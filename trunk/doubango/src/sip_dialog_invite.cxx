@@ -24,4 +24,19 @@
 * Authors:	F0076RTY <imsframework@gmail.com>
 *
 */
-#include <sip_dialog_invite.h>
+#include "sip_dialog_invite.h"
+
+PREF_NAMESPACE_START
+
+/* sip_dialog_invite constructor*/
+sip_dialog_invite::sip_dialog_invite()
+:sm_ctx(*this)
+{
+}
+
+/* sip_dialog_invite destructor */
+sip_dialog_invite::~sip_dialog_invite()
+{
+}
+
+PREF_NAMESPACE_END

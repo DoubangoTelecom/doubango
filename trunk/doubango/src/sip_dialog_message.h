@@ -28,14 +28,21 @@
 #ifndef __DOUBANGO_DIALOG_MESSAGE_SM_H__
 #define __DOUBANGO_DIALOG_MESSAGE_SM_H__
 
-#include <pref.h>
-#include <sip_dialog.h>
+#include "pref.h"
+#include "sip_dialog.h"
+#include "sm_dialog_message_sm.h"
 
 PREF_NAMESPACE_START
 
 /* MESSAGE */
 class sip_dialog_message : public sip_dialog
 {
+public:
+	sip_dialog_message();
+	~sip_dialog_message();
+
+private:
+	sip_dialog_messageContext sm_ctx;
 };
 
 PREF_NAMESPACE_END

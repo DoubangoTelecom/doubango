@@ -24,4 +24,19 @@
 * Authors:	F0076RTY <imsframework@gmail.com>
 *
 */
-#include <sip_dialog_info.h>
+#include "sip_dialog_info.h"
+
+PREF_NAMESPACE_START
+
+/* sip_dialog_info constructor*/
+sip_dialog_info::sip_dialog_info()
+:sm_ctx(*this)
+{
+}
+
+/* sip_dialog_info destructor */
+sip_dialog_info::~sip_dialog_info()
+{
+}
+
+PREF_NAMESPACE_END

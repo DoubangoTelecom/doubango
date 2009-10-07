@@ -208,6 +208,38 @@
 					RelativePath=".\src\sip_dialog_subscribe.cxx"
 					>
 				</File>
+				<Filter
+					Name="sm"
+					>
+					<File
+						RelativePath=".\src\sm_dialog_info_sm.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_invite_sm.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_message_sm.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_options_sm.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_publish_sm.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_register_sm.h"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_subscribe_sm.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 		<Filter
@@ -223,10 +255,6 @@
 			</File>
 			<File
 				RelativePath=".\src\pref.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\sm.h"
 				>
 			</File>
 			<File
@@ -268,7 +296,75 @@
 					RelativePath=".\src\sip_dialog_subscribe.h"
 					>
 				</File>
+				<Filter
+					Name="sm"
+					>
+					<File
+						RelativePath=".\src\sm_dialog_info_sm.cxx"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_invite_sm.cxx"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_message_sm.cxx"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_options_sm.cxx"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_publish_sm.cxx"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_register_sm.cxx"
+						>
+					</File>
+					<File
+						RelativePath=".\src\sm_dialog_subscribe_sm.cxx"
+						>
+					</File>
+				</Filter>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="sm"
+			>
+			<File
+				RelativePath=".\sm\sm_dialog_info.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\sm\sm_dialog_invite.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\sm\sm_dialog_message.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\sm\sm_dialog_options.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\sm\sm_dialog_publish.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\sm\sm_dialog_register.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\sm\sm_dialog_subscribe.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\src\statemap.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

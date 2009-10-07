@@ -24,4 +24,19 @@
 * Authors:	F0076RTY <imsframework@gmail.com>
 *
 */
-#include <sip_dialog_publish.h>
+#include "sip_dialog_publish.h"
+
+PREF_NAMESPACE_START
+
+/* sip_dialog_publish constructor*/
+sip_dialog_publish::sip_dialog_publish()
+:sm_ctx(*this)
+{
+}
+
+/* sip_dialog_options destructor */
+sip_dialog_publish::~sip_dialog_publish()
+{
+}
+
+PREF_NAMESPACE_END

@@ -28,14 +28,21 @@
 #ifndef __DOUBANGO_DIALOG_REGISTER_SM_H__
 #define __DOUBANGO_DIALOG_REGISTER_SM_H__
 
-#include <pref.h>
-#include <sip_dialog.h>
+#include "pref.h"
+#include "sip_dialog.h"
+#include "sm_dialog_register_sm.h"
 
 PREF_NAMESPACE_START
 
 /* REGISTER */
 class sip_dialog_register : public sip_dialog
 {
+public:
+	sip_dialog_register();
+	~sip_dialog_register();
+
+private:
+	sip_dialog_registerContext sm_ctx;
 };
 
 PREF_NAMESPACE_END

@@ -28,14 +28,21 @@
 #ifndef __DOUBANGO_DIALOG_OPTIONS_SM_H__
 #define __DOUBANGO_DIALOG_OPTIONS_SM_H__
 
-#include <pref.h>
-#include <sip_dialog.h>
+#include "pref.h"
+#include "sip_dialog.h"
+#include "sm_dialog_options_sm.h"
 
 PREF_NAMESPACE_START
 
 /* OPTIONS */
 class sip_dialog_options : public sip_dialog
 {
+public:
+	sip_dialog_options();
+	~sip_dialog_options();
+
+private:
+	sip_dialog_optionsContext sm_ctx;
 };
 
 PREF_NAMESPACE_END

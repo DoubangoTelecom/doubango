@@ -28,14 +28,21 @@
 #ifndef __DOUBANGO_DIALOG_PUBLISH_SM_H__
 #define __DOUBANGO_DIALOG_PUBLISH_SM_H__
 
-#include <pref.h>
-#include <sip_dialog.h>
+#include "pref.h"
+#include "sip_dialog.h"
+#include "sm_dialog_publish_sm.h"
 
 PREF_NAMESPACE_START
 
-/* PUBLISH */
-class sip_dialog_pubish : public sip_dialog
+/* PUBLISH== RFC 3903: Session Initiation Protocol (SIP) Extension for Event State Publication */
+class sip_dialog_publish : public sip_dialog
 {
+public:
+	sip_dialog_publish();
+	~sip_dialog_publish();
+
+private:
+	sip_dialog_publishContext sm_ctx;
 };
 
 PREF_NAMESPACE_END
