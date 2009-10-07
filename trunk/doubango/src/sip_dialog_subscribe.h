@@ -28,14 +28,21 @@
 #ifndef __DOUBANGO_DIALOG_SUBSCRIBE_SM_H__
 #define __DOUBANGO_DIALOG_SUBSCRIBE_SM_H__
 
-#include <pref.h>
-#include <sip_dialog.h>
+#include "pref.h"
+#include "sip_dialog.h"
+#include "sm_dialog_subscribe_sm.h"
 
 PREF_NAMESPACE_START
 
 /* SUBSCRIBE */
 class sip_dialog_subscribe : public sip_dialog
 {
+public:
+	sip_dialog_subscribe();
+	~sip_dialog_subscribe();
+
+private:
+	sip_dialog_subscribeContext sm_ctx;
 };
 
 PREF_NAMESPACE_END

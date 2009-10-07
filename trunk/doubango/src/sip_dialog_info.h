@@ -28,14 +28,21 @@
 #ifndef __DOUBANGO_DIALOG_INFO_SM_H__
 #define __DOUBANGO_DIALOG_INFO_SM_H__
 
-#include <pref.h>
-#include <sip_dialog.h>
+#include "pref.h"
+#include "sip_dialog.h"
+#include "sm_dialog_info_sm.h"
 
 PREF_NAMESPACE_START
 
-/* INFO */
+/* INFO== RFC2976 - The SIP INFO Method */
 class sip_dialog_info : public sip_dialog
 {
+public:
+	sip_dialog_info();
+	~sip_dialog_info();
+
+private:
+	sip_dialog_infoContext sm_ctx;
 };
 
 PREF_NAMESPACE_END

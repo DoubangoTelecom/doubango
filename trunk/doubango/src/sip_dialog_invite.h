@@ -28,14 +28,21 @@
 #ifndef __DOUBANGO_DIALOG_INVITE_SM_H__
 #define __DOUBANGO_DIALOG_INVITE_SM_H__
 
-#include <pref.h>
-#include <sip_dialog.h>
+#include "pref.h"
+#include "sip_dialog.h"
+#include "sm_dialog_invite_sm.h"
 
 PREF_NAMESPACE_START
 
 /* INVITE */
 class sip_dialog_invite : public sip_dialog
 {
+public:
+	sip_dialog_invite();
+	~sip_dialog_invite();
+
+private:
+	sip_dialog_inviteContext sm_ctx;
 };
 
 PREF_NAMESPACE_END

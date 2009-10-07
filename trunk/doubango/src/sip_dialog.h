@@ -28,7 +28,7 @@
 #ifndef __DOUBANGO_DIALOG_SM_H__
 #define __DOUBANGO_DIALOG_SM_H__
 
-#include <pref.h>
+#include "pref.h"
 
 PREF_NAMESPACE_START
 

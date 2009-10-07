@@ -24,4 +24,19 @@
 * Authors:	F0076RTY <imsframework@gmail.com>
 *
 */
-#include <sip_dialog_subscribe.h>
+#include "sip_dialog_subscribe.h"
+
+PREF_NAMESPACE_START
+
+/* sip_dialog_subscribe constructor*/
+sip_dialog_subscribe::sip_dialog_subscribe()
+:sm_ctx(*this)
+{
+}
+
+/* sip_dialog_subscribe destructor */
+sip_dialog_subscribe::~sip_dialog_subscribe()
+{
+}
+
+PREF_NAMESPACE_END
