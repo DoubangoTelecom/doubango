@@ -31,6 +31,26 @@
 #define PREF_NAMESPACE_USE		1
 #define PREF_NAMESPACE_VALUE	dgo
 
+/* doubango api funtions export */
+#if defined(WIN32) || defined(__SYMBIAN32__)
+#	ifdef DOUBANGO_EXPORTS
+#	define DOUBANGO_API __declspec(dllexport)
+#	define DOUBANGO_API_C extern "C" DOUBANGO_API
+#	else
+#	define DOUBANGO_API __declspec(dllimport)
+#	define DOUBANGO_API_C
+#	endif
+#else
+#	define DOUBANGO_API
+#	define DOUBANGO_API_C
+#endif
+
+/* disable warnings */
+#ifdef WIN32
+#pragma warning( disable : 4132 4100 4127 4152 4355 4996)
+#endif
+
+/* namespace definition*/
 #if PREF_NAMESPACE_USE 
 #	define PREF_NAMESPACE_START namespace PREF_NAMESPACE_VALUE {
 #	define PREF_NAMESPACE_END	} 

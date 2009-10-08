@@ -28,6 +28,9 @@
 #ifndef __DOUBANGO_DOUBANGO_H__
 #define __DOUBANGO_DOUBANGO_H__
 
-
+extern "C"
+{
+	#include "api_engine.h"
+}
 
 #endif /* __DOUBANGO_DOUBANGO_H__ */

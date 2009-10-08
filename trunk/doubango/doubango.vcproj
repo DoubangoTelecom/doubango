@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="./src"
+				AdditionalIncludeDirectories="./src;&quot;$(SolutionDir)sofia-sip-1.12.10\win32&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\su&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\ipt&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\sresolv&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\bnf&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\url&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\msg&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\sip&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\nta&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\nua&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\iptsec&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\http&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\nth&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\nea&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\sdp&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\soa&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\stun&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\tport&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DOUBANGO_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(OutDir)\libsofia_sip_ua.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -169,10 +170,6 @@
 		<Filter
 			Name="source"
 			>
-			<File
-				RelativePath=".\src\test.cxx"
-				>
-			</File>
 			<Filter
 				Name="sip_dialogs"
 				>
@@ -241,6 +238,18 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="api"
+				>
+				<File
+					RelativePath=".\src\api_engine.cxx"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api_stack.cxx"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -255,10 +264,6 @@
 			</File>
 			<File
 				RelativePath=".\src\pref.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\stdint0.h"
 				>
 			</File>
 			<Filter
@@ -328,6 +333,22 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="api"
+				>
+				<File
+					RelativePath=".\src\api_engine.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api_errors.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api_stack.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
