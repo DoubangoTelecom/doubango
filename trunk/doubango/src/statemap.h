@@ -44,6 +44,8 @@
 // (See bottom of file)
 //
 
+#include "pref.h"
+
 #if (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
 #include <iostream>
 #if defined(SMC_NO_EXCEPTIONS)
