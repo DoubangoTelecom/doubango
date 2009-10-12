@@ -38,7 +38,7 @@ PREF_NAMESPACE_START
 class sip_dialog_invite : public sip_dialog
 {
 public:
-	sip_dialog_invite();
+	sip_dialog_invite(stack* stk);
 	~sip_dialog_invite();
 
 private:

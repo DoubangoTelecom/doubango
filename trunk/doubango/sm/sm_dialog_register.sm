@@ -38,16 +38,38 @@
 //-------------------------------------------------------------------------------------
 // Initialized
 //-------------------------------------------------------------------------------------
-Initialized
-	Entry 
-	{ 
+Initialized Entry { OnStateChanged(SS_REGISTER_INITIALIZED); }
+{
+	sm_registerSent()	Trying { set_registering(true); }
+}
 	
-	}
-	Exit 
-	{ 
-	}
-	//
-	{
-	}
+Trying Entry { OnStateChanged(SS_REGISTER_TRYING); }
+{
+	sm_1xx_response()	nil {}
+	sm_2xx_response()	[ctxt.get_registering() == true] Established {}
+	sm_2xx_response()	[ctxt.get_registering() == false] Terminated {}
+	sm_401_407_421_494_response()	Authentifying {}
+	sm_unsupported_response()	Terminated {}
+}
+
+Established Entry { OnStateChanged(SS_REGISTER_ESTABLISHED); }
+{
+	sm_unregisterSent()	Trying { set_registering(false); }
+}
+
+Authentifying  Entry { OnStateChanged(SS_REGISTER_AUTHENTIFYING); }
+{
+}
+
+Terminated  Entry { OnStateChanged(SS_REGISTER_TERMINATED); }
+{
+	Default nil {}
+}
+
+Default Entry { OnStateChanged(SS_REGISTER_UNKNOWN); }
+{
+	sm_401_407_421_494_response()	Authentifying {}
+	Default	nil {}
+}
 	
 %%

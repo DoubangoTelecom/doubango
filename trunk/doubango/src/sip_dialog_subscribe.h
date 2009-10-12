@@ -38,7 +38,7 @@ PREF_NAMESPACE_START
 class sip_dialog_subscribe : public sip_dialog
 {
 public:
-	sip_dialog_subscribe();
+	sip_dialog_subscribe(stack* stk);
 	~sip_dialog_subscribe();
 
 private:

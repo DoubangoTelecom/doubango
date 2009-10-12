@@ -1,9 +1,11 @@
 #include "api_engine.h"
+#include "api_stack.h"
 
 /* TODO: add mutex */
 #include <algorithm>
 #include <functional>
 #include <list>
+#include <assert.h>
 
 #include <sofia-sip/su.h>
 
@@ -58,7 +60,8 @@ ERR engine_deinitialize()
 	std::list<PSTACK>::iterator iter = __stacks.begin();
 	for ( ; iter!=__stacks.end(); iter++ ) 
 	{
-        delete(*iter);
+		(*iter)->shutdown();
+        //delete(*iter);
 	} 
     __stacks.clear(); 
 
@@ -77,14 +80,14 @@ ERR engine_stack_create(int stack_id)
 	{
 		return ERR_STACK_ALREADY_EXIST;
 	}
-	stack* sk = new stack(stack_id, engine_callback);
-	if(sk->get_initialized())
+	stack* stk = new stack(stack_id, engine_callback);
+	if(stk->get_initialized())
 	{
-		__stacks.push_back(sk);
+		__stacks.push_back(stk);
 	}
 	else
 	{
-		delete sk;
+		delete stk;
 		return ERR_STACK_NOT_INITIALIZED;
 	}
 
@@ -96,7 +99,15 @@ ERR engine_stack_run(int stack_id)
 {
 	if(!__initialized) return ERR_ENGINE_NOT_INITIALIZED;
 
-	return ERR_NOT_IMPLEMENTED;
+	stack* stk = (stack*)engine_stack_find(stack_id);
+	if(stk)
+	{
+		return stk->run();
+	}
+	else
+	{
+		return ERR_STACK_NOT_FOUND;
+	}
 }
 
 /* shutdown downs the stack with the specified id */
@@ -104,7 +115,15 @@ ERR engine_stack_shutdown(int stack_id)
 {
 	if(!__initialized) return ERR_ENGINE_NOT_INITIALIZED;
 
-	return ERR_NOT_IMPLEMENTED;
+	stack* stk = (stack*)engine_stack_find(stack_id);
+	if(stk)
+	{
+		return stk->shutdown();
+	}
+	else
+	{
+		return ERR_STACK_NOT_FOUND;
+	}
 }
 
 /* shutdown downs all stacks */
@@ -116,8 +135,10 @@ ERR engine_stack_shutdown_all(void)
 }
 
 /* find stack by id*/
-stack* engine_stack_find(int stack_id)
+void* engine_stack_find(int stack_id)
 {
+	if(!__initialized) return NULL;
+
 	std::list<PSTACK>::iterator iter = __stacks.begin();
 	iter = std::find_if( iter, __stacks.end(), std::bind2nd( pred_stack_find_by_id(), stack_id ) );
 	if(iter != __stacks.end())
@@ -128,17 +149,12 @@ stack* engine_stack_find(int stack_id)
 }
 
 /* engine callback*/
-void engine_callback(nua_event_t   event,
-                  int           status,
-                  char const   *phrase,
-                  nua_t        *nua,
-                  nua_magic_t  *magic,
-                  nua_handle_t *nh,
-                  nua_hmagic_t *hmagic,
-                  sip_t const  *sip,
-                  tagi_t        tags[])
+void engine_callback(nua_event_t event, int status, char const *phrase,
+                  nua_t *nua, nua_magic_t *magic, nua_handle_t *nh,
+                  nua_hmagic_t *hmagic, sip_t const *sip, tagi_t tags[])
 {
-
+	((stack*)magic)->callback_handle(event, status, phrase, nua, magic,
+                  nh, hmagic, sip, tags);
 }
 
 #undef PSTACK

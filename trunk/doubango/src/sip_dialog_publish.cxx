@@ -29,8 +29,8 @@
 PREF_NAMESPACE_START
 
 /* sip_dialog_publish constructor*/
-sip_dialog_publish::sip_dialog_publish()
-:sm_ctx(*this)
+sip_dialog_publish::sip_dialog_publish(stack* stk)
+:sip_dialog(stk),sm_ctx(*this)
 {
 }
 

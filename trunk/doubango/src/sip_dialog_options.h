@@ -38,7 +38,7 @@ PREF_NAMESPACE_START
 class sip_dialog_options : public sip_dialog
 {
 public:
-	sip_dialog_options();
+	sip_dialog_options(stack* stk);
 	~sip_dialog_options();
 
 private:

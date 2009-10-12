@@ -35,14 +35,32 @@
 PREF_NAMESPACE_START
 
 /* REGISTER */
-class sip_dialog_register : public sip_dialog
+class DOUBANGO_API sip_dialog_register : public sip_dialog
 {
 public:
-	sip_dialog_register();
+	sip_dialog_register(stack* stk);
 	~sip_dialog_register();
+
+	/* sip_dialog override*/
+	ERR Start();
+	ERR Stop();
+	void OnStateChanged(SIP_STATE state);
+	inline const char* get_sipmethod()const;
+	inline bool get_terminated()const;
+	void dialog_callback(nua_event_t event,
+			       int status, char const *phrase,
+			       nua_t *nua, nua_magic_t *magic,
+			       nua_handle_t *nh, nua_hmagic_t *hmagic,
+			       sip_t const *sip,
+			       tagi_t tags[]);
+
+
+	bool get_registering() { return this->registering; }
+	void set_registering(bool val) { this->registering = val; }
 
 private:
 	sip_dialog_registerContext sm_ctx;
+	bool registering;
 };
 
 PREF_NAMESPACE_END

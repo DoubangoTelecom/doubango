@@ -20,8 +20,13 @@ typedef enum tag_ERR
 	ERR_ENGINE_NOT_INITIALIZED,		/* engine not initialized or initialization failed*/
 	ERR_ENGINE_ALREADY_INITIALIZED,	/* engine have been already initialized */
 
+	/* SIP DIALOG */
+	ERR_SIP_DIALOG_UNKNOWN,
+	ERR_SIP_DIALOG_NOT_FOUND,		/* dialog not found */
+
 	/* STACK errors */
-	ERR_STACK_ALREADY_EXIST,
+	ERR_STACK_NOT_FOUND,			/* stack not found*/
+	ERR_STACK_ALREADY_EXIST,		/* state already exist */
 	ERR_STACK_NOT_INITIALIZED,		/* stack not initialized or initialization failed*/
 	ERR_STACK_IS_INVALID,			/* stack is in an invalide state (NULL, destroyed, locked, ...) */
 	ERR_STACK_NOT_RUNNING,			/* operation failed because the stack is not running */

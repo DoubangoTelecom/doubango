@@ -38,7 +38,7 @@ PREF_NAMESPACE_START
 class sip_dialog_publish : public sip_dialog
 {
 public:
-	sip_dialog_publish();
+	sip_dialog_publish(stack* stk);
 	~sip_dialog_publish();
 
 private:

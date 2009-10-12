@@ -20,6 +20,9 @@ namespace dgo
     // Forward declarations.
     class map_dialog_message;
     class map_dialog_message_Initialized;
+    class map_dialog_message_Trying;
+    class map_dialog_message_Authentifying;
+    class map_dialog_message_Terminated;
     class map_dialog_message_Default;
     class sip_dialog_messageState;
     class sip_dialog_messageContext;
@@ -37,6 +40,11 @@ namespace dgo
         virtual void Entry(sip_dialog_messageContext&) {};
         virtual void Exit(sip_dialog_messageContext&) {};
 
+        virtual void sm_1xx_response(sip_dialog_messageContext& context);
+        virtual void sm_2xx_response(sip_dialog_messageContext& context);
+        virtual void sm_401_407_421_494_response(sip_dialog_messageContext& context);
+        virtual void sm_messageSent(sip_dialog_messageContext& context);
+        virtual void sm_unsupported_response(sip_dialog_messageContext& context);
 
     protected:
 
@@ -48,6 +56,9 @@ namespace dgo
     public:
 
         static map_dialog_message_Initialized Initialized;
+        static map_dialog_message_Trying Trying;
+        static map_dialog_message_Authentifying Authentifying;
+        static map_dialog_message_Terminated Terminated;
     };
 
     class map_dialog_message_Default :
@@ -59,6 +70,8 @@ namespace dgo
         : sip_dialog_messageState(name, stateId)
         {};
 
+        virtual void sm_401_407_421_494_response(sip_dialog_messageContext& context);
+        virtual void Default(sip_dialog_messageContext& context);
     };
 
     class map_dialog_message_Initialized :
@@ -69,6 +82,46 @@ namespace dgo
         : map_dialog_message_Default(name, stateId)
         {};
 
+        void Entry(sip_dialog_messageContext&);
+        void sm_messageSent(sip_dialog_messageContext& context);
+    };
+
+    class map_dialog_message_Trying :
+        public map_dialog_message_Default
+    {
+    public:
+        map_dialog_message_Trying(const char *name, int stateId)
+        : map_dialog_message_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_messageContext&);
+        void sm_1xx_response(sip_dialog_messageContext& context);
+        void sm_2xx_response(sip_dialog_messageContext& context);
+        void sm_401_407_421_494_response(sip_dialog_messageContext& context);
+        void sm_unsupported_response(sip_dialog_messageContext& context);
+    };
+
+    class map_dialog_message_Authentifying :
+        public map_dialog_message_Default
+    {
+    public:
+        map_dialog_message_Authentifying(const char *name, int stateId)
+        : map_dialog_message_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_messageContext&);
+    };
+
+    class map_dialog_message_Terminated :
+        public map_dialog_message_Default
+    {
+    public:
+        map_dialog_message_Terminated(const char *name, int stateId)
+        : map_dialog_message_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_messageContext&);
+        void Default(sip_dialog_messageContext& context);
     };
 
     class sip_dialog_messageContext :
@@ -105,6 +158,31 @@ namespace dgo
             }
 
             return (dynamic_cast<sip_dialog_messageState&>(*_state));
+        };
+
+        void sm_1xx_response()
+        {
+            (getState()).sm_1xx_response(*this);
+        };
+
+        void sm_2xx_response()
+        {
+            (getState()).sm_2xx_response(*this);
+        };
+
+        void sm_401_407_421_494_response()
+        {
+            (getState()).sm_401_407_421_494_response(*this);
+        };
+
+        void sm_messageSent()
+        {
+            (getState()).sm_messageSent(*this);
+        };
+
+        void sm_unsupported_response()
+        {
+            (getState()).sm_unsupported_response(*this);
         };
 
     private:

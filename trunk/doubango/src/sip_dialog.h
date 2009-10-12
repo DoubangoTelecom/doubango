@@ -29,14 +29,46 @@
 #define __DOUBANGO_DIALOG_SM_H__
 
 #include "pref.h"
+#include "api_sip_states.h"
+#include "api_errors.h"
+
+#include <sofia-sip/nua_tag.h>
+#include <sofia-sip/nua.h>
+#include <sofia-sip/su_debug.h>
 
 PREF_NAMESPACE_START
 
-class sip_dialog
+class stack;
+
+class DOUBANGO_API sip_dialog
 {
 public:
-	sip_dialog();
+	sip_dialog(stack* stk);
 	~sip_dialog();
+	
+	inline nua_handle_t* get_handle() const{ return this->handle; }
+	inline void set_handle(nua_handle_t* h) { this->handle = h; }
+
+	inline SIP_STATE get_state_current() const{ return this->state_current; }
+	inline void set_state_current(SIP_STATE s) { this->state_current = s; }
+
+	virtual ERR Start() = 0;
+	virtual ERR Stop() = 0;
+	virtual void OnStateChanged(SIP_STATE state);
+	virtual inline const char* get_sipmethod()const = 0;
+	virtual inline bool get_terminated()const = 0;
+	virtual void dialog_callback(nua_event_t event,
+			       int status, char const *phrase,
+			       nua_t *nua, nua_magic_t *magic,
+			       nua_handle_t *nh, nua_hmagic_t *hmagic,
+			       sip_t const *sip,
+			       tagi_t tags[]) = 0;
+
+
+protected:
+	nua_handle_t* handle;
+	stack* stk;
+	SIP_STATE state_current;
 };
 
 PREF_NAMESPACE_END
