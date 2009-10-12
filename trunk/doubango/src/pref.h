@@ -47,7 +47,7 @@
 
 /* disable warnings */
 #ifdef WIN32
-#pragma warning( disable : 4132 4100 4127 4152 4355 4996)
+#pragma warning( disable : 4132 4100 4127 4152 4355 4996 4251)
 #endif
 
 /* namespace definition*/

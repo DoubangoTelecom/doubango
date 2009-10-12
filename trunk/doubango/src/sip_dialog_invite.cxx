@@ -29,8 +29,8 @@
 PREF_NAMESPACE_START
 
 /* sip_dialog_invite constructor*/
-sip_dialog_invite::sip_dialog_invite()
-:sm_ctx(*this)
+sip_dialog_invite::sip_dialog_invite(stack* stk)
+:sip_dialog(stk),sm_ctx(*this)
 {
 }
 

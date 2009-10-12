@@ -3,7 +3,6 @@
 
 #include "pref.h"
 #include "api_errors.h"
-#include "api_stack.h"
 
 PREF_NAMESPACE_START
 
@@ -15,7 +14,7 @@ DOUBANGO_API_C ERR engine_stack_run(int stack_id);
 DOUBANGO_API_C ERR engine_stack_shutdown(int stack_id);
 DOUBANGO_API_C ERR engine_stack_shutdown_all(void);
 
-stack* engine_stack_find(int stack_id);
+void* engine_stack_find(int stack_id);
 
 PREF_NAMESPACE_END
 

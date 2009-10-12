@@ -29,13 +29,22 @@
 PREF_NAMESPACE_START
 
 /* sip_dialog constructor */
-sip_dialog::sip_dialog()
+sip_dialog::sip_dialog(stack* _stk)
 {
+	this->handle = NULL;
+	this->stk = _stk;
 }
 
 /* sip_dialog destructor*/
 sip_dialog::~sip_dialog()
 {
+}
+
+/* called when dialog state change*/
+void sip_dialog::OnStateChanged(SIP_STATE state)
+{
+	this->state_current = state;
+	SU_DEBUG_3(("%s::OnStateChanged ==> %d\n", this->get_sipmethod(), state));
 }
 
 PREF_NAMESPACE_END

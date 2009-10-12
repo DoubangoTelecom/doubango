@@ -30,8 +30,8 @@
 PREF_NAMESPACE_START
 
 /* sip_dialog_message constructor*/
-sip_dialog_options::sip_dialog_options()
-:sm_ctx(*this)
+sip_dialog_options::sip_dialog_options(stack* stk)
+:sip_dialog(stk),sm_ctx(*this)
 {
 }
 

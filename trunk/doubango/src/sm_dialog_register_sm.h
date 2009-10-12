@@ -20,6 +20,10 @@ namespace dgo
     // Forward declarations.
     class map_dialog_register;
     class map_dialog_register_Initialized;
+    class map_dialog_register_Trying;
+    class map_dialog_register_Established;
+    class map_dialog_register_Authentifying;
+    class map_dialog_register_Terminated;
     class map_dialog_register_Default;
     class sip_dialog_registerState;
     class sip_dialog_registerContext;
@@ -37,6 +41,12 @@ namespace dgo
         virtual void Entry(sip_dialog_registerContext&) {};
         virtual void Exit(sip_dialog_registerContext&) {};
 
+        virtual void sm_1xx_response(sip_dialog_registerContext& context);
+        virtual void sm_2xx_response(sip_dialog_registerContext& context);
+        virtual void sm_401_407_421_494_response(sip_dialog_registerContext& context);
+        virtual void sm_registerSent(sip_dialog_registerContext& context);
+        virtual void sm_unregisterSent(sip_dialog_registerContext& context);
+        virtual void sm_unsupported_response(sip_dialog_registerContext& context);
 
     protected:
 
@@ -48,6 +58,10 @@ namespace dgo
     public:
 
         static map_dialog_register_Initialized Initialized;
+        static map_dialog_register_Trying Trying;
+        static map_dialog_register_Established Established;
+        static map_dialog_register_Authentifying Authentifying;
+        static map_dialog_register_Terminated Terminated;
     };
 
     class map_dialog_register_Default :
@@ -59,6 +73,8 @@ namespace dgo
         : sip_dialog_registerState(name, stateId)
         {};
 
+        virtual void sm_401_407_421_494_response(sip_dialog_registerContext& context);
+        virtual void Default(sip_dialog_registerContext& context);
     };
 
     class map_dialog_register_Initialized :
@@ -69,6 +85,58 @@ namespace dgo
         : map_dialog_register_Default(name, stateId)
         {};
 
+        void Entry(sip_dialog_registerContext&);
+        void sm_registerSent(sip_dialog_registerContext& context);
+    };
+
+    class map_dialog_register_Trying :
+        public map_dialog_register_Default
+    {
+    public:
+        map_dialog_register_Trying(const char *name, int stateId)
+        : map_dialog_register_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_registerContext&);
+        void sm_1xx_response(sip_dialog_registerContext& context);
+        void sm_2xx_response(sip_dialog_registerContext& context);
+        void sm_401_407_421_494_response(sip_dialog_registerContext& context);
+        void sm_unsupported_response(sip_dialog_registerContext& context);
+    };
+
+    class map_dialog_register_Established :
+        public map_dialog_register_Default
+    {
+    public:
+        map_dialog_register_Established(const char *name, int stateId)
+        : map_dialog_register_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_registerContext&);
+        void sm_unregisterSent(sip_dialog_registerContext& context);
+    };
+
+    class map_dialog_register_Authentifying :
+        public map_dialog_register_Default
+    {
+    public:
+        map_dialog_register_Authentifying(const char *name, int stateId)
+        : map_dialog_register_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_registerContext&);
+    };
+
+    class map_dialog_register_Terminated :
+        public map_dialog_register_Default
+    {
+    public:
+        map_dialog_register_Terminated(const char *name, int stateId)
+        : map_dialog_register_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_registerContext&);
+        void Default(sip_dialog_registerContext& context);
     };
 
     class sip_dialog_registerContext :
@@ -105,6 +173,36 @@ namespace dgo
             }
 
             return (dynamic_cast<sip_dialog_registerState&>(*_state));
+        };
+
+        void sm_1xx_response()
+        {
+            (getState()).sm_1xx_response(*this);
+        };
+
+        void sm_2xx_response()
+        {
+            (getState()).sm_2xx_response(*this);
+        };
+
+        void sm_401_407_421_494_response()
+        {
+            (getState()).sm_401_407_421_494_response(*this);
+        };
+
+        void sm_registerSent()
+        {
+            (getState()).sm_registerSent(*this);
+        };
+
+        void sm_unregisterSent()
+        {
+            (getState()).sm_unregisterSent(*this);
+        };
+
+        void sm_unsupported_response()
+        {
+            (getState()).sm_unsupported_response(*this);
         };
 
     private:

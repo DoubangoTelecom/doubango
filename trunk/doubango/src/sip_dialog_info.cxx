@@ -29,8 +29,8 @@
 PREF_NAMESPACE_START
 
 /* sip_dialog_info constructor*/
-sip_dialog_info::sip_dialog_info()
-:sm_ctx(*this)
+sip_dialog_info::sip_dialog_info(stack* stk)
+:sip_dialog(stk), sm_ctx(*this)
 {
 }
 

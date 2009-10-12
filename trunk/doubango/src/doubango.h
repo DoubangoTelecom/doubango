@@ -31,6 +31,7 @@
 extern "C"
 {
 	#include "api_engine.h"
+	#include "api_sip.h"
 }
 
 #endif /* __DOUBANGO_DOUBANGO_H__ */

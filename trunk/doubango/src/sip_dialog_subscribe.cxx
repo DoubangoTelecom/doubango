@@ -29,8 +29,8 @@
 PREF_NAMESPACE_START
 
 /* sip_dialog_subscribe constructor*/
-sip_dialog_subscribe::sip_dialog_subscribe()
-:sm_ctx(*this)
+sip_dialog_subscribe::sip_dialog_subscribe(stack* stk)
+:sip_dialog(stk),sm_ctx(*this)
 {
 }
 
