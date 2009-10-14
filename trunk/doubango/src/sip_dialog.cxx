@@ -25,6 +25,11 @@
 *
 */
 #include "sip_dialog.h"
+#include "api_stack.h"
+
+#include <nua_stack.h>
+#include <sofia-sip/sip_hclasses.h>
+#include <sofia-sip/msg_header.h>
 
 PREF_NAMESPACE_START
 
@@ -45,6 +50,21 @@ void sip_dialog::OnStateChanged(SIP_STATE state)
 {
 	this->state_current = state;
 	SU_DEBUG_3(("%s::OnStateChanged ==> %d\n", this->get_sipmethod(), state));
+}
+
+/* authenticate the supplied request*/
+void sip_dialog::authenticate(nua_handle_t *nh, sip_t const *sip)
+{
+	const char* realm = msg_params_find(sip->sip_www_authenticate->au_params, "realm=");
+	const char* scheme = sip->sip_www_authenticate? 
+		sip->sip_www_authenticate->au_scheme: (sip->sip_proxy_authenticate ? sip->sip_proxy_authenticate->au_scheme : "UNKNOWN");
+
+	char* authstring = su_sprintf(NULL, "%s:%s:%s:%s", 
+	scheme, realm, this->stk->get_private_id(), this->stk->get_password());
+
+	nua_authenticate(nh, NUTAG_AUTH(authstring), TAG_END());
+
+	su_free(NULL, authstring);
 }
 
 PREF_NAMESPACE_END

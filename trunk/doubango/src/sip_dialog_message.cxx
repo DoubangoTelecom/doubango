@@ -50,8 +50,7 @@ sip_dialog_message::~sip_dialog_message()
 /* start sending MESSAGE */
 ERR sip_dialog_message::Start()
 {
-	this->handle = nua_handle(this->stk->get_nua(), this->stk->get_home(),
-	SIPTAG_TO_STR(this->dest_address), TAG_END());
+	this->handle = nua_handle(this->stk->get_nua(), this->stk->get_home(), TAG_END());
 
 	if(!this->handle)
 	{
@@ -59,6 +58,8 @@ ERR sip_dialog_message::Start()
 	}
 
 	nua_message(this->handle, 
+				SIPTAG_TO_STR(this->dest_address),
+				SIPTAG_FROM_STR(this->stk->get_public_id()),
 				SIPTAG_CONTENT_TYPE_STR(this->content_type),
 				SIPTAG_PAYLOAD_STR(this->content),
 				TAG_END());

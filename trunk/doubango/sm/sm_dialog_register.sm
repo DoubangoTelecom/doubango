@@ -45,20 +45,32 @@ Initialized Entry { OnStateChanged(SS_REGISTER_INITIALIZED); }
 	
 Trying Entry { OnStateChanged(SS_REGISTER_TRYING); }
 {
-	sm_1xx_response()	nil {}
-	sm_2xx_response()	[ctxt.get_registering() == true] Established {}
-	sm_2xx_response()	[ctxt.get_registering() == false] Terminated {}
+	sm_1xx_response()				nil {}
+	sm_2xx_response()				[ctxt.get_registering() == true] Established {}
+	sm_2xx_response()				[ctxt.get_registering() == false] Terminated {}
+	sm_3xx_response()				Terminated {}
 	sm_401_407_421_494_response()	Authentifying {}
-	sm_unsupported_response()	Terminated {}
+	sm_4xx_response()				Terminated {}
+	sm_5xx_response()				Terminated {}
+	sm_6xx_response()				Terminated {}
+	sm_xxx_response()				Terminated {}
+	Default							Terminated {}
 }
 
 Established Entry { OnStateChanged(SS_REGISTER_ESTABLISHED); }
 {
-	sm_unregisterSent()	Trying { set_registering(false); }
+	sm_1xx_response()				nil {}
+	sm_2xx_response()				nil {}
+	sm_unregisterSent()				Trying { set_registering(false); }
+	Default							Terminated {}
 }
 
 Authentifying  Entry { OnStateChanged(SS_REGISTER_AUTHENTIFYING); }
 {
+	sm_1xx_response()				nil {}
+	sm_2xx_response()				[ctxt.get_registering() == true] Established {}
+	sm_authentificationSent()		Trying {}
+	Default							Terminated {}
 }
 
 Terminated  Entry { OnStateChanged(SS_REGISTER_TERMINATED); }
@@ -66,10 +78,15 @@ Terminated  Entry { OnStateChanged(SS_REGISTER_TERMINATED); }
 	Default nil {}
 }
 
-Default Entry { OnStateChanged(SS_REGISTER_UNKNOWN); }
-{
-	sm_401_407_421_494_response()	Authentifying {}
-	Default	nil {}
-}
+//Default Entry { OnStateChanged(SS_REGISTER_UNKNOWN); }
+//{
+//	sm_401_407_421_494_response()	Authentifying {}
+//	sm_3xx_response()				nil {}
+//	sm_4xx_response()				nil {}
+//	sm_5xx_response()				nil {}
+//	sm_6xx_response()				nil {}
+//	sm_xxx_response()				nil {}
+//	Default							nil {}
+//}
 	
 %%

@@ -34,7 +34,6 @@
 
 #include <sofia-sip/nua_tag.h>
 #include <sofia-sip/nua.h>
-#include <sofia-sip/su_debug.h>
 
 PREF_NAMESPACE_START
 
@@ -64,6 +63,9 @@ public:
 			       sip_t const *sip,
 			       tagi_t tags[]) = 0;
 
+
+protected:
+	void authenticate(nua_handle_t *nh, sip_t const *sip);
 
 protected:
 	nua_handle_t* handle;

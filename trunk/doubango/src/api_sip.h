@@ -31,12 +31,13 @@ DOUBANGO_API_C ERR auth_set_operator_id(int stack_id, const char* operator_id);
 DOUBANGO_API_C ERR auth_set_amf(int stack_id, const char* amf);
 DOUBANGO_API_C ERR auth_set_privacy(int stack_id, const char* privacy);
 DOUBANGO_API_C ERR auth_set_security_mechanism(int stack_id, const char* security_mechanism);
+DOUBANGO_API_C ERR auth_set_early_ims(int stack_id, bool early_ims);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // network
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-DOUBANGO_API_C ERR network_set(int stack_id, const char* pcscf_ip, int pcscf_port, const char* transport);
-DOUBANGO_API_C ERR network_set_pcscf(int stack_id, const char* pcscf_ip, int pcscf_port);
+DOUBANGO_API_C ERR network_set(int stack_id, const char* pcscf, int pcscf_port, const char* transport);
+DOUBANGO_API_C ERR network_set_pcscf(int stack_id, const char* pcscf, int pcscf_port);
 DOUBANGO_API_C ERR network_set_transport(int stack_id, const char* transport);
 DOUBANGO_API_C ERR network_set_net_info(int stack_id, const char* net_info);
 

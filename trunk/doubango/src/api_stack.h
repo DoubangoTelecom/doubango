@@ -8,7 +8,7 @@
 
 #include <list>
 #include <algorithm>
-
+ 
 PREF_NAMESPACE_START
 
 /* generate setter and getter methods*/
@@ -80,7 +80,12 @@ public:
 	DEFINE_GET_SET(char*, realm);
 	DEFINE_GET_SET(char*, password);
 	DEFINE_GET_SET(char*, privacy);
-	DEFINE_GET_SET(char*, pcscf_ip);
+	DEFINE_GET_SET(bool, early_ims);
+
+	//
+	//	Network
+	//
+	DEFINE_GET_SET(char*, pcscf);
 	DEFINE_GET_SET(int, pcscf_port);
 
 	//
@@ -127,7 +132,12 @@ private:
 	char* realm;
 	char* password;
 	char* privacy;
-	char* pcscf_ip;
+	bool early_ims;
+
+	//
+	//	Network
+	//
+	char* pcscf;
 	int pcscf_port;
 
 	//
