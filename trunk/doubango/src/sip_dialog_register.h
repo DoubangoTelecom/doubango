@@ -59,6 +59,10 @@ public:
 	void set_registering(bool val) { this->registering = val; }
 
 private:
+	ERR sendRegister();
+	ERR sendUnregister();
+
+private:
 	sip_dialog_registerContext sm_ctx;
 	bool registering;
 };

@@ -134,24 +134,31 @@ ERR auth_set_security_mechanism(int stack_id, const char* security_mechanism)
 	return ERR_NOT_IMPLEMENTED;
 }
 
+ERR auth_set_early_ims(int stack_id, bool early_ims)
+{
+	GET_STACK(stack_id, stk);
+	stk->set_early_ims( early_ims );
+	return ERR_SUCCESS;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // network
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-ERR network_set(int stack_id, const char* pcscf_ip, int pcscf_port, const char* transport)
+ERR network_set(int stack_id, const char* pcscf, int pcscf_port, const char* transport)
 {
 	return ERR_NOT_IMPLEMENTED;
 }
 
-ERR network_set_pcscf(int stack_id, const char* pcscf_ip, int pcscf_port)
+ERR network_set_pcscf(int stack_id, const char* pcscf, int pcscf_port)
 {
 	GET_STACK(stack_id, stk);
-	char* pcscf = su_sprintf(stk->get_home(), "sip:%s:%d", pcscf_ip, pcscf_port);
+	char* pcscf_ip_port = su_sprintf(NULL, "sip:%s:%d", pcscf, pcscf_port);
 	nua_set_params(stk->get_nua(),
-					NUTAG_PROXY(pcscf),
+					NUTAG_PROXY(pcscf_ip_port),
 					NUTAG_OUTBOUND("no-validate"),
                     TAG_NULL());
-	su_free(stk->get_home(), pcscf);
+	
+	su_free(NULL, pcscf_ip_port);
 
 	return ERR_SUCCESS;
 }

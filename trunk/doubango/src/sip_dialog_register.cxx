@@ -55,40 +55,14 @@ ERR sip_dialog_register::Start()
 		return ERR_GLOBAL_FAILURE;
 	}
 
-	nua_register(this->handle,
-	SIPTAG_PRIVACY_STR(this->stk->get_privacy()),
-	NUTAG_OUTBOUND("no-options-keepalive"), 
-	NUTAG_OUTBOUND("no-validate"), 
-	NUTAG_KEEPALIVE(0),
-	SIPTAG_EXPIRES_STR("20"),
-	//NUTAG_M_USERNAME("doubango"),
-	SIPTAG_FROM_STR(this->stk->get_public_id()),
-	SIPTAG_TO_STR(this->stk->get_public_id()),
-    NUTAG_M_FEATURES("audio"),
-    NUTAG_CALLEE_CAPS(0),
-	SIPTAG_SUPPORTED_STR("timer, precondition, path, replaces, 100rel, gruu"),
-
-
-	//NUTAG_M_FEATURES("+g.3gpp.smsip;+g.3gpp.cs-voice"),
-	//TAG_IF(this->gsma_vs, NUTAG_M_FEATURES("+g.3gpp.cs-voice")),
-
-	TAG_END());
-	this->sm_ctx.sm_registerSent();
-
-	return ERR_SUCCESS;
+	return this->sendRegister();
 }
 
 /* stop */
 ERR sip_dialog_register::Stop()
 {
-	if(this->handle)
-	{
-		nua_unregister(this->handle, TAG_END());
-		this->sm_ctx.sm_unregisterSent();
-
-		return ERR_SUCCESS;
-	}
-	else return ERR_SIP_DIALOG_UNKNOWN;
+	ERR err = this->sendUnregister();
+	return err;
 }
 
 /* state changed */
@@ -109,6 +83,55 @@ inline bool sip_dialog_register::get_terminated()const
 	return (this->state_current == SS_REGISTER_TERMINATED);
 }
 
+/* send SIP REGISTER request */
+ERR sip_dialog_register::sendRegister()
+{
+	if(!this->handle) return ERR_SIP_DIALOG_UNKNOWN;
+
+	// FIXME: secure
+	bool secure = false;
+	char* ims_default_auth = su_sprintf(NULL, "Digest username=\"%s\",realm=\"%s\",nonce=\"\",uri=\"%s:%s\",response=\"\"",
+		this->stk->get_private_id(), this->stk->get_realm(), secure?"sips":"sip",this->stk->get_realm());
+
+	nua_register(this->handle,
+	SIPTAG_PRIVACY_STR(this->stk->get_privacy()),
+	NUTAG_OUTBOUND("no-options-keepalive"), 
+	NUTAG_OUTBOUND("no-validate"), 
+	NUTAG_KEEPALIVE(0),
+	SIPTAG_EXPIRES_STR("20"),
+	NUTAG_M_USERNAME("FIXME"),
+	SIPTAG_FROM_STR(this->stk->get_public_id()),
+	SIPTAG_TO_STR(this->stk->get_public_id()),
+    NUTAG_M_FEATURES("audio"),
+    NUTAG_CALLEE_CAPS(0),
+	SIPTAG_SUPPORTED_STR("timer, precondition, path, replaces, 100rel, gruu"),
+	SIPTAG_EVENT_STR("registration"),
+	SIPTAG_ALLOW_EVENTS_STR("presence"),
+	TAG_IF(!this->stk->get_early_ims(), SIPTAG_AUTHORIZATION_STR(ims_default_auth)), /* 3GPP TS 24.229. See section 5.1.1 */
+
+	//NUTAG_M_FEATURES("+g.3gpp.smsip;+g.3gpp.cs-voice"),
+	//TAG_IF(this->gsma_vs, NUTAG_M_FEATURES("+g.3gpp.cs-voice")),
+
+	TAG_END());
+	this->sm_ctx.sm_registerSent();
+
+	su_free(NULL, ims_default_auth);
+	return ERR_SUCCESS;
+}
+
+/* send SIP UNREGISTER request*/
+ERR sip_dialog_register::sendUnregister()
+{
+	if(this->handle)
+	{
+		nua_unregister(this->handle, TAG_END());
+		this->sm_ctx.sm_unregisterSent();
+
+		return ERR_SUCCESS;
+	}
+	else return ERR_SIP_DIALOG_UNKNOWN;
+}
+
 /* dialog callback function*/
 void sip_dialog_register::dialog_callback(nua_event_t _event,
 			       int status, char const *phrase,
@@ -124,9 +147,17 @@ void sip_dialog_register::dialog_callback(nua_event_t _event,
 		{
 			if(status <200) this->sm_ctx.sm_1xx_response();
 			else if(status <300) this->sm_ctx.sm_2xx_response();
-			else if(status == 401 || status == 407 || status == 421 || status == 494) this->sm_ctx.sm_401_407_421_494_response();
-			else this->sm_ctx.sm_unsupported_response();
-
+			else if(status <400) this->sm_ctx.sm_3xx_response();
+			else if(status == 401 || status == 407 || status == 421 || status == 494) 
+			{
+				this->sm_ctx.sm_401_407_421_494_response();
+				this->authenticate(nh, sip);
+				this->sm_ctx.sm_authentificationSent();
+			}
+			else if(status<500) this->sm_ctx.sm_4xx_response();
+			else if(status<600) this->sm_ctx.sm_5xx_response();
+			else if(status<700) this->sm_ctx.sm_6xx_response();
+			else this->sm_ctx.sm_xxx_response();
 			break;
 		}
 

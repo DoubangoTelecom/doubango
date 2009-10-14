@@ -21,7 +21,10 @@ stack::stack(int _id, nua_callback_f _callback)
 
 	/* authentication */
 	displayname = NULL, public_id = NULL, private_id = NULL, realm = NULL, 
-		password = NULL, privacy = NULL, pcscf_ip = NULL, pcscf_port = 5060;
+		password = NULL, privacy = NULL, early_ims = false;
+
+	/* Network */
+	pcscf = NULL, pcscf_port = 5060;
 
 	/* Features */
 	smsip = true, oma_large_msg = true, oma_sip_im = true, gsma_is = true, gsma_vs = true;

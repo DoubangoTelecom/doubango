@@ -60,7 +60,37 @@ namespace dgo
         return;
     }
 
+    void sip_dialog_registerState::sm_3xx_response(sip_dialog_registerContext& context)
+    {
+        Default(context);
+        return;
+    }
+
     void sip_dialog_registerState::sm_401_407_421_494_response(sip_dialog_registerContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_registerState::sm_4xx_response(sip_dialog_registerContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_registerState::sm_5xx_response(sip_dialog_registerContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_registerState::sm_6xx_response(sip_dialog_registerContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_registerState::sm_authentificationSent(sip_dialog_registerContext& context)
     {
         Default(context);
         return;
@@ -78,7 +108,7 @@ namespace dgo
         return;
     }
 
-    void sip_dialog_registerState::sm_unsupported_response(sip_dialog_registerContext& context)
+    void sip_dialog_registerState::sm_xxx_response(sip_dialog_registerContext& context)
     {
         Default(context);
         return;
@@ -87,23 +117,6 @@ namespace dgo
     void sip_dialog_registerState::Default(sip_dialog_registerContext& context)
     {
         assert(1==0);
-
-        return;
-    }
-
-    void map_dialog_register_Default::sm_401_407_421_494_response(sip_dialog_registerContext& context)
-    {
-
-        (context.getState()).Exit(context);
-        context.setState(map_dialog_register::Authentifying);
-        (context.getState()).Entry(context);
-
-        return;
-    }
-
-    void map_dialog_register_Default::Default(sip_dialog_registerContext& context)
-    {
-
 
         return;
     }
@@ -146,6 +159,16 @@ namespace dgo
         return;
     }
 
+    void map_dialog_register_Trying::Default(sip_dialog_registerContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_register::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
     void map_dialog_register_Trying::sm_1xx_response(sip_dialog_registerContext& context)
     {
 
@@ -179,6 +202,16 @@ namespace dgo
         return;
     }
 
+    void map_dialog_register_Trying::sm_3xx_response(sip_dialog_registerContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_register::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
     void map_dialog_register_Trying::sm_401_407_421_494_response(sip_dialog_registerContext& context)
     {
 
@@ -189,7 +222,37 @@ namespace dgo
         return;
     }
 
-    void map_dialog_register_Trying::sm_unsupported_response(sip_dialog_registerContext& context)
+    void map_dialog_register_Trying::sm_4xx_response(sip_dialog_registerContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_register::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_register_Trying::sm_5xx_response(sip_dialog_registerContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_register::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_register_Trying::sm_6xx_response(sip_dialog_registerContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_register::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_register_Trying::sm_xxx_response(sip_dialog_registerContext& context)
     {
 
         (context.getState()).Exit(context);
@@ -205,6 +268,30 @@ namespace dgo
         sip_dialog_register& ctxt(context.getOwner());
 
         ctxt.OnStateChanged(SS_REGISTER_ESTABLISHED);
+        return;
+    }
+
+    void map_dialog_register_Established::Default(sip_dialog_registerContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_register::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_register_Established::sm_1xx_response(sip_dialog_registerContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_register_Established::sm_2xx_response(sip_dialog_registerContext& context)
+    {
+
+
         return;
     }
 
@@ -234,6 +321,52 @@ namespace dgo
         sip_dialog_register& ctxt(context.getOwner());
 
         ctxt.OnStateChanged(SS_REGISTER_AUTHENTIFYING);
+        return;
+    }
+
+    void map_dialog_register_Authentifying::Default(sip_dialog_registerContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_register::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_register_Authentifying::sm_1xx_response(sip_dialog_registerContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_register_Authentifying::sm_2xx_response(sip_dialog_registerContext& context)
+    {
+        sip_dialog_register& ctxt(context.getOwner());
+
+        if (ctxt.get_registering() == true)
+        {
+            (context.getState()).Exit(context);
+            // No actions.
+            context.setState(map_dialog_register::Established);
+            (context.getState()).Entry(context);
+        }
+        else
+        {
+             map_dialog_register_Default::sm_2xx_response(context);
+        }
+
+        return;
+    }
+
+    void map_dialog_register_Authentifying::sm_authentificationSent(sip_dialog_registerContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_register::Trying);
+        (context.getState()).Entry(context);
+
         return;
     }
 
