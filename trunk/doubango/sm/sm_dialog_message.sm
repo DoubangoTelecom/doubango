@@ -40,24 +40,29 @@
 //-------------------------------------------------------------------------------------
 Initialized Entry { OnStateChanged(SS_MESSAGE_INITIALIZED); }
 {
-	sm_messageSent()	Trying { }
+	sm_messageSent()				Trying { }
 }
 	
 Trying Entry { OnStateChanged(SS_MESSAGE_TRYING); }
 {
-	sm_1xx_response()	nil {}
-	sm_2xx_response()	Terminated {}
+	sm_1xx_response()				nil {}
+	sm_2xx_response()				Terminated {}
 	sm_401_407_421_494_response()	Authentifying {}
-	sm_unsupported_response	Terminated { }
+	sm_xxx_response					Terminated { }
 }
 
 Authentifying  Entry { OnStateChanged(SS_MESSAGE_AUTHENTIFYING); }
 {
+	sm_1xx_response()				nil {}
+	sm_2xx_response()				Terminated {}
+	sm_xxx_response					Terminated { }
+	sm_authentificationSent()		Trying {}
+	Default							nil {}
 }
 
 Terminated  Entry { OnStateChanged(SS_MESSAGE_TERMINATED); }
 {
-	Default nil {}
+	Default							nil {}
 }
 
 Default Entry { OnStateChanged(SS_MESSAGE_UNKNOWN); }

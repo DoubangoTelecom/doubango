@@ -56,6 +56,7 @@ public:
 
 private:
 	sip_dialog_messageContext sm_ctx;
+	ERR sendMessage();
 
 	char* dest_address;
 	char* content_type;

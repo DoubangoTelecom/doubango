@@ -20,6 +20,10 @@ namespace dgo
     // Forward declarations.
     class map_dialog_publish;
     class map_dialog_publish_Initialized;
+    class map_dialog_publish_Trying;
+    class map_dialog_publish_Established;
+    class map_dialog_publish_Authentifying;
+    class map_dialog_publish_Terminated;
     class map_dialog_publish_Default;
     class sip_dialog_publishState;
     class sip_dialog_publishContext;
@@ -37,6 +41,18 @@ namespace dgo
         virtual void Entry(sip_dialog_publishContext&) {};
         virtual void Exit(sip_dialog_publishContext&) {};
 
+        virtual void sm_1xx_response(sip_dialog_publishContext& context);
+        virtual void sm_2xx_response(sip_dialog_publishContext& context, bool unpub);
+        virtual void sm_3xx_response(sip_dialog_publishContext& context);
+        virtual void sm_401_407_421_494_response(sip_dialog_publishContext& context);
+        virtual void sm_4xx_response(sip_dialog_publishContext& context);
+        virtual void sm_5xx_response(sip_dialog_publishContext& context);
+        virtual void sm_6xx_response(sip_dialog_publishContext& context);
+        virtual void sm_authentificationSent(sip_dialog_publishContext& context);
+        virtual void sm_cancelSent(sip_dialog_publishContext& context);
+        virtual void sm_publishSent(sip_dialog_publishContext& context);
+        virtual void sm_unpublishSent(sip_dialog_publishContext& context);
+        virtual void sm_xxx_response(sip_dialog_publishContext& context);
 
     protected:
 
@@ -48,6 +64,10 @@ namespace dgo
     public:
 
         static map_dialog_publish_Initialized Initialized;
+        static map_dialog_publish_Trying Trying;
+        static map_dialog_publish_Established Established;
+        static map_dialog_publish_Authentifying Authentifying;
+        static map_dialog_publish_Terminated Terminated;
     };
 
     class map_dialog_publish_Default :
@@ -59,6 +79,13 @@ namespace dgo
         : sip_dialog_publishState(name, stateId)
         {};
 
+        virtual void sm_401_407_421_494_response(sip_dialog_publishContext& context);
+        virtual void sm_3xx_response(sip_dialog_publishContext& context);
+        virtual void sm_4xx_response(sip_dialog_publishContext& context);
+        virtual void sm_5xx_response(sip_dialog_publishContext& context);
+        virtual void sm_6xx_response(sip_dialog_publishContext& context);
+        virtual void sm_xxx_response(sip_dialog_publishContext& context);
+        virtual void Default(sip_dialog_publishContext& context);
     };
 
     class map_dialog_publish_Initialized :
@@ -69,6 +96,75 @@ namespace dgo
         : map_dialog_publish_Default(name, stateId)
         {};
 
+        void Entry(sip_dialog_publishContext&);
+        void sm_publishSent(sip_dialog_publishContext& context);
+    };
+
+    class map_dialog_publish_Trying :
+        public map_dialog_publish_Default
+    {
+    public:
+        map_dialog_publish_Trying(const char *name, int stateId)
+        : map_dialog_publish_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_publishContext&);
+        void Default(sip_dialog_publishContext& context);
+        void sm_1xx_response(sip_dialog_publishContext& context);
+        void sm_2xx_response(sip_dialog_publishContext& context, bool unpub);
+        void sm_3xx_response(sip_dialog_publishContext& context);
+        void sm_401_407_421_494_response(sip_dialog_publishContext& context);
+        void sm_4xx_response(sip_dialog_publishContext& context);
+        void sm_5xx_response(sip_dialog_publishContext& context);
+        void sm_6xx_response(sip_dialog_publishContext& context);
+        void sm_cancelSent(sip_dialog_publishContext& context);
+        void sm_xxx_response(sip_dialog_publishContext& context);
+    };
+
+    class map_dialog_publish_Established :
+        public map_dialog_publish_Default
+    {
+    public:
+        map_dialog_publish_Established(const char *name, int stateId)
+        : map_dialog_publish_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_publishContext&);
+        void Default(sip_dialog_publishContext& context);
+        void sm_1xx_response(sip_dialog_publishContext& context);
+        void sm_2xx_response(sip_dialog_publishContext& context, bool unpub);
+        void sm_401_407_421_494_response(sip_dialog_publishContext& context);
+        void sm_publishSent(sip_dialog_publishContext& context);
+        void sm_unpublishSent(sip_dialog_publishContext& context);
+        void sm_xxx_response(sip_dialog_publishContext& context);
+    };
+
+    class map_dialog_publish_Authentifying :
+        public map_dialog_publish_Default
+    {
+    public:
+        map_dialog_publish_Authentifying(const char *name, int stateId)
+        : map_dialog_publish_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_publishContext&);
+        void Default(sip_dialog_publishContext& context);
+        void sm_1xx_response(sip_dialog_publishContext& context);
+        void sm_2xx_response(sip_dialog_publishContext& context, bool unpub);
+        void sm_authentificationSent(sip_dialog_publishContext& context);
+        void sm_xxx_response(sip_dialog_publishContext& context);
+    };
+
+    class map_dialog_publish_Terminated :
+        public map_dialog_publish_Default
+    {
+    public:
+        map_dialog_publish_Terminated(const char *name, int stateId)
+        : map_dialog_publish_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_publishContext&);
+        void Default(sip_dialog_publishContext& context);
     };
 
     class sip_dialog_publishContext :
@@ -105,6 +201,66 @@ namespace dgo
             }
 
             return (dynamic_cast<sip_dialog_publishState&>(*_state));
+        };
+
+        void sm_1xx_response()
+        {
+            (getState()).sm_1xx_response(*this);
+        };
+
+        void sm_2xx_response(bool unpub)
+        {
+            (getState()).sm_2xx_response(*this, unpub);
+        };
+
+        void sm_3xx_response()
+        {
+            (getState()).sm_3xx_response(*this);
+        };
+
+        void sm_401_407_421_494_response()
+        {
+            (getState()).sm_401_407_421_494_response(*this);
+        };
+
+        void sm_4xx_response()
+        {
+            (getState()).sm_4xx_response(*this);
+        };
+
+        void sm_5xx_response()
+        {
+            (getState()).sm_5xx_response(*this);
+        };
+
+        void sm_6xx_response()
+        {
+            (getState()).sm_6xx_response(*this);
+        };
+
+        void sm_authentificationSent()
+        {
+            (getState()).sm_authentificationSent(*this);
+        };
+
+        void sm_cancelSent()
+        {
+            (getState()).sm_cancelSent(*this);
+        };
+
+        void sm_publishSent()
+        {
+            (getState()).sm_publishSent(*this);
+        };
+
+        void sm_unpublishSent()
+        {
+            (getState()).sm_unpublishSent(*this);
+        };
+
+        void sm_xxx_response()
+        {
+            (getState()).sm_xxx_response(*this);
         };
 
     private:

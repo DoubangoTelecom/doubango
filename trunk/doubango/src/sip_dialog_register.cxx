@@ -61,7 +61,8 @@ ERR sip_dialog_register::Start()
 /* stop */
 ERR sip_dialog_register::Stop()
 {
-	ERR err = this->sendUnregister();
+	ERR err = (this->state_current == SS_REGISTER_ESTABLISHED) ? 
+		this->sendUnregister() : this->sendCancel();
 	return err;
 }
 
@@ -69,6 +70,12 @@ ERR sip_dialog_register::Stop()
 void sip_dialog_register::OnStateChanged(SIP_STATE state)
 {
 	sip_dialog::OnStateChanged(state);
+#if 0
+	if(this->get_terminated())
+	{
+		printf("REGISTER terminated\n");
+	}
+#endif
 }
 
 /* sip method name */
@@ -98,11 +105,10 @@ ERR sip_dialog_register::sendRegister()
 	NUTAG_OUTBOUND("no-options-keepalive"), 
 	NUTAG_OUTBOUND("no-validate"), 
 	NUTAG_KEEPALIVE(0),
-	SIPTAG_EXPIRES_STR("20"),
+	NUTAG_M_FEATURES("audio;expires=200;+g.3gpp.cs-voice"),// FIXME
 	NUTAG_M_USERNAME("FIXME"),
 	SIPTAG_FROM_STR(this->stk->get_public_id()),
 	SIPTAG_TO_STR(this->stk->get_public_id()),
-    NUTAG_M_FEATURES("audio"),
     NUTAG_CALLEE_CAPS(0),
 	SIPTAG_SUPPORTED_STR("timer, precondition, path, replaces, 100rel, gruu"),
 	SIPTAG_EVENT_STR("registration"),
@@ -132,6 +138,19 @@ ERR sip_dialog_register::sendUnregister()
 	else return ERR_SIP_DIALOG_UNKNOWN;
 }
 
+/* cancel request */
+ERR sip_dialog_register::sendCancel()
+{
+	if(this->handle)
+	{
+		nua_cancel(this->handle, TAG_END());
+		this->sm_ctx.sm_cancelSent();
+
+		return ERR_SUCCESS;
+	}
+	else return ERR_SIP_DIALOG_UNKNOWN;
+}
+
 /* dialog callback function*/
 void sip_dialog_register::dialog_callback(nua_event_t _event,
 			       int status, char const *phrase,
@@ -146,7 +165,7 @@ void sip_dialog_register::dialog_callback(nua_event_t _event,
 	case nua_r_unregister:
 		{
 			if(status <200) this->sm_ctx.sm_1xx_response();
-			else if(status <300) this->sm_ctx.sm_2xx_response();
+			else if(status <300) this->sm_ctx.sm_2xx_response( (_event==nua_r_unregister) );
 			else if(status <400) this->sm_ctx.sm_3xx_response();
 			else if(status == 401 || status == 407 || status == 421 || status == 494) 
 			{

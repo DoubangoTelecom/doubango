@@ -53,18 +53,13 @@ public:
 			       nua_handle_t *nh, nua_hmagic_t *hmagic,
 			       sip_t const *sip,
 			       tagi_t tags[]);
-
-
-	bool get_registering() { return this->registering; }
-	void set_registering(bool val) { this->registering = val; }
-
 private:
 	ERR sendRegister();
 	ERR sendUnregister();
+	ERR sendCancel();
 
 private:
 	sip_dialog_registerContext sm_ctx;
-	bool registering;
 };
 
 PREF_NAMESPACE_END

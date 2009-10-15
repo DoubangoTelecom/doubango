@@ -65,13 +65,19 @@ namespace dgo
         return;
     }
 
+    void sip_dialog_messageState::sm_authentificationSent(sip_dialog_messageContext& context)
+    {
+        Default(context);
+        return;
+    }
+
     void sip_dialog_messageState::sm_messageSent(sip_dialog_messageContext& context)
     {
         Default(context);
         return;
     }
 
-    void sip_dialog_messageState::sm_unsupported_response(sip_dialog_messageContext& context)
+    void sip_dialog_messageState::sm_xxx_response(sip_dialog_messageContext& context)
     {
         Default(context);
         return;
@@ -156,7 +162,7 @@ namespace dgo
         return;
     }
 
-    void map_dialog_message_Trying::sm_unsupported_response(sip_dialog_messageContext& context)
+    void map_dialog_message_Trying::sm_xxx_response(sip_dialog_messageContext& context)
     {
 
         (context.getState()).Exit(context);
@@ -172,6 +178,50 @@ namespace dgo
         sip_dialog_message& ctxt(context.getOwner());
 
         ctxt.OnStateChanged(SS_MESSAGE_AUTHENTIFYING);
+        return;
+    }
+
+    void map_dialog_message_Authentifying::Default(sip_dialog_messageContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_message_Authentifying::sm_1xx_response(sip_dialog_messageContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_message_Authentifying::sm_2xx_response(sip_dialog_messageContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_message::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_message_Authentifying::sm_authentificationSent(sip_dialog_messageContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_message::Trying);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_message_Authentifying::sm_xxx_response(sip_dialog_messageContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_message::Terminated);
+        (context.getState()).Entry(context);
+
         return;
     }
 
