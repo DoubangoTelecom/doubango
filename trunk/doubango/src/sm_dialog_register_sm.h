@@ -42,13 +42,14 @@ namespace dgo
         virtual void Exit(sip_dialog_registerContext&) {};
 
         virtual void sm_1xx_response(sip_dialog_registerContext& context);
-        virtual void sm_2xx_response(sip_dialog_registerContext& context);
+        virtual void sm_2xx_response(sip_dialog_registerContext& context, bool unreg);
         virtual void sm_3xx_response(sip_dialog_registerContext& context);
         virtual void sm_401_407_421_494_response(sip_dialog_registerContext& context);
         virtual void sm_4xx_response(sip_dialog_registerContext& context);
         virtual void sm_5xx_response(sip_dialog_registerContext& context);
         virtual void sm_6xx_response(sip_dialog_registerContext& context);
         virtual void sm_authentificationSent(sip_dialog_registerContext& context);
+        virtual void sm_cancelSent(sip_dialog_registerContext& context);
         virtual void sm_registerSent(sip_dialog_registerContext& context);
         virtual void sm_unregisterSent(sip_dialog_registerContext& context);
         virtual void sm_xxx_response(sip_dialog_registerContext& context);
@@ -78,6 +79,13 @@ namespace dgo
         : sip_dialog_registerState(name, stateId)
         {};
 
+        virtual void sm_401_407_421_494_response(sip_dialog_registerContext& context);
+        virtual void sm_3xx_response(sip_dialog_registerContext& context);
+        virtual void sm_4xx_response(sip_dialog_registerContext& context);
+        virtual void sm_5xx_response(sip_dialog_registerContext& context);
+        virtual void sm_6xx_response(sip_dialog_registerContext& context);
+        virtual void sm_xxx_response(sip_dialog_registerContext& context);
+        virtual void Default(sip_dialog_registerContext& context);
     };
 
     class map_dialog_register_Initialized :
@@ -103,12 +111,13 @@ namespace dgo
         void Entry(sip_dialog_registerContext&);
         void Default(sip_dialog_registerContext& context);
         void sm_1xx_response(sip_dialog_registerContext& context);
-        void sm_2xx_response(sip_dialog_registerContext& context);
+        void sm_2xx_response(sip_dialog_registerContext& context, bool unreg);
         void sm_3xx_response(sip_dialog_registerContext& context);
         void sm_401_407_421_494_response(sip_dialog_registerContext& context);
         void sm_4xx_response(sip_dialog_registerContext& context);
         void sm_5xx_response(sip_dialog_registerContext& context);
         void sm_6xx_response(sip_dialog_registerContext& context);
+        void sm_cancelSent(sip_dialog_registerContext& context);
         void sm_xxx_response(sip_dialog_registerContext& context);
     };
 
@@ -123,8 +132,10 @@ namespace dgo
         void Entry(sip_dialog_registerContext&);
         void Default(sip_dialog_registerContext& context);
         void sm_1xx_response(sip_dialog_registerContext& context);
-        void sm_2xx_response(sip_dialog_registerContext& context);
+        void sm_2xx_response(sip_dialog_registerContext& context, bool unreg);
+        void sm_401_407_421_494_response(sip_dialog_registerContext& context);
         void sm_unregisterSent(sip_dialog_registerContext& context);
+        void sm_xxx_response(sip_dialog_registerContext& context);
     };
 
     class map_dialog_register_Authentifying :
@@ -138,8 +149,9 @@ namespace dgo
         void Entry(sip_dialog_registerContext&);
         void Default(sip_dialog_registerContext& context);
         void sm_1xx_response(sip_dialog_registerContext& context);
-        void sm_2xx_response(sip_dialog_registerContext& context);
+        void sm_2xx_response(sip_dialog_registerContext& context, bool unreg);
         void sm_authentificationSent(sip_dialog_registerContext& context);
+        void sm_xxx_response(sip_dialog_registerContext& context);
     };
 
     class map_dialog_register_Terminated :
@@ -195,9 +207,9 @@ namespace dgo
             (getState()).sm_1xx_response(*this);
         };
 
-        void sm_2xx_response()
+        void sm_2xx_response(bool unreg)
         {
-            (getState()).sm_2xx_response(*this);
+            (getState()).sm_2xx_response(*this, unreg);
         };
 
         void sm_3xx_response()
@@ -228,6 +240,11 @@ namespace dgo
         void sm_authentificationSent()
         {
             (getState()).sm_authentificationSent(*this);
+        };
+
+        void sm_cancelSent()
+        {
+            (getState()).sm_cancelSent(*this);
         };
 
         void sm_registerSent()

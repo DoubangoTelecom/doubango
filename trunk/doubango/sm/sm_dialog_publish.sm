@@ -38,15 +38,62 @@
 //-------------------------------------------------------------------------------------
 // Initialized
 //-------------------------------------------------------------------------------------
-Initialized
-	Entry 
-	{ 
-	}
-	Exit 
-	{ 
-	}
-	//
-	{
-	}
+Initialized Entry { OnStateChanged(SS_PUBLISH_INITIALIZED); }
+{
+	sm_publishSent()	Trying { }
+}
+	
+Trying Entry { OnStateChanged(SS_PUBLISH_TRYING); }
+{
+	sm_1xx_response()				nil {}
+	sm_2xx_response(unpub: bool)	[unpub == true]		Terminated {}
+	sm_2xx_response(unpub: bool)	[unpub == false]	Established {}
+	sm_3xx_response()				Terminated {}
+	sm_401_407_421_494_response()	Authentifying {}
+	sm_4xx_response()				Terminated {}
+	sm_5xx_response()				Terminated {}
+	sm_6xx_response()				Terminated {}
+	sm_xxx_response()				Terminated {}
+	sm_cancelSent()					Terminated {}
+	Default							nil {}
+}
+
+Established Entry { OnStateChanged(SS_PUBLISH_ESTABLISHED); }
+{
+	sm_1xx_response()				nil {}
+	sm_2xx_response(unpub: bool)	[unpub == true]		Terminated {}
+	sm_2xx_response(unpub: bool)	[unpub == false]	nil {}
+	sm_401_407_421_494_response()	Authentifying {}
+	sm_unpublishSent()				Trying { }
+	sm_publishSent()				Trying {}
+	sm_xxx_response()				Terminated {}
+	Default							nil {}
+}
+
+Authentifying  Entry { OnStateChanged(SS_PUBLISH_AUTHENTIFYING); }
+{
+	sm_1xx_response()				nil {}
+	sm_2xx_response(unpub: bool)	[unpub == true]		Terminated {}
+	sm_2xx_response(unpub: bool)	[unpub == false]	Established {}
+	sm_xxx_response()				Terminated {}
+	sm_authentificationSent()		Trying {}
+	Default							nil {}
+}
+
+Terminated  Entry { OnStateChanged(SS_PUBLISH_TERMINATED); }
+{
+	Default nil {}
+}
+
+Default Entry { OnStateChanged(SS_PUBLISH_UNKNOWN); }
+{
+	sm_401_407_421_494_response()	Authentifying {}
+	sm_3xx_response()				nil {}
+	sm_4xx_response()				nil {}
+	sm_5xx_response()				nil {}
+	sm_6xx_response()				nil {}
+	sm_xxx_response()				nil {}
+	Default							nil {}
+}
 	
 %%

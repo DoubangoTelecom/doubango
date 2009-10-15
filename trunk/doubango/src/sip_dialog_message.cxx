@@ -50,6 +50,8 @@ sip_dialog_message::~sip_dialog_message()
 /* start sending MESSAGE */
 ERR sip_dialog_message::Start()
 {
+	this->sm_ctx.enterStartState();
+
 	this->handle = nua_handle(this->stk->get_nua(), this->stk->get_home(), TAG_END());
 
 	if(!this->handle)
@@ -57,16 +59,7 @@ ERR sip_dialog_message::Start()
 		return ERR_GLOBAL_FAILURE;
 	}
 
-	nua_message(this->handle, 
-				SIPTAG_TO_STR(this->dest_address),
-				SIPTAG_FROM_STR(this->stk->get_public_id()),
-				SIPTAG_CONTENT_TYPE_STR(this->content_type),
-				SIPTAG_PAYLOAD_STR(this->content),
-				TAG_END());
-
-	this->sm_ctx.sm_messageSent();
-
-	return ERR_SUCCESS;
+	return this->sendMessage();
 }
 
 /* terminate/stop dialog */
@@ -85,6 +78,23 @@ void sip_dialog_message::OnStateChanged(SIP_STATE state)
 inline const char* sip_dialog_message::get_sipmethod()const
 {
 	return "MESSAGE";
+}
+
+/* send sip MESSAGE request*/
+ERR sip_dialog_message::sendMessage()
+{
+	if(!this->handle) return ERR_SIP_DIALOG_UNKNOWN;
+
+	nua_message(this->handle, 
+				SIPTAG_TO_STR(this->dest_address),
+				SIPTAG_FROM_STR(this->stk->get_public_id()),
+				SIPTAG_CONTENT_TYPE_STR(this->content_type),
+				SIPTAG_PAYLOAD_STR(this->content),
+				TAG_END());
+
+	this->sm_ctx.sm_messageSent();
+
+	return ERR_SUCCESS;
 }
 
 /* returns true if terminated and false otherwise*/
@@ -107,8 +117,13 @@ void sip_dialog_message::dialog_callback(nua_event_t _event,
 		{
 			if(status <200) this->sm_ctx.sm_1xx_response();
 			else if(status <300) this->sm_ctx.sm_2xx_response();
-			else if(status == 401 || status == 407 || status == 421 || status == 494) this->sm_ctx.sm_401_407_421_494_response();
-			else this->sm_ctx.sm_unsupported_response();
+			else if(status == 401 || status == 407 || status == 421 || status == 494) 
+			{
+				this->sm_ctx.sm_401_407_421_494_response();
+				this->authenticate(nh, sip);
+				this->sm_ctx.sm_authentificationSent();
+			}
+			else this->sm_ctx.sm_xxx_response();
 			
 			break;
 		}

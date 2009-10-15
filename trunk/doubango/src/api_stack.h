@@ -70,6 +70,8 @@ public:
 
 	ERR sip_message(const char* dest_address, const char* content_type, const char* content);
 
+	ERR sip_publish();
+	ERR sip_unpublish();
 
 	//
 	//	Authentication

@@ -55,9 +55,10 @@ void sip_dialog::OnStateChanged(SIP_STATE state)
 /* authenticate the supplied request*/
 void sip_dialog::authenticate(nua_handle_t *nh, sip_t const *sip)
 {
-	const char* realm = msg_params_find(sip->sip_www_authenticate->au_params, "realm=");
+	const char* realm = sip->sip_www_authenticate?
+		msg_params_find(sip->sip_www_authenticate->au_params, "realm="): (sip->sip_proxy_authenticate ? msg_params_find(sip->sip_proxy_authenticate->au_params, "realm="): "UNKNOWN");
 	const char* scheme = sip->sip_www_authenticate? 
-		sip->sip_www_authenticate->au_scheme: (sip->sip_proxy_authenticate ? sip->sip_proxy_authenticate->au_scheme : "UNKNOWN");
+		sip->sip_www_authenticate->au_scheme: (sip->sip_proxy_authenticate ? sip->sip_proxy_authenticate->au_scheme: "UNKNOWN");
 
 	char* authstring = su_sprintf(NULL, "%s:%s:%s:%s", 
 	scheme, realm, this->stk->get_private_id(), this->stk->get_password());

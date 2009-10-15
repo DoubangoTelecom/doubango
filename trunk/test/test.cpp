@@ -26,7 +26,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	assert( ERR_SUCCEED(dgo::network_set_pcscf(STACK_ID, "192.168.0.14", 5060)) );
 
 	assert( ERR_SUCCEED(dgo::sip_register(STACK_ID)) );
-	Sleep(1000);
+	Sleep(5000);
+	assert( ERR_SUCCEED(dgo::sip_publish(STACK_ID)) );
 	//assert( ERR_SUCCEED(dgo::sip_message(STACK_ID, "sip:toto@wonderland.net", "text/plain", "test")) );
 	Sleep(50000);
 	assert( ERR_SUCCEED(dgo::sip_unregister(STACK_ID)) );

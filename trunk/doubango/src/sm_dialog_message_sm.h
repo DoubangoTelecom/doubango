@@ -43,8 +43,9 @@ namespace dgo
         virtual void sm_1xx_response(sip_dialog_messageContext& context);
         virtual void sm_2xx_response(sip_dialog_messageContext& context);
         virtual void sm_401_407_421_494_response(sip_dialog_messageContext& context);
+        virtual void sm_authentificationSent(sip_dialog_messageContext& context);
         virtual void sm_messageSent(sip_dialog_messageContext& context);
-        virtual void sm_unsupported_response(sip_dialog_messageContext& context);
+        virtual void sm_xxx_response(sip_dialog_messageContext& context);
 
     protected:
 
@@ -98,7 +99,7 @@ namespace dgo
         void sm_1xx_response(sip_dialog_messageContext& context);
         void sm_2xx_response(sip_dialog_messageContext& context);
         void sm_401_407_421_494_response(sip_dialog_messageContext& context);
-        void sm_unsupported_response(sip_dialog_messageContext& context);
+        void sm_xxx_response(sip_dialog_messageContext& context);
     };
 
     class map_dialog_message_Authentifying :
@@ -110,6 +111,11 @@ namespace dgo
         {};
 
         void Entry(sip_dialog_messageContext&);
+        void Default(sip_dialog_messageContext& context);
+        void sm_1xx_response(sip_dialog_messageContext& context);
+        void sm_2xx_response(sip_dialog_messageContext& context);
+        void sm_authentificationSent(sip_dialog_messageContext& context);
+        void sm_xxx_response(sip_dialog_messageContext& context);
     };
 
     class map_dialog_message_Terminated :
@@ -175,14 +181,19 @@ namespace dgo
             (getState()).sm_401_407_421_494_response(*this);
         };
 
+        void sm_authentificationSent()
+        {
+            (getState()).sm_authentificationSent(*this);
+        };
+
         void sm_messageSent()
         {
             (getState()).sm_messageSent(*this);
         };
 
-        void sm_unsupported_response()
+        void sm_xxx_response()
         {
-            (getState()).sm_unsupported_response(*this);
+            (getState()).sm_xxx_response(*this);
         };
 
     private:

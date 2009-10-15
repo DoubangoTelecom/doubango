@@ -43,10 +43,444 @@ namespace dgo
 {
     // Static class declarations.
     map_dialog_publish_Initialized map_dialog_publish::Initialized("map_dialog_publish::Initialized", 0);
+    map_dialog_publish_Trying map_dialog_publish::Trying("map_dialog_publish::Trying", 1);
+    map_dialog_publish_Established map_dialog_publish::Established("map_dialog_publish::Established", 2);
+    map_dialog_publish_Authentifying map_dialog_publish::Authentifying("map_dialog_publish::Authentifying", 3);
+    map_dialog_publish_Terminated map_dialog_publish::Terminated("map_dialog_publish::Terminated", 4);
+
+    void sip_dialog_publishState::sm_1xx_response(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_2xx_response(sip_dialog_publishContext& context, bool unpub)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_3xx_response(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_401_407_421_494_response(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_4xx_response(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_5xx_response(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_6xx_response(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_authentificationSent(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_cancelSent(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_publishSent(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_unpublishSent(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
+
+    void sip_dialog_publishState::sm_xxx_response(sip_dialog_publishContext& context)
+    {
+        Default(context);
+        return;
+    }
 
     void sip_dialog_publishState::Default(sip_dialog_publishContext& context)
     {
         assert(1==0);
+
+        return;
+    }
+
+    void map_dialog_publish_Default::sm_401_407_421_494_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Authentifying);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Default::sm_3xx_response(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Default::sm_4xx_response(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Default::sm_5xx_response(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Default::sm_6xx_response(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Default::sm_xxx_response(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Default::Default(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Initialized::Entry(sip_dialog_publishContext& context)
+
+{
+        sip_dialog_publish& ctxt(context.getOwner());
+
+        ctxt.OnStateChanged(SS_PUBLISH_INITIALIZED);
+        return;
+    }
+
+    void map_dialog_publish_Initialized::sm_publishSent(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Trying);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::Entry(sip_dialog_publishContext& context)
+
+{
+        sip_dialog_publish& ctxt(context.getOwner());
+
+        ctxt.OnStateChanged(SS_PUBLISH_TRYING);
+        return;
+    }
+
+    void map_dialog_publish_Trying::Default(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_1xx_response(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_2xx_response(sip_dialog_publishContext& context, bool unpub)
+    {
+
+        if (unpub == true)
+        {
+            (context.getState()).Exit(context);
+            // No actions.
+            context.setState(map_dialog_publish::Terminated);
+            (context.getState()).Entry(context);
+        }
+        else if (unpub == false)
+    
+    {
+            (context.getState()).Exit(context);
+            // No actions.
+            context.setState(map_dialog_publish::Established);
+            (context.getState()).Entry(context);
+        }        else
+        {
+             map_dialog_publish_Default::sm_2xx_response(context, unpub);
+        }
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_3xx_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_401_407_421_494_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Authentifying);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_4xx_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_5xx_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_6xx_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_cancelSent(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Trying::sm_xxx_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Established::Entry(sip_dialog_publishContext& context)
+
+{
+        sip_dialog_publish& ctxt(context.getOwner());
+
+        ctxt.OnStateChanged(SS_PUBLISH_ESTABLISHED);
+        return;
+    }
+
+    void map_dialog_publish_Established::Default(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Established::sm_1xx_response(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Established::sm_2xx_response(sip_dialog_publishContext& context, bool unpub)
+    {
+
+        if (unpub == true)
+        {
+            (context.getState()).Exit(context);
+            // No actions.
+            context.setState(map_dialog_publish::Terminated);
+            (context.getState()).Entry(context);
+        }
+        else if (unpub == false)
+    
+    {
+            // No actions.
+        }        else
+        {
+             map_dialog_publish_Default::sm_2xx_response(context, unpub);
+        }
+
+        return;
+    }
+
+    void map_dialog_publish_Established::sm_401_407_421_494_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Authentifying);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Established::sm_publishSent(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Trying);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Established::sm_unpublishSent(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Trying);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Established::sm_xxx_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Authentifying::Entry(sip_dialog_publishContext& context)
+
+{
+        sip_dialog_publish& ctxt(context.getOwner());
+
+        ctxt.OnStateChanged(SS_PUBLISH_AUTHENTIFYING);
+        return;
+    }
+
+    void map_dialog_publish_Authentifying::Default(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Authentifying::sm_1xx_response(sip_dialog_publishContext& context)
+    {
+
+
+        return;
+    }
+
+    void map_dialog_publish_Authentifying::sm_2xx_response(sip_dialog_publishContext& context, bool unpub)
+    {
+
+        if (unpub == true)
+        {
+            (context.getState()).Exit(context);
+            // No actions.
+            context.setState(map_dialog_publish::Terminated);
+            (context.getState()).Entry(context);
+        }
+        else if (unpub == false)
+    
+    {
+            (context.getState()).Exit(context);
+            // No actions.
+            context.setState(map_dialog_publish::Established);
+            (context.getState()).Entry(context);
+        }        else
+        {
+             map_dialog_publish_Default::sm_2xx_response(context, unpub);
+        }
+
+        return;
+    }
+
+    void map_dialog_publish_Authentifying::sm_authentificationSent(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Trying);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Authentifying::sm_xxx_response(sip_dialog_publishContext& context)
+    {
+
+        (context.getState()).Exit(context);
+        context.setState(map_dialog_publish::Terminated);
+        (context.getState()).Entry(context);
+
+        return;
+    }
+
+    void map_dialog_publish_Terminated::Entry(sip_dialog_publishContext& context)
+
+{
+        sip_dialog_publish& ctxt(context.getOwner());
+
+        ctxt.OnStateChanged(SS_PUBLISH_TERMINATED);
+        return;
+    }
+
+    void map_dialog_publish_Terminated::Default(sip_dialog_publishContext& context)
+    {
+
 
         return;
     }
