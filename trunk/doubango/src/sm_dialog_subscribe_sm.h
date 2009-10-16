@@ -20,6 +20,10 @@ namespace dgo
     // Forward declarations.
     class map_dialog_subscribe;
     class map_dialog_subscribe_Initialized;
+    class map_dialog_subscribe_Trying;
+    class map_dialog_subscribe_Established;
+    class map_dialog_subscribe_Authentifying;
+    class map_dialog_subscribe_Terminated;
     class map_dialog_subscribe_Default;
     class sip_dialog_subscribeState;
     class sip_dialog_subscribeContext;
@@ -37,6 +41,19 @@ namespace dgo
         virtual void Entry(sip_dialog_subscribeContext&) {};
         virtual void Exit(sip_dialog_subscribeContext&) {};
 
+        virtual void sm_1xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_2xx_response(sip_dialog_subscribeContext& context, bool unsub);
+        virtual void sm_3xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_401_407_421_494_response(sip_dialog_subscribeContext& context);
+        virtual void sm_4xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_5xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_6xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_authentificationSent(sip_dialog_subscribeContext& context);
+        virtual void sm_cancelSent(sip_dialog_subscribeContext& context);
+        virtual void sm_notify_response(sip_dialog_subscribeContext& context, bool term);
+        virtual void sm_subscribeSent(sip_dialog_subscribeContext& context);
+        virtual void sm_unsubscribeSent(sip_dialog_subscribeContext& context);
+        virtual void sm_xxx_response(sip_dialog_subscribeContext& context);
 
     protected:
 
@@ -48,6 +65,10 @@ namespace dgo
     public:
 
         static map_dialog_subscribe_Initialized Initialized;
+        static map_dialog_subscribe_Trying Trying;
+        static map_dialog_subscribe_Established Established;
+        static map_dialog_subscribe_Authentifying Authentifying;
+        static map_dialog_subscribe_Terminated Terminated;
     };
 
     class map_dialog_subscribe_Default :
@@ -59,6 +80,13 @@ namespace dgo
         : sip_dialog_subscribeState(name, stateId)
         {};
 
+        virtual void sm_401_407_421_494_response(sip_dialog_subscribeContext& context);
+        virtual void sm_3xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_4xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_5xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_6xx_response(sip_dialog_subscribeContext& context);
+        virtual void sm_xxx_response(sip_dialog_subscribeContext& context);
+        virtual void Default(sip_dialog_subscribeContext& context);
     };
 
     class map_dialog_subscribe_Initialized :
@@ -69,6 +97,76 @@ namespace dgo
         : map_dialog_subscribe_Default(name, stateId)
         {};
 
+        void Entry(sip_dialog_subscribeContext&);
+        void sm_subscribeSent(sip_dialog_subscribeContext& context);
+    };
+
+    class map_dialog_subscribe_Trying :
+        public map_dialog_subscribe_Default
+    {
+    public:
+        map_dialog_subscribe_Trying(const char *name, int stateId)
+        : map_dialog_subscribe_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_subscribeContext&);
+        void Default(sip_dialog_subscribeContext& context);
+        void sm_1xx_response(sip_dialog_subscribeContext& context);
+        void sm_2xx_response(sip_dialog_subscribeContext& context, bool unsub);
+        void sm_3xx_response(sip_dialog_subscribeContext& context);
+        void sm_401_407_421_494_response(sip_dialog_subscribeContext& context);
+        void sm_4xx_response(sip_dialog_subscribeContext& context);
+        void sm_5xx_response(sip_dialog_subscribeContext& context);
+        void sm_6xx_response(sip_dialog_subscribeContext& context);
+        void sm_cancelSent(sip_dialog_subscribeContext& context);
+        void sm_notify_response(sip_dialog_subscribeContext& context, bool term);
+        void sm_xxx_response(sip_dialog_subscribeContext& context);
+    };
+
+    class map_dialog_subscribe_Established :
+        public map_dialog_subscribe_Default
+    {
+    public:
+        map_dialog_subscribe_Established(const char *name, int stateId)
+        : map_dialog_subscribe_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_subscribeContext&);
+        void Default(sip_dialog_subscribeContext& context);
+        void sm_1xx_response(sip_dialog_subscribeContext& context);
+        void sm_2xx_response(sip_dialog_subscribeContext& context, bool unsub);
+        void sm_401_407_421_494_response(sip_dialog_subscribeContext& context);
+        void sm_notify_response(sip_dialog_subscribeContext& context, bool term);
+        void sm_unsubscribeSent(sip_dialog_subscribeContext& context);
+        void sm_xxx_response(sip_dialog_subscribeContext& context);
+    };
+
+    class map_dialog_subscribe_Authentifying :
+        public map_dialog_subscribe_Default
+    {
+    public:
+        map_dialog_subscribe_Authentifying(const char *name, int stateId)
+        : map_dialog_subscribe_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_subscribeContext&);
+        void Default(sip_dialog_subscribeContext& context);
+        void sm_1xx_response(sip_dialog_subscribeContext& context);
+        void sm_2xx_response(sip_dialog_subscribeContext& context, bool unsub);
+        void sm_authentificationSent(sip_dialog_subscribeContext& context);
+        void sm_xxx_response(sip_dialog_subscribeContext& context);
+    };
+
+    class map_dialog_subscribe_Terminated :
+        public map_dialog_subscribe_Default
+    {
+    public:
+        map_dialog_subscribe_Terminated(const char *name, int stateId)
+        : map_dialog_subscribe_Default(name, stateId)
+        {};
+
+        void Entry(sip_dialog_subscribeContext&);
+        void Default(sip_dialog_subscribeContext& context);
     };
 
     class sip_dialog_subscribeContext :
@@ -105,6 +203,71 @@ namespace dgo
             }
 
             return (dynamic_cast<sip_dialog_subscribeState&>(*_state));
+        };
+
+        void sm_1xx_response()
+        {
+            (getState()).sm_1xx_response(*this);
+        };
+
+        void sm_2xx_response(bool unsub)
+        {
+            (getState()).sm_2xx_response(*this, unsub);
+        };
+
+        void sm_3xx_response()
+        {
+            (getState()).sm_3xx_response(*this);
+        };
+
+        void sm_401_407_421_494_response()
+        {
+            (getState()).sm_401_407_421_494_response(*this);
+        };
+
+        void sm_4xx_response()
+        {
+            (getState()).sm_4xx_response(*this);
+        };
+
+        void sm_5xx_response()
+        {
+            (getState()).sm_5xx_response(*this);
+        };
+
+        void sm_6xx_response()
+        {
+            (getState()).sm_6xx_response(*this);
+        };
+
+        void sm_authentificationSent()
+        {
+            (getState()).sm_authentificationSent(*this);
+        };
+
+        void sm_cancelSent()
+        {
+            (getState()).sm_cancelSent(*this);
+        };
+
+        void sm_notify_response(bool term)
+        {
+            (getState()).sm_notify_response(*this, term);
+        };
+
+        void sm_subscribeSent()
+        {
+            (getState()).sm_subscribeSent(*this);
+        };
+
+        void sm_unsubscribeSent()
+        {
+            (getState()).sm_unsubscribeSent(*this);
+        };
+
+        void sm_xxx_response()
+        {
+            (getState()).sm_xxx_response(*this);
         };
 
     private:

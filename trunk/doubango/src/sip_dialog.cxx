@@ -33,11 +33,14 @@
 
 PREF_NAMESPACE_START
 
+unsigned int sip_dialog::dialog_counter = 0;
+
 /* sip_dialog constructor */
 sip_dialog::sip_dialog(stack* _stk)
 {
 	this->handle = NULL;
 	this->stk = _stk;
+	this->dialog_id = (++sip_dialog::dialog_counter);
 }
 
 /* sip_dialog destructor*/

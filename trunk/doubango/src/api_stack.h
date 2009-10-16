@@ -16,6 +16,12 @@ PREF_NAMESPACE_START
 	inline type &get_##member(){ return this->##member; } \
 	inline void set_##member(type val){ this->##member = val; }
 
+/* predicate: find dialog by id */
+struct pred_dialog_find_by_id: public std::binary_function< sip_dialog*, unsigned int, bool > {
+	bool operator () ( const sip_dialog* dlg, unsigned int dialog_id ) const {
+		return dlg->get_dialog_id() == dialog_id;
+	}
+};
 /* predicate: find dialog by handle */
 struct pred_dialog_find_by_handle: public std::binary_function< sip_dialog*, nua_handle_t*, bool > {
 	bool operator () ( const sip_dialog* dlg, const nua_handle_t* handle ) const {
@@ -35,17 +41,18 @@ struct pred_dialog_find_by_sipmethod: public std::binary_function< sip_dialog*, 
 	std::list<sip_dialog*>::iterator iter = std::find_if( this->dialogs.begin(), this->dialogs.end(), isDlgTerminated ); \
 	if(iter != this->dialogs.end()) dlg = *iter;
 
-/* find dialog by sipmethod*/
-#define GET_DIALOG_BY_SIPMETHOD(dlg, sipmethod) \
+/* get dialog by xxx */
+#define GET_DIALOG_BY_XXX(dlg, predicate, xxx) \
 	sip_dialog* dlg = NULL; \
-	std::list<sip_dialog*>::iterator iter = std::find_if( this->dialogs.begin(), this->dialogs.end(), std::bind2nd( pred_dialog_find_by_sipmethod(), sipmethod ) ); \
+	std::list<sip_dialog*>::iterator iter = std::find_if( this->dialogs.begin(), this->dialogs.end(), std::bind2nd( predicate(), xxx ) ); \
 	if(iter != this->dialogs.end()) dlg = *iter;
 
-/* find dialog by handle */
-#define GET_DIALOG_BY_HANDLE(dlg, handle) \
-	sip_dialog* dlg = NULL; \
-	std::list<sip_dialog*>::iterator iter = std::find_if( this->dialogs.begin(), this->dialogs.end(), std::bind2nd( pred_dialog_find_by_handle(), handle ) ); \
-	if(iter != this->dialogs.end()) dlg = *iter;
+/* get dialog by sipmethod*/
+#define GET_DIALOG_BY_SIPMETHOD(dlg, sipmethod) GET_DIALOG_BY_XXX(dlg, pred_dialog_find_by_sipmethod, sipmethod)
+/* get dialog by handle */
+#define GET_DIALOG_BY_HANDLE(dlg, handle) GET_DIALOG_BY_XXX(dlg, pred_dialog_find_by_handle, handle)
+/* get dialog by id */
+#define GET_DIALOG_BY_ID(dlg, dialog_id) GET_DIALOG_BY_XXX(dlg, pred_dialog_find_by_id, dialog_id)
 
 class DOUBANGO_API stack
 {
@@ -72,6 +79,9 @@ public:
 
 	ERR sip_publish();
 	ERR sip_unpublish();
+
+	ERR sip_subscribe(const char* dest_address, const char* eventpackg, const char* allow, int eventlist, unsigned int* dialog_id);
+	ERR sip_unsubscribe(unsigned int dialog_id);
 
 	//
 	//	Authentication
