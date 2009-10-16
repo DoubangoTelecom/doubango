@@ -25,18 +25,170 @@
 *
 */
 #include "sip_dialog_subscribe.h"
+#include "api_stack.h"
 
 PREF_NAMESPACE_START
 
 /* sip_dialog_subscribe constructor*/
-sip_dialog_subscribe::sip_dialog_subscribe(stack* stk)
+sip_dialog_subscribe::sip_dialog_subscribe(stack* stk, const char* _dest_address, const char* _eventpackg, const char* _allow, bool _eventlist)
 :sip_dialog(stk),sm_ctx(*this)
 {
+	this->dest_address = su_strdup(this->stk->get_home(), _dest_address);
+	this->eventpackg = su_strdup(this->stk->get_home(), _eventpackg);
+	this->allow = su_strdup(this->stk->get_home(), _allow);
+	this->eventlist = _eventlist;
 }
 
 /* sip_dialog_subscribe destructor */
 sip_dialog_subscribe::~sip_dialog_subscribe()
 {
+	// FIXME: destroy handle
+	su_free(this->stk->get_home(), this->dest_address);
+	su_free(this->stk->get_home(), this->eventpackg);
+	su_free(this->stk->get_home(), this->allow);
+}
+
+/* start */
+ERR sip_dialog_subscribe::Start()
+{
+	this->sm_ctx.enterStartState();
+	
+	this->handle = nua_handle(this->stk->get_nua(), this->stk->get_home(),
+	SIPTAG_TO_STR(this->stk->get_realm()), TAG_END());
+
+	if(!this->handle)
+	{
+		return ERR_GLOBAL_FAILURE;
+	}
+
+	return this->sendSubscribe();
+}
+
+/* stop */
+ERR sip_dialog_subscribe::Stop()
+{
+	ERR err = (this->state_current == SS_SUBSCRIBE_ESTABLISHED) ? 
+		this->sendUnsubscribe() : this->sendCancel();
+	return err;
+}
+
+/* state changed */
+void sip_dialog_subscribe::OnStateChanged(SIP_STATE state)
+{
+	sip_dialog::OnStateChanged(state);
+#if 1
+	if(this->get_terminated())
+	{
+		printf("SUBSCRIBE terminated\n");
+	}
+#endif
+}
+
+/* sip method name */
+inline const char* sip_dialog_subscribe::get_sipmethod()const
+{
+	return "SUBSCRIBE";
+}
+
+/* returns true if terminated and false otherwise*/
+inline bool sip_dialog_subscribe::get_terminated()const
+{
+	return (this->state_current == SS_SUBSCRIBE_TERMINATED);
+}
+
+/* send SIP SUBSCRIBE request */
+ERR sip_dialog_subscribe::sendSubscribe()
+{
+	if(!this->handle) return ERR_SIP_DIALOG_UNKNOWN;
+	
+    nua_subscribe(this->handle, 
+			SIPTAG_PRIVACY_STR(this->stk->get_privacy()),
+			SIPTAG_FROM_STR(this->stk->get_public_id()),
+			SIPTAG_TO_STR(this->dest_address),
+			NUTAG_M_FEATURES("expires=200"),// FIXME
+			SIPTAG_ACCEPT_STR(this->allow),
+			TAG_IF(eventlist, SIPTAG_SUPPORTED_STR("eventlist")),
+			SIPTAG_EVENT_STR(this->eventpackg),
+			TAG_END());
+
+	this->sm_ctx.sm_subscribeSent();
+	return ERR_SUCCESS;
+}
+
+
+/* send SIP UNSUBSCRIBE request*/
+ERR sip_dialog_subscribe::sendUnsubscribe()
+{
+	if(this->handle)
+	{
+		nua_subscribe(this->handle, 
+			NUTAG_M_FEATURES("expires=0"),// FIXME
+			TAG_END());
+		this->sm_ctx.sm_unsubscribeSent();
+
+		return ERR_SUCCESS;
+	}
+	else return ERR_SIP_DIALOG_UNKNOWN;
+}
+
+/* cancel request */
+ERR sip_dialog_subscribe::sendCancel()
+{
+	if(this->handle)
+	{
+		nua_cancel(this->handle, TAG_END());
+		this->sm_ctx.sm_cancelSent();
+
+		return ERR_SUCCESS;
+	}
+	else return ERR_SIP_DIALOG_UNKNOWN;
+}
+
+/* dialog callback function*/
+void sip_dialog_subscribe::dialog_callback(nua_event_t _event,
+			       int status, char const *phrase,
+			       nua_t *nua, nua_magic_t *magic,
+			       nua_handle_t *nh, nua_hmagic_t *hmagic,
+			       sip_t const *sip,
+			       tagi_t tags[])
+{
+	switch(_event)
+	{
+	case nua_r_subscribe:
+	case nua_r_unsubscribe:
+		{
+			if(status <200) this->sm_ctx.sm_1xx_response();
+			else if(status <300) this->sm_ctx.sm_2xx_response( (_event==nua_r_unsubscribe) );
+			else if(status <400) this->sm_ctx.sm_3xx_response();
+			else if(status == 401 || status == 407 || status == 421 || status == 494) 
+			{
+				this->sm_ctx.sm_401_407_421_494_response();
+				this->authenticate(nh, sip);
+				this->sm_ctx.sm_authentificationSent();
+			}
+			else if(status<500) this->sm_ctx.sm_4xx_response();
+			else if(status<600) this->sm_ctx.sm_5xx_response();
+			else if(status<700) this->sm_ctx.sm_6xx_response();
+			else this->sm_ctx.sm_xxx_response();
+			break;
+		}
+
+	case nua_i_notify:
+		{
+			// FIXME: handled by nea layer?
+			/*if(sip && sip->sip_subscription_state)
+			{
+				bool term = !stricmp(sip->sip_subscription_state->ss_substate, "terminated");
+				this->sm_ctx.sm_notify_response(term);
+			}*/
+			break;
+		}
+
+	default:
+		{
+			break;
+		}
+	}
 }
 
 PREF_NAMESPACE_END

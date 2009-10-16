@@ -2,6 +2,7 @@
 #include "sip_dialog_register.h"
 #include "sip_dialog_message.h"
 #include "sip_dialog_publish.h"
+#include "sip_dialog_subscribe.h"
 
 PREF_NAMESPACE_START
 
@@ -55,6 +56,25 @@ ERR stack::sip_publish()
 ERR stack::sip_unpublish()
 {
 	GET_DIALOG_BY_SIPMETHOD(dlg, "PUBLISH");
+	if(dlg){
+		return dlg->Stop();
+	}
+	else return ERR_SIP_DIALOG_NOT_FOUND;
+}
+
+/* SIP SUBSCRIBE */
+ERR stack::sip_subscribe(const char* dest_address, const char* eventpackg, const char* allow, int eventlist, unsigned int* dialog_id)
+{
+	sip_dialog_subscribe* dlg_subscribe = new sip_dialog_subscribe(this, dest_address, eventpackg, allow, eventlist?true:false);
+	*dialog_id = dlg_subscribe->get_dialog_id();
+	this->dialogs.push_back(dlg_subscribe);
+	return dlg_subscribe->Start();
+}
+
+/* SIP UNSUBSCRIBE*/
+ERR stack::sip_unsubscribe(unsigned int dialog_id)
+{
+	GET_DIALOG_BY_ID(dlg, dialog_id);
 	if(dlg){
 		return dlg->Stop();
 	}

@@ -134,7 +134,9 @@ ERR sip_dialog_publish::sendUnpublish()
 {
 	if(this->handle)
 	{
-		nua_unpublish(this->handle, TAG_END());
+		nua_publish(this->handle, 
+			NUTAG_M_FEATURES("expires=0"),// FIXME
+			TAG_END());
 		this->sm_ctx.sm_unpublishSent();
 
 		return ERR_SUCCESS;

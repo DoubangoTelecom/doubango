@@ -38,15 +38,65 @@
 //-------------------------------------------------------------------------------------
 // Initialized
 //-------------------------------------------------------------------------------------
-Initialized
-	Entry 
-	{ 
-	}
-	Exit 
-	{ 
-	}
-	//
-	{
-	}
+Initialized Entry { OnStateChanged(SS_SUBSCRIBE_INITIALIZED); }
+{
+	sm_subscribeSent()	Trying { }
+}
+	
+Trying Entry { OnStateChanged(SS_SUBSCRIBE_TRYING); }
+{
+	sm_1xx_response()				nil {}
+	sm_2xx_response(unsub: bool)	[unsub == true]		Terminated {}
+	sm_2xx_response(unsub: bool)	[unsub == false]	Established {}
+	sm_3xx_response()				Terminated {}
+	sm_401_407_421_494_response()	Authentifying {}
+	sm_4xx_response()				Terminated {}
+	sm_5xx_response()				Terminated {}
+	sm_6xx_response()				Terminated {}
+	sm_xxx_response()				Terminated {}
+	sm_notify_response(term: bool)	[term == true]		Terminated { OnStateChanged(SS_SUBSCRIBE_NOTIFIED); }
+	sm_notify_response(term: bool)	[term == false]		nil { OnStateChanged(SS_SUBSCRIBE_NOTIFIED); }
+	sm_cancelSent()					Terminated {}
+	Default							nil {}
+}
+
+Established Entry { OnStateChanged(SS_SUBSCRIBE_ESTABLISHED); }
+{
+	sm_1xx_response()				nil {}
+	sm_2xx_response(unsub: bool)	[unsub == true]		Terminated {}
+	sm_2xx_response(unsub: bool)	[unsub == false]	nil {}
+	sm_401_407_421_494_response()	Authentifying {}
+	sm_unsubscribeSent()			Trying { }
+	sm_xxx_response()				Terminated {}
+	sm_notify_response(term: bool)	[term == true]		Terminated { OnStateChanged(SS_SUBSCRIBE_NOTIFIED);}
+	sm_notify_response(term: bool)	[term == false]	nil { OnStateChanged(SS_SUBSCRIBE_NOTIFIED); }
+	Default							nil {}
+}
+
+Authentifying  Entry { OnStateChanged(SS_SUBSCRIBE_AUTHENTIFYING); }
+{
+	sm_1xx_response()				nil {}
+	sm_2xx_response(unsub: bool)	[unsub == true]		Terminated {}
+	sm_2xx_response(unsub: bool)	[unsub == false]	Established {}
+	sm_xxx_response()				Terminated {}
+	sm_authentificationSent()		Trying {}
+	Default							nil {}
+}
+
+Terminated  Entry { OnStateChanged(SS_SUBSCRIBE_TERMINATED); }
+{
+	Default nil {}
+}
+
+Default Entry { OnStateChanged(SS_SUBSCRIBE_UNKNOWN); }
+{
+	sm_401_407_421_494_response()	Authentifying {}
+	sm_3xx_response()				nil {}
+	sm_4xx_response()				nil {}
+	sm_5xx_response()				nil {}
+	sm_6xx_response()				nil {}
+	sm_xxx_response()				nil {}
+	Default							nil {}
+}
 
 %%

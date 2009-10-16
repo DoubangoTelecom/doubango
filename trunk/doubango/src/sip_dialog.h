@@ -51,6 +51,8 @@ public:
 	inline SIP_STATE get_state_current() const{ return this->state_current; }
 	inline void set_state_current(SIP_STATE s) { this->state_current = s; }
 
+	inline unsigned int get_dialog_id() const{ return this->dialog_id; }
+
 	virtual ERR Start() = 0;
 	virtual ERR Stop() = 0;
 	virtual void OnStateChanged(SIP_STATE state);
@@ -71,6 +73,10 @@ protected:
 	nua_handle_t* handle;
 	stack* stk;
 	SIP_STATE state_current;
+	unsigned int dialog_id;
+
+private:
+	static unsigned int dialog_counter;
 };
 
 PREF_NAMESPACE_END
