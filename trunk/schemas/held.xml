@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<xs:schema
+    targetNamespace="urn:ietf:params:xml:ns:geopriv:held"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:held="urn:ietf:params:xml:ns:geopriv:held"
+    xmlns:xml="http://www.w3.org/XML/1998/namespace"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+  <xs:annotation>
+    <xs:documentation>
+      This document (RFC-ietf-geopriv-http-location-delivery-16) defines HELD messages.
+    </xs:documentation>
+  </xs:annotation>
+
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>
+
+  <!-- Return Location -->
+  <xs:complexType name="returnLocationType">
+    <xs:complexContent>
+      <xs:restriction base="xs:anyType">
+        <xs:sequence>
+          <xs:element name="locationURI" type="xs:anyURI"
+                      maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="expires" type="xs:dateTime"
+                      use="required"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- responseTime Type -->
+  <xs:simpleType name="responseTimeType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="emergencyRouting"/>
+          <xs:enumeration value="emergencyDispatch"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:nonNegativeInteger">
+          <xs:minInclusive value="0"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <!-- Location Type -->
+  <xs:simpleType name="locationTypeBase">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="any"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="held:locationTypeList">
+          <xs:minLength value="1"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+
+  <xs:simpleType name="locationTypeList">
+    <xs:list>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="civic"/>
+          <xs:enumeration value="geodetic"/>
+          <xs:enumeration value="locationURI"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:list>
+  </xs:simpleType>
+
+  <xs:complexType name="locationTypeType">
+    <xs:simpleContent>
+      <xs:extension base="held:locationTypeBase">
+        <xs:attribute name="exact" type="xs:boolean"
+                      use="optional" default="false"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Message Definitions -->
+  <xs:complexType name="baseRequestType">
+    <xs:complexContent>
+      <xs:restriction base="xs:anyType">
+        <xs:sequence/>
+        <xs:attribute name="responseTime" type="held:responseTimeType"
+                      use="optional"/>
+        <xs:anyAttribute namespace="##any" processContents="lax"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="errorType">
+    <xs:complexContent>
+      <xs:restriction base="xs:anyType">
+        <xs:sequence>
+          <xs:element name="message" type="held:errorMsgType"
+                      minOccurs="0" maxOccurs="unbounded"/>
+          <xs:any namespace="##other" processContents="lax"
+                  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="code" type="xs:token"
+                      use="required"/>
+        <xs:anyAttribute namespace="##any" processContents="lax"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="errorMsgType">
+    <xs:simpleContent>
+      <xs:extension base="xs:token">
+        <xs:attribute ref="xml:lang"/>
+        <xs:anyAttribute namespace="##any" processContents="lax"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  <xs:element name="error" type="held:errorType"/>
+
+  <!-- Location Response -->
+  <xs:complexType name="locationResponseType">
+    <xs:complexContent>
+      <xs:restriction base="xs:anyType">
+        <xs:sequence>
+          <xs:element name="locationUriSet"
+                      type="held:returnLocationType"
+                      minOccurs="0"/>
+          <xs:any namespace="##other" processContents="lax"
+                  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="locationResponse"
+              type="held:locationResponseType"/>
+
+
+  <!-- Location Request -->
+
+  <xs:complexType name="locationRequestType">
+    <xs:complexContent>
+      <xs:extension base="held:baseRequestType">
+        <xs:sequence>
+          <xs:element name="locationType"
+                      type="held:locationTypeType"
+                      minOccurs="0"/>
+          <xs:any namespace="##other" processContents="lax"
+                  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="locationRequest"
+              type="held:locationRequestType"/>
+
+</xs:schema>

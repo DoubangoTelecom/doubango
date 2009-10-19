@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<xs:schema
+  targetNamespace="urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns:ca="urn:ietf:params:xml:ns:pidf:geopriv10:civicAddr"
+  xmlns:xml="http://www.w3.org/XML/1998/namespace"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+             schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
+  <xs:simpleType name="iso3166a2">
+    <xs:restriction base="xs:token">
+      <xs:pattern value="[A-Z]{2}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="caType">
+    <xs:simpleContent>
+      <xs:extension base="xs:token">
+        <xs:attribute ref="xml:lang" use="optional"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:element name="civicAddress" type="ca:civicAddress"/>
+  <xs:complexType name="civicAddress">
+    <xs:sequence>
+      <xs:element name="country" type="ca:iso3166a2" minOccurs="0"/>
+      <xs:element name="A1" type="ca:caType" minOccurs="0"/>
+      <xs:element name="A2" type="ca:caType" minOccurs="0"/>
+      <xs:element name="A3" type="ca:caType" minOccurs="0"/>
+      <xs:element name="A4" type="ca:caType" minOccurs="0"/>
+      <xs:element name="A5" type="ca:caType" minOccurs="0"/>
+      <xs:element name="A6" type="ca:caType" minOccurs="0"/>
+      <xs:element name="PRM" type="ca:caType" minOccurs="0"/>
+      <xs:element name="PRD" type="ca:caType" minOccurs="0"/>
+      <xs:element name="RD" type="ca:caType" minOccurs="0"/>
+      <xs:element name="STS" type="ca:caType" minOccurs="0"/>
+      <xs:element name="POD" type="ca:caType" minOccurs="0"/>
+      <xs:element name="POM" type="ca:caType" minOccurs="0"/>
+      <xs:element name="RDSEC" type="ca:caType" minOccurs="0"/>
+      <xs:element name="RDBR" type="ca:caType" minOccurs="0"/>
+      <xs:element name="RDSUBBR" type="ca:caType" minOccurs="0"/>
+      <xs:element name="HNO" type="ca:caType" minOccurs="0"/>
+      <xs:element name="HNS" type="ca:caType" minOccurs="0"/>
+      <xs:element name="LMK" type="ca:caType" minOccurs="0"/>
+      <xs:element name="LOC" type="ca:caType" minOccurs="0"/>
+      <xs:element name="FLR" type="ca:caType" minOccurs="0"/>
+      <xs:element name="NAM" type="ca:caType" minOccurs="0"/>
+      <xs:element name="PC" type="ca:caType" minOccurs="0"/>
+      <xs:element name="BLD" type="ca:caType" minOccurs="0"/>
+      <xs:element name="UNIT" type="ca:caType" minOccurs="0"/>
+      <xs:element name="ROOM" type="ca:caType" minOccurs="0"/>
+      <xs:element name="SEAT" type="ca:caType" minOccurs="0"/>
+      <xs:element name="PLC" type="xs:token" minOccurs="0"/>
+      <xs:element name="PCN" type="ca:caType" minOccurs="0"/>
+      <xs:element name="POBOX" type="ca:caType" minOccurs="0"/>
+      <xs:element name="ADDCODE" type="ca:caType" minOccurs="0"/>
+      <xs:any namespace="##other" processContents="lax"
+              minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+  </xs:complexType>
+</xs:schema>

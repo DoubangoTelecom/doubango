@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:cipid="urn:ietf:params:xml:ns:pidf:cipid" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:ietf:params:xml:ns:pidf:cipid" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:annotation>
+    <xs:documentation>
+         Describes CIPID tuple extensions for PIDF.
+       </xs:documentation>
+  </xs:annotation>
+  <xs:element name="card" type="xs:anyURI"/>
+  <xs:element name="display-name" type="xs:string"/>
+  <xs:element name="homepage" type="xs:anyURI"/>
+  <xs:element name="icon" type="xs:anyURI"/>
+  <xs:element name="map" type="xs:anyURI"/>
+  <xs:element name="sound" type="xs:anyURI"/>
+</xs:schema>

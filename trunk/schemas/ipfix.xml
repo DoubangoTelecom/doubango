@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+   <schema targetNamespace="urn:ietf:params:xml:ns:ipfix-info"
+           xmlns:ipfix="urn:ietf:params:xml:ns:ipfix-info"
+           xmlns="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+     <simpleType name="dataType">
+       <restriction base="string">
+         <enumeration value="unsigned8">
+           <annotation>
+             <documentation>The type "unsigned8" represents a
+               non-negative integer value in the range of 0 to 255.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="unsigned16">
+           <annotation>
+             <documentation>The type "unsigned16" represents a
+               non-negative integer value in the range of 0 to 65535.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="unsigned32">
+           <annotation>
+             <documentation>The type "unsigned32" represents a
+                non-negative integer value in the range of 0 to
+                4294967295.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="unsigned64">
+           <annotation>
+             <documentation>The type "unsigned64" represents a
+               non-negative integer value in the range of 0 to
+               18446744073709551615.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="signed8">
+           <annotation>
+             <documentation>The type "signed8" represents
+               an integer value in the range of -128 to 127.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="signed16">
+           <annotation>
+             <documentation>The type "signed16" represents an
+               integer value in the range of -32768 to 32767.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="signed32">
+           <annotation>
+             <documentation>The type "signed32" represents an
+                integer value in the range of -2147483648 to
+                2147483647.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="signed64">
+           <annotation>
+             <documentation>The type "signed64" represents an
+                integer value in the range of -9223372036854775808
+                to 9223372036854775807.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="float32">
+           <annotation>
+             <documentation>The type "float32" corresponds to an IEEE
+               single-precision 32-bit floating point type as defined
+               in [IEEE.754.1985].
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="float64">
+           <annotation>
+             <documentation>The type "float64" corresponds to an IEEE
+               double-precision 64-bit floating point type as defined
+               in [IEEE.754.1985].
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="boolean">
+           <annotation>
+             <documentation>The type "boolean" represents a binary
+               value.  The only allowed values are "true" and "false".
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="macAddress">
+           <annotation>
+             <documentation>The type "macAddress" represents a
+               string of 6 octets.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="octetArray">
+           <annotation>
+             <documentation>The type "octetArray" represents a finite
+             length string of octets.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="string">
+           <annotation>
+             <documentation>
+               The type "string" represents a finite length string
+               of valid characters from the Unicode character encoding
+               set [ISO.10646-1.1993].  Unicode allows for ASCII
+               [ISO.646.1991] and many other international character
+               sets to be used.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="dateTimeSeconds">
+           <annotation>
+             <documentation>
+               The type "dateTimeSeconds" represents a time value
+               in units of seconds normalized to the
+               GMT time zone.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="dateTimeMilliseconds">
+           <annotation>
+             <documentation>The type "dateTimeMilliseconds" represents
+               a time value in units of milliseconds
+               normalized to the GMT time zone.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="dateTimeMicroseconds">
+           <annotation>
+             <documentation>The type "dateTimeMicroseconds" represents
+               a time value in units of microseconds
+               normalized to the GMT time zone.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="dateTimeNanoseconds">
+           <annotation>
+             <documentation>The type "dateTimeNanoseconds" represents
+               a time value in units of nanoseconds
+               normalized to the GMT time zone.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="ipv4Address">
+           <annotation>
+             <documentation>The type "ipv4Address" represents a value
+               of an IPv4 address.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="ipv6Address">
+           <annotation>
+             <documentation>The type "ipv6Address" represents a value
+               of an IPv6 address.
+             </documentation>
+           </annotation>
+         </enumeration>
+       </restriction>
+     </simpleType>
+
+     <simpleType name="dataTypeSemantics">
+       <restriction base="string">
+         <enumeration value="quantity">
+           <annotation>
+             <documentation>
+               A quantity value represents a discrete
+               measured value pertaining to the record. This is
+               distinguished from counters which represent an ongoing
+               measured value whose "odometer" reading is captured as
+               part of a given record. If no semantic qualifier is
+               given, the Information Elements that have an integral
+               data type should behave as a quantity.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="totalCounter">
+           <annotation>
+             <documentation>
+               An integral value reporting the value of a counter.
+               Counters are unsigned and wrap back to zero after
+               reaching the limit of the type. For example, an
+               unsigned64 with counter semantics will continue to
+               increment until reaching the value of 2**64 - 1.  At
+               this point the next increment will wrap its value to
+               zero and continue counting from zero.  The semantics
+               of a total counter is similar to the semantics of
+               counters used in SNMP, such as Counter32 defined in
+               RFC 2578 [RFC2578].  The only difference between total
+               counters and counters used in SNMP is that the total
+               counters have an initial value of 0.  A total counter
+               counts independently of the export of its value.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="deltaCounter">
+           <annotation>
+             <documentation>
+               An integral value reporting the value of a counter.
+               Counters are unsigned and wrap back to zero after
+               reaching the limit of the type. For example, an
+               unsigned64 with counter semantics will continue to
+               increment until reaching the value of 2**64 - 1.  At
+               this point the next increment will wrap its value to
+               zero and continue counting from zero.  The semantics
+               of a delta counter is similar to the semantics of
+               counters used in SNMP, such as Counter32 defined in
+               RFC 2578 [RFC2578].  The only difference between delta
+               counters and counters used in SNMP is that the delta
+               counters have an initial value of 0.  A delta counter
+               is reset to 0 each time its value is exported.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="identifier">
+           <annotation>
+             <documentation>
+               An integral value which serves as an identifier.
+               Specifically mathematical operations on two
+               identifiers (aside from the equality operation) are
+               meaningless. For example, Autonomous System ID 1 *
+               Autonomous System ID 2 is meaningless.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="flags">
+           <annotation>
+             <documentation>
+               An integral value which actually represents a set of
+               bit fields.  Logical operations are appropriate on
+               such values, but not other mathematical operations.
+               Flags should always be of an unsigned type.
+             </documentation>
+           </annotation>
+         </enumeration>
+       </restriction>
+     </simpleType>
+
+     <simpleType name="applicability">
+       <restriction base="string">
+         <enumeration value="data">
+           <annotation>
+             <documentation>
+               Used for Information Elements that are applicable to
+               Flow Records only.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="option">
+           <annotation>
+             <documentation>
+               Used for Information Elements that are applicable to
+               option records only.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="all">
+           <annotation>
+             <documentation>
+               Used for Information Elements that are applicable to
+               Flow Records as well as to option records.
+             </documentation>
+           </annotation>
+         </enumeration>
+       </restriction>
+     </simpleType>
+
+     <simpleType name="status">
+       <restriction base="string">
+         <enumeration value="current">
+           <annotation>
+             <documentation>
+               Indicates that the Information Element definition
+               is that the definition is current and valid.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="deprecated">
+           <annotation>
+             <documentation>
+               Indicates that the Information Element definition is
+               obsolete, but it permits new/continued implementation
+               in order to foster interoperability with older/existing
+               implementations.
+             </documentation>
+           </annotation>
+         </enumeration>
+
+         <enumeration value="obsolete">
+           <annotation>
+             <documentation>
+               Indicates that the Information Element definition is
+               obsolete and should not be implemented and/or can be
+               removed if previously implemented.
+             </documentation>
+           </annotation>
+         </enumeration>
+       </restriction>
+     </simpleType>
+
+     <complexType name="text">
+       <choice maxOccurs="unbounded" minOccurs="0">
+         <element name="paragraph">
+           <complexType mixed="true">
+             <sequence>
+                <element maxOccurs="unbounded" minOccurs="0"
+                  name="xref">
+                  <complexType>
+                    <attribute name="target" type="string"
+                      use="required"/>
+                  </complexType>
+                </element>
+             </sequence>
+           </complexType>
+         </element>
+         <element name="artwork">
+           <simpleType>
+             <restriction base="string"/>
+           </simpleType>
+         </element>
+       </choice>
+     </complexType>
+
+     <simpleType name="range">
+       <restriction base="string"/>
+     </simpleType>
+
+     <element name="fieldDefinitions">
+       <complexType>
+         <sequence>
+           <element maxOccurs="unbounded" minOccurs="1" name="field">
+             <complexType>
+               <sequence>
+                 <element maxOccurs="1" minOccurs="1" name="description"
+                          type="ipfix:text">
+                   <annotation>
+                     <documentation>
+                       The semantics of this Information Element.
+                       Describes how this Information Element is
+                       derived from the Flow or other information
+                       available to the observer.
+                     </documentation>
+                   </annotation>
+                 </element>
+
+                 <element maxOccurs="1" minOccurs="0" name="reference"
+                          type="ipfix:text">
+                   <annotation>
+                     <documentation>
+                       Identifies additional specifications which more
+                       precisely define this item or provide additional
+                       context for its use.
+                     </documentation>
+                   </annotation>
+                 </element>
+
+                 <element maxOccurs="1" minOccurs="0" name="units"
+                          type="string">
+                   <annotation>
+                     <documentation>
+                       If the Information Element is a measure of some
+                       kind, the units identify what the measure is.
+                     </documentation>
+                   </annotation>
+                 </element>
+
+                 <element maxOccurs="1" minOccurs="0" name="range"
+                          type="ipfix:range">
+                   <annotation>
+                     <documentation>
+                       Some Information Elements may only be able to
+                       take on a restricted set of values which can be
+                       expressed as a range (e.g. 0 through 511
+                       inclusive). If this is the case, the valid
+                       inclusive range should be specified.
+                     </documentation>
+                   </annotation>
+                 </element>
+               </sequence>
+
+               <attribute name="name" type="string" use="required">
+                 <annotation>
+                   <documentation>
+                     A unique and meaningful name for the Information
+                     Element.
+                   </documentation>
+                 </annotation>
+               </attribute>
+
+               <attribute name="dataType" type="ipfix:dataType"
+                          use="required">
+                 <annotation>
+                   <documentation>
+                     One of the types listed in section 3.1 of this
+                     document or in a future extension of the
+                     information model. The type space for attributes
+                     is constrained to facilitate implementation.  The
+                     existing type space does however encompass most
+                     basic types used in modern programming languages,
+                     as well as some derived types (such as ipv4Address)
+                     which are common to this domain and useful
+                     to distinguish.
+                   </documentation>
+                 </annotation>
+               </attribute>
+
+               <attribute name="dataTypeSemantics"
+                          type="ipfix:dataTypeSemantics" use="optional">
+                 <annotation>
+                   <documentation>
+                     The integral types may be qualified by additional
+                     semantic details. Valid values for the data type
+                     semantics are specified in section 3.2 of this
+                     document or in a future extension of the
+                     information model.
+                   </documentation>
+                 </annotation>
+               </attribute>
+
+               <attribute name="elementId" type="nonNegativeInteger"
+                          use="required">
+                 <annotation>
+                   <documentation>
+                     A numeric identifier of the Information Element.
+                     If this identifier is used without an enterprise
+                     identifier (see [I-D.ietf-ipfix-protocol] and
+                     enterpriseId below), then it is globally unique
+                     and the list of allowed values is administered by
+                     IANA.  It is used for compact identification of an
+                     Information Element when encoding Templates in the
+                     protocol.
+                   </documentation>
+                 </annotation>
+               </attribute>
+
+               <attribute name="enterpriseId" type="nonNegativeInteger"
+                          use="optional">
+                 <annotation>
+                   <documentation>
+                     Enterprises may wish to define Information Elements
+                     without registering them with IANA, for example for
+                     enterprise-internal purposes. For such Information
+                     Elements the Information Element identifier
+                     described above is not sufficient when the
+                     Information Element is used outside the enterprise.
+                     If specifications of enterprise-specific
+                     Information Elements are made public and/or if
+                     enterprise-specific identifiers are used by the
+                     IPFIX protocol outside the enterprise, then the
+                     enterprise-specific identifier MUST be made
+                     globally unique by combining it with an enterprise
+                     identifier.  Valid values for the enterpriseId are
+                     defined by IANA as SMI network management private
+                     enterprise codes.  They are defined at
+                     http://www.iana.org/assignments/enterprise-numbers.
+                   </documentation>
+                 </annotation>
+               </attribute>
+
+               <attribute name="applicability"
+                          type="ipfix:applicability" use="optional">
+                 <annotation>
+                   <documentation>This propoerty of an Information
+                   Element indicates in which kind of records the
+                   Information Element can be used.
+                   Allowed values for this property are 'data',
+                   'option', and 'all'.</documentation>
+                 </annotation>
+               </attribute>
+
+               <attribute name="status" type="ipfix:status"
+                          use="required">
+                 <annotation>
+                   <documentation>
+                     The status of the specification of this
+                     Information Element.  Allowed values are 'current',
+                     'deprecated', and 'obsolete'.
+                   </documentation>
+                 </annotation>
+               </attribute>
+
+               <attribute name="group" type="string"
+                          use="required">
+                 <annotation>
+                   <documentation>to be done ...</documentation>
+                 </annotation>
+               </attribute>
+
+             </complexType>
+           </element>
+         </sequence>
+       </complexType>
+
+       <unique name="infoElementIdUnique">
+         <selector xpath="field"/>
+
+         <field xpath="elementId"/>
+       </unique>
+     </element>
+   </schema>

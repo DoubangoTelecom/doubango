@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+    targetNamespace="urn:ietf:params:xml:ns:patch-ops-error"
+    xmlns:tns="urn:ietf:params:xml:ns:patch-ops-error"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+ <!-- This import brings in the XML language attribute xml:lang-->
+ <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
+             schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
+ <!-- ROOT document element for signaling patch-ops errors -->
+ <xsd:element name="patch-ops-error">
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:any namespace="##any" processContents="lax"
+             minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+   <xsd:anyAttribute processContents="lax"/>
+  </xsd:complexType>
+ </xsd:element>
+
+ <!-- patch-ops error elements:
+      not intended to be used as root documnet elements -->
+ <xsd:element name="invalid-attribute-value"
+              type="tns:patch-error"/>
+ <xsd:element name="invalid-character-set"
+              type="tns:patch-error-simple"/>
+ <xsd:element name="invalid-diff-format"
+              type="tns:patch-error-simple"/>
+ <xsd:element name="invalid-entity-declaration"
+              type="tns:patch-error"/>
+ <xsd:element name="invalid-namespace-prefix"
+              type="tns:patch-error"/>
+ <xsd:element name="invalid-namespace-uri"
+              type="tns:patch-error"/>
+ <xsd:element name="invalid-node-types"
+              type="tns:patch-error"/>
+ <xsd:element name="invalid-patch-directive"
+              type="tns:patch-error"/>
+ <xsd:element name="invalid-root-element-operation"
+              type="tns:patch-error"/>
+ <xsd:element name="invalid-xml-prolog-operation"
+               type="tns:patch-error"/>
+ <xsd:element name="invalid-whitespace-directive"
+              type="tns:patch-error"/>
+ <xsd:element name="unlocated-node"
+              type="tns:patch-error"/>
+ <xsd:element name="unsupported-id-function"
+              type="tns:patch-error"/>
+ <xsd:element name="unsupported-xml-id"
+              type="tns:patch-error"/>
+
+ <!-- simple patch-ops error type  -->
+ <xsd:complexType name="patch-error-simple">
+  <xsd:attribute name="phrase" type="xsd:string"/>
+  <xsd:attribute ref="xml:lang"/>
+  <xsd:anyAttribute processContents="lax"/>
+ </xsd:complexType>
+
+ <!-- error type which includes patch operation -->
+ <xsd:complexType name="patch-error">
+  <xsd:sequence>
+   <xsd:any namespace="##any" processContents="lax"/>
+  </xsd:sequence>
+  <xsd:attribute name="phrase" type="xsd:string"/>
+  <xsd:attribute ref="xml:lang"/>
+  <xsd:anyAttribute processContents="lax"/>
+ </xsd:complexType>
+
+</xsd:schema>
