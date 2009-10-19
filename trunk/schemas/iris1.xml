@@ -1,0 +1,374 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:iris="urn:ietf:params:xml:ns:iris1" targetNamespace="urn:ietf:params:xml:ns:iris1" elementFormDefault="qualified">
+  <annotation>
+    <documentation>
+         Internet Registry Information Service (IRIS) Schema v1
+       </documentation>
+  </annotation>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- The Transactions                          -->
+<!--                                           -->
+<!-- ========================================= -->
+  <element name="request">
+    <complexType>
+      <sequence>
+        <element name="control" type="iris:controlType" minOccurs="0" maxOccurs="1"/>
+        <element name="searchSet" type="iris:searchSetType" minOccurs="1" maxOccurs="unbounded"/>
+      </sequence>
+    </complexType>
+  </element>
+  <element name="response">
+    <complexType>
+      <sequence>
+        <element name="reaction" type="iris:reactionType" minOccurs="0" maxOccurs="1"/>
+        <element name="resultSet" type="iris:resultSetType" minOccurs="1" maxOccurs="unbounded"/>
+        <element name="bags" type="iris:bagsType" minOccurs="0" maxOccurs="1"/>
+      </sequence>
+    </complexType>
+  </element>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Search Sets and Result Sets               -->
+<!--                                           -->
+<!-- ========================================= -->
+  <complexType name="searchSetType">
+    <sequence>
+      <element name="bag" type="iris:bagType" minOccurs="0" maxOccurs="1"/>
+      <choice>
+        <element name="lookupEntity" type="iris:lookupEntityType"/>
+        <element ref="iris:query"/>
+      </choice>
+    </sequence>
+  </complexType>
+  <complexType name="resultSetType">
+    <sequence>
+      <element name="answer" minOccurs="1" maxOccurs="1">
+        <complexType>
+          <sequence>
+            <element ref="iris:result" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="iris:entity" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="iris:searchContinuation" minOccurs="0" maxOccurs="unbounded"/>
+          </sequence>
+        </complexType>
+      </element>
+      <element name="additional" minOccurs="0" maxOccurs="1">
+        <complexType>
+          <sequence>
+            <element ref="iris:result" minOccurs="1" maxOccurs="unbounded"/>
+          </sequence>
+        </complexType>
+      </element>
+      <choice minOccurs="0" maxOccurs="1">
+        <element name="insufficientResources" type="iris:codeType"/>
+        <element name="invalidName" type="iris:codeType"/>
+        <element name="invalidSearch" type="iris:codeType"/>
+        <element name="queryNotSupported" type="iris:codeType"/>
+        <element name="limitExceeded" type="iris:codeType"/>
+        <element name="nameNotFound" type="iris:codeType"/>
+        <element name="permissionDenied" type="iris:codeType"/>
+        <element name="bagUnrecognized" type="iris:codeType"/>
+        <element name="bagUnacceptable" type="iris:codeType"/>
+        <element name="bagRefused" type="iris:codeType"/>
+        <element ref="iris:genericCode"/>
+      </choice>
+    </sequence>
+  </complexType>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Controls and Reactions                    -->
+<!--                                           -->
+<!-- ========================================= -->
+  <complexType name="controlType">
+    <sequence>
+      <any namespace="##any" processContents="skip" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+  <complexType name="reactionType">
+    <sequence>
+      <any namespace="##any" processContents="skip" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Queries and Lookups                       -->
+<!--                                           -->
+<!-- ========================================= -->
+  <complexType name="queryType"/>
+  <element name="query" type="iris:queryType" abstract="true"/>
+  <complexType name="lookupEntityType">
+    <attribute name="registryType" type="anyURI" use="required"/>
+    <attribute name="entityClass" type="token" use="required"/>
+    <attribute name="entityName" type="token" use="required"/>
+  </complexType>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Results                                   -->
+<!--                                           -->
+<!-- ========================================= -->
+  <complexType name="resultType">
+    <attribute name="authority" use="required" type="token"/>
+    <attribute name="resolution" type="token"/>
+    <attribute name="registryType" use="required" type="anyURI"/>
+    <attribute name="entityClass" use="required" type="token"/>
+    <attribute name="entityName" use="required" type="token"/>
+    <attribute name="temporaryReference" default="false" type="boolean"/>
+  </complexType>
+  <element name="result" type="iris:resultType" abstract="true"/>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Errors                                    -->
+<!--                                           -->
+<!-- ========================================= -->
+  <complexType name="codeType">
+    <sequence minOccurs="0" maxOccurs="unbounded">
+      <element name="explanation">
+        <complexType>
+          <simpleContent>
+            <extension base="string">
+              <attribute use="required" name="language" type="language"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+  <element name="genericCode" type="iris:codeType" abstract="true"/>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Entity References and                     -->
+<!-- Search Continuations                      -->
+<!--                                           -->
+<!-- ========================================= -->
+  <complexType name="entityType">
+    <sequence>
+      <element name="displayName" minOccurs="0" maxOccurs="unbounded">
+        <complexType>
+          <simpleContent>
+            <extension base="string">
+              <attribute name="language" use="required" type="language"/>
+            </extension>
+          </simpleContent>
+        </complexType>
+      </element>
+    </sequence>
+    <attribute name="authority" use="required" type="token"/>
+    <attribute name="resolution" type="token"/>
+    <attribute name="registryType" use="required" type="anyURI"/>
+    <attribute name="entityClass" use="required" type="token"/>
+    <attribute name="entityName" use="required" type="token"/>
+    <attribute name="referentType" use="required" form="qualified" type="iris:referentTypeType"/>
+    <attribute name="temporaryReference" default="false" type="boolean"/>
+    <attribute name="bagRef" type="IDREF"/>
+  </complexType>
+  <element name="entity" type="iris:entityType"/>
+  <simpleType name="referentTypeType">
+    <union memberTypes="QName iris:anyLiteralType"/>
+  </simpleType>
+  <simpleType name="anyLiteralType">
+    <restriction base="string">
+      <enumeration value="ANY"/>
+    </restriction>
+  </simpleType>
+  <complexType name="searchContinuationType">
+    <sequence>
+      <element ref="iris:query"/>
+    </sequence>
+    <attribute name="bagRef" type="IDREF"/>
+    <attribute name="authority" type="token" use="required"/>
+    <attribute name="resolution" type="token"/>
+  </complexType>
+  <element name="searchContinuation" type="iris:searchContinuationType"/>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Bags                                      -->
+<!--                                           -->
+<!-- ========================================= -->
+  <complexType name="bagsType">
+    <sequence>
+      <element name="bag" minOccurs="1" maxOccurs="unbounded">
+        <complexType>
+          <complexContent>
+            <extension base="iris:bagType">
+              <attribute use="required" name="id" type="ID"/>
+            </extension>
+          </complexContent>
+        </complexType>
+      </element>
+    </sequence>
+  </complexType>
+  <complexType name="bagType">
+    <sequence>
+      <any namespace="##any" processContents="skip" minOccurs="1" maxOccurs="1"/>
+    </sequence>
+  </complexType>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Derived Results for use with all          -->
+<!-- registry types.                           -->
+<!--                                           -->
+<!-- ========================================= -->
+<!--                                           -->
+<!-- See Also                                  -->
+<!--                                           -->
+  <element name="seeAlso" type="iris:entityType"/>
+<!--                                           -->
+<!-- Service Identification                    -->
+<!--                                           -->
+  <complexType name="serviceIdentificationType">
+    <complexContent>
+      <extension base="iris:resultType">
+        <sequence>
+          <element name="authorities" minOccurs="1" maxOccurs="1">
+            <complexType>
+              <sequence>
+                <element name="authority" type="token" minOccurs="1" maxOccurs="unbounded"/>
+              </sequence>
+            </complexType>
+          </element>
+          <element name="operatorName" type="string" minOccurs="0" maxOccurs="1"/>
+          <element name="eMail" type="string" minOccurs="0" maxOccurs="unbounded"/>
+          <element name="phone" type="string" minOccurs="0" maxOccurs="unbounded"/>
+          <element ref="iris:seeAlso" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="serviceIdentification" type="iris:serviceIdentificationType" substitutionGroup="iris:result"/>
+<!--                                           -->
+<!-- Limits                                    -->
+<!--                                           -->
+  <complexType name="limitsType">
+    <complexContent>
+      <extension base="iris:resultType">
+        <sequence>
+          <element name="totalQueries" minOccurs="0" maxOccurs="1">
+            <complexType>
+              <group ref="iris:timeLimitsGroup" minOccurs="1" maxOccurs="4"/>
+            </complexType>
+          </element>
+          <element name="totalResults" minOccurs="0" maxOccurs="1">
+            <complexType>
+              <group ref="iris:timeLimitsGroup" minOccurs="1" maxOccurs="4"/>
+            </complexType>
+          </element>
+          <element name="totalSessions" minOccurs="0" maxOccurs="1">
+            <complexType>
+              <group ref="iris:timeLimitsGroup" minOccurs="1" maxOccurs="4"/>
+            </complexType>
+          </element>
+          <element name="otherRestrictions" minOccurs="0" maxOccurs="1">
+            <complexType>
+              <sequence>
+                <element name="description" minOccurs="0" maxOccurs="unbounded">
+                  <complexType>
+                    <simpleContent>
+                      <extension base="string">
+                        <attribute name="language" type="language" use="required"/>
+                      </extension>
+                    </simpleContent>
+                  </complexType>
+                </element>
+              </sequence>
+            </complexType>
+          </element>
+          <element ref="iris:seeAlso" minOccurs="0" maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="limits" type="iris:limitsType" substitutionGroup="iris:result"/>
+  <group name="timeLimitsGroup">
+    <choice>
+      <element name="perSecond" type="nonNegativeInteger"/>
+      <element name="perMinute" type="nonNegativeInteger"/>
+      <element name="perHour" type="nonNegativeInteger"/>
+      <element name="perDay" type="nonNegativeInteger"/>
+    </choice>
+  </group>
+<!--                                           -->
+<!-- Simple Entity                             -->
+<!--                                           -->
+  <complexType name="simpleEntityType">
+    <complexContent>
+      <extension base="iris:resultType">
+        <sequence>
+          <element name="property" minOccurs="1" maxOccurs="unbounded">
+            <complexType>
+              <simpleContent>
+                <extension base="string">
+                  <attribute name="name" type="string" use="required"/>
+                  <attribute name="language" type="language" use="required"/>
+                  <attribute name="uri" type="anyURI"/>
+                </extension>
+              </simpleContent>
+            </complexType>
+          </element>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+  <element name="simpleEntity" type="iris:simpleEntityType" substitutionGroup="iris:result"/>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Derived Controls and Reactions            -->
+<!--                                           -->
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Only Check Permissions                    -->
+<!--                                           -->
+  <element name="onlyCheckPermissions">
+    <complexType/>
+  </element>
+<!--                                           -->
+<!-- Standard Reaction                         -->
+<!--                                           -->
+  <element name="standardReaction">
+    <complexType>
+      <choice>
+        <element name="controlAccepted">
+          <complexType/>
+        </element>
+        <element name="controlDenied">
+          <complexType/>
+        </element>
+        <element name="controlDisabled">
+          <complexType/>
+        </element>
+        <element name="controlUnrecognized">
+          <complexType/>
+        </element>
+      </choice>
+    </complexType>
+  </element>
+<!-- ========================================= -->
+<!--                                           -->
+<!-- Serialization                             -->
+<!--                                           -->
+<!-- ========================================= -->
+  <complexType name="serializedReferralType">
+    <sequence>
+      <element name="source">
+        <complexType>
+          <attribute name="authority" use="required" type="token"/>
+          <attribute name="resolution" type="token"/>
+          <attribute name="registryType" type="anyURI" use="required"/>
+          <attribute name="entityClass" type="token" use="required"/>
+          <attribute name="entityName" type="token" use="required"/>
+        </complexType>
+      </element>
+      <choice>
+        <element ref="iris:searchContinuation"/>
+        <element ref="iris:entity"/>
+      </choice>
+    </sequence>
+  </complexType>
+  <element name="serialization">
+    <complexType>
+      <choice minOccurs="1" maxOccurs="unbounded">
+        <element ref="iris:result"/>
+        <element name="serializedReferral" type="iris:serializedReferralType"/>
+      </choice>
+    </complexType>
+  </element>
+</schema>

@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="urn:ietf:params:xml:ns:cpl" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:ietf:params:xml:ns:cpl" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:complexType name="TopLevelActionType" abstract="true">
+    <xs:group ref="Node"/>
+  </xs:complexType>
+  <xs:element name="toplevelaction" type="TopLevelActionType"/>
+  <xs:complexType name="ActionType" abstract="true"/>
+  <xs:element name="action" type="ActionType"/>
+  <xs:complexType name="SwitchType" abstract="true"/>
+  <xs:element name="switch" type="SwitchType"/>
+  <xs:complexType name="ModifierType" abstract="true"/>
+  <xs:element name="modifier" type="ModifierType"/>
+  <xs:element name="location" type="LocationType" substitutionGroup="modifier"/>
+  <xs:element name="lookup" type="LookupType" substitutionGroup="modifier"/>
+  <xs:element name="remove-location" type="RemoveLocationType" substitutionGroup="modifier"/>
+  <xs:element name="sub" type="SubAction"/>
+  <xs:group name="Node">
+    <xs:choice>
+      <xs:element ref="switch" minOccurs="0" maxOccurs="1"/>
+      <xs:element ref="modifier" minOccurs="0" maxOccurs="1"/>
+      <xs:element ref="sub" minOccurs="0" maxOccurs="1"/>
+      <xs:element ref="action" minOccurs="0" maxOccurs="1"/>
+    </xs:choice>
+  </xs:group>
+  <xs:complexType name="OtherwiseAction">
+    <xs:group ref="Node"/>
+  </xs:complexType>
+  <xs:complexType name="NotPresentAction">
+    <xs:group ref="Node"/>
+  </xs:complexType>
+  <xs:simpleType name="YesNoType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="yes"/>
+      <xs:enumeration value="no"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="StatusType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:NMTOKEN">
+          <xs:enumeration value="busy"/>
+          <xs:enumeration value="notfound"/>
+          <xs:enumeration value="reject"/>
+          <xs:enumeration value="error"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:string"/>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="OrderingType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="parallel"/>
+      <xs:enumeration value="sequential"/>
+      <xs:enumeration value="first-only"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AddressFieldType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:NMTOKEN">
+          <xs:enumeration value="origin"/>
+          <xs:enumeration value="destination"/>
+          <xs:enumeration value="original-destination"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:string"/>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="AddressSubfieldType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:NMTOKEN">
+          <xs:enumeration value="address-type"/>
+          <xs:enumeration value="user"/>
+          <xs:enumeration value="host"/>
+          <xs:enumeration value="port"/>
+          <xs:enumeration value="tel"/>
+          <xs:enumeration value="display"/>
+          <xs:enumeration value="password"/>
+          <xs:enumeration value="alias-type"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:string"/>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:complexType name="AddressType">
+    <xs:annotation>
+      <xs:documentation>Exactly one of the three attributes must
+             appear</xs:documentation>
+    </xs:annotation>
+    <xs:group ref="Node"/>
+    <xs:attribute name="is" type="xs:string" use="optional"/>
+    <xs:attribute name="contains" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>for "display" only</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="subdomain-of" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>for "host", "tel" only</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+  </xs:complexType>
+  <xs:complexType name="AddressSwitchType">
+    <xs:complexContent>
+      <xs:extension base="SwitchType">
+        <xs:sequence>
+          <xs:element name="address" type="AddressType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:sequence minOccurs="0">
+            <xs:element name="not-present" type="NotPresentAction"/>
+            <xs:element name="address" type="AddressType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:element name="otherwise" type="OtherwiseAction" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="field" type="AddressFieldType" use="required"/>
+        <xs:attribute name="subfield" type="AddressSubfieldType" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="address-switch" type="AddressSwitchType" substitutionGroup="switch"/>
+  <xs:simpleType name="StringFieldType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="subject"/>
+      <xs:enumeration value="organization"/>
+      <xs:enumeration value="user-agent"/>
+      <xs:enumeration value="display"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="StringType">
+    <xs:group ref="Node"/>
+    <xs:attribute name="is" type="xs:string" use="optional"/>
+    <xs:attribute name="contains" type="xs:string" use="optional"/>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+  </xs:complexType>
+  <xs:complexType name="StringSwitchType">
+    <xs:complexContent>
+      <xs:extension base="SwitchType">
+        <xs:sequence>
+          <xs:element name="string" type="StringType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:sequence minOccurs="0">
+            <xs:element name="not-present" type="NotPresentAction"/>
+            <xs:element name="string" type="StringType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:element name="otherwise" type="OtherwiseAction" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="field" type="StringFieldType" use="required">
+          <xs:annotation>
+            <xs:documentation>Strings are matched as case-insensitive
+                   Unicode strings.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="string-switch" type="StringSwitchType" substitutionGroup="switch"/>
+  <xs:complexType name="LanguageType">
+    <xs:group ref="Node"/>
+    <xs:attribute name="matches" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation>The value of one of these parameters is a
+               language-tag, as defined in RFC
+               3066.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+  </xs:complexType>
+  <xs:complexType name="LanguageSwitchType">
+    <xs:complexContent>
+      <xs:extension base="SwitchType">
+        <xs:sequence>
+          <xs:element name="language" type="LanguageType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:sequence minOccurs="0">
+            <xs:element name="not-present" type="NotPresentAction"/>
+            <xs:element name="language" type="LanguageType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:element name="otherwise" type="OtherwiseAction" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="language-switch" type="LanguageSwitchType" substitutionGroup="switch"/>
+  <xs:simpleType name="FreqType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:pattern value="[s|S][e|E][c|C][o|O][n|N][d|D][l|L][y|Y]"/>
+      <xs:pattern value="[m|M][i|I][n|N][u|U][t|T][e|E][l|L][y|Y]"/>
+      <xs:pattern value="[h|H][o|O][u|U][r|R][l|L][y|Y]"/>
+      <xs:pattern value="[d|D][a|A][i|I][l|L][y|Y]"/>
+      <xs:pattern value="[w|W][e|E][e|E][k|K][l|L][y|Y]"/>
+      <xs:pattern value="[m|M][o|N][n|N][t|T][h|H][l|L][y|Y]"/>
+      <xs:pattern value="[y|Y][e|E][a|A][r|R][l|L][y|Y]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="YearDayType">
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:integer">
+          <xs:minInclusive value="-366"/>
+          <xs:maxInclusive value="-1"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:restriction base="xs:integer">
+          <xs:minInclusive value="1"/>
+          <xs:maxExclusive value="366"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:simpleType name="DayType">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:pattern value="[m|M][o|O]"/>
+      <xs:pattern value="[t|T][u|U]"/>
+      <xs:pattern value="[w|W][e|E]"/>
+      <xs:pattern value="[t|T][h|H]"/>
+      <xs:pattern value="[f|F][r|R]"/>
+      <xs:pattern value="[s|S][a|A]"/>
+      <xs:pattern value="[s|S][u|U]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="TimeType">
+    <xs:annotation>
+      <xs:documentation>Exactly one of the two attributes "dtend" and
+             "duration" must occur. None of the attributes following
+             freq are meaningful unless freq appears.
+             </xs:documentation>
+    </xs:annotation>
+    <xs:group ref="Node"/>
+    <xs:attribute name="dtstart" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation>RFC 2445 DATE-TIME</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="dtend" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>RFC 2445 DATE-TIME</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="duration" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>RFC 2445 DURATION</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="freq" type="FreqType" use="optional"/>
+    <xs:attribute name="interval" type="xs:positiveInteger" default="1"/>
+    <xs:attribute name="until" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>RFC 2445 DATE-TIME</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="count" type="xs:positiveInteger" use="optional"/>
+    <xs:attribute name="bysecond" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Comma-separated list of seconds within a
+               minute. Valid values are 0 to 59.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="byminute" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Comma-separated list of minutes within an
+               hour. Valid values are 0 to 59.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="byhour" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Comma-separated list of hours of the day.
+               Valid values are 0 to 23.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="byday" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Comma-separated list of days of the week.
+               Valid values are "MO", "TU", "WE", "TH", "FR", "SA" and
+               "SU". These values are not case-sensitive. Each can be
+               preceded by a positive (+n) or negative (-n)
+               integer.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="bymonthday" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Comma-separated list of days of the month.
+               Valid values are 1 to 31 or -31 to
+               -1.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="byyearday" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Comma-separated list of days of the year.
+               Valid values are 1 to 366 or -366 to
+               -1.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="byweekno" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Comma-separated list of ordinals specifying
+               weeks of the year. Valid values are 1 to 53 or -53 to
+               -1.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="bymonth" type="xs:string" use="optional">
+      <xs:annotation>
+        <xs:documentation>Comma-separated list of months of the year.
+               Valid values are 1 to 12.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="wkst" type="DayType" default="MO"/>
+    <xs:attribute name="bysetpos" type="YearDayType"/>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+  </xs:complexType>
+  <xs:simpleType name="TZIDType">
+    <xs:restriction base="xs:string"/>
+  </xs:simpleType>
+  <xs:simpleType name="TZURLType">
+    <xs:restriction base="xs:anyURI"/>
+  </xs:simpleType>
+  <xs:complexType name="TimeSwitchType">
+    <xs:complexContent>
+      <xs:extension base="SwitchType">
+        <xs:sequence>
+          <xs:element name="time" type="TimeType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:sequence minOccurs="0">
+            <xs:element name="not-present" type="NotPresentAction"/>
+            <xs:element name="time" type="TimeType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:element name="otherwise" type="OtherwiseAction" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="tzid" type="TZIDType"/>
+        <xs:attribute name="tzurl" type="TZURLType"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="time-switch" type="TimeSwitchType" substitutionGroup="switch"/>
+  <xs:simpleType name="PriorityValues">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:pattern value="[e|E][m|M][e|E][r|R][g|G][e|E][n|N][c|C][y|Y]"/>
+      <xs:pattern value="[u|U][r|R][g|G][e|E][n|N][t|T]"/>
+      <xs:pattern value="[n|N][o|O][r|R][m|M][a|A][l|L]"/>
+      <xs:pattern value="[n|N][o|O][n|N]-[u|U][r|R][g|G][e|E][n|N][t|T]"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="PriorityType">
+    <xs:annotation>
+      <xs:documentation>Exactly one of the three attributes must
+             appear </xs:documentation>
+    </xs:annotation>
+    <xs:group ref="Node"/>
+    <xs:attribute name="less" type="PriorityValues"/>
+    <xs:attribute name="greater" type="PriorityValues"/>
+    <xs:attribute name="equal" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>case-insensitive</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:anyAttribute namespace="##any" processContents="lax"/>
+  </xs:complexType>
+  <xs:complexType name="PrioritySwitchType">
+    <xs:complexContent>
+      <xs:extension base="SwitchType">
+        <xs:sequence>
+          <xs:element name="priority" type="PriorityType" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:sequence minOccurs="0">
+            <xs:element name="not-present" type="NotPresentAction"/>
+            <xs:element name="priority" type="PriorityType" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:element name="otherwise" type="OtherwiseAction" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="priority-switch" type="PrioritySwitchType" substitutionGroup="switch"/>
+  <xs:simpleType name="LocationPriorityType">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="1.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="LocationType">
+    <xs:complexContent>
+      <xs:extension base="ModifierType">
+        <xs:group ref="Node"/>
+        <xs:attribute name="url" type="xs:anyURI" use="required"/>
+        <xs:attribute name="priority" type="LocationPriorityType" use="optional" default="1.0"/>
+        <xs:attribute name="clear" type="YesNoType" default="no"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="LookupType">
+    <xs:complexContent>
+      <xs:extension base="ModifierType">
+        <xs:all>
+          <xs:element name="success" minOccurs="0">
+            <xs:complexType>
+              <xs:group ref="Node"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="notfound" minOccurs="0">
+            <xs:complexType>
+              <xs:group ref="Node"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="failure" minOccurs="0">
+            <xs:complexType>
+              <xs:group ref="Node"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:all>
+        <xs:attribute name="source" type="xs:string" use="required"/>
+        <xs:attribute name="timeout" type="xs:positiveInteger" default="30"/>
+        <xs:attribute name="clear" type="YesNoType" default="no"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="RemoveLocationType">
+    <xs:complexContent>
+      <xs:extension base="ModifierType">
+        <xs:group ref="Node"/>
+        <xs:attribute name="location" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="LogAction">
+    <xs:complexContent>
+      <xs:extension base="ActionType">
+        <xs:group ref="Node"/>
+        <xs:attribute name="name" type="xs:string" use="optional"/>
+        <xs:attribute name="comment" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="log" type="LogAction" substitutionGroup="action"/>
+  <xs:complexType name="IncomingType">
+    <xs:complexContent>
+      <xs:extension base="TopLevelActionType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="incoming" type="IncomingType" substitutionGroup="toplevelaction"/>
+  <xs:complexType name="OutgoingType">
+    <xs:complexContent>
+      <xs:extension base="TopLevelActionType"/>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="outgoing" type="OutgoingType" substitutionGroup="toplevelaction"/>
+  <xs:complexType name="ProxyAction">
+    <xs:complexContent>
+      <xs:extension base="ActionType">
+        <xs:all>
+          <xs:element name="busy" minOccurs="0">
+            <xs:complexType>
+              <xs:group ref="Node"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="noanswer" minOccurs="0">
+            <xs:complexType>
+              <xs:group ref="Node"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="failure" minOccurs="0">
+            <xs:complexType>
+              <xs:group ref="Node"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="redirection" minOccurs="0">
+            <xs:complexType>
+              <xs:group ref="Node"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="default" minOccurs="0">
+            <xs:complexType>
+              <xs:group ref="Node"/>
+            </xs:complexType>
+          </xs:element>
+        </xs:all>
+        <xs:attribute name="timeout" type="xs:positiveInteger" use="optional" default="20"/>
+        <xs:attribute name="recursive" type="YesNoType" use="optional" default="yes"/>
+        <xs:attribute name="ordering" type="OrderingType" use="optional" default="parallel"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="proxy" type="ProxyAction" substitutionGroup="action"/>
+  <xs:complexType name="RedirectAction">
+    <xs:complexContent>
+      <xs:extension base="ActionType">
+        <xs:attribute name="permanent" type="YesNoType" default="no"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="redirect" type="RedirectAction" substitutionGroup="action"/>
+  <xs:complexType name="RejectAction">
+    <xs:complexContent>
+      <xs:extension base="ActionType">
+        <xs:attribute name="status" type="StatusType" use="required"/>
+        <xs:attribute name="reason" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="reject" type="RejectAction" substitutionGroup="action"/>
+  <xs:complexType name="MailAction">
+    <xs:complexContent>
+      <xs:extension base="ActionType">
+        <xs:group ref="Node"/>
+        <xs:attribute name="url" type="xs:anyURI" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="mail" type="MailAction" substitutionGroup="action"/>
+  <xs:complexType name="SubAction">
+    <xs:attribute name="ref" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="AncillaryType"/>
+  <xs:complexType name="SubactionType">
+    <xs:group ref="Node"/>
+    <xs:attribute name="id" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="CPLType">
+    <xs:sequence>
+      <xs:element name="ancillary" type="AncillaryType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="subaction" type="SubactionType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element ref="toplevelaction" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Any toplevel action MUST NOT appear more
+                 than once.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="cpl" type="CPLType"/>
+</xs:schema>

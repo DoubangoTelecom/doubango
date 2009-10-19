@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:ietf:params:xml:ns:kpml-response" targetNamespace="urn:ietf:params:xml:ns:kpml-response" elementFormDefault="qualified" attributeFormDefault="unqualified">
+  <xs:element name="kpml-response">
+    <xs:annotation>
+      <xs:documentation>IETF Keypad Markup Language Response
+         </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attribute name="version" type="xs:string" use="required"/>
+      <xs:attribute name="code" type="xs:string" use="required"/>
+      <xs:attribute name="text" type="xs:string" use="required"/>
+      <xs:attribute name="suppressed" type="xs:boolean" use="optional"/>
+      <xs:attribute name="forced_flush" type="xs:string" use="optional">
+        <xs:annotation>
+          <xs:documentation>
+               String for future use for e.g., number of digits lost.
+             </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="digits" type="xs:string" use="optional"/>
+      <xs:attribute name="tag" type="xs:string" use="optional">
+        <xs:annotation>
+          <xs:documentation>Matches tag from regex in request
+             </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

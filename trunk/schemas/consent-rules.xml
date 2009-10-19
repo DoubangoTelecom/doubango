@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema
+     targetNamespace="urn:ietf:params:xml:ns:consent-rules"
+     xmlns:cr="urn:ietf:params:xml:ns:consent-rules"
+     xmlns:cp="urn:ietf:params:xml:ns:common-policy"
+     xmlns:xs="http://www.w3.org/2001/XMLSchema"
+     elementFormDefault="qualified"
+     attributeFormDefault="unqualified">
+
+     <!-- Conditions -->
+     <xs:element name="recipient" type="cp:identityType"/>
+     <xs:element name="target" type="cp:identityType"/>
+
+    <!-- Actions -->
+    <xs:simpleType name="trans-values">
+       <xs:restriction base="xs:string">
+         <xs:enumeration value="deny"/>
+         <xs:enumeration value="grant"/>
+       </xs:restriction>
+     </xs:simpleType>
+
+     <xs:element name="trans-handling">
+       <xs:complexType>
+         <xs:simpleContent>
+           <xs:extension base="trans-values">
+             <xs:attribute name="perm-uri" type="xs:anyURI"
+                           use="required"/>
+           </xs:extension>
+         </xs:simpleContent>
+       </xs:complexType>
+     </xs:element>
+
+   </xs:schema>
+

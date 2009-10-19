@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+  targetNamespace="urn:ietf:params:xml:ns:pidf:geopriv10:civicLoc"
+  xmlns:tns="urn:ietf:params:xml:ns:pidf:geopriv10:civicLoc"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+   <xs:complexType name="civicAddress">
+    <xs:sequence>
+      <xs:element name="country" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="A1" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="A2" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="A3" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="A4" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="A5" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="A6" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="PRD" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="POD" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="STS" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="HNO" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="HNS" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="LMK" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="LOC" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="FLR" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="NAM" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:element name="PC" type="xs:string"
+         minOccurs="0" maxOccurs="1"/>
+      <xs:any namespace="##other" processContents="lax" minOccurs="0"
+         maxOccurs="unbounded"/>
+    </xs:sequence>
+   </xs:complexType>
+
+</xs:schema>
+
+

@@ -1,0 +1,17 @@
+./configure \
+--build=mingw32 \
+--disable-ftp \
+--disable-file \
+--disable-ldap \
+--disable-dict \
+--disable-telnet \
+--disable-tftp \
+--disable-manual \
+--disable-ares \
+--disable-verbose \
+--disable-sspi \
+--disable-debug \
+--disable-crypto-auth \
+--disable-cookies \
+--without-ssl \
+--without-libssh2
