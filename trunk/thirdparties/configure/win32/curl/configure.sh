@@ -1,8 +1,14 @@
 ./configure \
 --build=mingw32 \
+--enable-nonblocking \
+--enable-http \
+--enable-ipv6 \
+--disable-thread \
+--disable-cookies \
 --disable-ftp \
 --disable-file \
 --disable-ldap \
+--disable-gopher \
 --disable-dict \
 --disable-telnet \
 --disable-tftp \
@@ -11,7 +17,8 @@
 --disable-verbose \
 --disable-sspi \
 --disable-debug \
---disable-crypto-auth \
 --disable-cookies \
 --without-ssl \
---without-libssh2
+--without-libssh2 \
+--without-ca-bundle
+
