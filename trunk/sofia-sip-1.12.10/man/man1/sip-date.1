@@ -1,0 +1,45 @@
+.TH "sip-date" 1 "8 Dec 2008" "Version 1.12.10" "sofia-sip-utils" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+sip-date \- Print or parse SIP date 
+.SH "Synopsis"
+.PP
+\fCsip-date [-n] [SIP-date | [YYYYy] [DDd] [HHh] [MMm] [SS[s]]]\fP
+.SH "Description"
+.PP
+\fIsip-date\fP is an utility for printing a SIP date (in the format specified by RFC 1123, but the timezone must always be GMT) or parsing a given SIP date. The date can be given as a SIP date or by giving year, day, hour, minutes and seconds separately.
+.SH "Options"
+.PP
+The \fIsip-date\fP utility takes options as follows: 
+.IP "\fB-n \fP" 1c
+The \fIsip-date\fP utility prints the date as seconds elapsed since epoch (01 Jan 1900 00:00:00).  
+.PP
+.SH "Examples"
+.PP
+You want to convert current time to SIP date: 
+.PP
+.nf
+ $ sip-date
+
+.fi
+.PP
+ You want to find out how many seconds there was in 1900's: 
+.PP
+.nf
+ $ siptime -n 2000y
+ 3155673600
+
+.fi
+.PP
+.SH "Reporting Bugs"
+.PP
+Report bugs to <sofia-sip-devel@lists.sourceforge.net>.
+.SH "Author"
+.PP
+Pekka Pessi <Pekka -dot- Pessi -at- nokia -dot- com>
+.SH "Copyright"
+.PP
+Copyright (C) 2005 Nokia Corporation.
+.PP
+This program is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 

@@ -1,0 +1,91 @@
+.TH "sip-dig" 1 "8 Dec 2008" "Version 1.12.10" "sofia-sip-utils" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+sip-dig \- Resolve SIP URIs. 
+This is an example program for \fBsresolv\fP library in synchronous mode.
+.PP
+\fBAuthor:\fP
+.RS 4
+Pekka Pessi <Pekka.Pessi@nokia.com>
+.RE
+.PP
+\fBDate:\fP
+.RS 4
+Original Created: Tue Jul 16 18:50:14 2002 ppessi
+.RE
+.PP
+.SH "Synopsis"
+.PP
+\fCsip-dig [OPTIONS] uri...\fP
+.SH "Description"
+.PP
+The \fIsip-dig\fP utility resolves SIP URIs as described in \fCRFC 3263\fP. It queries NAPTR, SRV and A/AAAA records and prints out the resulting transport addresses.
+.PP
+The default transports are: UDP, TCP, SCTP, TLS and TLS-SCTP. The SIPS URIs are resolved using only TLS transports, TLS and TLS-SCTP. If not otherwise indicated by NAPTR or SRV records, the sip-dig uses UDP and TCP as transports for SIP and TLS for SIPS URIs.
+.PP
+The results are printed intended, with a preference followed by weight, then protocol name, port number and IP address in numeric format.
+.SH "Command Line Options"
+.PP
+The \fIsip-dig\fP utility accepts following command line options: 
+.IP "\fB-p \fIprotoname\fP  \fP" 1c
+Use named transport protocol. The \fIprotoname\fP can be either well-known, e.g., 'udp', or it can specify NAPTR service and SRV identifier, e.g., 'tls-udp/SIPS+D2U/_sips._udp.'.  
+.IP "\fB--udp \fP" 1c
+Use UDP transport protocol.  
+.IP "\fB--tcp \fP" 1c
+Use TCP transport protocol.  
+.IP "\fB--tls \fP" 1c
+Use TLS over TCP transport protocol.  
+.IP "\fB--sctp \fP" 1c
+Use SCTP transport protocol.  
+.IP "\fB--tls-sctp \fP" 1c
+Use TLS over SCTP transport protocol.  
+.IP "\fB--no-sctp \fP" 1c
+Ignore SCTP or TLS-SCTP records in the list of default transports. This option has no effect if transport protocols has been explicitly listed.  
+.IP "\fB-4 \fP" 1c
+Query IP4 addresses (A records)  
+.IP "\fB-6 \fP" 1c
+Query IP6 addresses (AAAA records).  
+.IP "\fB-v \fP" 1c
+Be verbatim.  
+.IP "\fB\fP" 1c
+.PP
+.SH "Return Codes"
+.PP
+0when successful (a 2XX-series response is received) 1when unsuccessful (a 3XX..6XX-series response is received) 2initialization failure 
+.SH "Examples"
+.PP
+Resolve sip:openlaboratory.net, prefer TLS over TCP, TCP over UDP: 
+.PP
+.nf
+ $ sip-dig --tls --tcp --udp sip:openlaboratory.net
+        1 0.333 tls 5061 212.213.221.127
+        2 0.333 tcp 5060 212.213.221.127
+        3 0.333 udp 5060 212.213.221.127
+
+.fi
+.PP
+.PP
+Resolve sips:example.net with TLS over SCTP (TLS-SCTP) and TLS: 
+.PP
+.nf
+ $ sip-dig -p tls-sctp --tls sips:example.net
+        1 0.500 tls-udp 5061 172.21.55.26
+        2 0.500 tls 5061 172.21.55.26
+
+.fi
+.PP
+.SH "Environment"
+.PP
+SRESOLV_DEBUG, SRESOLV_CONF
+.SH "Reporting Bugs"
+.PP
+Report bugs to <sofia-sip-devel@lists.sourceforge.net>.
+.SH "Author"
+.PP
+Written by Pekka Pessi <pekka -dot pessi -at- nokia -dot- com>
+.SH "Copyright"
+.PP
+Copyright (C) 2006 Nokia Corporation.
+.PP
+This program is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 

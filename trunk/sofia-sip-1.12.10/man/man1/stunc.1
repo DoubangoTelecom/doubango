@@ -1,0 +1,81 @@
+.TH "stunc" 1 "8 Dec 2008" "Version 1.12.10" "sofia-sip-utils" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+stunc \- STUN test client. 
+STUN test client
+.PP
+\fBAuthor:\fP
+.RS 4
+Pekka Pessi <Pekka.Pessi@nokia.com> 
+.PP
+Martti Mela <Martti.Mela@nokia.com> 
+.PP
+Kai Vehmanen <Kai.Vehmanen@nokia.com>
+.RE
+.PP
+\fBDate:\fP
+.RS 4
+Created: Thu Jul 24 17:21:00 2003 ppessi
+.RE
+.PP
+.SH "Synopsis"
+.PP
+\fCstunc [OPTIONS] <stun-server-address>\fP
+.SH "Description"
+.PP
+The \fIstunc\fP utility can be used to gather information about possible NAT devices that are located between the client and STUN server.
+.PP
+\fIstunc\fP can provide the following information: the IP address and port as seen by the STUN server, detecting presence of NATs, and hints on the type of address translation done. It should be noted that the results of NAT type and life-time detection should be considered as hints. There is no guarantee that NAT(s) will handle future packets in the same way.
+.SH "Command Line Options"
+.PP
+The \fIstunc\fP utility accepts following command line options:
+.PP
+.IP "\fB-b \fP" 1c
+Perform a STUN binding discovery. \fIstunc\fP will report the client transport address (IP:port) as seen by the STUN server. In the presence of NATs, this address is allocated by the NAT closest to the STUN server. 
+.PP
+.IP "\fB-l \fP" 1c
+Perform a STUN binding life-time check. 
+.PP
+.IP "\fB-n \fP" 1c
+Perform a STUN binding type check. Notice that the results are only hints. Nondeterministic behaviour, resource exhaustion, or reboots of network elements can cause changes in NAT behaviour between successive runs of stunc. 
+.PP
+.IP "\fB-r \fP" 1c
+Randomize the local port. Otherwise \fIstunc\fP let's the operating system select a free port. 
+.PP
+.IP "\fB-s \fP" 1c
+Request a shared-secret over TLS. Tests whether the STUN server supports the shared-secret mechanism (needed to protect message integrity). Can be combined with \fI-b\fP, \fI-l\fP and \fI-n\fP. 
+.PP
+.PP
+.SH "Return Codes"
+.PP
+0when successful 1when any errors detected 
+.SH "Examples"
+.PP
+Discover the NAT binding, use a random local port: 
+.PP
+.nf
+ $ stunc stunserver.org -b -r
+
+.fi
+.PP
+.SH "Environment"
+.PP
+STUN_DEBUG
+.SH "Reporting Bugs"
+.PP
+Report bugs to <sofia-sip-devel@lists.sourceforge.net>.
+.SH "Authors"
+.PP
+.IP "\(bu" 2
+Pekka Pessi <pekka -dot pessi -at- nokia -dot- com>
+.IP "\(bu" 2
+Martti Mela <martti -dot mela -at- nokia -dot- com>
+.IP "\(bu" 2
+Kai Vehmanen <kai -dot vehmanen -at- nokia -dot- com>
+.PP
+.SH "Copyright"
+.PP
+Copyright (C) 2005,2006 Nokia Corporation.
+.PP
+This program is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
