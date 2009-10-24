@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyIPSec", "tinyIPSec\tinyIPSec.vcproj", "{002FF064-588F-402E-A096-C8D033F49F40}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{E40FEB1F-BE85-488D-BCBE-89668F6EBBF7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{002FF064-588F-402E-A096-C8D033F49F40}.Debug|Win32.ActiveCfg = Debug|Win32
+		{002FF064-588F-402E-A096-C8D033F49F40}.Debug|Win32.Build.0 = Debug|Win32
+		{002FF064-588F-402E-A096-C8D033F49F40}.Release|Win32.ActiveCfg = Release|Win32
+		{002FF064-588F-402E-A096-C8D033F49F40}.Release|Win32.Build.0 = Release|Win32
+		{E40FEB1F-BE85-488D-BCBE-89668F6EBBF7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E40FEB1F-BE85-488D-BCBE-89668F6EBBF7}.Debug|Win32.Build.0 = Debug|Win32
+		{E40FEB1F-BE85-488D-BCBE-89668F6EBBF7}.Release|Win32.ActiveCfg = Release|Win32
+		{E40FEB1F-BE85-488D-BCBE-89668F6EBBF7}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
