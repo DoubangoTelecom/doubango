@@ -24,37 +24,28 @@
     You should have received a copy of the GNU General Public License
     along with DOUBANGO.
 ****************************************************************************/
+#include "ipsec.h"
 
-#ifndef TINYIPSEC_CONFIG_H
-#define TINYIPSEC_CONFIG_H
+/* init ipsec SA */
+void ipsec_sa_init(ipsec_sa_t* sa)
+{
+	memset(sa, 0, sizeof(ipsec_sa_t));
+	sa->lifetime = SA_DEFAULT_LIFETIME;
+}
 
-#ifdef WIN32
-//#include <windows.h>
-#include <ws2tcpip.h>
-#endif
+/* free ipsec SA */
+void ipsec_sa_free(ipsec_sa_t* sa)
+{
+	if(sa)
+	{
+		if((sa)->opaque)
+		{
+			if((sa)->opaque_func_free) (sa)->opaque_func_free(&((sa)->opaque));
+			free((sa)->opaque);
+			(sa)->opaque = 0;
+		}
 
-#if (defined(WIN32) || defined(__SYMBIAN32__)) && defined(TINYIPSEC_EXPORTS)
-# 	define TINYIPSEC_API __declspec(dllexport)
-#elif (defined(WIN32) || defined(__SYMBIAN32__)) && defined(TINYIPSEC_IMPORTS)
-# 	define TINYIPSEC_API __declspec(dllimport)
-#else
-# define TINYIPSEC_API
-#endif
-
-//
-// Disable some well-known warnings
-//
-#ifdef _MSC_VER
-#	define _CRT_SECURE_NO_WARNINGS
-#endif
-
-//
-// IPSEC
-//
-#if (_WIN32_WINNT >= 0x0600 || WINVER >= 0x0600)
-#	define HAVE_WIN32_IPSEC 1
-#elif HAVE_IPSEC_TOOLS
-#	define HAVE_LINUX_IPSEC 1
-#endif /* IPSEC */
-
-#endif // TINYIPSEC_CONFIG_H
+		free(sa);
+		(sa) = 0;
+	}
+}
