@@ -61,7 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fwpuclnt.lib"
+				AdditionalDependencies="Fwpuclnt.lib Ws2_32.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -175,6 +175,10 @@
 		<Filter
 			Name="source"
 			>
+			<File
+				RelativePath=".\src\ipsec.c"
+				>
+			</File>
 			<File
 				RelativePath=".\src\ipsec.linux.c"
 				>
