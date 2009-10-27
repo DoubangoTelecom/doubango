@@ -1,0 +1,834 @@
+#content {
+	BACKGROUND: #f8fcff
+}
+#p-cactions LI {
+	BACKGROUND: #f8fcff
+}
+#p-cactions LI A {
+	BACKGROUND: #f8fcff
+}
+.ns-0  #content {
+	BACKGROUND: white
+}
+.ns-0  #p-cactions LI {
+	BACKGROUND: white
+}
+.ns-0  #p-cactions LI A {
+	BACKGROUND: white
+}
+.ns-1  #content {
+	BACKGROUND: #ffffee
+}
+.ns-1  #p-cactions LI {
+	BACKGROUND: #ffffee
+}
+.ns-1  #p-cactions LI A {
+	BACKGROUND: #ffffee
+}
+.ns-2  #content {
+	BACKGROUND: white
+}
+.ns-2  #p-cactions LI {
+	BACKGROUND: white
+}
+.ns-2  #p-cactions LI A {
+	BACKGROUND: white
+}
+.ns-3  #content {
+	BACKGROUND: #ffffee
+}
+.ns-3  #p-cactions LI {
+	BACKGROUND: #ffffee
+}
+.ns-3  #p-cactions LI A {
+	BACKGROUND: #ffffee
+}
+.ns-4  #content {
+	BACKGROUND: #f4f4f4
+}
+.ns-4  #p-cactions LI {
+	BACKGROUND: #f4f4f4
+}
+.ns-4  #p-cactions LI A {
+	BACKGROUND: #f4f4f4
+}
+.ns-5  #content {
+	BACKGROUND: #ffffee
+}
+.ns-5  #p-cactions LI {
+	BACKGROUND: #ffffee
+}
+.ns-5  #p-cactions LI A {
+	BACKGROUND: #ffffee
+}
+.ns-6  #content {
+	BACKGROUND: white
+}
+.ns-6  #p-cactions LI {
+	BACKGROUND: white
+}
+.ns-6  #p-cactions LI A {
+	BACKGROUND: white
+}
+.ns-7  #content {
+	BACKGROUND: #ffffee
+}
+.ns-7  #p-cactions LI {
+	BACKGROUND: #ffffee
+}
+.ns-7  #p-cactions LI A {
+	BACKGROUND: #ffffee
+}
+.ns-8  #content {
+	BACKGROUND: #eeeeff
+}
+.ns-8  #p-cactions LI {
+	BACKGROUND: #eeeeff
+}
+.ns-8  #p-cactions LI A {
+	BACKGROUND: #eeeeff
+}
+.ns-9  #content {
+	BACKGROUND: #ffffee
+}
+.ns-9  #p-cactions LI {
+	BACKGROUND: #ffffee
+}
+.ns-9  #p-cactions LI A {
+	BACKGROUND: #ffffee
+}
+.ns-10  #content {
+	BACKGROUND: white
+}
+.ns-10  #p-cactions LI {
+	BACKGROUND: white
+}
+.ns-10  #p-cactions LI A {
+	BACKGROUND: white
+}
+.ns-11  #content {
+	BACKGROUND: #ffffee
+}
+.ns-11  #p-cactions LI {
+	BACKGROUND: #ffffee
+}
+.ns-11  #p-cactions LI A {
+	BACKGROUND: #ffffee
+}
+.ns-12  #content {
+	BACKGROUND: #ffeeee
+}
+.ns-12  #p-cactions LI {
+	BACKGROUND: #ffeeee
+}
+.ns-12  #p-cactions LI A {
+	BACKGROUND: #ffeeee
+}
+.ns-13  #content {
+	BACKGROUND: #ffeeee
+}
+.ns-13  #p-cactions LI {
+	BACKGROUND: #ffeeee
+}
+.ns-13  #p-cactions LI A {
+	BACKGROUND: #ffeeee
+}
+.ns-15  #content {
+	BACKGROUND: white
+}
+.ns-15  #p-cactions LI {
+	BACKGROUND: white
+}
+.ns-15  #p-cactions LI A {
+	BACKGROUND: white
+}
+.ns-15  #content {
+	BACKGROUND: #ffffee
+}
+.ns-15  #p-cactions LI {
+	BACKGROUND: #ffffee
+}
+.ns-15  #p-cactions LI A {
+	BACKGROUND: #ffffee
+}
+.ns-100  #content {
+	BACKGROUND: white
+}
+.ns-101  #content {
+	BACKGROUND: #ffffee
+}
+.ns-101  #p-cactions LI {
+	BACKGROUND: #ffffee
+}
+.ns-101  #p-cactions LI A {
+	BACKGROUND: #ffffee
+}
+UNKNOWN {
+	BORDER-RIGHT: red 1px dashed; PADDING-RIGHT: 0.2em; BORDER-TOP: red 1px dashed; PADDING-LEFT: 0.2em; PADDING-BOTTOM: 0.2em; BORDER-LEFT: red 1px dashed; PADDING-TOP: 0.2em; BORDER-BOTTOM: red 1px dashed
+}
+UNKNOWN {
+	DISPLAY: none
+}
+H3 {
+	BORDER-BOTTOM: #aaa 1px dotted
+}
+H4 {
+	BORDER-BOTTOM: #ddd 1px dotted
+}
+H5 {
+	BORDER-BOTTOM: #ddd 1px dotted
+}
+H6 {
+	BORDER-BOTTOM: #ddd 1px dotted
+}
+.pBody {
+	PADDING-RIGHT: 0.1em; PADDING-LEFT: 0.1em; PADDING-BOTTOM: 0.3em; PADDING-TOP: 0.3em; moz-border-radius-topright: 0.5em
+}
+.portlet H5 {
+	BORDER-RIGHT: silver thin solid; BORDER-TOP: silver thin solid; BORDER-LEFT: silver thin solid; BORDER-BOTTOM: silver thin solid; BACKGROUND-COLOR: #e0e3e6; moz-border-radius-topright: 0.5em
+}
+#p-cactions UL LI {
+	moz-border-radius-topright: 0.5em; moz-border-radius-topleft: 0.5em
+}
+#p-cactions UL LI A {
+	moz-border-radius-topright: 0.5em; moz-border-radius-topleft: 0.5em
+}
+.firstHeading {
+	LINE-HEIGHT: 1.2em
+}
+DIV.egy_calendrier#cadre {
+	BORDER-RIGHT: #cccc99 1px solid; BORDER-TOP: #cccc99 1px solid; FONT-SIZE: smaller; BACKGROUND: #ffffff; BORDER-LEFT: #cccc99 1px solid; BORDER-BOTTOM: #cccc99 1px solid; TEXT-ALIGN: center
+}
+DIV.egy_calendrier#lien {
+	PADDING-RIGHT: 0.2em; PADDING-LEFT: 0.2em; BACKGROUND: #cccc99; PADDING-BOTTOM: 0.2em; PADDING-TOP: 0.2em
+}
+DIV.egy_calendrier#saison {
+	
+}
+DIV.egy_calendrier#mois {
+	
+}
+DIV.egy_calendrier#jour {
+	FONT-SIZE: medium
+}
+TABLE.egyleft {
+	BORDER-RIGHT: #aaaa80 1px solid; BORDER-TOP: #aaaa80 1px solid; BACKGROUND: #efefdd; FLOAT: right; MARGIN: 0.5em 0.5em 1em 1em; BORDER-LEFT: #aaaa80 1px solid; WIDTH: 170px; BORDER-BOTTOM: #aaaa80 1px solid; TEXT-ALIGN: center
+}
+.egybox {
+	BORDER-RIGHT: #aaaa80 1px solid; BORDER-TOP: #aaaa80 1px solid; BACKGROUND: #efefdd; FLOAT: right; MARGIN: 0.5em 0.5em 1em 1em; BORDER-LEFT: #aaaa80 1px solid; WIDTH: 170px; BORDER-BOTTOM: #aaaa80 1px solid; TEXT-ALIGN: center
+}
+.exposant {
+	VERTICAL-ALIGN: text-top
+}
+DIV.floatleft {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; FLOAT: left; BORDER-BOTTOM-WIDTH: 0px; POSITION: relative; BORDER-RIGHT-WIDTH: 0px
+}
+TABLE.floatleft {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; FLOAT: left; BORDER-BOTTOM-WIDTH: 0px; POSITION: relative; BORDER-RIGHT-WIDTH: 0px
+}
+DIV.floatright {
+	BORDER-TOP-WIDTH: 0px; CLEAR: right; BORDER-LEFT-WIDTH: 0px; FLOAT: right; BORDER-BOTTOM-WIDTH: 0px; POSITION: relative; BORDER-RIGHT-WIDTH: 0px
+}
+TABLE.floatright {
+	BORDER-TOP-WIDTH: 0px; CLEAR: right; BORDER-LEFT-WIDTH: 0px; FLOAT: right; BORDER-BOTTOM-WIDTH: 0px; POSITION: relative; BORDER-RIGHT-WIDTH: 0px
+}
+DIV.alerte#style2 {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; BACKGROUND: #ffffdd; PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em
+}
+DIV.alerte#style1 {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em
+}
+DIV.alerte#style3 {
+	BORDER-RIGHT: #808080 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: #808080 1px solid; PADDING-LEFT: 0.5em; BACKGROUND: #f0f0f0; PADDING-BOTTOM: 0.5em; BORDER-LEFT: #808080 1px solid; PADDING-TOP: 0.5em; BORDER-BOTTOM: #808080 1px solid
+}
+DIV.alerte#style4 {
+	BORDER-RIGHT: #8888aa 2px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: #8888aa 1px solid; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; BORDER-LEFT: #8888aa 1px solid; PADDING-TOP: 0.5em; BORDER-BOTTOM: #8888aa 2px solid; BACKGROUND-COLOR: #f7f8ff
+}
+DIV.alerte#style5 {
+	BORDER-RIGHT: red 1px dashed; PADDING-RIGHT: 0.5em; BORDER-TOP: red 1px dashed; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; BORDER-LEFT: red 1px dashed; PADDING-TOP: 0.5em; BORDER-BOTTOM: red 1px dashed
+}
+DIV.alerte#style6 {
+	BORDER-RIGHT: #cdcdcd 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: #cdcdcd 1px solid; PADDING-LEFT: 0.5em; BACKGROUND: peachpuff; PADDING-BOTTOM: 0.5em; BORDER-LEFT: #cdcdcd 1px solid; PADDING-TOP: 0.5em; BORDER-BOTTOM: #cdcdcd 1px solid
+}
+DIV.alerte#style7 {
+	BORDER-RIGHT: red 1mm dotted; PADDING-RIGHT: 0.5em; BORDER-TOP: red 1mm dotted; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; BORDER-LEFT: red 1mm dotted; PADDING-TOP: 0.5em; BORDER-BOTTOM: red 1mm dotted
+}
+DIV.alerte#style8 {
+	BORDER-RIGHT: red 1mm dotted; PADDING-RIGHT: 0.5em; BORDER-TOP: red 1mm dotted; PADDING-LEFT: 0.5em; BACKGROUND: yellow; PADDING-BOTTOM: 0.5em; BORDER-LEFT: red 1mm dotted; PADDING-TOP: 0.5em; BORDER-BOTTOM: red 1mm dotted
+}
+DIV.alerte#style9 {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; BACKGROUND: #f0f0ff; PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em
+}
+DIV.style1 {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em
+}
+DIV.style2 {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; BACKGROUND: #ffffdd; PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em
+}
+DIV.alerte#style3 {
+	BORDER-RIGHT: #808080 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: #808080 1px solid; PADDING-LEFT: 0.5em; BACKGROUND: #f0f0f0; PADDING-BOTTOM: 0.5em; BORDER-LEFT: #808080 1px solid; PADDING-TOP: 0.5em; BORDER-BOTTOM: #808080 1px solid
+}
+DIV.style4 {
+	BORDER-RIGHT: #8888aa 2px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: #8888aa 1px solid; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; BORDER-LEFT: #8888aa 1px solid; PADDING-TOP: 0.5em; BORDER-BOTTOM: #8888aa 2px solid; BACKGROUND-COLOR: #f7f8ff
+}
+DIV.style5 {
+	BORDER-RIGHT: red 1px dashed; PADDING-RIGHT: 0.5em; BORDER-TOP: red 1px dashed; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; BORDER-LEFT: red 1px dashed; PADDING-TOP: 0.5em; BORDER-BOTTOM: red 1px dashed
+}
+DIV.style6 {
+	BORDER-RIGHT: #cdcdcd 1px solid; PADDING-RIGHT: 0.5em; BORDER-TOP: #cdcdcd 1px solid; PADDING-LEFT: 0.5em; BACKGROUND: peachpuff; PADDING-BOTTOM: 0.5em; BORDER-LEFT: #cdcdcd 1px solid; PADDING-TOP: 0.5em; BORDER-BOTTOM: #cdcdcd 1px solid
+}
+DIV.style7 {
+	BORDER-RIGHT: red 1mm dotted; PADDING-RIGHT: 0.5em; BORDER-TOP: red 1mm dotted; PADDING-LEFT: 0.5em; PADDING-BOTTOM: 0.5em; BORDER-LEFT: red 1mm dotted; PADDING-TOP: 0.5em; BORDER-BOTTOM: red 1mm dotted
+}
+DIV.style8 {
+	BORDER-RIGHT: red 1mm dotted; PADDING-RIGHT: 0.5em; BORDER-TOP: red 1mm dotted; PADDING-LEFT: 0.5em; BACKGROUND: yellow; PADDING-BOTTOM: 0.5em; BORDER-LEFT: red 1mm dotted; PADDING-TOP: 0.5em; BORDER-BOTTOM: red 1mm dotted
+}
+DIV.style9 {
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; BACKGROUND: #f0f0ff; PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em
+}
+UNKNOWN {
+	BACKGROUND-IMAGE: url(/upload/7/7e/Wiki_original.png)! important
+}
+DIV.BoxenVerschmelzen {
+	BORDER-RIGHT: #aaaaaa 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #aaaaaa 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 95%; PADDING-BOTTOM: 2px; MARGIN: 0px; BORDER-LEFT: #aaaaaa 1px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaaaa 1px solid; BORDER-COLLAPSE: collapse; TEXT-ALIGN: center
+}
+DIV.NavFrame {
+	BORDER-RIGHT: #aaaaaa 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #aaaaaa 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 95%; PADDING-BOTTOM: 2px; MARGIN: 0px; BORDER-LEFT: #aaaaaa 1px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaaaa 1px solid; BORDER-COLLAPSE: collapse; TEXT-ALIGN: center
+}
+DIV.BoxenVerschmelzen DIV.NavFrame {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+UNKNOWN {
+	
+}
+DIV.NavPic {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; FLOAT: left; PADDING-BOTTOM: 2px; MARGIN: 0px; PADDING-TOP: 2px; BACKGROUND-COLOR: #ffffff
+}
+DIV.NavFrame DIV.NavHead {
+	FONT-WEIGHT: bold; FONT-SIZE: 100%; HEIGHT: 1.6em; BACKGROUND-COLOR: #efefef
+}
+DIV.NavFrame P {
+	FONT-SIZE: 100%
+}
+DIV.NavFrame DIV.NavContent {
+	FONT-SIZE: 100%
+}
+DIV.NavFrame DIV.NavContent P {
+	FONT-SIZE: 100%
+}
+DIV.NavEnd {
+	CLEAR: both; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; LINE-HEIGHT: 1px; PADDING-TOP: 0px
+}
+DIV.PointCarte {
+	BORDER-RIGHT: #ffffff 1px solid; BORDER-TOP: #ffffff 1px solid; BACKGROUND: #000000; BORDER-LEFT: #ffffff 1px solid; WIDTH: 1px; BORDER-BOTTOM: #ffffff 1px solid; POSITION: absolute; HEIGHT: 1px
+}
+.j11 {
+	BACKGROUND: #d7ecff
+}
+.j1er1 {
+	BACKGROUND: #d7ecff
+}
+.j22 {
+	BACKGROUND: #d7ecff
+}
+.j33 {
+	BACKGROUND: #d7ecff
+}
+.j44 {
+	BACKGROUND: #d7ecff
+}
+.j55 {
+	BACKGROUND: #d7ecff
+}
+.j66 {
+	BACKGROUND: #d7ecff
+}
+.j77 {
+	BACKGROUND: #d7ecff
+}
+.j88 {
+	BACKGROUND: #d7ecff
+}
+.j99 {
+	BACKGROUND: #d7ecff
+}
+.j1010 {
+	BACKGROUND: #d7ecff
+}
+.j1111 {
+	BACKGROUND: #d7ecff
+}
+.j1212 {
+	BACKGROUND: #d7ecff
+}
+.j1313 {
+	BACKGROUND: #d7ecff
+}
+.j1414 {
+	BACKGROUND: #d7ecff
+}
+.j1515 {
+	BACKGROUND: #d7ecff
+}
+.j1616 {
+	BACKGROUND: #d7ecff
+}
+.j1717 {
+	BACKGROUND: #d7ecff
+}
+.j1818 {
+	BACKGROUND: #d7ecff
+}
+.j1919 {
+	BACKGROUND: #d7ecff
+}
+.j2020 {
+	BACKGROUND: #d7ecff
+}
+.j2121 {
+	BACKGROUND: #d7ecff
+}
+.j2222 {
+	BACKGROUND: #d7ecff
+}
+.j2323 {
+	BACKGROUND: #d7ecff
+}
+.j2424 {
+	BACKGROUND: #d7ecff
+}
+.j2525 {
+	BACKGROUND: #d7ecff
+}
+.j2626 {
+	BACKGROUND: #d7ecff
+}
+.j2727 {
+	BACKGROUND: #d7ecff
+}
+.j2828 {
+	BACKGROUND: #d7ecff
+}
+.j2929 {
+	BACKGROUND: #d7ecff
+}
+.j3030 {
+	BACKGROUND: #d7ecff
+}
+.j3131 {
+	BACKGROUND: #d7ecff
+}
+.avance_boite {
+	BORDER-RIGHT: gray 1px solid; BORDER-TOP: gray 1px solid; BORDER-LEFT: gray 1px solid; WIDTH: 100px; BORDER-BOTTOM: gray 1px solid
+}
+.avance_barre {
+	FONT-WEIGHT: bold; FONT-SIZE: 100%; BACKGROUND-COLOR: #a0a0ff; TEXT-ALIGN: right
+}
+FORM#userlogin {
+	BORDER-RIGHT: #fc6 2px solid; PADDING-RIGHT: 1em; BORDER-TOP: #fc6 2px solid; PADDING-LEFT: 1em; PADDING-BOTTOM: 0.7em; BORDER-LEFT: #fc6 2px solid; COLOR: #000; MARGIN-RIGHT: 2em; PADDING-TOP: 1em; BORDER-BOTTOM: #fc6 2px solid; BACKGROUND-COLOR: #ffffe6
+}
+FORM#userlogin TABLE {
+	COLOR: #000; BACKGROUND-COLOR: #ffffe6
+}
+DIV.BoxenVerschmelzen {
+	BORDER-RIGHT: #aaaaaa 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #aaaaaa 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 95%; PADDING-BOTTOM: 2px; MARGIN: 0px; BORDER-LEFT: #aaaaaa 1px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaaaa 1px solid; BORDER-COLLAPSE: collapse; TEXT-ALIGN: center
+}
+DIV.NavFrame {
+	BORDER-RIGHT: #aaaaaa 1px solid; PADDING-RIGHT: 2px; BORDER-TOP: #aaaaaa 1px solid; PADDING-LEFT: 2px; FONT-SIZE: 95%; PADDING-BOTTOM: 2px; MARGIN: 0px; BORDER-LEFT: #aaaaaa 1px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaaaa 1px solid; BORDER-COLLAPSE: collapse; TEXT-ALIGN: center
+}
+DIV.BoxenVerschmelzen DIV.NavFrame {
+	BORDER-TOP-STYLE: none; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+UNKNOWN {
+	
+}
+DIV.NavPic {
+	PADDING-RIGHT: 2px; PADDING-LEFT: 2px; FLOAT: left; PADDING-BOTTOM: 2px; MARGIN: 0px; PADDING-TOP: 2px; BACKGROUND-COLOR: #ffffff
+}
+DIV.NavFrame DIV.NavHead {
+	FONT-WEIGHT: bold; FONT-SIZE: 100%; HEIGHT: 1.6em; BACKGROUND-COLOR: #efefef
+}
+DIV.NavFrame P {
+	FONT-SIZE: 100%
+}
+DIV.NavFrame DIV.NavContent {
+	FONT-SIZE: 100%
+}
+DIV.NavFrame DIV.NavContent P {
+	FONT-SIZE: 100%
+}
+DIV.NavEnd {
+	CLEAR: both; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; LINE-HEIGHT: 1px; PADDING-TOP: 0px
+}
+.NavToggle {
+	FONT-SIZE: x-small; FLOAT: right
+}
+.ns-1 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-3 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-5 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-7 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-9 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-11 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-13 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-15 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-101 DD {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+.ns-1 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-3 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-5 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-7 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-9 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-11 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-13 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-15 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-101 DL {
+	BORDER-TOP: #f0f080 1px solid; PADDING-LEFT: 0.5em; MARGIN-LEFT: 1em; BORDER-LEFT: #f0f080 1px solid; PADDING-TOP: 0.5em
+}
+.ns-1 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-3 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-5 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-7 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-9 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-11 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-13 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-15 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-101 DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-1 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-3 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-5 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-7 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-9 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-11 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-13 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-15 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-101 DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-1 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-3 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-5 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-7 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-9 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-11 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-13 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-15 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-101 DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-1 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-3 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-5 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-7 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-9 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-11 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-13 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-15 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-101 DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-1 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-3 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-5 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-7 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-9 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-11 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-13 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-15 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-101 DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-1 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-3 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-5 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-7 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-9 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-11 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-13 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-15 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-101 DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-1 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-3 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-5 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-7 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-9 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-11 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-13 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-15 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-101 DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-1 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-3 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-5 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-7 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-9 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-11 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-13 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-15 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-101 DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-1 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-3 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-5 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-7 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-9 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-11 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-13 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-15 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-101 DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffe0
+}
+.ns-1 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-3 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-5 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-7 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-9 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-11 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-13 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-15 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+.ns-101 DL DL DL DL DL DL DL DL DL DL {
+	BACKGROUND-COLOR: #ffffee
+}
+#ca-edit A {
+	FONT-WEIGHT: bold! important
+}
+.boite-accueil-haut {
+	BORDER-RIGHT: #aaaaaa 1px solid; BORDER-TOP: #aaaaaa 1px solid; PADDING-LEFT: 2px; FONT-WEIGHT: bold; FONT-SIZE: small; PADDING-BOTTOM: 2px; BORDER-LEFT: #aaaaaa 1px solid; PADDING-TOP: 2px; BORDER-BOTTOM: #aaaaaa 1px solid; FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif; BACKGROUND-COLOR: #c8d8ff; moz-border-radius-topright: 0.5em; moz-border-radius-topleft: 0.5em
+}
+TABLE.wikitable {
+	BORDER-RIGHT: #aaaaaa 1px solid; BORDER-TOP: #aaaaaa 1px solid; BACKGROUND: #f9f9f9; MARGIN: 1em 1em 1em 0px; BORDER-LEFT: #aaaaaa 1px solid; BORDER-BOTTOM: #aaaaaa 1px solid; BORDER-COLLAPSE: collapse
+}
+TABLE.wikitable TH {
+	BORDER-RIGHT: #aaaaaa 1px solid; PADDING-RIGHT: 0.2em; BORDER-TOP: #aaaaaa 1px solid; PADDING-LEFT: 0.2em; PADDING-BOTTOM: 0.2em; BORDER-LEFT: #aaaaaa 1px solid; PADDING-TOP: 0.2em; BORDER-BOTTOM: #aaaaaa 1px solid
+}
+TABLE.wikitable TD {
+	BORDER-RIGHT: #aaaaaa 1px solid; PADDING-RIGHT: 0.2em; BORDER-TOP: #aaaaaa 1px solid; PADDING-LEFT: 0.2em; PADDING-BOTTOM: 0.2em; BORDER-LEFT: #aaaaaa 1px solid; PADDING-TOP: 0.2em; BORDER-BOTTOM: #aaaaaa 1px solid
+}
+TABLE.wikitable TH {
+	BACKGROUND: #f2f2f2; TEXT-ALIGN: center
+}
+TABLE.wikitable CAPTION {
+	
+}
+.romain {
+	TEXT-TRANSFORM: lowercase; FONT-VARIANT: small-caps
+}
+.portailCase {
+	BORDER-RIGHT: #aaaaaa 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: #aaaaaa 1px solid; DISPLAY: block; PADDING-LEFT: 0px; PADDING-BOTTOM: 1px; MARGIN: 5px 0px; BORDER-LEFT: #aaaaaa 1px solid; WIDTH: 100%; PADDING-TOP: 0px; BORDER-BOTTOM: #aaaaaa 1px solid; valign: top
+}
+.portailCase H2 {
+	PADDING-RIGHT: 4px; PADDING-LEFT: 4px; FONT-WEIGHT: bold; FONT-SIZE: 100%; PADDING-BOTTOM: 4px; MARGIN: 0px 0px 5px; PADDING-TOP: 4px; TEXT-ALIGN: center
+}
+.portailLienEdition {
+	CLEAR: both; DISPLAY: block; FONT-SIZE: x-small; TEXT-ALIGN: right
+}
+.portailCase_v2 {
+	BORDER-RIGHT: #aaaaaa 1px solid; BORDER-TOP: #aaaaaa 1px solid; FONT-SIZE: 100%; BORDER-LEFT: #aaaaaa 1px solid; COLOR: #000000; BORDER-BOTTOM: #aaaaaa 1px solid
+}
+H2.portailCase_v2 {
+	PADDING-RIGHT: 3px; PADDING-LEFT: 3px; FONT-WEIGHT: bold; PADDING-BOTTOM: 3px; MARGIN: 0px; PADDING-TOP: 3px; TEXT-ALIGN: center
+}
+DIV.portailCase_v2 {
+	PADDING-RIGHT: 5px; BORDER-TOP: white 0px solid; PADDING-LEFT: 5px; MARGIN-BOTTOM: 1ex; PADDING-BOTTOM: 0px; PADDING-TOP: 5px
+}
+DIV.fairuse DIV DIV {
+	BACKGROUND-COLOR: #ff8080
+}
