@@ -1,7 +1,13 @@
 #include "globals.h"
 
-/* globals */
-ScreenMgr* globals::screenMgr = 0;
+ScreenMgr* globals::screenMgr;
+
+/* init globals */
+void globals::init()
+{
+	/* screen manager */
+	globals::screenMgr = 0;
+}
 
 /* get screen manager */
 ScreenMgr* globals::getScreenMgr()

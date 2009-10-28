@@ -2,12 +2,24 @@
 #define _LIBDOUBS_SCREENMGR_H
 
 #include "libdoubs_config.h"
-
 #include "Screen.h"
 
 #include <QtGui/QMdiArea>
 
 #include <list>
+
+typedef struct ScreenDefinition_s
+{
+	SCREEN_TYPE_T type;
+	ScreenCreatorFunc creatorFunc;
+	Screen* screen;
+
+	ScreenDefinition_s()
+	{
+		screen = 0;
+	}
+}
+ScreenDefinition_t;
 
 class LIBDOUBS_API ScreenMgr
 {
@@ -17,17 +29,14 @@ public:
 
 public:
 	void setMdiArea(QMdiArea* area);
-	const Screen* getSreen(SCREEN_TYPE_T type) const;
-	inline void addScreen(const Screen* screen);
-	inline void removeScreen(const Screen* screen);
-	inline void removeScreen(SCREEN_TYPE_T type);
+	inline void setCurrentScreen(SCREEN_TYPE_T type);
+	inline void registerScreenCreatorFunc(SCREEN_TYPE_T type, ScreenCreatorFunc creatorFunc);
 
 private:
-	static inline std::list<const Screen*> getScreens() { return ScreenMgr::screens; }
 
 private:
 	QMdiArea *mdiArea;
-	static std::list<const Screen*> screens;
+	std::list<ScreenDefinition_t*> screenDefinitions;
 
 private:
 

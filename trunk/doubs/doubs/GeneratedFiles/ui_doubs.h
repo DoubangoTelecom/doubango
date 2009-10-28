@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'doubs.ui'
 **
-** Created: Tue Oct 27 01:18:07 2009
+** Created: Wed Oct 28 02:11:54 2009
 **      by: Qt User Interface Compiler version 4.6.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -77,6 +77,7 @@ public:
             doubsClass->setObjectName(QString::fromUtf8("doubsClass"));
         doubsClass->setWindowModality(Qt::ApplicationModal);
         doubsClass->resize(335, 477);
+        doubsClass->setAutoFillBackground(false);
         actionOnline = new QAction(doubsClass);
         actionOnline->setObjectName(QString::fromUtf8("actionOnline"));
         actionSign_Out = new QAction(doubsClass);
