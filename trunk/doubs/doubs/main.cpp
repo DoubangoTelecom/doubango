@@ -25,12 +25,41 @@
     along with DOUBANGO.
 ****************************************************************************/
 #include "doubs.h"
+#include "ScreenAuthentication.h"
+
 #include <QtGui/QApplication>
+#include <QtGui>
+
+#include <globals.h>
 
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
+
+	QPixmap pix(":/doubs/Images/splash.PNG");
+    QSplashScreen splash(pix);
+    splash.show();
+	
+	/// ----BEGIN
+
+    /* init globals */
+	splash.showMessage("globals::init");
+	globals::init();
+	a.processEvents();
+
+	/* register Screens */
+	splash.showMessage("Register functions");
+	globals::getScreenMgr()->registerScreenCreatorFunc(ScreenAuthentication::getType(), ScreenAuthentication::CreateScreen);
+	a.processEvents();
+
+	/// ---- END
+
+	/* create and show main window */
 	doubs w;
 	w.show();
+
+	/* finish splash */
+	splash.finish(&w);
+
 	return a.exec();
 }

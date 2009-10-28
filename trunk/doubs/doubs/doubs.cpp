@@ -27,8 +27,7 @@
 #include "doubs.h"
 
 #include <QMessageBox>
-
-#include <Screen.h>
+#include <globals.h>
 
 doubs::doubs(QWidget *parent, Qt::WFlags flags)
 	: QMainWindow(parent, flags)
@@ -37,10 +36,15 @@ doubs::doubs(QWidget *parent, Qt::WFlags flags)
 
 	setCentralWidget(ui.mdiArea);
 
+	/* init mdi area */
+	globals::getScreenMgr()->setMdiArea(ui.mdiArea);
+
 	/* slots */
 	connect(ui.actionExit, SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui.actionOnline, SIGNAL(triggered()), this, SLOT(slotOnline()));
 	connect(ui.actionBusy, SIGNAL(triggered()), this, SLOT(slotBusy()));
+
+	/* register */
 }
 
 doubs::~doubs()
@@ -55,10 +59,9 @@ SLOTS
 /* change user status to 'online' */
 void doubs::slotOnline()
 {
-	QMessageBox::information(this, tr("User status"),
-            tr("change user status to 'online'"));
-
-	//Screen* s = new Screen(SCT_LOGIN);
+	//QMessageBox::information(this, tr("User status"),
+    //        tr("change user status to 'online'"));
+	globals::getScreenMgr()->setCurrentScreen(SCT_AUTHENTICATION);
 }
 
 /* change user status to 'busy' */

@@ -9,10 +9,13 @@ class LIBDOUBS_API globals
 public:
 
 public:
+	static void init();
 	static ScreenMgr* getScreenMgr();
+	static void uninit();
 
 private:
 	static ScreenMgr* screenMgr;
 };
+
 
 #endif /* _LIBDOUBS_GLOBALS_H */
