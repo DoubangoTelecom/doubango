@@ -122,7 +122,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
-				AdditionalIncludeDirectories="include"
+				AdditionalIncludeDirectories="include;&quot;$(DOUBANGO_HOME)\thirdparties\include\wince&quot;"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;WCECOMPAT_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
@@ -198,7 +198,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
-				AdditionalIncludeDirectories="include"
+				AdditionalIncludeDirectories="include;&quot;$(DOUBANGO_HOME)\thirdparties\include\wince&quot;"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;WCECOMPAT_EXPORTS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE"
 				TreatWChar_tAsBuiltInType="false"
 				UsePrecompiledHeader="0"
