@@ -843,6 +843,7 @@
 				ExecutionBucket="7"
 				AdditionalIncludeDirectories=".;..\include;&quot;$(SolutionDir)\wcecompat\include&quot;"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;BUILDING_LIBCURL"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -1018,6 +1019,7 @@
 				ExecutionBucket="7"
 				AdditionalIncludeDirectories=".;..\include;&quot;$(SolutionDir)\wcecompat\include&quot;"
 				PreprocessorDefinitions="NDEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE;BUILDING_LIBCURL"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
