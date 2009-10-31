@@ -57,7 +57,7 @@
 #include "test_xcap.h"
 #include "test_gsma_rcs.h"
 
-/* http://curl.haxx.se/libcurl/c/libcurl-tutorial.html */
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {

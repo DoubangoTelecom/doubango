@@ -28,9 +28,9 @@
 #ifndef TINYXCAP_CONFIG_H
 #define TINYXCAP_CONFIG_H
 
-#if (defined(WIN32) || defined(__SYMBIAN32__)) && defined(TINYXCAP_EXPORTS)
+#if (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYXCAP_EXPORTS)
 # 	define TINYXCAP_API __declspec(dllexport)
-#elif (defined(WIN32) || defined(__SYMBIAN32__)) && defined(TINYXCAP_IMPORTS)
+#elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYXCAP_IMPORTS)
 # 	define TINYXCAP_API __declspec(dllimport)
 #else
 # define TINYXCAP_API

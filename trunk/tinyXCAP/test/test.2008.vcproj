@@ -95,8 +95,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-			OutputDirectory="&quot;$(SolutionDir)$(ConfigurationName)\wce&quot;"
-			IntermediateDirectory="&quot;$(ConfigurationName)\wce&quot;"
+			OutputDirectory="$(SolutionDir)Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
 			>
@@ -119,13 +119,13 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
-				AdditionalIncludeDirectories="&quot;$(solutionDir)tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\wince&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\wince\wcecompat&quot;"
-				PreprocessorDefinitions="_DEBUG;_CONSOLE;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(solutionDir)tinyXCAP\src&quot;;..\..\thirdparties\include\win32"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;_WINDOWS;$(ARCHFAM);$(_ARCHFAM_);_UNICODE;UNICODE"
 				MinimalRebuild="true"
-				RuntimeLibrary="1"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
 			<Tool
@@ -139,11 +139,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions=" /subsystem:windowsce,5.01 /machine:THUMB"
 				AdditionalDependencies="&quot;$(OutDir)\tinyXCAP.lib&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				EntryPointSymbol="mainWCRTStartup"
+				SubSystem="1"
 				TargetMachine="0"
 			/>
 			<Tool
