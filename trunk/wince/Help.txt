@@ -1,0 +1,2 @@
+## libxml2 ##
+In wsockcompat remove line 9 [#include <winsock.h>]
