@@ -1,7 +1,11 @@
 LIBRARY WCECOMPAT.DLL
 EXPORTS
 
+_beginthread
+_beginthreadex
 _close
+_endthread
+_endthreadex
 _errno
 _get_osfhandle
 _getch
@@ -16,7 +20,11 @@ _wopen
 _wputenv
 _write
 
+beginthread=_beginthread
+beginthreadex=_beginthreadex
 close=_close
+endthread=_endthread
+endthreadex=_endthreadex
 errno
 getenv
 gmtime

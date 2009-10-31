@@ -22,11 +22,30 @@
 #ifndef __wcecompat__PROCESS_H__
 #define __wcecompat__PROCESS_H__
 
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+_CRTIMP uintptr_t __cdecl _beginthread (void( *start_address )( void * ),
+   unsigned stack_size, void *arglist );
+#define beginthread _beginthread
+
+_CRTIMP uintptr_t __cdecl _beginthreadex( 
+   void *security,
+   unsigned stack_size,
+   unsigned ( *start_address )( void * ),
+   void *arglist,
+   unsigned initflag,
+   unsigned *thrdaddr);
+#define beginthreadex _beginthreadex
+
+_CRTIMP void __cdecl _endthread (void);
+#define endthread _endthread
+
+_CRTIMP void __cdecl _endthreadex (unsigned retval);
+#define endthreadex _endthreadex
 
 int __cdecl _getpid(void);
 #define getpid _getpid

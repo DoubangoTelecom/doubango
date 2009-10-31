@@ -22,6 +22,45 @@
 #include <process.h>
 #include <windows.h>
 
+uintptr_t __cdecl _beginthread(void( *start_address )( void * ),
+   unsigned stack_size, void *arglist )
+{
+	DWORD thrdaddr;
+	return reinterpret_cast<uintptr_t>(CreateThread(
+      NULL,
+      stack_size,
+      reinterpret_cast<DWORD (*)(void*)>(start_address),
+      arglist,
+      0,
+      reinterpret_cast<DWORD*>(&thrdaddr)));
+}
+
+uintptr_t _beginthreadex( 
+   void *security,
+   unsigned stack_size,
+   unsigned ( *start_address )( void * ),
+   void *arglist,
+   unsigned initflag,
+   unsigned *thrdaddr)
+{
+	return reinterpret_cast<uintptr_t>(CreateThread(
+      reinterpret_cast<SECURITY_ATTRIBUTES*>(security),
+      stack_size,
+      reinterpret_cast<DWORD (*)(void*)>(start_address),
+      arglist,
+      initflag,
+      reinterpret_cast<DWORD*>(thrdaddr)));
+}
+
+void __cdecl _endthread(void)
+{
+	ExitThread(-1);
+}
+
+void __cdecl _endthreadex(unsigned retval)
+{
+	ExitThread(retval);
+}
 
 int __cdecl _getpid(void)
 {
