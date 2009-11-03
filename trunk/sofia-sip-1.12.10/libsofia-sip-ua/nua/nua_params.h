@@ -31,6 +31,7 @@
  *
  * @author Pekka Pessi <Pekka.Pessi@nokia.com>
  * @author Kai Vehmanen <Kai.Vehmanen@nokia.com>
+ * @author xxxyyyzzz <imsframework(at)gmail.com>
  *
  * @date Created: Wed Mar  8 11:38:18 EET 2006  ppessi
  */
@@ -96,6 +97,8 @@ struct nua_handle_preferences
   /* Preferences for registration (and dialog establishment) */
   unsigned         nhp_callee_caps:1; /**< Add callee caps to contact */
   unsigned         nhp_media_features:1;/**< Add media features to caps*/
+  /** Enable Early IMS security */
+  unsigned		   nhp_early_ims:1;
   /** Enable Service-Route */
   unsigned         nhp_service_route_enable:1;
   /** Enable Path */
@@ -141,6 +144,15 @@ struct nua_handle_preferences
   /** Next hop URI (used instead of route). */
   url_string_t       *nhp_proxy;
 
+  /** IMS Private Identifier */
+  char const		*nhp_impi;
+
+  /** IMS Public Identifier */
+  url_string_t		*nhp_impu;
+
+  /** Default realm (IMS initial register) */
+  char const		*nhp_realm;
+
   union { struct {
     /* A bit for each feature set by application */
     /* NOTE:
@@ -173,6 +185,7 @@ struct nua_handle_preferences
     unsigned nhb_message_auto_respond:1;
     unsigned nhb_callee_caps:1;
     unsigned nhb_media_features:1;
+	unsigned nhb_early_ims:1;
     unsigned nhb_service_route_enable:1;
     unsigned nhb_path_enable:1;
     unsigned nhb_auth_cache:1;
@@ -184,6 +197,10 @@ struct nua_handle_preferences
     unsigned nhb_keepalive_stream:1;
     unsigned nhb_registrar:1;
     unsigned :0;		/* at most 32 bits before this point */
+
+	unsigned nhb_impi:1;
+	unsigned nhb_impu:1;
+	unsigned nhb_realm:1;
 
     unsigned nhb_allow:1;
     unsigned nhb_supported:1;
@@ -201,7 +218,7 @@ struct nua_handle_preferences
     unsigned nhb_appl_method:1;
     unsigned nhb_initial_route:1;
     unsigned nhb_proxy:1;
-    unsigned :0;
+    unsigned :0; /* padding */
   } set_bits;
     unsigned set_unsigned[2];
   } nhp_set_;

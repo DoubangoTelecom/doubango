@@ -1,29 +1,30 @@
-/****************************************************************************
-			 _             _                             
-			| |           | |                            
-		  _ | | ___  _   _| | _   ____ ____   ____  ___  
-		 / || |/ _ \| | | | || \ / _  |  _ \ / _  |/ _ \ 
-		( (_| | |_| | |_| | |_) | ( | | | | ( ( | | |_| |
-		 \____|\___/ \____|____/ \_||_|_| |_|\_|| |\___/ 
-											(_____|   
-	
-	Copyright (C) 2009 xxxyyyzzz <imsframework(at)gmail.com>
-
-	This file is part of Open Source Doubango IMS Client Framework project.
-
-    DOUBANGO is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-	
-    DOUBANGO is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
-    along with DOUBANGO.
-****************************************************************************/
+/**
+* @file
+* @author  xxxyyyzzz <imsframework(at)gmail.com>
+* @version 1.0
+*
+* @section LICENSE
+*
+*	
+* This file is part of Open Source Doubango IMS Client Framework project.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+* @section DESCRIPTION
+*
+*
+*/
 #ifndef _DOUBANGO_ERRORS_H_
 #define _DOUBANGO_ERRORS_H_
 
@@ -41,6 +42,12 @@ typedef enum tag_ERR
 	ERR_GLOBAL_FAILURE			= -0xFFFF,
 	ERR_NOT_IMPLEMENTED,
 	ERR_FUNC_OBSOLETE,
+
+	/* PARAMS */
+	ERR_PARAMS_INVALID_PCSCF,
+	ERR_PARAMS_INVALID_REALM,
+	ERR_PARAMS_INVALID_PUBLIC_ID,
+	ERR_PARAMS_INVALID_PRIVATE_ID,
 
 	/* ENGINE errors */
 	ERR_ENGINE_NOT_INITIALIZED,		/* engine not initialized or initialization failed*/

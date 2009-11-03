@@ -31,6 +31,7 @@
  *
  * @author Pekka Pessi <Pekka.Pessi@nokia.com>
  * @author Martti Mela <Martti.Mela@nokia.com>
+ * @author xxxyyyzzz <imsframework(at)gmail.com>
  *
  * @date Created: Mon Feb 19 18:54:26 EET 2001 ppessi
  */
@@ -114,6 +115,27 @@ SOFIAPUBVAR tag_typedef_t nutag_use_dialog;
 #define NUTAG_USE_DIALOG_REF(x)    nutag_use_dialog_ref, tag_bool_vr(&(x))
 SOFIAPUBVAR tag_typedef_t nutag_use_dialog_ref;
 
+/* Parameters added for 3GPP IMS
+ */
+#define NUTAG_EARLY_IMS(x)		nutag_early_ims, tag_bool_v(x)
+SOFIAPUBVAR tag_typedef_t nutag_early_ims;
+#define NUTAG_EARLY_IMS_REF(x) nutag_early_ims_ref, tag_bool_vr(&(x))
+SOFIAPUBVAR tag_typedef_t nutag_early_ims_ref;
+
+#define NUTAG_IMPU(x)            nutag_impu, urltag_url_v(x)
+SOFIAPUBVAR tag_typedef_t nutag_impu;
+#define NUTAG_IMPU_REF(x)        nutag_impu_ref, urltag_url_vr(&(x))
+SOFIAPUBVAR tag_typedef_t nutag_impu_ref;
+
+#define NUTAG_IMPI(x) nutag_impi, tag_str_v(x)
+SOFIAPUBVAR tag_typedef_t nutag_impi;
+#define NUTAG_IMPI_REF(x) nutag_impi_ref, tag_str_vr((&x))
+SOFIAPUBVAR tag_typedef_t nutag_impi_ref;
+
+#define NUTAG_REALM(x) nutag_realm, tag_str_v(x)
+SOFIAPUBVAR tag_typedef_t nutag_realm;
+#define NUTAG_realm_REF(x) nutag_realm_ref, tag_str_vr((&x))
+SOFIAPUBVAR tag_typedef_t nutag_realm_ref;
 
 /* Protocol engine parameters,
  * set by nua_set_params(), get by nua_get_params() */

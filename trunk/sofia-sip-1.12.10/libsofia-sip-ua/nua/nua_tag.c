@@ -26,6 +26,7 @@
  *
  * @author Pekka Pessi <Pekka.Pessi@nokia.com>
  * @author Martti Mela <Martti.Mela@nokia.com>
+ * @author xxxyyyzzz <imsframework(at)gmail.com>
  *
  * @date Created: Wed Feb 21 10:13:29 2001 ppessi
  */
@@ -414,6 +415,96 @@ tag_typedef_t nutag_callee_caps = BOOLTAG_TYPEDEF(callee_caps);
  * Reference tag for NUTAG_CALLEE_CAPS().
  */
 
+/**@def NUTAG_IMPU(x)
+* Set the IP Multimedia Public Identity (sip or tel uri). This uri is publicly published and can be
+* seen as your sip adress.
+*
+*@par Used with
+* -nua_set_params(), nua_create(), nua_get_params()
+*
+*@par parameter type
+*
+*    url_string_t const * (either char const * or url_t *)
+*
+* @par Values
+*	- SIP URI
+*	- TEL URI
+*
+* Corresponding tag taking reference parameter is NUTAG_IMPU_REF().
+*/
+tag_typedef_t nutag_impu = URLTAG_TYPEDEF(impu);
+
+/**@def NUTAG_IMPU_REF(x)
+ * Reference tag for NUTAG_IMPU().
+ */
+
+/**@def NUTAG_IMPI(x)
+* Set the IP Multimedia Private Identity. This private user identity associated to the user's IMPUs.
+* For basic sip clients (no IMS) you should fill this field with your authentication user name.
+*
+*@par Used with
+* -nua_set_params(), nua_create(), nua_get_params()
+*
+*@par parameter type
+*
+*    char const *
+*
+* @par Values
+*	- Any
+*
+* Corresponding tag taking reference parameter is NUTAG_IMPI_REF().
+*/
+tag_typedef_t nutag_impi = STRTAG_TYPEDEF(impi);
+
+/**@def NUTAG_IMPI_REF(x)
+ * Reference tag for NUTAG_IMPI().
+ */
+
+/**@def NUTAG_REALM(x)
+* In IMS context we must set the realm in the initial first REGISTER request as per
+* 3GPP TS 24.229 subclause 5.1.1.2. This mean that we don't wait for the 401/407 response to provide credentials.
+*
+*@par Used with
+* -nua_set_params(), nua_create(), nua_get_params()
+*
+*@par parameter type
+*
+*    char const *
+*
+* @par Values
+*	- Any
+*
+* Corresponding tag taking reference parameter is NUTAG_REALM_REF().
+*/
+tag_typedef_t nutag_realm = STRTAG_TYPEDEF(realm);
+
+/**@def NUTAG_REALM_REF(x)
+ * Reference tag for NUTAG_REALM().
+ */
+
+/**@def NUTAG_EARLY_IMS(x)
+* Activate/deactivate early IMS security as per 3GPP TS 33.978.
+* You may activate this option if you are using the stack as basic sip engine without IMS
+* security features.
+*
+*@par Used with
+* -nua_register(), nua_create(), nua_set_params(), nua_get_params()
+*
+*@par Parameter type
+*
+*    int (boolean: nonzero is true, zero is false)
+*
+* @par Values
+*    - 0 (false) -  use normal IMS security mechanisms as per 3GPP TS 33.203
+*    - 1 (true) - try to use early IMS as per 3GPP TS 33.978 instead of default IMS security (3GPP TS 33.203)
+*
+* Corresponding tag taking reference parameter is NUTAG_EARLY_IMS_REF().
+*/
+tag_typedef_t nutag_early_ims = BOOLTAG_TYPEDEF(early_ims);
+
+/**@def NUTAG_EARLY_IMS_REF(x)
+ * Reference tag for NUTAG_EARLY_IMS().
+ */
 
 /**@def NUTAG_EARLY_MEDIA(x)
  *

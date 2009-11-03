@@ -2720,6 +2720,16 @@ int nua_client_request_sendmsg(nua_client_request_t *cr, msg_t *msg, sip_t *sip)
       return -1;
   }
 
+  /**For Initial REGISTER we must add default authentication if no erlyIMS as per 
+	3GPP TS 24.229 subclause 5.1.1.2.2. We must add tags for privateid and publicid
+	*/
+	if(cr->cr_method == sip_method_register && !NH_PGET(nh, early_ims)) 
+	{
+		char* auth = su_sprintf(0,"Digest username=\"%s\", realm=\"%s\", nonce=\"\", response=\"\", uri=\""URL_FORMAT_STRING"\"",
+		NH_PGET(nh, impi), NH_PGET(nh, realm), URL_PRINT_ARGS(sip->sip_request->rq_url));
+		sip_add_make(msg, sip, sip_authorization_class, auth);
+		su_free(0, auth);
+	}
   cr->cr_wait_for_cred = 0;
 
   if (cr->cr_methods->crm_send)

@@ -1,36 +1,37 @@
-/****************************************************************************
-			 _             _                             
-			| |           | |                            
-		  _ | | ___  _   _| | _   ____ ____   ____  ___  
-		 / || |/ _ \| | | | || \ / _  |  _ \ / _  |/ _ \ 
-		( (_| | |_| | |_| | |_) | ( | | | | ( ( | | |_| |
-		 \____|\___/ \____|____/ \_||_|_| |_|\_|| |\___/ 
-											(_____|   
-	
-	Copyright (C) 2009 xxxyyyzzz <imsframework(at)gmail.com>
-
-	This file is part of Open Source Doubango IMS Client Framework project.
-
-    DOUBANGO is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-	
-    DOUBANGO is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
-    along with DOUBANGO.
-****************************************************************************/
+/**
+* @file
+* @author  xxxyyyzzz <imsframework(at)gmail.com>
+* @version 1.0
+*
+* @section LICENSE
+*
+*	
+* This file is part of Open Source Doubango IMS Client Framework project.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+* @section DESCRIPTION
+*
+*
+*/
 #include "api_sip.h"
 #include "api_engine.h"
 #include "api_stack.h"
 
-#include <sofia-sip/auth_module.h>
-#include <sofia-sip/su_tag.h> // FIXME: remove
-#include <sofia-sip/sip_tag.h> // FIXME: remove
+//#include <sofia-sip/auth_module.h>
+//#include <sofia-sip/su_tag.h> // FIXME: remove
+//#include <sofia-sip/sip_tag.h> // FIXME: remove
 
 PREF_NAMESPACE_START
 
@@ -39,8 +40,6 @@ PREF_NAMESPACE_START
 	if(!stk) return ERR_STACK_NOT_FOUND; \
 	if(!stk->get_initialized()) return ERR_STACK_NOT_INITIALIZED; \
 	if(!stk->get_running()) return ERR_STACK_NOT_RUNNING;
-
-#define SAFE_FREE_HOME_PTR(home, ptr) { if(ptr){ su_free(home, ptr); } }
 	
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,27 +123,24 @@ ERR auth_set(int stack_id, const char* public_id, const char* private_id, const 
 ERR auth_set_displayname(int stack_id, const char* displayname)
 {
 	GET_STACK(stack_id, stk);
-	SAFE_FREE_HOME_PTR(stk->get_home(), stk->get_displayname());
-	stk->set_displayname( su_strdup(stk->get_home(), displayname) );
-	nua_set_params(stk->get_nua(),
+	stk->set_displayname( displayname );
+	/*nua_set_params(stk->get_nua(),
 					NUTAG_M_DISPLAY(displayname),
-                    TAG_NULL());
+                    TAG_NULL());*/
 	return ERR_SUCCESS;
 }
 
 ERR auth_set_public_id(int stack_id, const char* public_id)
 {
 	GET_STACK(stack_id, stk);
-	SAFE_FREE_HOME_PTR(stk->get_home(), stk->get_public_id());
-	stk->set_public_id( su_strdup(stk->get_home(), public_id) );
+	stk->set_public_id( public_id );
 	return ERR_SUCCESS;
 }
 
 ERR auth_set_private_id(int stack_id, const char* private_id)
 {
 	GET_STACK(stack_id, stk);
-	SAFE_FREE_HOME_PTR(stk->get_home(), stk->get_private_id());
-	stk->set_private_id( su_strdup(stk->get_home(), private_id) );
+	stk->set_private_id( private_id );
 	return ERR_SUCCESS;
 }
 
@@ -156,19 +152,17 @@ ERR auth_set_preferred_id(int stack_id, const char* preferred_id)
 ERR auth_set_password(int stack_id, const char* password)
 {
 	GET_STACK(stack_id, stk);
-	SAFE_FREE_HOME_PTR(stk->get_home(), stk->get_password());
-	stk->set_password( su_strdup(stk->get_home(), password) );
+	stk->set_password( password );
 	return ERR_SUCCESS;
 }
 
 ERR auth_set_realm(int stack_id, const char* realm)
 {
 	GET_STACK(stack_id, stk);
-	SAFE_FREE_HOME_PTR(stk->get_home(), stk->get_realm());
-	stk->set_realm( su_strdup(stk->get_home(), realm) );
-	nua_set_params(stk->get_nua(),
+	stk->set_realm( realm );
+	/*nua_set_params(stk->get_nua(),
 					AUTHTAG_REALM(realm),
-                    TAG_NULL());
+                    TAG_NULL());*/
 	return ERR_SUCCESS;
 }
 
@@ -185,8 +179,7 @@ ERR auth_set_amf(int stack_id, const char* amf)
 ERR auth_set_privacy(int stack_id, const char* privacy)
 {
 	GET_STACK(stack_id, stk);
-	SAFE_FREE_HOME_PTR(stk->get_home(), stk->get_privacy());
-	stk->set_privacy( su_strdup(stk->get_home(), privacy) );
+	stk->set_privacy( privacy );
 	return ERR_SUCCESS;
 }
 
@@ -213,13 +206,15 @@ ERR network_set(int stack_id, const char* pcscf, int pcscf_port, const char* tra
 ERR network_set_pcscf(int stack_id, const char* pcscf, int pcscf_port)
 {
 	GET_STACK(stack_id, stk);
-	char* pcscf_ip_port = su_sprintf(NULL, "sip:%s:%d", pcscf, pcscf_port);
+	stk->set_pcscf(pcscf);
+	stk->set_pcscf_port(pcscf_port);
+	/*char* pcscf_ip_port = su_sprintf(NULL, "sip:%s:%d", pcscf, pcscf_port);
 	nua_set_params(stk->get_nua(),
 					NUTAG_PROXY(pcscf_ip_port),
 					NUTAG_OUTBOUND("no-validate"),
                     TAG_NULL());
 	
-	su_free(NULL, pcscf_ip_port);
+	su_free(NULL, pcscf_ip_port);*/
 
 	return ERR_SUCCESS;
 }

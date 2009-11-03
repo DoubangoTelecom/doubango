@@ -184,7 +184,7 @@ namespace dgo
 {
         sip_dialog_register& ctxt(context.getOwner());
 
-        ctxt.OnStateChanged(SS_REGISTER_INITIALIZED);
+        ctxt.OnStateChanged(srs_none);
         return;
     }
 
@@ -203,7 +203,7 @@ namespace dgo
 {
         sip_dialog_register& ctxt(context.getOwner());
 
-        ctxt.OnStateChanged(SS_REGISTER_TRYING);
+        ctxt.OnStateChanged(srs_trying);
         return;
     }
 
@@ -321,7 +321,7 @@ namespace dgo
 {
         sip_dialog_register& ctxt(context.getOwner());
 
-        ctxt.OnStateChanged(SS_REGISTER_ESTABLISHED);
+        ctxt.OnStateChanged(srs_registered);
         return;
     }
 
@@ -396,7 +396,7 @@ namespace dgo
 {
         sip_dialog_register& ctxt(context.getOwner());
 
-        ctxt.OnStateChanged(SS_REGISTER_AUTHENTIFYING);
+        ctxt.OnStateChanged(srs_authentifying);
         return;
     }
 
@@ -464,7 +464,7 @@ namespace dgo
 {
         sip_dialog_register& ctxt(context.getOwner());
 
-        ctxt.OnStateChanged(SS_REGISTER_TERMINATED);
+        ctxt.OnStateChanged(srs_unregistered);
         return;
     }
 
