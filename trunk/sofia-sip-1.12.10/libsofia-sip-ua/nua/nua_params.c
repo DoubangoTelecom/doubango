@@ -26,6 +26,7 @@
  * @brief REGISTER and registrations
  *
  * @author Pekka Pessi <Pekka.Pessi@nokia.com>
+ * @author xxxyyyzzz <imsframework(at)gmail.com>
  *
  * @date Created: Wed Mar  8 11:48:49 EET 2006 ppessi
  */
@@ -140,6 +141,7 @@ int nua_stack_set_defaults(nua_handle_t *nh,
   NHP_SET(nhp, invite_enable, 1);
   NHP_SET(nhp, auto_alert, 0);
   NHP_SET(nhp, early_media, 0);
+  NHP_SET(nhp, early_ims, 0);
   NHP_SET(nhp, only183_100rel, 0);
   NHP_SET(nhp, auto_answer, 0);
   NHP_SET(nhp, auto_ack, 1);
@@ -277,10 +279,13 @@ int nua_stack_init_instance(nua_handle_t *nh, tagi_t const *tags)
  *   NUTAG_CALLEE_CAPS() \n
  *   NUTAG_DETECT_NETWORK_UPDATES() \n
  *   NUTAG_EARLY_ANSWER() \n
+ *   NUTAG_EARLY_IMS() \n
  *   NUTAG_EARLY_MEDIA() \n
  *   NUTAG_ENABLEINVITE() \n
  *   NUTAG_ENABLEMESSAGE() \n
  *   NUTAG_ENABLEMESSENGER() \n
+ *	 NUTAG_IMPI() \n
+ *	 NUTAG_IMPU() \n
  *   NUTAG_INITIAL_ROUTE() \n
  *   NUTAG_INITIAL_ROUTE_STR() \n
  *   NUTAG_INSTANCE() \n
@@ -593,7 +598,7 @@ int nua_stack_set_params(nua_t *nua, nua_handle_t *nh, nua_event_t e,
 }
 
 
-/** Parse parameters from tags to @a nhp or @a ngp.
+/** Parse parameters from @a tags to @a nhp or @a ngp.
  *
  * @param home allocate new values from @a home
  * @param nhp  structure to store handle preferences
@@ -701,6 +706,23 @@ static int nhp_set_tags(su_home_t *home,
 
     if (tag == NULL)
       break;
+
+	/* NUTAG_EARLY_IMS(early_ims) */
+    else if (tag == nutag_early_ims) {
+      NHP_SET(nhp, early_ims, value != 0);
+    }
+	/* NUTAG_IMPI(impi) */
+    else if (tag == nutag_impi) {
+      NHP_SET_STR(nhp, impi, value);
+    }
+    /* NUTAG_IMPU() */
+    else if (tag == nutag_impu) {
+      NHP_SET_STR_BY_URL(nhp, url_string_t, impu, value);
+    }
+	/* NUTAG_REALM(realm) */
+    else if (tag == nutag_realm) {
+      NHP_SET_STR(nhp, realm, value);
+    }
     /* NUTAG_RETRY_COUNT(retry_count) */
     else if (tag == nutag_retry_count) {
       NHP_SET(nhp, retry_count, (unsigned)value);
@@ -1462,6 +1484,7 @@ int nua_stack_set_smime_params(nua_t *nua, tagi_t const *tags)
  *   NUTAG_DETECT_NETWORK_UPDATES() \n
  *   NUTAG_EARLY_ANSWER() \n
  *   NUTAG_EARLY_MEDIA() \n
+ *   NUTAG_EARLY_IMS() \n
  *   NUTAG_ENABLEINVITE() \n
  *   NUTAG_ENABLEMESSAGE() \n
  *   NUTAG_ENABLEMESSENGER() \n
@@ -1637,6 +1660,7 @@ int nua_stack_get_params(nua_t *nua, nua_handle_t *nh, nua_event_t e,
      TIF(NUTAG_AUTOALERT, auto_alert),
      TIF(NUTAG_EARLY_ANSWER, early_answer),
      TIF(NUTAG_EARLY_MEDIA, early_media),
+	 TIF(NUTAG_EARLY_IMS, early_ims),
      TIF(NUTAG_ONLY183_100REL, only183_100rel),
      TIF(NUTAG_AUTOANSWER, auto_answer),
      TIF(NUTAG_AUTOACK, auto_ack),

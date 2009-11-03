@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="./src;&quot;$(SolutionDir)sofia-sip-1.12.10\win32&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\su&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\ipt&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\sresolv&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\bnf&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\url&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\msg&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\sip&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\nta&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\nua&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\iptsec&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\http&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\nth&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\nea&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\sdp&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\soa&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\stun&quot;;&quot;$(SolutionDir)sofia-sip-1.12.10\libsofia-sip-ua\tport&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;;./src;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\win32&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\su&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\ipt&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\sresolv&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\bnf&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\url&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\msg&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\sip&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\nta&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\nua&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\iptsec&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\http&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\nth&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\nea&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\sdp&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\soa&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\stun&quot;;&quot;$(DOUBANGO_HOME)\sofia-sip-1.12.10\libsofia-sip-ua\tport&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;DOUBANGO_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -266,6 +266,26 @@
 					</File>
 				</Filter>
 			</Filter>
+			<Filter
+				Name="FastDelegate"
+				>
+				<File
+					RelativePath=".\src\fastdelegate.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\fastdelegate2.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="utils"
+				>
+				<File
+					RelativePath=".\src\strutils.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -381,6 +401,14 @@
 						>
 					</File>
 				</Filter>
+			</Filter>
+			<Filter
+				Name="utils"
+				>
+				<File
+					RelativePath=".\src\strutils.cxx"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter

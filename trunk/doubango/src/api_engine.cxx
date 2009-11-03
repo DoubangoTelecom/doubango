@@ -1,29 +1,30 @@
-///****************************************************************************
-//			 _             _                             
-//			| |           | |                            
-//		  _ | | ___  _   _| | _   ____ ____   ____  ___  
-//		 / || |/ _ \| | | | || \ / _  |  _ \ / _  |/ _ \ 
-//		( (_| | |_| | |_| | |_) | ( | | | | ( ( | | |_| |
-//		 \____|\___/ \____|____/ \_||_|_| |_|\_|| |\___/ 
-//											(_____|   
-//	
-//	Copyright (C) 2009 xxxyyyzzz <imsframework(at)gmail.com>
-//
-//	This file is part of Open Source Doubango IMS Client Framework project.
-//
-//    DOUBANGO is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    (at your option) any later version.
-//	
-//    DOUBANGO is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
-//	
-//    You should have received a copy of the GNU General Public License
-//    along with DOUBANGO.
-//****************************************************************************/
+/**
+* @file
+* @author  xxxyyyzzz <imsframework(at)gmail.com>
+* @version 1.0
+*
+* @section LICENSE
+*
+*	
+* This file is part of Open Source Doubango IMS Client Framework project.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+* @section DESCRIPTION
+*
+*
+*/
 
 #include "api_engine.h"
 #include "api_stack.h"
@@ -34,30 +35,23 @@
 #include <list>
 #include <assert.h>
 
-#include <sofia-sip/su.h>
-
 #define PSTACK stack*
 
 PREF_NAMESPACE_START
 
-/* engine callback declaration */
-static void engine_callback(nua_event_t   event,
-                  int           status,
-                  char const   *phrase,
-                  nua_t        *nua,
-                  nua_magic_t  *magic,
-                  nua_handle_t *nh,
-                  nua_hmagic_t *hmagic,
-                  sip_t const  *sip,
-                  tagi_t        tags[]);
-
-/* global variable holding engine initialization state */
+/** 
+	global variable holding engine initialization state 
+*/
 static bool __initialized = false;
 
-/* global variable holding all stacks */
+/**
+	global variable holding all stacks 
+*/
 static std::list<PSTACK> __stacks;
 
-/* predicate: find stack by id */
+/** 
+	STL predicate to find stack by id
+*/
 struct pred_stack_find_by_id: public std::binary_function< PSTACK, int, bool > {
 	bool operator () ( const PSTACK s, const int &id ) const {
 		return s->get_id() == id;
@@ -107,7 +101,7 @@ ERR engine_stack_create(int stack_id)
 	{
 		return ERR_STACK_ALREADY_EXIST;
 	}
-	stack* stk = new stack(stack_id, engine_callback);
+	stack* stk = new stack(stack_id);
 	if(stk->get_initialized())
 	{
 		__stacks.push_back(stk);
@@ -175,13 +169,20 @@ void* engine_stack_find(int stack_id)
 	return NULL;
 }
 
-/* engine callback*/
-void engine_callback(nua_event_t event, int status, char const *phrase,
-                  nua_t *nua, nua_magic_t *magic, nua_handle_t *nh,
-                  nua_hmagic_t *hmagic, sip_t const *sip, tagi_t tags[])
+/* put a stck */
+ERR engine_push_stack(void* stack_ptr)
 {
-	((stack*)magic)->callback_handle(event, status, phrase, nua, magic,
-                  nh, hmagic, sip, tags);
+	if(!__initialized) return ERR_ENGINE_NOT_INITIALIZED;
+	if(!stack_ptr) return ERR_STACK_IS_INVALID;
+
+	stack* stk = (stack*)stack_ptr; // FIXME
+	if(!stk) return ERR_STACK_IS_INVALID;
+	if(engine_stack_find(stk->get_id())){
+		return ERR_STACK_ALREADY_EXIST;
+	}else{
+		__stacks.push_back(stk);
+		return ERR_SUCCESS;
+	}
 }
 
 #undef PSTACK

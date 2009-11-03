@@ -1,35 +1,49 @@
-/****************************************************************************
-			 _             _                             
-			| |           | |                            
-		  _ | | ___  _   _| | _   ____ ____   ____  ___  
-		 / || |/ _ \| | | | || \ / _  |  _ \ / _  |/ _ \ 
-		( (_| | |_| | |_| | |_) | ( | | | | ( ( | | |_| |
-		 \____|\___/ \____|____/ \_||_|_| |_|\_|| |\___/ 
-											(_____|   
-	
-	Copyright (C) 2009 xxxyyyzzz <imsframework(at)gmail.com>
-
-	This file is part of Open Source Doubango IMS Client Framework project.
-
-    DOUBANGO is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-	
-    DOUBANGO is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
-    along with DOUBANGO.
-****************************************************************************/
+/**
+* @file
+* @author  xxxyyyzzz <imsframework(at)gmail.com>
+* @version 1.0
+*
+* @section LICENSE
+*
+*	
+* This file is part of Open Source Doubango IMS Client Framework project.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+* @section DESCRIPTION
+*
+*
+*/
 #ifndef _DOUBANGO_SIP_STATES_H_
 #define _DOUBANGO_SIP_STATES_H_
 
 #include "pref.h"
 
 PREF_NAMESPACE_START
+
+/**
+	SIP registration states
+*/
+typedef enum sip_state_registration_e
+{
+	srs_none,
+	srs_trying,
+	srs_authentifying,
+	srs_unregistered,
+	srs_registered
+}
+sip_state_registration_t;
 
 typedef enum tag_SIP_STATE
 {

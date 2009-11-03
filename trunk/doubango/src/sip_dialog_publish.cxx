@@ -1,29 +1,30 @@
-/****************************************************************************
-			 _             _                             
-			| |           | |                            
-		  _ | | ___  _   _| | _   ____ ____   ____  ___  
-		 / || |/ _ \| | | | || \ / _  |  _ \ / _  |/ _ \ 
-		( (_| | |_| | |_| | |_) | ( | | | | ( ( | | |_| |
-		 \____|\___/ \____|____/ \_||_|_| |_|\_|| |\___/ 
-											(_____|   
-	
-	Copyright (C) 2009 xxxyyyzzz <imsframework(at)gmail.com>
-
-	This file is part of Open Source Doubango IMS Client Framework project.
-
-    DOUBANGO is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-	
-    DOUBANGO is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
-    along with DOUBANGO.
-****************************************************************************/
+/**
+* @file
+* @author  xxxyyyzzz <imsframework(at)gmail.com>
+* @version 1.0
+*
+* @section LICENSE
+*
+*	
+* This file is part of Open Source Doubango IMS Client Framework project.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+* @section DESCRIPTION
+*
+*
+*/
 #include "sip_dialog_publish.h"
 #include "api_stack.h"
 
@@ -62,15 +63,16 @@ ERR sip_dialog_publish::Start()
 /* stop */
 ERR sip_dialog_publish::Stop()
 {
-	ERR err = (this->state_current == SS_PUBLISH_ESTABLISHED) ? 
-		this->sendUnpublish() : this->sendCancel();
-	return err;
+	//ERR err = (this->state_current == SS_PUBLISH_ESTABLISHED) ? 
+	//	this->sendUnpublish() : this->sendCancel();
+	//return err;
+	return ERR_NOT_IMPLEMENTED;
 }
 
 /* state changed */
 void sip_dialog_publish::OnStateChanged(SIP_STATE state)
 {
-	sip_dialog::OnStateChanged(state);
+	//sip_dialog::OnStateChanged(state);
 #if 1
 	if(this->get_terminated())
 	{
@@ -88,7 +90,8 @@ inline const char* sip_dialog_publish::get_sipmethod()const
 /* returns true if terminated and false otherwise*/
 inline bool sip_dialog_publish::get_terminated()const
 {
-	return (this->state_current == SS_PUBLISH_TERMINATED);
+	//return (this->state_current == SS_PUBLISH_TERMINATED);
+	return false;
 }
 
 /* send SIP PUBLISH request */

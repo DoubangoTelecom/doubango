@@ -1,0 +1,99 @@
+Home page for downloading: http://www.gtk.org/download-windows.html
+
+## Preparation ##
+mkdir /c/tmp
+export PREFIX=/usr/local/win32
+export CFLAGS="-mthreads -D_WIN32_WINNT=0x0501 -DWINVER=0x0501"
+
+## Glib ##
+cd /c/tmp
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.22/glib_2.22.2-1_win32.zip
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/glib/2.22/glib-dev_2.22.2-1_win32.zip
+mkdir glib
+cd glib
+unzip ../glib_2.22.2-1_win32.zip
+unzip ../glib-dev_2.22.2-1_win32.zip
+mv glib/* $PREFIX
+
+## Iconv ##
+cd /c/tmp
+wget ftp://ftp.uni-hannover.de/pub/mirror/gnu/old-gnu/libiconv/libiconv-1.9.1.bin.woe32.zip
+unzip libiconv-1.9.1.bin.woe32.zip -d $PREFIX
+
+## Gettext ##
+cd /c/tmp
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime-0.17-1.zip
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/gettext-runtime-dev-0.17-1.zip
+unzip gettext-runtime-0.17-1.zip -d $PREFIX
+unzip gettext-runtime-dev-0.17-1.zip -d $PREFIX
+
+## DirectX Headers ##
+cd /c/tmp
+wget http://www.lysator.liu.se/~peda/directx-headers/directx-headers-0.03.tar.gz
+tar -zxvf directx-headers-0.03.tar.gz
+cd directx-headers-0.03/include
+patch -p1 < ../patch/dsound.patch
+patch -p1 < ../patch/ddraw.patch
+patch -p1 < ../patch/dinput.patch
+mv /c/tmp/directx-headers-0.03/* $PREFIX
+
+## Liboil ##
+cd /c/tmp
+wget http://liboil.freedesktop.org/download/liboil-0.3.16.tar.gz
+tar -zxvf liboil-0.3.16.tar.gz
+cd liboil-0.3.16
+./configure --prefix=$PREFIX --host=i586-mingw32msvc
+make -k
+make -k install
+
+## libxml2 ##
+cd /c/tmp
+wget ftp://xmlsoft.org/libxml2/libxml2-2.7.6.tar.gz
+tar -zxvf libxml2-2.7.6.tar.gz
+cd libxml2-2.7.6
+./configure --prefix=$PREFIX --host=i586-mingw32msvc
+make
+make install
+
+## zlib ##
+cd /c/tmp
+wget http://www.gzip.org/zlib/zlib-1.2.3.tar.gz
+tar -zxvf zlib-1.2.3.tar.gz
+cd zlib-1.2.3
+./configure --prefix=$PREFIX
+make
+make install
+
+## Libpng ##
+cd /c/tmp
+wget http://ftp.gnome.org/pub/gnome/binaries/win32/dependencies/libpng_1.2.39-1_win32.zip
+unzip libpng_1.2.39-1_win32.zip -d $PREFIX
+
+## Libogg ##
+cd /c/tmp
+wget http://downloads.xiph.org/releases/ogg/libogg-1.1.4.tar.gz
+tar -zxvf libogg-1.1.4.tar.gz
+cd libogg-1.1.4
+./configure --prefix=$PREFIX --host=i586-mingw32msvc
+make 
+make install
+
+## Libvorbis ##
+cd /c/tmp
+wget http://downloads.xiph.org/releases/vorbis/libvorbis-1.2.3.tar.gz
+tar -zxvf libvorbis-1.2.3.tar.gz
+cd libvorbis-1.2.3
+./configure --prefix=$PREFIX --host=i586-mingw32msvc
+make
+make install
+
+## Gstreamer ##
+cd /c/tmp
+wget http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-0.10.25.tar.gz
+wget http://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-0.10.25.tar.gz
+wget http://gstreamer.freedesktop.org/src/gst-plugins-good/gst-plugins-good-0.10.16.tar.gz
+#wget http://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-0.10.16.tar.gz
+#wget http://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-0.10.13.tar.gz
+tar -zxvf gstreamer-0.10.25.tar.gz
+export PKG_CONFIG_PATH=$PREFIX/lib/pkgconfig
+./configure --prefix=$PREFIX --host=i586-mingw32msvc

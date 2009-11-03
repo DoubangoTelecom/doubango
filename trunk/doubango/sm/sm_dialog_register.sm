@@ -38,12 +38,12 @@
 //-------------------------------------------------------------------------------------
 // Initialized
 //-------------------------------------------------------------------------------------
-Initialized Entry { OnStateChanged(SS_REGISTER_INITIALIZED); }
+Initialized Entry { OnStateChanged(srs_none); }
 {
 	sm_registerSent()	Trying { }
 }
 	
-Trying Entry { OnStateChanged(SS_REGISTER_TRYING); }
+Trying Entry { OnStateChanged(srs_trying); }
 {
 	sm_1xx_response()				nil {}
 	sm_2xx_response(unreg: bool)	[unreg == true]		Terminated {}
@@ -58,7 +58,7 @@ Trying Entry { OnStateChanged(SS_REGISTER_TRYING); }
 	Default							nil {}
 }
 
-Established Entry { OnStateChanged(SS_REGISTER_ESTABLISHED); }
+Established Entry { OnStateChanged(srs_registered); }
 {
 	sm_1xx_response()				nil {}
 	sm_2xx_response(unreg: bool)	[unreg == true]		Terminated {}
@@ -69,7 +69,7 @@ Established Entry { OnStateChanged(SS_REGISTER_ESTABLISHED); }
 	Default							nil {}
 }
 
-Authentifying  Entry { OnStateChanged(SS_REGISTER_AUTHENTIFYING); }
+Authentifying  Entry { OnStateChanged(srs_authentifying); }
 {
 	sm_1xx_response()				nil {}
 	sm_2xx_response(unreg: bool)	[unreg == true]		Terminated {}
@@ -79,12 +79,12 @@ Authentifying  Entry { OnStateChanged(SS_REGISTER_AUTHENTIFYING); }
 	Default							nil {}
 }
 
-Terminated  Entry { OnStateChanged(SS_REGISTER_TERMINATED); }
+Terminated  Entry { OnStateChanged(srs_unregistered); }
 {
 	Default nil {}
 }
 
-Default Entry { OnStateChanged(SS_REGISTER_UNKNOWN); }
+Default Entry { OnStateChanged(srs_none); }
 {
 	sm_401_407_421_494_response()	Authentifying {}
 	sm_3xx_response()				nil {}

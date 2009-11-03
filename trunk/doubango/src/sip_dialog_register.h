@@ -1,29 +1,30 @@
-/****************************************************************************
-			 _             _                             
-			| |           | |                            
-		  _ | | ___  _   _| | _   ____ ____   ____  ___  
-		 / || |/ _ \| | | | || \ / _  |  _ \ / _  |/ _ \ 
-		( (_| | |_| | |_| | |_) | ( | | | | ( ( | | |_| |
-		 \____|\___/ \____|____/ \_||_|_| |_|\_|| |\___/ 
-											(_____|   
-	
-	Copyright (C) 2009 xxxyyyzzz <imsframework(at)gmail.com>
-
-	This file is part of Open Source Doubango IMS Client Framework project.
-
-    DOUBANGO is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-	
-    DOUBANGO is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
-    along with DOUBANGO.
-****************************************************************************/
+/**
+* @file
+* @author  xxxyyyzzz <imsframework(at)gmail.com>
+* @version 1.0
+*
+* @section LICENSE
+*
+*	
+* This file is part of Open Source Doubango IMS Client Framework project.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+* @section DESCRIPTION
+*
+*
+*/
 
 #ifndef __DOUBANGO_DIALOG_REGISTER_SM_H__
 #define __DOUBANGO_DIALOG_REGISTER_SM_H__
@@ -44,7 +45,6 @@ public:
 	/* sip_dialog override*/
 	ERR Start();
 	ERR Stop();
-	void OnStateChanged(SIP_STATE state);
 	inline const char* get_sipmethod()const;
 	inline bool get_terminated()const;
 	void dialog_callback(nua_event_t event,
@@ -53,12 +53,17 @@ public:
 			       nua_handle_t *nh, nua_hmagic_t *hmagic,
 			       sip_t const *sip,
 			       tagi_t tags[]);
+
+	/* public methods */
+	inline void OnStateChanged(sip_state_registration_t state);
+
 private:
 	ERR sendRegister();
 	ERR sendUnregister();
 	ERR sendCancel();
 
 private:
+	sip_state_registration_t state_current;
 	sip_dialog_registerContext sm_ctx;
 };
 

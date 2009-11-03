@@ -18,7 +18,6 @@
 #define EXPORT
 #endif
 
-#include <stddef.h>
 
 #undef TAG_NAMESPACE
 #define TAG_NAMESPACE "nua"
@@ -38,6 +37,18 @@ EXPORT tag_typedef_t nutag_media_features_ref =
 extern tag_typedef_t nutag_callee_caps;
 EXPORT tag_typedef_t nutag_callee_caps_ref = 
   REFTAG_TYPEDEF(nutag_callee_caps);
+extern tag_typedef_t nutag_impu;
+EXPORT tag_typedef_t nutag_impu_ref = 
+  REFTAG_TYPEDEF(nutag_impu);
+extern tag_typedef_t nutag_impi;
+EXPORT tag_typedef_t nutag_impi_ref = 
+  REFTAG_TYPEDEF(nutag_impi);
+extern tag_typedef_t nutag_realm;
+EXPORT tag_typedef_t nutag_realm_ref = 
+  REFTAG_TYPEDEF(nutag_realm);
+extern tag_typedef_t nutag_early_ims;
+EXPORT tag_typedef_t nutag_early_ims_ref = 
+  REFTAG_TYPEDEF(nutag_early_ims);
 extern tag_typedef_t nutag_early_media;
 EXPORT tag_typedef_t nutag_early_media_ref = 
   REFTAG_TYPEDEF(nutag_early_media);
@@ -281,94 +292,3 @@ EXPORT tag_typedef_t nutag_hold_ref =
 extern tag_typedef_t nutag_address;
 EXPORT tag_typedef_t nutag_address_ref = 
   REFTAG_TYPEDEF(nutag_address);
-
-EXPORT tag_type_t nua_tag_list[] =
-{
-  nutag_retry_count,
-  nutag_uicc,
-  nutag_smime_opt,
-  nutag_sips_url,
-  nutag_soa_session,
-  nutag_keepalive_stream,
-  nutag_enablemessenger,
-  nutag_path_enable,
-  nutag_initial_route_str,
-  nutag_certificate_dir,
-  nutag_authtime,
-  nutag_smime_signature,
-  nutag_enableinvite,
-  nutag_answer_sent,
-  nutag_smime_message_encryption,
-  nutag_keepalive,
-  nutag_auth,
-  nutag_min_se,
-  nutag_url,
-  nutag_identity,
-  nutag_notify_refer,
-  nutag_initial_route,
-  nutag_early_media,
-  nutag_service_route_enable,
-  nutag_allow_events,
-  nutag_smime_message_digest,
-  nutag_only183_100rel,
-  nutag_use_dialog,
-  nutag_outbound,
-  nutag_outbound_set1,
-  nutag_invite_timer,
-  nutag_outbound_set2,
-  nutag_session_timer,
-  nutag_outbound_set3,
-  nutag_phrase,
-  nutag_outbound_set4,
-  nutag_detect_network_updates,
-  nutag_offer_recv,
-  nutag_m_username,
-  nutag_max_subscriptions,
-  nutag_smime_enable,
-  nutag_answer_recv,
-  nutag_shutdown_events,
-  nutag_session_refresher,
-  nutag_user_agent,
-  nutag_soa_name,
-  nutag_update_refresh,
-  nutag_dialog,
-  nutag_substate,
-  nutag_m_display,
-  nutag_address,
-  nutag_refer_with_id,
-  nutag_include_extra_sdp,
-  nutag_media_features,
-  nutag_certificate_phrase,
-  nutag_m_features,
-  nutag_refer_event,
-  nutag_refer_expires,
-  nutag_autoanswer,
-  nutag_enablemessage,
-  nutag_registrar,
-  nutag_m_params,
-  nutag_status,
-  nutag_refer_pause,
-  nutag_appl_method,
-  nutag_allow,
-  nutag_handle,
-  nutag_newsub,
-  nutag_callee_caps,
-  nutag_hold,
-  nutag_smime_key_encryption,
-  nutag_auth_cache,
-  nutag_with,
-  nutag_supported,
-  nutag_method,
-  nutag_smime_protection_mode,
-  nutag_early_answer,
-  nutag_event,
-  nutag_media_enable,
-  nutag_instance,
-  nutag_callstate,
-  nutag_autoack,
-  nutag_offer_sent,
-  nutag_refresh_without_sdp,
-  nutag_sub_expires,
-  nutag_autoalert,
-  NULL
-};
