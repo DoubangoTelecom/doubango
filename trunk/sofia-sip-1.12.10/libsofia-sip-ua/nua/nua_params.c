@@ -137,11 +137,13 @@ int nua_stack_set_defaults(nua_handle_t *nh,
   NHP_SET(nhp, retry_count, 3);
   NHP_SET(nhp, max_subscriptions, 20);
 
+  NHP_SET(nhp, early_ims, 0);
+  NHP_SET(nhp, sigcomp_enabled, 0);
+
   NHP_SET(nhp, media_enable, 1);
   NHP_SET(nhp, invite_enable, 1);
   NHP_SET(nhp, auto_alert, 0);
   NHP_SET(nhp, early_media, 0);
-  NHP_SET(nhp, early_ims, 0);
   NHP_SET(nhp, only183_100rel, 0);
   NHP_SET(nhp, auto_answer, 0);
   NHP_SET(nhp, auto_ack, 1);
@@ -319,6 +321,7 @@ int nua_stack_init_instance(nua_handle_t *nh, tagi_t const *tags)
  *   NUTAG_SMIME_OPT() \n
  *   NUTAG_SMIME_PROTECTION_MODE() \n
  *   NUTAG_SMIME_SIGNATURE() \n
+ *	 NUTAG_SIGCOMP_ENABLED() \n
  *   NUTAG_SOA_NAME() \n
  *   NUTAG_SUBSTATE() \n
  *   NUTAG_SUB_EXPIRES() \n
@@ -707,6 +710,14 @@ static int nhp_set_tags(su_home_t *home,
     if (tag == NULL)
       break;
 
+	/* NUTAG_SIGCOMP_ENABLED(sigcomp_enabled) */
+    else if (tag == nutag_sigcomp_enabled) {
+      NHP_SET(nhp, sigcomp_enabled, value != 0);
+#if 0
+	  if(value) sigcomp_init();
+	  else sigcomp_deinit();
+#endif
+    }
 	/* NUTAG_EARLY_IMS(early_ims) */
     else if (tag == nutag_early_ims) {
       NHP_SET(nhp, early_ims, value != 0);
@@ -1485,6 +1496,7 @@ int nua_stack_set_smime_params(nua_t *nua, tagi_t const *tags)
  *   NUTAG_EARLY_ANSWER() \n
  *   NUTAG_EARLY_MEDIA() \n
  *   NUTAG_EARLY_IMS() \n
+ *	 NUTAG_SIGCOMP_ENABLED() \n
  *   NUTAG_ENABLEINVITE() \n
  *   NUTAG_ENABLEMESSAGE() \n
  *   NUTAG_ENABLEMESSENGER() \n
@@ -1654,13 +1666,15 @@ int nua_stack_get_params(nua_t *nua, nua_handle_t *nh, nua_event_t e,
      TIF(NUTAG_RETRY_COUNT, retry_count),
      TIF(NUTAG_MAX_SUBSCRIPTIONS, max_subscriptions),
 
+	 TIF(NUTAG_EARLY_IMS, early_ims),
+	 TIF(NUTAG_SIGCOMP_ENABLED, sigcomp_enabled),
+
      TIF(NUTAG_SOA_NAME, soa_name),
      TIF(NUTAG_MEDIA_ENABLE, media_enable),
      TIF(NUTAG_ENABLEINVITE, invite_enable),
      TIF(NUTAG_AUTOALERT, auto_alert),
      TIF(NUTAG_EARLY_ANSWER, early_answer),
      TIF(NUTAG_EARLY_MEDIA, early_media),
-	 TIF(NUTAG_EARLY_IMS, early_ims),
      TIF(NUTAG_ONLY183_100REL, only183_100rel),
      TIF(NUTAG_AUTOANSWER, auto_answer),
      TIF(NUTAG_AUTOACK, auto_ack),

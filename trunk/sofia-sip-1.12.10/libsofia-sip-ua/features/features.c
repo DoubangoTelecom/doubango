@@ -77,7 +77,7 @@ char const * sofia_sip_has_dtls;
 char const * sofia_sip_has_tls_sctp;
 
 #if HAVE_SOFIA_SIGCOMP
-#include <sigcomp.h>
+#include <sofia-sip/sigcomp.h>
 #endif
 
 /** The name and version of software package providing SigComp functionality,

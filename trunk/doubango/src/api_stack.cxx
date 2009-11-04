@@ -83,7 +83,7 @@ stack::stack(int stack_id)
 	pcscf = NULL, pcscf_port = 5060;
 
 	/* Features */
-	smsip = true, oma_large_msg = true, oma_sip_im = true, gsma_is = true, gsma_vs = true;
+	smsip = true, sigcomp = false, oma_large_msg = true, oma_sip_im = true, gsma_is = true, gsma_vs = true;
 
 	/* Params */
 	expires = IMS_DEFAULT_EXIPRES;
@@ -155,7 +155,7 @@ inline ERR stack::run()
 		nua_set_params(nua, NUTAG_IMPI(this->private_id), TAG_NULL());
 
 		/* Realm: a home network domain name to address the SIP REGISTER request to */
-		nua_set_params(this->nua, NUTAG_REALM(this->realm), TAG_NULL());
+		nua_set_params(nua, NUTAG_REALM(this->realm), TAG_NULL());
 	}
 bail:
 	if(!ERR_SUCCEED(error) && this->running)
@@ -208,7 +208,8 @@ void stack::loop()
 	this->nua = nua_create(this->root, shared_callback, this,
 							 NUTAG_USER_AGENT(DEFAULT_USER_AGENT),
 							 NUTAG_PROXY("sip:127.0.0.1:5060"),
-                             /* tags as necessary ...*/
+                             NUTAG_SIGCOMP_ENABLED(this->sigcomp),
+
                              TAG_NULL());
 	if (!this->nua)
 	{

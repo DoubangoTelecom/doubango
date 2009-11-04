@@ -47,6 +47,8 @@
 #include <sofia-sip/su_alloc.h>
 #endif
 
+#include "auth_milenage.h"
+
 SOFIA_BEGIN_DECLS
 
 /** Parameters for digest-challenge.
@@ -84,6 +86,8 @@ typedef struct {
   unsigned    ac_md5 : 1;	/**< algorithm=MS5 (or missing) */
   unsigned    ac_md5sess : 1;	/**< algorithm=MD5-sess */
   unsigned    ac_sha1 : 1;	/**< algorithm=sha1 (SSA Hash) */
+  unsigned    ac_md5_akv1 : 1;	/**< algorithm=AKAv1-MD5 */
+  unsigned    ac_md5_akv2 : 1;	/**< algorithm=AKAv2-MD5 */
   unsigned    ac_auth : 1;	/**< qop=auth */
   unsigned    ac_auth_int : 1;	/**< qop=auth-int */
   unsigned : 0;
@@ -129,6 +133,8 @@ typedef struct {
   unsigned    ar_md5 : 1;	/**< MS5 algorithm */
   unsigned    ar_md5sess : 1;	/**< MD5-sess algorithm */
   unsigned    ar_sha1 : 1;	/**< SHA1 algorithm */
+  unsigned    ar_md5_akv1 : 1;	/**< algorithm=AKAv1-MD5 */
+  unsigned    ar_md5_akv2 : 1;	/**< algorithm=AKAv2-MD5 */
   unsigned    ar_auth : 1;	/**< qop=auth */
   unsigned    ar_auth_int : 1;	/**< qop=auth-int */
   unsigned : 0;
@@ -142,6 +148,9 @@ SOFIAPUBFUN void auth_digest_challenge_free_params(su_home_t *home,
 						   auth_challenge_t *ac);
 SOFIAPUBFUN issize_t auth_digest_response_get(su_home_t *, auth_response_t *,
 					      char const * const params[]);
+
+SOFIAPUBFUN int auth_digest_akares(auth_response_t *ar,
+			       char const *secret, u8 akares[AKA_RES_SIZE+1]);
 
 SOFIAPUBFUN int auth_digest_a1(auth_response_t *ar,
 			       auth_hexmd5_t ha1,

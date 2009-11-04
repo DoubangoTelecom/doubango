@@ -542,7 +542,7 @@ void tport_sent_message(tport_t *self, msg_t *msg, int error);
 
 /* ---------------------------------------------------------------------- */
 /* Compressor plugin */
-extern tport_comp_vtable_t const *tport_comp_vtable;
+//extern tport_comp_vtable_t const *tport_comp_vtable;
 
 char const *tport_canonize_comp(char const *comp);
 

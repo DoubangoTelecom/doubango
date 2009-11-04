@@ -147,6 +147,7 @@ public:
 	DEFINE_GET_SET_VAL(bool, oma_sip_im);
 	DEFINE_GET_SET_VAL(bool, gsma_is);
 	DEFINE_GET_SET_VAL(bool, gsma_vs);
+	DEFINE_GET_SET_VAL(bool, sigcomp);
 
 	//
 	//	Parameters
@@ -202,6 +203,7 @@ private:
 	bool oma_sip_im;
 	bool gsma_is;
 	bool gsma_vs;
+	bool sigcomp;
 
 	//
 	//	Parameters

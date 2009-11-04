@@ -62,7 +62,7 @@
 #include "outbound.h"
 
 #if HAVE_SIGCOMP
-#include <sigcomp.h>
+#include <sofia-sip/sigcomp.h>
 #endif
 
 #include <stddef.h>
@@ -1151,12 +1151,20 @@ nua_stack_init_transport(nua_t *nua, tagi_t const *tags)
   url_string_t const *contact1 = NULL, *contact2 = NULL;
   char const *name1 = "sip", *name2 = "sip";
   char const *certificate_dir = NULL;
+  int sigcomp_enabled = 0;
 
   tl_gets(tags,
           NUTAG_URL_REF(contact1),
           NUTAG_SIPS_URL_REF(contact2),
           NUTAG_CERTIFICATE_DIR_REF(certificate_dir),
+		  NUTAG_SIGCOMP_ENABLED_REF(sigcomp_enabled),
           TAG_END());
+
+  /* initialize sigcomp stack */
+  #if HAVE_SIGCOMP
+  if(sigcomp_enabled && sigcomp_init() <0)
+  	  return -1;
+  #endif
 
   if (!contact1 && contact2)
     contact1 = contact2, contact2 = NULL;

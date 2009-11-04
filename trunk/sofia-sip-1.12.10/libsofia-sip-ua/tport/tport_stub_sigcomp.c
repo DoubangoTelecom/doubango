@@ -36,11 +36,23 @@
 #include <string.h>
 #include <sofia-sip/string0.h>
 
+/* Plugin pointer */
 tport_comp_vtable_t const *tport_comp_vtable = NULL;
 
-int tport_plug_in_compress(tport_comp_vtable_t const *vsc)
+int tport_plug_in_comp(tport_comp_vtable_t const *vsc)
 {
-  return -1;
+  if (!vsc)
+    return 0;
+
+  if (vsc->vsc_size != (int)sizeof *vsc)
+    return su_seterrno(EINVAL);
+
+  if (tport_comp_vtable)
+    return su_seterrno(EEXIST);
+
+  tport_comp_vtable = vsc;
+
+  return 0;
 }
 
 char const tport_sigcomp_name[] = "sigcomp";

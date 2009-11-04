@@ -415,6 +415,53 @@ tag_typedef_t nutag_callee_caps = BOOLTAG_TYPEDEF(callee_caps);
  * Reference tag for NUTAG_CALLEE_CAPS().
  */
 
+/**@def NUTAG_EARLY_IMS(x)
+* Activate/deactivate early IMS security as per 3GPP TS 33.978.
+* You may activate this option if you are using the stack as basic sip engine without IMS
+* security features.
+*
+*@par Used with
+* -nua_register(), nua_create(), nua_set_params(), nua_get_params()
+*
+*@par Parameter type
+*
+*    int (boolean: nonzero is true, zero is false)
+*
+* @par Values
+*    - 0 (false) -  use normal IMS security mechanisms as per 3GPP TS 33.203
+*    - 1 (true) - try to use early IMS as per 3GPP TS 33.978 instead of default IMS security (3GPP TS 33.203)
+*
+* Corresponding tag taking reference parameter is NUTAG_EARLY_IMS_REF().
+*/
+tag_typedef_t nutag_early_ims = BOOLTAG_TYPEDEF(early_ims);
+
+/**@def NUTAG_EARLY_IMS_REF(x)
+ * Reference tag for NUTAG_EARLY_IMS().
+ */
+
+/**@def NUTAG_SIGCOMP_ENABLED(x)
+* Enable/disable SigComp (RFC 3320) compression when sending sip message.
+* Both full and half duplex compression are supported.
+* Compression and decompression use <a href="http://code.google.com/p/libsigcomp">libsigcomp</a>.
+*
+*@par Used with
+* - nua_create(), nua_set_params(), nua_get_params()
+*
+*@par Parameter type
+*
+*    int (boolean: nonzero is true, zero is false)
+*
+* @par Values
+*    - 0 (false) -  do not compress sip messages
+*    - 1 (true) - compress sip message using SigComp as per RFC 3320
+*
+* Corresponding tag taking reference parameter is NUTAG_SIGCOMP_ENABLED_REF().
+*/
+tag_typedef_t nutag_sigcomp_enabled = BOOLTAG_TYPEDEF(sigcomp_enabled);
+
+/**@def NUTAG_EARLY_IMS_REF(x)
+ * Reference tag for NUTAG_EARLY_IMS().
+ */
 /**@def NUTAG_IMPU(x)
 * Set the IP Multimedia Public Identity (sip or tel uri). This uri is publicly published and can be
 * seen as your sip adress.
@@ -480,30 +527,6 @@ tag_typedef_t nutag_realm = STRTAG_TYPEDEF(realm);
 
 /**@def NUTAG_REALM_REF(x)
  * Reference tag for NUTAG_REALM().
- */
-
-/**@def NUTAG_EARLY_IMS(x)
-* Activate/deactivate early IMS security as per 3GPP TS 33.978.
-* You may activate this option if you are using the stack as basic sip engine without IMS
-* security features.
-*
-*@par Used with
-* -nua_register(), nua_create(), nua_set_params(), nua_get_params()
-*
-*@par Parameter type
-*
-*    int (boolean: nonzero is true, zero is false)
-*
-* @par Values
-*    - 0 (false) -  use normal IMS security mechanisms as per 3GPP TS 33.203
-*    - 1 (true) - try to use early IMS as per 3GPP TS 33.978 instead of default IMS security (3GPP TS 33.203)
-*
-* Corresponding tag taking reference parameter is NUTAG_EARLY_IMS_REF().
-*/
-tag_typedef_t nutag_early_ims = BOOLTAG_TYPEDEF(early_ims);
-
-/**@def NUTAG_EARLY_IMS_REF(x)
- * Reference tag for NUTAG_EARLY_IMS().
  */
 
 /**@def NUTAG_EARLY_MEDIA(x)

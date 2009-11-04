@@ -806,7 +806,7 @@ static int auc_digest_challenge(auth_client_t *ca, msg_auth_t const *ch)
     goto error;
 
   /* Check that we can handle the challenge */
-  if (!ac->ac_md5 && !ac->ac_md5sess)
+  if ((!ac->ac_md5 && !ac->ac_md5sess) && !ac->ac_md5_akv1 && ! ac->ac_md5_akv2)
     goto error;
   if (ac->ac_qop && !ac->ac_auth && !ac->ac_auth_int)
     goto error;
@@ -821,8 +821,13 @@ static int auc_digest_challenge(auth_client_t *ca, msg_auth_t const *ch)
       /* Free the old one if we are updating after stale=true */
       su_free(home, (void *)cda->cda_cnonce);
     su_guid_generate(guid);
+#if 0
+	cda->cda_cnonce=cnonce="f221681c1e42fb5f8f9957bf7e72eb2b";
+	b64len = sizeof(cnonce);
+#else
     cda->cda_cnonce = cnonce = su_alloc(home, b64len);
     base64_e(cnonce, b64len, guid, sizeof(guid));
+#endif
     cda->cda_ncount = 0;
   }
 
@@ -904,6 +909,8 @@ int auc_digest_authorization(auth_client_t *ca,
   ar->ar_algorithm = NULL;
   ar->ar_md5 = ac->ac_md5;
   ar->ar_md5sess = ac->ac_md5sess;
+  ar->ar_md5_akv1 = ac->ac_md5_akv1;
+  ar->ar_md5_akv2 = ac->ac_md5_akv2;
   ar->ar_opaque = ac->ac_opaque;
   ar->ar_qop = NULL;
   ar->ar_auth = ac->ac_auth;
