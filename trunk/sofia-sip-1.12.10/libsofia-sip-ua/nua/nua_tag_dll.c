@@ -437,6 +437,55 @@ tag_typedef_t nutag_callee_caps;
  * Reference tag for NUTAG_CALLEE_CAPS().
  */
 
+/**@def NUTAG_EARLY_IMS(x)
+* Activate/deactivate early IMS security as per 3GPP TS 33.978.
+* You may activate this option if you are using the stack as basic sip engine without IMS
+* security features.
+*
+*@par Used with
+* -nua_register(), nua_create(), nua_set_params(), nua_get_params()
+*
+*@par Parameter type
+*
+*    int (boolean: nonzero is true, zero is false)
+*
+* @par Values
+*    - 0 (false) -  use normal IMS security mechanisms as per 3GPP TS 33.203
+*    - 1 (true) - try to use early IMS as per 3GPP TS 33.978 instead of default IMS security (3GPP TS 33.203)
+*
+* Corresponding tag taking reference parameter is NUTAG_EARLY_IMS_REF().
+*/
+EXPORT tag_typedef_t nutag_early_ims_ref;
+tag_typedef_t nutag_early_ims;
+
+/**@def NUTAG_EARLY_IMS_REF(x)
+ * Reference tag for NUTAG_EARLY_IMS().
+ */
+
+/**@def NUTAG_SIGCOMP_ENABLED(x)
+* Enable/disable SigComp (RFC 3320) compression when sending sip message.
+* Both full and half duplex compression are supported.
+* Compression and decompression use <a href="http://code.google.com/p/libsigcomp">libsigcomp</a>.
+*
+*@par Used with
+* - nua_create(), nua_set_params(), nua_get_params()
+*
+*@par Parameter type
+*
+*    int (boolean: nonzero is true, zero is false)
+*
+* @par Values
+*    - 0 (false) -  do not compress sip messages
+*    - 1 (true) - compress sip message using SigComp as per RFC 3320
+*
+* Corresponding tag taking reference parameter is NUTAG_SIGCOMP_ENABLED_REF().
+*/
+EXPORT tag_typedef_t nutag_sigcomp_enabled_ref;
+tag_typedef_t nutag_sigcomp_enabled;
+
+/**@def NUTAG_EARLY_IMS_REF(x)
+ * Reference tag for NUTAG_EARLY_IMS().
+ */
 /**@def NUTAG_IMPU(x)
 * Set the IP Multimedia Public Identity (sip or tel uri). This uri is publicly published and can be
 * seen as your sip adress.
@@ -505,31 +554,6 @@ tag_typedef_t nutag_realm;
 
 /**@def NUTAG_REALM_REF(x)
  * Reference tag for NUTAG_REALM().
- */
-
-/**@def NUTAG_EARLY_IMS(x)
-* Activate/deactivate early IMS security as per 3GPP TS 33.978.
-* You may activate this option if you are using the stack as basic sip engine without IMS
-* security features.
-*
-*@par Used with
-* -nua_register(), nua_create(), nua_set_params(), nua_get_params()
-*
-*@par Parameter type
-*
-*    int (boolean: nonzero is true, zero is false)
-*
-* @par Values
-*    - 0 (false) -  use normal IMS security mechanisms as per 3GPP TS 33.203
-*    - 1 (true) - try to use early IMS as per 3GPP TS 33.978 instead of default IMS security (3GPP TS 33.203)
-*
-* Corresponding tag taking reference parameter is NUTAG_EARLY_IMS_REF().
-*/
-EXPORT tag_typedef_t nutag_early_ims_ref;
-tag_typedef_t nutag_early_ims;
-
-/**@def NUTAG_EARLY_IMS_REF(x)
- * Reference tag for NUTAG_EARLY_IMS().
  */
 
 /**@def NUTAG_EARLY_MEDIA(x)
@@ -3164,7 +3188,7 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fwdReason, LPVOID fImpLoad)
   tag_typedef_t _nutag_early_media = BOOLTAG_TYPEDEF(early_media);
   tag_typedef_t _nutag_early_media_ref =
     REFTAG_TYPEDEF(nutag_early_media);
-  tag_typedef_t _nutag_impi = STRTAG_TYPEDEF(impi)
+  tag_typedef_t _nutag_impi = STRTAG_TYPEDEF(impi);
   tag_typedef_t _nutag_impi_ref =
     REFTAG_TYPEDEF(nutag_impi);
   tag_typedef_t _nutag_service_route_enable =
@@ -3206,7 +3230,7 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fwdReason, LPVOID fImpLoad)
   tag_typedef_t _nutag_outbound_set4 = STRTAG_TYPEDEF(outbound_set4);
   tag_typedef_t _nutag_outbound_set4_ref =
     REFTAG_TYPEDEF(nutag_outbound_set4);
-  tag_typedef_t _nutag_impu = URLTAG_TYPEDEF(impu)
+  tag_typedef_t _nutag_impu = URLTAG_TYPEDEF(impu);
   tag_typedef_t _nutag_impu_ref =
     REFTAG_TYPEDEF(nutag_impu);
   tag_typedef_t _nutag_detect_network_updates = UINTTAG_TYPEDEF(detect_network_updates);
@@ -3281,9 +3305,12 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fwdReason, LPVOID fImpLoad)
   tag_typedef_t _nutag_enablemessage = BOOLTAG_TYPEDEF(enableMessage);
   tag_typedef_t _nutag_enablemessage_ref =
     REFTAG_TYPEDEF(nutag_enablemessage);
-  tag_typedef_t _nutag_realm = STRTAG_TYPEDEF(realm)
+  tag_typedef_t _nutag_realm = STRTAG_TYPEDEF(realm);
   tag_typedef_t _nutag_realm_ref =
     REFTAG_TYPEDEF(nutag_realm);
+  tag_typedef_t _nutag_sigcomp_enabled = BOOLTAG_TYPEDEF(sigcomp_enabled);
+  tag_typedef_t _nutag_sigcomp_enabled_ref =
+    REFTAG_TYPEDEF(nutag_sigcomp_enabled);
   tag_typedef_t _nutag_registrar = URLTAG_TYPEDEF(registrar);
   tag_typedef_t _nutag_registrar_ref =
     REFTAG_TYPEDEF(nutag_registrar);
@@ -3494,6 +3521,8 @@ BOOL WINAPI DllMain(HINSTANCE hInst, DWORD fwdReason, LPVOID fImpLoad)
   *(struct tag_type_s *)nutag_enablemessage_ref = *_nutag_enablemessage_ref;
   *(struct tag_type_s *)nutag_realm = *_nutag_realm;
   *(struct tag_type_s *)nutag_realm_ref = *_nutag_realm_ref;
+  *(struct tag_type_s *)nutag_sigcomp_enabled = *_nutag_sigcomp_enabled;
+  *(struct tag_type_s *)nutag_sigcomp_enabled_ref = *_nutag_sigcomp_enabled_ref;
   *(struct tag_type_s *)nutag_registrar = *_nutag_registrar;
   *(struct tag_type_s *)nutag_registrar_ref = *_nutag_registrar_ref;
   *(struct tag_type_s *)nutag_m_params = *_nutag_m_params;

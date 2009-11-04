@@ -30,6 +30,7 @@
  * @author Martti Mela <Martti Mela@nokia.com>
  * @author Remeres Jacobs <Remeres.Jacobs@nokia.com>
  * @author Tat Chan <Tat.Chan@nokia.com>
+ * @author xxxyyyzzz <imsframework(at)gmail.com>
  *
  * @date Created: Wed Feb 14 18:32:58 2001 ppessi
  */

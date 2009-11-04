@@ -37,6 +37,12 @@ EXPORT tag_typedef_t nutag_media_features_ref =
 extern tag_typedef_t nutag_callee_caps;
 EXPORT tag_typedef_t nutag_callee_caps_ref = 
   REFTAG_TYPEDEF(nutag_callee_caps);
+extern tag_typedef_t nutag_early_ims;
+EXPORT tag_typedef_t nutag_early_ims_ref = 
+  REFTAG_TYPEDEF(nutag_early_ims);
+extern tag_typedef_t nutag_sigcomp_enabled;
+EXPORT tag_typedef_t nutag_sigcomp_enabled_ref = 
+  REFTAG_TYPEDEF(nutag_sigcomp_enabled);
 extern tag_typedef_t nutag_impu;
 EXPORT tag_typedef_t nutag_impu_ref = 
   REFTAG_TYPEDEF(nutag_impu);
@@ -46,9 +52,6 @@ EXPORT tag_typedef_t nutag_impi_ref =
 extern tag_typedef_t nutag_realm;
 EXPORT tag_typedef_t nutag_realm_ref = 
   REFTAG_TYPEDEF(nutag_realm);
-extern tag_typedef_t nutag_early_ims;
-EXPORT tag_typedef_t nutag_early_ims_ref = 
-  REFTAG_TYPEDEF(nutag_early_ims);
 extern tag_typedef_t nutag_early_media;
 EXPORT tag_typedef_t nutag_early_media_ref = 
   REFTAG_TYPEDEF(nutag_early_media);

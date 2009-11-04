@@ -43,12 +43,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	assert(stack->get_initialized());
 
 	/* MUST: Initialize mandatory parameters */
-	stack->set_public_id("sip:doubango@example.com");
-	stack->set_private_id("doubango@example.com");
+	stack->set_public_id("sip:bob@ims.inexbee.com");
+	stack->set_private_id("bob@ims.inexbee.com");
 
 	stack->set_pcscf("192.168.0.14");
-	stack->set_pcscf_port(5060);
-	stack->set_realm("example.com");
+	stack->set_pcscf_port(4060);
+	stack->set_realm("ims.inexbee.com");
+
+	/* Not mandatory but must be set before starting */
+	stack->set_sigcomp(true);
 
 	/* run stack */
 	assert( ERR_SUCCEED(stack->run()) );
@@ -56,6 +59,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	/* set other optional parameters */
 	stack->set_displayname("Doubango");
 	stack->set_privacy("none");
+	stack->set_password("bob");
 	stack->set_early_ims(false);
 	stack->set_expires(10);
 
@@ -64,7 +68,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	/* wait */
 #ifdef WIN32
-	Sleep(50000);
+	Sleep(500000);
 #else
 	getchar();
 #endif

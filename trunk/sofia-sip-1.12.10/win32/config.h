@@ -257,10 +257,13 @@
 #undef HAVE_SELECT
 
 /* Define to 1 if you have Sofia sigcomp >= 2.5 */
-#undef HAVE_SIGCOMP
+#define HAVE_SIGCOMP 1
 
 /* Define to 1 if you have the <sigcomp.h> header file. */
-#undef HAVE_SIGCOMP_H
+#define HAVE_SIGCOMP_H 1
+
+/* Define to 1 if you have Sofia sigcomp >= 2.5 */
+#define HAVE_SOFIA_SIGCOMP 1
 
 /* Define to 1 if you have the `signal' function. */
 #define HAVE_SIGNAL 1
@@ -282,9 +285,6 @@
 
 /* Define to 1 if we use NTLM library */
 #undef HAVE_SOFIA_NTLM
-
-/* Define to 1 if you have Sofia sigcomp >= 2.5 */
-#undef HAVE_SOFIA_SIGCOMP
 
 /* Define to 1 always */
 #define HAVE_SOFIA_SIP 1

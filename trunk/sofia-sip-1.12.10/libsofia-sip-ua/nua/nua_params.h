@@ -97,6 +97,8 @@ struct nua_handle_preferences
   /* Preferences for registration (and dialog establishment) */
   unsigned         nhp_callee_caps:1; /**< Add callee caps to contact */
   unsigned         nhp_media_features:1;/**< Add media features to caps*/
+  /** Enable SigComp */
+  unsigned		   nhp_sigcomp_enabled;
   /** Enable Early IMS security */
   unsigned		   nhp_early_ims:1;
   /** Enable Service-Route */
@@ -185,6 +187,7 @@ struct nua_handle_preferences
     unsigned nhb_message_auto_respond:1;
     unsigned nhb_callee_caps:1;
     unsigned nhb_media_features:1;
+	unsigned nhb_sigcomp_enabled:1;
 	unsigned nhb_early_ims:1;
     unsigned nhb_service_route_enable:1;
     unsigned nhb_path_enable:1;

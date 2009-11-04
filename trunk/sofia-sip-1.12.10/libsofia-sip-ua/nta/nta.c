@@ -2186,6 +2186,11 @@ int nta_agent_add_tport(nta_agent_t *self,
 		  (void *)self, tpn->tpn_comp, URL_PRINT_ARGS(url)));
     }
   }
+#if HAVE_SIGCOMP
+  else{
+	  tpn->tpn_comp = "sigcomp";
+  }
+#endif
 
   ta_start(ta, tag, value);
 

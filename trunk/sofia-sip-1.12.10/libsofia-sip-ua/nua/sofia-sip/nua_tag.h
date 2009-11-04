@@ -117,6 +117,11 @@ SOFIAPUBVAR tag_typedef_t nutag_use_dialog_ref;
 
 /* Parameters added for 3GPP IMS
  */
+#define NUTAG_SIGCOMP_ENABLED(x)		nutag_sigcomp_enabled, tag_bool_v(x)
+SOFIAPUBVAR tag_typedef_t nutag_sigcomp_enabled;
+#define NUTAG_SIGCOMP_ENABLED_REF(x) nutag_sigcomp_enabled_ref, tag_bool_vr(&(x))
+SOFIAPUBVAR tag_typedef_t nutag_sigcomp_enabled_ref;
+
 #define NUTAG_EARLY_IMS(x)		nutag_early_ims, tag_bool_v(x)
 SOFIAPUBVAR tag_typedef_t nutag_early_ims;
 #define NUTAG_EARLY_IMS_REF(x) nutag_early_ims_ref, tag_bool_vr(&(x))

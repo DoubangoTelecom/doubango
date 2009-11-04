@@ -11,7 +11,7 @@ RFC 3323
 RFC 3326 
 RFC 3325 
 RFC 3327 
- RFC 3329 
+RFC 3329 
 RFC 3361 
 RFC 3420 
 RFC 3428 
@@ -50,6 +50,8 @@ RFC 3556
 RFC 3605 
 RFC 3890 
 RFC 3455
+RFC 3310
+RFC 4169
 draft-ietf-sip-outbound
 draft-ietf-sip-gruu-14 
 

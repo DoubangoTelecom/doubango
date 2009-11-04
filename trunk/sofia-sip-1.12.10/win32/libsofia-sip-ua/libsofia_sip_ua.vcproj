@@ -49,7 +49,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..,..\..\libsofia-sip-ua\su,..\..\libsofia-sip-ua\ipt,..\..\libsofia-sip-ua\sresolv,..\..\libsofia-sip-ua\bnf,..\..\libsofia-sip-ua\url,..\..\libsofia-sip-ua\msg,..\..\libsofia-sip-ua\sip,..\..\libsofia-sip-ua\nta,..\..\libsofia-sip-ua\nua,..\..\libsofia-sip-ua\iptsec,..\..\libsofia-sip-ua\http,..\..\libsofia-sip-ua\nth,..\..\libsofia-sip-ua\nea,..\..\libsofia-sip-ua\sdp,..\..\libsofia-sip-ua\soa,..\..\libsofia-sip-ua\stun,..\..\libsofia-sip-ua\tport,..\..\libsofia-sip-ua\features,..\pthread,."
+				AdditionalIncludeDirectories="..;&quot;..\..\libsofia-sip-ua\sigcomp&quot;;&quot;..\..\libsofia-sip-ua\su&quot;;&quot;..\..\libsofia-sip-ua\ipt&quot;;&quot;..\..\libsofia-sip-ua\sresolv&quot;;&quot;..\..\libsofia-sip-ua\bnf&quot;;&quot;..\..\libsofia-sip-ua\url&quot;;&quot;..\..\libsofia-sip-ua\msg&quot;;&quot;..\..\libsofia-sip-ua\sip&quot;;&quot;..\..\libsofia-sip-ua\nta&quot;;&quot;..\..\libsofia-sip-ua\nua&quot;;&quot;..\..\libsofia-sip-ua\iptsec&quot;;&quot;..\..\libsofia-sip-ua\http&quot;;&quot;..\..\libsofia-sip-ua\nth&quot;;&quot;..\..\libsofia-sip-ua\nea&quot;;&quot;..\..\libsofia-sip-ua\sdp&quot;;&quot;..\..\libsofia-sip-ua\soa&quot;;&quot;..\..\libsofia-sip-ua\stun&quot;;&quot;..\..\libsofia-sip-ua\tport&quot;;&quot;..\..\libsofia-sip-ua\features&quot;;..\pthread;."
 				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;LIBSOFIA_SIP_UA_EXPORTS;IN_LIBSOFIA_SIP_UA=1;IN_LIBSOFIA_SRES=1"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -2521,6 +2521,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\libsofia-sip-ua\iptsec\auth_milenage.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\libsofia-sip-ua\iptsec\auth_module.c"
 					>
 					<FileConfiguration
@@ -2629,6 +2633,10 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="..\..\libsofia-sip-ua\iptsec\auth_rijndael.c"
+					>
 				</File>
 				<File
 					RelativePath="..\..\libsofia-sip-ua\iptsec\auth_tag.c"
@@ -3827,6 +3835,14 @@
 					</FileConfiguration>
 				</File>
 			</Filter>
+			<Filter
+				Name="sigcomp"
+				>
+				<File
+					RelativePath="..\..\libsofia-sip-ua\sigcomp\sigcomp.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -4260,6 +4276,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\libsofia-sip-ua\iptsec\sofia-sip\auth_milenage.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\libsofia-sip-ua\iptsec\sofia-sip\auth_module.h"
 					>
 				</File>
@@ -4269,6 +4289,10 @@
 				</File>
 				<File
 					RelativePath="..\..\libsofia-sip-ua\iptsec\sofia-sip\auth_plugin.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\libsofia-sip-ua\iptsec\sofia-sip\auth_rijndael.h"
 					>
 				</File>
 				<File
@@ -4381,6 +4405,14 @@
 				</File>
 				<File
 					RelativePath="..\..\libsofia-sip-ua\soa\sofia-sip\soa_tag.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sigcomp headers"
+				>
+				<File
+					RelativePath="..\..\libsofia-sip-ua\sigcomp\sofia-sip\sigcomp.h"
 					>
 				</File>
 			</Filter>

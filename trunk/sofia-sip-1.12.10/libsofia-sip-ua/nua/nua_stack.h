@@ -67,10 +67,6 @@
 
 SOFIA_BEGIN_DECLS
 
-#if HAVE_SIGCOMP
-#include <sigcomp.h>
-#endif
-
 #ifndef NUA_PARAMS_H
 #include "nua_params.h"
 #endif
