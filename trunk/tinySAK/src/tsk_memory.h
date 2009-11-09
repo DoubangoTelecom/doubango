@@ -20,23 +20,32 @@
 *
 */
 
-/**@file sak.h
- * @brief This file contains all headers needed to export public API functions.
+/**@file tsk_memory.h
+ * @brief Useful memory management functions to handle memory.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+#ifndef _TINYSAK_MEMORY_H_
+#define _TINYSAK_MEMORY_H_
 
 #include "tinySAK_config.h"
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_macros.h"
 #include "tsk_heap.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
+#include <stdlib.h> /* size_t */
 
-#endif /* _TINYSAK_SAK_H_ */
+/** Safely free a pointer
+*/
+#define TSK_SAFE_FREE(heap, ptr) (void)tsk_free(heap, &ptr);
+
+/** Safely free a pointer
+*/
+#define TSK_SAFE_FREE2(ptr) (void)tsk_free(0, &ptr);
+
+TINYSAK_API void* tsk_malloc(tsk_heap_t *heap, size_t size);
+TINYSAK_API void* tsk_realloc (tsk_heap_t *heap,  void * ptr, size_t size);
+TINYSAK_API void tsk_free(tsk_heap_t *heap, void** ptr);
+TINYSAK_API void* tsk_calloc(tsk_heap_t *heap, size_t num, size_t size);
+
+
+#endif /* _TINYSAK_MEMORY_H_ */

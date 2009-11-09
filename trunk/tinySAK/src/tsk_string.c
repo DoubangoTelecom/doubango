@@ -22,12 +22,14 @@
 
 /**@file tsk_string.c
  * @brief Useful string functions to manipulate strings.
+ * As I'm a lazy man, some definition come from this <ahref="http://www.cplusplus.com">this website</a>
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tsk_string.h"
+#include "tsk_memory.h"
 
 #include <stdarg.h>
 #include <ctype.h>
@@ -42,9 +44,6 @@
 #	define stricmp		_stricmp
 #endif
 
-#define HEAP_PUSH(heap, address) if(heap) tsk_heap_push(heap, (void*)address)
-#define HEAP_POP(heap, address) if(heap) tsk_heap_pop(heap, (void*)address); else free(address)
-
 /**@defgroup tsk_string_group String utils
 */
 
@@ -52,18 +51,42 @@
 /**@page tsk_string_page String utils Tutorial
 */
 
+static char HEX[] = "0123456789ABCDEF";
+
 /**@ingroup tsk_string_group
-* Free allocated memory
-* @param heap The memory heap from which to free @a ptr. Set to NULL if @a ptr had not been allocated using heap allocation mechanism.
-* @param ptr POinter to the memory to free
+* From base 10 to base 16
+* @param c the base 10 char to convert to base 16
+* @retval The base 16 value
 */
-void tsk_free(tsk_heap_t *heap, void** ptr)
+char tsk_b10tob16(char c)
 {
-	if(ptr)
-	{
-		HEAP_POP(heap, *ptr);
-		*ptr = 0;
-	}
+	return HEX[c & 15];
+}
+
+/**@ingroup tsk_string_group
+* From base 16 to base 10
+* @param c The base 16 char to convert to base 10
+* @retval The base 10 value
+*/
+char tsk_b16tob10(char c)
+{
+	return isdigit(c) ? c - '0' : tolower(c) - 'a' + 10;
+}
+
+/**@ingroup tsk_string_group
+* Compare two strings (case insensitive)
+* Compares the C string str1 to the C string str2.
+* This function starts comparing the first character of each string. If they are equal to each other, it continues with the following pairs 
+* until the characters differ or until a terminanting null-character is reached.
+* @param str1 C string to be compared. 
+* @param str2 C string to be compared. 
+* @retval Returns an integral value indicating the relationship between the strings:
+* A zero value indicates that both strings are equal.
+* A value greater than zero indicates that the first character that does not match has a greater value in str1 than in str2; And a value less than zero indicates the opposite.
+*/
+int tsk_stricmp(const char * str1, const char * str2)
+{
+	return stricmp(str1, str2);
 }
 
 /**@ingroup tsk_string_group
@@ -79,4 +102,66 @@ char* tsk_strdup(tsk_heap_t *heap, const char *s1)
 	HEAP_PUSH(heap, ret);
 
 	return ret;
+}
+
+/**@ingroup tsk_string_group
+* Appends a copy of the source string to the destination string. The terminating null character in destination is overwritten by the first character of source, 
+* and a new null-character is appended at the end of the new string formed by the concatenation of both in destination. If the destination is NULL then new 
+* memory will allocated and filled with source value.
+* @param heap The memory heap on which to allocate the concatened string. Set to NULL if
+* you don't want to use heap allocation mechanism.
+* @param destination Pointer de the destination array containing the new string.
+* @param source C string to be appended. This should not overlap destination. If NULL then nothing is done.
+*/
+void tsk_strcat(tsk_heap_t *heap, char** destination, const char* source)
+{
+	size_t index = 0;
+
+	if(!source) return;
+
+	if(!*destination){
+		*destination = (char*)tsk_malloc(heap, strlen(source)+1);
+		strncpy(*destination, source, strlen(source)+1);
+	}else{
+		index = strlen(*destination);
+		*destination = tsk_realloc(heap, *destination, index + strlen(source)+1);
+		strncpy(((*destination)+index), source, strlen(source)+1);
+	}
+}
+
+/**@ingroup tsk_string_group
+* Writes into the array pointed by str a C string consisting on a sequence of data formatted as the format argument specifies. After the format parameter, 
+* the function expects at least as many additional arguments as specified in format.
+* This function behaves exactly as printf does, but writing its results to a string instead of stdout. The size of the array passed as str should be enough to 
+* contain the entire formatted string.
+* @param heap The memory heap on which to allocate the concatened string. Set to NULL if
+* you don't want to use heap allocation mechanism.
+* @param str Pointer to an array of char elements where the resulting C string is stored. 
+* MUST be NULL.
+* @param format C string that contains the text to be written to the buffer. For more information see definiton of C function @a sprintf
+* @retval On success, the total number of characters written is returned. This count does not include the additional null-character automatically appended 
+* at the end of the string.
+* On failure, a negative number is returned.
+*/
+int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...)
+{
+	int len = 0;
+	va_list list;
+	
+	/* initialize variable arguments */
+	va_start(list, format);
+
+	/* free previous value */
+	if(*str) tsk_free(heap, str);
+	
+	/* compute destination len */
+    len = vsnprintf(0, 0, format, list);
+    *str = (char*)tsk_malloc(heap, len+1);
+    vsnprintf(*str, len, format, list);
+	(*str)[len] = '\0';
+	
+	/* reset variable arguments */
+	va_end( list );
+	
+	return len;
 }

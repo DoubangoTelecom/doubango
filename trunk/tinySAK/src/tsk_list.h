@@ -36,20 +36,20 @@
 /**@def TSK_LIST_CREATE
 * @brief allocate and initialize a linked list
 */
-#define TSK_LIST_CREATE(l)				TSK_XXX_CREATE(l, list)
+#define TSK_LIST_CREATE(l)				TSK_XXX_CREATE2(l, list)
 /**@def TSK_LIST_SAFE_FREE
 * @brief safely free a linked list
 */
-#define TSK_LIST_SAFE_FREE(l)			TSK_XXX_SAFE_FREE(l, list)
+#define TSK_LIST_SAFE_FREE(l)				TSK_XXX_SAFE_FREE2(l, list)
 
 /**@def TSK_LIST_ITEM_CREATE
 * @brief allocate and initialize an item
 */
-#define TSK_LIST_ITEM_CREATE(item)		TSK_XXX_CREATE(item, list_item)
+#define TSK_LIST_ITEM_CREATE(item)		TSK_XXX_CREATE2(item, list_item)
 /**@def TSK_LIST_ITEM_SAFE_FREE
 * @brief safely free an item
 */
-#define TSK_LIST_ITEM_SAFE_FREE(item)	TSK_XXX_SAFE_FREE(item, list_item)
+#define TSK_LIST_ITEM_SAFE_FREE(item)		TSK_XXX_SAFE_FREE2(item, list_item)
 
 /**@typedef tsk_list_item_func_free
 * Used to define the function to call to free an @b item.
@@ -96,7 +96,7 @@ typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* 
 
 TINYSAK_API void tsk_list_init(tsk_list_t* list);
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
-TINYSAK_API void tsk_list_remove_item2(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
+TINYSAK_API void tsk_list_remove_item2(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 TINYSAK_API void tsk_list_add_item(tsk_list_t* list, tsk_list_item_t** item);
 TINYSAK_API void tsk_list_add_list(tsk_list_t* destination, tsk_list_t** source);
 TINYSAK_API void tsk_list_add_data(tsk_list_t* destination, void** data, tsk_list_item_func_free item_func_free);

@@ -20,23 +20,20 @@
 *
 */
 
-/**@file sak.h
- * @brief This file contains all headers needed to export public API functions.
+/**@file tsk_url.h
+ * @brief Useful string functions to manipulate strings.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+#ifndef _TINYSAK_URL_H_
+#define _TINYSAK_URL_H_
 
 #include "tinySAK_config.h"
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_macros.h"
 #include "tsk_heap.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
 
-#endif /* _TINYSAK_SAK_H_ */
+TINYSAK_API char* tsk_url_encode(tsk_heap_t *heap, const char* url);
+TINYSAK_API char* tsk_url_decode(tsk_heap_t *heap, const char* url);
+
+#endif /* _TINYSAK_URL_H_ */

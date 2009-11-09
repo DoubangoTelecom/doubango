@@ -28,7 +28,7 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tsk_list.h"
-#include <stdlib.h>
+#include "tsk_memory.h"
 #include <string.h>
 
 /**@defgroup tsk_list_group Linked list
@@ -176,8 +176,9 @@ int find_person_by_name(const tsk_list_item_t* item, const void* name)
 *
 */
 
-/* find an item */
-int tsk_list_find_by_item(const tsk_list_item_t* item, const void* _item)
+/** tsk_list_find_by_item
+*/
+static int tsk_list_find_by_item(const tsk_list_item_t* item, const void* _item)
 {
 	return (item == (const tsk_list_item_t*)_item) ? 1 : 0;
 }
@@ -207,7 +208,7 @@ void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 * @param predicate the predicate function
 * @param data the data to pass to the predicate function
 */
-void tsk_list_remove_item2(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
+void tsk_list_remove_item2(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
 	if(list)
 	{
@@ -218,7 +219,12 @@ void tsk_list_remove_item2(const tsk_list_t* list, tsk_list_func_predicate predi
 		{
 			if(predicate(curr, data))
 			{
-				prev->next = curr->next;
+				if(prev == curr && curr->next == NULL)
+				{ /* There was only one item */
+					list->head = NULL;
+				}
+				else prev->next = curr->next;
+
 				tsk_list_item_free(&curr);
 				break;
 			}

@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\thirdparties\include\win32"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,6 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="&quot;..\thirdparties\lib\win32\libxml\vs_libxml2.dll.a&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -195,7 +197,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_memory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_string.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_url.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_xml.h"
 				>
 			</File>
 		</Filter>
@@ -217,7 +231,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_memory.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_string.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_url.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_xml.c"
 				>
 			</File>
 		</Filter>

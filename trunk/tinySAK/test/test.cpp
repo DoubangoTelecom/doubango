@@ -105,30 +105,118 @@ void test_heap()
 	/* initialize our memory heap */
 	tsk_heap_init(&heap);
 
-	/* heap(1) */
+	/* heap(1): Ten strings are allocated an all freed when we cleanup the heap  */
 	for(i=0; i<10;i++)
 	{
 		char* test = tsk_strdup(&heap, "testing the heap (1)");
 	}
 	tsk_heap_cleanup(&heap);
 
-	/* heap(2)*/
+	/* heap(2): pop memory from the heap*/
 	{
-		char* test = tsk_strdup(&heap, "testing the heap (2)");
+ 		char* test = tsk_strdup(&heap, "testing the heap (2)");
+		tsk_free(&heap, &test);
+
+		test = tsk_calloc(&heap, 10, 1);
+		tsk_free(&heap, &test);
+
+		test = tsk_malloc(&heap, 10);
+		tsk_free(&heap, &test);
+
+		test = tsk_malloc(&heap, 10);
+		test = tsk_realloc(&heap, test, 100);
 		tsk_free(&heap, &test);
 	}
+	
+	/* heap(3): pop a NULL pointer */
+	{
+		tsk_free(&heap, 0);
+	}
+
+	/* heap(4): allocate and pop from NULL heap */
+	{
+		char* test = tsk_calloc(0, 10, 1);
+		tsk_free(0, &test);
+
+		test = tsk_malloc(0, 10);
+		tsk_free(0, &test);
+
+		test = tsk_malloc(0, 10);
+		test = tsk_realloc(0, test, 100);
+		tsk_free(0, &test);
+	}
+}
+
+/* test string manipulation */
+void test_strings()
+{
+	char* str = 0;
+	tsk_heap_t heap;
+
+	/* initialize our memory heap */
+	tsk_heap_init(&heap);
+
+	/* concatenation */
+	tsk_strcat(&heap, &str, "first");
+	printf("test_strings/// strcat=%s\n", str);
+
+	tsk_strcat(&heap, &str, "second");
+	printf("test_strings/// strcat=%s\n", str);
+	
+	/* sprintf */
+	tsk_sprintf(&heap, &str, "%s", "third");
+	printf("test_strings/// strcat=%s\n", str);
+
+	/* cleanup */
+	tsk_heap_cleanup(&heap);
+}
+
+/* url encoding/decoding */
+void test_url()
+{
+	const char* url = "http://xcap.example.org/resource-lists/users/sip:RCSUser@example.org/index/~~/resource-lists/list%5B@name=%22rcs%22%5D";
+	char* str = 0;
+	tsk_heap_t heap;
+
+	/* initialize our memory heap */
+	tsk_heap_init(&heap);
+
+	/*decode url*/
+	str = tsk_url_decode(&heap, url);
+	printf("test_url/// decoded url:%s\n", str);
+
+	/*encode url*/
+	str = tsk_url_encode(&heap, str);
+	printf("test_url/// encoded url:%s\n", str);
+
+	/* cleanup */
+	tsk_heap_cleanup(&heap);
 }
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	/* linked lists */
-	test_basic_list();
-	test_complex_list();
+	while(1)
+	{
+		/* linked lists */
+		test_basic_list();
+		printf("\n\n");
+		test_complex_list();
+		printf("\n\n");
 
-	/* heap */
-	while(1)test_heap();
+		/* heap */
+		test_heap();
+		printf("\n\n");
 
-	printf("\n\n");
+		/* strings */
+		test_strings();
+		printf("\n\n");
+
+		/* url */
+		while(1)test_url();
+		printf("\n\n");
+	}
+
+	getchar();
 
 	return 0;
 }
