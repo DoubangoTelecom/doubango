@@ -33,7 +33,12 @@
 #include "tinySAK_config.h"
 #include "tsk_heap.h"
 
-TINYSAK_API void tsk_free(tsk_heap_t *heap, void** ptr);
+TINYSAK_API char tsk_b10tob16(char c);
+TINYSAK_API char tsk_b16tob10(char c);
+
+TINYSAK_API int tsk_stricmp(const char * str1, const char * str2);
 TINYSAK_API char* tsk_strdup(tsk_heap_t *heap, const char *s1);
+TINYSAK_API void tsk_strcat(tsk_heap_t *heap, char** destination, const char* source);
+TINYSAK_API int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...);
 
 #endif /* _TINYSAK_STRING_H_ */

@@ -28,13 +28,19 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tsk_heap.h"
+#include "tsk_memory.h"
 #include <stdlib.h>
 
 /**@defgroup tsk_heap_group Memory heap
 */
 
-// predicate function to find an address
-int tsk_heap_find_by_address(const tsk_heap_address_t* item, const void* address)
+/**@page tsk_heap_page Heap Management Tutorial
+*/
+
+/**@ingroup tsk_heap_group
+* Predicate function used to retrive an address by ref
+*/
+static int tsk_heap_find_by_address(const tsk_heap_address_t* item, const void* address)
 {
 	return (item->data == address) ? 1 : 0;
 }

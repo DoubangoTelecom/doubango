@@ -53,6 +53,13 @@ typedef struct tsk_heap_s
 }
 tsk_heap_t;
 
+/** PUSH new address to the heap pool
+*/
+#define HEAP_PUSH(heap, address) if(heap) tsk_heap_push(heap, (void*)address)
+/** POP and free an address from the heap pool
+*/
+#define HEAP_POP(heap, address) if(heap) tsk_heap_pop(heap, (void*)address); else free(address)
+
 TINYSAK_API void tsk_heap_init(tsk_heap_t *heap);
 TINYSAK_API void tsk_heap_push(tsk_heap_t *heap, void * address);
 TINYSAK_API void tsk_heap_pop(tsk_heap_t *heap, void * address);

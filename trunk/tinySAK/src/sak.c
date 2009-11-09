@@ -35,6 +35,9 @@
 * @par Getting Started
 *
 * - @ref tsk_list_page
+* - @ref tsk_heap_page
+* - @ref tsk_memory_page
+* - @ref tsk_string_page
 *
 * @par Supported Systems
 * 
