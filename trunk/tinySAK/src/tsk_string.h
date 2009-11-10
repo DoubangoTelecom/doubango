@@ -40,5 +40,6 @@ TINYSAK_API int tsk_stricmp(const char * str1, const char * str2);
 TINYSAK_API char* tsk_strdup(tsk_heap_t *heap, const char *s1);
 TINYSAK_API void tsk_strcat(tsk_heap_t *heap, char** destination, const char* source);
 TINYSAK_API int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...);
+TINYSAK_API void tsk_strupdate(tsk_heap_t *heap, char** str, const char* newval);
 
 #endif /* _TINYSAK_STRING_H_ */

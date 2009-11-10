@@ -29,6 +29,7 @@
  */
 #include "tsk_heap.h"
 #include "tsk_memory.h"
+#include "tsk_macros.h"
 #include <stdlib.h>
 
 /**@defgroup tsk_heap_group Memory heap

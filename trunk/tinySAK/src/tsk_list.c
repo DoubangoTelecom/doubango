@@ -29,6 +29,7 @@
  */
 #include "tsk_list.h"
 #include "tsk_memory.h"
+#include "tsk_macros.h"
 #include <string.h>
 
 /**@defgroup tsk_list_group Linked list

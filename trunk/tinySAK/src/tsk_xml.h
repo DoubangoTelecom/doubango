@@ -32,7 +32,6 @@
 
 #include "tinySAK_config.h"
 #include "tsk_heap.h"
-#include "tsk_macros.h"
 #include "tsk_list.h"
 #include <libxml/tree.h>
 
@@ -141,18 +140,18 @@ typedef tsk_list_t tsk_xml_namespaces_t;
 #define tsk_xml_attributes_free		tsk_list_free
 #define tsk_xml_namespaces_free		tsk_list_free
 
-void tsk_xml_namespace_init(tsk_xml_namespace_t* namespace);
-void tsk_xml_namespace_free(tsk_xml_namespace_t** namespace);
+TINYSAK_API void tsk_xml_namespace_init(tsk_xml_namespace_t* namespace);
+TINYSAK_API void tsk_xml_namespace_free(tsk_xml_namespace_t** namespace);
 
-void tsk_xml_element_init(tsk_xml_element_t* element);
-void tsk_xml_element_init_set(tsk_xml_element_t** element, const char* name, const char* value, tsk_xml_type_t type);
-void tsk_xml_element_free(void** element);
+TINYSAK_API void tsk_xml_element_init(tsk_xml_element_t* element);
+TINYSAK_API void tsk_xml_element_init_set(tsk_xml_element_t** element, const char* name, const char* value, tsk_xml_type_t type);
+TINYSAK_API void tsk_xml_element_free(void** element);
 
-void tsk_xml_attribute_init(tsk_xml_attribute_t* attribute);
-void tsk_xml_attribute_free(tsk_xml_attribute_t** attribute);
+TINYSAK_API void tsk_xml_attribute_init(tsk_xml_attribute_t* attribute);
+TINYSAK_API void tsk_xml_attribute_free(tsk_xml_attribute_t** attribute);
 
-xmlNsPtr tsk_xml_get_namespace(xmlDocPtr docPtr, xmlNodePtr node, const char *href);
-xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_node_find_type_t ftype);
-xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...);
+TINYSAK_API xmlNsPtr tsk_xml_get_namespace(xmlDocPtr docPtr, xmlNodePtr node, const char *href);
+TINYSAK_API xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_node_find_type_t ftype);
+TINYSAK_API xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...);
 
 #endif /* _TINYSAK_XML_H_ */
