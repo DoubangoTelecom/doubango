@@ -37,6 +37,7 @@
 /** Safely free a pointer
 */
 #define TSK_SAFE_FREE(heap, ptr) (void)tsk_free(heap, &ptr);
+#define TSK_FREE(ptr) TSK_SAFE_FREE(0, ptr)
 
 /** Safely free a pointer
 */

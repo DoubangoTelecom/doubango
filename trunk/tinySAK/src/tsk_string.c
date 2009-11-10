@@ -165,3 +165,11 @@ int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...)
 	
 	return len;
 }
+
+/**@ingroup tsk_string_group
+*/
+void tsk_strupdate(tsk_heap_t *heap, char** str, const char* newval)
+{
+	tsk_free(heap, str);
+	*str = tsk_strdup(heap, newval);
+}

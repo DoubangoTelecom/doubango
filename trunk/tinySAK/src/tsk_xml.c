@@ -30,6 +30,7 @@
 #include "tsk_xml.h"
 #include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_macros.h"
 
 #include <string.h>
 
