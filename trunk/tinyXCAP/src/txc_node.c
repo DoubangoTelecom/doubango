@@ -251,7 +251,7 @@ static char* __internal_txc_node_get_cust_sel(const char* doc_selector, const ch
 				const char* prefix = va_arg(steps, const char*);
 				const char* ns = va_arg(steps, const char*);
 				tsk_sprintf(&heap, &step_str, "%sxmlns(%s=%%22%s%%22)", _namespace?"":"%3F",prefix, ns);
-				tsk_strcat2(&_namespace, (const char*)step_str);
+				tsk_strcat(&heap, &_namespace, (const char*)step_str);
 				break;
 			}
 		default: break;

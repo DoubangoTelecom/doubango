@@ -1,31 +1,25 @@
-/****************************************************************************
-			 _             _                             
-			| |           | |                            
-		  _ | | ___  _   _| | _   ____ ____   ____  ___  
-		 / || |/ _ \| | | | || \ / _  |  _ \ / _  |/ _ \ 
-		( (_| | |_| | |_| | |_) | ( | | | | ( ( | | |_| |
-		 \____|\___/ \____|____/ \_||_|_| |_|\_|| |\___/ 
-											(_____|   
-	
-	Copyright (C) 2009 xxxyyyzzz <imsframework(at)gmail.com>
-
-	This file is part of Open Source Doubango IMS Client Framework project.
-
-    DOUBANGO is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-	
-    DOUBANGO is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
-    along with DOUBANGO.
-****************************************************************************/
-
-#include "xdm_api.h" 
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+#include "txc_api.h" 
 
 #ifndef TEST_RLS_SERVICES
 #define TEST_RLS_SERVICES
@@ -49,31 +43,31 @@ const char* rls_str0 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 /* test rls-services */
 void test_rls_services(const char* buffer, size_t size)
 {
-	xdm_rls_t* rls = 0;
-	xdm_list_item_t* item = 0;
-	xdm_list_t *list = 0;
+	txc_rls_t* rls = 0;
+	tsk_list_item_t* item = 0;
+	tsk_list_t *list = 0;
 	printf("\n---\nTEST RLS-SERVICES\n---\n");
 	{
 		/* create rls context */
-		rls = xdm_rls_create(buffer, size);
+		rls = txc_rls_create(buffer, size);
 
 		/* get all services */
-		list = xdm_rls_get_all_services(rls);
+		list = txc_rls_get_all_services(rls);
 
 		/* dump services */
-		xdm_list_foreach(item, list)
+		tsk_list_foreach(item, list)
 		{
-			xdm_rls_service_t *rls_service = ((xdm_rls_service_t*)item->data);
-			char* rls_service_str = xdm_rls_service_serialize(rls_service);
+			txc_rls_service_t *rls_service = ((txc_rls_service_t*)item->data);
+			char* rls_service_str = txc_rls_service_serialize(rls_service);
 			printf("\n%s\n", rls_service_str);
-			XDM_SAFE_FREE(rls_service_str);
+			TSK_SAFE_FREE2(rls_service_str);
 		}
 
 		/* free services */
-		XDM_LIST_SAFE_FREE(list);
+		TSK_LIST_SAFE_FREE(list);
 		
 		/* free rls context */
-		xdm_rls_free(&rls);
+		txc_rls_free(&rls);
 	}
 }
 

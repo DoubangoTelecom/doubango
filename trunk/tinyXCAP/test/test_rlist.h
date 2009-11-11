@@ -1,33 +1,28 @@
-/****************************************************************************
-			 _             _                             
-			| |           | |                            
-		  _ | | ___  _   _| | _   ____ ____   ____  ___  
-		 / || |/ _ \| | | | || \ / _  |  _ \ / _  |/ _ \ 
-		( (_| | |_| | |_| | |_) | ( | | | | ( ( | | |_| |
-		 \____|\___/ \____|____/ \_||_|_| |_|\_|| |\___/ 
-											(_____|   
-	
-	Copyright (C) 2009 xxxyyyzzz <imsframework(at)gmail.com>
-
-	This file is part of Open Source Doubango IMS Client Framework project.
-
-    DOUBANGO is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-	
-    DOUBANGO is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-	
-    You should have received a copy of the GNU General Public License
-    along with DOUBANGO.
-****************************************************************************/
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
 #ifndef TEST_RLIST_H
 #define TEST_RLIST_H
 
-#include "xdm_api.h" 
+#include "txc_api.h" 
 
 /* http://www.gsmworld.com/documents/rcs/rcs2_june09/R2_090831_RCS_Release_2_Technical_Realisation_v1_0.pdf subclause 11.2*/
 	const char* rlist_str0 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"/*//xmnls:xd=\"urn:oma:xml:xdm:xcap-directory\"*/
@@ -70,106 +65,106 @@
 void test_rlist(const char* rlist_str, size_t size)
 {
 	char* entry_str = 0;
-	xdm_rlist_t* rlist = 0;
-	xdm_list_t* list = 0;
-	xdm_list_item_t* item = 0;
+	txc_rlist_t* rlist = 0;
+	tsk_list_t* list = 0;
+	tsk_list_item_t* item = 0;
 
 	printf("\n---\nTEST RESOURCE-LISTS\n---\n");
 	{
 		/* create rlist context */
-		rlist = xdm_rlist_create(rlist_str, size);
+		rlist = txc_rlist_create(rlist_str, size);
 
 		/* get all lists */
 		printf("\nget all lists\n");
-		if(list = xdm_rlist_get_all_lists(rlist, 0))
+		if(list = txc_rlist_get_all_lists(rlist, 0))
 		{
-			xdm_list_foreach(item, list)
+			tsk_list_foreach(item, list)
 			{
-				xdm_rlist_list_t *rlist_list = ((xdm_rlist_list_t*)item->data);
+				txc_rlist_list_t *rlist_list = ((txc_rlist_list_t*)item->data);
 				printf("name\"%s\" display-name=\"%s\"\n", rlist_list->name, rlist_list->display_name);
 			}
-			XDM_LIST_SAFE_FREE(list);
+			TSK_LIST_SAFE_FREE(list);
 		}
 
 		/* get all entries in the list named 'ennemies' */
 		printf("\nget all entries in the list named 'rcs_revokedcontacts'\n");
-		if(list = xdm_rlist_get_entries_by_list(rlist, "rcs_revokedcontacts"))
+		if(list = txc_rlist_get_entries_by_list(rlist, "rcs_revokedcontacts"))
 		{
-			xdm_list_foreach(item, list)
+			tsk_list_foreach(item, list)
 			{
-				xdm_rlist_entry_t *entry = ((xdm_rlist_entry_t*)item->data);
+				txc_rlist_entry_t *entry = ((txc_rlist_entry_t*)item->data);
 				printf("list:\"%s\" uri:\"%s\" display-name=\"%s\" last-modified\"%s\"\n", entry->list, entry->uri, entry->display_name, entry->last_modified);
-				entry_str = xdm_rlist_entry_serialize(entry);
+				entry_str = txc_rlist_entry_serialize(entry);
 				printf("serialized entry: \n%s\n", entry_str);
-				XDM_SAFE_FREE(entry_str);
+				TSK_SAFE_FREE2(entry_str);
 			}
-			XDM_LIST_SAFE_FREE(list);
+			TSK_LIST_SAFE_FREE(list);
 		}
 
 		/* get all externals in the list named 'friends' */
 		printf("\nget all externals in the list named 'oma_blockedcontacts'\n");
-		if(list = xdm_rlist_get_externals_by_list(rlist, "oma_blockedcontacts"))
+		if(list = txc_rlist_get_externals_by_list(rlist, "oma_blockedcontacts"))
 		{
-			xdm_list_foreach(item, list)
+			tsk_list_foreach(item, list)
 			{
-				xdm_rlist_external_t *external = ((xdm_rlist_external_t*)item->data);
+				txc_rlist_external_t *external = ((txc_rlist_external_t*)item->data);
 				printf("list:\"%s\" anchor:\"%s\"\n", external->list, external->anchor);
 			}
-			XDM_LIST_SAFE_FREE(list);
+			TSK_LIST_SAFE_FREE(list);
 		}
 
 		/* free rlist */
-		xdm_rlist_free(&rlist);
+		txc_rlist_free(&rlist);
 	}
 }
 
 void test_rlist2(const char* rlist_str, size_t size)
 {
 	char* entry_str = 0;
-	xdm_rlist_t* rlist = 0;
-	xdm_list_t* list = 0;
-	xdm_list_item_t *item1 = 0, *item2 = 0, *item3 = 0;
+	txc_rlist_t* rlist = 0;
+	txc_rlist_listx_L_t* list = 0;
+	tsk_list_item_t *item1 = 0, *item2 = 0, *item3 = 0;
 
 	printf("\n---\nTEST RESOURCE-LISTS-2\n---\n");
 	{
 		/* create rlist context */
-		rlist = xdm_rlist_create(rlist_str, size);
+		rlist = txc_rlist_create(rlist_str, size);
 
 		/* get all lists */
 		printf("\nget all lists\n");
-		if(1 && (list = xdm_rlist_get_all_lists(rlist, 1)))
+		if(list = txc_rlist_get_all_lists(rlist, 1))
 		{
-			xdm_list_foreach(item1, list)
+			tsk_list_foreach(item1, list)
 			{
-				xdm_rlist_list2_t *rlist_list2 = ((xdm_rlist_list2_t*)item1->data);
+				txc_rlist_list2_t *rlist_list2 = ((txc_rlist_list2_t*)item1->data);
 
 				/* name and display-name */
 				printf("name\"%s\" display-name=\"%s\"\n", rlist_list2->name, rlist_list2->display_name);
 
 				/* entries */
-				xdm_list_foreach(item2, rlist_list2->entries)
+				tsk_list_foreach(item2, rlist_list2->entries)
 				{
-					xdm_rlist_entry_t *entry = ((xdm_rlist_entry_t*)item2->data);
-					char* entry_str = xdm_rlist_entry_serialize(entry);
+					txc_rlist_entry_t *entry = ((txc_rlist_entry_t*)item2->data);
+					char* entry_str = txc_rlist_entry_serialize(entry);
 					printf("\n%s\n", entry_str);
-					XDM_FREE(entry_str);
+					TSK_SAFE_FREE2(entry_str);
 				}
 
 				/*externals*/
-				xdm_list_foreach(item3, rlist_list2->externals)
+				tsk_list_foreach(item3, rlist_list2->externals)
 				{
-					xdm_rlist_external_t *external = ((xdm_rlist_external_t*)item3->data);
-					char* external_str = xdm_rlist_external_serialize(external);
+					txc_rlist_external_t *external = ((txc_rlist_external_t*)item3->data);
+					char* external_str = txc_rlist_external_serialize(external);
 					printf("\n%s\n", external_str);
-					XDM_FREE(external_str);
+					TSK_SAFE_FREE2(external_str);
 				}
 
 			}
-			XDM_LIST_SAFE_FREE(list);
+			TSK_LIST_SAFE_FREE(list);
 		}
 
 		/* free rlist */
-		xdm_rlist_free(&rlist);
+		txc_rlist_free(&rlist);
 	}
 }
 

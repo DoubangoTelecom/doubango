@@ -19,8 +19,18 @@
 * along with DOUBANGO.
 *
 */
+
+/**@file txc_rls.c
+ * @brief RFC 4826 subclause 4: <a href="http://tools.ietf.org/html/rfc4826#section-4">RLS Services Documents</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 #include "txc_rls.h"
 #include "txc_macros.h"
+#include "txc.h"
 
 #include "tsk_memory.h"
 #include "tsk_string.h"
@@ -28,22 +38,76 @@
 
 #include <string.h>
 
+/**@defgroup txc_rls_group XCAP RLS Services Documents 
+*/
+
+
+/**@page txc_rls_page XCAP RLS Services Documents Tutorial (rls-services)
+* @par Application Unique ID (AUID)
+* - '<span style="text-decoration:underline;">rls-services</span>' as per rfc 4826 subclause 4.4.1
+* @par Default Document Namespace
+* - '<span style="text-decoration:underline;">urn:ietf:params:xml:ns:rls-services</span>' as per rfc 4826 subclause 4.4.4
+* @par MIME Type
+* - '<span style="text-decoration:underline;">application/rls-services+xml</span>' as per rfc 4826 subclause 4.4.2
+* @par Default document name
+* - '<span style="text-decoration:underline;">index</span>' as per rfc 4826 subclause 4.4.7
+*
+* <H2>== Deserialize and dump an rls-services document received from an XDMS==</H2>
+* @code
+#include "txc_api.h" 
+
+txc_rls_t* rls = 0;
+tsk_list_item_t* item = 0;
+tsk_list_t *list = 0;
+printf("\n---\nTEST RLS-SERVICES\n---\n");
+{
+	// create rls context
+	rls = txc_rls_create(buffer, size);
+
+	// get all services
+	list = txc_rls_get_all_services(rls);
+
+	// dump services
+	tsk_list_foreach(item, list)
+	{
+		txc_rls_service_t *rls_service = ((txc_rls_service_t*)item->data);
+		char* rls_service_str = txc_rls_service_serialize(rls_service);
+		printf("\n%s\n", rls_service_str);
+		TSK_SAFE_FREE2(rls_service_str);
+	}
+
+	// free services
+	TSK_LIST_SAFE_FREE(list);
+	
+	// free rls context
+	txc_rls_free(&rls);
+}
+* @endcode
+*/
+
 #define RLS_RETURN_IF_INVALID(rls) if(!rls || !(rls->docPtr)) return 0;
 
-//static const char* txc_rls_ns = "urn:ietf:params:xml:ns:rls-services";
-
 #define RLS_XML_HEADER	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" \
-						"<rls-services xmlns=\"urn:ietf:params:xml:ns:rls-services\">"
+						"<rls-services xmlns=\""TXC_NS_RLS"\">"
 #define RLS_XML_FOOTER	"</rls-services>"
 
-/* init service */
+/**@ingroup txc_rls_group
+* Internal function to initialize a service . 
+* You MUST call @ref TXC_RLS_SERVICE_CREATE to create and initialize your object.
+* @param service The service element to initialize
+*/
 void txc_rls_service_init(txc_rls_service_t *service)
 {
 	memset(service, 0, sizeof(txc_rls_service_t));
 }
 
 
-/* set service's uri and resource-list */
+/**@ingroup txc_rls_group
+* Update an rls service.
+* @param service The service to update
+* @param uri The new uri.
+* @param resource_list The new resource-list
+*/
 void txc_rls_service_set(txc_rls_service_t *service, const char* uri, const char* resource_list)
 {
 	if(service)
@@ -53,7 +117,11 @@ void txc_rls_service_set(txc_rls_service_t *service, const char* uri, const char
 	}
 }
 
-/* add package to the existing list */
+/**@ingroup txc_rls_group
+* Add a new package to a service
+* @param service The service to update
+* @param package The new package to add to the service
+*/
 void txc_rls_service_add_package(txc_rls_service_t *service, const char* package)
 {
 	tsk_list_item_t *item = 0;
@@ -70,7 +138,12 @@ void txc_rls_service_add_package(txc_rls_service_t *service, const char* package
 	}
 }
 
-/* free service */
+/**@ingroup txc_rls_group
+* Internal function to free an rls service previously created using @ref TXC_RLS_SERVICE_CREATE.
+* You MUST call @ref TXC_RLS_SERVICE_SAFE_FREE to free a service.
+* @param _service The service to free.
+* @sa @ref TXC_RLS_SERVICE_SAFE_FREE
+*/
 void txc_rls_service_free(void **_service)
 {
 	txc_rls_service_t **service = ((txc_rls_service_t**)_service);
@@ -82,8 +155,12 @@ void txc_rls_service_free(void **_service)
 	tsk_free2(_service);
 }
 
-/* xml<->service binding*/
-/* ATTENTION: use 'TXC_RLS_SERVICE_SAFE_FREE' function to free the returned object */
+/**@ingroup txc_rls_group
+* Internal function to deserialize an rls service from an XML document.
+* @param node The pointer to the XML node from which to deserialize the rls service
+* @retval Pointer to a @ref txc_rls_service_t object or NULL if deserialization fail.
+* You MUST call @ref TXC_RLS_SERVICE_SAFE_FREE to free the returned object.
+*/
 txc_rls_service_t* txc_rls_service_from_xml(const xmlNodePtr node)
 {
 	xmlNodePtr node2 = 0;
@@ -129,12 +206,18 @@ txc_rls_service_t* txc_rls_service_from_xml(const xmlNodePtr node)
 	return rls_service;
 }
 
-/* create rls context */
+/**@ingroup txc_rls_group
+* Create a rls context from an XML buffer.
+* @param buffer The XML buffer from which to create the rls context
+* @param size The size of the XML buffer
+* @retval Pointer to a @ref txc_rls_t object or NULL. You MUST call @ref txc_rls_free to free the returned object.
+* @sa @ref txc_rls_free
+*/
 txc_rls_t* txc_rls_create(const char* buffer, size_t size)
 {
 	if(buffer && size)
 	{
-		txc_rls_t* rls = (txc_rls_t*)malloc(sizeof(txc_rls_t));
+		txc_rls_t* rls = (txc_rls_t*)tsk_malloc2(sizeof(txc_rls_t));
 		memset(rls, 0, sizeof(txc_rls_t));
 		rls->docPtr = xmlParseMemory(buffer, (int)size);
 
@@ -144,7 +227,11 @@ txc_rls_t* txc_rls_create(const char* buffer, size_t size)
 	return 0;
 }
 
-/* get all services (txc_rls_service_t)*/
+/**@ingroup txc_rls_group
+* Get all rls services
+* @param rls The rls context from which to extract the services
+* @retval Pointer to a @ref txc_rls_service_L_t object or NULL. You must call @a TSK_LIST_SAFE_FREE to free the returned object.
+*/
 txc_rls_service_L_t* txc_rls_get_all_services(const txc_rls_t* rls)
 {
 	txc_rls_service_t* rls_service = 0;
@@ -173,8 +260,11 @@ txc_rls_service_L_t* txc_rls_get_all_services(const txc_rls_t* rls)
 	return list;
 }
 
-/* serialize service */
-/* ATTENTION: use 'TSK_SAFE_FREE2' macro to free the returned string */
+/**@ingroup txc_rls_group
+* Serialize an rls service
+* @param service The service to serialize
+* @retval XML string representing the rls service.  You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+*/
 char* txc_rls_service_serialize(const txc_rls_service_t *service)
 {
 	char* service_str = 0;
@@ -204,9 +294,12 @@ char* txc_rls_service_serialize(const txc_rls_service_t *service)
 	return service_str;
 }
 
-/* serialize services with xml header */
-/* ATTENTION: use 'TSK_SAFE_FREE2' macro to free the returned string */
-char* txc_rls_rls_serialize(const tsk_list_t *services)
+/**@ingroup txc_rls_group
+* Serialize a list of several rls services
+* @param services The list of rls services to serialize
+* @retval XML string representing the list rls services.  You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+*/
+char* txc_rls_services_serialize(const tsk_list_t *services)
 {
 	tsk_list_item_t* item = 0;
 	char* services_str = 0;
@@ -231,7 +324,11 @@ char* txc_rls_rls_serialize(const tsk_list_t *services)
 	return services_str;
 }
 
-/* free rls context */
+/**@ingroup txc_rls_group
+* Internal function to free an rls context previously created using @ref txc_rls_create.
+* @param rls The context to free
+* @sa @ref txc_rls_create
+*/
 void txc_rls_free(txc_rls_t **rls)
 {
 	if(*rls)

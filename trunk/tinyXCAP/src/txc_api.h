@@ -24,6 +24,8 @@
 #define _TINYXCAP_TXC_API_H_
 
 #include "txc_macros.h"
+#include "tsk_macros.h"
+
 #include "txc.h"
 #include "txc_document.h"
 #include "txc_node.h"

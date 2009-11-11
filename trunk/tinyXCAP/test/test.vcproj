@@ -201,7 +201,19 @@
 			Name="tests"
 			>
 			<File
+				RelativePath=".\test_rlist.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_rls.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_selector.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_xcap-caps.h"
 				>
 			</File>
 		</Filter>
