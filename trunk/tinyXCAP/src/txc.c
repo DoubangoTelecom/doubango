@@ -45,13 +45,25 @@
 * -
 * - @ref txc_document_page
 * - @ref txc_node_page
+* -
+* - @ref txc_xcap_caps_page 
+* - @ref txc_rlist_page
+* - @ref txc_rls_page
 *
 * @par Compliance
 *
-* - <a href="http://tools.ietf.org/html/rfc4825"> RFC 4825 - The Extensible Markup Language (XML) Configuration Access Protocol (XCAP) </a>
-* - <a href="http://www.ietf.org/rfc/rfc4826.txt"> RFC 4826 - Extensible Markup Language (XML) Formats for Representing Resource Lists </a>
-* - <a href="http://www.ietf.org/rfc/rfc4827.txt"> RFC 4827 - An Extensible Markup Language (XML) Configuration Access Protocol (XCAP) Usage for Manipulating Presence Document Contents </a>
+* - <a href="http://tools.ietf.org/html/rfc4825"> RFC 4825 - The Extensible Markup Language (XML) Configuration Access Protocol (XCAP)</a>
+* - <a href="http://www.ietf.org/rfc/rfc4826.txt"> RFC 4826 - Extensible Markup Language (XML) Formats for Representing Resource Lists</a>
+* - <a href="http://www.ietf.org/rfc/rfc4827.txt"> RFC 4827 - An Extensible Markup Language (XML) Configuration Access Protocol (XCAP) Usage for Manipulating Presence Document Contents</a>
 * - <a href="http://www.ietf.org/rfc/rfc5025.txt"> RFC 5025 - Presence Authorization Rules</a>
+* -
+* - <a href="http://www.openmobilealliance.org/Technical/release_program/docs/XDM/V1_1-20080627-A/OMA-TS-XDM_Core-V1_1-20080627-A.pdf">OMA-TS-XDM_Core-V1_1-20080627-A</a>
+* - <a href="http://www.openmobilealliance.org/Technical/release_program/docs/XDM_PRS_IMPL/V1_0-20080627-C/OMA-WP-XDM_1_1_Implementation_Guidelines-20080627-C.pdf"> OMA-WP-XDM_1_1_Implementation_Guidelines-20080627-C</a>
+* - <a href="http://www.openmobilealliance.org/technical/release_program/docs/PresenceSIMPLE/V2_0-20081223-C/OMA-TS-Presence_SIMPLE_Content_XDM-V1_0-20081223-C.pdf"> OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C</a>
+* -
+* - <a href="http://www.gsmworld.com/documents/rcs/rcs2_june09/R2_090831_RCS_Release_2_Technical_Realisation_v1_0.pdf">RCS Release 2 (Jun ‘09) - Technical Realisation v1.0</a>
+* - <a href="http://www.gsmworld.com/documents/rcs/rcs1_updates/R1_090831_RCS_Release_1_Technical_Realisation_v1_1.pdf">RCS Release 1 Updates (Jun ‘09) - Technical Realisation v1.1</a>
+* - <a href="http://www.gsmworld.com/documents/1_technical_real_v1.pdf">RCS Release 1 (Dec 08)  - Technical Realisation v1.0</a>
 *
 * @par Supported AUIDs
 *
@@ -105,6 +117,9 @@
 * - <a href="#faq2">2. How to use document selectors?</a>
 * - <a href="#faq3">3. How to use node selectors?</a>
 *
+* - <a href="#faq4">4. How to create/deserialize an xcap-caps document received from the XDMS?</a>
+* - <a href="#faq5">5. How to create/deserialize a resource-lists document received from the XDMS?</a>
+* - <a href="#faq6">6. How to create/deserialize a rls-services document received from the XDMS?</a>
 *
 * @anchor faq1
 * @par 1. How to change default document name?
@@ -118,6 +133,18 @@
 * @anchor faq3
 * @par 3. How to use node selectors?
 * For more information about node selectors please refer to the @ref txc_node_page.
+*
+* @anchor faq4
+* @par 4. How to create/deserialize an xcap-caps document received from the XDMS?
+* For more information about how to handle xcap-caps documents please refer to @ref txc_xcap_caps_page.
+*
+* @anchor faq5
+* @par 5. How to create/deserialize a resource-lists document received from the XDMS?
+* For more information about how to handle resource-lists documents please refer to @ref txc_rlist_page.
+*
+* @anchor faq6
+* @par 6. How to create/deserialize a rls-services document received from the XDMS?
+* For more information about how to handle rls-services documents please refer to @ref txc_rls_page.
 */
 
 #define PANIC_AND_JUMP(code, request)\

@@ -38,11 +38,26 @@
 #define TXC_IS_EMPTY_STRING(str) (!str || !strlen(str))
 
 #define TXC_DOCUMENT_GLOBAL(auid_type) (auid_type == ietf_xcap_caps)
-#define	TXC_MIME_TYPE_ELEMENT	"application/xcap-el+xml" /* as per rfc 4825 subclause 15.2.1 */
-#define	TXC_MIME_TYPE_ATTRIBUTE	"application/xcap-att+xml" /* as per rfc 4825 subclause 15.2.2 */
-#define	TXC_MIME_TYPE_NS		"application/xcap-ns+xml" /* as per rfc 4825 subclause 15.2.3 */
-#define	TXC_MIME_TYPE_ERROR		"application/xcap-error+xml" /* as per rfc 4825 subclause 15.2.4 */
-#define	TXC_MIME_TYPE_CAPS		"application/xcap-caps+xml" /* as per rfc 4825 subclause 15.2.5 */
+
+#define	TXC_MIME_TYPE_ELEMENT	"application/xcap-el+xml" /**< as per rfc 4825 subclause 15.2.1 */
+#define	TXC_MIME_TYPE_ATTRIBUTE	"application/xcap-att+xml" /**< as per rfc 4825 subclause 15.2.2 */
+#define	TXC_MIME_TYPE_NS		"application/xcap-ns+xml" /**< as per rfc 4825 subclause 15.2.3 */
+#define	TXC_MIME_TYPE_ERROR		"application/xcap-error+xml" /**< as per rfc 4825 subclause 15.2.4 */
+#define	TXC_MIME_TYPE_CAPS		"application/xcap-caps+xml" /**< as per rfc 4825 subclause 12.4 */
+#define TXC_MIME_TYPE_RLIST		"application/resource-lists+xml" /**< as per rfc 4826 subclause 3.4.2 */
+#define TXC_MIME_TYPE_RLS		"application/rls-services+xml" /**< as per rfc 4826 subclause 4.4.2 */
+
+#define TXC_AUID_CAPS			"xcap-caps" /**< as per rfc 4825 subclause 12.1 */
+#define TXC_AUID_RLIST			"resource-lists" /**< as per rfc 4826 subclause 3.4.1 */
+#define TXC_AUID_RLS			"rls-services" /**< as per rfc 4826 subclause 4.4.1 */
+
+#define TXC_DOCUMENT_CAPS		"index"		/**< as per rfc 4825 subclause 5.5 */
+#define TXC_DOCUMENT_RLIST		"index"		/**< as per rfc 4826 subclause 3.4.7* */
+#define TXC_DOCUMENT_RLS		"index"		/**< as per rfc 4826 subclause 4.4.7 */
+
+#define TXC_NS_CAPS				"urn:ietf:params:xml:ns:xcap-caps" /**< as per rfc 4825 subclause 12.3*/
+#define TXC_NS_RLIST			"urn:ietf:params:xml:ns:resource-lists" /**< as per rfc 4826 subclause 3.4.4 */
+#define TXC_NS_RLS				"urn:ietf:params:xml:ns:rls-services" /**< as per rfc 4826 subclause 4.4.4 */
 
 /* check context validity */
 #define TXC_CONTEXT_CHECK(context, panic) \
@@ -189,9 +204,9 @@ typedef txc_auid_t AUIDS_T[TXC_AUIDS_COUNT];
 /* all supported auids */
 static const AUIDS_T txc_auids =
 {
-	{ietf_xcap_caps,		"xcap-caps",								"IETF server capabilities", TXC_MIME_TYPE_CAPS,							"index",			1},
-	{ietf_resource_lists,	"resource-lists",							"IETF resource-list",		"application/resource-lists+xml",			"index",			0},
-	{ietf_rls_services,		"rls-services",								"IETF RLS service",			"application/rls-services+xml",				"index",			0},
+	{ietf_xcap_caps,		TXC_AUID_CAPS,								"IETF server capabilities", TXC_MIME_TYPE_CAPS,							TXC_DOCUMENT_CAPS,			1},
+	{ietf_resource_lists,	TXC_AUID_RLIST,							"IETF resource-list",		TXC_MIME_TYPE_RLIST,			TXC_DOCUMENT_RLIST,			0},
+	{ietf_rls_services,		TXC_AUID_RLS,								"IETF RLS service",			TXC_MIME_TYPE_RLS,				TXC_DOCUMENT_RLS,			0},
 	{ietf_pres_rules,		"pres-rules",								"IETF pres-rules",			"application/auth-policy+xml",				"pres-rules",		0},
 	{ietf_directory,		"directory",								"IETF xdm directory",		"application/directory+xml",				"directory.xml",	0},
 

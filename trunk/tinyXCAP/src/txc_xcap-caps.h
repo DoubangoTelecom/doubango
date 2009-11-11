@@ -20,20 +20,28 @@
 *
 */
 
+/**@file txc_xcap-caps.h
+ * @brief RFC 4825 subclause <a href="http://tools.ietf.org/html/rfc4825#section-12">12. XCAP Server Capabilities</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 #ifndef _TINYXCAP_TXC_XCAP_CAPS_H_
 #define _TINYXCAP_TXC_XCAP_CAPS_H_
 
 #include "tinyxcap_config.h"
 #include "tsk_xml.h"
 
-/* urn:ietf:params:xml:ns:xcap-caps */
-
-/* xcap-caps document */
+/**
+* xcap-caps document structure.
+*/
 typedef struct xcap_caps_s
 {
-	tsk_list_t* auids;
-	tsk_list_t*	extensions;
-	tsk_list_t* namespaces;
+	tsk_list_t* auids; /**< List of supported AUIDs */
+	tsk_list_t*	extensions; /**< List of supported extensions */
+	tsk_list_t* namespaces; /**< List of supported namespaces */
 }
 xcap_caps_t;
 

@@ -20,5 +20,3 @@
 *
 */
 #include "txc_ietf-directory.h"
-
-//static const char* txc_ietf_directory_ns = "urn:ietf:params:xml:ns:resource-lists";

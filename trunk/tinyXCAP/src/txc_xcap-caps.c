@@ -19,6 +19,15 @@
 * along with DOUBANGO.
 *
 */
+
+/**@file txc_xcap-caps.c
+ * @brief RFC 4825 subclause <a href="http://tools.ietf.org/html/rfc4825#section-12">12. XCAP Server Capabilities</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 /*
 	xcap-caps
 		->namespaces
@@ -44,11 +53,59 @@
 
 #include <string.h>
 
+/**@defgroup txc_xcap_caps_group XCAP Server Capabilities
+*/
+
+
+/**@page txc_xcap_caps_page XCAP Server Capabilities Tutorial (xcap-caps)
+* @par Application Unique ID (AUID)
+* - '<span style="text-decoration:underline;">xcap-caps</span>' as per rfc 4825 subclause 12.1
+* @par Default Document Namespace
+* - '<span style="text-decoration:underline;">urn:ietf:params:xml:ns:xcap-caps</span>' as per rfc 4825 subclause 12.3
+* @par MIME Type
+* - '<span style="text-decoration:underline;">application/xcap-caps+xml</span>' as per rfc 4825 subclause 15.2.5
+* @par Default document name
+* - '<span style="text-decoration:underline;">index</span>' as per rfc 4825 subclause 5.5
+*
+* <H2>=== Create/deserialize an xcap-caps document received from the XDMS ===</H2>
+*
+* @code
+#include "txc_api.h" 
+
+*xcap_caps_t* xcap_caps = 0;
+tsk_list_item_t* item = 0;
+
+// deserialize/create the context from the XML buffer
+xcap_caps = txc_xcap_caps_create(buffer, size);
+
+// dump namespaces
+tsk_list_foreach(item, xcap_caps->namespaces)
+	printf("namespace: %s\n", ((char*)item->data));
+
+// dump extensions
+tsk_list_foreach(item, xcap_caps->extensions)
+	printf("extension: %s\n", ((char*)item->data));
+
+// dump auids
+tsk_list_foreach(item, xcap_caps->auids)
+	printf("auid: %s\n", ((char*)item->data));
+
+// free the context
+txc_xcap_caps_free(&xcap_caps);
+* @endcode
+*/
+
 #define CAPS_RETURN_IF_INVALID(caps) if(!caps || !caps->docPtr || !caps->root) return 0;
 
-//static const char* txc_xcap_caps_ns = "urn:ietf:params:xml:ns:xcap-caps ";
-
-/* get xxx(auids, namespaces or extensions) */
+/**@ingroup txc_xcap_caps_group
+* Internal function to deserialize into list an element of xcap-caps document (auids, extensions or namespaces) 
+* @param rootNode The XML document root node
+* @param root The XML root node from which to start
+* @param name1 The root element name (e.g. 'auids')
+* @param name2 The name of the element childs (e.g. 'auid')
+* @retval The list of the element childs as strings. You should never call this method. 
+* Instead you should call @ref txc_xcap_caps_create to deserialize the whole document. 
+*/
 static tsk_list_t* txc_xcap_caps_xxx(xmlNodePtr rootNode, const char* root, const char* name1, const char* name2)
 {
 	tsk_list_t *xxx = 0;
@@ -76,8 +133,12 @@ static tsk_list_t* txc_xcap_caps_xxx(xmlNodePtr rootNode, const char* root, cons
 	return xxx;
 }
 
-/* create xcap-caps context */
-/* ATTENTION: use 'txc_xcap_caps_free' function to free the returned object*/
+/**@ingroup txc_xcap_caps_group
+* Create an xcap-caps context.
+* @param buffer The XML buffer from which to create (or deserialize) the xcap-caps context
+* @param size The size of the XML @a buffer
+* @retval The deserialized xcap-caps document. You must call @ref txc_xcap_caps_free to free the returned context.
+*/
 xcap_caps_t* txc_xcap_caps_create(const char* buffer, size_t size)
 {
 	xmlNodePtr root = 0;
@@ -99,7 +160,10 @@ xcap_caps_t* txc_xcap_caps_create(const char* buffer, size_t size)
 	return caps;
 }
 
-/* free data (xcap_caps_t) */
+/**@ingroup txc_xcap_caps_group
+* Free an xcap-caps context previously deserialize/created using @ref txc_xcap_caps_create
+* @param caps The xcap-caps context to free
+*/
 void txc_xcap_caps_free(xcap_caps_t** caps)
 {
 	if(*caps)
