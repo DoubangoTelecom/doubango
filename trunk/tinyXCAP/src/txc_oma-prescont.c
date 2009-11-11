@@ -49,21 +49,21 @@ txc_oma_prescont_t* txc_oma_prescont_create(const char* buffer, size_t size)
 		memset(pres_cont, 0, sizeof(txc_oma_prescont_t));
 		do
 		{
-			if( !tsk_stricmp(node->name, "mime-Type") )
+			if( tsk_equals(node->name, "mime-Type") )
 			{
-				pres_cont->mime_type = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node->children));
+				pres_cont->mime_type = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node->children));
 			}
-			else if(!tsk_stricmp(node->name, "encoding") )
+			else if( tsk_equals(node->name, "encoding") )
 			{
-				pres_cont->encoding = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node->children));
+				pres_cont->encoding = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node->children));
 			}
-			else if( !tsk_stricmp(node->name, "description") )
+			else if( tsk_equals(node->name, "description") )
 			{
-				pres_cont->description = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node->children));
+				pres_cont->description = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node->children));
 			}
-			else if( !tsk_stricmp(node->name, "data") )
+			else if( tsk_equals(node->name, "data") )
 			{
-				pres_cont->data = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node->children));
+				pres_cont->data = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node->children));
 			}
 		}
 		while(node = tsk_xml_find_node(node, 0, nft_next));

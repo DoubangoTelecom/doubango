@@ -160,7 +160,7 @@ xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_no
 	{
 		switch(ftype)
 		{
-		case nft_none:		return (!tsk_stricmp(node->name, name))? node : 0;
+		case nft_none:		return (tsk_equals(node->name, name))? node : 0;
 		case nft_children: node = node->children; break;
 		case nft_parent:	node = node->parent; break;
 		case nft_next:		node = node->next; break;
@@ -169,7 +169,7 @@ xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_no
 		} /* switch */
 
 		/* check and return value if match */
-		if( node && (!name || !tsk_stricmp(node->name, name)) ) return node;
+		if( node && (!name || tsk_equals(node->name, name)) ) return node;
 	}
 
 	return 0;
@@ -198,11 +198,11 @@ xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...)
 		case nst_by_name:
 			{	/* name */
 				const char* qname = va_arg(list, const char*);
-				if(!tsk_stricmp(root->name, qname)){
+				if(tsk_equals(root->name, qname)){
 					node = tsk_xml_find_node(node, 0, nft_children);
 				}
 				else{
-					if(tsk_stricmp(node->name, qname))
+					if(!tsk_equals(node->name, qname))
 					{	/* do not match */
 						node = tsk_xml_find_node(node, qname, nft_next);
 					}
@@ -234,7 +234,7 @@ xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...)
 					{
 						if(attrPtr->type == XML_ATTRIBUTE_NODE && attrPtr->children)
 						{
-							if( !tsk_stricmp(attrPtr->name, att_name) ){
+							if( tsk_equals(attrPtr->name, att_name) ){
 								node = attrPtr->children;
 								found = 1;
 							}
@@ -261,8 +261,8 @@ xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...)
 					{
 						if(attrPtr->type == XML_ATTRIBUTE_NODE && attrPtr->children)
 						{
-							if( !tsk_stricmp(attrPtr->name, att_name)
-								&& ( (attrPtr->children->content && !tsk_stricmp(attrPtr->children->content, att_value)) || !att_value )
+							if( tsk_equals(attrPtr->name, att_name)
+								&& ( (attrPtr->children->content && tsk_equals(attrPtr->children->content, att_value)) || !att_value )
 								){
 									found = 1;
 							}

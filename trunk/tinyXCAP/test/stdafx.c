@@ -20,20 +20,7 @@
 *
 */
 
-#ifndef _TINYXCAP_TXC_API_H_
-#define _TINYXCAP_TXC_API_H_
+#include "stdafx.h"
 
-#include "txc_macros.h"
-#include "txc.h"
-#include "txc_document.h"
-#include "txc_node.h"
-#include "txc_xcap-caps.h"		/* urn:ietf:params:xml:ns:xcap-caps */
-#include "txc_rlist.h"			/* urn:ietf:params:xml:ns:resource-lists */
-#include "txc_rls.h"			/* urn:ietf:params:xml:ns:rls-services */
-#include "txc_oma-directory.h"	/* urn:oma:xml:xdm:xcap-directory */
-#include "txc_oma-prescont.h"	/* urn:oma:xml:prs:pres-content */
-#include "txc_gsma_rcs.h"		/* both gsma rcs phase 1 and 2 */
-#include "txc_oma.h"			/* OMA functionalities */
-#include "txc_oma-presrules.h" /* urn:ietf:params:xml:ns:pres-rules + urn:ietf:params:xml:ns:pres-rules*/
-
-#endif /* _TINYXCAP_TXC_API_H_ */
+// TODO: reference any additional headers you need in STDAFX.H
+// and not in this file

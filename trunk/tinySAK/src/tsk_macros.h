@@ -55,7 +55,7 @@
 * @param prefix the prefix of the object to create
 */
 #define TSK_XXX_CREATE2(xxx, prefix)\
-	xxx = (tsk_##prefix##_t*)tsk_malloc(0, sizeof(tsk_##prefix##_t)); \
+	xxx = (tsk_##prefix##_t*)tsk_malloc2(sizeof(tsk_##prefix##_t)); \
 	tsk_##prefix##_init(xxx);
 
 /**@def TSK_XXX_SAFE_FREE2

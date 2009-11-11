@@ -48,8 +48,8 @@ void txc_rls_service_set(txc_rls_service_t *service, const char* uri, const char
 {
 	if(service)
 	{		
-		tsk_strupdate(0, &(service->uri), uri);
-		tsk_strupdate(0, &(service->resource_list), resource_list);
+		tsk_strupdate2(&(service->uri), uri);
+		tsk_strupdate2(&(service->resource_list), resource_list);
 	}
 }
 
@@ -65,7 +65,7 @@ void txc_rls_service_add_package(txc_rls_service_t *service, const char* package
 		}
 		
 		TSK_LIST_ITEM_CREATE(item);
-		item->data = (void*)tsk_strdup(0, package);
+		item->data = (void*)tsk_strdup2(package);
 		tsk_list_add_item(service->packages, &item);
 	}
 }
@@ -79,7 +79,7 @@ void txc_rls_service_free(void **_service)
 	TSK_SAFE_FREE2((*service)->resource_list);
 	TSK_LIST_SAFE_FREE((*service)->packages);
 
-	tsk_free(0, _service);
+	tsk_free2(_service);
 }
 
 /* xml<->service binding*/
@@ -98,13 +98,13 @@ txc_rls_service_t* txc_rls_service_from_xml(const xmlNodePtr node)
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("service", "uri"),
 			TSK_XML_NODE_SELECT_END());
-		rls_service->uri = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rls_service->uri = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* resource-list */
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("service"),
 			TSK_XML_NODE_SELECT_BY_NAME("resource-list"),
 			TSK_XML_NODE_SELECT_END());
-		rls_service->resource_list = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rls_service->resource_list = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* packages */
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("service"),
@@ -119,7 +119,7 @@ txc_rls_service_t* txc_rls_service_from_xml(const xmlNodePtr node)
 			do
 			{
 				TSK_LIST_ITEM_CREATE(item);
-				item->data = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2->children));
+				item->data = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2->children));
 				tsk_list_add_item(rls_service->packages, &item);
 			}
 			while(node2 = tsk_xml_find_node(node2, "service", nft_next));
@@ -188,7 +188,7 @@ char* txc_rls_service_serialize(const txc_rls_service_t *service)
 	{
 		char* curr = 0;
 		tsk_sprintf(0, &curr, "<package>%s</package>", ((char*)item->data));
-		tsk_strcat(0, &package_str, curr);
+		tsk_strcat2(&package_str, curr);
 		TSK_SAFE_FREE2(curr);
 	}
 	/* service */
@@ -214,19 +214,19 @@ char* txc_rls_rls_serialize(const tsk_list_t *services)
 	if(!services) return 0;
 
 	/* xml header */
-	tsk_strcat(0, &services_str, RLS_XML_HEADER);
+	tsk_strcat2(&services_str, RLS_XML_HEADER);
 
 	tsk_list_foreach(item, services)
 	{
 		/* get service */
 		txc_rls_service_t *service = ((txc_rls_service_t*)item->data);
 		char* service_str = txc_rls_service_serialize(service);
-		tsk_strcat(0, &services_str, service_str);
+		tsk_strcat2(&services_str, service_str);
 		TSK_FREE(service_str);
 	}
 	
 	/* xml footer */
-	tsk_strcat(0, &services_str, RLS_XML_FOOTER);
+	tsk_strcat2(&services_str, RLS_XML_FOOTER);
 
 	return services_str;
 }
@@ -238,7 +238,7 @@ void txc_rls_free(txc_rls_t **rls)
 	{	
 		xmlFreeDoc((*rls)->docPtr);
 		
-		tsk_free(0, rls);
+		tsk_free2(rls);
 	}
 }
 
