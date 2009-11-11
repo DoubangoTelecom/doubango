@@ -128,7 +128,7 @@ char* txc_ietf_presrules_serialize(const txc_context_t *context)
 	char *ietf_presrules_str = 0, *oma_grantedcontacts = 0, *oma_blockedcontacts = 0, *doc_sel = 0;
 	
 	/* get document selector */
-	if( !context || !(doc_sel = txc_doc_get_sel2(context, ietf_resource_lists)) )
+	if( !context || !(doc_sel = TXC_DOC_GET_SEL(context, ietf_resource_lists)) )
 	{
 		goto bail;
 	}

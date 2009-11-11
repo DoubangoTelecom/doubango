@@ -19,9 +19,106 @@
 * along with DOUBANGO.
 *
 */
+
+/**@file txc.c
+ * @brief RCS/OMA/IETF XCAP API implementation
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
 #include "txc.h"
 #include "txc_macros.h"
 #include "tsk_macros.h"
+
+/** @mainpage TinySAK API Overview
+*
+* This file is an overview of TinyXCAP API.
+*
+* TinyXCAP is a tiny but fully featured RCS/OMA/IETF XCAP API implementation.
+* This API is designed to efficiently work on embedded systems whith limited memory
+* and low computing power.
+*
+* @par Getting Started
+*
+* - @ref txc_faq_page
+* -
+* - @ref txc_document_page
+* - @ref txc_node_page
+*
+* @par Compliance
+*
+* - <a href="http://tools.ietf.org/html/rfc4825"> RFC 4825 - The Extensible Markup Language (XML) Configuration Access Protocol (XCAP) </a>
+* - <a href="http://www.ietf.org/rfc/rfc4826.txt"> RFC 4826 - Extensible Markup Language (XML) Formats for Representing Resource Lists </a>
+* - <a href="http://www.ietf.org/rfc/rfc4827.txt"> RFC 4827 - An Extensible Markup Language (XML) Configuration Access Protocol (XCAP) Usage for Manipulating Presence Document Contents </a>
+* - <a href="http://www.ietf.org/rfc/rfc5025.txt"> RFC 5025 - Presence Authorization Rules</a>
+*
+* @par Supported AUIDs
+*
+* - xcap-caps
+* - resource-lists 
+* - rls-services pres-rules 
+* - directory 
+* - org.openmobilealliance.conv-history 
+* - org.openmobilealliance.pres-rules 
+* - org.openmobilealliance.xdm-directory 
+* - org.openmobilealliance.deferred-list
+* - org.openmobilealliance.pres-content 
+* - org.openmobilealliance.groups
+* - ...
+*
+* @par Supported Systems
+* 
+* - AIX
+* - Embedded Linux
+* - FreeBSD
+* - HPUX
+* - IRIX
+* - Linux
+* - LynxOS
+* - Mac OS X 
+* - Microsoft Windows XP/Vista/7
+* - Microsoft Windows CE
+* - NetBSD
+* - OpenBSD
+* - Solaris
+* - Symbian S60
+*
+* @par Supported Architectures
+*
+* - ARM
+* - ARMv4i
+* - Intel 32/64-bits
+* - Itanium
+* - MIPS
+* - PA
+* - PowerPC
+* - RISC
+* - SPARC
+*
+*/
+
+
+/**@page txc_faq_page Frequently asked questions
+*
+* - <a href="#faq1">1. How to change default document name?</a>
+* - <a href="#faq2">2. How to use document selectors?</a>
+* - <a href="#faq3">3. How to use node selectors?</a>
+*
+*
+* @anchor faq1
+* @par 1. How to change default document name?
+* When the application is initialized all documents are loaded with a default name (e.g. server capabilities (xcap-caps) default document name is 'index').<br>
+* It is possible to change these names using @ref txc_auid_update function.
+*
+* @anchor faq2
+* @par 2. How to use document selectors?
+* For more information about document selectors please refer to the @ref txc_document_page.
+*
+* @anchor faq3
+* @par 3. How to use node selectors?
+* For more information about node selectors please refer to the @ref txc_node_page.
+*/
 
 #define PANIC_AND_JUMP(code, request)\
 	{\
@@ -40,7 +137,7 @@ static const char* get_mime_type(const txc_context_t* context, const txc_request
 	case sl_element:return TXC_MIME_TYPE_ELEMENT;
 	case sl_document: 
 		{
-			const txc_auid_t* auid = txc_auid_findby_name(context->auids, request->auid);
+			const txc_auid_t* auid = txc_auid_findby_name(((txc_context_t*)context)->auids, (const char*)request->auid);
 			return auid?auid->content_type:"application/unknown+xml";
 		}
 	case sl_attribute:return TXC_MIME_TYPE_ATTRIBUTE;
@@ -59,8 +156,8 @@ void txc_content_set(txc_content_t* content, const char *data, size_t size, cons
 {
 	if(content)
 	{
-		tsk_strupdate(0, &(content->data), data);
-		tsk_strupdate(0, &(content->type), type);
+		tsk_strupdate2(&(content->data), data);
+		tsk_strupdate2(&(content->type), type);
 		content->size = size;
 	}
 }
@@ -85,65 +182,59 @@ void txc_auid_init(txc_auid_t *auid)
 }
 
 /* find auid object by type */
-txc_auid_t* txc_auid_findby_type(const txc_auid_L_t* auids, xcap_auid_type_t auid_type)
+const txc_auid_t* txc_auid_findby_type(const AUIDS_T auids, xcap_auid_type_t auid_type)
 {
-	tsk_list_item_t* item = 0;
-
-	if(!auids) return 0;
-
-	tsk_list_foreach(item, auids)
+	int i;
+	for(i=0; i< sizeof(AUIDS_T)/sizeof(txc_auid_t); i++)
 	{
-		txc_auid_t *auid = ((txc_auid_t*)item->data);
-		if(auid->type == auid_type)
+		if(auids[i].type == auid_type)
 		{
-			return auid;
+			return &auids[i];
 		}
 	}
 	return 0;
 }
 
 /* find auid object by type */
-txc_auid_t* txc_auid_findby_name(const txc_auid_L_t* auids, const char* name)
+const txc_auid_t* txc_auid_findby_name(const AUIDS_T auids, const char* name)
 {
-	tsk_list_item_t* item = 0;
-
-	if(!auids) return 0;
-
-	tsk_list_foreach(item, auids)
+	int i;
+	for(i=0; i< sizeof(AUIDS_T)/sizeof(txc_auid_t); i++)
 	{
-		txc_auid_t *auid = ((txc_auid_t*)item->data);
-		if(!tsk_stricmp(auid->name, name))
+		if(tsk_equals(auids[i].name, name))
 		{
-			return auid;
+			return &auids[i];
 		}
 	}
 	return 0;
 }
 
 /* returns 1 if availabe and 0 otherwise */
-int txc_auid_is_available(const txc_auid_L_t* auids, xcap_auid_type_t type)
+int txc_auid_is_available(const AUIDS_T auids, xcap_auid_type_t type)
 {
 	const txc_auid_t *auid = txc_auid_findby_type(auids, type);
 	return (auid && auid->available) ? 1 : 0;
 }
 
 /* change auid availability */
-void txc_auid_set_availability(const txc_auid_L_t* auids, xcap_auid_type_t type, int avail)
+void txc_auid_set_availability(AUIDS_T auids, xcap_auid_type_t type, int avail)
 {
-	txc_auid_t* auid = txc_auid_findby_type(auids, type);
+	const txc_auid_t* auid = txc_auid_findby_type(auids, type);
 	if(auid)
 	{
-		auid->available = avail;
+		((txc_auid_t*)auid)->available = avail;
 	}
 }
 
-/* change the document name of the auid with type=@type */
+/**
+* change the document name of the auid with type= 
+*/
 void txc_auid_update(txc_context_t* context, xcap_auid_type_t type, const char* document)
 {
-	txc_auid_t* auid = txc_auid_findby_type(context->auids, type);
+	const txc_auid_t* auid = txc_auid_findby_type(context->auids, type);
 	if(auid)
 	{
-		tsk_strupdate(0, &(auid->document), document);
+		tsk_strupdate(&context->heap, &(((txc_auid_t*)auid)->document), document);
 	}
 }
 
@@ -156,7 +247,7 @@ void txc_auid_free(void **_auid)
 	TSK_FREE((*auid)->content_type);
 	TSK_FREE((*auid)->document);
 
-	tsk_free(0, _auid);
+	tsk_free2(_auid);
 }
 
 /* initialize xdm context */
@@ -167,21 +258,18 @@ void txc_context_init(txc_context_t* context)
 
 	memset(context, 0, sizeof(txc_context_t));
 
-	/* copy all default auids */
-	TSK_LIST_CREATE(context->auids);
-	for(i = 0; i< (sizeof(txc_auids)/sizeof(txc_auid_t)); i++)
-	{
-		txc_auid_t* auid = 0;
-		TXC_AUID_CREATE(auid);
+	/* initialize the context's memory heap */
+	tsk_heap_init(&context->heap);
 
-		auid->type = txc_auids[i].type;
-		auid->available = txc_auids[i].available;
-		auid->content_type = tsk_strdup(0, txc_auids[i].content_type);
-		auid->description = tsk_strdup(0, txc_auids[i].description);
-		auid->document = tsk_strdup(0, txc_auids[i].document);
-		auid->name = tsk_strdup(0, txc_auids[i].name);
-		
-		tsk_list_add_data((context->auids), ((void**)&auid), txc_auid_free);
+	/* copy all default auids */
+	for(i = 0; i< (sizeof(AUIDS_T)/sizeof(txc_auid_t)); i++)
+	{
+		context->auids[i].type = txc_auids[i].type;
+		context->auids[i].available = txc_auids[i].available;
+		context->auids[i].content_type = tsk_strdup(&context->heap, txc_auids[i].content_type);
+		context->auids[i].description = tsk_strdup(&context->heap, txc_auids[i].description);
+		context->auids[i].document = tsk_strdup(&context->heap, txc_auids[i].document);
+		context->auids[i].name = tsk_strdup(&context->heap, txc_auids[i].name);
 	}
 
 	/* initialize libcurl */
@@ -193,7 +281,7 @@ void txc_context_init(txc_context_t* context)
 }
 
 /* update available auids using those provided by the xdms */
-void txc_conttext_update_available_auids(txc_context_t *context, const tsk_list_t* avail_auids)
+void txc_context_update_available_auids(txc_context_t *context, const tsk_list_t* avail_auids)
 {
 	tsk_list_item_t *item = 0;
 	
@@ -203,8 +291,8 @@ void txc_conttext_update_available_auids(txc_context_t *context, const tsk_list_
 	tsk_list_foreach(item, avail_auids)
 	{
 		/* context auids */
-		txc_auid_t* auid = txc_auid_findby_name(context->auids, ((const char*)item->data));
-		if(auid && !(auid->available)) auid->available = 1;
+		const txc_auid_t* auid = txc_auid_findby_name(context->auids, ((const char*)item->data));
+		if(auid && !(auid->available)) ((txc_auid_t*)auid)->available = 1;
 	}
 }
 
@@ -219,10 +307,13 @@ void txc_context_free(txc_context_t** context)
 	TSK_FREE((*context)->proxy_pwd);
 	TSK_FREE((*context)->user_agent);
 	TSK_FREE((*context)->pragma);
-	TSK_LIST_SAFE_FREE((*context)->auids);
 	TXC_EASYHANDLE_SAFE_FREE((*context)->easyhandle);
 
-	tsk_free(0, context);
+	/* cleanup the heap */
+	tsk_heap_cleanup(&((*context)->heap));
+
+	/* free the context */
+	tsk_free2(context);
 
 	/* cleanup libcurl */
 	curl_global_cleanup();
@@ -249,7 +340,7 @@ void txc_request_free(txc_request_t** request)
 	TSK_FREE((*request)->http_expect);
 	TXC_CONTENT_SAFE_FREE((*request)->content);
 	
-	tsk_free(0, request);
+	tsk_free2(request);
 }
 
 /* libcurl write callback */
@@ -476,7 +567,7 @@ int txc_xcap_perform(txc_context_t* context, txc_request_t* request, txc_oper_ty
 	/* get response content-type */
 	if(code=curl_easy_getinfo(context->easyhandle, CURLINFO_CONTENT_TYPE, (&temp_str)))
 		PANIC_AND_JUMP(xpa_libcurl_error, request)
-	else request->content->type = tsk_strdup(0, (const char*)temp_str); 
+	else request->content->type = tsk_strdup2((const char*)temp_str); 
 		
 bail:
 

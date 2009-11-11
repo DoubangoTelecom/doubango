@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyXCAP", "tinyXCAP.vcproj", "{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySAK", "..\tinySAK\tinySAK.vcproj", "{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{2A476CAA-BA45-4379-AFEC-088645840527}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Debug|Win32.Build.0 = Debug|Win32
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Release|Win32.ActiveCfg = Release|Win32
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Release|Win32.Build.0 = Release|Win32
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Win32.Build.0 = Debug|Win32
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Release|Win32.ActiveCfg = Release|Win32
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Release|Win32.Build.0 = Release|Win32
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Debug|Win32.ActiveCfg = Debug|Win32
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Debug|Win32.Build.0 = Debug|Win32
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Release|Win32.ActiveCfg = Release|Win32
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

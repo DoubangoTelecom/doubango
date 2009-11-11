@@ -34,7 +34,6 @@
 #include "tinySAK_config.h"
 #include "tsk_list.h"
 #include "tsk_string.h"
-//#include "tsk_macros.h"
 #include "tsk_heap.h"
 #include "tsk_memory.h"
 #include "tsk_url.h"

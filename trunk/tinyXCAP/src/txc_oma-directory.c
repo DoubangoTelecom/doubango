@@ -67,7 +67,7 @@ txc_omadir_folder_t* txc_omadir_folder_from_xml(xmlNodePtr node)
 		/* auid */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("folder", "auid"), TSK_XML_NODE_SELECT_END());
-		folder->auid = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		folder->auid = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 	}
 	else return 0;
 

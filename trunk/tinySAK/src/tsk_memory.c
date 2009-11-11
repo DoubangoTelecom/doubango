@@ -76,14 +76,14 @@ char* mystr = 0;
 // initialize our memory heap => MANDATORY before using the heap
 for(i=0; i<10;i++)
 {
-	mystr = tsk_strdup(0, "testing the heap (1)");
+	mystr = tsk_strdup2("testing the heap (1)");
 	... use the string ...
-	tsk_free(0, mystr);
+	tsk_free2(mystr);
 
-	mystr = (char*)tsk_malloc(0, 10);
-	mystr = tsk_realloc(0, mystr, 100);
+	mystr = (char*)tsk_malloc2(10);
+	mystr = tsk_realloc2(mystr, 100);
 	... use the string ...
-	tsk_free(0, mystr);
+	tsk_free2(mystr);
 }
 *@endcode
 */

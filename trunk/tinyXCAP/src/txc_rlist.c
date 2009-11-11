@@ -66,8 +66,8 @@ void txc_rlist_entry_set(txc_rlist_entry_t *entry, const char* uri, const char* 
 {
 	if(entry)
 	{		
-		tsk_strupdate(0, &(entry->uri), uri);
-		tsk_strupdate(0, &(entry->display_name), display_name);
+		tsk_strupdate2(&(entry->uri), uri);
+		tsk_strupdate2(&(entry->display_name), display_name);
 	}
 }
 
@@ -82,7 +82,7 @@ void txc_rlist_entry_free(void **_entry)
 	TSK_SAFE_FREE2((*entry)->last_modified);
 	TSK_SAFE_FREE2((*entry)->etag);
 
-	tsk_free(0, _entry);
+	tsk_free2(_entry);
 }
 
 /* init list */
@@ -96,8 +96,8 @@ void txc_rlist_list_set(txc_rlist_list_t *list, const char* name, const char* di
 {
 	if(list)
 	{		
-		tsk_strupdate(0, &(list->name), name);
-		tsk_strupdate(0, &(list->display_name), display_name);
+		tsk_strupdate2(&(list->name), name);
+		tsk_strupdate2(&(list->display_name), display_name);
 	}
 }
 
@@ -109,7 +109,7 @@ void txc_rlist_list_free(void **_list)
 	TSK_SAFE_FREE2((*list)->display_name);
 	TSK_SAFE_FREE2((*list)->name);
 
-	tsk_free(0, _list);
+	tsk_free2(_list);
 }
 
 /* init list2 */
@@ -123,8 +123,8 @@ void txc_rlist_list2_set(txc_rlist_list2_t *list2, const char* name, const char*
 {
 	if(list2)
 	{		
-		tsk_strupdate(0, &(list2->name), name);
-		tsk_strupdate(0, &(list2->display_name),display_name);
+		tsk_strupdate2(&(list2->name), name);
+		tsk_strupdate2(&(list2->display_name),display_name);
 	}
 }
 /* add external eement to the list2 */
@@ -171,7 +171,7 @@ void txc_rlist_list2_free(void **_list2)
 	TSK_LIST_SAFE_FREE((*list2)->externals);
 	TSK_LIST_SAFE_FREE((*list2)->entries);
 
-	tsk_free(0, _list2);
+	tsk_free2(_list2);
 }
 
 /* init external */
@@ -185,7 +185,7 @@ void txc_rlist_external_set(txc_rlist_external_t *external, const char* anchor)
 {
 	if(external)
 	{
-		tsk_strupdate(0, &(external->anchor), anchor);
+		tsk_strupdate2(&(external->anchor), anchor);
 	}
 }
 
@@ -197,7 +197,7 @@ void txc_rlist_external_free(void **_external)
 	TSK_SAFE_FREE2((*external)->anchor);
 	TSK_SAFE_FREE2((*external)->list);
 
-	tsk_free(0, _external);
+	tsk_free2(_external);
 }
 
 /* xml<->entry binding*/
@@ -210,27 +210,27 @@ txc_rlist_entry_t* txc_rlist_entry_from_xml(const xmlNodePtr node, const char* l
 	if(tsk_xml_find_node(node, "entry", nft_none))
 	{
 		TXC_RLIST_ENTRY_CREATE(rlist_entry);
-		rlist_entry->list = tsk_strdup(0, lname);
+		rlist_entry->list = tsk_strdup2(lname);
 
 		/* display-name */
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("entry"), 
 			TSK_XML_NODE_SELECT_BY_NAME("display-name"), TSK_XML_NODE_SELECT_END());
-		rlist_entry->display_name = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_entry->display_name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 		
 		/* uri */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("entry", "uri"), TSK_XML_NODE_SELECT_END());
-		rlist_entry->uri = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_entry->uri = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* last-modified */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("entry", "last-modified"), TSK_XML_NODE_SELECT_END());
-		rlist_entry->last_modified = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_entry->last_modified = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* etag */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("entry", "etag"), TSK_XML_NODE_SELECT_END());
-		rlist_entry->etag = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_entry->etag = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 		
 	}
 	else return 0;
@@ -248,13 +248,13 @@ txc_rlist_external_t* txc_rlist_external_from_xml(const xmlNodePtr node, const c
 	if(tsk_xml_find_node(node, "external", nft_none))
 	{
 		TXC_RLIST_EXTERNAL_CREATE(rlist_external);
-		rlist_external->list = tsk_strdup(0, lname);
+		rlist_external->list = tsk_strdup2(lname);
 		
 		/* anchor */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("external", "anchor"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_external->anchor = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_external->anchor = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 		
 	}else return 0;
 
@@ -276,13 +276,13 @@ txc_rlist_list_t* txc_rlist_list_from_xml(const xmlNodePtr node)
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("list", "name"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_list->name = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_list->name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* display-name */
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("list"),
 			TSK_XML_NODE_SELECT_BY_NAME("display-name"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_list->display_name = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_list->display_name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 		
 	}else return 0;
 
@@ -304,13 +304,13 @@ txc_rlist_list2_t* txc_rlist_list2_from_xml(const xmlNodePtr node)
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("list", "name"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_list2->name = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_list2->name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/** display-name **/
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("list"),
 			TSK_XML_NODE_SELECT_BY_NAME("display-name"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_list2->display_name = tsk_strdup(0, TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_list2->display_name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/** externals **/
 		/* select first external */
@@ -536,7 +536,7 @@ char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2)
 	{
 		txc_rlist_entry_t *entry = ((txc_rlist_entry_t*)item->data);
 		char* entry_str = txc_rlist_entry_serialize(entry);
-		tsk_strcat(0, &list2_str, (const char*)entry_str);
+		tsk_strcat2(&list2_str, (const char*)entry_str);
 		TSK_SAFE_FREE2(entry_str);
 	}
 	
@@ -545,12 +545,12 @@ char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2)
 	{
 		txc_rlist_external_t *external = ((txc_rlist_external_t*)item->data);
 		char* external_str = txc_rlist_external_serialize(external);
-		tsk_strcat(0, &list2_str, (const char*)external_str);
+		tsk_strcat2(&list2_str, (const char*)external_str);
 		TSK_FREE(external_str);
 	}
 	
 	/* close list */
-	tsk_strcat(0, &list2_str, "</list>");
+	tsk_strcat2(&list2_str, "</list>");
 
 	return list2_str;
 }
@@ -565,19 +565,19 @@ char* txc_rlist_rlist2_serialize(const tsk_list_t *rlist2)
 	if(!rlist2) return 0;
 
 	/* xml header */
-	tsk_strcat(0, &rlist2_str, RLIST_XML_HEADER);
+	tsk_strcat2(&rlist2_str, RLIST_XML_HEADER);
 
 	tsk_list_foreach(item, rlist2)
 	{
 		/* get list2 */
 		txc_rlist_list2_t *list2 = ((txc_rlist_list2_t*)item->data);
 		char* list2_str = txc_rlist_list2_serialize(list2);
-		tsk_strcat(0, &rlist2_str, list2_str);
+		tsk_strcat2(&rlist2_str, list2_str);
 		TSK_FREE(list2_str);
 	}
 	
 	/* xml footer */
-	tsk_strcat(0, &rlist2_str, RLIST_XML_FOOTER);
+	tsk_strcat2(&rlist2_str, RLIST_XML_FOOTER);
 
 	return rlist2_str;
 }

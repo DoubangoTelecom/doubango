@@ -140,8 +140,8 @@ typedef tsk_list_t tsk_xml_namespaces_t;
 #define tsk_xml_attributes_free		tsk_list_free
 #define tsk_xml_namespaces_free		tsk_list_free
 
-TINYSAK_API void tsk_xml_namespace_init(tsk_xml_namespace_t* namespace);
-TINYSAK_API void tsk_xml_namespace_free(tsk_xml_namespace_t** namespace);
+TINYSAK_API void tsk_xml_namespace_init(tsk_xml_namespace_t* _namespace);
+TINYSAK_API void tsk_xml_namespace_free(tsk_xml_namespace_t** _namespace);
 
 TINYSAK_API void tsk_xml_element_init(tsk_xml_element_t* element);
 TINYSAK_API void tsk_xml_element_init_set(tsk_xml_element_t** element, const char* name, const char* value, tsk_xml_type_t type);

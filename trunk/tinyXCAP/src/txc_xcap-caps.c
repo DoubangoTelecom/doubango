@@ -68,7 +68,7 @@ static tsk_list_t* txc_xcap_caps_xxx(xmlNodePtr rootNode, const char* root, cons
 		if(node->children && node->children->type == XML_TEXT_NODE)
 		{
 			TSK_LIST_ITEM_CREATE(item);
-			item->data = tsk_strdup(0, (const char*)node->children->content);
+			item->data = tsk_strdup2((const char*)node->children->content);
 			tsk_list_add_item(xxx, &item);
 		}
 	}

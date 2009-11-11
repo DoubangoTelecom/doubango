@@ -31,6 +31,7 @@
 #include <curl/curl.h>
 #include "sak.h"
 
+#define TXC_AUIDS_COUNT				11
 #define TXC_HTTP_DEFAULT_TIMEOUT	30000
 #define TXC_HTTP_SUCCESS(request)	(200==request->status || 202==request->status)
 
@@ -49,17 +50,37 @@
 	else if(!context->xui) panic = xpa_invalid_xui; \
 	else panic = xpa_success;
 
-/* context */
+/**@def TXC_CONTEXT_CREATE
+* Helper function to easly create and initialize an XCAP context
+*/
+/**@def TXC_CONTEXT_SAFE_FREE
+* Helper function to safely free an XCAP context
+*/
 #define TXC_CONTEXT_CREATE(_context)		TXC_XXX_CREATE2(_context, context)
 #define TXC_CONTEXT_SAFE_FREE(_context)	TXC_XXX_SAFE_FREE2(_context, context)
 
-/* request */
+/*@def TXC_REQUEST_CREATE
+* Helper function to easly create and initialize an XCAP request
+*/
+/*@def TXC_REQUEST_SAFE_FREE
+* Helper function to easly free an XCAP request
+*/
+/*@def TXC_REQUEST_RETURN_IF_PANIC
+* Check if we should panic and leave the current section
+*/
 #define TXC_REQUEST_CREATE(_request)		TXC_XXX_CREATE2(_request, request)
 #define TXC_REQUEST_SAFE_FREE(_request)	TXC_XXX_SAFE_FREE2(_request, request)
 #define TXC_REQUEST_RETURN_IF_PANIC(request)\
 	if(!TXC_PANIC_SUCCESS(request->panic)) return request;
+#define TXC_REQUEST_RETURN_IF_NULL_URL(request)\
+	if(!request->url) { request->panic =xpa_invalid_url;  return request; }
 
-/* content */
+/*@def TXC_CONTENT_CREATE
+* Helper function to easly create and initialize an XCAP content
+*/
+/*@def TXC_CONTENT_SAFE_FREE
+* Helper function to easly free an XCAP content
+*/
 #define TXC_CONTENT_CREATE(_content)		TXC_XXX_CREATE2(_content, content)
 #define TXC_CONTENT_SAFE_FREE(_content)	TXC_XXX_SAFE_FREE2(_content, content)
 
@@ -74,34 +95,6 @@
 #define TXC_AUID_SAFE_FREE(_auid)	TXC_XXX_SAFE_FREE2(_auid, auid)
 
 #define TXC_PANIC_SUCCESS(panic) ( (panic == xpa_success) )
-
-
-/*Node Selector as per rfc 4825 subclause 6.3
-node-selector          = element-selector ["/" terminal-selector]
-terminal-selector      = attribute-selector / namespace-selector /
-extension-selector
-element-selector       = step *( "/" step)
-step                   = by-name / by-pos / by-attr / by-pos-attr /
-extension-selector
-by-name                = NameorAny
-by-pos                 = NameorAny "[" position "]"
-position               = 1*DIGIT
-attr-test              = "@" att-name "=" att-value
-by-attr                = NameorAny "[" attr-test "]"
-by-pos-attr            = NameorAny "[" position "]" "[" attr-test "]"
-NameorAny              = QName / "*"   ; QName from XML Namespaces
-att-name               = QName
-att-value              = AttValue      ; from XML specification
-attribute-selector     = "@" att-name
-namespace-selector     = "namespace::*"
-extension-selector     = 1*( %x00-2e / %x30-ff )  ; anything but "/"
-*/
-#define TXC_NODE_SELECT_BY_NAME(qname)										by_name, qname
-#define TXC_NODE_SELECT_BY_POS(qname, position)								by_pos, qname, position
-#define TXC_NODE_SELECT_BY_ATTR(qname, att_name, att_value)					by_attr, qname, att_name, att_value
-#define TXC_NODE_SELECT_BY_POS_ATTR(qname, position, att_name, att_value)	by_pos_attr, qname, position, att_name, att_value
-#define TXC_NODE_ADD_NAMESPACE(prefix, ns)									0xF0, prefix, ns
-#define TXC_NODE_SELECT_END()												0xFF
 
 /* listing all possible xdm panic codes */
 typedef enum txc_panic_e
@@ -159,7 +152,9 @@ typedef enum txc_node_step_e
 }
 txc_node_step_t;
 
-/* supported AUIDs */
+/**
+* Supported XCAP AUIDs 
+*/
 typedef enum xcap_auid_type_e
 {
 	ietf_xcap_caps,			/* RFC 4825 sublause 12 */
@@ -189,9 +184,10 @@ typedef struct txc_auid_s
 }
 txc_auid_t;
 typedef tsk_list_t txc_auid_L_t; /* contains 'txc_auid_t' elements */
+typedef txc_auid_t AUIDS_T[TXC_AUIDS_COUNT];
 
 /* all supported auids */
-static const txc_auid_t txc_auids[11] =
+static const AUIDS_T txc_auids =
 {
 	{ietf_xcap_caps,		"xcap-caps",								"IETF server capabilities", TXC_MIME_TYPE_CAPS,							"index",			1},
 	{ietf_resource_lists,	"resource-lists",							"IETF resource-list",		"application/resource-lists+xml",			"index",			0},
@@ -223,6 +219,7 @@ typedef struct txc_request_s
 }
 txc_request_t;
 
+
 typedef struct txc_context_s
 {
 	char* xui;							/* RFC 4825 subclause 4: username*/
@@ -235,7 +232,8 @@ typedef struct txc_context_s
 	char* txc_root;						/* RFC 4825 subclause 6.1 */
 	char* pragma;						/* HTTP pragma */
 	char* user_agent;
-	txc_auid_L_t* auids;				/* contains list of all default auids */
+	AUIDS_T auids;	/* contains list of all default auids */
+	tsk_heap_t heap; /**< */
 
 	CURL* easyhandle;					/* curl handle */
 	int reuse_http_connection;			/* reuse the same easyhandle to send/receive data */
@@ -247,15 +245,15 @@ TINYXCAP_API void txc_content_set(txc_content_t* content, const char *data, size
 TINYXCAP_API void txc_content_free(txc_content_t** content);
 
 void txc_auid_init(txc_auid_t *auid);
-TINYXCAP_API txc_auid_t* txc_auid_findby_type(const txc_auid_L_t* auids, xcap_auid_type_t type);
-TINYXCAP_API txc_auid_t* txc_auid_findby_name(const txc_auid_L_t* auids, const char* name);
-TINYXCAP_API int txc_auid_is_available(const txc_auid_L_t* auids, xcap_auid_type_t type);
-TINYXCAP_API void txc_auid_set_availability(const txc_auid_L_t* auids, xcap_auid_type_t type, int avail);
+TINYXCAP_API const txc_auid_t* txc_auid_findby_type(const AUIDS_T auids, xcap_auid_type_t type);
+TINYXCAP_API const txc_auid_t* txc_auid_findby_name(const AUIDS_T auids, const char* name);
+TINYXCAP_API int txc_auid_is_available(const AUIDS_T auids, xcap_auid_type_t type);
+TINYXCAP_API void txc_auid_set_availability(AUIDS_T auids, xcap_auid_type_t type, int avail);
 TINYXCAP_API void txc_auid_update(txc_context_t* context, xcap_auid_type_t type, const char* document);
 void txc_auid_free(void **auid);
 
 TINYXCAP_API void txc_context_init(txc_context_t* context);
-TINYXCAP_API void txc_conttext_update_available_auids(txc_context_t *context, const tsk_list_t* avail_auids);
+TINYXCAP_API void txc_context_update_available_auids(txc_context_t *context, const tsk_list_t* avail_auids);
 TINYXCAP_API void txc_context_free(txc_context_t** context);
 
 TINYXCAP_API void txc_request_init(txc_request_t* request);

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="tinyXCAP"
-	ProjectGUID="{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}"
-	RootNamespace="tinyXCAP"
+	Name="test"
+	ProjectGUID="{2A476CAA-BA45-4379-AFEC-088645840527}"
+	RootNamespace="test"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYXCAP_EXPORTS"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -50,6 +50,7 @@
 				WarningLevel="3"
 				WarnAsError="true"
 				DebugInformationFormat="4"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -62,10 +63,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\curl\vs_libcurl.dll.a&quot;"
+				AdditionalDependencies="$(OutDir)\tinyXCAP.lib $(OutDir)\tinySAK.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -94,7 +95,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -117,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYXCAP_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -137,7 +138,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -169,134 +170,38 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\txc.c"
+				RelativePath=".\stdafx.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\txc_client.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_document.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_gsma_rcs.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_ietf-directory.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_ietf-presrules.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_node.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-directory.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-prescont.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-presrules.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_rlist.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_rls.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_xcap-caps.c"
+				RelativePath=".\test.c"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="include"
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\tinyxcap_config.h"
+				RelativePath=".\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\txc.h"
+				RelativePath=".\targetver.h"
 				>
 			</File>
+		</Filter>
+		<Filter
+			Name="tests"
+			>
 			<File
-				RelativePath=".\src\txc_api.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_client.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_document.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_gsma_rcs.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_ietf-directory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_ietf-pres-rules.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_macros.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_node.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-directory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-prescont.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-presrules.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_rlist.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_rls.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_xcap-caps.h"
+				RelativePath=".\test_selector.h"
 				>
 			</File>
 		</Filter>

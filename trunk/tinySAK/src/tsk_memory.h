@@ -41,12 +41,16 @@
 
 /** Safely free a pointer
 */
-#define TSK_SAFE_FREE2(ptr) (void)tsk_free(0, &ptr);
+#define TSK_SAFE_FREE2(ptr) (void)tsk_free2(&ptr);
 
 TINYSAK_API void* tsk_malloc(tsk_heap_t *heap, size_t size);
 TINYSAK_API void* tsk_realloc (tsk_heap_t *heap,  void * ptr, size_t size);
 TINYSAK_API void tsk_free(tsk_heap_t *heap, void** ptr);
 TINYSAK_API void* tsk_calloc(tsk_heap_t *heap, size_t num, size_t size);
 
+#define tsk_malloc2(size) tsk_malloc(0, size)
+#define tsk_realloc2(ptr, size)  tsk_realloc(0, ptr, size)
+#define tsk_free2(ptr) tsk_free(0, ptr)
+#define tsk_calloc2(num, size) tsk_calloc(0, num, size)
 
 #endif /* _TINYSAK_MEMORY_H_ */

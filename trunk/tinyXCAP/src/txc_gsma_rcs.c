@@ -60,7 +60,7 @@ txc_rlist_list2_L_t* txc_gsmarcs_create_rlist2(const txc_context_t* context)
 	char* anchor = 0, *doc_sel = 0;
 	
 	/* get document selector */
-	if( !context || !(doc_sel = txc_doc_get_sel2(context, ietf_resource_lists)) )
+	if( !context || !(doc_sel = TXC_DOC_GET_SEL(context, ietf_resource_lists)) )
 	{
 		goto bail;
 	}
@@ -126,7 +126,7 @@ txc_rls_service_L_t* txc_gsmarcs_create_rls(const txc_context_t* context)
 	char *uri = 0, *resource_list = 0, *doc_sel = 0;
 	
 	/* get document selector */
-	if( !context || !(doc_sel = txc_doc_get_sel2(context, ietf_resource_lists)) )
+	if( !context || !(doc_sel = TXC_DOC_GET_SEL(context, ietf_resource_lists)) )
 	{
 		goto bail;
 	}
