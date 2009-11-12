@@ -19,15 +19,32 @@
 * along with DOUBANGO.
 *
 */
-/*
-	RFC 5025 - Presence Authorization Rules
-*/
+
+/**@file txc_ietf-presrules.c
+ * @brief <a href="http://tools.ietf.org/html/rfc5025">RFC 5025 - IETF Presence Authorization Rules</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
 
 #include "txc_ietf-pres-rules.h"
 #include "txc_document.h"
 #include "txc_oma.h"
 
-//static const char* txc_ietf_pres_rules_ns = "urn:ietf:params:xml:ns:pres-rules";
+/**@defgroup txc_ietf_pres_rules_group IETF Presence Authorization Rules
+*/
+
+/**@page txc_ietf_pres_rules_page IETF Presence Authorization Rules Tutorial (pres-rules)
+* @par Application Unique ID (AUID)
+* - '<span style="text-decoration:underline;">pres-rules</span>' as per rfc 5025 subclause 9.1
+* @par Default Document Namespace
+* - '<span style="text-decoration:underline;">urn:ietf:params:xml:ns:pres-rules</span>' as per rfc 5025 subclause 9.3
+* @par MIME Type
+* - '<span style="text-decoration:underline;">application/auth-policy+xml</span>' as per rfc 5025 subclause 9.4
+* @par Default document name
+* - '<span style="text-decoration:underline;">index</span>' as per rfc 5025 subclause 9.7
+*/
 
 /* 1= owner uri ; 2=oma_grantedcontacts uri; 3=oma_blockedcontacts*/
 #define TXC_IETF_PRESRULES_TEMPLATE "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" \
@@ -121,8 +138,11 @@
 									  "</cr:rule>" \
 									"</cr:ruleset>" \
 
-/* will serialize a complete pres-rules whith xml header*/
-/* ATTENTION: use 'TSK_SAFE_FREE2' macro to free the returned string */
+/**@ingroup txc_ietf_pres_rules_group
+* Used to create an initial IETF pres-rules document.
+* @param context The xcap context for which to create the IETF pres-rules document.
+* @retval The XML document to PUT to the XDMS. You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+*/
 char* txc_ietf_presrules_serialize(const txc_context_t *context)
 {
 	char *ietf_presrules_str = 0, *oma_grantedcontacts = 0, *oma_blockedcontacts = 0, *doc_sel = 0;

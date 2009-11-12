@@ -19,14 +19,63 @@
 * along with DOUBANGO.
 *
 */
-/* implements [OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] */
+/**@file txc_oma-prescont.c
+ * @brief <a href="http://www.openmobilealliance.org/technical/release_program/docs/PresenceSIMPLE/V2_0-20081223-C/OMA-TS-Presence_SIMPLE_Content_XDM-V1_0-20081223-C.pdf">[OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] - OMA Presence Content (Avatar)</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 #include "txc_oma-prescont.h"
 
+/**@defgroup txc_oma_prescont_group OMA Presence Content (Avatars)
+*/
 
-//static const char* txc_oma_prescont_ns = "urn:oma:xml:prs:pres-content";
+/**@page txc_oma_prescont_page OMA Presence Content Tutorial (org.openmobilealliance.pres-content)
+* @par Application Unique ID (AUID)
+* - '<span style="text-decoration:underline;">org.openmobilealliance.pres-content</span>' as per [OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] subclause 5.1.2
+* @par Default Document Namespace
+* - '<span style="text-decoration:underline;">urn:oma:xml:prs:pres-content</span>' as per [OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] subclause 5.1.4
+* @par MIME Type
+* - '<span style="text-decoration:underline;">application/vnd.oma.pres-content+xml</span>' as per [OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] subclause 5.1.5
+* @par Default document name
+* - '<span style="text-decoration:underline;">oma_status-icon/rcs_status_icon</span>' as per [R1_090831_RCS_Release_1_Technical_Realisation_v1_1] subclause 4.8.1
+*
+* <H2>=== Create/deserialize an OMA Presence Content (avatar) document received from the XDMS ===</H2>
+*
+* @code
+#include "txc_api.h"
 
-/* create oma pres-content object */
-/* ATTENTION: use 'txc_oma_pres_cont_free' function to free the returned object*/
+// OMA pres-cont context
+txc_oma_prescont_t* omaprescont = 0;
+
+printf("\n---\nTEST OMA PRES-CONTENT\n---\n");
+{
+	// create oma-pres-content context
+	omaprescont = txc_oma_prescont_create(buffer, size);
+
+	// dump
+	printf("\ndump pres-content\n");
+	if(omaprescont)
+	{
+		printf("mime-type: \"%s\" encoding: \"%s\" description: \"%s\" data: \"%s\"\n", 
+			omaprescont->mime_type, omaprescont->encoding, omaprescont->description, omaprescont->data);
+	}
+	// free omapres-content context
+	txc_oma_prescont_free(&omaprescont);
+}
+* @endcode
+*
+*/
+
+/**@ingroup txc_oma_prescont_group
+* Create an OMA presence content object from an XML string.
+* @param buffer The XML string from which to create the pres-cont object
+* @param size The size of the XML string
+* @retval The OMA pres-cont object. You MUST call @ref txc_oma_prescont_free to free the returned object.
+* @sa @ref txc_oma_prescont_free
+*/
 txc_oma_prescont_t* txc_oma_prescont_create(const char* buffer, size_t size)
 {
 	xmlNodePtr node = 0;
@@ -74,7 +123,11 @@ txc_oma_prescont_t* txc_oma_prescont_create(const char* buffer, size_t size)
 	return pres_cont;
 }
 
-/* init oma pres-content object */
+/**@ingroup txc_oma_prescont_group
+* Free an OMA presence content object previously created using @ref txc_oma_prescont_create.
+* @param pres_cont The object to free.
+* @sa @ref txc_oma_prescont_create
+*/
 void txc_oma_prescont_free(txc_oma_prescont_t **pres_cont)
 {
 	TSK_SAFE_FREE2((*pres_cont)->mime_type);

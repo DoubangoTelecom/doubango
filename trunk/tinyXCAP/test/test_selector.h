@@ -35,10 +35,8 @@ void test_selector()
 
 	printf("---\nTEST XCAP SELECTOR\n---\n");
 
-	context->user_agent = tsk_strdup2("XDM-client/OMA1.1");
-	context->txc_root = tsk_strdup2("http://xcap.example.com:8080/services");
-	context->password = tsk_strdup2("mysecret");
-	context->xui = tsk_strdup2("sip:doubango@example.com");
+	/* Initialize the context */
+	TEST_XXXX_CONTEXT_INIT(context);
 
 	//txc_auid_update(context, ietf_resource_lists, "rlist.xml");
 	

@@ -122,8 +122,8 @@ typedef struct txc_rlist_list2_s
 	txc_rlist_external_L_t* externals; /**< All extenals */
 }
 txc_rlist_list2_t;
-typedef tsk_list_t txc_rlist_list2_L_t; /* List of @ref txc_rlist_list2_t elements */
-typedef tsk_list_t txc_rlist_list2_LL_t; /* List of @ref txc_rlist_list2_t elements */
+typedef tsk_list_t txc_rlist_list2_L_t; /**< List of @ref txc_rlist_list2_t elements */
+typedef tsk_list_t txc_rlist_list2_LL_t; /**< List of @ref txc_rlist_list2_L_t elements */
 
 /** Resource-lists document context
 */

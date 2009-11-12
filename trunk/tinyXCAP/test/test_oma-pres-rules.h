@@ -19,19 +19,31 @@
 * along with DOUBANGO.
 *
 */
+#include "txc_api.h" 
 
-/**@file txc_ietf-directory.h
- * @brief <a href="http://tools.ietf.org/html/draft-garcia-simple-xcap-directory-00">draft-garcia-simple-xcap-directory</a>
- *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
- *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
- */
+#ifndef TEST_OMA_PRESRULES
+#define TEST_OMA_PRESRULES
 
-#ifndef _TINYXCAP_TXC_IETF_DIRECTORY_H_
-#define _TINYXCAP_TXC_IETF_DIRECTORY_H_
+/* testing oma-presrules */
+void test_oma_presrules()
+{
+	txc_context_t* context;
+	char *presrules = 0;
+	
+	/* create our XCAP context */
+	TXC_CONTEXT_CREATE(context);
 
-#include "tinyxcap_config.h"
-#include "txc.h"
+	printf("---\nTEST IETF-PRESRULES\n---\n");
 
-#endif /* _TINYXCAP_TXC_IETF_DIRECTORY_H_ */
+	/* Initialize the context */
+	TEST_XXXX_CONTEXT_INIT(context);
+
+	presrules = txc_oma_presrules_serialize(context);
+	printf("OMA pres-rules: \n%s\n***\n", presrules);
+	TSK_SAFE_FREE2(presrules);
+
+	/* free the context*/
+	TXC_CONTEXT_SAFE_FREE(context);
+}
+
+#endif

@@ -49,18 +49,32 @@
 * - @ref txc_xcap_caps_page 
 * - @ref txc_rlist_page
 * - @ref txc_rls_page
+* - @ref txc_ietf_pres_rules_page
+* - @ref txc_oma_pres_rules_page
+* - @ref txc_ietf_directory_page
+* - @ref txc_oma_directory_page
+* - @ref txc_gsma_rcs_page
+* - @ref txc_oma_prescont_page
 *
 * @par Compliance
 *
-* - <a href="http://tools.ietf.org/html/rfc4825"> RFC 4825 - The Extensible Markup Language (XML) Configuration Access Protocol (XCAP)</a>
+*==== <span style="text-decoration:underline;"> IETF</span> ====
+*
+* - <a href="http://www.ietf.org/rfc/rfc4745.txt"> RFC 4745 - Common Policy: A Document Format for Expressing Privacy Preferences </a>
+* - <a href="http://www.ietf.org/rfc/rfc4825.txt"> RFC 4825 - The Extensible Markup Language (XML) Configuration Access Protocol (XCAP)</a>
 * - <a href="http://www.ietf.org/rfc/rfc4826.txt"> RFC 4826 - Extensible Markup Language (XML) Formats for Representing Resource Lists</a>
 * - <a href="http://www.ietf.org/rfc/rfc4827.txt"> RFC 4827 - An Extensible Markup Language (XML) Configuration Access Protocol (XCAP) Usage for Manipulating Presence Document Contents</a>
 * - <a href="http://www.ietf.org/rfc/rfc5025.txt"> RFC 5025 - Presence Authorization Rules</a>
-* -
+*
+*==== <span style="text-decoration:underline;"> OMA</span> ====
+*
 * - <a href="http://www.openmobilealliance.org/Technical/release_program/docs/XDM/V1_1-20080627-A/OMA-TS-XDM_Core-V1_1-20080627-A.pdf">OMA-TS-XDM_Core-V1_1-20080627-A</a>
-* - <a href="http://www.openmobilealliance.org/Technical/release_program/docs/XDM_PRS_IMPL/V1_0-20080627-C/OMA-WP-XDM_1_1_Implementation_Guidelines-20080627-C.pdf"> OMA-WP-XDM_1_1_Implementation_Guidelines-20080627-C</a>
-* - <a href="http://www.openmobilealliance.org/technical/release_program/docs/PresenceSIMPLE/V2_0-20081223-C/OMA-TS-Presence_SIMPLE_Content_XDM-V1_0-20081223-C.pdf"> OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C</a>
-* -
+* - <a href="http://www.openmobilealliance.org/Technical/release_program/docs/XDM_PRS_IMPL/V1_0-20080627-C/OMA-WP-XDM_1_1_Implementation_Guidelines-20080627-C.pdf">OMA-WP-XDM_1_1_Implementation_Guidelines-20080627-C</a>
+* - <a href="http://www.openmobilealliance.org/technical/release_program/docs/PresenceSIMPLE/V2_0-20081223-C/OMA-TS-Presence_SIMPLE_Content_XDM-V1_0-20081223-C.pdf">OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C</a>
+* - <a href="http://www.openmobilealliance.org/Technical/release_program/docs/PresenceSIMPLE/V1_1-20080627-A/OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A.pdf">OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A</a>
+*
+*====<span style="text-decoration:underline;"> GSMA RCS</span> ====
+*
 * - <a href="http://www.gsmworld.com/documents/rcs/rcs2_june09/R2_090831_RCS_Release_2_Technical_Realisation_v1_0.pdf">RCS Release 2 (Jun ‘09) - Technical Realisation v1.0</a>
 * - <a href="http://www.gsmworld.com/documents/rcs/rcs1_updates/R1_090831_RCS_Release_1_Technical_Realisation_v1_1.pdf">RCS Release 1 Updates (Jun ‘09) - Technical Realisation v1.1</a>
 * - <a href="http://www.gsmworld.com/documents/1_technical_real_v1.pdf">RCS Release 1 (Dec 08)  - Technical Realisation v1.0</a>
@@ -120,6 +134,9 @@
 * - <a href="#faq4">4. How to create/deserialize an xcap-caps document received from the XDMS?</a>
 * - <a href="#faq5">5. How to create/deserialize a resource-lists document received from the XDMS?</a>
 * - <a href="#faq6">6. How to create/deserialize a rls-services document received from the XDMS?</a>
+* - <a href="#faq7">7. How to create/deserialize an OMA XCAP directory document received from the XDMS?</a>
+* - <a href="#faq20">20. How to create and serialize GSMA RCS documents?</a>
+* - <a href="#faq20">21. How to parse an OMA pres-content (avatar) document received from the XDMS?</a>
 *
 * @anchor faq1
 * @par 1. How to change default document name?
@@ -145,6 +162,18 @@
 * @anchor faq6
 * @par 6. How to create/deserialize a rls-services document received from the XDMS?
 * For more information about how to handle rls-services documents please refer to @ref txc_rls_page.
+*
+* @anchor faq7
+* @par 7. How to create/deserialize an OMA XCAP directory document received from the XDMS?
+* For more information about how to handle OMA XCAP directory documents please refer to @ref txc_oma_directory_page.
+*
+* @anchor faq20
+* @par 20. How to create and serialize GSMA RCS documents?
+* For more information about how to handle GSAM RCS documents please refer to @ref txc_gsma_rcs_page.
+`*
+* @anchor faq21
+* @par 21. How to parse an OMA pres-content (avatar) document received from the XDMS?
+* For more information about how to handle OMA Presence Content documents (Avatars) please refer to @ref txc_oma_prescont_page.
 */
 
 #define PANIC_AND_JUMP(code, request)\
