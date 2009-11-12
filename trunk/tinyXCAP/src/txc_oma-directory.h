@@ -20,6 +20,14 @@
 *
 */
 
+/**@file txc_oma-directory.h
+ * @brief <a href="http://www.openmobilealliance.org/Technical/release_program/docs/XDM/V1_1-20080627-A/OMA-TS-XDM_Core-V1_1-20080627-A.pdf">[OMA-TS-XDM_Core-V1_1-20080627-A] - OMA XCAP directory subclause 6.7.2</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 #ifndef _TINYXCAP_TXC_OMA_DIRECTORY_H_
 #define _TINYXCAP_TXC_OMA_DIRECTORY_H_
 
@@ -27,23 +35,31 @@
 #include "txc.h"
 #include "txc_rlist.h"
 
-/* urn:oma:xml:xdm:xcap-directory */
-
+/**@def TXC_OMADIR_FOLDER_CREATE
+* Create an OMA XCAP directory folder
+* You MUST @ref TXC_OMADIR_FOLDER_SAFE_FREE to free the objet.
+* @sa @ref TXC_OMADIR_FOLDER_SAFE_FREE
+*/
+/**@def TXC_OMADIR_FOLDER_SAFE_FREE
+* Safely free an OMA XCAP directory previously created using @ref TXC_OMADIR_FOLDER_CREATE.
+* @sa @ref TXC_OMADIR_FOLDER_CREATE
+*/
 #define TXC_OMADIR_FOLDER_CREATE(folder)		TXC_XXX_CREATE2(folder, omadir_folder)
 #define TXC_OMADIR_FOLDER_SAFE_FREE(folder)		TXC_XXX_SAFE_FREE2(folder, omadir_folder)
 
-/* folder */
+/** OMA XCAP directory folder .
+*/
 typedef struct txc_omadir_folder_s
 {
-	char* auid;
+	char* auid; /**< The auid of the folder */
 }
 txc_omadir_folder_t;
-typedef tsk_list_t txc_omadir_folder_L_t; /* contains txc_omadir_folder_t elements */
+typedef tsk_list_t txc_omadir_folder_L_t; /* List of @ref txc_omadir_folder_t elements */
 
-/* oma xcap-directory */
+/**OMA XCAP directory context. */
 typedef struct txc_omadir_s
 {
-	xmlDocPtr docPtr;
+	xmlDocPtr docPtr; /**< Pointer to the XML document*/
 }
 txc_omadir_t;
 

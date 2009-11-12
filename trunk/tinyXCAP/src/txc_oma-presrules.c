@@ -20,10 +20,32 @@
 *
 */
 
+/**@file txc_oma-presrules.c
+ * @brief <a href="http://www.openmobilealliance.org/Technical/release_program/docs/PresenceSIMPLE/V1_1-20080627-A/OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A.pdf">[OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] - OMA Presence Authorization Rules</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 /* as per RCS1: http://www.gsmworld.com/documents/rcs/rcs1_updates/R1_090831_RCS_Release_1_Technical_Realisation_v1_1.pdf subclause 4.4*/
 #include "txc_oma-presrules.h"
 #include "txc_document.h"
 #include "txc_oma.h"
+
+/**@defgroup txc_oma_pres_rules_group OMA Presence Authorization Rules
+*/
+
+/**@page txc_oma_pres_rules_page OMA Presence Authorization Rules Tutorial (org.openmobilealliance.pres-rules)
+* @par Application Unique ID (AUID)
+* - '<span style="text-decoration:underline;">org.openmobilealliance.pres-rules</span>' as per [OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] subclause 5.1.1.2
+* @par Default Document Namespace
+* - '<span style="text-decoration:underline;">urn:ietf:params:xml:ns:common-policy</span>' as per [OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] subclause 5.1.1.3
+* @par MIME Type
+* - '<span style="text-decoration:underline;">application/auth-policy+xml</span>' as per [OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] subclause 5.1.1.5
+* @par Default document name
+* - '<span style="text-decoration:underline;">pres-rules</span>' as per [OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] subclause 5.1.1.8
+*/
 
 /* 1= owner uri ; 2=oma_grantedcontacts uri; 3=oma_blockedcontacts*/
 #define TXC_OMA_PRESRULES_TEMPLATE "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" \
@@ -119,8 +141,11 @@
 									"</cr:ruleset>"
 
 
-/* will serialize a complete pres-rules whith xml header*/
-/* ATTENTION: use 'TSK_SAFE_FREE2' macro to free the returned string */
+/**@ingroup txc_oma_pres_rules_group
+* Used to create an initial OMA pres-rules document.
+* @param context The xcap context for which to create the OMA pres-rules document.
+* @retval The XML document to PUT to the XDMS. You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+*/
 char* txc_oma_presrules_serialize(const txc_context_t *context)
 {
 	char *oma_presrules_str = 0, *oma_grantedcontacts = 0, *oma_blockedcontacts = 0, *doc_sel = 0;

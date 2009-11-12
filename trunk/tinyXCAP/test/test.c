@@ -21,13 +21,25 @@
 */
 #include "stdafx.h"
 
-#define LOOP				0
+#define TEST_XXXX_CONTEXT_INIT(context) \
+	context->user_agent = tsk_strdup2("XDM-client/OMA1.1"); \
+	context->txc_root = tsk_strdup2("http://example.com:8080/services"); \
+	context->password = tsk_strdup2("doubango"); \
+	context->xui = tsk_strdup2("sip:doubango@example.com"); \
+	context->pragma = tsk_strdup2("keep-alive");
 
-#define RUN_TEST_ALL		0
-#define RUN_TEST_SELECTOR	0
-#define RUN_TEST_XCAP_CAPS	0
-#define RUN_TEST_RLIST		0
-#define RUN_TEST_RLS		1
+#define LOOP						0
+
+#define RUN_TEST_ALL				1
+#define RUN_TEST_SELECTOR			0
+#define RUN_TEST_XCAP_CAPS			0
+#define RUN_TEST_RLIST				0
+#define RUN_TEST_RLS				0
+#define RUN_TEST_IETF_PRESRULES		0
+#define RUN_TEST_OMA_PRESRULES		0
+#define RUN_TEST_OMA_DIRECTORY		0
+#define RUN_TEST_GSMA_RCS			0
+#define RUN_TEST_OMA_PRESCONT		1
 
 #if RUN_TEST_SELECTOR || RUN_TEST_ALL
 #include "test_selector.h"
@@ -43,6 +55,26 @@
 
 #if RUN_TEST_RLS || RUN_TEST_ALL
 #include "test_rls.h"
+#endif
+
+#if RUN_TEST_IETF_PRESRULES || RUN_TEST_ALL
+#include "test_ietf-pres-rules.h"
+#endif
+
+#if RUN_TEST_OMA_PRESRULES || RUN_TEST_ALL
+#include "test_oma-pres-rules.h"
+#endif
+
+#if RUN_TEST_OMA_DIRECTORY || RUN_TEST_ALL
+#include "test_oma-directory.h"
+#endif
+
+#if RUN_TEST_GSMA_RCS || RUN_TEST_ALL
+#include "test_gsma_rcs.h"
+#endif
+
+#if RUN_TEST_OMA_PRESCONT || RUN_TEST_ALL
+#include "test_oma-pres-cont.h"
 #endif
 
 int _tmain(int argc, _TCHAR* argv[])
@@ -75,7 +107,33 @@ int _tmain(int argc, _TCHAR* argv[])
 		test_rls_services(rls_str0, strlen(rls_str0));
 #endif
 
+		/*ietf pres-rules*/
+#if RUN_TEST_IETF_PRESRULES || RUN_TEST_ALL
+		test_ietf_presrules();
+#endif
+
+		/*oma pres-rules*/
+#if RUN_TEST_OMA_PRESRULES || RUN_TEST_ALL
+		test_oma_presrules();
+#endif
+
+		/* oma directory */
+#if RUN_TEST_OMA_DIRECTORY || RUN_TEST_ALL
+		test_oma_directory(omadir_str0, strlen(omadir_str0));
+#endif
+
+		/* gsma rcs */
+#if RUN_TEST_GSMA_RCS || RUN_TEST_ALL
+		test_gsma_rcs();
+#endif
+
+		/* oma pres-cont (avatars) */
+#if RUN_TEST_OMA_PRESCONT || RUN_TEST_ALL
+		test_oma_pres_cont(omaprescont_str0, strlen(omaprescont_str0));
+#endif
+
 	}
+	
 	getchar();
 
 	return 0;

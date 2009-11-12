@@ -20,14 +20,20 @@
 *
 */
 
+/**@file txc_ietf-pres-rules.h
+ * @brief <a href="http://tools.ietf.org/html/rfc5025">RFC 5025 - IETF Presence Authorization Rules</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 #include "tinyxcap_config.h"
 #include "txc.h"
 
 #ifndef _TINYXCAP_IETF_PRES_RULES_H_
 #define _TINYXCAP_IETF_PRES_RULES_H_
 
-/* urn:ietf:params:xml:ns:pres-rules */
-
-char* txc_ietf_presrules_serialize(const txc_context_t *context);
+TINYXCAP_API char* txc_ietf_presrules_serialize(const txc_context_t *context);
 
 #endif /* _TINYXCAP_IETF_PRES_RULES_H_ */

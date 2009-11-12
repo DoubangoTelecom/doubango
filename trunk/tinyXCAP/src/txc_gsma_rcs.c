@@ -20,6 +20,14 @@
 *
 */
 
+/**@file txc_gsma_rcs.c
+ * @brief GSMA <a href="http://www.gsmworld.com/documents/rcs/rcs1_updates/R1_090831_RCS_Release_1_Technical_Realisation_v1_1.pdf">RCS 1</a> and <a href="http://www.gsmworld.com/documents/rcs/rcs2_june09/R2_090831_RCS_Release_2_Technical_Realisation_v1_0.pdf ">RCS 2</a> documents
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 /* both gsma rcs1 and rcs2 */
 /* GSMA RCS2: http://www.gsmworld.com/documents/rcs/rcs2_june09/R2_090831_RCS_Release_2_Technical_Realisation_v1_0.pdf */
 /* GSMA RCS1: http://www.gsmworld.com/documents/rcs/rcs1_updates/R1_090831_RCS_Release_1_Technical_Realisation_v1_1.pdf */
@@ -31,6 +39,53 @@
 
 #include "tsk_memory.h"
 #include "tsk_macros.h"
+
+/**@defgroup txc_gsma_rcs_group GSMA RCS phase 1 & 2
+*/
+
+/**@page txc_gsma_rcs_page GSMA RCS phase 1 & 2 Tutorial
+*
+* <H2>=== Create and serialize a GSMA RCS resource-lists, rls-services and pres-rules document ===</H2>
+*
+* @code
+#include "txc_api.h" 
+
+txc_context_t* context = 0;
+txc_rlist_list2_L_t *rlist2 = 0, *services;
+char *rlist2_str = 0, *rls_str = 0, *oma_presrules_str = 0;
+
+// create our xdm context
+TXC_CONTEXT_CREATE(context);
+
+// Initialize the context 
+context->user_agent = tsk_strdup2("XDM-client/OMA1.1");
+context->xdm_root = tsk_strdup2("http://xcap.example.com/services");
+context->password = tsk_strdup2("mysecret");
+context->xui = tsk_strdup2("sip:doubango@example.com");
+
+// Create an GSMA RCS2 resource-lists document object and serialize the document for test
+rlist2 = txc_gsmarcs_create_rlist2(context);
+rlist2_str = txc_rlist_list22_serialize(rlist2);
+printf("rcs resource-lists: %s\n", rlist2_str);
+TSK_SAFE_FREE2(rlist2_str);
+TSK_LIST_SAFE_FREE(rlist2);
+
+// Create an GSMA RCS2 rls-services document object and serialize the document for test
+services = txc_gsmarcs_create_rls(context);
+rls_str = txc_rls_services_serialize(services);
+printf("rcs rls-services: %s\n", rls_str);
+TSK_SAFE_FREE2(rls_str);
+TSK_LIST_SAFE_FREE(services);
+
+// Create an GSMA RCS2 pres-rules document as XML string
+oma_presrules_str = txc_gsmarcs_create_oma_presrules(context);
+printf("rcs oma pres-rules: %s\n", oma_presrules_str);
+TSK_SAFE_FREE2(oma_presrules_str);
+
+// free context
+TXC_CONTEXT_SAFE_FREE(context);
+* @endcode
+*/
 
 #define GSME_RCS_RLIST_ADD_ANCHOR(lname)\
 	tsk_sprintf(0, &anchor, \
@@ -51,8 +106,14 @@
 	TSK_SAFE_FREE2(resource_list); \
 	TSK_SAFE_FREE2(uri);
 
-/* create default list2 with all mandatory list as per GSMA RCS2. this include oma lists */
-/* ATTENTION: use 'TSK_LIST_SAFE_FREE' function to free the returned object */
+
+/**@ingroup txc_gsma_rcs_group
+* Create a GSMA RCS2 resource-lists document.
+* @param context The XCAP context from which to create the document.
+* @retval The resource-list document as @ref txc_rlist_list2_L_t object.
+* You MUST call @a TSK_LIST_SAFE_FREE to free the returned object.
+* @sa @ref txc_gsmarcs_create_rls
+*/
 txc_rlist_list2_L_t* txc_gsmarcs_create_rlist2(const txc_context_t* context)
 {
 	txc_rlist_list2_L_t* rlist = 0;
@@ -117,8 +178,13 @@ bail:
 	return rlist;
 }
 
-/* create default rls with all mandatory services as per GSMA RCS1 */
-/* ATTENTION: use 'TSK_LIST_SAFE_FREE' function to free the returned object */
+/**@ingroup txc_gsma_rcs_group
+* Create a GSMA RCS2 rls-services document.
+* @param context The XCAP context from which to create the document.
+* @retval The rls-services document as @ref txc_rls_service_L_t object.
+* You MUST call @a TSK_LIST_SAFE_FREE to free the returned object.
+* @sa @ref txc_gsmarcs_create_rlist2
+*/
 txc_rls_service_L_t* txc_gsmarcs_create_rls(const txc_context_t* context)
 {
 	txc_rls_service_t *service = 0;
@@ -149,8 +215,12 @@ txc_rls_service_L_t* txc_gsmarcs_create_rls(const txc_context_t* context)
 	return services;
 }
 
-/* create default oma pres-rules document */
-/* ATTENTION: use 'TSK_SAFE_FREE2' function to free the returned string */
+/**@ingroup txc_gsma_rcs_group
+* Serialize the GSMA RCS2 pres-rules document as XML string.
+* @param context The XCAP context from which to create the document.
+* @retval The resource-list document as @ref txc_rls_service_L_t object.
+* You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+*/
 char* txc_gsmarcs_create_oma_presrules(const txc_context_t* context)
 {
 	return txc_oma_presrules_serialize(context);

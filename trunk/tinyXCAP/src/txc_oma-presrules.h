@@ -20,14 +20,20 @@
 *
 */
 
+/**@file txc_oma-presrules.h
+ * @brief <a href="http://www.openmobilealliance.org/Technical/release_program/docs/PresenceSIMPLE/V1_1-20080627-A/OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A.pdf">[OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] - OMA Presence Authorization Rules</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 /* as per RCS1: http://www.gsmworld.com/documents/rcs/rcs1_updates/R1_090831_RCS_Release_1_Technical_Realisation_v1_1.pdf subclause 4.4*/
 #ifndef _TINYXCAP_TXC_OMA_PRESRULES_H_
 #define _TINYXCAP_TXC_OMA_PRESRULES_H_
 
 #include "tinyxcap_config.h"
 #include "txc.h"
-
-/* urn:ietf:params:xml:ns:pres-rules */
 
 TINYXCAP_API char* txc_oma_presrules_serialize(const txc_context_t *context);
 

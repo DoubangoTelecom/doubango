@@ -19,6 +19,14 @@
 * along with DOUBANGO.
 *
 */
+
+/**@file txc_oma-prescont.h
+ * @brief <a href="http://www.openmobilealliance.org/technical/release_program/docs/PresenceSIMPLE/V2_0-20081223-C/OMA-TS-Presence_SIMPLE_Content_XDM-V1_0-20081223-C.pdf">[OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] - OMA Presence Content (Avatar)</a>
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
 #ifndef _TINYXCAP_TXC_OMA_PRESCONT_H_
 #define _TINYXCAP_TXC_OMA_PRESCONT_H_
 
@@ -26,15 +34,13 @@
 #include "txc.h"
 #include "tsk_xml.h"
 
-/* urn:oma:xml:prs:pres-content */
-
-/* oma pres-content */
+/** OMA Presence-Content structure */
 typedef struct txc_oma_prescont_s
 {
-	char* mime_type;
-	char* encoding;
-	char* description;
-	char* data;
+	char* mime_type; /**< The Mime-Type*/
+	char* encoding; /**< The type of encoding (e.g. base64)*/
+	char* description; /**< The description*/
+	char* data; /**< The content */
 }
 txc_oma_prescont_t;
 

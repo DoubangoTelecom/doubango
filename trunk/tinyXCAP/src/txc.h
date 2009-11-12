@@ -39,25 +39,46 @@
 
 #define TXC_DOCUMENT_GLOBAL(auid_type) (auid_type == ietf_xcap_caps)
 
-#define	TXC_MIME_TYPE_ELEMENT	"application/xcap-el+xml" /**< as per rfc 4825 subclause 15.2.1 */
-#define	TXC_MIME_TYPE_ATTRIBUTE	"application/xcap-att+xml" /**< as per rfc 4825 subclause 15.2.2 */
-#define	TXC_MIME_TYPE_NS		"application/xcap-ns+xml" /**< as per rfc 4825 subclause 15.2.3 */
-#define	TXC_MIME_TYPE_ERROR		"application/xcap-error+xml" /**< as per rfc 4825 subclause 15.2.4 */
-#define	TXC_MIME_TYPE_CAPS		"application/xcap-caps+xml" /**< as per rfc 4825 subclause 12.4 */
-#define TXC_MIME_TYPE_RLIST		"application/resource-lists+xml" /**< as per rfc 4826 subclause 3.4.2 */
-#define TXC_MIME_TYPE_RLS		"application/rls-services+xml" /**< as per rfc 4826 subclause 4.4.2 */
+#define	TXC_MIME_TYPE_ELEMENT			"application/xcap-el+xml" /**< as per rfc 4825 subclause 15.2.1 */
+#define	TXC_MIME_TYPE_ATTRIBUTE			"application/xcap-att+xml" /**< as per rfc 4825 subclause 15.2.2 */
+#define	TXC_MIME_TYPE_NS				"application/xcap-ns+xml" /**< as per rfc 4825 subclause 15.2.3 */
+#define	TXC_MIME_TYPE_ERROR				"application/xcap-error+xml" /**< as per rfc 4825 subclause 15.2.4 */
+#define	TXC_MIME_TYPE_CAPS				"application/xcap-caps+xml" /**< as per rfc 4825 subclause 12.4 */
+#define TXC_MIME_TYPE_RLIST				"application/resource-lists+xml" /**< as per rfc 4826 subclause 3.4.2 */
+#define TXC_MIME_TYPE_RLS				"application/rls-services+xml" /**< as per rfc 4826 subclause 4.4.2 */
+#define TXC_MIME_TYPE_IETF_PRESRULES	"application/auth-policy+xml" /**< as per rfc 5025 subclause 9.4 */
+#define TXC_MIME_TYPE_OMA_PRESRULES		"application/auth-policy+xml" /**< as per [OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] subclause 5.1.1.5 */
+#define TXC_MIME_TYPE_IETF_DIRECTORY	"application/directory+xml" /**< as per draft-garcia-simple-xcap-directory-00 subclause 9.2 */
+#define TXC_MIME_TYPE_OMA_DIRECTORY		"application/vnd.oma.xcap-directory+xml" /**< as per [OMA-TS-XDM_Core-V1_1-20080627-A] subclause 6.7.2.2 */
+#define TXC_MIME_TYPE_OMA_PRESCONT		"application/vnd.oma.pres-content+xml" /**< as per [OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] subclause 5.1.5 */
 
 #define TXC_AUID_CAPS			"xcap-caps" /**< as per rfc 4825 subclause 12.1 */
 #define TXC_AUID_RLIST			"resource-lists" /**< as per rfc 4826 subclause 3.4.1 */
 #define TXC_AUID_RLS			"rls-services" /**< as per rfc 4826 subclause 4.4.1 */
+#define TXC_AUID_IETF_PRESRULES	"pres-rules" /**< as per rfc 5025 subclause 9.1 */
+#define TXC_AUID_OMA_PRESRULES	"org.openmobilealliance.pres-rules" /**< as per [OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] subclause 5.1.1.2 */
+#define TXC_AUID_IETF_DIRECTORY	"directory" /**<  as per draft-garcia-simple-xcap-directory-00 subclause 9.1 */
+#define TXC_AUID_OMA_DIRECTORY	"org.openmobilealliance.xcap-directory" /**< as per [OMA-TS-XDM_Core-V1_1-20080627-A subclause 6.7.2.1 */
+#define TXC_AUID_OMA_PRESCONT	"org.openmobilealliance.pres-content" /**< as per [OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] subclause 5.1.2 */
 
-#define TXC_DOCUMENT_CAPS		"index"		/**< as per rfc 4825 subclause 5.5 */
-#define TXC_DOCUMENT_RLIST		"index"		/**< as per rfc 4826 subclause 3.4.7* */
-#define TXC_DOCUMENT_RLS		"index"		/**< as per rfc 4826 subclause 4.4.7 */
+#define TXC_DOCUMENT_CAPS			"index"		/**< as per rfc 4825 subclause 5.5 */
+#define TXC_DOCUMENT_RLIST			"index"		/**< as per rfc 4826 subclause 3.4.7* */
+#define TXC_DOCUMENT_RLS			"index"		/**< as per rfc 4826 subclause 4.4.7 */
+#define TXC_DOCUMENT_IETF_PRESRULES	"index"		/**< as per rfc 5025 subclause 9.7 */
+#define TXC_DOCUMENT_OMA_PRESRULES	"pres-rules"		/**< as per [OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] subclause 5.1.1.8 */
+#define TXC_DOCUMENT_IETF_DIRECTORY	"directory.xml"		/**< as per draft-garcia-simple-xcap-directory-00 subclause 9.6 */
+#define TXC_DOCUMENT_OMA_DIRECTORY	"directory.xml"		/**< as per [OMA-TS-XDM_Core-V1_1-20080627-A] subclause 6.7.2.7 */
+#define TXC_DOCUMENT_OMA_PRESCONT	"oma_status-icon/rcs_status_icon"		/**< as per [R1_090831_RCS_Release_1_Technical_Realisation_v1_1] subclause 4.8.1 */
 
 #define TXC_NS_CAPS				"urn:ietf:params:xml:ns:xcap-caps" /**< as per rfc 4825 subclause 12.3*/
 #define TXC_NS_RLIST			"urn:ietf:params:xml:ns:resource-lists" /**< as per rfc 4826 subclause 3.4.4 */
 #define TXC_NS_RLS				"urn:ietf:params:xml:ns:rls-services" /**< as per rfc 4826 subclause 4.4.4 */
+#define TXC_NS_IETF_PRESRULES	"urn:ietf:params:xml:ns:pres-rules" /**< as per rfc 5025 subclause 9.3 */
+#define TXC_NS_OMA_PRESRULES	"urn:ietf:params:xml:ns:common-policy" /**< as per [OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A] subclause 5.1.1.3 */
+#define TXC_NS_IETF_DIRECTORY	"urn:ietf:params:xml:ns:xcap-directory" /**< as per draft-garcia-simple-xcap-directory-00 subclause 6 */
+#define TXC_NS_OMA_DIRECTORY	"urn:oma:xml:xdm:xcap-directory" /**< as per [OMA-TS-XDM_Core-V1_1-20080627-A] subclause 6.7.2.3 */
+#define TXC_NS_OMA_PRESCONT		"urn:oma:xml:prs:pres-content" /**< as per [OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] subclause 5.1.4 */
+
 
 /* check context validity */
 #define TXC_CONTEXT_CHECK(context, panic) \
@@ -205,16 +226,16 @@ typedef txc_auid_t AUIDS_T[TXC_AUIDS_COUNT];
 static const AUIDS_T txc_auids =
 {
 	{ietf_xcap_caps,		TXC_AUID_CAPS,								"IETF server capabilities", TXC_MIME_TYPE_CAPS,							TXC_DOCUMENT_CAPS,			1},
-	{ietf_resource_lists,	TXC_AUID_RLIST,							"IETF resource-list",		TXC_MIME_TYPE_RLIST,			TXC_DOCUMENT_RLIST,			0},
-	{ietf_rls_services,		TXC_AUID_RLS,								"IETF RLS service",			TXC_MIME_TYPE_RLS,				TXC_DOCUMENT_RLS,			0},
-	{ietf_pres_rules,		"pres-rules",								"IETF pres-rules",			"application/auth-policy+xml",				"pres-rules",		0},
-	{ietf_directory,		"directory",								"IETF xdm directory",		"application/directory+xml",				"directory.xml",	0},
+	{ietf_resource_lists,	TXC_AUID_RLIST,								"IETF resource-list",		TXC_MIME_TYPE_RLIST,						TXC_DOCUMENT_RLIST,			0},
+	{ietf_rls_services,		TXC_AUID_RLS,								"IETF RLS service",			TXC_MIME_TYPE_RLS,							TXC_DOCUMENT_RLS,			0},
+	{ietf_pres_rules,		TXC_AUID_IETF_PRESRULES,					"IETF pres-rules",			TXC_MIME_TYPE_IETF_PRESRULES,				TXC_DOCUMENT_IETF_PRESRULES,		0},
+	{ietf_directory,		TXC_AUID_IETF_DIRECTORY,					"IETF xdm directory",		TXC_MIME_TYPE_IETF_DIRECTORY,				TXC_DOCUMENT_IETF_DIRECTORY,	0},
 
 	{oma_conv_history,		"org.openmobilealliance.conv-history",		"OMA conversation history", "application/vnd.oma.im.history-list+xml",	"conv-history",		0},
-	{oma_pres_rules,		"org.openmobilealliance.pres-rules",		"OMA presence rules",		"application/auth-policy+xml",				"pres-rules",		0},
-	{oma_directory,			"org.openmobilealliance.xdm-directory",		"OMA xdm directory",		"application/vnd.oma.xdm-directory+xml",	"directory.xml",	0},
+	{oma_pres_rules,		TXC_AUID_OMA_PRESRULES,						"OMA presence rules",		TXC_MIME_TYPE_OMA_PRESRULES,				TXC_DOCUMENT_OMA_PRESRULES,		0},
+	{oma_directory,			TXC_AUID_OMA_DIRECTORY,						"OMA xdm directory",		TXC_MIME_TYPE_OMA_DIRECTORY,				TXC_DOCUMENT_OMA_DIRECTORY,	0},
 	{oma_deferred_list,		"org.openmobilealliance.deferred-list",		"OMA deferred list",		"application/vnd.oma.im.deferred-list+xml", "deferred-list",	0},
-	{oma_pres_content,		"org.openmobilealliance.pres-content",		"OMA presence content",		"application/vnd.oma.pres-content+xml",		"oma_status-icon",	0},
+	{oma_pres_content,		TXC_AUID_OMA_PRESCONT,						"OMA presence content",		TXC_MIME_TYPE_OMA_PRESCONT,					TXC_DOCUMENT_OMA_PRESCONT,	0},
 	{oma_shared_groups,		"org.openmobilealliance.groups",			"OMA shared groups",		"application/vnd.oma.poc.groups+xml",		"index"}
 };
 

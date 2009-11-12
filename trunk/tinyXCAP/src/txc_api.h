@@ -36,6 +36,7 @@
 #include "txc_oma-prescont.h"	/* urn:oma:xml:prs:pres-content */
 #include "txc_gsma_rcs.h"		/* both gsma rcs phase 1 and 2 */
 #include "txc_oma.h"			/* OMA functionalities */
-#include "txc_oma-presrules.h" /* urn:ietf:params:xml:ns:pres-rules + urn:ietf:params:xml:ns:pres-rules*/
+#include "txc_oma-presrules.h"  /* urn:ietf:params:xml:ns:pres-rules + urn:ietf:params:xml:ns:pres-rules*/
+#include "txc_ietf-pres-rules.h"/* urn:ietf:params:xml:ns:pres-rules */
 
 #endif /* _TINYXCAP_TXC_API_H_ */

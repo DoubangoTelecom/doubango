@@ -19,6 +19,15 @@
 * along with DOUBANGO.
 *
 */
+
+/**@file txc_gsma_rcs.h
+ * @brief GSMA <a href="http://www.gsmworld.com/documents/rcs/rcs1_updates/R1_090831_RCS_Release_1_Technical_Realisation_v1_1.pdf">RCS 1</a> and <a href="http://www.gsmworld.com/documents/rcs/rcs2_june09/R2_090831_RCS_Release_2_Technical_Realisation_v1_0.pdf ">RCS 2</a> documents
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
 #ifndef _TINYXCAP_TXC_GSMA_RCS_H_
 #define _TINYXCAP_TXC_GSMA_RCS_H_
 

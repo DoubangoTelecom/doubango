@@ -201,6 +201,26 @@
 			Name="tests"
 			>
 			<File
+				RelativePath=".\test_gsma_rcs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_ietf-pres-rules.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_oma-directory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_oma-pres-cont.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_oma-pres-rules.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_rlist.h"
 				>
 			</File>
