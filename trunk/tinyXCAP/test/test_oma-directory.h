@@ -73,7 +73,7 @@ void test_oma_directory(const char* buffer, size_t size)
 				printf("folder's auid:\"%s\" uri:\"%s\" display-name=\"%s\" etag\"%s\"\n", entry->list, entry->uri, entry->display_name, entry->etag);
 				entry_str = txc_rlist_entry_serialize(entry);
 				printf("serialized entry: \n%s\n", entry_str);
-				TSK_SAFE_FREE2(entry_str);
+				TSK_FREE(entry_str);
 			}
 			TSK_LIST_SAFE_FREE(list);
 		}

@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\win32\smc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -201,7 +201,15 @@
 			Name="tests"
 			>
 			<File
+				RelativePath=".\test_async.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_gsma_rcs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_http.h"
 				>
 			</File>
 			<File
@@ -234,6 +242,10 @@
 			</File>
 			<File
 				RelativePath=".\test_xcap-caps.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_xdmc.h"
 				>
 			</File>
 		</Filter>

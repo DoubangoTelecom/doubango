@@ -96,7 +96,7 @@ void test_rlist(const char* rlist_str, size_t size)
 				printf("list:\"%s\" uri:\"%s\" display-name=\"%s\" last-modified\"%s\"\n", entry->list, entry->uri, entry->display_name, entry->last_modified);
 				entry_str = txc_rlist_entry_serialize(entry);
 				printf("serialized entry: \n%s\n", entry_str);
-				TSK_SAFE_FREE2(entry_str);
+				TSK_FREE(entry_str);
 			}
 			TSK_LIST_SAFE_FREE(list);
 		}
@@ -147,7 +147,7 @@ void test_rlist2(const char* rlist_str, size_t size)
 					txc_rlist_entry_t *entry = ((txc_rlist_entry_t*)item2->data);
 					char* entry_str = txc_rlist_entry_serialize(entry);
 					printf("\n%s\n", entry_str);
-					TSK_SAFE_FREE2(entry_str);
+					TSK_FREE(entry_str);
 				}
 
 				/*externals*/
@@ -156,7 +156,7 @@ void test_rlist2(const char* rlist_str, size_t size)
 					txc_rlist_external_t *external = ((txc_rlist_external_t*)item3->data);
 					char* external_str = txc_rlist_external_serialize(external);
 					printf("\n%s\n", external_str);
-					TSK_SAFE_FREE2(external_str);
+					TSK_FREE(external_str);
 				}
 
 			}

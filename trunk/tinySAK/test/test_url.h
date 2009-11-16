@@ -19,23 +19,29 @@
 * along with DOUBANGO.
 *
 */
+#ifndef _TEST_URL_H_
+#define _TEST_URL_H_
 
-/**@file sak.h
- * @brief This file contains all headers needed to export public API functions.
- *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
- *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
- */
+/* url encoding/decoding */
+void test_url()
+{
+	const char* url = "http://xcap.example.org/resource-lists/users/sip:RCSUser@example.org/index/~~/resource-lists/list%5B@name=%22rcs%22%5D";
+	char* str = 0;
+	tsk_heap_t heap;
 
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+	/* initialize our memory heap */
+	tsk_heap_init(&heap);
 
-#include "tinySAK_config.h"
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_heap.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
+	/*decode url*/
+	str = tsk_url_decode(&heap, url);
+	printf("test_url/// decoded url:%s\n", str);
 
-#endif /* _TINYSAK_SAK_H_ */
+	/*encode url*/
+	str = tsk_url_encode(&heap, str);
+	printf("test_url/// encoded url:%s\n", str);
+
+	/* cleanup */
+	tsk_heap_cleanup(&heap);
+}
+
+#endif /* _TEST_URL_H_ */

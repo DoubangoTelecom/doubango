@@ -94,8 +94,7 @@ txc_oma_prescont_t* txc_oma_prescont_create(const char* buffer, size_t size)
 	if(node)
 	{
 		/* init pres-cont object */
-		pres_cont = (txc_oma_prescont_t*)malloc(sizeof(txc_oma_prescont_t));
-		memset(pres_cont, 0, sizeof(txc_oma_prescont_t));
+		pres_cont = (txc_oma_prescont_t*)tsk_calloc2(1, sizeof(txc_oma_prescont_t));
 		do
 		{
 			if( tsk_equals(node->name, "mime-Type") )
@@ -130,10 +129,10 @@ txc_oma_prescont_t* txc_oma_prescont_create(const char* buffer, size_t size)
 */
 void txc_oma_prescont_free(txc_oma_prescont_t **pres_cont)
 {
-	TSK_SAFE_FREE2((*pres_cont)->mime_type);
-	TSK_SAFE_FREE2((*pres_cont)->encoding);
-	TSK_SAFE_FREE2((*pres_cont)->description);
-	TSK_SAFE_FREE2((*pres_cont)->data);
+	TSK_FREE((*pres_cont)->mime_type);
+	TSK_FREE((*pres_cont)->encoding);
+	TSK_FREE((*pres_cont)->description);
+	TSK_FREE((*pres_cont)->data);
 
 	free(*pres_cont);
 	(*pres_cont) = 0;

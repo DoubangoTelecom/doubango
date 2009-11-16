@@ -78,12 +78,12 @@ for(i=0; i<10;i++)
 {
 	mystr = tsk_strdup2("testing the heap (1)");
 	... use the string ...
-	tsk_free2(mystr);
+	TSK_FREE(mystr);
 
 	mystr = (char*)tsk_malloc2(10);
 	mystr = tsk_realloc2(mystr, 100);
 	... use the string ...
-	tsk_free2(mystr);
+	TSK_FREE(mystr);
 }
 *@endcode
 */
@@ -157,7 +157,7 @@ void* tsk_realloc (tsk_heap_t *heap,  void* ptr, size_t size)
 */
 void tsk_free(tsk_heap_t *heap, void** ptr)
 {
-	if(ptr)
+	if(ptr && *ptr)
 	{
 		HEAP_POP(heap, *ptr);
 		*ptr = 0;

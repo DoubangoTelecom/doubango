@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\win32\pthread&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="&quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\libxml\vs_libxml2.dll.a&quot; $(NOINHERIT)"
+				AdditionalDependencies="&quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\pthread\pthread.lib&quot; $(NOINHERIT)"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -177,11 +177,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\sak.h"
+				RelativePath=".\src\tinySAK_config.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tinySAK_config.h"
+				RelativePath=".\src\tsk.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_condwait.h"
 				>
 			</File>
 			<File
@@ -201,7 +205,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_mutex.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_semaphore.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_string.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_thread.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_time.h"
 				>
 			</File>
 			<File
@@ -219,7 +239,11 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\src\sak.c"
+				RelativePath=".\src\tsk.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_condwait.c"
 				>
 			</File>
 			<File
@@ -235,7 +259,23 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_mutex.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_semaphore.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_string.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_thread.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_time.c"
 				>
 			</File>
 			<File

@@ -43,8 +43,8 @@
 * Safely free an rls service previously created using @ref TXC_RLS_SERVICE_CREATE.
 * @sa @ref TXC_RLS_SERVICE_CREATE
 */
-#define TXC_RLS_SERVICE_CREATE(service)		TXC_XXX_CREATE2(service, rls_service)
-#define TXC_RLS_SERVICE_SAFE_FREE(service)	TXC_XXX_SAFE_FREE2(service, rls_service)
+#define TXC_RLS_SERVICE_CREATE(this)		TXC_XXX_CREATE2(this, rls_service)
+#define TXC_RLS_SERVICE_SAFE_FREE(this)	TXC_XXX_SAFE_FREE2(this, rls_service)
 
 /**
 * RLS-SERVICE

@@ -1,5 +1,5 @@
 /**
-* @file sak.c
+* @file tsk.c
 * @author  Mamadou Diop <diopmamadou(at)yahoo.fr>
 * @version 1.0
 *
@@ -22,7 +22,7 @@
 * along with DOUBANGO.
 *
 */
-#include "sak.h"
+#include "tsk.h"
 
 /** @mainpage TinySAK API Overview
 *

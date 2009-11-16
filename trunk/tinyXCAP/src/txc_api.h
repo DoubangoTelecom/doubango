@@ -39,4 +39,6 @@
 #include "txc_oma-presrules.h"  /* urn:ietf:params:xml:ns:pres-rules + urn:ietf:params:xml:ns:pres-rules*/
 #include "txc_ietf-pres-rules.h"/* urn:ietf:params:xml:ns:pres-rules */
 
+#include "txc_client.h"			/* XDMC hight level API */
+
 #endif /* _TINYXCAP_TXC_API_H_ */

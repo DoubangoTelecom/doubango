@@ -66,6 +66,7 @@ void tsk_heap_push(tsk_heap_t *heap, void * address)
 
 	TSK_LIST_ITEM_CREATE(item);
 	item->data = address;
+	item->func_free = 0;
 	tsk_list_add_item(&heap->pool, &item);
 }
 

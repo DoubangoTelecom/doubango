@@ -40,7 +40,7 @@ void test_ietf_presrules()
 
 	presrules = txc_ietf_presrules_serialize(context);
 	printf("IETF pres-rules: \n%s\n***\n", presrules);
-	TSK_SAFE_FREE2(presrules);
+	TSK_FREE(presrules);
 
 	/* free the context*/
 	TXC_CONTEXT_SAFE_FREE(context);

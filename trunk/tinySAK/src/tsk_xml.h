@@ -53,7 +53,11 @@
 #define TSK_XML_ELEMENT_FREE(element) TSK_XXX_SAFE_FREE(0, element, xml_element)
 
 #define TSK_XML_ATTRIBUTE_CREATE(attribute) TSK_XXX_CREATE(0, attribute, xml_attribute)
-#define TSK_XML_ATTRIBUTE_FREE(attribute) TSK_XXX_SAFE_FREE(0, attribute, xml_attribute)	
+#define TSK_XML_ATTRIBUTE_FREE(attribute) TSK_XXX_SAFE_FREE(0, attribute, xml_attribute)
+
+#define TSK_XML_SERIALIZE(result, element, strValue)\
+	if(strValue) tsk_sprintf(0, &result, "<"##element##">%s</"##element##">", strValue); \
+	else tsk_strupdate2(&result, "");
 
 /** C and XML Schema mapping */
 typedef enum tsk_xml_type_e

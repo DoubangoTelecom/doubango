@@ -86,7 +86,7 @@ char tsk_b16tob10(char c)
 */
 int tsk_stricmp(const char * str1, const char * str2)
 {
-	return stricmp(str1, str2);
+	return (str1 && str2) ? stricmp(str1, str2) : ((!str1 && !str2) ? 0 : -1);
 }
 
 /**@ingroup tsk_string_group

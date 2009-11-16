@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\win32\smc&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYXCAP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\curl\vs_libcurl.dll.a&quot;"
+				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\curl\vs_libcurl.dll.a&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -297,6 +297,22 @@
 			</File>
 			<File
 				RelativePath=".\src\txc_xcap-caps.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="statemachine"
+			>
+			<File
+				RelativePath=".\src\txc_client.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\src\txc_client_sm.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\txc_client_sm.h"
 				>
 			</File>
 		</Filter>

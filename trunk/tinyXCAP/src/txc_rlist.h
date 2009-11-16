@@ -42,8 +42,8 @@
 * @sa @ref TXC_RLIST_ENTRY_CREATE
 */
 
-#define TXC_RLIST_ENTRY_CREATE(entry)			TXC_XXX_CREATE2(entry, rlist_entry)
-#define TXC_RLIST_ENTRY_SAFE_FREE(entry)	TXC_XXX_SAFE_FREE2(entry, rlist_entry)
+#define TXC_RLIST_ENTRY_CREATE(this)			TXC_XXX_CREATE2(this, rlist_entry)
+#define TXC_RLIST_ENTRY_SAFE_FREE(this)	TXC_XXX_SAFE_FREE2(this, rlist_entry)
 
 /**@def TXC_RLIST_LIST_CREATE
 * Create a new @ref txc_rlist_list_t object. You must call @ref TXC_RLIST_LIST_SAFE_FREE to free the newly created object.
@@ -53,8 +53,8 @@
 * Safely free @ref txc_rlist_list_t object previously created using @ref TXC_RLIST_LIST_CREATE.
 * @sa @ref TXC_RLIST_LIST_CREATE
 */
-#define TXC_RLIST_LIST_CREATE(rlist_list)		TXC_XXX_CREATE2(rlist_list, rlist_list)
-#define TXC_RLIST_LIST_SAFE_FREE(rlist_list)	TXC_XXX_SAFE_FREE2(rlist_list, rlist_list)
+#define TXC_RLIST_LIST_CREATE(this)		TXC_XXX_CREATE2(this, rlist_list)
+#define TXC_RLIST_LIST_SAFE_FREE(this)	TXC_XXX_SAFE_FREE2(this, rlist_list)
 
 /**@def TXC_RLIST_LIST2_CREATE
 * Create a new @ref txc_rlist_list2_t object. You must call @ref TXC_RLIST_LIST2_SAFE_FREE to free the newly created object.
@@ -64,8 +64,8 @@
 * Safely free @ref txc_rlist_list2_t object previously created using @ref TXC_RLIST_LIST2_CREATE.
 * @sa @ref TXC_RLIST_LIST2_CREATE
 */
-#define TXC_RLIST_LIST2_CREATE(list2)			TXC_XXX_CREATE2(list2, rlist_list2)
-#define TXC_RLIST_LIST2_SAFE_FREE(list2)		TXC_XXX_SAFE_FREE2(list2, rlist_list2)
+#define TXC_RLIST_LIST2_CREATE(this)			TXC_XXX_CREATE2(this, rlist_list2)
+#define TXC_RLIST_LIST2_SAFE_FREE(this)		TXC_XXX_SAFE_FREE2(this, rlist_list2)
 
 /**@def TXC_RLIST_EXTERNAL_CREATE
 * Create a new @ref txc_rlist_external_t object. You must call @ref TXC_RLIST_EXTERNAL_SAFE_FREE to free the newly created object.
@@ -75,8 +75,8 @@
 * Safely free @ref txc_rlist_external_t object previously created using @ref TXC_RLIST_EXTERNAL_CREATE.
 * @sa @ref TXC_RLIST_EXTERNAL_CREATE
 */
-#define TXC_RLIST_EXTERNAL_CREATE(external)		TXC_XXX_CREATE2(external, rlist_external)
-#define TXC_RLIST_EXTERNAL_SAFE_FREE(external)	TXC_XXX_SAFE_FREE2(external, rlist_external)
+#define TXC_RLIST_EXTERNAL_CREATE(this)		TXC_XXX_CREATE2(this, rlist_external)
+#define TXC_RLIST_EXTERNAL_SAFE_FREE(this)	TXC_XXX_SAFE_FREE2(this, rlist_external)
 
 /** Resource-list entry element 
 */
@@ -123,7 +123,7 @@ typedef struct txc_rlist_list2_s
 }
 txc_rlist_list2_t;
 typedef tsk_list_t txc_rlist_list2_L_t; /**< List of @ref txc_rlist_list2_t elements */
-typedef tsk_list_t txc_rlist_list2_LL_t; /**< List of @ref txc_rlist_list2_L_t elements */
+//typedef tsk_list_t txc_rlist_list2_LL_t; /**< List of @ref txc_rlist_list2_L_t elements */
 
 /** Resource-lists document context
 */
@@ -164,9 +164,9 @@ TINYXCAP_API char* txc_rlist_entry_serialize(const txc_rlist_entry_t *entry);
 TINYXCAP_API char* txc_rlist_entry_serialize2(const char* uri, const char* displayname);
 TINYXCAP_API char* txc_rlist_external_serialize(const txc_rlist_external_t *external);
 TINYXCAP_API char* txc_rlist_list_serialize(const txc_rlist_list_t *list);
-TINYXCAP_API char* txc_rlist_list_serialize2(const char* name, const char* displayname);
+TINYXCAP_API char* txc_rlist_list_serialize2(const char* name, const char* displayname, const char* anchor);
 TINYXCAP_API char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2);
-TINYXCAP_API char* txc_rlist_list22_serialize(const txc_rlist_list2_LL_t *list22);
+TINYXCAP_API char* txc_rlist_list2_L_serialize(const txc_rlist_list2_L_t *list22);
 TINYXCAP_API char* txc_rlist_add_xml_header(const char* xml_content);
 TINYXCAP_API void txc_rlist_free(txc_rlist_t **rlist);
 

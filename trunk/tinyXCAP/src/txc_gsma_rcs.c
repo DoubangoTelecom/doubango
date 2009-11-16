@@ -67,20 +67,20 @@ context->xui = tsk_strdup2("sip:doubango@example.com");
 rlist2 = txc_gsmarcs_create_rlist2(context);
 rlist2_str = txc_rlist_list22_serialize(rlist2);
 printf("rcs resource-lists: %s\n", rlist2_str);
-TSK_SAFE_FREE2(rlist2_str);
+TSK_FREE(rlist2_str);
 TSK_LIST_SAFE_FREE(rlist2);
 
 // Create an GSMA RCS2 rls-services document object and serialize the document for test
 services = txc_gsmarcs_create_rls(context);
 rls_str = txc_rls_services_serialize(services);
 printf("rcs rls-services: %s\n", rls_str);
-TSK_SAFE_FREE2(rls_str);
+TSK_FREE(rls_str);
 TSK_LIST_SAFE_FREE(services);
 
 // Create an GSMA RCS2 pres-rules document as XML string
 oma_presrules_str = txc_gsmarcs_create_oma_presrules(context);
 printf("rcs oma pres-rules: %s\n", oma_presrules_str);
-TSK_SAFE_FREE2(oma_presrules_str);
+TSK_FREE(oma_presrules_str);
 
 // free context
 TXC_CONTEXT_SAFE_FREE(context);
@@ -92,7 +92,7 @@ TXC_CONTEXT_SAFE_FREE(context);
 		"%s/~~/resource-lists/list%%5B@name=%%22%s%%22%%5D", \
 		doc_sel, lname); \
 	txc_rlist_list2_add_external(list2, anchor); \
-	TSK_SAFE_FREE2(anchor);
+	TSK_FREE(anchor);
 
 #define GSMA_RCS_ADD_SERVICE(lname, package)\
 	tsk_sprintf(0, &uri, "%s;pres-list=%s", \
@@ -103,8 +103,8 @@ TXC_CONTEXT_SAFE_FREE(context);
 	txc_rls_service_set(service, uri, resource_list); \
 	txc_rls_service_add_package(service, package); \
 	tsk_list_add_data(services, ((void**) &service), txc_rls_service_free); \
-	TSK_SAFE_FREE2(resource_list); \
-	TSK_SAFE_FREE2(uri);
+	TSK_FREE(resource_list); \
+	TSK_FREE(uri);
 
 
 /**@ingroup txc_gsma_rcs_group
@@ -219,7 +219,7 @@ txc_rls_service_L_t* txc_gsmarcs_create_rls(const txc_context_t* context)
 * Serialize the GSMA RCS2 pres-rules document as XML string.
 * @param context The XCAP context from which to create the document.
 * @retval The resource-list document as @ref txc_rls_service_L_t object.
-* You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+* You MUST call @a TSK_FREE to free the returned string.
 */
 char* txc_gsmarcs_create_oma_presrules(const txc_context_t* context)
 {

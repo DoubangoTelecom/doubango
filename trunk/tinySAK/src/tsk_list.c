@@ -341,7 +341,6 @@ void tsk_list_free(tsk_list_t** list)
 */
 void tsk_list_item_init(tsk_list_item_t* item)
 {
-	memset(item, 0, sizeof(tsk_list_item_t));
 }
 
 /**@ingroup tsk_list_group
