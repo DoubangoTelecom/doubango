@@ -73,7 +73,7 @@ printf("\n---\nTEST RLS-SERVICES\n---\n");
 		txc_rls_service_t *rls_service = ((txc_rls_service_t*)item->data);
 		char* rls_service_str = txc_rls_service_serialize(rls_service);
 		printf("\n%s\n", rls_service_str);
-		TSK_SAFE_FREE2(rls_service_str);
+		TSK_FREE(rls_service_str);
 	}
 
 	// free services
@@ -98,7 +98,6 @@ printf("\n---\nTEST RLS-SERVICES\n---\n");
 */
 void txc_rls_service_init(txc_rls_service_t *service)
 {
-	memset(service, 0, sizeof(txc_rls_service_t));
 }
 
 
@@ -148,8 +147,8 @@ void txc_rls_service_free(void **_service)
 {
 	txc_rls_service_t **service = ((txc_rls_service_t**)_service);
 
-	TSK_SAFE_FREE2((*service)->uri);
-	TSK_SAFE_FREE2((*service)->resource_list);
+	TSK_FREE((*service)->uri);
+	TSK_FREE((*service)->resource_list);
 	TSK_LIST_SAFE_FREE((*service)->packages);
 
 	tsk_free2(_service);
@@ -217,8 +216,7 @@ txc_rls_t* txc_rls_create(const char* buffer, size_t size)
 {
 	if(buffer && size)
 	{
-		txc_rls_t* rls = (txc_rls_t*)tsk_malloc2(sizeof(txc_rls_t));
-		memset(rls, 0, sizeof(txc_rls_t));
+		txc_rls_t* rls = (txc_rls_t*)tsk_calloc2(1, sizeof(txc_rls_t));
 		rls->docPtr = xmlParseMemory(buffer, (int)size);
 
 		return rls;
@@ -263,7 +261,7 @@ txc_rls_service_L_t* txc_rls_get_all_services(const txc_rls_t* rls)
 /**@ingroup txc_rls_group
 * Serialize an rls service
 * @param service The service to serialize
-* @retval XML string representing the rls service.  You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+* @retval XML string representing the rls service.  You MUST call @a TSK_FREE to free the returned string.
 */
 char* txc_rls_service_serialize(const txc_rls_service_t *service)
 {
@@ -279,7 +277,7 @@ char* txc_rls_service_serialize(const txc_rls_service_t *service)
 		char* curr = 0;
 		tsk_sprintf(0, &curr, "<package>%s</package>", ((char*)item->data));
 		tsk_strcat2(&package_str, curr);
-		TSK_SAFE_FREE2(curr);
+		TSK_FREE(curr);
 	}
 	/* service */
 	tsk_sprintf(0, &service_str,
@@ -290,14 +288,14 @@ char* txc_rls_service_serialize(const txc_rls_service_t *service)
 					"</packages>"
 				"</service>",
 				service->uri, service->resource_list, package_str);
-	TSK_SAFE_FREE2(package_str);
+	TSK_FREE(package_str);
 	return service_str;
 }
 
 /**@ingroup txc_rls_group
 * Serialize a list of several rls services
 * @param services The list of rls services to serialize
-* @retval XML string representing the list rls services.  You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+* @retval XML string representing the list rls services.  You MUST call @a TSK_FREE to free the returned string.
 */
 char* txc_rls_services_serialize(const tsk_list_t *services)
 {

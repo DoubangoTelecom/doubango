@@ -47,20 +47,20 @@ void test_gsma_rcs()
 	rlist2 = txc_gsmarcs_create_rlist2(context);
 	rlist2_str = txc_rlist_list22_serialize(rlist2);
 	printf("rcs resource-lists: %s\n", rlist2_str);
-	TSK_SAFE_FREE2(rlist2_str);
+	TSK_FREE(rlist2_str);
 	TSK_LIST_SAFE_FREE(rlist2);
 
 	/* Create an GSMA RCS2 rls-services document object and serialize the document for test*/
 	services = txc_gsmarcs_create_rls(context);
 	rls_str = txc_rls_services_serialize(services);
 	printf("rcs rls-services: %s\n", rls_str);
-	TSK_SAFE_FREE2(rls_str);
+	TSK_FREE(rls_str);
 	TSK_LIST_SAFE_FREE(services);
 
 	/* Create an GSMA RCS2 pres-rules document as XML string */
 	oma_presrules_str = txc_gsmarcs_create_oma_presrules(context);
 	printf("rcs oma pres-rules: %s\n", oma_presrules_str);
-	TSK_SAFE_FREE2(oma_presrules_str);
+	TSK_FREE(oma_presrules_str);
 
 	/* free context */
 	TXC_CONTEXT_SAFE_FREE(context);

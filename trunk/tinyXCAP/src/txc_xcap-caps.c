@@ -143,9 +143,8 @@ xcap_caps_t* txc_xcap_caps_create(const char* buffer, size_t size)
 {
 	xmlNodePtr root = 0;
 	xmlDocPtr docPtr = 0;
-	xcap_caps_t* caps = (xcap_caps_t*)malloc(sizeof(xcap_caps_t));
-	memset(caps, 0, sizeof(xcap_caps_t));
-
+	xcap_caps_t* caps = (xcap_caps_t*)tsk_calloc2(1, sizeof(xcap_caps_t));
+	
 	docPtr = xmlParseMemory(buffer, (int)size);
 	if(docPtr) root = docPtr->children;
 	if(root)

@@ -83,7 +83,7 @@ printf("\n---\nTEST OMA XCAP-DIRECTORY\n---\n");
 			printf("folder's auid:\"%s\" uri:\"%s\" display-name=\"%s\" etag\"%s\"\n", entry->list, entry->uri, entry->display_name, entry->etag);
 			entry_str = txc_rlist_entry_serialize(entry);
 			printf("serialized entry: \n%s\n", entry_str);
-			TSK_SAFE_FREE2(entry_str);
+			TSK_FREE(entry_str);
 		}
 		TSK_LIST_SAFE_FREE(list);
 	}
@@ -111,7 +111,6 @@ printf("\n---\nTEST OMA XCAP-DIRECTORY\n---\n");
 */
 void txc_omadir_folder_init(txc_omadir_folder_t *folder)
 {
-	memset(folder, 0, sizeof(txc_omadir_folder_t));
 }
 
 /**@ingroup txc_oma_directory_group
@@ -124,7 +123,7 @@ void txc_omadir_folder_free(void **_folder)
 {
 	txc_omadir_folder_t **folder = ((txc_omadir_folder_t**)_folder);
 
-	TSK_SAFE_FREE2((*folder)->auid);
+	TSK_FREE((*folder)->auid);
 
 	free(*_folder);
 	(*_folder) = 0;
@@ -165,8 +164,7 @@ txc_omadir_t* txc_omadir_create(const char* buffer, size_t size)
 {
 	if(buffer && size)
 	{
-		txc_omadir_t* omadir = (txc_omadir_t*)malloc(sizeof(txc_omadir_t));
-		memset(omadir, 0, sizeof(txc_omadir_t));
+		txc_omadir_t* omadir = (txc_omadir_t*)tsk_calloc2(1, sizeof(txc_omadir_t));
 		omadir->docPtr = xmlParseMemory(buffer, (int)size);
 
 		return omadir;

@@ -141,7 +141,7 @@
 /**@ingroup txc_ietf_pres_rules_group
 * Used to create an initial IETF pres-rules document.
 * @param context The xcap context for which to create the IETF pres-rules document.
-* @retval The XML document to PUT to the XDMS. You MUST call @a TSK_SAFE_FREE2 to free the returned string.
+* @retval The XML document to PUT to the XDMS. You MUST call @a TSK_FREE to free the returned string.
 */
 char* txc_ietf_presrules_serialize(const txc_context_t *context)
 {

@@ -40,7 +40,7 @@ void test_oma_presrules()
 
 	presrules = txc_oma_presrules_serialize(context);
 	printf("OMA pres-rules: \n%s\n***\n", presrules);
-	TSK_SAFE_FREE2(presrules);
+	TSK_FREE(presrules);
 
 	/* free the context*/
 	TXC_CONTEXT_SAFE_FREE(context);

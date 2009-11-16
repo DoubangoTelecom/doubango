@@ -37,7 +37,7 @@
 * @param prefix the prefix of the object to create
 */
 #define TXC_XXX_CREATE(heap, xxx, prefix)\
-	xxx = (txc_##prefix##_t*)tsk_malloc(heap, sizeof(txc_##prefix##_t)); \
+	xxx = (txc_##prefix##_t*)tsk_calloc(heap, 1, sizeof(txc_##prefix##_t)); \
 	txc_##prefix##_init(xxx);
 
 /**@def TXC_XXX_SAFE_FREE
@@ -55,7 +55,7 @@
 * @param prefix the prefix of the object to create
 */
 #define TXC_XXX_CREATE2(xxx, prefix)\
-	xxx = (txc_##prefix##_t*)tsk_malloc2(sizeof(txc_##prefix##_t)); \
+	xxx = (txc_##prefix##_t*)tsk_calloc2(1, sizeof(txc_##prefix##_t)); \
 	txc_##prefix##_init(xxx);
 
 /**@def TXC_XXX_SAFE_FREE2

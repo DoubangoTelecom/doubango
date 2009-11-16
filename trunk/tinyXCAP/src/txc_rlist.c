@@ -93,7 +93,7 @@ printf("\n---\nTEST RESOURCE-LISTS-2\n---\n");
 				txc_rlist_entry_t *entry = ((txc_rlist_entry_t*)item2->data);
 				char* entry_str = txc_rlist_entry_serialize(entry);
 				printf("\n%s\n", entry_str);
-				TSK_SAFE_FREE2(entry_str);
+				TSK_FREE(entry_str);
 			}
 
 			// ==externals==
@@ -102,7 +102,7 @@ printf("\n---\nTEST RESOURCE-LISTS-2\n---\n");
 				txc_rlist_external_t *external = ((txc_rlist_external_t*)item3->data);
 				char* external_str = txc_rlist_external_serialize(external);
 				printf("\n%s\n", external_str);
-				TSK_SAFE_FREE2(external_str);
+				TSK_FREE(external_str);
 			}
 
 		}
@@ -156,7 +156,6 @@ printf("\nget all entries in the list named 'rcs_revokedcontacts'\n");
 */
 void txc_rlist_entry_init(txc_rlist_entry_t *entry)
 {
-	memset(entry, 0, sizeof(txc_rlist_entry_t));
 }
 
 /**@ingroup txc_rlist_group
@@ -183,11 +182,11 @@ void txc_rlist_entry_free(void **_entry)
 {
 	txc_rlist_entry_t **entry = ((txc_rlist_entry_t**)_entry);
 
-	TSK_SAFE_FREE2((*entry)->uri);
-	TSK_SAFE_FREE2((*entry)->display_name);
-	TSK_SAFE_FREE2((*entry)->list);
-	TSK_SAFE_FREE2((*entry)->last_modified);
-	TSK_SAFE_FREE2((*entry)->etag);
+	TSK_FREE((*entry)->uri);
+	TSK_FREE((*entry)->display_name);
+	TSK_FREE((*entry)->list);
+	TSK_FREE((*entry)->last_modified);
+	TSK_FREE((*entry)->etag);
 
 	tsk_free2(_entry);
 }
@@ -200,7 +199,6 @@ void txc_rlist_entry_free(void **_entry)
 */
 void txc_rlist_list_init(txc_rlist_list_t *list)
 {
-	memset(list, 0, sizeof(txc_rlist_list_t));
 }
 
 /**@ingroup txc_rlist_group
@@ -228,8 +226,8 @@ void txc_rlist_list_free(void **_list)
 {
 	txc_rlist_list_t **list = ((txc_rlist_list_t**)_list);
 
-	TSK_SAFE_FREE2((*list)->display_name);
-	TSK_SAFE_FREE2((*list)->name);
+	TSK_FREE((*list)->display_name);
+	TSK_FREE((*list)->name);
 
 	tsk_free2(_list);
 }
@@ -242,7 +240,6 @@ void txc_rlist_list_free(void **_list)
 */
 void txc_rlist_list2_init(txc_rlist_list2_t *list2)
 {
-	memset(list2, 0, sizeof(txc_rlist_list2_t));
 }
 
 /**@ingroup txc_rlist_group
@@ -312,8 +309,8 @@ void txc_rlist_list2_free(void **_list2)
 {
 	txc_rlist_list2_t **list2 = ((txc_rlist_list2_t**)_list2);
 
-	TSK_SAFE_FREE2((*list2)->display_name);
-	TSK_SAFE_FREE2((*list2)->name);
+	TSK_FREE((*list2)->display_name);
+	TSK_FREE((*list2)->name);
 	TSK_LIST_SAFE_FREE((*list2)->externals);
 	TSK_LIST_SAFE_FREE((*list2)->entries);
 
@@ -328,7 +325,6 @@ void txc_rlist_list2_free(void **_list2)
 */
 void txc_rlist_external_init(txc_rlist_external_t *external)
 {
-	memset(external, 0, sizeof(txc_rlist_external_t));
 }
 
 /**@ingroup txc_rlist_group
@@ -354,8 +350,8 @@ void txc_rlist_external_free(void **_external)
 {
 	txc_rlist_external_t **external = ((txc_rlist_external_t**)_external);
 
-	TSK_SAFE_FREE2((*external)->anchor);
-	TSK_SAFE_FREE2((*external)->list);
+	TSK_FREE((*external)->anchor);
+	TSK_FREE((*external)->list);
 
 	tsk_free2(_external);
 }
@@ -476,7 +472,7 @@ txc_rlist_list2_t* txc_rlist_list2_from_xml(const xmlNodePtr node)
 
 	if(tsk_xml_find_node(node, "list", nft_none))
 	{
-		TXC_RLIST_LIST_CREATE(rlist_list2);
+		TXC_RLIST_LIST2_CREATE(rlist_list2);
 		
 		/** name **/
 		node2 = tsk_xml_select_node(node, 
@@ -536,8 +532,7 @@ txc_rlist_t* txc_rlist_create(const char* buffer, size_t size)
 {
 	if(buffer && size)
 	{
-		txc_rlist_t* rlist = (txc_rlist_t*)tsk_malloc2(sizeof(txc_rlist_t));
-		memset(rlist, 0, sizeof(txc_rlist_t));
+		txc_rlist_t* rlist = (txc_rlist_t*)tsk_calloc2(1, sizeof(txc_rlist_t));
 		rlist->docPtr = xmlParseMemory(buffer, (int)size);
 
 		return rlist;
@@ -662,12 +657,12 @@ txc_rlist_external_L_t* txc_rlist_get_externals_by_list(const txc_rlist_t* rlist
 * Serialize an external element
 * @param external The object to serialize
 * @retval XML string representing the serialized object
-* You MUST call TSK_SAFE_FREE2 macro to free the returned string.
+* You MUST call TSK_FREE macro to free the returned string.
 */
 char* txc_rlist_external_serialize(const txc_rlist_external_t *external)
 {
 	char* external_str = 0;
-	if(!external) return 0;
+	if(!external || !external->anchor) return 0;
 
 	tsk_sprintf(0, &external_str, "<external anchor=\"%s\" />", external->anchor);
 	return external_str;
@@ -677,7 +672,7 @@ char* txc_rlist_external_serialize(const txc_rlist_external_t *external)
 * Serialize an entry element
 * @param entry The object to serialize
 * @retval XML string representing the serialized object
-* You MUST call TSK_SAFE_FREE2 macro to free the returned string.
+* You MUST call TSK_FREE macro to free the returned string.
 * @sa @ref txc_rlist_entry_serialize2
 */
 char* txc_rlist_entry_serialize(const txc_rlist_entry_t *entry)
@@ -690,7 +685,7 @@ char* txc_rlist_entry_serialize(const txc_rlist_entry_t *entry)
 * @param uri The uri of the entry to serialize
 * @param displayname The display-name of the entry to serialize
 * @retval XML string representing the serialized object
-* You MUST call TSK_SAFE_FREE2 macro to free the returned string.
+* You MUST call TSK_FREE macro to free the returned string.
 * @sa @ref txc_rlist_entry_serialize
 */
 char* txc_rlist_entry_serialize2(const char* uri, const char* displayname)
@@ -710,34 +705,46 @@ char* txc_rlist_entry_serialize2(const char* uri, const char* displayname)
 * Serialize simple list element
 * @param list The list to serialize
 * @retval XML string representing the serialized object
-* You MUST call TSK_SAFE_FREE2 macro to free the returned string.
+* You MUST call TSK_FREE macro to free the returned string.
 * @sa @ref txc_rlist_list_serialize2
 */
 char* txc_rlist_list_serialize(const txc_rlist_list_t *list)
 {
-	return list ? txc_rlist_list_serialize2(list->name, list->display_name) : 0;
+	return list ? txc_rlist_list_serialize2(list->name, list->display_name, 0) : 0;
 }
 
 /**@ingroup txc_rlist_group
 * Serialize simple list element
 * @param name The name of the list to serialize
 * @param displayname The display-name of the list to serialize
+* @param anchor The anchor for the external element
 * @retval XML string representing the serialized object
-* You MUST call TSK_SAFE_FREE2 macro to free the returned string.
+* You MUST call TSK_FREE macro to free the returned string.
 * @sa @ref txc_rlist_list_serialize
 */
-char* txc_rlist_list_serialize2(const char* name, const char* displayname)
+char* txc_rlist_list_serialize2(const char* name, const char* displayname, const char* anchor)
 {
 	char* list_str = 0;
+	char* anchor_str = 0;
+	char* displayname_str = 0;
 
-	if(!name || !displayname) return 0;
-	
+	if(!name) return 0;
+
+	if(anchor) tsk_sprintf(0, &anchor_str, "<external anchor=\"%s\"/>", anchor);
+	else anchor_str = tsk_strdup2("");
+	TSK_XML_SERIALIZE(displayname_str, "display-name", displayname);
+
 	/* serialize */
 	 tsk_sprintf(0, &list_str,
 				"<list name=\"%s\" xmlns=\""TXC_NS_RLIST"\">"
-					"<display-name>%s</display-name>"
+					"%s"
+					"%s"
 				"</list>",
-				name, displayname);
+				name, displayname_str, anchor_str);
+	
+	 TSK_FREE(anchor_str);
+	 TSK_FREE(displayname_str);
+
 	return list_str;
 }
 
@@ -745,8 +752,8 @@ char* txc_rlist_list_serialize2(const char* name, const char* displayname)
 * Serialize one complex list element without XML header/declaration.
 * @param list2 The the complex list to serialize
 * @retval XML string representing the serialized object
-* You MUST call TSK_SAFE_FREE2 macro to free the returned string.
-* @sa @ref txc_rlist_list22_serialize
+* You MUST call TSK_FREE macro to free the returned string.
+* @sa @ref txc_rlist_list2_L_serialize
 */
 char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2)
 {
@@ -768,7 +775,7 @@ char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2)
 		txc_rlist_entry_t *entry = ((txc_rlist_entry_t*)item->data);
 		char* entry_str = txc_rlist_entry_serialize(entry);
 		tsk_strcat2(&list2_str, (const char*)entry_str);
-		TSK_SAFE_FREE2(entry_str);
+		TSK_FREE(entry_str);
 	}
 	
 	/*externals*/
@@ -790,10 +797,10 @@ char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2)
 * Serialize a complete/entire resource-lists document with an XML header/declaration.
 * @param list22 The 2xcomplex list to serialize
 * @retval XML string representing the serialized object
-* You MUST call TSK_SAFE_FREE2 macro to free the returned string.
+* You MUST call TSK_FREE macro to free the returned string.
 * @sa @ref txc_rlist_list2_serialize
 */
-char* txc_rlist_list22_serialize(const txc_rlist_list2_LL_t *list22)
+char* txc_rlist_list2_L_serialize(const txc_rlist_list2_L_t *list22)
 {
 	tsk_list_item_t* item = 0;
 	char* rlist2_str = 0;
@@ -822,7 +829,7 @@ char* txc_rlist_list22_serialize(const txc_rlist_list2_LL_t *list22)
 * Add an XML declaration/header to the content
 * @param xml_content The content to decore
 * @retval  Decorated XML content.
-* You MUST call TSK_SAFE_FREE2 to free the returned string.
+* You MUST call TSK_FREE to free the returned string.
 */
 char* txc_rlist_add_xml_header(const char* xml_content)
 {

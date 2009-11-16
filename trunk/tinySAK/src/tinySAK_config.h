@@ -37,7 +37,7 @@
 /**@def  TINYSAK_API
 * Used on Windows and Sysbian systems to export public functions.
 */
-#if (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSAK_EXPORTS)
+#if (defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSAK_EXPORTS)
 # 	define TINYSAK_API __declspec(dllexport)
 #elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSAK_IMPORTS)
 # 	define TINYSAK_API __declspec(dllimport)
@@ -50,6 +50,22 @@
 //
 #ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
+#	pragma warning( disable : 4996 )
 #endif
+
+//
+//	Features
+//
+#if HAVE_CONFIG
+	#include "config.h"
+#else
+	#if defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE)
+	#	define HAVE_GETTIMEOFDAY				0
+	#else
+	#	define HAVE_GETTIMEOFDAY				1
+	#endif
+#endif /* HAVE_CONFIG */
+
+#include <stdint.h>
 
 #endif /* _TINYSAK_H_ */

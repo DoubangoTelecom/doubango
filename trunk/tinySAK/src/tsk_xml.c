@@ -47,7 +47,6 @@
 */
 void tsk_xml_namespace_init(tsk_xml_namespace_t* namespace)
 {
-	memset(namespace, 0, sizeof(tsk_xml_namespace_t));
 }
 
 /**@ingroup tsk_xml_group
@@ -56,8 +55,8 @@ void tsk_xml_namespace_init(tsk_xml_namespace_t* namespace)
 */
 void tsk_xml_namespace_free(tsk_xml_namespace_t** namespace)
 {
-	TSK_SAFE_FREE2((*namespace)->prefix);
-	TSK_SAFE_FREE2((*namespace)->value);
+	TSK_FREE((*namespace)->prefix);
+	TSK_FREE((*namespace)->value);
 	tsk_free(0, namespace);
 }
 
@@ -67,7 +66,6 @@ void tsk_xml_namespace_free(tsk_xml_namespace_t** namespace)
 */
 void tsk_xml_element_init(tsk_xml_element_t* element)
 {
-	memset(element, 0, sizeof(tsk_xml_element_t));
 }
 
 /**@ingroup tsk_xml_group
@@ -96,8 +94,8 @@ void tsk_xml_element_free(void** _element)
 {
 	tsk_xml_element_t** element = (tsk_xml_element_t**)_element;
 
-	TSK_SAFE_FREE2((*element)->name);
-	TSK_SAFE_FREE2((*element)->value);
+	TSK_FREE((*element)->name);
+	TSK_FREE((*element)->value);
 	TSK_LIST_SAFE_FREE((*element)->elements);
 	TSK_LIST_SAFE_FREE((*element)->attributes);
 	TSK_LIST_SAFE_FREE((*element)->namespaces);
@@ -111,7 +109,6 @@ void tsk_xml_element_free(void** _element)
 */
 void tsk_xml_attribute_init(tsk_xml_attribute_t* attribute)
 {
-	memset(attribute, 0, sizeof(tsk_xml_attribute_t));
 }
 
 /**@ingroup tsk_xml_group
@@ -120,8 +117,8 @@ void tsk_xml_attribute_init(tsk_xml_attribute_t* attribute)
 */
 void tsk_xml_attribute_free(tsk_xml_attribute_t** attribute)
 {
-	TSK_SAFE_FREE2((*attribute)->name);
-	TSK_SAFE_FREE2((*attribute)->value);
+	TSK_FREE((*attribute)->name);
+	TSK_FREE((*attribute)->value);
 
 	tsk_free(0, attribute);
 }

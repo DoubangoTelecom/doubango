@@ -23,14 +23,15 @@
 
 #define TEST_XXXX_CONTEXT_INIT(context) \
 	context->user_agent = tsk_strdup2("XDM-client/OMA1.1"); \
-	context->txc_root = tsk_strdup2("http://example.com:8080/services"); \
+	context->txc_root = tsk_strdup2("http://192.168.0.15:8080/services"); \
 	context->password = tsk_strdup2("doubango"); \
-	context->xui = tsk_strdup2("sip:doubango@example.com"); \
-	context->pragma = tsk_strdup2("keep-alive");
+	context->xui = tsk_strdup2("sip:doubango@micromethod.com"); \
+	context->pragma = tsk_strdup2("keep-alive"); \
+	context->reuse_http_connection = 0;
 
 #define LOOP						0
 
-#define RUN_TEST_ALL				1
+#define RUN_TEST_ALL				0
 #define RUN_TEST_SELECTOR			0
 #define RUN_TEST_XCAP_CAPS			0
 #define RUN_TEST_RLIST				0
@@ -39,7 +40,10 @@
 #define RUN_TEST_OMA_PRESRULES		0
 #define RUN_TEST_OMA_DIRECTORY		0
 #define RUN_TEST_GSMA_RCS			0
-#define RUN_TEST_OMA_PRESCONT		1
+#define RUN_TEST_OMA_PRESCONT		0
+#define RUN_TEST_ASYNC				1
+#define RUN_TEST_HTTP				0
+#define RUN_TEST_XDMC				0
 
 #if RUN_TEST_SELECTOR || RUN_TEST_ALL
 #include "test_selector.h"
@@ -76,6 +80,19 @@
 #if RUN_TEST_OMA_PRESCONT || RUN_TEST_ALL
 #include "test_oma-pres-cont.h"
 #endif
+
+#if RUN_TEST_ASYNC || RUN_TEST_ALL
+#include "test_async.h"
+#endif
+
+#if RUN_TEST_HTTP || RUN_TEST_ALL
+#include "test_http.h"
+#endif
+
+#if RUN_TEST_XDMC || RUN_TEST_ALL
+#include "test_xdmc.h"
+#endif
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
@@ -132,6 +149,21 @@ int _tmain(int argc, _TCHAR* argv[])
 		test_oma_pres_cont(omaprescont_str0, strlen(omaprescont_str0));
 #endif
 
+		/* Testing asynchronous calls(HTTP) */
+#if RUN_TEST_ASYNC || RUN_TEST_ALL
+		test_async();
+#endif
+
+		/* HTTP tests (sending requests to XDMS) */
+#if RUN_TEST_HTTP || RUN_TEST_ALL
+		test_http();
+#endif
+
+		/* testing XDMC hight level API */
+#if RUN_TEST_XDMC || RUN_TEST_ALL
+		test_xdmc();
+#endif
+		
 	}
 	
 	getchar();

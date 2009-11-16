@@ -44,8 +44,8 @@
 * Safely free an OMA XCAP directory previously created using @ref TXC_OMADIR_FOLDER_CREATE.
 * @sa @ref TXC_OMADIR_FOLDER_CREATE
 */
-#define TXC_OMADIR_FOLDER_CREATE(folder)		TXC_XXX_CREATE2(folder, omadir_folder)
-#define TXC_OMADIR_FOLDER_SAFE_FREE(folder)		TXC_XXX_SAFE_FREE2(folder, omadir_folder)
+#define TXC_OMADIR_FOLDER_CREATE(this)		TXC_XXX_CREATE2(this, omadir_folder)
+#define TXC_OMADIR_FOLDER_SAFE_FREE(this)		TXC_XXX_SAFE_FREE2(this, omadir_folder)
 
 /** OMA XCAP directory folder .
 */

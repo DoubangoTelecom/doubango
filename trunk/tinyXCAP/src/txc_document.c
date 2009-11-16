@@ -58,7 +58,7 @@ txc_auid_update(context, ietf_resource_lists, "rlist.xml");
 
 char *url = TXC_DOC_GET_SEL(context, ietf_xcap_caps);
 printf("Server capabilities url: \n%s\n***\n", url);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @a Output: http://xcap.example.com:8080/services/xcap-caps/global/index
 *
@@ -68,7 +68,7 @@ TSK_SAFE_FREE2(url);
 
 char *url = TXC_DOC_GET_SEL(context, ietf_resource_lists);
 printf("IETF resource-list: \n%s\n***\n", url);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @a Output: http://xcap.example.com:8080/services/resource-lists/users/sip:doubango@example.com/index
 *
@@ -83,7 +83,7 @@ TSK_SAFE_FREE2(url);
 
 char *url = TXC_DOC_GET_SEL2(context, ietf_resource_lists, "usr-doc");
 printf("semi-custom document selector: \n%s\n***\n", url);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @a Output: http://xcap.example.com:8080/services/resource-lists/users/sip:doubango@example.com/usr-doc
 
@@ -94,7 +94,7 @@ TSK_SAFE_FREE2(url);
 
 char *url = txc_doc_get_cust_sel("http://usr-root", "usr-auid", "usr-xui", "usr-doc");
 printf("full-custom document selector: \n%s\n***\n", url);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @a Output: http://usr-root/usr-auid/users/usr-xui/usr-doc
 */
@@ -113,7 +113,7 @@ TSK_SAFE_FREE2(url);
 * @retval The HTTP URI containing the XCAP root and document selector, resulting in the selection of a specific document.  As a
   result, performing a GET against the document URI would retrieve the document.
 * If supplied parameters are not valide this method will return NULL.
-* You must free the returned string using TSK_SAFE_FREE2 or TSK_SAFE_FREE.
+* You must free the returned string using TSK_FREE or TSK_SAFE_FREE.
 * @sa @ref TXC_DOC_GET_SEL and @ref TXC_DOC_GET_SEL2
 */
 char* txc_doc_get_cust_sel(const char *xcaproot, const char *auid, const char *xui, const char *name)

@@ -33,22 +33,28 @@
 #include "tinySAK_config.h"
 
 /**@def TSK_LIST_CREATE
-* @brief allocate and initialize a linked list
+* Create and initialize a linked list.
+* You MUST use @ref TSK_LIST_SAFE_FREE to free a linked list.
+* @sa @ref TSK_LIST_SAFE_FREE.
 */
-#define TSK_LIST_CREATE(l)				TSK_XXX_CREATE2(l, list)
+#define TSK_LIST_CREATE(this)				TSK_XXX_CREATE2(this, list)
 /**@def TSK_LIST_SAFE_FREE
-* @brief safely free a linked list
+* Safely free a linked list previously created using @ref TSK_LIST_CREATE.
+* @sa @ref TSK_LIST_CREATE.
 */
-#define TSK_LIST_SAFE_FREE(l)				TSK_XXX_SAFE_FREE2(l, list)
+#define TSK_LIST_SAFE_FREE(this)			TSK_XXX_SAFE_FREE2(this, list)
 
 /**@def TSK_LIST_ITEM_CREATE
-* @brief allocate and initialize an item
+* Create and initialize an item.
+* You MUST use @ref TSK_LIST_ITEM_SAFE_FREE to free an item.
+* @sa @ref TSK_LIST_ITEM_SAFE_FREE.
 */
-#define TSK_LIST_ITEM_CREATE(item)		TSK_XXX_CREATE2(item, list_item)
+#define TSK_LIST_ITEM_CREATE(this)		TSK_XXX_CREATE2(this, list_item)
 /**@def TSK_LIST_ITEM_SAFE_FREE
-* @brief safely free an item
+* Safely free an item previously created using @ref TSK_LIST_ITEM_CREATE.
+* @sa @ref TSK_LIST_ITEM_CREATE.
 */
-#define TSK_LIST_ITEM_SAFE_FREE(item)		TSK_XXX_SAFE_FREE2(item, list_item)
+#define TSK_LIST_ITEM_SAFE_FREE(this)		TSK_XXX_SAFE_FREE2(this, list_item)
 
 /**@typedef tsk_list_item_func_free
 * Used to define the function to call to free an @b item.

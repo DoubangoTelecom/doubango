@@ -79,7 +79,7 @@ char *url = txc_node_get_sel(context, ietf_resource_lists,
 	TXC_NODE_SELECT_BY_ATTR("list", "name", "Default"), //==> /resource-lists/list[@name="Default"]
 	TXC_NODE_SELECT_END()
 	);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @sa txc_node_get_cust_sel for custom (user defined) requests.
 *
@@ -91,7 +91,7 @@ char *url = txc_node_get_sel(context, ietf_resource_lists,
 	TXC_NODE_SELECT_BY_POS("list", 2), //==> /resource-lists/list[2]
 	TXC_NODE_SELECT_END()
 	);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @sa txc_node_get_cust_sel for custom (user defined) requests.
 *
@@ -103,7 +103,7 @@ char *url = txc_node_get_sel(context, ietf_resource_lists,
 	TXC_NODE_SELECT_BY_POS("*", 4), //==> /resource-lists/*[4]
 	TXC_NODE_SELECT_END()
 	);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @sa txc_node_get_cust_sel for custom (user defined) requests.
 *
@@ -116,7 +116,7 @@ char *url = txc_node_get_sel(context, ietf_resource_lists,
 	TXC_NODE_SELECT_BY_ATTR("entry", "uri", "sip:doubango@example.com"),//==> /resource-lists/list[@name="Ennemies"]/entry[@uri="sip:doubango@example.com"]
 	TXC_NODE_SELECT_END()
 	);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @sa txc_node_get_cust_sel for custom (user defined) requests.
 *
@@ -130,7 +130,7 @@ char *url = txc_node_get_sel(context, ietf_resource_lists,
 	TXC_NODE_SELECT_BY_NAME("display-name"),//==> /resource-lists/list[@name="Friends"]/entry[@uri="sip:doubango@example.com"]/display-name
 	TXC_NODE_SELECT_END()
 	);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @sa txc_node_get_cust_sel for custom (user defined) requests.
 *
@@ -144,7 +144,7 @@ char *url = txc_node_get_sel(context, ietf_resource_lists,
 	TXC_NODE_SELECT_BY_NAME("display-name"),//==> /resource-lists/list[@name="Friends"]/entry[1]/display-name
 	TXC_NODE_SELECT_END()
 	);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 * @endcode
 * @sa txc_node_get_cust_sel for custom (user defined) requests.
 *
@@ -157,7 +157,7 @@ url = txc_node_get_sel(context, ietf_resource_lists,
 	TXC_NODE_SELECT_BY_POS_ATTR("entry", 23, "uri", "sip:doubango@example.com"),//==> /resource-lists/list[@name="Ennemies"]/entry[23][@uri="sip:doubango@example.com"]
 	TXC_NODE_SELECT_END()
 	);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @sa txc_node_get_cust_sel for custom (user defined) requests.
 *
@@ -173,7 +173,7 @@ char *url = txc_node_get_sel(context, ietf_resource_lists,
 	TXC_NODE_ADD_NAMESPACE("b", "urn:test:namespace2-uri"),//==>/foo/a:bar/b:baz?xmlns(a=urn:test:namespace1-uri)xmlns(b=urn:test:namespace2-uri)
 	TXC_NODE_SELECT_END()
 	);
-TSK_SAFE_FREE2(url);
+TSK_FREE(url);
 * @endcode
 * @sa txc_node_get_cust_sel for custom (user defined) requests.
 */
@@ -280,7 +280,7 @@ static char* __internal_txc_node_get_cust_sel(const char* doc_selector, const ch
 * or @ref TXC_NODE_ADD_NAMESPACE and end with @ref TXC_NODE_SELECT_END. For more information please refer to @ref txc_node_page.
 * @retval The HTTP URI containing the XCAP root, document selector, node selector separator, and node selector, resulting in the
 * selection of a specific XML node. If supplied parameters are not valide this method will return NULL.
-* You must free the returned string using TSK_SAFE_FREE2 or TSK_SAFE_FREE.
+* You must free the returned string using TSK_FREE or TSK_SAFE_FREE.
 * @sa txc_node_get_sel
 */
 char* txc_node_get_cust_sel(const char* doc_selector, const char *auid, ...)
@@ -307,7 +307,7 @@ char* txc_node_get_cust_sel(const char* doc_selector, const char *auid, ...)
 * or @ref TXC_NODE_ADD_NAMESPACE and end with @ref TXC_NODE_SELECT_END. For more information please refer to @ref txc_node_page.
 * @retval The HTTP URI containing the XCAP root, document selector, node selector separator, and node selector, resulting in the
 * selection of a specific XML node. If supplied parameters are not valide this method will return NULL.
-* You must free the returned string using TSK_SAFE_FREE2 or TSK_SAFE_FREE.
+* You must free the returned string using TSK_FREE or TSK_SAFE_FREE.
 * @sa txc_node_get_cust_sel
 */
 char* txc_node_get_sel(const txc_context_t* context, const xcap_auid_type_t auid_type, ...)
@@ -328,7 +328,7 @@ char* txc_node_get_sel(const txc_context_t* context, const xcap_auid_type_t auid
 	uri = __internal_txc_node_get_cust_sel(doc_selector, context->auids[auid_type].name, args);
 	
 	/* free document selector*/
-	TSK_SAFE_FREE2(doc_selector);
+	TSK_FREE(doc_selector);
 
 	/* reset variable arguments */
 	va_end(args);

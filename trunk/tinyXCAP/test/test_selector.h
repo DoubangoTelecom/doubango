@@ -43,22 +43,22 @@ void test_selector()
 	/* IETF server capabilities */
 	url = TXC_DOC_GET_SEL(context, ietf_xcap_caps);
 	printf("Server capabilities url: \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 
 	/* IETF resource-list */
 	url = TXC_DOC_GET_SEL(context, ietf_resource_lists);
 	printf("IETF resource-list: \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 
 	/* IETF resource-list (2): semi-custom docment name*/
 	url = TXC_DOC_GET_SEL2(context, ietf_resource_lists, "usr-doc");
 	printf("IETF resource-list(2): \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 
 	/* IETF resource-list (3): full-custom docment name*/
 	url = txc_doc_get_cust_sel("http://usr-root", "usr-auid", "usr-xui", "usr-doc");
 	printf("IETF resource-list(3): \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 	
 	/* Retrieve list named 'Default' in the resource list */
 	url = txc_node_get_sel(context, ietf_resource_lists,
@@ -66,7 +66,7 @@ void test_selector()
 		TXC_NODE_SELECT_END()
 		);
 	printf("Retrieve list named 'Default' in the resource list: \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 
 	/* Retrieve the second list in the resource list */
 	url = txc_node_get_sel(context, ietf_resource_lists,
@@ -74,7 +74,7 @@ void test_selector()
 		TXC_NODE_SELECT_END()
 		);
 	printf("Retrieve the second list in the resource list: \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 	
 	/* Retrieve the fourth list in the resource list(using wildcard!!!)*/
 	url = txc_node_get_sel(context, ietf_resource_lists,
@@ -82,7 +82,7 @@ void test_selector()
 		TXC_NODE_SELECT_END()
 		);
 	printf("Retrieve the fourth list in the resource list(using wildcard!!!): \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 
 	/* Retrieve an entry with uri equals to 'sip:doubango@example.com' into a list named 'Ennemies' in the resource list */
 	url = txc_node_get_sel(context, ietf_resource_lists,
@@ -91,7 +91,7 @@ void test_selector()
 		TXC_NODE_SELECT_END()
 		);
 	printf("Retrieve an entry with an uri equals to 'sip:doubango@example.com' into a list named 'Ennemies': \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 
 	/* Retrieve doubango's display-name (we suppose doubango is a friend) */
 	url = txc_node_get_sel(context, ietf_resource_lists,
@@ -101,7 +101,7 @@ void test_selector()
 		TXC_NODE_SELECT_END()
 		);
 	printf("Retrieve doubango's display-name (we suppose doubango is a friend): \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 
 	/* Retrieve the display-name of the first entry in the list of the Ennemies*/
 	url = txc_node_get_sel(context, ietf_resource_lists,
@@ -111,7 +111,7 @@ void test_selector()
 		TXC_NODE_SELECT_END()
 		);
 	printf("Retrieve the display-name of the first entry in the list of the Ennemies: \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 	
 	/* Retrieve an entry with uri equals to 'sip:doubango@example.com' at position 23 into a list named 'Ennemies' in the resource list */
 	url = txc_node_get_sel(context, ietf_resource_lists,
@@ -120,7 +120,7 @@ void test_selector()
 		TXC_NODE_SELECT_END()
 		);
 	printf("Retrieve an entry with uri equals to 'sip:doubango@example.com' at position 23 into a list named 'Ennemies' in the resource list: \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 	
 	/* Namespace test */
 	/*request /foo/a:bar/b:baz?xmlns(a=urn:test:namespace1-uri)xmlns(b=urn:test:namespace2-uri)*/
@@ -133,7 +133,7 @@ void test_selector()
 		TXC_NODE_SELECT_END()
 		);
 	printf("Namespace test: \n%s\n***\n", url);
-	TSK_SAFE_FREE2(url);
+	TSK_FREE(url);
 	
 	/* free allocated memory*/
 	TXC_CONTEXT_SAFE_FREE(context);
