@@ -86,6 +86,8 @@ extern "C" {
 extern int errno;
 int* __cdecl _errno(void);
 
+#define errno   (*_errno())
+
 #ifdef    __cplusplus
 }
 #endif

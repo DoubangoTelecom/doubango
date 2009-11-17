@@ -45,7 +45,7 @@ void test_gsma_rcs()
 
 	/* Create an GSMA RCS2 resource-lists document object and serialize the document for test */
 	rlist2 = txc_gsmarcs_create_rlist2(context);
-	rlist2_str = txc_rlist_list22_serialize(rlist2);
+	rlist2_str = txc_rlist_list2_L_serialize(rlist2);
 	printf("rcs resource-lists: %s\n", rlist2_str);
 	TSK_FREE(rlist2_str);
 	TSK_LIST_SAFE_FREE(rlist2);

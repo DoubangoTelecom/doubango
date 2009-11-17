@@ -29,6 +29,7 @@
 */
 #include "tsk_semaphore.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 #include <semaphore.h>
 #include <pthread.h>
@@ -55,11 +56,15 @@ void tsk_semaphore_init(tsk_semaphore_t* semaphore)
 */
 int tsk_semaphore_increment(tsk_semaphore_t* semaphore)
 {
+	int ret = EINVAL;
 	if(semaphore)
 	{
-		return sem_post((sem_t*)semaphore->handle);
+		if(ret = sem_post((sem_t*)semaphore->handle))
+		{
+			TSK_DEBUG_ERROR("sem_post function failed: %d", ret);
+		}
 	}
-	return EINVAL;
+	return ret;
 }
 
 /**@ingroup tsk_semaphore_group
@@ -79,6 +84,9 @@ int tsk_semaphore_decrement(tsk_semaphore_t* semaphore)
 		} 
 		while ( errno == EINTR );
 	}
+
+	if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", ret);
+
 	return ret;
 }
 
@@ -94,5 +102,9 @@ void tsk_semaphore_free(tsk_semaphore_t** semaphore)
 		sem_destroy((sem_t*)(*semaphore)->handle);
 		TSK_FREE((*semaphore)->handle);
 		tsk_free2(semaphore);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot free an uninitialized semaphore object");
 	}
 }

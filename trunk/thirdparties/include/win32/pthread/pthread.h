@@ -242,7 +242,7 @@ enum {
 
 #ifndef PTW32_CONFIG_H
 #  if defined(WINCE)
-#    define NEED_ERRNO
+//#    define NEED_ERRNO
 #    define NEED_SEM
 #  endif
 #  if defined(_UWIN) || defined(__MINGW32__)

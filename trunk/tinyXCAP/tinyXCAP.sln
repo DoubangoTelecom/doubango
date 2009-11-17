@@ -10,21 +10,41 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I) = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		Release|Win32 = Release|Win32
+		Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I) = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Debug|Win32.ActiveCfg = Debug|Win32
 		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Debug|Win32.Build.0 = Debug|Win32
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Release|Win32.ActiveCfg = Release|Win32
 		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Release|Win32.Build.0 = Release|Win32
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Win32.ActiveCfg = Debug|Win32
 		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Win32.Build.0 = Debug|Win32
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Release|Win32.ActiveCfg = Release|Win32
 		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Release|Win32.Build.0 = Release|Win32
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{2A476CAA-BA45-4379-AFEC-088645840527}.Debug|Win32.ActiveCfg = Debug|Win32
 		{2A476CAA-BA45-4379-AFEC-088645840527}.Debug|Win32.Build.0 = Debug|Win32
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{2A476CAA-BA45-4379-AFEC-088645840527}.Release|Win32.ActiveCfg = Release|Win32
 		{2A476CAA-BA45-4379-AFEC-088645840527}.Release|Win32.Build.0 = Release|Win32
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{2A476CAA-BA45-4379-AFEC-088645840527}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

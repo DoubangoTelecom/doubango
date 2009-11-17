@@ -20,30 +20,12 @@
 *
 */
 
-/**@file tsk.h
- * @brief This file contains all headers needed to export public API functions.
+/**@file tsk_debug.c
+ * @brief Useful functions for debugging.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
-
-#include "tinySAK_config.h"
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_heap.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
-
-#include "tsk_condwait.h"
-#include "tsk_mutex.h"
-#include "tsk_semaphore.h"
-#include "tsk_thread.h"
-
-#include "tsk_macros.h"
 #include "tsk_debug.h"
 
-#endif /* _TINYSAK_SAK_H_ */

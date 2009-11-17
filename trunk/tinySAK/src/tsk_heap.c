@@ -29,6 +29,7 @@
  */
 #include "tsk_heap.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 #include "tsk_macros.h"
 #include <stdlib.h>
 
@@ -98,5 +99,9 @@ void tsk_heap_cleanup(tsk_heap_t *heap)
 			curr = next;
 		}
 		pool->head = 0;
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot cleanup an uninitialized heap object");
 	}
 }

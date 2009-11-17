@@ -52,6 +52,13 @@ struct timezone
 	int  tz_dsttime;     /* type of dst correction */
 }; 
 
+//#if (_WIN32_WCE < 0x600)
+//struct timeval {
+//        long    tv_sec;         /* seconds */
+//        long    tv_usec;        /* and microseconds */
+//};
+//#endif
+
 int gettimeofday(struct timeval *tv, struct timezone *tz) 
 {  
 	FILETIME ft;
@@ -60,7 +67,13 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
 
 	if(tv)   
 	{    
+#ifdef _WIN32_WCE
+		SYSTEMTIME st;
+		GetSystemTime(&st);
+		SystemTimeToFileTime(&st, &ft);
+#else
 		GetSystemTimeAsFileTime(&ft);
+#endif
 
 		tmpres |= ft.dwHighDateTime;   
 		tmpres <<= 32; 

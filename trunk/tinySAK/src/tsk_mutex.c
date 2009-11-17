@@ -29,6 +29,7 @@
  */
 #include "tsk_mutex.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 #include <pthread.h>
 
@@ -54,11 +55,15 @@ void tsk_mutex_init(tsk_mutex_t* mutex)
 */
 int tsk_mutex_lock(tsk_mutex_t* mutex)
 {
+	int ret = EINVAL;
 	if(mutex)
 	{
-		return pthread_mutex_lock((pthread_mutex_t*)mutex->handle);
+		if(ret = pthread_mutex_lock((pthread_mutex_t*)mutex->handle))
+		{
+			TSK_DEBUG_ERROR("Failed to lock the mutex: %d", ret);
+		}
 	}
-	return EINVAL;
+	return ret;
 }
 
 /**@ingroup tsk_mutex_group
@@ -69,9 +74,13 @@ int tsk_mutex_lock(tsk_mutex_t* mutex)
 */
 int tsk_mutex_unlock(tsk_mutex_t* mutex)
 {
+	int ret = EINVAL;
 	if(mutex)
 	{
-		return pthread_mutex_unlock((pthread_mutex_t*)mutex->handle);
+		if(ret= pthread_mutex_unlock((pthread_mutex_t*)mutex->handle))
+		{
+			TSK_DEBUG_ERROR("Failed to unlock the mutex: %d", ret);
+		}
 	}
 	return EINVAL;
 }
@@ -88,5 +97,9 @@ void tsk_mutex_free(tsk_mutex_t** mutex)
 		pthread_mutex_destroy((pthread_mutex_t*)(*mutex)->handle);
 		TSK_FREE((*mutex)->handle);
 		tsk_free2(mutex);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot free an uninitialized mutex");
 	}
 }

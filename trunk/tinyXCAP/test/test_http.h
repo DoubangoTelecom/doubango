@@ -54,7 +54,7 @@ int test_http_add_list(txc_context_t *context, const char* name, const char* dis
 			TXC_NODE_SELECT_END()
 			);
 	list_str = txc_rlist_list_serialize2(name, displayname, anchor);
-	txc_content_set(request->content, list_str, strlen(list_str), 0);
+	txc_content_set(request->content, list_str, strlen(list_str), txc_mime_type_get(context, ietf_resource_lists, sl_element));
 	TSK_FREE(list_str);
 	
 	/* send the request to the server */
@@ -85,8 +85,7 @@ int test_http_caps(txc_context_t *context)
 
 	/*== get xcap-caps document an update avalable auids ==*/
 	request->url = TXC_DOC_GET_SEL(context, ietf_xcap_caps);
-	request->auid = tsk_strdup2(context->auids[ietf_xcap_caps].name);
-
+	
 	if((error = txc_xcap_perform(context, request, op_fetch, sl_document)) || !TXC_HTTP_SUCCESS(request))
 	{
 		printf("test_http_caps/// (get(xcap-caps)):%d status:%d\n", error, request->status);
@@ -138,7 +137,6 @@ int test_http_omadir(txc_context_t *context)
 
 	/* create request */
 	request->url = TXC_DOC_GET_SEL(context, oma_directory);
-	request->auid = tsk_strdup2(context->auids[oma_directory].name);
 
 	/*== get content from the xdms and update document names ==*/
 	if((error = txc_xcap_perform(context, request, op_fetch, sl_document)) || !TXC_HTTP_SUCCESS(request))
@@ -186,7 +184,6 @@ int test_http_rlist(txc_context_t* context)
 	
 	/* create request */
 	request->url = TXC_DOC_GET_SEL(context, ietf_resource_lists);
-	request->auid = tsk_strdup2(context->auids[ietf_resource_lists].name);
 
 	/*== get content from the xdms and update document names ==*/
 	if((error = txc_xcap_perform(context, request, op_fetch, sl_document)) || !TXC_HTTP_SUCCESS(request))
@@ -196,7 +193,7 @@ int test_http_rlist(txc_context_t* context)
 			/* create new resource-lists document as per gsma rcs specs and PUT it to the xdms */
 			txc_rlist_list2_L_t* rlist2 = txc_gsmarcs_create_rlist2(context);
 			char *rlist2_str = txc_rlist_list2_L_serialize(rlist2);
-			txc_content_set(request->content, (const char*)rlist2_str, strlen(rlist2_str), 0);/* set content */
+			txc_content_set(request->content, (const char*)rlist2_str, strlen(rlist2_str), txc_mime_type_get(context, ietf_resource_lists, sl_document));/* set content */
 			TSK_FREE(rlist2_str);
 			TSK_LIST_SAFE_FREE(rlist2);
 
@@ -258,7 +255,7 @@ int test_http_rlist(txc_context_t* context)
 				TXC_NODE_SELECT_END()
 				);
 		entry_str = txc_rlist_entry_serialize2("sip:mercuro2@colibria.com", "mercuro2");
-		txc_content_set(request->content, entry_str, strlen(entry_str), 0);
+		txc_content_set(request->content, entry_str, strlen(entry_str), txc_mime_type_get(context, ietf_resource_lists, sl_element));
 		TSK_FREE(entry_str);
 		
 		if((error = txc_xcap_perform(context, request, op_create, sl_element)) || !TXC_HTTP_SUCCESS(request))
@@ -285,7 +282,7 @@ int test_http_rlist(txc_context_t* context)
 				TXC_NODE_SELECT_END()
 				);
 		list_str = txc_rlist_list_serialize2("newlist", "newlist", 0);
-		txc_content_set(request->content, list_str, strlen(list_str), 0);
+		txc_content_set(request->content, list_str, strlen(list_str), txc_mime_type_get(context, ietf_resource_lists, sl_element));
 		TSK_FREE(list_str);
 		
 		/* send the request to the server */

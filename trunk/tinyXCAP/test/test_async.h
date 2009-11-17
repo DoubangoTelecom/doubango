@@ -24,15 +24,18 @@
 
 #include "txc_api.h"
 
-typedef const char* URLS_T[4]; 
+int count = 0;
 
-static URLS_T urls = 
+/* HTTP callback to handle requests received from the XDMS */
+static void http_callback(txc_request_t *request)
 {
-	"http://192.168.0.15:8080/xcap-caps/global/index",
-	"http://192.168.0.15:8080/xcap-caps/global/index",
-	"http://192.168.0.15:8080/xcap-caps/global/index",
-	"http://192.168.0.15:8080/xcap-caps/global/index"
-};
+	if(request->content)
+	{
+		TSK_DEBUG_INFO("%d) USER received response from the XDMS\n content:%s \n content-type:%s\n", ++count, request->content->data, request->content->type);
+	}
+	
+	TXC_REQUEST_SAFE_FREE(request);
+}
 
 /* Testing asynchronous call */
 int test_async()
@@ -40,29 +43,34 @@ int test_async()
 	txc_request_t* request = 0;
 	int ret = 0, error = 0, i;
 	txc_context_t* context = 0;
+	tsk_condwait_t *condwait;
 
 	printf("---\nTEST_ASYNC\n---\n");
 
 	TXC_CONTEXT_CREATE(context);
-	TEST_XXXX_CONTEXT_INIT(context);
+	TSK_CONDWAIT_CREATE(condwait);
 
-	for(i=0; i<100; i++)
+	TEST_XXXX_CONTEXT_INIT(context);
+	context->http_callback = http_callback;
+
+	for(i=0; i<10; i++)
 	{
 		TXC_REQUEST_CREATE(request);
 
 		/*== get xcap-caps document an update avalable auids ==*/
 		request->url = TXC_DOC_GET_SEL(context, ietf_xcap_caps);
-		request->auid = tsk_strdup2(context->auids[ietf_xcap_caps].name);
-		
-		if((error = txc_xcap_send(context, request, op_fetch, sl_document)))
+		if((error = txc_xcap_send(context, &request, op_fetch, sl_document)))
 		{
-			printf("test_async/// failed:%d status:%d\n", error, request->status);
+			printf("test_async/// failed:%d\n", error);
 			break;
 		}
+
+		tsk_condwait_timedwait(condwait, 50);
 	}
 
-	getchar();
+	//getchar();
 
+	TSK_CONDWAIT_SAFE_FREE(condwait);
 	TXC_CONTEXT_SAFE_FREE(context);
 
 	return ret;

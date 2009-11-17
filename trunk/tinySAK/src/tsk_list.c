@@ -30,6 +30,7 @@
 #include "tsk_list.h"
 #include "tsk_memory.h"
 #include "tsk_macros.h"
+#include "tsk_debug.h"
 #include <string.h>
 
 /**@defgroup tsk_list_group Linked list
@@ -287,6 +288,10 @@ void tsk_list_add_data(tsk_list_t* list, void** data, tsk_list_item_func_free it
 		tsk_list_add_item(list, &item);
 		(*data) = 0;
 	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
+	}
 }
 
 /**@ingroup tsk_list_group
@@ -308,6 +313,10 @@ const tsk_list_item_t* tsk_list_find_item(const tsk_list_t* list, tsk_list_func_
 				return item;
 			}
 		}
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot use an uninitialized predicate function");
 	}
 	return 0;
 }
@@ -332,6 +341,10 @@ void tsk_list_free(tsk_list_t** list)
 		}
 		free(*list);
 		(*list) = 0;
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot free an uninitialized list");
 	}
 }
 
@@ -362,5 +375,9 @@ void tsk_list_item_free(tsk_list_item_t** item)
 
 		free(*item);
 		(*item) = 0;
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot free an uninitialized item");
 	}
 }

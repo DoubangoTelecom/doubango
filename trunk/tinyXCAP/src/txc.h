@@ -87,7 +87,6 @@
 #define TXC_NS_OMA_DIRECTORY	"urn:oma:xml:xdm:xcap-directory" /**< as per [OMA-TS-XDM_Core-V1_1-20080627-A] subclause 6.7.2.3 */
 #define TXC_NS_OMA_PRESCONT		"urn:oma:xml:prs:pres-content" /**< as per [OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C] subclause 5.1.4 */
 
-
 /**@def TXC_CONTEXT_CHECK
 * Check context validity 
 */
@@ -140,9 +139,7 @@
 #define TXC_EASYHANDLE_SAFE_FREE(easyhandle) \
 	if(easyhandle) { curl_easy_cleanup(easyhandle); easyhandle = 0; }
 
-/**@def TXC_AUID_CHECK
-* The the validity of an auid. 
-*/
+
 /**@def TXC_AUID_CREATE
 * Create and initialize an auid.
 * You MUST use @ref TXC_AUID_SAFE_FREE to free an auid.
@@ -153,8 +150,6 @@
 * @sa @ref TXC_AUID_CREATE
 */
 
-#define TXC_AUID_CHECK(auid, panic)\
-	if(!auid) panic = xpa_unsupported_auid;
 #define TXC_AUID_CREATE(this)		TXC_XXX_CREATE2(this, auid)
 #define TXC_AUID_SAFE_FREE(this)	TXC_XXX_SAFE_FREE2(this, auid)
 
@@ -266,7 +261,6 @@ typedef txc_auid_t AUIDS_T[TXC_AUIDS_COUNT];
 */
 typedef struct txc_request_s
 {
-	char* auid;	 /**< The auid associated to this request. */
 	txc_content_t* content; /**< The request content. */
 	char* url; /**< The destination address. */
 	char* http_accept; /**< C string to put into the HTTP Accept header */
@@ -278,8 +272,16 @@ typedef struct txc_request_s
 	long timeout; /**< HTTP request timeout. */
 
 	CURL* easyhandle; /**< Curl handle */
+	struct curl_slist *headers; /**< curl headers */
 }
 txc_request_t;
+
+/**@typedef txc_http_callback
+* Function pointer to alert the user when new data becomes available.
+* You MUST use @ref TXC_REQUEST_SAFE_FREE to free the returned request.
+*@param request XCAP request holding data sent by the XDMS.
+*/
+typedef void (*txc_http_callback)(txc_request_t *request);
 
 /**@typedef txc_context_t
 * XCAP context.
@@ -304,10 +306,14 @@ typedef struct txc_context_s
 
 	CURLM *multihandle;					/**< Curl multi-handle */
 	CURL* easyhandle;					/**< Curl handle. */
-	unsigned running:1;					/**< */
+	unsigned running:1;					/**< If still running */
+	unsigned followredirect;				/**< Follow redirect when performing HTTP/XCAP operations */
 	unsigned reuse_http_connection:1;			/**< reuse the same easyhandle to send/receive data */
+	txc_http_callback http_callback;		/**< HTTP callback to pass data from the XDMS to the user */
 }
 txc_context_t;
+
+TINYXCAP_API const char* txc_mime_type_get(const txc_context_t *context, xcap_auid_type_t auid_type, txc_selection_type_t sel);
 
 TINYXCAP_API void txc_content_init(txc_content_t *content);
 TINYXCAP_API void txc_content_set(txc_content_t* content, const char *data, size_t size, const char *type);
@@ -331,6 +337,6 @@ TINYXCAP_API void txc_request_free(txc_request_t** request);
 
 TINYXCAP_API int txc_xcap_perform(txc_context_t* context, txc_request_t* request, txc_oper_type_t oper, txc_selection_type_t sel);
 
-TINYXCAP_API int txc_xcap_send(txc_context_t* context, txc_request_t* request, txc_oper_type_t oper, txc_selection_type_t sel);
+TINYXCAP_API int txc_xcap_send(txc_context_t* context, txc_request_t** request, txc_oper_type_t oper, txc_selection_type_t sel);
 
 #endif /* _TINYXCAP_TXC_H_ */
