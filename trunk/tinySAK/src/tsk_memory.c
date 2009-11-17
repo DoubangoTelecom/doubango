@@ -29,6 +29,7 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 #include <stdarg.h>
 #include <ctype.h>
@@ -107,7 +108,14 @@ static int tsk_memory_find_by_address(const tsk_heap_address_t* item, const void
 void* tsk_malloc(tsk_heap_t *heap, size_t size)
 {
 	void *ret = malloc(size);
-	HEAP_PUSH(heap, ret);
+	if(ret)
+	{
+		HEAP_PUSH(heap, ret);
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Memory allocation failed");
+	}
 
 	return ret;
 }
@@ -142,8 +150,13 @@ void* tsk_realloc (tsk_heap_t *heap,  void* ptr, size_t size)
 
 	ret = realloc(ptr, size);
 	if(ret && (old != ret) && address) 
-	{ /* update pointer value */
+	{ /* update pointer value and free old*/
 		address->data = ret;
+		tsk_free(heap, &old);
+	}
+	else if(!ret)
+	{
+		TSK_DEBUG_ERROR("Memory reallocation failed");
 	}
 
 	return ret;
@@ -179,7 +192,14 @@ void tsk_free(tsk_heap_t *heap, void** ptr)
 void* tsk_calloc(tsk_heap_t *heap, size_t num, size_t size)
 {
 	void* ret = calloc(num, size);
-	HEAP_PUSH(heap, ret);
+	if(ret)
+	{
+		HEAP_PUSH(heap, ret);
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Memory allocation failed");
+	}
 
 	return ret;
 }

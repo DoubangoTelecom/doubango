@@ -69,6 +69,9 @@ int test_async()
 	}
 
 	//getchar();
+#ifdef _WIN32_WCE
+	tsk_condwait_timedwait(condwait, 2000);
+#endif
 
 	TSK_CONDWAIT_SAFE_FREE(condwait);
 	TXC_CONTEXT_SAFE_FREE(context);

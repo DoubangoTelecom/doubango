@@ -27,14 +27,8 @@
 extern "C" {
 #endif
 
-
-#ifdef NDEBUG
-#define assert(exp) ((void)0)
-#else
-void _assert(void*, void*, unsigned);
+void __cdecl _assert(void*, void*, unsigned);
 #define assert(exp) (void)( (exp) || (_assert(#exp, __FILE__, __LINE__), 0) )
-#endif
-
 
 #ifdef __cplusplus
 }

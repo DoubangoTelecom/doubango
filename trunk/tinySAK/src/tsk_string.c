@@ -155,10 +155,32 @@ int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...)
 	if(*str) tsk_free(heap, str);
 	
 	/* compute destination len */
+#ifdef _WIN32_WCE
+	{
+		int n;
+		len = (strlen(format)*2);
+		*str = (char*)tsk_calloc(heap, 1, len+1);
+		for(;;)
+		{
+			if( (n = vsnprintf(*str, len, format, list)) >= 0 && (n<len) )
+			{
+				len = n;
+				goto done;
+			}
+			else
+			{
+				len += 5;
+				*str = tsk_realloc(heap, *str, len+1);
+			}
+		}
+done:
+		(*str)[len] = '\0';
+	}
+#else
     len = vsnprintf(0, 0, format, list);
     *str = (char*)tsk_malloc(heap, len+1);
     vsnprintf(*str, len, format, list);
-	(*str)[len] = '\0';
+#endif
 	
 	/* reset variable arguments */
 	va_end( list );

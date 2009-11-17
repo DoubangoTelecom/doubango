@@ -34,4 +34,19 @@
 
 int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
 
+
+#ifdef _WIN32_WCE
+
+#ifndef TIMEVAL
+/* On wince timeval struct is defined in "Winsock2.h" but I don't want to add it */
+struct timeval 
+{
+  long tv_sec;
+  long tv_usec;
+};
+#define TIMEVAL
+#endif TIMEVAL
+
+#endif
+
 #endif /* _TINYSAK_TIME_H_ */

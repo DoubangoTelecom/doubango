@@ -1,6 +1,7 @@
 LIBRARY WCECOMPAT.DLL
 EXPORTS
 
+_assert
 _beginthread
 _beginthreadex
 _close
@@ -20,6 +21,7 @@ _wopen
 _wputenv
 _write
 
+assert=_assert
 beginthread=_beginthread
 beginthreadex=_beginthreadex
 close=_close

@@ -59,7 +59,7 @@ void test_rls_services(const char* buffer, size_t size)
 		{
 			txc_rls_service_t *rls_service = ((txc_rls_service_t*)item->data);
 			char* rls_service_str = txc_rls_service_serialize(rls_service);
-			printf("\n%s\n", rls_service_str);
+			printf("\n %s \n", rls_service_str);
 			TSK_FREE(rls_service_str);
 		}
 
