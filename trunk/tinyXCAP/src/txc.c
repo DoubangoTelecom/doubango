@@ -186,6 +186,7 @@ static void* curl_async_process(void* arg);
 #define PANIC_AND_JUMP(code, request)\
 	{\
 	request->panic = code; \
+	TSK_DEBUG_ERROR("Operation failed with panic code: %d", code); \
 	goto bail;\
 	}
 
@@ -207,22 +208,28 @@ static const AUIDS_T txc_auids =
 	{oma_shared_groups,		"org.openmobilealliance.groups",			"application/vnd.oma.poc.groups+xml",		"index"}
 };
 
-/*== Internal function to get the content type */
-static const char* get_mime_type(const txc_context_t* context, const txc_request_t* request, txc_selection_type_t sel)
+/**@ingroup txc_group
+* Helper function to get XCAP MIME-TYPE by seclection type and auid.
+* @param context The XCAP context.
+* @param auid_type The auid for with to get the MIME-TYPE.
+* @param sel The selection type.
+*/
+const char* txc_mime_type_get(const txc_context_t *context, xcap_auid_type_t auid_type, txc_selection_type_t sel)
 {
-	/* return the user provided content type */
-	if(request && request->content && request->content->type) return request->content->type;
-	
 	switch(sel)
 	{
 	case sl_element:return TXC_MIME_TYPE_ELEMENT;
 	case sl_document: 
 		{
-			const txc_auid_t* auid = txc_auid_findby_name(((txc_context_t*)context)->auids, (const char*)request->auid);
+			const txc_auid_t* auid = txc_auid_findby_type(((txc_context_t*)context)->auids, auid_type);
 			return auid ? auid->content_type : "application/unknown+xml";
 		}
 	case sl_attribute:return TXC_MIME_TYPE_ATTRIBUTE;
-	default: return "application/unknown+xml";
+	default: 
+		{
+			TSK_DEBUG_WARN("Invalid selection type.");
+			return "application/unknown+xml";
+		}
 	}/* switch */
 }
 
@@ -499,12 +506,14 @@ void txc_request_init(txc_request_t* request)
 **/
 void txc_request_free(txc_request_t** request)
 {
-	TSK_FREE((*request)->auid);
 	TSK_FREE((*request)->url);
 	TSK_FREE((*request)->http_accept);
 	TSK_FREE((*request)->http_expect);
 	TXC_CONTENT_SAFE_FREE((*request)->content);
 	
+	/* Free Curl headers */
+	curl_slist_free_all((*request)->headers);
+
 	/* Curl easyhandle cleanup */
 	curl_easy_cleanup((*request)->easyhandle);
 	
@@ -560,7 +569,6 @@ curlioerr ioctl_callback(CURL *handle, int cmd, txc_content_t *userp)
 CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc_oper_type_t oper, txc_selection_type_t sel)
 {
 	CURLcode code = CURLE_OK;
-	struct curl_slist *headers = 0;
 	char* temp_str = 0;
 	tsk_heap_t heap;
 
@@ -569,9 +577,15 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 	request->easyhandle = curl_easy_init();
 	tsk_heap_init(&heap);
 
-#if DEBUG || _DEBUG
+#if DEBUG || _DEBUG && 0
 		curl_easy_setopt(request->easyhandle, CURLOPT_VERBOSE, 1);
 #endif
+
+	/* set private data */
+	if((code = curl_easy_setopt(request->easyhandle, CURLOPT_PRIVATE, request)))
+	{
+		PANIC_AND_JUMP(xpa_libcurl_error, request)
+	}
 
 	/* set xcap URL */
 	if(request->url && (code=curl_easy_setopt(request->easyhandle, CURLOPT_URL, request->url)))
@@ -612,11 +626,14 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 
 	/* X-3GPP-Intended-Identity */
 	tsk_sprintf(&heap, &temp_str, "X-3GPP-Intended-Identity: \"%s\"", context->xui);
-	headers = curl_slist_append(headers, temp_str);
+	request->headers = curl_slist_append(request->headers, temp_str);
 
 	/* Content-Type */
-	tsk_sprintf(&heap, &temp_str, "Content-Type: %s", get_mime_type(context, request, sel));
-	headers = curl_slist_append(headers, temp_str);
+	if(request->content && request->content->type)
+	{
+		tsk_sprintf(&heap, &temp_str, "Content-Type: %s", request->content->type);
+		request->headers = curl_slist_append(request->headers, temp_str);
+	}
 	
 	/* set proxy host */
 	if(context->proxy_host && (code=curl_easy_setopt(request->easyhandle, CURLOPT_PROXY, context->proxy_host)))
@@ -648,31 +665,37 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 		PANIC_AND_JUMP(xpa_libcurl_error, request)
 	}
 
+	/* Follow redirect */
+	if(context->followredirect && (code= curl_easy_setopt(request->easyhandle, CURLOPT_FOLLOWLOCATION, 1L)))
+	{
+		PANIC_AND_JUMP(xpa_libcurl_error, request)
+	}
+
 	/* Pragma */
 	if(context->pragma)
 	{
 		tsk_sprintf(&heap, &temp_str, "Pragma: %s", context->pragma);
-		headers = curl_slist_append(headers, temp_str);
+		request->headers = curl_slist_append(request->headers, temp_str);
 	}
 
 	/* Accept */
 	if(request->http_accept)
 	{
 		tsk_sprintf(&heap, &temp_str, "Accept: \"%s\"", request->http_accept);
-		headers = curl_slist_append(headers, temp_str);
+		request->headers = curl_slist_append(request->headers, temp_str);
 	}
-	else headers = curl_slist_append(headers, "Accept:");
+	else request->headers = curl_slist_append(request->headers, "Accept:");
 	
 
 	/* Expect */
 	if(request->http_expect)
 	{
 		tsk_sprintf(&heap, &temp_str, "Expect: %s", request->http_expect);
-		headers = curl_slist_append(headers, temp_str);
+		request->headers = curl_slist_append(request->headers, temp_str);
 	}
 	
 	/* pass our list of custom made headers */
-	if(code=curl_easy_setopt(request->easyhandle, CURLOPT_HTTPHEADER, headers))
+	if(code=curl_easy_setopt(request->easyhandle, CURLOPT_HTTPHEADER, request->headers))
 	{
 		PANIC_AND_JUMP(xpa_libcurl_error, request)
 	}
@@ -725,7 +748,7 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 
 					/* content length */
 					tsk_sprintf(&heap, &temp_str, "Content-Length: %u", request->content->size);
-					headers = curl_slist_append(headers, temp_str);
+					request->headers = curl_slist_append(request->headers, temp_str);
 					
 					/* ioctl function callback */
 					if(code=curl_easy_setopt(request->easyhandle, CURLOPT_IOCTLFUNCTION , ioctl_callback))
@@ -752,7 +775,6 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 bail:
 
 	/* free the header list */
-	//--curl_slist_free_all(headers);
 	tsk_heap_cleanup(&heap);
 
 	return code;
@@ -764,6 +786,10 @@ static void* curl_async_process(void* arg)
 	int running_handles = 0;
 	int rc = 0;
 	struct timeval timeout;
+
+	int msgs_in_queue;
+	int error = 0;
+	CURLMsg *msg;
 
 	txc_context_t *context = (txc_context_t*)arg;
 	timeout.tv_sec = 1;
@@ -805,37 +831,91 @@ static void* curl_async_process(void* arg)
 
 		} /* while(running_handles) */
 
+		/*== ==*/
+		msgs_in_queue = 1;
+		while (msgs_in_queue)
+		{
+			msg = curl_multi_info_read(context->multihandle, &msgs_in_queue);
+			if (msg && msg->msg == CURLMSG_DONE)
+			{
+				CURL *easyhandle = msg->easy_handle;
+				if(easyhandle)
+				{
+					txc_request_t *request = 0;
+
+					/* Remove easy handle */
+					curl_multi_remove_handle(context->multihandle, easyhandle);
+
+					curl_easy_getinfo(easyhandle, CURLINFO_PRIVATE, &request);
+					if(request && context->http_callback)
+					{
+						curl_easy_getinfo(easyhandle, CURLINFO_RESPONSE_CODE, &(request->status));
+						if(request->content)
+						{
+							char* contentType = 0;
+							curl_easy_getinfo(easyhandle, CURLINFO_CONTENT_TYPE, &contentType);
+							tsk_strupdate2(&(request->content->type), contentType);
+						}
+						TSK_DEBUG_INFO("New XCAP response received from the XDMS");
+						context->http_callback(request);
+					}
+					else if(request)
+					{
+						TXC_REQUEST_SAFE_FREE(request);
+						TSK_DEBUG_WARN("No HTTP callback function could be found.");
+						continue;
+					}
+					else
+					{
+						curl_easy_cleanup(easyhandle);
+						TSK_DEBUG_ERROR("CURL returned invalid request pointer.");
+						continue;
+					}
+				}
+			}
+		} /* while (msgs_in_queue) */
+		
+
 	} /* while(context && context->multihandle && context->running)  */
 
-#if defined(DEBUG) || defined(_DEBUG)
-	printf("CURL_ASYNC_PROCESS::EXIT\n\n");
-#endif
+	TSK_DEBUG_INFO("exiting curl sender thread");
+	
 	return 0;
 }
 
 
-int txc_xcap_send(txc_context_t* context, txc_request_t* request, txc_oper_type_t oper, txc_selection_type_t sel)
+int txc_xcap_send(txc_context_t* context, txc_request_t** request, txc_oper_type_t oper, txc_selection_type_t sel)
 {
-	CURLcode easycode = CURLE_OK;
-	CURLMcode multicode = CURLM_OK;
-	
+	int ret = 0;
+
 	/* Initialize the easyhandle */
-	if((easycode = txc_easyhandle_init(context, request, oper, sel)))
+	if((ret = txc_easyhandle_init(context, *request, oper, sel)))
 	{
-		return easycode;
+		TSK_DEBUG_ERROR("Failed to initialize CURL easyhandle: %d", ret);
+		goto bail;
 	}
-	
+
 	/* Add the easy handle */
-	if((multicode = curl_multi_add_handle(context->multihandle, request->easyhandle)))
+	if((ret = curl_multi_add_handle(context->multihandle, (*request)->easyhandle)))
 	{
-		return multicode;
+		TSK_DEBUG_ERROR("Failed to add new CURL handle: %d", ret);
+		goto bail;
 	}
 	else
 	{
 		tsk_semaphore_increment(context->semaphore);
 	}
 	
-	return 0;
+bail:
+	if(ret)
+	{
+		/* Failed */
+		TXC_REQUEST_SAFE_FREE(*request);
+	}
+
+	/* steal request */
+	*request = 0;
+	return ret;
 }
 
 //

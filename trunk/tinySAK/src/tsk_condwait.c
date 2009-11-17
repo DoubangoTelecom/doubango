@@ -30,6 +30,7 @@
 
 #include "tsk_condwait.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 #include "tsk_macros.h"
 #include "tsk_time.h"
 
@@ -69,7 +70,10 @@ int tsk_condwait_wait(tsk_condwait_t* condwait)
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
-		ret = pthread_cond_wait((pthread_cond_t*)condwait->handle, (pthread_mutex_t*)condwait->mutex->handle);
+		if(ret = pthread_cond_wait((pthread_cond_t*)condwait->handle, (pthread_mutex_t*)condwait->mutex->handle))
+		{
+			TSK_DEBUG_ERROR("pthread_cond_wait function failed: %d", ret);
+		}
 		tsk_mutex_unlock(condwait->mutex);
 	}
 	return ret;
@@ -97,7 +101,10 @@ int tsk_condwait_timedwait(tsk_condwait_t* condwait, unsigned int ms)
 		if(ts.tv_nsec > 999999999) ts.tv_sec+=1, ts.tv_nsec = ts.tv_nsec % 1000000000;
 		
 		tsk_mutex_lock(condwait->mutex);
-		ret = pthread_cond_timedwait((pthread_cond_t*)condwait->handle, (pthread_mutex_t*)condwait->mutex->handle, &ts);
+		if(ret = pthread_cond_timedwait((pthread_cond_t*)condwait->handle, (pthread_mutex_t*)condwait->mutex->handle, &ts))
+		{
+			TSK_DEBUG_ERROR("pthread_cond_timedwait function failed: %d", ret);
+		}
 		tsk_mutex_unlock(condwait->mutex);
 
 		return ret;
@@ -118,7 +125,10 @@ int tsk_condwait_signal(tsk_condwait_t* condwait)
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
-		ret = pthread_cond_signal((pthread_cond_t*)condwait->handle);
+		if(ret = pthread_cond_signal((pthread_cond_t*)condwait->handle))
+		{
+			TSK_DEBUG_ERROR("pthread_cond_signal function failed: %d", ret);
+		}
 		tsk_mutex_unlock(condwait->mutex);
 	}
 	return ret;
@@ -137,7 +147,10 @@ int tsk_condwait_broadcast(tsk_condwait_t* condwait)
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
-		ret = pthread_cond_broadcast((pthread_cond_t*)condwait->handle);
+		if(ret = pthread_cond_broadcast((pthread_cond_t*)condwait->handle))
+		{
+			TSK_DEBUG_ERROR("pthread_cond_broadcast function failed: %d", ret);
+		}
 		tsk_mutex_unlock(condwait->mutex);
 	}
 	return ret;
@@ -156,5 +169,9 @@ void tsk_condwait_free(tsk_condwait_t** condwait)
 		pthread_cond_destroy((pthread_cond_t*)(*condwait)->handle);
 		TSK_FREE((*condwait)->handle);
 		tsk_free2(condwait);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot free an uninitialized condwait object");
 	}
 }
