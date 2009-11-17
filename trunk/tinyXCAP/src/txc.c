@@ -577,7 +577,7 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 	request->easyhandle = curl_easy_init();
 	tsk_heap_init(&heap);
 
-#if DEBUG || _DEBUG && 0
+#if (DEBUG || _DEBUG) && 0
 		curl_easy_setopt(request->easyhandle, CURLOPT_VERBOSE, 1);
 #endif
 
@@ -795,6 +795,8 @@ static void* curl_async_process(void* arg)
 	timeout.tv_sec = 1;
 	timeout.tv_usec = 0;
 
+	TSK_DEBUG_INFO("CURL asynchronous processor == ENTER");
+
 	while(context && context->multihandle && context->running) 
 	{
 		fd_set read_fd_set, write_fd_set, exc_fd_set;
@@ -826,7 +828,7 @@ static void* curl_async_process(void* arg)
 					running_handles = 0;
 					break;
 				default:
-					while(CURLM_CALL_MULTI_PERFORM == curl_multi_perform(context->multihandle, &running_handles));
+					while(context->running && (CURLM_CALL_MULTI_PERFORM == curl_multi_perform(context->multihandle, &running_handles)));
 			} /* switch(rc)  */
 
 		} /* while(running_handles) */
@@ -878,7 +880,7 @@ static void* curl_async_process(void* arg)
 
 	} /* while(context && context->multihandle && context->running)  */
 
-	TSK_DEBUG_INFO("exiting curl sender thread");
+	TSK_DEBUG_INFO("CURL asynchronous processor == EXIT");
 	
 	return 0;
 }

@@ -257,6 +257,10 @@
 			Name="source"
 			>
 			<File
+				RelativePath=".\src\_time.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\args.cpp"
 				>
 			</File>
@@ -329,10 +333,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\time.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\src\timeb.cpp"
 				>
 			</File>
@@ -360,6 +360,10 @@
 		<Filter
 			Name="include"
 			>
+			<File
+				RelativePath=".\include\_time.h"
+				>
+			</File>
 			<File
 				RelativePath=".\include\assert.h"
 				>
@@ -434,10 +438,6 @@
 			</File>
 			<File
 				RelativePath=".\include\string.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\time.h"
 				>
 			</File>
 			<File

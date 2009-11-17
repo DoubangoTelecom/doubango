@@ -123,7 +123,8 @@
 				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\win32\pthread&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\wince\wcecompat&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYSAK_EXPORTS;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
 				MinimalRebuild="true"
-				RuntimeLibrary="1"
+				ExceptionHandling="0"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
@@ -141,10 +142,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2.lib &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\lib\win32\pthread\pthread.lib&quot; $(NOINHERIT)"
+				AdditionalOptions=" /subsystem:windowsce,5.01 /machine:THUMB"
+				AdditionalDependencies="ws2.lib &quot;$(DOUBANGO_HOME)\thirdparties\lib\wince\libxml\libxml2.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\lib\wince\pthread\pthread.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\lib\wince\wcecompat\wcecompat.lib&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="8"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -167,7 +168,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory=""
+				RemoteDirectory="%CSIDL_PROGRAM_FILES%\test"
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>

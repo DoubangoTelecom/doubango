@@ -85,7 +85,7 @@ int tsk_semaphore_decrement(tsk_semaphore_t* semaphore)
 		while ( errno == EINTR );
 	}
 
-	if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", ret);
+	if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", errno);
 
 	return ret;
 }

@@ -23,9 +23,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 void _assert(void* expression, void* file, unsigned line)
 {
+#ifndef NDEBUG
 	fprintf(stderr, "Assertion failed: %s, file %s, line %d\n", (char*)expression, file, line);
 	abort();
+#endif
 }

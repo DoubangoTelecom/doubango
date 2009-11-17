@@ -52,13 +52,6 @@ struct timezone
 	int  tz_dsttime;     /* type of dst correction */
 }; 
 
-//#if (_WIN32_WCE < 0x600)
-//struct timeval {
-//        long    tv_sec;         /* seconds */
-//        long    tv_usec;        /* and microseconds */
-//};
-//#endif
-
 int gettimeofday(struct timeval *tv, struct timezone *tz) 
 {  
 	FILETIME ft;
