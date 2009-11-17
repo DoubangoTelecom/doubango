@@ -90,7 +90,7 @@ typedef VOID (APIENTRY *PAPCFUNC)(DWORD dwParam);
 #define PTW32_INTERLOCKED_LPLONG PVOID*
 #endif
 
-#if defined(_WIN32_WCE)
+#if defined(__MINGW32__)
 #include <stdint.h>
 #elif defined(__BORLANDC__)
 #define int64_t ULONGLONG

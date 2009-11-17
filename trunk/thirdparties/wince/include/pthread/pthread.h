@@ -1216,8 +1216,8 @@ PTW32_DLLPORT int PTW32_CDECL pthreadCancelableTimedWait (HANDLE waitHandle,
 #  else
 #    ifndef errno
 #      if (defined(_MT) || defined(_DLL))
-         //__declspec(dllimport) extern int * __cdecl _errno(void);
-//#        define errno   (*_errno())
+         __declspec(dllimport) extern int * __cdecl _errno(void);
+#        define errno   (*_errno())
 #      endif
 #    endif
 #  endif
