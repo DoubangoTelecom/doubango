@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\win32&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\win32\smc&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\include\wince&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\wince\smc&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\include\wince\wcecompat&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\smc&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\wcecompat&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;_CONSOLE;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
 				MinimalRebuild="true"
 				UsePrecompiledHeader="0"
