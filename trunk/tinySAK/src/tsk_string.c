@@ -178,7 +178,7 @@ done:
 	}
 #else
     len = vsnprintf(0, 0, format, list);
-    *str = (char*)tsk_malloc(heap, len+1);
+    *str = (char*)tsk_calloc(heap, 1, len+1);
     vsnprintf(*str, len, format, list);
 #endif
 	
