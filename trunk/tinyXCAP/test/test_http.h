@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-#ifndef TEST_HTTP_H
+#if !defined(TEST_HTTP_H) && 0
 #define TEST_HTTP_H
 
 #include "txc_api.h"

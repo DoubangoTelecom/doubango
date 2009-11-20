@@ -31,9 +31,9 @@
 #endif
 
 
-#define LOOP						0
+#define LOOP						1
 
-#define RUN_TEST_ALL				0
+#define RUN_TEST_ALL				1
 #define RUN_TEST_LISTS				0
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
@@ -70,8 +70,11 @@
 #include "test_semaphore.h"
 #endif
 
-
+#ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
+#else
+int main()
+#endif
 {
 #if LOOP
 	while(1)

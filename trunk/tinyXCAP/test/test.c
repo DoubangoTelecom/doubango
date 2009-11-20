@@ -29,7 +29,7 @@
 	context->pragma = tsk_strdup2("keep-alive"); \
 	context->reuse_http_connection = 0;
 
-#define LOOP						1
+#define LOOP						0
 
 #define RUN_TEST_ALL				0
 #define RUN_TEST_SELECTOR			0
@@ -93,7 +93,11 @@
 #include "test_xdmc.h"
 #endif
 
+#ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
+#else
+int main()
+#endif
 {
 		/* Print copyright information */
 		printf("Doubango Project\nCopyright (C) 2009 Mamadou Diop \n\n");
@@ -155,7 +159,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		/* HTTP tests (sending requests to XDMS) */
 #if RUN_TEST_HTTP || RUN_TEST_ALL
-		test_http();
+		//test_http();
 #endif
 
 		/* testing XDMC hight level API */

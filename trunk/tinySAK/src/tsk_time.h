@@ -32,6 +32,11 @@
 
 #include "tinySAK_config.h"
 
+#ifdef __SYMBIAN32__ /* Forward declaration */
+struct timeval;
+struct timezone;
+#endif
+
 int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
 
 

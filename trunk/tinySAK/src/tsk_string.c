@@ -98,8 +98,12 @@ int tsk_stricmp(const char * str1, const char * str2)
 * You MUST not directly free the returned pointer if you are using heap mechanism. */
 char* tsk_strdup(tsk_heap_t *heap, const char *s1)
 {
-	char* ret = strdup(s1);
-	HEAP_PUSH(heap, ret);
+	char* ret = 0;
+	if(s1)
+	{
+		ret = strdup(s1);
+		HEAP_PUSH(heap, ret);
+	}
 
 	return ret;
 }
@@ -152,9 +156,10 @@ int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...)
 	va_start(list, format);
 
 	/* free previous value */
-	if(*str) tsk_free(heap, str);
+	if(*str) tsk_free(heap, (void**)str);
 	
-	/* compute destination len */
+	/* compute destination len for windows mobile
+	*/
 #ifdef _WIN32_WCE
 	{
 		int n;
@@ -179,7 +184,11 @@ done:
 #else
     len = vsnprintf(0, 0, format, list);
     *str = (char*)tsk_calloc(heap, 1, len+1);
-    vsnprintf(*str, len, format, list);
+    vsnprintf(*str, len
+#if !defined(_MSC_VER) || defined(__GNUC__)
+		+1
+#endif
+		, format, list);
 #endif
 	
 	/* reset variable arguments */
@@ -192,6 +201,6 @@ done:
 */
 void tsk_strupdate(tsk_heap_t *heap, char** str, const char* newval)
 {
-	tsk_free(heap, str);
+	tsk_free(heap, (void**)str);
 	*str = tsk_strdup(heap, newval);
 }

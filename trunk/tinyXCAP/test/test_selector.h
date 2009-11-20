@@ -26,7 +26,7 @@
 
 /* test xcap selector */
 void test_selector()
-{
+ {
 	txc_context_t* context;
 	char *url = 0;
 	

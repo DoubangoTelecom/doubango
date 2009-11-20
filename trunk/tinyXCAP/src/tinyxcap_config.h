@@ -38,4 +38,8 @@
 #	define _CRT_SECURE_NO_WARNINGS
 #endif
 
+#ifdef __SYMBIAN32__
+#undef _WIN32 /* Because of WINSCW */
+#endif
+
 #endif // TINYXCAP_CONFIG_H

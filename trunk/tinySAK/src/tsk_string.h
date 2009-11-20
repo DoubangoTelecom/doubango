@@ -43,8 +43,8 @@ TINYSAK_API int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ..
 TINYSAK_API void tsk_strupdate(tsk_heap_t *heap, char** str, const char* newval);
 
 
-#define tsk_equals(s1, s2) (tsk_stricmp(s1, s2) ? 0 : 1)
-#define tsk_strdup2(s1) tsk_strdup(0, s1)
+#define tsk_equals(s1, s2) (((s1 && s2) && (*s1 != *s2)) ? 0 : (tsk_stricmp((const char*)s1, (const char*)s2) ? 0 : 1))
+#define tsk_strdup2(s1) tsk_strdup(0, (const char*)s1)
 #define tsk_strcat2(destination, source)  tsk_strcat(0, destination, source)
 #define tsk_sprintf2(str, format, va_list) tsk_sprintf(0, str, format, va_list)
 #define tsk_strupdate2(str, newval)  tsk_strupdate(0, str, newval)
