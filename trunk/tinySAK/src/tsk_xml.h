@@ -36,7 +36,7 @@
 #include <libxml/tree.h>
 
 #define TSK_XML_NODE_IS_TEXTVALUE(node)							(node && node->type==XML_TEXT_NODE)
-#define TSK_XML_NODE_SAFE_GET_TEXTVALUE(node)					TSK_XML_NODE_IS_TEXTVALUE(node)?(node->content):0
+#define TSK_XML_NODE_SAFE_GET_TEXTVALUE(node)					(const char*)(TSK_XML_NODE_IS_TEXTVALUE(node)?(node->content):0)
 #define TSK_XML_NODE_SKIP_COMMENTS(node)						while(node && (node->type==XML_COMMENT_NODE)) node = tsk_xml_find_node(node, 0, nft_next);
 		
 

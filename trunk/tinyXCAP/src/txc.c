@@ -414,7 +414,7 @@ void txc_context_init(txc_context_t* context)
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE)
 	curl_global_init(CURL_GLOBAL_WIN32);
 #else
-	curl_global_init();
+	curl_global_init(CURL_GLOBAL_ALL);
 #endif
 
 	/* Init Curl multihandle */
@@ -581,6 +581,10 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 		curl_easy_setopt(request->easyhandle, CURLOPT_VERBOSE, 1);
 #endif
 
+#ifdef __SYMBIAN32__ /* FIXME */
+		curl_easy_setopt(request->easyhandle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4); 
+#endif
+		
 	/* set private data */
 	if((code = curl_easy_setopt(request->easyhandle, CURLOPT_PRIVATE, request)))
 	{
@@ -792,16 +796,17 @@ static void* curl_async_process(void* arg)
 	CURLMsg *msg;
 
 	txc_context_t *context = (txc_context_t*)arg;
-	timeout.tv_sec = 1;
+	timeout.tv_sec = 10;
 	timeout.tv_usec = 0;
 
 	TSK_DEBUG_INFO("CURL asynchronous processor == ENTER");
 
 	while(context && context->multihandle && context->running) 
 	{
+#if 0
 		fd_set read_fd_set, write_fd_set, exc_fd_set;
 		int max_fd;
-
+#endif
 		if(!running_handles)
 		{
 			tsk_semaphore_decrement(context->semaphore);
@@ -809,8 +814,8 @@ static void* curl_async_process(void* arg)
 			if(!context->running) break;
 		}
 
-		while(CURLM_CALL_MULTI_PERFORM == curl_multi_perform(context->multihandle, &running_handles));
-		
+		while(context->running && (CURLM_CALL_MULTI_PERFORM == curl_multi_perform(context->multihandle, &running_handles)));
+#if 0
 		while(running_handles && context->running) 
 		{
 			FD_ZERO(&read_fd_set);
@@ -832,7 +837,7 @@ static void* curl_async_process(void* arg)
 			} /* switch(rc)  */
 
 		} /* while(running_handles) */
-
+#endif
 		/*== ==*/
 		msgs_in_queue = 1;
 		while (msgs_in_queue)
@@ -897,6 +902,11 @@ int txc_xcap_send(txc_context_t* context, txc_request_t** request, txc_oper_type
 		goto bail;
 	}
 
+#ifdef __SYMBIAN32__
+	//curl_easy_perform((*request)->easyhandle);
+	//return 0;
+#endif
+	
 	/* Add the easy handle */
 	if((ret = curl_multi_add_handle(context->multihandle, (*request)->easyhandle)))
 	{

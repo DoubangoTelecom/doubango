@@ -82,7 +82,7 @@ int tsk_mutex_unlock(tsk_mutex_t* mutex)
 			TSK_DEBUG_ERROR("Failed to unlock the mutex: %d", ret);
 		}
 	}
-	return EINVAL;
+	return ret;
 }
 
 /**@ingroup tsk_mutex_group
@@ -96,7 +96,7 @@ void tsk_mutex_free(tsk_mutex_t** mutex)
 	{
 		pthread_mutex_destroy((pthread_mutex_t*)(*mutex)->handle);
 		TSK_FREE((*mutex)->handle);
-		tsk_free2(mutex);
+		tsk_free2((void**)mutex);
 	}
 	else
 	{

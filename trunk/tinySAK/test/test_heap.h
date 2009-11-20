@@ -42,17 +42,17 @@ void test_heap()
 	/* heap(2): pop memory from the heap*/
 	{
  		char* test = tsk_strdup(&heap, "testing the heap (2)");
-		tsk_free(&heap, &test);
+		tsk_free(&heap, (void**)&test);
 
 		test = tsk_calloc(&heap, 10, 1);
-		tsk_free(&heap, &test);
+		tsk_free(&heap, (void**)&test);
 
 		test = tsk_malloc(&heap, 10);
-		tsk_free(&heap, &test);
+		tsk_free(&heap, (void**)&test);
 
 		test = tsk_malloc(&heap, 10);
 		test = tsk_realloc(&heap, test, 100);
-		tsk_free(&heap, &test);
+		tsk_free(&heap, (void**)&test);
 	}
 	
 	/* heap(3): pop a NULL pointer */
@@ -63,14 +63,14 @@ void test_heap()
 	/* heap(4): allocate and pop from NULL heap */
 	{
 		char* test = tsk_calloc(0, 10, 1);
-		tsk_free(0, &test);
+		tsk_free(0, (void**)&test);
 
 		test = tsk_malloc(0, 10);
-		tsk_free(0, &test);
+		tsk_free(0, (void**)&test);
 
 		test = tsk_malloc(0, 10);
 		test = tsk_realloc(0, test, 100);
-		tsk_free(0, &test);
+		tsk_free(0, (void**)&test);
 	}
 }
 

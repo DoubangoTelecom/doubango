@@ -57,7 +57,7 @@ void tsk_xml_namespace_free(tsk_xml_namespace_t** namespace)
 {
 	TSK_FREE((*namespace)->prefix);
 	TSK_FREE((*namespace)->value);
-	tsk_free(0, namespace);
+	tsk_free(0, (void**)namespace);
 }
 
 /**@ingroup tsk_xml_group
@@ -100,7 +100,7 @@ void tsk_xml_element_free(void** _element)
 	TSK_LIST_SAFE_FREE((*element)->attributes);
 	TSK_LIST_SAFE_FREE((*element)->namespaces);
 
-	tsk_free(0, element);
+	tsk_free(0, (void**)element);
 }
 
 /**@ingroup tsk_xml_group
@@ -120,7 +120,7 @@ void tsk_xml_attribute_free(tsk_xml_attribute_t** attribute)
 	TSK_FREE((*attribute)->name);
 	TSK_FREE((*attribute)->value);
 
-	tsk_free(0, attribute);
+	tsk_free(0, (void**)attribute);
 }
 
 /**@ingroup tsk_xml_group
@@ -135,7 +135,7 @@ xmlNsPtr tsk_xml_get_namespace(xmlDocPtr docPtr, xmlNodePtr node, const char *hr
 	xmlNs *ns = *xmlGetNsList(docPtr, node);
 	while (ns)
 	{
-		if (!strcmp(ns->href, href)) return ns;
+		if (tsk_equals(ns->href, href)) return ns;
 		else ns = ns->next;
 	}
 
@@ -166,7 +166,11 @@ xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_no
 		} /* switch */
 
 		/* check and return value if match */
-		if( node && (!name || tsk_equals(node->name, name)) ) return node;
+		if( node && (!name || tsk_equals(node->name, name)) ) 
+		//if( node && (name == 0 || !tsk_stricmp((const char*)node->name, name)) ) 
+		{
+			return node;
+		}
 	}
 
 	return 0;

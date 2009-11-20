@@ -39,6 +39,8 @@
 #include <time.h>
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE)
 #include <windows.h>
+#else 
+#include <sys/time.h>
 #endif
 
 
@@ -168,7 +170,7 @@ void tsk_condwait_free(tsk_condwait_t** condwait)
 		TSK_MUTEX_SAFE_FREE((*condwait)->mutex);
 		pthread_cond_destroy((pthread_cond_t*)(*condwait)->handle);
 		TSK_FREE((*condwait)->handle);
-		tsk_free2(condwait);
+		tsk_free2((void**)condwait);
 	}
 	else
 	{

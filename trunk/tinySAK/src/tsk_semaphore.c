@@ -101,7 +101,7 @@ void tsk_semaphore_free(tsk_semaphore_t** semaphore)
 	{
 		sem_destroy((sem_t*)(*semaphore)->handle);
 		TSK_FREE((*semaphore)->handle);
-		tsk_free2(semaphore);
+		tsk_free2((void**)semaphore);
 	}
 	else
 	{

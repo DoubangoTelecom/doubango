@@ -53,7 +53,7 @@ int test_async()
 	TEST_XXXX_CONTEXT_INIT(context);
 	context->http_callback = http_callback;
 
-	for(i=0; i<10; i++)
+	for(i=0; i<1; i++)
 	{
 		TXC_REQUEST_CREATE(request);
 
@@ -64,13 +64,14 @@ int test_async()
 			printf("test_async/// failed:%d\n", error);
 			break;
 		}
-
+#if !defined (__SYMBIAN32__)
 		tsk_condwait_timedwait(condwait, 50);
+#endif
 	}
-
+	
 	//getchar();
-#ifdef _WIN32_WCE
-	tsk_condwait_timedwait(condwait, 2000);
+#if defined(_WIN32_WCE) || defined (__SYMBIAN32__)
+	tsk_condwait_timedwait(condwait, 20000);
 #endif
 
 	TSK_CONDWAIT_SAFE_FREE(condwait);

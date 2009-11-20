@@ -19,13 +19,18 @@
 * along with DOUBANGO.
 *
 */
-#pragma once
+#ifndef TEST_TINYXCAP_STDAFX_H
+#define TEST_TINYXCAP_STDAFX_H
 
 #include "targetver.h"
 
 #include <stdio.h>
+#if (defined(_WIN32) || defined(WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)
 #include <tchar.h>
+#endif
 
 
 
 // TODO: reference additional headers your program requires here
+
+#endif /* TEST_TINYXCAP_STDAFX_H */

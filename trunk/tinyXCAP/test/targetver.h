@@ -1,5 +1,7 @@
-#pragma once
+#ifndef _TEST_TINYXCAP_VER
+#define _TEST_TINYXCAP_VER
 
+#if (defined(_WIN32) || defined(WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)
 // The following macros define the minimum required platform.  The minimum required platform
 // is the earliest version of Windows, Internet Explorer etc. that has the necessary features to run 
 // your application.  The macros work by enabling all features available on platform versions up to and 
@@ -11,3 +13,6 @@
 #define _WIN32_WINNT 0x0600     // Change this to the appropriate value to target other versions of Windows.
 #endif
 
+#endif
+
+#endif /*_TEST_TINYXCAP_VER*/

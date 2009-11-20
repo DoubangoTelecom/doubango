@@ -78,4 +78,19 @@
 #define TSK_DEBUG_FATAL(FMT, ...)		((void)0)
 #endif
 
+/* FIXME */
+#ifdef __SYMBIAN32__
+
+#undef TSK_DEBUG_INFO
+#define TSK_DEBUG_INFO printf
+
+#undef TSK_DEBUG_WARN
+#define TSK_DEBUG_WARN printf
+
+#undef TSK_DEBUG_ERROR
+#define TSK_DEBUG_ERROR printf
+
+#endif
+
+
 #endif /* _TINYSAK_DEBUG_H_ */

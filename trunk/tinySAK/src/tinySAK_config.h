@@ -68,4 +68,9 @@
 
 #include <stdint.h>
 
+#ifdef __SYMBIAN32__
+#undef _WIN32 /* Because of WINSCW */
+#endif
+
+
 #endif /* _TINYSAK_H_ */
