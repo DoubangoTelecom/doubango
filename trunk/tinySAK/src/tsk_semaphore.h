@@ -32,31 +32,11 @@
 
 #include "tinySAK_config.h"
 
-/**@def TSK_SEMAPHORE_CREATE
-* Create and initialize a semaphore.
-* You MUST use @ref TSK_SEMAPHORE_SAFE_FREE to free a semaphore.
-* @param this The @ref tsk_semaphore_t object to create.
-* @sa @ref TSK_SEMAPHORE_SAFE_FREE.
-*/
-#define TSK_SEMAPHORE_CREATE(this)				TSK_XXX_CREATE2(this, semaphore)
-/**@def TSK_SEMAPHORE_SAFE_FREE
-* Safely free a semaphore previously created using @ref TSK_SEMAPHORE_CREATE.
-* @param this The @ref tsk_semaphore_t object to free.
-* @sa @ref TSK_SEMAPHORE_CREATE.
-*/
-#define TSK_SEMAPHORE_SAFE_FREE(this)			TSK_XXX_SAFE_FREE2(this, semaphore)
+typedef void tsk_semaphore_handle_t;
 
-/** Pthread Semaphore.
-*/
-typedef struct tsk_semaphore_s
-{
-	void* handle; /**< Handle pointing to the semaphore */
-}
-tsk_semaphore_t;
-
-TINYSAK_API void tsk_semaphore_init(tsk_semaphore_t* semaphore);
-TINYSAK_API int tsk_semaphore_increment(tsk_semaphore_t* semaphore);
-TINYSAK_API int tsk_semaphore_decrement(tsk_semaphore_t* semaphore);
-TINYSAK_API void tsk_semaphore_free(tsk_semaphore_t** semaphore);
+TINYSAK_API tsk_semaphore_handle_t* tsk_semaphore_create();
+TINYSAK_API int tsk_semaphore_increment(tsk_semaphore_handle_t* handle);
+TINYSAK_API int tsk_semaphore_decrement(tsk_semaphore_handle_t* handle);
+TINYSAK_API void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle);
 
 #endif /* _TINYSAK_SEMAPHORE_H_ */

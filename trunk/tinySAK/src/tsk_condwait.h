@@ -31,36 +31,17 @@
 #define _TINYSAK_CONDWAIT_H_
 
 #include "tinySAK_config.h"
-#include "tsk_mutex.h"
 
-/**@def TSK_CONDWAIT_CREATE
-* Create and initialize a condwait.
-* You MUST use @ref TSK_CONDWAIT_SAFE_FREE to free a condwait.
-* @param this The @ref tsk_condwait_t object to create.
-* @sa @ref TSK_CONDWAIT_SAFE_FREE.
+/**
+* Pthread condwait handle.
 */
-#define TSK_CONDWAIT_CREATE(this)				TSK_XXX_CREATE2(this, condwait)
-/**@def TSK_CONDWAIT_SAFE_FREE
-* Safely free a condwait previously created using @ref TSK_CONDWAIT_CREATE.
-* @param this The @ref tsk_condwait_t object to free.
-* @sa @ref TSK_CONDWAIT_CREATE.
-*/
-#define TSK_CONDWAIT_SAFE_FREE(this)			TSK_XXX_SAFE_FREE2(this, condwait)
+typedef void tsk_condwait_handle_t;
 
-/** Pthread CondWait.
-*/
-typedef struct tsk_condwait_s
-{
-	void* handle; /**< Handle pointing to the condwait */
-	tsk_mutex_t* mutex;  /**< Locker*/
-}
-tsk_condwait_t;
-
-TINYSAK_API void tsk_condwait_init(tsk_condwait_t* condwait);
-TINYSAK_API int tsk_condwait_wait(tsk_condwait_t* condwait);
-TINYSAK_API int tsk_condwait_timedwait(tsk_condwait_t* condwait, unsigned int ms);
-TINYSAK_API int tsk_condwait_signal(tsk_condwait_t* condwait);
-TINYSAK_API int tsk_condwait_broadcast(tsk_condwait_t* condwait);
-TINYSAK_API void tsk_condwait_free(tsk_condwait_t** condwait);
+TINYSAK_API tsk_condwait_handle_t* tsk_condwait_create();
+TINYSAK_API int tsk_condwait_wait(tsk_condwait_handle_t* handle);
+TINYSAK_API int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, unsigned int ms);
+TINYSAK_API int tsk_condwait_signal(tsk_condwait_handle_t* handle);
+TINYSAK_API int tsk_condwait_broadcast(tsk_condwait_handle_t* handle);
+TINYSAK_API void tsk_condwait_destroy(tsk_condwait_handle_t** handle);
 
 #endif /* _TINYSAK_CONDWAIT_H_ */

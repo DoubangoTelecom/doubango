@@ -42,8 +42,12 @@
 #include "tsk_mutex.h"
 #include "tsk_semaphore.h"
 #include "tsk_thread.h"
+#include "tsk_safeobj.h"
 
 #include "tsk_macros.h"
 #include "tsk_debug.h"
+
+#include "tsk_ppfcs16.h"
+#include "tsk_sha1.h"
 
 #endif /* _TINYSAK_SAK_H_ */

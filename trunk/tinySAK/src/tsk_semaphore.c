@@ -38,28 +38,39 @@
 */
 
 /**@ingroup tsk_semaphore_group
-* Internal function to initialize a semaphore. You MUST use @ref TSK_SEMAPHORE_CREATE to create and initialize a semaphore.
-* @param semaphore The semaphore to initialize.
-* @sa @ref TSK_SEMAPHORE_CREATE
+* Creates new Pthread semaphore. You MUST use @ref tsk_semaphore_free to free the handle.
+* @retval The New semaphore handle.
+* @sa @ref tsk_semaphore_free
 */
-void tsk_semaphore_init(tsk_semaphore_t* semaphore)
+tsk_semaphore_handle_t* tsk_semaphore_create()
 {
-	semaphore->handle = tsk_calloc2(1, sizeof(sem_t));
-	sem_init((sem_t*)semaphore->handle, PTHREAD_PROCESS_PRIVATE, 0);
+	tsk_semaphore_handle_t *handle = tsk_calloc2(1, sizeof(sem_t));
+	if(handle)
+	{
+		if(sem_init((sem_t*)handle, PTHREAD_PROCESS_PRIVATE, 0))
+		{
+			TSK_DEBUG_ERROR("Failed to initialize the new semaphore.");
+		}
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new mutex.");
+	}
+	return handle;
 }
 
 /**@ingroup tsk_semaphore_group
 * Increment a semaphore. You should use @ref tsk_semaphore_decrement to decrement the semaphore.
-* @param semaphore The semaphore to increment.
+* @param handle The semaphore to increment.
 * @retval Zero if succeed and otherwise the function returns -1 and sets errno to indicate the error.
 * @sa @ref tsk_semaphore_decrement.
 */
-int tsk_semaphore_increment(tsk_semaphore_t* semaphore)
+int tsk_semaphore_increment(tsk_semaphore_handle_t* handle)
 {
 	int ret = EINVAL;
-	if(semaphore)
+	if(handle)
 	{
-		if(ret = sem_post((sem_t*)semaphore->handle))
+		if(ret = sem_post((sem_t*)handle))
 		{
 			TSK_DEBUG_ERROR("sem_post function failed: %d", ret);
 		}
@@ -69,18 +80,18 @@ int tsk_semaphore_increment(tsk_semaphore_t* semaphore)
 
 /**@ingroup tsk_semaphore_group
 * Decrement a semaphore. You should use @ref tsk_semaphore_increment to increment a semaphore.
-* @param semaphore The semaphore to decrement.
+* @param handle The semaphore to decrement.
 * @retval Zero if succeed and otherwise the function returns -1 and sets errno to indicate the error.
 * @sa @ref tsk_semaphore_increment.
 */
-int tsk_semaphore_decrement(tsk_semaphore_t* semaphore)
+int tsk_semaphore_decrement(tsk_semaphore_handle_t* handle)
 {
 	int ret = EINVAL;
-	if(semaphore)
+	if(handle)
 	{
 		do 
 		{ 
-			ret = sem_wait((sem_t*)semaphore->handle); 
+			ret = sem_wait((sem_t*)handle); 
 		} 
 		while ( errno == EINTR );
 	}
@@ -91,17 +102,16 @@ int tsk_semaphore_decrement(tsk_semaphore_t* semaphore)
 }
 
 /**@ingroup tsk_semaphore_group
-* Internal function to free a semaphore previously created using @ref TSK_SEMAPHORE_CREATE. You MUST use @ref TSK_SEMAPHORE_SAFE_FREE to safely free a semaphore.
-* @param semaphore The semaphore to free.
-* @sa @ref TSK_SEMAPHORE_SAFE_FREE
+* Destroy a semaphore previously created using @ref tsk_semaphore_create.
+* @param handle The semaphore to free.
+* @sa @ref tsk_semaphore_create
 */
-void tsk_semaphore_free(tsk_semaphore_t** semaphore)
+void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
 {
-	if(semaphore && *semaphore)
+	if(handle && *handle)
 	{
-		sem_destroy((sem_t*)(*semaphore)->handle);
-		TSK_FREE((*semaphore)->handle);
-		tsk_free2((void**)semaphore);
+		sem_destroy((sem_t*)*handle);
+		tsk_free2((void**)handle);
 	}
 	else
 	{

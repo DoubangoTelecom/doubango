@@ -26,7 +26,7 @@ int mutex_count = 0;
 
 void *threadfunc_mutex1(void *parm)
 {
-	tsk_mutex_t *mutex = (tsk_mutex_t *)parm;
+	tsk_mutex_handle_t *mutex = (tsk_mutex_handle_t *)parm;
 	int ret = 0;
 
 	mutex_count++;
@@ -38,7 +38,7 @@ void *threadfunc_mutex1(void *parm)
 
 void *threadfunc_mutex2(void *parm)
 {
-	tsk_mutex_t *mutex = (tsk_mutex_t *)parm;
+	tsk_mutex_handle_t *mutex = (tsk_mutex_handle_t *)parm;
 	int ret = 0;
 
 	mutex_count++;
@@ -51,27 +51,28 @@ void *threadfunc_mutex2(void *parm)
 /* Pthread mutex */
 void test_mutex()
 {
-	tsk_mutex_t *mutex = 0;
+	tsk_mutex_handle_t *mutex = tsk_mutex_create();
 	void*       tid[2] = {0, 0};
 	int i;
 
 	printf("test_mutex//\n");
 
-	TSK_MUTEX_CREATE(mutex);
+	//assert(!tsk_mutex_lock(mutex));
 
 	tsk_thread_create(&tid[0], threadfunc_mutex1, mutex);
 	tsk_thread_create(&tid[1], threadfunc_mutex2, mutex);
 
 	/* VERY BAD */
 	while(mutex_count<2);
-	for(i=0;i<10000000;i++);
+	for(i=0;i<10000000000;i++);
 	
+	assert(!tsk_mutex_unlock(mutex));
 	assert(!tsk_mutex_unlock(mutex));
 
 	tsk_thread_join(&tid[0]);
 	tsk_thread_join(&tid[1]);
 
-	TSK_MUTEX_SAFE_FREE(mutex);
+	tsk_mutex_destroy(&mutex);
 }
 
 #endif /* _TEST_MUTEX_H_ */

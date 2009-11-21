@@ -1,0 +1,154 @@
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+
+/**@file tcomp_state.c
+ * @brief  SIGCOMP state.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#include "tcomp_state.h"
+#include "tsk_memory.h"
+#include "tsk_debug.h"
+#include "tsk_sha1.h"
+
+/**@defgroup tcomp_state_group SIGCOMP decompresion result.
+*/
+
+/**@ingroup tcomp_state_group
+* Creates new SigComp state. You MUST use @ref tcomp_state_destroy to free the state.
+* @retval New SigComp state.
+* @sa @ref tcomp_state_destroy.
+*/
+tcomp_state_t* tcomp_state_create(uint16_t length, uint16_t address, uint16_t instruction, uint16_t minimum_access_length, uint16_t retention_priority)
+{
+	tcomp_state_t *state = (tcomp_state_t *)tsk_calloc2(1, sizeof(tcomp_state_t));
+	if(state)
+	{
+		state->length = length;
+		state->address = address;
+		state->instruction = instruction;
+		state->minimum_access_length = minimum_access_length;
+		state->retention_priority = retention_priority;
+		
+		/* Initialize safeobject */
+		tsk_safeobj_init(state);
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new state.");
+	}
+	return state;
+}
+
+/**@ingroup tcomp_state_group
+* Compare two sigomp states.
+* @param state1 First state to compare.
+* @param state2 Second state to compare.
+* @retval 1 if the two handles are equals and 0 otherwise.
+*/
+int tcomp_state_equals(const tcomp_state_t *state1, const tcomp_state_t *state2)
+{
+	if(state1 && state2)
+	{
+		return tcomp_buffer_equals(state1->identifier, state2->identifier);
+	}
+	else if(!state1 && !state2) return 1;
+	else return 0;
+}
+
+/**@ingroup tcomp_state_group
+* Compute the state identifier by calculating a 20-byte SHA-1 hash [RFC-3174] over the
+*  byte string formed by concatenating the state_length, state_address,
+*  state_instruction, minimum_access_length and state_value (in the order given).
+* @param state The state to make valid.
+*/
+void tcomp_state_makeValid(tcomp_state_t* state)
+{
+	tsk_sha1context_t sha;
+
+	if(!state)
+	{
+		TSK_DEBUG_ERROR("NULL sigcomp state.");
+		return;
+	}
+
+	/* Lock */
+	tsk_safeobj_lock(state);
+	
+	tcomp_buffer_allocBuff(state->identifier, TSK_SHA1HashSize);
+
+	/*=============
+		* Calculates a 20-byte SHA-1 hash [RFC-3174] over the byte string formed by concatenating the state_length, state_address,
+	    * state_instruction, minimum_access_length and state_value (in the order given).  This is the state_identifier. 
+	*/
+	{
+		uint8_t i;
+		uint16_t values[4] = 
+		{ 
+			state->length, 
+			state->address, 
+			state->instruction, 
+			state->minimum_access_length 
+		};
+
+		int32_t err = tsk_sha1reset(&sha);
+		uint8_t firstPart[8];
+				
+		for(i=0; i<4; i++)
+		{
+		#if 0 /*BIG_ENDIAN*/// Do not change this (it's for my own tests)
+			firstPart[i] = (values[i] & 0xff);
+			firstPart[i+1] = (values[i] >> 8);
+		#else
+			firstPart[2*i] = (values[i] >> 8);
+			firstPart[2*i+1] = (values[i]& 0xff);
+		#endif
+		}
+
+		tsk_sha1input(&sha, firstPart, 8);
+		tsk_sha1input(&sha, tcomp_buffer_getBuffer(state->value), tcomp_buffer_getSize(state->value));
+		err = tsk_sha1result(&sha, tcomp_buffer_getBuffer(state->identifier));
+	}
+
+	/* unlock */
+	tsk_safeobj_unlock(state);
+}
+
+/**@ingroup tcomp_state_group
+* Destroy a SigComp state previously created using @ref tcomp_state_create.
+* @param state The SigComp state to destroy.
+* @sa @a tcomp_state_create.
+*/
+void tcomp_state_destroy(tcomp_state_t** state)
+{
+	if(state || !*state)
+	{
+		tsk_safeobj_deinit(*state);
+		tcomp_buffer_destroy(&((*state)->identifier));
+		tcomp_buffer_destroy(&((*state)->value));
+		
+		tsk_free2(state);
+	}
+	else TSK_DEBUG_ERROR("Null SigComp state.");
+}

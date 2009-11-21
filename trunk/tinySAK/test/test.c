@@ -33,7 +33,7 @@
 
 #define LOOP						1
 
-#define RUN_TEST_ALL				1
+#define RUN_TEST_ALL				0
 #define RUN_TEST_LISTS				0
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
@@ -41,6 +41,7 @@
 #define RUN_TEST_MUTEX				0
 #define RUN_TEST_CONDWAIT			0
 #define RUN_TEST_SEMAPHORE			0
+#define RUN_TEST_SAFEOBJECT			1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -68,6 +69,10 @@
 
 #if RUN_TEST_SEMAPHORE || RUN_TEST_ALL
 #include "test_semaphore.h"
+#endif
+
+#if RUN_TEST_SAFEOBJECT || RUN_TEST_ALL
+#include "test_safeobject.h"
 #endif
 
 #ifdef _WIN32_WCE
@@ -124,6 +129,12 @@ int main()
 #if RUN_TEST_SEMAPHORE || RUN_TEST_ALL
 		/* semaphore */
 		test_semaphore();
+		printf("\n\n");
+#endif
+
+#if RUN_TEST_SAFEOBJECT || RUN_TEST_ALL
+	/* safe object */
+		test_safeobject();
 		printf("\n\n");
 #endif
 

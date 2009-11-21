@@ -37,28 +37,39 @@
 */
 
 /**@ingroup tsk_mutex_group
-* Internal function to initialize a mutex. You MUST use @ref TSK_MUTEX_CREATE to create and initialize a mutex.
-* @param mutex The mutex to initialize.
-* @sa @ref TSK_MUTEX_CREATE
+* Creates new mutex handle. You MUST use @ref tsk_mutex_destroy to free the mutex handle.
+* @retval New mutex handle.
+* @sa @ref tsk_mutex_destroy
 */
-void tsk_mutex_init(tsk_mutex_t* mutex)
+tsk_mutex_handle_t* tsk_mutex_create()
 {
-	mutex->handle = tsk_calloc2(1, sizeof(pthread_mutex_t));
-	pthread_mutex_init((pthread_mutex_t*)mutex->handle, 0);
+	tsk_mutex_handle_t *handle = tsk_calloc2(1, sizeof(pthread_mutex_t));
+	if(handle)
+	{
+		if(pthread_mutex_init((pthread_mutex_t*)handle, 0))
+		{
+			TSK_DEBUG_ERROR("Failed to initialize the new mutex.");
+		}
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new mutex.");
+	}
+	return handle;
 }
 
 /**@ingroup tsk_mutex_group
 * Lock a mutex. You must use @ref tsk_mutex_unlock to unlock the mutex.
-* @param mutex The mutex to lock.
+* @param handle The handle of the mutex to lock.
 * @retval Zero if succeed and non-zero otherwise.
 * @sa @ref tsk_mutex_unlock.
 */
-int tsk_mutex_lock(tsk_mutex_t* mutex)
+int tsk_mutex_lock(tsk_mutex_handle_t* handle)
 {
 	int ret = EINVAL;
-	if(mutex)
+	if(handle)
 	{
-		if(ret = pthread_mutex_lock((pthread_mutex_t*)mutex->handle))
+		if(ret = pthread_mutex_lock((pthread_mutex_t*)handle))
 		{
 			TSK_DEBUG_ERROR("Failed to lock the mutex: %d", ret);
 		}
@@ -68,18 +79,25 @@ int tsk_mutex_lock(tsk_mutex_t* mutex)
 
 /**@ingroup tsk_mutex_group
 * Unlock a mutex previously locked using @ref tsk_mutex_lock.
-* @param mutex The mutex to unlock.
+* @param handle The handle of the mutex to unlock.
 * @retval Zero if succeed and non-zero otherwise.
 * @sa @ref tsk_mutex_lock.
 */
-int tsk_mutex_unlock(tsk_mutex_t* mutex)
+int tsk_mutex_unlock(tsk_mutex_handle_t* handle)
 {
 	int ret = EINVAL;
-	if(mutex)
+	if(handle)
 	{
-		if(ret= pthread_mutex_unlock((pthread_mutex_t*)mutex->handle))
+		if(ret = pthread_mutex_unlock((pthread_mutex_t*)handle))
 		{
-			TSK_DEBUG_ERROR("Failed to unlock the mutex: %d", ret);
+			if(ret == EPERM)
+			{
+				TSK_DEBUG_INFO("The calling thread does not own the mutex: %d", ret);
+			}
+			else
+			{
+				TSK_DEBUG_ERROR("Failed to unlock the mutex: %d", ret);
+			}
 		}
 	}
 	return ret;
@@ -90,13 +108,12 @@ int tsk_mutex_unlock(tsk_mutex_t* mutex)
 * @param mutex The mutex to free.
 * @sa @ref TSK_MUTEX_SAFE_FREE
 */
-void tsk_mutex_free(tsk_mutex_t** mutex)
+void tsk_mutex_destroy(tsk_mutex_handle_t** handle)
 {
-	if(mutex && *mutex)
+	if(handle && *handle)
 	{
-		pthread_mutex_destroy((pthread_mutex_t*)(*mutex)->handle);
-		TSK_FREE((*mutex)->handle);
-		tsk_free2((void**)mutex);
+		pthread_mutex_destroy((pthread_mutex_t*)*handle);
+		tsk_free2((void**)handle);
 	}
 	else
 	{
