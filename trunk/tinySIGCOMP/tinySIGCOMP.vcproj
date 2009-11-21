@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="test"
-	ProjectGUID="{7A1F8D56-A91F-4658-867F-5E24837071C0}"
-	RootNamespace="test"
+	Name="tinySIGCOMP"
+	ProjectGUID="{76261DC8-25B3-43F4-9FB5-112C4AC0880E}"
+	RootNamespace="tinySIGCOMP"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\pthread&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(SolutionDir)src&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIGCOMP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -50,7 +50,6 @@
 				WarningLevel="3"
 				WarnAsError="true"
 				DebugInformationFormat="4"
-				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -63,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\pthread\pthread.lib&quot;"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -95,7 +94,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -118,12 +117,11 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSIGCOMP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				WarnAsError="true"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -139,7 +137,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -171,73 +169,173 @@
 	</References>
 	<Files>
 		<Filter
-			Name="Source Files"
+			Name="source"
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\stdafx.c"
+				RelativePath=".\src\tcomp.c"
 				>
 			</File>
 			<File
-				RelativePath=".\test.c"
+				RelativePath=".\src\tcomp_buffer.c"
 				>
 			</File>
+			<Filter
+				Name="zlib"
+				>
+				<File
+					RelativePath=".\src\adler32.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\compress.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\deflate.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\trees.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\zutil.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SigCompLayer"
+				>
+				<File
+					RelativePath=".\src\tcomp_nakinfo.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_params.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_reqfeed.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_result.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_state.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Dictionaries"
+				>
+			</Filter>
+			<Filter
+				Name="Compressors"
+				>
+			</Filter>
 		</Filter>
 		<Filter
-			Name="Header Files"
+			Name="include"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\stdafx.h"
+				RelativePath=".\src\tcomp.h"
 				>
 			</File>
 			<File
-				RelativePath=".\targetver.h"
+				RelativePath=".\src\tcomp_buffer.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\tcomp_rfc5049_sip.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tcomp_types.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tinysigcomp_config.h"
+				>
+			</File>
+			<Filter
+				Name="zlib"
+				>
+				<File
+					RelativePath=".\src\deflate.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\trees.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\zconf.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\zlib.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\zutil.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="SigCompLayer"
+				>
+				<File
+					RelativePath=".\src\tcomp_nakinfo.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_params.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_reqfeed.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_result.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_state.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Dictionaries"
+				>
+			</Filter>
+			<Filter
+				Name="Compressors"
+				>
+			</Filter>
 		</Filter>
 		<Filter
-			Name="tests"
+			Name="asm"
 			>
 			<File
-				RelativePath=".\test_condwait.h"
+				RelativePath=".\asm\deflate.asm"
 				>
 			</File>
 			<File
-				RelativePath=".\test_heap.h"
+				RelativePath=".\asm\deflate.asm.back"
 				>
 			</File>
 			<File
-				RelativePath=".\test_lists.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_mutex.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_safeobject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_semaphore.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_strings.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_url.h"
+				RelativePath=".\asm\dummy.asm"
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath=".\ReadMe.txt"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>

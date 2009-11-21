@@ -38,6 +38,7 @@
 */
 #define TSK_SAFE_FREE(heap, ptr) (void)tsk_free(heap, (void**)(&ptr));
 #define TSK_FREE(ptr) TSK_SAFE_FREE(0, (void**)(ptr))
+#define TSK_SAFE_DELETE_ARRAY(ptr) { if(ptr){ delete []ptr; ptr=NULL; } }
 
 /** Safely free a pointer
 */

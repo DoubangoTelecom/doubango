@@ -24,7 +24,7 @@
 
 void *threadfunc_timed(void *parm)
 {
-	tsk_condwait_t *condwait = (tsk_condwait_t *)parm;
+	tsk_condwait_handle_t *condwait = (tsk_condwait_handle_t *)parm;
 	int ret = 0;
 
 	ret =  tsk_condwait_timedwait(condwait, 10);
@@ -35,7 +35,7 @@ void *threadfunc_timed(void *parm)
 
 void *threadfunc_infinite(void *parm)
 {
-	tsk_condwait_t *condwait = (tsk_condwait_t *)parm;
+	tsk_condwait_handle_t *condwait = (tsk_condwait_handle_t *)parm;
 	int ret = 0;
 
 	ret =  tsk_condwait_wait(condwait);
@@ -46,7 +46,7 @@ void *threadfunc_infinite(void *parm)
 
 void *threadfunc_onemore(void *parm)
 {
-	tsk_condwait_t *condwait = (tsk_condwait_t *)parm;
+	tsk_condwait_handle_t *condwait = (tsk_condwait_handle_t *)parm;
 	int ret = 0;
 
 	ret =  tsk_condwait_wait(condwait);
@@ -60,13 +60,11 @@ void *threadfunc_onemore(void *parm)
 /* Pthread condwait */
 void test_condwait()
 {
-	tsk_condwait_t *condwait;
+	tsk_condwait_handle_t *condwait = tsk_condwait_create();
 	int ret;
 	void*             tid[3] = {0,0,0};
 
 	printf("test_condwait//\n");
-
-	TSK_CONDWAIT_CREATE(condwait);
 
 	tsk_thread_create(&tid[0], threadfunc_timed, condwait);
 	tsk_thread_create(&tid[1], threadfunc_infinite, condwait);
@@ -82,7 +80,7 @@ void test_condwait()
 	tsk_thread_join(&tid[1]);
 	tsk_thread_join(&tid[2]);
 
-	TSK_CONDWAIT_SAFE_FREE(condwait);
+	tsk_condwait_destroy(&condwait);
 }
 
 #endif /* _TEST_CONDWAIT_H_ */

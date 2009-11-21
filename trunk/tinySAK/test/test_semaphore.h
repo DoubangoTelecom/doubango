@@ -26,7 +26,7 @@ int sema_count = 0;
 
 void *threadfunc_semaphore1(void *parm)
 {
-	tsk_semaphore_t *semaphore = (tsk_semaphore_t *)parm;
+	tsk_semaphore_handle_t *semaphore = (tsk_semaphore_handle_t *)parm;
 	int ret = 0;
 
 	sema_count++;
@@ -38,7 +38,7 @@ void *threadfunc_semaphore1(void *parm)
 
 void *threadfunc_semaphore2(void *parm)
 {
-	tsk_semaphore_t *semaphore = (tsk_semaphore_t *)parm;
+	tsk_semaphore_handle_t *semaphore = (tsk_semaphore_handle_t *)parm;
 	int ret = 0;
 
 	sema_count++;
@@ -51,13 +51,11 @@ void *threadfunc_semaphore2(void *parm)
 /* Pthread semaphore */
 void test_semaphore()
 {
-	tsk_semaphore_t *semaphore = 0;
+	tsk_semaphore_handle_t *semaphore = tsk_semaphore_create();
 	void*       tid[2] = {0,0};
 	int i;
 
 	printf("test_semaphore//\n");
-
-	TSK_SEMAPHORE_CREATE(semaphore);
 
 	tsk_thread_create(&tid[0], threadfunc_semaphore1, semaphore);
 	tsk_thread_create(&tid[1], threadfunc_semaphore2, semaphore);
@@ -72,7 +70,7 @@ void test_semaphore()
 	tsk_thread_join(&tid[0]);
 	tsk_thread_join(&tid[1]);
 
-	TSK_SEMAPHORE_SAFE_FREE(semaphore);
+	tsk_semaphore_destroy(&semaphore);
 }
 
 #endif /* _TEST_SEMAPHORE_H_ */

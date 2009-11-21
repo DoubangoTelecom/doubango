@@ -33,7 +33,7 @@
 #include "tsk_debug.h"
 #include "tsk_macros.h"
 #include "tsk_time.h"
-
+#include "tsk_mutex.h"
 #include <pthread.h>
 
 #include <time.h>
@@ -47,32 +47,60 @@
 /**@defgroup tsk_condwait_group Pthread CondWait
 */
 
-/**@ingroup tsk_condwait_group
-* Internal function to initialize a condwait. You MUST use @ref TSK_CONDWAIT_CREATE to create and initialize a condwait.
-* @param condwait The condwait to initialize.
-* @sa @ref TSK_CONDWAIT_CREATE
+/** Pthread CondWait.
 */
-void tsk_condwait_init(tsk_condwait_t* condwait)
+typedef struct tsk_condwait_s
 {
-	condwait->handle = tsk_calloc2(1, sizeof(pthread_cond_t));
-	pthread_cond_init((pthread_cond_t*)condwait->handle, 0);
-	TSK_MUTEX_CREATE(condwait->mutex);
+	pthread_cond_t* pcond; /**< Handle pointing to the condwait */
+	tsk_mutex_handle_t* mutex;  /**< Locker*/
+}
+tsk_condwait_t;
+
+/**@ingroup tsk_condwait_group
+* Creates new Pthread conwait handle. You MUST call @ref tsk_condwait_destroy to free the handle.
+* @retval New condwait handle.
+* @sa @ref tsk_condwait_destroy.
+*/
+tsk_condwait_handle_t* tsk_condwait_create()
+{
+	tsk_condwait_t *condwait = tsk_calloc2(1, sizeof(tsk_condwait_t));
+	if(condwait)
+	{
+		condwait->pcond = (pthread_cond_t*)tsk_calloc2(1, sizeof(pthread_cond_t));
+		if(pthread_cond_init(condwait->pcond, 0))
+		{
+			TSK_DEBUG_ERROR("Failed to initialize the new conwait.");
+		}
+		if(!(condwait->mutex = tsk_mutex_create()))
+		{
+			if(!pthread_mutex_init((pthread_mutex_t*)condwait->mutex, 0))
+			{
+				TSK_DEBUG_ERROR("Failed to initialize the new mutex.");
+			}
+		}
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new conwait.");
+	}
+	return condwait;
 }
 
 /**@ingroup tsk_condwait_group
 * Wait for a condition indefinitely.
-* @param condwait CondWait context created using @ref TSK_CONDWAIT_CREATE.
+* @param handle CondWait handle created using @ref tsk_condwait_create.
 * @retval Zero if succeed and non-zero otherwise.
 * @sa @ref tsk_condwait_timedwait.
 */
-int tsk_condwait_wait(tsk_condwait_t* condwait)
+int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 {
 	int ret = EINVAL;
+	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_wait((pthread_cond_t*)condwait->handle, (pthread_mutex_t*)condwait->mutex->handle))
+		if(ret = pthread_cond_wait(condwait->pcond, (pthread_mutex_t*)condwait->mutex))
 		{
 			TSK_DEBUG_ERROR("pthread_cond_wait function failed: %d", ret);
 		}
@@ -83,14 +111,15 @@ int tsk_condwait_wait(tsk_condwait_t* condwait)
 
 /**@ingroup tsk_condwait_group
 * Wait for a condition @ref ms milliseconds.
-* @param condwait CondWait context created using @ref TSK_CONDWAIT_CREATE.
+* @param handle CondWait context created using @ref tsk_condwait_create.
 * @param ms The number of milliseconds to wait for a given condition.
 * @retval Zero if succeed or @ref ETIMEDOUT if timedout and non-zero otherwise.
 * @sa @ref tsk_condwait_wait.
 */
-int tsk_condwait_timedwait(tsk_condwait_t* condwait, unsigned int ms)
+int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, unsigned int ms)
 {
 	int ret = EINVAL;
+	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 	if(condwait && condwait->mutex)
 	{
@@ -103,9 +132,16 @@ int tsk_condwait_timedwait(tsk_condwait_t* condwait, unsigned int ms)
 		if(ts.tv_nsec > 999999999) ts.tv_sec+=1, ts.tv_nsec = ts.tv_nsec % 1000000000;
 		
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_timedwait((pthread_cond_t*)condwait->handle, (pthread_mutex_t*)condwait->mutex->handle, &ts))
+		if(ret = pthread_cond_timedwait(condwait->pcond, (pthread_mutex_t*)condwait->mutex, &ts))
 		{
-			TSK_DEBUG_ERROR("pthread_cond_timedwait function failed: %d", ret);
+			if(ret == ETIMEDOUT)
+			{
+				TSK_DEBUG_INFO("pthread_cond_timedwait function timedout: %d", ret);
+			}
+			else
+			{
+				TSK_DEBUG_ERROR("pthread_cond_timedwait function failed: %d", ret);
+			}
 		}
 		tsk_mutex_unlock(condwait->mutex);
 
@@ -116,18 +152,19 @@ int tsk_condwait_timedwait(tsk_condwait_t* condwait, unsigned int ms)
 
 /**@ingroup tsk_condwait_group
 * Wakes up at least one thread that is currently waiting on @ref condwait variable.
-* @param condwait CondWait context created using @ref TSK_CONDWAIT_CREATE.
+* @param handle CondWait handle created using @ref tsk_condwait_create.
 * @retval Zero if succeed and non-zero otherwise.
 * @sa @ref tsk_condwait_broadcast.
 */
-int tsk_condwait_signal(tsk_condwait_t* condwait)
+int tsk_condwait_signal(tsk_condwait_handle_t* handle)
 {
 	int ret = EINVAL;
+	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_signal((pthread_cond_t*)condwait->handle))
+		if(ret = pthread_cond_signal(condwait->pcond))
 		{
 			TSK_DEBUG_ERROR("pthread_cond_signal function failed: %d", ret);
 		}
@@ -138,18 +175,19 @@ int tsk_condwait_signal(tsk_condwait_t* condwait)
 
 /**@ingroup tsk_condwait_group
 * Wakes up all threads that are currently waiting on @ref condwait variable.
-* @param condwait CondWait context created using @ref TSK_CONDWAIT_CREATE.
+* @param handle CondWait handle created using @ref tsk_condwait_create.
 * @retval Zero if succeed and non-zero otherwise.
 * @sa @ref tsk_condwait_signal.
 */
-int tsk_condwait_broadcast(tsk_condwait_t* condwait)
+int tsk_condwait_broadcast(tsk_condwait_handle_t* handle)
 {
 	int ret = EINVAL;
+	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_broadcast((pthread_cond_t*)condwait->handle))
+		if(ret = pthread_cond_broadcast(condwait->pcond))
 		{
 			TSK_DEBUG_ERROR("pthread_cond_broadcast function failed: %d", ret);
 		}
@@ -159,17 +197,19 @@ int tsk_condwait_broadcast(tsk_condwait_t* condwait)
 }
 
 /**@ingroup tsk_condwait_group
-* Internal function to free a condwait previously created using @ref TSK_CONDWAIT_CREATE. You MUST use @ref TSK_CONDWAIT_SAFE_FREE to safely free a condwait.
-* @param condwait The condwait to free.
-* @sa @ref TSK_CONDWAIT_SAFE_FREE
+* Destroy/Free a condwait variable previously created using @ref tsk_condwait_create.
+* @param handle The condwait handle to free.
+* @sa @ref tsk_condwait_create
 */
-void tsk_condwait_free(tsk_condwait_t** condwait)
+void tsk_condwait_destroy(tsk_condwait_handle_t** handle)
 {
+	tsk_condwait_t **condwait = (tsk_condwait_t**)handle;
+	
 	if(condwait && *condwait)
 	{
-		TSK_MUTEX_SAFE_FREE((*condwait)->mutex);
-		pthread_cond_destroy((pthread_cond_t*)(*condwait)->handle);
-		TSK_FREE((*condwait)->handle);
+		tsk_mutex_destroy(&((*condwait)->mutex));
+		pthread_cond_destroy((*condwait)->pcond);
+		TSK_FREE((*condwait)->pcond);
 		tsk_free2((void**)condwait);
 	}
 	else

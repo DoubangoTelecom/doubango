@@ -20,26 +20,16 @@
 *
 */
 
-/**@file tsk_mutex.h
- * @brief Pthread Mutex.
+/**@file tcomp_result.c
+ * @brief  SIGCOMP decompresion result.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef _TINYSAK_MUTEX_H_
-#define _TINYSAK_MUTEX_H_
+#include "tcomp_result.h"
+#include "tsk_memory.h"
+#include "tsk_debug.h"
 
-#include "tinySAK_config.h"
-
-/**
-* Pthread Mutex handle.
+/**@defgroup tcomp_result_group SIGCOMP decompresion result.
 */
-typedef void tsk_mutex_handle_t;
-
-TINYSAK_API tsk_mutex_handle_t* tsk_mutex_create();
-TINYSAK_API int tsk_mutex_lock(tsk_mutex_handle_t* handle);
-TINYSAK_API int tsk_mutex_unlock(tsk_mutex_handle_t* handle);
-TINYSAK_API void tsk_mutex_destroy(tsk_mutex_handle_t** handle);
-
-#endif /* _TINYSAK_MUTEX_H_ */

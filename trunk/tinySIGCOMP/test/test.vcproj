@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9.00"
 	Name="test"
-	ProjectGUID="{7A1F8D56-A91F-4658-867F-5E24837071C0}"
+	ProjectGUID="{0FC0B98C-E5BE-4AB4-A382-CBBEA5F09AFE}"
 	RootNamespace="test"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
@@ -41,7 +41,6 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\pthread&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(SolutionDir)src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +62,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\pthread\pthread.lib&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -123,8 +121,8 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				WarnAsError="true"
 				DebugInformationFormat="3"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -199,40 +197,10 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="tests"
+			Name="Resource Files"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath=".\test_condwait.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_heap.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_lists.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_mutex.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_safeobject.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_semaphore.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_strings.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_url.h"
-				>
-			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

@@ -253,7 +253,7 @@ typedef struct txc_auid_s
 	unsigned available:1; /**< The auid availability. */
 }
 txc_auid_t;
-typedef tsk_list_t txc_auid_L_t; /* contains 'txc_auid_t' elements */
+typedef tsk_list_t txc_auid_L_t; /**< Contains @ref txc_auid_t elements */
 typedef txc_auid_t AUIDS_T[TXC_AUIDS_COUNT];
 
 /**@typedef txc_request_t

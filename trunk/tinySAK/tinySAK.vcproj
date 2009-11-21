@@ -352,6 +352,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_binaryutils.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_condwait.h"
 				>
 			</File>
@@ -380,7 +384,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_ppfcs16.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_safeobj.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_semaphore.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_sha1.h"
 				>
 			</File>
 			<File
@@ -414,6 +430,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_binaryutils.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_condwait.c"
 				>
 			</File>
@@ -438,7 +458,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_ppfcs16.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_safeobj.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_semaphore.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_sha1.c"
 				>
 			</File>
 			<File

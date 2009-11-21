@@ -1,0 +1,67 @@
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+
+/**@file tcomp_reqfeed.h
+ * @brief  SIGCOMP requested feedback item as per rfc 3320 subclause 9.4.9.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#ifndef TCOMP_REQ_FEEDBACK_H
+#define TCOMP_REQ_FEEDBACK_H
+
+#include "tinysigcomp_config.h"
+#include "tcomp_buffer.h"
+
+/*
+0   1   2   3   4   5   6   7
++---+---+---+---+---+---+---+---+
+|     reserved      | Q | S | I |  requested_feedback_location
++---+---+---+---+---+---+---+---+
+|                               |
+:    requested feedback item    :  if Q = 1
+|                               |
++---+---+---+---+---+---+---+---+
+*/
+
+/**@typedef tcomp_reqfeed_t
+* SigComp Requested feedback item as per RFC 3320 subclause 9.4.9.
+*/
+typedef struct tcomp_reqfeed_s
+{
+	uint8_t Q; /**< The Q-bit indicates whether a requested feedback item is present or not.*/
+	uint8_t S; /**< The compressor sets the S-bit to 1 if it does not wish (or no longer
+	wishes) to save state information at the receiving endpoint and also
+	does not wish to access state information that it has previously saved.*/
+	uint8_t I; /**< Similarly the compressor sets the I-bit to 1 if it does not wish (or
+	no longer wishes) to access any of the locally available state items
+	offered by the receiving endpoint.*/
+	tcomp_buffer_handle_t *item; /**< The requested item feedback data */
+}
+tcomp_reqfeed_t;
+
+tcomp_reqfeed_t* tcomp_reqfeed_create();
+void tcomp_reqfeed_reset(tcomp_reqfeed_t*);
+void tcomp_reqfeed_destroy(tcomp_reqfeed_t**);
+
+#endif /* TCOMP_REQ_FEEDBACK_H */

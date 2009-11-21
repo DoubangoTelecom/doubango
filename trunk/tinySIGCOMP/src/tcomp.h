@@ -20,26 +20,18 @@
 *
 */
 
-/**@file tsk_mutex.h
- * @brief Pthread Mutex.
+/**@file tcomp.h
+ * @brief SIGCOMP (RFC 3320) Implementation for 2.5G, 3G and 4G cellular networks.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef _TINYSAK_MUTEX_H_
-#define _TINYSAK_MUTEX_H_
 
-#include "tinySAK_config.h"
+#ifndef _TINYSIGCOMPP_TCOMP_H_
+#define _TINYSIGCOMPP_TCOMP_H_
 
-/**
-* Pthread Mutex handle.
-*/
-typedef void tsk_mutex_handle_t;
+#include "tinysigcomp_config.h"
 
-TINYSAK_API tsk_mutex_handle_t* tsk_mutex_create();
-TINYSAK_API int tsk_mutex_lock(tsk_mutex_handle_t* handle);
-TINYSAK_API int tsk_mutex_unlock(tsk_mutex_handle_t* handle);
-TINYSAK_API void tsk_mutex_destroy(tsk_mutex_handle_t** handle);
 
-#endif /* _TINYSAK_MUTEX_H_ */
+#endif /* _TINYSIGCOMPP_TCOMP_H_ */
