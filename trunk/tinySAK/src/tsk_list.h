@@ -31,6 +31,7 @@
 #define _TINYSAK_LIST_H_
 
 #include "tinySAK_config.h"
+#include "tsk_object.h"
 
 /**@def TSK_LIST_CREATE
 * Create and initialize a linked list.

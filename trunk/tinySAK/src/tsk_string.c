@@ -204,3 +204,26 @@ void tsk_strupdate(tsk_heap_t *heap, char** str, const char* newval)
 	tsk_free(heap, (void**)str);
 	*str = tsk_strdup(heap, newval);
 }
+
+static void* tsk_string_create(void * _self, va_list * app)
+{
+	tsk_string_t *self = _self;
+	const char * value = va_arg(*app, const char *);
+	self->value = malloc(strlen(value) + 1);
+	strcpy(self->value, value);
+	return self;
+}
+
+static void tsk_string_destroy(void * _self)
+{ 
+	tsk_string_t *self = _self;
+	free(self->value), self->value = 0;
+}
+
+static const tsk_object_def_t tsk_string_def_s = 
+{
+	sizeof(tsk_string_t),
+	tsk_string_create, tsk_string_destroy,
+	0, 0
+};
+const void *tsk_string_def_t = &tsk_string_def_s;

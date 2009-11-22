@@ -31,7 +31,7 @@
 #include <tchar.h>
 #endif
 
-
+#define TINYSAK_IMPORTS
 
 // TODO: reference additional headers your program requires here
 #endif /* TEST_TINYSAK_STDAFX_H */

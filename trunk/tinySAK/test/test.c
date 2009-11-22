@@ -41,7 +41,8 @@
 #define RUN_TEST_MUTEX				0
 #define RUN_TEST_CONDWAIT			0
 #define RUN_TEST_SEMAPHORE			0
-#define RUN_TEST_SAFEOBJECT			1
+#define RUN_TEST_SAFEOBJECT			0
+#define RUN_TEST_OBJECT				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -74,6 +75,11 @@
 #if RUN_TEST_SAFEOBJECT || RUN_TEST_ALL
 #include "test_safeobject.h"
 #endif
+
+#if RUN_TEST_OBJECT || RUN_TEST_ALL
+#include "test_object.h"
+#endif
+
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -138,10 +144,15 @@ int main()
 		printf("\n\n");
 #endif
 
+#if RUN_TEST_OBJECT || RUN_TEST_ALL
+	/* object */
+		test_object();
+		printf("\n\n");
+#endif
+
 	}
 
 	getchar();
 
 	return 0;
 }
-

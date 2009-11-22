@@ -20,35 +20,22 @@
 *
 */
 
-/**@file tsk.h
- * @brief This file contains all headers needed to export public API functions.
+/**@file tsk_ppfcs16.h
+ * @brief PPP in HDLC-like Framing (RFC 1662).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+#ifndef _TINYSAK_PPFCS16_H_
+#define _TINYSAK_PPFCS16_H_
 
 #include "tinySAK_config.h"
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_heap.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
+#include <stdint.h>
 
-#include "tsk_condwait.h"
-#include "tsk_mutex.h"
-#include "tsk_semaphore.h"
-#include "tsk_thread.h"
-#include "tsk_safeobj.h"
-#include "tsk_object.h"
+#define PPPINITFCS16    0xffff  /* Initial FCS value */
+#define PPPGOODFCS16    0xf0b8  /* Good final FCS value */
 
-#include "tsk_macros.h"
-#include "tsk_debug.h"
+uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t* cp, register int32_t len);
 
-#include "tsk_ppfcs16.h"
-#include "tsk_sha1.h"
-
-#endif /* _TINYSAK_SAK_H_ */
+#endif /* _TINYSAK_PPFCS16_H_ */

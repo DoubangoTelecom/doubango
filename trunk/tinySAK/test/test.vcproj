@@ -218,6 +218,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_object.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_safeobject.h"
 				>
 			</File>
