@@ -19,6 +19,14 @@
 * along with DOUBANGO.
 *
 */
+
+/**@file tsk_mutex.h
+ * @brief Pthread mutex.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
 #ifndef _TEST_MUTEX_H_
 #define _TEST_MUTEX_H_
 

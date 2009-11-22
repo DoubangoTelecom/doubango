@@ -32,6 +32,7 @@
 
 #include "tinySAK_config.h"
 #include "tsk_heap.h"
+#include "tsk_object.h"
 
 TINYSAK_API char tsk_b10tob16(char c);
 TINYSAK_API char tsk_b16tob10(char c);
@@ -48,5 +49,15 @@ TINYSAK_API void tsk_strupdate(tsk_heap_t *heap, char** str, const char* newval)
 #define tsk_strcat2(destination, source)  tsk_strcat(0, destination, source)
 #define tsk_sprintf2(str, format, va_list) tsk_sprintf(0, str, format, va_list)
 #define tsk_strupdate2(str, newval)  tsk_strupdate(0, str, newval)
+
+typedef struct tsk_string_s
+{
+	TSK_DECLARE_OBJECT;
+
+	char *value;
+}
+tsk_string_t;
+
+TINYSAK_API const void *tsk_string_def_t;
 
 #endif /* _TINYSAK_STRING_H_ */

@@ -384,6 +384,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_object.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_ppfcs16.h"
 				>
 			</File>
@@ -455,6 +459,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_mutex.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_object.c"
 				>
 			</File>
 			<File
