@@ -44,7 +44,7 @@
 */
 tsk_semaphore_handle_t* tsk_semaphore_create()
 {
-	tsk_semaphore_handle_t *handle = tsk_calloc2(1, sizeof(sem_t));
+	tsk_semaphore_handle_t *handle = tsk_calloc(1, sizeof(sem_t));
 	if(handle)
 	{
 		if(sem_init((sem_t*)handle, PTHREAD_PROCESS_PRIVATE, 0))
@@ -111,7 +111,7 @@ void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
 	if(handle && *handle)
 	{
 		sem_destroy((sem_t*)*handle);
-		tsk_free2((void**)handle);
+		tsk_free(handle);
 	}
 	else
 	{

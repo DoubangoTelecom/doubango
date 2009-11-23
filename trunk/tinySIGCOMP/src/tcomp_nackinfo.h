@@ -33,7 +33,13 @@
 #include "tinysigcomp_config.h"
 #include "tcomp_buffer.h"
 #include "tsk_sha1.h"
+#include "tsk_object.h"
+
 #include <stdint.h>
+
+#define TCOMP_NACKINFO_CREATE()				tsk_object_new(tsk_nackinfo_def_t)
+#define TCOMP_NACKINFO_SAFE_FREE(self)		tsk_object_unref(self)
+
 /*
 +---+---+---+---+---+---+---+---+
 |         code_len = 0          |
@@ -61,6 +67,8 @@
 */
 typedef struct tcomp_nackinfo_s
 {
+	TSK_DECLARE_OBJECT;
+
 	uint8_t version; 	/**< Gives the version of the NACK mechanism being employed. */
 	uint8_t reasonCode; /**< The Reason Code is a one-byte value that indicates the nature of the decompression failure. */
 	uint8_t opcode; /**< The "OPCODE of failed instruction" is a one-byte field that includes the opcode to which the PC was pointing when the failure occurred */
@@ -70,7 +78,6 @@ typedef struct tcomp_nackinfo_s
 }
 tcomp_nackinfo_t;
 
-tcomp_nackinfo_t* tcomp_nackinfo_create();
-void tcomp_nackinfo_destroy(tcomp_nackinfo_t **nackinfo);
+TINYSIGCOMP_API const void *tcomp_nackinfo_def_t;
 
 #endif /* TCOMP_NAKINFO_H */

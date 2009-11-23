@@ -36,22 +36,6 @@
 /**@defgroup tcomp_reqfeed_group SigComp requested feedback item.
 */
 
-/**@ingroup tcomp_reqfeed_group
-* Create new feedback item. You MUST use @ref tcomp_reqfeed_destroy to free the feedback.
-* @retval The new feedback item.
-* @sa @ref tcomp_reqfeed_destroy.
-*/
-tcomp_reqfeed_t* tcomp_reqfeed_create()
-{
-	tcomp_reqfeed_t *feedback = (tcomp_reqfeed_t *)tsk_calloc2(1, sizeof(tcomp_reqfeed_t));
-	if(feedback)
-	{
-		feedback->item = tcomp_buffer_create();
-	}
-	else TSK_DEBUG_ERROR("Failed to create new feedback.");
-
-	return feedback;
-}
 
 /**@ingroup tcomp_reqfeed_group
 * Reset the feedback.
@@ -69,16 +53,55 @@ void tcomp_reqfeed_reset(tcomp_reqfeed_t* feedback)
 	else TSK_DEBUG_ERROR("NULL feedback.");
 }
 
+
+
+
+//========================================================
+//	Requested feedback object definition
+//
+/**@ingroup tcomp_reqfeed_group
+* Create new feedback item. You MUST use @ref tcomp_reqfeed_destroy to free the feedback.
+* @retval The new feedback item.
+* @sa @ref tcomp_reqfeed_destroy.
+*/
+static void* tcomp_reqfeed_create(void * self, va_list * app)
+{
+	tcomp_reqfeed_t *feedback = self;
+	if(feedback)
+	{
+		feedback->item = TCOMP_BUFFER_CREATE();
+	}
+	else TSK_DEBUG_ERROR("Failed to create new feedback.");
+
+	return self;
+}
+
 /**@ingroup tcomp_reqfeed_group
 * Free a feedback item previously created using @ref tcomp_reqfeed_create.
 * @param feedback The feedback to free.
 * @sa @ref tcomp_reqfeed_create.
 */
-void tcomp_reqfeed_destroy(tcomp_reqfeed_t** feedback)
+static void* tcomp_reqfeed_destroy(void* self)
 {
-	if(feedback && *feedback)
+	tcomp_reqfeed_t *feedback = self;
+	if(feedback)
 	{
-		tcomp_buffer_destroy(&((*feedback)->item));
-		tsk_free2(feedback);
+		TCOMP_BUFFER_SAFE_FREE(feedback->item);
 	}
+	else
+	{
+		TSK_DEBUG_WARN("NULL feedback");
+	}
+	return self;
 }
+
+static const tsk_object_def_t tcomp_reqfeed_def_s = 
+{
+	sizeof(tcomp_reqfeed_t),
+	tcomp_reqfeed_create, 
+	tcomp_reqfeed_destroy,
+	0, 
+	0,
+	0
+};
+const void *tcomp_reqfeed_def_t = &tcomp_reqfeed_def_s;

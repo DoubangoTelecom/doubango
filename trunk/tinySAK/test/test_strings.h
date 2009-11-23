@@ -26,24 +26,21 @@
 void test_strings()
 {
 	char* str = 0;
-	tsk_heap_t heap;
-
-	/* initialize our memory heap */
-	tsk_heap_init(&heap);
 
 	/* concatenation */
-	tsk_strcat(&heap, &str, "first");
+	tsk_strcat(&str, "first");
 	printf("test_strings/// strcat=%s\n", str);
 
-	tsk_strcat(&heap, &str, "second");
+	tsk_strcat(&str, "second");
 	printf("test_strings/// strcat=%s\n", str);
+
+	tsk_free(&str);
 	
 	/* sprintf */
-	tsk_sprintf(&heap, &str, "%s", "third");
+	tsk_sprintf(&str, "%s %s", "first", "second");
 	printf("test_strings/// strcat=%s\n", str);
 
-	/* cleanup */
-	tsk_heap_cleanup(&heap);
+	tsk_free(&str);
 }
 
 #endif /* _TEST_STRINGS_H_ */

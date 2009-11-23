@@ -33,33 +33,8 @@
 #include "tsk_sha1.h"
 
 /**@defgroup tcomp_state_group SIGCOMP decompresion result.
+* Data saved for retrieval by later SigComp messages.
 */
-
-/**@ingroup tcomp_state_group
-* Creates new SigComp state. You MUST use @ref tcomp_state_destroy to free the state.
-* @retval New SigComp state.
-* @sa @ref tcomp_state_destroy.
-*/
-tcomp_state_t* tcomp_state_create(uint16_t length, uint16_t address, uint16_t instruction, uint16_t minimum_access_length, uint16_t retention_priority)
-{
-	tcomp_state_t *state = (tcomp_state_t *)tsk_calloc2(1, sizeof(tcomp_state_t));
-	if(state)
-	{
-		state->length = length;
-		state->address = address;
-		state->instruction = instruction;
-		state->minimum_access_length = minimum_access_length;
-		state->retention_priority = retention_priority;
-		
-		/* Initialize safeobject */
-		tsk_safeobj_init(state);
-	}
-	else
-	{
-		TSK_DEBUG_ERROR("Failed to create new state.");
-	}
-	return state;
-}
 
 /**@ingroup tcomp_state_group
 * Compare two sigomp states.
@@ -135,20 +110,67 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 	tsk_safeobj_unlock(state);
 }
 
+
+
+
+
+//========================================================
+//	State object definition
+//
+/**@ingroup tcomp_state_group
+* Creates new SigComp state. You MUST use @ref tcomp_state_destroy to free the state.
+* @retval New SigComp state.
+* @sa @ref tcomp_state_destroy.
+*/
+static void* tcomp_state_create(void * self, va_list * app)
+{
+	tcomp_state_t *state = self;
+	if(state)
+	{
+		state->length = va_arg(*app, uint16_t);
+		state->address = va_arg(*app, uint16_t);
+		state->instruction = va_arg(*app, uint16_t);
+		state->minimum_access_length = va_arg(*app, uint16_t);
+		state->retention_priority = va_arg(*app, uint16_t);
+		
+		/* Initialize safeobject */
+		tsk_safeobj_init(state);
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new state.");
+	}
+	return state;
+}
+
 /**@ingroup tcomp_state_group
 * Destroy a SigComp state previously created using @ref tcomp_state_create.
 * @param state The SigComp state to destroy.
-* @sa @a tcomp_state_create.
+* @sa @ref tcomp_state_create.
 */
-void tcomp_state_destroy(tcomp_state_t** state)
+static void* tcomp_state_destroy(void *self)
 {
-	if(state || !*state)
+	tcomp_state_t *state = self;
+	if(state)
 	{
-		tsk_safeobj_deinit(*state);
-		tcomp_buffer_destroy(&((*state)->identifier));
-		tcomp_buffer_destroy(&((*state)->value));
-		
-		tsk_free2(state);
+		/* Deinitialize safeobject */
+		tsk_safeobj_deinit(state);
+
+		TCOMP_BUFFER_SAFE_FREE(state->identifier);
+		TCOMP_BUFFER_SAFE_FREE(state->value);
 	}
 	else TSK_DEBUG_ERROR("Null SigComp state.");
+
+	return self;
 }
+
+static const tsk_object_def_t tsk_state_def_s = 
+{
+	sizeof(tcomp_state_t),
+	tcomp_state_create,
+	tcomp_state_destroy,
+	0,
+	0,
+	0
+};
+const void *tcomp_state_def_t = &tsk_state_def_s;

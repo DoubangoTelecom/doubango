@@ -38,38 +38,38 @@
 * You MUST use @ref TSK_LIST_SAFE_FREE to free a linked list.
 * @sa @ref TSK_LIST_SAFE_FREE.
 */
-#define TSK_LIST_CREATE(this)				TSK_XXX_CREATE2(this, list)
+#define TSK_LIST_CREATE()					tsk_object_new(tsk_list_def_t)
 /**@def TSK_LIST_SAFE_FREE
 * Safely free a linked list previously created using @ref TSK_LIST_CREATE.
 * @sa @ref TSK_LIST_CREATE.
 */
-#define TSK_LIST_SAFE_FREE(this)			TSK_XXX_SAFE_FREE2(this, list)
+#define TSK_LIST_SAFE_FREE(self)			tsk_object_unref(self)
 
 /**@def TSK_LIST_ITEM_CREATE
 * Create and initialize an item.
 * You MUST use @ref TSK_LIST_ITEM_SAFE_FREE to free an item.
 * @sa @ref TSK_LIST_ITEM_SAFE_FREE.
 */
-#define TSK_LIST_ITEM_CREATE(this)		TSK_XXX_CREATE2(this, list_item)
+#define TSK_LIST_ITEM_CREATE()				tsk_object_new(tsk_list_item_def_t)
 /**@def TSK_LIST_ITEM_SAFE_FREE
 * Safely free an item previously created using @ref TSK_LIST_ITEM_CREATE.
 * @sa @ref TSK_LIST_ITEM_CREATE.
 */
-#define TSK_LIST_ITEM_SAFE_FREE(this)		TSK_XXX_SAFE_FREE2(this, list_item)
+#define TSK_LIST_ITEM_SAFE_FREE(self)		tsk_object_unref(self)
 
 /**@typedef tsk_list_item_func_free
 * Used to define the function to call to free an @b item.
 *
 *@param item item to free
 */
-typedef void (*tsk_list_item_func_free)(void** item);
+//typedef void (*tsk_list_item_func_free)(void** item);
 
 /** Item
 */
 typedef struct tsk_list_item_s
 {
+	TSK_DECLARE_OBJECT;
 	void* data; /**< opaque data encapsulated by the item. */
-	tsk_list_item_func_free func_free; /**< pointer to the function to call to free the item's data. */
 	struct tsk_list_item_s* next; /**< next item. */
 }
 tsk_list_item_t;
@@ -78,8 +78,8 @@ tsk_list_item_t;
 */
 typedef struct tsk_list_s
 {
-	tsk_list_item_t* head; /**< head of the list. */ 
-	//int count; /**< number of item in the list. */ 
+	TSK_DECLARE_OBJECT;
+	tsk_list_item_t* head; /**< head of the list. */
 }
 tsk_list_t;
 
@@ -100,16 +100,19 @@ typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* 
 #define tsk_list_foreach(item, list) for(item = list?list->head:0; item; item= item->next)
 
 
-TINYSAK_API void tsk_list_init(tsk_list_t* list);
+
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
 TINYSAK_API void tsk_list_remove_item2(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 TINYSAK_API void tsk_list_add_item(tsk_list_t* list, tsk_list_item_t** item);
 TINYSAK_API void tsk_list_add_list(tsk_list_t* destination, tsk_list_t** source);
-TINYSAK_API void tsk_list_add_data(tsk_list_t* destination, void** data, tsk_list_item_func_free item_func_free);
-TINYSAK_API const tsk_list_item_t* tsk_list_find_item(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
-TINYSAK_API void tsk_list_free(tsk_list_t** list);
+TINYSAK_API void tsk_list_add_data(tsk_list_t* destination, void** data);
+TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const void * tskobj);
+TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 
-TINYSAK_API void tsk_list_item_init(tsk_list_item_t* item);
-TINYSAK_API void tsk_list_item_free(tsk_list_item_t** item);
+
+
+
+TINYSAK_API const void *tsk_list_def_t;
+TINYSAK_API const void *tsk_list_item_def_t;
 
 #endif /* _TINYSAK_LIST_H_ */

@@ -92,10 +92,10 @@ for(i=0; i<10;i++)
 /**@ingroup tsk_memory_group
 * Predicate function used to retrive an address by ref
 */
-static int tsk_memory_find_by_address(const tsk_heap_address_t* item, const void* address)
+/*static int tsk_memory_find_by_address(const tsk_heap_address_t* item, const void* address)
 {
 	return (item->data == address) ? 1 : 0;
-}
+}*/
 
 /**@ingroup tsk_memory_group
 * Allocates a block of size bytes of memory, returning a pointer to the beginning of the block.
@@ -105,14 +105,10 @@ static int tsk_memory_find_by_address(const tsk_heap_address_t* item, const void
 * @retval On success, a pointer to the memory block allocated by the function.
 * You MUST call @a tsk_free to free the newly allocated memory.
 */
-void* tsk_malloc(tsk_heap_t *heap, size_t size)
+void* tsk_malloc(size_t size)
 {
 	void *ret = malloc(size);
-	if(ret)
-	{
-		HEAP_PUSH(heap, ret);
-	}
-	else
+	if(!ret)
 	{
 		TSK_DEBUG_ERROR("Memory allocation failed");
 	}
@@ -136,25 +132,12 @@ void* tsk_malloc(tsk_heap_t *heap, size_t size)
 * If the function failed to allocate the requested block of memory, a NULL pointer is returned.
 * You MUST call @a tsk_free to free the newly reallocated memory.
 */
-void* tsk_realloc (tsk_heap_t *heap,  void* ptr, size_t size)
+void* tsk_realloc (void* ptr, size_t size)
 {
 	void *ret = 0;
-	void *old = ptr;
-	tsk_heap_address_t* address = 0;
 	
-	/* Get old pointer from the heap */
-	if(heap)
-	{
-		address = (tsk_heap_address_t*)tsk_list_find_item(&heap->pool, tsk_memory_find_by_address, old);
-	}
-
 	ret = realloc(ptr, size);
-	if(ret && (old != ret) && address) 
-	{ /* update pointer value and free old*/
-		address->data = ret;
-		tsk_free(heap, &old);
-	}
-	else if(!ret)
+	if(!ret)
 	{
 		TSK_DEBUG_ERROR("Memory reallocation failed");
 	}
@@ -168,11 +151,11 @@ void* tsk_realloc (tsk_heap_t *heap,  void* ptr, size_t size)
 * @param ptr Pointer to a memory block previously allocated with @a tsk_malloc, @a tsk_calloc or @a tsk_realloc to be deallocated.
 * If a null pointer is passed as argument, no action occurs. 
 */
-void tsk_free(tsk_heap_t *heap, void** ptr)
+void tsk_free(void** ptr)
 {
 	if(ptr && *ptr)
 	{
-		HEAP_POP(heap, *ptr);
+		free(*ptr);
 		*ptr = 0;
 	}
 }
@@ -189,14 +172,10 @@ void tsk_free(tsk_heap_t *heap, void** ptr)
 * The returned pointer can be passed to free() if you are not using memory heap mechanism.
 * You MUST not directly free the returned pointer if you are using heap mechanism.
 */
-void* tsk_calloc(tsk_heap_t *heap, size_t num, size_t size)
+void* tsk_calloc(size_t num, size_t size)
 {
 	void* ret = calloc(num, size);
-	if(ret)
-	{
-		HEAP_PUSH(heap, ret);
-	}
-	else
+	if(!ret)
 	{
 		TSK_DEBUG_ERROR("Memory allocation failed");
 	}

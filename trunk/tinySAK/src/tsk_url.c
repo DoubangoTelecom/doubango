@@ -51,8 +51,8 @@
 * @sa tsk_url_encode
 *
 */
-char* tsk_url_encode(tsk_heap_t *heap, const char* url) {
-	char *purl = (char*)url, *buf = tsk_malloc(heap, strlen(url) * 3 + 1), *pbuf = buf;
+char* tsk_url_encode(const char* url) {
+	char *purl = (char*)url, *buf = tsk_malloc(strlen(url) * 3 + 1), *pbuf = buf;
 	while (*purl) {
 		if (isalnum(*purl) || *purl == '-' || *purl == '_' || *purl == '.' || *purl == '~') 
 			*pbuf++ = *purl;
@@ -75,8 +75,8 @@ char* tsk_url_encode(tsk_heap_t *heap, const char* url) {
 *
 * @sa tsk_url_encode
 */
-char* tsk_url_decode(tsk_heap_t *heap, const char* url) {
-	char *purl = (char*)url, *buf = tsk_malloc(heap, strlen(url) + 1), *pbuf = buf;
+char* tsk_url_decode(const char* url) {
+	char *purl = (char*)url, *buf = tsk_malloc(strlen(url) + 1), *pbuf = buf;
 	while (*purl) {
 		if (*purl == '%') {
 			if (purl[1] && purl[2]) {

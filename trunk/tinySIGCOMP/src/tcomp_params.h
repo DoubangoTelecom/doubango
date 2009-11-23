@@ -32,12 +32,18 @@
 
 #include "tinysigcomp_config.h"
 #include "tcomp_types.h"
+#include "tsk_object.h"
+
+#define TCOMP_PARAMS_CREATE()				tsk_object_new(tsk_params_def_t)
+#define TCOMP_PARAMS_SAFE_FREE(self)		tsk_object_unref(self)
 
 /**@typedef tcomp_params_t
 * SIGCOMP parameters as per rfc 3320 subclause 3.3.
 */
 typedef struct tcomp_params_s
 {
+	TSK_DECLARE_OBJECT;
+
 	uint8_t cpbCode; /**< 'Cycles Per Bit' binary code. You MUST use @ref tcomp_params_setCpbCode to set this value. */
 	uint8_t dmsCode; /**< 'Decompression Memory' Size binary code. You MUST use @ref tcomp_params_setDmsCode to set this value. */
 	uint8_t smsCode; /**< 'State Memory Size' binary code. You MUST use @ref tcomp_params_setSmsCode to set this value.  */
@@ -51,8 +57,6 @@ typedef struct tcomp_params_s
 }
 tcomp_params_t;
 
-
-tcomp_params_t* tcomp_params_create();
 
 int tcomp_params_hasCpbDmsSms(tcomp_params_t*);
 	
@@ -69,6 +73,7 @@ uint16_t tcomp_params_getParameters(tcomp_params_t*);
 void tcomp_params_setParameters(tcomp_params_t*, uint16_t sigCompParameters);
 
 void tcomp_params_reset(tcomp_params_t*);
-void tcomp_params_destroy(tcomp_params_t**);
+
+TINYSIGCOMP_API const void *tsk_params_def_t;
 
 #endif /* TCOMP_PARAMS_H */

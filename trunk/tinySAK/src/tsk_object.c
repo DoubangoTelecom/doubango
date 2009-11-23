@@ -31,20 +31,31 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+typedef struct tsk_object_header_s
+{
+	const void* base;
+	size_t	refCount;
+}
+tsk_object_header_t;
+#define TSK_OBJECT_HEADER_GET(object)	((tsk_object_header_t*)object)
 
 void* tsk_object_new(const tsk_object_def_t *objdef, ...)
 {
-	void *newobj = tsk_calloc2(1, objdef->size);
+	void *newobj = tsk_calloc(1, objdef->size);
 	if(newobj)
 	{
 		(*(const tsk_object_def_t **) newobj) = objdef;
-		TSK_OBJECT_DEF(newobj)->refCount = 1;
-		if (objdef->constructor)
+		TSK_OBJECT_HEADER_GET(newobj)->refCount = 1;
+		if(objdef->constructor)
 		{ 
 			va_list ap;
 			va_start(ap, objdef);
 			newobj = objdef->constructor(newobj, &ap);
 			va_end(ap);
+		}
+		else
+		{
+			TSK_DEBUG_WARN("No constructor found.");
 		}
 	}
 	else
@@ -57,9 +68,10 @@ void* tsk_object_new(const tsk_object_def_t *objdef, ...)
 
 size_t tsk_object_sizeof(const void *self)
 {
-	if(TSK_OBJECT_DEF_CONST(self))
+	const tsk_object_def_t **objdef = self;
+	if(objdef && *objdef)
 	{
-		return TSK_OBJECT_DEF_CONST(self)->size;
+		return (*objdef)->size;
 	}
 	else
 	{
@@ -68,12 +80,22 @@ size_t tsk_object_sizeof(const void *self)
 	}
 }
 
-int tsk_object_equals(const void *self, const void *object)
+int tsk_object_cmp(const void *self, const void *object)
 {
-	const tsk_object_def_t *objdef = TSK_OBJECT_DEF_CONST(self);
-	if(objdef && objdef->equals)
+	const tsk_object_def_t **objdef = self;
+	if(objdef && *objdef && (*objdef)->objcmp)
 	{
-		return objdef->equals(self, object);
+		return (*objdef)->objcmp(self, object);
+	}
+	return 0;
+}
+
+int tsk_object_icmp(const void *self, const void *object)
+{
+	const tsk_object_def_t **objdef = self;
+	if(objdef && *objdef && (*objdef)->objicmp)
+	{
+		return (*objdef)->objicmp(self, object);
 	}
 	return 0;
 }
@@ -82,7 +104,7 @@ void* tsk_object_ref(void *self)
 {
 	if(self)
 	{
-		TSK_OBJECT_DEF(self)->refCount++;
+		TSK_OBJECT_HEADER_GET(self)->refCount++;
 		return self;
 	}
 	return 0;
@@ -92,24 +114,28 @@ void* tsk_object_unref(void *self)
 {
 	if(self)
 	{
-		if(!--(TSK_OBJECT_DEF(self)->refCount))
+		if(!--(TSK_OBJECT_HEADER_GET(self)->refCount))
 		{
-			tsk_object_delete(&self);
+			tsk_object_delete(self);
 			return 0;
 		}
 	}
 	return self;
 }
 
-void tsk_object_delete(void **self)
+void tsk_object_delete(void *self)
 {
-	if(self && *self)
+	const tsk_object_def_t ** objdef = self;
+	if(self && *objdef)
 	{
-		const tsk_object_def_t **objdef = *self;
 		if((*objdef)->destructor)
 		{
-			(*objdef)->destructor(*self);
+			self = (*objdef)->destructor(self);
 		}
-		tsk_free2(self);
+		else
+		{
+			TSK_DEBUG_WARN("No destructor found.");
+		}
+		free(self);
 	}
 }

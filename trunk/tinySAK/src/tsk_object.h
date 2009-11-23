@@ -36,11 +36,22 @@
 #include <stdio.h>
 
 #define TSK_DECLARE_OBJECT \
-	const void* base
+	const void* base; \
+	size_t	refCount
 
+#define TSK_DECLARE_DEF(prefix, name) \
+	static const tsk_object_def_t ##prefix##_##name##_def_s = \
+	{\
+		sizeof(##prefix##_##name##_t),	\
+		##prefix##_##name##_create,		\
+		##prefix##_##name##_destroy,	\
+		##prefix##_##name##_clone,		\
+		##prefix##_##name##_cmp,		\
+		##prefix##_##name##_icmp,		\
+	};\
+	const void *##prefix##_##name##_def_t = &##prefix##_##name##_def_s;
 
-#define TSK_OBJECT_DEF(self)			((tsk_object_def_t*)self)
-#define TSK_OBJECT_DEF_CONST(self)		((const tsk_object_def_t*)self)
+#define TSK_OBJECT_DEF(self)			((const tsk_object_def_t*)self)
 
 /**
 * TSK OBJECT.
@@ -48,20 +59,20 @@
 typedef struct tsk_object_def_s
 {
 	size_t size;													/**< The size of an tsk object. */
-	void*	(* constructor) (void * self, va_list * app);			/**< The constructor. */
-	void	(* destructor) (void *);								/**< The destructor. */
-	void*	(* cloner) (const void * self);							/**< The object cloner. */
-	int		(* equals) (const void * self, const void * object);	/**< Compare two object. */
-
-	size_t	refCount;
+	void*	(* constructor) (void *self, va_list *app);				/**< The constructor. */
+	void*	(* destructor) (void *);								/**< The destructor. */
+	void*	(* cloner) (const void *self);							/**< The object cloner. */
+	int		(* objcmp) ( const char *self, const char *object );	/**< Compare two object */
+	int		(* objicmp) ( const char *self, const char *object );	/**< Compare two object (Ignore case) */
 }
 tsk_object_def_t;
 
 TINYSAK_API void* tsk_object_new(const tsk_object_def_t *objdef, ...);
 TINYSAK_API size_t tsk_object_sizeof(const void *self);
-TINYSAK_API int tsk_object_equals(const void *self, const void *object);
+TINYSAK_API int tsk_object_cmp(const void *self, const void *object);
+TINYSAK_API int tsk_object_icmp(const void *self, const void *object);
 TINYSAK_API void* tsk_object_ref(void *self);
 TINYSAK_API void* tsk_object_unref(void *self);
-TINYSAK_API void tsk_object_delete(void **self);
+TINYSAK_API void tsk_object_delete(void *self);
 
 #endif /* TSK_OBJECT_H */

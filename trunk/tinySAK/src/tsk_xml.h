@@ -46,14 +46,14 @@
 #define TSK_XML_NODE_SELECT_CONTENT()							nst_content
 #define TSK_XML_NODE_SELECT_END()								nst_end
 
-#define TSK_XML_NAMESPACE_CREATE(namespace) TSK_XXX_CREATE(0, namespace, xml_namespace)
-#define TSK_XML_NAMESPACE_FREE(namespace) TSK_XXX_SAFE_FREE(0, namespace, xml_namespace)
+#define TSK_XML_NAMESPACE_CREATE()								tsk_object_new(tsk_xml_namespace_def_t)
+#define TSK_XML_NAMESPACE_FREE(self)							tsk_object_unref(self)
 
-#define TSK_XML_ELEMENT_CREATE(element) TSK_XXX_CREATE(0, element, xml_element)
-#define TSK_XML_ELEMENT_FREE(element) TSK_XXX_SAFE_FREE(0, element, xml_element)
+#define TSK_XML_ELEMENT_CREATE(element)							tsk_object_new(tsk_xml_element_def_t)
+#define TSK_XML_ELEMENT_FREE(self)								tsk_object_unref(self)
 
-#define TSK_XML_ATTRIBUTE_CREATE(attribute) TSK_XXX_CREATE(0, attribute, xml_attribute)
-#define TSK_XML_ATTRIBUTE_FREE(attribute) TSK_XXX_SAFE_FREE(0, attribute, xml_attribute)
+#define TSK_XML_ATTRIBUTE_CREATE(attribute)						tsk_object_new(tsk_xml_attribute_def_t)
+#define TSK_XML_ATTRIBUTE_FREE(self)							tsk_object_unref(self)
 
 #define TSK_XML_SERIALIZE(result, element, strValue)\
 	if(strValue) tsk_sprintf(0, &result, "<"##element##">%s</"##element##">", strValue); \
@@ -102,6 +102,8 @@ tsk_xml_node_select_type_t;
 /** XML namespace */
 typedef struct tsk_xml_namespace_s
 {
+	TSK_DECLARE_OBJECT;
+
 	char* prefix;
 	char* value;
 }
@@ -110,6 +112,8 @@ tsk_xml_namespace_t;
 /** XML attribute */
 typedef struct tsk_xml_attribute_s
 {
+	TSK_DECLARE_OBJECT;
+
 	char* name;
 	void* value;
 	tsk_xml_type_t type;
@@ -119,6 +123,8 @@ tsk_xml_attribute_t;
 /** XML element */
 typedef struct tsk_xml_element_s
 {
+	TSK_DECLARE_OBJECT;
+
 	char* name;
 	void* value;
 	tsk_list_t* elements;
@@ -144,18 +150,22 @@ typedef tsk_list_t tsk_xml_namespaces_t;
 #define tsk_xml_attributes_free		tsk_list_free
 #define tsk_xml_namespaces_free		tsk_list_free
 
-TINYSAK_API void tsk_xml_namespace_init(tsk_xml_namespace_t* _namespace);
-TINYSAK_API void tsk_xml_namespace_free(tsk_xml_namespace_t** _namespace);
+//TINYSAK_API void tsk_xml_namespace_init(tsk_xml_namespace_t* _namespace);
+//TINYSAK_API void tsk_xml_namespace_free(tsk_xml_namespace_t** _namespace);
 
-TINYSAK_API void tsk_xml_element_init(tsk_xml_element_t* element);
+//TINYSAK_API void tsk_xml_element_init(tsk_xml_element_t* element);
 TINYSAK_API void tsk_xml_element_init_set(tsk_xml_element_t** element, const char* name, const char* value, tsk_xml_type_t type);
-TINYSAK_API void tsk_xml_element_free(void** element);
+//TINYSAK_API void tsk_xml_element_free(void** element);
 
-TINYSAK_API void tsk_xml_attribute_init(tsk_xml_attribute_t* attribute);
-TINYSAK_API void tsk_xml_attribute_free(tsk_xml_attribute_t** attribute);
+//TINYSAK_API void tsk_xml_attribute_init(tsk_xml_attribute_t* attribute);
+//TINYSAK_API void tsk_xml_attribute_free(tsk_xml_attribute_t** attribute);
 
 TINYSAK_API xmlNsPtr tsk_xml_get_namespace(xmlDocPtr docPtr, xmlNodePtr node, const char *href);
 TINYSAK_API xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_node_find_type_t ftype);
 TINYSAK_API xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...);
+
+TINYSAK_API const void *tsk_xml_namespace_def_t;
+TINYSAK_API const void *tsk_xml_attribute_def_t;
+TINYSAK_API const void *tsk_xml_element_def_t;
 
 #endif /* _TINYSAK_XML_H_ */

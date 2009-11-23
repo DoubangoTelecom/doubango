@@ -27,31 +27,36 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tcomp_nakinfo.h"
+#include "tcomp_nackinfo.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
 /**@defgroup tcomp_nackinfo_group SigComp NACK information.
 */
 
+
+//========================================================
+//	NackInfo object definition
+//
+
 /**@ingroup tcomp_nackinfo_group
 * Creates a nack info message. You MUST use @ref tcomp_nackinfo_destroy to free the nackinfo.
 * @retval The NACK info message.
 * @sa @ref tcomp_nackinfo_destroy.
 */
-tcomp_nackinfo_t* tcomp_nackinfo_create()
+static void* tcomp_nackinfo_create(void *self, va_list * app)
 {
-	tcomp_nackinfo_t *nackinfo = (tcomp_nackinfo_t *)tsk_calloc2(1, sizeof(tcomp_nackinfo_t));
+	tcomp_nackinfo_t *nackinfo = self;
 	if(nackinfo)
 	{
 		nackinfo->version = NACK_VERSION;
-		nackinfo->details = tcomp_buffer_create();
+		nackinfo->details = TCOMP_BUFFER_CREATE();
 	}
 	else
 	{
 		TSK_DEBUG_ERROR("Failed to create new nackinfo.");
 	}
-	return nackinfo;
+	return self;
 }
 
 /**@ingroup tcomp_nackinfo_group
@@ -59,11 +64,24 @@ tcomp_nackinfo_t* tcomp_nackinfo_create()
 * @param nackinfo The NACK info message to free.
 * @sa @ref tcomp_nackinfo_create.
 */
-void tcomp_nackinfo_destroy(tcomp_nackinfo_t **nackinfo)
+static void* tcomp_nackinfo_destroy(void * self)
 {
-	if(nackinfo && *nackinfo)
+	tcomp_nackinfo_t *nackinfo = self;
+	if(nackinfo)
 	{
-		tcomp_buffer_destroy(&((*nackinfo)->details));
-		tsk_free2(nackinfo);
+		TCOMP_BUFFER_SAFE_FREE(nackinfo->details);
 	}
+	return self;
 }
+
+
+static const tsk_object_def_t tcomp_nackinfo_def_s = 
+{
+	sizeof(tcomp_nackinfo_t),
+	tcomp_nackinfo_create, 
+	tcomp_nackinfo_destroy,
+	0, 
+	0,
+	0
+};
+const void *tcomp_nackinfo_def_t = &tcomp_nackinfo_def_s;

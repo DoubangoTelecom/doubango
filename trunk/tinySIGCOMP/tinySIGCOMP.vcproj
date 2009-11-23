@@ -209,7 +209,19 @@
 				Name="SigCompLayer"
 				>
 				<File
-					RelativePath=".\src\tcomp_nakinfo.c"
+					RelativePath=".\src\tcomp_compartment.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_compressordata.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_nackinfo.c"
 					>
 				</File>
 				<File
@@ -228,10 +240,18 @@
 					RelativePath=".\src\tcomp_state.c"
 					>
 				</File>
+				<File
+					RelativePath=".\src\tcomp_statehandler.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Dictionaries"
 				>
+				<File
+					RelativePath=".\src\tcomp_dicts.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Compressors"
@@ -249,6 +269,22 @@
 			</File>
 			<File
 				RelativePath=".\src\tcomp_buffer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tcomp_headers_index.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tcomp_instructions.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tcomp_nack_codes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tcomp_operands.h"
 				>
 			</File>
 			<File
@@ -291,6 +327,18 @@
 				Name="SigCompLayer"
 				>
 				<File
+					RelativePath=".\src\tcomp_compartment.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_compressordata.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_message.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\tcomp_nakinfo.h"
 					>
 				</File>
@@ -310,10 +358,26 @@
 					RelativePath=".\src\tcomp_state.h"
 					>
 				</File>
+				<File
+					RelativePath=".\src\tcomp_statehandler.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Dictionaries"
 				>
+				<File
+					RelativePath=".\src\tcomp_dicts.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_rfc3485_dictionary_sip.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_rfc5112_dictionary_presence.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Compressors"

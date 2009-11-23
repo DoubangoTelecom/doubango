@@ -44,7 +44,7 @@
 */
 int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
 {
-	*tid = tsk_calloc2(1, sizeof(pthread_t));
+	*tid = tsk_calloc(1, sizeof(pthread_t));
 	return pthread_create((pthread_t*)*tid, 0, start, arg);
 }
 
@@ -56,6 +56,6 @@ int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
 int tsk_thread_join(void** tid)
 {
 	int ret = pthread_join(*((pthread_t*)*tid), 0);
-	tsk_free2(tid);
+	tsk_free(tid);
 	return ret;
 }

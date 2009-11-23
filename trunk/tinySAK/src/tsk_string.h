@@ -34,21 +34,22 @@
 #include "tsk_heap.h"
 #include "tsk_object.h"
 
+#define TSK_STRING_CREATE(str)				tsk_object_new(tsk_string_def_t, str)
+#define TSK_STRING_SAFE_FREE(self)			tsk_object_unref(self)
+
 TINYSAK_API char tsk_b10tob16(char c);
 TINYSAK_API char tsk_b16tob10(char c);
 
 TINYSAK_API int tsk_stricmp(const char * str1, const char * str2);
-TINYSAK_API char* tsk_strdup(tsk_heap_t *heap, const char *s1);
-TINYSAK_API void tsk_strcat(tsk_heap_t *heap, char** destination, const char* source);
-TINYSAK_API int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...);
-TINYSAK_API void tsk_strupdate(tsk_heap_t *heap, char** str, const char* newval);
+TINYSAK_API int tsk_strcmp(const char * str1, const char * str2);
+TINYSAK_API char* tsk_strdup(const char *s1);
+TINYSAK_API void tsk_strcat(char** destination, const char* source);
+TINYSAK_API int tsk_sprintf(char** str, const char* format, ...);
+TINYSAK_API void tsk_strupdate(char** str, const char* newval);
 
 
-#define tsk_equals(s1, s2) (((s1 && s2) && (*s1 != *s2)) ? 0 : (tsk_stricmp((const char*)s1, (const char*)s2) ? 0 : 1))
-#define tsk_strdup2(s1) tsk_strdup(0, (const char*)s1)
-#define tsk_strcat2(destination, source)  tsk_strcat(0, destination, source)
-#define tsk_sprintf2(str, format, va_list) tsk_sprintf(0, str, format, va_list)
-#define tsk_strupdate2(str, newval)  tsk_strupdate(0, str, newval)
+#define tsk_striequals(s1, s2) (tsk_stricmp((const char*)(s1), (const char*)(s2)) ? 0 : 1)
+#define tsk_strequals(s1, s2) (tsk_strcmp((const char*)(s1), (const char*)(s2)) ? 0 : 1)
 
 typedef struct tsk_string_s
 {

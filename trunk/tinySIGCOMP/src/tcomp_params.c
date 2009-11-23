@@ -36,23 +36,6 @@
 */
 
 /**@ingroup tcomp_params_group
-* Creates new sigcomp params. You MUST use @ref tcomp_params_destroy to free the params.
-* @retval New sigcomp params.
-* @sa @ref tcomp_params_destroy.
-*/
-tcomp_params_t* tcomp_params_create()
-{
-	tcomp_params_t *params = (tcomp_params_t *)tsk_calloc2(1, sizeof(tcomp_params_t));
-	if(params)
-	{
-		tcomp_params_reset(params);
-	}
-	else TSK_DEBUG_ERROR("Failed to create new sigcomp params.");
-	
-	return params;
-}
-
-/**@ingroup tcomp_params_group
 * Checks if CPB, DMS and SMS values have been initialized.
 * @param params The sigcomp parameters containing the values to check.
 * @retval 1 if values have been set and zero otherwise.
@@ -175,7 +158,7 @@ void tcomp_params_setSmsValue(tcomp_params_t* params, uint32_t smsValue)
 	if(params)
 	{
 		uint8_t code;
-		for(code=0; code<8; code++)
+		for(code = 0; code < 8; code++)
 		{
 			if(smsValue <= sigcomp_encoding_sms[code])
 			{
@@ -250,9 +233,37 @@ void tcomp_params_reset(tcomp_params_t* params)
 		params->cpbCode = params->dmsCode = params->smsCode = params->SigComp_version = 0;
 		params->cpbValue = params->dmsValue = params->smsValue = 0;
 		
-		tsk_list_free(&(params->returnedStates));
+		TSK_LIST_SAFE_FREE(params->returnedStates);
 	}
 	else TSK_DEBUG_WARN("NULL sigcomp parameters.");
+}
+
+
+
+
+
+
+
+
+//========================================================
+//	SigComp parameters object definition
+//
+
+/**@ingroup tcomp_params_group
+* Creates new sigcomp params. You MUST use @ref tcomp_params_destroy to free the params.
+* @retval New sigcomp params.
+* @sa @ref tcomp_params_destroy.
+*/
+static void* tcomp_params_create(void *self, va_list * app)
+{
+	tcomp_params_t *params = self;
+	if(params)
+	{
+		tcomp_params_reset(params);
+	}
+	else TSK_DEBUG_ERROR("Failed to create new sigcomp params.");
+	
+	return self;
 }
 
 /**@ingroup tcomp_nackinfo_group
@@ -260,12 +271,25 @@ void tcomp_params_reset(tcomp_params_t* params)
 * @param params The SigComp params to free.
 * @sa @ref tcomp_params_create.
 */
-void tcomp_params_destroy(tcomp_params_t** params)
+static void* tcomp_params_destroy(void *self)
 {
-	if(params && *params)
+	tcomp_params_t *params = self;
+	if(params)
 	{
-		tsk_free2(params);
-		tsk_list_free(&((*params)->returnedStates));
+		TSK_LIST_SAFE_FREE(params->returnedStates);
 	}
 	else TSK_DEBUG_WARN("NULL sigcomp parameters.");
+
+	return self;
 }
+
+static const tsk_object_def_t tcomp_params_def_s = 
+{
+	sizeof(tcomp_params_t),
+	tcomp_params_create, 
+	tcomp_params_destroy,
+	0, 
+	0,
+	0
+};
+const void *tcomp_params_def_t = &tcomp_params_def_s;

@@ -25,23 +25,19 @@
 /* url encoding/decoding */
 void test_url()
 {
-	const char* url = "http://xcap.example.org/resource-lists/users/sip:RCSUser@example.org/index/~~/resource-lists/list%5B@name=%22rcs%22%5D";
-	char* str = 0;
-	tsk_heap_t heap;
-
-	/* initialize our memory heap */
-	tsk_heap_init(&heap);
+	const char *url = "http://xcap.example.org/resource-lists/users/sip:RCSUser@example.org/index/~~/resource-lists/list%5B@name=%22rcs%22%5D";
+	char *str1, *str2;
 
 	/*decode url*/
-	str = tsk_url_decode(&heap, url);
-	printf("test_url/// decoded url:%s\n", str);
+	str1 = tsk_url_decode(url);
+	printf("test_url/// decoded url:%s\n", str1);
 
 	/*encode url*/
-	str = tsk_url_encode(&heap, str);
-	printf("test_url/// encoded url:%s\n", str);
+	str2 = tsk_url_encode(str1);
+	printf("test_url/// encoded url:%s\n", str2);
 
-	/* cleanup */
-	tsk_heap_cleanup(&heap);
+	tsk_free(&str1);
+	tsk_free(&str2);
 }
 
 #endif /* _TEST_URL_H_ */
