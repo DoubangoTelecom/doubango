@@ -20,13 +20,20 @@
 *
 */
 
-#ifndef TCOMP_TYPES_H
-#define TCOMP_TYPES_H
+/**@file tcomp_operands.h
+ * @brief SigComp UDVM operands as per RFC 3312 subclause 8.5.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
 
-#include "tsk_list.h"
+#ifndef TCOMP_OPERANDS_H
+#define TCOMP_OPERANDS_H
 
-typedef tsk_list_t tcomp_buffers_L_t; /**< List containing @ref tcomp_buffer_handle_t elements. */
-typedef tsk_list_t tcomp_states_L_t; /**< List containing @ref tcomp_state_t elements. */
-typedef tsk_list_t tcomp_compartments_L_t; /** List containing @ref tcomp_compartment_t elements. */
+#define UDVM_OPERAND__LITERAL		0 /*#*/
+#define UDVM_OPERAND__REFERENCE     1 /*$*/
+#define UDVM_OPERAND__MULTITYPE     2 /*%*/
+#define UDVM_OPERAND__ADDRESS		3 /*@*/
 
-#endif /* TCOMP_TYPES_H */
+#endif /* TCOMP_NACKCODES_H */

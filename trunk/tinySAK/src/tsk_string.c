@@ -90,19 +90,24 @@ int tsk_stricmp(const char * str1, const char * str2)
 }
 
 /**@ingroup tsk_string_group
+*/
+int tsk_strcmp(const char * str1, const char * str2)
+{
+	return (str1 && str2) ? ((*str1 != *str2) ? -1 : strcmp(str1, str2)) : ((!str1 && !str2) ? 0 : -1);
+}
+
+/**@ingroup tsk_string_group
 * Duplicate a string
 * @param heap The memory heap on which to allocate the duplicated string. Set to NULL if
 * you don't want to use heap allocation mechanism.
 * @param s1 The string to duplicate
-* @retval The duplicated string. The returned pointer can be passed to free() if you are not using memory heap mechanism.
-* You MUST not directly free the returned pointer if you are using heap mechanism. */
-char* tsk_strdup(tsk_heap_t *heap, const char *s1)
+* @retval The duplicated string. */
+char* tsk_strdup(const char *s1)
 {
 	char* ret = 0;
 	if(s1)
 	{
 		ret = strdup(s1);
-		HEAP_PUSH(heap, ret);
 	}
 
 	return ret;
@@ -112,23 +117,21 @@ char* tsk_strdup(tsk_heap_t *heap, const char *s1)
 * Appends a copy of the source string to the destination string. The terminating null character in destination is overwritten by the first character of source, 
 * and a new null-character is appended at the end of the new string formed by the concatenation of both in destination. If the destination is NULL then new 
 * memory will allocated and filled with source value.
-* @param heap The memory heap on which to allocate the concatened string. Set to NULL if
-* you don't want to use heap allocation mechanism.
 * @param destination Pointer de the destination array containing the new string.
 * @param source C string to be appended. This should not overlap destination. If NULL then nothing is done.
 */
-void tsk_strcat(tsk_heap_t *heap, char** destination, const char* source)
+void tsk_strcat(char** destination, const char* source)
 {
 	size_t index = 0;
 
 	if(!source) return;
 
 	if(!*destination){
-		*destination = (char*)tsk_malloc(heap, strlen(source)+1);
+		*destination = (char*)tsk_malloc(strlen(source)+1);
 		strncpy(*destination, source, strlen(source)+1);
 	}else{
 		index = strlen(*destination);
-		*destination = tsk_realloc(heap, *destination, index + strlen(source)+1);
+		*destination = tsk_realloc(*destination, index + strlen(source)+1);
 		strncpy(((*destination)+index), source, strlen(source)+1);
 	}
 }
@@ -147,7 +150,7 @@ void tsk_strcat(tsk_heap_t *heap, char** destination, const char* source)
 * at the end of the string.
 * On failure, a negative number is returned.
 */
-int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...)
+int tsk_sprintf(char** str, const char* format, ...)
 {
 	int len = 0;
 	va_list list;
@@ -156,7 +159,7 @@ int tsk_sprintf(tsk_heap_t *heap, char** str, const char* format, ...)
 	va_start(list, format);
 
 	/* free previous value */
-	if(*str) tsk_free(heap, (void**)str);
+	if(*str) tsk_free((void**)str);
 	
 	/* compute destination len for windows mobile
 	*/
@@ -183,7 +186,7 @@ done:
 	}
 #else
     len = vsnprintf(0, 0, format, list);
-    *str = (char*)tsk_calloc(heap, 1, len+1);
+    *str = (char*)tsk_calloc(1, len+1);
     vsnprintf(*str, len
 #if !defined(_MSC_VER) || defined(__GNUC__)
 		+1
@@ -199,31 +202,42 @@ done:
 
 /**@ingroup tsk_string_group
 */
-void tsk_strupdate(tsk_heap_t *heap, char** str, const char* newval)
+void tsk_strupdate(char** str, const char* newval)
 {
-	tsk_free(heap, (void**)str);
-	*str = tsk_strdup(heap, newval);
+	tsk_free((void**)str);
+	*str = tsk_strdup(newval);
 }
 
-static void* tsk_string_create(void * _self, va_list * app)
+
+
+
+
+
+
+//========================================================
+//	String object definition
+//
+static void* tsk_string_create(void * self, va_list * app)
 {
-	tsk_string_t *self = _self;
-	const char * value = va_arg(*app, const char *);
-	self->value = malloc(strlen(value) + 1);
-	strcpy(self->value, value);
+	tsk_string_t *string = self;
+	string->value = tsk_strdup(va_arg(*app, const char *));
 	return self;
 }
 
-static void tsk_string_destroy(void * _self)
+static void* tsk_string_destroy(void * self)
 { 
-	tsk_string_t *self = _self;
-	free(self->value), self->value = 0;
+	tsk_string_t *string = self;
+	free(string->value), string->value = 0;
+
+	return self;
 }
 
 static const tsk_object_def_t tsk_string_def_s = 
 {
 	sizeof(tsk_string_t),
 	tsk_string_create, tsk_string_destroy,
-	0, 0
+	0, 
+	0,
+	0
 };
 const void *tsk_string_def_t = &tsk_string_def_s;

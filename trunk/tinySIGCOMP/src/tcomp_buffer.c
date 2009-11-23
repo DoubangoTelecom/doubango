@@ -42,6 +42,8 @@
 */
 typedef struct tcomp_buffer_s
 {
+	TSK_DECLARE_OBJECT;
+
 	size_t		size;			/**< The size of the buffer */
 	uint8_t*	lpbuffer;		/**< Pointer to the buffer */
 	size_t		index_bytes;	/**< Bytes (8bit size) cursor */
@@ -50,35 +52,6 @@ typedef struct tcomp_buffer_s
 	uint8_t		P_BIT;			/**< P-BIT controller. */
 }
 tcomp_buffer_t;
-
-/**@ingroup tcomp_buffer_group
-* Create SigComp buffer handle. You MUST use @ref tcomp_buffer_destroy to free the handle.
-* @param data Reference to an external buffer
-* @param len The length of the external buffer
-* @retval Returns a new buffer handle.
-* @sa @ref tcomp_buffer_destroy.
-*/
-tcomp_buffer_handle_t* _tcomp_buffer_create(const void* data, size_t len)
-{
-	tcomp_buffer_t* buffer = tsk_calloc2(1, sizeof(tcomp_buffer_t));
-
-	if(buffer)
-	{
-		buffer->owner = 1;
-
-		/*The P-bit controls the order in which bits are passed from the
-		dispatcher to the INPUT instructions*/
-		buffer->P_BIT = TCOMP_P_BIT_MSB_TO_LSB;
-
-		if(data && len)
-		{
-			tcomp_buffer_appendBuff(buffer, data, len);
-		}
-	}
-	else TSK_DEBUG_ERROR("Cannot create new SigComp handle");
-	
-	return ((tcomp_buffer_handle_t*)buffer);
-}
 
 /**@ingroup tcomp_buffer_group
 * Compare two sigomp buffers.
@@ -354,10 +327,10 @@ void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, size_t size)
 			TSK_DEBUG_WARN("Cannot allocate zero bytes.");
 			return;
 		}
-		tsk_free2(&(buffer->lpbuffer));
+		tsk_free(&(buffer->lpbuffer));
 
 		buffer->index_bits = buffer->index_bytes = 0;
-		buffer->lpbuffer = (uint8_t*) tsk_calloc2(1, size );
+		buffer->lpbuffer = (uint8_t*) tsk_calloc(1, size );
 		buffer->size = size;
 	}
 	else TSK_DEBUG_ERROR("Null SigComp handle");
@@ -404,10 +377,10 @@ int tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, siz
 	{
 		// realloc buffer
 		if(!buffer->size){
-			buffer->lpbuffer = (uint8_t*)tsk_malloc2(newSize);
+			buffer->lpbuffer = (uint8_t*)tsk_calloc(1, newSize);
 		}
 		else{
-			buffer->lpbuffer = (uint8_t*)tsk_realloc2(buffer->lpbuffer, newSize);
+			buffer->lpbuffer = (uint8_t*)tsk_realloc(buffer->lpbuffer, newSize);
 		}
 	}
 
@@ -448,11 +421,11 @@ int tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, size_t pos, size_t si
 		{
 			if(!(buffer->size))
 			{
-				buffer->lpbuffer = (uint8_t*)tsk_calloc2(1, newSize);
+				buffer->lpbuffer = (uint8_t*)tsk_calloc(1, newSize);
 			}
 			else
 			{
-				buffer->lpbuffer = (uint8_t*)tsk_realloc2(buffer->lpbuffer, newSize);
+				buffer->lpbuffer = (uint8_t*)tsk_realloc(buffer->lpbuffer, newSize);
 			}
 		}
 		if(buffer->lpbuffer)
@@ -478,7 +451,7 @@ void tcomp_buffer_freeBuff(tcomp_buffer_handle_t* handle)
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
 		if(buffer->lpbuffer && buffer->size && buffer->owner) 
 		{
-			tsk_free2(&(buffer->lpbuffer));
+			tsk_free(&(buffer->lpbuffer));
 		}
 		buffer->size = buffer->index_bytes = buffer->index_bits = 0;
 	}
@@ -607,19 +580,75 @@ void tcomp_buffer_reset(tcomp_buffer_handle_t* handle)
 	else TSK_DEBUG_ERROR("Null SigComp handle");
 }
 
+
+
+
+
+
+
+
+
+
+//========================================================
+//	SigComp buffer object definition
+//
+
+/**@ingroup tcomp_buffer_group
+* Create SigComp buffer handle. You MUST use @ref tcomp_buffer_destroy to free the handle.
+* @param data Reference to an external buffer
+* @param len The length of the external buffer
+* @retval Returns a new buffer handle.
+* @sa @ref tcomp_buffer_destroy.
+*/
+static void* _tcomp_buffer_create(void *self, va_list * app)
+{
+	tcomp_buffer_t* buffer = self;
+	const void* data = va_arg(*app, const void *);
+	size_t len = va_arg(*app, size_t);
+
+	if(buffer)
+	{
+		buffer->owner = 1;
+
+		/*
+		* The P-bit controls the order in which bits are passed from the dispatcher to the INPUT instructions.
+		*/
+		buffer->P_BIT = TCOMP_P_BIT_MSB_TO_LSB;
+
+		if(data && len)
+		{
+			tcomp_buffer_appendBuff(buffer, data, len);
+		}
+	}
+	else TSK_DEBUG_ERROR("Cannot create new SigComp handle");
+	
+	return self;
+}
+
 /**@ingroup tcomp_buffer_group
 * Destroy a SigComp buffer handle previously allocated using @ref _tcomp_buffer_create or @a tcomp_buffer_create.
 * @param handle The SigComp buffer handle to free.
 * @sa @a tcomp_buffer_create @ref _tcomp_buffer_create.
 */
-void tcomp_buffer_destroy(tcomp_buffer_handle_t** handle)
+static void* tcomp_buffer_destroy(void *self)
 {
-	if(handle || !*handle)
+	tcomp_buffer_t* buffer = self;
+	if(buffer)
 	{
-		tcomp_buffer_t** buffer = (tcomp_buffer_t**)handle;
-
-		tsk_free2(&((*buffer)->lpbuffer));
-		tsk_free2(buffer);
+		tcomp_buffer_freeBuff(buffer);
 	}
 	else TSK_DEBUG_ERROR("Null SigComp handle.");
+
+	return self;
 }
+
+static const tsk_object_def_t tcomp_buffer_def_s = 
+{
+	sizeof(tcomp_buffer_t),
+	_tcomp_buffer_create, 
+	tcomp_buffer_destroy,
+	0, 
+	0,
+	0
+};
+const void *tcomp_buffer_def_t = &tcomp_buffer_def_s;

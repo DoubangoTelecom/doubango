@@ -20,13 +20,21 @@
 *
 */
 
-#ifndef TCOMP_TYPES_H
-#define TCOMP_TYPES_H
+/**@file tcomp_dicts.h
+ * @brief SigComp Dictionaries
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
 
-#include "tsk_list.h"
+#ifndef _TINYSIGCOMP_DICTS_H_
+#define _TINYSIGCOMP_DICTS_H_
 
-typedef tsk_list_t tcomp_buffers_L_t; /**< List containing @ref tcomp_buffer_handle_t elements. */
-typedef tsk_list_t tcomp_states_L_t; /**< List containing @ref tcomp_state_t elements. */
-typedef tsk_list_t tcomp_compartments_L_t; /** List containing @ref tcomp_compartment_t elements. */
+#include "tinysigcomp_config.h"
+#include "tcomp_state.h"
 
-#endif /* TCOMP_TYPES_H */
+static tcomp_state_t* tcomp_state_create_presence_dict();
+static tcomp_state_t* tcomp_state_create_sip_dict();
+
+#endif /* _TINYSIGCOMP_DICTS_H_ */

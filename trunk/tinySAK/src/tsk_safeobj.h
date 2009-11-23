@@ -33,7 +33,7 @@
 #include "tinySAK_config.h"
 #include "tsk_mutex.h"
 
-#define TSK_SAFEOBJ_DECLARE\
+#define TSK_DECLARE_SAFEOBJ\
 	union{ \
 		tsk_mutex_handle_t *mutex; \
 	}

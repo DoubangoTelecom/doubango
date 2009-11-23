@@ -31,18 +31,22 @@
 #define TCOMP_BUFFER_H
 
 #include "tinysigcomp_config.h"
+#include "tsk_object.h"
+
 #include <stdint.h>
 
 #define TCOMP_P_BIT_MSB_TO_LSB 0
 #define TCOMP_P_BIT_LSB_TO_MSB 1
 
+#define _TCOMP_BUFFER_CREATE(data, len)	tsk_object_new(tcomp_buffer_def_t, data, len)
+#define TCOMP_BUFFER_CREATE()			_TCOMP_BUFFER_CREATE(0, 0)
+
+#define TCOMP_BUFFER_SAFE_FREE(self)	tsk_object_unref(self)
+
 /**
 * Sigcomp Buffer handle
 */
 typedef void tcomp_buffer_handle_t;
-
-tcomp_buffer_handle_t* _tcomp_buffer_create(const void* data, size_t len);
-#define tcomp_buffer_create() _tcomp_buffer_create(0, 0)
 
 int tcomp_buffer_equals(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2);
 int tcomp_buffer_startsWith(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2) /*const*/;
@@ -77,6 +81,7 @@ void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, size_t size);
 #define tcomp_buffer_print(handle) tcomp_buffer_nprint(handle, -1)
 
 void tcomp_buffer_reset(tcomp_buffer_handle_t* handle);
-void tcomp_buffer_destroy(tcomp_buffer_handle_t** handle);
+
+TINYSIGCOMP_API const void *tcomp_buffer_def_t;
 
 #endif /* TCOMP_BUFFER_H */

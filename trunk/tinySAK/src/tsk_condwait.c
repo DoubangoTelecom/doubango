@@ -63,10 +63,10 @@ tsk_condwait_t;
 */
 tsk_condwait_handle_t* tsk_condwait_create()
 {
-	tsk_condwait_t *condwait = tsk_calloc2(1, sizeof(tsk_condwait_t));
+	tsk_condwait_t *condwait = tsk_calloc(1, sizeof(tsk_condwait_t));
 	if(condwait)
 	{
-		condwait->pcond = (pthread_cond_t*)tsk_calloc2(1, sizeof(pthread_cond_t));
+		condwait->pcond = (pthread_cond_t*)tsk_calloc(1, sizeof(pthread_cond_t));
 		if(pthread_cond_init(condwait->pcond, 0))
 		{
 			TSK_DEBUG_ERROR("Failed to initialize the new conwait.");
@@ -210,7 +210,7 @@ void tsk_condwait_destroy(tsk_condwait_handle_t** handle)
 		tsk_mutex_destroy(&((*condwait)->mutex));
 		pthread_cond_destroy((*condwait)->pcond);
 		TSK_FREE((*condwait)->pcond);
-		tsk_free2((void**)condwait);
+		tsk_free(condwait);
 	}
 	else
 	{

@@ -33,6 +33,8 @@
 
 #include <pthread.h>
 
+// FIXME: Momory leaks in mutex
+
 /**@defgroup tsk_mutex_group Pthread Mutex
 */
 
@@ -43,7 +45,7 @@
 */
 tsk_mutex_handle_t* tsk_mutex_create()
 {
-	tsk_mutex_handle_t *handle = tsk_calloc2(1, sizeof(pthread_mutex_t));
+	tsk_mutex_handle_t *handle = tsk_calloc(1, sizeof(pthread_mutex_t));
 	if(handle)
 	{
 		if(pthread_mutex_init((pthread_mutex_t*)handle, 0))
@@ -113,7 +115,7 @@ void tsk_mutex_destroy(tsk_mutex_handle_t** handle)
 	if(handle && *handle)
 	{
 		pthread_mutex_destroy((pthread_mutex_t*)*handle);
-		tsk_free2((void**)handle);
+		tsk_free(handle);
 	}
 	else
 	{

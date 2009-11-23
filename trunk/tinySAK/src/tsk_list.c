@@ -227,7 +227,7 @@ void tsk_list_remove_item2(tsk_list_t* list, tsk_list_func_predicate predicate, 
 				}
 				else prev->next = curr->next;
 
-				tsk_list_item_free(&curr);
+				curr = tsk_object_unref(curr);
 				break;
 			}
 			
@@ -276,15 +276,14 @@ void tsk_list_add_list(tsk_list_t* dest, tsk_list_t** src)
 * @param data opaque data to add into @a list
 * @param item_func_free pointer to the function to call to free the opaque @a data
 */
-void tsk_list_add_data(tsk_list_t* list, void** data, tsk_list_item_func_free item_func_free)
+void tsk_list_add_data(tsk_list_t* list, void** data)
 {
 	if(data)
 	{
 		tsk_list_item_t *item = 0;
-		TSK_LIST_ITEM_CREATE(item);
+		item = TSK_LIST_ITEM_CREATE();
 		item->data = *data;
-		item->func_free = item_func_free;
-
+		
 		tsk_list_add_item(list, &item);
 		(*data) = 0;
 	}
@@ -295,13 +294,32 @@ void tsk_list_add_data(tsk_list_t* list, void** data, tsk_list_item_func_free it
 }
 
 /**@ingroup tsk_list_group
+*/
+const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const void * tskobj)
+{
+	if(list && tskobj)
+	{
+		tsk_list_item_t *item;
+		tsk_list_foreach(item, list)
+		{
+			if(tsk_object_icmp(item->data, tskobj))
+			{
+				return item;
+			}
+		}
+	}
+	
+	return 0;
+}
+
+/**@ingroup tsk_list_group
 * Find first item matching criteria defined by the @a predicate.
 * @param list the list to query
 * @param predicate the predicate against which to test each item
 * @param data data passed to the predicate function for comparaison
 * @retval the item which match the criteria and NULL otherwise
 */
-const tsk_list_item_t* tsk_list_find_item(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
+const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
 	if(predicate)
 	{
@@ -321,63 +339,89 @@ const tsk_list_item_t* tsk_list_find_item(const tsk_list_t* list, tsk_list_func_
 	return 0;
 }
 
-/**@ingroup tsk_list_group
-* Free all items in the list. If function pointers have been defined for some items then
-* they will be called before deallocating the item pointer.
-* @param list list to free
-*/
-void tsk_list_free(tsk_list_t** list)
-{
-	if(*list)
-	{
-		tsk_list_item_t* next = 0;
-		tsk_list_item_t* curr = (*list)->head;
 
-		while(curr)
-		{
-			next = curr->next;
-			tsk_list_item_free(&curr);
-			curr = next;
-		}
-		free(*list);
-		(*list) = 0;
-	}
-	else
-	{
-		TSK_DEBUG_WARN("Cannot free an uninitialized list");
-	}
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//	Item object definition
+//
+static void* tsk_list_item_create(void * self, va_list * app)
+{
+	return self;
 }
 
-/**@ingroup tsk_list_group
-* Initialize an already allocated item 
-* @param item item to initialize
-*/
-void tsk_list_item_init(tsk_list_item_t* item)
+static void* tsk_list_item_destroy(void *self)
 {
-}
-
-/**@ingroup tsk_list_group
-* Free a previously allocated item.
-* @param item item to free
-*/
-void tsk_list_item_free(tsk_list_item_t** item)
-{
-	if(*item)
+	tsk_list_item_t *item = self;
+	if(item)
 	{
-		if((*item)->func_free)
-		{
-			(*item)->func_free(&((*item)->data));
-		}
-		else if((*item)->data)
-		{
-			free((*item)->data);
-		}
-
-		free(*item);
-		(*item) = 0;
+		item->data = tsk_object_unref(item->data);
 	}
 	else
 	{
 		TSK_DEBUG_WARN("Cannot free an uninitialized item");
 	}
+	return item;
 }
+
+//TSK_DECLARE_DEF(tsk, list_item);
+static const tsk_object_def_t tsk_list_item_def_s =
+{
+	sizeof(tsk_list_item_t),	
+	tsk_list_item_create,
+	tsk_list_item_destroy,
+	0,
+	0
+};
+const void *tsk_list_item_def_t = &tsk_list_item_def_s;
+
+//========================================================
+//	List object definition
+//
+static void* tsk_list_create(void *self, va_list *app)
+{
+	tsk_list_t *list = self;
+
+	return self;
+}
+
+static void* tsk_list_destroy(void *self)
+{ 
+	tsk_list_t *list = self;
+	if(list)
+	{
+		tsk_list_item_t* next = 0;
+		tsk_list_item_t* curr = list->head;
+
+		while(curr)
+		{
+			next = curr->next;
+			curr = tsk_object_unref(curr);
+			curr = next;
+		}
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot free an uninitialized list");
+	}
+	return list;
+}
+
+//TSK_DECLARE_DEF(tsk, list);
+static const tsk_object_def_t tsk_list_def_s =
+{
+	sizeof(tsk_list_t),
+	tsk_list_create,
+	tsk_list_destroy,
+	0,
+	0
+};
+const void *tsk_list_def_t = &tsk_list_def_s;

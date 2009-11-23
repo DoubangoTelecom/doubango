@@ -45,28 +45,28 @@
 * Initialize an XML namespace
 * @param namespace The XML namespace to initialize.
 */
-void tsk_xml_namespace_init(tsk_xml_namespace_t* namespace)
+/*void tsk_xml_namespace_init(tsk_xml_namespace_t* namespace)
 {
-}
+}*/
 
 /**@ingroup tsk_xml_group
 * Free an XML namespace
 * @param namespace The namespace to free
 */
-void tsk_xml_namespace_free(tsk_xml_namespace_t** namespace)
+/*void tsk_xml_namespace_free(tsk_xml_namespace_t** namespace)
 {
 	TSK_FREE((*namespace)->prefix);
 	TSK_FREE((*namespace)->value);
-	tsk_free(0, (void**)namespace);
-}
+	TSK_FREE(namespace);
+}*/
 
 /**@ingroup tsk_xml_group
 * Initialize an XML element
 * @param element The XML element to initialize
 */
-void tsk_xml_element_init(tsk_xml_element_t* element)
+/*void tsk_xml_element_init(tsk_xml_element_t* element)
 {
-}
+}*/
 
 /**@ingroup tsk_xml_group
 * Initialize an XML element and set values
@@ -78,11 +78,11 @@ void tsk_xml_element_init(tsk_xml_element_t* element)
 void tsk_xml_element_init_set(tsk_xml_element_t** element, const char* name, const char* value, tsk_xml_type_t type)
 {
 	TSK_XML_ELEMENT_CREATE((*element));
-	TSK_LIST_CREATE((*element)->elements);
-	TSK_LIST_CREATE((*element)->attributes);
-	TSK_LIST_CREATE((*element)->namespaces);
-	(*element)->name = tsk_strdup(0, name);
-	(*element)->value = tsk_strdup(0, value);
+	(*element)->elements = TSK_LIST_CREATE();
+	(*element)->attributes = TSK_LIST_CREATE();
+	(*element)->namespaces = TSK_LIST_CREATE();
+	(*element)->name = tsk_strdup(name);
+	(*element)->value = tsk_strdup(value);
 	(*element)->type = type;
 }
 
@@ -90,7 +90,7 @@ void tsk_xml_element_init_set(tsk_xml_element_t** element, const char* name, con
 * Free an XML element
 * @param _element The XML element to free
 */
-void tsk_xml_element_free(void** _element)
+/*void tsk_xml_element_free(void** _element)
 {
 	tsk_xml_element_t** element = (tsk_xml_element_t**)_element;
 
@@ -100,28 +100,28 @@ void tsk_xml_element_free(void** _element)
 	TSK_LIST_SAFE_FREE((*element)->attributes);
 	TSK_LIST_SAFE_FREE((*element)->namespaces);
 
-	tsk_free(0, (void**)element);
-}
+	TSK_FREE(element);
+}*/
 
 /**@ingroup tsk_xml_group
 * Initialize an XML attribute
 * @param attribute The XML attribute to initialize
 */
-void tsk_xml_attribute_init(tsk_xml_attribute_t* attribute)
+/*void tsk_xml_attribute_init(tsk_xml_attribute_t* attribute)
 {
-}
+}*/
 
 /**@ingroup tsk_xml_group
 * Free an XML attribute
 * @param attribute The XML attribute to free
 */
-void tsk_xml_attribute_free(tsk_xml_attribute_t** attribute)
+/*void tsk_xml_attribute_free(tsk_xml_attribute_t** attribute)
 {
 	TSK_FREE((*attribute)->name);
 	TSK_FREE((*attribute)->value);
 
-	tsk_free(0, (void**)attribute);
-}
+	TSK_FREE(attribute);
+}*/
 
 /**@ingroup tsk_xml_group
 * Get an XML namespace from an XML document
@@ -135,7 +135,7 @@ xmlNsPtr tsk_xml_get_namespace(xmlDocPtr docPtr, xmlNodePtr node, const char *hr
 	xmlNs *ns = *xmlGetNsList(docPtr, node);
 	while (ns)
 	{
-		if (tsk_equals(ns->href, href)) return ns;
+		if (tsk_striequals(ns->href, href)) return ns;
 		else ns = ns->next;
 	}
 
@@ -157,7 +157,7 @@ xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_no
 	{
 		switch(ftype)
 		{
-		case nft_none:		return (tsk_equals(node->name, name))? node : 0;
+		case nft_none:		return (tsk_striequals(node->name, name))? node : 0;
 		case nft_children: node = node->children; break;
 		case nft_parent:	node = node->parent; break;
 		case nft_next:		node = node->next; break;
@@ -166,7 +166,7 @@ xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_no
 		} /* switch */
 
 		/* check and return value if match */
-		if( node && (!name || tsk_equals(node->name, name)) ) 
+		if( node && (!name || tsk_striequals(node->name, name)) ) 
 		//if( node && (name == 0 || !tsk_stricmp((const char*)node->name, name)) ) 
 		{
 			return node;
@@ -199,11 +199,11 @@ xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...)
 		case nst_by_name:
 			{	/* name */
 				const char* qname = va_arg(list, const char*);
-				if(tsk_equals(root->name, qname)){
+				if(tsk_striequals(root->name, qname)){
 					node = tsk_xml_find_node(node, 0, nft_children);
 				}
 				else{
-					if(!tsk_equals(node->name, qname))
+					if(!tsk_striequals(node->name, qname))
 					{	/* do not match */
 						node = tsk_xml_find_node(node, qname, nft_next);
 					}
@@ -235,7 +235,7 @@ xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...)
 					{
 						if(attrPtr->type == XML_ATTRIBUTE_NODE && attrPtr->children)
 						{
-							if( tsk_equals(attrPtr->name, att_name) ){
+							if( tsk_striequals(attrPtr->name, att_name) ){
 								node = attrPtr->children;
 								found = 1;
 							}
@@ -262,8 +262,8 @@ xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...)
 					{
 						if(attrPtr->type == XML_ATTRIBUTE_NODE && attrPtr->children)
 						{
-							if( tsk_equals(attrPtr->name, att_name)
-								&& ( (attrPtr->children->content && tsk_equals(attrPtr->children->content, att_value)) || !att_value )
+							if( tsk_striequals(attrPtr->name, att_name)
+								&& ( (attrPtr->children->content && tsk_striequals(attrPtr->children->content, att_value)) || !att_value )
 								){
 									found = 1;
 							}

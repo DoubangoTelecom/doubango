@@ -26,52 +26,52 @@
 /* test heap*/
 void test_heap()
 {
-	int i = 0;
-	tsk_heap_t heap;
+	//int i = 0;
+	//tsk_heap_t heap;
 
-	/* initialize our memory heap */
-	tsk_heap_init(&heap);
+	///* initialize our memory heap */
+	//tsk_heap_init(&heap);
 
-	/* heap(1): Ten strings are allocated an all freed when we cleanup the heap  */
-	for(i=0; i<10;i++)
-	{
-		char* test = tsk_strdup(&heap, "testing the heap (1)");
-	}
-	tsk_heap_cleanup(&heap);
+	///* heap(1): Ten strings are allocated an all freed when we cleanup the heap  */
+	//for(i=0; i<10;i++)
+	//{
+	//	char* test = tsk_strdup(&heap, "testing the heap (1)");
+	//}
+	//tsk_heap_cleanup(&heap);
 
-	/* heap(2): pop memory from the heap*/
-	{
- 		char* test = tsk_strdup(&heap, "testing the heap (2)");
-		tsk_free(&heap, (void**)&test);
+	///* heap(2): pop memory from the heap*/
+	//{
+ //		char* test = tsk_strdup(&heap, "testing the heap (2)");
+	//	tsk_free(&heap, (void**)&test);
 
-		test = tsk_calloc(&heap, 10, 1);
-		tsk_free(&heap, (void**)&test);
+	//	test = tsk_calloc(&heap, 10, 1);
+	//	tsk_free(&heap, (void**)&test);
 
-		test = tsk_malloc(&heap, 10);
-		tsk_free(&heap, (void**)&test);
+	//	test = tsk_malloc(&heap, 10);
+	//	tsk_free(&heap, (void**)&test);
 
-		test = tsk_malloc(&heap, 10);
-		test = tsk_realloc(&heap, test, 100);
-		tsk_free(&heap, (void**)&test);
-	}
-	
-	/* heap(3): pop a NULL pointer */
-	{
-		tsk_free(&heap, 0);
-	}
+	//	test = tsk_malloc(&heap, 10);
+	//	test = tsk_realloc(&heap, test, 100);
+	//	tsk_free(&heap, (void**)&test);
+	//}
+	//
+	///* heap(3): pop a NULL pointer */
+	//{
+	//	tsk_free(&heap, 0);
+	//}
 
-	/* heap(4): allocate and pop from NULL heap */
-	{
-		char* test = tsk_calloc(0, 10, 1);
-		tsk_free(0, (void**)&test);
+	///* heap(4): allocate and pop from NULL heap */
+	//{
+	//	char* test = tsk_calloc(0, 10, 1);
+	//	tsk_free(0, (void**)&test);
 
-		test = tsk_malloc(0, 10);
-		tsk_free(0, (void**)&test);
+	//	test = tsk_malloc(0, 10);
+	//	tsk_free(0, (void**)&test);
 
-		test = tsk_malloc(0, 10);
-		test = tsk_realloc(0, test, 100);
-		tsk_free(0, (void**)&test);
-	}
+	//	test = tsk_malloc(0, 10);
+	//	test = tsk_realloc(0, test, 100);
+	//	tsk_free(0, (void**)&test);
+	//}
 }
 
 #endif /* _TEST_HEAP_H_ */

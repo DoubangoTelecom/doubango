@@ -32,6 +32,10 @@
 
 #include "tinysigcomp_config.h"
 #include "tcomp_buffer.h"
+#include "tsk_object.h"
+
+#define TCOMP_REQFEED_CREATE()				tsk_object_new(tsk_reqfeed_def_t)
+#define TCOMP_REQFEED_SAFE_FREE(self)		tsk_object_unref(self)
 
 /*
 0   1   2   3   4   5   6   7
@@ -49,6 +53,8 @@
 */
 typedef struct tcomp_reqfeed_s
 {
+	TSK_DECLARE_OBJECT;
+
 	uint8_t Q; /**< The Q-bit indicates whether a requested feedback item is present or not.*/
 	uint8_t S; /**< The compressor sets the S-bit to 1 if it does not wish (or no longer
 	wishes) to save state information at the receiving endpoint and also
@@ -60,8 +66,8 @@ typedef struct tcomp_reqfeed_s
 }
 tcomp_reqfeed_t;
 
-tcomp_reqfeed_t* tcomp_reqfeed_create();
 void tcomp_reqfeed_reset(tcomp_reqfeed_t*);
-void tcomp_reqfeed_destroy(tcomp_reqfeed_t**);
+
+TINYSIGCOMP_API const void *tsk_reqfeed_def_t;
 
 #endif /* TCOMP_REQ_FEEDBACK_H */

@@ -20,56 +20,40 @@
 *
 */
 
-/**@file tsk_mutex.h
- * @brief Pthread mutex.
+/**@file tcomp_compressordata.h
+ * @brief  SigComp compressor data.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef _TEST_MUTEX_H_
-#define _TEST_MUTEX_H_
+#ifndef TCOMP_COMPRESSOR_DATA_H
+#define TCOMP_COMPRESSOR_DATA_H
 
-int mutex_testing = 0;
-int mutex_threa_started = 0;
+#include "tinysigcomp_config.h"
+#include "tcomp_state.h"
+#include "tcomp_buffer.h"
 
-void *threadfunc_mutex(void *parm)
+#include "tsk_object.h"
+#include "tsk_safeobj.h"
+
+#define TCOMP_COMPRESSORDATA_CREATE(isStream)		tsk_object_new(tsk_compressordata_def_t, isStream)
+#define TCOMP_COMPRESSORDATA_SAFE_FREE(self)		tsk_object_unref(self)
+
+typedef struct tcomp_compressordata_s
 {
-	tsk_mutex_handle_t *mutex = (tsk_mutex_handle_t *)parm;
-	int ret = 0;
-	
-	ret =  tsk_mutex_lock(mutex);
-	while(mutex_testing)
-	{
-		mutex_threa_started = 1;
-		tsk_mutex_lock(mutex);
-	}
+	TSK_DECLARE_OBJECT;
 
-	printf("threadfunc_mutex/// %d\n", ret);
+	tcomp_state_t *ghostState;
+	int isStream;
 
-	return 0;
+	TSK_DECLARE_SAFEOBJ;
 }
+tcomp_compressordata_t;
 
+void tcomp_compressordata_ackGhost(tcomp_compressordata_t *compdata, const tcomp_buffer_handle_t *stateid);
+void tcomp_compressordata_freeGhostState(tcomp_compressordata_t *compdata);
 
-/* Pthread mutex */
-void test_mutex()
-{
-	tsk_mutex_handle_t *mutex = tsk_mutex_create();
-	void*       tid[1] = {0};
+TINYSIGCOMP_API const void *tcomp_compressordata_def_t;
 
-	printf("test_mutex//\n");
-
-	mutex_testing = 1;
-	tsk_thread_create(&tid[0], threadfunc_mutex, mutex);
-
-	while(!mutex_threa_started);
-
-	mutex_testing = 0;
-	tsk_mutex_unlock(mutex);
-
-	tsk_thread_join(&(tid[0]));
-
-	tsk_mutex_destroy(&mutex);
-}
-
-#endif /* _TEST_MUTEX_H_ */
+#endif /* TCOMP_COMPRESSOR_DATA_H */

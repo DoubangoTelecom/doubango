@@ -22,87 +22,134 @@
 #ifndef _TEST_LISTS_H_
 #define _TEST_LISTS_H_
 
+//========================================================
+//	Person object definition
+//
+typedef struct person_s 
+{	
+	TSK_DECLARE_OBJECT;
+
+	char *id;
+	char *name;
+} 
+person_t;
+
+static void* person_create(void * self, va_list * app)
+{
+	person_t* person = self;
+	person->id = tsk_strdup(va_arg(*app, const char *));
+	person->name = tsk_strdup(va_arg(*app, const char *));
+	return self;
+}
+
+static void* person_destroy(void *self)
+{
+	person_t* person = self;
+	tsk_free(&(person->id));
+	tsk_free(&(person->name));
+	return self;
+}
+
+static int person_icmp(const void *self, const void *object)
+{	
+	const person_t* person1 = self;
+	const person_t* person2 = object;
+
+	if(!person1 || !person2)
+	{
+		return 0;
+	}
+
+	return tsk_stricmp(person1->id, person2->id);
+}
+
+static const tsk_object_def_t person_def_s =
+{
+	sizeof(person_t),	
+	person_create,
+	person_destroy,
+	0,
+	person_icmp,
+	person_icmp
+};
+const void *person_def_t = &person_def_s;
+#define PERSON_CREATE(id, name)		tsk_object_new(person_def_t, id, name)
+#define PERSON_SAFE_FREE(self)	tsk_object_unref(self)
+
+static int pred_find_person_by_name(const tsk_list_item_t *item, const void *name)
+{
+	if(item && item->data)
+	{
+		person_t *person = item->data;
+		return tsk_striequals(person->name, name);
+	}
+	return 0;
+}
+
 /* testing basic linked list */
 void test_basic_list()
 {
-	tsk_list_t *list = 0;
-	tsk_list_item_t *item = 0;
-
-	/* create list */
-	TSK_LIST_CREATE(list);
-
+	tsk_list_t *list = TSK_LIST_CREATE();
+	tsk_list_item_t *item = TSK_LIST_ITEM_CREATE();
+	
 	/* add items to the list */
-	TSK_LIST_ITEM_CREATE(item);
-	item->data = (void*)strdup("First item");
+	item->data = TSK_STRING_CREATE("First item");
 	tsk_list_add_item(list, &item);
 
-	TSK_LIST_ITEM_CREATE(item);
-	item->data = (void*)strdup("Second item");
+	item = TSK_LIST_ITEM_CREATE();
+	item->data = TSK_STRING_CREATE("Second item");
 	tsk_list_add_item(list, &item);
 
 	/* dump all items */
 	tsk_list_foreach(item, list)
 	{
-		char* item_data = ((char*)item->data);
-		printf("test_basic_list/// --> [%s]\n", item_data);
+		tsk_string_t* item_data = ((tsk_string_t*)item->data);
+		printf("test_basic_list/// --> [%s]\n", item_data->value);
 	}
 
 	/* delete all items in the list */
 	TSK_LIST_SAFE_FREE(list);
 }
 
-/* test complex linked list */
-typedef struct person_s { char *id; char *name; } person_t;
-void person_free(void** person) { 
-	person_t** pp = (person_t**)person; 
-	free((*pp)->id); 
-	free((*pp)->name);
-	free((*pp));
-	(*pp)=0;
-	printf("test_advanced_list/// [person_free]\n");
-}
-int find_person_by_name(const tsk_list_item_t* item, const void* name)
-{
-	person_t* item_data = (person_t*)(item->data);
-	printf("test_advanced_list/// [find_person2]\n");
-	return !strcmp(item_data->name, (const char*)name);
-}
-
 void test_complex_list()
 {
-	tsk_list_t *list = 0;
+	tsk_list_t *list = TSK_LIST_CREATE();
 	tsk_list_item_t *item = 0;
-
-	/* create list */
-	TSK_LIST_CREATE(list);
 
 	/* add items to the list */
 	{
-		person_t *person1 = (person_t*)malloc(sizeof *person1);
-		person1->id = strdup("1");
-		person1->name = strdup("person1");
-		tsk_list_add_data(list, ((void**) &person1), person_free);
+		person_t *person1 = PERSON_CREATE("1", "person1");
+		tsk_list_add_data(list, ((void**) &person1));
 	}
 	{
-		person_t *person2 = (person_t*)malloc(sizeof *person2);
-		person2->id = strdup("2");
-		person2->name = strdup("person2");
-		tsk_list_add_data(list, ((void**) &person2), person_free);
+		person_t *person2 = PERSON_CREATE("2", "person2");
+		tsk_list_add_data(list, ((void**) &person2));
 	}
 
 	/* dump all items */
 	tsk_list_foreach(item, list)
 	{
-		person_t* item_data = ((person_t*)item->data);
+		person_t* item_data = item->data;
 		printf("test_complex_list/// --> [id=%s and name=%s]\n", item_data->id, item_data->name);
 	}
 
-	/* Find person named "person2" */
+	/* Find person using tsk_object* */
 	{
-		const tsk_list_item_t *item_const = tsk_list_find_item(list, find_person_by_name, "person2");
+		person_t *person_to_find = PERSON_CREATE("1", "person1");
+		const tsk_list_item_t *item_const = tsk_list_find_item_by_data(list, person_to_find);
 		{
-			const person_t* item_data_const = ((const person_t*)item_const->data);
-			printf("test_complex_list/// --> person with name==\"person2\" and id=\"%s\"", item_data_const->id);
+			const person_t* item_data_const = item_const->data;
+			printf("test_complex_list/// using tsk_object --> person with name==\"person1\" and id=\"%s\"", item_data_const->id);
+		}
+		PERSON_SAFE_FREE(person_to_find);
+	}
+
+	/* Find person named "person2" using predicate */
+	{
+		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(list, pred_find_person_by_name, "person2");
+		{
+			const person_t* item_data_const = item_const->data;
+			printf("test_complex_list/// using predicate --> person with name==\"person2\" and id=\"%s\"", item_data_const->id);
 		}
 	}
 
