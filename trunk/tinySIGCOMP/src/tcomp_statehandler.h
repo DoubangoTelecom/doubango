@@ -54,7 +54,7 @@ typedef struct tcomp_statehandler_s
 	tcomp_compartments_L_t *compartments;
 	tcomp_params_t *sigcomp_parameters;
 	
-	tcomp_buffers_L_t *dictionaries;
+	tcomp_dictionaries_L_t *dictionaries;
 	int hasSipSdpDictionary;
 	int hasPresenceDictionary;
 

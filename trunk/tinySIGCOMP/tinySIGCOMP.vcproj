@@ -217,6 +217,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\tcomp_decompressordisp.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\tcomp_message.c"
 					>
 				</File>
@@ -242,6 +246,26 @@
 				</File>
 				<File
 					RelativePath=".\src\tcomp_statehandler.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_udvm.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_udvm.instructions.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_udvm.nack.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_udvm.operands.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_udvm.statemanagment.c"
 					>
 				</File>
 			</Filter>
@@ -335,6 +359,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\tcomp_decompressordisp.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\tcomp_message.h"
 					>
 				</File>
@@ -360,6 +388,10 @@
 				</File>
 				<File
 					RelativePath=".\src\tcomp_statehandler.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_udvm.h"
 					>
 				</File>
 			</Filter>

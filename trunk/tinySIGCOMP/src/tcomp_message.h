@@ -32,12 +32,12 @@
 
 #include "tinysigcomp_config.h"
 #include "tcomp_buffer.h"
-#include "tcomp_nakinfo.h"
+#include "tcomp_nackinfo.h"
 #include "tsk_object.h"
 
 #include <stdint.h>
 
-#define TCOMP_MESSAGE_CREATE(input_ptr, input_size, stream)	tsk_object_new(tsk_message_def_t, input_ptr, input_size, stream)
+#define TCOMP_MESSAGE_CREATE(input_ptr, input_size, stream)	tsk_object_new(tcomp_message_def_t, input_ptr, input_size, stream)
 #define TCOMP_MESSAGE_SAFE_FREE(self)						tsk_object_unref(self)
 
 /**

@@ -45,7 +45,7 @@ typedef struct tcomp_compressordata_s
 	TSK_DECLARE_OBJECT;
 
 	tcomp_state_t *ghostState;
-	int isStream;
+	unsigned isStream:1;
 
 	TSK_DECLARE_SAFEOBJ;
 }

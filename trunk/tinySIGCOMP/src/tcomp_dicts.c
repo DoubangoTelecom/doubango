@@ -40,10 +40,10 @@
 
 /**@ingroup tcomp_dicts_group
 */
-static tcomp_state_t* tcomp_state_create_presence_dict()
+tcomp_dictionary_t* tcomp_dicts_create_presence_dict()
 {
 	static const char *pres_dict_data = RFC5112_DICTIONARY_PRESENCE_VALUE;
-	static tcomp_state_t * pres_dict = 0;
+	static tcomp_dictionary_t * pres_dict = 0;
 
 	if(!pres_dict)
 	{
@@ -70,11 +70,11 @@ static tcomp_state_t* tcomp_state_create_presence_dict()
 
 /**@ingroup tcomp_dicts_group
 */
-static tcomp_state_t* tcomp_state_create_sip_dict()
+tcomp_dictionary_t* tcomp_dicts_create_sip_dict()
 {
 	
 	static const char *sip_dict_data = RFC3485_DICTIONARY_SIP_VALUE;
-	static tcomp_state_t *sip_dict = 0;
+	static tcomp_dictionary_t *sip_dict = 0;
 
 	if(!sip_dict)
 	{

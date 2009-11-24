@@ -53,8 +53,9 @@ static uint16_t TSK_LSB_2_MSB( void const * buffer )
 #	define	TSK_BINARY_GET_2BYTES(buffer) TSK_LSB_2_MSB(buffer)
 #	define  TSK_BINARY_SET_2BYTES(buffer, value)							\
 				{uint16_t __value__ = value;							\
-				(TSK_TO_U8(buffer)[0]) = (__value__ >> 8);					\
-				(TSK_TO_U8(buffer)[1]) = (__value__ & 0xff);}
+				uint8_t*__buffer__ = buffer;							\
+				(__buffer__[0]) = (__value__ >> 8);					\
+				(__buffer__[1]) = (__value__ & 0xff);}
 #endif
 
 /////////////////////////////////////////////////////////

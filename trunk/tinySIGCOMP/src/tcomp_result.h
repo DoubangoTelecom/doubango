@@ -75,14 +75,14 @@ typedef struct tcomp_result_s
 	uint8_t						statesToFreeIndex;
 
 	uint64_t					streamId;
-	int							isStreamBased;
+	unsigned					isStreamBased:1;
 	tcomp_buffer_handle_t		*output_buffer;
 
 	tcomp_reqfeed_t				*req_feedback;
 	tcomp_params_t				*remote_parameters;
 	tcomp_buffer_handle_t		*ret_feedback;
 
-	int							isNack;
+	unsigned					isNack:1;
 	tcomp_buffer_handle_t		*nack_info;
 }
 tcomp_result_t;

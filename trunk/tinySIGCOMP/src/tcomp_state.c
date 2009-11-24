@@ -164,7 +164,7 @@ static void* tcomp_state_destroy(void *self)
 	return self;
 }
 
-static const tsk_object_def_t tsk_state_def_s = 
+static const tsk_object_def_t tcomp_state_def_s = 
 {
 	sizeof(tcomp_state_t),
 	tcomp_state_create,
@@ -173,4 +173,4 @@ static const tsk_object_def_t tsk_state_def_s =
 	0,
 	0
 };
-const void *tcomp_state_def_t = &tsk_state_def_s;
+const void *tcomp_state_def_t = &tcomp_state_def_s;

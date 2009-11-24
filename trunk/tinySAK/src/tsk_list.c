@@ -201,16 +201,48 @@ void tsk_list_init(tsk_list_t* list)
 */
 void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 {
-	tsk_list_remove_item2(list, tsk_list_find_by_item, (const void*)item);
+	tsk_list_remove_item_by_pred(list, tsk_list_find_by_item, (const void*)item);
 }
 
 /**@ingroup tsk_list_group
-* Remove an item from the @a list using predicate function
-* @param list the list from which to remove an item
-* @param predicate the predicate function
-* @param data the data to pass to the predicate function
+* Remove an item from the @a list using predicate function.
+* @param list The list from which to remove an item.
+* @param tskobj The @ref tsk_object_t object to remove.
 */
-void tsk_list_remove_item2(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
+void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
+{
+	if(list)
+	{
+		tsk_list_item_t *prev = 0;
+		tsk_list_item_t *curr = prev = list->head;
+
+		while(curr)
+		{
+			if(tsk_object_icmp(curr->data, tskobj))
+			{
+				if(prev == curr && curr->next == NULL)
+				{ /* There was only one item */
+					list->head = NULL;
+				}
+				else prev->next = curr->next;
+
+				curr = tsk_object_unref(curr);
+				break;
+			}
+			
+			prev = curr;
+			curr = curr->next;
+		}
+	}
+}
+
+/**@ingroup tsk_list_group
+* Remove an item from the @a list using predicate function.
+* @param list The list from which to remove an item.
+* @param predicate The predicate function.
+* @param data Arbitrary data to pass to the predicate function.
+*/
+void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
 	if(list)
 	{
@@ -271,10 +303,10 @@ void tsk_list_add_list(tsk_list_t* dest, tsk_list_t** src)
 }
 
 /**@ingroup tsk_list_group
-* Add an opaque data to the list
-* @param list destination list
-* @param data opaque data to add into @a list
-* @param item_func_free pointer to the function to call to free the opaque @a data
+* Add an opaque data to the list.
+* @param list destination list.
+* @param data opaque data to add into @a list.
+* @param item_func_free pointer to the function to call to free the opaque @a data.
 */
 void tsk_list_add_data(tsk_list_t* list, void** data)
 {
@@ -294,6 +326,10 @@ void tsk_list_add_data(tsk_list_t* list, void** data)
 }
 
 /**@ingroup tsk_list_group
+* Find an item from a list.
+* @param list The list from which to search an item.
+* @param tskobj The @ref tsk_object_t object to remove.
+* @retval A @ref tsk_list_item_t item if found and NULL otherwize.
 */
 const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const void * tskobj)
 {
