@@ -43,7 +43,7 @@
 typedef struct tcomp_buffer_s
 {
 	TSK_DECLARE_OBJECT;
-
+	
 	size_t		size;			/**< The size of the buffer */
 	uint8_t*	lpbuffer;		/**< Pointer to the buffer */
 	size_t		index_bytes;	/**< Bytes (8bit size) cursor */

@@ -203,9 +203,7 @@ void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 	if(lpState)
 	{
 		compartment->total_memory_left += TCOMP_GET_STATE_SIZE(lpState);
-		assert(0); // FIXME: LIST REMOVE implementation
-		//compartment->local_states.remove(lpState);
-		//SAFE_DELETE_PTR(lpState);
+		tsk_list_remove_item_by_data(compartment->local_states, lpState);
 	}
 
 	tsk_safeobj_unlock(compartment);
@@ -224,9 +222,7 @@ void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t
 	tsk_safeobj_lock(compartment);
 
 	compartment->total_memory_left += TCOMP_GET_STATE_SIZE(*lpState);
-	assert(0); // FIXME: LIST REMOVE implementation
-	//compartment->local_states.remove(lpState);
-	//SAFE_DELETE_PTR(lpState);
+	tsk_list_remove_item_by_data(compartment->local_states, lpState);
 
 	tsk_safeobj_unlock(compartment);
 }
@@ -454,6 +450,9 @@ static void* tcomp_compartment_create(void * self, va_list * app)
 		uint64_t id = va_arg(*app, uint64_t);
 		uint16_t sigCompParameters = va_arg(*app, uint16_t);
 
+		/* Initialize safeobject */
+		tsk_safeobj_init(compartment);
+
 		/*
 		  +---+---+---+---+---+---+---+---+
 		  |  cpb  |    dms    |    sms    |
@@ -484,6 +483,9 @@ static void* tcomp_compartment_destroy(void *self)
 	tcomp_compartment_t *compartment = self;
 	if(compartment)
 	{
+		/* Deinitialize safeobject */
+		tsk_safeobj_deinit(compartment);
+
 		/* Delete all states */
 		TSK_LIST_SAFE_FREE(compartment->local_states);
 		

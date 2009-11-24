@@ -20,21 +20,15 @@
 *
 */
 
-/**@file tcomp_dicts.h
- * @brief SigComp Dictionaries
+/**@file tcomp_udvm.operands.c
+ * @brief  The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
+#include "tcomp_udvm.h"
 
-#ifndef _TINYSIGCOMP_DICTS_H_
-#define _TINYSIGCOMP_DICTS_H_
-
-#include "tinysigcomp_config.h"
-#include "tcomp_state.h"
-
-extern tcomp_dictionary_t* tcomp_dicts_create_presence_dict();
-extern tcomp_dictionary_t* tcomp_dicts_create_sip_dict();
-
-#endif /* _TINYSIGCOMP_DICTS_H_ */
+/**@defgroup tcomp_udvm_group SIGCOMP UDVM machine.
+* The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
+*/

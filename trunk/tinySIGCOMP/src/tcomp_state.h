@@ -67,6 +67,7 @@ typedef struct tcomp_state_s
 }
 tcomp_state_t;
 
+typedef tcomp_state_t tcomp_dictionary_t; /**< Ad dictionary is  a @ref tcomp_state_t. */
 
 int tcomp_state_equals(const tcomp_state_t *state1, const tcomp_state_t *state2);
 void tcomp_state_makeValid(tcomp_state_t*);
