@@ -38,6 +38,7 @@
 #include "tcomp_nack_codes.h"
 #include "tcomp_statehandler.h"
 #include "tcomp_headers_index.h"
+#include "tcomp_instructions.h"
 
 #include "tsk_object.h"
 
@@ -50,6 +51,9 @@
 
 #define TCOMP_UDVM_SET_2BYTES_VAL(position, value)	TSK_BINARY_SET_2BYTES(tcomp_buffer_getBufferAtPos(udvm, position), value)
 #define TCOMP_UDVM_GET_2BYTES_VAL(position)			TSK_BINARY_GET_2BYTES(tcomp_buffer_getBufferAtPos(udvm, position))
+
+#define TCOMP_UDVM_GET_BUFFER()				tcomp_buffer_getBuffer(udvm->memory)
+#define TCOMP_UDVM_GET_BUFFER_AT(position)	tcomp_buffer_getBufferAtPos(udvm->memory, position)
 
 typedef struct tcomp_udvm_s
 {
@@ -71,8 +75,9 @@ typedef struct tcomp_udvm_s
 }
 tcomp_udvm_t;
 
-
-int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm);
+/*
+*	Public function
+*/
 int tcomp_udvm_decompress(tcomp_udvm_t *udvm);
 
 /*

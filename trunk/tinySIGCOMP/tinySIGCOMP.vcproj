@@ -181,6 +181,10 @@
 				RelativePath=".\src\tcomp_buffer.c"
 				>
 			</File>
+			<File
+				RelativePath=".\src\tcomp_manager.c"
+				>
+			</File>
 			<Filter
 				Name="zlib"
 				>
@@ -217,6 +221,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\tcomp_compressordisp.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\tcomp_decompressordisp.c"
 					>
 				</File>
@@ -246,6 +254,10 @@
 				</File>
 				<File
 					RelativePath=".\src\tcomp_statehandler.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_udvm.bytecopy.c"
 					>
 				</File>
 				<File
@@ -304,6 +316,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tcomp_manager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tcomp_nack_codes.h"
 				>
 			</File>
@@ -356,6 +372,10 @@
 				</File>
 				<File
 					RelativePath=".\src\tcomp_compressordata.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\tcomp_compressordisp.h"
 					>
 				</File>
 				<File
