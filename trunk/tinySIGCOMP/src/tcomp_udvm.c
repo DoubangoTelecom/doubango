@@ -39,6 +39,351 @@
 #define TCOMP_UDVM_HEADER_RESERVED_SIZE 22
 
 
+/**@ingroup tcomp_udvm_group
+*/
+static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
+{
+	uint16_t operand_1, operand_2, operand_3, operand_4, operand_5, operand_6, operand_7;
+	int excution_failed = 0, end_message = 0;
+	if(!udvm->isOK) 
+	{
+		TSK_DEBUG_ERROR("Cannot run/execute bytecode on invalid.");
+		return 0;
+	}
+
+	// LOOP - EXCUTE all bytecode
+	while( !excution_failed && !end_message )
+	{
+		uint8_t udvm_instruction = * (TCOMP_UDVM_GET_BUFFER_AT(udvm->executionPointer));
+		udvm->last_memory_address_of_instruction = udvm->executionPointer;
+		udvm->executionPointer++; /* Skip the 1-byte [INSTRUCTION] */
+
+		switch(udvm_instruction)
+		{
+		case TCOMP_UDVM_INST__DECOMPRESSION_FAILURE:
+			{
+				//TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(udvm);
+				excution_failed = 1;
+				break;
+			}
+
+		case TCOMP_UDVM_INST__AND:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__AND(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__OR:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__OR(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__NOT:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__NOT(udvm, operand_1);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__LSHIFT:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__LSHIFT(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__RSHIFT:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__RSHIFT(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__ADD:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__ADD(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__SUBTRACT:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__SUBTRACT(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__MULTIPLY:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__MULTIPLY(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__DIVIDE:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__DIVIDE(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__REMAINDER:
+			{
+				operand_1 = tcomp_udvm_opget_reference_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__REMAINDER(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__SORT_ASCENDING:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__SORT_DESCENDING:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__SHA_1:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__SHA_1(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__LOAD:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__LOAD(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__MULTILOAD:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_literal_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__MULTILOAD(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__PUSH:
+			{
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__PUSH2(udvm);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__POP:
+			{
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__POP2(udvm);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__COPY:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__COPY(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__COPY_LITERAL:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_reference_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__COPY_LITERAL(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__COPY_OFFSET:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_reference_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__COPY_OFFSET(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__MEMSET:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_4 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__MEMSET(udvm, operand_1, operand_2, operand_3, operand_4);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__JUMP:
+			{
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__JUMP2(udvm);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__COMPARE:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
+				operand_4 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
+				operand_5 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__COMPARE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__CALL:
+			{
+				operand_1 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__CALL(udvm, operand_1);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__RETURN:
+			{
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__RETURN(udvm);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__SWITCH:
+			{
+				operand_1 = tcomp_udvm_opget_literal_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__SWITCH(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__CRC:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_4 = tcomp_udvm_opget_reference_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__CRC(udvm, operand_1, operand_2, operand_3, operand_4);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__INPUT_BYTES:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_BYTES(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__INPUT_BITS:
+			{	
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_BITS(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__INPUT_HUFFMAN:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
+				operand_3 = tcomp_udvm_opget_literal_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(udvm, operand_1, operand_2, operand_3);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__STATE_ACCESS:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_4 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_5 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_6 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_ACCESS(udvm, operand_1, operand_2, operand_3, operand_4, operand_5, operand_6);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__STATE_CREATE:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_4 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_5 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_CREATE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__STATE_FREE:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_FREE(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__OUTPUT:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__OUTPUT(udvm, operand_1, operand_2);
+				break;
+			}
+
+		case TCOMP_UDVM_INST__END_MESSAGE:
+			{
+				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_4 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_5 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_6 = tcomp_udvm_opget_multitype_param(udvm);
+				operand_7 = tcomp_udvm_opget_multitype_param(udvm);
+				//excution_failed = !TCOMP_UDVM_EXEC_INST__END_MESSAGE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5, operand_6, operand_7);
+				end_message = 1;
+				break;
+			}
+
+		default:
+			tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_OPCODE);
+			goto bail;
+		}
+	}
+
+bail:
+
+	// if excution_failed --> GetLastError()
+	return (!excution_failed);
+}
+
+/**@ingroup tcomp_udvm_group
+*/
+int tcomp_udvm_decompress(tcomp_udvm_t *udvm)
+{
+	return tcomp_udvm_runByteCode(udvm);
+}
 
 
 

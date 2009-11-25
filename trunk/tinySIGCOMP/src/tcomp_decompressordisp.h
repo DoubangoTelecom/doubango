@@ -44,7 +44,7 @@
 #define TCOMP_STREAM_BUFFER_CREATE(id)					tsk_object_new(tcomp_stream_buffer_def_t, (uint64_t)id)
 #define TCOMP_STREAM_BUFFER_SAFE_FREE(self)				tsk_object_unref(self)
 
-#define TCOMP_DECOMPRESSORDISP_CREATE(statehandler)		tsk_object_new(tcomp_stream_buffer_def_t, (const tcomp_statehandler_t*)statehandler)
+#define TCOMP_DECOMPRESSORDISP_CREATE(statehandler)		tsk_object_new(tcomp_decompressordisp_def_t, (const tcomp_statehandler_t*)statehandler)
 #define TCOMP_DECOMPRESSORDISP_SAFE_FREE(self)			tsk_object_unref(self)
 
 typedef struct tcomp_stream_buffer_s
