@@ -103,7 +103,7 @@ void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buf
 	}
 	else if(reasonCode == NACK_BYTECODES_TOO_LARGE)
 	{
-		uint16_t memorySize = tcomp_buffer_getSize(udvm->memory);
+		uint16_t memorySize = TCOMP_UDVM_GET_SIZE();
 		tcomp_buffer_appendBuff(udvm->lpResult->nack_info, &memorySize, 2);
 	}
 	else if(reasonCode == NACK_CYCLES_EXHAUSTED)

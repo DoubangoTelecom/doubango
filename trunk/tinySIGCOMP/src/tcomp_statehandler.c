@@ -406,10 +406,11 @@ static void* tcomp_statehandler_create(void * self, va_list * app)
 		tsk_safeobj_init(statehandler);
 		
 		/* RFC 3320 - 3.3.  SigComp Parameters */
+		statehandler->sigcomp_parameters = TCOMP_PARAMS_CREATE();
 		tcomp_params_setDmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_DECOMPRESSION_MEMORY_SIZE);
 		tcomp_params_setSmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_STATE_MEMORY_SIZE);
 		tcomp_params_setCpbValue(statehandler->sigcomp_parameters, SIP_RFC5049_CYCLES_PER_BIT);
-
+	
 		statehandler->sigcomp_parameters->SigComp_version = SIP_RFC5049_SIGCOMP_VERSION;
 	}
 	else TSK_DEBUG_ERROR("Null SigComp state handler.");

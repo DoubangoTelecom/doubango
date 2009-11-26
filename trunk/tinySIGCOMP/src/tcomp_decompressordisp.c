@@ -99,7 +99,7 @@ int tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, cons
 
 		if(ret && tcomp_decompressordisp_getNextStreamMsg(dispatcher, streamId, &discard_count, &size))
 		{
-			ret &= tcomp_decompressordisp_internalDecompress(dispatcher, tcomp_buffer_getBuffer(lpBuffer->buffer), &size, &lpResult);
+			ret &= tcomp_decompressordisp_internalDecompress(dispatcher, tcomp_buffer_getBuffer(lpBuffer->buffer), size, &lpResult);
 
 			/* remove buffer and discard */
 			tcomp_buffer_discardLastBytes(lpBuffer->buffer, discard_count);
@@ -116,7 +116,7 @@ int tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, cons
 	}
 	else
 	{
-		ret &= tcomp_decompressordisp_internalDecompress(dispatcher, input_ptr, &input_size, &lpResult);
+		ret &= tcomp_decompressordisp_internalDecompress(dispatcher, input_ptr, input_size, &lpResult);
 	}
 	
 	return ret;
@@ -150,7 +150,7 @@ int tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispatcher, 
 	
 	if(ret && tcomp_decompressordisp_getNextStreamMsg(dispatcher, streamId, &discard_count, &size))
 	{
-		ret &= tcomp_decompressordisp_internalDecompress(dispatcher, tcomp_buffer_getBuffer(lpBuffer), &size, &lpResult);
+		ret &= tcomp_decompressordisp_internalDecompress(dispatcher, tcomp_buffer_getBuffer(lpBuffer), size, &lpResult);
 
 		/* remove buffer and discard */
 		tcomp_buffer_discardLastBytes(lpBuffer->buffer, discard_count);
@@ -165,7 +165,7 @@ int tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispatcher, 
 
 /**@ingroup tcomp_decompressordisp_group
 */
-int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, const size_t *input_size, tcomp_result_t **lpResult)
+int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, const size_t input_size, tcomp_result_t **lpResult)
 {
 	tcomp_message_t *sigCompMessage;
 	tcomp_udvm_t *sigCompUDVM;

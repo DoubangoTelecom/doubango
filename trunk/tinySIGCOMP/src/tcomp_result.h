@@ -40,7 +40,7 @@
 
 #define MAX_TEMP_SATES	4
 
-#define TCOMP_RESULT_CREATE()						tsk_object_new(tsk_result_def_t)
+#define TCOMP_RESULT_CREATE()						tsk_object_new(tcomp_result_def_t)
 #define TCOMP_RESULT_SAFE_FREE(self)				tsk_object_unref(self)
 
 #define TCOMP_TEMPSTATE_TO_FREE_CREATE()			tsk_object_new(tcomp_tempstate_to_free_def_t)
@@ -87,9 +87,16 @@ typedef struct tcomp_result_s
 }
 tcomp_result_t;
 
-void tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput);
-void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, size_t output_size, int isStream, uint64_t streamId);
-void tcomp_result_setCompartmentId(tcomp_result_t *result, const void *id, size_t len);
+
+void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput);
+#define tcomp_result_reset(result) _tcomp_result_reset((tcomp_result_t *)result, 0, 1)
+
+TINYSIGCOMP_API void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, size_t output_size, int isStream, uint64_t streamId);
+#define tcomp_result_setOutputUDPBuffer(result, output_ptr, output_size) tcomp_result_setOutputBuffer((tcomp_result_t *)result, (void *)output_ptr, (size_t) output_size, 0, 0)
+#define tcomp_result_setOutputTCPBuffer(result, output_ptr, output_size, streamId) tcomp_result_setOutputBuffer((tcomp_result_t *)result, (void *)output_ptr, (size_t) output_size, 1, (uint64_t)streamId)
+#define tcomp_result_setOutputSCTPBuffer(result, output_ptr, output_size) tcomp_result_setOutputTCPBuffer
+
+TINYSIGCOMP_API void tcomp_result_setCompartmentId(tcomp_result_t *result, const void *id, size_t len);
 
 void tcomp_result_addTempStateToCreate(tcomp_result_t *result, tcomp_state_t* lpState);
 uint8_t tcomp_result_getTempStatesToCreateSize(const tcomp_result_t *result);

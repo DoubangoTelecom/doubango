@@ -255,12 +255,17 @@ static void* tcomp_message_create(void *self, va_list * app)
 
 		uint8_t *dummy_ptr, *end_ptr;
 		uint8_t state_len;
-
+		
 		if(input_size < MIN_LEN)
 		{
 			message->isOK = 0;
 			goto bail;
 		}
+
+		message->stateId = TCOMP_BUFFER_CREATE();
+		message->remaining_sigcomp_buffer = TCOMP_BUFFER_CREATE();
+		message->uploaded_UDVM_buffer = TCOMP_BUFFER_CREATE();
+		message->ret_feedback_buffer= TCOMP_BUFFER_CREATE();
 		
 		message->isNack = 0;
 		dummy_ptr = ((uint8_t*)input_ptr);
