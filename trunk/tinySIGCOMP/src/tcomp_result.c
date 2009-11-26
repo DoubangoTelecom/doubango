@@ -36,7 +36,7 @@
 
 /**@ingroup tcomp_result_group
 */
-void tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput)
+void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput)
 {
 	if(result)
 	{
@@ -215,9 +215,7 @@ static void* tcomp_result_create(void *self, va_list * app)
 
 	if(result)
 	{
-		result->isStreamBased = 0;
-		result->streamId = 0;
-		result->isNack = 0;
+		result->output_buffer = TCOMP_BUFFER_CREATE();
 	}
 
 	return self;
@@ -229,7 +227,8 @@ static void* tcomp_result_destroy(void * self)
 
 	if(result)
 	{
-		tcomp_result_reset(result, 1, 1);
+		_tcomp_result_reset(result, 1, 1);
+		TCOMP_BUFFER_SAFE_FREE(result->output_buffer);
 	}
 
 	return self;

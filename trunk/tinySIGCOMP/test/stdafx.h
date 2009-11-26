@@ -28,7 +28,10 @@
 #include <stdio.h>
 #include <tchar.h>
 
+#include <string.h>
 
-// TODO: reference additional headers your program requires here
+
+#define TINYSAK_IMPORTS
+#define TINYSIGCOMP_IMPORTS
 
 #endif /* TEST_TINYSIGCOMP_STDAFX_H */

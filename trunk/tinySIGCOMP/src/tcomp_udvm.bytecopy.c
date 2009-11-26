@@ -47,7 +47,7 @@ From UDVM to UDVM
 int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy)
 {
 	uint16_t byte_copy_left, byte_copy_right;
-	if (*destination == tcomp_buffer_getSize(udvm->memory) || source == tcomp_buffer_getSize(udvm->memory))
+	if (*destination == TCOMP_UDVM_GET_SIZE() || source == TCOMP_UDVM_GET_SIZE())
 	{
 		/* SEGFAULT */
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
@@ -85,7 +85,7 @@ int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint16_t destination, const uint8
 {
 	uint16_t byte_copy_left, byte_copy_right;
 
-	if(destination == tcomp_buffer_getSize(udvm->memory))
+	if(destination == TCOMP_UDVM_GET_SIZE())
 	{
 		/* SEGFAULT */
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
@@ -122,7 +122,7 @@ int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint16_t 
 {
 	uint16_t byte_copy_left, byte_copy_right;
 
-	if(source == tcomp_buffer_getSize(udvm->memory))
+	if(source == TCOMP_UDVM_GET_SIZE())
 	{
 		/* SEGFAULT */
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);

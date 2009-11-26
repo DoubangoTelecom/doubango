@@ -49,9 +49,16 @@
 #define TCOMP_UDVM_CREATE(_sigCompMessage, stateHandler, lpResult)	tsk_object_new(tcomp_udvm_def_t, (tcomp_message_t*)_sigCompMessage, (tcomp_statehandler_t*)stateHandler, (tcomp_result_t*)lpResult)
 #define TCOMP_UDVM_SAFE_FREE(self)									tsk_object_unref(self)
 
-#define TCOMP_UDVM_SET_2BYTES_VAL(position, value)	TSK_BINARY_SET_2BYTES(tcomp_buffer_getBufferAtPos(udvm, position), value)
-#define TCOMP_UDVM_GET_2BYTES_VAL(position)			TSK_BINARY_GET_2BYTES(tcomp_buffer_getBufferAtPos(udvm, position))
+#define TCOMP_UDVM_SET_2BYTES_VAL(position, value)	TSK_BINARY_SET_2BYTES(tcomp_buffer_getBufferAtPos(udvm->memory, position), value)
+#define TCOMP_UDVM_GET_2BYTES_VAL(position)			TSK_BINARY_GET_2BYTES(tcomp_buffer_getBufferAtPos(udvm->memory, position))
 
+#if defined(DEBUG) || defined(_DEBUG)
+#	define TCOMP_UDVM_DEBUG_PRINT(size)		tcomp_buffer_nprint(udvm->memory, size)
+#else
+#	define TCOMP_UDVM_DEBUG_PRINT(size)		((void)size)
+#endif
+
+#define TCOMP_UDVM_GET_SIZE()				tcomp_buffer_getSize(udvm->memory)
 #define TCOMP_UDVM_GET_BUFFER()				tcomp_buffer_getBuffer(udvm->memory)
 #define TCOMP_UDVM_GET_BUFFER_AT(position)	tcomp_buffer_getBufferAtPos(udvm->memory, position)
 

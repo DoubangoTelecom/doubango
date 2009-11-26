@@ -37,40 +37,46 @@
 
 typedef void tcomp_manager_handle_t;
 
+
+#define TCOMP_MANAGER_CREATE()					(tcomp_manager_handle_t*)tsk_object_new(tcomp_manager_def_t)
+#define TCOMP_MANAGER_SAFE_FREE(self)			tsk_object_unref(self)
+
 //
 //	Compression / Decompression
 //
-size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, int stream);
+TINYSIGCOMP_API size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, int stream);
 #define tcomp_manager_compressUDP(handle, compartmentId, input_ptr, input_size, output_ptr, output_size) tcomp_manager_compress((tcomp_manager_handle_t *)handle, (uint64_t) compartmentId, (const void*) input_ptr, (size_t) input_size, (void*) output_ptr, (size_t) output_size, 0)
 #define tcomp_manager_compressTCP(handle, compartmentId, input_ptr, input_size, output_ptr, output_size) tcomp_manager_compress((tcomp_manager_handle_t *)handle, (uint64_t) compartmentId, (const void*) input_ptr, (size_t) input_size, (void*) output_ptr, (size_t) output_size, 1) 
 #define tcomp_manager_compressSCTP compressTCP
 
-size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult);
-size_t tcomp_manager_getNextMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult);
+TINYSIGCOMP_API size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult);
+TINYSIGCOMP_API size_t tcomp_manager_getNextMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult);
 
 /*
 *	Compartment management
 */
-void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult);
-void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, uint64_t compartmentId);
+TINYSIGCOMP_API void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult);
+TINYSIGCOMP_API void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, uint64_t compartmentId);
 
 /*
 *	SigComp Parameters
 */
-void tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, uint32_t dms);
-void tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t sms);
-void tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb);
-void tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version);
+TINYSIGCOMP_API void tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, uint32_t dms);
+TINYSIGCOMP_API void tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t sms);
+TINYSIGCOMP_API void tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb);
+TINYSIGCOMP_API void tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version);
 
 /*
 *	Compressors
 */
-void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle/*, SigCompCompressor* compressor*/);
+TINYSIGCOMP_API void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle/*, SigCompCompressor* compressor*/);
 
 /*
 *	Dictionnaries
 */
-void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle);
-void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle);
+TINYSIGCOMP_API void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle);
+TINYSIGCOMP_API void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle);
+
+TINYSIGCOMP_API const void *tcomp_manager_def_t;
 
 #endif /* TCOMP_MANAGER_H */

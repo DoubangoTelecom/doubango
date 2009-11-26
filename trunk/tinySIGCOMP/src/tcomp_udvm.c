@@ -56,13 +56,13 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 	{
 		uint8_t udvm_instruction = * (TCOMP_UDVM_GET_BUFFER_AT(udvm->executionPointer));
 		udvm->last_memory_address_of_instruction = udvm->executionPointer;
-		udvm->executionPointer++; /* Skip the 1-byte [INSTRUCTION] */
+		udvm->executionPointer++; /* Skip the 1-byte [INSTRUCTION]. */
 
 		switch(udvm_instruction)
 		{
 		case TCOMP_UDVM_INST__DECOMPRESSION_FAILURE:
 			{
-				//TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(udvm);
+				TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(udvm);
 				excution_failed = 1;
 				break;
 			}
@@ -71,7 +71,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__AND(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__AND(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -79,14 +79,14 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__OR(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__OR(udvm, operand_1, operand_2);
 				break;
 			}
 
 		case TCOMP_UDVM_INST__NOT:
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__NOT(udvm, operand_1);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__NOT(udvm, operand_1);
 				break;
 			}
 
@@ -94,7 +94,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__LSHIFT(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__LSHIFT(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -102,7 +102,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__RSHIFT(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__RSHIFT(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -110,7 +110,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__ADD(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__ADD(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -118,7 +118,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__SUBTRACT(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__SUBTRACT(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -126,7 +126,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__MULTIPLY(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__MULTIPLY(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -134,7 +134,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__DIVIDE(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__DIVIDE(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -142,7 +142,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_reference_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__REMAINDER(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__REMAINDER(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -151,7 +151,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -160,7 +160,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -169,7 +169,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__SHA_1(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__SHA_1(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -177,7 +177,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__LOAD(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__LOAD(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -185,19 +185,19 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_literal_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__MULTILOAD(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__MULTILOAD(udvm, operand_1, operand_2);
 				break;
 			}
 
 		case TCOMP_UDVM_INST__PUSH:
 			{
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__PUSH2(udvm);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__PUSH2(udvm);
 				break;
 			}
 
 		case TCOMP_UDVM_INST__POP:
 			{
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__POP2(udvm);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__POP2(udvm);
 				break;
 			}
 
@@ -206,7 +206,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__COPY(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__COPY(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -215,7 +215,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_reference_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__COPY_LITERAL(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__COPY_LITERAL(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -224,7 +224,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_reference_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__COPY_OFFSET(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__COPY_OFFSET(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -234,13 +234,13 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_4 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__MEMSET(udvm, operand_1, operand_2, operand_3, operand_4);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__MEMSET(udvm, operand_1, operand_2, operand_3, operand_4);
 				break;
 			}
 
 		case TCOMP_UDVM_INST__JUMP:
 			{
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__JUMP2(udvm);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__JUMP2(udvm);
 				break;
 			}
 
@@ -251,20 +251,20 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_3 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
 				operand_4 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
 				operand_5 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__COMPARE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__COMPARE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5);
 				break;
 			}
 
 		case TCOMP_UDVM_INST__CALL:
 			{
 				operand_1 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__CALL(udvm, operand_1);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__CALL(udvm, operand_1);
 				break;
 			}
 
 		case TCOMP_UDVM_INST__RETURN:
 			{
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__RETURN(udvm);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__RETURN(udvm);
 				break;
 			}
 
@@ -272,7 +272,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_literal_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__SWITCH(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__SWITCH(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -282,7 +282,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_4 = tcomp_udvm_opget_reference_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__CRC(udvm, operand_1, operand_2, operand_3, operand_4);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__CRC(udvm, operand_1, operand_2, operand_3, operand_4);
 				break;
 			}
 
@@ -291,7 +291,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_BYTES(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_BYTES(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -300,7 +300,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_3 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_BITS(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_BITS(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -309,7 +309,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
 				operand_3 = tcomp_udvm_opget_literal_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(udvm, operand_1, operand_2, operand_3);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(udvm, operand_1, operand_2, operand_3);
 				break;
 			}
 
@@ -321,7 +321,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_4 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_5 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_6 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_ACCESS(udvm, operand_1, operand_2, operand_3, operand_4, operand_5, operand_6);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_ACCESS(udvm, operand_1, operand_2, operand_3, operand_4, operand_5, operand_6);
 				break;
 			}
 
@@ -332,7 +332,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_3 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_4 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_5 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_CREATE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_CREATE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5);
 				break;
 			}
 
@@ -340,7 +340,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_FREE(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__STATE_FREE(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -348,7 +348,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			{
 				operand_1 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_2 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__OUTPUT(udvm, operand_1, operand_2);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__OUTPUT(udvm, operand_1, operand_2);
 				break;
 			}
 
@@ -361,7 +361,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 				operand_5 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_6 = tcomp_udvm_opget_multitype_param(udvm);
 				operand_7 = tcomp_udvm_opget_multitype_param(udvm);
-				//excution_failed = !TCOMP_UDVM_EXEC_INST__END_MESSAGE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5, operand_6, operand_7);
+				excution_failed = !TCOMP_UDVM_EXEC_INST__END_MESSAGE(udvm, operand_1, operand_2, operand_3, operand_4, operand_5, operand_6, operand_7);
 				end_message = 1;
 				break;
 			}
@@ -370,6 +370,8 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 			tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_OPCODE);
 			goto bail;
 		}
+
+		//TCOMP_UDVM_DEBUG_PRINT(200);
 	}
 
 bail:
@@ -422,6 +424,7 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 		udvm->isOK = 1;
 		udvm->maximum_UDVM_cycles = 0; /* RFC 3320 subclause 8.6 */
 		udvm->consumed_cycles = 0;
+		udvm->memory = TCOMP_BUFFER_CREATE();
 
 		/* Alloc UDVM memory */
 		if(udvm->sigCompMessage->stream_based)
@@ -463,7 +466,7 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 			uint16_t match_count = tcomp_statehandler_findState(udvm->stateHandler, udvm->sigCompMessage->stateId, &lpState);
 			if( (!match_count || match_count>1 || !lpState)
 				|| (lpState->minimum_access_length > tcomp_buffer_getSize(udvm->sigCompMessage->stateId))
-				|| ((size_t)(lpState->address + lpState->length) > tcomp_buffer_getSize(udvm->memory)) )
+				|| ((size_t)(lpState->address + lpState->length) > TCOMP_UDVM_GET_SIZE()) )
 			{
 				tcomp_udvm_createNackInfo(udvm, NACK_STATE_NOT_FOUND, udvm->sigCompMessage->stateId, 0);
 				udvm->isOK = 0;
@@ -473,13 +476,13 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 			/*
 			* Copy bytecodes to UDVM memory
 			*/
-			if( (size_t)(lpState->address + lpState->length) >= tcomp_buffer_getSize(udvm->memory) )
+			if( (size_t)(lpState->address + lpState->length) >= TCOMP_UDVM_GET_SIZE() )
 			{
 				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 				udvm->isOK = 0;
 				return self;
 			}
-			memmove( tcomp_buffer_getBufferAtPos(udvm, lpState->address), 
+			memmove( TCOMP_UDVM_GET_BUFFER_AT(lpState->address), 
 				tcomp_buffer_getBuffer(lpState->value), 
 				tcomp_buffer_getSize(lpState->value) );
 			
@@ -491,17 +494,17 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 		}
 		else // DON'T HAVE STATE
 		{
-			//
-			// Copy bytecodes to UDVM memory
-			//
+			/*
+			* Copy bytecodes to UDVM memory
+			*/
 			size_t bytecodes_destination = udvm->sigCompMessage->bytecodes_destination;
-			if( (bytecodes_destination + tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer)) >= tcomp_buffer_getSize(udvm->memory) )
+			if( (bytecodes_destination + tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer)) >= TCOMP_UDVM_GET_SIZE() )
 			{
 				tcomp_udvm_createNackInfo2(udvm, NACK_BYTECODES_TOO_LARGE);
 				udvm->isOK = 0;
 				return self;
 			}
-			memmove( tcomp_buffer_getBufferAtPos(udvm, bytecodes_destination),
+			memmove( TCOMP_UDVM_GET_BUFFER_AT(bytecodes_destination),
 				tcomp_buffer_getBuffer(udvm->sigCompMessage->uploaded_UDVM_buffer),
 				tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer));
 
@@ -510,26 +513,29 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 		}
 
 		/* RFC 3320-Section_8.6.  UDVM Cycles
-		//To ensure that a SigComp message cannot consume excessive processing
-		resources, SigComp limits the number of "UDVM cycles" allocated to
-		each message.  The number of available UDVM cycles is initialized to
-		1000 plus the number of bits in the SigComp header (as described in
-		Section 7); this sum is then multiplied by cycles_per_bit.*/
+		/*
+		* To ensure that a SigComp message cannot consume excessive processing
+		* resources, SigComp limits the number of "UDVM cycles" allocated to
+		* each message.  The number of available UDVM cycles is initialized to
+		* 1000 plus the number of bits in the SigComp header (as described in
+		* Section 7); this sum is then multiplied by cycles_per_bit.
+		*/
 		/*maximum_UDVM_cycles = (8 * n + 1000) * cycles_per_bit*///FIXME:header_size
 		udvm->maximum_UDVM_cycles = ( (8 * udvm->sigCompMessage->header_size + 1000)* udvm->stateHandler->sigcomp_parameters->cpbValue );
 		
 		//
 		//	RFC 3320 - 7.2.  Useful values
 		//
-		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_UDVM_MEMORY_SIZE_INDEX, tcomp_buffer_getSize(udvm->memory));
+		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_UDVM_MEMORY_SIZE_INDEX, TCOMP_UDVM_GET_SIZE());
 		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_CYCLES_PER_BIT_INDEX, udvm->stateHandler->sigcomp_parameters->cpbValue);
 		TCOMP_UDVM_SET_2BYTES_VAL(TCOMP_UDVM_HEADER_SIGCOMP_VERSION_INDEX, udvm->stateHandler->sigcomp_parameters->SigComp_version);
-		memset(tcomp_buffer_getBufferAtPos(udvm, TCOMP_UDVM_HEADER_RESERVED_INDEX), 0, TCOMP_UDVM_HEADER_RESERVED_SIZE);
+		memset(TCOMP_UDVM_GET_BUFFER_AT(TCOMP_UDVM_HEADER_RESERVED_INDEX), 0, TCOMP_UDVM_HEADER_RESERVED_SIZE);
 	}
 	else
 	{
 		TSK_DEBUG_ERROR("Failed to create new udvm machine.");
 	}
+	
 	return self;
 }
 

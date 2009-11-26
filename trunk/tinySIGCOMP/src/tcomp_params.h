@@ -34,7 +34,7 @@
 #include "tcomp_types.h"
 #include "tsk_object.h"
 
-#define TCOMP_PARAMS_CREATE()				tsk_object_new(tsk_params_def_t)
+#define TCOMP_PARAMS_CREATE()				tsk_object_new(tcomp_params_def_t)
 #define TCOMP_PARAMS_SAFE_FREE(self)		tsk_object_unref(self)
 
 /**@typedef tcomp_params_t
@@ -74,6 +74,6 @@ void tcomp_params_setParameters(tcomp_params_t*, uint16_t sigCompParameters);
 
 void tcomp_params_reset(tcomp_params_t*);
 
-TINYSIGCOMP_API const void *tsk_params_def_t;
+TINYSIGCOMP_API const void *tcomp_params_def_t;
 
 #endif /* TCOMP_PARAMS_H */

@@ -702,8 +702,55 @@ struct_torture_test tests[] =
 	}
 };
 
+#include "tcomp_manager.h"
+
+#define OUTPUT_BUFFER_SIZE 2000
+
+#define RUN_TEST_LOOP	0
+
+#define RUN_TEST_ALL	0
+#define RUN_TEST_NO		2
+
 int _tmain(int argc, _TCHAR* argv[])
 {
+	size_t i, start, end;
+	char buffer[OUTPUT_BUFFER_SIZE];
+	tcomp_manager_handle_t *manager = TCOMP_MANAGER_CREATE();
+	tcomp_result_t *result = TCOMP_RESULT_CREATE();
+
+	/* Add SIP dictionary. */
+	tcomp_manager_addSipSdpDictionary(manager);
+
+	/* Add Presence dictionary. */
+	tcomp_manager_addPresenceDictionary(manager);
+	
+#if RUN_TEST_LOOP
+	for(;;;)
+#endif
+	{
+#if RUN_TEST_ALL
+		start = 0, end = 72;
+#else
+		start = RUN_TEST_NO, end = RUN_TEST_NO + 1;
+#endif
+
+		for(i=start; i<end; i++)
+		{
+			printf("Testing %s\n", tests[i].section_name);
+
+			memset(buffer, 0, OUTPUT_BUFFER_SIZE);
+			tcomp_result_setOutputUDPBuffer(result, buffer, OUTPUT_BUFFER_SIZE);
+
+			/* Performs decompression */
+			tcomp_manager_decompress(manager, tests[i].bytecode, tests[i].bytecode_size, result);
+		}
+
+	}/* LOOP */
+
+	/* Free previously allocated resources. */
+	TCOMP_RESULT_SAFE_FREE(result);
+	TCOMP_MANAGER_SAFE_FREE(manager);
+
 	return 0;
 }
 

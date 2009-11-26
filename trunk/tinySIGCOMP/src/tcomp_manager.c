@@ -81,6 +81,20 @@ size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* inpu
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return 0;
 	}
+	
+	if(!lpResult || !lpResult->output_buffer)
+	{
+		TSK_DEBUG_ERROR("You MUST initialize the sigcomp result and set a valid output buffer.");
+		return 0;
+	}
+
+	/* Reset previous values */
+	tcomp_result_reset(lpResult);
+	
+	if(tcomp_decompressordisp_decompress(manager->dispatcher_decompressor, input_ptr, input_size, lpResult))
+	{
+		return *tcomp_buffer_getIndexBytes(lpResult->output_buffer);
+	}
 
 	return 0;
 }
@@ -207,8 +221,6 @@ void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle)
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
-
-
 }
 
 /**@ingroup tcomp_manager_group
