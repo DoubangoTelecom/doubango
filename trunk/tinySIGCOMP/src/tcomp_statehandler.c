@@ -68,7 +68,7 @@ tcomp_compartment_t *tcomp_statehandler_getCompartment(tcomp_statehandler_t *sta
 	tsk_safeobj_lock(statehandler);
 
 	item_const = tsk_list_find_item_by_pred(statehandler->compartments, pred_find_compartment_by_id, &id);
-	if(item_const && !(result = item_const->data))
+	if(!item_const || !(result = item_const->data))
 	{
 		newcomp = TCOMP_COMPARTMENT_CREATE(id, tcomp_params_getParameters(statehandler->sigcomp_parameters));
 		result = newcomp;
@@ -183,8 +183,8 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 		return;
 	}
 
-	tsk_safeobj_lock(statehandler);
-	// FIXME: don't use interanl methods
+	/*== Do not lock --> all functions are thread-safe. */
+	//tsk_safeobj_lock(statehandler);
 
 	/*
 	* The compressor does not wish (or no longer wishes) to save state information?
@@ -203,7 +203,6 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 	*/
 	if(lpCompartment = tcomp_statehandler_getCompartment(statehandler, (*lpResult)->compartmentId))
 	{
-		tsk_safeobj_lock(lpCompartment);
 		compartment_total_size = lpCompartment->total_memory_size;
 	}
 	else goto bail;
@@ -223,24 +222,24 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 		// FIXME: lock
 		for (i = 0; i < tcomp_result_getTempStatesToCreateSize(*lpResult); i++)
 		{
-			tcomp_state_t *lpState =  (*lpResult)->statesToCreate[i];
-			if(!lpState) continue;
+			tcomp_state_t **lpState =  ((*lpResult)->statesToCreate + i);
+			if(!lpState || !*lpState) continue;
 
 			/*
 			* If the state creation request needs more state memory than the
 			* total state_memory_size for the compartment, the state handler
 			* deletes all but the first (state_memory_size - 64) bytes from the state_value.
 			*/
-			if(TCOMP_GET_STATE_SIZE(lpState) > compartment_total_size)
+			if(TCOMP_GET_STATE_SIZE(*lpState) > compartment_total_size)
 			{
 				size_t oldSize, newSize;
 				tcomp_compartment_clearStates(lpCompartment);
-				oldSize =  tcomp_buffer_getSize(lpState->value);
+				oldSize =  tcomp_buffer_getSize((*lpState)->value);
 				newSize = (compartment_total_size - 64);
-				tcomp_buffer_removeBuff(lpState->value, newSize, (oldSize-newSize));
-				lpState->length = newSize;
+				tcomp_buffer_removeBuff((*lpState)->value, newSize, (oldSize-newSize));
+				(*lpState)->length = newSize;
 
-				tcomp_compartment_addState(lpCompartment, &lpState);
+				tcomp_compartment_addState(lpCompartment, lpState);
 			}
 
 			/*
@@ -251,11 +250,11 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 			*/
 			else
 			{
-				while(lpCompartment->total_memory_left < TCOMP_GET_STATE_SIZE(lpState))
+				while(lpCompartment->total_memory_left < TCOMP_GET_STATE_SIZE(*lpState))
 				{
 					tcomp_compartment_freeStateByPriority(lpCompartment);
 				}
-				tcomp_compartment_addState(lpCompartment, &lpState);
+				tcomp_compartment_addState(lpCompartment, lpState);
 			}
 		}
 	}
@@ -289,9 +288,9 @@ compartment_free_states:
 		tcomp_compartment_setRetFeedback(lpCompartment, (*lpResult)->ret_feedback);
 	}
 
-bail:
-	tsk_safeobj_unlock(lpCompartment);
-	tsk_safeobj_unlock(statehandler);
+bail: ;
+	//--tsk_safeobj_unlock(lpCompartment);
+	//--tsk_safeobj_unlock(statehandler);
 }
 
 /**@ingroup tcomp_statehandler_group
@@ -411,6 +410,9 @@ static void* tcomp_statehandler_create(void * self, va_list * app)
 		tcomp_params_setSmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_STATE_MEMORY_SIZE);
 		tcomp_params_setCpbValue(statehandler->sigcomp_parameters, SIP_RFC5049_CYCLES_PER_BIT);
 	
+		statehandler->dictionaries = TSK_LIST_CREATE();
+		statehandler->compartments = TSK_LIST_CREATE();
+
 		statehandler->sigcomp_parameters->SigComp_version = SIP_RFC5049_SIGCOMP_VERSION;
 	}
 	else TSK_DEBUG_ERROR("Null SigComp state handler.");

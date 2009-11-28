@@ -54,10 +54,10 @@ int tcomp_buffer_startsWith(const tcomp_buffer_handle_t* handle1, const tcomp_bu
 const uint8_t* tcomp_buffer_getReadOnlyBufferAtPos(const tcomp_buffer_handle_t* handle, size_t position) /*const*/;
 #define tcomp_buffer_getReadOnlyBuffer(buffer) tcomp_buffer_getReadOnlyBufferAtPos(buffer, 0)
 
-uint8_t* tcomp_buffer_getBufferAtPos(const tcomp_buffer_handle_t* handle, size_t position);
+TINYSIGCOMP_API uint8_t* tcomp_buffer_getBufferAtPos(const tcomp_buffer_handle_t* handle, size_t position);
 #define tcomp_buffer_getBuffer(handle) tcomp_buffer_getBufferAtPos(handle, 0)
 
-const size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* handle) /*const*/;
+TINYSIGCOMP_API const size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* handle) /*const*/;
 const size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*const*/;
 
 uint8_t* tcomp_buffer_readBytes(tcomp_buffer_handle_t* handle, size_t size);

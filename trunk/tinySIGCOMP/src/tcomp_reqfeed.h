@@ -34,7 +34,7 @@
 #include "tcomp_buffer.h"
 #include "tsk_object.h"
 
-#define TCOMP_REQFEED_CREATE()				tsk_object_new(tsk_reqfeed_def_t)
+#define TCOMP_REQFEED_CREATE()				tsk_object_new(tcomp_reqfeed_def_t)
 #define TCOMP_REQFEED_SAFE_FREE(self)		tsk_object_unref(self)
 
 /*
@@ -68,6 +68,6 @@ tcomp_reqfeed_t;
 
 void tcomp_reqfeed_reset(tcomp_reqfeed_t*);
 
-TINYSIGCOMP_API const void *tsk_reqfeed_def_t;
+TINYSIGCOMP_API const void *tcomp_reqfeed_def_t;
 
 #endif /* TCOMP_REQ_FEEDBACK_H */

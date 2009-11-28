@@ -55,6 +55,7 @@ void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOu
 		{
 			result->statesToCreateIndex = 0;
 			result->statesToFreeIndex = 0;
+			result->consumed_cycles = 0;
 
 			tcomp_params_reset(result->remote_parameters);
 			
@@ -216,6 +217,13 @@ static void* tcomp_result_create(void *self, va_list * app)
 	if(result)
 	{
 		result->output_buffer = TCOMP_BUFFER_CREATE();
+		result->ret_feedback = TCOMP_BUFFER_CREATE();
+		result->nack_info = TCOMP_BUFFER_CREATE();
+
+		result->remote_parameters = TCOMP_PARAMS_CREATE();
+
+		result->req_feedback = TCOMP_REQFEED_CREATE();
+		
 	}
 
 	return self;
@@ -229,6 +237,12 @@ static void* tcomp_result_destroy(void * self)
 	{
 		_tcomp_result_reset(result, 1, 1);
 		TCOMP_BUFFER_SAFE_FREE(result->output_buffer);
+		TCOMP_BUFFER_SAFE_FREE(result->ret_feedback);
+		TCOMP_BUFFER_SAFE_FREE(result->nack_info);
+
+		TCOMP_PARAMS_SAFE_FREE(result->remote_parameters);
+
+		TCOMP_REQFEED_SAFE_FREE(result->req_feedback);
 	}
 
 	return self;
@@ -244,3 +258,46 @@ static const tsk_object_def_t tcomp_result_def_s =
 	0
 };
 const void *tcomp_result_def_t = &tcomp_result_def_s;
+
+
+//========================================================
+//	SigComp temporary state object definition
+//
+
+/**@ingroup tcomp_result_group
+*/
+static void* tcomp_tempstate_to_free_create(void *self, va_list * app)
+{
+	tcomp_tempstate_to_free_t* tempstate_to_free = self;
+
+	if(tempstate_to_free)
+	{
+		
+		tempstate_to_free->identifier = TCOMP_BUFFER_CREATE();
+	}
+
+	return self;
+}
+
+static void* tcomp_tempstate_to_free_destroy(void * self)
+{
+	tcomp_tempstate_to_free_t* tempstate_to_free = self;
+
+	if(tempstate_to_free)
+	{
+		TCOMP_BUFFER_SAFE_FREE(tempstate_to_free->identifier);
+	}
+
+	return self;
+}
+
+static const tsk_object_def_t tcomp_tempstate_to_free_def_s = 
+{
+	sizeof(tcomp_tempstate_to_free_t),
+	tcomp_tempstate_to_free_create, 
+	tcomp_tempstate_to_free_destroy,
+	0, 
+	0,
+	0
+};
+const void *tcomp_tempstate_to_free_def_t = &tcomp_tempstate_to_free_def_s;

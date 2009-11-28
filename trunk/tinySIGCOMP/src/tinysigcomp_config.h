@@ -63,4 +63,8 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
+
+/* Tiny SAK */
+#define TINYSAK_IMPORTS
+
 #endif // TINYSIGCOMP_CONFIG_H

@@ -72,7 +72,7 @@ static uint16_t fcstab[256] = {
 /*
 * Calculate a new fcs given the current fcs and the new data.
 */
-uint16_t pppfcs16(register uint16_t fcs, register const uint8_t* cp, register int32_t len)
+uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t* cp, register int32_t len)
 {
    while (len--)
    {

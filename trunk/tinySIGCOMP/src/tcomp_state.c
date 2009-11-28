@@ -132,6 +132,9 @@ static void* tcomp_state_create(void * self, va_list * app)
 		state->instruction = va_arg(*app, uint16_t);
 		state->minimum_access_length = va_arg(*app, uint16_t);
 		state->retention_priority = va_arg(*app, uint16_t);
+
+		state->value = TCOMP_BUFFER_CREATE();
+		state->identifier = TCOMP_BUFFER_CREATE();
 		
 		/* Initialize safeobject */
 		tsk_safeobj_init(state);
@@ -164,13 +167,27 @@ static void* tcomp_state_destroy(void *self)
 	return self;
 }
 
+
+static int tcomp_state_cmp(const void *obj1, const void *obj2)
+{
+	const tcomp_state_t *state1 = obj1;
+	const tcomp_state_t *state2 = obj2;
+
+	if(state1 && state2)
+	{
+		return tcomp_buffer_equals(state1->identifier, state2->identifier);
+	}
+	else if(!state1 && !state2) return 1;
+	else return 0;
+}
+
 static const tsk_object_def_t tcomp_state_def_s = 
 {
 	sizeof(tcomp_state_t),
 	tcomp_state_create,
 	tcomp_state_destroy,
 	0,
-	0,
-	0
+	tcomp_state_cmp,
+	tcomp_state_cmp
 };
 const void *tcomp_state_def_t = &tcomp_state_def_s;

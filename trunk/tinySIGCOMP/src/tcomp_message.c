@@ -218,7 +218,7 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 	message->nack_info->reasonCode = *dummy_ptr++;
 	message->nack_info->opcode = *dummy_ptr++;
 	message->nack_info->pc = TSK_BINARY_GET_2BYTES(dummy_ptr); dummy_ptr+=2;
-	memmove(message->nack_info->sha1, dummy_ptr, TSK_SHA1HashSize); dummy_ptr += TSK_SHA1HashSize;
+	memcpy(message->nack_info->sha1, dummy_ptr, TSK_SHA1HashSize); dummy_ptr += TSK_SHA1HashSize;
 	if(dummy_ptr < end_ptr)
 	{
 		/* Has error details */
@@ -258,10 +258,11 @@ static void* tcomp_message_create(void *self, va_list * app)
 		
 		if(input_size < MIN_LEN)
 		{
+			TSK_DEBUG_ERROR("SigComp Message too short.");
 			message->isOK = 0;
 			goto bail;
 		}
-
+		
 		message->stateId = TCOMP_BUFFER_CREATE();
 		message->remaining_sigcomp_buffer = TCOMP_BUFFER_CREATE();
 		message->uploaded_UDVM_buffer = TCOMP_BUFFER_CREATE();

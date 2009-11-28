@@ -35,7 +35,7 @@ struct_torture_test tests[] =
 		"A.1.1.  Bit Manipulation", 
 		RFC4465_A_1_1__Bit_Manipulation, 
 		170, 
-		"0x0150 0000 febf 0000", 
+		"\x01\x50\x00\x00\xfe\xbf\x00\x00", 
 		22
 	}
 	,
@@ -43,7 +43,7 @@ struct_torture_test tests[] =
 		"A.1.2.  Arithmetic",
 		RFC4465_A_1_2__Arithmetic,
 		174,
-		"0x0150 0000 febf 0000",
+		"\x00\x00\x00\x00\x00\x00\x00\x04",
 		25
 	}
 	,
@@ -52,9 +52,9 @@ struct_torture_test tests[] =
 		"A.1.3.  Sorting",
 		RFC4465_A_1_3__Sorting,
 		223,
-		"0x466f 7264 2c20 796f 7527 7265 2074 7572 6e69 6e67"
-        "0x2069 6e74 6f20 6120 7065 6e67 7569 6e2e 2053 746f"
-		"0x7020 6974 2e",
+		"\x46\x6f\x72\x64\x2c\x20\x79\x6f\x75\x27\x72\x65\x20\x74\x75\x72\x6e\x69\x6e\x67"
+        "\x20\x69\x6e\x74\x6f\x20\x61\x20\x70\x65\x6e\x67\x75\x69\x6e\x2e\x20\x53\x74\x6f"
+		"\x70\x20\x69\x74\x2e",
 		371
 	}
 	,
@@ -63,10 +63,10 @@ struct_torture_test tests[] =
 		"A.1.4.  SHA-1",
 		RFC4465_A_1_4__SHA1,
 		138,
-		"0xa999 3e36 4706 816a ba3e 2571 7850 c26c 9cd0 d89d"
-        "0x8498 3e44 1c3b d26e baae 4aa1 f951 29e5 e546 70f1"
-        "0x12ff 347b 4f27 d69e 1f32 8e6f 4b55 73e3 666e 122f"
-        "0x4f46 0452 ebb5 6393 4f46 0452 ebb5 6393 4f46 0452",
+		"\xa9\x99\x3e\x36\x47\x06\x81\x6a\xba\x3e\x25\x71\x78\x50\xc2\x6c\x9c\xd0\xd8\x9d"
+		"\x84\x98\x3e\x44\x1c\x3b\xd2\x6e\xba\xae\x4a\xa1\xf9\x51\x29\xe5\xe5\x46\x70\xf1"
+		"\x12\xff\x34\x7b\x4f\x27\xd6\x9e\x1f\x32\x8e\x6f\x4b\x55\x73\xe3\x66\x6e\x12\x2f"
+		"\x4f\x46\x04\x52\xeb\xb5\x63\x93\x4f\x46\x04\x52\xeb\xb5\x63\x93\x4f\x46\x04\x52",
 		17176
 	}
 	,
@@ -75,7 +75,7 @@ struct_torture_test tests[] =
 		"A.1.5.  LOAD and MULTILOAD",
 		RFC4465_A_1_5__LOAD_and_MULTILOAD,
 		58,
-		"0x0084 0084 0086 0086 002a 0080 002a 002a",
+		"\x00\x84\x00\x84\x00\x86\x00\x86\x00\x2a\x00\x80\x00\x2a\x00\x2a",
 		36
 	}
 	,
@@ -84,13 +84,13 @@ struct_torture_test tests[] =
 		"A.1.6.  COPY",
 		RFC4465_A_1_6__COPY,
 		60,
-		"0x4040 4040 4040 4040 4040 4040 4040 4040 4040 4040"
-        "0x4040 4040 4040 4040 4040 4040 4141 4141 4141 4141"
-        "0x4141 4141 4141 4141 4141 4141 4141 4141 4141 4141"
-        "0x4141 4141 4141 4141 4141 4141 4141 4141 4141 4141"
-        "0x4141 4141 4141 4141 4141 4141 4141 4141 4141 4141"
-        "0x4141 4141 4141 4141 4141 4141 4141 4141 4141 5541"
-        "0x4243 4443 44",
+		"\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40"
+		"\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x40\x41\x41\x41\x41\x41\x41\x41\x41"
+		"\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41"
+		"\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41"
+		"\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41"
+		"\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x41\x55\x41"
+		"\x42\x43\x44\x43\x44",
 		365
 	}
 	,
@@ -99,8 +99,8 @@ struct_torture_test tests[] =
 		"A.1.7.  COPY-LITERAL and COPY-OFFSET",
 		RFC4465_A_1_7__COPY_LITERAL_and_COPY_OFFSET,
 		100,
-		"0x4141 4141 0061 4141 4141 494A 4142 4344 494A 4142"
-		"0x004A 004E 4748 4845 4647 4748 4546",
+		"\x41\x41\x41\x41\x00\x61\x41\x41\x41\x41\x49\x4a\x41\x42\x43\x44\x49\x4a\x41\x42"
+		"\x00\x4a\x00\x4e\x47\x48\x48\x45\x46\x47\x47\x48\x45\x46",
 		216
 	}
 	,
@@ -109,7 +109,7 @@ struct_torture_test tests[] =
 		"A.1.8.  MEMSET",
 		RFC4465_A_1_8__MEMSET,
 		27,
-		"0x8040 4f5e 6d7c 8b9a a9b8 c7d6 e5f4 0312",
+		"\x80\x40\x4f\x5e\x6d\x7c\x8b\x9a\xa9\xb8\xc7\xd6\xe5\xf4\x03\x12",
 		166
 	}
 	,
@@ -127,7 +127,7 @@ struct_torture_test tests[] =
 		"A.1.10.  INPUT-BITS",
 		RFC4465_A_1_10__INPUT_BITS,
 		28,
-		"0x0000 0002 0002 0013 0000 0003 001a 0038",
+		"\x00\x00\x00\x02\x00\x02\x00\x13\x00\x00\x00\x03\x00\x1a\x00\x38",
 		66
 	}
 	,
@@ -136,7 +136,7 @@ struct_torture_test tests[] =
 		"A.1.11.  INPUT-HUFFMAN",
 		RFC4465_A_1_11__INPUT_HUFFMAN,
 		39,
-		"0x0000 0003 0008 04d7 0002 0003 0399 30fe",
+		"\x00\x00\x00\x03\x00\x08\x04\xd7\x00\x02\x00\x03\x03\x99\x30\xfe",
 		84
 	}
 	,
@@ -145,8 +145,8 @@ struct_torture_test tests[] =
 		"A.1.12.  INPUT-BYTES",
 		RFC4465_A_1_12__INPUT_BYTES,
 		72,
-		"0x0000 932e 0001 b166 d86f b100 1a2b 0003 9a97 34d8"
-		"0x0007 0001 3387 4e00 08dc 9651 b5dc 9600 599d 6a",
+		"\x00\x00\x93\x2e\x00\x01\xb1\x66\xd8\x6f\xb1\x00\x1a\x2b\x00\x03\x9a\x97\x34\xd8"
+		"\x00\x07\x00\x01\x33\x87\x4e\x00\x08\xdc\x96\x51\xb5\xdc\x96\x00\x59\x9d\x6a",
 		130
 	}
 	,
@@ -164,7 +164,7 @@ struct_torture_test tests[] =
 		"A.1.14.  Program Flow",
 		RFC4465_A_1_14__Program_Flow,
 		66,
-		"0x0001 0102 0203 0304 0405 0506 0707 0708 0808 0909",
+		"\x00\x01\x01\x02\x02\x03\x03\x04\x04\x05\x05\x06\x07\x07\x07\x08\x08\x08\x09\x09",
 		131
 	}
 	,
@@ -272,7 +272,7 @@ struct_torture_test tests[] =
 		"A.1.16.  STATE-ACCESS_1",
 		RFC4465_A_1_16__STATE_ACCESS_1,
 		408,
-		"0x7465 7374",
+		"\x74\x65\x73\x74",
 		26
 	}
 	,
@@ -281,7 +281,7 @@ struct_torture_test tests[] =
 		"A.1.16.  STATE-ACCESS_2",
 		RFC4465_A_1_16__STATE_ACCESS_2,
 		408,
-		"0x7465 7374",
+		"\x74\x65\x73\x74",
 		15
 	}
 	,
@@ -417,7 +417,8 @@ struct_torture_test tests[] =
 		RFC4465_A_2_4_Stream_based_Transport_1,
 		67,
 		"decompression_memory_size",
-		11
+		11,
+		1
 			
 	}
 	,
@@ -427,7 +428,9 @@ struct_torture_test tests[] =
 		RFC4465_A_2_4_Stream_based_Transport_2,
 		67,
 		"decompression_memory_size",
-		11
+		11,
+		1,
+		0
 			
 	}
 	,
@@ -437,7 +440,9 @@ struct_torture_test tests[] =
 		RFC4465_A_2_4_Stream_based_Transport_3,
 		3,
 		"MESSAGE_TOO_SHORT",
-		0
+		0,
+		1,
+		1
 	}
 	,
 	{
@@ -446,7 +451,9 @@ struct_torture_test tests[] =
 		RFC4465_A_2_4_Stream_based_Transport_4,
 		4,
 		"MESSAGE_TOO_SHORT",
-		0
+		0,
+		1,
+		1
 	}
 	,
 	{
@@ -455,6 +462,8 @@ struct_torture_test tests[] =
 		RFC4465_A_2_4_Stream_based_Transport_5,
 		30,
 		"MESSAGE_TOO_SHORT",
+		0,
+		1,
 		0
 	}
 	,
@@ -464,6 +473,8 @@ struct_torture_test tests[] =
 		RFC4465_A_2_4_Stream_based_Transport_6,
 		29,
 		"INVALID_CODE_LOCATION",
+		0,
+		1,
 		0
 	}
 	,
@@ -472,8 +483,10 @@ struct_torture_test tests[] =
 		"A.2.5.  Input Past the End of a Message_1",
 		RFC4465_A_2_5__Input_Past_the_End_of_a_Message_1,
 		59,
-		"0x6869 21",
-		23
+		"\x68\x69\x21",
+		23,
+		0,
+		0
 	}
 	,
 	{
@@ -482,7 +495,9 @@ struct_torture_test tests[] =
 		RFC4465_A_2_5__Input_Past_the_End_of_a_Message_2,
 		58,
 		"USER_REQUESTED",
-		0
+		0,
+		0,
+		1
 	}
 	,
 	{
@@ -491,7 +506,9 @@ struct_torture_test tests[] =
 		RFC4465_A_3_1__SigComp_Feedback_Mechanism_1,
 		84,
 		"",
-		52
+		52,
+		0,
+		0
 	}
 	,
 	{
@@ -704,16 +721,37 @@ struct_torture_test tests[] =
 
 #include "tcomp_manager.h"
 
-#define OUTPUT_BUFFER_SIZE 2000
+#define STREAM_ID					1983
+#define COMPARTMENT_ID				"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473"
+#define OUTPUT_BUFFER_SIZE			2000
+#define DECOMPRESSION_MEMORY_SIZE	65530
 
 #define RUN_TEST_LOOP	0
 
 #define RUN_TEST_ALL	0
-#define RUN_TEST_NO		2
+#define RUN_TEST_NO		48
+
+
+int startsWith(const char* buffer1, size_t size1, const char* buffer2, size_t size2) /*const*/
+{
+	size_t i;
+
+	if(size1 < size2) return 0;
+
+	for(i = 0; i< size2; i++)
+	{
+		if(buffer1[i] != buffer2[i])
+		{
+			return 0;
+		}
+	}
+	return 1;
+}
 
 int _tmain(int argc, _TCHAR* argv[])
 {
 	size_t i, start, end;
+	size_t res_size;
 	char buffer[OUTPUT_BUFFER_SIZE];
 	tcomp_manager_handle_t *manager = TCOMP_MANAGER_CREATE();
 	tcomp_result_t *result = TCOMP_RESULT_CREATE();
@@ -723,9 +761,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	/* Add Presence dictionary. */
 	tcomp_manager_addPresenceDictionary(manager);
+
+	/* Set decompression size. */
+	tcomp_manager_setDecompression_Memory_Size(manager, DECOMPRESSION_MEMORY_SIZE);
 	
 #if RUN_TEST_LOOP
-	for(;;;)
+	for(;;)
 #endif
 	{
 #if RUN_TEST_ALL
@@ -736,13 +777,56 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		for(i=start; i<end; i++)
 		{
-			printf("Testing %s\n", tests[i].section_name);
+			printf("=== Testing %s ===\n\n", tests[i].section_name);
 
-			memset(buffer, 0, OUTPUT_BUFFER_SIZE);
-			tcomp_result_setOutputUDPBuffer(result, buffer, OUTPUT_BUFFER_SIZE);
+			if(tests[i].stream)
+			{
+				tcomp_result_setOutputTCPBuffer(result, buffer, OUTPUT_BUFFER_SIZE, STREAM_ID);
+			}
+			else
+			{
+				tcomp_result_setOutputUDPBuffer(result, buffer, OUTPUT_BUFFER_SIZE);
+			}
 
 			/* Performs decompression */
-			tcomp_manager_decompress(manager, tests[i].bytecode, tests[i].bytecode_size, result);
+			res_size = tcomp_manager_decompress(manager, tests[i].bytecode, tests[i].bytecode_size, result);
+			if(result->isNack)
+			{
+				printf("\n==WE GOT A NACK\n\n");
+				//sendto(tcomp_buffer_getBuffer(result->nack_info), tcomp_buffer_getSize(result->nack_info));
+			}
+			else
+			{
+				tcomp_result_setCompartmentId(result, COMPARTMENT_ID, strlen(COMPARTMENT_ID));
+				tcomp_manager_provideCompartmentId(manager, result);
+			}
+			/* == Stream 
+			*/
+			if(tests[i].stream && (res_size || result->isNack))
+			{
+				for(;;)
+				{
+					res_size = tcomp_manager_getNextStreamMessage(manager, result);
+					if(!res_size && !result->isNack)
+					{
+						break;
+					}
+					else if(res_size)
+					{
+						tcomp_result_setCompartmentId(result, COMPARTMENT_ID, strlen(COMPARTMENT_ID));
+						tcomp_manager_provideCompartmentId(manager, result);
+					}
+					else
+					{
+						printf("\n==WE GOT A NACK\n\n");
+						//sendto(tcomp_buffer_getBuffer(result->nack_info), tcomp_buffer_getSize(result->nack_info));
+					}
+				}
+			}
+
+			printf("xoutpout: %s\n", startsWith(buffer, OUTPUT_BUFFER_SIZE, tests[i].xoutput, strlen(tests[i].xoutput)) ? "YES" : "NO");
+			printf("xcycles: %s\n", (result->consumed_cycles == tests[i].xcycles) ? "YES" : "NO");
+			printf("output size: %u\n", res_size);
 		}
 
 	}/* LOOP */

@@ -66,7 +66,7 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 		*/
 		tcomp_state_t* lpState = udvm->lpResult->statesToCreate[i];
 		tcomp_buffer_allocBuff(lpState->value, lpState->length);
-		ok &= tcomp_udvm_bytecopy_from(udvm, lpState->value, lpState->address, lpState->length);
+		ok &= tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(lpState->value), lpState->address, lpState->length);
 	}
 	
 	/*
@@ -76,7 +76,7 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 	{
 		tcomp_tempstate_to_free_t *lpDesc = udvm->lpResult->statesToFree[i];
 		tcomp_buffer_allocBuff(lpDesc->identifier, lpDesc->partial_identifier_length);
-		ok &= tcomp_udvm_bytecopy_from(udvm, lpDesc->identifier, lpDesc->partial_identifier_start, lpDesc->partial_identifier_length);
+		ok &= tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(lpDesc->identifier), lpDesc->partial_identifier_start, lpDesc->partial_identifier_length);
 	}
 	return ok;
 }

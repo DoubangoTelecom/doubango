@@ -101,13 +101,32 @@ size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* inpu
 
 /**@ingroup tcomp_manager_group
 */
-size_t tcomp_manager_getNextMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)
+size_t tcomp_manager_getNextStreamMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager)
 	{
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return 0;
+	}
+
+	if(!lpResult || !tcomp_buffer_getSize(lpResult->output_buffer))
+	{
+		TSK_DEBUG_ERROR("Invalid result.");
+		return 0;
+	}
+
+	if(!lpResult->isStreamBased)
+	{
+		TSK_DEBUG_ERROR("You MUST provide stream buffer.");
+		return 0;
+	}
+
+	_tcomp_result_reset(lpResult, 0, 0);
+	
+	if(tcomp_decompressordisp_getNextMessage(manager->dispatcher_decompressor, lpResult))
+	{
+		return *tcomp_buffer_getIndexBytes(lpResult->output_buffer);
 	}
 
 	return 0;
@@ -124,7 +143,7 @@ void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_re
 		return;
 	}
 
-
+	tcomp_statehandler_handleResult(manager->stateHandler, &lpResult);
 }
 
 /**@ingroup tcomp_manager_group
@@ -138,7 +157,7 @@ void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, uint64_t com
 		return;
 	}
 
-
+	tcomp_statehandler_deleteCompartment(manager->stateHandler, compartmentId);
 }
 
 /**@ingroup tcomp_manager_group
@@ -221,6 +240,8 @@ void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle)
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
+
+	tcomp_statehandler_addSipSdpDictionary(manager->stateHandler);
 }
 
 /**@ingroup tcomp_manager_group
@@ -234,7 +255,7 @@ void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle)
 		return;
 	}
 
-
+	tcomp_statehandler_addPresenceDictionary(manager->stateHandler);
 }
 
 
