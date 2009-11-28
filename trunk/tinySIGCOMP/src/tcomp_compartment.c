@@ -69,7 +69,7 @@ void tcomp_compartment_setRemoteParams(tcomp_compartment_t *compartment, tcomp_p
 	*	FIXME: not tic tac
 	*	FIXME: what about returned feedback?
 	*/
-	if(tcomp_buffer_getSize(lpParams->returnedStates))
+	if(lpParams->returnedStates && tcomp_buffer_getSize(lpParams->returnedStates))
 	{
 		TSK_LIST_SAFE_FREE(compartment->remote_parameters->returnedStates);
 		/* swap */
@@ -222,7 +222,8 @@ void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t
 	tsk_safeobj_lock(compartment);
 
 	compartment->total_memory_left += TCOMP_GET_STATE_SIZE(*lpState);
-	tsk_list_remove_item_by_data(compartment->local_states, lpState);
+	tsk_list_remove_item_by_data(compartment->local_states, *lpState);
+	*lpState = 0;
 
 	tsk_safeobj_unlock(compartment);
 }
@@ -245,14 +246,15 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 	{
 		return;
 	}
-
-	tsk_safeobj_lock(compartment);
 	
 	lpState = 0;
 	item = 0;
 
 	for (i = 0; i < size; i++)
 	{
+		/* lock */
+		tsk_safeobj_lock(compartment);
+
 		tsk_list_foreach(item, compartment->local_states)
 		{
 			tcomp_state_t *curr = item->data;
@@ -275,14 +277,15 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 				}
 			}
 		}
+		
+		/* unlock */
+		tsk_safeobj_unlock(compartment);
 
 		if(lpState)
 		{
 			tcomp_compartment_freeState(compartment, &lpState);
 		}
-	}
-
-	tsk_safeobj_unlock(compartment);
+	}	
 }
 
 /**@ingroup tcomp_compartment_group
@@ -298,6 +301,7 @@ void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t 
 	tsk_safeobj_lock(compartment);
 
 	tcomp_state_makeValid(*lpState);
+	tcomp_buffer_nprint((*lpState)->identifier, 6);
 	tsk_list_add_data(compartment->local_states, ((void**) lpState));
 	compartment->total_memory_left -= TCOMP_GET_STATE_SIZE(*lpState);
 	
@@ -326,7 +330,7 @@ uint16_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tco
 	tsk_list_foreach(item, compartment->local_states)
 	{
 		tcomp_state_t *curr = item->data;
-
+		
 		if(tcomp_buffer_startsWith(curr->identifier, partial_identifier))
 		{
 			*lpState = curr; // override
@@ -464,13 +468,21 @@ static void* tcomp_compartment_create(void * self, va_list * app)
 		// I always assume that remote params are equal to local params
 
 		/* Remote parameters */
+		compartment->remote_parameters = TCOMP_PARAMS_CREATE();
 		tcomp_params_setParameters(compartment->remote_parameters, sigCompParameters);
 
 		/* Local parameters */
+		compartment->local_parameters = TCOMP_PARAMS_CREATE();
 		tcomp_params_setParameters(compartment->local_parameters, sigCompParameters);
 
 		/* Total size */
 		compartment->total_memory_size = compartment->total_memory_left = compartment->local_parameters->smsValue;
+
+		/* Empty list. */
+		compartment->nacks = TSK_LIST_CREATE();
+		
+		/* Empty list. */
+		compartment->local_states = TSK_LIST_CREATE();
 	}
 
 	return self;
@@ -498,6 +510,16 @@ static void* tcomp_compartment_destroy(void *self)
 		
 		/* Delete Compressor data */
 		TCOMP_COMPRESSORDATA_SAFE_FREE(compartment->compressorData);
+		
+		/* Delete params */
+		TCOMP_PARAMS_SAFE_FREE(compartment->local_parameters);
+		TCOMP_PARAMS_SAFE_FREE(compartment->remote_parameters);
+
+		/* Delete NACKS */
+		TSK_LIST_SAFE_FREE(compartment->nacks);
+
+		/* Delete local states */
+		TSK_LIST_SAFE_FREE(compartment->local_states);
 	}
 	
 	return self;

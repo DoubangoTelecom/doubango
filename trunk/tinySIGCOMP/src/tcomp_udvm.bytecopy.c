@@ -64,7 +64,7 @@ int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t
 	// string of bytes is copied one byte at a time
 	while((size_tocopy--))
 	{
-		*TCOMP_UDVM_GET_BUFFER_AT(*destination++) = *TCOMP_UDVM_GET_BUFFER_AT(source++);
+		*TCOMP_UDVM_GET_BUFFER_AT((*destination)++) = *TCOMP_UDVM_GET_BUFFER_AT(source++);
 		
 		*destination = (*destination == byte_copy_right)? byte_copy_left : *destination;
 		source = (source == byte_copy_right)? byte_copy_left : source;

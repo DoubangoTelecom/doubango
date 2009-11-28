@@ -33,9 +33,9 @@
 #include "tinySAK_config.h"
 #include <stdint.h>
 
-#define PPPINITFCS16    0xffff  /* Initial FCS value */
-#define PPPGOODFCS16    0xf0b8  /* Good final FCS value */
+#define TSK_PPPINITFCS16    0xffff  /* Initial FCS value */
+#define TSK_PPPGOODFCS16    0xf0b8  /* Good final FCS value */
 
-uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t* cp, register int32_t len);
+TINYSAK_API uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t* cp, register int32_t len);
 
 #endif /* _TINYSAK_PPFCS16_H_ */

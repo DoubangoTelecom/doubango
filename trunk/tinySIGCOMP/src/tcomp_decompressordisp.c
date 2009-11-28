@@ -60,7 +60,7 @@ static int pred_find_streambuffer_by_id(const tsk_list_item_t *item, const void 
 */
 int tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult)
 {
-	int ret = 0;
+	int ret = 1;
 	uint64_t streamId = 0;
 	const tsk_list_item_t *item_const;
 
@@ -75,6 +75,11 @@ int tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, cons
 	*/
 	if(lpResult->isStreamBased)
 	{
+		if(!dispatcher->streamBuffers)
+		{
+			dispatcher->streamBuffers = TSK_LIST_CREATE();
+		}
+
 		streamId = lpResult->streamId;
 		ret =   tcomp_decompressordisp_appendStream(dispatcher, input_ptr, input_size, streamId);
 		if(!ret)
@@ -150,12 +155,14 @@ int tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispatcher, 
 	
 	if(ret && tcomp_decompressordisp_getNextStreamMsg(dispatcher, streamId, &discard_count, &size))
 	{
-		ret &= tcomp_decompressordisp_internalDecompress(dispatcher, tcomp_buffer_getBuffer(lpBuffer), size, &lpResult);
+		ret &= tcomp_decompressordisp_internalDecompress(dispatcher, tcomp_buffer_getBuffer(lpBuffer->buffer), size, &lpResult);
 
 		/* remove buffer and discard */
 		tcomp_buffer_discardLastBytes(lpBuffer->buffer, discard_count);
 		ret &= tcomp_buffer_removeBuff(lpBuffer->buffer, 0, size);
 	}
+	else ret = 0; /* Is it right? */
+
 	if(discard_count)
 	{
 		tcomp_buffer_discardLastBytes(lpBuffer->buffer, discard_count);
@@ -228,18 +235,22 @@ int tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, co
 	if(!item_const || !(lpBuffer = item_const->data))
 	{
 		/* First time we get this stream ID */
-		lpBuffer = TCOMP_STREAM_BUFFER_CREATE(streamId);
-		tsk_list_add_data(dispatcher->streamBuffers, ((void**) &lpBuffer));
-	}
-	
-	if(!lpBuffer) 
-	{
-		TSK_DEBUG_ERROR("Failed to create new stream buffer.");
-		return 0;
+		tcomp_buffer_handle_t *newbuf = TCOMP_STREAM_BUFFER_CREATE(streamId);
+		if(newbuf)
+		{
+			lpBuffer = newbuf;
+			lpBuffer->buffer = TCOMP_BUFFER_CREATE();
+			tsk_list_add_data(dispatcher->streamBuffers, ((void**) &newbuf));
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("Failed to create new stream buffer.");
+			return 0;
+		}
 	}
 	
 	/*  Check if buffer is too large */
-	if((tcomp_buffer_getSize(lpBuffer->buffer) + input_size) > TCOMP_MAX_STREAM_BUFFER_SIZE)
+	if(lpBuffer->buffer && (tcomp_buffer_getSize(lpBuffer->buffer) + input_size) > TCOMP_MAX_STREAM_BUFFER_SIZE)
 	{
 		tcomp_buffer_freeBuff(lpBuffer->buffer);
 		return 0;
@@ -260,7 +271,7 @@ int tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, co
 */
 int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size)
 {
-	tcomp_buffer_handle_t *lpBuffer;
+	tcomp_stream_buffer_t *lpBuffer;
 	const tsk_list_item_t *item_const;
 
 	uint8_t quote_count = 0;
@@ -283,12 +294,12 @@ int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher
 		return 0;
 	}
 	
-	size = 0;
-	discard_count = 0;
+	*size = 0;
+	*discard_count = 0;
 
 	quote_count = 0;
-	start = tcomp_buffer_getBuffer(lpBuffer);
-	end = (start + tcomp_buffer_getSize(lpBuffer));
+	start = tcomp_buffer_getBuffer(lpBuffer->buffer);
+	end = (start + tcomp_buffer_getSize(lpBuffer->buffer));
 
 	while(start<end){
 		if(*start==0xff)
@@ -296,24 +307,24 @@ int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher
 			start++;
 			if(*start==0xff)
 			{ /* end message */
-				if(size) return 1;
+				if(*size) return 1;
 				else /* message is empty --> delete this empty message(length=2) */
 				{ 
 					start--;
-					memmove(start, (start+2), (end-start));
-					discard_count+=2;
+					memcpy(start, (start+2), (end-start));
+					(*discard_count)+=2;
 					end-=2;
 					continue; 
 				}
 			}
 
 			quote_count = *start;
-			memmove((start), (start+1), (end-start));
+			memcpy((start), (start+1), (end-start));
 			end--;
-			discard_count++;
+			(*discard_count)++;
 			start+=(quote_count);
-			size+=(1+quote_count);
-		}else { start++; size++; }
+			(*size)+=(1+quote_count);
+		}else { start++; (*size)++; }
 	}
 
 	return 0;

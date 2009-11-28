@@ -371,32 +371,38 @@ void tcomp_buffer_referenceBuff(tcomp_buffer_handle_t* handle, uint8_t* external
 */
 int tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, size_t size)
 {
-	tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-	size_t oldSize = buffer->size;
-	size_t newSize = (oldSize + size);
+	if(handle)
 	{
-		// realloc buffer
-		if(!buffer->size){
-			buffer->lpbuffer = (uint8_t*)tsk_calloc(1, newSize);
+		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
+		size_t oldSize = buffer->size;
+		size_t newSize = (oldSize + size);
+		{
+			// realloc buffer
+			if(!buffer->size){
+				buffer->lpbuffer = (uint8_t*)tsk_calloc(1, newSize);
+			}
+			else{
+				buffer->lpbuffer = (uint8_t*)tsk_realloc(buffer->lpbuffer, newSize);
+			}
 		}
-		else{
-			buffer->lpbuffer = (uint8_t*)tsk_realloc(buffer->lpbuffer, newSize);
+
+		if(!buffer->lpbuffer) return 0;
+
+		if(data)
+		{
+			memcpy((buffer->lpbuffer+oldSize), data, size);
 		}
-	}
+		else
+		{
+			memset((buffer->lpbuffer+oldSize), 0, size);
+		}
 
-	if(!buffer->lpbuffer) return 0;
-
-	if(data)
-	{
-		memmove((buffer->lpbuffer+oldSize), data, size);
+		buffer->size = newSize;
+		return 1;
 	}
-	else
-	{
-		memset((buffer->lpbuffer+oldSize), 0, size);
-	}
+	else TSK_DEBUG_ERROR("Null SigComp handle");
 
-	buffer->size = newSize;
-	return 1;
+	return 0;
 }
 
 /**@ingroup tcomp_buffer_group
@@ -414,7 +420,7 @@ int tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, size_t pos, size_t si
 		size_t oldSize, newSize;
 
 		if(((pos + size) > buffer->size)) size = (buffer->size - pos);
-		memmove((buffer->lpbuffer + pos), (buffer->lpbuffer + pos + size), (buffer->size - (pos + size)));
+		memcpy((buffer->lpbuffer + pos), (buffer->lpbuffer + pos + size), (buffer->size - (pos + size)));
 		
 		oldSize = buffer->size;
 		newSize = (oldSize - size);

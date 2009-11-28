@@ -375,8 +375,7 @@ static int tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 	}
 
 bail:
-
-	// if excution_failed --> GetLastError()
+	udvm->lpResult->consumed_cycles = udvm->consumed_cycles;
 	return (!excution_failed);
 }
 
@@ -453,9 +452,9 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 		{
 			size_t size = tcomp_buffer_getSize(udvm->sigCompMessage->ret_feedback_buffer);
 			tcomp_buffer_allocBuff(udvm->lpResult->ret_feedback, size);
-			memmove(tcomp_buffer_getBuffer(udvm->lpResult->ret_feedback), tcomp_buffer_getBuffer(udvm->sigCompMessage->ret_feedback_buffer), size);
+			memcpy(tcomp_buffer_getBuffer(udvm->lpResult->ret_feedback), tcomp_buffer_getBuffer(udvm->sigCompMessage->ret_feedback_buffer), size);
 		}
-
+		
 		/*
 		*	Has state?
 		*/
@@ -482,7 +481,7 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 				udvm->isOK = 0;
 				return self;
 			}
-			memmove( TCOMP_UDVM_GET_BUFFER_AT(lpState->address), 
+			memcpy( TCOMP_UDVM_GET_BUFFER_AT(lpState->address), 
 				tcomp_buffer_getBuffer(lpState->value), 
 				tcomp_buffer_getSize(lpState->value) );
 			
@@ -504,7 +503,7 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 				udvm->isOK = 0;
 				return self;
 			}
-			memmove( TCOMP_UDVM_GET_BUFFER_AT(bytecodes_destination),
+			memcpy( TCOMP_UDVM_GET_BUFFER_AT(bytecodes_destination),
 				tcomp_buffer_getBuffer(udvm->sigCompMessage->uploaded_UDVM_buffer),
 				tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer));
 

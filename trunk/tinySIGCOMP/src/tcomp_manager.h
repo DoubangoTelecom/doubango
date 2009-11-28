@@ -50,7 +50,7 @@ TINYSIGCOMP_API size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, ui
 #define tcomp_manager_compressSCTP compressTCP
 
 TINYSIGCOMP_API size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult);
-TINYSIGCOMP_API size_t tcomp_manager_getNextMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult);
+TINYSIGCOMP_API size_t tcomp_manager_getNextStreamMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult);
 
 /*
 *	Compartment management

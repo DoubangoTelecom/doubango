@@ -84,6 +84,8 @@ typedef struct tcomp_result_s
 
 	unsigned					isNack:1;
 	tcomp_buffer_handle_t		*nack_info;
+
+	uint64_t					consumed_cycles;
 }
 tcomp_result_t;
 
@@ -105,5 +107,7 @@ void tcomp_result_addTempStateToFree(tcomp_result_t *result, tcomp_tempstate_to_
 uint8_t tcomp_result_getTempStatesToFreeSize(const tcomp_result_t *result);
 
 TINYSIGCOMP_API const void *tcomp_result_def_t;
+TINYSIGCOMP_API const void *tcomp_tempstate_to_free_def_t;
+
 
 #endif /* TCOMP_RESULT_H */
