@@ -43,7 +43,7 @@
 #include <stdint.h>
 
 #define TCOMP_COMPARTMENT_CREATE(id, sigCompParameters)		tsk_object_new(tcomp_compartment_def_t, (uint64_t)id, (uint16_t)sigCompParameters)
-#define TCOMP_COMPARTMENT_SAFE_FREE(self)					tsk_object_unref(self)
+#define TCOMP_COMPARTMENT_SAFE_FREE(self)					tsk_object_unref(self), self = 0
 
 typedef struct tcomp_compartment_s
 {
@@ -63,9 +63,10 @@ typedef struct tcomp_compartment_s
 	tcomp_buffer_handle_t *lpReqFeedback;
 	tcomp_buffer_handle_t *lpRetFeedback;
 
-	tcomp_compressordata_t* compressorData;
+	TCOMP_DECLARE_COMPRESSORDATA;
 
 	tcomp_buffers_L_t* nacks;
+	uint8_t nacks_history_count;
 
 	TSK_DECLARE_SAFEOBJ;
 }

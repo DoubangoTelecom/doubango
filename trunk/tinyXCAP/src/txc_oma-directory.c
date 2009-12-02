@@ -104,30 +104,30 @@ printf("\n---\nTEST OMA XCAP-DIRECTORY\n---\n");
 	TSK_XML_NODE_SELECT_END())
 
 
-/**@ingroup txc_oma_directory_group
-* Internal function to initialize an OMA XCAP directory folder.
-* You must never call this method. You shall use @ref TXC_OMADIR_FOLDER_CREATE to create a folder.
-* @param folder The folder to initialize
-*/
-void txc_omadir_folder_init(txc_omadir_folder_t *folder)
-{
-}
+///**@ingroup txc_oma_directory_group
+//* Internal function to initialize an OMA XCAP directory folder.
+//* You must never call this method. You shall use @ref TXC_OMADIR_FOLDER_CREATE to create a folder.
+//* @param folder The folder to initialize
+//*/
+//void txc_omadir_folder_init(txc_omadir_folder_t *folder)
+//{
+//}
 
-/**@ingroup txc_oma_directory_group
-* Internal function to free an OMA XCAP directory folder.
-* You must never call this method. You shall use @ref TXC_OMADIR_FOLDER_SAFE_FREE to safely free a folder.
-* @param _folder The folder to free
-* @sa @ref TXC_OMADIR_FOLDER_SAFE_FREE
-*/
-void txc_omadir_folder_free(void **_folder)
-{
-	txc_omadir_folder_t **folder = ((txc_omadir_folder_t**)_folder);
-
-	TSK_FREE((*folder)->auid);
-
-	free(*_folder);
-	(*_folder) = 0;
-}
+///**@ingroup txc_oma_directory_group
+//* Internal function to free an OMA XCAP directory folder.
+//* You must never call this method. You shall use @ref TXC_OMADIR_FOLDER_SAFE_FREE to safely free a folder.
+//* @param _folder The folder to free
+//* @sa @ref TXC_OMADIR_FOLDER_SAFE_FREE
+//*/
+//void txc_omadir_folder_free(void **_folder)
+//{
+//	txc_omadir_folder_t **folder = ((txc_omadir_folder_t**)_folder);
+//
+//	TSK_FREE((*folder)->auid);
+//
+//	free(*_folder);
+//	(*_folder) = 0;
+//}
 
 /**@ingroup txc_oma_directory_group
 * Deserialize an OMA XCAP folder directory from an XML node pointer.
@@ -141,37 +141,37 @@ txc_omadir_folder_t* txc_omadir_folder_from_xml(xmlNodePtr node)
 
 	if(node = tsk_xml_find_node(node, "folder", nft_none))
 	{
-		TXC_OMADIR_FOLDER_CREATE(folder);
+		folder = TXC_OMADIR_FOLDER_CREATE();
 		
 		/* auid */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("folder", "auid"), TSK_XML_NODE_SELECT_END());
-		folder->auid = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		folder->auid = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 	}
 	else return 0;
 
 	return folder;
 }
 
-/**@ingroup txc_oma_directory_group
-* Used to create an OMA XCAP directory context
-* @param buffer The XML buffer from which to create the context
-* @param size The size of the XML buffer
-* @retval An OMA XCAP directory context. You MUST use @ref txc_omadir_free to free the returned object.
-* @sa @ref txc_omadir_free
-*/
-txc_omadir_t* txc_omadir_create(const char* buffer, size_t size)
-{
-	if(buffer && size)
-	{
-		txc_omadir_t* omadir = (txc_omadir_t*)tsk_calloc2(1, sizeof(txc_omadir_t));
-		omadir->docPtr = xmlParseMemory(buffer, (int)size);
-
-		return omadir;
-	}
-
-	return 0;
-}
+///**@ingroup txc_oma_directory_group
+//* Used to create an OMA XCAP directory context
+//* @param buffer The XML buffer from which to create the context
+//* @param size The size of the XML buffer
+//* @retval An OMA XCAP directory context. You MUST use @ref txc_omadir_free to free the returned object.
+//* @sa @ref txc_omadir_free
+//*/
+//txc_omadir_t* txc_omadir_create(const char* buffer, size_t size)
+//{
+//	if(buffer && size)
+//	{
+//		txc_omadir_t* omadir = (txc_omadir_t*)tsk_calloc2(1, sizeof(txc_omadir_t));
+//		omadir->docPtr = xmlParseMemory(buffer, (int)size);
+//
+//		return omadir;
+//	}
+//
+//	return 0;
+//}
 
 /**@ingroup txc_oma_directory_group
 * Returns all folders from an OMA XCAP directory context.
@@ -196,11 +196,11 @@ txc_omadir_folder_L_t* txc_omadir_get_all_folders(const txc_omadir_t* omadir)
 	if(!tsk_xml_find_node(node, "folder", nft_none)) node = tsk_xml_find_node(node, "folder", nft_next);
 	if(node)
 	{
-		TSK_LIST_CREATE(list);
+		list = TSK_LIST_CREATE();
 		do
 		{
 			folder = txc_omadir_folder_from_xml(node);
-			tsk_list_add_data(list, ((void**) &folder), txc_omadir_folder_free);
+			tsk_list_add_data(list, ((void**) &folder));
 		}
 		while(node = tsk_xml_find_node(node, "folder", nft_next));
 	}
@@ -229,11 +229,11 @@ txc_rlist_entry_L_t* txc_omadir_get_entries_by_folder(const txc_omadir_t* omadir
 	if(!tsk_xml_find_node(node, "entry", nft_none)) node = tsk_xml_find_node(node, "entry", nft_next);
 	if(node)
 	{
-		TSK_LIST_CREATE(list);
+		list = TSK_LIST_CREATE();
 		do
 		{
 			rlist_entry = txc_rlist_entry_from_xml(node, fo_auid);
-			tsk_list_add_data(list, ((void**) &rlist_entry), txc_rlist_entry_free);
+			tsk_list_add_data(list, ((void**) &rlist_entry));
 		}
 		while(node = tsk_xml_find_node(node, "entry", nft_next));
 	}
@@ -241,20 +241,144 @@ txc_rlist_entry_L_t* txc_omadir_get_entries_by_folder(const txc_omadir_t* omadir
 	return list;
 }
 
-/**@ingroup txc_oma_directory_group
-* Free an OMA XCAP directory context previously created using @ref txc_omadir_create.
-* @param omadir The context to free.
-* @sa @ref txc_omadir_create
+///**@ingroup txc_oma_directory_group
+//* Free an OMA XCAP directory context previously created using @ref txc_omadir_create.
+//* @param omadir The context to free.
+//* @sa @ref txc_omadir_create
+//*/
+//void txc_omadir_free(txc_omadir_t **omadir)
+//{
+//	if(*omadir)
+//	{	
+//		xmlFreeDoc((*omadir)->docPtr);
+//		
+//		free(*omadir);
+//		(*omadir)=0;
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//	OMA directory object definition
+//
+
+/**@ingroup txc_omadir_group
 */
-void txc_omadir_free(txc_omadir_t **omadir)
+static void* txc_omadir_create(void *self, va_list * app)
 {
-	if(*omadir)
-	{	
-		xmlFreeDoc((*omadir)->docPtr);
-		
-		free(*omadir);
-		(*omadir)=0;
+	txc_omadir_t *omadir = self;
+	if(omadir)
+	{
+		const char* buffer = va_arg(*app, const char*);
+		size_t size = va_arg(*app, size_t);
+		if(buffer && size)
+		{
+			omadir->docPtr = xmlParseMemory(buffer, (int)size);
+		}
 	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new omadir object.");
+	}
+	return self;
 }
+
+/**@ingroup txc_omadir_group
+*/
+static void* txc_omadir_destroy(void * self)
+{
+	txc_omadir_t *omadir = self;
+	if(omadir)
+	{
+		xmlFreeDoc(omadir->docPtr);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL omadir object.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_omadir_def_s = 
+{
+	sizeof(txc_omadir_t),
+	txc_omadir_create,
+	txc_omadir_destroy,
+	0
+};
+const void *txc_omadir_def_t = &txc_omadir_def_s;
+
+
+
+
+
+//========================================================
+//	OMA directory folder object definition
+//
+
+/**@ingroup txc_omadir_group
+*/
+static void* txc_omadir_folder_create(void *self, va_list * app)
+{
+	txc_omadir_folder_t *folder = self;
+	if(folder)
+	{
+		
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new omadir folder object.");
+	}
+	return self;
+}
+
+/**@ingroup txc_omadir_group
+*/
+static void* txc_omadir_folder_destroy(void * self)
+{
+	txc_omadir_folder_t *folder = self;
+	if(folder)
+	{
+		TSK_FREE(folder->auid);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL omadir folderobject.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_omadir_folder_def_s = 
+{
+	sizeof(txc_omadir_folder_t),
+	txc_omadir_folder_create,
+	txc_omadir_folder_destroy,
+	0
+};
+const void *txc_omadir_folder_def_t = &txc_omadir_folder_def_s;
+
+
+
+
+
+
+
+
 
 #undef OMADIR_RETURN_IF_INVALID

@@ -47,17 +47,17 @@
 #define TSK_XML_NODE_SELECT_END()								nst_end
 
 #define TSK_XML_NAMESPACE_CREATE()								tsk_object_new(tsk_xml_namespace_def_t)
-#define TSK_XML_NAMESPACE_FREE(self)							tsk_object_unref(self)
+#define TSK_XML_NAMESPACE_FREE(self)							tsk_object_unref(self), self = 0
 
 #define TSK_XML_ELEMENT_CREATE(element)							tsk_object_new(tsk_xml_element_def_t)
-#define TSK_XML_ELEMENT_FREE(self)								tsk_object_unref(self)
+#define TSK_XML_ELEMENT_FREE(self)								tsk_object_unref(self), self = 0
 
 #define TSK_XML_ATTRIBUTE_CREATE(attribute)						tsk_object_new(tsk_xml_attribute_def_t)
-#define TSK_XML_ATTRIBUTE_FREE(self)							tsk_object_unref(self)
+#define TSK_XML_ATTRIBUTE_FREE(self)							tsk_object_unref(self), self = 0
 
 #define TSK_XML_SERIALIZE(result, element, strValue)\
-	if(strValue) tsk_sprintf(0, &result, "<"##element##">%s</"##element##">", strValue); \
-	else tsk_strupdate2(&result, "");
+	if(strValue) tsk_sprintf(&result, "<"##element##">%s</"##element##">", strValue); \
+	else tsk_strupdate(&result, "");
 
 /** C and XML Schema mapping */
 typedef enum tsk_xml_type_e

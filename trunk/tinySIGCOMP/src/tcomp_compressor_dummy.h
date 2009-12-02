@@ -20,29 +20,21 @@
 *
 */
 
-#ifndef TINYXCAP_CONFIG_H
-#define TINYXCAP_CONFIG_H
+/**@file tcomp_compressor_dummy.h
+ * @brief  SigComp dummy compresor. Used if none match. See RFC 4896 subclause 11.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#ifndef TCOMP_COMPRESSOR_DUMMY_H
+#define TCOMP_COMPRESSOR_DUMMY_H
 
-#if (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYXCAP_EXPORTS)
-# 	define TINYXCAP_API __declspec(dllexport)
-#elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYXCAP_IMPORTS)
-# 	define TINYXCAP_API __declspec(dllimport)
-#else
-# define TINYXCAP_API
-#endif
+#include "tinysigcomp_config.h"
+#include "tcomp_compartment.h"
 
-//
-// Disable some well-known warnings
-//
-#ifdef _MSC_VER
-#	define _CRT_SECURE_NO_WARNINGS
-#endif
+#include <stdint.h>
 
-#ifdef __SYMBIAN32__
-#undef _WIN32 /* Because of WINSCW */
-#endif
+int tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream);
 
-/* Tiny SAK */
-#define TINYSAK_IMPORTS
-
-#endif // TINYXCAP_CONFIG_H
+#endif /* TCOMP_COMPRESSOR_DUMMY_H */

@@ -1912,7 +1912,7 @@ int TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint
 	*outputbuffer_size += output_length;
 
 #if DEBUG || _DEBUG
-	tcomp_buffer_nprint(udvm->lpResult->output_buffer, *outputbuffer_size);
+	//tcomp_buffer_nprint(udvm->lpResult->output_buffer, *outputbuffer_size);
 #endif
 	return ok;
 }
@@ -2087,6 +2087,10 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 			partial_id = TCOMP_BUFFER_CREATE();
 			tcomp_buffer_allocBuff(partial_id, length);
 			tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(partial_id), index, length);
+			if(!udvm->lpResult->remote_parameters->returnedStates)
+			{
+				udvm->lpResult->remote_parameters->returnedStates = TSK_LIST_CREATE();
+			}
 			tsk_list_add_data(udvm->lpResult->remote_parameters->returnedStates, (void**)&partial_id);
 			index += length;
 		}

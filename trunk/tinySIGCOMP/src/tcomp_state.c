@@ -79,16 +79,19 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 	*/
 	{
 		uint8_t i;
-		uint16_t values[4] = 
-		{ 
-			state->length, 
-			state->address, 
-			state->instruction, 
-			state->minimum_access_length 
-		};
-
 		int32_t err = tsk_sha1reset(&sha);
 		uint8_t firstPart[8];
+		
+#ifdef __SYMBIAN32__
+		uint16_t values[4];
+		values[0] = state->length,
+		values[1] = state->address,
+		values[2] = state->instruction,
+		values[3] = state->minimum_access_length;
+		
+#else
+		uint16_t values[4] = { state->length, state->address, state->instruction, state->minimum_access_length };
+#endif
 				
 		for(i=0; i<4; i++)
 		{
@@ -175,10 +178,10 @@ static int tcomp_state_cmp(const void *obj1, const void *obj2)
 
 	if(state1 && state2)
 	{
-		return tcomp_buffer_equals(state1->identifier, state2->identifier);
+		return tcomp_buffer_equals(state1->identifier, state2->identifier) ? 0 : -1;
 	}
-	else if(!state1 && !state2) return 1;
-	else return 0;
+	else if(!state1 && !state2) return 0;
+	else return -1;
 }
 
 static const tsk_object_def_t tcomp_state_def_s = 
@@ -186,8 +189,6 @@ static const tsk_object_def_t tcomp_state_def_s =
 	sizeof(tcomp_state_t),
 	tcomp_state_create,
 	tcomp_state_destroy,
-	0,
-	tcomp_state_cmp,
 	tcomp_state_cmp
 };
 const void *tcomp_state_def_t = &tcomp_state_def_s;

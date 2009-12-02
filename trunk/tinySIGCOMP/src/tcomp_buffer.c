@@ -327,7 +327,7 @@ void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, size_t size)
 			TSK_DEBUG_WARN("Cannot allocate zero bytes.");
 			return;
 		}
-		tsk_free(&(buffer->lpbuffer));
+		tsk_free((void**)&(buffer->lpbuffer));
 
 		buffer->index_bits = buffer->index_bytes = 0;
 		buffer->lpbuffer = (uint8_t*) tsk_calloc(1, size );
@@ -457,7 +457,7 @@ void tcomp_buffer_freeBuff(tcomp_buffer_handle_t* handle)
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
 		if(buffer->lpbuffer && buffer->size && buffer->owner) 
 		{
-			tsk_free(&(buffer->lpbuffer));
+			tsk_free((void**)&(buffer->lpbuffer));
 		}
 		buffer->size = buffer->index_bytes = buffer->index_bits = 0;
 	}
@@ -513,6 +513,38 @@ uint8_t* tcomp_buffer_getP_BIT(const tcomp_buffer_handle_t* handle)
 	else TSK_DEBUG_ERROR("Null SigComp handle");
 
 	return 0;
+}
+
+/**@ingroup tcomp_buffer_group
+*/
+uint64_t tcomp_buffer_createHash(const void *data, size_t len)
+{
+	if(!data || !len)
+	{
+		TSK_DEBUG_ERROR("Null data.");
+		return 0;
+	}
+	{
+#define PRIME_1		500237
+#define PRIME_2		700241
+		uint64_t hash = 0;
+		uint8_t* strid = (uint8_t*)data;
+
+		/* Generate Hash code from id */
+		{
+		   uint64_t b = PRIME_1, a = PRIME_2;
+		   size_t i;
+		   for(i = 0; i < len; strid++, i++)
+		   {
+			  hash = hash * a + (*strid);
+			  a = a * b;
+		   }
+		}
+		return hash;
+
+#undef PRIME_1
+#undef PRIME_2
+	}
 }
 
 /**@ingroup tcomp_buffer_group
@@ -653,8 +685,6 @@ static const tsk_object_def_t tcomp_buffer_def_s =
 	sizeof(tcomp_buffer_t),
 	_tcomp_buffer_create, 
 	tcomp_buffer_destroy,
-	0, 
-	0,
 	0
 };
 const void *tcomp_buffer_def_t = &tcomp_buffer_def_s;

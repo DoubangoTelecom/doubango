@@ -557,8 +557,6 @@ static const tsk_object_def_t tcomp_udvm_def_s =
 	sizeof(tcomp_udvm_t),
 	tcomp_udvm_create,
 	tcomp_udvm_destroy,
-	0,
-	0,
 	0
 };
 const void *tcomp_udvm_def_t = &tcomp_udvm_def_s;

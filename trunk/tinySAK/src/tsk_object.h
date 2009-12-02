@@ -61,16 +61,14 @@ typedef struct tsk_object_def_s
 	size_t size;													/**< The size of an tsk object. */
 	void*	(* constructor) (void *self, va_list *app);				/**< The constructor. */
 	void*	(* destructor) (void *);								/**< The destructor. */
-	void*	(* cloner) (const void *self);							/**< The object cloner. */
-	int		(* objcmp) ( const char *self, const char *object );	/**< Compare two object */
-	int		(* objicmp) ( const char *self, const char *object );	/**< Compare two object (Ignore case) */
+	int		(* objcmp) (const void *object1, const void *object2);	/**< Compare two object */
 }
 tsk_object_def_t;
 
 TINYSAK_API void* tsk_object_new(const tsk_object_def_t *objdef, ...);
 TINYSAK_API size_t tsk_object_sizeof(const void *self);
 TINYSAK_API int tsk_object_cmp(const void *self, const void *object);
-TINYSAK_API int tsk_object_icmp(const void *self, const void *object);
+//TINYSAK_API int tsk_object_icmp(const void *self, const void *object);
 TINYSAK_API void* tsk_object_ref(void *self);
 TINYSAK_API void* tsk_object_unref(void *self);
 TINYSAK_API void tsk_object_delete(void *self);

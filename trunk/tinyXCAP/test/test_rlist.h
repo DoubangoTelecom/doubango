@@ -72,7 +72,7 @@ void test_rlist(const char* rlist_str, size_t size)
 	printf("\n---\nTEST RESOURCE-LISTS\n---\n");
 	{
 		/* create rlist context */
-		rlist = txc_rlist_create(rlist_str, size);
+		rlist = TXC_RLIST_CREATE(rlist_str, size);
 
 		/* get all lists */
 		printf("\nget all lists\n");
@@ -114,7 +114,7 @@ void test_rlist(const char* rlist_str, size_t size)
 		}
 
 		/* free rlist */
-		txc_rlist_free(&rlist);
+		TXC_RLIST_SAFE_FREE(rlist);
 	}
 }
 
@@ -128,7 +128,7 @@ void test_rlist2(const char* rlist_str, size_t size)
 	printf("\n---\nTEST RESOURCE-LISTS-2\n---\n");
 	{
 		/* create rlist context */
-		rlist = txc_rlist_create(rlist_str, size);
+		rlist = TXC_RLIST_CREATE(rlist_str, size);
 
 		/* get all lists */
 		printf("\nget all lists\n");
@@ -164,7 +164,7 @@ void test_rlist2(const char* rlist_str, size_t size)
 		}
 
 		/* free rlist */
-		txc_rlist_free(&rlist);
+		TXC_RLIST_SAFE_FREE(rlist);
 	}
 }
 

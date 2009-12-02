@@ -146,6 +146,7 @@
 				AdditionalDependencies="ws2.lib &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\libxml\libxml2.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\pthread\pthread.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\wcecompat\wcecompat.lib&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
+				SubSystem="8"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -202,6 +203,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\pthread&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -222,6 +224,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="&quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\pthread\pthread.lib&quot; $(NOINHERIT)"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"

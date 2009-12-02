@@ -91,14 +91,14 @@ printf("\n---\nTEST RLS-SERVICES\n---\n");
 						"<rls-services xmlns=\""TXC_NS_RLS"\">"
 #define RLS_XML_FOOTER	"</rls-services>"
 
-/**@ingroup txc_rls_group
-* Internal function to initialize a service . 
-* You MUST call @ref TXC_RLS_SERVICE_CREATE to create and initialize your object.
-* @param service The service element to initialize
-*/
-void txc_rls_service_init(txc_rls_service_t *service)
-{
-}
+///**@ingroup txc_rls_group
+//* Internal function to initialize a service . 
+//* You MUST call @ref TXC_RLS_SERVICE_CREATE to create and initialize your object.
+//* @param service The service element to initialize
+//*/
+//void txc_rls_service_init(txc_rls_service_t *service)
+//{
+//}
 
 
 /**@ingroup txc_rls_group
@@ -111,8 +111,8 @@ void txc_rls_service_set(txc_rls_service_t *service, const char* uri, const char
 {
 	if(service)
 	{		
-		tsk_strupdate2(&(service->uri), uri);
-		tsk_strupdate2(&(service->resource_list), resource_list);
+		tsk_strupdate(&(service->uri), uri);
+		tsk_strupdate(&(service->resource_list), resource_list);
 	}
 }
 
@@ -128,31 +128,31 @@ void txc_rls_service_add_package(txc_rls_service_t *service, const char* package
 	{
 		if(!(service->packages)) 
 		{
-			TSK_LIST_CREATE(service->packages);
+			service->packages = TSK_LIST_CREATE();
 		}
 		
-		TSK_LIST_ITEM_CREATE(item);
-		item->data = (void*)tsk_strdup2(package);
+		item = TSK_LIST_ITEM_CREATE();
+		item->data = TSK_STRING_CREATE(package);
 		tsk_list_add_item(service->packages, &item);
 	}
 }
 
-/**@ingroup txc_rls_group
-* Internal function to free an rls service previously created using @ref TXC_RLS_SERVICE_CREATE.
-* You MUST call @ref TXC_RLS_SERVICE_SAFE_FREE to free a service.
-* @param _service The service to free.
-* @sa @ref TXC_RLS_SERVICE_SAFE_FREE
-*/
-void txc_rls_service_free(void **_service)
-{
-	txc_rls_service_t **service = ((txc_rls_service_t**)_service);
-
-	TSK_FREE((*service)->uri);
-	TSK_FREE((*service)->resource_list);
-	TSK_LIST_SAFE_FREE((*service)->packages);
-
-	tsk_free2(_service);
-}
+///**@ingroup txc_rls_group
+//* Internal function to free an rls service previously created using @ref TXC_RLS_SERVICE_CREATE.
+//* You MUST call @ref TXC_RLS_SERVICE_SAFE_FREE to free a service.
+//* @param _service The service to free.
+//* @sa @ref TXC_RLS_SERVICE_SAFE_FREE
+//*/
+//void txc_rls_service_free(void **_service)
+//{
+//	txc_rls_service_t **service = ((txc_rls_service_t**)_service);
+//
+//	TSK_FREE((*service)->uri);
+//	TSK_FREE((*service)->resource_list);
+//	TSK_LIST_SAFE_FREE((*service)->packages);
+//
+//	tsk_free2(_service);
+//}
 
 /**@ingroup txc_rls_group
 * Internal function to deserialize an rls service from an XML document.
@@ -168,19 +168,19 @@ txc_rls_service_t* txc_rls_service_from_xml(const xmlNodePtr node)
 
 	if(tsk_xml_find_node(node, "service", nft_none))
 	{
-		TXC_RLS_SERVICE_CREATE(rls_service);
+		rls_service = TXC_RLS_SERVICE_CREATE();
 				
 		/* uri */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("service", "uri"),
 			TSK_XML_NODE_SELECT_END());
-		rls_service->uri = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rls_service->uri = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* resource-list */
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("service"),
 			TSK_XML_NODE_SELECT_BY_NAME("resource-list"),
 			TSK_XML_NODE_SELECT_END());
-		rls_service->resource_list = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rls_service->resource_list = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* packages */
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("service"),
@@ -191,11 +191,11 @@ txc_rls_service_t* txc_rls_service_from_xml(const xmlNodePtr node)
 		if(!tsk_xml_find_node(node2, "package", nft_none)) node2 = tsk_xml_find_node(node2, "package", nft_next);
 		if(node2)
 		{
-			TSK_LIST_CREATE(rls_service->packages);
+			rls_service->packages = TSK_LIST_CREATE();
 			do
 			{
-				TSK_LIST_ITEM_CREATE(item);
-				item->data = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2->children));
+				item = TSK_LIST_ITEM_CREATE();
+				item->data = TSK_STRING_CREATE(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2->children));
 				tsk_list_add_item(rls_service->packages, &item);
 			}
 			while(node2 = tsk_xml_find_node(node2, "service", nft_next));
@@ -205,25 +205,25 @@ txc_rls_service_t* txc_rls_service_from_xml(const xmlNodePtr node)
 	return rls_service;
 }
 
-/**@ingroup txc_rls_group
-* Create a rls context from an XML buffer.
-* @param buffer The XML buffer from which to create the rls context
-* @param size The size of the XML buffer
-* @retval Pointer to a @ref txc_rls_t object or NULL. You MUST call @ref txc_rls_free to free the returned object.
-* @sa @ref txc_rls_free
-*/
-txc_rls_t* txc_rls_create(const char* buffer, size_t size)
-{
-	if(buffer && size)
-	{
-		txc_rls_t* rls = (txc_rls_t*)tsk_calloc2(1, sizeof(txc_rls_t));
-		rls->docPtr = xmlParseMemory(buffer, (int)size);
-
-		return rls;
-	}
-
-	return 0;
-}
+///**@ingroup txc_rls_group
+//* Create a rls context from an XML buffer.
+//* @param buffer The XML buffer from which to create the rls context
+//* @param size The size of the XML buffer
+//* @retval Pointer to a @ref txc_rls_t object or NULL. You MUST call @ref txc_rls_free to free the returned object.
+//* @sa @ref txc_rls_free
+//*/
+//txc_rls_t* txc_rls_create(const char* buffer, size_t size)
+//{
+//	if(buffer && size)
+//	{
+//		txc_rls_t* rls = (txc_rls_t*)tsk_calloc2(1, sizeof(txc_rls_t));
+//		rls->docPtr = xmlParseMemory(buffer, (int)size);
+//
+//		return rls;
+//	}
+//
+//	return 0;
+//}
 
 /**@ingroup txc_rls_group
 * Get all rls services
@@ -247,11 +247,11 @@ txc_rls_service_L_t* txc_rls_get_all_services(const txc_rls_t* rls)
 	if(!tsk_xml_find_node(node, "service", nft_none)) node = tsk_xml_find_node(node, "service", nft_next);
 	if(node)
 	{
-		TSK_LIST_CREATE(list);
+		list = TSK_LIST_CREATE();
 		do
 		{
 			rls_service = txc_rls_service_from_xml(node);
-			tsk_list_add_data(list, ((void**) &rls_service), txc_rls_service_free);
+			tsk_list_add_data(list, ((void**) &rls_service));
 		}
 		while(node = tsk_xml_find_node(node, "service", nft_next));
 	}
@@ -275,12 +275,12 @@ char* txc_rls_service_serialize(const txc_rls_service_t *service)
 	tsk_list_foreach(item, service->packages)
 	{
 		char* curr = 0;
-		tsk_sprintf(0, &curr, "<package>%s</package>", ((char*)item->data));
-		tsk_strcat2(&package_str, curr);
+		tsk_sprintf(&curr, "<package>%s</package>", TSK_STRING_STR(item->data));
+		tsk_strcat(&package_str, curr);
 		TSK_FREE(curr);
 	}
 	/* service */
-	tsk_sprintf(0, &service_str,
+	tsk_sprintf(&service_str,
 				"<service uri=\"%s\">"
 					"<resource-list>%s</resource-list>"
 					"<packages>"
@@ -305,37 +305,163 @@ char* txc_rls_services_serialize(const tsk_list_t *services)
 	if(!services) return 0;
 
 	/* xml header */
-	tsk_strcat2(&services_str, RLS_XML_HEADER);
+	tsk_strcat(&services_str, RLS_XML_HEADER);
 
 	tsk_list_foreach(item, services)
 	{
 		/* get service */
 		txc_rls_service_t *service = ((txc_rls_service_t*)item->data);
 		char* service_str = txc_rls_service_serialize(service);
-		tsk_strcat2(&services_str, service_str);
+		tsk_strcat(&services_str, service_str);
 		TSK_FREE(service_str);
 	}
 	
 	/* xml footer */
-	tsk_strcat2(&services_str, RLS_XML_FOOTER);
+	tsk_strcat(&services_str, RLS_XML_FOOTER);
 
 	return services_str;
 }
 
+///**@ingroup txc_rls_group
+//* Internal function to free an rls context previously created using @ref txc_rls_create.
+//* @param rls The context to free
+//* @sa @ref txc_rls_create
+//*/
+//void txc_rls_free(txc_rls_t **rls)
+//{
+//	if(*rls)
+//	{	
+//		xmlFreeDoc((*rls)->docPtr);
+//		
+//		tsk_free2(rls);
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//	RLS object definition
+//
+
 /**@ingroup txc_rls_group
-* Internal function to free an rls context previously created using @ref txc_rls_create.
-* @param rls The context to free
-* @sa @ref txc_rls_create
 */
-void txc_rls_free(txc_rls_t **rls)
+static void* txc_rls_create(void *self, va_list * app)
 {
-	if(*rls)
-	{	
-		xmlFreeDoc((*rls)->docPtr);
-		
-		tsk_free2(rls);
+	txc_rls_t *rls = self;
+	if(rls)
+	{
+		const char* buffer = va_arg(*app, const char*);
+		size_t size = va_arg(*app, size_t);
+		if(buffer && size)
+		{
+			rls->docPtr = xmlParseMemory(buffer, (int)size);
+		}
 	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new rls object.");
+	}
+	return self;
 }
+
+/**@ingroup txc_rls_group
+*/
+static void* txc_rls_destroy(void * self)
+{
+	txc_rls_t *rls = self;
+	if(rls)
+	{
+		xmlFreeDoc(rls->docPtr);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL rls object.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_rls_def_s = 
+{
+	sizeof(txc_rls_t),
+	txc_rls_create,
+	txc_rls_destroy,
+	0
+};
+const void *txc_rls_def_t = &txc_rls_def_s;
+
+
+
+
+
+//========================================================
+//	RLS service definition
+//
+
+/**@ingroup txc_rls_group
+*/
+static void* txc_rls_service_create(void *self, va_list * app)
+{
+	txc_rls_service_t *rls_service = self;
+	if(!rls_service)
+	{
+		TSK_DEBUG_ERROR("Failed to create new rls service object.");
+	}
+	return self;
+}
+
+/**@ingroup txc_rls_group
+*/
+static void* txc_rls_service_destroy(void * self)
+{
+	txc_rls_service_t *rls_service = self;
+	if(rls_service)
+	{
+		TSK_FREE(rls_service->uri);
+		TSK_FREE(rls_service->resource_list);
+		TSK_LIST_SAFE_FREE(rls_service->packages);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL rls service object.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_rls_service_def_s = 
+{
+	sizeof(txc_rls_service_t),
+	txc_rls_service_create,
+	txc_rls_service_destroy,
+	0
+};
+const void *txc_rls_service_def_t = &txc_rls_service_def_s;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #undef RLS_RETURN_IF_INVALID
 

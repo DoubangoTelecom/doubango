@@ -32,6 +32,7 @@
 
 #include "tinysigcomp_config.h"
 #include "tcomp_result.h"
+#include "tcomp_compressor.h"
 
 #include <stdint.h>
 
@@ -39,14 +40,14 @@ typedef void tcomp_manager_handle_t;
 
 
 #define TCOMP_MANAGER_CREATE()					(tcomp_manager_handle_t*)tsk_object_new(tcomp_manager_def_t)
-#define TCOMP_MANAGER_SAFE_FREE(self)			tsk_object_unref(self)
+#define TCOMP_MANAGER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 //
 //	Compression / Decompression
 //
-TINYSIGCOMP_API size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, int stream);
-#define tcomp_manager_compressUDP(handle, compartmentId, input_ptr, input_size, output_ptr, output_size) tcomp_manager_compress((tcomp_manager_handle_t *)handle, (uint64_t) compartmentId, (const void*) input_ptr, (size_t) input_size, (void*) output_ptr, (size_t) output_size, 0)
-#define tcomp_manager_compressTCP(handle, compartmentId, input_ptr, input_size, output_ptr, output_size) tcomp_manager_compress((tcomp_manager_handle_t *)handle, (uint64_t) compartmentId, (const void*) input_ptr, (size_t) input_size, (void*) output_ptr, (size_t) output_size, 1) 
+TINYSIGCOMP_API size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compartmentId, size_t compartmentIdSize, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, int stream);
+#define tcomp_manager_compressUDP(handle, compartmentId, compartmentIdSize, input_ptr, input_size, output_ptr, output_size) tcomp_manager_compress((tcomp_manager_handle_t *)handle, (const void*) compartmentId, (size_t) compartmentIdSize, (const void*) input_ptr, (size_t) input_size, (void*) output_ptr, (size_t) output_size, 0)
+#define tcomp_manager_compressTCP(handle, compartmentId, compartmentIdSize, input_ptr, input_size, output_ptr, output_size) tcomp_manager_compress((tcomp_manager_handle_t *)handle, (const void*) compartmentId, (size_t) compartmentIdSize, (const void*) input_ptr, (size_t) input_size, (void*) output_ptr, (size_t) output_size, 1) 
 #define tcomp_manager_compressSCTP compressTCP
 
 TINYSIGCOMP_API size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult);
@@ -56,7 +57,7 @@ TINYSIGCOMP_API size_t tcomp_manager_getNextStreamMessage(tcomp_manager_handle_t
 *	Compartment management
 */
 TINYSIGCOMP_API void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult);
-TINYSIGCOMP_API void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, uint64_t compartmentId);
+TINYSIGCOMP_API void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize);
 
 /*
 *	SigComp Parameters
@@ -69,7 +70,7 @@ TINYSIGCOMP_API void tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *ha
 /*
 *	Compressors
 */
-TINYSIGCOMP_API void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle/*, SigCompCompressor* compressor*/);
+TINYSIGCOMP_API void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress compressor);
 
 /*
 *	Dictionnaries

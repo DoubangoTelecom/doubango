@@ -187,20 +187,17 @@ static char* __internal_txc_node_get_cust_sel(const char* doc_selector, const ch
 
 	int step;
 	char *result=0, *node_root = 0, *_namespace=0, *step_str = 0;
-	tsk_heap_t heap;
 
 	/* check parameters validity */
 	if(!doc_selector || !auid) return 0;
 	
-	/* initialize memory heap */
-	tsk_heap_init(&heap);
-
 	/* set base uri*/
-	uri = tsk_strdup2(doc_selector);
+	uri = tsk_strdup(doc_selector);
 
 	/* append node root*/
-	tsk_sprintf(&heap, &node_root, "/~~/%s", auid);
-	tsk_strcat2(&uri, node_root);
+	tsk_sprintf(&node_root, "/~~/%s", auid);
+	tsk_strcat(&uri, node_root);
+	TSK_FREE(node_root);
 	
 	while( (step=va_arg(steps, txc_node_step_t)) != 0xFF)
 	{
@@ -211,8 +208,9 @@ static char* __internal_txc_node_get_cust_sel(const char* doc_selector, const ch
 		case by_name:
 			{	/* qname */
 				const char* qname = va_arg(steps, const char*);
-				tsk_sprintf(&heap, &step_str, "/%s", qname);
-				tsk_strcat2(&uri, (const char*)step_str);
+				tsk_sprintf(&step_str, "/%s", qname);
+				tsk_strcat(&uri, (const char*)step_str);
+				TSK_FREE(step_str);
 				break;
 			}
 
@@ -220,18 +218,20 @@ static char* __internal_txc_node_get_cust_sel(const char* doc_selector, const ch
 			{	/* qname, position */
 				const char* qname = va_arg(steps, const char*);
 				int position = va_arg(steps, int);
-				tsk_sprintf(&heap, &step_str, "/%s%%5B%d%%5D", qname, position);
-				tsk_strcat2(&uri, (const char*)step_str);
+				tsk_sprintf(&step_str, "/%s%%5B%d%%5D", qname, position);
+				tsk_strcat(&uri, (const char*)step_str);
+				TSK_FREE(step_str);
 				break;
 			}
 
 		case by_attr:
 			{	/* qname, att_name, att_value */
 				const char* qname = va_arg(steps, const char*);
-				char* att_name = tsk_url_encode(&heap, va_arg(steps, const char*));
-				char* att_value = tsk_url_encode(&heap, va_arg(steps, const char*));
-				tsk_sprintf(&heap, &step_str, "/%s%%5B@%s=%%22%s%%22%%5D", qname, att_name, att_value);
-				tsk_strcat2(&uri, (const char*)step_str);
+				char* att_name = tsk_url_encode(va_arg(steps, const char*));
+				char* att_value = tsk_url_encode(va_arg(steps, const char*));
+				tsk_sprintf(&step_str, "/%s%%5B@%s=%%22%s%%22%%5D", qname, att_name, att_value);
+				tsk_strcat(&uri, (const char*)step_str);
+				TSK_FREE(step_str); TSK_FREE(att_name); TSK_FREE(att_value);
 				break;
 			}
 
@@ -239,10 +239,11 @@ static char* __internal_txc_node_get_cust_sel(const char* doc_selector, const ch
 			{	/* qname, position, att_name, att_value */
 				const char* qname = va_arg(steps, const char*);
 				int position = va_arg(steps, int);
-				char* att_name = tsk_url_encode(&heap, va_arg(steps, const char*));
-				char* att_value = tsk_url_encode(&heap, va_arg(steps, const char*));
-				tsk_sprintf(&heap, &step_str, "/%s%%5B%d%%5D%%5B@%s=%%22%s%%22%%5D", qname, position, att_name, att_value);
-				tsk_strcat2(&uri, (const char*)step_str);
+				char* att_name = tsk_url_encode(va_arg(steps, const char*));
+				char* att_value = tsk_url_encode(va_arg(steps, const char*));
+				tsk_sprintf(&step_str, "/%s%%5B%d%%5D%%5B@%s=%%22%s%%22%%5D", qname, position, att_name, att_value);
+				tsk_strcat(&uri, (const char*)step_str);
+				TSK_FREE(step_str); TSK_FREE(att_name); TSK_FREE(att_value);
 				break;
 			}
 
@@ -250,8 +251,9 @@ static char* __internal_txc_node_get_cust_sel(const char* doc_selector, const ch
 			{	/* prefix ns */
 				const char* prefix = va_arg(steps, const char*);
 				const char* ns = va_arg(steps, const char*);
-				tsk_sprintf(&heap, &step_str, "%sxmlns(%s=%%22%s%%22)", _namespace?"":"%3F",prefix, ns);
-				tsk_strcat(&heap, &_namespace, (const char*)step_str);
+				tsk_sprintf(&step_str, "%sxmlns(%s=%%22%s%%22)", _namespace?"":"%3F",prefix, ns);
+				tsk_strcat(&_namespace, (const char*)step_str);
+				TSK_FREE(step_str);
 				break;
 			}
 		default: break;
@@ -260,10 +262,8 @@ static char* __internal_txc_node_get_cust_sel(const char* doc_selector, const ch
 	}
 		
 	/* add namespace and free it*/
-	tsk_strcat2(&uri, (const char*)_namespace);
-	
-	/* Free heap */
-	tsk_heap_cleanup(&heap);
+	tsk_strcat(&uri, (const char*)_namespace);
+	TSK_FREE(_namespace);
 
 	return uri;
 }

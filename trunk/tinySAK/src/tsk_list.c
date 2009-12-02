@@ -182,7 +182,7 @@ int find_person_by_name(const tsk_list_item_t* item, const void* name)
 */
 static int tsk_list_find_by_item(const tsk_list_item_t* item, const void* _item)
 {
-	return (item == (const tsk_list_item_t*)_item) ? 1 : 0;
+	return (item == (const tsk_list_item_t*)_item) ? 0 : -1;
 }
 
 /**@ingroup tsk_list_group
@@ -218,7 +218,7 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
 
 		while(curr)
 		{
-			if(tsk_object_icmp(curr->data, tskobj))
+			if(!tsk_object_cmp(curr->data, tskobj))
 			{
 				if(prev == curr)
 				{ 
@@ -252,7 +252,7 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 
 		while(curr)
 		{
-			if(predicate(curr, data))
+			if(!predicate(curr, data))
 			{
 				if(prev == curr && curr->next == NULL)
 				{ /* There was only one item */
@@ -270,6 +270,32 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @fn	void tsk_list_clear_items(tsk_list_t* list)
+///
+/// @brief	Clear lsit by removing and deleting all items. 
+///
+/// @author	Mamadou
+/// @date	11/28/2009
+///
+/// @param [in,out]	list	The list to clear. 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+void tsk_list_clear_items(tsk_list_t* list)
+{
+	if(list)
+	{
+		tsk_list_item_t* next = 0;
+		tsk_list_item_t* curr = list->head;
+
+		while(curr)
+		{
+			next = curr->next;
+			tsk_object_unref(curr);
+			curr = next;
+		}
+		list->head = 0;
+	}
+}
 
 /**@ingroup tsk_list_group
 * Add an item to the list
@@ -339,7 +365,7 @@ const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const 
 		tsk_list_item_t *item;
 		tsk_list_foreach(item, list)
 		{
-			if(tsk_object_icmp(item->data, tskobj))
+			if(!tsk_object_cmp(item->data, tskobj))
 			{
 				return item;
 			}
@@ -363,7 +389,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 		tsk_list_item_t *item;
 		tsk_list_foreach(item, list)
 		{
-			if(predicate(item, data))
+			if(!predicate(item, data))
 			{
 				return item;
 			}
@@ -416,7 +442,6 @@ static const tsk_object_def_t tsk_list_item_def_s =
 	tsk_list_item_create,
 	tsk_list_item_destroy,
 	0,
-	0
 };
 const void *tsk_list_item_def_t = &tsk_list_item_def_s;
 
@@ -441,7 +466,7 @@ static void* tsk_list_destroy(void *self)
 		while(curr)
 		{
 			next = curr->next;
-			curr = tsk_object_unref(curr);
+			/*curr =*/ tsk_object_unref(curr);
 			curr = next;
 		}
 	}
@@ -459,6 +484,5 @@ static const tsk_object_def_t tsk_list_def_s =
 	tsk_list_create,
 	tsk_list_destroy,
 	0,
-	0
 };
 const void *tsk_list_def_t = &tsk_list_def_s;

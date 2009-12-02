@@ -43,12 +43,12 @@ int test_async()
 	txc_request_t* request = 0;
 	int ret = 0, error = 0, i;
 	txc_context_t* context = 0;
-	tsk_condwait_t *condwait;
+	tsk_condwait_handle_t *condwait;
 
 	printf("---\nTEST_ASYNC\n---\n");
 
 	TXC_CONTEXT_CREATE(context);
-	TSK_CONDWAIT_CREATE(condwait);
+	condwait = tsk_condwait_create();
 
 	TEST_XXXX_CONTEXT_INIT(context);
 	context->http_callback = http_callback;
@@ -74,7 +74,7 @@ int test_async()
 	tsk_condwait_timedwait(condwait, 20000);
 #endif
 
-	TSK_CONDWAIT_SAFE_FREE(condwait);
+	tsk_condwait_destroy(&condwait);
 	TXC_CONTEXT_SAFE_FREE(context);
 
 	return ret;

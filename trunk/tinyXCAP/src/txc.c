@@ -254,8 +254,8 @@ void txc_content_set(txc_content_t* content, const char *data, size_t size, cons
 {
 	if(content)
 	{
-		tsk_strupdate2(&(content->data), data);
-		tsk_strupdate2(&(content->type), type);
+		tsk_strupdate(&(content->data), data);
+		tsk_strupdate(&(content->type), type);
 		content->size = size;
 	}
 }
@@ -317,7 +317,7 @@ const txc_auid_t* txc_auid_findby_name(const AUIDS_T auids, const char* name)
 	int i;
 	for(i=0; i< sizeof(AUIDS_T)/sizeof(txc_auid_t); i++)
 	{
-		if(tsk_equals(auids[i].name, name))
+		if(tsk_strequals(auids[i].name, name))
 		{
 			return &auids[i];
 		}
@@ -367,7 +367,7 @@ void txc_auid_update(txc_context_t* context, xcap_auid_type_t type, const char* 
 	const txc_auid_t* auid = txc_auid_findby_type(context->auids, type);
 	if(auid)
 	{
-		tsk_strupdate(&context->heap, &(((txc_auid_t*)auid)->document), document);
+		tsk_strupdate(&(((txc_auid_t*)auid)->document), document);
 	}
 }
 
@@ -384,7 +384,7 @@ void txc_auid_free(void **_auid)
 	TSK_FREE((*auid)->content_type);
 	TSK_FREE((*auid)->document);
 
-	tsk_free2(_auid);
+	tsk_free(_auid);
 }
 
 /**@ingroup txc_group
@@ -397,17 +397,14 @@ void txc_context_init(txc_context_t* context)
 {
 	int i;
 
-	/* initialize the context's memory heap */
-	tsk_heap_init(&context->heap);
-
 	/* copy all default auids */
 	for(i = 0; i< (sizeof(AUIDS_T)/sizeof(txc_auid_t)); i++)
 	{
 		context->auids[i].type = txc_auids[i].type;
 		context->auids[i].available = txc_auids[i].available;
-		context->auids[i].content_type = tsk_strdup(&context->heap, txc_auids[i].content_type);
-		context->auids[i].document = tsk_strdup(&context->heap, txc_auids[i].document);
-		context->auids[i].name = tsk_strdup(&context->heap, txc_auids[i].name);
+		context->auids[i].content_type = tsk_strdup(txc_auids[i].content_type);
+		context->auids[i].document = tsk_strdup(txc_auids[i].document);
+		context->auids[i].name = tsk_strdup(txc_auids[i].name);
 	}
 
 	/* initialize libcurl */
@@ -421,7 +418,7 @@ void txc_context_init(txc_context_t* context)
 	context->multihandle = curl_multi_init();
 
 	/* Pthread semaphore + thread */
-	TSK_SEMAPHORE_CREATE(context->semaphore);
+	context->semaphore = tsk_semaphore_create();
 	context->running = 1;
 	tsk_thread_create(&(context->tid), curl_async_process, context);
 }
@@ -454,6 +451,8 @@ void txc_context_update_available_auids(txc_context_t *context, const tsk_list_t
 */
 void txc_context_free(txc_context_t** context)
 {
+	int i;
+
 	TSK_FREE((*context)->txc_root);
 	TSK_FREE((*context)->xui);
 	TSK_FREE((*context)->password);
@@ -464,20 +463,24 @@ void txc_context_free(txc_context_t** context)
 	TSK_FREE((*context)->pragma);
 	TXC_EASYHANDLE_SAFE_FREE((*context)->easyhandle);
 
+	for(i = 0; i< (sizeof(AUIDS_T)/sizeof(txc_auid_t)); i++)
+	{
+		TSK_FREE((*context)->auids[i].content_type);
+		TSK_FREE((*context)->auids[i].document);
+		TSK_FREE((*context)->auids[i].name);
+	}
+
 	/* Pthread semaphore + static thread */
 	(*context)->running = 0;
 	tsk_semaphore_increment((*context)->semaphore);
 	tsk_thread_join(&((*context)->tid));
-	TSK_SEMAPHORE_SAFE_FREE((*context)->semaphore);
-
-	/* cleanup the heap */
-	tsk_heap_cleanup(&((*context)->heap));
+	tsk_semaphore_destroy(&(*context)->semaphore);
 
 	/* cleanup multihandle*/
 	curl_multi_cleanup((*context)->multihandle);
 
 	/* free the context */
-	tsk_free2(context);
+	tsk_free(context);
 
 	/* cleanup libcurl */
 	curl_global_cleanup();
@@ -517,7 +520,7 @@ void txc_request_free(txc_request_t** request)
 	/* Curl easyhandle cleanup */
 	curl_easy_cleanup((*request)->easyhandle);
 	
-	tsk_free2(request);
+	tsk_free(request);
 }
 
 /*== libcurl write callback */
@@ -570,12 +573,10 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 {
 	CURLcode code = CURLE_OK;
 	char* temp_str = 0;
-	tsk_heap_t heap;
 
 	if(request->easyhandle) curl_easy_cleanup(request->easyhandle);
 
 	request->easyhandle = curl_easy_init();
-	tsk_heap_init(&heap);
 
 #if (DEBUG || _DEBUG) && 0
 		curl_easy_setopt(request->easyhandle, CURLOPT_VERBOSE, 1);
@@ -629,14 +630,16 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 	}
 
 	/* X-3GPP-Intended-Identity */
-	tsk_sprintf(&heap, &temp_str, "X-3GPP-Intended-Identity: \"%s\"", context->xui);
+	tsk_sprintf(&temp_str, "X-3GPP-Intended-Identity: \"%s\"", context->xui);
 	request->headers = curl_slist_append(request->headers, temp_str);
+	TSK_FREE(temp_str);
 
 	/* Content-Type */
 	if(request->content && request->content->type)
 	{
-		tsk_sprintf(&heap, &temp_str, "Content-Type: %s", request->content->type);
+		tsk_sprintf(&temp_str, "Content-Type: %s", request->content->type);
 		request->headers = curl_slist_append(request->headers, temp_str);
+		TSK_FREE(temp_str);
 	}
 	
 	/* set proxy host */
@@ -678,15 +681,17 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 	/* Pragma */
 	if(context->pragma)
 	{
-		tsk_sprintf(&heap, &temp_str, "Pragma: %s", context->pragma);
+		tsk_sprintf(&temp_str, "Pragma: %s", context->pragma);
 		request->headers = curl_slist_append(request->headers, temp_str);
+		TSK_FREE(temp_str);
 	}
 
 	/* Accept */
 	if(request->http_accept)
 	{
-		tsk_sprintf(&heap, &temp_str, "Accept: \"%s\"", request->http_accept);
+		tsk_sprintf(&temp_str, "Accept: \"%s\"", request->http_accept);
 		request->headers = curl_slist_append(request->headers, temp_str);
+		TSK_FREE(temp_str);
 	}
 	else request->headers = curl_slist_append(request->headers, "Accept:");
 	
@@ -694,8 +699,9 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 	/* Expect */
 	if(request->http_expect)
 	{
-		tsk_sprintf(&heap, &temp_str, "Expect: %s", request->http_expect);
+		tsk_sprintf(&temp_str, "Expect: %s", request->http_expect);
 		request->headers = curl_slist_append(request->headers, temp_str);
+		TSK_FREE(temp_str);
 	}
 	
 	/* pass our list of custom made headers */
@@ -751,8 +757,9 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 					}
 
 					/* content length */
-					tsk_sprintf(&heap, &temp_str, "Content-Length: %u", request->content->size);
+					tsk_sprintf(&temp_str, "Content-Length: %u", request->content->size);
 					request->headers = curl_slist_append(request->headers, temp_str);
+					TSK_FREE(temp_str);
 					
 					/* ioctl function callback */
 					if(code=curl_easy_setopt(request->easyhandle, CURLOPT_IOCTLFUNCTION , ioctl_callback))
@@ -777,9 +784,6 @@ CURLcode txc_easyhandle_init(txc_context_t* context, txc_request_t* request, txc
 	}/* switch */
 		
 bail:
-
-	/* free the header list */
-	tsk_heap_cleanup(&heap);
 
 	return code;
 }
@@ -861,7 +865,7 @@ static void* curl_async_process(void* arg)
 						{
 							char* contentType = 0;
 							curl_easy_getinfo(easyhandle, CURLINFO_CONTENT_TYPE, &contentType);
-							tsk_strupdate2(&(request->content->type), contentType);
+							tsk_strupdate(&(request->content->type), contentType);
 						}
 						TSK_DEBUG_INFO("New XCAP response received from the XDMS");
 						context->http_callback(request);
@@ -1120,7 +1124,7 @@ bail:
 //	/* get response content-type */
 //	if(code=curl_easy_getinfo(context->easyhandle, CURLINFO_CONTENT_TYPE, (&temp_str)))
 //		PANIC_AND_JUMP(xpa_libcurl_error, request)
-//	else if(request->content) request->content->type = tsk_strdup2((const char*)temp_str); 
+//	else if(request->content) request->content->type = tsk_strdup((const char*)temp_str); 
 //		
 //bail:
 //

@@ -58,10 +58,10 @@ char *rlist2_str = 0, *rls_str = 0, *oma_presrules_str = 0;
 TXC_CONTEXT_CREATE(context);
 
 // Initialize the context 
-context->user_agent = tsk_strdup2("XDM-client/OMA1.1");
-context->xdm_root = tsk_strdup2("http://xcap.example.com/services");
-context->password = tsk_strdup2("mysecret");
-context->xui = tsk_strdup2("sip:doubango@example.com");
+context->user_agent = tsk_strdup("XDM-client/OMA1.1");
+context->xdm_root = tsk_strdup("http://xcap.example.com/services");
+context->password = tsk_strdup("mysecret");
+context->xui = tsk_strdup("sip:doubango@example.com");
 
 // Create an GSMA RCS2 resource-lists document object and serialize the document for test
 rlist2 = txc_gsmarcs_create_rlist2(context);
@@ -88,21 +88,21 @@ TXC_CONTEXT_SAFE_FREE(context);
 */
 
 #define GSME_RCS_RLIST_ADD_ANCHOR(lname)\
-	tsk_sprintf(0, &anchor, \
+	tsk_sprintf(&anchor, \
 		"%s/~~/resource-lists/list%%5B@name=%%22%s%%22%%5D", \
 		doc_sel, lname); \
 	txc_rlist_list2_add_external(list2, anchor); \
 	TSK_FREE(anchor);
 
 #define GSMA_RCS_ADD_SERVICE(lname, package)\
-	tsk_sprintf(0, &uri, "%s;pres-list=%s", \
+	tsk_sprintf(&uri, "%s;pres-list=%s", \
 		context->xui, lname);\
-	tsk_sprintf(0, &resource_list, \
+	tsk_sprintf(&resource_list, \
 		"%s/~~/resource-lists/list%%5B@name=%%22%s%%22%%5D", \
 		doc_sel, lname); \
 	txc_rls_service_set(service, uri, resource_list); \
 	txc_rls_service_add_package(service, package); \
-	tsk_list_add_data(services, ((void**) &service), txc_rls_service_free); \
+	tsk_list_add_data(services, ((void**) &service)); \
 	TSK_FREE(resource_list); \
 	TSK_FREE(uri);
 
@@ -127,49 +127,49 @@ txc_rlist_list2_L_t* txc_gsmarcs_create_rlist2(const txc_context_t* context)
 	}
 
 	/* create list to be returned */
-	TSK_LIST_CREATE(rlist);
+	rlist = TSK_LIST_CREATE();
 
 	/* list containing all contacts and named 'all' */
-	TXC_RLIST_LIST2_CREATE(list2);
+	list2 = TXC_RLIST_LIST2_CREATE();
 	txc_rlist_list2_set(list2, "all", "all contacts");
-	tsk_list_add_data(rlist, ((void**) &list2), txc_rlist_list2_free);
+	tsk_list_add_data(rlist, ((void**) &list2));
 
 	/* rcs */
-	TXC_RLIST_LIST2_CREATE(list2);
+	list2 = TXC_RLIST_LIST2_CREATE();
 	txc_rlist_list2_set(list2, TXC_RNAME_GSMA_RCS_RCS, TXC_RNAME_GSMA_RCS_RCS);
 	txc_rlist_list2_add_entry(list2, context->xui, "own"); /* RCS 2 */
 	GSME_RCS_RLIST_ADD_ANCHOR("all");
-	tsk_list_add_data(rlist, ((void**) &list2), txc_rlist_list2_free);
+	tsk_list_add_data(rlist, ((void**) &list2));
 
 	/* rcs_blockedcontacts */
-	TXC_RLIST_LIST2_CREATE(list2);
+	list2 = TXC_RLIST_LIST2_CREATE();
 	txc_rlist_list2_set(list2, TXC_RNAME_GSMA_RCS_BLOCKEDCONTACTS, TXC_RNAME_GSMA_RCS_BLOCKEDCONTACTS);
-	tsk_list_add_data(rlist, ((void**) &list2), txc_rlist_list2_free);
+	tsk_list_add_data(rlist, ((void**) &list2));
 
 	/* rcs_revokedcontacts” */
-	TXC_RLIST_LIST2_CREATE(list2);
+	list2 = TXC_RLIST_LIST2_CREATE();
 	txc_rlist_list2_set(list2, TXC_RNAME_GSMA_RCS_REVOKEDCONTACTS, TXC_RNAME_GSMA_RCS_REVOKEDCONTACTS);
-	tsk_list_add_data(rlist, ((void**) &list2), txc_rlist_list2_free);
+	tsk_list_add_data(rlist, ((void**) &list2));
 
 	/* oma_buddylist */
-	TXC_RLIST_LIST2_CREATE(list2);
+	list2 = TXC_RLIST_LIST2_CREATE();
 	txc_rlist_list2_set(list2, TXC_RNAME_OMA_BUDDYLIST, TXC_RNAME_OMA_BUDDYLIST);
 	GSME_RCS_RLIST_ADD_ANCHOR(TXC_RNAME_GSMA_RCS_RCS);
-	tsk_list_add_data(rlist, ((void**) &list2), txc_rlist_list2_free);
+	tsk_list_add_data(rlist, ((void**) &list2));
 
 	/* oma_grantedcontacts */
-	TXC_RLIST_LIST2_CREATE(list2);
+	list2 = TXC_RLIST_LIST2_CREATE();
 	txc_rlist_list2_set(list2, TXC_RNAME_OMA_GRANTEDCONTACTS, TXC_RNAME_OMA_GRANTEDCONTACTS);
 	GSME_RCS_RLIST_ADD_ANCHOR(TXC_RNAME_GSMA_RCS_RCS);
 	GSME_RCS_RLIST_ADD_ANCHOR(TXC_RNAME_OMA_BUDDYLIST);
-	tsk_list_add_data(rlist, ((void**) &list2), txc_rlist_list2_free);
+	tsk_list_add_data(rlist, ((void**) &list2));
 
 	/* oma_blockedcontacts */
-	TXC_RLIST_LIST2_CREATE(list2);
+	list2 = TXC_RLIST_LIST2_CREATE();
 	txc_rlist_list2_set(list2, TXC_RNAME_OMA_BLOCKEDCONTACTS, TXC_RNAME_OMA_BLOCKEDCONTACTS);
 	GSME_RCS_RLIST_ADD_ANCHOR(TXC_RNAME_GSMA_RCS_BLOCKEDCONTACTS);
 	GSME_RCS_RLIST_ADD_ANCHOR(TXC_RNAME_GSMA_RCS_REVOKEDCONTACTS);
-	tsk_list_add_data(rlist, ((void**) &list2), txc_rlist_list2_free);
+	tsk_list_add_data(rlist, ((void**) &list2));
 	
 bail:
 	/* free doc sel */
@@ -198,14 +198,14 @@ txc_rls_service_L_t* txc_gsmarcs_create_rls(const txc_context_t* context)
 	}
 
 	/* create list to be returned */
-	TSK_LIST_CREATE(services);
+	services = TSK_LIST_CREATE();
 	
 	/* rcs */
-	TXC_RLS_SERVICE_CREATE(service);
+	service = TXC_RLS_SERVICE_CREATE();
 	GSMA_RCS_ADD_SERVICE(TXC_RNAME_GSMA_RCS_RCS, "presence");
 	
 	/* oma buddy list */
-	TXC_RLS_SERVICE_CREATE(service);
+	service = TXC_RLS_SERVICE_CREATE();
 	GSMA_RCS_ADD_SERVICE(TXC_RNAME_OMA_BUDDYLIST, "presence");
 	
 	bail:

@@ -90,7 +90,7 @@ int tsk_object_cmp(const void *self, const void *object)
 	return 0;
 }
 
-int tsk_object_icmp(const void *self, const void *object)
+/*int tsk_object_icmp(const void *self, const void *object)
 {
 	const tsk_object_def_t **objdef = self;
 	if(objdef && *objdef && (*objdef)->objicmp)
@@ -98,7 +98,7 @@ int tsk_object_icmp(const void *self, const void *object)
 		return (*objdef)->objicmp(self, object);
 	}
 	return 0;
-}
+}*/
 
 void* tsk_object_ref(void *self)
 {

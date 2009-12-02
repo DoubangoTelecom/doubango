@@ -46,17 +46,18 @@ static int pred_find_compartment_by_id(const tsk_list_item_t *item, const void *
 	if(item && item->data)
 	{
 		tcomp_compartment_t *compartment = item->data;
-		return (compartment->identifier == *((uint64_t*)id));
+		uint64_t res = (compartment->identifier - *((uint64_t*)id));
+		return res > 0 ? (int)1 : (res < 0 ? (int)-1 : (int)0);
 	}
-	return 0;
+	return -1;
 }
 
 /**@ingroup tcomp_statehandler_group
 */
-tcomp_compartment_t *tcomp_statehandler_getCompartment(tcomp_statehandler_t *statehandler, uint64_t id)
+tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_t *statehandler, uint64_t id)
 {
-	tcomp_compartment_t *result;
-	tcomp_compartment_t* newcomp;
+	tcomp_compartment_t *result = 0;
+	tcomp_compartment_t* newcomp = 0;
 	const tsk_list_item_t *item_const;
 
 	if(!statehandler)
@@ -98,6 +99,7 @@ void tcomp_statehandler_deleteCompartment(tcomp_statehandler_t *statehandler, ui
 	item_const = tsk_list_find_item_by_pred(statehandler->compartments, pred_find_compartment_by_id, &id);
 	if(item_const && (compartment = item_const->data))
 	{
+		TSK_DEBUG_INFO("SigComp - Delete compartment %lld", id);
 		tsk_list_remove_item_by_data(statehandler->compartments, compartment);
 	}
 
@@ -263,7 +265,7 @@ compartment_free_states:
 	/*
 	* Request state free now we have the correponding comprtement
 	*/
-	if(tcomp_result_getTempStatesToFreeSize((const tcomp_result_t*)lpResult))
+	if(tcomp_result_getTempStatesToFreeSize((const tcomp_result_t*)*lpResult))
 	{
 		tcomp_compartment_freeStates(lpCompartment, (*lpResult)->statesToFree, tcomp_result_getTempStatesToFreeSize((const tcomp_result_t*)*lpResult));
 	}
@@ -446,8 +448,6 @@ static const tsk_object_def_t tsk_statehandler_def_s =
 	sizeof(tcomp_statehandler_t),
 	tcomp_statehandler_create,
 	tcomp_statehandler_destroy,
-	0,
-	0,
 	0
 };
 const void *tcomp_statehandler_def_t = &tsk_statehandler_def_s;

@@ -49,7 +49,7 @@ void test_oma_directory(const char* buffer, size_t size)
 	printf("\n---\nTEST OMA XCAP-DIRECTORY\n---\n");
 	{
 		/* create oma xcap directory context */
-		omadir = txc_omadir_create(buffer, size);
+		omadir = TXC_OMADIR_CREATE(buffer, size);
 
 		/* get all folders */
 		printf("\nget all folders\n");
@@ -79,7 +79,7 @@ void test_oma_directory(const char* buffer, size_t size)
 		}
 
 		/* free the context */
-		txc_omadir_free(&omadir);
+		TXC_OMADIR_SAFE_FREE(omadir);
 	}
 }
 

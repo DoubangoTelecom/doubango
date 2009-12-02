@@ -35,7 +35,7 @@
 #include "tsk_object.h"
 
 #define TCOMP_REQFEED_CREATE()				tsk_object_new(tcomp_reqfeed_def_t)
-#define TCOMP_REQFEED_SAFE_FREE(self)		tsk_object_unref(self)
+#define TCOMP_REQFEED_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 /*
 0   1   2   3   4   5   6   7

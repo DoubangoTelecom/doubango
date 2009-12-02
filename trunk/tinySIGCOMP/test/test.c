@@ -21,11 +21,21 @@
 */
 
 #include "stdafx.h"
+#include "tcomp_manager.h" /* TinySIGCOMP API functions. */
 
-#define LOOP						0
+#define TORTURES					0
 
-#define RUN_TEST_ALL				0
-#define RUN_TEST_TORTURES			1
+#if TORTURES
+
+#define STREAM_ID					1983
+#define COMPARTMENT_ID				"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473"
+#define OUTPUT_BUFFER_SIZE			2000
+#define DECOMPRESSION_MEMORY_SIZE	65530
+
+#define RUN_TEST_LOOP	1
+
+#define RUN_TEST_ALL	1
+#define RUN_TEST_NO		68
 
 #include "rfc4465_torture_tests.h"
 
@@ -669,7 +679,7 @@ struct_torture_test tests[] =
 		"A.3.4.  Accessing RFC 3485 State",
 		RFC4465_A_3_4__Accessing_RFC_3485_State,
 		61,
-		"0x5349 50",
+		"\x53\x49\x50",
 		11
 	}
 	,
@@ -678,7 +688,7 @@ struct_torture_test tests[] =
 		"A.3.5.  Bytecode State Creation_1",
 		RFC4465_A_3_5__Bytecode_State_Creation_1,
 		74,
-		"0x4f4b",
+		"\x4f\x4b",
 		66
 	}
 	,
@@ -687,7 +697,7 @@ struct_torture_test tests[] =
 		"A.3.5.  Bytecode State Creation_2",
 		RFC4465_A_3_5__Bytecode_State_Creation_2,
 		8,
-		"0x4f4b 31",
+		"\x4f\x4b\x31",
 		7
 	}
 	,
@@ -696,7 +706,7 @@ struct_torture_test tests[] =
 		"A.3.5.  Bytecode State Creation_3",
 		RFC4465_A_3_5__Bytecode_State_Creation_3,
 		13,
-		"0x4f4b 32",
+		"\x4f\x4b\x32",
 		5
 	}
 	,
@@ -705,7 +715,7 @@ struct_torture_test tests[] =
 		"A.3.5.  Bytecode State Creation_4",
 		RFC4465_A_3_5__Bytecode_State_Creation_4,
 		7,
-		"0x0000 32",
+		"\x00\x00\x32",
 		5
 	}
 	,
@@ -715,24 +725,13 @@ struct_torture_test tests[] =
 		RFC4465_A_3_5__Bytecode_State_Creation_5,
 		7,
 		"STATE_NOT_FOUND",
-		0
+		0,
+		0,
+		1
 	}
 };
 
-#include "tcomp_manager.h"
-
-#define STREAM_ID					1983
-#define COMPARTMENT_ID				"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473"
-#define OUTPUT_BUFFER_SIZE			2000
-#define DECOMPRESSION_MEMORY_SIZE	65530
-
-#define RUN_TEST_LOOP	0
-
-#define RUN_TEST_ALL	0
-#define RUN_TEST_NO		48
-
-
-int startsWith(const char* buffer1, size_t size1, const char* buffer2, size_t size2) /*const*/
+int startsWith(const char* buffer1, size_t size1, const char* buffer2, size_t size2) 
 {
 	size_t i;
 
@@ -748,10 +747,14 @@ int startsWith(const char* buffer1, size_t size1, const char* buffer2, size_t si
 	return 1;
 }
 
+#ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
+#else
+int main()
+#endif
 {
 	size_t i, start, end;
-	size_t res_size;
+	size_t res_size = 0;
 	char buffer[OUTPUT_BUFFER_SIZE];
 	tcomp_manager_handle_t *manager = TCOMP_MANAGER_CREATE();
 	tcomp_result_t *result = TCOMP_RESULT_CREATE();
@@ -838,3 +841,319 @@ int _tmain(int argc, _TCHAR* argv[])
 	return 0;
 }
 
+
+#else /* !TORTURES */
+
+#define COMPARTMENT_ID1		"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a474"	// My first compartment id
+#define COMPARTMENT_ID2		"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a475"	// My second compartment id
+
+#define IS_STREAM			0	// Using reliable transport
+#define STREAM_ID			678		// stream identifier
+
+#define MAX_BUFFER_SIZE		0xfff0
+
+#define LOOP_COUNT			100
+
+#define DECOMP_NACK_4_TEST	0
+
+#define PRINTLN printf("\r\n");
+
+// messages to use for tests
+const char* messages[] =
+{
+	//{ 
+		"REGISTER sip:ims-network.com SIP/2.0\r\n"
+		"Via: SIP/2.0/UDP [::]:1988;comp=sigcomp;rport;branch=z9hG4bK1245420841406\r\n"
+		"From: <sip:mamadou@ims-network.com>;tag=29358\r\n"
+		"To: <sip:mamadou@ims-network.com>\r\n"
+		"Call-ID: M-fa53180346f7f55ceb8d8670f9223dbb\r\n"
+		"CSeq: 201 REGISTER\r\n"
+		"Max-Forwards: 70\r\n"
+		"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n"
+		"Contact: <sip:mamadou@[::]:1988;comp=sigcomp;transport=udp>;expires=600000;+deviceID=\"3ca50bcb-7a67-44f1-afd0-994a55f930f4\";mobility=\"fixed\";+g.3gpp.cs-voice;+g.3gpp.app%5fref=\"urn%3Aurnxxx%3A3gpp-application.ims.iari.gsmais\";+g.oma.sip-im.large-message;+g.oma.sip-im\r\n"
+		"User-Agent: IM-client/OMA1.0 doubango/v4.0.1390.0\r\n"
+		"Require: pref\r\n"
+		"P-Preferred-Identity: <sip:mamadou@ims-network.com>\r\n"
+		"Supported: path\r\n"
+		"P-Access-Network-Info: 3GPP-UTRAN-TDD;utran-cell-id-3gpp=00000000\r\n"
+		"Privacy: none\r\n"
+		"Supported: timer\r\n"
+		"Content-Length: 0\r\n"
+		"\r\n"
+	//}
+	,
+	//{ 
+		"SIP/2.0 401 Unauthorized - Challenging the UE\r\n"
+		"Via: SIP/2.0/UDP [::]:1988;comp=sigcomp;received=2001:5C0:1502:1800:1D41:BF77:F1BF:BB49;rport=1988;branch=z9hG4bK1245420841406\r\n"
+		"From: <sip:mamadou@ims-network.com>;tag=29358\r\n"
+		"To: <sip:mamadou@ims-network.com>;tag=3241f316c9eb68efd2c34668c4fbf834-eaa0\r\n"
+		"Call-ID: M-fa53180346f7f55ceb8d8670f9223dbb\r\n"
+		"CSeq: 201 REGISTER\r\n"
+		"Path: <sip:term@pcscf.ims-network.com:4060;lr>\r\n"
+		"Service-Route: <sip:orig@scscf.ims-network.com:6060;lr>"
+		"Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, PUBLISH, MESSAGE, INFO\r\n"
+		"Server: Sip EXpress router (2.1.0-dev1 OpenIMSCore (i386/linux))\r\n"
+		"Content-Length: 0\r\n"
+		"Warning: 392 2001:5C0:1502:1800:0:0:0:226:6060 \"Noisy feedback tells:  pid=24454 req_src_ip=2001:5C0:1502:1800:0:0:0:226 req_src_port=5060 in_uri=sip:scscf.ims-network.com:6060 out_uri=sip:scscf.ims-network.com:6060 via_cnt==3\"\r\n"
+		"WWW-Authenticate: Digest realm=\"ims-network.com\", nonce=\"xFBhTyFaQ0/lBgboH2ZqDe3BDmFXDwAA2Peq/bxtLQs=\", algorithm=AKAv1-MD5, qop=\"auth,auth-int\"\r\n"
+		"\r\n"
+
+	//}
+		,
+	//{ 
+		"REGISTER sip:ims-network.com SIP/2.0\r\n"
+		"Via: SIP/2.0/UDP [::]:1988;comp=sigcomp;rport;branch=z9hG4bK1245420841407\r\n"
+		"From: <sip:mamadou@ims-network.com>;tag=29358\r\n"
+		"To: <sip:mamadou@ims-network.com>\r\n"
+		"Call-ID: M-fa53180346f7f55ceb8d8670f9223dbb\r\n"
+		"CSeq: 202 REGISTER\r\n"
+		"Max-Forwards: 70\r\n"
+		"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n"
+		"Contact: <sip:mamadou@[::]:1988;comp=sigcomp;transport=udp>;expires=600000;+deviceID=\"3ca50bcb-7a67-44f1-afd0-994a55f930f4\";mobility=\"fixed\";+g.3gpp.cs-voice;+g.3gpp.app%5fref=\"urn%3Aurnxxx%3A3gpp-application.ims.iari.gsmais\";+g.oma.sip-im.large-message;+g.oma.sip-im\r\n"
+		"User-Agent: IM-client/OMA1.0 doubango/v4.0.1390.0\r\n"
+		"Authorization: Digest algorithm=AKAv1-MD5,username=\"mamadou@ims-network.com\",realm=\"ims-network.com\",nonce=\"xFBhTyFaQ0/lBgboH2ZqDe3BDmFXDwAA2Peq/bxtLQs=\",uri=\"sip:ims-network.com\",response=\"c499a6b49693d5b29c431786cff32ca4\",qop=auth-int,cnonce=\"9fcc19edace2d1beaa6122b86dd11256\",nc=00000001\r\n"
+		"Require: pref\r\n"
+		"P-Preferred-Identity: <sip:mamadou@ims-network.com>\r\n"
+		"Supported: path\r\n"
+		"P-Access-Network-Info: 3GPP-UTRAN-TDD;utran-cell-id-3gpp=00000000\r\n"
+		"Privacy: none\r\n"
+		"Supported: timer\r\n"
+		"Content-Length: 0\r\n"
+		"\r\n"
+	//}
+		,
+	//{ 
+		"SIP/2.0 200 OK - SAR succesful and registrar saved\r\n"
+		"Via: SIP/2.0/UDP [::]:1988;comp=sigcomp;received=2001:5C0:1502:1800:1D41:BF77:F1BF:BB49;rport=1988;branch=z9hG4bK1245420841407\r\n"
+		"From: <sip:mamadou@ims-network.com>;tag=29358\r\n"
+		"To: <sip:mamadou@ims-network.com>;tag=3241f316c9eb68efd2c34668c4fbf834-1b36\r\n"
+		"Call-ID: M-fa53180346f7f55ceb8d8670f9223dbb\r\n"
+		"CSeq: 202 REGISTER\r\n"
+		"P-Associated-URI: <sip:mamadou@ims-network.com>\r\n"
+		"Contact: <sip:mamadou@[::]:1988;comp=sigcomp;transport=udp>;expires=600000\r\n"
+		"Path: <sip:term@pcscf.ims-network.com:4060;lr>\r\n"
+		"Service-Route: <sip:orig@scscf.ims-network.com:6060;lr>"
+		"Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, PUBLISH, MESSAGE, INFO\r\n"
+		"P-Charging-Function-Addresses: ccf=pri_ccf_address\r\n"
+		"Server: Sip EXpress router (2.1.0-dev1 OpenIMSCore (i386/linux))\r\n"
+		"Content-Length: 0\r\n"
+		"Warning: 392 2001:5C0:1502:1800:0:0:0:226:6060 \"Noisy feedback tells:  pid=24452 req_src_ip=2001:5C0:1502:1800:0:0:0:226 req_src_port=5060 in_uri=sip:scscf.ims-network.com:6060 out_uri=sip:scscf.ims-network.com:6060 via_cnt==3\"\r\n"
+		"\r\n"
+	//}
+		,
+	//{ 
+		"SUBSCRIBE sip:mamadou@ims-network.com SIP/2.0\r\n"
+		"Via: SIP/2.0/UDP [::]:1988;comp=sigcomp;rport;branch=z9hG4bK1245420841408\r\n"
+		"From: <sip:mamadou@ims-network.com>;tag=5705\r\n"
+		"To: <sip:mamadou@ims-network.com>\r\n"
+		"Call-ID: M-dd6e227ce416f853ca7bca49ad5b676d\r\n"
+		"CSeq: 301 SUBSCRIBE\r\n"
+		"Max-Forwards: 70\r\n"
+		"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n"
+		"Contact: <sip:mamadou@[::]:1988;comp=sigcomp;transport=udp>;+g.oma.sip-im\r\n"
+		"User-Agent: IM-client/OMA1.0 doubango/v4.0.1390.0\r\n"
+		"Expires: 600000\r\n"
+		"Event: reg\r\n"
+		"Accept: application/reginfo+xml\r\n"
+		"Route: <sip:[2001:5c0:1502:1800::226]:4060;lr=true;transport=udp>,<sip:orig@scscf.ims-network.com:6060;lr>\r\n"
+		"P-Access-Network-Info: 3GPP-UTRAN-TDD;utran-cell-id-3gpp=00000000\r\n"
+		"Privacy: none\r\n"
+		"Supported: timer\r\n"
+		"Allow-Events: presence, presence.winfo, conference\r\n"
+		"Content-Length: 0\r\n"
+		"\r\n"
+	//}
+		,
+	//{ 
+		"SIP/2.0 200 Subscription to REG saved\r\n"
+		"Record-Route: <sip:mo@pcscf.ims-network.com:4060;lr>\r\n"
+		"Via: SIP/2.0/UDP [::]:1988;comp=sigcomp;received=2001:5C0:1502:1800:1D41:BF77:F1BF:BB49;rport=1988;branch=z9hG4bK1245420841408\r\n"
+		"From: <sip:mamadou@ims-network.com>;tag=5705\r\n"
+		"To: <sip:mamadou@ims-network.com>;tag=3241f316c9eb68efd2c34668c4fbf834-5cce\r\n"
+		"Call-ID: M-dd6e227ce416f853ca7bca49ad5b676d\r\n"
+		"CSeq: 301 SUBSCRIBE\r\n"
+		"Expires: 600000\r\n"
+		"Contact: <sip:mamadou@ims-network.com;comp=sigcomp;>\r\n"
+		"Server: Sip EXpress router (2.1.0-dev1 OpenIMSCore (i386/linux))\r\n"
+		"Content-Length: 0\r\n"
+		"Warning: 392 2001:5C0:1502:1800:0:0:0:226:6060 \"Noisy feedback tells:  pid=24454 req_src_ip=2001:5C0:1502:1800:0:0:0:226 req_src_port=4060 in_uri=sip:mamadou@ims-network.com out_uri=sip:mamadou@ims-network.com via_cnt==2\"\r\n"
+		"\r\n"
+	//}
+		,
+	//{ 
+		"NOTIFY sip:mamadou@[::]:1988;transport=udp SIP/2.0\r\n"
+		"Via: SIP/2.0/UDP [2001:5C0:1502:1800:0:0:0:226]:4060;comp=sigcomp;branch=z9hG4bK2b3f.38818b91.0\r\n"
+		"Via: SIP/2.0/UDP [2001:5C0:1502:1800:0:0:0:226]:6060;received=2001:5C0:1502:1800:0:0:0:226;rport=6060;branch=z9hG4bK2b3f.6db77cf1.0\r\n"
+		"To: <sip:mamadou@ims-network.com>;tag=5705\r\n"
+		"From: <sip:mamadou@ims-network.com>;tag=3241f316c9eb68efd2c34668c4fbf834-5cce\r\n"
+		"CSeq: 10 NOTIFY\r\n"
+		"Call-ID: M-dd6e227ce416f853ca7bca49ad5b676d\r\n"
+		"Content-Length: 379\r\n"
+		"User-Agent: Sip EXpress router(2.1.0-dev1 OpenIMSCore (i386/linux))\r\n"
+		"Contact: <sip:mamadou@ims-network.com; comp=sigcomp;>\r\n"
+		"Event: reg\r\n"
+		"Max-Forwards: 16\r\n"
+		"Subscription-State: active;expires=600030\r\n"
+		"Content-Type: application/reginfo+xml\r\n"
+		"\r\n"
+		"<?xml version=\"1.0\"?>\r\n"
+		"<reginfo xmlns=\"urn:ietf:params:xml:ns:reginfo\" version=\"0\" state=\"full\">\r\n"
+		"<registration aor=\"sip:mamadou@ims-network.com\" id=\"0xb5d91fcc\" state=\"active\">\r\n"
+		"<contact id=\"0xb5d8fb98\" state=\"active\" event=\"registered\" expires=\"600000\">\r\n"
+		"<uri>sip:mamadou@[::]:1988;transport=udp</uri>\r\n"
+		"</contact>\r\n"
+		"</registration>\r\n"
+		"</reginfo>\r\n"
+	//}
+	,
+	//{
+		"SIP/2.0 200 OK\r\n"
+		"Max-Forwards: 70\r\n"
+		"User-Agent: IM-client/OMA1.0 doubango/v4.0.1390.0\r\n"
+		"Via: SIP/2.0/UDP [2001:5C0:1502:1800:0:0:0:226]:4060;comp=sigcomp;branch=z9hG4bK2b3f.38818b91.0;received=2001:5c0:1502:1800::226\r\n"
+		"Via: SIP/2.0/UDP [2001:5C0:1502:1800:0:0:0:226]:6060;received=2001:5C0:1502:1800:0:0:0:226;rport=6060;branch=z9hG4bK2b3f.6db77cf1.0\r\n"
+		"To: <sip:mamadou@ims-network.com>;tag=5705\r\n"
+		"From: <sip:mamadou@ims-network.com>;tag=3241f316c9eb68efd2c34668c4fbf834-5cce\r\n"
+		"CSeq: 10 NOTIFY\r\n"
+		"Call-ID: M-dd6e227ce416f853ca7bca49ad5b676d\r\n"
+		"Content-Length: 0\r\n"
+		"\r\n"
+	//}
+};
+
+
+#ifdef _WIN32_WCE
+int _tmain(int argc, _TCHAR* argv[])
+#else
+int main()
+#endif
+{
+	int i = 0;
+	size_t outLen = 0;
+
+	tcomp_manager_handle_t *manager1 = 0, *manager2 = 0;
+	tcomp_result_t *result1 = 0, *result2 = 0;
+
+	/* temporary buffers  --> will hold compression/decompression results */
+	char buff1[MAX_BUFFER_SIZE]; 
+	char buff2[MAX_BUFFER_SIZE];
+	
+	/* Managers */
+	manager1 = TCOMP_MANAGER_CREATE();
+	manager2 = TCOMP_MANAGER_CREATE();
+
+	/* Add SIP/Presence dictionnaries */
+	tcomp_manager_addSipSdpDictionary(manager1);
+	tcomp_manager_addPresenceDictionary(manager1);
+	tcomp_manager_addSipSdpDictionary(manager2);
+	tcomp_manager_addPresenceDictionary(manager2);
+	
+	/* Results --> it is recomanded to use one result struct for each manager */
+	result1 = TCOMP_RESULT_CREATE();
+	result2 = TCOMP_RESULT_CREATE();
+
+	/* Sets compartment Ids */
+	tcomp_result_setCompartmentId(result1, COMPARTMENT_ID1, strlen(COMPARTMENT_ID1));
+	tcomp_result_setCompartmentId(result2, COMPARTMENT_ID2, strlen(COMPARTMENT_ID2));
+
+	/* Set DMS and SMS */
+	tcomp_manager_setDecompression_Memory_Size(manager1, 8192);
+	tcomp_manager_setDecompression_Memory_Size(manager2, 8192);
+	tcomp_manager_setCycles_Per_Bit(manager1, 64);
+	tcomp_manager_setCycles_Per_Bit(manager2, 64);
+	tcomp_manager_setState_Memory_Size(manager1, 8192);
+	tcomp_manager_setState_Memory_Size(manager2, 8192);
+
+	for(i = 0; i< (8*LOOP_COUNT); i++)
+	{
+		memset(buff1, '\0', MAX_BUFFER_SIZE);
+		memset(buff2, '\0', MAX_BUFFER_SIZE);
+
+		// 
+		//	Compression using manager I
+		//
+		outLen = tcomp_manager_compress(manager1, COMPARTMENT_ID1, strlen(COMPARTMENT_ID1), messages[i%8], strlen(messages[i%8]), buff1, MAX_BUFFER_SIZE, IS_STREAM);
+		if(outLen)
+		{
+			//* TODO: sendto(SendSocket, buff1, outLen, 0, (SOCKADDR *) &SenderAddr, sizeof(SenderAddr));
+
+			/*
+			* Decompress the compressed message using manager II
+			*/
+			tcomp_result_setOutputBuffer(result2, buff2, MAX_BUFFER_SIZE, IS_STREAM, STREAM_ID); // set the output buffer where to copy decompressed message
+			outLen = tcomp_manager_decompress(manager2, buff1, outLen, result2);
+			if(outLen) // OK
+			{
+				// buff2 contains the result and outLen is result length
+				printf("%s\n\n", buff2);
+				PRINTLN;
+
+				// provide the compartment id --> save temp states
+				tcomp_manager_provideCompartmentId(manager2, result2);
+			}
+			else // NOK
+			{
+				printf("ERROR (1)");
+				PRINTLN;
+				//--assert(tcomp_result_getIsNack(result2));
+#if DECOMP_NACK_4_TEST
+				manager1->decompress(result2.getNackInfo()->getBuffer(), result2.getNackInfo()->getSize(), &result1);
+#endif
+				// Decompression failed --> handle NACK (done by remote party)
+				// NACK will be retourned only if SigCompVersion >= 2
+				// NACK must be sent to the remote party (SIP/IMS use-case) over the network
+				//* TODO: sendto(SendSocket, result2.getNackInfo()->getBuffer(), result2.getNackInfo()->getSize(), 0, (SOCKADDR *) &SenderAddr, sizeof(SenderAddr));
+			}
+		}
+		else
+		{
+			//std::cout<< "ERROR (2)" << std::endl;
+			//--assert(0); // MUST never happen	
+		}
+
+
+		// 
+		//	Compression using manager II
+		//
+		outLen = tcomp_manager_compress(manager2, COMPARTMENT_ID2, strlen(COMPARTMENT_ID2), messages[i%8], strlen(messages[i%8]), buff2, MAX_BUFFER_SIZE, IS_STREAM);
+		if(outLen)
+		{
+			tcomp_result_setOutputBuffer(result1, buff1, MAX_BUFFER_SIZE, IS_STREAM, STREAM_ID); // set the output buffer where to copy decompressed message
+			outLen = tcomp_manager_decompress(manager1, buff2, outLen, result1);
+			if(outLen)
+			{
+				printf(buff1);
+				PRINTLN;
+				tcomp_manager_provideCompartmentId(manager1, result1);
+			}
+			else
+			{
+				printf("ERROR (3)");
+				//--assert(tcomp_result_getIsNack(result2));
+#if DECOMP_NACK_4_TEST
+				manager2->decompress(result1.getNackInfo()->getBuffer(), result1.getNackInfo()->getSize(), &result2);
+#endif
+			}
+		}
+		else
+		{
+			printf("ERROR (4)");
+			//--assert(0);	
+		}
+	}
+
+	// Close compartments
+	tcomp_manager_closeCompartment(manager1, COMPARTMENT_ID1, strlen(COMPARTMENT_ID1));
+	tcomp_manager_closeCompartment(manager2, COMPARTMENT_ID2, strlen(COMPARTMENT_ID2));
+
+	// Delete Results
+	TCOMP_RESULT_SAFE_FREE(result1);
+	TCOMP_RESULT_SAFE_FREE(result2);
+
+	// Delete managers
+	TCOMP_MANAGER_SAFE_FREE(manager1);
+	TCOMP_MANAGER_SAFE_FREE(manager2);
+}
+
+
+#endif /* TORTURES */

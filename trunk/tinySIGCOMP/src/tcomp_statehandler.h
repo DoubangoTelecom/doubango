@@ -45,7 +45,7 @@
 #include <stdint.h>
 
 #define TCOMP_STATEHANDLER_CREATE()				tsk_object_new(tcomp_statehandler_def_t)
-#define TCOMP_STATEHANDLER_SAFE_FREE(self)		tsk_object_unref(self)
+#define TCOMP_STATEHANDLER_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 typedef struct tcomp_statehandler_s
 {
@@ -62,7 +62,7 @@ typedef struct tcomp_statehandler_s
 }
 tcomp_statehandler_t;
 
-tcomp_compartment_t *tcomp_statehandler_getCompartment(tcomp_statehandler_t *statehandler, uint64_t id);
+tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_t *statehandler, uint64_t id);
 void tcomp_statehandler_deleteCompartment(tcomp_statehandler_t *statehandler, uint64_t id);
 int tcomp_statehandler_compartmentExist(tcomp_statehandler_t *statehandler, uint64_t id);
 uint16_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t** lpState);
