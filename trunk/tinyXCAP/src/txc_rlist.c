@@ -149,14 +149,14 @@ printf("\nget all entries in the list named 'rcs_revokedcontacts'\n");
 
 #define RLIST_RETURN_IF_INVALID(rlist) if(!rlist || !(rlist->docPtr)) return 0;
 
-/**@ingroup txc_rlist_group
-* Internal function to initialize a previously created entry
-* @param entry The entry to initilialize
-* @sa TXC_RLIST_ENTRY_CREATE
-*/
-void txc_rlist_entry_init(txc_rlist_entry_t *entry)
-{
-}
+///**@ingroup txc_rlist_group
+//* Internal function to initialize a previously created entry
+//* @param entry The entry to initilialize
+//* @sa TXC_RLIST_ENTRY_CREATE
+//*/
+//void txc_rlist_entry_init(txc_rlist_entry_t *entry)
+//{
+//}
 
 /**@ingroup txc_rlist_group
 * Set the entry's uri and display-name
@@ -168,38 +168,38 @@ void txc_rlist_entry_set(txc_rlist_entry_t *entry, const char* uri, const char* 
 {
 	if(entry)
 	{		
-		tsk_strupdate2(&(entry->uri), uri);
-		tsk_strupdate2(&(entry->display_name), display_name);
+		tsk_strupdate(&(entry->uri), uri);
+		tsk_strupdate(&(entry->display_name), display_name);
 	}
 }
 
-/**@ingroup txc_rlist_group
-* Internal function to free an entry previously created using @ref TXC_RLIST_ENTRY_SAFE_FREE.
-* You MUST call @ref TXC_RLIST_ENTRY_SAFE_FREE to safely free your entry.
-* @sa @ref TXC_RLIST_ENTRY_SAFE_FREE
-*/
-void txc_rlist_entry_free(void **_entry)
-{
-	txc_rlist_entry_t **entry = ((txc_rlist_entry_t**)_entry);
+///**@ingroup txc_rlist_group
+//* Internal function to free an entry previously created using @ref TXC_RLIST_ENTRY_SAFE_FREE.
+//* You MUST call @ref TXC_RLIST_ENTRY_SAFE_FREE to safely free your entry.
+//* @sa @ref TXC_RLIST_ENTRY_SAFE_FREE
+//*/
+//void txc_rlist_entry_free(void **_entry)
+//{
+//	txc_rlist_entry_t **entry = ((txc_rlist_entry_t**)_entry);
+//
+//	TSK_FREE((*entry)->uri);
+//	TSK_FREE((*entry)->display_name);
+//	TSK_FREE((*entry)->list);
+//	TSK_FREE((*entry)->last_modified);
+//	TSK_FREE((*entry)->etag);
+//
+//	tsk_free2(_entry);
+//}
 
-	TSK_FREE((*entry)->uri);
-	TSK_FREE((*entry)->display_name);
-	TSK_FREE((*entry)->list);
-	TSK_FREE((*entry)->last_modified);
-	TSK_FREE((*entry)->etag);
-
-	tsk_free2(_entry);
-}
-
-/**@ingroup txc_rlist_group
-* Internal function to initialize a previously created @ref txc_rlist_list_t object.
-* You MUST use @ref TXC_RLIST_LIST_CREATE to create and intialize your simple list.
-* @param list The list to initialize
-* @sa @ref TXC_RLIST_LIST_CREATE
-*/
-void txc_rlist_list_init(txc_rlist_list_t *list)
-{
-}
+///**@ingroup txc_rlist_group
+//* Internal function to initialize a previously created @ref txc_rlist_list_t object.
+//* You MUST use @ref TXC_RLIST_LIST_CREATE to create and intialize your simple list.
+//* @param list The list to initialize
+//* @sa @ref TXC_RLIST_LIST_CREATE
+//*/
+//void txc_rlist_list_init(txc_rlist_list_t *list)
+//{
+//}
 
 /**@ingroup txc_rlist_group
 * Update the list's name and display-name
@@ -211,36 +211,36 @@ void txc_rlist_list_set(txc_rlist_list_t *list, const char* name, const char* di
 {
 	if(list)
 	{	
-		tsk_strupdate2(&(list->name), name);
-		tsk_strupdate2(&(list->display_name), display_name);
+		tsk_strupdate(&(list->name), name);
+		tsk_strupdate(&(list->display_name), display_name);
 	}
 }
 
-/**@ingroup txc_rlist_group
-* Internal function to free a previously created @ref txc_rlist_list_t object. 
-* You MUST use @ref TXC_RLIST_LIST_SAFE_FREE to free your simple list.
-* @param _list The simple list to free
-* @sa @ref TXC_RLIST_LIST_SAFE_FREE
-*/
-void txc_rlist_list_free(void **_list)
-{
-	txc_rlist_list_t **list = ((txc_rlist_list_t**)_list);
+///**@ingroup txc_rlist_group
+//* Internal function to free a previously created @ref txc_rlist_list_t object. 
+//* You MUST use @ref TXC_RLIST_LIST_SAFE_FREE to free your simple list.
+//* @param _list The simple list to free
+//* @sa @ref TXC_RLIST_LIST_SAFE_FREE
+//*/
+//void txc_rlist_list_free(void **_list)
+//{
+//	txc_rlist_list_t **list = ((txc_rlist_list_t**)_list);
+//
+//	TSK_FREE((*list)->display_name);
+//	TSK_FREE((*list)->name);
+//
+//	tsk_free2(_list);
+//}
 
-	TSK_FREE((*list)->display_name);
-	TSK_FREE((*list)->name);
-
-	tsk_free2(_list);
-}
-
-/**@ingroup txc_rlist_group
-* Internal function to initialize a newly created @ref txc_rlist_list2_t object.
-* You MUST use @ref TXC_RLIST_LIST2_CREATE to create and initialize your complex list.
-* @param list2 The complex list to initialize
-* @sa @ref TXC_RLIST_LIST2_CREATE
-*/
-void txc_rlist_list2_init(txc_rlist_list2_t *list2)
-{
-}
+///**@ingroup txc_rlist_group
+//* Internal function to initialize a newly created @ref txc_rlist_list2_t object.
+//* You MUST use @ref TXC_RLIST_LIST2_CREATE to create and initialize your complex list.
+//* @param list2 The complex list to initialize
+//* @sa @ref TXC_RLIST_LIST2_CREATE
+//*/
+//void txc_rlist_list2_init(txc_rlist_list2_t *list2)
+//{
+//}
 
 /**@ingroup txc_rlist_group
 * Set list2's name and display-name
@@ -252,8 +252,8 @@ void txc_rlist_list2_set(txc_rlist_list2_t *list2, const char* name, const char*
 {
 	if(list2)
 	{		
-		tsk_strupdate2(&(list2->name), name);
-		tsk_strupdate2(&(list2->display_name),display_name);
+		tsk_strupdate(&(list2->name), name);
+		tsk_strupdate(&(list2->display_name),display_name);
 	}
 }
 /**@ingroup txc_rlist_group
@@ -268,12 +268,12 @@ void txc_rlist_list2_add_external(txc_rlist_list2_t *list2, const char* anchor)
 		txc_rlist_external_t *external = 0;
 		if(!(list2->externals)) 
 		{
-			TSK_LIST_CREATE(list2->externals);
+			list2->externals = TSK_LIST_CREATE();
 		}
 
-		TXC_RLIST_EXTERNAL_CREATE(external);
+		external = TXC_RLIST_EXTERNAL_CREATE();
 		txc_rlist_external_set(external, anchor);
-		tsk_list_add_data(list2->externals, ((void**)&external), txc_rlist_external_free);
+		tsk_list_add_data(list2->externals, ((void**)&external));
 	}
 }
 
@@ -288,44 +288,44 @@ void txc_rlist_list2_add_entry(txc_rlist_list2_t *list2, const char* uri, const 
 	if(list2)
 	{
 		txc_rlist_entry_t *entry = 0;
-		TXC_RLIST_ENTRY_CREATE(entry);
+		entry = TXC_RLIST_ENTRY_CREATE();
 		txc_rlist_entry_set(entry, uri, display_name);
 
 		if(!(list2->entries)) 
 		{
-			TSK_LIST_CREATE(list2->entries);
+			list2->entries = TSK_LIST_CREATE();
 		}
-		tsk_list_add_data(list2->entries, ((void**)&entry), txc_rlist_entry_free);
+		tsk_list_add_data(list2->entries, ((void**)&entry));
 	}
 }
 
-/**@ingroup txc_rlist_group
-* Internal function to free a previously created @ref txc_rlist_list2_t object using @ref TXC_RLIST_LIST2_CREATE.
-* You MUST use @ref TXC_RLIST_LIST2_SAFE_FREE to safely free your complex list.
-* @param _list2 The complex list to free
-* @sa @ref TXC_RLIST_LIST2_SAFE_FREE
-*/
-void txc_rlist_list2_free(void **_list2)
-{
-	txc_rlist_list2_t **list2 = ((txc_rlist_list2_t**)_list2);
+///**@ingroup txc_rlist_group
+//* Internal function to free a previously created @ref txc_rlist_list2_t object using @ref TXC_RLIST_LIST2_CREATE.
+//* You MUST use @ref TXC_RLIST_LIST2_SAFE_FREE to safely free your complex list.
+//* @param _list2 The complex list to free
+//* @sa @ref TXC_RLIST_LIST2_SAFE_FREE
+//*/
+//void txc_rlist_list2_free(void **_list2)
+//{
+//	txc_rlist_list2_t **list2 = ((txc_rlist_list2_t**)_list2);
+//
+//	TSK_FREE((*list2)->display_name);
+//	TSK_FREE((*list2)->name);
+//	TSK_LIST_SAFE_FREE((*list2)->externals);
+//	TSK_LIST_SAFE_FREE((*list2)->entries);
+//
+//	tsk_free2(_list2);
+//}
 
-	TSK_FREE((*list2)->display_name);
-	TSK_FREE((*list2)->name);
-	TSK_LIST_SAFE_FREE((*list2)->externals);
-	TSK_LIST_SAFE_FREE((*list2)->entries);
-
-	tsk_free2(_list2);
-}
-
-/**@ingroup txc_rlist_group
-* Internal function to initialize an external element.
-* You MUST call @ref TXC_RLIST_EXTERNAL_CREATE to create and initialize your element.
-* @param external The external element to initialize.
-* @sa @ref TXC_RLIST_EXTERNAL_CREATE.
-*/
-void txc_rlist_external_init(txc_rlist_external_t *external)
-{
-}
+///**@ingroup txc_rlist_group
+//* Internal function to initialize an external element.
+//* You MUST call @ref TXC_RLIST_EXTERNAL_CREATE to create and initialize your element.
+//* @param external The external element to initialize.
+//* @sa @ref TXC_RLIST_EXTERNAL_CREATE.
+//*/
+//void txc_rlist_external_init(txc_rlist_external_t *external)
+//{
+//}
 
 /**@ingroup txc_rlist_group
 * Sets the external's anchor value
@@ -336,25 +336,25 @@ void txc_rlist_external_set(txc_rlist_external_t *external, const char* anchor)
 {
 	if(external)
 	{
-		tsk_strupdate2(&(external->anchor), anchor);
+		tsk_strupdate(&(external->anchor), anchor);
 	}
 }
 
-/**@ingroup txc_rlist_group
-* Internal function to free a previously created @ref txc_rlist_external_t object.
-* You must call @ref TXC_RLIST_EXTERNAL_SAFE_FREE to free your object.
-* @param _external The external element to free
-* @sa @ref TXC_RLIST_EXTERNAL_SAFE_FREE
-*/
-void txc_rlist_external_free(void **_external)
-{
-	txc_rlist_external_t **external = ((txc_rlist_external_t**)_external);
-
-	TSK_FREE((*external)->anchor);
-	TSK_FREE((*external)->list);
-
-	tsk_free2(_external);
-}
+///**@ingroup txc_rlist_group
+//* Internal function to free a previously created @ref txc_rlist_external_t object.
+//* You must call @ref TXC_RLIST_EXTERNAL_SAFE_FREE to free your object.
+//* @param _external The external element to free
+//* @sa @ref TXC_RLIST_EXTERNAL_SAFE_FREE
+//*/
+//void txc_rlist_external_free(void **_external)
+//{
+//	txc_rlist_external_t **external = ((txc_rlist_external_t**)_external);
+//
+//	TSK_FREE((*external)->anchor);
+//	TSK_FREE((*external)->list);
+//
+//	tsk_free2(_external);
+//}
 
 /**@ingroup txc_rlist_group
 * Internal function to deserialize an entry element from an XML node pointer.
@@ -370,28 +370,28 @@ txc_rlist_entry_t* txc_rlist_entry_from_xml(const xmlNodePtr node, const char* l
 
 	if(tsk_xml_find_node(node, "entry", nft_none))
 	{
-		TXC_RLIST_ENTRY_CREATE(rlist_entry);
-		rlist_entry->list = tsk_strdup2(lname);
+		rlist_entry = TXC_RLIST_ENTRY_CREATE();
+		rlist_entry->list = tsk_strdup(lname);
 
 		/* display-name */
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("entry"), 
 			TSK_XML_NODE_SELECT_BY_NAME("display-name"), TSK_XML_NODE_SELECT_END());
-		rlist_entry->display_name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_entry->display_name = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 		
 		/* uri */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("entry", "uri"), TSK_XML_NODE_SELECT_END());
-		rlist_entry->uri = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_entry->uri = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* last-modified */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("entry", "last-modified"), TSK_XML_NODE_SELECT_END());
-		rlist_entry->last_modified = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_entry->last_modified = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* etag */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("entry", "etag"), TSK_XML_NODE_SELECT_END());
-		rlist_entry->etag = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_entry->etag = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 		
 	}
 	else return 0;
@@ -413,14 +413,14 @@ txc_rlist_external_t* txc_rlist_external_from_xml(const xmlNodePtr node, const c
 
 	if(tsk_xml_find_node(node, "external", nft_none))
 	{
-		TXC_RLIST_EXTERNAL_CREATE(rlist_external);
-		rlist_external->list = tsk_strdup2(lname);
+		rlist_external = TXC_RLIST_EXTERNAL_CREATE();
+		rlist_external->list = tsk_strdup(lname);
 		
 		/* anchor */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("external", "anchor"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_external->anchor = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_external->anchor = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 		
 	}else return 0;
 
@@ -440,19 +440,19 @@ txc_rlist_list_t* txc_rlist_list_from_xml(const xmlNodePtr node)
 
 	if(tsk_xml_find_node(node, "list", nft_none))
 	{
-		TXC_RLIST_LIST_CREATE(rlist_list);
+		rlist_list = TXC_RLIST_LIST_CREATE();
 		
 		/* name */
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("list", "name"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_list->name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_list->name = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/* display-name */
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("list"),
 			TSK_XML_NODE_SELECT_BY_NAME("display-name"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_list->display_name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_list->display_name = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 		
 	}else return 0;
 
@@ -472,19 +472,19 @@ txc_rlist_list2_t* txc_rlist_list2_from_xml(const xmlNodePtr node)
 
 	if(tsk_xml_find_node(node, "list", nft_none))
 	{
-		TXC_RLIST_LIST2_CREATE(rlist_list2);
+		rlist_list2 = TXC_RLIST_LIST2_CREATE();
 		
 		/** name **/
 		node2 = tsk_xml_select_node(node, 
 			TSK_XML_NODE_SELECT_ATT_VALUE("list", "name"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_list2->name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_list2->name = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/** display-name **/
 		node2 = tsk_xml_select_node(node, TSK_XML_NODE_SELECT_BY_NAME("list"),
 			TSK_XML_NODE_SELECT_BY_NAME("display-name"),
 			TSK_XML_NODE_SELECT_END());
-		rlist_list2->display_name = tsk_strdup2(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
+		rlist_list2->display_name = tsk_strdup(TSK_XML_NODE_SAFE_GET_TEXTVALUE(node2));
 
 		/*== externals ==*/
 		/* select first external */
@@ -492,11 +492,11 @@ txc_rlist_list2_t* txc_rlist_list2_from_xml(const xmlNodePtr node)
 		if(node2)
 		{
 			txc_rlist_external_t *rlist_external = 0;
-			TSK_LIST_CREATE(rlist_list2->externals);
+			rlist_list2->externals = TSK_LIST_CREATE();
 			do
 			{
 				rlist_external = txc_rlist_external_from_xml(node2, rlist_list2->name);
-				tsk_list_add_data(rlist_list2->externals, ((void**) &rlist_external), txc_rlist_external_free);
+				tsk_list_add_data(rlist_list2->externals, ((void**) &rlist_external));
 			}
 			while(node2 = tsk_xml_find_node(node2, "external", nft_next));
 		}
@@ -507,11 +507,11 @@ txc_rlist_list2_t* txc_rlist_list2_from_xml(const xmlNodePtr node)
 		if(node2)
 		{
 			txc_rlist_entry_t *rlist_entry = 0;
-			TSK_LIST_CREATE(rlist_list2->entries);
+			rlist_list2->entries = TSK_LIST_CREATE();
 			do
 			{
 				rlist_entry = txc_rlist_entry_from_xml(node2, rlist_list2->name);
-				tsk_list_add_data(rlist_list2->entries, ((void**) &rlist_entry), txc_rlist_entry_free);
+				tsk_list_add_data(rlist_list2->entries, ((void**) &rlist_entry));
 			}
 			while(node2 = tsk_xml_find_node(node2, "entry", nft_next));
 		}
@@ -520,26 +520,26 @@ txc_rlist_list2_t* txc_rlist_list2_from_xml(const xmlNodePtr node)
 	return rlist_list2;
 }
 
-/**@ingroup txc_rlist_group
-* Create a resource-lists context.
-* @param buffer The XML buffer from wich to create the context
-* @param size The size of the XML buffer
-* @retval @ref txc_rlist_t object holding a pointer to the XML buffer.
-* You must call @ref txc_rlist_free to free the returned object.
-* @sa @ref txc_rlist_free
-*/
-txc_rlist_t* txc_rlist_create(const char* buffer, size_t size)
-{
-	if(buffer && size)
-	{
-		txc_rlist_t* rlist = (txc_rlist_t*)tsk_calloc2(1, sizeof(txc_rlist_t));
-		rlist->docPtr = xmlParseMemory(buffer, (int)size);
-
-		return rlist;
-	}
-
-	return 0;
-}
+///**@ingroup txc_rlist_group
+//* Create a resource-lists context.
+//* @param buffer The XML buffer from wich to create the context
+//* @param size The size of the XML buffer
+//* @retval @ref txc_rlist_t object holding a pointer to the XML buffer.
+//* You must call @ref txc_rlist_free to free the returned object.
+//* @sa @ref txc_rlist_free
+//*/
+//txc_rlist_t* txc_rlist_create(const char* buffer, size_t size)
+//{
+//	if(buffer && size)
+//	{
+//		txc_rlist_t* rlist = (txc_rlist_t*)tsk_calloc(1, sizeof(txc_rlist_t));
+//		rlist->docPtr = xmlParseMemory(buffer, (int)size);
+//
+//		return rlist;
+//	}
+//
+//	return 0;
+//}
 
 /**@ingroup txc_rlist_group
 * Returns all lists holded by this context
@@ -564,18 +564,18 @@ txc_rlist_listx_L_t* txc_rlist_get_all_lists(const txc_rlist_t* rlist, int type2
 	if(!tsk_xml_find_node(node, "list", nft_none)) node = tsk_xml_find_node(node, "list", nft_next);
 	if(node)
 	{
-		TSK_LIST_CREATE(list);
+		list = TSK_LIST_CREATE();
 		do
 		{
 			if(type2)
 			{
 				txc_rlist_list2_t* rlist_list2 = txc_rlist_list2_from_xml(node);
-				tsk_list_add_data(list, ((void**) &rlist_list2), txc_rlist_list2_free);
+				tsk_list_add_data(list, ((void**) &rlist_list2));
 			}
 			else
 			{
 				txc_rlist_list_t* rlist_list = txc_rlist_list_from_xml(node);
-				tsk_list_add_data(list, ((void**) &rlist_list), txc_rlist_list_free);
+				tsk_list_add_data(list, ((void**) &rlist_list));
 			}
 		}
 		while(node = tsk_xml_find_node(node, "list", nft_next));
@@ -602,7 +602,7 @@ txc_rlist_entry_L_t* txc_rlist_get_entries_by_list(const txc_rlist_t* rlist, con
 	node = RLIST_SELECT_LIST_BY_NAME(lname);
 	if(!node) return 0;
 
-	TSK_LIST_CREATE(list);
+	list = TSK_LIST_CREATE();
 
 	/* select first entry */
 	if(!tsk_xml_find_node(node, "entry", nft_none)) node = tsk_xml_find_node(node, "entry", nft_next);
@@ -611,7 +611,7 @@ txc_rlist_entry_L_t* txc_rlist_get_entries_by_list(const txc_rlist_t* rlist, con
 		do
 		{
 			rlist_entry = txc_rlist_entry_from_xml(node, lname);
-			tsk_list_add_data(list, ((void**) &rlist_entry), txc_rlist_entry_free);
+			tsk_list_add_data(list, ((void**) &rlist_entry));
 		}
 		while(node = tsk_xml_find_node(node, "entry", nft_next));
 	}
@@ -641,11 +641,11 @@ txc_rlist_external_L_t* txc_rlist_get_externals_by_list(const txc_rlist_t* rlist
 	if(!tsk_xml_find_node(node, "external", nft_none)) node = tsk_xml_find_node(node, "external", nft_next);
 	if(node)
 	{
-		TSK_LIST_CREATE(list);
+		list = TSK_LIST_CREATE();
 		do
 		{
 			rlist_external = txc_rlist_external_from_xml(node, lname);
-			tsk_list_add_data(list, ((void**) &rlist_external), txc_rlist_external_free);
+			tsk_list_add_data(list, ((void**) &rlist_external));
 		}
 		while(node = tsk_xml_find_node(node, "external", nft_next));
 	}
@@ -664,7 +664,7 @@ char* txc_rlist_external_serialize(const txc_rlist_external_t *external)
 	char* external_str = 0;
 	if(!external || !external->anchor) return 0;
 
-	tsk_sprintf(0, &external_str, "<external anchor=\"%s\" />", external->anchor);
+	tsk_sprintf(&external_str, "<external anchor=\"%s\" />", external->anchor);
 	return external_str;
 }
 
@@ -693,7 +693,7 @@ char* txc_rlist_entry_serialize2(const char* uri, const char* displayname)
 	char* entry_str = 0;
 	if(!uri || !displayname) return 0;
 
-	tsk_sprintf(0, &entry_str,
+	tsk_sprintf(&entry_str,
 				"<entry uri=\"%s\" xmlns=\""TXC_NS_RLIST"\">"
 					"<display-name>%s</display-name>"
 				"</entry>",
@@ -730,12 +730,12 @@ char* txc_rlist_list_serialize2(const char* name, const char* displayname, const
 
 	if(!name) return 0;
 
-	if(anchor) tsk_sprintf(0, &anchor_str, "<external anchor=\"%s\"/>", anchor);
-	else anchor_str = tsk_strdup2("");
+	if(anchor) tsk_sprintf(&anchor_str, "<external anchor=\"%s\"/>", anchor);
+	else anchor_str = tsk_strdup("");
 	TSK_XML_SERIALIZE(displayname_str, "display-name", displayname);
 
 	/* serialize */
-	 tsk_sprintf(0, &list_str,
+	 tsk_sprintf(&list_str,
 				"<list name=\"%s\" xmlns=\""TXC_NS_RLIST"\">"
 					"%s"
 					"%s"
@@ -764,7 +764,7 @@ char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2)
 	if(!list2) return 0;
 
 	/* name and display-name */
-	tsk_sprintf(0, &list2_str,
+	tsk_sprintf(&list2_str,
 				"<list name=\"%s\" xmlns=\""TXC_NS_RLIST"\">"
 					"<display-name>%s</display-name>",
 				list2->name, list2->display_name);
@@ -774,7 +774,7 @@ char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2)
 	{
 		txc_rlist_entry_t *entry = ((txc_rlist_entry_t*)item->data);
 		char* entry_str = txc_rlist_entry_serialize(entry);
-		tsk_strcat2(&list2_str, (const char*)entry_str);
+		tsk_strcat(&list2_str, (const char*)entry_str);
 		TSK_FREE(entry_str);
 	}
 	
@@ -783,12 +783,12 @@ char* txc_rlist_list2_serialize(const txc_rlist_list2_t *list2)
 	{
 		txc_rlist_external_t *external = ((txc_rlist_external_t*)item->data);
 		char* external_str = txc_rlist_external_serialize(external);
-		tsk_strcat2(&list2_str, (const char*)external_str);
+		tsk_strcat(&list2_str, (const char*)external_str);
 		TSK_FREE(external_str);
 	}
 	
 	/* close list */
-	tsk_strcat2(&list2_str, "</list>");
+	tsk_strcat(&list2_str, "</list>");
 
 	return list2_str;
 }
@@ -808,19 +808,19 @@ char* txc_rlist_list2_L_serialize(const txc_rlist_list2_L_t *list22)
 	if(!list22) return 0;
 
 	/* xml header */
-	tsk_strcat2(&rlist2_str, RLIST_XML_HEADER);
+	tsk_strcat(&rlist2_str, RLIST_XML_HEADER);
 
 	tsk_list_foreach(item, list22)
 	{
 		/* get list2 */
 		txc_rlist_list2_t *list2 = ((txc_rlist_list2_t*)item->data);
 		char* list2_str = txc_rlist_list2_serialize(list2);
-		tsk_strcat2(&rlist2_str, list2_str);
+		tsk_strcat(&rlist2_str, list2_str);
 		TSK_FREE(list2_str);
 	}
 	
 	/* xml footer */
-	tsk_strcat2(&rlist2_str, RLIST_XML_FOOTER);
+	tsk_strcat(&rlist2_str, RLIST_XML_FOOTER);
 
 	return rlist2_str;
 }
@@ -836,27 +836,285 @@ char* txc_rlist_add_xml_header(const char* xml_content)
 	char* xml = 0;
 
 	/* append xml header */
-	tsk_sprintf(0, &xml,
+	tsk_sprintf(&xml,
 				"%s%s%s",
 				RLIST_XML_HEADER, xml_content, RLIST_XML_FOOTER);
 	return xml;
 }
 
+///**@ingroup txc_rlist_group
+//* Function to free a previously created context using @ref txc_rlist_create.
+//* @param rlist The context the free.
+//* @sa @ref txc_rlist_create
+//*/
+//void txc_rlist_free(txc_rlist_t **rlist )
+//{
+//	if(*rlist)
+//	{	
+//		xmlFreeDoc((*rlist)->docPtr);
+//		
+//		free(*rlist);
+//		(*rlist)=0;
+//	}
+//}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//	Rlist entry object definition
+//
+
 /**@ingroup txc_rlist_group
-* Function to free a previously created context using @ref txc_rlist_create.
-* @param rlist The context the free.
-* @sa @ref txc_rlist_create
 */
-void txc_rlist_free(txc_rlist_t **rlist )
+static void* txc_rlist_create(void *self, va_list * app)
 {
-	if(*rlist)
-	{	
-		xmlFreeDoc((*rlist)->docPtr);
-		
-		free(*rlist);
-		(*rlist)=0;
+	txc_rlist_t *rlist = self;
+	if(rlist)
+	{
+		const char* buffer = va_arg(*app, const char*);
+		size_t size = va_arg(*app, size_t);
+		if(buffer && size)
+		{
+			rlist->docPtr = xmlParseMemory(buffer, (int)size);
+		}
 	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new rlist.");
+	}
+	return self;
 }
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_destroy(void * self)
+{
+	txc_rlist_t *rlist= self;
+	if(rlist)
+	{
+		xmlFreeDoc(rlist->docPtr);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL rlist.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_rlist_def_s = 
+{
+	sizeof(txc_rlist_t),
+	txc_rlist_create, 
+	txc_rlist_destroy,
+	0
+};
+const void *txc_rlist_def_t = &txc_rlist_def_s;
+
+
+
+//========================================================
+//	Rlist entry object definition
+//
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_entry_create(void *self, va_list * app)
+{
+	txc_rlist_entry_t *rlist_entry = self;
+	if(rlist_entry)
+	{
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new rlist_entry.");
+	}
+	return self;
+}
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_entry_destroy(void * self)
+{
+	txc_rlist_entry_t *rlist_entry = self;
+	if(rlist_entry)
+	{
+		TSK_FREE(rlist_entry->uri);
+		TSK_FREE(rlist_entry->display_name);
+		TSK_FREE(rlist_entry->list);
+		TSK_FREE(rlist_entry->last_modified);
+		TSK_FREE(rlist_entry->etag);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL entry.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_rlist_entry_def_s = 
+{
+	sizeof(txc_rlist_entry_t),
+	txc_rlist_entry_create, 
+	txc_rlist_entry_destroy,
+	0
+};
+const void *txc_rlist_entry_def_t = &txc_rlist_entry_def_s;
+
+
+//========================================================
+//	Rlist list object definition
+//
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_list_create(void *self, va_list * app)
+{
+	txc_rlist_list_t *rlist_list = self;
+	if(rlist_list)
+	{
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new rlist_list.");
+	}
+	return self;
+}
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_list_destroy(void * self)
+{
+	txc_rlist_list_t *rlist_list = self;
+	if(rlist_list)
+	{
+		TSK_FREE(rlist_list->display_name);
+		TSK_FREE(rlist_list->name);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL list.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_rlist_list_def_s = 
+{
+	sizeof(txc_rlist_list_t),
+	txc_rlist_list_create, 
+	txc_rlist_list_destroy,
+	0
+};
+const void *txc_rlist_list_def_t = &txc_rlist_list_def_s;
+
+
+//========================================================
+//	Rlist list2 object definition
+//
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_list2_create(void *self, va_list * app)
+{
+	txc_rlist_list2_t *rlist_list2 = self;
+	if(rlist_list2)
+	{
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new rlist_list2.");
+	}
+	return self;
+}
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_list2_destroy(void * self)
+{
+	txc_rlist_list2_t *rlist_list2 = self;
+	if(rlist_list2)
+	{
+		TSK_FREE(rlist_list2->display_name);
+		TSK_FREE(rlist_list2->name);
+		TSK_LIST_SAFE_FREE(rlist_list2->externals);
+		TSK_LIST_SAFE_FREE(rlist_list2->entries);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL list2.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_rlist_list2_def_s = 
+{
+	sizeof(txc_rlist_list2_t),
+	txc_rlist_list2_create, 
+	txc_rlist_list2_destroy,
+	0
+};
+const void *txc_rlist_list2_def_t = &txc_rlist_list2_def_s;
+
+//========================================================
+//	Rlist external object definition
+//
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_external_create(void *self, va_list * app)
+{
+	txc_rlist_external_t *rlist_external = self;
+	if(rlist_external)
+	{
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new rlist_external.");
+	}
+	return self;
+}
+
+/**@ingroup txc_rlist_group
+*/
+static void* txc_rlist_external_destroy(void * self)
+{
+	txc_rlist_external_t *rlist_external = self;
+	if(rlist_external)
+	{
+		TSK_FREE(rlist_external->anchor);
+		TSK_FREE(rlist_external->list);
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot destroy NULL external.");
+	}
+	return self;
+}
+
+
+static const tsk_object_def_t txc_rlist_external_def_s = 
+{
+	sizeof(txc_rlist_external_t),
+	txc_rlist_external_create,
+	txc_rlist_external_destroy,
+	0
+};
+const void *txc_rlist_external_def_t = &txc_rlist_external_def_s;
+
 
 #undef RLIST_SELECT_LIST_BY_NAME
 #undef RLIST_RETURN_IF_INVALID

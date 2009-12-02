@@ -100,8 +100,6 @@ static const tsk_object_def_t tcomp_reqfeed_def_s =
 	sizeof(tcomp_reqfeed_t),
 	tcomp_reqfeed_create, 
 	tcomp_reqfeed_destroy,
-	0, 
-	0,
 	0
 };
 const void *tcomp_reqfeed_def_t = &tcomp_reqfeed_def_s;

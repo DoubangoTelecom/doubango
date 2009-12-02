@@ -19,7 +19,6 @@
 * along with DOUBANGO.
 *
 */
-
 #include "txc_api.h" 
 
 #ifndef TEST_XCAP_CAPS
@@ -54,16 +53,16 @@ void test_xcap_caps(const char* buffer, size_t size)
 	printf("\n---\nTEST XCAP-CAPS\n---\n");
 	{
 		xcap_caps = txc_xcap_caps_create(buffer, size);
-
+		
 		/* dump namespaces */
 		tsk_list_foreach(item, xcap_caps->namespaces)
-			printf("namespace: %s\n", ((char*)item->data));
+			printf("namespace: %s\n", TSK_STRING_STR(item->data));
 		/* dump extensions */
 		tsk_list_foreach(item, xcap_caps->extensions)
-			printf("extension: %s\n", ((char*)item->data));
+			printf("extension: %s\n", TSK_STRING_STR(item->data));
 		/* dump auids */
 		tsk_list_foreach(item, xcap_caps->auids)
-			printf("auid: %s\n", ((char*)item->data));
+			printf("auid: %s\n", TSK_STRING_STR(item->data));
 
 		txc_xcap_caps_free(&xcap_caps);
 	}

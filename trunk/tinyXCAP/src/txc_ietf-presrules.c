@@ -154,17 +154,17 @@ char* txc_ietf_presrules_serialize(const txc_context_t *context)
 	}
 	
 	/* oma granted contacts */
-	tsk_sprintf(0, &oma_grantedcontacts,
+	tsk_sprintf(&oma_grantedcontacts,
 		"%s/~~/resource-lists/list%%5B@name=%%22%s%%22%%5D",
 		doc_sel, TXC_RNAME_OMA_GRANTEDCONTACTS);
 	
 	/* oma blocked contacts */
-	tsk_sprintf(0, &oma_blockedcontacts,
+	tsk_sprintf(&oma_blockedcontacts,
 		"%s/~~/resource-lists/list%%5B@name=%%22%s%%22%%5D",
 		doc_sel, TXC_RNAME_OMA_BLOCKEDCONTACTS);
 	
 	/* append all */
-	tsk_sprintf(0, &ietf_presrules_str, TXC_IETF_PRESRULES_TEMPLATE,
+	tsk_sprintf(&ietf_presrules_str, TXC_IETF_PRESRULES_TEMPLATE,
 		context->xui, oma_grantedcontacts, oma_blockedcontacts);
 	
 bail:

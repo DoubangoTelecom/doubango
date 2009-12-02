@@ -25,11 +25,12 @@
 #include "targetver.h"
 
 #include <stdio.h>
-#if (defined(_WIN32) || defined(WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)
+//#if (defined(_WIN32) || defined(WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)
 #include <tchar.h>
-#endif
+//#endif
 
-
+#define TINYSAK_IMPORTS
+#define TINYXCAP_IMPORTS
 
 // TODO: reference additional headers your program requires here
 

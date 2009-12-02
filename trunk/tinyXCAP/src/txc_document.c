@@ -122,13 +122,13 @@ char* txc_doc_get_cust_sel(const char *xcaproot, const char *auid, const char *x
 
 	if(!xcaproot || !auid || !name) return 0;
 
-	if(!xui || tsk_equals("global", xui))
+	if(!xui || tsk_striequals("global", xui))
 	{	/* xdm-root/auid-name/global/doc-name */
-		tsk_sprintf(0, &selector, "%s/%s/global/%s", xcaproot, auid, name);
+		tsk_sprintf(&selector, "%s/%s/global/%s", xcaproot, auid, name);
 	}
 	else
 	{	/* xdm-root/auid-name/users/xui/doc-name */
-		tsk_sprintf(0, &selector, "%s/%s/users/%s/%s", xcaproot, auid, xui, name);
+		tsk_sprintf(&selector, "%s/%s/users/%s/%s", xcaproot, auid, xui, name);
 	}
 
 	return selector;

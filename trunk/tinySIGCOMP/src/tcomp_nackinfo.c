@@ -80,8 +80,6 @@ static const tsk_object_def_t tcomp_nackinfo_def_s =
 	sizeof(tcomp_nackinfo_t),
 	tcomp_nackinfo_create, 
 	tcomp_nackinfo_destroy,
-	0, 
-	0,
 	0
 };
 const void *tcomp_nackinfo_def_t = &tcomp_nackinfo_def_s;

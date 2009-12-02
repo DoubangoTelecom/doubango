@@ -45,7 +45,7 @@
 //	Nack - RFC 4077
 //
 #define NACK_VERSION			0x01
-#define NACK_MAX_HISTORY_SIZE	0x0a
+#define NACK_MAX_HISTORY_SIZE	0x0A
 
 //
 //	Feedbacks

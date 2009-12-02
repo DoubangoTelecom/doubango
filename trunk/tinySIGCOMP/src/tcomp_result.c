@@ -99,25 +99,7 @@ void tcomp_result_setCompartmentId(tcomp_result_t *result, const void *id, size_
 {
 	if(result)
 	{
-#define PRIME_1		500237
-#define PRIME_2		700241
-			uint64_t hash = 0;
-			uint8_t* strid = (uint8_t*)id;
-
-			/* Generate Hash code from id */
-			{
-			   uint64_t b = PRIME_1, a = PRIME_2;
-			   size_t i;
-			   for(i = 0; i < len; strid++, i++)
-			   {
-				  hash = hash * a + (*strid);
-				  a = a * b;
-			   }
-			}
-			result->compartmentId = hash;
-
-#undef PRIME_1
-#undef PRIME_2
+		result->compartmentId = tcomp_buffer_createHash(id, len);
 	}
 	else
 	{
@@ -253,8 +235,6 @@ static const tsk_object_def_t tcomp_result_def_s =
 	sizeof(tcomp_result_t),
 	tcomp_result_create, 
 	tcomp_result_destroy,
-	0, 
-	0,
 	0
 };
 const void *tcomp_result_def_t = &tcomp_result_def_s;
@@ -296,8 +276,6 @@ static const tsk_object_def_t tcomp_tempstate_to_free_def_s =
 	sizeof(tcomp_tempstate_to_free_t),
 	tcomp_tempstate_to_free_create, 
 	tcomp_tempstate_to_free_destroy,
-	0, 
-	0,
 	0
 };
 const void *tcomp_tempstate_to_free_def_t = &tcomp_tempstate_to_free_def_s;

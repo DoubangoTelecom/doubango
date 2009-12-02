@@ -38,7 +38,7 @@
 #include <stdint.h>
 
 #define TCOMP_NACKINFO_CREATE()				tsk_object_new(tsk_nackinfo_def_t)
-#define TCOMP_NACKINFO_SAFE_FREE(self)		tsk_object_unref(self)
+#define TCOMP_NACKINFO_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 /*
 +---+---+---+---+---+---+---+---+
@@ -64,6 +64,7 @@
 */
 /**@typedef tcomp_nackinfo_t
 * NACK info as per rfc 4077 subclause 3.1.
+* You MUST use @ref TCOMP_NACKINFO_CREATE to create new nackinfo object.
 */
 typedef struct tcomp_nackinfo_s
 {

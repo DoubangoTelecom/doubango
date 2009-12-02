@@ -299,10 +299,9 @@ typedef struct txc_context_s
 	char* pragma;						/**< HTTP pragma */
 	char* user_agent;					/**< The user agent. */
 	AUIDS_T auids;	/**< Contains list of all default auids. */
-	tsk_heap_t heap; /**< Internal heap*/
-	
+		
 	void* tid;							/**< Thread id */
-	tsk_semaphore_t *semaphore;			/**< Pthread semaphore */
+	tsk_semaphore_handle_t *semaphore;	/**< Pthread semaphore */
 
 	CURLM *multihandle;					/**< Curl multi-handle */
 	CURL* easyhandle;					/**< Curl handle. */

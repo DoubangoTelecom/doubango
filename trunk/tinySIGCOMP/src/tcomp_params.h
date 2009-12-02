@@ -35,7 +35,7 @@
 #include "tsk_object.h"
 
 #define TCOMP_PARAMS_CREATE()				tsk_object_new(tcomp_params_def_t)
-#define TCOMP_PARAMS_SAFE_FREE(self)		tsk_object_unref(self)
+#define TCOMP_PARAMS_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 /**@typedef tcomp_params_t
 * SIGCOMP parameters as per rfc 3320 subclause 3.3.

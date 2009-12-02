@@ -36,25 +36,34 @@
 #include "tcomp_buffer.h"
 #include "tcomp_types.h"
 #include "tcomp_result.h"
+#include "tcomp_compressor.h"
 
+#include "tsk_list.h"
 #include "tsk_object.h"
 #include "tsk_safeobj.h"
 
 #include <stdint.h>
 
+#define TCOMP_MAX_COMPRESSORS		5
+
 #define TCOMP_COMPRESSORDISP_CREATE(statehandler)		tsk_object_new(tcomp_compressordisp_def_t, (const tcomp_statehandler_t*)statehandler)
-#define TCOMP_COMPRESSORDISP_SAFE_FREE(self)			tsk_object_unref(self)
+#define TCOMP_COMPRESSORDISP_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 typedef struct tcomp_compressordisp_s
 {
 	TSK_DECLARE_OBJECT;
 
+	tcomp_compressor_compress compressors[TCOMP_MAX_COMPRESSORS];
 	const tcomp_statehandler_t* stateHandler;
 
 	TSK_DECLARE_SAFEOBJ;
 }
 tcomp_compressordisp_t;
 
+
+int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream);
+
+void tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress compressor);
 
 TINYSIGCOMP_API const void *tcomp_compressordisp_def_t;
 

@@ -41,7 +41,7 @@
 #define _TCOMP_BUFFER_CREATE(data, len)	tsk_object_new(tcomp_buffer_def_t, data, len)
 #define TCOMP_BUFFER_CREATE()			_TCOMP_BUFFER_CREATE(0, 0)
 
-#define TCOMP_BUFFER_SAFE_FREE(self)	tsk_object_unref(self)
+#define TCOMP_BUFFER_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 /**
 * Sigcomp Buffer handle
@@ -76,6 +76,8 @@ size_t* tcomp_buffer_getIndexBytes(const tcomp_buffer_handle_t* handle);
 size_t* tcomp_buffer_getIndexBits(const tcomp_buffer_handle_t* handle);
 
 uint8_t* tcomp_buffer_getP_BIT(const tcomp_buffer_handle_t* handle);
+
+uint64_t tcomp_buffer_createHash(const void *data, size_t len);
 
 void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, size_t size);
 #define tcomp_buffer_print(handle) tcomp_buffer_nprint(handle, -1)

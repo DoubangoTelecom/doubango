@@ -112,7 +112,7 @@ static tsk_list_t* txc_xcap_caps_xxx(xmlNodePtr rootNode, const char* root, cons
 	tsk_list_item_t* item = 0;
 	xmlNodePtr node = 0;
 		
-	TSK_LIST_CREATE(xxx);
+	xxx = TSK_LIST_CREATE();
 	
 	node = tsk_xml_select_node(rootNode, 
 		TSK_XML_NODE_SELECT_BY_NAME(root),
@@ -124,8 +124,8 @@ static tsk_list_t* txc_xcap_caps_xxx(xmlNodePtr rootNode, const char* root, cons
 	{
 		if(node->children && node->children->type == XML_TEXT_NODE)
 		{
-			TSK_LIST_ITEM_CREATE(item);
-			item->data = tsk_strdup2((const char*)node->children->content);
+			item = TSK_LIST_ITEM_CREATE();
+			item->data = TSK_STRING_CREATE((const char*)node->children->content);
 			tsk_list_add_item(xxx, &item);
 		}
 	}
@@ -143,7 +143,7 @@ xcap_caps_t* txc_xcap_caps_create(const char* buffer, size_t size)
 {
 	xmlNodePtr root = 0;
 	xmlDocPtr docPtr = 0;
-	xcap_caps_t* caps = (xcap_caps_t*)tsk_calloc2(1, sizeof(xcap_caps_t));
+	xcap_caps_t* caps = (xcap_caps_t*)tsk_calloc(1, sizeof(xcap_caps_t));
 	
 	docPtr = xmlParseMemory(buffer, (int)size);
 	if(docPtr) root = docPtr->children;
@@ -171,8 +171,7 @@ void txc_xcap_caps_free(xcap_caps_t** caps)
 		TSK_LIST_SAFE_FREE((*caps)->namespaces);
 		TSK_LIST_SAFE_FREE((*caps)->extensions);
 
-		free(*caps);
-		(*caps)=0;
+		tsk_free(caps);
 	}
 }
 

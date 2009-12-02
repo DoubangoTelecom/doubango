@@ -73,6 +73,8 @@ void initFeedbackItem(tcomp_message_t *message, uint8_t** start_ptr)
 		tcomp_buffer_referenceBuff(message->ret_feedback_buffer, *start_ptr, 1+(**start_ptr&0x7f));
 		*start_ptr += tcomp_buffer_getSize(message->ret_feedback_buffer);
 	}
+
+	TSK_DEBUG_INFO("SigComp - Create feedback item.");
 }
 
 /*== initStateId
@@ -99,10 +101,12 @@ void initStateful(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_pt
    +---+---+---+---+---+---+---+---+
 	*/
 	message->isOK &= (*start_ptr<=end_ptr);
-	if(message->isOK){
+	if(message->isOK)
+	{
 		tcomp_buffer_referenceBuff(message->remaining_sigcomp_buffer, *start_ptr, 
 							((end_ptr-*start_ptr)));
 	}
+	TSK_DEBUG_INFO("SigComp - Creating stateful message.");
 }
 	
 /*== initStateless
@@ -172,6 +176,8 @@ void initStateless(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_p
 		tcomp_buffer_referenceBuff(message->uploaded_UDVM_buffer, bytecodes_uploaded_udvm, bytecodes_len);
 		tcomp_buffer_referenceBuff(message->remaining_sigcomp_buffer, remaining_SigComp_message, ((end_ptr-remaining_SigComp_message)));
 	}
+
+	TSK_DEBUG_INFO("SigComp - Creating stateless message.");
 }
 
 /*== initNack
@@ -224,6 +230,8 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 		/* Has error details */
 		tcomp_buffer_appendBuff(message->nack_info->details, dummy_ptr, (end_ptr-dummy_ptr));
 	}
+
+	TSK_DEBUG_INFO("SigComp - Initializing NACK message.");
 }
 
 
@@ -364,8 +372,6 @@ static const tsk_object_def_t tcomp_message_def_s =
 	sizeof(tcomp_message_t),
 	tcomp_message_create, 
 	tcomp_message_destroy,
-	0, 
-	0,
 	0
 };
 const void *tcomp_message_def_t = &tcomp_message_def_s;

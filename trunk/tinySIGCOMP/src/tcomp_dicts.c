@@ -56,7 +56,7 @@ tcomp_dictionary_t* tcomp_dicts_create_presence_dict()
 
 		if(pres_dict)
 		{
-			tcomp_buffer_referenceBuff(pres_dict->value, (char*)pres_dict_data, RFC5112_DICTIONARY_PRESENCE_VALUE_LENGTH);
+			tcomp_buffer_referenceBuff(pres_dict->value, (uint8_t*)pres_dict_data, RFC5112_DICTIONARY_PRESENCE_VALUE_LENGTH);
 			tcomp_state_makeValid(pres_dict);
 		}
 		else
@@ -87,7 +87,7 @@ tcomp_dictionary_t* tcomp_dicts_create_sip_dict()
 		
 		if(sip_dict)
 		{
-			tcomp_buffer_referenceBuff(sip_dict->value, (char*)sip_dict_data, RFC3485_DICTIONARY_SIP_VALUE_LENGTH);
+			tcomp_buffer_referenceBuff(sip_dict->value, (uint8_t*)sip_dict_data, RFC3485_DICTIONARY_SIP_VALUE_LENGTH);
 			tcomp_state_makeValid(sip_dict);
 		}
 		else

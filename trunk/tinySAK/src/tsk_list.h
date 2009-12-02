@@ -43,7 +43,7 @@
 * Safely free a linked list previously created using @ref TSK_LIST_CREATE.
 * @sa @ref TSK_LIST_CREATE.
 */
-#define TSK_LIST_SAFE_FREE(self)			tsk_object_unref(self)
+#define TSK_LIST_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 /**@def TSK_LIST_ITEM_CREATE
 * Create and initialize an item.
@@ -55,7 +55,7 @@
 * Safely free an item previously created using @ref TSK_LIST_ITEM_CREATE.
 * @sa @ref TSK_LIST_ITEM_CREATE.
 */
-#define TSK_LIST_ITEM_SAFE_FREE(self)		tsk_object_unref(self)
+#define TSK_LIST_ITEM_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 /**@typedef tsk_list_item_func_free
 * Used to define the function to call to free an @b item.
@@ -85,7 +85,7 @@ tsk_list_t;
 
 /**@typedef tsk_list_func_predicate
 * Function predicate used to match an item.
-* @retval 1 if match and 0 otherwise
+* @retval 0 if match and <0 if first<second and >0 otherwise
 */
 typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* data);
 
@@ -104,6 +104,7 @@ typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* 
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
 TINYSAK_API void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj);
 TINYSAK_API void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
+TINYSAK_API void tsk_list_clear_items(tsk_list_t* list);
 TINYSAK_API void tsk_list_add_item(tsk_list_t* list, tsk_list_item_t** item);
 TINYSAK_API void tsk_list_add_list(tsk_list_t* destination, tsk_list_t** source);
 TINYSAK_API void tsk_list_add_data(tsk_list_t* destination, void** data);

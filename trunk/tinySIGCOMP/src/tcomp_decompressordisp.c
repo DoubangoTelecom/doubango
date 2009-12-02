@@ -50,9 +50,10 @@ static int pred_find_streambuffer_by_id(const tsk_list_item_t *item, const void 
 	if(item && item->data)
 	{
 		tcomp_stream_buffer_t *streambuffer = item->data;
-		return (streambuffer->id == *((uint64_t*)id));
+		uint64_t res = (streambuffer->id - *((uint64_t*)id));
+		return res > 0 ? (int)1 : (res < 0 ? (int)-1 : (int)0);
 	}
-	return 0;
+	return -1;
 }
 
 
@@ -174,21 +175,21 @@ int tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispatcher, 
 */
 int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, const size_t input_size, tcomp_result_t **lpResult)
 {
-	tcomp_message_t *sigCompMessage;
-	tcomp_udvm_t *sigCompUDVM;
-	int ret;
+	tcomp_message_t *sigCompMessage = 0;
+	tcomp_udvm_t *sigCompUDVM = 0;
+	int ret = 0;
 
 	if(!dispatcher)
 	{
 		TSK_DEBUG_ERROR("NULL sigcomp decompressor dispatcher.");
-		return 0;
-	}
+		goto bail;
+	}		
 
 	sigCompMessage = TCOMP_MESSAGE_CREATE(input_ptr, input_size, (*lpResult)->isStreamBased);
 	if(!sigCompMessage || !sigCompMessage->isOK)
 	{
 		TSK_DEBUG_ERROR("Failed to create new sigcomp message.");
-		return 0;
+		goto bail;
 	}
 	else if(sigCompMessage->isNack && TCOMP_NACK_SUPPORTED(dispatcher))
 	{
@@ -196,7 +197,7 @@ int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatch
 		tcomp_statehandler_handleNack((tcomp_statehandler_t*)dispatcher->stateHandler, (const tcomp_nackinfo_t*)sigCompMessage->nack_info);
 		(*lpResult)->isNack = 1;
 		
-		return 0;
+		goto bail;
 	}
 
 	/* Create new UDVM entity for each SigComp message */
@@ -212,6 +213,10 @@ int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatch
 		(*lpResult)->isNack = TCOMP_NACK_SUPPORTED(dispatcher);
 	}
 	
+bail:
+	/* Delete Message */
+	TCOMP_MESSAGE_SAFE_FREE(sigCompMessage);
+
 	/* Delete UDVM entity */
 	TCOMP_UDVM_SAFE_FREE(sigCompUDVM);
 
@@ -385,8 +390,6 @@ static const tsk_object_def_t tcomp_decompressordisp_def_s =
 	sizeof(tcomp_decompressordisp_t),
 	tcomp_decompressordisp_create,
 	tcomp_decompressordisp_destroy,
-	0,
-	0,
 	0
 };
 const void *tcomp_decompressordisp_def_t = &tcomp_decompressordisp_def_s;
@@ -434,8 +437,6 @@ static const tsk_object_def_t tcomp_stream_buffer_def_s =
 	sizeof(tcomp_stream_buffer_t),
 	tcomp_stream_buffer_create,
 	tcomp_stream_buffer_destroy,
-	0,
-	0,
 	0
 };
 const void *tcomp_stream_buffer_def_t = &tcomp_stream_buffer_def_s;

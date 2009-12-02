@@ -167,7 +167,7 @@ int tsk_sprintf(char** str, const char* format, ...)
 	{
 		int n;
 		len = (strlen(format)*2);
-		*str = (char*)tsk_calloc(heap, 1, len+1);
+		*str = (char*)tsk_calloc(1, len+1);
 		for(;;)
 		{
 			if( (n = vsnprintf(*str, len, format, list)) >= 0 && (n<len) )
@@ -178,7 +178,7 @@ int tsk_sprintf(char** str, const char* format, ...)
 			else
 			{
 				len += 5;
-				*str = tsk_realloc(heap, *str, len+1);
+				*str = tsk_realloc(*str, len+1);
 			}
 		}
 done:
@@ -235,9 +235,8 @@ static void* tsk_string_destroy(void * self)
 static const tsk_object_def_t tsk_string_def_s = 
 {
 	sizeof(tsk_string_t),
-	tsk_string_create, tsk_string_destroy,
+	tsk_string_create, 
+	tsk_string_destroy,
 	0, 
-	0,
-	0
 };
 const void *tsk_string_def_t = &tsk_string_def_s;

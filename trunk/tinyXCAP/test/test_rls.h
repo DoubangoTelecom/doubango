@@ -49,7 +49,7 @@ void test_rls_services(const char* buffer, size_t size)
 	printf("\n---\nTEST RLS-SERVICES\n---\n");
 	{
 		/* create rls context */
-		rls = txc_rls_create(buffer, size);
+		rls = TXC_RLS_CREATE(buffer, size);
 
 		/* get all services */
 		list = txc_rls_get_all_services(rls);
@@ -67,7 +67,7 @@ void test_rls_services(const char* buffer, size_t size)
 		TSK_LIST_SAFE_FREE(list);
 		
 		/* free rls context */
-		txc_rls_free(&rls);
+		TXC_RLS_SAFE_FREE(rls);
 	}
 }
 

@@ -59,13 +59,21 @@ tcomp_manager_t;
 
 /**@ingroup tcomp_manager_group
 */
-size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, uint64_t compartmentId, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, int stream)
+size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compartmentId, size_t compartmentIdSize, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, int stream)
 {
 	tcomp_manager_t *manager = handle;
+	size_t ret_size = output_size;
+
 	if(!manager)
 	{
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return 0;
+	}
+	
+	if(tcomp_compressordisp_compress(manager->dispatcher_compressor, tcomp_buffer_createHash(compartmentId, compartmentIdSize), 
+		input_ptr, input_size, output_ptr, &ret_size, stream))
+	{
+		return ret_size;
 	}
 
 	return 0;
@@ -148,7 +156,7 @@ void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_re
 
 /**@ingroup tcomp_manager_group
 */
-void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, uint64_t compartmentId)
+void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager)
@@ -157,7 +165,7 @@ void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, uint64_t com
 		return;
 	}
 
-	tcomp_statehandler_deleteCompartment(manager->stateHandler, compartmentId);
+	tcomp_statehandler_deleteCompartment(manager->stateHandler, tcomp_buffer_createHash(compartmentId, compartmentIdSize));
 }
 
 /**@ingroup tcomp_manager_group
@@ -218,7 +226,7 @@ void tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t ve
 
 /**@ingroup tcomp_manager_group
 */
-void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle/*, SigCompCompressor* compressor*/)
+void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress compressor)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager)
@@ -227,7 +235,7 @@ void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle/*, SigCompCompre
 		return;
 	}
 
-
+	tcomp_compressordisp_addCompressor(manager->dispatcher_compressor, compressor);
 }
 
 /**@ingroup tcomp_manager_group
@@ -257,9 +265,6 @@ void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle)
 
 	tcomp_statehandler_addPresenceDictionary(manager->stateHandler);
 }
-
-
-
 
 
 
@@ -321,8 +326,6 @@ static const tsk_object_def_t tcomp_manager_def_s =
 	sizeof(tcomp_manager_t),
 	tcomp_manager_create,
 	tcomp_manager_destroy,
-	0,
-	0,
 	0
 };
 const void *tcomp_manager_def_t = &tcomp_manager_def_s;

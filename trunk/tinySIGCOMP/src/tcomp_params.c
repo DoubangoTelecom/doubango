@@ -233,7 +233,7 @@ void tcomp_params_reset(tcomp_params_t* params)
 		params->cpbCode = params->dmsCode = params->smsCode = params->SigComp_version = 0;
 		params->cpbValue = params->dmsValue = params->smsValue = 0;
 		
-		TSK_LIST_SAFE_FREE(params->returnedStates);
+		tsk_list_clear_items(params->returnedStates);
 	}
 	else TSK_DEBUG_WARN("NULL sigcomp parameters.");
 }
@@ -259,7 +259,8 @@ static void* tcomp_params_create(void *self, va_list * app)
 	tcomp_params_t *params = self;
 	if(params)
 	{
-		tcomp_params_reset(params);
+		//tcomp_params_reset(params);
+		params->returnedStates = TSK_LIST_CREATE();
 	}
 	else TSK_DEBUG_ERROR("Failed to create new sigcomp params.");
 	
@@ -288,8 +289,6 @@ static const tsk_object_def_t tcomp_params_def_s =
 	sizeof(tcomp_params_t),
 	tcomp_params_create, 
 	tcomp_params_destroy,
-	0, 
-	0,
 	0
 };
 const void *tcomp_params_def_t = &tcomp_params_def_s;

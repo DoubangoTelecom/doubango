@@ -35,7 +35,8 @@
 #include "tsk_object.h"
 
 #define TSK_STRING_CREATE(str)				tsk_object_new(tsk_string_def_t, str)
-#define TSK_STRING_SAFE_FREE(self)			tsk_object_unref(self)
+#define TSK_STRING_SAFE_FREE(self)			tsk_object_unref(self), self = 0
+#define TSK_STRING_STR(self)				((tsk_string_t*)self)->value
 
 TINYSAK_API char tsk_b10tob16(char c);
 TINYSAK_API char tsk_b16tob10(char c);

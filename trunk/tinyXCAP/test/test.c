@@ -22,14 +22,14 @@
 #include "stdafx.h"
 
 #define TEST_XXXX_CONTEXT_INIT(context) \
-	context->user_agent = tsk_strdup2("XDM-client/OMA1.1"); \
-	context->txc_root = tsk_strdup2("http://192.168.0.15:8080/services"); \
-	context->password = tsk_strdup2("doubango"); \
-	context->xui = tsk_strdup2("sip:doubango@micromethod.com"); \
-	context->pragma = tsk_strdup2("keep-alive"); \
+	context->user_agent = tsk_strdup("XDM-client/OMA1.1"); \
+	context->txc_root = tsk_strdup("http://192.168.0.15:8080/services"); \
+	context->password = tsk_strdup("doubango"); \
+	context->xui = tsk_strdup("sip:doubango@micromethod.com"); \
+	context->pragma = tsk_strdup("keep-alive"); \
 	context->reuse_http_connection = 0;
 
-#define LOOP						0
+#define LOOP						1
 
 #define RUN_TEST_ALL				0
 #define RUN_TEST_SELECTOR			0

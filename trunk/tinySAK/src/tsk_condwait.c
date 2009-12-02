@@ -210,7 +210,7 @@ void tsk_condwait_destroy(tsk_condwait_handle_t** handle)
 		tsk_mutex_destroy(&((*condwait)->mutex));
 		pthread_cond_destroy((*condwait)->pcond);
 		TSK_FREE((*condwait)->pcond);
-		tsk_free(condwait);
+		tsk_free((void**)condwait);
 	}
 	else
 	{

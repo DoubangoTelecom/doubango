@@ -20,29 +20,19 @@
 *
 */
 
-#ifndef TINYXCAP_CONFIG_H
-#define TINYXCAP_CONFIG_H
+/**@file tcomp_compressor.h
+ * @brief  Deflate compressor.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#ifndef TCOMP_COMPRESSORDEFLATE_H
+#define TCOMP_COMPRESSORDEFLATE_H
 
-#if (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYXCAP_EXPORTS)
-# 	define TINYXCAP_API __declspec(dllexport)
-#elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYXCAP_IMPORTS)
-# 	define TINYXCAP_API __declspec(dllimport)
-#else
-# define TINYXCAP_API
-#endif
+#include "tinysigcomp_config.h"
+#include "tcomp_compartment.h"
 
-//
-// Disable some well-known warnings
-//
-#ifdef _MSC_VER
-#	define _CRT_SECURE_NO_WARNINGS
-#endif
+int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream);
 
-#ifdef __SYMBIAN32__
-#undef _WIN32 /* Because of WINSCW */
-#endif
-
-/* Tiny SAK */
-#define TINYSAK_IMPORTS
-
-#endif // TINYXCAP_CONFIG_H
+#endif /* TCOMP_COMPRESSORDEFLATE_H */
