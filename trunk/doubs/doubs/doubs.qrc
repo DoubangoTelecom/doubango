@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/doubs" >
-        <file>Images/splash.PNG</file>
-    </qresource>
-</RCC>
