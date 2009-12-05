@@ -68,8 +68,6 @@ static const tsk_object_def_t person_def_s =
 	sizeof(person_t),	
 	person_create,
 	person_destroy,
-	0,
-	person_icmp,
 	person_icmp
 };
 const void *person_def_t = &person_def_s;
@@ -94,11 +92,19 @@ void test_basic_list()
 	
 	/* add items to the list */
 	item->data = TSK_STRING_CREATE("First item");
-	tsk_list_add_item(list, &item);
+	tsk_list_pushfront_item(list, &item);
 
 	item = TSK_LIST_ITEM_CREATE();
 	item->data = TSK_STRING_CREATE("Second item");
-	tsk_list_add_item(list, &item);
+	tsk_list_pushback_item(list, &item);
+
+	item = TSK_LIST_ITEM_CREATE();
+	item->data = TSK_STRING_CREATE("Third item");
+	tsk_list_pushfront_item(list, &item);
+
+	item = TSK_LIST_ITEM_CREATE();
+	item->data = TSK_STRING_CREATE("Fourth item");
+	tsk_list_pushback_item(list, &item);
 
 	/* dump all items */
 	tsk_list_foreach(item, list)
@@ -119,11 +125,15 @@ void test_complex_list()
 	/* add items to the list */
 	{
 		person_t *person1 = PERSON_CREATE("1", "person1");
-		tsk_list_add_data(list, ((void**) &person1));
+		tsk_list_pushback_data(list, ((void**) &person1));
 	}
 	{
 		person_t *person2 = PERSON_CREATE("2", "person2");
-		tsk_list_add_data(list, ((void**) &person2));
+		tsk_list_pushfront_data(list, ((void**) &person2));
+	}
+	{
+		person_t *person3 = PERSON_CREATE("3", "person3");
+		tsk_list_pushfront_data(list, ((void**) &person3));
 	}
 
 	/* dump all items */

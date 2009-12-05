@@ -72,5 +72,4 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-
 #endif /* _TINYSAK_H_ */
