@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="tinySAK"
-	ProjectGUID="{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}"
-	RootNamespace="tinySAK"
+	Name="tinySIP"
+	ProjectGUID="{4CE20732-9978-4A88-B586-CFEFCB63E82D}"
+	RootNamespace="tinySIP"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -44,8 +44,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\pthread&quot;"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS;_WIN32_WINNT 0x0501"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -66,10 +66,86 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="&quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\pthread\pthread.lib&quot; $(NOINHERIT)"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				WarnAsError="true"
+				DebugInformationFormat="3"
+				CompileAs="1"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -120,11 +196,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\pthread&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\wcecompat&quot;"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYSAK_EXPORTS;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
+				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYSIP_EXPORTS;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
 				MinimalRebuild="true"
-				ExceptionHandling="0"
-				RuntimeLibrary="0"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
@@ -142,8 +218,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions=" /subsystem:windowsce,5.01 /machine:THUMB"
-				AdditionalDependencies="ws2.lib &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\libxml\libxml2.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\pthread\pthread.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\wcecompat\wcecompat.lib&quot;"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="8"
@@ -177,87 +252,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\pthread&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				WarnAsError="true"
-				DebugInformationFormat="3"
-				CompileAs="1"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="&quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\pthread\pthread.lib&quot; $(NOINHERIT)"
-				LinkIncremental="1"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-			OutputDirectory="&quot;$(SolutionDir)$(ConfigurationName)\wce&quot;"
-			IntermediateDirectory="&quot;$(SolutionDir)$(ConfigurationName)&quot;"
+			OutputDirectory="$(SolutionDir)Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
+			IntermediateDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
 			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
@@ -283,7 +280,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -305,7 +302,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="8"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="0"
@@ -342,166 +339,138 @@
 	</References>
 	<Files>
 		<Filter
+			Name="source"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
+			<File
+				RelativePath=".\source\tsip.c"
+				>
+			</File>
+			<File
+				RelativePath=".\source\tsip_message.c"
+				>
+			</File>
+			<Filter
+				Name="headers"
+				>
+				<File
+					RelativePath=".\source\headers\tsip_header.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\headers\tsip_header_accept.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\headers\tsip_header_Via.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="parsers"
+				>
+				<File
+					RelativePath=".\source\parsers\tsip_parser_header.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\parsers\tsip_parser_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\parsers\tsip_ragel_state.c"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
 			Name="include"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\tinySAK_config.h"
+				RelativePath=".\include\tinysip_config.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsk.h"
+				RelativePath=".\include\tsip.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsk_binaryutils.h"
+				RelativePath=".\include\tinysip\tsip_message.h"
+				>
+			</File>
+			<Filter
+				Name="headers"
+				>
+				<File
+					RelativePath=".\include\tinysip\headers\tsip_header.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\headers\tsip_header_accept.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\headers\tsip_header_Via.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\headers\tsip_headers.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="parsers"
+				>
+				<File
+					RelativePath=".\include\tinysip\parsers\tsip_parser_header.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\parsers\tsip_parser_message.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\parsers\tsip_ragel_state.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="ragel"
+			>
+			<File
+				RelativePath=".\ragel\tsip_machine_header.rl"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsk_condwait.h"
+				RelativePath=".\ragel\tsip_machine_message.rl"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsk_debug.h"
+				RelativePath=".\ragel\tsip_machine_utils.rl"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsk_heap.h"
+				RelativePath=".\ragel\tsip_parser_header.rl"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsk_list.h"
+				RelativePath=".\ragel\tsip_parser_header_Via.rl"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsk_macros.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_memory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_mutex.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_object.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_ppfcs16.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_safeobj.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_semaphore.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_sha1.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_string.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_thread.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_time.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_url.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_xml.h"
+				RelativePath=".\ragel\tsip_parser_message.rl"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="source"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			Name="abnf"
 			>
 			<File
-				RelativePath=".\src\tsk.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_binaryutils.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_condwait.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_debug.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_heap.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_list.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_memory.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_mutex.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_object.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_ppfcs16.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_safeobj.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_semaphore.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_sha1.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_string.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_thread.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_time.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_url.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_xml.c"
+				RelativePath=".\abnf\core.abnf"
 				>
 			</File>
 		</Filter>

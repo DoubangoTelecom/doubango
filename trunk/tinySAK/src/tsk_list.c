@@ -298,15 +298,23 @@ void tsk_list_clear_items(tsk_list_t* list)
 }
 
 /**@ingroup tsk_list_group
-* Add an item to the list
-* @param list list in which we will add the item
-* @param item item to add
+* Add an item to the list.
+* @param list list in which we will add the item.
+* @param item item to add.
+* @param back Indicates whether to put the item from back.
 */
-void tsk_list_add_item(tsk_list_t* list, tsk_list_item_t** item)
+void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 {
-	(*item)->next  = list->head;
-    list->head = *item;
+	int first = !list->head;
+	struct tsk_list_item_s** pivot = back ? &list->tail : &list->head;
+
+	if(back && list->tail) list->tail->next = *item, list->tail = *item;
+	else (*item)->next = list->head, list->head = *item;
 	
+	if(first)
+	{
+		list->tail = list->head = *item;
+	}
 	(*item) = 0;
 }
 
@@ -314,8 +322,9 @@ void tsk_list_add_item(tsk_list_t* list, tsk_list_item_t** item)
 * Add all items in @a source into @a destination
 * @param dest destination list
 * @param src source list
+* @param back Indicates whether to put the list from back.
 **/
-void tsk_list_add_list(tsk_list_t* dest, tsk_list_t** src)
+void tsk_list_push_list(tsk_list_t* dest, tsk_list_t** src, int back)
 {
 	tsk_list_item_t* next = 0;
 	tsk_list_item_t* curr = (*src)->head;
@@ -323,7 +332,7 @@ void tsk_list_add_list(tsk_list_t* dest, tsk_list_t** src)
 	while(curr)
 	{
 		next = curr->next;
-		tsk_list_add_item(dest, &curr);
+		tsk_list_push_item(dest, &curr, back);
 		curr = next->next;
 	}
 	(*src) = 0;
@@ -334,8 +343,9 @@ void tsk_list_add_list(tsk_list_t* dest, tsk_list_t** src)
 * @param list destination list.
 * @param data opaque data to add into @a list.
 * @param item_func_free pointer to the function to call to free the opaque @a data.
+* @param back Indicates whether to put the data from back.
 */
-void tsk_list_add_data(tsk_list_t* list, void** data)
+void tsk_list_push_data(tsk_list_t* list, void** data, int back)
 {
 	if(data)
 	{
@@ -343,7 +353,7 @@ void tsk_list_add_data(tsk_list_t* list, void** data)
 		item = TSK_LIST_ITEM_CREATE();
 		item->data = *data;
 		
-		tsk_list_add_item(list, &item);
+		tsk_list_push_item(list, &item, back);
 		(*data) = 0;
 	}
 	else

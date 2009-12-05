@@ -49,6 +49,7 @@ TINYSAK_API int tsk_sprintf(char** str, const char* format, ...);
 TINYSAK_API void tsk_strupdate(char** str, const char* newval);
 
 
+#define tsk_strempty(s) (*s == '\0')
 #define tsk_striequals(s1, s2) (tsk_stricmp((const char*)(s1), (const char*)(s2)) ? 0 : 1)
 #define tsk_strequals(s1, s2) (tsk_strcmp((const char*)(s1), (const char*)(s2)) ? 0 : 1)
 
