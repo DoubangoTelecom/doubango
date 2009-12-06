@@ -75,8 +75,13 @@
 	action parse_port
 	{
 		int len = (int)(p  - tag_start);
-
-		TSK_DEBUG_INFO("VIA:PARSE_PORT %d", len);
+		if(len)
+		{
+			char* tmp = tsk_calloc(1, len+1);
+			memcpy(tmp, tag_start, len);
+			hdr_via->port = atoi(tmp);
+			free(tmp);	
+		}
 	}
 
 	action parse_transport
@@ -89,8 +94,13 @@
 	action parse_ttl
 	{
 		int len = (int)(p  - tag_start);
-
-		TSK_DEBUG_INFO("VIA:PARSE_TTL %d", len);
+		if(len)
+		{
+			char* tmp = tsk_calloc(1, len+1);
+			memcpy(tmp, tag_start, len);
+			hdr_via->ttl = atoi(tmp);
+			free(tmp);	
+		}
 	}
 
 	action parse_maddr
@@ -125,7 +135,13 @@
 	{
 		int len = (int)(p  - tag_start);
 
-		TSK_DEBUG_INFO("VIA:PARSE_RPORT %d", len);
+		if(len)
+		{
+			char* tmp = tsk_calloc(1, len+1);
+			memcpy(tmp, tag_start, len);
+			hdr_via->rport = atoi(tmp);
+			free(tmp);	
+		}
 	}
 	
 	action eob
@@ -137,13 +153,13 @@
 	protocol_version = token >tag %parse_protocol_version;
 	transport = "UDP"i | "TCP"i | "TLS"i | "SCTP"i | "TLS-SCTP"i | other_transport >tag %parse_transport;
 	sent_protocol = protocol_name SLASH protocol_version SLASH transport;
-	sent_by = host>tag %parse_host ( COLON port )?>tag %parse_port;
+	sent_by = host>tag %parse_host ( COLON port >tag %parse_port )?;
 	via_ttl = "ttl"i EQUAL ttl >tag %parse_ttl;
 	via_maddr = "maddr"i EQUAL host >tag %parse_maddr;
 	via_received = "received"i EQUAL ( IPv4address | IPv6address )>tag %parse_received;
 	via_branch = "branch"i EQUAL token >tag %parse_branch;
 	via_compression = "comp"i EQUAL ( "sigcomp"i | other_compression )>tag %parse_comp;
-	response_port = "rport"i ( EQUAL DIGIT+ )?>tag %parse_rport;
+	response_port = "rport"i ( EQUAL DIGIT+ >tag %parse_rport )?;
 	via_extension = generic_param;
 	via_params = via_ttl | via_maddr | via_received | via_branch | via_compression | response_port | via_extension;
 	via_parm = sent_protocol LWS sent_by ( SEMI via_params )*;

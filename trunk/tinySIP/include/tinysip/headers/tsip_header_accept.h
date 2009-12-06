@@ -21,12 +21,14 @@
 */
 
 /**@file tsip_header_accept.h
- * @brief SIP header 'Accept' as per RFC 3261 subclause 20.1.
+ * @brief SIP header 'Accept-Contact'.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
+#ifndef _TSIP_HEADER_ACCEPT_H_
+#define _TSIP_HEADER_ACCEPT_H_
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
@@ -43,10 +45,10 @@
 ///		accept-range = media-range *(SEMI accept-param)
 /// 	media-range = ( "*/*" / ( m-type SLASH "*" ) / ( m-type SLASH m-subtype ) )  *( SEMI m-parameter ) 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef struct tsip_header_accept_s
+typedef struct tsip_header_Accept_s
 {	
 	TSIP_DECLARE_HEADER;
-	int test1;
-	int test2;
 }
-tsip_header_accept_t;
+tsip_header_Accept_t;
+
+#endif /* _TSIP_HEADER_ACCEPT_H_ */
