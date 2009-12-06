@@ -102,7 +102,7 @@
 	To = ("To"i | "t") SP* HCOLON SP*<: any* :>CRLF  @parse_header_To; 
 	Unsupported = "Unsupported"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Unsupported; 
 	User_Agent = "User-Agent"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_User_Agent; 
-	Via = "Via"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Via; 
+	Via = ("Via"i | "v") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Via; 
 	Warning = "Warning"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Warning; 
 	WWW_Authenticate = "WWW-Authenticate"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_WWW_Authenticate; 
 	P_Access_Network_Info = "P-Access-Network-Info"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_P_Access_Network_Info; 

@@ -25,7 +25,7 @@
 #define SIP_MESSAGE \
 	"REGISTER sip:ims-network.com SIP/2.0\r\n" \
 	"Test-Header: 0\r\n" \
-	"Via: SIP/2.0/UDP [::]:1988;comp=sigcomp;rport;branch=z9hG4bK1245420841406\r\n" \
+	"v: SIP/2.0/UDP [::]:1988;comp=sigcomp;rport=254;ttl=457;received=192.0.2.101;branch=z9hG4bK1245420841406\r\n" \
 	"From: <sip:mamadou@ims-network.com>;tag=29358\r\n" \
 	"To: <sip:mamadou@ims-network.com>\r\n" \
 	"Call-ID: M-fa53180346f7f55ceb8d8670f9223dbb\r\n" \

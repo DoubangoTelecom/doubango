@@ -21,7 +21,7 @@
 */
 
 /**@file tsip_header_accept.c
- * @brief SIP header 'Accept' as per RFC 3261 subclause 20.1.
+ * @brief SIP header 'Accept'.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
