@@ -209,6 +209,63 @@ void tsk_strupdate(char** str, const char* newval)
 }
 
 
+/**@ingroup tsk_string_group
+*/
+void tsk_strtrim_left(char **str)
+{
+	if(str && *str)
+	{
+		size_t count = 0;
+		while(isspace(*((*str)+count))) count++;
+		if(count)
+		{
+			strcpy((*str), (*str)+count);
+		}
+	}
+}
+
+/**@ingroup tsk_string_group
+*/
+void tsk_strtrim_right(char **str)
+{
+	if(str && *str)
+	{
+		size_t size = strlen(*str);
+		if(size)
+		{
+			while(isspace(*((*str)+size-1))) size--;
+			*(*str + size) = '\0';
+		}
+	}
+}
+
+/**@ingroup tsk_string_group
+*/
+void tsk_strquote(char **str)
+{
+	if(str && *str)
+	{
+		char *result = 0;
+		tsk_sprintf(&result, "\"%s\"", *str);
+		tsk_free(str);
+		*str = result;
+	}
+}
+
+/**@ingroup tsk_string_group
+*/
+void tsk_strunquote(char **str)
+{
+	if(str && *str)
+	{
+		size_t size = strlen(*str);
+		if(size>=2 && **str == '"' && *((*str)+size-1) == '"')
+		{
+			strcpy((*str), (*str)+1);
+			*((*str)+size-2) = '\0';
+		}
+	}
+}
 
 
 

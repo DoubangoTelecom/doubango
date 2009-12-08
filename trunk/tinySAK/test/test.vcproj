@@ -222,6 +222,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_params.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_safeobject.h"
 				>
 			</File>

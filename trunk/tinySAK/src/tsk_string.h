@@ -47,8 +47,13 @@ TINYSAK_API char* tsk_strdup(const char *s1);
 TINYSAK_API void tsk_strcat(char** destination, const char* source);
 TINYSAK_API int tsk_sprintf(char** str, const char* format, ...);
 TINYSAK_API void tsk_strupdate(char** str, const char* newval);
+TINYSAK_API void tsk_strtrim_left(char **str);
+TINYSAK_API void tsk_strtrim_right(char **str);
+TINYSAK_API void tsk_strquote(char **str);
+TINYSAK_API void tsk_strunquote(char **str);
 
 
+#define tsk_strtrim_both(str) tsk_strtrim_left(str), tsk_strtrim_right(str);
 #define tsk_strempty(s) (*s == '\0')
 #define tsk_striequals(s1, s2) (tsk_stricmp((const char*)(s1), (const char*)(s2)) ? 0 : 1)
 #define tsk_strequals(s1, s2) (tsk_strcmp((const char*)(s1), (const char*)(s2)) ? 0 : 1)

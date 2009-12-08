@@ -81,9 +81,6 @@ static void* tsip_message_create(void *self, va_list * app)
 		{
 			message->line_status = tsk_calloc(1, sizeof(tsip_status_line_t));
 		}*/
-
-		/* Initialize safeobject */
-		tsk_safeobj_init(message);
 	}
 	else
 	{
@@ -99,9 +96,6 @@ static void* tsip_message_destroy(void *self)
 	tsip_message_t *message = self;
 	if(message)
 	{
-		/* Deinitialize safeobject */
-		tsk_safeobj_deinit(message);
-
 		if(TSIP_MESSAGE_IS_REQUEST(message))
 		{
 			TSK_FREE(message->line_request.method);
@@ -114,6 +108,7 @@ static void* tsip_message_destroy(void *self)
 
 		TSK_FREE(message->sip_version);
 
+		TSIP_HEADER_FROM_SAFE_FREE(message->From);
 		TSIP_HEADER_VIA_SAFE_FREE(message->firstVia);
 	}
 	else TSK_DEBUG_ERROR("Null SIP message.");

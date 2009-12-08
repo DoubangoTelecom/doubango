@@ -29,6 +29,7 @@
  */
 #include "tinysip/parsers/tsip_parser_header.h"
 
+#include "tinysip/headers/tsip_header_From.h"
 #include "tinysip/headers/tsip_header_Via.h"
 
 #include "tsk_debug.h"
@@ -181,7 +182,10 @@
 	# /*== From: ==*/
 	action parse_header_From
 	{
-		TSK_DEBUG_ERROR("parse_header_From NOT IMPLEMENTED");
+		if(!message->From)
+		{
+			message->From = tsip_header_From_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
 	}
 
 	# /*== History-Info: ==*/
@@ -620,7 +624,7 @@ TSIP_BOOLEAN tsip_header_parse(tsip_ragel_state_t *state, tsip_message_t *messag
 	int cs = 0;
 	const char *p = state->tag_start;
 	const char *pe = state->tag_end;
-	const char *eof = 0;
+	const char *eof = pe;
 
 	%%write data;
 	%%write init;

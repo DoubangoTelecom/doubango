@@ -32,10 +32,10 @@
 #define TSIP_MESSAGE_H
 #include "tinysip_config.h"
 
+#include "tinysip/headers/tsip_header_From.h"
 #include "tinysip/headers/tsip_header_Via.h"
 
 #include "tsk_object.h"
-#include "tsk_safeobj.h"
 
 #define TSIP_MESSAGE_IS_REQUEST(message) ((message) ? (message)->type == tsip_request : 0)
 #define TSIP_MESSAGE_IS_RESPONSE(message) ((message) ? (message)->type == tsip_response : 0)
@@ -117,7 +117,6 @@ tsip_status_line_t;
 typedef struct tsip_message_s
 {
 	TSK_DECLARE_OBJECT;
-	TSK_DECLARE_SAFEOBJ;
 	
 	char *sip_version; /**< The SIP version. Only 'SIP/2.0' is supported. */
 	tsip_message_type_t type; /**< The type of this SIP message. */
@@ -128,7 +127,7 @@ typedef struct tsip_message_s
 		tsip_status_line_t line_status; /**< Status line. Only if message type is @ref tsip_response. */
 	};
 	
-	
+	tsip_header_From_t *From;
 	tsip_header_Via_t *firstVia; /**< First Via header. */
 }
 tsip_message_t;

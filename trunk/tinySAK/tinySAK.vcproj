@@ -391,6 +391,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_params.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_ppfcs16.h"
 				>
 			</File>
@@ -466,6 +470,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_object.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_params.c"
 				>
 			</File>
 			<File

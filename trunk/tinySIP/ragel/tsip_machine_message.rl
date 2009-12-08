@@ -36,15 +36,13 @@
 
 	# SIP RESPONSE
 	Reason_Phrase = ( reserved | unreserved | escaped | UTF8_NONASCII | UTF8_CONT | SP | HTAB )*;
-	Status_Code = DIGIT{3};
 	Status_Line = SIP_Version SP Status_Code SP Reason_Phrase CRLF;
 	Response = Status_Line message_header* CRLF message_body?;
 
 
 	# SIP REQUEST
-	Method = alpha+ >tag %parse_method;
 	Request_URI = any+ >tag %parse_requesturi;
-	Request_Line = Method :>SP Request_URI :>SP SIP_Version :>CRLF;
+	Request_Line = Method>tag %parse_method :>SP Request_URI :>SP SIP_Version :>CRLF;
 	Request = Request_Line message_header* :>CRLF <:message_body? >tag %parse_body;
 
 	# SIP MESSAGE

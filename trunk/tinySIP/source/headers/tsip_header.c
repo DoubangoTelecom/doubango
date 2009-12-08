@@ -141,3 +141,21 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 		default: return "unknown-header";
 	}
 }
+
+void tsip_header_add_param(tsip_header_t *header, const char *name, const char *value)
+{
+	if(header)
+	{
+		tsk_param_t *param = TSK_PARAM_CREATE();
+
+		if(!header->params)
+		{
+			header->params = TSK_LIST_CREATE();
+		}
+
+		param->name = tsk_strdup(name);
+		param->value = tsk_strdup(value);
+
+		tsk_list_pushback_data(header->params, ((void**) &param));
+	}
+}

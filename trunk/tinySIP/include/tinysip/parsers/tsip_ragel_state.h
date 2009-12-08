@@ -35,6 +35,33 @@
 #include <stdint.h>
 
 
+#define PARSER_SET_STRING(string) \
+	if(!string) \
+	{ \
+		int len = (int)(p  - tag_start);  \
+		if(string)free(string); \
+		string = tsk_calloc(len+1, sizeof(char)), memcpy(string, tag_start, len); \
+	}
+
+#define PARSER_SET_INTEGER(integer) \
+	int len = (int)(p  - tag_start); \
+	if(len>0) \
+	{ \
+		char* tmp = tsk_calloc(len+1, sizeof(char)); \
+		memcpy(tmp, tag_start, len); \
+		integer = atoi(tmp); \
+		free(tmp); \
+	}
+
+#define PARSER_ADD_PARAM(dest) \
+	size_t len = (size_t)(p  - tag_start); \
+	tsk_param_t *param = tsk_params_parse_param(tag_start, len); \
+	if(param) \
+	{ \
+		if(!dest) dest = TSK_LIST_CREATE(); \
+		tsk_list_pushback_data(dest, ((void**) &param)); \
+	}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	tsip_parser_s
 ///
