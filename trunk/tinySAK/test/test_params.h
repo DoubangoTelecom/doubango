@@ -19,37 +19,15 @@
 * along with DOUBANGO.
 *
 */
+#ifndef _TEST_PARAMS_H_
+#define _TEST_PARAMS_H_
 
-/**@file tsk.h
- * @brief This file contains all headers needed to export public API functions.
- *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
- *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
- */
+void test_params()
+{
+	tsk_param_t *param = tsk_param_parse("mamadou=diop", strlen("mamadou=diop"));
 
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+	TSK_PARAM_SAFE_FREE(param);
+}
 
-#include "tinySAK_config.h"
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_heap.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
-#include "tsk_params.h"
 
-#include "tsk_condwait.h"
-#include "tsk_mutex.h"
-#include "tsk_semaphore.h"
-#include "tsk_thread.h"
-#include "tsk_safeobj.h"
-#include "tsk_object.h"
-
-#include "tsk_macros.h"
-#include "tsk_debug.h"
-
-#include "tsk_ppfcs16.h"
-#include "tsk_sha1.h"
-
-#endif /* _TINYSAK_SAK_H_ */
+#endif /*_TEST_PARAMS_H_ */

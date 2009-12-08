@@ -29,8 +29,21 @@
  */
 #ifndef _TSIP_HEADER_FROM_H_
 #define _TSIP_HEADER_FROM_H_
+
 #include "tinysip_config.h"
+#include "tinysip/tsip_uri.h"
 #include "tinysip/headers/tsip_header.h"
+
+/**@def TSIP_HEADER_FROM_CREATE
+* Creates new sip 'From' header.  You must call @ref TSIP_HEADER_FROM_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_FROM_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_FROM_SAFE_FREE
+* Safely free a sip 'From' header previously created using TSIP_HEADER_FROM_CREATE.
+* @sa TSIP_HEADER_FROM_CREATE.
+*/
+#define TSIP_HEADER_FROM_CREATE()		tsk_object_new(tsip_header_From_def_t)
+#define TSIP_HEADER_FROM_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -39,13 +52,24 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: From	= 	( "From" / "f" ) HCOLON from-spec
+/// from-spec	= 	( name-addr / addr-spec ) *( SEMI from-param )
+/// from-param	= 	tag-param / generic-param
+/// tag-param	= 	"tag" EQUAL token
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_From_s
 {	
 	TSIP_DECLARE_HEADER;
+	
+	char *display_name;
+	tsip_uri_t *uri;
+	char *tag;
 }
 tsip_header_From_t;
+
+tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_From_def_t;
 
 #endif /* _TSIP_HEADER_FROM_H_ */

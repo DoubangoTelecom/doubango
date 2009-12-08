@@ -54,7 +54,7 @@
 	Error_Info = "Error-Info"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Error_Info; 
 	Event = ("Event"i | "e") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Event; 
 	Expires = "Expires"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Expires; 
-	From = "From"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_From; 
+	From = ("From"i | "f") SP* HCOLON SP*<: any* :>CRLF  @parse_header_From; 
 	History_Info = "History-Info"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_History_Info; 
 	Identity = ("Identity"i | "y") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Identity; 
 	Identity_Info = ("Identity-Info"i | "n") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Identity_Info; 
@@ -94,7 +94,7 @@
 	Session_Expires = ("Session-Expires"i | "x") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Session_Expires; 
 	SIP_ETag = "SIP-ETag"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_SIP_ETag; 
 	SIP_If_Match = "SIP-If-Match"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_SIP_If_Match; 
-	Subject = "Subject"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Subject; 
+	Subject = ("Subject"i | "s") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Subject; 
 	Subscription_State = "Subscription-State"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Subscription_State; 
 	Supported = ("Supported"i | "k") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Supported; 
 	Target_Dialog = "Target-Dialog"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Target_Dialog; 

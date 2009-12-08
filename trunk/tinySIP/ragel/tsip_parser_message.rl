@@ -65,7 +65,7 @@ static void tsip_message_parser_eob(tsip_ragel_state_t *state);
 		}
 		else
 		{
-			state->cs = tsip_machine_parser_message_error; goto st0;
+			state->cs = tsip_machine_parser_message_error; //goto st0;
 		}
 		
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_METHOD len=%d state=%d", len, state->cs);

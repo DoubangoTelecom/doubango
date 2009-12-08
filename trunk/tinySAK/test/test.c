@@ -34,7 +34,7 @@
 #define LOOP						1
 
 #define RUN_TEST_ALL				0
-#define RUN_TEST_LISTS				1
+#define RUN_TEST_LISTS				0
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
 #define RUN_TEST_URL				0
@@ -43,6 +43,7 @@
 #define RUN_TEST_SEMAPHORE			0
 #define RUN_TEST_SAFEOBJECT			0
 #define RUN_TEST_OBJECT				0
+#define RUN_TEST_PARAMS				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -79,6 +80,11 @@
 #if RUN_TEST_OBJECT || RUN_TEST_ALL
 #include "test_object.h"
 #endif
+
+#if RUN_TEST_PARAMS || RUN_TEST_ALL
+#include "test_params.h"
+#endif
+
 
 
 #ifdef _WIN32_WCE
@@ -149,6 +155,13 @@ int main()
 		test_object();
 		printf("\n\n");
 #endif
+
+#if RUN_TEST_PARAMS || RUN_TEST_ALL
+		/* parameters */
+		test_params();
+		printf("\n\n");
+#endif
+		
 
 	}
 

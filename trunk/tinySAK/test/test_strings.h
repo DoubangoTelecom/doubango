@@ -28,17 +28,37 @@ void test_strings()
 	char* str = 0;
 
 	/* concatenation */
-	tsk_strcat(&str, "first");
+	tsk_strcat(&str, "   first      ");
 	printf("test_strings/// strcat=%s\n", str);
+
+	/* Trim Right */
+	tsk_strtrim_right(&str);
+	printf("test_strings/// trim_right=%s\n", str);
 
 	tsk_strcat(&str, "second");
 	printf("test_strings/// strcat=%s\n", str);
 
+	/* Trim Left */
+	tsk_strtrim_left(&str);
+	printf("test_strings/// trim_left=%s\n", str);
+
 	tsk_free(&str);
 	
 	/* sprintf */
-	tsk_sprintf(&str, "%s %s", "first", "second");
-	printf("test_strings/// strcat=%s\n", str);
+	tsk_sprintf(&str, " \n\t%s %s\r  ", "first", "second");
+	printf("test_strings/// strcat=\"%s\"\n", str);
+
+	/* Trim Both */
+	tsk_strtrim_both(&str);
+	printf("test_strings/// trim_both=%s\n", str);
+
+	/* Quote */
+	tsk_strquote(&str);
+	printf("test_strings/// quote=%s\n", str);
+
+	/* Unquote */
+	tsk_strunquote(&str);
+	printf("test_strings/// unquote=%s\n", str);
 
 	tsk_free(&str);
 }

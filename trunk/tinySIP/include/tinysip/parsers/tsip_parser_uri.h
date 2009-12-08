@@ -20,36 +20,23 @@
 *
 */
 
-/**@file tsk.h
- * @brief This file contains all headers needed to export public API functions.
+/**@file tsip_parser_uri.h
+ * @brief SIP/SIPS/TEL URI parser.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
+#ifndef TINYSIP_PARSER_URI_H
+#define TINYSIP_PARSER_URI_H
 
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+#include "tinysip_config.h"
+#include "tinysip/tsip_uri.h"
 
-#include "tinySAK_config.h"
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_heap.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
-#include "tsk_params.h"
+#include "tinysip/parsers/tsip_ragel_state.h"
 
-#include "tsk_condwait.h"
-#include "tsk_mutex.h"
-#include "tsk_semaphore.h"
-#include "tsk_thread.h"
-#include "tsk_safeobj.h"
-#include "tsk_object.h"
+#include <stdint.h>
 
-#include "tsk_macros.h"
-#include "tsk_debug.h"
+TINYSIP_API tsip_uri_t *tsip_uri_parse(const char *data, size_t size);
 
-#include "tsk_ppfcs16.h"
-#include "tsk_sha1.h"
-
-#endif /* _TINYSAK_SAK_H_ */
+#endif /* TINYSIP_PARSER_URI_H */

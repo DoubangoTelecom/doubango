@@ -351,6 +351,10 @@
 				RelativePath=".\source\tsip_message.c"
 				>
 			</File>
+			<File
+				RelativePath=".\source\tsip_uri.c"
+				>
+			</File>
 			<Filter
 				Name="headers"
 				>
@@ -739,6 +743,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\source\parsers\tsip_parser_uri.c"
+					>
+				</File>
+				<File
 					RelativePath=".\source\parsers\tsip_ragel_state.c"
 					>
 				</File>
@@ -759,6 +767,10 @@
 			</File>
 			<File
 				RelativePath=".\include\tinysip\tsip_message.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinysip\tsip_uri.h"
 				>
 			</File>
 			<Filter
@@ -1153,6 +1165,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\tinysip\parsers\tsip_parser_uri.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinysip\parsers\tsip_ragel_state.h"
 					>
 				</File>
@@ -1543,6 +1559,10 @@
 			</File>
 			<File
 				RelativePath=".\ragel\tsip_parser_message.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\tsip_parser_uri.rl"
 				>
 			</File>
 		</Filter>

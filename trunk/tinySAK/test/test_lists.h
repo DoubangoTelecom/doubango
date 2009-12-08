@@ -81,7 +81,7 @@ static int pred_find_person_by_name(const tsk_list_item_t *item, const void *nam
 		person_t *person = item->data;
 		return tsk_striequals(person->name, name);
 	}
-	return 0;
+	return -1;
 }
 
 /* testing basic linked list */

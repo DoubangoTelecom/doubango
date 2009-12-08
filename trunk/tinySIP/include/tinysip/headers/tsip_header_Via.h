@@ -88,8 +88,8 @@ typedef struct tsip_header_Via_s
 	char *proto_version;
 	char *transport;
 	
-	int16_t rport;
-	int16_t ttl;
+	uint16_t rport;
+	uint16_t ttl;
 }
 tsip_header_Via_t;
 

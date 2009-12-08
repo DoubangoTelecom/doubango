@@ -60,6 +60,8 @@
 	COMMA = SWS "," SWS;
 	SEMI = SWS ";" SWS;
 	COLON = SWS ":" SWS;
+	LAQUOT = SWS "<";
+	RAQUOT = ">" SWS;
 	UTF8_CONT = 0x80..0xbf;
 	UTF8_NONASCII = ( 0xc0..0xdf UTF8_CONT ) | ( 0xe0..0xef UTF8_CONT{2} ) | ( 0xf0..0xf7 UTF8_CONT{3} ) | ( 0xf8..0xfb UTF8_CONT{4} ) | ( 0xfc..0xfd UTF8_CONT{5} );
 	ctext = 0x21..0x27 | 0x2a..0x5b | 0x5d..0x7e | UTF8_NONASCII | LWS;
@@ -142,5 +144,44 @@
 	other_compression = token;
 	compression_param = "comp="i ( "sigcomp"i | other_compression );
 	target_param = "target"i EQUAL pvalue;
+	orig = "orig"i;
+	gr_param = "gr"i ( "=" pvalue )?;
+	other_param = pname ( "=" pvalue )?;
+	scheme = ALPHA ( ALPHA | DIGIT | "+" | "-" | "." )*;
+
+	hnv_unreserved = "[" | "]" | "/" | "?" | ":" | "+" | "$";
+	hname = ( hnv_unreserved | unreserved | escaped )+;
+	hvalue = ( hnv_unreserved | unreserved | escaped )*;
+	header = hname ( "=" hvalue )?;
+	headers = "?" header ( "&" header )*;
+
+	
+	Informational = "100" | "180" | "181" | "182" | "183";
+	Success = "200" | "202";
+	Redirection = "250" | "301" | "302" | "305" | "380";
+	Client_Error = "400" | "401" | "402" | "403" | "404" | "405" | "406" | "407" | "408" | "410" | "412" | "413" | "414" | "415" | "416" | "417" | "420" | "421" | "422" | "423" | "428" | "429" | "433" | "436" | "440" | "437" | "438" | "470" | "480" | "481" | "482" | "483" | "484" | "485" | "486" | "487" | "488" | "489" | "491" | "493" | "494";
+	Server_Error = "500" | "501" | "502" | "503" | "504" | "505" | "513" | "580";
+	Global_Failure = "600" | "603" | "604" | "606";
+	extension_code = DIGIT{3};
+	Status_Code = Informational | Success | Redirection | Client_Error | Server_Error | Global_Failure | extension_code;
+	cause_param = "cause"i EQUAL Status_Code;
+	
+	INVITEm = 0x49.0x4e.0x56.0x49.0x54.0x45;
+	ACKm = 0x41.0x43.0x4b;
+	OPTIONSm = 0x4f.0x50.0x54.0x49.0x4f.0x4e.0x53;
+	BYEm = 0x42.0x59.0x45;
+	CANCELm = 0x43.0x41.0x4e.0x43.0x45.0x4c;
+	REGISTERm = 0x52.0x45.0x47.0x49.0x53.0x54.0x45.0x52;
+	INFOm = 0x49.0x4e.0x46.0x4f;
+	PRACKm = 0x50.0x52.0x41.0x43.0x4b;
+	SUBSCRIBEm = 0x53.0x55.0x42.0x53.0x43.0x52.0x49.0x42.0x45;
+	NOTIFYm = 0x4e.0x4f.0x54.0x49.0x46.0x59;
+	UPDATEm = 0x55.0x50.0x44.0x41.0x54.0x45;
+	MESSAGEm = 0x4d.0x45.0x53.0x53.0x41.0x47.0x45;
+	REFERm = 0x52.0x45.0x46.0x45.0x52;
+	PUBLISHm = 0x50.0x55.0x42.0x4c.0x49.0x53.0x48;
+	extension_method = token;
+	Method = INVITEm | ACKm | OPTIONSm | BYEm | CANCELm | REGISTERm | INFOm | PRACKm | SUBSCRIBEm | NOTIFYm | UPDATEm | MESSAGEm | REFERm | PUBLISHm | extension_method;
+	method_param = "method="i Method;
 
 }%%
