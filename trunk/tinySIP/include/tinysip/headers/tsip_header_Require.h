@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_REQUIRE_CREATE
+* Creates new sip 'Require' header.  You must call @ref TSIP_HEADER_REQUIRE_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_REQUIRE_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_REQUIRE_SAFE_FREE
+* Safely free a sip 'Require' header previously created using TSIP_HEADER_REQUIRE_CREATE.
+* @sa TSIP_HEADER_REQUIRE_CREATE.
+*/
+#define TSIP_HEADER_REQUIRE_CREATE()		tsk_object_new(tsip_header_Require_def_t)
+#define TSIP_HEADER_REQUIRE_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -39,13 +50,19 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Require	= 	"Require" HCOLON option-tag *(COMMA option-tag)
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Require_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	tsk_strings_L_t *options;
 }
 tsip_header_Require_t;
+
+tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Require_def_t;
 
 #endif /* _TSIP_HEADER_REQUIRE_H_ */

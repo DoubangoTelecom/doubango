@@ -39,6 +39,7 @@
 #include "tsk_safeobj.h"
 #include "tsk_memory.h"
 #include "tsk_string.h"
+#include "tsk_list.h"
 
 #define TSIP_HEADER(hdr)	((tsip_header_t*)(hdr))
 #define TSIP_HEADER_CREATE()
@@ -152,6 +153,7 @@ tsip_header_type_t;
 }
 
 typedef TSIP_DECLARE_HEADER tsip_header_t;
+typedef tsk_list_t tsip_headers_L_t; /**< List of @ref tsip_header_t elements. */
 
 TINYSIP_API const char *tsip_header_get_name(tsip_header_type_t type);
 TINYSIP_API void tsip_header_add_param(tsip_header_t *header, const char *name, const char *value);

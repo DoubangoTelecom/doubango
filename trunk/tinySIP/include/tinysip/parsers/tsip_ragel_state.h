@@ -62,6 +62,16 @@
 		tsk_list_pushback_data(dest, ((void**) &param)); \
 	}
 
+#define PARSER_ADD_STRING(dest) \
+	size_t len = (size_t)(p  - tag_start); \
+	tsk_string_t *string = TSK_STRING_CREATE(0); \
+	string->value = tsk_calloc(len+1, sizeof(char)), memcpy(string->value, tag_start, len); \
+	if(!dest)  \
+	{  \
+		dest = TSK_LIST_CREATE(); \
+	} \
+	tsk_list_pushback_data(dest, ((void**) &string));
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	tsip_parser_s
 ///

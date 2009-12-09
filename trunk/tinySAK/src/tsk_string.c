@@ -277,7 +277,11 @@ void tsk_strunquote(char **str)
 static void* tsk_string_create(void * self, va_list * app)
 {
 	tsk_string_t *string = self;
-	string->value = tsk_strdup(va_arg(*app, const char *));
+	const char *value = va_arg(*app, const char *);
+	if(value)
+	{
+		string->value = tsk_strdup(value);
+	}
 	return self;
 }
 

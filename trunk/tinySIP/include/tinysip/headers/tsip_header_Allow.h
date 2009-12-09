@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_ALLOW_CREATE
+* Creates new sip 'Allow' header.  You must call @ref TSIP_HEADER_ALLOW_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_ALLOW_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_ALLOW_SAFE_FREE
+* Safely free a sip 'Allow' header previously created using TSIP_HEADER_ALLOW_CREATE.
+* @sa TSIP_HEADER_ALLOW_CREATE.
+*/
+#define TSIP_HEADER_ALLOW_CREATE()		tsk_object_new(tsip_header_Allow_def_t)
+#define TSIP_HEADER_ALLOW_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -45,7 +56,13 @@
 typedef struct tsip_header_Allow_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	tsk_strings_L_t *methods;
 }
 tsip_header_Allow_t;
+
+tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Allow_def_t;
 
 #endif /* _TSIP_HEADER_ALLOW_H_ */

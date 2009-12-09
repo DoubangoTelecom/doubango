@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_CALL_ID_CREATE
+* Creates new sip 'Call-ID' header.  You must call @ref TSIP_HEADER_CALL_ID_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_CALL_ID_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_CALL_ID_SAFE_FREE
+* Safely free a sip 'Call-ID' header previously created using TSIP_HEADER_CALL_ID_CREATE.
+* @sa TSIP_HEADER_CALL_ID_CREATE.
+*/
+#define TSIP_HEADER_CALL_ID_CREATE()		tsk_object_new(tsip_header_Call_ID_def_t)
+#define TSIP_HEADER_CALL_ID_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -39,13 +50,20 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Call-ID / i
+/// callid	=  	word  [ "@" word ] 
+/// Call-ID	= 	( "Call-ID" / "i" ) HCOLON callid
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Call_ID_s
 {	
 	TSIP_DECLARE_HEADER;
+	char *value;
 }
 tsip_header_Call_ID_t;
+
+tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Call_ID_def_t;
 
 #endif /* _TSIP_HEADER_CALL_ID_H_ */
