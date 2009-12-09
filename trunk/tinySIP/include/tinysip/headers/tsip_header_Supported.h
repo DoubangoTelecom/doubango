@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_SUPPORTED_CREATE
+* Creates new sip 'Supported' header.  You must call @ref TSIP_HEADER_SUPPORTED_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_SUPPORTED_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_SUPPORTED_SAFE_FREE
+* Safely free a sip 'Supported' header previously created using TSIP_HEADER_SUPPORTED_CREATE.
+* @sa TSIP_HEADER_SUPPORTED_CREATE.
+*/
+#define TSIP_HEADER_SUPPORTED_CREATE()		tsk_object_new(tsip_header_Supported_def_t)
+#define TSIP_HEADER_SUPPORTED_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -39,13 +50,20 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Supported / k
+/// Supported	= 	( "Supported" / "k" ) HCOLON [option-tag *(COMMA option-tag)]
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Supported_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	tsk_strings_L_t *options;
 }
 tsip_header_Supported_t;
+
+tsip_header_Supported_t *tsip_header_Supported_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Supported_def_t;
 
 #endif /* _TSIP_HEADER_SUPPORTED_H_ */

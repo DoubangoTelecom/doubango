@@ -61,17 +61,13 @@
 
 	action parse_display_name
 	{
-		int len = (int)(p  - tag_start);
-		hdr_from->display_name = tsk_calloc(1, len+1);
-		memcpy(hdr_from->display_name, tag_start, len);
+		PARSER_SET_STRING(hdr_from->display_name);
 		TSK_DEBUG_INFO("FROM:PARSE_DISPLAY_NAME");
 	}
 
 	action parse_tag
 	{
-		int len = (int)(p  - tag_start);
-		hdr_from->tag = tsk_calloc(1, len+1);
-		memcpy(hdr_from->tag, tag_start, len);
+		PARSER_SET_STRING(hdr_from->tag);
 		TSK_DEBUG_INFO("FROM:PARSE_TAG");
 	}
 
@@ -81,10 +77,10 @@
 	}
 
 	URI = (scheme HCOLON any+)>tag %parse_uri;
-	display_name = (( token LWS )* | quoted_string)>tag %parse_display_name;
+	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;
 	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
-	tag_param = "tag"i EQUAL token>tag %parse_tag;
-	from_param = tag_param | generic_param;
+	my_tag_param = "tag"i EQUAL token>tag %parse_tag;
+	from_param = my_tag_param | generic_param;
 	from_spec = ( my_name_addr | URI ) :> ( SEMI from_param )*;
 	
 	From = ( "From"i | "f"i ) HCOLON from_spec;

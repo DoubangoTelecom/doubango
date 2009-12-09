@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_CSEQ_CREATE
+* Creates new sip 'CSeq' header.  You must call @ref TSIP_HEADER_CSEQ_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_CSEQ_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_CSEQ_SAFE_FREE
+* Safely free a sip 'CSeq' header previously created using TSIP_HEADER_CSEQ_CREATE.
+* @sa TSIP_HEADER_CSEQ_CREATE.
+*/
+#define TSIP_HEADER_CSEQ_CREATE()		tsk_object_new(tsip_header_CSeq_def_t)
+#define TSIP_HEADER_CSEQ_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -39,13 +50,20 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: CSeq	= 	"CSeq" HCOLON 1*DIGIT LWS Method
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_CSeq_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	char *method;
+	int32_t seq;
 }
 tsip_header_CSeq_t;
+
+tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_CSeq_def_t;
 
 #endif /* _TSIP_HEADER_CSEQ_H_ */

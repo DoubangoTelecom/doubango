@@ -68,6 +68,7 @@
 	qvalue = ( "0" ( "." DIGIT{,3} )? ) | ( "1" ( "." "0"{,3} )? );
 	alphanum = ALPHA | DIGIT;
 	token = ( alphanum | "-" | "." | "!" | "%" | "*" | "_" | "+" | "`" | "'" | "~" )+;
+	word = ( alphanum | "-" | "." | "!" | "%" | "*" | "_" | "+" | "`" | "'" | "~" | "(" | ")" | "<" | ">" | ":" | "\\" | DQUOTE | "/" | "[" | "]" | "?" | "{" | "}" )+;
 	domainlabel = alphanum | ( alphanum ( alphanum | "-" )* alphanum );
 	toplabel = ALPHA | ( ALPHA ( alphanum | "-" )* alphanum );
 	hostname = ( domainlabel "." )* toplabel "."?;
@@ -141,12 +142,14 @@
 	ttl_param = "ttl="i ttl;
 	maddr_param = "maddr="i host;
 	lr_param = "lr"i;
+	option_tag = token;
 	other_compression = token;
 	compression_param = "comp="i ( "sigcomp"i | other_compression );
 	target_param = "target"i EQUAL pvalue;
 	orig = "orig"i;
 	gr_param = "gr"i ( "=" pvalue )?;
 	other_param = pname ( "=" pvalue )?;
+	tag_param = "tag"i EQUAL token;
 	scheme = ALPHA ( ALPHA | DIGIT | "+" | "-" | "." )*;
 
 	hnv_unreserved = "[" | "]" | "/" | "?" | ":" | "+" | "$";
