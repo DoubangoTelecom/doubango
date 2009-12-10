@@ -32,20 +32,43 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE
+* Creates new sip 'P-Access-Network-Info' header.  You must call @ref TSIP_HEADER_P_ACCESS_NETWORK_INFO_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_P-ACCESS_NETWORK_INFO_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_P_ACCESS_NETWORK_INFO_SAFE_FREE
+* Safely free a sip 'P-Access-Network-Info' header previously created using TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE.
+* @sa TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE.
+*/
+#define TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE()		tsk_object_new(tsip_header_P_Access_Network_Info_def_t)
+#define TSIP_HEADER_P_ACCESS_NETWORK_INFO_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP header 'P-Access-Network-Info' .
+/// @brief	SIP header 'P-Access-Network-Info' as per RFC 3455.
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: P-Access-Network-Info  	= 	"P-Access-Network-Info" HCOLON access-net-spec
+/// access-net-spec	= 	access-type *( SEMI access-info )
+/// access-type	= 	"IEEE-802.11a" / "IEEE-802.11b" / "3GPP-GERAN" / "3GPP-UTRAN-FDD" / "3GPP-UTRAN-TDD" / "3GPP-CDMA2000" / token
+/// access-info	= 	cgi-3gpp / utran-cell-id-3gpp / extension-access-info
+/// extension-access-info	= 	gen-value
+/// cgi-3gpp	= 	"cgi-3gpp" EQUAL (token / quoted-string)
+/// utran-cell-id-3gpp	= 	"utran-cell-id-3gpp" EQUAL (token / quoted-string)
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_P_Access_Network_Info_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	char *value;
 }
 tsip_header_P_Access_Network_Info_t;
+
+tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_P_Access_Network_Info_def_t;
 
 #endif /* _TSIP_HEADER_P_ACCESS_NETWORK_INFO_H_ */

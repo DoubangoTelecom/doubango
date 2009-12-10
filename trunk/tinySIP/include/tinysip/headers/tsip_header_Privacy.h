@@ -32,20 +32,39 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_PRIVACY_CREATE
+* Creates new sip 'Privacy' header.  You must call @ref TSIP_HEADER_PRIVACY_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_PRIVACY_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_PRIVACY_SAFE_FREE
+* Safely free a sip 'Privacy' header previously created using TSIP_HEADER_PRIVACY_CREATE.
+* @sa TSIP_HEADER_PRIVACY_CREATE.
+*/
+#define TSIP_HEADER_PRIVACY_CREATE()		tsk_object_new(tsip_header_Privacy_def_t)
+#define TSIP_HEADER_PRIVACY_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP header 'Privacy'.
+/// @brief	SIP header 'Privacy' as per RFC 3323.
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Privacy = Privacy-hdr
+/// Privacy-hdr	= 	"Privacy" HCOLON priv-value *(";" priv-value)
+/// priv-value	= 	"header" / "session" / "user" / "none" / "critical" / "id" / "history" / token
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Privacy_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	tsk_strings_L_t *values;
 }
 tsip_header_Privacy_t;
+
+tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Privacy_def_t;
 
 #endif /* _TSIP_HEADER_PRIVACY_H_ */

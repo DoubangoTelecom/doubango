@@ -399,7 +399,7 @@ _match:
 		}
 		else
 		{
-			TSK_DEBUG_ERROR("Failed to parse header.");
+			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
 		}
 	}
 	break;

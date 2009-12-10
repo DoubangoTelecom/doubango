@@ -56,19 +56,21 @@
 	{
 		int len = (int)(p  - tag_start);
 		hdr_from->uri = tsip_uri_parse(tag_start, (size_t)len);
-		TSK_DEBUG_INFO("FROM:PARSE_URI");
 	}
 
 	action parse_display_name
 	{
 		PARSER_SET_STRING(hdr_from->display_name);
-		TSK_DEBUG_INFO("FROM:PARSE_DISPLAY_NAME");
 	}
 
 	action parse_tag
 	{
 		PARSER_SET_STRING(hdr_from->tag);
-		TSK_DEBUG_INFO("FROM:PARSE_TAG");
+	}
+
+	action parse_param
+	{
+		PARSER_ADD_PARAM(hdr_from->params);
 	}
 
 	action eob
@@ -80,7 +82,7 @@
 	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;
 	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
 	my_tag_param = "tag"i EQUAL token>tag %parse_tag;
-	from_param = my_tag_param | generic_param;
+	from_param = my_tag_param | (generic_param)>tag %parse_param;
 	from_spec = ( my_name_addr | URI ) :> ( SEMI from_param )*;
 	
 	From = ( "From"i | "f"i ) HCOLON from_spec;

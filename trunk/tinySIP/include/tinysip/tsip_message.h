@@ -33,9 +33,11 @@
 #include "tinysip_config.h"
 
 #include "tinysip/headers/tsip_header_Call_ID.h"
+#include "tinysip/headers/tsip_header_Contact.h"
+#include "tinysip/headers/tsip_header_Content_Length.h"
 #include "tinysip/headers/tsip_header_CSeq.h"
 #include "tinysip/headers/tsip_header_From.h"
-#include "tinysip/headers/tsip_header_Max_Forwards.h"
+#include "tinysip/headers/tsip_header_Expires.h"
 #include "tinysip/headers/tsip_header_To.h"
 #include "tinysip/headers/tsip_header_Via.h"
 
@@ -56,6 +58,10 @@
 */
 #define TSIP_MESSAGE_CREATE()		tsk_object_new(tsip_message_def_t)
 #define TSIP_MESSAGE_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
+
+#define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)((message && message->Content_Length) ? message->Content_Length->length : 0)
+
 
 /**
  * @enum	tsip_message_type_t
@@ -135,12 +141,11 @@ typedef struct tsip_message_s
 	tsip_header_Via_t *firstVia; /**< First Via header. */
 	tsip_header_From_t *From;
 	tsip_header_To_t *To;
-	//tsip_header_Contact_t *Contact;
+	tsip_header_Contact_t *Contact;
 	tsip_header_Call_ID_t *Call_ID;
 	tsip_header_CSeq_t *CSeq;
-	tsip_header_Max_Forwards_t *Max_Forwards;
-	//tsip_header_Expires_t *Expires;
-	//tsip_header_Content_Length *Content_Length;
+	tsip_header_Expires_t *Expires;
+	tsip_header_Content_Length_t *Content_Length;
 
 	/*== OTHER HEADERS*/
 	tsip_headers_L_t *headers;
@@ -150,15 +155,16 @@ tsip_message_t;
 typedef tsip_message_t tsip_request_t; /**< SIP request message. */
 typedef tsip_message_t tsip_response_t; /**< SIP response message. */
 
-TINYSIP_API tsip_header_t *tsip_message_find_header_by_index(const tsip_message_t *message, tsip_header_type_t type, size_t index);
-TINYSIP_API tsip_header_t *tsip_message_find_header(const tsip_message_t *message, tsip_header_type_t type);
-TINYSIP_API TSIP_BOOLEAN tsip_message_allowed(const tsip_message_t *message, const char* method);
-TINYSIP_API TSIP_BOOLEAN tsip_message_supported(const tsip_message_t *message, const char* option);
-TINYSIP_API TSIP_BOOLEAN tsip_message_required(const tsip_message_t *message, const char* option);
+TINYSIP_API tsip_header_t	*tsip_message_get_headerAt(const tsip_message_t *message, tsip_header_type_t type, size_t index);
+TINYSIP_API tsip_header_t	*tsip_message_get_header(const tsip_message_t *message, tsip_header_type_t type);
+TINYSIP_API TSIP_BOOLEAN	tsip_message_allowed(const tsip_message_t *message, const char* method);
+TINYSIP_API TSIP_BOOLEAN	tsip_message_supported(const tsip_message_t *message, const char* option);
+TINYSIP_API TSIP_BOOLEAN	tsip_message_required(const tsip_message_t *message, const char* option);
 
 
-TINYSIP_API uint32_t tsip_message_getContent_length(const tsip_message_t *message);
-TINYSIP_API int32_t tsip_message_getCSeq(const tsip_message_t *message);
+TINYSIP_API int32_t		tsip_message_getExpires(const tsip_message_t *message);
+TINYSIP_API uint32_t	tsip_message_getContent_length(const tsip_message_t *message);
+TINYSIP_API int32_t		tsip_message_getCSeq(const tsip_message_t *message);
 
 
 
