@@ -30,13 +30,20 @@
 #include "tinysip/parsers/tsip_parser_header.h"
 
 #include "tinysip/headers/tsip_header_Allow.h"
+#include "tinysip/headers/tsip_header_Allow_Events.h"
 #include "tinysip/headers/tsip_header_Call_ID.h"
+#include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_CSeq.h"
+#include "tinysip/headers/tsip_header_Expires.h"
 #include "tinysip/headers/tsip_header_From.h"
 #include "tinysip/headers/tsip_header_Max_Forwards.h"
+#include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
+#include "tinysip/headers/tsip_header_P_Access_Network_Info.h" 
+#include "tinysip/headers/tsip_header_Privacy.h"
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 #include "tinysip/headers/tsip_header_To.h"
+#include "tinysip/headers/tsip_header_User_Agent.h"
 #include "tinysip/headers/tsip_header_Via.h"
 
 #include "tsk_debug.h"
@@ -97,7 +104,11 @@
 	# /*== Allow-Events: ==*/
 	action parse_header_Allow_Events
 	{
-		TSK_DEBUG_ERROR("parse_header_Allow_Events NOT IMPLEMENTED");
+		tsip_header_Allow_Events_t *header = tsip_header_Allow_Events_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_pushback_data(message->headers, ((void**) &header));
+		}
 	}
 
 	# /*== Authentication-Info: ==*/
@@ -130,7 +141,10 @@
 	# /*== Contact: ==*/
 	action parse_header_Contact 
 	{
-		TSK_DEBUG_ERROR("parse_header_Contact NOT IMPLEMENTED");
+		if(!message->Contact)
+		{
+			message->Contact = tsip_header_Contact_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
 	}
 
 	# /*== Content-Disposition: ==*/
@@ -154,7 +168,10 @@
 	# /*== Content-Length: ==*/
 	action parse_header_Content_Length
 	{
-		TSK_DEBUG_ERROR("parse_header_Content_Length NOT IMPLEMENTED");
+		if(!message->Content_Length)
+		{
+			message->Content_Length = tsip_header_Content_Length_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
 	}
 
 	# /*== Content-Type: ==*/
@@ -193,7 +210,10 @@
 	# /*== Expires: ==*/
 	action parse_header_Expires
 	{
-		TSK_DEBUG_ERROR("parse_header_Expires NOT IMPLEMENTED");
+		if(!message->Expires)
+		{
+			message->Expires = tsip_header_Expires_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
 	}
 
 	# /*== From: ==*/
@@ -238,9 +258,10 @@
 	# /*== Max-Forwards: ==*/
 	action parse_header_Max_Forwards
 	{
-		if(!message->Max_Forwards)
+		tsip_header_Max_Forwards_t *header = tsip_header_Max_Forwards_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
 		{
-			message->Max_Forwards = tsip_header_Max_Forwards_parse(state->tag_start, (state->tag_end-state->tag_start));
+			tsk_list_pushback_data(message->headers, ((void**) &header));
 		}
 	}
 
@@ -268,6 +289,122 @@
 		TSK_DEBUG_ERROR("parse_header_Organization NOT IMPLEMENTED");
 	}
 
+	# /*== P-Access-Network-Info: ==*/
+	action parse_header_P_Access_Network_Info 
+	{
+		tsip_header_P_Access_Network_Info_t *header = tsip_header_P_Access_Network_Info_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_pushback_data(message->headers, ((void**) &header));
+		}
+	}
+
+	# /*== P-Answer-State: ==*/
+	action parse_header_P_Answer_State
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Answer_State NOT IMPLEMENTED");
+	}
+
+	# /*== P-Asserted-Identity: ==*/
+	action parse_header_P_Asserted_Identity 
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Asserted_Identity NOT IMPLEMENTED");
+	}
+
+	# /*== P-Associated-URI: ==*/
+	action parse_header_P_Associated_URI 
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Associated_URI NOT IMPLEMENTED");
+	}
+
+	# /*== P-Called-Party-ID: ==*/
+	action parse_header_P_Called_Party_ID
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Called_Party_ID NOT IMPLEMENTED");
+	}
+
+	# /*== P-Charging-Function-Addresses : ==*/
+	action parse_header_P_Charging_Function_Addresses 
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Charging_Function_Addresses NOT IMPLEMENTED");
+	}
+
+	# /*== P_Charging_Vector: ==*/
+	action parse_header_P_Charging_Vector
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Charging_Vector NOT IMPLEMENTED");
+	}
+
+	# /*== P-DCS-Billing-Info: ==*/
+	action parse_header_P_DCS_Billing_Info
+	{
+		TSK_DEBUG_ERROR("parse_header_P_DCS_Billing_Info NOT IMPLEMENTED");
+	}
+
+	# /*== P-DCS-LAES: ==*/
+	action parse_header_P_DCS_LAES
+	{
+		TSK_DEBUG_ERROR("parse_header_P_DCS_LAES NOT IMPLEMENTED");
+	}
+
+	# /*== P-DCS-OSPS: ==*/
+	action parse_header_P_DCS_OSPS
+	{
+		TSK_DEBUG_ERROR("parse_header_P_DCS_OSPS NOT IMPLEMENTED");
+	}
+
+	# /*== P-DCS-Redirect: ==*/
+	action parse_header_P_DCS_Redirect
+	{
+		TSK_DEBUG_ERROR("parse_header_P_DCS_Redirect NOT IMPLEMENTED");
+	}
+
+	# /*== P-DCS-Trace-Party-ID: ==*/
+	action parse_header_P_DCS_Trace_Party_ID
+	{
+		TSK_DEBUG_ERROR("parse_header_P_DCS_Trace_Party_ID NOT IMPLEMENTED");
+	}
+
+	# /*== P-Early-Media: ==*/
+	action parse_header_P_Early_Media
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Early_Media NOT IMPLEMENTED");
+	}
+
+	# /*== P-Media-Authorization: ==*/
+	action parse_header_P_Media_Authorization
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Media_Authorization NOT IMPLEMENTED");
+	}
+
+	# /*== P-Preferred-Identity: ==*/
+	action parse_header_P_Preferred_Identity
+	{
+		tsip_header_P_Preferred_Identity_t *header = tsip_header_P_Preferred_Identity_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_pushback_data(message->headers, ((void**) &header));
+		}
+	}
+
+	# /*== P-Profile-Key: ==*/
+	action parse_header_P_Profile_Key
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Profile_Key NOT IMPLEMENTED");
+	}
+
+	# /*== P-User-Database: ==*/
+	action parse_header_P_User_Database
+	{
+		TSK_DEBUG_ERROR("parse_header_P_User_Database NOT IMPLEMENTED");
+	}
+
+	# /*== P-Visited-Network-ID: ==*/
+	action parse_header_P_Visited_Network_ID
+	{
+		TSK_DEBUG_ERROR("parse_header_P_Visited_Network_ID NOT IMPLEMENTED");
+	}
+
 	# /*== Path: ==*/
 	action parse_header_Path
 	{
@@ -283,7 +420,11 @@
 	# /*== Privacy: ==*/
 	action parse_header_Privacy
 	{
-		TSK_DEBUG_ERROR("parse_header_Privacy NOT IMPLEMENTED");
+		tsip_header_Privacy_t *header = tsip_header_Privacy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_pushback_data(message->headers, ((void**) &header));
+		}
 	}
 
 	# /*== Authenticate: ==*/
@@ -498,7 +639,11 @@
 	# /*== User-Agent: ==*/
 	action parse_header_User_Agent
 	{
-		TSK_DEBUG_ERROR("parse_header_User_Agent NOT IMPLEMENTED");
+		tsip_header_User_Agent_t *header = tsip_header_User_Agent_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_pushback_data(message->headers, ((void**) &header));
+		}
 	}
 
 	# /*== Via: ==*/
@@ -510,9 +655,12 @@
 		}
 		else
 		{
-			// FIXME: add to the header list.
+			tsip_header_Via_t *header = tsip_header_Via_parse(state->tag_start, (state->tag_end-state->tag_start));
+			if(header)
+			{
+				tsk_list_pushback_data(message->headers, ((void**) &header));
+			}
 		}
-		TSK_DEBUG_ERROR("parse_header_Via NOT IMPLEMENTED");
 	}
 
 	# /*== Warning: ==*/
@@ -526,115 +674,7 @@
 	{
 		TSK_DEBUG_ERROR("parse_header_WWW_Authenticate NOT IMPLEMENTED");
 	}
-
-	# /*== P-Access-Network-Info: ==*/
-	action parse_header_P_Access_Network_Info 
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Access_Network_Info NOT IMPLEMENTED");
-	}
-
-	# /*== P-Answer-State: ==*/
-	action parse_header_P_Answer_State
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Answer_State NOT IMPLEMENTED");
-	}
-
-	# /*== P-Asserted-Identity: ==*/
-	action parse_header_P_Asserted_Identity 
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Asserted_Identity NOT IMPLEMENTED");
-	}
-
-	# /*== P-Associated-URI: ==*/
-	action parse_header_P_Associated_URI 
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Associated_URI NOT IMPLEMENTED");
-	}
-
-	# /*== P-Called-Party-ID: ==*/
-	action parse_header_P_Called_Party_ID
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Called_Party_ID NOT IMPLEMENTED");
-	}
-
-	# /*== P-Charging-Function-Addresses : ==*/
-	action parse_header_P_Charging_Function_Addresses 
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Charging_Function_Addresses NOT IMPLEMENTED");
-	}
-
-	# /*== P_Charging_Vector: ==*/
-	action parse_header_P_Charging_Vector
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Charging_Vector NOT IMPLEMENTED");
-	}
-
-	# /*== P-DCS-Billing-Info: ==*/
-	action parse_header_P_DCS_Billing_Info
-	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_Billing_Info NOT IMPLEMENTED");
-	}
-
-	# /*== P-DCS-LAES: ==*/
-	action parse_header_P_DCS_LAES
-	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_LAES NOT IMPLEMENTED");
-	}
-
-	# /*== P-DCS-OSPS: ==*/
-	action parse_header_P_DCS_OSPS
-	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_OSPS NOT IMPLEMENTED");
-	}
-
-	# /*== P-DCS-Redirect: ==*/
-	action parse_header_P_DCS_Redirect
-	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_Redirect NOT IMPLEMENTED");
-	}
-
-	# /*== P-DCS-Trace-Party-ID: ==*/
-	action parse_header_P_DCS_Trace_Party_ID
-	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_Trace_Party_ID NOT IMPLEMENTED");
-	}
-
-	# /*== P-Early-Media: ==*/
-	action parse_header_P_Early_Media
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Early_Media NOT IMPLEMENTED");
-	}
-
-	# /*== P-Media-Authorization: ==*/
-	action parse_header_P_Media_Authorization
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Media_Authorization NOT IMPLEMENTED");
-	}
-
-	# /*== P-Preferred-Identity: ==*/
-	action parse_header_P_Preferred_Identity
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Preferred_Identity NOT IMPLEMENTED");
-	}
-
-	# /*== P-Profile-Key: ==*/
-	action parse_header_P_Profile_Key
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Profile_Key NOT IMPLEMENTED");
-	}
-
-	# /*== P-User-Database: ==*/
-	action parse_header_P_User_Database
-	{
-		TSK_DEBUG_ERROR("parse_header_P_User_Database NOT IMPLEMENTED");
-	}
-
-	# /*== P-Visited-Network-ID: ==*/
-	action parse_header_P_Visited_Network_ID
-	{
-		TSK_DEBUG_ERROR("parse_header_P_Visited_Network_ID NOT IMPLEMENTED");
-	}
-	
+		
 	# /*== extension_header: ==*/
 	action parse_header_extension_header
 	{

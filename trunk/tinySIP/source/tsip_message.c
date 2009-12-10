@@ -31,6 +31,7 @@
 #include "tinysip/tsip_message.h"
 
 #include "tinysip/headers/tsip_header_Allow.h"
+#include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 
@@ -65,26 +66,29 @@ static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tsi
 }
 
 
-tsip_header_t *tsip_message_find_header_by_index(const tsip_message_t *message, tsip_header_type_t type, size_t index)
+tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *message, tsip_header_type_t type, size_t index)
 {
 	size_t pos = 0;
 	tsk_list_item_t *item = 0;
-	tsk_list_foreach(item, message->headers)
+	if(message)
 	{
-		if(!pred_find_header_by_type(item, &type))
+		tsk_list_foreach(item, message->headers)
 		{
-			if(pos++ >= index)
+			if(!pred_find_header_by_type(item, &type))
 			{
-				break;
+				if(pos++ >= index)
+				{
+					break;
+				}
 			}
 		}
 	}
 	return item ? item->data : 0;
 }
 
-tsip_header_t *tsip_message_find_header(const tsip_message_t *message, tsip_header_type_t type)
+tsip_header_t *tsip_message_get_header(const tsip_message_t *message, tsip_header_type_t type)
 {
-	return tsip_message_find_header_by_index(message, type, 0);
+	return tsip_message_get_headerAt(message, type, 0);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,11 +109,14 @@ TSIP_BOOLEAN tsip_message_allowed(const tsip_message_t *message, const char* met
 	int index = 0;
 	tsip_header_Allow_t *hdr_allow;
 
-	while( hdr_allow = (tsip_header_Allow_t*)tsip_message_find_header_by_index(message, tsip_htype_Allow, index++) )
+	if(message)
 	{
-		if(tsk_list_find_item_by_pred(hdr_allow->methods, pred_find_string_by_value, method))
+		while( hdr_allow = (tsip_header_Allow_t*)tsip_message_get_headerAt(message, tsip_htype_Allow, index++) )
 		{
-			return TSIP_TRUE;
+			if(tsk_list_find_item_by_pred(hdr_allow->methods, pred_find_string_by_value, method))
+			{
+				return TSIP_TRUE;
+			}
 		}
 	}
 	return TSIP_FALSE;
@@ -120,13 +127,16 @@ TSIP_BOOLEAN tsip_message_supported(const tsip_message_t *message, const char* o
 	int index = 0;
 	tsip_header_Supported_t *hdr_supported;
 
-	while( hdr_supported = (tsip_header_Supported_t*)tsip_message_find_header_by_index(message, tsip_htype_Supported, index++) )
+	if(message)
 	{
-		if(tsk_list_find_item_by_pred(hdr_supported->options, pred_find_string_by_value, option))
+		while( hdr_supported = (tsip_header_Supported_t*)tsip_message_get_headerAt(message, tsip_htype_Supported, index++) )
 		{
-			return TSIP_TRUE;
+			if(tsk_list_find_item_by_pred(hdr_supported->options, pred_find_string_by_value, option))
+			{
+				return TSIP_TRUE;
+			}
 		}
-	}
+		}
 	return TSIP_FALSE;
 }
 
@@ -136,18 +146,50 @@ TSIP_BOOLEAN tsip_message_required(const tsip_message_t *message, const char* op
 	int index = 0;
 	tsip_header_Require_t *hdr_require;
 
-	while( hdr_require = (tsip_header_Require_t*)tsip_message_find_header_by_index(message, tsip_htype_Require, index++) )
+	if(message)
 	{
-		if(tsk_list_find_item_by_pred(hdr_require->options, pred_find_string_by_value, option))
+		while( hdr_require = (tsip_header_Require_t*)tsip_message_get_headerAt(message, tsip_htype_Require, index++) )
 		{
-			return TSIP_TRUE;
+			if(tsk_list_find_item_by_pred(hdr_require->options, pred_find_string_by_value, option))
+			{
+				return TSIP_TRUE;
+			}
 		}
 	}
 	return TSIP_FALSE;
 }
 
 
+int32_t tsip_message_getExpires(const tsip_message_t *message)
+{	
+	if(message)
+	{
+		if(message->Expires)
+		{
+			return message->Expires->delta_seconds;
+		}
 
+		// FIXME: You MUST choose the right contact
+		if(message->Contact)
+		{
+			int index = 0;
+			const tsip_contact_t *contact;
+			while(contact = tsip_header_Contact_get_ContactAt(message->Contact, index++))
+			{
+				if(contact->expires >=0)
+				{
+					return contact->expires;
+				}
+			}
+		}
+	}
+	return -1;
+}
+
+uint32_t tsip_message_getContent_length(const tsip_message_t *message)
+{
+	return (message && message->Content_Length) ? message->Content_Length->length : 0;
+}
 
 
 
@@ -203,12 +245,15 @@ static void* tsip_message_destroy(void *self)
 
 		TSK_FREE(message->sip_version);
 
+		tsk_object_unref(message->Call_ID);
+		tsk_object_unref(message->Contact);
+		tsk_object_unref(message->Content_Length);
+		tsk_object_unref(message->CSeq);
 		tsk_object_unref(message->firstVia);
 		tsk_object_unref(message->From);
+		tsk_object_unref(message->Expires);
 		tsk_object_unref(message->To);
-		tsk_object_unref(message->Call_ID);
-		tsk_object_unref(message->CSeq);
-		tsk_object_unref(message->Max_Forwards);
+		
 
 		TSK_LIST_SAFE_FREE(message->headers);
 	}

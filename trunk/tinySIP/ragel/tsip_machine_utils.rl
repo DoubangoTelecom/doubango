@@ -68,6 +68,7 @@
 	qvalue = ( "0" ( "." DIGIT{,3} )? ) | ( "1" ( "." "0"{,3} )? );
 	alphanum = ALPHA | DIGIT;
 	token = ( alphanum | "-" | "." | "!" | "%" | "*" | "_" | "+" | "`" | "'" | "~" )+;
+	token_nodot = ( alphanum | "-" | "!" | "%" | "*" | "_" | "+" | "`" | "'" | "~" )+;
 	word = ( alphanum | "-" | "." | "!" | "%" | "*" | "_" | "+" | "`" | "'" | "~" | "(" | ")" | "<" | ">" | ":" | "\\" | DQUOTE | "/" | "[" | "]" | "?" | "{" | "}" )+;
 	domainlabel = alphanum | ( alphanum ( alphanum | "-" )* alphanum );
 	toplabel = ALPHA | ( ALPHA ( alphanum | "-" )* alphanum );
@@ -157,7 +158,6 @@
 	hvalue = ( hnv_unreserved | unreserved | escaped )*;
 	header = hname ( "=" hvalue )?;
 	headers = "?" header ( "&" header )*;
-
 	
 	Informational = "100" | "180" | "181" | "182" | "183";
 	Success = "200" | "202";
@@ -166,6 +166,7 @@
 	Server_Error = "500" | "501" | "502" | "503" | "504" | "505" | "513" | "580";
 	Global_Failure = "600" | "603" | "604" | "606";
 	extension_code = DIGIT{3};
+	delta_seconds = DIGIT+;
 	Status_Code = Informational | Success | Redirection | Client_Error | Server_Error | Global_Failure | extension_code;
 	cause_param = "cause"i EQUAL Status_Code;
 	

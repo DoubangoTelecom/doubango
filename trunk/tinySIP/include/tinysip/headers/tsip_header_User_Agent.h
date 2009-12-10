@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_USER_AGENT_CREATE
+* Creates new sip 'User-Agent' header.  You must call @ref TSIP_HEADER_USER_AGENT_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_USER_AGENT_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_USER_AGENT_SAFE_FREE
+* Safely free a sip 'User-Agent' header previously created using TSIP_HEADER_USER_AGENT_CREATE.
+* @sa TSIP_HEADER_USER_AGENT_CREATE.
+*/
+#define TSIP_HEADER_USER_AGENT_CREATE()		tsk_object_new(tsip_header_User_Agent_def_t)
+#define TSIP_HEADER_USER_AGENT_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -39,13 +50,18 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF : User-Agent	= 	"User-Agent" HCOLON server-val *(LWS server-val)
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_User_Agent_s
 {	
 	TSIP_DECLARE_HEADER;
+	char *value;
 }
 tsip_header_User_Agent_t;
+
+tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_User_Agent_def_t;
 
 #endif /* _TSIP_HEADER_USER_AGENT_H_ */

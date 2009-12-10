@@ -110,7 +110,7 @@ static void tsip_message_parser_eob(tsip_ragel_state_t *state);
 		}
 		else
 		{
-			TSK_DEBUG_ERROR("Failed to parse header.");
+			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
 		}
 	}
 

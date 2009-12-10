@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_CONTENT_LENGTH_CREATE
+* Creates new sip 'Content-Length' header.  You must call @ref TSIP_HEADER_CONTENT_LENGTH_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_CONTENT_LENGTH_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_CONTENT_LENGTH_SAFE_FREE
+* Safely free a sip 'Content-Length' header previously created using TSIP_HEADER_CONTENT_LENGTH_CREATE.
+* @sa TSIP_HEADER_CONTENT_LENGTH_CREATE.
+*/
+#define TSIP_HEADER_CONTENT_LENGTH_CREATE()		tsk_object_new(tsip_header_Content_Length_def_t)
+#define TSIP_HEADER_CONTENT_LENGTH_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -39,13 +50,20 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Content-Length / l
+/// Content-Length	= 	( "Content-Length" / "l" ) HCOLON 1*DIGIT
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Content_Length_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	uint32_t length;
 }
 tsip_header_Content_Length_t;
+
+tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Content_Length_def_t;
 
 #endif /* _TSIP_HEADER_CONTENT_LENGTH_H_ */

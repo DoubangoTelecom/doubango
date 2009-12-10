@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_EXPIRES_CREATE
+* Creates new sip 'Expires' header.  You must call @ref TSIP_HEADER_EXPIRES_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_EXPIRES_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_EXPIRES_SAFE_FREE
+* Safely free a sip 'Expires' header previously created using TSIP_HEADER_EXPIRES_CREATE.
+* @sa TSIP_HEADER_EXPIRES_CREATE.
+*/
+#define TSIP_HEADER_EXPIRES_CREATE()		tsk_object_new(tsip_header_Expires_def_t)
+#define TSIP_HEADER_EXPIRES_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -39,13 +50,19 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Expires	= 	"Expires" HCOLON delta-seconds
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Expires_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	int32_t delta_seconds;
 }
 tsip_header_Expires_t;
+
+tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Expires_def_t;
 
 #endif /* _TSIP_HEADER_EXPIRES_H_ */
