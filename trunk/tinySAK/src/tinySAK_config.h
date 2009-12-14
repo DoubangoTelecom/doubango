@@ -34,10 +34,22 @@
 #ifndef _TINYSAK_H_
 #define _TINYSAK_H_
 
+#if HAVE_CONFIG_H
+	#include "config.h"
+#endif
+
+#ifdef __SYMBIAN32__
+#undef _WIN32 /* Because of WINSCW */
+#endif
+
+#if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
+#	define TSK_UNDER_WINDOWS	1
+#endif
+
 /**@def  TINYSAK_API
 * Used on Windows and Sysbian systems to export public functions.
 */
-#if (defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSAK_EXPORTS)
+#if (TSK_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYSAK_EXPORTS)
 # 	define TINYSAK_API __declspec(dllexport)
 #elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSAK_IMPORTS)
 # 	define TINYSAK_API __declspec(dllimport)
@@ -56,20 +68,15 @@
 //
 //	Features
 //
-#if HAVE_CONFIG
-	#include "config.h"
-#else
-	#if defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE)
-	#	define HAVE_GETTIMEOFDAY				0
-	#else
-	#	define HAVE_GETTIMEOFDAY				1
-	#endif
-#endif /* HAVE_CONFIG */
+
+#if TSK_UNDER_WINDOWS
+#	define HAVE_GETTIMEOFDAY				0
+#else if(!HAVE_CONFIG_H)
+#	define HAVE_GETTIMEOFDAY				1
+#endif
 
 #include <stdint.h>
 
-#ifdef __SYMBIAN32__
-#undef _WIN32 /* Because of WINSCW */
-#endif
+
 
 #endif /* _TINYSAK_H_ */

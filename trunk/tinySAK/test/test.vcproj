@@ -238,6 +238,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_timer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_url.h"
 				>
 			</File>

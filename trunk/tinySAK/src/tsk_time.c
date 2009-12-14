@@ -29,7 +29,7 @@
 */
 #include "tsk_time.h"
 #include <time.h>
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE)
+#if TSK_UNDER_WINDOWS
 #include <windows.h>
 #endif
 
@@ -37,7 +37,7 @@
 */
 
 #if !HAVE_GETTIMEOFDAY
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE)
+#if TSK_UNDER_WINDOWS
 
 /* Thanks to "http://www.cpp-programming.net/c-tidbits/gettimeofday-function-for-windows" */
 #if defined(_MSC_VER) || defined(_MSC_EXTENSIONS)
@@ -109,4 +109,17 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
 int tsk_gettimeofday(struct timeval *tv, struct timezone *tz)
 {
 	return gettimeofday(tv, tz);
+}
+
+/**
+* Gets the number of milliseconds since the EPOCH.
+* @retval The number of milliseconds since EPOCH.
+*/
+uint64_t tsk_time_epoch()
+{
+	struct timeval tv;
+	static const uint64_t thousand = 1000;
+	gettimeofday(&tv, 0); 
+	
+	return (((uint64_t)tv.tv_sec)*thousand) + (((uint64_t)tv.tv_usec)/thousand);
 }

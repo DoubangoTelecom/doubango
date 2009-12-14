@@ -92,19 +92,19 @@ void test_basic_list()
 	
 	/* add items to the list */
 	item->data = TSK_STRING_CREATE("First item");
-	tsk_list_pushfront_item(list, &item);
+	tsk_list_push_front_item(list, &item);
 
 	item = TSK_LIST_ITEM_CREATE();
 	item->data = TSK_STRING_CREATE("Second item");
-	tsk_list_pushback_item(list, &item);
+	tsk_list_push_back_item(list, &item);
 
 	item = TSK_LIST_ITEM_CREATE();
 	item->data = TSK_STRING_CREATE("Third item");
-	tsk_list_pushfront_item(list, &item);
+	tsk_list_push_front_item(list, &item);
 
 	item = TSK_LIST_ITEM_CREATE();
 	item->data = TSK_STRING_CREATE("Fourth item");
-	tsk_list_pushback_item(list, &item);
+	tsk_list_push_back_item(list, &item);
 
 	/* dump all items */
 	tsk_list_foreach(item, list)
@@ -117,6 +117,92 @@ void test_basic_list()
 	TSK_LIST_SAFE_FREE(list);
 }
 
+void test_filtered_list()
+{
+#define PUSH_FILTERED(list, data) tsk_list_push_ascending_data(list, data);
+
+	tsk_list_t *list = TSK_LIST_CREATE();
+	tsk_list_item_t *item = 0;
+
+	/* add items to the list */
+	{
+		person_t *person2 = PERSON_CREATE("2", "person2");
+		PUSH_FILTERED(list, ((void**) &person2));
+	}
+	{
+		person_t *person6 = PERSON_CREATE("6", "person6");
+		PUSH_FILTERED(list, ((void**) &person6));
+	}
+	{
+		person_t *person1 = PERSON_CREATE("1", "person1");
+		PUSH_FILTERED(list, ((void**) &person1));
+	}
+	{
+		person_t *person6 = PERSON_CREATE("6", "person6");
+		PUSH_FILTERED(list, ((void**) &person6));
+	}
+	{
+		person_t *person6 = PERSON_CREATE("6", "person6");
+		PUSH_FILTERED(list, ((void**) &person6));
+	}
+	{
+		person_t *person2 = PERSON_CREATE("2", "person2");
+		PUSH_FILTERED(list, ((void**) &person2));
+	}
+	{
+		person_t *person2 = PERSON_CREATE("2", "person2");
+		PUSH_FILTERED(list, ((void**) &person2));
+	}
+	{
+		person_t *person5 = PERSON_CREATE("5", "person5");
+		PUSH_FILTERED(list, ((void**) &person5));
+	}
+	{
+		person_t *person4 = PERSON_CREATE("4", "person4");
+		PUSH_FILTERED(list, ((void**) &person4));
+	}
+	{
+		person_t *person1 = PERSON_CREATE("1", "person1");
+		PUSH_FILTERED(list, ((void**) &person1));
+	}
+	{
+		person_t *person1 = PERSON_CREATE("1", "person1");
+		PUSH_FILTERED(list, ((void**) &person1));
+	}
+	{
+		person_t *person3 = PERSON_CREATE("3", "person3");
+		PUSH_FILTERED(list, ((void**) &person3));
+	}
+	{
+		person_t *person6 = PERSON_CREATE("6", "person6");
+		PUSH_FILTERED(list, ((void**) &person6));
+	}
+	{
+		person_t *person1 = PERSON_CREATE("1", "person1");
+		PUSH_FILTERED(list, ((void**) &person1));
+	}
+	{
+		person_t *person3 = PERSON_CREATE("3", "person3");
+		PUSH_FILTERED(list, ((void**) &person3));
+	}
+	{
+		person_t *person6 = PERSON_CREATE("6", "person6");
+		PUSH_FILTERED(list, ((void**) &person6));
+	}
+
+	/* dump all items */
+	tsk_list_foreach(item, list)
+	{
+		person_t* item_data = item->data;
+		printf("test_filtered_list/// --> [id=%s and name=%s]\n", item_data->id, item_data->name);
+	}	
+
+	/* delete all items in the list */
+	TSK_LIST_SAFE_FREE(list);
+
+#undef PUSH_FILTERED
+}
+
 void test_complex_list()
 {
 	tsk_list_t *list = TSK_LIST_CREATE();
@@ -125,15 +211,15 @@ void test_complex_list()
 	/* add items to the list */
 	{
 		person_t *person1 = PERSON_CREATE("1", "person1");
-		tsk_list_pushback_data(list, ((void**) &person1));
+		tsk_list_push_back_data(list, ((void**) &person1));
 	}
 	{
 		person_t *person2 = PERSON_CREATE("2", "person2");
-		tsk_list_pushfront_data(list, ((void**) &person2));
+		tsk_list_push_front_data(list, ((void**) &person2));
 	}
 	{
 		person_t *person3 = PERSON_CREATE("3", "person3");
-		tsk_list_pushfront_data(list, ((void**) &person3));
+		tsk_list_push_front_data(list, ((void**) &person3));
 	}
 
 	/* dump all items */

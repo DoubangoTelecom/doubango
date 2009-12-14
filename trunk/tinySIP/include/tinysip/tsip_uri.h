@@ -35,8 +35,6 @@
 #include "tsk_object.h"
 #include "tsk_params.h"
 
-#include <stdint.h>
-
 /**@def TSIP_URI_CREATE
 * Creates new sip/sips/tel uri.  You must call @ref TSIP_URI_SAFE_FREE to free the uri.
 * @sa TSIP_HEADER_VIA_SAFE_FREE.

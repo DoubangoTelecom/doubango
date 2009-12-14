@@ -20,21 +20,35 @@
 *
 */
 
-/**@file tsk_ppfcs16.h
- * @brief PPP in HDLC-like Framing (RFC 1662).
+/**@file tsk_timers.h
+ * @brief Timer Management.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef _TINYSAK_PPFCS16_H_
-#define _TINYSAK_PPFCS16_H_
+#ifndef _TINYSAK_TIMER_H_
+#define _TINYSAK_TIMER_H_
 
 #include "tinySAK_config.h"
 
-#define TSK_PPPINITFCS16    0xffff  /* Initial FCS value */
-#define TSK_PPPGOODFCS16    0xf0b8  /* Good final FCS value */
+typedef enum tsk_timer_retcode_e
+{
+	tsk_error,
+	tsk_canceled,
+	tsk_timedout,
+}
+tsk_timer_retcode_t;
 
-TINYSAK_API uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t* cp, register int32_t len);
+typedef uint64_t tsk_timer_id_t;
+typedef void (*tsk_timer_callback)(const void* arg, tsk_timer_retcode_t code);
 
-#endif /* _TINYSAK_PPFCS16_H_ */
+TINYSAK_API int tsk_timer_manager_start();
+TINYSAK_API int tsk_timer_manager_stop();
+
+TINYSAK_API tsk_timer_id_t tsk_timer_manager_schedule(uint64_t timeout, tsk_timer_callback callback, const void *arg);
+TINYSAK_API void tsk_timer_manager_cancel(tsk_timer_id_t id);
+
+TINYSAK_API const void *tsk_timer_def_t;
+
+#endif /* _TINYSAK_TIMER_H_ */

@@ -2231,7 +2231,7 @@ _match:
 		tsip_header_Allow_t *header = tsip_header_Allow_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2241,7 +2241,7 @@ _match:
 		tsip_header_Allow_Events_t *header = tsip_header_Allow_Events_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2395,7 +2395,7 @@ _match:
 		tsip_header_Max_Forwards_t *header = tsip_header_Max_Forwards_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2429,7 +2429,7 @@ _match:
 		tsip_header_P_Access_Network_Info_t *header = tsip_header_P_Access_Network_Info_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2517,7 +2517,7 @@ _match:
 		tsip_header_P_Preferred_Identity_t *header = tsip_header_P_Preferred_Identity_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2557,7 +2557,7 @@ _match:
 		tsip_header_Privacy_t *header = tsip_header_Privacy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2645,7 +2645,7 @@ _match:
 		tsip_header_Require_t *header = tsip_header_Require_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2739,7 +2739,7 @@ _match:
 		tsip_header_Supported_t *header = tsip_header_Supported_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2776,7 +2776,7 @@ _match:
 		tsip_header_User_Agent_t *header = tsip_header_User_Agent_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(header)
 		{
-			tsk_list_pushback_data(message->headers, ((void**) &header));
+			tsk_list_push_back_data(message->headers, ((void**) &header));
 		}
 	}
 	break;
@@ -2792,7 +2792,7 @@ _match:
 			tsip_header_Via_t *header = tsip_header_Via_parse(state->tag_start, (state->tag_end-state->tag_start));
 			if(header)
 			{
-				tsk_list_pushback_data(message->headers, ((void**) &header));
+				tsk_list_push_back_data(message->headers, ((void**) &header));
 			}
 		}
 	}

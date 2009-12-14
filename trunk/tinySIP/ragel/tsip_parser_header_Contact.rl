@@ -98,7 +98,7 @@
 	{
 		if(curr_contact)
 		{
-			tsk_list_pushback_data(hdr_contact->contacts, ((void**) &curr_contact));
+			tsk_list_push_back_data(hdr_contact->contacts, ((void**) &curr_contact));
 			TSK_DEBUG_INFO("CONTACT:ADD_CONTACT");
 		}
 	}
@@ -146,7 +146,7 @@ tsip_header_Contact_t *tsip_header_Contact_parse(const char *data, size_t size)
 	{
 		if(curr_contact)
 		{
-			tsk_list_pushback_data(hdr_contact->contacts, ((void**) &curr_contact));
+			tsk_list_push_back_data(hdr_contact->contacts, ((void**) &curr_contact));
 		}
 	}
 	

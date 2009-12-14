@@ -38,7 +38,12 @@ struct timezone;
 #endif
 
 int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
+uint64_t tsk_time_epoch();
 
+/**
+* Gets the number of milliseconds since the EPOCH.
+*/
+#define tsk_time_epoch tsk_time_now
 
 #ifdef _WIN32_WCE
 

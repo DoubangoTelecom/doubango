@@ -20,8 +20,8 @@
 *
 */
 
-#ifndef TEST_SIPMESSAGE_H
-#define TEST_SIPMESSAGE_H
+#ifndef TEST_TSIP_STDAFX_H
+#define TEST_TSIP_STDAFX_H
 
 #ifdef WIN32
 #include "targetver.h"
@@ -38,4 +38,4 @@
 #define TINYSAK_IMPORTS
 #define TINYSIP_IMPORTS
 
-#endif /* TEST_SIPMESSAGE_H */
+#endif /* TEST_TSIP_STDAFX_H */

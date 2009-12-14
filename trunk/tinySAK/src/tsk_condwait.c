@@ -33,11 +33,10 @@
 #include "tsk_debug.h"
 #include "tsk_macros.h"
 #include "tsk_time.h"
-#include "tsk_mutex.h"
 #include <pthread.h>
 
 #include <time.h>
-#if defined(WIN32) || defined(_WIN32) || defined(_WIN32_WCE)
+#if TSK_UNDER_WINDOWS
 #include <windows.h>
 #else 
 #include <sys/time.h>
@@ -116,7 +115,7 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 * @retval Zero if succeed or @ref ETIMEDOUT if timedout and non-zero otherwise.
 * @sa @ref tsk_condwait_wait.
 */
-int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, unsigned int ms)
+int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 {
 	int ret = EINVAL;
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
@@ -127,8 +126,8 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, unsigned int ms)
 		struct timeval    tv = {0, 0};
 		/*int rc =*/  tsk_gettimeofday(&tv, 0);
 
-		ts.tv_sec  = ( tv.tv_sec + (ms/1000) );
-		ts.tv_nsec += ( (tv.tv_usec * 1000) + (ms % 1000 * 1000000) );
+		ts.tv_sec  = ( tv.tv_sec + ((long)ms/1000) );
+		ts.tv_nsec += ( (tv.tv_usec * 1000) + ((long)ms % 1000 * 1000000) );
 		if(ts.tv_nsec > 999999999) ts.tv_sec+=1, ts.tv_nsec = ts.tv_nsec % 1000000000;
 		
 		tsk_mutex_lock(condwait->mutex);
@@ -171,6 +170,21 @@ int tsk_condwait_signal(tsk_condwait_handle_t* handle)
 		tsk_mutex_unlock(condwait->mutex);
 	}
 	return ret;
+}
+
+/**@ingroup tsk_condwait_group
+* Gets the internal mutex used by the CondWait object.
+* @param handle The CondWait object holding the mutex.
+* @retval The internal mutex.
+*/
+tsk_mutex_handle_t* tsk_condwait_get_mutex(tsk_condwait_handle_t* handle)
+{
+	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
+	if(condwait)
+	{
+		return condwait->mutex;
+	}
+	return 0;
 }
 
 /**@ingroup tsk_condwait_group

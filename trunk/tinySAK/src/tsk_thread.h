@@ -32,7 +32,8 @@
 
 #include "tinySAK_config.h"
 
-int TINYSAK_API tsk_thread_create(void** tid, void *(*start) (void *), void *arg);
-int TINYSAK_API tsk_thread_join(void** tid);
+TINYSAK_API void tsk_thread_sleep(uint64_t ms);
+TINYSAK_API int tsk_thread_create(void** tid, void *(*start) (void *), void *arg);
+TINYSAK_API int tsk_thread_join(void** tid);
 
 #endif

@@ -31,7 +31,6 @@
 #define _TINYSAK_SHA1_H_
 
 #include "tinySAK_config.h"
-#include <stdint.h>
 
 
 #ifndef _TSK_SHA_enum_

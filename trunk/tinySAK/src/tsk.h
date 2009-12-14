@@ -39,6 +39,7 @@
 #include "tsk_url.h"
 #include "tsk_params.h"
 
+#include "tsk_timer.h"
 #include "tsk_condwait.h"
 #include "tsk_mutex.h"
 #include "tsk_semaphore.h"

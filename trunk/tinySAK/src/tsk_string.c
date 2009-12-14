@@ -37,7 +37,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(_MSC_VER) || defined(WIN32)
+#if defined(_MSC_VER) || TSK_UNDER_WINDOWS
 #	define snprintf		_snprintf
 #	define vsnprintf	_vsnprintf
 #	define strdup		_strdup
@@ -266,6 +266,22 @@ void tsk_strunquote(char **str)
 		}
 	}
 }
+
+/**@ingroup tsk_string_group
+* Conversts an integer to string.
+* @param i The integer number to convert to a string.
+* @param result Pointer to the string where to copy the result.
+*/
+void tsk_itoa(int64_t i, tsk_istr_t *result)
+{
+	memset(result, 0, sizeof(*result));
+    sprintf(*result,"%lld",i);
+}
+
+
+
+
+
 
 
 

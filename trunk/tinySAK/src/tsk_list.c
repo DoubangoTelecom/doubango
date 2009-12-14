@@ -319,6 +319,45 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 }
 
 /**@ingroup tsk_list_group
+* Add an item to the list in ascending or descending order.
+* @param list
+* @param item
+* @param predicate
+*/
+void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int ascending)
+{
+	if(list)
+	{
+		tsk_list_item_t *prev = 0;
+		tsk_list_item_t *curr = prev = list->head;
+		
+		while(curr)
+		{
+			int diff = tsk_object_cmp((*item), curr);
+			if((diff <= 0 && ascending) || (diff >=0 && !ascending))
+			{
+				if(curr == list->head)
+				{
+					tsk_list_push_front_item(list, item);
+				}
+				else
+				{
+					(*item)->next = curr;
+					prev->next = (*item);
+				}
+
+				return;
+			}
+			
+			prev = curr;
+			curr = curr->next;
+		}
+
+		tsk_list_push_back_item(list, item);
+	}
+}
+
+/**@ingroup tsk_list_group
 * Add all items in @a source into @a destination
 * @param dest destination list
 * @param src source list
@@ -349,11 +388,29 @@ void tsk_list_push_data(tsk_list_t* list, void** data, int back)
 {
 	if(data)
 	{
-		tsk_list_item_t *item = 0;
-		item = TSK_LIST_ITEM_CREATE();
+		tsk_list_item_t *item = TSK_LIST_ITEM_CREATE();
 		item->data = *data;
 		
 		tsk_list_push_item(list, &item, back);
+		(*data) = 0;
+	}
+	else
+	{
+		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
+	}
+}
+
+/**@ingroup tsk_list_group
+* Add an opaque data to the list in ascending or descending order.
+*/
+void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending)
+{
+	if(data)
+	{
+		tsk_list_item_t *item = TSK_LIST_ITEM_CREATE();
+		item->data = *data;
+		
+		tsk_list_push_filtered_item(list, &item, ascending);
 		(*data) = 0;
 	}
 	else
@@ -445,13 +502,21 @@ static void* tsk_list_item_destroy(void *self)
 	return item;
 }
 
+static int tsk_list_item_cmp(const void *self, const void *object)
+{	
+	const tsk_list_item_t* item1 = self;
+	const tsk_list_item_t* item2 = object;
+
+	return tsk_object_cmp(item1->data, item2->data);
+}
+
 //TSK_DECLARE_DEF(tsk, list_item);
 static const tsk_object_def_t tsk_list_item_def_s =
 {
 	sizeof(tsk_list_item_t),	
 	tsk_list_item_create,
 	tsk_list_item_destroy,
-	0,
+	tsk_list_item_cmp,
 };
 const void *tsk_list_item_def_t = &tsk_list_item_def_s;
 
