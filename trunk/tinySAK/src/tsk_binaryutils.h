@@ -32,7 +32,6 @@
 
 #include "tinySAK_config.h"
 
-#include <stdint.h>
 #include <stdio.h>
 
 #define TSK_BINARY_REVERSE_2BYTE(value) ((Tsk_BitReverseTable256[value & 0xff] << 8) | (Tsk_BitReverseTable256[(value >> 8)]))

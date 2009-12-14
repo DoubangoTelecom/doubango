@@ -32,8 +32,26 @@
 
 #include <pthread.h>
 
+#if TSK_UNDER_WINDOWS
+#	include <windows.h>
+#endif
+
 /**@defgroup tsk_thread_group Useful functions for threading.
 */
+
+
+void tsk_thread_sleep(uint64_t ms)
+{
+#if TSK_UNDER_WINDOWS
+	Sleep((DWORD)ms);
+#else
+	struct timespec interval; 
+
+	interval.tv_sec = (long)(ms/1000); 
+	interval.tv_nsec = (long)(ms%1000) * 1000000; 
+	nanosleep(&interval, 0);
+#endif	
+}
 
 /**@ingroup tsk_thread_group
 * Creates a new thread.

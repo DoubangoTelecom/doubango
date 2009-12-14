@@ -43,7 +43,8 @@
 #define RUN_TEST_SEMAPHORE			0
 #define RUN_TEST_SAFEOBJECT			0
 #define RUN_TEST_OBJECT				0
-#define RUN_TEST_PARAMS				1
+#define RUN_TEST_PARAMS				0
+#define RUN_TEST_TIMER				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -85,6 +86,11 @@
 #include "test_params.h"
 #endif
 
+#if RUN_TEST_TIMER || RUN_TEST_ALL
+#include "test_timer.h"
+#endif
+
+
 
 
 #ifdef _WIN32_WCE
@@ -102,9 +108,11 @@ int main()
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 		/* linked lists */
-		test_basic_list();
+		//test_basic_list();
 		printf("\n\n");
-		test_complex_list();
+		//test_complex_list();
+		printf("\n\n");
+		test_filtered_list();
 		printf("\n\n");
 #endif
 
@@ -159,6 +167,12 @@ int main()
 #if RUN_TEST_PARAMS || RUN_TEST_ALL
 		/* parameters */
 		test_params();
+		printf("\n\n");
+#endif
+
+#if RUN_TEST_TIMER || RUN_TEST_ALL
+		/* timer */
+		test_timer();
 		printf("\n\n");
 #endif
 		

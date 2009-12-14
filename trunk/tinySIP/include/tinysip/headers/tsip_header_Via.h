@@ -35,8 +35,6 @@
 
 #include "tsk_object.h"
 
-#include <stdint.h>
-
 /**@def TSIP_HEADER_VIA_CREATE
 * Creates new sip via header.  You must call @ref TSIP_HEADER_VIA_SAFE_FREE to free the header.
 * @sa TSIP_HEADER_VIA_SAFE_FREE.

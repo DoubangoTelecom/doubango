@@ -19,22 +19,18 @@
 * along with DOUBANGO.
 *
 */
+#ifndef _TEST_TIMER_H_
+#define _TEST_TIMER_H_
 
-/**@file tsk_ppfcs16.h
- * @brief PPP in HDLC-like Framing (RFC 1662).
- *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
- *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
- */
-#ifndef _TINYSAK_PPFCS16_H_
-#define _TINYSAK_PPFCS16_H_
+void test_timer()
+{
+	printf("test_timer//\n");
 
-#include "tinySAK_config.h"
+	tsk_timer_manager_start();
+	
+	tsk_timer_manager_schedule(100000, 0, 0);
 
-#define TSK_PPPINITFCS16    0xffff  /* Initial FCS value */
-#define TSK_PPPGOODFCS16    0xf0b8  /* Good final FCS value */
+	//tsk_timer_manager_stop();
+}
 
-TINYSAK_API uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t* cp, register int32_t len);
-
-#endif /* _TINYSAK_PPFCS16_H_ */
+#endif /* _TEST_TIMER_H_ */

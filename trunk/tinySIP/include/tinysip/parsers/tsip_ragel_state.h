@@ -32,8 +32,6 @@
 
 #include "tinysip_config.h"
 
-#include <stdint.h>
-
 
 #define PARSER_SET_STRING(string) \
 	if(!string) \
@@ -59,7 +57,7 @@
 	if(param) \
 	{ \
 		if(!dest) dest = TSK_LIST_CREATE(); \
-		tsk_list_pushback_data(dest, ((void**) &param)); \
+		tsk_list_push_back_data(dest, ((void**) &param)); \
 	}
 
 #define PARSER_ADD_STRING(dest) \
@@ -70,7 +68,7 @@
 	{  \
 		dest = TSK_LIST_CREATE(); \
 	} \
-	tsk_list_pushback_data(dest, ((void**) &string));
+	tsk_list_push_back_data(dest, ((void**) &string));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	tsip_parser_s

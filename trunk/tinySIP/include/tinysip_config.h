@@ -43,6 +43,7 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
+#include <stdint.h>
 
 /* Tiny SAK */
 #define TINYSAK_IMPORTS

@@ -108,16 +108,22 @@ TINYSAK_API void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_pr
 TINYSAK_API void tsk_list_clear_items(tsk_list_t* list);
 
 TINYSAK_API void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back);
-#define tsk_list_pushback_item(list, item) tsk_list_push_item(list, item, 1)
-#define tsk_list_pushfront_item(list, item) tsk_list_push_item(list, item, 0)
+#define tsk_list_push_back_item(list, item) tsk_list_push_item(list, item, 1)
+#define tsk_list_push_front_item(list, item) tsk_list_push_item(list, item, 0)
+TINYSAK_API void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int ascending);
+#define tsk_list_push_ascending_item(list, item) tsk_list_pushfiltered_item(list, item, 1)
+#define tsk_list_push_descending_item(list, item) tsk_list_pushfiltered_item(list, item, 0)
 
 TINYSAK_API void tsk_list_push_list(tsk_list_t* destination, tsk_list_t** source, int back);
 #define tsk_list_pushback_list(destination, source) tsk_list_push_list(destination, source, 1)
 #define tsk_list_pushfront_list(destination, source) tsk_list_push_list(destination, source, 0)
 
 TINYSAK_API void tsk_list_push_data(tsk_list_t* list, void** data, int back);
-#define tsk_list_pushback_data(list, data) tsk_list_push_data(list, data, 1)
-#define tsk_list_pushfront_data(list, data) tsk_list_push_data(list, data, 0)
+#define tsk_list_push_back_data(list, data) tsk_list_push_data(list, data, 1)
+#define tsk_list_push_front_data(list, data) tsk_list_push_data(list, data, 0)
+TINYSAK_API void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending);
+#define tsk_list_push_ascending_data(list, data) tsk_list_push_filtered_data(list, data, 1)
+#define tsk_list_push_descending_data(list, data) tsk_list_push_filtered_data(list, data, 0)
 
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const void * tskobj);
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);

@@ -156,6 +156,6 @@ void tsip_header_add_param(tsip_header_t *header, const char *name, const char *
 		param->name = tsk_strdup(name);
 		param->value = tsk_strdup(value);
 
-		tsk_list_pushback_data(header->params, ((void**) &param));
+		tsk_list_push_back_data(header->params, ((void**) &param));
 	}
 }

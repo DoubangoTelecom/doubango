@@ -423,6 +423,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_timer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_url.h"
 				>
 			</File>
@@ -502,6 +506,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_time.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_timer.c"
 				>
 			</File>
 			<File

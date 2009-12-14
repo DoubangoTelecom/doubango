@@ -20818,7 +20818,7 @@ _match:
 	{
 		if(curr_contact)
 		{
-			tsk_list_pushback_data(hdr_contact->contacts, ((void**) &curr_contact));
+			tsk_list_push_back_data(hdr_contact->contacts, ((void**) &curr_contact));
 			TSK_DEBUG_INFO("CONTACT:ADD_CONTACT");
 		}
 	}
@@ -20856,7 +20856,7 @@ _again:
 	{
 		if(curr_contact)
 		{
-			tsk_list_pushback_data(hdr_contact->contacts, ((void**) &curr_contact));
+			tsk_list_push_back_data(hdr_contact->contacts, ((void**) &curr_contact));
 		}
 	}
 	
