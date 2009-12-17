@@ -37,20 +37,19 @@
 
 typedef void tnet_transport_handle_t;
 
-TINYNET_API tnet_transport_handle_t* tnet_transport_start(const char* host, uint16_t port, tnet_socket_type_t type, const char* description);
-TINYNET_API int tnet_transport_get_isconnected(const tnet_transport_handle_t *handle);
-TINYNET_API const char* tnet_transport_get_description(const tnet_transport_handle_t *handle);
-TINYNET_API uint16_t tnet_transport_get_local_port(const tnet_transport_handle_t *handle, int client);
-#define tnet_transport_get_tport(handle) tnet_transport_get_local_port(handle, 1)
-#define tnet_transport_get_server_port(handle) tnet_transport_get_local_port(handle, 0)
-TINYNET_API const char* tnet_transport_get_local_ip(const tnet_transport_handle_t *handle, int client);
-#define tnet_transport_get_tip(handle) tnet_transport_get_local_ip(handle, 1)
-#define tnet_transport_get_server_ip(handle) tnet_transport_get_local_ip(handle, 0)
+typedef int (*tnet_transport_data_read)(tnet_fd_t fd, const void* data, size_t size);
 
-TINYNET_API int tnet_transport_add_socket(const tnet_transport_handle_t *handle, int32_t fd);
-TINYNET_API int tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, uint16_t port);
-TINYNET_API int tnet_transport_send(const tnet_transport_handle_t *handle, const void* buf, size_t size);
-TINYNET_API int tnet_transport_sendto(const tnet_transport_handle_t *handle, const struct sockaddr *to, const void* buf, size_t size);
+TINYNET_API tnet_transport_handle_t* tnet_transport_start(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
+TINYNET_API int tnet_transport_isrunning(const tnet_transport_handle_t *handle);
+TINYNET_API const char* tnet_transport_get_description(const tnet_transport_handle_t *handle);
+TINYNET_API int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
+
+TINYNET_API int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd);
+TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port);
+TINYNET_API size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size);
+TINYNET_API size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, size_t size);
+
+TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_transport_data_read callback);
 
 TINYNET_API tnet_socket_type_t tnet_transport_get_socket_type(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_shutdown(tnet_transport_handle_t** handle);

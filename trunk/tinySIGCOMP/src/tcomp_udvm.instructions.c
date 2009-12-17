@@ -2091,7 +2091,7 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 			{
 				udvm->lpResult->remote_parameters->returnedStates = TSK_LIST_CREATE();
 			}
-			tsk_list_add_data(udvm->lpResult->remote_parameters->returnedStates, (void**)&partial_id);
+			tsk_list_push_back_data(udvm->lpResult->remote_parameters->returnedStates, (void**)&partial_id);
 			index += length;
 		}
 	}

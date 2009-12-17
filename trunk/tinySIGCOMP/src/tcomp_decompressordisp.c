@@ -245,7 +245,7 @@ int tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, co
 		{
 			lpBuffer = newbuf;
 			lpBuffer->buffer = TCOMP_BUFFER_CREATE();
-			tsk_list_add_data(dispatcher->streamBuffers, ((void**) &newbuf));
+			tsk_list_push_back_data(dispatcher->streamBuffers, ((void**) &newbuf));
 		}
 		else
 		{

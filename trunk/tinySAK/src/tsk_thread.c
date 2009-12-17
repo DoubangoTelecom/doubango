@@ -30,10 +30,10 @@
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 
-#include <pthread.h>
-
 #if TSK_UNDER_WINDOWS
 #	include <windows.h>
+#else
+#	include <pthread.h>
 #endif
 
 /**@defgroup tsk_thread_group Useful functions for threading.
@@ -62,8 +62,14 @@ void tsk_thread_sleep(uint64_t ms)
 */
 int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
 {
+#if TSK_UNDER_WINDOWS
+	DWORD ThreadId;
+	*((HANDLE*)tid) = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)start, arg, 0, &ThreadId);
+	return *((HANDLE*)tid) ? 0 : -1;
+#else
 	*tid = tsk_calloc(1, sizeof(pthread_t));
 	return pthread_create((pthread_t*)*tid, 0, start, arg);
+#endif
 }
 
 /**@ingroup tsk_thread_group
@@ -73,7 +79,11 @@ int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
 */
 int tsk_thread_join(void** tid)
 {
+#if TSK_UNDER_WINDOWS
+	return (WaitForSingleObject(*((HANDLE*)tid), INFINITE) == WAIT_FAILED) ? -1 : 0;
+#else
 	int ret = pthread_join(*((pthread_t*)*tid), 0);
 	tsk_free(tid);
 	return ret;
+#endif
 }

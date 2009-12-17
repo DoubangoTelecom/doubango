@@ -27,6 +27,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
+
+#if HAVE_LIBXML2_H
+
 #include "tsk_xml.h"
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -289,3 +292,4 @@ xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...)
 	return node;
 }
 
+#endif /* HAVE_LIBXML2_H */

@@ -39,8 +39,7 @@
 
 typedef struct tnet_transport_s
 {
-	tnet_socket_t *server;
-	tnet_socket_t *client;
+	tnet_socket_t *master;
 
 	void *context;
 
@@ -48,18 +47,17 @@ typedef struct tnet_transport_s
 
 	char *description;
 	unsigned running:1;
-	unsigned connected:1;
 }
 tnet_transport_t;
 
 static void *tnet_transport_thread(void *param);
 
 
-tnet_transport_handle_t* tnet_transport_start(const char* host, uint16_t port, tnet_socket_type_t type, const char* description)
+tnet_transport_handle_t* tnet_transport_start(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
 {
 	int err;
 	tnet_transport_t *transport = tsk_object_new(tnet_transport_def_t, host, port, type, description);
-	if(!TNET_SOCKET_IS_VALID(transport->server))
+	if(!TNET_SOCKET_IS_VALID(transport->master))
 	{
 		tsk_object_unref(transport);
 		TSK_DEBUG_ERROR("Failed to create new transport.");
@@ -73,23 +71,24 @@ tnet_transport_handle_t* tnet_transport_start(const char* host, uint16_t port, t
 		TSK_DEBUG_FATAL("Failed to start transport thread with error: %d\n", err);
 		return 0;
 	}
+	
+	while(!transport->running) tsk_thread_sleep(500);
 
-	transport->running = 1;
 	return transport;
 }
 
-int tnet_transport_get_isconnected(const tnet_transport_handle_t *handle)
+int tnet_transport_isrunning(const tnet_transport_handle_t *handle)
 {
 	if(handle)
 	{
 		const tnet_transport_t *transport = handle;
-		return transport->connected;
+		return transport->running;
 	}
 	else
 	{
 		TSK_DEBUG_ERROR("NULL transport object.");
+		return 0;
 	}
-	return 0;
 }
 
 const char* tnet_transport_get_description(const tnet_transport_handle_t *handle)
@@ -102,50 +101,22 @@ const char* tnet_transport_get_description(const tnet_transport_handle_t *handle
 	else
 	{
 		TSK_DEBUG_ERROR("NULL transport object.");
+		return 0;
 	}
-	return 0;
 }
 
-uint16_t tnet_transport_get_local_port(const tnet_transport_handle_t *handle, int client)
+int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
 	if(handle)
 	{
 		const tnet_transport_t *transport = handle;
-		if(TNET_SOCKET_TYPE_IS_DGRAM(transport->server->type) || !client)
-		{
-			return transport->server->port;
-		}
-		else
-		{
-			return (client && transport->client) ? transport->client->port : 0;
-		}
+		return tnet_get_ip_n_port(fd, ip, port);
 	}
 	else
 	{
 		TSK_DEBUG_ERROR("NULL transport object.");
 	}
-	return 0;
-}
-
-const char* tnet_transport_get_local_ip(const tnet_transport_handle_t *handle, int client)
-{
-	if(handle)
-	{
-		const tnet_transport_t *transport = handle;
-		if(TNET_SOCKET_TYPE_IS_DGRAM(transport->server->type) || !client)
-		{
-			return transport->server->hostname;
-		}
-		else
-		{
-			return (client && transport->client) ? transport->client->hostname : 0;
-		}
-	}
-	else
-	{
-		TSK_DEBUG_ERROR("NULL transport object.");
-	}
-	return 0;
+	return -1;
 }
 
 tnet_socket_type_t tnet_transport_get_socket_type(const tnet_transport_handle_t *handle)
@@ -153,7 +124,7 @@ tnet_socket_type_t tnet_transport_get_socket_type(const tnet_transport_handle_t 
 	if(handle)
 	{
 		const tnet_transport_t *transport = handle;
-		transport->server->type;
+		transport->master->type;
 	}
 	else
 	{
@@ -184,7 +155,7 @@ static void* tnet_transport_create(void * self, va_list * app)
 	if(transport)
 	{
 		const char *host = va_arg(*app, const char*);
-		uint16_t port = va_arg(*app, uint16_t);
+		uint16_t port = va_arg(*app, tnet_port_t);
 		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);
 		const char *description = va_arg(*app, const char*);
 
@@ -193,8 +164,7 @@ static void* tnet_transport_create(void * self, va_list * app)
 			transport->description = tsk_strdup(description);
 		}
 		
-		transport->server = TNET_SOCKET_CREATE(host, port, type);
-		transport->client = 0;
+		transport->master = TNET_SOCKET_CREATE(host, port, type);
 	}
 	return self;
 }
@@ -204,7 +174,7 @@ static void* tnet_transport_destroy(void * self)
 	tnet_transport_t *transport = self;
 	if(transport)
 	{
-		TNET_SOCKET_SAFE_FREE(transport->server);
+		TNET_SOCKET_SAFE_FREE(transport->master);
 		TSK_FREE(transport->description);
 	}
 
@@ -269,7 +239,10 @@ const void *tnet_transport_def_t = &tnet_transport_def_s;
 typedef struct tnet_socket_desc_s
 {
 	WSABUF wsaBuffer;
-	int32_t fd;
+	tnet_fd_t fd;
+	unsigned connected:1;
+
+	tnet_transport_data_read callback;
 
 	DWORD readCount;
 	DWORD writeCount;
@@ -279,15 +252,16 @@ tnet_socket_desc_t;
 /*== Transport context structure definition */
 typedef struct tnet_transport_ctx_s
 {
-	DWORD eventsCount;
+	size_t eventsCount;
 	WSAEVENT events[WSA_MAXIMUM_WAIT_EVENTS];
 	tnet_socket_desc_t* sockets[WSA_MAXIMUM_WAIT_EVENTS];
 }
 tnet_transport_ctx_t;
 
 /*== Add socket */
-static void tnet_socket_desc_add(int32_t fd, tnet_transport_ctx_t *context)
+static void tnet_socket_desc_add(tnet_fd_t fd, tnet_transport_ctx_t *context)
 {
+	// FIXME: LOCK
 	tnet_socket_desc_t *socket_desc = tsk_calloc(1, sizeof(tnet_socket_desc_t));
 	socket_desc->fd = fd;
 	
@@ -300,7 +274,24 @@ static void tnet_socket_desc_add(int32_t fd, tnet_transport_ctx_t *context)
 /*== Remove socket */
 static void tnet_socket_desc_remove(int index, tnet_transport_ctx_t *context)
 {
+	// FIXME: LOCK
 
+}
+
+/*== Set callback */
+static int tnet_socket_desc_setcb(tnet_transport_ctx_t *context, tnet_fd_t fd, tnet_transport_data_read cb)
+{
+	// FIXME: LOCK
+	size_t i;
+	for(i=0; i<context->eventsCount; i++)
+	{
+		if(context->sockets[i]->fd == fd)
+		{
+			context->sockets[i]->callback = cb;
+			return 0;
+		}
+	}
+	return -1;
 }
 
 /*=== */
@@ -312,7 +303,7 @@ int CALLBACK AcceptCondFunc(LPWSABUF lpCallerId, LPWSABUF lpCallerData, LPQOS lp
 
 
 /* == Register new socket */
-int tnet_transport_add_socket(const tnet_transport_handle_t *handle, int32_t fd)
+int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	tnet_transport_ctx_t *context;
@@ -339,94 +330,93 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, int32_t fd)
 	return 0;
 }
 
-/*== Connect stream socket to the specified destination. */
-int tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, uint16_t port)
+/*== Connect stream/datagram socket to the specified destination. */
+tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	struct sockaddr to;
-	int ret = -1;
+	struct sockaddr_storage to;
+	int status = -1;
+	tnet_fd_t fd = INVALID_SOCKET;
 
 	if(!transport)
 	{
 		TSK_DEBUG_ERROR("Invalid server handle.");
-		return ret;
+		goto bail;
 	}
 
-	if(!TNET_SOCKET_TYPE_IS_STREAM(transport->server->type))
+	/* Init destination sockaddr fields */
+	if(status = tnet_sockaddr_init(host, port, transport->master->type, &to))
 	{
-		TSK_DEBUG_ERROR("In order to use WSAConnect you must use a stream transport.");
-		return ret;
+		TSK_DEBUG_ERROR("Invalid HOST/PORT.");
+		goto bail;
 	}
 
-	if(transport->connected || transport->client)
+	/*
+	* STREAM ==> create new socket add connect it to the remote host.
+	* DGRAM ==> connect the master to the remote host.
+	*/
+	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
+	{		
+		/* Create socket descriptor. */
+		if(status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd))
+		{
+			TSK_DEBUG_ERROR("Failed to create new sockfd.");
+			
+			goto bail;
+		}
+
+		/* Add the socket */
+		if(status = tnet_transport_add_socket(handle, fd))
+		{
+			TNET_PRINT_LAST_ERROR();
+
+			tnet_sockfd_close(&fd);
+			goto bail;
+		}
+	}
+	else
 	{
-		TSK_DEBUG_ERROR("Transport already connected.");
-		return ret;
+		fd = transport->master->fd;
 	}
 
-	/* Init sockaddr fields */
-	if(tnet_sockaddr_init(host, port, transport->server->type, &to))
+	if((status = WSAConnect(fd, (LPSOCKADDR)&to, sizeof(to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
 	{
-		TSK_DEBUG_ERROR("Invalid host or port.");
-		return ret;
-	}
-
-	/* Create client socket. */
-	transport->client = TNET_SOCKET_CREATE(0, 0, transport->server->type);
-	if(!TNET_SOCKET_IS_VALID(transport->client) || tnet_transport_add_socket(handle, transport->client->fd))
-	{
-		TNET_PRINT_LAST_ERROR();
-		TNET_SOCKET_SAFE_FREE(transport->client);
-		return ret;
-	}
-
-	if((ret = WSAConnect(transport->client->fd, (LPSOCKADDR)&to, sizeof(to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
-	{
-		if((ret = WSAGetLastError()) == WSAEWOULDBLOCK)
+		if((status = WSAGetLastError()) == WSAEWOULDBLOCK)
 		{
 			TSK_DEBUG_INFO("WSAEWOULDBLOCK error for WSAConnect operation");
-			ret = 0;
+			status = 0;
 		}
 		else
 		{
 			TNET_PRINT_LAST_ERROR();
-			return ret;
+
+			tnet_sockfd_close(&fd);
+			goto bail;
 		}
-	} else ret = 0;
+	}
 	
-	return ret;
+bail:
+	return fd;
 }
 
 /*== send stream data to the remote peer*/
-int tnet_transport_send(const tnet_transport_handle_t *handle, const void* buf, size_t size)
+size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	int ret = -1;
 	WSABUF wsaBuffer;
-	DWORD numberOfBytesSent;
+	DWORD numberOfBytesSent = 0;
 
 	if(!transport)
 	{
 		TSK_DEBUG_ERROR("Invalid transport handle.");
-		return ret;
-	}
-
-	if(!transport->connected || !transport->client)
-	{
-		TSK_DEBUG_ERROR("You MUST connect first.");
-		return ret;
-	}
-
-	if(!TNET_SOCKET_TYPE_IS_STREAM(transport->client->type))
-	{
-		TSK_DEBUG_ERROR("In order to use WSASend you must use a stream transport.");
-		return ret;
+		goto bail;
 	}
 
 	wsaBuffer.buf = (CHAR*)buf;
 	wsaBuffer.len = size;
 
-	if((ret = WSASend(transport->client->fd, &wsaBuffer, 1, &numberOfBytesSent, 0, NULL, NULL)) == SOCKET_ERROR)
+	if((ret = WSASend(from, &wsaBuffer, 1, &numberOfBytesSent, 0, NULL, NULL)) == SOCKET_ERROR)
 	{
 		if((ret = WSAGetLastError()) == WSAEWOULDBLOCK)
 		{
@@ -436,19 +426,23 @@ int tnet_transport_send(const tnet_transport_handle_t *handle, const void* buf, 
 		else
 		{
 			TNET_PRINT_LAST_ERROR();
-			return ret;
-		}
-	}else ret = 0;
 
-	return ret;
+			//tnet_sockfd_close(&from);
+			goto bail;
+		}
+	}
+	else ret = 0;
+
+bail:
+	return numberOfBytesSent;
 }
 
 /*== send dgarm to the specified destionation */
-int tnet_transport_sendto(const tnet_transport_handle_t *handle, const struct sockaddr *to, const void* buf, size_t size)
+size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	WSABUF wsaBuffer;
-	DWORD numberOfBytesSent;
+	DWORD numberOfBytesSent = 0;
 	int ret = -1;
 	
 	if(!transport)
@@ -457,7 +451,7 @@ int tnet_transport_sendto(const tnet_transport_handle_t *handle, const struct so
 		return ret;
 	}
 	
-	if(!TNET_SOCKET_TYPE_IS_DGRAM(transport->server->type))
+	if(!TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type))
 	{
 		TSK_DEBUG_ERROR("In order to use WSASendTo you must use an udp transport.");
 		return ret;
@@ -466,7 +460,7 @@ int tnet_transport_sendto(const tnet_transport_handle_t *handle, const struct so
 	wsaBuffer.buf = (CHAR*)buf;
 	wsaBuffer.len = size;
 	
-    if((ret = WSASendTo(transport->server->fd, &wsaBuffer, 1, &numberOfBytesSent, 0, to, sizeof(*to), 0, 0)) == SOCKET_ERROR)
+    if((ret = WSASendTo(from, &wsaBuffer, 1, &numberOfBytesSent, 0, to, sizeof(*to), 0, 0)) == SOCKET_ERROR)
 	{
 		if((ret = WSAGetLastError()) == WSAEWOULDBLOCK)
 		{
@@ -480,9 +474,24 @@ int tnet_transport_sendto(const tnet_transport_handle_t *handle, const struct so
 		}
 	} else ret = 0;
 	
-	TSK_DEBUG_INFO("[%s] %d bytes have been sent using WSASendTo", transport->description, numberOfBytesSent);
+	//TSK_DEBUG_INFO("[%s] %d bytes have been sent using WSASendTo", transport->description, numberOfBytesSent);
 	
-	return ret;
+	return numberOfBytesSent;
+}
+
+/*=== Sets callback function to call when data arrive on the specified sockfd. */
+int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_transport_data_read callback)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	int ret = -1;
+	
+	if(!transport)
+	{
+		TSK_DEBUG_ERROR("Invalid server handle.");
+		return ret;
+	}
+
+	return tnet_socket_desc_setcb(transport->context, fd, callback);
 }
 
 /*=== Main thread */
@@ -499,9 +508,9 @@ static void *tnet_transport_thread(void *param)
 	transport->context = context;
 
 	/* Start listening */
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->server->type))
+	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
 	{
-		if(listen(transport->server->fd, WSA_MAXIMUM_WAIT_EVENTS))
+		if(listen(transport->master->fd, WSA_MAXIMUM_WAIT_EVENTS))
 		{
 			TNET_PRINT_LAST_ERROR();
 			goto bail;
@@ -509,14 +518,15 @@ static void *tnet_transport_thread(void *param)
 	}
 
 	/* Add the current the transport socket to the context. */
-	tnet_socket_desc_add(transport->server->fd, context);
-	if(ret = WSAEventSelect(transport->server->fd, context->events[context->eventsCount - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->server->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)
+	tnet_socket_desc_add(transport->master->fd, context);
+	if(ret = WSAEventSelect(transport->master->fd, context->events[context->eventsCount - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)
 	{
 		TNET_PRINT_LAST_ERROR();
 		goto bail;
 	}
 
-	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->server->hostname, transport->server->port);
+	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+	transport->running = 1;
 	
 	while(transport->running)
 	{
@@ -551,7 +561,7 @@ static void *tnet_transport_thread(void *param)
 		/*================== FD_ACCEPT ==================*/
 		if(networkEvents.lNetworkEvents & FD_ACCEPT)
 		{
-			int32_t fd;
+			tnet_fd_t fd;
 			
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT", transport->description);
 
@@ -589,7 +599,7 @@ static void *tnet_transport_thread(void *param)
 		/*================== FD_CONNECT ==================*/
 		if(networkEvents.lNetworkEvents & FD_CONNECT)
 		{
-			//int32_t fd;
+			//tnet_fd_t fd;
 
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CONNECT", transport->description);
 
@@ -601,10 +611,7 @@ static void *tnet_transport_thread(void *param)
 			}
 			else
 			{
-				if(!transport->connected)
-				{
-					transport->connected = 1;
-				}
+				active_socket->connected = 1;
 			}
 		}
 
@@ -624,7 +631,7 @@ static void *tnet_transport_thread(void *param)
 			/* Create socket's internal buffer. */
 			if(!active_socket->wsaBuffer.buf)
 			{
-				size_t max_buffer_size = TNET_SOCKET_TYPE_IS_DGRAM(transport->server->type) ? DGRAM_MAX_SIZE : STREAM_MAX_SIZE;
+				size_t max_buffer_size = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? DGRAM_MAX_SIZE : STREAM_MAX_SIZE;
 				active_socket->wsaBuffer.buf = tsk_calloc(max_buffer_size, sizeof(char));
 				active_socket->wsaBuffer.len = max_buffer_size;
 			}
@@ -645,7 +652,11 @@ static void *tnet_transport_thread(void *param)
 			}
 			else
 			{
-				TSK_DEBUG_INFO("WSARecv(%d bytes) success on [%s]", active_socket->readCount, transport->description);
+				//TSK_DEBUG_INFO("WSARecv(%d bytes) success on [%s]\n%s\n", active_socket->readCount, transport->description, active_socket->wsaBuffer.buf);
+				if(active_socket->callback)
+				{
+					active_socket->callback(active_socket->fd, active_socket->wsaBuffer.buf, active_socket->readCount);
+				}
 			}
 		}
 
@@ -665,35 +676,40 @@ static void *tnet_transport_thread(void *param)
 			}
 
 			/*{
+				int test = 10;
 				WSAOVERLAPPED RecvOverlapped = {0};
 				RecvOverlapped.hEvent = active_event;
+				
 
 				
 				//* Create socket's internal buffer.
 				if(!active_socket->wsaBuffer.buf)
 				{
-					size_t max_buffer_size = TNET_SOCKET_TYPE_IS_DGRAM(transport->server->type) ? DGRAM_MAX_SIZE : STREAM_MAX_SIZE;
+					size_t max_buffer_size = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? DGRAM_MAX_SIZE : STREAM_MAX_SIZE;
 					active_socket->wsaBuffer.buf = tsk_calloc(max_buffer_size, sizeof(char));
 					active_socket->wsaBuffer.len = max_buffer_size;
 				}
-
-				//* Receive the waiting data. 
-				if(WSARecv(active_socket->fd, &(active_socket->wsaBuffer), 1, &(active_socket->readCount), &flags, &RecvOverlapped, NULL) == SOCKET_ERROR)
+				while(test--)
 				{
-					if(WSAGetLastError() == WSAEWOULDBLOCK)
+
+					//* Receive the waiting data. 
+					if(WSARecv(active_socket->fd, &(active_socket->wsaBuffer), 1, &(active_socket->readCount), &flags, &RecvOverlapped, NULL) == SOCKET_ERROR)
 					{
-						TSK_DEBUG_INFO("WSAEWOULDBLOCK error for READ operation");
+						if(WSAGetLastError() == WSAEWOULDBLOCK)
+						{
+							TSK_DEBUG_INFO("WSAEWOULDBLOCK error for READ operation");
+						}
+						else
+						{
+							tnet_socket_desc_remove(index, context);
+							TNET_PRINT_LAST_ERROR();
+							//continue;
+						}
 					}
 					else
 					{
-						tnet_socket_desc_remove(index, context);
-						TNET_PRINT_LAST_ERROR();
-						//continue;
-					}
+						TSK_DEBUG_INFO("WSARecv(%d bytes) success on [%s]", active_socket->readCount, transport->description);
 				}
-				else
-				{
-					TSK_DEBUG_INFO("WSARecv(%d bytes) success on [%s]", active_socket->readCount, transport->description);
 				}
 
 				//ret = WSAGetOverlappedResult(active_socket->fd, &RecvOverlapped, &active_socket->readCount, FALSE, &flags);

@@ -33,6 +33,8 @@
 #include "tinySAK_config.h"
 #include "tsk_heap.h"
 #include "tsk_list.h"
+
+#if HAVE_LIBXML2_H
 #include <libxml/tree.h>
 
 #define TSK_XML_NODE_IS_TEXTVALUE(node)							(node && node->type==XML_TEXT_NODE)
@@ -167,5 +169,7 @@ TINYSAK_API xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...);
 TINYSAK_API const void *tsk_xml_namespace_def_t;
 TINYSAK_API const void *tsk_xml_attribute_def_t;
 TINYSAK_API const void *tsk_xml_element_def_t;
+
+#endif /* HAVE_LIBXML2_H */
 
 #endif /* _TINYSAK_XML_H_ */

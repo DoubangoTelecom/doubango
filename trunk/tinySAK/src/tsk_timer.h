@@ -32,22 +32,29 @@
 
 #include "tinySAK_config.h"
 
+#define INVALID_TIMER_ID	0
+#define TSK_TIMER_ID_IS_VALID(id) (id != INVALID_TIMER_ID)
+
 typedef enum tsk_timer_retcode_e
 {
 	tsk_error,
+	tsk_stopped,
 	tsk_canceled,
 	tsk_timedout,
 }
 tsk_timer_retcode_t;
 
 typedef uint64_t tsk_timer_id_t;
-typedef void (*tsk_timer_callback)(const void* arg, tsk_timer_retcode_t code);
+typedef int (*tsk_timer_callback)(const void* arg, tsk_timer_retcode_t code);
 
 TINYSAK_API int tsk_timer_manager_start();
 TINYSAK_API int tsk_timer_manager_stop();
+#if defined(DEBUG) || defined(_DEBUG)
+TINYSAK_API void tsk_timer_manager_debug();
+#endif
 
 TINYSAK_API tsk_timer_id_t tsk_timer_manager_schedule(uint64_t timeout, tsk_timer_callback callback, const void *arg);
-TINYSAK_API void tsk_timer_manager_cancel(tsk_timer_id_t id);
+TINYSAK_API int tsk_timer_manager_cancel(tsk_timer_id_t id);
 
 TINYSAK_API const void *tsk_timer_def_t;
 

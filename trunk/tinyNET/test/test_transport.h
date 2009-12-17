@@ -21,51 +21,74 @@
 */
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
-
 #define REMOTE_IPV4 "192.168.0.15"
 #define SIP_MESSAGE \
-	"REGISTER sip:wonderland.net SIP/2.0\r\n" \
-	"Via: SIP/2.0/UDP %s:%d;comp=sigcomp;rport;branch=z9hG4bK1245420841406\r\n" \
-	"From: \"Mamadou\" <sip:mamadou@wonderland.net>;tag=29358\r\n" \
-	"To: <sip:mamadou@wonderland.net>;tag= 12345\r\n" \
+	"REGISTER sip:micromethod.com SIP/2.0\r\n" \
+	"Via: SIP/2.0/%s %s:%d;rport;branch=z9hG4bK1245420841406%d\r\n" \
+	"From: <sip:mamadou@micromethod.com>;tag=29358\r\n" \
+	"To: <sip:mamadou@micromethod.com>\r\n" \
 	"Call-ID: M-fa53180346f7f55ceb8d8670f9223dbb\r\n" \
 	"CSeq: 201 REGISTER\r\n" \
 	"Max-Forwards: 70\r\n" \
-	"Contact: <sip:mamadou@%s:%d;comp=sigcomp;transport=%s>\r\n" \
-	"Expires: 600\r\n" \
+	"Contact: <sip:mamadou@%s:%d;transport=%s>\r\n" \
+	"Expires: 20\r\n" \
 	"\r\n"
+
+
+static int tnet_tcp_data_read(tnet_fd_t fd, const void* data, size_t size)
+{
+	/* Do quick job. */
+	TSK_DEBUG_INFO("--- UDP ---\n%s\n", data);
+	return 0;
+}
+
+static int tnet_udp_data_read(tnet_fd_t fd, const void* data, size_t size)
+{
+	/* Do quick job. */
+	TSK_DEBUG_INFO("--- UDP ---\n%s\n", data);
+	return 0;
+}
 
 void test_transport_tcp_ipv4()
 {
 	tnet_socket_type_t type = tnet_socket_type_tcp_ipv4;
-	tnet_transport_handle_t *transport = tnet_transport_start(0, 0, type, "TCP/IPV4 TRANSPORT");
+	tnet_ip_t ip;
+	tnet_port_t port;
+	tnet_fd_t fd = INVALID_SOCKET;
+
+	tnet_transport_handle_t *transport = tnet_transport_start(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, type, "TCP/IPV4 TRANSPORT");
 	if(!transport)
 	{
 		TSK_DEBUG_ERROR("Failed to create TCP/IPv4 transport.");
 		return;
 	}
 
-	tsk_thread_sleep(1000);
+	//tsk_thread_sleep(500);
 
-	if(tnet_transport_connectto(transport, REMOTE_IPV4, 5060))
+	/* Connect to the SIP Registrar */
+	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == INVALID_SOCKET)
 	{
 		TSK_DEBUG_ERROR("Failed to connect TCP/IPv4 transport.");
 		tnet_transport_shutdown(&transport);
 		return;
 	}
 
-	while(!tnet_transport_get_isconnected(transport))
+	/* Set our callback function */
+	tnet_transport_set_callback(transport, fd, tnet_tcp_data_read);
+
+	//while(!tnet_transport_get_isconnected(transport))
 	{
 		/* Connecto succeed but not connected yet.*/
-		tsk_thread_sleep(2000);
+		tsk_thread_sleep(500);
 	}
 
+	/* Send our SIP message */
 	{
 		char* message = 0;
-		const char* ip =tnet_transport_get_tip(transport);
-		uint16_t port = tnet_transport_get_tport(transport);
-		tsk_sprintf(&message, SIP_MESSAGE, ip, port, ip, port, "tcp");
-		if(tnet_transport_send(transport, message, strlen(message)))
+		tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
+		tsk_sprintf(&message, SIP_MESSAGE, "TCP", ip, port, port, ip, port, "tcp");
+
+		if(!tnet_transport_send(transport, fd, message, strlen(message)))
 		{
 			TSK_DEBUG_ERROR("Failed to send data using TCP/IPv4 transport.");
 			tnet_transport_shutdown(&transport);
@@ -80,25 +103,41 @@ void test_transport_tcp_ipv4()
 void test_transport_udp_ipv4()
 {
 	tnet_socket_type_t type = tnet_socket_type_udp_ipv4;
-	tnet_transport_handle_t *transport = tnet_transport_start(0, 0, type, "UDP/IPV4 TRANSPORT");
+	tnet_ip_t ip;
+	tnet_port_t port;
+	tnet_fd_t fd = INVALID_SOCKET;
+
+	tnet_transport_handle_t *transport = tnet_transport_start(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, type, "UDP/IPV4 TRANSPORT");
 	if(!transport)
 	{
 		TSK_DEBUG_ERROR("Failed to create UDP/IPv4 transport.");
 		return;
 	}
 
-	tsk_thread_sleep(1000);
+	//tsk_thread_sleep(2000);
 
+	/* Connect to our SIP REGISTRAR */
+	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == INVALID_SOCKET)
 	{
-		struct sockaddr addr; 
+		TSK_DEBUG_ERROR("Failed to connect UDP/IPv4 transport.");
+		tnet_transport_shutdown(&transport);
+		return;
+	}
+
+	//tsk_thread_sleep(2000);
+
+	/* Set our callback function */
+	tnet_transport_set_callback(transport, fd, tnet_udp_data_read);
+
+	/* Send our SIP message */
+	{
 		char* message = 0;
-		const char* ip =tnet_transport_get_tip(transport);
-		uint16_t port = tnet_transport_get_tport(transport);
-		tsk_sprintf(&message, SIP_MESSAGE, ip, port, ip, port, "udp");
-		tnet_sockaddr_init(REMOTE_IPV4, 5060, type, &addr);
-		if(tnet_transport_sendto(transport, &addr, message, strlen(message)))
+		tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
+		tsk_sprintf(&message, SIP_MESSAGE, "UDP", ip, port, port, ip, port, "udp");
+
+		if(!tnet_transport_send(transport, fd, message, strlen(message)))
 		{
-			TSK_DEBUG_ERROR("Failed to send data using TCP/IPv4 transport.");
+			TSK_DEBUG_ERROR("Failed to send data using UDP/IPv4 transport.");
 			tnet_transport_shutdown(&transport);
 			TSK_FREE(message);
 			return;

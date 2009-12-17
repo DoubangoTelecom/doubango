@@ -24,7 +24,7 @@
 
 void test_sockets()
 {
-	tnet_socket_tcp_t * tcp_socket = TNET_SOCKET_CREATE("", 0, tnet_socket_type_udp_ipv6);
+	tnet_socket_tcp_t * tcp_socket = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
 	int test = 0;
 
 	if(!TNET_SOCKET_IS_VALID(tcp_socket))

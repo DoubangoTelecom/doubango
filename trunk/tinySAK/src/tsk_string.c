@@ -247,7 +247,7 @@ void tsk_strquote(char **str)
 	{
 		char *result = 0;
 		tsk_sprintf(&result, "\"%s\"", *str);
-		tsk_free(str);
+		tsk_free((void**)str);
 		*str = result;
 	}
 }
@@ -309,11 +309,24 @@ static void* tsk_string_destroy(void * self)
 	return self;
 }
 
+static int tsk_string_cmp(const void *obj1, const void *obj2)
+{
+	const tsk_string_t *s1 = obj1;
+	const tsk_string_t *s2 = obj2;
+
+	if(s1 && s2)
+	{
+		return tsk_stricmp(s1->value, s2->value);
+	}
+	else if(!s1 && !s2) return 0;
+	else return -1;
+}
+
 static const tsk_object_def_t tsk_string_def_s = 
 {
 	sizeof(tsk_string_t),
 	tsk_string_create, 
 	tsk_string_destroy,
-	0, 
+	tsk_string_cmp, 
 };
 const void *tsk_string_def_t = &tsk_string_def_s;

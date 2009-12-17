@@ -46,17 +46,13 @@
  *
  * @return	Zero if succeed and nonzero error code otherwise. 
 **/
-int tnet_socket_close(const tnet_socket_t *sock)
+int tnet_socket_close(tnet_socket_t *sock)
 {
-#if TNET_UNDER_WINDOWS
-	return closesocket(sock->fd);
-#else
-	return close(sock->fd);
-#endif
+	return tnet_sockfd_close(&(sock->fd));	
 }
 
 
-int tnet_socket_stream_connectto(tnet_socket_tcp_t *sock, const char* host, uint16_t port)
+int tnet_socket_stream_connectto(tnet_socket_tcp_t *sock, const char* host, tnet_port_t port)
 {
 	int status = 0;
 	tsk_istr_t _port;
@@ -134,17 +130,17 @@ static void* tnet_socket_create(void * self, va_list * app)
 		struct addrinfo *result = 0;
 		struct addrinfo *ptr = 0;
 		struct addrinfo hints;
-		tnet_hostname_t local_hostname;
+		tnet_host_t local_hostname;
 
 		const char *host = va_arg(*app, const char*);
-		sock->port = va_arg(*app, uint16_t);
+		sock->port = va_arg(*app, tnet_port_t);
 		tsk_itoa(sock->port, &port);
 		sock->type = va_arg(*app, tnet_socket_type_t);
 
 		/* Get the local host name */
-		memset(local_hostname, 0, sizeof(local_hostname));
-		if(host && !tsk_strempty(host))
+		if(host != TNET_SOCKET_HOST_ANY && !tsk_strempty(host))
 		{
+			memset(local_hostname, 0, sizeof(local_hostname));
 			memcpy(local_hostname, host, strlen(host)>sizeof(local_hostname)-1 ? sizeof(local_hostname)-1 : strlen(host));
 		}
 		else
@@ -177,12 +173,31 @@ static void* tnet_socket_create(void * self, va_list * app)
 			{
 				sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 				/* Get local IP string. */
-				if(status = tnet_getnameinfo(ptr->ai_addr, ptr->ai_addrlen, sock->hostname, sizeof(sock->hostname), 0, 0, NI_NUMERICHOST))
+				if(status = tnet_getnameinfo(ptr->ai_addr, ptr->ai_addrlen, sock->ip, sizeof(sock->ip), 0, 0, NI_NUMERICHOST))
 				{
 					TNET_PRINT_LAST_ERROR();
-					goto bail;
+					tnet_socket_close(sock);
+					continue;
 				}
-				break;
+				else
+				{
+					if(status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen))
+					{
+						TNET_PRINT_LAST_ERROR();
+						tnet_socket_close(sock);
+						continue;
+					}
+					else
+					{
+						if(sock->port == TNET_SOCKET_PORT_ANY && (status = tnet_get_port(sock->fd, &(sock->port))))
+						{
+							TNET_PRINT_LAST_ERROR();
+							tnet_socket_close(sock);
+							continue;
+						}
+						else break;
+					}
+				}
 			}
 		}
 		
@@ -191,23 +206,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		{
 			TNET_PRINT_LAST_ERROR();
 			goto bail;
-		}
-
-		/* Bind to the specified address and port. */
-		if(bind(sock->fd, result->ai_addr, result->ai_addrlen))
-		{
-			TNET_PRINT_LAST_ERROR();
-			tnet_socket_close(sock);
-			sock->fd = 0;
-			goto bail;
-		}
-		else
-		{
-			if(!sock->port && (status = tnet_getPort(sock->fd, &(sock->port))))
-			{
-				TNET_PRINT_LAST_ERROR();
-			}
-		}
+		}		
 
 		/* To avoid "Address already in use" error */
 		{

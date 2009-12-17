@@ -31,8 +31,15 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#include <semaphore.h>
-#include <pthread.h>
+#if TSK_UNDER_WINDOWS
+#	include <windows.h>
+#	include "tsk_errno.h"
+	typedef HANDLE	SEMAPHORE_T;
+#else
+#	include <pthread.h>
+#	include <semaphore.h>
+	typedef sem_t* SEMAPHORE_T;
+#endif
 
 /**@defgroup tsk_semaphore_group Pthread Semaphore
 */
@@ -44,19 +51,26 @@
 */
 tsk_semaphore_handle_t* tsk_semaphore_create()
 {
-	tsk_semaphore_handle_t *handle = tsk_calloc(1, sizeof(sem_t));
-	if(handle)
+	SEMAPHORE_T handle = 0;
+	
+#if TSK_UNDER_WINDOWS
+	handle = CreateSemaphore(NULL, 0, 0x7FFFFFFF, NULL);
+#else
+	handle = tsk_calloc(1, sizeof(SEMAPHORE_T));
+
+	if(sem_init((SEMAPHORE_T)handle, PTHREAD_PROCESS_PRIVATE, 0))
 	{
-		if(sem_init((sem_t*)handle, PTHREAD_PROCESS_PRIVATE, 0))
-		{
-			TSK_DEBUG_ERROR("Failed to initialize the new semaphore.");
-		}
+		TSK_FREE(handle);
+		TSK_DEBUG_ERROR("Failed to initialize the new semaphore.");
 	}
-	else
+#endif
+	
+	if(!handle)
 	{
 		TSK_DEBUG_ERROR("Failed to create new mutex.");
 	}
 	return handle;
+	
 }
 
 /**@ingroup tsk_semaphore_group
@@ -70,7 +84,11 @@ int tsk_semaphore_increment(tsk_semaphore_handle_t* handle)
 	int ret = EINVAL;
 	if(handle)
 	{
-		if(ret = sem_post((sem_t*)handle))
+#if TSK_UNDER_WINDOWS
+		if((ret = ReleaseSemaphore((SEMAPHORE_T)handle, 1L, 0L) ? 0 : -1))
+#else
+		if(ret = sem_post((SEMAPHORE_T)handle))
+#endif
 		{
 			TSK_DEBUG_ERROR("sem_post function failed: %d", ret);
 		}
@@ -89,14 +107,18 @@ int tsk_semaphore_decrement(tsk_semaphore_handle_t* handle)
 	int ret = EINVAL;
 	if(handle)
 	{
+#if TSK_UNDER_WINDOWS
+		ret = (WaitForSingleObject((SEMAPHORE_T)handle, INFINITE) == WAIT_OBJECT_0 ? 0 : -1);
+		if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", ret);
+#else
 		do 
 		{ 
-			ret = sem_wait((sem_t*)handle); 
+			ret = sem_wait((SEMAPHORE_T)handle); 
 		} 
 		while ( errno == EINTR );
+		if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", errno);
+#endif
 	}
-
-	if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", errno);
 
 	return ret;
 }
@@ -110,8 +132,13 @@ void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
 {
 	if(handle && *handle)
 	{
-		sem_destroy((sem_t*)*handle);
+#if TSK_UNDER_WINDOWS
+		CloseHandle((SEMAPHORE_T)*handle);
+		*handle = 0;
+#else
+		sem_destroy((SEMAPHORE_T)*handle);
 		tsk_free(handle);
+#endif
 	}
 	else
 	{
