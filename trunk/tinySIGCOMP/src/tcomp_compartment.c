@@ -303,7 +303,7 @@ void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t 
 
 	tcomp_state_makeValid(*lpState);
 	compartment->total_memory_left -= TCOMP_GET_STATE_SIZE(*lpState);
-	tsk_list_add_data(compartment->local_states, ((void**) lpState));
+	tsk_list_push_back_data(compartment->local_states, ((void**) lpState));
 	
 	TSK_DEBUG_INFO("SigComp - Add new state.");
 	*lpState = 0;
@@ -398,7 +398,7 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 
 
 	id = _TCOMP_BUFFER_CREATE(nackId, TSK_SHA1HashSize);
-	tsk_list_add_data(compartment->nacks, ((void**) &id));
+	tsk_list_push_back_data(compartment->nacks, ((void**) &id));
 	compartment->nacks_history_count++;
 
 	tsk_safeobj_unlock(compartment);

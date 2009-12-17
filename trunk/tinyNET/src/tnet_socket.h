@@ -48,7 +48,7 @@
 * @param self The socket to free.
 * @sa TNET_SOCKET_CREATE.
 */
-#define TNET_SOCKET_CREATE(host, port, type)	tsk_object_new(tnet_socket_def_t, (const char*)host, (uint16_t)port, (tnet_socket_type_t)type)
+#define TNET_SOCKET_CREATE(host, port, type)	tsk_object_new(tnet_socket_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type)
 #define TNET_SOCKET_SAFE_FREE(self)				tsk_object_unref(self), self = 0
 
 /**
@@ -109,6 +109,9 @@ tnet_socket_type_t;
 
 #define TNET_SOCKET_TYPE_IS_SECURE(type)	(TNET_SOCKET_TYPE_IS_IPSEC(type) || TNET_SOCKET_TYPE_IS_TLS(type) )
 
+#define TNET_SOCKET_HOST_ANY 0
+#define TNET_SOCKET_PORT_ANY 0
+
 /*==
 * tnet_socket_t
 * type: Defines the socket type.
@@ -121,8 +124,8 @@ tnet_socket_type_t;
 #define TNET_DECLARE_SOCKET struct { \
 	TSK_DECLARE_OBJECT; \
 	tnet_socket_type_t type; \
-	int32_t fd; \
-	tnet_hostname_t hostname; \
+	tnet_fd_t fd; \
+	tnet_ip_t ip; \
 	uint16_t port; \
 }
 typedef TNET_DECLARE_SOCKET tnet_socket_t; /**< Socket structure definition. */
@@ -132,7 +135,7 @@ typedef tnet_socket_t tnet_socket_tls_t; /**< TLS socket. */
 typedef tnet_socket_t tnet_socket_ipsec_t; /**< IPSec socket. */
 typedef tsk_list_t tnet_sockets_L_t; /**< List of @ref tnet_socket_t elements. */
 
-TINYNET_API int tnet_socket_stream_connectto(tnet_socket_tcp_t *socket, const char* host, uint16_t port);
+TINYNET_API int tnet_socket_stream_connectto(tnet_socket_tcp_t *socket, const char* host, tnet_port_t port);
 TINYNET_API int tnet_socket_dgram_sendto(tnet_socket_tcp_t *socket, const struct sockaddr *to, const void* buf, size_t size);
 
 

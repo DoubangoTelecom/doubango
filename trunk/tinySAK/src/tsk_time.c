@@ -28,10 +28,14 @@
 * @date Created: Sat Nov 8 16:54:58 2009 mdiop
 */
 #include "tsk_time.h"
-#include <time.h>
+
 #if TSK_UNDER_WINDOWS
-#include <windows.h>
+#	include <windows.h>
+#elif defined(__SYMBIAN32__)
+#	include <_timeval.h> 
 #endif
+
+#include <time.h>
 
 /**@defgroup tsk_time_group Useful datetime functions
 */

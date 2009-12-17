@@ -53,16 +53,13 @@ void test_semaphore()
 {
 	tsk_semaphore_handle_t *semaphore = tsk_semaphore_create();
 	void*       tid[2] = {0,0};
-	int i;
 
 	printf("test_semaphore//\n");
 
 	tsk_thread_create(&tid[0], threadfunc_semaphore1, semaphore);
 	tsk_thread_create(&tid[1], threadfunc_semaphore2, semaphore);
 
-	/* VERY BAD */
-	while(sema_count<2);
-	for(i=0;i<10000000;i++);
+	tsk_thread_sleep(1000);
 	
 	assert(!tsk_semaphore_increment(semaphore));
 	assert(!tsk_semaphore_increment(semaphore));

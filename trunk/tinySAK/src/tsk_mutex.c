@@ -31,7 +31,14 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#include <pthread.h>
+#if TSK_UNDER_WINDOWS
+#	include <windows.h>
+#	include "tsk_errno.h"
+	typedef HANDLE	MUTEX_T;
+#else
+#	include <pthread.h>
+	typedef pthread_mutex_t* MUTEX_T;
+#endif
 
 // FIXME: Momory leaks in mutex
 
@@ -44,16 +51,20 @@
 * @sa @ref tsk_mutex_destroy
 */
 tsk_mutex_handle_t* tsk_mutex_create()
-{
-	tsk_mutex_handle_t *handle = tsk_calloc(1, sizeof(pthread_mutex_t));
-	if(handle)
+{	
+	MUTEX_T handle = 0;
+	
+#if TSK_UNDER_WINDOWS
+	handle = CreateMutex(NULL, FALSE, NULL);
+#else
+	handle = tsk_calloc(1, sizeof(MUTEX_T));
+	if(pthread_mutex_init((MUTEX_T)handle, 0))
 	{
-		if(pthread_mutex_init((pthread_mutex_t*)handle, 0))
-		{
-			TSK_DEBUG_ERROR("Failed to initialize the new mutex.");
-		}
+		TSK_FREE(handle);
 	}
-	else
+#endif
+	
+	if(!handle)
 	{
 		TSK_DEBUG_ERROR("Failed to create new mutex.");
 	}
@@ -71,7 +82,11 @@ int tsk_mutex_lock(tsk_mutex_handle_t* handle)
 	int ret = EINVAL;
 	if(handle)
 	{
-		if(ret = pthread_mutex_lock((pthread_mutex_t*)handle))
+#if TSK_UNDER_WINDOWS
+		if((ret = WaitForSingleObject((MUTEX_T)handle , INFINITE)) == WAIT_FAILED)
+#else
+		if(ret = pthread_mutex_lock((MUTEX_T)handle))
+#endif
 		{
 			TSK_DEBUG_ERROR("Failed to lock the mutex: %d", ret);
 		}
@@ -90,7 +105,11 @@ int tsk_mutex_unlock(tsk_mutex_handle_t* handle)
 	int ret = EINVAL;
 	if(handle)
 	{
-		if(ret = pthread_mutex_unlock((pthread_mutex_t*)handle))
+#if TSK_UNDER_WINDOWS
+		if((ret = ReleaseMutex((MUTEX_T)handle) ? 0 : -1))
+#else
+		if(ret = pthread_mutex_unlock((MUTEX_T)handle))
+#endif
 		{
 			if(ret == EPERM)
 			{
@@ -114,8 +133,13 @@ void tsk_mutex_destroy(tsk_mutex_handle_t** handle)
 {
 	if(handle && *handle)
 	{
-		pthread_mutex_destroy((pthread_mutex_t*)*handle);
+#if TSK_UNDER_WINDOWS
+		CloseHandle((MUTEX_T)*handle);
+		*handle = 0;
+#else
+		pthread_mutex_destroy((MUTEX_T)*handle);
 		tsk_free(handle);
+#endif
 	}
 	else
 	{

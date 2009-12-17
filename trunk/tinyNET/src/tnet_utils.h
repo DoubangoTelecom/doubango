@@ -43,7 +43,11 @@
 #	include <netdb.h> 
 #endif
 
-typedef char tnet_hostname_t[/*NI_MAXHOST*/255];
+typedef int32_t tnet_fd_t;
+typedef uint16_t tnet_port_t;
+typedef char tnet_host_t[NI_MAXHOST];
+typedef char tnet_ip_t[INET6_ADDRSTRLEN];
+
 #ifdef _WIN32_WCE
 typedef TCHAR tnet_error_t[512];
 #else
@@ -52,14 +56,20 @@ typedef char tnet_error_t[512];
 
 TINYNET_API void tnet_getlasterror(tnet_error_t *error);
 
-TINYNET_API int32_t tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res);
+TINYNET_API int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res);
 TINYNET_API void tnet_freeaddrinfo(struct addrinfo *ai);
-TINYNET_API int tnet_getPort(int32_t fd, uint16_t *port);
+TINYNET_API int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
+#define tnet_get_ip(fd, ip) tnet_get_ip_n_port(fd, ip, 0)
+#define tnet_get_port(fd, port) tnet_get_ip_n_port(fd, 0, port)
 
 TINYNET_API int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
-TINYNET_API int tnet_gethostname(tnet_hostname_t* result);
+TINYNET_API int tnet_gethostname(tnet_host_t* result);
 
-TINYNET_API int tnet_sockaddr_init(const char *host, uint16_t port, enum tnet_socket_type_e type, struct sockaddr *addr);
+TINYNET_API int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, struct sockaddr_storage *ai_addr, int *ai_family, int *ai_socktype, int *ai_protocol);
+TINYNET_API int tnet_sockaddr_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, struct sockaddr_storage *addr);
+TINYNET_API int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, tnet_fd_t *fd);
+
+TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
 #define TNET_PRINT_LAST_ERROR() \
 	{ \

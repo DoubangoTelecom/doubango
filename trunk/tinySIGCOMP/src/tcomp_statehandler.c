@@ -73,7 +73,7 @@ tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_
 	{
 		newcomp = TCOMP_COMPARTMENT_CREATE(id, tcomp_params_getParameters(statehandler->sigcomp_parameters));
 		result = newcomp;
-		tsk_list_add_data(statehandler->compartments, ((void**) &newcomp));
+		tsk_list_push_back_data(statehandler->compartments, ((void**) &newcomp));
 	}
 
 	tsk_safeobj_unlock(statehandler);
@@ -357,7 +357,7 @@ void tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler)
 	if(!statehandler->hasSipSdpDictionary)
 	{
 		tcomp_dictionary_t* sip_dict = tcomp_dicts_create_sip_dict();
-		tsk_list_add_data(statehandler->dictionaries, ((void**) &sip_dict));
+		tsk_list_push_back_data(statehandler->dictionaries, ((void**) &sip_dict));
 		statehandler->hasSipSdpDictionary = 1;
 	}
 
@@ -379,7 +379,7 @@ void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler
 	if(!statehandler->hasPresenceDictionary)
 	{
 		tcomp_dictionary_t* pres_dict = tcomp_dicts_create_presence_dict();
-		tsk_list_add_data(statehandler->dictionaries, ((void**) &pres_dict));
+		tsk_list_push_back_data(statehandler->dictionaries, ((void**) &pres_dict));
 		statehandler->hasPresenceDictionary = 1;
 	}
 

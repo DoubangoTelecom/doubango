@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\pthread&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="&quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\pthread\pthread.lib&quot; $(NOINHERIT)"
+				AdditionalDependencies="$(NOINHERIT)"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -120,7 +120,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\pthread&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\wcecompat&quot;"
+				AdditionalIncludeDirectories="$(DOUBANGO_HOME)\thirdparties\wince\include"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYSAK_EXPORTS;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
@@ -143,7 +143,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions=" /subsystem:windowsce,5.01 /machine:THUMB"
-				AdditionalDependencies="ws2.lib &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\libxml\libxml2.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\pthread\pthread.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\wcecompat\wcecompat.lib&quot;"
+				AdditionalDependencies="ws2.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="8"
@@ -364,6 +364,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_debug.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_errno.h"
 				>
 			</File>
 			<File

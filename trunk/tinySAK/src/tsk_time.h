@@ -37,13 +37,13 @@ struct timeval;
 struct timezone;
 #endif
 
-int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
-uint64_t tsk_time_epoch();
+TINYSAK_API int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
+TINYSAK_API uint64_t tsk_time_epoch();
 
 /**
 * Gets the number of milliseconds since the EPOCH.
 */
-#define tsk_time_epoch tsk_time_now
+#define tsk_time_now() tsk_time_epoch()
 
 #ifdef _WIN32_WCE
 

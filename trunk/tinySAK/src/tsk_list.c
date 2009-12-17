@@ -254,13 +254,14 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 		{
 			if(!predicate(curr, data))
 			{
-				if(prev == curr && curr->next == NULL)
-				{ /* There was only one item */
-					list->head = NULL;
+				if(prev == curr)
+				{ 
+					/* Found at first position. */
+					list->head = curr->next;
 				}
 				else prev->next = curr->next;
 
-				curr = tsk_object_unref(curr);
+				/*curr =*/ tsk_object_unref(curr);
 				break;
 			}
 			

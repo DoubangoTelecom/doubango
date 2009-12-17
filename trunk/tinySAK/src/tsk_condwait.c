@@ -33,14 +33,21 @@
 #include "tsk_debug.h"
 #include "tsk_macros.h"
 #include "tsk_time.h"
-#include <pthread.h>
-
 #include <time.h>
+
 #if TSK_UNDER_WINDOWS
-#include <windows.h>
-#else 
-#include <sys/time.h>
+#	include <windows.h>
+#	include "tsk_errno.h"
+	typedef HANDLE	CONDWAIT_T;
+#	define TIMED_OUT	WAIT_TIMEOUT
+#else
+#	include <sys/time.h>
+#	include <pthread.h>
+	typedef pthread_cond_t* CONDWAIT_T;
+#	define TIMED_OUT	ETIMEDOUT
 #endif
+
+
 
 
 /**@defgroup tsk_condwait_group Pthread CondWait
@@ -50,8 +57,10 @@
 */
 typedef struct tsk_condwait_s
 {
-	pthread_cond_t* pcond; /**< Handle pointing to the condwait */
+	CONDWAIT_T pcond; /**< Handle pointing to the condwait */
+#if !TSK_UNDER_WINDOWS
 	tsk_mutex_handle_t* mutex;  /**< Locker*/
+#endif
 }
 tsk_condwait_t;
 
@@ -63,22 +72,33 @@ tsk_condwait_t;
 tsk_condwait_handle_t* tsk_condwait_create()
 {
 	tsk_condwait_t *condwait = tsk_calloc(1, sizeof(tsk_condwait_t));
+
 	if(condwait)
 	{
-		condwait->pcond = (pthread_cond_t*)tsk_calloc(1, sizeof(pthread_cond_t));
+#if TSK_UNDER_WINDOWS
+		condwait->pcond = CreateEvent(NULL, TRUE, FALSE, NULL);
+		if(!condwait->pcond)
+		{
+			TSK_FREE(condwait);
+		}
+#else
+		condwait->pcond = (CONDWAIT_T)tsk_calloc(1, sizeof(CONDWAIT_T));
 		if(pthread_cond_init(condwait->pcond, 0))
 		{
 			TSK_DEBUG_ERROR("Failed to initialize the new conwait.");
 		}
+
 		if(!(condwait->mutex = tsk_mutex_create()))
 		{
-			if(!pthread_mutex_init((pthread_mutex_t*)condwait->mutex, 0))
-			{
-				TSK_DEBUG_ERROR("Failed to initialize the new mutex.");
-			}
+			pthread_cond_destroy(condwait->pcond);
+
+			TSK_FREE(condwait);
+			TSK_DEBUG_ERROR("Failed to initialize the internal mutex.");
 		}
+#endif
 	}
-	else
+
+	if(!condwait)
 	{
 		TSK_DEBUG_ERROR("Failed to create new conwait.");
 	}
@@ -96,6 +116,12 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 	int ret = EINVAL;
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
+#if TSK_UNDER_WINDOWS
+	if((ret = (WaitForSingleObject(condwait->pcond, INFINITE) == WAIT_FAILED) ? -1 : 0))
+	{
+		TSK_DEBUG_ERROR("WaitForSingleObject function failed: %d", ret);
+	}
+#else
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
@@ -105,6 +131,7 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 		}
 		tsk_mutex_unlock(condwait->mutex);
 	}
+#endif
 	return ret;
 }
 
@@ -117,9 +144,27 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 */
 int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 {
+#if TSK_UNDER_WINDOWS
+	DWORD ret = WAIT_FAILED;
+#else
 	int ret = EINVAL;
+#endif
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
+#if TSK_UNDER_WINDOWS
+	if((ret = WaitForSingleObject(condwait->pcond, (DWORD)ms)) != WAIT_OBJECT_0)
+	{
+		if(ret == TIMED_OUT)
+		{
+			TSK_DEBUG_INFO("WaitForSingleObject function timedout: %d", ret);
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("WaitForSingleObject function failed: %d", ret);
+		}
+		return (ret == TIMED_OUT ? 0 : ret);
+	}
+#else
 	if(condwait && condwait->mutex)
 	{
 		struct timespec   ts = {0, 0};
@@ -133,7 +178,7 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 		tsk_mutex_lock(condwait->mutex);
 		if(ret = pthread_cond_timedwait(condwait->pcond, (pthread_mutex_t*)condwait->mutex, &ts))
 		{
-			if(ret == ETIMEDOUT)
+			if(ret == TIMED_OUT)
 			{
 				TSK_DEBUG_INFO("pthread_cond_timedwait function timedout: %d", ret);
 			}
@@ -142,10 +187,13 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 				TSK_DEBUG_ERROR("pthread_cond_timedwait function failed: %d", ret);
 			}
 		}
+
 		tsk_mutex_unlock(condwait->mutex);
 
-		return ret;
+		return (ret == TIMED_OUT ? 0 : ret);
 	}
+#endif
+
 	return ret;
 }
 
@@ -160,32 +208,41 @@ int tsk_condwait_signal(tsk_condwait_handle_t* handle)
 	int ret = EINVAL;
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
+#if TSK_UNDER_WINDOWS
+	if(ret = ((SetEvent(condwait->pcond) && ResetEvent(condwait->pcond)) ? 0 : -1))
+	{
+		ret = GetLastError();
+		TSK_DEBUG_ERROR("SetEvent/ResetEvent function failed: %d", ret);
+	}
+#else
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
+
 		if(ret = pthread_cond_signal(condwait->pcond))
 		{
 			TSK_DEBUG_ERROR("pthread_cond_signal function failed: %d", ret);
 		}
 		tsk_mutex_unlock(condwait->mutex);
 	}
+#endif
 	return ret;
 }
 
-/**@ingroup tsk_condwait_group
-* Gets the internal mutex used by the CondWait object.
-* @param handle The CondWait object holding the mutex.
-* @retval The internal mutex.
-*/
-tsk_mutex_handle_t* tsk_condwait_get_mutex(tsk_condwait_handle_t* handle)
-{
-	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
-	if(condwait)
-	{
-		return condwait->mutex;
-	}
-	return 0;
-}
+///**@ingroup tsk_condwait_group
+//* Gets the internal mutex used by the CondWait object.
+//* @param handle The CondWait object holding the mutex.
+//* @retval The internal mutex.
+//*/
+//tsk_mutex_handle_t* tsk_condwait_get_mutex(tsk_condwait_handle_t* handle)
+//{
+//	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
+//	if(condwait)
+//	{
+//		return condwait->mutex;
+//	}
+//	return 0;
+//}
 
 /**@ingroup tsk_condwait_group
 * Wakes up all threads that are currently waiting on @ref condwait variable.
@@ -198,6 +255,13 @@ int tsk_condwait_broadcast(tsk_condwait_handle_t* handle)
 	int ret = EINVAL;
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
+#if TSK_UNDER_WINDOWS
+	if(ret = ((SetEvent(condwait->pcond) && ResetEvent(condwait->pcond)) ? 0 : -1))
+	{
+		ret = GetLastError();
+		TSK_DEBUG_ERROR("SetEvent function failed: %d", ret);
+	}
+#else
 	if(condwait && condwait->mutex)
 	{
 		tsk_mutex_lock(condwait->mutex);
@@ -207,6 +271,8 @@ int tsk_condwait_broadcast(tsk_condwait_handle_t* handle)
 		}
 		tsk_mutex_unlock(condwait->mutex);
 	}
+#endif
+
 	return ret;
 }
 
@@ -221,9 +287,13 @@ void tsk_condwait_destroy(tsk_condwait_handle_t** handle)
 	
 	if(condwait && *condwait)
 	{
+#if TSK_UNDER_WINDOWS
+		CloseHandle((*condwait)->pcond);
+#else
 		tsk_mutex_destroy(&((*condwait)->mutex));
 		pthread_cond_destroy((*condwait)->pcond);
 		TSK_FREE((*condwait)->pcond);
+#endif
 		tsk_free((void**)condwait);
 	}
 	else

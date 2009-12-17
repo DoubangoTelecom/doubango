@@ -30,22 +30,16 @@
 #ifndef _TEST_MUTEX_H_
 #define _TEST_MUTEX_H_
 
-int mutex_testing = 0;
-int mutex_threa_started = 0;
+int mutex_thread_started = 0;
 
 void *threadfunc_mutex(void *parm)
 {
 	tsk_mutex_handle_t *mutex = (tsk_mutex_handle_t *)parm;
 	int ret = 0;
 	
+	mutex_thread_started = 1;
 	ret =  tsk_mutex_lock(mutex);
-	while(mutex_testing)
-	{
-		mutex_threa_started = 1;
-		tsk_mutex_lock(mutex);
-	}
-
-	printf("threadfunc_mutex/// %d\n", ret);
+	printf("threadfunc_mutex/// unlocked %d\n", ret);
 
 	return 0;
 }
@@ -59,13 +53,19 @@ void test_mutex()
 
 	printf("test_mutex//\n");
 
-	mutex_testing = 1;
+
+	
+	tsk_mutex_lock(mutex);
 	tsk_thread_create(&tid[0], threadfunc_mutex, mutex);
 
-	while(!mutex_threa_started);
+	while(!mutex_thread_started) tsk_thread_sleep(1000);
 
-	mutex_testing = 0;
+	printf("test_mutex// threadfunc_mutex is locked for 1 second\n");
+	tsk_thread_sleep(1000);
+
+	printf("test_mutex// Now unlock threadfunc_mutex\n");
 	tsk_mutex_unlock(mutex);
+
 
 	tsk_thread_join(&(tid[0]));
 

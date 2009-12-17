@@ -32,6 +32,7 @@
 
 #include "tsk_debug.h"
 #include "tsk_string.h"
+#include "tsk_memory.h"
 
 #include "tnet_socket.h"
 
@@ -74,7 +75,7 @@ void tnet_getlasterror(tnet_error_t *error)
 
 
 /**
- * @fn	int32_t tnet_getaddrinfo(const char *node, const char *service,
+ * @fn	int tnet_getaddrinfo(const char *node, const char *service,
  * 		const struct addrinfo *hints, struct addrinfo **res)
  *
  * @brief	converts human-readable text strings representing hostnames or IP addresses into a dynamically allocated linked list of struct addrinfo structures. 
@@ -90,7 +91,7 @@ void tnet_getlasterror(tnet_error_t *error)
  *
  * @return	Success returns zero. Failure returns a nonzero error code.
 **/
-int32_t tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res)
+int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res)
 {
 	return getaddrinfo(node, service, hints, res);
 }
@@ -110,7 +111,7 @@ void tnet_freeaddrinfo(struct addrinfo *ai)
 	freeaddrinfo(ai);
 }
 
-int tnet_getPort(int32_t fd, uint16_t *port)
+int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
 	*port = 0;
 
@@ -118,9 +119,6 @@ int tnet_getPort(int32_t fd, uint16_t *port)
 	{
 		int status;
 		struct sockaddr_storage ss;
-		//struct hostent *hp;
-		struct sockaddr_in *sin;
-		struct sockaddr_in6 *sin6;
 		socklen_t namelen = sizeof(ss);
 		if(status = getsockname(fd, (struct sockaddr*)&ss, &namelen))
 		{
@@ -131,17 +129,35 @@ int tnet_getPort(int32_t fd, uint16_t *port)
 		{
 		case AF_INET:
 			{
-				sin = ((struct sockaddr_in*)&ss);
-				*port = ntohs(sin->sin_port);
-				//hp = gethostbyaddr(&(sin->sin_addr), sizeof(sin->sin_addr), ss.ss_family);
+				struct sockaddr_in *sin = ((struct sockaddr_in*)&ss);
+				if(port)
+				{
+					*port = ntohs(sin->sin_port);
+				}
+				if(ip)
+				{
+					if(status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))
+					{
+						return status;
+					}
+				}
 				break;
 			}
 
 		case AF_INET6:
 			{
-				sin6 = ((struct sockaddr_in6*)&ss);
-				*port = ntohs(sin6->sin6_port);
-				//hp = gethostbyaddr(&(sin6->sin6_addr), sizeof(sin6->sin6_addr), ss.ss_family);
+				struct sockaddr_in6 *sin6 = ((struct sockaddr_in6*)&ss);
+				if(port)
+				{
+					*port = ntohs(sin6->sin6_port);
+				}
+				if(ip)
+				{
+					if(status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))
+					{
+						return status;
+					}
+				}
 				break;
 			}
 
@@ -163,14 +179,14 @@ int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, soc
 	return getnameinfo(sa, salen, node, nodelen, service, servicelen, flags);
 }
 
-int tnet_gethostname(tnet_hostname_t* result)
+int tnet_gethostname(tnet_host_t* result)
 {
 	return gethostname(*result, sizeof(*result));
 }
 
-int tnet_sockaddr_init(const char *host, uint16_t port, tnet_socket_type_t type, struct sockaddr *addr)
+int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, struct sockaddr_storage *ai_addr, int *ai_family, int *ai_socktype, int *ai_protocol)
 {
-	int status;
+	int status = 0;
 	struct addrinfo *result = 0;
 	struct addrinfo *ptr = 0;
 	struct addrinfo hints;
@@ -197,7 +213,20 @@ int tnet_sockaddr_init(const char *host, uint16_t port, tnet_socket_type_t type,
 	{
 		if(ptr->ai_family == hints.ai_family && ptr->ai_socktype == hints.ai_socktype && ptr->ai_protocol == hints.ai_protocol)
 		{
-			memcpy(addr, ptr->ai_addr, ptr->ai_addrlen);
+			/* duplicate addrinfo ==> Bad idea
+			*ai = tsk_calloc(1, sizeof (struct addrinfo));
+			memcpy (*ai, ptr, sizeof (struct addrinfo));
+			(*ai)->ai_addr = tsk_calloc(1, ptr->ai_addrlen);
+			memcpy((*ai)->ai_addr, ptr->ai_addr, ptr->ai_addrlen);
+			(*ai)->ai_addrlen = ptr->ai_addrlen;
+			(*ai)->ai_next = 0;
+			(*ai)->ai_canonname = 0;*/
+
+			if(ai_addr)memcpy(ai_addr, ptr->ai_addr, ptr->ai_addrlen);
+			if(ai_family) *ai_family = ptr->ai_family;
+			if(ai_socktype) *ai_socktype = ptr->ai_socktype;
+			if(ai_protocol) *ai_protocol = ptr->ai_protocol;
+			
 			break;
 		}
 	}
@@ -206,4 +235,62 @@ bail:
 	tnet_freeaddrinfo(result);
 
 	return status;
+}
+
+int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_socket_type_t type, struct sockaddr_storage *addr)
+{
+	int status;
+	struct sockaddr_storage ai_addr;
+
+	if(status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, 0, 0, 0))
+	{
+		return status;
+	}
+	
+	memcpy(addr, &ai_addr, sizeof(ai_addr));
+
+	return status;
+}
+
+int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, tnet_fd_t *fd)
+{
+	int status = -1;
+	struct sockaddr_storage ai_addr;
+	int ai_family, ai_socktype, ai_protocol;
+	*fd = INVALID_SOCKET;
+	
+	if(status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, &ai_family, &ai_socktype, &ai_protocol))
+	{
+		goto bail;
+	}
+	
+	if((*fd = socket(ai_family, ai_socktype, ai_protocol)) == INVALID_SOCKET)
+	{
+		TNET_PRINT_LAST_ERROR();
+		goto bail;
+	}
+	
+	if(status = bind(*fd, (const struct sockaddr*)&ai_addr, sizeof(ai_addr)))
+	{
+		TNET_PRINT_LAST_ERROR();
+		tnet_sockfd_close(fd);
+		
+		goto bail;
+	}
+	
+bail:
+	return (*fd == INVALID_SOCKET) ? status : 0;
+}
+
+int tnet_sockfd_close(tnet_fd_t *fd)
+{
+	int ret;
+#if TNET_UNDER_WINDOWS
+	ret = closesocket(*fd);
+#else
+	ret = close(*fd);
+#endif
+
+	*fd = INVALID_SOCKET;
+	return ret;
 }
