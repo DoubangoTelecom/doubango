@@ -32,30 +32,28 @@
 
 #include "tinySAK_config.h"
 
+#define TSK_TIMER_MANAGER_CREATE()					tsk_object_new(tsk_timer_manager_def_t)
+#define TSK_TIMER_MANAGER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
+
 #define INVALID_TIMER_ID	0
 #define TSK_TIMER_ID_IS_VALID(id) (id != INVALID_TIMER_ID)
 
-typedef enum tsk_timer_retcode_e
-{
-	tsk_error,
-	tsk_stopped,
-	tsk_canceled,
-	tsk_timedout,
-}
-tsk_timer_retcode_t;
 
+typedef void tsk_timer_manager_handle_t;
 typedef uint64_t tsk_timer_id_t;
-typedef int (*tsk_timer_callback)(const void* arg, tsk_timer_retcode_t code);
+typedef int (*tsk_timer_callback)(const void* arg, tsk_timer_id_t timer_id); /**< Callback function called when scheduled timer timeout. */
 
-TINYSAK_API int tsk_timer_manager_start();
-TINYSAK_API int tsk_timer_manager_stop();
+TINYSAK_API int tsk_timer_manager_start(tsk_timer_manager_handle_t *self);
+TINYSAK_API int tsk_timer_manager_isready(tsk_timer_manager_handle_t *self);
+TINYSAK_API int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self);
 #if defined(DEBUG) || defined(_DEBUG)
-TINYSAK_API void tsk_timer_manager_debug();
+TINYSAK_API void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self);
 #endif
 
-TINYSAK_API tsk_timer_id_t tsk_timer_manager_schedule(uint64_t timeout, tsk_timer_callback callback, const void *arg);
-TINYSAK_API int tsk_timer_manager_cancel(tsk_timer_id_t id);
+TINYSAK_API tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback callback, const void *arg);
+TINYSAK_API int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id);
 
 TINYSAK_API const void *tsk_timer_def_t;
+TINYSAK_API const void *tsk_timer_manager_def_t;
 
 #endif /* _TINYSAK_TIMER_H_ */

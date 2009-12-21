@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -344,11 +344,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\smc.bat"
+				>
+			</File>
+			<File
 				RelativePath=".\source\tsip.c"
 				>
 			</File>
 			<File
 				RelativePath=".\source\tsip_message.c"
+				>
+			</File>
+			<File
+				RelativePath=".\source\tsip_timers.c"
 				>
 			</File>
 			<File
@@ -751,6 +759,102 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="transactions"
+				>
+				<File
+					RelativePath=".\source\transactions\tsip_transac.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\transactions\tsip_transac_ict.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\transactions\tsip_transac_ist.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\transactions\tsip_transac_layer.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\transactions\tsip_transac_nict.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\transactions\tsip_transac_nist.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="smc"
+				>
+				<File
+					RelativePath=".\source\smc\tsip_transac_ict_sm.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\smc\tsip_transac_ist_sm.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\smc\tsip_transac_nict_sm.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\smc\tsip_transac_nist_sm.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="transports"
+				>
+				<File
+					RelativePath=".\source\transports\tsip_transport.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\transports\tsip_transport_layer.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dialogs"
+				>
+				<File
+					RelativePath=".\source\dialogs\tsip_dialog.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\dialogs\tsip_dialog_invite.client.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\dialogs\tsip_dialog_invite.server.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\dialogs\tsip_dialog_layer.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\dialogs\tsip_dialog_register.client.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\dialogs\tsip_dialog_register.server.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\dialogs\tsip_dialog_subscribe.client.c"
+					>
+				</File>
+				<File
+					RelativePath=".\source\dialogs\tsip_dialog_subscribe.server.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -767,6 +871,10 @@
 			</File>
 			<File
 				RelativePath=".\include\tinysip\tsip_message.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinysip\tsip_timers.h"
 				>
 			</File>
 			<File
@@ -1173,6 +1281,66 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="transactions"
+				>
+				<File
+					RelativePath=".\include\tinysip\transactions\tsip_transac.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\transactions\tsip_transac_ict.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\transactions\tsip_transac_ist.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\transactions\tsip_transac_layer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\transactions\tsip_transac_nict.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\transactions\tsip_transac_nist.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="smc"
+				>
+				<File
+					RelativePath=".\include\tinysip\smc\tsip_transac_ict_sm.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\smc\tsip_transac_ist_sm.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\smc\tsip_transac_nict_sm.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\smc\tsip_transac_nist_sm.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="transports"
+				>
+				<File
+					RelativePath=".\include\tinysip\transports\tsip_transport.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\transports\tsip_transport_layer.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="ragel"
@@ -1571,6 +1739,50 @@
 			>
 			<File
 				RelativePath=".\abnf\core.abnf"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="smc"
+			>
+			<File
+				RelativePath=".\smc\tsip_transac_ict.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\smc\tsip_transac_ist.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\smc\tsip_transac_nict.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\smc\tsip_transac_nist.sm"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="dialogs"
+			>
+			<File
+				RelativePath=".\include\tinysip\dialogs\tsip_dialog.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinysip\dialogs\tsip_dialog_invite.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinysip\dialogs\tsip_dialog_layer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinysip\dialogs\tsip_dialog_register.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinysip\dialogs\tsip_dialog_subscribe.h"
 				>
 			</File>
 		</Filter>

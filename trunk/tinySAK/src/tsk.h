@@ -46,6 +46,7 @@
 #include "tsk_mutex.h"
 #include "tsk_semaphore.h"
 #include "tsk_thread.h"
+#include "tsk_runnable.h"
 #include "tsk_safeobj.h"
 #include "tsk_object.h"
 

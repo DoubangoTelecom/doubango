@@ -1,4 +1,5 @@
 # Ragel generator
+# For more information about Ragel: http://www.complang.org/ragel/
 
 #export OPTIONS="-C -L -T0 -F1 -G2"
 export OPTIONS="-C -L"

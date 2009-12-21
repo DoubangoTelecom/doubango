@@ -298,6 +298,32 @@ void tsk_list_clear_items(tsk_list_t* list)
 	}
 }
 
+/** @ingroup tsk_list_group
+* Pops first item from the list. The item will be definitely removed from the list.
+* @param list The list from which to pop the item.
+*/
+tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
+{
+	tsk_list_item_t* item = 0;
+	if(list)
+	{
+		item = list->head;
+		if(list->head)
+		{
+			if(list->head->next)
+			{
+				list->head = list->head->next;
+			}
+			else
+			{
+				list->head = list->tail = 0;
+			}
+		}		
+	}
+
+	return item;
+}
+
 /**@ingroup tsk_list_group
 * Add an item to the list.
 * @param list list in which we will add the item.

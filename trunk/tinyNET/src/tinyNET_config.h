@@ -67,4 +67,6 @@
 
 #include <stdint.h>
 
+#define TINYSAK_IMPORTS
+
 #endif /* _TINYNET_H_ */

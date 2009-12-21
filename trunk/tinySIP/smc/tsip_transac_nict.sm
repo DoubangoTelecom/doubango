@@ -1,0 +1,168 @@
+%{
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+
+/**@file tsip_transac_nict.sm
+ * @brief SIP Non-INVITE Client Transaction as per RFC 3261 subcaluse 17.1.2.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+
+
+// FIXME: I haven't found how to remove the prefix.
+#define tsip_transac_nict_TSK_DEBUG_INFO TSK_DEBUG_INFO
+
+%}
+
+
+%class tsip_transac_nict
+%header "tinysip/transactions/tsip_transac_nict.h"
+%start tsip_transac_nict::Started
+%include "tsk_debug.h"
+
+%map tsip_transac_nict
+%%
+
+//------------------------
+//------------------------
+Started
+	Entry
+	{
+		
+	}
+{
+	sm_send() 
+		Trying 
+		{
+			Started_2_Trying_X_send();
+		}
+}
+
+//------------------------
+//------------------------
+Trying
+	Entry
+	{
+	}
+{	
+	sm_timerE()
+		nil 
+		{
+			Trying_2_Trying_X_timerE();
+		}
+
+	sm_timerF()
+		Terminated
+		{
+			Trying_2_Terminated_X_timerF();
+		}
+
+	sm_transportError()
+		Terminated
+		{
+			Trying_2_Terminated_X_transportError();
+		}
+
+	sm_1xx()
+		Proceeding
+		{
+			Trying_2_Proceedding_X_1xx();
+		}
+
+	sm_200_to_699()
+		Completed
+		{
+			Trying_2_Completed_X_200_to_699();
+		}
+
+	Default
+		nil
+		{
+			Trying_2_Trying_X_unknown();
+		}
+}
+
+//------------------------
+//------------------------
+Proceeding
+	Entry
+	{
+	}
+{	
+	sm_timerE()
+		nil
+		{
+			Proceeding_2_Proceeding_X_timerE();
+		}
+
+	sm_timerF()
+		Terminated
+		{
+			Proceeding_2_Terminated_X_timerF();
+		}
+
+	sm_transportError()
+		Terminated
+		{
+			Proceeding_2_Terminated_X_transportError();
+		}
+
+	sm_1xx()
+		nil
+		{
+			Proceeding_2_Proceeding_X_1xx();
+		}
+
+	sm_200_to_699()
+		Completed
+		{
+			Proceeding_2_Completed_X_200_to_699();
+		}
+}
+
+//------------------------
+//------------------------
+Completed
+	Entry
+	{
+	}
+{	
+	sm_timerK()
+		Terminated
+		{
+			Completed_2_Terminated_X_timerK();
+		}
+}
+
+//------------------------
+//------------------------
+Terminated
+	Entry
+	{
+	}
+{
+}
+
+
+%%

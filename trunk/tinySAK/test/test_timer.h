@@ -42,35 +42,37 @@ test_timer_t timers[] =
 	{8, 2500,	"4"},
 };
 
-static int test_timer_callback(const void* arg, tsk_timer_retcode_t code)
+static int test_timer_callback(const void* arg, tsk_timer_id_t timer_id)
 {
 	// Do quick job
-	printf("test_timer - code=%d and arg=%s//\n", code, arg);
+	printf("test_timer - id=%llu and arg=%s//\n", timer_id, arg);
 	return 0;
 }
 
 void test_timer()
 {
 	size_t i;
+	tsk_timer_manager_handle_t *handle = TSK_TIMER_MANAGER_CREATE();
 	printf("test_timer//\n");
 
-	tsk_timer_manager_start();
+	tsk_timer_manager_start(handle);
+	while(!tsk_timer_manager_isready(handle)) tsk_thread_sleep(1000);
 	
 	for(i=0; i<sizeof(timers)/sizeof(test_timer_t); ++i)
 	{
-		timers[i].id = tsk_timer_manager_schedule(timers[i].timeout, test_timer_callback, timers[i].arg);
+		timers[i].id = tsk_timer_manager_schedule(handle, timers[i].timeout, test_timer_callback, timers[i].arg);
 	}
 	
 	//tsk_timer_manager_cancel(timers[5].id);
-	tsk_timer_manager_cancel(timers[6].id);
-	tsk_timer_manager_cancel(timers[2].id);
+	tsk_timer_manager_cancel(handle, timers[6].id);
+	tsk_timer_manager_cancel(handle, timers[2].id);
 
-	//tsk_timer_manager_debug();
-	
+	//tsk_timer_manager_debug();	
 
-	tsk_thread_sleep(3020);
+	tsk_thread_sleep(4000);
 
-	tsk_timer_manager_stop();
+	//tsk_timer_manager_stop(handle);
+	TSK_TIMER_MANAGER_SAFE_FREE(handle);
 }
 
 #endif /* _TEST_TIMER_H_ */

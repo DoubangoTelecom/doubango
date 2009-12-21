@@ -351,6 +351,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tnet_transport_win32.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tnet_utils.c"
 				>
 			</File>

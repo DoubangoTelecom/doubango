@@ -34,13 +34,20 @@
 
 #include "tnet_socket.h"
 #include "tnet_utils.h"
+#include "tsk_runnable.h"
+
+#define DGRAM_MAX_SIZE	8192
+#define STREAM_MAX_SIZE	8192
+
+#define TNET_TRANSPORT_CREATE(host, port, type, description)		tsk_object_new(tnet_transport_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
+#define TNET_TRANSPORT_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 typedef void tnet_transport_handle_t;
 
-typedef int (*tnet_transport_data_read)(tnet_fd_t fd, const void* data, size_t size);
+typedef int (*tnet_transport_data_read)(const void* data, size_t size);
 
-TINYNET_API tnet_transport_handle_t* tnet_transport_start(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
-TINYNET_API int tnet_transport_isrunning(const tnet_transport_handle_t *handle);
+TINYNET_API int tnet_transport_start(tnet_transport_handle_t* transport);
+TINYNET_API int tnet_transport_isready(const tnet_transport_handle_t *handle);
 TINYNET_API const char* tnet_transport_get_description(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
 
@@ -49,10 +56,27 @@ TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *ha
 TINYNET_API size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size);
 TINYNET_API size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, size_t size);
 
-TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_transport_data_read callback);
+TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_data_read callback);
 
 TINYNET_API tnet_socket_type_t tnet_transport_get_socket_type(const tnet_transport_handle_t *handle);
-TINYNET_API int tnet_transport_shutdown(tnet_transport_handle_t** handle);
+TINYNET_API int tnet_transport_shutdown(tnet_transport_handle_t* handle);
+
+typedef struct tnet_transport_s
+{
+	TSK_DECLARE_RUNNABLE;
+
+	tnet_socket_t *master;
+
+	void *context;
+
+	unsigned active:1;
+	void* mainThreadId[1];
+
+	char *description;
+
+	tnet_transport_data_read callback;
+}
+tnet_transport_t;
 
 TINYNET_API const void *tnet_transport_def_t;
 

@@ -359,6 +359,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_buffer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_condwait.h"
 				>
 			</File>
@@ -400,6 +404,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_ppfcs16.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_runnable.h"
 				>
 			</File>
 			<File
@@ -453,6 +461,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_buffer.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_condwait.c"
 				>
 			</File>
@@ -486,6 +498,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_ppfcs16.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_runnable.c"
 				>
 			</File>
 			<File
