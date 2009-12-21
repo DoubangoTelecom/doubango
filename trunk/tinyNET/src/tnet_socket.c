@@ -115,8 +115,6 @@ int tnet_socket_dgram_sendto(tnet_socket_tcp_t *socket, const struct sockaddr *t
 
 
 
-
-
 //========================================================
 //	String object definition
 //
@@ -169,7 +167,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		/* Find our address. */
 		for(ptr = result; ptr; ptr = ptr->ai_next)
 		{
-			if(ptr->ai_family == hints.ai_family && ptr->ai_socktype == hints.ai_socktype && ptr->ai_protocol == hints.ai_protocol)
+			//if(ptr->ai_family == hints.ai_family && ptr->ai_socktype == hints.ai_socktype && ptr->ai_protocol == hints.ai_protocol)
 			{
 				sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 				/* Get local IP string. */

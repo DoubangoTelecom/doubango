@@ -54,7 +54,7 @@
 #define TSK_OBJECT_DEF(self)			((const tsk_object_def_t*)self)
 
 /**
-* TSK OBJECT.
+* Base object.
 */
 typedef struct tsk_object_def_s
 {

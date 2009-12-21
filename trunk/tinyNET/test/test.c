@@ -32,7 +32,7 @@
 
 
 
-#define RUN_TEST_LOOP		0
+#define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_SOCKETS	0
@@ -61,12 +61,8 @@ int main()
 
 #if RUN_TEST_ALL  || RUN_TEST_TRANSPORT
 		test_transport();
-#endif
-
-		
-	}
-
-	getchar();
+#endif		
+	}	
 
 	/* Cleanup the network stack */
 	tnet_cleanup();
