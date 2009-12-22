@@ -20,41 +20,41 @@
 *
 */
 
-/**@file tsk.h
- * @brief This file contains all headers needed to export public API functions.
+/**@file tsip_operation.h
+ * @brief SIP operation.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
+#ifndef TSIP_OPERATION_H
+#define TSIP_OPERATION_H
 
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+#include "tinysip_config.h"
 
-#include "tinySAK_config.h"
+#include "tsk_object.h"
 #include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_heap.h"
-#include "tsk_buffer.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
 #include "tsk_params.h"
 
+#define TSIP_OPERATION_CREATE(stack, ...)		tsk_object_new(tsip_operation_def_t, stack, __VA_ARGS__)
+#define TSIP_OPERATION_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
-#include "tsk_time.h"
-#include "tsk_timer.h"
-#include "tsk_condwait.h"
-#include "tsk_mutex.h"
-#include "tsk_semaphore.h"
-#include "tsk_thread.h"
-#include "tsk_runnable.h"
-#include "tsk_safeobj.h"
-#include "tsk_object.h"
+typedef enum tsip_operation_param_type_e
+{
+	oppname_nvp,
 
-#include "tsk_macros.h"
-#include "tsk_debug.h"
+	oppname_null
+}
+tsip_operation_param_type_t;
 
-#include "tsk_ppfcs16.h"
-#include "tsk_sha1.h"
+#define TSIP_OPERATION_SET_PARAM(NAME_STR, VALUE_STR)			oppname_nvp, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_OPERATION_SET_NULL()								oppname_null
 
-#endif /* _TINYSAK_SAK_H_ */
+typedef void tsip_operation_handle_t;
+
+tsip_operation_handle_t *tsip_operation_clone(const tsip_operation_handle_t *operation);
+
+typedef tsk_list_t tsip_operations_L_t; /**< List of @ref tsip_operation_handle_t elements. */
+TINYSIP_API const void *tsip_operation_def_t;
+
+#endif /* TSIP_OPERATION_H */

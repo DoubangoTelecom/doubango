@@ -36,6 +36,8 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+#include <string.h>
+
 /**@defgroup tsip_header_Call_ID_group SIP Call-ID header.
 */
 
@@ -43,10 +45,21 @@
 *	Ragel state machine.
 */
 
-/* #line 72 "tsip_parser_header_Call_ID.rl" */
+/* #line 74 "tsip_parser_header_Call_ID.rl" */
 
 
-
+int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Call_ID_t *Call_ID = header;
+		if(Call_ID->value)
+		{
+			return tsk_buffer_append(output, Call_ID->value, strlen(Call_ID->value));
+		}
+	}
+	return -1;
+}
 
 tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 {
@@ -54,12 +67,12 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Call_ID_t *hdr_call_id = TSIP_HEADER_CALL_ID_CREATE();
+	tsip_header_Call_ID_t *hdr_call_id = TSIP_HEADER_CALL_ID_CREATE(0);
 	
 	const char *tag_start;
 
 	
-/* #line 63 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 76 "../source/headers/tsip_header_Call_ID.c" */
 static const char _tsip_machine_parser_header_Call_ID_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -139,16 +152,16 @@ static const int tsip_machine_parser_header_Call_ID_error = 0;
 static const int tsip_machine_parser_header_Call_ID_en_main = 1;
 
 
-/* #line 87 "tsip_parser_header_Call_ID.rl" */
+/* #line 100 "tsip_parser_header_Call_ID.rl" */
 	
-/* #line 145 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 158 "../source/headers/tsip_header_Call_ID.c" */
 	{
 	cs = tsip_machine_parser_header_Call_ID_start;
 	}
 
-/* #line 88 "tsip_parser_header_Call_ID.rl" */
+/* #line 101 "tsip_parser_header_Call_ID.rl" */
 	
-/* #line 152 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 165 "../source/headers/tsip_header_Call_ID.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -223,26 +236,26 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tsip_parser_header_Call_ID.rl" */
+/* #line 52 "tsip_parser_header_Call_ID.rl" */
 	{
 		TSK_DEBUG_INFO("CALL_ID:TAG");
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "tsip_parser_header_Call_ID.rl" */
+/* #line 58 "tsip_parser_header_Call_ID.rl" */
 	{
 		PARSER_SET_STRING(hdr_call_id->value);
 		TSK_DEBUG_INFO("CALL_ID:PARSE_VALUE");
 	}
 	break;
 	case 2:
-/* #line 62 "tsip_parser_header_Call_ID.rl" */
+/* #line 64 "tsip_parser_header_Call_ID.rl" */
 	{
 		TSK_DEBUG_INFO("CALL_ID:EOB");
 	}
 	break;
-/* #line 246 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 259 "../source/headers/tsip_header_Call_ID.c" */
 		}
 	}
 
@@ -255,12 +268,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 89 "tsip_parser_header_Call_ID.rl" */
+/* #line 102 "tsip_parser_header_Call_ID.rl" */
 	
 	if( cs < 
-/* #line 262 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 275 "../source/headers/tsip_header_Call_ID.c" */
 17
-/* #line 90 "tsip_parser_header_Call_ID.rl" */
+/* #line 103 "tsip_parser_header_Call_ID.rl" */
  )
 	{
 		TSIP_HEADER_CALL_ID_SAFE_FREE(hdr_call_id);
@@ -286,7 +299,9 @@ static void* tsip_header_Call_ID_create(void *self, va_list * app)
 	tsip_header_Call_ID_t *Call_ID = self;
 	if(Call_ID)
 	{
+		Call_ID->value = tsk_strdup(va_arg(*app, const char *));
 		Call_ID->type = tsip_htype_Call_ID;
+		Call_ID->tostring = tsip_header_Call_ID_tostring;
 	}
 	else
 	{

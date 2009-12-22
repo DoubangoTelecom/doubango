@@ -32,5 +32,24 @@
 
 #include "tinysip_config.h"
 
+#include "tnet_transport.h"
+
+#include "tsk_object.h"
+#include "tsk_list.h"
+
+#define TSIP_TRANSPORT_CREATE(host, port, type, description)		tsk_object_new(tsip_transport_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
+#define TSIP_TRANSPORT_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+
+typedef struct tsip_transport_s
+{
+	TSK_DECLARE_OBJECT;
+
+	tnet_transport_t *net_transport;
+}
+tsip_transport_t;
+
+typedef tsk_list_t tsip_transports_L_t; /**< List of @ref tsip_transport_t elements. */
+
+TINYSIP_API const void *tsip_transport_def_t;
 
 #endif /* TINYSIP_TRANSPORT_H */

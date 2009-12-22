@@ -123,6 +123,58 @@
 
 }%%
 
+
+int tsip_header_Contact_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Contact_t *Contact = header;
+		tsip_contact_t *contact;
+		tsk_list_item_t *item;
+		int ret = 0;
+
+		tsk_list_foreach(item, Contact->contacts)
+		{
+			contact = item->data;
+
+			/* Separator */
+			if(item != Contact->contacts->head)
+			{
+				tsk_buffer_append(output, ",", 1);
+			}
+
+			/* Display name */
+			if(contact->display_name)
+			{
+				tsk_buffer_appendEx(output, "\"%s\"", contact->display_name);
+			}
+
+			/* Uri */
+			if(ret=tsip_uri_tostring(contact->uri, 1, 1, output))
+			{
+				return ret;
+			}
+
+			/* Expires */
+			if(contact->expires >=0)
+			{
+				tsk_buffer_appendEx(output, ";expires=%d", contact->expires);
+			}
+
+			/* Params */
+			if(ret=tsk_params_tostring(contact->params, ';', output))
+			{
+				return ret;
+			}
+		}
+
+		return ret;
+	}
+
+	return -1;
+}
+
+
 tsip_header_Contact_t *tsip_header_Contact_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -190,6 +242,7 @@ static void* tsip_header_Contact_create(void *self, va_list * app)
 	if(Contact)
 	{
 		Contact->type = tsip_htype_Contact;
+		Contact->tostring = tsip_header_Contact_tostring;
 		Contact->contacts = TSK_LIST_CREATE();
 	}
 	else

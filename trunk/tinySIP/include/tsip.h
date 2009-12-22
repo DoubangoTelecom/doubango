@@ -31,6 +31,7 @@
 #define TINYSIP_TSIP_H
 
 #include "tinysip_config.h"
+#include "tinysip/tsip_operation.h"
 
 #include "tsk_runnable.h"
 
@@ -94,6 +95,28 @@ tsip_stack_param_type_t;
 
 typedef void tsip_stack_handle_t;
 
+typedef enum tsip_event_type_e
+{
+	tsip_ack,
+	tsip_bye,
+	tsip_cancel,
+	tsip_message,
+	tsip_notify,
+	tsip_options,
+	tsip_prack,
+	tsip_publish,
+	tsip_refer,
+	tsip_register,
+	tsip_subscribe,
+	tsip_update,
+
+	tsip_unpublish,
+	tsip_unregister,
+	tsip_unsubscribe,
+
+}
+tsip_event_type_t;
+
 typedef struct tsip_event_s
 {
 	TSK_DECLARE_OBJECT;
@@ -101,6 +124,9 @@ typedef struct tsip_event_s
 	const tsip_stack_handle_t * stack;
 	short status_code;
 	char *reason_phrase;
+
+	unsigned incoming:1;
+	tsip_event_type_t type;
 }
 tsip_event_t;
 TINYSIP_API const void *tsip_event_def_t;
@@ -111,8 +137,14 @@ TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
 
+struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self);
+struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);
+struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self);
 
-#define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase) \
-	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase);
+int tsip_stack_register(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation);
+int tsip_stack_unregister(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation);
+
+#define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
+	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);
 
 #endif /* TINYSIP_TSIP_H */

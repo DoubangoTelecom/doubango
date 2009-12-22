@@ -70,7 +70,19 @@
 
 }%%
 
+int tsip_header_Max_Forwards_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Max_Forwards_t *Max_Forwards = header;
+		if(Max_Forwards->value >=0)
+		{
+			return tsk_buffer_appendEx(output, "%d", Max_Forwards->value);
+		}
+	}
 
+	return -1;
+}
 
 tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, size_t size)
 {
@@ -78,7 +90,7 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Max_Forwards_t *hdr_maxf = TSIP_HEADER_MAX_FORWARDS_CREATE();
+	tsip_header_Max_Forwards_t *hdr_maxf = TSIP_HEADER_MAX_FORWARDS_CREATE(-1);
 	
 	const char *tag_start;
 
@@ -112,7 +124,8 @@ static void* tsip_header_Max_Forwards_create(void *self, va_list * app)
 	if(Max_Forwards)
 	{
 		Max_Forwards->type = tsip_htype_Max_Forwards;
-		Max_Forwards->value = -1;
+		Max_Forwards->tostring = tsip_header_Max_Forwards_tostring;
+		Max_Forwards->value = va_arg(*app, int32_t);
 	}
 	else
 	{

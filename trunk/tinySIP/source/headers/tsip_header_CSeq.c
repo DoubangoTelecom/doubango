@@ -46,7 +46,15 @@
 /* #line 77 "tsip_parser_header_CSeq.rl" */
 
 
-
+int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_CSeq_t *CSeq = header;
+		return tsk_buffer_appendEx(output, "%d %s", CSeq->seq, CSeq->method);
+	}
+	return -1;
+}
 
 tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 {
@@ -59,7 +67,7 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 63 "../source/headers/tsip_header_CSeq.c" */
+/* #line 71 "../source/headers/tsip_header_CSeq.c" */
 static const char _tsip_machine_parser_header_CSeq_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -135,16 +143,16 @@ static const int tsip_machine_parser_header_CSeq_error = 0;
 static const int tsip_machine_parser_header_CSeq_en_main = 1;
 
 
-/* #line 92 "tsip_parser_header_CSeq.rl" */
+/* #line 100 "tsip_parser_header_CSeq.rl" */
 	
-/* #line 141 "../source/headers/tsip_header_CSeq.c" */
+/* #line 149 "../source/headers/tsip_header_CSeq.c" */
 	{
 	cs = tsip_machine_parser_header_CSeq_start;
 	}
 
-/* #line 93 "tsip_parser_header_CSeq.rl" */
+/* #line 101 "tsip_parser_header_CSeq.rl" */
 	
-/* #line 148 "../source/headers/tsip_header_CSeq.c" */
+/* #line 156 "../source/headers/tsip_header_CSeq.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -245,7 +253,7 @@ _match:
 		TSK_DEBUG_INFO("CSEQ:EOB");
 	}
 	break;
-/* #line 249 "../source/headers/tsip_header_CSeq.c" */
+/* #line 257 "../source/headers/tsip_header_CSeq.c" */
 		}
 	}
 
@@ -258,12 +266,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 94 "tsip_parser_header_CSeq.rl" */
+/* #line 102 "tsip_parser_header_CSeq.rl" */
 	
 	if( cs < 
-/* #line 265 "../source/headers/tsip_header_CSeq.c" */
+/* #line 273 "../source/headers/tsip_header_CSeq.c" */
 17
-/* #line 95 "tsip_parser_header_CSeq.rl" */
+/* #line 103 "tsip_parser_header_CSeq.rl" */
  )
 	{
 		TSIP_HEADER_CSEQ_SAFE_FREE(hdr_cseq);
@@ -290,6 +298,7 @@ static void* tsip_header_CSeq_create(void *self, va_list * app)
 	if(CSeq)
 	{
 		CSeq->type = tsip_htype_CSeq;
+		CSeq->tostring = tsip_header_CSeq_tostring;
 		CSeq->seq = -1;
 	}
 	else

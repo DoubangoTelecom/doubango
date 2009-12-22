@@ -24,11 +24,11 @@
 
 void test_transac()
 {
-	tsip_transac_nict_t transact;
+	//tsip_transac_nict_t transact;
 
-	tsip_transac_nict_init(&transact);
+	//tsip_transac_nict_init(&transact);
 
-	tsk_thread_sleep(2000);
+	//tsk_thread_sleep(2000);
 }
 
 #endif /* _TEST_TRANSAC_H */

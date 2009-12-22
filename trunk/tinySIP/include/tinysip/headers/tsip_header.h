@@ -40,9 +40,12 @@
 #include "tsk_memory.h"
 #include "tsk_string.h"
 #include "tsk_list.h"
+#include "tsk_buffer.h"
 
 #define TSIP_HEADER(hdr)	((tsip_header_t*)(hdr))
 #define TSIP_HEADER_CREATE()
+
+typedef int (*tsip_header_value_tostring)(const void* header/*FIXME*/, tsk_buffer_t* output);
 
 /**
  * @enum	tsip_header_type_e
@@ -149,6 +152,7 @@ tsip_header_type_t;
 #define TSIP_DECLARE_HEADER struct { \
 	TSK_DECLARE_OBJECT; \
 	tsip_header_type_t type; \
+	tsip_header_value_tostring tostring; \
 	tsk_params_L_t *params; \
 }
 
@@ -156,12 +160,14 @@ typedef TSIP_DECLARE_HEADER tsip_header_t;
 typedef tsk_list_t tsip_headers_L_t; /**< List of @ref tsip_header_t elements. */
 
 TINYSIP_API const char *tsip_header_get_name(tsip_header_type_t type);
-TINYSIP_API void tsip_header_add_param(tsip_header_t *header, const char *name, const char *value);
+TINYSIP_API const char tsip_header_get_param_separator(const tsip_header_t *self, int first);
+TINYSIP_API void tsip_header_add_param(tsip_header_t *self, const char *name, const char *value);
+TINYSIP_API int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output);
 
-#define TSIP_HEADER_HAS_PARAM(header, name)					tsk_params_has_param(header ? header->params : 0, name)
-#define TSIP_HEADER_GET_PARAM_BY_NAME(header, name)			tsk_params_get_param_by_name(header ? header->params : 0, name)
-#define TSIP_HEADER_GET_PARAM_VALUE(header, name)			tsk_params_get_param_value(header ? header->params : 0, name)
-#define TSIP_HEADER_GET_PARAM_VALUE_AS_INT(header, name)	tsk_params_get_param_value_as_int(header ? header->params : 0, name)
+#define TSIP_HEADER_HAS_PARAM(self, name)					tsk_params_has_param(self ? self->params : 0, name)
+#define TSIP_HEADER_GET_PARAM_BY_NAME(self, name)			tsk_params_get_param_by_name(self ? self->params : 0, name)
+#define TSIP_HEADER_GET_PARAM_VALUE(self, name)				tsk_params_get_param_value(self ? self->params : 0, name)
+#define TSIP_HEADER_GET_PARAM_VALUE_AS_INT(self, name)		tsk_params_get_param_value_as_int(self ? self->params : 0, name)
 
 
 #endif /* TINYSIP_HEADERS_H */

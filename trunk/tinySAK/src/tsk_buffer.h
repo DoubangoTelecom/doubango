@@ -40,6 +40,8 @@
 #define TSK_BUFFER_DATA(self)				(self ? TSK_BUFFER(self)->data : 0)
 #define TSK_BUFFER_SIZE(self)				(self ? TSK_BUFFER(self)->size : 0)
 
+#define TSK_BUFFER_TO_STRING(self)			(self ? (const char*)TSK_BUFFER_DATA(self) : 0)
+
 typedef struct tsk_buffer_s
 {
 	TSK_DECLARE_OBJECT;
@@ -50,6 +52,9 @@ typedef struct tsk_buffer_s
 tsk_buffer_t;
 
 typedef tsk_list_t tsk_buffers_L_t; /**< List of @ref tsk_buffer_t elements. */
+
+TINYSAK_API int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...);
+TINYSAK_API int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size);
 
 TINYSAK_API const void *tsk_buffer_def_t;
 

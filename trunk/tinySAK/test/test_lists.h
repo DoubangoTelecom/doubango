@@ -195,7 +195,7 @@ void test_filtered_list()
 	{
 		person_t* item_data = item->data;
 		printf("test_filtered_list/// --> [id=%s and name=%s]\n", item_data->id, item_data->name);
-	}	
+	}
 
 	/* delete all items in the list */
 	TSK_LIST_SAFE_FREE(list);

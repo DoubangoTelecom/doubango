@@ -24,9 +24,22 @@
 
 void test_params()
 {
-	tsk_param_t *param = tsk_param_parse("mamadou=diop", strlen("mamadou=diop"));
+	tsk_buffer_t *buffer = TSK_BUFFER_CREATE(0,0);
 
-	TSK_PARAM_SAFE_FREE(param);
+	tsk_param_t *param1 = tsk_params_parse_param("mamadou=diop", strlen("mamadou=diop"));
+	tsk_param_t *param2 = tsk_params_parse_param("project=doubango", strlen("project=doubango"));
+	tsk_param_t *param3 = tsk_params_parse_param("license=gpl", strlen("license=gpl"));
+
+	tsk_params_L_t *params = TSK_LIST_CREATE();
+	tsk_list_push_back_data(params, (void**)&param1);
+	tsk_list_push_back_data(params, (void**)&param2);
+	tsk_list_push_back_data(params, (void**)&param3);
+
+	tsk_params_tostring(params, ',', buffer);
+	TSK_DEBUG_INFO("Buffer=[%s]", TSK_BUFFER_TO_STRING(buffer));
+
+	TSK_BUFFER_SAFE_FREE(buffer);
+	TSK_LIST_SAFE_FREE(params);
 }
 
 

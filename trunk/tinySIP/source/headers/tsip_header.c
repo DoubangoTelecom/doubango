@@ -142,20 +142,83 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 	}
 }
 
-void tsip_header_add_param(tsip_header_t *header, const char *name, const char *value)
+const char tsip_header_get_param_separator(const tsip_header_t *self, int first)
 {
-	if(header)
+	if(self)
 	{
-		tsk_param_t *param = TSK_PARAM_CREATE();
-
-		if(!header->params)
+		switch(self->type)
 		{
-			header->params = TSK_LIST_CREATE();
+		case tsip_htype_Authorization:
+		case tsip_htype_Proxy_Authenticate:
+		case tsip_htype_Proxy_Authorization:
+			{
+				return first ? ' ' : ',';
+			}
+
+		default:
+			{
+				return ';';
+			}
+		}
+	}
+	return 0;
+}
+
+void tsip_header_add_param(tsip_header_t *self, const char *name, const char *value)
+{
+	if(self)
+	{
+		tsk_param_t *param = TSK_PARAM_CREATE(name, value);
+
+		if(!self->params)
+		{
+			self->params = TSK_LIST_CREATE();
 		}
 
-		param->name = tsk_strdup(name);
-		param->value = tsk_strdup(value);
-
-		tsk_list_push_back_data(header->params, ((void**) &param));
+		tsk_list_push_back_data(self->params, ((void**) &param));
 	}
+}
+
+int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
+{
+	int ret = -1;
+	static const char* hname;
+	static char separator;
+
+	if(self && self->tostring)
+	{
+		tsk_list_item_t *item;
+		int first = 1;
+		hname = tsip_header_get_name(self->type);
+		ret = 0; // for empty lists
+
+		/*
+		* Header name
+		*/
+		tsk_buffer_appendEx(output, "%s: ", hname);
+
+		/*
+		* Header value.
+		*/
+		self->tostring(self, output);
+
+		/*
+		* Parameters
+		*/
+		tsk_list_foreach(item, self->params)
+		{
+			tsk_param_t* param = item->data;
+			separator = tsip_header_get_param_separator(self, (self->params->head == item));
+			if(ret=tsk_buffer_appendEx(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value))
+			{
+				return ret;
+			}
+		}
+
+		/*
+		* CRLF
+		*/
+		tsk_buffer_append(output, "\r\n", 2);
+	}
+	return ret;
 }

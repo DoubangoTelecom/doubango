@@ -76,7 +76,15 @@
 
 }%%
 
-
+int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_CSeq_t *CSeq = header;
+		return tsk_buffer_appendEx(output, "%d %s", CSeq->seq, CSeq->method);
+	}
+	return -1;
+}
 
 tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 {
@@ -118,6 +126,7 @@ static void* tsip_header_CSeq_create(void *self, va_list * app)
 	if(CSeq)
 	{
 		CSeq->type = tsip_htype_CSeq;
+		CSeq->tostring = tsip_header_CSeq_tostring;
 		CSeq->seq = -1;
 	}
 	else

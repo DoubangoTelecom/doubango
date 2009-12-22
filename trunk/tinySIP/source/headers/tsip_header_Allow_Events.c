@@ -36,6 +36,8 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+#include <string.h>
+
 /**@defgroup tsip_header_Allow_events_group SIP Allow_events header.
 */
 
@@ -46,7 +48,33 @@
 /* #line 74 "tsip_parser_header_Allow_Events.rl" */
 
 
+int tsip_header_Allow_Event_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Allow_Events_t *Allow_Events = header;
+		tsk_list_item_t *item;
+		tsk_string_t *str;
+		int ret = 0;
 
+		tsk_list_foreach(item, Allow_Events->events)
+		{
+			str = item->data;
+			if(item == Allow_Events->events->head)
+			{
+				tsk_buffer_append(output, str->value, strlen(str->value));
+			}
+			else
+			{
+				tsk_buffer_appendEx(output, ",%s", str->value);
+			}
+		}
+
+		return ret;
+	}
+
+	return -1;
+}
 
 tsip_header_Allow_Events_t *tsip_header_Allow_Events_parse(const char *data, size_t size)
 {
@@ -294,6 +322,7 @@ static void* tsip_header_Allow_Events_create(void *self, va_list * app)
 	if(Allow_events)
 	{
 		Allow_events->type = tsip_htype_Allow_Events;
+		Allow_events->tostring = tsip_header_Allow_Event_tostring;
 	}
 	else
 	{

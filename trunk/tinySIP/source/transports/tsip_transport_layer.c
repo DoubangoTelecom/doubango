@@ -28,3 +28,63 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinysip/transports/tsip_transport_layer.h"
+
+
+int tsip_transport_layer_send(const tsip_transport_layer_t* self, const tsip_message_t *msg)
+{
+	if(self && self->stack)
+	{
+		
+	}
+	return -1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//	SIP transport layer object definition
+//
+static void* tsip_transport_layer_create(void * self, va_list * app)
+{
+	tsip_transport_layer_t *layer = self;
+	if(layer)
+	{
+		layer->stack = va_arg(*app, const tsip_stack_handle_t *);
+	}
+	return self;
+}
+
+static void* tsip_transport_layer_destroy(void * self)
+{ 
+	tsip_transport_layer_t *layer = self;
+	if(layer)
+	{
+		TSK_LIST_SAFE_FREE(layer->transports);
+	}
+	return self;
+}
+
+static int tsip_transport_layer_cmp(const void *obj1, const void *obj2)
+{
+	return -1;
+}
+
+static const tsk_object_def_t tsip_transport_layer_def_s = 
+{
+	sizeof(tsip_transport_layer_t),
+	tsip_transport_layer_create, 
+	tsip_transport_layer_destroy,
+	tsip_transport_layer_cmp, 
+};
+const void *tsip_transport_layer_def_t = &tsip_transport_layer_def_s;

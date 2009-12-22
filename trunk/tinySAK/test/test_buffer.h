@@ -19,37 +19,27 @@
 * along with DOUBANGO.
 *
 */
-#ifndef _TEST_STACK_H
-#define _TEST_STACK_H
+#ifndef _TEST_BUFFER_H_
+#define _TEST_BUFFER_H_
 
-int test_stack_callback(tsip_event_t *sipevent)
+/* url encoding/decoding */
+void test_buffer()
 {
-	tsk_object_ref(sipevent);
+	tsk_buffer_t *buffer = TSK_BUFFER_CREATE(0, 0); 
 	
-	TSK_DEBUG_INFO("STACK event: %d [%s]", sipevent->status_code, sipevent->reason_phrase);
+	tsk_buffer_append(buffer, "Diop", strlen("Diop"));
+	tsk_buffer_append(buffer, " ", strlen(" "));
+	tsk_buffer_append(buffer, "Mamadou", strlen("Mamadou"));
+	tsk_buffer_append(buffer, "\r\n", strlen("\r\n"));
 
-	tsk_object_unref(sipevent);
+	TSK_DEBUG_INFO("1. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
 
-	return 0;
+	tsk_buffer_appendEx(buffer, "val1=[%s] and val2=[%d]\n", "value1", 12);
+	tsk_buffer_appendEx(buffer, "val3=[%s] and val4=[%s]\n", "458888554778555LL", "1254852");
+
+	TSK_DEBUG_INFO("2. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
+
+	TSK_BUFFER_SAFE_FREE(buffer);
 }
 
-void test_stack()
-{
-	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, TSIP_STACK_SET_NULL());
-	tsip_operation_handle_t *op = TSIP_OPERATION_CREATE(stack,
-		TSIP_OPERATION_SET_PARAM("expires", "600000"),
-
-		TSIP_OPERATION_SET_NULL());
-
-	tsip_stack_start(stack);
-
-	tsk_thread_sleep(1000);
-
-	tsip_stack_stop(stack);
-
-	TSIP_OPERATION_SAFE_FREE(op);
-	tsip_stack_destroy(stack);
-}
-
-
-#endif /* _TEST_STACK_H */
+#endif /* _TEST_BUFFER_H_ */

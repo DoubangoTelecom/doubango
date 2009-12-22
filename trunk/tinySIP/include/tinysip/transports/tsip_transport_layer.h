@@ -32,5 +32,25 @@
 
 #include "tinysip_config.h"
 
+#include "tinysip/transports/tsip_transport.h"
+#include "tinysip/tsip_message.h"
+#include "tsip.h"
+
+#define TSIP_TRANSPORT_LAYER_CREATE(stack)				tsk_object_new(tsip_transport_layer_def_t, stack)
+#define TSIP_TRANSPORT_LAYER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
+
+typedef struct tsip_transport_layer_s
+{
+	TSK_DECLARE_OBJECT;
+
+	const tsip_stack_handle_t *stack;
+
+	tsip_transports_L_t *transports;
+}
+tsip_transport_layer_t;
+
+int tsip_transport_layer_send(const tsip_transport_layer_t* self, const tsip_message_t *msg);
+
+TINYSIP_API const void *tsip_transport_layer_def_t;
 
 #endif /* TINYSIP_TRANSPORT_LAYER_H */

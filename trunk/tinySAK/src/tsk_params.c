@@ -50,7 +50,7 @@ tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 		const char* start = line;
 		const char* end = (line + size);
 		const char* equal = strstr(line, "=");
-		tsk_param_t *param = TSK_PARAM_CREATE();
+		tsk_param_t *param = TSK_PARAM_CREATE(0, 0);
 
 		if(equal && equal<end)
 		{
@@ -71,21 +71,21 @@ tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 	return 0;
 }
 
-int tsk_params_has_param(const tsk_params_L_t *params, const char* name)
+int tsk_params_has_param(const tsk_params_L_t *self, const char* name)
 {
-	if(params)
+	if(self)
 	{
-		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(params, pred_find_param_by_name, name);
+		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
 		return item_const ? 1 : 0;
 	}
 	return 0;
 }
 
-const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *params, const char* name)
+const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, const char* name)
 {
-	if(params)
+	if(self)
 	{
-		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(params, pred_find_param_by_name, name);
+		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
 		if(item_const)
 		{
 			return item_const->data;
@@ -94,11 +94,11 @@ const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *params, co
 	return 0;
 }
 
-const char *tsk_params_get_param_value(const tsk_params_L_t *params, const char* name)
+const char *tsk_params_get_param_value(const tsk_params_L_t *self, const char* name)
 {
-	if(params)
+	if(self)
 	{
-		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(params, pred_find_param_by_name, name);
+		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
 		if(item_const && item_const->data)
 		{
 			tsk_param_t *param = item_const->data;
@@ -108,11 +108,70 @@ const char *tsk_params_get_param_value(const tsk_params_L_t *params, const char*
 	return 0;
 }
 
-int tsk_params_get_param_value_as_int(const tsk_params_L_t *params, const char* name)
+int tsk_params_get_param_value_as_int(const tsk_params_L_t *self, const char* name)
 {
-	const char *value = tsk_params_get_param_value(params, name);
+	const char *value = tsk_params_get_param_value(self, name);
 	return value ? atoi(value) : -1;
 }
+
+int tsk_params_param_tostring(const tsk_param_t *param, tsk_buffer_t* output)
+{
+	if(param)
+	{
+		return tsk_buffer_appendEx(output, param->value?"%s=%s":"%s", param->name, param->value);
+	}
+	return -1;
+}
+
+
+int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_buffer_t* output)
+{
+	int ret = -1;
+
+	if(self)
+	{
+		tsk_list_item_t *item;
+		ret = 0; // for empty lists
+		tsk_list_foreach(item, self)
+		{
+			tsk_param_t* param = item->data;
+			//tsk_params_param_tostring(param, output);
+			if(item == self->head)
+			{
+				if(ret=tsk_buffer_appendEx(output, param->value?"%s=%s":"%s", param->name, param->value))
+				{
+					goto bail;
+				}
+			}
+			else
+			{
+				if(ret=tsk_buffer_appendEx(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value))
+				{
+					goto bail;
+				}
+			}
+		}
+	}
+
+bail:
+	return ret;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -125,6 +184,21 @@ int tsk_params_get_param_value_as_int(const tsk_params_L_t *params, const char* 
 static void* tsk_param_create(void * self, va_list * app)
 {
 	tsk_param_t *param = self;
+	if(param)
+	{
+		const char* name = va_arg(*app, const char *);
+		const char* value = va_arg(*app, const char *);
+
+		if(name) 
+		{
+			param->name = tsk_strdup(name);
+			if(value) 
+			{
+				param->value = tsk_strdup(value);
+			}
+		}
+	}
+
 	return self;
 }
 

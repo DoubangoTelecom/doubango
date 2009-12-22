@@ -43,9 +43,10 @@
 #define RUN_TEST_SEMAPHORE			0
 #define RUN_TEST_SAFEOBJECT			0
 #define RUN_TEST_OBJECT				0
-#define RUN_TEST_PARAMS				0
-#define RUN_TEST_TIMER				1
+#define RUN_TEST_PARAMS				1
+#define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
+#define RUN_TEST_BUFFER				0
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -94,6 +95,11 @@
 #if RUN_TEST_RUNNABLE || RUN_TEST_ALL
 #include "test_runnable.h"
 #endif
+
+#if RUN_TEST_BUFFER || RUN_TEST_ALL
+#include "test_buffer.h"
+#endif
+
 
 
 
@@ -187,6 +193,11 @@ int main()
 		printf("\n\n");
 #endif
 
+
+#if RUN_TEST_BUFFER || RUN_TEST_ALL
+		/* test buffer */
+		test_buffer();
+#endif
 	}
 
 	getchar();

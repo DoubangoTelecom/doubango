@@ -32,6 +32,8 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+#define TSIP_HEADER_MAX_FORWARDS_DEFAULT 70
+
 /**@def TSIP_HEADER_MAX_FORWARDS_CREATE
 * Creates new sip 'Max-Forwards' header.  You must call @ref TSIP_HEADER_MAX_FORWARDS_SAFE_FREE to free the header.
 * @sa TSIP_HEADER_MAX_FORWARDS_SAFE_FREE.
@@ -40,7 +42,7 @@
 * Safely free a sip 'Max-Forwards' header previously created using TSIP_HEADER_MAX_FORWARDS_CREATE.
 * @sa TSIP_HEADER_MAX_FORWARDS_CREATE.
 */
-#define TSIP_HEADER_MAX_FORWARDS_CREATE()		tsk_object_new(tsip_header_Max_Forwards_def_t)
+#define TSIP_HEADER_MAX_FORWARDS_CREATE(max)		tsk_object_new(tsip_header_Max_Forwards_def_t, (int32_t) max)
 #define TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

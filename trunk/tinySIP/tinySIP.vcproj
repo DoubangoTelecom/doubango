@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -121,7 +121,7 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\smc&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYSIP_EXPORTS;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="8"
@@ -353,6 +353,10 @@
 			</File>
 			<File
 				RelativePath=".\source\tsip_message.c"
+				>
+			</File>
+			<File
+				RelativePath=".\source\tsip_operation.c"
 				>
 			</File>
 			<File
@@ -791,6 +795,10 @@
 				Name="smc"
 				>
 				<File
+					RelativePath=".\source\smc\tsip_dialog_register_sm.c"
+					>
+				</File>
+				<File
 					RelativePath=".\source\smc\tsip_transac_ict_sm.c"
 					>
 				</File>
@@ -871,6 +879,10 @@
 			</File>
 			<File
 				RelativePath=".\include\tinysip\tsip_message.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinysip\tsip_operation.h"
 				>
 			</File>
 			<File
@@ -1313,6 +1325,10 @@
 				Name="smc"
 				>
 				<File
+					RelativePath=".\include\tinysip\smc\tsip_dialog_register_sm.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinysip\smc\tsip_transac_ict_sm.h"
 					>
 				</File>
@@ -1745,6 +1761,10 @@
 		<Filter
 			Name="smc"
 			>
+			<File
+				RelativePath=".\smc\tsip_dialog_register.sm"
+				>
+			</File>
 			<File
 				RelativePath=".\smc\tsip_transac_ict.sm"
 				>

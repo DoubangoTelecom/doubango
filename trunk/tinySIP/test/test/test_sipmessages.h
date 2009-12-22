@@ -48,10 +48,11 @@
 	"l: 180\r\n" \
 	"\r\n"
 
-void test_messages()
+void test_parser()
 {
 	tsip_ragel_state_t state;
 	tsip_message_t *message = TSIP_MESSAGE_CREATE();
+	tsk_buffer_t *buffer = TSK_BUFFER_CREATE(0,0);
 	TSIP_BOOLEAN enabled;
 	int32_t expires;
 	uint32_t clength;
@@ -74,9 +75,41 @@ void test_messages()
 	expires = tsip_message_getExpires(message);
 	clength = TSIP_MESSAGE_CONTENT_LENGTH(message);
 	
+	tsip_message_tostring(message, buffer);
+	TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));
+
 	TSIP_MESSAGE_SAFE_FREE(message);
+	TSK_BUFFER_SAFE_FREE(buffer);
 }
 
+
+void test_requests()
+{
+	tsk_buffer_t *buffer = TSK_BUFFER_CREATE(0,0);
+	tsip_uri_t *from = tsip_uri_parse("sip:mamadou@micromethod.com", strlen("sip:mamadou@micromethod.com"));
+	
+
+	tsip_request_t *request = tsip_request_new("REGISTER", "sip:micromethod.com", from, from, "ABCDEFGHIJKLMOPQRSTUVWXYZ");
+	
+	tsip_message_tostring(request, buffer);
+	TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));
+	
+
+	TSIP_URI_SAFE_FREE(from);
+	TSIP_REQUEST_SAFE_FREE(request);
+	TSK_BUFFER_SAFE_FREE(buffer);
+}
+
+void test_responses()
+{
+
+}
+
+void test_messages()
+{
+	test_parser();
+	//test_requests();
+}
 
 
 #endif /* _TEST_SIPMESSAGES_H */

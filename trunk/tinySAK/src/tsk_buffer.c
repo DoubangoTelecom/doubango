@@ -30,10 +30,88 @@
 #include "tsk_buffer.h"
 #include "tsk_memory.h"
 
+#include <stdio.h>
+
+#if defined(_MSC_VER) || TSK_UNDER_WINDOWS
+#	define vsnprintf	_vsnprintf
+#endif
+
+int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
+{
+	int len = 0;
+	va_list list;
+	uint8_t *buffer;
+	size_t oldsize;
+
+	if(!self)
+	{
+		return -1;
+	}
+
+	oldsize = self->size;
+	buffer = (uint8_t*)TSK_BUFFER_DATA(self);
+	
+	/* initialize variable arguments */
+	va_start(list, format);
+	
+	/* compute destination len for windows mobile
+	*/
+#ifdef _WIN32_WCE
+	{
+		int n;
+		len = (strlen(format)*2);
+		buffer = tsk_realloc(buffer, (oldsize+len));
+		for(;;)
+		{
+			if( (n = vsnprintf((char*)(buffer + oldsize), len, format, list)) >= 0 && (n<=len) )
+			{
+				len = n;
+				break;
+			}
+			else
+			{
+				len += 5;
+				buffer = tsk_realloc(buffer, (oldsize+len));
+			}
+		}
+	}
+#else
+    len = vsnprintf(0, 0, format, list);
+    buffer = tsk_realloc(buffer, oldsize+len);
+    vsnprintf((buffer + oldsize), len
+#if !defined(_MSC_VER) || defined(__GNUC__)
+		+1
+#endif
+		, format, list);
+#endif
+	
+	/* reset variable arguments */
+	va_end( list );
+
+	self->data = buffer;
+	self->size = (oldsize+len);
+	
+	return 0;
+}
 
 
-
-
+int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size)
+{
+	if(self && size)
+	{
+		size_t oldsize = self->size;
+		size_t newsize = oldsize + size;
+		
+		self->data = tsk_realloc(self->data, newsize);
+		if(self->data)
+		{
+			memcpy(((uint8_t*)TSK_BUFFER_DATA(self) + oldsize), data, size);
+			self->size = newsize;
+			return 0;
+		}
+	}
+	return -1;
+}
 
 
 

@@ -37,11 +37,6 @@
  */
 
 
-// FIXME: I haven't found how to remove the prefix.
-#define tsip_transac_nict_TSK_DEBUG_INFO TSK_DEBUG_INFO
-
-
-
 #include <assert.h>
 #include "tinysip/transactions/tsip_transac_nict.h"
 #include "tsk_debug.h"

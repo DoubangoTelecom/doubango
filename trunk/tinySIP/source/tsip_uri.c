@@ -31,11 +31,71 @@
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
+#include "tsk_string.h"
+
+#include <string.h>
 
 /**@defgroup tsip_uri_group
 */
 
+int __tsip_uri_tostring(const tsip_uri_t *uri, int with_params, tsk_buffer_t *output)
+{
+	tsk_istr_t port;
 
+	if(uri->port) tsk_itoa(uri->port, &port);
+
+	/* sip:alice:secretword@atlanta.com:65535 */
+	tsk_buffer_appendEx(output, "%s%s%s%s%s%s%s%s%s", 
+
+		uri->scheme ? uri->scheme : "",
+		uri->scheme ? ":" : "",
+
+		uri->user_name ? uri->user_name : "",
+
+		uri->password ? ":" : "",
+		uri->password ? uri->password : "",
+
+		uri->host ? (uri->user_name ? "@" : "") : "",
+		uri->host ? uri->host : "",
+
+		uri->port ? ":" : "",
+		uri->port ? port : ""
+		);
+	
+	/* Params */
+	if(with_params && !TSK_LIST_IS_EMPTY(uri->params))
+	{
+		tsk_buffer_append(output, ";", 1);
+		tsk_params_tostring(uri->params, ';', output);
+	}
+	
+	return 0;
+}
+
+int tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote, tsk_buffer_t *output)
+{
+	if(quote)
+	{
+		if(uri->display_name)
+		{
+			tsk_buffer_appendEx(output, "\"%s\"", uri->display_name);
+		}
+
+		tsk_buffer_append(output, "<", 1);
+		__tsip_uri_tostring(uri, with_params, output);
+		tsk_buffer_append(output, ">", 1);
+
+		return 0;
+	}
+	else
+	{
+		__tsip_uri_tostring(uri, with_params, output);
+
+		return 0;
+	}
+
+	return -1;
+}
 
 
 

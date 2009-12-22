@@ -83,7 +83,7 @@
 	}
 	
 	my_tag_param = "tag"i EQUAL token>tag %parse_tag;
-	to_param = my_tag_param | (generic_param)>tag %parse_param;
+	to_param = my_tag_param | (generic_param--my_tag_param)>tag %parse_param;
 	
 	URI = (scheme HCOLON any+)>tag %parse_uri;
 	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;
@@ -96,7 +96,23 @@
 
 }%%
 
-
+int tsip_header_To_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		int ret;
+		const tsip_header_To_t *To = header;
+		if(ret=tsip_uri_tostring(To->uri, 1, 1, output))
+		{
+			return ret;
+		}
+		if(To->tag)
+		{
+			tsk_buffer_appendEx(output, ";tag=%s", To->tag);
+		}
+	}
+	return -1;
+}
 
 tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size)
 {
@@ -104,7 +120,7 @@ tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_To_t *hdr_to = TSIP_HEADER_TO_CREATE();
+	tsip_header_To_t *hdr_to = TSIP_HEADER_TO_CREATE(0,0,0);
 	
 	const char *tag_start;
 
@@ -137,7 +153,16 @@ static void* tsip_header_To_create(void *self, va_list * app)
 	tsip_header_To_t *To = self;
 	if(To)
 	{
+		const char* display_name = va_arg(*app, const char *);
+		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t *);
+		const char* tag = va_arg(*app, const char *);
+
+		To->display_name = tsk_strdup(display_name);
+		if(uri) To->uri = tsk_object_ref((void *)uri);
+		To->tag = tsk_strdup(tag);
+
 		To->type = tsip_htype_To;
+		To->tostring = tsip_header_To_tostring;
 	}
 	else
 	{

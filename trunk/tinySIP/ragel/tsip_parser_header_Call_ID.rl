@@ -34,6 +34,8 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+#include <string.h>
+
 /**@defgroup tsip_header_Call_ID_group SIP Call-ID header.
 */
 
@@ -71,7 +73,18 @@
 
 }%%
 
-
+int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Call_ID_t *Call_ID = header;
+		if(Call_ID->value)
+		{
+			return tsk_buffer_append(output, Call_ID->value, strlen(Call_ID->value));
+		}
+	}
+	return -1;
+}
 
 tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 {
@@ -79,7 +92,7 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Call_ID_t *hdr_call_id = TSIP_HEADER_CALL_ID_CREATE();
+	tsip_header_Call_ID_t *hdr_call_id = TSIP_HEADER_CALL_ID_CREATE(0);
 	
 	const char *tag_start;
 
@@ -112,7 +125,9 @@ static void* tsip_header_Call_ID_create(void *self, va_list * app)
 	tsip_header_Call_ID_t *Call_ID = self;
 	if(Call_ID)
 	{
+		Call_ID->value = tsk_strdup(va_arg(*app, const char *));
 		Call_ID->type = tsip_htype_Call_ID;
+		Call_ID->tostring = tsip_header_Call_ID_tostring;
 	}
 	else
 	{

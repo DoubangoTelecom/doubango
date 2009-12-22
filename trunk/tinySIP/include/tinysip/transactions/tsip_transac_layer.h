@@ -55,8 +55,6 @@ typedef tsk_list_t tsip_transac_layers_L_t;
 TINYSIP_API const void *tsip_transac_layer_def_t;
 
 
-tsip_transac_t* tsip_transac_layer_transac_new(tsip_transac_layer_t *self, const tsip_request_t* request, int client);
-#define tsip_transac_layer_transac_client_new(self, request) tsip_transac_layer_transac_new(self, request, 1)
-#define tsip_transac_layer_transac_server_new(self, request) tsip_transac_layer_transac_new(self, request, 0)
+const tsip_transac_t* tsip_transac_layer_new(tsip_transac_layer_t *self, const tsip_message_t* msg);
 
 #endif /* TINYSIP_TRANSAC_LAYER_H */

@@ -33,6 +33,12 @@
 #include "tinysip_config.h"
 #include "tinysip/smc/tsip_transac_nict_sm.h"
 #include "tinysip/transactions/tsip_transac.h"
+#include "tinysip/tsip_message.h"
+
+#define TSIP_TRANSAC_NICT_CREATE(stack, type, reliable, cseq_value, cseq_method, callid)		tsk_object_new(tsip_transac_nict_def_t, (const tsip_stack_handle_t *)stack, (tsip_transac_type_t)type, (unsigned)reliable, (int32_t)cseq_value, (const char*)cseq_method, (const char*)callid)
+#define TSIP_TRANSAC_NICT_SAFE_FREE(self)														tsk_object_unref(self), self = 0
+
+#define TSIP_TRANSAC_NICT(self)		((tsip_transac_nict_t*)(self))
 
 typedef struct tsip_transac_nict
 {
@@ -40,13 +46,15 @@ typedef struct tsip_transac_nict
 
 	struct tsip_transac_nictContext _fsm; /**< The state machine context. */
 
+	const tsip_request_t* request;
 	tsip_timer_t timerE;
 	tsip_timer_t timerF;
 	tsip_timer_t timerK;
 }
 tsip_transac_nict_t;
 
-TINYSIP_API void tsip_transac_nict_init(tsip_transac_nict_t *self);
+void tsip_transac_nict_init(tsip_transac_nict_t *self);
+int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* request);
 
 void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self);
 void tsip_transac_nict_Trying_2_Trying_X_timerE(tsip_transac_nict_t *self);
@@ -61,5 +69,9 @@ void tsip_transac_nict_Proceeding_2_Terminated_X_transportError(tsip_transac_nic
 void tsip_transac_nict_Proceeding_2_Proceeding_X_1xx(tsip_transac_nict_t *self);
 void tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(tsip_transac_nict_t *self);
 void tsip_transac_nict_Completed_2_Terminated_X_timerK(tsip_transac_nict_t *self);
+
+
+
+TINYSIP_API const void *tsip_transac_nict_def_t;
 
 #endif /* TINYSIP_TRANSAC_NICT_H */
