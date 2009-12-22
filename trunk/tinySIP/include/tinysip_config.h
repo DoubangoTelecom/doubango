@@ -45,8 +45,9 @@
 
 #include <stdint.h>
 
-/* Tiny SAK */
+/* FIXME */
 #define TINYSAK_IMPORTS
+#define TINYNET_IMPORTS
 
 /* FIXME */
 #define TSIP_TRUE	1

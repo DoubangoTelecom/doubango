@@ -44,6 +44,8 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+#include <string.h>
+
 /**@defgroup tsip_header_Privacy_group SIP Privacy header.
 */
 
@@ -54,7 +56,33 @@
 /* #line 79 "tsip_parser_header_Privacy.rl" */
 
 
+int tsip_header_Privacy_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Privacy_t *Privacy = header;
+		tsk_list_item_t *item;
+		tsk_string_t *str;
+		int ret = 0;
 
+		tsk_list_foreach(item, Privacy->values)
+		{
+			str = item->data;
+			if(item == Privacy->values->head)
+			{
+				tsk_buffer_append(output, str->value, strlen(str->value));
+			}
+			else
+			{
+				tsk_buffer_appendEx(output, ";%s", str->value);
+			}
+		}
+
+		return ret;
+	}
+
+	return -1;
+}
 
 tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size)
 {
@@ -290,6 +318,7 @@ static void* tsip_header_Privacy_create(void *self, va_list * app)
 	if(Privacy)
 	{
 		Privacy->type = tsip_htype_Privacy;
+		Privacy->tostring = tsip_header_Privacy_tostring;
 	}
 	else
 	{

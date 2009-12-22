@@ -27,9 +27,9 @@
 const char* uris[] = 
 {
 	//== SIP:
-	"sip:alice@atlanta.com;p1=23",
+	/*"sip:alice@atlanta.com;p1=23",
 	"sip:*666*@atlanta.com",
-	"sip:#66#@atlanta.com",
+	"sip:#66#@atlanta.com",*/
 	"sip:alice:secretword@atlanta.com",
 	"sip:alice:secretword@atlanta.com:65535;transport=tcp",
     "sip:+1-212-555-1212:1234@gateway.com;user=phone",
@@ -65,7 +65,18 @@ const char* uris[] =
 	"tel:#666#",
 };
 #include "tsk_string.h"
-void test_uri()
+
+void test_uri_tostring(const tsip_uri_t *uri)
+{
+	tsk_buffer_t *buffer = TSK_BUFFER_CREATE(0,0);
+
+	tsip_uri_tostring(uri, 1, 1, buffer);
+	TSK_DEBUG_INFO("uri_to_string=%s", TSK_BUFFER_TO_STRING(buffer));
+
+	TSK_BUFFER_SAFE_FREE(buffer);
+}
+
+void test_uri_parser()
 {
 	int i;
 	tsk_list_item_t *item = 0;
@@ -95,6 +106,8 @@ void test_uri()
 			}
 
 			printf("Is-secure: %s\n", TSIP_URI_IS_SECURE(uri) ? "YES" : "NO");
+
+			test_uri_tostring(uri);
 		}
 		else
 		{
@@ -105,6 +118,11 @@ void test_uri()
 
 		TSIP_URI_SAFE_FREE(uri);
 	}
+}
+
+void test_uri()
+{
+	test_uri_parser();
 }
 
 #endif /* _TEST_SIPURI_H */

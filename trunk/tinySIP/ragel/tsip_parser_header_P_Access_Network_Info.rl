@@ -77,7 +77,20 @@
 
 }%%
 
+int tsip_header_P_Access_Network_Info_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = header;
+		if(P_Access_Network_Info->value)
+		{
+			tsk_buffer_append(output, P_Access_Network_Info->value, strlen(P_Access_Network_Info->value));
+		}
+		return 0;
+	}
 
+	return -1;
+}
 
 tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(const char *data, size_t size)
 {
@@ -119,6 +132,7 @@ static void* tsip_header_P_Access_Network_Info_create(void *self, va_list * app)
 	if(P_Access_Network_Info)
 	{
 		P_Access_Network_Info->type = tsip_htype_P_Access_Network_Info;
+		P_Access_Network_Info->tostring = tsip_header_P_Access_Network_Info_tostring;
 	}
 	else
 	{

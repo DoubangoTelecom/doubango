@@ -41,8 +41,8 @@
 * Safely free a sip 'To' header previously created using TSIP_HEADER_TO_CREATE.
 * @sa TSIP_HEADER_TO_CREATE.
 */
-#define TSIP_HEADER_TO_CREATE()		tsk_object_new(tsip_header_To_def_t)
-#define TSIP_HEADER_TO_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+#define TSIP_HEADER_TO_CREATE(display_name, uri, tag)			tsk_object_new(tsip_header_To_def_t, (const char*)display_name, (const tsip_uri_t*)uri, (const char*)tag)
+#define TSIP_HEADER_TO_SAFE_FREE(self)							tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

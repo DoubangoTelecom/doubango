@@ -43,8 +43,14 @@
 
 #include "tsk_object.h"
 
-#define TSIP_MESSAGE_IS_REQUEST(message) ((message) ? (message)->type == tsip_request : 0)
-#define TSIP_MESSAGE_IS_RESPONSE(message) ((message) ? (message)->type == tsip_response : 0)
+#define TSIP_MESSAGE_VERSION_10					"SIP/1.0"
+#define TSIP_MESSAGE_VERSION_20					"SIP/2.0"
+#define TSIP_MESSAGE_VERSION_DEFAULT			TSIP_MESSAGE_VERSION_20
+
+#define TSIP_MESSAGE_IS_REQUEST(self) ((self) ? (self)->type == tsip_request : 0)
+#define TSIP_MESSAGE_IS_RESPONSE(self) ((self) ? (self)->type == tsip_response : 0)
+
+#define TSIP_MESSAGE_AS_REQUEST(self)	((tsip_request_t*)(self))
 
 
 /**@def TSIP_MESSAGE_CREATE
@@ -56,8 +62,12 @@
 * Safely free a sip messgae previously created using TSIP_MESSAGE_CREATE.
 * @sa TSIP_MESSAGE_CREATE.
 */
-#define TSIP_MESSAGE_CREATE()		tsk_object_new(tsip_message_def_t)
-#define TSIP_MESSAGE_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+#define TSIP_MESSAGE_CREATE()											tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_unknown)
+#define TSIP_REQUEST_CREATE(method, uristring)							tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_request, (const char*)method, (const char*)uristring)
+#define TSIP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_response, (const tsip_request_t*)request, (short)status, (const char*)phrase)
+#define TSIP_MESSAGE_SAFE_FREE(self)									tsk_object_unref(self), self = 0
+#define TSIP_REQUEST_SAFE_FREE(self)									TSIP_MESSAGE_SAFE_FREE(self)
+#define TSIP_RESPONSE_SAFE_FREE(self)									TSIP_MESSAGE_SAFE_FREE(self)
 
 
 #define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)((message && message->Content_Length) ? message->Content_Length->length : 0)
@@ -155,20 +165,22 @@ tsip_message_t;
 typedef tsip_message_t tsip_request_t; /**< SIP request message. */
 typedef tsip_message_t tsip_response_t; /**< SIP response message. */
 
-TINYSIP_API tsip_header_t	*tsip_message_get_headerAt(const tsip_message_t *message, tsip_header_type_t type, size_t index);
-TINYSIP_API tsip_header_t	*tsip_message_get_header(const tsip_message_t *message, tsip_header_type_t type);
-TINYSIP_API TSIP_BOOLEAN	tsip_message_allowed(const tsip_message_t *message, const char* method);
-TINYSIP_API TSIP_BOOLEAN	tsip_message_supported(const tsip_message_t *message, const char* option);
-TINYSIP_API TSIP_BOOLEAN	tsip_message_required(const tsip_message_t *message, const char* option);
+TINYSIP_API int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr);
+
+TINYSIP_API tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, size_t index);
+TINYSIP_API tsip_header_t *tsip_message_get_header(const tsip_message_t *self, tsip_header_type_t type);
+TINYSIP_API TSIP_BOOLEAN tsip_message_allowed(const tsip_message_t *self, const char* method);
+TINYSIP_API TSIP_BOOLEAN tsip_message_supported(const tsip_message_t *self, const char* option);
+TINYSIP_API TSIP_BOOLEAN tsip_message_required(const tsip_message_t *self, const char* option);
 
 
 TINYSIP_API int32_t		tsip_message_getExpires(const tsip_message_t *message);
 TINYSIP_API uint32_t	tsip_message_getContent_length(const tsip_message_t *message);
 TINYSIP_API int32_t		tsip_message_getCSeq(const tsip_message_t *message);
 
+TINYSIP_API int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output);
 
-
-
+TINYSIP_API tsip_request_t *tsip_request_new(const char* method, const char *uristring, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id);
 
 TINYSIP_API const void *tsip_message_def_t;
 

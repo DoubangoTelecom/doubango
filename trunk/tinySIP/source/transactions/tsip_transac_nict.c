@@ -28,11 +28,10 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinysip/transactions/tsip_transac_nict.h"
-#include "tsk_string.h"
+
 
 #define DEBUG_STATE_MACHINE				1
 #define TIMER_SCHEDULE(timeout, arg)	tsk_timer_manager_schedule(0, timeout, tsip_transac_nict_timer_callback, arg)
-#define TSIP_TRANSAC_NICT(self)			((tsip_transac_nict_t*)self)
 
 /*== Timer callback function.
 */
@@ -72,20 +71,34 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
 	
 	 /* set timer E */
 	 self->timerE.timeout = TSIP_TIMER_GET(E);
-
-	 // Send the request
-	 tsip_transac_nictContext_sm_send(&self->_fsm);
 }
 
+
+int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* request)
+{
+	int ret = -1;
+	if(self && request)
+	{
+		tsip_transac_nictContext_sm_send(&self->_fsm);
+		return 0;
+	}
+	return -1;
+}
 
 /* Started -> (send) -> Trying
 */
 void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self)
 {
-	/* When entering this state, the client transaction SHOULD set timer F to fire in 64*T1 seconds.  The request
+	/* 
+		When entering this state, the client transaction SHOULD set timer F to fire in 64*T1 seconds.  The request
 		MUST be passed to the transport layer for transmission.  If an unreliable transport is in use, the client transaction MUST set timer
-		E to fire in T1 seconds. */
+		E to fire in T1 seconds. 
+	*/
 
+	//if(tsip_transac_send(TSIP_TRANSAC(self), (const tsip_message_t *)request))
+	{
+		// what?
+	}
 	self->timerE.id = TIMER_SCHEDULE(self->timerE.timeout, self);
 }
 
@@ -164,3 +177,75 @@ void tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(tsip_transac_nict_t *
 void tsip_transac_nict_Completed_2_Terminated_X_timerK(tsip_transac_nict_t *self)
 {
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//	NICT object definition
+//
+static void* tsip_transac_nict_create(void * self, va_list * app)
+{
+	tsip_transac_nict_t *transac = self;
+	if(transac)
+	{
+		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t *);
+		tsip_transac_type_t type = va_arg(*app, tsip_transac_type_t);
+		unsigned reliable = va_arg(*app, unsigned);
+		int32_t cseq_value = va_arg(*app, int32_t);
+		const char *cseq_method = va_arg(*app, const char *);
+		const char *callid = va_arg(*app, const char *);
+
+		/* Initialize base class */
+		tsip_transac_init(TSIP_TRANSAC(transac), stack, type, reliable, cseq_value, cseq_method, callid);
+
+		/* Initialize NICT object */
+		tsip_transac_nict_init(transac);
+	}
+	return self;
+}
+
+static void* tsip_transac_nict_destroy(void * self)
+{ 
+	tsip_transac_nict_t *transac = self;
+	if(transac)
+	{
+		
+		/* DeInitialize base class */
+		tsip_transac_deinit(TSIP_TRANSAC(transac));
+	}
+	return self;
+}
+
+static int tsip_transac_nict_cmp(const void *obj1, const void *obj2)
+{
+	return -1;
+}
+
+static const tsk_object_def_t tsip_transac_nict_def_s = 
+{
+	sizeof(tsip_transac_nict_t),
+	tsip_transac_nict_create, 
+	tsip_transac_nict_destroy,
+	tsip_transac_nict_cmp, 
+};
+const void *tsip_transac_nict_def_t = &tsip_transac_nict_def_s;

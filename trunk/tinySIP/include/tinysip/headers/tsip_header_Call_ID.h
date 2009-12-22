@@ -40,7 +40,7 @@
 * Safely free a sip 'Call-ID' header previously created using TSIP_HEADER_CALL_ID_CREATE.
 * @sa TSIP_HEADER_CALL_ID_CREATE.
 */
-#define TSIP_HEADER_CALL_ID_CREATE()		tsk_object_new(tsip_header_Call_ID_def_t)
+#define TSIP_HEADER_CALL_ID_CREATE(call_id)		tsk_object_new(tsip_header_Call_ID_def_t, (const char*)call_id)
 #define TSIP_HEADER_CALL_ID_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -34,6 +34,7 @@
 
 #include "tinysip/transactions/tsip_transac_layer.h"
 #include "tinysip/dialogs/tsip_dialog_layer.h"
+#include "tinysip/transports/tsip_transport_layer.h"
 
 #include "tsk_timer.h"
 #include "tsk_memory.h"
@@ -89,9 +90,12 @@ typedef struct tsip_stack_s
 	/* Internals. */
 	tsk_timer_manager_handle_t* timer_mgr;
 	tsip_timers_t timers;
+	tsip_operations_L_t *operations;
 
+	/* Layers */
 	tsip_dialog_layer_t *layer_dialog;
 	tsip_transac_layer_t *layer_transac;
+	tsip_transport_layer_t *layer_transport;
 }
 tsip_stack_t;
 
@@ -237,11 +241,15 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	}
 	va_end(params);
 
+	/* Internals */
 	stack->callback = callback;
 	stack->timer_mgr = TSK_TIMER_MANAGER_CREATE();
+	stack->operations = TSK_LIST_CREATE();
 
+	/* Layers */
 	stack->layer_dialog = TSIP_DIALOG_LAYER_CREATE(stack);
 	stack->layer_transac = TSIP_TRANSAC_LAYER_CREATE(stack);
+	stack->layer_transport = TSIP_TRANSPORT_LAYER_CREATE(stack);
 
 	return stack;
 }
@@ -319,15 +327,80 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 		tsip_stack_t *stack = self;
 
 		TSK_TIMER_MANAGER_SAFE_FREE(stack->timer_mgr);
+		TSK_LIST_SAFE_FREE(stack->operations);
 
 		TSIP_DIALOG_LAYER_SAFE_FREE(stack->layer_dialog);
 		TSIP_TRANSAC_LAYER_SAFE_FREE(stack->layer_transac);
+		TSIP_TRANSPORT_LAYER_SAFE_FREE(stack->layer_transport);
 
 		return 0;
 	}
 
 	return -1;
 }
+
+struct tsip_dialog_layer_s * tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self)
+{
+	if(self)
+	{
+		const tsip_stack_t *stack = self;
+		return stack->layer_dialog;
+	}
+	return 0;
+}
+
+struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self)
+{
+	if(self)
+	{
+		const tsip_stack_t *stack = self;
+		return stack->layer_transac;
+	}
+	return 0;
+}
+
+struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self)
+{
+	if(self)
+	{
+		const tsip_stack_t *stack = self;
+		return stack->layer_transport;
+	}
+	return 0;
+}
+
+
+
+
+
+
+int tsip_stack_register(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation)
+{
+	if(self && operation)
+	{
+		const tsip_stack_t *stack = self;
+		tsip_operation_handle_t *op = tsip_operation_clone(operation);
+
+		tsk_list_push_back_data(stack->operations, (void**)&op);
+	}
+	return -1;
+}
+
+int tsip_stack_unregister(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation)
+{
+	if(self && operation)
+	{
+		const tsip_stack_t *stack = self;
+		tsip_operation_handle_t *op = tsip_operation_clone(operation);
+
+		tsk_list_push_back_data(stack->operations, (void**)&op);
+	}
+	return -1;
+}
+
+
+
+
 
 
 
@@ -382,6 +455,9 @@ static void* tsip_event_create(void * self, va_list * app)
 		sipevent->stack = va_arg(*app, const tsip_stack_handle_t *);
 		sipevent->status_code = va_arg(*app, short);
 		sipevent->reason_phrase = tsk_strdup(va_arg(*app, const char *));
+
+		sipevent->incoming = va_arg(*app, unsigned);
+		sipevent->type = va_arg(*app, tsip_event_type_t);
 	}
 	return self;
 }

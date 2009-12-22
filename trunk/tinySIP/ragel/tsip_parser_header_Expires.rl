@@ -70,7 +70,19 @@
 
 }%%
 
+int tsip_header_Expires_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Expires_t *Expires = header;
+		if(Expires->delta_seconds >=0)
+		{
+			return tsk_buffer_appendEx(output, "%d", Expires->delta_seconds);
+		}
+	}
 
+	return -1;
+}
 
 tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size)
 {
@@ -112,6 +124,7 @@ static void* tsip_header_Expires_create(void *self, va_list * app)
 	if(Expires)
 	{
 		Expires->type = tsip_htype_Expires;
+		Expires->tostring = tsip_header_Expires_tostring;
 		Expires->delta_seconds = -1;
 	}
 	else

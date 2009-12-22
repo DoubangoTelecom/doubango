@@ -32,6 +32,7 @@
 
 #include "tinysip_config.h"
 
+#include "tsip.h"
 #include "tinysip/tsip_timers.h"
 #include "tinysip/tsip_message.h"
 
@@ -53,6 +54,8 @@ tsip_transac_type_t;
 #define TSIP_DECLARE_TRANSAC struct { \
 	TSK_DECLARE_OBJECT; \
 	\
+	const tsip_stack_handle_t * stack;\
+	\
 	tsip_transac_type_t type; \
 	\
 	unsigned reliable:1; \
@@ -67,6 +70,8 @@ typedef TSIP_DECLARE_TRANSAC tsip_transac_t;
 
 typedef tsk_list_t tsip_transacs_L_t;
 
-int tsip_transac_send();
+int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, unsigned reliable, int32_t cseq_value, const char* cseq_method, const char* callid);
+int tsip_transac_send(tsip_transac_t *self, const tsip_message_t *msg);
+int tsip_transac_deinit(tsip_transac_t *transac);
 
 #endif /* TINYSIP_TRANSAC_H */

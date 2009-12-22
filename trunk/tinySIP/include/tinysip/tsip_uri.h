@@ -34,6 +34,7 @@
 
 #include "tsk_object.h"
 #include "tsk_params.h"
+#include "tsk_buffer.h"
 
 /**@def TSIP_URI_CREATE
 * Creates new sip/sips/tel uri.  You must call @ref TSIP_URI_SAFE_FREE to free the uri.
@@ -90,6 +91,8 @@ typedef struct tsip_uri_s
 	tsk_params_L_t *params; /**< list of tsk_param_t elements containing all parameters. */
 }
 tsip_uri_t;
+
+TINYSIP_API int tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote, tsk_buffer_t *output);
 
 TINYSIP_API const void *tsip_uri_def_t;
 

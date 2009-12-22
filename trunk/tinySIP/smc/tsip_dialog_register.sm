@@ -21,8 +21,8 @@
 *
 */
 
-/**@file tsip_transac_nict.sm
- * @brief SIP Non-INVITE Client Transaction as per RFC 3261 subcaluse 17.1.2.
+/**@file tsip_dialog_register.sm.
+ * @brief SIP dialog REGISTER.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -31,12 +31,12 @@
 %}
 
 
-%class tsip_transac_nict
-%header "tinysip/transactions/tsip_transac_nict.h"
-%start tsip_transac_nict::Started
+%class tsip_dialog_register
+%header "tinysip/dialogs/tsip_dialog_register.h"
+%start tsip_dialog_register::Started
 %include "tsk_debug.h"
 
-%map tsip_transac_nict
+%map tsip_dialog_register
 %%
 
 //------------------------
@@ -61,92 +61,72 @@ Trying
 	{
 	}
 {	
-	sm_timerE()
+	sm_1xx()
 		nil 
 		{
-			Trying_2_Trying_X_timerE();
+			Trying_2_Trying_X_1xx();
 		}
 
-	sm_timerF()
-		Terminated
+	sm_2xx(registering: int) [registering]
+		Connected 
 		{
-			Trying_2_Terminated_X_timerF();
+			Trying_2_Connected_X_2xx();
 		}
 
-	sm_transportError()
-		Terminated
+	sm_2xx(registering: int) [!registering]
+		Terminated 
 		{
-			Trying_2_Terminated_X_transportError();
+			Trying_2_Terminated_X_2xx();
 		}
 
-	sm_1xx()
-		Proceeding
+	sm_401_407_421_494(succeed: int) [succeed]
+		nil 
 		{
-			Trying_2_Proceedding_X_1xx();
+			Trying_2_Trying_X_401_407_421_494();
 		}
 
-	sm_200_to_699()
-		Completed
+	sm_401_407_421_494(succeed: int) [!succeed]
+		Terminated 
 		{
-			Trying_2_Completed_X_200_to_699();
+			Trying_2_Terminated_X_401_407_421_494();
 		}
 
-	Default
-		nil
+	sm_423()
+		nil 
 		{
-			Trying_2_Trying_X_unknown();
-		}
-}
-
-//------------------------
-//------------------------
-Proceeding
-	Entry
-	{
-	}
-{	
-	sm_timerE()
-		nil
-		{
-			Proceeding_2_Proceeding_X_timerE();
+			Trying_2_Trying_X_423();
 		}
 
-	sm_timerF()
-		Terminated
+	sm_300_to_699()
+		Terminated 
 		{
-			Proceeding_2_Terminated_X_timerF();
+			Trying_2_Terminated_X_300_to_699();
 		}
 
-	sm_transportError()
-		Terminated
+	sm_cancel()
+		Terminated 
 		{
-			Proceeding_2_Terminated_X_transportError();
-		}
-
-	sm_1xx()
-		nil
-		{
-			Proceeding_2_Proceeding_X_1xx();
-		}
-
-	sm_200_to_699()
-		Completed
-		{
-			Proceeding_2_Completed_X_200_to_699();
+			Trying_2_Terminated_X_cancel();
 		}
 }
 
 //------------------------
 //------------------------
-Completed
+Connected
 	Entry
 	{
 	}
 {	
-	sm_timerK()
-		Terminated
+	sm_unregister()
+		Trying
 		{
-			Completed_2_Terminated_X_timerK();
+			Connected_2_Trying_X_unregister();
+		}
+
+	sm_refresh()
+		Trying
+		{
+			Connected_2_Trying_X_refresh();
 		}
 }
 
@@ -159,5 +139,21 @@ Terminated
 {
 }
 
-
+//------------------------
+//------------------------
+Default 
+	Entry 
+	{ 
+	}
+{
+	sm_transportError()
+		Terminated
+		{
+			Any_2_Terminated_X_transportError();
+		}
+	Default
+		nil 
+		{
+		}
+}
 %%

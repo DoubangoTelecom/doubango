@@ -36,6 +36,8 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+#include <string.h>
+
 /**@defgroup tsip_header_Require_group SIP Require header.
 */
 
@@ -46,7 +48,33 @@
 /* #line 70 "tsip_parser_header_Require.rl" */
 
 
+int tsip_header_Require_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Require_t *Require = header;
+		tsk_list_item_t *item;
+		tsk_string_t *str;
+		int ret = 0;
 
+		tsk_list_foreach(item, Require->options)
+		{
+			str = item->data;
+			if(item == Require->options->head)
+			{
+				tsk_buffer_append(output, str->value, strlen(str->value));
+			}
+			else
+			{
+				tsk_buffer_appendEx(output, ",%s", str->value);
+			}
+		}
+
+		return ret;
+	}
+
+	return -1;
+}
 
 tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size)
 {
@@ -282,6 +310,7 @@ static void* tsip_header_Require_create(void *self, va_list * app)
 	if(Require)
 	{
 		Require->type = tsip_htype_Require;
+		Require->tostring = tsip_header_Require_tostring;
 	}
 	else
 	{

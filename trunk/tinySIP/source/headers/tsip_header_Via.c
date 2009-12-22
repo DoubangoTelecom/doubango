@@ -43,6 +43,56 @@
 
 /* #line 138 "tsip_parser_header_Via.rl" */
 
+int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Via_t *Via = header;
+		tsk_istr_t port, rport, ttl;
+
+		if(Via->port) tsk_itoa(Via->port, &port);
+		if(Via->rport) tsk_itoa(Via->rport, &rport);
+		if(Via->ttl) tsk_itoa(Via->ttl, &ttl);
+
+		/* SIP/2.0/UDP [::]:1988;test=1234;comp=sigcomp;rport=254;ttl=457;received=192.0.2.101;branch=z9hG4bK1245420841406\r\n" */
+		return tsk_buffer_appendEx(output, "%s/%s/%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+
+			Via->proto_name ? Via->proto_name : "SIP",
+
+			Via->proto_version ? Via->proto_version : "2.0",
+
+			Via->transport ? Via->transport : "UDP",
+
+			Via->host ? Via->host : "127.0.0.1",
+
+			Via->port ? ":" : "",
+			Via->port ? port : "",
+
+			Via->maddr ? ";maddr=" : "",
+			Via->maddr ? Via->maddr : "",
+
+			Via->sigcomp_id ? ";sigcomp-id=" : "",
+			Via->sigcomp_id ? Via->sigcomp_id : "",
+
+			Via->comp ? ";comp=" : "",
+			Via->comp ? Via->comp : "",
+
+			Via->rport ? ";rport=" : "",
+			Via->rport ? rport : "",
+
+			Via->ttl ? ";ttl=" : "",
+			Via->ttl ? ttl : "",
+
+			Via->received ? ";received=" : "",
+			Via->received ? Via->received : "",
+
+			Via->branch ? ";branch=" : "",
+			Via->branch ? Via->branch : ""
+			);
+	}
+	return -1;
+}
+
 
 tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 {
@@ -1353,6 +1403,7 @@ static void* tsip_header_Via_create(void *self, va_list * app)
 	if(via)
 	{
 		via->type = tsip_htype_Via;
+		via->tostring = tsip_header_Via_tostring;
 	}
 	else
 	{

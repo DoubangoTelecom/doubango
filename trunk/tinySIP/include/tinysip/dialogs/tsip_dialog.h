@@ -21,7 +21,7 @@
 */
 
 /**@file tsip_dialog.h
- * @brief SIP dialogtion base class as per RFC 3261 subclause 17.
+ * @brief SIP dialog base class as per RFC 3261 subclause 17.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -32,7 +32,9 @@
 
 #include "tinysip_config.h"
 
+#include "tsip.h"
 #include "tinysip/tsip_timers.h"
+#include "tinysip/tsip_message.h"
 
 #include "tsk_object.h"
 #include "tsk_list.h"
@@ -51,6 +53,8 @@ tsip_dialog_state_t;
 #define TSIP_DECLARE_DIALOG struct { \
 	TSK_DECLARE_OBJECT; \
 	\
+	const tsip_stack_handle_t * stack;\
+	\
 	tsip_dialog_state_t state; \
 	\
 	char* tag_local; \
@@ -65,5 +69,11 @@ tsip_dialog_state_t;
 typedef TSIP_DECLARE_DIALOG tsip_dialog_t;
 
 typedef tsk_list_t tsip_dialogs_L_t;
+
+int tsip_dialog_request_send(const tsip_dialog_t *self, const tsip_request_t* request);
+int tsip_dialog_response_send(const tsip_dialog_t *, const tsip_response_t* response);
+
+int tsip_dialog_init(tsip_dialog_t *self, const tsip_stack_handle_t * stack);
+int tsip_dialog_deinit(tsip_dialog_t *self);
 
 #endif /* TINYSIP_DIALOG_H */

@@ -37,26 +37,26 @@
 #include "tsk_string.h"
 
 
-tsip_transac_t* tsip_transac_layer_transac_new(tsip_transac_layer_t *self, const tsip_request_t* request, int client)
+const tsip_transac_t* tsip_transac_layer_new(tsip_transac_layer_t *self, const tsip_message_t* msg)
 {
-	if(self && request)
+	if(self && msg)
 	{
-		if(tsk_strequals(request->line_request.method, "INVITE"))
+		if(TSIP_MESSAGE_IS_REQUEST(msg))
 		{
-			if(client)
+			if(tsk_striequals(TSIP_MESSAGE_AS_REQUEST(msg)->line_request.method, "INVITE"))
 			{
 				// INVITE Client transaction (ICT)
 			}
 			else
 			{
-				// INVITE Server transaction (IST)
+				// NON-INVITE Client transaction (NICT)
 			}
 		}
 		else
 		{
-			if(client)
+			if(tsk_striequals(TSIP_MESSAGE_AS_REQUEST(msg)->line_request.method, "INVITE"))
 			{
-				// NON-INVITE Client transaction (NICT)
+				// INVITE Server transaction (IST)
 			}
 			else
 			{

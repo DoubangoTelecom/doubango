@@ -53,6 +53,20 @@
 
 /* #line 99 "tsip_parser_header_P_Preferred_Identity.rl" */
 
+int tsip_header_Preferred_Identity_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		int ret;
+		const tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = header;
+
+		if(ret=tsip_uri_tostring(P_Preferred_Identity->uri, 1, 1, output))
+		{
+			return ret;
+		}
+	}
+	return -1;
+}
 
 
 
@@ -1492,6 +1506,7 @@ static void* tsip_header_P_Preferred_Identity_create(void *self, va_list * app)
 	if(P_Preferred_Identity)
 	{
 		P_Preferred_Identity->type = tsip_htype_P_Preferred_Identity;
+		P_Preferred_Identity->tostring = tsip_header_Preferred_Identity_tostring;
 	}
 	else
 	{

@@ -82,7 +82,7 @@
 	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;
 	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
 	my_tag_param = "tag"i EQUAL token>tag %parse_tag;
-	from_param = my_tag_param | (generic_param)>tag %parse_param;
+	from_param = (my_tag_param) | (generic_param--my_tag_param)>tag %parse_param;
 	from_spec = ( my_name_addr | URI ) :> ( SEMI from_param )*;
 	
 	From = ( "From"i | "f"i ) HCOLON from_spec;
@@ -92,7 +92,23 @@
 
 }%%
 
-
+int tsip_header_From_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		int ret;
+		const tsip_header_From_t *From = header;
+		if(ret=tsip_uri_tostring(From->uri, 1, 1, output))
+		{
+			return ret;
+		}
+		if(From->tag)
+		{
+			tsk_buffer_appendEx(output, ";tag=%s", From->tag);
+		}
+	}
+	return -1;
+}
 
 tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size)
 {
@@ -100,7 +116,7 @@ tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_From_t *hdr_from = TSIP_HEADER_FROM_CREATE();
+	tsip_header_From_t *hdr_from = TSIP_HEADER_FROM_CREATE(0,0,0);
 	
 	const char *tag_start;
 
@@ -133,7 +149,16 @@ static void* tsip_header_From_create(void *self, va_list * app)
 	tsip_header_From_t *From = self;
 	if(From)
 	{
+		const char* display_name = va_arg(*app, const char *);
+		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t *);
+		const char* tag = va_arg(*app, const char *);
+
+		From->display_name = tsk_strdup(display_name);
+		if(uri) From->uri = tsk_object_ref((void *)uri);
+		From->tag = tsk_strdup(tag);
+
 		From->type = tsip_htype_From;
+		From->tostring = tsip_header_From_tostring;
 	}
 	else
 	{

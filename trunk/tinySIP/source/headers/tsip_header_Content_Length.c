@@ -45,7 +45,16 @@
 
 /* #line 71 "tsip_parser_header_Content_Length.rl" */
 
+int tsip_header_Content_Length_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Content_Length_t *Content_Length = header;		
+		return tsk_buffer_appendEx(output, "%d", Content_Length->length);
+	}
 
+	return -1;
+}
 
 
 tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data, size_t size)
@@ -277,6 +286,7 @@ static void* tsip_header_Content_Length_create(void *self, va_list * app)
 	if(Content_Length)
 	{
 		Content_Length->type = tsip_htype_Content_Length;
+		Content_Length->tostring = tsip_header_Content_Length_tostring;
 	}
 	else
 	{
