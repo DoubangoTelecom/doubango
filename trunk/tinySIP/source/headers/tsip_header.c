@@ -164,21 +164,6 @@ const char tsip_header_get_param_separator(const tsip_header_t *self, int first)
 	return 0;
 }
 
-void tsip_header_add_param(tsip_header_t *self, const char *name, const char *value)
-{
-	if(self)
-	{
-		tsk_param_t *param = TSK_PARAM_CREATE(name, value);
-
-		if(!self->params)
-		{
-			self->params = TSK_LIST_CREATE();
-		}
-
-		tsk_list_push_back_data(self->params, ((void**) &param));
-	}
-}
-
 int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 {
 	int ret = -1;

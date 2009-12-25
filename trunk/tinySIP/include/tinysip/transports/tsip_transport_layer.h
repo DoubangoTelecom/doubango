@@ -45,11 +45,18 @@ typedef struct tsip_transport_layer_s
 
 	const tsip_stack_handle_t *stack;
 
+	unsigned running:1;
 	tsip_transports_L_t *transports;
 }
 tsip_transport_layer_t;
 
-int tsip_transport_layer_send(const tsip_transport_layer_t* self, const tsip_message_t *msg);
+int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* host, tnet_port_t port, const char* description);
+int tsip_transport_layer_remove(tsip_transport_layer_t* self, const char* description);
+
+int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, const tsip_message_t *msg);
+
+int tsip_transport_layer_start(const tsip_transport_layer_t* self);
+int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self);
 
 TINYSIP_API const void *tsip_transport_layer_def_t;
 

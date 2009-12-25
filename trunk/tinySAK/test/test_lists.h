@@ -111,7 +111,12 @@ void test_basic_list()
 	{
 		tsk_string_t* item_data = ((tsk_string_t*)item->data);
 		printf("test_basic_list/// --> [%s]\n", item_data->value);
-	}
+	}	
+
+	tsk_list_remove_item(list, list->tail);
+	tsk_list_remove_item(list, list->tail);
+	tsk_list_remove_item(list, list->tail);
+	tsk_list_remove_item(list, list->tail);
 
 	/* delete all items in the list */
 	TSK_LIST_SAFE_FREE(list);

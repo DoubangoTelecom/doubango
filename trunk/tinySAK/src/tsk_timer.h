@@ -34,9 +34,10 @@
 
 #define TSK_TIMER_MANAGER_CREATE()					tsk_object_new(tsk_timer_manager_def_t)
 #define TSK_TIMER_MANAGER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
+#define TSK_TIMER_CALLBACK(callback)				((tsk_timer_callback)callback)
 
-#define INVALID_TIMER_ID	0
-#define TSK_TIMER_ID_IS_VALID(id) (id != INVALID_TIMER_ID)
+#define TSK_INVALID_TIMER_ID						0
+#define TSK_TIMER_ID_IS_VALID(id)					(id != TSK_INVALID_TIMER_ID)
 
 
 typedef void tsk_timer_manager_handle_t;

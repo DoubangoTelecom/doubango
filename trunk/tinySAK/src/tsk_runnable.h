@@ -67,7 +67,7 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 {																					\
 	if(TSK_RUNNABLE(self) && TSK_RUNNABLE(self)->initialized)						\
 	{																				\
-		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, &object);				\
+		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, (void**)&object);		\
 		tsk_semaphore_increment(TSK_RUNNABLE(self)->semaphore);						\
 	}																				\
 	else																			\

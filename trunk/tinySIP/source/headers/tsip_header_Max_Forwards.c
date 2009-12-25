@@ -45,6 +45,7 @@
 
 /* #line 71 "tsip_parser_header_Max_Forwards.rl" */
 
+
 int tsip_header_Max_Forwards_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -59,19 +60,18 @@ int tsip_header_Max_Forwards_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
-
 tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Max_Forwards_t *hdr_maxf = TSIP_HEADER_MAX_FORWARDS_CREATE(-1);
+	tsip_header_Max_Forwards_t *hdr_maxf = TSIP_HEADER_MAX_FORWARDS_CREATE(TSIP_HEADER_MAX_FORWARDS_NONE);
 	
 	const char *tag_start;
 
 	
-/* #line 63 "../source/headers/tsip_header_Max_Forwards.c" */
+/* #line 75 "../source/headers/tsip_header_Max_Forwards.c" */
 static const char _tsip_machine_parser_header_Max_Forwards_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -139,16 +139,16 @@ static const int tsip_machine_parser_header_Max_Forwards_error = 0;
 static const int tsip_machine_parser_header_Max_Forwards_en_main = 1;
 
 
-/* #line 86 "tsip_parser_header_Max_Forwards.rl" */
+/* #line 98 "tsip_parser_header_Max_Forwards.rl" */
 	
-/* #line 133 "../source/headers/tsip_header_Max_Forwards.c" */
+/* #line 145 "../source/headers/tsip_header_Max_Forwards.c" */
 	{
 	cs = tsip_machine_parser_header_Max_Forwards_start;
 	}
 
-/* #line 87 "tsip_parser_header_Max_Forwards.rl" */
+/* #line 99 "tsip_parser_header_Max_Forwards.rl" */
 	
-/* #line 140 "../source/headers/tsip_header_Max_Forwards.c" */
+/* #line 152 "../source/headers/tsip_header_Max_Forwards.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -242,7 +242,7 @@ _match:
 		TSK_DEBUG_INFO("MAX_FORWARDS:EOB");
 	}
 	break;
-/* #line 234 "../source/headers/tsip_header_Max_Forwards.c" */
+/* #line 246 "../source/headers/tsip_header_Max_Forwards.c" */
 		}
 	}
 
@@ -255,12 +255,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 88 "tsip_parser_header_Max_Forwards.rl" */
+/* #line 100 "tsip_parser_header_Max_Forwards.rl" */
 	
 	if( cs < 
-/* #line 250 "../source/headers/tsip_header_Max_Forwards.c" */
+/* #line 262 "../source/headers/tsip_header_Max_Forwards.c" */
 20
-/* #line 89 "tsip_parser_header_Max_Forwards.rl" */
+/* #line 101 "tsip_parser_header_Max_Forwards.rl" */
  )
 	{
 		TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(hdr_maxf);

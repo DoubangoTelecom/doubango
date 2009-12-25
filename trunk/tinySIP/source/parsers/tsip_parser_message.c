@@ -32,6 +32,8 @@
 #include "tinysip/parsers/tsip_parser_message.h"
 #include "tinysip/parsers/tsip_parser_header.h"
 
+#include "tinysip/parsers/tsip_parser_uri.h"
+
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
@@ -43,140 +45,158 @@ static void tsip_message_parser_eob(tsip_ragel_state_t *state);
 *	Ragel state machine.
 */
 
-/* #line 139 "tsip_parser_message.rl" */
+/* #line 185 "tsip_parser_message.rl" */
 
 
 
 /* Regel data */
 
-/* #line 53 "../source/parsers/tsip_parser_message.c" */
+/* #line 55 "../source/parsers/tsip_parser_message.c" */
 static const char _tsip_machine_parser_message_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
-	3, 1, 4, 1, 5, 1, 6, 2, 
-	0, 5, 2, 4, 0
+	3, 1, 4, 1, 5, 1, 6, 1, 
+	7, 1, 8, 2, 0, 5, 2, 0, 
+	7, 2, 6, 0
 };
 
-static const unsigned char _tsip_machine_parser_message_key_offsets[] = {
-	0, 0, 16, 31, 31, 32, 34, 36, 
-	38, 39, 41, 44, 46, 49, 50, 51, 
-	52, 53, 54, 55, 56, 62, 79, 96, 
-	110, 112, 115, 117, 120, 122, 124, 126, 
-	127, 153, 155, 157, 159, 161, 163, 164, 
-	165, 166, 167, 168, 170, 172, 179, 185, 
-	191, 192, 199, 207, 209, 217
+static const short _tsip_machine_parser_message_key_offsets[] = {
+	0, 0, 16, 31, 35, 47, 50, 50, 
+	51, 53, 55, 57, 58, 60, 63, 65, 
+	68, 69, 70, 71, 72, 73, 74, 75, 
+	81, 98, 115, 129, 131, 134, 136, 139, 
+	141, 143, 145, 146, 172, 198, 200, 202, 
+	204, 206, 208, 209, 210, 211, 212, 213, 
+	215, 217, 224, 230, 236, 237, 244, 252, 
+	254, 262
 };
 
 static const char _tsip_machine_parser_message_trans_keys[] = {
 	33, 37, 39, 83, 115, 126, 42, 43, 
 	45, 46, 48, 57, 65, 90, 95, 122, 
 	32, 33, 37, 39, 126, 42, 43, 45, 
-	46, 48, 57, 65, 90, 95, 122, 32, 
-	83, 115, 73, 105, 80, 112, 47, 48, 
-	57, 46, 48, 57, 48, 57, 13, 48, 
-	57, 10, 13, 13, 10, 13, 10, 120, 
-	48, 57, 65, 70, 97, 102, 32, 33, 
-	37, 39, 73, 105, 126, 42, 43, 45, 
-	46, 48, 57, 65, 90, 95, 122, 32, 
-	33, 37, 39, 80, 112, 126, 42, 43, 
-	45, 46, 48, 57, 65, 90, 95, 122, 
-	32, 33, 37, 39, 47, 126, 42, 43, 
-	45, 57, 65, 90, 95, 122, 48, 57, 
-	46, 48, 57, 48, 57, 32, 48, 57, 
-	48, 57, 48, 57, 48, 57, 32, 13, 
-	37, 60, 62, 96, 127, -64, -33, -32, 
-	-17, -16, -9, -8, -5, -4, -3, -2, 
-	8, 10, 31, 34, 35, 91, 94, 123, 
-	125, -128, -65, -128, -65, -128, -65, -128, 
-	-65, -128, -65, 10, 13, 13, 10, 13, 
-	10, 13, 13, 120, 13, 48, 57, 65, 
-	70, 97, 102, 48, 57, 65, 70, 97, 
-	102, 48, 57, 65, 70, 97, 102, 48, 
-	48, 49, 57, 65, 70, 97, 102, 48, 
-	120, 49, 57, 65, 70, 97, 102, 13, 
-	48, 13, 48, 49, 57, 65, 70, 97, 
-	102, 13, 48, 120, 49, 57, 65, 70, 
-	97, 102, 0
+	46, 48, 57, 65, 90, 95, 122, 65, 
+	90, 97, 122, 9, 32, 43, 58, 45, 
+	46, 48, 57, 65, 90, 97, 122, 9, 
+	32, 58, 32, 83, 115, 73, 105, 80, 
+	112, 47, 48, 57, 46, 48, 57, 48, 
+	57, 13, 48, 57, 10, 13, 13, 10, 
+	13, 10, 120, 48, 57, 65, 70, 97, 
+	102, 32, 33, 37, 39, 73, 105, 126, 
+	42, 43, 45, 46, 48, 57, 65, 90, 
+	95, 122, 32, 33, 37, 39, 80, 112, 
+	126, 42, 43, 45, 46, 48, 57, 65, 
+	90, 95, 122, 32, 33, 37, 39, 47, 
+	126, 42, 43, 45, 57, 65, 90, 95, 
+	122, 48, 57, 46, 48, 57, 48, 57, 
+	32, 48, 57, 48, 57, 48, 57, 48, 
+	57, 32, 13, 37, 60, 62, 96, 127, 
+	-64, -33, -32, -17, -16, -9, -8, -5, 
+	-4, -3, -2, 8, 10, 31, 34, 35, 
+	91, 94, 123, 125, 13, 37, 60, 62, 
+	96, 127, -64, -33, -32, -17, -16, -9, 
+	-8, -5, -4, -3, -2, 8, 10, 31, 
+	34, 35, 91, 94, 123, 125, -128, -65, 
+	-128, -65, -128, -65, -128, -65, -128, -65, 
+	10, 13, 13, 10, 13, 10, 13, 13, 
+	120, 13, 48, 57, 65, 70, 97, 102, 
+	48, 57, 65, 70, 97, 102, 48, 57, 
+	65, 70, 97, 102, 48, 48, 49, 57, 
+	65, 70, 97, 102, 48, 120, 49, 57, 
+	65, 70, 97, 102, 13, 48, 13, 48, 
+	49, 57, 65, 70, 97, 102, 13, 48, 
+	120, 49, 57, 65, 70, 97, 102, 0
 };
 
 static const char _tsip_machine_parser_message_single_lengths[] = {
-	0, 6, 5, 0, 1, 2, 2, 2, 
-	1, 0, 1, 0, 1, 1, 1, 1, 
-	1, 1, 1, 1, 0, 7, 7, 6, 
-	0, 1, 0, 1, 0, 0, 0, 1, 
-	6, 0, 0, 0, 0, 0, 1, 1, 
-	1, 1, 1, 2, 2, 1, 0, 0, 
-	1, 1, 2, 2, 2, 3
+	0, 6, 5, 0, 4, 3, 0, 1, 
+	2, 2, 2, 1, 0, 1, 0, 1, 
+	1, 1, 1, 1, 1, 1, 1, 0, 
+	7, 7, 6, 0, 1, 0, 1, 0, 
+	0, 0, 1, 6, 6, 0, 0, 0, 
+	0, 0, 1, 1, 1, 1, 1, 2, 
+	2, 1, 0, 0, 1, 1, 2, 2, 
+	2, 3
 };
 
 static const char _tsip_machine_parser_message_range_lengths[] = {
-	0, 5, 5, 0, 0, 0, 0, 0, 
-	0, 1, 1, 1, 1, 0, 0, 0, 
-	0, 0, 0, 0, 3, 5, 5, 4, 
-	1, 1, 1, 1, 1, 1, 1, 0, 
-	10, 1, 1, 1, 1, 1, 0, 0, 
-	0, 0, 0, 0, 0, 3, 3, 3, 
-	0, 3, 3, 0, 3, 3
+	0, 5, 5, 2, 4, 0, 0, 0, 
+	0, 0, 0, 0, 1, 1, 1, 1, 
+	0, 0, 0, 0, 0, 0, 0, 3, 
+	5, 5, 4, 1, 1, 1, 1, 1, 
+	1, 1, 0, 10, 10, 1, 1, 1, 
+	1, 1, 0, 0, 0, 0, 0, 0, 
+	0, 3, 3, 3, 0, 3, 3, 0, 
+	3, 3
 };
 
-static const unsigned char _tsip_machine_parser_message_index_offsets[] = {
-	0, 0, 12, 23, 24, 26, 29, 32, 
-	35, 37, 39, 42, 44, 47, 49, 51, 
-	53, 55, 57, 59, 61, 65, 78, 91, 
-	102, 104, 107, 109, 112, 114, 116, 118, 
-	120, 137, 139, 141, 143, 145, 147, 149, 
-	151, 153, 155, 157, 160, 163, 168, 172, 
-	176, 178, 183, 189, 192, 198
+static const short _tsip_machine_parser_message_index_offsets[] = {
+	0, 0, 12, 23, 26, 35, 39, 40, 
+	42, 45, 48, 51, 53, 55, 58, 60, 
+	63, 65, 67, 69, 71, 73, 75, 77, 
+	81, 94, 107, 118, 120, 123, 125, 128, 
+	130, 132, 134, 136, 153, 170, 172, 174, 
+	176, 178, 180, 182, 184, 186, 188, 190, 
+	193, 196, 201, 205, 209, 211, 216, 222, 
+	225, 231
 };
 
 static const char _tsip_machine_parser_message_indicies[] = {
 	0, 0, 0, 2, 2, 0, 0, 0, 
 	0, 0, 0, 1, 3, 4, 4, 4, 
 	4, 4, 4, 4, 4, 4, 1, 5, 
-	7, 6, 8, 8, 1, 9, 9, 1, 
-	10, 10, 1, 11, 1, 12, 1, 13, 
-	12, 1, 14, 1, 15, 14, 1, 16, 
-	1, 18, 17, 20, 19, 21, 1, 23, 
-	22, 24, 1, 25, 1, 26, 26, 26, 
-	1, 3, 4, 4, 4, 27, 27, 4, 
+	5, 1, 6, 6, 7, 8, 7, 7, 
+	7, 7, 1, 6, 6, 8, 1, 9, 
+	10, 9, 11, 11, 1, 12, 12, 1, 
+	13, 13, 1, 14, 1, 15, 1, 16, 
+	15, 1, 17, 1, 18, 17, 1, 19, 
+	1, 21, 20, 23, 22, 24, 1, 26, 
+	25, 27, 1, 28, 1, 29, 29, 29, 
+	1, 3, 4, 4, 4, 30, 30, 4, 
 	4, 4, 4, 4, 4, 1, 3, 4, 
-	4, 4, 28, 28, 4, 4, 4, 4, 
-	4, 4, 1, 3, 4, 4, 4, 29, 
-	4, 4, 4, 4, 4, 1, 30, 1, 
-	31, 30, 1, 32, 1, 33, 32, 1, 
-	34, 1, 35, 1, 36, 1, 37, 1, 
-	43, 44, 1, 1, 1, 1, 38, 39, 
-	40, 41, 42, 1, 1, 1, 1, 1, 
-	37, 37, 1, 38, 1, 39, 1, 40, 
-	1, 41, 1, 45, 1, 47, 46, 49, 
-	48, 50, 1, 52, 51, 53, 49, 48, 
-	49, 54, 48, 49, 55, 55, 55, 48, 
-	56, 56, 56, 1, 37, 37, 37, 1, 
-	57, 1, 58, 26, 26, 26, 1, 58, 
-	25, 26, 26, 26, 1, 49, 59, 48, 
-	49, 60, 55, 55, 55, 48, 49, 60, 
-	54, 55, 55, 55, 48, 0
+	4, 4, 31, 31, 4, 4, 4, 4, 
+	4, 4, 1, 3, 4, 4, 4, 32, 
+	4, 4, 4, 4, 4, 1, 33, 1, 
+	34, 33, 1, 35, 1, 36, 35, 1, 
+	37, 1, 38, 1, 39, 1, 40, 1, 
+	47, 48, 1, 1, 1, 1, 42, 43, 
+	44, 45, 46, 1, 1, 1, 1, 1, 
+	41, 55, 56, 1, 1, 1, 1, 50, 
+	51, 52, 53, 54, 1, 1, 1, 1, 
+	1, 49, 49, 1, 50, 1, 51, 1, 
+	52, 1, 53, 1, 57, 1, 59, 58, 
+	61, 60, 62, 1, 64, 63, 65, 61, 
+	60, 61, 66, 60, 61, 67, 67, 67, 
+	60, 68, 68, 68, 1, 49, 49, 49, 
+	1, 69, 1, 70, 29, 29, 29, 1, 
+	70, 28, 29, 29, 29, 1, 61, 71, 
+	60, 61, 72, 67, 67, 67, 60, 61, 
+	72, 66, 67, 67, 67, 60, 0
 };
 
 static const char _tsip_machine_parser_message_trans_targs[] = {
-	2, 0, 21, 3, 2, 4, 4, 5, 
+	2, 0, 24, 3, 2, 4, 5, 4, 
 	6, 7, 8, 9, 10, 11, 12, 13, 
-	14, 15, 18, 15, 16, 17, 15, 18, 
-	48, 20, 49, 22, 23, 24, 25, 26, 
+	14, 15, 16, 17, 18, 21, 18, 19, 
+	20, 18, 21, 52, 23, 53, 25, 26, 
 	27, 28, 29, 30, 31, 32, 33, 34, 
-	35, 36, 37, 38, 46, 39, 40, 43, 
-	40, 41, 42, 40, 43, 51, 45, 52, 
-	47, 19, 50, 44, 53
+	35, 36, 37, 38, 39, 40, 41, 42, 
+	50, 36, 37, 38, 39, 40, 41, 42, 
+	50, 43, 44, 47, 44, 45, 46, 44, 
+	47, 55, 49, 56, 51, 22, 54, 48, 
+	57
 };
 
 static const char _tsip_machine_parser_message_trans_actions[] = {
-	1, 0, 1, 3, 0, 1, 0, 5, 
-	1, 0, 0, 0, 0, 0, 0, 7, 
-	0, 1, 0, 0, 0, 0, 18, 9, 
-	13, 0, 13, 0, 0, 0, 0, 0, 
-	0, 7, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 1, 1, 
-	0, 0, 0, 18, 18, 13, 0, 13, 
-	0, 1, 13, 0, 13
+	1, 0, 1, 3, 0, 1, 0, 0, 
+	0, 0, 5, 1, 0, 0, 0, 0, 
+	0, 0, 7, 0, 1, 0, 0, 0, 
+	0, 25, 13, 17, 0, 17, 0, 0, 
+	0, 0, 0, 0, 7, 1, 0, 0, 
+	9, 1, 1, 1, 1, 1, 1, 19, 
+	1, 0, 0, 0, 0, 0, 0, 11, 
+	0, 0, 1, 1, 0, 0, 0, 25, 
+	25, 17, 0, 17, 0, 1, 17, 0, 
+	17
 };
 
 static const char _tsip_machine_parser_message_eof_actions[] = {
@@ -186,17 +206,18 @@ static const char _tsip_machine_parser_message_eof_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	15, 11, 11, 0, 0, 0
+	0, 0, 0, 0, 22, 15, 15, 0, 
+	0, 0
 };
 
 static const int tsip_machine_parser_message_start = 1;
-static const int tsip_machine_parser_message_first_final = 48;
+static const int tsip_machine_parser_message_first_final = 52;
 static const int tsip_machine_parser_message_error = 0;
 
 static const int tsip_machine_parser_message_en_main = 1;
 
 
-/* #line 144 "tsip_parser_message.rl" */
+/* #line 190 "tsip_parser_message.rl" */
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @fn	TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t *result)
@@ -230,7 +251,16 @@ TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t *resul
 
 	/* Check result */
 
-	return (state->cs == tsip_machine_parser_message_first_final);
+	if( state->cs < 
+/* #line 256 "../source/parsers/tsip_parser_message.c" */
+52
+/* #line 223 "tsip_parser_message.rl" */
+ )
+	{
+		TSIP_MESSAGE_SAFE_FREE(result);
+		return TSIP_FALSE;
+	}
+	return TSIP_TRUE;
 }
 
 
@@ -240,12 +270,12 @@ static void tsip_message_parser_init(tsip_ragel_state_t *state)
 
 	/* Regel machine initialization. */
 	
-/* #line 244 "../source/parsers/tsip_parser_message.c" */
+/* #line 274 "../source/parsers/tsip_parser_message.c" */
 	{
 	cs = tsip_machine_parser_message_start;
 	}
 
-/* #line 187 "tsip_parser_message.rl" */
+/* #line 238 "tsip_parser_message.rl" */
 	
 	state->cs = cs;
 }
@@ -258,7 +288,7 @@ static void tsip_message_parser_execute(tsip_ragel_state_t *state, tsip_message_
 	const char *eof = state->eof;
 
 	
-/* #line 262 "../source/parsers/tsip_parser_message.c" */
+/* #line 292 "../source/parsers/tsip_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -333,14 +363,14 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "tsip_parser_message.rl" */
+/* #line 50 "tsip_parser_message.rl" */
 	{
 		state->tag_start = p;
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::TAG state=%d", state->cs);
 	}
 	break;
 	case 1:
-/* #line 55 "tsip_parser_message.rl" */
+/* #line 57 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -349,45 +379,89 @@ _match:
 		if(message->type == tsip_unknown)
 		{
 			message->type = tsip_request;
-			message->line_request.method = tsk_calloc(1, len+1);
-			memcpy(message->line_request.method, state->tag_start, len);
+			if(!message->line_request.method)
+			{
+				message->line_request.method = tsk_calloc(1, len+1);
+				memcpy(message->line_request.method, state->tag_start, len);
+			}
 		}
 		else
 		{
-			state->cs = tsip_machine_parser_message_error; //goto st0;
+			state->cs = tsip_machine_parser_message_error;
 		}
 		
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_METHOD len=%d state=%d", len, state->cs);
 	}
 	break;
 	case 2:
-/* #line 76 "tsip_parser_message.rl" */
+/* #line 81 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		message->line_request.uri = tsk_calloc(1, len+1);
-		memcpy(message->line_request.uri, state->tag_start, len);
+		if(!message->line_request.uri)
+		{
+			message->line_request.uri = tsip_uri_parse(state->tag_start, (size_t)len);
+		}
 
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_REQUESTURI len=%d state=%d", len, state->cs);
 	}
 	break;
 	case 3:
-/* #line 89 "tsip_parser_message.rl" */
+/* #line 96 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		message->sip_version = tsk_calloc(1, len+1);
-		memcpy(message->sip_version, state->tag_start, len);
+		if(!message->sip_version)
+		{
+			message->sip_version = tsk_calloc(1, len+1);
+			memcpy(message->sip_version, state->tag_start, len);
+		}
 
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_SIPVERSION len=%d state=%d", len, state->cs);
 	}
 	break;
 	case 4:
-/* #line 102 "tsip_parser_message.rl" */
+/* #line 112 "tsip_parser_message.rl" */
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+		
+		if(message->type == tsip_unknown)
+		{
+			message->type = tsip_response;
+			message->line_status.status_code = atoi(state->tag_start);
+		}
+		else
+		{
+			state->cs = tsip_machine_parser_message_error;
+		}
+
+		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_STATUS_CODE len=%d state=%d", len, state->cs);
+	}
+	break;
+	case 5:
+/* #line 132 "tsip_parser_message.rl" */
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+
+		if(!message->line_status.reason_phrase)
+		{
+			message->line_status.reason_phrase = tsk_calloc(1, len+1);
+			memcpy(message->line_status.reason_phrase, state->tag_start, len);
+		}
+
+		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_REASON_PHRASE len=%d state=%d", len, state->cs);
+	}
+	break;
+	case 6:
+/* #line 148 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -403,14 +477,14 @@ _match:
 		}
 	}
 	break;
-	case 6:
-/* #line 128 "tsip_parser_message.rl" */
+	case 8:
+/* #line 174 "tsip_parser_message.rl" */
 	{
 		tsip_message_parser_eob(state);
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::EOB state=%d", state->cs);
 	}
 	break;
-/* #line 414 "../source/parsers/tsip_parser_message.c" */
+/* #line 488 "../source/parsers/tsip_parser_message.c" */
 		}
 	}
 
@@ -427,14 +501,14 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 48 "tsip_parser_message.rl" */
+/* #line 50 "tsip_parser_message.rl" */
 	{
 		state->tag_start = p;
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::TAG state=%d", state->cs);
 	}
 	break;
-	case 5:
-/* #line 119 "tsip_parser_message.rl" */
+	case 7:
+/* #line 165 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -442,7 +516,7 @@ _again:
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_BODY len=%d state=%d", len, state->cs);
 	}
 	break;
-/* #line 446 "../source/parsers/tsip_parser_message.c" */
+/* #line 520 "../source/parsers/tsip_parser_message.c" */
 		}
 	}
 	}
@@ -450,7 +524,7 @@ _again:
 	_out: {}
 	}
 
-/* #line 199 "tsip_parser_message.rl" */
+/* #line 250 "tsip_parser_message.rl" */
 
 	state->cs = cs;
 	state->p = p;

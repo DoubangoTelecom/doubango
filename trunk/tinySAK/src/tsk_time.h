@@ -37,6 +37,8 @@ struct timeval;
 struct timezone;
 #endif
 
+#define TSK_TIME_S_2_MS(S) (S*1000)
+
 TINYSAK_API int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
 TINYSAK_API uint64_t tsk_time_epoch();
 
@@ -45,18 +47,18 @@ TINYSAK_API uint64_t tsk_time_epoch();
 */
 #define tsk_time_now() tsk_time_epoch()
 
-#ifdef _WIN32_WCE
-
-#ifndef TIMEVAL
-/* On wince timeval struct is defined in "Winsock2.h" but I don't want to add it */
-struct timeval 
-{
-  long tv_sec;
-  long tv_usec;
-};
-#define TIMEVAL
-#endif TIMEVAL
-
-#endif
+//#ifdef _WIN32_WCE
+//
+//#ifndef TIMEVAL
+///* On wince timeval struct is defined in "Winsock2.h" but I don't want to add it */
+//struct timeval 
+//{
+//  long tv_sec;
+//  long tv_usec;
+//};
+//#define TIMEVAL
+//#endif TIMEVAL
+//
+//#endif
 
 #endif /* _TINYSAK_TIME_H_ */

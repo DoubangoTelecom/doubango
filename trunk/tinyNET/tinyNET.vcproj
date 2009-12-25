@@ -343,11 +343,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tnet_poll.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tnet_socket.c"
 				>
 			</File>
 			<File
 				RelativePath=".\src\tnet_transport.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tnet_transport_poll.c"
 				>
 			</File>
 			<File
@@ -371,11 +379,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tnet_poll.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tnet_socket.h"
 				>
 			</File>
 			<File
 				RelativePath=".\src\tnet_transport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tnet_types.h"
 				>
 			</File>
 			<File

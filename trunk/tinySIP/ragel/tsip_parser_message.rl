@@ -30,6 +30,8 @@
 #include "tinysip/parsers/tsip_parser_message.h"
 #include "tinysip/parsers/tsip_parser_header.h"
 
+#include "tinysip/parsers/tsip_parser_uri.h"
+
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
@@ -60,12 +62,15 @@ static void tsip_message_parser_eob(tsip_ragel_state_t *state);
 		if(message->type == tsip_unknown)
 		{
 			message->type = tsip_request;
-			message->line_request.method = tsk_calloc(1, len+1);
-			memcpy(message->line_request.method, state->tag_start, len);
+			if(!message->line_request.method)
+			{
+				message->line_request.method = tsk_calloc(1, len+1);
+				memcpy(message->line_request.method, state->tag_start, len);
+			}
 		}
 		else
 		{
-			state->cs = tsip_machine_parser_message_error; //goto st0;
+			state->cs = tsip_machine_parser_message_error;
 		}
 		
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_METHOD len=%d state=%d", len, state->cs);
@@ -78,8 +83,10 @@ static void tsip_message_parser_eob(tsip_ragel_state_t *state);
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		message->line_request.uri = tsk_calloc(1, len+1);
-		memcpy(message->line_request.uri, state->tag_start, len);
+		if(!message->line_request.uri)
+		{
+			message->line_request.uri = tsip_uri_parse(state->tag_start, (size_t)len);
+		}
 
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_REQUESTURI len=%d state=%d", len, state->cs);
 	}
@@ -91,10 +98,49 @@ static void tsip_message_parser_eob(tsip_ragel_state_t *state);
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		message->sip_version = tsk_calloc(1, len+1);
-		memcpy(message->sip_version, state->tag_start, len);
+		if(!message->sip_version)
+		{
+			message->sip_version = tsk_calloc(1, len+1);
+			memcpy(message->sip_version, state->tag_start, len);
+		}
 
 		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_SIPVERSION len=%d state=%d", len, state->cs);
+	}
+
+	#/* Status Code */
+	action parse_status_code
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+		
+		if(message->type == tsip_unknown)
+		{
+			message->type = tsip_response;
+			message->line_status.status_code = atoi(state->tag_start);
+		}
+		else
+		{
+			state->cs = tsip_machine_parser_message_error;
+		}
+
+		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_STATUS_CODE len=%d state=%d", len, state->cs);
+	}
+
+	#/* Reason Phrase */
+	action parse_reason_phrase
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+
+		if(!message->line_status.reason_phrase)
+		{
+			message->line_status.reason_phrase = tsk_calloc(1, len+1);
+			memcpy(message->line_status.reason_phrase, state->tag_start, len);
+		}
+
+		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_REASON_PHRASE len=%d state=%d", len, state->cs);
 	}
 
 	#/* Parse sip header */
@@ -174,7 +220,12 @@ TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t *resul
 
 	/* Check result */
 
-	return (state->cs == tsip_machine_parser_message_first_final);
+	if( state->cs < %%{ write first_final; }%% )
+	{
+		TSIP_MESSAGE_SAFE_FREE(result);
+		return TSIP_FALSE;
+	}
+	return TSIP_TRUE;
 }
 
 

@@ -44,6 +44,9 @@
 #endif
 
 #include <stdint.h>
+#ifdef __SYMBIAN32__
+#include <stdlib.h>
+#endif
 
 /* FIXME */
 #define TINYSAK_IMPORTS

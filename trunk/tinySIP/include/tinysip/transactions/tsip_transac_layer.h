@@ -35,7 +35,7 @@
 #include "tsip.h"
 #include "tinysip/transactions/tsip_transac.h"
 
-#include "tsk_object.h"
+#include "tsk_safeobj.h"
 #include "tsk_list.h"
 
 #define TSIP_TRANSAC_LAYER_CREATE(stack)			tsk_object_new(tsip_transac_layer_def_t, stack)
@@ -48,6 +48,8 @@ typedef struct tsip_transac_layer_s
 	const tsip_stack_handle_t *stack;
 
 	tsip_transacs_L_t *transactions;
+
+	TSK_DECLARE_SAFEOBJ;
 }
 tsip_transac_layer_t;
 
@@ -56,5 +58,7 @@ TINYSIP_API const void *tsip_transac_layer_def_t;
 
 
 const tsip_transac_t* tsip_transac_layer_new(tsip_transac_layer_t *self, const tsip_message_t* msg);
+int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *transac);
+const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const char* branch, const char* cseq_method);
 
 #endif /* TINYSIP_TRANSAC_LAYER_H */

@@ -29,6 +29,8 @@
  */
 #include "tinysip/tsip_uri.h"
 
+#include "tinysip/parsers/tsip_parser_uri.h"
+
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 #include "tsk_string.h"
@@ -98,7 +100,16 @@ int tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote, tsk_buf
 }
 
 
+tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, int with_params, int quote)
+{
+	tsip_uri_t *newuri;
+	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	tsip_uri_tostring(uri, with_params, quote, output);
+	newuri = tsip_uri_parse(output->data, output->size);
+	TSK_BUFFER_SAFE_FREE(output);
 
+	return newuri;
+}
 
 
 

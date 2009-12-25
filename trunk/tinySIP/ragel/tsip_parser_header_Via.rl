@@ -193,7 +193,7 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Via_t *hdr_via = TSIP_HEADER_VIA_CREATE();
+	tsip_header_Via_t *hdr_via = TSIP_HEADER_VIA_CREATE_NULL();
 	
 	const char *tag_start;
 
@@ -230,6 +230,18 @@ static void* tsip_header_Via_create(void *self, va_list * app)
 	tsip_header_Via_t *via = self;
 	if(via)
 	{
+		const char* proto_name = va_arg(*app, const char *);
+		const char* proto_version = va_arg(*app, const char *);
+		const char* transport = va_arg(*app, const char *);
+		const char* host = va_arg(*app, const char *);
+		uint16_t port = va_arg(*app, uint16_t);
+
+		if(proto_name) via->proto_name = tsk_strdup(proto_name);
+		if(proto_version) via->proto_version = tsk_strdup(proto_version);
+		if(transport) via->transport = tsk_strdup(transport);
+		if(host) via->host = tsk_strdup(host);
+		via->port = port;
+		
 		via->type = tsip_htype_Via;
 		via->tostring = tsip_header_Via_tostring;
 	}

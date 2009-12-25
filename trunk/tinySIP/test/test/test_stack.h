@@ -35,7 +35,18 @@ int test_stack_callback(tsip_event_t *sipevent)
 
 void test_stack()
 {
-	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, TSIP_STACK_SET_NULL());
+	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
+		TSIP_STACK_SET_DISPLAY_NAME("mamadou"),
+		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@micromethod.com"),
+		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou"),
+		TSIP_STACK_SET_REALM("sip:micromethod.com"),
+		TSIP_STACK_SET_PROXY_CSCF("192.168.0.15"),
+		TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
+		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
+
+		TSIP_STACK_SET_NULL());
+
+
 	tsip_operation_handle_t *op = TSIP_OPERATION_CREATE(stack,
 		TSIP_OPERATION_SET_PARAM("expires", "600000"),
 
@@ -43,7 +54,8 @@ void test_stack()
 
 	tsip_stack_start(stack);
 
-	tsk_thread_sleep(1000);
+	tsip_stack_register(stack, op);
+	tsk_thread_sleep(200000000);
 
 	tsip_stack_stop(stack);
 

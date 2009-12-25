@@ -1,0 +1,34 @@
+EXPORTS
+	tcomp_buffer_def_t @ 1 NONAME
+	tcomp_buffer_getBufferAtPos @ 2 NONAME
+	tcomp_buffer_getSize @ 3 NONAME
+	tcomp_compartment_def_t @ 4 NONAME
+	tcomp_compressordisp_def_t @ 5 NONAME
+	tcomp_decompressordisp_def_t @ 6 NONAME
+	tcomp_deflatedata_def_t @ 7 NONAME
+	tcomp_manager_addCompressor @ 8 NONAME
+	tcomp_manager_addPresenceDictionary @ 9 NONAME
+	tcomp_manager_addSipSdpDictionary @ 10 NONAME
+	tcomp_manager_closeCompartment @ 11 NONAME
+	tcomp_manager_compress @ 12 NONAME
+	tcomp_manager_decompress @ 13 NONAME
+	tcomp_manager_def_t @ 14 NONAME
+	tcomp_manager_getNextStreamMessage @ 15 NONAME
+	tcomp_manager_provideCompartmentId @ 16 NONAME
+	tcomp_manager_setCycles_Per_Bit @ 17 NONAME
+	tcomp_manager_setDecompression_Memory_Size @ 18 NONAME
+	tcomp_manager_setSigComp_Version @ 19 NONAME
+	tcomp_manager_setState_Memory_Size @ 20 NONAME
+	tcomp_message_def_t @ 21 NONAME
+	tcomp_nackinfo_def_t @ 22 NONAME
+	tcomp_params_def_t @ 23 NONAME
+	tcomp_reqfeed_def_t @ 24 NONAME
+	tcomp_result_def_t @ 25 NONAME
+	tcomp_result_setCompartmentId @ 26 NONAME
+	tcomp_result_setOutputBuffer @ 27 NONAME
+	tcomp_state_def_t @ 28 NONAME
+	tcomp_statehandler_def_t @ 29 NONAME
+	tcomp_stream_buffer_def_t @ 30 NONAME
+	tcomp_tempstate_to_free_def_t @ 31 NONAME
+	tcomp_udvm_def_t @ 32 NONAME
+

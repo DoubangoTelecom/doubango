@@ -61,6 +61,8 @@ typedef struct tsk_timer_s
 	const void *arg; /**< Opaque data to return with the callback function. */
 	uint64_t timeout; /**< When the timer will timeout(as EPOCH time). */
 	tsk_timer_callback callback; /**< The callback function to call after @ref timeout milliseconds. */
+
+	unsigned canceled:1;
 }
 tsk_timer_t;
 typedef tsk_list_t tsk_timers_L_t; /**< List of @ref tsk_timer_t elements. */
@@ -76,7 +78,7 @@ typedef tsk_list_t tsk_timers_L_t; /**< List of @ref tsk_timer_t elements. */
 typedef struct tsk_timer_manager_s
 {
 	TSK_DECLARE_RUNNABLE;
-
+	
 	unsigned active:1;
 	void* mainThreadId[1];
 	tsk_condwait_handle_t *condwait;
@@ -175,7 +177,7 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 
 tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback callback, const void *arg)
 {
-	tsk_timer_id_t timer_id = INVALID_TIMER_ID;
+	tsk_timer_id_t timer_id = TSK_INVALID_TIMER_ID;
 	tsk_timer_manager_t *manager = self;
 
 	if(manager && manager->running)
@@ -188,8 +190,8 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 		tsk_list_push_ascending_data(manager->timers, ((void**) &timer));
 		tsk_mutex_unlock(manager->mutex);
 
-		tsk_semaphore_increment(manager->sem);
 		tsk_condwait_signal(manager->condwait);
+		tsk_semaphore_increment(manager->sem);
 	}
 
 	return timer_id;
@@ -199,7 +201,7 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 {
 	int ret = -1;
 	tsk_timer_manager_t *manager = self;
-	if(manager->timers && manager->running)
+	if(!TSK_LIST_IS_EMPTY(manager->timers) && manager->running)
 	{
 		const tsk_list_item_t *item;
 		tsk_mutex_lock(manager->mutex);
@@ -207,8 +209,13 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 		if(item && item->data)
 		{
 			tsk_timer_t *timer = item->data;
-			//timer->callback(timer->arg, id);
-			tsk_list_remove_item(manager->timers, (tsk_list_item_t*)item);
+			timer->canceled = 1;
+			
+			if(item == manager->timers->head)
+			{	/* The timer we are waiting on ? ==> remove it now. */
+				tsk_condwait_signal(manager->condwait);
+			}
+			
 			ret = 0;
 		}
 		tsk_mutex_unlock(manager->mutex);
@@ -240,9 +247,10 @@ static void *run(void* self)
 
 static int __tsk_pred_find_timer_by_id(const tsk_list_item_t *item, const void *id)
 {
+	tsk_timer_t *timer;
 	if(item && item->data)
 	{
-		tsk_timer_t *timer = item->data;
+		timer = item->data;
 		return (int)(timer->id - *((tsk_timer_id_t*)id));
 	}
 	return -1;
@@ -271,7 +279,7 @@ peek_first:
 		curr = TSK_TIMER_GET_FIRST();
 		tsk_mutex_unlock(manager->mutex);
 
-		if(curr) 
+		if(curr && !curr->canceled) 
 		{
 			epoch = tsk_time_epoch();
 			if(epoch >= curr->timeout)
@@ -294,6 +302,12 @@ peek_first:
 					goto peek_first;
 				}
 			}
+		}
+		else if(curr && curr->canceled)
+		{
+			tsk_mutex_lock(manager->mutex);
+			tsk_list_remove_item_by_data(manager->timers, curr);
+			tsk_mutex_unlock(manager->mutex);
 		}
 	}
 	
@@ -391,7 +405,6 @@ static void* tsk_timer_destroy(void * self)
 	
 	if(timer)
 	{
-
 	}
 
 	return self;

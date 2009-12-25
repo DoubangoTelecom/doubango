@@ -68,7 +68,7 @@ const char* uris[] =
 
 void test_uri_tostring(const tsip_uri_t *uri)
 {
-	tsk_buffer_t *buffer = TSK_BUFFER_CREATE(0,0);
+	tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
 
 	tsip_uri_tostring(uri, 1, 1, buffer);
 	TSK_DEBUG_INFO("uri_to_string=%s", TSK_BUFFER_TO_STRING(buffer));

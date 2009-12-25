@@ -35,6 +35,7 @@
 #include "tinysip/headers/tsip_header_Max_Forwards.h"
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Supported.h"
+#include "tinysip/headers/tsip_header_User_Agent.h"
 
 
 #include "tsk_debug.h"
@@ -96,12 +97,11 @@ int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr)
 			ADD_HEADER(Expires, Expires);
 			ADD_HEADER(Content_Length, Content_Length);
 
-		default:
-			{
-				tsk_list_push_back_data(self->headers, (void**)&header);
-				break;
-			}
+			default: break;
 		}
+
+		tsk_list_push_back_data(self->headers, (void**)&header);
+
 		return 0;
 	}
 	return -1;
@@ -242,7 +242,12 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	if(TSIP_MESSAGE_IS_REQUEST(self))
 	{
 		/*Method SP Request_URI SP SIP_Version CRLF*/
-		tsk_buffer_appendEx(output, "%s %s %s\r\n", self->line_request.method, self->line_request.uri, TSIP_MESSAGE_VERSION_DEFAULT);
+		/* Method */
+		tsk_buffer_appendEx(output, "%s ", self->line_request.method);
+		/* Request URI */
+		tsip_uri_tostring(self->line_request.uri, 0, 0, output);
+		/* SIP VERSION */
+		tsk_buffer_appendEx(output, " %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT);
 	}
 	else
 	{
@@ -277,6 +282,9 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 		}
 	}
 
+	/* EMPTY LINE */
+	tsk_buffer_append(output, "\r\n", 2);
+
 	return 0;
 }
 
@@ -284,27 +292,38 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 * Request
 */
 
-tsip_request_t *tsip_request_new(const char* method, const char *uristring, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id)
+tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq)
 {
 	tsip_request_t* request;
-	tsip_header_Allow_t *allow;
-	tsip_header_Max_Forwards_t *maxfor;
+	//tsip_header_Allow_t *allow;
+	//tsip_header_Max_Forwards_t *maxfor;
 
-	request = TSIP_REQUEST_CREATE(method, uristring);
+	request = TSIP_REQUEST_CREATE(method, request_uri);
 
-	request->From = TSIP_HEADER_FROM_CREATE(0, from, 0);
+	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_FROM_VA_ARGS(0, from, 0));
+	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_TO_VA_ARGS(0, to, 0));
+	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CALL_ID_VA_ARGS(call_id));
+	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CSEQ_VA_ARGS(cseq, method));
+	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT));
+	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT));
+
+
+	/*request->From = TSIP_HEADER_FROM_CREATE(0, from, 0);
 	request->To = TSIP_HEADER_TO_CREATE(0, to, 0);
 	request->Call_ID = TSIP_HEADER_CALL_ID_CREATE(call_id);
+	request->CSeq = TSIP_HEADER_CSEQ_CREATE(1);*/
 	
 	/* allow */
-	allow = tsip_header_Allow_parse(TSIP_HEADER_STR, strlen(TSIP_HEADER_STR));
+	/*allow = tsip_header_Allow_parse(TSIP_HEADER_STR, strlen(TSIP_HEADER_STR));
 	tsip_message_add_header(request, TSIP_HEADER(allow));
-	TSIP_HEADER_ALLOW_SAFE_FREE(allow);
+	TSIP_HEADER_ALLOW_SAFE_FREE(allow);*/
 
 	/* max forward */
-	maxfor = TSIP_HEADER_MAX_FORWARDS_CREATE(TSIP_HEADER_MAX_FORWARDS_DEFAULT);
+	/*maxfor = TSIP_HEADER_MAX_FORWARDS_CREATE(TSIP_HEADER_MAX_FORWARDS_DEFAULT);
 	tsip_message_add_header(request, TSIP_HEADER(maxfor));
-	TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(maxfor);
+	TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(maxfor);*/
+
+	/* User-Agent */
 
 	return request;
 }
@@ -340,7 +359,7 @@ static void* tsip_message_create(void *self, va_list * app)
 		case tsip_request:
 			{
 				message->line_request.method = tsk_strdup(va_arg(*app, const char*));
-				message->line_request.uri = tsk_strdup(va_arg(*app, const char*)); 
+				message->line_request.uri = tsk_object_ref((void*)va_arg(*app, const tsip_uri_t*)); 
 				break;
 			}
 
@@ -376,7 +395,7 @@ static void* tsip_message_destroy(void *self)
 		if(TSIP_MESSAGE_IS_REQUEST(message))
 		{
 			TSK_FREE(message->line_request.method);
-			TSK_FREE(message->line_request.uri);
+			TSIP_URI_SAFE_FREE(message->line_request.uri);
 		}
 		else if(TSIP_MESSAGE_IS_RESPONSE(message))
 		{

@@ -36,6 +36,8 @@
 #define TSK_BUFFER_CREATE(data, size)		tsk_object_new(tsk_buffer_def_t, (const void*)data, (size_t)size)
 #define TSK_BUFFER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
+#define TSK_BUFFER_CREATE_NULL()			TSK_BUFFER_CREATE(0,0)
+
 #define TSK_BUFFER(self)					((tsk_buffer_t*)self)
 #define TSK_BUFFER_DATA(self)				(self ? TSK_BUFFER(self)->data : 0)
 #define TSK_BUFFER_SIZE(self)				(self ? TSK_BUFFER(self)->size : 0)

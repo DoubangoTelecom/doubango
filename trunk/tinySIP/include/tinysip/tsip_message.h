@@ -36,8 +36,9 @@
 #include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_Content_Length.h"
 #include "tinysip/headers/tsip_header_CSeq.h"
-#include "tinysip/headers/tsip_header_From.h"
 #include "tinysip/headers/tsip_header_Expires.h"
+#include "tinysip/headers/tsip_header_From.h"
+#include "tinysip/headers/tsip_header_P_Access_Network_Info.h"
 #include "tinysip/headers/tsip_header_To.h"
 #include "tinysip/headers/tsip_header_Via.h"
 
@@ -50,6 +51,8 @@
 #define TSIP_MESSAGE_IS_REQUEST(self) ((self) ? (self)->type == tsip_request : 0)
 #define TSIP_MESSAGE_IS_RESPONSE(self) ((self) ? (self)->type == tsip_response : 0)
 
+#define TSIP_MESSAGE(self)				((tsip_message_t*)(self))
+#define TSIP_MESSAGE_AS_RESPONSE(self)	((tsip_response_t*)(self))
 #define TSIP_MESSAGE_AS_REQUEST(self)	((tsip_request_t*)(self))
 
 
@@ -63,7 +66,7 @@
 * @sa TSIP_MESSAGE_CREATE.
 */
 #define TSIP_MESSAGE_CREATE()											tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_unknown)
-#define TSIP_REQUEST_CREATE(method, uristring)							tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_request, (const char*)method, (const char*)uristring)
+#define TSIP_REQUEST_CREATE(method, uri)								tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_request, (const char*)method, (const tsip_uri_t*)uri)
 #define TSIP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_response, (const tsip_request_t*)request, (short)status, (const char*)phrase)
 #define TSIP_MESSAGE_SAFE_FREE(self)									tsk_object_unref(self), self = 0
 #define TSIP_REQUEST_SAFE_FREE(self)									TSIP_MESSAGE_SAFE_FREE(self)
@@ -100,7 +103,7 @@ tsip_message_type_t;
 typedef struct tsip_request_line_s
 {
 	char *method; /**< SIP method name. e.g REGISTER, ACK or INVITE.*/
-	char *uri;	/**< The Request-URI is a SIP or SIPS URI as described in Section 19.1 or a general URI (RFC 2396 [5]).  It indicates
+	tsip_uri_t *uri;	/**< The Request-URI is a SIP or SIPS URI as described in Section 19.1 or a general URI (RFC 2396 [5]).  It indicates
            the user or service to which this request is being addressed. The Request-URI MUST NOT contain unescaped spaces or control
            characters and MUST NOT be enclosed in "<>". */
 }
@@ -165,7 +168,32 @@ tsip_message_t;
 typedef tsip_message_t tsip_request_t; /**< SIP request message. */
 typedef tsip_message_t tsip_response_t; /**< SIP response message. */
 
+
 TINYSIP_API int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr);
+
+#ifdef __SYMBIAN32__
+static void TSIP_MESSAGE_ADD_HEADER(tsip_message_t *self, ...)
+	{
+		va_list ap;
+		tsip_header_t *header;
+		const tsk_object_def_t *objdef;
+		
+		va_start(ap, self);
+		objdef = va_arg(ap, const tsk_object_def_t*);
+		header = tsk_object_new2(objdef, &ap);
+		va_end(ap);
+
+		tsip_message_add_header(self, header);
+		tsk_object_unref(header);
+	}
+#else
+#define TSIP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
+	{																	\
+		tsip_header_t *header = tsk_object_new(objdef, __VA_ARGS__);	\
+		tsip_message_add_header(self, header);							\
+		tsk_object_unref(header);										\
+	}
+#endif
 
 TINYSIP_API tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, size_t index);
 TINYSIP_API tsip_header_t *tsip_message_get_header(const tsip_message_t *self, tsip_header_type_t type);
@@ -180,7 +208,7 @@ TINYSIP_API int32_t		tsip_message_getCSeq(const tsip_message_t *message);
 
 TINYSIP_API int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output);
 
-TINYSIP_API tsip_request_t *tsip_request_new(const char* method, const char *uristring, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id);
+TINYSIP_API tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq);
 
 TINYSIP_API const void *tsip_message_def_t;
 

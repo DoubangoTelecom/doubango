@@ -64,7 +64,7 @@
 */
 //typedef void (*tsk_list_item_func_free)(void** item);
 
-#define TSK_LIST_IS_EMPTY(self)				(self ? (!self->head) : 0)
+#define TSK_LIST_IS_EMPTY(self)				(self ? (!self->head) : 1)
 
 /** Item
 */

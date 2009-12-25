@@ -62,7 +62,7 @@
 	Join = "Join"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Join; 
 	Max_Forwards = "Max-Forwards"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Max_Forwards; 
 	MIME_Version = "MIME-Version"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_MIME_Version; 
-	Min_Expires = "Min-SE"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Min_Expires; 
+	Min_Expires = "Min-Expires"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Min_Expires; 
 	Min_SE = "Min-SE"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Min_SE; 
 	Organization = "Organization"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Organization; 
 	Path = "Path"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Path; 

@@ -69,4 +69,16 @@
 
 #define TINYSAK_IMPORTS
 
+#if (_WIN32_WINNT>=0x0600) || (0)
+#	define TNET_HAVE_POLL		1
+#else
+#	define TNET_HAVE_POLL		0
+#endif
+
+#if TNET_UNDER_WINDOWS
+#	define TNET_USE_POLL	0 /* Do not use WSAPoll event if under Vista. */
+#else
+#	define TNET_USE_POLL	1
+#endif
+
 #endif /* _TINYNET_H_ */

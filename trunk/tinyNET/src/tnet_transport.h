@@ -42,21 +42,25 @@
 #define TNET_TRANSPORT_CREATE(host, port, type, description)		tsk_object_new(tnet_transport_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
 #define TNET_TRANSPORT_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
+#define TNET_TRANSPORT_DATA_READ(callback)							((tnet_transport_data_read)callback)
+
 typedef void tnet_transport_handle_t;
 
-typedef int (*tnet_transport_data_read)(const void* data, size_t size);
+typedef int (*tnet_transport_data_read)(const void *callback_data, const void* data, size_t size);
 
 TINYNET_API int tnet_transport_start(tnet_transport_handle_t* transport);
 TINYNET_API int tnet_transport_isready(const tnet_transport_handle_t *handle);
+TINYNET_API int tnet_transport_issecure(const tnet_transport_handle_t *handle);
 TINYNET_API const char* tnet_transport_get_description(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
 
+TINYNET_API int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd);
 TINYNET_API int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd);
 TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port);
 TINYNET_API size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size);
 TINYNET_API size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, size_t size);
 
-TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_data_read callback);
+TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_data_read callback, const void* callback_data);
 
 TINYNET_API tnet_socket_type_t tnet_transport_get_socket_type(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_shutdown(tnet_transport_handle_t* handle);
@@ -75,6 +79,7 @@ typedef struct tnet_transport_s
 	char *description;
 
 	tnet_transport_data_read callback;
+	const void* callback_data;
 }
 tnet_transport_t;
 

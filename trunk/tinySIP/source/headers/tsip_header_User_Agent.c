@@ -45,7 +45,7 @@
 *	Ragel state machine.
 */
 
-/* #line 71 "tsip_parser_header_User_Agent.rl" */
+/* #line 73 "tsip_parser_header_User_Agent.rl" */
 
 
 int tsip_header_User_Agent_tostring(const void* header, tsk_buffer_t* output)
@@ -69,12 +69,12 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_User_Agent_t *hdr_user_agent = TSIP_HEADER_USER_AGENT_CREATE();
+	tsip_header_User_Agent_t *hdr_user_agent = TSIP_HEADER_USER_AGENT_CREATE(0);
 	
 	const char *tag_start;
 
 	
-/* #line 63 "../source/headers/tsip_header_User_Agent.c" */
+/* #line 78 "../source/headers/tsip_header_User_Agent.c" */
 static const char _tsip_machine_parser_header_User_Agent_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 1
@@ -135,16 +135,16 @@ static const int tsip_machine_parser_header_User_Agent_error = 0;
 static const int tsip_machine_parser_header_User_Agent_en_main = 1;
 
 
-/* #line 86 "tsip_parser_header_User_Agent.rl" */
+/* #line 101 "tsip_parser_header_User_Agent.rl" */
 	
-/* #line 126 "../source/headers/tsip_header_User_Agent.c" */
+/* #line 141 "../source/headers/tsip_header_User_Agent.c" */
 	{
 	cs = tsip_machine_parser_header_User_Agent_start;
 	}
 
-/* #line 87 "tsip_parser_header_User_Agent.rl" */
+/* #line 102 "tsip_parser_header_User_Agent.rl" */
 	
-/* #line 133 "../source/headers/tsip_header_User_Agent.c" */
+/* #line 148 "../source/headers/tsip_header_User_Agent.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -219,26 +219,26 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tsip_parser_header_User_Agent.rl" */
+/* #line 52 "tsip_parser_header_User_Agent.rl" */
 	{
 		TSK_DEBUG_INFO("USER_AGENT:TAG");
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "tsip_parser_header_User_Agent.rl" */
+/* #line 58 "tsip_parser_header_User_Agent.rl" */
 	{
 		PARSER_SET_STRING(hdr_user_agent->value);
 		TSK_DEBUG_INFO("USER_AGENT:parse_user_agent");
 	}
 	break;
 	case 2:
-/* #line 62 "tsip_parser_header_User_Agent.rl" */
+/* #line 64 "tsip_parser_header_User_Agent.rl" */
 	{
 		TSK_DEBUG_INFO("USER_AGENT:EOB");
 	}
 	break;
-/* #line 227 "../source/headers/tsip_header_User_Agent.c" */
+/* #line 242 "../source/headers/tsip_header_User_Agent.c" */
 		}
 	}
 
@@ -251,12 +251,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 88 "tsip_parser_header_User_Agent.rl" */
+/* #line 103 "tsip_parser_header_User_Agent.rl" */
 	
 	if( cs < 
-/* #line 243 "../source/headers/tsip_header_User_Agent.c" */
+/* #line 258 "../source/headers/tsip_header_User_Agent.c" */
 15
-/* #line 89 "tsip_parser_header_User_Agent.rl" */
+/* #line 104 "tsip_parser_header_User_Agent.rl" */
  )
 	{
 		TSIP_HEADER_USER_AGENT_SAFE_FREE(hdr_user_agent);
@@ -284,6 +284,7 @@ static void* tsip_header_User_Agent_create(void *self, va_list * app)
 	{
 		User_Agent->type = tsip_htype_User_Agent;
 		User_Agent->tostring = tsip_header_User_Agent_tostring;
+		User_Agent->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else
 	{

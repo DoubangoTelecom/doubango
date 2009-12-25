@@ -15,7 +15,7 @@ ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_header.c tsip_parser_header.
 
 
 # ==Allow
-#ragel.exe $OPTIONS -o ../source/headers/tsip_header_Allow.c tsip_parser_header_Allow.rl
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_Allow.c tsip_parser_header_Allow.rl
 
 # ==Allow-Events
 ragel.exe $OPTIONS -o ../source/headers/tsip_header_Allow_Events.c tsip_parser_header_Allow_Events.rl
@@ -24,7 +24,7 @@ ragel.exe $OPTIONS -o ../source/headers/tsip_header_Allow_Events.c tsip_parser_h
 ragel.exe $OPTIONS -o ../source/headers/tsip_header_Call_ID.c tsip_parser_header_Call_ID.rl
 
 # ==Content-Length
-#ragel.exe $OPTIONS -o ../source/headers/tsip_header_Content_Length.c tsip_parser_header_Content_Length.rl
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_Content_Length.c tsip_parser_header_Content_Length.rl
 
 # ==Contact
 ragel.exe $OPTIONS -o ../source/headers/tsip_header_Contact.c tsip_parser_header_Contact.rl
@@ -38,11 +38,14 @@ ragel.exe $OPTIONS -o ../source/headers/tsip_header_Expires.c tsip_parser_header
 # ==From
 ragel.exe $OPTIONS -o ../source/headers/tsip_header_From.c tsip_parser_header_From.rl
 
-# ==Max_Forwards
+# ==Max-Forwards
 ragel.exe $OPTIONS -o ../source/headers/tsip_header_Max_Forwards.c tsip_parser_header_Max_Forwards.rl
 
+# ==Min-Expires
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_Min_Expires.c tsip_parser_header_Min_Expires.rl
+
 # ==P-Access-Network-Info
-#ragel.exe $OPTIONS -o ../source/headers/tsip_header_P_Access_Network_Info.c tsip_parser_header_P_Access_Network_Info.rl
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_P_Access_Network_Info.c tsip_parser_header_P_Access_Network_Info.rl
 
 # ==P-Preferred-Identity
 ragel.exe $OPTIONS -o ../source/headers/tsip_header_P_Preferred_Identity.c tsip_parser_header_P_Preferred_Identity.rl

@@ -35,7 +35,6 @@
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
-
 #include <string.h>
 
 /**@defgroup tsip_header_Allow_group SIP Allow header.
@@ -45,7 +44,8 @@
 *	Ragel state machine.
 */
 
-/* #line 70 "tsip_parser_header_Allow.rl" */
+/* #line 71 "tsip_parser_header_Allow.rl" */
+
 
 int tsip_header_Allow_tostring(const void* header, tsk_buffer_t* output)
 {
@@ -75,7 +75,6 @@ int tsip_header_Allow_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
-
 tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -87,7 +86,7 @@ tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 63 "../source/headers/tsip_header_Allow.c" */
+/* #line 90 "../source/headers/tsip_header_Allow.c" */
 static const char _tsip_machine_parser_header_Allow_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -165,16 +164,16 @@ static const int tsip_machine_parser_header_Allow_error = 0;
 static const int tsip_machine_parser_header_Allow_en_main = 1;
 
 
-/* #line 85 "tsip_parser_header_Allow.rl" */
+/* #line 112 "tsip_parser_header_Allow.rl" */
 	
-/* #line 143 "../source/headers/tsip_header_Allow.c" */
+/* #line 170 "../source/headers/tsip_header_Allow.c" */
 	{
 	cs = tsip_machine_parser_header_Allow_start;
 	}
 
-/* #line 86 "tsip_parser_header_Allow.rl" */
+/* #line 113 "tsip_parser_header_Allow.rl" */
 	
-/* #line 150 "../source/headers/tsip_header_Allow.c" */
+/* #line 177 "../source/headers/tsip_header_Allow.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -249,25 +248,25 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tsip_parser_header_Allow.rl" */
+/* #line 51 "tsip_parser_header_Allow.rl" */
 	{
 		TSK_DEBUG_INFO("ALLOW:TAG");
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "tsip_parser_header_Allow.rl" */
+/* #line 57 "tsip_parser_header_Allow.rl" */
 	{
 		PARSER_ADD_STRING(hdr_allow->methods);
 	}
 	break;
 	case 2:
-/* #line 61 "tsip_parser_header_Allow.rl" */
+/* #line 62 "tsip_parser_header_Allow.rl" */
 	{
 		TSK_DEBUG_INFO("ALLOW:EOB");
 	}
 	break;
-/* #line 243 "../source/headers/tsip_header_Allow.c" */
+/* #line 270 "../source/headers/tsip_header_Allow.c" */
 		}
 	}
 
@@ -280,12 +279,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 87 "tsip_parser_header_Allow.rl" */
+/* #line 114 "tsip_parser_header_Allow.rl" */
 	
 	if( cs < 
-/* #line 259 "../source/headers/tsip_header_Allow.c" */
+/* #line 286 "../source/headers/tsip_header_Allow.c" */
 18
-/* #line 88 "tsip_parser_header_Allow.rl" */
+/* #line 115 "tsip_parser_header_Allow.rl" */
  )
 	{
 		TSIP_HEADER_ALLOW_SAFE_FREE(hdr_allow);

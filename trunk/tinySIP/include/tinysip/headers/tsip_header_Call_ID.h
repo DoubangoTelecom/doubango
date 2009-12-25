@@ -40,8 +40,9 @@
 * Safely free a sip 'Call-ID' header previously created using TSIP_HEADER_CALL_ID_CREATE.
 * @sa TSIP_HEADER_CALL_ID_CREATE.
 */
-#define TSIP_HEADER_CALL_ID_CREATE(call_id)		tsk_object_new(tsip_header_Call_ID_def_t, (const char*)call_id)
-#define TSIP_HEADER_CALL_ID_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+#define TSIP_HEADER_CALL_ID_VA_ARGS(call_id)	tsip_header_Call_ID_def_t, (const char*)call_id
+#define TSIP_HEADER_CALL_ID_CREATE(call_id)		tsk_object_new(TSIP_HEADER_CALL_ID_VA_ARGS(call_id))
+#define TSIP_HEADER_CALL_ID_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -62,6 +63,7 @@ typedef struct tsip_header_Call_ID_s
 }
 tsip_header_Call_ID_t;
 
+void tsip_header_Call_ID_random(tsk_istr_t *result);
 tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size);
 
 TINYSIP_API const void *tsip_header_Call_ID_def_t;

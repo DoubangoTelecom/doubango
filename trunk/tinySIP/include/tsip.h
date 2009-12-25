@@ -32,26 +32,29 @@
 
 #include "tinysip_config.h"
 #include "tinysip/tsip_operation.h"
+#include "tinysip/tsip_timers.h"
 
 #include "tsk_runnable.h"
+
 
 #include <stdint.h>
 
 typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
+typedef void tsip_stack_handle_t;
 
-typedef int (*tsip_stack_callback)(struct tsip_event_s *sipevent);
+#define TSIP_STACK(self)		((tsip_stack_t*)(self))
 
 typedef enum tsip_stack_param_type_e
 {
 	/* Identity */
-	pname_uri,
-	pname_preferred_uri,
-	pname_user_name,
+	pname_display_name,
+	pname_public_identity,
+	pname_private_identity,
 	pname_password,
-#define TSIP_STACK_SET_URI(STR)							pname_uri, (const char*)STR
-#define TSIP_STACK_SET_PREFERRED_URI(STR)				pname_preferred_uri, (const char*)STR
-#define TSIP_STACK_SET_USER_NAME(STR)					pname_user_name, (const char*)STR
+#define TSIP_STACK_SET_DISPLAY_NAME(STR)				pname_display_name, (const char*)STR
+#define TSIP_STACK_SET_PUBLIC_IDENTITY(URI_STR)			pname_public_identity, (const char*)URI_STR
+#define TSIP_STACK_SET_PRIVATE_IDENTITY(STR)			pname_private_identity, (const char*)STR
 #define TSIP_STACK_SET_PASSWORD(STR)					pname_password, (const char*)STR
 
 	/* Network */
@@ -63,7 +66,8 @@ typedef enum tsip_stack_param_type_e
 	pname_amf,
 	pname_netinfo,
 	pname_realm,
-	pname_proxy,
+	pname_proxy_cscf,
+	pname_proxy_cscf_port,
 #define TSIP_STACK_SET_LOCAL_IP(STR)					pname_local_ip, (const char*)STR
 #define TSIP_STACK_SET_LOCAL_PORT(UINT16)				pname_local_port, (uint16_t)UINT16
 #define TSIP_STACK_SET_ENABLE_IPV6(INT)					pname_enable_ipv6, (int)INT
@@ -71,8 +75,9 @@ typedef enum tsip_stack_param_type_e
 #define TSIP_STACK_SET_POPERATOR_ID(OPERATOR_ID)		pname_privacy, (operator_id_t)OPERATOR_ID
 #define TSIP_STACK_SET_AMF(AMF)							pname_amf, (amf_t)AMF
 #define TSIP_STACK_SET_NETINFO(STR)						pname_netinfo, (const char*)STR
-#define TSIP_STACK_SET_REALM(STR)						pname_realm, (const char*)STR
-#define TSIP_STACK_SET_PROXY(STR)						pname_proxy, (const char*)STR
+#define TSIP_STACK_SET_REALM(FQDN_STR)					pname_realm, (const char*)FQDN_STR
+#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR)				pname_proxy_cscf, (const char*)FQDN_STR
+#define TSIP_STACK_SET_PROXY_CSCF_PORT(UINT16)			pname_proxy_cscf_port, (uint16_t)UINT16
 
 	/* Services */
 	pname_enable_100rel,
@@ -93,26 +98,26 @@ typedef enum tsip_stack_param_type_e
 }
 tsip_stack_param_type_t;
 
-typedef void tsip_stack_handle_t;
 
 typedef enum tsip_event_type_e
 {
-	tsip_ack,
-	tsip_bye,
-	tsip_cancel,
-	tsip_message,
-	tsip_notify,
-	tsip_options,
-	tsip_prack,
-	tsip_publish,
-	tsip_refer,
-	tsip_register,
-	tsip_subscribe,
-	tsip_update,
+	tsip_event_ack,
+	tsip_event_bye,
+	tsip_event_cancel,
+	tsip_event_invite,
+	tsip_event_message,
+	tsip_event_notify,
+	tsip_event_options,
+	tsip_event_prack,
+	tsip_event_publish,
+	tsip_event_refer,
+	tsip_event_register,
+	tsip_event_subscribe,
+	tsip_event_update,
 
-	tsip_unpublish,
-	tsip_unregister,
-	tsip_unsubscribe,
+	tsip_event_unpublish,
+	tsip_event_unregister,
+	tsip_event_unsubscribe,
 
 }
 tsip_event_type_t;
@@ -131,17 +136,82 @@ typedef struct tsip_event_s
 tsip_event_t;
 TINYSIP_API const void *tsip_event_def_t;
 
+
+typedef int (*tsip_stack_callback)(tsip_event_t *sipevent);
+
+
+
+typedef struct tsip_stack_s
+{
+	TSK_DECLARE_RUNNABLE;
+
+	tsip_stack_callback callback;
+
+	/* Identity */
+	char* display_name;
+	struct tsip_uri_s *public_identity;
+	char *private_identity;
+	char *password;
+
+	/* Network */
+	char *local_ip;
+	uint16_t local_port;
+	unsigned enable_ipv6:1;
+	char *privacy;
+	operator_id_t operator_id;
+	amf_t amf;
+	char *netinfo;
+	struct tsip_uri_s *realm;
+	char *proxy_cscf;
+	uint16_t proxy_cscf_port;
+
+	/* Services */
+	unsigned enable_100rel:1;
+	unsigned enable_gsmais:1;
+	unsigned enable_precond:1;
+	unsigned enable_3gppsms:1;
+	unsigned enable_gsmarcs:1;
+	unsigned enable_earlyIMS:1;
+	unsigned enable_ofdr:1;
+	unsigned enable_aa:1;
+	unsigned enable_dnd:1;
+	unsigned enable_option:1;
+
+	/* QoS */
+
+	/* Internals. */
+	tsk_timer_manager_handle_t* timer_mgr;
+	tsip_timers_t timers;
+	tsip_operations_L_t *operations;
+
+	/* Layers */
+	struct tsip_dialog_layer_s *layer_dialog;
+	struct tsip_transac_layer_s *layer_transac;
+	struct tsip_transport_layer_s *layer_transport;
+}
+tsip_stack_t;
+
+
+
+
+
+
+
+TINYSIP_API int tsip_global_init();
+TINYSIP_API int tsip_global_deinit();
+
 TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback callback, ...);
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
 
+const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self);
 struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self);
 struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);
 struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self);
 
-int tsip_stack_register(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_stack_register(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation);
 int tsip_stack_unregister(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \

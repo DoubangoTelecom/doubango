@@ -66,6 +66,30 @@ void* tsk_object_new(const tsk_object_def_t *objdef, ...)
 	return newobj;
 }
 
+void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
+{
+	void *newobj = tsk_calloc(1, objdef->size);
+	if(newobj)
+	{
+		(*(const tsk_object_def_t **) newobj) = objdef;
+		TSK_OBJECT_HEADER_GET(newobj)->refCount = 1;
+		if(objdef->constructor)
+		{ 
+			newobj = objdef->constructor(newobj, ap);
+		}
+		else
+		{
+			TSK_DEBUG_WARN("No constructor found.");
+		}
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new tsk_object.");
+	}
+
+	return newobj;
+}
+
 size_t tsk_object_sizeof(const void *self)
 {
 	const tsk_object_def_t **objdef = self;

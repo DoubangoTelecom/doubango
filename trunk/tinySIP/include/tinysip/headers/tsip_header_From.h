@@ -42,7 +42,8 @@
 * Safely free a sip 'From' header previously created using TSIP_HEADER_FROM_CREATE.
 * @sa TSIP_HEADER_FROM_CREATE.
 */
-#define TSIP_HEADER_FROM_CREATE(display_name, uri, tag)		tsk_object_new(tsip_header_From_def_t, (const char*)display_name, (const tsip_uri_t*)uri, (const char*)tag)
+#define TSIP_HEADER_FROM_VA_ARGS(display_name, uri, tag)	tsip_header_From_def_t, (const char*)display_name, (const tsip_uri_t*)uri, (const char*)tag
+#define TSIP_HEADER_FROM_CREATE(display_name, uri, tag)		tsk_object_new(TSIP_HEADER_FROM_VA_ARGS(display_name, uri, tag))
 #define TSIP_HEADER_FROM_SAFE_FREE(self)					tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

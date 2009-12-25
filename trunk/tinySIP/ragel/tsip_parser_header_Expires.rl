@@ -90,7 +90,7 @@ tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Expires_t *hdr_expires = TSIP_HEADER_EXPIRES_CREATE();
+	tsip_header_Expires_t *hdr_expires = TSIP_HEADER_EXPIRES_CREATE(TSIP_HEADER_EXPIRES_NONE);
 	
 	const char *tag_start;
 
@@ -125,7 +125,7 @@ static void* tsip_header_Expires_create(void *self, va_list * app)
 	{
 		Expires->type = tsip_htype_Expires;
 		Expires->tostring = tsip_header_Expires_tostring;
-		Expires->delta_seconds = -1;
+		Expires->delta_seconds = va_arg(*app, int32_t);
 	}
 	else
 	{

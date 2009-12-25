@@ -30,6 +30,9 @@
 #include "tsk_time.h"
 
 #if TSK_UNDER_WINDOWS
+#	ifdef _WIN32_WCE
+#		include <Winsock2.h> // timeval
+#	endif
 #	include <windows.h>
 #elif defined(__SYMBIAN32__)
 #	include <_timeval.h> 

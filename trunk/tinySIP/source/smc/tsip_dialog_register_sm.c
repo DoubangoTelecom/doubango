@@ -62,27 +62,27 @@
 
 #define EXIT_STATE(state)
 
-static void tsip_dialog_registerState_sm_1xx(struct tsip_dialog_registerContext *fsm)
+static void tsip_dialog_registerState_sm_1xx(struct tsip_dialog_registerContext *fsm, const tsip_message_t* msg)
 {
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_dialog_registerState_sm_2xx(struct tsip_dialog_registerContext *fsm, int registering)
+static void tsip_dialog_registerState_sm_2xx(struct tsip_dialog_registerContext *fsm, int registering, const tsip_message_t* msg)
 {
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_dialog_registerState_sm_300_to_699(struct tsip_dialog_registerContext *fsm)
+static void tsip_dialog_registerState_sm_300_to_699(struct tsip_dialog_registerContext *fsm, const tsip_message_t* msg)
 {
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_dialog_registerState_sm_401_407_421_494(struct tsip_dialog_registerContext *fsm, int succeed)
+static void tsip_dialog_registerState_sm_401_407_421_494(struct tsip_dialog_registerContext *fsm, int succeed, const tsip_message_t* msg)
 {
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_dialog_registerState_sm_423(struct tsip_dialog_registerContext *fsm)
+static void tsip_dialog_registerState_sm_423(struct tsip_dialog_registerContext *fsm, const tsip_message_t* msg)
 {
     getState(fsm)->Default(fsm);
 }
@@ -92,7 +92,7 @@ static void tsip_dialog_registerState_sm_cancel(struct tsip_dialog_registerConte
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_dialog_registerState_sm_refresh(struct tsip_dialog_registerContext *fsm)
+static void tsip_dialog_registerState_sm_refresh(struct tsip_dialog_registerContext *fsm, tsk_timer_id_t timer_id)
 {
     getState(fsm)->Default(fsm);
 }
@@ -229,53 +229,53 @@ static void tsip_dialog_register_Started_sm_send(struct tsip_dialog_registerCont
 const struct tsip_dialog_registerState tsip_dialog_register_Started = { POPULATE_STATE(tsip_dialog_register_Started), "tsip_dialog_register_Started", 0 };
 
 #undef tsip_dialog_register_Trying_sm_1xx
-static void tsip_dialog_register_Trying_sm_1xx(struct tsip_dialog_registerContext *fsm)
+static void tsip_dialog_register_Trying_sm_1xx(struct tsip_dialog_registerContext *fsm, const tsip_message_t* msg)
 {
     struct tsip_dialog_register* ctxt = getOwner(fsm);
     const struct tsip_dialog_registerState* EndStateName = getState(fsm);
 
     clearState(fsm);
-    tsip_dialog_register_Trying_2_Trying_X_1xx(ctxt);
+    tsip_dialog_register_Trying_2_Trying_X_1xx(ctxt, msg);
     setState(fsm, EndStateName);
 }
 
 #undef tsip_dialog_register_Trying_sm_2xx
-static void tsip_dialog_register_Trying_sm_2xx(struct tsip_dialog_registerContext *fsm, int registering)
+static void tsip_dialog_register_Trying_sm_2xx(struct tsip_dialog_registerContext *fsm, int registering, const tsip_message_t* msg)
 {
     struct tsip_dialog_register* ctxt = getOwner(fsm);
 
     if (registering) {
         EXIT_STATE(getState(fsm));
         clearState(fsm);
-        tsip_dialog_register_Trying_2_Connected_X_2xx(ctxt);
+        tsip_dialog_register_Trying_2_Connected_X_2xx(ctxt, msg);
         setState(fsm, &tsip_dialog_register_Connected);
         ENTRY_STATE(getState(fsm));
     }
     else if (!registering) {
         EXIT_STATE(getState(fsm));
         clearState(fsm);
-        tsip_dialog_register_Trying_2_Terminated_X_2xx(ctxt);
+        tsip_dialog_register_Trying_2_Terminated_X_2xx(ctxt, msg);
         setState(fsm, &tsip_dialog_register_Terminated);
         ENTRY_STATE(getState(fsm));
     }    else {
-        tsip_dialog_register_DefaultState_sm_2xx(fsm, registering);
+        tsip_dialog_register_DefaultState_sm_2xx(fsm, registering, msg);
     }
 }
 
 #undef tsip_dialog_register_Trying_sm_300_to_699
-static void tsip_dialog_register_Trying_sm_300_to_699(struct tsip_dialog_registerContext *fsm)
+static void tsip_dialog_register_Trying_sm_300_to_699(struct tsip_dialog_registerContext *fsm, const tsip_message_t* msg)
 {
     struct tsip_dialog_register* ctxt = getOwner(fsm);
 
     EXIT_STATE(getState(fsm));
     clearState(fsm);
-    tsip_dialog_register_Trying_2_Terminated_X_300_to_699(ctxt);
+    tsip_dialog_register_Trying_2_Terminated_X_300_to_699(ctxt, msg);
     setState(fsm, &tsip_dialog_register_Terminated);
     ENTRY_STATE(getState(fsm));
 }
 
 #undef tsip_dialog_register_Trying_sm_401_407_421_494
-static void tsip_dialog_register_Trying_sm_401_407_421_494(struct tsip_dialog_registerContext *fsm, int succeed)
+static void tsip_dialog_register_Trying_sm_401_407_421_494(struct tsip_dialog_registerContext *fsm, int succeed, const tsip_message_t* msg)
 {
     struct tsip_dialog_register* ctxt = getOwner(fsm);
 
@@ -283,28 +283,28 @@ static void tsip_dialog_register_Trying_sm_401_407_421_494(struct tsip_dialog_re
         const struct tsip_dialog_registerState* EndStateName = getState(fsm);
 
         clearState(fsm);
-        tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(ctxt);
+        tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(ctxt, msg);
         setState(fsm, EndStateName);
     }
     else if (!succeed) {
         EXIT_STATE(getState(fsm));
         clearState(fsm);
-        tsip_dialog_register_Trying_2_Terminated_X_401_407_421_494(ctxt);
+        tsip_dialog_register_Trying_2_Terminated_X_401_407_421_494(ctxt, msg);
         setState(fsm, &tsip_dialog_register_Terminated);
         ENTRY_STATE(getState(fsm));
     }    else {
-        tsip_dialog_register_DefaultState_sm_401_407_421_494(fsm, succeed);
+        tsip_dialog_register_DefaultState_sm_401_407_421_494(fsm, succeed, msg);
     }
 }
 
 #undef tsip_dialog_register_Trying_sm_423
-static void tsip_dialog_register_Trying_sm_423(struct tsip_dialog_registerContext *fsm)
+static void tsip_dialog_register_Trying_sm_423(struct tsip_dialog_registerContext *fsm, const tsip_message_t* msg)
 {
     struct tsip_dialog_register* ctxt = getOwner(fsm);
     const struct tsip_dialog_registerState* EndStateName = getState(fsm);
 
     clearState(fsm);
-    tsip_dialog_register_Trying_2_Trying_X_423(ctxt);
+    tsip_dialog_register_Trying_2_Trying_X_423(ctxt, msg);
     setState(fsm, EndStateName);
 }
 
@@ -323,7 +323,7 @@ static void tsip_dialog_register_Trying_sm_cancel(struct tsip_dialog_registerCon
 const struct tsip_dialog_registerState tsip_dialog_register_Trying = { POPULATE_STATE(tsip_dialog_register_Trying), "tsip_dialog_register_Trying", 1 };
 
 #undef tsip_dialog_register_Connected_sm_refresh
-static void tsip_dialog_register_Connected_sm_refresh(struct tsip_dialog_registerContext *fsm)
+static void tsip_dialog_register_Connected_sm_refresh(struct tsip_dialog_registerContext *fsm, tsk_timer_id_t timer_id)
 {
     struct tsip_dialog_register* ctxt = getOwner(fsm);
 
@@ -356,53 +356,53 @@ void tsip_dialog_registerContext_Init(struct tsip_dialog_registerContext* fsm, s
     fsm->_owner = owner;
 }
 
-void tsip_dialog_registerContext_sm_1xx(struct tsip_dialog_registerContext* fsm)
+void tsip_dialog_registerContext_sm_1xx(struct tsip_dialog_registerContext* fsm, const tsip_message_t* msg)
 {
     const struct tsip_dialog_registerState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_1xx");
-    state->sm_1xx(fsm);
+    state->sm_1xx(fsm, msg);
     setTransition(fsm, NULL);
 }
 
-void tsip_dialog_registerContext_sm_2xx(struct tsip_dialog_registerContext* fsm, int registering)
+void tsip_dialog_registerContext_sm_2xx(struct tsip_dialog_registerContext* fsm, int registering, const tsip_message_t* msg)
 {
     const struct tsip_dialog_registerState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_2xx");
-    state->sm_2xx(fsm, registering);
+    state->sm_2xx(fsm, registering, msg);
     setTransition(fsm, NULL);
 }
 
-void tsip_dialog_registerContext_sm_300_to_699(struct tsip_dialog_registerContext* fsm)
+void tsip_dialog_registerContext_sm_300_to_699(struct tsip_dialog_registerContext* fsm, const tsip_message_t* msg)
 {
     const struct tsip_dialog_registerState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_300_to_699");
-    state->sm_300_to_699(fsm);
+    state->sm_300_to_699(fsm, msg);
     setTransition(fsm, NULL);
 }
 
-void tsip_dialog_registerContext_sm_401_407_421_494(struct tsip_dialog_registerContext* fsm, int succeed)
+void tsip_dialog_registerContext_sm_401_407_421_494(struct tsip_dialog_registerContext* fsm, int succeed, const tsip_message_t* msg)
 {
     const struct tsip_dialog_registerState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_401_407_421_494");
-    state->sm_401_407_421_494(fsm, succeed);
+    state->sm_401_407_421_494(fsm, succeed, msg);
     setTransition(fsm, NULL);
 }
 
-void tsip_dialog_registerContext_sm_423(struct tsip_dialog_registerContext* fsm)
+void tsip_dialog_registerContext_sm_423(struct tsip_dialog_registerContext* fsm, const tsip_message_t* msg)
 {
     const struct tsip_dialog_registerState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_423");
-    state->sm_423(fsm);
+    state->sm_423(fsm, msg);
     setTransition(fsm, NULL);
 }
 
@@ -416,13 +416,13 @@ void tsip_dialog_registerContext_sm_cancel(struct tsip_dialog_registerContext* f
     setTransition(fsm, NULL);
 }
 
-void tsip_dialog_registerContext_sm_refresh(struct tsip_dialog_registerContext* fsm)
+void tsip_dialog_registerContext_sm_refresh(struct tsip_dialog_registerContext* fsm, tsk_timer_id_t timer_id)
 {
     const struct tsip_dialog_registerState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_refresh");
-    state->sm_refresh(fsm);
+    state->sm_refresh(fsm, timer_id);
     setTransition(fsm, NULL);
 }
 

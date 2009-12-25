@@ -1,0 +1,88 @@
+/*
+============================================================================
+ Name		: tinySIP.mmp
+ Author	  : Mamadou Diop
+ Copyright   : * Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+ Description : This is the project specification file for tinySIP.
+============================================================================
+*/
+
+TARGET		  tinySIP.dll
+TARGETTYPE	  dll
+UID			 0x1000008d 0xE600CF6F
+
+
+USERINCLUDE	 	..\..\tinySAK\src
+USERINCLUDE 	..\..\tinyNET\src
+USERINCLUDE		..\..\tinySIP\include
+USERINCLUDE		..\..\thirdparties\s60\include\smc
+
+SYSTEMINCLUDE   \epoc32\include \epoc32\include\stdapis \epoc32\include\stdapis\sys
+
+
+
+// In order to use .def files to freeze code you must use one or more DEFFILE lines;
+// see the ones commented out below for examples.
+// By default, the build tools look for the WINSCW def file in a BWINS directory
+// (at the same level as the directory containing the mmp file), 
+// the GCC ARM def file in a BMARM directory, and the ARMV5 def file in a EABI directory. 
+// If your .def files are stored in these default locations, you can simply specify the
+// .def filename(s) with no path. If you want to store .def files in non-default 
+// locations, you will need to specify the paths in the DEFFILE statement(s).
+
+//The following commented out code shows how the build system uses the implicit
+// location for defiles. To create the DEF files Choose Project > Freeze Exports from Carbide
+// or run 'abld freeze' from the command-line
+//#if defined (WINS)
+//  DEFFILE ..\bwins\tinySIP.def
+//#elif defined (GCC32)
+//  DEFFILE ..\bmarm\tinySIP.def
+//#else 
+//  DEFFILE ..\eabi\tinySIP.def
+//#endif
+
+nostrictdef
+
+LIBRARY		 euser.lib libc.lib tinySAK.lib tinyNET.lib
+
+#ifdef ENABLE_ABIV2_MODE
+DEBUGGABLE_UDEBONLY
+#endif
+
+MACRO TINYSIP_EXPORTS
+
+EPOCALLOWDLLDATA
+
+SOURCEPATH ..\source\dialogs
+SOURCE tsip_dialog.c tsip_dialog_invite.client.c tsip_dialog_invite.server.c tsip_dialog_layer.c tsip_dialog_register.client.c tsip_dialog_register.server.c tsip_dialog_subscribe.client.c tsip_dialog_subscribe.server.c
+SOURCEPATH ..\source\headers
+SOURCE tsip_header.c tsip_header_Accept_Contact.c tsip_header_Accept_Encoding.c tsip_header_Accept_Language.c tsip_header_Accept_Resource_Priority.c tsip_header_Alert_Info.c tsip_header_Allow.c tsip_header_Allow_Events.c tsip_header_Authentication_Info.c tsip_header_Authorization.c tsip_header_CSeq.c tsip_header_Call_ID.c tsip_header_Call_Info.c tsip_header_Contact.c tsip_header_Content_Disposition.c tsip_header_Content_Encoding.c tsip_header_Content_Language.c tsip_header_Content_Length.c tsip_header_Content_Type.c tsip_header_Date.c tsip_header_Error_Info.c tsip_header_Event.c tsip_header_Expires.c tsip_header_From.c tsip_header_History_Info.c tsip_header_Identity.c tsip_header_Identity_Info.c tsip_header_In_Reply_To.c tsip_header_Join.c tsip_header_MIME_Version.c tsip_header_Max_Forwards.c tsip_header_Min_Expires.c tsip_header_Min_SE.c tsip_header_Organization.c tsip_header_P_Access_Network_Info.c tsip_header_P_Answer_State.c tsip_header_P_Asserted_Identity.c tsip_header_P_Associated_URI.c tsip_header_P_Called_Party_ID.c tsip_header_P_Charging_Function_Addresses.c tsip_header_P_Charging_Vector.c tsip_header_P_DCS_Billing_Info.c tsip_header_P_DCS_LAES.c tsip_header_P_DCS_OSPS.c tsip_header_P_DCS_Redirect.c tsip_header_P_DCS_Trace_Party_ID.c tsip_header_P_Early_Media.c tsip_header_P_Media_Authorization.c tsip_header_P_Preferred_Identity.c tsip_header_P_Profile_Key.c tsip_header_P_User_Database.c tsip_header_P_Visited_Network_ID.c tsip_header_Path.c tsip_header_Priority.c tsip_header_Privacy.c tsip_header_Proxy_Authenticate.c tsip_header_Proxy_Authorization.c tsip_header_Proxy_Require.c tsip_header_RAck.c tsip_header_RSeq.c tsip_header_Reason.c tsip_header_Record_Route.c tsip_header_Refer_Sub.c tsip_header_Refer_To.c tsip_header_Referred_By.c tsip_header_Reject_Contact.c tsip_header_Replaces.c tsip_header_Reply_To.c tsip_header_Request_Disposition.c tsip_header_Require.c tsip_header_Resource_Priority.c tsip_header_Retry_After.c tsip_header_Route.c tsip_header_SIP_ETag.c tsip_header_SIP_If_Match.c tsip_header_Security_Client.c tsip_header_Security_Server.c tsip_header_Security_Verify.c tsip_header_Server.c tsip_header_Service_Route.c tsip_header_Session_Expires.c tsip_header_Subject.c tsip_header_Subscription_State.c tsip_header_Supported.c tsip_header_Target_Dialog.c tsip_header_Timestamp.c tsip_header_To.c tsip_header_Unsupported.c tsip_header_User_Agent.c tsip_header_Via.c tsip_header_WWW_Authenticate.c tsip_header_Warning.c tsip_header_accept.c
+SOURCEPATH ..\source\parsers
+SOURCE tsip_parser_header.c tsip_parser_message.c tsip_parser_uri.c tsip_ragel_state.c
+SOURCEPATH ..\source\smc
+SOURCE tsip_dialog_register_sm.c tsip_transac_ict_sm.c tsip_transac_ist_sm.c tsip_transac_nict_sm.c tsip_transac_nist_sm.c
+SOURCEPATH ..\source\transactions
+SOURCE tsip_transac.c tsip_transac_ict.c tsip_transac_ist.c tsip_transac_layer.c tsip_transac_nict.c tsip_transac_nist.c
+SOURCEPATH ..\source\transports
+SOURCE tsip_transport.c tsip_transport_layer.c
+SOURCEPATH ..\source
+SOURCE tsip.c tsip_message.c tsip_operation.c tsip_timers.c tsip_uri.c
+
+EXPORTUNFROZEN

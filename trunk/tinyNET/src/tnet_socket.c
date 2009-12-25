@@ -30,6 +30,8 @@
 
 #include "tnet_socket.h"
 
+#include "tnet_utils.h"
+
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
@@ -74,7 +76,7 @@ int tnet_socket_stream_connectto(tnet_socket_tcp_t *sock, const char* host, tnet
 	hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? IPPROTO_TCP : IPPROTO_UDP;
 
 	
-	if(status = tnet_getaddrinfo(host, _port, &hints, &result))
+	if((status = tnet_getaddrinfo(host, _port, &hints, &result)))
 	{
 		TNET_PRINT_LAST_ERROR();
 		goto bail;
@@ -84,7 +86,7 @@ int tnet_socket_stream_connectto(tnet_socket_tcp_t *sock, const char* host, tnet
 	{
 		if(ptr->ai_family == hints.ai_family && ptr->ai_socktype == hints.ai_socktype && ptr->ai_protocol == hints.ai_protocol)
 		{
-			if(status = connect(sock->fd, ptr->ai_addr, ptr->ai_addrlen))
+			if((status = connect(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
 			{
 				TNET_PRINT_LAST_ERROR();
 				goto bail;
@@ -143,7 +145,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		}
 		else
 		{
-			if(status = tnet_gethostname(&local_hostname))
+			if((status = tnet_gethostname(&local_hostname)))
 			{
 				TNET_PRINT_LAST_ERROR();
 				goto bail;
@@ -158,7 +160,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		hints.ai_flags = AI_PASSIVE; /* Bind to the local machine. */
 
 		/* Performs getaddrinfo */
-		if(status = tnet_getaddrinfo(local_hostname, port, &hints, &result))
+		if((status = tnet_getaddrinfo(local_hostname, port, &hints, &result)))
 		{
 			TNET_PRINT_LAST_ERROR();
 			goto bail;
@@ -171,7 +173,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 			{
 				sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 				/* Get local IP string. */
-				if(status = tnet_getnameinfo(ptr->ai_addr, ptr->ai_addrlen, sock->ip, sizeof(sock->ip), 0, 0, NI_NUMERICHOST))
+				if((status = tnet_getnameinfo(ptr->ai_addr, ptr->ai_addrlen, sock->ip, sizeof(sock->ip), 0, 0, NI_NUMERICHOST)))
 				{
 					TNET_PRINT_LAST_ERROR();
 					tnet_socket_close(sock);
@@ -179,7 +181,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 				}
 				else
 				{
-					if(status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen))
+					if((status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
 					{
 						TNET_PRINT_LAST_ERROR();
 						tnet_socket_close(sock);
@@ -218,6 +220,14 @@ static void* tnet_socket_create(void * self, va_list * app)
 				TNET_PRINT_LAST_ERROR();
 			}
 		}
+
+		/* Sets the socket to nonblocking mode */
+#if TNET_USE_POLL
+		if((status = tnet_sockfd_set_nonblocking(sock->fd)))
+		{
+			goto bail;
+		}
+#endif
 
 bail:
 		/* Free addrinfo */

@@ -35,6 +35,7 @@
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
+#include "tsk_time.h"
 
 #include <string.h>
 
@@ -45,7 +46,7 @@
 *	Ragel state machine.
 */
 
-/* #line 74 "tsip_parser_header_Call_ID.rl" */
+/* #line 75 "tsip_parser_header_Call_ID.rl" */
 
 
 int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
@@ -61,6 +62,12 @@ int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
+void tsip_header_Call_ID_random(tsk_istr_t *result)
+{
+	uint64_t epoch = tsk_time_epoch();
+	tsk_itoa(epoch, result);
+}
+
 tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -72,7 +79,7 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 76 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 83 "../source/headers/tsip_header_Call_ID.c" */
 static const char _tsip_machine_parser_header_Call_ID_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -152,16 +159,16 @@ static const int tsip_machine_parser_header_Call_ID_error = 0;
 static const int tsip_machine_parser_header_Call_ID_en_main = 1;
 
 
-/* #line 100 "tsip_parser_header_Call_ID.rl" */
+/* #line 107 "tsip_parser_header_Call_ID.rl" */
 	
-/* #line 158 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 165 "../source/headers/tsip_header_Call_ID.c" */
 	{
 	cs = tsip_machine_parser_header_Call_ID_start;
 	}
 
-/* #line 101 "tsip_parser_header_Call_ID.rl" */
+/* #line 108 "tsip_parser_header_Call_ID.rl" */
 	
-/* #line 165 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 172 "../source/headers/tsip_header_Call_ID.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -236,26 +243,26 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "tsip_parser_header_Call_ID.rl" */
+/* #line 53 "tsip_parser_header_Call_ID.rl" */
 	{
 		TSK_DEBUG_INFO("CALL_ID:TAG");
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 58 "tsip_parser_header_Call_ID.rl" */
+/* #line 59 "tsip_parser_header_Call_ID.rl" */
 	{
 		PARSER_SET_STRING(hdr_call_id->value);
 		TSK_DEBUG_INFO("CALL_ID:PARSE_VALUE");
 	}
 	break;
 	case 2:
-/* #line 64 "tsip_parser_header_Call_ID.rl" */
+/* #line 65 "tsip_parser_header_Call_ID.rl" */
 	{
 		TSK_DEBUG_INFO("CALL_ID:EOB");
 	}
 	break;
-/* #line 259 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 266 "../source/headers/tsip_header_Call_ID.c" */
 		}
 	}
 
@@ -268,12 +275,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 102 "tsip_parser_header_Call_ID.rl" */
+/* #line 109 "tsip_parser_header_Call_ID.rl" */
 	
 	if( cs < 
-/* #line 275 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 282 "../source/headers/tsip_header_Call_ID.c" */
 17
-/* #line 103 "tsip_parser_header_Call_ID.rl" */
+/* #line 110 "tsip_parser_header_Call_ID.rl" */
  )
 	{
 		TSIP_HEADER_CALL_ID_SAFE_FREE(hdr_call_id);

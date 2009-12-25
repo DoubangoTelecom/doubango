@@ -40,8 +40,13 @@
 * Safely free a sip 'CSeq' header previously created using TSIP_HEADER_CSEQ_CREATE.
 * @sa TSIP_HEADER_CSEQ_CREATE.
 */
-#define TSIP_HEADER_CSEQ_CREATE()		tsk_object_new(tsip_header_CSeq_def_t)
-#define TSIP_HEADER_CSEQ_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+#define TSIP_HEADER_CSEQ_VA_ARGS(seq, method)		tsip_header_CSeq_def_t, (int32_t) seq, (const char*)method
+#define TSIP_HEADER_CSEQ_CREATE(seq, method)		tsk_object_new(TSIP_HEADER_CSEQ_VA_ARGS(seq, method))
+#define TSIP_HEADER_CSEQ_SAFE_FREE(self)			tsk_object_unref(self), self = 0
+
+#define TSIP_HEADER_CSEQ_NONE						-1
+#define TSIP_HEADER_CSEQ_DEFAULT					1
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

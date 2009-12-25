@@ -30,6 +30,7 @@
  */
 #include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_time.h"
 
 #include <stdarg.h>
 #include <ctype.h>
@@ -104,13 +105,11 @@ int tsk_strcmp(const char * str1, const char * str2)
 * @retval The duplicated string. */
 char* tsk_strdup(const char *s1)
 {
-	char* ret = 0;
 	if(s1)
 	{
-		ret = strdup(s1);
+		return strdup(s1);
 	}
-
-	return ret;
+	return 0;
 }
 
 /**@ingroup tsk_string_group
@@ -278,6 +277,12 @@ void tsk_itoa(int64_t i, tsk_istr_t *result)
     sprintf(*result,"%lld",i);
 }
 
+
+void tsk_strrandom(tsk_istr_t *result)
+{
+	uint64_t epoch = tsk_time_epoch();
+	tsk_itoa(epoch, result);
+}
 
 
 
