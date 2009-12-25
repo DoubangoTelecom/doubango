@@ -38,9 +38,12 @@
 
 int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 {
+	/*
+	 * I suppose that sizeof(char) = 1-byte
+	 */
 	int len = 0;
 	va_list list;
-	uint8_t *buffer;
+	char *buffer;
 	size_t oldsize;
 
 	if(!self)
@@ -49,7 +52,7 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 	}
 
 	oldsize = self->size;
-	buffer = (uint8_t*)TSK_BUFFER_DATA(self);
+	buffer = (char*)TSK_BUFFER_DATA(self);
 	
 	/* initialize variable arguments */
 	va_start(list, format);

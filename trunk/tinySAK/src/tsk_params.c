@@ -81,6 +81,34 @@ int tsk_params_has_param(const tsk_params_L_t *self, const char* name)
 	return 0;
 }
 
+int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* value)
+{
+	tsk_param_t *param;
+
+	if(!name) return -1;
+
+	if(!*self)
+	{
+		*self = TSK_LIST_CREATE();
+	}
+
+	param = TSK_PARAM_CREATE(name, value);
+	tsk_list_push_back_data(*self, (void**)&param);
+
+	return 0;
+}
+
+
+int tsk_params_remove_param(tsk_params_L_t *self, const char* name)
+{
+	if(self)
+	{
+		tsk_list_remove_item_by_pred(self, pred_find_param_by_name, name);
+		return 0;
+	}
+	return -1;
+}
+
 const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, const char* name)
 {
 	if(self)

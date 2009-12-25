@@ -32,23 +32,53 @@
 
 #include "tinysip_config.h"
 
+#include "tinysip/tsip_message.h"
+
 #include "tnet_transport.h"
 
 #include "tsk_object.h"
 #include "tsk_list.h"
 
+
 #define TSIP_TRANSPORT_CREATE(host, port, type, description)		tsk_object_new(tsip_transport_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
 #define TSIP_TRANSPORT_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+
+#define TSIP_TRANSPORT_IS_SECURE(self)								(self && )
 
 typedef struct tsip_transport_s
 {
 	TSK_DECLARE_OBJECT;
 
-	tnet_transport_t *net_transport;
+	tnet_fd_t connectedFD;
+	tnet_transport_handle_t *net_transport;
+
+	const char *scheme;
+	const char *protocol;
+	const char *via_protocol;
+	const char *service; /**< NAPTR service name */
 }
 tsip_transport_t;
 
 typedef tsk_list_t tsip_transports_L_t; /**< List of @ref tsip_transport_t elements. */
+
+size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg);
+
+#define tsip_transport_start(transport)										(transport ? tnet_transport_start(transport->net_transport) : -1)
+#define tsip_transport_isready(transport)									(transport ? tnet_transport_isready(transport->net_transport) : -1)
+#define tsip_transport_issecure(transport)									(transport ? tnet_transport_issecure(transport->net_transport) : 0)
+#define tsip_transport_isconnected(transport)								(transport ? tnet_transport_isconnected(transport->net_transport, transport->connectedFD) : 0)
+#define tsip_transport_get_description(transport)							(transport ? tnet_transport_get_description(transport->net_transport) : 0)
+#define tsip_transport_get_ip_n_port(transport, ip, port)					(transport ? tnet_transport_get_ip_n_port(transport->net_transport, transport->connectedFD, ip, port) : -1)
+
+#define tsip_transport_connectto(transport, host, port)						(transport ? (transport->connectedFD=tnet_transport_connectto(transport->net_transport, host, port)) : TNET_INVALID_FD)
+//#define tsip_transport_send(transport, buf, size)							(transport ? tnet_transport_send(transport->net_transport, transport->connectedFD, buf, size) : 0)
+#define tsip_transport_sendto(transport, to, buf, size)						(transport ? tnet_transport_sendto(transport->net_transport, transport->connectedFD, to, buf, size) : 0)
+
+#define tsip_transport_set_callback(transport, callback, callback_data)		(transport ? tnet_transport_set_callback(transport->net_transport, callback, callback_data) : -1)
+
+#define tsip_transport_get_socket_type(transport)							(transport ? tnet_transport_get_socket_type(transport->net_transport) : tnet_socket_type_invalid)
+
+#define tsip_transport_shutdown(transport)									(transport ? tnet_transport_shutdown(transport->net_transport) : -1)
 
 TINYSIP_API const void *tsip_transport_def_t;
 

@@ -29,10 +29,60 @@
  */
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 
+#include "tinysip/dialogs/tsip_dialog_register.h"
 
 
+/*== Predicate */
+/*static int __tsip_pred_find_dialog_by_operation(const tsk_list_item_t *item, const void *operation)
+{
+	tsip_dialog_t *dialog;
+	const tsip_operation_handle_t *op = operation;
+
+	if(item && item->data)
+	{
+		dialog = item->data;
+		return tsk_object_cmp(dialog->operation, operation);
+		if(dialog->operation)
+		{
+			return tsip_operation_get_id dialog->operation->
+		}
+		return (int)(timer->id - *((tsk_timer_id_t*)id));
+	}
+	return -1;
+}*/
+
+static tsip_dialog_t* tsip_dialog_layer_find_dialog(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_operation_handle_t *operation)
+{
+	const tsk_list_item_t *item = tsk_list_find_item_by_data(self->dialogs, operation);
+	if(item && item->data)
+	{
+		tsip_dialog_t *dialog = item->data;
+		if(dialog && dialog->type == type)
+		{
+			return dialog;
+		}
+	}
+	return 0;
+}
 
 
+int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation)
+{
+	if(self)
+	{
+		tsip_dialog_register_t *dialog = (tsip_dialog_register_t*)tsip_dialog_layer_find_dialog(self, tsip_dialog_register, operation);
+		if(dialog)
+		{
+
+		}
+		else
+		{
+			dialog = TSIP_DIALOG_REGISTER_CREATE(self->stack, operation);
+			return tsip_dialog_register_start(dialog);
+		}
+	}
+	return -1;
+}
 
 
 

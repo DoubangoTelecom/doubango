@@ -92,7 +92,10 @@ typedef struct tsip_uri_s
 }
 tsip_uri_t;
 
+typedef tsk_list_t tsip_uris_L_t;
+
 TINYSIP_API int tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote, tsk_buffer_t *output);
+TINYSIP_API tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, int with_params, int quote);
 
 TINYSIP_API const void *tsip_uri_def_t;
 

@@ -62,7 +62,7 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_CSeq_t *hdr_cseq = TSIP_HEADER_CSEQ_CREATE();
+	tsip_header_CSeq_t *hdr_cseq = TSIP_HEADER_CSEQ_CREATE(TSIP_HEADER_CSEQ_NONE, 0);
 	
 	const char *tag_start;
 
@@ -299,7 +299,8 @@ static void* tsip_header_CSeq_create(void *self, va_list * app)
 	{
 		CSeq->type = tsip_htype_CSeq;
 		CSeq->tostring = tsip_header_CSeq_tostring;
-		CSeq->seq = -1;
+		CSeq->seq = va_arg(*app, int32_t);
+		CSeq->method = tsk_strdup(va_arg(*app, const char*));
 	}
 	else
 	{

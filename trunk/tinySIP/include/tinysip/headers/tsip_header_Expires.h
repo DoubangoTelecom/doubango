@@ -40,8 +40,12 @@
 * Safely free a sip 'Expires' header previously created using TSIP_HEADER_EXPIRES_CREATE.
 * @sa TSIP_HEADER_EXPIRES_CREATE.
 */
-#define TSIP_HEADER_EXPIRES_CREATE()		tsk_object_new(tsip_header_Expires_def_t)
-#define TSIP_HEADER_EXPIRES_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+#define TSIP_HEADER_EXPIRES_CREATE(delta_seconds)		tsk_object_new(tsip_header_Expires_def_t, (int32_t)delta_seconds)
+#define TSIP_HEADER_EXPIRES_SAFE_FREE(self)				tsk_object_unref(self), self = 0
+
+
+#define TSIP_HEADER_EXPIRES_NONE						-1
+#define TSIP_HEADER_EXPIRES_DEFAULT						600000
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

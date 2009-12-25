@@ -75,6 +75,15 @@
 #	define HAVE_GETTIMEOFDAY				1
 #endif
 
+
+#ifndef TSK_MIN
+#define TSK_MIN(a,b)            (((a) < (b)) ? (a) : (b))
+#endif /* TSK_MIN */
+
+#ifndef TSK_MAX
+#define TSK_MAX(a,b)            (((a) > (b)) ? (a) : (b))
+#endif /* TSK_MAX */
+
 #include <stdint.h>
 
 

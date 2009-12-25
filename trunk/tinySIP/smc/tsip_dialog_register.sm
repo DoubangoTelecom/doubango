@@ -33,6 +33,7 @@
 
 %class tsip_dialog_register
 %header "tinysip/dialogs/tsip_dialog_register.h"
+%header "tinysip/tsip_message.h"
 %start tsip_dialog_register::Started
 %include "tsk_debug.h"
 
@@ -61,46 +62,46 @@ Trying
 	{
 	}
 {	
-	sm_1xx()
+	sm_1xx(msg: const tsip_message_t*)
 		nil 
 		{
-			Trying_2_Trying_X_1xx();
+			Trying_2_Trying_X_1xx(msg);
 		}
 
-	sm_2xx(registering: int) [registering]
+	sm_2xx(registering: int, msg: const tsip_message_t*) [registering]
 		Connected 
 		{
-			Trying_2_Connected_X_2xx();
+			Trying_2_Connected_X_2xx(msg);
 		}
 
-	sm_2xx(registering: int) [!registering]
+	sm_2xx(registering: int, msg: const tsip_message_t*) [!registering]
 		Terminated 
 		{
-			Trying_2_Terminated_X_2xx();
+			Trying_2_Terminated_X_2xx(msg);
 		}
 
-	sm_401_407_421_494(succeed: int) [succeed]
+	sm_401_407_421_494(succeed: int, msg: const tsip_message_t*) [succeed]
 		nil 
 		{
-			Trying_2_Trying_X_401_407_421_494();
+			Trying_2_Trying_X_401_407_421_494(msg);
 		}
 
-	sm_401_407_421_494(succeed: int) [!succeed]
+	sm_401_407_421_494(succeed: int, msg: const tsip_message_t*) [!succeed]
 		Terminated 
 		{
-			Trying_2_Terminated_X_401_407_421_494();
+			Trying_2_Terminated_X_401_407_421_494(msg);
 		}
 
-	sm_423()
+	sm_423(msg: const tsip_message_t*)
 		nil 
 		{
-			Trying_2_Trying_X_423();
+			Trying_2_Trying_X_423(msg);
 		}
 
-	sm_300_to_699()
+	sm_300_to_699(msg: const tsip_message_t*)
 		Terminated 
 		{
-			Trying_2_Terminated_X_300_to_699();
+			Trying_2_Terminated_X_300_to_699(msg);
 		}
 
 	sm_cancel()
@@ -123,7 +124,7 @@ Connected
 			Connected_2_Trying_X_unregister();
 		}
 
-	sm_refresh()
+	sm_refresh(timer_id: tsk_timer_id_t)
 		Trying
 		{
 			Connected_2_Trying_X_refresh();

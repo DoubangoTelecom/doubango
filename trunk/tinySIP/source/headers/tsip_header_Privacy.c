@@ -53,7 +53,8 @@
 *	Ragel state machine.
 */
 
-/* #line 79 "tsip_parser_header_Privacy.rl" */
+/* #line 81 "tsip_parser_header_Privacy.rl" */
+
 
 
 int tsip_header_Privacy_tostring(const void* header, tsk_buffer_t* output)
@@ -84,6 +85,7 @@ int tsip_header_Privacy_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
+
 tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -95,7 +97,7 @@ tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 71 "../source/headers/tsip_header_Privacy.c" */
+/* #line 101 "../source/headers/tsip_header_Privacy.c" */
 static const char _tsip_machine_parser_header_Privacy_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -171,16 +173,16 @@ static const int tsip_machine_parser_header_Privacy_error = 0;
 static const int tsip_machine_parser_header_Privacy_en_main = 1;
 
 
-/* #line 94 "tsip_parser_header_Privacy.rl" */
+/* #line 124 "tsip_parser_header_Privacy.rl" */
 	
-/* #line 149 "../source/headers/tsip_header_Privacy.c" */
+/* #line 179 "../source/headers/tsip_header_Privacy.c" */
 	{
 	cs = tsip_machine_parser_header_Privacy_start;
 	}
 
-/* #line 95 "tsip_parser_header_Privacy.rl" */
+/* #line 125 "tsip_parser_header_Privacy.rl" */
 	
-/* #line 156 "../source/headers/tsip_header_Privacy.c" */
+/* #line 186 "../source/headers/tsip_header_Privacy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -255,25 +257,25 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 58 "tsip_parser_header_Privacy.rl" */
+/* #line 60 "tsip_parser_header_Privacy.rl" */
 	{
 		TSK_DEBUG_INFO("PRIVACY:TAG");
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 64 "tsip_parser_header_Privacy.rl" */
+/* #line 66 "tsip_parser_header_Privacy.rl" */
 	{
 		PARSER_ADD_STRING(hdr_privacy->values);
 	}
 	break;
 	case 2:
-/* #line 69 "tsip_parser_header_Privacy.rl" */
+/* #line 71 "tsip_parser_header_Privacy.rl" */
 	{
 		TSK_DEBUG_INFO("PRIVACY:EOB");
 	}
 	break;
-/* #line 249 "../source/headers/tsip_header_Privacy.c" */
+/* #line 279 "../source/headers/tsip_header_Privacy.c" */
 		}
 	}
 
@@ -286,12 +288,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 96 "tsip_parser_header_Privacy.rl" */
+/* #line 126 "tsip_parser_header_Privacy.rl" */
 	
 	if( cs < 
-/* #line 265 "../source/headers/tsip_header_Privacy.c" */
+/* #line 295 "../source/headers/tsip_header_Privacy.c" */
 16
-/* #line 97 "tsip_parser_header_Privacy.rl" */
+/* #line 127 "tsip_parser_header_Privacy.rl" */
  )
 	{
 		TSIP_HEADER_PRIVACY_SAFE_FREE(hdr_privacy);

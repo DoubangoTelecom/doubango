@@ -69,10 +69,18 @@ void tnet_getlasterror(tnet_error_t *error)
 	}
 #else
 	//strerror(errno);
-	memcpy(*error, "Unknown error.", sizeof(Unknown error));
+	memcpy(*error, "Unknown error.", sizeof("Unknown error"));
 #endif
 }
 
+int tnet_geterrno()
+{
+#if TNET_UNDER_WINDOWS
+	return WSAGetLastError();
+#else
+	return errno;
+#endif
+}
 
 /**
  * @fn	int tnet_getaddrinfo(const char *node, const char *service,
@@ -257,18 +265,25 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	int status = -1;
 	struct sockaddr_storage ai_addr;
 	int ai_family, ai_socktype, ai_protocol;
-	*fd = INVALID_SOCKET;
+	*fd = TNET_INVALID_SOCKET;
 	
 	if(status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, &ai_family, &ai_socktype, &ai_protocol))
 	{
 		goto bail;
 	}
 	
-	if((*fd = socket(ai_family, ai_socktype, ai_protocol)) == INVALID_SOCKET)
+	if((*fd = socket(ai_family, ai_socktype, ai_protocol)) == TNET_INVALID_SOCKET)
 	{
 		TNET_PRINT_LAST_ERROR();
 		goto bail;
 	}
+
+#if TNET_USE_POLL
+	if(status = tnet_sockfd_set_nonblocking(*fd))
+	{
+		goto bail;
+	}
+#endif
 	
 	if(status = bind(*fd, (const struct sockaddr*)&ai_addr, sizeof(ai_addr)))
 	{
@@ -279,7 +294,40 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	}
 	
 bail:
-	return (*fd == INVALID_SOCKET) ? status : 0;
+	return (*fd == TNET_INVALID_SOCKET) ? status : 0;
+}
+
+int tnet_sockfd_set_nonblocking(tnet_fd_t fd)
+{
+	if(fd != TNET_INVALID_FD)
+	{
+#if TNET_UNDER_WINDOWS
+	ULONG nonBlocking = 1;
+	if(ioctlsocket(fd, FIONBIO, &nonBlocking))
+	//if(WSAIoctl(fd, FIONBIO, &nonblocking, sizeof(nonblocking), NULL, 0, NULL, NULL, NULL) == SOCKET_ERROR)
+	{
+		TNET_PRINT_LAST_ERROR();
+		return -1;
+	}
+#else
+	int flags;
+    if((flags = fcntl(fd, F_GETFL, 0)) < 0) 
+	{ 
+		TNET_PRINT_LAST_ERROR();
+		return -1;
+	} 
+	if(fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) 
+	{ 
+		TNET_PRINT_LAST_ERROR();
+		return -1;
+	} 
+#endif
+
+	// int on = 1;
+	// ioctl(fd, FIONBIO, (char *)&on);
+
+	}
+	return 0;
 }
 
 int tnet_sockfd_close(tnet_fd_t *fd)
@@ -291,6 +339,6 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 	ret = close(*fd);
 #endif
 
-	*fd = INVALID_SOCKET;
+	*fd = TNET_INVALID_SOCKET;
 	return ret;
 }

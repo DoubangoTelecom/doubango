@@ -32,6 +32,8 @@
 
 #include "tsk_debug.h"
 
+static int __tnet_started = 0;
+
 /**
  * @fn	int tnet_startup()
  *
@@ -46,33 +48,39 @@
 int tnet_startup()
 {
 	int err = 0;
+	if(__tnet_started) goto bail;
 
 #if TNET_UNDER_WINDOWS
-
-	WORD wVersionRequested;
-    WSADATA wsaData;
-
-	wVersionRequested = MAKEWORD(2, 2);
-
-    err = WSAStartup(wVersionRequested, &wsaData);
-    if (err != 0) 
 	{
-        TSK_DEBUG_FATAL("WSAStartup failed with error: %d\n", err);
-        return 1;
-    }
+		WORD wVersionRequested;
+		WSADATA wsaData;
 
-    if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2)
-	{
-        TSK_DEBUG_FATAL("Could not find a usable version of Winsock.dll\n");
-        tnet_cleanup();
-        return 1;
-    }
-    else
-	{
-        TSK_DEBUG_INFO("The Winsock 2.2 dll was found okay\n");
+		wVersionRequested = MAKEWORD(2, 2);
+
+		err = WSAStartup(wVersionRequested, &wsaData);
+		if (err != 0) 
+		{
+			TSK_DEBUG_FATAL("WSAStartup failed with error: %d\n", err);
+			return 1;
+		}
+
+		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2)
+		{
+			TSK_DEBUG_FATAL("Could not find a usable version of Winsock.dll\n");
+			tnet_cleanup();
+			return 1;
+		}
+		else
+		{
+			__tnet_started = 1;
+			TSK_DEBUG_INFO("The Winsock 2.2 dll was found okay\n");
+		}
 	}
+#else
+	__tnet_started = 1;
 #endif /* TSIP_UNDER_WINDOWS */
 	
+bail:
 	return err;
 }
 
@@ -90,9 +98,15 @@ int tnet_startup()
 **/
 int tnet_cleanup()
 {
-#if TNET_UNDER_WINDOWS
-	return WSACleanup();
-#endif /* #if TNET_UNDER_WINDOWS */
+	if(!__tnet_started) goto bail;
 
+#if TNET_UNDER_WINDOWS
+	__tnet_started = 0;
+	return WSACleanup();
+#else
+	__tnet_started = 0;
+#endif
+
+bail:
 	return 0;
 }

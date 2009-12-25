@@ -66,6 +66,7 @@ typedef struct tsk_object_def_s
 tsk_object_def_t;
 
 TINYSAK_API void* tsk_object_new(const tsk_object_def_t *objdef, ...);
+TINYSAK_API void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap);
 TINYSAK_API size_t tsk_object_sizeof(const void *self);
 TINYSAK_API int tsk_object_cmp(const void *self, const void *object);
 //TINYSAK_API int tsk_object_icmp(const void *self, const void *object);

@@ -33,7 +33,7 @@
 #include "tsk_debug.h"
 #include "tsk_thread.h"
 
-#if TNET_UNDER_WINDOWS
+#if TNET_UNDER_WINDOWS && !TNET_USE_POLL
 
 /*== Socket description ==*/
 typedef struct transport_socket_s
@@ -55,6 +55,32 @@ transport_context_t;
 
 static void transport_socket_add(tnet_fd_t fd, transport_context_t *context);
 static void transport_socket_remove(int index, transport_context_t *context);
+
+/* Checks if socket is connected */
+int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t *context;
+	size_t i;
+
+	if(!transport)
+	{
+		TSK_DEBUG_ERROR("Invalid server handle.");
+		return 0;
+	}
+	
+	context = (transport_context_t*)transport->context;
+	for(i=0; i<context->count; i++)
+	{
+		const transport_socket_t* socket = context->sockets[i];
+		if(socket->fd == fd)
+		{
+			return socket->connected;
+		}
+	}
+	
+	return 0;
+}
 
 /* 
 * Add new socket to the watcher.
@@ -96,9 +122,9 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	int status = -1;
 	tnet_fd_t fd = INVALID_SOCKET;
 
-	if(!transport)
+	if(!transport || !transport->master)
 	{
-		TSK_DEBUG_ERROR("Invalid server handle.");
+		TSK_DEBUG_ERROR("Invalid transport handle.");
 		goto bail;
 	}
 
@@ -115,7 +141,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	*/
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
 	{		
-		/* Create socket descriptor. */
+		/* Create client socket descriptor. */
 		if(status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd))
 		{
 			TSK_DEBUG_ERROR("Failed to create new sockfd.");
@@ -317,6 +343,10 @@ void *tnet_transport_mainthread(void *param)
 	WSANETWORKEVENTS networkEvents;
 	DWORD flags = 0;
 	int ret;
+
+	WSAEVENT active_event;
+	transport_socket_t* active_socket;
+	int index;
 	
 	context = (transport_context_t*)tsk_calloc(1, sizeof(transport_context_t));
 	transport->context = context;
@@ -346,10 +376,6 @@ void *tnet_transport_mainthread(void *param)
 	
 	while(transport->running)
 	{
-		WSAEVENT active_event;
-		transport_socket_t* active_socket;
-		int index;
-
 		/* Wait for multiple events */
 		if((evt = WSAWaitForMultipleEvents(context->count, context->events, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED)
 		{

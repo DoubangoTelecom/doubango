@@ -34,6 +34,8 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+#include <string.h>
+
 /**@defgroup tsip_header_User_Agent_group SIP User_Agent header.
 */
 
@@ -91,7 +93,7 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_User_Agent_t *hdr_user_agent = TSIP_HEADER_USER_AGENT_CREATE();
+	tsip_header_User_Agent_t *hdr_user_agent = TSIP_HEADER_USER_AGENT_CREATE(0);
 	
 	const char *tag_start;
 
@@ -126,6 +128,7 @@ static void* tsip_header_User_Agent_create(void *self, va_list * app)
 	{
 		User_Agent->type = tsip_htype_User_Agent;
 		User_Agent->tostring = tsip_header_User_Agent_tostring;
+		User_Agent->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else
 	{

@@ -1357,6 +1357,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="dialogs"
+				>
+				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_invite.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_layer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_register.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_subscribe.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="ragel"
@@ -1779,30 +1803,6 @@
 			</File>
 			<File
 				RelativePath=".\smc\tsip_transac_nist.sm"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="dialogs"
-			>
-			<File
-				RelativePath=".\include\tinysip\dialogs\tsip_dialog.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinysip\dialogs\tsip_dialog_invite.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinysip\dialogs\tsip_dialog_layer.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinysip\dialogs\tsip_dialog_register.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinysip\dialogs\tsip_dialog_subscribe.h"
 				>
 			</File>
 		</Filter>

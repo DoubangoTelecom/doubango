@@ -385,13 +385,16 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 	// FIXME: very bad
 	if(compartment->nacks_history_count >= NACK_MAX_HISTORY_SIZE)
 	{
-		tsk_list_item_t *item;
+		//tsk_list_item_t *item;
 		tsk_list_item_t *item2delete = 0;
 
-		tsk_list_foreach(item, compartment->nacks)
+		/*tsk_list_foreach(item, compartment->nacks)
 		{
 			item2delete = item;
-		}
+		}*/
+		
+		item2delete = compartment->nacks->tail;
+
 		tsk_list_remove_item(compartment->nacks, item2delete);
 		compartment->nacks_history_count--;
 	}

@@ -45,6 +45,7 @@
 
 /* #line 71 "tsip_parser_header_Expires.rl" */
 
+
 int tsip_header_Expires_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -59,19 +60,18 @@ int tsip_header_Expires_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
-
 tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Expires_t *hdr_expires = TSIP_HEADER_EXPIRES_CREATE();
+	tsip_header_Expires_t *hdr_expires = TSIP_HEADER_EXPIRES_CREATE(TSIP_HEADER_EXPIRES_NONE);
 	
 	const char *tag_start;
 
 	
-/* #line 63 "../source/headers/tsip_header_Expires.c" */
+/* #line 75 "../source/headers/tsip_header_Expires.c" */
 static const char _tsip_machine_parser_header_Expires_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -130,16 +130,16 @@ static const int tsip_machine_parser_header_Expires_error = 0;
 static const int tsip_machine_parser_header_Expires_en_main = 1;
 
 
-/* #line 86 "tsip_parser_header_Expires.rl" */
+/* #line 98 "tsip_parser_header_Expires.rl" */
 	
-/* #line 124 "../source/headers/tsip_header_Expires.c" */
+/* #line 136 "../source/headers/tsip_header_Expires.c" */
 	{
 	cs = tsip_machine_parser_header_Expires_start;
 	}
 
-/* #line 87 "tsip_parser_header_Expires.rl" */
+/* #line 99 "tsip_parser_header_Expires.rl" */
 	
-/* #line 131 "../source/headers/tsip_header_Expires.c" */
+/* #line 143 "../source/headers/tsip_header_Expires.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -233,7 +233,7 @@ _match:
 		TSK_DEBUG_INFO("EXPIRES:EOB");
 	}
 	break;
-/* #line 225 "../source/headers/tsip_header_Expires.c" */
+/* #line 237 "../source/headers/tsip_header_Expires.c" */
 		}
 	}
 
@@ -246,12 +246,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 88 "tsip_parser_header_Expires.rl" */
+/* #line 100 "tsip_parser_header_Expires.rl" */
 	
 	if( cs < 
-/* #line 241 "../source/headers/tsip_header_Expires.c" */
+/* #line 253 "../source/headers/tsip_header_Expires.c" */
 15
-/* #line 89 "tsip_parser_header_Expires.rl" */
+/* #line 101 "tsip_parser_header_Expires.rl" */
  )
 	{
 		TSIP_HEADER_EXPIRES_SAFE_FREE(hdr_expires);
@@ -278,8 +278,8 @@ static void* tsip_header_Expires_create(void *self, va_list * app)
 	if(Expires)
 	{
 		Expires->type = tsip_htype_Expires;
-		Expires->delta_seconds = -1;
 		Expires->tostring = tsip_header_Expires_tostring;
+		Expires->delta_seconds = va_arg(*app, int32_t);
 	}
 	else
 	{

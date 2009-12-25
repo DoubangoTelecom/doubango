@@ -43,8 +43,14 @@
 * Safely free a sip via header previously created using TSIP_HEADER_VIA_CREATE.
 * @sa TSIP_HEADER_VIA_CREATE.
 */
-#define TSIP_HEADER_VIA_CREATE()		tsk_object_new(tsip_header_Via_def_t)
-#define TSIP_HEADER_VIA_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+#define TSIP_HEADER_VIA_VA_ARGS(proto_name, proto_version, transport, host, port)		tsip_header_Via_def_t, (const char*)proto_name, (const char*)proto_version, (const char*)transport, (const char*)host, (uint16_t)port
+#define TSIP_HEADER_VIA_CREATE(proto_name, proto_version, transport, host, port)		tsk_object_new(TSIP_HEADER_VIA_VA_ARGS(proto_name, proto_version, transport, host, port))
+#define TSIP_HEADER_VIA_CREATE_NULL()													TSIP_HEADER_VIA_CREATE(0, 0, 0, 0, 0)
+#define TSIP_HEADER_VIA_SAFE_FREE(self)													tsk_object_unref(self), self = 0
+
+
+#define TSIP_HEADER_VIA_PROTO_NAME_DEFAULT		"SIP"
+#define TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT	"2.0"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	tsip_header_Via_s

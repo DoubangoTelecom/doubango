@@ -35,16 +35,14 @@
 	"\r\n"
 
 
-static int tnet_tcp_data_read(const void* data, size_t size)
+static int tnet_tcp_data_read(const void *callback_data, const void* data, size_t size)
 {
-	/* Do quick job. */
 	TSK_DEBUG_INFO("--- TCP ---\n%s\n", data);
 	return 0;
 }
 
-static int tnet_udp_data_read(const void* data, size_t size)
+static int tnet_udp_data_read(const void *callback_data, const void* data, size_t size)
 {
-	/* Do quick job. */
 	TSK_DEBUG_INFO("--- UDP ---\n%s\n", data);
 	return 0;
 }
@@ -70,16 +68,16 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 	//tsk_thread_sleep(500);
 
 	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == INVALID_SOCKET)
+	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 4060)) == INVALID_SOCKET)
 	{
 		TSK_DEBUG_ERROR("Failed to connect TCP/IPv4 transport.");
 		return;
 	}
 
 	/* Set our callback function */
-	tnet_transport_set_callback(transport, tnet_tcp_data_read);
+	tnet_transport_set_callback(transport, tnet_tcp_data_read, "callbackdata");
 
-	//while(!tnet_transport_get_isconnected(transport))
+	while(!tnet_transport_isconnected(transport, fd))
 	{
 		/* Connecto succeed but not connected yet.*/
 		tsk_thread_sleep(500);
@@ -128,7 +126,7 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	//tsk_thread_sleep(2000);
 
 	/* Set our callback function */
-	tnet_transport_set_callback(transport, tnet_udp_data_read);
+	tnet_transport_set_callback(transport, tnet_udp_data_read, "callbackdata");
 
 	/* Send our SIP message */
 	/*while(1)*/{

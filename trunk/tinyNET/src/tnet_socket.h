@@ -31,7 +31,7 @@
 #define TNET_SOCKET_H
 
 #include "tinyNET_config.h"
-#include "tnet_utils.h"
+#include "tnet_types.h"
 
 #include "tsk_list.h"
 

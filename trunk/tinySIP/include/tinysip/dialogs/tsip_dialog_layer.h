@@ -50,8 +50,11 @@ typedef struct tsip_dialog_layer_s
 	tsip_dialogs_L_t *dialogs;
 }
 tsip_dialog_layer_t;
-
 typedef tsk_list_t tsip_dialog_layers_L_t;
+
+int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation);
+
+
 TINYSIP_API const void *tsip_dialog_layer_def_t;
 
 #endif /* TINYSIP_DIALOG_LAYER_H */

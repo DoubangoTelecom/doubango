@@ -45,7 +45,7 @@
 *	Ragel state machine.
 */
 
-/* #line 70 "tsip_parser_header_Require.rl" */
+/* #line 72 "tsip_parser_header_Require.rl" */
 
 
 int tsip_header_Require_tostring(const void* header, tsk_buffer_t* output)
@@ -87,7 +87,7 @@ tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 63 "../source/headers/tsip_header_Require.c" */
+/* #line 91 "../source/headers/tsip_header_Require.c" */
 static const char _tsip_machine_parser_header_Require_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -163,16 +163,16 @@ static const int tsip_machine_parser_header_Require_error = 0;
 static const int tsip_machine_parser_header_Require_en_main = 1;
 
 
-/* #line 85 "tsip_parser_header_Require.rl" */
+/* #line 113 "tsip_parser_header_Require.rl" */
 	
-/* #line 141 "../source/headers/tsip_header_Require.c" */
+/* #line 169 "../source/headers/tsip_header_Require.c" */
 	{
 	cs = tsip_machine_parser_header_Require_start;
 	}
 
-/* #line 86 "tsip_parser_header_Require.rl" */
+/* #line 114 "tsip_parser_header_Require.rl" */
 	
-/* #line 148 "../source/headers/tsip_header_Require.c" */
+/* #line 176 "../source/headers/tsip_header_Require.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -247,25 +247,25 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tsip_parser_header_Require.rl" */
+/* #line 52 "tsip_parser_header_Require.rl" */
 	{
 		TSK_DEBUG_INFO("REQUIRE:TAG");
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "tsip_parser_header_Require.rl" */
+/* #line 58 "tsip_parser_header_Require.rl" */
 	{
 		PARSER_ADD_STRING(hdr_require->options);
 	}
 	break;
 	case 2:
-/* #line 61 "tsip_parser_header_Require.rl" */
+/* #line 63 "tsip_parser_header_Require.rl" */
 	{
 		TSK_DEBUG_INFO("REQUIRE:EOB");
 	}
 	break;
-/* #line 241 "../source/headers/tsip_header_Require.c" */
+/* #line 269 "../source/headers/tsip_header_Require.c" */
 		}
 	}
 
@@ -278,12 +278,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 87 "tsip_parser_header_Require.rl" */
+/* #line 115 "tsip_parser_header_Require.rl" */
 	
 	if( cs < 
-/* #line 257 "../source/headers/tsip_header_Require.c" */
+/* #line 285 "../source/headers/tsip_header_Require.c" */
 19
-/* #line 88 "tsip_parser_header_Require.rl" */
+/* #line 116 "tsip_parser_header_Require.rl" */
  )
 	{
 		TSIP_HEADER_REQUIRE_SAFE_FREE(hdr_require);

@@ -42,6 +42,8 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+#include <string.h>
+
 /**@defgroup tsip_header_P_Access_Network_Info_group SIP P_Access_Network_Info header.
 */
 
@@ -98,7 +100,7 @@ tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(con
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Access_Network_Info_t *hdr_ani = TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE();
+	tsip_header_P_Access_Network_Info_t *hdr_ani = TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE_NULL();
 	
 	const char *tag_start;
 
@@ -131,6 +133,7 @@ static void* tsip_header_P_Access_Network_Info_create(void *self, va_list * app)
 	tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = self;
 	if(P_Access_Network_Info)
 	{
+		P_Access_Network_Info->value = tsk_strdup(va_arg(*app, const char *));
 		P_Access_Network_Info->type = tsip_htype_P_Access_Network_Info;
 		P_Access_Network_Info->tostring = tsip_header_P_Access_Network_Info_tostring;
 	}

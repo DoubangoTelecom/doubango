@@ -31,6 +31,8 @@
 #include "tsk_memory.h"
 #include "tsk_macros.h"
 #include "tsk_debug.h"
+
+#include <assert.h>
 #include <string.h>
 
 /**@defgroup tsk_list_group Linked list
@@ -221,11 +223,29 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
 			if(!tsk_object_cmp(curr->data, tskobj))
 			{
 				if(prev == curr)
-				{ 
-					/* Found at first position. */
-					list->head = curr->next;
+				{	/* Found at first position. */
+
+					if(list->head == list->tail)
+					{	/* There was only one item */
+
+						list->head = list->tail = 0;
+					}
+					else
+					{
+						list->head = curr->next;
+					}
 				}
-				else prev->next = curr->next;
+				else 
+				{
+					if(curr == list->tail)
+					{	/* Found at last position */
+						list->tail = prev;
+					}
+					else
+					{
+						prev->next = curr->next;
+					}
+				}
 
 				/*curr =*/ tsk_object_unref(curr);
 				break;
@@ -255,11 +275,28 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 			if(!predicate(curr, data))
 			{
 				if(prev == curr)
-				{ 
-					/* Found at first position. */
-					list->head = curr->next;
+				{	/* Found at first position. */
+					
+					if(list->head == list->tail)
+					{	/* There was only one item */
+						list->head = list->tail = 0;
+					}
+					else
+					{
+						list->head = curr->next;
+					}
 				}
-				else prev->next = curr->next;
+				else 
+				{
+					if(curr == list->tail)
+					{	/* Found at last position */
+						list->tail = prev;
+					}
+					else
+					{
+						prev->next = curr->next;
+					}
+				}
 
 				/*curr =*/ tsk_object_unref(curr);
 				break;
@@ -318,7 +355,9 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 			{
 				list->head = list->tail = 0;
 			}
-		}		
+		}
+
+		assert((list && list->tail) ? !list->tail->next : 1);
 	}
 
 	return item;
@@ -343,6 +382,8 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 		list->tail = list->head = *item;
 	}
 	(*item) = 0;
+
+	assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 /**@ingroup tsk_list_group
@@ -381,6 +422,8 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 		}
 
 		tsk_list_push_back_item(list, item);
+		
+		assert((list && list->tail) ? !list->tail->next : 1);
 	}
 }
 
@@ -439,6 +482,8 @@ void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending)
 		
 		tsk_list_push_filtered_item(list, &item, ascending);
 		(*data) = 0;
+
+		assert((list && list->tail) ? !list->tail->next : 1);
 	}
 	else
 	{

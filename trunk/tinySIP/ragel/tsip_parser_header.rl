@@ -37,6 +37,7 @@
 #include "tinysip/headers/tsip_header_Expires.h"
 #include "tinysip/headers/tsip_header_From.h"
 #include "tinysip/headers/tsip_header_Max_Forwards.h"
+#include "tinysip/headers/tsip_header_Min_Expires.h"
 #include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
 #include "tinysip/headers/tsip_header_P_Access_Network_Info.h" 
 #include "tinysip/headers/tsip_header_Privacy.h"
@@ -274,7 +275,11 @@
 	# /*== Min-Expires: ==*/
 	action parse_header_Min_Expires
 	{
-		TSK_DEBUG_ERROR("parse_header_Min_Expires NOT IMPLEMENTED");
+		tsip_header_Min_Expires_t *header = tsip_header_Min_Expires_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_push_back_data(message->headers, ((void**) &header));
+		}
 	}
 
 	# /*== Min-SE: ==*/

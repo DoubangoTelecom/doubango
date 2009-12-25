@@ -53,7 +53,8 @@
 *	Ragel state machine.
 */
 
-/* #line 78 "tsip_parser_header_P_Access_Network_Info.rl" */
+/* #line 80 "tsip_parser_header_P_Access_Network_Info.rl" */
+
 
 int tsip_header_P_Access_Network_Info_tostring(const void* header, tsk_buffer_t* output)
 {
@@ -70,19 +71,18 @@ int tsip_header_P_Access_Network_Info_tostring(const void* header, tsk_buffer_t*
 	return -1;
 }
 
-
 tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(const char *data, size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Access_Network_Info_t *hdr_ani = TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE();
+	tsip_header_P_Access_Network_Info_t *hdr_ani = TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE_NULL();
 	
 	const char *tag_start;
 
 	
-/* #line 71 "../source/headers/tsip_header_P_Access_Network_Info.c" */
+/* #line 86 "../source/headers/tsip_header_P_Access_Network_Info.c" */
 static const char _tsip_machine_parser_header_P_Access_Network_Info_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 1
@@ -159,16 +159,16 @@ static const int tsip_machine_parser_header_P_Access_Network_Info_error = 0;
 static const int tsip_machine_parser_header_P_Access_Network_Info_en_main = 1;
 
 
-/* #line 93 "tsip_parser_header_P_Access_Network_Info.rl" */
+/* #line 108 "tsip_parser_header_P_Access_Network_Info.rl" */
 	
-/* #line 150 "../source/headers/tsip_header_P_Access_Network_Info.c" */
+/* #line 165 "../source/headers/tsip_header_P_Access_Network_Info.c" */
 	{
 	cs = tsip_machine_parser_header_P_Access_Network_Info_start;
 	}
 
-/* #line 94 "tsip_parser_header_P_Access_Network_Info.rl" */
+/* #line 109 "tsip_parser_header_P_Access_Network_Info.rl" */
 	
-/* #line 157 "../source/headers/tsip_header_P_Access_Network_Info.c" */
+/* #line 172 "../source/headers/tsip_header_P_Access_Network_Info.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -243,25 +243,25 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 58 "tsip_parser_header_P_Access_Network_Info.rl" */
+/* #line 60 "tsip_parser_header_P_Access_Network_Info.rl" */
 	{
 		TSK_DEBUG_INFO("P_ACCESS_NETWORK_INFO:TAG");
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 64 "tsip_parser_header_P_Access_Network_Info.rl" */
+/* #line 66 "tsip_parser_header_P_Access_Network_Info.rl" */
 	{
 		PARSER_SET_STRING(hdr_ani->value);
 	}
 	break;
 	case 2:
-/* #line 69 "tsip_parser_header_P_Access_Network_Info.rl" */
+/* #line 71 "tsip_parser_header_P_Access_Network_Info.rl" */
 	{
 		TSK_DEBUG_INFO("P_ACCESS_NETWORK_INFO:EOB");
 	}
 	break;
-/* #line 250 "../source/headers/tsip_header_P_Access_Network_Info.c" */
+/* #line 265 "../source/headers/tsip_header_P_Access_Network_Info.c" */
 		}
 	}
 
@@ -274,12 +274,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 95 "tsip_parser_header_P_Access_Network_Info.rl" */
+/* #line 110 "tsip_parser_header_P_Access_Network_Info.rl" */
 	
 	if( cs < 
-/* #line 266 "../source/headers/tsip_header_P_Access_Network_Info.c" */
+/* #line 281 "../source/headers/tsip_header_P_Access_Network_Info.c" */
 26
-/* #line 96 "tsip_parser_header_P_Access_Network_Info.rl" */
+/* #line 111 "tsip_parser_header_P_Access_Network_Info.rl" */
  )
 	{
 		TSIP_HEADER_P_ACCESS_NETWORK_INFO_SAFE_FREE(hdr_ani);
@@ -305,6 +305,7 @@ static void* tsip_header_P_Access_Network_Info_create(void *self, va_list * app)
 	tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = self;
 	if(P_Access_Network_Info)
 	{
+		P_Access_Network_Info->value = tsk_strdup(va_arg(*app, const char *));
 		P_Access_Network_Info->type = tsip_htype_P_Access_Network_Info;
 		P_Access_Network_Info->tostring = tsip_header_P_Access_Network_Info_tostring;
 	}

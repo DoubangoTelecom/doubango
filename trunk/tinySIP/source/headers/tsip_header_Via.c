@@ -43,6 +43,7 @@
 
 /* #line 138 "tsip_parser_header_Via.rl" */
 
+
 int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -93,19 +94,18 @@ int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
-
 tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Via_t *hdr_via = TSIP_HEADER_VIA_CREATE();
+	tsip_header_Via_t *hdr_via = TSIP_HEADER_VIA_CREATE_NULL();
 	
 	const char *tag_start;
 
 	
-/* #line 59 "../source/headers/tsip_header_Via.c" */
+/* #line 109 "../source/headers/tsip_header_Via.c" */
 static const char _tsip_machine_parser_header_Via_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -1185,16 +1185,16 @@ static const int tsip_machine_parser_header_Via_error = 0;
 static const int tsip_machine_parser_header_Via_en_main = 1;
 
 
-/* #line 151 "tsip_parser_header_Via.rl" */
+/* #line 201 "tsip_parser_header_Via.rl" */
 	
-/* #line 1141 "../source/headers/tsip_header_Via.c" */
+/* #line 1191 "../source/headers/tsip_header_Via.c" */
 	{
 	cs = tsip_machine_parser_header_Via_start;
 	}
 
-/* #line 152 "tsip_parser_header_Via.rl" */
+/* #line 202 "tsip_parser_header_Via.rl" */
 	
-/* #line 1148 "../source/headers/tsip_header_Via.c" */
+/* #line 1198 "../source/headers/tsip_header_Via.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -1354,7 +1354,7 @@ _match:
 		
 	}
 	break;
-/* #line 1308 "../source/headers/tsip_header_Via.c" */
+/* #line 1358 "../source/headers/tsip_header_Via.c" */
 		}
 	}
 
@@ -1367,12 +1367,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 153 "tsip_parser_header_Via.rl" */
+/* #line 203 "tsip_parser_header_Via.rl" */
 	
 	if( cs < 
-/* #line 1324 "../source/headers/tsip_header_Via.c" */
+/* #line 1374 "../source/headers/tsip_header_Via.c" */
 359
-/* #line 154 "tsip_parser_header_Via.rl" */
+/* #line 204 "tsip_parser_header_Via.rl" */
  )
 	{
 		TSIP_HEADER_VIA_SAFE_FREE(hdr_via);
@@ -1402,6 +1402,18 @@ static void* tsip_header_Via_create(void *self, va_list * app)
 	tsip_header_Via_t *via = self;
 	if(via)
 	{
+		const char* proto_name = va_arg(*app, const char *);
+		const char* proto_version = va_arg(*app, const char *);
+		const char* transport = va_arg(*app, const char *);
+		const char* host = va_arg(*app, const char *);
+		uint16_t port = va_arg(*app, uint16_t);
+
+		if(proto_name) via->proto_name = tsk_strdup(proto_name);
+		if(proto_version) via->proto_version = tsk_strdup(proto_version);
+		if(transport) via->transport = tsk_strdup(transport);
+		if(host) via->host = tsk_strdup(host);
+		via->port = port;
+		
 		via->type = tsip_htype_Via;
 		via->tostring = tsip_header_Via_tostring;
 	}

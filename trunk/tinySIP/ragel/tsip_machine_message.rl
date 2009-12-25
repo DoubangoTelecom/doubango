@@ -35,13 +35,14 @@
 	message_header = any+ >tag :>CRLF %parse_header;
 
 	# SIP RESPONSE
-	Reason_Phrase = ( reserved | unreserved | escaped | UTF8_NONASCII | UTF8_CONT | SP | HTAB )*;
-	Status_Line = SIP_Version SP Status_Code SP Reason_Phrase CRLF;
+	Reason_Phrase = (( reserved | unreserved | escaped | UTF8_NONASCII | UTF8_CONT | SP | HTAB )*)>tag %parse_reason_phrase;
+	Status_Line = SIP_Version :>SP Status_Code>tag %parse_status_code :>SP Reason_Phrase :>CRLF;
 	Response = Status_Line message_header* CRLF message_body?;
 
 
 	# SIP REQUEST
-	Request_URI = any+ >tag %parse_requesturi;
+	URI = (scheme HCOLON any+)>tag %parse_requesturi;
+	Request_URI = URI;
 	Request_Line = Method>tag %parse_method :>SP Request_URI :>SP SIP_Version :>CRLF;
 	Request = Request_Line message_header* :>CRLF <:message_body? >tag %parse_body;
 

@@ -40,9 +40,12 @@
 * Safely free a sip 'User-Agent' header previously created using TSIP_HEADER_USER_AGENT_CREATE.
 * @sa TSIP_HEADER_USER_AGENT_CREATE.
 */
-#define TSIP_HEADER_USER_AGENT_CREATE()		tsk_object_new(tsip_header_User_Agent_def_t)
+#define TSIP_HEADER_USER_AGENT_VA_ARGS(ua)		tsip_header_User_Agent_def_t, (const char*)ua
+#define TSIP_HEADER_USER_AGENT_CREATE(ua)		tsk_object_new(TSIP_HEADER_USER_AGENT_VA_ARGS(ua))
 #define TSIP_HEADER_USER_AGENT_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
+
+#define TSIP_HEADER_USER_AGENT_DEFAULT			"IM-client/OMA1.0 doubango/v0.0.0"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///

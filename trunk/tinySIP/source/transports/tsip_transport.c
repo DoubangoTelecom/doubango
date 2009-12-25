@@ -29,13 +29,102 @@
  */
 #include "tinysip/transports/tsip_transport.h"
 
+#include "tsk_string.h"
+#include "tsk_buffer.h"
+#include "tsk_debug.h"
 
 
+int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip_message_t *msg)
+{
+	tnet_ip_t ip;
+	tnet_port_t port;
+
+	if(tsip_transport_get_ip_n_port(self, &ip, &port))
+	{
+		return -1;
+	}
+	
+	if(!msg->firstVia)
+	{
+		msg->firstVia = TSIP_HEADER_VIA_CREATE(TSIP_HEADER_VIA_PROTO_NAME_DEFAULT, TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT,
+			self->via_protocol, ip, port);
+		TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "rport", 0);
+	}
+	
+	tsk_strupdate(&msg->firstVia->branch, branch);
+
+	/*
+	* comp=sigcomp; sigcomp-id=
+	*/
+
+	return 0;
+}
+
+int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
+{
+	tnet_ip_t ip;
+	tnet_port_t port;
+
+	if(tsip_transport_get_ip_n_port(self, &ip, &port))
+	{
+		return -1;
+	}
+
+	/*
+	* Update the contact header.
+	*/
+	if(msg->Contact && !TSK_LIST_IS_EMPTY(msg->Contact->contacts))
+	{
+		tsip_contact_t *contact = msg->Contact->contacts->head->data;
+				
+		if(contact->uri && tsk_params_has_param(contact->params, "doubs"))
+		{
+			tsk_strupdate(&(contact->uri->scheme), self->scheme);
+			tsk_strupdate(&(contact->uri->host), ip);
+			contact->uri->port = port;
+			tsk_params_add_param(&contact->uri->params, "transport", self->protocol);
+
+			tsk_params_remove_param(contact->params, "doubs");
+		}
+	}
+
+	/*
+	*	Sigcomp
+	*/
+	
+	return 0;
+}
 
 
+size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg)
+{
+	int ret = -1;
+	if(self)
+	{
+		tsk_buffer_t *buffer = 0;
 
+		/* Add Via */
+		if(TSIP_MESSAGE_IS_REQUEST(msg) && !tsk_striequals(msg->line_request.method, "CANCEL"))
+		{
+			tsip_transport_addvia(self, branch, msg);
+			tsip_transport_msg_update(self, msg);
+		}
 
+		buffer = TSK_BUFFER_CREATE_NULL();
+		if(buffer)
+		{
+			tsip_message_tostring(msg, buffer);
+			
+			if(tnet_transport_send(self->net_transport, self->connectedFD, buffer->data, buffer->size))
+			{
+				ret = 0;
+			}
+			TSK_BUFFER_SAFE_FREE(buffer);
+		}
+	}
 
+	return ret;
+}
 
 
 
@@ -57,8 +146,31 @@ static void* tsip_transport_create(void * self, va_list * app)
 		uint16_t port = va_arg(*app, tnet_port_t);
 		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);
 		const char *description = va_arg(*app, const char*);
-
+		
 		transport->net_transport = TNET_TRANSPORT_CREATE(host, port, type, description);
+		
+		transport->scheme = TNET_SOCKET_TYPE_IS_TLS(type) ? "sips" : "sip";
+
+		if(TNET_SOCKET_TYPE_IS_STREAM(type))
+		{
+			transport->protocol = "tcp";
+			transport->via_protocol = "TCP";
+			transport->service = "SIP+D2T";
+
+			if(TNET_SOCKET_TYPE_IS_TLS(type))
+			{
+				transport->via_protocol = "TLS";
+				transport->service = "SIPS+D2T";
+			}
+		}
+		else
+		{
+			transport->protocol = "udp";
+			transport->via_protocol = "UDP";
+			transport->service = "SIP+D2U";
+		}
+		
+		transport->connectedFD = TNET_INVALID_FD;
 	}
 	return self;
 }
@@ -69,12 +181,25 @@ static void* tsip_transport_destroy(void * self)
 	if(transport)
 	{
 		TNET_TRANSPORT_SAFE_FREE(transport->net_transport);
+
+		/*TSK_FREE(transport->scheme);
+		TSK_FREE(transport->protocol);
+		TSK_FREE(transport->via_protocol);
+		TSK_FREE(transport->service);*/
 	}
 	return self;
 }
 
 static int tsip_transport_cmp(const void *obj1, const void *obj2)
 {
+	const tsip_transport_t *transport1 = obj1;
+	const tsip_transport_t *transport2 = obj2;
+	if(transport1 && transport2)
+	{
+		const char* desc1 = tsip_transport_get_description(transport1);
+		const char* desc2 = tsip_transport_get_description(transport2);
+		return tsk_stricmp(desc1, desc2);
+	}
 	return -1;
 }
 

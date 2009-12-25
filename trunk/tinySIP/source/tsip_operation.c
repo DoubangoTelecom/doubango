@@ -37,22 +37,31 @@ typedef struct tsip_operation_s
 {
 	TSK_DECLARE_OBJECT;
 
+	tsip_operation_id_t id;
 	const tsip_stack_handle_t* stack;
 	tsk_params_L_t *params;
 }
 tsip_operation_t;
 
 
-tsip_operation_handle_t *tsip_operation_clone(const tsip_operation_handle_t *operation)
+tsip_operation_handle_t *tsip_operation_clone(const tsip_operation_handle_t *self)
 {
-	if(operation)
+	if(self)
 	{
-		return tsk_object_ref((void*)operation);
+		return tsk_object_ref((void*)self);
 	}
 	return 0;
 }
 
-
+tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self)
+{
+	if(self)
+	{
+		const tsip_operation_t *operation = self;
+		return operation->id;
+	}
+	return TSIP_OPERATION_INVALID_ID;
+}
 
 
 
@@ -69,9 +78,13 @@ tsip_operation_handle_t *tsip_operation_clone(const tsip_operation_handle_t *ope
 static void* tsip_operation_create(void * self, va_list * app)
 {
 	tsip_operation_t *operation = self;
+	static tsip_operation_id_t unique_id = 0;
 	if(operation)
 	{
 		tsip_operation_param_type_t curr;
+
+		operation->stack = va_arg(*app, const tsip_stack_handle_t*);
+		operation->params = TSK_LIST_CREATE();
 
 		while((curr=va_arg(*app, tsip_operation_param_type_t)) != oppname_null)
 		{
@@ -95,6 +108,7 @@ static void* tsip_operation_create(void * self, va_list * app)
 			}
 		}
 		
+		operation->id = ++unique_id;
 	}
 
 bail:
@@ -113,6 +127,13 @@ static void* tsip_operation_destroy(void * self)
 
 static int tsip_operation_cmp(const void *obj1, const void *obj2)
 {
+	const tsip_operation_t *operation1 = obj1;
+	const tsip_operation_t *operation2 = obj2;
+
+	if(operation1 && operation2)
+	{
+		return (int)(operation1->id-operation2->id);
+	}
 	return -1;
 }
 

@@ -113,7 +113,7 @@
 	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
 	
 	c_p_expires = "expires"i EQUAL delta_seconds>tag %parse_expires;
-	contact_extension = generic_param>tag %parse_param;
+	contact_extension = (generic_param--c_p_expires)>tag %parse_param;
 	contact_params = c_p_expires | contact_extension;
 	contact_param = (( my_name_addr | URI ) ( SEMI contact_params )*) >create_contact %add_contact;
 	Contact = ( "Contact"i | "m"i ) HCOLON ( STAR | ( contact_param ( COMMA contact_param )* ) );
@@ -158,7 +158,10 @@ int tsip_header_Contact_tostring(const void* header, tsk_buffer_t* output)
 			/* Expires */
 			if(contact->expires >=0)
 			{
-				tsk_buffer_appendEx(output, ";expires=%d", contact->expires);
+				tsk_buffer_appendEx(output, ";expires=%d%s", 
+					contact->expires,
+					TSK_LIST_IS_EMPTY(contact->params) ? "" : ";"
+					);
 			}
 
 			/* Params */

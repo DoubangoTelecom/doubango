@@ -26,7 +26,7 @@ int so_mutex_count = 0;
 
 typedef struct mysafeobj_s
 {
-	TSK_SAFEOBJ_DECLARE;
+	TSK_DECLARE_SAFEOBJ;
 	
 	int test1;
 	int test2;	

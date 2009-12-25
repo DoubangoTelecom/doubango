@@ -30,15 +30,18 @@
 #include "tsip.h"
 
 #include "tinysip/tsip_uri.h"
-#include "tinysip/tsip_timers.h"
+
+#include "tinysip/parsers/tsip_parser_uri.h"
 
 #include "tinysip/transactions/tsip_transac_layer.h"
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 #include "tinysip/transports/tsip_transport_layer.h"
 
-#include "tsk_timer.h"
+#include "tnet.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
+#include "tsk_time.h"
 
 #include <stdarg.h>
 
@@ -46,59 +49,6 @@ void *run(void* self);
 
 #define TSIP_EVENT_CREATE(str)				tsk_object_new(tsip_event_def_t, str)
 #define TSIP_EVENT_SAFE_FREE(self)			tsk_object_unref(self), self = 0
-
-
-typedef struct tsip_stack_s
-{
-	TSK_DECLARE_RUNNABLE;
-
-	tsip_stack_callback callback;
-
-	/* Identity */
-	tsip_uri_t *uri;
-	tsip_uri_t *preferred_uri;
-	char *user_name;
-	char *password;
-
-	/* Network */
-	char *local_ip;
-	uint16_t local_port;
-	unsigned enable_ipv6:1;
-	char *privacy;
-	operator_id_t operator_id;
-	amf_t amf;
-	char *netinfo;
-	char *realm;
-	tsip_uri_t *proxy;
-
-	/* Services */
-	unsigned enable_100rel:1;
-	unsigned enable_gsmais:1;
-	unsigned enable_precond:1;
-	unsigned enable_3gppsms:1;
-	unsigned enable_gsmarcs:1;
-	unsigned enable_earlyIMS:1;
-	unsigned enable_ofdr:1;
-	unsigned enable_aa:1;
-	unsigned enable_dnd:1;
-	unsigned enable_option:1;
-
-	/* QoS */
-
-
-
-	/* Internals. */
-	tsk_timer_manager_handle_t* timer_mgr;
-	tsip_timers_t timers;
-	tsip_operations_L_t *operations;
-
-	/* Layers */
-	tsip_dialog_layer_t *layer_dialog;
-	tsip_transac_layer_t *layer_transac;
-	tsip_transport_layer_t *layer_transport;
-}
-tsip_stack_t;
-
 
 int __tsip_stack_set(tsip_stack_t *self, va_list values)
 {
@@ -111,21 +61,34 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			/* 
 			* Identity 
 			*/
-			case pname_uri:
+			case pname_display_name:
 			{
-				
+				tsk_strupdate(&self->display_name, va_arg(values, const char*));
+				break;
 			}
-			case pname_preferred_uri:
+			case pname_public_identity:
 			{
-				
+				const char *uristring = va_arg(values, const char*);
+				if(uristring)
+				{
+					tsip_uri_t *uri = tsip_uri_parse(uristring, strlen(uristring));
+					if(uri)
+					{
+						TSIP_URI_SAFE_FREE(self->public_identity);
+						self->public_identity = uri;
+					}
+				}
+				break;
 			}
-			case pname_user_name:
+			case pname_private_identity:
 			{
-				
+				tsk_strupdate(&self->private_identity, va_arg(values, const char*));
+				break;
 			}
 			case pname_password:
 			{
-				
+				tsk_strupdate(&self->password, va_arg(values, const char*));
+				break;
 			}
 
 			/* 
@@ -133,39 +96,61 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			*/
 			case pname_local_ip:
 			{
-				
+				tsk_strupdate(&self->local_ip, va_arg(values, const char*));
+				break;
 			}
 			case pname_local_port:
 			{
-				
+				self->local_port = va_arg(values, uint16_t);
+				break;
 			}
 			case pname_enable_ipv6:
 			{
-				
+				self->enable_ipv6 = va_arg(values, unsigned);
+				break;
 			}
 			case pname_privacy:
 			{
-				
+				tsk_strupdate(&self->privacy, va_arg(values, const char*));
+				break;
 			}
 			case pname_operator_id:
 			{
-
+				break;
 			}
 			case pname_amf:
 			{
-
+				break;
 			}
 			case pname_netinfo:
 			{
-
+				tsk_strupdate(&self->netinfo, va_arg(values, const char*));
+				break;
 			}
 			case pname_realm:
 			{
-
+				const char *uristring = va_arg(values, const char*);
+				if(uristring)
+				{
+					tsip_uri_t *uri = tsip_uri_parse(uristring, strlen(uristring));
+					if(uri)
+					{
+						TSIP_URI_SAFE_FREE(self->realm);
+						self->realm = uri;
+					}
+				}
+				break;
 			}
-			case pname_proxy:
+			case pname_proxy_cscf:
 			{
+				tsk_strupdate(&self->proxy_cscf, va_arg(values, const char*));
+				break;
+			}
 
+			case pname_proxy_cscf_port:
+			{
+				self->proxy_cscf_port = va_arg(values, uint16_t);
+				break;
 			}
 
 			/* 
@@ -173,43 +158,53 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			*/
 			case pname_enable_100rel:
 			{
-
+				self->enable_100rel = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_gsmais:
 			{
-
+				self->enable_gsmais = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_precond:
 			{
-
+				self->enable_precond = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_3gppsms:
 			{
-
+				self->enable_3gppsms = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_gsmarcs:
 			{
-
+				self->enable_gsmarcs = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_earlyIMS:
 			{
-
+				self->enable_earlyIMS = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_ofdr:
 			{
-
+				self->enable_ofdr = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_aa:
 			{
-
+				self->enable_aa = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_dnd:
 			{
-
+				self->enable_dnd = va_arg(values, unsigned);
+				break;
 			}
 			case pname_enable_option:
 			{
-
+				self->enable_option = va_arg(values, unsigned);
+				break;
 			}
 
 			/* 
@@ -226,6 +221,34 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 	return 0;
 }
 
+static __tsip_initialized = 0;
+
+int tsip_global_init()
+{
+	if(!__tsip_initialized)
+	{
+		srand((unsigned int) tsk_time_epoch());
+		if(!tnet_startup())
+		{
+			__tsip_initialized = 1;
+			return 0;
+		}
+	}
+	return -1;
+}
+
+int tsip_global_deinit()
+{
+	if(__tsip_initialized)
+	{
+		if(!tnet_cleanup())
+		{
+			__tsip_initialized = 0;
+			return 0;
+		}
+	}
+	return -1;
+}
 
 tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 {
@@ -234,6 +257,12 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 
 	if(!stack) return 0;
 
+	/*
+	* Default values
+	*/
+	stack->local_ip = TNET_SOCKET_HOST_ANY;
+	stack->local_port = TNET_SOCKET_PORT_ANY;
+
 	va_start(params, callback);
 	if(__tsip_stack_set(stack, params))
 	{
@@ -241,15 +270,27 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	}
 	va_end(params);
 
-	/* Internals */
+	/* 
+	* Internals 
+	*/
 	stack->callback = callback;
 	stack->timer_mgr = TSK_TIMER_MANAGER_CREATE();
 	stack->operations = TSK_LIST_CREATE();
 
-	/* Layers */
+	/* 
+	*	Layers 
+	*/
 	stack->layer_dialog = TSIP_DIALOG_LAYER_CREATE(stack);
 	stack->layer_transac = TSIP_TRANSAC_LAYER_CREATE(stack);
 	stack->layer_transport = TSIP_TRANSPORT_LAYER_CREATE(stack);
+
+	/*
+	* FIXME:
+	*/
+	if(tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, "UDP/IPV4 TRANSPORT"))
+	{
+		// WHAT ???
+	}
 
 	return stack;
 }
@@ -267,7 +308,14 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			return ret;
 		}
 
-		/* Start timer manager. */
+		/*
+		* Transport Layer
+		*/
+		tsip_transport_layer_start(stack->layer_transport);
+
+		/* 
+		* Timer manager
+		*/
 		if(ret = tsk_timer_manager_start(stack->timer_mgr))
 		{
 			// What to do ?
@@ -339,6 +387,17 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 	return -1;
 }
 
+
+const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self)
+{
+	if(self)
+	{
+		const tsip_stack_t *stack = self;
+		return stack->timer_mgr;
+	}
+	return 0;
+}
+
 struct tsip_dialog_layer_s * tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self)
 {
 	if(self)
@@ -381,7 +440,9 @@ int tsip_stack_register(tsip_stack_handle_t *self, const tsip_operation_handle_t
 		const tsip_stack_t *stack = self;
 		tsip_operation_handle_t *op = tsip_operation_clone(operation);
 
-		tsk_list_push_back_data(stack->operations, (void**)&op);
+		return tsip_dialog_layer_register(stack->layer_dialog, op);
+
+		//tsk_list_push_back_data(stack->operations, (void**)&op);
 	}
 	return -1;
 }
@@ -393,7 +454,7 @@ int tsip_stack_unregister(tsip_stack_handle_t *self, const tsip_operation_handle
 		const tsip_stack_t *stack = self;
 		tsip_operation_handle_t *op = tsip_operation_clone(operation);
 
-		tsk_list_push_back_data(stack->operations, (void**)&op);
+		//tsk_list_push_back_data(stack->operations, (void**)&op);
 	}
 	return -1;
 }

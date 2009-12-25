@@ -42,6 +42,8 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+#include <string.h>
+
 /**@defgroup tsip_header_Privacy_group SIP Privacy header.
 */
 

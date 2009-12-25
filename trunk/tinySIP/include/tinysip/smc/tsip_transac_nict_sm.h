@@ -16,13 +16,14 @@ struct tsip_transac_nictContext;
 
 struct tsip_transac_nictState
 {
+    void(*Entry)(struct tsip_transac_nictContext*);
 
-    void(*sm_1xx)(struct tsip_transac_nictContext*);
-    void(*sm_200_to_699)(struct tsip_transac_nictContext*);
+    void(*sm_1xx)(struct tsip_transac_nictContext*, const tsip_message_t*);
+    void(*sm_200_to_699)(struct tsip_transac_nictContext*, const tsip_message_t*);
     void(*sm_send)(struct tsip_transac_nictContext*);
-    void(*sm_timerE)(struct tsip_transac_nictContext*);
-    void(*sm_timerF)(struct tsip_transac_nictContext*);
-    void(*sm_timerK)(struct tsip_transac_nictContext*);
+    void(*sm_timerE)(struct tsip_transac_nictContext*, tsk_timer_id_t);
+    void(*sm_timerF)(struct tsip_transac_nictContext*, tsk_timer_id_t);
+    void(*sm_timerK)(struct tsip_transac_nictContext*, tsk_timer_id_t);
     void(*sm_transportError)(struct tsip_transac_nictContext*);
 
     void(*Default)(struct tsip_transac_nictContext*);
@@ -43,12 +44,13 @@ struct tsip_transac_nictContext
 };
 
 extern void tsip_transac_nictContext_Init(struct tsip_transac_nictContext*, struct tsip_transac_nict*);
-extern void tsip_transac_nictContext_sm_1xx(struct tsip_transac_nictContext*);
-extern void tsip_transac_nictContext_sm_200_to_699(struct tsip_transac_nictContext*);
+extern void tsip_transac_nictContext_EnterStartState(struct tsip_transac_nictContext*);
+extern void tsip_transac_nictContext_sm_1xx(struct tsip_transac_nictContext*, const tsip_message_t*);
+extern void tsip_transac_nictContext_sm_200_to_699(struct tsip_transac_nictContext*, const tsip_message_t*);
 extern void tsip_transac_nictContext_sm_send(struct tsip_transac_nictContext*);
-extern void tsip_transac_nictContext_sm_timerE(struct tsip_transac_nictContext*);
-extern void tsip_transac_nictContext_sm_timerF(struct tsip_transac_nictContext*);
-extern void tsip_transac_nictContext_sm_timerK(struct tsip_transac_nictContext*);
+extern void tsip_transac_nictContext_sm_timerE(struct tsip_transac_nictContext*, tsk_timer_id_t);
+extern void tsip_transac_nictContext_sm_timerF(struct tsip_transac_nictContext*, tsk_timer_id_t);
+extern void tsip_transac_nictContext_sm_timerK(struct tsip_transac_nictContext*, tsk_timer_id_t);
 extern void tsip_transac_nictContext_sm_transportError(struct tsip_transac_nictContext*);
 
 #endif

@@ -32,20 +32,44 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+
+/**@def TSIP_HEADER_MIN_EXPIRES_CREATE
+* Creates new sip 'Min-Expires' header.  You must call @ref TSIP_HEADER_MIN_EXPIRES_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_MIN_EXPIRES_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_MIN_EXPIRES_SAFE_FREE
+* Safely free a sip 'Min-Expires' header previously created using TSIP_HEADER_MIN_EXPIRES_CREATE.
+* @sa TSIP_HEADER_MIN_EXPIRES_CREATE.
+*/
+#define TSIP_HEADER_MIN_EXPIRES_VA_ARGS(value)		tsip_header_Min_Expires_def_t, (int32_t) value
+#define TSIP_HEADER_MIN_EXPIRES_CREATE(value)		tsk_object_new(TSIP_HEADER_MIN_EXPIRES_VA_ARGS(value))
+#define TSIP_HEADER_MIN_EXPIRES_SAFE_FREE(self)		tsk_object_unref(self), self = 0
+
+#define TSIP_HEADER_MIN_EXPIRES_CREATE_NULL()		TSIP_HEADER_MIN_EXPIRES_CREATE(TSIP_HEADER_MIN_EXPIRES_NONE)
+
+#define TSIP_HEADER_MIN_EXPIRES_NONE				-1
+#define TSIP_HEADER_MIN_EXPIRES_DEFAULT				30
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP header 'Min-Expires'.
+/// @brief	SIP header 'Min-Expires' as per RFC 3261.
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Min-Expires = "Min-Expires" HCOLON delta-seconds
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Min_Expires_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	int32_t value;
 }
 tsip_header_Min_Expires_t;
+
+tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Min_Expires_def_t;
 
 #endif /* _TSIP_HEADER_MIN_EXPIRES_H_ */

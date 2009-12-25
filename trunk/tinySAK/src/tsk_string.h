@@ -39,7 +39,7 @@
 #define TSK_STRING_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 #define TSK_STRING_STR(self)				((tsk_string_t*)self)->value
 
-typedef char tsk_istr_t[20]; /**< Integer number as string value. */
+typedef char tsk_istr_t[21]; /**< Integer number as string value. */
 
 TINYSAK_API char tsk_b10tob16(char c);
 TINYSAK_API char tsk_b16tob10(char c);
@@ -55,7 +55,7 @@ TINYSAK_API void tsk_strtrim_right(char **str);
 TINYSAK_API void tsk_strquote(char **str);
 TINYSAK_API void tsk_strunquote(char **str);
 TINYSAK_API void tsk_itoa(int64_t i, tsk_istr_t *result);
-
+TINYSAK_API void tsk_strrandom(tsk_istr_t *result);
 
 #define tsk_strtrim_both(str) tsk_strtrim_left(str), tsk_strtrim_right(str);
 #define tsk_strempty(s) (*s == '\0')

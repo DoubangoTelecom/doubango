@@ -42,8 +42,13 @@
 * Safely free a sip 'Max-Forwards' header previously created using TSIP_HEADER_MAX_FORWARDS_CREATE.
 * @sa TSIP_HEADER_MAX_FORWARDS_CREATE.
 */
-#define TSIP_HEADER_MAX_FORWARDS_CREATE(max)		tsk_object_new(tsip_header_Max_Forwards_def_t, (int32_t) max)
+#define TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max)		tsip_header_Max_Forwards_def_t, (int32_t) max
+#define TSIP_HEADER_MAX_FORWARDS_CREATE(max)		tsk_object_new(TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max))
 #define TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
+
+#define TSIP_HEADER_MAX_FORWARDS_NONE				-1
+#define TSIP_HEADER_MAX_FORWARDS_DEFAULT			70
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -52,7 +57,7 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Max-Forwards = "Max-Forwards" HCOLON 1*DIGIT
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Max_Forwards_s
