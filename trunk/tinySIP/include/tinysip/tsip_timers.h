@@ -34,7 +34,7 @@
 
 #include "tsk_timer.h"
 
-#define TSIP_TIMER_GET(TX)	tsip_timers_get##TX##()
+#define TSIP_TIMER_GET(TX)	tsip_timers_get##TX()
 
 //extern const char *timerT1;
 //extern const char *timerT2;

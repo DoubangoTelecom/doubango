@@ -79,3 +79,4 @@ uLong ZEXPORT compressBound (sourceLen)
     return sourceLen + (sourceLen >> 12) + (sourceLen >> 14) + 11;
 }
 #endif // HAS_ZLIB
+

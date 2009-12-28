@@ -84,7 +84,7 @@ void test_safeobject()
 	tsk_thread_join(&tid[1]);
 
 	tsk_safeobj_deinit(obj);
-	tsk_free(&obj);
+	tsk_free((void**)&obj);
 }
 
 #endif /* _TEST_SAFEOBJ_H_ */

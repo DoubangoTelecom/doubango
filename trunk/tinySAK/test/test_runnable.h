@@ -46,7 +46,6 @@ test_runnable_timer_t runnable_timers[] =
 typedef struct tsk_obj_s
 {
 	tsk_timer_id_t timer_id;
-	tsk_timer_retcode_t code;
 }
 tsk_obj_t;
 
@@ -56,7 +55,6 @@ static void* tsk_obj_create(void * self, va_list * app)
 	if(obj)
 	{
 		obj->timer_id = va_arg(*app, tsk_timer_id_t);
-		obj->code = va_arg(*app, tsk_timer_retcode_t);
 	}
 	return self;
 }
@@ -81,7 +79,7 @@ void *run(void* self)
 	if(curr = TSK_RUNNABLE_POP_FIRST(self))
 	{
 		const tsk_obj_t *obj = (const tsk_obj_t*)curr->data;
-		printf("\n\nTimer===>[%d] -- [%d]\n\n", obj->timer_id, obj->code);
+		printf("\n\nTimer===>[%d]\n\n", obj->timer_id);
 		tsk_object_unref(curr);
 	}
 	
@@ -90,12 +88,12 @@ void *run(void* self)
 	return 0;
 }
 
-static int test_runnable_timer_callback(const void* arg, tsk_timer_id_t timer_id, tsk_timer_retcode_t code)
+static int test_runnable_timer_callback(const void* arg, tsk_timer_id_t timer_id)
 {
 	// Do quick job
 	if(arg)
 	{
-		TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(arg), timer_id, code);
+		TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(arg), timer_id);
 		return 0;
 	}
 	return -1;
@@ -104,23 +102,24 @@ static int test_runnable_timer_callback(const void* arg, tsk_timer_id_t timer_id
 void test_runnable()
 {
 	size_t i;
+	tsk_timer_manager_handle_t *timer_mgr = TSK_TIMER_MANAGER_CREATE();
 	tsk_runnable_t* runnable = tsk_calloc(1, sizeof(tsk_runnable_t));
 	runnable->run = run;
 	printf("test_runnable//\n");
 
-	tsk_timer_manager_start();
+	tsk_timer_manager_start(timer_mgr);
 	tsk_runnable_start(runnable, tsk_obj_def_t);
 
 	for(i=0; i<sizeof(runnable_timers)/sizeof(test_runnable_timer_t); ++i)
 	{
-		runnable_timers[i].id = tsk_timer_manager_schedule(runnable_timers[i].timeout, test_runnable_timer_callback, runnable);
+		runnable_timers[i].id = tsk_timer_manager_schedule(timer_mgr, runnable_timers[i].timeout, test_runnable_timer_callback, runnable);
 	}
 	
 	tsk_thread_sleep(3000);
 
-	tsk_timer_manager_stop();
+	TSK_TIMER_MANAGER_SAFE_FREE(timer_mgr);
 	tsk_runnable_stop(runnable);
-	tsk_free(&runnable);
+	tsk_free((void**)&runnable);
 }
 
 #endif /* _TEST_RUNNABLE_H_ */

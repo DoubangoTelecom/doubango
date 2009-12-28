@@ -69,7 +69,7 @@
 
 #define TINYSAK_IMPORTS
 
-#if (_WIN32_WINNT>=0x0600) || (0)
+#if (_WIN32_WINNT>=0x0600) || (ANDROID)
 #	define TNET_HAVE_POLL		1
 #else
 #	define TNET_HAVE_POLL		0
@@ -82,3 +82,4 @@
 #endif
 
 #endif /* _TINYNET_H_ */
+

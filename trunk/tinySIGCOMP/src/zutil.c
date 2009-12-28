@@ -319,3 +319,4 @@ void  zcfree (opaque, ptr)
 #endif /* MY_ZCALLOC */
 
 #endif // HAS_ZLIB
+

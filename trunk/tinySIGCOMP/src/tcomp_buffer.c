@@ -688,3 +688,4 @@ static const tsk_object_def_t tcomp_buffer_def_s =
 	0
 };
 const void *tcomp_buffer_def_t = &tcomp_buffer_def_s;
+

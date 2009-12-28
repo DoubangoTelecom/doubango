@@ -384,6 +384,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_md5.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_mutex.h"
 				>
 			</File>

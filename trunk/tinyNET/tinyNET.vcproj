@@ -343,6 +343,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tnet_auth.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tnet_poll.c"
 				>
 			</File>
@@ -376,6 +380,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tnet.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tnet_auth.h"
 				>
 			</File>
 			<File

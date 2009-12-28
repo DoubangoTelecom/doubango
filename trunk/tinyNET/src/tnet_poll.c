@@ -21,7 +21,7 @@
 */
 #include "tnet_poll.h"
 
-#if TNET_USE_POLL
+#if TNET_USE_POLL && !TNET_HAVE_POLL
 
 /**
  * @fn	int tnet_poll(tnet_pollfd_t fds[ ], nfds_t nfds, int timeout)
@@ -121,3 +121,4 @@ int tnet_poll(tnet_pollfd_t fds[ ], tnet_nfds_t nfds, int timeout)
 }
 
 #endif /* TNET_USE_POLL */
+

@@ -52,3 +52,4 @@ void tsip_ragel_state_init(tsip_ragel_state_t *state, const char *data, size_t s
 	state->tag_start = 0;
 	state->tag_end = 0;
 }
+

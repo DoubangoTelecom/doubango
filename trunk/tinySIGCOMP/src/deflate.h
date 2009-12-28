@@ -332,3 +332,4 @@ void _tr_stored_block OF((deflate_state *s, charf *buf, ulg stored_len,
 #endif /* DEFLATE_H */
   
 #endif // HAS_ZLIB
+

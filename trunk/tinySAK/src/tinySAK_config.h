@@ -71,7 +71,7 @@
 
 #if TSK_UNDER_WINDOWS
 #	define HAVE_GETTIMEOFDAY				0
-#else if(!HAVE_CONFIG_H)
+#elif !HAVE_CONFIG_H
 #	define HAVE_GETTIMEOFDAY				1
 #endif
 

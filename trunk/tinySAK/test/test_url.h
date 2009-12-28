@@ -36,8 +36,8 @@ void test_url()
 	str2 = tsk_url_encode(str1);
 	printf("test_url/// encoded url:%s\n", str2);
 
-	tsk_free(&str1);
-	tsk_free(&str2);
+	tsk_free((void**)&str1);
+	tsk_free((void**)&str2);
 }
 
 #endif /* _TEST_URL_H_ */

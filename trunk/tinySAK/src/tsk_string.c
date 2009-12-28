@@ -31,6 +31,7 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_time.h"
+#include "tsk_debug.h"
 
 #include <stdarg.h>
 #include <ctype.h>
@@ -43,6 +44,8 @@
 #	define vsnprintf	_vsnprintf
 #	define strdup		_strdup
 #	define stricmp		_stricmp
+#elif ANDROID
+#	define stricmp		strcasecmp
 #endif
 
 /**@defgroup tsk_string_group String utils
@@ -278,11 +281,65 @@ void tsk_itoa(int64_t i, tsk_istr_t *result)
 }
 
 
+/**
+ * @fn	void tsk_strrandom(tsk_istr_t *result)
+ *
+ * @brief	Generates a random string.
+ *
+ * @author	Mamadou
+ * @date	12/27/2009
+ *
+ * @param [out]	result	A pointer to the result. 
+**/
 void tsk_strrandom(tsk_istr_t *result)
 {
 	uint64_t epoch = tsk_time_epoch();
 	tsk_itoa(epoch, result);
 }
+
+/**
+ * @fn	void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str)
+ *
+ * @brief	Converts hexadecimal bytes into string representation.
+ *
+ * @author	Mamadou
+ * @date	12/27/2009
+ *
+ * @param [in,out]	hex	The hexadecimal bytes to convert. 
+ * @param	size		The size of the hexadecimal bytes. 
+ * @param [in,out]	str	The pointer to the result. MUST be enought large to hold the result.
+ *						It is up to you to add the final '\0'.
+ * @sa @ref tsk_str_to_hex
+**/
+void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str)
+{
+	static const char *TSK_HEXA_VALUES = {"0123456789abcdef"};
+	size_t i;
+
+	for (i = 0 ; i<size; i++)
+	{
+		str[2*i] = TSK_HEXA_VALUES [ (*(hex+i) & 0xf0) >> 4 ];
+		str[(2*i)+1] = TSK_HEXA_VALUES [ (*(hex+i) & 0x0f)		];
+	}
+}
+
+/**
+ * @fn	void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex)
+ *
+ * @brief	Converts string chars into hexadecimal bytes.
+ *
+ * @author	Mamadou
+ * @date	12/27/2009
+ *
+ * @param [in,out]	str	If non-null, the string. 
+ * @param	size		The size. 
+ * @param [in,out]	hex	If non-null, the hexadecimal. 
+**/
+void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex)
+{
+	TSK_DEBUG_FATAL("Not implemented.");
+}
+
 
 
 

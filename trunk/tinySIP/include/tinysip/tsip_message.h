@@ -171,7 +171,7 @@ typedef tsip_message_t tsip_response_t; /**< SIP response message. */
 
 TINYSIP_API int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr);
 
-#ifdef __SYMBIAN32__
+#if !defined(_MSC_VER) || defined(__GNUC__)
 static void TSIP_MESSAGE_ADD_HEADER(tsip_message_t *self, ...)
 	{
 		va_list ap;

@@ -72,11 +72,11 @@ static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tsi
 int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr)
 {
 	#define ADD_HEADER(type, field) \
-		case tsip_htype_##type##: \
+		case tsip_htype_##type: \
 			{ \
-				if(!self->##field##) \
+				if(!self->field) \
 				{ \
-					self->##field## = (tsip_header_##type##_t*)header; \
+					self->field = (tsip_header_##type##_t*)header; \
 					return 0; \
 				} \
 				break; \
@@ -429,3 +429,4 @@ static const tsk_object_def_t tsip_message_def_s =
 	0
 };
 const void *tsip_message_def_t = &tsip_message_def_s;
+

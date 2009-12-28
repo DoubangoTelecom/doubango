@@ -34,7 +34,7 @@
 #define LOOP						1
 
 #define RUN_TEST_ALL				0
-#define RUN_TEST_LISTS				1
+#define RUN_TEST_LISTS				0
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
 #define RUN_TEST_URL				0
@@ -47,6 +47,7 @@
 #define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
 #define RUN_TEST_BUFFER				0
+#define RUN_TEST_MD5				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -100,6 +101,9 @@
 #include "test_buffer.h"
 #endif
 
+#if RUN_TEST_MD5 || RUN_TEST_ALL
+#include "test_md5.h"
+#endif
 
 
 
@@ -198,6 +202,12 @@ int main()
 		/* test buffer */
 		test_buffer();
 #endif
+
+#if RUN_TEST_MD5 || RUN_TEST_ALL
+		/* test md5 */
+		test_md5();
+#endif
+
 	}
 
 	getchar();

@@ -47,10 +47,10 @@
 #define TSIP_TRANSAC_MAGIC_COOKIE		"z9hG4bK"
 
 #define TRANSAC_TIMER_SCHEDULE(name, TX) \
-	self->timer##TX##.id = tsk_timer_manager_schedule((tsk_timer_manager_handle_t*)self->timer_mgr, self->timer##TX##.timeout, TSK_TIMER_CALLBACK(tsip_transac_##name##Context_sm_timer##TX##), &(self->_fsm))
+	self->timer##TX.id = tsk_timer_manager_schedule((tsk_timer_manager_handle_t*)self->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK(tsip_transac_##name##Context_sm_timer##TX), &(self->_fsm))
 
 #define TRANSAC_TIMER_CANCEL(TX) \
-	tsk_timer_manager_cancel((tsk_timer_manager_handle_t*)self->timer_mgr, self->timer##TX##.id)
+	tsk_timer_manager_cancel((tsk_timer_manager_handle_t*)self->timer_mgr, self->timer##TX.id)
 
 typedef enum tsip_transac_event_type_e
 {

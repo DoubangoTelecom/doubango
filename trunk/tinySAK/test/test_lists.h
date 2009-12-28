@@ -45,8 +45,8 @@ static void* person_create(void * self, va_list * app)
 static void* person_destroy(void *self)
 {
 	person_t* person = self;
-	tsk_free(&(person->id));
-	tsk_free(&(person->name));
+	tsk_free((void**)&(person->id));
+	tsk_free((void**)&(person->name));
 	return self;
 }
 

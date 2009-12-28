@@ -368,6 +368,10 @@
 			Name="tests"
 			>
 			<File
+				RelativePath=".\test_auth.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_sockets.h"
 				>
 			</File>

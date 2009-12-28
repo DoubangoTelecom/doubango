@@ -56,5 +56,6 @@
 
 #include "tsk_ppfcs16.h"
 #include "tsk_sha1.h"
+#include "tsk_md5.h"
 
 #endif /* _TINYSAK_SAK_H_ */

@@ -42,7 +42,7 @@ void test_strings()
 	tsk_strtrim_left(&str);
 	printf("test_strings/// trim_left=%s\n", str);
 
-	tsk_free(&str);
+	tsk_free((void**)&str);
 	
 	/* sprintf */
 	tsk_sprintf(&str, " \n\t%s %s\r  ", "first", "second");
@@ -60,7 +60,7 @@ void test_strings()
 	tsk_strunquote(&str);
 	printf("test_strings/// unquote=%s\n", str);
 
-	tsk_free(&str);
+	tsk_free((void**)&str);
 }
 
 #endif /* _TEST_STRINGS_H_ */

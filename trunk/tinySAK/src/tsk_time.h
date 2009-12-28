@@ -32,10 +32,10 @@
 
 #include "tinySAK_config.h"
 
-#ifdef __SYMBIAN32__ /* Forward declaration */
+//#if defined(__SYMBIAN32__) || ANDROID /* Forward declaration */
 struct timeval;
 struct timezone;
-#endif
+//#endif
 
 #define TSK_TIME_S_2_MS(S) (S*1000)
 
