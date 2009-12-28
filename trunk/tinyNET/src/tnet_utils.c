@@ -342,3 +342,4 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 	*fd = TNET_INVALID_SOCKET;
 	return ret;
 }
+

@@ -149,3 +149,4 @@ uLong ZEXPORT adler32_combine(adler1, adler2, len2)
     return sum1 | (sum2 << 16);
 }
 #endif // HAS_ZLIB
+

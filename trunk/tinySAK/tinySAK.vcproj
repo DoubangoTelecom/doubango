@@ -387,6 +387,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_md5.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_memory.h"
 				>
 			</File>
@@ -478,6 +482,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_list.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_md5.c"
 				>
 			</File>
 			<File

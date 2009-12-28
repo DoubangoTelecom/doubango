@@ -431,3 +431,4 @@ static const tsk_object_def_t tsk_timer_def_s =
 	tsk_timer_cmp, 
 };
 const void * tsk_timer_def_t = &tsk_timer_def_s;
+

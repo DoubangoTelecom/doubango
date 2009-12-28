@@ -269,3 +269,4 @@ void   zcfree  OF((voidpf opaque, voidpf ptr));
 
 #endif /* ZUTIL_H */
 #endif // HAS_ZLIB
+

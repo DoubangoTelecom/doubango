@@ -128,3 +128,4 @@ local const int base_dist[D_CODES] = {
 };
 
 #endif // HAS_ZLIB
+

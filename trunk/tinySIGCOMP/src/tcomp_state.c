@@ -192,3 +192,4 @@ static const tsk_object_def_t tcomp_state_def_s =
 	tcomp_state_cmp
 };
 const void *tcomp_state_def_t = &tcomp_state_def_s;
+

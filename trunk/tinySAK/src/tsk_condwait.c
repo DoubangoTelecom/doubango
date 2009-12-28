@@ -47,6 +47,10 @@
 #	define TIMED_OUT	ETIMEDOUT
 #endif
 
+#if ANDROID
+#	include <errno.h>
+#endif
+
 
 
 

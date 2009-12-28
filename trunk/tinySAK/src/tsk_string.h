@@ -56,6 +56,8 @@ TINYSAK_API void tsk_strquote(char **str);
 TINYSAK_API void tsk_strunquote(char **str);
 TINYSAK_API void tsk_itoa(int64_t i, tsk_istr_t *result);
 TINYSAK_API void tsk_strrandom(tsk_istr_t *result);
+TINYSAK_API void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str);
+TINYSAK_API void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex);
 
 #define tsk_strtrim_both(str) tsk_strtrim_left(str), tsk_strtrim_right(str);
 #define tsk_strempty(s) (*s == '\0')

@@ -41,6 +41,10 @@
 	typedef sem_t* SEMAPHORE_T;
 #endif
 
+#if ANDROID
+#	include <errno.h>
+#endif
+
 /**@defgroup tsk_semaphore_group Pthread Semaphore
 */
 

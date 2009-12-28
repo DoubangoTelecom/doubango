@@ -45,7 +45,7 @@
 #define TSIP_DIALOG(self)									((tsip_dialog_t*)(self))
 #define TSIP_DIALOG_GET_STATE(self)							TSIP_DIALOG(self)->state
 
-#define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)				self->timer##TX##.id = tsk_timer_manager_schedule(TSIP_STACK(self->stack)->timer_mgr, TSK_TIME_S_2_MS(self->timer##TX##.timeout), TSK_TIMER_CALLBACK(tsip_dialog_##name##Context_sm_##TX##), &(self->_fsm))	
+#define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)				self->timer##TX.id = tsk_timer_manager_schedule(TSIP_STACK(self->stack)->timer_mgr, TSK_TIME_S_2_MS(self->timer##TX.timeout), TSK_TIMER_CALLBACK(tsip_dialog_##name##Context_sm_##TX), &(self->_fsm))	
 
 #define TSIP_DIALOG_EXPIRES_DEFAULT							3600
 

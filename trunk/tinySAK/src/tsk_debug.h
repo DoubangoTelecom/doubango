@@ -79,7 +79,7 @@
 #endif
 
 /* FIXME */
-#ifdef __SYMBIAN32__
+#if defined(__SYMBIAN32__) || defined(ANDROID)
 
 #undef TSK_DEBUG_INFO
 #define TSK_DEBUG_INFO printf

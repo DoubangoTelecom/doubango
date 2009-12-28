@@ -40,6 +40,10 @@
 	typedef pthread_mutex_t* MUTEX_T;
 #endif
 
+#if ANDROID
+#	include <errno.h>
+#endif
+
 // FIXME: Momory leaks in mutex
 
 /**@defgroup tsk_mutex_group Pthread Mutex

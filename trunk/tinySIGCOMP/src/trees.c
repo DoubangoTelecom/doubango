@@ -1219,3 +1219,4 @@ local void copy_block(s, buf, len, header)
     }
 }
 #endif // HAS_ZLIB
+

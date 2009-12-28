@@ -2098,3 +2098,4 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 
 	return 1; 
 }
+
