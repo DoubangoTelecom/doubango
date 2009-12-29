@@ -131,7 +131,7 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 	if(ret && TCOMP_NACK_SUPPORTED)
 	{
 		/* store nack for later retrieval in case of errors */
-		uint8_t nackId[TSK_SHA1HashSize];
+		uint8_t nackId[TSK_SHA1_DIGEST_SIZE];
 		tsk_sha1context_t sha;
 
 		tsk_sha1reset(&sha);

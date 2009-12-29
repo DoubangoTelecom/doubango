@@ -71,7 +71,7 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 	/* Lock */
 	tsk_safeobj_lock(state);
 	
-	tcomp_buffer_allocBuff(state->identifier, TSK_SHA1HashSize);
+	tcomp_buffer_allocBuff(state->identifier, TSK_SHA1_DIGEST_SIZE);
 
 	/*=============
 		* Calculates a 20-byte SHA-1 hash [RFC-3174] over the byte string formed by concatenating the state_length, state_address,

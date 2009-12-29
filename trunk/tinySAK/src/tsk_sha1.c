@@ -5,6 +5,7 @@
  * Full Copyright Statement
  *
  *  Copyright (C) The Internet Society (2001).  All Rights Reserved.
+ *  Copyright (C) Mamadou Diop		   (2009)
  *
  *  This document and translations of it may be copied and furnished to
  *  others, and derivative works that comment on or otherwise explain it
@@ -91,6 +92,8 @@
  */
 #include "tsk_sha1.h"
 
+#include "tsk_string.h"
+
 /*
  *  Define the SHA1 circular left shift macro
  */
@@ -116,7 +119,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *);
  *      sha Error Code.
  *
  */
-int32_t tsk_sha1reset(tsk_sha1context_t *context)
+tsk_sha1_errcode_t tsk_sha1reset(tsk_sha1context_t *context)
 {
     if (!context)
     {
@@ -158,7 +161,7 @@ int32_t tsk_sha1reset(tsk_sha1context_t *context)
  *      sha Error Code.
  *
  */
-int32_t tsk_sha1result( tsk_sha1context_t *context, uint8_t Message_Digest[TSK_SHA1HashSize])
+tsk_sha1_errcode_t tsk_sha1result( tsk_sha1context_t *context, tsk_sha1digest_t Message_Digest)
 {
     int32_t i;
 
@@ -186,7 +189,7 @@ int32_t tsk_sha1result( tsk_sha1context_t *context, uint8_t Message_Digest[TSK_S
 
     }
 
-    for(i = 0; i < TSK_SHA1HashSize; ++i)
+    for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i)
     {
         Message_Digest[i] = context->Intermediate_Hash[i>>2]
                             >> 8 * ( 3 - ( i & 0x03 ) );
@@ -215,7 +218,7 @@ int32_t tsk_sha1result( tsk_sha1context_t *context, uint8_t Message_Digest[TSK_S
  *      sha Error Code.
  *
  */
-int32_t tsk_sha1input(    tsk_sha1context_t    *context,
+tsk_sha1_errcode_t tsk_sha1input(    tsk_sha1context_t    *context,
                   const uint8_t  *message_array,
                   unsigned       length)
 {
@@ -460,8 +463,51 @@ void tsk_sha1final(uint8_t *Message_Digest, tsk_sha1context_t *context)
 	context->Length_Low = 0;    /* and clear length */
 	context->Length_High = 0;
 	
-	for(i = 0; i < TSK_SHA1HashSize; ++i) 
+	for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i) 
 	{
 		Message_Digest[i] = context->Intermediate_Hash[i>>2] >> 8*(3-(i&0x03));
 	}
+}
+
+
+/**
+ * @fn	tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size,
+ * 		tsk_sha1string_t *result)
+ *
+ * @brief	Calculate SHA-1 HASH for @ref input data. 
+ *
+ * @author	Mamadou
+ * @date	12/28/2009
+ *
+ * @param [in,out]	input	The input data for which to calculate the SHA-1 hash. 
+ * @param	size			The size of the input data. 
+ * @param [out]	result		SHA-1 hash result as hexadecimal string. 
+ *
+ * @return	@ref shaSuccess if succeed and error code otherwise. 
+**/
+tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1string_t *result)
+{
+	tsk_sha1_errcode_t ret;
+	tsk_sha1context_t sha;
+	uint8_t digest[TSK_SHA1_DIGEST_SIZE];
+	
+	(*result)[TSK_SHA1_STRING_SIZE] = '\0';
+
+	if( (ret = tsk_sha1reset(&sha)) != shaSuccess )
+	{
+		return ret;
+	}
+	else if ( (ret = tsk_sha1input(&sha, input, size)) != shaSuccess )
+	{
+		return ret;
+	}
+	else if( (ret = tsk_sha1result(&sha, digest)) != shaSuccess )
+	{
+		return ret;
+	}
+
+
+	tsk_str_from_hex(digest, TSK_SHA1_DIGEST_SIZE, *result);
+
+	return shaSuccess;
 }

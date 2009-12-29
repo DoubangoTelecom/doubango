@@ -48,6 +48,7 @@
 #define RUN_TEST_RUNNABLE			0
 #define RUN_TEST_BUFFER				0
 #define RUN_TEST_MD5				1
+#define RUN_TEST_SHA1				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -104,6 +105,11 @@
 #if RUN_TEST_MD5 || RUN_TEST_ALL
 #include "test_md5.h"
 #endif
+
+#if RUN_TEST_SHA1 || RUN_TEST_ALL
+#include "test_sha1.h"
+#endif
+
 
 
 
@@ -204,8 +210,15 @@ int main()
 #endif
 
 #if RUN_TEST_MD5 || RUN_TEST_ALL
-		/* test md5 */
+		/* test md5 and hmac_md5 */
 		test_md5();
+		test_hmac_md5();
+#endif
+
+#if RUN_TEST_SHA1 || RUN_TEST_ALL
+		/* test sha1 and hmac_sha-1 */
+		test_sha1();
+		test_hmac_sha1();
 #endif
 
 	}

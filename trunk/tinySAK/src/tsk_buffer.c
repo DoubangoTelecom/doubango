@@ -116,6 +116,14 @@ int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size)
 	return -1;
 }
 
+void tsk_buffer_cleanup(tsk_buffer_t* self)
+{
+	if(self && self->data)
+	{
+		tsk_free(&(self->data));
+		self->size = 0;
+	}
+}
 
 
 

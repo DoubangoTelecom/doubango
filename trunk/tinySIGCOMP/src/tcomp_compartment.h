@@ -94,7 +94,7 @@ void tcomp_compartment_freeGhostState(tcomp_compartment_t *compartment);
 //
 //	Nacks
 //
-void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1HashSize]);
+void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE]);
 int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId);
 
 

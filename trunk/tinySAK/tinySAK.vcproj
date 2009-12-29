@@ -379,6 +379,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_hmac.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_list.h"
 				>
 			</File>
@@ -478,6 +482,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_heap.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_hmac.c"
 				>
 			</File>
 			<File
