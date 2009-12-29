@@ -77,7 +77,7 @@ void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buf
 	tsk_sha1context_t sha;
 	uint8_t *nackbuffer_ptr;
 
-	tcomp_buffer_allocBuff(udvm->lpResult->nack_info, NACK_SHA1_INDEX + TSK_SHA1HashSize);
+	tcomp_buffer_allocBuff(udvm->lpResult->nack_info, NACK_SHA1_INDEX + TSK_SHA1_DIGEST_SIZE);
 	nackbuffer_ptr = tcomp_buffer_getBuffer(udvm->lpResult->nack_info);
 	
 	nackbuffer_ptr[NACK_HEADER_INDEX] = 0xf8;

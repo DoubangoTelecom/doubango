@@ -32,21 +32,30 @@
 
 #include "tinySAK_config.h"
 
-
-#ifndef _TSK_SHA_enum_
-#define _TSK_SHA_enum_
-enum
+typedef enum tsk_sha1_errcode_e
 {
     shaSuccess = 0,
-    shaNull,            /* Null pointer parameter */
-    shaInputTooLong,    /* input data too long */
-    shaStateError       /* called Input after Result */
-};
-#endif
+    shaNull,            /**< Null pointer parameter */
+    shaInputTooLong,    /**< input data too long */
+    shaStateError       /**< called Input after Result */
+}
+tsk_sha1_errcode_t;
 
-#ifndef TSK_SHA1HashSize
-#define TSK_SHA1HashSize 20
-#endif
+
+#define TSK_SHA1_DIGEST_SIZE			20
+#define TSK_SHA1_BLOCK_SIZE				64
+
+#define TSK_SHA1_STRING_SIZE		(TSK_SHA1_DIGEST_SIZE*2)
+typedef char tsk_sha1string_t[TSK_SHA1_STRING_SIZE+1]; /**< Hexadecimal SHA-1 digest string. */
+typedef char tsk_sha1digest_t[TSK_SHA1_DIGEST_SIZE]; /**< SHA-1 digest bytes. */
+
+#define TSK_SHA1_DIGEST_CALC(input, input_size, digest)			\
+			{													\
+				tsk_sha1context_t ctx;							\
+				tsk_sha1reset(&ctx);							\
+				tsk_sha1input(&ctx, (input), (input_size));		\
+				tsk_sha1result(&ctx, (digest));					\
+			}
 
 /*
  *  This structure will hold context information for the SHA-1
@@ -54,7 +63,7 @@ enum
  */
 typedef struct tsk_sha1context_s
 {
-    uint32_t Intermediate_Hash[TSK_SHA1HashSize/4]; /* Message Digest  */
+    uint32_t Intermediate_Hash[TSK_SHA1_DIGEST_SIZE/4]; /* Message Digest  */
 
     uint32_t Length_Low;            /* Message length in bits      */
     uint32_t Length_High;           /* Message length in bits      */
@@ -72,9 +81,11 @@ tsk_sha1context_t;
  *  Function Prototypes
  */
 
-TINYSAK_API int32_t tsk_sha1reset(tsk_sha1context_t *);
-TINYSAK_API int32_t tsk_sha1input(tsk_sha1context_t *, const uint8_t *, unsigned int32_t);
-TINYSAK_API int32_t tsk_sha1result(tsk_sha1context_t *, uint8_t Message_Digest[TSK_SHA1HashSize]);
+TINYSAK_API tsk_sha1_errcode_t tsk_sha1reset(tsk_sha1context_t *);
+TINYSAK_API tsk_sha1_errcode_t tsk_sha1input(tsk_sha1context_t *, const uint8_t *, unsigned int32_t);
+TINYSAK_API tsk_sha1_errcode_t tsk_sha1result(tsk_sha1context_t *, tsk_sha1digest_t Message_Digest);
 TINYSAK_API void tsk_sha1final(uint8_t *Message_Digest, tsk_sha1context_t *context);
+TINYSAK_API tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1string_t *result);
+
 
 #endif /* _TINYSAK_SHA1_H_ */

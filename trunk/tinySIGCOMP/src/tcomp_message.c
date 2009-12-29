@@ -224,7 +224,7 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 	message->nack_info->reasonCode = *dummy_ptr++;
 	message->nack_info->opcode = *dummy_ptr++;
 	message->nack_info->pc = TSK_BINARY_GET_2BYTES(dummy_ptr); dummy_ptr+=2;
-	memcpy(message->nack_info->sha1, dummy_ptr, TSK_SHA1HashSize); dummy_ptr += TSK_SHA1HashSize;
+	memcpy(message->nack_info->sha1, dummy_ptr, TSK_SHA1_DIGEST_SIZE); dummy_ptr += TSK_SHA1_DIGEST_SIZE;
 	if(dummy_ptr < end_ptr)
 	{
 		/* Has error details */

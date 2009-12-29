@@ -307,7 +307,7 @@ int tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcom
 		return 0;
 	}
 
-	tcomp_buffer_referenceBuff(&sha_id, ((tcomp_nackinfo_t*)nackinfo)->sha1, TSK_SHA1HashSize);
+	tcomp_buffer_referenceBuff(&sha_id, ((tcomp_nackinfo_t*)nackinfo)->sha1, TSK_SHA1_DIGEST_SIZE);
 
 	tsk_list_foreach(item, statehandler->compartments)
 	{

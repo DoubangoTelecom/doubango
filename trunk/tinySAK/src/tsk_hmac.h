@@ -20,43 +20,26 @@
 *
 */
 
-/**@file tsk.h
- * @brief This file contains all headers needed to export public API functions.
+/**@file tsk_hmac.h
+ * @brief HMAC: Keyed-Hashing for Message Authentication (RFC 2104) / FIPS-198-1.
+ * HMAC-MD5 and HMAC-SHA-1 are also implemented.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+#ifndef _TINYSAK_HMAC_H_
+#define _TINYSAK_HMAC_H_
 
 #include "tinySAK_config.h"
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_heap.h"
-#include "tsk_buffer.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
-#include "tsk_params.h"
 
-
-#include "tsk_time.h"
-#include "tsk_timer.h"
-#include "tsk_condwait.h"
-#include "tsk_mutex.h"
-#include "tsk_semaphore.h"
-#include "tsk_thread.h"
-#include "tsk_runnable.h"
-#include "tsk_safeobj.h"
-#include "tsk_object.h"
-
-#include "tsk_macros.h"
-#include "tsk_debug.h"
-
-#include "tsk_ppfcs16.h"
 #include "tsk_sha1.h"
 #include "tsk_md5.h"
-#include "tsk_hmac.h"
 
-#endif /* _TINYSAK_SAK_H_ */
+TINYSAK_API int hmac_md5_compute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_md5string_t *result);
+TINYSAK_API int hmac_md5digest_compute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_md5digest_t result);
+
+TINYSAK_API int hmac_sha1_compute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_sha1string_t *result);
+TINYSAK_API int hmac_sha1digest_compute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_sha1digest_t result);
+
+#endif /* _TINYSAK_HMAC_H_ */

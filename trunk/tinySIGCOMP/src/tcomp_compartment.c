@@ -370,7 +370,7 @@ void tcomp_compartment_freeGhostState(tcomp_compartment_t *compartment)
 
 /**@ingroup tcomp_compartment_group
 */
-void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1HashSize])
+void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE])
 {
 	tcomp_buffer_handle_t *id;
 
@@ -400,7 +400,7 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 	}
 
 
-	id = _TCOMP_BUFFER_CREATE(nackId, TSK_SHA1HashSize);
+	id = _TCOMP_BUFFER_CREATE(nackId, TSK_SHA1_DIGEST_SIZE);
 	tsk_list_push_back_data(compartment->nacks, ((void**) &id));
 	compartment->nacks_history_count++;
 

@@ -124,7 +124,7 @@ void tsk_md5update(tsk_md5context_t *ctx, uint8_t const *buf, size_t len)
  * Final wrapup - pad to 64-byte boundary with the bit pattern 
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void tsk_md5final(uint8_t digest[TSK_MD5_DIGEST_SIZE], tsk_md5context_t *ctx)
+void tsk_md5final(tsk_md5digest_t digest, tsk_md5context_t *ctx)
 {
     int count = ctx->bytes[0] & 0x3f; 	/* Number of bytes in ctx->in */
     uint8_t *p = (uint8_t *)ctx->in + count;
@@ -257,16 +257,30 @@ void tsk_md5transform(uint32_t buf[4], uint32_t const in[TSK_MD5_DIGEST_SIZE])
 }
 
 
-void tsk_md5compute(const char* input, size_t size, tsk_md5result_t *result)
+/**
+ * @fn	int tsk_md5compute(const char* input, size_t size, tsk_md5string_t *result)
+ *
+ * @brief	Calculate MD5 HASH for @ref input data. 
+ *
+ * @author	Mamadou
+ * @date	12/28/2009
+ *
+ * @param [in,out]	input	The input data for which to calculate the MD5 hash. 
+ * @param	size			The size of the input data. 
+ * @param [out]	result		MD5 hash result as Hexadecimal string. 
+ *
+ * @return	Zero if succeed and error code otherwise. 
+**/
+int tsk_md5compute(const char* input, size_t size, tsk_md5string_t *result)
 {
-	tsk_md5context_t context;
-	uint8_t digest[TSK_MD5_DIGEST_SIZE];
-	
-	(*result)[TSK_MD5_RESULT_SIZE] = '\0';
-	
-	tsk_md5init(&context);
-	tsk_md5update(&context, input, size);
-	tsk_md5final(digest, &context);
+	tsk_md5digest_t digest;
 
+	if(!result | !*result) return -1;
+	
+	(*result)[TSK_MD5_STRING_SIZE] = '\0';
+	
+	TSK_MD5_DIGEST_CALC(input, size, digest);
 	tsk_str_from_hex(digest, TSK_MD5_DIGEST_SIZE, *result);
+
+	return 0;
 }

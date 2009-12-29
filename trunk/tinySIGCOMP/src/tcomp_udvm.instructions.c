@@ -615,7 +615,7 @@ int TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t 
 
 	tsk_sha1context_t sha;
 	int32_t err;
-	uint8_t Message_Digest[TSK_SHA1HashSize];
+	uint8_t Message_Digest[TSK_SHA1_DIGEST_SIZE];
 
 	CONSUME_CYCLES(1+length);
 
@@ -660,7 +660,7 @@ int TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t 
 	/*
 	* Copy sha1 result to udvm memory
 	*/
-	ok &= tcomp_udvm_bytecopy_to(udvm, destination, Message_Digest, TSK_SHA1HashSize);
+	ok &= tcomp_udvm_bytecopy_to(udvm, destination, Message_Digest, TSK_SHA1_DIGEST_SIZE);
 
 bail:
 	TSK_FREE(data);
