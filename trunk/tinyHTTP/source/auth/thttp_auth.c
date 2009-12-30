@@ -1,0 +1,198 @@
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+/**@file thttp_auth.c
+ * @brief HTTP basic/digest authetication (RFC 2617) implementations.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#include "tinyHTTP/auth/thttp_auth.h"
+
+#include "tsk_string.h"
+#include "tsk_base64.h"
+#include "tsk_buffer.h"
+#include "tsk_memory.h"
+
+#include <string.h>
+
+/**
+ * @fn	size_t thttp_auth_basic_response(const char* userid, const char* password,
+ * 		char** response)
+ *
+ * @brief	Creates HTTP-basic response as per RFC 2617.
+ *
+ * @author	Mamadou
+ * @date	12/30/2009
+ *
+ * @param [in,out]	userid		The user-id. 
+ * @param [in,out]	password	The user-password.
+ * @param [in,out]	response	A pointer to the response. It will be up to the caller to free the newly allocated buffer. 
+ *
+ * @return	The size of the response. 
+**/
+size_t thttp_auth_basic_response(const char* userid, const char* password, char** response)
+{
+	size_t ret;
+
+	/* RFC 2617 - 2 Basic Authentication Scheme
+	
+	To receive authorization, the client sends the userid and password,
+	separated by a single colon (":") character, within a base64 [7]
+	encoded string in the credentials.
+	*/
+	
+	char *res = 0;
+	tsk_sprintf(&res, "%s:%s", userid, password);
+	ret = tsk_base64_encode(res, strlen(res), response);
+	TSK_FREE(res);
+
+	return ret;
+}
+
+
+/**
+ * @fn	size_t thttp_auth_digest_HA1(const char* username, const char* realm, const char* password, char** ha1)
+ *
+ * @brief	Creates digest HA1 value as per RFC 2617 subclause 3.2.2.2. 
+ *
+ * @author	Mamadou
+ * @date	12/30/2009
+ *
+ * @param [in,out]	username	The user's name (unquoted) in the specified @ref realm. 
+ * @param [in,out]	realm		The realm. (unquoted) 
+ * @param [in,out]	password	The user's password. 
+ * @param [in,out]	ha1			A pointer to the result. 
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
+int thttp_auth_digest_HA1(const char* username, const char* realm, const char* password, tsk_md5string_t* ha1)
+{
+	int ret;
+
+	/* RFC 2617 - 3.2.2.2 A1
+		A1       = unq(username-value) ":" unq(realm-value) ":" passwd
+	*/
+	char *a1 = 0;
+	tsk_sprintf(&a1, "%s:%s:%s", username, realm, password);	
+	ret = tsk_md5compute(a1, strlen(a1), ha1);
+	TSK_FREE(a1);
+	
+	return ret;
+}
+
+/**
+ * @fn	size_t thttp_auth_digest_HA1sess(const char* username, const char* realm,
+ * 		const char* password, const char* nonce, const char* cnonce, tsk_md5string_t ha1sess)
+ *
+ * @brief	Creates digest HA1 value for 'MD5-sess' algo as per RFC 2617 subclause 3.2.2.2.
+ *
+ * @author	Mamadou
+ * @date	12/30/2009
+ *
+ * @param [in,out]	username	The user's name (unquoted) in the specified @ref realm.
+ * @param [in,out]	realm		The realm (unquoted). 
+ * @param [in,out]	password	The user's password.  
+ * @param [in,out]	nonce		The nonce (unquoted).
+ * @param [in,out]	cnonce		The client nonce (unquoted).
+ * @param [in,out]	ha1sess		A pointer to the result. 
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
+int thttp_auth_digest_HA1sess(const char* username, const char* realm, const char* password, const char* nonce, const char* cnonce, tsk_md5string_t* ha1sess)
+{
+	int ret;
+
+	/* RFC 2617 - 3.2.2.2 A1
+			A1       = H( unq(username-value) ":" unq(realm-value)
+                     ":" passwd )
+                     ":" unq(nonce-value) ":" unq(cnonce-value)
+	*/
+
+	char *a1sess = 0;
+	tsk_sprintf(&a1sess, "%s:%s:%s:%s:%s", username, realm, password, nonce, cnonce);	
+	ret = tsk_md5compute(a1sess, strlen(a1sess), ha1sess);
+	TSK_FREE(a1sess);
+
+	return ret;
+}
+
+/**
+ * @fn	int thttp_auth_digest_HA2(const char* method, const char* uri, const char* entity_body,
+ * 		const char* qop, tsk_md5string_t* ha2)
+ *
+ * @brief	Creates digest HA2 value as per RFC 2617 subclause 3.2.2.3. 
+ *
+ * @author	Mamadou
+ * @date	12/30/2009
+ *
+ * @param [in,out]	method		The HTTP/SIP method name. 
+ * @param [in,out]	uri			The HTTP URL or SIP URI of the request. 
+ * @param [in,out]	entity_body	The entity body. 
+ * @param [in,out]	qop			The Quality Of Protection.
+ * @param [in,out]	ha2			A pointer to the response. 
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
+int thttp_auth_digest_HA2(const char* method, const char* uri, const char* entity_body, const char* qop, tsk_md5string_t* ha2)
+{
+	int ret;
+	/* RFC 2617 - 3.2.2.3 A2
+
+	If the "qop" directive's value is "auth" or is unspecified, then A2
+	is:
+	A2       = Method ":" digest-uri-value
+
+	If the "qop" value is "auth-int", then A2 is:
+	A2       = Method ":" digest-uri-value ":" H(entity-body)
+	*/
+
+	char *a2 = 0;
+
+	if(!qop || tsk_strempty(qop) || tsk_striequals(qop, "auth"))
+	{
+		tsk_sprintf(&a2, "%s:%s", method, uri);
+	}
+	else if(tsk_striequals(qop, "auth-int"))
+	{
+		if(entity_body)
+		{
+			tsk_md5string_t hEntity;
+			if((ret = tsk_md5compute(entity_body, strlen(entity_body), &hEntity)))
+			{
+				goto bail;
+			}
+			tsk_sprintf(&a2, "%s:%s:%s", method, uri, hEntity);
+		}
+		else
+		{
+			tsk_sprintf(&a2, "%s:%s:%s", method, uri, TSK_MD5_EMPTY);
+		}
+	}
+
+	ret = tsk_md5compute(a2, strlen(a2), ha2);
+
+bail:
+	 TSK_FREE(a2);
+
+	 return ret;
+}

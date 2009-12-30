@@ -355,6 +355,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_base64.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_binaryutils.h"
 				>
 			</File>
@@ -462,6 +466,10 @@
 			>
 			<File
 				RelativePath=".\src\tsk.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_base64.c"
 				>
 			</File>
 			<File

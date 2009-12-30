@@ -47,8 +47,9 @@
 #define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
 #define RUN_TEST_BUFFER				0
-#define RUN_TEST_MD5				1
-#define RUN_TEST_SHA1				1
+#define RUN_TEST_MD5				0
+#define RUN_TEST_SHA1				0
+#define RUN_TEST_BASE64				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -110,6 +111,9 @@
 #include "test_sha1.h"
 #endif
 
+#if RUN_TEST_BASE64 || RUN_TEST_ALL
+#include "test_base64.h"
+#endif
 
 
 
@@ -221,6 +225,10 @@ int main()
 		test_hmac_sha1();
 #endif
 
+#if RUN_TEST_BASE64 || RUN_TEST_ALL
+		/* test base64 encoding/decoding */
+		test_base64();
+#endif
 	}
 
 	getchar();

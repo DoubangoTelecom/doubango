@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="tinyHTTP"
-	ProjectGUID="{B3E45009-C7C3-4090-837C-2D30C9058443}"
-	RootNamespace="tinyHTTP"
+	Name="test"
+	ProjectGUID="{BE242939-1E65-4875-A3E7-41D8B77D187F}"
+	RootNamespace="test"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -20,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYHTTP_EXPORTS;_WIN32_WINNT 0x0501"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyHTTP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -94,7 +94,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -117,7 +117,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYHTTP_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -138,7 +138,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -170,93 +170,47 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\source\thttp.c"
+				RelativePath=".\stdafx.c"
 				>
 			</File>
 			<File
-				RelativePath=".\source\thttp_message.c"
-				>
-			</File>
-			<File
-				RelativePath=".\source\thttp_utl.c"
-				>
-			</File>
-			<Filter
-				Name="auth"
-				>
-				<File
-					RelativePath=".\source\auth\thttp_auth.c"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="headers"
-				>
-			</Filter>
-			<Filter
-				Name="parsers"
-				>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="include"
-			>
-			<File
-				RelativePath=".\include\thttp.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinyHTTP\thttp_message.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinyHTTP\thttp_url.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinyhttp_config.h"
-				>
-			</File>
-			<Filter
-				Name="auth"
-				>
-				<File
-					RelativePath=".\include\tinyHTTP\auth\thttp_auth.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="headers"
-				>
-			</Filter>
-			<Filter
-				Name="parsers"
-				>
-			</Filter>
-		</Filter>
-		<Filter
-			Name="abnf"
-			>
-			<File
-				RelativePath=".\abnf\http.abnf"
-				>
-			</File>
-			<File
-				RelativePath=".\abnf\httpauth.abnf"
-				>
-			</File>
-			<File
-				RelativePath=".\abnf\uri.abnf"
+				RelativePath=".\test.c"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="ragel"
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
+			<File
+				RelativePath=".\stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\targetver.h"
+				>
+			</File>
 		</Filter>
+		<Filter
+			Name="tests"
+			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
+			<File
+				RelativePath=".\test_auth.h"
+				>
+			</File>
+		</Filter>
+		<File
+			RelativePath=".\ReadMe.txt"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

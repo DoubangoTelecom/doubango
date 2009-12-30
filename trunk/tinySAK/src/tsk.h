@@ -58,5 +58,6 @@
 #include "tsk_sha1.h"
 #include "tsk_md5.h"
 #include "tsk_hmac.h"
+#include "tsk_base64.h"
 
 #endif /* _TINYSAK_SAK_H_ */
