@@ -35,6 +35,8 @@
 #define TSK_MD5_DIGEST_SIZE		16
 #define TSK_MD5_BLOCK_SIZE		64
 
+#define TSK_MD5_EMPTY			"d41d8cd98f00b204e9800998ecf8427e"
+
 #define TSK_MD5_STRING_SIZE		(TSK_MD5_DIGEST_SIZE*2)
 typedef char tsk_md5string_t[TSK_MD5_STRING_SIZE+1]; /**< Hexadecimal MD5 string. */
 typedef uint8_t tsk_md5digest_t[TSK_MD5_DIGEST_SIZE]; /**< MD5 digest bytes. */
