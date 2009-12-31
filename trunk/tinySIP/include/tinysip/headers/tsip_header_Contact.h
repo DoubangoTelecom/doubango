@@ -44,20 +44,20 @@
 #define TSIP_HEADER_CONTACT_CREATE()		tsk_object_new(tsip_header_Contact_def_t)
 #define TSIP_HEADER_CONTACT_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
-#define TSIP_CONTACT_CREATE()				tsk_object_new(tsip_contact_def_t)
-#define TSIP_CONTACT_SAFE_FREE(self)		tsk_object_unref(self), self = 0
-
-typedef struct tsip_contact_s
-{
-	TSK_DECLARE_OBJECT;
-
-	char *display_name;
-	tsip_uri_t *uri;
-	int32_t expires;
-	tsk_params_L_t *params;
-}
-tsip_contact_t;
-typedef tsk_list_t tsip_contacts_L_t;
+//#define TSIP_CONTACT_CREATE()				tsk_object_new(tsip_contact_def_t)
+//#define TSIP_CONTACT_SAFE_FREE(self)		tsk_object_unref(self), self = 0
+//
+//typedef struct tsip_contact_s
+//{
+//	TSK_DECLARE_OBJECT;
+//
+//	char *display_name;
+//	tsip_uri_t *uri;
+//	int32_t expires;
+//	tsk_params_L_t *params;
+//}
+//tsip_contact_t;
+//typedef tsk_list_t tsip_contacts_L_t;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,16 +97,20 @@ typedef struct tsip_header_Contact_s
 {	
 	TSIP_DECLARE_HEADER;
 	
-	tsip_contacts_L_t *contacts;
+	char *display_name;
+	tsip_uri_t *uri;
+	int32_t expires;
+	//tsip_contacts_L_t *contacts;
 }
 tsip_header_Contact_t;
+typedef tsk_list_t tsip_header_Contacts_L_t;
 
-const tsip_contact_t *tsip_header_Contact_get_ContactAt(tsip_header_Contact_t *hdr_contact, size_t index);
-#define tsip_header_Contact_get_Contact(hdr_contact) tsip_header_Contact_get_ContactAt(hdr_contact, 0)
+//const tsip_contact_t *tsip_header_Contact_get_ContactAt(tsip_header_Contact_t *hdr_contact, size_t index);
+//#define tsip_header_Contact_get_Contact(hdr_contact) tsip_header_Contact_get_ContactAt(hdr_contact, 0)
 
-tsip_header_Contact_t *tsip_header_Contact_parse(const char *data, size_t size);
+tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, size_t size);
 
 TINYSIP_API const void *tsip_header_Contact_def_t;
-TINYSIP_API const void *tsip_contact_def_t;
+//TINYSIP_API const void *tsip_contact_def_t;
 
 #endif /* _TSIP_HEADER_CONTACT_H_ */

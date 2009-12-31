@@ -31,6 +31,7 @@
 
 #include "tinysip/headers/tsip_header_Allow.h"
 #include "tinysip/headers/tsip_header_Allow_Events.h"
+#include "tinysip/headers/tsip_header_Authorization.h"
 #include "tinysip/headers/tsip_header_Call_ID.h"
 #include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_CSeq.h"
@@ -41,11 +42,14 @@
 #include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
 #include "tinysip/headers/tsip_header_P_Access_Network_Info.h" 
 #include "tinysip/headers/tsip_header_Privacy.h"
+#include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
+#include "tinysip/headers/tsip_header_Proxy_Authorization.h"
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 #include "tinysip/headers/tsip_header_To.h"
 #include "tinysip/headers/tsip_header_User_Agent.h"
 #include "tinysip/headers/tsip_header_Via.h"
+#include "tinysip/headers/tsip_header_WWW_Authenticate.h"
 
 #include "tsk_debug.h"
 
@@ -121,7 +125,11 @@
 	# /*== Authorization: ==*/
 	action parse_header_Authorization 
 	{
-		TSK_DEBUG_ERROR("parse_header_Authorization NOT IMPLEMENTED");
+		tsip_header_Authorization_t *header = tsip_header_Authorization_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_push_back_data(message->headers, ((void**) &header));
+		}
 	}
 
 	# /*== Call-ID: ==*/
@@ -142,9 +150,24 @@
 	# /*== Contact: ==*/
 	action parse_header_Contact 
 	{
-		if(!message->Contact)
+		tsip_header_Contacts_L_t* headers =  tsip_header_Contact_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(headers)
 		{
-			message->Contact = tsip_header_Contact_parse(state->tag_start, (state->tag_end-state->tag_start));
+			tsk_list_item_t *item;
+			tsk_list_foreach(item, headers)
+			{
+				tsip_header_Contact_t *hdr = tsk_object_ref(item->data);
+				if(!message->Contact)
+				{
+					message->Contact = hdr;
+				}
+				else
+				{
+					tsk_list_push_back_data(message->headers, ((void**) &hdr));
+				}
+			}
+
+			TSK_LIST_SAFE_FREE(headers);
 		}
 	}
 
@@ -435,13 +458,21 @@
 	# /*== Authenticate: ==*/
 	action parse_header_Proxy_Authenticate
 	{
-		TSK_DEBUG_ERROR("parse_header_Proxy_Authenticate NOT IMPLEMENTED");
+		tsip_header_Proxy_Authenticate_t *header = tsip_header_Proxy_Authenticate_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_push_back_data(message->headers, ((void**) &header));
+		}
 	}
 
 	# /*== Proxy-Authorization: ==*/
 	action parse_header_Proxy_Authorization
 	{
-		TSK_DEBUG_ERROR("parse_header_Proxy_Authorization NOT IMPLEMENTED");
+		tsip_header_Proxy_Authorization_t *header = tsip_header_Proxy_Authorization_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_push_back_data(message->headers, ((void**) &header));
+		}
 	}
 
 	# /*== Proxy-Require: ==*/
@@ -677,7 +708,11 @@
 	# /*== WWW-Authenticate: ==*/
 	action parse_header_WWW_Authenticate
 	{
-		TSK_DEBUG_ERROR("parse_header_WWW_Authenticate NOT IMPLEMENTED");
+		tsip_header_WWW_Authenticate_t *header = tsip_header_WWW_Authenticate_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_push_back_data(message->headers, ((void**) &header));
+		}
 	}
 		
 	# /*== extension_header: ==*/

@@ -39,7 +39,7 @@
  * @fn	size_t thttp_auth_basic_response(const char* userid, const char* password,
  * 		char** response)
  *
- * @brief	Creates HTTP-basic response as per RFC 2617.
+ * @brief	Generates HTTP-basic response as per RFC 2617.
  *
  * @author	Mamadou
  * @date	12/30/2009
@@ -73,7 +73,7 @@ size_t thttp_auth_basic_response(const char* userid, const char* password, char*
 /**
  * @fn	size_t thttp_auth_digest_HA1(const char* username, const char* realm, const char* password, char** ha1)
  *
- * @brief	Creates digest HA1 value as per RFC 2617 subclause 3.2.2.2. 
+ * @brief	Generates digest HA1 value as per RFC 2617 subclause 3.2.2.2. 
  *
  * @author	Mamadou
  * @date	12/30/2009
@@ -104,7 +104,7 @@ int thttp_auth_digest_HA1(const char* username, const char* realm, const char* p
  * @fn	size_t thttp_auth_digest_HA1sess(const char* username, const char* realm,
  * 		const char* password, const char* nonce, const char* cnonce, tsk_md5string_t ha1sess)
  *
- * @brief	Creates digest HA1 value for 'MD5-sess' algo as per RFC 2617 subclause 3.2.2.2.
+ * @brief	Generates digest HA1 value for 'MD5-sess' algo as per RFC 2617 subclause 3.2.2.2.
  *
  * @author	Mamadou
  * @date	12/30/2009
@@ -140,7 +140,7 @@ int thttp_auth_digest_HA1sess(const char* username, const char* realm, const cha
  * @fn	int thttp_auth_digest_HA2(const char* method, const char* uri, const char* entity_body,
  * 		const char* qop, tsk_md5string_t* ha2)
  *
- * @brief	Creates digest HA2 value as per RFC 2617 subclause 3.2.2.3. 
+ * @brief	Generates digest HA2 value as per RFC 2617 subclause 3.2.2.3. 
  *
  * @author	Mamadou
  * @date	12/30/2009
@@ -193,6 +193,69 @@ int thttp_auth_digest_HA2(const char* method, const char* uri, const char* entit
 
 bail:
 	 TSK_FREE(a2);
+
+	 return ret;
+}
+
+
+/**
+ * @fn	int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce,
+ * 		const char* noncecount, const char* cnonce, const char* qop, const tsk_md5string_t* ha2,
+ * 		tsk_md5string_t* response)
+ *
+ * @brief	Generates HTTP digest response as per RFC 2617 subclause 3.2.2.1.
+ *
+ * @author	Mamadou
+ * @date	12/31/2009
+ *
+ * @param [in,out]	ha1			HA1 string generated using  @ref thttp_auth_digest_HA1 or @ref thttp_auth_digest_HA1sess.
+ * @param [in,out]	nonce		The nonce value. 
+ * @param [in,out]	noncecount	The nonce count.
+ * @param [in,out]	cnonce		The client nounce (unquoted).
+ * @param [in,out]	qop			The Quality Of Protection (unquoted).
+ * @param [in,out]	ha2			HA2 string generated using @ref thttp_auth_digest_HA2.
+ * @param [in,out]	response	A pointer to the response.
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
+int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, const char* noncecount, const char* cnonce, 
+							   const char* qop, const tsk_md5string_t* ha2, tsk_md5string_t* response)
+{
+	int ret;
+
+	/* RFC 2617 3.2.2.1 Request-Digest
+
+	============ CASE 1 ============
+	If the "qop" value is "auth" or "auth-int":
+	request-digest  = <"> < KD ( H(A1),     unq(nonce-value)
+	":" nc-value
+	":" unq(cnonce-value)
+	":" unq(qop-value)
+	":" H(A2)
+	) <">
+	============ CASE 2 ============
+	If the "qop" directive is not present (this construction is for
+	compatibility with RFC 2069):
+	request-digest  =
+	<"> < KD ( H(A1), unq(nonce-value) ":" H(A2) ) >
+	<">
+	*/
+
+	char *res = 0;
+
+	if(tsk_striequals(qop, "auth") || tsk_striequals(qop, "auth-int"))
+	{
+		/* CASE 1 */
+		tsk_sprintf(&res, "%s:%s:%s:%s:%s:%s", *ha1, nonce, noncecount, cnonce, qop, *ha2);
+	}
+	else
+	{
+		/* CASE 2 */
+		tsk_sprintf(&res, "%s:%s:%s", *ha1, nonce, *ha2);
+	}
+
+	ret = tsk_md5compute(res, strlen(res), response);
+	TSK_FREE(res);
 
 	 return ret;
 }

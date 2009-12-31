@@ -51,6 +51,7 @@ int main()
 
 #if RUN_TEST_AUTH || RUN_TEST_ALL
 		test_basic_auth();
+		test_digest_auth();
 #endif
 
 	}

@@ -213,15 +213,7 @@ int32_t tsip_message_getExpires(const tsip_message_t *self)
 		// FIXME: You MUST choose the right contact
 		if(self->Contact)
 		{
-			int index = 0;
-			const tsip_contact_t *contact;
-			while(contact = tsip_header_Contact_get_ContactAt(self->Contact, index++))
-			{
-				if(contact->expires >=0)
-				{
-					return contact->expires;
-				}
-			}
+			return self->Contact->expires;
 		}
 	}
 	return -1;

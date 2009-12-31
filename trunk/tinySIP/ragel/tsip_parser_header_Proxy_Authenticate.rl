@@ -1,0 +1,260 @@
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+
+/**@file tsip_header_Proxy_Authenticate.c
+ * @brief SIP Proxy-Authenticate header.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
+
+#include "tinysip/parsers/tsip_parser_uri.h"
+
+#include "tsk_debug.h"
+#include "tsk_memory.h"
+#include "tsk_time.h"
+
+#include <string.h>
+
+/**@defgroup tsip_header_Proxy_Authenticate_group SIP Proxy-Authenticate header.
+*/
+
+/***********************************
+*	Ragel state machine.
+*/
+%%{
+	machine tsip_machine_parser_header_Proxy_Authenticate;
+
+	# Includes
+	include tsip_machine_utils "./tsip_machine_utils.rl";
+	
+	action tag
+	{
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:TAG");
+		tag_start = p;
+	}
+	
+	action is_digest
+	{
+		#//FIXME: Only Digest is supported
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:IS_DIGEST");
+		hdr_Proxy_Authenticate->scheme = tsk_strdup("Digest");
+	}
+
+	action parse_realm
+	{
+		PARSER_SET_STRING(hdr_Proxy_Authenticate->realm);
+		tsk_strunquote(&hdr_Proxy_Authenticate->realm);
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_REALM");
+	}
+
+	action parse_domain
+	{
+		PARSER_SET_STRING(hdr_Proxy_Authenticate->domain);
+		//tsk_strunquote(&hdr_Proxy_Authenticate->domain);
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_DOMAIN");
+	}
+
+	action parse_nonce
+	{
+		PARSER_SET_STRING(hdr_Proxy_Authenticate->nonce);
+		tsk_strunquote(&hdr_Proxy_Authenticate->nonce);
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_NONCE");
+	}
+
+	action parse_opaque
+	{
+		PARSER_SET_STRING(hdr_Proxy_Authenticate->opaque);
+		tsk_strunquote(&hdr_Proxy_Authenticate->opaque);
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_OPAQUE");
+	}
+
+	action parse_stale
+	{
+		hdr_Proxy_Authenticate->stale = tsk_strniequals(tag_start, "true", 4);
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_STALE");
+	}
+
+	action parse_algorithm
+	{
+		PARSER_SET_STRING(hdr_Proxy_Authenticate->algorithm);
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_ALGORITHM");
+	}
+
+	action parse_qop
+	{
+		PARSER_SET_STRING(hdr_Proxy_Authenticate->qop);
+		//tsk_strunquote(&hdr_Proxy_Authenticate->qop);
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_QOP");
+	}
+
+	action parse_param
+	{
+		PARSER_ADD_PARAM(hdr_Proxy_Authenticate->params);
+	}
+
+	action eob
+	{
+		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:EOB");
+	}
+
+	#FIXME: Only Digest (MD5, AKAv1-MD5 and AKAv2-MD5) is supported
+	other_challenge = (any+ -- "Digest");
+	auth_param = (token :>EQUAL<: token)>tag %parse_param;
+
+	realm = "realm"i EQUAL quoted_string>tag %parse_realm;
+	domain = "domain"i EQUAL LDQUOT <: (any*)>tag %parse_domain :> RDQUOT;
+	nonce = "nonce"i EQUAL quoted_string>tag %parse_nonce;
+	opaque = "opaque"i EQUAL quoted_string>tag %parse_opaque;
+	stale = "stale"i EQUAL ( "true"i | "false"i )>tag %parse_stale;
+	algorithm = "algorithm"i EQUAL <:token>tag %parse_algorithm;
+	qop_options = "qop"i EQUAL LDQUOT <: (any*)>tag %parse_qop :> RDQUOT;
+	
+	digest_cln = realm | domain | nonce | opaque | stale | algorithm | qop_options | auth_param;
+	challenge = ( "Digest"i LWS digest_cln ( COMMA digest_cln )* )>is_digest | other_challenge;
+	Proxy_Authenticate = "Proxy-Authenticate"i HCOLON challenge;
+
+	# Entry point
+	main := Proxy_Authenticate :>CRLF @eob;
+
+}%%
+
+int tsip_header_Proxy_Authenticate_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = header;
+		if(Proxy_Authenticate && Proxy_Authenticate->scheme)
+		{
+			return tsk_buffer_appendEx(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
+				Proxy_Authenticate->scheme,
+				Proxy_Authenticate->realm ? Proxy_Authenticate->realm : "",
+				
+				Proxy_Authenticate->domain ? ",domain=\"" : "",
+				Proxy_Authenticate->domain ? Proxy_Authenticate->domain : "",
+				Proxy_Authenticate->domain ? "\"" : "",
+				
+				
+				Proxy_Authenticate->qop ? ",qop=\"" : "",
+				Proxy_Authenticate->qop ? Proxy_Authenticate->qop : "",
+				Proxy_Authenticate->qop ? "\"" : "",
+
+
+				Proxy_Authenticate->nonce ? ",nonce=\"" : "",
+				Proxy_Authenticate->nonce ? Proxy_Authenticate->nonce : "",
+				Proxy_Authenticate->nonce ? "\"" : "",
+
+				Proxy_Authenticate->opaque ? ",opaque=\"" : "",
+				Proxy_Authenticate->opaque ? Proxy_Authenticate->opaque : "",
+				Proxy_Authenticate->opaque ? "\"" : "",
+
+				Proxy_Authenticate->stale ? "TRUE" : "FALSE",
+
+				Proxy_Authenticate->algorithm ? ",algorithm=" : "",
+				Proxy_Authenticate->algorithm ? Proxy_Authenticate->algorithm : ""
+				);
+		}
+	}
+	return -1;
+}
+
+tsip_header_Proxy_Authenticate_t *tsip_header_Proxy_Authenticate_parse(const char *data, size_t size)
+{
+	int cs = 0;
+	const char *p = data;
+	const char *pe = p + size;
+	const char *eof = pe;
+	tsip_header_Proxy_Authenticate_t *hdr_Proxy_Authenticate = TSIP_HEADER_PROXY_AUTHENTICATE_CREATE();
+	
+	const char *tag_start;
+
+	%%write data;
+	%%write init;
+	%%write exec;
+	
+	if( cs < %%{ write first_final; }%% )
+	{
+		TSIP_HEADER_PROXY_AUTHENTICATE_SAFE_FREE(hdr_Proxy_Authenticate);
+	}
+	
+	return hdr_Proxy_Authenticate;
+}
+
+
+
+
+
+
+
+//========================================================
+//	Proxy_Authenticate header object definition
+//
+
+/**@ingroup tsip_header_Proxy_Authenticate_group
+*/
+static void* tsip_header_Proxy_Authenticate_create(void *self, va_list * app)
+{
+	tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = self;
+	if(Proxy_Authenticate)
+	{
+		Proxy_Authenticate->type = tsip_htype_Proxy_Authenticate;
+		Proxy_Authenticate->tostring = tsip_header_Proxy_Authenticate_tostring;
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new Proxy_Authenticate header.");
+	}
+	return self;
+}
+
+/**@ingroup tsip_header_Proxy_Authenticate_group
+*/
+static void* tsip_header_Proxy_Authenticate_destroy(void *self)
+{
+	tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = self;
+	if(Proxy_Authenticate)
+	{
+		TSK_FREE(Proxy_Authenticate->scheme);
+		TSK_FREE(Proxy_Authenticate->realm);
+		TSK_FREE(Proxy_Authenticate->domain);
+		TSK_FREE(Proxy_Authenticate->nonce);
+		TSK_FREE(Proxy_Authenticate->opaque);
+		TSK_FREE(Proxy_Authenticate->algorithm);
+		TSK_FREE(Proxy_Authenticate->qop);
+
+		TSK_LIST_SAFE_FREE(Proxy_Authenticate->params);
+	}
+	else TSK_DEBUG_ERROR("Null Proxy_Authenticate header.");
+
+	return self;
+}
+
+static const tsk_object_def_t tsip_header_Proxy_Authenticate_def_s = 
+{
+	sizeof(tsip_header_Proxy_Authenticate_t),
+	tsip_header_Proxy_Authenticate_create,
+	tsip_header_Proxy_Authenticate_destroy,
+	0
+};
+const void *tsip_header_Proxy_Authenticate_def_t = &tsip_header_Proxy_Authenticate_def_s;

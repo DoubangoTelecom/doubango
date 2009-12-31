@@ -145,6 +145,7 @@ static void* tsip_header_CSeq_destroy(void *self)
 	if(CSeq)
 	{
 		TSK_FREE(CSeq->method);
+		TSK_LIST_SAFE_FREE(CSeq->params);
 	}
 	else TSK_DEBUG_ERROR("Null CSeq header.");
 

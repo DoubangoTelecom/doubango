@@ -151,6 +151,7 @@ static void* tsip_header_Call_ID_destroy(void *self)
 	if(Call_ID)
 	{
 		TSK_FREE(Call_ID->value);
+		TSK_LIST_SAFE_FREE(Call_ID->params);
 	}
 	else TSK_DEBUG_ERROR("Null Call_ID header.");
 
