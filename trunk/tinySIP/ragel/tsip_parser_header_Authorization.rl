@@ -140,8 +140,8 @@
 	}
 
 	#FIXME: Only Digest (MD5, AKAv1-MD5 and AKAv2-MD5) is supported
-	other_response = (any+ -- "Digest");
-	auth_param = (token :>EQUAL<: token)>tag %parse_param;
+	other_response = (any+);
+	auth_param = generic_param>tag %parse_param;
 	
 	username = "username"i EQUAL quoted_string>tag %parse_username;
 	realm = "realm"i EQUAL quoted_string>tag %parse_realm;
@@ -155,8 +155,8 @@
 	message_qop = "qop"i EQUAL LDQUOT <: (any*)>tag %parse_qop :> RDQUOT;
 	nonce_count = "nc"i EQUAL (LHEX{8})>tag %parse_nc;
 	
-	dig_resp = username | realm | nonce | digest_uri | dresponse | algorithm | cnonce | opaque | message_qop | nonce_count | auth_param;
-	digest_response = dig_resp ( COMMA dig_resp )*;
+	dig_resp = (username | realm | nonce | digest_uri | dresponse | algorithm | cnonce | opaque | message_qop | nonce_count)>1 | auth_param>0;
+	digest_response = dig_resp ( COMMA <:dig_resp )*;
 	credentials = ( "Digest"i LWS digest_response )>is_digest | other_response;
 	Authorization = "Authorization"i HCOLON credentials;
 

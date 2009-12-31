@@ -83,7 +83,7 @@
 	}
 	
 	my_tag_param = "tag"i EQUAL token>tag %parse_tag;
-	to_param = my_tag_param | (generic_param--my_tag_param)>tag %parse_param;
+	to_param = my_tag_param>1 | (generic_param)>0 >tag %parse_param;
 	
 	URI = (scheme HCOLON any+)>tag %parse_uri;
 	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;

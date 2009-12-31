@@ -120,8 +120,8 @@
 	}
 
 	#FIXME: Only Digest (MD5, AKAv1-MD5 and AKAv2-MD5) is supported
-	other_challenge = (any+ -- "Digest");
-	auth_param = (token :>EQUAL<: token)>tag %parse_param;
+	other_challenge = (any+);
+	auth_param = generic_param>tag %parse_param;
 
 	realm = "realm"i EQUAL quoted_string>tag %parse_realm;
 	domain = "domain"i EQUAL LDQUOT <: (any*)>tag %parse_domain :> RDQUOT;
@@ -131,7 +131,7 @@
 	algorithm = "algorithm"i EQUAL <:token>tag %parse_algorithm;
 	qop_options = "qop"i EQUAL LDQUOT <: (any*)>tag %parse_qop :> RDQUOT;
 	
-	digest_cln = realm | domain | nonce | opaque | stale | algorithm | qop_options | auth_param;
+	digest_cln = (realm | domain | nonce | opaque | stale | algorithm | qop_options)>1 | auth_param>0;
 	challenge = ( "Digest"i LWS digest_cln ( COMMA digest_cln )* )>is_digest | other_challenge;
 	Proxy_Authenticate = "Proxy-Authenticate"i HCOLON challenge;
 
