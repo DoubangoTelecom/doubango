@@ -39,7 +39,7 @@ ragel.exe $OPTIONS -o ../source/headers/tsip_header_Authorization.c tsip_parser_
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_Expires.c tsip_parser_header_Expires.rl
 
 # ==From
-#ragel.exe $OPTIONS -o ../source/headers/tsip_header_From.c tsip_parser_header_From.rl
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_From.c tsip_parser_header_From.rl
 
 # ==Max-Forwards
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_Max_Forwards.c tsip_parser_header_Max_Forwards.rl
@@ -69,7 +69,7 @@ ragel.exe $OPTIONS -o ../source/headers/tsip_header_Proxy_Authorization.c tsip_p
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_Supported.c tsip_parser_header_Supported.rl
 
 # ==To
-#ragel.exe $OPTIONS -o ../source/headers/tsip_header_To.c tsip_parser_header_To.rl
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_To.c tsip_parser_header_To.rl
 
 # ==User-Agent
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_User_Agent.c tsip_parser_header_User_Agent.rl

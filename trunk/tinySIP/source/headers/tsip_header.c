@@ -142,17 +142,18 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 	}
 }
 
-const char tsip_header_get_param_separator(const tsip_header_t *self, int first)
+const char tsip_header_get_param_separator(const tsip_header_t *self)
 {
 	if(self)
 	{
 		switch(self->type)
 		{
 		case tsip_htype_Authorization:
-		case tsip_htype_Proxy_Authenticate:
 		case tsip_htype_Proxy_Authorization:
+		case tsip_htype_Proxy_Authenticate:
+		case tsip_htype_WWW_Authenticate:
 			{
-				return first ? ' ' : ',';
+				return ',';
 			}
 
 		default:
@@ -197,7 +198,7 @@ int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 		tsk_list_foreach(item, self->params)
 		{
 			tsk_param_t* param = item->data;
-			separator = tsip_header_get_param_separator(self, (self->params->head == item));
+			separator = tsip_header_get_param_separator(self);
 			if(ret=tsk_buffer_appendEx(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value))
 			{
 				return ret;
