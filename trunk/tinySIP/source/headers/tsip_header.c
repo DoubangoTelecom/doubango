@@ -54,7 +54,7 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 		case tsip_htype_Allow: return "Allow";
 		case tsip_htype_Allow_Events: return "Allow-Events";
 		case tsip_htype_Authentication_Info: return "Authentication-Info";
-		case tsip_htype_Authorization: return "";
+		case tsip_htype_Authorization: return "Authorization";
 		case tsip_htype_Call_ID: return "Call-ID";
 		case tsip_htype_Call_Info: return "Call-Info";
 		case tsip_htype_Contact: return "Contact";
@@ -185,7 +185,11 @@ int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 		/*
 		* Header value.
 		*/
-		self->tostring(self, output);
+		if((ret=self->tostring(self, output)))
+		{
+			// CHECK all headers return value!
+			//return ret;
+		}
 
 		/*
 		* Parameters

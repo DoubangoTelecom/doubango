@@ -40,4 +40,7 @@ TINYHTTP_API int thttp_auth_digest_HA1sess(const char* username, const char* rea
 
 TINYHTTP_API int thttp_auth_digest_HA2(const char* method, const char* uri, const char* entity_body, const char* qop, tsk_md5string_t* ha2);
 
+TINYHTTP_API int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, const char* noncecount, const char* cnonce, 
+											const char* qop, const tsk_md5string_t* ha2, tsk_md5string_t* response);
+
 #endif /* TINYHTTP_THTTP_H */

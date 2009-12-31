@@ -104,10 +104,10 @@ int tsip_header_From_tostring(const void* header, tsk_buffer_t* output)
 		}
 		if(From->tag)
 		{
-			tsk_buffer_appendEx(output, ";tag=%s", From->tag);
+			ret = tsk_buffer_appendEx(output, ";tag=%s", From->tag);
 		}
 	}
-	return -1;
+	return ret;
 }
 
 tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size)

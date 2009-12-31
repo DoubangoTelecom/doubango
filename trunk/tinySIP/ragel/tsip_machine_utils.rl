@@ -61,7 +61,9 @@
 	SEMI = SWS ";" SWS;
 	COLON = SWS ":" SWS;
 	LAQUOT = SWS "<";
+	LDQUOT = SWS DQUOTE;
 	RAQUOT = ">" SWS;
+	RDQUOT = DQUOTE SWS;
 	UTF8_CONT = 0x80..0xbf;
 	UTF8_NONASCII = ( 0xc0..0xdf UTF8_CONT ) | ( 0xe0..0xef UTF8_CONT{2} ) | ( 0xf0..0xf7 UTF8_CONT{3} ) | ( 0xf8..0xfb UTF8_CONT{4} ) | ( 0xfc..0xfd UTF8_CONT{5} );
 	ctext = 0x21..0x27 | 0x2a..0x5b | 0x5d..0x7e | UTF8_NONASCII | LWS;

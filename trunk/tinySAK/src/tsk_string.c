@@ -95,9 +95,23 @@ int tsk_stricmp(const char * str1, const char * str2)
 
 /**@ingroup tsk_string_group
 */
+int tsk_strnicmp(const char * str1, const char * str2, size_t n)
+{
+	return (str1 && str2) ? strnicmp(str1, str2, n) : ((!str1 && !str2) ? 0 : -1);
+}
+
+/**@ingroup tsk_string_group
+*/
 int tsk_strcmp(const char * str1, const char * str2)
 {
 	return (str1 && str2) ? ((*str1 != *str2) ? -1 : strcmp(str1, str2)) : ((!str1 && !str2) ? 0 : -1);
+}
+
+/**@ingroup tsk_string_group
+*/
+int tsk_strncmp(const char * str1, const char * str2, size_t n)
+{
+	return (str1 && str2) ? ((*str1 != *str2) ? -1 : strncmp(str1, str2, n)) : ((!str1 && !str2) ? 0 : -1);
 }
 
 /**@ingroup tsk_string_group

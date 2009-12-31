@@ -154,8 +154,14 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	*/
 	{
 		char* contact = 0;
+		tsip_header_Contacts_L_t *hdr_contacts;
 		tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d;doubs\r\n", /*self->issecure*/0?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, self->expires);
-		request->Contact = tsip_header_Contact_parse(contact, strlen(contact));
+		hdr_contacts = tsip_header_Contact_parse(contact, strlen(contact));
+		if(!TSK_LIST_IS_EMPTY(hdr_contacts))
+		{
+			request->Contact = tsk_object_ref(hdr_contacts->head->data);
+		}
+		TSK_LIST_SAFE_FREE(hdr_contacts);
 		TSK_FREE(contact);
 	}
 
@@ -302,13 +308,12 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			}
 
 			/* Remote target */
-			if(!isRegister && response->Contact && !TSK_LIST_IS_EMPTY(response->Contact->contacts))
+			if(!isRegister && response->Contact && response->Contact)
 			{
-				tsip_contact_t *contact = response->Contact->contacts->head->data;
 				TSIP_URI_SAFE_FREE(self->uri_remote_target);
-				if(contact->uri)
+				if(response->Contact->uri)
 				{
-					self->uri_remote_target = tsip_uri_clone(contact->uri, 0, 0);
+					self->uri_remote_target = tsip_uri_clone(response->Contact->uri, 0, 0);
 				}
 			}
 

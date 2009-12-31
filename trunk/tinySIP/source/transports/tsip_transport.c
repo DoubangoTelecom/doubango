@@ -73,18 +73,16 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	/*
 	* Update the contact header.
 	*/
-	if(msg->Contact && !TSK_LIST_IS_EMPTY(msg->Contact->contacts))
-	{
-		tsip_contact_t *contact = msg->Contact->contacts->head->data;
-				
-		if(contact->uri && tsk_params_has_param(contact->params, "doubs"))
+	if(msg->Contact)
+	{			
+		if(msg->Contact->uri && tsk_params_has_param(msg->Contact->params, "doubs"))
 		{
-			tsk_strupdate(&(contact->uri->scheme), self->scheme);
-			tsk_strupdate(&(contact->uri->host), ip);
-			contact->uri->port = port;
-			tsk_params_add_param(&contact->uri->params, "transport", self->protocol);
+			tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
+			tsk_strupdate(&(msg->Contact->uri->host), ip);
+			msg->Contact->uri->port = port;
+			tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
 
-			tsk_params_remove_param(contact->params, "doubs");
+			tsk_params_remove_param(msg->Contact->params, "doubs");
 		}
 	}
 

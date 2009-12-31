@@ -32,6 +32,17 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+/**@def TSIP_HEADER_PROXY_AUTHENTICATE_CREATE
+* Creates new sip 'PROXY-AUTHENTICATE' header.  You must call @ref TSIP_HEADER_PROXY_AUTHENTICATE_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_PROXY_AUTHENTICATE_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_PROXY_AUTHENTICATE_SAFE_FREE
+* Safely free a sip 'PROXY-AUTHENTICATE' header previously created using TSIP_HEADER_PROXY_AUTHENTICATE_CREATE.
+* @sa TSIP_HEADER_PROXY_AUTHENTICATE_CREATE.
+*/
+#define TSIP_HEADER_PROXY_AUTHENTICATE_CREATE()				tsk_object_new(tsip_header_Proxy_Authenticate_def_t)
+#define TSIP_HEADER_PROXY_AUTHENTICATE_SAFE_FREE(self)		tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -39,13 +50,37 @@
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF = Proxy-Authenticate	= 	"Proxy-Authenticate" HCOLON challenge
+///				challenge	= 	("Digest" LWS digest-cln *(COMMA digest-cln)) / other-challenge
+///				other-challenge	= 	auth-scheme / auth-param *(COMMA auth-param)
+///				digest-cln	= 	realm / domain / nonce / opaque / stale / algorithm / qop-options / auth-param
+///				realm	= 	"realm" EQUAL realm-value
+///				realm-value	= 	quoted-string
+///				domain	= 	"domain" EQUAL LDQUOT URI *( 1*SP URI ) RDQUOT
+///				URI	= 	absoluteURI / abs-path
+///				opaque	= 	"opaque" EQUAL quoted-string
+///				stale	= 	"stale" EQUAL ( "true" / "false" )
+///				qop-options	= 	"qop" EQUAL LDQUOT qop-value *("," qop-value) RDQUOT
+///				qop-value	= 	"auth" / "auth-int" / token
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Proxy_Authenticate_s
 {	
 	TSIP_DECLARE_HEADER;
+	
+	char* scheme;
+	char* realm;
+	char* domain;
+	char* nonce;
+	char* opaque;
+	unsigned stale:1;
+	char* algorithm;
+	char* qop;
 }
 tsip_header_Proxy_Authenticate_t;
+
+tsip_header_Proxy_Authenticate_t *tsip_header_Proxy_Authenticate_parse(const char *data, size_t size);
+
+TINYSIP_API const void *tsip_header_Proxy_Authenticate_def_t;
 
 #endif /* _TSIP_HEADER_PROXY_AUTHENTICATE_H_ */
