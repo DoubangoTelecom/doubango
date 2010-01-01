@@ -32,6 +32,8 @@
 
 #include "tinySAK_config.h"
 
+TSK_BEGIN_DECLS
+
 #ifndef _WIN32_WCE
 #	include <errno.h>
 #else
@@ -84,5 +86,7 @@
 #endif
 
 #endif
+
+TSK_END_DECLS
 
 #endif

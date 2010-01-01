@@ -41,7 +41,7 @@
 	typedef sem_t* SEMAPHORE_T;
 #endif
 
-#if ANDROID
+#if defined(__GNUC__)
 #	include <errno.h>
 #endif
 

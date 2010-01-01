@@ -44,7 +44,7 @@
 
 #include "tsk_binaryutils.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_UDVM_CREATE(_sigCompMessage, stateHandler, lpResult)	tsk_object_new(tcomp_udvm_def_t, (tcomp_message_t*)_sigCompMessage, (tcomp_statehandler_t*)stateHandler, (tcomp_result_t*)lpResult)
 #define TCOMP_UDVM_SAFE_FREE(self)									tsk_object_unref(self), self = 0
@@ -160,6 +160,8 @@ int TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint
 int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority);
 
 
-TINYSIGCOMP_API const void *tcomp_udvm_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_udvm_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_UDVM_H */

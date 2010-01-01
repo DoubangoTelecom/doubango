@@ -33,5 +33,7 @@
 
 #include "tinysigcomp_config.h"
 
+TCOMP_BEGIN_DECLS
+TCOMP_END_DECLS
 
 #endif /* _TINYSIGCOMPP_TCOMP_H_ */

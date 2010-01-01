@@ -42,6 +42,8 @@
 #include "tsk_list.h"
 #include "tsk_string.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_DIALOG(self)									((tsip_dialog_t*)(self))
 #define TSIP_DIALOG_GET_STATE(self)							TSIP_DIALOG(self)->state
 
@@ -131,4 +133,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const tsip_stack_handle_t * stack, const char* call_id, const tsip_operation_handle_t* operation);
 int tsip_dialog_deinit(tsip_dialog_t *self);
 
+TSIP_END_DECLS
+
 #endif /* TINYSIP_DIALOG_H */
+

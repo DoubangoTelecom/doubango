@@ -31,13 +31,13 @@
 #define TINYSIP_TSIP_H
 
 #include "tinysip_config.h"
+
 #include "tinysip/tsip_operation.h"
 #include "tinysip/tsip_timers.h"
 
 #include "tsk_runnable.h"
 
-
-#include <stdint.h>
+TSIP_BEGIN_DECLS
 
 typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
@@ -134,7 +134,7 @@ typedef struct tsip_event_s
 	tsip_event_type_t type;
 }
 tsip_event_t;
-TINYSIP_API const void *tsip_event_def_t;
+TINYSIP_GEXTERN const void *tsip_event_def_t;
 
 
 typedef int (*tsip_stack_callback)(tsip_event_t *sipevent);
@@ -216,5 +216,7 @@ int tsip_stack_unregister(tsip_stack_handle_t *self, const tsip_operation_handle
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);
+
+TSIP_END_DECLS
 
 #endif /* TINYSIP_TSIP_H */

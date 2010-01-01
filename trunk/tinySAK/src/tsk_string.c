@@ -44,8 +44,9 @@
 #	define vsnprintf	_vsnprintf
 #	define strdup		_strdup
 #	define stricmp		_stricmp
-#elif ANDROID
+#elif defined(__GNUC__)
 #	define stricmp		strcasecmp
+#	define strnicmp		strncasecmp
 #endif
 
 /**@defgroup tsk_string_group String utils

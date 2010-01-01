@@ -32,6 +32,8 @@
 #ifndef _TINYSIGCOMPP_RFC3485_H_
 #define _TINYSIGCOMPP_RFC3485_H_
 
+TCOMP_BEGIN_DECLS
+
 #define RFC3485_DICTIONARY_SIP_VALUE_LENGTH				0x12e4
 #define RFC3485_DICTIONARY_SIP_STATE_ADDRESS			0 /*(not relevant for the dictionary) */
 #define RFC3485_DICTIONARY_SIP_STATE_INSTRUCTION        0 /*(not relevant for the dictionary) */
@@ -263,6 +265,8 @@
 	"\x04\xaa\x04\x0b\xe3\x07\x0e\xee\x04\x0f\x09\x04\x0e\xb4\x04\x0d\xbe\x04\x10\xc5\x04\x08" \
 	"\x30\x05\x0f\x30\x04\x07\x59\x04\x0a\x0f\x06\x0e\x61\x04\x04\x81\x04\x0d\xab\x04\x0d\x93" \
 	"\x04\x11\x6b\x04\x0e\x96\x05\x04\x66\x09\x04\x6b\x0b\x04\x46\x04\x0c\xe1"
+
+TCOMP_END_DECLS
 
 #endif /* _TINYSIGCOMPP_RFC3485_H_ */
 

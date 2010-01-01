@@ -31,9 +31,12 @@
 #define TCOMP_STATE_H
 
 #include "tinysigcomp_config.h"
+
 #include "tcomp_buffer.h"
 #include "tsk_safeobj.h"
 #include "tsk_object.h"
+
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_STATE_CREATE(length, address, instruction, minimum_access_length, retention_priority)	\
 	tsk_object_new(tcomp_state_def_t, length, address, instruction, minimum_access_length, retention_priority)
@@ -72,6 +75,8 @@ typedef tcomp_state_t tcomp_dictionary_t; /**< Ad dictionary is  a @ref tcomp_st
 int tcomp_state_equals(const tcomp_state_t *state1, const tcomp_state_t *state2);
 void tcomp_state_makeValid(tcomp_state_t*);
 
-TINYSIGCOMP_API const void *tcomp_state_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_state_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_STATE_H */

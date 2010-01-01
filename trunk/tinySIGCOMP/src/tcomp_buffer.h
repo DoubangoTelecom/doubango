@@ -31,9 +31,10 @@
 #define TCOMP_BUFFER_H
 
 #include "tinysigcomp_config.h"
+
 #include "tsk_object.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_P_BIT_MSB_TO_LSB 0
 #define TCOMP_P_BIT_LSB_TO_MSB 1
@@ -84,6 +85,8 @@ void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, size_t size);
 
 void tcomp_buffer_reset(tcomp_buffer_handle_t* handle);
 
-TINYSIGCOMP_API const void *tcomp_buffer_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_buffer_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_BUFFER_H */

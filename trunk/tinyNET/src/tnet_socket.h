@@ -35,6 +35,7 @@
 
 #include "tsk_list.h"
 
+TNET_BEGIN_DECLS
 
 /**@def TNET_SOCKET_CREATE
 * Create a socket. You MUST use @ref TNET_SOCKET_SAFE_FREE to safely close and free the socket.
@@ -141,6 +142,9 @@ TINYNET_API int tnet_socket_dgram_sendto(tnet_socket_tcp_t *socket, const struct
 
 
 
-TINYNET_API const void *tnet_socket_def_t;
+TINYNET_GEXTERN const void *tnet_socket_def_t;
+
+
+TNET_END_DECLS
 
 #endif /* TNET_SOCKET_H */

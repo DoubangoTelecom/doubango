@@ -497,11 +497,11 @@ tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1strin
 	{
 		return ret;
 	}
-	else if ( (ret = tsk_sha1input(&sha, input, size)) != shaSuccess )
+	else if ( (ret = tsk_sha1input(&sha, (uint8_t*)input, size)) != shaSuccess )
 	{
 		return ret;
 	}
-	else if( (ret = tsk_sha1result(&sha, digest)) != shaSuccess )
+	else if( (ret = tsk_sha1result(&sha, (char*)digest)) != shaSuccess )
 	{
 		return ret;
 	}

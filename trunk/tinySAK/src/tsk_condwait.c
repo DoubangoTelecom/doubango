@@ -47,7 +47,7 @@
 #	define TIMED_OUT	ETIMEDOUT
 #endif
 
-#if ANDROID
+#if defined(__GNUC__)
 #	include <errno.h>
 #endif
 

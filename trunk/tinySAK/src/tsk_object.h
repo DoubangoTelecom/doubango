@@ -35,6 +35,8 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+TSK_BEGIN_DECLS
+
 #define TSK_DECLARE_OBJECT \
 	const void* base; \
 	size_t	refCount
@@ -73,5 +75,7 @@ TINYSAK_API int tsk_object_cmp(const void *self, const void *object);
 TINYSAK_API void* tsk_object_ref(void *self);
 TINYSAK_API void* tsk_object_unref(void *self);
 TINYSAK_API void tsk_object_delete(void *self);
+
+TSK_END_DECLS
 
 #endif /* TSK_OBJECT_H */

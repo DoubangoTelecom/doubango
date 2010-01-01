@@ -41,6 +41,8 @@
 #	include "zlib.h"
 #endif
 
+TCOMP_BEGIN_DECLS
+
 #define _TCOMP_DEFLATEDATA_CREATE(isStream, z_level, z_windowBits)		tsk_object_new(tcomp_deflatedata_def_t, (int)isStream, (int)z_level,(int) z_windowBits)
 #define TCOMP_DEFLATEDATA_CREATE(isStream)								tsk_object_new(tcomp_deflatedata_def_t, (int)isStream, Z_BEST_COMPRESSION, Z_DEFAULT_WINDOW_BITS)
 #define TCOMP_DEFLATEDATA_SAFE_FREE(self)								tsk_object_unref(self), self = 0
@@ -159,6 +161,8 @@ int tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata);
 int tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata);
 int tcomp_deflatedata_zUnInit(tcomp_deflatedata_t *deflatedata);
 
-TINYSIGCOMP_API const void *tcomp_deflatedata_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_deflatedata_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_COMPRESSORDEFLATE_DATA_H */

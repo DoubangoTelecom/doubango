@@ -34,6 +34,8 @@
 #include "tinysip/smc/tsip_transac_ict_sm.h"
 #include "tinysip/transactions/tsip_transac.h"
 
+TSIP_BEGIN_DECLS
+
 typedef struct tsip_transac_ict
 {
 	TSIP_DECLARE_TRANSAC;
@@ -44,4 +46,7 @@ tsip_transac_ict_t;
 
 void tsip_transac_ict_init(tsip_transac_ict_t *self);
 
+TSIP_END_DECLS
+
 #endif /* TINYSIP_TRANSAC_ICT_H */
+

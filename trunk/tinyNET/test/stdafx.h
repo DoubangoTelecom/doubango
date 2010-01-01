@@ -34,7 +34,4 @@
 
 // TODO: reference additional headers your program requires here
 
-#define TINYSAK_IMPORTS
-#define TINYNET_IMPORTS
-
 #endif /* TEST_TNET_STDAFX_H */

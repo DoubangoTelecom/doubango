@@ -32,7 +32,10 @@
 
 #include "tinySAK_config.h"
 #include "tsk_heap.h"
+
 #include <stdlib.h> /* size_t */
+
+TSK_BEGIN_DECLS
 
 /** Safely free a pointer
 */
@@ -44,5 +47,7 @@ TINYSAK_API void* tsk_malloc(size_t size);
 TINYSAK_API void* tsk_realloc (void * ptr, size_t size);
 TINYSAK_API void tsk_free(void** ptr);
 TINYSAK_API void* tsk_calloc(size_t num, size_t size);
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_MEMORY_H_ */

@@ -34,6 +34,8 @@
 #include "tinysip/tsip_uri.h"
 #include "tinysip/headers/tsip_header.h"
 
+TSIP_BEGIN_DECLS
+
 /**@def TSIP_HEADER_FROM_CREATE
 * Creates new sip 'From' header.  You must call @ref TSIP_HEADER_FROM_SAFE_FREE to free the header.
 * @sa TSIP_HEADER_FROM_SAFE_FREE.
@@ -71,6 +73,8 @@ tsip_header_From_t;
 
 tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size);
 
-TINYSIP_API const void *tsip_header_From_def_t;
+TINYSIP_GEXTERN const void *tsip_header_From_def_t;
+
+TSIP_END_DECLS
 
 #endif /* _TSIP_HEADER_FROM_H_ */

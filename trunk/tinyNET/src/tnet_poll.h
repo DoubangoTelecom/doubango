@@ -32,6 +32,8 @@
 
 #include "tinyNET_config.h"
 
+TNET_BEGIN_DECLS
+
 #if TNET_USE_POLL
 
 #include "tnet_types.h"
@@ -89,5 +91,7 @@ int tnet_poll(tnet_pollfd_t fds[ ], tnet_nfds_t nfds, int timeout);
 #endif /* TNET_HAVE_POLL */
 
 #endif /* TNET_USE_POLL */
+
+TNET_END_DECLS
 
 #endif /* TNET_POLL_H */

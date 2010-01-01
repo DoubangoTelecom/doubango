@@ -31,4 +31,7 @@
 
 #include "tinyhttp_config.h"
 
+THTTP_BEGIN_DECLS
+THTTP_END_DECLS
+
 #endif /* TINYHTTP_THTTP_H */

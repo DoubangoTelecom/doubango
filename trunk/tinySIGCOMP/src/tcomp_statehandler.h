@@ -31,6 +31,7 @@
 #define TCOMP_STATE_HANDLER_H
 
 #include "tinysigcomp_config.h"
+
 #include "tcomp_types.h"
 #include "tcomp_params.h"
 #include "tcomp_nackinfo.h"
@@ -42,7 +43,7 @@
 #include "tsk_safeobj.h"
 #include "tsk_object.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_STATEHANDLER_CREATE()				tsk_object_new(tcomp_statehandler_def_t)
 #define TCOMP_STATEHANDLER_SAFE_FREE(self)		tsk_object_unref(self), self = 0
@@ -73,6 +74,8 @@ int tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcom
 void tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler);
 void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler);
 
-TINYSIGCOMP_API const void *tcomp_statehandler_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_statehandler_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_STATE_HANDLER_H */

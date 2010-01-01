@@ -32,9 +32,13 @@
 
 #include "tinySAK_config.h"
 
+TSK_BEGIN_DECLS
+
 TINYSAK_API void tsk_thread_sleep(uint64_t ms);
 TINYSAK_API int tsk_thread_create(void** tid, void *(*start) (void *), void *arg);
 TINYSAK_API int tsk_thread_join(void** tid);
+
+TSK_END_DECLS
 
 #endif
 

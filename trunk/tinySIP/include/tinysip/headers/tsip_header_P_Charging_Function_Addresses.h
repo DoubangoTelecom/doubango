@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_P_CHARGING_FUNCTION_ADDRESSES_H_
 #define _TSIP_HEADER_P_CHARGING_FUNCTION_ADDRESSES_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -48,4 +51,7 @@ typedef struct tsip_header_P_Charging_Function_Addresses_s
 }
 tsip_header_P_Charging_Function_Addresses_t;
 
+TSIP_END_DECLS
+
 #endif /* _TSIP_HEADER_P_CHARGING_FUNCTION_ADDRESSES_H_ */
+

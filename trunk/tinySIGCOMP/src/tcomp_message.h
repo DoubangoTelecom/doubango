@@ -35,7 +35,7 @@
 #include "tcomp_nackinfo.h"
 #include "tsk_object.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_MESSAGE_CREATE(input_ptr, input_size, stream)	tsk_object_new(tcomp_message_def_t, input_ptr, input_size, stream)
 #define TCOMP_MESSAGE_SAFE_FREE(self)						tsk_object_unref(self), self = 0
@@ -67,6 +67,8 @@ typedef struct tcomp_message_s
 }
 tcomp_message_t;
 
-TINYSIGCOMP_API const void *tcomp_message_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_message_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_MESSAGE_H */

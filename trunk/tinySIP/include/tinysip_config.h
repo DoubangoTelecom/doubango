@@ -23,34 +23,53 @@
 #ifndef TINYSIP_CONFIG_H
 #define TINYSIP_CONFIG_H
 
-#if (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSIP_EXPORTS)
-# 	define TINYSIP_API __declspec(dllexport)
-#elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSIP_IMPORTS)
-# 	define TINYSIP_API __declspec(dllimport)
-#else
-# define TINYSIP_API
-#endif
-
-
-//
-// Disable some well-known warnings
-//
-#ifdef _MSC_VER
-#	define _CRT_SECURE_NO_WARNINGS
+#if HAVE_CONFIG_H
+	#include "config.h"
 #endif
 
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
+/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
+*/
+#if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
+#	define TSIP_UNDER_WINDOWS	1
+#endif
+
+#if !defined(__GNUC__) && defined(TINYSIP_EXPORTS)
+# 	define TINYSIP_API		__declspec(dllexport)
+# 	define TINYSIP_GEXTERN	__declspec(dllexport)
+#elif !defined(__GNUC__) /*&& defined(TINYSIP_IMPORTS)*/
+# 	define TINYSIP_API		__declspec(dllimport)
+# 	define TINYSIP_GEXTERN	__declspec(dllimport)
+#else
+#	define TINYSIP_API
+#	define TINYSIP_GEXTERN	extern
+#endif
+
+
+/* Guards against C++ name mangling 
+*/
+#ifdef __cplusplus
+#	define TSIP_BEGIN_DECLS extern "C" {
+#	define TSIP_END_DECLS }
+#else
+#	define TSIP_BEGIN_DECLS 
+#	define TSIP_END_DECLS
+#endif
+
+/* Disable some well-known warnings
+*/
+#ifdef _MSC_VER
+#	define _CRT_SECURE_NO_WARNINGS
+#endif
+
+
 #include <stdint.h>
 #ifdef __SYMBIAN32__
 #include <stdlib.h>
 #endif
-
-/* FIXME */
-#define TINYSAK_IMPORTS
-#define TINYNET_IMPORTS
 
 /* FIXME */
 #define TSIP_TRUE	1

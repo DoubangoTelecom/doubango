@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_SUPPORTED_H_
 #define _TSIP_HEADER_SUPPORTED_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_SUPPORTED_CREATE
 * Creates new sip 'Supported' header.  You must call @ref TSIP_HEADER_SUPPORTED_SAFE_FREE to free the header.
@@ -64,6 +67,9 @@ tsip_header_Supported_t;
 
 tsip_header_Supported_t *tsip_header_Supported_parse(const char *data, size_t size);
 
-TINYSIP_API const void *tsip_header_Supported_def_t;
+TINYSIP_GEXTERN const void *tsip_header_Supported_def_t;
+
+TSIP_END_DECLS
 
 #endif /* _TSIP_HEADER_SUPPORTED_H_ */
+

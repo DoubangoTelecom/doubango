@@ -78,7 +78,6 @@ typedef tsk_list_t tsk_timers_L_t; /**< List of @ref tsk_timer_t elements. */
 typedef struct tsk_timer_manager_s
 {
 	TSK_DECLARE_RUNNABLE;
-	
 	unsigned active:1;
 	void* mainThreadId[1];
 	tsk_condwait_handle_t *condwait;
@@ -103,7 +102,7 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 {
 	int err = -1;
 	tsk_timer_manager_t *manager = self;
-	if(manager && !manager->running)
+	if(manager && !TSK_RUNNABLE(manager)->running)
 	{				
 		TSK_RUNNABLE(manager)->run = run;
 		if(err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t))
@@ -160,7 +159,7 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 {
 	int ret = -1;
 	tsk_timer_manager_t *manager = self;
-	if(manager && manager->running)
+	if(manager && TSK_RUNNABLE(manager)->running)
 	{
 		if(ret = tsk_runnable_stop(TSK_RUNNABLE(manager)))
 		{
@@ -180,7 +179,7 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 	tsk_timer_id_t timer_id = TSK_INVALID_TIMER_ID;
 	tsk_timer_manager_t *manager = self;
 
-	if(manager && manager->running)
+	if(manager && TSK_RUNNABLE(manager)->running)
 	{
 		tsk_timer_t *timer;
 
@@ -201,7 +200,7 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 {
 	int ret = -1;
 	tsk_timer_manager_t *manager = self;
-	if(!TSK_LIST_IS_EMPTY(manager->timers) && manager->running)
+	if(!TSK_LIST_IS_EMPTY(manager->timers) && TSK_RUNNABLE(manager)->running)
 	{
 		const tsk_list_item_t *item;
 		tsk_mutex_lock(manager->mutex);
@@ -265,12 +264,12 @@ static void *__tsk_timer_manager_mainthread(void *param)
 	//TSK_DEBUG_INFO("TIMER MANAGER -- START");
 	
 	manager->active = 1;
-	while(manager->running)
+	while(TSK_RUNNABLE(manager)->running)
 	{
 		tsk_semaphore_decrement(manager->sem);
 
 peek_first:
-		if(!manager->running)
+		if(!TSK_RUNNABLE(manager)->running)
 		{
 			break;
 		}

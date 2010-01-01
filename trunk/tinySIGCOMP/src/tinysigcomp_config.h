@@ -23,17 +23,43 @@
 #ifndef TINYSIGCOMP_CONFIG_H
 #define TINYSIGCOMP_CONFIG_H
 
-#if (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSIGCOMP_EXPORTS)
-# 	define TINYSIGCOMP_API __declspec(dllexport)
-#elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSIGCOMP_IMPORTS)
-# 	define TINYSIGCOMP_API __declspec(dllimport)
-#else
-# define TINYSIGCOMP_API
+#if HAVE_CONFIG_H
+	#include "config.h"
 #endif
 
-//
-//DEFLATE block type 01 (data compressed with fixed Huffman codes)*/
-//
+#ifdef __SYMBIAN32__
+#undef _WIN32 /* Because of WINSCW */
+#endif
+
+/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
+*/
+#if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
+#	define TCOMP_UNDER_WINDOWS	1
+#endif
+
+#if !defined(__GNUC__) && defined(TINYSIGCOMP_EXPORTS)
+# 	define TINYSIGCOMP_API		__declspec(dllexport)
+# 	define TINYSIGCOMP_GEXTERN	__declspec(dllexport)
+#elif !defined(__GNUC__) /*&& defined(TINYSIGCOMP_IMPORTS)*/
+# 	define TINYSIGCOMP_API		__declspec(dllimport)
+# 	define TINYSIGCOMP_GEXTERN	__declspec(dllimport)
+#else
+#	define TINYSIGCOMP_API
+#	define TINYSIGCOMP_GEXTERN	extern
+#endif
+
+/* Guards against C++ name mangling 
+*/
+#ifdef __cplusplus
+#	define TCOMP_BEGIN_DECLS extern "C" {
+#	define TCOMP_END_DECLS }
+#else
+#	define TCOMP_BEGIN_DECLS 
+#	define TCOMP_END_DECLS
+#endif
+
+/*	DEFLATE block type 01 (data compressed with fixed Huffman codes)
+*/
 #ifndef FORCE_STATIC
 #	define FORCE_STATIC /*zlib*/
 #endif
@@ -52,20 +78,13 @@
 //
 #define USE_ONLY_ACKED_STATES	1
 
-//
-// Disable some well-known warnings
-//
+/* Disable some well-known warnings
+*/
 #ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#ifdef __SYMBIAN32__
-#undef _WIN32 /* Because of WINSCW */
-#endif
-
-
-/* Tiny SAK */
-#define TINYSAK_IMPORTS
+#include <stdint.h>
 
 #endif // TINYSIGCOMP_CONFIG_H
 

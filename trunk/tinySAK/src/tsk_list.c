@@ -372,7 +372,7 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 {
 	int first = !list->head;
-	struct tsk_list_item_s** pivot = back ? &list->tail : &list->head;
+	//struct tsk_list_item_s** pivot = back ? &list->tail : &list->head;
 
 	if(back && list->tail) list->tail->next = *item, list->tail = *item;
 	else (*item)->next = list->head, list->head = *item;
@@ -597,7 +597,7 @@ const void *tsk_list_item_def_t = &tsk_list_item_def_s;
 //
 static void* tsk_list_create(void *self, va_list *app)
 {
-	tsk_list_t *list = self;
+	//tsk_list_t *list = self;
 
 	return self;
 }

@@ -34,6 +34,8 @@
 
 #include "tsk_timer.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_TIMER_GET(TX)	tsip_timers_get##TX()
 
 //extern const char *timerT1;
@@ -107,4 +109,7 @@ TINYSIP_API uint32_t tsip_timers_getI();
 TINYSIP_API uint32_t tsip_timers_getJ();
 TINYSIP_API uint32_t tsip_timers_getK();
 
+TSIP_END_DECLS
+
 #endif /* TINYSIP_TIMERS_H */
+

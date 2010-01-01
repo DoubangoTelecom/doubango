@@ -40,7 +40,7 @@
 	typedef pthread_mutex_t* MUTEX_T;
 #endif
 
-#if ANDROID
+#if defined(__GNUC__)
 #	include <errno.h>
 #endif
 

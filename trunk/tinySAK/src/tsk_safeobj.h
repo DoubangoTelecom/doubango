@@ -33,6 +33,8 @@
 #include "tinySAK_config.h"
 #include "tsk_mutex.h"
 
+TSK_BEGIN_DECLS
+
 #define TSK_DECLARE_SAFEOBJ\
 	union{ \
 		tsk_mutex_handle_t *mutex; \
@@ -63,5 +65,7 @@
 #define tsk_safeobj_lock(safeobj)	tsk_mutex_lock(TSK_SAFEOBJ_MUTEX(safeobj))
 #define tsk_safeobj_unlock(safeobj) tsk_mutex_unlock(TSK_SAFEOBJ_MUTEX(safeobj))
 #define tsk_safeobj_deinit(safeobj)	tsk_mutex_destroy(&TSK_SAFEOBJ_MUTEX(safeobj))
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_SAFEOBJ_H_ */

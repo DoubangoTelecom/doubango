@@ -166,9 +166,9 @@ TINYSAK_API xmlNsPtr tsk_xml_get_namespace(xmlDocPtr docPtr, xmlNodePtr node, co
 TINYSAK_API xmlNodePtr tsk_xml_find_node(const xmlNodePtr curr, const char* name, tsk_xml_node_find_type_t ftype);
 TINYSAK_API xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...);
 
-TINYSAK_API const void *tsk_xml_namespace_def_t;
-TINYSAK_API const void *tsk_xml_attribute_def_t;
-TINYSAK_API const void *tsk_xml_element_def_t;
+TINYSAK_GEXTERN const void *tsk_xml_namespace_def_t;
+TINYSAK_GEXTERN const void *tsk_xml_attribute_def_t;
+TINYSAK_GEXTERN const void *tsk_xml_element_def_t;
 
 #endif /* HAVE_LIBXML2_H */
 

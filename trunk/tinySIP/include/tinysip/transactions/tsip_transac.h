@@ -41,6 +41,8 @@
 #include "tsk_object.h"
 #include "tsk_list.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_TRANSAC(self)				((tsip_transac_t*)(self))
 #define TSIP_TRANSAC_GET_TYPE(self)		TSIP_TRANSAC(self)->type
 
@@ -119,4 +121,8 @@ int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_messa
 int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2);
 int tsip_transac_deinit(tsip_transac_t *transac);
 
+
+TSIP_END_DECLS
+
 #endif /* TINYSIP_TRANSAC_H */
+

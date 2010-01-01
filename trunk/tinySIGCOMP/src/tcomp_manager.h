@@ -31,10 +31,11 @@
 #define TCOMP_MANAGER_H
 
 #include "tinysigcomp_config.h"
+
 #include "tcomp_result.h"
 #include "tcomp_compressor.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 typedef void tcomp_manager_handle_t;
 
@@ -78,6 +79,8 @@ TINYSIGCOMP_API void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle,
 TINYSIGCOMP_API void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle);
 TINYSIGCOMP_API void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle);
 
-TINYSIGCOMP_API const void *tcomp_manager_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_manager_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_MANAGER_H */

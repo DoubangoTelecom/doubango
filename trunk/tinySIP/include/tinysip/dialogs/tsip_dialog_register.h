@@ -34,6 +34,8 @@
 #include "tinysip/dialogs/tsip_dialog.h"
 #include "tinysip/smc/tsip_dialog_register_sm.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_DIALOG_REGISTER_CREATE(stack, operation)		tsk_object_new(tsip_dialog_register_def_t, (const tsip_stack_handle_t *)stack, (const tsip_operation_handle_t*) operation)
 #define TSIP_DIALOG_REGISTER_SAFE_FREE(self)				tsk_object_unref(self), self = 0
 
@@ -69,6 +71,9 @@ void tsip_dialog_register_Connected_2_Trying_X_refresh(tsip_dialog_register_t *s
 void tsip_dialog_register_Any_2_Terminated_X_transportError(tsip_dialog_register_t *self);
 
 
-TINYSIP_API const void *tsip_dialog_register_def_t;
+TINYSIP_GEXTERN const void *tsip_dialog_register_def_t;
+
+TSIP_END_DECLS
 
 #endif /* TINYSIP_DIALOG_REGISTER_H */
+

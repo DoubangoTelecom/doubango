@@ -40,7 +40,7 @@
 #include "tsk_object.h"
 #include "tsk_safeobj.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_STREAM_BUFFER_CREATE(id)					tsk_object_new(tcomp_stream_buffer_def_t, (uint64_t)id)
 #define TCOMP_STREAM_BUFFER_SAFE_FREE(self)				tsk_object_unref(self), self = 0
@@ -77,7 +77,9 @@ int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatch
 int tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, size_t input_size, uint64_t streamId);
 int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size);
 
-TINYSIGCOMP_API const void *tcomp_stream_buffer_def_t;
-TINYSIGCOMP_API const void *tcomp_decompressordisp_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_stream_buffer_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_decompressordisp_def_t;
+
+TCOMP_END_DECLS
 
 #endif /*TCOMP_DECOMPRESSORDISP_H*/

@@ -33,6 +33,8 @@
 #include "tinySAK_config.h"
 #include "tsk_list.h"
 
+TSK_BEGIN_DECLS
+
 #define TSK_BUFFER_CREATE(data, size)		tsk_object_new(tsk_buffer_def_t, (const void*)data, (size_t)size)
 #define TSK_BUFFER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
@@ -60,7 +62,8 @@ TINYSAK_API int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 TINYSAK_API int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size);
 TINYSAK_API void tsk_buffer_cleanup(tsk_buffer_t* self);
 
-TINYSAK_API const void *tsk_buffer_def_t;
+TINYSAK_GEXTERN const void *tsk_buffer_def_t;
 
+TSK_END_DECLS
 
 #endif
