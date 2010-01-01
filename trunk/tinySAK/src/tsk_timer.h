@@ -32,6 +32,8 @@
 
 #include "tinySAK_config.h"
 
+TSK_BEGIN_DECLS
+
 #define TSK_TIMER_MANAGER_CREATE()					tsk_object_new(tsk_timer_manager_def_t)
 #define TSK_TIMER_MANAGER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 #define TSK_TIMER_CALLBACK(callback)				((tsk_timer_callback)callback)
@@ -54,7 +56,9 @@ TINYSAK_API void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self);
 TINYSAK_API tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback callback, const void *arg);
 TINYSAK_API int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id);
 
-TINYSAK_API const void *tsk_timer_def_t;
-TINYSAK_API const void *tsk_timer_manager_def_t;
+TINYSAK_GEXTERN const void *tsk_timer_def_t;
+TINYSAK_GEXTERN const void *tsk_timer_manager_def_t;
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_TIMER_H_ */

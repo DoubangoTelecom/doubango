@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_SESSION_EXPIRES_H_
 #define _TSIP_HEADER_SESSION_EXPIRES_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -48,4 +51,7 @@ typedef struct tsip_header_Session_Expires_s
 }
 tsip_header_Session_Expires_t;
 
+TSIP_END_DECLS
+
 #endif /* _TSIP_HEADER_SESSION_EXPIRES_H_ */
+

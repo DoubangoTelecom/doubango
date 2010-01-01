@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_MAX_FORWARDS_H_
 #define _TSIP_HEADER_MAX_FORWARDS_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 #define TSIP_HEADER_MAX_FORWARDS_DEFAULT 70
 
@@ -70,6 +73,9 @@ tsip_header_Max_Forwards_t;
 
 tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, size_t size);
 
-TINYSIP_API const void *tsip_header_Max_Forwards_def_t;
+TINYSIP_GEXTERN const void *tsip_header_Max_Forwards_def_t;
+
+TSIP_END_DECLS
 
 #endif /* _TSIP_HEADER_MAX_FORWARDS_H_ */
+

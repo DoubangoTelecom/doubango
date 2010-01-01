@@ -35,6 +35,11 @@
 
 #include "tinysip/parsers/tsip_ragel_state.h"
 
+TSIP_BEGIN_DECLS
+
 TINYSIP_API tsip_uri_t *tsip_uri_parse(const char *data, size_t size);
 
+TSIP_END_DECLS
+
 #endif /* TINYSIP_PARSER_URI_H */
+

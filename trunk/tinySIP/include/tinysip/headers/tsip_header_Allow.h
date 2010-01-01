@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_ALLOW_H_
 #define _TSIP_HEADER_ALLOW_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 #define TSIP_HEADER_ALLOW_DEFAULT	"ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, UPDATE"
 #define TSIP_HEADER_STR				"Allow:"TSIP_HEADER_ALLOW_DEFAULT"\r\n"
@@ -66,6 +69,9 @@ tsip_header_Allow_t;
 
 tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size);
 
-TINYSIP_API const void *tsip_header_Allow_def_t;
+TINYSIP_GEXTERN const void *tsip_header_Allow_def_t;
+
+TSIP_END_DECLS
 
 #endif /* _TSIP_HEADER_ALLOW_H_ */
+

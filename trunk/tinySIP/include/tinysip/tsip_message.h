@@ -30,6 +30,7 @@
  */
 #ifndef TSIP_MESSAGE_H
 #define TSIP_MESSAGE_H
+
 #include "tinysip_config.h"
 
 #include "tinysip/headers/tsip_header_Call_ID.h"
@@ -43,6 +44,8 @@
 #include "tinysip/headers/tsip_header_Via.h"
 
 #include "tsk_object.h"
+
+TSIP_BEGIN_DECLS
 
 #define TSIP_MESSAGE_VERSION_10					"SIP/1.0"
 #define TSIP_MESSAGE_VERSION_20					"SIP/2.0"
@@ -210,6 +213,9 @@ TINYSIP_API int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *
 
 TINYSIP_API tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq);
 
-TINYSIP_API const void *tsip_message_def_t;
+TINYSIP_GEXTERN const void *tsip_message_def_t;
+
+TSIP_END_DECLS
 
 #endif /* TSIP_MESSAGE_H */
+

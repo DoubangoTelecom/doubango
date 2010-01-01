@@ -38,6 +38,8 @@
 #include "tsk_object.h"
 #include "tsk_list.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_DIALOG_LAYER_CREATE(stack)				tsk_object_new(tsip_dialog_layer_def_t, stack)
 #define TSIP_DIALOG_LAYER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
@@ -55,6 +57,9 @@ typedef tsk_list_t tsip_dialog_layers_L_t;
 int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation);
 
 
-TINYSIP_API const void *tsip_dialog_layer_def_t;
+TINYSIP_GEXTERN const void *tsip_dialog_layer_def_t;
+
+TSIP_END_DECLS
 
 #endif /* TINYSIP_DIALOG_LAYER_H */
+

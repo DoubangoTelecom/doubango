@@ -31,9 +31,12 @@
 #define _TINYSAK_RUNNABLE_H_
 
 #include "tinySAK_config.h"
+
 #include "tsk_object.h"
 #include "tsk_semaphore.h"
 #include "tsk_list.h"
+
+TSK_BEGIN_DECLS
 
 typedef void * (*tsk_runnable_func_run)(void* self);
 
@@ -98,5 +101,7 @@ typedef TSK_DECLARE_RUNNABLE tsk_runnable_t;
 TINYSAK_API int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef);
 TINYSAK_API int tsk_runnable_enqueue(tsk_runnable_t *self, ...);
 TINYSAK_API int tsk_runnable_stop(tsk_runnable_t *self);
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_RUNNABLE_H_ */

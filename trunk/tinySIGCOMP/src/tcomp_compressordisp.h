@@ -42,7 +42,7 @@
 #include "tsk_object.h"
 #include "tsk_safeobj.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_MAX_COMPRESSORS		5
 
@@ -65,6 +65,8 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 
 void tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress compressor);
 
-TINYSIGCOMP_API const void *tcomp_compressordisp_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_compressordisp_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_COMPRESSORDISP_H */

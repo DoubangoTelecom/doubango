@@ -38,6 +38,8 @@
 #include "tsk_safeobj.h"
 #include "tsk_list.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_TRANSAC_LAYER_CREATE(stack)			tsk_object_new(tsip_transac_layer_def_t, stack)
 #define TSIP_TRANSAC_LAYER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
@@ -54,11 +56,14 @@ typedef struct tsip_transac_layer_s
 tsip_transac_layer_t;
 
 typedef tsk_list_t tsip_transac_layers_L_t;
-TINYSIP_API const void *tsip_transac_layer_def_t;
+TINYSIP_GEXTERN const void *tsip_transac_layer_def_t;
 
 
 const tsip_transac_t* tsip_transac_layer_new(tsip_transac_layer_t *self, const tsip_message_t* msg);
 int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *transac);
 const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const char* branch, const char* cseq_method);
 
+TSIP_END_DECLS
+
 #endif /* TINYSIP_TRANSAC_LAYER_H */
+

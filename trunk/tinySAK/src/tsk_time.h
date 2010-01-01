@@ -32,6 +32,8 @@
 
 #include "tinySAK_config.h"
 
+TSK_BEGIN_DECLS
+
 //#if defined(__SYMBIAN32__) || ANDROID /* Forward declaration */
 struct timeval;
 struct timezone;
@@ -60,5 +62,7 @@ TINYSAK_API uint64_t tsk_time_epoch();
 //#endif TIMEVAL
 //
 //#endif
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_TIME_H_ */

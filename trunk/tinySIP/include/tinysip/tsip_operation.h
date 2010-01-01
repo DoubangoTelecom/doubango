@@ -36,6 +36,8 @@
 #include "tsk_list.h"
 #include "tsk_params.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_OPERATION_CREATE(stack, ...)		tsk_object_new(tsip_operation_def_t, stack, __VA_ARGS__)
 #define TSIP_OPERATION_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
@@ -59,6 +61,9 @@ tsip_operation_handle_t *tsip_operation_clone(const tsip_operation_handle_t *sel
 tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self);
 
 typedef tsk_list_t tsip_operations_L_t; /**< List of @ref tsip_operation_handle_t elements. */
-TINYSIP_API const void *tsip_operation_def_t;
+TINYSIP_GEXTERN const void *tsip_operation_def_t;
+
+TSIP_END_DECLS
 
 #endif /* TSIP_OPERATION_H */
+

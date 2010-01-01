@@ -33,6 +33,8 @@
 #include "tinySAK_config.h"
 #include <stdio.h>
 
+TSK_BEGIN_DECLS
+
 #ifndef DEBUG_LEVEL
 #define DEBUG_LEVEL DEBUG_LEVEL_ERROR
 #endif
@@ -78,8 +80,10 @@
 #define TSK_DEBUG_FATAL(FMT, ...)		((void)0)
 #endif
 
+//__GNUC_VA_LIST
+
 /* FIXME */
-#if defined(__SYMBIAN32__) || defined(ANDROID)
+#if defined(__SYMBIAN32__) || defined(ANDROID) || defined(__GNUC__)
 
 #undef TSK_DEBUG_INFO
 #define TSK_DEBUG_INFO printf
@@ -90,7 +94,11 @@
 #undef TSK_DEBUG_ERROR
 #define TSK_DEBUG_ERROR printf
 
+#undef TSK_DEBUG_FATAL
+#define  TSK_DEBUG_FATAL printf
+
 #endif
 
+TSK_END_DECLS
 
 #endif /* _TINYSAK_DEBUG_H_ */

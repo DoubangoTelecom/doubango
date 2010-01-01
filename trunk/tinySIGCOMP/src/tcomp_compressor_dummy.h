@@ -33,8 +33,11 @@
 #include "tinysigcomp_config.h"
 #include "tcomp_compartment.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 int tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream);
 
+TCOMP_END_DECLS
+
 #endif /* TCOMP_COMPRESSOR_DUMMY_H */
+

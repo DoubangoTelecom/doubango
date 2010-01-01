@@ -33,6 +33,8 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+TSIP_BEGIN_DECLS
+
 /**@def TSIP_HEADER_AUTHORIZATION_CREATE
 * Creates new sip 'AUTHORIZATION' header.  You must call @ref TSIP_HEADER_AUTHORIZATION_SAFE_FREE to free the header.
 * @sa TSIP_HEADER_AUTHORIZATION_SAFE_FREE.
@@ -98,6 +100,9 @@ tsip_header_Authorization_t;
 
 tsip_header_Authorization_t *tsip_header_Authorization_parse(const char *data, size_t size);
 
-TINYSIP_API const void *tsip_header_Authorization_def_t;
+TINYSIP_GEXTERN const void *tsip_header_Authorization_def_t;
+
+TSIP_END_DECLS
 
 #endif /* _TSIP_HEADER_AUTHORIZATION_H_ */
+

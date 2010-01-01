@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_P_ASSOCIATED_URI_H_
 #define _TSIP_HEADER_P_ASSOCIATED_URI_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -48,4 +51,7 @@ typedef struct tsip_header_P_Associated_URI_s
 }
 tsip_header_P_Associated_URI_t;
 
+TSIP_END_DECLS
+
 #endif /* _TSIP_HEADER_P_ASSOCIATED_URI_H_ */
+

@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_MIN_EXPIRES_H_
 #define _TSIP_HEADER_MIN_EXPIRES_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 
 /**@def TSIP_HEADER_MIN_EXPIRES_CREATE
@@ -70,6 +73,9 @@ tsip_header_Min_Expires_t;
 
 tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_t size);
 
-TINYSIP_API const void *tsip_header_Min_Expires_def_t;
+TINYSIP_GEXTERN const void *tsip_header_Min_Expires_def_t;
+
+TSIP_END_DECLS
 
 #endif /* _TSIP_HEADER_MIN_EXPIRES_H_ */
+

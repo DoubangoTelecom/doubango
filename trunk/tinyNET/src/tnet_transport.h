@@ -36,6 +36,8 @@
 #include "tnet_utils.h"
 #include "tsk_runnable.h"
 
+TNET_BEGIN_DECLS
+
 #define DGRAM_MAX_SIZE	8192
 #define STREAM_MAX_SIZE	8192
 
@@ -83,6 +85,8 @@ typedef struct tnet_transport_s
 }
 tnet_transport_t;
 
-TINYNET_API const void *tnet_transport_def_t;
+TINYNET_GEXTERN const void *tnet_transport_def_t;
+
+TNET_END_DECLS
 
 #endif /* TNET_SERVER_H */

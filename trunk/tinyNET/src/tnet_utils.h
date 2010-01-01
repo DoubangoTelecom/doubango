@@ -31,8 +31,11 @@
 #define TNET_UTILS_H
 
 #include "tinyNET_config.h"
+
 #include "tnet_socket.h"
 #include "tnet_types.h"
+
+TNET_BEGIN_DECLS
 
 TINYNET_API void tnet_getlasterror(tnet_error_t *error);
 TINYNET_API int tnet_geterrno();
@@ -62,7 +65,7 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 	}
 
 
-#include "tnet_socket.h"
+TNET_END_DECLS
 
 #endif /* TNET_UTILS_H */
 

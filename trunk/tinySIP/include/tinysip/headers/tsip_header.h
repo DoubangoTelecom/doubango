@@ -42,6 +42,8 @@
 #include "tsk_list.h"
 #include "tsk_buffer.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_HEADER(hdr)	((tsip_header_t*)(hdr))
 #define TSIP_HEADER_CREATE()
 
@@ -170,5 +172,7 @@ TINYSIP_API int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *ou
 #define TSIP_HEADER_GET_PARAM_VALUE(self, name)				tsk_params_get_param_value(self ? self->params : 0, name)
 #define TSIP_HEADER_GET_PARAM_VALUE_AS_INT(self, name)		tsk_params_get_param_value_as_int(self ? self->params : 0, name)
 
+TSIP_END_DECLS
 
 #endif /* TINYSIP_HEADERS_H */
+

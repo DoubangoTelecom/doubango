@@ -37,6 +37,8 @@
 
 #include "tinysip/smc/tsip_transac_nict_sm.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_TRANSAC_NICT_CREATE(stack, reliable, cseq_value, cseq_method, callid)		tsk_object_new(tsip_transac_nict_def_t, (const tsip_stack_handle_t *)stack, (unsigned)reliable, (int32_t)cseq_value, (const char*)cseq_method, (const char*)callid)
 #define TSIP_TRANSAC_NICT_SAFE_FREE(self)														tsk_object_unref(self), self = 0
 
@@ -75,6 +77,9 @@ void tsip_transac_nict_Completed_2_Terminated_X_timerK(tsip_transac_nict_t *self
 void tsip_transac_nict_Any_2_Terminated_X_transportError(tsip_transac_nict_t *self);
 
 
-TINYSIP_API const void *tsip_transac_nict_def_t;
+TINYSIP_GEXTERN const void *tsip_transac_nict_def_t;
+
+TSIP_END_DECLS
 
 #endif /* TINYSIP_TRANSAC_NICT_H */
+

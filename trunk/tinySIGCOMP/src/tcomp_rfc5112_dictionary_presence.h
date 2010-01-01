@@ -32,6 +32,8 @@
 #ifndef _TINYSIGCOMPP_RFC5112_H_
 #define _TINYSIGCOMPP_RFC5112_H_
 
+TCOMP_BEGIN_DECLS
+
 #define RFC5112_DICTIONARY_PRESENCE_VALUE_LENGTH			0x0d93
 #define RFC5112_DICTIONARY_PRESENCE_STATE_ADDRESS			0 /*(not relevant for the dictionary) */
 #define RFC5112_DICTIONARY_PRESENCE_STATE_INSTRUCTION       0 /*(not relevant for the dictionary) */
@@ -201,5 +203,7 @@
 	"\x0c\x16\x04\x05\x2e\x08\x0b\x3f\x11\x0c\x23\x08\x0c\x7b\x09\x0b\xc7\x07\x07\xf6\x05\x0b" \
 	"\x3b\x09\x08\x75\x09\x0c\x81\x09\x06\xe9\x0b\x09\xb0\x07\x05\x22\x07\x04\xa3\x07\x06\xc2" \
 	"\x07\x05\x99\x05\x06\x06\x05\x05\xfc\x04\x09\xc3\x04\x06\x4c\x08\x04\xbe\x09\x0b\x2a"
+
+TCOMP_END_DECLS
 
 #endif /* _TINYSIGCOMPP_RFC5112_H_ */

@@ -32,6 +32,9 @@
 #define _TINYSAK_SAK_H_
 
 #include "tinySAK_config.h"
+
+TSK_BEGIN_DECLS
+
 #include "tsk_list.h"
 #include "tsk_string.h"
 #include "tsk_heap.h"
@@ -59,5 +62,7 @@
 #include "tsk_md5.h"
 #include "tsk_hmac.h"
 #include "tsk_base64.h"
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_SAK_H_ */

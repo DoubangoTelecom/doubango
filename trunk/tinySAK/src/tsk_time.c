@@ -36,6 +36,8 @@
 #	include <windows.h>
 #elif defined(__SYMBIAN32__)
 #	include <_timeval.h> 
+#else
+#	include <sys/time.h>
 #endif
 
 #include <time.h>

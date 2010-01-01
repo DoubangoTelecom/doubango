@@ -35,7 +35,7 @@
 #include "tsk_sha1.h"
 #include "tsk_object.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_NACKINFO_CREATE()				tsk_object_new(tsk_nackinfo_def_t)
 #define TCOMP_NACKINFO_SAFE_FREE(self)		tsk_object_unref(self), self = 0
@@ -79,6 +79,8 @@ typedef struct tcomp_nackinfo_s
 }
 tcomp_nackinfo_t;
 
-TINYSIGCOMP_API const void *tcomp_nackinfo_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_nackinfo_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_NAKINFO_H */

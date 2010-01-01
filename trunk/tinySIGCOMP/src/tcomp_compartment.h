@@ -31,6 +31,7 @@
 #define TCOMP_COMPARTMENT_H
 
 #include "tinysigcomp_config.h"
+
 #include "tcomp_types.h"
 #include "tcomp_params.h"
 #include "tcomp_compressordata.h"
@@ -40,7 +41,7 @@
 #include "tsk_object.h"
 #include "tsk_sha1.h"
 
-#include <stdint.h>
+TCOMP_BEGIN_DECLS
 
 #define TCOMP_COMPARTMENT_CREATE(id, sigCompParameters)		tsk_object_new(tcomp_compartment_def_t, (uint64_t)id, (uint16_t)sigCompParameters)
 #define TCOMP_COMPARTMENT_SAFE_FREE(self)					tsk_object_unref(self), self = 0
@@ -98,6 +99,8 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId);
 
 
-TINYSIGCOMP_API const void *tcomp_compartment_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_compartment_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_COMPARTMENT_H */

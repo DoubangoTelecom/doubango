@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_ACCEPT_H_
 #define _TSIP_HEADER_ACCEPT_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	tsip_header_accept_s
@@ -51,4 +54,7 @@ typedef struct tsip_header_Accept_s
 }
 tsip_header_Accept_t;
 
+TSIP_END_DECLS
+
 #endif /* _TSIP_HEADER_ACCEPT_H_ */
+

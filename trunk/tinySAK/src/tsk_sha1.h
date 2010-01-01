@@ -32,6 +32,8 @@
 
 #include "tinySAK_config.h"
 
+TSK_BEGIN_DECLS
+
 typedef enum tsk_sha1_errcode_e
 {
     shaSuccess = 0,
@@ -87,5 +89,6 @@ TINYSAK_API tsk_sha1_errcode_t tsk_sha1result(tsk_sha1context_t *, tsk_sha1diges
 TINYSAK_API void tsk_sha1final(uint8_t *Message_Digest, tsk_sha1context_t *context);
 TINYSAK_API tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1string_t *result);
 
+TSK_END_DECLS
 
 #endif /* _TINYSAK_SHA1_H_ */

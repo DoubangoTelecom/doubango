@@ -33,6 +33,8 @@
 #include "tinySAK_config.h"
 #include "tsk_object.h"
 
+TSK_BEGIN_DECLS
+
 /**@def TSK_LIST_CREATE
 * Create and initialize a linked list.
 * You MUST use @ref TSK_LIST_SAFE_FREE to free a linked list.
@@ -134,7 +136,10 @@ TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* 
 
 
 
-TINYSAK_API const void *tsk_list_def_t;
-TINYSAK_API const void *tsk_list_item_def_t;
+TINYSAK_GEXTERN const void *tsk_list_def_t;
+TINYSAK_GEXTERN const void *tsk_list_item_def_t;
+
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_LIST_H_ */

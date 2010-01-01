@@ -33,6 +33,8 @@
 
 #include "tsk_md5.h"
 
+THTTP_BEGIN_DECLS
+
 TINYHTTP_API size_t thttp_auth_basic_response(const char* userid, const char* password, char** response);
 
 TINYHTTP_API int thttp_auth_digest_HA1(const char* username, const char* realm, const char* password, tsk_md5string_t* ha1);
@@ -42,5 +44,7 @@ TINYHTTP_API int thttp_auth_digest_HA2(const char* method, const char* uri, cons
 
 TINYHTTP_API int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, const char* noncecount, const char* cnonce, 
 											const char* qop, const tsk_md5string_t* ha2, tsk_md5string_t* response);
+
+THTTP_END_DECLS
 
 #endif /* TINYHTTP_THTTP_H */

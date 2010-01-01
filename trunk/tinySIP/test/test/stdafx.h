@@ -35,7 +35,4 @@
 // TODO: reference additional headers your program requires here
 #include <string.h>
 
-#define TINYSAK_IMPORTS
-#define TINYSIP_IMPORTS
-
 #endif /* TEST_TSIP_STDAFX_H */

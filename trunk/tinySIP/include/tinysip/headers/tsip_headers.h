@@ -34,4 +34,10 @@
 
 #include "tinysip/headers/tsip_header_accept.h"
 
+TSIP_BEGIN_DECLS
+
+TSIP_END_DECLS
+
+
 #endif /* TINYSIP_HEADERS_H */
+

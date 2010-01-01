@@ -34,6 +34,8 @@
 #include "tinysip/smc/tsip_transac_nist_sm.h"
 #include "tinysip/transactions/tsip_transac.h"
 
+TSIP_BEGIN_DECLS
+
 typedef struct tsip_transac_nist
 {
 	TSIP_DECLARE_TRANSAC;
@@ -44,4 +46,7 @@ tsip_transac_nist_t;
 
 void tsip_transac_nist_init(tsip_transac_nist_t *self);
 
+TSIP_END_DECLS
+
 #endif /* TINYSIP_TRANSAC_NIST_H */
+

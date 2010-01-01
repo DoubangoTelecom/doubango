@@ -29,9 +29,12 @@
  */
 #ifndef _TSIP_HEADER_CONTACT_H_
 #define _TSIP_HEADER_CONTACT_H_
+
 #include "tinysip_config.h"
 #include "tinysip/tsip_uri.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_CONTACT_CREATE
 * Creates new sip 'Contact' header.  You must call @ref TSIP_HEADER_CONTACT_SAFE_FREE to free the header.
@@ -110,7 +113,10 @@ typedef tsk_list_t tsip_header_Contacts_L_t;
 
 tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, size_t size);
 
-TINYSIP_API const void *tsip_header_Contact_def_t;
-//TINYSIP_API const void *tsip_contact_def_t;
+TINYSIP_GEXTERN const void *tsip_header_Contact_def_t;
+//TINYSIP_GEXTERN const void *tsip_contact_def_t;
+
+TSIP_END_DECLS
 
 #endif /* _TSIP_HEADER_CONTACT_H_ */
+

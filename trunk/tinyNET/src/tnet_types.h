@@ -50,6 +50,8 @@
 
 #include "tsk_errno.h"
 
+TNET_BEGIN_DECLS
+
 typedef int32_t tnet_fd_t;
 typedef uint16_t tnet_port_t;
 typedef char tnet_host_t[NI_MAXHOST];
@@ -73,6 +75,7 @@ typedef TCHAR tnet_error_t[512];
 typedef char tnet_error_t[512];
 #endif
 
+TNET_END_DECLS
 
 #endif /* TNET_TYPES_H */
 

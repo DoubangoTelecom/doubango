@@ -32,6 +32,8 @@
 
 #include "tinysip_config.h"
 
+TSIP_BEGIN_DECLS
+
 #define PARSER_SET_STRING(string) \
 	if(!string) \
 	{ \
@@ -92,4 +94,7 @@ tsip_ragel_state_t;
 
 TINYSIP_API void tsip_ragel_state_init(tsip_ragel_state_t *state, const char *data, size_t size);
 
+TSIP_END_DECLS
+
 #endif /* TINYSIP_RAGEL_STATE_H */
+

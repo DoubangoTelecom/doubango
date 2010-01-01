@@ -42,33 +42,44 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
+/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
+*/
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TSK_UNDER_WINDOWS	1
 #endif
 
-/**@def  TINYSAK_API
-* Used on Windows and Sysbian systems to export public functions.
+/* Used on Windows and Sysbian systems to export/import public functions and global variables.
 */
-#if (TSK_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYSAK_EXPORTS)
-# 	define TINYSAK_API __declspec(dllexport)
-#elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYSAK_IMPORTS)
-# 	define TINYSAK_API __declspec(dllimport)
+#if !defined(__GNUC__) && defined(TINYSAK_EXPORTS)
+# 	define TINYSAK_API		__declspec(dllexport)
+#	define TINYSAK_GEXTERN	__declspec(dllexport)
+#elif !defined(__GNUC__) /*&& defined(TINYSAK_IMPORTS)*/
+# 	define TINYSAK_API		__declspec(dllimport)
+#	define TINYSAK_GEXTERN	__declspec(dllimport)
 #else
-# define TINYSAK_API
+#	define TINYSAK_API
+#	define TINYSAK_GEXTERN	extern
 #endif
 
-//
-// Disable some well-known warnings
-//
+/* Guards against C++ name mangling 
+*/
+#ifdef __cplusplus
+#	define TSK_BEGIN_DECLS extern "C" {
+#	define TSK_END_DECLS }
+#else
+#	define TSK_BEGIN_DECLS 
+#	define TSK_END_DECLS
+#endif
+
+/* Disable some well-known warnings
+*/
 #ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
 #	pragma warning( disable : 4996 )
 #endif
 
-//
-//	Features
-//
-
+/*	Features
+*/
 #if TSK_UNDER_WINDOWS
 #	define HAVE_GETTIMEOFDAY				0
 #elif !HAVE_CONFIG_H
@@ -85,6 +96,7 @@
 #endif /* TSK_MAX */
 
 #include <stdint.h>
+#include <stddef.h>
 
 
 

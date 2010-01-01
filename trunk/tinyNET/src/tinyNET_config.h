@@ -42,6 +42,8 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
+/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
+*/
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TNET_UNDER_WINDOWS	1
 #endif
@@ -49,25 +51,33 @@
 /**@def  TINYNET_API
 * Used on Windows and Sysbian systems to export public functions.
 */
-#if (TNET_UNDER_WINDOWS || defined(__SYMBIAN32__)) && defined(TINYNET_EXPORTS)
+#if !defined(__GNUC__) && defined(TINYNET_EXPORTS)
 # 	define TINYNET_API __declspec(dllexport)
-#elif (defined(WIN32) || defined(_WIN32_WCE) || defined(__SYMBIAN32__)) && defined(TINYNET_IMPORTS)
+# 	define TINYNET_GEXTERN __declspec(dllexport)
+#elif !defined(__GNUC__) /*&& defined(TINYNET_IMPORTS)*/
 # 	define TINYNET_API __declspec(dllimport)
+# 	define TINYNET_GEXTERN __declspec(dllimport)
 #else
-# define TINYNET_API
+#	define TINYNET_API
+#	define TINYNET_GEXTERN	extern
 #endif
 
-//
-// Disable some well-known warnings
-//
+/* Guards against C++ name mangling 
+*/
+#ifdef __cplusplus
+#	define TNET_BEGIN_DECLS extern "C" {
+#	define TNET_END_DECLS }
+#else
+#	define TNET_BEGIN_DECLS 
+#	define TNET_END_DECLS
+#endif
+
+/* Disable some well-known warnings
+*/
 #ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
 #	pragma warning( disable : 4996 )
 #endif
-
-#include <stdint.h>
-
-#define TINYSAK_IMPORTS
 
 #if (_WIN32_WINNT>=0x0600) || (ANDROID)
 #	define TNET_HAVE_POLL		1
@@ -80,6 +90,8 @@
 #else
 #	define TNET_USE_POLL	1
 #endif
+
+#include <stdint.h>
 
 #endif /* _TINYNET_H_ */
 

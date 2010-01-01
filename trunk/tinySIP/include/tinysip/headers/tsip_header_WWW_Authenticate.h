@@ -29,8 +29,11 @@
  */
 #ifndef _TSIP_HEADER_WWW_Authenticate_H_
 #define _TSIP_HEADER_WWW_Authenticate_H_
+
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
+
+TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_WWW_AUTHENTICATE_CREATE
 * Creates new sip 'WWW-AUTHENTICATE' header.  You must call @ref TSIP_HEADER_WWW_AUTHENTICATE_SAFE_FREE to free the header.
@@ -81,6 +84,9 @@ tsip_header_WWW_Authenticate_t;
 
 tsip_header_WWW_Authenticate_t *tsip_header_WWW_Authenticate_parse(const char *data, size_t size);
 
-TINYSIP_API const void *tsip_header_WWW_Authenticate_def_t;
+TINYSIP_GEXTERN const void *tsip_header_WWW_Authenticate_def_t;
+
+TSIP_END_DECLS
 
 #endif /* _TSIP_HEADER_WWW_Authenticate_H_ */
+

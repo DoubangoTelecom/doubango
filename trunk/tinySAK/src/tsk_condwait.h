@@ -33,6 +33,8 @@
 #include "tinySAK_config.h"
 #include "tsk_mutex.h"
 
+TSK_BEGIN_DECLS
+
 /**
 * Pthread condwait handle.
 */
@@ -44,5 +46,7 @@ TINYSAK_API int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t m
 TINYSAK_API int tsk_condwait_signal(tsk_condwait_handle_t* handle);
 TINYSAK_API int tsk_condwait_broadcast(tsk_condwait_handle_t* handle);
 TINYSAK_API void tsk_condwait_destroy(tsk_condwait_handle_t** handle);
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_CONDWAIT_H_ */

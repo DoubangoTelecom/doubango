@@ -36,6 +36,8 @@
 #include "tinysip/tsip_message.h"
 #include "tsip.h"
 
+TSIP_BEGIN_DECLS
+
 #define TSIP_TRANSPORT_LAYER_CREATE(stack)				tsk_object_new(tsip_transport_layer_def_t, stack)
 #define TSIP_TRANSPORT_LAYER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
@@ -58,6 +60,9 @@ int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *br
 int tsip_transport_layer_start(const tsip_transport_layer_t* self);
 int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self);
 
-TINYSIP_API const void *tsip_transport_layer_def_t;
+TINYSIP_GEXTERN const void *tsip_transport_layer_def_t;
+
+TSIP_END_DECLS
 
 #endif /* TINYSIP_TRANSPORT_LAYER_H */
+

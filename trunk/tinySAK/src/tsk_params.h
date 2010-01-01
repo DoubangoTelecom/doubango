@@ -35,6 +35,8 @@
 #include "tsk_list.h"
 #include "tsk_buffer.h"
 
+TSK_BEGIN_DECLS
+
 #define TSK_PARAM_CREATE(name, value)		tsk_object_new(tsk_param_def_t, name, value)
 #define TSK_PARAM_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
@@ -61,6 +63,8 @@ TINYSAK_API int tsk_params_get_param_value_as_int(const tsk_params_L_t *self, co
 TINYSAK_API int tsk_params_param_tostring(const tsk_param_t *param, tsk_buffer_t* output);
 TINYSAK_API int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_buffer_t* output);
 
-TINYSAK_API const void *tsk_param_def_t;
+TINYSAK_GEXTERN const void *tsk_param_def_t;
+
+TSK_END_DECLS
 
 #endif /* _TINYSAK_PARAMS_H_ */

@@ -31,12 +31,15 @@
 #define TCOMP_RESULT_H
 
 #include "tinysigcomp_config.h"
+
 #include "tcomp_state.h"
 #include "tcomp_reqfeed.h"
 #include "tcomp_params.h"
 #include "tcomp_buffer.h"
 
 #include "tsk_object.h"
+
+TCOMP_BEGIN_DECLS
 
 #define MAX_TEMP_SATES	4
 
@@ -58,7 +61,7 @@ typedef struct tcomp_tempstate_to_free_s
 }
 tcomp_tempstate_to_free_t;
 
-TINYSIGCOMP_API const void *tcomp_tempstate_to_free_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_tempstate_to_free_def_t;
 
 /**
 * SigComp decompression result.
@@ -106,8 +109,9 @@ uint8_t tcomp_result_getTempStatesToCreateSize(const tcomp_result_t *result);
 void tcomp_result_addTempStateToFree(tcomp_result_t *result, tcomp_tempstate_to_free_t* lpDesc);
 uint8_t tcomp_result_getTempStatesToFreeSize(const tcomp_result_t *result);
 
-TINYSIGCOMP_API const void *tcomp_result_def_t;
-TINYSIGCOMP_API const void *tcomp_tempstate_to_free_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_result_def_t;
+TINYSIGCOMP_GEXTERN const void *tcomp_tempstate_to_free_def_t;
 
+TCOMP_END_DECLS
 
 #endif /* TCOMP_RESULT_H */

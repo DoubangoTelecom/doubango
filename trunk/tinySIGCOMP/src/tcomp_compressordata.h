@@ -33,6 +33,8 @@
 #include "tinysigcomp_config.h"
 #include "tcomp_buffer.h"
 
+TCOMP_BEGIN_DECLS
+
 typedef void tcomp_compressordata_t;
 
 typedef void (*tcomp_xxx_freeGhostState)(tcomp_compressordata_t *data);
@@ -67,6 +69,8 @@ typedef void (*tcomp_xxx_ackGhost)(tcomp_compressordata_t *data, const tcomp_buf
 //void tcomp_compressordata_ackGhost(tcomp_compressordata_t *compdata, const tcomp_buffer_handle_t *stateid);
 //void tcomp_compressordata_freeGhostState(tcomp_compressordata_t *compdata);
 //
-//TINYSIGCOMP_API const void *tcomp_compressordata_def_t;
+//TINYSIGCOMP_GEXTERN const void *tcomp_compressordata_def_t;
+
+TCOMP_END_DECLS
 
 #endif /* TCOMP_COMPRESSOR_DATA_H */
