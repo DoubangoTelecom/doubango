@@ -38,12 +38,14 @@
 #if TSK_UNDER_WINDOWS
 #	include <windows.h>
 #	include "tsk_errno.h"
+#	define CONDWAIT_S void
 	typedef HANDLE	CONDWAIT_T;
 #	define TIMED_OUT	WAIT_TIMEOUT
 #else
 #	include <sys/time.h>
 #	include <pthread.h>
-	typedef pthread_cond_t* CONDWAIT_T;
+#	define CONDWAIT_S pthread_cond_t
+	typedef CONDWAIT_S* CONDWAIT_T;
 #	define TIMED_OUT	ETIMEDOUT
 #endif
 
@@ -86,7 +88,7 @@ tsk_condwait_handle_t* tsk_condwait_create()
 			TSK_FREE(condwait);
 		}
 #else
-		condwait->pcond = (CONDWAIT_T)tsk_calloc(1, sizeof(CONDWAIT_T));
+		condwait->pcond = (CONDWAIT_T)tsk_calloc(1, sizeof(CONDWAIT_S));
 		if(pthread_cond_init(condwait->pcond, 0))
 		{
 			TSK_DEBUG_ERROR("Failed to initialize the new conwait.");

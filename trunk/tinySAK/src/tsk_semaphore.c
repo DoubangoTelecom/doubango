@@ -30,20 +30,52 @@
 #include "tsk_semaphore.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
+#include "tsk_string.h"
 
-#if TSK_UNDER_WINDOWS
+/* Apple claims that they fully support POSIX semaphore but ...
+ * Structure to handle unnamed semaphores.
+ */
+#if defined(__APPLE__) /* Mac OSX/Darwin/Iphone/Ipod Touch */
+#	define TSK_USE_NAMED_SEM	1
+#else 
+#	define TSK_USE_NAMED_SEM	0
+#endif
+
+#if TSK_UNDER_WINDOWS /* Windows XP/Vista/7/CE */
+
 #	include <windows.h>
 #	include "tsk_errno.h"
+#	define SEMAPHORE_S void
 	typedef HANDLE	SEMAPHORE_T;
-#else
+//#else if define(__APPLE__) /* Mac OSX/Darwin/Iphone/Ipod Touch */
+//#	include <march/semaphore.h>
+//#	include <march/task.h>
+#else /* All *nix */
+
 #	include <pthread.h>
 #	include <semaphore.h>
+#	if TSK_USE_NAMED_SEM
+		static int sem_count = 0;
+		typedef struct named_sem_s
+		{
+			sem_t* sem;
+			char* name;
+		} named_sem_t;
+#		define SEMAPHORE_S named_sem_t
+#		define GET_SEM(PSEM) (((named_sem_t*)(PSEM))->sem)
+#	else
+#		define SEMAPHORE_S sem_t
+#		define GET_SEM(PSEM) ((PSEM))
+#	endif /* TSK_USE_NAMED_SEM */
 	typedef sem_t* SEMAPHORE_T;
+
 #endif
 
 #if defined(__GNUC__)
 #	include <errno.h>
 #endif
+
+
 
 /**@defgroup tsk_semaphore_group Pthread Semaphore
 */
@@ -60,12 +92,23 @@ tsk_semaphore_handle_t* tsk_semaphore_create()
 #if TSK_UNDER_WINDOWS
 	handle = CreateSemaphore(NULL, 0, 0x7FFFFFFF, NULL);
 #else
-	handle = tsk_calloc(1, sizeof(SEMAPHORE_T));
-
-	if(sem_init((SEMAPHORE_T)handle, PTHREAD_PROCESS_PRIVATE, 0))
+	handle = tsk_calloc(1, sizeof(SEMAPHORE_S));
+	
+#if TSK_USE_NAMED_SEM
+	named_sem_t * nsem = (named_sem_t*)handle;
+	tsk_sprintf(&(nsem->name), "/sem-%d", sem_count++);
+	if((nsem->sem = sem_open(nsem->name, O_CREAT /*| O_EXCL*/, S_IRUSR | S_IWUSR, 0)) == SEM_FAILED)
 	{
+		TSK_FREE(nsem->name);
+#else
+	int ret, pshared;
+	
+	pshared = 0;
+	if((ret = sem_init((SEMAPHORE_T)handle, pshared, 0)))
+	{
+#endif
 		TSK_FREE(handle);
-		TSK_DEBUG_ERROR("Failed to initialize the new semaphore.");
+		TSK_DEBUG_ERROR("Failed to initialize the new semaphore (errno=%d).", errno);
 	}
 #endif
 	
@@ -74,7 +117,6 @@ tsk_semaphore_handle_t* tsk_semaphore_create()
 		TSK_DEBUG_ERROR("Failed to create new mutex.");
 	}
 	return handle;
-	
 }
 
 /**@ingroup tsk_semaphore_group
@@ -91,7 +133,7 @@ int tsk_semaphore_increment(tsk_semaphore_handle_t* handle)
 #if TSK_UNDER_WINDOWS
 		if((ret = ReleaseSemaphore((SEMAPHORE_T)handle, 1L, 0L) ? 0 : -1))
 #else
-		if(ret = sem_post((SEMAPHORE_T)handle))
+		if(ret = sem_post((SEMAPHORE_T)GET_SEM(handle)))
 #endif
 		{
 			TSK_DEBUG_ERROR("sem_post function failed: %d", ret);
@@ -117,7 +159,7 @@ int tsk_semaphore_decrement(tsk_semaphore_handle_t* handle)
 #else
 		do 
 		{ 
-			ret = sem_wait((SEMAPHORE_T)handle); 
+			ret = sem_wait((SEMAPHORE_T)GET_SEM(handle)); 
 		} 
 		while ( errno == EINTR );
 		if(ret)	TSK_DEBUG_ERROR("sem_wait function failed: %d", errno);
@@ -140,8 +182,14 @@ void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
 		CloseHandle((SEMAPHORE_T)*handle);
 		*handle = 0;
 #else
-		sem_destroy((SEMAPHORE_T)*handle);
-		tsk_free(handle);
+#	if TSK_USE_NAMED_SEM
+		named_sem_t * nsem = ((named_sem_t*)*handle);
+		sem_close(nsem->sem);
+		TSK_FREE(nsem->name);
+#else
+		sem_destroy((SEMAPHORE_T)GET_SEM(*handle));
+#endif /* TSK_USE_NAMED_SEM */
+	tsk_free(handle);
 #endif
 	}
 	else
