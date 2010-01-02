@@ -133,7 +133,11 @@ static void* tnet_socket_create(void * self, va_list * app)
 		tnet_host_t local_hostname;
 
 		const char *host = va_arg(*app, const char*);
+#if defined(__GNUC__)
+		sock->port = (tnet_port_t)va_arg(*app, unsigned);
+#else
 		sock->port = va_arg(*app, tnet_port_t);
+#endif
 		tsk_itoa(sock->port, &port);
 		sock->type = va_arg(*app, tnet_socket_type_t);
 

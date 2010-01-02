@@ -36,6 +36,8 @@
 
 #include "tnet_socket.h"
 
+#include <string.h>
+
 /**
  * @fn	void tnet_getlasterror(tnet_error_t *error)
  *
@@ -48,11 +50,11 @@
 **/
 void tnet_getlasterror(tnet_error_t *error)
 {
+	int err  = tnet_geterrno();
 	memset(*error, 0, sizeof(*error));
 
 #if TNET_UNDER_WINDOWS
 	{
-		int err  = WSAGetLastError();
 #ifdef _WIN32_WCE
 		FormatMessage
 #else
@@ -285,7 +287,7 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	}
 #endif
 	
-	if(status = bind(*fd, (const struct sockaddr*)&ai_addr, sizeof(ai_addr)))
+	if(status = bind(*fd, (const struct sockaddr*)&ai_addr, ai_addr.ss_len))
 	{
 		TNET_PRINT_LAST_ERROR();
 		tnet_sockfd_close(fd);
