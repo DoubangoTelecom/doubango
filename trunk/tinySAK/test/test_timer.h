@@ -58,6 +58,8 @@ void test_timer()
 	tsk_timer_manager_start(handle);
 	while(!tsk_timer_manager_isready(handle)) tsk_thread_sleep(1000);
 	
+	tsk_thread_sleep(1000);
+	
 	for(i=0; i<sizeof(timers)/sizeof(test_timer_t); ++i)
 	{
 		timers[i].id = tsk_timer_manager_schedule(handle, timers[i].timeout, test_timer_callback, timers[i].arg);

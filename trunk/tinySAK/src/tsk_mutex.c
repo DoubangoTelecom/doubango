@@ -35,9 +35,11 @@
 #	include <windows.h>
 #	include "tsk_errno.h"
 	typedef HANDLE	MUTEX_T;
+#	define MUTEX_S void
 #else
 #	include <pthread.h>
-	typedef pthread_mutex_t* MUTEX_T;
+#	define MUTEX_S pthread_mutex_t
+	typedef MUTEX_S* MUTEX_T;
 #endif
 
 #if defined(__GNUC__)
@@ -61,7 +63,7 @@ tsk_mutex_handle_t* tsk_mutex_create()
 #if TSK_UNDER_WINDOWS
 	handle = CreateMutex(NULL, FALSE, NULL);
 #else
-	handle = tsk_calloc(1, sizeof(MUTEX_T));
+	handle = tsk_calloc(1, sizeof(MUTEX_S));
 	if(pthread_mutex_init((MUTEX_T)handle, 0))
 	{
 		TSK_FREE(handle);
