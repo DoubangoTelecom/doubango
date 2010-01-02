@@ -28,7 +28,8 @@
 #endif
 
 #include <stdio.h>
-#include <tchar.h>
+#include <string.h>
+//#include <tchar.h>
 
 
 

@@ -79,7 +79,7 @@
 #	pragma warning( disable : 4996 )
 #endif
 
-#if (_WIN32_WINNT>=0x0600) || (ANDROID)
+#if (_WIN32_WINNT>=0x0600) || (ANDROID) || defined (__APPLE__)
 #	define TNET_HAVE_POLL		1
 #else
 #	define TNET_HAVE_POLL		0

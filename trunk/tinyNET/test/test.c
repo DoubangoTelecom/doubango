@@ -34,9 +34,9 @@
 
 #define RUN_TEST_LOOP		1
 
-#define RUN_TEST_ALL		1
+#define RUN_TEST_ALL		0
 #define RUN_TEST_SOCKETS	0
-#define RUN_TEST_TRANSPORT	0
+#define RUN_TEST_TRANSPORT	1
 #define RUN_TEST_AUTH		0
 
 #ifdef _WIN32_WCE

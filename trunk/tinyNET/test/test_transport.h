@@ -49,10 +49,10 @@ static int tnet_udp_data_read(const void *callback_data, const void* data, size_
 
 void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 {
-	tnet_socket_type_t type = tnet_socket_type_tcp_ipv4;
+	//tnet_socket_type_t type = tnet_socket_type_tcp_ipv4;
 	tnet_ip_t ip;
 	tnet_port_t port;
-	tnet_fd_t fd = INVALID_SOCKET;
+	tnet_fd_t fd = TNET_INVALID_FD;
 
 	if(tnet_transport_start(transport))
 	{
@@ -68,7 +68,7 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 	//tsk_thread_sleep(500);
 
 	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 4060)) == INVALID_SOCKET)
+	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == TNET_INVALID_FD)
 	{
 		TSK_DEBUG_ERROR("Failed to connect TCP/IPv4 transport.");
 		return;
@@ -102,10 +102,10 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 
 int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 {
-	tnet_socket_type_t type = tnet_socket_type_udp_ipv4;
+	//tnet_socket_type_t type = tnet_socket_type_udp_ipv4;
 	tnet_ip_t ip;
 	tnet_port_t port;
-	tnet_fd_t fd = INVALID_SOCKET;
+	tnet_fd_t fd = TNET_INVALID_FD;
 	
 	if(tnet_transport_start(transport))
 	{
@@ -116,7 +116,7 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	//tsk_thread_sleep(2000);
 
 	/* Connect to our SIP REGISTRAR */
-	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == INVALID_SOCKET)
+	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == TNET_INVALID_FD)
 	{
 		TSK_DEBUG_ERROR("Failed to connect UDP/IPv4 transport.");
 		//tnet_transport_shutdown(transport);

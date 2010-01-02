@@ -157,7 +157,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		fd = transport->master->fd;
 	}
 	
-	if((status = connect(fd, (struct sockaddr*)&to, sizeof(to))))
+	if((status = connect(fd, (struct sockaddr*)&to, to.ss_len)))
 	{
 		status = tnet_geterrno();
 		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS)
@@ -192,7 +192,7 @@ size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from
 		goto bail;
 	}
 
-	if((numberOfBytesSent = send(from, buf, size, 0)) == 0)
+	if((numberOfBytesSent = send(from, buf, size, 0)) <= 0)
 	{
 		TNET_PRINT_LAST_ERROR();
 
