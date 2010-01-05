@@ -143,8 +143,8 @@ static void* tsip_header_Allow_Events_create(void *self, va_list * app)
 	tsip_header_Allow_Events_t *Allow_events = self;
 	if(Allow_events)
 	{
-		Allow_events->type = tsip_htype_Allow_Events;
-		Allow_events->tostring = tsip_header_Allow_Event_tostring;
+		TSIP_HEADER(Allow_events)->type = tsip_htype_Allow_Events;
+		TSIP_HEADER(Allow_events)->tostring = tsip_header_Allow_Event_tostring;
 	}
 	else
 	{

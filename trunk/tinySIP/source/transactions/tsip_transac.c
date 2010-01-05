@@ -30,6 +30,7 @@
 #include "tinysip/transactions/tsip_transac.h"
 
 #include "tinysip/transports/tsip_transport_layer.h"
+#include "tinysip/transactions/tsip_transac_layer.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -69,7 +70,7 @@ int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2)
 {
 	if(t1 && t2)
 	{
-		return (tsk_stricmp(t1->branch, t2->branch) + tsk_stricmp(t1->cseq_method, t2->cseq_method));
+		return (tsk_strcmp(t1->branch, t2->branch) + tsk_strcmp(t1->cseq_method, t2->cseq_method));
 	}
 	return -1;
 }
@@ -89,3 +90,7 @@ int tsip_transac_deinit(tsip_transac_t *transac)
 	return -1;
 }
 
+int tsip_transac_remove_callback(const tsip_transac_t* self, tsk_timer_id_t timer_id)
+{
+	return tsip_transac_layer_remove(TSIP_STACK(self->stack)->layer_transac, TSIP_TRANSAC(self));
+}

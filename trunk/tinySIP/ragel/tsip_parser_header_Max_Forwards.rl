@@ -123,8 +123,8 @@ static void* tsip_header_Max_Forwards_create(void *self, va_list * app)
 	tsip_header_Max_Forwards_t *Max_Forwards = self;
 	if(Max_Forwards)
 	{
-		Max_Forwards->type = tsip_htype_Max_Forwards;
-		Max_Forwards->tostring = tsip_header_Max_Forwards_tostring;
+		TSIP_HEADER(Max_Forwards)->type = tsip_htype_Max_Forwards;
+		TSIP_HEADER(Max_Forwards)->tostring = tsip_header_Max_Forwards_tostring;
 		Max_Forwards->value = va_arg(*app, int32_t);
 	}
 	else

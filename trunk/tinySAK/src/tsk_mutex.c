@@ -36,10 +36,12 @@
 #	include "tsk_errno.h"
 	typedef HANDLE	MUTEX_T;
 #	define MUTEX_S void
+#	define TSK_ERROR_NOT_OWNER ERROR_NOT_OWNER
 #else
 #	include <pthread.h>
 #	define MUTEX_S pthread_mutex_t
 	typedef MUTEX_S* MUTEX_T;
+#	define TSK_ERROR_NOT_OWNER EPERM
 #endif
 
 #if defined(__GNUC__)
@@ -113,13 +115,15 @@ int tsk_mutex_unlock(tsk_mutex_handle_t* handle)
 	{
 #if TSK_UNDER_WINDOWS
 		if((ret = ReleaseMutex((MUTEX_T)handle) ? 0 : -1))
+		{
+			ret = GetLastError();
 #else
 		if(ret = pthread_mutex_unlock((MUTEX_T)handle))
-#endif
 		{
-			if(ret == EPERM)
+#endif
+			if(ret == TSK_ERROR_NOT_OWNER)
 			{
-				TSK_DEBUG_INFO("The calling thread does not own the mutex: %d", ret);
+				TSK_DEBUG_WARN("The calling thread does not own the mutex: %d", ret);
 			}
 			else
 			{

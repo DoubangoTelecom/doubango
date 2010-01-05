@@ -127,6 +127,8 @@ typedef struct tsip_event_s
 	TSK_DECLARE_OBJECT;
 
 	const tsip_stack_handle_t * stack;
+	tsip_operation_id_t opid;
+
 	short status_code;
 	char *reason_phrase;
 
@@ -137,7 +139,7 @@ tsip_event_t;
 TINYSIP_GEXTERN const void *tsip_event_def_t;
 
 
-typedef int (*tsip_stack_callback)(tsip_event_t *sipevent);
+typedef int (*tsip_stack_callback)(const tsip_event_t *sipevent);
 
 
 
@@ -203,6 +205,7 @@ TINYSIP_API int tsip_global_deinit();
 TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback callback, ...);
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
+int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
 

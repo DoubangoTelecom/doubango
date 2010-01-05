@@ -138,8 +138,8 @@ static void* tsip_header_Require_create(void *self, va_list * app)
 	tsip_header_Require_t *Require = self;
 	if(Require)
 	{
-		Require->type = tsip_htype_Require;
-		Require->tostring = tsip_header_Require_tostring;
+		TSIP_HEADER(Require)->type = tsip_htype_Require;
+		TSIP_HEADER(Require)->tostring = tsip_header_Require_tostring;
 	}
 	else
 	{

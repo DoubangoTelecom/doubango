@@ -47,8 +47,8 @@
 
 void *run(void* self);
 
-#define TSIP_EVENT_CREATE(str)				tsk_object_new(tsip_event_def_t, str)
-#define TSIP_EVENT_SAFE_FREE(self)			tsk_object_unref(self), self = 0
+#define TSIP_EVENT_CREATE(stack, opid, status_code, phrase, incoming, type)		tsk_object_new(tsip_event_def_t, stack, opid, status_code, phrase, incoming, type)
+#define TSIP_EVENT_SAFE_FREE(self)											tsk_object_unref(self), self = 0
 
 int __tsip_stack_set(tsip_stack_t *self, va_list values)
 {
@@ -345,6 +345,21 @@ int tsip_stack_set(tsip_stack_handle_t *self, ...)
 	return -1;
 }
 
+int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type)
+{
+	if(self)
+	{
+		const tsip_stack_t *stack = self;
+
+		TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), stack, opid, status_code, reason_phrase, incoming, type);
+		//tsip_event_t *event = TSIP_EVENT_CREATE(stack, opid, status_code, reason_phrase, incoming, type);
+		//TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), event);
+
+		return 0;
+	}
+	return -1;
+}
+
 int tsip_stack_stop(tsip_stack_handle_t *self)
 {
 	if(self)
@@ -503,8 +518,6 @@ void *run(void* self)
 
 
 
-
-
 //========================================================
 //	SIP event object definition
 //
@@ -514,6 +527,8 @@ static void* tsip_event_create(void * self, va_list * app)
 	if(sipevent)
 	{
 		sipevent->stack = va_arg(*app, const tsip_stack_handle_t *);
+		sipevent->opid = va_arg(*app, tsip_operation_id_t);
+
 		sipevent->status_code = va_arg(*app, short);
 		sipevent->reason_phrase = tsk_strdup(va_arg(*app, const char *));
 

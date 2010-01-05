@@ -78,6 +78,7 @@ typedef tsk_list_t tsk_timers_L_t; /**< List of @ref tsk_timer_t elements. */
 typedef struct tsk_timer_manager_s
 {
 	TSK_DECLARE_RUNNABLE;
+
 	unsigned active:1;
 	void* mainThreadId[1];
 	tsk_condwait_handle_t *condwait;
@@ -143,7 +144,7 @@ void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 		tsk_list_item_t *item = 0;
 
 		tsk_mutex_lock(manager->mutex);
-
+		
 		tsk_list_foreach(item, manager->timers)
 		{
 			tsk_timer_t* timer = item->data;
@@ -187,6 +188,7 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 		timer_id = timer->id;
 		tsk_mutex_lock(manager->mutex);
 		tsk_list_push_ascending_data(manager->timers, ((void**) &timer));
+		//tsk_timer_manager_debug(self);
 		tsk_mutex_unlock(manager->mutex);
 
 		tsk_condwait_signal(manager->condwait);
@@ -231,7 +233,7 @@ static void *run(void* self)
 
 	if(curr = TSK_RUNNABLE_POP_FIRST(manager))
 	{
-		const tsk_timer_t *timer = (const tsk_timer_t *)curr->data;
+		tsk_timer_t *timer = (tsk_timer_t *)curr->data;
 		if(timer->callback)
 		{
 			timer->callback(timer->arg, timer->id);
@@ -278,7 +280,7 @@ peek_first:
 		curr = TSK_TIMER_GET_FIRST();
 		tsk_mutex_unlock(manager->mutex);
 
-		if(curr && !curr->canceled) 
+		if(!curr->canceled) 
 		{
 			epoch = tsk_time_epoch();
 			if(epoch >= curr->timeout)
@@ -302,7 +304,7 @@ peek_first:
 				}
 			}
 		}
-		else if(curr && curr->canceled)
+		else
 		{
 			tsk_mutex_lock(manager->mutex);
 			tsk_list_remove_item_by_data(manager->timers, curr);

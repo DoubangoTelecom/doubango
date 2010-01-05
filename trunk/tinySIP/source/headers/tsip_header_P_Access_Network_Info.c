@@ -306,8 +306,8 @@ static void* tsip_header_P_Access_Network_Info_create(void *self, va_list * app)
 	if(P_Access_Network_Info)
 	{
 		P_Access_Network_Info->value = tsk_strdup(va_arg(*app, const char *));
-		P_Access_Network_Info->type = tsip_htype_P_Access_Network_Info;
-		P_Access_Network_Info->tostring = tsip_header_P_Access_Network_Info_tostring;
+		TSIP_HEADER(P_Access_Network_Info)->type = tsip_htype_P_Access_Network_Info;
+		TSIP_HEADER(P_Access_Network_Info)->tostring = tsip_header_P_Access_Network_Info_tostring;
 	}
 	else
 	{

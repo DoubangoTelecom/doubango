@@ -70,7 +70,7 @@
 
 	action parse_param
 	{
-		PARSER_ADD_PARAM(hdr_from->params);
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_from));
 	}
 
 	action eob
@@ -157,8 +157,8 @@ static void* tsip_header_From_create(void *self, va_list * app)
 		if(uri) From->uri = tsk_object_ref((void *)uri);
 		From->tag = tsk_strdup(tag);
 
-		From->type = tsip_htype_From;
-		From->tostring = tsip_header_From_tostring;
+		TSIP_HEADER(From)->type = tsip_htype_From;
+		TSIP_HEADER(From)->tostring = tsip_header_From_tostring;
 	}
 	else
 	{
@@ -178,7 +178,7 @@ static void* tsip_header_From_destroy(void *self)
 		TSK_FREE(From->tag);
 
 		TSIP_URI_SAFE_FREE(From->uri);
-		TSK_LIST_SAFE_FREE(From->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(From));
 	}
 	else TSK_DEBUG_ERROR("Null From header.");
 

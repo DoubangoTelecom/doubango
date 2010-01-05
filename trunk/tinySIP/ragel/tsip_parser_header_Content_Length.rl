@@ -120,8 +120,8 @@ static void* tsip_header_Content_Length_create(void *self, va_list * app)
 	tsip_header_Content_Length_t *Content_Length = self;
 	if(Content_Length)
 	{
-		Content_Length->type = tsip_htype_Content_Length;
-		Content_Length->tostring = tsip_header_Content_Length_tostring;
+		TSIP_HEADER(Content_Length)->type = tsip_htype_Content_Length;
+		TSIP_HEADER(Content_Length)->tostring = tsip_header_Content_Length_tostring;
 	}
 	else
 	{

@@ -307,8 +307,8 @@ static void* tsip_header_Call_ID_create(void *self, va_list * app)
 	if(Call_ID)
 	{
 		Call_ID->value = tsk_strdup(va_arg(*app, const char *));
-		Call_ID->type = tsip_htype_Call_ID;
-		Call_ID->tostring = tsip_header_Call_ID_tostring;
+		TSIP_HEADER(Call_ID)->type = tsip_htype_Call_ID;
+		TSIP_HEADER(Call_ID)->tostring = tsip_header_Call_ID_tostring;
 	}
 	else
 	{
@@ -325,7 +325,7 @@ static void* tsip_header_Call_ID_destroy(void *self)
 	if(Call_ID)
 	{
 		TSK_FREE(Call_ID->value);
-		TSK_LIST_SAFE_FREE(Call_ID->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Call_ID));
 	}
 	else TSK_DEBUG_ERROR("Null Call_ID header.");
 

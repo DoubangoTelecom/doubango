@@ -171,7 +171,7 @@ int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 	static const char* hname;
 	static char separator;
 
-	if(self && self->tostring)
+	if(self && TSIP_HEADER(self)->tostring)
 	{
 		tsk_list_item_t *item;
 		int first = 1;
@@ -186,7 +186,7 @@ int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 		/*
 		* Header value.
 		*/
-		if((ret=self->tostring(self, output)))
+		if((ret=TSIP_HEADER(self)->tostring(self, output)))
 		{
 			// CHECK all headers return value!
 			//return ret;

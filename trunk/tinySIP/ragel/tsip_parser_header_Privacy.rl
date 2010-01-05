@@ -149,8 +149,8 @@ static void* tsip_header_Privacy_create(void *self, va_list * app)
 	tsip_header_Privacy_t *Privacy = self;
 	if(Privacy)
 	{
-		Privacy->type = tsip_htype_Privacy;
-		Privacy->tostring = tsip_header_Privacy_tostring;
+		TSIP_HEADER(Privacy)->type = tsip_htype_Privacy;
+		TSIP_HEADER(Privacy)->tostring = tsip_header_Privacy_tostring;
 	}
 	else
 	{

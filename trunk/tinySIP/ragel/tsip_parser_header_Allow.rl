@@ -142,8 +142,8 @@ static void* tsip_header_Allow_create(void *self, va_list * app)
 		{
 			Allow->methods = tsip_header_Allow_parse(methods, strlen(methods));
 		}*/
-		Allow->type = tsip_htype_Allow;
-		Allow->tostring = tsip_header_Allow_tostring;
+		TSIP_HEADER(Allow)->type = tsip_htype_Allow;
+		TSIP_HEADER(Allow)->tostring = tsip_header_Allow_tostring;
 	}
 	else
 	{

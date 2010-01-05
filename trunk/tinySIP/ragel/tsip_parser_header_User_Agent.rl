@@ -126,8 +126,8 @@ static void* tsip_header_User_Agent_create(void *self, va_list * app)
 	tsip_header_User_Agent_t *User_Agent = self;
 	if(User_Agent)
 	{
-		User_Agent->type = tsip_htype_User_Agent;
-		User_Agent->tostring = tsip_header_User_Agent_tostring;
+		TSIP_HEADER(User_Agent)->type = tsip_htype_User_Agent;
+		TSIP_HEADER(User_Agent)->tostring = tsip_header_User_Agent_tostring;
 		User_Agent->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else

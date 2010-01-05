@@ -214,9 +214,9 @@ static void* tnet_transport_create(void * self, va_list * app)
 		const char *host = va_arg(*app, const char*);
 		
 #if defined(__GNUC__)
-		uint16_t port = (uint16_t)va_arg(*app, unsigned);
+		tnet_port_t port = (uint16_t)va_arg(*app, unsigned);
 #else
-		uint16_t port = va_arg(*app, tnet_port_t);
+		tnet_port_t port = (tnet_port_t)va_arg(*app, tnet_port_t);
 #endif
 		
 		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);

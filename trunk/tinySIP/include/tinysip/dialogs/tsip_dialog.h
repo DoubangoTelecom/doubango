@@ -38,18 +38,28 @@
 #include "tinysip/tsip_message.h"
 #include "tinysip/tsip_operation.h"
 
-#include "tsk_object.h"
+#include "tinysip/authentication/tsip_challenge.h"
+
+#include "tsk_safeobj.h"
 #include "tsk_list.h"
 #include "tsk_string.h"
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG(self)									((tsip_dialog_t*)(self))
-#define TSIP_DIALOG_GET_STATE(self)							TSIP_DIALOG(self)->state
+#define TSIP_DIALOG(self)													((tsip_dialog_t*)(self))
+#define TSIP_DIALOG_GET_STATE(self)											TSIP_DIALOG(self)->state
+#define TSIP_DIALOG_GET_STACK(self)											TSIP_STACK(TSIP_DIALOG(self)->stack)
 
-#define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)				self->timer##TX.id = tsk_timer_manager_schedule(TSIP_STACK(self->stack)->timer_mgr, TSK_TIME_S_2_MS(self->timer##TX.timeout), TSK_TIMER_CALLBACK(tsip_dialog_##name##Context_sm_##TX), &(self->_fsm))	
+#define TSIP_DIALOG_SYNC_BEGIN(self)										tsk_safeobj_lock(TSIP_DIALOG(self))
+#define TSIP_DIALOG_SYNC_END(self)											tsk_safeobj_unlock(TSIP_DIALOG(self))
 
-#define TSIP_DIALOG_EXPIRES_DEFAULT							3600
+#define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)								\
+	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, TSK_TIME_S_2_MS(self->timer##TX.timeout), TSK_TIMER_CALLBACK(tsip_dialog_##name##_timer_callback), self)	
+
+#define TSIP_DIALOG_ALERT_USER(self, code, reason_phrase, incoming, type)	\
+	tsip_stack_alert(TSIP_DIALOG(self)->stack, /*tsip_operation_get_id(TSIP_DIALOG(self)->operation)*/0, code, reason_phrase, incoming, type)
+
+#define TSIP_DIALOG_EXPIRES_DEFAULT											3600
 
 typedef enum tsip_dialog_state_e
 {
@@ -87,41 +97,51 @@ tsip_dialog_event_type_t;
 
 typedef int (*tsip_dialog_event_callback)(const void *arg, tsip_dialog_event_type_t type, const tsip_message_t *msg);
 
-#define TSIP_DECLARE_DIALOG struct { \
-	TSK_DECLARE_OBJECT; \
-	\
-	tsip_dialog_type_t type; \
-	\
-	const tsip_stack_handle_t *stack;\
-	const tsip_operation_handle_t* operation; \
-	\
-	tsip_dialog_state_t state; \
-	\
-	unsigned running:1; \
-	\
-	char* tag_local; \
-	tsip_uri_t* uri_local; \
-	char* tag_remote; \
-	tsip_uri_t* uri_remote; \
-	\
-	tsip_uri_t* uri_remote_target; \
-	\
-	int32_t cseq_value; \
-	char* cseq_method; \
-	int32_t rseq_value; \
-	\
-	int32_t expires; \
-	\
-	char* callid; \
-	\
-	tsip_uris_L_t *routes; \
-	\
-	tsip_dialog_event_callback callback; \
-}
+/*================================
+*/
+typedef struct tsip_dialog_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	tsip_dialog_type_t type;
+	
+	const tsip_stack_handle_t *stack;
+	const tsip_operation_handle_t* operation;
+	
+	tsip_dialog_state_t state;
+	
+	unsigned running:1;
+	
+	char* tag_local;
+	tsip_uri_t* uri_local;
+	char* tag_remote;
+	tsip_uri_t* uri_remote;
+	
+	tsip_uri_t* uri_remote_target;
+	
+	int32_t cseq_value;
+	char* cseq_method;
+	int32_t rseq_value;
+	
+	int32_t expires;
+	
+	char* callid;
+	
+	tsip_uris_L_t *routes;
+	
+	tsip_challenges_L_t *challenges;
+	
+	tsip_dialog_event_callback callback;
 
-typedef TSIP_DECLARE_DIALOG tsip_dialog_t;
+	TSK_DECLARE_SAFEOBJ;
+}
+tsip_dialog_t;
+
+#define TSIP_DECLARE_DIALOG tsip_dialog_t dialog
 
 typedef tsk_list_t tsip_dialogs_L_t;
+/*
+================================*/
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method);
 int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request);

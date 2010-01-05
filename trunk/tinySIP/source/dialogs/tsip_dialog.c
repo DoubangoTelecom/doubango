@@ -34,6 +34,12 @@
 
 #include "tinysip/transactions/tsip_transac_nict.h"
 
+#include "tinysip/headers/tsip_header_Authorization.h"
+#include "tinysip/headers/tsip_header_Proxy_Authorization.h"
+#include "tinysip/headers/tsip_header_WWW_Authenticate.h"
+#include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
+
+int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response);
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
 {
@@ -179,6 +185,29 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	{
 		TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(TSIP_STACK(self->stack)->netinfo));
 	}
+	
+	/* Update authorizations */
+	{
+		tsk_list_item_t *item;
+		tsip_challenge_t *challenge;
+		tsip_header_t* auth_hdr;
+		tsk_list_foreach(item, self->challenges)
+		{
+			challenge = item->data;
+			auth_hdr = tsip_challenge_create_header_authorization(challenge, request);
+			if(auth_hdr)
+			{
+				tsip_message_add_header(request, auth_hdr);
+				tsk_object_unref(auth_hdr), auth_hdr = 0;
+			}
+		}
+	}
+
+	/* Update CSeq */
+	if(!tsk_striequals(request->line_request.method, "ACK") && !tsk_striequals(request->line_request.method, "CANCEL"))
+	{
+		request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
+	}
 
 
 	TSIP_URI_SAFE_FREE(request_uri);
@@ -189,43 +218,57 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 }
 
 
+/**
+ * @fn	int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
+ *
+ * @brief	Sends a SIP/IMS request. This function is responsible for transaction creation.
+ *
+ * @author	Mamadou
+ * @date	1/4/2010
+ *
+ * @param [in,out]	self	The parent dialog. All callback events will be notified to this dialog.
+ * @param [in,out]	request	The request to send.
+ *
+ * @return	Zero if succeed and no-zero error code otherwise. 
+**/
 int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 {
-	if(self && self->stack /*&& TSIP_MESSAGE_IS_REQUEST(request)*/)
+	if(self && self->stack)
 	{	
 		tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
 		if(layer)
 		{
+			/*	Create new transaction. The new transaction will be added to the dialog layer. 
+				The transaction has all information to create the right transaction type (NICT or ICT).
+				As this is an outgoing request ==> It shall be a client transaction (NICT or ICT).
+				For server transactions creation see @ref tsip_dialog_response_send.
+			*/
 			const tsip_transac_t *transac = tsip_transac_layer_new(layer, request);
+
+			/* Set the transaction's dialog. All events comming from the transaction (timeouts, errors ...) will be signaled to this dialog.
+			*/
+			TSIP_TRANSAC(transac)->dialog = self;
 			if(transac)
 			{
-				/* Set transaction's dialog */
-				TSIP_TRANSAC(transac)->dialog = self;
-
-				/* Increment the CSeq value*/
-				if(!tsk_striequals(request->line_request.method, "ACK") && !tsk_striequals(request->line_request.method, "CANCEL"))
-				{
-					request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
-				}
-
 				switch(transac->type)
 				{
 				case tsip_ict:
 					{
+						/* Start the newly create IC transaction.
+						*/
 						
 						break;
 					}
 
 				case tsip_nict:
 					{
+						/* Start the newly created NIC transaction.
+						*/
 						tsip_transac_nict_start(TSIP_TRANSAC_NICT(transac), request);
 						break;
 					}
 
-				default:
-					{
-						return -2;
-					}
+				default: return -1;
 				}
 
 				return 0;
@@ -244,6 +287,20 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 	return -1;
 }
 
+/**
+ * @fn	int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response)
+ *
+ * @brief	Gets the number of milliseconds to wait before retransmission.
+ *			e.g. ==> delay before refreshing registrations (REGISTER), subscribtions (SUBSCRIBE), publication (PUBLISH) ...
+ *
+ * @author	Mamadou
+ * @date	1/4/2010
+ *
+ * @param [in,out]	self		The calling dialog.
+ * @param [in,out]	response	The SIP/IMS response containing the new delay (expires, subscription-state ...).
+ *
+ * @return	Zero if succeed and no-zero error code otherwise. 
+**/
 int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response)
 {
 	int expires = self->expires;
@@ -280,6 +337,24 @@ compute:
 	return newdelay;
 }
 
+/**
+ * @fn	int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
+ *
+ * @brief	Updates the dialog state:
+ *			- Authorizations (using challenges from the @ref response message)
+ *			- State (early, established, disconnected, ...)
+ *			- Routes (and Service-Route)
+ *			- Target (remote)
+ *			- ...
+ *
+ * @author	Mamadou
+ * @date	1/4/2010
+ *
+ * @param [in,out]	self		The calling dialog.
+ * @param [in,out]	response	The SIP/IMS response from which to get the new information. 
+ *
+ * @return	Zero if succeed and no-zero error code otherwise. 
+**/
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 {
 	if(self && TSIP_MESSAGE_IS_RESPONSE(response) && response->To)
@@ -291,12 +366,19 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 		/* 
 		*	1xx (!100) or 2xx 
 		*/
-		if(100 <= code || code >= 300)
+		/*
+		*	401 or 407 or 421 or 494
+		*/
+		if(code == 401 || code == 407 || code == 421 || code == 494)
+		{
+			return tsip_dialog_update_challenges(self, response);
+		}
+		else if(100 <= code || code >= 300)
 		{
 			tsip_dialog_state_t state = self->state;
 
 			/* 1xx */
-			if(response->line_status.status_code <= 199)
+			if(TSIP_RESPONSE_CODE(response) <= 199)
 			{
 				if(tsk_strempty(response->To->tag)) return -1;
 				state = tsip_early;
@@ -336,26 +418,147 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 
 			self->state = state;
 		}
-		
-		/*
-		*	401 or 407 or 421 or 494
-		*/
-		else if(code == 401 || code == 407 || code == 421 || code == 494)
-		{
-			// FIXME:
-		}
-
 	}
 	return -1;
+}
+
+int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response)
+{
+	int ret = -1;
+	size_t i;
+
+	tsk_list_item_t *item;
+
+	tsip_challenge_t *challenge;
+	
+	const tsip_header_WWW_Authenticate_t *WWW_Authenticate;
+	const tsip_header_Proxy_Authenticate_t *Proxy_Authenticate;
+
+	/* RFC 2617 - Digest Operation
+
+	*	(A) The client response to a WWW-Authenticate challenge for a protection
+		space starts an authentication session with that protection space.
+		The authentication session lasts until the client receives another
+		WWW-Authenticate challenge from any server in the protection space.
+
+		(B) The server may return a 401 response with a new nonce value, causing the client
+		to retry the request; by specifying stale=TRUE with this response,
+		the server tells the client to retry with the new nonce, but without
+		prompting for a new username and password.
+	*/
+
+	/* FIXME: As we perform the same task ==> Use only one loop.
+	*/
+
+	for(i =0; (WWW_Authenticate = (const tsip_header_WWW_Authenticate_t*)tsip_message_get_headerAt(response, tsip_htype_WWW_Authenticate, i)); i++)
+	{
+		int isnew = 1;
+
+		tsk_list_foreach(item, self->challenges)
+		{
+			challenge = item->data;
+			if(challenge->isproxy) continue;
+			
+			if(tsk_strequals(challenge->realm, WWW_Authenticate->realm) && WWW_Authenticate->stale)
+			{
+				/*== (B) ==*/
+				if((ret = tsip_challenge_update(challenge, 
+					WWW_Authenticate->scheme, 
+					WWW_Authenticate->realm, 
+					WWW_Authenticate->nonce, 
+					WWW_Authenticate->opaque, 
+					WWW_Authenticate->algorithm, 
+					WWW_Authenticate->qop)))
+				{
+					return ret;
+				}
+				else
+				{
+					isnew = 0;
+					continue;
+				}
+			}
+			else return -1;
+		}
+
+		if(isnew)
+		{
+			if((challenge = TSIP_CHALLENGE_CREATE(self->stack,
+					0, 
+					WWW_Authenticate->scheme, 
+					WWW_Authenticate->realm, 
+					WWW_Authenticate->nonce, 
+					WWW_Authenticate->opaque, 
+					WWW_Authenticate->algorithm, 
+					WWW_Authenticate->qop)))
+			{
+				tsk_list_push_back_data(self->challenges, (void**)&challenge);
+			}
+			else return -1;
+		}
+	}
+	
+	for(i=0; (Proxy_Authenticate = (const tsip_header_Proxy_Authenticate_t*)tsip_message_get_headerAt(response, tsip_htype_Proxy_Authenticate, i)); i++)
+	{
+		int isnew = 1;
+
+		tsk_list_foreach(item, self->challenges)
+		{
+			challenge = item->data;
+			if(!challenge->isproxy) continue;
+			
+			if(tsk_strequals(challenge->realm, Proxy_Authenticate->realm) && Proxy_Authenticate->stale)
+			{
+				/*== (B) ==*/
+				if((ret = tsip_challenge_update(challenge, 
+					Proxy_Authenticate->scheme, 
+					Proxy_Authenticate->realm, 
+					Proxy_Authenticate->nonce, 
+					Proxy_Authenticate->opaque, 
+					Proxy_Authenticate->algorithm, 
+					Proxy_Authenticate->qop)))
+				{
+					return ret;
+				}
+				else
+				{
+					isnew = 0;
+					continue;
+				}
+			}
+			else return -1;
+		}
+
+		if(isnew)
+		{
+			if((challenge = TSIP_CHALLENGE_CREATE(self->stack,
+					1, 
+					Proxy_Authenticate->scheme, 
+					Proxy_Authenticate->realm, 
+					Proxy_Authenticate->nonce, 
+					Proxy_Authenticate->opaque, 
+					Proxy_Authenticate->algorithm, 
+					Proxy_Authenticate->qop)))
+			{
+				tsk_list_push_back_data(self->challenges, (void**)&challenge);
+			}
+			else return -1;
+		}
+	}	
+	return 0;
+
 }
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const tsip_stack_handle_t * stack, const char* call_id, const tsip_operation_handle_t* operation)
 {
 	if(self)
 	{
+		tsk_safeobj_init(self);
+
 		self->type = type;
 		self->stack = stack;
 		if(!self->routes)self->routes = TSK_LIST_CREATE();
+		if(!self->challenges)self->challenges = TSK_LIST_CREATE();
 		self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
 		
 		if(call_id)
@@ -401,7 +604,10 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 		TSK_FREE(self->callid);
 
 		TSK_LIST_SAFE_FREE(self->routes);
+		TSK_LIST_SAFE_FREE(self->challenges);
 		
+		tsk_safeobj_deinit(self);
+
 		return 0;
 	}
 	return -1;

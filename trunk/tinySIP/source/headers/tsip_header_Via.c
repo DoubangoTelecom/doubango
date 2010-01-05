@@ -1344,7 +1344,7 @@ _match:
 	case 12:
 /* #line 110 "tsip_parser_header_Via.rl" */
 	{
-		PARSER_ADD_PARAM(hdr_via->params);
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_via));
 		TSK_DEBUG_INFO("VIA:PARSE_PARAM");
 	}
 	break;
@@ -1406,7 +1406,11 @@ static void* tsip_header_Via_create(void *self, va_list * app)
 		const char* proto_version = va_arg(*app, const char *);
 		const char* transport = va_arg(*app, const char *);
 		const char* host = va_arg(*app, const char *);
+#if defined(__GNUC__)
+		uint16_t port = (uint16_t)va_arg(*app, unsigned);
+#else
 		uint16_t port = va_arg(*app, uint16_t);
+#endif
 
 		if(proto_name) via->proto_name = tsk_strdup(proto_name);
 		if(proto_version) via->proto_version = tsk_strdup(proto_version);
@@ -1414,8 +1418,8 @@ static void* tsip_header_Via_create(void *self, va_list * app)
 		if(host) via->host = tsk_strdup(host);
 		via->port = port;
 		
-		via->type = tsip_htype_Via;
-		via->tostring = tsip_header_Via_tostring;
+		TSIP_HEADER(via)->type = tsip_htype_Via;
+		TSIP_HEADER(via)->tostring = tsip_header_Via_tostring;
 	}
 	else
 	{
@@ -1440,7 +1444,7 @@ static void* tsip_header_Via_destroy(void *self)
 		TSK_FREE(via->received);
 		TSK_FREE(via->sigcomp_id);
 		TSK_FREE(via->transport);
-		TSK_LIST_SAFE_FREE(via->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(via));
 	}
 	else TSK_DEBUG_ERROR("Null Via header.");
 

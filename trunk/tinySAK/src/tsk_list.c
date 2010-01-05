@@ -35,6 +35,8 @@
 #include <assert.h>
 #include <string.h>
 
+// FIXME: remove asserts
+
 /**@defgroup tsk_list_group Linked list
 */
 
@@ -218,6 +220,8 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
 		tsk_list_item_t *prev = 0;
 		tsk_list_item_t *curr = prev = list->head;
 
+		assert((list && list->tail) ? !list->tail->next : 1);
+
 		while(curr)
 		{
 			if(!tsk_object_cmp(curr->data, tskobj))
@@ -240,6 +244,7 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
 					if(curr == list->tail)
 					{	/* Found at last position */
 						list->tail = prev;
+						list->tail->next = 0;
 					}
 					else
 					{
@@ -255,6 +260,8 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
 			curr = curr->next;
 		}
 	}
+
+	assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 /**@ingroup tsk_list_group
@@ -306,6 +313,7 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 			curr = curr->next;
 		}
 	}
+	assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -468,6 +476,7 @@ void tsk_list_push_data(tsk_list_t* list, void** data, int back)
 	{
 		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
 	}
+	assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 /**@ingroup tsk_list_group

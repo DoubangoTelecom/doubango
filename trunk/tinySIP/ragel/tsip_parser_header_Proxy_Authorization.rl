@@ -131,7 +131,7 @@
 
 	action parse_param
 	{
-		PARSER_ADD_PARAM(hdr_Proxy_Authorization->params);
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_Proxy_Authorization));
 	}
 
 	action eob
@@ -152,7 +152,7 @@
 	algorithm = "algorithm"i EQUAL <:token>tag %parse_algorithm;
 	cnonce = "cnonce"i EQUAL quoted_string>tag %parse_cnonce;
 	opaque = "opaque"i EQUAL quoted_string>tag %parse_opaque;
-	message_qop = "qop"i EQUAL LDQUOT <: (any*)>tag %parse_qop :> RDQUOT;
+	message_qop = "qop"i EQUAL (any*)>tag %parse_qop;
 	nonce_count = "nc"i EQUAL (LHEX{8})>tag %parse_nc;
 	
 	dig_resp = (username | realm | nonce | digest_uri | dresponse | algorithm | cnonce | opaque | message_qop | nonce_count)>1 | auth_param>0;
@@ -172,7 +172,7 @@ int tsip_header_Proxy_Authorization_tostring(const void* header, tsk_buffer_t* o
 		const tsip_header_Proxy_Authorization_t *Proxy_Authorization = header;
 		if(Proxy_Authorization && Proxy_Authorization->scheme)
 		{
-			return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+			return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 				Proxy_Authorization->scheme,
 
 				Proxy_Authorization->username ? "username=\"" : "",
@@ -206,9 +206,8 @@ int tsip_header_Proxy_Authorization_tostring(const void* header, tsk_buffer_t* o
 				Proxy_Authorization->opaque ? Proxy_Authorization->opaque : "",
 				Proxy_Authorization->opaque ? "\"" : "",
 
-				Proxy_Authorization->qop ? ",qop=\"" : "",
+				Proxy_Authorization->qop ? ",qop=" : "",
 				Proxy_Authorization->qop ? Proxy_Authorization->qop : "",
-				Proxy_Authorization->qop ? "\"" : "",
 
 				Proxy_Authorization->nc ? ",nc=" : "",
 				Proxy_Authorization->nc ? Proxy_Authorization->nc : ""
@@ -257,8 +256,8 @@ static void* tsip_header_Proxy_Authorization_create(void *self, va_list * app)
 	tsip_header_Proxy_Authorization_t *Proxy_Authorization = self;
 	if(Proxy_Authorization)
 	{
-		Proxy_Authorization->type = tsip_htype_Proxy_Authorization;
-		Proxy_Authorization->tostring = tsip_header_Proxy_Authorization_tostring;
+		TSIP_HEADER(Proxy_Authorization)->type = tsip_htype_Proxy_Authorization;
+		TSIP_HEADER(Proxy_Authorization)->tostring = tsip_header_Proxy_Authorization_tostring;
 	}
 	else
 	{
@@ -286,7 +285,7 @@ static void* tsip_header_Proxy_Authorization_destroy(void *self)
 		TSK_FREE(Proxy_Authorization->qop);
 		TSK_FREE(Proxy_Authorization->nc);
 		
-		TSK_LIST_SAFE_FREE(Proxy_Authorization->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Proxy_Authorization));
 	}
 	else TSK_DEBUG_ERROR("Null Proxy_Authorization header.");
 

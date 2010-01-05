@@ -49,10 +49,14 @@ TSIP_BEGIN_DECLS
 #define TSIP_TRANSAC_MAGIC_COOKIE		"z9hG4bK"
 
 #define TRANSAC_TIMER_SCHEDULE(name, TX) \
-	self->timer##TX.id = tsk_timer_manager_schedule((tsk_timer_manager_handle_t*)self->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK(tsip_transac_##name##Context_sm_timer##TX), &(self->_fsm))
+	self->timer##TX.id = tsk_timer_manager_schedule((tsk_timer_manager_handle_t*)TSIP_TRANSAC(self)->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK(tsip_transac_##name##Context_sm_timer##TX), &(self->_fsm))
 
 #define TRANSAC_TIMER_CANCEL(TX) \
-	tsk_timer_manager_cancel((tsk_timer_manager_handle_t*)self->timer_mgr, self->timer##TX.id)
+	tsk_timer_manager_cancel((tsk_timer_manager_handle_t*)TSIP_TRANSAC(self)->timer_mgr, self->timer##TX.id)
+
+#define TRANSAC_REMOVE_SCHEDULE() \
+	tsk_timer_manager_schedule((tsk_timer_manager_handle_t*)TSIP_TRANSAC(self)->timer_mgr, 500, TSK_TIMER_CALLBACK(tsip_transac_remove_callback), self)
+
 
 typedef enum tsip_transac_event_type_e
 {
@@ -88,39 +92,45 @@ typedef enum tsip_transac_type_e
 }
 tsip_transac_type_t;
 
-#define TSIP_DECLARE_TRANSAC struct { \
-	TSK_DECLARE_OBJECT; \
-	\
-	const tsip_stack_handle_t * stack;\
-	const tsk_timer_manager_handle_t *timer_mgr; \
-	\
-	const tsip_dialog_t *dialog; \
-	\
-	tsip_transac_type_t type; \
-	\
-	unsigned reliable:1; \
-	\
-	unsigned running:1; \
-	\
-	char *branch; \
-	\
-	int32_t cseq_value; \
-	char* cseq_method; \
-	\
-	char* callid; \
-	\
-	tsip_transac_event_callback callback; \
+/*================================
+*/
+typedef struct tsip_transac_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	const tsip_stack_handle_t * stack;
+	const tsk_timer_manager_handle_t *timer_mgr;
+	
+	const tsip_dialog_t *dialog;
+	
+	tsip_transac_type_t type;
+	
+	unsigned reliable:1;
+	
+	unsigned running:1;
+	
+	char *branch;
+	
+	int32_t cseq_value;
+	char* cseq_method;
+	
+	char* callid;
+	
+	tsip_transac_event_callback callback;
 }
+tsip_transac_t;
 
-typedef TSIP_DECLARE_TRANSAC tsip_transac_t;
+#define TSIP_DECLARE_TRANSAC tsip_transac_t transac
 
-typedef tsk_list_t tsip_transacs_L_t;
+typedef tsk_list_t tsip_transacs_L_t; /**< List of @ref tsip_transac_t elements. */
+/*
+================================*/
 
 int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, unsigned reliable, int32_t cseq_value, const char* cseq_method, const char* callid);
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg);
 int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2);
-int tsip_transac_deinit(tsip_transac_t *transac);
-
+int tsip_transac_deinit(tsip_transac_t *self);
+int tsip_transac_remove_callback(const tsip_transac_t* self, tsk_timer_id_t timer_id);
 
 TSIP_END_DECLS
 

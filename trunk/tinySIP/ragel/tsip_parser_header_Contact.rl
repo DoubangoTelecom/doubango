@@ -90,7 +90,7 @@
 	{
 		if(curr_contact)
 		{
-			PARSER_ADD_PARAM(curr_contact->params);
+			PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_contact));
 		}
 	}
 
@@ -196,8 +196,8 @@ static void* tsip_header_Contact_create(void *self, va_list * app)
 	tsip_header_Contact_t *Contact = self;
 	if(Contact)
 	{
-		Contact->type = tsip_htype_Contact;
-		Contact->tostring = tsip_header_Contact_tostring;
+		TSIP_HEADER(Contact)->type = tsip_htype_Contact;
+		TSIP_HEADER(Contact)->tostring = tsip_header_Contact_tostring;
 		Contact->expires = -1;
 	}
 	else
@@ -217,7 +217,7 @@ static void* tsip_header_Contact_destroy(void *self)
 		TSK_FREE(Contact->display_name);
 		TSIP_URI_SAFE_FREE(Contact->uri);
 
-		TSK_LIST_SAFE_FREE(Contact->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Contact));
 	}
 	else TSK_DEBUG_ERROR("Null Contact header.");
 
@@ -262,7 +262,7 @@ const void *tsip_header_Contact_def_t = &tsip_header_Contact_def_s;
 //	if(contact)
 //	{
 //		TSK_FREE(contact->display_name);
-//		TSK_LIST_SAFE_FREE(contact->params);
+//		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(contact));
 //
 //		TSIP_URI_SAFE_FREE(contact->uri);
 //	}

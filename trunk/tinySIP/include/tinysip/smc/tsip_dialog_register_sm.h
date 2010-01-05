@@ -16,14 +16,16 @@ struct tsip_dialog_registerContext;
 
 struct tsip_dialog_registerState
 {
+    void(*Entry)(struct tsip_dialog_registerContext*);
 
     void(*sm_1xx)(struct tsip_dialog_registerContext*, const tsip_message_t*);
     void(*sm_2xx)(struct tsip_dialog_registerContext*, int, const tsip_message_t*);
     void(*sm_300_to_699)(struct tsip_dialog_registerContext*, const tsip_message_t*);
-    void(*sm_401_407_421_494)(struct tsip_dialog_registerContext*, int, const tsip_message_t*);
+    void(*sm_401_407_421_494)(struct tsip_dialog_registerContext*, const tsip_message_t*);
     void(*sm_423)(struct tsip_dialog_registerContext*, const tsip_message_t*);
     void(*sm_cancel)(struct tsip_dialog_registerContext*);
-    void(*sm_refresh)(struct tsip_dialog_registerContext*, tsk_timer_id_t);
+    void(*sm_error)(struct tsip_dialog_registerContext*);
+    void(*sm_refresh)(struct tsip_dialog_registerContext*);
     void(*sm_send)(struct tsip_dialog_registerContext*);
     void(*sm_transportError)(struct tsip_dialog_registerContext*);
     void(*sm_unregister)(struct tsip_dialog_registerContext*);
@@ -45,13 +47,15 @@ struct tsip_dialog_registerContext
 };
 
 extern void tsip_dialog_registerContext_Init(struct tsip_dialog_registerContext*, struct tsip_dialog_register*);
+extern void tsip_dialog_registerContext_EnterStartState(struct tsip_dialog_registerContext*);
 extern void tsip_dialog_registerContext_sm_1xx(struct tsip_dialog_registerContext*, const tsip_message_t*);
 extern void tsip_dialog_registerContext_sm_2xx(struct tsip_dialog_registerContext*, int, const tsip_message_t*);
 extern void tsip_dialog_registerContext_sm_300_to_699(struct tsip_dialog_registerContext*, const tsip_message_t*);
-extern void tsip_dialog_registerContext_sm_401_407_421_494(struct tsip_dialog_registerContext*, int, const tsip_message_t*);
+extern void tsip_dialog_registerContext_sm_401_407_421_494(struct tsip_dialog_registerContext*, const tsip_message_t*);
 extern void tsip_dialog_registerContext_sm_423(struct tsip_dialog_registerContext*, const tsip_message_t*);
 extern void tsip_dialog_registerContext_sm_cancel(struct tsip_dialog_registerContext*);
-extern void tsip_dialog_registerContext_sm_refresh(struct tsip_dialog_registerContext*, tsk_timer_id_t);
+extern void tsip_dialog_registerContext_sm_error(struct tsip_dialog_registerContext*);
+extern void tsip_dialog_registerContext_sm_refresh(struct tsip_dialog_registerContext*);
 extern void tsip_dialog_registerContext_sm_send(struct tsip_dialog_registerContext*);
 extern void tsip_dialog_registerContext_sm_transportError(struct tsip_dialog_registerContext*);
 extern void tsip_dialog_registerContext_sm_unregister(struct tsip_dialog_registerContext*);

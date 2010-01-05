@@ -129,6 +129,16 @@ char* tsk_strdup(const char *s1)
 	}
 	return 0;
 }
+/**@ingroup tsk_string_group
+* Checks if @ref str1 contains an occurrence of @ref str2.
+* @param str1 The master.
+* @param str2 The string for which to search an occcurrence.
+* @retval 1 if @ref str1 contains an occurrence of @ref str2 and Zero otherwise.
+*/
+int tsk_strcontains(const char * str1, const char * str2)
+{
+	return ((str1 && str2) && strstr(str1, str2));
+}
 
 /**@ingroup tsk_string_group
 * Appends a copy of the source string to the destination string. The terminating null character in destination is overwritten by the first character of source, 

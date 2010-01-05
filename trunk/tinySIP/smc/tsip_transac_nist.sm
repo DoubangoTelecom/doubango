@@ -32,17 +32,107 @@
 
 %class tsip_transac_nist
 %header "tinysip/transactions/tsip_transac_nist.h"
-%start tsip_transac_nist::Started
+%header "tinysip/tsip_message.h"
+%start tsip_transac_nist::Trying
 
 %map tsip_transac_nist
 %%
 
 //------------------------
-//
-Started 
+//------------------------
+Trying
+	Entry
+	{
+		
+	}
 {
+	sm_send_1xx(msg: const tsip_message_t*)
+		Proceeding
+		{
+			Trying_2_Proceeding_X_send_1xx(msg);
+		}
+
+	sm_send_200_to_699(msg: const tsip_message_t*) 
+		Completed 
+		{
+			Trying_2_Completed_X_send_200_to_699(msg);
+		}
 
 }
 
+//------------------------
+//------------------------
+Proceeding
+	Entry
+	{
+	}
+{	
+	sm_send_1xx(msg: const tsip_message_t*)
+		nil
+		{
+			Proceeding_2_Proceeding_X_send_1xx(msg);
+		}
+
+	sm_send_200_to_699(msg: const tsip_message_t*) 
+		Completed 
+		{
+			Proceeding_2_Completed_X_send_200_to_699(msg);
+		}
+
+	sm_send_response(msg: const tsip_message_t*) 
+		nil 
+		{
+			Proceeding_2_Proceeding_X_send_response(msg);
+		}
+}
+
+
+//------------------------
+//------------------------
+Completed
+	Entry
+	{
+	}
+{	
+	sm_send_response(msg: const tsip_message_t*)
+		nil
+		{
+			Completed_2_Completed_X_send_response(msg);
+		}
+
+	sm_timerJ()
+		Terminated
+		{
+			Completed_2_Terminated_X_tirmerJ();
+		}
+}
+
+
+
+//------------------------
+//------------------------
+Terminated
+	Entry
+	{
+		OnTerminated();
+	}
+{
+}
+
+//------------------------
+//------------------------
+Default
+{
+	sm_transportError()
+		Terminated
+		{
+			Any_2_Terminated_X_transportError();
+		}
+
+	Default
+		nil 
+		{
+		}
+}
 
 %%

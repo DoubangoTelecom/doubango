@@ -44,8 +44,8 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_HEADER(hdr)	((tsip_header_t*)(hdr))
-#define TSIP_HEADER_CREATE()
+#define TSIP_HEADER(self)			((tsip_header_t*)(self))
+#define TSIP_HEADER_PARAMS(self)	(TSIP_HEADER(self)->params)
 
 typedef int (*tsip_header_value_tostring)(const void* header/*FIXME*/, tsk_buffer_t* output);
 
@@ -151,26 +151,32 @@ typedef enum tsip_header_type_e
 }
 tsip_header_type_t;
 
-#define TSIP_DECLARE_HEADER struct { \
-	TSK_DECLARE_OBJECT; \
-	tsip_header_type_t type; \
-	tsip_header_value_tostring tostring; \
-	tsk_params_L_t *params; \
+/*================================
+*/
+typedef struct tsip_header_s
+{
+	TSK_DECLARE_OBJECT;
+	tsip_header_type_t type;
+	tsip_header_value_tostring tostring;
+	tsk_params_L_t *params;
 }
+tsip_header_t;
 
-typedef TSIP_DECLARE_HEADER tsip_header_t;
+#define TSIP_DECLARE_HEADER tsip_header_t header
 typedef tsk_list_t tsip_headers_L_t; /**< List of @ref tsip_header_t elements. */
+/*
+================================*/
 
 TINYSIP_API const char *tsip_header_get_name(tsip_header_type_t type);
 TINYSIP_API const char tsip_header_get_param_separator(const tsip_header_t *self);
 TINYSIP_API int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output);
 
-#define TSIP_HEADER_HAS_PARAM(self, name)					tsk_params_has_param(self ? self->params : 0, name)
-#define TSIP_HEADER_ADD_PARAM(self, name, value)			tsk_params_add_param(self ? &self->params : 0, name, value)
-#define TSIP_HEADER_REMOVE_PARAM(self, name)				tsk_params_remove_param(self ? self->params : 0, name)
-#define TSIP_HEADER_GET_PARAM_BY_NAME(self, name)			tsk_params_get_param_by_name(self ? self->params : 0, name)
-#define TSIP_HEADER_GET_PARAM_VALUE(self, name)				tsk_params_get_param_value(self ? self->params : 0, name)
-#define TSIP_HEADER_GET_PARAM_VALUE_AS_INT(self, name)		tsk_params_get_param_value_as_int(self ? self->params : 0, name)
+#define TSIP_HEADER_HAS_PARAM(self, name)					tsk_params_has_param(self ? TSIP_HEADER(self)->params : 0, name)
+#define TSIP_HEADER_ADD_PARAM(self, name, value)			tsk_params_add_param(self ? &TSIP_HEADER(self)->params : 0, name, value)
+#define TSIP_HEADER_REMOVE_PARAM(self, name)				tsk_params_remove_param(self ? TSIP_HEADER(self)->params : 0, name)
+#define TSIP_HEADER_GET_PARAM_BY_NAME(self, name)			tsk_params_get_param_by_name(self ? TSIP_HEADER(self)->params : 0, name)
+#define TSIP_HEADER_GET_PARAM_VALUE(self, name)				tsk_params_get_param_value(self ? TSIP_HEADER(self)->params : 0, name)
+#define TSIP_HEADER_GET_PARAM_VALUE_AS_INT(self, name)		tsk_params_get_param_value_as_int(self ? TSIP_HEADER(self)->params : 0, name)
 
 TSIP_END_DECLS
 

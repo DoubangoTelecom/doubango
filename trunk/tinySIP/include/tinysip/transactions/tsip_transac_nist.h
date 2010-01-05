@@ -31,8 +31,11 @@
 #define TINYSIP_TRANSAC_NIST_H
 
 #include "tinysip_config.h"
-#include "tinysip/smc/tsip_transac_nist_sm.h"
+
 #include "tinysip/transactions/tsip_transac.h"
+#include "tinysip/tsip_message.h"
+
+#include "tinysip/smc/tsip_transac_nist_sm.h"
 
 TSIP_BEGIN_DECLS
 
@@ -45,6 +48,18 @@ typedef struct tsip_transac_nist
 tsip_transac_nist_t;
 
 void tsip_transac_nist_init(tsip_transac_nist_t *self);
+int tsip_transac_nist_start(tsip_transac_nist_t *self);
+void tsip_transac_nist_OnTerminated(tsip_transac_nist_t *self);
+
+void tsip_transac_nist_Trying_2_Proceeding_X_send_1xx(tsip_transac_nist_t *self, const tsip_message_t* msg);
+void tsip_transac_nist_Trying_2_Completed_X_send_200_to_699(tsip_transac_nist_t *self, const tsip_message_t* msg);
+void tsip_transac_nist_Proceeding_2_Proceeding_X_send_1xx(tsip_transac_nist_t *self, const tsip_message_t* msg);
+void tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(tsip_transac_nist_t *self, const tsip_message_t* msg);
+void tsip_transac_nist_Proceeding_2_Proceeding_X_send_response(tsip_transac_nist_t *self, const tsip_message_t* msg);
+void tsip_transac_nist_Completed_2_Completed_X_send_response(tsip_transac_nist_t *self, const tsip_message_t* msg);
+void tsip_transac_nist_Completed_2_Terminated_X_tirmerJ(tsip_transac_nist_t *self);
+void tsip_transac_nist_Any_2_Terminated_X_transportError(tsip_transac_nist_t *self);
+
 
 TSIP_END_DECLS
 
