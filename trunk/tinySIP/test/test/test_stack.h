@@ -22,13 +22,15 @@
 #ifndef _TEST_STACK_H
 #define _TEST_STACK_H
 
-int test_stack_callback(tsip_event_t *sipevent)
+int test_stack_callback(const tsip_event_t *sipevent)
 {
-	tsk_object_ref(sipevent);
-	
-	TSK_DEBUG_INFO("STACK event: %d [%s]", sipevent->status_code, sipevent->reason_phrase);
+	tsip_operation_id_t opid = sipevent->opid;
 
-	tsk_object_unref(sipevent);
+	// find operation by id
+
+	TSK_DEBUG_INFO("\n====\nSTACK event: %d [%s]\n=====", sipevent->status_code, sipevent->reason_phrase);
+
+	//tsk_thread_sleep(1000000);
 
 	return 0;
 }
@@ -36,9 +38,10 @@ int test_stack_callback(tsip_event_t *sipevent)
 void test_stack()
 {
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
-		TSIP_STACK_SET_DISPLAY_NAME("mamadou"),
+		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@micromethod.com"),
-		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou"),
+		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@micromethod.com"),
+		TSIP_STACK_SET_PASSWORD("mamadou"),
 		TSIP_STACK_SET_REALM("sip:micromethod.com"),
 		TSIP_STACK_SET_PROXY_CSCF("192.168.0.15"),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
@@ -51,6 +54,8 @@ void test_stack()
 		TSIP_OPERATION_SET_PARAM("expires", "600000"),
 
 		TSIP_OPERATION_SET_NULL());
+
+	tsip_operation_id_t opid = tsip_operation_get_id(op);
 
 	tsip_stack_start(stack);
 

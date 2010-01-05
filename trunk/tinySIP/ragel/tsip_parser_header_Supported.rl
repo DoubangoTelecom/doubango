@@ -138,8 +138,8 @@ static void* tsip_header_Supported_create(void *self, va_list * app)
 	tsip_header_Supported_t *Supported = self;
 	if(Supported)
 	{
-		Supported->type = tsip_htype_Supported;
-		Supported->tostring = tsip_header_Supported_tostring;
+		TSIP_HEADER(Supported)->type = tsip_htype_Supported;
+		TSIP_HEADER(Supported)->tostring = tsip_header_Supported_tostring;
 	}
 	else
 	{

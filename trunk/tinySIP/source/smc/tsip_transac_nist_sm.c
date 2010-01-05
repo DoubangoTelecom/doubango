@@ -45,27 +45,279 @@
     (fsm)->_owner
 
 #define POPULATE_STATE(state) \
+    state##_Entry, \
+    state##_sm_send_1xx, \
+    state##_sm_send_200_to_699, \
+    state##_sm_send_response, \
+    state##_sm_timerJ, \
+    state##_sm_transportError, \
     state##_Default
 
-#define ENTRY_STATE(state)
+#define ENTRY_STATE(state) \
+    if ((state)->Entry != NULL) { \
+        (state)->Entry(fsm); \
+    }
 
 #define EXIT_STATE(state)
+
+static void tsip_transac_nistState_sm_send_1xx(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    getState(fsm)->Default(fsm);
+}
+
+static void tsip_transac_nistState_sm_send_200_to_699(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    getState(fsm)->Default(fsm);
+}
+
+static void tsip_transac_nistState_sm_send_response(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    getState(fsm)->Default(fsm);
+}
+
+static void tsip_transac_nistState_sm_timerJ(struct tsip_transac_nistContext *fsm)
+{
+    getState(fsm)->Default(fsm);
+}
+
+static void tsip_transac_nistState_sm_transportError(struct tsip_transac_nistContext *fsm)
+{
+    getState(fsm)->Default(fsm);
+}
 
 static void tsip_transac_nistState_Default(struct tsip_transac_nistContext *fsm)
 {
     State_Default(fsm);
 }
 
-#define tsip_transac_nist_Started_Default tsip_transac_nistState_Default
-#define tsip_transac_nist_Started_Entry NULL
-#define tsip_transac_nist_Started_Exit NULL
+#define tsip_transac_nist_Trying_sm_send_1xx tsip_transac_nistState_sm_send_1xx
+#define tsip_transac_nist_Trying_sm_send_200_to_699 tsip_transac_nistState_sm_send_200_to_699
+#define tsip_transac_nist_Trying_sm_send_response tsip_transac_nistState_sm_send_response
+#define tsip_transac_nist_Trying_sm_timerJ tsip_transac_nistState_sm_timerJ
+#define tsip_transac_nist_Trying_sm_transportError tsip_transac_nistState_sm_transportError
+#define tsip_transac_nist_Trying_Default tsip_transac_nistState_Default
+#define tsip_transac_nist_Trying_Entry NULL
+#define tsip_transac_nist_Trying_Exit NULL
+#define tsip_transac_nist_Proceeding_sm_send_1xx tsip_transac_nistState_sm_send_1xx
+#define tsip_transac_nist_Proceeding_sm_send_200_to_699 tsip_transac_nistState_sm_send_200_to_699
+#define tsip_transac_nist_Proceeding_sm_send_response tsip_transac_nistState_sm_send_response
+#define tsip_transac_nist_Proceeding_sm_timerJ tsip_transac_nistState_sm_timerJ
+#define tsip_transac_nist_Proceeding_sm_transportError tsip_transac_nistState_sm_transportError
+#define tsip_transac_nist_Proceeding_Default tsip_transac_nistState_Default
+#define tsip_transac_nist_Proceeding_Entry NULL
+#define tsip_transac_nist_Proceeding_Exit NULL
+#define tsip_transac_nist_Completed_sm_send_1xx tsip_transac_nistState_sm_send_1xx
+#define tsip_transac_nist_Completed_sm_send_200_to_699 tsip_transac_nistState_sm_send_200_to_699
+#define tsip_transac_nist_Completed_sm_send_response tsip_transac_nistState_sm_send_response
+#define tsip_transac_nist_Completed_sm_timerJ tsip_transac_nistState_sm_timerJ
+#define tsip_transac_nist_Completed_sm_transportError tsip_transac_nistState_sm_transportError
+#define tsip_transac_nist_Completed_Default tsip_transac_nistState_Default
+#define tsip_transac_nist_Completed_Entry NULL
+#define tsip_transac_nist_Completed_Exit NULL
+#define tsip_transac_nist_Terminated_sm_send_1xx tsip_transac_nistState_sm_send_1xx
+#define tsip_transac_nist_Terminated_sm_send_200_to_699 tsip_transac_nistState_sm_send_200_to_699
+#define tsip_transac_nist_Terminated_sm_send_response tsip_transac_nistState_sm_send_response
+#define tsip_transac_nist_Terminated_sm_timerJ tsip_transac_nistState_sm_timerJ
+#define tsip_transac_nist_Terminated_sm_transportError tsip_transac_nistState_sm_transportError
+#define tsip_transac_nist_Terminated_Default tsip_transac_nistState_Default
+#define tsip_transac_nist_Terminated_Entry NULL
+#define tsip_transac_nist_Terminated_Exit NULL
+#define tsip_transac_nist_DefaultState_sm_send_1xx tsip_transac_nistState_sm_send_1xx
+#define tsip_transac_nist_DefaultState_sm_send_200_to_699 tsip_transac_nistState_sm_send_200_to_699
+#define tsip_transac_nist_DefaultState_sm_send_response tsip_transac_nistState_sm_send_response
+#define tsip_transac_nist_DefaultState_sm_timerJ tsip_transac_nistState_sm_timerJ
+#define tsip_transac_nist_DefaultState_sm_transportError tsip_transac_nistState_sm_transportError
 
-const struct tsip_transac_nistState tsip_transac_nist_Started = { POPULATE_STATE(tsip_transac_nist_Started), "tsip_transac_nist_Started", 0 };
+#undef tsip_transac_nist_Trying_sm_transportError
+#define tsip_transac_nist_Trying_sm_transportError tsip_transac_nist_DefaultState_sm_transportError
+#undef tsip_transac_nist_Proceeding_sm_transportError
+#define tsip_transac_nist_Proceeding_sm_transportError tsip_transac_nist_DefaultState_sm_transportError
+#undef tsip_transac_nist_Completed_sm_transportError
+#define tsip_transac_nist_Completed_sm_transportError tsip_transac_nist_DefaultState_sm_transportError
+#undef tsip_transac_nist_Terminated_sm_transportError
+#define tsip_transac_nist_Terminated_sm_transportError tsip_transac_nist_DefaultState_sm_transportError
+#undef tsip_transac_nist_DefaultState_sm_transportError
+static void tsip_transac_nist_DefaultState_sm_transportError(struct tsip_transac_nistContext *fsm)
+{
+    struct tsip_transac_nist* ctxt = getOwner(fsm);
+
+    EXIT_STATE(getState(fsm));
+    clearState(fsm);
+    tsip_transac_nist_Any_2_Terminated_X_transportError(ctxt);
+    setState(fsm, &tsip_transac_nist_Terminated);
+    ENTRY_STATE(getState(fsm));
+}
+
+#undef tsip_transac_nist_Trying_Default
+#define tsip_transac_nist_Trying_Default tsip_transac_nist_DefaultState_Default
+#undef tsip_transac_nist_Proceeding_Default
+#define tsip_transac_nist_Proceeding_Default tsip_transac_nist_DefaultState_Default
+#undef tsip_transac_nist_Completed_Default
+#define tsip_transac_nist_Completed_Default tsip_transac_nist_DefaultState_Default
+#undef tsip_transac_nist_Terminated_Default
+#define tsip_transac_nist_Terminated_Default tsip_transac_nist_DefaultState_Default
+#undef tsip_transac_nist_DefaultState_Default
+static void tsip_transac_nist_DefaultState_Default(struct tsip_transac_nistContext *fsm)
+{
+
+}
+
+#undef tsip_transac_nist_Trying_sm_send_1xx
+static void tsip_transac_nist_Trying_sm_send_1xx(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    struct tsip_transac_nist* ctxt = getOwner(fsm);
+
+    EXIT_STATE(getState(fsm));
+    clearState(fsm);
+    tsip_transac_nist_Trying_2_Proceeding_X_send_1xx(ctxt, msg);
+    setState(fsm, &tsip_transac_nist_Proceeding);
+    ENTRY_STATE(getState(fsm));
+}
+
+#undef tsip_transac_nist_Trying_sm_send_200_to_699
+static void tsip_transac_nist_Trying_sm_send_200_to_699(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    struct tsip_transac_nist* ctxt = getOwner(fsm);
+
+    EXIT_STATE(getState(fsm));
+    clearState(fsm);
+    tsip_transac_nist_Trying_2_Completed_X_send_200_to_699(ctxt, msg);
+    setState(fsm, &tsip_transac_nist_Completed);
+    ENTRY_STATE(getState(fsm));
+}
+
+const struct tsip_transac_nistState tsip_transac_nist_Trying = { POPULATE_STATE(tsip_transac_nist_Trying), "tsip_transac_nist_Trying", 0 };
+
+#undef tsip_transac_nist_Proceeding_sm_send_1xx
+static void tsip_transac_nist_Proceeding_sm_send_1xx(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    struct tsip_transac_nist* ctxt = getOwner(fsm);
+    const struct tsip_transac_nistState* EndStateName = getState(fsm);
+
+    clearState(fsm);
+    tsip_transac_nist_Proceeding_2_Proceeding_X_send_1xx(ctxt, msg);
+    setState(fsm, EndStateName);
+}
+
+#undef tsip_transac_nist_Proceeding_sm_send_200_to_699
+static void tsip_transac_nist_Proceeding_sm_send_200_to_699(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    struct tsip_transac_nist* ctxt = getOwner(fsm);
+
+    EXIT_STATE(getState(fsm));
+    clearState(fsm);
+    tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(ctxt, msg);
+    setState(fsm, &tsip_transac_nist_Completed);
+    ENTRY_STATE(getState(fsm));
+}
+
+#undef tsip_transac_nist_Proceeding_sm_send_response
+static void tsip_transac_nist_Proceeding_sm_send_response(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    struct tsip_transac_nist* ctxt = getOwner(fsm);
+    const struct tsip_transac_nistState* EndStateName = getState(fsm);
+
+    clearState(fsm);
+    tsip_transac_nist_Proceeding_2_Proceeding_X_send_response(ctxt, msg);
+    setState(fsm, EndStateName);
+}
+
+const struct tsip_transac_nistState tsip_transac_nist_Proceeding = { POPULATE_STATE(tsip_transac_nist_Proceeding), "tsip_transac_nist_Proceeding", 1 };
+
+#undef tsip_transac_nist_Completed_sm_send_response
+static void tsip_transac_nist_Completed_sm_send_response(struct tsip_transac_nistContext *fsm, const tsip_message_t* msg)
+{
+    struct tsip_transac_nist* ctxt = getOwner(fsm);
+    const struct tsip_transac_nistState* EndStateName = getState(fsm);
+
+    clearState(fsm);
+    tsip_transac_nist_Completed_2_Completed_X_send_response(ctxt, msg);
+    setState(fsm, EndStateName);
+}
+
+#undef tsip_transac_nist_Completed_sm_timerJ
+static void tsip_transac_nist_Completed_sm_timerJ(struct tsip_transac_nistContext *fsm)
+{
+    struct tsip_transac_nist* ctxt = getOwner(fsm);
+
+    EXIT_STATE(getState(fsm));
+    clearState(fsm);
+    tsip_transac_nist_Completed_2_Terminated_X_tirmerJ(ctxt);
+    setState(fsm, &tsip_transac_nist_Terminated);
+    ENTRY_STATE(getState(fsm));
+}
+
+const struct tsip_transac_nistState tsip_transac_nist_Completed = { POPULATE_STATE(tsip_transac_nist_Completed), "tsip_transac_nist_Completed", 2 };
+
+#undef tsip_transac_nist_Terminated_Entry
+void tsip_transac_nist_Terminated_Entry(struct tsip_transac_nistContext *fsm)
+{
+    struct tsip_transac_nist *ctxt = getOwner(fsm);
+
+    tsip_transac_nist_OnTerminated(ctxt);
+}
+
+const struct tsip_transac_nistState tsip_transac_nist_Terminated = { POPULATE_STATE(tsip_transac_nist_Terminated), "tsip_transac_nist_Terminated", 3 };
 
 void tsip_transac_nistContext_Init(struct tsip_transac_nistContext* fsm, struct tsip_transac_nist* owner)
 {
-    FSM_INIT(fsm, &tsip_transac_nist_Started);
+    FSM_INIT(fsm, &tsip_transac_nist_Trying);
     fsm->_owner = owner;
+}
+
+void tsip_transac_nistContext_EnterStartState(struct tsip_transac_nistContext* fsm)
+{
+    ENTRY_STATE(getState(fsm));
+}
+
+void tsip_transac_nistContext_sm_send_1xx(struct tsip_transac_nistContext* fsm, const tsip_message_t* msg)
+{
+    const struct tsip_transac_nistState* state = getState(fsm);
+
+    assert(state != NULL);
+    setTransition(fsm, "sm_send_1xx");
+    state->sm_send_1xx(fsm, msg);
+    setTransition(fsm, NULL);
+}
+
+void tsip_transac_nistContext_sm_send_200_to_699(struct tsip_transac_nistContext* fsm, const tsip_message_t* msg)
+{
+    const struct tsip_transac_nistState* state = getState(fsm);
+
+    assert(state != NULL);
+    setTransition(fsm, "sm_send_200_to_699");
+    state->sm_send_200_to_699(fsm, msg);
+    setTransition(fsm, NULL);
+}
+
+void tsip_transac_nistContext_sm_send_response(struct tsip_transac_nistContext* fsm, const tsip_message_t* msg)
+{
+    const struct tsip_transac_nistState* state = getState(fsm);
+
+    assert(state != NULL);
+    setTransition(fsm, "sm_send_response");
+    state->sm_send_response(fsm, msg);
+    setTransition(fsm, NULL);
+}
+
+void tsip_transac_nistContext_sm_timerJ(struct tsip_transac_nistContext* fsm)
+{
+    const struct tsip_transac_nistState* state = getState(fsm);
+
+    assert(state != NULL);
+    setTransition(fsm, "sm_timerJ");
+    state->sm_timerJ(fsm);
+    setTransition(fsm, NULL);
+}
+
+void tsip_transac_nistContext_sm_transportError(struct tsip_transac_nistContext* fsm)
+{
+    const struct tsip_transac_nistState* state = getState(fsm);
+
+    assert(state != NULL);
+    setTransition(fsm, "sm_transportError");
+    state->sm_transportError(fsm);
+    setTransition(fsm, NULL);
 }
 
 /*
@@ -73,4 +325,3 @@ void tsip_transac_nistContext_Init(struct tsip_transac_nistContext* fsm, struct 
  *  buffer-read-only: t
  * End:
  */
-

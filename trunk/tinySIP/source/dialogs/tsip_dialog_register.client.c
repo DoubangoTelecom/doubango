@@ -38,13 +38,33 @@
 
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(register, TX)
-#define TSIP_DIALOG_REGISTER_SIGNAL_ERROR()							tsip_dialog_registerContext_sm_transportError(&self->_fsm);
+#define TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self)									\
+	TSIP_DIALOG_SYNC_BEGIN(self);												\
+	tsip_dialog_registerContext_sm_error(&TSIP_DIALOG_REGISTER(self)->_fsm);	\
+	TSIP_DIALOG_SYNC_END(self);
 
-/*== Dialog callback function
-*/
+int send_register(tsip_dialog_register_t *self);
+
+/**
+ * @fn	int tsip_dialog_register_event_callback(const void *arg, tsip_dialog_event_type_t type,
+ * 		const tsip_message_t *msg)
+ *
+ * @brief	Callback function called to alert the dialog for new events from the transaction/transport layers.
+ *
+ * @author	Mamadou
+ * @date	1/4/2010
+ *
+ * @param [in,out]	arg	Opaque data. Shall contain a reference to the dialog itself.
+ * @param	type		The event type. 
+ * @param [in,out]	msg	The incoming SIP/IMS message. 
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
 int tsip_dialog_register_event_callback(const void *arg, tsip_dialog_event_type_t type, const tsip_message_t *msg)
 {
-	const tsip_dialog_register_t *dialog = arg;
+	const tsip_dialog_register_t *self = arg;
+
+	TSIP_DIALOG_SYNC_BEGIN(self);
 
 	switch(type)
 	{
@@ -52,25 +72,27 @@ int tsip_dialog_register_event_callback(const void *arg, tsip_dialog_event_type_
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
-				short status_code = msg->line_status.status_code;
+				short status_code = TSIP_RESPONSE_CODE(msg);
 				if(status_code <=199)
 				{
-					tsip_dialog_registerContext_sm_1xx(&TSIP_DIALOG_REGISTER(dialog)->_fsm, msg);
+					tsip_dialog_registerContext_sm_1xx(&TSIP_DIALOG_REGISTER(self)->_fsm, msg);
 				}
 				else if(status_code<=299)
 				{
-					tsip_dialog_registerContext_sm_2xx(&TSIP_DIALOG_REGISTER(dialog)->_fsm, TSIP_DIALOG_REGISTER(dialog)->registering, msg);
+					tsip_dialog_registerContext_sm_2xx(&TSIP_DIALOG_REGISTER(self)->_fsm, TSIP_DIALOG_REGISTER(self)->registering, msg);
 				}
-				else if(status_code == 407 || status_code == 407 || status_code == 421 || status_code == 494)
+				else if(status_code == 401 || status_code == 407 || status_code == 421 || status_code == 494)
 				{
-					tsip_dialog_registerContext_sm_401_407_421_494(&TSIP_DIALOG_REGISTER(dialog)->_fsm, 1, msg);// FIXME: 1???
+					tsip_dialog_registerContext_sm_401_407_421_494(&TSIP_DIALOG_REGISTER(self)->_fsm, msg);
 				}
 				else if(status_code == 423)
 				{
-					tsip_dialog_registerContext_sm_423(&TSIP_DIALOG_REGISTER(dialog)->_fsm, msg);
+					tsip_dialog_registerContext_sm_423(&TSIP_DIALOG_REGISTER(self)->_fsm, msg);
 				}
 				else
 				{
+					// Alert User
+					TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
 					TSK_DEBUG_WARN("Not supported status code: %d", status_code);
 				}
 			}
@@ -79,7 +101,7 @@ int tsip_dialog_register_event_callback(const void *arg, tsip_dialog_event_type_
 
 	case tsip_dialog_canceled:
 		{
-			tsip_dialog_registerContext_sm_cancel(&TSIP_DIALOG_REGISTER(dialog)->_fsm);
+			tsip_dialog_registerContext_sm_cancel(&TSIP_DIALOG_REGISTER(self)->_fsm);
 			break;
 		}
 
@@ -88,95 +110,171 @@ int tsip_dialog_register_event_callback(const void *arg, tsip_dialog_event_type_
 	case tsip_dialog_error:
 	case tsip_dialog_transport_error:
 		{
-			tsip_dialog_registerContext_sm_transportError(&TSIP_DIALOG_REGISTER(dialog)->_fsm);
+			tsip_dialog_registerContext_sm_transportError(&TSIP_DIALOG_REGISTER(self)->_fsm);
 			break;
 		}
 	}
 
+	TSIP_DIALOG_SYNC_END(self);
+
 	return 0;
 }
 
+/**
+ * @fn	int tsip_dialog_register_timer_callback(const tsip_dialog_register_t* self,
+ * 		tsk_timer_id_t timer_id)
+ *
+ * @brief	Timer manager callback.
+ *
+ * @author	Mamadou
+ * @date	1/5/2010
+ *
+ * @param [in,out]	self	The owner of the signaled timer. 
+ * @param	timer_id		The identifier of the signaled timer.
+ *
+ * @return	Zero if succeed and non-zero error code otherwise.  
+**/
+int tsip_dialog_register_timer_callback(const tsip_dialog_register_t* self, tsk_timer_id_t timer_id)
+{
+	int ret = -1;
+
+	if(self)
+	{
+		TSIP_DIALOG_SYNC_BEGIN(self);
+
+		if(timer_id == self->timerrefresh.id)
+		{
+			tsip_dialog_registerContext_sm_refresh(&TSIP_DIALOG_REGISTER(self)->_fsm);
+			ret = 0;
+		}
+
+		TSIP_DIALOG_SYNC_END(self);
+	}
+	return ret;
+}
+
+/**
+ * @fn	void tsip_dialog_register_init(tsip_dialog_register_t *self)
+ *
+ * @brief	Initializes the dialog.
+ *
+ * @author	Mamadou
+ * @date	1/4/2010
+ *
+ * @param [in,out]	self	The dialog to initialize. 
+**/
 void tsip_dialog_register_init(tsip_dialog_register_t *self)
 {
 	/* Initialize the state machine.
 	*/
 	tsip_dialog_registerContext_Init(&self->_fsm, self);
 
-	self->expires = 10;
+	TSIP_DIALOG(self)->expires = 10;
+	TSIP_DIALOG(self)->callback = tsip_dialog_register_event_callback;
 	self->registering = 1;
-	self->callback = tsip_dialog_register_event_callback;
 
-	self->uri_local = tsk_object_ref((void*)TSIP_STACK(self->stack)->public_identity);
-	self->uri_remote = tsk_object_ref((void*)TSIP_STACK(self->stack)->public_identity);
-	self->uri_remote_target = tsk_object_ref((void*)TSIP_STACK(self->stack)->realm);
+	TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
+	TSIP_DIALOG(self)->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
+	TSIP_DIALOG(self)->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->realm);
 
 	self->timerrefresh.id = TSK_INVALID_TIMER_ID;
-	self->timerrefresh.timeout = self->expires;
+	self->timerrefresh.timeout = TSIP_DIALOG(self)->expires;
 
 #if defined(_DEBUG) || defined(DEBUG)
 	 setDebugFlag(&(self->_fsm), DEBUG_STATE_MACHINE);
 #endif
 }
 
+/**
+ * @fn	int tsip_dialog_register_start(tsip_dialog_register_t *self)
+ *
+ * @brief	Starts the dialog state machine.
+ *
+ * @author	Mamadou
+ * @date	1/4/2010
+ *
+ * @param [in,out]	self	The dialog to start. 
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
 int tsip_dialog_register_start(tsip_dialog_register_t *self)
 {
 	int ret = -1;
-	if(self && !self->running)
+	if(self && !TSIP_DIALOG(self)->running)
 	{
 		/* Set state machine state to started */
 		setState(&self->_fsm, &tsip_dialog_register_Started);
 
 		/* Send request */
 		tsip_dialog_registerContext_sm_send(&self->_fsm);
-		return 0;
+		ret = 0;
 	}
-	return -1;
+	return ret;
 }
 
+
+//--------------------------------------------------------
+//				== STATE MACHINE BEGIN ==
+//--------------------------------------------------------
+
+/* Started -> (send) -> Trying
+*/
 void tsip_dialog_register_Started_2_Trying_X_send(tsip_dialog_register_t *self)
 {
-	tsip_request_t* request = tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER");
-	if(tsip_dialog_request_send(TSIP_DIALOG(self), request))
-	{
-		// ???
-	}
-	TSIP_REQUEST_SAFE_FREE(request);
+	send_register(self);
 }
 
 /* Trying -> (1xx) -> Trying
 */
 void tsip_dialog_register_Trying_2_Trying_X_1xx(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
-	/* Do nothing */
+	tsip_dialog_update(TSIP_DIALOG(self), msg);
 }
 
+/* Trying -> (2xx) -> Connected
+*/
+#include "tsk_thread.h"
 void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
+	/* Alert the user. */
+	TSIP_DIALOG_ALERT_USER(self, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg), 1, tsip_event_register);
+
+	/* Update the dialog state. */
 	tsip_dialog_update(TSIP_DIALOG(self), msg);
 
+	/* Request timeout for dialog refresh (re-registration). */
 	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), msg);
 	TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(refresh);
 }
 
+/* Trying -> (2xx) -> Terminated
+*/
 void tsip_dialog_register_Trying_2_Terminated_X_2xx(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
-
 }
 
+/*	Trying --> (401/407/421/494) --> Trying
+*/
 void tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
+	if(tsip_dialog_update(TSIP_DIALOG(self), msg))
+	{
+		// Alert user
+		TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
+		goto bail;
+	}
+	
+	send_register(self);
 
-}
-
-void tsip_dialog_register_Trying_2_Terminated_X_401_407_421_494(tsip_dialog_register_t *self, const tsip_message_t* msg)
-{
-
+bail:;
 }
 
 /*	Trying -> (423) -> Trying
 */
 void tsip_dialog_register_Trying_2_Trying_X_423(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
+	tsip_header_Min_Expires_t *hdr;
+
 	/*
 	RFC 3261 - 10.2.8 Error Responses
 
@@ -186,53 +284,96 @@ void tsip_dialog_register_Trying_2_Trying_X_423(tsip_dialog_register_t *self, co
 	expiration interval within the Min-Expires header field of the 423
 	(Interval Too Brief) response.
 	*/
-	tsip_header_Min_Expires_t *hdr = (tsip_header_Min_Expires_t*)tsip_message_get_header(msg, tsip_htype_Min_Expires);
+	hdr = (tsip_header_Min_Expires_t*)tsip_message_get_header(msg, tsip_htype_Min_Expires);
 	if(hdr)
 	{
-		tsip_request_t *request;
-		self->expires = hdr->value;
+		TSIP_DIALOG(self)->expires = hdr->value;
 
-		request = self->dlg_request ? tsk_object_ref(self->dlg_request) : tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER");
-		tsip_dialog_request_send(TSIP_DIALOG(self), request);
-		TSIP_REQUEST_SAFE_FREE(request);
+		send_register(self);
 	}
 	else
 	{
-		TSIP_DIALOG_REGISTER_SIGNAL_ERROR();
+		TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
 	}
 }
 
+/* Trying -> (300-699) -> Terminated
+*/
 void tsip_dialog_register_Trying_2_Terminated_X_300_to_699(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
-
 }
 
+/* Trying -> (cancel) -> Terminated
+*/
 void tsip_dialog_register_Trying_2_Terminated_X_cancel(tsip_dialog_register_t *self)
 {
 }
 
+/* Connected -> (Unregister) -> Trying
+*/
 void tsip_dialog_register_Connected_2_Trying_X_unregister(tsip_dialog_register_t *self)
 {
-
 }
 
+/* Connected -> (refresh) -> Trying
+*/
 void tsip_dialog_register_Connected_2_Trying_X_refresh(tsip_dialog_register_t *self)
 {
-	if(!self->dlg_request)
-	{
-		self->dlg_request = tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER");
-	}
-	tsip_dialog_request_send(TSIP_DIALOG(self), self->dlg_request);
+	send_register(self);
 }
 
+/* Any -> (transport error) -> Terminated
+*/
 void tsip_dialog_register_Any_2_Terminated_X_transportError(tsip_dialog_register_t *self)
 {
 
 }
 
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//				== STATE MACHINE END ==
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+/**
+ * @fn	int send_register(tsip_dialog_register_t *self)
+ *
+ * @brief	Sends a REGISTER request. 
+ *
+ * @author	Mamadou
+ * @date	1/4/2010
+ *
+ * @param [in,out]	self	The caller.
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
+int send_register(tsip_dialog_register_t *self)
+{
+	tsip_request_t *request;
+	int ret;
+
+	request = tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER");
+	ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
+	TSIP_REQUEST_SAFE_FREE(request);
+
+	return ret;
+}
+
+
+/**
+ * @fn	void tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
+ *
+ * @brief	Callback function called by the state machine manager to signal that the final state has been reached.
+ *
+ * @author	Mamadou
+ * @date	1/5/2010
+ *
+ * @param [in,out]	self	The state machine owner.
+**/
+void tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
+{
+	TSK_DEBUG_INFO("=== Dialog terminated ===");
+}
 
 
 
@@ -274,8 +415,6 @@ static void* tsip_dialog_register_destroy(void * self)
 	{
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
-
-		TSIP_MESSAGE_SAFE_FREE(dialog->dlg_request);
 	}
 	return self;
 }

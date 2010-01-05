@@ -374,7 +374,7 @@ void *tnet_transport_mainthread(void *param)
 
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	
-	while(transport->running)
+	while(TSK_RUNNABLE(transport)->running)
 	{
 		/* Wait for multiple events */
 		if((evt = WSAWaitForMultipleEvents(context->count, context->events, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED)
@@ -383,7 +383,7 @@ void *tnet_transport_mainthread(void *param)
 			goto bail;
 		}
 
-		if(!transport->running)
+		if(!TSK_RUNNABLE(transport)->running)
 		{
 			goto bail;
 		}

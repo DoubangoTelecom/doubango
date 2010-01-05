@@ -75,14 +75,14 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	*/
 	if(msg->Contact)
 	{			
-		if(msg->Contact->uri && tsk_params_has_param(msg->Contact->params, "doubs"))
+		if(msg->Contact->uri && TSIP_HEADER_HAS_PARAM(msg->Contact, "doubs"))
 		{
 			tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
 			tsk_strupdate(&(msg->Contact->uri->host), ip);
 			msg->Contact->uri->port = port;
 			tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
 
-			tsk_params_remove_param(msg->Contact->params, "doubs");
+			TSIP_HEADER_REMOVE_PARAM(msg->Contact, "doubs");
 		}
 	}
 
@@ -141,7 +141,11 @@ static void* tsip_transport_create(void * self, va_list * app)
 	if(transport)
 	{
 		const char *host = va_arg(*app, const char*);
+#if defined(__GNUC__)
+		uint16_t port = (uint16_t)va_arg(*app, unsigned);
+#else
 		uint16_t port = va_arg(*app, tnet_port_t);
+#endif
 		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);
 		const char *description = va_arg(*app, const char*);
 		

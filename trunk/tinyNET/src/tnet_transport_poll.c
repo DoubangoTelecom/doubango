@@ -156,8 +156,11 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	{
 		fd = transport->master->fd;
 	}
-	
+#if TNET_HAVE_SS_LEN
 	if((status = connect(fd, (struct sockaddr*)&to, to.ss_len)))
+#else
+	if((status = connect(fd, (struct sockaddr*)&to, sizeof(to))))
+#endif
 	{
 		status = tnet_geterrno();
 		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS)

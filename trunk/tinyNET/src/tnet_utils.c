@@ -287,7 +287,11 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	}
 #endif
 	
+#if TNET_HAVE_SS_LEN
 	if(status = bind(*fd, (const struct sockaddr*)&ai_addr, ai_addr.ss_len))
+#else
+	if(status = bind(*fd, (const struct sockaddr*)&ai_addr, sizeof(ai_addr)))
+#endif
 	{
 		TNET_PRINT_LAST_ERROR();
 		tnet_sockfd_close(fd);

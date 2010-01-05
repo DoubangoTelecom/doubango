@@ -107,7 +107,21 @@ int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr)
 	return -1;
 }
 
-tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, size_t index)
+int tsip_message_add_headers(tsip_message_t *self, const tsip_headers_L_t *headers)
+{
+	tsk_list_item_t *item = 0;
+	if(self)
+	{
+		tsk_list_foreach(item, headers)
+		{
+			tsip_message_add_header(self, item->data);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, size_t index)
 {
 	size_t pos = 0;
 	tsk_list_item_t *item = 0;
@@ -127,7 +141,7 @@ tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header
 	return item ? item->data : 0;
 }
 
-tsip_header_t *tsip_message_get_header(const tsip_message_t *self, tsip_header_type_t type)
+const tsip_header_t *tsip_message_get_header(const tsip_message_t *self, tsip_header_type_t type)
 {
 	return tsip_message_get_headerAt(self, type, 0);
 }
@@ -200,7 +214,6 @@ TSIP_BOOLEAN tsip_message_required(const tsip_message_t *self, const char* optio
 	return TSIP_FALSE;
 }
 
-
 int32_t tsip_message_getExpires(const tsip_message_t *self)
 {	
 	if(self)
@@ -244,7 +257,7 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	else
 	{
 		/*SIP_Version SP Status_Code SP Reason_Phrase CRLF*/
-		tsk_buffer_appendEx(output, "%s %hi %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT, self->line_status.status_code, self->line_status.reason_phrase);
+		tsk_buffer_appendEx(output, "%s %hi %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT, TSIP_RESPONSE_CODE(self), TSIP_RESPONSE_PHRASE(self));
 	}
 
 	/* First Via */
@@ -357,8 +370,12 @@ static void* tsip_message_create(void *self, va_list * app)
 
 		case tsip_response:
 			{
-				const tsip_request_t* request = va_arg(*app, const tsip_request_t*); 
+				const tsip_request_t* request = va_arg(*app, const tsip_request_t*);
+#if defined(__GNUC__)
+				message->line_status.status_code = (short)va_arg(*app, int);
+#else
 				message->line_status.status_code = va_arg(*app, short);
+#endif
 				message->line_status.reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
 				
 				/* TODO: copy headers */

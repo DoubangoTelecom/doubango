@@ -616,7 +616,7 @@ _match:
 	case 9:
 /* #line 113 "tsip_parser_header_WWW_Authenticate.rl" */
 	{
-		PARSER_ADD_PARAM(hdr_WWW_Authenticate->params);
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_WWW_Authenticate));
 		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_PARAM");
 	}
 	break;
@@ -670,8 +670,8 @@ static void* tsip_header_WWW_Authenticate_create(void *self, va_list * app)
 	tsip_header_WWW_Authenticate_t *WWW_Authenticate = self;
 	if(WWW_Authenticate)
 	{
-		WWW_Authenticate->type = tsip_htype_WWW_Authenticate;
-		WWW_Authenticate->tostring = tsip_header_WWW_Authenticate_tostring;
+		TSIP_HEADER(WWW_Authenticate)->type = tsip_htype_WWW_Authenticate;
+		TSIP_HEADER(WWW_Authenticate)->tostring = tsip_header_WWW_Authenticate_tostring;
 	}
 	else
 	{
@@ -695,7 +695,7 @@ static void* tsip_header_WWW_Authenticate_destroy(void *self)
 		TSK_FREE(WWW_Authenticate->algorithm);
 		TSK_FREE(WWW_Authenticate->qop);
 
-		TSK_LIST_SAFE_FREE(WWW_Authenticate->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(WWW_Authenticate));
 	}
 	else TSK_DEBUG_ERROR("Null WWW_Authenticate header.");
 

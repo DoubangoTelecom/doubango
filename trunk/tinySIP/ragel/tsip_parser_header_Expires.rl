@@ -123,8 +123,8 @@ static void* tsip_header_Expires_create(void *self, va_list * app)
 	tsip_header_Expires_t *Expires = self;
 	if(Expires)
 	{
-		Expires->type = tsip_htype_Expires;
-		Expires->tostring = tsip_header_Expires_tostring;
+		TSIP_HEADER(Expires)->type = tsip_htype_Expires;
+		TSIP_HEADER(Expires)->tostring = tsip_header_Expires_tostring;
 		Expires->delta_seconds = va_arg(*app, int32_t);
 	}
 	else

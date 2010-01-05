@@ -32,25 +32,21 @@
 #include "tinysip/dialogs/tsip_dialog_register.h"
 
 
-/*== Predicate */
-/*static int __tsip_pred_find_dialog_by_operation(const tsk_list_item_t *item, const void *operation)
-{
-	tsip_dialog_t *dialog;
-	const tsip_operation_handle_t *op = operation;
-
-	if(item && item->data)
-	{
-		dialog = item->data;
-		return tsk_object_cmp(dialog->operation, operation);
-		if(dialog->operation)
-		{
-			return tsip_operation_get_id dialog->operation->
-		}
-		return (int)(timer->id - *((tsk_timer_id_t*)id));
-	}
-	return -1;
-}*/
-
+/**
+ * @fn	static tsip_dialog_t* tsip_dialog_layer_find_dialog(tsip_dialog_layer_t *self,
+ * 		tsip_dialog_type_t type, const tsip_operation_handle_t *operation)
+ *
+ * @brief	Internal function used to find a dialog by type and  
+ *
+ * @author	Mamadou
+ * @date	1/3/2010
+ *
+ * @param [in,out]	self		If non-null, the self. 
+ * @param	type				The type. 
+ * @param [in,out]	operation	If non-null, the operation. 
+ *
+ * @return	null if it fails, else. 
+**/
 static tsip_dialog_t* tsip_dialog_layer_find_dialog(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_operation_handle_t *operation)
 {
 	const tsk_list_item_t *item = tsk_list_find_item_by_data(self->dialogs, operation);
@@ -66,22 +62,39 @@ static tsip_dialog_t* tsip_dialog_layer_find_dialog(tsip_dialog_layer_t *self, t
 }
 
 
+/**
+ * @fn	int tsip_dialog_layer_register(tsip_dialog_layer_t *self,
+ * 		const tsip_operation_handle_t *operation)
+ *
+ * @brief	Performs SIP/IMS registration operation. Action initiated by the stack layer.
+ *
+ * @author	Mamadou
+ * @date	1/3/2010
+ *
+ * @param [in,out]	self		The dialog layer used to perform the operation.
+ * @param [in,out]	operation	A pointer to the operation to perform. 
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
 int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation)
 {
+	int ret = -1;
+
 	if(self)
 	{
 		tsip_dialog_register_t *dialog = (tsip_dialog_register_t*)tsip_dialog_layer_find_dialog(self, tsip_dialog_register, operation);
 		if(dialog)
 		{
-
+			
 		}
 		else
 		{
 			dialog = TSIP_DIALOG_REGISTER_CREATE(self->stack, operation);
-			return tsip_dialog_register_start(dialog);
+			ret = tsip_dialog_register_start(dialog);
+			tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 		}
 	}
-	return -1;
+	return ret;
 }
 
 
@@ -100,6 +113,7 @@ static void* tsip_dialog_layer_create(void * self, va_list * app)
 	if(layer)
 	{
 		layer->stack = va_arg(*app, const tsip_stack_handle_t *);
+		layer->dialogs = TSK_LIST_CREATE();
 	}
 	return self;
 }

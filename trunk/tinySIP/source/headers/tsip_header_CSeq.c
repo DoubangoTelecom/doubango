@@ -297,8 +297,8 @@ static void* tsip_header_CSeq_create(void *self, va_list * app)
 	tsip_header_CSeq_t *CSeq = self;
 	if(CSeq)
 	{
-		CSeq->type = tsip_htype_CSeq;
-		CSeq->tostring = tsip_header_CSeq_tostring;
+		TSIP_HEADER(CSeq)->type = tsip_htype_CSeq;
+		TSIP_HEADER(CSeq)->tostring = tsip_header_CSeq_tostring;
 		CSeq->seq = va_arg(*app, int32_t);
 		CSeq->method = tsk_strdup(va_arg(*app, const char*));
 	}
@@ -317,7 +317,7 @@ static void* tsip_header_CSeq_destroy(void *self)
 	if(CSeq)
 	{
 		TSK_FREE(CSeq->method);
-		TSK_LIST_SAFE_FREE(CSeq->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(CSeq));
 	}
 	else TSK_DEBUG_ERROR("Null CSeq header.");
 

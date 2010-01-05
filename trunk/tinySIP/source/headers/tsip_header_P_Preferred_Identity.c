@@ -1504,8 +1504,8 @@ static void* tsip_header_P_Preferred_Identity_create(void *self, va_list * app)
 	tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = self;
 	if(P_Preferred_Identity)
 	{
-		P_Preferred_Identity->type = tsip_htype_P_Preferred_Identity;
-		P_Preferred_Identity->tostring = tsip_header_Preferred_Identity_tostring;
+		TSIP_HEADER(P_Preferred_Identity)->type = tsip_htype_P_Preferred_Identity;
+		TSIP_HEADER(P_Preferred_Identity)->tostring = tsip_header_Preferred_Identity_tostring;
 	}
 	else
 	{

@@ -73,16 +73,29 @@
  */
 #include "tinysip/transactions/tsip_transac_nict.h"
 
-#include "tinysip/transactions/tsip_transac_layer.h"
-
 #include "tsk_debug.h"
 
 #define DEBUG_STATE_MACHINE						1
 
 #define TRANSAC_NICT_TIMER_SCHEDULE(TX)			TRANSAC_TIMER_SCHEDULE(nict, TX)
 
-/*== Transaction event callback function.
-*/
+
+/**
+ * @fn	int tsip_transac_nict_event_callback(const void *arg, tsip_transac_event_type_t type,
+ * 		const tsip_message_t *msg)
+ *
+ * @brief	Callback function called by the transport layer to alert the transaction for incoming messages
+ *			or errors (e.g. transport error).
+ *
+ * @author	Mamadou
+ * @date	1/4/2010
+ *
+ * @param [in,out]	arg	Opaque data. Shall contain a reference to the transaction itself. 
+ * @param	type		The event type. 
+ * @param [in,out]	msg	The incoming message.
+ *
+ * @return	Zero if succeed and no-zero error code otherwise. 
+**/
 int tsip_transac_nict_event_callback(const void *arg, tsip_transac_event_type_t type, const tsip_message_t *msg)
 {
 	const tsip_transac_nict_t* transac = arg;
@@ -92,7 +105,7 @@ int tsip_transac_nict_event_callback(const void *arg, tsip_transac_event_type_t 
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
-				short status_code = msg->line_status.status_code;
+				short status_code = TSIP_RESPONSE_CODE(msg);
 				if(status_code <=199)
 				{
 					tsip_transac_nictContext_sm_1xx(&TSIP_TRANSAC_NICT(transac)->_fsm, msg);
@@ -153,13 +166,11 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
 	/* Initialize the state machine.
 	*/
 	tsip_transac_nictContext_Init(&self->_fsm, self);
-
-
-	/* To perform Entry state action */
-	//tsip_transac_nictContext_EnterStartState(&(self->_fsm));
-
-	/* Set callback function */
-	self->callback = tsip_transac_nict_event_callback;
+	
+	/* Set callback function to call when new messages are arrive or errors happen in
+		the transport layer.
+	*/
+	TSIP_TRANSAC(self)->callback = tsip_transac_nict_event_callback;
 
 #if defined(_DEBUG) || defined(DEBUG)
 	 setDebugFlag(&(self->_fsm), DEBUG_STATE_MACHINE);
@@ -171,7 +182,7 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
 
 	 self->timerE.timeout = TSIP_TIMER_GET(E);
 	 self->timerF.timeout = TSIP_TIMER_GET(F);
-	 self->timerK.timeout = self->reliable ? 0 : TSIP_TIMER_GET(K); /* RFC 3261 - 17.1.2.2 [Proceeding_2_Completed_X_200_to_699]*/
+	 self->timerK.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(K); /* RFC 3261 - 17.1.2.2 [Proceeding_2_Completed_X_200_to_699]*/
 }
 
 
@@ -184,60 +195,36 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
  * @date	12/24/2009
  *
  * @param [in,out]	self	The client transaction to start. 
- * @param [in,out]	request	The request to send. 
+ * @param [in,out]	request	The SIP/IMS request to send. 
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
 int tsip_transac_nict_start(tsip_transac_nict_t *self, tsip_request_t* request)
 {
 	int ret = -1;
-	if(self && request && !self->running)
+	if(self && request && !TSIP_TRANSAC(self)->running)
 	{
 		/* Set state machine state to started */
 		setState(&self->_fsm, &tsip_transac_nict_Started);
 
 		/* Add branch to the new client transaction. */
-		self->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE);
+		TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE);
 		{
 			tsk_istr_t branch;
 			tsk_strrandom(&branch);
-			tsk_strcat(&(self->branch), branch);
+			tsk_strcat(&(TSIP_TRANSAC(self)->branch), branch);
 		}
 
-		self->running = 1;
+		TSIP_TRANSAC(self)->running = 1;
 		self->request = tsk_object_ref(request);
 		tsip_transac_nictContext_sm_send(&self->_fsm);
 
-		return 0;
+		ret = 0;
 	}
-	return -1;
+	return ret;
 }
 
-//#include "tsk_thread.h"
-void tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self)
-{
-	/* Cancel timers */
-	if(!self->reliable)
-	{
-		TRANSAC_TIMER_CANCEL(E);
-	}
-	TRANSAC_TIMER_CANCEL(F);
-	TRANSAC_TIMER_CANCEL(K);
 
-	self->running = 0;
-
-	// FIXME:
-	
-	//tsk_timer_manager_debug(TSIP_STACK(self->stack)->timer_mgr);
-
-	// FIXME:
-	//if(tsip_transac_layer_remove(TSIP_STACK(self->stack)->layer_transac, TSIP_TRANSAC(self)))
-	{
-		// ??? 
-	}
-
-	
-}
 
 
 
@@ -255,7 +242,7 @@ void tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self)
 void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self)
 {
 	//== Send the request
-	tsip_transac_send(TSIP_TRANSAC(self), self->branch, TSIP_MESSAGE(self->request));
+	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(self->request));
 
 	/*	RFC 3261 - 17.1.2.2
 		The "Trying" state is entered when the TU initiates a new client
@@ -268,7 +255,7 @@ void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self)
 		If an  unreliable transport is in use, the client transaction MUST set timer
 		E to fire in T1 seconds.
 	*/
-	if(!self->reliable)
+	if(!TSIP_TRANSAC(self)->reliable)
 	{
 		TRANSAC_NICT_TIMER_SCHEDULE(E);
 	}
@@ -279,7 +266,7 @@ void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self)
 void tsip_transac_nict_Trying_2_Trying_X_timerE(tsip_transac_nict_t *self)
 {
 	//== Send the request
-	tsip_transac_send(TSIP_TRANSAC(self), self->branch, self->request);
+	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->request);
 
 	/*	RFC 3261 - 17.1.2.2
 		If timer E fires while still in this (Trying) state, the timer is reset, but this time with a value of MIN(2*T1, T2).
@@ -304,7 +291,7 @@ void tsip_transac_nict_Trying_2_Terminated_X_timerF(tsip_transac_nict_t *self)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 	
-	self->dialog->callback(self->dialog, tsip_dialog_transport_error, 0);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
 }
 
 /* Trying -> (Transport Error) -> Terminated
@@ -313,7 +300,7 @@ void tsip_transac_nict_Trying_2_Terminated_X_transportError(tsip_transac_nict_t 
 {
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	self->dialog->callback(self->dialog, tsip_dialog_transport_error, 0);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
 }
 
 /* Trying -> (1xx) -> Proceeding
@@ -327,13 +314,13 @@ void tsip_transac_nict_Trying_2_Proceedding_X_1xx(tsip_transac_nict_t *self, con
 	*/
 
 	/* Cancel timers */
-	if(!self->reliable)
+	if(!TSIP_TRANSAC(self)->reliable)
 	{
 		TRANSAC_TIMER_CANCEL(E);
 	}
 	TRANSAC_TIMER_CANCEL(F);
 	
-	self->dialog->callback(self->dialog, tsip_dialog_msg, msg);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, msg);
 }
 
 /* Trying -> (200-699) -> Completed
@@ -348,13 +335,13 @@ void tsip_transac_nict_Trying_2_Completed_X_200_to_699(tsip_transac_nict_t *self
 		If Timer K fires while in this state (Completed), the client transaction MUST transition to the "Terminated" state.
 	*/
 
-	if(!self->reliable)
+	if(!TSIP_TRANSAC(self)->reliable)
 	{
 		TRANSAC_TIMER_CANCEL(E);
 	}
 	TRANSAC_TIMER_CANCEL(F);
 
-	self->dialog->callback(self->dialog, tsip_dialog_msg, msg);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, msg);
 
 	/* SCHEDULE timer K */
 	TRANSAC_NICT_TIMER_SCHEDULE(K);
@@ -371,7 +358,7 @@ void tsip_transac_nict_Trying_2_Trying_X_unknown(tsip_transac_nict_t *self)
 void tsip_transac_nict_Proceeding_2_Proceeding_X_timerE(tsip_transac_nict_t *self)
 {
 	//== Send the request
-	tsip_transac_send(TSIP_TRANSAC(self), self->branch, self->request);
+	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->request);
 
 	/*	RFC 3261 - 17.1.2.2
 		If Timer E fires while in the "Proceeding" state, the request MUST be
@@ -393,7 +380,7 @@ void tsip_transac_nict_Proceeding_2_Terminated_X_timerF(tsip_transac_nict_t *sel
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	self->dialog->callback(self->dialog, tsip_dialog_transport_error, 0);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
 }
 
 /* Proceeding -> (Transport error) -> Terminated
@@ -401,18 +388,18 @@ void tsip_transac_nict_Proceeding_2_Terminated_X_timerF(tsip_transac_nict_t *sel
 void tsip_transac_nict_Proceeding_2_Terminated_X_transportError(tsip_transac_nict_t *self)
 {
 	/* Timers will be canceles by On */
-	self->dialog->callback(self->dialog, tsip_dialog_transport_error, 0);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
 }
 
 /* Proceeding -> (1xx) -> Proceeding
 */
 void tsip_transac_nict_Proceeding_2_Proceeding_X_1xx(tsip_transac_nict_t *self, const tsip_message_t* msg)
 {
-	if(!self->reliable)
+	if(!TSIP_TRANSAC(self)->reliable)
 	{
 		TRANSAC_TIMER_CANCEL(E);
 	}
-	self->dialog->callback(self->dialog, tsip_dialog_msg, msg);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, msg);
 }
 
 /* Proceeding -> (200-699) -> Completed
@@ -437,12 +424,12 @@ void tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(tsip_transac_nict_t *
 		The default value of T4 is 5s.
 	*/
 
-	if(!self->reliable)
+	if(!TSIP_TRANSAC(self)->reliable)
 	{
 		TRANSAC_TIMER_CANCEL(E);
 	}
 
-	self->dialog->callback(self->dialog, tsip_dialog_msg, msg);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, msg);
 	
 	/* SCHEDULE timer K */
 	TRANSAC_NICT_TIMER_SCHEDULE(K);
@@ -463,7 +450,7 @@ void tsip_transac_nict_Completed_2_Terminated_X_timerK(tsip_transac_nict_t *self
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	self->dialog->callback(self->dialog, tsip_dialog_transac_ok, 0);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transac_ok, 0);
 }
 
 /* Any -> (Transport Error) -> Terminated
@@ -472,13 +459,29 @@ void tsip_transac_nict_Any_2_Terminated_X_transportError(tsip_transac_nict_t *se
 {
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	self->dialog->callback(self->dialog, tsip_dialog_transport_error, 0);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
 }
 
 
 
+/*== TERMINATED
+*/
+void tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self)
+{
+	/* Cancel timers */
+	if(!TSIP_TRANSAC(self)->reliable)
+	{
+		TRANSAC_TIMER_CANCEL(E);
+	}
+	TRANSAC_TIMER_CANCEL(F);
+	TRANSAC_TIMER_CANCEL(K);
 
+	TSIP_TRANSAC(self)->running = 0;
 
+	TSK_DEBUG_INFO("=== NICT terminated ===");
+	
+	TRANSAC_REMOVE_SCHEDULE();
+}
 
 
 
@@ -523,7 +526,7 @@ static void* tsip_transac_nict_destroy(void * self)
 	tsip_transac_nict_t *transac = self;
 	if(transac)
 	{
-		transac->running = 0;
+		TSIP_TRANSAC(transac)->running = 0;
 		TSIP_REQUEST_SAFE_FREE(transac->request);
 
 		/* DeInitialize base class */

@@ -1104,7 +1104,7 @@ _match:
 	case 4:
 /* #line 75 "tsip_parser_header_To.rl" */
 	{
-		PARSER_ADD_PARAM(hdr_to->params);
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_to));
 		TSK_DEBUG_INFO("TO:PARSE_PARAM");
 	}
 	break;
@@ -1166,8 +1166,8 @@ static void* tsip_header_To_create(void *self, va_list * app)
 		if(uri) To->uri = tsk_object_ref((void *)uri);
 		To->tag = tsk_strdup(tag);
 
-		To->type = tsip_htype_To;
-		To->tostring = tsip_header_To_tostring;
+		TSIP_HEADER(To)->type = tsip_htype_To;
+		TSIP_HEADER(To)->tostring = tsip_header_To_tostring;
 	}
 	else
 	{
@@ -1187,7 +1187,7 @@ static void* tsip_header_To_destroy(void *self)
 		TSK_FREE(To->tag);
 
 		TSIP_URI_SAFE_FREE(To->uri);
-		TSK_LIST_SAFE_FREE(To->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(To));
 	}
 	else TSK_DEBUG_ERROR("Null To header.");
 

@@ -19,7 +19,7 @@ FOR /f %%i IN ('dir /b %TSIP_SMC_SM%\*.sm') DO (
 java -jar %DOUBANGO_HOME%\SMC_6_0_0\Smc.jar -c -d %TSIP_SMC_SRC_TMP% -headerd %TSIP_SMC_INC% %TSIP_SMC_SM%\%%i
 %TOOLS%\BatchSubstitute.bat "C:\Projects\Doubango\tinySIP\include\tinysip\smc\" "tinysip/smc/" %TSIP_SMC_SRC_TMP%\%%~ni_sm.c > %TSIP_SMC_SRC%\%%~ni_sm.c
 
-REM java -jar %DOUBANGO_HOME%\SMC_6_0_0\Smc.jar -graph -glevel 2 -d %TSIP_SMC_GRAPH% %TSIP_SMC_SM%\%%i
-REM %DOT_DIR%\dot -Tpng -o %TSIP_SMC_GRAPH%\%%~ni_sm.png %TSIP_SMC_GRAPH%\%%~ni_sm.dot
+:: java -jar %DOUBANGO_HOME%\SMC_6_0_0\Smc.jar -graph -glevel 2 -d %TSIP_SMC_GRAPH% %TSIP_SMC_SM%\%%i
+:: %DOT_DIR%\dot -Tpng -o %TSIP_SMC_GRAPH%\%%~ni_sm.png %TSIP_SMC_GRAPH%\%%~ni_sm.dot
 )
 RMDIR /S /Q %TSIP_SMC_SRC_TMP%

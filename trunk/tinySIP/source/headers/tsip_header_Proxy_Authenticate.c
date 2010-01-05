@@ -618,7 +618,7 @@ _match:
 	case 9:
 /* #line 113 "tsip_parser_header_Proxy_Authenticate.rl" */
 	{
-		PARSER_ADD_PARAM(hdr_Proxy_Authenticate->params);
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_Proxy_Authenticate));
 	}
 	break;
 	case 10:
@@ -671,8 +671,8 @@ static void* tsip_header_Proxy_Authenticate_create(void *self, va_list * app)
 	tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = self;
 	if(Proxy_Authenticate)
 	{
-		Proxy_Authenticate->type = tsip_htype_Proxy_Authenticate;
-		Proxy_Authenticate->tostring = tsip_header_Proxy_Authenticate_tostring;
+		TSIP_HEADER(Proxy_Authenticate)->type = tsip_htype_Proxy_Authenticate;
+		TSIP_HEADER(Proxy_Authenticate)->tostring = tsip_header_Proxy_Authenticate_tostring;
 	}
 	else
 	{
@@ -696,7 +696,7 @@ static void* tsip_header_Proxy_Authenticate_destroy(void *self)
 		TSK_FREE(Proxy_Authenticate->algorithm);
 		TSK_FREE(Proxy_Authenticate->qop);
 
-		TSK_LIST_SAFE_FREE(Proxy_Authenticate->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Proxy_Authenticate));
 	}
 	else TSK_DEBUG_ERROR("Null Proxy_Authenticate header.");
 

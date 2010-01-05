@@ -91,6 +91,12 @@
 #	define TNET_USE_POLL	1
 #endif
 
+#if defined(__APPLE__)
+#	define TNET_HAVE_SS_LEN		1
+#else
+#	define TNET_HAVE_SS_LEN		0
+#endif
+
 #include <stdint.h>
 
 #endif /* _TINYNET_H_ */

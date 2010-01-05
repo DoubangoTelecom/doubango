@@ -123,8 +123,8 @@ static void* tsip_header_Min_Expires_create(void *self, va_list * app)
 	tsip_header_Min_Expires_t *Min_Expires = self;
 	if(Min_Expires)
 	{
-		Min_Expires->type = tsip_htype_Min_Expires;
-		Min_Expires->tostring = tsip_header_Min_Expires_tostring;
+		TSIP_HEADER(Min_Expires)->type = tsip_htype_Min_Expires;
+		TSIP_HEADER(Min_Expires)->tostring = tsip_header_Min_Expires_tostring;
 		Min_Expires->value = va_arg(*app, int32_t);
 	}
 	else

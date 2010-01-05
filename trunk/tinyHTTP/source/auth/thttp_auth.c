@@ -200,7 +200,7 @@ bail:
 
 /**
  * @fn	int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce,
- * 		const char* noncecount, const char* cnonce, const char* qop, const tsk_md5string_t* ha2,
+ * 		const nonce_count_t noncecount, const char* cnonce, const char* qop, const tsk_md5string_t* ha2,
  * 		tsk_md5string_t* response)
  *
  * @brief	Generates HTTP digest response as per RFC 2617 subclause 3.2.2.1.
@@ -218,7 +218,7 @@ bail:
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, const char* noncecount, const char* cnonce, 
+int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, const nonce_count_t noncecount, const char* cnonce, 
 							   const char* qop, const tsk_md5string_t* ha2, tsk_md5string_t* response)
 {
 	int ret;

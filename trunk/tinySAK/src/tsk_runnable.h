@@ -81,21 +81,24 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 
 
 
-#define TSK_DECLARE_RUNNABLE \
-	TSK_DECLARE_OBJECT; \
-	\
-	const tsk_object_def_t *objdef; \
-	\
-	void* tid[1]; \
-	tsk_runnable_func_run run; \
-	tsk_semaphore_handle_t *semaphore; \
-	\
-	unsigned running:1; \
-	unsigned initialized:1; \
-	\
-	tsk_list_t *objects
+typedef struct tsk_runnable_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	const tsk_object_def_t *objdef;
+	
+	void* tid[1];
+	tsk_runnable_func_run run;
+	tsk_semaphore_handle_t *semaphore;
+	
+	unsigned running:1;
+	unsigned initialized:1;
+	
+	tsk_list_t *objects;
+}
+tsk_runnable_t;
 
-typedef struct tsk_runnable_s { TSK_DECLARE_RUNNABLE; } tsk_runnable_t;
+#define TSK_DECLARE_RUNNABLE tsk_runnable_t runnable
 
 TINYSAK_API int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef);
 TINYSAK_API int tsk_runnable_enqueue(tsk_runnable_t *self, ...);

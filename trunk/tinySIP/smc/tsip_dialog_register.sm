@@ -28,6 +28,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
+
+//#define tsip_dialog_register_TSIP_DIALOG_BEGIN_TRANSIT(self)	TSIP_DIALOG_BEGIN_TRANSIT(self)
+//#define tsip_dialog_register_TSIP_DIALOG_END_TRANSIT(self)		TSIP_DIALOG_END_TRANSIT(self)
 %}
 
 
@@ -45,7 +48,9 @@
 Started
 	Entry
 	{
-		
+	}
+	Exit
+	{
 	}
 {
 	sm_send() 
@@ -53,12 +58,20 @@ Started
 		{
 			Started_2_Trying_X_send();
 		}
+
+	Default
+		nil 
+		{
+		}
 }
 
 //------------------------
 //------------------------
 Trying
 	Entry
+	{
+	}
+	Exit
 	{
 	}
 {	
@@ -80,16 +93,10 @@ Trying
 			Trying_2_Terminated_X_2xx(msg);
 		}
 
-	sm_401_407_421_494(succeed: int, msg: const tsip_message_t*) [succeed]
+	sm_401_407_421_494(msg: const tsip_message_t*)
 		nil 
 		{
 			Trying_2_Trying_X_401_407_421_494(msg);
-		}
-
-	sm_401_407_421_494(succeed: int, msg: const tsip_message_t*) [!succeed]
-		Terminated 
-		{
-			Trying_2_Terminated_X_401_407_421_494(msg);
 		}
 
 	sm_423(msg: const tsip_message_t*)
@@ -109,12 +116,20 @@ Trying
 		{
 			Trying_2_Terminated_X_cancel();
 		}
+
+	Default
+		nil 
+		{
+		}
 }
 
 //------------------------
 //------------------------
 Connected
 	Entry
+	{
+	}
+	Exit
 	{
 	}
 {	
@@ -124,10 +139,15 @@ Connected
 			Connected_2_Trying_X_unregister();
 		}
 
-	sm_refresh(timer_id: tsk_timer_id_t)
+	sm_refresh()
 		Trying
 		{
 			Connected_2_Trying_X_refresh();
+		}
+
+	Default
+		nil 
+		{
 		}
 }
 
@@ -136,8 +156,17 @@ Connected
 Terminated
 	Entry
 	{
+		OnTerminated();
+	}
+
+	Exit
+	{
 	}
 {
+	Default
+		nil 
+		{
+		}
 }
 
 //------------------------
@@ -146,12 +175,21 @@ Default
 	Entry 
 	{ 
 	}
+	Exit
+	{
+	}
 {
 	sm_transportError()
 		Terminated
 		{
 			Any_2_Terminated_X_transportError();
 		}
+
+	sm_error()
+		Terminated
+		{
+		}
+
 	Default
 		nil 
 		{

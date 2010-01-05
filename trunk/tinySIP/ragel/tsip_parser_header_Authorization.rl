@@ -131,7 +131,7 @@
 
 	action parse_param
 	{
-		PARSER_ADD_PARAM(hdr_Authorization->params);
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_Authorization));
 	}
 
 	action eob
@@ -152,7 +152,7 @@
 	algorithm = "algorithm"i EQUAL <:token>tag %parse_algorithm;
 	cnonce = "cnonce"i EQUAL quoted_string>tag %parse_cnonce;
 	opaque = "opaque"i EQUAL quoted_string>tag %parse_opaque;
-	message_qop = "qop"i EQUAL LDQUOT <: (any*)>tag %parse_qop :> RDQUOT;
+	message_qop = "qop"i EQUAL (any*)>tag %parse_qop;
 	nonce_count = "nc"i EQUAL (LHEX{8})>tag %parse_nc;
 	
 	dig_resp = (username | realm | nonce | digest_uri | dresponse | algorithm | cnonce | opaque | message_qop | nonce_count)>1 | auth_param>0;
@@ -172,7 +172,7 @@ int tsip_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
 		const tsip_header_Authorization_t *Authorization = header;
 		if(Authorization && Authorization->scheme)
 		{
-			return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+			return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 				Authorization->scheme,
 
 				Authorization->username ? "username=\"" : "",
@@ -206,9 +206,8 @@ int tsip_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
 				Authorization->opaque ? Authorization->opaque : "",
 				Authorization->opaque ? "\"" : "",
 
-				Authorization->qop ? ",qop=\"" : "",
+				Authorization->qop ? ",qop=" : "",
 				Authorization->qop ? Authorization->qop : "",
-				Authorization->qop ? "\"" : "",
 
 				Authorization->nc ? ",nc=" : "",
 				Authorization->nc ? Authorization->nc : ""
@@ -257,8 +256,8 @@ static void* tsip_header_Authorization_create(void *self, va_list * app)
 	tsip_header_Authorization_t *Authorization = self;
 	if(Authorization)
 	{
-		Authorization->type = tsip_htype_Authorization;
-		Authorization->tostring = tsip_header_Authorization_tostring;
+		TSIP_HEADER(Authorization)->type = tsip_htype_Authorization;
+		TSIP_HEADER(Authorization)->tostring = tsip_header_Authorization_tostring;
 	}
 	else
 	{
@@ -286,7 +285,7 @@ static void* tsip_header_Authorization_destroy(void *self)
 		TSK_FREE(Authorization->qop);
 		TSK_FREE(Authorization->nc);
 		
-		TSK_LIST_SAFE_FREE(Authorization->params);
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Authorization));
 	}
 	else TSK_DEBUG_ERROR("Null Authorization header.");
 

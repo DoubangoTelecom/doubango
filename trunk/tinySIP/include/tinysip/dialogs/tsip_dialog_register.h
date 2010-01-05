@@ -50,7 +50,6 @@ typedef struct tsip_dialog_register
 	tsip_timer_t timerrefresh;
 
 	unsigned registering:1;
-	tsip_request_t *dlg_request;
 }
 tsip_dialog_register_t;
 
@@ -62,13 +61,13 @@ void tsip_dialog_register_Trying_2_Trying_X_1xx(tsip_dialog_register_t *self, co
 void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self, const tsip_message_t *msg);
 void tsip_dialog_register_Trying_2_Terminated_X_2xx(tsip_dialog_register_t *self, const tsip_message_t *msg);
 void tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(tsip_dialog_register_t *self, const tsip_message_t *msg);
-void tsip_dialog_register_Trying_2_Terminated_X_401_407_421_494(tsip_dialog_register_t *self, const tsip_message_t *msg);
 void tsip_dialog_register_Trying_2_Trying_X_423(tsip_dialog_register_t *self, const tsip_message_t *msg);
 void tsip_dialog_register_Trying_2_Terminated_X_300_to_699(tsip_dialog_register_t *self, const tsip_message_t *msg);
 void tsip_dialog_register_Trying_2_Terminated_X_cancel(tsip_dialog_register_t *self);
 void tsip_dialog_register_Connected_2_Trying_X_unregister(tsip_dialog_register_t *self);
 void tsip_dialog_register_Connected_2_Trying_X_refresh(tsip_dialog_register_t *self);
 void tsip_dialog_register_Any_2_Terminated_X_transportError(tsip_dialog_register_t *self);
+void tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self);
 
 
 TINYSIP_GEXTERN const void *tsip_dialog_register_def_t;

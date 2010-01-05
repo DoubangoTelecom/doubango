@@ -32,14 +32,23 @@
 
 int mutex_thread_started = 0;
 
+int safe_func(tsk_mutex_handle_t *mutex, const char* caller)
+{
+	int ret = 0;
+
+	ret = tsk_mutex_lock(mutex);
+	printf("threadfunc_mutex/// Start doing job [%s]... %d\n", caller, ret);
+	tsk_thread_sleep(5000);
+	printf("threadfunc_mutex/// Stop doing job [%s]... %d\n", caller, ret);
+	ret = tsk_mutex_unlock(mutex);
+
+	return ret;
+}
+
 void *threadfunc_mutex(void *parm)
 {
 	tsk_mutex_handle_t *mutex = (tsk_mutex_handle_t *)parm;
-	int ret = 0;
-	
-	mutex_thread_started = 1;
-	ret =  tsk_mutex_lock(mutex);
-	printf("threadfunc_mutex/// unlocked %d\n", ret);
+	safe_func(mutex, "caller1");
 
 	return 0;
 }
@@ -55,16 +64,20 @@ void test_mutex()
 
 
 	
-	tsk_mutex_lock(mutex);
+	//tsk_mutex_lock(mutex);
+	
 	tsk_thread_create(&tid[0], threadfunc_mutex, mutex);
+	tsk_thread_sleep(1000);
 
-	while(!mutex_thread_started) tsk_thread_sleep(1000);
+	safe_func(mutex, "caller0");
+
+	/*while(!mutex_thread_started) tsk_thread_sleep(1000);
 
 	printf("test_mutex// threadfunc_mutex is locked for 1 second\n");
 	tsk_thread_sleep(1000);
 
 	printf("test_mutex// Now unlock threadfunc_mutex\n");
-	tsk_mutex_unlock(mutex);
+	tsk_mutex_unlock(mutex);*/
 
 
 	tsk_thread_join(&(tid[0]));
