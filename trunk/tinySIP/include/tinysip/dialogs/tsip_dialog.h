@@ -145,6 +145,8 @@ typedef tsk_list_t tsip_dialogs_L_t;
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method);
 int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request);
+
+tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short status, const char* phrase, const tsip_request_t* request);
 int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* response);
 
 int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response);

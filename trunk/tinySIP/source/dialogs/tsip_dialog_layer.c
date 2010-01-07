@@ -30,6 +30,9 @@
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 
 #include "tinysip/dialogs/tsip_dialog_register.h"
+#include "tinysip/dialogs/tsip_dialog_message.h"
+
+#include "tinysip/transactions/tsip_transac_layer.h"
 
 
 /**
@@ -61,6 +64,31 @@ static tsip_dialog_t* tsip_dialog_layer_find_dialog(tsip_dialog_layer_t *self, t
 	return 0;
 }
 
+const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag)
+{
+	tsip_dialog_t *ret = 0;
+	tsip_dialog_t *dialog;
+	tsk_list_item_t *item;
+
+	tsk_safeobj_lock(self);
+
+	tsk_list_foreach(item, self->dialogs)
+	{
+		dialog = item->data;
+		if( tsk_strequals(dialog->callid, callid) 
+			&& tsk_strequals(dialog->tag_local, to_tag)
+			&& tsk_strequals(dialog->tag_remote, from_tag)
+			)
+		{
+			ret = dialog;
+			break;
+		}
+	}
+
+	tsk_safeobj_unlock(self);
+
+	return ret;
+}
 
 /**
  * @fn	int tsip_dialog_layer_register(tsip_dialog_layer_t *self,
@@ -82,6 +110,8 @@ int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_h
 
 	if(self)
 	{
+		//tsk_safeobj_lock(self);
+
 		tsip_dialog_register_t *dialog = (tsip_dialog_register_t*)tsip_dialog_layer_find_dialog(self, tsip_dialog_register, operation);
 		if(dialog)
 		{
@@ -93,12 +123,51 @@ int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_h
 			ret = tsip_dialog_register_start(dialog);
 			tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 		}
+
+		//tsk_safeobj_unlock(self);
 	}
 	return ret;
 }
 
 
+int tsip_dialog_layer_handle_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message)
+{
+	int ret = -1;
+	const tsip_dialog_t* dialog;
 
+	tsk_safeobj_lock(self);
+
+	dialog = tsip_dialog_layer_find(self, message->Call_ID->value, message->To->tag, message->From->tag);
+	if(dialog)
+	{
+		dialog->callback(dialog, tsip_dialog_msg, message);
+	}
+	else
+	{
+		const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
+		const tsip_transac_t* transac;
+
+		if(TSIP_MESSAGE_IS_REQUEST(message))
+		{
+			if(tsk_strequals("MESSAGE", TSIP_REQUEST_METHOD(message)))
+			{
+				tsip_dialog_message_t *dlg_msg = TSIP_DIALOG_MESSAGE_CREATE(self->stack, 0);
+
+				transac = tsip_transac_layer_new(layer_transac, 0, message);
+				if(transac)
+				{
+					TSIP_TRANSAC(transac)->dialog = TSIP_DIALOG(dlg_msg);
+					//ret = tsip_dialog_message_recv(dlg_msg, message);
+				}
+				tsk_list_push_back_data(self->dialogs, (void**)&dlg_msg);
+			}
+		}
+	}
+
+	tsk_safeobj_unlock(self);
+
+	return ret;
+}
 
 
 
@@ -114,6 +183,8 @@ static void* tsip_dialog_layer_create(void * self, va_list * app)
 	{
 		layer->stack = va_arg(*app, const tsip_stack_handle_t *);
 		layer->dialogs = TSK_LIST_CREATE();
+
+		tsk_safeobj_init(layer);
 	}
 	return self;
 }
@@ -124,6 +195,8 @@ static void* tsip_dialog_layer_destroy(void * self)
 	if(layer)
 	{
 		TSK_LIST_SAFE_FREE(layer->dialogs);
+
+		tsk_safeobj_deinit(layer);
 	}
 	return self;
 }

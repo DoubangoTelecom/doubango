@@ -51,14 +51,12 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("AUTHORIZATION:TAG");
 		tag_start = p;
 	}
 	
 	action is_digest
 	{
 		#//FIXME: Only Digest is supported
-		TSK_DEBUG_INFO("AUTHORIZATION:IS_DIGEST");
 		hdr_Authorization->scheme = tsk_strdup("Digest");
 	}
 
@@ -66,67 +64,57 @@
 	{
 		PARSER_SET_STRING(hdr_Authorization->username);
 		tsk_strunquote(&hdr_Authorization->username);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_USERNAME");
 	}
 
 	action parse_realm
 	{
 		PARSER_SET_STRING(hdr_Authorization->realm);
 		tsk_strunquote(&hdr_Authorization->realm);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_REALM");
 	}
 
 	action parse_nonce
 	{
 		PARSER_SET_STRING(hdr_Authorization->nonce);
 		tsk_strunquote(&hdr_Authorization->nonce);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_NONCE");
 	}
 
 	action parse_uri
 	{
 		PARSER_SET_STRING(hdr_Authorization->uri);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_URI");
 	}
 
 	action parse_response
 	{
 		PARSER_SET_STRING(hdr_Authorization->response);
 		tsk_strunquote(&hdr_Authorization->response);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_RESPONSE");
 	}
 
 	action parse_algorithm
 	{
 		PARSER_SET_STRING(hdr_Authorization->algorithm);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_ALGORITHM");
 	}
 
 	action parse_cnonce
 	{
 		PARSER_SET_STRING(hdr_Authorization->cnonce);
 		tsk_strunquote(&hdr_Authorization->cnonce);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_CNONCE");
 	}
 
 	action parse_opaque
 	{
 		PARSER_SET_STRING(hdr_Authorization->opaque);
 		tsk_strunquote(&hdr_Authorization->opaque);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_OPAQUE");
 	}
 
 	action parse_qop
 	{
 		PARSER_SET_STRING(hdr_Authorization->qop);
 		//tsk_strunquote(&hdr_Authorization->qop);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_QOP");
 	}
 
 	action parse_nc
 	{
 		PARSER_SET_STRING(hdr_Authorization->nc);
-		TSK_DEBUG_INFO("AUTHORIZATION:PARSE_NC");
 	}
 
 	action parse_param
@@ -136,10 +124,10 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("AUTHORIZATION:EOB");
 	}
 
 	#FIXME: Only Digest (MD5, AKAv1-MD5 and AKAv2-MD5) is supported
+	qop_value  = "auth" | "auth-int" | token;
 	other_response = (any+);
 	auth_param = generic_param>tag %parse_param;
 	
@@ -152,7 +140,7 @@
 	algorithm = "algorithm"i EQUAL <:token>tag %parse_algorithm;
 	cnonce = "cnonce"i EQUAL quoted_string>tag %parse_cnonce;
 	opaque = "opaque"i EQUAL quoted_string>tag %parse_opaque;
-	message_qop = "qop"i EQUAL (any*)>tag %parse_qop;
+	message_qop = "qop"i EQUAL qop_value>tag %parse_qop;
 	nonce_count = "nc"i EQUAL (LHEX{8})>tag %parse_nc;
 	
 	dig_resp = (username | realm | nonce | digest_uri | dresponse | algorithm | cnonce | opaque | message_qop | nonce_count)>1 | auth_param>0;

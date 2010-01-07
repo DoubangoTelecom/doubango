@@ -48,7 +48,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("TO:TAG");
 		tag_start = p;
 	}
 	
@@ -56,30 +55,25 @@
 	{
 		int len = (int)(p  - tag_start);
 		hdr_to->uri = tsip_uri_parse(tag_start, (size_t)len);
-		TSK_DEBUG_INFO("TO:PARSE_URI");
 	}
 
 	action parse_display_name
 	{
 		PARSER_SET_STRING(hdr_to->display_name);
-		TSK_DEBUG_INFO("TO:PARSE_DISPLAY_NAME");
 	}
 
 	action parse_tag
 	{
 		PARSER_SET_STRING(hdr_to->tag);
-		TSK_DEBUG_INFO("TO:PARSE_TAG");
 	}
 
 	action parse_param
 	{
 		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_to));
-		TSK_DEBUG_INFO("TO:PARSE_PARAM");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("TO:EOB");
 	}
 	
 	my_tag_param = "tag"i EQUAL token>tag %parse_tag;

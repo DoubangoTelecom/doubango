@@ -39,6 +39,8 @@ int tsip_transac_init(tsip_transac_t *transac, const tsip_stack_handle_t * stack
 {
 	if(transac)
 	{
+		tsk_safeobj_init(transac);
+
 		transac->stack = stack;
 		transac->timer_mgr = tsip_stack_get_timer_mgr(stack);
 		transac->type = type;
@@ -47,6 +49,23 @@ int tsip_transac_init(tsip_transac_t *transac, const tsip_stack_handle_t * stack
 		transac->cseq_method = tsk_strdup(cseq_method);
 		transac->callid = tsk_strdup(callid);
 		
+		return 0;
+	}
+	return -1;
+}
+
+int tsip_transac_deinit(tsip_transac_t *transac)
+{
+	if(transac)
+	{
+		transac->stack = 0;
+		
+		TSK_FREE(transac->branch);
+		TSK_FREE(transac->cseq_method);
+		TSK_FREE(transac->callid);
+
+		tsk_safeobj_deinit(transac);
+
 		return 0;
 	}
 	return -1;
@@ -71,21 +90,6 @@ int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2)
 	if(t1 && t2)
 	{
 		return (tsk_strcmp(t1->branch, t2->branch) + tsk_strcmp(t1->cseq_method, t2->cseq_method));
-	}
-	return -1;
-}
-
-int tsip_transac_deinit(tsip_transac_t *transac)
-{
-	if(transac)
-	{
-		transac->stack = 0;
-		
-		TSK_FREE(transac->branch);
-		TSK_FREE(transac->cseq_method);
-		TSK_FREE(transac->callid);
-
-		return 0;
 	}
 	return -1;
 }

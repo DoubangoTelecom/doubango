@@ -48,7 +48,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("CONTACT:TAG");
 		tag_start = p;
 	}
 
@@ -57,7 +56,6 @@
 		if(!curr_contact)
 		{
 			curr_contact = TSIP_HEADER_CONTACT_CREATE();
-			TSK_DEBUG_INFO("CONTACT:CREATE_CONTACT");
 		}
 	}
 
@@ -99,13 +97,11 @@
 		if(curr_contact)
 		{
 			tsk_list_push_back_data(hdr_contacts, ((void**) &curr_contact));
-			TSK_DEBUG_INFO("CONTACT:ADD_CONTACT");
 		}
 	}
-
+	
 	action eob
 	{
-		TSK_DEBUG_INFO("CONTACT:EOB");
 	}
 	
 	URI = (scheme HCOLON any+)>tag %parse_uri;
@@ -113,9 +109,9 @@
 	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
 	
 	c_p_expires = "expires"i EQUAL delta_seconds>tag %parse_expires;
-	contact_extension = (generic_param--c_p_expires)>tag %parse_param;
-	contact_params = c_p_expires | contact_extension;
-	contact_param = (( my_name_addr | URI ) ( SEMI contact_params )*) >create_contact %add_contact;
+	contact_extension = (generic_param)>tag %parse_param;
+	contact_params = c_p_expires>1 | contact_extension>0;
+	contact_param = (( my_name_addr | URI ) <: ( SEMI contact_params )*) >create_contact %add_contact;
 	Contact = ( "Contact"i | "m"i ) HCOLON ( STAR | ( contact_param ( COMMA contact_param )* ) );
 	
 	# Entry point

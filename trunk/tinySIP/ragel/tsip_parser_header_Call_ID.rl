@@ -51,19 +51,16 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("CALL_ID:TAG");
 		tag_start = p;
 	}
 	
 	action parse_value
 	{
 		PARSER_SET_STRING(hdr_call_id->value);
-		TSK_DEBUG_INFO("CALL_ID:PARSE_VALUE");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("CALL_ID:EOB");
 	}
 
 	callid = word ( "@" word )?;

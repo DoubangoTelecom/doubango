@@ -36,6 +36,7 @@
 #include "tinysip/headers/tsip_header_Call_ID.h"
 #include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_Content_Length.h"
+#include "tinysip/headers/tsip_header_Content_Type.h"
 #include "tinysip/headers/tsip_header_CSeq.h"
 #include "tinysip/headers/tsip_header_Expires.h"
 #include "tinysip/headers/tsip_header_From.h"
@@ -44,6 +45,7 @@
 #include "tinysip/headers/tsip_header_Via.h"
 
 #include "tsk_object.h"
+#include "tsk_buffer.h"
 
 TSIP_BEGIN_DECLS
 
@@ -70,7 +72,7 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_MESSAGE_CREATE()											tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_unknown)
 #define TSIP_REQUEST_CREATE(method, uri)								tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_request, (const char*)method, (const tsip_uri_t*)uri)
-#define TSIP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_response, (const tsip_request_t*)request, (short)status, (const char*)phrase)
+#define TSIP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_response, (const tsip_request_t*)request, (short)status_code, (const char*)reason_phrase)
 #define TSIP_MESSAGE_SAFE_FREE(self)									tsk_object_unref(self), self = 0
 #define TSIP_REQUEST_SAFE_FREE(self)									TSIP_MESSAGE_SAFE_FREE(self)
 #define TSIP_RESPONSE_SAFE_FREE(self)									TSIP_MESSAGE_SAFE_FREE(self)
@@ -82,8 +84,9 @@ TSIP_BEGIN_DECLS
 #define TSIP_REQUEST_METHOD(self)			 ((self)->line_request.method)
 #define TSIP_REQUEST_URI(self)				 ((self)->line_request.uri)
 
-#define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)((message && message->Content_Length) ? message->Content_Length->length : 0)
-
+#define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)(((message) && (message)->Content_Length) ? (message)->Content_Length->length : 0)
+#define TSIP_MESSAGE_CONTENT(message)		 (TSIP_MESSAGE_HAS_CONTENT(message) ? (message)->Content : 0)
+#define TSIP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content)
 
 /**
  * @enum	tsip_message_type_t
@@ -167,7 +170,10 @@ typedef struct tsip_message_s
 	tsip_header_Call_ID_t *Call_ID;
 	tsip_header_CSeq_t *CSeq;
 	tsip_header_Expires_t *Expires;
+
+	tsip_header_Content_Type_t *Content_Type;
 	tsip_header_Content_Length_t *Content_Length;
+	tsk_buffer_t *Content;
 
 	/*== OTHER HEADERS*/
 	tsip_headers_L_t *headers;
@@ -220,6 +226,7 @@ TINYSIP_API int32_t		tsip_message_getCSeq(const tsip_message_t *message);
 TINYSIP_API int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output);
 
 TINYSIP_API tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq);
+TINYSIP_API tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase, const tsip_request_t *request);
 
 TINYSIP_GEXTERN const void *tsip_message_def_t;
 

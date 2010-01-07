@@ -162,7 +162,7 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 	{
 		if(ret == TIMED_OUT)
 		{
-			TSK_DEBUG_INFO("WaitForSingleObject function timedout: %d", ret);
+			//TSK_DEBUG_INFO("WaitForSingleObject function timedout: %d", ret);
 		}
 		else
 		{

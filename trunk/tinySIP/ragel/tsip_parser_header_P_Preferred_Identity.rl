@@ -56,7 +56,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("P_PREFERRED_IDENTITY:TAG");
 		tag_start = p;
 	}
 	
@@ -80,7 +79,6 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("P_PREFERRED_IDENTITY:EOB");
 	}
 	
 	#/* FIXME: Only one URI is added --> According to the ABNF the header could have more than one URI. */
@@ -89,12 +87,11 @@
 	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;
 	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
 
-	PPreferredID_value = my_name_addr | URI;
-	PPreferredID = "P-Preferred-Identity"i HCOLON PPreferredID_value ( COMMA PPreferredID_value )*;
-	P_Preferred_Identity = PPreferredID;
+	PPreferredID_value = (my_name_addr)>0 | (URI)>1;
+	PPreferredID = "P-Preferred-Identity"i HCOLON PPreferredID_value>1 ( COMMA PPreferredID_value )*>0;
 	
 	# Entry point
-	main := P_Preferred_Identity :>CRLF @eob;
+	main := PPreferredID :>CRLF @eob;
 
 }%%
 

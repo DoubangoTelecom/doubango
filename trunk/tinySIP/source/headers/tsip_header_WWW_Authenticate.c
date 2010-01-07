@@ -46,7 +46,7 @@
 *	Ragel state machine.
 */
 
-/* #line 142 "tsip_parser_header_WWW_Authenticate.rl" */
+/* #line 131 "tsip_parser_header_WWW_Authenticate.rl" */
 
 
 int tsip_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
@@ -100,360 +100,6 @@ tsip_header_WWW_Authenticate_t *tsip_header_WWW_Authenticate_parse(const char *d
 
 	
 /* #line 103 "../source/headers/tsip_header_WWW_Authenticate.c" */
-static const char _tsip_machine_parser_header_WWW_Authenticate_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 1, 
-	3, 1, 4, 1, 5, 1, 6, 1, 
-	7, 1, 8, 1, 9, 1, 10, 2, 
-	0, 3, 2, 0, 8
-};
-
-static const short _tsip_machine_parser_header_WWW_Authenticate_key_offsets[] = {
-	0, 0, 2, 4, 6, 7, 9, 11, 
-	13, 15, 17, 19, 21, 23, 25, 27, 
-	29, 31, 34, 39, 40, 41, 46, 49, 
-	52, 55, 58, 61, 64, 95, 112, 117, 
-	136, 152, 156, 172, 175, 178, 181, 184, 
-	187, 191, 196, 204, 213, 222, 231, 234, 
-	242, 252, 255, 259, 262, 266, 269, 273, 
-	277, 279, 283, 285, 289, 291, 301, 311, 
-	320, 329, 338, 347, 350, 357, 367, 377, 
-	387, 390, 394, 398, 400, 402, 405, 408, 
-	411, 414, 417, 420, 423, 426, 430, 447, 
-	463, 466, 469, 472, 475, 478, 482, 486, 
-	488, 490, 493, 496, 499, 502, 506, 510, 
-	526, 529, 532, 535, 538, 541, 545, 550, 
-	553, 556, 559, 562, 565, 569, 573, 589, 
-	592, 595, 598, 601, 604, 608, 613, 616, 
-	619, 623, 627, 629, 631, 634, 637, 640, 
-	643, 647, 651, 667, 670, 673, 676, 679, 
-	682, 686, 691, 694, 697, 700, 703, 707, 
-	714, 717, 720, 723, 726, 730, 733, 736, 
-	738, 741
-};
-
-static const char _tsip_machine_parser_header_WWW_Authenticate_trans_keys[] = {
-	87, 119, 87, 119, 87, 119, 45, 65, 
-	97, 85, 117, 84, 116, 72, 104, 69, 
-	101, 78, 110, 84, 116, 73, 105, 67, 
-	99, 65, 97, 84, 116, 69, 101, 9, 
-	32, 58, 9, 13, 32, 68, 100, 13, 
-	10, 9, 13, 32, 68, 100, 13, 73, 
-	105, 13, 71, 103, 13, 69, 101, 13, 
-	83, 115, 13, 84, 116, 9, 13, 32, 
-	9, 13, 32, 33, 37, 39, 65, 68, 
-	78, 79, 81, 82, 83, 97, 100, 110, 
-	111, 113, 114, 115, 126, 42, 43, 45, 
-	46, 48, 57, 66, 90, 95, 122, 9, 
-	13, 32, 33, 37, 39, 44, 61, 126, 
-	42, 46, 48, 57, 65, 90, 95, 122, 
-	9, 13, 32, 44, 61, 9, 13, 32, 
-	33, 34, 37, 39, 91, 126, 42, 43, 
-	45, 46, 48, 57, 65, 90, 95, 122, 
-	9, 13, 32, 33, 37, 39, 44, 126, 
-	42, 46, 48, 57, 65, 90, 95, 122, 
-	9, 13, 32, 44, 9, 13, 34, 92, 
-	-64, -33, -32, -17, -16, -9, -8, -5, 
-	-4, -3, 32, 126, 13, -128, -65, 13, 
-	-128, -65, 13, -128, -65, 13, -128, -65, 
-	13, -128, -65, 9, 13, 32, 44, 13, 
-	0, 9, 11, 127, 13, 58, 48, 57, 
-	65, 70, 97, 102, 13, 58, 93, 48, 
-	57, 65, 70, 97, 102, 13, 58, 93, 
-	48, 57, 65, 70, 97, 102, 13, 58, 
-	93, 48, 57, 65, 70, 97, 102, 13, 
-	58, 93, 13, 58, 48, 57, 65, 70, 
-	97, 102, 13, 46, 58, 93, 48, 57, 
-	65, 70, 97, 102, 13, 48, 57, 13, 
-	46, 48, 57, 13, 48, 57, 13, 46, 
-	48, 57, 13, 48, 57, 13, 93, 48, 
-	57, 13, 93, 48, 57, 13, 93, 13, 
-	46, 48, 57, 13, 46, 13, 46, 48, 
-	57, 13, 46, 13, 46, 58, 93, 48, 
-	57, 65, 70, 97, 102, 13, 46, 58, 
-	93, 48, 57, 65, 70, 97, 102, 13, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	13, 58, 93, 48, 57, 65, 70, 97, 
-	102, 13, 58, 93, 48, 57, 65, 70, 
-	97, 102, 13, 58, 93, 48, 57, 65, 
-	70, 97, 102, 13, 58, 93, 13, 48, 
-	57, 65, 70, 97, 102, 13, 46, 58, 
-	93, 48, 57, 65, 70, 97, 102, 13, 
-	46, 58, 93, 48, 57, 65, 70, 97, 
-	102, 13, 46, 58, 93, 48, 57, 65, 
-	70, 97, 102, 13, 48, 57, 13, 46, 
-	48, 57, 13, 46, 48, 57, 13, 46, 
-	13, 58, 13, 76, 108, 13, 71, 103, 
-	13, 79, 111, 13, 82, 114, 13, 73, 
-	105, 13, 84, 116, 13, 72, 104, 13, 
-	77, 109, 9, 13, 32, 61, 9, 13, 
-	32, 33, 37, 39, 126, 42, 43, 45, 
-	46, 48, 57, 65, 90, 95, 122, 9, 
-	13, 32, 33, 37, 39, 44, 126, 42, 
-	46, 48, 57, 65, 90, 95, 122, 13, 
-	79, 111, 13, 77, 109, 13, 65, 97, 
-	13, 73, 105, 13, 78, 110, 9, 13, 
-	32, 61, 9, 13, 32, 34, 13, 34, 
-	13, 34, 13, 79, 111, 13, 78, 110, 
-	13, 67, 99, 13, 69, 101, 9, 13, 
-	32, 61, 9, 13, 32, 34, 9, 13, 
-	34, 92, -64, -33, -32, -17, -16, -9, 
-	-8, -5, -4, -3, 32, 126, 13, -128, 
-	-65, 13, -128, -65, 13, -128, -65, 13, 
-	-128, -65, 13, -128, -65, 9, 13, 32, 
-	44, 13, 0, 9, 11, 127, 13, 80, 
-	112, 13, 65, 97, 13, 81, 113, 13, 
-	85, 117, 13, 69, 101, 9, 13, 32, 
-	61, 9, 13, 32, 34, 9, 13, 34, 
-	92, -64, -33, -32, -17, -16, -9, -8, 
-	-5, -4, -3, 32, 126, 13, -128, -65, 
-	13, -128, -65, 13, -128, -65, 13, -128, 
-	-65, 13, -128, -65, 9, 13, 32, 44, 
-	13, 0, 9, 11, 127, 13, 79, 111, 
-	13, 80, 112, 9, 13, 32, 61, 9, 
-	13, 32, 34, 13, 34, 13, 34, 13, 
-	69, 101, 13, 65, 97, 13, 76, 108, 
-	13, 77, 109, 9, 13, 32, 61, 9, 
-	13, 32, 34, 9, 13, 34, 92, -64, 
-	-33, -32, -17, -16, -9, -8, -5, -4, 
-	-3, 32, 126, 13, -128, -65, 13, -128, 
-	-65, 13, -128, -65, 13, -128, -65, 13, 
-	-128, -65, 9, 13, 32, 44, 13, 0, 
-	9, 11, 127, 13, 84, 116, 13, 65, 
-	97, 13, 76, 108, 13, 69, 101, 9, 
-	13, 32, 61, 9, 13, 32, 70, 84, 
-	102, 116, 13, 65, 97, 13, 76, 108, 
-	13, 83, 115, 13, 69, 101, 9, 13, 
-	32, 44, 13, 82, 114, 13, 85, 117, 
-	10, 13, 9, 13, 32, 0
-};
-
-static const char _tsip_machine_parser_header_WWW_Authenticate_single_lengths[] = {
-	0, 2, 2, 2, 1, 2, 2, 2, 
-	2, 2, 2, 2, 2, 2, 2, 2, 
-	2, 3, 5, 1, 1, 5, 3, 3, 
-	3, 3, 3, 3, 21, 9, 5, 9, 
-	8, 4, 4, 1, 1, 1, 1, 1, 
-	4, 1, 2, 3, 3, 3, 3, 2, 
-	4, 1, 2, 1, 2, 1, 2, 2, 
-	2, 2, 2, 2, 2, 4, 4, 3, 
-	3, 3, 3, 3, 1, 4, 4, 4, 
-	1, 2, 2, 2, 2, 3, 3, 3, 
-	3, 3, 3, 3, 3, 4, 7, 8, 
-	3, 3, 3, 3, 3, 4, 4, 2, 
-	2, 3, 3, 3, 3, 4, 4, 4, 
-	1, 1, 1, 1, 1, 4, 1, 3, 
-	3, 3, 3, 3, 4, 4, 4, 1, 
-	1, 1, 1, 1, 4, 1, 3, 3, 
-	4, 4, 2, 2, 3, 3, 3, 3, 
-	4, 4, 4, 1, 1, 1, 1, 1, 
-	4, 1, 3, 3, 3, 3, 4, 7, 
-	3, 3, 3, 3, 4, 3, 3, 2, 
-	3, 0
-};
-
-static const char _tsip_machine_parser_header_WWW_Authenticate_range_lengths[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 5, 4, 0, 5, 
-	4, 0, 6, 1, 1, 1, 1, 1, 
-	0, 2, 3, 3, 3, 3, 0, 3, 
-	3, 1, 1, 1, 1, 1, 1, 1, 
-	0, 1, 0, 1, 0, 3, 3, 3, 
-	3, 3, 3, 0, 3, 3, 3, 3, 
-	1, 1, 1, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 5, 4, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 6, 
-	1, 1, 1, 1, 1, 0, 2, 0, 
-	0, 0, 0, 0, 0, 0, 6, 1, 
-	1, 1, 1, 1, 0, 2, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 6, 1, 1, 1, 1, 1, 
-	0, 2, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0
-};
-
-static const short _tsip_machine_parser_header_WWW_Authenticate_index_offsets[] = {
-	0, 0, 3, 6, 9, 11, 14, 17, 
-	20, 23, 26, 29, 32, 35, 38, 41, 
-	44, 47, 51, 57, 59, 61, 67, 71, 
-	75, 79, 83, 87, 91, 118, 132, 138, 
-	153, 166, 171, 182, 185, 188, 191, 194, 
-	197, 202, 206, 212, 219, 226, 233, 237, 
-	243, 251, 254, 258, 261, 265, 268, 272, 
-	276, 279, 283, 286, 290, 293, 301, 309, 
-	316, 323, 330, 337, 341, 346, 354, 362, 
-	370, 373, 377, 381, 384, 387, 391, 395, 
-	399, 403, 407, 411, 415, 419, 424, 437, 
-	450, 454, 458, 462, 466, 470, 475, 480, 
-	483, 486, 490, 494, 498, 502, 507, 512, 
-	523, 526, 529, 532, 535, 538, 543, 547, 
-	551, 555, 559, 563, 567, 572, 577, 588, 
-	591, 594, 597, 600, 603, 608, 612, 616, 
-	620, 625, 630, 633, 636, 640, 644, 648, 
-	652, 657, 662, 673, 676, 679, 682, 685, 
-	688, 693, 697, 701, 705, 709, 713, 718, 
-	726, 730, 734, 738, 742, 747, 751, 755, 
-	758, 762
-};
-
-static const unsigned char _tsip_machine_parser_header_WWW_Authenticate_indicies[] = {
-	0, 0, 1, 2, 2, 1, 3, 3, 
-	1, 4, 1, 5, 5, 1, 6, 6, 
-	1, 7, 7, 1, 8, 8, 1, 9, 
-	9, 1, 10, 10, 1, 11, 11, 1, 
-	12, 12, 1, 13, 13, 1, 14, 14, 
-	1, 15, 15, 1, 16, 16, 1, 16, 
-	16, 17, 1, 19, 20, 19, 21, 21, 
-	18, 22, 18, 23, 1, 19, 22, 19, 
-	21, 21, 18, 22, 24, 24, 18, 22, 
-	25, 25, 18, 22, 26, 26, 18, 22, 
-	27, 27, 18, 22, 28, 28, 18, 29, 
-	22, 29, 18, 29, 22, 29, 30, 30, 
-	30, 31, 32, 33, 34, 35, 36, 37, 
-	31, 32, 33, 34, 35, 36, 37, 30, 
-	30, 30, 30, 30, 30, 18, 38, 39, 
-	38, 40, 40, 40, 41, 42, 40, 40, 
-	40, 40, 40, 18, 43, 22, 43, 29, 
-	42, 18, 42, 22, 42, 44, 45, 44, 
-	44, 46, 44, 44, 44, 44, 44, 44, 
-	18, 47, 39, 47, 44, 44, 44, 41, 
-	44, 44, 44, 44, 44, 18, 48, 22, 
-	48, 29, 18, 45, 22, 54, 55, 49, 
-	50, 51, 52, 53, 45, 18, 22, 45, 
-	18, 22, 49, 18, 22, 50, 18, 22, 
-	51, 18, 22, 52, 18, 47, 39, 47, 
-	41, 18, 22, 45, 45, 18, 22, 57, 
-	56, 56, 56, 18, 22, 59, 54, 58, 
-	58, 58, 18, 22, 59, 54, 60, 60, 
-	60, 18, 22, 59, 54, 61, 61, 61, 
-	18, 22, 59, 54, 18, 22, 63, 62, 
-	56, 56, 18, 22, 64, 59, 54, 65, 
-	58, 58, 18, 22, 66, 18, 22, 67, 
-	68, 18, 22, 69, 18, 22, 70, 71, 
-	18, 22, 72, 18, 22, 54, 73, 18, 
-	22, 54, 74, 18, 22, 54, 18, 22, 
-	70, 75, 18, 22, 70, 18, 22, 67, 
-	76, 18, 22, 67, 18, 22, 64, 59, 
-	54, 77, 60, 60, 18, 22, 64, 59, 
-	54, 61, 61, 61, 18, 22, 79, 54, 
-	78, 78, 78, 18, 22, 81, 54, 80, 
-	80, 80, 18, 22, 81, 54, 82, 82, 
-	82, 18, 22, 81, 54, 83, 83, 83, 
-	18, 22, 81, 54, 18, 22, 84, 78, 
-	78, 18, 22, 64, 81, 54, 85, 80, 
-	80, 18, 22, 64, 81, 54, 86, 82, 
-	82, 18, 22, 64, 81, 54, 83, 83, 
-	83, 18, 22, 87, 18, 22, 64, 88, 
-	18, 22, 64, 89, 18, 22, 64, 18, 
-	22, 63, 18, 22, 90, 90, 18, 22, 
-	91, 91, 18, 22, 92, 92, 18, 22, 
-	93, 93, 18, 22, 94, 94, 18, 22, 
-	95, 95, 18, 22, 96, 96, 18, 22, 
-	97, 97, 18, 97, 22, 97, 98, 18, 
-	98, 22, 98, 99, 99, 99, 99, 99, 
-	99, 99, 99, 99, 18, 100, 101, 100, 
-	102, 102, 102, 103, 102, 102, 102, 102, 
-	102, 18, 22, 104, 104, 18, 22, 105, 
-	105, 18, 22, 106, 106, 18, 22, 107, 
-	107, 18, 22, 108, 108, 18, 108, 22, 
-	108, 109, 18, 109, 22, 109, 110, 18, 
-	22, 112, 111, 22, 114, 113, 22, 115, 
-	115, 18, 22, 116, 116, 18, 22, 117, 
-	117, 18, 22, 118, 118, 18, 118, 22, 
-	118, 119, 18, 120, 22, 120, 121, 18, 
-	127, 22, 128, 129, 122, 123, 124, 125, 
-	126, 127, 18, 22, 127, 18, 22, 122, 
-	18, 22, 123, 18, 22, 124, 18, 22, 
-	125, 18, 130, 131, 130, 132, 18, 22, 
-	127, 127, 18, 22, 133, 133, 18, 22, 
-	134, 134, 18, 22, 135, 135, 18, 22, 
-	136, 136, 18, 22, 137, 137, 18, 137, 
-	22, 137, 138, 18, 139, 22, 139, 140, 
-	18, 146, 22, 147, 148, 141, 142, 143, 
-	144, 145, 146, 18, 22, 146, 18, 22, 
-	141, 18, 22, 142, 18, 22, 143, 18, 
-	22, 144, 18, 149, 150, 149, 151, 18, 
-	22, 146, 146, 18, 22, 152, 152, 18, 
-	22, 153, 153, 18, 153, 22, 153, 154, 
-	18, 154, 22, 154, 155, 18, 22, 157, 
-	156, 22, 159, 158, 22, 160, 160, 18, 
-	22, 161, 161, 18, 22, 162, 162, 18, 
-	22, 163, 163, 18, 163, 22, 163, 164, 
-	18, 165, 22, 165, 166, 18, 172, 22, 
-	173, 174, 167, 168, 169, 170, 171, 172, 
-	18, 22, 172, 18, 22, 167, 18, 22, 
-	168, 18, 22, 169, 18, 22, 170, 18, 
-	175, 176, 175, 177, 18, 22, 172, 172, 
-	18, 22, 178, 178, 18, 22, 179, 179, 
-	18, 22, 180, 180, 18, 22, 181, 181, 
-	18, 181, 22, 181, 182, 18, 182, 22, 
-	182, 183, 184, 183, 184, 18, 22, 185, 
-	185, 18, 22, 186, 186, 18, 22, 187, 
-	187, 18, 22, 188, 188, 18, 189, 190, 
-	189, 191, 18, 22, 192, 192, 18, 22, 
-	187, 187, 18, 193, 22, 18, 19, 22, 
-	19, 18, 1, 0
-};
-
-static const unsigned char _tsip_machine_parser_header_WWW_Authenticate_trans_targs[] = {
-	2, 0, 3, 4, 5, 6, 7, 8, 
-	9, 10, 11, 12, 13, 14, 15, 16, 
-	17, 18, 19, 21, 159, 22, 20, 161, 
-	23, 24, 25, 26, 27, 28, 29, 77, 
-	88, 97, 111, 126, 132, 146, 30, 20, 
-	29, 28, 31, 30, 32, 34, 42, 33, 
-	33, 35, 36, 37, 38, 39, 40, 41, 
-	43, 76, 44, 47, 45, 46, 48, 63, 
-	49, 61, 50, 51, 59, 52, 53, 57, 
-	54, 55, 56, 58, 60, 62, 64, 72, 
-	65, 68, 66, 67, 69, 70, 71, 73, 
-	74, 75, 78, 79, 80, 81, 82, 83, 
-	84, 85, 86, 87, 33, 20, 87, 28, 
-	89, 90, 91, 92, 93, 94, 95, 96, 
-	33, 96, 33, 98, 99, 100, 101, 102, 
-	102, 103, 104, 105, 106, 107, 108, 103, 
-	109, 110, 33, 20, 28, 112, 113, 114, 
-	115, 116, 117, 117, 118, 119, 120, 121, 
-	122, 123, 118, 124, 125, 33, 20, 28, 
-	127, 128, 129, 130, 131, 33, 131, 33, 
-	133, 134, 135, 136, 137, 137, 138, 139, 
-	140, 141, 142, 143, 138, 144, 145, 33, 
-	20, 28, 147, 148, 149, 150, 151, 152, 
-	157, 153, 154, 155, 156, 33, 20, 28, 
-	158, 160
-};
-
-static const char _tsip_machine_parser_header_WWW_Authenticate_trans_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 3, 0, 21, 
-	0, 0, 0, 0, 0, 0, 1, 0, 
-	0, 0, 0, 0, 0, 0, 19, 19, 
-	0, 19, 0, 0, 0, 0, 0, 19, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 1, 15, 15, 0, 15, 
-	0, 0, 0, 0, 0, 0, 0, 1, 
-	23, 0, 7, 0, 0, 0, 0, 0, 
-	1, 1, 0, 0, 0, 0, 0, 0, 
-	0, 0, 9, 9, 9, 0, 0, 0, 
-	0, 0, 0, 1, 1, 0, 0, 0, 
-	0, 0, 0, 0, 0, 11, 11, 11, 
-	0, 0, 0, 0, 1, 26, 0, 17, 
-	0, 0, 0, 0, 0, 1, 1, 0, 
-	0, 0, 0, 0, 0, 0, 0, 5, 
-	5, 5, 0, 0, 0, 0, 0, 1, 
-	1, 0, 0, 0, 0, 13, 13, 13, 
-	0, 0
-};
-
 static const int tsip_machine_parser_header_WWW_Authenticate_start = 1;
 static const int tsip_machine_parser_header_WWW_Authenticate_first_final = 161;
 static const int tsip_machine_parser_header_WWW_Authenticate_error = 0;
@@ -461,190 +107,2365 @@ static const int tsip_machine_parser_header_WWW_Authenticate_error = 0;
 static const int tsip_machine_parser_header_WWW_Authenticate_en_main = 1;
 
 
-/* #line 194 "tsip_parser_header_WWW_Authenticate.rl" */
+/* #line 183 "tsip_parser_header_WWW_Authenticate.rl" */
 	
-/* #line 467 "../source/headers/tsip_header_WWW_Authenticate.c" */
+/* #line 113 "../source/headers/tsip_header_WWW_Authenticate.c" */
 	{
 	cs = tsip_machine_parser_header_WWW_Authenticate_start;
 	}
 
-/* #line 195 "tsip_parser_header_WWW_Authenticate.rl" */
+/* #line 184 "tsip_parser_header_WWW_Authenticate.rl" */
 	
-/* #line 474 "../source/headers/tsip_header_WWW_Authenticate.c" */
+/* #line 120 "../source/headers/tsip_header_WWW_Authenticate.c" */
 	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
-
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _tsip_machine_parser_header_WWW_Authenticate_trans_keys + _tsip_machine_parser_header_WWW_Authenticate_key_offsets[cs];
-	_trans = _tsip_machine_parser_header_WWW_Authenticate_index_offsets[cs];
-
-	_klen = _tsip_machine_parser_header_WWW_Authenticate_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _tsip_machine_parser_header_WWW_Authenticate_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += ((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _tsip_machine_parser_header_WWW_Authenticate_indicies[_trans];
-	cs = _tsip_machine_parser_header_WWW_Authenticate_trans_targs[_trans];
-
-	if ( _tsip_machine_parser_header_WWW_Authenticate_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _tsip_machine_parser_header_WWW_Authenticate_actions + _tsip_machine_parser_header_WWW_Authenticate_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
-/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
-	{
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:TAG");
-		tag_start = p;
+case 1:
+	switch( (*p) ) {
+		case 87: goto st2;
+		case 119: goto st2;
 	}
-	break;
-	case 1:
-/* #line 59 "tsip_parser_header_WWW_Authenticate.rl" */
-	{
-		#//FIXME: Only Digest is supported
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:IS_DIGEST");
-		hdr_WWW_Authenticate->scheme = tsk_strdup("Digest");
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	switch( (*p) ) {
+		case 87: goto st3;
+		case 119: goto st3;
 	}
-	break;
-	case 2:
-/* #line 66 "tsip_parser_header_WWW_Authenticate.rl" */
-	{
-		PARSER_SET_STRING(hdr_WWW_Authenticate->realm);
-		tsk_strunquote(&hdr_WWW_Authenticate->realm);
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_REALM");
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	switch( (*p) ) {
+		case 87: goto st4;
+		case 119: goto st4;
 	}
-	break;
-	case 3:
-/* #line 73 "tsip_parser_header_WWW_Authenticate.rl" */
-	{
-		PARSER_SET_STRING(hdr_WWW_Authenticate->domain);
-		//tsk_strunquote(&hdr_WWW_Authenticate->domain);
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_DOMAIN");
+	goto st0;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	if ( (*p) == 45 )
+		goto st5;
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	switch( (*p) ) {
+		case 65: goto st6;
+		case 97: goto st6;
 	}
-	break;
-	case 4:
-/* #line 80 "tsip_parser_header_WWW_Authenticate.rl" */
+	goto st0;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	switch( (*p) ) {
+		case 85: goto st7;
+		case 117: goto st7;
+	}
+	goto st0;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	switch( (*p) ) {
+		case 84: goto st8;
+		case 116: goto st8;
+	}
+	goto st0;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	switch( (*p) ) {
+		case 72: goto st9;
+		case 104: goto st9;
+	}
+	goto st0;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+	switch( (*p) ) {
+		case 69: goto st10;
+		case 101: goto st10;
+	}
+	goto st0;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+	switch( (*p) ) {
+		case 78: goto st11;
+		case 110: goto st11;
+	}
+	goto st0;
+st11:
+	if ( ++p == pe )
+		goto _test_eof11;
+case 11:
+	switch( (*p) ) {
+		case 84: goto st12;
+		case 116: goto st12;
+	}
+	goto st0;
+st12:
+	if ( ++p == pe )
+		goto _test_eof12;
+case 12:
+	switch( (*p) ) {
+		case 73: goto st13;
+		case 105: goto st13;
+	}
+	goto st0;
+st13:
+	if ( ++p == pe )
+		goto _test_eof13;
+case 13:
+	switch( (*p) ) {
+		case 67: goto st14;
+		case 99: goto st14;
+	}
+	goto st0;
+st14:
+	if ( ++p == pe )
+		goto _test_eof14;
+case 14:
+	switch( (*p) ) {
+		case 65: goto st15;
+		case 97: goto st15;
+	}
+	goto st0;
+st15:
+	if ( ++p == pe )
+		goto _test_eof15;
+case 15:
+	switch( (*p) ) {
+		case 84: goto st16;
+		case 116: goto st16;
+	}
+	goto st0;
+st16:
+	if ( ++p == pe )
+		goto _test_eof16;
+case 16:
+	switch( (*p) ) {
+		case 69: goto st17;
+		case 101: goto st17;
+	}
+	goto st0;
+st17:
+	if ( ++p == pe )
+		goto _test_eof17;
+case 17:
+	switch( (*p) ) {
+		case 9: goto st17;
+		case 32: goto st17;
+		case 58: goto st18;
+	}
+	goto st0;
+st18:
+	if ( ++p == pe )
+		goto _test_eof18;
+case 18:
+	switch( (*p) ) {
+		case 9: goto st21;
+		case 13: goto st159;
+		case 32: goto st21;
+		case 68: goto tr21;
+		case 100: goto tr21;
+	}
+	goto st19;
+st19:
+	if ( ++p == pe )
+		goto _test_eof19;
+case 19:
+	if ( (*p) == 13 )
+		goto st20;
+	goto st19;
+tr39:
+/* #line 104 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_WWW_Authenticate));
+	}
+	goto st20;
+tr101:
+/* #line 93 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->algorithm);
+	}
+	goto st20;
+tr131:
+/* #line 76 "tsip_parser_header_WWW_Authenticate.rl" */
 	{
 		PARSER_SET_STRING(hdr_WWW_Authenticate->nonce);
 		tsk_strunquote(&hdr_WWW_Authenticate->nonce);
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_NONCE");
 	}
-	break;
-	case 5:
-/* #line 87 "tsip_parser_header_WWW_Authenticate.rl" */
+	goto st20;
+tr150:
+/* #line 82 "tsip_parser_header_WWW_Authenticate.rl" */
 	{
 		PARSER_SET_STRING(hdr_WWW_Authenticate->opaque);
 		tsk_strunquote(&hdr_WWW_Authenticate->opaque);
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_OPAQUE");
 	}
-	break;
-	case 6:
-/* #line 94 "tsip_parser_header_WWW_Authenticate.rl" */
+	goto st20;
+tr176:
+/* #line 64 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->realm);
+		tsk_strunquote(&hdr_WWW_Authenticate->realm);
+	}
+	goto st20;
+tr190:
+/* #line 88 "tsip_parser_header_WWW_Authenticate.rl" */
 	{
 		hdr_WWW_Authenticate->stale = tsk_strniequals(tag_start, "true", 4);
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_STALE");
 	}
-	break;
-	case 7:
-/* #line 100 "tsip_parser_header_WWW_Authenticate.rl" */
+	goto st20;
+st20:
+	if ( ++p == pe )
+		goto _test_eof20;
+case 20:
+/* #line 340 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	if ( (*p) == 10 )
+		goto tr23;
+	goto st0;
+tr23:
+/* #line 109 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+	}
+	goto st161;
+st161:
+	if ( ++p == pe )
+		goto _test_eof161;
+case 161:
+/* #line 353 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	goto st0;
+st21:
+	if ( ++p == pe )
+		goto _test_eof21;
+case 21:
+	switch( (*p) ) {
+		case 9: goto st21;
+		case 13: goto st20;
+		case 32: goto st21;
+		case 68: goto tr21;
+		case 100: goto tr21;
+	}
+	goto st19;
+tr21:
+/* #line 58 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		#//FIXME: Only Digest is supported
+		hdr_WWW_Authenticate->scheme = tsk_strdup("Digest");
+	}
+	goto st22;
+st22:
+	if ( ++p == pe )
+		goto _test_eof22;
+case 22:
+/* #line 378 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 73: goto st23;
+		case 105: goto st23;
+	}
+	goto st19;
+st23:
+	if ( ++p == pe )
+		goto _test_eof23;
+case 23:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 71: goto st24;
+		case 103: goto st24;
+	}
+	goto st19;
+st24:
+	if ( ++p == pe )
+		goto _test_eof24;
+case 24:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 69: goto st25;
+		case 101: goto st25;
+	}
+	goto st19;
+st25:
+	if ( ++p == pe )
+		goto _test_eof25;
+case 25:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 83: goto st26;
+		case 115: goto st26;
+	}
+	goto st19;
+st26:
+	if ( ++p == pe )
+		goto _test_eof26;
+case 26:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 84: goto st27;
+		case 116: goto st27;
+	}
+	goto st19;
+st27:
+	if ( ++p == pe )
+		goto _test_eof27;
+case 27:
+	switch( (*p) ) {
+		case 9: goto st28;
+		case 13: goto st20;
+		case 32: goto st28;
+	}
+	goto st19;
+tr41:
+/* #line 104 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_WWW_Authenticate));
+	}
+	goto st28;
+tr103:
+/* #line 93 "tsip_parser_header_WWW_Authenticate.rl" */
 	{
 		PARSER_SET_STRING(hdr_WWW_Authenticate->algorithm);
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_ALGORITHM");
 	}
-	break;
-	case 8:
-/* #line 106 "tsip_parser_header_WWW_Authenticate.rl" */
+	goto st28;
+tr132:
+/* #line 76 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->nonce);
+		tsk_strunquote(&hdr_WWW_Authenticate->nonce);
+	}
+	goto st28;
+tr151:
+/* #line 82 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->opaque);
+		tsk_strunquote(&hdr_WWW_Authenticate->opaque);
+	}
+	goto st28;
+tr177:
+/* #line 64 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->realm);
+		tsk_strunquote(&hdr_WWW_Authenticate->realm);
+	}
+	goto st28;
+tr191:
+/* #line 88 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		hdr_WWW_Authenticate->stale = tsk_strniequals(tag_start, "true", 4);
+	}
+	goto st28;
+st28:
+	if ( ++p == pe )
+		goto _test_eof28;
+case 28:
+/* #line 478 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto st28;
+		case 13: goto st20;
+		case 32: goto st28;
+		case 33: goto tr30;
+		case 37: goto tr30;
+		case 39: goto tr30;
+		case 65: goto st77;
+		case 68: goto st88;
+		case 78: goto st97;
+		case 79: goto st111;
+		case 81: goto st126;
+		case 82: goto st132;
+		case 83: goto st146;
+		case 97: goto st77;
+		case 100: goto st88;
+		case 110: goto st97;
+		case 111: goto st111;
+		case 113: goto st126;
+		case 114: goto st132;
+		case 115: goto st146;
+		case 126: goto tr30;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto tr30;
+		} else if ( (*p) >= 42 )
+			goto tr30;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto tr30;
+		} else if ( (*p) >= 66 )
+			goto tr30;
+	} else
+		goto tr30;
+	goto st19;
+tr30:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st29;
+st29:
+	if ( ++p == pe )
+		goto _test_eof29;
+case 29:
+/* #line 527 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto tr38;
+		case 13: goto tr39;
+		case 32: goto tr38;
+		case 33: goto st29;
+		case 37: goto st29;
+		case 39: goto st29;
+		case 44: goto tr41;
+		case 61: goto st31;
+		case 126: goto st29;
+	}
+	if ( (*p) < 48 ) {
+		if ( 42 <= (*p) && (*p) <= 46 )
+			goto st29;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st29;
+		} else if ( (*p) >= 65 )
+			goto st29;
+	} else
+		goto st29;
+	goto st19;
+tr38:
+/* #line 104 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_WWW_Authenticate));
+	}
+	goto st30;
+st30:
+	if ( ++p == pe )
+		goto _test_eof30;
+case 30:
+/* #line 561 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto st30;
+		case 13: goto st20;
+		case 32: goto st30;
+		case 44: goto st28;
+		case 61: goto st31;
+	}
+	goto st19;
+st31:
+	if ( ++p == pe )
+		goto _test_eof31;
+case 31:
+	switch( (*p) ) {
+		case 9: goto st31;
+		case 13: goto st20;
+		case 32: goto st31;
+		case 33: goto st32;
+		case 34: goto st34;
+		case 37: goto st32;
+		case 39: goto st32;
+		case 91: goto st42;
+		case 126: goto st32;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto st32;
+		} else if ( (*p) >= 42 )
+			goto st32;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st32;
+		} else if ( (*p) >= 65 )
+			goto st32;
+	} else
+		goto st32;
+	goto st19;
+st32:
+	if ( ++p == pe )
+		goto _test_eof32;
+case 32:
+	switch( (*p) ) {
+		case 9: goto tr47;
+		case 13: goto tr39;
+		case 32: goto tr47;
+		case 33: goto st32;
+		case 37: goto st32;
+		case 39: goto st32;
+		case 44: goto tr41;
+		case 126: goto st32;
+	}
+	if ( (*p) < 48 ) {
+		if ( 42 <= (*p) && (*p) <= 46 )
+			goto st32;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st32;
+		} else if ( (*p) >= 65 )
+			goto st32;
+	} else
+		goto st32;
+	goto st19;
+tr47:
+/* #line 104 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_WWW_Authenticate));
+	}
+	goto st33;
+tr100:
+/* #line 93 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->algorithm);
+	}
+	goto st33;
+tr112:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+/* #line 70 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->domain);
+		//tsk_strunquote(&hdr_WWW_Authenticate->domain);
+	}
+	goto st33;
+tr114:
+/* #line 70 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->domain);
+		//tsk_strunquote(&hdr_WWW_Authenticate->domain);
+	}
+	goto st33;
+tr130:
+/* #line 76 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->nonce);
+		tsk_strunquote(&hdr_WWW_Authenticate->nonce);
+	}
+	goto st33;
+tr149:
+/* #line 82 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		PARSER_SET_STRING(hdr_WWW_Authenticate->opaque);
+		tsk_strunquote(&hdr_WWW_Authenticate->opaque);
+	}
+	goto st33;
+tr157:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+/* #line 98 "tsip_parser_header_WWW_Authenticate.rl" */
 	{
 		PARSER_SET_STRING(hdr_WWW_Authenticate->qop);
 		//tsk_strunquote(&hdr_WWW_Authenticate->qop);
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_QOP");
 	}
-	break;
-	case 9:
-/* #line 113 "tsip_parser_header_WWW_Authenticate.rl" */
+	goto st33;
+tr159:
+/* #line 98 "tsip_parser_header_WWW_Authenticate.rl" */
 	{
-		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_WWW_Authenticate));
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:PARSE_PARAM");
+		PARSER_SET_STRING(hdr_WWW_Authenticate->qop);
+		//tsk_strunquote(&hdr_WWW_Authenticate->qop);
 	}
-	break;
-	case 10:
-/* #line 119 "tsip_parser_header_WWW_Authenticate.rl" */
+	goto st33;
+tr175:
+/* #line 64 "tsip_parser_header_WWW_Authenticate.rl" */
 	{
-		TSK_DEBUG_INFO("WWW_AUTHENTICATE:EOB");
+		PARSER_SET_STRING(hdr_WWW_Authenticate->realm);
+		tsk_strunquote(&hdr_WWW_Authenticate->realm);
 	}
-	break;
-/* #line 630 "../source/headers/tsip_header_WWW_Authenticate.c" */
-		}
+	goto st33;
+tr189:
+/* #line 88 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		hdr_WWW_Authenticate->stale = tsk_strniequals(tag_start, "true", 4);
 	}
+	goto st33;
+st33:
+	if ( ++p == pe )
+		goto _test_eof33;
+case 33:
+/* #line 705 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto st33;
+		case 13: goto st20;
+		case 32: goto st33;
+		case 44: goto st28;
+	}
+	goto st19;
+st34:
+	if ( ++p == pe )
+		goto _test_eof34;
+case 34:
+	switch( (*p) ) {
+		case 9: goto st34;
+		case 13: goto st20;
+		case 34: goto st40;
+		case 92: goto st41;
+	}
+	if ( (*p) < -16 ) {
+		if ( (*p) > -33 ) {
+			if ( -32 <= (*p) && (*p) <= -17 )
+				goto st36;
+		} else if ( (*p) >= -64 )
+			goto st35;
+	} else if ( (*p) > -9 ) {
+		if ( (*p) < -4 ) {
+			if ( -8 <= (*p) && (*p) <= -5 )
+				goto st38;
+		} else if ( (*p) > -3 ) {
+			if ( 32 <= (*p) && (*p) <= 126 )
+				goto st34;
+		} else
+			goto st39;
+	} else
+		goto st37;
+	goto st19;
+st35:
+	if ( ++p == pe )
+		goto _test_eof35;
+case 35:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st34;
+	goto st19;
+st36:
+	if ( ++p == pe )
+		goto _test_eof36;
+case 36:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st35;
+	goto st19;
+st37:
+	if ( ++p == pe )
+		goto _test_eof37;
+case 37:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st36;
+	goto st19;
+st38:
+	if ( ++p == pe )
+		goto _test_eof38;
+case 38:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st37;
+	goto st19;
+st39:
+	if ( ++p == pe )
+		goto _test_eof39;
+case 39:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st38;
+	goto st19;
+st40:
+	if ( ++p == pe )
+		goto _test_eof40;
+case 40:
+	switch( (*p) ) {
+		case 9: goto tr47;
+		case 13: goto tr39;
+		case 32: goto tr47;
+		case 44: goto tr41;
+	}
+	goto st19;
+st41:
+	if ( ++p == pe )
+		goto _test_eof41;
+case 41:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) > 9 ) {
+		if ( 11 <= (*p) )
+			goto st34;
+	} else if ( (*p) >= 0 )
+		goto st34;
+	goto st19;
+st42:
+	if ( ++p == pe )
+		goto _test_eof42;
+case 42:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st76;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st43;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st43;
+	} else
+		goto st43;
+	goto st19;
+st43:
+	if ( ++p == pe )
+		goto _test_eof43;
+case 43:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st47;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st44;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st44;
+	} else
+		goto st44;
+	goto st19;
+st44:
+	if ( ++p == pe )
+		goto _test_eof44;
+case 44:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st47;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st45;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st45;
+	} else
+		goto st45;
+	goto st19;
+st45:
+	if ( ++p == pe )
+		goto _test_eof45;
+case 45:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st47;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st46;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st46;
+	} else
+		goto st46;
+	goto st19;
+st46:
+	if ( ++p == pe )
+		goto _test_eof46;
+case 46:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st47;
+		case 93: goto st40;
+	}
+	goto st19;
+st47:
+	if ( ++p == pe )
+		goto _test_eof47;
+case 47:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st63;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st48;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st43;
+	} else
+		goto st43;
+	goto st19;
+st48:
+	if ( ++p == pe )
+		goto _test_eof48;
+case 48:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+		case 58: goto st47;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st61;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st44;
+	} else
+		goto st44;
+	goto st19;
+st49:
+	if ( ++p == pe )
+		goto _test_eof49;
+case 49:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st50;
+	goto st19;
+st50:
+	if ( ++p == pe )
+		goto _test_eof50;
+case 50:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st51;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st59;
+	goto st19;
+st51:
+	if ( ++p == pe )
+		goto _test_eof51;
+case 51:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st52;
+	goto st19;
+st52:
+	if ( ++p == pe )
+		goto _test_eof52;
+case 52:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st53;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st57;
+	goto st19;
+st53:
+	if ( ++p == pe )
+		goto _test_eof53;
+case 53:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st54;
+	goto st19;
+st54:
+	if ( ++p == pe )
+		goto _test_eof54;
+case 54:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 93: goto st40;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st55;
+	goto st19;
+st55:
+	if ( ++p == pe )
+		goto _test_eof55;
+case 55:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 93: goto st40;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st56;
+	goto st19;
+st56:
+	if ( ++p == pe )
+		goto _test_eof56;
+case 56:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 93: goto st40;
+	}
+	goto st19;
+st57:
+	if ( ++p == pe )
+		goto _test_eof57;
+case 57:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st53;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st58;
+	goto st19;
+st58:
+	if ( ++p == pe )
+		goto _test_eof58;
+case 58:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st53;
+	}
+	goto st19;
+st59:
+	if ( ++p == pe )
+		goto _test_eof59;
+case 59:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st51;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st60;
+	goto st19;
+st60:
+	if ( ++p == pe )
+		goto _test_eof60;
+case 60:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st51;
+	}
+	goto st19;
+st61:
+	if ( ++p == pe )
+		goto _test_eof61;
+case 61:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+		case 58: goto st47;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st62;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st45;
+	} else
+		goto st45;
+	goto st19;
+st62:
+	if ( ++p == pe )
+		goto _test_eof62;
+case 62:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+		case 58: goto st47;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st46;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st46;
+	} else
+		goto st46;
+	goto st19;
+st63:
+	if ( ++p == pe )
+		goto _test_eof63;
+case 63:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st72;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st64;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st64;
+	} else
+		goto st64;
+	goto st19;
+st64:
+	if ( ++p == pe )
+		goto _test_eof64;
+case 64:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st68;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st65;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st65;
+	} else
+		goto st65;
+	goto st19;
+st65:
+	if ( ++p == pe )
+		goto _test_eof65;
+case 65:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st68;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st66;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st66;
+	} else
+		goto st66;
+	goto st19;
+st66:
+	if ( ++p == pe )
+		goto _test_eof66;
+case 66:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st68;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st67;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st67;
+	} else
+		goto st67;
+	goto st19;
+st67:
+	if ( ++p == pe )
+		goto _test_eof67;
+case 67:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st68;
+		case 93: goto st40;
+	}
+	goto st19;
+st68:
+	if ( ++p == pe )
+		goto _test_eof68;
+case 68:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st69;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st64;
+	} else
+		goto st64;
+	goto st19;
+st69:
+	if ( ++p == pe )
+		goto _test_eof69;
+case 69:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+		case 58: goto st68;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st70;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st65;
+	} else
+		goto st65;
+	goto st19;
+st70:
+	if ( ++p == pe )
+		goto _test_eof70;
+case 70:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+		case 58: goto st68;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st71;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st66;
+	} else
+		goto st66;
+	goto st19;
+st71:
+	if ( ++p == pe )
+		goto _test_eof71;
+case 71:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+		case 58: goto st68;
+		case 93: goto st40;
+	}
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st67;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st67;
+	} else
+		goto st67;
+	goto st19;
+st72:
+	if ( ++p == pe )
+		goto _test_eof72;
+case 72:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st73;
+	goto st19;
+st73:
+	if ( ++p == pe )
+		goto _test_eof73;
+case 73:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st74;
+	goto st19;
+st74:
+	if ( ++p == pe )
+		goto _test_eof74;
+case 74:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st75;
+	goto st19;
+st75:
+	if ( ++p == pe )
+		goto _test_eof75;
+case 75:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 46: goto st49;
+	}
+	goto st19;
+st76:
+	if ( ++p == pe )
+		goto _test_eof76;
+case 76:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 58: goto st63;
+	}
+	goto st19;
+st77:
+	if ( ++p == pe )
+		goto _test_eof77;
+case 77:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 76: goto st78;
+		case 108: goto st78;
+	}
+	goto st19;
+st78:
+	if ( ++p == pe )
+		goto _test_eof78;
+case 78:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 71: goto st79;
+		case 103: goto st79;
+	}
+	goto st19;
+st79:
+	if ( ++p == pe )
+		goto _test_eof79;
+case 79:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 79: goto st80;
+		case 111: goto st80;
+	}
+	goto st19;
+st80:
+	if ( ++p == pe )
+		goto _test_eof80;
+case 80:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 82: goto st81;
+		case 114: goto st81;
+	}
+	goto st19;
+st81:
+	if ( ++p == pe )
+		goto _test_eof81;
+case 81:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 73: goto st82;
+		case 105: goto st82;
+	}
+	goto st19;
+st82:
+	if ( ++p == pe )
+		goto _test_eof82;
+case 82:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 84: goto st83;
+		case 116: goto st83;
+	}
+	goto st19;
+st83:
+	if ( ++p == pe )
+		goto _test_eof83;
+case 83:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 72: goto st84;
+		case 104: goto st84;
+	}
+	goto st19;
+st84:
+	if ( ++p == pe )
+		goto _test_eof84;
+case 84:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 77: goto st85;
+		case 109: goto st85;
+	}
+	goto st19;
+st85:
+	if ( ++p == pe )
+		goto _test_eof85;
+case 85:
+	switch( (*p) ) {
+		case 9: goto st85;
+		case 13: goto st20;
+		case 32: goto st85;
+		case 61: goto st86;
+	}
+	goto st19;
+st86:
+	if ( ++p == pe )
+		goto _test_eof86;
+case 86:
+	switch( (*p) ) {
+		case 9: goto st86;
+		case 13: goto st20;
+		case 32: goto st86;
+		case 33: goto tr99;
+		case 37: goto tr99;
+		case 39: goto tr99;
+		case 126: goto tr99;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto tr99;
+		} else if ( (*p) >= 42 )
+			goto tr99;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto tr99;
+		} else if ( (*p) >= 65 )
+			goto tr99;
+	} else
+		goto tr99;
+	goto st19;
+tr99:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st87;
+st87:
+	if ( ++p == pe )
+		goto _test_eof87;
+case 87:
+/* #line 1416 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto tr100;
+		case 13: goto tr101;
+		case 32: goto tr100;
+		case 33: goto st87;
+		case 37: goto st87;
+		case 39: goto st87;
+		case 44: goto tr103;
+		case 126: goto st87;
+	}
+	if ( (*p) < 48 ) {
+		if ( 42 <= (*p) && (*p) <= 46 )
+			goto st87;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st87;
+		} else if ( (*p) >= 65 )
+			goto st87;
+	} else
+		goto st87;
+	goto st19;
+st88:
+	if ( ++p == pe )
+		goto _test_eof88;
+case 88:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 79: goto st89;
+		case 111: goto st89;
+	}
+	goto st19;
+st89:
+	if ( ++p == pe )
+		goto _test_eof89;
+case 89:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 77: goto st90;
+		case 109: goto st90;
+	}
+	goto st19;
+st90:
+	if ( ++p == pe )
+		goto _test_eof90;
+case 90:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 65: goto st91;
+		case 97: goto st91;
+	}
+	goto st19;
+st91:
+	if ( ++p == pe )
+		goto _test_eof91;
+case 91:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 73: goto st92;
+		case 105: goto st92;
+	}
+	goto st19;
+st92:
+	if ( ++p == pe )
+		goto _test_eof92;
+case 92:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 78: goto st93;
+		case 110: goto st93;
+	}
+	goto st19;
+st93:
+	if ( ++p == pe )
+		goto _test_eof93;
+case 93:
+	switch( (*p) ) {
+		case 9: goto st93;
+		case 13: goto st20;
+		case 32: goto st93;
+		case 61: goto st94;
+	}
+	goto st19;
+st94:
+	if ( ++p == pe )
+		goto _test_eof94;
+case 94:
+	switch( (*p) ) {
+		case 9: goto st94;
+		case 13: goto st20;
+		case 32: goto st94;
+		case 34: goto st95;
+	}
+	goto st19;
+st95:
+	if ( ++p == pe )
+		goto _test_eof95;
+case 95:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 34: goto tr112;
+	}
+	goto tr111;
+tr111:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st96;
+st96:
+	if ( ++p == pe )
+		goto _test_eof96;
+case 96:
+/* #line 1530 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 34: goto tr114;
+	}
+	goto st96;
+st97:
+	if ( ++p == pe )
+		goto _test_eof97;
+case 97:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 79: goto st98;
+		case 111: goto st98;
+	}
+	goto st19;
+st98:
+	if ( ++p == pe )
+		goto _test_eof98;
+case 98:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 78: goto st99;
+		case 110: goto st99;
+	}
+	goto st19;
+st99:
+	if ( ++p == pe )
+		goto _test_eof99;
+case 99:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 67: goto st100;
+		case 99: goto st100;
+	}
+	goto st19;
+st100:
+	if ( ++p == pe )
+		goto _test_eof100;
+case 100:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 69: goto st101;
+		case 101: goto st101;
+	}
+	goto st19;
+st101:
+	if ( ++p == pe )
+		goto _test_eof101;
+case 101:
+	switch( (*p) ) {
+		case 9: goto st101;
+		case 13: goto st20;
+		case 32: goto st101;
+		case 61: goto st102;
+	}
+	goto st19;
+tr120:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st102;
+st102:
+	if ( ++p == pe )
+		goto _test_eof102;
+case 102:
+/* #line 1597 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto tr120;
+		case 13: goto st20;
+		case 32: goto tr120;
+		case 34: goto tr121;
+	}
+	goto st19;
+tr121:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st103;
+st103:
+	if ( ++p == pe )
+		goto _test_eof103;
+case 103:
+/* #line 1615 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto st103;
+		case 13: goto st20;
+		case 34: goto st109;
+		case 92: goto st110;
+	}
+	if ( (*p) < -16 ) {
+		if ( (*p) > -33 ) {
+			if ( -32 <= (*p) && (*p) <= -17 )
+				goto st105;
+		} else if ( (*p) >= -64 )
+			goto st104;
+	} else if ( (*p) > -9 ) {
+		if ( (*p) < -4 ) {
+			if ( -8 <= (*p) && (*p) <= -5 )
+				goto st107;
+		} else if ( (*p) > -3 ) {
+			if ( 32 <= (*p) && (*p) <= 126 )
+				goto st103;
+		} else
+			goto st108;
+	} else
+		goto st106;
+	goto st19;
+st104:
+	if ( ++p == pe )
+		goto _test_eof104;
+case 104:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st103;
+	goto st19;
+st105:
+	if ( ++p == pe )
+		goto _test_eof105;
+case 105:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st104;
+	goto st19;
+st106:
+	if ( ++p == pe )
+		goto _test_eof106;
+case 106:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st105;
+	goto st19;
+st107:
+	if ( ++p == pe )
+		goto _test_eof107;
+case 107:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st106;
+	goto st19;
+st108:
+	if ( ++p == pe )
+		goto _test_eof108;
+case 108:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st107;
+	goto st19;
+st109:
+	if ( ++p == pe )
+		goto _test_eof109;
+case 109:
+	switch( (*p) ) {
+		case 9: goto tr130;
+		case 13: goto tr131;
+		case 32: goto tr130;
+		case 44: goto tr132;
+	}
+	goto st19;
+st110:
+	if ( ++p == pe )
+		goto _test_eof110;
+case 110:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) > 9 ) {
+		if ( 11 <= (*p) )
+			goto st103;
+	} else if ( (*p) >= 0 )
+		goto st103;
+	goto st19;
+st111:
+	if ( ++p == pe )
+		goto _test_eof111;
+case 111:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 80: goto st112;
+		case 112: goto st112;
+	}
+	goto st19;
+st112:
+	if ( ++p == pe )
+		goto _test_eof112;
+case 112:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 65: goto st113;
+		case 97: goto st113;
+	}
+	goto st19;
+st113:
+	if ( ++p == pe )
+		goto _test_eof113;
+case 113:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 81: goto st114;
+		case 113: goto st114;
+	}
+	goto st19;
+st114:
+	if ( ++p == pe )
+		goto _test_eof114;
+case 114:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 85: goto st115;
+		case 117: goto st115;
+	}
+	goto st19;
+st115:
+	if ( ++p == pe )
+		goto _test_eof115;
+case 115:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 69: goto st116;
+		case 101: goto st116;
+	}
+	goto st19;
+st116:
+	if ( ++p == pe )
+		goto _test_eof116;
+case 116:
+	switch( (*p) ) {
+		case 9: goto st116;
+		case 13: goto st20;
+		case 32: goto st116;
+		case 61: goto st117;
+	}
+	goto st19;
+tr139:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st117;
+st117:
+	if ( ++p == pe )
+		goto _test_eof117;
+case 117:
+/* #line 1779 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto tr139;
+		case 13: goto st20;
+		case 32: goto tr139;
+		case 34: goto tr140;
+	}
+	goto st19;
+tr140:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st118;
+st118:
+	if ( ++p == pe )
+		goto _test_eof118;
+case 118:
+/* #line 1797 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto st118;
+		case 13: goto st20;
+		case 34: goto st124;
+		case 92: goto st125;
+	}
+	if ( (*p) < -16 ) {
+		if ( (*p) > -33 ) {
+			if ( -32 <= (*p) && (*p) <= -17 )
+				goto st120;
+		} else if ( (*p) >= -64 )
+			goto st119;
+	} else if ( (*p) > -9 ) {
+		if ( (*p) < -4 ) {
+			if ( -8 <= (*p) && (*p) <= -5 )
+				goto st122;
+		} else if ( (*p) > -3 ) {
+			if ( 32 <= (*p) && (*p) <= 126 )
+				goto st118;
+		} else
+			goto st123;
+	} else
+		goto st121;
+	goto st19;
+st119:
+	if ( ++p == pe )
+		goto _test_eof119;
+case 119:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st118;
+	goto st19;
+st120:
+	if ( ++p == pe )
+		goto _test_eof120;
+case 120:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st119;
+	goto st19;
+st121:
+	if ( ++p == pe )
+		goto _test_eof121;
+case 121:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st120;
+	goto st19;
+st122:
+	if ( ++p == pe )
+		goto _test_eof122;
+case 122:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st121;
+	goto st19;
+st123:
+	if ( ++p == pe )
+		goto _test_eof123;
+case 123:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st122;
+	goto st19;
+st124:
+	if ( ++p == pe )
+		goto _test_eof124;
+case 124:
+	switch( (*p) ) {
+		case 9: goto tr149;
+		case 13: goto tr150;
+		case 32: goto tr149;
+		case 44: goto tr151;
+	}
+	goto st19;
+st125:
+	if ( ++p == pe )
+		goto _test_eof125;
+case 125:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) > 9 ) {
+		if ( 11 <= (*p) )
+			goto st118;
+	} else if ( (*p) >= 0 )
+		goto st118;
+	goto st19;
+st126:
+	if ( ++p == pe )
+		goto _test_eof126;
+case 126:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 79: goto st127;
+		case 111: goto st127;
+	}
+	goto st19;
+st127:
+	if ( ++p == pe )
+		goto _test_eof127;
+case 127:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 80: goto st128;
+		case 112: goto st128;
+	}
+	goto st19;
+st128:
+	if ( ++p == pe )
+		goto _test_eof128;
+case 128:
+	switch( (*p) ) {
+		case 9: goto st128;
+		case 13: goto st20;
+		case 32: goto st128;
+		case 61: goto st129;
+	}
+	goto st19;
+st129:
+	if ( ++p == pe )
+		goto _test_eof129;
+case 129:
+	switch( (*p) ) {
+		case 9: goto st129;
+		case 13: goto st20;
+		case 32: goto st129;
+		case 34: goto st130;
+	}
+	goto st19;
+st130:
+	if ( ++p == pe )
+		goto _test_eof130;
+case 130:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 34: goto tr157;
+	}
+	goto tr156;
+tr156:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st131;
+st131:
+	if ( ++p == pe )
+		goto _test_eof131;
+case 131:
+/* #line 1951 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 34: goto tr159;
+	}
+	goto st131;
+st132:
+	if ( ++p == pe )
+		goto _test_eof132;
+case 132:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 69: goto st133;
+		case 101: goto st133;
+	}
+	goto st19;
+st133:
+	if ( ++p == pe )
+		goto _test_eof133;
+case 133:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 65: goto st134;
+		case 97: goto st134;
+	}
+	goto st19;
+st134:
+	if ( ++p == pe )
+		goto _test_eof134;
+case 134:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 76: goto st135;
+		case 108: goto st135;
+	}
+	goto st19;
+st135:
+	if ( ++p == pe )
+		goto _test_eof135;
+case 135:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 77: goto st136;
+		case 109: goto st136;
+	}
+	goto st19;
+st136:
+	if ( ++p == pe )
+		goto _test_eof136;
+case 136:
+	switch( (*p) ) {
+		case 9: goto st136;
+		case 13: goto st20;
+		case 32: goto st136;
+		case 61: goto st137;
+	}
+	goto st19;
+tr165:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st137;
+st137:
+	if ( ++p == pe )
+		goto _test_eof137;
+case 137:
+/* #line 2018 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto tr165;
+		case 13: goto st20;
+		case 32: goto tr165;
+		case 34: goto tr166;
+	}
+	goto st19;
+tr166:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st138;
+st138:
+	if ( ++p == pe )
+		goto _test_eof138;
+case 138:
+/* #line 2036 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 9: goto st138;
+		case 13: goto st20;
+		case 34: goto st144;
+		case 92: goto st145;
+	}
+	if ( (*p) < -16 ) {
+		if ( (*p) > -33 ) {
+			if ( -32 <= (*p) && (*p) <= -17 )
+				goto st140;
+		} else if ( (*p) >= -64 )
+			goto st139;
+	} else if ( (*p) > -9 ) {
+		if ( (*p) < -4 ) {
+			if ( -8 <= (*p) && (*p) <= -5 )
+				goto st142;
+		} else if ( (*p) > -3 ) {
+			if ( 32 <= (*p) && (*p) <= 126 )
+				goto st138;
+		} else
+			goto st143;
+	} else
+		goto st141;
+	goto st19;
+st139:
+	if ( ++p == pe )
+		goto _test_eof139;
+case 139:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st138;
+	goto st19;
+st140:
+	if ( ++p == pe )
+		goto _test_eof140;
+case 140:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st139;
+	goto st19;
+st141:
+	if ( ++p == pe )
+		goto _test_eof141;
+case 141:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st140;
+	goto st19;
+st142:
+	if ( ++p == pe )
+		goto _test_eof142;
+case 142:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st141;
+	goto st19;
+st143:
+	if ( ++p == pe )
+		goto _test_eof143;
+case 143:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) <= -65 )
+		goto st142;
+	goto st19;
+st144:
+	if ( ++p == pe )
+		goto _test_eof144;
+case 144:
+	switch( (*p) ) {
+		case 9: goto tr175;
+		case 13: goto tr176;
+		case 32: goto tr175;
+		case 44: goto tr177;
+	}
+	goto st19;
+st145:
+	if ( ++p == pe )
+		goto _test_eof145;
+case 145:
+	if ( (*p) == 13 )
+		goto st20;
+	if ( (*p) > 9 ) {
+		if ( 11 <= (*p) )
+			goto st138;
+	} else if ( (*p) >= 0 )
+		goto st138;
+	goto st19;
+st146:
+	if ( ++p == pe )
+		goto _test_eof146;
+case 146:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 84: goto st147;
+		case 116: goto st147;
+	}
+	goto st19;
+st147:
+	if ( ++p == pe )
+		goto _test_eof147;
+case 147:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 65: goto st148;
+		case 97: goto st148;
+	}
+	goto st19;
+st148:
+	if ( ++p == pe )
+		goto _test_eof148;
+case 148:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 76: goto st149;
+		case 108: goto st149;
+	}
+	goto st19;
+st149:
+	if ( ++p == pe )
+		goto _test_eof149;
+case 149:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 69: goto st150;
+		case 101: goto st150;
+	}
+	goto st19;
+st150:
+	if ( ++p == pe )
+		goto _test_eof150;
+case 150:
+	switch( (*p) ) {
+		case 9: goto st150;
+		case 13: goto st20;
+		case 32: goto st150;
+		case 61: goto st151;
+	}
+	goto st19;
+st151:
+	if ( ++p == pe )
+		goto _test_eof151;
+case 151:
+	switch( (*p) ) {
+		case 9: goto st151;
+		case 13: goto st20;
+		case 32: goto st151;
+		case 70: goto tr183;
+		case 84: goto tr184;
+		case 102: goto tr183;
+		case 116: goto tr184;
+	}
+	goto st19;
+tr183:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st152;
+st152:
+	if ( ++p == pe )
+		goto _test_eof152;
+case 152:
+/* #line 2204 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 65: goto st153;
+		case 97: goto st153;
+	}
+	goto st19;
+st153:
+	if ( ++p == pe )
+		goto _test_eof153;
+case 153:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 76: goto st154;
+		case 108: goto st154;
+	}
+	goto st19;
+st154:
+	if ( ++p == pe )
+		goto _test_eof154;
+case 154:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 83: goto st155;
+		case 115: goto st155;
+	}
+	goto st19;
+st155:
+	if ( ++p == pe )
+		goto _test_eof155;
+case 155:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 69: goto st156;
+		case 101: goto st156;
+	}
+	goto st19;
+st156:
+	if ( ++p == pe )
+		goto _test_eof156;
+case 156:
+	switch( (*p) ) {
+		case 9: goto tr189;
+		case 13: goto tr190;
+		case 32: goto tr189;
+		case 44: goto tr191;
+	}
+	goto st19;
+tr184:
+/* #line 53 "tsip_parser_header_WWW_Authenticate.rl" */
+	{
+		tag_start = p;
+	}
+	goto st157;
+st157:
+	if ( ++p == pe )
+		goto _test_eof157;
+case 157:
+/* #line 2262 "../source/headers/tsip_header_WWW_Authenticate.c" */
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 82: goto st158;
+		case 114: goto st158;
+	}
+	goto st19;
+st158:
+	if ( ++p == pe )
+		goto _test_eof158;
+case 158:
+	switch( (*p) ) {
+		case 13: goto st20;
+		case 85: goto st155;
+		case 117: goto st155;
+	}
+	goto st19;
+st159:
+	if ( ++p == pe )
+		goto _test_eof159;
+case 159:
+	switch( (*p) ) {
+		case 10: goto st160;
+		case 13: goto st20;
+	}
+	goto st19;
+st160:
+	if ( ++p == pe )
+		goto _test_eof160;
+case 160:
+	switch( (*p) ) {
+		case 9: goto st21;
+		case 13: goto st20;
+		case 32: goto st21;
+	}
+	goto st19;
+	}
+	_test_eof2: cs = 2; goto _test_eof; 
+	_test_eof3: cs = 3; goto _test_eof; 
+	_test_eof4: cs = 4; goto _test_eof; 
+	_test_eof5: cs = 5; goto _test_eof; 
+	_test_eof6: cs = 6; goto _test_eof; 
+	_test_eof7: cs = 7; goto _test_eof; 
+	_test_eof8: cs = 8; goto _test_eof; 
+	_test_eof9: cs = 9; goto _test_eof; 
+	_test_eof10: cs = 10; goto _test_eof; 
+	_test_eof11: cs = 11; goto _test_eof; 
+	_test_eof12: cs = 12; goto _test_eof; 
+	_test_eof13: cs = 13; goto _test_eof; 
+	_test_eof14: cs = 14; goto _test_eof; 
+	_test_eof15: cs = 15; goto _test_eof; 
+	_test_eof16: cs = 16; goto _test_eof; 
+	_test_eof17: cs = 17; goto _test_eof; 
+	_test_eof18: cs = 18; goto _test_eof; 
+	_test_eof19: cs = 19; goto _test_eof; 
+	_test_eof20: cs = 20; goto _test_eof; 
+	_test_eof161: cs = 161; goto _test_eof; 
+	_test_eof21: cs = 21; goto _test_eof; 
+	_test_eof22: cs = 22; goto _test_eof; 
+	_test_eof23: cs = 23; goto _test_eof; 
+	_test_eof24: cs = 24; goto _test_eof; 
+	_test_eof25: cs = 25; goto _test_eof; 
+	_test_eof26: cs = 26; goto _test_eof; 
+	_test_eof27: cs = 27; goto _test_eof; 
+	_test_eof28: cs = 28; goto _test_eof; 
+	_test_eof29: cs = 29; goto _test_eof; 
+	_test_eof30: cs = 30; goto _test_eof; 
+	_test_eof31: cs = 31; goto _test_eof; 
+	_test_eof32: cs = 32; goto _test_eof; 
+	_test_eof33: cs = 33; goto _test_eof; 
+	_test_eof34: cs = 34; goto _test_eof; 
+	_test_eof35: cs = 35; goto _test_eof; 
+	_test_eof36: cs = 36; goto _test_eof; 
+	_test_eof37: cs = 37; goto _test_eof; 
+	_test_eof38: cs = 38; goto _test_eof; 
+	_test_eof39: cs = 39; goto _test_eof; 
+	_test_eof40: cs = 40; goto _test_eof; 
+	_test_eof41: cs = 41; goto _test_eof; 
+	_test_eof42: cs = 42; goto _test_eof; 
+	_test_eof43: cs = 43; goto _test_eof; 
+	_test_eof44: cs = 44; goto _test_eof; 
+	_test_eof45: cs = 45; goto _test_eof; 
+	_test_eof46: cs = 46; goto _test_eof; 
+	_test_eof47: cs = 47; goto _test_eof; 
+	_test_eof48: cs = 48; goto _test_eof; 
+	_test_eof49: cs = 49; goto _test_eof; 
+	_test_eof50: cs = 50; goto _test_eof; 
+	_test_eof51: cs = 51; goto _test_eof; 
+	_test_eof52: cs = 52; goto _test_eof; 
+	_test_eof53: cs = 53; goto _test_eof; 
+	_test_eof54: cs = 54; goto _test_eof; 
+	_test_eof55: cs = 55; goto _test_eof; 
+	_test_eof56: cs = 56; goto _test_eof; 
+	_test_eof57: cs = 57; goto _test_eof; 
+	_test_eof58: cs = 58; goto _test_eof; 
+	_test_eof59: cs = 59; goto _test_eof; 
+	_test_eof60: cs = 60; goto _test_eof; 
+	_test_eof61: cs = 61; goto _test_eof; 
+	_test_eof62: cs = 62; goto _test_eof; 
+	_test_eof63: cs = 63; goto _test_eof; 
+	_test_eof64: cs = 64; goto _test_eof; 
+	_test_eof65: cs = 65; goto _test_eof; 
+	_test_eof66: cs = 66; goto _test_eof; 
+	_test_eof67: cs = 67; goto _test_eof; 
+	_test_eof68: cs = 68; goto _test_eof; 
+	_test_eof69: cs = 69; goto _test_eof; 
+	_test_eof70: cs = 70; goto _test_eof; 
+	_test_eof71: cs = 71; goto _test_eof; 
+	_test_eof72: cs = 72; goto _test_eof; 
+	_test_eof73: cs = 73; goto _test_eof; 
+	_test_eof74: cs = 74; goto _test_eof; 
+	_test_eof75: cs = 75; goto _test_eof; 
+	_test_eof76: cs = 76; goto _test_eof; 
+	_test_eof77: cs = 77; goto _test_eof; 
+	_test_eof78: cs = 78; goto _test_eof; 
+	_test_eof79: cs = 79; goto _test_eof; 
+	_test_eof80: cs = 80; goto _test_eof; 
+	_test_eof81: cs = 81; goto _test_eof; 
+	_test_eof82: cs = 82; goto _test_eof; 
+	_test_eof83: cs = 83; goto _test_eof; 
+	_test_eof84: cs = 84; goto _test_eof; 
+	_test_eof85: cs = 85; goto _test_eof; 
+	_test_eof86: cs = 86; goto _test_eof; 
+	_test_eof87: cs = 87; goto _test_eof; 
+	_test_eof88: cs = 88; goto _test_eof; 
+	_test_eof89: cs = 89; goto _test_eof; 
+	_test_eof90: cs = 90; goto _test_eof; 
+	_test_eof91: cs = 91; goto _test_eof; 
+	_test_eof92: cs = 92; goto _test_eof; 
+	_test_eof93: cs = 93; goto _test_eof; 
+	_test_eof94: cs = 94; goto _test_eof; 
+	_test_eof95: cs = 95; goto _test_eof; 
+	_test_eof96: cs = 96; goto _test_eof; 
+	_test_eof97: cs = 97; goto _test_eof; 
+	_test_eof98: cs = 98; goto _test_eof; 
+	_test_eof99: cs = 99; goto _test_eof; 
+	_test_eof100: cs = 100; goto _test_eof; 
+	_test_eof101: cs = 101; goto _test_eof; 
+	_test_eof102: cs = 102; goto _test_eof; 
+	_test_eof103: cs = 103; goto _test_eof; 
+	_test_eof104: cs = 104; goto _test_eof; 
+	_test_eof105: cs = 105; goto _test_eof; 
+	_test_eof106: cs = 106; goto _test_eof; 
+	_test_eof107: cs = 107; goto _test_eof; 
+	_test_eof108: cs = 108; goto _test_eof; 
+	_test_eof109: cs = 109; goto _test_eof; 
+	_test_eof110: cs = 110; goto _test_eof; 
+	_test_eof111: cs = 111; goto _test_eof; 
+	_test_eof112: cs = 112; goto _test_eof; 
+	_test_eof113: cs = 113; goto _test_eof; 
+	_test_eof114: cs = 114; goto _test_eof; 
+	_test_eof115: cs = 115; goto _test_eof; 
+	_test_eof116: cs = 116; goto _test_eof; 
+	_test_eof117: cs = 117; goto _test_eof; 
+	_test_eof118: cs = 118; goto _test_eof; 
+	_test_eof119: cs = 119; goto _test_eof; 
+	_test_eof120: cs = 120; goto _test_eof; 
+	_test_eof121: cs = 121; goto _test_eof; 
+	_test_eof122: cs = 122; goto _test_eof; 
+	_test_eof123: cs = 123; goto _test_eof; 
+	_test_eof124: cs = 124; goto _test_eof; 
+	_test_eof125: cs = 125; goto _test_eof; 
+	_test_eof126: cs = 126; goto _test_eof; 
+	_test_eof127: cs = 127; goto _test_eof; 
+	_test_eof128: cs = 128; goto _test_eof; 
+	_test_eof129: cs = 129; goto _test_eof; 
+	_test_eof130: cs = 130; goto _test_eof; 
+	_test_eof131: cs = 131; goto _test_eof; 
+	_test_eof132: cs = 132; goto _test_eof; 
+	_test_eof133: cs = 133; goto _test_eof; 
+	_test_eof134: cs = 134; goto _test_eof; 
+	_test_eof135: cs = 135; goto _test_eof; 
+	_test_eof136: cs = 136; goto _test_eof; 
+	_test_eof137: cs = 137; goto _test_eof; 
+	_test_eof138: cs = 138; goto _test_eof; 
+	_test_eof139: cs = 139; goto _test_eof; 
+	_test_eof140: cs = 140; goto _test_eof; 
+	_test_eof141: cs = 141; goto _test_eof; 
+	_test_eof142: cs = 142; goto _test_eof; 
+	_test_eof143: cs = 143; goto _test_eof; 
+	_test_eof144: cs = 144; goto _test_eof; 
+	_test_eof145: cs = 145; goto _test_eof; 
+	_test_eof146: cs = 146; goto _test_eof; 
+	_test_eof147: cs = 147; goto _test_eof; 
+	_test_eof148: cs = 148; goto _test_eof; 
+	_test_eof149: cs = 149; goto _test_eof; 
+	_test_eof150: cs = 150; goto _test_eof; 
+	_test_eof151: cs = 151; goto _test_eof; 
+	_test_eof152: cs = 152; goto _test_eof; 
+	_test_eof153: cs = 153; goto _test_eof; 
+	_test_eof154: cs = 154; goto _test_eof; 
+	_test_eof155: cs = 155; goto _test_eof; 
+	_test_eof156: cs = 156; goto _test_eof; 
+	_test_eof157: cs = 157; goto _test_eof; 
+	_test_eof158: cs = 158; goto _test_eof; 
+	_test_eof159: cs = 159; goto _test_eof; 
+	_test_eof160: cs = 160; goto _test_eof; 
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-/* #line 196 "tsip_parser_header_WWW_Authenticate.rl" */
+/* #line 185 "tsip_parser_header_WWW_Authenticate.rl" */
 	
 	if( cs < 
-/* #line 646 "../source/headers/tsip_header_WWW_Authenticate.c" */
+/* #line 2467 "../source/headers/tsip_header_WWW_Authenticate.c" */
 161
-/* #line 197 "tsip_parser_header_WWW_Authenticate.rl" */
+/* #line 186 "tsip_parser_header_WWW_Authenticate.rl" */
  )
 	{
 		TSIP_HEADER_WWW_AUTHENTICATE_SAFE_FREE(hdr_WWW_Authenticate);

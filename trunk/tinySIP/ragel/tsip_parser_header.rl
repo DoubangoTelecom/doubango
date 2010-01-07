@@ -201,7 +201,10 @@
 	# /*== Content-Type: ==*/
 	action parse_header_Content_Type
 	{
-		TSK_DEBUG_ERROR("parse_header_Content_Type NOT IMPLEMENTED");
+		if(!message->Content_Type)
+		{
+			message->Content_Type = tsip_header_Content_Type_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
 	}
 
 	# /*== CSeq: ==*/

@@ -47,7 +47,6 @@
 
 	action tag
 	{
-		TSK_DEBUG_INFO("VIA:TAG");
 		tag_start = p;
 	}
 
@@ -109,7 +108,6 @@
 	action parse_param
 	{
 		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_via));
-		TSK_DEBUG_INFO("VIA:PARSE_PARAM");
 	}
 	
 	action eob
@@ -128,8 +126,8 @@
 	via_branch = "branch"i EQUAL token >tag %parse_branch;
 	via_compression = "comp"i EQUAL ( "sigcomp"i | other_compression )>tag %parse_comp;
 	response_port = "rport"i ( EQUAL DIGIT+ >tag %parse_rport )?;
-	via_extension = (generic_param & !(via_ttl | via_maddr | via_received | via_branch | via_compression | response_port)) >tag %parse_param;
-	via_params = via_ttl | via_maddr | via_received | via_branch | via_compression | response_port | via_extension;
+	via_extension = (generic_param) >tag %parse_param;
+	via_params = (via_ttl | via_maddr | via_received | via_branch | via_compression | response_port)>1 | (via_extension)>0;
 	via_parm = sent_protocol LWS sent_by ( SEMI via_params )*;
 	Via = ( "Via"i | "v"i ) HCOLON via_parm ( COMMA via_parm )*;
 	

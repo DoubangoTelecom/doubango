@@ -43,7 +43,7 @@
 *	Ragel state machine.
 */
 
-/* #line 77 "tsip_parser_header_CSeq.rl" */
+/* #line 73 "tsip_parser_header_CSeq.rl" */
 
 
 int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
@@ -68,74 +68,6 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 
 	
 /* #line 71 "../source/headers/tsip_header_CSeq.c" */
-static const char _tsip_machine_parser_header_CSeq_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 1, 
-	3
-};
-
-static const char _tsip_machine_parser_header_CSeq_key_offsets[] = {
-	0, 0, 2, 4, 6, 8, 11, 16, 
-	17, 19, 23, 28, 45, 46, 48, 64, 
-	79, 80
-};
-
-static const char _tsip_machine_parser_header_CSeq_trans_keys[] = {
-	67, 99, 83, 115, 69, 101, 81, 113, 
-	9, 32, 58, 9, 13, 32, 48, 57, 
-	10, 9, 32, 9, 32, 48, 57, 9, 
-	13, 32, 48, 57, 9, 13, 32, 33, 
-	37, 39, 126, 42, 43, 45, 46, 48, 
-	57, 65, 90, 95, 122, 10, 9, 32, 
-	9, 32, 33, 37, 39, 126, 42, 43, 
-	45, 46, 48, 57, 65, 90, 95, 122, 
-	13, 33, 37, 39, 126, 42, 43, 45, 
-	46, 48, 57, 65, 90, 95, 122, 10, 
-	0
-};
-
-static const char _tsip_machine_parser_header_CSeq_single_lengths[] = {
-	0, 2, 2, 2, 2, 3, 3, 1, 
-	2, 2, 3, 7, 1, 2, 6, 5, 
-	1, 0
-};
-
-static const char _tsip_machine_parser_header_CSeq_range_lengths[] = {
-	0, 0, 0, 0, 0, 0, 1, 0, 
-	0, 1, 1, 5, 0, 0, 5, 5, 
-	0, 0
-};
-
-static const char _tsip_machine_parser_header_CSeq_index_offsets[] = {
-	0, 0, 3, 6, 9, 12, 16, 21, 
-	23, 26, 30, 35, 48, 50, 53, 65, 
-	76, 78
-};
-
-static const char _tsip_machine_parser_header_CSeq_indicies[] = {
-	0, 0, 1, 2, 2, 1, 3, 3, 
-	1, 4, 4, 1, 4, 4, 5, 1, 
-	5, 6, 5, 7, 1, 8, 1, 9, 
-	9, 1, 9, 9, 7, 1, 10, 11, 
-	10, 12, 1, 13, 14, 13, 15, 15, 
-	15, 15, 15, 15, 15, 15, 15, 1, 
-	16, 1, 17, 17, 1, 17, 17, 15, 
-	15, 15, 15, 15, 15, 15, 15, 15, 
-	1, 18, 19, 19, 19, 19, 19, 19, 
-	19, 19, 19, 1, 20, 1, 1, 0
-};
-
-static const char _tsip_machine_parser_header_CSeq_trans_targs[] = {
-	2, 0, 3, 4, 5, 6, 7, 10, 
-	8, 9, 11, 12, 10, 11, 12, 15, 
-	13, 14, 16, 15, 17
-};
-
-static const char _tsip_machine_parser_header_CSeq_trans_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 1, 
-	0, 0, 5, 5, 0, 0, 0, 1, 
-	0, 0, 3, 0, 7
-};
-
 static const int tsip_machine_parser_header_CSeq_start = 1;
 static const int tsip_machine_parser_header_CSeq_first_final = 17;
 static const int tsip_machine_parser_header_CSeq_error = 0;
@@ -143,135 +75,296 @@ static const int tsip_machine_parser_header_CSeq_error = 0;
 static const int tsip_machine_parser_header_CSeq_en_main = 1;
 
 
-/* #line 100 "tsip_parser_header_CSeq.rl" */
+/* #line 96 "tsip_parser_header_CSeq.rl" */
 	
-/* #line 149 "../source/headers/tsip_header_CSeq.c" */
+/* #line 81 "../source/headers/tsip_header_CSeq.c" */
 	{
 	cs = tsip_machine_parser_header_CSeq_start;
 	}
 
-/* #line 101 "tsip_parser_header_CSeq.rl" */
+/* #line 97 "tsip_parser_header_CSeq.rl" */
 	
-/* #line 156 "../source/headers/tsip_header_CSeq.c" */
+/* #line 88 "../source/headers/tsip_header_CSeq.c" */
 	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
-
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _tsip_machine_parser_header_CSeq_trans_keys + _tsip_machine_parser_header_CSeq_key_offsets[cs];
-	_trans = _tsip_machine_parser_header_CSeq_index_offsets[cs];
-
-	_klen = _tsip_machine_parser_header_CSeq_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _tsip_machine_parser_header_CSeq_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += ((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _tsip_machine_parser_header_CSeq_indicies[_trans];
-	cs = _tsip_machine_parser_header_CSeq_trans_targs[_trans];
-
-	if ( _tsip_machine_parser_header_CSeq_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _tsip_machine_parser_header_CSeq_actions + _tsip_machine_parser_header_CSeq_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
+case 1:
+	switch( (*p) ) {
+		case 67: goto st2;
+		case 99: goto st2;
+	}
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	switch( (*p) ) {
+		case 83: goto st3;
+		case 115: goto st3;
+	}
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	switch( (*p) ) {
+		case 69: goto st4;
+		case 101: goto st4;
+	}
+	goto st0;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	switch( (*p) ) {
+		case 81: goto st5;
+		case 113: goto st5;
+	}
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	switch( (*p) ) {
+		case 9: goto st5;
+		case 32: goto st5;
+		case 58: goto st6;
+	}
+	goto st0;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	switch( (*p) ) {
+		case 9: goto st6;
+		case 13: goto st7;
+		case 32: goto st6;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto tr7;
+	goto st0;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	if ( (*p) == 10 )
+		goto st8;
+	goto st0;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	switch( (*p) ) {
+		case 9: goto st9;
+		case 32: goto st9;
+	}
+	goto st0;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+	switch( (*p) ) {
+		case 9: goto st9;
+		case 32: goto st9;
+	}
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto tr7;
+	goto st0;
+tr7:
 /* #line 50 "tsip_parser_header_CSeq.rl" */
 	{
-		TSK_DEBUG_INFO("CSEQ:TAG");
 		tag_start = p;
 	}
-	break;
-	case 1:
-/* #line 56 "tsip_parser_header_CSeq.rl" */
-	{
-		PARSER_SET_STRING(hdr_cseq->method);
-		TSK_DEBUG_INFO("CSEQ:PARSE_METHOD");
+	goto st10;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+/* #line 189 "../source/headers/tsip_header_CSeq.c" */
+	switch( (*p) ) {
+		case 9: goto tr10;
+		case 13: goto tr11;
+		case 32: goto tr10;
 	}
-	break;
-	case 2:
-/* #line 62 "tsip_parser_header_CSeq.rl" */
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st10;
+	goto st0;
+tr10:
+/* #line 60 "tsip_parser_header_CSeq.rl" */
 	{
 		PARSER_SET_INTEGER(hdr_cseq->seq);
-		TSK_DEBUG_INFO("CSEQ:PARSE_SEQ");
 	}
-	break;
-	case 3:
-/* #line 68 "tsip_parser_header_CSeq.rl" */
+	goto st11;
+st11:
+	if ( ++p == pe )
+		goto _test_eof11;
+case 11:
+/* #line 208 "../source/headers/tsip_header_CSeq.c" */
+	switch( (*p) ) {
+		case 9: goto st11;
+		case 13: goto st12;
+		case 32: goto st11;
+		case 33: goto tr15;
+		case 37: goto tr15;
+		case 39: goto tr15;
+		case 126: goto tr15;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto tr15;
+		} else if ( (*p) >= 42 )
+			goto tr15;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto tr15;
+		} else if ( (*p) >= 65 )
+			goto tr15;
+	} else
+		goto tr15;
+	goto st0;
+tr11:
+/* #line 60 "tsip_parser_header_CSeq.rl" */
 	{
-		TSK_DEBUG_INFO("CSEQ:EOB");
+		PARSER_SET_INTEGER(hdr_cseq->seq);
 	}
-	break;
-/* #line 257 "../source/headers/tsip_header_CSeq.c" */
-		}
+	goto st12;
+st12:
+	if ( ++p == pe )
+		goto _test_eof12;
+case 12:
+/* #line 243 "../source/headers/tsip_header_CSeq.c" */
+	if ( (*p) == 10 )
+		goto st13;
+	goto st0;
+st13:
+	if ( ++p == pe )
+		goto _test_eof13;
+case 13:
+	switch( (*p) ) {
+		case 9: goto st14;
+		case 32: goto st14;
 	}
+	goto st0;
+st14:
+	if ( ++p == pe )
+		goto _test_eof14;
+case 14:
+	switch( (*p) ) {
+		case 9: goto st14;
+		case 32: goto st14;
+		case 33: goto tr15;
+		case 37: goto tr15;
+		case 39: goto tr15;
+		case 126: goto tr15;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto tr15;
+		} else if ( (*p) >= 42 )
+			goto tr15;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto tr15;
+		} else if ( (*p) >= 65 )
+			goto tr15;
+	} else
+		goto tr15;
+	goto st0;
+tr15:
+/* #line 50 "tsip_parser_header_CSeq.rl" */
+	{
+		tag_start = p;
+	}
+	goto st15;
+st15:
+	if ( ++p == pe )
+		goto _test_eof15;
+case 15:
+/* #line 293 "../source/headers/tsip_header_CSeq.c" */
+	switch( (*p) ) {
+		case 13: goto tr18;
+		case 33: goto st15;
+		case 37: goto st15;
+		case 39: goto st15;
+		case 126: goto st15;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto st15;
+		} else if ( (*p) >= 42 )
+			goto st15;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st15;
+		} else if ( (*p) >= 65 )
+			goto st15;
+	} else
+		goto st15;
+	goto st0;
+tr18:
+/* #line 55 "tsip_parser_header_CSeq.rl" */
+	{
+		PARSER_SET_STRING(hdr_cseq->method);
+	}
+	goto st16;
+st16:
+	if ( ++p == pe )
+		goto _test_eof16;
+case 16:
+/* #line 326 "../source/headers/tsip_header_CSeq.c" */
+	if ( (*p) == 10 )
+		goto tr20;
+	goto st0;
+tr20:
+/* #line 65 "tsip_parser_header_CSeq.rl" */
+	{
+	}
+	goto st17;
+st17:
+	if ( ++p == pe )
+		goto _test_eof17;
+case 17:
+/* #line 339 "../source/headers/tsip_header_CSeq.c" */
+	goto st0;
+	}
+	_test_eof2: cs = 2; goto _test_eof; 
+	_test_eof3: cs = 3; goto _test_eof; 
+	_test_eof4: cs = 4; goto _test_eof; 
+	_test_eof5: cs = 5; goto _test_eof; 
+	_test_eof6: cs = 6; goto _test_eof; 
+	_test_eof7: cs = 7; goto _test_eof; 
+	_test_eof8: cs = 8; goto _test_eof; 
+	_test_eof9: cs = 9; goto _test_eof; 
+	_test_eof10: cs = 10; goto _test_eof; 
+	_test_eof11: cs = 11; goto _test_eof; 
+	_test_eof12: cs = 12; goto _test_eof; 
+	_test_eof13: cs = 13; goto _test_eof; 
+	_test_eof14: cs = 14; goto _test_eof; 
+	_test_eof15: cs = 15; goto _test_eof; 
+	_test_eof16: cs = 16; goto _test_eof; 
+	_test_eof17: cs = 17; goto _test_eof; 
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-/* #line 102 "tsip_parser_header_CSeq.rl" */
+/* #line 98 "tsip_parser_header_CSeq.rl" */
 	
 	if( cs < 
-/* #line 273 "../source/headers/tsip_header_CSeq.c" */
+/* #line 366 "../source/headers/tsip_header_CSeq.c" */
 17
-/* #line 103 "tsip_parser_header_CSeq.rl" */
+/* #line 99 "tsip_parser_header_CSeq.rl" */
  )
 	{
 		TSIP_HEADER_CSEQ_SAFE_FREE(hdr_cseq);

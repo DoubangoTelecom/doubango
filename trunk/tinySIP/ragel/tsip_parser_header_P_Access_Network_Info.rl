@@ -58,7 +58,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("P_ACCESS_NETWORK_INFO:TAG");
 		tag_start = p;
 	}
 
@@ -69,7 +68,6 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("P_ACCESS_NETWORK_INFO:EOB");
 	}
 		
 	P_Access_Network_Info = "P-Access-Network-Info"i HCOLON (any*)>tag %parse_value;

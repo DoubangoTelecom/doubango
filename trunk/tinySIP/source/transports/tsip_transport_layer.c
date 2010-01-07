@@ -30,6 +30,8 @@
 #include "tinysip/transports/tsip_transport_layer.h"
 
 #include "tinysip/transactions/tsip_transac_layer.h"
+#include "tinysip/dialogs/tsip_dialog_layer.h"
+
 #include "tinysip/parsers/tsip_parser_message.h"
 
 #include "tsk_thread.h"
@@ -45,32 +47,73 @@ static int tsip_transport_layer_stream_data_read(const tsip_transport_layer_t *s
 */
 static int tsip_transport_layer_dgram_data_read(const tsip_transport_layer_t *self, const void* data, size_t size)
 {
+	int ret = -1;
 	tsip_ragel_state_t state;
-	tsip_message_t *message = TSIP_MESSAGE_CREATE();
+	tsip_message_t *message = 0;
 
 	tsip_ragel_state_init(&state, data, size);
-	if(tsip_message_parse(&state, message) == TSIP_TRUE && message->firstVia && message->CSeq)
+	if(tsip_message_parse(&state, &message) == TSIP_TRUE 
+		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
 		const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
-		if(layer_transac)
-		{
-			const tsip_transac_t *transac = tsip_transac_layer_find_client(layer_transac, message->firstVia->branch, message->CSeq->method);
-			if(transac)
-			{
-				//if(transac->callback)
-				{
-					transac->callback(transac, tsip_transac_msg, message);
-				}
-			}
-			else
-			{
-				/* Look into dialog layer */
-			}
+		const tsip_dialog_layer_t *layer_dialog = tsip_stack_get_dialog_layer(self->stack);
+
+		if((ret=tsip_transac_layer_handle_msg(layer_transac, 1, message)))
+		{	/* NO MATCHING TRANSACTION FOUND ==> LOOK INTO DIALOG LAYER */
+			
+			ret = tsip_dialog_layer_handle_msg(layer_dialog, message);
 		}
+		//if(layer_transac)
+		//{
+		//	if(TSIP_MESSAGE_IS_RESPONSE(message))
+		//	{
+		//		/* Look into transaction layer 
+		//		*/
+		//		const tsip_transac_t *transac = tsip_transac_layer_find_client(layer_transac, TSIP_MESSAGE_AS_RESPONSE(message));
+		//		if(transac)
+		//		{
+		//			transac->callback(transac, tsip_transac_msg, message);
+		//		}
+		//		
+		//		/* Look into dialog layer 
+		//		*/
+		//		else
+		//		{
+
+		//		}
+		//	}
+		//	else
+		//	{
+		//		/* Look into transaction layer 
+		//		*/
+		//		const tsip_transac_t *transac = tsip_transac_layer_find_server(layer_transac, TSIP_MESSAGE_AS_REQUEST(message));
+		//		if(transac)
+		//		{
+		//			transac->callback(transac, tsip_transac_msg, message);
+		//		}
+
+		//		/* Look into dialog layer 
+		//		*/
+		//		else
+		//		{
+		//			const tsip_dialog_t *dialog = tsip_dialog_layer_find(layer_dialog, message->Call_ID->value, message->To->tag, message->From->tag);
+		//			if(dialog)
+		//			{
+		//				dialog->callback(dialog, tsip_dialog_msg, message);
+		//			}
+		//			else
+		//			{
+		//				/*
+		//				*/
+		//				const tsip_transac_t *transac = tsip_transac_layer_new(tsip_transac_layer_t *self, const tsip_message_t* msg)
+		//			}
+		//		}
+		//	}
+		//}
 	}
 	TSIP_MESSAGE_SAFE_FREE(message);
 
-	return 0;
+	return ret;
 }
 
 tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, tnet_socket_type_t type)

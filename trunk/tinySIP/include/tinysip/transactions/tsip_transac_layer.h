@@ -59,9 +59,12 @@ typedef tsk_list_t tsip_transac_layers_L_t;
 TINYSIP_GEXTERN const void *tsip_transac_layer_def_t;
 
 
-const tsip_transac_t* tsip_transac_layer_new(tsip_transac_layer_t *self, const tsip_message_t* msg);
+const tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, int isCT, const tsip_message_t* msg);
 int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *transac);
-const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const char* branch, const char* cseq_method);
+//const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_response_t* response);
+//const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_request_t* request);
+
+int tsip_transac_layer_handle_msg(const tsip_transac_layer_t *self, int incoming, const tsip_message_t* message);
 
 TSIP_END_DECLS
 

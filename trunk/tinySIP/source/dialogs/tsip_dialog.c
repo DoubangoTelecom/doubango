@@ -243,7 +243,7 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 				As this is an outgoing request ==> It shall be a client transaction (NICT or ICT).
 				For server transactions creation see @ref tsip_dialog_response_send.
 			*/
-			const tsip_transac_t *transac = tsip_transac_layer_new(layer, request);
+			const tsip_transac_t *transac = tsip_transac_layer_new(layer, 1, request);
 
 			/* Set the transaction's dialog. All events comming from the transaction (timeouts, errors ...) will be signaled to this dialog.
 			*/
@@ -278,13 +278,28 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 	return -1;
 }
 
+tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short status, const char* phrase, const tsip_request_t* request)
+{
+	/* Reponse is created as per RFC 3261 subclause 8.2.6 and (headers+tags) are copied
+	* as per subclause 8.2.6.2.
+	*/
+	tsip_response_t* response = tsip_response_new(status, phrase, request);
+	return response;
+}
+
 int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* response)
 {
+	int ret = -1;
+
 	if(self && self->stack)
 	{
-		return 0;
+		tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
+		if(layer)
+		{
+			ret = tsip_transac_layer_handle_msg(layer, 0, response);
+		}
 	}
-	return -1;
+	return ret;
 }
 
 /**

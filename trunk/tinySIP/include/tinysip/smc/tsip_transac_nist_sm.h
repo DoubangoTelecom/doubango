@@ -18,9 +18,9 @@ struct tsip_transac_nistState
 {
     void(*Entry)(struct tsip_transac_nistContext*);
 
-    void(*sm_send_1xx)(struct tsip_transac_nistContext*, const tsip_message_t*);
-    void(*sm_send_200_to_699)(struct tsip_transac_nistContext*, const tsip_message_t*);
-    void(*sm_send_response)(struct tsip_transac_nistContext*, const tsip_message_t*);
+    void(*sm_recv_request)(struct tsip_transac_nistContext*, const tsip_request_t*);
+    void(*sm_send_1xx)(struct tsip_transac_nistContext*, const tsip_request_t*);
+    void(*sm_send_200_to_699)(struct tsip_transac_nistContext*, const tsip_request_t*);
     void(*sm_timerJ)(struct tsip_transac_nistContext*);
     void(*sm_transportError)(struct tsip_transac_nistContext*);
 
@@ -29,6 +29,7 @@ struct tsip_transac_nistState
     STATE_MEMBERS
 };
 
+extern const struct tsip_transac_nistState tsip_transac_nist_Started;
 extern const struct tsip_transac_nistState tsip_transac_nist_Trying;
 extern const struct tsip_transac_nistState tsip_transac_nist_Proceeding;
 extern const struct tsip_transac_nistState tsip_transac_nist_Completed;
@@ -42,9 +43,9 @@ struct tsip_transac_nistContext
 
 extern void tsip_transac_nistContext_Init(struct tsip_transac_nistContext*, struct tsip_transac_nist*);
 extern void tsip_transac_nistContext_EnterStartState(struct tsip_transac_nistContext*);
-extern void tsip_transac_nistContext_sm_send_1xx(struct tsip_transac_nistContext*, const tsip_message_t*);
-extern void tsip_transac_nistContext_sm_send_200_to_699(struct tsip_transac_nistContext*, const tsip_message_t*);
-extern void tsip_transac_nistContext_sm_send_response(struct tsip_transac_nistContext*, const tsip_message_t*);
+extern void tsip_transac_nistContext_sm_recv_request(struct tsip_transac_nistContext*, const tsip_request_t*);
+extern void tsip_transac_nistContext_sm_send_1xx(struct tsip_transac_nistContext*, const tsip_request_t*);
+extern void tsip_transac_nistContext_sm_send_200_to_699(struct tsip_transac_nistContext*, const tsip_request_t*);
 extern void tsip_transac_nistContext_sm_timerJ(struct tsip_transac_nistContext*);
 extern void tsip_transac_nistContext_sm_transportError(struct tsip_transac_nistContext*);
 

@@ -48,25 +48,21 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("CSEQ:TAG");
 		tag_start = p;
 	}
 	
 	action parse_method
 	{
 		PARSER_SET_STRING(hdr_cseq->method);
-		TSK_DEBUG_INFO("CSEQ:PARSE_METHOD");
 	}
 
 	action parse_seq
 	{
 		PARSER_SET_INTEGER(hdr_cseq->seq);
-		TSK_DEBUG_INFO("CSEQ:PARSE_SEQ");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("CSEQ:EOB");
 	}
 	
 	CSeq = "CSeq"i HCOLON DIGIT+>tag %parse_seq LWS Method >tag %parse_method;

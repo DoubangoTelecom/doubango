@@ -39,185 +39,27 @@
 
 static void tsip_message_parser_execute(tsip_ragel_state_t *state, tsip_message_t *message);
 static void tsip_message_parser_init(tsip_ragel_state_t *state);
-static void tsip_message_parser_eob(tsip_ragel_state_t *state);
+static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *message);
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 185 "tsip_parser_message.rl" */
+/* #line 183 "tsip_parser_message.rl" */
 
 
 
 /* Regel data */
 
 /* #line 55 "../source/parsers/tsip_parser_message.c" */
-static const char _tsip_machine_parser_message_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 1, 
-	3, 1, 4, 1, 5, 1, 6, 1, 
-	7, 1, 8, 2, 0, 5, 2, 0, 
-	7, 2, 6, 0
-};
-
-static const short _tsip_machine_parser_message_key_offsets[] = {
-	0, 0, 16, 31, 35, 47, 50, 50, 
-	51, 53, 55, 57, 58, 60, 63, 65, 
-	68, 69, 70, 71, 72, 73, 74, 75, 
-	81, 98, 115, 129, 131, 134, 136, 139, 
-	141, 143, 145, 146, 172, 198, 200, 202, 
-	204, 206, 208, 209, 210, 211, 212, 213, 
-	215, 217, 224, 230, 236, 237, 244, 252, 
-	254, 262
-};
-
-static const char _tsip_machine_parser_message_trans_keys[] = {
-	33, 37, 39, 83, 115, 126, 42, 43, 
-	45, 46, 48, 57, 65, 90, 95, 122, 
-	32, 33, 37, 39, 126, 42, 43, 45, 
-	46, 48, 57, 65, 90, 95, 122, 65, 
-	90, 97, 122, 9, 32, 43, 58, 45, 
-	46, 48, 57, 65, 90, 97, 122, 9, 
-	32, 58, 32, 83, 115, 73, 105, 80, 
-	112, 47, 48, 57, 46, 48, 57, 48, 
-	57, 13, 48, 57, 10, 13, 13, 10, 
-	13, 10, 120, 48, 57, 65, 70, 97, 
-	102, 32, 33, 37, 39, 73, 105, 126, 
-	42, 43, 45, 46, 48, 57, 65, 90, 
-	95, 122, 32, 33, 37, 39, 80, 112, 
-	126, 42, 43, 45, 46, 48, 57, 65, 
-	90, 95, 122, 32, 33, 37, 39, 47, 
-	126, 42, 43, 45, 57, 65, 90, 95, 
-	122, 48, 57, 46, 48, 57, 48, 57, 
-	32, 48, 57, 48, 57, 48, 57, 48, 
-	57, 32, 13, 37, 60, 62, 96, 127, 
-	-64, -33, -32, -17, -16, -9, -8, -5, 
-	-4, -3, -2, 8, 10, 31, 34, 35, 
-	91, 94, 123, 125, 13, 37, 60, 62, 
-	96, 127, -64, -33, -32, -17, -16, -9, 
-	-8, -5, -4, -3, -2, 8, 10, 31, 
-	34, 35, 91, 94, 123, 125, -128, -65, 
-	-128, -65, -128, -65, -128, -65, -128, -65, 
-	10, 13, 13, 10, 13, 10, 13, 13, 
-	120, 13, 48, 57, 65, 70, 97, 102, 
-	48, 57, 65, 70, 97, 102, 48, 57, 
-	65, 70, 97, 102, 48, 48, 49, 57, 
-	65, 70, 97, 102, 48, 120, 49, 57, 
-	65, 70, 97, 102, 13, 48, 13, 48, 
-	49, 57, 65, 70, 97, 102, 13, 48, 
-	120, 49, 57, 65, 70, 97, 102, 0
-};
-
-static const char _tsip_machine_parser_message_single_lengths[] = {
-	0, 6, 5, 0, 4, 3, 0, 1, 
-	2, 2, 2, 1, 0, 1, 0, 1, 
-	1, 1, 1, 1, 1, 1, 1, 0, 
-	7, 7, 6, 0, 1, 0, 1, 0, 
-	0, 0, 1, 6, 6, 0, 0, 0, 
-	0, 0, 1, 1, 1, 1, 1, 2, 
-	2, 1, 0, 0, 1, 1, 2, 2, 
-	2, 3
-};
-
-static const char _tsip_machine_parser_message_range_lengths[] = {
-	0, 5, 5, 2, 4, 0, 0, 0, 
-	0, 0, 0, 0, 1, 1, 1, 1, 
-	0, 0, 0, 0, 0, 0, 0, 3, 
-	5, 5, 4, 1, 1, 1, 1, 1, 
-	1, 1, 0, 10, 10, 1, 1, 1, 
-	1, 1, 0, 0, 0, 0, 0, 0, 
-	0, 3, 3, 3, 0, 3, 3, 0, 
-	3, 3
-};
-
-static const short _tsip_machine_parser_message_index_offsets[] = {
-	0, 0, 12, 23, 26, 35, 39, 40, 
-	42, 45, 48, 51, 53, 55, 58, 60, 
-	63, 65, 67, 69, 71, 73, 75, 77, 
-	81, 94, 107, 118, 120, 123, 125, 128, 
-	130, 132, 134, 136, 153, 170, 172, 174, 
-	176, 178, 180, 182, 184, 186, 188, 190, 
-	193, 196, 201, 205, 209, 211, 216, 222, 
-	225, 231
-};
-
-static const char _tsip_machine_parser_message_indicies[] = {
-	0, 0, 0, 2, 2, 0, 0, 0, 
-	0, 0, 0, 1, 3, 4, 4, 4, 
-	4, 4, 4, 4, 4, 4, 1, 5, 
-	5, 1, 6, 6, 7, 8, 7, 7, 
-	7, 7, 1, 6, 6, 8, 1, 9, 
-	10, 9, 11, 11, 1, 12, 12, 1, 
-	13, 13, 1, 14, 1, 15, 1, 16, 
-	15, 1, 17, 1, 18, 17, 1, 19, 
-	1, 21, 20, 23, 22, 24, 1, 26, 
-	25, 27, 1, 28, 1, 29, 29, 29, 
-	1, 3, 4, 4, 4, 30, 30, 4, 
-	4, 4, 4, 4, 4, 1, 3, 4, 
-	4, 4, 31, 31, 4, 4, 4, 4, 
-	4, 4, 1, 3, 4, 4, 4, 32, 
-	4, 4, 4, 4, 4, 1, 33, 1, 
-	34, 33, 1, 35, 1, 36, 35, 1, 
-	37, 1, 38, 1, 39, 1, 40, 1, 
-	47, 48, 1, 1, 1, 1, 42, 43, 
-	44, 45, 46, 1, 1, 1, 1, 1, 
-	41, 55, 56, 1, 1, 1, 1, 50, 
-	51, 52, 53, 54, 1, 1, 1, 1, 
-	1, 49, 49, 1, 50, 1, 51, 1, 
-	52, 1, 53, 1, 57, 1, 59, 58, 
-	61, 60, 62, 1, 64, 63, 65, 61, 
-	60, 61, 66, 60, 61, 67, 67, 67, 
-	60, 68, 68, 68, 1, 49, 49, 49, 
-	1, 69, 1, 70, 29, 29, 29, 1, 
-	70, 28, 29, 29, 29, 1, 61, 71, 
-	60, 61, 72, 67, 67, 67, 60, 61, 
-	72, 66, 67, 67, 67, 60, 0
-};
-
-static const char _tsip_machine_parser_message_trans_targs[] = {
-	2, 0, 24, 3, 2, 4, 5, 4, 
-	6, 7, 8, 9, 10, 11, 12, 13, 
-	14, 15, 16, 17, 18, 21, 18, 19, 
-	20, 18, 21, 52, 23, 53, 25, 26, 
-	27, 28, 29, 30, 31, 32, 33, 34, 
-	35, 36, 37, 38, 39, 40, 41, 42, 
-	50, 36, 37, 38, 39, 40, 41, 42, 
-	50, 43, 44, 47, 44, 45, 46, 44, 
-	47, 55, 49, 56, 51, 22, 54, 48, 
-	57
-};
-
-static const char _tsip_machine_parser_message_trans_actions[] = {
-	1, 0, 1, 3, 0, 1, 0, 0, 
-	0, 0, 5, 1, 0, 0, 0, 0, 
-	0, 0, 7, 0, 1, 0, 0, 0, 
-	0, 25, 13, 17, 0, 17, 0, 0, 
-	0, 0, 0, 0, 7, 1, 0, 0, 
-	9, 1, 1, 1, 1, 1, 1, 19, 
-	1, 0, 0, 0, 0, 0, 0, 11, 
-	0, 0, 1, 1, 0, 0, 0, 25, 
-	25, 17, 0, 17, 0, 1, 17, 0, 
-	17
-};
-
-static const char _tsip_machine_parser_message_eof_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 22, 15, 15, 0, 
-	0, 0
-};
-
 static const int tsip_machine_parser_message_start = 1;
-static const int tsip_machine_parser_message_first_final = 52;
+static const int tsip_machine_parser_message_first_final = 42;
 static const int tsip_machine_parser_message_error = 0;
 
 static const int tsip_machine_parser_message_en_main = 1;
 
 
-/* #line 190 "tsip_parser_message.rl" */
+/* #line 188 "tsip_parser_message.rl" */
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @fn	TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t *result)
@@ -234,11 +76,16 @@ static const int tsip_machine_parser_message_en_main = 1;
 /// @return	@ref TSIP_TRUE if succeed and @ref TSIP_FALSE otherwise.
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t *result)
+TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t **result)
 {
 	if(!state || state->pe <= state->p)
 	{
 		return TSIP_FALSE;
+	}
+
+	if(!*result)
+	{
+		*result = TSIP_MESSAGE_CREATE();
 	}
 
 	/* Ragel init */
@@ -247,17 +94,17 @@ TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t *resul
 	/*
 	*	State mechine execution.
 	*/
-	tsip_message_parser_execute(state, result);
+	tsip_message_parser_execute(state, *result);
 
 	/* Check result */
 
 	if( state->cs < 
-/* #line 256 "../source/parsers/tsip_parser_message.c" */
-52
-/* #line 223 "tsip_parser_message.rl" */
+/* #line 103 "../source/parsers/tsip_parser_message.c" */
+42
+/* #line 226 "tsip_parser_message.rl" */
  )
 	{
-		TSIP_MESSAGE_SAFE_FREE(result);
+		TSIP_MESSAGE_SAFE_FREE(*result);
 		return TSIP_FALSE;
 	}
 	return TSIP_TRUE;
@@ -270,12 +117,12 @@ static void tsip_message_parser_init(tsip_ragel_state_t *state)
 
 	/* Regel machine initialization. */
 	
-/* #line 274 "../source/parsers/tsip_parser_message.c" */
+/* #line 121 "../source/parsers/tsip_parser_message.c" */
 	{
 	cs = tsip_machine_parser_message_start;
 	}
 
-/* #line 238 "tsip_parser_message.rl" */
+/* #line 241 "tsip_parser_message.rl" */
 	
 	state->cs = cs;
 }
@@ -288,89 +135,74 @@ static void tsip_message_parser_execute(tsip_ragel_state_t *state, tsip_message_
 	const char *eof = state->eof;
 
 	
-/* #line 292 "../source/parsers/tsip_parser_message.c" */
+/* #line 139 "../source/parsers/tsip_parser_message.c" */
 	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
-
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _tsip_machine_parser_message_trans_keys + _tsip_machine_parser_message_key_offsets[cs];
-	_trans = _tsip_machine_parser_message_index_offsets[cs];
-
-	_klen = _tsip_machine_parser_message_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _tsip_machine_parser_message_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += ((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _tsip_machine_parser_message_indicies[_trans];
-	cs = _tsip_machine_parser_message_trans_targs[_trans];
-
-	if ( _tsip_machine_parser_message_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _tsip_machine_parser_message_actions + _tsip_machine_parser_message_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
+case 1:
+	switch( (*p) ) {
+		case 33: goto tr0;
+		case 37: goto tr0;
+		case 39: goto tr0;
+		case 83: goto tr2;
+		case 115: goto tr2;
+		case 126: goto tr0;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto tr0;
+		} else if ( (*p) >= 42 )
+			goto tr0;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto tr0;
+		} else if ( (*p) >= 65 )
+			goto tr0;
+	} else
+		goto tr0;
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+tr0:
 /* #line 50 "tsip_parser_message.rl" */
 	{
 		state->tag_start = p;
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::TAG state=%d", state->cs);
 	}
-	break;
-	case 1:
-/* #line 57 "tsip_parser_message.rl" */
+	goto st2;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+/* #line 182 "../source/parsers/tsip_parser_message.c" */
+	switch( (*p) ) {
+		case 32: goto tr3;
+		case 33: goto st2;
+		case 37: goto st2;
+		case 39: goto st2;
+		case 126: goto st2;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto st2;
+		} else if ( (*p) >= 42 )
+			goto st2;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st2;
+		} else if ( (*p) >= 65 )
+			goto st2;
+	} else
+		goto st2;
+	goto st0;
+tr3:
+/* #line 56 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -389,12 +221,72 @@ _match:
 		{
 			state->cs = tsip_machine_parser_message_error;
 		}
-		
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_METHOD len=%d state=%d", len, state->cs);
 	}
-	break;
-	case 2:
-/* #line 81 "tsip_parser_message.rl" */
+	goto st3;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+/* #line 231 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) > 90 ) {
+		if ( 97 <= (*p) && (*p) <= 122 )
+			goto tr5;
+	} else if ( (*p) >= 65 )
+		goto tr5;
+	goto st0;
+tr5:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st4;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+/* #line 248 "../source/parsers/tsip_parser_message.c" */
+	switch( (*p) ) {
+		case 9: goto st5;
+		case 32: goto st5;
+		case 43: goto st4;
+		case 58: goto st6;
+	}
+	if ( (*p) < 48 ) {
+		if ( 45 <= (*p) && (*p) <= 46 )
+			goto st4;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 97 <= (*p) && (*p) <= 122 )
+				goto st4;
+		} else if ( (*p) >= 65 )
+			goto st4;
+	} else
+		goto st4;
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	switch( (*p) ) {
+		case 9: goto st5;
+		case 32: goto st5;
+		case 58: goto st6;
+	}
+	goto st0;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	goto st7;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	if ( (*p) == 32 )
+		goto tr10;
+	goto st7;
+tr10:
+/* #line 78 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -404,12 +296,84 @@ _match:
 		{
 			message->line_request.uri = tsip_uri_parse(state->tag_start, (size_t)len);
 		}
-
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_REQUESTURI len=%d state=%d", len, state->cs);
 	}
-	break;
-	case 3:
-/* #line 96 "tsip_parser_message.rl" */
+	goto st8;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+/* #line 306 "../source/parsers/tsip_parser_message.c" */
+	switch( (*p) ) {
+		case 83: goto tr11;
+		case 115: goto tr11;
+	}
+	goto st0;
+tr11:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st9;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+/* #line 322 "../source/parsers/tsip_parser_message.c" */
+	switch( (*p) ) {
+		case 73: goto st10;
+		case 105: goto st10;
+	}
+	goto st0;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+	switch( (*p) ) {
+		case 80: goto st11;
+		case 112: goto st11;
+	}
+	goto st0;
+st11:
+	if ( ++p == pe )
+		goto _test_eof11;
+case 11:
+	if ( (*p) == 47 )
+		goto st12;
+	goto st0;
+st12:
+	if ( ++p == pe )
+		goto _test_eof12;
+case 12:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st13;
+	goto st0;
+st13:
+	if ( ++p == pe )
+		goto _test_eof13;
+case 13:
+	if ( (*p) == 46 )
+		goto st14;
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st13;
+	goto st0;
+st14:
+	if ( ++p == pe )
+		goto _test_eof14;
+case 14:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st15;
+	goto st0;
+st15:
+	if ( ++p == pe )
+		goto _test_eof15;
+case 15:
+	if ( (*p) == 13 )
+		goto tr18;
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st15;
+	goto st0;
+tr18:
+/* #line 91 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -420,12 +384,322 @@ _match:
 			message->sip_version = tsk_calloc(1, len+1);
 			memcpy(message->sip_version, state->tag_start, len);
 		}
-
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_SIPVERSION len=%d state=%d", len, state->cs);
 	}
-	break;
-	case 4:
-/* #line 112 "tsip_parser_message.rl" */
+	goto st16;
+tr45:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+/* #line 123 "tsip_parser_message.rl" */
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+
+		if(!message->line_status.reason_phrase)
+		{
+			message->line_status.reason_phrase = tsk_calloc(1, len+1);
+			memcpy(message->line_status.reason_phrase, state->tag_start, len);
+		}
+	}
+	goto st16;
+tr53:
+/* #line 123 "tsip_parser_message.rl" */
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+
+		if(!message->line_status.reason_phrase)
+		{
+			message->line_status.reason_phrase = tsk_calloc(1, len+1);
+			memcpy(message->line_status.reason_phrase, state->tag_start, len);
+		}
+	}
+	goto st16;
+st16:
+	if ( ++p == pe )
+		goto _test_eof16;
+case 16:
+/* #line 426 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) == 10 )
+		goto st17;
+	goto st0;
+st17:
+	if ( ++p == pe )
+		goto _test_eof17;
+case 17:
+	if ( (*p) == 13 )
+		goto st21;
+	goto tr20;
+tr20:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st18;
+tr25:
+/* #line 137 "tsip_parser_message.rl" */
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+		
+		if(tsip_header_parse(state, message))
+		{
+			//TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
+		}
+	}
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st18;
+st18:
+	if ( ++p == pe )
+		goto _test_eof18;
+case 18:
+/* #line 468 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) == 13 )
+		goto st19;
+	goto st18;
+st19:
+	if ( ++p == pe )
+		goto _test_eof19;
+case 19:
+	if ( (*p) == 10 )
+		goto st20;
+	goto st0;
+st20:
+	if ( ++p == pe )
+		goto _test_eof20;
+case 20:
+	if ( (*p) == 13 )
+		goto tr26;
+	goto tr25;
+tr26:
+/* #line 137 "tsip_parser_message.rl" */
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+		
+		if(tsip_header_parse(state, message))
+		{
+			//TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
+		}
+	}
+	goto st21;
+st21:
+	if ( ++p == pe )
+		goto _test_eof21;
+case 21:
+/* #line 507 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) == 10 )
+		goto tr27;
+	goto st0;
+tr27:
+/* #line 163 "tsip_parser_message.rl" */
+	{
+		state->cs = cs;
+		state->p = p;
+		state->pe = pe;
+		state->eof = eof;
+
+		tsip_message_parser_eoh(state, message);
+
+		cs = state->cs;
+		p = state->p;
+		pe = state->pe;
+		eof = state->eof;
+	}
+	goto st42;
+st42:
+	if ( ++p == pe )
+		goto _test_eof42;
+case 42:
+/* #line 531 "../source/parsers/tsip_parser_message.c" */
+	goto st42;
+tr2:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st22;
+st22:
+	if ( ++p == pe )
+		goto _test_eof22;
+case 22:
+/* #line 543 "../source/parsers/tsip_parser_message.c" */
+	switch( (*p) ) {
+		case 32: goto tr3;
+		case 33: goto st2;
+		case 37: goto st2;
+		case 39: goto st2;
+		case 73: goto st23;
+		case 105: goto st23;
+		case 126: goto st2;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto st2;
+		} else if ( (*p) >= 42 )
+			goto st2;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st2;
+		} else if ( (*p) >= 65 )
+			goto st2;
+	} else
+		goto st2;
+	goto st0;
+st23:
+	if ( ++p == pe )
+		goto _test_eof23;
+case 23:
+	switch( (*p) ) {
+		case 32: goto tr3;
+		case 33: goto st2;
+		case 37: goto st2;
+		case 39: goto st2;
+		case 80: goto st24;
+		case 112: goto st24;
+		case 126: goto st2;
+	}
+	if ( (*p) < 48 ) {
+		if ( (*p) > 43 ) {
+			if ( 45 <= (*p) && (*p) <= 46 )
+				goto st2;
+		} else if ( (*p) >= 42 )
+			goto st2;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st2;
+		} else if ( (*p) >= 65 )
+			goto st2;
+	} else
+		goto st2;
+	goto st0;
+st24:
+	if ( ++p == pe )
+		goto _test_eof24;
+case 24:
+	switch( (*p) ) {
+		case 32: goto tr3;
+		case 33: goto st2;
+		case 37: goto st2;
+		case 39: goto st2;
+		case 47: goto st25;
+		case 126: goto st2;
+	}
+	if ( (*p) < 45 ) {
+		if ( 42 <= (*p) && (*p) <= 43 )
+			goto st2;
+	} else if ( (*p) > 57 ) {
+		if ( (*p) > 90 ) {
+			if ( 95 <= (*p) && (*p) <= 122 )
+				goto st2;
+		} else if ( (*p) >= 65 )
+			goto st2;
+	} else
+		goto st2;
+	goto st0;
+st25:
+	if ( ++p == pe )
+		goto _test_eof25;
+case 25:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st26;
+	goto st0;
+st26:
+	if ( ++p == pe )
+		goto _test_eof26;
+case 26:
+	if ( (*p) == 46 )
+		goto st27;
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st26;
+	goto st0;
+st27:
+	if ( ++p == pe )
+		goto _test_eof27;
+case 27:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st28;
+	goto st0;
+st28:
+	if ( ++p == pe )
+		goto _test_eof28;
+case 28:
+	if ( (*p) == 32 )
+		goto tr34;
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st28;
+	goto st0;
+tr34:
+/* #line 91 "tsip_parser_message.rl" */
+	{
+		int len;
+		state->tag_end = p;
+		len = (int)(state->tag_end  - state->tag_start);
+
+		if(!message->sip_version)
+		{
+			message->sip_version = tsk_calloc(1, len+1);
+			memcpy(message->sip_version, state->tag_start, len);
+		}
+	}
+	goto st29;
+st29:
+	if ( ++p == pe )
+		goto _test_eof29;
+case 29:
+/* #line 670 "../source/parsers/tsip_parser_message.c" */
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto tr35;
+	goto st0;
+tr35:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st30;
+st30:
+	if ( ++p == pe )
+		goto _test_eof30;
+case 30:
+/* #line 684 "../source/parsers/tsip_parser_message.c" */
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st31;
+	goto st0;
+st31:
+	if ( ++p == pe )
+		goto _test_eof31;
+case 31:
+	if ( 48 <= (*p) && (*p) <= 57 )
+		goto st32;
+	goto st0;
+st32:
+	if ( ++p == pe )
+		goto _test_eof32;
+case 32:
+	if ( (*p) == 32 )
+		goto tr38;
+	goto st0;
+tr38:
+/* #line 105 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -440,91 +714,251 @@ _match:
 		{
 			state->cs = tsip_machine_parser_message_error;
 		}
-
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_STATUS_CODE len=%d state=%d", len, state->cs);
 	}
-	break;
-	case 5:
-/* #line 132 "tsip_parser_message.rl" */
-	{
-		int len;
-		state->tag_end = p;
-		len = (int)(state->tag_end  - state->tag_start);
-
-		if(!message->line_status.reason_phrase)
-		{
-			message->line_status.reason_phrase = tsk_calloc(1, len+1);
-			memcpy(message->line_status.reason_phrase, state->tag_start, len);
-		}
-
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_REASON_PHRASE len=%d state=%d", len, state->cs);
+	goto st33;
+st33:
+	if ( ++p == pe )
+		goto _test_eof33;
+case 33:
+/* #line 724 "../source/parsers/tsip_parser_message.c" */
+	switch( (*p) ) {
+		case 13: goto tr45;
+		case 37: goto tr46;
+		case 60: goto st0;
+		case 62: goto st0;
+		case 96: goto st0;
+		case 127: goto st0;
 	}
-	break;
-	case 6:
-/* #line 148 "tsip_parser_message.rl" */
-	{
-		int len;
-		state->tag_end = p;
-		len = (int)(state->tag_end  - state->tag_start);
-		
-		if(tsip_header_parse(state, message))
-		{
-			TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
-		}
-		else
-		{
-			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
-		}
-	}
-	break;
-	case 8:
-/* #line 174 "tsip_parser_message.rl" */
-	{
-		tsip_message_parser_eob(state);
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::EOB state=%d", state->cs);
-	}
-	break;
-/* #line 488 "../source/parsers/tsip_parser_message.c" */
-		}
-	}
-
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
-	_test_eof: {}
-	if ( p == eof )
-	{
-	const char *__acts = _tsip_machine_parser_message_actions + _tsip_machine_parser_message_eof_actions[cs];
-	unsigned int __nacts = (unsigned int) *__acts++;
-	while ( __nacts-- > 0 ) {
-		switch ( *__acts++ ) {
-	case 0:
+	if ( (*p) < -4 ) {
+		if ( (*p) < -32 ) {
+			if ( -64 <= (*p) && (*p) <= -33 )
+				goto tr40;
+		} else if ( (*p) > -17 ) {
+			if ( (*p) > -9 ) {
+				if ( -8 <= (*p) && (*p) <= -5 )
+					goto tr43;
+			} else if ( (*p) >= -16 )
+				goto tr42;
+		} else
+			goto tr41;
+	} else if ( (*p) > -3 ) {
+		if ( (*p) < 34 ) {
+			if ( (*p) > 8 ) {
+				if ( 10 <= (*p) && (*p) <= 31 )
+					goto st0;
+			} else if ( (*p) >= -2 )
+				goto st0;
+		} else if ( (*p) > 35 ) {
+			if ( (*p) > 94 ) {
+				if ( 123 <= (*p) && (*p) <= 125 )
+					goto st0;
+			} else if ( (*p) >= 91 )
+				goto st0;
+		} else
+			goto st0;
+	} else
+		goto tr44;
+	goto tr39;
+tr39:
 /* #line 50 "tsip_parser_message.rl" */
 	{
 		state->tag_start = p;
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::TAG state=%d", state->cs);
 	}
-	break;
-	case 7:
-/* #line 165 "tsip_parser_message.rl" */
+	goto st34;
+st34:
+	if ( ++p == pe )
+		goto _test_eof34;
+case 34:
+/* #line 773 "../source/parsers/tsip_parser_message.c" */
+	switch( (*p) ) {
+		case 13: goto tr53;
+		case 37: goto st40;
+		case 60: goto st0;
+		case 62: goto st0;
+		case 96: goto st0;
+		case 127: goto st0;
+	}
+	if ( (*p) < -4 ) {
+		if ( (*p) < -32 ) {
+			if ( -64 <= (*p) && (*p) <= -33 )
+				goto st35;
+		} else if ( (*p) > -17 ) {
+			if ( (*p) > -9 ) {
+				if ( -8 <= (*p) && (*p) <= -5 )
+					goto st38;
+			} else if ( (*p) >= -16 )
+				goto st37;
+		} else
+			goto st36;
+	} else if ( (*p) > -3 ) {
+		if ( (*p) < 34 ) {
+			if ( (*p) > 8 ) {
+				if ( 10 <= (*p) && (*p) <= 31 )
+					goto st0;
+			} else if ( (*p) >= -2 )
+				goto st0;
+		} else if ( (*p) > 35 ) {
+			if ( (*p) > 94 ) {
+				if ( 123 <= (*p) && (*p) <= 125 )
+					goto st0;
+			} else if ( (*p) >= 91 )
+				goto st0;
+		} else
+			goto st0;
+	} else
+		goto st39;
+	goto st34;
+tr40:
+/* #line 50 "tsip_parser_message.rl" */
 	{
-		int len;
-		state->tag_end = p;
-		len = (int)(state->tag_end  - state->tag_start);
-		TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_BODY len=%d state=%d", len, state->cs);
+		state->tag_start = p;
 	}
-	break;
-/* #line 520 "../source/parsers/tsip_parser_message.c" */
-		}
+	goto st35;
+st35:
+	if ( ++p == pe )
+		goto _test_eof35;
+case 35:
+/* #line 822 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) <= -65 )
+		goto st34;
+	goto st0;
+tr41:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
 	}
+	goto st36;
+st36:
+	if ( ++p == pe )
+		goto _test_eof36;
+case 36:
+/* #line 836 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) <= -65 )
+		goto st35;
+	goto st0;
+tr42:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
 	}
+	goto st37;
+st37:
+	if ( ++p == pe )
+		goto _test_eof37;
+case 37:
+/* #line 850 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) <= -65 )
+		goto st36;
+	goto st0;
+tr43:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st38;
+st38:
+	if ( ++p == pe )
+		goto _test_eof38;
+case 38:
+/* #line 864 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) <= -65 )
+		goto st37;
+	goto st0;
+tr44:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st39;
+st39:
+	if ( ++p == pe )
+		goto _test_eof39;
+case 39:
+/* #line 878 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) <= -65 )
+		goto st38;
+	goto st0;
+tr46:
+/* #line 50 "tsip_parser_message.rl" */
+	{
+		state->tag_start = p;
+	}
+	goto st40;
+st40:
+	if ( ++p == pe )
+		goto _test_eof40;
+case 40:
+/* #line 892 "../source/parsers/tsip_parser_message.c" */
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st41;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st41;
+	} else
+		goto st41;
+	goto st0;
+st41:
+	if ( ++p == pe )
+		goto _test_eof41;
+case 41:
+	if ( (*p) < 65 ) {
+		if ( 48 <= (*p) && (*p) <= 57 )
+			goto st34;
+	} else if ( (*p) > 70 ) {
+		if ( 97 <= (*p) && (*p) <= 102 )
+			goto st34;
+	} else
+		goto st34;
+	goto st0;
+	}
+	_test_eof2: cs = 2; goto _test_eof; 
+	_test_eof3: cs = 3; goto _test_eof; 
+	_test_eof4: cs = 4; goto _test_eof; 
+	_test_eof5: cs = 5; goto _test_eof; 
+	_test_eof6: cs = 6; goto _test_eof; 
+	_test_eof7: cs = 7; goto _test_eof; 
+	_test_eof8: cs = 8; goto _test_eof; 
+	_test_eof9: cs = 9; goto _test_eof; 
+	_test_eof10: cs = 10; goto _test_eof; 
+	_test_eof11: cs = 11; goto _test_eof; 
+	_test_eof12: cs = 12; goto _test_eof; 
+	_test_eof13: cs = 13; goto _test_eof; 
+	_test_eof14: cs = 14; goto _test_eof; 
+	_test_eof15: cs = 15; goto _test_eof; 
+	_test_eof16: cs = 16; goto _test_eof; 
+	_test_eof17: cs = 17; goto _test_eof; 
+	_test_eof18: cs = 18; goto _test_eof; 
+	_test_eof19: cs = 19; goto _test_eof; 
+	_test_eof20: cs = 20; goto _test_eof; 
+	_test_eof21: cs = 21; goto _test_eof; 
+	_test_eof42: cs = 42; goto _test_eof; 
+	_test_eof22: cs = 22; goto _test_eof; 
+	_test_eof23: cs = 23; goto _test_eof; 
+	_test_eof24: cs = 24; goto _test_eof; 
+	_test_eof25: cs = 25; goto _test_eof; 
+	_test_eof26: cs = 26; goto _test_eof; 
+	_test_eof27: cs = 27; goto _test_eof; 
+	_test_eof28: cs = 28; goto _test_eof; 
+	_test_eof29: cs = 29; goto _test_eof; 
+	_test_eof30: cs = 30; goto _test_eof; 
+	_test_eof31: cs = 31; goto _test_eof; 
+	_test_eof32: cs = 32; goto _test_eof; 
+	_test_eof33: cs = 33; goto _test_eof; 
+	_test_eof34: cs = 34; goto _test_eof; 
+	_test_eof35: cs = 35; goto _test_eof; 
+	_test_eof36: cs = 36; goto _test_eof; 
+	_test_eof37: cs = 37; goto _test_eof; 
+	_test_eof38: cs = 38; goto _test_eof; 
+	_test_eof39: cs = 39; goto _test_eof; 
+	_test_eof40: cs = 40; goto _test_eof; 
+	_test_eof41: cs = 41; goto _test_eof; 
 
+	_test_eof: {}
 	_out: {}
 	}
 
-/* #line 250 "tsip_parser_message.rl" */
+/* #line 253 "tsip_parser_message.rl" */
 
 	state->cs = cs;
 	state->p = p;
@@ -532,12 +966,30 @@ _again:
 	state->eof = eof;
 }
 
-static void tsip_message_parser_eob(tsip_ragel_state_t *state)
+static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *message)
 {
 	int cs = state->cs;
-	//const char *eof = state->eof;
+	const char *p = state->p;
+	const char *pe = state->pe;
+	const char *eof = state->eof;
 
+	if(message)
+	{
+		uint32_t clen = tsip_message_getContent_length(message);
+		if((p+clen) <pe && !message->Content)
+		{
+			message->Content = TSK_BUFFER_CREATE((p+1), clen);
+			p = (p+clen);
+		}
+		else
+		{
+			p = (pe-1);
+		}
+	}
 	//%%write eof;
 
 	state->cs = cs;
+	state->p = p;
+	state->pe = pe;
+	state->eof = eof;
 }

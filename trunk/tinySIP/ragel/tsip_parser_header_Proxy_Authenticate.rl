@@ -51,14 +51,12 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:TAG");
 		tag_start = p;
 	}
 	
 	action is_digest
 	{
 		#//FIXME: Only Digest is supported
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:IS_DIGEST");
 		hdr_Proxy_Authenticate->scheme = tsk_strdup("Digest");
 	}
 
@@ -66,47 +64,40 @@
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authenticate->realm);
 		tsk_strunquote(&hdr_Proxy_Authenticate->realm);
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_REALM");
 	}
 
 	action parse_domain
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authenticate->domain);
 		//tsk_strunquote(&hdr_Proxy_Authenticate->domain);
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_DOMAIN");
 	}
 
 	action parse_nonce
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authenticate->nonce);
 		tsk_strunquote(&hdr_Proxy_Authenticate->nonce);
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_NONCE");
 	}
 
 	action parse_opaque
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authenticate->opaque);
 		tsk_strunquote(&hdr_Proxy_Authenticate->opaque);
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_OPAQUE");
 	}
 
 	action parse_stale
 	{
 		hdr_Proxy_Authenticate->stale = tsk_strniequals(tag_start, "true", 4);
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_STALE");
 	}
 
 	action parse_algorithm
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authenticate->algorithm);
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_ALGORITHM");
 	}
 
 	action parse_qop
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authenticate->qop);
 		//tsk_strunquote(&hdr_Proxy_Authenticate->qop);
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:PARSE_QOP");
 	}
 
 	action parse_param
@@ -116,7 +107,6 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("PROXY_AUTHENTICATE:EOB");
 	}
 
 	#FIXME: Only Digest (MD5, AKAv1-MD5 and AKAv2-MD5) is supported

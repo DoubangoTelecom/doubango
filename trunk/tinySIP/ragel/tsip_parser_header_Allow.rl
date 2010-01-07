@@ -49,7 +49,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("ALLOW:TAG");
 		tag_start = p;
 	}
 	
@@ -60,7 +59,6 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("ALLOW:EOB");
 	}
 	
 	Allow = "Allow"i HCOLON ( Method>tag %parse_method ( COMMA Method>tag %parse_method )* )?;
