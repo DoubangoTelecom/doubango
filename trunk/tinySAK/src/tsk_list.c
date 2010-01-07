@@ -298,6 +298,7 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 					if(curr == list->tail)
 					{	/* Found at last position */
 						list->tail = prev;
+						list->tail->next = 0;
 					}
 					else
 					{

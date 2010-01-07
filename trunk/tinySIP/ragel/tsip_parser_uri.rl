@@ -40,13 +40,33 @@
 *	Ragel state machine.
 */
 %%{
+	machine tsip_machine_userinfo;
+
+	# Includes
+	include tsip_machine_utils "./tsip_machine_utils.rl";
+
+	action parse_toto
+	{
+		TSK_DEBUG_INFO("PARSE_TOTO [%s]", tag_start);
+	}
+
+	action parse_titi
+	{
+		TSK_DEBUG_INFO("PARSE_TITI [%s]", tag_start);
+	}
+
+}%%
+
+%%{
 	machine tsip_machine_parser_uri;
 
 	# Includes
 	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_userinfo;
 		
 	action tag
 	{
+		TSK_DEBUG_INFO("PARSER_URI::TAG");
 		tag_start = p;
 	}
 
@@ -62,32 +82,43 @@
 
 	action parse_scheme
 	{
-		PARSER_SET_STRING(uri->scheme);		
+		TSK_DEBUG_INFO("PARSER_URI::SCHEME");
+		PARSER_SET_STRING(uri->scheme);
 	}
 
 	action parse_user_name
 	{
+		TSK_DEBUG_INFO("PARSER_URI::USER_NAME");
 		PARSER_SET_STRING(uri->user_name);		
 	}
 
 	action parse_password
 	{
+		TSK_DEBUG_INFO("PARSER_URI::PASSWORD");
 		PARSER_SET_STRING(uri->password);	
 	}
 
 	action parse_host
 	{
+		TSK_DEBUG_INFO("PARSER_URI::HOST");
 		PARSER_SET_STRING(uri->host);	
 	}
 
 	action parse_port
 	{
+		TSK_DEBUG_INFO("PARSER_URI::PORT");
 		PARSER_SET_INTEGER(uri->port);	
 	}
 
 	action parse_param
 	{
+		TSK_DEBUG_INFO("PARSER_URI::PARAM");
 		PARSER_ADD_PARAM(uri->params);
+	}
+
+	action has_arobase
+	{
+		tsk_strcontains(tag_start, "@") 
 	}
 
 	action eob
@@ -104,13 +135,88 @@
 	my_userinfo = ( user>tag %parse_user_name | telephone_subscriber ) :> ( ":" password>tag %parse_password )? "@";
 	
 	UNKNOWN_URI = (scheme)>tag %parse_scheme HCOLON <:any*;
-	SIP_URI = ("sip:"i %is_sip | "sips:"i %is_sips) my_userinfo? my_hostport uri_parameters headers?;
-	TEL_URI = ("tel:"i >is_tel) telephone_subscriber;
+	#SIP_URI = ("sip:"i %is_sip | "sips:"i %is_sips) (((my_userinfo my_hostport) when has_arobase) | (my_hostport)) uri_parameters headers?;
+	#SIP_URI = ("sip:"i %is_sip | "sips:"i %is_sips) my_userinfo? my_hostport uri_parameters headers?;
+
+
+	SIP_URI := |*
+				("sip:"i %is_sip | "sips:"i %is_sips) => parse_scheme;
+
+				 *|;
+
+
+
+	#SIP_URI = 
+	#	("sip:"i %is_sip | "sips:"i %is_sips)
+	#	((any when has_arobase)*) %parse_toto | any* %parse_titi
+	#	uri_parameters headers?;
+
+	#SIP_URI = ( "sip:"i %is_sip | "sips:"i %is_sips ) > 0 >tag
+	#	( ((any when has_arobase)*) %parse_toto | (any*) %parse_titi ) >1
+	#	( uri_parameters headers? ) >2;
+
+	#SIP_URI = 
+	#	start:		(
+	#					( "sip:"i %is_sip | "sips:"i %is_sips ) >tag %tag -> check
+	#				),
+	#	check:		(
+	#					( (any* when has_arobase) )%parse_user_name -> usrinfo | (any*)-> hport
+	#				),
+	#	usrinfo:	(
+	#					(any)* %parse_toto-> hport
+	#				),
+	#	hport:		(
+	#					(any)* -> final
+	#				);
 	
-	URI =  ((SIP_URI)>1 | (TEL_URI)>1 | (UNKNOWN_URI)>0);
+	#TEL_URI = ("tel:"i %is_tel) telephone_subscriber;
+	
+	#URI =  SIP_URI;
+	#URI =  ((SIP_URI)>1 | (TEL_URI)>1 | (UNKNOWN_URI)>0);
 	
 	# Entry point
-	main := URI;
+	#main := ( 
+	#		  ("sip:"i %is_sip | "sips:"i %is_sips) @ { fcall SIP_URI; } 
+	#	  );
+
+	sip_usrinfo		:= ( ( user>tag %parse_user_name ) :> ( ":" password>tag %parse_password )? :>> '@' ) @{ fgoto main; };
+	main			:= |*
+							("sip:"i %is_sip | "sips:"i %is_sips) > 100
+							{
+								if(tsk_strcontains(te, "@"))
+								{
+									fgoto sip_usrinfo;
+								}
+							};
+							
+							( (IPv6reference >is_ipv6)>89 | (IPv4address >is_ipv4)>88 | (hostname >is_hostname)>87 ) > 90
+							{
+								SCANNER_SET_STRING(uri->host);
+							};							
+
+							(":" port) >80
+							{
+								ts++;
+								SCANNER_SET_INTEGER(uri->port);
+							};
+							
+							( ";" (pname ( "=" pvalue )?) ) > 70
+							{
+								ts++;
+								SACANNER_ADD_PARAM(uri->params);
+							};
+						
+							(any*) > 0
+							{
+								TSK_DEBUG_INFO("OOOOOOOOOK* \np=%s\n\nts=%s\nte=%s\n", p,ts, te);
+								//fgoto sip_hostport;
+							};
+
+						
+
+					*|;
+
+	#main := ({ fcall SIP_URI; });
 
 }%%
 
@@ -133,6 +239,10 @@ tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
+
+	const char *ts = 0, *te = 0;
+	int act =0;
+
 	tsip_uri_t *uri = TSIP_URI_CREATE(uri_unknown);
 	
 	const char *tag_start = 0;

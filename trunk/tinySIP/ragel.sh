@@ -5,13 +5,13 @@
 export OPTIONS="-C -L -G2"
 
 # SIP/SIPS/TEL URI parser
-#ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_uri.c tsip_parser_uri.rl
+ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_uri.c tsip_parser_uri.rl
 
 # SIP message (both requests an responses) parser.
-ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_message.c tsip_parser_message.rl
+#ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_message.c tsip_parser_message.rl
 
 # SIP headers parser
-ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_header.c tsip_parser_header.rl
+#ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_header.c tsip_parser_header.rl
 
 
 # ==Allow

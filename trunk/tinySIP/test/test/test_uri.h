@@ -27,9 +27,9 @@
 const char* uris[] = 
 {
 	//== SIP:
-	/*"sip:alice@atlanta.com;p1=23",
+	"sip:alice@atlanta.com;p1=23",
 	"sip:*666*@atlanta.com",
-	"sip:#66#@atlanta.com",*/
+	"sip:#66#@atlanta.com",
 	"sip:alice:secretword@atlanta.com",
 	"sip:alice:secretword@atlanta.com:65535;transport=tcp",
     "sip:+1-212-555-1212:1234@gateway.com;user=phone",

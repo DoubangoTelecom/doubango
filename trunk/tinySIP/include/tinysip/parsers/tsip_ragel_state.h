@@ -31,45 +31,87 @@
 #define TINYSIP_RAGEL_STATE_H
 
 #include "tinysip_config.h"
+#include "tsk_params.h"
 
 TSIP_BEGIN_DECLS
+
+#define SCANNER_SET_STRING(string) \
+	if(!string) \
+	{ \
+		int len = (int)(te  - ts);  \
+		if(len >0) \
+		{ \
+			string = tsk_calloc(len+1, sizeof(char)), memcpy(string, ts, len); \
+		} \
+	}
 
 #define PARSER_SET_STRING(string) \
 	if(!string) \
 	{ \
 		int len = (int)(p  - tag_start);  \
-		if(string)free(string); \
 		string = tsk_calloc(len+1, sizeof(char)), memcpy(string, tag_start, len); \
 	}
 
-#define PARSER_SET_INTEGER(integer) \
-	int len = (int)(p  - tag_start); \
-	if(len>0) \
+#define SCANNER_SET_INTEGER(integer) \
 	{ \
-		char* tmp = tsk_calloc(len+1, sizeof(char)); \
-		memcpy(tmp, tag_start, len); \
-		integer = atoi(tmp); \
-		free(tmp); \
+		int len = (int)(te  - ts); \
+		if(len>=0) \
+		{ \
+			char* tmp = tsk_calloc(len+1, sizeof(char)); \
+			memcpy(tmp, ts, len); \
+			integer = atoi(tmp); \
+			free(tmp); \
+		} \
+	}
+
+#define PARSER_SET_INTEGER(integer) \
+	{ \
+		int len = (int)(p  - tag_start); \
+		if(len>0) \
+		{ \
+			char* tmp = tsk_calloc(len+1, sizeof(char)); \
+			memcpy(tmp, tag_start, len); \
+			integer = atoi(tmp); \
+			free(tmp); \
+		} \
 	}
 
 #define PARSER_ADD_PARAM(dest) \
-	size_t len = (size_t)(p  - tag_start); \
-	tsk_param_t *param = tsk_params_parse_param(tag_start, len); \
-	if(param) \
 	{ \
-		if(!dest) dest = TSK_LIST_CREATE(); \
-		tsk_list_push_back_data(dest, ((void**) &param)); \
+		size_t len = (size_t)(p  - tag_start); \
+		tsk_param_t *param = tsk_params_parse_param(tag_start, len); \
+		if(param) \
+		{ \
+			if(!dest) dest = TSK_LIST_CREATE(); \
+			tsk_list_push_back_data(dest, ((void**) &param)); \
+		} \
+	}
+
+#define SACANNER_ADD_PARAM(dest) \
+	{ \
+		int len = (int)(te  - ts); \
+		if(len >0) \
+		{ \
+			tsk_param_t *param = tsk_params_parse_param(ts, len); \
+			if(param) \
+			{ \
+				if(!dest) dest = TSK_LIST_CREATE(); \
+				tsk_list_push_back_data(dest, ((void**) &param)); \
+			} \
+		} \
 	}
 
 #define PARSER_ADD_STRING(dest) \
-	size_t len = (size_t)(p  - tag_start); \
-	tsk_string_t *string = TSK_STRING_CREATE(0); \
-	string->value = tsk_calloc(len+1, sizeof(char)), memcpy(string->value, tag_start, len); \
-	if(!dest)  \
-	{  \
-		dest = TSK_LIST_CREATE(); \
-	} \
-	tsk_list_push_back_data(dest, ((void**) &string));
+	{ \
+		size_t len = (size_t)(p  - tag_start); \
+		tsk_string_t *string = TSK_STRING_CREATE(0); \
+		string->value = tsk_calloc(len+1, sizeof(char)), memcpy(string->value, tag_start, len); \
+		if(!dest)  \
+		{  \
+			dest = TSK_LIST_CREATE(); \
+		} \
+		tsk_list_push_back_data(dest, ((void**) &string)); \
+	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	tsip_parser_s
