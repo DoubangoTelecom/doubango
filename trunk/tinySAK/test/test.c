@@ -38,7 +38,7 @@
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
 #define RUN_TEST_URL				0
-#define RUN_TEST_MUTEX				1
+#define RUN_TEST_MUTEX				0
 #define RUN_TEST_CONDWAIT			0
 #define RUN_TEST_SEMAPHORE			0
 #define RUN_TEST_SAFEOBJECT			0
@@ -49,7 +49,7 @@
 #define RUN_TEST_BUFFER				0
 #define RUN_TEST_MD5				0
 #define RUN_TEST_SHA1				0
-#define RUN_TEST_BASE64				0
+#define RUN_TEST_BASE64				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
