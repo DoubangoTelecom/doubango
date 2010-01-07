@@ -46,7 +46,7 @@
 int send_register(tsip_dialog_register_t *self);
 
 /**
- * @fn	int tsip_dialog_register_event_callback(const void *arg, tsip_dialog_event_type_t type,
+ * @fn	int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip_dialog_event_type_t type,
  * 		const tsip_message_t *msg)
  *
  * @brief	Callback function called to alert the dialog for new events from the transaction/transport layers.
@@ -54,16 +54,14 @@ int send_register(tsip_dialog_register_t *self);
  * @author	Mamadou
  * @date	1/4/2010
  *
- * @param [in,out]	arg	Opaque data. Shall contain a reference to the dialog itself.
+ * @param [in,out]	self	A reference to the dialog.
  * @param	type		The event type. 
  * @param [in,out]	msg	The incoming SIP/IMS message. 
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int tsip_dialog_register_event_callback(const void *arg, tsip_dialog_event_type_t type, const tsip_message_t *msg)
+int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip_dialog_event_type_t type, const tsip_message_t *msg)
 {
-	const tsip_dialog_register_t *self = arg;
-
 	TSIP_DIALOG_SYNC_BEGIN(self);
 
 	switch(type)
@@ -350,7 +348,7 @@ void tsip_dialog_register_Any_2_Terminated_X_transportError(tsip_dialog_register
 int send_register(tsip_dialog_register_t *self)
 {
 	tsip_request_t *request;
-	int ret;
+	int ret = -1;
 
 	request = tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER");
 	ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);

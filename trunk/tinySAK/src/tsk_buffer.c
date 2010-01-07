@@ -148,7 +148,7 @@ static void* tsk_buffer_create(void * self, va_list * app)
 	
 	if(data && size)
 	{
-		buffer->data = tsk_calloc((size+1), sizeof(char*));
+		buffer->data = tsk_calloc((size+1), sizeof(uint8_t));
 		memcpy(buffer->data, data, size);
 		buffer->size = size;
 	}

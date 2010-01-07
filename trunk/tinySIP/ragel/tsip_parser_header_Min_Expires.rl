@@ -48,19 +48,16 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("MIN_EXPIRES:TAG");
 		tag_start = p;
 	}
 	
 	action parse_value
 	{
 		PARSER_SET_INTEGER(hdr_minE->value);
-		TSK_DEBUG_INFO("MIN_EXPIRES:PARSE_VALUE");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("MIN_EXPIRES:EOB");
 	}
 
 	Min_Expires = "Min-Expires"i HCOLON (delta_seconds)>tag %parse_value;
@@ -141,6 +138,7 @@ static void* tsip_header_Min_Expires_destroy(void *self)
 	tsip_header_Min_Expires_t *Min_Expires = self;
 	if(Min_Expires)
 	{
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Min_Expires));
 	}
 	else TSK_DEBUG_ERROR("Null Min_Expires header.");
 

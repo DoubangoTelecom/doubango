@@ -47,7 +47,6 @@
 		
 	action tag
 	{
-		TSK_DEBUG_INFO("URI:TAG");
 		tag_start = p;
 	}
 
@@ -64,42 +63,35 @@
 	action parse_scheme
 	{
 		PARSER_SET_STRING(uri->scheme);		
-		TSK_DEBUG_INFO("URI:SCHEME");
 	}
 
 	action parse_user_name
 	{
 		PARSER_SET_STRING(uri->user_name);		
-		TSK_DEBUG_INFO("URI:USER_NAME");
 	}
 
 	action parse_password
 	{
 		PARSER_SET_STRING(uri->password);	
-		TSK_DEBUG_INFO("URI:PARSE_PASSWORD");
 	}
 
 	action parse_host
 	{
 		PARSER_SET_STRING(uri->host);	
-		TSK_DEBUG_INFO("URI:PARSE_HOST");
 	}
 
 	action parse_port
 	{
 		PARSER_SET_INTEGER(uri->port);	
-		TSK_DEBUG_INFO("URI:PARSE_PORT");
 	}
 
 	action parse_param
 	{
 		PARSER_ADD_PARAM(uri->params);
-		TSK_DEBUG_INFO("URI:PARSE_PARAM");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("URI:EOB");
 	}
 
 	#uri_parameter = transport_param | user_param | method_param | ttl_param | maddr_param | lr_param | compression_param | target_param | cause_param | orig | gr_param | other_param;
@@ -111,11 +103,11 @@
 	
 	my_userinfo = ( user>tag %parse_user_name | telephone_subscriber ) :> ( ":" password>tag %parse_password )? "@";
 	
-	UNKNOWN_URI = (scheme & !("sip"i | "sips"i | "tel"i))>tag %parse_scheme HCOLON <:any*;
+	UNKNOWN_URI = (scheme)>tag %parse_scheme HCOLON <:any*;
 	SIP_URI = ("sip:"i %is_sip | "sips:"i %is_sips) my_userinfo? my_hostport uri_parameters headers?;
 	TEL_URI = ("tel:"i >is_tel) telephone_subscriber;
 	
-	URI =  (SIP_URI | TEL_URI | UNKNOWN_URI);
+	URI =  ((SIP_URI)>1 | (TEL_URI)>1 | (UNKNOWN_URI)>0);
 	
 	# Entry point
 	main := URI;

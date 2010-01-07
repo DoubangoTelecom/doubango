@@ -51,7 +51,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("ALLOW_EVENTS:TAG");
 		tag_start = p;
 	}
 
@@ -62,7 +61,6 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("ALLOW_EVENTS:EOB");
 	}
 	
 	event_package = token_nodot;

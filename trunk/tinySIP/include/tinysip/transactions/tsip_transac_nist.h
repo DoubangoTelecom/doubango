@@ -39,27 +39,38 @@
 
 TSIP_BEGIN_DECLS
 
+#define TSIP_TRANSAC_NIST_CREATE(stack, reliable, cseq_value, cseq_method, callid)		tsk_object_new(tsip_transac_nist_def_t, (const tsip_stack_handle_t *)stack, (unsigned)reliable, (int32_t)cseq_value, (const char*)cseq_method, (const char*)callid)
+#define TSIP_TRANSAC_NIST_SAFE_FREE(self)												tsk_object_unref(self), self = 0
+
+#define TSIP_TRANSAC_NIST(self)															((tsip_transac_nist_t*)(self))
+
 typedef struct tsip_transac_nist
 {
 	TSIP_DECLARE_TRANSAC;
 
 	struct tsip_transac_nistContext _fsm; /**< The state machine context. */
+
+	tsip_response_t* response;
+	tsip_timer_t timerJ;
 }
 tsip_transac_nist_t;
 
 void tsip_transac_nist_init(tsip_transac_nist_t *self);
 int tsip_transac_nist_start(tsip_transac_nist_t *self);
-void tsip_transac_nist_OnTerminated(tsip_transac_nist_t *self);
 
-void tsip_transac_nist_Trying_2_Proceeding_X_send_1xx(tsip_transac_nist_t *self, const tsip_message_t* msg);
-void tsip_transac_nist_Trying_2_Completed_X_send_200_to_699(tsip_transac_nist_t *self, const tsip_message_t* msg);
-void tsip_transac_nist_Proceeding_2_Proceeding_X_send_1xx(tsip_transac_nist_t *self, const tsip_message_t* msg);
-void tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(tsip_transac_nist_t *self, const tsip_message_t* msg);
-void tsip_transac_nist_Proceeding_2_Proceeding_X_send_response(tsip_transac_nist_t *self, const tsip_message_t* msg);
-void tsip_transac_nist_Completed_2_Completed_X_send_response(tsip_transac_nist_t *self, const tsip_message_t* msg);
+void tsip_transac_nist_Started_2_Trying_X_recv_request(tsip_transac_nist_t *self, const tsip_request_t* request);
+void tsip_transac_nist_Trying_2_Proceeding_X_send_1xx(tsip_transac_nist_t *self, const tsip_request_t* request);
+void tsip_transac_nist_Trying_2_Completed_X_send_200_to_699(tsip_transac_nist_t *self, const tsip_request_t* request);
+void tsip_transac_nist_Proceeding_2_Proceeding_X_send_1xx(tsip_transac_nist_t *self, const tsip_request_t* request);
+void tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(tsip_transac_nist_t *self, const tsip_request_t* request);
+void tsip_transac_nist_Proceeding_2_Proceeding_X_recv_request(tsip_transac_nist_t *self, const tsip_request_t* request);
+void tsip_transac_nist_Completed_2_Completed_X_recv_request(tsip_transac_nist_t *self, const tsip_request_t* request);
 void tsip_transac_nist_Completed_2_Terminated_X_tirmerJ(tsip_transac_nist_t *self);
 void tsip_transac_nist_Any_2_Terminated_X_transportError(tsip_transac_nist_t *self);
 
+void tsip_transac_nist_OnTerminated(tsip_transac_nist_t *self);
+
+TINYSIP_GEXTERN const void *tsip_transac_nist_def_t;
 
 TSIP_END_DECLS
 

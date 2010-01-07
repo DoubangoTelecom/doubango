@@ -95,6 +95,7 @@ int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr)
 			ADD_HEADER(Call_ID, Call_ID);
 			ADD_HEADER(CSeq, CSeq);
 			ADD_HEADER(Expires, Expires);
+			ADD_HEADER(Content_Type, Content_Type);
 			ADD_HEADER(Content_Length, Content_Length);
 
 			default: break;
@@ -274,7 +275,9 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	if(self->CSeq) tsip_header_tostring(TSIP_HEADER(self->CSeq), output);
 	/* Expires */
 	if(self->Expires) tsip_header_tostring(TSIP_HEADER(self->Expires), output);
-	/* Content Length*/
+	/* Content-Type */
+	if(self->Content_Type) tsip_header_tostring(TSIP_HEADER(self->Content_Type), output);
+	/* Content-Length*/
 	if(self->Content_Length) tsip_header_tostring(TSIP_HEADER(self->Content_Length), output);
 
 	/* All other headers */
@@ -290,12 +293,14 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	/* EMPTY LINE */
 	tsk_buffer_append(output, "\r\n", 2);
 
+	/* CONTENT */
+	if(TSIP_MESSAGE_HAS_CONTENT(self))
+	{
+		tsk_buffer_append(output, TSK_BUFFER_TO_STRING(self->Content), TSK_BUFFER_SIZE(self->Content));
+	}
+
 	return 0;
 }
-
-/*========================================================
-* Request
-*/
 
 tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq)
 {
@@ -333,6 +338,21 @@ tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_u
 	return request;
 }
 
+tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase, const tsip_request_t *request)
+{
+	tsip_response_t *response = 0;
+
+	if(request)
+	{
+		response = TSIP_RESPONSE_CREATE(request, status_code, reason_phrase);
+		TSIP_MESSAGE_ADD_HEADER(response, TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT)); /* To be compliant with OMA SIMPLE IM v1.0*/
+		/*
+			Copy other headers
+		*/
+	}
+
+	return response;
+}
 
 
 
@@ -354,6 +374,8 @@ static void* tsip_message_create(void *self, va_list * app)
 	if(message)
 	{
 		message->type = va_arg(*app, tsip_message_type_t); 
+		message->headers = TSK_LIST_CREATE();
+
 		switch(message->type)
 		{
 		case tsip_unknown:
@@ -378,14 +400,47 @@ static void* tsip_message_create(void *self, va_list * app)
 #endif
 				message->line_status.reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
 				
-				/* TODO: copy headers */
+				/*
+				RFC 3261 - 8.2.6.2 Headers and Tags
 
+				The From field of the response MUST equal the From header field of
+				the request.  The Call-ID header field of the response MUST equal the
+				Call-ID header field of the request.  The CSeq header field of the
+				response MUST equal the CSeq field of the request.  The Via header
+				field values in the response MUST equal the Via header field values
+				in the request and MUST maintain the same ordering.
 
+				If a request contained a To tag in the request, the To header field
+				in the response MUST equal that of the request.  However, if the To
+				header field in the request did not contain a tag, the URI in the To
+				header field in the response MUST equal the URI in the To header
+				field; additionally, the UAS MUST add a tag to the To header field in
+				the response (with the exception of the 100 (Trying) response, in
+				which a tag MAY be present).  This serves to identify the UAS that is
+				responding, possibly resulting in a component of a dialog ID.  The
+				same tag MUST be used for all responses to that request, both final
+				and provisional (again excepting the 100 (Trying)).  Procedures for
+				the generation of tags are defined in Section 19.3.
+				*/
+				message->From = tsk_object_ref((void*)request->From);
+				message->Call_ID = tsk_object_ref((void*)request->Call_ID);
+				message->CSeq = tsk_object_ref((void*)request->CSeq);
+				message->firstVia = tsk_object_ref((void*)request->firstVia);
+				/* All other VIAs */
+				{
+					size_t index = 0;
+					const tsip_header_t * via;
+					while((via = tsip_message_get_headerAt(request, tsip_htype_Via, index++)))
+					{
+						tsip_message_add_header(message, via);
+					}
+				}
+				message->To = tsk_object_ref((void*)request->To);
+				
+				// FIXME: What about record routes?
 				break;
 			}
 		}
-
-		message->headers = TSK_LIST_CREATE();
 	}
 	else
 	{
@@ -416,12 +471,14 @@ static void* tsip_message_destroy(void *self)
 		tsk_object_unref(message->Call_ID);
 		tsk_object_unref(message->Contact);
 		tsk_object_unref(message->Content_Length);
+		tsk_object_unref(message->Content_Type);
 		tsk_object_unref(message->CSeq);
 		tsk_object_unref(message->firstVia);
 		tsk_object_unref(message->From);
 		tsk_object_unref(message->Expires);
 		tsk_object_unref(message->To);
 		
+		TSK_BUFFER_SAFE_FREE(message->Content);
 
 		TSK_LIST_SAFE_FREE(message->headers);
 	}

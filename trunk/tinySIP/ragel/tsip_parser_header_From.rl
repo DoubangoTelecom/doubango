@@ -48,7 +48,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("FROM:TAG");
 		tag_start = p;
 	}
 	
@@ -75,7 +74,6 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("FROM:EOB");
 	}
 
 	URI = (scheme HCOLON any+)>tag %parse_uri;

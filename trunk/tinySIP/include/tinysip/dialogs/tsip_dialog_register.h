@@ -53,7 +53,7 @@ typedef struct tsip_dialog_register
 }
 tsip_dialog_register_t;
 
-void tsip_dialog_register_init(tsip_dialog_register_t *self);
+//void tsip_dialog_register_init(tsip_dialog_register_t *self);
 int tsip_dialog_register_start(tsip_dialog_register_t *self);
 
 void tsip_dialog_register_Started_2_Trying_X_send(tsip_dialog_register_t *self);

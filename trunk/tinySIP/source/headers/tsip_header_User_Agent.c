@@ -45,7 +45,7 @@
 *	Ragel state machine.
 */
 
-/* #line 73 "tsip_parser_header_User_Agent.rl" */
+/* #line 70 "tsip_parser_header_User_Agent.rl" */
 
 
 int tsip_header_User_Agent_tostring(const void* header, tsk_buffer_t* output)
@@ -75,59 +75,6 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 
 	
 /* #line 78 "../source/headers/tsip_header_User_Agent.c" */
-static const char _tsip_machine_parser_header_User_Agent_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 2, 
-	0, 1
-};
-
-static const char _tsip_machine_parser_header_User_Agent_key_offsets[] = {
-	0, 0, 2, 4, 6, 8, 9, 11, 
-	13, 15, 17, 19, 22, 25, 26, 27
-};
-
-static const char _tsip_machine_parser_header_User_Agent_trans_keys[] = {
-	85, 117, 83, 115, 69, 101, 82, 114, 
-	45, 65, 97, 71, 103, 69, 101, 78, 
-	110, 84, 116, 9, 32, 58, 9, 13, 
-	32, 13, 10, 0
-};
-
-static const char _tsip_machine_parser_header_User_Agent_single_lengths[] = {
-	0, 2, 2, 2, 2, 1, 2, 2, 
-	2, 2, 2, 3, 3, 1, 1, 0
-};
-
-static const char _tsip_machine_parser_header_User_Agent_range_lengths[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0
-};
-
-static const char _tsip_machine_parser_header_User_Agent_index_offsets[] = {
-	0, 0, 3, 6, 9, 12, 14, 17, 
-	20, 23, 26, 29, 33, 37, 39, 41
-};
-
-static const char _tsip_machine_parser_header_User_Agent_indicies[] = {
-	0, 0, 1, 2, 2, 1, 3, 3, 
-	1, 4, 4, 1, 5, 1, 6, 6, 
-	1, 7, 7, 1, 8, 8, 1, 9, 
-	9, 1, 10, 10, 1, 10, 10, 11, 
-	1, 13, 14, 13, 12, 16, 15, 17, 
-	1, 1, 0
-};
-
-static const char _tsip_machine_parser_header_User_Agent_trans_targs[] = {
-	2, 0, 3, 4, 5, 6, 7, 8, 
-	9, 10, 11, 12, 13, 12, 14, 13, 
-	14, 15
-};
-
-static const char _tsip_machine_parser_header_User_Agent_trans_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 1, 1, 7, 0, 
-	3, 5
-};
-
 static const int tsip_machine_parser_header_User_Agent_start = 1;
 static const int tsip_machine_parser_header_User_Agent_first_final = 15;
 static const int tsip_machine_parser_header_User_Agent_error = 0;
@@ -135,128 +82,211 @@ static const int tsip_machine_parser_header_User_Agent_error = 0;
 static const int tsip_machine_parser_header_User_Agent_en_main = 1;
 
 
-/* #line 101 "tsip_parser_header_User_Agent.rl" */
+/* #line 98 "tsip_parser_header_User_Agent.rl" */
 	
-/* #line 141 "../source/headers/tsip_header_User_Agent.c" */
+/* #line 88 "../source/headers/tsip_header_User_Agent.c" */
 	{
 	cs = tsip_machine_parser_header_User_Agent_start;
 	}
 
-/* #line 102 "tsip_parser_header_User_Agent.rl" */
+/* #line 99 "tsip_parser_header_User_Agent.rl" */
 	
-/* #line 148 "../source/headers/tsip_header_User_Agent.c" */
+/* #line 95 "../source/headers/tsip_header_User_Agent.c" */
 	{
-	int _klen;
-	unsigned int _trans;
-	const char *_acts;
-	unsigned int _nacts;
-	const char *_keys;
-
 	if ( p == pe )
 		goto _test_eof;
-	if ( cs == 0 )
-		goto _out;
-_resume:
-	_keys = _tsip_machine_parser_header_User_Agent_trans_keys + _tsip_machine_parser_header_User_Agent_key_offsets[cs];
-	_trans = _tsip_machine_parser_header_User_Agent_index_offsets[cs];
-
-	_klen = _tsip_machine_parser_header_User_Agent_single_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + ((_upper-_lower) >> 1);
-			if ( (*p) < *_mid )
-				_upper = _mid - 1;
-			else if ( (*p) > *_mid )
-				_lower = _mid + 1;
-			else {
-				_trans += (_mid - _keys);
-				goto _match;
-			}
-		}
-		_keys += _klen;
-		_trans += _klen;
-	}
-
-	_klen = _tsip_machine_parser_header_User_Agent_range_lengths[cs];
-	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
-		while (1) {
-			if ( _upper < _lower )
-				break;
-
-			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
-			if ( (*p) < _mid[0] )
-				_upper = _mid - 2;
-			else if ( (*p) > _mid[1] )
-				_lower = _mid + 2;
-			else {
-				_trans += ((_mid - _keys)>>1);
-				goto _match;
-			}
-		}
-		_trans += _klen;
-	}
-
-_match:
-	_trans = _tsip_machine_parser_header_User_Agent_indicies[_trans];
-	cs = _tsip_machine_parser_header_User_Agent_trans_targs[_trans];
-
-	if ( _tsip_machine_parser_header_User_Agent_trans_actions[_trans] == 0 )
-		goto _again;
-
-	_acts = _tsip_machine_parser_header_User_Agent_actions + _tsip_machine_parser_header_User_Agent_trans_actions[_trans];
-	_nacts = (unsigned int) *_acts++;
-	while ( _nacts-- > 0 )
+	switch ( cs )
 	{
-		switch ( *_acts++ )
-		{
-	case 0:
+case 1:
+	switch( (*p) ) {
+		case 85: goto st2;
+		case 117: goto st2;
+	}
+	goto st0;
+st0:
+cs = 0;
+	goto _out;
+st2:
+	if ( ++p == pe )
+		goto _test_eof2;
+case 2:
+	switch( (*p) ) {
+		case 83: goto st3;
+		case 115: goto st3;
+	}
+	goto st0;
+st3:
+	if ( ++p == pe )
+		goto _test_eof3;
+case 3:
+	switch( (*p) ) {
+		case 69: goto st4;
+		case 101: goto st4;
+	}
+	goto st0;
+st4:
+	if ( ++p == pe )
+		goto _test_eof4;
+case 4:
+	switch( (*p) ) {
+		case 82: goto st5;
+		case 114: goto st5;
+	}
+	goto st0;
+st5:
+	if ( ++p == pe )
+		goto _test_eof5;
+case 5:
+	if ( (*p) == 45 )
+		goto st6;
+	goto st0;
+st6:
+	if ( ++p == pe )
+		goto _test_eof6;
+case 6:
+	switch( (*p) ) {
+		case 65: goto st7;
+		case 97: goto st7;
+	}
+	goto st0;
+st7:
+	if ( ++p == pe )
+		goto _test_eof7;
+case 7:
+	switch( (*p) ) {
+		case 71: goto st8;
+		case 103: goto st8;
+	}
+	goto st0;
+st8:
+	if ( ++p == pe )
+		goto _test_eof8;
+case 8:
+	switch( (*p) ) {
+		case 69: goto st9;
+		case 101: goto st9;
+	}
+	goto st0;
+st9:
+	if ( ++p == pe )
+		goto _test_eof9;
+case 9:
+	switch( (*p) ) {
+		case 78: goto st10;
+		case 110: goto st10;
+	}
+	goto st0;
+st10:
+	if ( ++p == pe )
+		goto _test_eof10;
+case 10:
+	switch( (*p) ) {
+		case 84: goto st11;
+		case 116: goto st11;
+	}
+	goto st0;
+st11:
+	if ( ++p == pe )
+		goto _test_eof11;
+case 11:
+	switch( (*p) ) {
+		case 9: goto st11;
+		case 32: goto st11;
+		case 58: goto st12;
+	}
+	goto st0;
+tr13:
 /* #line 52 "tsip_parser_header_User_Agent.rl" */
 	{
-		TSK_DEBUG_INFO("USER_AGENT:TAG");
 		tag_start = p;
 	}
-	break;
-	case 1:
-/* #line 58 "tsip_parser_header_User_Agent.rl" */
+	goto st12;
+st12:
+	if ( ++p == pe )
+		goto _test_eof12;
+case 12:
+/* #line 209 "../source/headers/tsip_header_User_Agent.c" */
+	switch( (*p) ) {
+		case 9: goto tr13;
+		case 13: goto tr14;
+		case 32: goto tr13;
+	}
+	goto tr12;
+tr12:
+/* #line 52 "tsip_parser_header_User_Agent.rl" */
+	{
+		tag_start = p;
+	}
+	goto st13;
+st13:
+	if ( ++p == pe )
+		goto _test_eof13;
+case 13:
+/* #line 226 "../source/headers/tsip_header_User_Agent.c" */
+	if ( (*p) == 13 )
+		goto tr16;
+	goto st13;
+tr14:
+/* #line 52 "tsip_parser_header_User_Agent.rl" */
+	{
+		tag_start = p;
+	}
+/* #line 57 "tsip_parser_header_User_Agent.rl" */
 	{
 		PARSER_SET_STRING(hdr_user_agent->value);
-		TSK_DEBUG_INFO("USER_AGENT:parse_user_agent");
 	}
-	break;
-	case 2:
-/* #line 64 "tsip_parser_header_User_Agent.rl" */
+	goto st14;
+tr16:
+/* #line 57 "tsip_parser_header_User_Agent.rl" */
 	{
-		TSK_DEBUG_INFO("USER_AGENT:EOB");
+		PARSER_SET_STRING(hdr_user_agent->value);
 	}
-	break;
-/* #line 242 "../source/headers/tsip_header_User_Agent.c" */
-		}
+	goto st14;
+st14:
+	if ( ++p == pe )
+		goto _test_eof14;
+case 14:
+/* #line 250 "../source/headers/tsip_header_User_Agent.c" */
+	if ( (*p) == 10 )
+		goto tr17;
+	goto st0;
+tr17:
+/* #line 62 "tsip_parser_header_User_Agent.rl" */
+	{
 	}
+	goto st15;
+st15:
+	if ( ++p == pe )
+		goto _test_eof15;
+case 15:
+/* #line 263 "../source/headers/tsip_header_User_Agent.c" */
+	goto st0;
+	}
+	_test_eof2: cs = 2; goto _test_eof; 
+	_test_eof3: cs = 3; goto _test_eof; 
+	_test_eof4: cs = 4; goto _test_eof; 
+	_test_eof5: cs = 5; goto _test_eof; 
+	_test_eof6: cs = 6; goto _test_eof; 
+	_test_eof7: cs = 7; goto _test_eof; 
+	_test_eof8: cs = 8; goto _test_eof; 
+	_test_eof9: cs = 9; goto _test_eof; 
+	_test_eof10: cs = 10; goto _test_eof; 
+	_test_eof11: cs = 11; goto _test_eof; 
+	_test_eof12: cs = 12; goto _test_eof; 
+	_test_eof13: cs = 13; goto _test_eof; 
+	_test_eof14: cs = 14; goto _test_eof; 
+	_test_eof15: cs = 15; goto _test_eof; 
 
-_again:
-	if ( cs == 0 )
-		goto _out;
-	if ( ++p != pe )
-		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
 
-/* #line 103 "tsip_parser_header_User_Agent.rl" */
+/* #line 100 "tsip_parser_header_User_Agent.rl" */
 	
 	if( cs < 
-/* #line 258 "../source/headers/tsip_header_User_Agent.c" */
+/* #line 288 "../source/headers/tsip_header_User_Agent.c" */
 15
-/* #line 104 "tsip_parser_header_User_Agent.rl" */
+/* #line 101 "tsip_parser_header_User_Agent.rl" */
  )
 	{
 		TSIP_HEADER_USER_AGENT_SAFE_FREE(hdr_user_agent);

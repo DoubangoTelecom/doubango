@@ -21,8 +21,8 @@
 *
 */
 
-/**@file tsip_transac_nict.sm
- * @brief SIP Non-INVITE Client Transaction as per RFC 3261 subcaluse 17.1.2.
+/**@file tsip_dialog_message.sm.
+ * @brief SIP dialog MESSAGE.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -31,116 +31,80 @@
 %}
 
 
-%class tsip_transac_nict
-%header "tinysip/transactions/tsip_transac_nict.h"
+%class tsip_dialog_message
+%header "tinysip/dialogs/tsip_dialog_message.h"
 %header "tinysip/tsip_message.h"
-%start tsip_transac_nict::Started
+%start tsip_dialog_message::Started
+%include "tsk_debug.h"
 
-%map tsip_transac_nict
+%map tsip_dialog_message
 %%
 
 //------------------------
 //------------------------
 Started
-	Entry
-	{
-		
-	}
 {
-	sm_send() 
-		Trying 
+	sm_send(msg: const tsip_message_t*) 
+		Sending 
 		{
-			Started_2_Trying_X_send();
+			Started_2_Sending_X_send(msg);
+		}
+	sm_receive(msg: const tsip_message_t*)
+		Receiving
+		{
+			Started_2_Receiving_X_recv(msg);
 		}
 }
 
 //------------------------
 //------------------------
-Trying
-	Entry
-	{
-	}
+Sending
 {	
-	sm_timerE()
+	sm_1xx(msg: const tsip_message_t*)
 		nil 
 		{
-			Trying_2_Trying_X_timerE();
+			Sending_2_Sending_X_1xx(msg);
 		}
 
-	sm_timerF()
-		Terminated
+	sm_2xx(msg: const tsip_message_t*)
+		Terminated 
 		{
-			Trying_2_Terminated_X_timerF();
+			Sending_2_Terminated_X_2xx(msg);
 		}
 
-	sm_transportError()
-		Terminated
+	sm_401_407_421_494(msg: const tsip_message_t*)
+		nil 
 		{
-			Trying_2_Terminated_X_transportError();
+			Sending_2_Sending_X_401_407_421_494(msg);
 		}
 
-	sm_1xx(msg: const tsip_message_t*)
-		Proceeding
+	sm_300_to_699(msg: const tsip_message_t*)
+		Terminated 
 		{
-			Trying_2_Proceedding_X_1xx(msg);
+			Sending_2_Terminated_X_300_to_699(msg);
 		}
 
-	sm_200_to_699(msg: const tsip_message_t*)
-		Completed
+	sm_cancel()
+		Terminated 
 		{
-			Trying_2_Completed_X_200_to_699(msg);
-		}
-}
-
-//------------------------
-//------------------------
-Proceeding
-	Entry
-	{
-	}
-{	
-	sm_timerE()
-		nil
-		{
-			Proceeding_2_Proceeding_X_timerE();
-		}
-
-	sm_timerF()
-		Terminated
-		{
-			Proceeding_2_Terminated_X_timerF();
-		}
-
-	sm_transportError()
-		Terminated
-		{
-			Proceeding_2_Terminated_X_transportError();
-		}
-
-	sm_1xx(msg: const tsip_message_t*)
-		nil
-		{
-			Proceeding_2_Proceeding_X_1xx(msg);
-		}
-
-	sm_200_to_699(msg: const tsip_message_t*)
-		Completed
-		{
-			Proceeding_2_Completed_X_200_to_699(msg);
+			Sending_2_Terminated_X_cancel();
 		}
 }
 
 //------------------------
 //------------------------
-Completed
-	Entry
-	{
-	}
+Receiving
 {	
-	sm_timerK()
+	sm_accept(msg: const tsip_message_t*)
 		Terminated
 		{
-			Completed_2_Terminated_X_timerK();
+			Receiving_2_Terminated_X_accept(msg);
+		}
+
+	sm_reject(msg: const tsip_message_t*)
+		Terminated
+		{
+			Receiving_2_Terminated_X_reject(msg);
 		}
 }
 
@@ -152,11 +116,15 @@ Terminated
 		OnTerminated();
 	}
 {
+	Default
+		nil 
+		{
+		}
 }
 
 //------------------------
 //------------------------
-Default
+Default 
 {
 	sm_transportError()
 		Terminated
@@ -164,10 +132,14 @@ Default
 			Any_2_Terminated_X_transportError();
 		}
 
+	sm_error()
+		Terminated
+		{
+		}
+
 	Default
 		nil 
 		{
 		}
 }
-
 %%

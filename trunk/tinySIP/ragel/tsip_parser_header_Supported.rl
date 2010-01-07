@@ -50,7 +50,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("SUPPORTED:TAG");
 		tag_start = p;
 	}
 	
@@ -61,7 +60,6 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("SUPPORTED:EOB");
 	}
 	
 	Supported = ( "Supported"i | "k"i ) HCOLON ( option_tag>tag %parse_option ( COMMA option_tag>tag %parse_option )* )?;

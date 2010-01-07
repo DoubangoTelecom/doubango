@@ -50,19 +50,16 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("USER_AGENT:TAG");
 		tag_start = p;
 	}
 
 	action parse_user_agent
 	{
 		PARSER_SET_STRING(hdr_user_agent->value);
-		TSK_DEBUG_INFO("USER_AGENT:parse_user_agent");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("USER_AGENT:EOB");
 	}
 		
 	User_Agent = "User-Agent"i HCOLON (any*)>tag %parse_user_agent;

@@ -51,14 +51,12 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:TAG");
 		tag_start = p;
 	}
 	
 	action is_digest
 	{
 		#//FIXME: Only Digest is supported
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:IS_DIGEST");
 		hdr_Proxy_Authorization->scheme = tsk_strdup("Digest");
 	}
 
@@ -66,61 +64,52 @@
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->username);
 		tsk_strunquote(&hdr_Proxy_Authorization->username);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_USERNAME");
 	}
 
 	action parse_realm
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->realm);
 		tsk_strunquote(&hdr_Proxy_Authorization->realm);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_REALM");
 	}
 
 	action parse_nonce
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->nonce);
 		tsk_strunquote(&hdr_Proxy_Authorization->nonce);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_NONCE");
 	}
 
 	action parse_uri
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->uri);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_URI");
 	}
 
 	action parse_response
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->response);
 		tsk_strunquote(&hdr_Proxy_Authorization->response);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_RESPONSE");
 	}
 
 	action parse_algorithm
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->algorithm);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_ALGORITHM");
 	}
 
 	action parse_cnonce
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->cnonce);
 		tsk_strunquote(&hdr_Proxy_Authorization->cnonce);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_CNONCE");
 	}
 
 	action parse_opaque
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->opaque);
 		tsk_strunquote(&hdr_Proxy_Authorization->opaque);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_OPAQUE");
 	}
 
 	action parse_qop
 	{
 		PARSER_SET_STRING(hdr_Proxy_Authorization->qop);
 		//tsk_strunquote(&hdr_Proxy_Authorization->qop);
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:PARSE_QOP");
 	}
 
 	action parse_nc
@@ -136,10 +125,10 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("PROXY_AUTHORIZATION:EOB");
 	}
 
 	#FIXME: Only Digest (MD5, AKAv1-MD5 and AKAv2-MD5) is supported
+	qop_value  = "auth" | "auth-int" | token;
 	other_response = (any+);
 	auth_param = generic_param>tag %parse_param;
 	
@@ -152,7 +141,7 @@
 	algorithm = "algorithm"i EQUAL <:token>tag %parse_algorithm;
 	cnonce = "cnonce"i EQUAL quoted_string>tag %parse_cnonce;
 	opaque = "opaque"i EQUAL quoted_string>tag %parse_opaque;
-	message_qop = "qop"i EQUAL (any*)>tag %parse_qop;
+	message_qop = "qop"i EQUAL qop_value>tag %parse_qop;
 	nonce_count = "nc"i EQUAL (LHEX{8})>tag %parse_nc;
 	
 	dig_resp = (username | realm | nonce | digest_uri | dresponse | algorithm | cnonce | opaque | message_qop | nonce_count)>1 | auth_param>0;

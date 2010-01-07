@@ -29,8 +29,6 @@
  */
 #include "tinysip/headers/tsip_header_Content_Length.h"
 
-#include "tinysip/parsers/tsip_parser_uri.h"
-
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
@@ -48,19 +46,16 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("CONTENT_LENGTH:TAG");
 		tag_start = p;
 	}
 
 	action parse_content_length
 	{
 		PARSER_SET_INTEGER(hdr_clength->length);
-		TSK_DEBUG_INFO("CONTENT_LENGTH:PARSE_CONTENT_LENGTH");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("CONTENT_LENGTH:EOB");
 	}
 	
 	Content_Length = ( "Content-Length"i | "l"i ) HCOLON (DIGIT+)>tag %parse_content_length;
@@ -137,6 +132,7 @@ static void* tsip_header_Content_Length_destroy(void *self)
 	tsip_header_Content_Length_t *Content_Length = self;
 	if(Content_Length)
 	{
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Length));
 	}
 	else TSK_DEBUG_ERROR("Null Content_Length header.");
 

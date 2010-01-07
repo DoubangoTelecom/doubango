@@ -70,6 +70,9 @@
 	qvalue = ( "0" ( "." DIGIT{,3} )? ) | ( "1" ( "." "0"{,3} )? );
 	alphanum = ALPHA | DIGIT;
 	token = ( alphanum | "-" | "." | "!" | "%" | "*" | "_" | "+" | "`" | "'" | "~" )+;
+	ietf_token = token;
+	x_token = "x-"i token;
+	iana_token = token;
 	token_nodot = ( alphanum | "-" | "!" | "%" | "*" | "_" | "+" | "`" | "'" | "~" )+;
 	word = ( alphanum | "-" | "." | "!" | "%" | "*" | "_" | "+" | "`" | "'" | "~" | "(" | ")" | "<" | ">" | ":" | "\\" | DQUOTE | "/" | "[" | "]" | "?" | "{" | "}" )+;
 	domainlabel = alphanum | ( alphanum ( alphanum | "-" )* alphanum );

@@ -35,6 +35,17 @@
 
 TSIP_BEGIN_DECLS
 
+/**@def TSIP_HEADER_CONTENT_TYPE_CREATE
+* Creates new sip 'Content-Type' header.  You must call @ref TSIP_HEADER_CONTENT_TYPE_SAFE_FREE to free the header.
+* @sa TSIP_HEADER_CONTENT_TYPE_SAFE_FREE.
+*/
+/**@def TSIP_HEADER_CONTENT_TYPE_SAFE_FREE
+* Safely free a sip 'Content-Type' header previously created using TSIP_HEADER_CONTENT_TYPE_CREATE.
+* @sa TSIP_HEADER_CONTENT_TYPE_CREATE.
+*/
+#define TSIP_HEADER_CONTENT_TYPE_CREATE()			tsk_object_new(tsip_header_Content_Type_def_t)
+#define TSIP_HEADER_CONTENT_TYPE_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -42,14 +53,35 @@ TSIP_BEGIN_DECLS
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF= Content-Type / c
+///					Content-Type	= 	( "Content-Type" / "c" ) HCOLON media-type
+///					media-type	= 	m-type SLASH m-subtype *( SEMI m-parameter)
+/// 				m-type	= 	discrete-type / composite-type
+///					discrete-type	= 	"text" / "image" / "audio" / "video" / "application" / extension-token
+/// 				composite-type	= 	"message" / "multipart" / extension-token
+/// 				extension-token	= 	ietf-token / x-token
+/// 				ietf-token	= 	token
+/// 				x-token	= 	"x-" token
+/// 				m-subtype	= 	extension-token / iana-token
+/// 				iana-token	= 	token
+/// 				m-parameter	= 	m-attribute EQUAL m-value
+/// 				m-attribute	= 	token
+/// 				m-value	= 	token / quoted-string
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Content_Type_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	char* type;
 }
 tsip_header_Content_Type_t;
+
+
+tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_Content_Type_def_t;
+
 
 TSIP_END_DECLS
 

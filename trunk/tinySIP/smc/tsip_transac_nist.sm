@@ -33,10 +33,26 @@
 %class tsip_transac_nist
 %header "tinysip/transactions/tsip_transac_nist.h"
 %header "tinysip/tsip_message.h"
-%start tsip_transac_nist::Trying
+%start tsip_transac_nist::Started
 
 %map tsip_transac_nist
 %%
+
+
+//------------------------
+//------------------------
+Started
+	Entry
+	{
+		
+	}
+{
+	sm_recv_request(request: const tsip_request_t*) 
+		Trying 
+		{
+			Started_2_Trying_X_recv_request(request);
+		}
+}
 
 //------------------------
 //------------------------
@@ -46,16 +62,16 @@ Trying
 		
 	}
 {
-	sm_send_1xx(msg: const tsip_message_t*)
+	sm_send_1xx(request: const tsip_request_t*)
 		Proceeding
 		{
-			Trying_2_Proceeding_X_send_1xx(msg);
+			Trying_2_Proceeding_X_send_1xx(request);
 		}
 
-	sm_send_200_to_699(msg: const tsip_message_t*) 
+	sm_send_200_to_699(request: const tsip_request_t*) 
 		Completed 
 		{
-			Trying_2_Completed_X_send_200_to_699(msg);
+			Trying_2_Completed_X_send_200_to_699(request);
 		}
 
 }
@@ -67,22 +83,22 @@ Proceeding
 	{
 	}
 {	
-	sm_send_1xx(msg: const tsip_message_t*)
+	sm_send_1xx(request: const tsip_request_t*)
 		nil
 		{
-			Proceeding_2_Proceeding_X_send_1xx(msg);
+			Proceeding_2_Proceeding_X_send_1xx(request);
 		}
 
-	sm_send_200_to_699(msg: const tsip_message_t*) 
+	sm_send_200_to_699(request: const tsip_request_t*) 
 		Completed 
 		{
-			Proceeding_2_Completed_X_send_200_to_699(msg);
+			Proceeding_2_Completed_X_send_200_to_699(request);
 		}
 
-	sm_send_response(msg: const tsip_message_t*) 
+	sm_recv_request(request: const tsip_request_t*) 
 		nil 
 		{
-			Proceeding_2_Proceeding_X_send_response(msg);
+			Proceeding_2_Proceeding_X_recv_request(request);
 		}
 }
 
@@ -94,10 +110,10 @@ Completed
 	{
 	}
 {	
-	sm_send_response(msg: const tsip_message_t*)
+	sm_recv_request(request: const tsip_request_t*)
 		nil
 		{
-			Completed_2_Completed_X_send_response(msg);
+			Completed_2_Completed_X_recv_request(request);
 		}
 
 	sm_timerJ()

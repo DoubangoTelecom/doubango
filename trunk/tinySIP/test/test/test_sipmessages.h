@@ -60,26 +60,49 @@
 	"Contact: <sip:mamadou@192.168.0.11:63140>;expires=3600;q=1.0,<sip:mamadou@192.168.0.11:56717>;expires=3600;q=1.0\r\n" \
 	"Contact: <sip:mamadou@127.0.0.1:5060>;expires=3600;q=1.0\r\n" \
 	"Contact: <sip:mamadou@127.0.0.1>;expires=3600;q=1.0\r\n" \
+	"P-Preferred-Identity: <sip:mamadou@ims-network.com>\r\n" \
+	"P-Access-Network-Info: 3GPP-UTRAN-TDD;utran-cell-id-3gpp=00000000\r\n" \
 	"Authorization: Digest username=\"Alice\", realm=\"atlanta.com\",nonce=\"84a4cc6f3082121f32b42a2187831a9e\",response=\"7587245234b3434cc3412213e5f113a5432,test=123\"\r\n" \
+	"Privacy: none;user;id\r\n" \
 	"Proxy-Authenticate: Digest realm=\"atlanta.com\",domain=\"sip:ss1.carrier.com\",qop=\"auth,auth-int\",nonce=\"f84f1cec41e6cbe5aea9c8e88d359\",opaque=\"\", stale=FALSE, algorithm=MD5,test=124\r\n" \
 	"Authorization: Digest username=\"bob\", realm=\"atlanta.example.com\",nonce=\"ea9c8e88df84f1cec4341ae6cbe5a359\", opaque=\"\",uri=\"sips:ss2.biloxi.example.com\",test=\"7854\",response=\"dfe56131d1958046689d83306477ecc\"\r\n" \
 	"Proxy-Authorization: Digest username=\"Alice\", test=666,realm=\"atlanta.com\",nonce=\"c60f3082ee1212b402a21831ae\",response=\"245f23415f11432b3434341c022\"\r\n" \
 	"WWW-Authenticate: Digest realm=\"atlanta.com\",domain=\"sip:boxesbybob.com\", qop=\"auth\",nonce=\"f84f1cec41e6cbe5aea9c8e88d359\",opaque=\"\",stale=FALSE,algorithm=MD5,test=\"3\"\r\n" \
+	"l: 0\r\n" \
 	"\r\n"
 
+#define SIP_MESSAGE \
+	"MESSAGE sip:mamadou@micromethod.com SIP/2.0\r\n" \
+	"Via: SIP/2.0/UDP 192.168.0.11:64163;rport;branch=z9hG4bK1262758946486\r\n" \
+	"Route: <sip:192.168.0.15:5060;lr=true;transport=udp\r\n" \
+	"From: <sip:bob@micromethod.com>;tag=mercuro\r\n" \
+	"To: <sip:mamadou@micromethod.com>\r\n" \
+	"Call-ID: 1262767804423\r\n" \
+	"CSeq: 8 MESSAGE\r\n" \
+	"Max-Forwards: 70\r\n" \
+	"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n" \
+	"User-Agent: IM-client/OMA1.0 Mercuro-Bronze/v4.0.1508.0\r\n" \
+	"c: text/plain; charset=utf-8\r\n" \
+	"P-Preferred-Identity: <sip:bob@micromethod.com\r\n" \
+	"Allow-Events: presence, presence.winfo\r\n" \
+	"Content-Length: 11\r\n" \
+	"\r\n" \
+	"How are you"
 
+
+#define SIP_MSG_2_TEST SIP_MESSAGE
 
 void test_parser()
 {
 	tsip_ragel_state_t state;
-	tsip_message_t *message = TSIP_MESSAGE_CREATE();
+	tsip_message_t *message = 0;
 	tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
 	TSIP_BOOLEAN enabled;
 	int32_t expires;
 	uint32_t clength;
 
-	tsip_ragel_state_init(&state, SIP_RESPONSE, strlen(SIP_RESPONSE));
-	tsip_message_parse(&state, message);
+	tsip_ragel_state_init(&state, SIP_MSG_2_TEST, strlen(SIP_MSG_2_TEST));
+	tsip_message_parse(&state, &message);
 
 	enabled = tsip_message_allowed(message, "REFER");
 	enabled = tsip_message_allowed(message, "MESSAGE");
@@ -125,13 +148,36 @@ void test_requests()
 
 void test_responses()
 {
+	tsip_ragel_state_t state;
+	tsip_request_t *request = 0;
+	tsip_request_t *response = 0;
 
+	tsip_ragel_state_init(&state, SIP_MESSAGE, strlen(SIP_MESSAGE));
+	tsip_message_parse(&state, &request);
+
+	/* Create the response and destroy the request */
+	response = tsip_response_new(200, "OK you can move forward", request);
+	TSIP_REQUEST_SAFE_FREE(request);
+
+	{
+		/* DUMP the response */
+		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+
+		tsip_message_tostring(response, buffer);
+		TSK_DEBUG_INFO("Response=\n%s", TSK_BUFFER_TO_STRING(buffer));
+
+		TSK_BUFFER_SAFE_FREE(buffer);
+	}
+	
+
+	TSIP_RESPONSE_SAFE_FREE(response);
 }
 
 void test_messages()
 {
-	test_parser();
+	//test_parser();
 	//test_requests();
+	test_responses();
 }
 
 

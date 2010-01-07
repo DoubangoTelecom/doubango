@@ -48,19 +48,16 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("MAX_FORWARDS:TAG");
 		tag_start = p;
 	}
 	
 	action parse_value
 	{
 		PARSER_SET_INTEGER(hdr_maxf->value);
-		TSK_DEBUG_INFO("MAX_FORWARDS:PARSE_VALUE");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("MAX_FORWARDS:EOB");
 	}
 
 	Max_Forwards = "Max-Forwards"i HCOLON (DIGIT+)>tag %parse_value;

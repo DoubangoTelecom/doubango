@@ -58,7 +58,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("PRIVACY:TAG");
 		tag_start = p;
 	}
 
@@ -69,10 +68,9 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("PRIVACY:EOB");
 	}
 	
-	priv_value = "header"i | "session"i | "user"i | "none"i | "critical"i | "id"i | "history"i | token;
+	priv_value = ("header"i | "session"i | "user"i | "none"i | "critical"i | "id"i | "history"i)>1 | token>0;
 	Privacy_hdr = "Privacy"i HCOLON priv_value>tag %parse_priv_value ( ";" priv_value>tag %parse_priv_value )*;
 	
 	# Entry point

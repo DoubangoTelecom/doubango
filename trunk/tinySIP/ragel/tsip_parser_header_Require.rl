@@ -50,7 +50,6 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("REQUIRE:TAG");
 		tag_start = p;
 	}
 	
@@ -61,7 +60,6 @@
 
 	action eob
 	{
-		TSK_DEBUG_INFO("REQUIRE:EOB");
 	}
 	
 	Require = "Require"i HCOLON option_tag>tag %parse_option ( COMMA option_tag>tag %parse_option )*;

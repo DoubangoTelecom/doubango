@@ -90,29 +90,30 @@
  * @author	Mamadou
  * @date	1/4/2010
  *
- * @param [in,out]	arg	Opaque data. Shall contain a reference to the transaction itself. 
+ * @param [in,out]	self	A pointer to the NIC transaction. 
  * @param	type		The event type. 
  * @param [in,out]	msg	The incoming message.
  *
  * @return	Zero if succeed and no-zero error code otherwise. 
 **/
-int tsip_transac_nict_event_callback(const void *arg, tsip_transac_event_type_t type, const tsip_message_t *msg)
+int tsip_transac_nict_event_callback(const tsip_transac_nict_t *self, tsip_transac_event_type_t type, const tsip_message_t *msg)
 {
-	const tsip_transac_nict_t* transac = arg;
+	TSIP_TRANSAC_SYNC_BEGIN(self);
+
 	switch(type)
 	{
-	case tsip_transac_msg:
+	case tsip_transac_incoming_msg:
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
 				short status_code = TSIP_RESPONSE_CODE(msg);
 				if(status_code <=199)
 				{
-					tsip_transac_nictContext_sm_1xx(&TSIP_TRANSAC_NICT(transac)->_fsm, msg);
+					tsip_transac_nictContext_sm_1xx(&TSIP_TRANSAC_NICT(self)->_fsm, msg);
 				}
 				else if(status_code<=699)
 				{
-					tsip_transac_nictContext_sm_200_to_699(&TSIP_TRANSAC_NICT(transac)->_fsm, msg);
+					tsip_transac_nictContext_sm_200_to_699(&TSIP_TRANSAC_NICT(self)->_fsm, msg);
 				}
 				else
 				{
@@ -148,7 +149,39 @@ int tsip_transac_nict_event_callback(const void *arg, tsip_transac_event_type_t 
 		}
 	}
 
+	TSIP_TRANSAC_SYNC_END(self);
+
 	return 0;
+}
+
+int tsip_transac_nict_timer_callback(const tsip_transac_nict_t* self, tsk_timer_id_t timer_id)
+{
+	int ret = -1;
+
+	if(self)
+	{
+		TSIP_TRANSAC_SYNC_BEGIN(self);
+
+		if(timer_id == self->timerE.id)
+		{
+			tsip_transac_nictContext_sm_timerE(&TSIP_TRANSAC_NICT(self)->_fsm);
+			ret = 0;
+		}
+		else if(timer_id == self->timerF.id)
+		{
+			tsip_transac_nictContext_sm_timerF(&TSIP_TRANSAC_NICT(self)->_fsm);
+			ret = 0;
+		}
+		else if(timer_id == self->timerK.id)
+		{
+			tsip_transac_nictContext_sm_timerK(&TSIP_TRANSAC_NICT(self)->_fsm);
+			ret = 0;
+		}
+
+		TSIP_TRANSAC_SYNC_END(self);
+	}
+
+	return ret;
 }
 
 /**
@@ -167,7 +200,7 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
 	*/
 	tsip_transac_nictContext_Init(&self->_fsm, self);
 	
-	/* Set callback function to call when new messages are arrive or errors happen in
+	/* Set callback function to call when new messages arrive or errors happen in
 		the transport layer.
 	*/
 	TSIP_TRANSAC(self)->callback = tsip_transac_nict_event_callback;
@@ -182,7 +215,7 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
 
 	 self->timerE.timeout = TSIP_TIMER_GET(E);
 	 self->timerF.timeout = TSIP_TIMER_GET(F);
-	 self->timerK.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(K); /* RFC 3261 - 17.1.2.2 [Proceeding_2_Completed_X_200_to_699]*/
+	 self->timerK.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(K); /* RFC 3261 - 17.1.2.2*/
 }
 
 
