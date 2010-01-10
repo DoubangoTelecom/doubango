@@ -31,7 +31,7 @@
 	"CSeq: 201 REGISTER\r\n" \
 	"Max-Forwards: 70\r\n" \
 	"Contact: <sip:mamadou@%s:%d;transport=%s>\r\n" \
-	"Expires: 20000\r\n" \
+	"Expires: 10\r\n" \
 	"\r\n"
 
 
@@ -113,7 +113,11 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 		return -1;
 	}
 
-	//tsk_thread_sleep(2000);
+	
+	while(!tnet_transport_isready(transport))
+	{
+		tsk_thread_sleep(500);
+	}
 
 	/* Connect to our SIP REGISTRAR */
 	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == TNET_INVALID_FD)
@@ -162,7 +166,8 @@ void test_transport()
 	test_transport_tcp_ipv4(tcp);
 #endif	
 
-	tsk_thread_sleep(2000000);
+	getchar();
+	//tsk_thread_sleep(2000);
 
 #if TEST_UDP
 	TNET_TRANSPORT_SAFE_FREE(udp);

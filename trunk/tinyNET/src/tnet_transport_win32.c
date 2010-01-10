@@ -332,10 +332,10 @@ static void transport_socket_remove(int index, transport_context_t *context)
 
 		WSACloseEvent(context->events[index]);
 
-		for(i=(context->count-1) ; i>index; i--)
-		{
-			context->sockets[i-1] = context->sockets[i];
-			context->events[i-1] = context->events[i];
+		for(i=index ; i<context->count-1; i++)
+		{			
+			context->sockets[i] = context->sockets[i+1];
+			context->events[i] = context->events[i+1];
 		}
 
 		context->sockets[context->count-1] = 0;

@@ -24,7 +24,7 @@
 
 int test_stack_callback(const tsip_event_t *sipevent)
 {
-	tsip_operation_id_t opid = sipevent->opid;
+	//tsip_operation_id_t opid = sipevent->opid;
 
 	// find operation by id
 
@@ -64,6 +64,7 @@ void test_stack()
 
 	tsip_stack_register(stack, op);
 
+	//while(1);//tsk_thread_sleep(500);
 	//while(1)
 		//tsk_thread_sleep(50000000000);
 	getchar();

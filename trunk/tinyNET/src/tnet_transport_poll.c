@@ -32,18 +32,19 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 #include "tsk_thread.h"
+#include "tsk_buffer.h"
 
 #if TNET_USE_POLL
 
 #include "tnet_poll.h"
+
+#include <unistd.h>
 
 #define TNET_MAX_FDS		64
 
 /*== Socket description ==*/
 typedef struct transport_socket_s
 {
-	char *buffer;
-	size_t bufsize;
 	tnet_fd_t fd;
 	unsigned connected:1;
 }
@@ -234,7 +235,30 @@ bail:
 	return numberOfBytesSent;
 }
 
-
+int tnet_transport_has_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t *context;
+	size_t i;
+	
+	if(!transport)
+	{
+		TSK_DEBUG_ERROR("Invalid server handle.");
+		return 0;
+	}
+	
+	context = (transport_context_t*)transport->context;
+	
+	for(i=0; i<context->count; i++)
+	{
+		if(context->sockets[i]->fd == fd)
+		{
+			return 1;
+		}
+	}
+	
+	return 0;
+}
 
 /*== Add new socket ==*/
 void transport_socket_add(tnet_fd_t fd, transport_context_t *context)
@@ -266,19 +290,49 @@ static void transport_socket_set_connected(tnet_fd_t fd, transport_context_t *co
 /*== Remove socket ==*/
 void transport_socket_remove(int index, transport_context_t *context)
 {
+	int i;
+	
+	if(index < (int)context->count)
+	{
+		tnet_sockfd_close(&(context->sockets[index]->fd));
 
+		TSK_FREE(context->sockets[index]);
+		
+		for(i=index ; i<context->count-1; i++)
+		{			
+			context->sockets[i] = context->sockets[i+1];
+		}
+		
+		context->sockets[context->count-1] = 0;
+		
+		context->count--;
+	}
 }
 
 int tnet_transport_stop(tnet_transport_t *transport)
 {	
 	int ret;
+	transport_context_t *context;
+	char c = '\0';
 
-	if(ret = tsk_runnable_stop(TSK_RUNNABLE(transport)))
+	if(!transport)
+	{
+		return -1;
+	}
+	
+	context = transport->context;
+	
+	if((ret = tsk_runnable_stop(TSK_RUNNABLE(transport))))
 	{
 		return ret;
 	}
 	
-	//signal(...);
+	if(context)
+	{
+		// signal using pipe[1]
+		write(context->sockets[1]->fd, &c, 1);
+	}
+	
 	return tsk_thread_join(transport->mainThreadId);
 }
 
@@ -289,6 +343,7 @@ void *tnet_transport_mainthread(void *param)
 {
 	tnet_transport_t *transport = param;
 	transport_context_t *context;
+	tnet_fd_t pipes[2];
 	int ret;
 	size_t i;
 
@@ -307,6 +362,15 @@ void *tnet_transport_mainthread(void *param)
 			goto bail;
 		}
 	}
+	
+	/* Create and add pipes to the fd_set */
+	if((ret = pipe(pipes)))
+	{
+		TNET_PRINT_LAST_ERROR();
+		goto bail;
+	}
+	transport_socket_add(pipes[0], context);
+	transport_socket_add(pipes[1], context);
 
 	/* Add the current transport socket to the context. */
 	transport_socket_add(transport->master->fd, context);
@@ -316,15 +380,16 @@ void *tnet_transport_mainthread(void *param)
 
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 
-	while(transport->running)
+	while(TSK_RUNNABLE(transport)->running)
 	{
+
 		if((ret = tnet_poll(context->ufds, context->count, -1)) < 0)
 		{
 			TNET_PRINT_LAST_ERROR();
 			goto bail;
 		}
 
-		if(!transport->running)
+		if(!TSK_RUNNABLE(transport)->running)
 		{
 			goto bail;
 		}
@@ -342,21 +407,28 @@ void *tnet_transport_mainthread(void *param)
 			/*================== POLLIN ==================*/
 			if(context->ufds[i].revents & TNET_POLLIN)
 			{
-				int readCount;
+				size_t len = 0;
+				void* buffer = 0;
+				
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
-
-				/* Create socket's internal buffer. */
-				if(!active_socket->buffer)
+				
+				/* Retrieve the amount of pending data */
+				if(tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0)
 				{
-					// FIXME: see win32 function
-					size_t max_buffer_size = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? DGRAM_MAX_SIZE : STREAM_MAX_SIZE;
-					active_socket->buffer = tsk_calloc(max_buffer_size, sizeof(char));
-					active_socket->bufsize = max_buffer_size;
+					TSK_DEBUG_ERROR("IOCTLT FAILED.");
+					TNET_PRINT_LAST_ERROR();
+					continue;
+				}
+				if(!(buffer = tsk_calloc(len, sizeof(uint8_t))))
+				{
+					TSK_DEBUG_ERROR("TSK_CALLOC FAILED.");
+					continue;
 				}
 
 				/* Receive the waiting data. */
-				if((readCount = recv(active_socket->fd, active_socket->buffer, active_socket->bufsize, 0)) < 0)
+				if(recv(active_socket->fd, buffer, len, 0) < 0)
 				{
+					TSK_FREE(buffer);
 					//if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK)
 					{
 						//TSK_DEBUG_INFO("WSAEWOULDBLOCK error for READ operation");
@@ -370,7 +442,14 @@ void *tnet_transport_mainthread(void *param)
 				}
 				else
 				{	
-					TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(transport), active_socket->buffer, readCount);
+					tsk_buffer_t *BUFFER = TSK_BUFFER_CREATE_NULL();
+					
+					BUFFER->data = buffer;
+					BUFFER->size = len;
+					
+					//printf("====\n\n%s\n\n====", buffer);
+					
+					TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), BUFFER);
 				}
 			}
 

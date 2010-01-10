@@ -28,7 +28,10 @@
 #endif
 
 #include <stdio.h>
+
+#if (defined(_WIN32) || defined(WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)
 #include <tchar.h>
+#endif
 
 
 

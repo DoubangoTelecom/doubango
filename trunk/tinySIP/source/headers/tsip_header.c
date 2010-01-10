@@ -142,7 +142,7 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 	}
 }
 
-const char tsip_header_get_param_separator(const tsip_header_t *self)
+char tsip_header_get_param_separator(const tsip_header_t *self)
 {
 	if(self)
 	{
@@ -174,7 +174,7 @@ int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 	if(self && TSIP_HEADER(self)->tostring)
 	{
 		tsk_list_item_t *item;
-		int first = 1;
+		
 		hname = tsip_header_get_name(self->type);
 		ret = 0; // for empty lists
 

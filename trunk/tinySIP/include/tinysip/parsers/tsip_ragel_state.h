@@ -33,6 +33,8 @@
 #include "tinysip_config.h"
 #include "tsk_params.h"
 
+#include <string.h>
+
 TSIP_BEGIN_DECLS
 
 #define SCANNER_SET_STRING(string) \

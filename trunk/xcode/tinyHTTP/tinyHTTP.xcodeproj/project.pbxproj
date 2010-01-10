@@ -1,0 +1,744 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ECED61AA10F9885E006B4DC9 /* thttp_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61A910F9885E006B4DC9 /* thttp_auth.h */; };
+		ECED61AD10F98876006B4DC9 /* thttp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61AB10F98876006B4DC9 /* thttp.h */; };
+		ECED61AE10F98876006B4DC9 /* tinyhttp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61AC10F98876006B4DC9 /* tinyhttp_config.h */; };
+		ECED61B210F98893006B4DC9 /* thttp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61AF10F98893006B4DC9 /* thttp.c */; };
+		ECED61B310F98893006B4DC9 /* thttp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61B010F98893006B4DC9 /* thttp_message.c */; };
+		ECED61B410F98893006B4DC9 /* thttp_utl.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61B110F98893006B4DC9 /* thttp_utl.c */; };
+		ECED61B610F988B3006B4DC9 /* thttp_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61B510F988B3006B4DC9 /* thttp_auth.c */; };
+		ECED61F610F98926006B4DC9 /* tinySAK_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C110F98926006B4DC9 /* tinySAK_config.h */; };
+		ECED61F710F98926006B4DC9 /* tsk.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61C210F98926006B4DC9 /* tsk.c */; };
+		ECED61F810F98926006B4DC9 /* tsk.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C310F98926006B4DC9 /* tsk.h */; };
+		ECED61F910F98926006B4DC9 /* tsk_base64.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61C410F98926006B4DC9 /* tsk_base64.c */; };
+		ECED61FA10F98926006B4DC9 /* tsk_base64.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C510F98926006B4DC9 /* tsk_base64.h */; };
+		ECED61FB10F98926006B4DC9 /* tsk_binaryutils.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61C610F98926006B4DC9 /* tsk_binaryutils.c */; };
+		ECED61FC10F98926006B4DC9 /* tsk_binaryutils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C710F98926006B4DC9 /* tsk_binaryutils.h */; };
+		ECED61FD10F98926006B4DC9 /* tsk_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61C810F98926006B4DC9 /* tsk_buffer.c */; };
+		ECED61FE10F98926006B4DC9 /* tsk_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C910F98926006B4DC9 /* tsk_buffer.h */; };
+		ECED61FF10F98926006B4DC9 /* tsk_condwait.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61CA10F98926006B4DC9 /* tsk_condwait.c */; };
+		ECED620010F98926006B4DC9 /* tsk_condwait.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61CB10F98926006B4DC9 /* tsk_condwait.h */; };
+		ECED620110F98926006B4DC9 /* tsk_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61CC10F98926006B4DC9 /* tsk_debug.c */; };
+		ECED620210F98926006B4DC9 /* tsk_debug.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61CD10F98926006B4DC9 /* tsk_debug.h */; };
+		ECED620310F98926006B4DC9 /* tsk_errno.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61CE10F98926006B4DC9 /* tsk_errno.h */; };
+		ECED620410F98926006B4DC9 /* tsk_heap.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61CF10F98926006B4DC9 /* tsk_heap.c */; };
+		ECED620510F98926006B4DC9 /* tsk_heap.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D010F98926006B4DC9 /* tsk_heap.h */; };
+		ECED620610F98926006B4DC9 /* tsk_hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61D110F98926006B4DC9 /* tsk_hmac.c */; };
+		ECED620710F98926006B4DC9 /* tsk_hmac.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D210F98926006B4DC9 /* tsk_hmac.h */; };
+		ECED620810F98926006B4DC9 /* tsk_list.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61D310F98926006B4DC9 /* tsk_list.c */; };
+		ECED620910F98926006B4DC9 /* tsk_list.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D410F98926006B4DC9 /* tsk_list.h */; };
+		ECED620A10F98926006B4DC9 /* tsk_macros.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D510F98926006B4DC9 /* tsk_macros.h */; };
+		ECED620B10F98926006B4DC9 /* tsk_md5.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61D610F98926006B4DC9 /* tsk_md5.c */; };
+		ECED620C10F98926006B4DC9 /* tsk_md5.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D710F98926006B4DC9 /* tsk_md5.h */; };
+		ECED620D10F98926006B4DC9 /* tsk_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61D810F98926006B4DC9 /* tsk_memory.c */; };
+		ECED620E10F98926006B4DC9 /* tsk_memory.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D910F98926006B4DC9 /* tsk_memory.h */; };
+		ECED620F10F98926006B4DC9 /* tsk_mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61DA10F98926006B4DC9 /* tsk_mutex.c */; };
+		ECED621010F98926006B4DC9 /* tsk_mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61DB10F98926006B4DC9 /* tsk_mutex.h */; };
+		ECED621110F98926006B4DC9 /* tsk_object.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61DC10F98926006B4DC9 /* tsk_object.c */; };
+		ECED621210F98926006B4DC9 /* tsk_object.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61DD10F98926006B4DC9 /* tsk_object.h */; };
+		ECED621310F98926006B4DC9 /* tsk_params.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61DE10F98926006B4DC9 /* tsk_params.c */; };
+		ECED621410F98926006B4DC9 /* tsk_params.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61DF10F98926006B4DC9 /* tsk_params.h */; };
+		ECED621510F98926006B4DC9 /* tsk_ppfcs16.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61E010F98926006B4DC9 /* tsk_ppfcs16.c */; };
+		ECED621610F98926006B4DC9 /* tsk_ppfcs16.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61E110F98926006B4DC9 /* tsk_ppfcs16.h */; };
+		ECED621710F98926006B4DC9 /* tsk_runnable.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61E210F98926006B4DC9 /* tsk_runnable.c */; };
+		ECED621810F98926006B4DC9 /* tsk_runnable.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61E310F98926006B4DC9 /* tsk_runnable.h */; };
+		ECED621910F98926006B4DC9 /* tsk_safeobj.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61E410F98926006B4DC9 /* tsk_safeobj.c */; };
+		ECED621A10F98926006B4DC9 /* tsk_safeobj.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61E510F98926006B4DC9 /* tsk_safeobj.h */; };
+		ECED621B10F98926006B4DC9 /* tsk_semaphore.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61E610F98926006B4DC9 /* tsk_semaphore.c */; };
+		ECED621C10F98926006B4DC9 /* tsk_semaphore.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61E710F98926006B4DC9 /* tsk_semaphore.h */; };
+		ECED621D10F98926006B4DC9 /* tsk_sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61E810F98926006B4DC9 /* tsk_sha1.c */; };
+		ECED621E10F98926006B4DC9 /* tsk_sha1.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61E910F98926006B4DC9 /* tsk_sha1.h */; };
+		ECED621F10F98926006B4DC9 /* tsk_string.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61EA10F98926006B4DC9 /* tsk_string.c */; };
+		ECED622010F98926006B4DC9 /* tsk_string.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61EB10F98926006B4DC9 /* tsk_string.h */; };
+		ECED622110F98926006B4DC9 /* tsk_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61EC10F98926006B4DC9 /* tsk_thread.c */; };
+		ECED622210F98926006B4DC9 /* tsk_thread.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61ED10F98926006B4DC9 /* tsk_thread.h */; };
+		ECED622310F98926006B4DC9 /* tsk_time.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61EE10F98926006B4DC9 /* tsk_time.c */; };
+		ECED622410F98926006B4DC9 /* tsk_time.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61EF10F98926006B4DC9 /* tsk_time.h */; };
+		ECED622510F98926006B4DC9 /* tsk_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61F010F98926006B4DC9 /* tsk_timer.c */; };
+		ECED622610F98926006B4DC9 /* tsk_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61F110F98926006B4DC9 /* tsk_timer.h */; };
+		ECED622710F98926006B4DC9 /* tsk_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61F210F98926006B4DC9 /* tsk_url.c */; };
+		ECED622810F98926006B4DC9 /* tsk_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61F310F98926006B4DC9 /* tsk_url.h */; };
+		ECED622910F98926006B4DC9 /* tsk_xml.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61F410F98926006B4DC9 /* tsk_xml.c */; };
+		ECED622A10F98926006B4DC9 /* tsk_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61F510F98926006B4DC9 /* tsk_xml.h */; };
+		ECED622F10F989A3006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */; };
+		ECED624810F98B6A006B4DC9 /* stdafx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED624210F98B6A006B4DC9 /* stdafx.c */; };
+		ECED624910F98B6A006B4DC9 /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED624510F98B6A006B4DC9 /* test.c */; };
+		ECED624F10F98B8B006B4DC9 /* libtinyHTTP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC0630554660B00DB518D /* libtinyHTTP.dylib */; };
+		ECED625010F98B8B006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ECED622D10F9899F006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED61BB10F988E7006B4DC9 /* tinySAK */;
+			remoteInfo = tinySAK;
+		};
+		ECED624B10F98B85006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC0620554660B00DB518D /* tinyHTTP */;
+			remoteInfo = tinyHTTP;
+		};
+		ECED624D10F98B85006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED61BB10F988E7006B4DC9 /* tinySAK */;
+			remoteInfo = tinySAK;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D2AAC0630554660B00DB518D /* libtinyHTTP.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyHTTP.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED61A610F98820006B4DC9 /* http.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = http.abnf; path = ../../tinyHTTP/abnf/http.abnf; sourceTree = SOURCE_ROOT; };
+		ECED61A710F98820006B4DC9 /* httpauth.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = httpauth.abnf; path = ../../tinyHTTP/abnf/httpauth.abnf; sourceTree = SOURCE_ROOT; };
+		ECED61A810F98820006B4DC9 /* uri.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = uri.abnf; path = ../../tinyHTTP/abnf/uri.abnf; sourceTree = SOURCE_ROOT; };
+		ECED61A910F9885E006B4DC9 /* thttp_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp_auth.h; path = ../../tinyHTTP/include/tinyHTTP/auth/thttp_auth.h; sourceTree = SOURCE_ROOT; };
+		ECED61AB10F98876006B4DC9 /* thttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp.h; path = ../../tinyHTTP/include/thttp.h; sourceTree = SOURCE_ROOT; };
+		ECED61AC10F98876006B4DC9 /* tinyhttp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyhttp_config.h; path = ../../tinyHTTP/include/tinyhttp_config.h; sourceTree = SOURCE_ROOT; };
+		ECED61AF10F98893006B4DC9 /* thttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp.c; path = ../../tinyHTTP/source/thttp.c; sourceTree = SOURCE_ROOT; };
+		ECED61B010F98893006B4DC9 /* thttp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp_message.c; path = ../../tinyHTTP/source/thttp_message.c; sourceTree = SOURCE_ROOT; };
+		ECED61B110F98893006B4DC9 /* thttp_utl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp_utl.c; path = ../../tinyHTTP/source/thttp_utl.c; sourceTree = SOURCE_ROOT; };
+		ECED61B510F988B3006B4DC9 /* thttp_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp_auth.c; path = ../../tinyHTTP/source/auth/thttp_auth.c; sourceTree = SOURCE_ROOT; };
+		ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySAK.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED61C110F98926006B4DC9 /* tinySAK_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinySAK_config.h; path = ../../tinySAK/src/tinySAK_config.h; sourceTree = SOURCE_ROOT; };
+		ECED61C210F98926006B4DC9 /* tsk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk.c; path = ../../tinySAK/src/tsk.c; sourceTree = SOURCE_ROOT; };
+		ECED61C310F98926006B4DC9 /* tsk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk.h; path = ../../tinySAK/src/tsk.h; sourceTree = SOURCE_ROOT; };
+		ECED61C410F98926006B4DC9 /* tsk_base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_base64.c; path = ../../tinySAK/src/tsk_base64.c; sourceTree = SOURCE_ROOT; };
+		ECED61C510F98926006B4DC9 /* tsk_base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_base64.h; path = ../../tinySAK/src/tsk_base64.h; sourceTree = SOURCE_ROOT; };
+		ECED61C610F98926006B4DC9 /* tsk_binaryutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_binaryutils.c; path = ../../tinySAK/src/tsk_binaryutils.c; sourceTree = SOURCE_ROOT; };
+		ECED61C710F98926006B4DC9 /* tsk_binaryutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_binaryutils.h; path = ../../tinySAK/src/tsk_binaryutils.h; sourceTree = SOURCE_ROOT; };
+		ECED61C810F98926006B4DC9 /* tsk_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_buffer.c; path = ../../tinySAK/src/tsk_buffer.c; sourceTree = SOURCE_ROOT; };
+		ECED61C910F98926006B4DC9 /* tsk_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_buffer.h; path = ../../tinySAK/src/tsk_buffer.h; sourceTree = SOURCE_ROOT; };
+		ECED61CA10F98926006B4DC9 /* tsk_condwait.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_condwait.c; path = ../../tinySAK/src/tsk_condwait.c; sourceTree = SOURCE_ROOT; };
+		ECED61CB10F98926006B4DC9 /* tsk_condwait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_condwait.h; path = ../../tinySAK/src/tsk_condwait.h; sourceTree = SOURCE_ROOT; };
+		ECED61CC10F98926006B4DC9 /* tsk_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_debug.c; path = ../../tinySAK/src/tsk_debug.c; sourceTree = SOURCE_ROOT; };
+		ECED61CD10F98926006B4DC9 /* tsk_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_debug.h; path = ../../tinySAK/src/tsk_debug.h; sourceTree = SOURCE_ROOT; };
+		ECED61CE10F98926006B4DC9 /* tsk_errno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_errno.h; path = ../../tinySAK/src/tsk_errno.h; sourceTree = SOURCE_ROOT; };
+		ECED61CF10F98926006B4DC9 /* tsk_heap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_heap.c; path = ../../tinySAK/src/tsk_heap.c; sourceTree = SOURCE_ROOT; };
+		ECED61D010F98926006B4DC9 /* tsk_heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_heap.h; path = ../../tinySAK/src/tsk_heap.h; sourceTree = SOURCE_ROOT; };
+		ECED61D110F98926006B4DC9 /* tsk_hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_hmac.c; path = ../../tinySAK/src/tsk_hmac.c; sourceTree = SOURCE_ROOT; };
+		ECED61D210F98926006B4DC9 /* tsk_hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_hmac.h; path = ../../tinySAK/src/tsk_hmac.h; sourceTree = SOURCE_ROOT; };
+		ECED61D310F98926006B4DC9 /* tsk_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_list.c; path = ../../tinySAK/src/tsk_list.c; sourceTree = SOURCE_ROOT; };
+		ECED61D410F98926006B4DC9 /* tsk_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_list.h; path = ../../tinySAK/src/tsk_list.h; sourceTree = SOURCE_ROOT; };
+		ECED61D510F98926006B4DC9 /* tsk_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_macros.h; path = ../../tinySAK/src/tsk_macros.h; sourceTree = SOURCE_ROOT; };
+		ECED61D610F98926006B4DC9 /* tsk_md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_md5.c; path = ../../tinySAK/src/tsk_md5.c; sourceTree = SOURCE_ROOT; };
+		ECED61D710F98926006B4DC9 /* tsk_md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_md5.h; path = ../../tinySAK/src/tsk_md5.h; sourceTree = SOURCE_ROOT; };
+		ECED61D810F98926006B4DC9 /* tsk_memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_memory.c; path = ../../tinySAK/src/tsk_memory.c; sourceTree = SOURCE_ROOT; };
+		ECED61D910F98926006B4DC9 /* tsk_memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_memory.h; path = ../../tinySAK/src/tsk_memory.h; sourceTree = SOURCE_ROOT; };
+		ECED61DA10F98926006B4DC9 /* tsk_mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_mutex.c; path = ../../tinySAK/src/tsk_mutex.c; sourceTree = SOURCE_ROOT; };
+		ECED61DB10F98926006B4DC9 /* tsk_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_mutex.h; path = ../../tinySAK/src/tsk_mutex.h; sourceTree = SOURCE_ROOT; };
+		ECED61DC10F98926006B4DC9 /* tsk_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_object.c; path = ../../tinySAK/src/tsk_object.c; sourceTree = SOURCE_ROOT; };
+		ECED61DD10F98926006B4DC9 /* tsk_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_object.h; path = ../../tinySAK/src/tsk_object.h; sourceTree = SOURCE_ROOT; };
+		ECED61DE10F98926006B4DC9 /* tsk_params.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_params.c; path = ../../tinySAK/src/tsk_params.c; sourceTree = SOURCE_ROOT; };
+		ECED61DF10F98926006B4DC9 /* tsk_params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_params.h; path = ../../tinySAK/src/tsk_params.h; sourceTree = SOURCE_ROOT; };
+		ECED61E010F98926006B4DC9 /* tsk_ppfcs16.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_ppfcs16.c; path = ../../tinySAK/src/tsk_ppfcs16.c; sourceTree = SOURCE_ROOT; };
+		ECED61E110F98926006B4DC9 /* tsk_ppfcs16.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_ppfcs16.h; path = ../../tinySAK/src/tsk_ppfcs16.h; sourceTree = SOURCE_ROOT; };
+		ECED61E210F98926006B4DC9 /* tsk_runnable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_runnable.c; path = ../../tinySAK/src/tsk_runnable.c; sourceTree = SOURCE_ROOT; };
+		ECED61E310F98926006B4DC9 /* tsk_runnable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_runnable.h; path = ../../tinySAK/src/tsk_runnable.h; sourceTree = SOURCE_ROOT; };
+		ECED61E410F98926006B4DC9 /* tsk_safeobj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_safeobj.c; path = ../../tinySAK/src/tsk_safeobj.c; sourceTree = SOURCE_ROOT; };
+		ECED61E510F98926006B4DC9 /* tsk_safeobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_safeobj.h; path = ../../tinySAK/src/tsk_safeobj.h; sourceTree = SOURCE_ROOT; };
+		ECED61E610F98926006B4DC9 /* tsk_semaphore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_semaphore.c; path = ../../tinySAK/src/tsk_semaphore.c; sourceTree = SOURCE_ROOT; };
+		ECED61E710F98926006B4DC9 /* tsk_semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_semaphore.h; path = ../../tinySAK/src/tsk_semaphore.h; sourceTree = SOURCE_ROOT; };
+		ECED61E810F98926006B4DC9 /* tsk_sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_sha1.c; path = ../../tinySAK/src/tsk_sha1.c; sourceTree = SOURCE_ROOT; };
+		ECED61E910F98926006B4DC9 /* tsk_sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_sha1.h; path = ../../tinySAK/src/tsk_sha1.h; sourceTree = SOURCE_ROOT; };
+		ECED61EA10F98926006B4DC9 /* tsk_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_string.c; path = ../../tinySAK/src/tsk_string.c; sourceTree = SOURCE_ROOT; };
+		ECED61EB10F98926006B4DC9 /* tsk_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_string.h; path = ../../tinySAK/src/tsk_string.h; sourceTree = SOURCE_ROOT; };
+		ECED61EC10F98926006B4DC9 /* tsk_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_thread.c; path = ../../tinySAK/src/tsk_thread.c; sourceTree = SOURCE_ROOT; };
+		ECED61ED10F98926006B4DC9 /* tsk_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_thread.h; path = ../../tinySAK/src/tsk_thread.h; sourceTree = SOURCE_ROOT; };
+		ECED61EE10F98926006B4DC9 /* tsk_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_time.c; path = ../../tinySAK/src/tsk_time.c; sourceTree = SOURCE_ROOT; };
+		ECED61EF10F98926006B4DC9 /* tsk_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_time.h; path = ../../tinySAK/src/tsk_time.h; sourceTree = SOURCE_ROOT; };
+		ECED61F010F98926006B4DC9 /* tsk_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_timer.c; path = ../../tinySAK/src/tsk_timer.c; sourceTree = SOURCE_ROOT; };
+		ECED61F110F98926006B4DC9 /* tsk_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_timer.h; path = ../../tinySAK/src/tsk_timer.h; sourceTree = SOURCE_ROOT; };
+		ECED61F210F98926006B4DC9 /* tsk_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_url.c; path = ../../tinySAK/src/tsk_url.c; sourceTree = SOURCE_ROOT; };
+		ECED61F310F98926006B4DC9 /* tsk_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_url.h; path = ../../tinySAK/src/tsk_url.h; sourceTree = SOURCE_ROOT; };
+		ECED61F410F98926006B4DC9 /* tsk_xml.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_xml.c; path = ../../tinySAK/src/tsk_xml.c; sourceTree = SOURCE_ROOT; };
+		ECED61F510F98926006B4DC9 /* tsk_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_xml.h; path = ../../tinySAK/src/tsk_xml.h; sourceTree = SOURCE_ROOT; };
+		ECED623D10F98B46006B4DC9 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED624210F98B6A006B4DC9 /* stdafx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stdafx.c; path = ../../tinyHTTP/test/stdafx.c; sourceTree = SOURCE_ROOT; };
+		ECED624310F98B6A006B4DC9 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../tinyHTTP/test/stdafx.h; sourceTree = SOURCE_ROOT; };
+		ECED624410F98B6A006B4DC9 /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = targetver.h; path = ../../tinyHTTP/test/targetver.h; sourceTree = SOURCE_ROOT; };
+		ECED624510F98B6A006B4DC9 /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = test.c; path = ../../tinyHTTP/test/test.c; sourceTree = SOURCE_ROOT; };
+		ECED624610F98B6A006B4DC9 /* test.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = test.vcproj; path = ../../tinyHTTP/test/test.vcproj; sourceTree = SOURCE_ROOT; };
+		ECED624710F98B6A006B4DC9 /* test_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test_auth.h; path = ../../tinyHTTP/test/test_auth.h; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289988505E68E00004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED622F10F989A3006B4DC9 /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED61BA10F988E7006B4DC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED623B10F98B46006B4DC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED624F10F98B8B006B4DC9 /* libtinyHTTP.dylib in Frameworks */,
+				ECED625010F98B8B006B4DC9 /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* tinyHTTP */ = {
+			isa = PBXGroup;
+			children = (
+				ECED624210F98B6A006B4DC9 /* stdafx.c */,
+				ECED624310F98B6A006B4DC9 /* stdafx.h */,
+				ECED624410F98B6A006B4DC9 /* targetver.h */,
+				ECED624510F98B6A006B4DC9 /* test.c */,
+				ECED624610F98B6A006B4DC9 /* test.vcproj */,
+				ECED624710F98B6A006B4DC9 /* test_auth.h */,
+				ECED623910F98B38006B4DC9 /* test */,
+				ECED61BF10F988F6006B4DC9 /* tinySAK */,
+				ECED619F10F987B4006B4DC9 /* ragel */,
+				ECED619E10F987A5006B4DC9 /* abnf */,
+				ECED619D10F9878B006B4DC9 /* include */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = tinyHTTP;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				ECED61AF10F98893006B4DC9 /* thttp.c */,
+				ECED61B010F98893006B4DC9 /* thttp_message.c */,
+				ECED61B110F98893006B4DC9 /* thttp_utl.c */,
+				ECED61A210F987D2006B4DC9 /* parsers */,
+				ECED61A110F987CA006B4DC9 /* headers */,
+				ECED61A010F987C2006B4DC9 /* auth */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC0630554660B00DB518D /* libtinyHTTP.dylib */,
+				ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */,
+				ECED623D10F98B46006B4DC9 /* test */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ECED619D10F9878B006B4DC9 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECED61AB10F98876006B4DC9 /* thttp.h */,
+				ECED61AC10F98876006B4DC9 /* tinyhttp_config.h */,
+				ECED61A510F987F3006B4DC9 /* headers */,
+				ECED61A410F987EA006B4DC9 /* parsers */,
+				ECED61A310F987E3006B4DC9 /* auth */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		ECED619E10F987A5006B4DC9 /* abnf */ = {
+			isa = PBXGroup;
+			children = (
+				ECED61A610F98820006B4DC9 /* http.abnf */,
+				ECED61A710F98820006B4DC9 /* httpauth.abnf */,
+				ECED61A810F98820006B4DC9 /* uri.abnf */,
+			);
+			name = abnf;
+			sourceTree = "<group>";
+		};
+		ECED619F10F987B4006B4DC9 /* ragel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = ragel;
+			sourceTree = "<group>";
+		};
+		ECED61A010F987C2006B4DC9 /* auth */ = {
+			isa = PBXGroup;
+			children = (
+				ECED61B510F988B3006B4DC9 /* thttp_auth.c */,
+			);
+			name = auth;
+			sourceTree = "<group>";
+		};
+		ECED61A110F987CA006B4DC9 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = headers;
+			sourceTree = "<group>";
+		};
+		ECED61A210F987D2006B4DC9 /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = parsers;
+			sourceTree = "<group>";
+		};
+		ECED61A310F987E3006B4DC9 /* auth */ = {
+			isa = PBXGroup;
+			children = (
+				ECED61A910F9885E006B4DC9 /* thttp_auth.h */,
+			);
+			name = auth;
+			sourceTree = "<group>";
+		};
+		ECED61A410F987EA006B4DC9 /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = parsers;
+			sourceTree = "<group>";
+		};
+		ECED61A510F987F3006B4DC9 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = headers;
+			sourceTree = "<group>";
+		};
+		ECED61BF10F988F6006B4DC9 /* tinySAK */ = {
+			isa = PBXGroup;
+			children = (
+				ECED61C110F98926006B4DC9 /* tinySAK_config.h */,
+				ECED61C210F98926006B4DC9 /* tsk.c */,
+				ECED61C310F98926006B4DC9 /* tsk.h */,
+				ECED61C410F98926006B4DC9 /* tsk_base64.c */,
+				ECED61C510F98926006B4DC9 /* tsk_base64.h */,
+				ECED61C610F98926006B4DC9 /* tsk_binaryutils.c */,
+				ECED61C710F98926006B4DC9 /* tsk_binaryutils.h */,
+				ECED61C810F98926006B4DC9 /* tsk_buffer.c */,
+				ECED61C910F98926006B4DC9 /* tsk_buffer.h */,
+				ECED61CA10F98926006B4DC9 /* tsk_condwait.c */,
+				ECED61CB10F98926006B4DC9 /* tsk_condwait.h */,
+				ECED61CC10F98926006B4DC9 /* tsk_debug.c */,
+				ECED61CD10F98926006B4DC9 /* tsk_debug.h */,
+				ECED61CE10F98926006B4DC9 /* tsk_errno.h */,
+				ECED61CF10F98926006B4DC9 /* tsk_heap.c */,
+				ECED61D010F98926006B4DC9 /* tsk_heap.h */,
+				ECED61D110F98926006B4DC9 /* tsk_hmac.c */,
+				ECED61D210F98926006B4DC9 /* tsk_hmac.h */,
+				ECED61D310F98926006B4DC9 /* tsk_list.c */,
+				ECED61D410F98926006B4DC9 /* tsk_list.h */,
+				ECED61D510F98926006B4DC9 /* tsk_macros.h */,
+				ECED61D610F98926006B4DC9 /* tsk_md5.c */,
+				ECED61D710F98926006B4DC9 /* tsk_md5.h */,
+				ECED61D810F98926006B4DC9 /* tsk_memory.c */,
+				ECED61D910F98926006B4DC9 /* tsk_memory.h */,
+				ECED61DA10F98926006B4DC9 /* tsk_mutex.c */,
+				ECED61DB10F98926006B4DC9 /* tsk_mutex.h */,
+				ECED61DC10F98926006B4DC9 /* tsk_object.c */,
+				ECED61DD10F98926006B4DC9 /* tsk_object.h */,
+				ECED61DE10F98926006B4DC9 /* tsk_params.c */,
+				ECED61DF10F98926006B4DC9 /* tsk_params.h */,
+				ECED61E010F98926006B4DC9 /* tsk_ppfcs16.c */,
+				ECED61E110F98926006B4DC9 /* tsk_ppfcs16.h */,
+				ECED61E210F98926006B4DC9 /* tsk_runnable.c */,
+				ECED61E310F98926006B4DC9 /* tsk_runnable.h */,
+				ECED61E410F98926006B4DC9 /* tsk_safeobj.c */,
+				ECED61E510F98926006B4DC9 /* tsk_safeobj.h */,
+				ECED61E610F98926006B4DC9 /* tsk_semaphore.c */,
+				ECED61E710F98926006B4DC9 /* tsk_semaphore.h */,
+				ECED61E810F98926006B4DC9 /* tsk_sha1.c */,
+				ECED61E910F98926006B4DC9 /* tsk_sha1.h */,
+				ECED61EA10F98926006B4DC9 /* tsk_string.c */,
+				ECED61EB10F98926006B4DC9 /* tsk_string.h */,
+				ECED61EC10F98926006B4DC9 /* tsk_thread.c */,
+				ECED61ED10F98926006B4DC9 /* tsk_thread.h */,
+				ECED61EE10F98926006B4DC9 /* tsk_time.c */,
+				ECED61EF10F98926006B4DC9 /* tsk_time.h */,
+				ECED61F010F98926006B4DC9 /* tsk_timer.c */,
+				ECED61F110F98926006B4DC9 /* tsk_timer.h */,
+				ECED61F210F98926006B4DC9 /* tsk_url.c */,
+				ECED61F310F98926006B4DC9 /* tsk_url.h */,
+				ECED61F410F98926006B4DC9 /* tsk_xml.c */,
+				ECED61F510F98926006B4DC9 /* tsk_xml.h */,
+			);
+			name = tinySAK;
+			sourceTree = "<group>";
+		};
+		ECED623910F98B38006B4DC9 /* test */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = test;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC0600554660B00DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED61AA10F9885E006B4DC9 /* thttp_auth.h in Headers */,
+				ECED61AD10F98876006B4DC9 /* thttp.h in Headers */,
+				ECED61AE10F98876006B4DC9 /* tinyhttp_config.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED61B810F988E7006B4DC9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED61F610F98926006B4DC9 /* tinySAK_config.h in Headers */,
+				ECED61F810F98926006B4DC9 /* tsk.h in Headers */,
+				ECED61FA10F98926006B4DC9 /* tsk_base64.h in Headers */,
+				ECED61FC10F98926006B4DC9 /* tsk_binaryutils.h in Headers */,
+				ECED61FE10F98926006B4DC9 /* tsk_buffer.h in Headers */,
+				ECED620010F98926006B4DC9 /* tsk_condwait.h in Headers */,
+				ECED620210F98926006B4DC9 /* tsk_debug.h in Headers */,
+				ECED620310F98926006B4DC9 /* tsk_errno.h in Headers */,
+				ECED620510F98926006B4DC9 /* tsk_heap.h in Headers */,
+				ECED620710F98926006B4DC9 /* tsk_hmac.h in Headers */,
+				ECED620910F98926006B4DC9 /* tsk_list.h in Headers */,
+				ECED620A10F98926006B4DC9 /* tsk_macros.h in Headers */,
+				ECED620C10F98926006B4DC9 /* tsk_md5.h in Headers */,
+				ECED620E10F98926006B4DC9 /* tsk_memory.h in Headers */,
+				ECED621010F98926006B4DC9 /* tsk_mutex.h in Headers */,
+				ECED621210F98926006B4DC9 /* tsk_object.h in Headers */,
+				ECED621410F98926006B4DC9 /* tsk_params.h in Headers */,
+				ECED621610F98926006B4DC9 /* tsk_ppfcs16.h in Headers */,
+				ECED621810F98926006B4DC9 /* tsk_runnable.h in Headers */,
+				ECED621A10F98926006B4DC9 /* tsk_safeobj.h in Headers */,
+				ECED621C10F98926006B4DC9 /* tsk_semaphore.h in Headers */,
+				ECED621E10F98926006B4DC9 /* tsk_sha1.h in Headers */,
+				ECED622010F98926006B4DC9 /* tsk_string.h in Headers */,
+				ECED622210F98926006B4DC9 /* tsk_thread.h in Headers */,
+				ECED622410F98926006B4DC9 /* tsk_time.h in Headers */,
+				ECED622610F98926006B4DC9 /* tsk_timer.h in Headers */,
+				ECED622810F98926006B4DC9 /* tsk_url.h in Headers */,
+				ECED622A10F98926006B4DC9 /* tsk_xml.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC0620554660B00DB518D /* tinyHTTP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinyHTTP" */;
+			buildPhases = (
+				D2AAC0600554660B00DB518D /* Headers */,
+				D2AAC0610554660B00DB518D /* Sources */,
+				D289988505E68E00004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECED622E10F9899F006B4DC9 /* PBXTargetDependency */,
+			);
+			name = tinyHTTP;
+			productName = tinyHTTP;
+			productReference = D2AAC0630554660B00DB518D /* libtinyHTTP.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECED61BB10F988E7006B4DC9 /* tinySAK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECED61C010F988F6006B4DC9 /* Build configuration list for PBXNativeTarget "tinySAK" */;
+			buildPhases = (
+				ECED61B810F988E7006B4DC9 /* Headers */,
+				ECED61B910F988E7006B4DC9 /* Sources */,
+				ECED61BA10F988E7006B4DC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tinySAK;
+			productName = tinySAK;
+			productReference = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECED623C10F98B46006B4DC9 /* test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECED624110F98B65006B4DC9 /* Build configuration list for PBXNativeTarget "test" */;
+			buildPhases = (
+				ECED623A10F98B46006B4DC9 /* Sources */,
+				ECED623B10F98B46006B4DC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECED624C10F98B85006B4DC9 /* PBXTargetDependency */,
+				ECED624E10F98B85006B4DC9 /* PBXTargetDependency */,
+			);
+			name = test;
+			productName = test;
+			productReference = ECED623D10F98B46006B4DC9 /* test */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinyHTTP" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* tinyHTTP */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC0620554660B00DB518D /* tinyHTTP */,
+				ECED61BB10F988E7006B4DC9 /* tinySAK */,
+				ECED623C10F98B46006B4DC9 /* test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC0610554660B00DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED61B210F98893006B4DC9 /* thttp.c in Sources */,
+				ECED61B310F98893006B4DC9 /* thttp_message.c in Sources */,
+				ECED61B410F98893006B4DC9 /* thttp_utl.c in Sources */,
+				ECED61B610F988B3006B4DC9 /* thttp_auth.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED61B910F988E7006B4DC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED61F710F98926006B4DC9 /* tsk.c in Sources */,
+				ECED61F910F98926006B4DC9 /* tsk_base64.c in Sources */,
+				ECED61FB10F98926006B4DC9 /* tsk_binaryutils.c in Sources */,
+				ECED61FD10F98926006B4DC9 /* tsk_buffer.c in Sources */,
+				ECED61FF10F98926006B4DC9 /* tsk_condwait.c in Sources */,
+				ECED620110F98926006B4DC9 /* tsk_debug.c in Sources */,
+				ECED620410F98926006B4DC9 /* tsk_heap.c in Sources */,
+				ECED620610F98926006B4DC9 /* tsk_hmac.c in Sources */,
+				ECED620810F98926006B4DC9 /* tsk_list.c in Sources */,
+				ECED620B10F98926006B4DC9 /* tsk_md5.c in Sources */,
+				ECED620D10F98926006B4DC9 /* tsk_memory.c in Sources */,
+				ECED620F10F98926006B4DC9 /* tsk_mutex.c in Sources */,
+				ECED621110F98926006B4DC9 /* tsk_object.c in Sources */,
+				ECED621310F98926006B4DC9 /* tsk_params.c in Sources */,
+				ECED621510F98926006B4DC9 /* tsk_ppfcs16.c in Sources */,
+				ECED621710F98926006B4DC9 /* tsk_runnable.c in Sources */,
+				ECED621910F98926006B4DC9 /* tsk_safeobj.c in Sources */,
+				ECED621B10F98926006B4DC9 /* tsk_semaphore.c in Sources */,
+				ECED621D10F98926006B4DC9 /* tsk_sha1.c in Sources */,
+				ECED621F10F98926006B4DC9 /* tsk_string.c in Sources */,
+				ECED622110F98926006B4DC9 /* tsk_thread.c in Sources */,
+				ECED622310F98926006B4DC9 /* tsk_time.c in Sources */,
+				ECED622510F98926006B4DC9 /* tsk_timer.c in Sources */,
+				ECED622710F98926006B4DC9 /* tsk_url.c in Sources */,
+				ECED622910F98926006B4DC9 /* tsk_xml.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED623A10F98B46006B4DC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED624810F98B6A006B4DC9 /* stdafx.c in Sources */,
+				ECED624910F98B6A006B4DC9 /* test.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ECED622E10F9899F006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED61BB10F988E7006B4DC9 /* tinySAK */;
+			targetProxy = ECED622D10F9899F006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED624C10F98B85006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC0620554660B00DB518D /* tinyHTTP */;
+			targetProxy = ECED624B10F98B85006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED624E10F98B85006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED61BB10F988E7006B4DC9 /* tinySAK */;
+			targetProxy = ECED624D10F98B85006B4DC9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB914B08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../../doubango/tinyHTTP/include;
+				INSTALL_PATH = /usr/local/lib;
+				LIBRARY_SEARCH_PATHS = "";
+				PRODUCT_NAME = tinyHTTP;
+			};
+			name = Debug;
+		};
+		1DEB914C08733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = tinyHTTP;
+			};
+			name = Release;
+		};
+		1DEB914F08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB915008733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+		ECED61BD10F988E8006B4DC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinySAK;
+			};
+			name = Debug;
+		};
+		ECED61BE10F988E8006B4DC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinySAK;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		ECED623F10F98B47006B4DC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = ../../../doubango/tinyHTTP/include;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = test;
+			};
+			name = Debug;
+		};
+		ECED624010F98B47006B4DC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = test;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinyHTTP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914B08733D8E0010E9CD /* Debug */,
+				1DEB914C08733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinyHTTP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914F08733D8E0010E9CD /* Debug */,
+				1DEB915008733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECED61C010F988F6006B4DC9 /* Build configuration list for PBXNativeTarget "tinySAK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECED61BD10F988E8006B4DC9 /* Debug */,
+				ECED61BE10F988E8006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECED624110F98B65006B4DC9 /* Build configuration list for PBXNativeTarget "test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECED623F10F98B47006B4DC9 /* Debug */,
+				ECED624010F98B47006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

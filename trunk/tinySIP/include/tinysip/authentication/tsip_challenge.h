@@ -41,6 +41,7 @@
 
 #include "tsk_object.h"
 #include "tsk_list.h"
+#include "tsk_md5.h"
 
 TSIP_BEGIN_DECLS
 

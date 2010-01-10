@@ -34,6 +34,8 @@
 #include "tsk_binaryutils.h"
 #include "tsk_sha1.h"
 
+#include <string.h>
+
 /**@defgroup tcomp_message_group SigComp Message.
 * A message sent from the compressor dispatcher to the decompressordispatcher.  In case of a message-based transport such as UDP, a
 * SigComp message corresponds to exactly one datagram.  For a stream-based transport such as TCP, the SigComp messages are

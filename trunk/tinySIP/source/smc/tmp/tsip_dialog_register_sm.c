@@ -43,7 +43,7 @@
 #include <assert.h>
 #include "tinysip/dialogs/tsip_dialog_register.h"
 #include "tsk_debug.h"
-#include "C:\Projects\Doubango\tinySIP\include\tinysip\smc\tsip_dialog_register_sm.h"
+#include "tinysip/smc/tsip_dialog_register_sm.h"
 
 #define getOwner(fsm) \
     (fsm)->_owner

@@ -39,7 +39,7 @@
 
 #include <assert.h>
 #include "tinysip/transactions/tsip_transac_nist.h"
-#include "C:\Projects\Doubango\tinySIP\include\tinysip\smc\tsip_transac_nist_sm.h"
+#include "tinysip/smc/tsip_transac_nist_sm.h"
 
 #define getOwner(fsm) \
     (fsm)->_owner

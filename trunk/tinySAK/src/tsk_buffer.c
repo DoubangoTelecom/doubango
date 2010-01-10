@@ -31,6 +31,7 @@
 #include "tsk_memory.h"
 
 #include <stdio.h>
+#include <string.h>
 
 #if defined(_MSC_VER) || TSK_UNDER_WINDOWS
 #	define vsnprintf	_vsnprintf

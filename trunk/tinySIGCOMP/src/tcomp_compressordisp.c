@@ -35,6 +35,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <string.h>
+
 /**@defgroup tcomp_compressordisp_group SIGCOMP decompressor dispatcher.
 * Entity that receives application messages, invokes a compressor,and forwards the resulting SigComp compressed messages to a remote
 * endpoint.
@@ -136,7 +138,7 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 
 		tsk_sha1reset(&sha);
 		tsk_sha1input(&sha, (const uint8_t*)output_ptr, *output_size);
-		tsk_sha1result(&sha, nackId);
+		tsk_sha1result(&sha, (char*)nackId);
 		tcomp_compartment_addNack(lpCompartment, nackId);
 	}
 

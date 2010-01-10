@@ -35,6 +35,7 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+#include <string.h>
 
 /**
  * @fn	int tnet_socket_close(const tnet_socket_t *socket)

@@ -32,6 +32,7 @@
 #include "tsk_binaryutils.h"
 #include "tsk_debug.h"
 
+#include <string.h>
 
 /*
 	|<----------------------------DMS--------------------------------->|

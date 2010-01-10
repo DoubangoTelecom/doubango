@@ -132,7 +132,7 @@ uint8_t* tcomp_buffer_getBufferAtPos(const tcomp_buffer_handle_t* handle, size_t
 * Gets the internal buffer size
 * @retval The size of the internal buffer
 */
-const size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* handle) /*const*/
+size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* handle) /*const*/
 {
 	if(handle)
 	{
@@ -147,7 +147,7 @@ const size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* handle) /*const*/
 * Gets the remainning bits.
 * @param handle The handle for which to get the remaining bits.
 */
-const size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*const*/
+size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*const*/
 {
 	if(handle)
 	{

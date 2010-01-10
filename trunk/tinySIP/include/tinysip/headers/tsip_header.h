@@ -168,7 +168,7 @@ typedef tsk_list_t tsip_headers_L_t; /**< List of @ref tsip_header_t elements. *
 ================================*/
 
 TINYSIP_API const char *tsip_header_get_name(tsip_header_type_t type);
-TINYSIP_API const char tsip_header_get_param_separator(const tsip_header_t *self);
+TINYSIP_API char tsip_header_get_param_separator(const tsip_header_t *self);
 TINYSIP_API int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output);
 
 #define TSIP_HEADER_HAS_PARAM(self, name)					tsk_params_has_param(self ? TSIP_HEADER(self)->params : 0, name)

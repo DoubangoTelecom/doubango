@@ -26,7 +26,9 @@
 #include "targetver.h"
 
 #include <stdio.h>
-#include <tchar.h>
+#if (defined(_WIN32) || defined(WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)
+#	include <tchar.h>
+#endif
 
 #include <string.h>
 

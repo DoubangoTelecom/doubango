@@ -322,18 +322,18 @@ static void tsip_dialog_register_Trying_sm_2xx(struct tsip_dialog_registerContex
 {
     struct tsip_dialog_register* ctxt = getOwner(fsm);
 
-    if (unregistering) {
+    if (!unregistering) {
         EXIT_STATE(getState(fsm));
         clearState(fsm);
         tsip_dialog_register_Trying_2_Connected_X_2xx(ctxt, msg);
-        setState(fsm, &tsip_dialog_register_Terminated);
+        setState(fsm, &tsip_dialog_register_Connected);
         ENTRY_STATE(getState(fsm));
     }
-    else if (!unregistering) {
+    else if (unregistering) {
         EXIT_STATE(getState(fsm));
         clearState(fsm);
         tsip_dialog_register_Trying_2_Terminated_X_2xx(ctxt, msg);
-        setState(fsm, &tsip_dialog_register_Connected);
+        setState(fsm, &tsip_dialog_register_Terminated);
         ENTRY_STATE(getState(fsm));
     }    else {
         tsip_dialog_register_DefaultState_sm_2xx(fsm, unregistering, msg);

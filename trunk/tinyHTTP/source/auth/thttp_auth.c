@@ -63,7 +63,7 @@ size_t thttp_auth_basic_response(const char* userid, const char* password, char*
 	
 	char *res = 0;
 	tsk_sprintf(&res, "%s:%s", userid, password);
-	ret = tsk_base64_encode(res, strlen(res), response);
+	ret = tsk_base64_encode((const uint8_t*)res, strlen(res), response);
 	TSK_FREE(res);
 
 	return ret;

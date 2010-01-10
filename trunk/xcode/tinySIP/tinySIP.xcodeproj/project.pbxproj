@@ -1,0 +1,2247 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		ECED654410F99647006B4DC9 /* tsip_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED654010F99647006B4DC9 /* tsip_message.h */; };
+		ECED654510F99647006B4DC9 /* tsip_operation.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED654110F99647006B4DC9 /* tsip_operation.h */; };
+		ECED654610F99647006B4DC9 /* tsip_timers.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED654210F99647006B4DC9 /* tsip_timers.h */; };
+		ECED654710F99647006B4DC9 /* tsip_uri.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED654310F99647006B4DC9 /* tsip_uri.h */; };
+		ECED65DD10F99666006B4DC9 /* tsip.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED65D810F99666006B4DC9 /* tsip.c */; };
+		ECED65DE10F99666006B4DC9 /* tsip_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED65D910F99666006B4DC9 /* tsip_message.c */; };
+		ECED65DF10F99666006B4DC9 /* tsip_operation.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED65DA10F99666006B4DC9 /* tsip_operation.c */; };
+		ECED65E010F99666006B4DC9 /* tsip_timers.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED65DB10F99666006B4DC9 /* tsip_timers.c */; };
+		ECED65E110F99666006B4DC9 /* tsip_uri.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED65DC10F99666006B4DC9 /* tsip_uri.c */; };
+		ECED682310F996F6006B4DC9 /* tinySAK_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67EE10F996F6006B4DC9 /* tinySAK_config.h */; };
+		ECED682410F996F6006B4DC9 /* tsk.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED67EF10F996F6006B4DC9 /* tsk.c */; };
+		ECED682510F996F6006B4DC9 /* tsk.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67F010F996F6006B4DC9 /* tsk.h */; };
+		ECED682610F996F6006B4DC9 /* tsk_base64.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED67F110F996F6006B4DC9 /* tsk_base64.c */; };
+		ECED682710F996F6006B4DC9 /* tsk_base64.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67F210F996F6006B4DC9 /* tsk_base64.h */; };
+		ECED682810F996F6006B4DC9 /* tsk_binaryutils.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED67F310F996F6006B4DC9 /* tsk_binaryutils.c */; };
+		ECED682910F996F6006B4DC9 /* tsk_binaryutils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67F410F996F6006B4DC9 /* tsk_binaryutils.h */; };
+		ECED682A10F996F6006B4DC9 /* tsk_buffer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED67F510F996F6006B4DC9 /* tsk_buffer.c */; };
+		ECED682B10F996F6006B4DC9 /* tsk_buffer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67F610F996F6006B4DC9 /* tsk_buffer.h */; };
+		ECED682C10F996F6006B4DC9 /* tsk_condwait.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED67F710F996F6006B4DC9 /* tsk_condwait.c */; };
+		ECED682D10F996F6006B4DC9 /* tsk_condwait.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67F810F996F6006B4DC9 /* tsk_condwait.h */; };
+		ECED682E10F996F6006B4DC9 /* tsk_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED67F910F996F6006B4DC9 /* tsk_debug.c */; };
+		ECED682F10F996F6006B4DC9 /* tsk_debug.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67FA10F996F6006B4DC9 /* tsk_debug.h */; };
+		ECED683010F996F6006B4DC9 /* tsk_errno.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67FB10F996F6006B4DC9 /* tsk_errno.h */; };
+		ECED683110F996F6006B4DC9 /* tsk_heap.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED67FC10F996F6006B4DC9 /* tsk_heap.c */; };
+		ECED683210F996F6006B4DC9 /* tsk_heap.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67FD10F996F6006B4DC9 /* tsk_heap.h */; };
+		ECED683310F996F6006B4DC9 /* tsk_hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED67FE10F996F6006B4DC9 /* tsk_hmac.c */; };
+		ECED683410F996F6006B4DC9 /* tsk_hmac.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED67FF10F996F6006B4DC9 /* tsk_hmac.h */; };
+		ECED683510F996F6006B4DC9 /* tsk_list.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED680010F996F6006B4DC9 /* tsk_list.c */; };
+		ECED683610F996F6006B4DC9 /* tsk_list.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED680110F996F6006B4DC9 /* tsk_list.h */; };
+		ECED683710F996F6006B4DC9 /* tsk_macros.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED680210F996F6006B4DC9 /* tsk_macros.h */; };
+		ECED683810F996F6006B4DC9 /* tsk_md5.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED680310F996F6006B4DC9 /* tsk_md5.c */; };
+		ECED683910F996F6006B4DC9 /* tsk_md5.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED680410F996F6006B4DC9 /* tsk_md5.h */; };
+		ECED683A10F996F6006B4DC9 /* tsk_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED680510F996F6006B4DC9 /* tsk_memory.c */; };
+		ECED683B10F996F6006B4DC9 /* tsk_memory.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED680610F996F6006B4DC9 /* tsk_memory.h */; };
+		ECED683C10F996F6006B4DC9 /* tsk_mutex.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED680710F996F6006B4DC9 /* tsk_mutex.c */; };
+		ECED683D10F996F6006B4DC9 /* tsk_mutex.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED680810F996F6006B4DC9 /* tsk_mutex.h */; };
+		ECED683E10F996F6006B4DC9 /* tsk_object.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED680910F996F6006B4DC9 /* tsk_object.c */; };
+		ECED683F10F996F6006B4DC9 /* tsk_object.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED680A10F996F6006B4DC9 /* tsk_object.h */; };
+		ECED684010F996F6006B4DC9 /* tsk_params.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED680B10F996F6006B4DC9 /* tsk_params.c */; };
+		ECED684110F996F6006B4DC9 /* tsk_params.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED680C10F996F6006B4DC9 /* tsk_params.h */; };
+		ECED684210F996F6006B4DC9 /* tsk_ppfcs16.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED680D10F996F6006B4DC9 /* tsk_ppfcs16.c */; };
+		ECED684310F996F6006B4DC9 /* tsk_ppfcs16.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED680E10F996F6006B4DC9 /* tsk_ppfcs16.h */; };
+		ECED684410F996F6006B4DC9 /* tsk_runnable.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED680F10F996F6006B4DC9 /* tsk_runnable.c */; };
+		ECED684510F996F6006B4DC9 /* tsk_runnable.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED681010F996F6006B4DC9 /* tsk_runnable.h */; };
+		ECED684610F996F6006B4DC9 /* tsk_safeobj.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED681110F996F6006B4DC9 /* tsk_safeobj.c */; };
+		ECED684710F996F6006B4DC9 /* tsk_safeobj.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED681210F996F6006B4DC9 /* tsk_safeobj.h */; };
+		ECED684810F996F6006B4DC9 /* tsk_semaphore.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED681310F996F6006B4DC9 /* tsk_semaphore.c */; };
+		ECED684910F996F6006B4DC9 /* tsk_semaphore.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED681410F996F6006B4DC9 /* tsk_semaphore.h */; };
+		ECED684A10F996F6006B4DC9 /* tsk_sha1.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED681510F996F6006B4DC9 /* tsk_sha1.c */; };
+		ECED684B10F996F6006B4DC9 /* tsk_sha1.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED681610F996F6006B4DC9 /* tsk_sha1.h */; };
+		ECED684C10F996F6006B4DC9 /* tsk_string.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED681710F996F6006B4DC9 /* tsk_string.c */; };
+		ECED684D10F996F6006B4DC9 /* tsk_string.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED681810F996F6006B4DC9 /* tsk_string.h */; };
+		ECED684E10F996F6006B4DC9 /* tsk_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED681910F996F6006B4DC9 /* tsk_thread.c */; };
+		ECED684F10F996F6006B4DC9 /* tsk_thread.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED681A10F996F6006B4DC9 /* tsk_thread.h */; };
+		ECED685010F996F6006B4DC9 /* tsk_time.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED681B10F996F6006B4DC9 /* tsk_time.c */; };
+		ECED685110F996F6006B4DC9 /* tsk_time.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED681C10F996F6006B4DC9 /* tsk_time.h */; };
+		ECED685210F996F6006B4DC9 /* tsk_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED681D10F996F6006B4DC9 /* tsk_timer.c */; };
+		ECED685310F996F6006B4DC9 /* tsk_timer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED681E10F996F6006B4DC9 /* tsk_timer.h */; };
+		ECED685410F996F6006B4DC9 /* tsk_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED681F10F996F6006B4DC9 /* tsk_url.c */; };
+		ECED685510F996F6006B4DC9 /* tsk_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED682010F996F6006B4DC9 /* tsk_url.h */; };
+		ECED685610F996F6006B4DC9 /* tsk_xml.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED682110F996F6006B4DC9 /* tsk_xml.c */; };
+		ECED685710F996F6006B4DC9 /* tsk_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED682210F996F6006B4DC9 /* tsk_xml.h */; };
+		ECED685C10F997BF006B4DC9 /* tinysip_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED685A10F997BF006B4DC9 /* tinysip_config.h */; };
+		ECED685D10F997BF006B4DC9 /* tsip.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED685B10F997BF006B4DC9 /* tsip.h */; };
+		ECED687910F99811006B4DC9 /* tinyNET_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED686910F99811006B4DC9 /* tinyNET_config.h */; };
+		ECED687A10F99811006B4DC9 /* tnet.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED686A10F99811006B4DC9 /* tnet.c */; };
+		ECED687B10F99811006B4DC9 /* tnet.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED686B10F99811006B4DC9 /* tnet.h */; };
+		ECED687C10F99811006B4DC9 /* tnet_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED686C10F99811006B4DC9 /* tnet_auth.c */; };
+		ECED687D10F99811006B4DC9 /* tnet_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED686D10F99811006B4DC9 /* tnet_auth.h */; };
+		ECED687E10F99811006B4DC9 /* tnet_poll.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED686E10F99811006B4DC9 /* tnet_poll.c */; };
+		ECED687F10F99811006B4DC9 /* tnet_poll.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED686F10F99811006B4DC9 /* tnet_poll.h */; };
+		ECED688010F99811006B4DC9 /* tnet_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED687010F99811006B4DC9 /* tnet_socket.c */; };
+		ECED688110F99811006B4DC9 /* tnet_socket.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED687110F99811006B4DC9 /* tnet_socket.h */; };
+		ECED688210F99811006B4DC9 /* tnet_transport.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED687210F99811006B4DC9 /* tnet_transport.c */; };
+		ECED688310F99811006B4DC9 /* tnet_transport.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED687310F99811006B4DC9 /* tnet_transport.h */; };
+		ECED688410F99811006B4DC9 /* tnet_transport_poll.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED687410F99811006B4DC9 /* tnet_transport_poll.c */; };
+		ECED688510F99811006B4DC9 /* tnet_transport_win32.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED687510F99811006B4DC9 /* tnet_transport_win32.c */; };
+		ECED688610F99811006B4DC9 /* tnet_types.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED687610F99811006B4DC9 /* tnet_types.h */; };
+		ECED688710F99811006B4DC9 /* tnet_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED687710F99811006B4DC9 /* tnet_utils.c */; };
+		ECED688810F99811006B4DC9 /* tnet_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED687810F99811006B4DC9 /* tnet_utils.h */; };
+		ECED688F10F9986A006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED65E610F9968A006B4DC9 /* libtinySAK.dylib */; };
+		ECED689510F99886006B4DC9 /* libtinyNET.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED686410F997F2006B4DC9 /* libtinyNET.dylib */; };
+		ECED689610F99886006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED65E610F9968A006B4DC9 /* libtinySAK.dylib */; };
+		ECED68AD10F9991C006B4DC9 /* thttp_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED68AB10F9991C006B4DC9 /* thttp_message.h */; };
+		ECED68AE10F9991C006B4DC9 /* thttp_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED68AC10F9991C006B4DC9 /* thttp_url.h */; };
+		ECED68B110F9992F006B4DC9 /* thttp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED68AF10F9992F006B4DC9 /* thttp.h */; };
+		ECED68B210F9992F006B4DC9 /* tinyhttp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED68B010F9992F006B4DC9 /* tinyhttp_config.h */; };
+		ECED68BD10F99944006B4DC9 /* thttp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68BA10F99944006B4DC9 /* thttp.c */; };
+		ECED68BE10F99944006B4DC9 /* thttp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68BB10F99944006B4DC9 /* thttp_message.c */; };
+		ECED68BF10F99944006B4DC9 /* thttp_utl.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68BC10F99944006B4DC9 /* thttp_utl.c */; };
+		ECED68C410F99979006B4DC9 /* libtinyHTTP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED689D10F998E4006B4DC9 /* libtinyHTTP.dylib */; };
+		ECED696810F9A303006B4DC9 /* tsip_challenge.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68E110F9A303006B4DC9 /* tsip_challenge.c */; };
+		ECED696910F9A303006B4DC9 /* tsip_milenage.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68E210F9A303006B4DC9 /* tsip_milenage.c */; };
+		ECED696A10F9A303006B4DC9 /* tsip_rijndael.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68E310F9A303006B4DC9 /* tsip_rijndael.c */; };
+		ECED696B10F9A303006B4DC9 /* tsip_dialog.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68E510F9A303006B4DC9 /* tsip_dialog.c */; };
+		ECED696C10F9A303006B4DC9 /* tsip_dialog_invite.client.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68E610F9A303006B4DC9 /* tsip_dialog_invite.client.c */; };
+		ECED696D10F9A303006B4DC9 /* tsip_dialog_invite.server.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68E710F9A303006B4DC9 /* tsip_dialog_invite.server.c */; };
+		ECED696E10F9A303006B4DC9 /* tsip_dialog_layer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68E810F9A303006B4DC9 /* tsip_dialog_layer.c */; };
+		ECED696F10F9A303006B4DC9 /* tsip_dialog_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68E910F9A303006B4DC9 /* tsip_dialog_message.c */; };
+		ECED697010F9A303006B4DC9 /* tsip_dialog_register.client.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68EA10F9A303006B4DC9 /* tsip_dialog_register.client.c */; };
+		ECED697110F9A303006B4DC9 /* tsip_dialog_register.server.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68EB10F9A303006B4DC9 /* tsip_dialog_register.server.c */; };
+		ECED697210F9A303006B4DC9 /* tsip_dialog_subscribe.client.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68EC10F9A303006B4DC9 /* tsip_dialog_subscribe.client.c */; };
+		ECED697310F9A303006B4DC9 /* tsip_dialog_subscribe.server.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68ED10F9A303006B4DC9 /* tsip_dialog_subscribe.server.c */; };
+		ECED697410F9A303006B4DC9 /* tsip_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68EF10F9A303006B4DC9 /* tsip_header.c */; };
+		ECED697510F9A303006B4DC9 /* tsip_header_accept.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F010F9A303006B4DC9 /* tsip_header_accept.c */; };
+		ECED697610F9A303006B4DC9 /* tsip_header_Accept_Contact.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F110F9A303006B4DC9 /* tsip_header_Accept_Contact.c */; };
+		ECED697710F9A303006B4DC9 /* tsip_header_Accept_Encoding.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F210F9A303006B4DC9 /* tsip_header_Accept_Encoding.c */; };
+		ECED697810F9A303006B4DC9 /* tsip_header_Accept_Language.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F310F9A303006B4DC9 /* tsip_header_Accept_Language.c */; };
+		ECED697910F9A303006B4DC9 /* tsip_header_Accept_Resource_Priority.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F410F9A303006B4DC9 /* tsip_header_Accept_Resource_Priority.c */; };
+		ECED697A10F9A303006B4DC9 /* tsip_header_Alert_Info.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F510F9A303006B4DC9 /* tsip_header_Alert_Info.c */; };
+		ECED697B10F9A303006B4DC9 /* tsip_header_Allow.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F610F9A303006B4DC9 /* tsip_header_Allow.c */; };
+		ECED697C10F9A303006B4DC9 /* tsip_header_Allow_Events.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F710F9A303006B4DC9 /* tsip_header_Allow_Events.c */; };
+		ECED697D10F9A303006B4DC9 /* tsip_header_Authentication_Info.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F810F9A303006B4DC9 /* tsip_header_Authentication_Info.c */; };
+		ECED697E10F9A303006B4DC9 /* tsip_header_Authorization.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68F910F9A303006B4DC9 /* tsip_header_Authorization.c */; };
+		ECED697F10F9A303006B4DC9 /* tsip_header_Call_ID.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68FA10F9A303006B4DC9 /* tsip_header_Call_ID.c */; };
+		ECED698010F9A303006B4DC9 /* tsip_header_Call_Info.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68FB10F9A303006B4DC9 /* tsip_header_Call_Info.c */; };
+		ECED698110F9A303006B4DC9 /* tsip_header_Contact.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68FC10F9A303006B4DC9 /* tsip_header_Contact.c */; };
+		ECED698210F9A303006B4DC9 /* tsip_header_Content_Disposition.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68FD10F9A303006B4DC9 /* tsip_header_Content_Disposition.c */; };
+		ECED698310F9A303006B4DC9 /* tsip_header_Content_Encoding.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68FE10F9A303006B4DC9 /* tsip_header_Content_Encoding.c */; };
+		ECED698410F9A303006B4DC9 /* tsip_header_Content_Language.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED68FF10F9A303006B4DC9 /* tsip_header_Content_Language.c */; };
+		ECED698510F9A303006B4DC9 /* tsip_header_Content_Length.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690010F9A303006B4DC9 /* tsip_header_Content_Length.c */; };
+		ECED698610F9A303006B4DC9 /* tsip_header_Content_Type.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690110F9A303006B4DC9 /* tsip_header_Content_Type.c */; };
+		ECED698710F9A303006B4DC9 /* tsip_header_CSeq.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690210F9A303006B4DC9 /* tsip_header_CSeq.c */; };
+		ECED698810F9A303006B4DC9 /* tsip_header_Date.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690310F9A303006B4DC9 /* tsip_header_Date.c */; };
+		ECED698910F9A303006B4DC9 /* tsip_header_Error_Info.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690410F9A303006B4DC9 /* tsip_header_Error_Info.c */; };
+		ECED698A10F9A303006B4DC9 /* tsip_header_Event.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690510F9A303006B4DC9 /* tsip_header_Event.c */; };
+		ECED698B10F9A303006B4DC9 /* tsip_header_Expires.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690610F9A303006B4DC9 /* tsip_header_Expires.c */; };
+		ECED698C10F9A303006B4DC9 /* tsip_header_From.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690710F9A303006B4DC9 /* tsip_header_From.c */; };
+		ECED698D10F9A303006B4DC9 /* tsip_header_History_Info.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690810F9A303006B4DC9 /* tsip_header_History_Info.c */; };
+		ECED698E10F9A303006B4DC9 /* tsip_header_Identity.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690910F9A303006B4DC9 /* tsip_header_Identity.c */; };
+		ECED698F10F9A303006B4DC9 /* tsip_header_Identity_Info.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690A10F9A303006B4DC9 /* tsip_header_Identity_Info.c */; };
+		ECED699010F9A303006B4DC9 /* tsip_header_In_Reply_To.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690B10F9A303006B4DC9 /* tsip_header_In_Reply_To.c */; };
+		ECED699110F9A303006B4DC9 /* tsip_header_Join.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690C10F9A303006B4DC9 /* tsip_header_Join.c */; };
+		ECED699210F9A303006B4DC9 /* tsip_header_Max_Forwards.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690D10F9A303006B4DC9 /* tsip_header_Max_Forwards.c */; };
+		ECED699310F9A303006B4DC9 /* tsip_header_MIME_Version.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690E10F9A303006B4DC9 /* tsip_header_MIME_Version.c */; };
+		ECED699410F9A303006B4DC9 /* tsip_header_Min_Expires.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED690F10F9A303006B4DC9 /* tsip_header_Min_Expires.c */; };
+		ECED699510F9A303006B4DC9 /* tsip_header_Min_SE.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691010F9A303006B4DC9 /* tsip_header_Min_SE.c */; };
+		ECED699610F9A303006B4DC9 /* tsip_header_Organization.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691110F9A303006B4DC9 /* tsip_header_Organization.c */; };
+		ECED699710F9A303006B4DC9 /* tsip_header_P_Access_Network_Info.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691210F9A303006B4DC9 /* tsip_header_P_Access_Network_Info.c */; };
+		ECED699810F9A303006B4DC9 /* tsip_header_P_Answer_State.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691310F9A303006B4DC9 /* tsip_header_P_Answer_State.c */; };
+		ECED699910F9A303006B4DC9 /* tsip_header_P_Asserted_Identity.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691410F9A303006B4DC9 /* tsip_header_P_Asserted_Identity.c */; };
+		ECED699A10F9A303006B4DC9 /* tsip_header_P_Associated_URI.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691510F9A303006B4DC9 /* tsip_header_P_Associated_URI.c */; };
+		ECED699B10F9A303006B4DC9 /* tsip_header_P_Called_Party_ID.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691610F9A303006B4DC9 /* tsip_header_P_Called_Party_ID.c */; };
+		ECED699C10F9A303006B4DC9 /* tsip_header_P_Charging_Function_Addresses.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691710F9A303006B4DC9 /* tsip_header_P_Charging_Function_Addresses.c */; };
+		ECED699D10F9A303006B4DC9 /* tsip_header_P_Charging_Vector.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691810F9A303006B4DC9 /* tsip_header_P_Charging_Vector.c */; };
+		ECED699E10F9A303006B4DC9 /* tsip_header_P_DCS_Billing_Info.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691910F9A303006B4DC9 /* tsip_header_P_DCS_Billing_Info.c */; };
+		ECED699F10F9A303006B4DC9 /* tsip_header_P_DCS_LAES.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691A10F9A303006B4DC9 /* tsip_header_P_DCS_LAES.c */; };
+		ECED69A010F9A303006B4DC9 /* tsip_header_P_DCS_OSPS.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691B10F9A303006B4DC9 /* tsip_header_P_DCS_OSPS.c */; };
+		ECED69A110F9A303006B4DC9 /* tsip_header_P_DCS_Redirect.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691C10F9A303006B4DC9 /* tsip_header_P_DCS_Redirect.c */; };
+		ECED69A210F9A303006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691D10F9A303006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.c */; };
+		ECED69A310F9A303006B4DC9 /* tsip_header_P_Early_Media.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691E10F9A303006B4DC9 /* tsip_header_P_Early_Media.c */; };
+		ECED69A410F9A303006B4DC9 /* tsip_header_P_Media_Authorization.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED691F10F9A303006B4DC9 /* tsip_header_P_Media_Authorization.c */; };
+		ECED69A510F9A303006B4DC9 /* tsip_header_P_Preferred_Identity.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692010F9A303006B4DC9 /* tsip_header_P_Preferred_Identity.c */; };
+		ECED69A610F9A303006B4DC9 /* tsip_header_P_Profile_Key.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692110F9A303006B4DC9 /* tsip_header_P_Profile_Key.c */; };
+		ECED69A710F9A303006B4DC9 /* tsip_header_P_User_Database.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692210F9A303006B4DC9 /* tsip_header_P_User_Database.c */; };
+		ECED69A810F9A303006B4DC9 /* tsip_header_P_Visited_Network_ID.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692310F9A303006B4DC9 /* tsip_header_P_Visited_Network_ID.c */; };
+		ECED69A910F9A303006B4DC9 /* tsip_header_Path.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692410F9A303006B4DC9 /* tsip_header_Path.c */; };
+		ECED69AA10F9A303006B4DC9 /* tsip_header_Priority.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692510F9A303006B4DC9 /* tsip_header_Priority.c */; };
+		ECED69AB10F9A303006B4DC9 /* tsip_header_Privacy.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692610F9A303006B4DC9 /* tsip_header_Privacy.c */; };
+		ECED69AC10F9A303006B4DC9 /* tsip_header_Proxy_Authenticate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692710F9A303006B4DC9 /* tsip_header_Proxy_Authenticate.c */; };
+		ECED69AD10F9A303006B4DC9 /* tsip_header_Proxy_Authorization.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692810F9A303006B4DC9 /* tsip_header_Proxy_Authorization.c */; };
+		ECED69AE10F9A303006B4DC9 /* tsip_header_Proxy_Require.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692910F9A303006B4DC9 /* tsip_header_Proxy_Require.c */; };
+		ECED69AF10F9A303006B4DC9 /* tsip_header_RAck.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692A10F9A303006B4DC9 /* tsip_header_RAck.c */; };
+		ECED69B010F9A303006B4DC9 /* tsip_header_Reason.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692B10F9A303006B4DC9 /* tsip_header_Reason.c */; };
+		ECED69B110F9A303006B4DC9 /* tsip_header_Record_Route.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692C10F9A303006B4DC9 /* tsip_header_Record_Route.c */; };
+		ECED69B210F9A303006B4DC9 /* tsip_header_Refer_Sub.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692D10F9A303006B4DC9 /* tsip_header_Refer_Sub.c */; };
+		ECED69B310F9A303006B4DC9 /* tsip_header_Refer_To.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692E10F9A303006B4DC9 /* tsip_header_Refer_To.c */; };
+		ECED69B410F9A303006B4DC9 /* tsip_header_Referred_By.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED692F10F9A303006B4DC9 /* tsip_header_Referred_By.c */; };
+		ECED69B510F9A303006B4DC9 /* tsip_header_Reject_Contact.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693010F9A303006B4DC9 /* tsip_header_Reject_Contact.c */; };
+		ECED69B610F9A303006B4DC9 /* tsip_header_Replaces.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693110F9A303006B4DC9 /* tsip_header_Replaces.c */; };
+		ECED69B710F9A303006B4DC9 /* tsip_header_Reply_To.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693210F9A303006B4DC9 /* tsip_header_Reply_To.c */; };
+		ECED69B810F9A303006B4DC9 /* tsip_header_Request_Disposition.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693310F9A303006B4DC9 /* tsip_header_Request_Disposition.c */; };
+		ECED69B910F9A303006B4DC9 /* tsip_header_Require.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693410F9A303006B4DC9 /* tsip_header_Require.c */; };
+		ECED69BA10F9A303006B4DC9 /* tsip_header_Resource_Priority.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693510F9A303006B4DC9 /* tsip_header_Resource_Priority.c */; };
+		ECED69BB10F9A303006B4DC9 /* tsip_header_Retry_After.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693610F9A303006B4DC9 /* tsip_header_Retry_After.c */; };
+		ECED69BC10F9A303006B4DC9 /* tsip_header_Route.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693710F9A303006B4DC9 /* tsip_header_Route.c */; };
+		ECED69BD10F9A303006B4DC9 /* tsip_header_RSeq.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693810F9A303006B4DC9 /* tsip_header_RSeq.c */; };
+		ECED69BE10F9A303006B4DC9 /* tsip_header_Security_Client.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693910F9A303006B4DC9 /* tsip_header_Security_Client.c */; };
+		ECED69BF10F9A303006B4DC9 /* tsip_header_Security_Server.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693A10F9A303006B4DC9 /* tsip_header_Security_Server.c */; };
+		ECED69C010F9A303006B4DC9 /* tsip_header_Security_Verify.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693B10F9A303006B4DC9 /* tsip_header_Security_Verify.c */; };
+		ECED69C110F9A303006B4DC9 /* tsip_header_Server.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693C10F9A303006B4DC9 /* tsip_header_Server.c */; };
+		ECED69C210F9A303006B4DC9 /* tsip_header_Service_Route.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693D10F9A303006B4DC9 /* tsip_header_Service_Route.c */; };
+		ECED69C310F9A303006B4DC9 /* tsip_header_Session_Expires.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693E10F9A303006B4DC9 /* tsip_header_Session_Expires.c */; };
+		ECED69C410F9A303006B4DC9 /* tsip_header_SIP_ETag.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED693F10F9A303006B4DC9 /* tsip_header_SIP_ETag.c */; };
+		ECED69C510F9A303006B4DC9 /* tsip_header_SIP_If_Match.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694010F9A303006B4DC9 /* tsip_header_SIP_If_Match.c */; };
+		ECED69C610F9A303006B4DC9 /* tsip_header_Subject.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694110F9A303006B4DC9 /* tsip_header_Subject.c */; };
+		ECED69C710F9A303006B4DC9 /* tsip_header_Subscription_State.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694210F9A303006B4DC9 /* tsip_header_Subscription_State.c */; };
+		ECED69C810F9A303006B4DC9 /* tsip_header_Supported.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694310F9A303006B4DC9 /* tsip_header_Supported.c */; };
+		ECED69C910F9A303006B4DC9 /* tsip_header_Target_Dialog.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694410F9A303006B4DC9 /* tsip_header_Target_Dialog.c */; };
+		ECED69CA10F9A303006B4DC9 /* tsip_header_Timestamp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694510F9A303006B4DC9 /* tsip_header_Timestamp.c */; };
+		ECED69CB10F9A303006B4DC9 /* tsip_header_To.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694610F9A303006B4DC9 /* tsip_header_To.c */; };
+		ECED69CC10F9A303006B4DC9 /* tsip_header_Unsupported.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694710F9A303006B4DC9 /* tsip_header_Unsupported.c */; };
+		ECED69CD10F9A303006B4DC9 /* tsip_header_User_Agent.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694810F9A303006B4DC9 /* tsip_header_User_Agent.c */; };
+		ECED69CE10F9A303006B4DC9 /* tsip_header_Via.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694910F9A303006B4DC9 /* tsip_header_Via.c */; };
+		ECED69CF10F9A303006B4DC9 /* tsip_header_Warning.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694A10F9A303006B4DC9 /* tsip_header_Warning.c */; };
+		ECED69D010F9A303006B4DC9 /* tsip_header_WWW_Authenticate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694B10F9A303006B4DC9 /* tsip_header_WWW_Authenticate.c */; };
+		ECED69D110F9A303006B4DC9 /* tsip_parser_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694D10F9A303006B4DC9 /* tsip_parser_header.c */; };
+		ECED69D210F9A303006B4DC9 /* tsip_parser_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694E10F9A303006B4DC9 /* tsip_parser_message.c */; };
+		ECED69D310F9A303006B4DC9 /* tsip_parser_uri.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED694F10F9A303006B4DC9 /* tsip_parser_uri.c */; };
+		ECED69D410F9A303006B4DC9 /* tsip_ragel_state.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED695010F9A303006B4DC9 /* tsip_ragel_state.c */; };
+		ECED69DA10F9A303006B4DC9 /* tsip_dialog_message_sm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED695810F9A303006B4DC9 /* tsip_dialog_message_sm.c */; };
+		ECED69DB10F9A303006B4DC9 /* tsip_dialog_register_sm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED695910F9A303006B4DC9 /* tsip_dialog_register_sm.c */; };
+		ECED69DC10F9A303006B4DC9 /* tsip_transac_ict_sm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED695A10F9A303006B4DC9 /* tsip_transac_ict_sm.c */; };
+		ECED69DD10F9A303006B4DC9 /* tsip_transac_ist_sm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED695B10F9A303006B4DC9 /* tsip_transac_ist_sm.c */; };
+		ECED69DE10F9A303006B4DC9 /* tsip_transac_nict_sm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED695C10F9A303006B4DC9 /* tsip_transac_nict_sm.c */; };
+		ECED69DF10F9A303006B4DC9 /* tsip_transac_nist_sm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED695D10F9A303006B4DC9 /* tsip_transac_nist_sm.c */; };
+		ECED69E010F9A303006B4DC9 /* tsip_transac.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED695F10F9A303006B4DC9 /* tsip_transac.c */; };
+		ECED69E110F9A303006B4DC9 /* tsip_transac_ict.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED696010F9A303006B4DC9 /* tsip_transac_ict.c */; };
+		ECED69E210F9A303006B4DC9 /* tsip_transac_ist.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED696110F9A303006B4DC9 /* tsip_transac_ist.c */; };
+		ECED69E310F9A303006B4DC9 /* tsip_transac_layer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED696210F9A303006B4DC9 /* tsip_transac_layer.c */; };
+		ECED69E410F9A303006B4DC9 /* tsip_transac_nict.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED696310F9A303006B4DC9 /* tsip_transac_nict.c */; };
+		ECED69E510F9A303006B4DC9 /* tsip_transac_nist.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED696410F9A303006B4DC9 /* tsip_transac_nist.c */; };
+		ECED69E610F9A303006B4DC9 /* tsip_transport.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED696610F9A303006B4DC9 /* tsip_transport.c */; };
+		ECED69E710F9A303006B4DC9 /* tsip_transport_layer.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED696710F9A303006B4DC9 /* tsip_transport_layer.c */; };
+		ECED6A6810F9A343006B4DC9 /* tsip_challenge.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69E910F9A343006B4DC9 /* tsip_challenge.h */; };
+		ECED6A6910F9A343006B4DC9 /* tsip_milenage.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69EA10F9A343006B4DC9 /* tsip_milenage.h */; };
+		ECED6A6A10F9A343006B4DC9 /* tsip_rijndael.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69EB10F9A343006B4DC9 /* tsip_rijndael.h */; };
+		ECED6A6B10F9A343006B4DC9 /* tsip_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69ED10F9A343006B4DC9 /* tsip_dialog.h */; };
+		ECED6A6C10F9A343006B4DC9 /* tsip_dialog_invite.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69EE10F9A343006B4DC9 /* tsip_dialog_invite.h */; };
+		ECED6A6D10F9A343006B4DC9 /* tsip_dialog_layer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69EF10F9A343006B4DC9 /* tsip_dialog_layer.h */; };
+		ECED6A6E10F9A343006B4DC9 /* tsip_dialog_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F010F9A343006B4DC9 /* tsip_dialog_message.h */; };
+		ECED6A6F10F9A343006B4DC9 /* tsip_dialog_register.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F110F9A343006B4DC9 /* tsip_dialog_register.h */; };
+		ECED6A7010F9A343006B4DC9 /* tsip_dialog_subscribe.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F210F9A343006B4DC9 /* tsip_dialog_subscribe.h */; };
+		ECED6A7110F9A343006B4DC9 /* tsip_header.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F410F9A343006B4DC9 /* tsip_header.h */; };
+		ECED6A7210F9A343006B4DC9 /* tsip_header_accept.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F510F9A343006B4DC9 /* tsip_header_accept.h */; };
+		ECED6A7310F9A343006B4DC9 /* tsip_header_Accept_Contact.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F610F9A343006B4DC9 /* tsip_header_Accept_Contact.h */; };
+		ECED6A7410F9A343006B4DC9 /* tsip_header_Accept_Encoding.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F710F9A343006B4DC9 /* tsip_header_Accept_Encoding.h */; };
+		ECED6A7510F9A343006B4DC9 /* tsip_header_Accept_Language.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F810F9A343006B4DC9 /* tsip_header_Accept_Language.h */; };
+		ECED6A7610F9A343006B4DC9 /* tsip_header_Accept_Resource_Priority.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69F910F9A343006B4DC9 /* tsip_header_Accept_Resource_Priority.h */; };
+		ECED6A7710F9A343006B4DC9 /* tsip_header_Alert_Info.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69FA10F9A343006B4DC9 /* tsip_header_Alert_Info.h */; };
+		ECED6A7810F9A343006B4DC9 /* tsip_header_Allow.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69FB10F9A343006B4DC9 /* tsip_header_Allow.h */; };
+		ECED6A7910F9A343006B4DC9 /* tsip_header_Allow_Events.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69FC10F9A343006B4DC9 /* tsip_header_Allow_Events.h */; };
+		ECED6A7A10F9A343006B4DC9 /* tsip_header_Authentication_Info.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69FD10F9A343006B4DC9 /* tsip_header_Authentication_Info.h */; };
+		ECED6A7B10F9A343006B4DC9 /* tsip_header_Authorization.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69FE10F9A343006B4DC9 /* tsip_header_Authorization.h */; };
+		ECED6A7C10F9A343006B4DC9 /* tsip_header_Call_ID.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED69FF10F9A343006B4DC9 /* tsip_header_Call_ID.h */; };
+		ECED6A7D10F9A343006B4DC9 /* tsip_header_Call_Info.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0010F9A343006B4DC9 /* tsip_header_Call_Info.h */; };
+		ECED6A7E10F9A343006B4DC9 /* tsip_header_Contact.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0110F9A343006B4DC9 /* tsip_header_Contact.h */; };
+		ECED6A7F10F9A343006B4DC9 /* tsip_header_Content_Disposition.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0210F9A343006B4DC9 /* tsip_header_Content_Disposition.h */; };
+		ECED6A8010F9A343006B4DC9 /* tsip_header_Content_Encoding.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0310F9A343006B4DC9 /* tsip_header_Content_Encoding.h */; };
+		ECED6A8110F9A343006B4DC9 /* tsip_header_Content_Language.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0410F9A343006B4DC9 /* tsip_header_Content_Language.h */; };
+		ECED6A8210F9A343006B4DC9 /* tsip_header_Content_Length.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0510F9A343006B4DC9 /* tsip_header_Content_Length.h */; };
+		ECED6A8310F9A343006B4DC9 /* tsip_header_Content_Type.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0610F9A343006B4DC9 /* tsip_header_Content_Type.h */; };
+		ECED6A8410F9A343006B4DC9 /* tsip_header_CSeq.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0710F9A343006B4DC9 /* tsip_header_CSeq.h */; };
+		ECED6A8510F9A343006B4DC9 /* tsip_header_Date.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0810F9A343006B4DC9 /* tsip_header_Date.h */; };
+		ECED6A8610F9A343006B4DC9 /* tsip_header_Error_Info.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0910F9A343006B4DC9 /* tsip_header_Error_Info.h */; };
+		ECED6A8710F9A343006B4DC9 /* tsip_header_Event.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0A10F9A343006B4DC9 /* tsip_header_Event.h */; };
+		ECED6A8810F9A343006B4DC9 /* tsip_header_Expires.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0B10F9A343006B4DC9 /* tsip_header_Expires.h */; };
+		ECED6A8910F9A343006B4DC9 /* tsip_header_From.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0C10F9A343006B4DC9 /* tsip_header_From.h */; };
+		ECED6A8A10F9A343006B4DC9 /* tsip_header_History_Info.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0D10F9A343006B4DC9 /* tsip_header_History_Info.h */; };
+		ECED6A8B10F9A343006B4DC9 /* tsip_header_Identity.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0E10F9A343006B4DC9 /* tsip_header_Identity.h */; };
+		ECED6A8C10F9A343006B4DC9 /* tsip_header_Identity_Info.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A0F10F9A343006B4DC9 /* tsip_header_Identity_Info.h */; };
+		ECED6A8D10F9A343006B4DC9 /* tsip_header_In_Reply_To.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1010F9A343006B4DC9 /* tsip_header_In_Reply_To.h */; };
+		ECED6A8E10F9A343006B4DC9 /* tsip_header_Join.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1110F9A343006B4DC9 /* tsip_header_Join.h */; };
+		ECED6A8F10F9A343006B4DC9 /* tsip_header_Max_Forwards.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1210F9A343006B4DC9 /* tsip_header_Max_Forwards.h */; };
+		ECED6A9010F9A343006B4DC9 /* tsip_header_MIME_Version.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1310F9A343006B4DC9 /* tsip_header_MIME_Version.h */; };
+		ECED6A9110F9A343006B4DC9 /* tsip_header_Min_Expires.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1410F9A343006B4DC9 /* tsip_header_Min_Expires.h */; };
+		ECED6A9210F9A343006B4DC9 /* tsip_header_Min_SE.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1510F9A343006B4DC9 /* tsip_header_Min_SE.h */; };
+		ECED6A9310F9A343006B4DC9 /* tsip_header_Organization.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1610F9A343006B4DC9 /* tsip_header_Organization.h */; };
+		ECED6A9410F9A343006B4DC9 /* tsip_header_P_Access_Network_Info.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1710F9A343006B4DC9 /* tsip_header_P_Access_Network_Info.h */; };
+		ECED6A9510F9A343006B4DC9 /* tsip_header_P_Answer_State.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1810F9A343006B4DC9 /* tsip_header_P_Answer_State.h */; };
+		ECED6A9610F9A343006B4DC9 /* tsip_header_P_Asserted_Identity.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1910F9A343006B4DC9 /* tsip_header_P_Asserted_Identity.h */; };
+		ECED6A9710F9A343006B4DC9 /* tsip_header_P_Associated_URI.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1A10F9A343006B4DC9 /* tsip_header_P_Associated_URI.h */; };
+		ECED6A9810F9A343006B4DC9 /* tsip_header_P_Called_Party_ID.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1B10F9A343006B4DC9 /* tsip_header_P_Called_Party_ID.h */; };
+		ECED6A9910F9A343006B4DC9 /* tsip_header_P_Charging_Function_Addresses.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1C10F9A343006B4DC9 /* tsip_header_P_Charging_Function_Addresses.h */; };
+		ECED6A9A10F9A343006B4DC9 /* tsip_header_P_Charging_Vector.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1D10F9A343006B4DC9 /* tsip_header_P_Charging_Vector.h */; };
+		ECED6A9B10F9A343006B4DC9 /* tsip_header_P_DCS_Billing_Info.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1E10F9A343006B4DC9 /* tsip_header_P_DCS_Billing_Info.h */; };
+		ECED6A9C10F9A343006B4DC9 /* tsip_header_P_DCS_LAES.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A1F10F9A343006B4DC9 /* tsip_header_P_DCS_LAES.h */; };
+		ECED6A9D10F9A343006B4DC9 /* tsip_header_P_DCS_OSPS.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2010F9A343006B4DC9 /* tsip_header_P_DCS_OSPS.h */; };
+		ECED6A9E10F9A343006B4DC9 /* tsip_header_P_DCS_Redirect.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2110F9A343006B4DC9 /* tsip_header_P_DCS_Redirect.h */; };
+		ECED6A9F10F9A343006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2210F9A343006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.h */; };
+		ECED6AA010F9A343006B4DC9 /* tsip_header_P_Early_Media.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2310F9A343006B4DC9 /* tsip_header_P_Early_Media.h */; };
+		ECED6AA110F9A343006B4DC9 /* tsip_header_P_Media_Authorization.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2410F9A343006B4DC9 /* tsip_header_P_Media_Authorization.h */; };
+		ECED6AA210F9A343006B4DC9 /* tsip_header_P_Preferred_Identity.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2510F9A343006B4DC9 /* tsip_header_P_Preferred_Identity.h */; };
+		ECED6AA310F9A343006B4DC9 /* tsip_header_P_Profile_Key.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2610F9A343006B4DC9 /* tsip_header_P_Profile_Key.h */; };
+		ECED6AA410F9A343006B4DC9 /* tsip_header_P_User_Database.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2710F9A343006B4DC9 /* tsip_header_P_User_Database.h */; };
+		ECED6AA510F9A343006B4DC9 /* tsip_header_P_Visited_Network_ID.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2810F9A343006B4DC9 /* tsip_header_P_Visited_Network_ID.h */; };
+		ECED6AA610F9A343006B4DC9 /* tsip_header_Path.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2910F9A343006B4DC9 /* tsip_header_Path.h */; };
+		ECED6AA710F9A343006B4DC9 /* tsip_header_Priority.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2A10F9A343006B4DC9 /* tsip_header_Priority.h */; };
+		ECED6AA810F9A343006B4DC9 /* tsip_header_Privacy.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2B10F9A343006B4DC9 /* tsip_header_Privacy.h */; };
+		ECED6AA910F9A343006B4DC9 /* tsip_header_Proxy_Authenticate.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2C10F9A343006B4DC9 /* tsip_header_Proxy_Authenticate.h */; };
+		ECED6AAA10F9A343006B4DC9 /* tsip_header_Proxy_Authorization.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2D10F9A343006B4DC9 /* tsip_header_Proxy_Authorization.h */; };
+		ECED6AAB10F9A343006B4DC9 /* tsip_header_Proxy_Require.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2E10F9A343006B4DC9 /* tsip_header_Proxy_Require.h */; };
+		ECED6AAC10F9A343006B4DC9 /* tsip_header_RAck.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A2F10F9A343006B4DC9 /* tsip_header_RAck.h */; };
+		ECED6AAD10F9A343006B4DC9 /* tsip_header_Reason.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3010F9A343006B4DC9 /* tsip_header_Reason.h */; };
+		ECED6AAE10F9A343006B4DC9 /* tsip_header_Record_Route.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3110F9A343006B4DC9 /* tsip_header_Record_Route.h */; };
+		ECED6AAF10F9A343006B4DC9 /* tsip_header_Refer_Sub.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3210F9A343006B4DC9 /* tsip_header_Refer_Sub.h */; };
+		ECED6AB010F9A343006B4DC9 /* tsip_header_Refer_To.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3310F9A343006B4DC9 /* tsip_header_Refer_To.h */; };
+		ECED6AB110F9A343006B4DC9 /* tsip_header_Referred_By.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3410F9A343006B4DC9 /* tsip_header_Referred_By.h */; };
+		ECED6AB210F9A343006B4DC9 /* tsip_header_Reject_Contact.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3510F9A343006B4DC9 /* tsip_header_Reject_Contact.h */; };
+		ECED6AB310F9A343006B4DC9 /* tsip_header_Replaces.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3610F9A343006B4DC9 /* tsip_header_Replaces.h */; };
+		ECED6AB410F9A343006B4DC9 /* tsip_header_Reply_To.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3710F9A343006B4DC9 /* tsip_header_Reply_To.h */; };
+		ECED6AB510F9A343006B4DC9 /* tsip_header_Request_Disposition.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3810F9A343006B4DC9 /* tsip_header_Request_Disposition.h */; };
+		ECED6AB610F9A343006B4DC9 /* tsip_header_Require.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3910F9A343006B4DC9 /* tsip_header_Require.h */; };
+		ECED6AB710F9A343006B4DC9 /* tsip_header_Resource_Priority.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3A10F9A343006B4DC9 /* tsip_header_Resource_Priority.h */; };
+		ECED6AB810F9A343006B4DC9 /* tsip_header_Retry_After.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3B10F9A343006B4DC9 /* tsip_header_Retry_After.h */; };
+		ECED6AB910F9A343006B4DC9 /* tsip_header_Route.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3C10F9A343006B4DC9 /* tsip_header_Route.h */; };
+		ECED6ABA10F9A343006B4DC9 /* tsip_header_RSeq.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3D10F9A343006B4DC9 /* tsip_header_RSeq.h */; };
+		ECED6ABB10F9A343006B4DC9 /* tsip_header_Security_Client.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3E10F9A343006B4DC9 /* tsip_header_Security_Client.h */; };
+		ECED6ABC10F9A343006B4DC9 /* tsip_header_Security_Server.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A3F10F9A343006B4DC9 /* tsip_header_Security_Server.h */; };
+		ECED6ABD10F9A343006B4DC9 /* tsip_header_Security_Verify.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4010F9A343006B4DC9 /* tsip_header_Security_Verify.h */; };
+		ECED6ABE10F9A343006B4DC9 /* tsip_header_Server.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4110F9A343006B4DC9 /* tsip_header_Server.h */; };
+		ECED6ABF10F9A343006B4DC9 /* tsip_header_Service_Route.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4210F9A343006B4DC9 /* tsip_header_Service_Route.h */; };
+		ECED6AC010F9A343006B4DC9 /* tsip_header_Session_Expires.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4310F9A343006B4DC9 /* tsip_header_Session_Expires.h */; };
+		ECED6AC110F9A343006B4DC9 /* tsip_header_SIP_ETag.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4410F9A343006B4DC9 /* tsip_header_SIP_ETag.h */; };
+		ECED6AC210F9A343006B4DC9 /* tsip_header_SIP_If_Match.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4510F9A343006B4DC9 /* tsip_header_SIP_If_Match.h */; };
+		ECED6AC310F9A343006B4DC9 /* tsip_header_Subject.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4610F9A343006B4DC9 /* tsip_header_Subject.h */; };
+		ECED6AC410F9A343006B4DC9 /* tsip_header_Subscription_State.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4710F9A343006B4DC9 /* tsip_header_Subscription_State.h */; };
+		ECED6AC510F9A343006B4DC9 /* tsip_header_Supported.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4810F9A343006B4DC9 /* tsip_header_Supported.h */; };
+		ECED6AC610F9A343006B4DC9 /* tsip_header_Target_Dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4910F9A343006B4DC9 /* tsip_header_Target_Dialog.h */; };
+		ECED6AC710F9A343006B4DC9 /* tsip_header_Timestamp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4A10F9A343006B4DC9 /* tsip_header_Timestamp.h */; };
+		ECED6AC810F9A343006B4DC9 /* tsip_header_To.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4B10F9A343006B4DC9 /* tsip_header_To.h */; };
+		ECED6AC910F9A343006B4DC9 /* tsip_header_Unsupported.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4C10F9A343006B4DC9 /* tsip_header_Unsupported.h */; };
+		ECED6ACA10F9A343006B4DC9 /* tsip_header_User_Agent.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4D10F9A343006B4DC9 /* tsip_header_User_Agent.h */; };
+		ECED6ACB10F9A343006B4DC9 /* tsip_header_Via.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4E10F9A343006B4DC9 /* tsip_header_Via.h */; };
+		ECED6ACC10F9A343006B4DC9 /* tsip_header_Warning.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A4F10F9A343006B4DC9 /* tsip_header_Warning.h */; };
+		ECED6ACD10F9A343006B4DC9 /* tsip_header_WWW_Authenticate.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5010F9A343006B4DC9 /* tsip_header_WWW_Authenticate.h */; };
+		ECED6ACE10F9A343006B4DC9 /* tsip_headers.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5110F9A343006B4DC9 /* tsip_headers.h */; };
+		ECED6ACF10F9A343006B4DC9 /* tsip_parser_header.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5310F9A343006B4DC9 /* tsip_parser_header.h */; };
+		ECED6AD010F9A343006B4DC9 /* tsip_parser_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5410F9A343006B4DC9 /* tsip_parser_message.h */; };
+		ECED6AD110F9A343006B4DC9 /* tsip_parser_uri.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5510F9A343006B4DC9 /* tsip_parser_uri.h */; };
+		ECED6AD210F9A343006B4DC9 /* tsip_ragel_state.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5610F9A343006B4DC9 /* tsip_ragel_state.h */; };
+		ECED6AD310F9A343006B4DC9 /* tsip_dialog_message_sm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5810F9A343006B4DC9 /* tsip_dialog_message_sm.h */; };
+		ECED6AD410F9A343006B4DC9 /* tsip_dialog_register_sm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5910F9A343006B4DC9 /* tsip_dialog_register_sm.h */; };
+		ECED6AD510F9A343006B4DC9 /* tsip_transac_ict_sm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5A10F9A343006B4DC9 /* tsip_transac_ict_sm.h */; };
+		ECED6AD610F9A343006B4DC9 /* tsip_transac_ist_sm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5B10F9A343006B4DC9 /* tsip_transac_ist_sm.h */; };
+		ECED6AD710F9A343006B4DC9 /* tsip_transac_nict_sm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5C10F9A343006B4DC9 /* tsip_transac_nict_sm.h */; };
+		ECED6AD810F9A343006B4DC9 /* tsip_transac_nist_sm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5D10F9A343006B4DC9 /* tsip_transac_nist_sm.h */; };
+		ECED6AD910F9A343006B4DC9 /* tsip_transac.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A5F10F9A343006B4DC9 /* tsip_transac.h */; };
+		ECED6ADA10F9A343006B4DC9 /* tsip_transac_ict.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A6010F9A343006B4DC9 /* tsip_transac_ict.h */; };
+		ECED6ADB10F9A343006B4DC9 /* tsip_transac_ist.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A6110F9A343006B4DC9 /* tsip_transac_ist.h */; };
+		ECED6ADC10F9A343006B4DC9 /* tsip_transac_layer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A6210F9A343006B4DC9 /* tsip_transac_layer.h */; };
+		ECED6ADD10F9A343006B4DC9 /* tsip_transac_nict.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A6310F9A343006B4DC9 /* tsip_transac_nict.h */; };
+		ECED6ADE10F9A343006B4DC9 /* tsip_transac_nist.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A6410F9A343006B4DC9 /* tsip_transac_nist.h */; };
+		ECED6ADF10F9A343006B4DC9 /* tsip_transport.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A6610F9A343006B4DC9 /* tsip_transport.h */; };
+		ECED6AE010F9A343006B4DC9 /* tsip_transport_layer.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED6A6710F9A343006B4DC9 /* tsip_transport_layer.h */; };
+		ECED6AEE10F9A66E006B4DC9 /* thttp_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED6AEB10F9A66E006B4DC9 /* thttp_auth.c */; };
+		ECED6AF210F9A68F006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED65E610F9968A006B4DC9 /* libtinySAK.dylib */; };
+		ECED6B0A10F9A94A006B4DC9 /* libtinyHTTP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED689D10F998E4006B4DC9 /* libtinyHTTP.dylib */; };
+		ECED6B0B10F9A94A006B4DC9 /* libtinyNET.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED686410F997F2006B4DC9 /* libtinyNET.dylib */; };
+		ECED6B0C10F9A94A006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED65E610F9968A006B4DC9 /* libtinySAK.dylib */; };
+		ECED6B0D10F9A94A006B4DC9 /* libtinySIP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC0630554660B00DB518D /* libtinySIP.dylib */; };
+		ECED6B1810F9A971006B4DC9 /* stdafx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED6B1010F9A971006B4DC9 /* stdafx.c */; };
+		ECED6B1910F9A971006B4DC9 /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED6B1310F9A971006B4DC9 /* test.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		ECED688D10F99866006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED65E510F99689006B4DC9;
+			remoteInfo = tinySAK;
+		};
+		ECED689110F99880006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED65E510F99689006B4DC9;
+			remoteInfo = tinySAK;
+		};
+		ECED689310F99880006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED686310F997F2006B4DC9;
+			remoteInfo = tinyNET;
+		};
+		ECED68C210F99975006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED689C10F998E4006B4DC9;
+			remoteInfo = tinyHTTP;
+		};
+		ECED6AF010F9A68B006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED65E510F99689006B4DC9;
+			remoteInfo = tinySAK;
+		};
+		ECED6B0210F9A943006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC0620554660B00DB518D;
+			remoteInfo = tinySIP;
+		};
+		ECED6B0410F9A943006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED65E510F99689006B4DC9;
+			remoteInfo = tinySAK;
+		};
+		ECED6B0610F9A943006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED686310F997F2006B4DC9;
+			remoteInfo = tinyNET;
+		};
+		ECED6B0810F9A943006B4DC9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECED689C10F998E4006B4DC9;
+			remoteInfo = tinyHTTP;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D2AAC0630554660B00DB518D /* libtinySIP.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySIP.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED644810F99599006B4DC9 /* abnf */ = {isa = PBXFileReference; lastKnownFileType = folder; name = abnf; path = ../../tinySIP/abnf; sourceTree = SOURCE_ROOT; };
+		ECED644B10F995A8006B4DC9 /* graph */ = {isa = PBXFileReference; lastKnownFileType = folder; name = graph; path = ../../tinySIP/graph; sourceTree = SOURCE_ROOT; };
+		ECED644D10F995B8006B4DC9 /* ragel */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ragel; path = ../../tinySIP/ragel; sourceTree = SOURCE_ROOT; };
+		ECED64B010F995DB006B4DC9 /* smc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = smc; path = ../../tinySIP/smc; sourceTree = SOURCE_ROOT; };
+		ECED654010F99647006B4DC9 /* tsip_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsip_message.h; path = ../../tinySIP/include/tinysip/tsip_message.h; sourceTree = SOURCE_ROOT; };
+		ECED654110F99647006B4DC9 /* tsip_operation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsip_operation.h; path = ../../tinySIP/include/tinysip/tsip_operation.h; sourceTree = SOURCE_ROOT; };
+		ECED654210F99647006B4DC9 /* tsip_timers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsip_timers.h; path = ../../tinySIP/include/tinysip/tsip_timers.h; sourceTree = SOURCE_ROOT; };
+		ECED654310F99647006B4DC9 /* tsip_uri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsip_uri.h; path = ../../tinySIP/include/tinysip/tsip_uri.h; sourceTree = SOURCE_ROOT; };
+		ECED65D810F99666006B4DC9 /* tsip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsip.c; path = ../../tinySIP/source/tsip.c; sourceTree = SOURCE_ROOT; };
+		ECED65D910F99666006B4DC9 /* tsip_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsip_message.c; path = ../../tinySIP/source/tsip_message.c; sourceTree = SOURCE_ROOT; };
+		ECED65DA10F99666006B4DC9 /* tsip_operation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsip_operation.c; path = ../../tinySIP/source/tsip_operation.c; sourceTree = SOURCE_ROOT; };
+		ECED65DB10F99666006B4DC9 /* tsip_timers.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsip_timers.c; path = ../../tinySIP/source/tsip_timers.c; sourceTree = SOURCE_ROOT; };
+		ECED65DC10F99666006B4DC9 /* tsip_uri.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsip_uri.c; path = ../../tinySIP/source/tsip_uri.c; sourceTree = SOURCE_ROOT; };
+		ECED65E610F9968A006B4DC9 /* libtinySAK.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySAK.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED67EE10F996F6006B4DC9 /* tinySAK_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinySAK_config.h; path = ../../tinySAK/src/tinySAK_config.h; sourceTree = SOURCE_ROOT; };
+		ECED67EF10F996F6006B4DC9 /* tsk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk.c; path = ../../tinySAK/src/tsk.c; sourceTree = SOURCE_ROOT; };
+		ECED67F010F996F6006B4DC9 /* tsk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk.h; path = ../../tinySAK/src/tsk.h; sourceTree = SOURCE_ROOT; };
+		ECED67F110F996F6006B4DC9 /* tsk_base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_base64.c; path = ../../tinySAK/src/tsk_base64.c; sourceTree = SOURCE_ROOT; };
+		ECED67F210F996F6006B4DC9 /* tsk_base64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_base64.h; path = ../../tinySAK/src/tsk_base64.h; sourceTree = SOURCE_ROOT; };
+		ECED67F310F996F6006B4DC9 /* tsk_binaryutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_binaryutils.c; path = ../../tinySAK/src/tsk_binaryutils.c; sourceTree = SOURCE_ROOT; };
+		ECED67F410F996F6006B4DC9 /* tsk_binaryutils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_binaryutils.h; path = ../../tinySAK/src/tsk_binaryutils.h; sourceTree = SOURCE_ROOT; };
+		ECED67F510F996F6006B4DC9 /* tsk_buffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_buffer.c; path = ../../tinySAK/src/tsk_buffer.c; sourceTree = SOURCE_ROOT; };
+		ECED67F610F996F6006B4DC9 /* tsk_buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_buffer.h; path = ../../tinySAK/src/tsk_buffer.h; sourceTree = SOURCE_ROOT; };
+		ECED67F710F996F6006B4DC9 /* tsk_condwait.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_condwait.c; path = ../../tinySAK/src/tsk_condwait.c; sourceTree = SOURCE_ROOT; };
+		ECED67F810F996F6006B4DC9 /* tsk_condwait.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_condwait.h; path = ../../tinySAK/src/tsk_condwait.h; sourceTree = SOURCE_ROOT; };
+		ECED67F910F996F6006B4DC9 /* tsk_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_debug.c; path = ../../tinySAK/src/tsk_debug.c; sourceTree = SOURCE_ROOT; };
+		ECED67FA10F996F6006B4DC9 /* tsk_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_debug.h; path = ../../tinySAK/src/tsk_debug.h; sourceTree = SOURCE_ROOT; };
+		ECED67FB10F996F6006B4DC9 /* tsk_errno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_errno.h; path = ../../tinySAK/src/tsk_errno.h; sourceTree = SOURCE_ROOT; };
+		ECED67FC10F996F6006B4DC9 /* tsk_heap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_heap.c; path = ../../tinySAK/src/tsk_heap.c; sourceTree = SOURCE_ROOT; };
+		ECED67FD10F996F6006B4DC9 /* tsk_heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_heap.h; path = ../../tinySAK/src/tsk_heap.h; sourceTree = SOURCE_ROOT; };
+		ECED67FE10F996F6006B4DC9 /* tsk_hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_hmac.c; path = ../../tinySAK/src/tsk_hmac.c; sourceTree = SOURCE_ROOT; };
+		ECED67FF10F996F6006B4DC9 /* tsk_hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_hmac.h; path = ../../tinySAK/src/tsk_hmac.h; sourceTree = SOURCE_ROOT; };
+		ECED680010F996F6006B4DC9 /* tsk_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_list.c; path = ../../tinySAK/src/tsk_list.c; sourceTree = SOURCE_ROOT; };
+		ECED680110F996F6006B4DC9 /* tsk_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_list.h; path = ../../tinySAK/src/tsk_list.h; sourceTree = SOURCE_ROOT; };
+		ECED680210F996F6006B4DC9 /* tsk_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_macros.h; path = ../../tinySAK/src/tsk_macros.h; sourceTree = SOURCE_ROOT; };
+		ECED680310F996F6006B4DC9 /* tsk_md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_md5.c; path = ../../tinySAK/src/tsk_md5.c; sourceTree = SOURCE_ROOT; };
+		ECED680410F996F6006B4DC9 /* tsk_md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_md5.h; path = ../../tinySAK/src/tsk_md5.h; sourceTree = SOURCE_ROOT; };
+		ECED680510F996F6006B4DC9 /* tsk_memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_memory.c; path = ../../tinySAK/src/tsk_memory.c; sourceTree = SOURCE_ROOT; };
+		ECED680610F996F6006B4DC9 /* tsk_memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_memory.h; path = ../../tinySAK/src/tsk_memory.h; sourceTree = SOURCE_ROOT; };
+		ECED680710F996F6006B4DC9 /* tsk_mutex.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_mutex.c; path = ../../tinySAK/src/tsk_mutex.c; sourceTree = SOURCE_ROOT; };
+		ECED680810F996F6006B4DC9 /* tsk_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_mutex.h; path = ../../tinySAK/src/tsk_mutex.h; sourceTree = SOURCE_ROOT; };
+		ECED680910F996F6006B4DC9 /* tsk_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_object.c; path = ../../tinySAK/src/tsk_object.c; sourceTree = SOURCE_ROOT; };
+		ECED680A10F996F6006B4DC9 /* tsk_object.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_object.h; path = ../../tinySAK/src/tsk_object.h; sourceTree = SOURCE_ROOT; };
+		ECED680B10F996F6006B4DC9 /* tsk_params.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_params.c; path = ../../tinySAK/src/tsk_params.c; sourceTree = SOURCE_ROOT; };
+		ECED680C10F996F6006B4DC9 /* tsk_params.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_params.h; path = ../../tinySAK/src/tsk_params.h; sourceTree = SOURCE_ROOT; };
+		ECED680D10F996F6006B4DC9 /* tsk_ppfcs16.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_ppfcs16.c; path = ../../tinySAK/src/tsk_ppfcs16.c; sourceTree = SOURCE_ROOT; };
+		ECED680E10F996F6006B4DC9 /* tsk_ppfcs16.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_ppfcs16.h; path = ../../tinySAK/src/tsk_ppfcs16.h; sourceTree = SOURCE_ROOT; };
+		ECED680F10F996F6006B4DC9 /* tsk_runnable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_runnable.c; path = ../../tinySAK/src/tsk_runnable.c; sourceTree = SOURCE_ROOT; };
+		ECED681010F996F6006B4DC9 /* tsk_runnable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_runnable.h; path = ../../tinySAK/src/tsk_runnable.h; sourceTree = SOURCE_ROOT; };
+		ECED681110F996F6006B4DC9 /* tsk_safeobj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_safeobj.c; path = ../../tinySAK/src/tsk_safeobj.c; sourceTree = SOURCE_ROOT; };
+		ECED681210F996F6006B4DC9 /* tsk_safeobj.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_safeobj.h; path = ../../tinySAK/src/tsk_safeobj.h; sourceTree = SOURCE_ROOT; };
+		ECED681310F996F6006B4DC9 /* tsk_semaphore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_semaphore.c; path = ../../tinySAK/src/tsk_semaphore.c; sourceTree = SOURCE_ROOT; };
+		ECED681410F996F6006B4DC9 /* tsk_semaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_semaphore.h; path = ../../tinySAK/src/tsk_semaphore.h; sourceTree = SOURCE_ROOT; };
+		ECED681510F996F6006B4DC9 /* tsk_sha1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_sha1.c; path = ../../tinySAK/src/tsk_sha1.c; sourceTree = SOURCE_ROOT; };
+		ECED681610F996F6006B4DC9 /* tsk_sha1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_sha1.h; path = ../../tinySAK/src/tsk_sha1.h; sourceTree = SOURCE_ROOT; };
+		ECED681710F996F6006B4DC9 /* tsk_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_string.c; path = ../../tinySAK/src/tsk_string.c; sourceTree = SOURCE_ROOT; };
+		ECED681810F996F6006B4DC9 /* tsk_string.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_string.h; path = ../../tinySAK/src/tsk_string.h; sourceTree = SOURCE_ROOT; };
+		ECED681910F996F6006B4DC9 /* tsk_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_thread.c; path = ../../tinySAK/src/tsk_thread.c; sourceTree = SOURCE_ROOT; };
+		ECED681A10F996F6006B4DC9 /* tsk_thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_thread.h; path = ../../tinySAK/src/tsk_thread.h; sourceTree = SOURCE_ROOT; };
+		ECED681B10F996F6006B4DC9 /* tsk_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_time.c; path = ../../tinySAK/src/tsk_time.c; sourceTree = SOURCE_ROOT; };
+		ECED681C10F996F6006B4DC9 /* tsk_time.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_time.h; path = ../../tinySAK/src/tsk_time.h; sourceTree = SOURCE_ROOT; };
+		ECED681D10F996F6006B4DC9 /* tsk_timer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_timer.c; path = ../../tinySAK/src/tsk_timer.c; sourceTree = SOURCE_ROOT; };
+		ECED681E10F996F6006B4DC9 /* tsk_timer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_timer.h; path = ../../tinySAK/src/tsk_timer.h; sourceTree = SOURCE_ROOT; };
+		ECED681F10F996F6006B4DC9 /* tsk_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_url.c; path = ../../tinySAK/src/tsk_url.c; sourceTree = SOURCE_ROOT; };
+		ECED682010F996F6006B4DC9 /* tsk_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_url.h; path = ../../tinySAK/src/tsk_url.h; sourceTree = SOURCE_ROOT; };
+		ECED682110F996F6006B4DC9 /* tsk_xml.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_xml.c; path = ../../tinySAK/src/tsk_xml.c; sourceTree = SOURCE_ROOT; };
+		ECED682210F996F6006B4DC9 /* tsk_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_xml.h; path = ../../tinySAK/src/tsk_xml.h; sourceTree = SOURCE_ROOT; };
+		ECED685A10F997BF006B4DC9 /* tinysip_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinysip_config.h; path = ../../tinySIP/include/tinysip_config.h; sourceTree = SOURCE_ROOT; };
+		ECED685B10F997BF006B4DC9 /* tsip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsip.h; path = ../../tinySIP/include/tsip.h; sourceTree = SOURCE_ROOT; };
+		ECED686410F997F2006B4DC9 /* libtinyNET.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyNET.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED686910F99811006B4DC9 /* tinyNET_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyNET_config.h; path = ../../tinyNET/src/tinyNET_config.h; sourceTree = SOURCE_ROOT; };
+		ECED686A10F99811006B4DC9 /* tnet.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tnet.c; path = ../../tinyNET/src/tnet.c; sourceTree = SOURCE_ROOT; };
+		ECED686B10F99811006B4DC9 /* tnet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tnet.h; path = ../../tinyNET/src/tnet.h; sourceTree = SOURCE_ROOT; };
+		ECED686C10F99811006B4DC9 /* tnet_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tnet_auth.c; path = ../../tinyNET/src/tnet_auth.c; sourceTree = SOURCE_ROOT; };
+		ECED686D10F99811006B4DC9 /* tnet_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tnet_auth.h; path = ../../tinyNET/src/tnet_auth.h; sourceTree = SOURCE_ROOT; };
+		ECED686E10F99811006B4DC9 /* tnet_poll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tnet_poll.c; path = ../../tinyNET/src/tnet_poll.c; sourceTree = SOURCE_ROOT; };
+		ECED686F10F99811006B4DC9 /* tnet_poll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tnet_poll.h; path = ../../tinyNET/src/tnet_poll.h; sourceTree = SOURCE_ROOT; };
+		ECED687010F99811006B4DC9 /* tnet_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tnet_socket.c; path = ../../tinyNET/src/tnet_socket.c; sourceTree = SOURCE_ROOT; };
+		ECED687110F99811006B4DC9 /* tnet_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tnet_socket.h; path = ../../tinyNET/src/tnet_socket.h; sourceTree = SOURCE_ROOT; };
+		ECED687210F99811006B4DC9 /* tnet_transport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tnet_transport.c; path = ../../tinyNET/src/tnet_transport.c; sourceTree = SOURCE_ROOT; };
+		ECED687310F99811006B4DC9 /* tnet_transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tnet_transport.h; path = ../../tinyNET/src/tnet_transport.h; sourceTree = SOURCE_ROOT; };
+		ECED687410F99811006B4DC9 /* tnet_transport_poll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tnet_transport_poll.c; path = ../../tinyNET/src/tnet_transport_poll.c; sourceTree = SOURCE_ROOT; };
+		ECED687510F99811006B4DC9 /* tnet_transport_win32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tnet_transport_win32.c; path = ../../tinyNET/src/tnet_transport_win32.c; sourceTree = SOURCE_ROOT; };
+		ECED687610F99811006B4DC9 /* tnet_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tnet_types.h; path = ../../tinyNET/src/tnet_types.h; sourceTree = SOURCE_ROOT; };
+		ECED687710F99811006B4DC9 /* tnet_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tnet_utils.c; path = ../../tinyNET/src/tnet_utils.c; sourceTree = SOURCE_ROOT; };
+		ECED687810F99811006B4DC9 /* tnet_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tnet_utils.h; path = ../../tinyNET/src/tnet_utils.h; sourceTree = SOURCE_ROOT; };
+		ECED689D10F998E4006B4DC9 /* libtinyHTTP.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyHTTP.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED68A410F9991C006B4DC9 /* auth */ = {isa = PBXFileReference; lastKnownFileType = folder; name = auth; path = ../../tinyHTTP/include/tinyHTTP/auth; sourceTree = SOURCE_ROOT; };
+		ECED68A710F9991C006B4DC9 /* headers */ = {isa = PBXFileReference; lastKnownFileType = folder; name = headers; path = ../../tinyHTTP/include/tinyHTTP/headers; sourceTree = SOURCE_ROOT; };
+		ECED68A910F9991C006B4DC9 /* parsers */ = {isa = PBXFileReference; lastKnownFileType = folder; name = parsers; path = ../../tinyHTTP/include/tinyHTTP/parsers; sourceTree = SOURCE_ROOT; };
+		ECED68AB10F9991C006B4DC9 /* thttp_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp_message.h; path = ../../tinyHTTP/include/tinyHTTP/thttp_message.h; sourceTree = SOURCE_ROOT; };
+		ECED68AC10F9991C006B4DC9 /* thttp_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp_url.h; path = ../../tinyHTTP/include/tinyHTTP/thttp_url.h; sourceTree = SOURCE_ROOT; };
+		ECED68AF10F9992F006B4DC9 /* thttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp.h; path = ../../tinyHTTP/include/thttp.h; sourceTree = SOURCE_ROOT; };
+		ECED68B010F9992F006B4DC9 /* tinyhttp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyhttp_config.h; path = ../../tinyHTTP/include/tinyhttp_config.h; sourceTree = SOURCE_ROOT; };
+		ECED68BA10F99944006B4DC9 /* thttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp.c; path = ../../tinyHTTP/source/thttp.c; sourceTree = SOURCE_ROOT; };
+		ECED68BB10F99944006B4DC9 /* thttp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp_message.c; path = ../../tinyHTTP/source/thttp_message.c; sourceTree = SOURCE_ROOT; };
+		ECED68BC10F99944006B4DC9 /* thttp_utl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp_utl.c; path = ../../tinyHTTP/source/thttp_utl.c; sourceTree = SOURCE_ROOT; };
+		ECED68E110F9A303006B4DC9 /* tsip_challenge.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_challenge.c; sourceTree = "<group>"; };
+		ECED68E210F9A303006B4DC9 /* tsip_milenage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_milenage.c; sourceTree = "<group>"; };
+		ECED68E310F9A303006B4DC9 /* tsip_rijndael.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_rijndael.c; sourceTree = "<group>"; };
+		ECED68E510F9A303006B4DC9 /* tsip_dialog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog.c; sourceTree = "<group>"; };
+		ECED68E610F9A303006B4DC9 /* tsip_dialog_invite.client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_invite.client.c; sourceTree = "<group>"; };
+		ECED68E710F9A303006B4DC9 /* tsip_dialog_invite.server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_invite.server.c; sourceTree = "<group>"; };
+		ECED68E810F9A303006B4DC9 /* tsip_dialog_layer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_layer.c; sourceTree = "<group>"; };
+		ECED68E910F9A303006B4DC9 /* tsip_dialog_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_message.c; sourceTree = "<group>"; };
+		ECED68EA10F9A303006B4DC9 /* tsip_dialog_register.client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_register.client.c; sourceTree = "<group>"; };
+		ECED68EB10F9A303006B4DC9 /* tsip_dialog_register.server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_register.server.c; sourceTree = "<group>"; };
+		ECED68EC10F9A303006B4DC9 /* tsip_dialog_subscribe.client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_subscribe.client.c; sourceTree = "<group>"; };
+		ECED68ED10F9A303006B4DC9 /* tsip_dialog_subscribe.server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_subscribe.server.c; sourceTree = "<group>"; };
+		ECED68EF10F9A303006B4DC9 /* tsip_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header.c; sourceTree = "<group>"; };
+		ECED68F010F9A303006B4DC9 /* tsip_header_accept.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_accept.c; sourceTree = "<group>"; };
+		ECED68F110F9A303006B4DC9 /* tsip_header_Accept_Contact.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Accept_Contact.c; sourceTree = "<group>"; };
+		ECED68F210F9A303006B4DC9 /* tsip_header_Accept_Encoding.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Accept_Encoding.c; sourceTree = "<group>"; };
+		ECED68F310F9A303006B4DC9 /* tsip_header_Accept_Language.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Accept_Language.c; sourceTree = "<group>"; };
+		ECED68F410F9A303006B4DC9 /* tsip_header_Accept_Resource_Priority.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Accept_Resource_Priority.c; sourceTree = "<group>"; };
+		ECED68F510F9A303006B4DC9 /* tsip_header_Alert_Info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Alert_Info.c; sourceTree = "<group>"; };
+		ECED68F610F9A303006B4DC9 /* tsip_header_Allow.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Allow.c; sourceTree = "<group>"; };
+		ECED68F710F9A303006B4DC9 /* tsip_header_Allow_Events.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Allow_Events.c; sourceTree = "<group>"; };
+		ECED68F810F9A303006B4DC9 /* tsip_header_Authentication_Info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Authentication_Info.c; sourceTree = "<group>"; };
+		ECED68F910F9A303006B4DC9 /* tsip_header_Authorization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Authorization.c; sourceTree = "<group>"; };
+		ECED68FA10F9A303006B4DC9 /* tsip_header_Call_ID.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Call_ID.c; sourceTree = "<group>"; };
+		ECED68FB10F9A303006B4DC9 /* tsip_header_Call_Info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Call_Info.c; sourceTree = "<group>"; };
+		ECED68FC10F9A303006B4DC9 /* tsip_header_Contact.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Contact.c; sourceTree = "<group>"; };
+		ECED68FD10F9A303006B4DC9 /* tsip_header_Content_Disposition.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Content_Disposition.c; sourceTree = "<group>"; };
+		ECED68FE10F9A303006B4DC9 /* tsip_header_Content_Encoding.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Content_Encoding.c; sourceTree = "<group>"; };
+		ECED68FF10F9A303006B4DC9 /* tsip_header_Content_Language.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Content_Language.c; sourceTree = "<group>"; };
+		ECED690010F9A303006B4DC9 /* tsip_header_Content_Length.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Content_Length.c; sourceTree = "<group>"; };
+		ECED690110F9A303006B4DC9 /* tsip_header_Content_Type.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Content_Type.c; sourceTree = "<group>"; };
+		ECED690210F9A303006B4DC9 /* tsip_header_CSeq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_CSeq.c; sourceTree = "<group>"; };
+		ECED690310F9A303006B4DC9 /* tsip_header_Date.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Date.c; sourceTree = "<group>"; };
+		ECED690410F9A303006B4DC9 /* tsip_header_Error_Info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Error_Info.c; sourceTree = "<group>"; };
+		ECED690510F9A303006B4DC9 /* tsip_header_Event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Event.c; sourceTree = "<group>"; };
+		ECED690610F9A303006B4DC9 /* tsip_header_Expires.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Expires.c; sourceTree = "<group>"; };
+		ECED690710F9A303006B4DC9 /* tsip_header_From.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_From.c; sourceTree = "<group>"; };
+		ECED690810F9A303006B4DC9 /* tsip_header_History_Info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_History_Info.c; sourceTree = "<group>"; };
+		ECED690910F9A303006B4DC9 /* tsip_header_Identity.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Identity.c; sourceTree = "<group>"; };
+		ECED690A10F9A303006B4DC9 /* tsip_header_Identity_Info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Identity_Info.c; sourceTree = "<group>"; };
+		ECED690B10F9A303006B4DC9 /* tsip_header_In_Reply_To.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_In_Reply_To.c; sourceTree = "<group>"; };
+		ECED690C10F9A303006B4DC9 /* tsip_header_Join.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Join.c; sourceTree = "<group>"; };
+		ECED690D10F9A303006B4DC9 /* tsip_header_Max_Forwards.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Max_Forwards.c; sourceTree = "<group>"; };
+		ECED690E10F9A303006B4DC9 /* tsip_header_MIME_Version.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_MIME_Version.c; sourceTree = "<group>"; };
+		ECED690F10F9A303006B4DC9 /* tsip_header_Min_Expires.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Min_Expires.c; sourceTree = "<group>"; };
+		ECED691010F9A303006B4DC9 /* tsip_header_Min_SE.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Min_SE.c; sourceTree = "<group>"; };
+		ECED691110F9A303006B4DC9 /* tsip_header_Organization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Organization.c; sourceTree = "<group>"; };
+		ECED691210F9A303006B4DC9 /* tsip_header_P_Access_Network_Info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Access_Network_Info.c; sourceTree = "<group>"; };
+		ECED691310F9A303006B4DC9 /* tsip_header_P_Answer_State.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Answer_State.c; sourceTree = "<group>"; };
+		ECED691410F9A303006B4DC9 /* tsip_header_P_Asserted_Identity.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Asserted_Identity.c; sourceTree = "<group>"; };
+		ECED691510F9A303006B4DC9 /* tsip_header_P_Associated_URI.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Associated_URI.c; sourceTree = "<group>"; };
+		ECED691610F9A303006B4DC9 /* tsip_header_P_Called_Party_ID.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Called_Party_ID.c; sourceTree = "<group>"; };
+		ECED691710F9A303006B4DC9 /* tsip_header_P_Charging_Function_Addresses.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Charging_Function_Addresses.c; sourceTree = "<group>"; };
+		ECED691810F9A303006B4DC9 /* tsip_header_P_Charging_Vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Charging_Vector.c; sourceTree = "<group>"; };
+		ECED691910F9A303006B4DC9 /* tsip_header_P_DCS_Billing_Info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_DCS_Billing_Info.c; sourceTree = "<group>"; };
+		ECED691A10F9A303006B4DC9 /* tsip_header_P_DCS_LAES.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_DCS_LAES.c; sourceTree = "<group>"; };
+		ECED691B10F9A303006B4DC9 /* tsip_header_P_DCS_OSPS.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_DCS_OSPS.c; sourceTree = "<group>"; };
+		ECED691C10F9A303006B4DC9 /* tsip_header_P_DCS_Redirect.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_DCS_Redirect.c; sourceTree = "<group>"; };
+		ECED691D10F9A303006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_DCS_Trace_Party_ID.c; sourceTree = "<group>"; };
+		ECED691E10F9A303006B4DC9 /* tsip_header_P_Early_Media.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Early_Media.c; sourceTree = "<group>"; };
+		ECED691F10F9A303006B4DC9 /* tsip_header_P_Media_Authorization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Media_Authorization.c; sourceTree = "<group>"; };
+		ECED692010F9A303006B4DC9 /* tsip_header_P_Preferred_Identity.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Preferred_Identity.c; sourceTree = "<group>"; };
+		ECED692110F9A303006B4DC9 /* tsip_header_P_Profile_Key.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Profile_Key.c; sourceTree = "<group>"; };
+		ECED692210F9A303006B4DC9 /* tsip_header_P_User_Database.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_User_Database.c; sourceTree = "<group>"; };
+		ECED692310F9A303006B4DC9 /* tsip_header_P_Visited_Network_ID.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_P_Visited_Network_ID.c; sourceTree = "<group>"; };
+		ECED692410F9A303006B4DC9 /* tsip_header_Path.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Path.c; sourceTree = "<group>"; };
+		ECED692510F9A303006B4DC9 /* tsip_header_Priority.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Priority.c; sourceTree = "<group>"; };
+		ECED692610F9A303006B4DC9 /* tsip_header_Privacy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Privacy.c; sourceTree = "<group>"; };
+		ECED692710F9A303006B4DC9 /* tsip_header_Proxy_Authenticate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Proxy_Authenticate.c; sourceTree = "<group>"; };
+		ECED692810F9A303006B4DC9 /* tsip_header_Proxy_Authorization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Proxy_Authorization.c; sourceTree = "<group>"; };
+		ECED692910F9A303006B4DC9 /* tsip_header_Proxy_Require.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Proxy_Require.c; sourceTree = "<group>"; };
+		ECED692A10F9A303006B4DC9 /* tsip_header_RAck.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_RAck.c; sourceTree = "<group>"; };
+		ECED692B10F9A303006B4DC9 /* tsip_header_Reason.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Reason.c; sourceTree = "<group>"; };
+		ECED692C10F9A303006B4DC9 /* tsip_header_Record_Route.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Record_Route.c; sourceTree = "<group>"; };
+		ECED692D10F9A303006B4DC9 /* tsip_header_Refer_Sub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Refer_Sub.c; sourceTree = "<group>"; };
+		ECED692E10F9A303006B4DC9 /* tsip_header_Refer_To.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Refer_To.c; sourceTree = "<group>"; };
+		ECED692F10F9A303006B4DC9 /* tsip_header_Referred_By.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Referred_By.c; sourceTree = "<group>"; };
+		ECED693010F9A303006B4DC9 /* tsip_header_Reject_Contact.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Reject_Contact.c; sourceTree = "<group>"; };
+		ECED693110F9A303006B4DC9 /* tsip_header_Replaces.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Replaces.c; sourceTree = "<group>"; };
+		ECED693210F9A303006B4DC9 /* tsip_header_Reply_To.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Reply_To.c; sourceTree = "<group>"; };
+		ECED693310F9A303006B4DC9 /* tsip_header_Request_Disposition.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Request_Disposition.c; sourceTree = "<group>"; };
+		ECED693410F9A303006B4DC9 /* tsip_header_Require.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Require.c; sourceTree = "<group>"; };
+		ECED693510F9A303006B4DC9 /* tsip_header_Resource_Priority.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Resource_Priority.c; sourceTree = "<group>"; };
+		ECED693610F9A303006B4DC9 /* tsip_header_Retry_After.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Retry_After.c; sourceTree = "<group>"; };
+		ECED693710F9A303006B4DC9 /* tsip_header_Route.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Route.c; sourceTree = "<group>"; };
+		ECED693810F9A303006B4DC9 /* tsip_header_RSeq.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_RSeq.c; sourceTree = "<group>"; };
+		ECED693910F9A303006B4DC9 /* tsip_header_Security_Client.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Security_Client.c; sourceTree = "<group>"; };
+		ECED693A10F9A303006B4DC9 /* tsip_header_Security_Server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Security_Server.c; sourceTree = "<group>"; };
+		ECED693B10F9A303006B4DC9 /* tsip_header_Security_Verify.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Security_Verify.c; sourceTree = "<group>"; };
+		ECED693C10F9A303006B4DC9 /* tsip_header_Server.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Server.c; sourceTree = "<group>"; };
+		ECED693D10F9A303006B4DC9 /* tsip_header_Service_Route.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Service_Route.c; sourceTree = "<group>"; };
+		ECED693E10F9A303006B4DC9 /* tsip_header_Session_Expires.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Session_Expires.c; sourceTree = "<group>"; };
+		ECED693F10F9A303006B4DC9 /* tsip_header_SIP_ETag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_SIP_ETag.c; sourceTree = "<group>"; };
+		ECED694010F9A303006B4DC9 /* tsip_header_SIP_If_Match.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_SIP_If_Match.c; sourceTree = "<group>"; };
+		ECED694110F9A303006B4DC9 /* tsip_header_Subject.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Subject.c; sourceTree = "<group>"; };
+		ECED694210F9A303006B4DC9 /* tsip_header_Subscription_State.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Subscription_State.c; sourceTree = "<group>"; };
+		ECED694310F9A303006B4DC9 /* tsip_header_Supported.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Supported.c; sourceTree = "<group>"; };
+		ECED694410F9A303006B4DC9 /* tsip_header_Target_Dialog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Target_Dialog.c; sourceTree = "<group>"; };
+		ECED694510F9A303006B4DC9 /* tsip_header_Timestamp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Timestamp.c; sourceTree = "<group>"; };
+		ECED694610F9A303006B4DC9 /* tsip_header_To.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_To.c; sourceTree = "<group>"; };
+		ECED694710F9A303006B4DC9 /* tsip_header_Unsupported.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Unsupported.c; sourceTree = "<group>"; };
+		ECED694810F9A303006B4DC9 /* tsip_header_User_Agent.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_User_Agent.c; sourceTree = "<group>"; };
+		ECED694910F9A303006B4DC9 /* tsip_header_Via.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Via.c; sourceTree = "<group>"; };
+		ECED694A10F9A303006B4DC9 /* tsip_header_Warning.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_Warning.c; sourceTree = "<group>"; };
+		ECED694B10F9A303006B4DC9 /* tsip_header_WWW_Authenticate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_header_WWW_Authenticate.c; sourceTree = "<group>"; };
+		ECED694D10F9A303006B4DC9 /* tsip_parser_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_parser_header.c; sourceTree = "<group>"; };
+		ECED694E10F9A303006B4DC9 /* tsip_parser_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_parser_message.c; sourceTree = "<group>"; };
+		ECED694F10F9A303006B4DC9 /* tsip_parser_uri.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_parser_uri.c; sourceTree = "<group>"; };
+		ECED695010F9A303006B4DC9 /* tsip_ragel_state.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_ragel_state.c; sourceTree = "<group>"; };
+		ECED695810F9A303006B4DC9 /* tsip_dialog_message_sm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_message_sm.c; sourceTree = "<group>"; };
+		ECED695910F9A303006B4DC9 /* tsip_dialog_register_sm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_dialog_register_sm.c; sourceTree = "<group>"; };
+		ECED695A10F9A303006B4DC9 /* tsip_transac_ict_sm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_ict_sm.c; sourceTree = "<group>"; };
+		ECED695B10F9A303006B4DC9 /* tsip_transac_ist_sm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_ist_sm.c; sourceTree = "<group>"; };
+		ECED695C10F9A303006B4DC9 /* tsip_transac_nict_sm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_nict_sm.c; sourceTree = "<group>"; };
+		ECED695D10F9A303006B4DC9 /* tsip_transac_nist_sm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_nist_sm.c; sourceTree = "<group>"; };
+		ECED695F10F9A303006B4DC9 /* tsip_transac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac.c; sourceTree = "<group>"; };
+		ECED696010F9A303006B4DC9 /* tsip_transac_ict.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_ict.c; sourceTree = "<group>"; };
+		ECED696110F9A303006B4DC9 /* tsip_transac_ist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_ist.c; sourceTree = "<group>"; };
+		ECED696210F9A303006B4DC9 /* tsip_transac_layer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_layer.c; sourceTree = "<group>"; };
+		ECED696310F9A303006B4DC9 /* tsip_transac_nict.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_nict.c; sourceTree = "<group>"; };
+		ECED696410F9A303006B4DC9 /* tsip_transac_nist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transac_nist.c; sourceTree = "<group>"; };
+		ECED696610F9A303006B4DC9 /* tsip_transport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transport.c; sourceTree = "<group>"; };
+		ECED696710F9A303006B4DC9 /* tsip_transport_layer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsip_transport_layer.c; sourceTree = "<group>"; };
+		ECED69E910F9A343006B4DC9 /* tsip_challenge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_challenge.h; sourceTree = "<group>"; };
+		ECED69EA10F9A343006B4DC9 /* tsip_milenage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_milenage.h; sourceTree = "<group>"; };
+		ECED69EB10F9A343006B4DC9 /* tsip_rijndael.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_rijndael.h; sourceTree = "<group>"; };
+		ECED69ED10F9A343006B4DC9 /* tsip_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_dialog.h; sourceTree = "<group>"; };
+		ECED69EE10F9A343006B4DC9 /* tsip_dialog_invite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_dialog_invite.h; sourceTree = "<group>"; };
+		ECED69EF10F9A343006B4DC9 /* tsip_dialog_layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_dialog_layer.h; sourceTree = "<group>"; };
+		ECED69F010F9A343006B4DC9 /* tsip_dialog_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_dialog_message.h; sourceTree = "<group>"; };
+		ECED69F110F9A343006B4DC9 /* tsip_dialog_register.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_dialog_register.h; sourceTree = "<group>"; };
+		ECED69F210F9A343006B4DC9 /* tsip_dialog_subscribe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_dialog_subscribe.h; sourceTree = "<group>"; };
+		ECED69F410F9A343006B4DC9 /* tsip_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header.h; sourceTree = "<group>"; };
+		ECED69F510F9A343006B4DC9 /* tsip_header_accept.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_accept.h; sourceTree = "<group>"; };
+		ECED69F610F9A343006B4DC9 /* tsip_header_Accept_Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Accept_Contact.h; sourceTree = "<group>"; };
+		ECED69F710F9A343006B4DC9 /* tsip_header_Accept_Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Accept_Encoding.h; sourceTree = "<group>"; };
+		ECED69F810F9A343006B4DC9 /* tsip_header_Accept_Language.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Accept_Language.h; sourceTree = "<group>"; };
+		ECED69F910F9A343006B4DC9 /* tsip_header_Accept_Resource_Priority.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Accept_Resource_Priority.h; sourceTree = "<group>"; };
+		ECED69FA10F9A343006B4DC9 /* tsip_header_Alert_Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Alert_Info.h; sourceTree = "<group>"; };
+		ECED69FB10F9A343006B4DC9 /* tsip_header_Allow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Allow.h; sourceTree = "<group>"; };
+		ECED69FC10F9A343006B4DC9 /* tsip_header_Allow_Events.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Allow_Events.h; sourceTree = "<group>"; };
+		ECED69FD10F9A343006B4DC9 /* tsip_header_Authentication_Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Authentication_Info.h; sourceTree = "<group>"; };
+		ECED69FE10F9A343006B4DC9 /* tsip_header_Authorization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Authorization.h; sourceTree = "<group>"; };
+		ECED69FF10F9A343006B4DC9 /* tsip_header_Call_ID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Call_ID.h; sourceTree = "<group>"; };
+		ECED6A0010F9A343006B4DC9 /* tsip_header_Call_Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Call_Info.h; sourceTree = "<group>"; };
+		ECED6A0110F9A343006B4DC9 /* tsip_header_Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Contact.h; sourceTree = "<group>"; };
+		ECED6A0210F9A343006B4DC9 /* tsip_header_Content_Disposition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Content_Disposition.h; sourceTree = "<group>"; };
+		ECED6A0310F9A343006B4DC9 /* tsip_header_Content_Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Content_Encoding.h; sourceTree = "<group>"; };
+		ECED6A0410F9A343006B4DC9 /* tsip_header_Content_Language.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Content_Language.h; sourceTree = "<group>"; };
+		ECED6A0510F9A343006B4DC9 /* tsip_header_Content_Length.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Content_Length.h; sourceTree = "<group>"; };
+		ECED6A0610F9A343006B4DC9 /* tsip_header_Content_Type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Content_Type.h; sourceTree = "<group>"; };
+		ECED6A0710F9A343006B4DC9 /* tsip_header_CSeq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_CSeq.h; sourceTree = "<group>"; };
+		ECED6A0810F9A343006B4DC9 /* tsip_header_Date.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Date.h; sourceTree = "<group>"; };
+		ECED6A0910F9A343006B4DC9 /* tsip_header_Error_Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Error_Info.h; sourceTree = "<group>"; };
+		ECED6A0A10F9A343006B4DC9 /* tsip_header_Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Event.h; sourceTree = "<group>"; };
+		ECED6A0B10F9A343006B4DC9 /* tsip_header_Expires.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Expires.h; sourceTree = "<group>"; };
+		ECED6A0C10F9A343006B4DC9 /* tsip_header_From.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_From.h; sourceTree = "<group>"; };
+		ECED6A0D10F9A343006B4DC9 /* tsip_header_History_Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_History_Info.h; sourceTree = "<group>"; };
+		ECED6A0E10F9A343006B4DC9 /* tsip_header_Identity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Identity.h; sourceTree = "<group>"; };
+		ECED6A0F10F9A343006B4DC9 /* tsip_header_Identity_Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Identity_Info.h; sourceTree = "<group>"; };
+		ECED6A1010F9A343006B4DC9 /* tsip_header_In_Reply_To.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_In_Reply_To.h; sourceTree = "<group>"; };
+		ECED6A1110F9A343006B4DC9 /* tsip_header_Join.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Join.h; sourceTree = "<group>"; };
+		ECED6A1210F9A343006B4DC9 /* tsip_header_Max_Forwards.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Max_Forwards.h; sourceTree = "<group>"; };
+		ECED6A1310F9A343006B4DC9 /* tsip_header_MIME_Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_MIME_Version.h; sourceTree = "<group>"; };
+		ECED6A1410F9A343006B4DC9 /* tsip_header_Min_Expires.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Min_Expires.h; sourceTree = "<group>"; };
+		ECED6A1510F9A343006B4DC9 /* tsip_header_Min_SE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Min_SE.h; sourceTree = "<group>"; };
+		ECED6A1610F9A343006B4DC9 /* tsip_header_Organization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Organization.h; sourceTree = "<group>"; };
+		ECED6A1710F9A343006B4DC9 /* tsip_header_P_Access_Network_Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Access_Network_Info.h; sourceTree = "<group>"; };
+		ECED6A1810F9A343006B4DC9 /* tsip_header_P_Answer_State.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Answer_State.h; sourceTree = "<group>"; };
+		ECED6A1910F9A343006B4DC9 /* tsip_header_P_Asserted_Identity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Asserted_Identity.h; sourceTree = "<group>"; };
+		ECED6A1A10F9A343006B4DC9 /* tsip_header_P_Associated_URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Associated_URI.h; sourceTree = "<group>"; };
+		ECED6A1B10F9A343006B4DC9 /* tsip_header_P_Called_Party_ID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Called_Party_ID.h; sourceTree = "<group>"; };
+		ECED6A1C10F9A343006B4DC9 /* tsip_header_P_Charging_Function_Addresses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Charging_Function_Addresses.h; sourceTree = "<group>"; };
+		ECED6A1D10F9A343006B4DC9 /* tsip_header_P_Charging_Vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Charging_Vector.h; sourceTree = "<group>"; };
+		ECED6A1E10F9A343006B4DC9 /* tsip_header_P_DCS_Billing_Info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_DCS_Billing_Info.h; sourceTree = "<group>"; };
+		ECED6A1F10F9A343006B4DC9 /* tsip_header_P_DCS_LAES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_DCS_LAES.h; sourceTree = "<group>"; };
+		ECED6A2010F9A343006B4DC9 /* tsip_header_P_DCS_OSPS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_DCS_OSPS.h; sourceTree = "<group>"; };
+		ECED6A2110F9A343006B4DC9 /* tsip_header_P_DCS_Redirect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_DCS_Redirect.h; sourceTree = "<group>"; };
+		ECED6A2210F9A343006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_DCS_Trace_Party_ID.h; sourceTree = "<group>"; };
+		ECED6A2310F9A343006B4DC9 /* tsip_header_P_Early_Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Early_Media.h; sourceTree = "<group>"; };
+		ECED6A2410F9A343006B4DC9 /* tsip_header_P_Media_Authorization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Media_Authorization.h; sourceTree = "<group>"; };
+		ECED6A2510F9A343006B4DC9 /* tsip_header_P_Preferred_Identity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Preferred_Identity.h; sourceTree = "<group>"; };
+		ECED6A2610F9A343006B4DC9 /* tsip_header_P_Profile_Key.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Profile_Key.h; sourceTree = "<group>"; };
+		ECED6A2710F9A343006B4DC9 /* tsip_header_P_User_Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_User_Database.h; sourceTree = "<group>"; };
+		ECED6A2810F9A343006B4DC9 /* tsip_header_P_Visited_Network_ID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_P_Visited_Network_ID.h; sourceTree = "<group>"; };
+		ECED6A2910F9A343006B4DC9 /* tsip_header_Path.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Path.h; sourceTree = "<group>"; };
+		ECED6A2A10F9A343006B4DC9 /* tsip_header_Priority.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Priority.h; sourceTree = "<group>"; };
+		ECED6A2B10F9A343006B4DC9 /* tsip_header_Privacy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Privacy.h; sourceTree = "<group>"; };
+		ECED6A2C10F9A343006B4DC9 /* tsip_header_Proxy_Authenticate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Proxy_Authenticate.h; sourceTree = "<group>"; };
+		ECED6A2D10F9A343006B4DC9 /* tsip_header_Proxy_Authorization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Proxy_Authorization.h; sourceTree = "<group>"; };
+		ECED6A2E10F9A343006B4DC9 /* tsip_header_Proxy_Require.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Proxy_Require.h; sourceTree = "<group>"; };
+		ECED6A2F10F9A343006B4DC9 /* tsip_header_RAck.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_RAck.h; sourceTree = "<group>"; };
+		ECED6A3010F9A343006B4DC9 /* tsip_header_Reason.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Reason.h; sourceTree = "<group>"; };
+		ECED6A3110F9A343006B4DC9 /* tsip_header_Record_Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Record_Route.h; sourceTree = "<group>"; };
+		ECED6A3210F9A343006B4DC9 /* tsip_header_Refer_Sub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Refer_Sub.h; sourceTree = "<group>"; };
+		ECED6A3310F9A343006B4DC9 /* tsip_header_Refer_To.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Refer_To.h; sourceTree = "<group>"; };
+		ECED6A3410F9A343006B4DC9 /* tsip_header_Referred_By.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Referred_By.h; sourceTree = "<group>"; };
+		ECED6A3510F9A343006B4DC9 /* tsip_header_Reject_Contact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Reject_Contact.h; sourceTree = "<group>"; };
+		ECED6A3610F9A343006B4DC9 /* tsip_header_Replaces.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Replaces.h; sourceTree = "<group>"; };
+		ECED6A3710F9A343006B4DC9 /* tsip_header_Reply_To.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Reply_To.h; sourceTree = "<group>"; };
+		ECED6A3810F9A343006B4DC9 /* tsip_header_Request_Disposition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Request_Disposition.h; sourceTree = "<group>"; };
+		ECED6A3910F9A343006B4DC9 /* tsip_header_Require.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Require.h; sourceTree = "<group>"; };
+		ECED6A3A10F9A343006B4DC9 /* tsip_header_Resource_Priority.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Resource_Priority.h; sourceTree = "<group>"; };
+		ECED6A3B10F9A343006B4DC9 /* tsip_header_Retry_After.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Retry_After.h; sourceTree = "<group>"; };
+		ECED6A3C10F9A343006B4DC9 /* tsip_header_Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Route.h; sourceTree = "<group>"; };
+		ECED6A3D10F9A343006B4DC9 /* tsip_header_RSeq.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_RSeq.h; sourceTree = "<group>"; };
+		ECED6A3E10F9A343006B4DC9 /* tsip_header_Security_Client.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Security_Client.h; sourceTree = "<group>"; };
+		ECED6A3F10F9A343006B4DC9 /* tsip_header_Security_Server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Security_Server.h; sourceTree = "<group>"; };
+		ECED6A4010F9A343006B4DC9 /* tsip_header_Security_Verify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Security_Verify.h; sourceTree = "<group>"; };
+		ECED6A4110F9A343006B4DC9 /* tsip_header_Server.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Server.h; sourceTree = "<group>"; };
+		ECED6A4210F9A343006B4DC9 /* tsip_header_Service_Route.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Service_Route.h; sourceTree = "<group>"; };
+		ECED6A4310F9A343006B4DC9 /* tsip_header_Session_Expires.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Session_Expires.h; sourceTree = "<group>"; };
+		ECED6A4410F9A343006B4DC9 /* tsip_header_SIP_ETag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_SIP_ETag.h; sourceTree = "<group>"; };
+		ECED6A4510F9A343006B4DC9 /* tsip_header_SIP_If_Match.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_SIP_If_Match.h; sourceTree = "<group>"; };
+		ECED6A4610F9A343006B4DC9 /* tsip_header_Subject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Subject.h; sourceTree = "<group>"; };
+		ECED6A4710F9A343006B4DC9 /* tsip_header_Subscription_State.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Subscription_State.h; sourceTree = "<group>"; };
+		ECED6A4810F9A343006B4DC9 /* tsip_header_Supported.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Supported.h; sourceTree = "<group>"; };
+		ECED6A4910F9A343006B4DC9 /* tsip_header_Target_Dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Target_Dialog.h; sourceTree = "<group>"; };
+		ECED6A4A10F9A343006B4DC9 /* tsip_header_Timestamp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Timestamp.h; sourceTree = "<group>"; };
+		ECED6A4B10F9A343006B4DC9 /* tsip_header_To.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_To.h; sourceTree = "<group>"; };
+		ECED6A4C10F9A343006B4DC9 /* tsip_header_Unsupported.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Unsupported.h; sourceTree = "<group>"; };
+		ECED6A4D10F9A343006B4DC9 /* tsip_header_User_Agent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_User_Agent.h; sourceTree = "<group>"; };
+		ECED6A4E10F9A343006B4DC9 /* tsip_header_Via.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Via.h; sourceTree = "<group>"; };
+		ECED6A4F10F9A343006B4DC9 /* tsip_header_Warning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_Warning.h; sourceTree = "<group>"; };
+		ECED6A5010F9A343006B4DC9 /* tsip_header_WWW_Authenticate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_header_WWW_Authenticate.h; sourceTree = "<group>"; };
+		ECED6A5110F9A343006B4DC9 /* tsip_headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_headers.h; sourceTree = "<group>"; };
+		ECED6A5310F9A343006B4DC9 /* tsip_parser_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_parser_header.h; sourceTree = "<group>"; };
+		ECED6A5410F9A343006B4DC9 /* tsip_parser_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_parser_message.h; sourceTree = "<group>"; };
+		ECED6A5510F9A343006B4DC9 /* tsip_parser_uri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_parser_uri.h; sourceTree = "<group>"; };
+		ECED6A5610F9A343006B4DC9 /* tsip_ragel_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_ragel_state.h; sourceTree = "<group>"; };
+		ECED6A5810F9A343006B4DC9 /* tsip_dialog_message_sm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_dialog_message_sm.h; sourceTree = "<group>"; };
+		ECED6A5910F9A343006B4DC9 /* tsip_dialog_register_sm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_dialog_register_sm.h; sourceTree = "<group>"; };
+		ECED6A5A10F9A343006B4DC9 /* tsip_transac_ict_sm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_ict_sm.h; sourceTree = "<group>"; };
+		ECED6A5B10F9A343006B4DC9 /* tsip_transac_ist_sm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_ist_sm.h; sourceTree = "<group>"; };
+		ECED6A5C10F9A343006B4DC9 /* tsip_transac_nict_sm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_nict_sm.h; sourceTree = "<group>"; };
+		ECED6A5D10F9A343006B4DC9 /* tsip_transac_nist_sm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_nist_sm.h; sourceTree = "<group>"; };
+		ECED6A5F10F9A343006B4DC9 /* tsip_transac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac.h; sourceTree = "<group>"; };
+		ECED6A6010F9A343006B4DC9 /* tsip_transac_ict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_ict.h; sourceTree = "<group>"; };
+		ECED6A6110F9A343006B4DC9 /* tsip_transac_ist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_ist.h; sourceTree = "<group>"; };
+		ECED6A6210F9A343006B4DC9 /* tsip_transac_layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_layer.h; sourceTree = "<group>"; };
+		ECED6A6310F9A343006B4DC9 /* tsip_transac_nict.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_nict.h; sourceTree = "<group>"; };
+		ECED6A6410F9A343006B4DC9 /* tsip_transac_nist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transac_nist.h; sourceTree = "<group>"; };
+		ECED6A6610F9A343006B4DC9 /* tsip_transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transport.h; sourceTree = "<group>"; };
+		ECED6A6710F9A343006B4DC9 /* tsip_transport_layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsip_transport_layer.h; sourceTree = "<group>"; };
+		ECED6AEB10F9A66E006B4DC9 /* thttp_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_auth.c; sourceTree = "<group>"; };
+		ECED6AFE10F9A93A006B4DC9 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECED6B1010F9A971006B4DC9 /* stdafx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stdafx.c; path = ../../tinySIP/test/test/stdafx.c; sourceTree = SOURCE_ROOT; };
+		ECED6B1110F9A971006B4DC9 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../tinySIP/test/test/stdafx.h; sourceTree = SOURCE_ROOT; };
+		ECED6B1210F9A971006B4DC9 /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = targetver.h; path = ../../tinySIP/test/test/targetver.h; sourceTree = SOURCE_ROOT; };
+		ECED6B1310F9A971006B4DC9 /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = test.c; path = ../../tinySIP/test/test/test.c; sourceTree = SOURCE_ROOT; };
+		ECED6B1410F9A971006B4DC9 /* test_sipmessages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test_sipmessages.h; path = ../../tinySIP/test/test/test_sipmessages.h; sourceTree = SOURCE_ROOT; };
+		ECED6B1510F9A971006B4DC9 /* test_stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test_stack.h; path = ../../tinySIP/test/test/test_stack.h; sourceTree = SOURCE_ROOT; };
+		ECED6B1610F9A971006B4DC9 /* test_transac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test_transac.h; path = ../../tinySIP/test/test/test_transac.h; sourceTree = SOURCE_ROOT; };
+		ECED6B1710F9A971006B4DC9 /* test_uri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test_uri.h; path = ../../tinySIP/test/test/test_uri.h; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D289988505E68E00004EDB86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED689510F99886006B4DC9 /* libtinyNET.dylib in Frameworks */,
+				ECED689610F99886006B4DC9 /* libtinySAK.dylib in Frameworks */,
+				ECED68C410F99979006B4DC9 /* libtinyHTTP.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED65E410F99689006B4DC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED686210F997F2006B4DC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED688F10F9986A006B4DC9 /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED689B10F998E4006B4DC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED6AF210F9A68F006B4DC9 /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED6AFC10F9A93A006B4DC9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED6B0A10F9A94A006B4DC9 /* libtinyHTTP.dylib in Frameworks */,
+				ECED6B0B10F9A94A006B4DC9 /* libtinyNET.dylib in Frameworks */,
+				ECED6B0C10F9A94A006B4DC9 /* libtinySAK.dylib in Frameworks */,
+				ECED6B0D10F9A94A006B4DC9 /* libtinySIP.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* tinySIP */ = {
+			isa = PBXGroup;
+			children = (
+				ECED6B0E10F9A953006B4DC9 /* test */,
+				ECED68A010F998EB006B4DC9 /* tinyHTTP */,
+				ECED685F10F997E2006B4DC9 /* tinyNET */,
+				ECED67EB10F996BF006B4DC9 /* tinySAK */,
+				ECED64B010F995DB006B4DC9 /* smc */,
+				ECED644D10F995B8006B4DC9 /* ragel */,
+				ECED644B10F995A8006B4DC9 /* graph */,
+				ECED644810F99599006B4DC9 /* abnf */,
+				ECED644710F9957A006B4DC9 /* include */,
+				08FB7795FE84155DC02AAC07 /* Source */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = tinySIP;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				ECED68E010F9A303006B4DC9 /* authentication */,
+				ECED68E410F9A303006B4DC9 /* dialogs */,
+				ECED68EE10F9A303006B4DC9 /* headers */,
+				ECED694C10F9A303006B4DC9 /* parsers */,
+				ECED695110F9A303006B4DC9 /* smc */,
+				ECED695E10F9A303006B4DC9 /* transactions */,
+				ECED696510F9A303006B4DC9 /* transports */,
+				ECED65D810F99666006B4DC9 /* tsip.c */,
+				ECED65D910F99666006B4DC9 /* tsip_message.c */,
+				ECED65DA10F99666006B4DC9 /* tsip_operation.c */,
+				ECED65DB10F99666006B4DC9 /* tsip_timers.c */,
+				ECED65DC10F99666006B4DC9 /* tsip_uri.c */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D2AAC0630554660B00DB518D /* libtinySIP.dylib */,
+				ECED65E610F9968A006B4DC9 /* libtinySAK.dylib */,
+				ECED686410F997F2006B4DC9 /* libtinyNET.dylib */,
+				ECED689D10F998E4006B4DC9 /* libtinyHTTP.dylib */,
+				ECED6AFE10F9A93A006B4DC9 /* test */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ECED644710F9957A006B4DC9 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECED69E810F9A343006B4DC9 /* authentication */,
+				ECED69EC10F9A343006B4DC9 /* dialogs */,
+				ECED69F310F9A343006B4DC9 /* headers */,
+				ECED6A5210F9A343006B4DC9 /* parsers */,
+				ECED6A5710F9A343006B4DC9 /* smc */,
+				ECED6A5E10F9A343006B4DC9 /* transactions */,
+				ECED6A6510F9A343006B4DC9 /* transports */,
+				ECED654010F99647006B4DC9 /* tsip_message.h */,
+				ECED685A10F997BF006B4DC9 /* tinysip_config.h */,
+				ECED654110F99647006B4DC9 /* tsip_operation.h */,
+				ECED685B10F997BF006B4DC9 /* tsip.h */,
+				ECED654210F99647006B4DC9 /* tsip_timers.h */,
+				ECED654310F99647006B4DC9 /* tsip_uri.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		ECED67EB10F996BF006B4DC9 /* tinySAK */ = {
+			isa = PBXGroup;
+			children = (
+				ECED67EE10F996F6006B4DC9 /* tinySAK_config.h */,
+				ECED67EF10F996F6006B4DC9 /* tsk.c */,
+				ECED67F010F996F6006B4DC9 /* tsk.h */,
+				ECED67F110F996F6006B4DC9 /* tsk_base64.c */,
+				ECED67F210F996F6006B4DC9 /* tsk_base64.h */,
+				ECED67F310F996F6006B4DC9 /* tsk_binaryutils.c */,
+				ECED67F410F996F6006B4DC9 /* tsk_binaryutils.h */,
+				ECED67F510F996F6006B4DC9 /* tsk_buffer.c */,
+				ECED67F610F996F6006B4DC9 /* tsk_buffer.h */,
+				ECED67F710F996F6006B4DC9 /* tsk_condwait.c */,
+				ECED67F810F996F6006B4DC9 /* tsk_condwait.h */,
+				ECED67F910F996F6006B4DC9 /* tsk_debug.c */,
+				ECED67FA10F996F6006B4DC9 /* tsk_debug.h */,
+				ECED67FB10F996F6006B4DC9 /* tsk_errno.h */,
+				ECED67FC10F996F6006B4DC9 /* tsk_heap.c */,
+				ECED67FD10F996F6006B4DC9 /* tsk_heap.h */,
+				ECED67FE10F996F6006B4DC9 /* tsk_hmac.c */,
+				ECED67FF10F996F6006B4DC9 /* tsk_hmac.h */,
+				ECED680010F996F6006B4DC9 /* tsk_list.c */,
+				ECED680110F996F6006B4DC9 /* tsk_list.h */,
+				ECED680210F996F6006B4DC9 /* tsk_macros.h */,
+				ECED680310F996F6006B4DC9 /* tsk_md5.c */,
+				ECED680410F996F6006B4DC9 /* tsk_md5.h */,
+				ECED680510F996F6006B4DC9 /* tsk_memory.c */,
+				ECED680610F996F6006B4DC9 /* tsk_memory.h */,
+				ECED680710F996F6006B4DC9 /* tsk_mutex.c */,
+				ECED680810F996F6006B4DC9 /* tsk_mutex.h */,
+				ECED680910F996F6006B4DC9 /* tsk_object.c */,
+				ECED680A10F996F6006B4DC9 /* tsk_object.h */,
+				ECED680B10F996F6006B4DC9 /* tsk_params.c */,
+				ECED680C10F996F6006B4DC9 /* tsk_params.h */,
+				ECED680D10F996F6006B4DC9 /* tsk_ppfcs16.c */,
+				ECED680E10F996F6006B4DC9 /* tsk_ppfcs16.h */,
+				ECED680F10F996F6006B4DC9 /* tsk_runnable.c */,
+				ECED681010F996F6006B4DC9 /* tsk_runnable.h */,
+				ECED681110F996F6006B4DC9 /* tsk_safeobj.c */,
+				ECED681210F996F6006B4DC9 /* tsk_safeobj.h */,
+				ECED681310F996F6006B4DC9 /* tsk_semaphore.c */,
+				ECED681410F996F6006B4DC9 /* tsk_semaphore.h */,
+				ECED681510F996F6006B4DC9 /* tsk_sha1.c */,
+				ECED681610F996F6006B4DC9 /* tsk_sha1.h */,
+				ECED681710F996F6006B4DC9 /* tsk_string.c */,
+				ECED681810F996F6006B4DC9 /* tsk_string.h */,
+				ECED681910F996F6006B4DC9 /* tsk_thread.c */,
+				ECED681A10F996F6006B4DC9 /* tsk_thread.h */,
+				ECED681B10F996F6006B4DC9 /* tsk_time.c */,
+				ECED681C10F996F6006B4DC9 /* tsk_time.h */,
+				ECED681D10F996F6006B4DC9 /* tsk_timer.c */,
+				ECED681E10F996F6006B4DC9 /* tsk_timer.h */,
+				ECED681F10F996F6006B4DC9 /* tsk_url.c */,
+				ECED682010F996F6006B4DC9 /* tsk_url.h */,
+				ECED682110F996F6006B4DC9 /* tsk_xml.c */,
+				ECED682210F996F6006B4DC9 /* tsk_xml.h */,
+			);
+			name = tinySAK;
+			sourceTree = "<group>";
+		};
+		ECED685F10F997E2006B4DC9 /* tinyNET */ = {
+			isa = PBXGroup;
+			children = (
+				ECED688B10F99829006B4DC9 /* source */,
+				ECED688A10F99823006B4DC9 /* include */,
+			);
+			name = tinyNET;
+			sourceTree = "<group>";
+		};
+		ECED688A10F99823006B4DC9 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECED686D10F99811006B4DC9 /* tnet_auth.h */,
+				ECED686910F99811006B4DC9 /* tinyNET_config.h */,
+				ECED686B10F99811006B4DC9 /* tnet.h */,
+				ECED686F10F99811006B4DC9 /* tnet_poll.h */,
+				ECED687110F99811006B4DC9 /* tnet_socket.h */,
+				ECED687310F99811006B4DC9 /* tnet_transport.h */,
+				ECED687610F99811006B4DC9 /* tnet_types.h */,
+				ECED687810F99811006B4DC9 /* tnet_utils.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		ECED688B10F99829006B4DC9 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				ECED686E10F99811006B4DC9 /* tnet_poll.c */,
+				ECED686A10F99811006B4DC9 /* tnet.c */,
+				ECED686C10F99811006B4DC9 /* tnet_auth.c */,
+				ECED687010F99811006B4DC9 /* tnet_socket.c */,
+				ECED687210F99811006B4DC9 /* tnet_transport.c */,
+				ECED687410F99811006B4DC9 /* tnet_transport_poll.c */,
+				ECED687510F99811006B4DC9 /* tnet_transport_win32.c */,
+				ECED687710F99811006B4DC9 /* tnet_utils.c */,
+			);
+			name = source;
+			sourceTree = "<group>";
+		};
+		ECED68A010F998EB006B4DC9 /* tinyHTTP */ = {
+			isa = PBXGroup;
+			children = (
+				ECED68A310F998FC006B4DC9 /* source */,
+				ECED68A210F998F7006B4DC9 /* include */,
+			);
+			name = tinyHTTP;
+			sourceTree = "<group>";
+		};
+		ECED68A210F998F7006B4DC9 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECED68AF10F9992F006B4DC9 /* thttp.h */,
+				ECED68B010F9992F006B4DC9 /* tinyhttp_config.h */,
+				ECED68A410F9991C006B4DC9 /* auth */,
+				ECED68A710F9991C006B4DC9 /* headers */,
+				ECED68A910F9991C006B4DC9 /* parsers */,
+				ECED68AB10F9991C006B4DC9 /* thttp_message.h */,
+				ECED68AC10F9991C006B4DC9 /* thttp_url.h */,
+			);
+			name = include;
+			sourceTree = "<group>";
+		};
+		ECED68A310F998FC006B4DC9 /* source */ = {
+			isa = PBXGroup;
+			children = (
+				ECED6AEA10F9A66E006B4DC9 /* auth */,
+				ECED6AEC10F9A66E006B4DC9 /* headers */,
+				ECED6AED10F9A66E006B4DC9 /* parsers */,
+				ECED68BA10F99944006B4DC9 /* thttp.c */,
+				ECED68BB10F99944006B4DC9 /* thttp_message.c */,
+				ECED68BC10F99944006B4DC9 /* thttp_utl.c */,
+			);
+			name = source;
+			sourceTree = "<group>";
+		};
+		ECED68E010F9A303006B4DC9 /* authentication */ = {
+			isa = PBXGroup;
+			children = (
+				ECED68E110F9A303006B4DC9 /* tsip_challenge.c */,
+				ECED68E210F9A303006B4DC9 /* tsip_milenage.c */,
+				ECED68E310F9A303006B4DC9 /* tsip_rijndael.c */,
+			);
+			name = authentication;
+			path = ../../tinySIP/source/authentication;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED68E410F9A303006B4DC9 /* dialogs */ = {
+			isa = PBXGroup;
+			children = (
+				ECED68E510F9A303006B4DC9 /* tsip_dialog.c */,
+				ECED68E610F9A303006B4DC9 /* tsip_dialog_invite.client.c */,
+				ECED68E710F9A303006B4DC9 /* tsip_dialog_invite.server.c */,
+				ECED68E810F9A303006B4DC9 /* tsip_dialog_layer.c */,
+				ECED68E910F9A303006B4DC9 /* tsip_dialog_message.c */,
+				ECED68EA10F9A303006B4DC9 /* tsip_dialog_register.client.c */,
+				ECED68EB10F9A303006B4DC9 /* tsip_dialog_register.server.c */,
+				ECED68EC10F9A303006B4DC9 /* tsip_dialog_subscribe.client.c */,
+				ECED68ED10F9A303006B4DC9 /* tsip_dialog_subscribe.server.c */,
+			);
+			name = dialogs;
+			path = ../../tinySIP/source/dialogs;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED68EE10F9A303006B4DC9 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				ECED68EF10F9A303006B4DC9 /* tsip_header.c */,
+				ECED68F010F9A303006B4DC9 /* tsip_header_accept.c */,
+				ECED68F110F9A303006B4DC9 /* tsip_header_Accept_Contact.c */,
+				ECED68F210F9A303006B4DC9 /* tsip_header_Accept_Encoding.c */,
+				ECED68F310F9A303006B4DC9 /* tsip_header_Accept_Language.c */,
+				ECED68F410F9A303006B4DC9 /* tsip_header_Accept_Resource_Priority.c */,
+				ECED68F510F9A303006B4DC9 /* tsip_header_Alert_Info.c */,
+				ECED68F610F9A303006B4DC9 /* tsip_header_Allow.c */,
+				ECED68F710F9A303006B4DC9 /* tsip_header_Allow_Events.c */,
+				ECED68F810F9A303006B4DC9 /* tsip_header_Authentication_Info.c */,
+				ECED68F910F9A303006B4DC9 /* tsip_header_Authorization.c */,
+				ECED68FA10F9A303006B4DC9 /* tsip_header_Call_ID.c */,
+				ECED68FB10F9A303006B4DC9 /* tsip_header_Call_Info.c */,
+				ECED68FC10F9A303006B4DC9 /* tsip_header_Contact.c */,
+				ECED68FD10F9A303006B4DC9 /* tsip_header_Content_Disposition.c */,
+				ECED68FE10F9A303006B4DC9 /* tsip_header_Content_Encoding.c */,
+				ECED68FF10F9A303006B4DC9 /* tsip_header_Content_Language.c */,
+				ECED690010F9A303006B4DC9 /* tsip_header_Content_Length.c */,
+				ECED690110F9A303006B4DC9 /* tsip_header_Content_Type.c */,
+				ECED690210F9A303006B4DC9 /* tsip_header_CSeq.c */,
+				ECED690310F9A303006B4DC9 /* tsip_header_Date.c */,
+				ECED690410F9A303006B4DC9 /* tsip_header_Error_Info.c */,
+				ECED690510F9A303006B4DC9 /* tsip_header_Event.c */,
+				ECED690610F9A303006B4DC9 /* tsip_header_Expires.c */,
+				ECED690710F9A303006B4DC9 /* tsip_header_From.c */,
+				ECED690810F9A303006B4DC9 /* tsip_header_History_Info.c */,
+				ECED690910F9A303006B4DC9 /* tsip_header_Identity.c */,
+				ECED690A10F9A303006B4DC9 /* tsip_header_Identity_Info.c */,
+				ECED690B10F9A303006B4DC9 /* tsip_header_In_Reply_To.c */,
+				ECED690C10F9A303006B4DC9 /* tsip_header_Join.c */,
+				ECED690D10F9A303006B4DC9 /* tsip_header_Max_Forwards.c */,
+				ECED690E10F9A303006B4DC9 /* tsip_header_MIME_Version.c */,
+				ECED690F10F9A303006B4DC9 /* tsip_header_Min_Expires.c */,
+				ECED691010F9A303006B4DC9 /* tsip_header_Min_SE.c */,
+				ECED691110F9A303006B4DC9 /* tsip_header_Organization.c */,
+				ECED691210F9A303006B4DC9 /* tsip_header_P_Access_Network_Info.c */,
+				ECED691310F9A303006B4DC9 /* tsip_header_P_Answer_State.c */,
+				ECED691410F9A303006B4DC9 /* tsip_header_P_Asserted_Identity.c */,
+				ECED691510F9A303006B4DC9 /* tsip_header_P_Associated_URI.c */,
+				ECED691610F9A303006B4DC9 /* tsip_header_P_Called_Party_ID.c */,
+				ECED691710F9A303006B4DC9 /* tsip_header_P_Charging_Function_Addresses.c */,
+				ECED691810F9A303006B4DC9 /* tsip_header_P_Charging_Vector.c */,
+				ECED691910F9A303006B4DC9 /* tsip_header_P_DCS_Billing_Info.c */,
+				ECED691A10F9A303006B4DC9 /* tsip_header_P_DCS_LAES.c */,
+				ECED691B10F9A303006B4DC9 /* tsip_header_P_DCS_OSPS.c */,
+				ECED691C10F9A303006B4DC9 /* tsip_header_P_DCS_Redirect.c */,
+				ECED691D10F9A303006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.c */,
+				ECED691E10F9A303006B4DC9 /* tsip_header_P_Early_Media.c */,
+				ECED691F10F9A303006B4DC9 /* tsip_header_P_Media_Authorization.c */,
+				ECED692010F9A303006B4DC9 /* tsip_header_P_Preferred_Identity.c */,
+				ECED692110F9A303006B4DC9 /* tsip_header_P_Profile_Key.c */,
+				ECED692210F9A303006B4DC9 /* tsip_header_P_User_Database.c */,
+				ECED692310F9A303006B4DC9 /* tsip_header_P_Visited_Network_ID.c */,
+				ECED692410F9A303006B4DC9 /* tsip_header_Path.c */,
+				ECED692510F9A303006B4DC9 /* tsip_header_Priority.c */,
+				ECED692610F9A303006B4DC9 /* tsip_header_Privacy.c */,
+				ECED692710F9A303006B4DC9 /* tsip_header_Proxy_Authenticate.c */,
+				ECED692810F9A303006B4DC9 /* tsip_header_Proxy_Authorization.c */,
+				ECED692910F9A303006B4DC9 /* tsip_header_Proxy_Require.c */,
+				ECED692A10F9A303006B4DC9 /* tsip_header_RAck.c */,
+				ECED692B10F9A303006B4DC9 /* tsip_header_Reason.c */,
+				ECED692C10F9A303006B4DC9 /* tsip_header_Record_Route.c */,
+				ECED692D10F9A303006B4DC9 /* tsip_header_Refer_Sub.c */,
+				ECED692E10F9A303006B4DC9 /* tsip_header_Refer_To.c */,
+				ECED692F10F9A303006B4DC9 /* tsip_header_Referred_By.c */,
+				ECED693010F9A303006B4DC9 /* tsip_header_Reject_Contact.c */,
+				ECED693110F9A303006B4DC9 /* tsip_header_Replaces.c */,
+				ECED693210F9A303006B4DC9 /* tsip_header_Reply_To.c */,
+				ECED693310F9A303006B4DC9 /* tsip_header_Request_Disposition.c */,
+				ECED693410F9A303006B4DC9 /* tsip_header_Require.c */,
+				ECED693510F9A303006B4DC9 /* tsip_header_Resource_Priority.c */,
+				ECED693610F9A303006B4DC9 /* tsip_header_Retry_After.c */,
+				ECED693710F9A303006B4DC9 /* tsip_header_Route.c */,
+				ECED693810F9A303006B4DC9 /* tsip_header_RSeq.c */,
+				ECED693910F9A303006B4DC9 /* tsip_header_Security_Client.c */,
+				ECED693A10F9A303006B4DC9 /* tsip_header_Security_Server.c */,
+				ECED693B10F9A303006B4DC9 /* tsip_header_Security_Verify.c */,
+				ECED693C10F9A303006B4DC9 /* tsip_header_Server.c */,
+				ECED693D10F9A303006B4DC9 /* tsip_header_Service_Route.c */,
+				ECED693E10F9A303006B4DC9 /* tsip_header_Session_Expires.c */,
+				ECED693F10F9A303006B4DC9 /* tsip_header_SIP_ETag.c */,
+				ECED694010F9A303006B4DC9 /* tsip_header_SIP_If_Match.c */,
+				ECED694110F9A303006B4DC9 /* tsip_header_Subject.c */,
+				ECED694210F9A303006B4DC9 /* tsip_header_Subscription_State.c */,
+				ECED694310F9A303006B4DC9 /* tsip_header_Supported.c */,
+				ECED694410F9A303006B4DC9 /* tsip_header_Target_Dialog.c */,
+				ECED694510F9A303006B4DC9 /* tsip_header_Timestamp.c */,
+				ECED694610F9A303006B4DC9 /* tsip_header_To.c */,
+				ECED694710F9A303006B4DC9 /* tsip_header_Unsupported.c */,
+				ECED694810F9A303006B4DC9 /* tsip_header_User_Agent.c */,
+				ECED694910F9A303006B4DC9 /* tsip_header_Via.c */,
+				ECED694A10F9A303006B4DC9 /* tsip_header_Warning.c */,
+				ECED694B10F9A303006B4DC9 /* tsip_header_WWW_Authenticate.c */,
+			);
+			name = headers;
+			path = ../../tinySIP/source/headers;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED694C10F9A303006B4DC9 /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+				ECED694D10F9A303006B4DC9 /* tsip_parser_header.c */,
+				ECED694E10F9A303006B4DC9 /* tsip_parser_message.c */,
+				ECED694F10F9A303006B4DC9 /* tsip_parser_uri.c */,
+				ECED695010F9A303006B4DC9 /* tsip_ragel_state.c */,
+			);
+			name = parsers;
+			path = ../../tinySIP/source/parsers;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED695110F9A303006B4DC9 /* smc */ = {
+			isa = PBXGroup;
+			children = (
+				ECED695810F9A303006B4DC9 /* tsip_dialog_message_sm.c */,
+				ECED695910F9A303006B4DC9 /* tsip_dialog_register_sm.c */,
+				ECED695A10F9A303006B4DC9 /* tsip_transac_ict_sm.c */,
+				ECED695B10F9A303006B4DC9 /* tsip_transac_ist_sm.c */,
+				ECED695C10F9A303006B4DC9 /* tsip_transac_nict_sm.c */,
+				ECED695D10F9A303006B4DC9 /* tsip_transac_nist_sm.c */,
+			);
+			name = smc;
+			path = ../../tinySIP/source/smc;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED695E10F9A303006B4DC9 /* transactions */ = {
+			isa = PBXGroup;
+			children = (
+				ECED695F10F9A303006B4DC9 /* tsip_transac.c */,
+				ECED696010F9A303006B4DC9 /* tsip_transac_ict.c */,
+				ECED696110F9A303006B4DC9 /* tsip_transac_ist.c */,
+				ECED696210F9A303006B4DC9 /* tsip_transac_layer.c */,
+				ECED696310F9A303006B4DC9 /* tsip_transac_nict.c */,
+				ECED696410F9A303006B4DC9 /* tsip_transac_nist.c */,
+			);
+			name = transactions;
+			path = ../../tinySIP/source/transactions;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED696510F9A303006B4DC9 /* transports */ = {
+			isa = PBXGroup;
+			children = (
+				ECED696610F9A303006B4DC9 /* tsip_transport.c */,
+				ECED696710F9A303006B4DC9 /* tsip_transport_layer.c */,
+			);
+			name = transports;
+			path = ../../tinySIP/source/transports;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED69E810F9A343006B4DC9 /* authentication */ = {
+			isa = PBXGroup;
+			children = (
+				ECED69E910F9A343006B4DC9 /* tsip_challenge.h */,
+				ECED69EA10F9A343006B4DC9 /* tsip_milenage.h */,
+				ECED69EB10F9A343006B4DC9 /* tsip_rijndael.h */,
+			);
+			name = authentication;
+			path = ../../tinySIP/include/tinysip/authentication;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED69EC10F9A343006B4DC9 /* dialogs */ = {
+			isa = PBXGroup;
+			children = (
+				ECED69ED10F9A343006B4DC9 /* tsip_dialog.h */,
+				ECED69EE10F9A343006B4DC9 /* tsip_dialog_invite.h */,
+				ECED69EF10F9A343006B4DC9 /* tsip_dialog_layer.h */,
+				ECED69F010F9A343006B4DC9 /* tsip_dialog_message.h */,
+				ECED69F110F9A343006B4DC9 /* tsip_dialog_register.h */,
+				ECED69F210F9A343006B4DC9 /* tsip_dialog_subscribe.h */,
+			);
+			name = dialogs;
+			path = ../../tinySIP/include/tinysip/dialogs;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED69F310F9A343006B4DC9 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				ECED69F410F9A343006B4DC9 /* tsip_header.h */,
+				ECED69F510F9A343006B4DC9 /* tsip_header_accept.h */,
+				ECED69F610F9A343006B4DC9 /* tsip_header_Accept_Contact.h */,
+				ECED69F710F9A343006B4DC9 /* tsip_header_Accept_Encoding.h */,
+				ECED69F810F9A343006B4DC9 /* tsip_header_Accept_Language.h */,
+				ECED69F910F9A343006B4DC9 /* tsip_header_Accept_Resource_Priority.h */,
+				ECED69FA10F9A343006B4DC9 /* tsip_header_Alert_Info.h */,
+				ECED69FB10F9A343006B4DC9 /* tsip_header_Allow.h */,
+				ECED69FC10F9A343006B4DC9 /* tsip_header_Allow_Events.h */,
+				ECED69FD10F9A343006B4DC9 /* tsip_header_Authentication_Info.h */,
+				ECED69FE10F9A343006B4DC9 /* tsip_header_Authorization.h */,
+				ECED69FF10F9A343006B4DC9 /* tsip_header_Call_ID.h */,
+				ECED6A0010F9A343006B4DC9 /* tsip_header_Call_Info.h */,
+				ECED6A0110F9A343006B4DC9 /* tsip_header_Contact.h */,
+				ECED6A0210F9A343006B4DC9 /* tsip_header_Content_Disposition.h */,
+				ECED6A0310F9A343006B4DC9 /* tsip_header_Content_Encoding.h */,
+				ECED6A0410F9A343006B4DC9 /* tsip_header_Content_Language.h */,
+				ECED6A0510F9A343006B4DC9 /* tsip_header_Content_Length.h */,
+				ECED6A0610F9A343006B4DC9 /* tsip_header_Content_Type.h */,
+				ECED6A0710F9A343006B4DC9 /* tsip_header_CSeq.h */,
+				ECED6A0810F9A343006B4DC9 /* tsip_header_Date.h */,
+				ECED6A0910F9A343006B4DC9 /* tsip_header_Error_Info.h */,
+				ECED6A0A10F9A343006B4DC9 /* tsip_header_Event.h */,
+				ECED6A0B10F9A343006B4DC9 /* tsip_header_Expires.h */,
+				ECED6A0C10F9A343006B4DC9 /* tsip_header_From.h */,
+				ECED6A0D10F9A343006B4DC9 /* tsip_header_History_Info.h */,
+				ECED6A0E10F9A343006B4DC9 /* tsip_header_Identity.h */,
+				ECED6A0F10F9A343006B4DC9 /* tsip_header_Identity_Info.h */,
+				ECED6A1010F9A343006B4DC9 /* tsip_header_In_Reply_To.h */,
+				ECED6A1110F9A343006B4DC9 /* tsip_header_Join.h */,
+				ECED6A1210F9A343006B4DC9 /* tsip_header_Max_Forwards.h */,
+				ECED6A1310F9A343006B4DC9 /* tsip_header_MIME_Version.h */,
+				ECED6A1410F9A343006B4DC9 /* tsip_header_Min_Expires.h */,
+				ECED6A1510F9A343006B4DC9 /* tsip_header_Min_SE.h */,
+				ECED6A1610F9A343006B4DC9 /* tsip_header_Organization.h */,
+				ECED6A1710F9A343006B4DC9 /* tsip_header_P_Access_Network_Info.h */,
+				ECED6A1810F9A343006B4DC9 /* tsip_header_P_Answer_State.h */,
+				ECED6A1910F9A343006B4DC9 /* tsip_header_P_Asserted_Identity.h */,
+				ECED6A1A10F9A343006B4DC9 /* tsip_header_P_Associated_URI.h */,
+				ECED6A1B10F9A343006B4DC9 /* tsip_header_P_Called_Party_ID.h */,
+				ECED6A1C10F9A343006B4DC9 /* tsip_header_P_Charging_Function_Addresses.h */,
+				ECED6A1D10F9A343006B4DC9 /* tsip_header_P_Charging_Vector.h */,
+				ECED6A1E10F9A343006B4DC9 /* tsip_header_P_DCS_Billing_Info.h */,
+				ECED6A1F10F9A343006B4DC9 /* tsip_header_P_DCS_LAES.h */,
+				ECED6A2010F9A343006B4DC9 /* tsip_header_P_DCS_OSPS.h */,
+				ECED6A2110F9A343006B4DC9 /* tsip_header_P_DCS_Redirect.h */,
+				ECED6A2210F9A343006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.h */,
+				ECED6A2310F9A343006B4DC9 /* tsip_header_P_Early_Media.h */,
+				ECED6A2410F9A343006B4DC9 /* tsip_header_P_Media_Authorization.h */,
+				ECED6A2510F9A343006B4DC9 /* tsip_header_P_Preferred_Identity.h */,
+				ECED6A2610F9A343006B4DC9 /* tsip_header_P_Profile_Key.h */,
+				ECED6A2710F9A343006B4DC9 /* tsip_header_P_User_Database.h */,
+				ECED6A2810F9A343006B4DC9 /* tsip_header_P_Visited_Network_ID.h */,
+				ECED6A2910F9A343006B4DC9 /* tsip_header_Path.h */,
+				ECED6A2A10F9A343006B4DC9 /* tsip_header_Priority.h */,
+				ECED6A2B10F9A343006B4DC9 /* tsip_header_Privacy.h */,
+				ECED6A2C10F9A343006B4DC9 /* tsip_header_Proxy_Authenticate.h */,
+				ECED6A2D10F9A343006B4DC9 /* tsip_header_Proxy_Authorization.h */,
+				ECED6A2E10F9A343006B4DC9 /* tsip_header_Proxy_Require.h */,
+				ECED6A2F10F9A343006B4DC9 /* tsip_header_RAck.h */,
+				ECED6A3010F9A343006B4DC9 /* tsip_header_Reason.h */,
+				ECED6A3110F9A343006B4DC9 /* tsip_header_Record_Route.h */,
+				ECED6A3210F9A343006B4DC9 /* tsip_header_Refer_Sub.h */,
+				ECED6A3310F9A343006B4DC9 /* tsip_header_Refer_To.h */,
+				ECED6A3410F9A343006B4DC9 /* tsip_header_Referred_By.h */,
+				ECED6A3510F9A343006B4DC9 /* tsip_header_Reject_Contact.h */,
+				ECED6A3610F9A343006B4DC9 /* tsip_header_Replaces.h */,
+				ECED6A3710F9A343006B4DC9 /* tsip_header_Reply_To.h */,
+				ECED6A3810F9A343006B4DC9 /* tsip_header_Request_Disposition.h */,
+				ECED6A3910F9A343006B4DC9 /* tsip_header_Require.h */,
+				ECED6A3A10F9A343006B4DC9 /* tsip_header_Resource_Priority.h */,
+				ECED6A3B10F9A343006B4DC9 /* tsip_header_Retry_After.h */,
+				ECED6A3C10F9A343006B4DC9 /* tsip_header_Route.h */,
+				ECED6A3D10F9A343006B4DC9 /* tsip_header_RSeq.h */,
+				ECED6A3E10F9A343006B4DC9 /* tsip_header_Security_Client.h */,
+				ECED6A3F10F9A343006B4DC9 /* tsip_header_Security_Server.h */,
+				ECED6A4010F9A343006B4DC9 /* tsip_header_Security_Verify.h */,
+				ECED6A4110F9A343006B4DC9 /* tsip_header_Server.h */,
+				ECED6A4210F9A343006B4DC9 /* tsip_header_Service_Route.h */,
+				ECED6A4310F9A343006B4DC9 /* tsip_header_Session_Expires.h */,
+				ECED6A4410F9A343006B4DC9 /* tsip_header_SIP_ETag.h */,
+				ECED6A4510F9A343006B4DC9 /* tsip_header_SIP_If_Match.h */,
+				ECED6A4610F9A343006B4DC9 /* tsip_header_Subject.h */,
+				ECED6A4710F9A343006B4DC9 /* tsip_header_Subscription_State.h */,
+				ECED6A4810F9A343006B4DC9 /* tsip_header_Supported.h */,
+				ECED6A4910F9A343006B4DC9 /* tsip_header_Target_Dialog.h */,
+				ECED6A4A10F9A343006B4DC9 /* tsip_header_Timestamp.h */,
+				ECED6A4B10F9A343006B4DC9 /* tsip_header_To.h */,
+				ECED6A4C10F9A343006B4DC9 /* tsip_header_Unsupported.h */,
+				ECED6A4D10F9A343006B4DC9 /* tsip_header_User_Agent.h */,
+				ECED6A4E10F9A343006B4DC9 /* tsip_header_Via.h */,
+				ECED6A4F10F9A343006B4DC9 /* tsip_header_Warning.h */,
+				ECED6A5010F9A343006B4DC9 /* tsip_header_WWW_Authenticate.h */,
+				ECED6A5110F9A343006B4DC9 /* tsip_headers.h */,
+			);
+			name = headers;
+			path = ../../tinySIP/include/tinysip/headers;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED6A5210F9A343006B4DC9 /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+				ECED6A5310F9A343006B4DC9 /* tsip_parser_header.h */,
+				ECED6A5410F9A343006B4DC9 /* tsip_parser_message.h */,
+				ECED6A5510F9A343006B4DC9 /* tsip_parser_uri.h */,
+				ECED6A5610F9A343006B4DC9 /* tsip_ragel_state.h */,
+			);
+			name = parsers;
+			path = ../../tinySIP/include/tinysip/parsers;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED6A5710F9A343006B4DC9 /* smc */ = {
+			isa = PBXGroup;
+			children = (
+				ECED6A5810F9A343006B4DC9 /* tsip_dialog_message_sm.h */,
+				ECED6A5910F9A343006B4DC9 /* tsip_dialog_register_sm.h */,
+				ECED6A5A10F9A343006B4DC9 /* tsip_transac_ict_sm.h */,
+				ECED6A5B10F9A343006B4DC9 /* tsip_transac_ist_sm.h */,
+				ECED6A5C10F9A343006B4DC9 /* tsip_transac_nict_sm.h */,
+				ECED6A5D10F9A343006B4DC9 /* tsip_transac_nist_sm.h */,
+			);
+			name = smc;
+			path = ../../tinySIP/include/tinysip/smc;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED6A5E10F9A343006B4DC9 /* transactions */ = {
+			isa = PBXGroup;
+			children = (
+				ECED6A5F10F9A343006B4DC9 /* tsip_transac.h */,
+				ECED6A6010F9A343006B4DC9 /* tsip_transac_ict.h */,
+				ECED6A6110F9A343006B4DC9 /* tsip_transac_ist.h */,
+				ECED6A6210F9A343006B4DC9 /* tsip_transac_layer.h */,
+				ECED6A6310F9A343006B4DC9 /* tsip_transac_nict.h */,
+				ECED6A6410F9A343006B4DC9 /* tsip_transac_nist.h */,
+			);
+			name = transactions;
+			path = ../../tinySIP/include/tinysip/transactions;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED6A6510F9A343006B4DC9 /* transports */ = {
+			isa = PBXGroup;
+			children = (
+				ECED6A6610F9A343006B4DC9 /* tsip_transport.h */,
+				ECED6A6710F9A343006B4DC9 /* tsip_transport_layer.h */,
+			);
+			name = transports;
+			path = ../../tinySIP/include/tinysip/transports;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED6AEA10F9A66E006B4DC9 /* auth */ = {
+			isa = PBXGroup;
+			children = (
+				ECED6AEB10F9A66E006B4DC9 /* thttp_auth.c */,
+			);
+			name = auth;
+			path = ../../tinyHTTP/source/auth;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED6AEC10F9A66E006B4DC9 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = headers;
+			path = ../../tinyHTTP/source/headers;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED6AED10F9A66E006B4DC9 /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = parsers;
+			path = ../../tinyHTTP/source/parsers;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECED6B0E10F9A953006B4DC9 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				ECED6B1010F9A971006B4DC9 /* stdafx.c */,
+				ECED6B1110F9A971006B4DC9 /* stdafx.h */,
+				ECED6B1210F9A971006B4DC9 /* targetver.h */,
+				ECED6B1310F9A971006B4DC9 /* test.c */,
+				ECED6B1410F9A971006B4DC9 /* test_sipmessages.h */,
+				ECED6B1510F9A971006B4DC9 /* test_stack.h */,
+				ECED6B1610F9A971006B4DC9 /* test_transac.h */,
+				ECED6B1710F9A971006B4DC9 /* test_uri.h */,
+			);
+			name = test;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		D2AAC0600554660B00DB518D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED654410F99647006B4DC9 /* tsip_message.h in Headers */,
+				ECED654510F99647006B4DC9 /* tsip_operation.h in Headers */,
+				ECED654610F99647006B4DC9 /* tsip_timers.h in Headers */,
+				ECED654710F99647006B4DC9 /* tsip_uri.h in Headers */,
+				ECED6A6810F9A343006B4DC9 /* tsip_challenge.h in Headers */,
+				ECED6A6910F9A343006B4DC9 /* tsip_milenage.h in Headers */,
+				ECED6A6A10F9A343006B4DC9 /* tsip_rijndael.h in Headers */,
+				ECED6A6B10F9A343006B4DC9 /* tsip_dialog.h in Headers */,
+				ECED6A6C10F9A343006B4DC9 /* tsip_dialog_invite.h in Headers */,
+				ECED6A6D10F9A343006B4DC9 /* tsip_dialog_layer.h in Headers */,
+				ECED6A6E10F9A343006B4DC9 /* tsip_dialog_message.h in Headers */,
+				ECED6A6F10F9A343006B4DC9 /* tsip_dialog_register.h in Headers */,
+				ECED6A7010F9A343006B4DC9 /* tsip_dialog_subscribe.h in Headers */,
+				ECED6A7110F9A343006B4DC9 /* tsip_header.h in Headers */,
+				ECED6A7210F9A343006B4DC9 /* tsip_header_accept.h in Headers */,
+				ECED6A7310F9A343006B4DC9 /* tsip_header_Accept_Contact.h in Headers */,
+				ECED6A7410F9A343006B4DC9 /* tsip_header_Accept_Encoding.h in Headers */,
+				ECED6A7510F9A343006B4DC9 /* tsip_header_Accept_Language.h in Headers */,
+				ECED6A7610F9A343006B4DC9 /* tsip_header_Accept_Resource_Priority.h in Headers */,
+				ECED6A7710F9A343006B4DC9 /* tsip_header_Alert_Info.h in Headers */,
+				ECED6A7810F9A343006B4DC9 /* tsip_header_Allow.h in Headers */,
+				ECED6A7910F9A343006B4DC9 /* tsip_header_Allow_Events.h in Headers */,
+				ECED6A7A10F9A343006B4DC9 /* tsip_header_Authentication_Info.h in Headers */,
+				ECED6A7B10F9A343006B4DC9 /* tsip_header_Authorization.h in Headers */,
+				ECED6A7C10F9A343006B4DC9 /* tsip_header_Call_ID.h in Headers */,
+				ECED6A7D10F9A343006B4DC9 /* tsip_header_Call_Info.h in Headers */,
+				ECED6A7E10F9A343006B4DC9 /* tsip_header_Contact.h in Headers */,
+				ECED6A7F10F9A343006B4DC9 /* tsip_header_Content_Disposition.h in Headers */,
+				ECED6A8010F9A343006B4DC9 /* tsip_header_Content_Encoding.h in Headers */,
+				ECED6A8110F9A343006B4DC9 /* tsip_header_Content_Language.h in Headers */,
+				ECED6A8210F9A343006B4DC9 /* tsip_header_Content_Length.h in Headers */,
+				ECED6A8310F9A343006B4DC9 /* tsip_header_Content_Type.h in Headers */,
+				ECED6A8410F9A343006B4DC9 /* tsip_header_CSeq.h in Headers */,
+				ECED6A8510F9A343006B4DC9 /* tsip_header_Date.h in Headers */,
+				ECED6A8610F9A343006B4DC9 /* tsip_header_Error_Info.h in Headers */,
+				ECED6A8710F9A343006B4DC9 /* tsip_header_Event.h in Headers */,
+				ECED6A8810F9A343006B4DC9 /* tsip_header_Expires.h in Headers */,
+				ECED6A8910F9A343006B4DC9 /* tsip_header_From.h in Headers */,
+				ECED6A8A10F9A343006B4DC9 /* tsip_header_History_Info.h in Headers */,
+				ECED6A8B10F9A343006B4DC9 /* tsip_header_Identity.h in Headers */,
+				ECED6A8C10F9A343006B4DC9 /* tsip_header_Identity_Info.h in Headers */,
+				ECED6A8D10F9A343006B4DC9 /* tsip_header_In_Reply_To.h in Headers */,
+				ECED6A8E10F9A343006B4DC9 /* tsip_header_Join.h in Headers */,
+				ECED6A8F10F9A343006B4DC9 /* tsip_header_Max_Forwards.h in Headers */,
+				ECED6A9010F9A343006B4DC9 /* tsip_header_MIME_Version.h in Headers */,
+				ECED6A9110F9A343006B4DC9 /* tsip_header_Min_Expires.h in Headers */,
+				ECED6A9210F9A343006B4DC9 /* tsip_header_Min_SE.h in Headers */,
+				ECED6A9310F9A343006B4DC9 /* tsip_header_Organization.h in Headers */,
+				ECED6A9410F9A343006B4DC9 /* tsip_header_P_Access_Network_Info.h in Headers */,
+				ECED6A9510F9A343006B4DC9 /* tsip_header_P_Answer_State.h in Headers */,
+				ECED6A9610F9A343006B4DC9 /* tsip_header_P_Asserted_Identity.h in Headers */,
+				ECED6A9710F9A343006B4DC9 /* tsip_header_P_Associated_URI.h in Headers */,
+				ECED6A9810F9A343006B4DC9 /* tsip_header_P_Called_Party_ID.h in Headers */,
+				ECED6A9910F9A343006B4DC9 /* tsip_header_P_Charging_Function_Addresses.h in Headers */,
+				ECED6A9A10F9A343006B4DC9 /* tsip_header_P_Charging_Vector.h in Headers */,
+				ECED6A9B10F9A343006B4DC9 /* tsip_header_P_DCS_Billing_Info.h in Headers */,
+				ECED6A9C10F9A343006B4DC9 /* tsip_header_P_DCS_LAES.h in Headers */,
+				ECED6A9D10F9A343006B4DC9 /* tsip_header_P_DCS_OSPS.h in Headers */,
+				ECED6A9E10F9A343006B4DC9 /* tsip_header_P_DCS_Redirect.h in Headers */,
+				ECED6A9F10F9A343006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.h in Headers */,
+				ECED6AA010F9A343006B4DC9 /* tsip_header_P_Early_Media.h in Headers */,
+				ECED6AA110F9A343006B4DC9 /* tsip_header_P_Media_Authorization.h in Headers */,
+				ECED6AA210F9A343006B4DC9 /* tsip_header_P_Preferred_Identity.h in Headers */,
+				ECED6AA310F9A343006B4DC9 /* tsip_header_P_Profile_Key.h in Headers */,
+				ECED6AA410F9A343006B4DC9 /* tsip_header_P_User_Database.h in Headers */,
+				ECED6AA510F9A343006B4DC9 /* tsip_header_P_Visited_Network_ID.h in Headers */,
+				ECED6AA610F9A343006B4DC9 /* tsip_header_Path.h in Headers */,
+				ECED6AA710F9A343006B4DC9 /* tsip_header_Priority.h in Headers */,
+				ECED6AA810F9A343006B4DC9 /* tsip_header_Privacy.h in Headers */,
+				ECED6AA910F9A343006B4DC9 /* tsip_header_Proxy_Authenticate.h in Headers */,
+				ECED6AAA10F9A343006B4DC9 /* tsip_header_Proxy_Authorization.h in Headers */,
+				ECED6AAB10F9A343006B4DC9 /* tsip_header_Proxy_Require.h in Headers */,
+				ECED6AAC10F9A343006B4DC9 /* tsip_header_RAck.h in Headers */,
+				ECED6AAD10F9A343006B4DC9 /* tsip_header_Reason.h in Headers */,
+				ECED6AAE10F9A343006B4DC9 /* tsip_header_Record_Route.h in Headers */,
+				ECED6AAF10F9A343006B4DC9 /* tsip_header_Refer_Sub.h in Headers */,
+				ECED6AB010F9A343006B4DC9 /* tsip_header_Refer_To.h in Headers */,
+				ECED6AB110F9A343006B4DC9 /* tsip_header_Referred_By.h in Headers */,
+				ECED6AB210F9A343006B4DC9 /* tsip_header_Reject_Contact.h in Headers */,
+				ECED6AB310F9A343006B4DC9 /* tsip_header_Replaces.h in Headers */,
+				ECED6AB410F9A343006B4DC9 /* tsip_header_Reply_To.h in Headers */,
+				ECED6AB510F9A343006B4DC9 /* tsip_header_Request_Disposition.h in Headers */,
+				ECED6AB610F9A343006B4DC9 /* tsip_header_Require.h in Headers */,
+				ECED6AB710F9A343006B4DC9 /* tsip_header_Resource_Priority.h in Headers */,
+				ECED6AB810F9A343006B4DC9 /* tsip_header_Retry_After.h in Headers */,
+				ECED6AB910F9A343006B4DC9 /* tsip_header_Route.h in Headers */,
+				ECED6ABA10F9A343006B4DC9 /* tsip_header_RSeq.h in Headers */,
+				ECED6ABB10F9A343006B4DC9 /* tsip_header_Security_Client.h in Headers */,
+				ECED6ABC10F9A343006B4DC9 /* tsip_header_Security_Server.h in Headers */,
+				ECED6ABD10F9A343006B4DC9 /* tsip_header_Security_Verify.h in Headers */,
+				ECED6ABE10F9A343006B4DC9 /* tsip_header_Server.h in Headers */,
+				ECED6ABF10F9A343006B4DC9 /* tsip_header_Service_Route.h in Headers */,
+				ECED6AC010F9A343006B4DC9 /* tsip_header_Session_Expires.h in Headers */,
+				ECED6AC110F9A343006B4DC9 /* tsip_header_SIP_ETag.h in Headers */,
+				ECED6AC210F9A343006B4DC9 /* tsip_header_SIP_If_Match.h in Headers */,
+				ECED6AC310F9A343006B4DC9 /* tsip_header_Subject.h in Headers */,
+				ECED6AC410F9A343006B4DC9 /* tsip_header_Subscription_State.h in Headers */,
+				ECED6AC510F9A343006B4DC9 /* tsip_header_Supported.h in Headers */,
+				ECED6AC610F9A343006B4DC9 /* tsip_header_Target_Dialog.h in Headers */,
+				ECED6AC710F9A343006B4DC9 /* tsip_header_Timestamp.h in Headers */,
+				ECED6AC810F9A343006B4DC9 /* tsip_header_To.h in Headers */,
+				ECED6AC910F9A343006B4DC9 /* tsip_header_Unsupported.h in Headers */,
+				ECED6ACA10F9A343006B4DC9 /* tsip_header_User_Agent.h in Headers */,
+				ECED6ACB10F9A343006B4DC9 /* tsip_header_Via.h in Headers */,
+				ECED6ACC10F9A343006B4DC9 /* tsip_header_Warning.h in Headers */,
+				ECED6ACD10F9A343006B4DC9 /* tsip_header_WWW_Authenticate.h in Headers */,
+				ECED6ACE10F9A343006B4DC9 /* tsip_headers.h in Headers */,
+				ECED6ACF10F9A343006B4DC9 /* tsip_parser_header.h in Headers */,
+				ECED6AD010F9A343006B4DC9 /* tsip_parser_message.h in Headers */,
+				ECED6AD110F9A343006B4DC9 /* tsip_parser_uri.h in Headers */,
+				ECED6AD210F9A343006B4DC9 /* tsip_ragel_state.h in Headers */,
+				ECED6AD310F9A343006B4DC9 /* tsip_dialog_message_sm.h in Headers */,
+				ECED6AD410F9A343006B4DC9 /* tsip_dialog_register_sm.h in Headers */,
+				ECED6AD510F9A343006B4DC9 /* tsip_transac_ict_sm.h in Headers */,
+				ECED6AD610F9A343006B4DC9 /* tsip_transac_ist_sm.h in Headers */,
+				ECED6AD710F9A343006B4DC9 /* tsip_transac_nict_sm.h in Headers */,
+				ECED6AD810F9A343006B4DC9 /* tsip_transac_nist_sm.h in Headers */,
+				ECED6AD910F9A343006B4DC9 /* tsip_transac.h in Headers */,
+				ECED6ADA10F9A343006B4DC9 /* tsip_transac_ict.h in Headers */,
+				ECED6ADB10F9A343006B4DC9 /* tsip_transac_ist.h in Headers */,
+				ECED6ADC10F9A343006B4DC9 /* tsip_transac_layer.h in Headers */,
+				ECED6ADD10F9A343006B4DC9 /* tsip_transac_nict.h in Headers */,
+				ECED6ADE10F9A343006B4DC9 /* tsip_transac_nist.h in Headers */,
+				ECED6ADF10F9A343006B4DC9 /* tsip_transport.h in Headers */,
+				ECED6AE010F9A343006B4DC9 /* tsip_transport_layer.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED65E210F99689006B4DC9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED682310F996F6006B4DC9 /* tinySAK_config.h in Headers */,
+				ECED682510F996F6006B4DC9 /* tsk.h in Headers */,
+				ECED682710F996F6006B4DC9 /* tsk_base64.h in Headers */,
+				ECED682910F996F6006B4DC9 /* tsk_binaryutils.h in Headers */,
+				ECED682B10F996F6006B4DC9 /* tsk_buffer.h in Headers */,
+				ECED682D10F996F6006B4DC9 /* tsk_condwait.h in Headers */,
+				ECED682F10F996F6006B4DC9 /* tsk_debug.h in Headers */,
+				ECED683010F996F6006B4DC9 /* tsk_errno.h in Headers */,
+				ECED683210F996F6006B4DC9 /* tsk_heap.h in Headers */,
+				ECED683410F996F6006B4DC9 /* tsk_hmac.h in Headers */,
+				ECED683610F996F6006B4DC9 /* tsk_list.h in Headers */,
+				ECED683710F996F6006B4DC9 /* tsk_macros.h in Headers */,
+				ECED683910F996F6006B4DC9 /* tsk_md5.h in Headers */,
+				ECED683B10F996F6006B4DC9 /* tsk_memory.h in Headers */,
+				ECED683D10F996F6006B4DC9 /* tsk_mutex.h in Headers */,
+				ECED683F10F996F6006B4DC9 /* tsk_object.h in Headers */,
+				ECED684110F996F6006B4DC9 /* tsk_params.h in Headers */,
+				ECED684310F996F6006B4DC9 /* tsk_ppfcs16.h in Headers */,
+				ECED684510F996F6006B4DC9 /* tsk_runnable.h in Headers */,
+				ECED684710F996F6006B4DC9 /* tsk_safeobj.h in Headers */,
+				ECED684910F996F6006B4DC9 /* tsk_semaphore.h in Headers */,
+				ECED684B10F996F6006B4DC9 /* tsk_sha1.h in Headers */,
+				ECED684D10F996F6006B4DC9 /* tsk_string.h in Headers */,
+				ECED684F10F996F6006B4DC9 /* tsk_thread.h in Headers */,
+				ECED685110F996F6006B4DC9 /* tsk_time.h in Headers */,
+				ECED685310F996F6006B4DC9 /* tsk_timer.h in Headers */,
+				ECED685510F996F6006B4DC9 /* tsk_url.h in Headers */,
+				ECED685710F996F6006B4DC9 /* tsk_xml.h in Headers */,
+				ECED685C10F997BF006B4DC9 /* tinysip_config.h in Headers */,
+				ECED685D10F997BF006B4DC9 /* tsip.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED686010F997F2006B4DC9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED687910F99811006B4DC9 /* tinyNET_config.h in Headers */,
+				ECED687B10F99811006B4DC9 /* tnet.h in Headers */,
+				ECED687D10F99811006B4DC9 /* tnet_auth.h in Headers */,
+				ECED687F10F99811006B4DC9 /* tnet_poll.h in Headers */,
+				ECED688110F99811006B4DC9 /* tnet_socket.h in Headers */,
+				ECED688310F99811006B4DC9 /* tnet_transport.h in Headers */,
+				ECED688610F99811006B4DC9 /* tnet_types.h in Headers */,
+				ECED688810F99811006B4DC9 /* tnet_utils.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED689910F998E4006B4DC9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED68AD10F9991C006B4DC9 /* thttp_message.h in Headers */,
+				ECED68AE10F9991C006B4DC9 /* thttp_url.h in Headers */,
+				ECED68B110F9992F006B4DC9 /* thttp.h in Headers */,
+				ECED68B210F9992F006B4DC9 /* tinyhttp_config.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		D2AAC0620554660B00DB518D /* tinySIP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinySIP" */;
+			buildPhases = (
+				D2AAC0600554660B00DB518D /* Headers */,
+				D2AAC0610554660B00DB518D /* Sources */,
+				D289988505E68E00004EDB86 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECED689210F99880006B4DC9 /* PBXTargetDependency */,
+				ECED689410F99880006B4DC9 /* PBXTargetDependency */,
+				ECED68C310F99975006B4DC9 /* PBXTargetDependency */,
+			);
+			name = tinySIP;
+			productName = tinySIP;
+			productReference = D2AAC0630554660B00DB518D /* libtinySIP.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECED65E510F99689006B4DC9 /* tinySAK */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECED67EA10F996A8006B4DC9 /* Build configuration list for PBXNativeTarget "tinySAK" */;
+			buildPhases = (
+				ECED65E210F99689006B4DC9 /* Headers */,
+				ECED65E310F99689006B4DC9 /* Sources */,
+				ECED65E410F99689006B4DC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = tinySAK;
+			productName = tinySAK;
+			productReference = ECED65E610F9968A006B4DC9 /* libtinySAK.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECED686310F997F2006B4DC9 /* tinyNET */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECED688910F99812006B4DC9 /* Build configuration list for PBXNativeTarget "tinyNET" */;
+			buildPhases = (
+				ECED686010F997F2006B4DC9 /* Headers */,
+				ECED686110F997F2006B4DC9 /* Sources */,
+				ECED686210F997F2006B4DC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECED688E10F99866006B4DC9 /* PBXTargetDependency */,
+			);
+			name = tinyNET;
+			productName = tinyNET;
+			productReference = ECED686410F997F2006B4DC9 /* libtinyNET.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECED689C10F998E4006B4DC9 /* tinyHTTP */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECED68A110F998EB006B4DC9 /* Build configuration list for PBXNativeTarget "tinyHTTP" */;
+			buildPhases = (
+				ECED689910F998E4006B4DC9 /* Headers */,
+				ECED689A10F998E4006B4DC9 /* Sources */,
+				ECED689B10F998E4006B4DC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECED6AF110F9A68B006B4DC9 /* PBXTargetDependency */,
+			);
+			name = tinyHTTP;
+			productName = tinyHTTP;
+			productReference = ECED689D10F998E4006B4DC9 /* libtinyHTTP.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
+		ECED6AFD10F9A93A006B4DC9 /* test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECED6B0F10F9A953006B4DC9 /* Build configuration list for PBXNativeTarget "test" */;
+			buildPhases = (
+				ECED6AFB10F9A93A006B4DC9 /* Sources */,
+				ECED6AFC10F9A93A006B4DC9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECED6B0310F9A943006B4DC9 /* PBXTargetDependency */,
+				ECED6B0510F9A943006B4DC9 /* PBXTargetDependency */,
+				ECED6B0710F9A943006B4DC9 /* PBXTargetDependency */,
+				ECED6B0910F9A943006B4DC9 /* PBXTargetDependency */,
+			);
+			name = test;
+			productName = test;
+			productReference = ECED6AFE10F9A93A006B4DC9 /* test */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinySIP" */;
+			compatibilityVersion = "Xcode 3.1";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* tinySIP */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D2AAC0620554660B00DB518D /* tinySIP */,
+				ECED65E510F99689006B4DC9 /* tinySAK */,
+				ECED686310F997F2006B4DC9 /* tinyNET */,
+				ECED689C10F998E4006B4DC9 /* tinyHTTP */,
+				ECED6AFD10F9A93A006B4DC9 /* test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D2AAC0610554660B00DB518D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED65DD10F99666006B4DC9 /* tsip.c in Sources */,
+				ECED65DE10F99666006B4DC9 /* tsip_message.c in Sources */,
+				ECED65DF10F99666006B4DC9 /* tsip_operation.c in Sources */,
+				ECED65E010F99666006B4DC9 /* tsip_timers.c in Sources */,
+				ECED65E110F99666006B4DC9 /* tsip_uri.c in Sources */,
+				ECED696810F9A303006B4DC9 /* tsip_challenge.c in Sources */,
+				ECED696910F9A303006B4DC9 /* tsip_milenage.c in Sources */,
+				ECED696A10F9A303006B4DC9 /* tsip_rijndael.c in Sources */,
+				ECED696B10F9A303006B4DC9 /* tsip_dialog.c in Sources */,
+				ECED696C10F9A303006B4DC9 /* tsip_dialog_invite.client.c in Sources */,
+				ECED696D10F9A303006B4DC9 /* tsip_dialog_invite.server.c in Sources */,
+				ECED696E10F9A303006B4DC9 /* tsip_dialog_layer.c in Sources */,
+				ECED696F10F9A303006B4DC9 /* tsip_dialog_message.c in Sources */,
+				ECED697010F9A303006B4DC9 /* tsip_dialog_register.client.c in Sources */,
+				ECED697110F9A303006B4DC9 /* tsip_dialog_register.server.c in Sources */,
+				ECED697210F9A303006B4DC9 /* tsip_dialog_subscribe.client.c in Sources */,
+				ECED697310F9A303006B4DC9 /* tsip_dialog_subscribe.server.c in Sources */,
+				ECED697410F9A303006B4DC9 /* tsip_header.c in Sources */,
+				ECED697510F9A303006B4DC9 /* tsip_header_accept.c in Sources */,
+				ECED697610F9A303006B4DC9 /* tsip_header_Accept_Contact.c in Sources */,
+				ECED697710F9A303006B4DC9 /* tsip_header_Accept_Encoding.c in Sources */,
+				ECED697810F9A303006B4DC9 /* tsip_header_Accept_Language.c in Sources */,
+				ECED697910F9A303006B4DC9 /* tsip_header_Accept_Resource_Priority.c in Sources */,
+				ECED697A10F9A303006B4DC9 /* tsip_header_Alert_Info.c in Sources */,
+				ECED697B10F9A303006B4DC9 /* tsip_header_Allow.c in Sources */,
+				ECED697C10F9A303006B4DC9 /* tsip_header_Allow_Events.c in Sources */,
+				ECED697D10F9A303006B4DC9 /* tsip_header_Authentication_Info.c in Sources */,
+				ECED697E10F9A303006B4DC9 /* tsip_header_Authorization.c in Sources */,
+				ECED697F10F9A303006B4DC9 /* tsip_header_Call_ID.c in Sources */,
+				ECED698010F9A303006B4DC9 /* tsip_header_Call_Info.c in Sources */,
+				ECED698110F9A303006B4DC9 /* tsip_header_Contact.c in Sources */,
+				ECED698210F9A303006B4DC9 /* tsip_header_Content_Disposition.c in Sources */,
+				ECED698310F9A303006B4DC9 /* tsip_header_Content_Encoding.c in Sources */,
+				ECED698410F9A303006B4DC9 /* tsip_header_Content_Language.c in Sources */,
+				ECED698510F9A303006B4DC9 /* tsip_header_Content_Length.c in Sources */,
+				ECED698610F9A303006B4DC9 /* tsip_header_Content_Type.c in Sources */,
+				ECED698710F9A303006B4DC9 /* tsip_header_CSeq.c in Sources */,
+				ECED698810F9A303006B4DC9 /* tsip_header_Date.c in Sources */,
+				ECED698910F9A303006B4DC9 /* tsip_header_Error_Info.c in Sources */,
+				ECED698A10F9A303006B4DC9 /* tsip_header_Event.c in Sources */,
+				ECED698B10F9A303006B4DC9 /* tsip_header_Expires.c in Sources */,
+				ECED698C10F9A303006B4DC9 /* tsip_header_From.c in Sources */,
+				ECED698D10F9A303006B4DC9 /* tsip_header_History_Info.c in Sources */,
+				ECED698E10F9A303006B4DC9 /* tsip_header_Identity.c in Sources */,
+				ECED698F10F9A303006B4DC9 /* tsip_header_Identity_Info.c in Sources */,
+				ECED699010F9A303006B4DC9 /* tsip_header_In_Reply_To.c in Sources */,
+				ECED699110F9A303006B4DC9 /* tsip_header_Join.c in Sources */,
+				ECED699210F9A303006B4DC9 /* tsip_header_Max_Forwards.c in Sources */,
+				ECED699310F9A303006B4DC9 /* tsip_header_MIME_Version.c in Sources */,
+				ECED699410F9A303006B4DC9 /* tsip_header_Min_Expires.c in Sources */,
+				ECED699510F9A303006B4DC9 /* tsip_header_Min_SE.c in Sources */,
+				ECED699610F9A303006B4DC9 /* tsip_header_Organization.c in Sources */,
+				ECED699710F9A303006B4DC9 /* tsip_header_P_Access_Network_Info.c in Sources */,
+				ECED699810F9A303006B4DC9 /* tsip_header_P_Answer_State.c in Sources */,
+				ECED699910F9A303006B4DC9 /* tsip_header_P_Asserted_Identity.c in Sources */,
+				ECED699A10F9A303006B4DC9 /* tsip_header_P_Associated_URI.c in Sources */,
+				ECED699B10F9A303006B4DC9 /* tsip_header_P_Called_Party_ID.c in Sources */,
+				ECED699C10F9A303006B4DC9 /* tsip_header_P_Charging_Function_Addresses.c in Sources */,
+				ECED699D10F9A303006B4DC9 /* tsip_header_P_Charging_Vector.c in Sources */,
+				ECED699E10F9A303006B4DC9 /* tsip_header_P_DCS_Billing_Info.c in Sources */,
+				ECED699F10F9A303006B4DC9 /* tsip_header_P_DCS_LAES.c in Sources */,
+				ECED69A010F9A303006B4DC9 /* tsip_header_P_DCS_OSPS.c in Sources */,
+				ECED69A110F9A303006B4DC9 /* tsip_header_P_DCS_Redirect.c in Sources */,
+				ECED69A210F9A303006B4DC9 /* tsip_header_P_DCS_Trace_Party_ID.c in Sources */,
+				ECED69A310F9A303006B4DC9 /* tsip_header_P_Early_Media.c in Sources */,
+				ECED69A410F9A303006B4DC9 /* tsip_header_P_Media_Authorization.c in Sources */,
+				ECED69A510F9A303006B4DC9 /* tsip_header_P_Preferred_Identity.c in Sources */,
+				ECED69A610F9A303006B4DC9 /* tsip_header_P_Profile_Key.c in Sources */,
+				ECED69A710F9A303006B4DC9 /* tsip_header_P_User_Database.c in Sources */,
+				ECED69A810F9A303006B4DC9 /* tsip_header_P_Visited_Network_ID.c in Sources */,
+				ECED69A910F9A303006B4DC9 /* tsip_header_Path.c in Sources */,
+				ECED69AA10F9A303006B4DC9 /* tsip_header_Priority.c in Sources */,
+				ECED69AB10F9A303006B4DC9 /* tsip_header_Privacy.c in Sources */,
+				ECED69AC10F9A303006B4DC9 /* tsip_header_Proxy_Authenticate.c in Sources */,
+				ECED69AD10F9A303006B4DC9 /* tsip_header_Proxy_Authorization.c in Sources */,
+				ECED69AE10F9A303006B4DC9 /* tsip_header_Proxy_Require.c in Sources */,
+				ECED69AF10F9A303006B4DC9 /* tsip_header_RAck.c in Sources */,
+				ECED69B010F9A303006B4DC9 /* tsip_header_Reason.c in Sources */,
+				ECED69B110F9A303006B4DC9 /* tsip_header_Record_Route.c in Sources */,
+				ECED69B210F9A303006B4DC9 /* tsip_header_Refer_Sub.c in Sources */,
+				ECED69B310F9A303006B4DC9 /* tsip_header_Refer_To.c in Sources */,
+				ECED69B410F9A303006B4DC9 /* tsip_header_Referred_By.c in Sources */,
+				ECED69B510F9A303006B4DC9 /* tsip_header_Reject_Contact.c in Sources */,
+				ECED69B610F9A303006B4DC9 /* tsip_header_Replaces.c in Sources */,
+				ECED69B710F9A303006B4DC9 /* tsip_header_Reply_To.c in Sources */,
+				ECED69B810F9A303006B4DC9 /* tsip_header_Request_Disposition.c in Sources */,
+				ECED69B910F9A303006B4DC9 /* tsip_header_Require.c in Sources */,
+				ECED69BA10F9A303006B4DC9 /* tsip_header_Resource_Priority.c in Sources */,
+				ECED69BB10F9A303006B4DC9 /* tsip_header_Retry_After.c in Sources */,
+				ECED69BC10F9A303006B4DC9 /* tsip_header_Route.c in Sources */,
+				ECED69BD10F9A303006B4DC9 /* tsip_header_RSeq.c in Sources */,
+				ECED69BE10F9A303006B4DC9 /* tsip_header_Security_Client.c in Sources */,
+				ECED69BF10F9A303006B4DC9 /* tsip_header_Security_Server.c in Sources */,
+				ECED69C010F9A303006B4DC9 /* tsip_header_Security_Verify.c in Sources */,
+				ECED69C110F9A303006B4DC9 /* tsip_header_Server.c in Sources */,
+				ECED69C210F9A303006B4DC9 /* tsip_header_Service_Route.c in Sources */,
+				ECED69C310F9A303006B4DC9 /* tsip_header_Session_Expires.c in Sources */,
+				ECED69C410F9A303006B4DC9 /* tsip_header_SIP_ETag.c in Sources */,
+				ECED69C510F9A303006B4DC9 /* tsip_header_SIP_If_Match.c in Sources */,
+				ECED69C610F9A303006B4DC9 /* tsip_header_Subject.c in Sources */,
+				ECED69C710F9A303006B4DC9 /* tsip_header_Subscription_State.c in Sources */,
+				ECED69C810F9A303006B4DC9 /* tsip_header_Supported.c in Sources */,
+				ECED69C910F9A303006B4DC9 /* tsip_header_Target_Dialog.c in Sources */,
+				ECED69CA10F9A303006B4DC9 /* tsip_header_Timestamp.c in Sources */,
+				ECED69CB10F9A303006B4DC9 /* tsip_header_To.c in Sources */,
+				ECED69CC10F9A303006B4DC9 /* tsip_header_Unsupported.c in Sources */,
+				ECED69CD10F9A303006B4DC9 /* tsip_header_User_Agent.c in Sources */,
+				ECED69CE10F9A303006B4DC9 /* tsip_header_Via.c in Sources */,
+				ECED69CF10F9A303006B4DC9 /* tsip_header_Warning.c in Sources */,
+				ECED69D010F9A303006B4DC9 /* tsip_header_WWW_Authenticate.c in Sources */,
+				ECED69D110F9A303006B4DC9 /* tsip_parser_header.c in Sources */,
+				ECED69D210F9A303006B4DC9 /* tsip_parser_message.c in Sources */,
+				ECED69D310F9A303006B4DC9 /* tsip_parser_uri.c in Sources */,
+				ECED69D410F9A303006B4DC9 /* tsip_ragel_state.c in Sources */,
+				ECED69DA10F9A303006B4DC9 /* tsip_dialog_message_sm.c in Sources */,
+				ECED69DB10F9A303006B4DC9 /* tsip_dialog_register_sm.c in Sources */,
+				ECED69DC10F9A303006B4DC9 /* tsip_transac_ict_sm.c in Sources */,
+				ECED69DD10F9A303006B4DC9 /* tsip_transac_ist_sm.c in Sources */,
+				ECED69DE10F9A303006B4DC9 /* tsip_transac_nict_sm.c in Sources */,
+				ECED69DF10F9A303006B4DC9 /* tsip_transac_nist_sm.c in Sources */,
+				ECED69E010F9A303006B4DC9 /* tsip_transac.c in Sources */,
+				ECED69E110F9A303006B4DC9 /* tsip_transac_ict.c in Sources */,
+				ECED69E210F9A303006B4DC9 /* tsip_transac_ist.c in Sources */,
+				ECED69E310F9A303006B4DC9 /* tsip_transac_layer.c in Sources */,
+				ECED69E410F9A303006B4DC9 /* tsip_transac_nict.c in Sources */,
+				ECED69E510F9A303006B4DC9 /* tsip_transac_nist.c in Sources */,
+				ECED69E610F9A303006B4DC9 /* tsip_transport.c in Sources */,
+				ECED69E710F9A303006B4DC9 /* tsip_transport_layer.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED65E310F99689006B4DC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED682410F996F6006B4DC9 /* tsk.c in Sources */,
+				ECED682610F996F6006B4DC9 /* tsk_base64.c in Sources */,
+				ECED682810F996F6006B4DC9 /* tsk_binaryutils.c in Sources */,
+				ECED682A10F996F6006B4DC9 /* tsk_buffer.c in Sources */,
+				ECED682C10F996F6006B4DC9 /* tsk_condwait.c in Sources */,
+				ECED682E10F996F6006B4DC9 /* tsk_debug.c in Sources */,
+				ECED683110F996F6006B4DC9 /* tsk_heap.c in Sources */,
+				ECED683310F996F6006B4DC9 /* tsk_hmac.c in Sources */,
+				ECED683510F996F6006B4DC9 /* tsk_list.c in Sources */,
+				ECED683810F996F6006B4DC9 /* tsk_md5.c in Sources */,
+				ECED683A10F996F6006B4DC9 /* tsk_memory.c in Sources */,
+				ECED683C10F996F6006B4DC9 /* tsk_mutex.c in Sources */,
+				ECED683E10F996F6006B4DC9 /* tsk_object.c in Sources */,
+				ECED684010F996F6006B4DC9 /* tsk_params.c in Sources */,
+				ECED684210F996F6006B4DC9 /* tsk_ppfcs16.c in Sources */,
+				ECED684410F996F6006B4DC9 /* tsk_runnable.c in Sources */,
+				ECED684610F996F6006B4DC9 /* tsk_safeobj.c in Sources */,
+				ECED684810F996F6006B4DC9 /* tsk_semaphore.c in Sources */,
+				ECED684A10F996F6006B4DC9 /* tsk_sha1.c in Sources */,
+				ECED684C10F996F6006B4DC9 /* tsk_string.c in Sources */,
+				ECED684E10F996F6006B4DC9 /* tsk_thread.c in Sources */,
+				ECED685010F996F6006B4DC9 /* tsk_time.c in Sources */,
+				ECED685210F996F6006B4DC9 /* tsk_timer.c in Sources */,
+				ECED685410F996F6006B4DC9 /* tsk_url.c in Sources */,
+				ECED685610F996F6006B4DC9 /* tsk_xml.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED686110F997F2006B4DC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED687A10F99811006B4DC9 /* tnet.c in Sources */,
+				ECED687C10F99811006B4DC9 /* tnet_auth.c in Sources */,
+				ECED687E10F99811006B4DC9 /* tnet_poll.c in Sources */,
+				ECED688010F99811006B4DC9 /* tnet_socket.c in Sources */,
+				ECED688210F99811006B4DC9 /* tnet_transport.c in Sources */,
+				ECED688410F99811006B4DC9 /* tnet_transport_poll.c in Sources */,
+				ECED688510F99811006B4DC9 /* tnet_transport_win32.c in Sources */,
+				ECED688710F99811006B4DC9 /* tnet_utils.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED689A10F998E4006B4DC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED68BD10F99944006B4DC9 /* thttp.c in Sources */,
+				ECED68BE10F99944006B4DC9 /* thttp_message.c in Sources */,
+				ECED68BF10F99944006B4DC9 /* thttp_utl.c in Sources */,
+				ECED6AEE10F9A66E006B4DC9 /* thttp_auth.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECED6AFB10F9A93A006B4DC9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECED6B1810F9A971006B4DC9 /* stdafx.c in Sources */,
+				ECED6B1910F9A971006B4DC9 /* test.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		ECED688E10F99866006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED65E510F99689006B4DC9 /* tinySAK */;
+			targetProxy = ECED688D10F99866006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED689210F99880006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED65E510F99689006B4DC9 /* tinySAK */;
+			targetProxy = ECED689110F99880006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED689410F99880006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED686310F997F2006B4DC9 /* tinyNET */;
+			targetProxy = ECED689310F99880006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED68C310F99975006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED689C10F998E4006B4DC9 /* tinyHTTP */;
+			targetProxy = ECED68C210F99975006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED6AF110F9A68B006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED65E510F99689006B4DC9 /* tinySAK */;
+			targetProxy = ECED6AF010F9A68B006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED6B0310F9A943006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D2AAC0620554660B00DB518D /* tinySIP */;
+			targetProxy = ECED6B0210F9A943006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED6B0510F9A943006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED65E510F99689006B4DC9 /* tinySAK */;
+			targetProxy = ECED6B0410F9A943006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED6B0710F9A943006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED686310F997F2006B4DC9 /* tinyNET */;
+			targetProxy = ECED6B0610F9A943006B4DC9 /* PBXContainerItemProxy */;
+		};
+		ECED6B0910F9A943006B4DC9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED689C10F998E4006B4DC9 /* tinyHTTP */;
+			targetProxy = ECED6B0810F9A943006B4DC9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB914B08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../../doubango/tinySIP/include,
+					../../../doubango/tinyHTTP/include,
+					../../../doubango/thirdparties/mac/include/smc,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				PRODUCT_NAME = tinySIP;
+			};
+			name = Debug;
+		};
+		1DEB914C08733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PRODUCT_NAME = tinySIP;
+			};
+			name = Release;
+		};
+		1DEB914F08733D8E0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../../doubango/tinyHTTP/include;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Debug;
+		};
+		1DEB915008733D8E0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.5;
+			};
+			name = Release;
+		};
+		ECED65E710F9968A006B4DC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinySAK;
+			};
+			name = Debug;
+		};
+		ECED65E810F9968A006B4DC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinySAK;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		ECED686510F997F3006B4DC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyNET;
+			};
+			name = Debug;
+		};
+		ECED686610F997F3006B4DC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyNET;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		ECED689E10F998E4006B4DC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyHTTP;
+			};
+			name = Debug;
+		};
+		ECED689F10F998E4006B4DC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyHTTP;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		ECED6B0010F9A93A006B4DC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../../doubango/tinyHTTP/include,
+					../../../doubango/tinySAK,
+					../../../doubango/tinySIP/include,
+					../../../doubango/tinyNET,
+					../../../doubango/thirdparties/mac/include/smc,
+				);
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = test;
+			};
+			name = Debug;
+		};
+		ECED6B0110F9A93A006B4DC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				PREBINDING = NO;
+				PRODUCT_NAME = test;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB914A08733D8E0010E9CD /* Build configuration list for PBXNativeTarget "tinySIP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914B08733D8E0010E9CD /* Debug */,
+				1DEB914C08733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB914E08733D8E0010E9CD /* Build configuration list for PBXProject "tinySIP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB914F08733D8E0010E9CD /* Debug */,
+				1DEB915008733D8E0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECED67EA10F996A8006B4DC9 /* Build configuration list for PBXNativeTarget "tinySAK" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECED65E710F9968A006B4DC9 /* Debug */,
+				ECED65E810F9968A006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECED688910F99812006B4DC9 /* Build configuration list for PBXNativeTarget "tinyNET" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECED686510F997F3006B4DC9 /* Debug */,
+				ECED686610F997F3006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECED68A110F998EB006B4DC9 /* Build configuration list for PBXNativeTarget "tinyHTTP" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECED689E10F998E4006B4DC9 /* Debug */,
+				ECED689F10F998E4006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECED6B0F10F9A953006B4DC9 /* Build configuration list for PBXNativeTarget "test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECED6B0010F9A93A006B4DC9 /* Debug */,
+				ECED6B0110F9A93A006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

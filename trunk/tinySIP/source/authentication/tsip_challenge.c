@@ -107,7 +107,7 @@ int tsip_challenge_get_akares(const tsip_challenge_t *self, char const *password
 
 	/* RFC 3310 subclause 3.2: nonce = base64(RAND || AUTN || SERV_DATA) 
 	*/
-	n = tsk_base64_decode(self->nonce, strlen(self->nonce), &nonce);	
+	n = tsk_base64_decode((const uint8_t*)self->nonce, strlen(self->nonce), &nonce);	
 	if(n > TSK_MD5_STRING_SIZE)
 	{
 		TSK_DEBUG_ERROR("The IMS CORE returned an invalid nonce.");

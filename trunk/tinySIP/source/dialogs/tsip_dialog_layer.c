@@ -52,7 +52,12 @@
 **/
 static tsip_dialog_t* tsip_dialog_layer_find_dialog(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_operation_handle_t *operation)
 {
-	const tsk_list_item_t *item = tsk_list_find_item_by_data(self->dialogs, operation);
+	const tsk_list_item_t *item;
+	
+	tsk_safeobj_lock(self);
+	item = tsk_list_find_item_by_data(self->dialogs, operation);
+	tsk_safeobj_unlock(self);
+	
 	if(item && item->data)
 	{
 		tsip_dialog_t *dialog = item->data;
@@ -107,12 +112,14 @@ const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, con
 int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation)
 {
 	int ret = -1;
+	tsip_dialog_register_t *dialog;
 
 	if(self)
 	{
 		//tsk_safeobj_lock(self);
-
-		tsip_dialog_register_t *dialog = (tsip_dialog_register_t*)tsip_dialog_layer_find_dialog(self, tsip_dialog_register, operation);
+		dialog = (tsip_dialog_register_t*)tsip_dialog_layer_find_dialog(self, tsip_dialog_register, operation);
+		//tsk_safeobj_unlock(self);
+		
 		if(dialog)
 		{
 			
@@ -123,8 +130,6 @@ int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_h
 			ret = tsip_dialog_register_start(dialog);
 			tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 		}
-
-		//tsk_safeobj_unlock(self);
 	}
 	return ret;
 }
@@ -166,9 +171,10 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	int ret = -1;
 	const tsip_dialog_t* dialog;
 
-	tsk_safeobj_lock(self);
-
+	//tsk_safeobj_lock(self);
 	dialog = tsip_dialog_layer_find(self, message->Call_ID->value, message->To->tag, message->From->tag);
+	//tsk_safeobj_unlock(self);
+	
 	if(dialog)
 	{
 		dialog->callback(dialog, tsip_dialog_msg, message);
@@ -206,7 +212,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 		}
 	}
 
-	tsk_safeobj_unlock(self);
+	
 
 	return ret;
 }

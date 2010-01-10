@@ -44,6 +44,7 @@
 #include "tsk_time.h"
 
 #include <stdarg.h>
+#include <string.h>
 
 void *run(void* self);
 
@@ -110,7 +111,11 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			}
 			case pname_local_port:
 			{
+#if defined (__GNUC__)
+				self->local_port = (uint16_t)va_arg(values, unsigned);
+#else
 				self->local_port = va_arg(values, uint16_t);
+#endif
 				break;
 			}
 			case pname_privacy:
@@ -257,7 +262,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 	return 0;
 }
 
-static __tsip_initialized = 0;
+static unsigned __tsip_initialized = 0;
 
 int tsip_global_init()
 {
@@ -513,8 +518,8 @@ int tsip_stack_unregister(tsip_stack_handle_t *self, const tsip_operation_handle
 {
 	if(self && operation)
 	{
-		const tsip_stack_t *stack = self;
-		tsip_operation_handle_t *op = tsip_operation_clone(operation);
+		//const tsip_stack_t *stack = self;
+		//tsip_operation_handle_t *op = tsip_operation_clone(operation);
 
 		//tsk_list_push_back_data(stack->operations, (void**)&op);
 	}
@@ -576,7 +581,11 @@ static void* tsip_event_create(void * self, va_list * app)
 		sipevent->stack = va_arg(*app, const tsip_stack_handle_t *);
 		sipevent->opid = va_arg(*app, tsip_operation_id_t);
 
+#if defined(__GNUC__)
+		sipevent->status_code = (short)va_arg(*app, int);
+#else
 		sipevent->status_code = va_arg(*app, short);
+#endif
 		sipevent->reason_phrase = tsk_strdup(va_arg(*app, const char *));
 
 		sipevent->incoming = va_arg(*app, unsigned);
