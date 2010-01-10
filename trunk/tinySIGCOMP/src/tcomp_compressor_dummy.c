@@ -31,6 +31,8 @@
 #include "tcomp_compressor_dummy.h"
 #include "tcomp_buffer.h"
 
+#include <string.h>
+
 #define UNCOMPRESSED_BYTECODE_LENGTH				13
 #define UNCOMPRESSED_BYTECODE_DESTINATION_CODE		0x01 /* 128 */
 #define DUMMYCOMPRESSOR_UNCOMPRESSED_BYTECODE \

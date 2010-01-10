@@ -43,6 +43,8 @@
 #	include <arpa/inet.h>
 #	include <netdb.h>
 #	include <fcntl.h>
+#	include <sys/ioctl.h>
+#	include <unistd.h>
 #	if TNET_HAVE_POLL
 #		include <poll.h>
 #	endif /* TNET_HAVE_POLL */

@@ -33,6 +33,7 @@
 #include "tsk_debug.h"
 #include "tsk_ppfcs16.h"
 
+#include <string.h> /* memcpy */
 #include <stdlib.h> /* qsort */
 #include <math.h>	/* ceil, log ... */
 
@@ -650,7 +651,7 @@ int TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t 
 		goto bail;
 	}
 
-	if( (err = tsk_sha1result(&sha, Message_Digest)) )
+	if( (err = tsk_sha1result(&sha, (char*)Message_Digest)) )
 	{
 		ok = 0;
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
@@ -1413,7 +1414,7 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16
 	* Decompression failure occurs if this operand (length) does not lie between 0
 	* and 16 inclusive.
 	*/
-	if(length<0 || length>16)
+	if(/*length<0 ||*/ length>16)
 	{
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_OPERAND);
 		return 0;

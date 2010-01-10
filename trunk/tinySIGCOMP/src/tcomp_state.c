@@ -106,7 +106,7 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 
 		tsk_sha1input(&sha, firstPart, 8);
 		tsk_sha1input(&sha, tcomp_buffer_getBuffer(state->value), tcomp_buffer_getSize(state->value));
-		err = tsk_sha1result(&sha, tcomp_buffer_getBuffer(state->identifier));
+		err = tsk_sha1result(&sha, (char*)tcomp_buffer_getBuffer(state->identifier));
 	}
 
 	/* unlock */
@@ -130,11 +130,19 @@ static void* tcomp_state_create(void * self, va_list * app)
 	tcomp_state_t *state = self;
 	if(state)
 	{
+#if defined(__GNUC__)
+		state->length = (uint16_t)va_arg(*app, unsigned);
+		state->address = (uint16_t)va_arg(*app, unsigned);
+		state->instruction = (uint16_t)va_arg(*app, unsigned);
+		state->minimum_access_length = (uint16_t)va_arg(*app, unsigned);
+		state->retention_priority = (uint16_t)va_arg(*app, unsigned);
+#else
 		state->length = va_arg(*app, uint16_t);
 		state->address = va_arg(*app, uint16_t);
 		state->instruction = va_arg(*app, uint16_t);
 		state->minimum_access_length = va_arg(*app, uint16_t);
 		state->retention_priority = va_arg(*app, uint16_t);
+#endif
 
 		state->value = TCOMP_BUFFER_CREATE();
 		state->identifier = TCOMP_BUFFER_CREATE();

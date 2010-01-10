@@ -91,7 +91,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content)
 
 #define TSIP_RESPONSE_IS(self, code)		(TSIP_RESPONSE_CODE((self)) == code)
-#define TSIP_RESPONSE_IS_NXX(self, N)		(##N##00<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= ##N##99)
+#define TSIP_RESPONSE_IS_NXX(self, N)		(N##00<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= N##99)
 #define TSIP_RESPONSE_IS_1XX(self)			TSIP_RESPONSE_IS_NXX(self, 1)
 #define TSIP_RESPONSE_IS_2XX(self)			TSIP_RESPONSE_IS_NXX(self, 2)
 #define TSIP_RESPONSE_IS_3XX(self)			TSIP_RESPONSE_IS_NXX(self, 3)
@@ -168,11 +168,16 @@ typedef struct tsip_message_s
 	char *sip_version; /**< The SIP version. Only 'SIP/2.0' is supported. */
 	tsip_message_type_t type; /**< The type of this SIP message. */
 
+	// FIXME: http://docs.google.com/viewer?a=v&q=cache%3AE5v90Lcl5TkJ%3Awww.open-std.org%2FJTC1%2FSC22%2FWG14%2Fwww%2Fdocs%2Fn1406.pdf+anonymous+union+has+no+member&hl=en&sig=AHIEtbTdnPDnQLKpWQB9-nBYQg_BB4jIHQ&pli=1
+#if !defined(__GNUC__)
 	union
 	{
+#endif
 		tsip_request_line_t line_request; /**< Request status line. Only if message type is @ref tsip_request. */
 		tsip_status_line_t line_status; /**< Status line. Only if message type is @ref tsip_response. */
+#if !defined(__GNUC__)
 	};
+#endif
 	
 	/*== MOST COMMON HEADERS. */
 	tsip_header_Via_t *firstVia; /**< First Via header. */

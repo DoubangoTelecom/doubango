@@ -35,10 +35,11 @@
 
 TSK_BEGIN_DECLS
 
-#define TSK_DECLARE_SAFEOBJ\
-	union{ \
-		tsk_mutex_handle_t *mutex; \
-	}
+//#define TSK_DECLARE_SAFEOBJ\
+//	union{ \
+//		tsk_mutex_handle_t *mutex; \
+//	}
+#define TSK_DECLARE_SAFEOBJ		tsk_mutex_handle_t *mutex
 
 #define TSK_SAFEOBJ_MUTEX(safeobj) ((safeobj)->mutex)
 

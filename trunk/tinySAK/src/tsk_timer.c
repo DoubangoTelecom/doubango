@@ -134,7 +134,7 @@ int tsk_timer_manager_isready(tsk_timer_manager_handle_t *self)
 	return 0;
 }
 
-#if defined(DEBUG) || defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG) || !defined(NDEBUG)
 void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 {
 	tsk_timer_manager_t *manager = self;
@@ -188,8 +188,9 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 		timer_id = timer->id;
 		tsk_mutex_lock(manager->mutex);
 		tsk_list_push_ascending_data(manager->timers, ((void**) &timer));
-		//tsk_timer_manager_debug(self);
 		tsk_mutex_unlock(manager->mutex);
+		
+		tsk_timer_manager_debug(self);
 
 		tsk_condwait_signal(manager->condwait);
 		tsk_semaphore_increment(manager->sem);
@@ -263,7 +264,7 @@ static void *__tsk_timer_manager_mainthread(void *param)
 	uint64_t epoch;
 	tsk_timer_manager_t *manager = param;
 
-	//TSK_DEBUG_INFO("TIMER MANAGER -- START");
+	TSK_DEBUG_INFO("TIMER MANAGER -- START");
 	
 	manager->active = 1;
 	while(TSK_RUNNABLE(manager)->running)
@@ -280,7 +281,7 @@ peek_first:
 		curr = TSK_TIMER_GET_FIRST();
 		tsk_mutex_unlock(manager->mutex);
 
-		if(!curr->canceled) 
+		if(curr && !curr->canceled) 
 		{
 			epoch = tsk_time_epoch();
 			if(epoch >= curr->timeout)
@@ -304,7 +305,7 @@ peek_first:
 				}
 			}
 		}
-		else
+		else if(curr)
 		{
 			tsk_mutex_lock(manager->mutex);
 			tsk_list_remove_item_by_data(manager->timers, curr);
@@ -313,7 +314,7 @@ peek_first:
 	}
 	
 	manager->active = 0;
-	//TSK_DEBUG_INFO("TIMER MANAGER -- STOP");
+	TSK_DEBUG_INFO("TIMER MANAGER -- STOP");
 
 	return 0;
 }

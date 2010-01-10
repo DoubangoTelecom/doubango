@@ -137,7 +137,7 @@ const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t 
 		return 0;
 	}
 
-	//tsk_safeobj_lock(self);
+	tsk_safeobj_lock(self);
 
 	tsk_list_foreach(item, self->transactions)
 	{
@@ -151,7 +151,7 @@ const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t 
 		}
 	}
 
-	//tsk_safeobj_unlock(self);
+	tsk_safeobj_unlock(self);
 
 	return ret;
 }
@@ -195,7 +195,7 @@ const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t 
 		return 0;
 	}
 
-	//tsk_safeobj_lock(self);
+	tsk_safeobj_lock(self);
 
 
 	tsk_list_foreach(item, self->transactions)
@@ -218,7 +218,7 @@ const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t 
 		}
 	}
 
-	//tsk_safeobj_unlock(self);
+	tsk_safeobj_unlock(self);
 
 	return ret;
 }
@@ -243,7 +243,7 @@ int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, con
 	int ret = -1;
 	const tsip_transac_t *transac = 0;
 
-	tsk_safeobj_lock(self);
+	//tsk_safeobj_lock(self);
 
 	if(TSIP_MESSAGE_IS_REQUEST(message))
 	{
@@ -254,13 +254,13 @@ int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, con
 		transac = tsip_transac_layer_find_client(self, /*TSIP_MESSAGE_AS_RESPONSE*/(message));
 	}
 
+	//tsk_safeobj_unlock(self);
+	
 	if(transac)
 	{
 		transac->callback(transac, tsip_transac_incoming_msg, message);
 		ret = 0;
 	}
-
-	tsk_safeobj_unlock(self);
 
 	return ret;
 }

@@ -92,7 +92,7 @@ void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buf
 	*/
 	tsk_sha1reset(&sha);
 	tsk_sha1input(&sha, udvm->sigCompMessage->startPtr, udvm->sigCompMessage->totalSize);
-	tsk_sha1result(&sha, (nackbuffer_ptr + NACK_SHA1_INDEX));
+	tsk_sha1result(&sha, (char*)(nackbuffer_ptr + NACK_SHA1_INDEX));
 	
 	/*
 	* Details

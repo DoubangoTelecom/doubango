@@ -23,6 +23,8 @@
 #include "stdafx.h"
 #include "tcomp_manager.h" /* TinySIGCOMP API functions. */
 
+#include "tsk_debug.h"
+
 #define TORTURES					0
 
 #if TORTURES
@@ -856,8 +858,6 @@ int main()
 
 #define DECOMP_NACK_4_TEST	0
 
-#define PRINTLN printf("\r\n");
-
 // messages to use for tests
 const char* messages[] =
 {
@@ -1085,16 +1085,15 @@ int main()
 			if(outLen) // OK
 			{
 				// buff2 contains the result and outLen is result length
-				printf("%s\n\n", buff2);
-				PRINTLN;
+				TSK_DEBUG_INFO("%s\n\n", buff2);
 
 				// provide the compartment id --> save temp states
 				tcomp_manager_provideCompartmentId(manager2, result2);
 			}
 			else // NOK
 			{
-				printf("ERROR (1)");
-				PRINTLN;
+				TSK_DEBUG_ERROR("ERROR (1)");
+				
 				//--assert(tcomp_result_getIsNack(result2));
 #if DECOMP_NACK_4_TEST
 				manager1->decompress(result2.getNackInfo()->getBuffer(), result2.getNackInfo()->getSize(), &result1);
@@ -1122,13 +1121,12 @@ int main()
 			outLen = tcomp_manager_decompress(manager1, buff2, outLen, result1);
 			if(outLen)
 			{
-				printf(buff1);
-				PRINTLN;
+				TSK_DEBUG_INFO("%s\n\n", buff1);
 				tcomp_manager_provideCompartmentId(manager1, result1);
 			}
 			else
 			{
-				printf("ERROR (3)");
+				TSK_DEBUG_ERROR("ERROR (3)");
 				//--assert(tcomp_result_getIsNack(result2));
 #if DECOMP_NACK_4_TEST
 				manager2->decompress(result1.getNackInfo()->getBuffer(), result1.getNackInfo()->getSize(), &result2);
@@ -1137,7 +1135,7 @@ int main()
 		}
 		else
 		{
-			printf("ERROR (4)");
+			TSK_DEBUG_ERROR("ERROR (4)");
 			//--assert(0);	
 		}
 	}

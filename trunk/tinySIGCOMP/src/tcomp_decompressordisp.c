@@ -34,6 +34,7 @@
 #include "tsk_debug.h"
 
 #include <assert.h>
+#include <string.h>
 
 #define TCOMP_MAX_STREAM_BUFFER_SIZE		65535
 #define TCOMP_NACK_SUPPORTED(dispatcher)	(dispatcher->stateHandler->sigcomp_parameters->SigComp_version >= 0x02)

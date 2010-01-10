@@ -462,7 +462,11 @@ static void* tcomp_compartment_create(void * self, va_list * app)
 	if(compartment)
 	{
 		uint64_t id = va_arg(*app, uint64_t);
+#if defined (__GNUC__)
+		uint16_t sigCompParameters = (uint16_t)va_arg(*app, unsigned);
+#else
 		uint16_t sigCompParameters = va_arg(*app, uint16_t);
+#endif
 
 		/* Initialize safeobject */
 		tsk_safeobj_init(compartment);

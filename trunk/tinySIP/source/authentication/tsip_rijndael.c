@@ -58,7 +58,7 @@
  */
 #include "tinysip/authentication/tsip_rijndael.h"
 
-#if TSIP_UNDER_WINDOWS || defined(__SYMBIAN32__)
+#if TSIP_UNDER_WINDOWS || defined(__SYMBIAN32__) || defined(__LITTLE_ENDIAN__)
 #	define LITTLE_ENDIAN	/* For INTEL architecture */
 #endif
 
