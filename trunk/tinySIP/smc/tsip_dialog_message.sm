@@ -44,15 +44,15 @@
 //------------------------
 Started
 {
-	sm_send(msg: const tsip_message_t*) 
+	sm_sendMESSAGE(msg: const tsip_message_t*) 
 		Sending 
 		{
-			Started_2_Sending_X_send(msg);
+			Started_2_Sending_X_sendMESSAGE(msg);
 		}
-	sm_receive(msg: const tsip_message_t*)
+	sm_receiveMESSAGE(msg: const tsip_message_t*)
 		Receiving
 		{
-			Started_2_Receiving_X_recv(msg);
+			Started_2_Receiving_X_recvMESSAGE(msg);
 		}
 }
 

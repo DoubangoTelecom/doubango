@@ -31,8 +31,6 @@
  */
 #include "tinysip/headers/tsip_header_Content_Length.h"
 
-#include "tinysip/parsers/tsip_parser_uri.h"
-
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
@@ -43,7 +41,7 @@
 *	Ragel state machine.
 */
 
-/* #line 68 "tsip_parser_header_Content_Length.rl" */
+/* #line 66 "tsip_parser_header_Content_Length.rl" */
 
 
 int tsip_header_Content_Length_tostring(const void* header, tsk_buffer_t* output)
@@ -63,12 +61,12 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Content_Length_t *hdr_clength = TSIP_HEADER_CONTENT_LENGTH_CREATE();
+	tsip_header_Content_Length_t *hdr_clength = TSIP_HEADER_CONTENT_LENGTH_CREATE(0);
 	
 	const char *tag_start;
 
 	
-/* #line 72 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 70 "../source/headers/tsip_header_Content_Length.c" */
 static const int tsip_machine_parser_header_Content_Length_start = 1;
 static const int tsip_machine_parser_header_Content_Length_first_final = 22;
 static const int tsip_machine_parser_header_Content_Length_error = 0;
@@ -76,16 +74,16 @@ static const int tsip_machine_parser_header_Content_Length_error = 0;
 static const int tsip_machine_parser_header_Content_Length_en_main = 1;
 
 
-/* #line 92 "tsip_parser_header_Content_Length.rl" */
+/* #line 90 "tsip_parser_header_Content_Length.rl" */
 	
-/* #line 82 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 80 "../source/headers/tsip_header_Content_Length.c" */
 	{
 	cs = tsip_machine_parser_header_Content_Length_start;
 	}
 
-/* #line 93 "tsip_parser_header_Content_Length.rl" */
+/* #line 91 "tsip_parser_header_Content_Length.rl" */
 	
-/* #line 89 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 87 "../source/headers/tsip_header_Content_Length.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -267,7 +265,7 @@ case 19:
 		goto tr17;
 	goto st0;
 tr17:
-/* #line 50 "tsip_parser_header_Content_Length.rl" */
+/* #line 48 "tsip_parser_header_Content_Length.rl" */
 	{
 		tag_start = p;
 	}
@@ -276,14 +274,14 @@ st20:
 	if ( ++p == pe )
 		goto _test_eof20;
 case 20:
-/* #line 280 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 278 "../source/headers/tsip_header_Content_Length.c" */
 	if ( (*p) == 13 )
 		goto tr20;
 	if ( 48 <= (*p) && (*p) <= 57 )
 		goto st20;
 	goto st0;
 tr20:
-/* #line 55 "tsip_parser_header_Content_Length.rl" */
+/* #line 53 "tsip_parser_header_Content_Length.rl" */
 	{
 		PARSER_SET_INTEGER(hdr_clength->length);
 	}
@@ -292,12 +290,12 @@ st21:
 	if ( ++p == pe )
 		goto _test_eof21;
 case 21:
-/* #line 296 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 294 "../source/headers/tsip_header_Content_Length.c" */
 	if ( (*p) == 10 )
 		goto tr22;
 	goto st0;
 tr22:
-/* #line 60 "tsip_parser_header_Content_Length.rl" */
+/* #line 58 "tsip_parser_header_Content_Length.rl" */
 	{
 	}
 	goto st22;
@@ -305,7 +303,7 @@ st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-/* #line 309 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 307 "../source/headers/tsip_header_Content_Length.c" */
 	goto st0;
 	}
 	_test_eof2: cs = 2; goto _test_eof; 
@@ -334,12 +332,12 @@ case 22:
 	_out: {}
 	}
 
-/* #line 94 "tsip_parser_header_Content_Length.rl" */
+/* #line 92 "tsip_parser_header_Content_Length.rl" */
 	
 	if( cs < 
-/* #line 341 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 339 "../source/headers/tsip_header_Content_Length.c" */
 22
-/* #line 95 "tsip_parser_header_Content_Length.rl" */
+/* #line 93 "tsip_parser_header_Content_Length.rl" */
  )
 	{
 		TSIP_HEADER_CONTENT_LENGTH_SAFE_FREE(hdr_clength);
@@ -365,6 +363,8 @@ static void* tsip_header_Content_Length_create(void *self, va_list * app)
 	tsip_header_Content_Length_t *Content_Length = self;
 	if(Content_Length)
 	{
+		Content_Length->length = va_arg(*app, uint32_t);
+
 		TSIP_HEADER(Content_Length)->type = tsip_htype_Content_Length;
 		TSIP_HEADER(Content_Length)->tostring = tsip_header_Content_Length_tostring;
 	}
@@ -382,6 +382,7 @@ static void* tsip_header_Content_Length_destroy(void *self)
 	tsip_header_Content_Length_t *Content_Length = self;
 	if(Content_Length)
 	{
+		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Length));
 	}
 	else TSK_DEBUG_ERROR("Null Content_Length header.");
 

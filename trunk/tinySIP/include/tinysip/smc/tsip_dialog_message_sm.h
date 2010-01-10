@@ -25,9 +25,9 @@ struct tsip_dialog_messageState
     void(*sm_accept)(struct tsip_dialog_messageContext*, const tsip_message_t*);
     void(*sm_cancel)(struct tsip_dialog_messageContext*);
     void(*sm_error)(struct tsip_dialog_messageContext*);
-    void(*sm_receive)(struct tsip_dialog_messageContext*, const tsip_message_t*);
+    void(*sm_receiveMESSAGE)(struct tsip_dialog_messageContext*, const tsip_message_t*);
     void(*sm_reject)(struct tsip_dialog_messageContext*, const tsip_message_t*);
-    void(*sm_send)(struct tsip_dialog_messageContext*, const tsip_message_t*);
+    void(*sm_sendMESSAGE)(struct tsip_dialog_messageContext*, const tsip_message_t*);
     void(*sm_transportError)(struct tsip_dialog_messageContext*);
 
     void(*Default)(struct tsip_dialog_messageContext*);
@@ -55,9 +55,9 @@ extern void tsip_dialog_messageContext_sm_401_407_421_494(struct tsip_dialog_mes
 extern void tsip_dialog_messageContext_sm_accept(struct tsip_dialog_messageContext*, const tsip_message_t*);
 extern void tsip_dialog_messageContext_sm_cancel(struct tsip_dialog_messageContext*);
 extern void tsip_dialog_messageContext_sm_error(struct tsip_dialog_messageContext*);
-extern void tsip_dialog_messageContext_sm_receive(struct tsip_dialog_messageContext*, const tsip_message_t*);
+extern void tsip_dialog_messageContext_sm_receiveMESSAGE(struct tsip_dialog_messageContext*, const tsip_message_t*);
 extern void tsip_dialog_messageContext_sm_reject(struct tsip_dialog_messageContext*, const tsip_message_t*);
-extern void tsip_dialog_messageContext_sm_send(struct tsip_dialog_messageContext*, const tsip_message_t*);
+extern void tsip_dialog_messageContext_sm_sendMESSAGE(struct tsip_dialog_messageContext*, const tsip_message_t*);
 extern void tsip_dialog_messageContext_sm_transportError(struct tsip_dialog_messageContext*);
 
 #endif

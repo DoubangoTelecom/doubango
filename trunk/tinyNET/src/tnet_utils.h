@@ -65,6 +65,12 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 	}
 
 
+#if TSK_UNDER_WINDOWS
+#	define tnet_ioctlt ioctlsocket
+#else
+#	define tnet_ioctlt ioctl
+#endif
+
 TNET_END_DECLS
 
 #endif /* TNET_UTILS_H */

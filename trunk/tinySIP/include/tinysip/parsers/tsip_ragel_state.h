@@ -67,7 +67,7 @@ TSIP_BEGIN_DECLS
 #define PARSER_SET_INTEGER(integer) \
 	{ \
 		int len = (int)(p  - tag_start); \
-		if(len>0) \
+		if(len>=0) \
 		{ \
 			char* tmp = tsk_calloc(len+1, sizeof(char)); \
 			memcpy(tmp, tag_start, len); \

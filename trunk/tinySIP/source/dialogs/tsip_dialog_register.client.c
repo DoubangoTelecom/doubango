@@ -70,20 +70,19 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
-				short status_code = TSIP_RESPONSE_CODE(msg);
-				if(status_code <=199)
+				if(TSIP_RESPONSE_IS_1XX(msg))
 				{
 					tsip_dialog_registerContext_sm_1xx(&TSIP_DIALOG_REGISTER(self)->_fsm, msg);
 				}
-				else if(status_code<=299)
+				else if(TSIP_RESPONSE_IS_2XX(msg))
 				{
-					tsip_dialog_registerContext_sm_2xx(&TSIP_DIALOG_REGISTER(self)->_fsm, TSIP_DIALOG_REGISTER(self)->registering, msg);
+					tsip_dialog_registerContext_sm_2xx(&TSIP_DIALOG_REGISTER(self)->_fsm, TSIP_DIALOG_REGISTER(self)->unregistering, msg);
 				}
-				else if(status_code == 401 || status_code == 407 || status_code == 421 || status_code == 494)
+				else if(TSIP_RESPONSE_IS(msg,401) || TSIP_RESPONSE_IS(msg,407) || TSIP_RESPONSE_IS(msg,421) || TSIP_RESPONSE_IS(msg,494))
 				{
 					tsip_dialog_registerContext_sm_401_407_421_494(&TSIP_DIALOG_REGISTER(self)->_fsm, msg);
 				}
-				else if(status_code == 423)
+				else if(TSIP_RESPONSE_IS(msg,423))
 				{
 					tsip_dialog_registerContext_sm_423(&TSIP_DIALOG_REGISTER(self)->_fsm, msg);
 				}
@@ -91,9 +90,15 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 				{
 					// Alert User
 					TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
-					TSK_DEBUG_WARN("Not supported status code: %d", status_code);
+					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
 				}
 			}
+			break;
+		}
+
+	case tsip_dialog_hang_up:
+		{
+			tsip_dialog_registerContext_sm_hangup(&TSIP_DIALOG_REGISTER(self)->_fsm);
 			break;
 		}
 
@@ -169,8 +174,7 @@ void tsip_dialog_register_init(tsip_dialog_register_t *self)
 
 	TSIP_DIALOG(self)->expires = 10;
 	TSIP_DIALOG(self)->callback = tsip_dialog_register_event_callback;
-	self->registering = 1;
-
+	
 	TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
 	TSIP_DIALOG(self)->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
 	TSIP_DIALOG(self)->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->realm);
@@ -235,7 +239,8 @@ void tsip_dialog_register_Trying_2_Trying_X_1xx(tsip_dialog_register_t *self, co
 void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
 	/* Alert the user. */
-	TSIP_DIALOG_ALERT_USER(self, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg), 1, tsip_event_register);
+	TSIP_DIALOG_ALERT_USER(self, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg), 1, 
+		self->unregistering ? tsip_event_unregister : tsip_event_register);
 
 	/* Update the dialog state. */
 	tsip_dialog_update(TSIP_DIALOG(self), msg);
@@ -249,6 +254,9 @@ void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self,
 */
 void tsip_dialog_register_Trying_2_Terminated_X_2xx(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
+	/* Alert the user. */
+	TSIP_DIALOG_ALERT_USER(self, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg), 1, 
+		self->unregistering ? tsip_event_unregister : tsip_event_register);
 }
 
 /*	Trying --> (401/407/421/494) --> Trying
@@ -257,8 +265,12 @@ void tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(tsip_dialog_register
 {
 	if(tsip_dialog_update(TSIP_DIALOG(self), msg))
 	{
-		// Alert user
 		TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
+
+		/* Alert the user. */
+		TSIP_DIALOG_ALERT_USER(self, 801, "FIXME", 1, 
+			self->unregistering ? tsip_event_unregister : tsip_event_register);
+
 		goto bail;
 	}
 	
@@ -292,6 +304,10 @@ void tsip_dialog_register_Trying_2_Trying_X_423(tsip_dialog_register_t *self, co
 	else
 	{
 		TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
+
+		/* Alert the user. */
+		TSIP_DIALOG_ALERT_USER(self, 803, "FIXME", 1, 
+			self->unregistering ? tsip_event_unregister : tsip_event_register);
 	}
 }
 
@@ -299,12 +315,18 @@ void tsip_dialog_register_Trying_2_Trying_X_423(tsip_dialog_register_t *self, co
 */
 void tsip_dialog_register_Trying_2_Terminated_X_300_to_699(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
+	/* Alert the user. */
+	TSIP_DIALOG_ALERT_USER(self, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg), 1, 
+		self->unregistering ? tsip_event_unregister : tsip_event_register);
 }
 
 /* Trying -> (cancel) -> Terminated
 */
 void tsip_dialog_register_Trying_2_Terminated_X_cancel(tsip_dialog_register_t *self)
 {
+	/* Alert the user. */
+	TSIP_DIALOG_ALERT_USER(self, 806, "Request canceled", 1, 
+		self->unregistering ? tsip_event_unregister : tsip_event_register);
 }
 
 /* Connected -> (Unregister) -> Trying
@@ -320,11 +342,19 @@ void tsip_dialog_register_Connected_2_Trying_X_refresh(tsip_dialog_register_t *s
 	send_register(self);
 }
 
+/* Any -> (hangup) -> Trying
+*/
+void tsip_dialog_register_Any_2_Trying_X_hangup(tsip_dialog_register_t *self)
+{
+	self->unregistering = 1;
+	send_register(self);
+}
+
 /* Any -> (transport error) -> Terminated
 */
 void tsip_dialog_register_Any_2_Terminated_X_transportError(tsip_dialog_register_t *self)
 {
-
+	TSIP_DIALOG_ALERT_USER(self, 800, "Transport Error.", 1, tsip_event_register);
 }
 
 
@@ -349,10 +379,54 @@ int send_register(tsip_dialog_register_t *self)
 {
 	tsip_request_t *request;
 	int ret = -1;
-
+	
+	if(self->unregistering)
+	{
+		TSIP_DIALOG(self)->expires = 0;
+	}
+	
 	request = tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER");
-	ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
-	TSIP_REQUEST_SAFE_FREE(request);
+
+	if(request)
+	{
+		/* == RCS phase 2
+		*/
+		if(TSIP_DIALOG_GET_STACK(self)->enable_gsmarcs)
+		{
+			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.oma.sip-im.large-message", 0);
+			TSIP_HEADER_ADD_PARAM(request->Contact, "audio", 0);
+			TSIP_HEADER_ADD_PARAM(request->Contact, "video", 0);
+			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.cs-voice", 0);
+			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.icsi-ref", TSIP_ICSI_QUOTED_MMTEL_PSVOICE);
+		}
+
+		/* mobility */
+		if(TSIP_DIALOG_GET_STACK(self)->mobility)
+		{
+			TSIP_HEADER_ADD_PARAM(request->Contact, "mobility", TSIP_DIALOG_GET_STACK(self)->mobility);
+		}
+
+		/* deviceID - FIXME: find reference. */
+		if(TSIP_DIALOG_GET_STACK(self)->device_id)
+		{
+			TSIP_HEADER_ADD_PARAM(request->Contact, "+deviceID", TSIP_DIALOG_GET_STACK(self)->device_id);
+		}
+
+		/* GSMA Image Sharing */
+		if(TSIP_DIALOG_GET_STACK(self)->enable_gsmais)
+		{
+			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.app_ref", TSIP_IARI_QUOTED_GSMAIS);
+		}
+
+		/* 3GPP TS 24.341 subclause 5.3.2.2 */
+		if(TSIP_DIALOG_GET_STACK(self)->enable_3gppsms)
+		{
+			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.smsip", 0);
+		}		
+		
+		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
+		TSIP_REQUEST_SAFE_FREE(request);
+	}
 
 	return ret;
 }
@@ -371,6 +445,12 @@ int send_register(tsip_dialog_register_t *self)
 void tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 {
 	TSK_DEBUG_INFO("=== Dialog terminated ===");
+
+	/* Cancel all timers */
+	DIALOG_TIMER_CANCEL(refresh);
+
+	/* Destroy asynchronously */
+	DIALOG_REMOVE_SCHEDULE();
 }
 
 
@@ -417,9 +497,9 @@ static void* tsip_dialog_register_destroy(void * self)
 	return self;
 }
 
-static int tsip_dialog_register_cmp(const void *obj1, const void *obj2)
+static int tsip_dialog_register_cmp(const void *dialog1, const void *dialog2)
 {
-	return -1;
+	return tsip_dialog_cmp(dialog1, dialog2);
 }
 
 static const tsk_object_def_t tsip_dialog_register_def_s = 

@@ -81,7 +81,7 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 				}
 				else
 				{
-					tsip_dialog_messageContext_sm_receive(&TSIP_DIALOG_MESSAGE(self)->_fsm, msg);
+					tsip_dialog_messageContext_sm_receiveMESSAGE(&TSIP_DIALOG_MESSAGE(self)->_fsm, msg);
 				}
 			}
 			break;
@@ -151,6 +151,12 @@ int send_response(tsip_dialog_message_t *self, short status, const char* phrase,
 	response = tsip_dialog_response_new(TSIP_DIALOG(self), status, phrase, request);
 	if(response)
 	{
+		if(response->To && !response->To->tag)
+		{
+			tsk_istr_t tag;
+			tsk_strrandom(&tag);
+			response->To->tag = tsk_strdup(tag);
+		}
 		ret = tsip_dialog_response_send(TSIP_DIALOG(self), response);
 		TSIP_RESPONSE_SAFE_FREE(response);
 	}
@@ -165,11 +171,11 @@ int send_response(tsip_dialog_message_t *self, short status, const char* phrase,
 //--------------------------------------------------------
 
 
-void tsip_dialog_message_Started_2_Sending_X_send(tsip_dialog_message_t *self, const tsip_message_t *message)
+void tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(tsip_dialog_message_t *self, const tsip_message_t *message)
 {
 }
 
-void tsip_dialog_message_Started_2_Receiving_X_recv(tsip_dialog_message_t *self, const tsip_message_t *message)
+void tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(tsip_dialog_message_t *self, const tsip_message_t *message)
 {
 	send_response(self, 200, "OK", message);
 }

@@ -47,10 +47,10 @@ Started
 		
 	}
 {
-	sm_recv_request(request: const tsip_request_t*) 
+	sm_request(request: const tsip_request_t*) 
 		Trying 
 		{
-			Started_2_Trying_X_recv_request(request);
+			Started_2_Trying_X_request(request);
 		}
 }
 
@@ -62,16 +62,16 @@ Trying
 		
 	}
 {
-	sm_send_1xx(request: const tsip_request_t*)
+	sm_send_1xx(response: const tsip_response_t*)
 		Proceeding
 		{
-			Trying_2_Proceeding_X_send_1xx(request);
+			Trying_2_Proceeding_X_send_1xx(response);
 		}
 
-	sm_send_200_to_699(request: const tsip_request_t*) 
+	sm_send_200_to_699(response: const tsip_response_t*) 
 		Completed 
 		{
-			Trying_2_Completed_X_send_200_to_699(request);
+			Trying_2_Completed_X_send_200_to_699(response);
 		}
 
 }
@@ -83,22 +83,22 @@ Proceeding
 	{
 	}
 {	
-	sm_send_1xx(request: const tsip_request_t*)
+	sm_send_1xx(response: const tsip_response_t*)
 		nil
 		{
-			Proceeding_2_Proceeding_X_send_1xx(request);
+			Proceeding_2_Proceeding_X_send_1xx(response);
 		}
 
-	sm_send_200_to_699(request: const tsip_request_t*) 
+	sm_send_200_to_699(response: const tsip_response_t*) 
 		Completed 
 		{
-			Proceeding_2_Completed_X_send_200_to_699(request);
+			Proceeding_2_Completed_X_send_200_to_699(response);
 		}
 
-	sm_recv_request(request: const tsip_request_t*) 
+	sm_request(request: const tsip_request_t*) 
 		nil 
 		{
-			Proceeding_2_Proceeding_X_recv_request(request);
+			Proceeding_2_Proceeding_X_request(request);
 		}
 }
 
@@ -110,10 +110,10 @@ Completed
 	{
 	}
 {	
-	sm_recv_request(request: const tsip_request_t*)
+	sm_request(request: const tsip_request_t*)
 		nil
 		{
-			Completed_2_Completed_X_recv_request(request);
+			Completed_2_Completed_X_request(request);
 		}
 
 	sm_timerJ()

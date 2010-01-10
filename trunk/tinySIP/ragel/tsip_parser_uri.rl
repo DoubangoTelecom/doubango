@@ -47,12 +47,10 @@
 
 	action parse_toto
 	{
-		TSK_DEBUG_INFO("PARSE_TOTO [%s]", tag_start);
 	}
 
 	action parse_titi
 	{
-		TSK_DEBUG_INFO("PARSE_TITI [%s]", tag_start);
 	}
 
 }%%
@@ -66,7 +64,6 @@
 		
 	action tag
 	{
-		TSK_DEBUG_INFO("PARSER_URI::TAG");
 		tag_start = p;
 	}
 
@@ -82,37 +79,31 @@
 
 	action parse_scheme
 	{
-		TSK_DEBUG_INFO("PARSER_URI::SCHEME");
 		PARSER_SET_STRING(uri->scheme);
 	}
 
 	action parse_user_name
 	{
-		TSK_DEBUG_INFO("PARSER_URI::USER_NAME");
 		PARSER_SET_STRING(uri->user_name);		
 	}
 
 	action parse_password
 	{
-		TSK_DEBUG_INFO("PARSER_URI::PASSWORD");
 		PARSER_SET_STRING(uri->password);	
 	}
 
 	action parse_host
 	{
-		TSK_DEBUG_INFO("PARSER_URI::HOST");
 		PARSER_SET_STRING(uri->host);	
 	}
 
 	action parse_port
 	{
-		TSK_DEBUG_INFO("PARSER_URI::PORT");
 		PARSER_SET_INTEGER(uri->port);	
 	}
 
 	action parse_param
 	{
-		TSK_DEBUG_INFO("PARSER_URI::PARAM");
 		PARSER_ADD_PARAM(uri->params);
 	}
 
@@ -208,8 +199,6 @@
 						
 							(any*) > 0
 							{
-								TSK_DEBUG_INFO("OOOOOOOOOK* \np=%s\n\nts=%s\nte=%s\n", p,ts, te);
-								//fgoto sip_hostport;
 							};
 
 						

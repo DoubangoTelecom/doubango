@@ -43,8 +43,11 @@ void test_stack()
 		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@micromethod.com"),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
 		TSIP_STACK_SET_REALM("sip:micromethod.com"),
-		TSIP_STACK_SET_PROXY_CSCF("192.168.0.15"),
+		TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
+		TSIP_STACK_SET_SEC_AGREE_MECH("ipsec-3gpp"),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
+		TSIP_STACK_SET_MOBILITY("fixed"),
+		TSIP_STACK_SET_DEVICE_ID("DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 
 		TSIP_STACK_SET_NULL());
@@ -60,7 +63,10 @@ void test_stack()
 	tsip_stack_start(stack);
 
 	tsip_stack_register(stack, op);
-	tsk_thread_sleep(200000000);
+
+	//while(1)
+		//tsk_thread_sleep(50000000000);
+	getchar();
 
 	tsip_stack_stop(stack);
 

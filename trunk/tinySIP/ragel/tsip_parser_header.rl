@@ -44,6 +44,7 @@
 #include "tinysip/headers/tsip_header_Privacy.h"
 #include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
 #include "tinysip/headers/tsip_header_Proxy_Authorization.h"
+#include "tinysip/headers/tsip_header_Record_Route.h"
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 #include "tinysip/headers/tsip_header_To.h"
@@ -499,7 +500,11 @@
 	# /*== Record-Route: ==*/
 	action parse_header_Record_Route 
 	{
-		TSK_DEBUG_ERROR("parse_header_Record_Route NOT IMPLEMENTED");
+		tsip_header_Record_Route_t *header = tsip_header_Record_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(header)
+		{
+			tsk_list_push_back_data(message->headers, ((void**) &header));
+		}
 	}
 
 	# /*== Refer-Sub: ==*/

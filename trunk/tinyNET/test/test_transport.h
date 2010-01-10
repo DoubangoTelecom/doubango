@@ -31,7 +31,7 @@
 	"CSeq: 201 REGISTER\r\n" \
 	"Max-Forwards: 70\r\n" \
 	"Contact: <sip:mamadou@%s:%d;transport=%s>\r\n" \
-	"Expires: 20\r\n" \
+	"Expires: 20000\r\n" \
 	"\r\n"
 
 
@@ -149,8 +149,8 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 
 void test_transport()
 {
-#define TEST_TCP 1
-#define TEST_UDP 0
+#define TEST_TCP 0
+#define TEST_UDP 1
 
 #if TEST_UDP
 	tnet_transport_handle_t *udp = TNET_TRANSPORT_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
@@ -162,7 +162,7 @@ void test_transport()
 	test_transport_tcp_ipv4(tcp);
 #endif	
 
-	tsk_thread_sleep(2000);
+	tsk_thread_sleep(2000000);
 
 #if TEST_UDP
 	TNET_TRANSPORT_SAFE_FREE(udp);

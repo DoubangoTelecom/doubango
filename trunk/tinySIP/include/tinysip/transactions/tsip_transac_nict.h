@@ -58,7 +58,7 @@ typedef struct tsip_transac_nict
 tsip_transac_nict_t;
 
 void tsip_transac_nict_init(tsip_transac_nict_t *self);
-int tsip_transac_nict_start(tsip_transac_nict_t *self, tsip_request_t* request);
+int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* request);
 void tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self);
 
 void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self);

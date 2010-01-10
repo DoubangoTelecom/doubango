@@ -59,9 +59,10 @@ typedef tsk_list_t tsip_dialog_layers_L_t;
 
 int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation);
 
-//const tsip_dialog_t* tsip_dialog_layer_find(tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag);
+int tsip_dialog_layer_hangupAll(tsip_dialog_layer_t *self);
+int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dialog);
 
-int tsip_dialog_layer_handle_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message);
+int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message);
 
 TINYSIP_GEXTERN const void *tsip_dialog_layer_def_t;
 

@@ -106,18 +106,17 @@ int tsip_transac_nict_event_callback(const tsip_transac_nict_t *self, tsip_trans
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
-				short status_code = TSIP_RESPONSE_CODE(msg);
-				if(status_code <=199)
+				if(TSIP_RESPONSE_IS_1XX(msg))
 				{
 					tsip_transac_nictContext_sm_1xx(&TSIP_TRANSAC_NICT(self)->_fsm, msg);
 				}
-				else if(status_code<=699)
+				else if(TSIP_RESPONSE_IS_23456(msg))
 				{
 					tsip_transac_nictContext_sm_200_to_699(&TSIP_TRANSAC_NICT(self)->_fsm, msg);
 				}
 				else
 				{
-					TSK_DEBUG_WARN("Not supported status code: %d", status_code);
+					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
 				}
 			}
 			break;
@@ -232,7 +231,7 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int tsip_transac_nict_start(tsip_transac_nict_t *self, tsip_request_t* request)
+int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* request)
 {
 	int ret = -1;
 	if(self && request && !TSIP_TRANSAC(self)->running)
@@ -249,7 +248,7 @@ int tsip_transac_nict_start(tsip_transac_nict_t *self, tsip_request_t* request)
 		}
 
 		TSIP_TRANSAC(self)->running = 1;
-		self->request = tsk_object_ref(request);
+		self->request = tsk_object_ref((void*)request);
 		tsip_transac_nictContext_sm_send(&self->_fsm);
 
 		ret = 0;
@@ -483,7 +482,7 @@ void tsip_transac_nict_Completed_2_Terminated_X_timerK(tsip_transac_nict_t *self
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transac_ok, 0);
+	//TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transac_ok, 0);
 }
 
 /* Any -> (Transport Error) -> Terminated

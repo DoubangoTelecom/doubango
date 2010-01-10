@@ -21,7 +21,7 @@
 */
 
 /**@file tsip_dialog_layer.c
- * @brief SIP dialogtion layer.
+ * @brief SIP dialog layer.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -130,7 +130,38 @@ int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_h
 }
 
 
-int tsip_dialog_layer_handle_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message)
+int tsip_dialog_layer_hangupAll(tsip_dialog_layer_t *self)
+{
+	if(self)
+	{
+		tsk_list_item_t *item;
+		tsip_dialog_t *dialog;
+		tsk_list_foreach(item, self->dialogs)
+		{
+			dialog = item->data;
+			tsip_dialog_hangup(dialog);
+		}
+		return 0;
+	}
+
+	return -1;
+}
+
+int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dialog)
+{
+	if(dialog && self)
+	{
+		tsk_safeobj_lock(self);
+		tsk_list_remove_item_by_data(self->dialogs, dialog);
+		tsk_safeobj_unlock(self);
+
+		return 0;
+	}
+
+	return -1;
+}
+
+int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message)
 {
 	int ret = -1;
 	const tsip_dialog_t* dialog;
@@ -145,7 +176,7 @@ int tsip_dialog_layer_handle_msg(const tsip_dialog_layer_t *self, const tsip_mes
 	else
 	{
 		const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
-		const tsip_transac_t* transac;
+		/*const*/ tsip_transac_t* transac;
 
 		if(TSIP_MESSAGE_IS_REQUEST(message))
 		{
@@ -153,14 +184,25 @@ int tsip_dialog_layer_handle_msg(const tsip_dialog_layer_t *self, const tsip_mes
 			{
 				tsip_dialog_message_t *dlg_msg = TSIP_DIALOG_MESSAGE_CREATE(self->stack, 0);
 
-				transac = tsip_transac_layer_new(layer_transac, 0, message);
+				transac = tsip_transac_layer_new(layer_transac, TSIP_FALSE, message);
 				if(transac)
 				{
 					TSIP_TRANSAC(transac)->dialog = TSIP_DIALOG(dlg_msg);
-					//ret = tsip_dialog_message_recv(dlg_msg, message);
 				}
 				tsk_list_push_back_data(self->dialogs, (void**)&dlg_msg);
 			}
+
+			else if(tsk_strequals("INVITE", TSIP_REQUEST_METHOD(message)))
+			{
+			}
+
+			// ....
+
+			if(transac)
+			{
+				ret = tsip_transac_start(transac, message);
+			}
+				
 		}
 	}
 

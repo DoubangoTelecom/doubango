@@ -375,6 +375,9 @@ static void* tsip_message_create(void *self, va_list * app)
 	{
 		message->type = va_arg(*app, tsip_message_type_t); 
 		message->headers = TSK_LIST_CREATE();
+		message->sockfd = TNET_INVALID_FD;
+		message->Content_Length = TSIP_HEADER_CONTENT_LENGTH_CREATE(0);
+
 
 		switch(message->type)
 		{
@@ -400,6 +403,9 @@ static void* tsip_message_create(void *self, va_list * app)
 #endif
 				message->line_status.reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
 				
+				/* Copy sockfd */
+				message->sockfd = request->sockfd;
+
 				/*
 				RFC 3261 - 8.2.6.2 Headers and Tags
 
@@ -433,6 +439,15 @@ static void* tsip_message_create(void *self, va_list * app)
 					while((via = tsip_message_get_headerAt(request, tsip_htype_Via, index++)))
 					{
 						tsip_message_add_header(message, via);
+					}
+				}
+				/* Record routes */
+				{
+					size_t index = 0;
+					const tsip_header_t *record_route;
+					while((record_route = tsip_message_get_headerAt(request, tsip_htype_Record_Route, index++)))
+					{
+						tsip_message_add_header(message, record_route);
 					}
 				}
 				message->To = tsk_object_ref((void*)request->To);

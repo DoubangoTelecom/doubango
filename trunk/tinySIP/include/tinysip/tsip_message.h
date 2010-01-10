@@ -44,6 +44,8 @@
 #include "tinysip/headers/tsip_header_To.h"
 #include "tinysip/headers/tsip_header_Via.h"
 
+#include "tnet_types.h"
+
 #include "tsk_object.h"
 #include "tsk_buffer.h"
 
@@ -87,6 +89,16 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)(((message) && (message)->Content_Length) ? (message)->Content_Length->length : 0)
 #define TSIP_MESSAGE_CONTENT(message)		 (TSIP_MESSAGE_HAS_CONTENT(message) ? (message)->Content : 0)
 #define TSIP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content)
+
+#define TSIP_RESPONSE_IS(self, code)		(TSIP_RESPONSE_CODE((self)) == code)
+#define TSIP_RESPONSE_IS_NXX(self, N)		(##N##00<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= ##N##99)
+#define TSIP_RESPONSE_IS_1XX(self)			TSIP_RESPONSE_IS_NXX(self, 1)
+#define TSIP_RESPONSE_IS_2XX(self)			TSIP_RESPONSE_IS_NXX(self, 2)
+#define TSIP_RESPONSE_IS_3XX(self)			TSIP_RESPONSE_IS_NXX(self, 3)
+#define TSIP_RESPONSE_IS_4XX(self)			TSIP_RESPONSE_IS_NXX(self, 4)
+#define TSIP_RESPONSE_IS_5XX(self)			TSIP_RESPONSE_IS_NXX(self, 5)
+#define TSIP_RESPONSE_IS_6XX(self)			TSIP_RESPONSE_IS_NXX(self, 6)
+#define TSIP_RESPONSE_IS_23456(self)		(200<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
 
 /**
  * @enum	tsip_message_type_t
@@ -177,6 +189,9 @@ typedef struct tsip_message_s
 
 	/*== OTHER HEADERS*/
 	tsip_headers_L_t *headers;
+
+	/*== */
+	tnet_fd_t sockfd;
 }
 tsip_message_t;
 

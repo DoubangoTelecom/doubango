@@ -111,6 +111,18 @@ tnet_socket_type_t;
 
 #define TNET_SOCKET_TYPE_IS_SECURE(type)	(TNET_SOCKET_TYPE_IS_IPSEC(type) || TNET_SOCKET_TYPE_IS_TLS(type) )
 
+#define TNET_SOCKET_TYPE_DEL(type, OP)		(type = TNET_SOCKET_TYPE_IS_##OP(type) ? type ^= TNET_SOCKET_TYPE_##OP : type)
+
+#define TNET_SOCKET_TYPE_AS_IPV4(type)	(type = TNET_SOCKET_TYPE_IS_IPV6(type) ? (type ^TNET_SOCKET_TYPE_IPV6)|TNET_SOCKET_TYPE_IPV4 : type)
+#define TNET_SOCKET_TYPE_AS_IPV6(type)	(type = TNET_SOCKET_TYPE_IS_IPV4(type) ? (type ^TNET_SOCKET_TYPE_IPV4)|TNET_SOCKET_TYPE_IPV6 : type)
+
+#define TNET_SOCKET_TYPE_AS_IPSEC(type)	(type |=TNET_SOCKET_TYPE_IPSEC)
+
+#define TNET_SOCKET_TYPE_AS_UDP(type)	(TNET_SOCKET_TYPE_DEL(type,TCP), TNET_SOCKET_TYPE_DEL(type,TLS), TNET_SOCKET_TYPE_DEL(type,SCTP), type |=TNET_SOCKET_TYPE_UDP)
+#define TNET_SOCKET_TYPE_AS_TCP(type)	(TNET_SOCKET_TYPE_DEL(type,UDP), TNET_SOCKET_TYPE_DEL(type,TLS), TNET_SOCKET_TYPE_DEL(type,SCTP), type |=TNET_SOCKET_TYPE_TCP)
+#define TNET_SOCKET_TYPE_AS_TLS(type)	(TNET_SOCKET_TYPE_DEL(type,TCP), TNET_SOCKET_TYPE_DEL(type,UDP), TNET_SOCKET_TYPE_DEL(type,SCTP), type |=TNET_SOCKET_TYPE_TLS)
+#define TNET_SOCKET_TYPE_AS_SCTP(type)	(TNET_SOCKET_TYPE_DEL(type,TCP), TNET_SOCKET_TYPE_DEL(type,TLS), TNET_SOCKET_TYPE_DEL(type,UDP), type |=TNET_SOCKET_TYPE_SCTP)
+
 #define TNET_SOCKET_HOST_ANY 0
 #define TNET_SOCKET_PORT_ANY 0
 
@@ -139,7 +151,6 @@ typedef tsk_list_t tnet_sockets_L_t; /**< List of @ref tnet_socket_t elements. *
 
 TINYNET_API int tnet_socket_stream_connectto(tnet_socket_tcp_t *socket, const char* host, tnet_port_t port);
 TINYNET_API int tnet_socket_dgram_sendto(tnet_socket_tcp_t *socket, const struct sockaddr *to, const void* buf, size_t size);
-
 
 
 TINYNET_GEXTERN const void *tnet_socket_def_t;

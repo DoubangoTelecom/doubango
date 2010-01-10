@@ -82,7 +82,7 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Content_Length_t *hdr_clength = TSIP_HEADER_CONTENT_LENGTH_CREATE();
+	tsip_header_Content_Length_t *hdr_clength = TSIP_HEADER_CONTENT_LENGTH_CREATE(0);
 	
 	const char *tag_start;
 
@@ -115,6 +115,8 @@ static void* tsip_header_Content_Length_create(void *self, va_list * app)
 	tsip_header_Content_Length_t *Content_Length = self;
 	if(Content_Length)
 	{
+		Content_Length->length = va_arg(*app, uint32_t);
+
 		TSIP_HEADER(Content_Length)->type = tsip_htype_Content_Length;
 		TSIP_HEADER(Content_Length)->tostring = tsip_header_Content_Length_tostring;
 	}

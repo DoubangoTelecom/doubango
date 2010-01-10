@@ -348,6 +348,7 @@ void *tnet_transport_mainthread(void *param)
 				/* Create socket's internal buffer. */
 				if(!active_socket->buffer)
 				{
+					// FIXME: see win32 function
 					size_t max_buffer_size = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? DGRAM_MAX_SIZE : STREAM_MAX_SIZE;
 					active_socket->buffer = tsk_calloc(max_buffer_size, sizeof(char));
 					active_socket->bufsize = max_buffer_size;

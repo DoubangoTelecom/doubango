@@ -33,7 +33,6 @@
 #include "tsk_string.h"
 
 /* Apple claims that they fully support POSIX semaphore but ...
- * Structure to handle unnamed semaphores.
  */
 #if defined(__APPLE__) /* Mac OSX/Darwin/Iphone/Ipod Touch */
 #	define TSK_USE_NAMED_SEM	1

@@ -67,6 +67,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 				break;
 			}
 			case pname_public_identity:
+			case pname_preferred_identity:
 			{
 				const char *uristring = va_arg(values, const char*);
 				if(uristring)
@@ -74,8 +75,16 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 					tsip_uri_t *uri = tsip_uri_parse(uristring, strlen(uristring));
 					if(uri)
 					{
-						TSIP_URI_SAFE_FREE(self->public_identity);
-						self->public_identity = uri;
+						if(curr == pname_public_identity)
+						{
+							TSIP_URI_SAFE_FREE(self->public_identity);
+							self->public_identity = uri;
+						}
+						else
+						{
+							TSIP_URI_SAFE_FREE(self->preferred_identity);
+							self->preferred_identity = uri;
+						}
 					}
 				}
 				break;
@@ -102,11 +111,6 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			case pname_local_port:
 			{
 				self->local_port = va_arg(values, uint16_t);
-				break;
-			}
-			case pname_enable_ipv6:
-			{
-				self->enable_ipv6 = va_arg(values, unsigned);
 				break;
 			}
 			case pname_privacy:
@@ -143,18 +147,50 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			}
 			case pname_proxy_cscf:
 			{
-				tsk_strupdate(&self->proxy_cscf, va_arg(values, const char*));
+				const char* pcscf = va_arg(values, const char*);
+				const char* transport = va_arg(values, const char*);
+				int use_ipv6 = va_arg(values, int);
+
+				tsk_strupdate(&self->proxy_cscf, pcscf);
+
+				if(tsk_striequals(transport, "UDP")) TNET_SOCKET_TYPE_AS_UDP(self->proxy_cscf_type);
+				else if(tsk_striequals(transport, "TCP")) TNET_SOCKET_TYPE_AS_TCP(self->proxy_cscf_type);
+				else if(tsk_striequals(transport, "TLS")) TNET_SOCKET_TYPE_AS_TLS(self->proxy_cscf_type);
+				else if(tsk_striequals(transport, "SCTP")) TNET_SOCKET_TYPE_AS_SCTP(self->proxy_cscf_type);
+
+				if(use_ipv6) TNET_SOCKET_TYPE_AS_IPV6(self->proxy_cscf_type);
+				else TNET_SOCKET_TYPE_AS_IPV4(self->proxy_cscf_type);
 				break;
 			}
 
 			case pname_proxy_cscf_port:
 			{
-				self->proxy_cscf_port = va_arg(values, uint16_t);
+				self->proxy_cscf_port = va_arg(values, int);
+				break;
+			}
+
+			case pname_device_id:
+			{
+				if(self->device_id)
+					TSK_FREE(self->device_id);
+				tsk_sprintf(&self->device_id, "\"%s\"", va_arg(values, const char*));
+				break;
+			}
+
+			case pname_mobility:
+			{
+				tsk_strupdate(&self->mobility, va_arg(values, const char*));
+				break;
+			}
+
+			case pname_sec_agree_mech:
+			{
+				tsk_strupdate(&self->sec_agree_mech, va_arg(values, const char*));
 				break;
 			}
 
 			/* 
-			* Services 
+			* Features 
 			*/
 			case pname_enable_100rel:
 			{
@@ -263,6 +299,9 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	stack->local_ip = TNET_SOCKET_HOST_ANY;
 	stack->local_port = TNET_SOCKET_PORT_ANY;
 
+	stack->proxy_cscf_port = 5060;
+	stack->proxy_cscf_type = tnet_socket_type_udp_ipv4;
+
 	va_start(params, callback);
 	if(__tsip_stack_set(stack, params))
 	{
@@ -284,14 +323,6 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	stack->layer_transac = TSIP_TRANSAC_LAYER_CREATE(stack);
 	stack->layer_transport = TSIP_TRANSPORT_LAYER_CREATE(stack);
 
-	/*
-	* FIXME:
-	*/
-	if(tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, "UDP/IPV4 TRANSPORT"))
-	{
-		// WHAT ???
-	}
-
 	return stack;
 }
 
@@ -306,6 +337,14 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		if(ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))
 		{
 			return ret;
+		}
+
+		/*
+		* FIXME:
+		*/
+		if(tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, stack->proxy_cscf_type, "FIXME"))
+		{
+			// WHAT ???
 		}
 
 		/*
@@ -360,6 +399,7 @@ int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, 
 	return -1;
 }
 
+//#include "tsk_thread.h"
 int tsip_stack_stop(tsip_stack_handle_t *self)
 {
 	if(self)
@@ -367,13 +407,18 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 		int ret;
 		tsip_stack_t *stack = self;
 
+
+		/* Hangup all dialogs */
+		tsip_dialog_layer_hangupAll(stack->layer_dialog);
+		//tsk_thread_sleep(50000000);
+
+		/* Stop timer manager. */
+		ret = tsk_timer_manager_stop(stack->timer_mgr);
+
 		if(ret = tsk_runnable_stop(TSK_RUNNABLE(stack)))
 		{
 			//return ret;
 		}
-
-		/* Stop timer manager. */
-		ret = tsk_timer_manager_stop(stack->timer_mgr);
 
 		TSK_DEBUG_INFO("SIP STACK -- STOP");
 
@@ -395,6 +440,8 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 		TSIP_DIALOG_LAYER_SAFE_FREE(stack->layer_dialog);
 		TSIP_TRANSAC_LAYER_SAFE_FREE(stack->layer_transac);
 		TSIP_TRANSPORT_LAYER_SAFE_FREE(stack->layer_transport);
+
+		// FIXME: free strings, uris, ...
 
 		return 0;
 	}

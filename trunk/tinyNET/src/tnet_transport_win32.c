@@ -32,13 +32,13 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 #include "tsk_thread.h"
+#include "tsk_buffer.h"
 
 #if TNET_UNDER_WINDOWS && !TNET_USE_POLL
 
 /*== Socket description ==*/
 typedef struct transport_socket_s
 {
-	WSABUF wsaBuffer;
 	tnet_fd_t fd;
 	unsigned connected:1;
 }
@@ -79,6 +79,31 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 		}
 	}
 	
+	return 0;
+}
+
+int tnet_transport_has_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t *context;
+	size_t i;
+
+	if(!transport)
+	{
+		TSK_DEBUG_ERROR("Invalid server handle.");
+		return 0;
+	}
+
+	context = (transport_context_t*)transport->context;
+
+	for(i=0; i<context->count; i++)
+	{
+		if(context->sockets[i]->fd == fd)
+		{
+			return 1;
+		}
+	}
+
 	return 0;
 }
 
@@ -299,10 +324,10 @@ static void transport_socket_remove(int index, transport_context_t *context)
 	if(index < (int)context->count)
 	{
 		tnet_sockfd_close(&(context->sockets[index]->fd));
-		if(context->sockets[index]->wsaBuffer.buf)
-		{
-			TSK_FREE(context->sockets[index]->wsaBuffer.buf);
-		}
+		//if(context->sockets[index]->wsaBuffer.buf)
+		//{
+		//	TSK_FREE(context->sockets[index]->wsaBuffer.buf);
+		//}
 		TSK_FREE(context->sockets[index]);
 
 		WSACloseEvent(context->events[index]);
@@ -462,6 +487,7 @@ void *tnet_transport_mainthread(void *param)
 		if(networkEvents.lNetworkEvents & FD_READ)
 		{
 			DWORD readCount = 0;
+			WSABUF wsaBuffer;
 
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description);
 
@@ -471,17 +497,23 @@ void *tnet_transport_mainthread(void *param)
 				TNET_PRINT_LAST_ERROR();
 				continue;
 			}
-			
-			/* Create socket's internal buffer. */
-			if(!active_socket->wsaBuffer.buf)
+
+			/* Retrieve the amount of pending data */
+			if(tnet_ioctlt(active_socket->fd, FIONREAD, &(wsaBuffer.len)) < 0)
 			{
-				size_t max_buffer_size = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? DGRAM_MAX_SIZE : STREAM_MAX_SIZE;
-				active_socket->wsaBuffer.buf = tsk_calloc(max_buffer_size, sizeof(char));
-				active_socket->wsaBuffer.len = max_buffer_size;
+				TSK_DEBUG_ERROR("IOCTLT FAILED.");
+				TNET_PRINT_LAST_ERROR();
+				continue;
+			}
+			/* Alloc data */
+			if(!(wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t))))
+			{
+				TSK_DEBUG_ERROR("TSK_CALLOC FAILED.");
+				continue;
 			}
 
 			/* Receive the waiting data. */
-			if(WSARecv(active_socket->fd, &(active_socket->wsaBuffer), 1, &readCount, &flags, 0, 0) == SOCKET_ERROR)
+			if(WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0) == SOCKET_ERROR)
 			{
 				if(WSAGetLastError() == WSAEWOULDBLOCK)
 				{
@@ -489,6 +521,8 @@ void *tnet_transport_mainthread(void *param)
 				}
 				else
 				{
+					TSK_FREE(wsaBuffer.buf);
+
 					transport_socket_remove(index, context);
 					TNET_PRINT_LAST_ERROR();
 					continue;
@@ -496,7 +530,11 @@ void *tnet_transport_mainthread(void *param)
 			}
 			else
 			{	
-				TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(transport), active_socket->wsaBuffer.buf, readCount);
+				tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+				buffer->data = wsaBuffer.buf;
+				buffer->size = wsaBuffer.len;
+
+				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), buffer);
 			}
 		}
 
@@ -524,8 +562,13 @@ void *tnet_transport_mainthread(void *param)
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CLOSE", transport->description);
 		}
 
-		/* Reset event */
-		WSAResetEvent(active_event);
+		/*	http://msdn.microsoft.com/en-us/library/ms741690(VS.85).aspx
+
+			The proper way to reset the state of an event object used with the WSAEventSelect function 
+			is to pass the handle of the event object to the WSAEnumNetworkEvents function in the hEventObject parameter. 
+			This will reset the event object and adjust the status of active FD events on the socket in an atomic fashion.
+		*/
+		/* WSAResetEvent(active_event); <== DO NOT USE (see above) */
 
 	} /* while(transport->running) */
 	

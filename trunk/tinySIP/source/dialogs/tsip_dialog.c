@@ -187,6 +187,25 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 	
 	/* Update authorizations */
+	if(TSK_LIST_IS_EMPTY(self->challenges))
+	{
+		if(tsk_strequals("REGISTER", method) && !TSIP_STACK(self->stack)->enable_earlyIMS)
+		{
+			/*	3GPP TS 34.229 - 5.1.1.1A === 3GPP TS 33.978 - 6.2.3.1
+				On sending a REGISTER request, the UE shall populate the header fields as follows:
+					a)	the Authorization header, with:
+					-	the username directive, set to the value of the private user identity;
+					-	the realm directive, set to the domain name of the home network;
+					-	the uri directive, set to the SIP URI of the domain name of the home network;
+					-	the nonce directive, set to an empty value; and
+					-	the response directive, set to an empty value.
+			*/
+			tsip_header_t* auth_hdr = tsip_challenge_create_empty_header_authorization("sip:fixme@micromethod.com", "fixme:realm", "uri");
+			tsip_message_add_header(request, auth_hdr);
+			tsk_object_unref(auth_hdr), auth_hdr = 0;
+		}
+	}
+	else
 	{
 		tsk_list_item_t *item;
 		tsip_challenge_t *challenge;
@@ -243,11 +262,11 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 				As this is an outgoing request ==> It shall be a client transaction (NICT or ICT).
 				For server transactions creation see @ref tsip_dialog_response_send.
 			*/
-			const tsip_transac_t *transac = tsip_transac_layer_new(layer, 1, request);
+			/*const*/ tsip_transac_t *transac = tsip_transac_layer_new(layer, 1, request);
 
 			/* Set the transaction's dialog. All events comming from the transaction (timeouts, errors ...) will be signaled to this dialog.
 			*/
-			TSIP_TRANSAC(transac)->dialog = self;
+			/*TSIP_TRANSAC*/(transac)->dialog = self;
 			if(transac)
 			{
 				switch(transac->type)
@@ -264,7 +283,7 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 					{
 						/* Start the newly created NIC transaction.
 						*/
-						tsip_transac_nict_start(TSIP_TRANSAC_NICT(transac), request);
+						tsip_transac_start(transac, request);
 						break;
 					}
 
@@ -296,7 +315,13 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 		tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
 		if(layer)
 		{
-			ret = tsip_transac_layer_handle_msg(layer, 0, response);
+			/* As this is a response ...then there should be a matching server transaction.
+			*/
+			const tsip_transac_t *transac = tsip_transac_layer_find_server(layer, response);
+			if(transac)
+			{
+				ret = transac->callback(transac, tsip_transac_outgoing_msg, response);
+			}
 		}
 	}
 	return ret;
@@ -600,6 +625,36 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const tsip_st
 		self->cseq_value = rand();
 
 		return 0;
+	}
+	return -1;
+}
+
+int tsip_dialog_hangup(tsip_dialog_t *self)
+{
+	if(self)
+	{
+		return self->callback(self, tsip_dialog_hang_up, 0);
+	}
+	return -1;
+}
+
+int tsip_dialog_remove_callback(const tsip_dialog_t* self, tsk_timer_id_t timer_id)
+{
+	return tsip_dialog_layer_remove(TSIP_STACK(self->stack)->layer_dialog, TSIP_DIALOG(self));
+}
+
+int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2)
+{
+	if(d1 && d2)
+	{
+		if(
+			tsk_strequals(d1->callid, d2->callid) 
+			&& (tsk_strequals(d1->tag_local, d2->tag_local))
+			&& (tsk_strequals(d1->tag_remote, d2->tag_remote))
+			)
+		{
+			return 0;
+		}
 	}
 	return -1;
 }

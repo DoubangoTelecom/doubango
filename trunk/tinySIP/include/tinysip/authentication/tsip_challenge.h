@@ -73,6 +73,7 @@ typedef tsk_list_t tsip_challenges_L_t;
 
 int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
 tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self, const tsip_request_t *request);
+tsip_header_t *tsip_challenge_create_empty_header_authorization(const char* username, const char* realm, const char* uristring);
 
 TINYSIP_GEXTERN const void *tsip_challenge_def_t;
 

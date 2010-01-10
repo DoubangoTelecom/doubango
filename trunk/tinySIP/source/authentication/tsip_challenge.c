@@ -361,6 +361,23 @@ bail:
 #undef TSIP_AUTH_COPY_VALUES
 }
 
+tsip_header_t *tsip_challenge_create_empty_header_authorization(const char* username, const char* realm, const char* uristring)
+{
+	tsip_header_Authorization_t *header = TSIP_HEADER_AUTHORIZATION_CREATE();
+
+	if(header)
+	{
+		header->scheme = tsk_strdup("Digest");
+		header->username = tsk_strdup(username);
+		header->realm = tsk_strdup(realm);
+		header->nonce = tsk_strdup("");
+		header->response = tsk_strdup("");
+		header->uri = tsk_strdup(uristring);
+	}
+
+	return TSIP_HEADER(header);
+}
+
 
 
 

@@ -49,7 +49,7 @@ typedef struct tsip_dialog_register
 	
 	tsip_timer_t timerrefresh;
 
-	unsigned registering:1;
+	unsigned unregistering:1;
 }
 tsip_dialog_register_t;
 
@@ -66,6 +66,7 @@ void tsip_dialog_register_Trying_2_Terminated_X_300_to_699(tsip_dialog_register_
 void tsip_dialog_register_Trying_2_Terminated_X_cancel(tsip_dialog_register_t *self);
 void tsip_dialog_register_Connected_2_Trying_X_unregister(tsip_dialog_register_t *self);
 void tsip_dialog_register_Connected_2_Trying_X_refresh(tsip_dialog_register_t *self);
+void tsip_dialog_register_Any_2_Trying_X_hangup(tsip_dialog_register_t *self);
 void tsip_dialog_register_Any_2_Terminated_X_transportError(tsip_dialog_register_t *self);
 void tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self);
 

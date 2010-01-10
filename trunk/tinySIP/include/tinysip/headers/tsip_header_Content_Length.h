@@ -43,7 +43,8 @@ TSIP_BEGIN_DECLS
 * Safely free a sip 'Content-Length' header previously created using TSIP_HEADER_CONTENT_LENGTH_CREATE.
 * @sa TSIP_HEADER_CONTENT_LENGTH_CREATE.
 */
-#define TSIP_HEADER_CONTENT_LENGTH_CREATE()		tsk_object_new(tsip_header_Content_Length_def_t)
+#define TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(length)	tsip_header_Content_Length_def_t, (uint32_t)length
+#define TSIP_HEADER_CONTENT_LENGTH_CREATE(length)	tsk_object_new(TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(length))
 #define TSIP_HEADER_CONTENT_LENGTH_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
