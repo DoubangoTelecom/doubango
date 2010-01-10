@@ -81,14 +81,14 @@ Trying
 			Trying_2_Trying_X_1xx(msg);
 		}
 
-	sm_2xx(registering: int, msg: const tsip_message_t*) [registering]
-		Connected 
+	sm_2xx(unregistering: int, msg: const tsip_message_t*) [unregistering]
+		Terminated
 		{
 			Trying_2_Connected_X_2xx(msg);
 		}
 
-	sm_2xx(registering: int, msg: const tsip_message_t*) [!registering]
-		Terminated 
+	sm_2xx(unregistering: int, msg: const tsip_message_t*) [!unregistering]
+		 Connected
 		{
 			Trying_2_Terminated_X_2xx(msg);
 		}
@@ -179,6 +179,12 @@ Default
 	{
 	}
 {
+	sm_hangup()
+		Trying
+		{
+			Any_2_Trying_X_hangup();
+		}
+
 	sm_transportError()
 		Terminated
 		{

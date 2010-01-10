@@ -8,10 +8,10 @@ export OPTIONS="-C -L -G2"
 ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_uri.c tsip_parser_uri.rl
 
 # SIP message (both requests an responses) parser.
-#ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_message.c tsip_parser_message.rl
+ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_message.c tsip_parser_message.rl
 
 # SIP headers parser
-#ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_header.c tsip_parser_header.rl
+ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_header.c tsip_parser_header.rl
 
 
 # ==Allow
@@ -27,7 +27,7 @@ ragel.exe $OPTIONS -o ../source/parsers/tsip_parser_uri.c tsip_parser_uri.rl
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_Call_ID.c tsip_parser_header_Call_ID.rl
 
 # ==Content-Length
-#ragel.exe $OPTIONS -o ../source/headers/tsip_header_Content_Length.c tsip_parser_header_Content_Length.rl
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_Content_Length.c tsip_parser_header_Content_Length.rl
 
 # ==Content-Type
 ragel.exe $OPTIONS -o ../source/headers/tsip_header_Content_Type.c tsip_parser_header_Content_Type.rl
@@ -65,6 +65,9 @@ ragel.exe $OPTIONS -o ../source/headers/tsip_header_Content_Type.c tsip_parser_h
 # ==Proxy-Authorization
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_Proxy_Authorization.c tsip_parser_header_Proxy_Authorization.rl
 
+# ==Record-Route
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_Record_Route.c tsip_parser_header_Record_Route.rl
+
 # ==Require
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_Require.c tsip_parser_header_Require.rl
 
@@ -75,10 +78,10 @@ ragel.exe $OPTIONS -o ../source/headers/tsip_header_Content_Type.c tsip_parser_h
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_To.c tsip_parser_header_To.rl
 
 # ==User-Agent
-ragel.exe $OPTIONS -o ../source/headers/tsip_header_User_Agent.c tsip_parser_header_User_Agent.rl
+#ragel.exe $OPTIONS -o ../source/headers/tsip_header_User_Agent.c tsip_parser_header_User_Agent.rl
 
 # ==Via
-#ragel.exe $OPTIONS -o ../source/headers/tsip_header_Via.c tsip_parser_header_Via.rl
+ragel.exe $OPTIONS -o ../source/headers/tsip_header_Via.c tsip_parser_header_Via.rl
 
 # ==WWW-Authenticate
 #ragel.exe $OPTIONS -o ../source/headers/tsip_header_WWW_Authenticate.c tsip_parser_header_WWW_Authenticate.rl

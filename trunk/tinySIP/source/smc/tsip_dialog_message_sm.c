@@ -54,9 +54,9 @@
     state##_sm_accept, \
     state##_sm_cancel, \
     state##_sm_error, \
-    state##_sm_receive, \
+    state##_sm_receiveMESSAGE, \
     state##_sm_reject, \
-    state##_sm_send, \
+    state##_sm_sendMESSAGE, \
     state##_sm_transportError, \
     state##_Default
 
@@ -102,7 +102,7 @@ static void tsip_dialog_messageState_sm_error(struct tsip_dialog_messageContext 
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_dialog_messageState_sm_receive(struct tsip_dialog_messageContext *fsm, const tsip_message_t* msg)
+static void tsip_dialog_messageState_sm_receiveMESSAGE(struct tsip_dialog_messageContext *fsm, const tsip_message_t* msg)
 {
     getState(fsm)->Default(fsm);
 }
@@ -112,7 +112,7 @@ static void tsip_dialog_messageState_sm_reject(struct tsip_dialog_messageContext
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_dialog_messageState_sm_send(struct tsip_dialog_messageContext *fsm, const tsip_message_t* msg)
+static void tsip_dialog_messageState_sm_sendMESSAGE(struct tsip_dialog_messageContext *fsm, const tsip_message_t* msg)
 {
     getState(fsm)->Default(fsm);
 }
@@ -134,9 +134,9 @@ static void tsip_dialog_messageState_Default(struct tsip_dialog_messageContext *
 #define tsip_dialog_message_Started_sm_accept tsip_dialog_messageState_sm_accept
 #define tsip_dialog_message_Started_sm_cancel tsip_dialog_messageState_sm_cancel
 #define tsip_dialog_message_Started_sm_error tsip_dialog_messageState_sm_error
-#define tsip_dialog_message_Started_sm_receive tsip_dialog_messageState_sm_receive
+#define tsip_dialog_message_Started_sm_receiveMESSAGE tsip_dialog_messageState_sm_receiveMESSAGE
 #define tsip_dialog_message_Started_sm_reject tsip_dialog_messageState_sm_reject
-#define tsip_dialog_message_Started_sm_send tsip_dialog_messageState_sm_send
+#define tsip_dialog_message_Started_sm_sendMESSAGE tsip_dialog_messageState_sm_sendMESSAGE
 #define tsip_dialog_message_Started_sm_transportError tsip_dialog_messageState_sm_transportError
 #define tsip_dialog_message_Started_Default tsip_dialog_messageState_Default
 #define tsip_dialog_message_Started_Entry NULL
@@ -148,9 +148,9 @@ static void tsip_dialog_messageState_Default(struct tsip_dialog_messageContext *
 #define tsip_dialog_message_Sending_sm_accept tsip_dialog_messageState_sm_accept
 #define tsip_dialog_message_Sending_sm_cancel tsip_dialog_messageState_sm_cancel
 #define tsip_dialog_message_Sending_sm_error tsip_dialog_messageState_sm_error
-#define tsip_dialog_message_Sending_sm_receive tsip_dialog_messageState_sm_receive
+#define tsip_dialog_message_Sending_sm_receiveMESSAGE tsip_dialog_messageState_sm_receiveMESSAGE
 #define tsip_dialog_message_Sending_sm_reject tsip_dialog_messageState_sm_reject
-#define tsip_dialog_message_Sending_sm_send tsip_dialog_messageState_sm_send
+#define tsip_dialog_message_Sending_sm_sendMESSAGE tsip_dialog_messageState_sm_sendMESSAGE
 #define tsip_dialog_message_Sending_sm_transportError tsip_dialog_messageState_sm_transportError
 #define tsip_dialog_message_Sending_Default tsip_dialog_messageState_Default
 #define tsip_dialog_message_Sending_Entry NULL
@@ -162,9 +162,9 @@ static void tsip_dialog_messageState_Default(struct tsip_dialog_messageContext *
 #define tsip_dialog_message_Receiving_sm_accept tsip_dialog_messageState_sm_accept
 #define tsip_dialog_message_Receiving_sm_cancel tsip_dialog_messageState_sm_cancel
 #define tsip_dialog_message_Receiving_sm_error tsip_dialog_messageState_sm_error
-#define tsip_dialog_message_Receiving_sm_receive tsip_dialog_messageState_sm_receive
+#define tsip_dialog_message_Receiving_sm_receiveMESSAGE tsip_dialog_messageState_sm_receiveMESSAGE
 #define tsip_dialog_message_Receiving_sm_reject tsip_dialog_messageState_sm_reject
-#define tsip_dialog_message_Receiving_sm_send tsip_dialog_messageState_sm_send
+#define tsip_dialog_message_Receiving_sm_sendMESSAGE tsip_dialog_messageState_sm_sendMESSAGE
 #define tsip_dialog_message_Receiving_sm_transportError tsip_dialog_messageState_sm_transportError
 #define tsip_dialog_message_Receiving_Default tsip_dialog_messageState_Default
 #define tsip_dialog_message_Receiving_Entry NULL
@@ -176,9 +176,9 @@ static void tsip_dialog_messageState_Default(struct tsip_dialog_messageContext *
 #define tsip_dialog_message_Terminated_sm_accept tsip_dialog_messageState_sm_accept
 #define tsip_dialog_message_Terminated_sm_cancel tsip_dialog_messageState_sm_cancel
 #define tsip_dialog_message_Terminated_sm_error tsip_dialog_messageState_sm_error
-#define tsip_dialog_message_Terminated_sm_receive tsip_dialog_messageState_sm_receive
+#define tsip_dialog_message_Terminated_sm_receiveMESSAGE tsip_dialog_messageState_sm_receiveMESSAGE
 #define tsip_dialog_message_Terminated_sm_reject tsip_dialog_messageState_sm_reject
-#define tsip_dialog_message_Terminated_sm_send tsip_dialog_messageState_sm_send
+#define tsip_dialog_message_Terminated_sm_sendMESSAGE tsip_dialog_messageState_sm_sendMESSAGE
 #define tsip_dialog_message_Terminated_sm_transportError tsip_dialog_messageState_sm_transportError
 #define tsip_dialog_message_Terminated_Default tsip_dialog_messageState_Default
 #define tsip_dialog_message_Terminated_Entry NULL
@@ -190,9 +190,9 @@ static void tsip_dialog_messageState_Default(struct tsip_dialog_messageContext *
 #define tsip_dialog_message_DefaultState_sm_accept tsip_dialog_messageState_sm_accept
 #define tsip_dialog_message_DefaultState_sm_cancel tsip_dialog_messageState_sm_cancel
 #define tsip_dialog_message_DefaultState_sm_error tsip_dialog_messageState_sm_error
-#define tsip_dialog_message_DefaultState_sm_receive tsip_dialog_messageState_sm_receive
+#define tsip_dialog_message_DefaultState_sm_receiveMESSAGE tsip_dialog_messageState_sm_receiveMESSAGE
 #define tsip_dialog_message_DefaultState_sm_reject tsip_dialog_messageState_sm_reject
-#define tsip_dialog_message_DefaultState_sm_send tsip_dialog_messageState_sm_send
+#define tsip_dialog_message_DefaultState_sm_sendMESSAGE tsip_dialog_messageState_sm_sendMESSAGE
 #define tsip_dialog_message_DefaultState_sm_transportError tsip_dialog_messageState_sm_transportError
 
 #undef tsip_dialog_message_Started_sm_transportError
@@ -246,26 +246,26 @@ static void tsip_dialog_message_DefaultState_Default(struct tsip_dialog_messageC
 
 }
 
-#undef tsip_dialog_message_Started_sm_receive
-static void tsip_dialog_message_Started_sm_receive(struct tsip_dialog_messageContext *fsm, const tsip_message_t* msg)
+#undef tsip_dialog_message_Started_sm_receiveMESSAGE
+static void tsip_dialog_message_Started_sm_receiveMESSAGE(struct tsip_dialog_messageContext *fsm, const tsip_message_t* msg)
 {
     struct tsip_dialog_message* ctxt = getOwner(fsm);
 
     EXIT_STATE(getState(fsm));
     clearState(fsm);
-    tsip_dialog_message_Started_2_Receiving_X_recv(ctxt, msg);
+    tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(ctxt, msg);
     setState(fsm, &tsip_dialog_message_Receiving);
     ENTRY_STATE(getState(fsm));
 }
 
-#undef tsip_dialog_message_Started_sm_send
-static void tsip_dialog_message_Started_sm_send(struct tsip_dialog_messageContext *fsm, const tsip_message_t* msg)
+#undef tsip_dialog_message_Started_sm_sendMESSAGE
+static void tsip_dialog_message_Started_sm_sendMESSAGE(struct tsip_dialog_messageContext *fsm, const tsip_message_t* msg)
 {
     struct tsip_dialog_message* ctxt = getOwner(fsm);
 
     EXIT_STATE(getState(fsm));
     clearState(fsm);
-    tsip_dialog_message_Started_2_Sending_X_send(ctxt, msg);
+    tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(ctxt, msg);
     setState(fsm, &tsip_dialog_message_Sending);
     ENTRY_STATE(getState(fsm));
 }
@@ -455,13 +455,13 @@ void tsip_dialog_messageContext_sm_error(struct tsip_dialog_messageContext* fsm)
     setTransition(fsm, NULL);
 }
 
-void tsip_dialog_messageContext_sm_receive(struct tsip_dialog_messageContext* fsm, const tsip_message_t* msg)
+void tsip_dialog_messageContext_sm_receiveMESSAGE(struct tsip_dialog_messageContext* fsm, const tsip_message_t* msg)
 {
     const struct tsip_dialog_messageState* state = getState(fsm);
 
     assert(state != NULL);
-    setTransition(fsm, "sm_receive");
-    state->sm_receive(fsm, msg);
+    setTransition(fsm, "sm_receiveMESSAGE");
+    state->sm_receiveMESSAGE(fsm, msg);
     setTransition(fsm, NULL);
 }
 
@@ -475,13 +475,13 @@ void tsip_dialog_messageContext_sm_reject(struct tsip_dialog_messageContext* fsm
     setTransition(fsm, NULL);
 }
 
-void tsip_dialog_messageContext_sm_send(struct tsip_dialog_messageContext* fsm, const tsip_message_t* msg)
+void tsip_dialog_messageContext_sm_sendMESSAGE(struct tsip_dialog_messageContext* fsm, const tsip_message_t* msg)
 {
     const struct tsip_dialog_messageState* state = getState(fsm);
 
     assert(state != NULL);
-    setTransition(fsm, "sm_send");
-    state->sm_send(fsm, msg);
+    setTransition(fsm, "sm_sendMESSAGE");
+    state->sm_sendMESSAGE(fsm, msg);
     setTransition(fsm, NULL);
 }
 

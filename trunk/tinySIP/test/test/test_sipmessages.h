@@ -73,7 +73,8 @@
 
 #define SIP_MESSAGE \
 	"MESSAGE sip:mamadou@micromethod.com SIP/2.0\r\n" \
-	"Via: SIP/2.0/UDP 192.168.0.11:64163;rport;branch=z9hG4bK1262758946486\r\n" \
+	"Via: SIP/2.0/UDP 192.168.0.11:64163;rport=4;branch=z9hG4bK1262758946486\r\n" \
+	"Via: SIP/2.0/UDP 192.168.0.11:59265;rport=59265;branch=z9hG4bK1263064096664\r\n" \
 	"Route: <sip:192.168.0.15:5060;lr=true;transport=udp\r\n" \
 	"From: <sip:bob@micromethod.com>;tag=mercuro\r\n" \
 	"To: <sip:mamadou@micromethod.com>\r\n" \

@@ -195,7 +195,7 @@ void *run(void* self)
 		tsk_object_unref(curr);
 	}
 	
-	TSK_RUNNABLE_RUN_END(self);
+	TSK_RUNNABLE_RUN_END(transport);
 
 	return 0;
 }

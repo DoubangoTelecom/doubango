@@ -32,45 +32,73 @@
 #include "tinysip/transports/tsip_transport_layer.h"
 #include "tinysip/transactions/tsip_transac_layer.h"
 
+#include "tinysip/transactions/tsip_transac_nist.h"
+#include "tinysip/transactions/tsip_transac_nict.h"
+
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
-int tsip_transac_init(tsip_transac_t *transac, const tsip_stack_handle_t * stack, tsip_transac_type_t type, unsigned reliable, int32_t cseq_value, const char* cseq_method, const char* callid)
+int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, unsigned reliable, int32_t cseq_value, const char* cseq_method, const char* callid)
 {
-	if(transac)
+	if(self && !self->initialized)
 	{
-		tsk_safeobj_init(transac);
+		tsk_safeobj_init(self);
 
-		transac->stack = stack;
-		transac->timer_mgr = tsip_stack_get_timer_mgr(stack);
-		transac->type = type;
-		transac->reliable = reliable;
-		transac->cseq_value = cseq_value;
-		transac->cseq_method = tsk_strdup(cseq_method);
-		transac->callid = tsk_strdup(callid);
-		
+		self->stack = stack;
+		self->timer_mgr = tsip_stack_get_timer_mgr(stack);
+		self->type = type;
+		self->reliable = reliable;
+		self->cseq_value = cseq_value;
+		self->cseq_method = tsk_strdup(cseq_method);
+		self->callid = tsk_strdup(callid);
+				
 		return 0;
 	}
 	return -1;
 }
 
-int tsip_transac_deinit(tsip_transac_t *transac)
+int tsip_transac_deinit(tsip_transac_t *self)
 {
-	if(transac)
+	if(self && self->initialized)
 	{
-		transac->stack = 0;
+		self->stack = 0;
 		
-		TSK_FREE(transac->branch);
-		TSK_FREE(transac->cseq_method);
-		TSK_FREE(transac->callid);
+		TSK_FREE(self->branch);
+		TSK_FREE(self->cseq_method);
+		TSK_FREE(self->callid);
 
-		tsk_safeobj_deinit(transac);
+		tsk_safeobj_deinit(self);
+
+		self->initialized = 0;
 
 		return 0;
 	}
 	return -1;
 }
 
+int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request)
+{
+	int ret = -1;
+	if(self)
+	{
+		if(self->type == tsip_nist)
+		{
+			ret = tsip_transac_nist_start(TSIP_TRANSAC_NIST(self), request);
+		}
+		else if(self->type == tsip_ist)
+		{
+		}
+		else if(self->type == tsip_nict)
+		{
+			ret = tsip_transac_nict_start(TSIP_TRANSAC_NICT(self), request);
+		}
+		else if(self->type == tsip_ict)
+		{
+		}
+	}
+
+	return ret;
+}
 
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg)
 {
@@ -89,7 +117,10 @@ int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2)
 {
 	if(t1 && t2)
 	{
-		return (tsk_strcmp(t1->branch, t2->branch) + tsk_strcmp(t1->cseq_method, t2->cseq_method));
+		if(tsk_strequals(t1->branch, t2->branch) && tsk_strequals(t1->cseq_method, t2->cseq_method))
+		{
+			return 0;
+		}
 	}
 	return -1;
 }

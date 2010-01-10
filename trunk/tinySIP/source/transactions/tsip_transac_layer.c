@@ -37,7 +37,7 @@
 #include "tsk_string.h"
 
 
-const tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, int isCT, const tsip_message_t* msg)
+tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BOOLEAN isCT, const tsip_message_t* msg)
 {
 	tsip_transac_t *ret = 0;
 
@@ -104,7 +104,7 @@ int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *
 	return -1;
 }
 
-const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_response_t* response)
+const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_message_t* message)
 {
    /*
    RFC 3261 - 17.1.3 Matching Responses to Client Transactions
@@ -132,7 +132,7 @@ const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t 
 
 	/*	Check first Via/CSeq validity.
 	*/
-	if(!response->firstVia || !response->CSeq)
+	if(!message->firstVia || !message->CSeq)
 	{
 		return 0;
 	}
@@ -142,8 +142,8 @@ const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t 
 	tsk_list_foreach(item, self->transactions)
 	{
 		transac = item->data;
-		if( tsk_strequals(transac->branch, response->firstVia->branch) 
-			&& tsk_strequals(transac->cseq_method, response->CSeq->method)
+		if( tsk_strequals(transac->branch, message->firstVia->branch) 
+			&& tsk_strequals(transac->cseq_method, message->CSeq->method)
 			)
 		{
 			ret = transac;
@@ -156,7 +156,7 @@ const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t 
 	return ret;
 }
 
-const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_request_t* request)
+const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_message_t* message)
 {
 	/*
 	   RFC 3261 - 17.2.3 Matching Requests to Server Transactions
@@ -190,7 +190,7 @@ const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t 
 
 	/*	Check first Via/CSeq validity.
 	*/
-	if(!request->firstVia || !request->CSeq)
+	if(!message->firstVia || !message->CSeq)
 	{
 		return 0;
 	}
@@ -201,16 +201,16 @@ const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t 
 	tsk_list_foreach(item, self->transactions)
 	{
 		transac = item->data;
-		if(tsk_strequals(transac->branch, request->firstVia->branch) 
+		if(tsk_strequals(transac->branch, message->firstVia->branch) 
 			&& (1 == 1) /* FIXME: compare host:ip */
 			)
 		{
-			if(tsk_strequals(transac->cseq_method, TSIP_REQUEST_METHOD(request)))
+			if(tsk_strequals(transac->cseq_method, message->CSeq->method))
 			{
 				ret = transac;
 				break;
 			}
-			else if(tsk_strequals("ACK", TSIP_REQUEST_METHOD(request)) || tsk_strequals("CANCEL", TSIP_REQUEST_METHOD(request)))
+			else if(tsk_strequals("ACK", message->CSeq->method) || tsk_strequals("CANCEL", message->CSeq->method))
 			{
 				ret = transac;
 				break;
@@ -225,7 +225,20 @@ const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t 
 
 
 
-int tsip_transac_layer_handle_msg(const tsip_transac_layer_t *self, int incoming, const tsip_message_t* message)
+/**
+ * @fn	int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, const tsip_message_t* message)
+ *
+ * @brief	Handles SIP/IMS message incoming from the transport layer.
+ *
+ * @author	Mamadou
+ * @date	1/8/2010
+ *
+ * @param [in,out]	self	The transaction layer.
+ * @param [in,out]	message	The SIP/IMS message to handle.
+ *
+ * @return	Zero if a matching transaction have been found and non-zero result code otherwise.
+**/
+int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, const tsip_message_t* message)
 {
 	int ret = -1;
 	const tsip_transac_t *transac = 0;
@@ -234,16 +247,16 @@ int tsip_transac_layer_handle_msg(const tsip_transac_layer_t *self, int incoming
 
 	if(TSIP_MESSAGE_IS_REQUEST(message))
 	{
-		transac = tsip_transac_layer_find_server(self, TSIP_MESSAGE_AS_REQUEST(message));
+		transac = tsip_transac_layer_find_server(self, /*TSIP_MESSAGE_AS_REQUEST*/(message));
 	}
 	else
 	{
-		transac = tsip_transac_layer_find_client(self, TSIP_MESSAGE_AS_RESPONSE(message));
+		transac = tsip_transac_layer_find_client(self, /*TSIP_MESSAGE_AS_RESPONSE*/(message));
 	}
 
 	if(transac)
 	{
-		transac->callback(transac, incoming?tsip_transac_incoming_msg:tsip_transac_outgoing_msg, message);
+		transac->callback(transac, tsip_transac_incoming_msg, message);
 		ret = 0;
 	}
 

@@ -51,6 +51,10 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_VIA_SAFE_FREE(self)													tsk_object_unref(self), self = 0
 
 
+#define TSIP_HEADER_VIA_HAS_RPORT(self)			((self)->rport!=0)
+#define TSIP_HEADER_VIA_HAS_TTL(self)			((self)->ttl!=0)
+#define TSIP_HEADER_VIA_UNRELIABLE_TRANS(self)	(tsk_striequals("UDP", (self)->transport))
+#define TSIP_HEADER_VIA_RELIABLE_TRANS(self)	!(TSIP_HEADER_VIA_UNRELIABLE_TRANS(self))
 #define TSIP_HEADER_VIA_PROTO_NAME_DEFAULT		"SIP"
 #define TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT	"2.0"
 
@@ -94,8 +98,8 @@ typedef struct tsip_header_Via_s
 	char *proto_version;
 	char *transport;
 	
-	uint16_t rport;
-	uint16_t ttl;
+	int32_t rport;
+	int32_t ttl;
 }
 tsip_header_Via_t;
 

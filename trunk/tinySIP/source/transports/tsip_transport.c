@@ -46,12 +46,33 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 	
 	if(!msg->firstVia)
 	{
+		/*	RFC 3261 - 18.1.1 Sending Requests
+			Before a request is sent, the client transport MUST insert a value of
+			the "sent-by" field into the Via header field.  This field contains
+			an IP address or host name, and port.  The usage of an FQDN is
+			RECOMMENDED.  This field is used for sending responses under certain
+			conditions, described below.  If the port is absent, the default
+			value depends on the transport.  It is 5060 for UDP, TCP and SCTP,
+			5061 for TLS.
+		*/
 		msg->firstVia = TSIP_HEADER_VIA_CREATE(TSIP_HEADER_VIA_PROTO_NAME_DEFAULT, TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT,
 			self->via_protocol, ip, port);
 		TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "rport", 0);
 	}
 	
 	tsk_strupdate(&msg->firstVia->branch, branch);
+
+	if(0)
+	{
+		/*	RFC 3261 - 18.1.1 Sending Requests (FIXME)
+			A client that sends a request to a multicast address MUST add the
+			"maddr" parameter to its Via header field value containing the
+			destination multicast address, and for IPv4, SHOULD add the "ttl"
+			parameter with a value of 1.  Usage of IPv6 multicast is not defined
+			in this specification, and will be a subject of future
+			standardization when the need arises.
+		*/
+	}
 
 	/*
 	* comp=sigcomp; sigcomp-id=
@@ -84,7 +105,8 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 
 			TSIP_HEADER_REMOVE_PARAM(msg->Contact, "doubs");
 		}
-	}
+	}	
+	
 
 	/*
 	*	Sigcomp
@@ -94,7 +116,7 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 }
 
 
-size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg)
+size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort)
 {
 	int ret = -1;
 	if(self)
@@ -107,16 +129,66 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 			tsip_transport_addvia(self, branch, msg);
 			tsip_transport_msg_update(self, msg);
 		}
+		else if(TSIP_MESSAGE_IS_RESPONSE(msg))
+		{
+			/*	RFC 3581 - 4.  Server Behavior
+				When a server compliant to this specification (which can be a proxy
+				or UAS) receives a request, it examines the topmost Via header field
+				value.  If this Via header field value contains an "rport" parameter
+				with no value, it MUST set the value of the parameter to the source
+				port of the request.
+			*/
+			if(msg->firstVia->rport == 0)
+			{
+				/* As the response message has been built from the request ...then it's first via is the same as
+					the request's first via.
+				*/
+				msg->firstVia->rport = msg->firstVia->port;
+			}
+		}
 
 		buffer = TSK_BUFFER_CREATE_NULL();
 		if(buffer)
 		{
 			tsip_message_tostring(msg, buffer);
-			
-			if(tnet_transport_send(self->net_transport, self->connectedFD, buffer->data, buffer->size))
+
+			if(buffer->size >1300)
 			{
-				ret = 0;
+				/*	RFC 3261 - 18.1.1 Sending Requests (FIXME)
+					If a request is within 200 bytes of the path MTU, or if it is larger
+					than 1300 bytes and the path MTU is unknown, the request MUST be sent
+					using an RFC 2914 [43] congestion controlled transport protocol, such
+					as TCP. If this causes a change in the transport protocol from the
+					one indicated in the top Via, the value in the top Via MUST be
+					changed.  This prevents fragmentation of messages over UDP and
+					provides congestion control for larger messages.  However,
+					implementations MUST be able to handle messages up to the maximum
+					datagram packet size.  For UDP, this size is 65,535 bytes, including
+					IP and UDP headers.
+				*/
 			}
+			
+			/*if(destIP && destPort)
+			{
+				struct sockaddr_storage to;
+				if(tnet_sockaddr_init(destIP, destPort, tsip_transport_get_socket_type(self), &to))
+				{
+					goto bail;
+				}
+				if(tnet_transport_sendto(self->net_transport, self->connectedFD, &to, buffer->data, buffer->size))
+				{
+					ret = 0;
+				}
+			}
+			else*/
+			{
+				if(tnet_transport_send(self->net_transport, self->connectedFD, buffer->data, buffer->size))
+				{
+					ret = 0;
+				}
+			}
+
+//bail:
 			TSK_BUFFER_SAFE_FREE(buffer);
 		}
 	}
@@ -140,6 +212,7 @@ static void* tsip_transport_create(void * self, va_list * app)
 	tsip_transport_t *transport = self;
 	if(transport)
 	{
+		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t*);
 		const char *host = va_arg(*app, const char*);
 #if defined(__GNUC__)
 		uint16_t port = (uint16_t)va_arg(*app, unsigned);
@@ -149,6 +222,7 @@ static void* tsip_transport_create(void * self, va_list * app)
 		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);
 		const char *description = va_arg(*app, const char*);
 		
+		transport->stack = stack;
 		transport->net_transport = TNET_TRANSPORT_CREATE(host, port, type, description);
 		
 		transport->scheme = TNET_SOCKET_TYPE_IS_TLS(type) ? "sips" : "sip";

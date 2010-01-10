@@ -56,8 +56,8 @@ tsip_dialog_message_t;
 //int tsip_dialog_message_send(tsip_dialog_message_t *self);
 //int tsip_dialog_message_recv(tsip_dialog_message_t *self, const tsip_message_t *message);
 
-void tsip_dialog_message_Started_2_Sending_X_send(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Started_2_Receiving_X_recv(tsip_dialog_message_t *self, const tsip_message_t *message);
+void tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(tsip_dialog_message_t *self, const tsip_message_t *message);
+void tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(tsip_dialog_message_t *self, const tsip_message_t *message);
 void tsip_dialog_message_Sending_2_Sending_X_1xx(tsip_dialog_message_t *self, const tsip_message_t *message);
 void tsip_dialog_message_Sending_2_Terminated_X_2xx(tsip_dialog_message_t *self, const tsip_message_t *message);
 void tsip_dialog_message_Sending_2_Sending_X_401_407_421_494(tsip_dialog_message_t *self, const tsip_message_t *message);

@@ -105,6 +105,14 @@
 		PARSER_SET_INTEGER(hdr_via->rport);
 	}
 
+	action has_rport
+	{
+		if(hdr_via->rport <0)
+		{
+			hdr_via->rport = 0;
+		}
+	}
+
 	action parse_param
 	{
 		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_via));
@@ -125,7 +133,7 @@
 	via_received = "received"i EQUAL ( IPv4address | IPv6address )>tag %parse_received;
 	via_branch = "branch"i EQUAL token >tag %parse_branch;
 	via_compression = "comp"i EQUAL ( "sigcomp"i | other_compression )>tag %parse_comp;
-	response_port = "rport"i ( EQUAL DIGIT+ >tag %parse_rport )?;
+	response_port = "rport"i ( EQUAL DIGIT+ >tag %parse_rport )? %has_rport;
 	via_extension = (generic_param) >tag %parse_param;
 	via_params = (via_ttl | via_maddr | via_received | via_branch | via_compression | response_port)>1 | (via_extension)>0;
 	via_parm = sent_protocol LWS sent_by ( SEMI via_params )*;
@@ -169,11 +177,11 @@ int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
 			Via->comp ? ";comp=" : "",
 			Via->comp ? Via->comp : "",
 
-			Via->rport ? ";rport=" : "",
-			Via->rport ? rport : "",
+			Via->rport>=0 ? (Via->rport>0?";rport=":";rport") : "",
+			Via->rport>0 ? rport : "",
 
-			Via->ttl ? ";ttl=" : "",
-			Via->ttl ? ttl : "",
+			Via->ttl>=0 ? (Via->ttl>0?";rport=":";rport") : "",
+			Via->ttl>0 ? ttl : "",
 
 			Via->received ? ";received=" : "",
 			Via->received ? Via->received : "",
@@ -243,6 +251,9 @@ static void* tsip_header_Via_create(void *self, va_list * app)
 		if(transport) via->transport = tsk_strdup(transport);
 		if(host) via->host = tsk_strdup(host);
 		via->port = port;
+
+		via->rport = -1;
+		via->ttl = -1;
 		
 		TSIP_HEADER(via)->type = tsip_htype_Via;
 		TSIP_HEADER(via)->tostring = tsip_header_Via_tostring;

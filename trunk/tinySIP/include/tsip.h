@@ -35,9 +35,16 @@
 #include "tinysip/tsip_operation.h"
 #include "tinysip/tsip_timers.h"
 
+#include "tnet_socket.h"
+
 #include "tsk_runnable.h"
 
 TSIP_BEGIN_DECLS
+
+#define TSIP_IARI_GSMAIS				"urn%3Aurn-7%3A3gpp-application.ims.iari.gsma-is"
+#define TSIP_IARI_QUOTED_GSMAIS			"\""TSIP_IARI_GSMAIS"\""
+#define TSIP_ICSI_MMTEL_PSVOICE			"urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel"
+#define TSIP_ICSI_QUOTED_MMTEL_PSVOICE	"\""TSIP_ICSI_MMTEL_PSVOICE"\""
 
 typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
@@ -50,17 +57,18 @@ typedef enum tsip_stack_param_type_e
 	/* Identity */
 	pname_display_name,
 	pname_public_identity,
+	pname_preferred_identity,
 	pname_private_identity,
 	pname_password,
 #define TSIP_STACK_SET_DISPLAY_NAME(STR)				pname_display_name, (const char*)STR
 #define TSIP_STACK_SET_PUBLIC_IDENTITY(URI_STR)			pname_public_identity, (const char*)URI_STR
+#define TSIP_STACK_SET_PREFERRED_IDENTITY(URI_STR)		pname_preferred_identity, (const char*)URI_STR
 #define TSIP_STACK_SET_PRIVATE_IDENTITY(STR)			pname_private_identity, (const char*)STR
 #define TSIP_STACK_SET_PASSWORD(STR)					pname_password, (const char*)STR
 
 	/* Network */
 	pname_local_ip,
 	pname_local_port,
-	pname_enable_ipv6,
 	pname_privacy,
 	pname_operator_id,
 	pname_amf,
@@ -68,18 +76,22 @@ typedef enum tsip_stack_param_type_e
 	pname_realm,
 	pname_proxy_cscf,
 	pname_proxy_cscf_port,
-#define TSIP_STACK_SET_LOCAL_IP(STR)					pname_local_ip, (const char*)STR
-#define TSIP_STACK_SET_LOCAL_PORT(UINT16)				pname_local_port, (uint16_t)UINT16
-#define TSIP_STACK_SET_ENABLE_IPV6(INT)					pname_enable_ipv6, (int)INT
-#define TSIP_STACK_SET_PRIVACY(STR)						pname_privacy, (const char*)STR
-#define TSIP_STACK_SET_POPERATOR_ID(OPERATOR_ID)		pname_privacy, (operator_id_t)OPERATOR_ID
-#define TSIP_STACK_SET_AMF(AMF)							pname_amf, (amf_t)AMF
-#define TSIP_STACK_SET_NETINFO(STR)						pname_netinfo, (const char*)STR
-#define TSIP_STACK_SET_REALM(FQDN_STR)					pname_realm, (const char*)FQDN_STR
-#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR)				pname_proxy_cscf, (const char*)FQDN_STR
-#define TSIP_STACK_SET_PROXY_CSCF_PORT(UINT16)			pname_proxy_cscf_port, (uint16_t)UINT16
-
-	/* Services */
+	pname_device_id,
+	pname_mobility,
+	pname_sec_agree_mech,
+#define TSIP_STACK_SET_LOCAL_IP(STR)											pname_local_ip, (const char*)STR
+#define TSIP_STACK_SET_LOCAL_PORT(INT)											pname_local_port, (int)INT
+#define TSIP_STACK_SET_PRIVACY(STR)												pname_privacy, (const char*)STR
+#define TSIP_STACK_SET_POPERATOR_ID(OPERATOR_ID)								pname_privacy, (operator_id_t)OPERATOR_ID
+#define TSIP_STACK_SET_AMF(AMF)													pname_amf, (amf_t)AMF
+#define TSIP_STACK_SET_NETINFO(STR)												pname_netinfo, (const char*)STR
+#define TSIP_STACK_SET_REALM(FQDN_STR)											pname_realm, (const char*)FQDN_STR
+#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, TRANSPORT_STR, USE_IPV6_INT)		pname_proxy_cscf, (const char*)FQDN_STR, (const char*)TRANSPORT_STR, (int)USE_IPV6_INT
+#define TSIP_STACK_SET_PROXY_CSCF_PORT(UINT16)									pname_proxy_cscf_port, (uint16_t)UINT16
+#define TSIP_STACK_SET_DEVICE_ID(UUID_STR)										pname_device_id, (const char*)UUID_STR
+#define TSIP_STACK_SET_MOBILITY(MOB_STR)										pname_mobility, (const char*)MOB_STR
+#define TSIP_STACK_SET_SEC_AGREE_MECH(MECH_STR)									pname_sec_agree_mech, (const char*)MECH_STR
+	/* Features */
 	pname_enable_100rel,
 	pname_enable_gsmais,
 	pname_enable_precond,
@@ -152,22 +164,26 @@ typedef struct tsip_stack_s
 	/* Identity */
 	char* display_name;
 	struct tsip_uri_s *public_identity;
+	struct tsip_uri_s *preferred_identity;
 	char *private_identity;
 	char *password;
 
 	/* Network */
 	char *local_ip;
 	uint16_t local_port;
-	unsigned enable_ipv6:1;
 	char *privacy;
 	operator_id_t operator_id;
 	amf_t amf;
 	char *netinfo;
 	struct tsip_uri_s *realm;
 	char *proxy_cscf;
-	uint16_t proxy_cscf_port;
+	int proxy_cscf_port;
+	tnet_socket_type_t proxy_cscf_type;
+	char* device_id;
+	char* mobility;
+	char* sec_agree_mech;
 
-	/* Services */
+	/* features */
 	unsigned enable_100rel:1;
 	unsigned enable_gsmais:1;
 	unsigned enable_precond:1;

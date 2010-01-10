@@ -18,9 +18,9 @@ struct tsip_transac_nistState
 {
     void(*Entry)(struct tsip_transac_nistContext*);
 
-    void(*sm_recv_request)(struct tsip_transac_nistContext*, const tsip_request_t*);
-    void(*sm_send_1xx)(struct tsip_transac_nistContext*, const tsip_request_t*);
-    void(*sm_send_200_to_699)(struct tsip_transac_nistContext*, const tsip_request_t*);
+    void(*sm_request)(struct tsip_transac_nistContext*, const tsip_request_t*);
+    void(*sm_send_1xx)(struct tsip_transac_nistContext*, const tsip_response_t*);
+    void(*sm_send_200_to_699)(struct tsip_transac_nistContext*, const tsip_response_t*);
     void(*sm_timerJ)(struct tsip_transac_nistContext*);
     void(*sm_transportError)(struct tsip_transac_nistContext*);
 
@@ -43,9 +43,9 @@ struct tsip_transac_nistContext
 
 extern void tsip_transac_nistContext_Init(struct tsip_transac_nistContext*, struct tsip_transac_nist*);
 extern void tsip_transac_nistContext_EnterStartState(struct tsip_transac_nistContext*);
-extern void tsip_transac_nistContext_sm_recv_request(struct tsip_transac_nistContext*, const tsip_request_t*);
-extern void tsip_transac_nistContext_sm_send_1xx(struct tsip_transac_nistContext*, const tsip_request_t*);
-extern void tsip_transac_nistContext_sm_send_200_to_699(struct tsip_transac_nistContext*, const tsip_request_t*);
+extern void tsip_transac_nistContext_sm_request(struct tsip_transac_nistContext*, const tsip_request_t*);
+extern void tsip_transac_nistContext_sm_send_1xx(struct tsip_transac_nistContext*, const tsip_response_t*);
+extern void tsip_transac_nistContext_sm_send_200_to_699(struct tsip_transac_nistContext*, const tsip_response_t*);
 extern void tsip_transac_nistContext_sm_timerJ(struct tsip_transac_nistContext*);
 extern void tsip_transac_nistContext_sm_transportError(struct tsip_transac_nistContext*);
 
