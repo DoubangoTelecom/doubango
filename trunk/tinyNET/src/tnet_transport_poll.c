@@ -53,6 +53,7 @@ typedef struct transport_context_s
 {
 	size_t count;
 	short events;
+	tnet_fd_t pipeW;
 	tnet_pollfd_t ufds[TNET_MAX_FDS];
 	transport_socket_t* sockets[TNET_MAX_FDS];
 }
@@ -101,11 +102,18 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
 
 	context = (transport_context_t*)transport->context;
-	transport_socket_add(fd, context);
+	if(context)
+	{
+		static char c = '\0';
+		transport_socket_add(fd, context);
+	
+		// signal
+		return (write(context->pipeW, &c, 1) > 0);
+	}
 
-	// signal
-
-	return 0;
+	// ...
+	
+	return -1;
 }
 
 tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port)
@@ -311,7 +319,6 @@ int tnet_transport_stop(tnet_transport_t *transport)
 {	
 	int ret;
 	transport_context_t *context;
-	char c = '\0';
 
 	if(!transport)
 	{
@@ -327,8 +334,10 @@ int tnet_transport_stop(tnet_transport_t *transport)
 	
 	if(context)
 	{
-		// signal using pipe[1]
-		write(context->sockets[1]->fd, &c, 1);
+		static char c = '\0';
+		
+		// signal
+		write(context->pipeW, &c, 1);
 	}
 	
 	return tsk_thread_join(transport->mainThreadId);
@@ -367,8 +376,8 @@ void *tnet_transport_mainthread(void *param)
 		TNET_PRINT_LAST_ERROR();
 		goto bail;
 	}
-	transport_socket_add(pipes[0], context);
-	transport_socket_add(pipes[1], context);
+	transport_socket_add(pipes[0], context); // Add pipeR
+	context->pipeW = pipes[1];
 
 	/* Add the current transport socket to the context. */
 	transport_socket_add(transport->master->fd, context);
@@ -410,7 +419,11 @@ void *tnet_transport_mainthread(void *param)
 				
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
 				
-				/* Retrieve the amount of pending data */
+				/* Retrieve the amount of pending data.
+				 * IMPORTANT: If you are using Symbian please update your SDK to the latest build (August 2009) to have 'FIONREAD'.
+				 * This apply whatever you are using the 3rd or 5th edition.
+				 * Download link: http://wiki.forum.nokia.com/index.php/Open_C/C%2B%2B_Release_History
+				 */
 				if(tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0)
 				{
 					TSK_DEBUG_ERROR("IOCTLT FAILED.");
