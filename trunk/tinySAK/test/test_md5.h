@@ -84,7 +84,7 @@ void test_hmac_md5()
 
 	for(i=0; i< sizeof(msgs_hmac_md5)/sizeof(struct hmac_md5_result); i++)
 	{
-		hmac_md5_compute(msgs_hmac_md5[i].msg, strlen(msgs_hmac_md5[i].msg), msgs_hmac_md5[i].key, strlen(msgs_hmac_md5[i].key), &md5result);
+		hmac_md5_compute((const uint8_t*)msgs_hmac_md5[i].msg, strlen(msgs_hmac_md5[i].msg), msgs_hmac_md5[i].key, strlen(msgs_hmac_md5[i].key), &md5result);
 		if(tsk_striequals(msgs_hmac_md5[i].xres, md5result))
 		{
 			TSK_DEBUG_INFO("[HMAC-MD5-%d] ==> OK", i);

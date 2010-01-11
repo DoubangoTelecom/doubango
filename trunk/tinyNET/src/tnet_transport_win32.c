@@ -319,7 +319,7 @@ static void transport_socket_add(tnet_fd_t fd, transport_context_t *context)
 /*== Remove socket ==*/
 static void transport_socket_remove(int index, transport_context_t *context)
 {
-	int i;
+	size_t i;
 
 	if(index < (int)context->count)
 	{

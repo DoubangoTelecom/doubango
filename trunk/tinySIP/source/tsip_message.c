@@ -249,9 +249,9 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	{
 		/*Method SP Request_URI SP SIP_Version CRLF*/
 		/* Method */
-		tsk_buffer_appendEx(output, "%s ", self->line_request.method);
+		tsk_buffer_appendEx(output, "%s ", self->method);
 		/* Request URI */
-		tsip_uri_tostring(self->line_request.uri, 0, 0, output);
+		tsip_uri_tostring(self->uri, 0, 0, output);
 		/* SIP VERSION */
 		tsk_buffer_appendEx(output, " %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT);
 	}
@@ -388,8 +388,8 @@ static void* tsip_message_create(void *self, va_list * app)
 
 		case tsip_request:
 			{
-				message->line_request.method = tsk_strdup(va_arg(*app, const char*));
-				message->line_request.uri = tsk_object_ref((void*)va_arg(*app, const tsip_uri_t*)); 
+				message->method = tsk_strdup(va_arg(*app, const char*));
+				message->uri = tsk_object_ref((void*)va_arg(*app, const tsip_uri_t*)); 
 				break;
 			}
 
@@ -397,11 +397,11 @@ static void* tsip_message_create(void *self, va_list * app)
 			{
 				const tsip_request_t* request = va_arg(*app, const tsip_request_t*);
 #if defined(__GNUC__)
-				message->line_status.status_code = (short)va_arg(*app, int);
+				message->status_code = (short)va_arg(*app, int);
 #else
-				message->line_status.status_code = va_arg(*app, short);
+				message->status_code = va_arg(*app, short);
 #endif
-				message->line_status.reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
+				message->reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
 				
 				/* Copy sockfd */
 				message->sockfd = request->sockfd;
@@ -473,12 +473,12 @@ static void* tsip_message_destroy(void *self)
 	{
 		if(TSIP_MESSAGE_IS_REQUEST(message))
 		{
-			TSK_FREE(message->line_request.method);
-			TSIP_URI_SAFE_FREE(message->line_request.uri);
+			TSK_FREE(message->method);
+			TSIP_URI_SAFE_FREE(message->uri);
 		}
 		else if(TSIP_MESSAGE_IS_RESPONSE(message))
 		{
-			TSK_FREE(message->line_status.reason_phrase);
+			TSK_FREE(message->reason_phrase);
 		}
 
 		TSK_FREE(message->sip_version);

@@ -1,0 +1,74 @@
+/*
+============================================================================
+ Name		: tinyNET.mmp
+ Author	  : Mamadou Diop
+ Copyright   : * Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+ Description : This is the project specification file for tinyNET.
+============================================================================
+*/
+
+TARGET		  tinyNET.dll
+TARGETTYPE	  dll
+UID			 0x1000008d 0xE6E8E096
+
+USERINCLUDE	 	..\..\..\tinySAK\src
+
+SYSTEMINCLUDE   \epoc32\include \epoc32\include\stdapis \epoc32\include\stdapis\sys
+
+
+
+// In order to use .def files to freeze code you must use one or more DEFFILE lines;
+// see the ones commented out below for examples.
+// By default, the build tools look for the WINSCW def file in a BWINS directory
+// (at the same level as the directory containing the mmp file), 
+// the GCC ARM def file in a BMARM directory, and the ARMV5 def file in a EABI directory. 
+// If your .def files are stored in these default locations, you can simply specify the
+// .def filename(s) with no path. If you want to store .def files in non-default 
+// locations, you will need to specify the paths in the DEFFILE statement(s).
+
+//The following commented out code shows how the build system uses the implicit
+// location for defiles. To create the DEF files Choose Project > Freeze Exports from Carbide
+// or run 'abld freeze' from the command-line
+//#if defined (WINS)
+//  DEFFILE ..\bwins\tinyNET.def
+//#elif defined (GCC32)
+//  DEFFILE ..\bmarm\tinyNET.def
+//#else 
+//  DEFFILE ..\eabi\tinyNET.def
+//#endif
+
+nostrictdef
+
+LIBRARY		 euser.lib libc.lib tinySAK.lib
+
+#ifdef ENABLE_ABIV2_MODE
+DEBUGGABLE_UDEBONLY
+#endif
+
+MACRO TINYNET_EXPORTS
+
+EPOCALLOWDLLDATA
+
+SOURCEPATH ..\..\..\tinyNET\src
+SOURCE tnet.c tnet_auth.c tnet_poll.c tnet_socket.c tnet_transport.c tnet_transport_poll.c tnet_transport_win32.c tnet_utils.c
+
+EXPORTUNFROZEN
+
+CAPABILITY WriteDeviceData

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>testSAK</name>
+	<name>tinyNET</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -16,4 +16,11 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 		<nature>com.nokia.carbide.cdt.builder.carbideCPPBuilderNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>src</name>
+			<type>2</type>
+			<location>C:/Projects/Doubango/tinyNET/src</location>
+		</link>
+	</linkedResources>
 </projectDescription>

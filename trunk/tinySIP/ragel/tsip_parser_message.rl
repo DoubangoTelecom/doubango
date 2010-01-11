@@ -61,10 +61,10 @@ static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *m
 		if(message->type == tsip_unknown)
 		{
 			message->type = tsip_request;
-			if(!message->line_request.method)
+			if(!message->method)
 			{
-				message->line_request.method = tsk_calloc(1, len+1);
-				memcpy(message->line_request.method, state->tag_start, len);
+				message->method = tsk_calloc(1, len+1);
+				memcpy(message->method, state->tag_start, len);
 			}
 		}
 		else
@@ -80,9 +80,9 @@ static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *m
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(!message->line_request.uri)
+		if(!message->uri)
 		{
-			message->line_request.uri = tsip_uri_parse(state->tag_start, (size_t)len);
+			message->uri = tsip_uri_parse(state->tag_start, (size_t)len);
 		}
 	}
 
@@ -110,7 +110,7 @@ static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *m
 		if(message->type == tsip_unknown)
 		{
 			message->type = tsip_response;
-			message->line_status.status_code = atoi(state->tag_start);
+			message->status_code = atoi(state->tag_start);
 		}
 		else
 		{
@@ -125,10 +125,10 @@ static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *m
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(!message->line_status.reason_phrase)
+		if(!message->reason_phrase)
 		{
-			message->line_status.reason_phrase = tsk_calloc(1, len+1);
-			memcpy(message->line_status.reason_phrase, state->tag_start, len);
+			message->reason_phrase = tsk_calloc(1, len+1);
+			memcpy(message->reason_phrase, state->tag_start, len);
 		}
 	}
 

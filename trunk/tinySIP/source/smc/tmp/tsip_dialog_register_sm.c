@@ -43,7 +43,7 @@
 #include <assert.h>
 #include "tinysip/dialogs/tsip_dialog_register.h"
 #include "tsk_debug.h"
-#include "tinysip/smc/tsip_dialog_register_sm.h"
+#include "C:\Projects\Doubango\tinySIP\include\tinysip\smc\tsip_dialog_register_sm.h"
 
 #define getOwner(fsm) \
     (fsm)->_owner
@@ -57,6 +57,7 @@
     state##_sm_423, \
     state##_sm_cancel, \
     state##_sm_error, \
+    state##_sm_hangup, \
     state##_sm_refresh, \
     state##_sm_send, \
     state##_sm_transportError, \
@@ -75,7 +76,7 @@ static void tsip_dialog_registerState_sm_1xx(struct tsip_dialog_registerContext 
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_dialog_registerState_sm_2xx(struct tsip_dialog_registerContext *fsm, int registering, const tsip_message_t* msg)
+static void tsip_dialog_registerState_sm_2xx(struct tsip_dialog_registerContext *fsm, int unregistering, const tsip_message_t* msg)
 {
     getState(fsm)->Default(fsm);
 }
@@ -101,6 +102,11 @@ static void tsip_dialog_registerState_sm_cancel(struct tsip_dialog_registerConte
 }
 
 static void tsip_dialog_registerState_sm_error(struct tsip_dialog_registerContext *fsm)
+{
+    getState(fsm)->Default(fsm);
+}
+
+static void tsip_dialog_registerState_sm_hangup(struct tsip_dialog_registerContext *fsm)
 {
     getState(fsm)->Default(fsm);
 }
@@ -137,6 +143,7 @@ static void tsip_dialog_registerState_Default(struct tsip_dialog_registerContext
 #define tsip_dialog_register_Started_sm_423 tsip_dialog_registerState_sm_423
 #define tsip_dialog_register_Started_sm_cancel tsip_dialog_registerState_sm_cancel
 #define tsip_dialog_register_Started_sm_error tsip_dialog_registerState_sm_error
+#define tsip_dialog_register_Started_sm_hangup tsip_dialog_registerState_sm_hangup
 #define tsip_dialog_register_Started_sm_refresh tsip_dialog_registerState_sm_refresh
 #define tsip_dialog_register_Started_sm_send tsip_dialog_registerState_sm_send
 #define tsip_dialog_register_Started_sm_transportError tsip_dialog_registerState_sm_transportError
@@ -151,6 +158,7 @@ static void tsip_dialog_registerState_Default(struct tsip_dialog_registerContext
 #define tsip_dialog_register_Trying_sm_423 tsip_dialog_registerState_sm_423
 #define tsip_dialog_register_Trying_sm_cancel tsip_dialog_registerState_sm_cancel
 #define tsip_dialog_register_Trying_sm_error tsip_dialog_registerState_sm_error
+#define tsip_dialog_register_Trying_sm_hangup tsip_dialog_registerState_sm_hangup
 #define tsip_dialog_register_Trying_sm_refresh tsip_dialog_registerState_sm_refresh
 #define tsip_dialog_register_Trying_sm_send tsip_dialog_registerState_sm_send
 #define tsip_dialog_register_Trying_sm_transportError tsip_dialog_registerState_sm_transportError
@@ -165,6 +173,7 @@ static void tsip_dialog_registerState_Default(struct tsip_dialog_registerContext
 #define tsip_dialog_register_Connected_sm_423 tsip_dialog_registerState_sm_423
 #define tsip_dialog_register_Connected_sm_cancel tsip_dialog_registerState_sm_cancel
 #define tsip_dialog_register_Connected_sm_error tsip_dialog_registerState_sm_error
+#define tsip_dialog_register_Connected_sm_hangup tsip_dialog_registerState_sm_hangup
 #define tsip_dialog_register_Connected_sm_refresh tsip_dialog_registerState_sm_refresh
 #define tsip_dialog_register_Connected_sm_send tsip_dialog_registerState_sm_send
 #define tsip_dialog_register_Connected_sm_transportError tsip_dialog_registerState_sm_transportError
@@ -179,6 +188,7 @@ static void tsip_dialog_registerState_Default(struct tsip_dialog_registerContext
 #define tsip_dialog_register_Terminated_sm_423 tsip_dialog_registerState_sm_423
 #define tsip_dialog_register_Terminated_sm_cancel tsip_dialog_registerState_sm_cancel
 #define tsip_dialog_register_Terminated_sm_error tsip_dialog_registerState_sm_error
+#define tsip_dialog_register_Terminated_sm_hangup tsip_dialog_registerState_sm_hangup
 #define tsip_dialog_register_Terminated_sm_refresh tsip_dialog_registerState_sm_refresh
 #define tsip_dialog_register_Terminated_sm_send tsip_dialog_registerState_sm_send
 #define tsip_dialog_register_Terminated_sm_transportError tsip_dialog_registerState_sm_transportError
@@ -193,10 +203,31 @@ static void tsip_dialog_registerState_Default(struct tsip_dialog_registerContext
 #define tsip_dialog_register_DefaultState_sm_423 tsip_dialog_registerState_sm_423
 #define tsip_dialog_register_DefaultState_sm_cancel tsip_dialog_registerState_sm_cancel
 #define tsip_dialog_register_DefaultState_sm_error tsip_dialog_registerState_sm_error
+#define tsip_dialog_register_DefaultState_sm_hangup tsip_dialog_registerState_sm_hangup
 #define tsip_dialog_register_DefaultState_sm_refresh tsip_dialog_registerState_sm_refresh
 #define tsip_dialog_register_DefaultState_sm_send tsip_dialog_registerState_sm_send
 #define tsip_dialog_register_DefaultState_sm_transportError tsip_dialog_registerState_sm_transportError
 #define tsip_dialog_register_DefaultState_sm_unregister tsip_dialog_registerState_sm_unregister
+
+#undef tsip_dialog_register_Started_sm_hangup
+#define tsip_dialog_register_Started_sm_hangup tsip_dialog_register_DefaultState_sm_hangup
+#undef tsip_dialog_register_Trying_sm_hangup
+#define tsip_dialog_register_Trying_sm_hangup tsip_dialog_register_DefaultState_sm_hangup
+#undef tsip_dialog_register_Connected_sm_hangup
+#define tsip_dialog_register_Connected_sm_hangup tsip_dialog_register_DefaultState_sm_hangup
+#undef tsip_dialog_register_Terminated_sm_hangup
+#define tsip_dialog_register_Terminated_sm_hangup tsip_dialog_register_DefaultState_sm_hangup
+#undef tsip_dialog_register_DefaultState_sm_hangup
+static void tsip_dialog_register_DefaultState_sm_hangup(struct tsip_dialog_registerContext *fsm)
+{
+    struct tsip_dialog_register* ctxt = getOwner(fsm);
+
+    EXIT_STATE(getState(fsm));
+    clearState(fsm);
+    tsip_dialog_register_Any_2_Trying_X_hangup(ctxt);
+    setState(fsm, &tsip_dialog_register_Trying);
+    ENTRY_STATE(getState(fsm));
+}
 
 #undef tsip_dialog_register_Started_sm_transportError
 #define tsip_dialog_register_Started_sm_transportError tsip_dialog_register_DefaultState_sm_transportError
@@ -287,25 +318,25 @@ static void tsip_dialog_register_Trying_sm_1xx(struct tsip_dialog_registerContex
 }
 
 #undef tsip_dialog_register_Trying_sm_2xx
-static void tsip_dialog_register_Trying_sm_2xx(struct tsip_dialog_registerContext *fsm, int registering, const tsip_message_t* msg)
+static void tsip_dialog_register_Trying_sm_2xx(struct tsip_dialog_registerContext *fsm, int unregistering, const tsip_message_t* msg)
 {
     struct tsip_dialog_register* ctxt = getOwner(fsm);
 
-    if (registering) {
+    if (unregistering) {
         EXIT_STATE(getState(fsm));
         clearState(fsm);
         tsip_dialog_register_Trying_2_Connected_X_2xx(ctxt, msg);
-        setState(fsm, &tsip_dialog_register_Connected);
+        setState(fsm, &tsip_dialog_register_Terminated);
         ENTRY_STATE(getState(fsm));
     }
-    else if (!registering) {
+    else if (!unregistering) {
         EXIT_STATE(getState(fsm));
         clearState(fsm);
         tsip_dialog_register_Trying_2_Terminated_X_2xx(ctxt, msg);
-        setState(fsm, &tsip_dialog_register_Terminated);
+        setState(fsm, &tsip_dialog_register_Connected);
         ENTRY_STATE(getState(fsm));
     }    else {
-        tsip_dialog_register_DefaultState_sm_2xx(fsm, registering, msg);
+        tsip_dialog_register_DefaultState_sm_2xx(fsm, unregistering, msg);
     }
 }
 
@@ -426,13 +457,13 @@ void tsip_dialog_registerContext_sm_1xx(struct tsip_dialog_registerContext* fsm,
     setTransition(fsm, NULL);
 }
 
-void tsip_dialog_registerContext_sm_2xx(struct tsip_dialog_registerContext* fsm, int registering, const tsip_message_t* msg)
+void tsip_dialog_registerContext_sm_2xx(struct tsip_dialog_registerContext* fsm, int unregistering, const tsip_message_t* msg)
 {
     const struct tsip_dialog_registerState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_2xx");
-    state->sm_2xx(fsm, registering, msg);
+    state->sm_2xx(fsm, unregistering, msg);
     setTransition(fsm, NULL);
 }
 
@@ -483,6 +514,16 @@ void tsip_dialog_registerContext_sm_error(struct tsip_dialog_registerContext* fs
     assert(state != NULL);
     setTransition(fsm, "sm_error");
     state->sm_error(fsm);
+    setTransition(fsm, NULL);
+}
+
+void tsip_dialog_registerContext_sm_hangup(struct tsip_dialog_registerContext* fsm)
+{
+    const struct tsip_dialog_registerState* state = getState(fsm);
+
+    assert(state != NULL);
+    setTransition(fsm, "sm_hangup");
+    state->sm_hangup(fsm);
     setTransition(fsm, NULL);
 }
 

@@ -91,7 +91,7 @@
 #	define TNET_USE_POLL	1
 #endif
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) /*|| defined(__SYMBIAN32__)*/
 #	define TNET_HAVE_SS_LEN		1
 #else
 #	define TNET_HAVE_SS_LEN		0
