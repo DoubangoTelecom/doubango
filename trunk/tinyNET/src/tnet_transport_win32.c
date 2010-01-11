@@ -20,8 +20,8 @@
 *
 */
 
-/**@file tnet_transport_32.c
- * @brief Network transport layer for WIN32 and WINCE systems.
+/**@file tnet_transport_win32.c
+ * @brief Network transport layer for WIN32(XP/Vista/7) and WINCE(5.0 or higher) systems.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -132,9 +132,15 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
 
 	/* Signal */
-	WSASetEvent(context->events[0]);
+	if(context)
+	{
+		WSASetEvent(context->events[0]);
+		return 0;
+	}
 
-	return 0;
+	// ...
+	
+	return -1;
 }
 
 /*

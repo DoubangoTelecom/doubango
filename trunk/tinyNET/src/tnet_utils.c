@@ -136,11 +136,7 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 			return -1;
 		}
 		
-#if /*defined(__SYMBIAN32__)*/0 /* FIXME */
-		if(1)
-#else
-		if(ss.ss_family == AF_INET)
-#endif
+		if(((struct sockaddr *)&ss)->sa_family == AF_INET)
 		{
 			struct sockaddr_in *sin = ((struct sockaddr_in*)&ss);
 			if(port)
@@ -155,11 +151,7 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 				}
 			}
 		}
-#if /*defined(__SYMBIAN32__)*/0 /* FIXME */
-		else if(2)
-#else
-		else if(ss.ss_family == AF_INET6)
-#endif
+		else if(((struct sockaddr *)&ss)->sa_family == AF_INET6)
 		{
 			struct sockaddr_in6 *sin6 = ((struct sockaddr_in6*)&ss);
 			if(port)

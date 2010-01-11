@@ -49,7 +49,7 @@
 #	define TIMED_OUT	ETIMEDOUT
 #endif
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) || defined (__SYMBIAN32__)
 #	include <errno.h>
 #endif
 

@@ -21,7 +21,7 @@
 */
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
-#define REMOTE_IP "2a01:e35:8b32:7050:6122:2706:2124:32cb"
+#define REMOTE_IP "192.168.16.104"
 
 #define SIP_MESSAGE \
 	"REGISTER sip:micromethod.com SIP/2.0\r\n" \
@@ -159,7 +159,7 @@ void test_transport()
 
 
 #if TEST_UDP
-	tnet_transport_handle_t *udp = TNET_TRANSPORT_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6/*get_family*/, "UDP/IPV4 TRANSPORT");
+	tnet_transport_handle_t *udp = TNET_TRANSPORT_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
 	test_transport_udp_ipv4(udp);
 #endif
 
