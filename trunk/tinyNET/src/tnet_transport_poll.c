@@ -38,8 +38,6 @@
 
 #include "tnet_poll.h"
 
-#include <unistd.h>
-
 #define TNET_MAX_FDS		64
 
 /*== Socket description ==*/

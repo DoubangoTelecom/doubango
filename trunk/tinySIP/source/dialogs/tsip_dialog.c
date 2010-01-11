@@ -223,7 +223,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 
 	/* Update CSeq */
-	if(!tsk_striequals(request->line_request.method, "ACK") && !tsk_striequals(request->line_request.method, "CANCEL"))
+	if(!tsk_striequals(request->method, "ACK") && !tsk_striequals(request->method, "CANCEL"))
 	{
 		request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
 	}
@@ -399,7 +399,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 {
 	if(self && TSIP_MESSAGE_IS_RESPONSE(response) && response->To)
 	{
-		short code = response->line_status.status_code;
+		short code = response->status_code;
 		const char *tag = response->To->tag;
 		int isRegister = response->CSeq ? tsk_striequals(response->CSeq->method, "REGISTER") : 0;
 

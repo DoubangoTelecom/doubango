@@ -298,22 +298,22 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 	{
 		tsk_istr_t port;
 
-		if(request->line_request.uri->port) tsk_itoa(request->line_request.uri->port, &port);
+		if(request->uri->port) tsk_itoa(request->uri->port, &port);
 		tsk_sprintf(&uristring, "%s%s%s%s%s%s%s%s%s", 
 
-		request->line_request.uri->scheme ? request->line_request.uri->scheme : "",
-		request->line_request.uri->scheme ? ":" : "",
+		request->uri->scheme ? request->uri->scheme : "",
+		request->uri->scheme ? ":" : "",
 
-		request->line_request.uri->user_name ? request->line_request.uri->user_name : "",
+		request->uri->user_name ? request->uri->user_name : "",
 
-		request->line_request.uri->password ? ":" : "",
-		request->line_request.uri->password ? request->line_request.uri->password : "",
+		request->uri->password ? ":" : "",
+		request->uri->password ? request->uri->password : "",
 
-		request->line_request.uri->host ? (request->line_request.uri->user_name ? "@" : "") : "",
-		request->line_request.uri->host ? request->line_request.uri->host : "",
+		request->uri->host ? (request->uri->user_name ? "@" : "") : "",
+		request->uri->host ? request->uri->host : "",
 
-		request->line_request.uri->port ? ":" : "",
-		request->line_request.uri->port ? port : ""
+		request->uri->port ? ":" : "",
+		request->uri->port ? port : ""
 		);
 	}
 
@@ -321,7 +321,7 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 	THTTP_NCOUNT_2_STRING(self->nc, nc);
 
 	// FIXME: entity_body ==> request-content
-	if(tsip_challenge_get_response(self, request->line_request.method, uristring, 0/*FIXME*/, &response))
+	if(tsip_challenge_get_response(self, request->method, uristring, 0/*FIXME*/, &response))
 	{
 		goto bail;
 	}

@@ -21,7 +21,8 @@
 */
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
-#define REMOTE_IPV4 "192.168.0.15"
+#define REMOTE_IP "2a01:e35:8b32:7050:6122:2706:2124:32cb"
+
 #define SIP_MESSAGE \
 	"REGISTER sip:micromethod.com SIP/2.0\r\n" \
 	"Via: SIP/2.0/%s %s:%d;rport;branch=z9hG4bK1245420841406%d\r\n" \
@@ -68,7 +69,7 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 	//tsk_thread_sleep(500);
 
 	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == TNET_INVALID_FD)
+	if((fd = tnet_transport_connectto(transport, REMOTE_IP, 5060)) == TNET_INVALID_FD)
 	{
 		TSK_DEBUG_ERROR("Failed to connect TCP/IPv4 transport.");
 		return;
@@ -120,7 +121,7 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	}
 
 	/* Connect to our SIP REGISTRAR */
-	if((fd = tnet_transport_connectto(transport, REMOTE_IPV4, 5060)) == TNET_INVALID_FD)
+	if((fd = tnet_transport_connectto(transport, REMOTE_IP, 5060)) == TNET_INVALID_FD)
 	{
 		TSK_DEBUG_ERROR("Failed to connect UDP/IPv4 transport.");
 		//tnet_transport_shutdown(transport);
@@ -156,8 +157,9 @@ void test_transport()
 #define TEST_TCP 0
 #define TEST_UDP 1
 
+
 #if TEST_UDP
-	tnet_transport_handle_t *udp = TNET_TRANSPORT_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
+	tnet_transport_handle_t *udp = TNET_TRANSPORT_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6/*get_family*/, "UDP/IPV4 TRANSPORT");
 	test_transport_udp_ipv4(udp);
 #endif
 
@@ -176,6 +178,7 @@ void test_transport()
 #if TEST_TCP
 	tnet_transport_shutdown(tcp);
 #endif
+
 }
 
 

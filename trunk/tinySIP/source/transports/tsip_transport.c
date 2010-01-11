@@ -124,7 +124,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 		tsk_buffer_t *buffer = 0;
 
 		/* Add Via */
-		if(TSIP_MESSAGE_IS_REQUEST(msg) && !tsk_striequals(msg->line_request.method, "CANCEL"))
+		if(TSIP_MESSAGE_IS_REQUEST(msg) && !tsk_striequals(msg->method, "CANCEL"))
 		{
 			tsip_transport_addvia(self, branch, msg);
 			tsip_transport_msg_update(self, msg);

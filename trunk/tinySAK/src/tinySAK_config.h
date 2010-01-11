@@ -86,6 +86,11 @@
 #	define HAVE_GETTIMEOFDAY				1
 #endif
 
+#if defined(__SYMBIAN32__)
+#	define USE_GNUC_VA_ARGS		1
+#else
+#	define USE_GNUC_VA_ARGS		0
+#endif
 
 #ifndef TSK_MIN
 #define TSK_MIN(a,b)            (((a) < (b)) ? (a) : (b))

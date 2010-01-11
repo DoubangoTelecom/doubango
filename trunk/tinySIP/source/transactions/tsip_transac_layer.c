@@ -49,7 +49,7 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BO
 		{
 			if(isCT)
 			{
-				if(tsk_striequals(TSIP_MESSAGE_AS_REQUEST(msg)->line_request.method, "INVITE"))
+				if(tsk_striequals(TSIP_MESSAGE_AS_REQUEST(msg)->method, "INVITE"))
 				{
 					// INVITE Client transaction (ICT)
 				}
@@ -64,7 +64,7 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BO
 			}
 			else
 			{
-				if(tsk_striequals(TSIP_MESSAGE_AS_REQUEST(msg)->line_request.method, "INVITE"))
+				if(tsk_striequals(TSIP_MESSAGE_AS_REQUEST(msg)->method, "INVITE"))
 				{
 					// INVITE Server transaction (IST)
 				}

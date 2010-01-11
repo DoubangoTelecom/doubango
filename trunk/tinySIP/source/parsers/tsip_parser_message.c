@@ -211,10 +211,10 @@ tr3:
 		if(message->type == tsip_unknown)
 		{
 			message->type = tsip_request;
-			if(!message->line_request.method)
+			if(!message->method)
 			{
-				message->line_request.method = tsk_calloc(1, len+1);
-				memcpy(message->line_request.method, state->tag_start, len);
+				message->method = tsk_calloc(1, len+1);
+				memcpy(message->method, state->tag_start, len);
 			}
 		}
 		else
@@ -292,9 +292,9 @@ tr10:
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(!message->line_request.uri)
+		if(!message->uri)
 		{
-			message->line_request.uri = tsip_uri_parse(state->tag_start, (size_t)len);
+			message->uri = tsip_uri_parse(state->tag_start, (size_t)len);
 		}
 	}
 	goto st8;
@@ -397,10 +397,10 @@ tr45:
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(!message->line_status.reason_phrase)
+		if(!message->reason_phrase)
 		{
-			message->line_status.reason_phrase = tsk_calloc(1, len+1);
-			memcpy(message->line_status.reason_phrase, state->tag_start, len);
+			message->reason_phrase = tsk_calloc(1, len+1);
+			memcpy(message->reason_phrase, state->tag_start, len);
 		}
 	}
 	goto st16;
@@ -411,10 +411,10 @@ tr53:
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(!message->line_status.reason_phrase)
+		if(!message->reason_phrase)
 		{
-			message->line_status.reason_phrase = tsk_calloc(1, len+1);
-			memcpy(message->line_status.reason_phrase, state->tag_start, len);
+			message->reason_phrase = tsk_calloc(1, len+1);
+			memcpy(message->reason_phrase, state->tag_start, len);
 		}
 	}
 	goto st16;
@@ -708,7 +708,7 @@ tr38:
 		if(message->type == tsip_unknown)
 		{
 			message->type = tsip_response;
-			message->line_status.status_code = atoi(state->tag_start);
+			message->status_code = atoi(state->tag_start);
 		}
 		else
 		{

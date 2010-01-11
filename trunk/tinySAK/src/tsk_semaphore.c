@@ -100,10 +100,7 @@ tsk_semaphore_handle_t* tsk_semaphore_create()
 	{
 		TSK_FREE(nsem->name);
 #else
-	int ret, pshared;
-	
-	pshared = 0;
-	if((ret = sem_init((SEMAPHORE_T)handle, pshared, 0)))
+	if(sem_init((SEMAPHORE_T)handle, 0, 0))
 	{
 #endif
 		TSK_FREE(handle);

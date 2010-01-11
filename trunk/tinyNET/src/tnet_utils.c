@@ -130,54 +130,56 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 		int status;
 		struct sockaddr_storage ss;
 		socklen_t namelen = sizeof(ss);
-		if(status = getsockname(fd, (struct sockaddr*)&ss, &namelen))
+		if((status = getsockname(fd, (struct sockaddr*)&ss, &namelen)))
 		{
 			TSK_DEBUG_ERROR("GETSOCKNAME has failed with status code: %d", status);
 			return -1;
 		}
-		switch(ss.ss_family)
+		
+#if /*defined(__SYMBIAN32__)*/0 /* FIXME */
+		if(1)
+#else
+		if(ss.ss_family == AF_INET)
+#endif
 		{
-		case AF_INET:
+			struct sockaddr_in *sin = ((struct sockaddr_in*)&ss);
+			if(port)
 			{
-				struct sockaddr_in *sin = ((struct sockaddr_in*)&ss);
-				if(port)
-				{
-					*port = ntohs(sin->sin_port);
-				}
-				if(ip)
-				{
-					if(status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))
-					{
-						return status;
-					}
-				}
-				break;
+				*port = ntohs(sin->sin_port);
 			}
-
-		case AF_INET6:
+			if(ip)
 			{
-				struct sockaddr_in6 *sin6 = ((struct sockaddr_in6*)&ss);
-				if(port)
+				if((status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
 				{
-					*port = ntohs(sin6->sin6_port);
+					return status;
 				}
-				if(ip)
-				{
-					if(status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))
-					{
-						return status;
-					}
-				}
-				break;
 			}
-
-		default:
-			{
-				TSK_DEBUG_ERROR("Unsupported address family.");
-				return -1;
-			}
-			
 		}
+#if /*defined(__SYMBIAN32__)*/0 /* FIXME */
+		else if(2)
+#else
+		else if(ss.ss_family == AF_INET6)
+#endif
+		{
+			struct sockaddr_in6 *sin6 = ((struct sockaddr_in6*)&ss);
+			if(port)
+			{
+				*port = ntohs(sin6->sin6_port);
+			}
+			if(ip)
+			{
+				if((status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
+				{
+					return status;
+				}
+			}
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("Unsupported address family.");
+			return -1;
+		}
+		
 		return 0;
 	}
 	TSK_DEBUG_ERROR("Could not use an invalid socket description.");
@@ -212,7 +214,7 @@ int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_
 	hints.ai_flags = AI_PASSIVE; /* Bind to the local machine. */
 
 	/* Performs getaddrinfo */
-	if(status = tnet_getaddrinfo(host, p, &hints, &result))
+	if((status = tnet_getaddrinfo(host, p, &hints, &result)))
 	{
 		TNET_PRINT_LAST_ERROR();
 		goto bail;
@@ -252,7 +254,7 @@ int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_socket_type_t ty
 	int status;
 	struct sockaddr_storage ai_addr;
 
-	if(status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, 0, 0, 0))
+	if((status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, 0, 0, 0)))
 	{
 		return status;
 	}
@@ -269,7 +271,7 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	int ai_family, ai_socktype, ai_protocol;
 	*fd = TNET_INVALID_SOCKET;
 	
-	if(status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, &ai_family, &ai_socktype, &ai_protocol))
+	if((status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, &ai_family, &ai_socktype, &ai_protocol)))
 	{
 		goto bail;
 	}
@@ -281,16 +283,16 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	}
 
 #if TNET_USE_POLL
-	if(status = tnet_sockfd_set_nonblocking(*fd))
+	if((status = tnet_sockfd_set_nonblocking(*fd)))
 	{
 		goto bail;
 	}
 #endif
 	
 #if TNET_HAVE_SS_LEN
-	if(status = bind(*fd, (const struct sockaddr*)&ai_addr, ai_addr.ss_len))
+	if((status = bind(*fd, (const struct sockaddr*)&ai_addr, ai_addr.ss_len)))
 #else
-	if(status = bind(*fd, (const struct sockaddr*)&ai_addr, sizeof(ai_addr)))
+	if((status = bind(*fd, (const struct sockaddr*)&ai_addr, sizeof(ai_addr))))
 #endif
 	{
 		TNET_PRINT_LAST_ERROR();

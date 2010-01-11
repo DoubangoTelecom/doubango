@@ -39,7 +39,7 @@
 
 #include <assert.h>
 #include "tinysip/transactions/tsip_transac_nict.h"
-#include "tinysip/smc/tsip_transac_nict_sm.h"
+#include "C:\Projects\Doubango\tinySIP\include\tinysip\smc\tsip_transac_nict_sm.h"
 
 #define getOwner(fsm) \
     (fsm)->_owner
@@ -77,17 +77,17 @@ static void tsip_transac_nictState_sm_send(struct tsip_transac_nictContext *fsm)
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_transac_nictState_sm_timerE(struct tsip_transac_nictContext *fsm, tsk_timer_id_t timer_id)
+static void tsip_transac_nictState_sm_timerE(struct tsip_transac_nictContext *fsm)
 {
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_transac_nictState_sm_timerF(struct tsip_transac_nictContext *fsm, tsk_timer_id_t timer_id)
+static void tsip_transac_nictState_sm_timerF(struct tsip_transac_nictContext *fsm)
 {
     getState(fsm)->Default(fsm);
 }
 
-static void tsip_transac_nictState_sm_timerK(struct tsip_transac_nictContext *fsm, tsk_timer_id_t timer_id)
+static void tsip_transac_nictState_sm_timerK(struct tsip_transac_nictContext *fsm)
 {
     getState(fsm)->Default(fsm);
 }
@@ -237,7 +237,7 @@ static void tsip_transac_nict_Trying_sm_200_to_699(struct tsip_transac_nictConte
 }
 
 #undef tsip_transac_nict_Trying_sm_timerE
-static void tsip_transac_nict_Trying_sm_timerE(struct tsip_transac_nictContext *fsm, tsk_timer_id_t timer_id)
+static void tsip_transac_nict_Trying_sm_timerE(struct tsip_transac_nictContext *fsm)
 {
     struct tsip_transac_nict* ctxt = getOwner(fsm);
     const struct tsip_transac_nictState* EndStateName = getState(fsm);
@@ -248,7 +248,7 @@ static void tsip_transac_nict_Trying_sm_timerE(struct tsip_transac_nictContext *
 }
 
 #undef tsip_transac_nict_Trying_sm_timerF
-static void tsip_transac_nict_Trying_sm_timerF(struct tsip_transac_nictContext *fsm, tsk_timer_id_t timer_id)
+static void tsip_transac_nict_Trying_sm_timerF(struct tsip_transac_nictContext *fsm)
 {
     struct tsip_transac_nict* ctxt = getOwner(fsm);
 
@@ -297,7 +297,7 @@ static void tsip_transac_nict_Proceeding_sm_200_to_699(struct tsip_transac_nictC
 }
 
 #undef tsip_transac_nict_Proceeding_sm_timerE
-static void tsip_transac_nict_Proceeding_sm_timerE(struct tsip_transac_nictContext *fsm, tsk_timer_id_t timer_id)
+static void tsip_transac_nict_Proceeding_sm_timerE(struct tsip_transac_nictContext *fsm)
 {
     struct tsip_transac_nict* ctxt = getOwner(fsm);
     const struct tsip_transac_nictState* EndStateName = getState(fsm);
@@ -308,7 +308,7 @@ static void tsip_transac_nict_Proceeding_sm_timerE(struct tsip_transac_nictConte
 }
 
 #undef tsip_transac_nict_Proceeding_sm_timerF
-static void tsip_transac_nict_Proceeding_sm_timerF(struct tsip_transac_nictContext *fsm, tsk_timer_id_t timer_id)
+static void tsip_transac_nict_Proceeding_sm_timerF(struct tsip_transac_nictContext *fsm)
 {
     struct tsip_transac_nict* ctxt = getOwner(fsm);
 
@@ -334,7 +334,7 @@ static void tsip_transac_nict_Proceeding_sm_transportError(struct tsip_transac_n
 const struct tsip_transac_nictState tsip_transac_nict_Proceeding = { POPULATE_STATE(tsip_transac_nict_Proceeding), "tsip_transac_nict_Proceeding", 2 };
 
 #undef tsip_transac_nict_Completed_sm_timerK
-static void tsip_transac_nict_Completed_sm_timerK(struct tsip_transac_nictContext *fsm, tsk_timer_id_t timer_id)
+static void tsip_transac_nict_Completed_sm_timerK(struct tsip_transac_nictContext *fsm)
 {
     struct tsip_transac_nict* ctxt = getOwner(fsm);
 
@@ -398,33 +398,33 @@ void tsip_transac_nictContext_sm_send(struct tsip_transac_nictContext* fsm)
     setTransition(fsm, NULL);
 }
 
-void tsip_transac_nictContext_sm_timerE(struct tsip_transac_nictContext* fsm, tsk_timer_id_t timer_id)
+void tsip_transac_nictContext_sm_timerE(struct tsip_transac_nictContext* fsm)
 {
     const struct tsip_transac_nictState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_timerE");
-    state->sm_timerE(fsm, timer_id);
+    state->sm_timerE(fsm);
     setTransition(fsm, NULL);
 }
 
-void tsip_transac_nictContext_sm_timerF(struct tsip_transac_nictContext* fsm, tsk_timer_id_t timer_id)
+void tsip_transac_nictContext_sm_timerF(struct tsip_transac_nictContext* fsm)
 {
     const struct tsip_transac_nictState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_timerF");
-    state->sm_timerF(fsm, timer_id);
+    state->sm_timerF(fsm);
     setTransition(fsm, NULL);
 }
 
-void tsip_transac_nictContext_sm_timerK(struct tsip_transac_nictContext* fsm, tsk_timer_id_t timer_id)
+void tsip_transac_nictContext_sm_timerK(struct tsip_transac_nictContext* fsm)
 {
     const struct tsip_transac_nictState* state = getState(fsm);
 
     assert(state != NULL);
     setTransition(fsm, "sm_timerK");
-    state->sm_timerK(fsm, timer_id);
+    state->sm_timerK(fsm);
     setTransition(fsm, NULL);
 }
 
