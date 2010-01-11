@@ -50,6 +50,10 @@
 #	endif /* TNET_HAVE_POLL */
 #endif
 
+#if defined(TNET_HAVE_SCTP)
+#include <netinet/sctp.h>
+#endif
+
 #include "tsk_errno.h"
 
 TNET_BEGIN_DECLS

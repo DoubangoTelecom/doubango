@@ -168,22 +168,28 @@ typedef struct tsip_message_s
 	char *sip_version; /**< The SIP version. Only 'SIP/2.0' is supported. */
 	tsip_message_type_t type; /**< The type of this SIP message. */
 
+#if !defined(__C99__) /* C99 does not allow unnamed structs/unions */
 	union
 	{
 		struct
 		{
+#endif
 			char *method; /**< SIP method name. e.g REGISTER, ACK or INVITE.*/
 			tsip_uri_t *uri;	/**< The Request-URI is a SIP or SIPS URI as described in Section 19.1 or a general URI (RFC 2396 [5]).  It indicates
 				   the user or service to which this request is being addressed. The Request-URI MUST NOT contain unescaped spaces or control
 				   characters and MUST NOT be enclosed in "<>". */
+#if !defined(__C99__)
 		};
 		struct
 		{
+#endif
 			short status_code; /**< 3-digit integer result code that indicates the outcome of an attempt to understand and satisfy a request. */
 			char *reason_phrase; /**< Textual description related to the status code. */
+#if !defined(__C99__)
 		};
 	};
 	
+#endif
 	/*== MOST COMMON HEADERS. */
 	tsip_header_Via_t *firstVia; /**< First Via header. */
 	tsip_header_From_t *From;

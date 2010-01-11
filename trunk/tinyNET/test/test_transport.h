@@ -21,7 +21,7 @@
 */
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
-#define REMOTE_IP "192.168.16.104"
+#define REMOTE_IP /*"2a01:e35:8632:7050:6122:2706:2124:32cb"*/ "192.168.16.104"
 
 #define SIP_MESSAGE \
 	"REGISTER sip:micromethod.com SIP/2.0\r\n" \
@@ -137,6 +137,8 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	/*while(1)*/{
 		char* message = 0;
 		tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
+		//memset(ip, '\0', 46);
+		//memcpy(ip, "fe80::225:4bff:fe8d:84bb", strlen("fe80::225:4bff:fe8d:84bb"));
 		tsk_sprintf(&message, SIP_MESSAGE, "UDP", ip, port, port, ip, port, "udp");
 
 		if(!tnet_transport_send(transport, fd, message, strlen(message)))
