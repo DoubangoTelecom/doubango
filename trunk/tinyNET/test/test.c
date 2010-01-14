@@ -26,18 +26,21 @@
 #include "tnet.h"
 #include "tnet_socket.h"
 #include "tnet_transport.h"
+#include "stun/tnet_stun.h"
 
 #include "test_sockets.h"
 #include "test_transport.h"
 #include "test_auth.h"
+#include "test_stun.h"
 
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_SOCKETS	0
-#define RUN_TEST_TRANSPORT	1
+#define RUN_TEST_TRANSPORT	0
 #define RUN_TEST_AUTH		0
+#define RUN_TEST_STUN		1
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -68,6 +71,9 @@ int main()
 		test_auth();
 #endif
 
+#if RUN_TEST_ALL || RUN_TEST_STUN
+		test_stun();
+#endif
 	}	
 
 	/* Cleanup the network stack */

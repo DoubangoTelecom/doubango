@@ -38,7 +38,7 @@
 TNET_BEGIN_DECLS
 
 /**@def TNET_SOCKET_CREATE
-* Create a socket. You MUST use @ref TNET_SOCKET_SAFE_FREE to safely close and free the socket.
+* Create a non-blocking socket. You MUST use @ref TNET_SOCKET_SAFE_FREE to safely close and free the socket.
 * To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
 * @param host The hostname or IPv4/IPv6 address string. To bind to any local local address set the host value to NULL;
 * @param type The prefered type. See @ref tnet_socket_type_t.
@@ -50,8 +50,9 @@ TNET_BEGIN_DECLS
 * @param self The socket to free.
 * @sa TNET_SOCKET_CREATE.
 */
-#define TNET_SOCKET_CREATE(host, port, type)	tsk_object_new(tnet_socket_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type)
-#define TNET_SOCKET_SAFE_FREE(self)				tsk_object_unref(self), self = 0
+#define TNET_SOCKET_CREATE_EX(host, port, type, nonblocking)	tsk_object_new(tnet_socket_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (int)nonblocking)
+#define TNET_SOCKET_CREATE(host, port, type)					TNET_SOCKET_CREATE_EX(host, port, type, 1)
+#define TNET_SOCKET_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 /**
  * @enum	tnet_socket_type_e
@@ -150,7 +151,7 @@ typedef tnet_socket_t tnet_socket_ipsec_t; /**< IPSec socket. */
 typedef tsk_list_t tnet_sockets_L_t; /**< List of @ref tnet_socket_t elements. */
 
 TINYNET_API int tnet_socket_stream_connectto(tnet_socket_tcp_t *socket, const char* host, tnet_port_t port);
-TINYNET_API int tnet_socket_dgram_sendto(tnet_socket_tcp_t *socket, const struct sockaddr *to, const void* buf, size_t size);
+TINYNET_API int tnet_socket_sendto(tnet_socket_t *socket, const struct sockaddr *to, const void* buf, size_t size);
 
 
 TINYNET_GEXTERN const void *tnet_socket_def_t;
