@@ -104,7 +104,7 @@ bail:
 }
 
 
-int tnet_socket_dgram_sendto(tnet_socket_tcp_t *socket, const struct sockaddr *to, const void* buf, size_t size)
+int tnet_socket_sendto(tnet_socket_t *socket, const struct sockaddr *to, const void* buf, size_t size)
 {
 	if(!TNET_SOCKET_IS_VALID(socket))
 	{
@@ -112,7 +112,11 @@ int tnet_socket_dgram_sendto(tnet_socket_tcp_t *socket, const struct sockaddr *t
 		return -1;
 	}
 
-	return sendto(socket->fd, buf, size, 0, to, TNET_SOCKET_TYPE_IS_IPV6(socket->type) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in));
+#if TNET_HAVE_SS_LEN
+	return sendto(socket->fd, buf, size, 0, to, to->ss_len);
+#else
+	return sendto(socket->fd, buf, size, 0, to, sizeof(*to));
+#endif
 }
 
 
@@ -127,6 +131,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 	if(sock)
 	{
 		int status;
+		int nonblocking;
 		tsk_istr_t port;
 		struct addrinfo *result = 0;
 		struct addrinfo *ptr = 0;
@@ -141,6 +146,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 #endif
 		tsk_itoa(sock->port, &port);
 		sock->type = va_arg(*app, tnet_socket_type_t);
+		nonblocking = va_arg(*app, int);
 
 		/* Get the local host name */
 		if(host != TNET_SOCKET_HOST_ANY && !tsk_strempty(host))
@@ -227,12 +233,13 @@ static void* tnet_socket_create(void * self, va_list * app)
 		}
 
 		/* Sets the socket to nonblocking mode */
-#if TNET_USE_POLL
-		if((status = tnet_sockfd_set_nonblocking(sock->fd)))
+		if(nonblocking)
 		{
-			goto bail;
+			if((status = tnet_sockfd_set_nonblocking(sock->fd)))
+			{
+				goto bail;
+			}
 		}
-#endif
 
 bail:
 		/* Free addrinfo */

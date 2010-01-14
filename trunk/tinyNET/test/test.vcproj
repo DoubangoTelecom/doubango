@@ -376,6 +376,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_stun.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_transport.h"
 				>
 			</File>
