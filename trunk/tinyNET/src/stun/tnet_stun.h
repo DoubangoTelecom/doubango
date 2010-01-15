@@ -32,9 +32,37 @@
 
 #include "../tinyNET_config.h"
 #include "tnet_stun_message.h"
+#include "../tnet_types.h"
+#include "../tnet_socket.h"
+
+#include "tsk_object.h"
 
 TNET_BEGIN_DECLS
 
+#define TNET_STUN_CONTEXT_CREATE(username, password, fd)	tsk_object_new(tnet_stun_context_def_t, (const char*)username, (const char*)password, (tnet_fd_t)fd)
+#define TNET_STUN_CONTEXT_SAFE_FREE(self)					tsk_object_unref(self), self = 0
+
+typedef struct tnet_stun_context_s
+{
+	TSK_DECLARE_OBJECT;
+
+	char* username;
+	char* password;
+
+	uint16_t RTO; /**< Estimate of the round-trip time (RTT) in millisecond */
+	uint16_t Rc; /**< Number of retransmission for UDP retransmission in millisecond. */
+
+
+	tnet_fd_t localFD;
+
+	tnet_ip_t publicIP;
+	tnet_port_t publicPort;
+}
+tnet_stun_context_t;
+
+TINYNET_API int tnet_stun_resolve(const tnet_stun_context_t* context, const char* serverAddress, tnet_port_t serverPort);
+
+TINYNET_GEXTERN const void *tnet_stun_context_def_t;
 
 TNET_END_DECLS
 

@@ -375,6 +375,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyNET\test\test_stun.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyNET\test\test_transport.h"
 				>
 			</File>

@@ -369,6 +369,22 @@
 				RelativePath="..\..\tinyNET\src\tnet_utils.c"
 				>
 			</File>
+			<Filter
+				Name="stun"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\stun\tnet_stun.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\stun\tnet_stun_attribute.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\stun\tnet_stun_message.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -405,6 +421,22 @@
 				RelativePath="..\..\tinyNET\src\tnet_utils.h"
 				>
 			</File>
+			<Filter
+				Name="stun"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\stun\tnet_stun.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\stun\tnet_stun_attribute.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\stun\tnet_stun_message.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

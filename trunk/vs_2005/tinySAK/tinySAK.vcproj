@@ -418,6 +418,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinySAK\src\tsk_ppfcs32.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySAK\src\tsk_runnable.h"
 				>
 			</File>
@@ -521,6 +525,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinySAK\src\tsk_ppfcs16.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySAK\src\tsk_ppfcs32.c"
 				>
 			</File>
 			<File

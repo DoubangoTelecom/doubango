@@ -106,24 +106,18 @@ bail:
 
 int tnet_socket_sendto(tnet_socket_t *socket, const struct sockaddr *to, const void* buf, size_t size)
 {
-	if(!TNET_SOCKET_IS_VALID(socket))
+	if(socket)
 	{
-		TSK_DEBUG_ERROR("Using invalid socket to send data.");
-		return -1;
+		return tnet_sockfd_sendto(socket->fd, to, buf, size);
 	}
-
-#if TNET_HAVE_SS_LEN
-	return sendto(socket->fd, buf, size, 0, to, to->ss_len);
-#else
-	return sendto(socket->fd, buf, size, 0, to, sizeof(*to));
-#endif
+	return -1;
 }
 
 
 
 
 //========================================================
-//	String object definition
+//	SOCKET object definition
 //
 static void* tnet_socket_create(void * self, va_list * app)
 {

@@ -136,14 +136,17 @@ tnet_socket_type_t;
 */
 
 
-#define TNET_DECLARE_SOCKET struct { \
-	TSK_DECLARE_OBJECT; \
-	tnet_socket_type_t type; \
-	tnet_fd_t fd; \
-	tnet_ip_t ip; \
-	uint16_t port; \
+typedef struct tnet_socket_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	tnet_socket_type_t type;
+	tnet_fd_t fd;
+	tnet_ip_t ip;
+	uint16_t port;
 }
-typedef TNET_DECLARE_SOCKET tnet_socket_t; /**< Socket structure definition. */
+tnet_socket_t;
+
 typedef tnet_socket_t tnet_socket_udp_t; /**< UDP socket. */
 typedef tnet_socket_t tnet_socket_tcp_t; /**< TCP socket. */
 typedef tnet_socket_t tnet_socket_tls_t; /**< TLS socket. */
