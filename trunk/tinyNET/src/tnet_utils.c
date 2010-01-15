@@ -297,13 +297,14 @@ bail:
 	return (*fd == TNET_INVALID_SOCKET) ? status : 0;
 }
 
-int tnet_sockfd_set_nonblocking(tnet_fd_t fd)
+
+int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 {
 	if(fd != TNET_INVALID_FD)
 	{
 #if TNET_UNDER_WINDOWS
-	ULONG nonBlocking = 1;
-	if(ioctlsocket(fd, FIONBIO, &nonBlocking))
+	ULONG mode = nonBlocking;
+	if(ioctlsocket(fd, FIONBIO, &mode))
 	//if(WSAIoctl(fd, FIONBIO, &nonblocking, sizeof(nonblocking), NULL, 0, NULL, NULL, NULL) == SOCKET_ERROR)
 	{
 		TNET_PRINT_LAST_ERROR();
@@ -316,7 +317,7 @@ int tnet_sockfd_set_nonblocking(tnet_fd_t fd)
 		TNET_PRINT_LAST_ERROR();
 		return -1;
 	} 
-	if(fcntl(fd, F_SETFL, flags | O_NONBLOCK) < 0) 
+	if(fcntl(fd, F_SETFL, flags | (nonBlocking ? O_NONBLOCK : O_BLOCK)) < 0)
 	{ 
 		TNET_PRINT_LAST_ERROR();
 		return -1;
@@ -328,6 +329,21 @@ int tnet_sockfd_set_nonblocking(tnet_fd_t fd)
 
 	}
 	return 0;
+}
+
+int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size)
+{
+	if(fd == TNET_INVALID_FD)
+	{
+		TSK_DEBUG_ERROR("Using invalid FD to send data.");
+		return -1;
+	}
+
+#if TNET_HAVE_SS_LEN
+	return sendto(fd, buf, size, 0, to, to->ss_len);
+#else
+	return sendto(fd, buf, size, 0, to, sizeof(*to));
+#endif
 }
 
 int tnet_sockfd_close(tnet_fd_t *fd)

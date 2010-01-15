@@ -1,0 +1,203 @@
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+
+/**@file tnet_stun_attribute.h
+ * @brief STUN2(RFC 5389) attribute parser.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#ifndef TNET_STUN_ATTRIBUTE_H
+#define TNET_STUN_ATTRIBUTE_H
+
+#include "../tinyNET_config.h"
+
+#include "tsk_object.h"
+#include "tsk_buffer.h"
+
+TNET_BEGIN_DECLS
+
+/* RFC 5389 - 15.  STUN Attributes */
+#define TNET_STUN_ATTRIBUTE_CREATE()						tsk_object_new(tnet_stun_attribute_def_t)
+#define TNET_STUN_ATTRIBUTE_SAFE_FREE(self)					tsk_object_unref(self), self = 0
+
+/* RFC 5389 - 15.1.  MAPPED-ADDRESS */
+#define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_CREATE()			tsk_object_new(tnet_stun_attribute_mapped_addr_def_t)
+#define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+
+/* RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS */
+#define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_CREATE()			tsk_object_new(tnet_stun_attribute_xmapped_addr_def_t)
+#define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_SAFE_FREE(self)		tsk_object_unref(self), self = 0
+
+/* RFC 5389 - 15.3.  USERNAME */
+#define TNET_STUN_ATTRIBUTE_USERNAME_CREATE()					tsk_object_new(tnet_stun_attribute_username_def_t)
+#define TNET_STUN_ATTRIBUTE_USERNAME_SAFE_FREE(self)			tsk_object_unref(self), self = 0
+
+/**
+ * @enum	tnet_stun_addr_family_e
+ *
+ * @brief	STUN IP family as per RFC 5389 subclause 15.1.
+**/
+typedef enum tnet_stun_addr_family_e
+{
+	tsf_ipv4 = 0x01,
+	tsf_ipv6 = 0x02
+}
+tnet_stun_addr_family_t;
+
+/**
+ * @enum	tnet_stun_attribute_type_e
+ *
+ * @brief	STUN attribute types as per RFC 5389 subclause 18.2. http:
+ * 			//tools.ietf.org/html/rfc5389#page-31. 
+ * @author	Mamadou. 
+ * @date	1/14/2010. 
+**/
+typedef enum tnet_stun_attribute_type_e
+{
+	/* === Comprehension-required range (0x0000-0x7FFF):
+	*/
+	 tsa_reserved = 0x0000,					/**< (Reserved) */
+     tsa_mapped_address = 0x0001,			/**< http://tools.ietf.org/html/rfc5389#page-32 */
+     tsa_response_address = 0x0002,			/**< (Reserved; was RESPONSE-ADDRESS) */
+     tsa_change_address = 0x0003,			/**< (Reserved; was CHANGE-ADDRESS) */
+     tsa_source_address = 0x0004,			/**< (Reserved; was SOURCE-ADDRESS) */
+     tsa_changed_address = 0x0005,			/**< (Reserved; was CHANGED-ADDRESS) */
+     tsa_username = 0x0006,					/**< http://tools.ietf.org/html/rfc5389#page-34 */
+     tsa_password = 0x0007,					/**< (Reserved; was PASSWORD) */
+     tsa_message_integrity = 0x0008,		/**< http://tools.ietf.org/html/rfc5389#page-34 */
+     tsa_error_code = 0x0009,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
+     tsa_unknown_attributes = 0x000A,		/**< http://tools.ietf.org/html/rfc5389#page-38 */
+     tsa_reflected_from = 0x000B,			/**< (Reserved; was REFLECTED-FROM) */
+     tsa_realm = 0x0014,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
+     tsa_nonce = 0x0015,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
+     tsa_xor_mapped_address = 0x0020,		/**< http://tools.ietf.org/html/rfc5389#page-33 */
+
+	 /* === Comprehension-optional range (0x8000-0xFFFF)
+	 */
+     tsa_software = 0x8022,					/**< http://tools.ietf.org/html/rfc5389#page-39 */
+     tsa_alternate_server = 0x8023,			/**< http://tools.ietf.org/html/rfc5389#page-39 */
+     tsa_fingerprint = 0x8028,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
+}
+tnet_stun_attribute_type_t;
+
+
+/** RFC 5389 - 15.  STUN Attributes
+	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|         Type                  |            Length             |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|                         Value (variable)                ....
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+typedef struct tnet_stun_attribute_s
+{
+	TSK_DECLARE_OBJECT;
+
+	tnet_stun_attribute_type_t type;
+	uint16_t length;
+}
+tnet_stun_attribute_t;
+
+typedef tsk_list_t tnet_stun_attributes_L_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_def_t;
+
+#define TNET_STUN_DECLARE_ATTRIBUTE tnet_stun_attribute_t attribute
+
+
+/*	RFC 5389 - 15.1.  MAPPED-ADDRESS
+	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|0 0 0 0 0 0 0 0|    Family     |           Port                |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|                                                               |
+	|                 Address (32 bits or 128 bits)                 |
+	|                                                               |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	*/
+typedef struct tnet_stun_attribute_mapped_addr_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+
+	tnet_stun_addr_family_t family;
+	uint16_t port;
+	uint8_t address[128];
+}
+tnet_stun_attribute_mapped_addr_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_mapped_addr_def_t;
+
+
+/*	RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS
+	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|x x x x x x x x|    Family     |         X-Port                |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|                X-Address (Variable)
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	*/
+typedef struct tnet_stun_attribute_xmapped_addr_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+
+	tnet_stun_addr_family_t family;
+	uint16_t xport;
+	tsk_buffer_t *xaddress;
+}
+tnet_stun_attribute_xmapped_addr_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_xmapped_addr_def_t;
+
+
+/*	RFC 5389 - 15.3.  USERNAME
+*/
+typedef struct tnet_stun_attribute_username_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	
+	tsk_buffer_t* value;
+}
+tnet_stun_attribute_username_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_username_def_t;
+
+
+/*	RFC 5389 - 15.4.  MESSAGE-INTEGRITY
+*/
+typedef struct tnet_stun_attribute_integrity_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	
+	tsk_sha1digest_t sha1digest;
+}
+tnet_stun_attribute_integrity_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_integrity__def_t;
+
+
+
+tnet_stun_attribute_t* tnet_stun_attribute_parse(const void* data, size_t size);
+
+
+TNET_END_DECLS
+
+#endif /* TNET_STUN_ATTRIBUTE_H */

@@ -53,7 +53,12 @@ TINYNET_API int tnet_gethostname(tnet_host_t* result);
 TINYNET_API int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, tnet_socket_type_t type, struct sockaddr_storage *ai_addr, int *ai_family, int *ai_socktype, int *ai_protocol);
 TINYNET_API int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_socket_type_t type, struct sockaddr_storage *addr);
 TINYNET_API int tnet_sockfd_init(const char *host, tnet_port_t port, tnet_socket_type_t type, tnet_fd_t *fd);
-TINYNET_API int tnet_sockfd_set_nonblocking(tnet_fd_t fd);
+
+TINYNET_API int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking);
+#define tnet_sockfd_set_nonblocking(fd)	tnet_sockfd_set_mode(fd, 1)
+#define tnet_sockfd_set_blocking(fd)	tnet_sockfd_set_mode(fd, 0)
+
+TINYNET_API int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size);
 
 TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
@@ -66,7 +71,7 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
 
 #if TSK_UNDER_WINDOWS
-#	define tnet_ioctlt ioctlsocket
+#	define tnet_ioctlt ioctlsocket /* FIXME: use WSAIoctl */
 #else
 #	define tnet_ioctlt ioctl
 #endif

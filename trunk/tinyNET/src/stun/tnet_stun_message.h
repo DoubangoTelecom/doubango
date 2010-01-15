@@ -21,7 +21,7 @@
 */
 
 /**@file tnet_stun_message.h
- * @brief STUN(RFC 5389) message parser.
+ * @brief STUN2 (RFC 5389) message parser.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -31,11 +31,14 @@
 #define TNET_STUN_MESSAGE_H
 
 #include "../tinyNET_config.h"
+#include "tnet_stun_attribute.h"
 
-#include "tsk_md5.h"
 #include "tsk_buffer.h"
 
 TNET_BEGIN_DECLS
+
+#define TNET_STUN_MESSAGE_CREATE()						tsk_object_new(tnet_stun_message_def_t)
+#define TNET_STUN_MESSAGE_SAFE_FREE(self)				tsk_object_unref(self), self = 0
 
 /**
  * @def	TNET_STUN_TCP_UDP_DEFAULT_PORT
@@ -64,8 +67,10 @@ TNET_BEGIN_DECLS
 **/
 #define TNET_STUN_MAGIC_COOKIE		0x2112A442
 
+#define TNET_STUN_HEADER_SIZE		20
+
 /**
- * @def	TNET_IS_STUN(PU8)
+ * @def	TNET_IS_STUN2(PU8)
  *
  * @brief	Check if the pointer to the buffer hold a STUN header by checking that it starts with 0b00 and contain the magic cookie.
  *			As per RFC 5389 subclause 19: Explicitly point out that the most significant 2 bits of STUN are
@@ -77,74 +82,25 @@ TNET_BEGIN_DECLS
  *
  * @param	PU8	The pointer to the buffer holding the STUN raw data.
 **/
-#define TNET_IS_STUN(PU8)	\
-	( (PU8)[0] & 0xc0) == 0x00 ) && \
+#define TNET_IS_STUN2(PU8)	\
+	(((PU8)[0] & 0xc0) == 0x00) && \
 	((*((uint32_t *)(PU8))+1) == htonl(TNET_STUN_MAGIC_COOKIE))
 
 /**
- * @def	TNET_STUN_TRANSAC_ID_LENGTH
+ * @def	TNET_STUN_TRANSACID_SIZE
  *
- * @brief	STUN trasactionn ID length.
+ * @brief	STUN trasactionn ID size (96bits = 12bytes).
  *
  * @remarks	Mamadou, 1/14/2010. 
 **/
-#define TNET_STUN_TRANSAC_ID_LENGTH		16
+#define TNET_STUN_TRANSACID_SIZE		12
 
 /**
- * @typedef	char tnet_stun_transacid_t[TNET_STUN_TRANSAC_ID_LENGTH+1]
+ * @typedef	char tnet_stun_transacid_t[TNET_STUN_TRANSACID_SIZE+1]
  *
  * @brief	Defines an alias representing the stun transaction id type.
 **/
-typedef tsk_md5digest_t tnet_stun_transacid_t;
-typedef tsk_md5string_t tnet_stun_transacid_string_t;
-
-/**
- * @enum	tnet_stun_attributes_type_e
- *
- * @brief	STUN attribute types as per RFC 5389 subclause 18.2. http:
- * 			//tools.ietf.org/html/rfc5389#page-31. 
- * @author	Mamadou. 
- * @date	1/14/2010. 
-**/
-typedef enum tnet_stun_attributes_type_e
-{
-	/* === Comprehension-required range (0x0000-0x7FFF):
-	*/
-	 tsa_reserved = 0x0000,					/**< (Reserved) */
-     tsa_mapped_address = 0x0001,			/**< http://tools.ietf.org/html/rfc5389#page-32 */
-     tsa_response_address = 0x0002,			/**< (Reserved; was RESPONSE-ADDRESS) */
-     tsa_change_address = 0x0003,			/**< (Reserved; was CHANGE-ADDRESS) */
-     tsa_source_address = 0x0004,			/**< (Reserved; was SOURCE-ADDRESS) */
-     tsa_changed_address = 0x0005,			/**< (Reserved; was CHANGED-ADDRESS) */
-     tsa_username = 0x0006,					/**< http://tools.ietf.org/html/rfc5389#page-34 */
-     tsa_password = 0x0007,					/**< (Reserved; was PASSWORD) */
-     tsa_message_integrity = 0x0008,		/**< http://tools.ietf.org/html/rfc5389#page-34 */
-     tsa_error_code = 0x0009,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
-     tsa_unknown_attributes = 0x000A,		/**< http://tools.ietf.org/html/rfc5389#page-38 */
-     tsa_reflected_from = 0x000B,			/**< (Reserved; was REFLECTED-FROM) */
-     tsa_realm = 0x0014,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
-     tsa_nonce = 0x0015,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
-     tsa_xor_mapped_address = 0x0020,		/**< http://tools.ietf.org/html/rfc5389#page-33 */
-
-	 /* === Comprehension-optional range (0x8000-0xFFFF)
-	 */
-     tsa_software = 0x8022,					/**< http://tools.ietf.org/html/rfc5389#page-39 */
-     tsa_alternate_server = 0x8023,			/**< http://tools.ietf.org/html/rfc5389#page-39 */
-     tsa_fingerprint = 0x8028,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
-}
-tnet_stun_attributes_type_t;
-
-/**
- * @enum	tnet_stun_addr_family_e
- *
- * @brief	STUN IP family as per RFC 5389 subclause 15.1.
-**/
-typedef enum tnet_stun_addr_family_e
-{
-	tsf_ipv4 = 0x01,
-	tsf_ipv6 = 0x02
-}
-tnet_stun_addr_family_t;
+typedef uint8_t tnet_stun_transacid_t[TNET_STUN_TRANSACID_SIZE];
 
 /**
  * @enum	tnet_stun_class_type_e
@@ -216,6 +172,8 @@ tnet_stun_message_type_t;
 **/
 typedef struct tnet_stun_message_s
 {
+	TSK_DECLARE_OBJECT;
+
 	/*
 	   0                   1                   2                   3
        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -234,13 +192,20 @@ typedef struct tnet_stun_message_s
 	uint16_t length;
 	uint32_t cookie;
 	tnet_stun_transacid_t transaction_id;
+
+	tnet_stun_attributes_L_t *attributes; /**< List of all attributes associated to this message */
 }
 tnet_stun_message_t;
 
+//TINYNET_API int tnet_stun_message_set_type(tnet_stun_message_t *message, tnet_stun_message_type_t type);
+//TINYNET_API int tnet_stun_message_set_random_transacid(tnet_stun_message_t *message);
 
-TINYNET_API void tnet_stun_random_transacid(tnet_stun_transacid_t transacid);
 TINYNET_API tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *message);
 TINYNET_API tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t size);
+
+
+TINYNET_GEXTERN const void *tnet_stun_message_def_t;
+
 
 TNET_END_DECLS
 
