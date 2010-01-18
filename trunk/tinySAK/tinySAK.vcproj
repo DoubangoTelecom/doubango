@@ -419,6 +419,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_ppfcs32.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_runnable.h"
 				>
 			</File>
@@ -522,6 +526,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_ppfcs16.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_ppfcs32.c"
 				>
 			</File>
 			<File

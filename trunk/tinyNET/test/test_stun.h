@@ -22,9 +22,11 @@
 #ifndef TNET_TEST_STUN_H
 #define TNET_TEST_STUN_H
 
-#define STUN_SERVER_IP			"stun.3cx.com"
-#define STUN_SERVER_PORT		TNET_STUN_TCP_UDP_DEFAULT_PORT
-#define STUN_SERVER_PROTO		tnet_socket_type_udp_ipv4
+//#define STUN_SERVER_IP			"numb.viagenie.ca"
+//#define STUN_SERVER_PORT		TNET_STUN_TCP_UDP_DEFAULT_PORT
+//#define STUN_SERVER_PROTO		tnet_socket_type_udp_ipv4
+
+// http://tools.ietf.org/html/draft-ietf-behave-stun-test-vectors-04
 
 void test_stun_dump_transacid(tnet_stun_transacid_t transcid)
 {
@@ -76,28 +78,28 @@ bail:
 
 void test_stun_context()
 {
-	tnet_socket_t *localSocket = 0;
-	tnet_stun_context_t *context = 0;
-
-	/* Somewhere in Your application ==> Create and bind your local socket
-	*/
-	if(!(localSocket = TNET_SOCKET_CREATE_EX(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO, 0)))
-	{
-		goto bail;
-	}
-	
-	/*	Create your STUN2 context
-	*/
-	if(!(context = TNET_STUN_CONTEXT_CREATE("myusername", "mypassword", localSocket->fd)))
-	{
-		goto bail;
-	}
-	
-	tnet_stun_resolve(context, STUN_SERVER_IP, STUN_SERVER_PORT);
-
-bail:
-	TNET_SOCKET_SAFE_FREE(localSocket);
-	TNET_STUN_CONTEXT_SAFE_FREE(context);
+//	tnet_socket_t *localSocket = 0;
+//	tnet_stun_context_t *context = 0;
+//
+//	/* Somewhere in Your application ==> Create and bind your local socket
+//	*/
+//	if(!(localSocket = TNET_SOCKET_CREATE_EX(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO, 0)))
+//	{
+//		goto bail;
+//	}
+//	
+//	/*	Create your STUN2 context
+//	*/
+//	if(!(context = TNET_STUN_CONTEXT_CREATE("myusername", "mypassword", localSocket->fd)))
+//	{
+//		goto bail;
+//	}
+//	
+//	tnet_stun_resolve(context, STUN_SERVER_IP, STUN_SERVER_PORT, STUN_SERVER_PROTO);
+//
+//bail:
+//	TNET_SOCKET_SAFE_FREE(localSocket);
+//	TNET_STUN_CONTEXT_SAFE_FREE(context);
 }
 
 void test_stun()

@@ -52,6 +52,7 @@ TINYSAK_API int tsk_strnicmp(const char * str1, const char * str2, size_t n);
 TINYSAK_API int tsk_strcmp(const char * str1, const char * str2);
 TINYSAK_API int tsk_strncmp(const char * str1, const char * str2, size_t n);
 TINYSAK_API char* tsk_strdup(const char *s1);
+TINYSAK_API char* tsk_strndup(const char *s1, size_t n);
 TINYSAK_API int tsk_strcontains(const char * str1, const char * str2);
 TINYSAK_API void tsk_strcat(char** destination, const char* source);
 TINYSAK_API int tsk_sprintf(char** str, const char* format, ...);

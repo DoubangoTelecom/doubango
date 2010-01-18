@@ -37,37 +37,19 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_STUN_MESSAGE_CREATE()						tsk_object_new(tnet_stun_message_def_t)
-#define TNET_STUN_MESSAGE_SAFE_FREE(self)				tsk_object_unref(self), self = 0
+#define TNET_STUN_MESSAGE_CREATE(username, password)			tsk_object_new(tnet_stun_message_def_t, (const char*)username, (const char*)password)
+#define TNET_STUN_MESSAGE_CREATE_NULL()							TNET_STUN_MESSAGE_CREATE(0,0)
+#define TNET_STUN_MESSAGE_SAFE_FREE(self)						tsk_object_unref(self), self = 0
 
-/**
- * @def	TNET_STUN_TCP_UDP_DEFAULT_PORT
- *
- * @brief	Default port for both TCP and UDP protos as per RFC 5389 subclause 9.
- *
- * @remarks	Mamadou, 1/14/2010. 
-**/
-#define TNET_STUN_TCP_UDP_DEFAULT_PORT 3478
+#define TNET_STUN_CLASS_REQUEST_MASK		(0x0000)
+#define TNET_STUN_CLASS_INDICATION_MASK		(0x0010)
+#define TNET_STUN_CLASS_SUCCESS_MASK		(0x0100)
+#define TNET_STUN_CLASS_ERROR_MASK			(0x0110)
 
-/**
- * @def	TNET_STUN_TLS_DEFAULT_PORT
- *
- * @brief	Default port for TLS proto as per RFC 5389 subclause 9.
- *
- * @remarks	Mamadou, 1/14/2010. 
-**/
-#define TNET_STUN_TLS_DEFAULT_PORT 5349
-
-/**
- * @def	TNET_STUN_MAGIC_COOKIE
- *
- * @brief	STUN magic cookie value in network byte order as per RFC 5389 subclause 6.
- *
- * @remarks	Mamadou, 1/14/2010. 
-**/
-#define TNET_STUN_MAGIC_COOKIE		0x2112A442
-
-#define TNET_STUN_HEADER_SIZE		20
+#define TNET_STUN_RESPONSE_IS_REQUEST(self)						((self->type & TNET_STUN_CLASS_REQUEST_MASK) == TNET_STUN_CLASS_REQUEST_MASK)
+#define TNET_STUN_RESPONSE_IS_INDICATION(self)					((self->type & TNET_STUN_CLASS_INDICATION_MASK) == TNET_STUN_CLASS_INDICATION_MASK)
+#define TNET_STUN_RESPONSE_IS_SUCCESS(self)						((self->type & TNET_STUN_CLASS_SUCCESS_MASK) == TNET_STUN_CLASS_SUCCESS_MASK)
+#define TNET_STUN_RESPONSE_IS_ERROR(self)						((self->type & TNET_STUN_CLASS_ERROR_MASK) == TNET_STUN_CLASS_ERROR_MASK)
 
 /**
  * @def	TNET_IS_STUN2(PU8)
@@ -109,25 +91,31 @@ typedef uint8_t tnet_stun_transacid_t[TNET_STUN_TRANSACID_SIZE];
 **/
 typedef enum tnet_stun_class_type_e
 {
-	tsc_request = 0x00,				/**< Request class: 0b00 */
-	tsc_indication = 0x01,			/**< Indication class: 0b01 */
-	tsc_success_response = 0x02,	/**< Success response class: 0b10 */
-	tsc_error_response = 0x03,		/**< Error/failure response class: 0b11 */
+	stun_class_request = 0x00,				/**< Request class: 0b00 */
+	stun_class_indication = 0x01,			/**< Indication class: 0b01 */
+	stun_class_success_response = 0x02,	/**< Success response class: 0b10 */
+	stun_class_error_response = 0x03,		/**< Error/failure response class: 0b11 */
 }
 tnet_stun_class_type_t;
 
 /**
  * @enum	tnet_stun_method_type_e
  *
- * @brief	List of STUN methods. RFC 5389 only define one method(Bining).
- *			As per RFC 5389 subclause 3: The method indicates which of the
- *		    various requests or indications this is; this specification defines
- *		    just one method, Binding, but other methods are expected to be
- *		    defined in other documents.
+ * @brief	List of STUN methods. 
+ *			RFC 5389 only define one method(Bining). All other methods have been defined
+ *			by TURN (draft-ietf-behave-turn-16 and draft-ietf-behave-turn-tcp-05).
+ *			
 **/
 typedef enum tnet_stun_method_type_e
 {
-	tsm_binding = 0x01, /**< Binding method: 0b000000000001 */
+	stun_method_binding = 0x0001, /**< RFC 5389 - Binding method: 0b000000000001 */
+	
+	stun_method_allocate = 0x0003,  /**< draft-ietf-behave-turn-16 - Allocate          (only request/response semantics defined) */
+	stun_method_refresh = 0x0004,  /**< draft-ietf-behave-turn-16 - Refresh           (only request/response semantics defined) */
+	stun_method_send = 0x0006,  /**< draft-ietf-behave-turn-16 - Send              (only indication semantics defined) */
+	stun_method_data = 0x0007,  /**< draft-ietf-behave-turn-16 - Data              (only indication semantics defined) */
+	stun_method_createpermission = 0x0008,  /**< draft-ietf-behave-turn-16 - CreatePermission  (only request/response semantics defined */
+	stun_method_channelbind = 0x0009,  /**< draft-ietf-behave-turn-16 - ChannelBind       (only request/response semantics defined) */
 }
 tnet_stun_method_type_t;
 
@@ -154,10 +142,15 @@ typedef enum tnet_stun_message_type_e
        |11|10|9|8|7|1|6|5|4|0|3|2|1|0|
        +--+--+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
-	tsm_binding_request = 0x0001,				/**< 00000[0]000[0]0001 Where Class=[0][0] as per @ref tnet_stun_class_type_t */
-	tsm_binding_indication = 0x0011,			/**< 00000[0]000[1]0001 Where Class=[0][1] as per @ref tnet_stun_class_type_t */
-	tsm_binding_success_response = 0x0101,		/**< 00000[1]000[0]0001 Where Class=[1][0] as per @ref tnet_stun_class_type_t */
-	tsm_binding_error_response = 0x0111,		/**< 00000[1]000[1]0001 Where Class=[1][1] as per @ref tnet_stun_class_type_t */
+	stun_binding_request = (stun_method_binding | TNET_STUN_CLASS_REQUEST_MASK),
+	stun_binding_indication = (stun_method_binding | TNET_STUN_CLASS_INDICATION_MASK),
+	stun_binding_success_response = (stun_method_binding | TNET_STUN_CLASS_SUCCESS_MASK),
+	stun_binding_error_response = (stun_method_binding | TNET_STUN_CLASS_ERROR_MASK),
+
+	stun_allocate_request = (stun_method_allocate | TNET_STUN_CLASS_REQUEST_MASK),
+	stun_allocate_indication = (stun_method_allocate | TNET_STUN_CLASS_INDICATION_MASK),
+	stun_allocate_success_response = (stun_method_allocate | TNET_STUN_CLASS_SUCCESS_MASK),
+	stun_allocate_error_response = (stun_method_allocate | TNET_STUN_CLASS_ERROR_MASK),
 }
 tnet_stun_message_type_t;
 
@@ -187,22 +180,32 @@ typedef struct tnet_stun_message_s
       |                                                               |
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
-
+	
 	tnet_stun_message_type_t type;
 	uint16_t length;
 	uint32_t cookie;
 	tnet_stun_transacid_t transaction_id;
 
+	unsigned fingerprint:1;
+	unsigned integrity:1;
+
+	char* username;
+	char* password;
+	char* realm;
+	char* nonce;
+
 	tnet_stun_attributes_L_t *attributes; /**< List of all attributes associated to this message */
 }
 tnet_stun_message_t;
 
-//TINYNET_API int tnet_stun_message_set_type(tnet_stun_message_t *message, tnet_stun_message_type_t type);
-//TINYNET_API int tnet_stun_message_set_random_transacid(tnet_stun_message_t *message);
-
-TINYNET_API tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *message);
-TINYNET_API tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t size);
-
+tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *message);
+tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t size);
+int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribute_t** attribute);
+const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type);
+short tnet_stun_message_get_errorcode(const tnet_stun_message_t *self);
+const char* tnet_stun_message_get_realm(const tnet_stun_message_t *self);
+const char* tnet_stun_message_get_nonce(const tnet_stun_message_t *self);
+int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self);
 
 TINYNET_GEXTERN const void *tnet_stun_message_def_t;
 
