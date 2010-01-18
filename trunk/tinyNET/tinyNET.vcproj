@@ -347,6 +347,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tnet_nat.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tnet_poll.c"
 				>
 			</File>
@@ -378,7 +382,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\stun\tnet_stun_attribute.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\stun\tnet_stun_message.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="turn"
+				>
+				<File
+					RelativePath=".\src\turn\tnet_turn.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\turn\tnet_turn_attribute.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\turn\tnet_turn_message.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ice"
+				>
+				<File
+					RelativePath=".\src\ice\tnet_ice.c"
 					>
 				</File>
 			</Filter>
@@ -399,7 +431,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tnet_nat.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tnet_poll.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tnet_proto.h"
 				>
 			</File>
 			<File
@@ -426,10 +466,54 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\stun\tnet_stun_attribute.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\stun\tnet_stun_message.h"
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="turn"
+				>
+				<File
+					RelativePath=".\src\turn\tnet_turn.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\turn\tnet_turn_attribute.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\turn\tnet_turn_message.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ice"
+				>
+				<File
+					RelativePath=".\src\ice\tnet_ice.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="smc"
+			>
+			<File
+				RelativePath=".\smc\ice.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\smc\stun.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\smc\turn.sm"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

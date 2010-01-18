@@ -43,6 +43,8 @@ TINYNET_API int tnet_geterrno();
 
 TINYNET_API int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res);
 TINYNET_API void tnet_freeaddrinfo(struct addrinfo *ai);
+TINYNET_API int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result);
+TINYNET_API tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd);
 TINYNET_API int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
 #define tnet_get_ip(fd, ip) tnet_get_ip_n_port(fd, ip, 0)
 #define tnet_get_port(fd, port) tnet_get_ip_n_port(fd, 0, port)

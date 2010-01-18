@@ -22,7 +22,7 @@
 
 /**@file tsk_string.c
  * @brief Useful string functions to manipulate strings.
- * As I'm a lazy man, some definition come from this <ahref="http://www.cplusplus.com">this website</a>
+ * As I'm a lazy man, some comments come from <ahref="http://www.cplusplus.com">this website</a>
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -129,6 +129,32 @@ char* tsk_strdup(const char *s1)
 	}
 	return 0;
 }
+
+/**
+ * @fn	char* tsk_strndup(const char *s1, size_t n)
+ *
+ * @brief	Duplicates the first @a n chars of @a s1.
+ *
+ * @author	Mamadou
+ * @date	1/16/2010
+ *
+ * @param [in,out]	s1	The string to duplicate. 
+ * @param	n			The number of chars to copy to the new string. 
+ *
+ * @return	null A copy of @a s1. 
+**/
+char* tsk_strndup(const char *s1, size_t n)
+{
+	char *ret = 0;
+	size_t len = strlen(s1);
+	size_t nret = (n > len) ? (len) : (n);
+
+	ret = tsk_calloc((nret+1), sizeof(uint8_t));
+	memcpy(ret, s1, nret);
+
+	return ret;
+}
+
 /**@ingroup tsk_string_group
 * Checks if @ref str1 contains an occurrence of @ref str2.
 * @param str1 The master.

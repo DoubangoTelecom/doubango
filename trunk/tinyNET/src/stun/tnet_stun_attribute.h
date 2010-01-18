@@ -32,26 +32,63 @@
 
 #include "../tinyNET_config.h"
 
+#include "../tnet_types.h"
+
 #include "tsk_object.h"
 #include "tsk_buffer.h"
+#include "tsk_sha1.h"
 
 TNET_BEGIN_DECLS
+
+#define TNET_STUN_ATTRIBUTE(self)		((tnet_stun_attribute_t*)(self))
 
 /* RFC 5389 - 15.  STUN Attributes */
 #define TNET_STUN_ATTRIBUTE_CREATE()						tsk_object_new(tnet_stun_attribute_def_t)
 #define TNET_STUN_ATTRIBUTE_SAFE_FREE(self)					tsk_object_unref(self), self = 0
 
 /* RFC 5389 - 15.1.  MAPPED-ADDRESS */
-#define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_CREATE()			tsk_object_new(tnet_stun_attribute_mapped_addr_def_t)
-#define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_SAFE_FREE(self)	tsk_object_unref(self), self = 0
+#define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_CREATE(payload, payload_size)			tsk_object_new(tnet_stun_attribute_mapped_addr_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_SAFE_FREE(self)							tsk_object_unref(self), self = 0
 
 /* RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS */
-#define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_CREATE()			tsk_object_new(tnet_stun_attribute_xmapped_addr_def_t)
-#define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_SAFE_FREE(self)		tsk_object_unref(self), self = 0
+#define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_CREATE(payload, payload_size)			tsk_object_new(tnet_stun_attribute_xmapped_addr_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_SAFE_FREE(self)							tsk_object_unref(self), self = 0
 
 /* RFC 5389 - 15.3.  USERNAME */
-#define TNET_STUN_ATTRIBUTE_USERNAME_CREATE()					tsk_object_new(tnet_stun_attribute_username_def_t)
-#define TNET_STUN_ATTRIBUTE_USERNAME_SAFE_FREE(self)			tsk_object_unref(self), self = 0
+#define TNET_STUN_ATTRIBUTE_USERNAME_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_username_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_STUN_ATTRIBUTE_USERNAME_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+
+/* RFC 5389 - 15.4.  MESSAGE-INTEGRITY */
+#define TNET_STUN_ATTRIBUTE_INTEGRITY_CREATE(sha1digest)							tsk_object_new(tnet_stun_attribute_integrity_def_t, (tsk_sha1digest_t*)sha1digest)
+#define TNET_STUN_ATTRIBUTE_INTEGRITY_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+
+/* RFC 5389 - 15.5.  FINGERPRINT */
+#define TNET_STUN_ATTRIBUTE_FINGERPRINT_CREATE(fingerprint)							tsk_object_new(tnet_stun_attribute_fingerprint_def_t, (uint32_t)fingerprint)
+#define TNET_STUN_ATTRIBUTE_FINGERPRINT_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+
+/*	RFC 5389 - 15.6.  ERROR-CODE  */
+#define TNET_STUN_ATTRIBUTE_ERRORCODE_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_errorcode_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_STUN_ATTRIBUTE_ERRORCODE_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+
+/*	RFC 5389 - 15.7.  REALM */
+#define TNET_STUN_ATTRIBUTE_REALM_CREATE(payload, payload_size)						tsk_object_new(tnet_stun_attribute_realm_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_STUN_ATTRIBUTE_REALM_SAFE_FREE(self)									tsk_object_unref(self), self = 0
+
+/*	RFC 5389 - 15.8.  NONCE */
+#define TNET_STUN_ATTRIBUTE_NONCE_CREATE(payload, payload_size)						tsk_object_new(tnet_stun_attribute_nonce_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_STUN_ATTRIBUTE_NONCE_SAFE_FREE(self)									tsk_object_unref(self), self = 0
+
+/*	RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES */
+#define TNET_STUN_ATTRIBUTE_UNKNOWNS_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_unknowns_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_STUN_ATTRIBUTE_UNKNOWNS_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+
+/*	RFC 5389 - 15.10.  SOFTWARE */
+#define TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(software)								tsk_object_new(tnet_stun_attribute_software_def_t, (const char*)software)
+#define TNET_STUN_ATTRIBUTE_SOFTWARE_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+
+/*	RFC 5389 - 15.11.  ALTERNATE-SERVER */
+#define TNET_STUN_ATTRIBUTE_ALTSERVER_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_altserver_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_STUN_ATTRIBUTE_ALTSERVER_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 /**
  * @enum	tnet_stun_addr_family_e
@@ -60,8 +97,8 @@ TNET_BEGIN_DECLS
 **/
 typedef enum tnet_stun_addr_family_e
 {
-	tsf_ipv4 = 0x01,
-	tsf_ipv6 = 0x02
+	stun_ipv4 = 0x01,
+	stun_ipv6 = 0x02
 }
 tnet_stun_addr_family_t;
 
@@ -75,29 +112,43 @@ tnet_stun_addr_family_t;
 **/
 typedef enum tnet_stun_attribute_type_e
 {
-	/* === Comprehension-required range (0x0000-0x7FFF):
+	/* === RFC 5389 - Comprehension-required range (0x0000-0x7FFF):
 	*/
-	 tsa_reserved = 0x0000,					/**< (Reserved) */
-     tsa_mapped_address = 0x0001,			/**< http://tools.ietf.org/html/rfc5389#page-32 */
-     tsa_response_address = 0x0002,			/**< (Reserved; was RESPONSE-ADDRESS) */
-     tsa_change_address = 0x0003,			/**< (Reserved; was CHANGE-ADDRESS) */
-     tsa_source_address = 0x0004,			/**< (Reserved; was SOURCE-ADDRESS) */
-     tsa_changed_address = 0x0005,			/**< (Reserved; was CHANGED-ADDRESS) */
-     tsa_username = 0x0006,					/**< http://tools.ietf.org/html/rfc5389#page-34 */
-     tsa_password = 0x0007,					/**< (Reserved; was PASSWORD) */
-     tsa_message_integrity = 0x0008,		/**< http://tools.ietf.org/html/rfc5389#page-34 */
-     tsa_error_code = 0x0009,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
-     tsa_unknown_attributes = 0x000A,		/**< http://tools.ietf.org/html/rfc5389#page-38 */
-     tsa_reflected_from = 0x000B,			/**< (Reserved; was REFLECTED-FROM) */
-     tsa_realm = 0x0014,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
-     tsa_nonce = 0x0015,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
-     tsa_xor_mapped_address = 0x0020,		/**< http://tools.ietf.org/html/rfc5389#page-33 */
+	 stun_reserved = 0x0000,				/**< (Reserved) */
+     stun_mapped_address = 0x0001,			/**< http://tools.ietf.org/html/rfc5389#page-32 */
+     stun_response_address = 0x0002,		/**< (Reserved; was RESPONSE-ADDRESS) */
+     stun_change_address = 0x0003,			/**< (Reserved; was CHANGE-ADDRESS) */
+     stun_source_address = 0x0004,			/**< (Reserved; was SOURCE-ADDRESS) */
+     stun_changed_address = 0x0005,			/**< (Reserved; was CHANGED-ADDRESS) */
+     stun_username = 0x0006,				/**< http://tools.ietf.org/html/rfc5389#page-34 */
+     stun_password = 0x0007,				/**< (Reserved; was PASSWORD) */
+     stun_message_integrity = 0x0008,		/**< http://tools.ietf.org/html/rfc5389#page-34 */
+     stun_error_code = 0x0009,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
+     stun_unknown_attributes = 0x000A,		/**< http://tools.ietf.org/html/rfc5389#page-38 */
+     stun_reflected_from = 0x000B,			/**< (Reserved; was REFLECTED-FROM) */
+     stun_realm = 0x0014,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
+     stun_nonce = 0x0015,					/**< http://tools.ietf.org/html/rfc5389#page-38 */
+     stun_xor_mapped_address = 0x0020,		/**< http://tools.ietf.org/html/rfc5389#page-33 */
 
-	 /* === Comprehension-optional range (0x8000-0xFFFF)
+	 /* === RFC 5389 - Comprehension-optional range (0x8000-0xFFFF)
 	 */
-     tsa_software = 0x8022,					/**< http://tools.ietf.org/html/rfc5389#page-39 */
-     tsa_alternate_server = 0x8023,			/**< http://tools.ietf.org/html/rfc5389#page-39 */
-     tsa_fingerprint = 0x8028,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
+     stun_software = 0x8022,				/**< http://tools.ietf.org/html/rfc5389#page-39 */
+     stun_alternate_server = 0x8023,		/**< http://tools.ietf.org/html/rfc5389#page-39 */
+     stun_fingerprint = 0x8028,				/**< http://tools.ietf.org/html/rfc5389#page-36 */
+
+	/* === draft-ietf-behave-turn-16
+	*/
+	stun_channel_number = 0x000C,			/**< draft-ietf-behave-turn-16 -  CHANNEL-NUMBER */
+	stun_lifetime = 0x000D,					/**< draft-ietf-behave-turn-16 -  LIFETIME */
+	stun_reserved2 = 0x0010,				/**< draft-ietf-behave-turn-16 -  Reserved (was BANDWIDTH) */
+	stun_xor_peer_address = 0x0012,			/**< draft-ietf-behave-turn-16 -  XOR-PEER-ADDRESS */
+	stun_data = 0x0013,						/**< draft-ietf-behave-turn-16 -  DATA */
+	stun_xor_relayed_address = 0x0016,		/**< draft-ietf-behave-turn-16 -  XOR-RELAYED-ADDRESS */
+	stun_even_port = 0x0018,				/**< draft-ietf-behave-turn-16 -  EVEN-PORT */
+	stun_requested_transport = 0x0019,		/**< draft-ietf-behave-turn-16 -  REQUESTED-TRANSPORT */
+	stun_dont_fragment = 0x001A,			/**< draft-ietf-behave-turn-16 -  DONT-FRAGMENT */
+	stun_reserved3 = 0x0021,				/**< draft-ietf-behave-turn-16 -  Reserved (was TIMER-VAL) */
+	stun_reservation_token = 0x0022,		/**< draft-ietf-behave-turn-16 -  RESERVATION-TOKEN */
 }
 tnet_stun_attribute_type_t;
 
@@ -143,9 +194,10 @@ typedef struct tnet_stun_attribute_mapped_addr_s
 
 	tnet_stun_addr_family_t family;
 	uint16_t port;
-	uint8_t address[128];
+	uint8_t address[16];
 }
 tnet_stun_attribute_mapped_addr_t;
+
 TINYNET_GEXTERN const void *tnet_stun_attribute_mapped_addr_def_t;
 
 
@@ -164,7 +216,7 @@ typedef struct tnet_stun_attribute_xmapped_addr_s
 
 	tnet_stun_addr_family_t family;
 	uint16_t xport;
-	tsk_buffer_t *xaddress;
+	uint8_t xaddress[16];
 }
 tnet_stun_attribute_xmapped_addr_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_xmapped_addr_def_t;
@@ -176,7 +228,7 @@ typedef struct tnet_stun_attribute_username_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;
 	
-	tsk_buffer_t* value;
+	char* value;
 }
 tnet_stun_attribute_username_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_username_def_t;
@@ -191,12 +243,98 @@ typedef struct tnet_stun_attribute_integrity_s
 	tsk_sha1digest_t sha1digest;
 }
 tnet_stun_attribute_integrity_t;
-TINYNET_GEXTERN const void *tnet_stun_attribute_integrity__def_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_integrity_def_t;
+
+
+/* RFC 5389 - 15.5.  FINGERPRINT */
+typedef struct tnet_stun_attribute_fingerprint_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	
+	uint32_t value;
+}
+tnet_stun_attribute_fingerprint_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_fingerprint_def_t;
+
+/*	RFC 5389 - 15.6.  ERROR-CODE 
+	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|           Reserved, should be 0         |Class|     Number    |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|      Reason Phrase (variable)                                ..
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+typedef struct tnet_stun_attribute_errorcode_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	
+	uint8_t _class;
+	uint8_t number;
+	char* reason_phrase;
+}
+tnet_stun_attribute_errorcode_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_errorcode_def_t;
 
 
 
-tnet_stun_attribute_t* tnet_stun_attribute_parse(const void* data, size_t size);
+/*	RFC 5389 - 15.7.  REALM */
+typedef struct tnet_stun_attribute_realm_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	
+	char* value;
+}
+tnet_stun_attribute_realm_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_realm_def_t;
 
+
+/*	RFC 5389 - 15.8.  NONCE */
+typedef struct tnet_stun_attribute_nonce_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	
+	char* value;
+}
+tnet_stun_attribute_nonce_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_nonce_def_t;
+
+/*	RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES */
+typedef struct tnet_stun_attribute_unknowns_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	
+	tsk_buffer_t *value;
+}
+tnet_stun_attribute_unknowns_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_unknowns_def_t;
+
+/*	RFC 5389 - 15.10.  SOFTWARE */
+typedef struct tnet_stun_attribute_software_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	
+	char *value;
+}
+tnet_stun_attribute_software_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_software_def_t;
+
+/*	RFC 5389 - 15.11.  ALTERNATE-SERVER */
+typedef struct tnet_stun_attribute_altserver_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+
+	tnet_stun_addr_family_t family;
+	uint16_t port;
+	uint8_t server[128];
+}
+tnet_stun_attribute_altserver_t;
+TINYNET_GEXTERN const void *tnet_stun_attribute_altserver_def_t;
+
+
+tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t size);
+int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output);
+void tnet_stun_attribute_pad(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output);
 
 TNET_END_DECLS
 

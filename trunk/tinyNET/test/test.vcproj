@@ -372,6 +372,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_nat.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_sockets.h"
 				>
 			</File>

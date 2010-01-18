@@ -121,6 +121,39 @@ void tnet_freeaddrinfo(struct addrinfo *ai)
 	freeaddrinfo(ai);
 }
 
+int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result)
+{
+	if(fd >0)
+	{
+		socklen_t namelen = sizeof(*result);
+		return getsockname(fd, (struct sockaddr*)result, &namelen);
+	}
+	return -1;
+}
+
+tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd)
+{
+	tnet_socket_type_t type = tnet_socket_type_invalid;
+	
+	/*if(fd >0)
+	{
+		struct sockaddr_storage ss;
+		if(!tnet_get_sockaddr(fd, &ss))
+		{
+			if(((struct sockaddr *)&ss)->sa_family == AF_INET)
+			{
+				TNET_SOCKET_TYPE_AS_IPV4(type);
+			}
+			else if(((struct sockaddr *)&ss)->sa_family == AF_INET6)
+			{
+				TNET_SOCKET_TYPE_AS_IPV6(type);
+			}
+		}
+	}*/
+
+	return type;
+}
+
 int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
 	*port = 0;
@@ -129,10 +162,9 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 	{
 		int status;
 		struct sockaddr_storage ss;
-		socklen_t namelen = sizeof(ss);
-		if((status = getsockname(fd, (struct sockaddr*)&ss, &namelen)))
+		if((status = tnet_get_sockaddr(fd, &ss)))
 		{
-			TSK_DEBUG_ERROR("GETSOCKNAME has failed with status code: %d", status);
+			TSK_DEBUG_ERROR("TNET_GET_SOCKADDR has failed with status code: %d", status);
 			return -1;
 		}
 		
