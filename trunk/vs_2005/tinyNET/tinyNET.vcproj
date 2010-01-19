@@ -346,6 +346,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyNET\src\tnet_nat.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyNET\src\tnet_poll.c"
 				>
 			</File>
@@ -385,6 +389,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="turn"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\turn\tnet_turn.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\turn\tnet_turn_attribute.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\turn\tnet_turn_message.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ice"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\ice\tnet_ice.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -399,6 +427,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyNET\src\tnet_auth.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyNET\src\tnet_nat.h"
 				>
 			</File>
 			<File
@@ -434,6 +466,30 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyNET\src\stun\tnet_stun_message.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="turn"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\turn\tnet_turn.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\turn\tnet_turn_attribute.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\turn\tnet_turn_message.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="ice"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\ice\tnet_ice.h"
 					>
 				</File>
 			</Filter>
