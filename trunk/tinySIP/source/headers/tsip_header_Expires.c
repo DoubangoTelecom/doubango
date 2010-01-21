@@ -278,7 +278,7 @@ case 15:
 /* #line 101 "tsip_parser_header_Expires.rl" */
  )
 	{
-		TSIP_HEADER_EXPIRES_SAFE_FREE(hdr_expires);
+		TSK_OBJECT_SAFE_FREE(hdr_expires);
 	}
 	
 	return hdr_expires;

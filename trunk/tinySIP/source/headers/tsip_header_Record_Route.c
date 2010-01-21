@@ -308,7 +308,7 @@ case 17:
 /* #line 100 "tsip_parser_header_Record_Route.rl" */
  )
 	{
-		TSIP_HEADER_RECORD_ROUTE_SAFE_FREE(hdr_record_route);
+		TSK_OBJECT_SAFE_FREE(hdr_record_route);
 	}
 	
 	return hdr_record_route;
@@ -350,7 +350,7 @@ static void* tsip_header_Record_Route_destroy(void *self)
 	if(Record_Route)
 	{
 		TSK_FREE(Record_Route->value);
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Record_Route));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Record_Route));
 	}
 	else TSK_DEBUG_ERROR("Null Record_Route header.");
 

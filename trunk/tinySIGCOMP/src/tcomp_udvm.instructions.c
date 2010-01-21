@@ -1727,7 +1727,7 @@ int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_iden
 	if(!lpState || !match_count || match_count>1)
 	{
 		tcomp_udvm_createNackInfo3(udvm, (match_count>1) ? NACK_ID_NOT_UNIQUE : NACK_STATE_NOT_FOUND, partial_id);
-		TCOMP_BUFFER_SAFE_FREE(partial_id);
+		TSK_OBJECT_SAFE_FREE(partial_id);
 		return 0;
 	}
 	else if(partial_identifier_length < lpState->minimum_access_length)
@@ -1737,10 +1737,10 @@ int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_iden
 		* the matched state item.
 		*/
 		tcomp_udvm_createNackInfo3(udvm, NACK_STATE_NOT_FOUND, partial_id);
-		TCOMP_BUFFER_SAFE_FREE(partial_id);
+		TSK_OBJECT_SAFE_FREE(partial_id);
 		return 0;
 	}
-	TCOMP_BUFFER_SAFE_FREE(partial_id);
+	TSK_OBJECT_SAFE_FREE(partial_id);
 
 	/*
 	* If any of the operands state_address, state_instruction or

@@ -53,7 +53,6 @@ typedef void (*tcomp_xxx_ackGhost)(tcomp_compressordata_t *data, const tcomp_buf
 //#include "tsk_safeobj.h"
 //
 //#define TCOMP_COMPRESSORDATA_CREATE(isStream)		tsk_object_new(tsk_compressordata_def_t, isStream)
-//#define TCOMP_COMPRESSORDATA_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 //
 //typedef struct tcomp_compressordata_s
 //{

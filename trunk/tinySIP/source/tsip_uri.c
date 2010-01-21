@@ -106,7 +106,7 @@ tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, int with_params, int quote)
 	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
 	tsip_uri_tostring(uri, with_params, quote, output);
 	newuri = tsip_uri_parse(output->data, output->size);
-	TSK_BUFFER_SAFE_FREE(output);
+	TSK_OBJECT_SAFE_FREE(output);
 
 	return newuri;
 }
@@ -151,7 +151,7 @@ static void* tsip_uri_destroy(void *self)
 		TSK_FREE(uri->user_name);
 		TSK_FREE(uri->password);
 		TSK_FREE(uri->display_name);
-		TSK_LIST_SAFE_FREE(uri->params);
+		TSK_OBJECT_SAFE_FREE(uri->params);
 	}
 	else TSK_DEBUG_ERROR("Null SIP/SIPS/TEL URI.");
 

@@ -120,7 +120,7 @@ static void* tsip_operation_destroy(void * self)
 	tsip_operation_t *operation = self;
 	if(operation)
 	{
-		TSK_LIST_SAFE_FREE(operation->params);
+		TSK_OBJECT_SAFE_FREE(operation->params);
 	}
 	return self;
 }

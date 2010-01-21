@@ -41,8 +41,6 @@ TNET_BEGIN_DECLS
 
 #define TNET_STUN_CONTEXT_CREATE(fd, socket_type, server_address, server_port, username, password)	\
 	tsk_object_new(tnet_stun_context_def_t, (tnet_fd_t)fd, (tnet_socket_type_t)socket_type, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
-#define TNET_STUN_CONTEXT_SAFE_FREE(self) \
-	tsk_object_unref(self), self = 0
 
 
 /**
@@ -73,6 +71,13 @@ TNET_BEGIN_DECLS
 **/
 #define TNET_STUN_MAGIC_COOKIE		0x2112A442
 
+/**
+ * @def	TNET_STUN_HEADER_SIZE
+ *
+ * @brief	STUN2 header size as per RFC 5389 subclause 6.
+ *
+ * @remarks	Mamadou, 1/20/2010. 
+**/
 #define TNET_STUN_HEADER_SIZE		20
 
 typedef struct tnet_stun_context_s
@@ -81,6 +86,8 @@ typedef struct tnet_stun_context_s
 
 	char* username;
 	char* password;
+	char* realm;
+	char* nonce;
 
 	char* software;
 
@@ -95,11 +102,9 @@ typedef struct tnet_stun_context_s
 }
 tnet_stun_context_t;
 
-typedef tnet_stun_message_t tnet_stun_response_t;
-
 int tnet_stun_send_reliably(const tnet_stun_message_t* message);
 tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc, const tnet_stun_message_t* message, const struct sockaddr* server);
-TINYNET_API int tnet_stun_bind(const tnet_stun_context_t* context, char** mapped_address, tnet_port_t *mapped_port);
+TINYNET_API int tnet_stun_bind(tnet_stun_context_t* context, char** mapped_address, tnet_port_t *mapped_port);
 int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2);
 
 TINYNET_GEXTERN const void *tnet_stun_context_def_t;

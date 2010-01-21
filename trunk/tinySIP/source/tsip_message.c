@@ -326,12 +326,12 @@ tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_u
 	/* allow */
 	/*allow = tsip_header_Allow_parse(TSIP_HEADER_STR, strlen(TSIP_HEADER_STR));
 	tsip_message_add_header(request, TSIP_HEADER(allow));
-	TSIP_HEADER_ALLOW_SAFE_FREE(allow);*/
+	TSK_OBJECT_SAFE_FREE(allow);*/
 
 	/* max forward */
 	/*maxfor = TSIP_HEADER_MAX_FORWARDS_CREATE(TSIP_HEADER_MAX_FORWARDS_DEFAULT);
 	tsip_message_add_header(request, TSIP_HEADER(maxfor));
-	TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(maxfor);*/
+	TSK_OBJECT_SAFE_FREE(maxfor);*/
 
 	/* User-Agent */
 
@@ -474,7 +474,7 @@ static void* tsip_message_destroy(void *self)
 		if(TSIP_MESSAGE_IS_REQUEST(message))
 		{
 			TSK_FREE(message->method);
-			TSIP_URI_SAFE_FREE(message->uri);
+			TSK_OBJECT_SAFE_FREE(message->uri);
 		}
 		else if(TSIP_MESSAGE_IS_RESPONSE(message))
 		{
@@ -483,19 +483,19 @@ static void* tsip_message_destroy(void *self)
 
 		TSK_FREE(message->sip_version);
 
-		tsk_object_unref(message->Call_ID);
-		tsk_object_unref(message->Contact);
-		tsk_object_unref(message->Content_Length);
-		tsk_object_unref(message->Content_Type);
-		tsk_object_unref(message->CSeq);
-		tsk_object_unref(message->firstVia);
-		tsk_object_unref(message->From);
-		tsk_object_unref(message->Expires);
-		tsk_object_unref(message->To);
+		TSK_OBJECT_SAFE_FREE(message->Call_ID);
+		TSK_OBJECT_SAFE_FREE(message->Contact);
+		TSK_OBJECT_SAFE_FREE(message->Content_Length);
+		TSK_OBJECT_SAFE_FREE(message->Content_Type);
+		TSK_OBJECT_SAFE_FREE(message->CSeq);
+		TSK_OBJECT_SAFE_FREE(message->firstVia);
+		TSK_OBJECT_SAFE_FREE(message->From);
+		TSK_OBJECT_SAFE_FREE(message->Expires);
+		TSK_OBJECT_SAFE_FREE(message->To);
 		
-		TSK_BUFFER_SAFE_FREE(message->Content);
+		TSK_OBJECT_SAFE_FREE(message->Content);
 
-		TSK_LIST_SAFE_FREE(message->headers);
+		TSK_OBJECT_SAFE_FREE(message->headers);
 	}
 	else TSK_DEBUG_ERROR("Null SIP message.");
 

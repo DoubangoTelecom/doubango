@@ -167,7 +167,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		{
 			request->Contact = tsk_object_ref(hdr_contacts->head->data);
 		}
-		TSK_LIST_SAFE_FREE(hdr_contacts);
+		TSK_OBJECT_SAFE_FREE(hdr_contacts);
 		TSK_FREE(contact);
 	}
 
@@ -229,9 +229,9 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 
 
-	TSIP_URI_SAFE_FREE(request_uri);
-	TSIP_URI_SAFE_FREE(from_uri);
-	TSIP_URI_SAFE_FREE(to_uri);
+	TSK_OBJECT_SAFE_FREE(request_uri);
+	TSK_OBJECT_SAFE_FREE(from_uri);
+	TSK_OBJECT_SAFE_FREE(to_uri);
 
 	return request;
 }
@@ -432,7 +432,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			/* Remote target */
 			if(!isRegister && response->Contact && response->Contact)
 			{
-				TSIP_URI_SAFE_FREE(self->uri_remote_target);
+				TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
 				if(response->Contact->uri)
 				{
 					self->uri_remote_target = tsip_uri_clone(response->Contact->uri, 0, 0);
@@ -663,18 +663,18 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 {
 	if(self && self->stack)
 	{
-		TSIP_URI_SAFE_FREE(self->uri_local);
+		TSK_OBJECT_SAFE_FREE(self->uri_local);
 		TSK_FREE(self->tag_local);
-		TSIP_URI_SAFE_FREE(self->uri_remote);
+		TSK_OBJECT_SAFE_FREE(self->uri_remote);
 		TSK_FREE(self->tag_remote);
 
-		TSIP_URI_SAFE_FREE(self->uri_remote_target);
+		TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
 		
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
 
-		TSK_LIST_SAFE_FREE(self->routes);
-		TSK_LIST_SAFE_FREE(self->challenges);
+		TSK_OBJECT_SAFE_FREE(self->routes);
+		TSK_OBJECT_SAFE_FREE(self->challenges);
 		
 		tsk_safeobj_deinit(self);
 

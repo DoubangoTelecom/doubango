@@ -37,7 +37,6 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_DIALOG_MESSAGE_CREATE(stack, operation)		tsk_object_new(tsip_dialog_message_def_t, (const tsip_stack_handle_t *)stack, (const tsip_operation_handle_t*) operation)
-#define TSIP_DIALOG_MESSAGE_SAFE_FREE(self)					tsk_object_unref(self), self = 0
 
 #define TSIP_DIALOG_MESSAGE(self)							((tsip_dialog_message_t*)(self))
 

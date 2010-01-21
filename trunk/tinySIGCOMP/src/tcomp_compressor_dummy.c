@@ -105,7 +105,7 @@ int tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const vo
 	pointer += input_size;
 	*output_size = (pointer);
 
-	TCOMP_BUFFER_SAFE_FREE(output_buffer);
+	TSK_OBJECT_SAFE_FREE(output_buffer);
 
 	return 1;
 }

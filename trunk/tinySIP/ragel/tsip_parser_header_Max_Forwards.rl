@@ -97,7 +97,7 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, siz
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(hdr_maxf);
+		TSK_OBJECT_SAFE_FREE(hdr_maxf);
 	}
 	
 	return hdr_maxf;

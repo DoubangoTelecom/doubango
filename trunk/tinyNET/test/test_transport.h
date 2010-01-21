@@ -174,7 +174,7 @@ void test_transport()
 	//tsk_thread_sleep(2000);
 
 #if TEST_UDP
-	TNET_TRANSPORT_SAFE_FREE(udp);
+	TSK_OBJECT_SAFE_FREE(udp);
 #endif
 
 #if TEST_TCP

@@ -289,7 +289,7 @@ case 15:
 /* #line 101 "tsip_parser_header_User_Agent.rl" */
  )
 	{
-		TSIP_HEADER_USER_AGENT_SAFE_FREE(hdr_user_agent);
+		TSK_OBJECT_SAFE_FREE(hdr_user_agent);
 	}
 	
 	return hdr_user_agent;

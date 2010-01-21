@@ -216,10 +216,10 @@ int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatch
 	
 bail:
 	/* Delete Message */
-	TCOMP_MESSAGE_SAFE_FREE(sigCompMessage);
+	TSK_OBJECT_SAFE_FREE(sigCompMessage);
 
 	/* Delete UDVM entity */
-	TCOMP_UDVM_SAFE_FREE(sigCompUDVM);
+	TSK_OBJECT_SAFE_FREE(sigCompUDVM);
 
 	return ret;
 }
@@ -379,7 +379,7 @@ static void* tcomp_decompressordisp_destroy(void *self)
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(decompressordisp);
 
-		TSK_LIST_SAFE_FREE(decompressordisp->streamBuffers);
+		TSK_OBJECT_SAFE_FREE(decompressordisp->streamBuffers);
 	}
 	else TSK_DEBUG_ERROR("Null dispatcher.");
 	
@@ -426,7 +426,7 @@ static void* tcomp_stream_buffer_destroy(void *self)
 	tcomp_stream_buffer_t *stream_buffer = self;
 	if(stream_buffer)
 	{
-		TCOMP_BUFFER_SAFE_FREE(stream_buffer->buffer);
+		TSK_OBJECT_SAFE_FREE(stream_buffer->buffer);
 	}
 	else TSK_DEBUG_ERROR("Null stream buffer.");
 	

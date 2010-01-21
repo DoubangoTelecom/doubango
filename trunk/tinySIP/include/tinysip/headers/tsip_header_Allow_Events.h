@@ -36,15 +36,10 @@
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_ALLOW_EVENTS_CREATE
-* Creates new sip 'Allow_Events' header.  You must call @ref TSIP_HEADER_ALLOW_EVENTS_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_ALLOW_EVENTS_SAFE_FREE.
-*/
-/**@def TSIP_HEADER_ALLOW_EVENTS_SAFE_FREE
-* Safely free a sip 'Allow_Events' header previously created using TSIP_HEADER_ALLOW_EVENTS_CREATE.
-* @sa TSIP_HEADER_ALLOW_EVENTS_CREATE.
+* Creates new sip 'Allow_Events' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_HEADER_ALLOW_EVENTS_CREATE()		tsk_object_new(tsip_header_Allow_Events_def_t)
-#define TSIP_HEADER_ALLOW_EVENTS_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

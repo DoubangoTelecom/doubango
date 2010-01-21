@@ -98,7 +98,7 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_CSEQ_SAFE_FREE(hdr_cseq);
+		TSK_OBJECT_SAFE_FREE(hdr_cseq);
 	}
 	
 	return hdr_cseq;
@@ -141,7 +141,7 @@ static void* tsip_header_CSeq_destroy(void *self)
 	if(CSeq)
 	{
 		TSK_FREE(CSeq->method);
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(CSeq));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(CSeq));
 	}
 	else TSK_DEBUG_ERROR("Null CSeq header.");
 

@@ -277,7 +277,7 @@ static void* tcomp_params_destroy(void *self)
 	tcomp_params_t *params = self;
 	if(params)
 	{
-		TSK_LIST_SAFE_FREE(params->returnedStates);
+		TSK_OBJECT_SAFE_FREE(params->returnedStates);
 	}
 	else TSK_DEBUG_WARN("NULL sigcomp parameters.");
 

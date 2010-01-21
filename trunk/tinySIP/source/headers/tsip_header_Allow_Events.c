@@ -467,7 +467,7 @@ case 24:
 /* #line 119 "tsip_parser_header_Allow_Events.rl" */
  )
 	{
-		TSIP_HEADER_ALLOW_EVENTS_SAFE_FREE(hdr_allow_events);
+		TSK_OBJECT_SAFE_FREE(hdr_allow_events);
 	}
 	
 	return hdr_allow_events;
@@ -507,7 +507,7 @@ static void* tsip_header_Allow_Events_destroy(void *self)
 	tsip_header_Allow_Events_t *Allow_events = self;
 	if(Allow_events)
 	{
-		TSK_LIST_SAFE_FREE(Allow_events->events);
+		TSK_OBJECT_SAFE_FREE(Allow_events->events);
 	}
 	else TSK_DEBUG_ERROR("Null Allow_events header.");
 

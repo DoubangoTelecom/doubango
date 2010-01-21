@@ -222,7 +222,7 @@ tsip_header_Proxy_Authorization_t *tsip_header_Proxy_Authorization_parse(const c
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_PROXY_AUTHORIZATION_SAFE_FREE(hdr_Proxy_Authorization);
+		TSK_OBJECT_SAFE_FREE(hdr_Proxy_Authorization);
 	}
 	
 	return hdr_Proxy_Authorization;
@@ -274,7 +274,7 @@ static void* tsip_header_Proxy_Authorization_destroy(void *self)
 		TSK_FREE(Proxy_Authorization->qop);
 		TSK_FREE(Proxy_Authorization->nc);
 		
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Proxy_Authorization));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Proxy_Authorization));
 	}
 	else TSK_DEBUG_ERROR("Null Proxy_Authorization header.");
 

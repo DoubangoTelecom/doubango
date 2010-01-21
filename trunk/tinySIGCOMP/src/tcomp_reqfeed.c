@@ -86,7 +86,7 @@ static void* tcomp_reqfeed_destroy(void* self)
 	tcomp_reqfeed_t *feedback = self;
 	if(feedback)
 	{
-		TCOMP_BUFFER_SAFE_FREE(feedback->item);
+		TSK_OBJECT_SAFE_FREE(feedback->item);
 	}
 	else
 	{

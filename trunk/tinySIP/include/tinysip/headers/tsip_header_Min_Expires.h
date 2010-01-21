@@ -37,16 +37,11 @@ TSIP_BEGIN_DECLS
 
 
 /**@def TSIP_HEADER_MIN_EXPIRES_CREATE
-* Creates new sip 'Min-Expires' header.  You must call @ref TSIP_HEADER_MIN_EXPIRES_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_MIN_EXPIRES_SAFE_FREE.
-*/
-/**@def TSIP_HEADER_MIN_EXPIRES_SAFE_FREE
-* Safely free a sip 'Min-Expires' header previously created using TSIP_HEADER_MIN_EXPIRES_CREATE.
-* @sa TSIP_HEADER_MIN_EXPIRES_CREATE.
+* Creates new sip 'Min-Expires' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_HEADER_MIN_EXPIRES_VA_ARGS(value)		tsip_header_Min_Expires_def_t, (int32_t) value
 #define TSIP_HEADER_MIN_EXPIRES_CREATE(value)		tsk_object_new(TSIP_HEADER_MIN_EXPIRES_VA_ARGS(value))
-#define TSIP_HEADER_MIN_EXPIRES_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 #define TSIP_HEADER_MIN_EXPIRES_CREATE_NULL()		TSIP_HEADER_MIN_EXPIRES_CREATE(TSIP_HEADER_MIN_EXPIRES_NONE)
 

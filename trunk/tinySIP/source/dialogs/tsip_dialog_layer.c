@@ -242,7 +242,7 @@ static void* tsip_dialog_layer_destroy(void * self)
 	tsip_dialog_layer_t *layer = self;
 	if(layer)
 	{
-		TSK_LIST_SAFE_FREE(layer->dialogs);
+		TSK_OBJECT_SAFE_FREE(layer->dialogs);
 
 		tsk_safeobj_deinit(layer);
 	}

@@ -185,7 +185,7 @@ tsip_header_Proxy_Authenticate_t *tsip_header_Proxy_Authenticate_parse(const cha
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_PROXY_AUTHENTICATE_SAFE_FREE(hdr_Proxy_Authenticate);
+		TSK_OBJECT_SAFE_FREE(hdr_Proxy_Authenticate);
 	}
 	
 	return hdr_Proxy_Authenticate;
@@ -233,7 +233,7 @@ static void* tsip_header_Proxy_Authenticate_destroy(void *self)
 		TSK_FREE(Proxy_Authenticate->algorithm);
 		TSK_FREE(Proxy_Authenticate->qop);
 
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Proxy_Authenticate));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Proxy_Authenticate));
 	}
 	else TSK_DEBUG_ERROR("Null Proxy_Authenticate header.");
 

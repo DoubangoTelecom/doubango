@@ -39,7 +39,6 @@ TNET_BEGIN_DECLS
 
 #define TNET_STUN_MESSAGE_CREATE(username, password)			tsk_object_new(tnet_stun_message_def_t, (const char*)username, (const char*)password)
 #define TNET_STUN_MESSAGE_CREATE_NULL()							TNET_STUN_MESSAGE_CREATE(0,0)
-#define TNET_STUN_MESSAGE_SAFE_FREE(self)						tsk_object_unref(self), self = 0
 
 #define TNET_STUN_CLASS_REQUEST_MASK		(0x0000)
 #define TNET_STUN_CLASS_INDICATION_MASK		(0x0010)
@@ -151,6 +150,11 @@ typedef enum tnet_stun_message_type_e
 	stun_allocate_indication = (stun_method_allocate | TNET_STUN_CLASS_INDICATION_MASK),
 	stun_allocate_success_response = (stun_method_allocate | TNET_STUN_CLASS_SUCCESS_MASK),
 	stun_allocate_error_response = (stun_method_allocate | TNET_STUN_CLASS_ERROR_MASK),
+
+	stun_refresh_request = (stun_method_refresh | TNET_STUN_CLASS_REQUEST_MASK),
+	stun_refresh_indication = (stun_method_refresh | TNET_STUN_CLASS_INDICATION_MASK),
+	stun_refresh_success_response = (stun_method_refresh | TNET_STUN_CLASS_SUCCESS_MASK),
+	stun_refresh_error_response = (stun_method_refresh | TNET_STUN_CLASS_ERROR_MASK),
 }
 tnet_stun_message_type_t;
 
@@ -188,6 +192,7 @@ typedef struct tnet_stun_message_s
 
 	unsigned fingerprint:1;
 	unsigned integrity:1;
+	unsigned dontfrag:1;
 
 	char* username;
 	char* password;
@@ -197,6 +202,9 @@ typedef struct tnet_stun_message_s
 	tnet_stun_attributes_L_t *attributes; /**< List of all attributes associated to this message */
 }
 tnet_stun_message_t;
+
+typedef tnet_stun_message_t tnet_stun_response_t;
+typedef tnet_stun_message_t tnet_stun_request_t;
 
 tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *message);
 tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t size);

@@ -38,21 +38,16 @@
 TNET_BEGIN_DECLS
 
 /**@def TNET_SOCKET_CREATE
-* Create a non-blocking socket. You MUST use @ref TNET_SOCKET_SAFE_FREE to safely close and free the socket.
+* Create a non-blocking socket. You MUST use @ref TSK_OBJECT_SAFE_FREE to safely close and free the socket.
 * To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
 * @param host The hostname or IPv4/IPv6 address string. To bind to any local local address set the host value to NULL;
 * @param type The prefered type. See @ref tnet_socket_type_t.
 * @param port The local/remote port used to receive/send data. Set the port value to NULL to bind to a random port.
-* @sa @ref TNET_SOCKET_SAFE_FREE.
+* @sa @ref TSK_OBJECT_SAFE_FREE.
 */
-/**@def TNET_SOCKET_SAFE_FREE.
-* Safely close and free a socket prviously created using @ref TNET_SOCKET_CREATE.
-* @param self The socket to free.
-* @sa TNET_SOCKET_CREATE.
-*/
+
 #define TNET_SOCKET_CREATE_EX(host, port, type, nonblocking)	tsk_object_new(tnet_socket_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (int)nonblocking)
 #define TNET_SOCKET_CREATE(host, port, type)					TNET_SOCKET_CREATE_EX(host, port, type, 1)
-#define TNET_SOCKET_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 /**
  * @enum	tnet_socket_type_e

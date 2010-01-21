@@ -49,7 +49,6 @@
 void *run(void* self);
 
 #define TSIP_EVENT_CREATE(stack, opid, status_code, phrase, incoming, type)		tsk_object_new(tsip_event_def_t, stack, opid, status_code, phrase, incoming, type)
-#define TSIP_EVENT_SAFE_FREE(self)											tsk_object_unref(self), self = 0
 
 int __tsip_stack_set(tsip_stack_t *self, va_list values)
 {
@@ -78,12 +77,12 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 					{
 						if(curr == pname_public_identity)
 						{
-							TSIP_URI_SAFE_FREE(self->public_identity);
+							TSK_OBJECT_SAFE_FREE(self->public_identity);
 							self->public_identity = uri;
 						}
 						else
 						{
-							TSIP_URI_SAFE_FREE(self->preferred_identity);
+							TSK_OBJECT_SAFE_FREE(self->preferred_identity);
 							self->preferred_identity = uri;
 						}
 					}
@@ -144,7 +143,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 					tsip_uri_t *uri = tsip_uri_parse(uristring, strlen(uristring));
 					if(uri)
 					{
-						TSIP_URI_SAFE_FREE(self->realm);
+						TSK_OBJECT_SAFE_FREE(self->realm);
 						self->realm = uri;
 					}
 				}
@@ -439,12 +438,12 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 	{
 		tsip_stack_t *stack = self;
 
-		TSK_TIMER_MANAGER_SAFE_FREE(stack->timer_mgr);
-		TSK_LIST_SAFE_FREE(stack->operations);
+		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
+		TSK_OBJECT_SAFE_FREE(stack->operations);
 
-		TSIP_DIALOG_LAYER_SAFE_FREE(stack->layer_dialog);
-		TSIP_TRANSAC_LAYER_SAFE_FREE(stack->layer_transac);
-		TSIP_TRANSPORT_LAYER_SAFE_FREE(stack->layer_transport);
+		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
+		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
+		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
 
 		// FIXME: free strings, uris, ...
 

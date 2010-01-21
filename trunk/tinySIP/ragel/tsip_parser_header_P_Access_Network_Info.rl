@@ -108,7 +108,7 @@ tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(con
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_P_ACCESS_NETWORK_INFO_SAFE_FREE(hdr_ani);
+		TSK_OBJECT_SAFE_FREE(hdr_ani);
 	}
 	
 	return hdr_ani;

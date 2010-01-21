@@ -41,13 +41,13 @@ void test_sockets()
 
 	if(!TNET_SOCKET_IS_VALID(tcp_socket))
 	{
-		TNET_SOCKET_SAFE_FREE(tcp_socket);
+		TSK_OBJECT_SAFE_FREE(tcp_socket);
 		return;
 	}
 
 	test = tnet_socket_stream_connectto(tcp_socket, "www.google.com", 80);
 
-	TNET_SOCKET_SAFE_FREE(tcp_socket);
+	TSK_OBJECT_SAFE_FREE(tcp_socket);
 }
 
 #endif /* TNET_TEST_SOCKETS_H */

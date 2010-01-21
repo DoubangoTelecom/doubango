@@ -189,7 +189,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 			}
 
 //bail:
-			TSK_BUFFER_SAFE_FREE(buffer);
+			TSK_OBJECT_SAFE_FREE(buffer);
 		}
 	}
 
@@ -256,7 +256,7 @@ static void* tsip_transport_destroy(void * self)
 	tsip_transport_t *transport = self;
 	if(transport)
 	{
-		TNET_TRANSPORT_SAFE_FREE(transport->net_transport);
+		TSK_OBJECT_SAFE_FREE(transport->net_transport);
 
 		/*TSK_FREE(transport->scheme);
 		TSK_FREE(transport->protocol);

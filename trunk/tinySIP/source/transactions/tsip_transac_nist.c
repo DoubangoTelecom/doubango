@@ -233,7 +233,7 @@ void tsip_transac_nist_Trying_2_Proceeding_X_send_1xx(tsip_transac_nist_t *self,
 	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
 
 	/* Update last response */
-	TSIP_RESPONSE_SAFE_FREE(self->lastResponse);
+	TSK_OBJECT_SAFE_FREE(self->lastResponse);
 	self->lastResponse = tsk_object_ref((void*)response);
 }
 
@@ -251,7 +251,7 @@ void tsip_transac_nist_Trying_2_Completed_X_send_200_to_699(tsip_transac_nist_t 
 	TRANSAC_NIST_TIMER_SCHEDULE(J);
 
 	/* Update last response */
-	TSIP_RESPONSE_SAFE_FREE(self->lastResponse);
+	TSK_OBJECT_SAFE_FREE(self->lastResponse);
 	self->lastResponse = tsk_object_ref((void*)response);
 }
 
@@ -267,7 +267,7 @@ void tsip_transac_nist_Proceeding_2_Proceeding_X_send_1xx(tsip_transac_nist_t *s
 	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
 
 	/* Update last response */
-	TSIP_RESPONSE_SAFE_FREE(self->lastResponse);
+	TSK_OBJECT_SAFE_FREE(self->lastResponse);
 	self->lastResponse = tsk_object_ref((void*)response);
 }
 
@@ -306,7 +306,7 @@ void tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(tsip_transac_nis
 	TRANSAC_NIST_TIMER_SCHEDULE(J);
 
 	/* Update last response */
-	TSIP_RESPONSE_SAFE_FREE(self->lastResponse);
+	TSK_OBJECT_SAFE_FREE(self->lastResponse);
 	self->lastResponse = tsk_object_ref((void*)response);
 }
 
@@ -409,7 +409,7 @@ static void* tsip_transac_nist_destroy(void * self)
 	if(transac)
 	{
 		TSIP_TRANSAC(transac)->running = 0;
-		TSIP_RESPONSE_SAFE_FREE(transac->lastResponse);
+		TSK_OBJECT_SAFE_FREE(transac->lastResponse);
 
 		/* DeInitialize base class */
 		tsip_transac_deinit(TSIP_TRANSAC(transac));

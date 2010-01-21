@@ -39,15 +39,10 @@
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_URI_CREATE
-* Creates new sip/sips/tel uri.  You must call @ref TSIP_URI_SAFE_FREE to free the uri.
-* @sa TSIP_HEADER_VIA_SAFE_FREE.
-*/
-/**@def TSIP_URI_SAFE_FREE
-* Safely free a sip/sips/tel uri previously created using TSIP_URI_CREATE.
-* @sa TSIP_URI_CREATE.
+* Creates new sip/sips/tel uri.  You must call @ref TSK_OBJECT_SAFE_FREE to free the uri.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_URI_CREATE(type)				tsk_object_new(tsip_uri_def_t, (tsip_uri_type_t) type)
-#define TSIP_URI_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 #define TSIP_URI_IS_SECURE(uri)		((uri && uri->type==uri_sips) ? 1 : 0)
 

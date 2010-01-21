@@ -113,7 +113,7 @@ tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size)
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_REQUIRE_SAFE_FREE(hdr_require);
+		TSK_OBJECT_SAFE_FREE(hdr_require);
 	}
 	
 	return hdr_require;
@@ -153,7 +153,7 @@ static void* tsip_header_Require_destroy(void *self)
 	tsip_header_Require_t *Require = self;
 	if(Require)
 	{
-		TSK_LIST_SAFE_FREE(Require->options);
+		TSK_OBJECT_SAFE_FREE(Require->options);
 	}
 	else TSK_DEBUG_ERROR("Null Require header.");
 

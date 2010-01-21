@@ -44,7 +44,6 @@
 TCOMP_BEGIN_DECLS
 
 #define TCOMP_COMPARTMENT_CREATE(id, sigCompParameters)		tsk_object_new(tcomp_compartment_def_t, (uint64_t)id, (uint16_t)sigCompParameters)
-#define TCOMP_COMPARTMENT_SAFE_FREE(self)					tsk_object_unref(self), self = 0
 
 typedef struct tcomp_compartment_s
 {

@@ -71,7 +71,7 @@ void tcomp_compartment_setRemoteParams(tcomp_compartment_t *compartment, tcomp_p
 	*/
 	if(lpParams->returnedStates && tcomp_buffer_getSize(lpParams->returnedStates))
 	{
-		TSK_LIST_SAFE_FREE(compartment->remote_parameters->returnedStates);
+		TSK_OBJECT_SAFE_FREE(compartment->remote_parameters->returnedStates);
 		/* swap */
 		compartment->remote_parameters->returnedStates = lpParams->returnedStates;
 		lpParams->returnedStates = 0;
@@ -91,7 +91,7 @@ void tcomp_compartment_setReqFeedback(tcomp_compartment_t *compartment, tcomp_bu
 	tsk_safeobj_lock(compartment);
 
 	/* Delete old */
-	TCOMP_BUFFER_SAFE_FREE(compartment->lpReqFeedback);
+	TSK_OBJECT_SAFE_FREE(compartment->lpReqFeedback);
 
 	compartment->lpReqFeedback = _TCOMP_BUFFER_CREATE(tcomp_buffer_getBuffer(feedback), tcomp_buffer_getSize(feedback));
 
@@ -111,7 +111,7 @@ void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_bu
 	tsk_safeobj_lock(compartment);
 	
 	// Delete old
-	TCOMP_BUFFER_SAFE_FREE(compartment->lpRetFeedback);
+	TSK_OBJECT_SAFE_FREE(compartment->lpRetFeedback);
 	
 	compartment->lpRetFeedback = _TCOMP_BUFFER_CREATE(tcomp_buffer_getBuffer(feedback), tcomp_buffer_getSize(feedback));
 
@@ -123,7 +123,7 @@ void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_bu
 	{
 		tcomp_buffer_handle_t *stateid = _TCOMP_BUFFER_CREATE(tcomp_buffer_getBufferAtPos(feedback, 1), tcomp_buffer_getSize(feedback)-1);
 		compartment->ackGhost(compartment->compressorData, stateid);
-		TCOMP_BUFFER_SAFE_FREE(stateid);
+		TSK_OBJECT_SAFE_FREE(stateid);
 	}
 #endif
 	
@@ -516,14 +516,14 @@ static void* tcomp_compartment_destroy(void *self)
 		tsk_safeobj_deinit(compartment);
 
 		/* Delete all states */
-		TSK_LIST_SAFE_FREE(compartment->local_states);
+		TSK_OBJECT_SAFE_FREE(compartment->local_states);
 		
 		/* Delete feedbacks */
-		TCOMP_BUFFER_SAFE_FREE(compartment->lpReqFeedback);
-		TCOMP_BUFFER_SAFE_FREE(compartment->lpRetFeedback);
+		TSK_OBJECT_SAFE_FREE(compartment->lpReqFeedback);
+		TSK_OBJECT_SAFE_FREE(compartment->lpRetFeedback);
 		
 		/* Delete Nacks */
-		TSK_LIST_SAFE_FREE(compartment->nacks);
+		TSK_OBJECT_SAFE_FREE(compartment->nacks);
 		
 		/* Delete Compressor data */
 		tsk_object_unref(compartment->compressorData);
@@ -531,14 +531,14 @@ static void* tcomp_compartment_destroy(void *self)
 		compartment->freeGhostState = 0;
 		
 		/* Delete params */
-		TCOMP_PARAMS_SAFE_FREE(compartment->local_parameters);
-		TCOMP_PARAMS_SAFE_FREE(compartment->remote_parameters);
+		TSK_OBJECT_SAFE_FREE(compartment->local_parameters);
+		TSK_OBJECT_SAFE_FREE(compartment->remote_parameters);
 
 		/* Delete NACKS */
-		TSK_LIST_SAFE_FREE(compartment->nacks);
+		TSK_OBJECT_SAFE_FREE(compartment->nacks);
 
 		/* Delete local states */
-		TSK_LIST_SAFE_FREE(compartment->local_states);
+		TSK_OBJECT_SAFE_FREE(compartment->local_states);
 	}
 	
 	return self;

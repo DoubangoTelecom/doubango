@@ -37,27 +37,17 @@ TSK_BEGIN_DECLS
 
 /**@def TSK_LIST_CREATE
 * Create and initialize a linked list.
-* You MUST use @ref TSK_LIST_SAFE_FREE to free a linked list.
+* You MUST use @ref TSK_OBJECT_SAFE_FREE to free a linked list.
 * @sa @ref TSK_LIST_SAFE_FREE.
 */
 #define TSK_LIST_CREATE()					tsk_object_new(tsk_list_def_t)
-/**@def TSK_LIST_SAFE_FREE
-* Safely free a linked list previously created using @ref TSK_LIST_CREATE.
-* @sa @ref TSK_LIST_CREATE.
-*/
-#define TSK_LIST_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 /**@def TSK_LIST_ITEM_CREATE
 * Create and initialize an item.
-* You MUST use @ref TSK_LIST_ITEM_SAFE_FREE to free an item.
-* @sa @ref TSK_LIST_ITEM_SAFE_FREE.
+* You MUST use @ref TSK_OBJECT_SAFE_FREE to free an item.
+* @sa @ref TSK_OBJECT_SAFE_FREE.
 */
 #define TSK_LIST_ITEM_CREATE()				tsk_object_new(tsk_list_item_def_t)
-/**@def TSK_LIST_ITEM_SAFE_FREE
-* Safely free an item previously created using @ref TSK_LIST_ITEM_CREATE.
-* @sa @ref TSK_LIST_ITEM_CREATE.
-*/
-#define TSK_LIST_ITEM_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 /**@typedef tsk_list_item_func_free
 * Used to define the function to call to free an @b item.

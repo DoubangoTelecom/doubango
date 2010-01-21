@@ -338,7 +338,7 @@ static void* tcomp_message_create(void *self, va_list * app)
 bail:
 	if(message && !message->isOK)
 	{
-		TCOMP_MESSAGE_SAFE_FREE(message);
+		TSK_OBJECT_SAFE_FREE(message);
 		return 0;
 	}
 
@@ -356,10 +356,10 @@ static void* tcomp_message_destroy(void *self)
 
 	if(message)
 	{
-		TCOMP_BUFFER_SAFE_FREE(message->stateId);
-		TCOMP_BUFFER_SAFE_FREE(message->remaining_sigcomp_buffer);
-		TCOMP_BUFFER_SAFE_FREE(message->uploaded_UDVM_buffer);
-		TCOMP_BUFFER_SAFE_FREE(message->ret_feedback_buffer);
+		TSK_OBJECT_SAFE_FREE(message->stateId);
+		TSK_OBJECT_SAFE_FREE(message->remaining_sigcomp_buffer);
+		TSK_OBJECT_SAFE_FREE(message->uploaded_UDVM_buffer);
+		TSK_OBJECT_SAFE_FREE(message->ret_feedback_buffer);
 	}
 	else
 	{

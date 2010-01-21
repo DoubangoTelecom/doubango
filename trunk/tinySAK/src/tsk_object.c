@@ -31,6 +31,13 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#if defined (_DEBUG)
+#	define TSK_DEBUG_OBJECTS	1
+static int tsk_objects_count = 0;
+#else
+#	define TSK_DEBUG_OBJECTS	0
+#endif
+
 typedef struct tsk_object_header_s
 {
 	const void* base;
@@ -52,6 +59,10 @@ void* tsk_object_new(const tsk_object_def_t *objdef, ...)
 			va_start(ap, objdef);
 			newobj = objdef->constructor(newobj, &ap);
 			va_end(ap);
+
+#if TSK_DEBUG_OBJECTS
+		TSK_DEBUG_INFO("N° objects:%d", ++tsk_objects_count);
+#endif
 		}
 		else
 		{
@@ -155,6 +166,9 @@ void tsk_object_delete(void *self)
 		if((*objdef)->destructor)
 		{
 			self = (*objdef)->destructor(self);
+#if TSK_DEBUG_OBJECTS
+		TSK_DEBUG_INFO("N° objects:%d", --tsk_objects_count);
+#endif
 		}
 		else
 		{

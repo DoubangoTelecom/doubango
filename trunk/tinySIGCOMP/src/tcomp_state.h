@@ -41,9 +41,6 @@ TCOMP_BEGIN_DECLS
 #define TCOMP_STATE_CREATE(length, address, instruction, minimum_access_length, retention_priority)	\
 	tsk_object_new(tcomp_state_def_t, length, address, instruction, minimum_access_length, retention_priority)
 
-#define TCOMP_STATE_SAFE_FREE(self)		tsk_object_unref(self), self = 0
-
-
 // FIXME:
 #define TCOMP_PARTIAL_ID_LEN_CODE		0x01
 #define TCOMP_PARTIAL_ID_LEN_VALUE		0x06

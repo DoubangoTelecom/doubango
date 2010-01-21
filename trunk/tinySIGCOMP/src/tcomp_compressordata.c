@@ -101,7 +101,7 @@
 //		/* Deinitialize safeobject */
 //		tsk_safeobj_deinit(compdata);
 //
-//		TCOMP_STATE_SAFE_FREE(compdata->ghostState);
+//		TSK_OBJECT_SAFE_FREE(compdata->ghostState);
 //	}
 //
 //	return self;

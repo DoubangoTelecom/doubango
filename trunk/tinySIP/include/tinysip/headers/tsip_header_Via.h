@@ -38,17 +38,12 @@
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_VIA_CREATE
-* Creates new sip via header.  You must call @ref TSIP_HEADER_VIA_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_VIA_SAFE_FREE.
-*/
-/**@def TSIP_HEADER_VIA_SAFE_FREE
-* Safely free a sip via header previously created using TSIP_HEADER_VIA_CREATE.
-* @sa TSIP_HEADER_VIA_CREATE.
+* Creates new sip via header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_HEADER_VIA_VA_ARGS(proto_name, proto_version, transport, host, port)		tsip_header_Via_def_t, (const char*)proto_name, (const char*)proto_version, (const char*)transport, (const char*)host, (uint16_t)port
 #define TSIP_HEADER_VIA_CREATE(proto_name, proto_version, transport, host, port)		tsk_object_new(TSIP_HEADER_VIA_VA_ARGS(proto_name, proto_version, transport, host, port))
 #define TSIP_HEADER_VIA_CREATE_NULL()													TSIP_HEADER_VIA_CREATE(0, 0, 0, 0, 0)
-#define TSIP_HEADER_VIA_SAFE_FREE(self)													tsk_object_unref(self), self = 0
 
 
 #define TSIP_HEADER_VIA_HAS_RPORT(self)			((self)->rport!=0)

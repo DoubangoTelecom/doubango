@@ -66,7 +66,7 @@ static int tsip_transport_layer_dgram_data_read(const tsip_transport_t *transpor
 			ret = tsip_dialog_layer_handle_incoming_msg(layer_dialog, message);
 		}
 	}
-	TSIP_MESSAGE_SAFE_FREE(message);
+	TSK_OBJECT_SAFE_FREE(message);
 
 	return ret;
 }
@@ -224,7 +224,7 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 		}
 		else 
 		{
-			//TSIP_TRANSPORT_SAFE_FREE(transport);
+			//TSK_OBJECT_SAFE_FREE(transport);
 			return -2;
 		}
 	}
@@ -372,7 +372,7 @@ static void* tsip_transport_layer_destroy(void * self)
 	{
 		//tsip_transport_layer_shutdown(self);
 
-		TSK_LIST_SAFE_FREE(layer->transports);
+		TSK_OBJECT_SAFE_FREE(layer->transports);
 	}
 	return self;
 }

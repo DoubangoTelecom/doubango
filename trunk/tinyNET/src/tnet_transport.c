@@ -238,7 +238,7 @@ static void* tnet_transport_destroy(void * self)
 	if(transport)
 	{
 		tnet_transport_shutdown(transport);
-		TNET_SOCKET_SAFE_FREE(transport->master);
+		TSK_OBJECT_SAFE_FREE(transport->master);
 		TSK_FREE(transport->description);
 	}
 

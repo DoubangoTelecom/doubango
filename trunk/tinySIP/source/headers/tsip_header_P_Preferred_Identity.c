@@ -13467,7 +13467,7 @@ case 404:
 /* #line 127 "tsip_parser_header_P_Preferred_Identity.rl" */
  )
 	{
-		TSIP_HEADER_P_PREFERRED_IDENTITY_SAFE_FREE(hdr_pi);
+		TSK_OBJECT_SAFE_FREE(hdr_pi);
 	}
 	
 	return hdr_pi;
@@ -13508,7 +13508,7 @@ static void* tsip_header_P_Preferred_Identity_destroy(void *self)
 	if(P_Preferred_Identity)
 	{
 		TSK_FREE(P_Preferred_Identity->display_name);
-		TSIP_URI_SAFE_FREE(P_Preferred_Identity->uri);
+		TSK_OBJECT_SAFE_FREE(P_Preferred_Identity->uri);
 	}
 	else TSK_DEBUG_ERROR("Null P_Preferred_Identity header.");
 

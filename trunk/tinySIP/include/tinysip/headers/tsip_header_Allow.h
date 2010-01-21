@@ -39,15 +39,11 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_STR				"Allow:"TSIP_HEADER_ALLOW_DEFAULT"\r\n"
 
 /**@def TSIP_HEADER_ALLOW_CREATE
-* Creates new sip 'Allow' header.  You must call @ref TSIP_HEADER_ALLOW_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_ALLOW_SAFE_FREE.
+* Creates new sip 'Allow' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
-/**@def TSIP_HEADER_ALLOW_SAFE_FREE
-* Safely free a sip 'Allow' header previously created using TSIP_HEADER_ALLOW_CREATE.
-* @sa TSIP_HEADER_ALLOW_CREATE.
-*/
+
 #define TSIP_HEADER_ALLOW_CREATE(/*methods*/)		tsk_object_new(tsip_header_Allow_def_t/*, (const char*)methods*/)
-#define TSIP_HEADER_ALLOW_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

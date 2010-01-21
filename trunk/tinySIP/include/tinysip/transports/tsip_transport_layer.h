@@ -39,7 +39,6 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSPORT_LAYER_CREATE(stack)				tsk_object_new(tsip_transport_layer_def_t, stack)
-#define TSIP_TRANSPORT_LAYER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 typedef struct tsip_transport_layer_s
 {

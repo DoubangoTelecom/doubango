@@ -195,7 +195,7 @@ static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *m
 /// @date	12/4/2009
 ///
 /// @param [in,out]	state	The ragel state to use. 
-/// @param [out]	result	Non-null sip message created using @ref TSIP_MESSAGE_CREATE. You must use @ref TSIP_MESSAGE_SAFE_FREE to
+/// @param [out]	result	Non-null sip message created using @ref TSIP_MESSAGE_CREATE. You must use @ref TSK_OBJECT_SAFE_FREE to
 ///							free the result.
 ///
 /// @return	@ref TSIP_TRUE if succeed and @ref TSIP_FALSE otherwise.
@@ -225,7 +225,7 @@ TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t **resu
 
 	if( state->cs < %%{ write first_final; }%% )
 	{
-		TSIP_MESSAGE_SAFE_FREE(*result);
+		TSK_OBJECT_SAFE_FREE(*result);
 		return TSIP_FALSE;
 	}
 	return TSIP_TRUE;

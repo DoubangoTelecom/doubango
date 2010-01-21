@@ -100,7 +100,7 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_USER_AGENT_SAFE_FREE(hdr_user_agent);
+		TSK_OBJECT_SAFE_FREE(hdr_user_agent);
 	}
 	
 	return hdr_user_agent;

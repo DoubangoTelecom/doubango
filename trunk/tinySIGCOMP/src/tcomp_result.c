@@ -43,12 +43,12 @@ void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOu
 		uint8_t i;
 		for(i = 0; i < result->statesToCreateIndex; i++)
 		{
-			result->statesToCreate[i] = TCOMP_STATE_SAFE_FREE(result->statesToCreate[i]);
+			result->statesToCreate[i] = TSK_OBJECT_SAFE_FREE(result->statesToCreate[i]);
 		}
 
 		for(i = 0; i < result->statesToFreeIndex; i++)
 		{
-			result->statesToFree[i] = TCOMP_TEMPSTATE_TO_FREE_SAFE_FREE(result->statesToFree[i]);
+			result->statesToFree[i] = TSK_OBJECT_SAFE_FREE(result->statesToFree[i]);
 		}
 
 		if(!isDestructor)
@@ -218,13 +218,13 @@ static void* tcomp_result_destroy(void * self)
 	if(result)
 	{
 		_tcomp_result_reset(result, 1, 1);
-		TCOMP_BUFFER_SAFE_FREE(result->output_buffer);
-		TCOMP_BUFFER_SAFE_FREE(result->ret_feedback);
-		TCOMP_BUFFER_SAFE_FREE(result->nack_info);
+		TSK_OBJECT_SAFE_FREE(result->output_buffer);
+		TSK_OBJECT_SAFE_FREE(result->ret_feedback);
+		TSK_OBJECT_SAFE_FREE(result->nack_info);
 
-		TCOMP_PARAMS_SAFE_FREE(result->remote_parameters);
+		TSK_OBJECT_SAFE_FREE(result->remote_parameters);
 
-		TCOMP_REQFEED_SAFE_FREE(result->req_feedback);
+		TSK_OBJECT_SAFE_FREE(result->req_feedback);
 	}
 
 	return self;
@@ -265,7 +265,7 @@ static void* tcomp_tempstate_to_free_destroy(void * self)
 
 	if(tempstate_to_free)
 	{
-		TCOMP_BUFFER_SAFE_FREE(tempstate_to_free->identifier);
+		TSK_OBJECT_SAFE_FREE(tempstate_to_free->identifier);
 	}
 
 	return self;

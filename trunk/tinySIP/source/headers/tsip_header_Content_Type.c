@@ -994,7 +994,7 @@ case 59:
 /* #line 113 "tsip_parser_header_Content_Type.rl" */
  )
 	{
-		TSIP_HEADER_CONTENT_TYPE_SAFE_FREE(hdr_ctype);
+		TSK_OBJECT_SAFE_FREE(hdr_ctype);
 	}
 	
 	return hdr_ctype;
@@ -1035,7 +1035,7 @@ static void* tsip_header_Content_Type_destroy(void *self)
 	if(Content_Type)
 	{
 		TSK_FREE(Content_Type->type);
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Type));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Type));
 	}
 	else TSK_DEBUG_ERROR("Null Content_Type header.");
 

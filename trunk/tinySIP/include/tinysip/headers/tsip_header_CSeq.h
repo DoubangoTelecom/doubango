@@ -36,16 +36,12 @@
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_CSEQ_CREATE
-* Creates new sip 'CSeq' header.  You must call @ref TSIP_HEADER_CSEQ_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_CSEQ_SAFE_FREE.
+* Creates new sip 'CSeq' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
-/**@def TSIP_HEADER_CSEQ_SAFE_FREE
-* Safely free a sip 'CSeq' header previously created using TSIP_HEADER_CSEQ_CREATE.
-* @sa TSIP_HEADER_CSEQ_CREATE.
-*/
+
 #define TSIP_HEADER_CSEQ_VA_ARGS(seq, method)		tsip_header_CSeq_def_t, (int32_t) seq, (const char*)method
 #define TSIP_HEADER_CSEQ_CREATE(seq, method)		tsk_object_new(TSIP_HEADER_CSEQ_VA_ARGS(seq, method))
-#define TSIP_HEADER_CSEQ_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 #define TSIP_HEADER_CSEQ_NONE						-1
 #define TSIP_HEADER_CSEQ_DEFAULT					1

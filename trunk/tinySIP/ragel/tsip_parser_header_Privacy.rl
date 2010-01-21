@@ -124,7 +124,7 @@ tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size)
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_PRIVACY_SAFE_FREE(hdr_privacy);
+		TSK_OBJECT_SAFE_FREE(hdr_privacy);
 	}
 	
 	return hdr_privacy;
@@ -164,7 +164,7 @@ static void* tsip_header_Privacy_destroy(void *self)
 	tsip_header_Privacy_t *Privacy = self;
 	if(Privacy)
 	{
-		TSK_LIST_SAFE_FREE(Privacy->values);
+		TSK_OBJECT_SAFE_FREE(Privacy->values);
 	}
 	else TSK_DEBUG_ERROR("Null Privacy header.");
 

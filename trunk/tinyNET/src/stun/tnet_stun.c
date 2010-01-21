@@ -54,6 +54,8 @@ void tnet_stun_parse_address(const uint8_t in_ip[16], int ipv6, char** out_ip)
 tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_context_t* context)
 {
 	tnet_stun_message_t *message = TNET_STUN_MESSAGE_CREATE(context->username, context->password);
+	message->realm = tsk_strdup(context->realm);
+	message->nonce = tsk_strdup(context->nonce);
 
 	if(message)
 	{
@@ -73,7 +75,7 @@ tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_context_t* context
 		/* Add software attribute */
 		if(context->software)
 		{
-			tnet_stun_attribute_t* attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(context->software);
+			tnet_stun_attribute_t* attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(context->software, strlen(context->software));
 			tnet_stun_message_add_attribute(message, &attribute);
 		}
 	}
@@ -108,7 +110,25 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 		goto bail;
 	}
 	
-	/* Bind ICMP socket */
+	{
+//#ifndef SIO_UDP_CONNRESET
+//#  ifndef IOC_VENDOR
+//#    define IOC_VENDOR 0x18000000
+//#  endif
+//#  ifndef _WSAIOW
+//#    define _WSAIOW(x,y) (IOC_IN|(x)|(y))
+//#  endif
+//#  define SIO_UDP_CONNRESET _WSAIOW(IOC_VENDOR,12)
+//#endif
+//		DWORD dwBytesReturned = 0;
+//		BOOL bNewBehavior = TRUE;
+//		DWORD status;
+//		
+//		// disable  new behavior using
+//		// IOCTL: SIO_UDP_CONNRESET
+//		status = WSAIoctl(localFD, SIO_UDP_CONNRESET, &bNewBehavior, sizeof(bNewBehavior),
+//			NULL, 0, &dwBytesReturned, NULL, NULL);
+	}
 
 	tv.tv_sec = 0;
 	tv.tv_usec = 0;
@@ -153,9 +173,10 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			}
 			
 			/* Receive pending data */
-			data = tsk_calloc(len, len);
+			data = tsk_calloc(len, sizeof(uint8_t));
 			if((ret = recv(localFD, data, len, 0))<0)
 			{
+				int error = tnet_geterrno();
 				TSK_FREE(data);
 				goto bail;
 			}
@@ -168,7 +189,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			{
 				if(tnet_stun_transacid_cmp(message->transaction_id, reponse->transaction_id))
 				{ /* Not same transaction id */
-					TNET_STUN_MESSAGE_SAFE_FREE(reponse);
+					TSK_OBJECT_SAFE_FREE(reponse);
 					continue;
 				}
 			}
@@ -178,7 +199,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 	}
 	
 bail:
-	TSK_BUFFER_SAFE_FREE(buffer);
+	TSK_OBJECT_SAFE_FREE(buffer);
 
 	return reponse;
 }
@@ -186,11 +207,12 @@ bail:
 /**
 *	
 */
-int tnet_stun_bind(const tnet_stun_context_t* context, char** mapped_address, tnet_port_t *mapped_port)
+int tnet_stun_bind(tnet_stun_context_t* context, char** mapped_address, tnet_port_t *mapped_port)
 {
 	int ret = -1;
 	struct sockaddr_storage server;
 	tnet_stun_response_t *response = 0;
+	tnet_stun_request_t *request = 0;
 
 	if(!context || context->localFD == TNET_INVALID_FD)
 	{
@@ -214,24 +236,49 @@ int tnet_stun_bind(const tnet_stun_context_t* context, char** mapped_address, tn
 	*/
 stun_phase0:
 	{
-		tnet_stun_message_t *firstRequest = tnet_stun_create_request(context);
+		request = tnet_stun_create_request(context);
 
-		if(!firstRequest)
+		if(!request)
 		{
 			goto bail;
 		}
 
 		if(TNET_SOCKET_TYPE_IS_DGRAM(context->socket_type))
 		{
-			response = tnet_stun_send_unreliably(context->localFD, context->RTO, context->Rc, firstRequest, (struct sockaddr*)&server);
+			response = tnet_stun_send_unreliably(context->localFD, context->RTO, context->Rc, request, (struct sockaddr*)&server);
 		}
 
 		if(response)
 		{
 			if(TNET_STUN_RESPONSE_IS_ERROR(response))
 			{
-				int test = stun_allocate_error_response;
-				test ++;
+				short code = tnet_stun_message_get_errorcode(response);
+				const char* realm = tnet_stun_message_get_realm(response);
+				const char* nonce = tnet_stun_message_get_nonce(response);
+
+				if(code == 401 && realm && nonce)
+				{
+					if(!context->nonce)
+					{	/* First time we get a nonce */
+						tsk_strupdate(&context->nonce, nonce);
+						tsk_strupdate(&context->realm, realm);
+
+						/* Delete the message and response before retrying*/
+						TSK_OBJECT_SAFE_FREE(response);
+						TSK_OBJECT_SAFE_FREE(request);
+
+						// Send again using new transaction identifier
+						return tnet_stun_bind(context, mapped_address, mapped_port);
+					}
+					else
+					{
+						ret = -3;
+					}
+				}
+				else
+				{
+					ret = -2;
+				}
 			}
 			else
 			{
@@ -256,7 +303,9 @@ stun_phase0:
 	/* END OF stun_phase0 */
 	
 bail:
-	TNET_STUN_MESSAGE_SAFE_FREE(response);
+	TSK_OBJECT_SAFE_FREE(response);
+	TSK_OBJECT_SAFE_FREE(request);
+
 	return ret;
 }
 
@@ -324,6 +373,8 @@ static void* tnet_stun_context_destroy(void * self)
 	{
 		TSK_FREE(context->username);
 		TSK_FREE(context->password);
+		TSK_FREE(context->realm);
+		TSK_FREE(context->nonce);
 
 		TSK_FREE(context->server_address);
 

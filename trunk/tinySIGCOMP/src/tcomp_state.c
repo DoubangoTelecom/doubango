@@ -170,8 +170,8 @@ static void* tcomp_state_destroy(void *self)
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(state);
 
-		TCOMP_BUFFER_SAFE_FREE(state->identifier);
-		TCOMP_BUFFER_SAFE_FREE(state->value);
+		TSK_OBJECT_SAFE_FREE(state->identifier);
+		TSK_OBJECT_SAFE_FREE(state->value);
 	}
 	else TSK_DEBUG_ERROR("Null SigComp state.");
 

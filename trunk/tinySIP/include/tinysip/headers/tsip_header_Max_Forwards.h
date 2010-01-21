@@ -38,16 +38,11 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_MAX_FORWARDS_DEFAULT 70
 
 /**@def TSIP_HEADER_MAX_FORWARDS_CREATE
-* Creates new sip 'Max-Forwards' header.  You must call @ref TSIP_HEADER_MAX_FORWARDS_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_MAX_FORWARDS_SAFE_FREE.
-*/
-/**@def TSIP_HEADER_MAX_FORWARDS_SAFE_FREE
-* Safely free a sip 'Max-Forwards' header previously created using TSIP_HEADER_MAX_FORWARDS_CREATE.
-* @sa TSIP_HEADER_MAX_FORWARDS_CREATE.
+* Creates new sip 'Max-Forwards' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max)		tsip_header_Max_Forwards_def_t, (int32_t) max
 #define TSIP_HEADER_MAX_FORWARDS_CREATE(max)		tsk_object_new(TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max))
-#define TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 
 #define TSIP_HEADER_MAX_FORWARDS_NONE				-1

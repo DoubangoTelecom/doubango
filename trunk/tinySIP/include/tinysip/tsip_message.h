@@ -65,19 +65,12 @@ TSIP_BEGIN_DECLS
 
 /**@def TSIP_MESSAGE_CREATE
 * Creates new sip messgae. Could be either a request or a response.
-* You must call @ref TSIP_MESSAGE_SAFE_FREE to free the message.
-* @sa TSIP_MESSAGE_SAFE_FREE.
-*/
-/**@def TSIP_MESSAGE_SAFE_FREE
-* Safely free a sip messgae previously created using TSIP_MESSAGE_CREATE.
-* @sa TSIP_MESSAGE_CREATE.
+* You must call @ref TSK_OBJECT_SAFE_FREE to free the message.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_MESSAGE_CREATE()											tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_unknown)
 #define TSIP_REQUEST_CREATE(method, uri)								tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_request, (const char*)method, (const tsip_uri_t*)uri)
 #define TSIP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_response, (const tsip_request_t*)request, (short)status_code, (const char*)reason_phrase)
-#define TSIP_MESSAGE_SAFE_FREE(self)									tsk_object_unref(self), self = 0
-#define TSIP_REQUEST_SAFE_FREE(self)									TSIP_MESSAGE_SAFE_FREE(self)
-#define TSIP_RESPONSE_SAFE_FREE(self)									TSIP_MESSAGE_SAFE_FREE(self)
 
 
 #define TSIP_RESPONSE_CODE(self)			 ((self)->status_code)
@@ -156,7 +149,7 @@ tsip_message_type_t;
  *
  * @brief	Represents a SIP message. A SIP message is either a request from a client to a server,
  * 			or a response from a server to a client. See RFC 3261 suc-bclause 7. 
- *			You must call @ref TSIP_MESSAGE_CREATE to create a sip message and TSIP_MESSAGE_SAFE_FREE to free the message.
+ *			You must call @ref TSIP_MESSAGE_CREATE to create a sip message and TSK_OBJECT_SAFE_FREE to free the message.
  *
  * @author	Mamadou
  * @date	12/2/2009

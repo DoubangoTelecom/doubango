@@ -44,10 +44,8 @@ TCOMP_BEGIN_DECLS
 #define MAX_TEMP_SATES	4
 
 #define TCOMP_RESULT_CREATE()						tsk_object_new(tcomp_result_def_t)
-#define TCOMP_RESULT_SAFE_FREE(self)				tsk_object_unref(self), self = 0
 
 #define TCOMP_TEMPSTATE_TO_FREE_CREATE()			tsk_object_new(tcomp_tempstate_to_free_def_t)
-#define TCOMP_TEMPSTATE_TO_FREE_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 typedef struct tcomp_tempstate_to_free_s
 {

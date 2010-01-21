@@ -29,14 +29,93 @@
  */
 #include "tnet_turn_attribute.h"
 
+#include "../stun/tnet_stun.h"
+
 #include "tsk_debug.h"
 
 
-
-tnet_stun_attribute_t* tnet_turn_attribute_deserialize(const void* payload, size_t payload_size)
+tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_t type, uint16_t length, const void* payload, size_t payload_size)
 {
-	TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-	return 0;
+	tnet_stun_attribute_t *attribute = 0;
+	const uint8_t* dataPtr = payload;
+
+	/* Attribute Value
+	*/
+	
+	switch(type)
+	{
+	/*	draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
+	case stun_channel_number:
+		{
+			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			break;
+		}
+
+	/*	draft-ietf-behave-turn-16 - 14.2.  LIFETIME */
+	case stun_lifetime:
+		{
+			uint32_t lifetime = ntohl(*((uint32_t*)dataPtr));
+			attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(lifetime);
+			break;
+		}
+
+	/*	draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS */
+	case stun_xor_peer_address:
+		{
+			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			break;
+		}
+
+	/*	draft-ietf-behave-turn-16 - 14.4.  DATA */
+	case stun_data:
+		{
+			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			break;
+		}
+
+	/*	draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS */
+	case stun_xor_relayed_address:
+		{
+			attribute = TNET_TURN_ATTRIBUTE_XRELAYED_ADDR_CREATE(dataPtr, length);
+			break;
+		}
+
+	/*	draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT */
+	case stun_even_port:
+		{
+			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			break;
+		}
+
+	/*	draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT */
+	case stun_requested_transport:
+		{
+			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			break;
+		}
+
+	/*	draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT */
+	case stun_dont_fragment:
+		{
+			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			break;
+		}
+	
+	/*	draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN */
+	case stun_reservation_token:
+		{
+			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			break;
+		}
+
+	default:
+		{
+			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			break;
+		}
+	}
+
+	return attribute;
 }
 
 
@@ -176,7 +255,7 @@ static void* tnet_turn_attribute_lifetime_create(void * self, va_list * app)
 	tnet_turn_attribute_lifetime_t *attribute = self;
 	if(attribute)
 	{
-		attribute->value = htonl(va_arg(*app, uint32_t));
+		attribute->value = /*htonl*/(va_arg(*app, uint32_t));
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_lifetime;
 		TNET_STUN_ATTRIBUTE(attribute)->length = 4;
 	}
@@ -287,7 +366,34 @@ static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
+		const uint8_t *payloadPtr = (const uint8_t*)payload;
+		payloadPtr += 1; /* Ignore first 8bits */
+
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_relayed_address;
+		TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
+		
+		attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
+
+		attribute->xport = ntohs(*((uint16_t*)payloadPtr));
+		attribute->xport ^= 0x2112;
+		payloadPtr+=2;
+		
+
+		if(attribute->family == stun_ipv4)
+		{
+			uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
+			addr ^= TNET_STUN_MAGIC_COOKIE;
+			memcpy(attribute->xaddress, &addr, 4);
+			payloadPtr+=4;
+		}
+		else if(attribute->family == stun_ipv6)
+		{
+			TSK_DEBUG_ERROR("IPv6 not supported yet.");
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+		}
 	}
 	return self;
 }
@@ -392,8 +498,8 @@ static void* tnet_turn_attribute_dontfrag_create(void * self, va_list * app)
 	tnet_turn_attribute_dontfrag_t *attribute = self;
 	if(attribute)
 	{
-		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		//const void *payload = va_arg(*app, const void*);
+		//size_t payload_size = va_arg(*app, size_t);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_dont_fragment;
 	}

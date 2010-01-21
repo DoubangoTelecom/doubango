@@ -414,6 +414,54 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="dns"
+				>
+				<File
+					RelativePath=".\src\dns\tnet_dns.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_a.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_aaaa.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_cname.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_mx.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_naptr.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_ns.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_ptr.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_soa.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_soa.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_txt.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -495,6 +543,50 @@
 				>
 				<File
 					RelativePath=".\src\ice\tnet_ice.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dns"
+				>
+				<File
+					RelativePath=".\src\dns\tnet_dns.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_a.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_aaaa.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_cname.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_mx.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_naptr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_ns.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_ptr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_srv.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_txt.h"
 					>
 				</File>
 			</Filter>

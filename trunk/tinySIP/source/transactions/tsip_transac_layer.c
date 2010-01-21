@@ -296,7 +296,7 @@ static void* tsip_transac_layer_destroy(void * self)
 	tsip_transac_layer_t *layer = self;
 	if(layer)
 	{
-		TSK_LIST_SAFE_FREE(layer->transactions);
+		TSK_OBJECT_SAFE_FREE(layer->transactions);
 
 		tsk_safeobj_deinit(layer);
 	}

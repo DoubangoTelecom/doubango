@@ -92,7 +92,7 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_CONTENT_LENGTH_SAFE_FREE(hdr_clength);
+		TSK_OBJECT_SAFE_FREE(hdr_clength);
 	}
 	
 	return hdr_clength;
@@ -134,7 +134,7 @@ static void* tsip_header_Content_Length_destroy(void *self)
 	tsip_header_Content_Length_t *Content_Length = self;
 	if(Content_Length)
 	{
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Length));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Length));
 	}
 	else TSK_DEBUG_ERROR("Null Content_Length header.");
 
