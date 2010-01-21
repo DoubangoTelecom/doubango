@@ -378,6 +378,25 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 #endif
 }
 
+int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct sockaddr *from)
+{
+	int fromlen;
+
+	if(fd == TNET_INVALID_FD)
+	{
+		TSK_DEBUG_ERROR("Using invalid FD to recv data.");
+		return -1;
+	}
+
+#if TNET_HAVE_SS_LEN
+	fromlen = from->ss_len;
+#else
+	fromlen = sizeof(*from);
+#endif
+
+	return recvfrom(fd, buf, size, flags, from, &fromlen);
+}
+
 int tnet_sockfd_close(tnet_fd_t *fd)
 {
 	int ret;

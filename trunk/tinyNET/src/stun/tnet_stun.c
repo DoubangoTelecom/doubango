@@ -89,7 +89,7 @@ int tnet_stun_send_reliably(const tnet_stun_message_t* message)
 }
 
 
-tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc, const tnet_stun_message_t* message, const struct sockaddr* server)
+tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc, const tnet_stun_message_t* message, struct sockaddr* server)
 {
 	/*	RFC 5389 - 7.2.1.  Sending over UDP
 		STUN indications are not retransmitted; thus, indication transactions over UDP 
@@ -160,7 +160,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			rto *= 2;
 			continue;
 		}
-		else
+		else if(FD_ISSET(localFD, &set))
 		{	/* there is data to read */
 
 			size_t len = 0;
@@ -174,10 +174,11 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			
 			/* Receive pending data */
 			data = tsk_calloc(len, sizeof(uint8_t));
-			if((ret = recv(localFD, data, len, 0))<0)
+			if((ret = tnet_sockfd_recvfrom(localFD, data, len, 0, server))<0)
 			{
-				int error = tnet_geterrno();
 				TSK_FREE(data);
+								
+				TSK_DEBUG_ERROR("Recving STUN dgrams failed with error code:%d", tnet_geterrno());
 				goto bail;
 			}
 
@@ -196,6 +197,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			
 			goto bail;
 		}
+		else continue;
 	}
 	
 bail:

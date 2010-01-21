@@ -103,7 +103,7 @@ typedef struct tnet_stun_context_s
 tnet_stun_context_t;
 
 int tnet_stun_send_reliably(const tnet_stun_message_t* message);
-tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc, const tnet_stun_message_t* message, const struct sockaddr* server);
+tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc, const tnet_stun_message_t* message, struct sockaddr* server);
 TINYNET_API int tnet_stun_bind(tnet_stun_context_t* context, char** mapped_address, tnet_port_t *mapped_port);
 int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2);
 

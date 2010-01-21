@@ -61,6 +61,7 @@ TINYNET_API int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking);
 #define tnet_sockfd_set_blocking(fd)	tnet_sockfd_set_mode(fd, 0)
 
 TINYNET_API int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size);
+TINYNET_API int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct sockaddr *from);
 
 TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
