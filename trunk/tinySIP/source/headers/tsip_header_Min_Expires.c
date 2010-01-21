@@ -313,7 +313,7 @@ case 19:
 /* #line 98 "tsip_parser_header_Min_Expires.rl" */
  )
 	{
-		TSIP_HEADER_MIN_EXPIRES_SAFE_FREE(hdr_minE);
+		TSK_OBJECT_SAFE_FREE(hdr_minE);
 	}
 	
 	return hdr_minE;

@@ -36,16 +36,11 @@
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_RECORD_ROUTE_CREATE
-* Creates new sip 'Record-Route' header.  You must call @ref TSIP_HEADER_RECORD_ROUTE_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_RECORD_ROUTE_SAFE_FREE.
-*/
-/**@def TSIP_HEADER_RECORD_ROUTE_SAFE_FREE
-* Safely free a sip 'Record-Route' header previously created using TSIP_HEADER_RECORD_ROUTE_CREATE.
-* @sa TSIP_HEADER_RECORD_ROUTE_CREATE.
+* Creates new sip 'Record-Route' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_HEADER_RECORD_ROUTE_VA_ARGS(record_route)	tsip_header_Record_Route_def_t, (const char*)record_route
 #define TSIP_HEADER_RECORD_ROUTE_CREATE(record_route)	tsk_object_new(TSIP_HEADER_RECORD_ROUTE_VA_ARGS(record_route))
-#define TSIP_HEADER_RECORD_ROUTE_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

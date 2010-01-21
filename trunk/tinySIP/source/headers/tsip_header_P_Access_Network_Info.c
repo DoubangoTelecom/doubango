@@ -403,7 +403,7 @@ case 26:
 /* #line 109 "tsip_parser_header_P_Access_Network_Info.rl" */
  )
 	{
-		TSIP_HEADER_P_ACCESS_NETWORK_INFO_SAFE_FREE(hdr_ani);
+		TSK_OBJECT_SAFE_FREE(hdr_ani);
 	}
 	
 	return hdr_ani;

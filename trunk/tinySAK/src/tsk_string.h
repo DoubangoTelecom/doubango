@@ -39,7 +39,6 @@
 TSK_BEGIN_DECLS
 
 #define TSK_STRING_CREATE(str)				tsk_object_new(tsk_string_def_t, str)
-#define TSK_STRING_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 #define TSK_STRING_STR(self)				((tsk_string_t*)self)->value
 
 typedef char tsk_istr_t[21]; /**< Integer number as string value. */

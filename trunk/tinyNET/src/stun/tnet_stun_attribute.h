@@ -44,51 +44,39 @@ TNET_BEGIN_DECLS
 
 /* RFC 5389 - 15.  STUN Attributes */
 #define TNET_STUN_ATTRIBUTE_CREATE()						tsk_object_new(tnet_stun_attribute_def_t)
-#define TNET_STUN_ATTRIBUTE_SAFE_FREE(self)					tsk_object_unref(self), self = 0
 
 /* RFC 5389 - 15.1.  MAPPED-ADDRESS */
 #define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_CREATE(payload, payload_size)			tsk_object_new(tnet_stun_attribute_mapped_addr_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_SAFE_FREE(self)							tsk_object_unref(self), self = 0
 
 /* RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS */
 #define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_CREATE(payload, payload_size)			tsk_object_new(tnet_stun_attribute_xmapped_addr_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_SAFE_FREE(self)							tsk_object_unref(self), self = 0
 
 /* RFC 5389 - 15.3.  USERNAME */
 #define TNET_STUN_ATTRIBUTE_USERNAME_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_username_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_STUN_ATTRIBUTE_USERNAME_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 /* RFC 5389 - 15.4.  MESSAGE-INTEGRITY */
-#define TNET_STUN_ATTRIBUTE_INTEGRITY_CREATE(sha1digest)							tsk_object_new(tnet_stun_attribute_integrity_def_t, (tsk_sha1digest_t*)sha1digest)
-#define TNET_STUN_ATTRIBUTE_INTEGRITY_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+#define TNET_STUN_ATTRIBUTE_INTEGRITY_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_integrity_def_t, (const void*)payload, (size_t)payload_size)
 
 /* RFC 5389 - 15.5.  FINGERPRINT */
 #define TNET_STUN_ATTRIBUTE_FINGERPRINT_CREATE(fingerprint)							tsk_object_new(tnet_stun_attribute_fingerprint_def_t, (uint32_t)fingerprint)
-#define TNET_STUN_ATTRIBUTE_FINGERPRINT_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 /*	RFC 5389 - 15.6.  ERROR-CODE  */
 #define TNET_STUN_ATTRIBUTE_ERRORCODE_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_errorcode_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_STUN_ATTRIBUTE_ERRORCODE_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 /*	RFC 5389 - 15.7.  REALM */
 #define TNET_STUN_ATTRIBUTE_REALM_CREATE(payload, payload_size)						tsk_object_new(tnet_stun_attribute_realm_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_STUN_ATTRIBUTE_REALM_SAFE_FREE(self)									tsk_object_unref(self), self = 0
 
 /*	RFC 5389 - 15.8.  NONCE */
 #define TNET_STUN_ATTRIBUTE_NONCE_CREATE(payload, payload_size)						tsk_object_new(tnet_stun_attribute_nonce_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_STUN_ATTRIBUTE_NONCE_SAFE_FREE(self)									tsk_object_unref(self), self = 0
 
 /*	RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES */
 #define TNET_STUN_ATTRIBUTE_UNKNOWNS_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_unknowns_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_STUN_ATTRIBUTE_UNKNOWNS_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 /*	RFC 5389 - 15.10.  SOFTWARE */
-#define TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(software)								tsk_object_new(tnet_stun_attribute_software_def_t, (const char*)software)
-#define TNET_STUN_ATTRIBUTE_SOFTWARE_SAFE_FREE(self)								tsk_object_unref(self), self = 0
+#define TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_software_def_t, (const void*)payload, (size_t)payload_size)
 
 /*	RFC 5389 - 15.11.  ALTERNATE-SERVER */
 #define TNET_STUN_ATTRIBUTE_ALTSERVER_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_altserver_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_STUN_ATTRIBUTE_ALTSERVER_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 /**
  * @enum	tnet_stun_addr_family_e

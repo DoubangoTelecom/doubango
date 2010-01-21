@@ -545,7 +545,7 @@ static void* tcomp_udvm_destroy(void *self)
 	tcomp_udvm_t *udvm = self;
 	if(udvm)
 	{
-		TCOMP_BUFFER_SAFE_FREE(udvm->memory);
+		TSK_OBJECT_SAFE_FREE(udvm->memory);
 	}
 	else TSK_DEBUG_ERROR("Null udvm machine.");
 

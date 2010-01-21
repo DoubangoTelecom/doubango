@@ -1508,7 +1508,7 @@ case 88:
  )
 	{
 		TSK_DEBUG_ERROR("Failed to parse SIP/SIPS/TEL URI.");
-		TSIP_URI_SAFE_FREE(uri);
+		TSK_OBJECT_SAFE_FREE(uri);
 	}
 	
 	return uri;

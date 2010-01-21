@@ -39,7 +39,6 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_OPERATION_CREATE(stack, ...)		tsk_object_new(tsip_operation_def_t, stack, __VA_ARGS__)
-#define TSIP_OPERATION_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 typedef uint64_t tsip_operation_id_t;			
 #define TSIP_OPERATION_INVALID_ID				0

@@ -46,35 +46,21 @@ TNET_BEGIN_DECLS
 
 #define TNET_TURN_CONTEXT_CREATE(server_address, server_port, username, password)	\
 	tsk_object_new(tnet_turn_context_def_t, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
-#define TNET_TURN_CONTEXT_SAFE_FREE(self) \
-	tsk_object_unref(self), self = 0
 
 #define TNET_TURN_ALLOCATION_CREATE(fd, socket_type, server_address, server_port, username, password) \
 	tsk_object_new(tnet_turn_allocation_def_t, (tnet_fd_t)fd, (tnet_socket_type_t)socket_type, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
-#define TNET_TURN_ALLOCATION_SAFE_FREE(self) \
-	tsk_object_unref(self), self = 0
 
-typedef struct tnet_turn_context_s
-{
-	TSK_DECLARE_OBJECT;
-
-	char* username;
-	char* password;
-
-	char* software;
-
-	uint16_t timeout;
-	
-	char* server_address;
-	tnet_port_t server_port; 
-}
-tnet_turn_context_t;
-TINYNET_GEXTERN const void *tnet_turn_context_def_t;
+typedef uint64_t tnet_turn_allocation_id_t;
+#define TNET_TURN_INVALID_ALLOCATION_ID				0
+#define TNET_TURN_IS_VALID_ALLOCATION_ID(id)		(id != TNET_TURN_INVALID_ALLOCATION_ID)
 
 typedef struct tnet_turn_allocation_s
 {
 	TSK_DECLARE_OBJECT;
 	
+	tnet_turn_allocation_id_t id; /**< Unique id. */
+	unsigned active:1;
+
 	char* relay_address; /**< the relayed transport address */
 	
 	/* 5-tuple */
@@ -93,7 +79,7 @@ typedef struct tnet_turn_allocation_s
 	/*---*/
 
 	/* the time-to-expiry */
-	uint32_t timeout; /**< Timeout value in seconds. Default is 600s(10 minutes)*/
+	uint32_t timeout; /**< Timeout value in seconds. Default is 600s(10 minutes). */
 	/*---*/
 
 	/* A list of permissions */
@@ -103,8 +89,31 @@ typedef struct tnet_turn_allocation_s
 }
 tnet_turn_allocation_t;
 TINYNET_GEXTERN const void *tnet_turn_allocation_def_t;
+typedef tsk_list_t tnet_turn_allocations_L_t;
 
-tnet_turn_allocation_t* tnet_turn_allocate(const void* nat_context, tnet_fd_t localFD, tnet_socket_type_t socket_type);
+typedef struct tnet_turn_context_s
+{
+	TSK_DECLARE_OBJECT;
+
+	char* username;
+	char* password;
+
+	char* software;
+
+	uint16_t timeout; /**< Default/initial timeout value to use for all allocations. */
+	
+	char* server_address;
+	tnet_port_t server_port; 
+
+	tnet_turn_allocations_L_t *allocations; /**< List of all allocations associated to this context. */
+}
+tnet_turn_context_t;
+TINYNET_GEXTERN const void *tnet_turn_context_def_t;
+
+
+
+tnet_turn_allocation_id_t tnet_turn_allocate(const void* nat_context, const tnet_fd_t localFD, tnet_socket_type_t socket_type);
+int tnet_turn_unallocate(const void* nat_context, tnet_turn_allocation_t *allocation);
 
 
 TNET_END_DECLS

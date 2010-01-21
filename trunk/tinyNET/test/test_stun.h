@@ -71,9 +71,9 @@ void test_sun_sendMessage()
 	tnet_socket_sendto(socket, (struct sockaddr*)&to, buffer->data, buffer->size);
 
 bail:
-	TNET_STUN_MESSAGE_SAFE_FREE(message);
-	TNET_SOCKET_SAFE_FREE(socket);
-	TSK_BUFFER_SAFE_FREE(buffer);*/
+	TSK_OBJECT_SAFE_FREE(message);
+	TSK_OBJECT_SAFE_FREE(socket);
+	TSK_OBJECT_SAFE_FREE(buffer);*/
 }
 
 void test_stun_context()
@@ -98,8 +98,8 @@ void test_stun_context()
 //	tnet_stun_resolve(context, STUN_SERVER_IP, STUN_SERVER_PORT, STUN_SERVER_PROTO);
 //
 //bail:
-//	TNET_SOCKET_SAFE_FREE(localSocket);
-//	TNET_STUN_CONTEXT_SAFE_FREE(context);
+//	TNET_OBJECT_SAFE_FREE(localSocket);
+//	TNET_OBJECT_SAFE_FREE(context);
 }
 
 void test_stun()

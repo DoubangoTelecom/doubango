@@ -47,7 +47,6 @@
 TCOMP_BEGIN_DECLS
 
 #define TCOMP_UDVM_CREATE(_sigCompMessage, stateHandler, lpResult)	tsk_object_new(tcomp_udvm_def_t, (tcomp_message_t*)_sigCompMessage, (tcomp_statehandler_t*)stateHandler, (tcomp_result_t*)lpResult)
-#define TCOMP_UDVM_SAFE_FREE(self)									tsk_object_unref(self), self = 0
 
 #define TCOMP_UDVM_SET_2BYTES_VAL(position, value)	TSK_BINARY_SET_2BYTES(tcomp_buffer_getBufferAtPos(udvm->memory, position), value)
 #define TCOMP_UDVM_GET_2BYTES_VAL(position)			TSK_BINARY_GET_2BYTES(tcomp_buffer_getBufferAtPos(udvm->memory, position))

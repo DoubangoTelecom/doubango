@@ -323,7 +323,7 @@ case 20:
 /* #line 98 "tsip_parser_header_Max_Forwards.rl" */
  )
 	{
-		TSIP_HEADER_MAX_FORWARDS_SAFE_FREE(hdr_maxf);
+		TSK_OBJECT_SAFE_FREE(hdr_maxf);
 	}
 	
 	return hdr_maxf;

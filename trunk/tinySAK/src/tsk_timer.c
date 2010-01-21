@@ -41,7 +41,6 @@
 */
 
 #define TSK_TIMER_CREATE(timeout, callback, arg)	tsk_object_new(tsk_timer_def_t, timeout, callback, arg)
-#define TSK_TIMER_SAFE_FREE(self)					tsk_object_unref(self), self = 0
 #define TSK_TIMER_TIMEOUT(self)						((tsk_timer_t*)self)->timeout
 #define TSK_TIMER_GET_FIRST()						(manager->timers && manager->timers->head) ? (tsk_timer_t*)(((tsk_list_item_t*)(manager->timers->head))->data) : 0
 
@@ -108,13 +107,13 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 		TSK_RUNNABLE(manager)->run = run;
 		if(err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t))
 		{
-			TSK_TIMER_MANAGER_SAFE_FREE(manager);
+			TSK_OBJECT_SAFE_FREE(manager);
 			return err;
 		}
 
 		if(err = tsk_thread_create(&(manager->mainThreadId[0]), __tsk_timer_manager_mainthread, manager))
 		{
-			TSK_TIMER_MANAGER_SAFE_FREE(manager);
+			TSK_OBJECT_SAFE_FREE(manager);
 			
 			TSK_DEBUG_FATAL("Failed to start timer manager: %d\n", err);
 			return err;

@@ -69,7 +69,7 @@ static void* tcomp_nackinfo_destroy(void * self)
 	tcomp_nackinfo_t *nackinfo = self;
 	if(nackinfo)
 	{
-		TCOMP_BUFFER_SAFE_FREE(nackinfo->details);
+		TSK_OBJECT_SAFE_FREE(nackinfo->details);
 	}
 	return self;
 }

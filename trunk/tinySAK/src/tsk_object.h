@@ -37,6 +37,19 @@
 
 TSK_BEGIN_DECLS
 
+/**
+ * @def	TSK_OBJECT_SAFE_FREE(self) tsk_object_unref(self), self = 0
+ *
+ * @brief	Safely free an object. If the reference count of the object was equal to 1 then this
+ * 			object will be freed otherwise the refrence count will be decremented. 
+ *			In all all case this operation will set the pointer (the object itself) to NULL. 
+ *
+ * @remarks	Mamadou, 1/20/2010. 
+ *
+ * @param	self	The object to free or unref. 
+**/
+#define TSK_OBJECT_SAFE_FREE(self)		tsk_object_unref(self), self = 0
+
 #define TSK_DECLARE_OBJECT \
 	const void* base; \
 	size_t	refCount

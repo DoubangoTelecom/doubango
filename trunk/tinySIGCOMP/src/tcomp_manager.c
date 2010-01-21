@@ -312,9 +312,9 @@ static void* tcomp_manager_destroy(void *self)
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(manager);
 		
-		TCOMP_DECOMPRESSORDISP_SAFE_FREE(manager->dispatcher_decompressor);
-		TCOMP_COMPRESSORDISP_SAFE_FREE(manager->dispatcher_compressor);
-		TCOMP_STATEHANDLER_SAFE_FREE(manager->stateHandler);
+		TSK_OBJECT_SAFE_FREE(manager->dispatcher_decompressor);
+		TSK_OBJECT_SAFE_FREE(manager->dispatcher_compressor);
+		TSK_OBJECT_SAFE_FREE(manager->stateHandler);
 	}
 	else TSK_DEBUG_ERROR("Null manager.");
 	

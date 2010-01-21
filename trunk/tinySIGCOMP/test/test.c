@@ -1145,12 +1145,12 @@ int main()
 	tcomp_manager_closeCompartment(manager2, COMPARTMENT_ID2, strlen(COMPARTMENT_ID2));
 
 	// Delete Results
-	TCOMP_RESULT_SAFE_FREE(result1);
-	TCOMP_RESULT_SAFE_FREE(result2);
+	TSK_OBJECT_SAFE_FREE(result1);
+	TSK_OBJECT_SAFE_FREE(result2);
 
 	// Delete managers
-	TCOMP_MANAGER_SAFE_FREE(manager1);
-	TCOMP_MANAGER_SAFE_FREE(manager2);
+	TSK_OBJECT_SAFE_FREE(manager1);
+	TSK_OBJECT_SAFE_FREE(manager2);
 }
 
 

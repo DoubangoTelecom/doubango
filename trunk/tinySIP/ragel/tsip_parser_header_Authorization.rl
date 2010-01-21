@@ -221,7 +221,7 @@ tsip_header_Authorization_t *tsip_header_Authorization_parse(const char *data, s
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_AUTHORIZATION_SAFE_FREE(hdr_Authorization);
+		TSK_OBJECT_SAFE_FREE(hdr_Authorization);
 	}
 	
 	return hdr_Authorization;
@@ -273,7 +273,7 @@ static void* tsip_header_Authorization_destroy(void *self)
 		TSK_FREE(Authorization->qop);
 		TSK_FREE(Authorization->nc);
 		
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Authorization));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Authorization));
 	}
 	else TSK_DEBUG_ERROR("Null Authorization header.");
 

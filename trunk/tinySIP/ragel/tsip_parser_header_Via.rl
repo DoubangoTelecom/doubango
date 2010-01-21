@@ -209,7 +209,7 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_VIA_SAFE_FREE(hdr_via);
+		TSK_OBJECT_SAFE_FREE(hdr_via);
 	}
 	
 	return hdr_via;
@@ -281,7 +281,7 @@ static void* tsip_header_Via_destroy(void *self)
 		TSK_FREE(via->received);
 		TSK_FREE(via->sigcomp_id);
 		TSK_FREE(via->transport);
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(via));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(via));
 	}
 	else TSK_DEBUG_ERROR("Null Via header.");
 

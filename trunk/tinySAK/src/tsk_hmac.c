@@ -108,7 +108,7 @@ digest_compute:
 
 		if(pass1_done)
 		{
-			TSK_BUFFER_SAFE_FREE(passx);
+			TSK_OBJECT_SAFE_FREE(passx);
 			goto pass1_and_pass2_done;
 		}
 		else

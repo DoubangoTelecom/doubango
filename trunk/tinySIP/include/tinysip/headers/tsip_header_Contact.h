@@ -37,18 +37,12 @@
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_CONTACT_CREATE
-* Creates new sip 'Contact' header.  You must call @ref TSIP_HEADER_CONTACT_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_CONTACT_SAFE_FREE.
-*/
-/**@def TSIP_HEADER_CONTACT_SAFE_FREE
-* Safely free a sip 'Contact' header previously created using TSIP_HEADER_CONTACT_CREATE.
-* @sa TSIP_HEADER_CONTACT_CREATE.
+* Creates new sip 'Contact' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_HEADER_CONTACT_CREATE()		tsk_object_new(tsip_header_Contact_def_t)
-#define TSIP_HEADER_CONTACT_SAFE_FREE(self)	tsk_object_unref(self), self = 0
 
 //#define TSIP_CONTACT_CREATE()				tsk_object_new(tsip_contact_def_t)
-//#define TSIP_CONTACT_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 //
 //typedef struct tsip_contact_s
 //{

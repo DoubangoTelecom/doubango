@@ -243,7 +243,7 @@ tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
 	if( cs < %%{ write first_final; }%% )
 	{
 		TSK_DEBUG_ERROR("Failed to parse SIP/SIPS/TEL URI.");
-		TSIP_URI_SAFE_FREE(uri);
+		TSK_OBJECT_SAFE_FREE(uri);
 	}
 	
 	return uri;

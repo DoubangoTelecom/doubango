@@ -100,7 +100,7 @@ tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size)
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_EXPIRES_SAFE_FREE(hdr_expires);
+		TSK_OBJECT_SAFE_FREE(hdr_expires);
 	}
 	
 	return hdr_expires;

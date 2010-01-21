@@ -71,7 +71,7 @@ void test_stack()
 
 	tsip_stack_stop(stack);
 
-	TSIP_OPERATION_SAFE_FREE(op);
+	TSK_OBJECT_SAFE_FREE(op);
 	tsip_stack_destroy(stack);
 }
 

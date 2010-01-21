@@ -99,9 +99,9 @@ void tsk_xml_element_init_set(tsk_xml_element_t** element, const char* name, con
 
 	TSK_FREE((*element)->name);
 	TSK_FREE((*element)->value);
-	TSK_LIST_SAFE_FREE((*element)->elements);
-	TSK_LIST_SAFE_FREE((*element)->attributes);
-	TSK_LIST_SAFE_FREE((*element)->namespaces);
+	TSK_OBJECT_SAFE_FREE((*element)->elements);
+	TSK_OBJECT_SAFE_FREE((*element)->attributes);
+	TSK_OBJECT_SAFE_FREE((*element)->namespaces);
 
 	TSK_FREE(element);
 }*/

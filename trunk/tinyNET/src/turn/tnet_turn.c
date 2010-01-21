@@ -43,23 +43,31 @@
 #include "tnet_turn_attribute.h"
 
 #include "tsk_md5.h"
+#include "tsk_debug.h"
 
 #include <string.h>
+
+/*
+- IMPORTANT: 16.  Detailed Example
+- It is suggested that the client refresh the allocation roughly 1 minute before it expires.
+- If the client wishes to immediately delete an existing allocation, it includes a LIFETIME attribute with a value of 0.
+*/
 
 int tnet_turn_send_allocate(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation)
 {
 	tnet_stun_attribute_t* attribute;
 	int ret = -1;
 
-	tnet_stun_message_t *message = TNET_STUN_MESSAGE_CREATE(context->username, context->password);
-	message->fingerprint = context->enable_fingerprint;
-	message->integrity = context->enable_integrity;
-	message->realm = tsk_strdup(allocation->realm);
-	message->nonce = tsk_strdup(allocation->nonce);
+	tnet_stun_request_t *request = TNET_STUN_MESSAGE_CREATE(context->username, context->password);
+	request->fingerprint = context->enable_fingerprint;
+	request->integrity = context->enable_integrity;
+	request->dontfrag = context->enable_dontfrag;
+	request->realm = tsk_strdup(allocation->realm);
+	request->nonce = tsk_strdup(allocation->nonce);
 
-	if(message)
+	if(request)
 	{
-		message->type = stun_allocate_request;
+		request->type = allocation->active ? stun_refresh_request : stun_allocate_request;
 
 		{	/* Create random transaction id */
 			tsk_istr_t random;
@@ -68,37 +76,37 @@ int tnet_turn_send_allocate(const tnet_nat_context_t* context, tnet_turn_allocat
 			tsk_strrandom(&random);
 			TSK_MD5_DIGEST_CALC(random, sizeof(random), digest);
 
-			memcpy(message->transaction_id, digest, TNET_STUN_TRANSACID_SIZE);
+			memcpy(request->transaction_id, digest, TNET_STUN_TRANSACID_SIZE);
 		}
 
 		/* Add software attribute */
 		if(allocation->software)
 		{
-			attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(allocation->software);
-			tnet_stun_message_add_attribute(message, &attribute);
+			attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(allocation->software, strlen(allocation->software));
+			tnet_stun_message_add_attribute(request, &attribute);
 		}
 
 		/* Add Requested transport. */
 		{
 			attribute = TNET_TURN_ATTRIBUTE_REQTRANS_CREATE(TNET_SOCKET_TYPE_IS_DGRAM(allocation->socket_type) ? TNET_PROTO_UDP: TNET_PROTO_TCP);
-			tnet_stun_message_add_attribute(message, &attribute);
+			tnet_stun_message_add_attribute(request, &attribute);
 		}
 
 		/* Add lifetime */
 		{
-			attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(allocation->timeout);
-			tnet_stun_message_add_attribute(message, &attribute);
+			attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(ntohl(allocation->timeout));
+			tnet_stun_message_add_attribute(request, &attribute);
 		}
 
 		/* Add Event Port */
 		{
 			attribute = TNET_TURN_ATTRIBUTE_EVEN_PORT_CREATE(context->enable_evenport);
-			tnet_stun_message_add_attribute(message, &attribute);
+			tnet_stun_message_add_attribute(request, &attribute);
 		}
 
 		if(TNET_SOCKET_TYPE_IS_DGRAM(allocation->socket_type))
 		{
-			tnet_stun_response_t *response = tnet_stun_send_unreliably(allocation->localFD, 500, 7, message, (struct sockaddr*)&allocation->server);
+			tnet_stun_response_t *response = tnet_stun_send_unreliably(allocation->localFD, 500, 7, request, (struct sockaddr*)&allocation->server);
 			if(response)
 			{
 				if(TNET_STUN_RESPONSE_IS_ERROR(response))
@@ -106,23 +114,29 @@ int tnet_turn_send_allocate(const tnet_nat_context_t* context, tnet_turn_allocat
 					short code = tnet_stun_message_get_errorcode(response);
 					const char* realm = tnet_stun_message_get_realm(response);
 					const char* nonce = tnet_stun_message_get_nonce(response);
+
 					if(code == 401 && realm && nonce)
 					{
 						if(!allocation->nonce)
 						{	/* First time we get a nonce */
 							tsk_strupdate(&allocation->nonce, nonce);
 							tsk_strupdate(&allocation->realm, realm);
+							
+							/* Delete the message and response before retrying*/
+							TSK_OBJECT_SAFE_FREE(response);
+							TSK_OBJECT_SAFE_FREE(request);
 
 							// Send again using new transaction identifier
 							return tnet_turn_send_allocate(context, allocation);
 						}
 						else
 						{
-							return -3;
+							ret = -3;
 						}
 					}
 					else
 					{
+						TSK_DEBUG_ERROR("Server error code: %d", code);
 						ret = -2;
 					}
 				}
@@ -140,29 +154,66 @@ int tnet_turn_send_allocate(const tnet_nat_context_t* context, tnet_turn_allocat
 			{
 				ret = -4;
 			}
-			TNET_STUN_MESSAGE_SAFE_FREE(response);
+			TSK_OBJECT_SAFE_FREE(response);
 		}
 	}
 	
-	TNET_STUN_MESSAGE_SAFE_FREE(message);
+	TSK_OBJECT_SAFE_FREE(request);
 	return ret;
 }
 
-tnet_turn_allocation_t* tnet_turn_allocate(const void* nat_context, tnet_fd_t localFD, tnet_socket_type_t socket_type)
+tnet_turn_allocation_id_t tnet_turn_allocate(const void* nat_context, const tnet_fd_t localFD, tnet_socket_type_t socket_type)
 {
-	tnet_turn_allocation_t* allocation = 0;
+	tnet_turn_allocation_id_t id = TNET_TURN_INVALID_ALLOCATION_ID;
 	const tnet_nat_context_t* context = nat_context;
-	if(nat_context)
+
+	if(context)
 	{
-		allocation = TNET_TURN_ALLOCATION_CREATE(context->localFD, context->socket_type, context->server_address, context->server_port, context->username, context->password);
+		int ret;
+		tnet_turn_allocation_t* allocation = TNET_TURN_ALLOCATION_CREATE(localFD, context->socket_type, context->server_address, context->server_port, context->username, context->password);
 		allocation->software = tsk_strdup(context->software);
 		
-		tnet_turn_send_allocate(nat_context, allocation);
+		if((ret = tnet_turn_send_allocate(nat_context, allocation)))
+		{
+			TSK_DEBUG_ERROR("TURN allocation failed with error code:%d.", ret);
+			TSK_OBJECT_SAFE_FREE(allocation);
+		}
+		else
+		{
+			id = allocation->id;
+			allocation->active = 1;
+			tsk_list_push_back_data(context->allocations, (void**)&allocation);
+		}
 	}
 
-	return allocation;
+	return id;
 }
 
+int tnet_turn_unallocate(const void* nat_context, tnet_turn_allocation_t *allocation)
+{
+	const tnet_nat_context_t* context = nat_context;
+
+	if(context && allocation)
+	{
+		int ret;
+		uint32_t timeout = allocation->timeout; /* Save timeout. */
+		allocation->timeout = 0;
+
+		if((ret = tnet_turn_send_allocate(nat_context, allocation)))
+		{
+			TSK_DEBUG_ERROR("TURN unallocation failed with error code:%d.", ret);
+
+			allocation->timeout = timeout; /* Restore timeout */
+			return -1;
+		}
+		else
+		{
+			tsk_list_remove_item_by_data(context->allocations, allocation);
+			return 0;
+		}
+	}
+	return -1;
+}
 
 
 //========================================================
@@ -181,6 +232,8 @@ static void* tnet_turn_context_create(void * self, va_list * app)
 
 		context->software = tsk_strdup(TNET_SOFTWARE);
 		context->timeout = 600;
+
+		context->allocations = TSK_LIST_CREATE();
 	}
 	return self;
 }
@@ -196,6 +249,8 @@ static void* tnet_turn_context_destroy(void * self)
 		TSK_FREE(context->server_address);
 
 		TSK_FREE(context->software);
+
+		TSK_OBJECT_SAFE_FREE(context->allocations);
 	}
 
 	return self;
@@ -210,6 +265,8 @@ static const tsk_object_def_t tnet_turn_context_def_s =
 };
 const void *tnet_turn_context_def_t = &tnet_turn_context_def_s;
 
+
+
 //========================================================
 //	TURN ALLOCATION object definition
 //
@@ -218,8 +275,12 @@ static void* tnet_turn_allocation_create(void * self, va_list * app)
 	tnet_turn_allocation_t *allocation = self;
 	if(allocation)
 	{
+		static tnet_turn_allocation_id_t __unique_id = 0;
+		
 		const char* server_address;
 		tnet_port_t server_port;
+
+		allocation->id = ++__unique_id;
 
 		allocation->localFD = va_arg(*app, tnet_fd_t);
 		allocation->socket_type = va_arg(*app, tnet_socket_type_t);

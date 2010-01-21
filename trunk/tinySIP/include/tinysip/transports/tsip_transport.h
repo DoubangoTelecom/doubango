@@ -45,7 +45,6 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSPORT_CREATE(stack, host, port, type, description)		tsk_object_new(tsip_transport_def_t, stack, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
-#define TSIP_TRANSPORT_SAFE_FREE(self)									tsk_object_unref(self), self = 0
 
 #define TSIP_TRANSPORT_IS_SECURE(self)									(self && )
 

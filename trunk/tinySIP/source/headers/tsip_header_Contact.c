@@ -2372,8 +2372,8 @@ case 136:
 /* #line 172 "tsip_parser_header_Contact.rl" */
  )
 	{
-		TSIP_HEADER_CONTACT_SAFE_FREE(curr_contact);
-		TSK_LIST_SAFE_FREE(hdr_contacts);
+		TSK_OBJECT_SAFE_FREE(curr_contact);
+		TSK_OBJECT_SAFE_FREE(hdr_contacts);
 	}
 	
 	return hdr_contacts;
@@ -2412,9 +2412,9 @@ static void* tsip_header_Contact_destroy(void *self)
 	if(Contact)
 	{
 		TSK_FREE(Contact->display_name);
-		TSIP_URI_SAFE_FREE(Contact->uri);
+		TSK_OBJECT_SAFE_FREE(Contact->uri);
 
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Contact));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Contact));
 	}
 	else TSK_DEBUG_ERROR("Null Contact header.");
 
@@ -2459,9 +2459,9 @@ const void *tsip_header_Contact_def_t = &tsip_header_Contact_def_s;
 //	if(contact)
 //	{
 //		TSK_FREE(contact->display_name);
-//		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(contact));
+//		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(contact));
 //
-//		TSIP_URI_SAFE_FREE(contact->uri);
+//		TSK_OBJECT_SAFE_FREE(contact->uri);
 //	}
 //	else TSK_DEBUG_ERROR("Null Contact object.");
 //

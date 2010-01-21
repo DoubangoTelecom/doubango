@@ -47,7 +47,6 @@ TCOMP_BEGIN_DECLS
 #define TCOMP_MAX_COMPRESSORS		5
 
 #define TCOMP_COMPRESSORDISP_CREATE(statehandler)		tsk_object_new(tcomp_compressordisp_def_t, (const tcomp_statehandler_t*)statehandler)
-#define TCOMP_COMPRESSORDISP_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 typedef struct tcomp_compressordisp_s
 {

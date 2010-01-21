@@ -38,7 +38,6 @@
 TCOMP_BEGIN_DECLS
 
 #define TCOMP_MESSAGE_CREATE(input_ptr, input_size, stream)	tsk_object_new(tcomp_message_def_t, input_ptr, input_size, stream)
-#define TCOMP_MESSAGE_SAFE_FREE(self)						tsk_object_unref(self), self = 0
 
 /**
 * SigComp Message Format as per RFC 3320 subclause 7.

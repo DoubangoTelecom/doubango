@@ -41,7 +41,6 @@ typedef void tcomp_manager_handle_t;
 
 
 #define TCOMP_MANAGER_CREATE()					(tcomp_manager_handle_t*)tsk_object_new(tcomp_manager_def_t)
-#define TCOMP_MANAGER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 //
 //	Compression / Decompression

@@ -73,7 +73,7 @@ void test_uri_tostring(const tsip_uri_t *uri)
 	tsip_uri_tostring(uri, 1, 1, buffer);
 	TSK_DEBUG_INFO("uri_to_string=%s", TSK_BUFFER_TO_STRING(buffer));
 
-	TSK_BUFFER_SAFE_FREE(buffer);
+	TSK_OBJECT_SAFE_FREE(buffer);
 }
 
 void test_uri_parser()
@@ -116,7 +116,7 @@ void test_uri_parser()
 
 		printf("\n\n");
 
-		TSIP_URI_SAFE_FREE(uri);
+		TSK_OBJECT_SAFE_FREE(uri);
 	}
 }
 

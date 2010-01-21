@@ -113,7 +113,7 @@ tsip_header_Supported_t *tsip_header_Supported_parse(const char *data, size_t si
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_SUPPORTED_SAFE_FREE(hdr_supported);
+		TSK_OBJECT_SAFE_FREE(hdr_supported);
 	}
 	
 	return hdr_supported;
@@ -153,7 +153,7 @@ static void* tsip_header_Supported_destroy(void *self)
 	tsip_header_Supported_t *Supported = self;
 	if(Supported)
 	{
-		TSK_LIST_SAFE_FREE(Supported->options);
+		TSK_OBJECT_SAFE_FREE(Supported->options);
 	}
 	else TSK_DEBUG_ERROR("Null Supported header.");
 

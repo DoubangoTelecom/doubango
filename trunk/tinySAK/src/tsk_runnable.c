@@ -70,7 +70,7 @@ static int tsk_runnable_deinit(tsk_runnable_t *self)
 		else if(self->running) return -3;
 
 		tsk_semaphore_destroy(&self->semaphore);
-		TSK_LIST_SAFE_FREE(self->objects);
+		TSK_OBJECT_SAFE_FREE(self->objects);
 
 		self->initialized = 0;
 

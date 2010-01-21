@@ -425,7 +425,7 @@ int send_register(tsip_dialog_register_t *self)
 		}		
 		
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
-		TSIP_REQUEST_SAFE_FREE(request);
+		TSK_OBJECT_SAFE_FREE(request);
 	}
 
 	return ret;

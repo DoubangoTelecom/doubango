@@ -46,7 +46,6 @@
 TCOMP_BEGIN_DECLS
 
 #define TCOMP_STATEHANDLER_CREATE()				tsk_object_new(tcomp_statehandler_def_t)
-#define TCOMP_STATEHANDLER_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 typedef struct tcomp_statehandler_s
 {

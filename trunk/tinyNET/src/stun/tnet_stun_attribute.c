@@ -74,8 +74,7 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 	/* RFC 5389 -  15.3.  USERNAME*/
 	case stun_username:
 		{
-			TSK_DEBUG_ERROR("DESERIALIZE:USERNAME ==> NOT IMPLEMENTED");
-			attribute = TNET_STUN_ATTRIBUTE_CREATE();
+			attribute = TNET_STUN_ATTRIBUTE_USERNAME_CREATE(dataPtr, length);
 			break;
 		}
 
@@ -85,9 +84,7 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 		{
 			if(length == TSK_SHA1_DIGEST_SIZE)
 			{
-				tsk_sha1digest_t sha1digest;
-				memcpy(sha1digest, dataPtr, TSK_SHA1_DIGEST_SIZE);
-				attribute = TNET_STUN_ATTRIBUTE_INTEGRITY_CREATE(&sha1digest);
+				attribute = TNET_STUN_ATTRIBUTE_INTEGRITY_CREATE(dataPtr, length);
 			}
 			break;
 		}
@@ -95,7 +92,7 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 		/* RFC 5389 -  15.5.  FINGERPRINT*/
 	case stun_fingerprint:
 		{
-			uint32_t fingerprint = htonl(*((uint32_t*)dataPtr));
+			uint32_t fingerprint = ntohl(*((uint32_t*)dataPtr));
 			attribute = TNET_STUN_ATTRIBUTE_FINGERPRINT_CREATE(fingerprint);
 			break;
 		}
@@ -132,17 +129,14 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 	/*	RFC 5389 - 15.10.  SOFTWARE */
 	case stun_software:
 		{
-			char* software = tsk_strndup(dataPtr, length);
-			attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(software);
-			TSK_FREE(software);
+			attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(dataPtr, length);
 			break;
 		}
 
 	/*	RFC 5389 - 15.11.  ALTERNATE-SERVER */
 	case stun_alternate_server:
 		{
-			TSK_DEBUG_ERROR("DESERIALIZE:ALTERNATE-SERVER ==> NOT IMPLEMENTED");
-			attribute = TNET_STUN_ATTRIBUTE_CREATE();
+			attribute = TNET_STUN_ATTRIBUTE_ALTSERVER_CREATE(dataPtr, length);
 			break;
 		}
 
@@ -159,7 +153,8 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 	case stun_reserved3:
 	case stun_reservation_token:
 		{
-			attribute = tnet_turn_attribute_deserialize(dataPtr, length);
+			attribute = tnet_turn_attribute_deserialize(type, length, dataPtr, length);
+			break;
 		}
 
 	default:
@@ -168,9 +163,12 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 	}
 
 	
-	/* Set common values. */
-	attribute->type = type;
-	attribute->length = length;
+	/* Set common values (Do I need this ==> already set by the constructor). */
+	if(attribute)
+	{
+		attribute->type = type;
+		attribute->length = length;
+	}
 
 	return attribute;
 }
@@ -383,7 +381,7 @@ static void* tnet_stun_attribute_mapped_addr_create(void * self, va_list * app)
 		}
 		else if(attribute->family == stun_ipv6)
 		{
-			//memcpy(attribute->address, payloadPtr, 16);
+			TSK_DEBUG_ERROR("IPv6 not supported yet.");
 		}
 		else
 		{
@@ -455,7 +453,7 @@ static void* tnet_stun_attribute_xmapped_addr_create(void * self, va_list * app)
 		}
 		else if(attribute->family == stun_ipv6)
 		{
-			
+			TSK_DEBUG_ERROR("IPv6 not supported yet.");
 		}
 		else
 		{
@@ -533,11 +531,16 @@ static void* tnet_stun_attribute_integrity_create(void * self, va_list * app)
 	tnet_stun_attribute_integrity_t *attribute = self;
 	if(attribute)
 	{
-		tsk_sha1digest_t* sha1digest = va_arg(*app, tsk_sha1digest_t*);
-		memcpy(attribute->sha1digest, *sha1digest, TSK_SHA1_DIGEST_SIZE);
+		const void *payload = va_arg(*app, const void*);
+		size_t payload_size = va_arg(*app, size_t);
+		
+		if(payload_size == TSK_SHA1_DIGEST_SIZE)
+		{
+			memcpy(attribute->sha1digest, payload, TSK_SHA1_DIGEST_SIZE);
 
-		TNET_STUN_ATTRIBUTE(attribute)->type = stun_message_integrity;
-		TNET_STUN_ATTRIBUTE(attribute)->length = TSK_SHA1_DIGEST_SIZE;
+			TNET_STUN_ATTRIBUTE(attribute)->type = stun_message_integrity;
+			TNET_STUN_ATTRIBUTE(attribute)->length = TSK_SHA1_DIGEST_SIZE;
+		}
 	}
 	return self;
 }
@@ -746,7 +749,7 @@ static void* tnet_stun_attribute_unknowns_destroy(void * self)
 	tnet_stun_attribute_unknowns_t *attribute = self;
 	if(attribute)
 	{
-		TSK_BUFFER_SAFE_FREE(attribute->value);
+		TSK_OBJECT_SAFE_FREE(attribute->value);
 	}
 	return self;
 }
@@ -768,9 +771,12 @@ static void* tnet_stun_attribute_software_create(void * self, va_list * app)
 	tnet_stun_attribute_software_t *attribute = self;
 	if(attribute)
 	{
+		const void *payload = va_arg(*app, const void*);
+		size_t payload_size = va_arg(*app, size_t);
+
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_software;
 
-		attribute->value = tsk_strdup(va_arg(*app, const char*));
+		attribute->value = tsk_strndup(payload, payload_size);
 		TNET_STUN_ATTRIBUTE(attribute)->length = strlen(attribute->value);
 	}
 	return self;
@@ -806,7 +812,30 @@ static void* tnet_stun_attribute_altserver_create(void * self, va_list * app)
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
+		const uint8_t *payloadPtr = (const uint8_t*)payload;
+		payloadPtr += 1; /* Ignore first 8bits */
+
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_alternate_server;
+		TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
+
+		attribute->family = (tnet_stun_addr_family_t) (*(payloadPtr++));
+		attribute->port = ntohs(*((uint16_t*)payloadPtr));
+		payloadPtr+=2;
+
+		if(attribute->family == stun_ipv4)
+		{
+			uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
+			memcpy(attribute->server, &addr, 4);
+			payloadPtr+=4;
+		}
+		else if(attribute->family == stun_ipv6)
+		{
+			TSK_DEBUG_ERROR("IPv6 not supported yet.");
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+		}
 	}
 	return self;
 }
@@ -816,7 +845,7 @@ static void* tnet_stun_attribute_altserver_destroy(void * self)
 	tnet_stun_attribute_altserver_t *attribute = self;
 	if(attribute)
 	{
-
+		
 	}
 	return self;
 }

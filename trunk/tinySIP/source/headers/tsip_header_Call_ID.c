@@ -403,7 +403,7 @@ case 16:
 /* #line 107 "tsip_parser_header_Call_ID.rl" */
  )
 	{
-		TSIP_HEADER_CALL_ID_SAFE_FREE(hdr_call_id);
+		TSK_OBJECT_SAFE_FREE(hdr_call_id);
 	}
 	
 	return hdr_call_id;
@@ -445,7 +445,7 @@ static void* tsip_header_Call_ID_destroy(void *self)
 	if(Call_ID)
 	{
 		TSK_FREE(Call_ID->value);
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Call_ID));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Call_ID));
 	}
 	else TSK_DEBUG_ERROR("Null Call_ID header.");
 

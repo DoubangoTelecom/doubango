@@ -2468,7 +2468,7 @@ case 160:
 /* #line 186 "tsip_parser_header_WWW_Authenticate.rl" */
  )
 	{
-		TSIP_HEADER_WWW_AUTHENTICATE_SAFE_FREE(hdr_WWW_Authenticate);
+		TSK_OBJECT_SAFE_FREE(hdr_WWW_Authenticate);
 	}
 	
 	return hdr_WWW_Authenticate;
@@ -2516,7 +2516,7 @@ static void* tsip_header_WWW_Authenticate_destroy(void *self)
 		TSK_FREE(WWW_Authenticate->algorithm);
 		TSK_FREE(WWW_Authenticate->qop);
 
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(WWW_Authenticate));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(WWW_Authenticate));
 	}
 	else TSK_DEBUG_ERROR("Null WWW_Authenticate header.");
 

@@ -5087,7 +5087,7 @@ case 213:
 /* #line 125 "tsip_parser_header_To.rl" */
  )
 	{
-		TSIP_HEADER_TO_SAFE_FREE(hdr_to);
+		TSK_OBJECT_SAFE_FREE(hdr_to);
 	}
 	
 	return hdr_to;
@@ -5138,8 +5138,8 @@ static void* tsip_header_To_destroy(void *self)
 		TSK_FREE(To->display_name);
 		TSK_FREE(To->tag);
 
-		TSIP_URI_SAFE_FREE(To->uri);
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(To));
+		TSK_OBJECT_SAFE_FREE(To->uri);
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(To));
 	}
 	else TSK_DEBUG_ERROR("Null To header.");
 

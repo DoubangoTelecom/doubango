@@ -137,7 +137,7 @@ int tsk_mutex_unlock(tsk_mutex_handle_t* handle)
 /**@ingroup tsk_mutex_group
 * Internal function to free a mutex previously created using @ref TSK_MUTEX_CREATE. You MUST use @ref TSK_MUTEX_SAFE_FREE to safely free a mutex.
 * @param mutex The mutex to free.
-* @sa @ref TSK_MUTEX_SAFE_FREE
+* @sa @ref TSK_OBJECT_SAFE_FREE
 */
 void tsk_mutex_destroy(tsk_mutex_handle_t** handle)
 {

@@ -158,7 +158,7 @@ int send_response(tsip_dialog_message_t *self, short status, const char* phrase,
 			response->To->tag = tsk_strdup(tag);
 		}
 		ret = tsip_dialog_response_send(TSIP_DIALOG(self), response);
-		TSIP_RESPONSE_SAFE_FREE(response);
+		TSK_OBJECT_SAFE_FREE(response);
 	}
 
 	return ret;

@@ -112,7 +112,7 @@ tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size)
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_ALLOW_SAFE_FREE(hdr_allow);
+		TSK_OBJECT_SAFE_FREE(hdr_allow);
 	}
 	
 	return hdr_allow;
@@ -157,7 +157,7 @@ static void* tsip_header_Allow_destroy(void *self)
 	tsip_header_Allow_t *Allow = self;
 	if(Allow)
 	{
-		TSK_LIST_SAFE_FREE(Allow->methods);
+		TSK_OBJECT_SAFE_FREE(Allow->methods);
 	}
 	else TSK_DEBUG_ERROR("Null Allow header.");
 

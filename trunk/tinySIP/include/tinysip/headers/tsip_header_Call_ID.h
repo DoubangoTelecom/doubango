@@ -36,16 +36,12 @@
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_CALL_ID_CREATE
-* Creates new sip 'Call-ID' header.  You must call @ref TSIP_HEADER_CALL_ID_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_CALL_ID_SAFE_FREE.
+* Creates new sip 'Call-ID' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
 */
-/**@def TSIP_HEADER_CALL_ID_SAFE_FREE
-* Safely free a sip 'Call-ID' header previously created using TSIP_HEADER_CALL_ID_CREATE.
-* @sa TSIP_HEADER_CALL_ID_CREATE.
-*/
+
 #define TSIP_HEADER_CALL_ID_VA_ARGS(call_id)	tsip_header_Call_ID_def_t, (const char*)call_id
 #define TSIP_HEADER_CALL_ID_CREATE(call_id)		tsk_object_new(TSIP_HEADER_CALL_ID_VA_ARGS(call_id))
-#define TSIP_HEADER_CALL_ID_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

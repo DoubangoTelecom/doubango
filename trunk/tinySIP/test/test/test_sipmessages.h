@@ -123,8 +123,8 @@ void test_parser()
 	tsip_message_tostring(message, buffer);
 	TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));
 
-	TSIP_MESSAGE_SAFE_FREE(message);
-	TSK_BUFFER_SAFE_FREE(buffer);
+	TSK_OBJECT_SAFE_FREE(message);
+	TSK_OBJECT_SAFE_FREE(buffer);
 }
 
 
@@ -141,10 +141,10 @@ void test_requests()
 	TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));
 	
 
-	TSIP_URI_SAFE_FREE(from);
-	TSIP_REQUEST_SAFE_FREE(request_uri);
-	TSIP_REQUEST_SAFE_FREE(request);
-	TSK_BUFFER_SAFE_FREE(buffer);
+	TSK_OBJECT_SAFE_FREE(from);
+	TSK_OBJECT_SAFE_FREE(request_uri);
+	TSK_OBJECT_SAFE_FREE(request);
+	TSK_OBJECT_SAFE_FREE(buffer);
 }
 
 void test_responses()
@@ -158,7 +158,7 @@ void test_responses()
 
 	/* Create the response and destroy the request */
 	response = tsip_response_new(200, "OK you can move forward", request);
-	TSIP_REQUEST_SAFE_FREE(request);
+	TSK_OBJECT_SAFE_FREE(request);
 
 	{
 		/* DUMP the response */
@@ -167,11 +167,11 @@ void test_responses()
 		tsip_message_tostring(response, buffer);
 		TSK_DEBUG_INFO("Response=\n%s", TSK_BUFFER_TO_STRING(buffer));
 
-		TSK_BUFFER_SAFE_FREE(buffer);
+		TSK_OBJECT_SAFE_FREE(buffer);
 	}
 	
 
-	TSIP_RESPONSE_SAFE_FREE(response);
+	TSK_OBJECT_SAFE_FREE(response);
 }
 
 void test_messages()

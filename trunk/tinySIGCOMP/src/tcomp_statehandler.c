@@ -433,10 +433,10 @@ static void* tcomp_statehandler_destroy(void *self)
 		tsk_safeobj_deinit(statehandler);
 
 		/* Delete all compartments */
-		TSK_LIST_SAFE_FREE(statehandler->compartments);
+		TSK_OBJECT_SAFE_FREE(statehandler->compartments);
 
 		/* Delete all dictionaries */
-		TSK_LIST_SAFE_FREE(statehandler->dictionaries);
+		TSK_OBJECT_SAFE_FREE(statehandler->dictionaries);
 	}
 	else TSK_DEBUG_ERROR("Null SigComp state handler.");
 

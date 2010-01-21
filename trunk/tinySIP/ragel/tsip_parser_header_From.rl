@@ -124,7 +124,7 @@ tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size)
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_FROM_SAFE_FREE(hdr_from);
+		TSK_OBJECT_SAFE_FREE(hdr_from);
 	}
 	
 	return hdr_from;
@@ -175,8 +175,8 @@ static void* tsip_header_From_destroy(void *self)
 		TSK_FREE(From->display_name);
 		TSK_FREE(From->tag);
 
-		TSIP_URI_SAFE_FREE(From->uri);
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(From));
+		TSK_OBJECT_SAFE_FREE(From->uri);
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(From));
 	}
 	else TSK_DEBUG_ERROR("Null From header.");
 

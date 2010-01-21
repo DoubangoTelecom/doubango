@@ -42,7 +42,6 @@ TNET_BEGIN_DECLS
 #define STREAM_MAX_SIZE	8192
 
 #define TNET_TRANSPORT_CREATE(host, port, type, description)		tsk_object_new(tnet_transport_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
-#define TNET_TRANSPORT_SAFE_FREE(self)								tsk_object_unref(self), self = 0
 
 #define TNET_TRANSPORT_DATA_READ(callback)							((tnet_transport_data_read)callback)
 

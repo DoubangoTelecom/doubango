@@ -38,7 +38,6 @@
 TSK_BEGIN_DECLS
 
 #define TSK_PARAM_CREATE(name, value)		tsk_object_new(tsk_param_def_t, name, value)
-#define TSK_PARAM_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 typedef struct tsk_param_s
 {

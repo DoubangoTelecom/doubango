@@ -40,7 +40,6 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSAC_NIST_CREATE(stack, reliable, cseq_value, cseq_method, callid)		tsk_object_new(tsip_transac_nist_def_t, (const tsip_stack_handle_t *)stack, (unsigned)reliable, (int32_t)cseq_value, (const char*)cseq_method, (const char*)callid)
-#define TSIP_TRANSAC_NIST_SAFE_FREE(self)												tsk_object_unref(self), self = 0
 
 #define TSIP_TRANSAC_NIST(self)															((tsip_transac_nist_t*)(self))
 

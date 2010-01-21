@@ -274,5 +274,5 @@ void tcomp_deflatedata_freeGhostState(tcomp_compressordata_t *data)
 		return;
 	}
 
-	TCOMP_STATE_SAFE_FREE(deflatedata->ghostState);
+	TSK_OBJECT_SAFE_FREE(deflatedata->ghostState);
 }

@@ -168,7 +168,7 @@
 				}
 			}
 
-			TSK_LIST_SAFE_FREE(headers);
+			TSK_OBJECT_SAFE_FREE(headers);
 		}
 	}
 

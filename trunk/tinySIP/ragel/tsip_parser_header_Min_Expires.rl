@@ -97,7 +97,7 @@ tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSIP_HEADER_MIN_EXPIRES_SAFE_FREE(hdr_minE);
+		TSK_OBJECT_SAFE_FREE(hdr_minE);
 	}
 	
 	return hdr_minE;
@@ -138,7 +138,7 @@ static void* tsip_header_Min_Expires_destroy(void *self)
 	tsip_header_Min_Expires_t *Min_Expires = self;
 	if(Min_Expires)
 	{
-		TSK_LIST_SAFE_FREE(TSIP_HEADER_PARAMS(Min_Expires));
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Min_Expires));
 	}
 	else TSK_DEBUG_ERROR("Null Min_Expires header.");
 

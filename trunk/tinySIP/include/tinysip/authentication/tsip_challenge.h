@@ -46,7 +46,6 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_CHALLENGE_CREATE(stack, isproxy, scheme, realm, nonce, opaque, algorithm, qop)		tsk_object_new(tsip_challenge_def_t, stack, (unsigned)isproxy,(const char*)scheme, (const char*)realm, (const char*)nonce, (const char*)opaque, (const char*)algorithm, (const char*)qop)
-#define TSIP_CHALLENGE_SAFE_FREE(self)															tsk_object_unref(self), self = 0
 
 #define TSIP_CHALLENGE_CREATE_NULL(stack)														TSIP_CHALLENGE_CREATE(stack, 0,0,0,0,0,0,0)
 

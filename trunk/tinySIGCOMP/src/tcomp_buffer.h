@@ -42,8 +42,6 @@ TCOMP_BEGIN_DECLS
 #define _TCOMP_BUFFER_CREATE(data, len)	tsk_object_new(tcomp_buffer_def_t, data, len)
 #define TCOMP_BUFFER_CREATE()			_TCOMP_BUFFER_CREATE(0, 0)
 
-#define TCOMP_BUFFER_SAFE_FREE(self)	tsk_object_unref(self), self = 0
-
 /**
 * Sigcomp Buffer handle
 */

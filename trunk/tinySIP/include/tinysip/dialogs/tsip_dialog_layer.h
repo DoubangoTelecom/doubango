@@ -41,7 +41,6 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_DIALOG_LAYER_CREATE(stack)				tsk_object_new(tsip_dialog_layer_def_t, stack)
-#define TSIP_DIALOG_LAYER_SAFE_FREE(self)			tsk_object_unref(self), self = 0
 
 typedef struct tsip_dialog_layer_s
 {

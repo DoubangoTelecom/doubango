@@ -559,7 +559,7 @@ static void* tsip_transac_nict_destroy(void * self)
 	if(transac)
 	{
 		TSIP_TRANSAC(transac)->running = 0;
-		TSIP_REQUEST_SAFE_FREE(transac->request);
+		TSK_OBJECT_SAFE_FREE(transac->request);
 
 		/* DeInitialize base class */
 		tsip_transac_deinit(TSIP_TRANSAC(transac));
