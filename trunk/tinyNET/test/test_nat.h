@@ -24,7 +24,7 @@
 
 //stun.ekiga.net
 //#define STUN_SERVER_IP			"numb.viagenie.ca"
-#define STUN_SERVER_IP			"numb.viagenie.ca"
+#define STUN_SERVER_IP			"stun.ekiga.net"
 #define STUN_USERNAME			"bossiel@yahoo.fr"
 #define STUN_PASSWORD			"diopmama"
 #define STUN_SERVER_PORT		TNET_STUN_TCP_UDP_DEFAULT_PORT
@@ -132,8 +132,8 @@ bail:
 
 void test_nat()
 {
-	//test_nat_stun();
-	test_nat_turn();
+	test_nat_stun();
+	//test_nat_turn();
 	tsk_thread_sleep(1000);
 }
 
