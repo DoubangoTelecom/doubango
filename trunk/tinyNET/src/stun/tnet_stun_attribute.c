@@ -49,8 +49,13 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 	tnet_stun_attribute_type_t type = (tnet_stun_attribute_type_t)ntohs(*((uint16_t*)dataPtr));
 	uint16_t length = ntohs(*(((uint16_t*)dataPtr)+1));
 
-	dataPtr += (2 /* Type */+ 2/* Length */);
+	/* Check validity */
+	if(!data || size<=4/* Type(2-bytes) plus Length (2-bytes) */)
+	{
+		return 0;
+	}
 
+	dataPtr += (2 /* Type */+ 2/* Length */);
 
 	/* Attribute Value
 	*/
@@ -206,14 +211,14 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	case stun_mapped_address:
 		{
 			TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-			break;
+			return -3;
 		}
 
 	/* RFC 5389 -  15.2.  XOR-MAPPED-ADDRESS*/
 	case stun_xor_mapped_address:
 		{
 			TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-			break;
+			return -3;
 		}
 
 	/* RFC 5389 -  15.3.  USERNAME*/
@@ -221,7 +226,7 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 		{
 			tnet_stun_attribute_username_t *username = (tnet_stun_attribute_username_t*)attribute;
 			tsk_buffer_append(output, username->value, strlen(username->value));
-			break;
+			return 0;
 		}
 
 
@@ -230,22 +235,22 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 		{
 			tnet_stun_attribute_integrity_t *integrity = (tnet_stun_attribute_integrity_t*)attribute;
 			tsk_buffer_append(output, integrity->sha1digest, TSK_SHA1_DIGEST_SIZE);
-			break;
+			return 0;
 		}
 
 		/* RFC 5389 -  15.5.  FINGERPRINT*/
 	case stun_fingerprint:
 		{
-			tnet_stun_attribute_fingerprint_t *fingerprint = (tnet_stun_attribute_fingerprint_t*)attribute;
-			tsk_buffer_append(output, &(fingerprint->value), 4);
-			break;
+			uint32_t fingerprint = /*htonl*/(((tnet_stun_attribute_fingerprint_t*)attribute)->value);
+			tsk_buffer_append(output, &fingerprint, 4);
+			return 0;
 		}
 
 	/* RFC 5389 -  15.6.  ERROR-CODE*/
 	case stun_error_code:
 		{
 			TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-			break;
+			return -3;
 		}
 
 	/* RFC 5389 -  15.7.  REALM*/
@@ -253,7 +258,7 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 		{
 			tnet_stun_attribute_realm_t *realm = (tnet_stun_attribute_realm_t*)attribute;
 			tsk_buffer_append(output, realm->value, strlen(realm->value));
-			break;
+			return 0;
 		}
 
 	/* RFC 5389 -  15.8.  NONCE*/
@@ -261,14 +266,14 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 		{
 			tnet_stun_attribute_nonce_t *nonce = (tnet_stun_attribute_nonce_t*)attribute;
 			tsk_buffer_append(output, nonce->value, strlen(nonce->value));
-			break;
+			return 0;
 		}
 
 	/* RFC 5389 -  15.9.  UNKNOWN-ATTRIBUTES*/
 	case stun_unknown_attributes:
 		{
 			TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-			break;
+			return -3;
 		}
 
 	/*	RFC 5389 - 15.10.  SOFTWARE */
@@ -276,14 +281,14 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 		{
 			tnet_stun_attribute_software_t *software = (tnet_stun_attribute_software_t*)attribute;
 			tsk_buffer_append(output, software->value, strlen(software->value));
-			break;
+			return 0;
 		}
 
 	/*	RFC 5389 - 15.11.  ALTERNATE-SERVER */
 	case stun_alternate_server:
 		{
 			TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-			break;
+			return -3;
 		}
 	/* draft-ietf-behave-turn-16 - */
 	case stun_channel_number:
@@ -298,15 +303,12 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	case stun_reserved3:
 	case stun_reservation_token:
 		{
-			tnet_turn_attribute_serialize(attribute, output);
-			break;
+			return tnet_turn_attribute_serialize(attribute, output);
 		}
 
 	default:
-		break;
+		return -2;
 	}
-
-	return -2;
 }
 
 void tnet_stun_attribute_pad(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output)

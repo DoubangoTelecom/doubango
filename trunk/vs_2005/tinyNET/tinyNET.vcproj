@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_WIN32_WINNT=0x0501;_DEBUG;_WINDOWS;_USRDLL;TINYNET_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib $(OutDir)\tinySAK.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -433,6 +433,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_message.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_mx.c"
 					>
 				</File>
@@ -446,6 +450,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_ptr.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_rr.c"
 					>
 				</File>
 				<File
@@ -557,6 +565,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_message.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_mx.h"
 					>
 				</File>
@@ -570,6 +582,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_ptr.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_rr.h"
 					>
 				</File>
 				<File
