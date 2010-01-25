@@ -84,6 +84,235 @@ int tnet_geterrno()
 #endif
 }
 
+
+/**
+ * @fn	tnet_interfaces_L_t* tnet_get_interfaces()
+ *
+ * @brief	Gets list of all network interfaces/adapters. 
+ *
+ * @author	Mamadou
+ * @date	1/25/2010
+ *
+ * @return	List of interfaces. 
+ *			It is up to the caller to free the returned list using @ref TSK_OBJECT_SAFE_FREE. 
+ *
+**/
+tnet_interfaces_L_t* tnet_get_interfaces()
+{
+	tnet_interfaces_L_t * ifaces = TSK_LIST_CREATE();
+
+#if TSK_UNDER_WINDOWS
+
+#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+
+	PIP_ADAPTER_INFO pAdapterInfo = NULL;
+	PIP_ADAPTER_INFO pAdapter = NULL;
+	DWORD dwRetVal = 0;
+
+	ULONG ulOutBufLen = sizeof (IP_ADAPTER_INFO);
+	pAdapterInfo = (IP_ADAPTER_INFO *) MALLOC(sizeof (IP_ADAPTER_INFO));
+	if(pAdapterInfo == NULL)
+	{
+		TSK_DEBUG_ERROR("Error allocating memory needed to call GetAdaptersinfo.");
+		goto bail;
+	}
+	// Make an initial call to GetAdaptersInfo to get
+	// the necessary size into the ulOutBufLen variable
+	if (GetAdaptersInfo(pAdapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
+	{
+		FREE(pAdapterInfo);
+		pAdapterInfo = (IP_ADAPTER_INFO *) MALLOC(ulOutBufLen);
+		if(pAdapterInfo == NULL)
+		{
+			TSK_DEBUG_ERROR("Error allocating memory needed to call GetAdaptersinfo.");
+			goto bail;
+		}
+	}
+
+	if ((dwRetVal = GetAdaptersInfo(pAdapterInfo, &ulOutBufLen)) == NO_ERROR) 
+	{
+		pAdapter = pAdapterInfo;
+		while(pAdapter) 
+		{
+			tnet_interface_t *iface = TNET_INTERFACE_CREATE(pAdapter->Description);
+			tsk_list_push_back_data(ifaces, &(iface));
+			
+			pAdapter = pAdapter->Next;
+		}
+	}
+
+	if(pAdapterInfo)
+	{
+		FREE(pAdapterInfo);
+	}
+
+
+#undef MALLOC
+#undef FREE
+
+
+#else /* !TSK_UNDER_WINDOWS */
+
+// use SIOCGIFCONF ioctl
+
+#endif
+
+bail:
+	return ifaces;
+}
+
+tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family)
+{
+	tnet_addresses_L_t *addresses = TSK_LIST_CREATE();
+	tnet_ip_t ip;
+
+#if TSK_UNDER_WINDOWS
+
+#define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
+#define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
+
+	/* Declare and initialize variables */
+    DWORD dwSize = 0;
+    DWORD dwRetVal = 0;
+
+    int i = 0;
+
+    // Set the flags to pass to GetAdaptersAddresses
+    ULONG flags = GAA_FLAG_INCLUDE_PREFIX;
+
+    LPVOID lpMsgBuf = NULL;
+
+    PIP_ADAPTER_ADDRESSES pAddresses = NULL;
+    ULONG outBufLen = 0;
+
+    PIP_ADAPTER_ADDRESSES pCurrAddresses = NULL;
+    PIP_ADAPTER_UNICAST_ADDRESS pUnicast = NULL;
+    PIP_ADAPTER_ANYCAST_ADDRESS pAnycast = NULL;
+    PIP_ADAPTER_MULTICAST_ADDRESS pMulticast = NULL;
+    IP_ADAPTER_DNS_SERVER_ADDRESS *pDnServer = NULL;
+    IP_ADAPTER_PREFIX *pPrefix = NULL;
+
+
+	outBufLen = sizeof(IP_ADAPTER_ADDRESSES);
+    pAddresses = (IP_ADAPTER_ADDRESSES *) MALLOC(outBufLen);
+
+    // Make an initial call to GetAdaptersAddresses to get the 
+    // size needed into the outBufLen variable
+    if(GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen) == ERROR_BUFFER_OVERFLOW)
+	{
+        FREE(pAddresses);
+        pAddresses = (IP_ADAPTER_ADDRESSES *) MALLOC(outBufLen);
+    }
+
+    if(pAddresses == NULL)
+	{
+        TSK_DEBUG_ERROR("Memory allocation failed for IP_ADAPTER_ADDRESSES struct.");
+        goto bail;
+    }
+
+	dwRetVal = GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen);
+
+	if(dwRetVal == NO_ERROR) 
+	{
+        pCurrAddresses = pAddresses;
+		while (pCurrAddresses)
+		{
+			/* UNICAST addresses
+			*/
+			pUnicast = pCurrAddresses->FirstUnicastAddress;
+            while(pUnicast)
+			{
+				memset(ip, '\0', sizeof(ip));
+				tnet_get_sockip(pUnicast->Address.lpSockaddr, &ip);
+				{
+					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
+					address->family = pUnicast->Address.lpSockaddr->sa_family;
+					address->unicast = 1;
+					tsk_list_push_back_data(addresses, &address);
+				}
+
+                pUnicast = pUnicast->Next;
+            }
+
+			/* ANYCAST addresses
+			*/
+			pAnycast = pCurrAddresses->FirstAnycastAddress;
+            while(pAnycast)
+			{
+				memset(ip, '\0', sizeof(ip));
+				tnet_get_sockip(pAnycast->Address.lpSockaddr, &ip);
+				{
+					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
+					address->family = pAnycast->Address.lpSockaddr->sa_family;
+					address->anycast = 1;
+					tsk_list_push_back_data(addresses, &address);
+				}
+
+                pAnycast = pAnycast->Next;
+            }
+
+			/* MULTYCAST addresses
+			*/
+			pMulticast = pCurrAddresses->FirstMulticastAddress;
+            while(pMulticast)
+			{
+				memset(ip, '\0', sizeof(ip));
+				tnet_get_sockip(pMulticast->Address.lpSockaddr, &ip);
+				{
+					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
+					address->family = pMulticast->Address.lpSockaddr->sa_family;
+					address->multicast = 1;
+					tsk_list_push_back_data(addresses, &address);
+				}
+
+                pMulticast = pMulticast->Next;
+            }
+
+			/* DNS servers
+			*/
+			pDnServer = pCurrAddresses->FirstDnsServerAddress;
+            while(pDnServer)
+			{
+				memset(ip, '\0', sizeof(ip));
+				tnet_get_sockip(pDnServer->Address.lpSockaddr, &ip);
+				{
+					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
+					address->family = pDnServer->Address.lpSockaddr->sa_family;
+					address->dnsserver = 1;
+					tsk_list_push_back_data(addresses, &address);
+				}
+
+                pDnServer = pDnServer->Next;
+            }
+
+			pCurrAddresses = pCurrAddresses->Next;
+		}
+	}
+
+	if(pAddresses)
+	{
+		FREE(pAddresses);
+	}
+
+#undef MALLOC
+#undef FREE
+
+
+
+
+#else	/* !TSK_UNDER_WINDOWS */
+
+
+
+
+#endif
+
+
+bail:
+	return addresses;
+}
+
 /**
  * @fn	int tnet_getaddrinfo(const char *node, const char *service,
  * 		const struct addrinfo *hints, struct addrinfo **res)
@@ -154,6 +383,51 @@ tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd)
 	return type;
 }
 
+int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)
+{
+	int status = -1;
+
+	if(addr->sa_family == AF_INET)
+	{
+		struct sockaddr_in *sin = (struct sockaddr_in *)addr;
+		if(port)
+		{
+			*port = ntohs(sin->sin_port);
+			status = 0;
+		}
+		if(ip)
+		{
+			if((status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
+			{
+				return status;
+			}
+		}
+	}
+	else if(addr->sa_family == AF_INET6)
+	{
+		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)addr;
+		if(port)
+		{
+			*port = ntohs(sin6->sin6_port);
+			status = 0;
+		}
+		if(ip)
+		{
+			if((status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
+			{
+				return status;
+			}
+		}
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Unsupported address family.");
+		return -1;
+	}
+
+	return status;
+}
+
 int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
 	*port = 0;
@@ -167,45 +441,10 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 			TSK_DEBUG_ERROR("TNET_GET_SOCKADDR has failed with status code: %d", status);
 			return -1;
 		}
-		
-		if(((struct sockaddr *)&ss)->sa_family == AF_INET)
-		{
-			struct sockaddr_in *sin = ((struct sockaddr_in*)&ss);
-			if(port)
-			{
-				*port = ntohs(sin->sin_port);
-			}
-			if(ip)
-			{
-				if((status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
-				{
-					return status;
-				}
-			}
-		}
-		else if(((struct sockaddr *)&ss)->sa_family == AF_INET6)
-		{
-			struct sockaddr_in6 *sin6 = ((struct sockaddr_in6*)&ss);
-			if(port)
-			{
-				*port = ntohs(sin6->sin6_port);
-			}
-			if(ip)
-			{
-				if((status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
-				{
-					return status;
-				}
-			}
-		}
-		else
-		{
-			TSK_DEBUG_ERROR("Unsupported address family.");
-			return -1;
-		}
-		
-		return 0;
+
+		return tnet_get_sockip_n_port(((struct sockaddr *)&ss), ip, port);
 	}
+
 	TSK_DEBUG_ERROR("Could not use an invalid socket description.");
 	return -1;
 }
@@ -349,7 +588,7 @@ int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 		TNET_PRINT_LAST_ERROR();
 		return -1;
 	} 
-	if(fcntl(fd, F_SETFL, flags | (nonBlocking ? O_NONBLOCK : O_BLOCK)) < 0)
+	if(fcntl(fd, F_SETFL, flags | (nonBlocking ? O_NONBLOCK : ~O_NONBLOCK)) < 0)
 	{ 
 		TNET_PRINT_LAST_ERROR();
 		return -1;
@@ -380,7 +619,7 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 
 int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct sockaddr *from)
 {
-	int fromlen;
+	socklen_t fromlen;
 
 	if(fd == TNET_INVALID_FD)
 	{
@@ -397,6 +636,28 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 	return recvfrom(fd, buf, size, flags, from, &fromlen);
 }
 
+int tnet_sockfd_send(tnet_fd_t fd, void* buf, size_t size, int flags)
+{
+	if(fd == TNET_INVALID_FD)
+	{
+		TSK_DEBUG_ERROR("Using invalid FD to send data.");
+		return -1;
+	}
+
+	return send(fd, buf, size, flags);
+}
+
+int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags)
+{
+	if(fd == TNET_INVALID_FD)
+	{
+		TSK_DEBUG_ERROR("Using invalid FD to recv data.");
+		return -1;
+	}
+
+	return recv(fd, buf, size, flags);
+}
+
 int tnet_sockfd_close(tnet_fd_t *fd)
 {
 	int ret;
@@ -410,3 +671,124 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 	return ret;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//	INTERFACE object definition
+//
+static void* tnet_interface_create(void * self, va_list * app)
+{
+	tnet_interface_t *iface = self;
+	if(iface)
+	{
+		iface->name = tsk_strdup(va_arg(*app, const char*));
+	}
+	return self;
+}
+
+static void* tnet_interface_destroy(void * self)
+{ 
+	tnet_interface_t *iface = self;
+	if(iface)
+	{
+		TSK_FREE(iface->name);
+	}
+
+	return self;
+}
+
+static int tnet_interface_cmp(const void *if1, const void *if2)
+{
+	const tnet_interface_t *iface1 = if1;
+	const tnet_interface_t *iface2 = if2;
+
+	if(iface1 && iface2)
+	{
+		return tsk_stricmp(iface1->name, iface1->name);
+	}
+	else if(!iface1 && !iface2) return 0;
+	else return -1;
+}
+
+static const tsk_object_def_t tnet_interface_def_s = 
+{
+	sizeof(tnet_interface_t),
+	tnet_interface_create, 
+	tnet_interface_destroy,
+	tnet_interface_cmp, 
+};
+const void *tnet_interface_def_t = &tnet_interface_def_s;
+
+
+
+
+//========================================================
+//	ADDRESS object definition
+//
+static void* tnet_address_create(void * self, va_list * app)
+{
+	tnet_address_t *address = self;
+	if(address)
+	{
+		address->ip = tsk_strdup(va_arg(*app, const char*));
+	}
+	return self;
+}
+
+static void* tnet_address_destroy(void * self)
+{ 
+	tnet_address_t *address = self;
+	if(address)
+	{
+		TSK_FREE(address->ip);
+	}
+
+	return self;
+}
+
+static const tsk_object_def_t tnet_address_def_s = 
+{
+	sizeof(tnet_address_t),
+	tnet_address_create, 
+	tnet_address_destroy,
+	0, 
+};
+const void *tnet_address_def_t = &tnet_address_def_s;

@@ -48,6 +48,14 @@ TNET_BEGIN_DECLS
 #define TNET_NAT_DEFAULT_RC				7	/**< Number of retransmission for UDP retransmission in millisecond. */
 #define TNET_NAT_TCP_UDP_DEFAULT_PORT	3478
 
+/**
+ * @struct	tnet_nat_context_s
+ *
+ * @brief	NAT context.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+**/
 typedef struct tnet_nat_context_s
 {
 	TSK_DECLARE_OBJECT;
@@ -63,7 +71,7 @@ typedef struct tnet_nat_context_s
 	tnet_port_t server_port; /**< TURN/STUN server port. */
 
 	uint16_t RTO; /**< Estimate of the round-trip time (RTT) in millisecond. */
-	uint16_t Rc; /**< Number of retransmission for UDP retransmission in millisecond. */
+	uint16_t Rc; /**< Number of retransmissions for UDP in millisecond. */
 
 	unsigned enable_dontfrag:1;
 	unsigned enable_integrity:1;
@@ -72,17 +80,34 @@ typedef struct tnet_nat_context_s
 	unsigned use_dnsquery:1; /**< Indicates whether to use DNS SRV query to find the stun/turn ip address. */
 
 	tnet_turn_allocations_L_t *allocations; /**< List of all allocations associated to this context. */
+	tnet_stun_bindings_L_t *stun_bindings; /**< List of all STUN2 bindings associated to this context. */
 }
 tnet_nat_context_t;
 
+/**
+ * @typedef	void tnet_nat_context_handle_t
+ *
+ * @brief	Handle to the NAT context(@ref tnet_nat_context_t).
+**/
 typedef void tnet_nat_context_handle_t;
 
 TINYNET_API int tnet_nat_set_server_address(tnet_nat_context_handle_t* self, const char* server_address);
 TINYNET_API int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_address,  tnet_port_t server_port);
-TINYNET_API int tnet_nat_stun_bind(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD, char** mapped_address, tnet_port_t *mapped_port);
+
+TINYNET_API tnet_stun_binding_id_t tnet_nat_stun_bind(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD);
+TINYNET_API int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id, char** ipaddress, tnet_port_t *port);
+TINYNET_API int tnet_nat_stun_unbind(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id);
 
 TINYNET_API tnet_turn_allocation_id_t tnet_nat_turn_allocate(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD);
+TINYNET_API int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, char** ipaddress, tnet_port_t *port);
+TINYNET_API int tnet_nat_turn_allocation_refresh(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id);
 TINYNET_API int tnet_nat_turn_unallocate(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id);
+TINYNET_API tnet_turn_channel_binding_id_t tnet_nat_turn_channel_bind(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, struct sockaddr_storage *peer);
+TINYNET_API int tnet_nat_turn_channel_refresh(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id);
+TINYNET_API int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id, const void* data, size_t size, int indication);
+#define tnet_nat_turn_channel_sendindication(context, channel_id, data, size)	tnet_nat_turn_channel_send(context, channel_id, data, size, 1)
+#define tnet_nat_turn_channel_senddata(context, channel_id, data, size)			tnet_nat_turn_channel_send(context, channel_id, data, size, 0)
+TINYNET_API int tnet_nat_turn_add_permission(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, const char* ipaddress, uint32_t timeout);
 
 TINYNET_GEXTERN const void *tnet_nat_context_def_t;
 

@@ -35,19 +35,55 @@
 #include "tnet_socket.h"
 #include "tnet_types.h"
 
+#include "tsk_list.h"
+
 TNET_BEGIN_DECLS
+
+#define TNET_INTERFACE_CREATE(name)			tsk_object_new(tnet_interface_def_t, (const char*)name)
+#define TNET_ADDRESS_CREATE(ip)				tsk_object_new(tnet_address_def_t, (const char*)ip)
+
+typedef struct tnet_interface_s
+{
+	TSK_DECLARE_OBJECT;
+
+	char* name;
+}
+tnet_interface_t;
+typedef tsk_list_t tnet_interfaces_L_t;
+
+typedef struct tnet_address_s
+{
+	TSK_DECLARE_OBJECT;
+
+	tnet_family_t family;
+
+	unsigned unicast:1;
+	unsigned anycast:1;
+	unsigned multicast:1;
+	unsigned dnsserver:1;
+
+	char* ip;
+}
+tnet_address_t;
+typedef tsk_list_t tnet_addresses_L_t;
 
 TINYNET_API void tnet_getlasterror(tnet_error_t *error);
 TINYNET_API int tnet_geterrno();
 
+TINYNET_API tnet_interfaces_L_t* tnet_get_interfaces();
+TINYNET_API tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family);
+#define tnet_get_addresses_all()	tnet_get_addresses(AF_UNSPEC)
 
 TINYNET_API int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res);
 TINYNET_API void tnet_freeaddrinfo(struct addrinfo *ai);
 TINYNET_API int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result);
 TINYNET_API tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd);
 TINYNET_API int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
+TINYNET_API int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port);
 #define tnet_get_ip(fd, ip) tnet_get_ip_n_port(fd, ip, 0)
 #define tnet_get_port(fd, port) tnet_get_ip_n_port(fd, 0, port)
+#define tnet_get_sockip(addr, ip) tnet_get_sockip_n_port(addr, ip, 0)
+#define tnet_get_sockport(addr, port) tnet_get_sockip_n_port(addr, 0, port)
 
 TINYNET_API int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
 TINYNET_API int tnet_gethostname(tnet_host_t* result);
@@ -62,6 +98,8 @@ TINYNET_API int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking);
 
 TINYNET_API int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size);
 TINYNET_API int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct sockaddr *from);
+TINYNET_API int tnet_sockfd_send(tnet_fd_t fd, void* buf, size_t size, int flags);
+TINYNET_API int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags);
 
 TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
@@ -78,6 +116,10 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 #else
 #	define tnet_ioctlt ioctl
 #endif
+
+
+TINYNET_GEXTERN const void *tnet_interface_def_t;
+TINYNET_GEXTERN const void *tnet_address_def_t;
 
 TNET_END_DECLS
 

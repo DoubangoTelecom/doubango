@@ -158,17 +158,19 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 		}
 
 	default:
-		attribute = TNET_STUN_ATTRIBUTE_CREATE();
+		TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
 		break;
 	}
 
-	
-	/* Set common values (Do I need this ==> already set by the constructor). */
-	if(attribute)
+	if(!attribute)
 	{
-		attribute->type = type;
-		attribute->length = length;
+		/* Create default */
+		attribute = TNET_STUN_ATTRIBUTE_CREATE();
 	}
+	
+	/* Set common values (Do I need this ==> already set by the constructor). */	
+	attribute->type = type;
+	attribute->length = length;
 
 	return attribute;
 }
@@ -363,29 +365,32 @@ static void* tnet_stun_attribute_mapped_addr_create(void * self, va_list * app)
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
-		const uint8_t *payloadPtr = (const uint8_t*)payload;
-		payloadPtr += 1; /* Ignore first 8bits */
-
-		TNET_STUN_ATTRIBUTE(attribute)->type = stun_mapped_address;
-		TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
-
-		attribute->family = (tnet_stun_addr_family_t) (*(payloadPtr++));
-		attribute->port = ntohs(*((uint16_t*)payloadPtr));
-		payloadPtr+=2;
-
-		if(attribute->family == stun_ipv4)
+		if(payload && payload_size)
 		{
-			uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
-			memcpy(attribute->address, &addr, 4);
-			payloadPtr+=4;
-		}
-		else if(attribute->family == stun_ipv6)
-		{
-			TSK_DEBUG_ERROR("IPv6 not supported yet.");
-		}
-		else
-		{
-			TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+			const uint8_t *payloadPtr = (const uint8_t*)payload;
+			payloadPtr += 1; /* Ignore first 8bits */
+
+			TNET_STUN_ATTRIBUTE(attribute)->type = stun_mapped_address;
+			TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
+
+			attribute->family = (tnet_stun_addr_family_t) (*(payloadPtr++));
+			attribute->port = ntohs(*((uint16_t*)payloadPtr));
+			payloadPtr+=2;
+
+			if(attribute->family == stun_ipv4)
+			{
+				uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
+				memcpy(attribute->address, &addr, 4);
+				payloadPtr+=4;
+			}
+			else if(attribute->family == stun_ipv6)
+			{
+				TSK_DEBUG_ERROR("IPv6 not supported yet.");
+			}
+			else
+			{
+				TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+			}
 		}
 	}
 	return self;
@@ -421,43 +426,46 @@ static void* tnet_stun_attribute_xmapped_addr_create(void * self, va_list * app)
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
-		const uint8_t *payloadPtr = (const uint8_t*)payload;
-		payloadPtr += 1; /* Ignore first 8bits */
-
-		TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_mapped_address;
-		TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
-		
-		attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
-
-		/*	RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS
-			X-Port is computed by taking the mapped port in host byte order,
-			XOR'ing it with the most significant 16 bits of the magic cookie, and
-			then the converting the result to network byte order.
-		*/
-		attribute->xport = ntohs(*((uint16_t*)payloadPtr));
-		attribute->xport ^= 0x2112;
-		payloadPtr+=2;
-		
-
-		if(attribute->family == stun_ipv4)
+		if(payload && payload_size)
 		{
+			const uint8_t *payloadPtr = (const uint8_t*)payload;
+			payloadPtr += 1; /* Ignore first 8bits */
+
+			TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_mapped_address;
+			TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
+			
+			attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
+
 			/*	RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS
-				If the IP address family is IPv4, X-Address is computed by taking the mapped IP
-				address in host byte order, XOR'ing it with the magic cookie, and
-				converting the result to network byte order.
+				X-Port is computed by taking the mapped port in host byte order,
+				XOR'ing it with the most significant 16 bits of the magic cookie, and
+				then the converting the result to network byte order.
 			*/
-			uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
-			addr ^= TNET_STUN_MAGIC_COOKIE;
-			memcpy(attribute->xaddress, &addr, 4);
-			payloadPtr+=4;
-		}
-		else if(attribute->family == stun_ipv6)
-		{
-			TSK_DEBUG_ERROR("IPv6 not supported yet.");
-		}
-		else
-		{
-			TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+			attribute->xport = ntohs(*((uint16_t*)payloadPtr));
+			//attribute->xport ^= 0x2112;
+			payloadPtr+=2;
+			
+
+			if(attribute->family == stun_ipv4)
+			{
+				/*	RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS
+					If the IP address family is IPv4, X-Address is computed by taking the mapped IP
+					address in host byte order, XOR'ing it with the magic cookie, and
+					converting the result to network byte order.
+				*/
+				uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
+				//addr ^= TNET_STUN_MAGIC_COOKIE;
+				memcpy(attribute->xaddress, &addr, 4);
+				payloadPtr+=4;
+			}
+			else if(attribute->family == stun_ipv6)
+			{
+				TSK_DEBUG_ERROR("IPv6 not supported yet.");
+			}
+			else
+			{
+				TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+			}
 		}
 		
 	}
@@ -620,7 +628,7 @@ static void* tnet_stun_attribute_errorcode_create(void * self, va_list * app)
 
 			attribute->_class = code >>8;
 			attribute->number = (code & 0xFF);
-			attribute->reason_phrase = tsk_strndup(payload, (payload_size-4));
+			attribute->reason_phrase = tsk_strndup((const char*)payload, (payload_size-4));
 		}
 		
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_error_code;

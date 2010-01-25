@@ -30,9 +30,9 @@
 #ifndef TNET_STUN_ATTRIBUTE_H
 #define TNET_STUN_ATTRIBUTE_H
 
-#include "../tinyNET_config.h"
+#include "tinyNET_config.h"
 
-#include "../tnet_types.h"
+#include "tnet_types.h"
 
 #include "tsk_object.h"
 #include "tsk_buffer.h"

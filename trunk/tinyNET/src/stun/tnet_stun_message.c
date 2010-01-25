@@ -199,7 +199,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 
 		tsk_sprintf(&keystr, "%s:%s:%s", self->username, self->realm, self->password);
 		TSK_MD5_DIGEST_CALC(keystr, strlen(keystr), md5);
-		hmac_sha1digest_compute(output->data, output->size, md5, TSK_MD5_DIGEST_SIZE, hmac);
+		hmac_sha1digest_compute(output->data, output->size, (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
 		
 		SERIALIZE_N_ADD_ATTRIBUTE(INTEGRITY, hmac, TSK_SHA1_DIGEST_SIZE);
 		
@@ -302,7 +302,7 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t s
 			
 			continue;
 		}
-		else break;
+		else continue;
 
 		
 

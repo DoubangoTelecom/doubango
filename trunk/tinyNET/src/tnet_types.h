@@ -35,6 +35,7 @@
 #if TNET_UNDER_WINDOWS
 #	include	<winsock2.h>
 #	include	<ws2tcpip.h>
+#	include <iphlpapi.h>
 #else
 #	include <sys/types.h>
 #	include <sys/socket.h>
@@ -60,6 +61,7 @@ TNET_BEGIN_DECLS
 
 typedef int32_t tnet_fd_t;
 typedef uint16_t tnet_port_t;
+typedef int32_t tnet_family_t;
 typedef char tnet_host_t[NI_MAXHOST];
 typedef char tnet_ip_t[INET6_ADDRSTRLEN];
 

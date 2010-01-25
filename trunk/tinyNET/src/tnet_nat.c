@@ -32,21 +32,146 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
+#include "tsk_debug.h"
 
-int __pred_find_turn_allocation(const tsk_list_item_t* item, const void* data)
+/**
+ * @fn	int __pred_find_turn_allocation(const tsk_list_item_t* item, const void* id)
+ *
+ * @brief	Predicate function to find turn allocation by id. 
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	item	The current list item. 
+ * @param [in,out]	id	A pointer to the allocation identifier. 
+ *
+ * @return	Zero if current list item hold an allocation with the same id and -1 otherwise. 
+**/
+int __pred_find_turn_allocation(const tsk_list_item_t* item, const void* id)
 {
 	if(item)
 	{
 		tnet_turn_allocation_t *allocation = item->data;
-		tnet_turn_allocation_id_t alloc_id = *((tnet_turn_allocation_id_t*)data);
 		if(allocation)
 		{
+			tnet_turn_allocation_id_t alloc_id = *((tnet_turn_allocation_id_t*)id);
 			return (allocation->id == alloc_id) ? 0 : -1;
 		}
 	}
 	return -1;
 }
 
+/**
+ * @fn	int __pred_find_stun_binding(const tsk_list_item_t* item, const void* id)
+ *
+ * @brief	Predicate function to find stun binding by id. 
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	item	The current list item. 
+ * @param [in,out]	id		A pointer to the binding identifier. 
+ *
+ * @return	Zero if current list item hold a binding with the same id and -1 otherwise.  
+**/
+int __pred_find_stun_binding(const tsk_list_item_t* item, const void* id)
+{
+	if(item)
+	{
+		tnet_stun_binding_t *binding = item->data;
+		if(binding)
+		{
+			tnet_stun_binding_id_t binding_id = *((tnet_stun_binding_id_t*)id);
+			return (binding->id == binding_id) ? 0 : -1;
+		}
+	}
+	return -1;
+}
+
+/**
+ * @fn	int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id)
+ *
+ * @brief	Predicate function to find TURN channel binding by id. 
+ *
+ * @author	Mamadou
+ * @date	1/24/2010
+ *
+ * @param [in,out]	item	The current list item. 
+ * @param [in,out]	id		A pointer to the TURN channel binding identifier. 
+ *
+ * @return	Zero if current list item hold a TURN channel binding with the same id and -1 otherwise. 
+**/
+int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id)
+{
+	if(item)
+	{
+		tnet_turn_channel_binding_t *binding = item->data;
+		if(binding)
+		{
+			tnet_turn_channel_binding_id_t binding_id = *((tnet_turn_channel_binding_id_t*)id);
+			return (binding->id == binding_id) ? 0 : -1;
+		}
+	}
+	return -1;
+}
+
+/**
+ * @fn	int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family,
+ * 		int XORed, char** out_ip)
+ *
+ * @brief	Formats binary IP address as string.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param	in_ip			The binary IP address to format. 
+ * @param	family			The address family. 
+ * @param	XORed			Indicates whether the address is obfucated (XORed) or not. 
+ * @param [in,out]	out_ip	The output string 
+ *
+ * @return	Zero if current list item hold a binding with the same id and -1 otherwise. 
+**/
+int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family, int XORed, char** out_ip)
+{
+	if(family == stun_ipv6)
+	{
+		TSK_DEBUG_ERROR("IPv6 not supported yet.");
+	}
+	else if(family == stun_ipv4)
+	{
+		uint32_t address = *((uint32_t*)in_ip);
+		address = /*ntohl*/(address);
+		if(XORed)
+		{
+			address ^= TNET_STUN_MAGIC_COOKIE;
+		}
+		tsk_sprintf(out_ip, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
+
+		return 0;
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Unsupported address family: %u.", family);
+	}
+
+	return -1;
+}
+
+
+/**
+ * @fn	int tnet_nat_set_server_address(tnet_nat_context_handle_t* self,
+ * 		const char* server_address)
+ *
+ * @brief	Sets the address of the STUN/TURN server.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	self			The NAT context. 
+ * @param [in,out]	server_address	The address of server. 
+ *
+ * @return	Zero if succeed and non zero error code otherwise. 
+**/
 int tnet_nat_set_server_address(tnet_nat_context_handle_t* self, const char* server_address)
 {
 	tnet_nat_context_t* context = self;
@@ -59,6 +184,21 @@ int tnet_nat_set_server_address(tnet_nat_context_handle_t* self, const char* ser
 	return -1;
 }
 
+/**
+ * @fn	int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_address,
+ * 		tnet_port_t server_port)
+ *
+ * @brief	Sets the address and port of the STUN/TURN server.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	self			The NAT context. 
+ * @param [in,out]	server_address	The address of server. 
+ * @param	server_port				The server port. 
+ *
+ * @return	Zero if succeed and non zero error code otherwise.  
+**/
 int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_address,  tnet_port_t server_port)
 {
 	tnet_nat_context_t* context = self;
@@ -74,43 +214,139 @@ int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_addr
 }
 
 /**
- * @fn	int tnet_nat_stun_bind(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD,
- * 		char** mapped_address, tnet_port_t *mapped_port)
+ * @fn	tnet_stun_binding_id_t tnet_nat_stun_bind(const tnet_nat_context_handle_t* self,
+ * 		const tnet_fd_t localFD)
  *
- * @brief	Performs STUN2 binding request to retrieve information about the mapped address. 
+ * @brief	Creates and sends a STUN2 binding request to the STUN/TURN server in order to get the server reflexive
+ *			address associated to this file descriptor (or socket). The caller should call @ref tnet_nat_stun_unbind to destroy the binding.
  *
  * @author	Mamadou
- * @date	1/16/2010
+ * @date	1/23/2010
  *
- * @param [in,out]	self			If non-null, the self. 
- * @param	localFD					The local fd. 
- * @param [in,out]	mapped_address	The mapped address. You must pass a NULL pointer and it is up
- * 									to you to free the returned string. 
- * @param [in,out]	mapped_port		The mapped port. 
+ * @param [in,out]	self	The NAT context.  
+ * @param	localFD			The local file descriptor (or socket) for which to get the reflexive server address.
  *
- * @return	Zero if succeed and non-zero error code otherwise. 
+ * @return	A valid binding id if succeed and @ref TNET_STUN_INVALID_BINDING_ID otherwise. If the returned id is valid then
+ *			the newly created binding will contain the server-reflexive address associated to the local file descriptor.
  *
- * ### param [in,out]	context	The NAT context. 
+ * @sa @ref tnet_nat_stun_unbind.
 **/
-int tnet_nat_stun_bind(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD, char** mapped_address, tnet_port_t *mapped_port)
+tnet_stun_binding_id_t tnet_nat_stun_bind(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD)
 {
 	const tnet_nat_context_t* context = self;
-	int ret = -1;
-
-	if(self)
+	if(context)
 	{
-		tnet_stun_context_t* stun_context = TNET_STUN_CONTEXT_CREATE(localFD, context->socket_type, context->server_address, context->server_port, context->username, context->password);
-		if(stun_context)
-		{
-			ret = tnet_stun_bind(stun_context, mapped_address, mapped_port);
-		}
-		TSK_OBJECT_SAFE_FREE(stun_context);
+		return tnet_stun_bind(context, localFD);
 	}
-	return ret;
+	return TNET_STUN_INVALID_BINDING_ID;
+}
+
+/**
+ * @fn	int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self,
+ * 		tnet_stun_binding_id_t id, char** ipaddress, tnet_port_t *port)
+ *
+ * @brief	Gets the server reflexive address associated to this STUN2 binding.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	self		The NAT context. 
+ * @param	id					The id of the STUN2 binding conetxt (obtained using @ref tnet_nat_stun_bind) holding the server-reflexive address. 
+ * @param [in,out]	ipaddress	The reflexive IP address. It is up the the caller to free the returned string 
+ * @param [in,out]	port		The reflexive port. 
+ *
+ * @return	Zero if succeed and non zero error code otherwise. 
+**/
+int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id, char** ipaddress, tnet_port_t *port)
+{
+	const tnet_nat_context_t* context = self;
+	if(context)
+	{
+		const tsk_list_item_t* item = tsk_list_find_item_by_pred(context->stun_bindings, __pred_find_stun_binding, &id);
+		if(item && item->data)
+		{
+			tnet_stun_binding_t *binding = item->data;
+			/*STUN2: XOR-MAPPED-ADDRESS */
+			if(binding->xmaddr)
+			{
+				int ret = tnet_stun_address_tostring(binding->xmaddr->xaddress, binding->xmaddr->family, 1, ipaddress);
+				*port = /*ntohs*/(binding->xmaddr->xport) ^ 0x2112;
+				return ret;
+			}
+
+			/*STUN1: MAPPED-ADDRESS*/
+			if(binding->maddr)
+			{
+				int ret = tnet_stun_address_tostring(binding->maddr->address, binding->maddr->family, 0, ipaddress);
+				*port = /*ntohs*/(binding->maddr->port);
+				return ret;
+			}
+		}
+	}
+	return -1;
+}
+
+/**
+ * @fn	int tnet_nat_stun_unbind(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id)
+ *
+ * @brief	Removes a STUN2 binding from the NAT context.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	self	The NAT context from which to remove the STUN2 binding. 
+ * @param	id				The id of the STUN2 binding to remove. 
+ *
+ * @return	Zero if succeed and non zero error code otherwise.
+ *
+ *
+ * @sa @ref tnet_nat_stun_bind.
+**/
+int tnet_nat_stun_unbind(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id)
+{
+	const tnet_nat_context_t* context = self;
+	if(context)
+	{
+		tsk_list_remove_item_by_pred(context->stun_bindings, __pred_find_stun_binding, &id);
+		return 0;
+	}
+	return -1;
 }
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @fn	tnet_turn_allocation_id_t tnet_nat_turn_allocate(const tnet_nat_context_handle_t* self,
+ * 		const tnet_fd_t localFD)
+ *
+ * @brief	Creates TURN allocation as per draft-ietf-behave-turn-16 subclause 6. This function  will also 
+ *			send an allocation request to the server (subclause 6.1).
+ *
+ * @author	Mamadou
+ * @date	1/24/2010
+ *
+ * @param [in,out]	self	The NAT context. 
+ * @param	localFD			The local file descriptor. 
+ *
+ * @return	A valid TURN allocation id if succeed and @ref TNET_TURN_INVALID_ALLOCATION_ID otherwise.
+ *
+ * @sa @ref tnet_nat_turn_unallocate.
+**/
 tnet_turn_allocation_id_t tnet_nat_turn_allocate(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD)
 {
 	const tnet_nat_context_t* context = self;
@@ -123,11 +359,102 @@ tnet_turn_allocation_id_t tnet_nat_turn_allocate(const tnet_nat_context_handle_t
 	return TNET_TURN_INVALID_ALLOCATION_ID;
 }
 
+/**
+ * @fn	int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self,
+ * 		tnet_turn_allocation_id_t id, char** ipaddress, tnet_port_t *port)
+ *
+ * @brief	Gets the STUN server-refelexive IP address and port associated to this TURN allocation.
+ *
+ * @author	Mamadou
+ * @date	1/24/2010
+ *
+ * @param [in,out]	self		The NAT context. 
+ * @param	id					The id of the TURN allocation for which to to get server-reflexive IP address and port. 
+ * @param [in,out]	ipaddress	The server-reflexive IP address. 
+ * @param [in,out]	port		The server-reflexive port. 
+ *
+ * @return	Zero if succeed and non zero error code otherwise. 
+**/
+int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, char** ipaddress, tnet_port_t *port)
+{
+	const tnet_nat_context_t* context = self;
+	if(context)
+	{
+		const tsk_list_item_t* item = tsk_list_find_item_by_pred(context->allocations, __pred_find_turn_allocation, &id);
+		if(item && item->data)
+		{
+			tnet_turn_allocation_t *allocation = item->data;
+			/*STUN2: XOR-MAPPED-ADDRESS */
+			if(allocation->xmaddr)
+			{
+				int ret = tnet_stun_address_tostring(allocation->xmaddr->xaddress, allocation->xmaddr->family, 1, ipaddress);
+				*port = /*ntohs*/(allocation->xmaddr->xport) ^ 0x2112;
+				return ret;
+			}
+
+			/*STUN1: MAPPED-ADDRESS*/
+			if(allocation->maddr)
+			{
+				int ret = tnet_stun_address_tostring(allocation->maddr->address, allocation->maddr->family, 0, ipaddress);
+				*port = /*ntohs*/(allocation->maddr->port);
+				return ret;
+			}
+		}
+	}
+	return -1;
+}
+
+/**
+ * @fn	int tnet_nat_turn_allocation_refresh(const tnet_nat_context_handle_t* self,
+ * 		tnet_turn_allocation_id_t id)
+ *
+ * @brief	Refresh a TURN allocation previously created using @ref tnet_nat_turn_allocate.
+ *
+ * @author	Mamadou
+ * @date	1/24/2010
+ *
+ * @param [in,out]	self	The NAT context.
+ * @param	id				The id of the TURN allocation to refresh. 
+ *
+ * @return	Zero if succeed and non zero error code otherwise. 
+**/
+int tnet_nat_turn_allocation_refresh(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id)
+{
+	const tnet_nat_context_t* context = self;
+	
+	if(context)
+	{
+		const tsk_list_item_t* item = tsk_list_find_item_by_pred(context->allocations, __pred_find_turn_allocation, &id);
+		if(item && item->data)
+		{
+			tnet_turn_allocation_t *allocation = item->data;
+			return tnet_turn_allocation_refresh(self, allocation);
+		}
+	}
+	return -1;
+}
+
+/**
+ * @fn	int tnet_nat_turn_unallocate(const tnet_nat_context_handle_t* self,
+ * 		tnet_turn_allocation_id_t id)
+ *
+ * @brief	Unallocate/remove a TURN allocation from the server.
+ *
+ * @author	Mamadou
+ * @date	1/24/2010
+ *
+ * @param [in,out]	self	The NAT context from which to remove the allocation. 
+ * @param	id				The id of the TURN allocation to remove. 
+ *
+ * @return	Zero if succeed and non zero error code otherwise.
+ *
+ * @sa @ref tnet_nat_turn_allocate.
+**/
 int tnet_nat_turn_unallocate(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id)
 {
 	const tnet_nat_context_t* context = self;
 
-	if(self)
+	if(context)
 	{
 		const tsk_list_item_t* item = tsk_list_find_item_by_pred(context->allocations, __pred_find_turn_allocation, &id);
 		if(item && item->data)
@@ -139,7 +466,91 @@ int tnet_nat_turn_unallocate(const tnet_nat_context_handle_t* self, tnet_turn_al
 	return -1;
 }
 
+/**
+ * @fn	tnet_turn_channel_binding_id_t tnet_nat_turn_channel_bind(const tnet_nat_context_handle_t* self,
+ * 		tnet_turn_allocation_id_t id, struct sockaddr_storage *peer)
+ *
+ * @brief	Creates TURN channel binding as per draft-ietf-behave-turn-16 sublause 11 and send it to the
+ *			server as per subclause 11.1.
+ *
+ * @author	Mamadou
+ * @date	1/24/2010
+ *
+ * @param [in,out]	self	The NAT context. 
+ * @param	id				The id of the TURN allocation associated to this binding. 
+ * @param [in,out]	peer	The XOR remote peer for the channel binding. 
+ *
+ * @return	A valid TURN channel binding id if succeed and @ref TNET_TURN_INVALID_CHANNEL_BINDING_ID otherwise.
+**/
+tnet_turn_channel_binding_id_t tnet_nat_turn_channel_bind(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, struct sockaddr_storage *peer)
+{
+	const tnet_nat_context_t* context = self;
 
+	if(context)
+	{
+		const tsk_list_item_t* item = tsk_list_find_item_by_pred(context->allocations, __pred_find_turn_allocation, &id);
+		if(item && item->data)
+		{
+			tnet_turn_allocation_t *allocation = item->data;
+			return tnet_turn_channel_bind(self, allocation, peer);
+		}
+	}
+	return TNET_TURN_INVALID_CHANNEL_BINDING_ID;
+}
+
+int tnet_nat_turn_channel_refresh(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id)
+{
+	const tnet_nat_context_t* context = self;
+	
+	if(context)
+	{
+		tsk_list_item_t* curr;
+		tsk_list_foreach(curr, context->allocations)
+		{
+			const tsk_list_item_t* item = tsk_list_find_item_by_pred(((tnet_turn_allocation_t *)curr->data)->channel_bindings, __pred_find_turn_channel_binding, &id);
+			if(item && item->data)
+			{
+				return tnet_turn_channel_refresh(context, (tnet_turn_channel_binding_t *)item->data);
+			}
+		}
+	}
+	return -1;
+}
+
+int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id, const void* data, size_t size, int indication)
+{
+	const tnet_nat_context_t* context = self;
+	
+	if(context && data && size)
+	{
+		tsk_list_item_t* curr;
+		tsk_list_foreach(curr, context->allocations)
+		{
+			const tsk_list_item_t* item = tsk_list_find_item_by_pred(((tnet_turn_allocation_t *)curr->data)->channel_bindings, __pred_find_turn_channel_binding, &id);
+			if(item && item->data)
+			{
+				return tnet_turn_channel_senddata(context, (tnet_turn_channel_binding_t *)item->data, data, size, indication);
+			}
+		}
+	}
+	return -1;
+}
+
+int tnet_nat_turn_add_permission(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, const char* ipaddress, uint32_t timeout)
+{
+	const tnet_nat_context_t* context = self;
+
+	if(self)
+	{
+		const tsk_list_item_t* item = tsk_list_find_item_by_pred(context->allocations, __pred_find_turn_allocation, &id);
+		if(item && item->data)
+		{
+			tnet_turn_allocation_t *allocation = item->data;
+			return tnet_turn_add_permission(self, allocation, ipaddress, timeout);
+		}
+	}
+	return -1;
+}
 
 
 //========================================================
@@ -157,7 +568,14 @@ static void* tnet_nat_context_create(void * self, va_list * app)
 
 		context->server_port = TNET_NAT_TCP_UDP_DEFAULT_PORT;
 		
+		/*	7.2.1.  Sending over UDP
+			In fixed-line access links, a value of 500 ms is RECOMMENDED.
+		*/
 		context->RTO = TNET_NAT_DEFAULT_RTO;
+
+		/*	7.2.1.  Sending over UDP
+			Rc SHOULD be configurable and SHOULD have a default of 7.
+		*/
 		context->Rc = TNET_NAT_DEFAULT_RC;
 		
 		context->software = tsk_strdup(TNET_SOFTWARE);
@@ -167,6 +585,7 @@ static void* tnet_nat_context_create(void * self, va_list * app)
 		context->enable_dontfrag = 0;//TNET_SOCKET_TYPE_IS_DGRAM(context->socket_type) ? 1 : 0;
 
 		context->allocations = TSK_LIST_CREATE();
+		context->stun_bindings = TSK_LIST_CREATE();
 	}
 	return self;
 }
@@ -182,6 +601,7 @@ static void* tnet_nat_context_destroy(void * self)
 		TSK_FREE(context->server_address);
 
 		TSK_OBJECT_SAFE_FREE(context->allocations);
+		TSK_OBJECT_SAFE_FREE(context->stun_bindings);
 	}
 
 	return self;
