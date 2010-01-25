@@ -372,6 +372,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_ifaces.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_nat.h"
 				>
 			</File>

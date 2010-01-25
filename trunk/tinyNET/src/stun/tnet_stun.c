@@ -29,6 +29,7 @@
  */
 #include "tnet_stun.h"
 
+#include "../tnet_nat.h"
 #include "../tnet_utils.h"
 
 #include "tsk_md5.h"
@@ -39,23 +40,24 @@
 
 #include <string.h>
 
-void tnet_stun_parse_address(const uint8_t in_ip[16], int ipv6, char** out_ip)
-{
-	if(ipv6)
-	{
-		TSK_DEBUG_ERROR("IPv6 not supported yet.");
-	}
-	else
-	{
-		tsk_sprintf(out_ip, "%u.%u.%u.%u", in_ip[3], in_ip[2], in_ip[1], in_ip[0]);
-	}
-}
 
-tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_context_t* context)
+/**
+ * @fn	tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_binding_t* binding)
+ *
+ * @brief	Create generic STUN2 request with all mandatory headers and attributes. 
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	binding	The binding object from which to create the request. 
+ *
+ * @return	STUN2 request if succeed and NULL otherwise. 
+**/
+tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_binding_t* binding)
 {
-	tnet_stun_message_t *message = TNET_STUN_MESSAGE_CREATE(context->username, context->password);
-	message->realm = tsk_strdup(context->realm);
-	message->nonce = tsk_strdup(context->nonce);
+	tnet_stun_message_t *message = TNET_STUN_MESSAGE_CREATE(binding->username, binding->password);
+	message->realm = tsk_strdup(binding->realm);
+	message->nonce = tsk_strdup(binding->nonce);
 
 	if(message)
 	{
@@ -73,9 +75,9 @@ tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_context_t* context
 		}
 
 		/* Add software attribute */
-		if(context->software)
+		if(binding->software)
 		{
-			tnet_stun_attribute_t* attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(context->software, strlen(context->software));
+			tnet_stun_attribute_t* attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(binding->software, strlen(binding->software));
 			tnet_stun_message_add_attribute(message, &attribute);
 		}
 	}
@@ -89,6 +91,23 @@ int tnet_stun_send_reliably(const tnet_stun_message_t* message)
 }
 
 
+/**
+ * @fn	tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
+ * 		uint16_t Rc, const tnet_stun_message_t* message, struct sockaddr* server)
+ *
+ * @brief	Internal function to send a STUN message using unrealiable protocol such as UDP.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param	localFD			The local file descriptor. 
+ * @param	RTO				The Retransmission TimeOut. 
+ * @param	Rc				The Number of retransmissions. 
+ * @param [in,out]	message	The message to send. 
+ * @param [in,out]	server	The destination STUN server. 
+ *
+ * @return	The response from the server or NULL if transport error. 
+**/
 tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc, const tnet_stun_message_t* message, struct sockaddr* server)
 {
 	/*	RFC 5389 - 7.2.1.  Sending over UDP
@@ -207,24 +226,24 @@ bail:
 }
 
 /**
-*	
-*/
-int tnet_stun_bind(tnet_stun_context_t* context, char** mapped_address, tnet_port_t *mapped_port)
+ * @fn	int tnet_stun_send_bind(const tnet_nat_context_t* context, tnet_stun_binding_t *binding)
+ *
+ * @brief	Internal function to send a STUN2 binding request over the network.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	context	The NAT context holding the user preferences. 
+ * @param [in,out]	binding	The STUN binding object used to create the message to send. 
+ *
+ * @return	Zero if succeed and non-zero error code otherwise. 
+**/
+int tnet_stun_send_bind(const tnet_nat_context_t* context, tnet_stun_binding_t *binding)
 {
 	int ret = -1;
-	struct sockaddr_storage server;
 	tnet_stun_response_t *response = 0;
 	tnet_stun_request_t *request = 0;
-
-	if(!context || context->localFD == TNET_INVALID_FD)
-	{
-		goto bail;
-	}
-
-	if((ret = tnet_sockaddr_init(context->server_address, context->server_port, context->socket_type, &server)))
-	{
-		goto bail;
-	}
+	
 
 	goto stun_phase0;
 
@@ -238,16 +257,14 @@ int tnet_stun_bind(tnet_stun_context_t* context, char** mapped_address, tnet_por
 	*/
 stun_phase0:
 	{
-		request = tnet_stun_create_request(context);
-
-		if(!request)
+		if(!(request = tnet_stun_create_request(binding)))
 		{
 			goto bail;
-		}
+		}		
 
 		if(TNET_SOCKET_TYPE_IS_DGRAM(context->socket_type))
 		{
-			response = tnet_stun_send_unreliably(context->localFD, context->RTO, context->Rc, request, (struct sockaddr*)&server);
+			response = tnet_stun_send_unreliably(binding->localFD, context->RTO, context->Rc, request, (struct sockaddr*)&binding->server);
 		}
 
 		if(response)
@@ -260,17 +277,17 @@ stun_phase0:
 
 				if(code == 401 && realm && nonce)
 				{
-					if(!context->nonce)
+					if(!binding->nonce)
 					{	/* First time we get a nonce */
-						tsk_strupdate(&context->nonce, nonce);
-						tsk_strupdate(&context->realm, realm);
+						tsk_strupdate(&binding->nonce, nonce);
+						tsk_strupdate(&binding->realm, realm);
 
 						/* Delete the message and response before retrying*/
 						TSK_OBJECT_SAFE_FREE(response);
 						TSK_OBJECT_SAFE_FREE(request);
 
 						// Send again using new transaction identifier
-						return tnet_stun_bind(context, mapped_address, mapped_port);
+						return tnet_stun_send_bind(context, binding);
 					}
 					else
 					{
@@ -287,17 +304,13 @@ stun_phase0:
 				const tnet_stun_attribute_t *attribute;
 				if((attribute= tnet_stun_message_get_attribute(response, stun_xor_mapped_address)))
 				{
-					tnet_stun_parse_address(((const tnet_stun_attribute_xmapped_addr_t*)attribute)->xaddress, ((const tnet_stun_attribute_xmapped_addr_t*)attribute)->family == stun_ipv6, mapped_address);
-					*mapped_port = ((const tnet_stun_attribute_xmapped_addr_t*)attribute)->xport;
-
 					ret = 0;
+					binding->xmaddr = tsk_object_ref((void*)attribute);
 				}
 				else if((attribute= tnet_stun_message_get_attribute(response, stun_mapped_address)))
 				{
-					tnet_stun_parse_address(((const tnet_stun_attribute_mapped_addr_t*)attribute)->address, ((const tnet_stun_attribute_mapped_addr_t*)attribute)->family == stun_ipv6, mapped_address);
-					*mapped_port = ((const tnet_stun_attribute_mapped_addr_t*)attribute)->port;
-
 					ret = 0;
+					binding->maddr = tsk_object_ref((void*)attribute);
 				}
 			}
 		}
@@ -311,8 +324,61 @@ bail:
 	return ret;
 }
 
+/**
+ * @fn	tnet_stun_binding_id_t tnet_stun_bind(const tnet_nat_context_t* nat_context, tnet_fd_t localFD)
+ *
+ * @brief	Public function to create a binding context.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param [in,out]	nat_context	The NAT context. 
+ * @param	localFD				The local file descriptor for which to create the binding context. 
+ *
+ * @return	A valid binding id if succeed and @ref TNET_STUN_INVALID_BINDING_ID otherwise. If the returned id is valid then
+ *			the newly created binding will contain the server reflexive address associated to the local file descriptor.
+**/
+tnet_stun_binding_id_t tnet_stun_bind(const tnet_nat_context_t* nat_context, tnet_fd_t localFD)
+{
+	tnet_stun_binding_id_t id = TNET_STUN_INVALID_BINDING_ID;
 
+	tnet_stun_binding_t *binding = 0;
 
+	if(nat_context && localFD != TNET_INVALID_FD)
+	{
+		if(!(binding = TNET_STUN_BINDING_CREATE(localFD, nat_context->socket_type, nat_context->server_address, nat_context->server_port, nat_context->username, nat_context->password)))
+		{
+			goto bail;
+		}
+
+		if(tnet_stun_send_bind(nat_context, binding))
+		{
+			TSK_OBJECT_SAFE_FREE(binding);
+			goto bail;
+		}
+
+		id = binding->id;
+		tsk_list_push_back_data(nat_context->stun_bindings, (void**)&binding);
+	}
+
+bail:
+	return id;
+}
+
+/**
+ * @fn	int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1,
+ * 		const tnet_stun_transacid_t id2)
+ *
+ * @brief	Compares two transaction ids.
+ *
+ * @author	Mamadou
+ * @date	1/23/2010
+ *
+ * @param	id1	The first transaction identifier. 
+ * @param	id2	The second transaction  identifier. 
+ *
+ * @return	Zero if the two identifiers are equal and non-zero value otherwise.
+**/
 int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)
 {
 	size_t i;
@@ -336,62 +402,61 @@ int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_tra
 
 
 //========================================================
-//	STUN2 CONTEXT object definition
+//	STUN2 BINDING object definition
 //
-static void* tnet_stun_context_create(void * self, va_list * app)
+static void* tnet_stun_binding_create(void * self, va_list * app)
 {
-	tnet_stun_context_t *context = self;
-	if(context)
+	tnet_stun_binding_t *binding = self;
+	if(binding)
 	{
-		context->localFD = va_arg(*app, tnet_fd_t);
-		context->socket_type = va_arg(*app, tnet_socket_type_t);
+		static tnet_stun_binding_id_t __binding_unique_id = 0;
+
+		const char* server_address;
+		tnet_port_t server_port;
+
+		binding->id = ++__binding_unique_id;
+
+		binding->localFD = va_arg(*app, tnet_fd_t);
+		binding->socket_type = va_arg(*app, tnet_socket_type_t);
 	
-		context->server_address = tsk_strdup(va_arg(*app, const char*));
-		context->server_port = va_arg(*app, tnet_port_t);
+		server_address = tsk_strdup(va_arg(*app, const char*));
+		server_port = va_arg(*app, tnet_port_t);
 
-		context->username = tsk_strdup(va_arg(*app, const char*));
-		context->password = tsk_strdup(va_arg(*app, const char*));
+		binding->username = tsk_strdup(va_arg(*app, const char*));
+		binding->password = tsk_strdup(va_arg(*app, const char*));
 		
+		tnet_sockaddr_init(server_address, server_port, binding->socket_type, &binding->server);		
 
-		/*	7.2.1.  Sending over UDP
-			In fixed-line access links, a value of 500 ms is RECOMMENDED.
-		*/
-		context->RTO = 500;
-
-		/*	7.2.1.  Sending over UDP
-			Rc SHOULD be configurable and SHOULD have a default of 7.
-		*/
-		context->Rc = 7;
-
-		context->software = tsk_strdup(TNET_SOFTWARE);
+		binding->software = tsk_strdup(TNET_SOFTWARE);
 	}
 	return self;
 }
 
-static void* tnet_stun_context_destroy(void * self)
+static void* tnet_stun_binding_destroy(void * self)
 { 
-	tnet_stun_context_t *context = self;
-	if(context)
+	tnet_stun_binding_t *binding = self;
+	if(binding)
 	{
-		TSK_FREE(context->username);
-		TSK_FREE(context->password);
-		TSK_FREE(context->realm);
-		TSK_FREE(context->nonce);
+		TSK_FREE(binding->username);
+		TSK_FREE(binding->password);
+		TSK_FREE(binding->realm);
+		TSK_FREE(binding->nonce);
 
-		TSK_FREE(context->server_address);
+		TSK_FREE(binding->software);
 
-		TSK_FREE(context->software);
+		TSK_OBJECT_SAFE_FREE(binding->maddr);
+		TSK_OBJECT_SAFE_FREE(binding->xmaddr);
 	}
 
 	return self;
 }
 
-static const tsk_object_def_t tnet_stun_context_def_s = 
+static const tsk_object_def_t tnet_stun_binding_def_s = 
 {
-	sizeof(tnet_stun_context_t),
-	tnet_stun_context_create, 
-	tnet_stun_context_destroy,
+	sizeof(tnet_stun_binding_t),
+	tnet_stun_binding_create, 
+	tnet_stun_binding_destroy,
 	0, 
 };
-const void *tnet_stun_context_def_t = &tnet_stun_context_def_s;
+const void *tnet_stun_binding_def_t = &tnet_stun_binding_def_s;
 

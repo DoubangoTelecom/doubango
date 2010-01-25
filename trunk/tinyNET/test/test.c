@@ -34,15 +34,17 @@
 #include "test_auth.h"
 #include "test_stun.h"
 #include "test_nat.h"
+#include "test_ifaces.h"
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_SOCKETS	0
-#define RUN_TEST_TRANSPORT	0
+#define RUN_TEST_TRANSPORT	1
 #define RUN_TEST_AUTH		0
 #define RUN_TEST_STUN		0
-#define RUN_TEST_NAT		1
+#define RUN_TEST_NAT		0
+#define RUN_TEST_IFACES		0
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -80,6 +82,11 @@ int main()
 #if RUN_TEST_ALL || RUN_TEST_NAT
 		test_nat();
 #endif
+
+#if RUN_TEST_ALL || RUN_TEST_IFACES
+		test_ifaces();
+#endif
+
 
 	}	
 

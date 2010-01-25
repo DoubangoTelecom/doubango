@@ -28,7 +28,7 @@ TARGET		  tinyNET.dll
 TARGETTYPE	  dll
 UID			 0x1000008d 0xE6E8E096
 
-USERINCLUDE	 	..\..\..\tinySAK\src
+USERINCLUDE	 	..\..\..\tinySAK\src ..\..\..\tinyNET\src
 
 SYSTEMINCLUDE   \epoc32\include \epoc32\include\stdapis \epoc32\include\stdapis\sys
 
@@ -68,7 +68,16 @@ EPOCALLOWDLLDATA
 
 SOURCEPATH ..\..\..\tinyNET\src
 SOURCE tnet.c tnet_auth.c tnet_poll.c tnet_socket.c tnet_transport.c tnet_transport_poll.c tnet_transport_win32.c tnet_utils.c
-
+SOURCEPATH ..\..\..\tinyNET\src
+SOURCE tnet_nat.c
+SOURCEPATH ..\..\..\tinyNET\src\turn
+SOURCE tnet_turn.c tnet_turn_attribute.c tnet_turn_message.c
+SOURCEPATH ..\..\..\tinyNET\src\dns
+SOURCE tnet_dns.c tnet_dns_a.c tnet_dns_aaaa.c tnet_dns_cname.c tnet_dns_mx.c tnet_dns_naptr.c tnet_dns_ns.c tnet_dns_ptr.c tnet_dns_soa.c tnet_dns_txt.c
+SOURCEPATH ..\..\..\tinyNET\src\ice
+SOURCE tnet_ice.c
+SOURCEPATH ..\..\..\tinyNET\src\stun
+SOURCE tnet_stun.c tnet_stun_attribute.c tnet_stun_message.c
 EXPORTUNFROZEN
 
 CAPABILITY WriteDeviceData

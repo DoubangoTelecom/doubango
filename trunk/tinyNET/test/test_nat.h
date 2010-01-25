@@ -24,7 +24,7 @@
 
 //stun.ekiga.net
 //#define STUN_SERVER_IP			"numb.viagenie.ca"
-#define STUN_SERVER_IP			"stun.ekiga.net"
+#define STUN_SERVER_IP			"numb.viagenie.ca"
 #define STUN_USERNAME			"bossiel@yahoo.fr"
 #define STUN_PASSWORD			"diopmama"
 #define STUN_SERVER_PORT		TNET_STUN_TCP_UDP_DEFAULT_PORT
@@ -34,6 +34,8 @@ void test_nat_stun()
 {
 	tnet_socket_t *socket1 = 0, *socket2 = 0;
 	tnet_nat_context_handle_t *context = 0;
+
+	tnet_stun_binding_id_t bind_id1, bind_id2;
 
 	char* public_ip1 = 0, *public_ip2 = 0;
 	tnet_port_t public_port1 = 0, public_port2 = 0;
@@ -52,16 +54,31 @@ void test_nat_stun()
 		goto bail;
 	}
 
-	if(tnet_nat_stun_bind(context, socket1->fd, &public_ip1, &public_port1)
-		|| tnet_nat_stun_bind(context, socket2->fd, &public_ip2, &public_port2))
+	/* == BIND
+	*/
+	bind_id1 = tnet_nat_stun_bind(context, socket1->fd);
+	bind_id2 = tnet_nat_stun_bind(context, socket2->fd);
+
+	if(!TNET_STUN_IS_VALID_BINDING_ID(bind_id1) ||!TNET_STUN_IS_VALID_BINDING_ID(bind_id2))
 	{
 		TSK_DEBUG_ERROR("Failed to get public IP/port using stun");
 		goto bail;
 	}
 
+	if(!tnet_nat_stun_get_reflexive_address(context, bind_id1, &public_ip1, &public_port1))
+	{
+		TSK_DEBUG_INFO("Public IP1/Port1 ==> %s:%u", public_ip1, public_port1);
+	}
 
-	TSK_DEBUG_INFO("Public IP1/Port1 ==> %s:%u", public_ip1, public_port1);
-	TSK_DEBUG_INFO("Public IP2/Port2 ==> %s:%u", public_ip2, public_port2);
+	if(!tnet_nat_stun_get_reflexive_address(context, bind_id2, &public_ip2, &public_port2))
+	{
+		TSK_DEBUG_INFO("Public IP2/Port2 ==> %s:%u", public_ip2, public_port2);
+	}
+
+	/* == UNBIND
+	*/
+	tnet_nat_stun_unbind(context, bind_id1);
+	tnet_nat_stun_unbind(context, bind_id2);
 
 bail:
 	TSK_OBJECT_SAFE_FREE(socket1);
@@ -78,6 +95,12 @@ void test_nat_turn()
 	tnet_socket_t *socket1 = 0, *socket2 = 0;
 	tnet_nat_context_handle_t *context = 0;
 	tnet_turn_allocation_id_t alloc_id1, alloc_id2;
+
+	char* public_ip1 = 0, *public_ip2 = 0;
+	tnet_port_t public_port1 = 0, public_port2 = 0;
+
+	tnet_turn_channel_binding_id_t channel_id;
+
 	int ret;
 	
 	if(!(socket1 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))
@@ -98,14 +121,65 @@ void test_nat_turn()
 	*/
 	alloc_id1 = tnet_nat_turn_allocate(context, socket1->fd);
 	alloc_id2 = tnet_nat_turn_allocate(context, socket2->fd);
-	if(TNET_TURN_IS_VALID_ALLOCATION_ID(alloc_id1)|| TNET_TURN_IS_VALID_ALLOCATION_ID(alloc_id2))
-	{
-		TSK_DEBUG_INFO("TURN allocation succeeded and id1=%llu and id2=%llu", alloc_id1, alloc_id2);
-	}
-	else
+	if(!TNET_TURN_IS_VALID_ALLOCATION_ID(alloc_id1) || !TNET_TURN_IS_VALID_ALLOCATION_ID(alloc_id2))
 	{
 		TSK_DEBUG_ERROR("TURN allocation failed.");
 		goto bail;
+	}
+	else
+	{
+		TSK_DEBUG_INFO("TURN allocation succeeded and id1=%llu and id2=%llu", alloc_id1, alloc_id2);
+	}
+
+	tsk_thread_sleep(2000);
+
+	/* == RETRIEVE STUN SERVER REFLEXIVE ADDRESSES
+	*/
+	if(!tnet_nat_turn_get_reflexive_address(context, alloc_id1, &public_ip1, &public_port1))
+	{
+		TSK_DEBUG_INFO("Public IP1/Port1 ==> %s:%u", public_ip1, public_port1);
+	}
+
+	if(!tnet_nat_turn_get_reflexive_address(context, alloc_id2, &public_ip2, &public_port2))
+	{
+		TSK_DEBUG_INFO("Public IP2/Port2 ==> %s:%u", public_ip2, public_port2);
+	}
+
+	/* == CREATE PERMISSION
+	*/
+	//tnet_nat_turn_add_permission(context, alloc_id1, "192.168.0.11", 300);
+
+	/* == CHANNEL BINDING
+	*/
+	{
+		/* Try to bind (channel binding) to the  socket1 to socket2 */
+		struct sockaddr_storage peer;
+		if((ret = tnet_sockaddr_init(public_ip2, public_port2, STUN_SERVER_PROTO, &peer)))
+		{
+			TSK_DEBUG_ERROR("Failed to init peer with error code %d.", ret);
+		}
+		else
+		{
+			channel_id = tnet_nat_turn_channel_bind(context, alloc_id1,&peer);
+			if(TNET_TURN_IS_VALID_CHANNEL_BINDING_ID(channel_id))
+			{
+				TSK_DEBUG_INFO("TURN channel binding succeeded.");
+
+				/* Try to send data using the newly create channel */
+				if(tnet_nat_turn_channel_senddata(context, channel_id, "Doubango", strlen("Doubango")))
+				{
+					TSK_DEBUG_ERROR("Failed to send data using channel id [%u].", channel_id);
+				}
+				else
+				{
+					TSK_DEBUG_INFO("Data successfuly sent using channel if[%u].", channel_id);
+				}
+			}
+			else
+			{
+				TSK_DEBUG_ERROR("TURN channel binding failed.");
+			}
+		}
 	}
 
 	tsk_thread_sleep(2000);
@@ -126,14 +200,26 @@ bail:
 	TSK_OBJECT_SAFE_FREE(socket1);
 	TSK_OBJECT_SAFE_FREE(socket2);
 
+	TSK_FREE(public_ip1);
+	TSK_FREE(public_ip1);
+
 	TSK_OBJECT_SAFE_FREE(context);
 }
 
 
 void test_nat()
 {
-	test_nat_stun();
-	//test_nat_turn();
+	uint8_t addr[4];	
+	
+	const char* str = "192.168.16.104";
+	memset(addr, 0, sizeof(addr));
+
+	//sscanf(str,"%64[0-9.]:%32[^,]%n",addr);
+	//sscanf(str,"%3u.%3u.%3u.%3u",&addr[0], &addr[1], &addr[2], &addr[3]);
+	//sscanf(str,"%3u.{1,4}",addr);
+
+	//test_nat_stun();
+	test_nat_turn();
 	tsk_thread_sleep(1000);
 }
 

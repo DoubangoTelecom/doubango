@@ -30,8 +30,8 @@
 #ifndef TNET_STUN_MESSAGE_H
 #define TNET_STUN_MESSAGE_H
 
-#include "../tinyNET_config.h"
-#include "tnet_stun_attribute.h"
+#include "tinyNET_config.h"
+#include "stun/tnet_stun_attribute.h"
 
 #include "tsk_buffer.h"
 
@@ -155,6 +155,20 @@ typedef enum tnet_stun_message_type_e
 	stun_refresh_indication = (stun_method_refresh | TNET_STUN_CLASS_INDICATION_MASK),
 	stun_refresh_success_response = (stun_method_refresh | TNET_STUN_CLASS_SUCCESS_MASK),
 	stun_refresh_error_response = (stun_method_refresh | TNET_STUN_CLASS_ERROR_MASK),
+
+	stun_send_indication = (stun_method_send | TNET_STUN_CLASS_INDICATION_MASK),
+
+	stun_data_indication = (stun_method_data | TNET_STUN_CLASS_INDICATION_MASK),
+
+	stun_createpermission_request = (stun_method_createpermission | TNET_STUN_CLASS_REQUEST_MASK),
+	stun_createpermission_indication = (stun_method_createpermission | TNET_STUN_CLASS_INDICATION_MASK),
+	stun_createpermission_success_response = (stun_method_createpermission | TNET_STUN_CLASS_SUCCESS_MASK),
+	stun_createpermission_error_response = (stun_method_createpermission | TNET_STUN_CLASS_ERROR_MASK),
+
+	stun_channelbind_request = (stun_method_channelbind | TNET_STUN_CLASS_REQUEST_MASK),
+	stun_channelbind_indication = (stun_method_channelbind | TNET_STUN_CLASS_INDICATION_MASK),
+	stun_channelbind_success_response = (stun_method_channelbind | TNET_STUN_CLASS_SUCCESS_MASK),
+	stun_channelbind_error_response = (stun_method_channelbind | TNET_STUN_CLASS_ERROR_MASK),
 }
 tnet_stun_message_type_t;
 

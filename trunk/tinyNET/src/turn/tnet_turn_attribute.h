@@ -30,20 +30,21 @@
 #ifndef TNET_TURN_ATTRIBUTE_H
 #define TNET_TURN_ATTRIBUTE_H
 
-#include "../tinyNET_config.h"
-#include "../tnet_proto.h"
-#include "../stun/tnet_stun_attribute.h"
+#include "tinyNET_config.h"
+#include "tnet_proto.h"
+#include "stun/tnet_stun_attribute.h"
 
 TNET_BEGIN_DECLS
 
 /* draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
-#define TNET_TURN_ATTRIBUTE_CHANNELNUM_CREATE(payload, payload_size)		tsk_object_new(tnet_turn_attribute_channelnum_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_TURN_ATTRIBUTE_CHANNELNUM_CREATE(number)						tsk_object_new(tnet_turn_attribute_channelnum_def_t, (uint16_t)number)
 
 /*	draft-ietf-behave-turn-16 - 14.2.  LIFETIME */
 #define TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(lifetime)						tsk_object_new(tnet_turn_attribute_lifetime_def_t, (uint32_t)lifetime)
 
 /*	draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS */
 #define TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE(payload, payload_size)		tsk_object_new(tnet_turn_attribute_xpeer_addr_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE_NULL()						TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE(0,0)
 
 /*	draft-ietf-behave-turn-16 - 14.4.  DATA */
 #define TNET_TURN_ATTRIBUTE_DATA_CREATE(payload, payload_size)				tsk_object_new(tnet_turn_attribute_data_def_t, (const void*)payload, (size_t)payload_size)
@@ -63,7 +64,7 @@ TNET_BEGIN_DECLS
 /*	draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN */
 #define TNET_TURN_ATTRIBUTE_RESTOKEN_CREATE(payload, payload_size)			tsk_object_new(tnet_turn_attribute_restoken_def_t, (const void*)payload, (size_t)payload_size)
 
-
+typedef tnet_stun_attribute_t tnet_turn_attribute_t;
 
 /*	draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER
 	0                   1                   2                   3

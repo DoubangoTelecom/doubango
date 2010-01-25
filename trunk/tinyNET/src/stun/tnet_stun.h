@@ -30,18 +30,28 @@
 #ifndef TNET_STUN_H
 #define TNET_STUN_H
 
-#include "../tinyNET_config.h"
-#include "tnet_stun_message.h"
-#include "../tnet_types.h"
-#include "../tnet_socket.h"
+#include "tinyNET_config.h"
+#include "stun/tnet_stun_message.h"
+#include "tnet_types.h"
+#include "tnet_socket.h"
 
 #include "tsk_object.h"
 
 TNET_BEGIN_DECLS
 
-#define TNET_STUN_CONTEXT_CREATE(fd, socket_type, server_address, server_port, username, password)	\
-	tsk_object_new(tnet_stun_context_def_t, (tnet_fd_t)fd, (tnet_socket_type_t)socket_type, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
+#define TNET_STUN_BINDING_CREATE(fd, socket_type, server_address, server_port, username, password)	\
+	tsk_object_new(tnet_stun_binding_def_t, (tnet_fd_t)fd, (tnet_socket_type_t)socket_type, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
 
+typedef uint64_t tnet_stun_binding_id_t;
+/**
+ * @def	TNET_STUN_INVALID_BINDING_ID
+ *
+ * @brief	STUN2 invalid binding id.
+ *
+ * @remarks	Mamadou, 1/23/2010. 
+**/
+#define TNET_STUN_INVALID_BINDING_ID				0
+#define TNET_STUN_IS_VALID_BINDING_ID(id)			(id != TNET_STUN_INVALID_BINDING_ID)
 
 /**
  * @def	TNET_STUN_TCP_UDP_DEFAULT_PORT
@@ -80,34 +90,59 @@ TNET_BEGIN_DECLS
 **/
 #define TNET_STUN_HEADER_SIZE		20
 
-typedef struct tnet_stun_context_s
+/**
+ * @struct	tnet_stun_binding_s
+ *
+ * @brief	Object definition for STUN binding context.
+ *
+ * @author	Mamadou
+ * @date	1/22/2010
+**/
+typedef struct tnet_stun_binding_s
 {
 	TSK_DECLARE_OBJECT;
 
+	//! A unique id to identify this binding. 
+	tnet_stun_binding_id_t id;
+
+	//! The username to authenticate to the STUN server. 
 	char* username;
+	//! The password to authenticate to the STUN server. 
 	char* password;
+	//! The realm.
 	char* realm;
+	//! The nonce.
 	char* nonce;
-
+	//! The client name.
 	char* software;
-
-	uint16_t RTO; /**< Estimate of the round-trip time (RTT) in millisecond */
-	uint16_t Rc; /**< Number of retransmission for UDP retransmission in millisecond. */
-
+	//! Local file descriptor for which to get server reflexive address.
 	tnet_fd_t localFD;
+	//! The type of the bound socket.
 	tnet_socket_type_t socket_type;
-
-	char* server_address;
-	tnet_port_t server_port;
+	//! The address of the STUN server.
+	struct sockaddr_storage server;
+	//! Server reflexive address of the local socket(STUN1 as per RFC 3489).
+	tnet_stun_attribute_mapped_addr_t *maddr;
+	//! XORed server reflexive address (STUN2 as per RFC 5389).
+	tnet_stun_attribute_xmapped_addr_t *xmaddr;
 }
-tnet_stun_context_t;
+tnet_stun_binding_t;
+TINYNET_GEXTERN const void *tnet_stun_binding_def_t;
+/**
+ * @typedef	tsk_list_t tnet_stun_bindings_L_t
+ *
+ * @brief	List of @ref tnet_stun_binding_t elements.
+**/
+typedef tsk_list_t tnet_stun_bindings_L_t;
+
+//#if defined(__SYMBIAN32__) || ANDROID /* Forward declaration */
+struct tnet_nat_context_s;
+//#endif
 
 int tnet_stun_send_reliably(const tnet_stun_message_t* message);
 tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO, uint16_t Rc, const tnet_stun_message_t* message, struct sockaddr* server);
-TINYNET_API int tnet_stun_bind(tnet_stun_context_t* context, char** mapped_address, tnet_port_t *mapped_port);
+TINYNET_API tnet_stun_binding_id_t tnet_stun_bind(const struct tnet_nat_context_s* nat_context, tnet_fd_t localFD);
 int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2);
-
-TINYNET_GEXTERN const void *tnet_stun_context_def_t;
 
 TNET_END_DECLS
 

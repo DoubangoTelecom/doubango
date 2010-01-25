@@ -106,4 +106,6 @@ EXPORTS
 	tsk_timer_manager_stop @ 105 NONAME
 	tsk_url_decode @ 106 NONAME
 	tsk_url_encode @ 107 NONAME
+	tsk_pppfcs32 @ 108 NONAME
+	tsk_strndup @ 109 NONAME
 

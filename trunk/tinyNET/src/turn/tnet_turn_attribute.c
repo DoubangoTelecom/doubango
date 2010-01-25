@@ -47,7 +47,8 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	/*	draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
 	case stun_channel_number:
 		{
-			TSK_DEBUG_ERROR("==> NOT IMPLEMENTED");
+			uint32_t number = ntohl(*((uint32_t*)dataPtr));
+			attribute = TNET_TURN_ATTRIBUTE_CHANNELNUM_CREATE(number);
 			break;
 		}
 
@@ -115,6 +116,12 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 		}
 	}
 
+	if(!attribute)
+	{
+		/* Create default */
+		attribute = TNET_STUN_ATTRIBUTE_CREATE();
+	}
+
 	return attribute;
 }
 
@@ -134,7 +141,8 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	/*	draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
 	case stun_channel_number:
 		{
-			TSK_DEBUG_ERROR("SERIALIZE:CHANNEL-NUMBER ==> NOT IMPLEMENTED");
+			tnet_turn_attribute_channelnum_t *number = (tnet_turn_attribute_channelnum_t*)attribute;
+			tsk_buffer_append(output, &(number->number), 2);
 			break;
 		}
 
@@ -149,14 +157,33 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	/*	draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS */
 	case stun_xor_peer_address:
 		{
-			TSK_DEBUG_ERROR("SERIALIZE:XOR-PEER-ADDRESS ==> NOT IMPLEMENTED");
+			tnet_turn_attribute_xpeer_addr_t* xpeer = (tnet_turn_attribute_xpeer_addr_t*)attribute;
+			if(xpeer)
+			{
+				if(xpeer->family == stun_ipv4)
+				{
+					uint8_t pad = 0x00;
+					tsk_buffer_append(output, &pad, 1);
+					tsk_buffer_append(output, &xpeer->family, 1);
+					tsk_buffer_append(output, &xpeer->xport, 2);
+					tsk_buffer_append(output, xpeer->xaddress, 4);
+				}
+				else
+				{
+					TSK_DEBUG_ERROR("SERIALIZE:XOR-PEER-ADDRESS ==> IPV6 - NOT IMPLEMENTED");
+				}
+			}
 			break;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.4.  DATA */
 	case stun_data:
 		{
-			TSK_DEBUG_ERROR("SERIALIZE:DATA ==> NOT IMPLEMENTED");
+			tnet_turn_attribute_data_t *data = (tnet_turn_attribute_data_t*)attribute;
+			if(data->value)
+			{
+				tsk_buffer_append(output, data->value->data, data->value->size);
+			}
 			break;
 		}
 
@@ -218,10 +245,14 @@ static void* tnet_turn_attribute_channelnum_create(void * self, va_list * app)
 	tnet_turn_attribute_channelnum_t *attribute = self;
 	if(attribute)
 	{
-		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+#if defined (__GNUC__)
+		attribute->number = (uint16_t)(va_arg(*app, unsigned));
+#else
+		attribute->number = (va_arg(*app, uint16_t));
+#endif
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_channel_number;
+		TNET_STUN_ATTRIBUTE(attribute)->length = 2;
 	}
 	return self;
 }
@@ -294,8 +325,13 @@ static void* tnet_turn_attribute_xpeer_addr_create(void * self, va_list * app)
 	{
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
+		
+		if(payload && payload_size)
+		{
 
+		}
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_peer_address;
+		TNET_STUN_ATTRIBUTE(attribute)->length = 8;
 	}
 	return self;
 }
@@ -331,7 +367,12 @@ static void* tnet_turn_attribute_data_create(void * self, va_list * app)
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
+		if(payload && payload_size)
+		{
+			attribute->value = TSK_BUFFER_CREATE(payload, payload_size);
+		}
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_data;
+		TNET_STUN_ATTRIBUTE(attribute)->length = (uint16_t)payload_size;
 	}
 	return self;
 }
@@ -341,7 +382,7 @@ static void* tnet_turn_attribute_data_destroy(void * self)
 	tnet_turn_attribute_data_t *attribute = self;
 	if(attribute)
 	{
-		
+		TSK_OBJECT_SAFE_FREE(attribute->value);
 	}
 	return self;
 }
@@ -366,33 +407,36 @@ static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
-		const uint8_t *payloadPtr = (const uint8_t*)payload;
-		payloadPtr += 1; /* Ignore first 8bits */
-
-		TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_relayed_address;
-		TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
-		
-		attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
-
-		attribute->xport = ntohs(*((uint16_t*)payloadPtr));
-		attribute->xport ^= 0x2112;
-		payloadPtr+=2;
-		
-
-		if(attribute->family == stun_ipv4)
+		if(payload && payload_size)
 		{
-			uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
-			addr ^= TNET_STUN_MAGIC_COOKIE;
-			memcpy(attribute->xaddress, &addr, 4);
-			payloadPtr+=4;
-		}
-		else if(attribute->family == stun_ipv6)
-		{
-			TSK_DEBUG_ERROR("IPv6 not supported yet.");
-		}
-		else
-		{
-			TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+			const uint8_t *payloadPtr = (const uint8_t*)payload;
+			payloadPtr += 1; /* Ignore first 8bits */
+
+			TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_relayed_address;
+			TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
+			
+			attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
+
+			attribute->xport = ntohs(*((uint16_t*)payloadPtr));
+			//attribute->xport ^= 0x2112;
+			payloadPtr+=2;
+			
+
+			if(attribute->family == stun_ipv4)
+			{
+				uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
+				//addr ^= TNET_STUN_MAGIC_COOKIE;
+				memcpy(attribute->xaddress, &addr, 4);
+				payloadPtr+=4;
+			}
+			else if(attribute->family == stun_ipv6)
+			{
+				TSK_DEBUG_ERROR("IPv6 not supported yet.");
+			}
+			else
+			{
+				TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+			}
 		}
 	}
 	return self;
