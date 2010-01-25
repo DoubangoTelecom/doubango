@@ -143,7 +143,7 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 		{
 			tnet_turn_attribute_channelnum_t *number = (tnet_turn_attribute_channelnum_t*)attribute;
 			tsk_buffer_append(output, &(number->number), 2);
-			break;
+			return 0;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.2.  LIFETIME */
@@ -151,7 +151,7 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 		{
 			tnet_turn_attribute_lifetime_t *lifetime = (tnet_turn_attribute_lifetime_t*)attribute;
 			tsk_buffer_append(output, &(lifetime->value), 4);
-			break;
+			return 0;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS */
@@ -171,9 +171,10 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 				else
 				{
 					TSK_DEBUG_ERROR("SERIALIZE:XOR-PEER-ADDRESS ==> IPV6 - NOT IMPLEMENTED");
+					return -3;
 				}
 			}
-			break;
+			return 0;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.4.  DATA */
@@ -184,14 +185,14 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 			{
 				tsk_buffer_append(output, data->value->data, data->value->size);
 			}
-			break;
+			return 0;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS */
 	case stun_xor_relayed_address:
 		{
 			TSK_DEBUG_ERROR("SERIALIZE:XOR-RELAYED-ADDRESS ==> NOT IMPLEMENTED");
-			break;
+			return -3;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT */
@@ -200,7 +201,7 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 			tnet_turn_attribute_even_port_t *even_port = (tnet_turn_attribute_even_port_t*)attribute;
 			uint8_t value = (even_port->R << 7);
 			tsk_buffer_append(output, &(value), 1);
-			break;
+			return 0;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT */
@@ -209,21 +210,21 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 			tnet_turn_attribute_reqtrans_t *reqtrans = (tnet_turn_attribute_reqtrans_t*)attribute;
 			tsk_buffer_append(output, &(reqtrans->protocol), 1);
 			tsk_buffer_append(output, &(reqtrans->rffu), 3);
-			break;
+			return 0;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT */
 	case stun_dont_fragment:
 		{
 			TSK_DEBUG_ERROR("SERIALIZE:DONT-FRAGMENT ==> NOT IMPLEMENTED");
-			break;
+			return -3;
 		}
 
 	/*	draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN */
 	case stun_reservation_token:
 		{
 			TSK_DEBUG_ERROR("SERIALIZE:TOKEN ==> NOT IMPLEMENTED");
-			break;
+			return -3;
 		}
 	}
 
