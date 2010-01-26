@@ -162,7 +162,7 @@ bail:
 	return ifaces;
 }
 
-tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family)
+tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver)
 {
 	tnet_addresses_L_t *addresses = TSK_LIST_CREATE();
 	tnet_ip_t ip;
@@ -221,7 +221,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family)
 			/* UNICAST addresses
 			*/
 			pUnicast = pCurrAddresses->FirstUnicastAddress;
-            while(pUnicast)
+            while(unicast && pUnicast)
 			{
 				memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pUnicast->Address.lpSockaddr, &ip);
@@ -238,7 +238,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family)
 			/* ANYCAST addresses
 			*/
 			pAnycast = pCurrAddresses->FirstAnycastAddress;
-            while(pAnycast)
+            while(anycast && pAnycast)
 			{
 				memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pAnycast->Address.lpSockaddr, &ip);
@@ -255,7 +255,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family)
 			/* MULTYCAST addresses
 			*/
 			pMulticast = pCurrAddresses->FirstMulticastAddress;
-            while(pMulticast)
+            while(multicast && pMulticast)
 			{
 				memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pMulticast->Address.lpSockaddr, &ip);
@@ -272,7 +272,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family)
 			/* DNS servers
 			*/
 			pDnServer = pCurrAddresses->FirstDnsServerAddress;
-            while(pDnServer)
+            while(dnsserver && pDnServer)
 			{
 				memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pDnServer->Address.lpSockaddr, &ip);

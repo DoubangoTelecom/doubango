@@ -28,7 +28,10 @@
  */
 #include "tnet_dns_rr.h"
 
+#include "../tnet_types.h"
+
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_t qclass)
 {
@@ -64,8 +67,241 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 	return -1;
 }
 
+tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size)
+{
+	tnet_dns_rr_t *rr = 0;
+	const uint8_t* dataPtr = data;
+	const uint8_t* dataEnd = (dataPtr+size);
+	tnet_dns_qtype_t qtype;
+	tnet_dns_qclass_t qclass;
+	char* qname = 0;
+
+	/* == Parse QNAME
+	*/
+	while(dataPtr && dataPtr<dataEnd)
+	{
+		/* FIXME: do .... */
+		dataPtr++;
+
+		if(!*dataPtr)
+		{
+			/* Terminator found. */
+			break;
+		}
+	}
+	
+	/* Check validity */
+	if(dataPtr>=dataEnd)
+	{
+		goto bail;
+	}
+
+	qtype = (tnet_dns_qtype_t)ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+	qclass = (tnet_dns_qclass_t)ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+
+	switch(qtype)
+	{
+		case qtype_a:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_aaa:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_cname:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_mx:
+			{
+				break;
+			}
+
+		case qtype_naptr:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_ns:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_opt:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_ptr:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_soa:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_srv:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_txt:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		default:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+	}
+
+bail:
+	TSK_FREE(qname);
+	return rr;
+}
 
 
+int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
+{
+	if(!rr || !output)
+	{
+		return -1;
+	}
+
+	/* NAME
+	*/
+	{
+		
+	}
+	
+	/* TYPE
+	*/
+	{
+		uint16_t qtype = htons(rr->qtype);
+		tsk_buffer_append(output, &(qtype), 2);
+	}
+
+	/* CLASS
+	*/
+	{
+		uint16_t qclass = htons(rr->qclass);
+		tsk_buffer_append(output, &(qclass), 2);
+	}
+
+	/* TTL
+	*/
+	{
+		uint32_t ttl = htonl(rr->ttl);
+		tsk_buffer_append(output, &(ttl), 4);
+	}
+
+	/* RDLENGTH
+	*/
+	{
+		uint16_t length = htons(rr->rdlength);
+		tsk_buffer_append(output, &(length), 2);
+	}
+	
+	/* RDATA
+	*/
+	
+	switch(rr->qtype)
+	{
+		case qtype_a:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_aaa:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_cname:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_mx:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_naptr:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_ns:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_opt:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_ptr:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_soa:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_srv:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		case qtype_txt:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+
+		default:
+			{
+				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				break;
+			}
+	}
+
+	return -1;
+}
 
 
 //========================================================

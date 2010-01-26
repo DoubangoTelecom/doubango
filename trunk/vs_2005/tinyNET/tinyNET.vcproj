@@ -449,6 +449,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_opt.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_ptr.c"
 					>
 				</File>
@@ -458,6 +462,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_soa.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_srv.c"
 					>
 				</File>
 				<File
@@ -578,6 +586,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_ns.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_opt.h"
 					>
 				</File>
 				<File

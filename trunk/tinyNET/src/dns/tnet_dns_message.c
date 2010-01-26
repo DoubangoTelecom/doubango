@@ -28,12 +28,199 @@
  */
 #include "tnet_dns_message.h"
 
+#include "../tnet_utils.h"
 #include "tsk_memory.h"
+#include "tsk_string.h"
+#include "tsk_debug.h"
+
+#include <string.h>
+
+int tnet_dns_qname_serialize(const char* qname, tsk_buffer_t* output)
+{
+	/*
+		QNAME       a domain name represented as a sequence of labels, where
+					each label consists of a length octet followed by that
+					number of octets.  The domain name terminates with the
+					zero length octet for the null label of the root.  Note
+					that this field may be an odd number of octets; no
+					padding is used.
+
+					Example: "doubango.com" ==> 8doubango3comNULL
+	*/
+	static uint8_t null = 0;
+	char* _qname = tsk_strdup(qname);
+	char* label = strtok(_qname, ".");
+
+	while(label)
+	{
+		uint8_t length = strlen(label);
+		tsk_buffer_append(output, &length, 1);
+		tsk_buffer_append(output, label, strlen(label));
+
+		label = strtok (0, ".");
+	}
+	
+	/* terminates domain name */
+	tsk_buffer_append(output, &null, 1);
+
+	TSK_FREE(_qname);
+
+	return 0;
+}
+
+tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message)
+{
+	tsk_buffer_t* output = 0;
+	uint16_t _2bytes;
+
+	/* Check message validity */
+	if(!message)
+	{
+		goto bail;
+	}
+
+	output = TSK_BUFFER_CREATE_NULL();
+
+	/* ==============================
+	*	HEADER
+	*/
+	//tsk_buffer_append(output, &(message->Header), sizeof(message->Header));
+	
+	/* ID */
+	_2bytes = ntohs(message->Header.ID);
+	tsk_buffer_append(output, &(_2bytes), 2);
+	/* |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   | */
+	{
+		uint16_t temp, _2bytes = 0;
+
+		temp = message->Header.QR, temp <<= 15;
+		_2bytes |= temp;
+
+		temp = message->Header.OPCODE, temp <<= 11;
+		_2bytes |= temp;
+
+		temp = message->Header.AA, temp <<= 10;
+		_2bytes |= temp;
+
+		temp = message->Header.TC, temp <<= 9;
+		_2bytes |= temp;
+
+		temp = message->Header.RD, temp <<= 8;
+		_2bytes |= temp;
+
+		temp = message->Header.RA, temp <<= 7;
+		_2bytes |= temp;
+
+		temp = message->Header.Z, temp <<= 4;
+		_2bytes |= temp;
+
+		temp = message->Header.RCODE, temp <<= 4;
+		_2bytes |= temp;
+
+		_2bytes = ntohs(_2bytes);
+		tsk_buffer_append(output, &(_2bytes), 2);
+	}
+	/* QDCOUNT */
+	_2bytes = ntohs(message->Header.QDCOUNT);
+	tsk_buffer_append(output, &(_2bytes), 2);
+	/* ANCOUNT */
+	_2bytes = ntohs(message->Header.ANCOUNT);
+	tsk_buffer_append(output, &(_2bytes), 2);
+	/* NSCOUNT */
+	_2bytes = ntohs(message->Header.NSCOUNT);
+	tsk_buffer_append(output, &(_2bytes), 2);
+	/* ARCOUNT */
+	_2bytes = ntohs(message->Header.ARCOUNT);
+	tsk_buffer_append(output, &(_2bytes), 2);
 
 
+	/* ==============================
+	*	QUESTION
+	*/
+	if(TNET_DNS_MESSAGE_IS_QUERY(message))
+	{
+		/* QNAME */
+		tnet_dns_qname_serialize(message->Question.QNAME, output);
+		/* QTYPE */
+		_2bytes = ntohs(message->Question.QTYPE);
+		tsk_buffer_append(output, &(_2bytes), 2);
+		/* QCLASS */
+		_2bytes = ntohs(message->Question.QCLASS);
+		tsk_buffer_append(output, &(_2bytes), 2);
+	}
+
+	/* ==============================
+	*	ANSWERS
+	*/
+
+	/* ==============================
+	*	AUTHORITIES
+	*/
+
+	/* ==============================
+	*	ADDITIONALS
+	*/
+	
+
+	
+
+bail:
+	return output;
+}
+
+tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t size)
+{
+	tnet_dns_message_t *message = 0;
+	uint8_t* dataPtr, *dataEnd;
+
+	if(!data || !size)
+	{
+		goto bail;
+	}
+
+	dataPtr = (uint8_t*)data;
+	dataEnd = (dataPtr + size);
+
+	message = TNET_DNS_MESSAGE_CREATE_NULL();
+
+	/* ==============================
+	*	HEADER
+	*/
+	/* ID */
+	message->Header.ID = ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+	/* |QR|   Opcode  |AA|TC|RD|RA|   Z    |   RCODE   | */
+	{
+		uint16_t flags = ntohs(*((uint16_t*)dataPtr));
+
+		message->Header.QR = (flags >> 15);
+		message->Header.OPCODE = ((flags >> 11) & 0x000F);
+		message->Header.AA = ((flags >> 10) & 0x0001);
+		message->Header.TC = ((flags >> 9) & 0x0001);
+		message->Header.RD = ((flags >> 8) & 0x0001);
+		message->Header.RA = ((flags >> 7) & 0x0001);
+		message->Header.Z = ((flags >> 4) & 0x0007);
+		message->Header.RCODE = (flags & 0x000F);
+
+		dataPtr += 2;
+	}
+	/* QDCOUNT */
+	message->Header.QDCOUNT = ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+	/* ANCOUNT */
+	message->Header.ANCOUNT = ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+	/* NSCOUNT */
+	message->Header.NSCOUNT = ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+	/* ARCOUNT */
+	message->Header.ARCOUNT = ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
 
 
-
+bail:
+	return message;
+}
 
 //========================================================
 //	[[DNS MESSAGE]] object definition
@@ -43,7 +230,31 @@ static void* tnet_dns_message_create(void * self, va_list * app)
 	tnet_dns_message_t *message = self;
 	if(message)
 	{
+		static uint16_t __dnsmessage_unique_id = 0;
+
+		const char* qname = va_arg(*app, const char*);
+		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
+		tnet_dns_qtype_t qtype = va_arg(*app, tnet_dns_qtype_t);
+		unsigned isquery = va_arg(*app, unsigned);
+
+		/* Create random ID. */
+		message->Header.ID = ++__dnsmessage_unique_id;
 		
+		/* QR field ==> query (0) - response (1) */
+		message->Header.QR = isquery ? 0 : 1;
+		
+		if(isquery)
+		{
+			/* QDCOUNT field ==> at least one question */
+			message->Header.QDCOUNT = 1;
+		}
+		
+		if(qname)
+		{
+			message->Question.QNAME = tsk_strdup(qname);
+			message->Question.QTYPE = qtype;
+			message->Question.QCLASS = qclass;
+		}
 	}
 	return self;
 }
@@ -56,7 +267,7 @@ static void* tnet_dns_message_destroy(void * self)
 		TSK_FREE(message->Question.QNAME);
 		
 		TSK_OBJECT_SAFE_FREE(message->Answers);
-		TSK_OBJECT_SAFE_FREE(message->Authoritys);
+		TSK_OBJECT_SAFE_FREE(message->Authorities);
 		TSK_OBJECT_SAFE_FREE(message->Additionals);
 	}
 	return self;

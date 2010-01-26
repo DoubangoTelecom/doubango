@@ -19,3 +19,174 @@
 * along with DOUBANGO.
 *
 */
+/**@file tnet_dns.c
+ * @brief DNS utilities functions (RFCS [1034 1035] [3401 3402 3403 3404]).
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#include "tnet_dns.h"
+
+#include "tnet_dns_message.h"
+
+#include "tnet_types.h"
+
+#include "tsk_memory.h"
+#include "tsk_time.h"
+#include "tsk_debug.h"
+
+tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
+{
+	tsk_buffer_t *output = 0;
+	tnet_dns_query_t* query = TNET_DNS_QUERY_CREATE(qname, qclass, qtype);
+	tnet_dns_response_t *response = 0;
+	
+	/* Set user preference */
+	query->Header.RD = ctx->enable_recursion;
+	
+	/* Serialize and send to the server. */
+	output = tnet_dns_message_serialize(query);
+	
+	{
+		/* FIXME */
+		int ret;
+		struct timeval tv;
+		fd_set set;
+		uint64_t timeout = 0;
+		tsk_list_item_t *item;
+		const tnet_address_t *address;
+		struct sockaddr_storage server;
+		tnet_socket_t *localsocket = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
+		
+		/* Check socket validity */
+		if(!TNET_SOCKET_IS_VALID(localsocket))
+		{
+			goto done;
+		}
+
+		/* Always wait for 300ms before retransmission */
+		tv.tv_sec = 0;
+		tv.tv_usec = (300 * 1000);
+
+		/* Set FD */
+		FD_ZERO(&set);
+		FD_SET(localsocket->fd, &set);
+
+		do
+		{
+			tsk_list_foreach(item, ctx->servers)
+			{
+				address = item->data;
+				if(!address->ip || address->family != AF_INET) continue; /* FIXME: for now I only support IPv4. */
+				
+				if(tnet_sockaddr_init(address->ip, 53, tnet_socket_type_udp_ipv4, &server))
+				{
+					TSK_DEBUG_ERROR("Failed to connect to this DNS server: \"%s\"", address->ip);
+					continue;
+				}
+
+				TSK_DEBUG_INFO("Send DNS query to \"%s\"", address->ip);
+				tnet_sockfd_sendto(localsocket->fd, (const struct sockaddr*)&server, output->data, output->size);
+			}
+
+			/* First time? ==> set timeout value */
+			if(!timeout) timeout = tsk_time_epoch() + ctx->timeout;
+
+			/* wait for response */
+			if((ret = select(localsocket->fd+1, &set, NULL, NULL, &tv))<0)
+			{	/* Error */
+				goto done;
+			}
+			else if(ret == 0)
+			{	/* timeout ==> do nothing */
+			}
+			else if(FD_ISSET(localsocket->fd, &set))
+			{	/* there is data to read */
+				size_t len = 0;
+				void* data = 0;
+
+				/* Check how how many bytes are pending */
+				if((ret = tnet_ioctlt(localsocket->fd, FIONREAD, &len))<0)
+				{
+					goto done;
+				}
+				
+				/* Receive pending data */
+				data = tsk_calloc(len, sizeof(uint8_t));
+				if((ret = tnet_sockfd_recv(localsocket->fd, data, len, 0))<0)
+				{
+					TSK_FREE(data);
+									
+					TSK_DEBUG_ERROR("Recving DNS dgrams failed with error code:%d", tnet_geterrno());
+					goto done;
+				}
+
+				/* Parse the incoming response. */
+				response = tnet_dns_message_deserialize(data, len);
+				TSK_FREE(data);
+				
+				if(response)
+				{	/* response successfuly parsed */
+					if(query->Header.ID != response->Header.ID)
+					{ /* Not same transaction id ==> continue*/
+						TSK_OBJECT_SAFE_FREE(response);
+					}
+					else goto done;
+				}
+			}
+		}
+		while(timeout < tsk_time_epoch());
+
+done:
+		TSK_OBJECT_SAFE_FREE(localsocket);
+		goto bail;
+	}
+	
+	
+
+bail:
+	TSK_OBJECT_SAFE_FREE(query);
+	TSK_OBJECT_SAFE_FREE(output);
+
+	return response;
+}
+
+
+
+//========================================================
+//	[[DNS CONTEXT]] object definition
+//
+static void* tnet_dns_create(void * self, va_list * app)
+{
+	tnet_dns_t *dns = self;
+	if(dns)
+	{
+		dns->timeout = TNET_DNS_TIMEOUT_DEFAULT;
+		dns->enable_recursion = 1;
+		dns->enable_edns0 = 1;
+
+		/* Gets all dns servers. */
+		dns->servers = tnet_get_addresses_all_dnsservers();
+	}
+	return self;
+}
+
+static void* tnet_dns_destroy(void * self) 
+{ 
+	tnet_dns_t *dns = self;
+	if(dns)
+	{
+		TSK_OBJECT_SAFE_FREE(dns->servers);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dns_def_s =
+{
+	sizeof(tnet_dns_t),
+	tnet_dns_create,
+	tnet_dns_destroy,
+	0,
+};
+const void *tnet_dns_def_t = &tnet_dns_def_s;

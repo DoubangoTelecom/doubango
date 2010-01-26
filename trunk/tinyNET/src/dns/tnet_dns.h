@@ -20,7 +20,7 @@
 *
 */
 /**@file tnet_dns.h
- * @brief DNS utilities functions (RFCS [1034 1035] [3401 3402 3403 3404]).
+ * @brief DNS utilities functions (RFCS [1034 1035] [2671] [3401 3402 3403 3404]).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -32,8 +32,35 @@
 
 #include "tinyNET_config.h"
 
+#include "tnet_dns_message.h"
+
+#include "tnet_utils.h"
+
 TNET_BEGIN_DECLS
 
+#define TNET_DNS_CREATE()						tsk_object_new(tnet_dns_def_t)
+
+/** Default timeout (in milliseconds) value for DNS queries. 
+*/
+#define TNET_DNS_TIMEOUT_DEFAULT				2000
+
+typedef struct tnet_dns_s
+{
+	TSK_DECLARE_OBJECT;
+
+	unsigned timeout; /**< In milliseconds. Default: @ref TNET_DNS_TIMEOUT_DEFAULT. */
+	unsigned enable_recursion:1; /**< Indicates whether to direct the name server to pursue the query recursively. Default: enabled.*/
+	unsigned enable_edns0:1; /**< Indicates whether to enable EDNS0 (Extension Mechanisms for DNS) or not. Default: enabled. */
+
+
+
+	tnet_addresses_L_t *servers;
+}
+tnet_dns_t;
+
+TINYNET_API tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
+
+TINYNET_GEXTERN const void *tnet_dns_def_t;
 
 TNET_END_DECLS
 
