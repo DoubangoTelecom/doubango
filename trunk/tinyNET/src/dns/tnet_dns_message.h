@@ -34,7 +34,18 @@
 
 #include "tnet_dns_rr.h"
 
+#include "tsk_buffer.h"
+
 TNET_BEGIN_DECLS
+
+#define TNET_DNS_MESSAGE_CREATE(qname, qclass, qtype, isquery)	tsk_object_new(tnet_dns_message_def_t, (const char*)qname, (tnet_dns_qclass_t)qclass, (tnet_dns_qtype_t)qtype, (unsigned)isquery)
+#define TNET_DNS_MESSAGE_CREATE_NULL()							TNET_DNS_MESSAGE_CREATE(0, qclass_any, qtype_any, 0)
+
+#define TNET_DNS_RESPONSE_CREATE(qname, qclass, qtype)			TNET_DNS_MESSAGE_CREATE(qname, qclass, qtype, 0)
+#define TNET_DNS_QUERY_CREATE(qname, qclass, qtype)				TNET_DNS_MESSAGE_CREATE(qname, qclass, qtype, 1)
+
+#define TNET_DNS_MESSAGE_IS_RESPONSE(message)		((message)->Header.QR == 1)
+#define TNET_DNS_MESSAGE_IS_QUERY(message)			((message)->Header.QR == 0)
 
 /** Response code as per RFC 1035 subclause 4.1.1.
 */
@@ -48,6 +59,16 @@ typedef enum tnet_dns_rcode_e
 	rcode_refused = 5
 }
 tnet_dns_rcode_t;
+
+/** OPCODE defining the kind of query as per RFC 1035 subclause 4.1.1.
+*/
+typedef enum tnet_dns_opcode_e
+{
+	opcode_query = 0,	/**< 0               a standard query (QUERY) */
+    opcode_iquery = 1,  /**< 1               an inverse query (IQUERY) */
+    opcode_status = 2,	/**< 2               a server status request (STATUS) */
+}
+tnet_dns_opcode_t;
 
 /** DNS message as per RFC 1035 subclause 4.
 */
@@ -90,7 +111,7 @@ typedef struct tnet_dns_message_s
 	{
 		uint16_t ID;
 		unsigned QR:1;
-		unsigned OPCODE:4;
+		unsigned OPCODE:4; /* see @ref tnet_dns_opcode_t */
 		unsigned AA:1;
 		unsigned TC:1;
 		unsigned RD:1;
@@ -126,10 +147,18 @@ typedef struct tnet_dns_message_s
 	Question;
 
 	tnet_dns_rrs_L_t *Answers;
-	tnet_dns_rrs_L_t *Authoritys;
+	tnet_dns_rrs_L_t *Authorities;
 	tnet_dns_rrs_L_t *Additionals;
 }
 tnet_dns_message_t;
+
+typedef tnet_dns_message_t tnet_dns_query_t;
+typedef tnet_dns_message_t tnet_dns_response_t;
+
+tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message);
+tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t size);
+
+TINYNET_GEXTERN const void *tnet_dns_message_def_t;
 
 TNET_END_DECLS
 

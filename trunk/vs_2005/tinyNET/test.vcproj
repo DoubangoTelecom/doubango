@@ -371,6 +371,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyNET\test\test_dns.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyNET\test\test_nat.h"
 				>
 			</File>

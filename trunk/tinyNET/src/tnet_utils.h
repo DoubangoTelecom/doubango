@@ -71,8 +71,20 @@ TINYNET_API void tnet_getlasterror(tnet_error_t *error);
 TINYNET_API int tnet_geterrno();
 
 TINYNET_API tnet_interfaces_L_t* tnet_get_interfaces();
-TINYNET_API tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family);
-#define tnet_get_addresses_all()	tnet_get_addresses(AF_UNSPEC)
+TINYNET_API tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver);
+#define tnet_get_addresses_all()			tnet_get_addresses(AF_UNSPEC, 1, 1, 1, 1)
+#define tnet_get_addresses_all_unicast()	tnet_get_addresses(AF_UNSPEC, 1, 0, 0, 0)
+#define tnet_get_addresses_unicast4()		tnet_get_addresses(AF_INET, 1, 0, 0, 0)
+#define tnet_get_addresses_unicast6()		tnet_get_addresses(AF_INET6, 1, 0, 0, 0)
+#define tnet_get_addresses_all_anycast()	tnet_get_addresses(AF_UNSPEC, 0, 1, 0, 0)
+#define tnet_get_addresses_anycast4()		tnet_get_addresses(AF_INET, 0, 1, 0, 0)
+#define tnet_get_addresses_anycast6()		tnet_get_addresses(AF_INET6, 0, 1, 0, 0)
+#define tnet_get_addresses_all_multicast()	tnet_get_addresses(AF_UNSPEC, 0, 0, 1, 0)
+#define tnet_get_addresses_multicast4()		tnet_get_addresses(AF_INET, 0, 0, 1, 0)
+#define tnet_get_addresses_multicast6()		tnet_get_addresses(AF_INET6, 0, 0, 1, 0)
+#define tnet_get_addresses_all_dnsservers()	tnet_get_addresses(AF_UNSPEC, 0, 0, 0, 1)
+#define tnet_get_addresses_dnsservers4()	tnet_get_addresses(AF_INET, 0, 0, 0, 1)
+#define tnet_get_addresses_dnsservers6()	tnet_get_addresses(AF_INET6, 0, 0, 0, 1)
 
 TINYNET_API int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res);
 TINYNET_API void tnet_freeaddrinfo(struct addrinfo *ai);

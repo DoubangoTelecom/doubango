@@ -122,7 +122,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 	fd_set set;
 
 	tsk_buffer_t *buffer = tnet_stun_message_serialize(message);
-	tnet_stun_response_t *reponse = 0;
+	tnet_stun_response_t *response = 0;
 	
 	if(!buffer)
 	{
@@ -202,14 +202,14 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			}
 
 			/* Parse the incoming response. */
-			reponse = tnet_stun_message_deserialize(data, len);
+			response = tnet_stun_message_deserialize(data, len);
 			TSK_FREE(data);
 
-			if(reponse)
+			if(response)
 			{
-				if(tnet_stun_transacid_cmp(message->transaction_id, reponse->transaction_id))
+				if(tnet_stun_transacid_cmp(message->transaction_id, response->transaction_id))
 				{ /* Not same transaction id */
-					TSK_OBJECT_SAFE_FREE(reponse);
+					TSK_OBJECT_SAFE_FREE(response);
 					continue;
 				}
 			}
@@ -222,7 +222,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 bail:
 	TSK_OBJECT_SAFE_FREE(buffer);
 
-	return reponse;
+	return response;
 }
 
 /**
