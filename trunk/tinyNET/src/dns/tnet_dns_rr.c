@@ -28,10 +28,21 @@
  */
 #include "tnet_dns_rr.h"
 
+#include "tnet_dns_a.h"
+#include "tnet_dns_aaaa.h"
+#include "tnet_dns_mx.h"
+#include "tnet_dns_naptr.h"
+#include "tnet_dns_ns.h"
+#include "tnet_dns_opt.h"
+#include "tnet_dns_ptr.h"
+#include "tnet_dns_soa.h"
+#include "tnet_dns_txt.h"
+
 #include "../tnet_types.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
+#include "tsk_string.h"
 
 int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_t qclass)
 {
@@ -67,51 +78,179 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 	return -1;
 }
 
-tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size)
+size_t tnet_qname_label_parse(const void* data, size_t size, char** name, int fromPtr)
 {
-	tnet_dns_rr_t *rr = 0;
-	const uint8_t* dataPtr = data;
-	const uint8_t* dataEnd = (dataPtr+size);
-	tnet_dns_qtype_t qtype;
-	tnet_dns_qclass_t qclass;
-	char* qname = 0;
+	uint8_t* dataPtr = (uint8_t*)data;
+	uint8_t* dataEnd = (dataPtr + size);
 
-	/* == Parse QNAME
-	*/
-	while(dataPtr && dataPtr<dataEnd)
+	while(*dataPtr)
 	{
-		/* FIXME: do .... */
+		uint8_t length;
+
+		if(*name)
+		{
+			tsk_strcat(name, ".");
+		}	
+
+		length = *dataPtr;
 		dataPtr++;
 
-		if(!*dataPtr)
+		tsk_strncat(name, dataPtr, length);
+		dataPtr += length;
+
+		if(!fromPtr) break;
+	}
+
+	return (dataPtr - ((uint8_t*)data));
+}
+
+int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** charstring, size_t *offset)
+{
+	/* RFC 1035 - 3.3. Standard RRs
+		<character-string> is a single length octet followed by that number of characters. 
+		<character-string> is treated as binary information, and can be up to 256 characters in
+		length (including the length octet).
+	*/
+	uint8_t* dataPtr = (((uint8_t*)data)+ *offset);
+	uint8_t length = *dataPtr;
+	
+	if(length < size)
+	{
+		*charstring = tsk_strndup((dataPtr + 1), length);
+		*offset += (1 + length);
+		
+		return 0;
+	}
+	else return -1;
+}
+
+int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, size_t *offset)
+{
+	/* RFC 1035 - 4.1.4. Message compression
+
+		The pointer takes the form of a two octet sequence:
+		+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+		| 1  1|                OFFSET                   |
+		+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+	*/
+	uint8_t* dataPtr = (((uint8_t*)data) + *offset);
+	uint8_t* dataEnd = (dataPtr + size);
+	int usingPtr = 0; /* Do not change. */
+
+	while(*dataPtr)
+	{
+		usingPtr = ((*dataPtr & 0xC0) == 0xC0);
+
+		if(usingPtr)
 		{
-			/* Terminator found. */
-			break;
+			uint8_t *Ptr;
+			uint16_t ptr_offset = (*dataPtr & 0x3F);
+			ptr_offset = ptr_offset << 8 | *(dataPtr+1);
+			Ptr = ((uint8_t*)data) + ptr_offset;
+			
+			tnet_qname_label_parse(Ptr, (dataEnd - Ptr), name, 1);
+			*offset += 2, dataPtr += 2;
+			break; // Is it right?
+		}
+		else
+		{
+			size_t length = tnet_qname_label_parse(dataPtr, size, name, 0);
+			*offset += length, dataPtr += length;
 		}
 	}
-	
+
+	*offset += usingPtr ? 0 : 1;
+
+	return 0;
+}
+
+int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
+{
+	/*
+		QNAME       a domain name represented as a sequence of labels, where
+					each label consists of a length octet followed by that
+					number of octets.  The domain name terminates with the
+					zero length octet for the null label of the root.  Note
+					that this field may be an odd number of octets; no
+					padding is used.
+
+					Example: "doubango.com" ==> 8doubango3comNULL
+	*/
+	static uint8_t null = 0;
+
+	if(qname)
+	{
+		char* _qname = tsk_strdup(qname);
+		char* label = strtok(_qname, ".");
+
+		while(label)
+		{
+			uint8_t length = strlen(label);
+			tsk_buffer_append(output, &length, 1);
+			tsk_buffer_append(output, label, strlen(label));
+
+			label = strtok (0, ".");
+		}
+
+		TSK_FREE(_qname);
+	}
+
+	/* terminates domain name */
+	tsk_buffer_append(output, &null, 1);
+
+	return 0;
+}
+
+tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* offset)
+{
+	tnet_dns_rr_t *rr = 0;
+	uint8_t* dataStart = (uint8_t*)data;
+	uint8_t* dataPtr = (dataStart + *offset);
+	uint8_t* dataEnd = (dataPtr+size);
+	tnet_dns_qtype_t qtype;
+	tnet_dns_qclass_t qclass;
+	uint32_t ttl;
+	uint16_t rdlength;
+	char* qname = 0;
+
 	/* Check validity */
-	if(dataPtr>=dataEnd)
+	if(!dataPtr || !size)
 	{
 		goto bail;
 	}
 
+	/* == Parse QNAME
+	*/
+	tnet_dns_rr_qname_deserialize(dataStart, size, &qname, offset);
+	dataPtr = (dataStart + *offset);
+	/* == Parse QTYPE
+	*/
 	qtype = (tnet_dns_qtype_t)ntohs(*((uint16_t*)dataPtr));
-	dataPtr += 2;
+	dataPtr += 2, *offset += 2;
+	/* == Parse QCLASS
+	*/
 	qclass = (tnet_dns_qclass_t)ntohs(*((uint16_t*)dataPtr));
-	dataPtr += 2;
+	dataPtr += 2, *offset += 2;
+	/* == Parse TTL
+	*/
+	ttl = ntohl(*((uint32_t*)dataPtr));
+	dataPtr += 4, *offset += 4;
+	/* == Parse RDLENGTH
+	*/
+	rdlength = ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2, *offset += 2;
 
 	switch(qtype)
 	{
 		case qtype_a:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_A_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
-		case qtype_aaa:
+		case qtype_aaaa:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_AAAA_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
@@ -123,36 +262,38 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size)
 
 		case qtype_mx:
 			{
+				rr = TNET_DNS_MX_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_naptr:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_NAPTR_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_ns:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_NS_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_opt:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				unsigned payload_size = qclass;
+				rr = TNET_DNS_OPT_CREATE(payload_size);
 				break;
 			}
 
 		case qtype_ptr:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_PTR_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_soa:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_SOA_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
@@ -164,7 +305,7 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size)
 
 		case qtype_txt:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_TXT_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
@@ -177,6 +318,8 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size)
 
 bail:
 	TSK_FREE(qname);
+	
+	*offset += rdlength;
 	return rr;
 }
 
@@ -191,7 +334,7 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 	/* NAME
 	*/
 	{
-		
+		tnet_dns_rr_qname_serialize(rr->name, output);
 	}
 	
 	/* TYPE
@@ -233,7 +376,7 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 				break;
 			}
 
-		case qtype_aaa:
+		case qtype_aaaa:
 			{
 				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
 				break;

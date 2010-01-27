@@ -19,3 +19,83 @@
 * along with DOUBANGO.
 *
 */
+/**@file tnet_dns_a.c
+ * @brief DNS Address record - RR - (RFC 1035).
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#include "tnet_dns_a.h"
+
+#include "../tnet_types.h"
+
+#include "tsk_string.h"
+#include "tsk_memory.h"
+#include "tsk_debug.h"
+
+
+//========================================================
+//	[[DNS A]] object definition
+//
+static void* tnet_dns_a_create(void * self, va_list * app)
+{
+	tnet_dns_a_t *a = self;
+	if(a)
+	{
+		const char* name = va_arg(*app, const char*);
+		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
+		uint32_t ttl = va_arg(*app, uint32_t);
+#if defined(__GNUC__)
+		uint16_t rdlength = (uint16_t)va_arg(*app, unsigned);
+#else
+		uint16_t rdlength = va_arg(*app, uint16_t);
+#endif
+		const void* data = va_arg(*app, const void*);
+		size_t offset = va_arg(*app, size_t);
+
+		const uint8_t* rddata = (((uint8_t*)data) + offset);
+		const uint8_t* dataEnd = (rddata + rdlength);
+
+		/* init base */
+		tnet_dns_rr_init(TNET_DNS_RR(a), qtype_a, qclass);
+		TNET_DNS_RR(a)->name = tsk_strdup(name);
+		TNET_DNS_RR(a)->rdlength = rdlength;
+		TNET_DNS_RR(a)->ttl = ttl;
+
+		if(rddata && rdlength && (rdlength == 4/* 32bits */))
+		{	// ==> DESERIALIZATION
+			/* ADDRESS */
+			uint32_t address = ntohl(*((uint32_t*)rddata));
+			tsk_sprintf(&(a->address), "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("Invalid IPv4 address.");
+		}
+
+	}
+	return self;
+}
+
+static void* tnet_dns_a_destroy(void * self) 
+{ 
+	tnet_dns_a_t *a = self;
+	if(a)
+	{
+		/* deinit base */
+		tnet_dns_rr_deinit(TNET_DNS_RR(a));
+
+		TSK_FREE(a->address);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dns_a_def_s =
+{
+	sizeof(tnet_dns_a_t),
+	tnet_dns_a_create,
+	tnet_dns_a_destroy,
+	0,
+};
+const void *tnet_dns_a_def_t = &tnet_dns_a_def_s;

@@ -35,43 +35,11 @@
 
 #include <string.h>
 
-int tnet_dns_qname_serialize(const char* qname, tsk_buffer_t* output)
-{
-	/*
-		QNAME       a domain name represented as a sequence of labels, where
-					each label consists of a length octet followed by that
-					number of octets.  The domain name terminates with the
-					zero length octet for the null label of the root.  Note
-					that this field may be an odd number of octets; no
-					padding is used.
-
-					Example: "doubango.com" ==> 8doubango3comNULL
-	*/
-	static uint8_t null = 0;
-	char* _qname = tsk_strdup(qname);
-	char* label = strtok(_qname, ".");
-
-	while(label)
-	{
-		uint8_t length = strlen(label);
-		tsk_buffer_append(output, &length, 1);
-		tsk_buffer_append(output, label, strlen(label));
-
-		label = strtok (0, ".");
-	}
-	
-	/* terminates domain name */
-	tsk_buffer_append(output, &null, 1);
-
-	TSK_FREE(_qname);
-
-	return 0;
-}
-
 tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message)
 {
 	tsk_buffer_t* output = 0;
 	uint16_t _2bytes;
+	tsk_list_item_t *item;
 
 	/* Check message validity */
 	if(!message)
@@ -140,7 +108,7 @@ tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message)
 	if(TNET_DNS_MESSAGE_IS_QUERY(message))
 	{
 		/* QNAME */
-		tnet_dns_qname_serialize(message->Question.QNAME, output);
+		tnet_dns_rr_qname_serialize(message->Question.QNAME, output);
 		/* QTYPE */
 		_2bytes = ntohs(message->Question.QTYPE);
 		tsk_buffer_append(output, &(_2bytes), 2);
@@ -152,16 +120,26 @@ tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message)
 	/* ==============================
 	*	ANSWERS
 	*/
+	tsk_list_foreach(item, message->Answers)
+	{
+		tnet_dns_rr_serialize((tnet_dns_rr_t *)item->data, output);
+	}
 
 	/* ==============================
 	*	AUTHORITIES
 	*/
+	tsk_list_foreach(item, message->Authorities)
+	{
+		tnet_dns_rr_serialize((tnet_dns_rr_t *)item->data, output);
+	}
 
 	/* ==============================
 	*	ADDITIONALS
 	*/
-	
-
+	tsk_list_foreach(item, message->Additionals)
+	{
+		tnet_dns_rr_serialize((tnet_dns_rr_t *)item->data, output);
+	}
 	
 
 bail:
@@ -171,7 +149,9 @@ bail:
 tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t size)
 {
 	tnet_dns_message_t *message = 0;
-	uint8_t* dataPtr, *dataEnd;
+	uint8_t *dataPtr, *dataEnd, *dataStart;
+	uint16_t i;
+	size_t offset = 0;
 
 	if(!data || !size)
 	{
@@ -179,7 +159,8 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 	}
 
 	dataPtr = (uint8_t*)data;
-	dataEnd = (dataPtr + size);
+	dataStart = dataPtr;
+	dataEnd = (dataStart + size);
 
 	message = TNET_DNS_MESSAGE_CREATE_NULL();
 
@@ -217,6 +198,71 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 	message->Header.ARCOUNT = ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 
+	/* === Queries 
+	*/
+	offset = (dataPtr - dataStart);
+	for(i=0; i<message->Header.QDCOUNT; i++)
+	{
+		/* Do not need to parse queries in the response ==> silently ignore */
+		char* name = 0;
+		tnet_dns_rr_qname_deserialize(dataStart, (dataEnd-dataPtr), &name, &offset); /* QNAME */
+		dataPtr+=offset;
+		dataPtr+=4, offset+=4; /* QTYPE + QCLASS */
+		TSK_FREE(name);
+	}
+	dataPtr = (dataStart + offset); /* TODO: remove ==> obly for debug tests */
+
+	/* === Answers 
+	*/
+	offset = (dataPtr - dataStart);
+	for(i=0; i<message->Header.ANCOUNT; i++)
+	{
+		tnet_dns_rr_t* rr = tnet_dns_rr_deserialize(dataStart, (dataEnd-dataPtr), &offset);
+		if(rr)
+		{
+			if(!message->Answers)
+			{
+				message->Answers = TSK_LIST_CREATE();
+			}
+			tsk_list_push_back_data(message->Answers, &rr);
+		}
+	}
+	dataPtr = (dataStart + offset);
+
+	/* === Authorities 
+	*/
+	offset = (dataPtr - dataStart);
+	for(i=0; i<message->Header.NSCOUNT; i++)
+	{
+		tnet_dns_rr_t* rr = tnet_dns_rr_deserialize(dataStart, (dataEnd-dataPtr), &offset);
+		if(rr)
+		{
+			if(!message->Authorities)
+			{
+				message->Authorities = TSK_LIST_CREATE();
+			}
+			tsk_list_push_back_data(message->Authorities, &rr);
+		}
+	}
+	dataPtr = (dataStart + offset);
+
+	/* === Additionals 
+	*/
+	offset = (dataPtr - dataStart);
+	for(i=0; i<message->Header.ARCOUNT; i++)
+	{
+		tnet_dns_rr_t* rr = tnet_dns_rr_deserialize(dataStart, (dataEnd-dataPtr), &offset);
+		if(rr)
+		{
+			if(!message->Additionals)
+			{
+				message->Additionals = TSK_LIST_CREATE();
+			}
+			tsk_list_push_back_data(message->Additionals, &rr);
+		}
+	}
+	dataPtr = (dataStart + offset);
+	
 
 bail:
 	return message;

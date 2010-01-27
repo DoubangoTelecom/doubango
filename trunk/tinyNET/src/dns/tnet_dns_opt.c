@@ -39,10 +39,6 @@
 
 
 
-
-
-
-
 //========================================================
 //	[[DNS OPT]] object definition
 //
@@ -51,8 +47,21 @@ static void* tnet_dns_opt_create(void * self, va_list * app)
 	tnet_dns_opt_t *rr_opt = self;
 	if(rr_opt)
 	{
+		uint16_t payload_size = (uint16_t)va_arg(*app, unsigned);
+
 		/* init base */
-		tnet_dns_rr_init(TNET_DNS_RR(rr_opt), qtype_any, qclass_any);
+		tnet_dns_rr_init(TNET_DNS_RR(rr_opt), qtype_opt, qclass_any);
+
+		/*
+			 NAME         domain name    empty (root domain)
+			 TYPE         u_int16_t      OPT
+			 CLASS        u_int16_t      sender's UDP payload size
+			 TTL          u_int32_t      extended RCODE and flags
+			 RDLEN        u_int16_t      describes RDATA
+			 RDATA        octet stream   {attribute,value} pairs
+			
+		*/
+		TNET_DNS_RR(rr_opt)->qclass = payload_size;
 	}
 	return self;
 }
