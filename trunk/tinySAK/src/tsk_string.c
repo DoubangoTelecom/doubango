@@ -175,18 +175,27 @@ int tsk_strcontains(const char * str1, const char * str2)
 */
 void tsk_strcat(char** destination, const char* source)
 {
+	tsk_strncat(destination, source, strlen(source));
+}
+
+/**@ingroup tsk_string_group
+*/
+void tsk_strncat(char** destination, const char* source, size_t n)
+{
 	size_t index = 0;
+	size_t size_to_cat = (n > strlen(source)) ? strlen(source) : n;
 
 	if(!source) return;
 
 	if(!*destination){
-		*destination = (char*)tsk_malloc(strlen(source)+1);
-		strncpy(*destination, source, strlen(source)+1);
+		*destination = (char*)tsk_malloc(size_to_cat+1);
+		strncpy(*destination, source, size_to_cat+1);
 	}else{
 		index = strlen(*destination);
-		*destination = tsk_realloc(*destination, index + strlen(source)+1);
-		strncpy(((*destination)+index), source, strlen(source)+1);
+		*destination = tsk_realloc(*destination, index + size_to_cat+1);
+		strncpy(((*destination)+index), source, size_to_cat+1);
 	}
+	(*destination)[index + size_to_cat] = '\0';
 }
 
 /**@ingroup tsk_string_group

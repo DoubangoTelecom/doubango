@@ -27,10 +27,22 @@ void test_dns_query()
 	tnet_dns_t *ctx = TNET_DNS_CREATE();
 	tnet_dns_response_t *response = 0;
 
-	response = tnet_dns_resolve(ctx, "ims.inexbee.com", qclass_in, qtype_naptr);
+	if((response = tnet_dns_resolve(ctx, "ims.inexbee.com", qclass_in, qtype_naptr)))
+	{
+		if(TNET_DNS_RESPONSE_IS_SUCCESS(response))
+		{
+			TSK_DEBUG_INFO("We got a success response from the DNS server.");
+		}
+		else
+		{
+			TSK_DEBUG_ERROR("We got an error response from the DNS server. Erro code: %u", response->Header.RCODE);
+		}
+	}
 
 	TSK_OBJECT_SAFE_FREE(response);
 	TSK_OBJECT_SAFE_FREE(ctx);
+
+	tsk_thread_sleep(2000);
 }
 
 void test_dns()

@@ -29,6 +29,7 @@
 #include "tnet_dns.h"
 
 #include "tnet_dns_message.h"
+#include "tnet_dns_opt.h"
 
 #include "tnet_types.h"
 
@@ -44,6 +45,18 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 	
 	/* Set user preference */
 	query->Header.RD = ctx->enable_recursion;
+
+	/* EDNS0 */
+	if(ctx->enable_edns0)
+	{
+		tnet_dns_opt_t *rr_opt = TNET_DNS_OPT_CREATE(TNET_DNS_DGRAM_SIZE_DEFAULT);
+		if(!query->Additionals)
+		{
+			query->Additionals = TSK_LIST_CREATE();
+		}
+		tsk_list_push_back_data(query->Additionals, &rr_opt);
+		query->Header.ARCOUNT++;
+	}
 	
 	/* Serialize and send to the server. */
 	output = tnet_dns_message_serialize(query);
@@ -53,14 +66,16 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 		int ret;
 		struct timeval tv;
 		fd_set set;
+		tnet_fd_t maxFD;
 		uint64_t timeout = 0;
 		tsk_list_item_t *item;
 		const tnet_address_t *address;
 		struct sockaddr_storage server;
-		tnet_socket_t *localsocket = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
+		tnet_socket_t *localsocket4 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
+		tnet_socket_t *localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
 		
 		/* Check socket validity */
-		if(!TNET_SOCKET_IS_VALID(localsocket))
+		if(!TNET_SOCKET_IS_VALID(localsocket4))
 		{
 			goto done;
 		}
@@ -71,50 +86,88 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 
 		/* Set FD */
 		FD_ZERO(&set);
-		FD_SET(localsocket->fd, &set);
+		FD_SET(localsocket4->fd, &set);
+		if(TNET_SOCKET_IS_VALID(localsocket6))
+		{
+			FD_SET(localsocket6->fd, &set);
+			maxFD = TSK_MAX(localsocket4->fd, localsocket6->fd);
+		}
+		else
+		{
+			maxFD = localsocket4->fd;
+		}
 
 		do
 		{
 			tsk_list_foreach(item, ctx->servers)
 			{
 				address = item->data;
-				if(!address->ip || address->family != AF_INET) continue; /* FIXME: for now I only support IPv4. */
+				if(!address->ip || 
+					(address->family != AF_INET && address->family != AF_INET6) || 
+					(address->family == AF_INET6 && !TNET_SOCKET_IS_VALID(localsocket6)))
+				{
+					continue;
+				}
 				
-				if(tnet_sockaddr_init(address->ip, 53, tnet_socket_type_udp_ipv4, &server))
+				if(tnet_sockaddr_init(address->ip, 53, (address->family == AF_INET ? tnet_socket_type_udp_ipv4 : tnet_socket_type_udp_ipv6), &server))
 				{
 					TSK_DEBUG_ERROR("Failed to connect to this DNS server: \"%s\"", address->ip);
 					continue;
 				}
 
 				TSK_DEBUG_INFO("Send DNS query to \"%s\"", address->ip);
-				tnet_sockfd_sendto(localsocket->fd, (const struct sockaddr*)&server, output->data, output->size);
+
+				if(address->family == AF_INET6)
+				{
+					tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size);
+				}
+				else
+				{
+					tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size);
+				}
 			}
 
 			/* First time? ==> set timeout value */
 			if(!timeout) timeout = tsk_time_epoch() + ctx->timeout;
 
 			/* wait for response */
-			if((ret = select(localsocket->fd+1, &set, NULL, NULL, &tv))<0)
+			if((ret = select(maxFD+1, &set, NULL, NULL, &tv))<0)
 			{	/* Error */
 				goto done;
 			}
 			else if(ret == 0)
 			{	/* timeout ==> do nothing */
 			}
-			else if(FD_ISSET(localsocket->fd, &set))
+			else
 			{	/* there is data to read */
 				size_t len = 0;
 				void* data = 0;
+				tnet_fd_t active_fd;
+
+				/* Find active file descriptor */
+				if(FD_ISSET(localsocket4->fd, &set))
+				{
+					active_fd = localsocket4->fd;
+				}
+				else if(FD_ISSET(localsocket6->fd, &set))
+				{
+					active_fd = localsocket4->fd;
+				}
+				else
+				{
+					TSK_DEBUG_ERROR("FD_ISSET ==> Invalid file descriptor.");
+					continue;
+				}
 
 				/* Check how how many bytes are pending */
-				if((ret = tnet_ioctlt(localsocket->fd, FIONREAD, &len))<0)
+				if((ret = tnet_ioctlt(active_fd, FIONREAD, &len))<0)
 				{
 					goto done;
 				}
 				
 				/* Receive pending data */
 				data = tsk_calloc(len, sizeof(uint8_t));
-				if((ret = tnet_sockfd_recv(localsocket->fd, data, len, 0))<0)
+				if((ret = tnet_sockfd_recv(active_fd, data, len, 0))<0)
 				{
 					TSK_FREE(data);
 									
@@ -128,7 +181,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 				
 				if(response)
 				{	/* response successfuly parsed */
-					if(query->Header.ID != response->Header.ID)
+					if(query->Header.ID != response->Header.ID || !TNET_DNS_MESSAGE_IS_RESPONSE(response))
 					{ /* Not same transaction id ==> continue*/
 						TSK_OBJECT_SAFE_FREE(response);
 					}
@@ -139,7 +192,8 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 		while(timeout < tsk_time_epoch());
 
 done:
-		TSK_OBJECT_SAFE_FREE(localsocket);
+		TSK_OBJECT_SAFE_FREE(localsocket4);
+		TSK_OBJECT_SAFE_FREE(localsocket6);
 		goto bail;
 	}
 	

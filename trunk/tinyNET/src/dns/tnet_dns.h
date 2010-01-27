@@ -44,6 +44,10 @@ TNET_BEGIN_DECLS
 */
 #define TNET_DNS_TIMEOUT_DEFAULT				2000
 
+/** Maximum supported Dgram size to advertise using EDNS0. 
+*/
+#define TNET_DNS_DGRAM_SIZE_DEFAULT				4096
+
 typedef struct tnet_dns_s
 {
 	TSK_DECLARE_OBJECT;

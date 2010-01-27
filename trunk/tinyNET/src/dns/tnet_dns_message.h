@@ -47,6 +47,9 @@ TNET_BEGIN_DECLS
 #define TNET_DNS_MESSAGE_IS_RESPONSE(message)		((message)->Header.QR == 1)
 #define TNET_DNS_MESSAGE_IS_QUERY(message)			((message)->Header.QR == 0)
 
+#define TNET_DNS_RESPONSE_IS_SUCCESS(response)		((response)->Header.RCODE == rcode_noerror)
+#define TNET_DNS_RESPONSE_IS_ERROR(response)		!TNET_DNS_RESPONSE_IS_SUCCESS(response)
+
 /** Response code as per RFC 1035 subclause 4.1.1.
 */
 typedef enum tnet_dns_rcode_e
