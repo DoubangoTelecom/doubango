@@ -92,3 +92,4 @@ TINYSAK_API void tsk_object_delete(void *self);
 TSK_END_DECLS
 
 #endif /* TSK_OBJECT_H */
+

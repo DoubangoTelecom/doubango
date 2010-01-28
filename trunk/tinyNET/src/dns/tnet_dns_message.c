@@ -224,7 +224,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 			{
 				message->Answers = TSK_LIST_CREATE();
 			}
-			tsk_list_push_back_data(message->Answers, &rr);
+			tsk_list_push_back_data(message->Answers, (void**)&rr);
 		}
 	}
 	dataPtr = (dataStart + offset);
@@ -241,7 +241,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 			{
 				message->Authorities = TSK_LIST_CREATE();
 			}
-			tsk_list_push_back_data(message->Authorities, &rr);
+			tsk_list_push_back_data(message->Authorities, (void**)&rr);
 		}
 	}
 	dataPtr = (dataStart + offset);
@@ -258,7 +258,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 			{
 				message->Additionals = TSK_LIST_CREATE();
 			}
-			tsk_list_push_back_data(message->Additionals, &rr);
+			tsk_list_push_back_data(message->Additionals, (void**)&rr);
 		}
 	}
 	dataPtr = (dataStart + offset);

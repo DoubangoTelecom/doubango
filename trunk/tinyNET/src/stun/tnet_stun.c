@@ -420,7 +420,11 @@ static void* tnet_stun_binding_create(void * self, va_list * app)
 		binding->socket_type = va_arg(*app, tnet_socket_type_t);
 	
 		server_address = tsk_strdup(va_arg(*app, const char*));
+#if defined(__GNUC__)
+		server_port = (tnet_port_t)va_arg(*app, unsigned);
+#else
 		server_port = va_arg(*app, tnet_port_t);
+#endif
 
 		binding->username = tsk_strdup(va_arg(*app, const char*));
 		binding->password = tsk_strdup(va_arg(*app, const char*));
@@ -459,4 +463,5 @@ static const tsk_object_def_t tnet_stun_binding_def_s =
 	0, 
 };
 const void *tnet_stun_binding_def_t = &tnet_stun_binding_def_s;
+
 

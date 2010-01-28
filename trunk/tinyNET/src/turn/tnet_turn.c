@@ -632,7 +632,11 @@ static void* tnet_turn_allocation_create(void * self, va_list * app)
 		allocation->socket_type = va_arg(*app, tnet_socket_type_t);
 	
 		server_address = va_arg(*app, const char*);
+#if defined(__GNUC__)
+		server_port = (tnet_port_t)va_arg(*app, unsigned);
+#else
 		server_port = va_arg(*app, tnet_port_t);
+#endif
 
 		allocation->username = tsk_strdup(va_arg(*app, const char*));
 		allocation->password = tsk_strdup(va_arg(*app, const char*));
@@ -678,3 +682,4 @@ static const tsk_object_def_t tnet_turn_allocation_def_s =
 	0, 
 };
 const void *tnet_turn_allocation_def_t = &tnet_turn_allocation_def_s;
+

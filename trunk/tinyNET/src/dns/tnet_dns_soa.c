@@ -64,10 +64,10 @@ static void* tnet_dns_soa_create(void * self, va_list * app)
 		if(rddata && rdlength)
 		{	// ==> DESERIALIZATION
 			/* MNAME */
-			tnet_dns_rr_charstring_deserialize(data, (dataEnd - rddata), &(soa->mname), &offset);
+			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(soa->mname), &offset);
 			rddata += offset;
 			/* RNAME */
-			tnet_dns_rr_charstring_deserialize(data, (dataEnd - rddata), &(soa->rname), &offset);
+			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(soa->rname), &offset);
 			rddata += offset;
 			/* SERIAL */
 			soa->serial = ntohl(*((uint32_t*)rddata));

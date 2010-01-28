@@ -42,3 +42,4 @@ TINYSAK_API uint32_t tsk_pppfcs32(register uint32_t fcs, register const uint8_t*
 TSK_END_DECLS
 
 #endif /* _TINYSAK_PPFCS32_H_ */
+

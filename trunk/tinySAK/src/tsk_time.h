@@ -66,3 +66,4 @@ TINYSAK_API uint64_t tsk_time_epoch();
 TSK_END_DECLS
 
 #endif /* _TINYSAK_TIME_H_ */
+

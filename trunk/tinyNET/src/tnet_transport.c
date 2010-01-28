@@ -253,3 +253,4 @@ static const tsk_object_def_t tnet_transport_def_s =
 	0, 
 };
 const void *tnet_transport_def_t = &tnet_transport_def_s;
+

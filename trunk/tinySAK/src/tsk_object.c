@@ -177,3 +177,4 @@ void tsk_object_delete(void *self)
 		free(self);
 	}
 }
+

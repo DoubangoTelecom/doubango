@@ -27,7 +27,7 @@ void test_dns_query()
 	tnet_dns_t *ctx = TNET_DNS_CREATE();
 	tnet_dns_response_t *response = 0;
 
-	if((response = tnet_dns_resolve(ctx, "ims.inexbee.com", qclass_in, qtype_naptr)))
+	if((response = tnet_dns_resolve(ctx, "sip2sip.info", qclass_in, qtype_naptr)))
 	{
 		if(TNET_DNS_RESPONSE_IS_SUCCESS(response))
 		{

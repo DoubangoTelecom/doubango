@@ -47,3 +47,4 @@ TINYSAK_API void tsk_mutex_destroy(tsk_mutex_handle_t** handle);
 TSK_END_DECLS
 
 #endif /* _TINYSAK_MUTEX_H_ */
+

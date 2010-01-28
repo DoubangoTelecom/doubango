@@ -158,3 +158,4 @@ TINYNET_GEXTERN const void *tnet_socket_def_t;
 TNET_END_DECLS
 
 #endif /* TNET_SOCKET_H */
+

@@ -81,3 +81,4 @@ uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t* cp, registe
    }
    return (fcs);
 }
+

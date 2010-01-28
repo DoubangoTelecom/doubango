@@ -792,3 +792,4 @@ static const tsk_object_def_t tnet_address_def_s =
 	0, 
 };
 const void *tnet_address_def_t = &tnet_address_def_s;
+

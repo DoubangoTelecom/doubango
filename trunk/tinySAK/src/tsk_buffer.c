@@ -181,3 +181,4 @@ static const tsk_object_def_t tsk_buffer_def_s =
 	tsk_buffer_cmp, 
 };
 const void *tsk_buffer_def_t = &tsk_buffer_def_s;
+

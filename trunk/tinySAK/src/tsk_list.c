@@ -643,3 +643,4 @@ static const tsk_object_def_t tsk_list_def_s =
 	0,
 };
 const void *tsk_list_def_t = &tsk_list_def_s;
+

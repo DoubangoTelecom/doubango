@@ -67,3 +67,4 @@
 //	if(xxx) { tsk_##prefix##_free(&(xxx)); xxx = 0; }
 //
 //#endif /* _TINYSAK_MACROS_H_ */
+

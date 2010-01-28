@@ -293,3 +293,4 @@ xmlNodePtr tsk_xml_select_node(const xmlNodePtr root, ...)
 }
 
 #endif /* HAVE_LIBXML2_H */
+

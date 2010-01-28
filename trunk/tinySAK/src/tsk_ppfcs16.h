@@ -42,3 +42,4 @@ TINYSAK_API uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t*
 TSK_END_DECLS
 
 #endif /* _TINYSAK_PPFCS16_H_ */
+

@@ -51,3 +51,4 @@ TINYSAK_API void* tsk_calloc(size_t num, size_t size);
 TSK_END_DECLS
 
 #endif /* _TINYSAK_MEMORY_H_ */
+

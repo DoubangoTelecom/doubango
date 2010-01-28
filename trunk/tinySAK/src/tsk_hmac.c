@@ -237,3 +237,4 @@ int hmac_sha1digest_compute(const uint8_t* input, size_t input_size, const char*
 {
 	return tsk_hmac_xxxcompute(input, input_size, key, key_size, sha1, (uint8_t*)result);
 }
+

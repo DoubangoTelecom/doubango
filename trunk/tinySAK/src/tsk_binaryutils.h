@@ -129,3 +129,4 @@ static const unsigned char Tsk_BitReverseTable256[] =
 TSK_END_DECLS
 
 #endif /* _TINYSAK_BINARYUTILS_H_ */
+

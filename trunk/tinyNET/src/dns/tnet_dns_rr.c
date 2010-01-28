@@ -78,32 +78,6 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 	return -1;
 }
 
-size_t tnet_qname_label_parse(const void* data, size_t size, char** name, int fromPtr)
-{
-	uint8_t* dataPtr = (uint8_t*)data;
-	uint8_t* dataEnd = (dataPtr + size);
-
-	while(*dataPtr)
-	{
-		uint8_t length;
-
-		if(*name)
-		{
-			tsk_strcat(name, ".");
-		}	
-
-		length = *dataPtr;
-		dataPtr++;
-
-		tsk_strncat(name, dataPtr, length);
-		dataPtr += length;
-
-		if(!fromPtr) break;
-	}
-
-	return (dataPtr - ((uint8_t*)data));
-}
-
 int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** charstring, size_t *offset)
 {
 	/* RFC 1035 - 3.3. Standard RRs
@@ -124,6 +98,7 @@ int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** cha
 	else return -1;
 }
 
+
 int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, size_t *offset)
 {
 	/* RFC 1035 - 4.1.4. Message compression
@@ -135,7 +110,7 @@ int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, si
 	*/
 	uint8_t* dataPtr = (((uint8_t*)data) + *offset);
 	uint8_t* dataEnd = (dataPtr + size);
-	int usingPtr = 0; /* Do not change. */
+	unsigned usingPtr = 0; /* Do not change. */
 
 	while(*dataPtr)
 	{
@@ -143,26 +118,73 @@ int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, si
 
 		if(usingPtr)
 		{
-			uint8_t *Ptr;
-			uint16_t ptr_offset = (*dataPtr & 0x3F);
+			size_t ptr_offset = (*dataPtr & 0x3F);
 			ptr_offset = ptr_offset << 8 | *(dataPtr+1);
-			Ptr = ((uint8_t*)data) + ptr_offset;
 			
-			tnet_qname_label_parse(Ptr, (dataEnd - Ptr), name, 1);
-			*offset += 2, dataPtr += 2;
-			break; // Is it right?
+			*offset += 2;
+			return tnet_dns_rr_qname_deserialize(data, size, name, &ptr_offset);
 		}
 		else
 		{
-			size_t length = tnet_qname_label_parse(dataPtr, size, name, 0);
+			uint8_t length;
+
+			if(*name)
+			{
+				tsk_strcat(name, ".");
+			}	
+
+			length = *dataPtr;
+			*offset+=1, dataPtr++;
+
+			tsk_strncat(name, dataPtr, length);
 			*offset += length, dataPtr += length;
 		}
 	}
 
-	*offset += usingPtr ? 0 : 1;
+	*offset+=1;
 
 	return 0;
 }
+
+//int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, size_t *offset)
+//{
+//	/* RFC 1035 - 4.1.4. Message compression
+//
+//		The pointer takes the form of a two octet sequence:
+//		+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//		| 1  1|                OFFSET                   |
+//		+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
+//	*/
+//	uint8_t* dataPtr = (((uint8_t*)data) + *offset);
+//	uint8_t* dataEnd = (dataPtr + size);
+//	unsigned usingPtr = 0; /* Do not change. */
+//	unsigned islast = 0;
+//
+//	while(!islast)
+//	{
+//		usingPtr = ((*dataPtr & 0xC0) == 0xC0);
+//
+//		if(usingPtr)
+//		{
+//			uint8_t *Ptr;
+//			uint16_t ptr_offset = (*dataPtr & 0x3F);
+//			ptr_offset = ptr_offset << 8 | *(dataPtr+1);
+//			Ptr = ((uint8_t*)data) + ptr_offset;
+//			
+//			tnet_qname_label_parse(Ptr, (dataEnd - Ptr), name, &islast);
+//			*offset += 2, dataPtr += 2;
+//		}
+//		else
+//		{
+//			size_t length = tnet_qname_label_parse(dataPtr, size, name, &islast);
+//			*offset += length, dataPtr += length;
+//		}
+//	}
+//
+//	*offset += usingPtr ? 0 : 1;
+//
+//	return 0;
+//}
 
 int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 {

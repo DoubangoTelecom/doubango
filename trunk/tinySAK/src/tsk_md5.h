@@ -68,3 +68,4 @@ TINYSAK_API int tsk_md5compute(const char* input, size_t size, tsk_md5string_t *
 TSK_END_DECLS
 
 #endif /* _TINYSAK_MD5_H_ */
+
