@@ -54,7 +54,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 		{
 			query->Additionals = TSK_LIST_CREATE();
 		}
-		tsk_list_push_back_data(query->Additionals, &rr_opt);
+		tsk_list_push_back_data(query->Additionals, (void**)&rr_opt);
 		query->Header.ARCOUNT++;
 	}
 	

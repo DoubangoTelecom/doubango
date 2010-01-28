@@ -42,7 +42,7 @@ typedef struct tnet_dns_soa_s
 {
 	TNET_DECLARE_DNS_RR;
 
-	/* RFC 1035 - 3.3.12. SOA RDATA format
+	/* RFC 1035 - 3.3.13. SOA RDATA format
 	+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
     /                     MNAME                     /
     /                                               /
@@ -80,3 +80,4 @@ TINYNET_GEXTERN const void *tnet_dns_soa_def_t;
 TNET_END_DECLS
 
 #endif /* TNET_DNS_RR_SOA_H */
+

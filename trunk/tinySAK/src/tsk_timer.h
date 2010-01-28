@@ -61,3 +61,4 @@ TINYSAK_GEXTERN const void *tsk_timer_manager_def_t;
 TSK_END_DECLS
 
 #endif /* _TINYSAK_TIMER_H_ */
+

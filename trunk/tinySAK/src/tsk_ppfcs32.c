@@ -112,3 +112,4 @@ uint32_t tsk_pppfcs32(register uint32_t fcs, register const uint8_t* cp, registe
 
 	return (fcs);
 }
+

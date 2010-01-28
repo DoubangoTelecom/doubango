@@ -33,6 +33,8 @@
 
 #include "tsk_debug.h"
 
+#include <string.h>
+
 
 tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_t type, uint16_t length, const void* payload, size_t payload_size)
 {

@@ -50,3 +50,4 @@ TINYSAK_API void tsk_condwait_destroy(tsk_condwait_handle_t** handle);
 TSK_END_DECLS
 
 #endif /* _TINYSAK_CONDWAIT_H_ */
+

@@ -44,3 +44,4 @@ TINYSAK_API void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle);
 TSK_END_DECLS
 
 #endif /* _TINYSAK_SEMAPHORE_H_ */
+

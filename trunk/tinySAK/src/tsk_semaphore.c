@@ -193,3 +193,4 @@ void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
 		TSK_DEBUG_WARN("Cannot free an uninitialized semaphore object");
 	}
 }
+

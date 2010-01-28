@@ -22,27 +22,31 @@ LOCAL_PATH := $(DOUBANGO_HOME)/tinySAK/src
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := tinySAK
-LOCAL_SRC_FILES := tsk.c \
-	tsk_binaryutils.c \
-	tsk_buffer.c \
-	tsk_condwait.c \
-	tsk_debug.c \
-	tsk_heap.c \
-	tsk_list.c \
-	tsk_memory.c \
-	tsk_mutex.c \
-	tsk_object.c \
-	tsk_params.c \
-	tsk_ppfcs16.c \
-	tsk_runnable.c \
-	tsk_safeobj.c \
-	tsk_semaphore.c \
-	tsk_sha1.c \
-	tsk_string.c \
-	tsk_thread.c \
-	tsk_time.c \
-	tsk_timer.c \
-	tsk_url.c \
+LOCAL_SRC_FILES := tsk.c\
+	tsk_base64.c\
+	tsk_binaryutils.c\
+	tsk_buffer.c\
+	tsk_condwait.c\
+	tsk_debug.c\
+	tsk_heap.c\
+	tsk_hmac.c\
+	tsk_list.c\
+	tsk_md5.c\
+	tsk_memory.c\
+	tsk_mutex.c\
+	tsk_object.c\
+	tsk_params.c\
+	tsk_ppfcs16.c\
+	tsk_ppfcs32.c\
+	tsk_runnable.c\
+	tsk_safeobj.c\
+	tsk_semaphore.c\
+	tsk_sha1.c\
+	tsk_string.c\
+	tsk_thread.c\
+	tsk_time.c\
+	tsk_timer.c\
+	tsk_url.c\
 	tsk_xml.c
 
 include $(BUILD_SHARED_LIBRARY)

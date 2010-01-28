@@ -434,6 +434,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dns\tnet_dns_message.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dns\tnet_dns_mx.c"
 					>
 				</File>
@@ -446,7 +450,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dns\tnet_dns_opt.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dns\tnet_dns_ptr.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_rr.c"
 					>
 				</File>
 				<File
@@ -454,7 +466,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\dns\tnet_dns_soa.h"
+					RelativePath=".\src\dns\tnet_dns_srv.c"
 					>
 				</File>
 				<File
@@ -566,6 +578,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dns\tnet_dns_message.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dns\tnet_dns_mx.h"
 					>
 				</File>
@@ -578,7 +594,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dns\tnet_dns_opt.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dns\tnet_dns_ptr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_rr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dns\tnet_dns_soa.h"
 					>
 				</File>
 				<File

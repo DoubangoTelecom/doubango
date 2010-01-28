@@ -88,3 +88,4 @@ TINYSAK_GEXTERN const void *tsk_string_def_t;
 TSK_END_DECLS
 
 #endif /* _TINYSAK_STRING_H_ */
+

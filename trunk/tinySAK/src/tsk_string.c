@@ -44,6 +44,7 @@
 #	define vsnprintf	_vsnprintf
 #	define strdup		_strdup
 #	define stricmp		_stricmp
+#	define strnicmp		_strnicmp
 #elif defined(__GNUC__)
 #	define stricmp		strcasecmp
 #	define strnicmp		strncasecmp
@@ -452,3 +453,4 @@ static const tsk_object_def_t tsk_string_def_s =
 	tsk_string_cmp, 
 };
 const void *tsk_string_def_t = &tsk_string_def_s;
+

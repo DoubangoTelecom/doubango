@@ -56,3 +56,4 @@ TINYNET_GEXTERN const void *tnet_dns_a_def_t;
 TNET_END_DECLS
 
 #endif /* TNET_DNS_RR_A_H */
+

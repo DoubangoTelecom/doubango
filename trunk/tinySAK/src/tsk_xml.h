@@ -173,3 +173,4 @@ TINYSAK_GEXTERN const void *tsk_xml_element_def_t;
 #endif /* HAVE_LIBXML2_H */
 
 #endif /* _TINYSAK_XML_H_ */
+

@@ -189,7 +189,7 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 		tsk_list_push_ascending_data(manager->timers, ((void**) &timer));
 		tsk_mutex_unlock(manager->mutex);
 		
-		tsk_timer_manager_debug(self);
+		//tsk_timer_manager_debug(self);
 
 		tsk_condwait_signal(manager->condwait);
 		tsk_semaphore_increment(manager->sem);
@@ -432,4 +432,5 @@ static const tsk_object_def_t tsk_timer_def_s =
 	tsk_timer_cmp, 
 };
 const void * tsk_timer_def_t = &tsk_timer_def_s;
+
 

@@ -77,3 +77,4 @@ TINYNET_GEXTERN const void *tnet_dns_naptr_def_t;
 TNET_END_DECLS
 
 #endif /* TNET_DNS_RR_NAPTR_H */
+

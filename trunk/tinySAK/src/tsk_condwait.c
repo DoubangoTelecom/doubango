@@ -307,3 +307,4 @@ void tsk_condwait_destroy(tsk_condwait_handle_t** handle)
 		TSK_DEBUG_WARN("Cannot free an uninitialized condwait object");
 	}
 }
+

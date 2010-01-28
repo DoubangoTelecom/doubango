@@ -60,3 +60,4 @@ TINYNET_GEXTERN const void *tnet_dns_mx_def_t;
 TNET_END_DECLS
 
 #endif /* TNET_DNS_RR_MX_H */
+

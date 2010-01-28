@@ -92,3 +92,4 @@ TINYSAK_API tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, t
 TSK_END_DECLS
 
 #endif /* _TINYSAK_SHA1_H_ */
+
