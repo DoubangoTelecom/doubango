@@ -30,12 +30,14 @@
 
 #include "tnet_dns_a.h"
 #include "tnet_dns_aaaa.h"
+#include "tnet_dns_cname.h"
 #include "tnet_dns_mx.h"
 #include "tnet_dns_naptr.h"
 #include "tnet_dns_ns.h"
 #include "tnet_dns_opt.h"
 #include "tnet_dns_ptr.h"
 #include "tnet_dns_soa.h"
+#include "tnet_dns_srv.h"
 #include "tnet_dns_txt.h"
 
 #include "../tnet_types.h"
@@ -278,7 +280,7 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* of
 
 		case qtype_cname:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_CNAME_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
@@ -321,7 +323,7 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* of
 
 		case qtype_srv:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				rr = TNET_DNS_SRV_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
