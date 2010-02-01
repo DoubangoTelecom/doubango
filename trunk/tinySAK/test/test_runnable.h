@@ -117,7 +117,7 @@ void test_runnable()
 	
 	tsk_thread_sleep(3000);
 
-	TSK_TIMER_MANAGER_SAFE_FREE(timer_mgr);
+	TSK_OBJECT_SAFE_FREE(timer_mgr);
 	tsk_runnable_stop(runnable);
 	tsk_free((void**)&runnable);
 }

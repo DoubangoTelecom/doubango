@@ -119,7 +119,7 @@ void test_basic_list()
 	tsk_list_remove_item(list, list->tail);
 
 	/* delete all items in the list */
-	TSK_LIST_SAFE_FREE(list);
+	TSK_OBJECT_SAFE_FREE(list);
 }
 
 void test_filtered_list()
@@ -203,7 +203,7 @@ void test_filtered_list()
 	}
 
 	/* delete all items in the list */
-	TSK_LIST_SAFE_FREE(list);
+	TSK_OBJECT_SAFE_FREE(list);
 
 #undef PUSH_FILTERED
 }
@@ -255,7 +255,7 @@ void test_complex_list()
 	}
 
 	/* delete all items in the list */
-	TSK_LIST_SAFE_FREE(list);
+	TSK_OBJECT_SAFE_FREE(list);
 }
 
 #endif /* _TEST_LISTS_H_ */
