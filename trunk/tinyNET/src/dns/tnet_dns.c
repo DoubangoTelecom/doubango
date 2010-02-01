@@ -36,13 +36,44 @@
 #include "tsk_memory.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"
+#include "tsk_string.h"
+
+/* DNS cache functions */
+int tnet_dns_cache_maintenance(tnet_dns_t *ctx);
+int tnet_dns_cache_entry_add(tnet_dns_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response);
+const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
 
 tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
 	tsk_buffer_t *output = 0;
 	tnet_dns_query_t* query = TNET_DNS_QUERY_CREATE(qname, qclass, qtype);
 	tnet_dns_response_t *response = 0;
+	unsigned from_cache = 0;
 	
+	/* Check validity */
+	if(!ctx)
+	{
+		goto bail;
+	}
+
+	/* Cache maintenance */
+	if(!TSK_LIST_IS_EMPTY(ctx->cache))
+	{	/* Only do maintenance if the cache is not empty */
+		tnet_dns_cache_maintenance(ctx);
+	}
+
+	/* Retrieve data from cache. */
+	if(ctx->enable_cache)
+	{
+		tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
+		if(entry)
+		{
+			response = tsk_object_ref(entry->response);
+			from_cache = 1;
+			goto bail;
+		}
+	}
+
 	/* Set user preference */
 	query->Header.RD = ctx->enable_recursion;
 
@@ -197,15 +228,153 @@ done:
 		goto bail;
 	}
 	
-	
 
 bail:
 	TSK_OBJECT_SAFE_FREE(query);
 	TSK_OBJECT_SAFE_FREE(output);
 
+	/* Add the result to the cache. */
+	if(response && !from_cache && ctx->enable_cache)
+	{
+		tnet_dns_cache_entry_add(ctx, qname, qclass, qtype, response);
+	}
+
 	return response;
 }
 
+int tnet_dns_cache_maintenance(tnet_dns_t *ctx)
+{
+
+	if(ctx)
+	{
+		tsk_list_item_t *item;
+		tsk_safeobj_lock(ctx);
+again:
+		
+		tsk_list_foreach(item, ctx->cache)
+		{
+			tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)item->data;
+			if((entry ->epoch + ctx->cache_ttl) < tsk_time_epoch())
+			{
+				tsk_list_remove_item_by_data(ctx->cache, entry);
+				goto again; /* Do not delete data while looping */
+			}
+		}
+
+		tsk_safeobj_unlock(ctx);
+		
+		return 0;
+	}
+	return -1;
+}
+
+int tnet_dns_cache_entry_add(tnet_dns_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response)
+{
+	int ret = -1;
+
+	if(ctx)
+	{
+		tnet_dns_cache_entry_t *entry;
+
+		tsk_safeobj_lock(ctx);
+
+		entry = 0;
+
+		/* Retrieve from cache */
+		entry = (tnet_dns_cache_entry_t*)tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
+
+		if(entry)
+		{	/* UPDATE */
+			TSK_OBJECT_SAFE_FREE(entry->response);
+			entry->response = tsk_object_ref(response);
+			entry->epoch = tsk_time_epoch();
+			ret = 0;
+			goto done;
+		}
+		else
+		{	/* CREATE */
+			entry = TNET_DNS_CACHE_ENTRY_CREATE(qname, qclass, qtype, response);
+			if(entry)
+			{
+				tsk_list_push_back_data(ctx->cache, (void**)&entry);
+				ret = 0;
+				goto done;
+			}
+			else
+			{
+				ret = -2;
+				goto done;
+			}
+		}
+done:
+		tsk_safeobj_unlock(ctx);
+	}
+	return ret;
+}
+
+const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
+{
+	tnet_dns_cache_entry_t *ret = 0;
+	if(ctx)
+	{
+		tsk_list_item_t *item;
+
+		tsk_safeobj_lock(ctx);
+
+		tsk_list_foreach(item, ctx->cache)
+		{
+			tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)item->data;
+			if(entry->qtype == qtype && entry->qclass == qclass && tsk_strequals(entry->qname, qname))
+			{
+				ret = entry;
+				goto bail;
+			}
+		}
+
+		tsk_safeobj_unlock(ctx);
+	}
+
+bail:
+	return ret;
+}
+
+
+//========================================================
+//	[[DNS CACHE ENTRY]] object definition
+//
+static void* tnet_dns_cache_entry_create(void * self, va_list * app)
+{
+	tnet_dns_cache_entry_t *entry = self;
+	if(entry)
+	{
+		entry->qname = tsk_strdup(va_arg(*app, const char*));
+		entry->qclass = va_arg(*app, tnet_dns_qtype_t);
+		entry->qtype = va_arg(*app, tnet_dns_qtype_t);
+		entry->response = tsk_object_ref(va_arg(*app, tnet_dns_response_t*));
+		
+		entry->epoch = tsk_time_epoch();
+	}
+	return self;
+}
+
+static void* tnet_dns_cache_entry_destroy(void * self) 
+{ 
+	tnet_dns_cache_entry_t *entry = self;
+	if(entry)
+	{
+		TSK_OBJECT_SAFE_FREE(entry->response);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dns_cache_entry_def_s =
+{
+	sizeof(tnet_dns_cache_entry_t),
+	tnet_dns_cache_entry_create,
+	tnet_dns_cache_entry_destroy,
+	0,
+};
+const void *tnet_dns_cache_entry_def_t = &tnet_dns_cache_entry_def_s;
 
 
 //========================================================
@@ -219,9 +388,16 @@ static void* tnet_dns_create(void * self, va_list * app)
 		dns->timeout = TNET_DNS_TIMEOUT_DEFAULT;
 		dns->enable_recursion = 1;
 		dns->enable_edns0 = 1;
+		dns->enable_cache = 1;
+
+		dns->cache_ttl = TNET_DNS_CACHE_TTL;
 
 		/* Gets all dns servers. */
 		dns->servers = tnet_get_addresses_all_dnsservers();
+		/* Creates empty cache. */
+		dns->cache = TSK_LIST_CREATE();
+
+		tsk_safeobj_init(dns);
 	}
 	return self;
 }
@@ -231,7 +407,10 @@ static void* tnet_dns_destroy(void * self)
 	tnet_dns_t *dns = self;
 	if(dns)
 	{
+		tsk_safeobj_deinit(dns);
+
 		TSK_OBJECT_SAFE_FREE(dns->servers);
+		TSK_OBJECT_SAFE_FREE(dns->cache);
 	}
 	return self;
 }
