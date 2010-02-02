@@ -47,7 +47,7 @@ int __tsip_uri_tostring(const tsip_uri_t *uri, int with_params, tsk_buffer_t *ou
 	if(uri->port) tsk_itoa(uri->port, &port);
 
 	/* sip:alice:secretword@atlanta.com:65535 */
-	tsk_buffer_appendEx(output, "%s%s%s%s%s%s%s%s%s", 
+	tsk_buffer_appendEx(output, "%s%s%s%s%s%s%s%s%s%s%s", 
 
 		uri->scheme ? uri->scheme : "",
 		uri->scheme ? ":" : "",
@@ -58,7 +58,9 @@ int __tsip_uri_tostring(const tsip_uri_t *uri, int with_params, tsk_buffer_t *ou
 		uri->password ? uri->password : "",
 
 		uri->host ? (uri->user_name ? "@" : "") : "",
+		uri->host_type == host_ipv6 ? "[" : "",
 		uri->host ? uri->host : "",
+		uri->host_type == host_ipv6 ? "]" : "",
 
 		uri->port ? ":" : "",
 		uri->port ? port : ""

@@ -40,22 +40,6 @@
 *	Ragel state machine.
 */
 %%{
-	machine tsip_machine_userinfo;
-
-	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
-
-	action parse_toto
-	{
-	}
-
-	action parse_titi
-	{
-	}
-
-}%%
-
-%%{
 	machine tsip_machine_parser_uri;
 
 	# Includes
@@ -107,70 +91,15 @@
 		PARSER_ADD_PARAM(uri->params);
 	}
 
-	action has_arobase
-	{
-		tsk_strcontains(tag_start, "@") 
-	}
-
 	action eob
 	{
 	}
 
-	#uri_parameter = transport_param | user_param | method_param | ttl_param | maddr_param | lr_param | compression_param | target_param | cause_param | orig | gr_param | other_param;
 	my_uri_parameter = (pname ( "=" pvalue )?) >tag %parse_param;
 	uri_parameters = ( ";" my_uri_parameter )*;
+
+	sip_usrinfo		:= ( ( user>tag %parse_user_name ) :> ( ':' password>tag %parse_password )? :>> '@' ) @{ fgoto main; };
 	
-	my_host = (hostname>is_hostname | IPv4address>is_ipv4 | IPv6reference>is_ipv6 );
-	my_hostport = my_host>tag %parse_host ( ":" port>tag %parse_port )?;
-	
-	my_userinfo = ( user>tag %parse_user_name | telephone_subscriber ) :> ( ":" password>tag %parse_password )? "@";
-	
-	UNKNOWN_URI = (scheme)>tag %parse_scheme HCOLON <:any*;
-	#SIP_URI = ("sip:"i %is_sip | "sips:"i %is_sips) (((my_userinfo my_hostport) when has_arobase) | (my_hostport)) uri_parameters headers?;
-	#SIP_URI = ("sip:"i %is_sip | "sips:"i %is_sips) my_userinfo? my_hostport uri_parameters headers?;
-
-
-	SIP_URI := |*
-				("sip:"i %is_sip | "sips:"i %is_sips) => parse_scheme;
-
-				 *|;
-
-
-
-	#SIP_URI = 
-	#	("sip:"i %is_sip | "sips:"i %is_sips)
-	#	((any when has_arobase)*) %parse_toto | any* %parse_titi
-	#	uri_parameters headers?;
-
-	#SIP_URI = ( "sip:"i %is_sip | "sips:"i %is_sips ) > 0 >tag
-	#	( ((any when has_arobase)*) %parse_toto | (any*) %parse_titi ) >1
-	#	( uri_parameters headers? ) >2;
-
-	#SIP_URI = 
-	#	start:		(
-	#					( "sip:"i %is_sip | "sips:"i %is_sips ) >tag %tag -> check
-	#				),
-	#	check:		(
-	#					( (any* when has_arobase) )%parse_user_name -> usrinfo | (any*)-> hport
-	#				),
-	#	usrinfo:	(
-	#					(any)* %parse_toto-> hport
-	#				),
-	#	hport:		(
-	#					(any)* -> final
-	#				);
-	
-	#TEL_URI = ("tel:"i %is_tel) telephone_subscriber;
-	
-	#URI =  SIP_URI;
-	#URI =  ((SIP_URI)>1 | (TEL_URI)>1 | (UNKNOWN_URI)>0);
-	
-	# Entry point
-	#main := ( 
-	#		  ("sip:"i %is_sip | "sips:"i %is_sips) @ { fcall SIP_URI; } 
-	#	  );
-
-	sip_usrinfo		:= ( ( user>tag %parse_user_name ) :> ( ":" password>tag %parse_password )? :>> '@' ) @{ fgoto main; };
 	main			:= |*
 							("sip:"i %is_sip | "sips:"i %is_sips) > 100
 							{
@@ -180,9 +109,15 @@
 								}
 							};
 							
+							("tel:"i %is_tel (any+)>tag %parse_user_name :> uri_parameters) > 100 { };
+							
 							( (IPv6reference >is_ipv6)>89 | (IPv4address >is_ipv4)>88 | (hostname >is_hostname)>87 ) > 90
 							{
 								SCANNER_SET_STRING(uri->host);
+								if(uri->host_type == host_ipv6)
+								{
+									tsk_strunquoteex(&uri->host, '[', ']');
+								}
 							};							
 
 							(":" port) >80
@@ -191,15 +126,8 @@
 								SCANNER_SET_INTEGER(uri->port);
 							};
 							
-							( ";" (pname ( "=" pvalue )?) ) > 70
-							{
-								ts++;
-								SACANNER_ADD_PARAM(uri->params);
-							};
-						
-							(any*) > 0
-							{
-							};
+							( uri_parameters ) > 70	{  };
+							(any*) > 0					{  };
 
 						
 
