@@ -306,10 +306,17 @@ void tsk_strtrim_right(char **str)
 */
 void tsk_strquote(char **str)
 {
+	tsk_strquoteex(str, '"', '"');
+}
+
+/**@ingroup tsk_string_group
+*/
+void tsk_strquoteex(char **str, char lquote, char rquote)
+{
 	if(str && *str)
 	{
 		char *result = 0;
-		tsk_sprintf(&result, "\"%s\"", *str);
+		tsk_sprintf(&result, "%c%s%c", lquote, *str, rquote);
 		tsk_free((void**)str);
 		*str = result;
 	}
@@ -319,10 +326,17 @@ void tsk_strquote(char **str)
 */
 void tsk_strunquote(char **str)
 {
+	tsk_strunquoteex(str, '"', '"');
+}
+
+/**@ingroup tsk_string_group
+*/
+void tsk_strunquoteex(char **str, char lquote, char rquote)
+{
 	if(str && *str)
 	{
 		size_t size = strlen(*str);
-		if(size>=2 && **str == '"' && *((*str)+size-1) == '"')
+		if(size>=2 && **str == lquote && *((*str)+size-1) == rquote)
 		{
 			strcpy((*str), (*str)+1);
 			*((*str)+size-2) = '\0';

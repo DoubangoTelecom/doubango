@@ -26,6 +26,7 @@
 
 const char* uris[] = 
 {
+	
 	//== SIP:
 	"sip:alice@atlanta.com;p1=23",
 	"sip:*666*@atlanta.com",
@@ -40,7 +41,7 @@ const char* uris[] =
 	"sip:alice@[1111::aaa:bbb:ccc:ddd]:5060;user=phone",
 	"sip:alice@1111::aaa:bbb:ccc:ddd",
 	"sip:alice@[::127]",
-	"sip:ss2.biloxi.example.com;lr",
+	"sip:ss2.biloxi.example.com;lr",// FIXME
     "sip:atlanta.com;method=REGISTER?to=alice%40atlanta.com",
     "sip:alice@atlanta.com;maddr=239.255.255.1;ttl=15",
     "sip:alice@atlanta.com;comp=sigcomp",
@@ -60,7 +61,7 @@ const char* uris[] =
 
 	//== TEL:
 	"tel:+1-201-555-0123",
-    "tel:7042;phone-context=example.com",
+    "tel:7042;phone-context=example.com;ff=ff",
     "tel:863-1234;phone-context=+1-914-555",
 	"tel:#666#",
 };
@@ -115,7 +116,7 @@ void test_uri_parser()
 		}
 
 		printf("\n\n");
-
+		
 		TSK_OBJECT_SAFE_FREE(uri);
 	}
 }
