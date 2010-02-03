@@ -60,7 +60,7 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 	
 	/* compute destination len for windows mobile
 	*/
-#ifdef _WIN32_WCE
+#if defined(_WIN32_WCE) || defined(ANDROID)
 	{
 		int n;
 		len = (strlen(format)*2);

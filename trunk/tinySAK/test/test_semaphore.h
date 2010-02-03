@@ -22,16 +22,14 @@
 #ifndef _TEST_SEMAPHORE_H_
 #define _TEST_SEMAPHORE_H_
 
-int sema_count = 0;
-
 void *threadfunc_semaphore1(void *parm)
 {
 	tsk_semaphore_handle_t *semaphore = (tsk_semaphore_handle_t *)parm;
 	int ret = 0;
 
-	sema_count++;
+	printf("threadfunc_semaphore1/// START %d\n", ret);
 	ret =  tsk_semaphore_decrement(semaphore);
-	printf("threadfunc_semaphore1/// %d\n", ret);
+	printf("threadfunc_semaphore1/// STOP %d\n", ret);
 
 	return 0;
 }
@@ -41,9 +39,9 @@ void *threadfunc_semaphore2(void *parm)
 	tsk_semaphore_handle_t *semaphore = (tsk_semaphore_handle_t *)parm;
 	int ret = 0;
 
-	sema_count++;
+	printf("threadfunc_semaphore2/// START %d\n", ret);
 	ret =  tsk_semaphore_decrement(semaphore);
-	printf("threadfunc_semaphore2/// %d\n", ret);
+	printf("threadfunc_semaphore2/// STOP %d\n", ret);
 
 	return 0;
 }
@@ -63,6 +61,8 @@ void test_semaphore()
 	
 	assert(!tsk_semaphore_increment(semaphore));
 	assert(!tsk_semaphore_increment(semaphore));
+
+	tsk_thread_sleep(1000);
 
 	tsk_thread_join(&tid[0]);
 	tsk_thread_join(&tid[1]);

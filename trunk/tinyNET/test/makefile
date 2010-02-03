@@ -1,10 +1,7 @@
 APP := test
 
-#TINYSAK_INCLUDE := -I../src
-#TINYSAK_LIB := -L../ -ltinySAK
-
-CFLAGS := $(CFLAGS) -I../src -static
-LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK
+CFLAGS := $(CFLAGS) -I$(DOUBANGO_HOME)/$(PROJECT)/src -I$(DOUBANGO_HOME)/tinySAK/src
+LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -l$(PROJECT)
 
 all: $(APP)
 

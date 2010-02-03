@@ -54,6 +54,9 @@
 #	include <pthread.h>
 #	include <semaphore.h>
 #	if TSK_USE_NAMED_SEM
+#	include <fcntl.h> /* O_CREAT */
+#	include <sys/stat.h> /* S_IRUSR, S_IWUSR*/
+
 		static int sem_count = 0;
 		typedef struct named_sem_s
 		{
