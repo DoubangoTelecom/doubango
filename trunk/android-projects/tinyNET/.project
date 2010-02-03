@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>tinySAK</name>
+	<name>tinyNET</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -23,7 +23,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
-					<value>OPTIONS=&quot;-O0 -g3 -DDEBUG_LEVEL=DEBUG_LEVEL_INFO&quot;  -j1</value>
+					<value>OPTIONS=&quot;-O0 -g3 -DDEBUG_LEVEL=DEBUG_LEVEL_INFO&quot;</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildCommand</key>
@@ -68,16 +68,6 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>org.eclipse.ui.externaltools.ExternalToolBuilder</name>
-			<triggers>clean,full,incremental,</triggers>
-			<arguments>
-				<dictionary>
-					<key>LaunchConfigHandle</key>
-					<value>&lt;project&gt;/.externalToolBuilders/Android Builder.launch</value>
-				</dictionary>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.cdt.core.cnature</nature>
@@ -93,12 +83,12 @@
 		<link>
 			<name>src</name>
 			<type>2</type>
-			<location>C:/Projects/Doubango/tinySAK/src</location>
+			<location>C:/Projects/Doubango/tinyNET/src</location>
 		</link>
 		<link>
 			<name>test</name>
 			<type>2</type>
-			<location>C:/Projects/Doubango/tinySAK/test</location>
+			<location>C:/Projects/Doubango/tinyNET/test</location>
 		</link>
 	</linkedResources>
 </projectDescription>

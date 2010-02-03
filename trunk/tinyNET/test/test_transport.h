@@ -21,7 +21,7 @@
 */
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
-#define REMOTE_IP /*"2a01:e35:8632:7050:6122:2706:2124:32cb"*/ "192.168.16.104"
+#define REMOTE_IP /*"2a01:e35:8632:7050:6122:2706:2124:32cb"*/ "192.168.0.15"
 
 #define SIP_MESSAGE \
 	"REGISTER sip:micromethod.com SIP/2.0\r\n" \

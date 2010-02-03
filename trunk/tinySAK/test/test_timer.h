@@ -74,7 +74,7 @@ void test_timer()
 	tsk_thread_sleep(4000);
 
 	//tsk_timer_manager_stop(handle);
-	TSK_TIMER_MANAGER_SAFE_FREE(handle);
+	TSK_OBJECT_SAFE_FREE(handle);
 }
 
 #endif /* _TEST_TIMER_H_ */

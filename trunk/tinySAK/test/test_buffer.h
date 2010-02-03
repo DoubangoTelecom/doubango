@@ -32,14 +32,14 @@ void test_buffer()
 	tsk_buffer_append(buffer, "Mamadou", strlen("Mamadou"));
 	tsk_buffer_append(buffer, "\r\n", strlen("\r\n"));
 
-	TSK_DEBUG_INFO("1. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
+	printf("1. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
 
 	tsk_buffer_appendEx(buffer, "val1=[%s] and val2=[%d]\n", "value1", 12);
 	tsk_buffer_appendEx(buffer, "val3=[%s] and val4=[%s]\n", "458888554778555LL", "1254852");
 
-	TSK_DEBUG_INFO("2. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
+	printf("2. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
 
-	TSK_BUFFER_SAFE_FREE(buffer);
+	TSK_OBJECT_SAFE_FREE(buffer);
 }
 
 #endif /* _TEST_BUFFER_H_ */

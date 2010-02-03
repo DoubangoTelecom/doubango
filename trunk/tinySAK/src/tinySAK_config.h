@@ -48,7 +48,7 @@
 #	define TSK_UNDER_WINDOWS	1
 #endif
 
-/* Used on Windows and Sysbian systems to export/import public functions and global variables.
+/* Used on Windows and Symbian systems to export/import public functions and global variables.
 */
 #if !defined(__GNUC__) && defined(TINYSAK_EXPORTS)
 # 	define TINYSAK_API		__declspec(dllexport)
