@@ -109,7 +109,7 @@ uint16_t tcomp_udvm_opget_reference_param(tcomp_udvm_t *udvm)
 
 	case 0x80: // 10nnnnnn nnnnnnnn               memory[2 * N]       0 - 65535
 		{
-			uint8_t N = (TSK_BINARY_GET_2BYTES(memory_ptr) & 0x3fff);
+			uint16_t N = (TSK_BINARY_GET_2BYTES(memory_ptr) & 0x3fff);
 			result = 2*N;
 			udvm->executionPointer+=2;
 		}
