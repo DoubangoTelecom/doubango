@@ -39,11 +39,11 @@
 #include "tsk_string.h"
 
 /* DNS cache functions */
-int tnet_dns_cache_maintenance(tnet_dns_t *ctx);
-int tnet_dns_cache_entry_add(tnet_dns_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response);
-const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
+int tnet_dns_cache_maintenance(tnet_dns_ctx_t *ctx);
+int tnet_dns_cache_entry_add(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response);
+const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
 
-tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
+tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
 	tsk_buffer_t *output = 0;
 	tnet_dns_query_t* query = TNET_DNS_QUERY_CREATE(qname, qclass, qtype);
@@ -51,7 +51,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 	unsigned from_cache = 0;
 	
 	/* Check validity */
-	if(!ctx)
+	if(!ctx || !query)
 	{
 		goto bail;
 	}
@@ -90,10 +90,13 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 	}
 	
 	/* Serialize and send to the server. */
-	output = tnet_dns_message_serialize(query);
+	if(!(output = tnet_dns_message_serialize(query)))
+	{
+		TSK_DEBUG_ERROR("Failed to serialize the DNS message.");
+		goto bail;
+	}
 	
 	{
-		/* FIXME */
 		int ret;
 		struct timeval tv;
 		fd_set set;
@@ -140,9 +143,9 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_d
 					continue;
 				}
 				
-				if(tnet_sockaddr_init(address->ip, 53, (address->family == AF_INET ? tnet_socket_type_udp_ipv4 : tnet_socket_type_udp_ipv6), &server))
+				if(tnet_sockaddr_init(address->ip, ctx->server_port, (address->family == AF_INET ? tnet_socket_type_udp_ipv4 : tnet_socket_type_udp_ipv6), &server))
 				{
-					TSK_DEBUG_ERROR("Failed to connect to this DNS server: \"%s\"", address->ip);
+					TSK_DEBUG_ERROR("Failed to initialize the DNS server address: \"%s\"", address->ip);
 					continue;
 				}
 
@@ -242,7 +245,7 @@ bail:
 	return response;
 }
 
-int tnet_dns_cache_maintenance(tnet_dns_t *ctx)
+int tnet_dns_cache_maintenance(tnet_dns_ctx_t *ctx)
 {
 
 	if(ctx)
@@ -268,7 +271,7 @@ again:
 	return -1;
 }
 
-int tnet_dns_cache_entry_add(tnet_dns_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response)
+int tnet_dns_cache_entry_add(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response)
 {
 	int ret = -1;
 
@@ -312,7 +315,7 @@ done:
 	return ret;
 }
 
-const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
+const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
 	tnet_dns_cache_entry_t *ret = 0;
 	if(ctx)
@@ -380,46 +383,48 @@ const void *tnet_dns_cache_entry_def_t = &tnet_dns_cache_entry_def_s;
 //========================================================
 //	[[DNS CONTEXT]] object definition
 //
-static void* tnet_dns_create(void * self, va_list * app)
+static void* tnet_dns_ctx_create(void * self, va_list * app)
 {
-	tnet_dns_t *dns = self;
-	if(dns)
+	tnet_dns_ctx_t *ctx = self;
+	if(ctx)
 	{
-		dns->timeout = TNET_DNS_TIMEOUT_DEFAULT;
-		dns->enable_recursion = 1;
-		dns->enable_edns0 = 1;
-		dns->enable_cache = 1;
+		ctx->timeout = TNET_DNS_TIMEOUT_DEFAULT;
+		ctx->enable_recursion = 1;
+		ctx->enable_edns0 = 1;
+		ctx->enable_cache = 1;
 
-		dns->cache_ttl = TNET_DNS_CACHE_TTL;
+		ctx->cache_ttl = TNET_DNS_CACHE_TTL;
+
+		ctx->server_port = TNET_DNS_SERVER_PORT_DEFAULT;
 
 		/* Gets all dns servers. */
-		dns->servers = tnet_get_addresses_all_dnsservers();
+		ctx->servers = tnet_get_addresses_all_dnsservers();
 		/* Creates empty cache. */
-		dns->cache = TSK_LIST_CREATE();
+		ctx->cache = TSK_LIST_CREATE();
 
-		tsk_safeobj_init(dns);
+		tsk_safeobj_init(ctx);
 	}
 	return self;
 }
 
-static void* tnet_dns_destroy(void * self) 
+static void* tnet_dns_ctx_destroy(void * self) 
 { 
-	tnet_dns_t *dns = self;
-	if(dns)
+	tnet_dns_ctx_t *ctx = self;
+	if(ctx)
 	{
-		tsk_safeobj_deinit(dns);
+		tsk_safeobj_deinit(ctx);
 
-		TSK_OBJECT_SAFE_FREE(dns->servers);
-		TSK_OBJECT_SAFE_FREE(dns->cache);
+		TSK_OBJECT_SAFE_FREE(ctx->servers);
+		TSK_OBJECT_SAFE_FREE(ctx->cache);
 	}
 	return self;
 }
 
-static const tsk_object_def_t tnet_dns_def_s =
+static const tsk_object_def_t tnet_dns_ctx_def_s =
 {
-	sizeof(tnet_dns_t),
-	tnet_dns_create,
-	tnet_dns_destroy,
+	sizeof(tnet_dns_ctx_t),
+	tnet_dns_ctx_create,
+	tnet_dns_ctx_destroy,
 	0,
 };
-const void *tnet_dns_def_t = &tnet_dns_def_s;
+const void *tnet_dns_ctx_def_t = &tnet_dns_ctx_def_s;

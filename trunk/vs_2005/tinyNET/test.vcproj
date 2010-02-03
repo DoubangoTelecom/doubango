@@ -390,6 +390,10 @@
 				RelativePath="..\..\tinyNET\test\test_transport.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\tinyNET\test\tnet_dhcp.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

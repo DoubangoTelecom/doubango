@@ -24,7 +24,7 @@
 
 void test_dns_query()
 {
-	tnet_dns_t *ctx = TNET_DNS_CREATE();
+	tnet_dns_ctx_t *ctx = TNET_DNS_CREATE();
 	tnet_dns_response_t *response = 0;
 
 	if((response = tnet_dns_resolve(ctx, "_stun._udp.ims.inexbee.com", qclass_in, qtype_srv)))

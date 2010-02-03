@@ -199,14 +199,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="1"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYNET_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -219,6 +220,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib $(OutDir)\tinySAK.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -473,6 +475,22 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="dhcp"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_message.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -610,6 +628,22 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_txt.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dhcp"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_message.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option.h"
 					>
 				</File>
 			</Filter>
