@@ -40,7 +40,7 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DNS_CREATE()												tsk_object_new(tnet_dns_def_t)
+#define TNET_DNS_CTX_CREATE()											tsk_object_new(tnet_dns_ctx_def_t)
 #define TNET_DNS_CACHE_ENTRY_CREATE(qname, qclass, qtype, answer)		tsk_object_new(tnet_dns_cache_entry_def_t, (const char*)qname, (tnet_dns_qclass_t)qclass, (tnet_dns_qtype_t)qtype, (tnet_dns_response_t*)answer)
 
 #define TNET_DNS_CACHE_TTL						(15000 * 1000)
@@ -52,6 +52,8 @@ TNET_BEGIN_DECLS
 /** Maximum supported Dgram size to advertise using EDNS0. 
 */
 #define TNET_DNS_DGRAM_SIZE_DEFAULT				4096
+
+#define TNET_DNS_SERVER_PORT_DEFAULT			53
 
 typedef struct tnet_dns_cache_entry_s
 {
@@ -69,27 +71,29 @@ tnet_dns_cache_entry_t;
 typedef tsk_list_t  tnet_dns_cache_entries_L_t;
 typedef tnet_dns_cache_entries_L_t tnet_dns_cache_t;
 
-typedef struct tnet_dns_s
+typedef struct tnet_dns_ctx_s
 {
 	TSK_DECLARE_OBJECT;
 
-	unsigned timeout; /**< In milliseconds. Default: @ref TNET_DNS_TIMEOUT_DEFAULT. */
+	uint64_t timeout; /**< In milliseconds. Default: @ref tnet_dns_ctx_tIMEOUT_DEFAULT. */
 	unsigned enable_recursion:1; /**< Indicates whether to direct the name server to pursue the query recursively. Default: enabled.*/
 	unsigned enable_edns0:1; /**< Indicates whether to enable EDNS0 (Extension Mechanisms for DNS) or not. Default: enabled. */
 	unsigned enable_cache:1; /**< Indicates whether to enable the DNS cache or not. */
 
 	uint64_t cache_ttl;
 
+	tnet_port_t server_port;
+
 	tnet_dns_cache_t *cache;
 	tnet_addresses_L_t *servers;
 
 	TSK_DECLARE_SAFEOBJ;
 }
-tnet_dns_t;
+tnet_dns_ctx_t;
 
-TINYNET_API tnet_dns_response_t *tnet_dns_resolve(tnet_dns_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
+TINYNET_API tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
 
-TINYNET_GEXTERN const void *tnet_dns_def_t;
+TINYNET_GEXTERN const void *tnet_dns_ctx_def_t;
 TINYNET_GEXTERN const void *tnet_dns_cache_entry_def_t;
 
 TNET_END_DECLS

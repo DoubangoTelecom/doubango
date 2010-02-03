@@ -155,6 +155,7 @@ typedef struct tnet_dns_message_s
 }
 tnet_dns_message_t;
 
+typedef tsk_list_t tnet_dns_messages_L_t;
 typedef tnet_dns_message_t tnet_dns_query_t;
 typedef tnet_dns_message_t tnet_dns_response_t;
 
