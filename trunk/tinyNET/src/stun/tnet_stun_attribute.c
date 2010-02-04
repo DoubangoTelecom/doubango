@@ -385,13 +385,25 @@ static void* tnet_stun_attribute_mapped_addr_create(void * self, va_list * app)
 				memcpy(attribute->address, &addr, 4);
 				payloadPtr+=4;
 			}
-			else if(attribute->family == stun_ipv6)
-			{
-				TSK_DEBUG_ERROR("IPv6 not supported yet.");
-			}
-			else
-			{
-				TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+
+			{	/*=== Compute IP address */
+				size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
+				if(addr_size)
+				{	
+					size_t i;
+					uint32_t addr;
+
+					for(i=0; i<addr_size; i+=4)
+					{
+						addr = ntohl(*((uint32_t*)payloadPtr));
+						memcpy(&attribute->address[i], &addr, 4);
+						payloadPtr+=4;
+					}
+				}
+				else
+				{
+					TSK_DEBUG_ERROR("UNKNOWN FAMILY [%u].", attribute->family);
+				}
 			}
 		}
 	}
@@ -444,29 +456,35 @@ static void* tnet_stun_attribute_xmapped_addr_create(void * self, va_list * app)
 				then the converting the result to network byte order.
 			*/
 			attribute->xport = ntohs(*((uint16_t*)payloadPtr));
-			//attribute->xport ^= 0x2112;
+			attribute->xport ^= 0x2112;
 			payloadPtr+=2;
 			
+			
+			{	/*=== Compute IP address */
 
-			if(attribute->family == stun_ipv4)
-			{
 				/*	RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS
 					If the IP address family is IPv4, X-Address is computed by taking the mapped IP
 					address in host byte order, XOR'ing it with the magic cookie, and
 					converting the result to network byte order.
 				*/
-				uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
-				//addr ^= TNET_STUN_MAGIC_COOKIE;
-				memcpy(attribute->xaddress, &addr, 4);
-				payloadPtr+=4;
-			}
-			else if(attribute->family == stun_ipv6)
-			{
-				TSK_DEBUG_ERROR("IPv6 not supported yet.");
-			}
-			else
-			{
-				TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
+				size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
+				if(addr_size)
+				{	
+					size_t i;
+					uint32_t addr;
+
+					for(i=0; i<addr_size; i+=4)
+					{
+						addr = ntohl(*((uint32_t*)payloadPtr));
+						addr ^= TNET_STUN_MAGIC_COOKIE;
+						memcpy(&attribute->xaddress[i], &addr, 4);
+						payloadPtr+=4;
+					}
+				}
+				else
+				{
+					TSK_DEBUG_ERROR("UNKNOWN FAMILY [%u].", attribute->family);
+				}
 			}
 		}
 		

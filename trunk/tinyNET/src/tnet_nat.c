@@ -131,22 +131,20 @@ int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id
  *
  * @return	Zero if current list item hold a binding with the same id and -1 otherwise. 
 **/
-int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family, int XORed, char** out_ip)
+int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family, char** out_ip)
 {
 	if(family == stun_ipv6)
 	{
-		TSK_DEBUG_ERROR("IPv6 not supported yet.");
+		tsk_sprintf(out_ip, "%x:%x:%x:%x:%x:%x:%x:%x",
+				ntohs(*((uint16_t*)&in_ip[0])), ntohs(*((uint16_t*)&in_ip[2])), ntohs(*((uint16_t*)&in_ip[4])), ntohs(*((uint16_t*)&in_ip[6])),
+				ntohs(*((uint16_t*)&in_ip[8])), ntohs(*((uint16_t*)&in_ip[10])), ntohs(*((uint16_t*)&in_ip[12])), ntohs(*((uint16_t*)&in_ip[14])));
 	}
 	else if(family == stun_ipv4)
 	{
 		uint32_t address = *((uint32_t*)in_ip);
 		address = /*ntohl*/(address);
-		if(XORed)
-		{
-			address ^= TNET_STUN_MAGIC_COOKIE;
-		}
 		tsk_sprintf(out_ip, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
-
+		
 		return 0;
 	}
 	else
@@ -269,15 +267,15 @@ int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 			/*STUN2: XOR-MAPPED-ADDRESS */
 			if(binding->xmaddr)
 			{
-				int ret = tnet_stun_address_tostring(binding->xmaddr->xaddress, binding->xmaddr->family, 1, ipaddress);
-				*port = /*ntohs*/(binding->xmaddr->xport) ^ 0x2112;
+				int ret = tnet_stun_address_tostring(binding->xmaddr->xaddress, binding->xmaddr->family, ipaddress);
+				*port = /*ntohs*/(binding->xmaddr->xport);
 				return ret;
 			}
 
 			/*STUN1: MAPPED-ADDRESS*/
 			if(binding->maddr)
 			{
-				int ret = tnet_stun_address_tostring(binding->maddr->address, binding->maddr->family, 0, ipaddress);
+				int ret = tnet_stun_address_tostring(binding->maddr->address, binding->maddr->family, ipaddress);
 				*port = /*ntohs*/(binding->maddr->port);
 				return ret;
 			}
@@ -387,15 +385,15 @@ int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 			/*STUN2: XOR-MAPPED-ADDRESS */
 			if(allocation->xmaddr)
 			{
-				int ret = tnet_stun_address_tostring(allocation->xmaddr->xaddress, allocation->xmaddr->family, 1, ipaddress);
-				*port = /*ntohs*/(allocation->xmaddr->xport) ^ 0x2112;
+				int ret = tnet_stun_address_tostring(allocation->xmaddr->xaddress, allocation->xmaddr->family, ipaddress);
+				*port = /*ntohs*/(allocation->xmaddr->xport);
 				return ret;
 			}
 
 			/*STUN1: MAPPED-ADDRESS*/
 			if(allocation->maddr)
 			{
-				int ret = tnet_stun_address_tostring(allocation->maddr->address, allocation->maddr->family, 0, ipaddress);
+				int ret = tnet_stun_address_tostring(allocation->maddr->address, allocation->maddr->family, ipaddress);
 				*port = /*ntohs*/(allocation->maddr->port);
 				return ret;
 			}
