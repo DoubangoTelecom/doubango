@@ -421,25 +421,29 @@ static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app
 			attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
 
 			attribute->xport = ntohs(*((uint16_t*)payloadPtr));
-			//attribute->xport ^= 0x2112;
+			attribute->xport ^= 0x2112;
 			payloadPtr+=2;
-			
 
-			if(attribute->family == stun_ipv4)
-			{
-				uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
-				//addr ^= TNET_STUN_MAGIC_COOKIE;
-				memcpy(attribute->xaddress, &addr, 4);
-				payloadPtr+=4;
-			}
-			else if(attribute->family == stun_ipv6)
-			{
-				TSK_DEBUG_ERROR("IPv6 not supported yet.");
-			}
-			else
-			{
-				TSK_DEBUG_ERROR("UNKNOWN FAMILY.");
-			}
+			{	/*=== Compute IP address */
+				size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
+				if(addr_size)
+				{	
+					size_t i;
+					uint32_t addr;
+
+					for(i=0; i<addr_size; i+=4)
+					{
+						addr = ntohl(*((uint32_t*)payloadPtr));
+						addr ^= TNET_STUN_MAGIC_COOKIE;
+						memcpy(&attribute->xaddress[i], &addr, 4);
+						payloadPtr+=4;
+					}
+				}
+				else
+				{
+					TSK_DEBUG_ERROR("UNKNOWN FAMILY [%u].", attribute->family);
+				}
+			}			
 		}
 	}
 	return self;

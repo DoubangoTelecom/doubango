@@ -209,16 +209,7 @@ bail:
 
 void test_nat()
 {
-	uint8_t addr[4];	
-	
-	const char* str = "192.168.16.104";
-	memset(addr, 0, sizeof(addr));
-
-	//sscanf(str,"%64[0-9.]:%32[^,]%n",addr);
-	//sscanf(str,"%3u.%3u.%3u.%3u",&addr[0], &addr[1], &addr[2], &addr[3]);
-	//sscanf(str,"%3u.{1,4}",addr);
-
-	//test_nat_stun();
+	test_nat_stun();
 	test_nat_turn();
 	tsk_thread_sleep(1000);
 }
