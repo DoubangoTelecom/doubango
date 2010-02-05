@@ -21,7 +21,23 @@
 */
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
-#define REMOTE_IP /*"2a01:e35:8632:7050:6122:2706:2124:32cb"*/ "192.168.0.15"
+
+#define REMOTE_IP4	"192.168.0.15"
+#define REMOTE_IP6	"2a01:e35:8632:7050:6122:2706:2124:32cb"
+#define REMOTE_IP REMOTE_IP4
+
+#if defined(ANDROID) /* FIXME */
+#	define LOCAL_IP4	"10.0.2.15"
+#else
+#	define LOCAL_IP4	TNET_SOCKET_HOST_ANY
+#endif
+#define LOCAL_IP6	TNET_SOCKET_HOST_ANY
+
+#if /*defined(ANDROID)*/1
+#	define LOCAL_PORT TNET_SOCKET_PORT_ANY
+#else
+#	define LOCAL_PORT TNET_SOCKET_PORT_ANY
+#endif
 
 #define SIP_MESSAGE \
 	"REGISTER sip:micromethod.com SIP/2.0\r\n" \
@@ -137,8 +153,8 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	/*while(1)*/{
 		char* message = 0;
 		tnet_transport_get_ip_n_port(transport, fd, &ip, &port);
-		//memset(ip, '\0', 46);
-		//memcpy(ip, "fe80::225:4bff:fe8d:84bb", strlen("fe80::225:4bff:fe8d:84bb"));
+		//memset(ip, 0, sizeof(ip));
+		//memcpy(ip, "192.168.0.12", 12);
 		tsk_sprintf(&message, SIP_MESSAGE, "UDP", ip, port, port, ip, port, "udp");
 
 		if(!tnet_transport_send(transport, fd, message, strlen(message)))
@@ -161,17 +177,20 @@ void test_transport()
 
 
 #if TEST_UDP
-	tnet_transport_handle_t *udp = TNET_TRANSPORT_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
+	tnet_transport_handle_t *udp = TNET_TRANSPORT_CREATE(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
 	test_transport_udp_ipv4(udp);
 #endif
 
 #if TEST_TCP
-	tnet_transport_handle_t *tcp = TNET_TRANSPORT_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_tcp_ipv4, "TCP/IPV4 TRANSPORT");
+	tnet_transport_handle_t *tcp = TNET_TRANSPORT_CREATE(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_tcp_ipv4, "TCP/IPV4 TRANSPORT");
 	test_transport_tcp_ipv4(tcp);
 #endif	
 
+#if defined(ANDROID)
+	tsk_thread_sleep(1000);
+#else
 	getchar();
-	//tsk_thread_sleep(2000);
+#endif
 
 #if TEST_UDP
 	TSK_OBJECT_SAFE_FREE(udp);
@@ -180,7 +199,6 @@ void test_transport()
 #if TEST_TCP
 	tnet_transport_shutdown(tcp);
 #endif
-
 }
 
 

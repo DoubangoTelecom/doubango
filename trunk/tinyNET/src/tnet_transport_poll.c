@@ -179,7 +179,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		{
 			TNET_PRINT_LAST_ERROR();
 
-			tnet_sockfd_close(&fd);
+			//--tnet_sockfd_close(&fd);
 			goto bail;
 		}
 	}
@@ -231,7 +231,7 @@ size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t fr
 		goto bail;
 	}
 	
-    if((numberOfBytesSent = sendto(from, buf, size, 0, to, sizeof(*to))) == 0)
+    if((numberOfBytesSent = sendto(from, buf, size, 0, to, sizeof(*to))) <= 0)
 	{
 		TNET_PRINT_LAST_ERROR();
 		goto bail;
