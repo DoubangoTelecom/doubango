@@ -70,8 +70,8 @@ void tnet_getlasterror(tnet_error_t *error)
 		  0);
 	}
 #else
-	//strerror(errno);
-	memcpy(*error, "Unknown error.", sizeof("Unknown error"));
+	//FIXME: use strerror(errno);
+	sprintf(*error, "Network error (%d).", err);
 #endif
 }
 

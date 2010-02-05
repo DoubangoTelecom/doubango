@@ -66,7 +66,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib ws2_32.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -393,6 +393,10 @@
 			</File>
 			<File
 				RelativePath=".\test_transport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\tnet_dhcp.h"
 				>
 			</File>
 		</Filter>

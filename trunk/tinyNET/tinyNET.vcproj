@@ -474,6 +474,22 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="dhcp"
+				>
+				<File
+					RelativePath=".\src\dhcp\tnet_dhcp.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp\tnet_dhcp_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp\tnet_dhcp_option.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -615,6 +631,22 @@
 				</File>
 				<File
 					RelativePath=".\src\dns\tnet_dns_txt.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dhcp"
+				>
+				<File
+					RelativePath=".\src\dhcp\tnet_dhcp.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp\tnet_dhcp_message.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp\tnet_dhcp_option.h"
 					>
 				</File>
 			</Filter>
