@@ -371,6 +371,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyNET\test\test_dhcp.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyNET\test\test_dns.h"
 				>
 			</File>
@@ -388,10 +392,6 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyNET\test\test_transport.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyNET\test\tnet_dhcp.h"
 				>
 			</File>
 		</Filter>

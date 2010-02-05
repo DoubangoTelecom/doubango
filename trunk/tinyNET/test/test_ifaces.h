@@ -30,7 +30,7 @@ void test_ifaces_dump_ifaces()
 	tsk_list_foreach(item, ifaces)
 	{
 		const tnet_interface_t *iface = item->data;
-		TSK_DEBUG_INFO("Interface: %s", iface->name);
+		TSK_DEBUG_INFO("Interface: %s", iface->description);
 	}
 
 	TSK_OBJECT_SAFE_FREE(ifaces);

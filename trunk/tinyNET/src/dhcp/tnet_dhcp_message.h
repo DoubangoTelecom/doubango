@@ -38,7 +38,9 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP_MESSAGE_CREATE()	tsk_object_new(tnet_dhcp_message_def_t)
+#define TNET_DHCP_MESSAGE_CREATE(opcode)	tsk_object_new(tnet_dhcp_message_def_t, (tnet_dhcp_message_op_t)opcode)
+#define TNET_DHCP_REQUEST_CREATE()			TNET_DHCP_MESSAGE_CREATE(dhcp_op_bootrequest)
+#define TNET_DHCP_REPLY_CREATE()			TNET_DHCP_MESSAGE_CREATE(dhcp_op_bootreply)
 
 #define TNET_DHCP_MAGIC_COOKIE		0x63825363 /**< DHCP magic cookie (99, 130, 83 and 99 in decimal).*/
 
@@ -48,12 +50,12 @@ typedef enum tnet_dhcp_message_type_e
 {
 	/**< DHCPDISCOVER -  Client broadcast to locate available servers.
 	*/
-	dhcp_type_discover,
+	dhcp_type_discover = 1,
 
    /**< DHCPOFFER    -  Server to client in response to DHCPDISCOVER with
                    offer of configuration parameters.
    */
-	dhcp_type_offer,
+	dhcp_type_offer = 2,
 
    /**< DHCPREQUEST  -  Client message to servers either (a) requesting
                    offered parameters from one server and implicitly
@@ -62,36 +64,60 @@ typedef enum tnet_dhcp_message_type_e
                    e.g., system reboot, or (c) extending the lease on a
                    particular network address.
    */
-	dhcp_type_request,
+	dhcp_type_request = 3,
+
+	/**< DHCPDECLINE  -  Client to server indicating network address is already
+                   in use.
+   */
+	dhcp_type_decline = 4,
 
    /**< DHCPACK      -  Server to client with configuration parameters,
                    including committed network address.
    */
-	dhcp_type_ack,
+	dhcp_type_ack = 5,
 
    /**< DHCPNAK      -  Server to client indicating client's notion of network
                    address is incorrect (e.g., client has moved to new
                    subnet) or client's lease as expired
    */
-	dhcp_type_nack,
-
-   /**< DHCPDECLINE  -  Client to server indicating network address is already
-                   in use.
-   */
-	dhcp_type_decline,
+	dhcp_type_nack = 6,
 
    /**< DHCPRELEASE  -  Client to server relinquishing network address and
                    cancelling remaining lease.
    */
-	dhcp_type_release,
+	dhcp_type_release = 7,
 
    /**< DHCPINFORM   -  Client to server, asking only for local configuration
                    parameters; client already has externally configured
                    network address.
    */
-	dhcp_type_inform,
+	dhcp_type_inform = 8,
 }
 tnet_dhcp_message_type_t;
+
+/**
+* DHCP hardward types as per RFC 1340.
+*/
+typedef enum tnet_dhcp_message_htype_e
+{
+	dhcp_htype_Ethernet_10Mb = 1, /**<    Ethernet (10Mb) */
+	dhcp_htype_Ethernet_3Mb = 2, /**<     Experimental Ethernet (3Mb) */
+	dhcp_htype_AX_25 = 3, /**<     Amateur Radio AX.25 */
+	dhcp_htype_Token_Ring = 4, /**<     Proteon ProNET Token Ring */
+	dhcp_htype_Chaos = 5, /**<     Chaos */
+	dhcp_htype_IEEE_802_Networks = 6, /**<     IEEE 802 Networks */
+	dhcp_htype_ARCNET = 7, /**<     ARCNET */
+	dhcp_htype_Hyperchannel = 8, /**<     Hyperchannel */
+	dhcp_htype_Lanstar = 9, /**<     Lanstar	 */
+	dhcp_htype_Autonet_Short_Address  = 10, /**<     Autonet Short Address */
+	dhcp_htype_ALocalTalk = 11, /**<     LocalTalk	 */
+	dhcp_htype_LocalNet= 12, /**<     LocalNet (IBM PCNet or SYTEK LocalNET)	 */
+	dhcp_htype_Ultra_link =  13, /**<     Ultra link */
+	dhcp_htype_SMDS = 14, /**<     SMDS	 */
+	dhcp_htype_Frame_Relay = 15, /**<     Frame Relay	 */
+	dhcp_htype_ATM = 16, /**<     Asynchronous Transmission Mode (ATM) */
+}
+tnet_dhcp_message_htype_t;
 
 /** DHCP message OP code / message type.
 */
@@ -107,6 +133,10 @@ tnet_dhcp_message_op_t;
 typedef struct tnet_dhcp_message_s
 {
 	TSK_DECLARE_OBJECT;
+
+	/** DHCP message type. Mandatory.
+	*/
+	tnet_dhcp_message_type_t type;
 
 	/*
 	0                   1                   2                   3
@@ -149,8 +179,8 @@ typedef struct tnet_dhcp_message_s
 	/**< Hardware address type, see ARP section in "Assigned Numbers" RFC; e.g., '1' = 10mb ethernet. 
 		For more information see RFC 1340.
 	*/
-    uint8_t htype;
-	/**< Hardware address length (e.g.  '6' for 10mb ethernet). 
+    tnet_dhcp_message_htype_t htype;
+	/**< Hardware address length (e.g.  '6' for 10mb ethernet). strlen(chaddr).
 	*/
     uint8_t hlen;
 	/**< Client sets to zero, optionally used by relay agents when booting via a relay agent.

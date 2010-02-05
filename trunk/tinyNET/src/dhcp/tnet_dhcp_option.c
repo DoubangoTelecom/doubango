@@ -92,7 +92,7 @@ static void* tnet_dhcp_option_create(void * self, va_list * app)
 	tnet_dhcp_option_t *option = self;
 	if(option)
 	{
-		tnet_dhcp_option_init(option, dhcp_tag_reserved);
+		tnet_dhcp_option_init(option, dhcp_tag_null);
 	}
 	return self;
 }

@@ -42,7 +42,8 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP_CTX_CREATE()	tsk_object_new(tnet_dhcp_ctx_def_t)
+#define TNET_DHCP_CTX_CREATE()			tsk_object_new(tnet_dhcp_ctx_def_t)
+#define TNET_DHCP_PARAMS_CREATE(tag)	tsk_object_new(tnet_dhcp_params_def_t, (tnet_dhcp_option_tag_t)tag)
 
 /** Default timeout (in milliseconds) value for DHCP requests. 
 */
@@ -51,7 +52,7 @@ TNET_BEGIN_DECLS
 /**< Local port(client) to bind to for incoming DHCP messages as per RFC 2131 subclause 4.1. */
 #define TNET_DHCP_CLIENT_PORT		68
 /**< Destination port(Server) for outgoing DHCP messages as per RFC 2131 subclause 4.1. */
-#define TNET_DHCP_SERVER_PORT		64
+#define TNET_DHCP_SERVER_PORT		67
 
 
 typedef struct tnet_dhcp_params_s
@@ -72,13 +73,14 @@ typedef struct tnet_dhcp_ctx_s
 	
 	tnet_port_t port_client; /**< Local port to bind to for incloming DHCP messages. Default: 68 */
 	tnet_port_t server_port; /**< Destination port for outgoing DHCP messages. Default: 64 */
+	tnet_interfaces_L_t *interfaces;
 	
 	TSK_DECLARE_SAFEOBJ;
 }
 tnet_dhcp_ctx_t;
 
 
-tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_params_t* params);
+TINYNET_API tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_params_t* params);
 
 TINYNET_GEXTERN const void *tnet_dhcp_ctx_def_t;
 TINYNET_GEXTERN const void *tnet_dhcp_params_def_t;
