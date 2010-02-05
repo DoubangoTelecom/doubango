@@ -98,7 +98,7 @@ typedef enum tnet_dhcp_option_tag_e
 	dhcp_tag_DHCP_Msg_Type= 53        ,/**< DHCP Msg Type                    1       DHCP Message Type                                 [RFC2132]  */
 	dhcp_tag_DHCP_Server_Id= 54        ,/**< DHCP Server Id                   4       DHCP Server Identification                        [RFC2132]  */
 	dhcp_tag_Parameter_List= 55        ,/**< Parameter List                   N       Parameter Request List                            [RFC2132]  */
-	dhcp_tag_DHCP_Message= 56        ,/**< DHCP Message                     N       DHCP Error Message                                [RFC2132]  */
+	dhcp_tag_DHCP_Error_Message= 56        ,/**< DHCP Message                     N       DHCP Error Message                                [RFC2132]  */
 	dhcp_tag_DHCP_Max_Msg_Size= 57        ,/**< DHCP Max Msg Size                2       DHCP Maximum Message Size                         [RFC2132]  */
 	dhcp_tag_Renewal_Time= 58        ,/**< Renewal Time                     4       DHCP Renewal (T1) Time                            [RFC2132]  */
 	dhcp_tag_Rebinding_Time= 59        ,/**< Rebinding Time                   4       DHCP Rebinding (T2) Time                          [RFC2132]  */
@@ -209,7 +209,7 @@ typedef enum tnet_dhcp_option_tag_e
 	dhcp_tag_Virtual_Subnet= 221       ,/**< Virtual Subnet Selection Option (Tentatively Assigned - 2005-06-23) */
 	// 222-223   Unassigned                                                                                 [RFC3942]
 	//224-254   Reserved (Private Use)
-	dhcp_tag_reserved=224 ,
+	dhcp_tag_null=224 ,
 	dhcp_tag_End= 255       ,/**< End                              0         None                                            [RFC2132]  */
 }
 tnet_dhcp_option_tag_t;

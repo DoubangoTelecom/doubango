@@ -135,7 +135,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 		pAdapter = pAdapterInfo;
 		while(pAdapter) 
 		{
-			tnet_interface_t *iface = TNET_INTERFACE_CREATE(pAdapter->Description);
+			tnet_interface_t *iface = TNET_INTERFACE_CREATE(pAdapter->Description, pAdapter->Address, pAdapter->AddressLength);
 			tsk_list_push_back_data(ifaces, &(iface));
 			
 			pAdapter = pAdapter->Next;
@@ -609,6 +609,11 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 		TSK_DEBUG_ERROR("Using invalid FD to send data.");
 		return -1;
 	}
+	if(!buf || !size)
+	{
+		TSK_DEBUG_ERROR("Using invalid BUFFER.");
+		return -2;
+	}
 
 #if TNET_HAVE_SS_LEN
 	return sendto(fd, buf, size, 0, to, to->ss_len);
@@ -719,7 +724,15 @@ static void* tnet_interface_create(void * self, va_list * app)
 	tnet_interface_t *iface = self;
 	if(iface)
 	{
-		iface->name = tsk_strdup(va_arg(*app, const char*));
+		const char* description = va_arg(*app, const char*);
+		const uint8_t* mac_address = va_arg(*app, const uint8_t*);
+		size_t mac_address_length = va_arg(*app, size_t);
+
+		iface->description = tsk_strdup(description);
+		if((iface->mac_address = tsk_calloc(mac_address_length, sizeof(uint8_t)))){
+			memcpy(iface->mac_address, mac_address, mac_address_length);
+		}
+		iface->mac_address_length = mac_address_length;
 	}
 	return self;
 }
@@ -729,7 +742,8 @@ static void* tnet_interface_destroy(void * self)
 	tnet_interface_t *iface = self;
 	if(iface)
 	{
-		TSK_FREE(iface->name);
+		TSK_FREE(iface->description);
+		TSK_FREE(iface->mac_address);
 	}
 
 	return self;
@@ -739,10 +753,10 @@ static int tnet_interface_cmp(const void *if1, const void *if2)
 {
 	const tnet_interface_t *iface1 = if1;
 	const tnet_interface_t *iface2 = if2;
-
+	
 	if(iface1 && iface2)
 	{
-		return tsk_stricmp(iface1->name, iface1->name);
+		return tsk_stricmp(iface1->description, iface1->description);
 	}
 	else if(!iface1 && !iface2) return 0;
 	else return -1;

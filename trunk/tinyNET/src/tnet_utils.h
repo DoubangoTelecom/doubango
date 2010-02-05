@@ -39,14 +39,16 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_INTERFACE_CREATE(name)			tsk_object_new(tnet_interface_def_t, (const char*)name)
-#define TNET_ADDRESS_CREATE(ip)				tsk_object_new(tnet_address_def_t, (const char*)ip)
+#define TNET_INTERFACE_CREATE(description, mac_address, mac_address_length)	tsk_object_new(tnet_interface_def_t, (const char*)description, (const uint8_t*)mac_address, (size_t)mac_address_length)
+#define TNET_ADDRESS_CREATE(ip)												tsk_object_new(tnet_address_def_t, (const char*)ip)
 
 typedef struct tnet_interface_s
 {
 	TSK_DECLARE_OBJECT;
-
-	char* name;
+	
+	char* description;
+	uint8_t* mac_address;
+	size_t mac_address_length;
 }
 tnet_interface_t;
 typedef tsk_list_t tnet_interfaces_L_t;

@@ -29,21 +29,25 @@
  */
 #include "tnet_dhcp.h"
 
+#include "tsk_memory.h"
+#include "tsk_time.h"
 #include "tsk_debug.h"
 
 // Useful link: http://support.microsoft.com/?scid=kb%3Ben-us%3B169289&x=21&y=14
 // Another one: http://www.iana.org/assignments/bootp-dhcp-parameters/
 
 
-tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, const tnet_dhcp_request_t* request)
+tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_request_t* request)
 {
-	tsk_buffer_t *output = 0;
+	tsk_buffer_t *output;
 	tnet_dhcp_reply_t* reply = 0;
 	int ret;
 	struct timeval tv;
 	fd_set set;
 	tnet_fd_t clientFD = TNET_INVALID_FD;
 	uint64_t timeout = 0;
+	tsk_list_item_t *item;
+	const tnet_interface_t *iface;
 	
 	tnet_socket_t *localsocket4 = 0;
 	tnet_socket_t *localsocket6 = 0;
@@ -54,16 +58,9 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, const tnet_dhcp_
 		goto bail;
 	}
 
-	/* Serialize and send to the server. */
-	if(!(output = tnet_dhcp_message_serialize(request)))
-	{
-		TSK_DEBUG_ERROR("Failed to serialize the DHCP message.");
-		goto bail;
-	}
-
 	if(ctx->use_ipv6)
 	{
-		localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv6);
+		localsocket6 = TNET_SOCKET_CREATE("::", ctx->port_client, tnet_socket_type_udp_ipv6);
 		if(TNET_SOCKET_IS_VALID(localsocket6))
 		{
 			clientFD = localsocket6->fd;
@@ -72,7 +69,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, const tnet_dhcp_
 	}
 	else
 	{
-		localsocket4 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv4);
+		localsocket4 = TNET_SOCKET_CREATE("0.0.0.0", ctx->port_client, tnet_socket_type_udp_ipv4);
 		if(TNET_SOCKET_IS_VALID(localsocket4))
 		{
 			clientFD = localsocket4->fd;
@@ -88,24 +85,109 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, const tnet_dhcp_
 	FD_ZERO(&set);
 	FD_SET(clientFD, &set);
 
-	if(tnet_sockaddr_init("255.255.255.255"/* FIXME: IPv6 */, ctx->server_port, (ctx->use_ipv6 == AF_INET ? tnet_socket_type_udp_ipv4 : tnet_socket_type_udp_ipv6), &server))
+	if(tnet_sockaddr_init("255.255.255.255"/* FIXME: IPv6 */, ctx->server_port, (ctx->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4), &server))
 	{
-		TSK_DEBUG_ERROR("Failed to connect to initialize the DHCP server address.");
+		TSK_DEBUG_ERROR("Failed to connect to initialize the DHCP server address [errno=%d].", tnet_geterrno());
+		//TNET_PRINT_LAST_ERROR();
 		//continue;
 		goto bail;
 	}
 
-	if((ret =tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size))<0)
+	/* ENABLE BROADCASTING */
 	{
-		TSK_DEBUG_ERROR("Failed to send the DHCP request to the remote peer [%d].", ret);
-		goto bail;
+#if defined(SOLARIS)
+		char yes = '1';
+#else
+		int yes = 1;
+#endif
+		if(setsockopt(clientFD, SOL_SOCKET, SO_BROADCAST, (char*)&yes, sizeof(int)))
+		{
+			TSK_DEBUG_ERROR("Failed to enable broadcast option [errno=%d].", tnet_geterrno());
+			goto bail;
+		}
 	}
+
+	do
+	{
+		tsk_list_foreach(item, ctx->interfaces)
+		{
+			iface = item->data;
+		
+			/* chaddr */
+			memset(request->chaddr, 0, sizeof(request->chaddr));
+			request->hlen = iface->mac_address_length > sizeof(request->chaddr) ? sizeof(request->chaddr) : iface->mac_address_length;
+			memcpy(request->chaddr, iface->mac_address, request->hlen);
+
+			/* Serialize and send to the server. */
+			if(!(output = tnet_dhcp_message_serialize(request)))
+			{
+				TSK_DEBUG_ERROR("Failed to serialize the DHCP message.");
+				goto next_iface;
+			}
+			/* Send the request to the DHCP server */
+			if((ret =tnet_sockfd_sendto(clientFD, (const struct sockaddr*)&server, output->data, output->size))<0)
+			{
+				TSK_DEBUG_ERROR("Failed to send the DHCP request to the remote peer [%d] [errno=%d].", ret, tnet_geterrno());
+				//TNET_PRINT_LAST_ERROR();
+				goto next_iface;
+			}
+			/* wait for response */
+			if((ret = select(clientFD+1, &set, NULL, NULL, &tv))<0)
+			{	/* Error */
+				goto next_iface;
+			}
+			else if(ret == 0)
+			{	/* timeout ==> do nothing */
+			}
+			else
+			{	/* there is data to read */
+				size_t len = 0;
+				void* data = 0;
+
+				/* Check how how many bytes are pending */
+				if((ret = tnet_ioctlt(clientFD, FIONREAD, &len))<0)
+				{
+					goto next_iface;
+				}
+				
+				/* Receive pending data */
+				data = tsk_calloc(len, sizeof(uint8_t));
+				if((ret = tnet_sockfd_recv(clientFD, data, len, 0))<0)
+				{
+					TSK_FREE(data);
+									
+					TSK_DEBUG_ERROR("Recving DHCP dgrams failed with error code:%d", tnet_geterrno());
+					goto next_iface;
+				}
+
+				/* Parse the incoming response. */
+				reply = tnet_dhcp_message_deserialize(data, len);
+				TSK_FREE(data);
+				
+				if(reply)
+				{	/* response successfuly parsed */
+					if(request->xid != reply->xid)
+					{ /* Not same transaction id ==> continue*/
+						TSK_OBJECT_SAFE_FREE(reply);
+					}
+				}
+			}
+
+	next_iface:
+			TSK_OBJECT_SAFE_FREE(output);
+			if(reply){
+				goto bail;
+			}
+		}
+
+		/* First time? ==> set timeout value */
+		if(!timeout) timeout = tsk_time_epoch() + ctx->timeout;
+	}
+	while(timeout < tsk_time_epoch());
 
 bail:
 	TSK_OBJECT_SAFE_FREE(localsocket4);
 	TSK_OBJECT_SAFE_FREE(localsocket6);
-
-	TSK_OBJECT_SAFE_FREE(output);
 
 	return reply;
 }
@@ -113,15 +195,16 @@ bail:
 tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_params_t* params)
 {
 	tnet_dhcp_reply_t* reply = 0;
-	tnet_dhcp_request_t* request = TNET_DHCP_MESSAGE_CREATE();
+	tnet_dhcp_request_t* request = TNET_DHCP_REQUEST_CREATE();
 
 	if(!ctx || !params || !request)
 	{
 		goto bail;
 	}
 
-	request->op = dhcp_op_bootrequest;
-
+	//request->op = params->tag;
+	request->type = dhcp_type_discover; // FIXME
+	reply = tnet_dhcp_send_request(ctx, request);
 
 bail:
 	TSK_OBJECT_SAFE_FREE(request);
@@ -145,7 +228,12 @@ static void* tnet_dhcp_ctx_create(void * self, va_list * app)
 		ctx->timeout = TNET_DHCP_TIMEOUT_DEFAULT;
 		ctx->port_client = TNET_DHCP_CLIENT_PORT;
 		ctx->server_port = TNET_DHCP_SERVER_PORT;
-		//...
+		ctx->interfaces = tnet_get_interfaces();
+		
+		if(!ctx->interfaces || TSK_LIST_IS_EMPTY(ctx->interfaces))
+		{
+			TSK_DEBUG_ERROR("Failed to retrieve network interfaces.");
+		}
 
 		tsk_safeobj_init(ctx);
 	}
@@ -159,7 +247,7 @@ static void* tnet_dhcp_ctx_destroy(void * self)
 	{
 		tsk_safeobj_deinit(ctx);
 
-		//...
+		TSK_OBJECT_SAFE_FREE(ctx->interfaces);
 	}
 	return self;
 }
@@ -172,3 +260,34 @@ static const tsk_object_def_t tnet_dhcp_ctx_def_s =
 	0,
 };
 const void *tnet_dhcp_ctx_def_t = &tnet_dhcp_ctx_def_s;
+
+//========================================================
+//	[[DHCP PARAMS]] object definition
+//
+static void* tnet_dhcp_params_create(void * self, va_list * app)
+{
+	tnet_dhcp_params_t *params = self;
+	if(params)
+	{
+		params->tag = va_arg(*app, tnet_dhcp_option_tag_t);
+	}
+	return self;
+}
+
+static void* tnet_dhcp_params_destroy(void * self) 
+{ 
+	tnet_dhcp_params_t *params = self;
+	if(params)
+	{
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dhcp_params_def_s =
+{
+	sizeof(tnet_dhcp_params_t),
+	tnet_dhcp_params_create,
+	tnet_dhcp_params_destroy,
+	0,
+};
+const void *tnet_dhcp_params_def_t = &tnet_dhcp_params_def_s;
