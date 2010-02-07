@@ -153,7 +153,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		/* Add the socket */
 		if((status = tnet_transport_add_socket(handle, fd)))
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR(Failed to add new socket.");
 
 			tnet_sockfd_close(&fd);
 			goto bail;
@@ -177,7 +177,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		}
 		else
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("connect have failed.");
 
 			//--tnet_sockfd_close(&fd);
 			goto bail;
@@ -204,7 +204,7 @@ size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from
 
 	if((numberOfBytesSent = send(from, buf, size, 0)) <= 0)
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("send have failed.");
 
 		//tnet_sockfd_close(&from);
 		goto bail;
@@ -233,7 +233,7 @@ size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t fr
 	
     if((numberOfBytesSent = sendto(from, buf, size, 0, to, sizeof(*to))) <= 0)
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("sendto have failed.");
 		goto bail;
 	}
 		
@@ -365,7 +365,7 @@ void *tnet_transport_mainthread(void *param)
 	{
 		if(listen(transport->master->fd, TNET_MAX_FDS))
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("listen have failed.");
 			goto bail;
 		}
 	}
@@ -373,7 +373,7 @@ void *tnet_transport_mainthread(void *param)
 	/* Create and add pipes to the fd_set */
 	if((ret = pipe(pipes)))
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("Failed to create new pipes.");
 		goto bail;
 	}
 	transport_socket_add(pipes[0], context); // Add pipeR
@@ -392,7 +392,7 @@ void *tnet_transport_mainthread(void *param)
 
 		if((ret = tnet_poll(context->ufds, context->count, -1)) < 0)
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("poll have failed.");
 			goto bail;
 		}
 
@@ -426,8 +426,7 @@ void *tnet_transport_mainthread(void *param)
 				 */
 				if(tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0)
 				{
-					TSK_DEBUG_ERROR("IOCTLT FAILED.");
-					TNET_PRINT_LAST_ERROR();
+					TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
 					continue;
 				}
 				if(!(buffer = tsk_calloc(len, sizeof(uint8_t))))
@@ -447,7 +446,7 @@ void *tnet_transport_mainthread(void *param)
 					//else
 					{
 						transport_socket_remove(i, context);
-						TNET_PRINT_LAST_ERROR();
+						TNET_PRINT_LAST_ERROR("recv have failed.");
 						continue;
 					}
 				}

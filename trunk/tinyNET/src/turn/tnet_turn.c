@@ -498,7 +498,7 @@ int tnet_turn_channel_senddata(const struct tnet_nat_context_s* nat_context, con
 
 			if(tnet_sockfd_sendto(channel_bind->allocation->localFD, (struct sockaddr*)&channel_bind->allocation->server, output->data, output->size) <= 0)
 			{
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("Failed to send TURN messsage.");
 				ret = -2;
 				goto bail;
 			}

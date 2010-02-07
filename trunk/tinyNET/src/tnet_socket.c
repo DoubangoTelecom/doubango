@@ -79,7 +79,7 @@ int tnet_socket_stream_connectto(tnet_socket_tcp_t *sock, const char* host, tnet
 	
 	if((status = tnet_getaddrinfo(host, _port, &hints, &result)))
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("getaddrinfo have failed.");
 		goto bail;
 	}
 
@@ -89,7 +89,7 @@ int tnet_socket_stream_connectto(tnet_socket_tcp_t *sock, const char* host, tnet
 		{
 			if((status = connect(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
 			{
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("connect have failed.");
 				goto bail;
 			}
 
@@ -152,7 +152,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		{
 			if((status = tnet_gethostname(&local_hostname)))
 			{
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("gethostname have failed.");
 				goto bail;
 			}
 		}
@@ -167,7 +167,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		/* Performs getaddrinfo */
 		if((status = tnet_getaddrinfo(local_hostname, port, &hints, &result)))
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("getaddrinfo have failed.");
 			goto bail;
 		}
 		
@@ -180,7 +180,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 				/* Get local IP string. */
 				if((status = tnet_getnameinfo(ptr->ai_addr, ptr->ai_addrlen, sock->ip, sizeof(sock->ip), 0, 0, NI_NUMERICHOST)))
 				{
-					TNET_PRINT_LAST_ERROR();
+					TNET_PRINT_LAST_ERROR("getnameinfo have failed");
 					tnet_socket_close(sock);
 					continue;
 				}
@@ -188,7 +188,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 				{
 					if((status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
 					{
-						TNET_PRINT_LAST_ERROR();
+						TNET_PRINT_LAST_ERROR("bind have failed.");
 						tnet_socket_close(sock);
 						continue;
 					}
@@ -196,7 +196,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 					{
 						if(sock->port == TNET_SOCKET_PORT_ANY && (status = tnet_get_port(sock->fd, &(sock->port))))
 						{
-							TNET_PRINT_LAST_ERROR();
+							TNET_PRINT_LAST_ERROR("Failed to retrieve IP and Port.");
 							tnet_socket_close(sock);
 							continue;
 						}
@@ -209,7 +209,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		/* Check socket validity. */
 		if(!TNET_SOCKET_IS_VALID(sock)) 
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("Invalid socket.");
 			goto bail;
 		}		
 
@@ -222,7 +222,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 #endif
 			if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(int)))
 			{
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEADDR) have failed.");
 			}
 		}
 

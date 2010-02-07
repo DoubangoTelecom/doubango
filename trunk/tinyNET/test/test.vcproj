@@ -372,6 +372,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_dhcp.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_dns.h"
 				>
 			</File>
@@ -393,10 +397,6 @@
 			</File>
 			<File
 				RelativePath=".\test_transport.h"
-				>
-			</File>
-			<File
-				RelativePath=".\tnet_dhcp.h"
 				>
 			</File>
 		</Filter>

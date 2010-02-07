@@ -29,6 +29,7 @@
  */
 #include "tnet_dhcp.h"
 
+#include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"
@@ -36,7 +37,8 @@
 // Useful link: http://support.microsoft.com/?scid=kb%3Ben-us%3B169289&x=21&y=14
 // Another one: http://www.iana.org/assignments/bootp-dhcp-parameters/
 
-
+/* FIXME: USE retransmission mech (*2*2...)
+*/
 tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_request_t* request)
 {
 	tsk_buffer_t *output;
@@ -60,7 +62,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 
 	if(ctx->use_ipv6)
 	{
-		localsocket6 = TNET_SOCKET_CREATE("::", ctx->port_client, tnet_socket_type_udp_ipv6);
+		localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv6);
 		if(TNET_SOCKET_IS_VALID(localsocket6))
 		{
 			clientFD = localsocket6->fd;
@@ -69,7 +71,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 	}
 	else
 	{
-		localsocket4 = TNET_SOCKET_CREATE("0.0.0.0", ctx->port_client, tnet_socket_type_udp_ipv4);
+		localsocket4 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv4);
 		if(TNET_SOCKET_IS_VALID(localsocket4))
 		{
 			clientFD = localsocket4->fd;
@@ -77,19 +79,13 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 		else goto bail;
 	}
 
-	/* Always wait for 300ms before retransmission */
+	/* Always wait for 500ms before retransmission */
 	tv.tv_sec = 0;
-	tv.tv_usec = (300 * 1000);
-
-	/* Set FD */
-	FD_ZERO(&set);
-	FD_SET(clientFD, &set);
+	tv.tv_usec = (500 * 1000);
 
 	if(tnet_sockaddr_init("255.255.255.255"/* FIXME: IPv6 */, ctx->server_port, (ctx->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4), &server))
 	{
-		TSK_DEBUG_ERROR("Failed to connect to initialize the DHCP server address [errno=%d].", tnet_geterrno());
-		//TNET_PRINT_LAST_ERROR();
-		//continue;
+		TNET_PRINT_LAST_ERROR("Failed to initialize the DHCP server address.");
 		goto bail;
 	}
 
@@ -107,11 +103,18 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 		}
 	}
 
+	/* Set timeout */
+	timeout = tsk_time_epoch() + ctx->timeout;
+
 	do
 	{
 		tsk_list_foreach(item, ctx->interfaces)
 		{
 			iface = item->data;
+
+			/* Set FD */
+			FD_ZERO(&set);
+			FD_SET(clientFD, &set);
 		
 			/* chaddr */
 			memset(request->chaddr, 0, sizeof(request->chaddr));
@@ -127,13 +130,16 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 			/* Send the request to the DHCP server */
 			if((ret =tnet_sockfd_sendto(clientFD, (const struct sockaddr*)&server, output->data, output->size))<0)
 			{
-				TSK_DEBUG_ERROR("Failed to send the DHCP request to the remote peer [%d] [errno=%d].", ret, tnet_geterrno());
-				//TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("Failed to send DHCP request.");
+
+				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
 				goto next_iface;
 			}
 			/* wait for response */
 			if((ret = select(clientFD+1, &set, NULL, NULL, &tv))<0)
 			{	/* Error */
+				TNET_PRINT_LAST_ERROR("select have failed.");
+				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
 				goto next_iface;
 			}
 			else if(ret == 0)
@@ -156,7 +162,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				{
 					TSK_FREE(data);
 									
-					TSK_DEBUG_ERROR("Recving DHCP dgrams failed with error code:%d", tnet_geterrno());
+					TNET_PRINT_LAST_ERROR("Failed to receive DHCP dgrams.");
 					goto next_iface;
 				}
 
@@ -179,11 +185,9 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				goto bail;
 			}
 		}
-
-		/* First time? ==> set timeout value */
-		if(!timeout) timeout = tsk_time_epoch() + ctx->timeout;
+		break;//FIXME
 	}
-	while(timeout < tsk_time_epoch());
+	while(timeout > tsk_time_epoch());
 
 bail:
 	TSK_OBJECT_SAFE_FREE(localsocket4);

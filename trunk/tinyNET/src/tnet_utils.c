@@ -101,7 +101,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 {
 	tnet_interfaces_L_t * ifaces = TSK_LIST_CREATE();
 
-#if TSK_UNDER_WINDOWS
+#if TSK_UNDER_WINDOWS /*=== WINDOWS XP/VISTA/7/CE===*/
 
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
@@ -152,9 +152,68 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 #undef FREE
 
 
-#else /* !TSK_UNDER_WINDOWS */
+#elif HAVE_IFADDRS_H /*=== Using getifaddrs ===*/
 
-// use SIOCGIFCONF ioctl
+
+	// see http://www.kernel.org/doc/man-pages/online/pages/man3/getifaddrs.3.html
+	struct ifaddrs *ifaddr, *ifa;
+
+	/* Get interfaces */
+	//if(getifaddrs(&ifaddr) == -1)
+	{
+		TSK_DEBUG_ERROR("getifaddrs failed and errno= [%d]", tnet_geterrno());
+		goto bail;
+	}
+
+
+#else /*=== ANDROID,... --> Using SIOCGIFCONF and SIOCGIFHWADDR ===*/
+
+	tnet_fd_t fd = TNET_INVALID_FD;
+	char buffer[1024];
+	struct ifconf ifc;
+
+	struct sockaddr_in *sin;
+	struct ifreq *ifr;
+
+	if((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
+	{
+		TSK_DEBUG_ERROR("Failed to create new DGRAM socket and errno= [%d]", tnet_geterrno());
+		goto done;
+	}
+
+	ifc.ifc_len = sizeof(buffer);
+	ifc.ifc_buf = buffer;
+
+	if(ioctl(fd, SIOCGIFCONF, &ifc) < 0)
+	{
+		TSK_DEBUG_ERROR("ioctl(SIOCGIFCONF) failed and errno= [%d]", tnet_geterrno());
+		goto done;
+	}
+
+	for(ifr = ifc.ifc_req; ifr && !tsk_strempty(ifr->ifr_name); ifr++)
+	{
+		sin = (struct sockaddr_in *)&(ifr->ifr_addr);
+		// TODO: IPAddress if needed
+		if(/*ioctl(fd, SIOCGIFFLAGS, &ifr) == 0*/1)
+		{
+			if (!(ifr->ifr_flags & IFF_LOOPBACK))
+			{
+				if(/*ioctl(fd, SIOCGIFHWADDR, &ifr) == 0*/1)
+				{
+					tnet_interface_t *iface = TNET_INTERFACE_CREATE(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
+					tsk_list_push_back_data(ifaces, (void**)&(iface));
+				}
+			}
+		 }
+		else
+		{
+			TSK_DEBUG_ERROR("ioctl(SIOCGIFFLAGS) failed and errno= [%d]", tnet_geterrno());
+		}
+	}
+
+done:
+	tnet_sockfd_close(&fd);
+
 
 #endif
 
@@ -479,7 +538,7 @@ int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_
 	/* Performs getaddrinfo */
 	if((status = tnet_getaddrinfo(host, p, &hints, &result)))
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("getaddrinfo have failed.");
 		goto bail;
 	}
 	
@@ -541,7 +600,7 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	
 	if((*fd = socket(ai_family, ai_socktype, ai_protocol)) == TNET_INVALID_SOCKET)
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("Failed to create new socket.");
 		goto bail;
 	}
 
@@ -558,7 +617,7 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	if((status = bind(*fd, (const struct sockaddr*)&ai_addr, sizeof(ai_addr))))
 #endif
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("bind have failed.");
 		tnet_sockfd_close(fd);
 		
 		goto bail;
@@ -578,19 +637,19 @@ int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 	if(ioctlsocket(fd, FIONBIO, &mode))
 	//if(WSAIoctl(fd, FIONBIO, &nonblocking, sizeof(nonblocking), NULL, 0, NULL, NULL, NULL) == SOCKET_ERROR)
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("ioctlsocket(FIONBIO) have failed.");
 		return -1;
 	}
 #else
 	int flags;
     if((flags = fcntl(fd, F_GETFL, 0)) < 0) 
 	{ 
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("fcntl(F_GETFL) have failed.");
 		return -1;
 	} 
 	if(fcntl(fd, F_SETFL, flags | (nonBlocking ? O_NONBLOCK : ~O_NONBLOCK)) < 0)
 	{ 
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("fcntl(O_NONBLOCK/O_NONBLOCK) have failed.");
 		return -1;
 	} 
 #endif
