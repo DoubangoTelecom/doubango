@@ -202,7 +202,7 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
 	/* Set callback function to call when new messages arrive or errors happen in
 		the transport layer.
 	*/
-	TSIP_TRANSAC(self)->callback = tsip_transac_nict_event_callback;
+	TSIP_TRANSAC(self)->callback = TSIP_TRANSAC_EVENT_CALLBACK(tsip_transac_nict_event_callback);
 
 #if defined(_DEBUG) || defined(DEBUG)
 	 setDebugFlag(&(self->_fsm), DEBUG_STATE_MACHINE);

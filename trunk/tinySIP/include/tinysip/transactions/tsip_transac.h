@@ -85,7 +85,7 @@ tsip_transac_event_t;
 	transac_event.msg = msg;*/
 
 typedef int (*tsip_transac_event_callback)(const void *arg, tsip_transac_event_type_t type, const tsip_message_t *msg);
-
+#define TSIP_TRANSAC_EVENT_CALLBACK(callback)	 ((tsip_transac_event_callback)(callback))
 
 typedef enum tsip_transac_type_e
 {

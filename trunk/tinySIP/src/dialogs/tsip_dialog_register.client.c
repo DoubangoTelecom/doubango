@@ -173,7 +173,7 @@ void tsip_dialog_register_init(tsip_dialog_register_t *self)
 	tsip_dialog_registerContext_Init(&self->_fsm, self);
 
 	TSIP_DIALOG(self)->expires = 10;
-	TSIP_DIALOG(self)->callback = tsip_dialog_register_event_callback;
+	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_register_event_callback);
 	
 	TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
 	TSIP_DIALOG(self)->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
