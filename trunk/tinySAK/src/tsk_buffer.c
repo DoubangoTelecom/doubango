@@ -60,7 +60,7 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 	
 	/* compute destination len for windows mobile
 	*/
-#if defined(_WIN32_WCE) || defined(ANDROID)
+#if defined(_WIN32_WCE)
 	{
 		int n;
 		len = (strlen(format)*2);
@@ -81,7 +81,7 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 	}
 #else
     len = vsnprintf(0, 0, format, list);
-    buffer = tsk_realloc(buffer, oldsize+len);
+    buffer = tsk_realloc(buffer, oldsize+len+1);
     vsnprintf((buffer + oldsize), len
 #if !defined(_MSC_VER) || defined(__GNUC__)
 		+1

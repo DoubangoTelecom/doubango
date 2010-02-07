@@ -46,10 +46,10 @@
 #define RUN_TEST_PARAMS				0
 #define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
-#define RUN_TEST_BUFFER				0
+#define RUN_TEST_BUFFER				1
 #define RUN_TEST_MD5				0
 #define RUN_TEST_SHA1				0
-#define RUN_TEST_BASE64				1
+#define RUN_TEST_BASE64				0
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"

@@ -226,7 +226,7 @@ int tsk_sprintf(char** str, const char* format, ...)
 	
 	/* compute destination len for windows mobile
 	*/
-#if defined(_WIN32_WCE) || defined(ANDROID)
+#if defined(_WIN32_WCE)
 	{
 		int n;
 		len = (strlen(format)*2);
