@@ -103,6 +103,7 @@ typedef enum tsip_dialog_event_type_e
 tsip_dialog_event_type_t;
 
 typedef int (*tsip_dialog_event_callback)(const void *arg, tsip_dialog_event_type_t type, const tsip_message_t *msg);
+#define TSIP_DIALOG_EVENT_CALLBACK(callback) ((tsip_dialog_event_callback)(callback))
 
 /*================================
 */

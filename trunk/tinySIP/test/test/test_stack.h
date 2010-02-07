@@ -22,6 +22,13 @@
 #ifndef _TEST_STACK_H
 #define _TEST_STACK_H
 
+
+#if defined(ANDROID) /* FIXME */
+#	define LOCAL_IP	"10.0.2.15"
+#else
+#	define LOCAL_IP	TNET_SOCKET_HOST_ANY
+#endif
+
 int test_stack_callback(const tsip_event_t *sipevent)
 {
 	//tsip_operation_id_t opid = sipevent->opid;
@@ -43,7 +50,8 @@ void test_stack()
 		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@micromethod.com"),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
 		TSIP_STACK_SET_REALM("sip:micromethod.com"),
-		TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
+		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
+		TSIP_STACK_SET_PROXY_CSCF("ekiga.net", "udp", 0),
 		TSIP_STACK_SET_SEC_AGREE_MECH("ipsec-3gpp"),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
 		TSIP_STACK_SET_MOBILITY("fixed"),
@@ -66,8 +74,8 @@ void test_stack()
 
 	//while(1);//tsk_thread_sleep(500);
 	//while(1)
-		//tsk_thread_sleep(50000000000);
-	getchar();
+		tsk_thread_sleep(50000);
+	//getchar();
 
 	tsip_stack_stop(stack);
 
