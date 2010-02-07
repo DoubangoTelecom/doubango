@@ -34,8 +34,8 @@ void test_buffer()
 
 	printf("1. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
 
-	tsk_buffer_appendEx(buffer, "val1=[%s] and val2=[%d]\n", "value1", 12);
-	tsk_buffer_appendEx(buffer, "val3=[%s] and val4=[%s]\n", "458888554778555LL", "1254852");
+	tsk_buffer_appendEx(buffer, "val1=[%s] and val2=[%d]r\n", "value1", 12);
+	tsk_buffer_appendEx(buffer, "val3=[%s] and val4=[%s]r\n", "458888554778555LL", "1254852");
 
 	printf("2. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
 
