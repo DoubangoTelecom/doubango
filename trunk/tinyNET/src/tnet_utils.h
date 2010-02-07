@@ -117,11 +117,11 @@ TINYNET_API int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags
 
 TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
-#define TNET_PRINT_LAST_ERROR() \
+#define TNET_PRINT_LAST_ERROR(msg) \
 	{ \
 		tnet_error_t error; \
 		tnet_getlasterror(&error); \
-		TSK_DEBUG_ERROR("Network error --> %s", error); \
+		TSK_DEBUG_ERROR("[%s]\nNetwork error ==> %s", msg, error); \
 	}
 
 

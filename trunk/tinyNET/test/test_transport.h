@@ -22,7 +22,7 @@
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
 
-#define REMOTE_IP4	"192.168.0.15"
+#define REMOTE_IP4	"ekiga.net"//"192.168.0.15"
 #define REMOTE_IP6	"2a01:e35:8632:7050:6122:2706:2124:32cb"
 #define REMOTE_IP REMOTE_IP4
 
@@ -33,8 +33,8 @@
 #endif
 #define LOCAL_IP6	TNET_SOCKET_HOST_ANY
 
-#if /*defined(ANDROID)*/1
-#	define LOCAL_PORT TNET_SOCKET_PORT_ANY
+#if defined(ANDROID)
+#	define LOCAL_PORT 5060
 #else
 #	define LOCAL_PORT TNET_SOCKET_PORT_ANY
 #endif

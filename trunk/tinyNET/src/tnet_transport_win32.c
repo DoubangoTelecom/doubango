@@ -127,7 +127,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	if(WSAEventSelect(fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR)
 	{
 		transport_socket_remove((context->count - 1), context);
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 		return -1;
 	}
 
@@ -183,7 +183,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		/* Add the socket */
 		if(status = tnet_transport_add_socket(handle, fd))
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
 
 			tnet_sockfd_close(&fd);
 			goto bail;
@@ -203,7 +203,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		}
 		else
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("WSAConnect have failed.");
 
 			tnet_sockfd_close(&fd);
 			goto bail;
@@ -242,7 +242,7 @@ size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from
 		}
 		else
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("WSASend have failed.");
 
 			//tnet_sockfd_close(&from);
 			goto bail;
@@ -288,7 +288,7 @@ size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t fr
 		}
 		else
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("WSASendTo have failed.");
 			return ret;
 		}
 	} else ret = 0;
@@ -387,7 +387,7 @@ void *tnet_transport_mainthread(void *param)
 	{
 		if(listen(transport->master->fd, WSA_MAXIMUM_WAIT_EVENTS))
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("listen have failed.");
 			goto bail;
 		}
 	}
@@ -396,7 +396,7 @@ void *tnet_transport_mainthread(void *param)
 	transport_socket_add(transport->master->fd, context);
 	if(ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)
 	{
-		TNET_PRINT_LAST_ERROR();
+		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 		goto bail;
 	}
 
@@ -410,7 +410,7 @@ void *tnet_transport_mainthread(void *param)
 		/* Wait for multiple events */
 		if((evt = WSAWaitForMultipleEvents(context->count, context->events, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED)
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("WSAWaitForMultipleEvents have failed.");
 			goto bail;
 		}
 
@@ -427,7 +427,7 @@ void *tnet_transport_mainthread(void *param)
 		/* Get the network events flags */
 		if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR)
 		{
-			TNET_PRINT_LAST_ERROR();
+			TNET_PRINT_LAST_ERROR("WSAEnumNetworkEvents have failed.");
 			goto bail;
 		}
 
@@ -440,8 +440,7 @@ void *tnet_transport_mainthread(void *param)
 
 			if(networkEvents.iErrorCode[FD_ACCEPT_BIT])
 			{
-				TSK_DEBUG_ERROR("ACCEPT FAILED.");
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("ACCEPT FAILED.");
 				continue;
 			}
 			
@@ -453,14 +452,13 @@ void *tnet_transport_mainthread(void *param)
 				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
 				{
 					transport_socket_remove((context->count - 1), context);
-					TNET_PRINT_LAST_ERROR();
+					TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 					continue;
 				}
 			}
 			else
 			{
-				TSK_DEBUG_ERROR("ACCEPT FAILED.");
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("ACCEPT FAILED.");
 				continue;
 			}
 
@@ -478,8 +476,7 @@ void *tnet_transport_mainthread(void *param)
 
 			if(networkEvents.iErrorCode[FD_CONNECT_BIT])
 			{
-				TSK_DEBUG_ERROR("CONNECT FAILED.");
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("CONNECT FAILED.");
 				continue;
 			}
 			else
@@ -499,16 +496,14 @@ void *tnet_transport_mainthread(void *param)
 
 			if(networkEvents.iErrorCode[FD_READ_BIT])
 			{
-				TSK_DEBUG_ERROR("READ FAILED.");
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("READ FAILED.");
 				continue;
 			}
 
 			/* Retrieve the amount of pending data */
 			if(tnet_ioctlt(active_socket->fd, FIONREAD, &(wsaBuffer.len)) < 0)
 			{
-				TSK_DEBUG_ERROR("IOCTLT FAILED.");
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
 				continue;
 			}
 			/* Alloc data */
@@ -530,7 +525,7 @@ void *tnet_transport_mainthread(void *param)
 					TSK_FREE(wsaBuffer.buf);
 
 					transport_socket_remove(index, context);
-					TNET_PRINT_LAST_ERROR();
+					TNET_PRINT_LAST_ERROR("WSARecv have failed.");
 					continue;
 				}
 			}
@@ -554,8 +549,7 @@ void *tnet_transport_mainthread(void *param)
 
 			if(networkEvents.iErrorCode[FD_WRITE_BIT])
 			{
-				TSK_DEBUG_ERROR("WRITE FAILED.");
-				TNET_PRINT_LAST_ERROR();
+				TNET_PRINT_LAST_ERROR("WRITE FAILED.");
 				continue;
 			}			
 		}

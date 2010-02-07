@@ -97,6 +97,12 @@
 #	define TNET_HAVE_SS_LEN		0
 #endif
 
+#if 0 /* __APPLE__? */
+#	define HAVE_IFADDRS_H	1
+#else
+#	define HAVE_IFADDRS_H	0
+#endif
+
 /* Used in TURN/STUN2 attributes.
 */
 #define TNET_SOFTWARE	"IM-client/OMA1.0 doubango/v0.0.0"

@@ -223,7 +223,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 				}
 			}
 		}
-		while(timeout < tsk_time_epoch());
+		while(timeout > tsk_time_epoch());
 
 done:
 		TSK_OBJECT_SAFE_FREE(localsocket4);
