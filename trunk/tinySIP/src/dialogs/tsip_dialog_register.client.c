@@ -32,6 +32,8 @@
 
 #include "tinysip/headers/tsip_header_Min_Expires.h"
 
+#include "tinysip/api/tsip_register.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 #include "tsk_time.h"
@@ -42,6 +44,10 @@
 	TSIP_DIALOG_SYNC_BEGIN(self);												\
 	tsip_dialog_registerContext_sm_error(&TSIP_DIALOG_REGISTER(self)->_fsm);	\
 	TSIP_DIALOG_SYNC_END(self);
+#define TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, incoming)	\
+	tsip_register_event_signal(type, TSIP_DIALOG_GET_STACK(self),/*tsip_operation_get_id(TSIP_DIALOG(self)->operation)*/0, code, phrase, incoming)
+#define TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, type, code, phrase) TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, 1)
+#define TSIP_DIALOG_REGISTER_SIGNAL_OUTGOING(self, type, code, phrase) TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, 0)
 
 int send_register(tsip_dialog_register_t *self);
 
@@ -239,8 +245,8 @@ void tsip_dialog_register_Trying_2_Trying_X_1xx(tsip_dialog_register_t *self, co
 void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
 	/* Alert the user. */
-	TSIP_DIALOG_ALERT_USER(self, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg), 1, 
-		self->unregistering ? tsip_event_unregister : tsip_event_register);
+	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, self->unregistering ? tsip_unregister_ok : tsip_register_ok,
+			TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg));
 
 	/* Update the dialog state. */
 	tsip_dialog_update(TSIP_DIALOG(self), msg);
@@ -255,8 +261,7 @@ void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self,
 void tsip_dialog_register_Trying_2_Terminated_X_2xx(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
 	/* Alert the user. */
-	TSIP_DIALOG_ALERT_USER(self, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg), 1, 
-		self->unregistering ? tsip_event_unregister : tsip_event_register);
+	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_unregister_ok, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg));
 }
 
 /*	Trying --> (401/407/421/494) --> Trying
@@ -268,9 +273,9 @@ void tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(tsip_dialog_register
 		TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
 
 		/* Alert the user. */
-		TSIP_DIALOG_ALERT_USER(self, 801, "FIXME", 1, 
-			self->unregistering ? tsip_event_unregister : tsip_event_register);
-
+		TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, self->unregistering ? tsip_unregistering : tsip_registering,
+			TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg));
+		
 		goto bail;
 	}
 	
@@ -305,9 +310,8 @@ void tsip_dialog_register_Trying_2_Trying_X_423(tsip_dialog_register_t *self, co
 	{
 		TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
 
-		/* Alert the user. */
-		TSIP_DIALOG_ALERT_USER(self, 803, "FIXME", 1, 
-			self->unregistering ? tsip_event_unregister : tsip_event_register);
+		TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, self->unregistering ? tsip_unregistering : tsip_registering,
+			TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg));
 	}
 }
 
@@ -316,8 +320,7 @@ void tsip_dialog_register_Trying_2_Trying_X_423(tsip_dialog_register_t *self, co
 void tsip_dialog_register_Trying_2_Terminated_X_300_to_699(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
 	/* Alert the user. */
-	TSIP_DIALOG_ALERT_USER(self, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg), 1, 
-		self->unregistering ? tsip_event_unregister : tsip_event_register);
+	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_nok, TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg));
 }
 
 /* Trying -> (cancel) -> Terminated
@@ -325,8 +328,7 @@ void tsip_dialog_register_Trying_2_Terminated_X_300_to_699(tsip_dialog_register_
 void tsip_dialog_register_Trying_2_Terminated_X_cancel(tsip_dialog_register_t *self)
 {
 	/* Alert the user. */
-	TSIP_DIALOG_ALERT_USER(self, 806, "Request canceled", 1, 
-		self->unregistering ? tsip_event_unregister : tsip_event_register);
+	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_cancelled, 701, "Registration cancelled");
 }
 
 /* Connected -> (Unregister) -> Trying
@@ -354,7 +356,7 @@ void tsip_dialog_register_Any_2_Trying_X_hangup(tsip_dialog_register_t *self)
 */
 void tsip_dialog_register_Any_2_Terminated_X_transportError(tsip_dialog_register_t *self)
 {
-	TSIP_DIALOG_ALERT_USER(self, 800, "Transport Error.", 1, tsip_event_register);
+	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_transporterr, 702, "Transport error.");
 }
 
 
@@ -449,6 +451,9 @@ void tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 	/* Cancel all timers */
 	DIALOG_TIMER_CANCEL(refresh);
 
+	/* Alert user */
+	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_terminated, 700, "Dialog terminated.");
+
 	/* Destroy asynchronously */
 	DIALOG_REMOVE_SCHEDULE();
 }
@@ -474,8 +479,8 @@ static void* tsip_dialog_register_create(void * self, va_list * app)
 	tsip_dialog_register_t *dialog = self;
 	if(dialog)
 	{
-		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t *);
-		const tsip_operation_handle_t *operation = va_arg(*app, const tsip_operation_handle_t *);
+		tsip_stack_handle_t *stack = va_arg(*app, tsip_stack_handle_t *);
+		tsip_operation_handle_t *operation = va_arg(*app, tsip_operation_handle_t *);
 
 		/* Initialize base class */
 		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_register, stack, 0, operation);

@@ -66,7 +66,7 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	const char *tag_start;
 
 	
-/* #line 70 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 70 "../src/headers/tsip_header_Content_Length.c" */
 static const int tsip_machine_parser_header_Content_Length_start = 1;
 static const int tsip_machine_parser_header_Content_Length_first_final = 22;
 static const int tsip_machine_parser_header_Content_Length_error = 0;
@@ -76,14 +76,14 @@ static const int tsip_machine_parser_header_Content_Length_en_main = 1;
 
 /* #line 90 "tsip_parser_header_Content_Length.rl" */
 	
-/* #line 80 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 80 "../src/headers/tsip_header_Content_Length.c" */
 	{
 	cs = tsip_machine_parser_header_Content_Length_start;
 	}
 
 /* #line 91 "tsip_parser_header_Content_Length.rl" */
 	
-/* #line 87 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 87 "../src/headers/tsip_header_Content_Length.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -274,7 +274,7 @@ st20:
 	if ( ++p == pe )
 		goto _test_eof20;
 case 20:
-/* #line 278 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 278 "../src/headers/tsip_header_Content_Length.c" */
 	if ( (*p) == 13 )
 		goto tr20;
 	if ( 48 <= (*p) && (*p) <= 57 )
@@ -290,7 +290,7 @@ st21:
 	if ( ++p == pe )
 		goto _test_eof21;
 case 21:
-/* #line 294 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 294 "../src/headers/tsip_header_Content_Length.c" */
 	if ( (*p) == 10 )
 		goto tr22;
 	goto st0;
@@ -303,7 +303,7 @@ st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-/* #line 307 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 307 "../src/headers/tsip_header_Content_Length.c" */
 	goto st0;
 	}
 	_test_eof2: cs = 2; goto _test_eof; 
@@ -335,7 +335,7 @@ case 22:
 /* #line 92 "tsip_parser_header_Content_Length.rl" */
 	
 	if( cs < 
-/* #line 339 "../source/headers/tsip_header_Content_Length.c" */
+/* #line 339 "../src/headers/tsip_header_Content_Length.c" */
 22
 /* #line 93 "tsip_parser_header_Content_Length.rl" */
  )

@@ -48,7 +48,6 @@
 
 void *run(void* self);
 
-#define TSIP_EVENT_CREATE(stack, opid, status_code, phrase, incoming, type)		tsk_object_new(tsip_event_def_t, stack, opid, status_code, phrase, incoming, type)
 
 int __tsip_stack_set(tsip_stack_t *self, va_list values)
 {
@@ -147,6 +146,16 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 						self->realm = uri;
 					}
 				}
+				break;
+			}
+			case pname_discovery_naptr:
+			{
+				self->use_dns_naptr = va_arg(values, unsigned);
+				break;
+			}
+			case pname_discovery_dhcp:
+			{
+				self->use_dhcp = va_arg(values, unsigned);
 				break;
 			}
 			case pname_proxy_cscf:
@@ -327,6 +336,15 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	stack->layer_transac = TSIP_TRANSAC_LAYER_CREATE(stack);
 	stack->layer_transport = TSIP_TRANSPORT_LAYER_CREATE(stack);
 
+	/*
+	*	DNS context
+	*/
+	stack->dns_ctx = TNET_DNS_CTX_CREATE();
+
+	/*
+	*	DHCP context
+	*/
+
 	return stack;
 }
 
@@ -341,6 +359,25 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		if(ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))
 		{
 			return ret;
+		}
+
+		/* Use DNS NAPTR for the P-CSCF discovery? */
+		if(stack->use_dns_naptr)
+		{
+			char* hostname = 0;
+			tnet_port_t port = 0;
+
+			if(!tnet_dns_query_naptr_srv(stack->dns_ctx, stack->realm->host, "SIP+D2U"/*FIXME*/, &hostname, &port))
+			{
+				tsk_strupdate(&stack->proxy_cscf, hostname);
+				stack->proxy_cscf_port = port;
+			}
+			else
+			{
+				TSK_DEBUG_ERROR("P-CSCF discovery using DNS NAPTR failed. The stack will use the user supplied address and port.");
+			}
+
+			TSK_FREE(hostname);
 		}
 
 		/*
@@ -383,6 +420,19 @@ int tsip_stack_set(tsip_stack_handle_t *self, ...)
 		ret = __tsip_stack_set(stack, params);
 		va_end(params);
 		return ret;
+	}
+
+	return -1;
+}
+
+int tsip_stack_set_callback_register(tsip_stack_handle_t *self, tsip_register_callback callback)
+{
+	if(self)
+	{
+		tsip_stack_t *stack = self;
+		stack->callback_register = callback;
+		
+		return 0;
 	}
 
 	return -1;
@@ -447,6 +497,8 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 
 		// FIXME: free strings, uris, ...
 
+		TSK_OBJECT_SAFE_FREE(stack->dns_ctx);
+
 		return 0;
 	}
 
@@ -499,38 +551,6 @@ struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_h
 
 
 
-int tsip_stack_register(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation)
-{
-	if(self && operation)
-	{
-		const tsip_stack_t *stack = self;
-		tsip_operation_handle_t *op = tsip_operation_clone(operation);
-
-		return tsip_dialog_layer_register(stack->layer_dialog, op);
-
-		//tsk_list_push_back_data(stack->operations, (void**)&op);
-	}
-	return -1;
-}
-
-int tsip_stack_unregister(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation)
-{
-	if(self && operation)
-	{
-		//const tsip_stack_t *stack = self;
-		//tsip_operation_handle_t *op = tsip_operation_clone(operation);
-
-		//tsk_list_push_back_data(stack->operations, (void**)&op);
-	}
-	return -1;
-}
-
-
-
-
-
-
-
 
 
 
@@ -541,78 +561,38 @@ void *run(void* self)
 	tsip_stack_t *stack = self;
 
 	TSK_RUNNABLE_RUN_BEGIN(stack);
+
+	TSK_DEBUG_INFO("STACK::run -- START");
 	
 	if(curr = TSK_RUNNABLE_POP_FIRST(stack))
 	{
 		tsip_event_t *sipevent = (tsip_event_t*)curr->data;
 		
-		if(stack->callback)
+		switch(sipevent->type)
 		{
-			stack->callback(sipevent);
+		case tsip_event_register:
+			{
+				if(stack->callback_register){
+					stack->callback_register(TSIP_REGISTER_EVENT(sipevent));
+				}
+				else if(stack->callback){
+					stack->callback(sipevent);
+				}
+				break;
+			}
+		default:
+			{
+				if(stack->callback){
+					stack->callback(sipevent);
+				}
+			}
 		}
+		
 		tsk_object_unref(curr);
 	}
 	
 	TSK_RUNNABLE_RUN_END(self);
 
+	TSK_DEBUG_INFO("STACK::run -- STOP");
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-//========================================================
-//	SIP event object definition
-//
-static void* tsip_event_create(void * self, va_list * app)
-{
-	tsip_event_t *sipevent = self;
-	if(sipevent)
-	{
-		sipevent->stack = va_arg(*app, const tsip_stack_handle_t *);
-		sipevent->opid = va_arg(*app, tsip_operation_id_t);
-
-#if defined(__GNUC__)
-		sipevent->status_code = (short)va_arg(*app, int);
-#else
-		sipevent->status_code = va_arg(*app, short);
-#endif
-		sipevent->reason_phrase = tsk_strdup(va_arg(*app, const char *));
-
-		sipevent->incoming = va_arg(*app, unsigned);
-		sipevent->type = va_arg(*app, tsip_event_type_t);
-	}
-	return self;
-}
-
-static void* tsip_event_destroy(void * self)
-{ 
-	tsip_event_t *sipevent = self;
-	if(sipevent)
-	{
-		TSK_FREE(sipevent->reason_phrase);
-	}
-	return self;
-}
-
-static int tsip_event_cmp(const void *obj1, const void *obj2)
-{
-	return -1;
-}
-
-static const tsk_object_def_t tsip_event_def_s = 
-{
-	sizeof(tsip_event_t),
-	tsip_event_create, 
-	tsip_event_destroy,
-	tsip_event_cmp, 
-};
-const void *tsip_event_def_t = &tsip_event_def_s;

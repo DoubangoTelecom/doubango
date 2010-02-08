@@ -36,7 +36,7 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_REGISTER_CREATE(stack, operation)		tsk_object_new(tsip_dialog_register_def_t, (const tsip_stack_handle_t *)stack, (const tsip_operation_handle_t*) operation)
+#define TSIP_DIALOG_REGISTER_CREATE(stack, operation)		tsk_object_new(tsip_dialog_register_def_t, (tsip_stack_handle_t *)stack, (tsip_operation_handle_t*) operation)
 
 #define TSIP_DIALOG_REGISTER(self)							((tsip_dialog_register_t*)(self))
 

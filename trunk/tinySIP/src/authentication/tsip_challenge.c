@@ -50,11 +50,11 @@
 #define TSIP_CHALLENGE_PASSWORD(self)	TSIP_CHALLENGE_STACK(self)->password
 
 
-int tsip_challenge_update_cnonce(tsip_challenge_t *self)
+int tsip_challenge_reset_cnonce(tsip_challenge_t *self)
 {
 	if(self)
 	{
-		if(self->qop)
+		if(self->qop) /* client nonce is only used if qop=auth, auth-int or both */
 		{
 #if 0
 			memcpy(self->cnonce, "f221681c1e42fb5f8f9957bf7e72eb2b", 32);
@@ -85,15 +85,15 @@ int tsip_challenge_get_akares(const tsip_challenge_t *self, char const *password
 	size_t n;
 	char *nonce = 0;
 
-	AKA_XXX_DELCLARE(RAND);
-	AKA_XXX_DELCLARE(AK);
-	AKA_XXX_DELCLARE(AMF);
-	AKA_XXX_DELCLARE(CK);
-	AKA_XXX_DELCLARE(IK);
-	AKA_XXX_DELCLARE(K);
-	AKA_XXX_DELCLARE(SQN);
-	AKA_XXX_DELCLARE(MAC_A);
-	AKA_XXX_DELCLARE(AUTN);
+	AKA_XXX_DECLARE(RAND);
+	AKA_XXX_DECLARE(AK);
+	AKA_XXX_DECLARE(AMF);
+	AKA_XXX_DECLARE(CK);
+	AKA_XXX_DECLARE(IK);
+	AKA_XXX_DECLARE(K);
+	AKA_XXX_DECLARE(SQN);
+	AKA_XXX_DECLARE(MAC_A);
+	AKA_XXX_DECLARE(AUTN);
 
 	AKA_XXX_BZERO(RAND);
 	AKA_XXX_BZERO(AK);
@@ -242,7 +242,9 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 			&ha2);
 
 		/* RESPONSE */
-		THTTP_NCOUNT_2_STRING(self->nc, nc);
+		if(self->nc){
+			THTTP_NCOUNT_2_STRING(self->nc, nc);
+		}
 		thttp_auth_digest_response(&ha1, 
 			self->nonce,
 			nc,
@@ -251,7 +253,9 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 			&ha2,
 			response);
 		
-		self->nc++;
+		if(self->qop){
+			self->nc++;
+		}
 
 		return 0;
 	}
@@ -272,9 +276,8 @@ int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char
 		self->qop = tsk_strcontains(qop, "auth-int") ? "auth-int" : 
 				(tsk_strcontains(qop, "auth") ? "auth" : 0);
 
-		if(noncechanged)
-		{
-			tsip_challenge_update_cnonce(self);
+		if(noncechanged && self->qop){
+			tsip_challenge_reset_cnonce(self);
 		}
 		return 0;
 	}
@@ -318,7 +321,9 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 	}
 
 	/* We compute the nc here because @ref tsip_challenge_get_response function will increment it's value. */
-	THTTP_NCOUNT_2_STRING(self->nc, nc);
+	if(self->nc){
+		THTTP_NCOUNT_2_STRING(self->nc, nc);
+	}
 
 	// FIXME: entity_body ==> request-content
 	if(tsip_challenge_get_response(self, request->method, uristring, 0/*FIXME*/, &response))
@@ -335,9 +340,9 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 		hdr->qop = tsk_strdup(self->qop);													\
 		hdr->opaque = tsk_strdup(self->opaque);												\
 		hdr->algorithm = self->algorithm ? tsk_strdup(self->algorithm) : tsk_strdup("MD5");	\
-		hdr->cnonce = tsk_strdup(self->cnonce);												\
+		hdr->cnonce = self->nc? tsk_strdup(self->cnonce) : 0;								\
 		hdr->uri = tsk_strdup(uristring);													\
-		hdr->nc = tsk_strdup(nc);															\
+		hdr->nc = self->nc? tsk_strdup(nc) : 0;												\
 		hdr->response = tsk_strdup(response);												\
 
 	if(self->isproxy)
@@ -426,7 +431,9 @@ static void* tsip_challenge_create(void *self, va_list * app)
 		challenge->qop = tsk_strcontains(qop, "auth-int") ? "auth-int" : 
 				(tsk_strcontains(qop, "auth") ? "auth" : 0);
 		
-		tsip_challenge_update_cnonce(challenge);
+		if(challenge->qop){
+			tsip_challenge_reset_cnonce(challenge);
+		}
 	}
 	else TSK_DEBUG_ERROR("Failed to create new sip challenge object.");
 	
@@ -445,6 +452,7 @@ static void* tsip_challenge_destroy(void *self)
 		TSK_FREE(challenge->nonce);
 		TSK_FREE(challenge->opaque);
 		TSK_FREE(challenge->algorithm);
+		
 		//TSK_FREE(challenge->qop);
 	}
 	else TSK_DEBUG_ERROR("Null SIP challenge object.");

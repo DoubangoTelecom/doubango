@@ -92,6 +92,8 @@ typedef struct tnet_dns_ctx_s
 tnet_dns_ctx_t;
 
 TINYNET_API tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
+TINYNET_API int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname, tnet_port_t* port);
+TINYNET_API int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char* service, char** hostname, tnet_port_t* port);
 
 TINYNET_GEXTERN const void *tnet_dns_ctx_def_t;
 TINYNET_GEXTERN const void *tnet_dns_cache_entry_def_t;

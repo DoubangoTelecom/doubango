@@ -35,38 +35,27 @@
 #include "tinysip/transactions/tsip_transac_layer.h"
 
 
-/**
- * @fn	static tsip_dialog_t* tsip_dialog_layer_find_dialog(tsip_dialog_layer_t *self,
- * 		tsip_dialog_type_t type, const tsip_operation_handle_t *operation)
- *
- * @brief	Internal function used to find a dialog by type and  
- *
- * @author	Mamadou
- * @date	1/3/2010
- *
- * @param [in,out]	self		If non-null, the self. 
- * @param	type				The type. 
- * @param [in,out]	operation	If non-null, the operation. 
- *
- * @return	null if it fails, else. 
-**/
-static tsip_dialog_t* tsip_dialog_layer_find_dialog(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_operation_handle_t *operation)
+tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_operation_handle_t *operation)
 {
-	const tsk_list_item_t *item;
-	
+	tsip_dialog_t *ret = 0;
+	tsip_dialog_t *dialog;
+	tsk_list_item_t *item;
+
 	tsk_safeobj_lock(self);
-	item = tsk_list_find_item_by_data(self->dialogs, operation);
-	tsk_safeobj_unlock(self);
-	
-	if(item && item->data)
+
+	tsk_list_foreach(item, self->dialogs)
 	{
-		tsip_dialog_t *dialog = item->data;
-		if(dialog && dialog->type == type)
+		dialog = item->data;
+		if( tsip_operation_get_id(dialog->operation) == tsip_operation_get_id(operation) )
 		{
-			return dialog;
+			ret = dialog;
+			break;
 		}
 	}
-	return 0;
+
+	tsk_safeobj_unlock(self);
+
+	return ret;
 }
 
 const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag)
@@ -95,44 +84,44 @@ const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, con
 	return ret;
 }
 
-/**
- * @fn	int tsip_dialog_layer_register(tsip_dialog_layer_t *self,
- * 		const tsip_operation_handle_t *operation)
- *
- * @brief	Performs SIP/IMS registration operation. Action initiated by the stack layer.
- *
- * @author	Mamadou
- * @date	1/3/2010
- *
- * @param [in,out]	self		The dialog layer used to perform the operation.
- * @param [in,out]	operation	A pointer to the operation to perform. 
- *
- * @return	Zero if succeed and non-zero error code otherwise. 
-**/
-int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation)
-{
-	int ret = -1;
-	tsip_dialog_register_t *dialog;
-
-	if(self)
-	{
-		//tsk_safeobj_lock(self);
-		dialog = (tsip_dialog_register_t*)tsip_dialog_layer_find_dialog(self, tsip_dialog_register, operation);
-		//tsk_safeobj_unlock(self);
-		
-		if(dialog)
-		{
-			
-		}
-		else
-		{
-			dialog = TSIP_DIALOG_REGISTER_CREATE(self->stack, operation);
-			ret = tsip_dialog_register_start(dialog);
-			tsk_list_push_back_data(self->dialogs, (void**)&dialog);
-		}
-	}
-	return ret;
-}
+///**
+// * @fn	int tsip_dialog_layer_register(tsip_dialog_layer_t *self,
+// * 		const tsip_operation_handle_t *operation)
+// *
+// * @brief	Performs SIP/IMS registration operation. Action initiated by the stack layer.
+// *
+// * @author	Mamadou
+// * @date	1/3/2010
+// *
+// * @param [in,out]	self		The dialog layer used to perform the operation.
+// * @param [in,out]	operation	A pointer to the operation to perform. 
+// *
+// * @return	Zero if succeed and non-zero error code otherwise. 
+//**/
+//int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation)
+//{
+//	int ret = -1;
+//	tsip_dialog_register_t *dialog;
+//
+//	if(self)
+//	{
+//		//tsk_safeobj_lock(self);
+//		dialog = (tsip_dialog_register_t*)tsip_dialog_layer_find_dialog(self, tsip_dialog_register, operation);
+//		//tsk_safeobj_unlock(self);
+//		
+//		if(dialog)
+//		{
+//			
+//		}
+//		else
+//		{
+//			dialog = TSIP_DIALOG_REGISTER_CREATE(self->stack, operation);
+//			ret = tsip_dialog_register_start(dialog);
+//			tsk_list_push_back_data(self->dialogs, (void**)&dialog);
+//		}
+//	}
+//	return ret;
+//}
 
 
 int tsip_dialog_layer_hangupAll(tsip_dialog_layer_t *self)
@@ -182,7 +171,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	else
 	{
 		const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
-		/*const*/ tsip_transac_t* transac;
+		/*const*/ tsip_transac_t* transac = 0;
 
 		if(TSIP_MESSAGE_IS_REQUEST(message))
 		{

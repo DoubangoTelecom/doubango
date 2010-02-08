@@ -153,7 +153,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		/* Add the socket */
 		if((status = tnet_transport_add_socket(handle, fd)))
 		{
-			TNET_PRINT_LAST_ERROR(Failed to add new socket.");
+			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
 
 			tnet_sockfd_close(&fd);
 			goto bail;

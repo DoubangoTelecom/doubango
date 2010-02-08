@@ -352,6 +352,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsip_event.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsip_message.c"
 				>
 			</File>
@@ -887,6 +891,30 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="api"
+				>
+				<File
+					RelativePath=".\src\api\tsip_invite.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api\tsip_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api\tsip_publish.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api\tsip_register.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api\tsip_subscribe.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -899,6 +927,10 @@
 			</File>
 			<File
 				RelativePath=".\include\tsip.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinysip\tsip_event.h"
 				>
 			</File>
 			<File
@@ -1426,6 +1458,30 @@
 				</File>
 				<File
 					RelativePath=".\include\tinysip\authentication\tsip_rijndael.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="api"
+				>
+				<File
+					RelativePath=".\include\tinysip\api\tsip_invite.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\api\tsip_message.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\api\tsip_publish.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\api\tsip_register.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\api\tsip_subscribe.h"
 					>
 				</File>
 			</Filter>

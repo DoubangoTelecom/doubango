@@ -40,7 +40,7 @@
 /**@defgroup tsip_uri_group
 */
 
-int __tsip_uri_tostring(const tsip_uri_t *uri, int with_params, tsk_buffer_t *output)
+int __tsip_uri_serialize(const tsip_uri_t *uri, int with_params, tsk_buffer_t *output)
 {
 	tsk_istr_t port;
 
@@ -76,7 +76,7 @@ int __tsip_uri_tostring(const tsip_uri_t *uri, int with_params, tsk_buffer_t *ou
 	return 0;
 }
 
-int tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote, tsk_buffer_t *output)
+int tsip_uri_serialize(const tsip_uri_t *uri, int with_params, int quote, tsk_buffer_t *output)
 {
 	if(quote)
 	{
@@ -86,14 +86,14 @@ int tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote, tsk_buf
 		}
 
 		tsk_buffer_append(output, "<", 1);
-		__tsip_uri_tostring(uri, with_params, output);
+		__tsip_uri_serialize(uri, with_params, output);
 		tsk_buffer_append(output, ">", 1);
 
 		return 0;
 	}
 	else
 	{
-		__tsip_uri_tostring(uri, with_params, output);
+		__tsip_uri_serialize(uri, with_params, output);
 
 		return 0;
 	}
@@ -101,12 +101,29 @@ int tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote, tsk_buf
 	return -1;
 }
 
+char* tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote)
+{
+	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	char* ret = 0;
+
+	if(!tsip_uri_serialize(uri, with_params, quote, output))
+	{
+		ret = tsk_strndup((const char*)output->data, output->size);
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to serialize URI.");
+	}
+
+	TSK_OBJECT_SAFE_FREE(output);
+	return ret;
+}
 
 tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, int with_params, int quote)
 {
 	tsip_uri_t *newuri;
 	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
-	tsip_uri_tostring(uri, with_params, quote, output);
+	tsip_uri_serialize(uri, with_params, quote, output);
 	newuri = tsip_uri_parse(output->data, output->size);
 	TSK_OBJECT_SAFE_FREE(output);
 

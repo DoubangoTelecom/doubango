@@ -26,8 +26,9 @@ void test_dns_query()
 {
 	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
 	tnet_dns_response_t *response = 0;
-
-	if((response = tnet_dns_resolve(ctx, "_stun._udp.ims.inexbee.com", qclass_in, qtype_srv)))
+	
+	//if((response = tnet_dns_resolve(ctx, "_sip._udp.sip2sip.info", qclass_in, qtype_srv)))
+	if((response = tnet_dns_resolve(ctx, "sip2sip.info", qclass_in, qtype_mx)))
 	{
 		if(TNET_DNS_RESPONSE_IS_SUCCESS(response))
 		{
@@ -45,9 +46,45 @@ void test_dns_query()
 	tsk_thread_sleep(2000);
 }
 
+void test_dns_srv()
+{
+	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+	char* hostname = 0;
+	tnet_port_t port = 0;
+
+	if(!tnet_dns_query_srv(ctx, "_sip._udp.sip2sip.info", &hostname, &port))
+	{
+		TSK_DEBUG_INFO("DNS SRV succeed ==> hostname=%s and port=%u", hostname, port);
+	}
+
+	TSK_FREE(hostname);
+	TSK_OBJECT_SAFE_FREE(ctx);
+
+	tsk_thread_sleep(2000);
+}
+
+void test_dns_naptr_srv()
+{
+	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+	char* hostname = 0;
+	tnet_port_t port = 0;
+
+	if(!tnet_dns_query_naptr_srv(ctx, "sip2sip.info", "SIP+D2U", &hostname, &port))
+	{
+		TSK_DEBUG_INFO("DNS NAPTR+SRV succeed ==> hostname=%s and port=%u", hostname, port);
+	}
+
+	TSK_FREE(hostname);
+	TSK_OBJECT_SAFE_FREE(ctx);
+
+	tsk_thread_sleep(2000);
+}
+
 void test_dns()
 {
-	test_dns_query();
+	test_dns_naptr_srv();
+	//test_dns_srv();
+	//test_dns_query();
 }
 
 

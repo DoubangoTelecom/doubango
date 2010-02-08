@@ -62,7 +62,7 @@ int tsip_header_Contact_tostring(const void* header, tsk_buffer_t* output)
 			}
 
 			/* Uri */
-			if(ret=tsip_uri_tostring(Contact->uri, 1, 1, output))
+			if(ret=tsip_uri_serialize(Contact->uri, 1, 1, output))
 			{
 				return ret;
 			}

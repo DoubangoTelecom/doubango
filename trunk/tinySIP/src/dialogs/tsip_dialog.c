@@ -39,6 +39,8 @@
 #include "tinysip/headers/tsip_header_WWW_Authenticate.h"
 #include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
 
+#include "tsk_debug.h"
+
 int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response);
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
@@ -589,14 +591,20 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 
 }
 
-int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const tsip_stack_handle_t * stack, const char* call_id, const tsip_operation_handle_t* operation)
+int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_handle_t * stack, const char* call_id, tsip_operation_handle_t* operation)
 {
 	if(self)
 	{
+		if(self->initialized)
+		{
+			TSK_DEBUG_WARN("Dialog already initialized.");
+			return -2;
+		}
+
 		tsk_safeobj_init(self);
 
 		self->type = type;
-		self->stack = stack;
+		self->stack = tsk_object_ref(stack);
 		if(!self->routes)self->routes = TSK_LIST_CREATE();
 		if(!self->challenges)self->challenges = TSK_LIST_CREATE();
 		self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
@@ -612,7 +620,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const tsip_st
 			tsk_strupdate(&self->callid, cid);
 		}
 
-		self->operation = operation;
+		self->operation = tsk_object_ref(operation);
 
 		/* Local tag */
 		{
@@ -624,6 +632,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const tsip_st
 		/* CSeq */
 		self->cseq_value = rand();
 
+		self->initialized = 1;
 		return 0;
 	}
 	return -1;
@@ -661,8 +670,17 @@ int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2)
 
 int tsip_dialog_deinit(tsip_dialog_t *self)
 {
-	if(self && self->stack)
+	if(self)
 	{
+		if(!self->initialized)
+		{
+			TSK_DEBUG_WARN("Dialog not initialized.");
+			return -2;
+		}
+
+		tsk_object_unref(self->stack);
+		tsk_object_unref(self->operation);
+
 		TSK_OBJECT_SAFE_FREE(self->uri_local);
 		TSK_FREE(self->tag_local);
 		TSK_OBJECT_SAFE_FREE(self->uri_remote);
@@ -676,6 +694,7 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 		TSK_OBJECT_SAFE_FREE(self->routes);
 		TSK_OBJECT_SAFE_FREE(self->challenges);
 		
+		self->initialized = 0;
 		tsk_safeobj_deinit(self);
 
 		return 0;
