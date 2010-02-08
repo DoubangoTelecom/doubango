@@ -315,6 +315,8 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	stack->proxy_cscf_port = 5060;
 	stack->proxy_cscf_type = tnet_socket_type_udp_ipv4;
 
+	stack->enable_earlyIMS = 1;
+
 	va_start(params, callback);
 	if(__tsip_stack_set(stack, params))
 	{

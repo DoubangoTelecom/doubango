@@ -173,22 +173,22 @@
 			Name="source"
 			>
 			<File
-				RelativePath="..\..\tinyHTTP\source\thttp.c"
+				RelativePath="..\..\tinyHTTP\src\thttp.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyHTTP\source\thttp_message.c"
+				RelativePath="..\..\tinyHTTP\src\thttp_message.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyHTTP\source\thttp_utl.c"
+				RelativePath="..\..\tinyHTTP\src\thttp_utl.c"
 				>
 			</File>
 			<Filter
 				Name="auth"
 				>
 				<File
-					RelativePath="..\..\tinyHTTP\source\auth\thttp_auth.c"
+					RelativePath="..\..\tinyHTTP\src\auth\thttp_auth.c"
 					>
 				</File>
 			</Filter>

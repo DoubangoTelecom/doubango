@@ -29,10 +29,13 @@
  */
 #include "tnet_dhcp.h"
 
+#include "tsk_string.h"
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"
+
+//#include <string.h>
 
 // Useful link: http://support.microsoft.com/?scid=kb%3Ben-us%3B169289&x=21&y=14
 // Another one: http://www.iana.org/assignments/bootp-dhcp-parameters/
@@ -108,6 +111,12 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 
 	do
 	{
+		/* RFC 2131 - 3.6 Use of DHCP in clients with multiple interfaces
+			A client with multiple network interfaces must use DHCP through each
+			interface independently to obtain configuration information
+			parameters for those separate interfaces.
+		*/
+
 		tsk_list_foreach(item, ctx->interfaces)
 		{
 			iface = item->data;
@@ -116,13 +125,27 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 			FD_ZERO(&set);
 			FD_SET(clientFD, &set);
 		
+			/* ciaddr */
+			if(request->type == dhcp_type_inform){
+				struct sockaddr_storage ss;
+				if(!tnet_get_sockaddr(clientFD, &ss)){
+					if(ctx->use_ipv6){
+						// FIXME
+					}
+					else{
+						uint32_t addr = htonl((*((uint32_t*)&((struct sockaddr_in*)&ss)->sin_addr)));
+						memcpy(&request->ciaddr, &addr, 4);
+					}
+				}
+			}
+
 			/* chaddr */
 			memset(request->chaddr, 0, sizeof(request->chaddr));
 			request->hlen = iface->mac_address_length > sizeof(request->chaddr) ? sizeof(request->chaddr) : iface->mac_address_length;
 			memcpy(request->chaddr, iface->mac_address, request->hlen);
 
 			/* Serialize and send to the server. */
-			if(!(output = tnet_dhcp_message_serialize(request)))
+			if(!(output = tnet_dhcp_message_serialize(ctx, request)))
 			{
 				TSK_DEBUG_ERROR("Failed to serialize the DHCP message.");
 				goto next_iface;
@@ -167,7 +190,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				}
 
 				/* Parse the incoming response. */
-				reply = tnet_dhcp_message_deserialize(data, len);
+				reply = tnet_dhcp_message_deserialize(ctx, data, len);
 				TSK_FREE(data);
 				
 				if(reply)
@@ -196,7 +219,7 @@ bail:
 	return reply;
 }
 
-tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_params_t* params)
+tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_message_type_t type, tnet_dhcp_params_t* params)
 {
 	tnet_dhcp_reply_t* reply = 0;
 	tnet_dhcp_request_t* request = TNET_DHCP_REQUEST_CREATE();
@@ -206,8 +229,9 @@ tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_params_t* par
 		goto bail;
 	}
 
-	//request->op = params->tag;
-	request->type = dhcp_type_discover; // FIXME
+	request->type = type;
+	tnet_dhcp_message_add_codes(request, params->codes, params->codes_count);
+
 	reply = tnet_dhcp_send_request(ctx, request);
 
 bail:
@@ -217,7 +241,22 @@ bail:
 }
 
 
-
+int tnet_dhcp_params_add_code(tnet_dhcp_params_t* params, tnet_dhcp_option_code_t code)
+{
+	if(params){
+		if(params->codes_count < TNET_DHCP_MAX_CODES){
+			unsigned i;
+			for(i=0; i<params->codes_count; i++){
+				if(params->codes[i] == code){
+					return -3;
+				}
+			}
+			params->codes[params->codes_count++] = code;
+		}
+		else return -2;
+	}
+	return -1;
+}
 
 
 
@@ -229,6 +268,12 @@ static void* tnet_dhcp_ctx_create(void * self, va_list * app)
 	tnet_dhcp_ctx_t *ctx = self;
 	if(ctx)
 	{
+		tnet_host_t host;
+
+		ctx->vendor_id = tsk_strdup(TNET_DHCP_VENDOR_ID_DEFAULT);
+		if(!tnet_gethostname(&host)){
+			ctx->hostname = tsk_strndup(host, strlen(host));
+		}
 		ctx->timeout = TNET_DHCP_TIMEOUT_DEFAULT;
 		ctx->port_client = TNET_DHCP_CLIENT_PORT;
 		ctx->server_port = TNET_DHCP_SERVER_PORT;
@@ -250,6 +295,9 @@ static void* tnet_dhcp_ctx_destroy(void * self)
 	if(ctx)
 	{
 		tsk_safeobj_deinit(ctx);
+		
+		TSK_FREE(ctx->vendor_id);
+		TSK_FREE(ctx->hostname);
 
 		TSK_OBJECT_SAFE_FREE(ctx->interfaces);
 	}
@@ -273,7 +321,6 @@ static void* tnet_dhcp_params_create(void * self, va_list * app)
 	tnet_dhcp_params_t *params = self;
 	if(params)
 	{
-		params->tag = va_arg(*app, tnet_dhcp_option_tag_t);
 	}
 	return self;
 }

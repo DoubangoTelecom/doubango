@@ -41,7 +41,7 @@
 
 #include "tsk_debug.h"
 
-int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response);
+int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, int acceptNewVector);
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
 {
@@ -413,7 +413,13 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 		*/
 		if(code == 401 || code == 407 || code == 421 || code == 494)
 		{
-			return tsip_dialog_update_challenges(self, response);
+			int acceptNewVector;
+
+			/* 3GPP IMS - Each authentication vector is used only once.
+			*	==> Re-registration/De-registration ==> Allow 401/407 challenge.
+			*/
+			acceptNewVector = (isRegister && self->state == tsip_established);
+			return tsip_dialog_update_challenges(self, response, acceptNewVector);
 		}
 		else if(100 <= code || code >= 300)
 		{
@@ -464,7 +470,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 	return -1;
 }
 
-int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response)
+int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, int acceptNewVector)
 {
 	int ret = -1;
 	size_t i;
@@ -501,7 +507,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 			challenge = item->data;
 			if(challenge->isproxy) continue;
 			
-			if(tsk_strequals(challenge->realm, WWW_Authenticate->realm) && WWW_Authenticate->stale)
+			if(tsk_strequals(challenge->realm, WWW_Authenticate->realm) && (WWW_Authenticate->stale || acceptNewVector))
 			{
 				/*== (B) ==*/
 				if((ret = tsip_challenge_update(challenge, 
@@ -549,7 +555,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 			challenge = item->data;
 			if(!challenge->isproxy) continue;
 			
-			if(tsk_strequals(challenge->realm, Proxy_Authenticate->realm) && Proxy_Authenticate->stale)
+			if(tsk_strequals(challenge->realm, Proxy_Authenticate->realm) && (Proxy_Authenticate->stale || acceptNewVector))
 			{
 				/*== (B) ==*/
 				if((ret = tsip_challenge_update(challenge, 

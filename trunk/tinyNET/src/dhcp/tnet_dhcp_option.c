@@ -29,14 +29,14 @@
 #include "tnet_dhcp_option.h"
 
 
-int tnet_dhcp_option_init(tnet_dhcp_option_t *option, tnet_dhcp_option_tag_t tag)
+int tnet_dhcp_option_init(tnet_dhcp_option_t *option, tnet_dhcp_option_code_t code)
 {
 	if(option)
 	{
 		if(!option->initialized)
 		{
-			option->tag = tag;
-			option->data = TSK_BUFFER_CREATE_NULL();
+			option->code = code;
+			option->value = TSK_BUFFER_CREATE_NULL();
 			
 			option->initialized = 1;
 			return 0;
@@ -52,7 +52,7 @@ int tnet_dhcp_option_deinit(tnet_dhcp_option_t *option)
 	{
 		if(option->initialized)
 		{
-			TSK_OBJECT_SAFE_FREE(option->data);
+			TSK_OBJECT_SAFE_FREE(option->value);
 			
 			option->initialized = 0;
 			return 0;
@@ -80,11 +80,37 @@ bail:
 
 int tnet_dhcp_option_serialize(const tnet_dhcp_option_t* option, tsk_buffer_t *output)
 {
+	if(!option || !output)
+	{
+		return -1;
+	}
+	
+	/* Code */
+	tsk_buffer_append(output, &(option->code), 1);
+	
+	/* Length */
+	tsk_buffer_append(output, &(option->value->size), 1);
+	
+	/* Value */
+	tsk_buffer_append(output, option->value->data, option->value->size);
+	
 	return 0;
 }
 
+int tnet_dhcp_option_serializeex(tnet_dhcp_option_code_t code, uint8_t length, const void* value, tsk_buffer_t *output)
+{
+	if(value && length && output)
+	{
+		tsk_buffer_append(output, &(code), 1);
+		tsk_buffer_append(output, &(length), 1);
+		tsk_buffer_append(output, value, length);
+		
+		return 0;
+	}
+	return -1;
+}
 
-//========================================================
+//
 //	[[DHCP OPTION]] object definition
 //
 static void* tnet_dhcp_option_create(void * self, va_list * app)
@@ -92,7 +118,7 @@ static void* tnet_dhcp_option_create(void * self, va_list * app)
 	tnet_dhcp_option_t *option = self;
 	if(option)
 	{
-		tnet_dhcp_option_init(option, dhcp_tag_null);
+		tnet_dhcp_option_init(option, dhcp_code_null);
 	}
 	return self;
 }
@@ -115,3 +141,50 @@ static const tsk_object_def_t tnet_dhcp_option_def_s =
 	0,
 };
 const void *tnet_dhcp_option_def_t = &tnet_dhcp_option_def_s;
+
+
+
+/*=============================================
+*	RFC 2132 - 9.8. Parameter Request List
+*==============================================*/
+int tnet_dhcp_option_paramslist_add_code(tnet_dhcp_option_paramslist_t* self, tnet_dhcp_option_code_t code)
+{
+	if(self){
+		return tsk_buffer_append(TNET_DHCP_OPTION(self)->value, &code, 1);
+	}
+	return -1;
+}
+
+//
+//	[[DHCP OPTION - RFC 2132 9.8. Parameter Request List]] object definition
+//
+static void* tnet_dhcp_option_paramslist_create(void * self, va_list * app)
+{
+	tnet_dhcp_option_paramslist_t *option = self;
+	if(option)
+	{
+		/* init base */
+		tnet_dhcp_option_init(TNET_DHCP_OPTION(option), dhcp_code_Parameter_List);
+	}
+	return self;
+}
+
+static void* tnet_dhcp_option_paramslist_destroy(void * self) 
+{ 
+	tnet_dhcp_option_paramslist_t *option = self;
+	if(option)
+	{
+		/* deinit base */
+		tnet_dhcp_option_deinit(TNET_DHCP_OPTION(option));
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dhcp_option_paramslist_def_s =
+{
+	sizeof(tnet_dhcp_option_paramslist_t),
+	tnet_dhcp_option_paramslist_create,
+	tnet_dhcp_option_paramslist_destroy,
+	0,
+};
+const void *tnet_dhcp_option_paramslist_def_t = &tnet_dhcp_option_paramslist_def_s;
