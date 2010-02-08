@@ -57,7 +57,7 @@
 /**@page tsk_string_page String utils Tutorial
 */
 
-static char HEX[] = "0123456789ABCDEF";
+static char HEX[] = "0123456789abcdef";
 
 /**@ingroup tsk_string_group
 * From base 10 to base 16

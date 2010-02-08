@@ -431,6 +431,10 @@
 				RelativePath=".\test_url.h"
 				>
 			</File>
+			<File
+				RelativePath=".\test_uuid.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"
