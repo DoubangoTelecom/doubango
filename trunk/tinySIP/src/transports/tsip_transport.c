@@ -151,6 +151,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 		if(buffer)
 		{
 			tsip_message_tostring(msg, buffer);
+			printf(buffer->data);
 
 			if(buffer->size >1300)
 			{

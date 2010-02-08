@@ -42,7 +42,12 @@ TNET_BEGIN_DECLS
 #define TNET_DHCP_REQUEST_CREATE()			TNET_DHCP_MESSAGE_CREATE(dhcp_op_bootrequest)
 #define TNET_DHCP_REPLY_CREATE()			TNET_DHCP_MESSAGE_CREATE(dhcp_op_bootreply)
 
+#define TNET_DHCP_MESSAGE_IS_REQUEST(self)	((self) && ((self)->op==dhcp_op_bootrequest))
+#define TNET_DHCP_MESSAGE_IS_REPLY(self)	((self) && ((self)->op==dhcp_op_bootreply))
+
 #define TNET_DHCP_MAGIC_COOKIE		0x63825363 /**< DHCP magic cookie (99, 130, 83 and 99 in decimal).*/
+
+#define TNET_DHCP_MESSAGE_MIN_SIZE	223 /* Is it rigth? */
 
 /**	List of all supported DHCP message (see RFC 2131).
 */
@@ -134,10 +139,9 @@ typedef struct tnet_dhcp_message_s
 {
 	TSK_DECLARE_OBJECT;
 
-	/** DHCP message type. Mandatory.
+	/**< DHCP message type. Mandatory.
 	*/
 	tnet_dhcp_message_type_t type;
-
 	/*
 	0                   1                   2                   3
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -233,8 +237,10 @@ typedef tnet_dhcp_message_t tnet_dhcp_reply_t; /**< BOOTREPLY message. */
 
 TINYNET_GEXTERN const void *tnet_dhcp_message_def_t;
 
-tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_message_t *message);
-tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const uint8_t *data, size_t size);
+tsk_buffer_t* tnet_dhcp_message_serialize(const struct tnet_dhcp_ctx_s *ctx, const tnet_dhcp_message_t *self);
+tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, size_t size);
+const tnet_dhcp_option_t* tnet_dhcp_message_find_option(const tnet_dhcp_message_t *self, tnet_dhcp_option_code_t code);
+int tnet_dhcp_message_add_codes(tnet_dhcp_message_t *self, tnet_dhcp_option_code_t codes[], unsigned codes_count);
 
 TNET_END_DECLS
 

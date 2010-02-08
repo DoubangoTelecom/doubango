@@ -38,6 +38,7 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 #include "tsk_base64.h"
+#include "tsk_hmac.h"
 
 #include <string.h>
 
@@ -181,13 +182,27 @@ int tsip_challenge_get_akares(const tsip_challenge_t *self, char const *password
 	*/
 	if(TSIP_CHALLENGE_IS_AKAv2(self))
 	{
-		uint8_t res_ik_ck[AKA_RES_SIZE + AKA_IK_SIZE + AKA_CK_SIZE + 26];
+		uint8_t res_ik_ck[AKA_RES_SIZE + AKA_IK_SIZE + AKA_CK_SIZE];
+		tsk_md5digest_t md5_digest;
+
 		memcpy(res_ik_ck, akares, AKA_RES_SIZE);
 		memcpy((res_ik_ck + AKA_RES_SIZE), IK, AKA_IK_SIZE);
 		memcpy((res_ik_ck + AKA_RES_SIZE + AKA_IK_SIZE), CK, AKA_CK_SIZE);
-		memcpy((res_ik_ck + AKA_RES_SIZE + AKA_IK_SIZE + AKA_CK_SIZE), "http-digest-akav2-password", 26);
-		
-		ret = ((tsk_base64_encode(res_ik_ck, sizeof(res_ik_ck), result)>0) ? 0 : -2);
+
+		if((ret = hmac_md5digest_compute("http-digest-akav2-password", 26, res_ik_ck, sizeof(res_ik_ck), md5_digest))){/* PRF(RES||IK||CK, ...) */
+			TSK_DEBUG_ERROR("HMAC_MD5DIGEST_COMPUTE failed. AKAv2 response will be invalid.");
+
+			ret = -3;
+			goto bail;
+		}
+		else{/* b64(PRF(...)) */
+			if(!tsk_base64_encode(md5_digest, sizeof(md5_digest), result)){
+				TSK_DEBUG_ERROR("TSK_BASE64_ENCODE failed. AKAv2 response will be invalid.");
+
+				ret = -4;
+				goto bail;
+			}
+		}
 	}
 	else
 	{

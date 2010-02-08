@@ -139,7 +139,7 @@ typedef struct tsip_dialog_s
 	tsip_uris_L_t *routes;
 	
 	tsip_challenges_L_t *challenges;
-	
+
 	tsip_dialog_event_callback callback;
 
 	TSK_DECLARE_SAFEOBJ;

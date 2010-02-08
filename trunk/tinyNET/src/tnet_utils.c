@@ -515,6 +515,7 @@ int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, soc
 
 int tnet_gethostname(tnet_host_t* result)
 {
+
 	return gethostname(*result, sizeof(*result));
 }
 

@@ -24,30 +24,34 @@
 
 void test_dhcp_discover(tnet_dhcp_ctx_t *ctx)
 {
-	tnet_dhcp_params_t *params = TNET_DHCP_PARAMS_CREATE(dhcp_tag_null);
+}
+
+void test_dhcp_offer(tnet_dhcp_ctx_t *ctx)
+{
+}
+
+void test_dhcp_request(tnet_dhcp_ctx_t *ctx)
+{
+}
+
+void test_dhcp_inform(tnet_dhcp_ctx_t *ctx)
+{
+	tnet_dhcp_params_t *params = 0;
+	tnet_dhcp_reply_t *reply = 0;
+
+	params = TNET_DHCP_PARAMS_CREATE();
+	tnet_dhcp_params_add_code(params, dhcp_code_SIP_Servers_DHCP_Option);
 	
-	tnet_dhcp_reply_t *reply = tnet_dhcp_query(ctx, params);
+	reply = tnet_dhcp_query_inform(ctx, params);
 	
 	TSK_OBJECT_SAFE_FREE(reply);
 	TSK_OBJECT_SAFE_FREE(params);
 }
 
-void test_dhcp_offer()
-{
-}
-
-void test_dhcp_request()
-{
-}
-
-void test_dhcp_inform()
-{
-}
-
 void test_dhcp()
 {
 	tnet_dhcp_ctx_t *ctx = TNET_DHCP_CTX_CREATE();
-	test_dhcp_discover(ctx);
+	test_dhcp_inform(ctx);
 
 	TSK_OBJECT_SAFE_FREE(ctx);
 }
