@@ -459,6 +459,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_uuid.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_xml.h"
 				>
 			</File>
@@ -566,6 +570,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_url.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_uuid.c"
 				>
 			</File>
 			<File

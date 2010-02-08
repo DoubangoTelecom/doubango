@@ -20,51 +20,29 @@
 *
 */
 
-/**@file tsk.h
- * @brief This file contains all headers needed to export public API functions.
+/**@file tsk_uuid.h
+ * @brief Universally Unique Identifier (UUID version 5) implementation (RFC 4122).
+ *		  This implementation is not fully conform to RFC 4122 but could be safely used to generate random UUIDs.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-
-#ifndef _TINYSAK_SAK_H_
-#define _TINYSAK_SAK_H_
+#ifndef _TINYSAK_UUID_H_
+#define _TINYSAK_UUID_H_
 
 #include "tinySAK_config.h"
 
 TSK_BEGIN_DECLS
 
-#include "tsk_list.h"
-#include "tsk_string.h"
-#include "tsk_heap.h"
-#include "tsk_buffer.h"
-#include "tsk_memory.h"
-#include "tsk_url.h"
-#include "tsk_params.h"
+#define TSK_UUID_DIGEST_SIZE			16
+#define TSK_UUID_STRING_SIZE			((TSK_UUID_DIGEST_SIZE*2)+4/*-*/)
 
+typedef char tsk_uuidstring_t[TSK_UUID_STRING_SIZE+1]; /**< Hexadecimal UUID digest string. */
+typedef char tsk_uuiddigest_t[TSK_UUID_DIGEST_SIZE]; /**< UUID digest bytes. */
 
-#include "tsk_time.h"
-#include "tsk_timer.h"
-#include "tsk_condwait.h"
-#include "tsk_mutex.h"
-#include "tsk_semaphore.h"
-#include "tsk_thread.h"
-#include "tsk_runnable.h"
-#include "tsk_safeobj.h"
-#include "tsk_object.h"
-
-#include "tsk_macros.h"
-#include "tsk_debug.h"
-
-#include "tsk_ppfcs16.h"
-#include "tsk_sha1.h"
-#include "tsk_md5.h"
-#include "tsk_hmac.h"
-#include "tsk_base64.h"
-#include "tsk_uuid.h"
+TINYSAK_API int tsk_uuidgenerate(tsk_uuidstring_t *result);
 
 TSK_END_DECLS
 
-#endif /* _TINYSAK_SAK_H_ */
-
+#endif /* _TINYSAK_UUID_H_ */

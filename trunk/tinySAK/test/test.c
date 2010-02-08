@@ -46,10 +46,11 @@
 #define RUN_TEST_PARAMS				0
 #define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
-#define RUN_TEST_BUFFER				1
+#define RUN_TEST_BUFFER				0
 #define RUN_TEST_MD5				0
 #define RUN_TEST_SHA1				0
 #define RUN_TEST_BASE64				0
+#define RUN_TEST_UUID				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -115,6 +116,9 @@
 #include "test_base64.h"
 #endif
 
+#if RUN_TEST_UUID || RUN_TEST_ALL
+#include "test_uuid.h"
+#endif
 
 
 
@@ -229,6 +233,12 @@ int main()
 		/* test base64 encoding/decoding */
 		test_base64();
 #endif
+
+#if RUN_TEST_UUID || RUN_TEST_ALL
+		/* test fake UUID (version5) */
+		test_uuid();
+#endif
+
 	}
 
 	getchar();
