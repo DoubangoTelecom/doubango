@@ -34,8 +34,12 @@
 
 #include "tinysip/tsip_operation.h"
 #include "tinysip/tsip_timers.h"
+#include "tinysip/tsip_event.h"
+
+#include "tinysip/api/tsip_register.h"
 
 #include "tnet_socket.h"
+#include "dns/tnet_dns.h"
 
 #include "tsk_runnable.h"
 
@@ -74,6 +78,8 @@ typedef enum tsip_stack_param_type_e
 	pname_amf,
 	pname_netinfo,
 	pname_realm,
+	pname_discovery_naptr,
+	pname_discovery_dhcp,
 	pname_proxy_cscf,
 	pname_proxy_cscf_port,
 	pname_device_id,
@@ -86,6 +92,8 @@ typedef enum tsip_stack_param_type_e
 #define TSIP_STACK_SET_AMF(AMF)													pname_amf, (amf_t)AMF
 #define TSIP_STACK_SET_NETINFO(STR)												pname_netinfo, (const char*)STR
 #define TSIP_STACK_SET_REALM(FQDN_STR)											pname_realm, (const char*)FQDN_STR
+#define TSIP_STACK_SET_DISCOVERY_NAPTR(USE_NAPTR_UINT)							pname_discovery_naptr, (unsigned)USE_NAPTR_UINT
+#define TSIP_STACK_SET_DISCOVERY_DHCP(USE_DHCP_UINT)							pname_discovery_dhcp, (unsigned)USE_DHCP_UINT
 #define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, TRANSPORT_STR, USE_IPV6_INT)		pname_proxy_cscf, (const char*)FQDN_STR, (const char*)TRANSPORT_STR, (int)USE_IPV6_INT
 #define TSIP_STACK_SET_PROXY_CSCF_PORT(UINT16)									pname_proxy_cscf_port, (uint16_t)UINT16
 #define TSIP_STACK_SET_DEVICE_ID(UUID_STR)										pname_device_id, (const char*)UUID_STR
@@ -111,55 +119,12 @@ typedef enum tsip_stack_param_type_e
 tsip_stack_param_type_t;
 
 
-typedef enum tsip_event_type_e
-{
-	tsip_event_ack,
-	tsip_event_bye,
-	tsip_event_cancel,
-	tsip_event_invite,
-	tsip_event_message,
-	tsip_event_notify,
-	tsip_event_options,
-	tsip_event_prack,
-	tsip_event_publish,
-	tsip_event_refer,
-	tsip_event_register,
-	tsip_event_subscribe,
-	tsip_event_update,
-
-	tsip_event_unpublish,
-	tsip_event_unregister,
-	tsip_event_unsubscribe,
-
-}
-tsip_event_type_t;
-
-typedef struct tsip_event_s
-{
-	TSK_DECLARE_OBJECT;
-
-	const tsip_stack_handle_t * stack;
-	tsip_operation_id_t opid;
-
-	short status_code;
-	char *reason_phrase;
-
-	unsigned incoming:1;
-	tsip_event_type_t type;
-}
-tsip_event_t;
-TINYSIP_GEXTERN const void *tsip_event_def_t;
-
-
-typedef int (*tsip_stack_callback)(const tsip_event_t *sipevent);
-
-
-
 typedef struct tsip_stack_s
 {
 	TSK_DECLARE_RUNNABLE;
 
 	tsip_stack_callback callback;
+	tsip_register_callback callback_register;
 
 	/* Identity */
 	char* display_name;
@@ -177,11 +142,18 @@ typedef struct tsip_stack_s
 	char *netinfo;
 	struct tsip_uri_s *realm;
 	char *proxy_cscf;
+	unsigned use_dns_naptr:1;
+	unsigned use_dhcp:1;
 	int proxy_cscf_port;
 	tnet_socket_type_t proxy_cscf_type;
 	char* device_id;
 	char* mobility;
 	char* sec_agree_mech;
+
+	/* DNS */
+	tnet_dns_ctx_t *dns_ctx;
+
+	/* DHCP */
 
 	/* features */
 	unsigned enable_100rel:1;
@@ -221,6 +193,7 @@ TINYSIP_API int tsip_global_deinit();
 TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback callback, ...);
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
+TINYSIP_API int tsip_stack_set_callback_register(tsip_stack_handle_t *self, tsip_register_callback callback);
 int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
@@ -230,8 +203,8 @@ struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_handle_
 struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);
 struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self);
 
-TINYSIP_API int tsip_stack_register(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation);
-int tsip_stack_unregister(tsip_stack_handle_t *self, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_register(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+int tsip_unregister(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);

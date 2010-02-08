@@ -252,8 +252,8 @@ static void* tsip_dialog_message_create(void * self, va_list * app)
 	tsip_dialog_message_t *dialog = self;
 	if(dialog)
 	{
-		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t *);
-		const tsip_operation_handle_t *operation = va_arg(*app, const tsip_operation_handle_t *);
+		tsip_stack_handle_t *stack = va_arg(*app, tsip_stack_handle_t *);
+		tsip_operation_handle_t *operation = va_arg(*app, tsip_operation_handle_t *);
 
 		/* Initialize base class */
 		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_message, stack, 0, operation);

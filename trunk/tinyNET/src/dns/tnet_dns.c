@@ -30,6 +30,8 @@
 
 #include "tnet_dns_message.h"
 #include "tnet_dns_opt.h"
+#include "tnet_dns_srv.h"
+#include "tnet_dns_naptr.h"
 
 #include "tnet_types.h"
 
@@ -243,6 +245,118 @@ bail:
 	}
 
 	return response;
+}
+
+int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname, tnet_port_t* port)
+{
+	tnet_dns_response_t *response;
+
+	if(!ctx){
+		return -1;
+	}
+
+	if((response = tnet_dns_resolve(ctx, service, qclass_in, qtype_srv)))
+	{
+		tsk_list_item_t *item;
+		tnet_dns_rr_t* rr;
+		tnet_dns_srv_t *srv;
+		uint16_t lowest_priority = 65535;
+		uint16_t weight = 65535;
+		tsk_list_foreach(item, response->Answers)
+		{
+			rr = item->data;
+			if(rr->qtype != qtype_srv){
+				continue;
+			}
+			srv = (tnet_dns_srv_t*)rr;
+			if(srv->priority < lowest_priority){
+				lowest_priority = srv->priority;
+				tsk_strupdate(hostname, srv->target);
+				*port = srv->port;
+				weight = srv->weight;
+			}
+			else if(srv->priority == lowest_priority){
+				if(srv->weight <weight || !*hostname){
+					tsk_strupdate(hostname, srv->target);
+					*port = srv->port;
+					weight = srv->weight;
+				}
+			}
+		}
+	}
+
+	TSK_OBJECT_SAFE_FREE(response);
+
+	return (hostname && !tsk_strempty(*hostname)) ? 0 : -2;
+}
+
+int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char* service, char** hostname, tnet_port_t* port)
+{
+	tnet_dns_response_t *response;
+
+	if(!ctx){
+		return -1;
+	}
+
+	if((response = tnet_dns_resolve(ctx, domain, qclass_in, qtype_naptr)))
+	{
+		tsk_list_item_t *item;
+		tnet_dns_rr_t* rr;
+		tnet_dns_naptr_t *naptr;
+		uint16_t lowest_preference = 65535;
+		uint16_t order = 65535;
+		char* replacement = 0; /* e.g. _sip._udp.example.com */
+		char* flags = 0;/* e.g. S, A, AAAA, A6, U, P ... */
+
+		tsk_list_foreach(item, response->Answers)
+		{
+			rr = item->data;
+			if(rr->qtype != qtype_naptr){
+				continue;
+			}
+			naptr = (tnet_dns_naptr_t*)rr;
+
+			if(!tsk_striequals(service, naptr->services)){
+				continue;
+			}
+
+			if(naptr->preference < lowest_preference){
+				lowest_preference = naptr->preference;
+				tsk_strupdate(&replacement, naptr->replacement);
+				tsk_strupdate(&flags, naptr->flags);
+			}
+			else if(naptr->preference == lowest_preference){
+				if(naptr->order <order || !*hostname){
+					tsk_strupdate(&replacement, naptr->replacement);
+					tsk_strupdate(&flags, naptr->flags);
+				}
+			}
+		}
+
+		if(flags && replacement){
+			if(tsk_striequals(flags, "S")){
+				tnet_dns_query_srv(ctx, replacement, hostname, port);
+			}
+			else if(tsk_striequals(flags, "A") || tsk_striequals(flags, "AAAA") ||tsk_striequals(flags, "A6")){
+				TSK_DEBUG_WARN("Defaulting port value.");
+				tsk_strupdate(hostname, replacement);
+				*port = 5060;
+			}
+			else{
+				TSK_DEBUG_ERROR("DNS NAPTR query returned invalid falgs.");
+			}
+		}
+		else{
+			TSK_DEBUG_ERROR("DNS NAPTR query returned zero result.");
+		}
+
+		TSK_FREE(flags);
+		TSK_FREE(replacement);
+	}
+
+	TSK_OBJECT_SAFE_FREE(response);
+
+	return (hostname && !tsk_strempty(*hostname)) ? 0 : -2;
 }
 
 int tnet_dns_cache_maintenance(tnet_dns_ctx_t *ctx)

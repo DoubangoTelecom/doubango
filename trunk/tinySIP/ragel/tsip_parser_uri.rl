@@ -48,6 +48,7 @@
 		
 	action tag
 	{
+		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 
@@ -101,7 +102,7 @@
 	sip_usrinfo		:= ( ( user>tag %parse_user_name ) :> ( ':' password>tag %parse_password )? :>> '@' ) @{ fgoto main; };
 	
 	main			:= |*
-							("sip:"i %is_sip | "sips:"i %is_sips) > 100
+							("sip:"i>tag %is_sip | "sips:"i>tag %is_sips) @100
 							{
 								if(tsk_strcontains(te, "@"))
 								{
@@ -109,9 +110,9 @@
 								}
 							};
 							
-							("tel:"i %is_tel (any+)>tag %parse_user_name :> uri_parameters) > 100 { };
+							("tel:"i %is_tel (any+)>tag %parse_user_name :> uri_parameters) @100 { };
 							
-							( (IPv6reference >is_ipv6)>89 | (IPv4address >is_ipv4)>88 | (hostname >is_hostname)>87 ) > 90
+							( (IPv6reference >is_ipv6)>89 | (IPv4address >is_ipv4)>88 | (hostname >is_hostname)>87 ) @90
 							{
 								SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6)
@@ -120,14 +121,14 @@
 								}
 							};							
 
-							(":" port) >80
+							(':' port)@80
 							{
 								ts++;
 								SCANNER_SET_INTEGER(uri->port);
 							};
 							
-							( uri_parameters ) > 70	{  };
-							(any*) > 0					{  };
+							( uri_parameters ) @70	{  };
+							(any)+ @0				{  };
 
 						
 

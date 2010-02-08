@@ -105,7 +105,7 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 109 "../source/headers/tsip_header_Via.c" */
+/* #line 109 "../src/headers/tsip_header_Via.c" */
 static const int tsip_machine_parser_header_Via_start = 1;
 static const int tsip_machine_parser_header_Via_first_final = 335;
 static const int tsip_machine_parser_header_Via_error = 0;
@@ -115,14 +115,14 @@ static const int tsip_machine_parser_header_Via_en_main = 1;
 
 /* #line 207 "tsip_parser_header_Via.rl" */
 	
-/* #line 119 "../source/headers/tsip_header_Via.c" */
+/* #line 119 "../src/headers/tsip_header_Via.c" */
 	{
 	cs = tsip_machine_parser_header_Via_start;
 	}
 
 /* #line 208 "tsip_parser_header_Via.rl" */
 	
-/* #line 126 "../source/headers/tsip_header_Via.c" */
+/* #line 126 "../src/headers/tsip_header_Via.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -233,7 +233,7 @@ st4:
 	if ( ++p == pe )
 		goto _test_eof4;
 case 4:
-/* #line 237 "../source/headers/tsip_header_Via.c" */
+/* #line 237 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st4;
 		case 13: goto st5;
@@ -311,7 +311,7 @@ st8:
 	if ( ++p == pe )
 		goto _test_eof8;
 case 8:
-/* #line 315 "../source/headers/tsip_header_Via.c" */
+/* #line 315 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr9;
 		case 13: goto tr10;
@@ -344,7 +344,7 @@ st9:
 	if ( ++p == pe )
 		goto _test_eof9;
 case 9:
-/* #line 348 "../source/headers/tsip_header_Via.c" */
+/* #line 348 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st9;
 		case 13: goto st10;
@@ -362,7 +362,7 @@ st10:
 	if ( ++p == pe )
 		goto _test_eof10;
 case 10:
-/* #line 366 "../source/headers/tsip_header_Via.c" */
+/* #line 366 "../src/headers/tsip_header_Via.c" */
 	if ( (*p) == 10 )
 		goto st11;
 	goto st0;
@@ -395,7 +395,7 @@ st13:
 	if ( ++p == pe )
 		goto _test_eof13;
 case 13:
-/* #line 399 "../source/headers/tsip_header_Via.c" */
+/* #line 399 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st13;
 		case 13: goto st14;
@@ -473,7 +473,7 @@ st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-/* #line 477 "../source/headers/tsip_header_Via.c" */
+/* #line 477 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr22;
 		case 13: goto tr23;
@@ -506,7 +506,7 @@ st18:
 	if ( ++p == pe )
 		goto _test_eof18;
 case 18:
-/* #line 510 "../source/headers/tsip_header_Via.c" */
+/* #line 510 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st18;
 		case 13: goto st19;
@@ -524,7 +524,7 @@ st19:
 	if ( ++p == pe )
 		goto _test_eof19;
 case 19:
-/* #line 528 "../source/headers/tsip_header_Via.c" */
+/* #line 528 "../src/headers/tsip_header_Via.c" */
 	if ( (*p) == 10 )
 		goto st20;
 	goto st0;
@@ -557,7 +557,7 @@ st22:
 	if ( ++p == pe )
 		goto _test_eof22;
 case 22:
-/* #line 561 "../source/headers/tsip_header_Via.c" */
+/* #line 561 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st22;
 		case 13: goto st23;
@@ -635,7 +635,7 @@ st26:
 	if ( ++p == pe )
 		goto _test_eof26;
 case 26:
-/* #line 639 "../source/headers/tsip_header_Via.c" */
+/* #line 639 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr35;
 		case 13: goto tr36;
@@ -670,7 +670,7 @@ st27:
 	if ( ++p == pe )
 		goto _test_eof27;
 case 27:
-/* #line 674 "../source/headers/tsip_header_Via.c" */
+/* #line 674 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st27;
 		case 13: goto st28;
@@ -696,7 +696,7 @@ st28:
 	if ( ++p == pe )
 		goto _test_eof28;
 case 28:
-/* #line 700 "../source/headers/tsip_header_Via.c" */
+/* #line 700 "../src/headers/tsip_header_Via.c" */
 	if ( (*p) == 10 )
 		goto st29;
 	goto st0;
@@ -737,7 +737,7 @@ st31:
 	if ( ++p == pe )
 		goto _test_eof31;
 case 31:
-/* #line 741 "../source/headers/tsip_header_Via.c" */
+/* #line 741 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 45: goto st32;
 		case 46: goto st284;
@@ -806,7 +806,7 @@ st35:
 	if ( ++p == pe )
 		goto _test_eof35;
 case 35:
-/* #line 810 "../source/headers/tsip_header_Via.c" */
+/* #line 810 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr51;
 		case 13: goto tr52;
@@ -836,7 +836,7 @@ st36:
 	if ( ++p == pe )
 		goto _test_eof36;
 case 36:
-/* #line 840 "../source/headers/tsip_header_Via.c" */
+/* #line 840 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st36;
 		case 13: goto st37;
@@ -884,7 +884,7 @@ st40:
 	if ( ++p == pe )
 		goto _test_eof40;
 case 40:
-/* #line 888 "../source/headers/tsip_header_Via.c" */
+/* #line 888 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st40;
 		case 13: goto st41;
@@ -930,7 +930,7 @@ st44:
 	if ( ++p == pe )
 		goto _test_eof44;
 case 44:
-/* #line 934 "../source/headers/tsip_header_Via.c" */
+/* #line 934 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr68;
 		case 13: goto tr69;
@@ -1000,7 +1000,7 @@ st45:
 	if ( ++p == pe )
 		goto _test_eof45;
 case 45:
-/* #line 1004 "../source/headers/tsip_header_Via.c" */
+/* #line 1004 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st45;
 		case 13: goto st46;
@@ -1110,7 +1110,7 @@ st49:
 	if ( ++p == pe )
 		goto _test_eof49;
 case 49:
-/* #line 1114 "../source/headers/tsip_header_Via.c" */
+/* #line 1114 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st49;
 		case 13: goto st50;
@@ -1208,7 +1208,7 @@ st53:
 	if ( ++p == pe )
 		goto _test_eof53;
 case 53:
-/* #line 1212 "../source/headers/tsip_header_Via.c" */
+/* #line 1212 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr86;
 		case 13: goto tr87;
@@ -1243,7 +1243,7 @@ st54:
 	if ( ++p == pe )
 		goto _test_eof54;
 case 54:
-/* #line 1247 "../source/headers/tsip_header_Via.c" */
+/* #line 1247 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st54;
 		case 13: goto st55;
@@ -1548,7 +1548,7 @@ st74:
 	if ( ++p == pe )
 		goto _test_eof74;
 case 74:
-/* #line 1552 "../source/headers/tsip_header_Via.c" */
+/* #line 1552 "../src/headers/tsip_header_Via.c" */
 	if ( (*p) == 10 )
 		goto tr115;
 	goto st0;
@@ -1562,7 +1562,7 @@ st335:
 	if ( ++p == pe )
 		goto _test_eof335;
 case 335:
-/* #line 1566 "../source/headers/tsip_header_Via.c" */
+/* #line 1566 "../src/headers/tsip_header_Via.c" */
 	goto st0;
 st75:
 	if ( ++p == pe )
@@ -2190,7 +2190,7 @@ st125:
 	if ( ++p == pe )
 		goto _test_eof125;
 case 125:
-/* #line 2194 "../source/headers/tsip_header_Via.c" */
+/* #line 2194 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr163;
 		case 13: goto tr164;
@@ -2359,7 +2359,7 @@ st137:
 	if ( ++p == pe )
 		goto _test_eof137;
 case 137:
-/* #line 2363 "../source/headers/tsip_header_Via.c" */
+/* #line 2363 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr179;
 		case 13: goto tr180;
@@ -2519,7 +2519,7 @@ st150:
 	if ( ++p == pe )
 		goto _test_eof150;
 case 150:
-/* #line 2523 "../source/headers/tsip_header_Via.c" */
+/* #line 2523 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 45: goto st151;
 		case 46: goto st157;
@@ -2588,7 +2588,7 @@ st154:
 	if ( ++p == pe )
 		goto _test_eof154;
 case 154:
-/* #line 2592 "../source/headers/tsip_header_Via.c" */
+/* #line 2592 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr204;
 		case 13: goto tr205;
@@ -2893,7 +2893,7 @@ st171:
 	if ( ++p == pe )
 		goto _test_eof171;
 case 171:
-/* #line 2897 "../source/headers/tsip_header_Via.c" */
+/* #line 2897 "../src/headers/tsip_header_Via.c" */
 	if ( (*p) == 58 )
 		goto st206;
 	if ( (*p) < 65 ) {
@@ -3490,7 +3490,7 @@ st222:
 	if ( ++p == pe )
 		goto _test_eof222;
 case 222:
-/* #line 3494 "../source/headers/tsip_header_Via.c" */
+/* #line 3494 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr275;
 		case 13: goto tr276;
@@ -3910,7 +3910,7 @@ st252:
 	if ( ++p == pe )
 		goto _test_eof252;
 case 252:
-/* #line 3914 "../source/headers/tsip_header_Via.c" */
+/* #line 3914 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr275;
 		case 13: goto tr276;
@@ -3980,7 +3980,7 @@ st255:
 	if ( ++p == pe )
 		goto _test_eof255;
 case 255:
-/* #line 3984 "../source/headers/tsip_header_Via.c" */
+/* #line 3984 "../src/headers/tsip_header_Via.c" */
 	if ( (*p) == 58 )
 		goto st239;
 	goto st0;
@@ -4037,7 +4037,7 @@ st260:
 	if ( ++p == pe )
 		goto _test_eof260;
 case 260:
-/* #line 4041 "../source/headers/tsip_header_Via.c" */
+/* #line 4041 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto st260;
 		case 13: goto st261;
@@ -4124,7 +4124,7 @@ st268:
 	if ( ++p == pe )
 		goto _test_eof268;
 case 268:
-/* #line 4128 "../source/headers/tsip_header_Via.c" */
+/* #line 4128 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr328;
 		case 13: goto tr329;
@@ -4239,7 +4239,7 @@ st279:
 	if ( ++p == pe )
 		goto _test_eof279;
 case 279:
-/* #line 4243 "../source/headers/tsip_header_Via.c" */
+/* #line 4243 "../src/headers/tsip_header_Via.c" */
 	switch( (*p) ) {
 		case 9: goto tr343;
 		case 13: goto tr344;
@@ -4566,7 +4566,7 @@ st298:
 	if ( ++p == pe )
 		goto _test_eof298;
 case 298:
-/* #line 4570 "../source/headers/tsip_header_Via.c" */
+/* #line 4570 "../src/headers/tsip_header_Via.c" */
 	if ( (*p) == 58 )
 		goto st333;
 	if ( (*p) < 65 ) {
@@ -5351,7 +5351,7 @@ case 334:
 /* #line 209 "tsip_parser_header_Via.rl" */
 	
 	if( cs < 
-/* #line 5355 "../source/headers/tsip_header_Via.c" */
+/* #line 5355 "../src/headers/tsip_header_Via.c" */
 335
 /* #line 210 "tsip_parser_header_Via.rl" */
  )

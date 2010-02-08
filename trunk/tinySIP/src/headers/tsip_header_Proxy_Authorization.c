@@ -112,7 +112,7 @@ tsip_header_Proxy_Authorization_t *tsip_header_Proxy_Authorization_parse(const c
 	const char *tag_start;
 
 	
-/* #line 116 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 116 "../src/headers/tsip_header_Proxy_Authorization.c" */
 static const int tsip_machine_parser_header_Proxy_Authorization_start = 1;
 static const int tsip_machine_parser_header_Proxy_Authorization_first_final = 203;
 static const int tsip_machine_parser_header_Proxy_Authorization_error = 0;
@@ -122,14 +122,14 @@ static const int tsip_machine_parser_header_Proxy_Authorization_en_main = 1;
 
 /* #line 220 "tsip_parser_header_Proxy_Authorization.rl" */
 	
-/* #line 126 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 126 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	{
 	cs = tsip_machine_parser_header_Proxy_Authorization_start;
 	}
 
 /* #line 221 "tsip_parser_header_Proxy_Authorization.rl" */
 	
-/* #line 133 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 133 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -405,7 +405,7 @@ st23:
 	if ( ++p == pe )
 		goto _test_eof23;
 case 23:
-/* #line 409 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 409 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	if ( (*p) == 10 )
 		goto tr26;
 	goto st0;
@@ -418,7 +418,7 @@ st203:
 	if ( ++p == pe )
 		goto _test_eof203;
 case 203:
-/* #line 422 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 422 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	goto st0;
 st24:
 	if ( ++p == pe )
@@ -443,7 +443,7 @@ st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 447 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 447 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 13: goto st23;
 		case 73: goto st26;
@@ -572,7 +572,7 @@ st31:
 	if ( ++p == pe )
 		goto _test_eof31;
 case 31:
-/* #line 576 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 576 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st31;
 		case 13: goto st23;
@@ -621,7 +621,7 @@ st32:
 	if ( ++p == pe )
 		goto _test_eof32;
 case 32:
-/* #line 625 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 625 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr41;
 		case 13: goto tr42;
@@ -655,7 +655,7 @@ st33:
 	if ( ++p == pe )
 		goto _test_eof33;
 case 33:
-/* #line 659 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 659 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st33;
 		case 13: goto st23;
@@ -808,7 +808,7 @@ st36:
 	if ( ++p == pe )
 		goto _test_eof36;
 case 36:
-/* #line 812 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 812 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st36;
 		case 13: goto st23;
@@ -1519,7 +1519,7 @@ st90:
 	if ( ++p == pe )
 		goto _test_eof90;
 case 90:
-/* #line 1523 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 1523 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr103;
 		case 13: goto tr104;
@@ -1613,7 +1613,7 @@ st97:
 	if ( ++p == pe )
 		goto _test_eof97;
 case 97:
-/* #line 1617 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 1617 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr113;
 		case 13: goto st23;
@@ -1631,7 +1631,7 @@ st98:
 	if ( ++p == pe )
 		goto _test_eof98;
 case 98:
-/* #line 1635 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 1635 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st98;
 		case 13: goto st23;
@@ -1772,7 +1772,7 @@ st109:
 	if ( ++p == pe )
 		goto _test_eof109;
 case 109:
-/* #line 1776 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 1776 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	if ( (*p) == 13 )
 		goto st23;
 	if ( (*p) > 57 ) {
@@ -1915,7 +1915,7 @@ st121:
 	if ( ++p == pe )
 		goto _test_eof121;
 case 121:
-/* #line 1919 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 1919 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr144;
 		case 13: goto st23;
@@ -1933,7 +1933,7 @@ st122:
 	if ( ++p == pe )
 		goto _test_eof122;
 case 122:
-/* #line 1937 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 1937 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st122;
 		case 13: goto st23;
@@ -2097,7 +2097,7 @@ st136:
 	if ( ++p == pe )
 		goto _test_eof136;
 case 136:
-/* #line 2101 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2101 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr163;
 		case 13: goto st23;
@@ -2115,7 +2115,7 @@ st137:
 	if ( ++p == pe )
 		goto _test_eof137;
 case 137:
-/* #line 2119 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2119 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st137;
 		case 13: goto st23;
@@ -2277,7 +2277,7 @@ st149:
 	if ( ++p == pe )
 		goto _test_eof149;
 case 149:
-/* #line 2281 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2281 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr180;
 		case 13: goto tr181;
@@ -2363,7 +2363,7 @@ st155:
 	if ( ++p == pe )
 		goto _test_eof155;
 case 155:
-/* #line 2367 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2367 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr190;
 		case 13: goto st23;
@@ -2381,7 +2381,7 @@ st156:
 	if ( ++p == pe )
 		goto _test_eof156;
 case 156:
-/* #line 2385 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2385 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st156;
 		case 13: goto st23;
@@ -2545,7 +2545,7 @@ st170:
 	if ( ++p == pe )
 		goto _test_eof170;
 case 170:
-/* #line 2549 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2549 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr209;
 		case 13: goto st23;
@@ -2563,7 +2563,7 @@ st171:
 	if ( ++p == pe )
 		goto _test_eof171;
 case 171:
-/* #line 2567 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2567 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st171;
 		case 13: goto st23;
@@ -2719,7 +2719,7 @@ st184:
 	if ( ++p == pe )
 		goto _test_eof184;
 case 184:
-/* #line 2723 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2723 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 13: goto st23;
 		case 34: goto tr230;
@@ -2806,7 +2806,7 @@ st192:
 	if ( ++p == pe )
 		goto _test_eof192;
 case 192:
-/* #line 2810 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2810 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto tr238;
 		case 13: goto st23;
@@ -2824,7 +2824,7 @@ st193:
 	if ( ++p == pe )
 		goto _test_eof193;
 case 193:
-/* #line 2828 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 2828 "../src/headers/tsip_header_Proxy_Authorization.c" */
 	switch( (*p) ) {
 		case 9: goto st193;
 		case 13: goto st23;
@@ -3147,7 +3147,7 @@ case 202:
 /* #line 222 "tsip_parser_header_Proxy_Authorization.rl" */
 	
 	if( cs < 
-/* #line 3151 "../source/headers/tsip_header_Proxy_Authorization.c" */
+/* #line 3151 "../src/headers/tsip_header_Proxy_Authorization.c" */
 203
 /* #line 223 "tsip_parser_header_Proxy_Authorization.rl" */
  )

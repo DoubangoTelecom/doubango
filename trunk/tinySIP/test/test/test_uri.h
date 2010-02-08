@@ -28,7 +28,8 @@ const char* uris[] =
 {
 	
 	//== SIP:
-	"sip:alice@atlanta.com;p1=23",
+	"sip:2233392625@sip2sip.info",
+	"sip:alice@iatlanta.com;p1=23",
 	"sip:*666*@atlanta.com",
 	"sip:#66#@atlanta.com",
 	"sip:alice:secretword@atlanta.com",
@@ -69,12 +70,9 @@ const char* uris[] =
 
 void test_uri_tostring(const tsip_uri_t *uri)
 {
-	tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
-
-	tsip_uri_tostring(uri, 1, 1, buffer);
-	TSK_DEBUG_INFO("uri_to_string=%s", TSK_BUFFER_TO_STRING(buffer));
-
-	TSK_OBJECT_SAFE_FREE(buffer);
+	char* ret = tsip_uri_tostring(uri, 1, 1);
+	TSK_DEBUG_INFO("uri_to_string=%s", ret);
+	TSK_FREE(ret);
 }
 
 void test_uri_parser()
@@ -116,6 +114,7 @@ void test_uri_parser()
 		}
 
 		printf("\n\n");
+		getchar();
 		
 		TSK_OBJECT_SAFE_FREE(uri);
 	}

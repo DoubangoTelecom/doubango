@@ -96,7 +96,7 @@ int tsip_header_From_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const tsip_header_From_t *From = header;
-		if(ret=tsip_uri_tostring(From->uri, 1, 1, output))
+		if(ret=tsip_uri_serialize(From->uri, 1, 1, output))
 		{
 			return ret;
 		}

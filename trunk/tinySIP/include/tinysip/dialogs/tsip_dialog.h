@@ -113,11 +113,12 @@ typedef struct tsip_dialog_s
 	
 	tsip_dialog_type_t type;
 	
-	const tsip_stack_handle_t *stack;
-	const tsip_operation_handle_t* operation;
+	tsip_stack_handle_t *stack;
+	tsip_operation_handle_t* operation;
 	
 	tsip_dialog_state_t state;
 	
+	unsigned initialized:1;
 	unsigned running:1;
 	
 	char* tag_local;
@@ -160,7 +161,7 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
 
-int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const tsip_stack_handle_t * stack, const char* call_id, const tsip_operation_handle_t* operation);
+int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_handle_t * stack, const char* call_id, tsip_operation_handle_t* operation);
 int tsip_dialog_hangup(tsip_dialog_t *self);
 int tsip_dialog_remove_callback(const tsip_dialog_t* self, tsk_timer_id_t timer_id);
 int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2);

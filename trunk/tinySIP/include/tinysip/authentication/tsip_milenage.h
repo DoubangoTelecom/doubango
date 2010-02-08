@@ -167,7 +167,7 @@ typedef uint8_t AKA_AUTS_T[AKA_AUTS_SIZE + 1];
 #define AKA_AUTN_SIZE 16
 typedef uint8_t AKA_AUTN_T[AKA_AUTN_SIZE + 1];
 
-#define AKA_XXX_DELCLARE(name) AKA_##name##_T name
+#define AKA_XXX_DECLARE(name) AKA_##name##_T name
 #define AKA_XXX_BZERO(name)	memset(name, '\0', AKA_##name##_SIZE + 1)
 
 void f1    ( uint8_t k[16], uint8_t rand[16], uint8_t sqn[6], uint8_t amf[2],
