@@ -39,6 +39,9 @@
 
 // Useful link: http://support.microsoft.com/?scid=kb%3Ben-us%3B169289&x=21&y=14
 // Another one: http://www.iana.org/assignments/bootp-dhcp-parameters/
+// RFC 3319 Dynamic Host Configuration Protocol (DHCPv6) Options for Session Initiation Protocol (SIP) Servers
+// RFC 3361  Dynamic Host Configuration Protocol (DHCP-for-IPv4) Option for Session Initiation Protocol (SIP) Servers
+
 
 /* FIXME: USE retransmission mech (*2*2...)
 */

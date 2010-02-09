@@ -153,6 +153,7 @@ bail:
 tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, size_t size)
 {
 	tnet_dhcp_message_t *message = 0;
+	uint8_t *dataPtr, *dataEnd, *dataStart;
 
 	if(!data || !size)
 	{
@@ -169,7 +170,70 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 		goto bail;
 	}
 
+	dataPtr = (uint8_t*)data;
+	dataStart = dataPtr;
+	dataEnd = (dataStart + size);
+
 	/*== op (1)*/
+	message->op = *(dataPtr++);
+	/*== htype (1) */
+	message->htype = *(dataPtr++);
+	/*== hlen (1) */
+	message->hlen = *(dataPtr++);
+	/*== htype (1) */
+	message->hops = *(dataPtr++);
+	/*== xid (4) */
+	message->xid= ntohl(*((uint32_t*)dataPtr));
+	dataPtr += 4;
+	/*== secs (2) */
+	message->secs = ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+	/*== flags (2) */
+	message->flags = ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+	/*== ciaddr  (4) */
+	message->ciaddr= ntohl(*((uint32_t*)dataPtr));
+	dataPtr += 4;
+	/*== yiaddr  (4) */
+	message->yiaddr= ntohl(*((uint32_t*)dataPtr));
+	dataPtr += 4;
+	/*== siaddr  (4) */
+	message->siaddr= ntohl(*((uint32_t*)dataPtr));
+	dataPtr += 4;
+	/*== giaddr  (4) */
+	message->giaddr= ntohl(*((uint32_t*)dataPtr));
+	dataPtr += 4;
+	/*== chaddr  (16[max]) */
+	memcpy(message->chaddr, dataPtr, message->hlen>16 ? 16 : message->hlen);
+	dataPtr += 16;
+	/*== sname   (64) */
+	memcpy(message->sname, dataPtr, 64);
+	dataPtr += 64;
+	/*== file    (128) */
+	memcpy(message->file, dataPtr, 128);
+	dataPtr += 128;
+	/*== Magic Cookie (4) */
+	if(ntohl(*((uint32_t*)dataPtr)) != TNET_DHCP_MAGIC_COOKIE){
+		TSK_DEBUG_ERROR("Invalid DHCP magic cookie.");
+		// Do not exit ==> continue parsing.
+	}
+	dataPtr += 4;
+
+	/*== options (variable) */
+	while(dataPtr<dataEnd && *dataPtr!=dhcp_code_End)
+	{
+		tnet_dhcp_option_t* option = tnet_dhcp_option_deserialize(dataPtr, (dataEnd-dataPtr));
+		if(option && option->value){
+			
+			if(option->code == dhcp_code_DHCP_Msg_Type){
+				message->type = (tnet_dhcp_message_type_t)*TSK_BUFFER_TO_U8(option->value);
+			}
+
+			dataPtr += option->value->size + 2/*Code Len*/;
+			tsk_list_push_back_data(message->options, (void**)&option);
+		}
+		else break;
+	}
 
 bail:
 	return message;

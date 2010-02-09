@@ -54,7 +54,7 @@ TNET_BEGIN_DECLS
 /**< Destination port(Server) for outgoing DHCP messages as per RFC 2131 subclause 4.1. */
 #define TNET_DHCP_SERVER_PORT		67
 
-#define TNET_DHCP_VENDOR_ID_DEFAULT				"IM-client/OMA1.0 doubango/v0.0.0"
+#define TNET_DHCP_VENDOR_ID_DEFAULT				"doubango/v0.0.0"
 #define TNET_DHCP_MAX_CODES						20
 
 /** Parameter Request List (55)
