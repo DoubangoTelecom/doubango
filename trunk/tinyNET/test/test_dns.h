@@ -69,7 +69,7 @@ void test_dns_naptr_srv()
 	char* hostname = 0;
 	tnet_port_t port = 0;
 
-	if(!tnet_dns_query_naptr_srv(ctx, /*"sip2sip.info"*/"ims.inexbee.com", "SIP+D2U", &hostname, &port))
+	if(!tnet_dns_query_naptr_srv(ctx, "sip2sip.info", "SIP+D2U", &hostname, &port))
 	{
 		TSK_DEBUG_INFO("DNS NAPTR+SRV succeed ==> hostname=%s and port=%u", hostname, port);
 	}
