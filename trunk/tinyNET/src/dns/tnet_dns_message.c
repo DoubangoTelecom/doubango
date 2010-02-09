@@ -224,7 +224,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 			{
 				message->Answers = TSK_LIST_CREATE();
 			}
-			tsk_list_push_back_data(message->Answers, (void**)&rr);
+			tsk_list_push_descending_data(message->Answers, (void**)&rr); /* Push filtered (Useful for NAPTR and SRV records). */
 		}
 	}
 	dataPtr = (dataStart + offset);

@@ -259,28 +259,15 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 	{
 		tsk_list_item_t *item;
 		tnet_dns_rr_t* rr;
-		tnet_dns_srv_t *srv;
-		uint16_t lowest_priority = 65535;
-		uint16_t weight = 65535;
-		tsk_list_foreach(item, response->Answers)
+		tsk_list_foreach(item, response->Answers) /* Already Filtered ==> Peek the first One */
 		{
 			rr = item->data;
-			if(rr->qtype != qtype_srv){
-				continue;
-			}
-			srv = (tnet_dns_srv_t*)rr;
-			if(srv->priority < lowest_priority){
-				lowest_priority = srv->priority;
+			if(rr->qtype == qtype_srv){
+				tnet_dns_srv_t *srv = (tnet_dns_srv_t*)rr;
+				
 				tsk_strupdate(hostname, srv->target);
 				*port = srv->port;
-				weight = srv->weight;
-			}
-			else if(srv->priority == lowest_priority){
-				if(srv->weight <weight || !*hostname){
-					tsk_strupdate(hostname, srv->target);
-					*port = srv->port;
-					weight = srv->weight;
-				}
+				break;
 			}
 		}
 	}
@@ -302,33 +289,21 @@ int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char
 	{
 		tsk_list_item_t *item;
 		tnet_dns_rr_t* rr;
-		tnet_dns_naptr_t *naptr;
-		uint16_t lowest_preference = 65535;
-		uint16_t order = 65535;
+
 		char* replacement = 0; /* e.g. _sip._udp.example.com */
 		char* flags = 0;/* e.g. S, A, AAAA, A6, U, P ... */
 
-		tsk_list_foreach(item, response->Answers)
+		tsk_list_foreach(item, response->Answers) /* Already Filtered ==> Peek the first One */
 		{
 			rr = item->data;
-			if(rr->qtype != qtype_naptr){
-				continue;
-			}
-			naptr = (tnet_dns_naptr_t*)rr;
+			if(rr->qtype == qtype_naptr){
+				tnet_dns_naptr_t *naptr = (tnet_dns_naptr_t*)rr;
 
-			if(!tsk_striequals(service, naptr->services)){
-				continue;
-			}
-
-			if(naptr->preference < lowest_preference){
-				lowest_preference = naptr->preference;
-				tsk_strupdate(&replacement, naptr->replacement);
-				tsk_strupdate(&flags, naptr->flags);
-			}
-			else if(naptr->preference == lowest_preference){
-				if(naptr->order <order || !*hostname){
+				if(tsk_striequals(service, naptr->services)){
 					tsk_strupdate(&replacement, naptr->replacement);
 					tsk_strupdate(&flags, naptr->flags);
+
+					break;
 				}
 			}
 		}

@@ -149,7 +149,7 @@ typedef struct tnet_dns_message_s
 	}
 	Question;
 
-	tnet_dns_rrs_L_t *Answers;
+	tnet_dns_rrs_L_t *Answers; /**< Filtered answers by priority. */
 	tnet_dns_rrs_L_t *Authorities;
 	tnet_dns_rrs_L_t *Additionals;
 }
