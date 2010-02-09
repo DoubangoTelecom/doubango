@@ -117,13 +117,78 @@ int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size)
 	return -1;
 }
 
-void tsk_buffer_cleanup(tsk_buffer_t* self)
+int tsk_buffer_realloc(tsk_buffer_t* self, size_t size)
+{
+	if(self)
+	{
+		if(size == 0){
+			return tsk_buffer_cleanup(self);
+		}
+
+		if(self->size == 0){
+			self->data = tsk_calloc(size, sizeof(uint8_t));
+		}
+		else{
+			self->data = tsk_realloc(self->data, size);
+		}
+
+		self->size = size;
+		return 0;
+	}
+	return -1;
+}
+
+int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size)
+{
+	if(self)
+	{
+		if((position + size) > self->size)
+		{
+			size = self->size - position;
+			memcpy(((uint8_t*)self->data) + position, ((uint8_t*)self->data) + position + size, 
+				self->size-(position+size));
+			return tsk_buffer_realloc(self, (self->size-size));
+		}
+	}
+	return -1;
+}
+
+int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void*data, size_t size)
+{
+	if(self && size)
+	{
+		int ret;
+		if(position > self->size){
+			return -2;
+		}
+
+		if((ret = tsk_buffer_realloc(self, (self->size + size)))){
+			return ret;
+		}
+		memmove(((uint8_t*)self->data) + position + size, ((uint8_t*)self->data) + position,
+			self->size - (position + size));
+		
+
+		if(data){
+			memcpy(((uint8_t*)self->data) + position, data, size);
+		}
+		else{
+			memset(((uint8_t*)self->data) + position, 0, size);
+		}
+
+		return 0;
+	}
+	return -1;
+}
+
+int tsk_buffer_cleanup(tsk_buffer_t* self)
 {
 	if(self && self->data)
 	{
 		tsk_free(&(self->data));
 		self->size = 0;
 	}
+	return 0;
 }
 
 
