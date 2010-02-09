@@ -58,7 +58,10 @@ typedef tsk_list_t tsk_buffers_L_t; /**< List of @ref tsk_buffer_t elements. */
 
 TINYSAK_API int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...);
 TINYSAK_API int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size);
-TINYSAK_API void tsk_buffer_cleanup(tsk_buffer_t* self);
+TINYSAK_API int tsk_buffer_realloc(tsk_buffer_t* self, size_t size);
+TINYSAK_API int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size);
+TINYSAK_API int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void*data, size_t size);
+TINYSAK_API int tsk_buffer_cleanup(tsk_buffer_t* self);
 
 TINYSAK_GEXTERN const void *tsk_buffer_def_t;
 
