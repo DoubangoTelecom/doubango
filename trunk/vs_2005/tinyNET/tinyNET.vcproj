@@ -490,6 +490,14 @@
 					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option.c"
 					>
 				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip4.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip6.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -644,6 +652,14 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip4.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip6.h"
 					>
 				</File>
 			</Filter>

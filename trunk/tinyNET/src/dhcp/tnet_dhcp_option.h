@@ -33,11 +33,13 @@
 #include "tinyNET_config.h"
 
 #include "tsk_buffer.h"
+#include "tsk_string.h"
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP_OPTION_CREATE()						tsk_object_new(tnet_dhcp_option_def_t)
-#define TNET_DHCP_OPTION_PARAMSLIST_CREATE()			tsk_object_new(tnet_dhcp_option_paramslist_def_t)
+#define TNET_DHCP_OPTION_CREATE(code)						tsk_object_new(tnet_dhcp_option_def_t, code)
+#define TNET_DHCP_OPTION_PARAMSLIST_CREATE()				tsk_object_new(tnet_dhcp_option_paramslist_def_t)
+#define TNET_DHCP_OPTION_DNS_CREATE(payload, payload_size)	tsk_object_new(tnet_dhcp_option_dns_def_t, (const void*)payload, (size_t)payload_size)
 
 #define TNET_DHCP_OPTION(self)							((tnet_dhcp_option_t*)(self))
 
@@ -242,7 +244,7 @@ int tnet_dhcp_option_serializeex(tnet_dhcp_option_code_t code, uint8_t length, c
 
 
 
-/** Parameter Request List */
+/** Parameter Request List Option */
 typedef struct tnet_dhcp_option_paramslist_s
 {
 	TNET_DECLARE_DHCP_OPTION;
@@ -257,11 +259,26 @@ typedef struct tnet_dhcp_option_paramslist_s
 tnet_dhcp_option_paramslist_t;
 int tnet_dhcp_option_paramslist_add_code(tnet_dhcp_option_paramslist_t* self, tnet_dhcp_option_code_t code);
 
+/** Domain Name Server Option */
+typedef struct tnet_dhcp_option_dns_s
+{
+	TNET_DECLARE_DHCP_OPTION;
+
+	/* RFC 2132 - 3.8. Domain Name Server Option
+	Code   Len         Address 1               Address 2
+	+-----+-----+-----+-----+-----+-----+-----+-----+--
+	|  6  |  n  |  a1 |  a2 |  a3 |  a4 |  a1 |  a2 |  ...
+	+-----+-----+-----+-----+-----+-----+-----+-----+--
+	*/
+	tsk_strings_L_t *servers;
+}
+tnet_dhcp_option_dns_t;
 
 
 
 TINYNET_GEXTERN const void *tnet_dns_ns_def_t;
 TINYNET_GEXTERN const void *tnet_dhcp_option_paramslist_def_t;
+TINYNET_GEXTERN const void *tnet_dhcp_option_dns_def_t;
 
 
 

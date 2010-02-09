@@ -22,6 +22,8 @@
 #ifndef TNET_TEST_DHCP_H
 #define TNET_TEST_DHCP_H
 
+#include "dhcp/tnet_dhcp_option_sip4.h"
+
 void test_dhcp_discover(tnet_dhcp_ctx_t *ctx)
 {
 }
@@ -40,12 +42,74 @@ void test_dhcp_inform(tnet_dhcp_ctx_t *ctx)
 	tnet_dhcp_reply_t *reply = 0;
 
 	params = TNET_DHCP_PARAMS_CREATE();
-	tnet_dhcp_params_add_code(params, dhcp_code_SIP_Servers_DHCP_Option);
+	tnet_dhcp_params_add_code(params, dhcp_code_SIP_Servers_DHCP_Option); /* SIP Servers */
+	tnet_dhcp_params_add_code(params, dhcp_code_Domain_Server); /* DNS Server */
 	
 	reply = tnet_dhcp_query_inform(ctx, params);
+
+	if(!TNET_DHCP_MESSAGE_IS_REPLY(reply))
+	{
+		TSK_DEBUG_ERROR("DHCP request is not expected in response to a request.");
+		goto bail;
+	}
+
+	if(reply)
+	{
+		switch(reply->type)
+		{
+		case dhcp_type_ack:
+			{
+				tsk_list_item_t *item;
+				TSK_DEBUG_INFO("DHCP response type ==> ACK.");
+
+				tsk_list_foreach(item, reply->options)
+				{
+					const tnet_dhcp_option_t *option = item->data;
+
+					/* SIP SERVERS */
+					if(option->code == dhcp_code_SIP_Servers_DHCP_Option)
+					{
+						tsk_list_item_t *item2;
+						const tnet_dhcp_option_sip4_t *option_sip4 = (const tnet_dhcp_option_sip4_t*)option;;
+						tsk_list_foreach(item2, option_sip4->servers)
+						{
+							const tsk_string_t *str = item2->data;
+							TSK_DEBUG_INFO("DHCP-SIP_SERVER ==>%s", str->value);
+						}
+					}
+
+					/* DNS SERVERS */
+					if(option->code == dhcp_code_Domain_Server)
+					{
+						tsk_list_item_t *item2;
+						const tnet_dhcp_option_dns_t *option_dns = (const tnet_dhcp_option_dns_t*)option;;
+						tsk_list_foreach(item2, option_dns->servers)
+						{
+							const tsk_string_t *str = item2->data;
+							TSK_DEBUG_INFO("DHCP-DNS_SERVER ==>%s", str->value);
+						}
+					}
+				}
+				break;
+			}
+
+		default:
+			{
+				break;
+			}
+		}
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("DHCP reply is NULL.");
+		goto bail;
+	}
 	
+bail:
 	TSK_OBJECT_SAFE_FREE(reply);
 	TSK_OBJECT_SAFE_FREE(params);
+
+	tsk_thread_sleep(1000);
 }
 
 void test_dhcp()
