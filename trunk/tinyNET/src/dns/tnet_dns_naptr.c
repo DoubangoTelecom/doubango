@@ -104,11 +104,42 @@ static void* tnet_dns_naptr_destroy(void * self)
 	return self;
 }
 
+static int tnet_dns_naptr_cmp(const void *obj1, const void *obj2)
+{ 
+	const tnet_dns_rr_t* rr1 = obj1;
+	const tnet_dns_rr_t* rr2 = obj2;
+
+	if(rr1 && rr2 && (rr1->qtype==qtype_naptr) && (rr2->qtype==qtype_naptr))
+	{
+		const tnet_dns_naptr_t* naptr1 = (tnet_dns_naptr_t*)rr1;
+		const tnet_dns_naptr_t* naptr2 = (tnet_dns_naptr_t*)rr2;
+
+		/* Compare orders. */
+		if(naptr1->order < naptr2->order){ /* Lowest order is tried first. */
+			return 1;
+		}
+		else if(naptr1->order > naptr2->order){
+			return -1;
+		}
+
+		/* Compare preference */
+		if(naptr1->order < naptr2->order){ /* Lowest preference is tried first. */
+			return 1;
+		}
+		else if(naptr1->order > naptr2->order){
+			return -1;
+		}
+		
+		return 0;
+	}
+	else return -1;
+}
+
 static const tsk_object_def_t tnet_dns_naptr_def_s =
 {
 	sizeof(tnet_dns_naptr_t),
 	tnet_dns_naptr_create,
 	tnet_dns_naptr_destroy,
-	0,
+	tnet_dns_naptr_cmp,
 };
 const void *tnet_dns_naptr_def_t = &tnet_dns_naptr_def_s;

@@ -92,11 +92,42 @@ static void* tnet_dns_srv_destroy(void * self)
 	return self;
 }
 
+static int tnet_dns_srv_cmp(const void *obj1, const void *obj2)
+{ 
+	const tnet_dns_rr_t* rr1 = obj1;
+	const tnet_dns_rr_t* rr2 = obj2;
+
+	if(rr1 && rr2 && (rr1->qtype==qtype_srv) && (rr2->qtype==qtype_srv))
+	{
+		const tnet_dns_srv_t* srv1 = (tnet_dns_srv_t*)rr1;
+		const tnet_dns_srv_t* srv2 = (tnet_dns_srv_t*)rr2;
+
+		/* Compare priorities. */
+		if(srv1->priority < srv2->priority){ /* Lowest priority is tried first. */
+			return 1;
+		}
+		else if(srv1->priority > srv2->priority){
+			return -1;
+		}
+
+		/* Compare weight */
+		if(srv1->weight > srv2->weight){
+			return 1;
+		}
+		else if(srv1->weight < srv2->weight){
+			return -1;
+		}
+		
+		return 0;
+	}
+	else return -1;
+}
+
 static const tsk_object_def_t tnet_dns_srv_def_s =
 {
 	sizeof(tnet_dns_srv_t),
 	tnet_dns_srv_create,
 	tnet_dns_srv_destroy,
-	0,
+	tnet_dns_srv_cmp,
 };
 const void *tnet_dns_srv_def_t = &tnet_dns_srv_def_s;
