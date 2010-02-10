@@ -489,6 +489,18 @@
 					RelativePath=".\src\dhcp\tnet_dhcp_option.c"
 					>
 				</File>
+				<File
+					RelativePath=".\src\dhcp\tnet_dhcp_option_sip.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dhcp6"
+				>
+				<File
+					RelativePath=".\src\dhcp6\tnet_dhcp6.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -647,6 +659,18 @@
 				</File>
 				<File
 					RelativePath=".\src\dhcp\tnet_dhcp_option.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp\tnet_dhcp_option_sip.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dhcp6"
+				>
+				<File
+					RelativePath=".\src\dhcp6\tnet_dhcp6.h"
 					>
 				</File>
 			</Filter>

@@ -28,7 +28,7 @@
  */
 #include "tnet_dhcp_option.h"
 
-#include "tnet_dhcp_option_sip4.h"
+#include "tnet_dhcp_option_sip.h"
 
 #include "tnet_types.h"
 
@@ -90,7 +90,7 @@ tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, size_t size)
 	{
 	case dhcp_code_SIP_Servers_DHCP_Option:
 		{
-			option = TNET_DHCP_OPTION_SIP4_CREATE(dataPtr, len);
+			option = tnet_dhcp_option_sip_CREATE(dataPtr, len);
 			break;
 		}
 
@@ -299,6 +299,8 @@ static void* tnet_dhcp_option_dns_destroy(void * self)
 	{
 		/* deinit base */
 		tnet_dhcp_option_deinit(TNET_DHCP_OPTION(option));
+
+		TSK_OBJECT_SAFE_FREE(option->servers);
 	}
 	return self;
 }

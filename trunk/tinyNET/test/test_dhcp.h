@@ -22,7 +22,7 @@
 #ifndef TNET_TEST_DHCP_H
 #define TNET_TEST_DHCP_H
 
-#include "dhcp/tnet_dhcp_option_sip4.h"
+#include "dhcp/tnet_dhcp_option_sip.h"
 
 void test_dhcp_discover(tnet_dhcp_ctx_t *ctx)
 {
@@ -70,7 +70,7 @@ void test_dhcp_inform(tnet_dhcp_ctx_t *ctx)
 					if(option->code == dhcp_code_SIP_Servers_DHCP_Option)
 					{
 						tsk_list_item_t *item2;
-						const tnet_dhcp_option_sip4_t *option_sip4 = (const tnet_dhcp_option_sip4_t*)option;;
+						const tnet_dhcp_option_sip_t *option_sip4 = (const tnet_dhcp_option_sip_t*)option;;
 						tsk_list_foreach(item2, option_sip4->servers)
 						{
 							const tsk_string_t *str = item2->data;

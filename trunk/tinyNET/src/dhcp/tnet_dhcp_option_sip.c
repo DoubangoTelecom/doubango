@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-/**@file tnet_dhcp_option_sip4.c
+/**@file tnet_dhcp_option_sip.c
  * @brief  Dynamic Host Configuration Protocol (DHCP-for-IPv4) Option for 
  *			Session Initiation Protocol (SIP) Servers as per RFC 3361.
  *
@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tnet_dhcp_option_sip4.h"
+#include "tnet_dhcp_option_sip.h"
 
 #include "dns/tnet_dns_rr.h"
 
@@ -39,9 +39,9 @@
 //
 //	[[DHCP SIP4]] object definition
 //
-static void* tnet_dhcp_option_sip4_create(void * self, va_list * app)
+static void* tnet_dhcp_option_sip_create(void * self, va_list * app)
 {
-	tnet_dhcp_option_sip4_t *option = self;
+	tnet_dhcp_option_sip_t *option = self;
 	if(option)
 	{
 		const void* payload = va_arg(*app, const void*);
@@ -104,9 +104,9 @@ static void* tnet_dhcp_option_sip4_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dhcp_option_sip4_destroy(void * self) 
+static void* tnet_dhcp_option_sip_destroy(void * self) 
 { 
-	tnet_dhcp_option_sip4_t *option = self;
+	tnet_dhcp_option_sip_t *option = self;
 	if(option)
 	{
 		/* deinit base */
@@ -115,11 +115,11 @@ static void* tnet_dhcp_option_sip4_destroy(void * self)
 	return self;
 }
 
-static const tsk_object_def_t tnet_dhcp_option_sip4_def_s =
+static const tsk_object_def_t tnet_dhcp_option_sip_def_s =
 {
-	sizeof(tnet_dhcp_option_sip4_t),
-	tnet_dhcp_option_sip4_create,
-	tnet_dhcp_option_sip4_destroy,
+	sizeof(tnet_dhcp_option_sip_t),
+	tnet_dhcp_option_sip_create,
+	tnet_dhcp_option_sip_destroy,
 	0,
 };
-const void *tnet_dhcp_option_sip4_def_t = &tnet_dhcp_option_sip4_def_s;
+const void *tnet_dhcp_option_sip_def_t = &tnet_dhcp_option_sip_def_s;
