@@ -21,7 +21,7 @@
 */
 /**@file tnet_dhcp.h
  * @brief DHCP (RFC 2131 - Dynamic Host Configuration Protocol) utilities function for P-CSCF discovery(RFC 3319 and 3361)
- *		  Also implement: RFC 3315, 3319, ...
+ *		  Also implement: RFC 3315, 3118, 3319, 3825 (Geoconf), 4676 (Civic Addresses Configuration Information)...
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -56,6 +56,7 @@ TNET_BEGIN_DECLS
 
 #define TNET_DHCP_VENDOR_ID_DEFAULT				"doubango/v0.0.0"
 #define TNET_DHCP_MAX_CODES						20
+#define TNET_DHCP_MAX_MSG_SIZE					1500
 
 /** Parameter Request List (55)
 */
@@ -74,11 +75,10 @@ typedef struct tnet_dhcp_ctx_s
 	
 	char* vendor_id;
 	char* hostname;
+	uint16_t max_msg_size; /**< Option code 57. */
 
 	uint64_t timeout;
 
-	unsigned use_ipv6;
-	
 	tnet_port_t port_client; /**< Local port to bind to for incloming DHCP messages. Default: 68 */
 	tnet_port_t server_port; /**< Destination port for outgoing DHCP messages. Default: 64 */
 	tnet_interfaces_L_t *interfaces;

@@ -126,6 +126,17 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const struct tnet_dhcp_ctx_s *ctx, con
 		tnet_dhcp_option_serializeex(dhcp_code_Class_Id, strlen(ctx->vendor_id), ctx->vendor_id, output);
 	}
 
+	/*== RFC 2132 - 9.10. Maximum DHCP Message Size (57)
+		Code   Len     Length
+		+-----+-----+-----+-----+
+		|  57 |  2  |  l1 |  l2 |
+		+-----+-----+-----+-----+
+	*/
+	if(TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->max_msg_size){
+		_2bytes = ntohs(ctx->max_msg_size);
+		tnet_dhcp_option_serializeex(dhcp_code_DHCP_Max_Msg_Size, 2, &_2bytes, output);
+	}
+
 	/*== DHCP Options 
 	*/
 	{

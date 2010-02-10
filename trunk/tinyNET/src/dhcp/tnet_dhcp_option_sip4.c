@@ -65,7 +65,7 @@ static void* tnet_dhcp_option_sip4_create(void * self, va_list * app)
 			|'e'|'x'|'a'|'m'|'p'|'l'|'e'| 3 |'n'|'e'|'t'| 0 | +---+---+---
 			+---+---+---+---+---+---+---+---+---+---+
 			*/
-			size_t offset = 0;
+			size_t offset = 1;
 			char* server = 0;
 			payloadPtr++;
 			while((payloadPtr < payloadEnd) && !tnet_dns_rr_qname_deserialize(payload, (payloadEnd - payloadPtr), &server, &offset))
@@ -74,7 +74,6 @@ static void* tnet_dhcp_option_sip4_create(void * self, va_list * app)
 				tsk_list_push_back_data(option->servers, (void*)&string);
 				TSK_FREE(server);
 				payloadPtr += offset;
-				break;// FIXME ==> check that the while loop is correct
 			}
 		}
 		else{

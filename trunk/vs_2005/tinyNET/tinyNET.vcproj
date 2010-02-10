@@ -499,6 +499,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="dhcp6"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -660,6 +668,14 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip6.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="dhcp6"
+				>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6.h"
 					>
 				</File>
 			</Filter>
