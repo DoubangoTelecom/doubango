@@ -109,7 +109,7 @@ bail:
 	TSK_OBJECT_SAFE_FREE(reply);
 	TSK_OBJECT_SAFE_FREE(params);
 
-	tsk_thread_sleep(1000);
+	//tsk_thread_sleep(1000);
 }
 
 void test_dhcp()

@@ -21,7 +21,7 @@
 */
 /**@file tnet_dhcp.c
  * @brief DHCP/BOOTP (RFC 2131 - Dynamic Host Configuration Protocol) utilities function for P-CSCF discovery(RFC 3319 and 3361).
- *		  Also implement: RFC 3315, 3319, ...
+ *		  Also implement: RFC 3315, 3118, 3319, 3825 (Geoconf), 4676 (Civic Addresses Configuration Information) ...
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -39,6 +39,7 @@
 
 // Useful link: http://support.microsoft.com/?scid=kb%3Ben-us%3B169289&x=21&y=14
 // Another one: http://www.iana.org/assignments/bootp-dhcp-parameters/
+// Another one: http://www.slideshare.net/raini/DHCP-Presentation-v102
 // RFC 3319 Dynamic Host Configuration Protocol (DHCPv6) Options for Session Initiation Protocol (SIP) Servers
 // RFC 3361  Dynamic Host Configuration Protocol (DHCP-for-IPv4) Option for Session Initiation Protocol (SIP) Servers
 
@@ -52,44 +53,30 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 	int ret;
 	struct timeval tv;
 	fd_set set;
-	tnet_fd_t clientFD = TNET_INVALID_FD;
 	uint64_t timeout = 0;
 	tsk_list_item_t *item;
 	const tnet_interface_t *iface;
 	
 	tnet_socket_t *localsocket4 = 0;
-	tnet_socket_t *localsocket6 = 0;
 	struct sockaddr_storage server;
 	
 	if(!ctx || !request)
 	{
 		goto bail;
 	}
-
-	if(ctx->use_ipv6)
+	
+	localsocket4 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv4);
+	if(!TNET_SOCKET_IS_VALID(localsocket4))
 	{
-		localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv6);
-		if(TNET_SOCKET_IS_VALID(localsocket6))
-		{
-			clientFD = localsocket6->fd;
-		}
-		else goto bail;
-	}
-	else
-	{
-		localsocket4 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv4);
-		if(TNET_SOCKET_IS_VALID(localsocket4))
-		{
-			clientFD = localsocket4->fd;
-		}
-		else goto bail;
+		TSK_DEBUG_ERROR("Failed to create/bind DHCP client socket.");
+		goto bail;
 	}
 
-	/* Always wait for 500ms before retransmission */
+	/* Always wait for 200ms before retransmission */
 	tv.tv_sec = 0;
-	tv.tv_usec = (500 * 1000);
+	tv.tv_usec = (200 * 1000);
 
-	if(tnet_sockaddr_init("255.255.255.255"/* FIXME: IPv6 */, ctx->server_port, (ctx->use_ipv6 ? tnet_socket_type_udp_ipv6 : tnet_socket_type_udp_ipv4), &server))
+	if(tnet_sockaddr_init("255.255.255.255", ctx->server_port, tnet_socket_type_udp_ipv4, &server))
 	{
 		TNET_PRINT_LAST_ERROR("Failed to initialize the DHCP server address.");
 		goto bail;
@@ -102,7 +89,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 #else
 		int yes = 1;
 #endif
-		if(setsockopt(clientFD, SOL_SOCKET, SO_BROADCAST, (char*)&yes, sizeof(int)))
+		if(setsockopt(localsocket4->fd, SOL_SOCKET, SO_BROADCAST, (char*)&yes, sizeof(int)))
 		{
 			TSK_DEBUG_ERROR("Failed to enable broadcast option [errno=%d].", tnet_geterrno());
 			goto bail;
@@ -126,19 +113,14 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 
 			/* Set FD */
 			FD_ZERO(&set);
-			FD_SET(clientFD, &set);
+			FD_SET(localsocket4->fd, &set);
 		
 			/* ciaddr */
 			if(request->type == dhcp_type_inform){
 				struct sockaddr_storage ss;
-				if(!tnet_get_sockaddr(clientFD, &ss)){
-					if(ctx->use_ipv6){
-						// FIXME
-					}
-					else{
-						uint32_t addr = htonl((*((uint32_t*)&((struct sockaddr_in*)&ss)->sin_addr)));
-						memcpy(&request->ciaddr, &addr, 4);
-					}
+				if(!tnet_get_sockaddr(localsocket4->fd, &ss)){
+					uint32_t addr = htonl((*((uint32_t*)&((struct sockaddr_in*)&ss)->sin_addr)));
+					memcpy(&request->ciaddr, &addr, 4);
 				}
 			}
 
@@ -154,7 +136,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				goto next_iface;
 			}
 			/* Send the request to the DHCP server */
-			if((ret =tnet_sockfd_sendto(clientFD, (const struct sockaddr*)&server, output->data, output->size))<0)
+			if((ret =tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size))<0)
 			{
 				TNET_PRINT_LAST_ERROR("Failed to send DHCP request.");
 
@@ -162,7 +144,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				goto next_iface;
 			}
 			/* wait for response */
-			if((ret = select(clientFD+1, &set, NULL, NULL, &tv))<0)
+			if((ret = select(localsocket4->fd+1, &set, NULL, NULL, &tv))<0)
 			{	/* Error */
 				TNET_PRINT_LAST_ERROR("select have failed.");
 				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
@@ -177,14 +159,14 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				void* data = 0;
 
 				/* Check how how many bytes are pending */
-				if((ret = tnet_ioctlt(clientFD, FIONREAD, &len))<0)
+				if((ret = tnet_ioctlt(localsocket4->fd, FIONREAD, &len))<0)
 				{
 					goto next_iface;
 				}
 				
 				/* Receive pending data */
 				data = tsk_calloc(len, sizeof(uint8_t));
-				if((ret = tnet_sockfd_recv(clientFD, data, len, 0))<0)
+				if((ret = tnet_sockfd_recv(localsocket4->fd, data, len, 0))<0)
 				{
 					TSK_FREE(data);
 									
@@ -217,7 +199,6 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 
 bail:
 	TSK_OBJECT_SAFE_FREE(localsocket4);
-	TSK_OBJECT_SAFE_FREE(localsocket6);
 
 	return reply;
 }
@@ -278,6 +259,7 @@ static void* tnet_dhcp_ctx_create(void * self, va_list * app)
 			ctx->hostname = tsk_strndup(host, strlen(host));
 		}
 		ctx->timeout = TNET_DHCP_TIMEOUT_DEFAULT;
+		ctx->max_msg_size = TNET_DHCP_MAX_MSG_SIZE;
 		ctx->port_client = TNET_DHCP_CLIENT_PORT;
 		ctx->server_port = TNET_DHCP_SERVER_PORT;
 		ctx->interfaces = tnet_get_interfaces();
