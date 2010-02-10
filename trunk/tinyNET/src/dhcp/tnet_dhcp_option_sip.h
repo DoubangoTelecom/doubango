@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-/**@file tnet_dhcp_option_sip4.h
+/**@file tnet_dhcp_option_sip.h
  * @brief  Dynamic Host Configuration Protocol (DHCP-for-IPv4) Option for 
  *			Session Initiation Protocol (SIP) Servers as per RFC 3361.
  *
@@ -28,8 +28,8 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 
-#ifndef TNET_DHCP_OPTION_SIP4_H
-#define TNET_DHCP_OPTION_SIP4_H
+#ifndef tnet_dhcp_option_sip_H
+#define tnet_dhcp_option_sip_H
 
 #include "tinyNET_config.h"
 
@@ -39,9 +39,9 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP_OPTION_SIP4_CREATE(payload, payload_size)			tsk_object_new(tnet_dhcp_option_sip4_def_t, (const void*)payload, (size_t)payload_size)
+#define tnet_dhcp_option_sip_CREATE(payload, payload_size)			tsk_object_new(tnet_dhcp_option_sip_def_t, (const void*)payload, (size_t)payload_size)
 
-typedef struct tnet_dhcp_option_sip4_s
+typedef struct tnet_dhcp_option_sip_s
 {
 	TNET_DECLARE_DHCP_OPTION;
 
@@ -53,10 +53,10 @@ typedef struct tnet_dhcp_option_sip4_s
 	*/
 	tsk_strings_L_t *servers;
 }
-tnet_dhcp_option_sip4_t;
+tnet_dhcp_option_sip_t;
 
-TINYNET_GEXTERN const void *tnet_dhcp_option_sip4_def_t;
+TINYNET_GEXTERN const void *tnet_dhcp_option_sip_def_t;
 
 TNET_END_DECLS
 
-#endif /* #define TNET_DHCP_OPTION_SIP4_H */
+#endif /* #define tnet_dhcp_option_sip_H */
