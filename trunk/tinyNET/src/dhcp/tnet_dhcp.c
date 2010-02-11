@@ -244,7 +244,7 @@ int tnet_dhcp_params_add_code(tnet_dhcp_params_t* params, tnet_dhcp_option_code_
 
 
 
-//========================================================
+//=================================================================================================
 //	[[DHCP CONTEXT]] object definition
 //
 static void* tnet_dhcp_ctx_create(void * self, va_list * app)
@@ -298,7 +298,7 @@ static const tsk_object_def_t tnet_dhcp_ctx_def_s =
 };
 const void *tnet_dhcp_ctx_def_t = &tnet_dhcp_ctx_def_s;
 
-//========================================================
+//=================================================================================================
 //	[[DHCP PARAMS]] object definition
 //
 static void* tnet_dhcp_params_create(void * self, va_list * app)

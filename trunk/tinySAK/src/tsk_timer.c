@@ -334,7 +334,7 @@ peek_first:
 
 
 
-//========================================================
+//=================================================================================================
 //	Timer object definition
 //
 static void* tsk_timer_manager_create(void * self, va_list * app)
@@ -381,7 +381,7 @@ const void * tsk_timer_manager_def_t = &tsk_timer_manager_def_s;
 
 
 
-//========================================================
+//=================================================================================================
 //	Timer object definition
 //
 static void* tsk_timer_create(void * self, va_list * app)

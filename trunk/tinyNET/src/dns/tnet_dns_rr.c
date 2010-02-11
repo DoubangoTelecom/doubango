@@ -471,7 +471,7 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 }
 
 
-//========================================================
+//=================================================================================================
 //	[[DNS RR]] object definition
 //
 static void* tnet_dns_rr_create(void * self, va_list * app)

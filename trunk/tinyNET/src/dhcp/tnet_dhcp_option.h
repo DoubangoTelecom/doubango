@@ -235,14 +235,16 @@ typedef tsk_list_t tnet_dhcp_options_L_t;
 
 #define TNET_DECLARE_DHCP_OPTION tnet_dhcp_option_t dhcp_option
 
-int tnet_dhcp_option_init(tnet_dhcp_option_t *option, tnet_dhcp_option_code_t code);
-int tnet_dhcp_option_deinit(tnet_dhcp_option_t *option);
+int tnet_dhcp_option_init(tnet_dhcp_option_t *self, tnet_dhcp_option_code_t code);
+int tnet_dhcp_option_deinit(tnet_dhcp_option_t *self);
 
 tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, size_t size);
-int tnet_dhcp_option_serialize(const tnet_dhcp_option_t* option, tsk_buffer_t *output);
+int tnet_dhcp_option_serialize(const tnet_dhcp_option_t* self, tsk_buffer_t *output);
 int tnet_dhcp_option_serializeex(tnet_dhcp_option_code_t code, uint8_t length, const void* value, tsk_buffer_t *output);
 
-
+/*=======================================================================================
+*	RFC 2132 - 9.8. Parameter Request List
+*=======================================================================================*/
 
 /** Parameter Request List Option */
 typedef struct tnet_dhcp_option_paramslist_s
@@ -258,6 +260,10 @@ typedef struct tnet_dhcp_option_paramslist_s
 }
 tnet_dhcp_option_paramslist_t;
 int tnet_dhcp_option_paramslist_add_code(tnet_dhcp_option_paramslist_t* self, tnet_dhcp_option_code_t code);
+
+/*=======================================================================================
+*	RFC 2132 - 3.8. Domain Name Server Option
+*=======================================================================================*/
 
 /** Domain Name Server Option */
 typedef struct tnet_dhcp_option_dns_s
@@ -275,20 +281,11 @@ typedef struct tnet_dhcp_option_dns_s
 tnet_dhcp_option_dns_t;
 
 
-
+TINYNET_GEXTERN const void *tnet_dhcp_option_def_t;
 TINYNET_GEXTERN const void *tnet_dns_ns_def_t;
 TINYNET_GEXTERN const void *tnet_dhcp_option_paramslist_def_t;
 TINYNET_GEXTERN const void *tnet_dhcp_option_dns_def_t;
 
-
-
-
-
-
-
-
-
-TINYNET_GEXTERN const void *tnet_dhcp_option_def_t;
 
 TNET_END_DECLS
 

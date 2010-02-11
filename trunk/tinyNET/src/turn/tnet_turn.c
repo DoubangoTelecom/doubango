@@ -536,7 +536,7 @@ int tnet_turn_add_permission(const tnet_nat_context_t* nat_context, tnet_turn_al
 	return -1;
 }
 
-//========================================================
+//=================================================================================================
 //	TURN CHANNEL-BINDING object definition
 //
 static void* tnet_turn_channel_binding_create(void * self, va_list * app)
@@ -578,7 +578,7 @@ static const tsk_object_def_t tnet_turn_channel_binding_def_s =
 };
 const void *tnet_turn_channel_binding_def_t = &tnet_turn_channel_binding_def_s;
 
-//========================================================
+//=================================================================================================
 //	TURN PERMISSION object definition
 //
 static void* tnet_turn_permission_create(void * self, va_list * app)
@@ -613,7 +613,7 @@ const void *tnet_turn_permission_def_t = &tnet_turn_permission_def_s;
 
 
 
-//========================================================
+//=================================================================================================
 //	TURN ALLOCATION object definition
 //
 static void* tnet_turn_allocation_create(void * self, va_list * app)

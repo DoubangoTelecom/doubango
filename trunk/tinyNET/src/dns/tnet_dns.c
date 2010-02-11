@@ -431,7 +431,7 @@ bail:
 }
 
 
-//========================================================
+//=================================================================================================
 //	[[DNS CACHE ENTRY]] object definition
 //
 static void* tnet_dns_cache_entry_create(void * self, va_list * app)
@@ -469,7 +469,7 @@ static const tsk_object_def_t tnet_dns_cache_entry_def_s =
 const void *tnet_dns_cache_entry_def_t = &tnet_dns_cache_entry_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[DNS CONTEXT]] object definition
 //
 static void* tnet_dns_ctx_create(void * self, va_list * app)

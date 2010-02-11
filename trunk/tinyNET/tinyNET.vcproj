@@ -501,6 +501,18 @@
 					RelativePath=".\src\dhcp6\tnet_dhcp6.c"
 					>
 				</File>
+				<File
+					RelativePath=".\src\dhcp6\tnet_dhcp6_duid.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp6\tnet_dhcp6_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp6\tnet_dhcp6_option.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -671,6 +683,18 @@
 				>
 				<File
 					RelativePath=".\src\dhcp6\tnet_dhcp6.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp6\tnet_dhcp6_duid.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp6\tnet_dhcp6_message.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dhcp6\tnet_dhcp6_option.h"
 					>
 				</File>
 			</Filter>

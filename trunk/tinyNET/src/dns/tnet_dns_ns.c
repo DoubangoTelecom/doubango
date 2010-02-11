@@ -31,7 +31,7 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
-//========================================================
+//=================================================================================================
 //	[[DNS NS]] object definition
 //
 static void* tnet_dns_ns_create(void * self, va_list * app)

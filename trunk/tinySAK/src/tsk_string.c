@@ -424,7 +424,7 @@ void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex)
 
 
 
-//========================================================
+//=================================================================================================
 //	String object definition
 //
 static void* tsk_string_create(void * self, va_list * app)

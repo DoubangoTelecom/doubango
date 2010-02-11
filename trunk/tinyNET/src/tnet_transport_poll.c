@@ -20,8 +20,8 @@
 *
 */
 
-/**@file tnet_transport_32.c
- * @brief Network transport layer for WIN32 and WINCE systems.
+/**@file tnet_transport_poll.c
+ * @brief Network transport layer using polling.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *

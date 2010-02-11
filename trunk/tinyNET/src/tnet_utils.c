@@ -515,7 +515,6 @@ int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, soc
 
 int tnet_gethostname(tnet_host_t* result)
 {
-
 	return gethostname(*result, sizeof(*result));
 }
 
@@ -605,7 +604,7 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 		goto bail;
 	}
 
-#if TNET_USE_POLL
+#if TNET_USE_POLL /* For win32 WSA* function the socket is auto. set to nonblocking mode. */
 	if((status = tnet_sockfd_set_nonblocking(*fd)))
 	{
 		goto bail;
@@ -776,7 +775,7 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 
 
 
-//========================================================
+//=================================================================================================
 //	INTERFACE object definition
 //
 static void* tnet_interface_create(void * self, va_list * app)
@@ -834,7 +833,7 @@ const void *tnet_interface_def_t = &tnet_interface_def_s;
 
 
 
-//========================================================
+//=================================================================================================
 //	ADDRESS object definition
 //
 static void* tnet_address_create(void * self, va_list * app)

@@ -203,7 +203,7 @@ int tsk_buffer_cleanup(tsk_buffer_t* self)
 
 
 
-//========================================================
+//=================================================================================================
 //	Buffer object definition
 //
 static void* tsk_buffer_create(void * self, va_list * app)
