@@ -46,6 +46,8 @@ typedef struct tnet_interface_s
 {
 	TSK_DECLARE_OBJECT;
 	
+	unsigned index;
+
 	char* description;
 	uint8_t* mac_address;
 	size_t mac_address_length;
@@ -101,6 +103,9 @@ TINYNET_API int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tne
 
 TINYNET_API int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
 TINYNET_API int tnet_gethostname(tnet_host_t* result);
+
+TINYNET_API int tnet_sockfd_joingroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index);
+TINYNET_API int tnet_sockfd_leavegroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index);
 
 TINYNET_API int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, tnet_socket_type_t type, struct sockaddr_storage *ai_addr, int *ai_family, int *ai_socktype, int *ai_protocol);
 TINYNET_API int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_socket_type_t type, struct sockaddr_storage *addr);

@@ -162,7 +162,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		hints.ai_family = TNET_SOCKET_TYPE_IS_IPV6(sock->type) ? AF_INET6 : AF_INET;
 		hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? SOCK_STREAM : SOCK_DGRAM;
 		hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? IPPROTO_TCP : IPPROTO_UDP;
-		hints.ai_flags = AI_PASSIVE; /* Bind to the local machine. */
+		hints.ai_flags = AI_PASSIVE /*| AI_ADDRCONFIG*/; /* Bind to the local machine. */
 
 		/* Performs getaddrinfo */
 		if((status = tnet_getaddrinfo(local_hostname, port, &hints, &result)))

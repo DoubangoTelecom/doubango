@@ -111,6 +111,8 @@ static void* tnet_dhcp_option_sip_destroy(void * self)
 	{
 		/* deinit base */
 		tnet_dhcp_option_deinit(TNET_DHCP_OPTION(option));
+
+		TSK_OBJECT_SAFE_FREE(option->servers);
 	}
 	return self;
 }

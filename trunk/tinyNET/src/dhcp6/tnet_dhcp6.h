@@ -33,7 +33,21 @@
 
 #include "tinyNET_config.h"
 
+#include "tnet_dhcp6_message.h"
+
+#include "tnet_utils.h"
+
+#include "tsk_object.h"
+#include "tsk_safeobj.h"
+
 TNET_BEGIN_DECLS
+
+#define TNET_DHCP6_CTX_CREATE()			tsk_object_new(tnet_dhcp6_ctx_def_t)
+
+#define TNET_DHCP6_ENTERPRISE_NUM_DEFAULT			37627 /**< Will be replaced by a valid number. 
+	I've requested a number from IANA (http://pen.iana.org/pen/PenApplication.page). 
+	The list of assigned numbers could be found here http://www.iana.org/assignments/enterprise-numbers. */
+#define TNET_DHCP6_VENDOR_CLASS_DATA_DEFAULT			"doubango/v0.0.0"
 
 /** RFC 3315 - 5.1. Multicast Addresses
 *	A link-scoped multicast address used by a client to communicate with
@@ -87,6 +101,27 @@ TNET_BEGIN_DECLS
 #define TNET_DHCP6_CLIENT_PORT		546
 /**< Destination port(Server) for outgoing DHCP messages as per RFC 3315 subclause 5.2. */
 #define TNET_DHCP6_SERVER_PORT		547
+
+typedef struct tnet_dhcp6_ctx_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	uint16_t enterprise_number;
+	char* vendor_class_data;
+
+	uint64_t timeout;
+
+	tnet_port_t port_client; /**< Local port to bind to for incloming DHCPv6 messages. Default: 546 */
+	tnet_port_t server_port; /**< Destination port for outgoing DHCPv6 messages. Default: 547 */
+	tnet_interfaces_L_t *interfaces;
+	
+	TSK_DECLARE_SAFEOBJ;
+}
+tnet_dhcp6_ctx_t;
+
+TINYNET_API tnet_dhcp6_reply_t* tnet_dhcp6_requestinfo(const tnet_dhcp6_ctx_t* ctx, const tnet_dhcp6_option_orequest_t *orequest);
+
+TINYNET_GEXTERN const void *tnet_dhcp6_ctx_def_t;
 
 TNET_END_DECLS
 

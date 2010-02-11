@@ -28,3 +28,234 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tnet_dhcp6.h"
+
+#include "tsk_string.h"
+#include "tsk_debug.h"
+#include "tsk_memory.h"
+#include "tsk_time.h"
+#include "tsk_thread.h"
+
+
+
+tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dhcp6_request_t* request)
+{
+	tsk_buffer_t *output;
+	tnet_dhcp6_reply_t* reply = 0;
+	int ret;
+	struct timeval tv;
+	fd_set set;
+	uint64_t timeout = 0;
+	tsk_list_item_t *item;
+	const tnet_interface_t *iface;
+	
+	tnet_socket_t *localsocket6 = 0;
+	struct sockaddr_storage server;
+	
+	if(!ctx || !request)
+	{
+		goto bail;
+	}
+	
+	localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv6);
+	if(!TNET_SOCKET_IS_VALID(localsocket6))
+	{
+		TSK_DEBUG_ERROR("Failed to create/bind DHCPv6 client socket.");
+		goto bail;
+	}
+
+	/* Always wait for 200ms before retransmission */
+	tv.tv_sec = 0;
+	tv.tv_usec = (200 * 1000);
+
+	if(tnet_sockaddr_init(TNET_DHCP6_All_DHCP_Relay_Agents_and_Servers, ctx->server_port, tnet_socket_type_udp_ipv6, &server))
+	{
+		TNET_PRINT_LAST_ERROR("Failed to initialize the DHCPv6 server address.");
+		goto bail;
+	}
+
+	/* Set timeout */
+	timeout = tsk_time_epoch() + ctx->timeout;
+
+	do
+	{
+		tsk_list_foreach(item, ctx->interfaces)
+		{
+			iface = item->data;
+
+			/* Set FD */
+			FD_ZERO(&set);
+			FD_SET(localsocket6->fd, &set);
+			
+			///* ciaddr */
+			//if(request->type == dhcp_type_inform){
+			//	struct sockaddr_storage ss;
+			//	if(!tnet_get_sockaddr(localsocket4->fd, &ss)){
+			//		uint32_t addr = htonl((*((uint32_t*)&((struct sockaddr_in*)&ss)->sin_addr)));
+			//		memcpy(&request->ciaddr, &addr, 4);
+			//	}
+			//}
+
+			///* chaddr */
+			//memset(request->chaddr, 0, sizeof(request->chaddr));
+			//request->hlen = iface->mac_address_length > sizeof(request->chaddr) ? sizeof(request->chaddr) : iface->mac_address_length;
+			//memcpy(request->chaddr, iface->mac_address, request->hlen);
+
+			/* Serialize and send to the server. */
+			if(!(output = tnet_dhcp6_message_serialize(ctx, request)))
+			{
+				TSK_DEBUG_ERROR("Failed to serialize the DHCPv6 message.");
+				goto next_iface;
+			}
+			/* Send the request to the DHCP server */
+			if((ret =tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size))<0)
+			{
+				TNET_PRINT_LAST_ERROR("Failed to send DHCPv6 request.");
+
+				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
+				goto next_iface;
+			}
+			/* wait for response */
+			if((ret = select(localsocket6->fd+1, &set, NULL, NULL, &tv))<0)
+			{	/* Error */
+				TNET_PRINT_LAST_ERROR("select have failed.");
+				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
+				goto next_iface;
+			}
+			else if(ret == 0)
+			{	/* timeout ==> do nothing */
+			}
+			else
+			{	/* there is data to read. */
+				size_t len = 0;
+				void* data = 0;
+
+				/* Check how how many bytes are pending */
+				if((ret = tnet_ioctlt(localsocket6->fd, FIONREAD, &len))<0)
+				{
+					goto next_iface;
+				}
+				
+				/* Receive pending data */
+				data = tsk_calloc(len, sizeof(uint8_t));
+				if((ret = tnet_sockfd_recv(localsocket6->fd, data, len, 0))<0)
+				{
+					TSK_FREE(data);
+									
+					TNET_PRINT_LAST_ERROR("Failed to receive DHCP dgrams.");
+					goto next_iface;
+				}
+
+				/* Parse the incoming response. */
+				reply = tnet_dhcp6_message_deserialize(ctx, data, len);
+				TSK_FREE(data);
+				
+				if(reply)
+				{	/* response successfuly parsed */
+					if(request->transaction_id != reply->transaction_id)
+					{ /* Not same transaction id ==> continue*/
+						TSK_OBJECT_SAFE_FREE(reply);
+					}
+				}
+			}
+
+	next_iface:
+			TSK_OBJECT_SAFE_FREE(output);
+			if(reply){
+				goto bail;
+			}
+		}
+		break;//FIXME
+	}
+	while(timeout > tsk_time_epoch());
+
+bail:
+	TSK_OBJECT_SAFE_FREE(localsocket6);
+
+	return reply;
+}
+
+
+
+
+
+
+
+tnet_dhcp6_reply_t* tnet_dhcp6_requestinfo(const tnet_dhcp6_ctx_t* ctx, const tnet_dhcp6_option_orequest_t *orequest)
+{
+	tnet_dhcp6_reply_t* reply = 0;
+	tnet_dhcp6_request_t* request = TNET_DHCP6_REQUEST_CREATE(dhcp6_type_information_request);
+
+	if(!ctx || !orequest || !request)
+	{
+		goto bail;
+	}
+
+	orequest = tsk_object_ref((void*)orequest);
+	tsk_list_push_back_data(request->options, (void**)&orequest);
+
+	/* Vendor class */
+	{
+		
+	}
+
+	reply = tnet_dhcp6_send_request(ctx, request);
+
+bail:
+	TSK_OBJECT_SAFE_FREE(request);
+
+	return reply;
+}
+
+
+
+
+
+//=================================================================================================
+//	[[DHCPv6 CONTEXT]] object definition
+//
+static void* tnet_dhcp6_ctx_create(void * self, va_list * app)
+{
+	tnet_dhcp6_ctx_t *ctx = self;
+	if(ctx)
+	{
+		ctx->enterprise_number = TNET_DHCP6_ENTERPRISE_NUM_DEFAULT;
+		ctx->vendor_class_data = tsk_strdup(TNET_DHCP6_VENDOR_CLASS_DATA_DEFAULT);
+		
+		ctx->port_client = TNET_DHCP6_CLIENT_PORT;
+		ctx->server_port = TNET_DHCP6_SERVER_PORT;
+		ctx->interfaces = tnet_get_interfaces();
+
+		ctx->timeout = 0xffff; /* FIXME */
+		
+		if(!ctx->interfaces || TSK_LIST_IS_EMPTY(ctx->interfaces))
+		{
+			TSK_DEBUG_ERROR("Failed to retrieve network interfaces.");
+		}
+
+		tsk_safeobj_init(ctx);
+	}
+	return self;
+}
+
+static void* tnet_dhcp6_ctx_destroy(void * self) 
+{ 
+	tnet_dhcp6_ctx_t *ctx = self;
+	if(ctx)
+	{
+		tsk_safeobj_deinit(ctx);
+		
+		TSK_FREE(ctx->vendor_class_data);
+
+		TSK_OBJECT_SAFE_FREE(ctx->interfaces);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dhcp6_ctx_def_s =
+{
+	sizeof(tnet_dhcp6_ctx_t),
+	tnet_dhcp6_ctx_create,
+	tnet_dhcp6_ctx_destroy,
+	0,
+};
+const void *tnet_dhcp6_ctx_def_t = &tnet_dhcp6_ctx_def_s;

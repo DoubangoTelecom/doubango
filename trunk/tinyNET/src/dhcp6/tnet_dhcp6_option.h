@@ -32,35 +32,47 @@
 
 #include "tinyNET_config.h"
 
+#include "tnet_dhcp6_duid.h"
+
 #include "tsk_list.h"
 #include "tsk_buffer.h"
 
 TNET_BEGIN_DECLS
+
+#define TNET_DHCP6_OPTION_INDENTIFER_CREATE(code, payload, payload_size)		tsk_object_new(tnet_dhcp6_option_identifier_def_t, (tnet_dhcp6_option_code_t)code, (const void*)payload, (size_t)payload_size)
+#define TNET_DHCP6_OPTION_CLIENTID_CREATE(payload, payload_size)				TNET_DHCP6_OPTION_INDENTIFER_CREATE(dhcp6_code_clientid, payload, payload_size)
+#define TNET_DHCP6_OPTION_SERVERID_CREATE(payload, payload_size)				TNET_DHCP6_OPTION_INDENTIFER_CREATE(dhcp6_code_serverid, payload, payload_size)
+
+#define TNET_DHCP6_OPTION_OREQUEST_CREATE(payload, payload_size)				tsk_object_new(tnet_dhcp6_option_orequest_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_DHCP6_OPTION_OREQUEST_CREATE_NULL()								TNET_DHCP6_OPTION_OREQUEST_CREATE(0, 0)
+
+#define TNET_DHCP6_OPTION_VENDORCLASS_CREATE(payload, payload_size)				tsk_object_new(tnet_dhcp6_option_vendorclass_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_DHCP6_OPTION_VENDORCLASS_CREATE_NULL()								TNET_DHCP6_OPTION_OREQUEST_CREATE(0, 0)
 
 #define TNET_DHCP6_OPTION(self)							((tnet_dhcp6_option_t*)(self))
 
 /** List of DHCPv6 option as registered by IANA (RFC 3315 subcaluse 24.3)*/
 typedef enum tnet_dhcp6_option_code_e
 {
-	dhcp6_code_clientid = 1,	/**< OPTION_CLIENTID       1 */
-	dhcp6_code_serverid = 2,  /**<OPTION_SERVERID       2 */
-	dhcp6_code_ia_na = 3,  /**< OPTION_IA_NA          3 */
-	dhcp6_code_ia_ta = 4,  /**< OPTION_IA_TA          4 */
-	dhcp6_code_iaaddr = 5,  /**< OPTION_IAADDR         5 */
-	dhcp6_code_oro = 6,  /**< OPTION_ORO            6 */
-	dhcp6_code_preference = 7,  /**< OPTION_PREFERENCE     7 */
-	dhcp6_code_elapsed_time = 8,  /**< OPTION_ELAPSED_TIME   8 */
-	dhcp6_code_relay_msg = 9, /**< OPTION_RELAY_MSG      9 */
-	dhcp6_code_auth = 11,  /**< OPTION_AUTH           11 */
-	dhcp6_code_unicast = 12,  /**< OPTION_UNICAST        12 */
-	dhcp6_code_status_code = 13,  /**< OPTION_STATUS_CODE    13 */
-	dhcp6_code_rapid_commit = 14,  /**< OPTION_RAPID_COMMIT   14 */
-	dhcp6_code_user_class = 15,  /**< OPTION_USER_CLASS     15 */
-	dhcp6_code_vendor_class = 16,  /**< OPTION_VENDOR_CLASS   16 */
-	dhcp6_code_vendor_opts = 17,  /**< OPTION_VENDOR_OPTS    17 */
-	dhcp6_code_interface_id = 18,  /**< OPTION_INTERFACE_ID   18 */
-	dhcp6_code_reconf_msg = 19,  /**< OPTION_RECONF_MSG     19 */
-	dhcp6_code_reconf_accept = 20,  /**< OPTION_RECONF_ACCEPT  20 */
+	dhcp6_code_clientid = 1,	/**< Client Identifier Option. */
+	dhcp6_code_serverid = 2,  /**< Server Identifier Option. */
+	dhcp6_code_ia_na = 3,  /**< Identity Association for Non-temporary Addresses Option. */
+	dhcp6_code_ia_ta = 4,  /**< Identity Association for Temporary Addresses Option. */
+	dhcp6_code_iaaddr = 5,  /**< IA Address Option. */
+	dhcp6_code_oro = 6,  /**< Option Request Option. */
+	dhcp6_code_preference = 7,  /**< Preference Option. */
+	dhcp6_code_elapsed_time = 8,  /**< Elapsed Time Option. */
+	dhcp6_code_relay_msg = 9, /**< Relay Message Option. */
+	dhcp6_code_auth = 11,  /**< Authentication Option. */
+	dhcp6_code_unicast = 12,  /**< Server Unicast Option. */
+	dhcp6_code_status_code = 13,  /**< Status Code Option. */
+	dhcp6_code_rapid_commit = 14,  /**<  Rapid Commit Option. */
+	dhcp6_code_user_class = 15,  /**< User Class Option. */
+	dhcp6_code_vendor_class = 16,  /**< Vendor Class Option. */
+	dhcp6_code_vendor_opts = 17,  /**< Vendor-specific Information Option. */
+	dhcp6_code_interface_id = 18,  /**< Interface-Id Option. */
+	dhcp6_code_reconf_msg = 19,  /**< Reconfigure Message Option. */
+	dhcp6_code_reconf_accept = 20,  /**< Reconfigure Accept Option. */
 }
 tnet_dhcp6_option_code_t;
 
@@ -107,6 +119,8 @@ typedef struct tnet_dhcp6_option_s
 	
 	/* An unsigned integer identifying the specific option type carried in this option.*/
 	tnet_dhcp6_option_code_t code;
+	/* Option length. Same as strlen(data buffer)*/
+	uint16_t len;
 	/* The data for the option */
 	tsk_buffer_t *data;
 }
@@ -125,16 +139,99 @@ int tnet_dhcp6_option_serializeex(tnet_dhcp6_option_code_t code, uint8_t length,
 
 
 /*======================================================================================
-*	RFC 3315 - 22.2. Client Identifier Option
+*	RFC 3315 - 
+			22.2. Client Identifier Option
+			22.3. Server Identifier Option
 *=======================================================================================*/
+/**	DHCPv6 Client /server Identifier Option (subclause 22.2 and 22.3).
+*/
+typedef struct tnet_dhcp6_option_identifier_s
+{
+	TNET_DECLARE_DHCP6_OPTION;
+	/*
+	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|        OPTION_XXXXXXID        |          option-len           |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	.                                                               .
+	.                              DUID                             .
+	.                        (variable length)                      .
+	.                                                               .
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	OPTION_XXXXXXID = OPTION_CLIENTID or OPTION_SERVERID
+	*/
+	tnet_dhcp6_duid_t *duid;
+}
+tnet_dhcp6_option_identifier_t;
+typedef tnet_dhcp6_option_identifier_t tnet_dhcp6_option_clientid_t;
+typedef tnet_dhcp6_option_identifier_t tnet_dhcp6_option_serverid_t;
 
-/*=======================================================================================
-*	RFC 3315 - 22.3. Server Identifier Option
-*=======================================================================================*/
 
 /*======================================================================================
 *	RFC 3315 - 22.4. Identity Association for Non-temporary Addresses Option
 *=======================================================================================*/
+
+/*======================================================================================
+*	RFC 3315 - 22.7. Option Request Option
+*=======================================================================================*/
+
+TINYNET_API int tnet_dhcp6_option_orequest_add_code(struct tnet_dhcp6_option_orequest_s* self, uint16_t code);
+
+/**	DHCPv6 Option Request Option (subclause 22.7).
+*/
+typedef struct tnet_dhcp6_option_orequest_s
+{
+	TNET_DECLARE_DHCP6_OPTION;
+	/*
+	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|           OPTION_ORO          |           option-len          |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|    requested-option-code-1    |    requested-option-code-2    |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|                              ...                              |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	*/
+}
+tnet_dhcp6_option_orequest_t;
+
+/*======================================================================================
+*	RFC 3315 - 22.16. Vendor Class Option
+*=======================================================================================*/
+
+/**	DHCPv6 Vendor Class Option (subclause 22.16).
+*/
+typedef struct tnet_dhcp6_option_vendorclass_s
+{
+	TNET_DECLARE_DHCP6_OPTION;
+	/*
+	 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |      OPTION_VENDOR_CLASS      |           option-len          |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      |                       enterprise-number                       |
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+      .                                                               .
+      .                       vendor-class-data                       .
+      .                             . . .                             .
+      +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	*/
+	uint32_t enterprise_number;
+	/*
+	 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
+     |       vendor-class-len        |          opaque-data          |
+     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-...-+-+-+-+-+-+-+
+	*/
+	tsk_buffer_t* vendor_class_data;
+}
+tnet_dhcp6_option_vendorclass_t;
+
+TINYNET_GEXTERN const void *tnet_dhcp6_option_def_t;
+TINYNET_GEXTERN const void *tnet_dhcp6_option_identifier_def_t;
+TINYNET_GEXTERN const void *tnet_dhcp6_option_orequest_def_t;
+TINYNET_GEXTERN const void *tnet_dhcp6_option_vendorclass_def_t;
 
 TNET_END_DECLS
 
