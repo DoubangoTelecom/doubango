@@ -393,7 +393,11 @@ bail:
 **/
 int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res)
 {
-	return getaddrinfo(node, service, hints, res);
+	int ret;
+	if((ret = getaddrinfo(node, service, hints, res))){
+		TSK_DEBUG_ERROR("getaddrinfo failed: [%s]", tnet_gai_strerror(ret));
+	}
+	return ret;
 }
 
 /**

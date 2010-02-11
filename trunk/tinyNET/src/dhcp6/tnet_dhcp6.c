@@ -56,7 +56,7 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 		goto bail;
 	}
 	
-	localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv6);
+	localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY /*"fe80::283c:168a:5c70:81eb"*/, ctx->port_client, tnet_socket_type_udp_ipv6);
 	if(!TNET_SOCKET_IS_VALID(localsocket6))
 	{
 		TSK_DEBUG_ERROR("Failed to create/bind DHCPv6 client socket.");

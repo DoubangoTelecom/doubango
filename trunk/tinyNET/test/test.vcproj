@@ -376,6 +376,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_dhcp6.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_dns.h"
 				>
 			</File>
