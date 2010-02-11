@@ -240,7 +240,7 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 
 
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER]] object definition
 //
 static void* tnet_turn_attribute_channelnum_create(void * self, va_list * app)
@@ -281,7 +281,7 @@ const void *tnet_turn_attribute_channelnum_def_t = &tnet_turn_attribute_channeln
 
 
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.2.  LIFETIME]] object definition
 //
 static void* tnet_turn_attribute_lifetime_create(void * self, va_list * app)
@@ -318,7 +318,7 @@ const void *tnet_turn_attribute_lifetime_def_t = &tnet_turn_attribute_lifetime_d
 
 
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS]] object definition
 //
 static void* tnet_turn_attribute_xpeer_addr_create(void * self, va_list * app)
@@ -359,7 +359,7 @@ static const tsk_object_def_t tnet_turn_attribute_xpeer_addr_def_s =
 const void *tnet_turn_attribute_xpeer_addr_def_t = &tnet_turn_attribute_xpeer_addr_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.4.  DATA]] object definition
 //
 static void* tnet_turn_attribute_data_create(void * self, va_list * app)
@@ -399,7 +399,7 @@ static const tsk_object_def_t tnet_turn_attribute_data_def_s =
 };
 const void *tnet_turn_attribute_data_def_t = &tnet_turn_attribute_data_def_s;
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS]] object definition
 //
 static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app)
@@ -469,7 +469,7 @@ static const tsk_object_def_t tnet_turn_attribute_xrelayed_addr_def_s =
 const void *tnet_turn_attribute_xrelayed_addr_def_t = &tnet_turn_attribute_xrelayed_addr_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT]] object definition
 //
 static void* tnet_turn_attribute_even_port_create(void * self, va_list * app)
@@ -505,7 +505,7 @@ static const tsk_object_def_t tnet_turn_attribute_even_port_def_s =
 const void *tnet_turn_attribute_even_port_def_t = &tnet_turn_attribute_even_port_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT]] object definition
 //
 static void* tnet_turn_attribute_reqtrans_create(void * self, va_list * app)
@@ -541,7 +541,7 @@ static const tsk_object_def_t tnet_turn_attribute_reqtrans_def_s =
 const void *tnet_turn_attribute_reqtrans_def_t = &tnet_turn_attribute_reqtrans_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT]] object definition
 //
 static void* tnet_turn_attribute_dontfrag_create(void * self, va_list * app)
@@ -578,7 +578,7 @@ const void *tnet_turn_attribute_dontfrag_def_t = &tnet_turn_attribute_dontfrag_d
 
 
 
-//========================================================
+//=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN]] object definition
 //
 static void* tnet_turn_attribute_restoken_create(void * self, va_list * app)

@@ -390,7 +390,7 @@ int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self)
 
 
 
-//========================================================
+//=================================================================================================
 //	STUN2 MESSAGE object definition
 //
 static void* tnet_stun_message_create(void * self, va_list * app)

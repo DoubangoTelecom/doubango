@@ -33,7 +33,7 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
-//========================================================
+//=================================================================================================
 //	[[DNS SRV]] object definition
 //
 static void* tnet_dns_srv_create(void * self, va_list * app)

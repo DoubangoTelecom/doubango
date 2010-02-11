@@ -235,12 +235,12 @@ typedef tsk_list_t tnet_dhcp_messages_L_t;
 typedef tnet_dhcp_message_t tnet_dhcp_request_t; /**< BOOTREQUEST message. */
 typedef tnet_dhcp_message_t tnet_dhcp_reply_t; /**< BOOTREPLY message. */
 
-TINYNET_GEXTERN const void *tnet_dhcp_message_def_t;
-
 tsk_buffer_t* tnet_dhcp_message_serialize(const struct tnet_dhcp_ctx_s *ctx, const tnet_dhcp_message_t *self);
 tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, size_t size);
 const tnet_dhcp_option_t* tnet_dhcp_message_find_option(const tnet_dhcp_message_t *self, tnet_dhcp_option_code_t code);
 int tnet_dhcp_message_add_codes(tnet_dhcp_message_t *self, tnet_dhcp_option_code_t codes[], unsigned codes_count);
+
+TINYNET_GEXTERN const void *tnet_dhcp_message_def_t;
 
 TNET_END_DECLS
 

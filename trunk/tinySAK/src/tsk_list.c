@@ -562,7 +562,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 
 
 
-//========================================================
+//=================================================================================================
 //	Item object definition
 //
 static void* tsk_list_item_create(void * self, va_list * app)
@@ -602,7 +602,7 @@ static const tsk_object_def_t tsk_list_item_def_s =
 };
 const void *tsk_list_item_def_t = &tsk_list_item_def_s;
 
-//========================================================
+//=================================================================================================
 //	List object definition
 //
 static void* tsk_list_create(void *self, va_list *app)

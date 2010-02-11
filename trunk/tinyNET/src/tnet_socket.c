@@ -116,7 +116,7 @@ int tnet_socket_sendto(tnet_socket_t *socket, const struct sockaddr *to, const v
 
 
 
-//========================================================
+//=================================================================================================
 //	SOCKET object definition
 //
 static void* tnet_socket_create(void * self, va_list * app)

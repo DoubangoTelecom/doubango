@@ -268,7 +268,7 @@ bail:
 	return message;
 }
 
-//========================================================
+//=================================================================================================
 //	[[DNS MESSAGE]] object definition
 //
 static void* tnet_dns_message_create(void * self, va_list * app)

@@ -35,16 +35,29 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-int tnet_dhcp_option_init(tnet_dhcp_option_t *option, tnet_dhcp_option_code_t code)
+/**
+ * @fn	int tnet_dhcp_option_init(tnet_dhcp_option_t *self, tnet_dhcp_option_code_t code)
+ *
+ * @brief	Initializes DHCPv4 option. 
+ *
+ * @author	Mamadou
+ * @date	2/11/2010
+ *
+ * @param [in,out]	self	The option to initialize. 
+ * @param	code			The code of the option to initialize. 
+ *
+ * @return	Zero if succeed and non-zero error code otherwise.
+**/
+int tnet_dhcp_option_init(tnet_dhcp_option_t *self, tnet_dhcp_option_code_t code)
 {
-	if(option)
+	if(self)
 	{
-		if(!option->initialized)
+		if(!self->initialized)
 		{
-			option->code = code;
+			self->code = code;
 			//option->value = TSK_BUFFER_CREATE_NULL();
 			
-			option->initialized = 1;
+			self->initialized = 1;
 			return 0;
 		}
 		return -2;
@@ -52,15 +65,15 @@ int tnet_dhcp_option_init(tnet_dhcp_option_t *option, tnet_dhcp_option_code_t co
 	return -1;
 }
 
-int tnet_dhcp_option_deinit(tnet_dhcp_option_t *option)
+int tnet_dhcp_option_deinit(tnet_dhcp_option_t *self)
 {
-	if(option)
+	if(self)
 	{
-		if(option->initialized)
+		if(self->initialized)
 		{
-			TSK_OBJECT_SAFE_FREE(option->value);
+			TSK_OBJECT_SAFE_FREE(self->value);
 			
-			option->initialized = 0;
+			self->initialized = 0;
 			return 0;
 		}
 		return -2;
@@ -115,22 +128,22 @@ bail:
 	return option;
 }
 
-int tnet_dhcp_option_serialize(const tnet_dhcp_option_t* option, tsk_buffer_t *output)
+int tnet_dhcp_option_serialize(const tnet_dhcp_option_t* self, tsk_buffer_t *output)
 {
-	if(!option || !output)
+	if(!self || !output)
 	{
 		return -1;
 	}
 	
 	/* Code */
-	tsk_buffer_append(output, &(option->code), 1);
+	tsk_buffer_append(output, &(self->code), 1);
 	
-	if(option->value){
+	if(self->value){
 		/* Length */
-		tsk_buffer_append(output, &(option->value->size), 1);
+		tsk_buffer_append(output, &(self->value->size), 1);
 	
 		/* Value */
-		tsk_buffer_append(output, option->value->data, option->value->size);
+		tsk_buffer_append(output, self->value->data, self->value->size);
 	}
 	else{
 		/* Length */
@@ -188,9 +201,9 @@ const void *tnet_dhcp_option_def_t = &tnet_dhcp_option_def_s;
 
 
 
-/*=============================================
+/*=======================================================================================
 *	RFC 2132 - 9.8. Parameter Request List
-*==============================================*/
+*=======================================================================================*/
 int tnet_dhcp_option_paramslist_add_code(tnet_dhcp_option_paramslist_t* self, tnet_dhcp_option_code_t code)
 {
 	if(self){
@@ -237,9 +250,9 @@ static const tsk_object_def_t tnet_dhcp_option_paramslist_def_s =
 const void *tnet_dhcp_option_paramslist_def_t = &tnet_dhcp_option_paramslist_def_s;
 
 
-/*=============================================
+/*=======================================================================================
 *	RFC 2132 - 3.8. Domain Name Server Option
-*==============================================*/
+*=======================================================================================*/
 //
 //	[[DHCP OPTION - RFC 2132 3.8. Domain Name Server Option]] object definition
 //

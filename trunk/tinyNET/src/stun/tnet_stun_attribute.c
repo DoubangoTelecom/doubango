@@ -323,7 +323,7 @@ void tnet_stun_attribute_pad(const tnet_stun_attribute_t* attribute, tsk_buffer_
 
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.  STUN Attributes]] object definition
 //
 static void* tnet_stun_attribute_create(void * self, va_list * app)
@@ -356,7 +356,7 @@ static const tsk_object_def_t tnet_stun_attribute_def_s =
 const void *tnet_stun_attribute_def_t = &tnet_stun_attribute_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.1.  MAPPED-ADDRESS]] object definition
 //
 static void* tnet_stun_attribute_mapped_addr_create(void * self, va_list * app)
@@ -429,7 +429,7 @@ static const tsk_object_def_t tnet_stun_attribute_mapped_addr_def_s =
 };
 const void *tnet_stun_attribute_mapped_addr_def_t = &tnet_stun_attribute_mapped_addr_def_s;
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS]] object definition
 //
 static void* tnet_stun_attribute_xmapped_addr_create(void * self, va_list * app)
@@ -512,7 +512,7 @@ static const tsk_object_def_t tnet_stun_attribute_xmapped_addr_def_s =
 const void *tnet_stun_attribute_xmapped_addr_def_t = &tnet_stun_attribute_xmapped_addr_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.3.  USERNAME]] object definition
 //
 static void* tnet_stun_attribute_username_create(void * self, va_list * app)
@@ -551,7 +551,7 @@ static const tsk_object_def_t tnet_stun_attribute_username_def_s =
 const void *tnet_stun_attribute_username_def_t = &tnet_stun_attribute_username_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.4.  MESSAGE-INTEGRITY]] object definition
 //
 static void* tnet_stun_attribute_integrity_create(void * self, va_list * app)
@@ -593,7 +593,7 @@ static const tsk_object_def_t tnet_stun_attribute_integrity_def_s =
 const void *tnet_stun_attribute_integrity_def_t = &tnet_stun_attribute_integrity_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.5.  FINGERPRINT]] object definition
 //
 static void* tnet_stun_attribute_fingerprint_create(void * self, va_list * app)
@@ -630,7 +630,7 @@ const void *tnet_stun_attribute_fingerprint_def_t = &tnet_stun_attribute_fingerp
 
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.6.  ERROR-CODE]] object definition
 //
 static void* tnet_stun_attribute_errorcode_create(void * self, va_list * app)
@@ -677,7 +677,7 @@ static const tsk_object_def_t tnet_stun_attribute_errorcode_def_s =
 const void *tnet_stun_attribute_errorcode_def_t = &tnet_stun_attribute_errorcode_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.7.  REALM]] object definition
 //
 static void* tnet_stun_attribute_realm_create(void * self, va_list * app)
@@ -716,7 +716,7 @@ static const tsk_object_def_t tnet_stun_attribute_realm_def_s =
 const void *tnet_stun_attribute_realm_def_t = &tnet_stun_attribute_realm_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.8.  NONCE]] object definition
 //
 static void* tnet_stun_attribute_nonce_create(void * self, va_list * app)
@@ -755,7 +755,7 @@ static const tsk_object_def_t tnet_stun_attribute_nonce_def_s =
 const void *tnet_stun_attribute_nonce_def_t = &tnet_stun_attribute_nonce_def_s;
 
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES]] object definition
 //
 static void* tnet_stun_attribute_unknowns_create(void * self, va_list * app)
@@ -791,7 +791,7 @@ static const tsk_object_def_t tnet_stun_attribute_unknowns_def_s =
 };
 const void *tnet_stun_attribute_unknowns_def_t = &tnet_stun_attribute_unknowns_def_s;
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.10.  SOFTWARE]] object definition
 //
 static void* tnet_stun_attribute_software_create(void * self, va_list * app)
@@ -829,7 +829,7 @@ static const tsk_object_def_t tnet_stun_attribute_software_def_s =
 };
 const void *tnet_stun_attribute_software_def_t = &tnet_stun_attribute_software_def_s;
 
-//========================================================
+//=================================================================================================
 //	[[RFC 5389 - 15.11.  ALTERNATE-SERVER]] object definition
 //
 static void* tnet_stun_attribute_altserver_create(void * self, va_list * app)

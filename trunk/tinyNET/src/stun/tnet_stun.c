@@ -401,7 +401,7 @@ int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_tra
 
 
 
-//========================================================
+//=================================================================================================
 //	STUN2 BINDING object definition
 //
 static void* tnet_stun_binding_create(void * self, va_list * app)
