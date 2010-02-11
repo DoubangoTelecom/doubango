@@ -27,10 +27,62 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tnet_dhcp6_message.h"
+#include "tnet_dhcp6.h"
 
+#include "tsk_debug.h"
 
+tsk_buffer_t* tnet_dhcp6_message_serialize(const tnet_dhcp6_ctx_t *ctx, const tnet_dhcp6_message_t *self)
+{
+	tsk_buffer_t* output = 0;
+	//uint8_t _1byte;
+	uint16_t _2bytes;
+	uint32_t _4bytes;
+	
+	/* Check message validity */
+	if(!self){
+		goto bail;
+	}
 
+	output = TSK_BUFFER_CREATE_NULL();
 
+	/*== msg-type + transaction-id */
+	_4bytes = (((uint32_t)(self->type)) << 24) | (self->transaction_id & 0xFFFFFF);
+	_4bytes = ntohl(_4bytes);
+	tsk_buffer_append(output, &(_4bytes), 4);
+
+	/*== Vendor class
+	*/
+	{
+		_2bytes = htons(dhcp6_code_vendor_class);
+		tsk_buffer_append(output, &(_2bytes), 2);
+		_2bytes = htons(4 + strlen(ctx->vendor_class_data));
+		tsk_buffer_append(output, &(_2bytes), 2);
+		_4bytes = ntohl(ctx->enterprise_number);
+		tsk_buffer_append(output, &(_4bytes), 4);
+		tsk_buffer_append(output, ctx->vendor_class_data, strlen(ctx->vendor_class_data));
+	}
+
+	/*== DHCP Options
+	*/
+	{
+		tsk_list_item_t *item;
+		tnet_dhcp6_option_t* option;
+		tsk_list_foreach(item, self->options)
+		{
+			option = (tnet_dhcp6_option_t*)item->data;
+			if(tnet_dhcp6_option_serialize(option, output)){
+				TSK_DEBUG_WARN("Failed to serialize DHCPv6 OPTION (%u)", option->code);
+			}
+		}
+	}
+bail:
+	return output;
+}
+
+tnet_dhcp6_message_t* tnet_dhcp6_message_deserialize(const tnet_dhcp6_ctx_t *ctx, const uint8_t *data, size_t size)
+{
+	return 0;
+}
 
 
 

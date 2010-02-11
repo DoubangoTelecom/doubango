@@ -33,6 +33,7 @@
 #include "tinyNET_config.h"
 
 #include "tnet_dhcp_option.h"
+#include "tnet_hardwares.h"
 
 #include "tsk_buffer.h"
 
@@ -100,30 +101,6 @@ typedef enum tnet_dhcp_message_type_e
 }
 tnet_dhcp_message_type_t;
 
-/**
-* DHCP hardward types as per RFC 1340.
-*/
-typedef enum tnet_dhcp_message_htype_e
-{
-	dhcp_htype_Ethernet_10Mb = 1, /**<    Ethernet (10Mb) */
-	dhcp_htype_Ethernet_3Mb = 2, /**<     Experimental Ethernet (3Mb) */
-	dhcp_htype_AX_25 = 3, /**<     Amateur Radio AX.25 */
-	dhcp_htype_Token_Ring = 4, /**<     Proteon ProNET Token Ring */
-	dhcp_htype_Chaos = 5, /**<     Chaos */
-	dhcp_htype_IEEE_802_Networks = 6, /**<     IEEE 802 Networks */
-	dhcp_htype_ARCNET = 7, /**<     ARCNET */
-	dhcp_htype_Hyperchannel = 8, /**<     Hyperchannel */
-	dhcp_htype_Lanstar = 9, /**<     Lanstar	 */
-	dhcp_htype_Autonet_Short_Address  = 10, /**<     Autonet Short Address */
-	dhcp_htype_ALocalTalk = 11, /**<     LocalTalk	 */
-	dhcp_htype_LocalNet= 12, /**<     LocalNet (IBM PCNet or SYTEK LocalNET)	 */
-	dhcp_htype_Ultra_link =  13, /**<     Ultra link */
-	dhcp_htype_SMDS = 14, /**<     SMDS	 */
-	dhcp_htype_Frame_Relay = 15, /**<     Frame Relay	 */
-	dhcp_htype_ATM = 16, /**<     Asynchronous Transmission Mode (ATM) */
-}
-tnet_dhcp_message_htype_t;
-
 /** DHCP message OP code / message type.
 */
 typedef enum tnet_dhcp_message_op_e
@@ -183,7 +160,7 @@ typedef struct tnet_dhcp_message_s
 	/**< Hardware address type, see ARP section in "Assigned Numbers" RFC; e.g., '1' = 10mb ethernet. 
 		For more information see RFC 1340.
 	*/
-    tnet_dhcp_message_htype_t htype;
+    tnet_hardware_type_t htype;
 	/**< Hardware address length (e.g.  '6' for 10mb ethernet). strlen(chaddr).
 	*/
     uint8_t hlen;

@@ -103,7 +103,7 @@ tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, size_t size)
 	{
 	case dhcp_code_SIP_Servers_DHCP_Option:
 		{
-			option = tnet_dhcp_option_sip_CREATE(dataPtr, len);
+			option = TNET_DHCP_OPTION_SIP_CREATE(dataPtr, len);
 			break;
 		}
 

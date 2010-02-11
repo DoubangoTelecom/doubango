@@ -491,11 +491,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip4.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip6.c"
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip.c"
 					>
 				</File>
 			</Filter>
@@ -504,6 +500,18 @@
 				>
 				<File
 					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6_duid.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6_message.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6_option.c"
 					>
 				</File>
 			</Filter>
@@ -521,6 +529,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyNET\src\tnet_auth.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyNET\src\tnet_hardwares.h"
 				>
 			</File>
 			<File
@@ -663,11 +675,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip4.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip6.h"
+					RelativePath="..\..\tinyNET\src\dhcp\tnet_dhcp_option_sip.h"
 					>
 				</File>
 			</Filter>
@@ -676,6 +684,18 @@
 				>
 				<File
 					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6_duid.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6_message.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyNET\src\dhcp6\tnet_dhcp6_option.h"
 					>
 				</File>
 			</Filter>

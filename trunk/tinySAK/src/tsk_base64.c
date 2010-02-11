@@ -38,7 +38,7 @@
 #define TSK_BASE64_ENCODE_BLOCK_SIZE	3 /* 24-bit input group */
 #define TSK_BASE64_DECODE_BLOCK_SIZE	4
 
-====================================================================================================================================================
+/*==================================================================
      Value Encoding  Value Encoding  Value Encoding  Value Encoding
          0 A            17 R            34 i            51 z
          1 B            18 S            35 j            52 0
@@ -76,7 +76,7 @@ size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output)
 {
 	static const char* TSK_BASE64_ENCODE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-	==================================================================================================================================================================
+	/*=================================================================================
 		content					T					S					K
 		ASCII					0x54				0x53				0x4B
 		Binary					0101 0100			0101 0011			0100 1011

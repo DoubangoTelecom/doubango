@@ -30,6 +30,7 @@
 #include "stun/tnet_stun.h"
 #include "dns/tnet_dns.h"
 #include "dhcp/tnet_dhcp.h"
+#include "dhcp6/tnet_dhcp6.h"
 
 #include "test_sockets.h"
 #include "test_transport.h"
@@ -39,6 +40,7 @@
 #include "test_ifaces.h"
 #include "test_dns.h"
 #include "test_dhcp.h"
+#include "test_dhcp6.h"
 
 #define RUN_TEST_LOOP		1
 
@@ -50,7 +52,8 @@
 #define RUN_TEST_NAT		0
 #define RUN_TEST_IFACES		0
 #define RUN_TEST_DNS		0
-#define RUN_TEST_DHCP		1
+#define RUN_TEST_DHCP		0
+#define RUN_TEST_DHCP6		1
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -99,6 +102,10 @@ int main()
 
 #if RUN_TEST_ALL || RUN_TEST_DHCP
 		test_dhcp();
+#endif
+
+#if RUN_TEST_ALL || RUN_TEST_DHCP6
+		test_dhcp6();
 #endif
 
 	}	

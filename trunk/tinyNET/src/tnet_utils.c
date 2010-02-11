@@ -136,6 +136,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 		while(pAdapter) 
 		{
 			tnet_interface_t *iface = TNET_INTERFACE_CREATE(pAdapter->Description, pAdapter->Address, pAdapter->AddressLength);
+			iface->index = pAdapter->Index;
 			tsk_list_push_back_data(ifaces, &(iface));
 			
 			pAdapter = pAdapter->Next;
@@ -202,6 +203,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 				{
 					tnet_interface_t *iface = TNET_INTERFACE_CREATE(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
 					tsk_list_push_back_data(ifaces, (void**)&(iface));
+					index
 				}
 			}
 		 }
@@ -518,6 +520,37 @@ int tnet_gethostname(tnet_host_t* result)
 	return gethostname(*result, sizeof(*result));
 }
 
+int tnet_sockfd_joingroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index)
+{
+	int ret = -1;
+	//struct ipv6_mreq mreq6;
+	//struct sockaddr_storage ss;
+
+	//if((ret = tnet_sockaddr_init(multiaddr, 0, tnet_socket_type_udp_ipv6, &ss)))
+	//{
+	//	return ret;
+	//}
+
+	//memcpy(&mreq6.ipv6mr_multiaddr, &((struct sockaddr_in6 *) &ss)->sin6_addr, sizeof(struct in6_addr));
+	//mreq6.ipv6mr_interface = iface_index;
+
+	//if((ret = setsockopt(fd, IPPROTO_IPV6, IPV6_JOIN_GROUP, (const char*)&mreq6, sizeof(mreq6))))
+	//{
+	//	TNET_PRINT_LAST_ERROR("Failed to join IPv6 multicast group.");
+	//	return ret;
+	//}
+
+	return ret;
+}
+
+int tnet_sockfd_leavegroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index)
+{
+	//if(multiaddr)
+	{
+	}
+	return -1;
+}
+
 int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, struct sockaddr_storage *ai_addr, int *ai_family, int *ai_socktype, int *ai_protocol)
 {
 	int status = 0;
@@ -533,7 +566,7 @@ int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_
 	hints.ai_family = TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET;
 	hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(type) ? SOCK_STREAM : SOCK_DGRAM;
 	hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(type) ? IPPROTO_TCP : IPPROTO_UDP;
-	hints.ai_flags = AI_PASSIVE; /* Bind to the local machine. */
+	//--hints.ai_flags = AI_PASSIVE;
 
 	/* Performs getaddrinfo */
 	if((status = tnet_getaddrinfo(host, p, &hints, &result)))
@@ -677,7 +710,9 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 #if TNET_HAVE_SS_LEN
 	return sendto(fd, buf, size, 0, to, to->ss_len);
 #else
-	return sendto(fd, buf, size, 0, to, sizeof(*to));
+	//return sendto(fd, buf, size, 0, to, sizeof(*to));
+	return sendto(fd, buf, size, 0, to, 
+		to->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6): (to->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(*to))); //FIXME: why sizeof(*to) don't work for IPv6 on XP?
 #endif
 }
 

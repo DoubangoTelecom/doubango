@@ -44,8 +44,7 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const struct tnet_dhcp_ctx_s *ctx, con
 	uint32_t _4bytes;
 	
 	/* Check message validity */
-	if(!message)
-	{
+	if(!message){
 		goto bail;
 	}
 
@@ -310,7 +309,7 @@ static void* tnet_dhcp_message_create(void * self, va_list * app)
 		static uint32_t __dhcpmessage_unique_xid = 0;//(uint32_t)tsk_time_epoch();
 
 		message->op = va_arg(*app, tnet_dhcp_message_op_t);
-		message->htype = dhcp_htype_Ethernet_10Mb;
+		message->htype = tnet_htype_Ethernet_10Mb;
 		message->hlen = 0x06;
 
 		message->xid = ++(__dhcpmessage_unique_xid);

@@ -39,7 +39,7 @@
 
 TNET_BEGIN_DECLS
 
-#define tnet_dhcp_option_sip_CREATE(payload, payload_size)			tsk_object_new(tnet_dhcp_option_sip_def_t, (const void*)payload, (size_t)payload_size)
+#define TNET_DHCP_OPTION_SIP_CREATE(payload, payload_size)			tsk_object_new(tnet_dhcp_option_sip_def_t, (const void*)payload, (size_t)payload_size)
 
 typedef struct tnet_dhcp_option_sip_s
 {

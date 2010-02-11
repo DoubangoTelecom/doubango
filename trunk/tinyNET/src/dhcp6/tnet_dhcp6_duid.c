@@ -27,3 +27,258 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tnet_dhcp6_duid.h"
+
+#include "tnet_types.h"
+
+int tnet_dhcp6_duid_llt_serialize(const tnet_dhcp6_duid_llt_t* self, tsk_buffer_t *output);
+int tnet_dhcp6_duid_en_serialize(const tnet_dhcp6_duid_en_t* self, tsk_buffer_t *output);
+int tnet_dhcp6_duid_ll_serialize(const tnet_dhcp6_duid_ll_t* self, tsk_buffer_t *output);
+
+int tnet_dhcp6_duid_init(tnet_dhcp6_duid_t *self, tnet_dhcp6_duid_type_t type)
+{
+	if(self)
+	{
+		if(!self->initialized)
+		{
+			self->type = type;			
+			self->initialized = 1;
+			return 0;
+		}
+		return -2;
+	}
+	return -1;
+}
+
+int tnet_dhcp6_duid_deinit(tnet_dhcp6_duid_t *self)
+{
+	if(self)
+	{
+		if(self->initialized)
+		{			
+			self->initialized = 0;
+			return 0;
+		}
+		return -2;
+	}
+	return -1;
+}
+
+tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, size_t size)
+{
+	tnet_dhcp6_duid_t *duid = 0;
+	uint8_t* dataPtr = ((uint8_t*)data);
+	uint8_t* dataEnd = (dataPtr+size);
+
+	tnet_dhcp6_duid_type_t type;
+	uint8_t len = 0;
+
+	/* Check validity */
+	if(!dataPtr || size<2/*Type*/)
+	{
+		goto bail;
+	}
+
+	type = (tnet_dhcp6_duid_type_t) ntohs(*((uint16_t*)dataPtr));
+	dataPtr += 2;
+
+bail:
+	return duid;
+}
+
+int tnet_dhcp6_duid_serialize(const tnet_dhcp6_duid_t* self, tsk_buffer_t *output)
+{
+	int ret = -1;
+
+	if(!self || !output)
+	{
+		return ret;
+	}
+
+	switch(self->type)
+	{
+	case dhcp6_duid_linklayer_plus_time:
+		{
+			ret = tnet_dhcp6_duid_llt_serialize(TNET_DHCP6_DUID_LLT(self), output);
+			break;
+		}
+
+	case dhcp6_duid_Vendor_assigned_id:
+		{
+			ret = tnet_dhcp6_duid_en_serialize(TNET_DHCP6_DUID_EN(self), output);
+			break;
+		}
+
+	case dhcp6_duid_linklayer:
+		{
+			ret = tnet_dhcp6_duid_ll_serialize(TNET_DHCP6_DUID_LL(self), output);
+			break;
+		}
+
+	default:
+		{
+			ret = -2;
+			goto bail;
+		}
+	}
+
+bail:
+	return ret;
+}
+
+/*=======================================================================================
+*	RFC 3315 - 9.2. DUID Based on Link-layer Address Plus Time [DUID-LLT]
+*=======================================================================================*/
+
+int tnet_dhcp6_duid_llt_serialize(const tnet_dhcp6_duid_llt_t* self, tsk_buffer_t *output)
+{
+	return -1;
+}
+
+//
+//	[[DHCPv6 DUID-LLT]] object definition
+//
+static void* tnet_dhcp6_duid_llt_create(void * self, va_list * app)
+{
+	tnet_dhcp6_duid_llt_t *duid = self;
+	if(duid)
+	{
+		const void* payload = va_arg(*app, const void*);
+		size_t payload_size = va_arg(*app, size_t);
+
+		/* init base */
+		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_linklayer_plus_time);
+
+		if(payload && payload_size)
+		{ /* DESERIALIZATION */
+		}
+	}
+	return self;
+}
+
+static void* tnet_dhcp6_duid_llt_destroy(void * self) 
+{ 
+	tnet_dhcp6_duid_llt_t *duid = self;
+	if(duid)
+	{
+		/* deinit base */
+		tnet_dhcp6_duid_deinit(TNET_DHCP6_DUID(duid));
+
+		TSK_OBJECT_SAFE_FREE(duid->address);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dhcp6_duid_llt_def_s =
+{
+	sizeof(tnet_dhcp6_duid_llt_t),
+	tnet_dhcp6_duid_llt_create,
+	tnet_dhcp6_duid_llt_destroy,
+	0,
+};
+const void *tnet_dhcp6_duid_llt_def_t = &tnet_dhcp6_duid_llt_def_s;
+
+
+/*=======================================================================================
+*	RFC 3315 - 9.3. DUID Assigned by Vendor Based on Enterprise Number [DUID-EN]
+*=======================================================================================*/
+
+int tnet_dhcp6_duid_en_serialize(const tnet_dhcp6_duid_en_t* self, tsk_buffer_t *output)
+{
+	return -1;
+}
+
+//
+//	[[DHCPv6 DUID-EN]] object definition
+//
+static void* tnet_dhcp6_duid_en_create(void * self, va_list * app)
+{
+	tnet_dhcp6_duid_en_t *duid = self;
+	if(duid)
+	{
+		const void* payload = va_arg(*app, const void*);
+		size_t payload_size = va_arg(*app, size_t);
+
+		/* init base */
+		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_Vendor_assigned_id);
+
+		if(payload && payload_size)
+		{ /* DESERIALIZATION */
+		}
+	}
+	return self;
+}
+
+static void* tnet_dhcp6_duid_en_destroy(void * self) 
+{ 
+	tnet_dhcp6_duid_en_t *duid = self;
+	if(duid)
+	{
+		/* deinit base */
+		tnet_dhcp6_duid_deinit(TNET_DHCP6_DUID(duid));
+
+		TSK_OBJECT_SAFE_FREE(duid->indentifier);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dhcp6_duid_en_def_s =
+{
+	sizeof(tnet_dhcp6_duid_en_t),
+	tnet_dhcp6_duid_en_create,
+	tnet_dhcp6_duid_en_destroy,
+	0,
+};
+const void *tnet_dhcp6_duid_en_def_t = &tnet_dhcp6_duid_en_def_s;
+
+
+/*=======================================================================================
+*	RFC 3315 - 9.4. DUID Based on Link-layer Address [DUID-LL]
+*=======================================================================================*/
+
+int tnet_dhcp6_duid_ll_serialize(const tnet_dhcp6_duid_ll_t* self, tsk_buffer_t *output)
+{
+	return -1;
+}
+
+//
+//	[[DHCPv6 DUID-LL]] object definition
+//
+static void* tnet_dhcp6_duid_ll_create(void * self, va_list * app)
+{
+	tnet_dhcp6_duid_ll_t *duid = self;
+	if(duid)
+	{
+		const void* payload = va_arg(*app, const void*);
+		size_t payload_size = va_arg(*app, size_t);
+
+		/* init base */
+		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_linklayer);
+
+		if(payload && payload_size)
+		{ /* DESERIALIZATION */
+		}
+	}
+	return self;
+}
+
+static void* tnet_dhcp6_duid_ll_destroy(void * self) 
+{ 
+	tnet_dhcp6_duid_ll_t *duid = self;
+	if(duid)
+	{
+		/* deinit base */
+		tnet_dhcp6_duid_deinit(TNET_DHCP6_DUID(duid));
+
+		TSK_OBJECT_SAFE_FREE(duid->address);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_dhcp6_duid_ll_def_s =
+{
+	sizeof(tnet_dhcp6_duid_ll_t),
+	tnet_dhcp6_duid_ll_create,
+	tnet_dhcp6_duid_ll_destroy,
+	0,
+};
+const void *tnet_dhcp6_duid_ll_def_t = &tnet_dhcp6_duid_ll_def_s;

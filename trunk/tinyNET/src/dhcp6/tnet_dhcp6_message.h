@@ -33,9 +33,12 @@
 
 #include "tnet_dhcp6_option.h"
 
+#include "tsk_object.h"
+
 TNET_BEGIN_DECLS
 
 #define TNET_DHCP6_MESSAGE_CREATE(type)	tsk_object_new(tnet_dhcp6_message_def_t, (tnet_dhcp6_message_type_t)type)
+#define TNET_DHCP6_REQUEST_CREATE(type)	TNET_DHCP6_MESSAGE_CREATE(type)
 
 /** List of all supported DHCPv6 messages.
 *	For more info: RFC 3315 - 5.3. DHCP Message Types
@@ -124,9 +127,11 @@ typedef struct tnet_dhcp6_message_s
 tnet_dhcp6_message_t;
 
 typedef tsk_list_t tnet_dhcp6_messages_L_t;
+typedef tnet_dhcp6_message_t tnet_dhcp6_request_t;
+typedef tnet_dhcp6_message_t tnet_dhcp6_reply_t;
 
-
-
+tsk_buffer_t* tnet_dhcp6_message_serialize(const struct tnet_dhcp6_ctx_s *ctx, const tnet_dhcp6_message_t *self);
+tnet_dhcp6_message_t* tnet_dhcp6_message_deserialize(const struct tnet_dhcp6_ctx_s *ctx, const uint8_t *data, size_t size);
 
 TINYNET_GEXTERN const void *tnet_dhcp6_message_def_t;
 
