@@ -93,14 +93,16 @@
 
 #if defined(__APPLE__) /*|| defined(__SYMBIAN32__)*/
 #	define TNET_HAVE_SS_LEN		1
+#	define TNET_HAVE_SA_LEN		1
 #else
 #	define TNET_HAVE_SS_LEN		0
+#	define TNET_HAVE_SA_LEN		0
 #endif
 
-#if 0 /* __APPLE__? */
-#	define HAVE_IFADDRS_H	1
+#if defined(__APPLE__)
+#	define HAVE_IFADDRS	1
 #else
-#	define HAVE_IFADDRS_H	0
+#	define HAVE_IFADDRS	0 /* Windows, ANDROID */
 #endif
 
 /* Used in TURN/STUN2 attributes.

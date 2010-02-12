@@ -39,6 +39,8 @@
 
 TNET_BEGIN_DECLS
 
+struct tnet_dhcp_ctx_s;
+
 #define TNET_DHCP_MESSAGE_CREATE(opcode)	tsk_object_new(tnet_dhcp_message_def_t, (tnet_dhcp_message_op_t)opcode)
 #define TNET_DHCP_REQUEST_CREATE()			TNET_DHCP_MESSAGE_CREATE(dhcp_op_bootrequest)
 #define TNET_DHCP_REPLY_CREATE()			TNET_DHCP_MESSAGE_CREATE(dhcp_op_bootreply)

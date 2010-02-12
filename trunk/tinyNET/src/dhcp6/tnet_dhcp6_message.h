@@ -37,6 +37,8 @@
 
 TNET_BEGIN_DECLS
 
+struct tnet_dhcp6_ctx_s;
+
 #define TNET_DHCP6_MESSAGE_CREATE(type)	tsk_object_new(tnet_dhcp6_message_def_t, (tnet_dhcp6_message_type_t)type)
 #define TNET_DHCP6_REQUEST_CREATE(type)	TNET_DHCP6_MESSAGE_CREATE(type)
 

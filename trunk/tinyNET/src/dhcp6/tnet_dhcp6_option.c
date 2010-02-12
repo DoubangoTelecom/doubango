@@ -68,7 +68,7 @@ tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, size_t size
 {
 	tnet_dhcp6_option_t *option = 0;
 	uint8_t* dataPtr = ((uint8_t*)data);
-	uint8_t* dataEnd = (dataPtr+size);
+	//uint8_t* dataEnd = (dataPtr+size);
 
 	tnet_dhcp6_option_code_t code;
 	uint16_t len;

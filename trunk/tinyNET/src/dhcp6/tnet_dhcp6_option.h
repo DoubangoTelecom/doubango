@@ -176,8 +176,6 @@ typedef tnet_dhcp6_option_identifier_t tnet_dhcp6_option_serverid_t;
 *	RFC 3315 - 22.7. Option Request Option
 *=======================================================================================*/
 
-TINYNET_API int tnet_dhcp6_option_orequest_add_code(struct tnet_dhcp6_option_orequest_s* self, uint16_t code);
-
 /**	DHCPv6 Option Request Option (subclause 22.7).
 */
 typedef struct tnet_dhcp6_option_orequest_s
@@ -196,6 +194,8 @@ typedef struct tnet_dhcp6_option_orequest_s
 	*/
 }
 tnet_dhcp6_option_orequest_t;
+
+TINYNET_API int tnet_dhcp6_option_orequest_add_code(tnet_dhcp6_option_orequest_t* self, uint16_t code);
 
 /*======================================================================================
 *	RFC 3315 - 22.16. Vendor Class Option

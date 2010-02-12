@@ -331,7 +331,7 @@ int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char
 
 	TSK_OBJECT_SAFE_FREE(response);
 
-	return (hostname && !tsk_strempty(*hostname)) ? 0 : -2;
+	return (hostname && *hostname && !tsk_strempty(*hostname)) ? 0 : -2;
 }
 
 int tnet_dns_cache_maintenance(tnet_dns_ctx_t *ctx)

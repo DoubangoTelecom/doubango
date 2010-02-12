@@ -36,7 +36,9 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
-tsk_buffer_t* tnet_dhcp_message_serialize(const struct tnet_dhcp_ctx_s *ctx, const tnet_dhcp_message_t *message)
+#include <string.h>
+
+tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet_dhcp_message_t *message)
 {
 	tsk_buffer_t* output = 0;
 	uint8_t _1byte;

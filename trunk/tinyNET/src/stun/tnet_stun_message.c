@@ -39,6 +39,8 @@
 #include "tsk_string.h"
 #include "tsk_ppfcs32.h"
 
+#include <string.h>
+
 #define SERIALIZE_N_ADD_ATTRIBUTE(ATT_NAME, payload, payload_size) \
 		attribute = TNET_STUN_ATTRIBUTE_##ATT_NAME##_CREATE(payload, payload_size); \
 		tnet_stun_attribute_serialize(attribute, output); \

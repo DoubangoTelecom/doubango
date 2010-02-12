@@ -35,6 +35,7 @@
 #include "tsk_time.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 int tsk_uuidgenerate(tsk_uuidstring_t *result)
 {

@@ -46,10 +46,9 @@
 #	include <fcntl.h>
 #	include <sys/ioctl.h>
 #	include <unistd.h>
-#	if HAVE_IFADDRS_H
+#	include <net/if.h>
+#	if HAVE_IFADDRS
 #		include <ifaddrs.h>
-#	else
-#		include <net/if.h>
 #	endif
 #	if TNET_HAVE_POLL
 #		include <poll.h>
