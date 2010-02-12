@@ -490,8 +490,18 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 	{
 		tsip_stack_t *stack = self;
 
+		TSK_FREE(stack->display_name);
+		TSK_OBJECT_SAFE_FREE(stack->public_identity);
+		TSK_OBJECT_SAFE_FREE(stack->preferred_identity);
+		//TSK_OBJECT_SAFE_FREE(stack->associated_identity);
+		TSK_FREE(stack->private_identity);
+		TSK_FREE(stack->password);
+
 		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
 		TSK_OBJECT_SAFE_FREE(stack->operations);
+
+		TSK_OBJECT_SAFE_FREE(stack->service_routes);
+		TSK_OBJECT_SAFE_FREE(stack->paths);
 
 		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transac);

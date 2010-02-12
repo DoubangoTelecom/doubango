@@ -1915,7 +1915,7 @@
 			Name="abnf"
 			>
 			<File
-				RelativePath="..\..\tinySIPabnf\core.abnf"
+				RelativePath="..\..\tinySIP\abnf\core.abnf"
 				>
 			</File>
 		</Filter>

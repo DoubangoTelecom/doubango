@@ -38,6 +38,7 @@
 TSK_BEGIN_DECLS
 
 #define TSK_PARAM_CREATE(name, value)		tsk_object_new(tsk_param_def_t, name, value)
+#define TSK_PARAM_CREATE_NULL()				TSK_PARAM_CREATE(0,0)
 
 typedef struct tsk_param_s
 {

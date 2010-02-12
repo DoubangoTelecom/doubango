@@ -84,10 +84,9 @@ int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
-void tsip_header_Call_ID_random(tsk_istr_t *result)
+int tsip_header_Call_ID_random(tsk_uuidstring_t *result)
 {
-	uint64_t epoch = tsk_time_epoch();
-	tsk_itoa(epoch, result);
+	return tsk_uuidgenerate(result);
 }
 
 tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)

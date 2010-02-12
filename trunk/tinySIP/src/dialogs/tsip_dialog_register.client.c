@@ -178,7 +178,7 @@ void tsip_dialog_register_init(tsip_dialog_register_t *self)
 	*/
 	tsip_dialog_registerContext_Init(&self->_fsm, self);
 
-	TSIP_DIALOG(self)->expires = 10;
+	TSIP_DIALOG(self)->expires = 30;
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_register_event_callback);
 	
 	TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
@@ -241,12 +241,47 @@ void tsip_dialog_register_Trying_2_Trying_X_1xx(tsip_dialog_register_t *self, co
 
 /* Trying -> (2xx) -> Connected
 */
-#include "tsk_thread.h"
+//#include "tsk_thread.h"
 void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self, const tsip_message_t* msg)
 {
 	/* Alert the user. */
-	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, self->unregistering ? tsip_unregister_ok : tsip_register_ok,
-			TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg));
+	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_ok, 
+		TSIP_RESPONSE_CODE(msg), TSIP_RESPONSE_PHRASE(msg));
+
+	/*	- Set P-associated-uriS
+	*	- Update service-routes
+	*	- Update Pats
+	*/
+	if(TSIP_DIALOG(self)->state != tsip_established) /* Must be called before "tsip_dialog_update" update the state. */
+	{
+		size_t index;
+		tsip_header_t* hdr;
+
+		/* To avoid memory leaks ==> delete all concerned objects (it worth nothing) */
+		//TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->associated_uri);
+		TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->service_routes);
+		TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->paths);
+
+		/* Service-Route */
+		for(index = 0; (hdr = (tsip_header_t*)tsip_message_get_headerAt(msg, tsip_htype_Service_Route, index)); index++){
+			if(index == 0){
+				TSIP_DIALOG_GET_STACK(self)->service_routes = TSK_LIST_CREATE();
+			}
+			hdr = tsk_object_ref(hdr);
+			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->service_routes, (void**)&hdr);
+		}
+
+		/* Paths */
+		for(index = 0; (hdr = (tsip_header_t*)tsip_message_get_headerAt(msg, tsip_htype_Path, index)); index++){
+			if(index == 0){
+				TSIP_DIALOG_GET_STACK(self)->paths = TSK_LIST_CREATE();
+			}
+			hdr = tsk_object_ref(hdr);
+			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->paths, (void**)&hdr);
+		}
+		/* Associated Uris */
+		// FIXME
+	}
 
 	/* Update the dialog state. */
 	tsip_dialog_update(TSIP_DIALOG(self), msg);

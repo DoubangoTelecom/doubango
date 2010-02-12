@@ -78,24 +78,31 @@ int __tsip_uri_serialize(const tsip_uri_t *uri, int with_params, tsk_buffer_t *o
 
 int tsip_uri_serialize(const tsip_uri_t *uri, int with_params, int quote, tsk_buffer_t *output)
 {
-	if(quote)
+	if(uri)
 	{
-		if(uri->display_name)
+		if(quote)
 		{
-			tsk_buffer_appendEx(output, "\"%s\"", uri->display_name);
+			if(uri->display_name)
+			{
+				tsk_buffer_appendEx(output, "\"%s\"", uri->display_name);
+			}
+
+			tsk_buffer_append(output, "<", 1);
+			__tsip_uri_serialize(uri, with_params, output);
+			tsk_buffer_append(output, ">", 1);
+
+			return 0;
 		}
+		else
+		{
+			__tsip_uri_serialize(uri, with_params, output);
 
-		tsk_buffer_append(output, "<", 1);
-		__tsip_uri_serialize(uri, with_params, output);
-		tsk_buffer_append(output, ">", 1);
-
-		return 0;
+			return 0;
+		}
 	}
 	else
 	{
-		__tsip_uri_serialize(uri, with_params, output);
-
-		return 0;
+		TSK_DEBUG_ERROR("Cannot serialize NULL URI.");
 	}
 
 	return -1;

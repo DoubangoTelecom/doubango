@@ -33,14 +33,15 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+#include "tinysip/tsip_uri.h"
+
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_SERVICE_ROUTE_CREATE
 * Creates new sip 'Service-Route' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define TSIP_HEADER_SERVICE_ROUTE_VA_ARGS(service_route)	tsip_header_Service_Route_def_t, (const char*)service_route
-#define TSIP_HEADER_SERVICE_ROUTE_CREATE(service_route)	tsk_object_new(TSIP_HEADER_SERVICE_ROUTE_VA_ARGS(service_route))
+#define TSIP_HEADER_SERVICE_ROUTE_CREATE()	tsk_object_new(tsip_header_Service_Route_def_t)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -56,11 +57,15 @@ TSIP_BEGIN_DECLS
 typedef struct tsip_header_Service_Route_s
 {	
 	TSIP_DECLARE_HEADER;
-	char *value;
+
+	char *display_name;
+	tsip_uri_t *uri;
 }
 tsip_header_Service_Route_t;
 
-tsip_header_Service_Route_t *tsip_header_Service_Route_parse(const char *data, size_t size);
+typedef tsk_list_t tsip_header_Service_Routes_L_t;
+
+tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data, size_t size);
 
 TINYSIP_GEXTERN const void *tsip_header_Service_Route_def_t;
 
