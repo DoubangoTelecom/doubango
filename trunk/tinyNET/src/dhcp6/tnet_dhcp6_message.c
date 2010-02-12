@@ -31,6 +31,8 @@
 
 #include "tsk_debug.h"
 
+#include <string.h>
+
 tsk_buffer_t* tnet_dhcp6_message_serialize(const tnet_dhcp6_ctx_t *ctx, const tnet_dhcp6_message_t *self)
 {
 	tsk_buffer_t* output = 0;

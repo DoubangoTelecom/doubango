@@ -35,7 +35,7 @@
 #include "tsk_time.h"
 #include "tsk_debug.h"
 
-//#include <string.h>
+#include <string.h>
 
 // Useful link: http://support.microsoft.com/?scid=kb%3Ben-us%3B169289&x=21&y=14
 // Another one: http://www.iana.org/assignments/bootp-dhcp-parameters/

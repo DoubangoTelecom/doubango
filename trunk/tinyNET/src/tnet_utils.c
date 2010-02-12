@@ -153,19 +153,60 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 #undef FREE
 
 
-#elif HAVE_IFADDRS_H /*=== Using getifaddrs ===*/
-
+#elif HAVE_IFADDRS /*=== Using getifaddrs ===*/
 
 	// see http://www.kernel.org/doc/man-pages/online/pages/man3/getifaddrs.3.html
-	struct ifaddrs *ifaddr, *ifa;
+	struct ifaddrs *ifaddr = 0, *ifa = 0;
 
 	/* Get interfaces */
-	//if(getifaddrs(&ifaddr) == -1)
+	if(getifaddrs(&ifaddr) == -1)
 	{
 		TSK_DEBUG_ERROR("getifaddrs failed and errno= [%d]", tnet_geterrno());
 		goto bail;
 	}
-
+	
+	for(ifa = ifaddr; ifa; ifa = ifa->ifa_next)
+	{
+		if(ifa->ifa_addr->sa_family != AF_LINK){
+			continue;
+		}
+		
+#ifdef __linux__
+		{
+			struct ifreq ifr;
+			tnet_fd_t fd = TNET_INVALID_FD;
+			
+			if((fd = socket(AF_UNSPEC, SOCK_DGRAM, IPPROTO_UDP)) < 0){
+				TSK_DEBUG_ERROR("Failed to create new DGRAM socket and errno= [%d]", tnet_geterrno());
+				goto next;
+			}
+			
+			ifr.ifr_addr.sa_family = ifa->ifa_addr->sa_family;
+			strcpy(ifr.ifr_name, ifa.ifa_name);
+			if(tnet_ioctl(fd, SIOCGIFHWADDR, &ifr)<0){
+				TSK_DEBUG_ERROR("tnet_ioctl(SIOCGIFHWADDR)", tnet_geterrno());
+				goto next;
+			}
+			else{
+				//sockaddr_dl* sdl = (struct sockaddr_dl *)ifa->ifa_addr;
+				tnet_interface_t *iface = TNET_INTERFACE_CREATE(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
+				tsk_list_push_back_data(ifaces, (void**)&(iface));
+			}
+		next:
+			tnet_sockfd_close(&fd);
+		}
+#else
+		{
+			//struct sockaddr_dl* sdl = (struct sockaddr_dl*)ifa->ifa_addr;
+			tnet_interface_t *iface = TNET_INTERFACE_CREATE(ifa->ifa_name, ifa->ifa_addr, 6);
+			iface->index = if_nametoindex(ifa->ifa_name);
+			tsk_list_push_back_data(ifaces, (void**)&(iface));
+		}
+#endif
+		
+	}/* for */
+	
+	freeifaddrs(ifaddr);
 
 #else /*=== ANDROID,... --> Using SIOCGIFCONF and SIOCGIFHWADDR ===*/
 
@@ -176,7 +217,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 	struct sockaddr_in *sin;
 	struct ifreq *ifr;
 
-	if((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
+	if((fd = socket(AF_UNSPEC, SOCK_DGRAM, IPPROTO_UDP)) < 0)
 	{
 		TSK_DEBUG_ERROR("Failed to create new DGRAM socket and errno= [%d]", tnet_geterrno());
 		goto done;
@@ -711,8 +752,8 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 		return -2;
 	}
 
-#if TNET_HAVE_SS_LEN
-	return sendto(fd, buf, size, 0, to, to->ss_len);
+#if TNET_HAVE_SA_LEN
+	return sendto(fd, buf, size, 0, to, to->sa_len);
 #else
 	//return sendto(fd, buf, size, 0, to, sizeof(*to));
 	return sendto(fd, buf, size, 0, to, 
@@ -730,8 +771,8 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 		return -1;
 	}
 
-#if TNET_HAVE_SS_LEN
-	fromlen = from->ss_len;
+#if TNET_HAVE_SA_LEN
+	fromlen = from->sa_len;
 #else
 	fromlen = sizeof(*from);
 #endif

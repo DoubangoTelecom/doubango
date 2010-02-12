@@ -125,8 +125,8 @@ typedef struct tnet_stun_binding_s
 	tnet_stun_attribute_mapped_addr_t *maddr;
 	//! XORed server reflexive address (STUN2 as per RFC 5389).
 	tnet_stun_attribute_xmapped_addr_t *xmaddr;
-}
-tnet_stun_binding_t;
+}tnet_stun_binding_t;
+
 TINYNET_GEXTERN const void *tnet_stun_binding_def_t;
 /**
  * @typedef	tsk_list_t tnet_stun_bindings_L_t
