@@ -23,11 +23,11 @@
 #define _TEST_SIPMESSAGES_H
 
 #define SIP_REQUEST \
-	"REGISTER sip:ims-network.com SIP/2.0\r\n" \
+	"REGISTER sip:open-ims.test SIP/2.0\r\n" \
 	"Test-Header: 0\r\n" \
 	"v: SIP/2.0/UDP [::]:1988;test=1234;comp=sigcomp;rport=254;ttl=457;received=192.0.2.101;branch=z9hG4bK1245420841406\r\n" \
-	"f: \"Mamadou\" <sip:mamadou@ims-network.com>;tag=29358\r\n" \
-	"t:    <sip:mamadou@ims-network.com>;tag= 12345\r\n" \
+	"f: \"Mamadou\" <sip:mamadou@open-ims.test>;tag=29358\r\n" \
+	"t:    <sip:mamadou@open-ims.test>;tag= 12345\r\n" \
 	"i: M-fa53180346f7f55ceb8d8670f9223dbb\r\n" \
 	"CSeq: 201 REGISTER\r\n" \
 	"Max-Forwards: 70\r\n" \
@@ -37,8 +37,10 @@
 	"m: <sip:mamadou@[::]:1988;comp=sigcomp;transport=udp>;expires=600000;+deviceID=\"3ca50bcb-7a67-44f1-afd0-994a55f930f4\";mobility=\"fixed\";+g.3gpp.cs-voice;+g.3gpp.app%5fref=\"urn%3Aurnxxx%3A3gpp-application.ims.iari.gsmais\";+g.oma.sip-im.large-message;+g.oma.sip-im\r\n" \
 	"User-Agent: IM-client/OMA1.0 doubango/v0.0.0\r\n" \
 	"Require: pref, path\r\n" \
+	"Service-Route: <sip:orig@open-ims.test:6060;lr>,<sip:orig2@open-ims.test:6060;lr>\r\n" \
+	"Path: <sip:term@open-ims.test:4060;lr>\r\n" \
 	"Require: 100rel\r\n" \
-	"P-Preferred-Identity: <sip:mamadou@ims-network.com>\r\n" \
+	"P-Preferred-Identity: <sip:mamadou@open-ims.test>\r\n" \
 	"k: path\r\n" \
 	"k: gruu, outbound, timer\r\n" \
 	"P-Access-Network-Info: 3GPP-UTRAN-TDD;utran-cell-id-3gpp=00000000\r\n" \
@@ -50,17 +52,19 @@
 
 #define SIP_RESPONSE \
 	"SIP/2.0 200 This is my reason phrase\r\n" \
-	"To: <sip:mamadou@micromethod.com>;tag=bweyal\r\n" \
+	"To: <sip:mamadou@open-ims.test>;tag=bweyal\r\n" \
 	"Via: SIP/2.0/UDP 192.168.0.11:63140;branch=z9hG4bK1261611942868;rport=63140\r\n" \
 	"CSeq: 31516 REGISTER\r\n" \
 	"Content-Length: 0\r\n" \
 	"Call-ID: 1261611941121\r\n" \
 	"Min-Expires: 30\r\n" \
-	"From: <sip:mamadou@micromethod.com>;tag=1261611941121\r\n" \
+	"From: <sip:mamadou@open-ims.test>;tag=1261611941121\r\n" \
 	"Contact: <sip:mamadou@192.168.0.11:63140>;expires=3600;q=1.0,<sip:mamadou@192.168.0.11:56717>;expires=3600;q=1.0\r\n" \
 	"Contact: <sip:mamadou@127.0.0.1:5060>;expires=3600;q=1.0\r\n" \
 	"Contact: <sip:mamadou@127.0.0.1>;expires=3600;q=1.0\r\n" \
-	"P-Preferred-Identity: <sip:mamadou@ims-network.com>\r\n" \
+	"P-Preferred-Identity: <sip:mamadou@open-ims.test>\r\n" \
+	"Service-Route: <sip:orig@open-ims.test:6060;lr><sip:orig2@open-ims.test:6060;lr>,<sip:orig3@open-ims.test:6060;lr>\r\n" \
+	"Path: <sip:term@open-ims.test:4060;lr>\r\n" \
 	"P-Access-Network-Info: 3GPP-UTRAN-TDD;utran-cell-id-3gpp=00000000\r\n" \
 	"Authorization: Digest username=\"Alice\", realm=\"atlanta.com\",nonce=\"84a4cc6f3082121f32b42a2187831a9e\",response=\"7587245234b3434cc3412213e5f113a5432,test=123\"\r\n" \
 	"Privacy: none;user;id\r\n" \
@@ -72,19 +76,22 @@
 	"\r\n"
 
 #define SIP_MESSAGE \
-	"MESSAGE sip:mamadou@micromethod.com SIP/2.0\r\n" \
+	"MESSAGE sip:mamadou@open-ims.test SIP/2.0\r\n" \
 	"Via: SIP/2.0/UDP 192.168.0.11:64163;rport=4;branch=z9hG4bK1262758946486\r\n" \
 	"Via: SIP/2.0/UDP 192.168.0.11:59265;rport=59265;branch=z9hG4bK1263064096664\r\n" \
 	"Route: <sip:192.168.0.15:5060;lr=true;transport=udp\r\n" \
-	"From: <sip:bob@micromethod.com>;tag=mercuro\r\n" \
-	"To: <sip:mamadou@micromethod.com>\r\n" \
+	"From: <sip:bob@open-ims.test>;tag=mercuro\r\n" \
+	"To: <sip:mamadou@open-ims.test>\r\n" \
 	"Call-ID: 1262767804423\r\n" \
 	"CSeq: 8 MESSAGE\r\n" \
 	"Max-Forwards: 70\r\n" \
 	"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n" \
 	"User-Agent: IM-client/OMA1.0 Mercuro-Bronze/v4.0.1508.0\r\n" \
 	"c: text/plain; charset=utf-8\r\n" \
-	"P-Preferred-Identity: <sip:bob@micromethod.com\r\n" \
+	"Service-Route: <sip:orig@open-ims.test:6060;lr;transport=udp>,<sip:atlanta.com>,<sip:orig2@open-ims.test:6060;lr>\r\n" \
+	"Path: <sip:term@open-ims.test:4060;lr>\r\n" \
+	"Route: <sip:pcscf.open-ims.test:4060;lr;transport=udp>,<sip:orig@scscf.open-ims.test:6060;lr>\r\n" \
+	"P-Preferred-Identity: <sip:bob@open-ims.test\r\n" \
 	"Allow-Events: presence, presence.winfo\r\n" \
 	"Content-Length: 11\r\n" \
 	"\r\n" \
@@ -131,8 +138,8 @@ void test_parser()
 void test_requests()
 {
 	tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
-	tsip_uri_t *from = tsip_uri_parse("sip:mamadou@micromethod.com", strlen("sip:mamadou@micromethod.com"));
-	tsip_uri_t *request_uri = tsip_uri_parse("sip:micromethod.com", strlen("sip:micromethod.com"));
+	tsip_uri_t *from = tsip_uri_parse("sip:mamadou@open-ims.test", strlen("sip:mamadou@open-ims.test"));
+	tsip_uri_t *request_uri = tsip_uri_parse("sip:open-ims.test", strlen("sip:open-ims.test"));
 	
 
 	tsip_request_t *request = tsip_request_new("REGISTER", request_uri, from, from, "ABCDEFGHIJKLMOPQRSTUVWXYZ", 4521);

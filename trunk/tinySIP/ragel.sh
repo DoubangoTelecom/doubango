@@ -21,7 +21,7 @@ ragel.exe $OPTIONS -o ../src/parsers/tsip_parser_uri.c tsip_parser_uri.rl
 #ragel.exe $OPTIONS -o ../src/headers/tsip_header_Allow_Events.c tsip_parser_header_Allow_Events.rl
 
 # ==Authorization
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Authorization.c tsip_parser_header_Authorization.rl
+#ragel.exe $OPTIONS -o ../src/headers/tsip_header_Authorization.c tsip_parser_header_Authorization.rl
 
 # ==Call-ID
 #ragel.exe $OPTIONS -o ../src/headers/tsip_header_Call_ID.c tsip_parser_header_Call_ID.rl
@@ -50,6 +50,9 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Authorization.c tsip_parser_hea
 # ==Min-Expires
 #ragel.exe $OPTIONS -o ../src/headers/tsip_header_Min_Expires.c tsip_parser_header_Min_Expires.rl
 
+# ==Path
+#ragel.exe $OPTIONS -o ../src/headers/tsip_header_Path.c tsip_parser_header_Path.rl
+
 # ==P-Access-Network-Info
 #ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Access_Network_Info.c tsip_parser_header_P_Access_Network_Info.rl
 
@@ -63,13 +66,19 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Authorization.c tsip_parser_hea
 #ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Authenticate.c tsip_parser_header_Proxy_Authenticate.rl
 
 # ==Proxy-Authorization
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Authorization.c tsip_parser_header_Proxy_Authorization.rl
+#ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Authorization.c tsip_parser_header_Proxy_Authorization.rl
 
 # ==Record-Route
 #ragel.exe $OPTIONS -o ../src/headers/tsip_header_Record_Route.c tsip_parser_header_Record_Route.rl
 
 # ==Require
 #ragel.exe $OPTIONS -o ../src/headers/tsip_header_Require.c tsip_parser_header_Require.rl
+
+# == Service-Route
+#ragel.exe $OPTIONS -o ../src/headers/tsip_header_Route.c tsip_parser_header_Route.rl
+
+# == Service-Route
+#ragel.exe $OPTIONS -o ../src/headers/tsip_header_Service_Route.c tsip_parser_header_Service_Route.rl
 
 # ==Supported
 #ragel.exe $OPTIONS -o ../src/headers/tsip_header_Supported.c tsip_parser_header_Supported.rl

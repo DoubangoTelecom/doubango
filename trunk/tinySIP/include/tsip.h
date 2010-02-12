@@ -38,6 +38,9 @@
 
 #include "tinysip/api/tsip_register.h"
 
+#include "tinysip/headers/tsip_header_Service_Route.h"
+#include "tinysip/headers/tsip_header_Path.h"
+
 #include "tnet_socket.h"
 #include "dns/tnet_dns.h"
 
@@ -130,6 +133,7 @@ typedef struct tsip_stack_s
 	char* display_name;
 	struct tsip_uri_s *public_identity;
 	struct tsip_uri_s *preferred_identity;
+	//struct tsip_uri_s *associated_identity;
 	char *private_identity;
 	char *password;
 
@@ -149,6 +153,8 @@ typedef struct tsip_stack_s
 	char* device_id;
 	char* mobility;
 	char* sec_agree_mech;
+	tsip_header_Paths_L_t* paths;
+	tsip_header_Service_Routes_L_t* service_routes;
 
 	/* DNS */
 	tnet_dns_ctx_t *dns_ctx;

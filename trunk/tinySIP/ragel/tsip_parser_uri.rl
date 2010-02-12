@@ -48,7 +48,6 @@
 		
 	action tag
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 
@@ -69,17 +68,17 @@
 
 	action parse_user_name
 	{
-		PARSER_SET_STRING(uri->user_name);		
+		PARSER_SET_STRING(uri->user_name);
 	}
 
 	action parse_password
 	{
-		PARSER_SET_STRING(uri->password);	
+		PARSER_SET_STRING(uri->password);
 	}
 
 	action parse_host
 	{
-		PARSER_SET_STRING(uri->host);	
+		PARSER_SET_STRING(uri->host);
 	}
 
 	action parse_port
@@ -104,7 +103,7 @@
 	main			:= |*
 							("sip:"i>tag %is_sip | "sips:"i>tag %is_sips) @100
 							{
-								if(tsk_strcontains(te, "@"))
+								if(tsk_strcontains(te, (pe - te), "@"))
 								{
 									fgoto sip_usrinfo;
 								}
@@ -121,7 +120,7 @@
 								}
 							};							
 
-							(':' port)@80
+							(":" port)@80
 							{
 								ts++;
 								SCANNER_SET_INTEGER(uri->port);

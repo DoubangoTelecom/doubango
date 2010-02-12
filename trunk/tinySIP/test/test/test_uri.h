@@ -28,6 +28,8 @@ const char* uris[] =
 {
 	
 	//== SIP:
+	"sip:open-ims.test",
+	"sip:pcscf.open-ims.test:4060;lr;transport=udp",
 	"sip:2233392625@sip2sip.info",
 	"sip:alice@iatlanta.com;p1=23",
 	"sip:*666*@atlanta.com",

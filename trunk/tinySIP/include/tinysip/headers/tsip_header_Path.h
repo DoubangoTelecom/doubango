@@ -33,23 +33,41 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+#include "tinysip/tsip_uri.h"
+
 TSIP_BEGIN_DECLS
+
+/**@def TSIP_HEADER_PATH_CREATE
+* Creates new sip 'Path' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
+*/
+#define TSIP_HEADER_PATH_CREATE()	tsk_object_new(tsip_header_Path_def_t)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP header 'Path'.
+/// @brief	SIP header 'Path' as per RFC 3327.
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF : Path	= 	"Path" HCOLON path-value *(COMMA path-value)
+///							path-value	= 	name-addr *( SEMI rr-param )
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Path_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	char *display_name;
+	tsip_uri_t *uri;
 }
 tsip_header_Path_t;
+
+typedef tsk_list_t tsip_header_Paths_L_t;
+
+tsip_header_Paths_L_t *tsip_header_Path_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_Path_def_t;
 
 TSIP_END_DECLS
 

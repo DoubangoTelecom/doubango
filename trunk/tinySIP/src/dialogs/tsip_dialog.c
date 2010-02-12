@@ -611,19 +611,21 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 
 		self->type = type;
 		self->stack = tsk_object_ref(stack);
-		if(!self->routes)self->routes = TSK_LIST_CREATE();
-		if(!self->challenges)self->challenges = TSK_LIST_CREATE();
+		if(!self->routes){
+			self->routes = TSK_LIST_CREATE();
+		}
+		if(!self->challenges){
+			self->challenges = TSK_LIST_CREATE();
+		}
 		self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
 		
-		if(call_id)
-		{
+		if(call_id){
 			tsk_strupdate(&self->callid, call_id);
 		}
-		else
-		{
-			tsk_istr_t cid;
-			tsip_header_Call_ID_random(&cid);
-			tsk_strupdate(&self->callid, cid);
+		else{
+			tsk_uuidstring_t uuid; /* Call-id is a random UUID */
+			tsip_header_Call_ID_random(&uuid);
+			tsk_strupdate(&self->callid, uuid);
 		}
 
 		self->operation = tsk_object_ref(operation);

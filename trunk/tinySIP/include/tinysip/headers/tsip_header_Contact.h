@@ -42,20 +42,6 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_HEADER_CONTACT_CREATE()		tsk_object_new(tsip_header_Contact_def_t)
 
-//#define TSIP_CONTACT_CREATE()				tsk_object_new(tsip_contact_def_t)
-//
-//typedef struct tsip_contact_s
-//{
-//	TSK_DECLARE_OBJECT;
-//
-//	char *display_name;
-//	tsip_uri_t *uri;
-//	int32_t expires;
-//	tsk_params_L_t *params;
-//}
-//tsip_contact_t;
-//typedef tsk_list_t tsip_contacts_L_t;
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -97,18 +83,13 @@ typedef struct tsip_header_Contact_s
 	char *display_name;
 	tsip_uri_t *uri;
 	int32_t expires;
-	//tsip_contacts_L_t *contacts;
 }
 tsip_header_Contact_t;
 typedef tsk_list_t tsip_header_Contacts_L_t;
 
-//const tsip_contact_t *tsip_header_Contact_get_ContactAt(tsip_header_Contact_t *hdr_contact, size_t index);
-//#define tsip_header_Contact_get_Contact(hdr_contact) tsip_header_Contact_get_ContactAt(hdr_contact, 0)
-
 tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, size_t size);
 
 TINYSIP_GEXTERN const void *tsip_header_Contact_def_t;
-//TINYSIP_GEXTERN const void *tsip_contact_def_t;
 
 TSIP_END_DECLS
 

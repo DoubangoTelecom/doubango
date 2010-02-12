@@ -39,13 +39,16 @@
 #include "tinysip/headers/tsip_header_From.h"
 #include "tinysip/headers/tsip_header_Max_Forwards.h"
 #include "tinysip/headers/tsip_header_Min_Expires.h"
-#include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
+#include "tinysip/headers/tsip_header_Path.h"
 #include "tinysip/headers/tsip_header_P_Access_Network_Info.h" 
+#include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
 #include "tinysip/headers/tsip_header_Privacy.h"
 #include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
 #include "tinysip/headers/tsip_header_Proxy_Authorization.h"
 #include "tinysip/headers/tsip_header_Record_Route.h"
 #include "tinysip/headers/tsip_header_Require.h"
+#include "tinysip/headers/tsip_header_Route.h"
+#include "tinysip/headers/tsip_header_Service_Route.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 #include "tinysip/headers/tsip_header_To.h"
 #include "tinysip/headers/tsip_header_User_Agent.h"
@@ -440,7 +443,18 @@
 	# /*== Path: ==*/
 	action parse_header_Path
 	{
-		TSK_DEBUG_ERROR("parse_header_Path NOT IMPLEMENTED");
+		tsip_header_Paths_L_t* headers =  tsip_header_Path_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(headers)
+		{
+			tsk_list_item_t *item;
+			tsk_list_foreach(item, headers)
+			{
+				tsip_header_Route_t *hdr = tsk_object_ref(item->data);
+				tsk_list_push_back_data(message->headers, ((void**) &hdr));
+			}
+
+			TSK_OBJECT_SAFE_FREE(headers);
+		}
 	}
 
 	# /* == Priority: ==*/
@@ -574,7 +588,18 @@
 	# /*== Route: ==*/
 	action parse_header_Route
 	{
-		TSK_DEBUG_ERROR("parse_header_Route NOT IMPLEMENTED");
+		tsip_header_Routes_L_t* headers =  tsip_header_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(headers)
+		{
+			tsk_list_item_t *item;
+			tsk_list_foreach(item, headers)
+			{
+				tsip_header_Route_t *hdr = tsk_object_ref(item->data);
+				tsk_list_push_back_data(message->headers, ((void**) &hdr));
+			}
+
+			TSK_OBJECT_SAFE_FREE(headers);
+		}
 	}
 
 	# /*== RSeq: ==*/
@@ -610,7 +635,18 @@
 	# /*== Service-Route: ==*/
 	action parse_header_Service_Route
 	{
-		TSK_DEBUG_ERROR("parse_header_Service_Route NOT IMPLEMENTED");
+		tsip_header_Service_Routes_L_t* headers =  tsip_header_Service_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(headers)
+		{
+			tsk_list_item_t *item;
+			tsk_list_foreach(item, headers)
+			{
+				tsip_header_Service_Route_t *hdr = tsk_object_ref(item->data);
+				tsk_list_push_back_data(message->headers, ((void**) &hdr));
+			}
+
+			TSK_OBJECT_SAFE_FREE(headers);
+		}
 	}
 
 	# /*== Session-Expires: ==*/

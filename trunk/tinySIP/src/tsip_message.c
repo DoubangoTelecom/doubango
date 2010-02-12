@@ -262,23 +262,41 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	}
 
 	/* First Via */
-	if(self->firstVia) tsip_header_tostring(TSIP_HEADER(self->firstVia), output);
+	if(self->firstVia){
+		tsip_header_tostring(TSIP_HEADER(self->firstVia), output);
+	}
 	/* From */
-	if(self->From) tsip_header_tostring(TSIP_HEADER(self->From), output);
+	if(self->From){
+		tsip_header_tostring(TSIP_HEADER(self->From), output);
+	}
 	/* To */
-	if(self->To) tsip_header_tostring(TSIP_HEADER(self->To), output);
+	if(self->To){
+		tsip_header_tostring(TSIP_HEADER(self->To), output);
+	}
 	/* Contact */
-	if(self->Contact) tsip_header_tostring(TSIP_HEADER(self->Contact), output);
+	if(self->Contact){
+		tsip_header_tostring(TSIP_HEADER(self->Contact), output);
+	}
 	/* Call_id */
-	if(self->Call_ID) tsip_header_tostring(TSIP_HEADER(self->Call_ID), output);
+	if(self->Call_ID){
+		tsip_header_tostring(TSIP_HEADER(self->Call_ID), output);
+	}
 	/* CSeq */
-	if(self->CSeq) tsip_header_tostring(TSIP_HEADER(self->CSeq), output);
+	if(self->CSeq){
+		tsip_header_tostring(TSIP_HEADER(self->CSeq), output);
+	}
 	/* Expires */
-	if(self->Expires) tsip_header_tostring(TSIP_HEADER(self->Expires), output);
+	if(self->Expires){
+		tsip_header_tostring(TSIP_HEADER(self->Expires), output);
+	}
 	/* Content-Type */
-	if(self->Content_Type) tsip_header_tostring(TSIP_HEADER(self->Content_Type), output);
+	if(self->Content_Type){
+		tsip_header_tostring(TSIP_HEADER(self->Content_Type), output);
+	}
 	/* Content-Length*/
-	if(self->Content_Length) tsip_header_tostring(TSIP_HEADER(self->Content_Length), output);
+	if(self->Content_Length){
+		tsip_header_tostring(TSIP_HEADER(self->Content_Length), output);
+	}
 
 	/* All other headers */
 	{
@@ -294,8 +312,7 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	tsk_buffer_append(output, "\r\n", 2);
 
 	/* CONTENT */
-	if(TSIP_MESSAGE_HAS_CONTENT(self))
-	{
+	if(TSIP_MESSAGE_HAS_CONTENT(self)){
 		tsk_buffer_append(output, TSK_BUFFER_TO_STRING(self->Content), TSK_BUFFER_SIZE(self->Content));
 	}
 
@@ -315,7 +332,7 @@ tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_u
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CALL_ID_VA_ARGS(call_id));
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CSEQ_VA_ARGS(cseq, method));
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT));
-	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT));
+	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_USER_AGENT_VA_ARGS(/*TSIP_HEADER_USER_AGENT_DEFAULT*/"IM-client/OMA1.0 Mercuro-Gold/v4.0.1610.0"));
 
 
 	/*request->From = TSIP_HEADER_FROM_CREATE(0, from, 0);

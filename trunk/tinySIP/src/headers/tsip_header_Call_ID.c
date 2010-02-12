@@ -62,10 +62,9 @@ int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
-void tsip_header_Call_ID_random(tsk_istr_t *result)
+int tsip_header_Call_ID_random(tsk_uuidstring_t *result)
 {
-	uint64_t epoch = tsk_time_epoch();
-	tsk_itoa(epoch, result);
+	return tsk_uuidgenerate(result);
 }
 
 tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
@@ -79,7 +78,7 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 83 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 82 "../src/headers/tsip_header_Call_ID.c" */
 static const int tsip_machine_parser_header_Call_ID_start = 1;
 static const int tsip_machine_parser_header_Call_ID_first_final = 17;
 static const int tsip_machine_parser_header_Call_ID_error = 0;
@@ -87,16 +86,16 @@ static const int tsip_machine_parser_header_Call_ID_error = 0;
 static const int tsip_machine_parser_header_Call_ID_en_main = 1;
 
 
-/* #line 104 "tsip_parser_header_Call_ID.rl" */
+/* #line 103 "tsip_parser_header_Call_ID.rl" */
 	
-/* #line 93 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 92 "../src/headers/tsip_header_Call_ID.c" */
 	{
 	cs = tsip_machine_parser_header_Call_ID_start;
 	}
 
-/* #line 105 "tsip_parser_header_Call_ID.rl" */
+/* #line 104 "tsip_parser_header_Call_ID.rl" */
 	
-/* #line 100 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 99 "../src/headers/tsip_header_Call_ID.c" */
 	{
 	if ( p == pe )
 		goto _test_eof;
@@ -264,7 +263,7 @@ st13:
 	if ( ++p == pe )
 		goto _test_eof13;
 case 13:
-/* #line 268 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 267 "../src/headers/tsip_header_Call_ID.c" */
 	switch( (*p) ) {
 		case 13: goto tr13;
 		case 37: goto st13;
@@ -299,7 +298,7 @@ st14:
 	if ( ++p == pe )
 		goto _test_eof14;
 case 14:
-/* #line 303 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 302 "../src/headers/tsip_header_Call_ID.c" */
 	if ( (*p) == 10 )
 		goto tr16;
 	goto st0;
@@ -312,7 +311,7 @@ st17:
 	if ( ++p == pe )
 		goto _test_eof17;
 case 17:
-/* #line 316 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 315 "../src/headers/tsip_header_Call_ID.c" */
 	goto st0;
 st15:
 	if ( ++p == pe )
@@ -395,12 +394,12 @@ case 16:
 	_out: {}
 	}
 
-/* #line 106 "tsip_parser_header_Call_ID.rl" */
+/* #line 105 "tsip_parser_header_Call_ID.rl" */
 	
 	if( cs < 
-/* #line 402 "../source/headers/tsip_header_Call_ID.c" */
+/* #line 401 "../src/headers/tsip_header_Call_ID.c" */
 17
-/* #line 107 "tsip_parser_header_Call_ID.rl" */
+/* #line 106 "tsip_parser_header_Call_ID.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(hdr_call_id);

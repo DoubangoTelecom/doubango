@@ -42,7 +42,7 @@
 *	Ragel state machine.
 */
 
-/* #line 139 "tsip_parser_uri.rl" */
+/* #line 138 "tsip_parser_uri.rl" */
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ static const int tsip_machine_parser_uri_en_sip_usrinfo = 65;
 static const int tsip_machine_parser_uri_en_main = 73;
 
 
-/* #line 169 "tsip_parser_uri.rl" */
+/* #line 168 "tsip_parser_uri.rl" */
 	
 /* #line 88 "../src/parsers/tsip_parser_uri.c" */
 	{
@@ -92,7 +92,7 @@ static const int tsip_machine_parser_uri_en_main = 73;
 	act = 0;
 	}
 
-/* #line 170 "tsip_parser_uri.rl" */
+/* #line 169 "tsip_parser_uri.rl" */
 	
 /* #line 98 "../src/parsers/tsip_parser_uri.c" */
 	{
@@ -101,11 +101,11 @@ static const int tsip_machine_parser_uri_en_main = 73;
 	switch ( cs )
 	{
 tr13:
-/* #line 130 "tsip_parser_uri.rl" */
+/* #line 129 "tsip_parser_uri.rl" */
 	{{p = ((te))-1;}{  }}
 	goto st73;
 tr21:
-/* #line 116 "tsip_parser_uri.rl" */
+/* #line 115 "tsip_parser_uri.rl" */
 	{{p = ((te))-1;}{
 								SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6)
@@ -115,11 +115,11 @@ tr21:
 							}}
 	goto st73;
 tr28:
-/* #line 113 "tsip_parser_uri.rl" */
+/* #line 112 "tsip_parser_uri.rl" */
 	{{p = ((te))-1;}{ }}
 	goto st73;
 tr40:
-/* #line 116 "tsip_parser_uri.rl" */
+/* #line 115 "tsip_parser_uri.rl" */
 	{te = p+1;{
 								SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6)
@@ -129,11 +129,11 @@ tr40:
 							}}
 	goto st73;
 tr93:
-/* #line 131 "tsip_parser_uri.rl" */
+/* #line 130 "tsip_parser_uri.rl" */
 	{te = p;p--;{  }}
 	goto st73;
 tr94:
-/* #line 116 "tsip_parser_uri.rl" */
+/* #line 115 "tsip_parser_uri.rl" */
 	{te = p;p--;{
 								SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6)
@@ -143,56 +143,56 @@ tr94:
 							}}
 	goto st73;
 tr97:
-/* #line 125 "tsip_parser_uri.rl" */
+/* #line 124 "tsip_parser_uri.rl" */
 	{te = p;p--;{
 								ts++;
 								SCANNER_SET_INTEGER(uri->port);
 							}}
 	goto st73;
 tr99:
-/* #line 91 "tsip_parser_uri.rl" */
+/* #line 90 "tsip_parser_uri.rl" */
 	{
 		PARSER_ADD_PARAM(uri->params);
 	}
-/* #line 130 "tsip_parser_uri.rl" */
+/* #line 129 "tsip_parser_uri.rl" */
 	{te = p;p--;{  }}
 	goto st73;
 tr109:
-/* #line 56 "tsip_parser_uri.rl" */
+/* #line 55 "tsip_parser_uri.rl" */
 	{ uri->scheme = tsk_strdup("sip"), uri->type = uri_sip; }
-/* #line 106 "tsip_parser_uri.rl" */
+/* #line 105 "tsip_parser_uri.rl" */
 	{te = p;p--;{
-								if(tsk_strcontains(te, "@"))
+								if(tsk_strcontains(te, (pe - te), "@"))
 								{
 									{goto st65;}
 								}
 							}}
 	goto st73;
 tr111:
-/* #line 57 "tsip_parser_uri.rl" */
+/* #line 56 "tsip_parser_uri.rl" */
 	{ uri->scheme = tsk_strdup("sips"), uri->type = uri_sips; }
-/* #line 106 "tsip_parser_uri.rl" */
+/* #line 105 "tsip_parser_uri.rl" */
 	{te = p;p--;{
-								if(tsk_strcontains(te, "@"))
+								if(tsk_strcontains(te, (pe - te), "@"))
 								{
 									{goto st65;}
 								}
 							}}
 	goto st73;
 tr115:
-/* #line 71 "tsip_parser_uri.rl" */
+/* #line 70 "tsip_parser_uri.rl" */
 	{
-		PARSER_SET_STRING(uri->user_name);		
+		PARSER_SET_STRING(uri->user_name);
 	}
-/* #line 113 "tsip_parser_uri.rl" */
+/* #line 112 "tsip_parser_uri.rl" */
 	{te = p;p--;{ }}
 	goto st73;
 tr118:
-/* #line 91 "tsip_parser_uri.rl" */
+/* #line 90 "tsip_parser_uri.rl" */
 	{
 		PARSER_ADD_PARAM(uri->params);
 	}
-/* #line 113 "tsip_parser_uri.rl" */
+/* #line 112 "tsip_parser_uri.rl" */
 	{te = p;p--;{ }}
 	goto st73;
 st73:
@@ -228,7 +228,7 @@ st74:
 case 74:
 	goto st74;
 tr86:
-/* #line 61 "tsip_parser_uri.rl" */
+/* #line 60 "tsip_parser_uri.rl" */
 	{ uri->host_type = uri->host_type = host_ipv4; }
 	goto st1;
 st1:
@@ -391,7 +391,6 @@ tr16:
 	{te = p+1;}
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st80;
@@ -399,7 +398,7 @@ st80:
 	if ( ++p == pe )
 		goto _test_eof80;
 case 80:
-/* #line 403 "../src/parsers/tsip_parser_uri.c" */
+/* #line 402 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto tr15;
 		case 37: goto st13;
@@ -424,7 +423,6 @@ case 80:
 tr17:
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st13;
@@ -432,7 +430,7 @@ st13:
 	if ( ++p == pe )
 		goto _test_eof13;
 case 13:
-/* #line 436 "../src/parsers/tsip_parser_uri.c" */
+/* #line 434 "../src/parsers/tsip_parser_uri.c" */
 	if ( (*p) < 65 ) {
 		if ( 48 <= (*p) && (*p) <= 57 )
 			goto st14;
@@ -456,7 +454,7 @@ case 14:
 		goto tr15;
 	goto tr13;
 tr101:
-/* #line 91 "tsip_parser_uri.rl" */
+/* #line 90 "tsip_parser_uri.rl" */
 	{
 		PARSER_ADD_PARAM(uri->params);
 	}
@@ -465,7 +463,7 @@ st15:
 	if ( ++p == pe )
 		goto _test_eof15;
 case 15:
-/* #line 469 "../src/parsers/tsip_parser_uri.c" */
+/* #line 467 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto tr16;
 		case 37: goto tr17;
@@ -516,7 +514,7 @@ st81:
 	if ( ++p == pe )
 		goto _test_eof81;
 case 81:
-/* #line 520 "../src/parsers/tsip_parser_uri.c" */
+/* #line 518 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto tr18;
 		case 37: goto st17;
@@ -566,7 +564,6 @@ case 18:
 tr98:
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st82;
@@ -574,7 +571,7 @@ st82:
 	if ( ++p == pe )
 		goto _test_eof82;
 case 82:
-/* #line 578 "../src/parsers/tsip_parser_uri.c" */
+/* #line 575 "../src/parsers/tsip_parser_uri.c" */
 	if ( (*p) < 65 ) {
 		if ( 48 <= (*p) && (*p) <= 57 )
 			goto st83;
@@ -604,14 +601,14 @@ tr23:
 tr89:
 /* #line 1 "tsip_parser_uri.rl" */
 	{te = p+1;}
-/* #line 63 "tsip_parser_uri.rl" */
+/* #line 62 "tsip_parser_uri.rl" */
 	{ uri->host_type = uri->host_type = host_hostname; }
 	goto st84;
 st84:
 	if ( ++p == pe )
 		goto _test_eof84;
 case 84:
-/* #line 615 "../src/parsers/tsip_parser_uri.c" */
+/* #line 612 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 45: goto st19;
 		case 46: goto tr104;
@@ -648,7 +645,7 @@ st85:
 	if ( ++p == pe )
 		goto _test_eof85;
 case 85:
-/* #line 652 "../src/parsers/tsip_parser_uri.c" */
+/* #line 649 "../src/parsers/tsip_parser_uri.c" */
 	if ( (*p) < 65 ) {
 		if ( 48 <= (*p) && (*p) <= 57 )
 			goto st20;
@@ -708,17 +705,16 @@ tr90:
 	{te = p+1;}
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
-/* #line 63 "tsip_parser_uri.rl" */
+/* #line 62 "tsip_parser_uri.rl" */
 	{ uri->host_type = uri->host_type = host_hostname; }
 	goto st86;
 st86:
 	if ( ++p == pe )
 		goto _test_eof86;
 case 86:
-/* #line 722 "../src/parsers/tsip_parser_uri.c" */
+/* #line 718 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 45: goto st19;
 		case 46: goto tr104;
@@ -742,7 +738,7 @@ st87:
 	if ( ++p == pe )
 		goto _test_eof87;
 case 87:
-/* #line 746 "../src/parsers/tsip_parser_uri.c" */
+/* #line 742 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 45: goto st19;
 		case 46: goto tr104;
@@ -766,7 +762,7 @@ st88:
 	if ( ++p == pe )
 		goto _test_eof88;
 case 88:
-/* #line 770 "../src/parsers/tsip_parser_uri.c" */
+/* #line 766 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 45: goto st19;
 		case 46: goto tr104;
@@ -796,7 +792,7 @@ st90:
 	if ( ++p == pe )
 		goto _test_eof90;
 case 90:
-/* #line 800 "../src/parsers/tsip_parser_uri.c" */
+/* #line 796 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 45: goto st19;
 		case 46: goto tr104;
@@ -819,14 +815,14 @@ case 91:
 tr91:
 /* #line 1 "tsip_parser_uri.rl" */
 	{te = p+1;}
-/* #line 63 "tsip_parser_uri.rl" */
+/* #line 62 "tsip_parser_uri.rl" */
 	{ uri->host_type = uri->host_type = host_hostname; }
 	goto st92;
 st92:
 	if ( ++p == pe )
 		goto _test_eof92;
 case 92:
-/* #line 830 "../src/parsers/tsip_parser_uri.c" */
+/* #line 826 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 45: goto st19;
 		case 46: goto tr104;
@@ -850,7 +846,7 @@ st93:
 	if ( ++p == pe )
 		goto _test_eof93;
 case 93:
-/* #line 854 "../src/parsers/tsip_parser_uri.c" */
+/* #line 850 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 45: goto st19;
 		case 46: goto tr104;
@@ -874,7 +870,7 @@ st94:
 	if ( ++p == pe )
 		goto _test_eof94;
 case 94:
-/* #line 878 "../src/parsers/tsip_parser_uri.c" */
+/* #line 874 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 45: goto st19;
 		case 46: goto tr104;
@@ -901,11 +897,10 @@ tr116:
 tr27:
 /* #line 1 "tsip_parser_uri.rl" */
 	{te = p+1;}
-/* #line 58 "tsip_parser_uri.rl" */
+/* #line 57 "tsip_parser_uri.rl" */
 	{ uri->scheme = tsk_strdup("tel"), uri->type = uri_tel; }
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st95;
@@ -913,18 +908,18 @@ st95:
 	if ( ++p == pe )
 		goto _test_eof95;
 case 95:
-/* #line 917 "../src/parsers/tsip_parser_uri.c" */
+/* #line 912 "../src/parsers/tsip_parser_uri.c" */
 	if ( (*p) == 59 )
 		goto tr117;
 	goto tr116;
 tr117:
-/* #line 71 "tsip_parser_uri.rl" */
+/* #line 70 "tsip_parser_uri.rl" */
 	{
-		PARSER_SET_STRING(uri->user_name);		
+		PARSER_SET_STRING(uri->user_name);
 	}
 	goto st24;
 tr120:
-/* #line 91 "tsip_parser_uri.rl" */
+/* #line 90 "tsip_parser_uri.rl" */
 	{
 		PARSER_ADD_PARAM(uri->params);
 	}
@@ -933,7 +928,7 @@ st24:
 	if ( ++p == pe )
 		goto _test_eof24;
 case 24:
-/* #line 937 "../src/parsers/tsip_parser_uri.c" */
+/* #line 932 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto tr29;
 		case 37: goto tr30;
@@ -962,7 +957,6 @@ tr29:
 	{te = p+1;}
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st96;
@@ -970,7 +964,7 @@ st96:
 	if ( ++p == pe )
 		goto _test_eof96;
 case 96:
-/* #line 974 "../src/parsers/tsip_parser_uri.c" */
+/* #line 968 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto tr32;
 		case 37: goto st25;
@@ -995,7 +989,6 @@ case 96:
 tr30:
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st25;
@@ -1003,7 +996,7 @@ st25:
 	if ( ++p == pe )
 		goto _test_eof25;
 case 25:
-/* #line 1007 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1000 "../src/parsers/tsip_parser_uri.c" */
 	if ( (*p) < 65 ) {
 		if ( 48 <= (*p) && (*p) <= 57 )
 			goto st26;
@@ -1057,7 +1050,7 @@ st97:
 	if ( ++p == pe )
 		goto _test_eof97;
 case 97:
-/* #line 1061 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1054 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto tr33;
 		case 37: goto st28;
@@ -1105,14 +1098,14 @@ case 29:
 		goto tr33;
 	goto tr28;
 tr92:
-/* #line 62 "tsip_parser_uri.rl" */
+/* #line 61 "tsip_parser_uri.rl" */
 	{ uri->host_type = uri->host_type = host_ipv6; }
 	goto st30;
 st30:
 	if ( ++p == pe )
 		goto _test_eof30;
 case 30:
-/* #line 1116 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1109 "../src/parsers/tsip_parser_uri.c" */
 	if ( (*p) == 58 )
 		goto st64;
 	if ( (*p) < 65 ) {
@@ -1538,7 +1531,7 @@ st65:
 	if ( ++p == pe )
 		goto _test_eof65;
 case 65:
-/* #line 1542 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1535 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto tr71;
 		case 37: goto tr72;
@@ -1560,7 +1553,6 @@ case 65:
 tr71:
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st66;
@@ -1568,7 +1560,7 @@ st66:
 	if ( ++p == pe )
 		goto _test_eof66;
 case 66:
-/* #line 1572 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1564 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto st66;
 		case 37: goto st67;
@@ -1590,7 +1582,6 @@ case 66:
 tr72:
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st67;
@@ -1598,7 +1589,7 @@ st67:
 	if ( ++p == pe )
 		goto _test_eof67;
 case 67:
-/* #line 1602 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1593 "../src/parsers/tsip_parser_uri.c" */
 	if ( (*p) < 65 ) {
 		if ( 48 <= (*p) && (*p) <= 57 )
 			goto st68;
@@ -1622,16 +1613,16 @@ case 68:
 		goto st66;
 	goto st0;
 tr75:
-/* #line 71 "tsip_parser_uri.rl" */
+/* #line 70 "tsip_parser_uri.rl" */
 	{
-		PARSER_SET_STRING(uri->user_name);		
+		PARSER_SET_STRING(uri->user_name);
 	}
 	goto st69;
 st69:
 	if ( ++p == pe )
 		goto _test_eof69;
 case 69:
-/* #line 1635 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1626 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto tr78;
 		case 37: goto tr79;
@@ -1655,7 +1646,6 @@ case 69:
 tr78:
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st70;
@@ -1663,7 +1653,7 @@ st70:
 	if ( ++p == pe )
 		goto _test_eof70;
 case 70:
-/* #line 1667 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1657 "../src/parsers/tsip_parser_uri.c" */
 	switch( (*p) ) {
 		case 33: goto st70;
 		case 37: goto st71;
@@ -1687,7 +1677,6 @@ case 70:
 tr79:
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
 	goto st71;
@@ -1695,7 +1684,7 @@ st71:
 	if ( ++p == pe )
 		goto _test_eof71;
 case 71:
-/* #line 1699 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1688 "../src/parsers/tsip_parser_uri.c" */
 	if ( (*p) < 65 ) {
 		if ( 48 <= (*p) && (*p) <= 57 )
 			goto st72;
@@ -1719,39 +1708,38 @@ case 72:
 		goto st70;
 	goto st0;
 tr76:
-/* #line 71 "tsip_parser_uri.rl" */
+/* #line 70 "tsip_parser_uri.rl" */
 	{
-		PARSER_SET_STRING(uri->user_name);		
+		PARSER_SET_STRING(uri->user_name);
 	}
-/* #line 102 "tsip_parser_uri.rl" */
+/* #line 101 "tsip_parser_uri.rl" */
 	{ {goto st73;} }
 	goto st98;
 tr80:
 /* #line 50 "tsip_parser_uri.rl" */
 	{
-		TSK_DEBUG_INFO("URI::TAG");
 		tag_start = p;
 	}
-/* #line 76 "tsip_parser_uri.rl" */
+/* #line 75 "tsip_parser_uri.rl" */
 	{
-		PARSER_SET_STRING(uri->password);	
+		PARSER_SET_STRING(uri->password);
 	}
-/* #line 102 "tsip_parser_uri.rl" */
+/* #line 101 "tsip_parser_uri.rl" */
 	{ {goto st73;} }
 	goto st98;
 tr83:
-/* #line 76 "tsip_parser_uri.rl" */
+/* #line 75 "tsip_parser_uri.rl" */
 	{
-		PARSER_SET_STRING(uri->password);	
+		PARSER_SET_STRING(uri->password);
 	}
-/* #line 102 "tsip_parser_uri.rl" */
+/* #line 101 "tsip_parser_uri.rl" */
 	{ {goto st73;} }
 	goto st98;
 st98:
 	if ( ++p == pe )
 		goto _test_eof98;
 case 98:
-/* #line 1755 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1743 "../src/parsers/tsip_parser_uri.c" */
 	goto st0;
 	}
 	_test_eof73: cs = 73; goto _test_eof; 
@@ -1904,12 +1892,12 @@ case 98:
 	_out: {}
 	}
 
-/* #line 171 "tsip_parser_uri.rl" */
+/* #line 170 "tsip_parser_uri.rl" */
 	
 	if( cs < 
-/* #line 1911 "../src/parsers/tsip_parser_uri.c" */
+/* #line 1899 "../src/parsers/tsip_parser_uri.c" */
 73
-/* #line 172 "tsip_parser_uri.rl" */
+/* #line 171 "tsip_parser_uri.rl" */
  )
 	{
 		TSK_DEBUG_ERROR("Failed to parse SIP/SIPS/TEL URI.");

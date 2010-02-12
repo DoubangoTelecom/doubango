@@ -33,6 +33,8 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+#include "tsk_uuid.h"
+
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_CALL_ID_CREATE
@@ -62,7 +64,7 @@ typedef struct tsip_header_Call_ID_s
 }
 tsip_header_Call_ID_t;
 
-void tsip_header_Call_ID_random(tsk_istr_t *result);
+int tsip_header_Call_ID_random(tsk_uuidstring_t *result);
 tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size);
 
 TINYSIP_GEXTERN const void *tsip_header_Call_ID_def_t;

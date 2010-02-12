@@ -32,7 +32,7 @@
 #include "tsk_debug.h"
 
 #if defined (_DEBUG) || defined (DEBUG)
-#	define TSK_DEBUG_OBJECTS	1
+#	define TSK_DEBUG_OBJECTS	0
 static int tsk_objects_count = 0;
 #else
 #	define TSK_DEBUG_OBJECTS	0

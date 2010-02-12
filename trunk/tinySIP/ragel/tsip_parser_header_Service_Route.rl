@@ -54,16 +54,60 @@
 		tag_start = p;
 	}
 	
-	action parse_route
+	action create_service
 	{
-		PARSER_SET_STRING(hdr_service_route->value);
+		if(!curr_service)
+		{
+			curr_service = TSIP_HEADER_SERVICE_ROUTE_CREATE();
+		}
+	}
+
+	action parse_display_name
+	{
+		if(curr_service)
+		{
+			PARSER_SET_STRING(curr_service->display_name);
+		}
+	}
+
+	action parse_uri
+	{
+		if(curr_service && !curr_service->uri)
+		{
+			int len = (int)(p  - tag_start);
+			curr_service->uri = tsip_uri_parse(tag_start, (size_t)len);
+		}
+	}
+
+	action parse_param
+	{
+		if(curr_service)
+		{
+			PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_service));
+		}
+	}
+
+	action add_service
+	{
+		if(curr_service)
+		{
+			tsk_list_push_back_data(hdr_services, ((void**) &curr_service));
+		}
 	}
 
 	action eob
 	{
 	}
 
-	Service_Route = ( "Service-Route"i ) HCOLON any*>tag %parse_route;
+	
+	URI = (scheme HCOLON any+)>tag %parse_uri;
+	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;
+	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
+
+	rr_param = (generic_param)>tag %parse_param;
+
+	sr_value	= 	(my_name_addr ( SEMI rr_param )*) >create_service %add_service;
+	Service_Route	= 	"Service-Route" HCOLON sr_value (COMMA sr_value)*;
 	
 	# Entry point
 	main := Service_Route :>CRLF @eob;
@@ -75,23 +119,32 @@ int tsip_header_Service_Route_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const tsip_header_Service_Route_t *Service_Route = header;
-		if(Service_Route->value)
-		{
-			return tsk_buffer_append(output, Service_Route->value, strlen(Service_Route->value));
+		int ret = 0;
+		
+		if(Service_Route->display_name){ /* Display Name */
+			tsk_buffer_appendEx(output, "\"%s\"", Service_Route->display_name);
 		}
+
+		if(ret=tsip_uri_serialize(Service_Route->uri, 1, 1, output)){ /* Route */
+			return ret;
+		}
+		
+		return ret;
 	}
+
 	return -1;
 }
 
-tsip_header_Service_Route_t *tsip_header_Service_Route_parse(const char *data, size_t size)
+tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data, size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Service_Route_t *hdr_service_route = TSIP_HEADER_SERVICE_ROUTE_CREATE(0);
+	tsip_header_Service_Routes_L_t *hdr_services = TSK_LIST_CREATE();
 	
 	const char *tag_start;
+	tsip_header_Service_Route_t *curr_service = 0;
 
 	%%write data;
 	%%write init;
@@ -99,13 +152,12 @@ tsip_header_Service_Route_t *tsip_header_Service_Route_parse(const char *data, s
 	
 	if( cs < %%{ write first_final; }%% )
 	{
-		TSK_OBJECT_SAFE_FREE(hdr_service_route);
+		TSK_OBJECT_SAFE_FREE(curr_service);
+		TSK_OBJECT_SAFE_FREE(hdr_services);
 	}
 	
-	return hdr_service_route;
+	return hdr_services;
 }
-
-
 
 
 
@@ -122,7 +174,6 @@ static void* tsip_header_Service_Route_create(void *self, va_list * app)
 	tsip_header_Service_Route_t *Service_Route = self;
 	if(Service_Route)
 	{
-		Service_Route->value = tsk_strdup(va_arg(*app, const char *));
 		TSIP_HEADER(Service_Route)->type = tsip_htype_Service_Route;
 		TSIP_HEADER(Service_Route)->tostring = tsip_header_Service_Route_tostring;
 	}
@@ -140,7 +191,9 @@ static void* tsip_header_Service_Route_destroy(void *self)
 	tsip_header_Service_Route_t *Service_Route = self;
 	if(Service_Route)
 	{
-		TSK_FREE(Service_Route->value);
+		TSK_FREE(Service_Route->display_name);
+		TSK_OBJECT_SAFE_FREE(Service_Route->uri);
+
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Service_Route));
 	}
 	else TSK_DEBUG_ERROR("Null Service_Route header.");

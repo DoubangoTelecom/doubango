@@ -33,7 +33,15 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+#include "tinysip/tsip_uri.h"
+
 TSIP_BEGIN_DECLS
+
+/**@def TSIP_HEADER_ROUTE_CREATE
+* Creates new sip 'Route' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
+*/
+#define TSIP_HEADER_ROUTE_CREATE()	tsk_object_new(tsip_header_Route_def_t)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -42,14 +50,26 @@ TSIP_BEGIN_DECLS
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF : Route	= 	"Route" HCOLON route-param *(COMMA route-param)
+///							route-param	= 	name-addr *( SEMI rr-param )
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Route_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	char *display_name;
+	tsip_uri_t *uri;
 }
 tsip_header_Route_t;
+
+//#define TSIP_DECLARE_HEADER_ROUTE	tsip_header_Route_t header_Route
+
+typedef tsk_list_t tsip_header_Routes_L_t;
+
+tsip_header_Routes_L_t *tsip_header_Route_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_Route_def_t;
 
 TSIP_END_DECLS
 
