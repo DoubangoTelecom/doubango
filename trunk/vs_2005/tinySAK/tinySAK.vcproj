@@ -122,11 +122,12 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
+				Optimization="0"
 				AdditionalIncludeDirectories="$(DOUBANGO_HOME)\thirdparties\wince\include"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYSAK_EXPORTS;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
 				MinimalRebuild="true"
 				ExceptionHandling="0"
-				RuntimeLibrary="0"
+				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
@@ -148,8 +149,8 @@
 				AdditionalDependencies="ws2.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="8"
-				TargetMachine="0"
+				SubSystem="9"
+				TargetMachine="16"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -421,6 +422,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinySAK\src\tsk_ragel_state.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySAK\src\tsk_runnable.h"
 				>
 			</File>
@@ -532,6 +537,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinySAK\src\tsk_ppfcs32.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySAK\src\tsk_ragel_state.c"
 				>
 			</File>
 			<File

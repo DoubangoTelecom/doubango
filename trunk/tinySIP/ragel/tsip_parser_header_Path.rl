@@ -58,7 +58,7 @@
 	{
 		if(!curr_path)
 		{
-			curr_path = TSIP_HEADER_PATH_CREATE();
+			curr_path = TSIP_HEADER_PATH_CREATE_NULL();
 		}
 	}
 
@@ -174,8 +174,13 @@ static void* tsip_header_Path_create(void *self, va_list * app)
 	tsip_header_Path_t *Path = self;
 	if(Path)
 	{
+		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
+
 		TSIP_HEADER(Path)->type = tsip_htype_Path;
 		TSIP_HEADER(Path)->tostring = tsip_header_Path_tostring;
+		if(uri){
+			Path->uri = tsk_object_ref((void*)uri);
+		}
 	}
 	else
 	{

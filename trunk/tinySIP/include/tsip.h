@@ -37,9 +37,9 @@
 #include "tinysip/tsip_event.h"
 
 #include "tinysip/api/tsip_register.h"
+#include "tinysip/api/tsip_subscribe.h"
 
-#include "tinysip/headers/tsip_header_Service_Route.h"
-#include "tinysip/headers/tsip_header_Path.h"
+#include "tinysip/tsip_uri.h"
 
 #include "tnet_socket.h"
 #include "dns/tnet_dns.h"
@@ -128,11 +128,12 @@ typedef struct tsip_stack_s
 
 	tsip_stack_callback callback;
 	tsip_register_callback callback_register;
+	tsip_subscribe_callback callback_subscribe;
 
 	/* Identity */
 	char* display_name;
-	struct tsip_uri_s *public_identity;
-	struct tsip_uri_s *preferred_identity;
+	tsip_uri_t *public_identity;
+	tsip_uri_t *preferred_identity;
 	//struct tsip_uri_s *associated_identity;
 	char *private_identity;
 	char *password;
@@ -153,8 +154,9 @@ typedef struct tsip_stack_s
 	char* device_id;
 	char* mobility;
 	char* sec_agree_mech;
-	tsip_header_Paths_L_t* paths;
-	tsip_header_Service_Routes_L_t* service_routes;
+	tsip_uris_L_t* paths;
+	tsip_uris_L_t* service_routes;
+	tsip_uris_L_t* associated_uris;
 
 	/* DNS */
 	tnet_dns_ctx_t *dns_ctx;
@@ -200,10 +202,12 @@ TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback callback,
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API int tsip_stack_set_callback_register(tsip_stack_handle_t *self, tsip_register_callback callback);
+TINYSIP_API int tsip_stack_set_callback_subscribe(tsip_stack_handle_t *self, tsip_subscribe_callback callback);
 int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
 
+tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const char* protocol);
 const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self);
 struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self);
 struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);
@@ -211,6 +215,9 @@ struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_h
 
 TINYSIP_API int tsip_register(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 int tsip_unregister(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+
+TINYSIP_API int tsip_subscribe(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+int tsip_unsubscribe(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);

@@ -35,12 +35,16 @@
 #include "tinysip/headers/tsip_header_Call_ID.h"
 #include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_CSeq.h"
+#include "tinysip/headers/tsip_header_Event.h"
 #include "tinysip/headers/tsip_header_Expires.h"
 #include "tinysip/headers/tsip_header_From.h"
 #include "tinysip/headers/tsip_header_Max_Forwards.h"
 #include "tinysip/headers/tsip_header_Min_Expires.h"
 #include "tinysip/headers/tsip_header_Path.h"
 #include "tinysip/headers/tsip_header_P_Access_Network_Info.h" 
+#include "tinysip/headers/tsip_header_P_Asserted_Identity.h"
+#include "tinysip/headers/tsip_header_P_Associated_URI.h"
+#include "tinysip/headers/tsip_header_P_Charging_Function_Addresses.h"
 #include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
 #include "tinysip/headers/tsip_header_Privacy.h"
 #include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
@@ -48,14 +52,38 @@
 #include "tinysip/headers/tsip_header_Record_Route.h"
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Route.h"
+#include "tinysip/headers/tsip_header_Server.h"
 #include "tinysip/headers/tsip_header_Service_Route.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 #include "tinysip/headers/tsip_header_To.h"
 #include "tinysip/headers/tsip_header_User_Agent.h"
 #include "tinysip/headers/tsip_header_Via.h"
+#include "tinysip/headers/tsip_header_Warning.h"
 #include "tinysip/headers/tsip_header_WWW_Authenticate.h"
 
 #include "tsk_debug.h"
+
+#undef ADD_HEADERS
+#undef ADD_HEADER
+
+#define ADD_HEADERS(headers)\
+	if(headers)\
+	{\
+		tsk_list_item_t *item;\
+		tsk_list_foreach(item, headers)\
+		{\
+			tsip_header_t *hdr = tsk_object_ref(item->data);\
+			tsk_list_push_back_data(message->headers, ((void**) &hdr));\
+		}\
+		\
+		TSK_OBJECT_SAFE_FREE(headers);\
+	}
+#define ADD_HEADER(header)\
+	if(header)\
+	{\
+		tsk_list_push_back_data(message->headers, ((void**) &header));\
+	}
+
 
 /***********************************
 *	Ragel state machine.
@@ -104,20 +132,14 @@
 	action parse_header_Allow
 	{
 		tsip_header_Allow_t *header = tsip_header_Allow_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Allow-Events: ==*/
 	action parse_header_Allow_Events
 	{
 		tsip_header_Allow_Events_t *header = tsip_header_Allow_Events_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Authentication-Info: ==*/
@@ -130,10 +152,7 @@
 	action parse_header_Authorization 
 	{
 		tsip_header_Authorization_t *header = tsip_header_Authorization_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Call-ID: ==*/
@@ -155,24 +174,7 @@
 	action parse_header_Contact 
 	{
 		tsip_header_Contacts_L_t* headers =  tsip_header_Contact_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(headers)
-		{
-			tsk_list_item_t *item;
-			tsk_list_foreach(item, headers)
-			{
-				tsip_header_Contact_t *hdr = tsk_object_ref(item->data);
-				if(!message->Contact)
-				{
-					message->Contact = hdr;
-				}
-				else
-				{
-					tsk_list_push_back_data(message->headers, ((void**) &hdr));
-				}
-			}
-
-			TSK_OBJECT_SAFE_FREE(headers);
-		}
+		ADD_HEADERS(headers);
 	}
 
 	# /*== Content-Disposition: ==*/
@@ -235,7 +237,8 @@
 	# /*== Event: ==*/
 	action parse_header_Event
 	{
-		TSK_DEBUG_ERROR("parse_header_Event NOT IMPLEMENTED");
+		tsip_header_Event_t *header = tsip_header_Event_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
 	}
 
 	# /*== Expires: ==*/
@@ -290,10 +293,7 @@
 	action parse_header_Max_Forwards
 	{
 		tsip_header_Max_Forwards_t *header = tsip_header_Max_Forwards_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== MIME-Version: ==*/
@@ -306,10 +306,7 @@
 	action parse_header_Min_Expires
 	{
 		tsip_header_Min_Expires_t *header = tsip_header_Min_Expires_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Min-SE: ==*/
@@ -328,10 +325,7 @@
 	action parse_header_P_Access_Network_Info 
 	{
 		tsip_header_P_Access_Network_Info_t *header = tsip_header_P_Access_Network_Info_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== P-Answer-State: ==*/
@@ -343,13 +337,15 @@
 	# /*== P-Asserted-Identity: ==*/
 	action parse_header_P_Asserted_Identity 
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Asserted_Identity NOT IMPLEMENTED");
+		tsip_header_P_Asserted_Identities_L_t* headers =  tsip_header_P_Asserted_Identity_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADERS(headers);
 	}
 
 	# /*== P-Associated-URI: ==*/
-	action parse_header_P_Associated_URI 
+	action parse_header_P_Associated_URI
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Associated_URI NOT IMPLEMENTED");
+		tsip_header_P_Associated_URIs_L_t* headers =  tsip_header_P_Associated_URI_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADERS(headers);
 	}
 
 	# /*== P-Called-Party-ID: ==*/
@@ -361,7 +357,8 @@
 	# /*== P-Charging-Function-Addresses : ==*/
 	action parse_header_P_Charging_Function_Addresses 
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Charging_Function_Addresses NOT IMPLEMENTED");
+		tsip_header_P_Charging_Function_Addressess_L_t* headers =  tsip_header_P_Charging_Function_Addresses_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADERS(headers);
 	}
 
 	# /*== P_Charging_Vector: ==*/
@@ -416,10 +413,7 @@
 	action parse_header_P_Preferred_Identity
 	{
 		tsip_header_P_Preferred_Identity_t *header = tsip_header_P_Preferred_Identity_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== P-Profile-Key: ==*/
@@ -444,17 +438,7 @@
 	action parse_header_Path
 	{
 		tsip_header_Paths_L_t* headers =  tsip_header_Path_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(headers)
-		{
-			tsk_list_item_t *item;
-			tsk_list_foreach(item, headers)
-			{
-				tsip_header_Route_t *hdr = tsk_object_ref(item->data);
-				tsk_list_push_back_data(message->headers, ((void**) &hdr));
-			}
-
-			TSK_OBJECT_SAFE_FREE(headers);
-		}
+		ADD_HEADERS(headers);
 	}
 
 	# /* == Priority: ==*/
@@ -467,30 +451,21 @@
 	action parse_header_Privacy
 	{
 		tsip_header_Privacy_t *header = tsip_header_Privacy_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Authenticate: ==*/
 	action parse_header_Proxy_Authenticate
 	{
 		tsip_header_Proxy_Authenticate_t *header = tsip_header_Proxy_Authenticate_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Proxy-Authorization: ==*/
 	action parse_header_Proxy_Authorization
 	{
 		tsip_header_Proxy_Authorization_t *header = tsip_header_Proxy_Authorization_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Proxy-Require: ==*/
@@ -515,10 +490,7 @@
 	action parse_header_Record_Route 
 	{
 		tsip_header_Record_Route_t *header = tsip_header_Record_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Refer-Sub: ==*/
@@ -589,17 +561,7 @@
 	action parse_header_Route
 	{
 		tsip_header_Routes_L_t* headers =  tsip_header_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(headers)
-		{
-			tsk_list_item_t *item;
-			tsk_list_foreach(item, headers)
-			{
-				tsip_header_Route_t *hdr = tsk_object_ref(item->data);
-				tsk_list_push_back_data(message->headers, ((void**) &hdr));
-			}
-
-			TSK_OBJECT_SAFE_FREE(headers);
-		}
+		ADD_HEADERS(headers);
 	}
 
 	# /*== RSeq: ==*/
@@ -629,24 +591,15 @@
 	# /*== Server: ==*/
 	action parse_header_Server
 	{
-		TSK_DEBUG_ERROR("parse_header_Server NOT IMPLEMENTED");
+		tsip_header_Server_t *header = tsip_header_Server_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
 	}
 
 	# /*== Service-Route: ==*/
 	action parse_header_Service_Route
 	{
 		tsip_header_Service_Routes_L_t* headers =  tsip_header_Service_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(headers)
-		{
-			tsk_list_item_t *item;
-			tsk_list_foreach(item, headers)
-			{
-				tsip_header_Service_Route_t *hdr = tsk_object_ref(item->data);
-				tsk_list_push_back_data(message->headers, ((void**) &hdr));
-			}
-
-			TSK_OBJECT_SAFE_FREE(headers);
-		}
+		ADD_HEADERS(headers);
 	}
 
 	# /*== Session-Expires: ==*/
@@ -683,10 +636,7 @@
 	action parse_header_Supported
 	{
 		tsip_header_Supported_t *header = tsip_header_Supported_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Target-Dialog: ==*/
@@ -720,10 +670,7 @@
 	action parse_header_User_Agent
 	{
 		tsip_header_User_Agent_t *header = tsip_header_User_Agent_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Via: ==*/
@@ -746,17 +693,15 @@
 	# /*== Warning: ==*/
 	action parse_header_Warning 
 	{
-		TSK_DEBUG_ERROR("parse_header_Warning NOT IMPLEMENTED");
+		tsip_header_Warnings_L_t* headers =  tsip_header_Warning_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADERS(headers);
 	}
 
 	# /*== WWW-Authenticate: ==*/
 	action parse_header_WWW_Authenticate
 	{
 		tsip_header_WWW_Authenticate_t *header = tsip_header_WWW_Authenticate_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 		
 	# /*== extension_header: ==*/

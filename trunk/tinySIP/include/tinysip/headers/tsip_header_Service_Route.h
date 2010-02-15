@@ -41,7 +41,9 @@ TSIP_BEGIN_DECLS
 * Creates new sip 'Service-Route' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define TSIP_HEADER_SERVICE_ROUTE_CREATE()	tsk_object_new(tsip_header_Service_Route_def_t)
+#define TSIP_HEADER_SERVICE_ROUTE_VA_ARGS(uri)		tsip_header_Service_Route_def_t, (const tsip_uri_t*)uri
+#define TSIP_HEADER_SERVICE_ROUTE_CREATE(uri)		tsk_object_new(TSIP_HEADER_SERVICE_ROUTE_VA_ARGS(uri))
+#define TSIP_HEADER_SERVICE_ROUTE_CREATE_NULL()		TSIP_HEADER_SERVICE_ROUTE_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

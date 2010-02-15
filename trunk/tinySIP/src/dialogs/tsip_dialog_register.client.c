@@ -30,7 +30,10 @@
 #include "tinysip/dialogs/tsip_dialog_register.h"
 #include "tinysip/parsers/tsip_parser_uri.h"
 
+#include "tinysip/headers/tsip_header_Path.h"
+#include "tinysip/headers/tsip_header_P_Associated_URI.h"
 #include "tinysip/headers/tsip_header_Min_Expires.h"
+#include "tinysip/headers/tsip_header_Service_Route.h"
 
 #include "tinysip/api/tsip_register.h"
 
@@ -76,6 +79,9 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
+				//
+				//	RESPONSE
+				//
 				if(TSIP_RESPONSE_IS_1XX(msg))
 				{
 					tsip_dialog_registerContext_sm_1xx(&TSIP_DIALOG_REGISTER(self)->_fsm, msg);
@@ -98,6 +104,12 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 					TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self);
 					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
 				}
+			}
+			else
+			{
+				//
+				//	REQUEST
+				//
 			}
 			break;
 		}
@@ -178,7 +190,6 @@ void tsip_dialog_register_init(tsip_dialog_register_t *self)
 	*/
 	tsip_dialog_registerContext_Init(&self->_fsm, self);
 
-	TSIP_DIALOG(self)->expires = 30;
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_register_event_callback);
 	
 	TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
@@ -255,32 +266,42 @@ void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self,
 	if(TSIP_DIALOG(self)->state != tsip_established) /* Must be called before "tsip_dialog_update" update the state. */
 	{
 		size_t index;
-		tsip_header_t* hdr;
+		const tsip_header_Path_t *hdr_Path;
+		const tsip_header_Service_Route_t *hdr_Service_Route;
+		const tsip_header_P_Associated_URI_t *hdr_P_Associated_URI_t;
+		tsip_uri_t *uri;
 
 		/* To avoid memory leaks ==> delete all concerned objects (it worth nothing) */
-		//TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->associated_uri);
+		TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->associated_uris);
 		TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->service_routes);
 		TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->paths);
 
+		/* Associated URIs */
+		for(index = 0; (hdr_P_Associated_URI_t = (const tsip_header_P_Associated_URI_t*)tsip_message_get_headerAt(msg, tsip_htype_P_Associated_URI, index)); index++){
+			if(!TSIP_DIALOG_GET_STACK(self)->associated_uris){
+				TSIP_DIALOG_GET_STACK(self)->associated_uris = TSK_LIST_CREATE();
+			}
+			uri = tsk_object_ref(hdr_P_Associated_URI_t->uri);
+			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->associated_uris, (void**)&uri);
+		}
+
 		/* Service-Route */
-		for(index = 0; (hdr = (tsip_header_t*)tsip_message_get_headerAt(msg, tsip_htype_Service_Route, index)); index++){
-			if(index == 0){
+		for(index = 0; (hdr_Service_Route = (const tsip_header_Service_Route_t*)tsip_message_get_headerAt(msg, tsip_htype_Service_Route, index)); index++){
+			if(!TSIP_DIALOG_GET_STACK(self)->service_routes){
 				TSIP_DIALOG_GET_STACK(self)->service_routes = TSK_LIST_CREATE();
 			}
-			hdr = tsk_object_ref(hdr);
-			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->service_routes, (void**)&hdr);
+			uri = tsk_object_ref(hdr_Service_Route->uri);
+			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->service_routes, (void**)&uri);
 		}
 
 		/* Paths */
-		for(index = 0; (hdr = (tsip_header_t*)tsip_message_get_headerAt(msg, tsip_htype_Path, index)); index++){
-			if(index == 0){
+		for(index = 0; (hdr_Path = (const tsip_header_Path_t*)tsip_message_get_headerAt(msg, tsip_htype_Path, index)); index++){
+			if(TSIP_DIALOG_GET_STACK(self)->paths == 0){
 				TSIP_DIALOG_GET_STACK(self)->paths = TSK_LIST_CREATE();
 			}
-			hdr = tsk_object_ref(hdr);
-			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->paths, (void**)&hdr);
+			uri = tsk_object_ref(hdr_Path->uri);
+			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->paths, (void**)&uri);
 		}
-		/* Associated Uris */
-		// FIXME
 	}
 
 	/* Update the dialog state. */

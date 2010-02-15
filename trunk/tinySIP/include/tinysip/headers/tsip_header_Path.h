@@ -41,7 +41,9 @@ TSIP_BEGIN_DECLS
 * Creates new sip 'Path' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define TSIP_HEADER_PATH_CREATE()	tsk_object_new(tsip_header_Path_def_t)
+#define TSIP_HEADER_PATH_VA_ARGS(uri)		tsip_header_Path_def_t, (const tsip_uri_t*)uri
+#define TSIP_HEADER_PATH_CREATE(uri)		tsk_object_new(TSIP_HEADER_PATH_VA_ARGS(uri))
+#define TSIP_HEADER_PATH_CREATE_NULL()		TSIP_HEADER_PATH_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

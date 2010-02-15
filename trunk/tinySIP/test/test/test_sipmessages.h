@@ -98,12 +98,19 @@
 	"Route: <sip:pcscf.open-ims.test:4060;lr;transport=udp>,<sip:orig@scscf.open-ims.test:6060;lr>\r\n" \
 	"P-Preferred-Identity: <sip:bob@open-ims.test\r\n" \
 	"Allow-Events: presence, presence.winfo\r\n" \
+	"Event: reg\r\n" \
+	"P-Associated-URI: <sip:bob@open-ims.test>, <sip:0600000001@open-ims.test>, <sip:0100000001@open-ims.test>\r\n" \
+	"P-Charging-Function-Addresses: ccf=pri_ccf_address\r\n" \
+	"Server: Sip EXpress router (2.0.0-dev1 OpenIMSCore (i386/linux))\r\n" \
+	"Warning: 392 192.168.0.15:6060 \"Noisy feedback tells:  pid=4521 req_src_ip=192.168.0.15 req_src_port=5060 in_uri=sip:scscf.open-ims.test:6060 out_uri=sip:scscf.open-ims.test:6060 via_cnt==3\"\r\n" \
+	"P-Asserted-Identity: \"Cullen Jennings\" <sip:fluffy@cisco.com>\r\n" \
+	"P-Asserted-Identity: tel:+14085264000\r\n" \
 	"Content-Length: 11\r\n" \
 	"\r\n" \
 	"How are you"
 
 
-#define SIP_MSG_2_TEST SIP_RESPONSE
+#define SIP_MSG_2_TEST SIP_MESSAGE
 
 void test_parser()
 {

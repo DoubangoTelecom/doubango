@@ -123,9 +123,10 @@
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\smc&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\smc&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYSIP_EXPORTS;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
 				MinimalRebuild="true"
+				ExceptionHandling="0"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -144,7 +145,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
+				AdditionalOptions=" /subsystem:windowsce,5.01 /machine:THUMB"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="8"
@@ -761,10 +763,6 @@
 					RelativePath="..\..\tinySIP\src\parsers\tsip_parser_uri.c"
 					>
 				</File>
-				<File
-					RelativePath="..\..\tinySIP\src\parsers\tsip_ragel_state.c"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="transactions"
@@ -803,6 +801,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinySIP\src\smc\tsip_dialog_register_sm.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\src\smc\tsip_dialog_subscribe_sm.c"
 					>
 				</File>
 				<File
@@ -1377,10 +1379,6 @@
 					RelativePath="..\..\tinySIP\include\tinysip\parsers\tsip_parser_uri.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\parsers\tsip_ragel_state.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="transactions"
@@ -1419,6 +1417,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_dialog_register_sm.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_dialog_subscribe_sm.h"
 					>
 				</File>
 				<File
@@ -1928,6 +1930,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinySIP\smc\tsip_dialog_register.sm"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySIP\smc\tsip_dialog_subscribe.sm"
 				>
 			</File>
 			<File

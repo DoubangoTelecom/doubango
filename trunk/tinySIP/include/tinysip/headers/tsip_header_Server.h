@@ -35,6 +35,13 @@
 
 TSIP_BEGIN_DECLS
 
+/**@def TSIP_HEADER_SERVER_CREATE
+* Creates new sip 'Server' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
+*/
+#define TSIP_HEADER_SERVER_VA_ARGS(server)		tsip_header_Server_def_t, (const char*)server
+#define TSIP_HEADER_SERVER_CREATE(server)		tsk_object_new(TSIP_HEADER_SERVER_VA_ARGS(server))
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -42,14 +49,22 @@ TSIP_BEGIN_DECLS
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Server	= 	"Server" HCOLON server-val *(LWS server-val)
+/// server-val	= 	product / comment
+/// product	= 	token [SLASH product-version]
+/// product-version	= 	token
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Server_s
 {	
 	TSIP_DECLARE_HEADER;
+	char* value;
 }
 tsip_header_Server_t;
+
+tsip_header_Server_t *tsip_header_Server_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_Server_def_t;
 
 TSIP_END_DECLS
 

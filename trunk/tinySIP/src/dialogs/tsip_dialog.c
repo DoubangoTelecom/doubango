@@ -35,9 +35,12 @@
 #include "tinysip/transactions/tsip_transac_nict.h"
 
 #include "tinysip/headers/tsip_header_Authorization.h"
-#include "tinysip/headers/tsip_header_Proxy_Authorization.h"
-#include "tinysip/headers/tsip_header_WWW_Authenticate.h"
+#include "tinysip/headers/tsip_header_Contact.h"
+#include "tinysip/headers/tsip_header_Expires.h"
 #include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
+#include "tinysip/headers/tsip_header_Proxy_Authorization.h"
+#include "tinysip/headers/tsip_header_Route.h"
+#include "tinysip/headers/tsip_header_WWW_Authenticate.h"
 
 #include "tsk_debug.h"
 
@@ -99,7 +102,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	into the Request-URI.  The UAC MUST NOT add a Route header field to
 	the request.
 	*/
-	if(TSK_LIST_IS_EMPTY(self->routes))
+	if(!self->routes || TSK_LIST_IS_EMPTY(self->routes))
 	{
 		request_uri = tsk_object_ref((void*)self->uri_remote_target);
 	}
@@ -173,12 +176,19 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		TSK_FREE(contact);
 	}
 
-
-
-
+	/* Dialog Routes */
 	if(copy_routes_start !=-1)
 	{
-		// FIXME:
+		tsk_list_item_t *item;
+		int32_t index = -1;
+		tsk_list_foreach(item, self->routes)
+		{
+			const tsip_uri_t* uri = item->data;
+			if(++index < copy_routes_start || !uri){
+				continue;
+			}
+			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
+		}
 	}
 
 	
@@ -191,7 +201,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	/* Update authorizations */
 	if(TSK_LIST_IS_EMPTY(self->challenges))
 	{
-		if(tsk_strequals("REGISTER", method) && !TSIP_STACK(self->stack)->enable_earlyIMS)
+		if(tsk_striequals("REGISTER", method) && !TSIP_STACK(self->stack)->enable_earlyIMS)
 		{
 			/*	3GPP TS 34.229 - 5.1.1.1A === 3GPP TS 33.978 - 6.2.3.1
 				On sending a REGISTER request, the UE shall populate the header fields as follows:
@@ -225,9 +235,18 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 
 	/* Update CSeq */
-	if(!tsk_striequals(request->method, "ACK") && !tsk_striequals(request->method, "CANCEL"))
+	if(!tsk_striequals(method, "ACK") && !tsk_striequals(method, "CANCEL"))
 	{
 		request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
+	}
+
+	/* Route generation 
+		*	==> http://betelco.blogspot.com/2008/11/proxy-and-service-route-discovery-in.html
+		* The dialog Routes have been copied above.
+	*/
+	if(!tsk_striequals("REGISTER", method))
+	{	// According to the above link ==> Initial/Re/De registration do not have routes.
+		
 	}
 
 
@@ -347,23 +366,47 @@ int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* respons
 {
 	int expires = self->expires;
 	int newdelay = expires;	/* default value */
+	const tsip_header_t* hdr;
+	size_t i;
 
-	/* 
-	*	NOTIFY with subscription-state header with expires parameter. 
+	/*== NOTIFY with subscription-state header with expires parameter. 
 	*/
-	if(response->CSeq && tsk_striequals(response->CSeq->method, "NOTIFY"))
-	{
+	if(response->CSeq && tsk_striequals(response->CSeq->method, "NOTIFY")){
 		// FIXME:
 		//expires = tsk_params_get_asint("expires");
 		goto compute;
 	}
 
-	/*
-	*	Exipires header or contact header with expires param?
+	/*== Expires header.
 	*/
-	if((expires = tsip_message_getExpires(response)) >0)
-	{
+	if((hdr = tsip_message_get_header(response, tsip_htype_Event))){
+		expires = ((const tsip_header_Expires_t*)hdr)->delta_seconds;
 		goto compute;
+	}
+
+	/*== Contact header.
+	*/
+	for(i=0; (hdr = tsip_message_get_headerAt(response, tsip_htype_Contact, i)); i++){
+		const tsip_header_Contact_t* contact = (const tsip_header_Contact_t*)hdr;
+		if(contact && contact->uri)
+		{
+			tsip_uri_t* contactUri = tsip_stack_get_contacturi(self->stack, tsk_params_get_param_value(contact->uri->params, "transport"));
+			if(contactUri)
+			{
+				if(tsk_strequals(contact->uri->user_name, contactUri->user_name)
+					&& tsk_strequals(contact->uri->host, contactUri->host)
+					&& contact->uri->port == contactUri->port)
+				{
+					if(contact->expires>=0){ /* No expires parameter ==> -1*/
+						expires = contact->expires;
+
+						TSK_OBJECT_SAFE_FREE(contactUri);
+						goto compute;
+					}
+				}
+				TSK_OBJECT_SAFE_FREE(contactUri);
+			}
+		}
 	}
 
 	/*
@@ -421,7 +464,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			acceptNewVector = (isRegister && self->state == tsip_established);
 			return tsip_dialog_update_challenges(self, response, acceptNewVector);
 		}
-		else if(100 <= code || code >= 300)
+		else if(100 < code && code < 300)
 		{
 			tsip_dialog_state_t state = self->state;
 
@@ -447,16 +490,30 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 				}
 			}
 
-			/* Route sets + cseq + tags + ... */
-			if(self->state == tsip_established && tsk_striequals(self->tag_remote, tag))
+			/* Route sets 
+			*/
 			{
+				size_t index;
+				const tsip_header_t *hdr;
+
+				TSK_OBJECT_SAFE_FREE(self->routes);
+
+				for(index = 0; (hdr = tsip_message_get_headerAt(response, tsip_htype_Record_Route, index)); index++){
+					if(!self->routes){
+						self->routes = TSK_LIST_CREATE();
+					}
+					hdr = tsk_object_ref((void*)hdr);
+					tsk_list_push_front_data(self->routes, (void**)&hdr); /* Copy reversed. */
+				}
+			}
+			
+
+			/* cseq + tags + ... */
+			if(self->state == tsip_established && tsk_striequals(self->tag_remote, tag)){
 				return 0;
 			}
-			else
-			{
-				// FIXME: copy routes (reversed)
-				if(!isRegister)
-				{
+			else{
+				if(!isRegister){
 
 				}
 
@@ -601,6 +658,8 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 {
 	if(self)
 	{
+		const tsk_param_t* param;
+
 		if(self->initialized)
 		{
 			TSK_DEBUG_WARN("Dialog already initialized.");
@@ -609,6 +668,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 
 		tsk_safeobj_init(self);
 
+		self->state = tsip_initial;
 		self->type = type;
 		self->stack = tsk_object_ref(stack);
 		if(!self->routes){
@@ -639,6 +699,14 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 
 		/* CSeq */
 		self->cseq_value = rand();
+
+		/* Expires */
+		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "expires"))){
+			TSIP_DIALOG(self)->expires = atoi(param->value);
+		}
+		else{
+			TSIP_DIALOG(self)->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
+		}
 
 		self->initialized = 1;
 		return 0;

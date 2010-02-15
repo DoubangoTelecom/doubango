@@ -23,7 +23,7 @@
 */
 
 /**@file tsip_header_Route.c
- * @brief SIP Service-Route header as per RFC 3608.
+ * @brief SIP Route header.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -39,7 +39,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Route_group SIP Service-Route header.
+/**@defgroup tsip_header_Route_group SIP Route header.
 */
 
 /***********************************
@@ -421,7 +421,7 @@ _match:
 	{
 		if(!curr_route)
 		{
-			curr_route = TSIP_HEADER_ROUTE_CREATE();
+			curr_route = TSIP_HEADER_ROUTE_CREATE_NULL();
 		}
 	}
 	break;
@@ -510,8 +510,14 @@ static void* tsip_header_Route_create(void *self, va_list * app)
 	tsip_header_Route_t *Route = self;
 	if(Route)
 	{
+		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
+
 		TSIP_HEADER(Route)->type = tsip_htype_Route;
 		TSIP_HEADER(Route)->tostring = tsip_header_Route_tostring;
+
+		if(uri){
+			Route->uri = tsk_object_ref((void*)uri);
+		}
 	}
 	else
 	{
