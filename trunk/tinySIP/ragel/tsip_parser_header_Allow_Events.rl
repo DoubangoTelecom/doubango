@@ -56,7 +56,7 @@
 
 	action parse_event
 	{
-		PARSER_ADD_STRING(hdr_allow_events->events);
+		TSK_PARSER_ADD_STRING(hdr_allow_events->events);
 	}
 
 	action eob

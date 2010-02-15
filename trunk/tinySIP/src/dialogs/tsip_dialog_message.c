@@ -114,7 +114,7 @@ void tsip_dialog_message_init(tsip_dialog_message_t *self)
 	*/
 	tsip_dialog_messageContext_Init(&self->_fsm, self);
 
-	TSIP_DIALOG(self)->callback = tsip_dialog_message_event_callback;
+	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_message_event_callback);
 
 #if defined(_DEBUG) || defined(DEBUG)
 	 setDebugFlag(&(self->_fsm), DEBUG_STATE_MACHINE);

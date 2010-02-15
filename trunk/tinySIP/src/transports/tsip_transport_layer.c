@@ -48,10 +48,10 @@ static int tsip_transport_layer_stream_data_read(const tsip_transport_t *transpo
 static int tsip_transport_layer_dgram_data_read(const tsip_transport_t *transport, const void* data, size_t size)
 {
 	int ret = -1;
-	tsip_ragel_state_t state;
+	tsk_ragel_state_t state;
 	tsip_message_t *message = 0;
 
-	tsip_ragel_state_init(&state, data, size);
+	tsk_ragel_state_init(&state, data, size);
 	if(tsip_message_parse(&state, &message) == TSIP_TRUE 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{

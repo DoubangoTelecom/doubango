@@ -346,7 +346,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\thttp_utl.c"
+				RelativePath=".\src\thttp_url.c"
 				>
 			</File>
 			<Filter
@@ -360,10 +360,38 @@
 			<Filter
 				Name="headers"
 				>
+				<File
+					RelativePath=".\src\headers\thttp_header.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\headers\thttp_header_Authorization.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\headers\thttp_header_Proxy_Authenticate.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\headers\thttp_header_WWW_Authenticate.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="parsers"
 				>
+				<File
+					RelativePath=".\src\parsers\thttp_parser_header.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\parsers\thttp_parser_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\parsers\thttp_parser_url.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -396,10 +424,46 @@
 			<Filter
 				Name="headers"
 				>
+				<File
+					RelativePath=".\include\tinyHTTP\headers\thttp_header.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\headers\thttp_header_Authorization.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\headers\thttp_header_Content_Length.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\headers\thttp_header_Content_Type.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\headers\thttp_header_Proxy_Authenticate.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\headers\thttp_header_WWW_Authenticate.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="parsers"
 				>
+				<File
+					RelativePath=".\include\tinyHTTP\parsers\thttp_parser_header.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\parsers\thttp_parser_message.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\parsers\thttp_parser_url.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 		<Filter
@@ -421,6 +485,46 @@
 		<Filter
 			Name="ragel"
 			>
+			<File
+				RelativePath=".\ragel\thttp_machine_header.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_machine_message.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_machine_utils.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_header.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_header_Authorization.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_header_Content_Length.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_header_Content_Type.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_header_WWW_Authenticate.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_message.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_url.rl"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -166,6 +166,8 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 
 				tsk_strupdate(&self->proxy_cscf, pcscf);
 
+				TSK_DEBUG_INFO("P-CSCF ==>%s", self->proxy_cscf);
+
 				if(tsk_striequals(transport, "UDP")) TNET_SOCKET_TYPE_AS_UDP(self->proxy_cscf_type);
 				else if(tsk_striequals(transport, "TCP")) TNET_SOCKET_TYPE_AS_TCP(self->proxy_cscf_type);
 				else if(tsk_striequals(transport, "TLS")) TNET_SOCKET_TYPE_AS_TLS(self->proxy_cscf_type);

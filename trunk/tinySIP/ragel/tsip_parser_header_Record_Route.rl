@@ -56,7 +56,7 @@
 	
 	action parse_route
 	{
-		PARSER_SET_STRING(hdr_record_route->value);
+		TSK_PARSER_SET_STRING(hdr_record_route->value);
 	}
 
 	action eob

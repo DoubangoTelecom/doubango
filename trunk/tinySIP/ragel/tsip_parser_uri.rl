@@ -44,7 +44,7 @@
 
 	# Includes
 	include tsip_machine_utils "./tsip_machine_utils.rl";
-	include tsip_machine_userinfo;
+	#include tsip_machine_userinfo;
 		
 	action tag
 	{
@@ -63,32 +63,32 @@
 
 	action parse_scheme
 	{
-		PARSER_SET_STRING(uri->scheme);
+		TSK_PARSER_SET_STRING(uri->scheme);
 	}
 
 	action parse_user_name
 	{
-		PARSER_SET_STRING(uri->user_name);
+		TSK_PARSER_SET_STRING(uri->user_name);
 	}
 
 	action parse_password
 	{
-		PARSER_SET_STRING(uri->password);
+		TSK_PARSER_SET_STRING(uri->password);
 	}
 
 	action parse_host
 	{
-		PARSER_SET_STRING(uri->host);
+		TSK_PARSER_SET_STRING(uri->host);
 	}
 
 	action parse_port
 	{
-		PARSER_SET_INTEGER(uri->port);	
+		TSK_PARSER_SET_INTEGER(uri->port);	
 	}
 
 	action parse_param
 	{
-		PARSER_ADD_PARAM(uri->params);
+		TSK_PARSER_ADD_PARAM(uri->params);
 	}
 
 	action eob
@@ -113,7 +113,7 @@
 							
 							( (IPv6reference >is_ipv6)>89 | (IPv4address >is_ipv4)>88 | (hostname >is_hostname)>87 ) @90
 							{
-								SCANNER_SET_STRING(uri->host);
+								TSK_SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6)
 								{
 									tsk_strunquoteex(&uri->host, '[', ']');
@@ -123,7 +123,7 @@
 							(":" port)@80
 							{
 								ts++;
-								SCANNER_SET_INTEGER(uri->port);
+								TSK_SCANNER_SET_INTEGER(uri->port);
 							};
 							
 							( uri_parameters ) @70	{  };

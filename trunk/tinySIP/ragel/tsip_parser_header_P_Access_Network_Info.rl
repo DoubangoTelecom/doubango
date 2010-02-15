@@ -63,7 +63,7 @@
 
 	action parse_value
 	{
-		PARSER_SET_STRING(hdr_ani->value);
+		TSK_PARSER_SET_STRING(hdr_ani->value);
 	}
 
 	action eob

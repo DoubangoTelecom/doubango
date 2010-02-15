@@ -56,7 +56,7 @@
 	
 	action parse_value
 	{
-		PARSER_SET_STRING(hdr_call_id->value);
+		TSK_PARSER_SET_STRING(hdr_call_id->value);
 	}
 
 	action eob

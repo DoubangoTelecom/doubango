@@ -16,7 +16,7 @@ digit    = "0" / "1" / "2" / "3" / "4" / "5" / "6" / "7" / "8" / "9"
 alphanum = alpha / digit
 
 ;;;; 2. URI Characters and Escape Sequences
-uric     = reserved / unreserved / escaped
+urlc     = reserved / unreserved / escaped
 
 ;;;; 2.2. Reserved Characters
 reserved    = ";" / "/" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
@@ -42,8 +42,8 @@ absoluteURI   = scheme ":" ( hier-part / opaque-part )
 hier-part     = ( net-path / abs-path ) [ "?" query ]
 net-path      = "//" authority [ abs-path ]
 abs-path      = "/"  path-segments
-opaque-part   = uric-no-slash *uric
-uric-no-slash = unreserved / escaped / ";" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
+opaque-part   = urlc-no-slash *urlc
+urlc-no-slash = unreserved / escaped / ";" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
 
 ;;;; 3.1. Scheme Component
 scheme        = alpha *( alpha / digit / "+" / "-" / "." )
@@ -73,14 +73,14 @@ param         = *pchar
 pchar         = unreserved / escaped / ":" / "@" / "&" / "=" / "+" / "$" / ","
 
 ;;;; 3.4. Query Component
-query         = *uric
+query         = *urlc
 
 ;;;; 4. URI References
 URI-reference = [ absoluteURI / relativeURI ] [ "#" fragment ]
 
 
 ;;;; 4.1. Fragment Identifier
-fragment      = *uric
+fragment      = *urlc
 
 ;;;; 5. Relative URI References
 relativeURI   = ( net-path / abs-path / rel-path ) [ "?" query ]

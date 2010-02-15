@@ -23,10 +23,12 @@
 #define _TEST_STACK_H
 
 
-#if defined(ANDROID) /* FIXME */
-#	define LOCAL_IP	"10.0.2.15"
-#else
-#	define LOCAL_IP	TNET_SOCKET_HOST_ANY
+#ifndef LOCAL_IP
+#	ifdef ANDROID
+#		define LOCAL_IP	"10.0.2.15"
+#	else
+#		define LOCAL_IP	TNET_SOCKET_HOST_ANY
+#	endif
 #endif
 
 int test_stack_callback(const tsip_event_t *sipevent)
@@ -82,13 +84,32 @@ void test_stack()
 		TSIP_STACK_SET_PASSWORD("d3sb7j4fb8"),
 		TSIP_STACK_SET_REALM("sip:sip2sip.info"), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
-		TSIP_STACK_SET_DISCOVERY_NAPTR(1),
-		//TSIP_STACK_SET_PROXY_CSCF("proxy.sipthor.net", "udp", 0),
-		//TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
+		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
+		TSIP_STACK_SET_PROXY_CSCF("proxy.sipthor.net", "udp", 0),
+		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
+		TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
 		TSIP_STACK_SET_SEC_AGREE_MECH("ipsec-3gpp"),
 		TSIP_STACK_SET_MOBILITY("fixed"),
 		TSIP_STACK_SET_DEVICE_ID("DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
+
+	/*
+	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
+		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
+		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@ericsson.com"),
+		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@ericsson.com"),
+		TSIP_STACK_SET_PASSWORD("mamadou"),
+		TSIP_STACK_SET_REALM("sip:ericsson.com"), // FIXME: without sip:
+		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
+		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
+		TSIP_STACK_SET_PROXY_CSCF("192.168.0.11", "udp", 0),
+		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
+		TSIP_STACK_SET_PROXY_CSCF_PORT(5081),
+		TSIP_STACK_SET_SEC_AGREE_MECH("ipsec-3gpp"),
+		TSIP_STACK_SET_MOBILITY("fixed"),
+		TSIP_STACK_SET_DEVICE_ID("DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC"),
+		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
+*/
 
 		TSIP_STACK_SET_NULL());
 

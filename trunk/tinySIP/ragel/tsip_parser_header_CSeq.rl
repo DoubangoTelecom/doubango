@@ -53,12 +53,12 @@
 	
 	action parse_method
 	{
-		PARSER_SET_STRING(hdr_cseq->method);
+		TSK_PARSER_SET_STRING(hdr_cseq->method);
 	}
 
 	action parse_seq
 	{
-		PARSER_SET_INTEGER(hdr_cseq->seq);
+		TSK_PARSER_SET_INTEGER(hdr_cseq->seq);
 	}
 
 	action eob

@@ -54,7 +54,7 @@
 	
 	action parse_method
 	{
-		PARSER_ADD_STRING(hdr_allow->methods);
+		TSK_PARSER_ADD_STRING(hdr_allow->methods);
 	}
 
 	action eob

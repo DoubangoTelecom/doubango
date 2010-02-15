@@ -20,24 +20,24 @@
 *
 */
 
-/**@file tsip_ragel_state.h.
- * @brief Ragel state for sip parsing.
+/**@file tsk_ragel_state.h.
+ * @brief Ragel state for sak parsing.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYSIP_RAGEL_STATE_H
-#define TINYSIP_RAGEL_STATE_H
+#ifndef TINYSAK_RAGEL_STATE_H
+#define TINYSAK_RAGEL_STATE_H
 
-#include "tinysip_config.h"
+#include "tinysak_config.h"
 #include "tsk_params.h"
 
 #include <string.h>
 
-TSIP_BEGIN_DECLS
+TSK_BEGIN_DECLS
 
-#define SCANNER_SET_STRING(string) \
+#define TSK_SCANNER_SET_STRING(string) \
 	if(!string) \
 	{ \
 		int len = (int)(te  - ts);  \
@@ -47,14 +47,14 @@ TSIP_BEGIN_DECLS
 		} \
 	}
 
-#define PARSER_SET_STRING(string) \
+#define TSK_PARSER_SET_STRING(string) \
 	if(!string) \
 	{ \
 		int len = (int)(p  - tag_start);  \
 		string = tsk_calloc(len+1, sizeof(char)), memcpy(string, tag_start, len); \
 	}
 
-#define SCANNER_SET_INTEGER(integer) \
+#define TSK_SCANNER_SET_INTEGER(integer) \
 	{ \
 		int len = (int)(te  - ts); \
 		if(len>=0) \
@@ -66,7 +66,7 @@ TSIP_BEGIN_DECLS
 		} \
 	}
 
-#define PARSER_SET_INTEGER(integer) \
+#define TSK_PARSER_SET_INTEGER(integer) \
 	{ \
 		int len = (int)(p  - tag_start); \
 		if(len>=0) \
@@ -78,7 +78,7 @@ TSIP_BEGIN_DECLS
 		} \
 	}
 
-#define PARSER_ADD_PARAM(dest) \
+#define TSK_PARSER_ADD_PARAM(dest) \
 	{ \
 		size_t len = (size_t)(p  - tag_start); \
 		tsk_param_t *param = tsk_params_parse_param(tag_start, len); \
@@ -89,7 +89,7 @@ TSIP_BEGIN_DECLS
 		} \
 	}
 
-#define SACANNER_ADD_PARAM(dest) \
+#define TSK_SACANNER_ADD_PARAM(dest) \
 	{ \
 		int len = (int)(te  - ts); \
 		if(len >0) \
@@ -103,7 +103,7 @@ TSIP_BEGIN_DECLS
 		} \
 	}
 
-#define PARSER_ADD_STRING(dest) \
+#define TSK_PARSER_ADD_STRING(dest) \
 	{ \
 		size_t len = (size_t)(p  - tag_start); \
 		tsk_string_t *string = TSK_STRING_CREATE(0); \
@@ -116,14 +116,14 @@ TSIP_BEGIN_DECLS
 	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	tsip_parser_s
+/// @struct	tsk_parser_s
 ///
 /// @brief	Ragel state.
 ///
 /// @author	Mamadou
 /// @date	12/4/2009
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef struct tsip_ragel_state_s
+typedef struct tsk_ragel_state_s
 {
 	int cs; /**< Ragel current state. */
 	const char *p; /**< Data pointing to the buffer to parse. */
@@ -133,12 +133,12 @@ typedef struct tsip_ragel_state_s
 	const char* tag_start; /**< Last tag start position set by ragel machine. */
 	const char* tag_end; /**< The end of the ragel tag. */
 }
-tsip_ragel_state_t;
+tsk_ragel_state_t;
 
 
-TINYSIP_API void tsip_ragel_state_init(tsip_ragel_state_t *state, const char *data, size_t size);
+TINYSAK_API void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, size_t size);
 
-TSIP_END_DECLS
+TSK_END_DECLS
 
-#endif /* TINYSIP_RAGEL_STATE_H */
+#endif /* TINYSAK_RAGEL_STATE_H */
 

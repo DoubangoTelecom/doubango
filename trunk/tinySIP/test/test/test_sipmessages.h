@@ -75,10 +75,12 @@
 	"l: 0\r\n" \
 	"\r\n"
 
+	//"Via: SIP/2.0/UDP 192.168.0.11:64163;rport=4;branch=z9hG4bK1262758946486\r\n" \
+	//"Via: SIP/2.0/UDP 192.168.0.11:59265;rport=59265;branch=z9hG4bK1263064096664\r\n" \
+
 #define SIP_MESSAGE \
 	"MESSAGE sip:mamadou@open-ims.test SIP/2.0\r\n" \
-	"Via: SIP/2.0/UDP 192.168.0.11:64163;rport=4;branch=z9hG4bK1262758946486\r\n" \
-	"Via: SIP/2.0/UDP 192.168.0.11:59265;rport=59265;branch=z9hG4bK1263064096664\r\n" \
+	"Via: SIP/2.0/UDP 192.168.0.12:49205;rport=49205;branch=z9hG4bK1266089653138;received_port_ext=5081;received=192.168.0.12\r\n" \
 	"Route: <sip:192.168.0.15:5060;lr=true;transport=udp\r\n" \
 	"From: <sip:bob@open-ims.test>;tag=mercuro\r\n" \
 	"To: <sip:mamadou@open-ims.test>\r\n" \
@@ -88,6 +90,9 @@
 	"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n" \
 	"User-Agent: IM-client/OMA1.0 Mercuro-Bronze/v4.0.1508.0\r\n" \
 	"c: text/plain; charset=utf-8\r\n" \
+	"Security-Client: ipsec-3gpp;alg=hmac-md5-96;ealg=aes-cbc;prot=esp;mod=trans;port-c=61676;port-s=61662;spi-c=12345;spi-s=67890\r\n" \
+	"Security-Server: ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=78952;port-s=77854\r\n" \
+	"Security-Verify: ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=9999;port-s=20000\r\n" \
 	"Service-Route: <sip:orig@open-ims.test:6060;lr;transport=udp>,<sip:atlanta.com>,<sip:orig2@open-ims.test:6060;lr>\r\n" \
 	"Path: <sip:term@open-ims.test:4060;lr>\r\n" \
 	"Route: <sip:pcscf.open-ims.test:4060;lr;transport=udp>,<sip:orig@scscf.open-ims.test:6060;lr>\r\n" \
@@ -98,18 +103,18 @@
 	"How are you"
 
 
-#define SIP_MSG_2_TEST SIP_MESSAGE
+#define SIP_MSG_2_TEST SIP_RESPONSE
 
 void test_parser()
 {
-	tsip_ragel_state_t state;
+	tsk_ragel_state_t state;
 	tsip_message_t *message = 0;
 	tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
 	TSIP_BOOLEAN enabled;
 	int32_t expires;
 	uint32_t clength;
 
-	tsip_ragel_state_init(&state, SIP_MSG_2_TEST, strlen(SIP_MSG_2_TEST));
+	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, strlen(SIP_MSG_2_TEST));
 	tsip_message_parse(&state, &message);
 
 	enabled = tsip_message_allowed(message, "REFER");
@@ -156,11 +161,11 @@ void test_requests()
 
 void test_responses()
 {
-	tsip_ragel_state_t state;
+	tsk_ragel_state_t state;
 	tsip_request_t *request = 0;
 	tsip_request_t *response = 0;
 
-	tsip_ragel_state_init(&state, SIP_MESSAGE, strlen(SIP_MESSAGE));
+	tsk_ragel_state_init(&state, SIP_MESSAGE, strlen(SIP_MESSAGE));
 	tsip_message_parse(&state, &request);
 
 	/* Create the response and destroy the request */

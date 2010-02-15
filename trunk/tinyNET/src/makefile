@@ -21,7 +21,15 @@ OBJS = \
 	###################
 OBJS +=	dhcp/tnet_dhcp.o\
 	dhcp/tnet_dhcp_message.o\
-	dhcp/tnet_dhcp_option.o
+	dhcp/tnet_dhcp_option.o\
+	dhcp/tnet_dhcp_option_sip.o
+	###################
+	## DHCPv6
+	###################
+OBJS +=	dhcp6/tnet_dhcp6.o\
+	dhcp6/tnet_dhcp6_duid.o\
+	dhcp6/tnet_dhcp6_message.o\
+	dhcp6/tnet_dhcp6_option.o
 	###################
 	## DDNS
 	###################

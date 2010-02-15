@@ -171,7 +171,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 			continue;
 		}
 		
-#ifdef __linux__
+#if defined(__linux__)
 		{
 			struct ifreq ifr;
 			tnet_fd_t fd = TNET_INVALID_FD;
@@ -217,7 +217,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 	struct sockaddr_in *sin;
 	struct ifreq *ifr;
 
-	if((fd = socket(AF_UNSPEC, SOCK_DGRAM, IPPROTO_UDP)) < 0)
+	if((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
 	{
 		TSK_DEBUG_ERROR("Failed to create new DGRAM socket and errno= [%d]", tnet_geterrno());
 		goto done;
@@ -244,7 +244,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 				{
 					tnet_interface_t *iface = TNET_INTERFACE_CREATE(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
 					tsk_list_push_back_data(ifaces, (void**)&(iface));
-					index
+					//iface->index = if_nametoindex(ifr->ifr_name);
 				}
 			}
 		 }
@@ -611,7 +611,7 @@ int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_
 	hints.ai_family = TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET;
 	hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(type) ? SOCK_STREAM : SOCK_DGRAM;
 	hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(type) ? IPPROTO_TCP : IPPROTO_UDP;
-	//--hints.ai_flags = AI_PASSIVE;
+	hints.ai_flags = AI_PASSIVE;
 
 	/* Performs getaddrinfo */
 	if((status = tnet_getaddrinfo(host, p, &hints, &result)))

@@ -53,7 +53,7 @@
 	
 	action parse_value
 	{
-		PARSER_SET_INTEGER(hdr_minE->value);
+		TSK_PARSER_SET_INTEGER(hdr_minE->value);
 	}
 
 	action eob

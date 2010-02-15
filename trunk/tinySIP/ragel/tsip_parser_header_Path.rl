@@ -66,7 +66,7 @@
 	{
 		if(curr_path)
 		{
-			PARSER_SET_STRING(curr_path->display_name);
+			TSK_PARSER_SET_STRING(curr_path->display_name);
 		}
 	}
 
@@ -83,7 +83,7 @@
 	{
 		if(curr_path)
 		{
-			PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_path));
+			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_path));
 		}
 	}
 

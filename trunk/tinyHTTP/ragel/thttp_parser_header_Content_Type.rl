@@ -1,0 +1,170 @@
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+
+/**@file thttp_header_Content_Type.c
+ * @brief HTTP Content-Type header.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#include "tinyhttp/headers/thttp_header_Content_Type.h"
+
+#include "tsk_debug.h"
+#include "tsk_memory.h"
+
+#include <string.h>
+
+/**@defgroup thttp_header_Content_Type_group HTTP Content_Type header.
+*/
+
+/***********************************
+*	Ragel state machine.
+*/
+%%{
+	machine thttp_machine_parser_header_Content_Type;
+
+	# Includes
+	include thttp_machine_utils "./thttp_machine_utils.rl";
+	
+	action tag
+	{
+		tag_start = p;
+	}
+
+	action parse_content_type
+	{
+		TSK_PARSER_SET_STRING(hdr_ctype->type);
+	}
+
+	action parse_param
+	{		
+		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_ctype));
+	}
+
+	action eob
+	{
+	}
+
+	extension_token = ietf_token | x_token;
+
+	m_attribute = token;
+	m_value = token | quoted_string;
+	m_parameter = (m_attribute EQUAL m_value)>tag %parse_param;
+
+	discrete_type = "text"i | "image"i | "audio"i | "video"i | "application"i | extension_token;
+	composite_type = "message"i | "multipart"i | extension_token;
+	m_type = discrete_type | composite_type;
+	m_subtype = extension_token | iana_token;
+
+	media_type = (m_type SLASH m_subtype)@1 >tag %parse_content_type ((SEMI m_parameter)*)@0;
+
+	Content_Type = ( "Content-Type"i | "c"i ) HCOLON media_type;
+	
+	# Entry point
+	main := Content_Type :>CRLF @eob;
+
+}%%
+
+int thttp_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header)
+	{
+		const thttp_header_Content_Type_t *Content_Type = header;	
+		return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
+	}
+
+	return -1;
+}
+
+thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, size_t size)
+{
+	int cs = 0;
+	const char *p = data;
+	const char *pe = p + size;
+	const char *eof = pe;
+	thttp_header_Content_Type_t *hdr_ctype = THTTP_HEADER_CONTENT_TYPE_CREATE();
+	
+	const char *tag_start;
+
+	%%write data;
+	%%write init;
+	%%write exec;
+	
+	if( cs < %%{ write first_final; }%% )
+	{
+		TSK_OBJECT_SAFE_FREE(hdr_ctype);
+	}
+	
+	return hdr_ctype;
+}
+
+
+
+
+
+
+
+//========================================================
+//	Content_Type header object definition
+//
+
+/**@ingroup thttp_header_Content_Type_group
+*/
+static void* thttp_header_Content_Type_create(void *self, va_list * app)
+{
+	thttp_header_Content_Type_t *Content_Type = self;
+	if(Content_Type)
+	{
+		THTTP_HEADER(Content_Type)->type = thttp_htype_Content_Type;
+		THTTP_HEADER(Content_Type)->tostring = thttp_header_Content_Type_tostring;
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new Content_Type header.");
+	}
+	return self;
+}
+
+/**@ingroup thttp_header_Content_Type_group
+*/
+static void* thttp_header_Content_Type_destroy(void *self)
+{
+	thttp_header_Content_Type_t *Content_Type = self;
+	if(Content_Type)
+	{
+		TSK_FREE(Content_Type->type);
+		TSK_OBJECT_SAFE_FREE(THTTP_HEADER_PARAMS(Content_Type));
+	}
+	else TSK_DEBUG_ERROR("Null Content_Type header.");
+
+	return self;
+}
+
+static const tsk_object_def_t thttp_header_Content_Type_def_s = 
+{
+	sizeof(thttp_header_Content_Type_t),
+	thttp_header_Content_Type_create,
+	thttp_header_Content_Type_destroy,
+	0
+};
+const void *thttp_header_Content_Type_def_t = &thttp_header_Content_Type_def_s;

@@ -22,7 +22,7 @@
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
 
-#define REMOTE_IP4	"ekiga.net"//"192.168.0.15"
+#define REMOTE_IP4	"proxy.sipthor.net"//"192.168.0.15"
 #define REMOTE_IP6	"2a01:e35:8632:7050:6122:2706:2124:32cb"
 #define REMOTE_IP REMOTE_IP4
 

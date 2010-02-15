@@ -86,7 +86,77 @@ tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 90 "../source/headers/tsip_header_Allow.c" */
+/* #line 90 "../src/headers/tsip_header_Allow.c" */
+static const char _tsip_machine_parser_header_Allow_actions[] = {
+	0, 1, 0, 1, 1, 1, 2
+};
+
+static const char _tsip_machine_parser_header_Allow_key_offsets[] = {
+	0, 0, 2, 4, 6, 8, 10, 13, 
+	30, 31, 47, 51, 52, 54, 57, 74, 
+	75, 77, 93
+};
+
+static const char _tsip_machine_parser_header_Allow_trans_keys[] = {
+	65, 97, 76, 108, 76, 108, 79, 111, 
+	87, 119, 9, 32, 58, 9, 13, 32, 
+	33, 37, 39, 126, 42, 43, 45, 46, 
+	48, 57, 65, 90, 95, 122, 10, 9, 
+	13, 32, 33, 37, 39, 44, 126, 42, 
+	46, 48, 57, 65, 90, 95, 122, 9, 
+	13, 32, 44, 10, 9, 32, 9, 32, 
+	44, 9, 13, 32, 33, 37, 39, 126, 
+	42, 43, 45, 46, 48, 57, 65, 90, 
+	95, 122, 10, 9, 32, 9, 32, 33, 
+	37, 39, 126, 42, 43, 45, 46, 48, 
+	57, 65, 90, 95, 122, 0
+};
+
+static const char _tsip_machine_parser_header_Allow_single_lengths[] = {
+	0, 2, 2, 2, 2, 2, 3, 7, 
+	1, 8, 4, 1, 2, 3, 7, 1, 
+	2, 6, 0
+};
+
+static const char _tsip_machine_parser_header_Allow_range_lengths[] = {
+	0, 0, 0, 0, 0, 0, 0, 5, 
+	0, 4, 0, 0, 0, 0, 5, 0, 
+	0, 5, 0
+};
+
+static const char _tsip_machine_parser_header_Allow_index_offsets[] = {
+	0, 0, 3, 6, 9, 12, 15, 19, 
+	32, 34, 47, 52, 54, 57, 61, 74, 
+	76, 79, 91
+};
+
+static const char _tsip_machine_parser_header_Allow_indicies[] = {
+	0, 0, 1, 2, 2, 1, 3, 3, 
+	1, 4, 4, 1, 5, 5, 1, 5, 
+	5, 6, 1, 6, 7, 6, 8, 8, 
+	8, 8, 8, 8, 8, 8, 8, 1, 
+	9, 1, 10, 11, 10, 12, 12, 12, 
+	13, 12, 12, 12, 12, 12, 1, 14, 
+	15, 14, 16, 1, 17, 1, 18, 18, 
+	1, 18, 18, 16, 1, 16, 19, 16, 
+	8, 8, 8, 8, 8, 8, 8, 8, 
+	8, 1, 20, 1, 21, 21, 1, 21, 
+	21, 8, 8, 8, 8, 8, 8, 8, 
+	8, 8, 1, 1, 0
+};
+
+static const char _tsip_machine_parser_header_Allow_trans_targs[] = {
+	2, 0, 3, 4, 5, 6, 7, 8, 
+	9, 18, 10, 8, 9, 14, 10, 11, 
+	14, 12, 13, 15, 16, 17
+};
+
+static const char _tsip_machine_parser_header_Allow_trans_actions[] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	1, 5, 3, 3, 0, 3, 0, 0, 
+	0, 0, 0, 0, 0, 0
+};
+
 static const int tsip_machine_parser_header_Allow_start = 1;
 static const int tsip_machine_parser_header_Allow_first_final = 18;
 static const int tsip_machine_parser_header_Allow_error = 0;
@@ -96,301 +166,113 @@ static const int tsip_machine_parser_header_Allow_en_main = 1;
 
 /* #line 110 "tsip_parser_header_Allow.rl" */
 	
-/* #line 100 "../source/headers/tsip_header_Allow.c" */
+/* #line 170 "../src/headers/tsip_header_Allow.c" */
 	{
 	cs = tsip_machine_parser_header_Allow_start;
 	}
 
 /* #line 111 "tsip_parser_header_Allow.rl" */
 	
-/* #line 107 "../source/headers/tsip_header_Allow.c" */
+/* #line 177 "../src/headers/tsip_header_Allow.c" */
 	{
+	int _klen;
+	unsigned int _trans;
+	const char *_acts;
+	unsigned int _nacts;
+	const char *_keys;
+
 	if ( p == pe )
 		goto _test_eof;
-	switch ( cs )
+	if ( cs == 0 )
+		goto _out;
+_resume:
+	_keys = _tsip_machine_parser_header_Allow_trans_keys + _tsip_machine_parser_header_Allow_key_offsets[cs];
+	_trans = _tsip_machine_parser_header_Allow_index_offsets[cs];
+
+	_klen = _tsip_machine_parser_header_Allow_single_lengths[cs];
+	if ( _klen > 0 ) {
+		const char *_lower = _keys;
+		const char *_mid;
+		const char *_upper = _keys + _klen - 1;
+		while (1) {
+			if ( _upper < _lower )
+				break;
+
+			_mid = _lower + ((_upper-_lower) >> 1);
+			if ( (*p) < *_mid )
+				_upper = _mid - 1;
+			else if ( (*p) > *_mid )
+				_lower = _mid + 1;
+			else {
+				_trans += (_mid - _keys);
+				goto _match;
+			}
+		}
+		_keys += _klen;
+		_trans += _klen;
+	}
+
+	_klen = _tsip_machine_parser_header_Allow_range_lengths[cs];
+	if ( _klen > 0 ) {
+		const char *_lower = _keys;
+		const char *_mid;
+		const char *_upper = _keys + (_klen<<1) - 2;
+		while (1) {
+			if ( _upper < _lower )
+				break;
+
+			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
+			if ( (*p) < _mid[0] )
+				_upper = _mid - 2;
+			else if ( (*p) > _mid[1] )
+				_lower = _mid + 2;
+			else {
+				_trans += ((_mid - _keys)>>1);
+				goto _match;
+			}
+		}
+		_trans += _klen;
+	}
+
+_match:
+	_trans = _tsip_machine_parser_header_Allow_indicies[_trans];
+	cs = _tsip_machine_parser_header_Allow_trans_targs[_trans];
+
+	if ( _tsip_machine_parser_header_Allow_trans_actions[_trans] == 0 )
+		goto _again;
+
+	_acts = _tsip_machine_parser_header_Allow_actions + _tsip_machine_parser_header_Allow_trans_actions[_trans];
+	_nacts = (unsigned int) *_acts++;
+	while ( _nacts-- > 0 )
 	{
-case 1:
-	switch( (*p) ) {
-		case 65: goto st2;
-		case 97: goto st2;
-	}
-	goto st0;
-st0:
-cs = 0;
-	goto _out;
-st2:
-	if ( ++p == pe )
-		goto _test_eof2;
-case 2:
-	switch( (*p) ) {
-		case 76: goto st3;
-		case 108: goto st3;
-	}
-	goto st0;
-st3:
-	if ( ++p == pe )
-		goto _test_eof3;
-case 3:
-	switch( (*p) ) {
-		case 76: goto st4;
-		case 108: goto st4;
-	}
-	goto st0;
-st4:
-	if ( ++p == pe )
-		goto _test_eof4;
-case 4:
-	switch( (*p) ) {
-		case 79: goto st5;
-		case 111: goto st5;
-	}
-	goto st0;
-st5:
-	if ( ++p == pe )
-		goto _test_eof5;
-case 5:
-	switch( (*p) ) {
-		case 87: goto st6;
-		case 119: goto st6;
-	}
-	goto st0;
-st6:
-	if ( ++p == pe )
-		goto _test_eof6;
-case 6:
-	switch( (*p) ) {
-		case 9: goto st6;
-		case 32: goto st6;
-		case 58: goto st7;
-	}
-	goto st0;
-st7:
-	if ( ++p == pe )
-		goto _test_eof7;
-case 7:
-	switch( (*p) ) {
-		case 9: goto st7;
-		case 13: goto st8;
-		case 32: goto st7;
-		case 33: goto tr8;
-		case 37: goto tr8;
-		case 39: goto tr8;
-		case 126: goto tr8;
-	}
-	if ( (*p) < 48 ) {
-		if ( (*p) > 43 ) {
-			if ( 45 <= (*p) && (*p) <= 46 )
-				goto tr8;
-		} else if ( (*p) >= 42 )
-			goto tr8;
-	} else if ( (*p) > 57 ) {
-		if ( (*p) > 90 ) {
-			if ( 95 <= (*p) && (*p) <= 122 )
-				goto tr8;
-		} else if ( (*p) >= 65 )
-			goto tr8;
-	} else
-		goto tr8;
-	goto st0;
-tr11:
-/* #line 56 "tsip_parser_header_Allow.rl" */
-	{
-		PARSER_ADD_STRING(hdr_allow->methods);
-	}
-	goto st8;
-st8:
-	if ( ++p == pe )
-		goto _test_eof8;
-case 8:
-/* #line 206 "../source/headers/tsip_header_Allow.c" */
-	if ( (*p) == 10 )
-		goto tr9;
-	goto st0;
-tr9:
-/* #line 61 "tsip_parser_header_Allow.rl" */
-	{
-	}
-	goto st18;
-st18:
-	if ( ++p == pe )
-		goto _test_eof18;
-case 18:
-/* #line 219 "../source/headers/tsip_header_Allow.c" */
-	goto st0;
-tr8:
+		switch ( *_acts++ )
+		{
+	case 0:
 /* #line 51 "tsip_parser_header_Allow.rl" */
 	{
 		tag_start = p;
 	}
-	goto st9;
-st9:
-	if ( ++p == pe )
-		goto _test_eof9;
-case 9:
-/* #line 231 "../source/headers/tsip_header_Allow.c" */
-	switch( (*p) ) {
-		case 9: goto tr10;
-		case 13: goto tr11;
-		case 32: goto tr10;
-		case 33: goto st9;
-		case 37: goto st9;
-		case 39: goto st9;
-		case 44: goto tr13;
-		case 126: goto st9;
-	}
-	if ( (*p) < 48 ) {
-		if ( 42 <= (*p) && (*p) <= 46 )
-			goto st9;
-	} else if ( (*p) > 57 ) {
-		if ( (*p) > 90 ) {
-			if ( 95 <= (*p) && (*p) <= 122 )
-				goto st9;
-		} else if ( (*p) >= 65 )
-			goto st9;
-	} else
-		goto st9;
-	goto st0;
-tr10:
+	break;
+	case 1:
 /* #line 56 "tsip_parser_header_Allow.rl" */
 	{
-		PARSER_ADD_STRING(hdr_allow->methods);
+		TSK_PARSER_ADD_STRING(hdr_allow->methods);
 	}
-	goto st10;
-st10:
-	if ( ++p == pe )
-		goto _test_eof10;
-case 10:
-/* #line 264 "../source/headers/tsip_header_Allow.c" */
-	switch( (*p) ) {
-		case 9: goto st10;
-		case 13: goto st11;
-		case 32: goto st10;
-		case 44: goto st14;
-	}
-	goto st0;
-st11:
-	if ( ++p == pe )
-		goto _test_eof11;
-case 11:
-	if ( (*p) == 10 )
-		goto st12;
-	goto st0;
-st12:
-	if ( ++p == pe )
-		goto _test_eof12;
-case 12:
-	switch( (*p) ) {
-		case 9: goto st13;
-		case 32: goto st13;
-	}
-	goto st0;
-st13:
-	if ( ++p == pe )
-		goto _test_eof13;
-case 13:
-	switch( (*p) ) {
-		case 9: goto st13;
-		case 32: goto st13;
-		case 44: goto st14;
-	}
-	goto st0;
-tr13:
-/* #line 56 "tsip_parser_header_Allow.rl" */
+	break;
+	case 2:
+/* #line 61 "tsip_parser_header_Allow.rl" */
 	{
-		PARSER_ADD_STRING(hdr_allow->methods);
 	}
-	goto st14;
-st14:
-	if ( ++p == pe )
-		goto _test_eof14;
-case 14:
-/* #line 308 "../source/headers/tsip_header_Allow.c" */
-	switch( (*p) ) {
-		case 9: goto st14;
-		case 13: goto st15;
-		case 32: goto st14;
-		case 33: goto tr8;
-		case 37: goto tr8;
-		case 39: goto tr8;
-		case 126: goto tr8;
+	break;
+/* #line 268 "../src/headers/tsip_header_Allow.c" */
+		}
 	}
-	if ( (*p) < 48 ) {
-		if ( (*p) > 43 ) {
-			if ( 45 <= (*p) && (*p) <= 46 )
-				goto tr8;
-		} else if ( (*p) >= 42 )
-			goto tr8;
-	} else if ( (*p) > 57 ) {
-		if ( (*p) > 90 ) {
-			if ( 95 <= (*p) && (*p) <= 122 )
-				goto tr8;
-		} else if ( (*p) >= 65 )
-			goto tr8;
-	} else
-		goto tr8;
-	goto st0;
-st15:
-	if ( ++p == pe )
-		goto _test_eof15;
-case 15:
-	if ( (*p) == 10 )
-		goto st16;
-	goto st0;
-st16:
-	if ( ++p == pe )
-		goto _test_eof16;
-case 16:
-	switch( (*p) ) {
-		case 9: goto st17;
-		case 32: goto st17;
-	}
-	goto st0;
-st17:
-	if ( ++p == pe )
-		goto _test_eof17;
-case 17:
-	switch( (*p) ) {
-		case 9: goto st17;
-		case 32: goto st17;
-		case 33: goto tr8;
-		case 37: goto tr8;
-		case 39: goto tr8;
-		case 126: goto tr8;
-	}
-	if ( (*p) < 48 ) {
-		if ( (*p) > 43 ) {
-			if ( 45 <= (*p) && (*p) <= 46 )
-				goto tr8;
-		} else if ( (*p) >= 42 )
-			goto tr8;
-	} else if ( (*p) > 57 ) {
-		if ( (*p) > 90 ) {
-			if ( 95 <= (*p) && (*p) <= 122 )
-				goto tr8;
-		} else if ( (*p) >= 65 )
-			goto tr8;
-	} else
-		goto tr8;
-	goto st0;
-	}
-	_test_eof2: cs = 2; goto _test_eof; 
-	_test_eof3: cs = 3; goto _test_eof; 
-	_test_eof4: cs = 4; goto _test_eof; 
-	_test_eof5: cs = 5; goto _test_eof; 
-	_test_eof6: cs = 6; goto _test_eof; 
-	_test_eof7: cs = 7; goto _test_eof; 
-	_test_eof8: cs = 8; goto _test_eof; 
-	_test_eof18: cs = 18; goto _test_eof; 
-	_test_eof9: cs = 9; goto _test_eof; 
-	_test_eof10: cs = 10; goto _test_eof; 
-	_test_eof11: cs = 11; goto _test_eof; 
-	_test_eof12: cs = 12; goto _test_eof; 
-	_test_eof13: cs = 13; goto _test_eof; 
-	_test_eof14: cs = 14; goto _test_eof; 
-	_test_eof15: cs = 15; goto _test_eof; 
-	_test_eof16: cs = 16; goto _test_eof; 
-	_test_eof17: cs = 17; goto _test_eof; 
 
+_again:
+	if ( cs == 0 )
+		goto _out;
+	if ( ++p != pe )
+		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
@@ -398,7 +280,7 @@ case 17:
 /* #line 112 "tsip_parser_header_Allow.rl" */
 	
 	if( cs < 
-/* #line 402 "../source/headers/tsip_header_Allow.c" */
+/* #line 284 "../src/headers/tsip_header_Allow.c" */
 18
 /* #line 113 "tsip_parser_header_Allow.rl" */
  )

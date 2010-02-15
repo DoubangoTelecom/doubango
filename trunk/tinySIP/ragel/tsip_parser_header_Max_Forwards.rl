@@ -53,7 +53,7 @@
 	
 	action parse_value
 	{
-		PARSER_SET_INTEGER(hdr_maxf->value);
+		TSK_PARSER_SET_INTEGER(hdr_maxf->value);
 	}
 
 	action eob

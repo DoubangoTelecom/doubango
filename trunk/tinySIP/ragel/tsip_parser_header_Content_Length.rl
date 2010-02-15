@@ -51,7 +51,7 @@
 
 	action parse_content_length
 	{
-		PARSER_SET_INTEGER(hdr_clength->length);
+		TSK_PARSER_SET_INTEGER(hdr_clength->length);
 	}
 
 	action eob

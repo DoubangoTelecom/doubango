@@ -295,11 +295,14 @@ int ipsec_sa_bound(ipsec_context_t* context, ipsec_direction_t direction)
 	bundle.lifetime.lifetimeSeconds = (context->SAs[direction].lifetime > WIN32_SA_MAX_LIFETIME) ? WIN32_SA_MAX_LIFETIME : context->SAs[direction].lifetime;
 
 	/* inbound ? */
-	if(direction == ipd_incoming_rep || direction == ipd_incoming_req)
+	if(direction == ipd_incoming_rep || direction == ipd_incoming_req){
 		result = IPsecSaContextAddInbound0(engine, GET_SA_OPAQUE(context->SAs[direction])->saId, &bundle);
-	else
-		result = IPsecSaContextAddOutbound0(engine, GET_SA_OPAQUE(context->SAs[direction])->saId, &bundle);
-
+	}
+	else{
+		result = IPsecSaContextAddOutbound0(engine, GET_SA_OPAQUE(context->SAs[direction == ipd_outgoing_rep ? ipd_incoming_req : ipd_incoming_rep])->saId, &bundle);
+		DEBUG_PRINT("saId=%d\n", GET_SA_OPAQUE(context->SAs[direction])->saId);
+	}
+	
 	CLEANUP_ON_ERROR(result);
 
 CLEANUP:
@@ -434,6 +437,7 @@ DWORD getInboundSPI(ipsec_context_t* context, ipsec_direction_t direction)
 	GET_SA_OPAQUE(context->SAs[direction])->inFilterId = tmpInFilterId;
 	GET_SA_OPAQUE(context->SAs[direction])->outFilterId = tmpOutFilterId;
 	GET_SA_OPAQUE(context->SAs[direction])->saId = tmpSaId;
+	DEBUG_PRINT("tmpSaId=%d\n", tmpSaId);
 CLEANUP:
 	if (result != NO_ERROR)
 	{

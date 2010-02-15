@@ -59,17 +59,17 @@
 
 	action parse_display_name
 	{
-		PARSER_SET_STRING(hdr_from->display_name);
+		TSK_PARSER_SET_STRING(hdr_from->display_name);
 	}
 
 	action parse_tag
 	{
-		PARSER_SET_STRING(hdr_from->tag);
+		TSK_PARSER_SET_STRING(hdr_from->tag);
 	}
 
 	action parse_param
 	{
-		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_from));
+		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_from));
 	}
 
 	action eob
@@ -80,7 +80,7 @@
 	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;
 	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
 	my_tag_param = "tag"i EQUAL token>tag %parse_tag;
-	from_param = (my_tag_param)>1 | (generic_param)>0 >tag %parse_param;
+	from_param = (my_tag_param)@1 | (generic_param)@0 >tag %parse_param;
 	from_spec = ( my_name_addr | URI ) :> ( SEMI from_param )*;
 	
 	From = ( "From"i | "f"i ) HCOLON from_spec;

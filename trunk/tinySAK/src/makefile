@@ -32,6 +32,7 @@ OBJS = tsk.o\
 	tsk_time.o\
 	tsk_timer.o\
 	tsk_url.o\
+	tsk_uuid.o\
 	tsk_xml.o
 
 $(APP): $(OBJS)
