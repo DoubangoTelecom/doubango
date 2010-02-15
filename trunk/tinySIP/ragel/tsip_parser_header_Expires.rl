@@ -54,7 +54,7 @@
 
 	action parse_delta_seconds
 	{
-		PARSER_SET_INTEGER(hdr_expires->delta_seconds);
+		TSK_PARSER_SET_INTEGER(hdr_expires->delta_seconds);
 		TSK_DEBUG_INFO("EXPIRES:PARSE_DELTA_SECONDS");
 	}
 

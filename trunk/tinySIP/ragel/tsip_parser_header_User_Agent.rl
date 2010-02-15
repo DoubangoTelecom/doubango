@@ -55,7 +55,7 @@
 
 	action parse_user_agent
 	{
-		PARSER_SET_STRING(hdr_user_agent->value);
+		TSK_PARSER_SET_STRING(hdr_user_agent->value);
 	}
 
 	action eob

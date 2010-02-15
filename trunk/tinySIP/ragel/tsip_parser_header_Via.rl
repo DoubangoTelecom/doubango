@@ -52,57 +52,57 @@
 
 	action parse_protocol_name
 	{
-		PARSER_SET_STRING(hdr_via->proto_name);
+		TSK_PARSER_SET_STRING(hdr_via->proto_name);
 	}
 
 	action parse_protocol_version
 	{
-		PARSER_SET_STRING(hdr_via->proto_version);
+		TSK_PARSER_SET_STRING(hdr_via->proto_version);
 	}
 
 	action parse_host
 	{
-		PARSER_SET_STRING(hdr_via->host);
+		TSK_PARSER_SET_STRING(hdr_via->host);
 	}
 
 	action parse_port
 	{
-		PARSER_SET_INTEGER(hdr_via->port);
+		TSK_PARSER_SET_INTEGER(hdr_via->port);
 	}
 
 	action parse_transport
 	{
-		PARSER_SET_STRING(hdr_via->transport);
+		TSK_PARSER_SET_STRING(hdr_via->transport);
 	}
 
 	action parse_ttl
 	{
-		PARSER_SET_INTEGER(hdr_via->ttl);
+		TSK_PARSER_SET_INTEGER(hdr_via->ttl);
 	}
 
 	action parse_maddr
 	{
-		PARSER_SET_STRING(hdr_via->maddr);
+		TSK_PARSER_SET_STRING(hdr_via->maddr);
 	}
 	
 	action parse_received
 	{
-		PARSER_SET_STRING(hdr_via->received);
+		TSK_PARSER_SET_STRING(hdr_via->received);
 	}
 
 	action parse_branch
 	{
-		PARSER_SET_STRING(hdr_via->branch);
+		TSK_PARSER_SET_STRING(hdr_via->branch);
 	}
 
 	action parse_comp
 	{
-		PARSER_SET_STRING(hdr_via->comp);
+		TSK_PARSER_SET_STRING(hdr_via->comp);
 	}
 
 	action parse_rport
 	{
-		PARSER_SET_INTEGER(hdr_via->rport);
+		TSK_PARSER_SET_INTEGER(hdr_via->rport);
 	}
 
 	action has_rport
@@ -115,7 +115,7 @@
 
 	action parse_param
 	{
-		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_via));
+		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_via));
 	}
 	
 	action eob
@@ -125,7 +125,7 @@
 
 	protocol_name = "SIP"i | token >tag %parse_protocol_name;
 	protocol_version = token >tag %parse_protocol_version;
-	transport = "UDP"i | "TCP"i | "TLS"i | "SCTP"i | "TLS-SCTP"i | other_transport >tag %parse_transport;
+	transport = ("UDP"i | "TCP"i | "TLS"i | "SCTP"i | "TLS-SCTP"i | other_transport) >tag %parse_transport;
 	sent_protocol = protocol_name SLASH protocol_version SLASH transport;
 	sent_by = host>tag %parse_host ( COLON port >tag %parse_port )?;
 	via_ttl = "ttl"i EQUAL ttl >tag %parse_ttl;
@@ -135,7 +135,7 @@
 	via_compression = "comp"i EQUAL ( "sigcomp"i | other_compression )>tag %parse_comp;
 	response_port = "rport"i ( EQUAL DIGIT+ >tag %parse_rport )? %has_rport;
 	via_extension = (generic_param) >tag %parse_param;
-	via_params = (via_ttl | via_maddr | via_received | via_branch | via_compression | response_port)>1 | (via_extension)>0;
+	via_params = (via_ttl | via_maddr | via_received | via_branch | via_compression | response_port)@1 | (via_extension)@0;
 	via_parm = sent_protocol LWS sent_by ( SEMI via_params )*;
 	Via = ( "Via"i | "v"i ) HCOLON via_parm ( COMMA via_parm )*;
 	
@@ -209,6 +209,7 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 	
 	if( cs < %%{ write first_final; }%% )
 	{
+		TSK_DEBUG_ERROR("Failed to parse Via header.");
 		TSK_OBJECT_SAFE_FREE(hdr_via);
 	}
 	

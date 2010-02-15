@@ -32,7 +32,7 @@
 
 #include "tinysip_config.h"
 
-#include "tinysip/parsers/tsip_ragel_state.h"
+#include "tsk_ragel_state.h"
 
 #include "tsk_params.h"
 #include "tsk_object.h"

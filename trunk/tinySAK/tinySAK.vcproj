@@ -423,6 +423,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_ragel_state.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_runnable.h"
 				>
 			</File>
@@ -534,6 +538,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_ppfcs32.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_ragel_state.c"
 				>
 			</File>
 			<File

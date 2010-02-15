@@ -137,7 +137,7 @@ int thttp_auth_digest_HA1sess(const char* username, const char* realm, const cha
 }
 
 /**
- * @fn	int thttp_auth_digest_HA2(const char* method, const char* uri, const char* entity_body,
+ * @fn	int thttp_auth_digest_HA2(const char* method, const char* url, const char* entity_body,
  * 		const char* qop, tsk_md5string_t* ha2)
  *
  * @brief	Generates digest HA2 value as per RFC 2617 subclause 3.2.2.3. 
@@ -146,31 +146,31 @@ int thttp_auth_digest_HA1sess(const char* username, const char* realm, const cha
  * @date	12/30/2009
  *
  * @param [in,out]	method		The HTTP/SIP method name. 
- * @param [in,out]	uri			The HTTP URL or SIP URI of the request. 
+ * @param [in,out]	url			The HTTP URL or SIP URI of the request. 
  * @param [in,out]	entity_body	The entity body. 
  * @param [in,out]	qop			The Quality Of Protection.
  * @param [in,out]	ha2			A pointer to the response. 
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int thttp_auth_digest_HA2(const char* method, const char* uri, const char* entity_body, const char* qop, tsk_md5string_t* ha2)
+int thttp_auth_digest_HA2(const char* method, const char* url, const char* entity_body, const char* qop, tsk_md5string_t* ha2)
 {
 	int ret;
 	/* RFC 2617 - 3.2.2.3 A2
 
 	If the "qop" directive's value is "auth" or is unspecified, then A2
 	is:
-	A2       = Method ":" digest-uri-value
+	A2       = Method ":" digest-url-value
 
 	If the "qop" value is "auth-int", then A2 is:
-	A2       = Method ":" digest-uri-value ":" H(entity-body)
+	A2       = Method ":" digest-url-value ":" H(entity-body)
 	*/
 
 	char *a2 = 0;
 
 	if(!qop || tsk_strempty(qop) || tsk_striequals(qop, "auth"))
 	{
-		tsk_sprintf(&a2, "%s:%s", method, uri);
+		tsk_sprintf(&a2, "%s:%s", method, url);
 	}
 	else if(tsk_striequals(qop, "auth-int"))
 	{
@@ -181,11 +181,11 @@ int thttp_auth_digest_HA2(const char* method, const char* uri, const char* entit
 			{
 				goto bail;
 			}
-			tsk_sprintf(&a2, "%s:%s:%s", method, uri, hEntity);
+			tsk_sprintf(&a2, "%s:%s:%s", method, url, hEntity);
 		}
 		else
 		{
-			tsk_sprintf(&a2, "%s:%s:%s", method, uri, TSK_MD5_EMPTY);
+			tsk_sprintf(&a2, "%s:%s:%s", method, url, TSK_MD5_EMPTY);
 		}
 	}
 

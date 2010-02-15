@@ -41,12 +41,12 @@ qop-value         = "auth" | "auth-int" | token
 
 ;;;; 3.2.2 The Authorization Request Header
 credentials      = "Digest" digest-response
-digest-response  = 1#( username | realm | nonce | digest-uri | response | [ algorithm ] | [cnonce] | [opaque] | [message-qop] | [nonce-count]  | [auth-param] )
+digest-response  = 1#( username | realm | nonce | digest-url | response | [ algorithm ] | [cnonce] | [opaque] | [message-qop] | [nonce-count]  | [auth-param] )
 
 username         = "username" "=" username-value
 username-value   = quoted-string
-digest-uri       = "uri" "=" digest-uri-value
-digest-uri-value = request-uri   ; As specified by HTTP/1.1
+digest-url       = "url" "=" digest-url-value
+digest-url-value = request-url   ; As specified by HTTP/1.1
 message-qop      = "qop" "=" qop-value
 cnonce           = "cnonce" "=" cnonce-value
 cnonce-value     = nonce-value

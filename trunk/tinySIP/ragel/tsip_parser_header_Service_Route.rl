@@ -66,7 +66,7 @@
 	{
 		if(curr_service)
 		{
-			PARSER_SET_STRING(curr_service->display_name);
+			TSK_PARSER_SET_STRING(curr_service->display_name);
 		}
 	}
 
@@ -83,7 +83,7 @@
 	{
 		if(curr_service)
 		{
-			PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_service));
+			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_service));
 		}
 	}
 

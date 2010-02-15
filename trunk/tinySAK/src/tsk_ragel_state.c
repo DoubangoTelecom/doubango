@@ -20,17 +20,17 @@
 *
 */
 
-/**@file tsip_ragel_state.c.
- * @brief Ragel state for sip parsing.
+/**@file tsk_ragel_state.c.
+ * @brief Ragel state for SIP, HTTP and MSRP parsing.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/parsers/tsip_ragel_state.h"
+#include "tsk_ragel_state.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	void tsip_ragel_state_init(tsip_ragel_state_t *state, const char *data, size_t size)
+/// @fn	void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, size_t size)
 ///
 /// @brief	Initialize/Reset the ragel state with default values. 
 ///
@@ -42,7 +42,7 @@
 /// @param	size			The size of the data. 
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void tsip_ragel_state_init(tsip_ragel_state_t *state, const char *data, size_t size)
+void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, size_t size)
 {
 	state->cs = 0;
 	state->p = data;

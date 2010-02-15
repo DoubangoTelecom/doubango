@@ -59,17 +59,17 @@
 
 	action parse_display_name
 	{
-		PARSER_SET_STRING(hdr_to->display_name);
+		TSK_PARSER_SET_STRING(hdr_to->display_name);
 	}
 
 	action parse_tag
 	{
-		PARSER_SET_STRING(hdr_to->tag);
+		TSK_PARSER_SET_STRING(hdr_to->tag);
 	}
 
 	action parse_param
 	{
-		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_to));
+		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_to));
 	}
 
 	action eob
@@ -77,7 +77,7 @@
 	}
 	
 	my_tag_param = "tag"i EQUAL token>tag %parse_tag;
-	to_param = my_tag_param>1 | (generic_param)>0 >tag %parse_param;
+	to_param = my_tag_param@1 | (generic_param)@0 >tag %parse_param;
 	
 	URI = (scheme HCOLON any+)>tag %parse_uri;
 	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;

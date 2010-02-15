@@ -15,10 +15,19 @@ all: $(APP)
 	
 OBJS = \
 	tsip.o\
+	tsip_event.o\
 	tsip_message.o\
 	tsip_operation.o\
 	tsip_timers.o\
 	tsip_uri.o
+	###################
+	## api
+	###################
+OBJS += api/tsip_invite.o\
+	api/tsip_message.o\
+	api/tsip_publish.o\
+	api/tsip_register.o\
+	api/tsip_subscribe.o
 	###################
 	## authentication
 	###################

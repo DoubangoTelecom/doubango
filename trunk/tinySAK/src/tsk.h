@@ -63,6 +63,7 @@ TSK_BEGIN_DECLS
 #include "tsk_hmac.h"
 #include "tsk_base64.h"
 #include "tsk_uuid.h"
+#include "tsk_ragel_state.h"
 
 TSK_END_DECLS
 

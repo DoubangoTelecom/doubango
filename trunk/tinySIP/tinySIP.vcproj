@@ -47,7 +47,6 @@
 				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -762,10 +761,6 @@
 					RelativePath=".\src\parsers\tsip_parser_uri.c"
 					>
 				</File>
-				<File
-					RelativePath=".\src\parsers\tsip_ragel_state.c"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="transactions"
@@ -1342,10 +1337,6 @@
 				</File>
 				<File
 					RelativePath=".\include\tinysip\parsers\tsip_parser_uri.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysip\parsers\tsip_ragel_state.h"
 					>
 				</File>
 			</Filter>

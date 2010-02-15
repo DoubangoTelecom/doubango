@@ -123,3 +123,4 @@ static const tsk_object_def_t tnet_dhcp6_message_def_s =
 	0,
 };
 const void *tnet_dhcp6_message_def_t = &tnet_dhcp6_message_def_s;
+

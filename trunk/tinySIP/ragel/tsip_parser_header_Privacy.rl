@@ -63,14 +63,14 @@
 
 	action parse_priv_value
 	{
-		PARSER_ADD_STRING(hdr_privacy->values);
+		TSK_PARSER_ADD_STRING(hdr_privacy->values);
 	}
 
 	action eob
 	{
 	}
 	
-	priv_value = ("header"i | "session"i | "user"i | "none"i | "critical"i | "id"i | "history"i)>1 | token>0;
+	priv_value = ("header"i | "session"i | "user"i | "none"i | "critical"i | "id"i | "history"i)@1 | token@0;
 	Privacy_hdr = "Privacy"i HCOLON priv_value>tag %parse_priv_value ( ";" priv_value>tag %parse_priv_value )*;
 	
 	# Entry point

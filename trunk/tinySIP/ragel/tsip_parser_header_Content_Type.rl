@@ -53,12 +53,12 @@
 
 	action parse_content_type
 	{
-		PARSER_SET_STRING(hdr_ctype->type);
+		TSK_PARSER_SET_STRING(hdr_ctype->type);
 	}
 
 	action parse_param
 	{		
-		PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_ctype));
+		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_ctype));
 	}
 
 	action eob
@@ -76,7 +76,7 @@
 	m_type = discrete_type | composite_type;
 	m_subtype = extension_token | iana_token;
 
-	media_type = (m_type SLASH m_subtype)>1 >tag %parse_content_type ((SEMI m_parameter)*)>0;
+	media_type = (m_type SLASH m_subtype)@1 >tag %parse_content_type ((SEMI m_parameter)*)@0;
 
 	Content_Type = ( "Content-Type"i | "c"i ) HCOLON media_type;
 	

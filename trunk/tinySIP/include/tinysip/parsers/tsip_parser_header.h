@@ -32,11 +32,11 @@
 
 #include "tinysip_config.h"
 #include "tinysip/tsip_message.h"
-#include "tinysip/parsers/tsip_ragel_state.h"
+#include "tsk_ragel_state.h"
 
 TSIP_BEGIN_DECLS
 
-TSIP_BOOLEAN tsip_header_parse(tsip_ragel_state_t *state, tsip_message_t *message);
+TSIP_BOOLEAN tsip_header_parse(tsk_ragel_state_t *state, tsip_message_t *message);
 
 TSIP_END_DECLS
 

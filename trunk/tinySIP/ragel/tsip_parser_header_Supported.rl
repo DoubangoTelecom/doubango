@@ -55,7 +55,7 @@
 	
 	action parse_option
 	{
-		PARSER_ADD_STRING(hdr_supported->options);
+		TSK_PARSER_ADD_STRING(hdr_supported->options);
 	}
 
 	action eob

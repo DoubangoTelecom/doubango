@@ -774,7 +774,7 @@
 	main := HEADER;
 }%%
 
-TSIP_BOOLEAN tsip_header_parse(tsip_ragel_state_t *state, tsip_message_t *message)
+TSIP_BOOLEAN tsip_header_parse(tsk_ragel_state_t *state, tsip_message_t *message)
 {
 	int cs = 0;
 	const char *p = state->tag_start;
@@ -785,5 +785,6 @@ TSIP_BOOLEAN tsip_header_parse(tsip_ragel_state_t *state, tsip_message_t *messag
 	%%write init;
 	%%write exec;
 	
-	return (cs == tsip_machine_parser_headers_first_final);
+	return ( cs >= %%{ write first_final; }%% );
+	//return (cs == tsip_machine_parser_headers_first_final);
 }

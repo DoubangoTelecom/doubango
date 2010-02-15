@@ -74,6 +74,64 @@ tsip_header_Record_Route_t *tsip_header_Record_Route_parse(const char *data, siz
 
 	
 /* #line 77 "../src/headers/tsip_header_Record_Route.c" */
+static const char _tsip_machine_parser_header_Record_Route_actions[] = {
+	0, 1, 0, 1, 1, 1, 2, 2, 
+	0, 1
+};
+
+static const char _tsip_machine_parser_header_Record_Route_key_offsets[] = {
+	0, 0, 2, 4, 6, 8, 10, 12, 
+	13, 15, 17, 19, 21, 23, 26, 29, 
+	30, 31
+};
+
+static const char _tsip_machine_parser_header_Record_Route_trans_keys[] = {
+	82, 114, 69, 101, 67, 99, 79, 111, 
+	82, 114, 68, 100, 45, 82, 114, 79, 
+	111, 85, 117, 84, 116, 69, 101, 9, 
+	32, 58, 9, 13, 32, 13, 10, 0
+};
+
+static const char _tsip_machine_parser_header_Record_Route_single_lengths[] = {
+	0, 2, 2, 2, 2, 2, 2, 1, 
+	2, 2, 2, 2, 2, 3, 3, 1, 
+	1, 0
+};
+
+static const char _tsip_machine_parser_header_Record_Route_range_lengths[] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0
+};
+
+static const char _tsip_machine_parser_header_Record_Route_index_offsets[] = {
+	0, 0, 3, 6, 9, 12, 15, 18, 
+	20, 23, 26, 29, 32, 35, 39, 43, 
+	45, 47
+};
+
+static const char _tsip_machine_parser_header_Record_Route_indicies[] = {
+	0, 0, 1, 2, 2, 1, 3, 3, 
+	1, 4, 4, 1, 5, 5, 1, 6, 
+	6, 1, 7, 1, 8, 8, 1, 9, 
+	9, 1, 10, 10, 1, 11, 11, 1, 
+	12, 12, 1, 12, 12, 13, 1, 15, 
+	16, 15, 14, 18, 17, 19, 1, 1, 
+	0
+};
+
+static const char _tsip_machine_parser_header_Record_Route_trans_targs[] = {
+	2, 0, 3, 4, 5, 6, 7, 8, 
+	9, 10, 11, 12, 13, 14, 15, 14, 
+	16, 15, 16, 17
+};
+
+static const char _tsip_machine_parser_header_Record_Route_trans_actions[] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 1, 1, 
+	7, 0, 3, 5
+};
+
 static const int tsip_machine_parser_header_Record_Route_start = 1;
 static const int tsip_machine_parser_header_Record_Route_first_final = 17;
 static const int tsip_machine_parser_header_Record_Route_error = 0;
@@ -83,219 +141,113 @@ static const int tsip_machine_parser_header_Record_Route_en_main = 1;
 
 /* #line 97 "tsip_parser_header_Record_Route.rl" */
 	
-/* #line 87 "../src/headers/tsip_header_Record_Route.c" */
+/* #line 145 "../src/headers/tsip_header_Record_Route.c" */
 	{
 	cs = tsip_machine_parser_header_Record_Route_start;
 	}
 
 /* #line 98 "tsip_parser_header_Record_Route.rl" */
 	
-/* #line 94 "../src/headers/tsip_header_Record_Route.c" */
+/* #line 152 "../src/headers/tsip_header_Record_Route.c" */
 	{
+	int _klen;
+	unsigned int _trans;
+	const char *_acts;
+	unsigned int _nacts;
+	const char *_keys;
+
 	if ( p == pe )
 		goto _test_eof;
-	switch ( cs )
+	if ( cs == 0 )
+		goto _out;
+_resume:
+	_keys = _tsip_machine_parser_header_Record_Route_trans_keys + _tsip_machine_parser_header_Record_Route_key_offsets[cs];
+	_trans = _tsip_machine_parser_header_Record_Route_index_offsets[cs];
+
+	_klen = _tsip_machine_parser_header_Record_Route_single_lengths[cs];
+	if ( _klen > 0 ) {
+		const char *_lower = _keys;
+		const char *_mid;
+		const char *_upper = _keys + _klen - 1;
+		while (1) {
+			if ( _upper < _lower )
+				break;
+
+			_mid = _lower + ((_upper-_lower) >> 1);
+			if ( (*p) < *_mid )
+				_upper = _mid - 1;
+			else if ( (*p) > *_mid )
+				_lower = _mid + 1;
+			else {
+				_trans += (_mid - _keys);
+				goto _match;
+			}
+		}
+		_keys += _klen;
+		_trans += _klen;
+	}
+
+	_klen = _tsip_machine_parser_header_Record_Route_range_lengths[cs];
+	if ( _klen > 0 ) {
+		const char *_lower = _keys;
+		const char *_mid;
+		const char *_upper = _keys + (_klen<<1) - 2;
+		while (1) {
+			if ( _upper < _lower )
+				break;
+
+			_mid = _lower + (((_upper-_lower) >> 1) & ~1);
+			if ( (*p) < _mid[0] )
+				_upper = _mid - 2;
+			else if ( (*p) > _mid[1] )
+				_lower = _mid + 2;
+			else {
+				_trans += ((_mid - _keys)>>1);
+				goto _match;
+			}
+		}
+		_trans += _klen;
+	}
+
+_match:
+	_trans = _tsip_machine_parser_header_Record_Route_indicies[_trans];
+	cs = _tsip_machine_parser_header_Record_Route_trans_targs[_trans];
+
+	if ( _tsip_machine_parser_header_Record_Route_trans_actions[_trans] == 0 )
+		goto _again;
+
+	_acts = _tsip_machine_parser_header_Record_Route_actions + _tsip_machine_parser_header_Record_Route_trans_actions[_trans];
+	_nacts = (unsigned int) *_acts++;
+	while ( _nacts-- > 0 )
 	{
-case 1:
-	switch( (*p) ) {
-		case 82: goto st2;
-		case 114: goto st2;
-	}
-	goto st0;
-st0:
-cs = 0;
-	goto _out;
-st2:
-	if ( ++p == pe )
-		goto _test_eof2;
-case 2:
-	switch( (*p) ) {
-		case 69: goto st3;
-		case 101: goto st3;
-	}
-	goto st0;
-st3:
-	if ( ++p == pe )
-		goto _test_eof3;
-case 3:
-	switch( (*p) ) {
-		case 67: goto st4;
-		case 99: goto st4;
-	}
-	goto st0;
-st4:
-	if ( ++p == pe )
-		goto _test_eof4;
-case 4:
-	switch( (*p) ) {
-		case 79: goto st5;
-		case 111: goto st5;
-	}
-	goto st0;
-st5:
-	if ( ++p == pe )
-		goto _test_eof5;
-case 5:
-	switch( (*p) ) {
-		case 82: goto st6;
-		case 114: goto st6;
-	}
-	goto st0;
-st6:
-	if ( ++p == pe )
-		goto _test_eof6;
-case 6:
-	switch( (*p) ) {
-		case 68: goto st7;
-		case 100: goto st7;
-	}
-	goto st0;
-st7:
-	if ( ++p == pe )
-		goto _test_eof7;
-case 7:
-	if ( (*p) == 45 )
-		goto st8;
-	goto st0;
-st8:
-	if ( ++p == pe )
-		goto _test_eof8;
-case 8:
-	switch( (*p) ) {
-		case 82: goto st9;
-		case 114: goto st9;
-	}
-	goto st0;
-st9:
-	if ( ++p == pe )
-		goto _test_eof9;
-case 9:
-	switch( (*p) ) {
-		case 79: goto st10;
-		case 111: goto st10;
-	}
-	goto st0;
-st10:
-	if ( ++p == pe )
-		goto _test_eof10;
-case 10:
-	switch( (*p) ) {
-		case 85: goto st11;
-		case 117: goto st11;
-	}
-	goto st0;
-st11:
-	if ( ++p == pe )
-		goto _test_eof11;
-case 11:
-	switch( (*p) ) {
-		case 84: goto st12;
-		case 116: goto st12;
-	}
-	goto st0;
-st12:
-	if ( ++p == pe )
-		goto _test_eof12;
-case 12:
-	switch( (*p) ) {
-		case 69: goto st13;
-		case 101: goto st13;
-	}
-	goto st0;
-st13:
-	if ( ++p == pe )
-		goto _test_eof13;
-case 13:
-	switch( (*p) ) {
-		case 9: goto st13;
-		case 32: goto st13;
-		case 58: goto st14;
-	}
-	goto st0;
-tr15:
+		switch ( *_acts++ )
+		{
+	case 0:
 /* #line 53 "tsip_parser_header_Record_Route.rl" */
 	{
 		tag_start = p;
 	}
-	goto st14;
-st14:
-	if ( ++p == pe )
-		goto _test_eof14;
-case 14:
-/* #line 226 "../src/headers/tsip_header_Record_Route.c" */
-	switch( (*p) ) {
-		case 9: goto tr15;
-		case 13: goto tr16;
-		case 32: goto tr15;
-	}
-	goto tr14;
-tr14:
-/* #line 53 "tsip_parser_header_Record_Route.rl" */
-	{
-		tag_start = p;
-	}
-	goto st15;
-st15:
-	if ( ++p == pe )
-		goto _test_eof15;
-case 15:
-/* #line 243 "../src/headers/tsip_header_Record_Route.c" */
-	if ( (*p) == 13 )
-		goto tr18;
-	goto st15;
-tr16:
-/* #line 53 "tsip_parser_header_Record_Route.rl" */
-	{
-		tag_start = p;
-	}
+	break;
+	case 1:
 /* #line 58 "tsip_parser_header_Record_Route.rl" */
 	{
-		PARSER_SET_STRING(hdr_record_route->value);
+		TSK_PARSER_SET_STRING(hdr_record_route->value);
 	}
-	goto st16;
-tr18:
-/* #line 58 "tsip_parser_header_Record_Route.rl" */
-	{
-		PARSER_SET_STRING(hdr_record_route->value);
-	}
-	goto st16;
-st16:
-	if ( ++p == pe )
-		goto _test_eof16;
-case 16:
-/* #line 267 "../src/headers/tsip_header_Record_Route.c" */
-	if ( (*p) == 10 )
-		goto tr19;
-	goto st0;
-tr19:
+	break;
+	case 2:
 /* #line 63 "tsip_parser_header_Record_Route.rl" */
 	{
 	}
-	goto st17;
-st17:
-	if ( ++p == pe )
-		goto _test_eof17;
-case 17:
-/* #line 280 "../src/headers/tsip_header_Record_Route.c" */
-	goto st0;
+	break;
+/* #line 243 "../src/headers/tsip_header_Record_Route.c" */
+		}
 	}
-	_test_eof2: cs = 2; goto _test_eof; 
-	_test_eof3: cs = 3; goto _test_eof; 
-	_test_eof4: cs = 4; goto _test_eof; 
-	_test_eof5: cs = 5; goto _test_eof; 
-	_test_eof6: cs = 6; goto _test_eof; 
-	_test_eof7: cs = 7; goto _test_eof; 
-	_test_eof8: cs = 8; goto _test_eof; 
-	_test_eof9: cs = 9; goto _test_eof; 
-	_test_eof10: cs = 10; goto _test_eof; 
-	_test_eof11: cs = 11; goto _test_eof; 
-	_test_eof12: cs = 12; goto _test_eof; 
-	_test_eof13: cs = 13; goto _test_eof; 
-	_test_eof14: cs = 14; goto _test_eof; 
-	_test_eof15: cs = 15; goto _test_eof; 
-	_test_eof16: cs = 16; goto _test_eof; 
-	_test_eof17: cs = 17; goto _test_eof; 
 
+_again:
+	if ( cs == 0 )
+		goto _out;
+	if ( ++p != pe )
+		goto _resume;
 	_test_eof: {}
 	_out: {}
 	}
@@ -303,7 +255,7 @@ case 17:
 /* #line 99 "tsip_parser_header_Record_Route.rl" */
 	
 	if( cs < 
-/* #line 307 "../src/headers/tsip_header_Record_Route.c" */
+/* #line 259 "../src/headers/tsip_header_Record_Route.c" */
 17
 /* #line 100 "tsip_parser_header_Record_Route.rl" */
  )

@@ -63,7 +63,7 @@
 	{
 		if(curr_contact)
 		{
-			PARSER_SET_STRING(curr_contact->display_name);
+			TSK_PARSER_SET_STRING(curr_contact->display_name);
 		}
 	}
 
@@ -80,7 +80,7 @@
 	{
 		if(curr_contact)
 		{
-			PARSER_SET_INTEGER(curr_contact->expires);
+			TSK_PARSER_SET_INTEGER(curr_contact->expires);
 		}
 	}
 
@@ -88,7 +88,7 @@
 	{
 		if(curr_contact)
 		{
-			PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_contact));
+			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_contact));
 		}
 	}
 
@@ -110,7 +110,7 @@
 	
 	c_p_expires = "expires"i EQUAL delta_seconds>tag %parse_expires;
 	contact_extension = (generic_param)>tag %parse_param;
-	contact_params = c_p_expires>1 | contact_extension>0;
+	contact_params = c_p_expires@1 | contact_extension@0;
 	contact_param = (( my_name_addr | URI ) <: ( SEMI contact_params )*) >create_contact %add_contact;
 	Contact = ( "Contact"i | "m"i ) HCOLON ( STAR | ( contact_param ( COMMA contact_param )* ) );
 	

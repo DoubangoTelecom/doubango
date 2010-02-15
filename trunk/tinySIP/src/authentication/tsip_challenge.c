@@ -288,8 +288,10 @@ int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char
 		tsk_strupdate(&self->nonce, nonce);
 		tsk_strupdate(&self->opaque, opaque);
 		tsk_strupdate(&self->algorithm, algorithm);
-		self->qop = tsk_strcontains(qop, strlen(qop), "auth-int") ? "auth-int" : 
-				(tsk_strcontains(qop, strlen(qop), "auth") ? "auth" : 0);
+		if(qop){
+			self->qop = tsk_strcontains(qop, strlen(qop), "auth-int") ? "auth-int" : 
+					(tsk_strcontains(qop, strlen(qop), "auth") ? "auth" : 0);
+		}
 
 		if(noncechanged && self->qop){
 			tsip_challenge_reset_cnonce(self);
@@ -443,8 +445,10 @@ static void* tsip_challenge_create(void *self, va_list * app)
 		challenge->opaque = tsk_strdup(va_arg(*app, const char*));
 		challenge->algorithm = tsk_strdup(va_arg(*app, const char*));
 		qop = va_arg(*app, const char*);
-		challenge->qop = tsk_strcontains(qop, strlen(qop), "auth-int") ? "auth-int" : 
-				(tsk_strcontains(qop, strlen(qop), "auth") ? "auth" : 0);
+		if(qop){
+			challenge->qop = tsk_strcontains(qop, strlen(qop), "auth-int") ? "auth-int" : 
+					(tsk_strcontains(qop, strlen(qop), "auth") ? "auth" : 0);
+		}
 		
 		if(challenge->qop){
 			tsip_challenge_reset_cnonce(challenge);

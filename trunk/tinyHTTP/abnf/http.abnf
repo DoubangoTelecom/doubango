@@ -50,7 +50,7 @@ upalpha  = "A" / "B" / "C" / "D" / "E" / "F" / "G" / "H" / "I" / "J" / "K" / "L"
 alphanum = alpha / digit
 
 ;;;; 2. URI Characters and Escape Sequences
-uric     = reserved / unreserved / escaped
+urlc     = reserved / unreserved / escaped
 
 ;;;; 2.2. Reserved Characters
 reserved    = ";" / "/" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
@@ -76,8 +76,8 @@ absoluteURI   = scheme ":" ( hier-part / opaque-part )
 hier-part     = ( net-path / abs-path ) [ "?" query ]
 net-path      = "//" authority [ abs-path ]
 abs-path      = "/"  path-segments
-opaque-part   = uric-no-slash *uric
-uric-no-slash = unreserved / escaped / ";" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
+opaque-part   = urlc-no-slash *urlc
+urlc-no-slash = unreserved / escaped / ";" / "?" / ":" / "@" / "&" / "=" / "+" / "$" / ","
 
 ;;;; 3.1. Scheme Component
 scheme        = alpha *( alpha / digit / "+" / "-" / "." )
@@ -107,14 +107,14 @@ param         = *pchar
 pchar         = unreserved / escaped / ":" / "@" / "&" / "=" / "+" / "$" / ","
 
 ;;;; 3.4. Query Component
-query         = *uric
+query         = *urlc
 
 ;;;; 4. URI References
 URI-reference = [ absoluteURI / relativeURI ] [ "#" fragment ]
 
 
 ;;;; 4.1. Fragment Identifier
-fragment      = *uric
+fragment      = *urlc
 
 ;;;; 5. Relative URI References
 relativeURI   = ( net-path / abs-path / rel-path ) [ "?" query ]
@@ -179,12 +179,12 @@ qop-value         = "auth" / "auth-int" / token
 ;;;; 3.2.2 The Authorization Request Header
 credentials      = "Digest" digest-response
 digest-response  = digest-response-value *(COMMA digest-response-value)
-digest-response-value = ( username / realm / nonce / digest-uri / auth-response / [ algorithm ] / [cnonce] / [opaque] / [message-qop] / [nonce-count]  / [auth-param] )
+digest-response-value = ( username / realm / nonce / digest-url / auth-response / [ algorithm ] / [cnonce] / [opaque] / [message-qop] / [nonce-count]  / [auth-param] )
 
 username         = "username" "=" username-value
 username-value   = quoted-string
-digest-uri       = "uri" "=" digest-uri-value
-digest-uri-value = request-uri   ; As specified by HTTP/1.1
+digest-url       = "url" "=" digest-url-value
+digest-url-value = request-url   ; As specified by HTTP/1.1
 message-qop      = "qop" "=" qop-value
 cnonce           = "cnonce" "=" cnonce-value
 cnonce-value     = nonce-value
@@ -227,7 +227,7 @@ SWS	           = 	[LWS] 	; sep whitespace
 TEXT           = 1*(token / LWS) ; <any OCTET except CTLs, but including LWS>
 COMMA	       = SWS 	"," 	SWS 	; comma
 
-;;;; text (from sip ==> is it right?)
+;;;; text (from http ==> is it right?)
 TEXT-UTF8-TRIM	= 1*TEXT-UTF8char    *(*LWS   TEXT-UTF8char)
 TEXT-UTF8char	= %x21-7E   /   UTF8-NONASCII
 UTF8-NONASCII	= %xC0-DF 	1UTF8-CONT /	%xE0-EF 	2UTF8-CONT /	%xF0-F7 	3UTF8-CONT /	%xF8-FB 	4UTF8-CONT /	%xFC-FD 	5UTF8-CONT

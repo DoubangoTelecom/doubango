@@ -35,9 +35,9 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-static void tsip_message_parser_execute(tsip_ragel_state_t *state, tsip_message_t *message);
-static void tsip_message_parser_init(tsip_ragel_state_t *state);
-static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *message);
+static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message);
+static void tsip_message_parser_init(tsk_ragel_state_t *state);
+static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message);
 
 /***********************************
 *	Ragel state machine.
@@ -187,7 +187,7 @@ static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *m
 %%write data;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t *result)
+/// @fn	TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t *result)
 ///
 /// @brief	Parse a SIP message. Both requests and reponses messages. 
 ///
@@ -201,7 +201,7 @@ static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *m
 /// @return	@ref TSIP_TRUE if succeed and @ref TSIP_FALSE otherwise.
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t **result)
+TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result)
 {
 	if(!state || state->pe <= state->p)
 	{
@@ -232,7 +232,7 @@ TSIP_BOOLEAN tsip_message_parse(tsip_ragel_state_t *state, tsip_message_t **resu
 }
 
 
-static void tsip_message_parser_init(tsip_ragel_state_t *state)
+static void tsip_message_parser_init(tsk_ragel_state_t *state)
 {
 	int cs = 0;
 
@@ -242,7 +242,7 @@ static void tsip_message_parser_init(tsip_ragel_state_t *state)
 	state->cs = cs;
 }
 
-static void tsip_message_parser_execute(tsip_ragel_state_t *state, tsip_message_t *message)
+static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message)
 {
 	int cs = state->cs;
 	const char *p = state->p;
@@ -257,7 +257,7 @@ static void tsip_message_parser_execute(tsip_ragel_state_t *state, tsip_message_
 	state->eof = eof;
 }
 
-static void tsip_message_parser_eoh(tsip_ragel_state_t *state, tsip_message_t *message)
+static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message)
 {
 	int cs = state->cs;
 	const char *p = state->p;

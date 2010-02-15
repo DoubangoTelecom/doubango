@@ -72,7 +72,7 @@
 	{
 		if(!hdr_pi->display_name)
 		{
-			PARSER_SET_STRING(hdr_pi->display_name);
+			TSK_PARSER_SET_STRING(hdr_pi->display_name);
 		}
 
 	}
