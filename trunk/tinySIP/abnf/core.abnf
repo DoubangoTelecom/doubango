@@ -1013,7 +1013,7 @@ transport	= 	"UDP" / "TCP" / "TLS" / "SCTP" / "TLS-SCTP" / other-transport
 sent-by	= 	host [ COLON port ]
 ttl	= 	1*3DIGIT   
  
-;;;; Warning 	  	RFC 3261 	Up
+;;;; Warning
 Warning	= 	"Warning" HCOLON warning-value *(COMMA warning-value)
 warning-value	= 	warn-code SP warn-agent SP warn-text
 warn-code	= 	3DIGIT

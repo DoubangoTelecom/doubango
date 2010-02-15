@@ -69,7 +69,7 @@ TSIP_BEGIN_DECLS
 
 typedef enum tsip_dialog_state_e
 {
-	tsip_none,
+	tsip_initial,
 	tsip_early,
 	tsip_established,
 	tsip_terminated
@@ -85,7 +85,8 @@ typedef enum tsip_dialog_type_e
 	tsip_dialog_prack,
 	tsip_dialog_publish,
 	tsip_dialog_refer,
-	tsip_dialog_register
+	tsip_dialog_register,
+	tsip_dialog_subscribe,
 }
 tsip_dialog_type_t;
 

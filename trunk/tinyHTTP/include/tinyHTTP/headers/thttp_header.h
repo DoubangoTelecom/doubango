@@ -57,6 +57,8 @@ typedef int (*thttp_header_value_tostring)(const struct thttp_header_s* header, 
 typedef enum thttp_header_type_e
 {
 	thttp_htype_Authorization,
+	thttp_htype_Content_Length,
+	thttp_htype_Content_Type,
 	thttp_htype_Proxy_Authenticate,
 	thttp_htype_Proxy_Authorization,
 	thttp_htype_WWW_Authenticate,

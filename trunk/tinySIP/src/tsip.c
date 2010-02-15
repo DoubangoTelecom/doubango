@@ -29,8 +29,6 @@
  */
 #include "tsip.h"
 
-#include "tinysip/tsip_uri.h"
-
 #include "tinysip/parsers/tsip_parser_uri.h"
 
 #include "tinysip/transactions/tsip_transac_layer.h"
@@ -442,6 +440,19 @@ int tsip_stack_set_callback_register(tsip_stack_handle_t *self, tsip_register_ca
 	return -1;
 }
 
+int tsip_stack_set_callback_subscribe(tsip_stack_handle_t *self, tsip_subscribe_callback callback)
+{
+	if(self)
+	{
+		tsip_stack_t *stack = self;
+		stack->callback_subscribe = callback;
+		
+		return 0;
+	}
+
+	return -1;
+}
+
 int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type)
 {
 	if(self)
@@ -504,6 +515,7 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 
 		TSK_OBJECT_SAFE_FREE(stack->service_routes);
 		TSK_OBJECT_SAFE_FREE(stack->paths);
+		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
 
 		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
@@ -519,6 +531,42 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 	return -1;
 }
 
+tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const char* protocol)
+{
+	if(self)
+	{
+		const tsip_stack_t *stack = self;
+		tsk_list_item_t *item;
+
+		if(stack->layer_transport && stack->layer_transport->transports)
+		{
+			tsk_list_foreach(item, stack->layer_transport->transports)
+			{
+				tsip_transport_t *transport = item->data;
+
+				if(transport)
+				{
+					if(tsk_strequals(transport->protocol, protocol))
+					{
+						tnet_ip_t ip;
+						tnet_port_t port;
+
+						if(!tsip_transport_get_ip_n_port(transport, &ip, &port))
+						{
+							tsip_uri_t* uri = TSIP_URI_CREATE(tsk_striequals(protocol, "tls") ? uri_sips : uri_sip);
+							uri->host = tsk_strdup(ip);
+							uri->port = port;
+							uri->host_type = host_ipv4; // FIXME
+							uri->user_name = tsk_strdup(stack->public_identity->user_name);
+							return uri;
+						}
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
 
 const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self)
 {
@@ -588,17 +636,23 @@ void *run(void* self)
 			{
 				if(stack->callback_register){
 					stack->callback_register(TSIP_REGISTER_EVENT(sipevent));
+					break;
 				}
-				else if(stack->callback){
-					stack->callback(sipevent);
+			}
+
+		case tsip_event_subscribe:
+			{
+				if(stack->callback_subscribe){
+					stack->callback_subscribe(TSIP_SUBSCRIBE_EVENT(sipevent));
+					break;
 				}
-				break;
 			}
 		default:
 			{
 				if(stack->callback){
 					stack->callback(sipevent);
 				}
+				break;
 			}
 		}
 		

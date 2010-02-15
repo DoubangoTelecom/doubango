@@ -58,6 +58,7 @@ typedef void tsip_operation_handle_t;
 
 tsip_operation_handle_t *tsip_operation_clone(const tsip_operation_handle_t *self);
 TINYSIP_API tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self);
+const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self, const char* pname);
 
 typedef tsk_list_t tsip_operations_L_t; /**< List of @ref tsip_operation_handle_t elements. */
 TINYSIP_GEXTERN const void *tsip_operation_def_t;

@@ -298,6 +298,7 @@ static void* tsip_header_User_Agent_destroy(void *self)
 	if(User_Agent)
 	{
 		TSK_FREE(User_Agent->value);
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(User_Agent));
 	}
 	else TSK_DEBUG_ERROR("Null User_Agent header.");
 

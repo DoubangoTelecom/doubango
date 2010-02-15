@@ -63,7 +63,15 @@ tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self)
 	return TSIP_OPERATION_INVALID_ID;
 }
 
-
+const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self, const char* pname)
+{
+	if(self)
+	{
+		const tsip_operation_t *operation = self;
+		return tsk_params_get_param_by_name(operation->params, pname);
+	}
+	return 0;
+}
 
 
 

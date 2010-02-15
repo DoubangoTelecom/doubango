@@ -38,6 +38,9 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Contact.c tsip_parser_header_Co
 # ==CSeq
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_CSeq.c tsip_parser_header_CSeq.rl
 
+# ==Event
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Event.c tsip_parser_header_Event.rl
+
 # ==Expires
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Expires.c tsip_parser_header_Expires.rl
 
@@ -55,6 +58,15 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Path.c tsip_parser_header_Path.
 
 # ==P-Access-Network-Info
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Access_Network_Info.c tsip_parser_header_P_Access_Network_Info.rl
+
+# ==P-Asserted-Identity
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Asserted_Identity.c tsip_parser_header_P_Asserted_Identity.rl
+
+# ==P-Associated-URI
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Associated_URI.c tsip_parser_header_P_Associated_URI.rl
+
+# ==P-Charging-Function-Addresses
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Charging_Function_Addresses.c tsip_parser_header_P_Charging_Function_Addresses.rl
 
 # ==P-Preferred-Identity
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Preferred_Identity.c tsip_parser_header_P_Preferred_Identity.rl
@@ -74,7 +86,10 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Record_Route.c tsip_parser_head
 # ==Require
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Require.c tsip_parser_header_Require.rl
 
-# == Service-Route
+# == Server
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Server.c tsip_parser_header_Server.rl
+
+# == Route
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Route.c tsip_parser_header_Route.rl
 
 # == Service-Route
@@ -91,6 +106,9 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_User_Agent.c tsip_parser_header
 
 # ==Via
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Via.c tsip_parser_header_Via.rl
+
+# ==Warning
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Warning.c tsip_parser_header_Warning.rl
 
 # ==WWW-Authenticate
 #########ragel.exe $OPTIONS -o ../src/headers/tsip_header_WWW_Authenticate.c tsip_parser_header_WWW_Authenticate.rl

@@ -430,7 +430,7 @@ _match:
 	{
 		if(!curr_service)
 		{
-			curr_service = TSIP_HEADER_SERVICE_ROUTE_CREATE();
+			curr_service = TSIP_HEADER_SERVICE_ROUTE_CREATE_NULL();
 		}
 	}
 	break;
@@ -519,8 +519,13 @@ static void* tsip_header_Service_Route_create(void *self, va_list * app)
 	tsip_header_Service_Route_t *Service_Route = self;
 	if(Service_Route)
 	{
+		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
+
 		TSIP_HEADER(Service_Route)->type = tsip_htype_Service_Route;
 		TSIP_HEADER(Service_Route)->tostring = tsip_header_Service_Route_tostring;
+		if(uri){
+			Service_Route->uri = tsk_object_ref((void*)uri);
+		}
 	}
 	else
 	{
