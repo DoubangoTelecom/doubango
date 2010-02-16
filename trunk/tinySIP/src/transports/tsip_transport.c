@@ -29,10 +29,11 @@
  */
 #include "tinysip/transports/tsip_transport.h"
 
+#include "tinysip/parsers/tsip_parser_uri.h"
+
 #include "tsk_string.h"
 #include "tsk_buffer.h"
 #include "tsk_debug.h"
-
 
 int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip_message_t *msg)
 {
@@ -197,7 +198,35 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 }
 
 
-
+tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr)
+{
+	if(self)
+	{
+		tnet_ip_t ip;
+		tnet_port_t port;
+		tsip_uri_t* uri = 0;
+		
+		if(!tnet_get_ip_n_port(self->connectedFD, &ip, &port))
+		{
+			char* uristring = 0;
+			tsk_sprintf(&uristring, "%s:%s:%d;%s;transport=%s",
+				self->scheme,
+				ip,
+				port,
+				lr ? "lr" : "",
+				self->protocol);
+			if(uristring){
+				if((uri = tsip_uri_parse(uristring, strlen(uristring)))){
+					tnet_socket_type_t type = tsip_transport_get_socket_type(self);
+					uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(type) ? host_ipv6 : host_ipv4;
+				}
+				TSK_FREE(uristring);
+			}
+		}
+		return uri;
+	}
+	return 0;
+}
 
 
 

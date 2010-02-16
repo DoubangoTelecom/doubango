@@ -43,7 +43,7 @@
 *	Ragel state machine.
 */
 
-/* #line 71 "tsip_parser_header_Expires.rl" */
+/* #line 68 "tsip_parser_header_Expires.rl" */
 
 
 int tsip_header_Expires_tostring(const void* header, tsk_buffer_t* output)
@@ -130,14 +130,14 @@ static const int tsip_machine_parser_header_Expires_error = 0;
 static const int tsip_machine_parser_header_Expires_en_main = 1;
 
 
-/* #line 98 "tsip_parser_header_Expires.rl" */
+/* #line 95 "tsip_parser_header_Expires.rl" */
 	
 /* #line 136 "../src/headers/tsip_header_Expires.c" */
 	{
 	cs = tsip_machine_parser_header_Expires_start;
 	}
 
-/* #line 99 "tsip_parser_header_Expires.rl" */
+/* #line 96 "tsip_parser_header_Expires.rl" */
 	
 /* #line 143 "../src/headers/tsip_header_Expires.c" */
 	{
@@ -216,24 +216,21 @@ _match:
 	case 0:
 /* #line 50 "tsip_parser_header_Expires.rl" */
 	{
-		TSK_DEBUG_INFO("EXPIRES:TAG");
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "tsip_parser_header_Expires.rl" */
+/* #line 55 "tsip_parser_header_Expires.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_expires->delta_seconds);
-		TSK_DEBUG_INFO("EXPIRES:PARSE_DELTA_SECONDS");
 	}
 	break;
 	case 2:
-/* #line 62 "tsip_parser_header_Expires.rl" */
+/* #line 60 "tsip_parser_header_Expires.rl" */
 	{
-		TSK_DEBUG_INFO("EXPIRES:EOB");
 	}
 	break;
-/* #line 237 "../src/headers/tsip_header_Expires.c" */
+/* #line 234 "../src/headers/tsip_header_Expires.c" */
 		}
 	}
 
@@ -246,12 +243,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 100 "tsip_parser_header_Expires.rl" */
+/* #line 97 "tsip_parser_header_Expires.rl" */
 	
 	if( cs < 
-/* #line 253 "../src/headers/tsip_header_Expires.c" */
+/* #line 250 "../src/headers/tsip_header_Expires.c" */
 15
-/* #line 101 "tsip_parser_header_Expires.rl" */
+/* #line 98 "tsip_parser_header_Expires.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(hdr_expires);

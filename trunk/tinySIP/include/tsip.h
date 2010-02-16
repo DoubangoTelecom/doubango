@@ -147,10 +147,10 @@ typedef struct tsip_stack_s
 	char *netinfo;
 	struct tsip_uri_s *realm;
 	char *proxy_cscf;
-	unsigned use_dns_naptr:1;
-	unsigned use_dhcp:1;
 	int proxy_cscf_port;
 	tnet_socket_type_t proxy_cscf_type;
+	unsigned use_dns_naptr:1;
+	unsigned use_dhcp:1;
 	char* device_id;
 	char* mobility;
 	char* sec_agree_mech;
@@ -203,11 +203,12 @@ TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API int tsip_stack_set_callback_register(tsip_stack_handle_t *self, tsip_register_callback callback);
 TINYSIP_API int tsip_stack_set_callback_subscribe(tsip_stack_handle_t *self, tsip_subscribe_callback callback);
-int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
+//int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
 
 tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const char* protocol);
+tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr);
 const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self);
 struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self);
 struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);

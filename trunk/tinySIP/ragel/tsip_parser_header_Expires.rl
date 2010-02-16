@@ -48,19 +48,16 @@
 	
 	action tag
 	{
-		TSK_DEBUG_INFO("EXPIRES:TAG");
 		tag_start = p;
 	}
 
 	action parse_delta_seconds
 	{
 		TSK_PARSER_SET_INTEGER(hdr_expires->delta_seconds);
-		TSK_DEBUG_INFO("EXPIRES:PARSE_DELTA_SECONDS");
 	}
 
 	action eob
 	{
-		TSK_DEBUG_INFO("EXPIRES:EOB");
 	}
 		
 	Expires = "Expires"i HCOLON delta_seconds>tag %parse_delta_seconds;

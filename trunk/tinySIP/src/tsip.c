@@ -385,8 +385,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		/*
 		* FIXME:
 		*/
-		if(tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, stack->proxy_cscf_type, "FIXME"))
-		{
+		if(tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, stack->proxy_cscf_type, "FIXME")){
 			// WHAT ???
 		}
 
@@ -453,20 +452,20 @@ int tsip_stack_set_callback_subscribe(tsip_stack_handle_t *self, tsip_subscribe_
 	return -1;
 }
 
-int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type)
-{
-	if(self)
-	{
-		const tsip_stack_t *stack = self;
-
-		TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), stack, opid, status_code, reason_phrase, incoming, type);
-		//tsip_event_t *event = TSIP_EVENT_CREATE(stack, opid, status_code, reason_phrase, incoming, type);
-		//TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), event);
-
-		return 0;
-	}
-	return -1;
-}
+//int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type)
+//{
+//	if(self)
+//	{
+//		const tsip_stack_t *stack = self;
+//
+//		TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), stack, opid, status_code, reason_phrase, incoming, type);
+//		//tsip_event_t *event = TSIP_EVENT_CREATE(stack, opid, status_code, reason_phrase, incoming, type);
+//		//TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), event);
+//
+//		return 0;
+//	}
+//	return -1;
+//}
 
 //#include "tsk_thread.h"
 int tsip_stack_stop(tsip_stack_handle_t *self)
@@ -537,31 +536,55 @@ tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const cha
 	{
 		const tsip_stack_t *stack = self;
 		tsk_list_item_t *item;
-
-		if(stack->layer_transport && stack->layer_transport->transports)
+		tsk_list_foreach(item, stack->layer_transport->transports)
 		{
-			tsk_list_foreach(item, stack->layer_transport->transports)
+			tsip_transport_t *transport = item->data;
+
+			if(transport)
 			{
-				tsip_transport_t *transport = item->data;
-
-				if(transport)
+				if(tsk_strequals(transport->protocol, protocol))
 				{
-					if(tsk_strequals(transport->protocol, protocol))
+					tsip_uri_t* uri = 0;
+					if((uri = tsip_transport_get_uri(transport, 0)))
 					{
-						tnet_ip_t ip;
-						tnet_port_t port;
-
-						if(!tsip_transport_get_ip_n_port(transport, &ip, &port))
-						{
-							tsip_uri_t* uri = TSIP_URI_CREATE(tsk_striequals(protocol, "tls") ? uri_sips : uri_sip);
-							uri->host = tsk_strdup(ip);
-							uri->port = port;
-							uri->host_type = host_ipv4; // FIXME
-							uri->user_name = tsk_strdup(stack->public_identity->user_name);
-							return uri;
-						}
+						tsk_strupdate(&uri->user_name, stack->public_identity->user_name);
+						return uri;
 					}
 				}
+			}
+		}
+	}
+	return 0;
+}
+
+tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr)
+{
+	if(self)
+	{
+		const tsip_stack_t *stack = self;
+		if(stack->layer_transport->transports && !TSK_LIST_IS_EMPTY(stack->layer_transport->transports))
+		{
+			tsip_transport_t *transport = stack->layer_transport->transports->head->data;
+			if(transport)
+			{
+				tsip_uri_t* uri = 0;
+			
+				char* uristring = 0;
+				tsk_sprintf(&uristring, "%s:%s:%d;%s;transport=%s",
+					transport->scheme,
+					stack->proxy_cscf,
+					stack->proxy_cscf_port,
+					lr ? "lr" : "",
+					transport->protocol);
+				if(uristring){
+					if((uri = tsip_uri_parse(uristring, strlen(uristring)))){
+						tnet_socket_type_t type = tsip_transport_get_socket_type(transport);
+						uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(type) ? host_ipv6 : host_ipv4;
+					}
+					TSK_FREE(uristring);
+				}
+				
+				return uri;
 			}
 		}
 	}

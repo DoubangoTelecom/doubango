@@ -161,7 +161,9 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	const tsip_dialog_t* dialog;
 
 	//tsk_safeobj_lock(self);
-	dialog = tsip_dialog_layer_find(self, message->Call_ID->value, message->To->tag, message->From->tag);
+	dialog = tsip_dialog_layer_find(self, message->Call_ID->value, 
+		TSIP_MESSAGE_IS_RESPONSE(message) ? message->To->tag : message->From->tag, 
+		TSIP_MESSAGE_IS_RESPONSE(message) ? message->From->tag : message->To->tag);
 	//tsk_safeobj_unlock(self);
 	
 	if(dialog)

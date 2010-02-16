@@ -175,22 +175,6 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		TSK_OBJECT_SAFE_FREE(hdr_contacts);
 		TSK_FREE(contact);
 	}
-
-	/* Dialog Routes */
-	if(copy_routes_start !=-1)
-	{
-		tsk_list_item_t *item;
-		int32_t index = -1;
-		tsk_list_foreach(item, self->routes)
-		{
-			const tsip_uri_t* uri = item->data;
-			if(++index < copy_routes_start || !uri){
-				continue;
-			}
-			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
-		}
-	}
-
 	
 	/* P-Access-Network-Info */
 	if(TSIP_STACK(self->stack)->netinfo)
@@ -246,7 +230,39 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	*/
 	if(!tsk_striequals("REGISTER", method))
 	{	// According to the above link ==> Initial/Re/De registration do not have routes.
-		
+		tsk_list_item_t* item;
+		if(copy_routes_start !=-1)
+		{	/* The dialog already have routes ==> copy them. */
+			if(self->state == tsip_early || self->state == tsip_established)
+			{
+				int32_t index = -1;
+				tsk_list_foreach(item, self->routes)
+				{
+					const tsip_uri_t* uri = item->data;
+					if(++index < copy_routes_start || !uri){
+						continue;
+					}
+					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
+				}
+			}
+		}
+		else
+		{	/* No routes associated to this dialog. */
+			if(self->state == tsip_initial || self->state == tsip_early)
+			{
+				tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), 1);
+				// Proxy-CSCF as first route
+				if(uri){
+					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
+					TSK_OBJECT_SAFE_FREE(uri);
+				}
+				// Service routes
+				tsk_list_foreach(item, TSIP_DIALOG_GET_STACK(self)->service_routes)
+				{
+					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(item->data));
+				}
+			}
+		}
 	}
 
 
@@ -481,7 +497,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			}
 
 			/* Remote target */
-			if(!isRegister && response->Contact && response->Contact)
+			if(!isRegister && response->Contact)
 			{
 				TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
 				if(response->Contact->uri)
@@ -522,6 +538,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			}
 
 			self->state = state;
+			return 0;
 		}
 	}
 	return -1;
@@ -763,7 +780,7 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 		TSK_FREE(self->tag_remote);
 
 		TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
-		
+
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
 

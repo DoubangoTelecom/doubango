@@ -123,7 +123,7 @@ void test_stack()
 		TSIP_STACK_SET_NULL());
 
 	tsip_operation_handle_t *op = TSIP_OPERATION_CREATE(stack,
-		TSIP_OPERATION_SET_PARAM("expires", "30"),
+		TSIP_OPERATION_SET_PARAM("expires", "300"),
 
 		TSIP_OPERATION_SET_NULL());
 
