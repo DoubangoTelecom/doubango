@@ -174,7 +174,22 @@
 	action parse_header_Contact 
 	{
 		tsip_header_Contacts_L_t* headers =  tsip_header_Contact_parse(state->tag_start, (state->tag_end-state->tag_start));
-		ADD_HEADERS(headers);
+		if(headers)
+		{
+			tsk_list_item_t *item;
+			tsk_list_foreach(item, headers)
+			{
+				tsip_header_Contact_t *hdr = tsk_object_ref(item->data);
+				if(!message->Contact){
+					message->Contact = hdr;
+				}
+				else{
+					tsk_list_push_back_data(message->headers, ((void**) &hdr));
+				}
+			}
+
+			TSK_OBJECT_SAFE_FREE(headers);
+		}
 	}
 
 	# /*== Content-Disposition: ==*/

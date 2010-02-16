@@ -102,6 +102,15 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 				//
 				//	REQUEST
 				//
+				if(tsk_striequals(TSIP_REQUEST_METHOD(msg), "NOTIFY"))
+				{
+					int sterminated = 0; // FIXME
+					tsip_dialog_subscribeContext_sm_NOTIFY(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm, sterminated, msg);
+				}
+				else
+				{
+					// FIXME: send something
+				}
 			}
 			break;
 		}

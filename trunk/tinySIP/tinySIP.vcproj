@@ -802,6 +802,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\smc\tsip_dialog_subscribe_sm.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\smc\tsip_transac_ict_sm.c"
 					>
 				</File>
@@ -1886,6 +1890,10 @@
 			</File>
 			<File
 				RelativePath=".\smc\tsip_dialog_register.sm"
+				>
+			</File>
+			<File
+				RelativePath=".\smc\tsip_dialog_subscribe.sm"
 				>
 			</File>
 			<File

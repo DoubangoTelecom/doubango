@@ -67,6 +67,7 @@ tsip_transport_t;
 typedef tsk_list_t tsip_transports_L_t; /**< List of @ref tsip_transport_t elements. */
 
 size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
+tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 #define tsip_transport_start(transport)										(transport ? tnet_transport_start(transport->net_transport) : -1)
 #define tsip_transport_isready(transport)									(transport ? tnet_transport_isready(transport->net_transport) : -1)
