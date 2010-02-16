@@ -95,6 +95,9 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Route.c tsip_parser_header_Rout
 # == Service-Route
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Service_Route.c tsip_parser_header_Service_Route.rl
 
+# ==Subscription-State
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Subscription_State.c tsip_parser_header_Subscription_State.rl
+
 # ==Supported
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Supported.c tsip_parser_header_Supported.rl
 

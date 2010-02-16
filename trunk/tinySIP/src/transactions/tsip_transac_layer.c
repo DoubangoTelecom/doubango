@@ -35,7 +35,7 @@
 #include "tinysip/transactions/tsip_transac_nist.h"
 
 #include "tsk_string.h"
-
+#include "tsk_debug.h"
 
 tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BOOLEAN isCT, const tsip_message_t* msg)
 {
@@ -77,8 +77,7 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BO
 					tsk_list_push_back_data(self->transactions, (void**)&transac);
 				}
 
-				if(ret)
-				{
+				if(ret){
 					ret->branch = tsk_strdup(msg->firstVia->branch);
 				}
 			}

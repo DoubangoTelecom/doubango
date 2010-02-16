@@ -136,47 +136,47 @@ const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->firstVia;
 				goto bail;
-			}
+			}else pos++; break;
 		case tsip_htype_From:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->From;
 				goto bail;
-			}else pos++;
+			}else pos++; break;
 		case tsip_htype_To:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->To;
-				goto bail;
+				goto bail; break;
 			}else pos++;
 		case tsip_htype_Contact:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->Contact;
 				goto bail;
-			}else pos++;
+			}else pos++; break;
 		case tsip_htype_Call_ID:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->Call_ID;
 				goto bail;
-			}else pos++;
+			}else pos++; break;
 		case tsip_htype_CSeq:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->CSeq;
 				goto bail;
-			}else pos++;
+			}else pos++; break;
 		case tsip_htype_Expires:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->Expires;
 				goto bail;
-			}else pos++;
+			}else pos++; break;
 		case tsip_htype_Content_Type:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->Content_Type;
 				goto bail;
-			}else pos++;
+			}else pos++; break;
 		case tsip_htype_Content_Length:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->Content_Length;
 				goto bail;
-			}else pos++;
+			}else pos++; break;
 		default:
 			break;
 		}
@@ -506,8 +506,9 @@ static void* tsip_message_create(void *self, va_list * app)
 				message->CSeq = tsk_object_ref((void*)request->CSeq);
 				message->firstVia = tsk_object_ref((void*)request->firstVia);
 				/* All other VIAs */
+				if(message->firstVia)
 				{
-					size_t index = 0;
+					size_t index = 1;
 					const tsip_header_t * via;
 					while((via = tsip_message_get_headerAt(request, tsip_htype_Via, index++)))
 					{

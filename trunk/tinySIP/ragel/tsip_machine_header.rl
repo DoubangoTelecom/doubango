@@ -52,7 +52,7 @@
 	CSeq = "CSeq"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_CSeq; 
 	Date = "Date"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Date; 
 	Error_Info = "Error-Info"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Error_Info; 
-	Event = ("Event"i | "e") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Event; 
+	Event = ("Event"i | "o"i) SP* HCOLON SP*<: any* :>CRLF  @parse_header_Event; 
 	Expires = "Expires"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Expires; 
 	From = ("From"i | "f") SP* HCOLON SP*<: any* :>CRLF  @parse_header_From; 
 	History_Info = "History-Info"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_History_Info; 
@@ -94,8 +94,8 @@
 	Session_Expires = ("Session-Expires"i | "x") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Session_Expires; 
 	SIP_ETag = "SIP-ETag"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_SIP_ETag; 
 	SIP_If_Match = "SIP-If-Match"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_SIP_If_Match; 
-	Subject = ("Subject"i | "s") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Subject; 
-	Subscription_State = "Subscription-State"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Subscription_State; 
+	Subject = ("Subject"i | "s"i) SP* HCOLON SP*<: any* :>CRLF  @parse_header_Subject; 
+	Subscription_State = ("Subscription-State"i) SP* HCOLON SP*<: any* :>CRLF  @parse_header_Subscription_State; 
 	Supported = ("Supported"i | "k") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Supported; 
 	Target_Dialog = "Target-Dialog"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Target_Dialog; 
 	Timestamp = "Timestamp"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Timestamp; 

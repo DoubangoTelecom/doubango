@@ -601,7 +601,7 @@ const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_hand
 	return 0;
 }
 
-struct tsip_dialog_layer_s * tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self)
+const struct tsip_dialog_layer_s * tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self)
 {
 	if(self)
 	{
@@ -611,7 +611,7 @@ struct tsip_dialog_layer_s * tsip_stack_get_dialog_layer(const tsip_stack_handle
 	return 0;
 }
 
-struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self)
+const struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self)
 {
 	if(self)
 	{
@@ -621,7 +621,7 @@ struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handl
 	return 0;
 }
 
-struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self)
+const struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self)
 {
 	if(self)
 	{

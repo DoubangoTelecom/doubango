@@ -54,6 +54,7 @@
 #include "tinysip/headers/tsip_header_Route.h"
 #include "tinysip/headers/tsip_header_Server.h"
 #include "tinysip/headers/tsip_header_Service_Route.h"
+#include "tinysip/headers/tsip_header_Subscription_State.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 #include "tinysip/headers/tsip_header_To.h"
 #include "tinysip/headers/tsip_header_User_Agent.h"
@@ -644,7 +645,8 @@
 	# /*== Subscription-State: ==*/
 	action parse_header_Subscription_State
 	{
-		TSK_DEBUG_ERROR("PARSE_HEADER_ACCEPT NOT IMPLEMENTED");
+		tsip_header_Subscription_State_t* header =  tsip_header_Subscription_State_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
 	}
 
 	# /*== Supported: ==*/

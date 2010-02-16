@@ -33,7 +33,7 @@
 #include "tinysip/dialogs/tsip_dialog_message.h"
 
 #include "tinysip/transactions/tsip_transac_layer.h"
-
+#include "tinysip/transports/tsip_transport_layer.h"
 
 tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_operation_handle_t *operation)
 {
@@ -70,8 +70,8 @@ const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, con
 	{
 		dialog = item->data;
 		if( tsk_strequals(dialog->callid, callid) 
-			&& tsk_strequals(dialog->tag_local, to_tag)
-			&& tsk_strequals(dialog->tag_remote, from_tag)
+			&& tsk_strequals(dialog->tag_local, from_tag)
+			&& tsk_strequals(dialog->tag_remote, to_tag)
 			)
 		{
 			ret = dialog;
@@ -159,6 +159,12 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 {
 	int ret = -1;
 	const tsip_dialog_t* dialog;
+	tsip_transac_t* transac = 0;
+	const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
+
+	if(!layer_transac){
+		goto bail;
+	}
 
 	//tsk_safeobj_lock(self);
 	dialog = tsip_dialog_layer_find(self, message->Call_ID->value, 
@@ -166,13 +172,14 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 		TSIP_MESSAGE_IS_RESPONSE(message) ? message->From->tag : message->To->tag);
 	//tsk_safeobj_unlock(self);
 	
-	if(dialog)
-	{
+	if(dialog){
 		dialog->callback(dialog, tsip_dialog_msg, message);
+		if((transac = tsip_transac_layer_new(layer_transac, TSIP_FALSE, message))){
+			TSIP_TRANSAC(transac)->dialog = dialog;
+		}
 	}
-	else
-	{
-		const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
+	else{
+		
 		/*const*/ tsip_transac_t* transac = 0;
 
 		if(TSIP_MESSAGE_IS_REQUEST(message))
@@ -193,18 +200,30 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 			{
 			}
 
-			// ....
-
-			if(transac)
-			{
-				ret = tsip_transac_start(transac, message);
-			}
-				
+			// ....				
 		}
 	}
 
-	
+	if(transac){
+		ret = tsip_transac_start(transac, message);
+	}
+	else{
+		const tsip_transport_layer_t *layer;
+		tsip_response_t* response;
 
+		if((layer = layer = tsip_stack_get_transport_layer(self->stack)))
+		{		
+			if(/*TSIP_MESSAGE_IS_REQUEST(message)*/1){
+				if((response = tsip_response_new(481, "Dialog/Transaction Does Not Exist", message))){
+					ret = tsip_transport_layer_send(layer, response->firstVia ? response->firstVia->branch : "no-branch", response);
+					TSK_OBJECT_SAFE_FREE(response);
+				}
+			}
+			else; // FIXME
+		}
+	}
+	
+bail:
 	return ret;
 }
 

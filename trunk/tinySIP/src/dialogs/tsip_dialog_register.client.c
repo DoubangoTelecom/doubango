@@ -263,7 +263,6 @@ void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self,
 	*	- Update service-routes
 	*	- Update Pats
 	*/
-	if(TSIP_DIALOG(self)->state != tsip_established) /* Must be called before "tsip_dialog_update" update the state. */
 	{
 		size_t index;
 		const tsip_header_Path_t *hdr_Path;

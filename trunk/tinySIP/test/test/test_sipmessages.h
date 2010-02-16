@@ -74,6 +74,7 @@
 	"Proxy-Authorization: Digest username=\"Alice\", test=666,realm=\"atlanta.com\",nonce=\"c60f3082ee1212b402a21831ae\",response=\"245f23415f11432b3434341c022\"\r\n" \
 	"WWW-Authenticate: Digest realm=\"atlanta.com\",domain=\"sip:boxesbybob.com\", qop=\"auth\",nonce=\"f84f1cec41e6cbe5aea9c8e88d359\",opaque=\"\",stale=FALSE,algorithm=MD5,test=\"3\"\r\n" \
 	"l: 0\r\n" \
+	"Subscription-State: active;reason=deactivated;expires=507099;retry-after=145;test=jk\r\n"\
 	"\r\n"
 
 	//"Via: SIP/2.0/UDP 192.168.0.11:64163;rport=4;branch=z9hG4bK1262758946486\r\n" \
