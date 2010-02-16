@@ -210,9 +210,9 @@ TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
 tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const char* protocol);
 tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr);
 const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self);
-struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self);
-struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);
-struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self);
+const struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self);
+const struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);
+const struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self);
 
 TINYSIP_API int tsip_register(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 int tsip_unregister(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);

@@ -48,8 +48,14 @@ int tsip_subscribtion_callback(const tsip_subscribe_event_t *sipevent)
 {
 	/* common part */
 	TSK_DEBUG_INFO("\n====\nSUBSCRIBTION event: %d [%s]\n=====", TSIP_EVENT(sipevent)->code, TSIP_EVENT(sipevent)->phrase);
-	/* registration part */
-
+	/* subscribtion part */
+	switch(sipevent->type)
+	{
+	case tsip_subscribe_notify:
+			break;
+	default:
+		break;
+	}
 	return 0;
 }
 
@@ -103,7 +109,7 @@ void test_stack()
 		TSIP_STACK_SET_DEVICE_ID("DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 */
-	
+	/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@ericsson.com"),
@@ -119,11 +125,12 @@ void test_stack()
 		TSIP_STACK_SET_MOBILITY("fixed"),
 		TSIP_STACK_SET_DEVICE_ID("DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
+*/
 
 		TSIP_STACK_SET_NULL());
 
 	tsip_operation_handle_t *op = TSIP_OPERATION_CREATE(stack,
-		TSIP_OPERATION_SET_PARAM("expires", "300"),
+		TSIP_OPERATION_SET_PARAM("expires", "30"),
 
 		TSIP_OPERATION_SET_NULL());
 
@@ -144,6 +151,7 @@ void test_stack()
 		TSIP_OPERATION_SET_PARAM("expires", "30"),
 		TSIP_OPERATION_SET_PARAM("package", "reg"),
 		TSIP_OPERATION_SET_PARAM("accept", "application/reginfo+xml"),
+		TSIP_OPERATION_SET_PARAM("to", "sip:mamadou@ims.inexbee.com"),
 		
 		TSIP_OPERATION_SET_NULL());
 		tsip_subscribe(stack, op2);

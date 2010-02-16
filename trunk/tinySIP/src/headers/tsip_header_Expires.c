@@ -23,7 +23,7 @@
 */
 
 /**@file tsip_header_Expires.c
- * @brief SIP Expires/t header.
+ * @brief SIP Expires header.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *

@@ -40,6 +40,7 @@
 #include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
 #include "tinysip/headers/tsip_header_Proxy_Authorization.h"
 #include "tinysip/headers/tsip_header_Route.h"
+#include "tinysip/headers/tsip_header_Subscription_State.h"
 #include "tinysip/headers/tsip_header_WWW_Authenticate.h"
 
 #include "tsk_debug.h"
@@ -291,7 +292,7 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 {
 	if(self && self->stack)
 	{	
-		tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
+		const tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
 		if(layer)
 		{
 			/*	Create new transaction. The new transaction will be added to the dialog layer. 
@@ -349,7 +350,7 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 
 	if(self && self->stack)
 	{
-		tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
+		const tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
 		if(layer)
 		{
 			/* As this is a response ...then there should be a matching server transaction.
@@ -388,14 +389,18 @@ int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* respons
 	/*== NOTIFY with subscription-state header with expires parameter. 
 	*/
 	if(response->CSeq && tsk_striequals(response->CSeq->method, "NOTIFY")){
-		// FIXME:
-		//expires = tsk_params_get_asint("expires");
-		goto compute;
+		const tsip_header_Subscription_State_t *hdr_state;
+		if((hdr_state = (const tsip_header_Subscription_State_t*)tsip_message_get_header(response, tsip_htype_Subscription_State))){
+			if(hdr_state->expires >0){
+				expires = hdr_state->expires;
+				goto compute;
+			}
+		}
 	}
 
 	/*== Expires header.
 	*/
-	if((hdr = tsip_message_get_header(response, tsip_htype_Event))){
+	if((hdr = tsip_message_get_header(response, tsip_htype_Expires))){
 		expires = ((const tsip_header_Expires_t*)hdr)->delta_seconds;
 		goto compute;
 	}
