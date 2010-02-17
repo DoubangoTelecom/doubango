@@ -378,6 +378,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinySAK\src\tsk_fsm.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySAK\src\tsk_heap.h"
 				>
 			</File>
@@ -497,6 +501,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinySAK\src\tsk_debug.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySAK\src\tsk_fsm.c"
 				>
 			</File>
 			<File

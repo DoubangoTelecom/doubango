@@ -100,6 +100,10 @@
 #define TSK_MAX(a,b)            (((a) > (b)) ? (a) : (b))
 #endif /* TSK_MAX */
 
+#ifndef TSK_NULL
+#define TSK_NULL 0
+#endif /* TSK_NULL */
+
 #include <stdint.h>
 #include <stddef.h>
 
