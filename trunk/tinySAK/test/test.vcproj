@@ -380,6 +380,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_fsm.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_heap.h"
 				>
 			</File>
