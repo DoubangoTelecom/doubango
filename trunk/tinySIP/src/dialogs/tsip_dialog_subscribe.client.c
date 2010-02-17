@@ -213,7 +213,6 @@ void tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 		self->package = tsk_strdup(param->value);
 	}
 
-	TSIP_DIALOG(self)->expires = 30;
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_subscribe_event_callback);
 	
 	/* from */

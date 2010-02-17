@@ -42,7 +42,7 @@ TSK_BEGIN_DECLS
 #include "tsk_memory.h"
 #include "tsk_url.h"
 #include "tsk_params.h"
-
+#include "tsk_fsm.h"
 
 #include "tsk_time.h"
 #include "tsk_timer.h"

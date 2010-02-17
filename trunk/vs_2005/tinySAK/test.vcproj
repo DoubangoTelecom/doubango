@@ -379,6 +379,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinySAK\test\test_fsm.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySAK\test\test_heap.h"
 				>
 			</File>

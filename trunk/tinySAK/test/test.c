@@ -50,7 +50,8 @@
 #define RUN_TEST_MD5				0
 #define RUN_TEST_SHA1				0
 #define RUN_TEST_BASE64				0
-#define RUN_TEST_UUID				1
+#define RUN_TEST_UUID				0
+#define RUN_TEST_FSM				1
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"
@@ -120,6 +121,9 @@
 #include "test_uuid.h"
 #endif
 
+#if RUN_TEST_FSM || RUN_TEST_ALL
+#include "test_fsm.h"
+#endif
 
 
 #ifdef _WIN32_WCE
@@ -237,6 +241,11 @@ int main()
 #if RUN_TEST_UUID || RUN_TEST_ALL
 		/* test fake UUID (version5) */
 		test_uuid();
+#endif
+
+#if RUN_TEST_FSM || RUN_TEST_ALL
+		/* test FSM */
+		test_fsm();
 #endif
 
 	}
