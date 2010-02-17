@@ -379,6 +379,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_fsm.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_heap.h"
 				>
 			</File>
@@ -498,6 +502,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_debug.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tsk_fsm.c"
 				>
 			</File>
 			<File
