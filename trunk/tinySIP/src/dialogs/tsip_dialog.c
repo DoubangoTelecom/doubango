@@ -688,8 +688,6 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 			return -2;
 		}
 
-		tsk_safeobj_init(self);
-
 		self->state = tsip_initial;
 		self->type = type;
 		self->stack = tsk_object_ref(stack);
@@ -793,7 +791,6 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 		TSK_OBJECT_SAFE_FREE(self->challenges);
 		
 		self->initialized = 0;
-		tsk_safeobj_deinit(self);
 
 		return 0;
 	}

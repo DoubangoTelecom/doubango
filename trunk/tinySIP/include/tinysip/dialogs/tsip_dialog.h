@@ -50,20 +50,11 @@ TSIP_BEGIN_DECLS
 #define TSIP_DIALOG_GET_STATE(self)											TSIP_DIALOG(self)->state
 #define TSIP_DIALOG_GET_STACK(self)											TSIP_STACK(TSIP_DIALOG(self)->stack)
 
-#define TSIP_DIALOG_SYNC_BEGIN(self)										tsk_safeobj_lock(TSIP_DIALOG(self))
-#define TSIP_DIALOG_SYNC_END(self)											tsk_safeobj_unlock(TSIP_DIALOG(self))
-
 #define DIALOG_TIMER_CANCEL(TX) \
 	tsk_timer_manager_cancel(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.id)
 
 #define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)								\
 	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, TSK_TIME_S_2_MS(self->timer##TX.timeout), TSK_TIMER_CALLBACK(tsip_dialog_##name##_timer_callback), self)	
-
-//#define TSIP_DIALOG_ALERT_USER(self, code, reason_phrase, incoming, type)	\
-//	tsip_stack_alert(TSIP_DIALOG(self)->stack, /*tsip_operation_get_id(TSIP_DIALOG(self)->operation)*/0, code, reason_phrase, incoming, type)
-
-//#define DIALOG_REMOVE_SCHEDULE() \
-//	tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, 0, TSK_TIMER_CALLBACK(tsip_dialog_remove_callback), self)
 
 #define TSIP_DIALOG_EXPIRES_DEFAULT											3600
 
@@ -142,8 +133,6 @@ typedef struct tsip_dialog_s
 	tsip_challenges_L_t *challenges;
 
 	tsip_dialog_event_callback callback;
-
-	TSK_DECLARE_SAFEOBJ; // FIXME
 }
 tsip_dialog_t;
 

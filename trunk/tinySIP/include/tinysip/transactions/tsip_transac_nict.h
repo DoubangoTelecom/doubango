@@ -35,7 +35,7 @@
 #include "tinysip/transactions/tsip_transac.h"
 #include "tinysip/tsip_message.h"
 
-#include "tinysip/smc/tsip_transac_nict_sm.h"
+#include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
@@ -47,7 +47,7 @@ typedef struct tsip_transac_nict
 {
 	TSIP_DECLARE_TRANSAC;
 
-	struct tsip_transac_nictContext _fsm; /**< The state machine context. */
+	tsk_fsm_t *fsm;
 
 	tsip_request_t* request;
 	tsip_timer_t timerE;
@@ -56,25 +56,7 @@ typedef struct tsip_transac_nict
 }
 tsip_transac_nict_t;
 
-void tsip_transac_nict_init(tsip_transac_nict_t *self);
 int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* request);
-void tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self);
-
-void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self);
-void tsip_transac_nict_Trying_2_Trying_X_timerE(tsip_transac_nict_t *self);
-void tsip_transac_nict_Trying_2_Terminated_X_timerF(tsip_transac_nict_t *self);
-void tsip_transac_nict_Trying_2_Terminated_X_transportError(tsip_transac_nict_t *self);
-void tsip_transac_nict_Trying_2_Proceedding_X_1xx(tsip_transac_nict_t *self, const tsip_message_t* msg);
-void tsip_transac_nict_Trying_2_Completed_X_200_to_699(tsip_transac_nict_t *self, const tsip_message_t* msg);
-void tsip_transac_nict_Trying_2_Trying_X_unknown(tsip_transac_nict_t *self);
-void tsip_transac_nict_Proceeding_2_Proceeding_X_timerE(tsip_transac_nict_t *self);
-void tsip_transac_nict_Proceeding_2_Terminated_X_timerF(tsip_transac_nict_t *self);
-void tsip_transac_nict_Proceeding_2_Terminated_X_transportError(tsip_transac_nict_t *self);
-void tsip_transac_nict_Proceeding_2_Proceeding_X_1xx(tsip_transac_nict_t *self, const tsip_message_t* msg);
-void tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(tsip_transac_nict_t *self, const tsip_message_t* msg);
-void tsip_transac_nict_Completed_2_Terminated_X_timerK(tsip_transac_nict_t *self);
-void tsip_transac_nict_Any_2_Terminated_X_transportError(tsip_transac_nict_t *self);
-
 
 TINYSIP_GEXTERN const void *tsip_transac_nict_def_t;
 

@@ -32,7 +32,8 @@
 
 #include "tinysip_config.h"
 #include "tinysip/dialogs/tsip_dialog.h"
-#include "tinysip/smc/tsip_dialog_message_sm.h"
+
+#include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
@@ -44,7 +45,7 @@ typedef struct tsip_dialog_message
 {
 	TSIP_DECLARE_DIALOG;
 
-	struct tsip_dialog_messageContext _fsm;
+	tsk_fsm_t *fsm;
 	
 	tsip_message_t *msg;
 
@@ -54,18 +55,6 @@ tsip_dialog_message_t;
 
 //int tsip_dialog_message_send(tsip_dialog_message_t *self);
 //int tsip_dialog_message_recv(tsip_dialog_message_t *self, const tsip_message_t *message);
-
-void tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Sending_2_Sending_X_1xx(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Sending_2_Terminated_X_2xx(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Sending_2_Sending_X_401_407_421_494(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Sending_2_Terminated_X_300_to_699(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Sending_2_Terminated_X_cancel(tsip_dialog_message_t *self);
-void tsip_dialog_message_Receiving_2_Terminated_X_accept(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Receiving_2_Terminated_X_reject(tsip_dialog_message_t *self, const tsip_message_t *message);
-void tsip_dialog_message_Any_2_Terminated_X_transportError(tsip_dialog_message_t *self);
-void tsip_dialog_message_OnTerminated(tsip_dialog_message_t *self);
 
 
 TINYSIP_GEXTERN const void *tsip_dialog_message_def_t;

@@ -57,10 +57,6 @@ TSIP_BEGIN_DECLS
 #define TRANSAC_TIMER_CANCEL(TX) \
 	tsk_timer_manager_cancel((tsk_timer_manager_handle_t*)TSIP_TRANSAC(self)->timer_mgr, self->timer##TX.id)
 
-#define TRANSAC_REMOVE_SCHEDULE() \
-	tsk_timer_manager_schedule((tsk_timer_manager_handle_t*)TSIP_TRANSAC(self)->timer_mgr, 0, TSK_TIMER_CALLBACK(tsip_transac_remove_callback), self)
-
-
 typedef enum tsip_transac_event_type_e
 {
 	tsip_transac_incoming_msg,
@@ -122,8 +118,6 @@ typedef struct tsip_transac_s
 	char* callid;
 	
 	tsip_transac_event_callback callback;
-
-	TSK_DECLARE_SAFEOBJ;
 }
 tsip_transac_t;
 
@@ -138,7 +132,7 @@ int tsip_transac_deinit(tsip_transac_t *self);
 int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request);
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg);
 int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2);
-int tsip_transac_remove_callback(const tsip_transac_t* self, tsk_timer_id_t timer_id);
+int tsip_transac_remove(const tsip_transac_t* self);
 
 TSIP_END_DECLS
 

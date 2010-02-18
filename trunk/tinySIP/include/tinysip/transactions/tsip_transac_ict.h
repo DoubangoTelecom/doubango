@@ -31,8 +31,9 @@
 #define TINYSIP_TRANSAC_ICT_H
 
 #include "tinysip_config.h"
-#include "tinysip/smc/tsip_transac_ict_sm.h"
 #include "tinysip/transactions/tsip_transac.h"
+
+#include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
@@ -40,11 +41,11 @@ typedef struct tsip_transac_ict
 {
 	TSIP_DECLARE_TRANSAC;
 
-	struct tsip_transac_ictContext _fsm; /**< The state machine context. */
+	tsk_fsm_t *fsm;
 }
 tsip_transac_ict_t;
 
-void tsip_transac_ict_init(tsip_transac_ict_t *self);
+int tsip_transac_ict_init(tsip_transac_ict_t *self);
 
 TSIP_END_DECLS
 
