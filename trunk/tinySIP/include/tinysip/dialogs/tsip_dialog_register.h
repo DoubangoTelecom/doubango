@@ -32,7 +32,8 @@
 
 #include "tinysip_config.h"
 #include "tinysip/dialogs/tsip_dialog.h"
-#include "tinysip/smc/tsip_dialog_register_sm.h"
+
+#include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
@@ -44,8 +45,8 @@ typedef struct tsip_dialog_register
 {
 	TSIP_DECLARE_DIALOG;
 
-	struct tsip_dialog_registerContext _fsm;
-	
+	tsk_fsm_t *fsm;
+
 	tsip_timer_t timerrefresh;
 
 	unsigned unregistering:1;
@@ -54,21 +55,6 @@ tsip_dialog_register_t;
 
 //void tsip_dialog_register_init(tsip_dialog_register_t *self);
 int tsip_dialog_register_start(tsip_dialog_register_t *self);
-
-void tsip_dialog_register_Started_2_Trying_X_send(tsip_dialog_register_t *self);
-void tsip_dialog_register_Trying_2_Trying_X_1xx(tsip_dialog_register_t *self, const tsip_message_t *msg);
-void tsip_dialog_register_Trying_2_Connected_X_2xx(tsip_dialog_register_t *self, const tsip_message_t *msg);
-void tsip_dialog_register_Trying_2_Terminated_X_2xx(tsip_dialog_register_t *self, const tsip_message_t *msg);
-void tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(tsip_dialog_register_t *self, const tsip_message_t *msg);
-void tsip_dialog_register_Trying_2_Trying_X_423(tsip_dialog_register_t *self, const tsip_message_t *msg);
-void tsip_dialog_register_Trying_2_Terminated_X_300_to_699(tsip_dialog_register_t *self, const tsip_message_t *msg);
-void tsip_dialog_register_Trying_2_Terminated_X_cancel(tsip_dialog_register_t *self);
-void tsip_dialog_register_Connected_2_Trying_X_unregister(tsip_dialog_register_t *self);
-void tsip_dialog_register_Connected_2_Trying_X_refresh(tsip_dialog_register_t *self);
-void tsip_dialog_register_Any_2_Trying_X_hangup(tsip_dialog_register_t *self);
-void tsip_dialog_register_Any_2_Terminated_X_transportError(tsip_dialog_register_t *self);
-void tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self);
-
 
 TINYSIP_GEXTERN const void *tsip_dialog_register_def_t;
 

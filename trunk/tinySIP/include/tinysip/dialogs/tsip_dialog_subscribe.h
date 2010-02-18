@@ -32,7 +32,8 @@
 
 #include "tinysip_config.h"
 #include "tinysip/dialogs/tsip_dialog.h"
-#include "tinysip/smc/tsip_dialog_subscribe_sm.h"
+
+#include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
@@ -44,8 +45,8 @@ typedef struct tsip_dialog_subscribe
 {
 	TSIP_DECLARE_DIALOG;
 
-	struct tsip_dialog_subscribeContext _fsm;
-	
+	tsk_fsm_t *fsm;
+		
 	tsip_timer_t timerrefresh;
 
 	unsigned unsubscribing:1;
@@ -55,24 +56,6 @@ typedef struct tsip_dialog_subscribe
 tsip_dialog_subscribe_t;
 
 int tsip_dialog_subscribe_start(tsip_dialog_subscribe_t *self);
-
-void tsip_dialog_subscribe_Started_2_Trying_X_send(tsip_dialog_subscribe_t *self);
-void tsip_dialog_subscribe_Trying_2_Trying_X_1xx(tsip_dialog_subscribe_t *self, const tsip_response_t* response);
-void tsip_dialog_subscribe_Trying_2_Terminated_X_2xx(tsip_dialog_subscribe_t *self, const tsip_response_t* response);
-void tsip_dialog_subscribe_Trying_2_Connected_X_2xx(tsip_dialog_subscribe_t *self, const tsip_response_t* response);
-void tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494(tsip_dialog_subscribe_t *self, const tsip_response_t* response);
-void tsip_dialog_subscribe_Trying_2_Trying_X_423(tsip_dialog_subscribe_t *self, const tsip_response_t* response);
-void tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(tsip_dialog_subscribe_t *self, const tsip_response_t* response);
-void tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(tsip_dialog_subscribe_t *self);
-void tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request);
-void tsip_dialog_subscribe_Connected_2_Trying_X_unsubscribe(tsip_dialog_subscribe_t *self);
-void tsip_dialog_subscribe_Connected_2_Trying_X_refresh(tsip_dialog_subscribe_t *self);
-void tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request);
-void tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request);
-void tsip_dialog_subscribe_Any_2_Trying_X_hangup(tsip_dialog_subscribe_t *self);
-void tsip_dialog_subscribe_Any_2_Terminated_X_transportError(tsip_dialog_subscribe_t *self);
-void tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self);
-void tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_subscribe_def_t;
 

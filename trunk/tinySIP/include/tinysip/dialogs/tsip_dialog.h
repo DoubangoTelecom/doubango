@@ -62,8 +62,8 @@ TSIP_BEGIN_DECLS
 //#define TSIP_DIALOG_ALERT_USER(self, code, reason_phrase, incoming, type)	\
 //	tsip_stack_alert(TSIP_DIALOG(self)->stack, /*tsip_operation_get_id(TSIP_DIALOG(self)->operation)*/0, code, reason_phrase, incoming, type)
 
-#define DIALOG_REMOVE_SCHEDULE() \
-	tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, 0, TSK_TIMER_CALLBACK(tsip_dialog_remove_callback), self)
+//#define DIALOG_REMOVE_SCHEDULE() \
+//	tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, 0, TSK_TIMER_CALLBACK(tsip_dialog_remove_callback), self)
 
 #define TSIP_DIALOG_EXPIRES_DEFAULT											3600
 
@@ -113,7 +113,7 @@ typedef struct tsip_dialog_s
 	TSK_DECLARE_OBJECT;
 	
 	tsip_dialog_type_t type;
-	
+
 	tsip_stack_handle_t *stack;
 	tsip_operation_handle_t* operation;
 	
@@ -143,7 +143,7 @@ typedef struct tsip_dialog_s
 
 	tsip_dialog_event_callback callback;
 
-	TSK_DECLARE_SAFEOBJ;
+	TSK_DECLARE_SAFEOBJ; // FIXME
 }
 tsip_dialog_t;
 
@@ -164,7 +164,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_handle_t * stack, const char* call_id, tsip_operation_handle_t* operation);
 int tsip_dialog_hangup(tsip_dialog_t *self);
-int tsip_dialog_remove_callback(const tsip_dialog_t* self, tsk_timer_id_t timer_id);
+int tsip_dialog_remove(const tsip_dialog_t* self);
 int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2);
 int tsip_dialog_deinit(tsip_dialog_t *self);
 

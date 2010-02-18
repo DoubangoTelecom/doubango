@@ -40,17 +40,90 @@
 
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(subscribe, TX)
-#define TSIP_DIALOG_SUBSCRIBE_SIGNAL_ERROR(self)									\
-	TSIP_DIALOG_SYNC_BEGIN(self);												\
-	tsip_dialog_subscribeContext_sm_error(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm);	\
-	TSIP_DIALOG_SYNC_END(self);
 #define TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, incoming)	\
 	tsip_subscribe_event_signal(type, TSIP_DIALOG_GET_STACK(self),/*tsip_operation_get_id(TSIP_DIALOG(self)->operation)*/0, code, phrase, incoming)
 #define TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, type, code, phrase) TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, 1)
 #define TSIP_DIALOG_SUBSCRIBE_SIGNAL_OUTGOING(self, type, code, phrase) TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, 0)
 
+
+/* ======================== internal functions ======================== */
 int send_subscribe(tsip_dialog_subscribe_t *self);
 int send_notify_200ok(tsip_dialog_subscribe_t *self, const tsip_request_t* request);
+int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self);
+
+/* ======================== transitions ======================== */
+int tsip_dialog_subscribe_Started_2_Trying_X_send(va_list *app);
+int tsip_dialog_subscribe_Trying_2_Trying_X_1xx(va_list *app);
+int tsip_dialog_subscribe_Trying_2_Terminated_X_2xx(va_list *app);
+int tsip_dialog_subscribe_Trying_2_Connected_X_2xx(va_list *app);
+int tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494(va_list *app);
+int tsip_dialog_subscribe_Trying_2_Trying_X_423(va_list *app);
+int tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(va_list *app);
+int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app);
+int tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY(va_list *app);
+int tsip_dialog_subscribe_Connected_2_Trying_X_unsubscribe(va_list *app);
+int tsip_dialog_subscribe_Connected_2_Trying_X_refresh(va_list *app);
+int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app);
+int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app);
+int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app);
+int tsip_dialog_subscribe_Any_2_Terminated_X_transportError(va_list *app);
+int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app);
+
+
+/* ======================== conds ======================== */
+int _fsm_cond_unsubscribing(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+{
+	return dialog->unsubscribing ? 1 : 0;
+}
+int _fsm_cond_subscribing(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+{
+	return !_fsm_cond_unsubscribing(dialog, message);
+}
+
+int _fsm_cond_notify_terminated(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+{
+	const tsip_header_Subscription_State_t *hdr_state;
+	if((hdr_state = (const tsip_header_Subscription_State_t*)tsip_message_get_header(message, tsip_htype_Subscription_State)))
+	{
+		return tsk_striequals(hdr_state->state, "terminated") &&
+			(hdr_state->expires < 0 || tsk_striequals(hdr_state->reason, "rejected") || tsk_striequals(hdr_state->reason, "noresource"));
+	}
+	return 0;
+}
+
+int _fsm_cond_notify_not_terminated(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+{
+	return !_fsm_cond_notify_terminated(dialog, message);
+}
+
+/* ======================== actions ======================== */
+typedef enum _fsm_action_e
+{
+	_fsm_action_send,
+	_fsm_action_1xx,
+	_fsm_action_2xx,
+	_fsm_action_401_407_421_494,
+	_fsm_action_423,
+	_fsm_action_300_to_699,
+	_fsm_action_cancel,
+	_fsm_action_notify,
+	_fsm_action_unsubscribe,
+	_fsm_action_refresh,
+	_fsm_action_hangup,
+	_fsm_action_transporterror,
+	_fsm_action_error,
+}
+_fsm_action_t;
+
+/* ======================== states ======================== */
+typedef enum _fsm_state_e
+{
+	_fsm_state_Started,
+	_fsm_state_Trying,
+	_fsm_state_Connected,
+	_fsm_state_Terminated
+}
+_fsm_state_t;
 
 /**
  * @fn	int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, tsip_dialog_event_type_t type,
@@ -69,7 +142,7 @@ int send_notify_200ok(tsip_dialog_subscribe_t *self, const tsip_request_t* reque
 **/
 int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, tsip_dialog_event_type_t type, const tsip_message_t *msg)
 {
-	TSIP_DIALOG_SYNC_BEGIN(self);
+	int ret = -1;
 
 	switch(type)
 	{
@@ -82,24 +155,24 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 				//
 				if(TSIP_RESPONSE_IS_1XX(msg))
 				{
-					tsip_dialog_subscribeContext_sm_1xx(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm, msg);
+					ret = tsk_fsm_act(self->fsm, _fsm_action_1xx, self, msg, self, msg);
 				}
 				else if(TSIP_RESPONSE_IS_2XX(msg))
 				{
-					tsip_dialog_subscribeContext_sm_2xx(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm, TSIP_DIALOG_SUBSCRIBE(self)->unsubscribing, msg);
+					ret = tsk_fsm_act(self->fsm, _fsm_action_2xx, self, msg, self, msg);
 				}
 				else if(TSIP_RESPONSE_IS(msg,401) || TSIP_RESPONSE_IS(msg,407) || TSIP_RESPONSE_IS(msg,421) || TSIP_RESPONSE_IS(msg,494))
 				{
-					tsip_dialog_subscribeContext_sm_401_407_421_494(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm, msg);
+					ret = tsk_fsm_act(self->fsm, _fsm_action_401_407_421_494, self, msg, self, msg);
 				}
 				else if(TSIP_RESPONSE_IS(msg,423))
 				{
-					tsip_dialog_subscribeContext_sm_423(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm, msg);
+					ret = tsk_fsm_act(self->fsm, _fsm_action_423, self, msg, self, msg);
 				}
 				else
 				{
 					// Alert User
-					TSIP_DIALOG_SUBSCRIBE_SIGNAL_ERROR(self);
+					ret = tsk_fsm_act((self)->fsm, _fsm_action_error, self, msg, self, msg);
 					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
 				}
 			}
@@ -108,22 +181,8 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 				//
 				//	REQUEST
 				//
-				if(tsk_striequals(TSIP_REQUEST_METHOD(msg), "NOTIFY"))
-				{
-					const tsip_header_Subscription_State_t *hdr_state;
-					if((hdr_state = (const tsip_header_Subscription_State_t*)tsip_message_get_header(msg, tsip_htype_Subscription_State)))
-					{
-						const char* state = hdr_state->state;
-						const char* reason = hdr_state->reason;
-						int32_t expires = hdr_state->expires;
-						int terminated = tsk_striequals(state, "terminated") &&
-							(expires < 0 || tsk_striequals(reason, "rejected") || tsk_striequals(reason, "noresource"));
-						
-						tsip_dialog_subscribeContext_sm_NOTIFY(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm, terminated, msg);
-					}
-					else{
-						tsip_dialog_subscribeContext_sm_NOTIFY(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm, 1, msg);// FIXME: send error
-					}
+				if(tsk_striequals(TSIP_REQUEST_METHOD(msg), "NOTIFY")){
+					ret = tsk_fsm_act((self)->fsm, _fsm_action_notify, self, msg, self, msg);
 				}
 				else
 				{
@@ -135,13 +194,13 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 
 	case tsip_dialog_hang_up:
 		{
-			tsip_dialog_subscribeContext_sm_hangup(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_hangup, self, msg, self, msg);
 			break;
 		}
 
 	case tsip_dialog_canceled:
 		{
-			tsip_dialog_subscribeContext_sm_cancel(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_cancel, self, msg, self, msg);
 			break;
 		}
 
@@ -150,14 +209,12 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 	case tsip_dialog_error:
 	case tsip_dialog_transport_error:
 		{
-			tsip_dialog_subscribeContext_sm_transportError(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_transporterror, self, msg, self, msg);
 			break;
 		}
 	}
-
-	TSIP_DIALOG_SYNC_END(self);
-
-	return 0;
+	
+	return ret;
 }
 
 /**
@@ -180,33 +237,87 @@ int tsip_dialog_subscribe_timer_callback(const tsip_dialog_subscribe_t* self, ts
 
 	if(self)
 	{
-		TSIP_DIALOG_SYNC_BEGIN(self);
-
 		if(timer_id == self->timerrefresh.id)
 		{
-			tsip_dialog_subscribeContext_sm_refresh(&TSIP_DIALOG_SUBSCRIBE(self)->_fsm);
+			tsk_fsm_act(self->fsm, _fsm_action_refresh, self, TSK_NULL, self, TSK_NULL);
 			ret = 0;
 		}
-
-		TSIP_DIALOG_SYNC_END(self);
 	}
 	return ret;
 }
 
 /**
- * @fn	void tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
+ * @fn	int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
  *
  * @brief	Initializes the dialog.
  *
  * @param [in,out]	self	The dialog to initialize. 
 **/
-void tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
+int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 {
 	const tsk_param_t* param;
 	tsip_uri_t* uri = 0;
-	/* Initialize the state machine.
-	*/
-	tsip_dialog_subscribeContext_Init(&self->_fsm, self);
+
+	/* Initialize the State Machine. */
+	tsk_fsm_set(self->fsm,
+			
+			/*=======================
+			* === Started === 
+			*/
+			// Started -> (Send) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_send, _fsm_state_Trying, tsip_dialog_subscribe_Started_2_Trying_X_send, "tsip_dialog_subscribe_Started_2_Trying_X_send"),
+			// Started -> (Any) -> Started
+			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_dialog_subscribe_Started_2_Started_X_any"),
+			
+
+			/*=======================
+			* === Trying === 
+			*/
+			// Trying -> (1xx) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_1xx, _fsm_state_Trying, tsip_dialog_subscribe_Trying_2_Trying_X_1xx, "tsip_dialog_subscribe_Trying_2_Trying_X_1xx"),
+			// Trying -> (2xx) -> Terminated
+			TSK_FSM_ADD(_fsm_state_Trying, _fsm_action_2xx, _fsm_cond_unsubscribing, _fsm_state_Terminated, tsip_dialog_subscribe_Trying_2_Terminated_X_2xx, "tsip_dialog_subscribe_Trying_2_Terminated_X_2xx"),
+			// Trying -> (2xx) -> Connected
+			TSK_FSM_ADD(_fsm_state_Trying, _fsm_action_2xx, _fsm_cond_subscribing, _fsm_state_Connected, tsip_dialog_subscribe_Trying_2_Connected_X_2xx, "tsip_dialog_subscribe_Trying_2_Connected_X_2xx"),
+			// Trying -> (401/407/421/494) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_401_407_421_494, _fsm_state_Trying, tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494, "tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494"),
+			// Trying -> (423) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_423, _fsm_state_Trying, tsip_dialog_subscribe_Trying_2_Trying_X_423, "tsip_dialog_subscribe_Trying_2_Trying_X_423"),
+			// Trying -> (300_to_699) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_300_to_699, _fsm_state_Terminated, tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699, "tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699"),
+			// Trying -> (cancel) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_cancel, _fsm_state_Terminated, tsip_dialog_subscribe_Trying_2_Terminated_X_cancel, "tsip_dialog_subscribe_Trying_2_Terminated_X_cancel"),
+			// Trying -> (Notify) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_notify, _fsm_state_Trying, tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY, "tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY"),
+			// Trying -> (Any) -> Trying
+			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Trying, "tsip_dialog_subscribe_Trying_2_Trying_X_any"),
+
+
+			/*=======================
+			* === Connected === 
+			*/
+			// Connected -> (unsubscribe) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_unsubscribe, _fsm_state_Trying, tsip_dialog_subscribe_Connected_2_Trying_X_unsubscribe, "tsip_dialog_subscribe_Connected_2_Trying_X_unsubscribe"),
+			// Connected -> (refresh) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_refresh, _fsm_state_Trying, tsip_dialog_subscribe_Connected_2_Trying_X_refresh, "tsip_dialog_subscribe_Connected_2_Trying_X_refresh"),
+			// Connected -> (NOTIFY) -> Connected
+			TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_notify, _fsm_cond_notify_not_terminated, _fsm_state_Connected, tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY, "tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY"),
+			// Connected -> (NOTIFY) -> Terminated
+			TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_notify, _fsm_cond_notify_terminated, _fsm_state_Terminated, tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY, "tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY"),
+			// Connected -> (Any) -> Connected
+			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Connected, "tsip_dialog_subscribe_Connected_2_Connected_X_any"),
+
+			/*=======================
+			* === Any === 
+			*/
+			// Any -> (transport error) -> Terminated
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_dialog_subscribe_Any_2_Terminated_X_transportError, "tsip_dialog_subscribe_Any_2_Terminated_X_transportError"),
+			// Any -> (transport error) -> Terminated
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_dialog_subscribe_Any_2_Terminated_X_Error, "tsip_dialog_subscribe_Any_2_Terminated_X_Error"),
+			// Any -> (hangup) -> Terminated
+			// Any -> (hangup) -> Trying
+
+			TSK_FSM_ADD_NULL());
 	
 	/* Package. */
 	if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "package"))){
@@ -233,9 +344,7 @@ void tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 
 	tsk_object_unref(uri);
 
-#if defined(_DEBUG) || defined(DEBUG)
-	 setDebugFlag(&(self->_fsm), DEBUG_STATE_MACHINE);
-#endif
+	return 0;
 }
 
 int tsip_dialog_subscribe_start(tsip_dialog_subscribe_t *self)
@@ -243,12 +352,8 @@ int tsip_dialog_subscribe_start(tsip_dialog_subscribe_t *self)
 	int ret = -1;
 	if(self && !TSIP_DIALOG(self)->running)
 	{
-		/* Set state machine state to started */
-		setState(&self->_fsm, &tsip_dialog_subscribe_Started);
-
 		/* Send request */
-		tsip_dialog_subscribeContext_sm_send(&self->_fsm);
-		ret = 0;
+		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, TSK_NULL, self, TSK_NULL);
 	}
 	return ret;
 }
@@ -260,29 +365,44 @@ int tsip_dialog_subscribe_start(tsip_dialog_subscribe_t *self)
 
 /* Started -> (send) -> Trying
 */
-void tsip_dialog_subscribe_Started_2_Trying_X_send(tsip_dialog_subscribe_t *self)
+int tsip_dialog_subscribe_Started_2_Trying_X_send(va_list *app)
 {
-	send_subscribe(self);
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return send_subscribe(self);
 }
 
 /* Trying -> (1xx) -> Trying
 */
-void tsip_dialog_subscribe_Trying_2_Trying_X_1xx(tsip_dialog_subscribe_t *self, const tsip_response_t* response)
+int tsip_dialog_subscribe_Trying_2_Trying_X_1xx(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
 }
 
 /* Trying -> (2xx) -> Terminated
 */
-void tsip_dialog_subscribe_Trying_2_Terminated_X_2xx(tsip_dialog_subscribe_t *self, const tsip_response_t* response)
+int tsip_dialog_subscribe_Trying_2_Terminated_X_2xx(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
 	/* Alert the user. */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_unsubscribe_ok, TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+
+	return 0;
 }
 
 /* Trying -> (2xx) -> Connected
 */
-void tsip_dialog_subscribe_Trying_2_Connected_X_2xx(tsip_dialog_subscribe_t *self, const tsip_response_t* response)
+int tsip_dialog_subscribe_Trying_2_Connected_X_2xx(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
 	/* Alert the user. */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_ok, 
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
@@ -293,32 +413,36 @@ void tsip_dialog_subscribe_Trying_2_Connected_X_2xx(tsip_dialog_subscribe_t *sel
 	/* Request timeout for dialog refresh (re-subscribtion). */
 	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), response);
 	TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(refresh);
+
+	return 0;
 }
 
 /* Trying -> (401/407/421/494) -> Trying
 */
-void tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494(tsip_dialog_subscribe_t *self, const tsip_response_t* response)
+int tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
 	if(tsip_dialog_update(TSIP_DIALOG(self), response))
 	{
-		TSIP_DIALOG_SUBSCRIBE_SIGNAL_ERROR(self);
-
 		/* Alert the user. */
 		TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, self->unsubscribing ? tsip_unsubscribing : tsip_subscribing,
 			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
 		
-		goto bail;
+		return -1;
 	}
 	
-	send_subscribe(self);
-
-bail:;
+	return send_subscribe(self);
 }
 
 /* Trying -> (423) -> Trying
 */
-void tsip_dialog_subscribe_Trying_2_Trying_X_423(tsip_dialog_subscribe_t *self, const tsip_response_t* response)
+int tsip_dialog_subscribe_Trying_2_Trying_X_423(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
 	tsip_header_Min_Expires_t *hdr;
 
 	/*
@@ -338,52 +462,80 @@ void tsip_dialog_subscribe_Trying_2_Trying_X_423(tsip_dialog_subscribe_t *self, 
 	}
 	else
 	{
-		TSIP_DIALOG_SUBSCRIBE_SIGNAL_ERROR(self);
-
 		TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, self->unsubscribing ? tsip_unsubscribing : tsip_subscribing,
 			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+
+		return -1;
 	}
+
+	return 0;
 }
 
 /* Trying -> (300-699) -> Terminated
 */
-void tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(tsip_dialog_subscribe_t *self, const tsip_response_t* response)
+int tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
 	/* Alert the user. */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_nok, TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+
+	return 0;
 }
 
 /* Trying -> (cancel) -> Terminated
 */
-void tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(tsip_dialog_subscribe_t *self)
+int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
 	/* Alert the user. */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_cancelled, 801, "Subscribtion cancelled");
+
+	return 0;
 }
 
 /* Trying -> (NOTIFY) -> Trying
 */
-void tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request)
+int tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+
 	send_notify_200ok(self, request);
+
+	return 0;
 }
 
 /* Connected -> (unsubscribe) -> Trying
 */
-void tsip_dialog_subscribe_Connected_2_Trying_X_unsubscribe(tsip_dialog_subscribe_t *self)
+int tsip_dialog_subscribe_Connected_2_Trying_X_unsubscribe(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
 }
 
 /* Connected -> (refresh) -> Trying
 */
-void tsip_dialog_subscribe_Connected_2_Trying_X_refresh(tsip_dialog_subscribe_t *self)
+int tsip_dialog_subscribe_Connected_2_Trying_X_refresh(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
 }
 
 /* Connected -> (NOTIFY) -> Connected
 */
-void tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request)
+int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+
 	send_notify_200ok(self, request);
 
 	/* Alert the user */
@@ -393,27 +545,49 @@ void tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(tsip_dialog_subscribe_
 	/* Request timeout for dialog refresh (re-registration). */
 	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), request);
 	TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(refresh);
+
+	return 0;
 }
 
 /* Connected -> (NOTIFY) -> Terminated
 */
-void tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request)
+int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app)
 {
-	send_notify_200ok(self, request);
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+
+	return send_notify_200ok(self, request);
 }
 
 /* Any -> (hangup) -> Trying
 */
-void tsip_dialog_subscribe_Any_2_Trying_X_hangup(tsip_dialog_subscribe_t *self)
+int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
 }
 
 /* Any -> (transport error) -> Terminated
 */
-void tsip_dialog_subscribe_Any_2_Terminated_X_transportError(tsip_dialog_subscribe_t *self)
+int tsip_dialog_subscribe_Any_2_Terminated_X_transportError(va_list *app)
 {
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
 }
 
+/* Any -> (error) -> Terminated
+*/
+int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app)
+{
+	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
+}
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -467,7 +641,7 @@ int send_notify_200ok(tsip_dialog_subscribe_t *self, const tsip_request_t* reque
 }
 
 /**
- * @fn	void tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
+ * @fn	int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
  *
  * @brief	Callback function called by the state machine manager to signal that the final state has been reached.
  *
@@ -476,9 +650,9 @@ int send_notify_200ok(tsip_dialog_subscribe_t *self, const tsip_request_t* reque
  *
  * @param [in,out]	self	The state machine owner.
 **/
-void tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
+int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 {
-	TSK_DEBUG_INFO("=== Dialog terminated ===");
+	TSK_DEBUG_INFO("=== SUBSCRIBE Dialog terminated ===");
 
 	/* Cancel all timers */
 	DIALOG_TIMER_CANCEL(refresh);
@@ -486,8 +660,10 @@ void tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 	/* Alert user */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_terminated, 700, "Dialog terminated.");
 
-	/* Destroy asynchronously */
-	DIALOG_REMOVE_SCHEDULE();
+	/* Remove from the dialog layer. */
+	tsip_dialog_remove(TSIP_DIALOG(self));
+
+	return 0;
 }
 
 
@@ -501,6 +677,11 @@ static void* tsip_dialog_subscribe_create(void * self, va_list * app)
 	{
 		tsip_stack_handle_t *stack = va_arg(*app, tsip_stack_handle_t *);
 		tsip_operation_handle_t *operation = va_arg(*app, tsip_operation_handle_t *);
+
+		/* create FSM */
+		dialog->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
+		dialog->fsm->debug = DEBUG_STATE_MACHINE;
+		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_subscribe_OnTerminated), (const void*)dialog);
 
 		/* Initialize base class */
 		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_subscribe, stack, 0, operation);
@@ -518,6 +699,9 @@ static void* tsip_dialog_subscribe_destroy(void * self)
 	{
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
+
+		/* FSM */
+		TSK_OBJECT_SAFE_FREE(dialog->fsm);
 
 		TSK_FREE(dialog->package);
 	}
