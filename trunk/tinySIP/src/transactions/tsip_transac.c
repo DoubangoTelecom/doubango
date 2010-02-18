@@ -42,8 +42,6 @@ int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, t
 {
 	if(self && !self->initialized)
 	{
-		tsk_safeobj_init(self);
-
 		self->stack = stack;
 		self->timer_mgr = tsip_stack_get_timer_mgr(stack);
 		self->type = type;
@@ -66,8 +64,6 @@ int tsip_transac_deinit(tsip_transac_t *self)
 		TSK_FREE(self->branch);
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
-
-		tsk_safeobj_deinit(self);
 
 		self->initialized = 0;
 
@@ -125,7 +121,7 @@ int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2)
 	return -1;
 }
 
-int tsip_transac_remove_callback(const tsip_transac_t* self, tsk_timer_id_t timer_id)
+int tsip_transac_remove(const tsip_transac_t* self)
 {
 	return tsip_transac_layer_remove(TSIP_STACK(self->stack)->layer_transac, TSIP_TRANSAC(self));
 }

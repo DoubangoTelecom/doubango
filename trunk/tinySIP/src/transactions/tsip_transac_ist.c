@@ -29,7 +29,7 @@
  */
 #include "tinysip/transactions/tsip_transac_ist.h"
 
-void tsip_transac_ist_init(tsip_transac_ist_t *self)
+int tsip_transac_ist_init(tsip_transac_ist_t *self)
 {
-	tsip_transac_istContext_Init(&self->_fsm, self);
+	return 0;
 }

@@ -172,7 +172,7 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 				else
 				{
 					// Alert User
-					ret = tsk_fsm_act((self)->fsm, _fsm_action_error, self, msg, self, msg);
+					ret = tsk_fsm_act(self->fsm, _fsm_action_error, self, msg, self, msg);
 					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
 				}
 			}
@@ -661,9 +661,7 @@ int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_terminated, 700, "Dialog terminated.");
 
 	/* Remove from the dialog layer. */
-	tsip_dialog_remove(TSIP_DIALOG(self));
-
-	return 0;
+	return tsip_dialog_remove(TSIP_DIALOG(self));
 }
 
 

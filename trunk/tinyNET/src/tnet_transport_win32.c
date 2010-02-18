@@ -516,9 +516,15 @@ void *tnet_transport_mainthread(void *param)
 			/* Receive the waiting data. */
 			if(WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0) == SOCKET_ERROR)
 			{
-				if(WSAGetLastError() == WSAEWOULDBLOCK)
+				ret = WSAGetLastError();
+				if(ret == WSAEWOULDBLOCK)
 				{
-					TSK_DEBUG_INFO("WSAEWOULDBLOCK error for READ operation");
+					TSK_DEBUG_WARN("WSAEWOULDBLOCK error for READ operation");
+				}
+				else if(ret == WSAECONNRESET && TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type))
+				{	/* For DGRAM ==> The sent packet gernerated "ICMP Destination/Port unreachable" result. */
+					TSK_FREE(wsaBuffer.buf);
+					continue; // ignore and retry.
 				}
 				else
 				{

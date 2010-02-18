@@ -29,7 +29,7 @@
  */
 #include "tinysip/transactions/tsip_transac_ict.h"
 
-void tsip_transac_ict_init(tsip_transac_ict_t *self)
+int tsip_transac_ict_init(tsip_transac_ict_t *self)
 {
-	tsip_transac_ictContext_Init(&self->_fsm, self);
+	return 0;
 }

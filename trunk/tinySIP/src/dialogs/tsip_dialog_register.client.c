@@ -663,9 +663,7 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_terminated, 700, "Dialog terminated.");
 	
 	/* Remove from the dialog layer. */
-	tsip_dialog_remove(TSIP_DIALOG(self));
-	
-	return 0;
+	return tsip_dialog_remove(TSIP_DIALOG(self));
 }
 
 

@@ -42,14 +42,57 @@
 	tsip_dialog_messageContext_sm_error(&TSIP_DIALOG_MESSAGE(self)->_fsm);		\
 	TSIP_DIALOG_SYNC_END(self);
 
+/* ======================== internal functions ======================== */
 int send_message(tsip_dialog_message_t *self);
 int send_response(tsip_dialog_message_t *self, short status, const char* phrase, const tsip_request_t *request);
+int tsip_dialog_message_OnTerminated(tsip_dialog_message_t *self);
 
+/* ======================== transitions ======================== */
+int tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(va_list *app);
+int tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(va_list *app);
+int tsip_dialog_message_Sending_2_Sending_X_1xx(va_list *app);
+int tsip_dialog_message_Sending_2_Terminated_X_2xx(va_list *app);
+int tsip_dialog_message_Sending_2_Sending_X_401_407_421_494(va_list *app);
+int tsip_dialog_message_Sending_2_Terminated_X_300_to_699(va_list *app);
+int tsip_dialog_message_Sending_2_Terminated_X_cancel(va_list *app);
+int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app);
+int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app);
+int tsip_dialog_message_Any_2_Terminated_X_transportError(va_list *app);
+int tsip_dialog_message_Any_2_Terminated_X_Error(va_list *app);
+
+/* ======================== conds ======================== */
+
+/* ======================== actions ======================== */
+typedef enum _fsm_action_e
+{
+	_fsm_action_sendMESSAGE,
+	_fsm_action_receiveMESSAGE,
+	_fsm_action_1xx,
+	_fsm_action_2xx,
+	_fsm_action_401_407_421_494,
+	_fsm_action_300_to_699,
+	_fsm_action_cancel,
+	_fsm_action_accept,
+	_fsm_action_reject,
+	_fsm_action_transporterror,
+	_fsm_action_error,
+}
+_fsm_action_t;
+
+/* ======================== states ======================== */
+typedef enum _fsm_state_e
+{
+	_fsm_state_Started,
+	_fsm_state_Sending,
+	_fsm_state_Receiving,
+	_fsm_state_Terminated
+}
+_fsm_state_t;
 
 
 int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_dialog_event_type_t type, const tsip_message_t *msg)
 {
-	TSIP_DIALOG_SYNC_BEGIN(self);
+	int ret = -1;
 
 	switch(type)
 	{
@@ -62,26 +105,26 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 					short status_code = TSIP_RESPONSE_CODE(msg);
 					if(status_code <=199)
 					{
-						tsip_dialog_messageContext_sm_1xx(&TSIP_DIALOG_MESSAGE(self)->_fsm, msg);
+						ret = tsk_fsm_act(self->fsm, _fsm_action_1xx, self, msg, self, msg);
 					}
 					else if(status_code<=299)
 					{
-						tsip_dialog_messageContext_sm_2xx(&TSIP_DIALOG_MESSAGE(self)->_fsm, msg);
+						ret = tsk_fsm_act(self->fsm, _fsm_action_2xx, self, msg, self, msg);
 					}
 					else if(status_code == 401 || status_code == 407 || status_code == 421 || status_code == 494)
 					{
-						tsip_dialog_messageContext_sm_401_407_421_494(&TSIP_DIALOG_MESSAGE(self)->_fsm, msg);
+						ret = tsk_fsm_act(self->fsm, _fsm_action_401_407_421_494, self, msg, self, msg);
 					}
 					else
 					{
 						// Alert User
-						TSIP_DIALOG_MESSAGE_SIGNAL_ERROR(self);
+						ret = tsk_fsm_act(self->fsm, _fsm_action_error, self, msg, self, msg);
 						TSK_DEBUG_WARN("Not supported status code: %d", status_code);
 					}
 				}
 				else
 				{
-					tsip_dialog_messageContext_sm_receiveMESSAGE(&TSIP_DIALOG_MESSAGE(self)->_fsm, msg);
+					ret = tsk_fsm_act(self->fsm, _fsm_action_receiveMESSAGE, self, msg, self, msg);
 				}
 			}
 			break;
@@ -89,7 +132,7 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 
 	case tsip_dialog_canceled:
 		{
-			tsip_dialog_messageContext_sm_cancel(&TSIP_DIALOG_MESSAGE(self)->_fsm);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_cancel, self, msg, self, msg);
 			break;
 		}
 
@@ -98,27 +141,69 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 	case tsip_dialog_error:
 	case tsip_dialog_transport_error:
 		{
-			tsip_dialog_messageContext_sm_transportError(&TSIP_DIALOG_MESSAGE(self)->_fsm);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_transporterror, self, msg, self, msg);
 			break;
 		}
 	}
 
-	TSIP_DIALOG_SYNC_END(self);
-
-	return 0;
+	return ret;
 }
 
-void tsip_dialog_message_init(tsip_dialog_message_t *self)
+int tsip_dialog_message_init(tsip_dialog_message_t *self)
 {
-	/* Initialize the state machine.
-	*/
-	tsip_dialog_messageContext_Init(&self->_fsm, self);
+	/* Initialize the state machine. */
+	tsk_fsm_set(self->fsm,
+			
+			/*=======================
+			* === Started === 
+			*/
+			// Started -> (send) -> Sending
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_sendMESSAGE, _fsm_state_Sending, tsip_dialog_message_Started_2_Sending_X_sendMESSAGE, "tsip_dialog_message_Started_2_Sending_X_sendMESSAGE"),
+			// Started -> (receive) -> Receiving
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_receiveMESSAGE, _fsm_state_Receiving, tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE, "tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE"),
+			// Started -> (Any) -> Started
+			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_dialog_message_Started_2_Started_X_any"),
+			
+
+			/*=======================
+			* === Sending === 
+			*/
+			// Sending -> (1xx) -> Sending
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Sending, _fsm_action_1xx, _fsm_state_Sending, tsip_dialog_message_Sending_2_Sending_X_1xx, "tsip_dialog_message_Sending_2_Sending_X_1xx"),
+			// Sending -> (2xx) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Sending, _fsm_action_2xx, _fsm_state_Terminated, tsip_dialog_message_Sending_2_Terminated_X_2xx, "tsip_dialog_message_Sending_2_Terminated_X_2xx"),
+			// Sending -> (401/407/421/494) -> Sending
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Sending, _fsm_action_401_407_421_494, _fsm_state_Sending, tsip_dialog_message_Sending_2_Sending_X_401_407_421_494, "tsip_dialog_message_Sending_2_Sending_X_401_407_421_494"),
+			// Sending -> (300_to_699) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Sending, _fsm_action_300_to_699, _fsm_state_Terminated, tsip_dialog_message_Sending_2_Terminated_X_300_to_699, "tsip_dialog_message_Sending_2_Terminated_X_300_to_699"),
+			// Sending -> (cancel) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Sending, _fsm_action_cancel, _fsm_state_Terminated, tsip_dialog_message_Sending_2_Terminated_X_cancel, "tsip_dialog_message_Sending_2_Terminated_X_cancel"),
+			// Sending -> (Any) -> Sending
+			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Sending, "tsip_dialog_message_Sending_2_Sending_X_any"),
+
+			/*=======================
+			* === Receiving === 
+			*/
+			// Receiving -> (accept) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Receiving, _fsm_action_accept, _fsm_state_Terminated, tsip_dialog_message_Receiving_2_Terminated_X_accept, "tsip_dialog_message_Receiving_2_Terminated_X_accept"),
+			// Receiving -> (rejected) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Receiving, _fsm_action_reject, _fsm_state_Terminated, tsip_dialog_message_Receiving_2_Terminated_X_reject, "tsip_dialog_message_Receiving_2_Terminated_X_reject"),
+			// Receiving -> (Any) -> Receiving
+			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Receiving, "tsip_dialog_message_Receiving_2_Receiving_X_any"),
+
+			/*=======================
+			* === Any === 
+			*/
+			// Any -> (transport error) -> Terminated
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_dialog_message_Any_2_Terminated_X_transportError, "tsip_dialog_message_Any_2_Terminated_X_transportError"),
+			// Any -> (transport error) -> Terminated
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_dialog_message_Any_2_Terminated_X_Error, "tsip_dialog_message_Any_2_Terminated_X_Error"),
+
+			TSK_FSM_ADD_NULL());
 
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_message_event_callback);
 
-#if defined(_DEBUG) || defined(DEBUG)
-	 setDebugFlag(&(self->_fsm), DEBUG_STATE_MACHINE);
-#endif
+	return 0;
 }
 
 
@@ -143,6 +228,129 @@ int tsip_dialog_message_recv(tsip_dialog_message_t *self, const tsip_message_t *
 	return ret;
 }*/
 
+
+
+
+
+//--------------------------------------------------------
+//				== STATE MACHINE BEGIN ==
+//--------------------------------------------------------
+
+
+/* Started -> (sendMESSAGE) -> Sending
+*/
+int tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+
+	return 0;
+}
+
+/* Started -> (recvMESSAGE) -> Receiving
+*/
+int tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+
+	return send_response(self, 200, "OK", request);
+}
+
+/*	Sending -> (1xx) -> Sending
+*/
+int tsip_dialog_message_Sending_2_Sending_X_1xx(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
+}
+
+/*	Sending -> (2xx) -> Sending
+*/
+int tsip_dialog_message_Sending_2_Terminated_X_2xx(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
+}
+
+/*	Sending -> (401/407/421/494) -> Sending
+*/
+int tsip_dialog_message_Sending_2_Sending_X_401_407_421_494(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
+}
+
+/*	Sending -> (300 to 699) -> Terminated
+*/
+int tsip_dialog_message_Sending_2_Terminated_X_300_to_699(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	return 0;
+}
+
+/*	Sending -> (cancel) -> Terminated
+*/
+int tsip_dialog_message_Sending_2_Terminated_X_cancel(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	return 0;
+}
+
+/*	Receiving -> (accept) -> Terminated
+*/
+int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	return 0;
+}
+
+/*	Receiving -> (reject) -> Terminated
+*/
+int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	return 0;
+}
+
+/*	Any -> (transport error) -> Terminated
+*/
+int tsip_dialog_message_Any_2_Terminated_X_transportError(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	return 0;
+}
+
+/*	Any -> (error) -> Terminated
+*/
+int tsip_dialog_message_Any_2_Terminated_X_Error(va_list *app)
+{
+	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	return 0;
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//				== STATE MACHINE END ==
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 int send_response(tsip_dialog_message_t *self, short status, const char* phrase, const tsip_request_t *request)
 {
 	tsip_response_t *response;
@@ -165,62 +373,12 @@ int send_response(tsip_dialog_message_t *self, short status, const char* phrase,
 }
 
 
-
-//--------------------------------------------------------
-//				== STATE MACHINE BEGIN ==
-//--------------------------------------------------------
-
-
-void tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(tsip_dialog_message_t *self, const tsip_message_t *message)
+int tsip_dialog_message_OnTerminated(tsip_dialog_message_t *self)
 {
-}
+	TSK_DEBUG_INFO("=== MESSAGE Dialog terminated ===");
 
-void tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(tsip_dialog_message_t *self, const tsip_message_t *message)
-{
-	send_response(self, 200, "OK", message);
-}
-
-void tsip_dialog_message_Sending_2_Sending_X_1xx(tsip_dialog_message_t *self, const tsip_message_t *message)
-{
-}
-
-void tsip_dialog_message_Sending_2_Terminated_X_2xx(tsip_dialog_message_t *self, const tsip_message_t *message)
-{
-}
-
-void tsip_dialog_message_Sending_2_Sending_X_401_407_421_494(tsip_dialog_message_t *self, const tsip_message_t *message)
-{
-}
-
-void tsip_dialog_message_Sending_2_Terminated_X_300_to_699(tsip_dialog_message_t *self, const tsip_message_t *message)
-{
-}
-
-void tsip_dialog_message_Sending_2_Terminated_X_cancel(tsip_dialog_message_t *self)
-{
-}
-
-void tsip_dialog_message_Receiving_2_Terminated_X_accept(tsip_dialog_message_t *self, const tsip_message_t *message)
-{
-}
-
-void tsip_dialog_message_Receiving_2_Terminated_X_reject(tsip_dialog_message_t *self, const tsip_message_t *message)
-{
-}
-
-void tsip_dialog_message_Any_2_Terminated_X_transportError(tsip_dialog_message_t *self)
-{
-}
-
-
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//				== STATE MACHINE END ==
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-void tsip_dialog_message_OnTerminated(tsip_dialog_message_t *self)
-{
+	/* Remove from the dialog layer. */
+	return tsip_dialog_remove(TSIP_DIALOG(self));
 }
 
 
@@ -255,6 +413,11 @@ static void* tsip_dialog_message_create(void * self, va_list * app)
 		tsip_stack_handle_t *stack = va_arg(*app, tsip_stack_handle_t *);
 		tsip_operation_handle_t *operation = va_arg(*app, tsip_operation_handle_t *);
 
+		/* create FSM */
+		dialog->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
+		dialog->fsm->debug = DEBUG_STATE_MACHINE;
+		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_message_OnTerminated), (const void*)dialog);
+
 		/* Initialize base class */
 		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_message, stack, 0, operation);
 
@@ -269,6 +432,9 @@ static void* tsip_dialog_message_destroy(void * self)
 	tsip_dialog_message_t *dialog = self;
 	if(dialog)
 	{
+		/* FSM */
+		TSK_OBJECT_SAFE_FREE(dialog->fsm);
+
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 	}

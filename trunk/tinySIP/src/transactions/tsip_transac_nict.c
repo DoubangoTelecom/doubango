@@ -79,6 +79,53 @@
 
 #define TRANSAC_NICT_TIMER_SCHEDULE(TX)			TRANSAC_TIMER_SCHEDULE(nict, TX)
 
+/* ======================== internal functions ======================== */
+int tsip_transac_nict_init(tsip_transac_nict_t *self);
+int tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self);
+
+/* ======================== transitions ======================== */
+int tsip_transac_nict_Started_2_Trying_X_send(va_list *app);
+int tsip_transac_nict_Trying_2_Trying_X_timerE(va_list *app);
+int tsip_transac_nict_Trying_2_Terminated_X_timerF(va_list *app);
+int tsip_transac_nict_Trying_2_Terminated_X_transportError(va_list *app);
+int tsip_transac_nict_Trying_2_Proceedding_X_1xx(va_list *app);
+int tsip_transac_nict_Trying_2_Completed_X_200_to_699(va_list *app);
+int tsip_transac_nict_Proceeding_2_Proceeding_X_timerE(va_list *app);
+int tsip_transac_nict_Proceeding_2_Terminated_X_timerF(va_list *app);
+int tsip_transac_nict_Proceeding_2_Terminated_X_transportError(va_list *app);
+int tsip_transac_nict_Proceeding_2_Proceeding_X_1xx(va_list *app);
+int tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(va_list *app);
+int tsip_transac_nict_Completed_2_Terminated_X_timerK(va_list *app);
+int tsip_transac_nict_Any_2_Terminated_X_transportError(va_list *app);
+int tsip_transac_nict_Any_2_Terminated_X_Error(va_list *app);
+
+/* ======================== conds ======================== */
+
+/* ======================== actions ======================== */
+typedef enum _fsm_action_e
+{
+	_fsm_action_send,
+	_fsm_action_timerE,
+	_fsm_action_timerF,
+	_fsm_action_timerK,
+	_fsm_action_1xx,
+	_fsm_action_200_to_699,
+	_fsm_action_transporterror,
+	_fsm_action_error,
+}
+_fsm_action_t;
+
+/* ======================== states ======================== */
+typedef enum _fsm_state_e
+{
+	_fsm_state_Started,
+	_fsm_state_Trying,
+	_fsm_state_Proceeding,
+	_fsm_state_Completed,
+	_fsm_state_Terminated
+}
+_fsm_state_t;
+
 
 /**
  * @fn	int tsip_transac_nict_event_callback(const void *arg, tsip_transac_event_type_t type,
@@ -97,8 +144,8 @@
  * @return	Zero if succeed and no-zero error code otherwise. 
 **/
 int tsip_transac_nict_event_callback(const tsip_transac_nict_t *self, tsip_transac_event_type_t type, const tsip_message_t *msg)
-{
-	TSIP_TRANSAC_SYNC_BEGIN(self);
+{	
+	int ret = 0;
 
 	switch(type)
 	{
@@ -108,11 +155,11 @@ int tsip_transac_nict_event_callback(const tsip_transac_nict_t *self, tsip_trans
 			{
 				if(TSIP_RESPONSE_IS_1XX(msg))
 				{
-					tsip_transac_nictContext_sm_1xx(&TSIP_TRANSAC_NICT(self)->_fsm, msg);
+					ret = tsk_fsm_act(self->fsm, _fsm_action_1xx, self, msg, self, msg);
 				}
 				else if(TSIP_RESPONSE_IS_23456(msg))
 				{
-					tsip_transac_nictContext_sm_200_to_699(&TSIP_TRANSAC_NICT(self)->_fsm, msg);
+					ret = tsk_fsm_act(self->fsm, _fsm_action_200_to_699, self, msg, self, msg);
 				}
 				else
 				{
@@ -123,34 +170,24 @@ int tsip_transac_nict_event_callback(const tsip_transac_nict_t *self, tsip_trans
 		}
 
 	case tsip_transac_canceled:
-		{
-			break;
-		}
-
 	case tsip_transac_terminated:
-		{
-			break;
-		}
-
 	case tsip_transac_timedout:
-		{
-			break;
-		}
+		break;
 
 	case tsip_transac_error:
 		{
+			ret = tsk_fsm_act(self->fsm, _fsm_action_error, self, msg, self, msg);
 			break;
 		}
 
 	case tsip_transac_transport_error:
 		{
+			ret = tsk_fsm_act(self->fsm, _fsm_action_transporterror, self, msg, self, msg);
 			break;
 		}
 	}
 
-	TSIP_TRANSAC_SYNC_END(self);
-
-	return 0;
+	return ret;
 }
 
 int tsip_transac_nict_timer_callback(const tsip_transac_nict_t* self, tsk_timer_id_t timer_id)
@@ -159,32 +196,25 @@ int tsip_transac_nict_timer_callback(const tsip_transac_nict_t* self, tsk_timer_
 
 	if(self)
 	{
-		TSIP_TRANSAC_SYNC_BEGIN(self);
-
 		if(timer_id == self->timerE.id)
 		{
-			tsip_transac_nictContext_sm_timerE(&TSIP_TRANSAC_NICT(self)->_fsm);
-			ret = 0;
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerE, self, TSK_NULL, self, TSK_NULL);
 		}
 		else if(timer_id == self->timerF.id)
 		{
-			tsip_transac_nictContext_sm_timerF(&TSIP_TRANSAC_NICT(self)->_fsm);
-			ret = 0;
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerF, self, TSK_NULL, self, TSK_NULL);
 		}
 		else if(timer_id == self->timerK.id)
 		{
-			tsip_transac_nictContext_sm_timerK(&TSIP_TRANSAC_NICT(self)->_fsm);
-			ret = 0;
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerK, self, TSK_NULL, self, TSK_NULL);
 		}
-
-		TSIP_TRANSAC_SYNC_END(self);
 	}
 
 	return ret;
 }
 
 /**
- * @fn	void tsip_transac_nict_init(tsip_transac_nict_t *self)
+ * @fn	int tsip_transac_nict_init(tsip_transac_nict_t *self)
  *
  * @brief	Initializes the transaction.
  *
@@ -193,20 +223,72 @@ int tsip_transac_nict_timer_callback(const tsip_transac_nict_t* self, tsk_timer_
  *
  * @param [in,out]	self	The transaction to initialize.
 **/
-void tsip_transac_nict_init(tsip_transac_nict_t *self)
+int tsip_transac_nict_init(tsip_transac_nict_t *self)
 {
-	/* Initialize the state machine.
-	*/
-	tsip_transac_nictContext_Init(&self->_fsm, self);
+	/* Initialize the state machine. */
+	tsk_fsm_set(self->fsm,
+			
+			/*=======================
+			* === Started === 
+			*/
+			// Started -> (Send) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_send, _fsm_state_Trying, tsip_transac_nict_Started_2_Trying_X_send, "tsip_transac_nict_Started_2_Trying_X_send"),
+			// Started -> (Any) -> Started
+			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_transac_nict_Started_2_Started_X_any"),
+			
+
+			/*=======================
+			* === Trying === 
+			*/
+			// Trying -> (timerE) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_timerE, _fsm_state_Trying, tsip_transac_nict_Trying_2_Trying_X_timerE, "tsip_transac_nict_Trying_2_Trying_X_timerE"),
+			// Trying -> (timerF) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_timerF, _fsm_state_Terminated, tsip_transac_nict_Trying_2_Terminated_X_timerF, "tsip_transac_nict_Trying_2_Terminated_X_timerF"),
+			// Trying -> (transport error) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_transporterror, _fsm_state_Terminated, tsip_transac_nict_Trying_2_Terminated_X_transportError, "tsip_transac_nict_Trying_2_Terminated_X_transportError"),
+			// Trying  -> (1xx) -> Proceeding
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_1xx, _fsm_state_Proceeding, tsip_transac_nict_Trying_2_Proceedding_X_1xx, "tsip_transac_nict_Trying_2_Proceedding_X_1xx"),
+			// Trying  -> (200 to 699) -> Completed
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_200_to_699, _fsm_state_Completed, tsip_transac_nict_Trying_2_Completed_X_200_to_699, "tsip_transac_nict_Trying_2_Completed_X_200_to_699"),
+
+			
+			/*=======================
+			* === Proceeding === 
+			*/
+			// Proceeding -> (timerE) -> Proceeding
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_timerE, _fsm_state_Proceeding, tsip_transac_nict_Proceeding_2_Proceeding_X_timerE, "tsip_transac_nict_Proceeding_2_Proceeding_X_timerE"),
+			// Proceeding -> (timerF) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_timerF, _fsm_state_Terminated, tsip_transac_nict_Proceeding_2_Terminated_X_timerF, "tsip_transac_nict_Proceeding_2_Terminated_X_timerF"),
+			// Proceeding -> (transport error) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_transporterror, _fsm_state_Terminated, tsip_transac_nict_Proceeding_2_Terminated_X_transportError, "tsip_transac_nict_Proceeding_2_Terminated_X_transportError"),
+			// Proceeding -> (1xx) -> Proceeding
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_1xx, _fsm_state_Proceeding, tsip_transac_nict_Proceeding_2_Proceeding_X_1xx, "tsip_transac_nict_Proceeding_2_Proceeding_X_1xx"),
+			// Proceeding -> (200 to 699) -> Completed
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_200_to_699, _fsm_state_Completed, tsip_transac_nict_Proceeding_2_Completed_X_200_to_699, "tsip_transac_nict_Proceeding_2_Completed_X_200_to_699"),
+
+			
+			/*=======================
+			* === Completed === 
+			*/
+			// Completed -> (timer K) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Completed, _fsm_action_timerK, _fsm_state_Terminated, tsip_transac_nict_Completed_2_Terminated_X_timerK, "tsip_transac_nict_Completed_2_Terminated_X_timerK"),
+			
+
+			/*=======================
+			* === Any === 
+			*/
+			// Any -> (transport error) -> Terminated
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_transac_nict_Any_2_Terminated_X_transportError, "tsip_transac_nict_Any_2_Terminated_X_transportError"),
+			// Any -> (transport error) -> Terminated
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_transac_nict_Any_2_Terminated_X_Error, "tsip_transac_nict_Any_2_Terminated_X_Error"),
+
+			
+			TSK_FSM_ADD_NULL());
 	
 	/* Set callback function to call when new messages arrive or errors happen in
 		the transport layer.
 	*/
 	TSIP_TRANSAC(self)->callback = TSIP_TRANSAC_EVENT_CALLBACK(tsip_transac_nict_event_callback);
-
-#if defined(_DEBUG) || defined(DEBUG)
-	 setDebugFlag(&(self->_fsm), DEBUG_STATE_MACHINE);
-#endif
 	 
 	 self->timerE.id = TSK_INVALID_TIMER_ID;
 	 self->timerF.id = TSK_INVALID_TIMER_ID;
@@ -215,6 +297,8 @@ void tsip_transac_nict_init(tsip_transac_nict_t *self)
 	 self->timerE.timeout = TSIP_TIMER_GET(E);
 	 self->timerF.timeout = TSIP_TIMER_GET(F);
 	 self->timerK.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(K); /* RFC 3261 - 17.1.2.2*/
+
+	 return 0;
 }
 
 
@@ -236,9 +320,6 @@ int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* req
 	int ret = -1;
 	if(self && request && !TSIP_TRANSAC(self)->running)
 	{
-		/* Set state machine state to started */
-		setState(&self->_fsm, &tsip_transac_nict_Started);
-
 		/* Add branch to the new client transaction. */
 		TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE);
 		{
@@ -249,9 +330,8 @@ int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* req
 
 		TSIP_TRANSAC(self)->running = 1;
 		self->request = tsk_object_ref((void*)request);
-		tsip_transac_nictContext_sm_send(&self->_fsm);
 
-		ret = 0;
+		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, TSK_NULL, self, TSK_NULL);
 	}
 	return ret;
 }
@@ -265,14 +345,16 @@ int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* req
 
 
 
-//========================================================
-//	State Machine
-//
-
+//--------------------------------------------------------
+//				== STATE MACHINE BEGIN ==
+//--------------------------------------------------------
 /* Started -> (send) -> Trying
 */
-void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self)
+int tsip_transac_nict_Started_2_Trying_X_send(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	//== Send the request
 	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, TSIP_MESSAGE(self->request));
 
@@ -291,12 +373,17 @@ void tsip_transac_nict_Started_2_Trying_X_send(tsip_transac_nict_t *self)
 	{
 		TRANSAC_NICT_TIMER_SCHEDULE(E);
 	}
+
+	return 0;
 }
 
 /* Trying -> (Timer E) -> Trying
 */
-void tsip_transac_nict_Trying_2_Trying_X_timerE(tsip_transac_nict_t *self)
+int tsip_transac_nict_Trying_2_Trying_X_timerE(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	//== Send the request
 	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->request);
 
@@ -309,12 +396,17 @@ void tsip_transac_nict_Trying_2_Trying_X_timerE(tsip_transac_nict_t *self)
 	*/
 	self->timerE.timeout = TSK_MIN(self->timerE.timeout*2, TSIP_TIMER_GET(T2));
 	TRANSAC_NICT_TIMER_SCHEDULE(E);
+
+	return 0;
 }
 
 /* Trying -> (Timer F) -> Terminated
 */
-void tsip_transac_nict_Trying_2_Terminated_X_timerF(tsip_transac_nict_t *self)
+int tsip_transac_nict_Trying_2_Terminated_X_timerF(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/*	RFC 3261 - 17.1.2.2
 		If Timer F fires while the client transaction is still in the
 		"Trying" state, the client transaction SHOULD inform the TU about the
@@ -324,21 +416,31 @@ void tsip_transac_nict_Trying_2_Terminated_X_timerF(tsip_transac_nict_t *self)
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 	
 	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
+
+	return 0;
 }
 
 /* Trying -> (Transport Error) -> Terminated
 */
-void tsip_transac_nict_Trying_2_Terminated_X_transportError(tsip_transac_nict_t *self)
+int tsip_transac_nict_Trying_2_Terminated_X_transportError(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
 	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
+
+	return 0;
 }
 
 /* Trying -> (1xx) -> Proceeding
 */
-void tsip_transac_nict_Trying_2_Proceedding_X_1xx(tsip_transac_nict_t *self, const tsip_message_t* msg)
+int tsip_transac_nict_Trying_2_Proceedding_X_1xx(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/*	RFC 3261 - 17.1.2.2
 		If a provisional response is received while in the "Trying" state, the
 		response MUST be passed to the TU, and then the client transaction
@@ -352,13 +454,18 @@ void tsip_transac_nict_Trying_2_Proceedding_X_1xx(tsip_transac_nict_t *self, con
 	}
 	TRANSAC_TIMER_CANCEL(F);
 	
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, msg);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, message);
+
+	return 0;
 }
 
 /* Trying -> (200-699) -> Completed
 */
-void tsip_transac_nict_Trying_2_Completed_X_200_to_699(tsip_transac_nict_t *self, const tsip_message_t* msg)
+int tsip_transac_nict_Trying_2_Completed_X_200_to_699(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/*	RFC 3261 - 17.1.2.2
 		If a final response (status codes 200-699) is received while in the "Trying" state, the response
 		MUST be passed to the TU, and the client transaction MUST transition
@@ -373,22 +480,21 @@ void tsip_transac_nict_Trying_2_Completed_X_200_to_699(tsip_transac_nict_t *self
 	}
 	TRANSAC_TIMER_CANCEL(F);
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, msg);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, message);
 
 	/* SCHEDULE timer K */
 	TRANSAC_NICT_TIMER_SCHEDULE(K);
-}
 
-/* Trying -> (unknown) -> Trying
-*/
-void tsip_transac_nict_Trying_2_Trying_X_unknown(tsip_transac_nict_t *self)
-{
+	return 0;
 }
 
 /* Proceeding -> (TimerE) -> Proceeding
 */
-void tsip_transac_nict_Proceeding_2_Proceeding_X_timerE(tsip_transac_nict_t *self)
+int tsip_transac_nict_Proceeding_2_Proceeding_X_timerE(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	//== Send the request
 	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->request);
 
@@ -399,12 +505,17 @@ void tsip_transac_nict_Proceeding_2_Proceeding_X_timerE(tsip_transac_nict_t *sel
 	*/
 	self->timerE.timeout = TSK_MIN(self->timerE.timeout*2, TSIP_TIMER_GET(T2));
 	TRANSAC_NICT_TIMER_SCHEDULE(E);
+
+	return 0;
 }
 
 /* Proceeding -> (Timer F) -> Proceeding
 */
-void tsip_transac_nict_Proceeding_2_Terminated_X_timerF(tsip_transac_nict_t *self)
+int tsip_transac_nict_Proceeding_2_Terminated_X_timerF(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/*	RFC 3261 - 17.1.2.2
 		If timer F fires while in the "Proceeding" state, the TU MUST be informed of a timeout, and the
 		client transaction MUST transition to the terminated state.
@@ -413,31 +524,46 @@ void tsip_transac_nict_Proceeding_2_Terminated_X_timerF(tsip_transac_nict_t *sel
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
 	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
+
+	return 0;
 }
 
 /* Proceeding -> (Transport error) -> Terminated
 */
-void tsip_transac_nict_Proceeding_2_Terminated_X_transportError(tsip_transac_nict_t *self)
+int tsip_transac_nict_Proceeding_2_Terminated_X_transportError(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/* Timers will be canceles by On */
 	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
+
+	return 0;
 }
 
 /* Proceeding -> (1xx) -> Proceeding
 */
-void tsip_transac_nict_Proceeding_2_Proceeding_X_1xx(tsip_transac_nict_t *self, const tsip_message_t* msg)
+int tsip_transac_nict_Proceeding_2_Proceeding_X_1xx(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	if(!TSIP_TRANSAC(self)->reliable)
 	{
 		TRANSAC_TIMER_CANCEL(E);
 	}
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, msg);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, message);
+
+	return 0;
 }
 
 /* Proceeding -> (200-699) -> Completed
 */
-void tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(tsip_transac_nict_t *self, const tsip_message_t* msg)
+int tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/*	RFC 3261 - 17.1.2.2
 		If a final response (status codes 200-699) is received while in the
 		"Proceeding" state, the response MUST be passed to the TU, and the
@@ -461,16 +587,21 @@ void tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(tsip_transac_nict_t *
 		TRANSAC_TIMER_CANCEL(E);
 	}
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, msg);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, message);
 	
 	/* SCHEDULE timer K */
 	TRANSAC_NICT_TIMER_SCHEDULE(K);
+
+	return 0;
 }
 
 /* Completed -> (Timer K) -> Terminated
 */
-void tsip_transac_nict_Completed_2_Terminated_X_timerK(tsip_transac_nict_t *self)
+int tsip_transac_nict_Completed_2_Terminated_X_timerK(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/*	RFC 3261 - 17.1.2.2
 		If Timer K fires while in this state (Completed), the client transaction
 		MUST transition to the "Terminated" state.
@@ -483,22 +614,46 @@ void tsip_transac_nict_Completed_2_Terminated_X_timerK(tsip_transac_nict_t *self
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
 	//TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transac_ok, 0);
+
+	return 0;
 }
 
 /* Any -> (Transport Error) -> Terminated
 */
-void tsip_transac_nict_Any_2_Terminated_X_transportError(tsip_transac_nict_t *self)
+int tsip_transac_nict_Any_2_Terminated_X_transportError(va_list *app)
 {
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
 	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
+
+	return 0;
 }
+
+/* Any -> (Error) -> Terminated
+*/
+int tsip_transac_nict_Any_2_Terminated_X_Error(va_list *app)
+{
+	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
+	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	return 0;
+}
+
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//				== STATE MACHINE END ==
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 
 /*== TERMINATED
 */
-void tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self)
+int tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self)
 {
 	/* Cancel timers */
 	if(!TSIP_TRANSAC(self)->reliable)
@@ -512,7 +667,8 @@ void tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self)
 
 	TSK_DEBUG_INFO("=== NICT terminated ===");
 	
-	TRANSAC_REMOVE_SCHEDULE();
+	/* Remove (and destroy) the transaction from the layer. */
+	return tsip_transac_remove(TSIP_TRANSAC(self));
 }
 
 
@@ -544,6 +700,11 @@ static void* tsip_transac_nict_create(void * self, va_list * app)
 		const char *cseq_method = va_arg(*app, const char *);
 		const char *callid = va_arg(*app, const char *);
 
+		/* create FSM */
+		transac->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
+		transac->fsm->debug = DEBUG_STATE_MACHINE;
+		tsk_fsm_set_callback_terminated(transac->fsm, TSK_FSM_ONTERMINATED(tsip_transac_nict_OnTerminated), (const void*)transac);
+
 		/* Initialize base class */
 		tsip_transac_init(TSIP_TRANSAC(transac), stack, tsip_nict, reliable, cseq_value, cseq_method, callid);
 
@@ -563,6 +724,9 @@ static void* tsip_transac_nict_destroy(void * self)
 
 		/* DeInitialize base class */
 		tsip_transac_deinit(TSIP_TRANSAC(transac));
+
+		/* FSM */
+		TSK_OBJECT_SAFE_FREE(transac->fsm);
 	}
 	return self;
 }
