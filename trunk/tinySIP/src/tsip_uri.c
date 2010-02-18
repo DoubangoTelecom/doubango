@@ -40,7 +40,7 @@
 /**@defgroup tsip_uri_group
 */
 
-int __tsip_uri_serialize(const tsip_uri_t *uri, int with_params, tsk_buffer_t *output)
+int __tsip_uri_serialize(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, tsk_buffer_t *output)
 {
 	tsk_istr_t port;
 
@@ -76,7 +76,7 @@ int __tsip_uri_serialize(const tsip_uri_t *uri, int with_params, tsk_buffer_t *o
 	return 0;
 }
 
-int tsip_uri_serialize(const tsip_uri_t *uri, int with_params, int quote, tsk_buffer_t *output)
+int tsip_uri_serialize(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BOOLEAN quote, tsk_buffer_t *output)
 {
 	if(uri)
 	{
@@ -108,7 +108,7 @@ int tsip_uri_serialize(const tsip_uri_t *uri, int with_params, int quote, tsk_bu
 	return -1;
 }
 
-char* tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote)
+char* tsip_uri_tostring(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BOOLEAN quote)
 {
 	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
 	char* ret = 0;
@@ -126,7 +126,7 @@ char* tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote)
 	return ret;
 }
 
-tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, int with_params, int quote)
+tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BOOLEAN quote)
 {
 	tsip_uri_t *newuri;
 	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();

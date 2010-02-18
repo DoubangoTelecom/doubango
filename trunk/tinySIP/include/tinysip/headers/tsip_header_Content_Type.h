@@ -39,7 +39,9 @@ TSIP_BEGIN_DECLS
 * Creates new sip 'Content-Type' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define TSIP_HEADER_CONTENT_TYPE_CREATE()			tsk_object_new(tsip_header_Content_Type_def_t)
+#define TSIP_HEADER_CONTENT_TYPE_VA_ARGS(type)	tsip_header_Content_Type_def_t, (const char*)type
+#define TSIP_HEADER_CONTENT_TYPE_CREATE(type)			tsk_object_new(TSIP_HEADER_CONTENT_TYPE_VA_ARGS(type))
+#define TSIP_HEADER_CONTENT_TYPE_CREATE_NULL()			TSIP_HEADER_CONTENT_TYPE_CREATE(TSIP_NULL)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

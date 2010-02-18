@@ -91,9 +91,9 @@ tsip_uri_t;
 
 typedef tsk_list_t tsip_uris_L_t;
 
-TINYSIP_API int tsip_uri_serialize(const tsip_uri_t *uri, int with_params, int quote, tsk_buffer_t *output);
-TINYSIP_API char* tsip_uri_tostring(const tsip_uri_t *uri, int with_params, int quote);
-TINYSIP_API tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, int with_params, int quote);
+TINYSIP_API int tsip_uri_serialize(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BOOLEAN quote, tsk_buffer_t *output);
+TINYSIP_API char* tsip_uri_tostring(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BOOLEAN quote);
+TINYSIP_API tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BOOLEAN quote);
 
 TINYSIP_GEXTERN const void *tsip_uri_def_t;
 

@@ -34,6 +34,8 @@
 
 #include "tinysip/transactions/tsip_transac_nict.h"
 
+#include "tinysip/parsers/tsip_parser_uri.h"
+
 #include "tinysip/headers/tsip_header_Authorization.h"
 #include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_Expires.h"
@@ -680,8 +682,6 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 {
 	if(self)
 	{
-		const tsk_param_t* param;
-
 		if(self->initialized)
 		{
 			TSK_DEBUG_WARN("Dialog already initialized.");
@@ -720,12 +720,42 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 		/* CSeq */
 		self->cseq_value = rand();
 
-		/* Expires */
-		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "expires"))){
-			self->expires = atoi(param->value);
+		/*== Operation */
+		if(self->operation != TSIP_OPERATION_INVALID_HANDLE)
+		{
+			const tsk_param_t* param;
+			tsip_uri_t* uri;
+
+			/* Expires */
+			if((param = tsip_operation_get_param(self->operation, "expires"))){
+				self->expires = atoi(param->value);
+			}
+			else{
+				self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
+			}
+
+			/* from */
+			if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "from")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
+				self->uri_local = uri;
+			}
+			else{
+				self->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
+			}
+			
+			/* to */
+			if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "to")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
+				self->uri_remote_target = tsk_object_ref(uri); /* the to uri will be used as request uri. */
+				self->uri_remote = tsk_object_ref(uri);
+				tsk_object_unref(uri);
+			}
+			else{
+				self->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
+				self->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->realm);
+			}
 		}
-		else{
-			self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
+		else
+		{
+			TSK_DEBUG_ERROR("Invalid operation id.");
 		}
 
 		self->initialized = 1;

@@ -128,7 +128,7 @@ char* tsk_strdup(const char *s1)
 	{
 		return strdup(s1);
 	}
-	return 0;
+	return TSK_NULL;
 }
 
 /**

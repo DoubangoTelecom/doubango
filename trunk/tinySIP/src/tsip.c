@@ -452,6 +452,19 @@ int tsip_stack_set_callback_subscribe(tsip_stack_handle_t *self, tsip_subscribe_
 	return -1;
 }
 
+int tsip_stack_set_callback_message(tsip_stack_handle_t *self, tsip_message_callback callback)
+{
+	if(self)
+	{
+		tsip_stack_t *stack = self;
+		stack->callback_message = callback;
+		
+		return 0;
+	}
+
+	return -1;
+}
+
 //int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type)
 //{
 //	if(self)
@@ -502,6 +515,7 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 	{
 		tsip_stack_t *stack = self;
 
+		/* Identity */
 		TSK_FREE(stack->display_name);
 		TSK_OBJECT_SAFE_FREE(stack->public_identity);
 		TSK_OBJECT_SAFE_FREE(stack->preferred_identity);
@@ -509,20 +523,36 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 		TSK_FREE(stack->private_identity);
 		TSK_FREE(stack->password);
 
+		/* Network */
+		TSK_FREE(stack->local_ip);
+		TSK_FREE(stack->privacy);
+		TSK_FREE(stack->netinfo);
+		TSK_OBJECT_SAFE_FREE(stack->realm);
+		TSK_FREE(stack->proxy_cscf);
+		TSK_FREE(stack->device_id);
+		TSK_FREE(stack->mobility);
+		TSK_FREE(stack->sec_agree_mech);
+		TSK_OBJECT_SAFE_FREE(stack->paths);
+		TSK_OBJECT_SAFE_FREE(stack->service_routes);
+		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
+		
+		/* DNS */
+		TSK_OBJECT_SAFE_FREE(stack->dns_ctx);
+
+		/* DHCP */
+
+		/* features */
+
+		/* QoS */
+
+		/* Internals. */
 		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
 		TSK_OBJECT_SAFE_FREE(stack->operations);
 
-		TSK_OBJECT_SAFE_FREE(stack->service_routes);
-		TSK_OBJECT_SAFE_FREE(stack->paths);
-		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
-
+		/* Layers */
 		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
-
-		// FIXME: free strings, uris, ...
-
-		TSK_OBJECT_SAFE_FREE(stack->dns_ctx);
 
 		return 0;
 	}
@@ -667,6 +697,14 @@ void *run(void* self)
 			{
 				if(stack->callback_subscribe){
 					stack->callback_subscribe(TSIP_SUBSCRIBE_EVENT(sipevent));
+					break;
+				}
+			}
+
+		case tsip_event_message:
+			{
+				if(stack->callback_message){
+					stack->callback_message(TSIP_MESSAGE_EVENT(sipevent));
 					break;
 				}
 			}

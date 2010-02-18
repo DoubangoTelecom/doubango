@@ -272,7 +272,7 @@ int tsip_transac_nist_handle_request(const tsip_transac_nist_t *self, const tsip
 	int ret = -1;
 	if(!(ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, TSK_NULL, self, TSK_NULL))){
 		/* Alert the dialog */
-		ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, request);
+		ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
 	}
 	return ret;
 }

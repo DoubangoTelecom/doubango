@@ -43,14 +43,8 @@
 
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(register, TX)
-#define TSIP_DIALOG_REGISTER_SIGNAL_ERROR(self)									\
-	TSIP_DIALOG_SYNC_BEGIN(self);												\
-	tsip_dialog_registerContext_sm_error(&TSIP_DIALOG_REGISTER(self)->_fsm);	\
-	TSIP_DIALOG_SYNC_END(self);
-#define TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, incoming)	\
-	tsip_register_event_signal(type, TSIP_DIALOG_GET_STACK(self),/*tsip_operation_get_id(TSIP_DIALOG(self)->operation)*/0, code, phrase, incoming)
-#define TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, type, code, phrase) TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, 1)
-#define TSIP_DIALOG_REGISTER_SIGNAL_OUTGOING(self, type, code, phrase) TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, 0)
+#define TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, message)	\
+	tsip_register_event_signal(type, TSIP_DIALOG_GET_STACK(self),tsip_operation_get_id(TSIP_DIALOG(self)->operation), code, phrase, message)
 
 
 /* ======================== internal functions ======================== */
@@ -135,7 +129,7 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 
 	switch(type)
 	{
-	case tsip_dialog_msg:
+	case tsip_dialog_i_msg:
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
@@ -298,9 +292,9 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_register_event_callback);
 	
-	TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
-	TSIP_DIALOG(self)->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
-	TSIP_DIALOG(self)->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->realm);
+	//TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
+	//TSIP_DIALOG(self)->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
+	//TSIP_DIALOG(self)->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->realm);
 
 	self->timerrefresh.id = TSK_INVALID_TIMER_ID;
 	self->timerrefresh.timeout = TSIP_DIALOG(self)->expires;
@@ -365,8 +359,8 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
 	/* Alert the user. */
-	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_ok, 
-		TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message));
+	TSIP_DIALOG_REGISTER_SIGNAL(self, tsip_ao_register, 
+		TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
 
 	/*	- Set P-associated-uriS
 	*	- Update service-routes
@@ -430,7 +424,8 @@ int tsip_dialog_register_Trying_2_Terminated_X_2xx(va_list *app)
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
 	/* Alert the user. */
-	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_unregister_ok, TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message));
+	TSIP_DIALOG_REGISTER_SIGNAL(self, tsip_ao_unregister, 
+		TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
 
 	return 0;
 }
@@ -446,8 +441,8 @@ int tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(va_list *app)
 	if((ret = tsip_dialog_update(TSIP_DIALOG(self), message)))
 	{
 		/* Alert the user. */
-		TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, self->unregistering ? tsip_unregistering : tsip_registering,
-			TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message));
+		TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register,
+			TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
 		
 		return ret;
 	}
@@ -497,8 +492,9 @@ int tsip_dialog_register_Trying_2_Terminated_X_300_to_699(va_list *app)
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
 	/* Alert the user. */
-	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_nok, TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message));
-
+	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
+		TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
+	
 	return 0;
 }
 
@@ -510,7 +506,8 @@ int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app)
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
 	/* Alert the user. */
-	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_cancelled, 701, "Registration cancelled");
+	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
+		701, "Registration cancelled", TSIP_NULL);
 
 	return 0;
 }
@@ -553,7 +550,9 @@ int tsip_dialog_register_Any_2_Terminated_X_transportError(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_transporterr, 702, "Transport error.");
+	/* Alert the user. */
+	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
+		702, "Transport error.", TSIP_NULL);
 
 	return 0;
 }
@@ -564,6 +563,10 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	/* Alert the user. */
+	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
+		703, "Global error.", TSIP_NULL);
 
 	return 0;
 }
@@ -658,9 +661,6 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 	
 	/* Cancel all timers */
 	DIALOG_TIMER_CANCEL(refresh);
-	
-	/* Alert user */
-	TSIP_DIALOG_REGISTER_SIGNAL_INCOMING(self, tsip_register_terminated, 700, "Dialog terminated.");
 	
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

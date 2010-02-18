@@ -53,9 +53,7 @@ typedef struct tsip_dialog_message
 }
 tsip_dialog_message_t;
 
-//int tsip_dialog_message_send(tsip_dialog_message_t *self);
-//int tsip_dialog_message_recv(tsip_dialog_message_t *self, const tsip_message_t *message);
-
+int tsip_dialog_message_start(tsip_dialog_message_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_message_def_t;
 

@@ -44,15 +44,42 @@ int test_stack_callback(const tsip_event_t *sipevent)
 	return 0;
 }
 
-int tsip_subscribtion_callback(const tsip_subscribe_event_t *sipevent)
+int tsip_subscription_callback(const tsip_subscribe_event_t *sipevent)
 {
 	/* common part */
 	TSK_DEBUG_INFO("\n====\nSUBSCRIBTION event: %d [%s]\n=====", TSIP_EVENT(sipevent)->code, TSIP_EVENT(sipevent)->phrase);
 	/* subscribtion part */
 	switch(sipevent->type)
 	{
-	case tsip_subscribe_notify:
+	case tsip_i_notify:
+		{
+			if(TSIP_MESSAGE_HAS_CONTENT(TSIP_EVENT(sipevent)->sipmessage))
+			{
+				TSK_DEBUG_INFO("NOTIFY Content: %s", TSIP_MESSAGE_CONTENT(TSIP_EVENT(sipevent)->sipmessage));
+			}
 			break;
+		}
+	default:
+		break;
+	}
+	return 0;
+}
+
+int tsip_messaging_callback(const tsip_message_event_t *sipevent)
+{
+	/* common part */
+	TSK_DEBUG_INFO("\n====\nMESSAGE event: %d [%s]\n=====", TSIP_EVENT(sipevent)->code, TSIP_EVENT(sipevent)->phrase);
+	/* message part */
+	switch(sipevent->type)
+	{
+	case tsip_i_message:
+		{
+			if(TSIP_MESSAGE_HAS_CONTENT(TSIP_EVENT(sipevent)->sipmessage))
+			{
+				TSK_DEBUG_INFO("MESSAGE Content: %s", TSIP_MESSAGE_CONTENT(TSIP_EVENT(sipevent)->sipmessage));
+			}
+			break;
+		}
 	default:
 		break;
 	}
@@ -66,27 +93,31 @@ int tsip_registration_callback(const tsip_register_event_t *sipevent)
 	/* registration part */
 	switch(sipevent->type)
 	{
-	case tsip_register_ok:
+	case tsip_ao_register:
 		{
-			TSK_DEBUG_INFO("Registration succeed.");
+			if(TSIP_RESPONSE_IS_2XX(TSIP_EVENT(sipevent)->sipmessage)){
+				TSK_DEBUG_INFO("Registration succeed.");
+			}
+			else{
+				TSK_DEBUG_INFO("Registration failed.");
+			}
 			break;
 		}
-	case tsip_register_nok:
-	case tsip_register_cancelled:
-	case tsip_register_auth_nok:
-	case tsip_register_secagree_nok:
-	case tsip_register_transporterr:
+
+	case tsip_ao_unregister:
 		{
-			TSK_DEBUG_INFO("Registration failed.");
+			if(TSIP_RESPONSE_IS_2XX(TSIP_EVENT(sipevent)->sipmessage)){
+				TSK_DEBUG_INFO("Unregistration succeed.");
+			}
+			else{
+				TSK_DEBUG_INFO("Unregistration failed.");
+			}
 			break;
 		}
-	case tsip_register_terminated:
-		{
-			TSK_DEBUG_INFO("Registration terminated.");
-			break;
-		}
+
+	default:
+		break;
 	}
-	
 	return 0;
 }
 
@@ -153,7 +184,8 @@ void test_stack()
 
 	/* Callbacks */
 	tsip_stack_set_callback_register(stack, tsip_registration_callback);
-	tsip_stack_set_callback_subscribe(stack, tsip_subscribtion_callback);
+	tsip_stack_set_callback_subscribe(stack, tsip_subscription_callback);
+	tsip_stack_set_callback_message(stack, tsip_messaging_callback);
 
 	tsip_stack_start(stack);
 
@@ -161,16 +193,26 @@ void test_stack()
 
 	tsk_thread_sleep(1000);
 
-	{
-		tsip_operation_handle_t *op2 = TSIP_OPERATION_CREATE(stack,
-		TSIP_OPERATION_SET_PARAM("expires", "30"),
-		TSIP_OPERATION_SET_PARAM("package", "reg"),
-		TSIP_OPERATION_SET_PARAM("accept", "application/reginfo+xml"),
-		TSIP_OPERATION_SET_PARAM("to", "sip:mamadou@ims.inexbee.com"),
-		
-		TSIP_OPERATION_SET_NULL());
-		tsip_subscribe(stack, op2);
-	}
+	//{
+	//	tsip_operation_handle_t *op2 = TSIP_OPERATION_CREATE(stack,
+	//	TSIP_OPERATION_SET_PARAM("expires", "30"),
+	//	TSIP_OPERATION_SET_PARAM("package", "reg"),
+	//	TSIP_OPERATION_SET_PARAM("accept", "application/reginfo+xml"),
+	//	TSIP_OPERATION_SET_PARAM("to", "sip:mamadou@ims.inexbee.com"),
+	//	
+	//	TSIP_OPERATION_SET_NULL());
+	//	tsip_subscribe(stack, op2);
+	//}
+
+	//{
+	//	tsip_operation_handle_t *op3 = TSIP_OPERATION_CREATE(stack,
+	//	TSIP_OPERATION_SET_PARAM("to", "sip:laurent@ims.inexbee.com"),
+	//	TSIP_OPERATION_SET_PARAM("content", "test"),
+	//	TSIP_OPERATION_SET_PARAM("content-type", "text/plain"),
+	//	
+	//	TSIP_OPERATION_SET_NULL());
+	//	tsip_message(stack, op3);
+	//}
 
 	//while(1);//tsk_thread_sleep(500);
 	//while(1)

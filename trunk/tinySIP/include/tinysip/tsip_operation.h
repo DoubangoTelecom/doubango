@@ -42,6 +42,7 @@ TSIP_BEGIN_DECLS
 
 typedef uint64_t tsip_operation_id_t;			
 #define TSIP_OPERATION_INVALID_ID				0
+#define TSIP_OPERATION_INVALID_HANDLE			TSIP_NULL
 
 typedef enum tsip_operation_param_type_e
 {
@@ -56,7 +57,7 @@ tsip_operation_param_type_t;
 
 typedef void tsip_operation_handle_t;
 
-tsip_operation_handle_t *tsip_operation_clone(const tsip_operation_handle_t *self);
+tsip_operation_handle_t *tsip_operation_createex(const struct tsip_message_s* message);
 TINYSIP_API tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self);
 const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self, const char* pname);
 

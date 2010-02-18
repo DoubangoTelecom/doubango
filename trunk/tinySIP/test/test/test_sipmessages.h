@@ -112,7 +112,7 @@
 	"How are you"
 
 
-#define SIP_MSG_2_TEST SIP_RESPONSE
+#define SIP_MSG_2_TEST SIP_MESSAGE
 
 void test_parser()
 {

@@ -38,6 +38,7 @@
 
 #include "tinysip/api/tsip_register.h"
 #include "tinysip/api/tsip_subscribe.h"
+#include "tinysip/api/tsip_message.h"
 
 #include "tinysip/tsip_uri.h"
 
@@ -129,6 +130,7 @@ typedef struct tsip_stack_s
 	tsip_stack_callback callback;
 	tsip_register_callback callback_register;
 	tsip_subscribe_callback callback_subscribe;
+	tsip_message_callback callback_message;
 
 	/* Identity */
 	char* display_name;
@@ -203,6 +205,7 @@ TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API int tsip_stack_set_callback_register(tsip_stack_handle_t *self, tsip_register_callback callback);
 TINYSIP_API int tsip_stack_set_callback_subscribe(tsip_stack_handle_t *self, tsip_subscribe_callback callback);
+TINYSIP_API int tsip_stack_set_callback_message(tsip_stack_handle_t *self, tsip_message_callback callback);
 //int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
@@ -219,6 +222,8 @@ int tsip_unregister(tsip_stack_handle_t *stack, const tsip_operation_handle_t *o
 
 TINYSIP_API int tsip_subscribe(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 int tsip_unsubscribe(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+
+TINYSIP_API int tsip_message(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);

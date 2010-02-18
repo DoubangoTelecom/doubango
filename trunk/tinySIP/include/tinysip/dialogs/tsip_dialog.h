@@ -83,7 +83,8 @@ tsip_dialog_type_t;
 
 typedef enum tsip_dialog_event_type_e
 {
-	tsip_dialog_msg,
+	tsip_dialog_i_msg,
+	tsip_dialog_o_msg,
 	tsip_dialog_transac_ok,
 	tsip_dialog_canceled,
 	tsip_dialog_terminated,

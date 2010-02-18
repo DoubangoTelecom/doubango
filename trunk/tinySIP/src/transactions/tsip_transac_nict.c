@@ -454,7 +454,7 @@ int tsip_transac_nict_Trying_2_Proceedding_X_1xx(va_list *app)
 	}
 	TRANSAC_TIMER_CANCEL(F);
 	
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, message);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, message);
 
 	return 0;
 }
@@ -480,7 +480,7 @@ int tsip_transac_nict_Trying_2_Completed_X_200_to_699(va_list *app)
 	}
 	TRANSAC_TIMER_CANCEL(F);
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, message);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, message);
 
 	/* SCHEDULE timer K */
 	TRANSAC_NICT_TIMER_SCHEDULE(K);
@@ -552,7 +552,7 @@ int tsip_transac_nict_Proceeding_2_Proceeding_X_1xx(va_list *app)
 	{
 		TRANSAC_TIMER_CANCEL(E);
 	}
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, message);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, message);
 
 	return 0;
 }
@@ -587,7 +587,7 @@ int tsip_transac_nict_Proceeding_2_Completed_X_200_to_699(va_list *app)
 		TRANSAC_TIMER_CANCEL(E);
 	}
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_msg, message);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, message);
 	
 	/* SCHEDULE timer K */
 	TRANSAC_NICT_TIMER_SCHEDULE(K);

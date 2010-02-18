@@ -40,19 +40,20 @@ TSIP_BEGIN_DECLS
 
 typedef enum tsip_subscribe_event_type_e
 {
-	tsip_subscribe_ok,
-	tsip_subscribe_nok,
-	tsip_unsubscribe_ok,
-	tsip_unsubscribe_nok,
-	tsip_subscribing,
-	tsip_unsubscribing,
-	tsip_subscribe_notify,
-	tsip_subscribe_sent,
-	tsip_subscribe_cancelled,
-	tsip_subscribe_auth_nok,
-	tsip_subscribe_secagree_nok,
-	tsip_subscribe_transporterr,
-	tsip_subscribe_terminated,
+	tsip_i_subscribe,
+	tsip_ai_subscribe,
+	tsip_o_subscribe,
+	tsip_ao_subscribe,
+	
+	tsip_i_unsubscribe,
+	tsip_ai_unsubscribe,
+	tsip_o_unsubscribe,
+	tsip_ao_unsubscribe,
+
+	tsip_i_notify,
+	tsip_ai_notify,
+	tsip_o_notify,
+	tsip_ao_notify
 }
 tsip_subscribe_event_type_t;
 
@@ -64,7 +65,7 @@ typedef struct tsip_subscribe_event_e
 }
 tsip_subscribe_event_t;
 
-int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, struct tsip_stack_s *stack, tsip_operation_id_t opid, short status_code, const char *phrase, unsigned incoming);
+int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, struct tsip_stack_s *stack, tsip_operation_id_t opid, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
 typedef int (*tsip_subscribe_callback)(const tsip_subscribe_event_t *sipevent);
 
