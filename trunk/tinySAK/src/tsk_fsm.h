@@ -39,15 +39,7 @@ TSK_BEGIN_DECLS
 
 #define TSK_FSM_CREATE(state_curr, state_term)		tsk_object_new(tsk_fsm_def_t, (tsk_fsm_state_id)state_curr, (tsk_fsm_state_id)state_term)
 #define TSK_FSM_ENTRY_CREATE()						tsk_object_new(tsk_fsm_entry_def_t)
-
-
-/*==============
-*	from (stateA) ---> [fsm_actionB {fsm_cond_B or fsm_cond_always}] ---> to (stateB) ==> execute(fsm_functionB)
-*				  ---> [fsm_actionC {fsm_cond_C or fsm_cond_always}] ---> to (stateC) ==> execute(fsm_functionC)
-*
-*	The starting state is "stateA". If after executing "fsm_actionB" action, "fsm_cond_B" or "fsm_cond_always" condition is true
-*	then we can move to "stateB". At "stateB" we execute "fsm_functionB" function.
-*/
+#define TSK_FSM_ONTERMINATED(self)					(tsk_fsm_onterminated)(self)
 
 #define tsk_fsm_state_any -0xFFFF
 #define tsk_fsm_state_default -0xFFF0
@@ -58,7 +50,7 @@ TSK_BEGIN_DECLS
 
 typedef int tsk_fsm_state_id;
 typedef int tsk_fsm_action_id;
-typedef int (*tsk_fsm_cond)(void*, void*);
+typedef int (*tsk_fsm_cond)(const void*, const void*);
 typedef int (*tsk_fsm_exec)(va_list *app);
 typedef int (*tsk_fsm_onterminated)(const void*);
 
@@ -108,11 +100,10 @@ typedef struct tsk_fsm_s
 tsk_fsm_t;
 
 TINYSAK_API int tsk_fsm_exec_nothing(va_list *app);
-TINYSAK_API int tsk_fsm_cond_always(void*, void*);
+TINYSAK_API int tsk_fsm_cond_always(const void*, const void*);
 TINYSAK_API int tsk_fsm_set(tsk_fsm_t* self, ...);
 TINYSAK_API int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callback, const void* callbackdata);
-TINYSAK_API int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, void* cond_data1, void* cond_data2, ...);
-
+TINYSAK_API int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data1, const void* cond_data2, ...);
 
 TINYSAK_GEXTERN const void *tsk_fsm_def_t;
 TINYSAK_GEXTERN const void *tsk_fsm_entry_def_t;

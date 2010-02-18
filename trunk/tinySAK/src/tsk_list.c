@@ -32,7 +32,7 @@
 #include "tsk_macros.h"
 #include "tsk_debug.h"
 
-#include <assert.h>
+//#include <assert.h>
 #include <string.h>
 
 // FIXME: remove asserts
@@ -220,7 +220,7 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
 		tsk_list_item_t *prev = 0;
 		tsk_list_item_t *curr = prev = list->head;
 
-		assert((list && list->tail) ? !list->tail->next : 1);
+		//assert((list && list->tail) ? !list->tail->next : 1);
 
 		while(curr)
 		{
@@ -261,7 +261,7 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
 		}
 	}
 
-	assert((list && list->tail) ? !list->tail->next : 1);
+	//assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 /**@ingroup tsk_list_group
@@ -314,7 +314,7 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 			curr = curr->next;
 		}
 	}
-	assert((list && list->tail) ? !list->tail->next : 1);
+	//assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -366,7 +366,7 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 			}
 		}
 
-		assert((list && list->tail) ? !list->tail->next : 1);
+		//assert((list && list->tail) ? !list->tail->next : 1);
 	}
 
 	return item;
@@ -392,7 +392,7 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 	}
 	(*item) = 0;
 
-	assert((list && list->tail) ? !list->tail->next : 1);
+	//assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 /**@ingroup tsk_list_group
@@ -432,7 +432,7 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 
 		tsk_list_push_back_item(list, item);
 		
-		assert((list && list->tail) ? !list->tail->next : 1);
+		//assert((list && list->tail) ? !list->tail->next : 1);
 	}
 }
 
@@ -477,7 +477,7 @@ void tsk_list_push_data(tsk_list_t* list, void** data, int back)
 	{
 		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
 	}
-	assert((list && list->tail) ? !list->tail->next : 1);
+	//assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 /**@ingroup tsk_list_group
@@ -493,7 +493,7 @@ void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending)
 		tsk_list_push_filtered_item(list, &item, ascending);
 		(*data) = 0;
 
-		assert((list && list->tail) ? !list->tail->next : 1);
+		//assert((list && list->tail) ? !list->tail->next : 1);
 	}
 	else
 	{

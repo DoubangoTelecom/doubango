@@ -724,10 +724,10 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 
 		/* Expires */
 		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "expires"))){
-			TSIP_DIALOG(self)->expires = atoi(param->value);
+			self->expires = atoi(param->value);
 		}
 		else{
-			TSIP_DIALOG(self)->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
+			self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
 		}
 
 		self->initialized = 1;
@@ -745,7 +745,7 @@ int tsip_dialog_hangup(tsip_dialog_t *self)
 	return -1;
 }
 
-int tsip_dialog_remove_callback(const tsip_dialog_t* self, tsk_timer_id_t timer_id)
+int tsip_dialog_remove(const tsip_dialog_t* self)
 {
 	return tsip_dialog_layer_remove(TSIP_STACK(self->stack)->layer_dialog, TSIP_DIALOG(self));
 }

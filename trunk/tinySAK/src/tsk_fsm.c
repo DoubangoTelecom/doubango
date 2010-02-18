@@ -33,7 +33,7 @@
 #include "tsk_debug.h"
 
 int tsk_fsm_exec_nothing(va_list *app){ return 1; }
-int tsk_fsm_cond_always(void* data1, void* data2) { return 1; }
+int tsk_fsm_cond_always(const void* data1, const void* data2) { return 1; }
 
 int tsk_fsm_set(tsk_fsm_t* self, ...)
 {
@@ -57,7 +57,7 @@ int tsk_fsm_set(tsk_fsm_t* self, ...)
 			entry->exec = va_arg(args, tsk_fsm_exec);
 			entry->desc = va_arg(args, const char*);
 			
-			tsk_list_push_back_data(self->entries, (void**)&entry);
+			tsk_list_push_descending_data(self->entries, (void**)&entry);
 		}
 	}
 	va_end(args);
@@ -76,12 +76,13 @@ int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callba
 	return -1;
 }
 
-int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, void* cond_data1, void* cond_data2, ...)
+int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data1, const void* cond_data2, ...)
 {
 	tsk_list_item_t *item;
 	va_list ap;
 	int found = 0;
-
+	int ret_exec = 0;
+	
 	if(!self){
 		TSK_DEBUG_ERROR("Null FSM.");
 		return -1;
@@ -98,32 +99,29 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, void* cond_data1, voi
 	tsk_list_foreach(item, self->entries)
 	{
 		tsk_fsm_entry_t* entry = item->data;
-		if((entry->from != self->current)){
+		if((entry->from != tsk_fsm_state_any) && (entry->from != self->current)){
 			continue;
 		}
 
-		if((entry->action != action) && (entry->action != tsk_fsm_state_any)){
+		if((entry->action != tsk_fsm_action_any) && (entry->action != action)){
 			continue;
 		}
 		
 		// check condition
 		if(entry->cond(cond_data1, cond_data2)){
-			self->current = entry->to;
-			if(entry->exec){
-				entry->exec(&ap);
-			}
-			found = 1;
 			// For debug information
 			if(self->debug){
 				TSK_DEBUG_INFO("State machine: %s", entry->desc);
 			}
-			
-			if(self->current == self->term){
-				if(self->callback_term){
-					self->callback_term(self->callback_data);
+			self->current = entry->to;
+			if(entry->exec){
+				if((ret_exec = entry->exec(&ap))){
+					TSK_DEBUG_INFO("State machine: Exec function failed. Moving to terminal state.");
+					self->current = self->term;
 				}
 			}
 
+			found = 1;
 			break;
 		}
 	}
@@ -132,6 +130,12 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, void* cond_data1, voi
 	// unlock
 	tsk_safeobj_unlock(self);
 
+	/* Only call the callback function after unlock. */
+	if(self->current == self->term){
+		if(self->callback_term){
+			self->callback_term(self->callback_data);
+		}
+	}
 	if(!found){
 		TSK_DEBUG_WARN("State machine: No matching state found.");
 	}
@@ -209,17 +213,26 @@ static void* tsk_fsm_entry_destroy(void * self)
 
 	return self;
 }
-static int tsk_string_cmp(const void *obj1, const void *obj2)
+static int tsk_fsm_entry_cmp(const void *obj1, const void *obj2)
 {
 	const tsk_fsm_entry_t* entry1 = obj1;
 	const tsk_fsm_entry_t* entry2 = obj2;
 	if(entry1 && entry2)
 	{
+		/* Put "Any" states at the bottom. (Strong)*/
 		if(entry1->from == tsk_fsm_state_any){
-			return -1;
+			return -20;
 		}
 		else if(entry2->from == tsk_fsm_state_any){
-			return 1;
+			return +20;
+		}
+
+		/* Put "Any" actions at the bottom. (Weak)*/
+		if(entry1->action == tsk_fsm_action_any){
+			return -10;
+		}
+		else if(entry1->action == tsk_fsm_action_any){
+			return +10;
 		}
 	}
 	return 0;
@@ -230,6 +243,6 @@ static const tsk_object_def_t tsk_fsm_entry_def_s =
 	sizeof(tsk_fsm_entry_t),
 	tsk_fsm_entry_create, 
 	tsk_fsm_entry_destroy,
-	0, 
+	tsk_fsm_entry_cmp, 
 };
 const void *tsk_fsm_entry_def_t = &tsk_fsm_entry_def_s;
