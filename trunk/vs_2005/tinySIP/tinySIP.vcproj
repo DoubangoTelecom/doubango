@@ -793,38 +793,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="smc"
-				>
-				<File
-					RelativePath="..\..\tinySIP\src\smc\tsip_dialog_message_sm.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\src\smc\tsip_dialog_register_sm.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\src\smc\tsip_dialog_subscribe_sm.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\src\smc\tsip_transac_ict_sm.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\src\smc\tsip_transac_ist_sm.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\src\smc\tsip_transac_nict_sm.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\src\smc\tsip_transac_nist_sm.c"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="transports"
 				>
 				<File
@@ -1409,38 +1377,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="smc"
-				>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_dialog_message_sm.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_dialog_register_sm.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_dialog_subscribe_sm.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_transac_ict_sm.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_transac_ist_sm.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_transac_nict_sm.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\smc\tsip_transac_nist_sm.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="transports"
 				>
 				<File
@@ -1918,38 +1854,6 @@
 			>
 			<File
 				RelativePath="..\..\tinySIP\abnf\core.abnf"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="smc"
-			>
-			<File
-				RelativePath="..\..\tinySIP\smc\tsip_dialog_message.sm"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinySIP\smc\tsip_dialog_register.sm"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinySIP\smc\tsip_dialog_subscribe.sm"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinySIP\smc\tsip_transac_ict.sm"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinySIP\smc\tsip_transac_ist.sm"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinySIP\smc\tsip_transac_nict.sm"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinySIP\smc\tsip_transac_nist.sm"
 				>
 			</File>
 		</Filter>

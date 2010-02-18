@@ -173,23 +173,20 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	//tsk_safeobj_unlock(self);
 	
 	if(dialog){
-		dialog->callback(dialog, tsip_dialog_msg, message);
+		dialog->callback(dialog, tsip_dialog_i_msg, message);
 		if((transac = tsip_transac_layer_new(layer_transac, TSIP_FALSE, message))){
 			TSIP_TRANSAC(transac)->dialog = dialog;
 		}
 	}
-	else{
-		
-		/*const*/ tsip_transac_t* transac = 0;
-
+	else{		
 		if(TSIP_MESSAGE_IS_REQUEST(message))
 		{
+			tsip_operation_handle_t* op = tsip_operation_createex(message);
+
 			if(tsk_strequals("MESSAGE", TSIP_REQUEST_METHOD(message)))
 			{
-				tsip_dialog_message_t *dlg_msg = TSIP_DIALOG_MESSAGE_CREATE(self->stack, 0);
-
-				transac = tsip_transac_layer_new(layer_transac, TSIP_FALSE, message);
-				if(transac)
+				tsip_dialog_message_t *dlg_msg = TSIP_DIALOG_MESSAGE_CREATE(self->stack, op);
+				if((transac = tsip_transac_layer_new(layer_transac, TSIP_FALSE, message)))
 				{
 					TSIP_TRANSAC(transac)->dialog = TSIP_DIALOG(dlg_msg);
 				}
@@ -200,7 +197,9 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 			{
 			}
 
-			// ....				
+			// ....
+
+			TSK_OBJECT_SAFE_FREE(op);
 		}
 	}
 

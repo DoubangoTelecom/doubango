@@ -29,8 +29,6 @@
  */
 #include "tinysip/dialogs/tsip_dialog_subscribe.h"
 
-#include "tinysip/parsers/tsip_parser_uri.h"
-
 #include "tinysip/headers/tsip_header_Event.h"
 #include "tinysip/headers/tsip_header_Min_Expires.h"
 #include "tinysip/headers/tsip_header_Subscription_State.h"
@@ -40,11 +38,8 @@
 
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(subscribe, TX)
-#define TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, incoming)	\
-	tsip_subscribe_event_signal(type, TSIP_DIALOG_GET_STACK(self),/*tsip_operation_get_id(TSIP_DIALOG(self)->operation)*/0, code, phrase, incoming)
-#define TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, type, code, phrase) TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, 1)
-#define TSIP_DIALOG_SUBSCRIBE_SIGNAL_OUTGOING(self, type, code, phrase) TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, 0)
-
+#define TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, message)	\
+	tsip_subscribe_event_signal(type, TSIP_DIALOG_GET_STACK(self), tsip_operation_get_id(TSIP_DIALOG(self)->operation), code, phrase, message)
 
 /* ======================== internal functions ======================== */
 int send_subscribe(tsip_dialog_subscribe_t *self);
@@ -146,7 +141,7 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 
 	switch(type)
 	{
-	case tsip_dialog_msg:
+	case tsip_dialog_i_msg:
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
@@ -256,8 +251,7 @@ int tsip_dialog_subscribe_timer_callback(const tsip_dialog_subscribe_t* self, ts
 int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 {
 	const tsk_param_t* param;
-	tsip_uri_t* uri = 0;
-
+	
 	/* Initialize the State Machine. */
 	tsk_fsm_set(self->fsm,
 			
@@ -325,24 +319,9 @@ int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 	}
 
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_subscribe_event_callback);
-	
-	/* from */
-	TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
-	
-	/* to */
-	if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "to")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
-		TSIP_DIALOG(self)->uri_remote_target = tsk_object_ref(uri); /* the to uri will be used as request uri. */
-		TSIP_DIALOG(self)->uri_remote = tsk_object_ref(uri);
-	}
-	else{
-		TSIP_DIALOG(self)->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
-		TSIP_DIALOG(self)->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->realm);
-	}
 
 	self->timerrefresh.id = TSK_INVALID_TIMER_ID;
 	self->timerrefresh.timeout = TSIP_DIALOG(self)->expires;
-
-	tsk_object_unref(uri);
 
 	return 0;
 }
@@ -391,7 +370,8 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_2xx(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* Alert the user. */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_unsubscribe_ok, TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
 	return 0;
 }
@@ -404,8 +384,8 @@ int tsip_dialog_subscribe_Trying_2_Connected_X_2xx(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* Alert the user. */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_ok, 
-		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
 	/* Update the dialog state. */
 	tsip_dialog_update(TSIP_DIALOG(self), response);
@@ -427,8 +407,8 @@ int tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494(va_list *app)
 	if(tsip_dialog_update(TSIP_DIALOG(self), response))
 	{
 		/* Alert the user. */
-		TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, self->unsubscribing ? tsip_unsubscribing : tsip_subscribing,
-			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
+			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 		
 		return -1;
 	}
@@ -462,8 +442,8 @@ int tsip_dialog_subscribe_Trying_2_Trying_X_423(va_list *app)
 	}
 	else
 	{
-		TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, self->unsubscribing ? tsip_unsubscribing : tsip_subscribing,
-			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
+			715, "Invalid SIP response.", response);
 
 		return -1;
 	}
@@ -479,7 +459,8 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* Alert the user. */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_nok, TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response));
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe,  
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
 	return 0;
 }
@@ -492,7 +473,8 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* Alert the user. */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_cancelled, 801, "Subscribtion cancelled");
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
+		701, "Subscription cancelled", TSIP_NULL);
 
 	return 0;
 }
@@ -504,9 +486,7 @@ int tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY(va_list *app)
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
 
-	send_notify_200ok(self, request);
-
-	return 0;
+	return send_notify_200ok(self, request);
 }
 
 /* Connected -> (unsubscribe) -> Trying
@@ -539,8 +519,8 @@ int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app)
 	send_notify_200ok(self, request);
 
 	/* Alert the user */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_notify, 
-		TSIP_RESPONSE_CODE(request), TSIP_RESPONSE_PHRASE(request));
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
+		299, "Incoming Request.", request);
 	
 	/* Request timeout for dialog refresh (re-registration). */
 	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), request);
@@ -555,6 +535,10 @@ int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app)
 {
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+
+	/* Alert the user */
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
+		720, "Dialog terminated", request);
 
 	return send_notify_200ok(self, request);
 }
@@ -656,9 +640,6 @@ int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 
 	/* Cancel all timers */
 	DIALOG_TIMER_CANCEL(refresh);
-
-	/* Alert user */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL_INCOMING(self, tsip_subscribe_terminated, 700, "Dialog terminated.");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

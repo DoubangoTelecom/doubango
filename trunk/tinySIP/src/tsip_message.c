@@ -122,6 +122,23 @@ int tsip_message_add_headers(tsip_message_t *self, const tsip_headers_L_t *heade
 	return -1;
 }
 
+int tsip_message_add_content(tsip_message_t *self, const char* content_type, const void* content, size_t size)
+{
+	if(self)
+	{
+		TSK_OBJECT_SAFE_FREE(self->Content_Type);
+		TSK_OBJECT_SAFE_FREE(self->Content_Length);
+		TSK_OBJECT_SAFE_FREE(self->Content);
+
+		TSIP_MESSAGE_ADD_HEADER(self, TSIP_HEADER_CONTENT_TYPE_VA_ARGS(content_type));
+		TSIP_MESSAGE_ADD_HEADER(self, TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(size));
+		self->Content = TSK_BUFFER_CREATE(content, size);
+
+		return 0;
+	}
+	return -1;
+}
+
 const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, size_t index)
 {
 	size_t pos = 0;
@@ -449,7 +466,7 @@ static void* tsip_message_create(void *self, va_list * app)
 		message->type = va_arg(*app, tsip_message_type_t); 
 		message->headers = TSK_LIST_CREATE();
 		message->sockfd = TNET_INVALID_FD;
-		message->Content_Length = TSIP_HEADER_CONTENT_LENGTH_CREATE(0);
+		//message->Content_Length = TSIP_HEADER_CONTENT_LENGTH_CREATE(0);
 
 
 		switch(message->type)

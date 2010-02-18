@@ -30,6 +30,8 @@
 #include "tinysip/tsip_operation.h"
 #include "tsip.h"
 
+#include "tinysip/tsip_message.h"
+
 #include "tsk_debug.h"
 
 
@@ -44,13 +46,30 @@ typedef struct tsip_operation_s
 tsip_operation_t;
 
 
-tsip_operation_handle_t *tsip_operation_clone(const tsip_operation_handle_t *self)
+tsip_operation_handle_t *tsip_operation_createex(const struct tsip_message_s* message)
 {
-	if(self)
+	tsip_operation_handle_t* operation = TSIP_NULL;
+
+	if(message)
 	{
-		return tsk_object_ref((void*)self);
+		char* from = TSIP_NULL, *to = TSIP_NULL;
+
+		if(message->From && message->From->uri){ /* MUST be not null */
+			from = tsip_uri_tostring(message->From->uri, TSIP_FALSE, TSIP_FALSE);
+		}
+		if(message->To && message->To->uri){ /* MUST be not null */
+			to = tsip_uri_tostring(message->To->uri, TSIP_FALSE, TSIP_FALSE);
+		}
+
+		operation = TSIP_OPERATION_CREATE(TSIP_NULL,
+			TSIP_OPERATION_SET_PARAM("to", to),
+			TSIP_OPERATION_SET_PARAM("from", from),
+			TSIP_OPERATION_SET_NULL());
+
+		TSK_FREE(from);
+		TSK_FREE(to);
 	}
-	return 0;
+	return operation;
 }
 
 tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self)
@@ -70,7 +89,7 @@ const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self,
 		const tsip_operation_t *operation = self;
 		return tsk_params_get_param_by_name(operation->params, pname);
 	}
-	return 0;
+	return TSIP_NULL;
 }
 
 

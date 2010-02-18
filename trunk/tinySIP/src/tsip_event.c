@@ -31,13 +31,15 @@
 
 #include "tsip.h"
 
+#include "tinysip/tsip_message.h"
+
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
 
 
 
-int tsip_event_init(tsip_event_t* self, tsip_stack_t *stack, tsip_operation_id_t opid, short code, const char *phrase, unsigned incoming, tsip_event_type_t type)
+int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_operation_id_t opid, short code, const char *phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
 {
 	if(self && stack)
 	{
@@ -45,8 +47,10 @@ int tsip_event_init(tsip_event_t* self, tsip_stack_t *stack, tsip_operation_id_t
 		self->opid = opid;
 		self->code = code;
 		tsk_strupdate(&(self->phrase), phrase);
-		self->incoming = incoming;
 		self->type = type;
+		if(sipmessage){
+			self->sipmessage = tsk_object_ref((void*)sipmessage);
+		}
 		return 0;
 	}
 	return -1;
@@ -59,6 +63,7 @@ int tsip_event_deinit(tsip_event_t* self)
 		TSK_OBJECT_SAFE_FREE(self->stack);
 
 		TSK_FREE(self->phrase);
+		TSK_OBJECT_SAFE_FREE(self->sipmessage);
 		return 0;
 	}
 	return -1;
@@ -85,18 +90,27 @@ static void* tsip_event_create(void * self, va_list * app)
 	tsip_event_t *sipevent = self;
 	if(sipevent)
 	{
-		sipevent->stack = va_arg(*app, tsip_stack_handle_t *);
-		sipevent->opid = va_arg(*app, tsip_operation_id_t);
+		const tsip_message_t* sipmessage;
+		tsip_stack_t *stack;
+		tsip_operation_id_t opid;
+		short code;
+		const char *phrase;
+		tsip_event_type_t type;
+		
+		stack = va_arg(*app, tsip_stack_handle_t *);
+		opid = va_arg(*app, tsip_operation_id_t);
 
 #if defined(__GNUC__)
-		sipevent->code = (short)va_arg(*app, int);
+		code = (short)va_arg(*app, int);
 #else
-		sipevent->code = va_arg(*app, short);
+		code = va_arg(*app, short);
 #endif
-		sipevent->phrase = tsk_strdup(va_arg(*app, const char *));
-
-		sipevent->incoming = va_arg(*app, unsigned);
-		sipevent->type = va_arg(*app, tsip_event_type_t);
+		phrase = va_arg(*app, const char *);
+		
+		sipmessage = va_arg(*app, const tsip_message_t*);
+		type = va_arg(*app, tsip_event_type_t);
+		
+		tsip_event_init(self, stack, opid, code, phrase, sipmessage, type);
 	}
 	return self;
 }
@@ -106,7 +120,7 @@ static void* tsip_event_destroy(void * self)
 	tsip_event_t *sipevent = self;
 	if(sipevent)
 	{
-		TSK_FREE(sipevent->phrase);
+		tsip_event_deinit(sipevent);
 	}
 	return self;
 }

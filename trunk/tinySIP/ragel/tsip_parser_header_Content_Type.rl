@@ -89,8 +89,13 @@ int tsip_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
 	{
-		const tsip_header_Content_Type_t *Content_Type = header;	
-		return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
+		const tsip_header_Content_Type_t *Content_Type = header;
+		if(Content_Type->type){
+			return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
+		}
+		else{
+			return -2;
+		}
 	}
 
 	return -1;
@@ -102,7 +107,7 @@ tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Content_Type_t *hdr_ctype = TSIP_HEADER_CONTENT_TYPE_CREATE();
+	tsip_header_Content_Type_t *hdr_ctype = TSIP_HEADER_CONTENT_TYPE_CREATE_NULL();
 	
 	const char *tag_start;
 
@@ -137,6 +142,8 @@ static void* tsip_header_Content_Type_create(void *self, va_list * app)
 	{
 		TSIP_HEADER(Content_Type)->type = tsip_htype_Content_Type;
 		TSIP_HEADER(Content_Type)->tostring = tsip_header_Content_Type_tostring;
+
+		Content_Type->type = tsk_strdup( va_arg(*app, const char*) );
 	}
 	else
 	{

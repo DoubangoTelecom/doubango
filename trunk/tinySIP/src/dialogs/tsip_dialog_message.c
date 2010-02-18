@@ -37,13 +37,11 @@
 #include "tsk_time.h"
 
 #define DEBUG_STATE_MACHINE											1
-#define TSIP_DIALOG_MESSAGE_SIGNAL_ERROR(self)									\
-	TSIP_DIALOG_SYNC_BEGIN(self);												\
-	tsip_dialog_messageContext_sm_error(&TSIP_DIALOG_MESSAGE(self)->_fsm);		\
-	TSIP_DIALOG_SYNC_END(self);
+#define TSIP_DIALOG_MESSAGE_SIGNAL(self, type, code, phrase, message)	\
+	tsip_message_event_signal(type, TSIP_DIALOG_GET_STACK(self), tsip_operation_get_id(TSIP_DIALOG(self)->operation), code, phrase, message)
 
 /* ======================== internal functions ======================== */
-int send_message(tsip_dialog_message_t *self);
+int send_MESSAGE(tsip_dialog_message_t *self, tsip_request_t *request);
 int send_response(tsip_dialog_message_t *self, short status, const char* phrase, const tsip_request_t *request);
 int tsip_dialog_message_OnTerminated(tsip_dialog_message_t *self);
 
@@ -96,7 +94,7 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 
 	switch(type)
 	{
-	case tsip_dialog_msg:
+	case tsip_dialog_i_msg:
 		{
 			if(msg)
 			{
@@ -122,13 +120,25 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 						TSK_DEBUG_WARN("Not supported status code: %d", status_code);
 					}
 				}
-				else
+				else // REQUEST ==> Incoming MESSAGE
 				{
 					ret = tsk_fsm_act(self->fsm, _fsm_action_receiveMESSAGE, self, msg, self, msg);
 				}
 			}
 			break;
 		}
+
+	//case tsip_dialog_o_msg:
+	//	{
+	//		if(msg)
+	//		{
+	//			if(TSIP_MESSAGE_IS_REQUEST(msg)) /* outgoing MESSAGE. */
+	//			{
+	//				ret = tsk_fsm_act(self->fsm, _fsm_action_sendMESSAGE, self, msg, self, msg);
+	//			}
+	//		}
+	//		break;
+	//	}
 
 	case tsip_dialog_canceled:
 		{
@@ -151,6 +161,8 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 
 int tsip_dialog_message_init(tsip_dialog_message_t *self)
 {
+	//const tsk_param_t* param;
+
 	/* Initialize the state machine. */
 	tsk_fsm_set(self->fsm,
 			
@@ -206,28 +218,45 @@ int tsip_dialog_message_init(tsip_dialog_message_t *self)
 	return 0;
 }
 
-
-
-/*int tsip_dialog_message_send(tsip_dialog_message_t *self)
+int tsip_dialog_message_start(tsip_dialog_message_t *self)
 {
 	int ret = -1;
+	if(self && !TSIP_DIALOG(self)->running)
+	{
+		const tsk_param_t* param;
+		const void* content = TSIP_NULL;
+		size_t content_length = 0;
+		const char* content_type = "text/plain";
 
-	self->sender = 1;
-	//tsip_dialog_messageContext_sm_send(&self->_fsm, message);
+		tsip_request_t* request = tsip_dialog_request_new(TSIP_DIALOG(self), "MESSAGE");
 
+		/* content-type */
+		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content-type"))){
+			content_type = param->value;
+		}
+		/* content-length */
+		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content-length"))){
+			content_length = atoi(param->value);
+		}
+		/* content */
+		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content"))){
+			content = param->value;
+			if(!content_length && content){
+				content_length = strlen(content);
+			}
+		}
+
+		if(content){
+			tsip_message_add_content(request, content_type, content, content_length);
+		}
+
+		/* Send request */
+		ret = tsk_fsm_act(self->fsm, _fsm_action_sendMESSAGE, self, request, self, request);
+		
+		TSK_OBJECT_SAFE_FREE(request);
+	}
 	return ret;
 }
-
-int tsip_dialog_message_recv(tsip_dialog_message_t *self, const tsip_message_t *message)
-{
-	int ret = -1;
-
-	self->sender = 0;
-	tsip_dialog_messageContext_sm_receive(&self->_fsm, message);
-
-	return ret;
-}*/
-
 
 
 
@@ -242,9 +271,9 @@ int tsip_dialog_message_recv(tsip_dialog_message_t *self, const tsip_message_t *
 int tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(va_list *app)
 {
 	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+	tsip_request_t *request = va_arg(*app, tsip_request_t *);
 
-	return 0;
+	return send_MESSAGE(self, request);
 }
 
 /* Started -> (recvMESSAGE) -> Receiving
@@ -254,7 +283,11 @@ int tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(va_list *app)
 	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
 	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
 
-	return send_response(self, 200, "OK", request);
+	/* Alert the user. */
+	TSIP_DIALOG_MESSAGE_SIGNAL(self, tsip_i_message, 
+			299, "Incoming Request.", request);
+
+	return send_response(self, 200, "OK", request); // Wait for accept
 }
 
 /*	Sending -> (1xx) -> Sending
@@ -273,6 +306,10 @@ int tsip_dialog_message_Sending_2_Terminated_X_2xx(va_list *app)
 {
 	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	/* Alert the user. */
+	TSIP_DIALOG_MESSAGE_SIGNAL(self, tsip_ao_message, 
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
 	return 0;
 }
@@ -293,6 +330,10 @@ int tsip_dialog_message_Sending_2_Terminated_X_300_to_699(va_list *app)
 {
 	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	/* Alert the user. */
+	TSIP_DIALOG_MESSAGE_SIGNAL(self, tsip_ao_message, 
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
 	return 0;
 }
@@ -350,6 +391,11 @@ int tsip_dialog_message_Any_2_Terminated_X_Error(va_list *app)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //				== STATE MACHINE END ==
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+int send_MESSAGE(tsip_dialog_message_t *self, tsip_request_t *request)
+{
+	return tsip_dialog_request_send(TSIP_DIALOG(self), request);
+}
 
 int send_response(tsip_dialog_message_t *self, short status, const char* phrase, const tsip_request_t *request)
 {

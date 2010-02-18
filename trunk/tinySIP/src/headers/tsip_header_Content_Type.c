@@ -50,8 +50,13 @@ int tsip_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
 	{
-		const tsip_header_Content_Type_t *Content_Type = header;	
-		return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
+		const tsip_header_Content_Type_t *Content_Type = header;
+		if(Content_Type->type){
+			return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
+		}
+		else{
+			return -2;
+		}
 	}
 
 	return -1;
@@ -63,12 +68,12 @@ tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Content_Type_t *hdr_ctype = TSIP_HEADER_CONTENT_TYPE_CREATE();
+	tsip_header_Content_Type_t *hdr_ctype = TSIP_HEADER_CONTENT_TYPE_CREATE_NULL();
 	
 	const char *tag_start;
 
 	
-/* #line 72 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 77 "../src/headers/tsip_header_Content_Type.c" */
 static const char _tsip_machine_parser_header_Content_Type_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -235,16 +240,16 @@ static const int tsip_machine_parser_header_Content_Type_error = 0;
 static const int tsip_machine_parser_header_Content_Type_en_main = 1;
 
 
-/* #line 110 "tsip_parser_header_Content_Type.rl" */
+/* #line 115 "tsip_parser_header_Content_Type.rl" */
 	
-/* #line 241 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 246 "../src/headers/tsip_header_Content_Type.c" */
 	{
 	cs = tsip_machine_parser_header_Content_Type_start;
 	}
 
-/* #line 111 "tsip_parser_header_Content_Type.rl" */
+/* #line 116 "tsip_parser_header_Content_Type.rl" */
 	
-/* #line 248 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 253 "../src/headers/tsip_header_Content_Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -341,7 +346,7 @@ _match:
 	{
 	}
 	break;
-/* #line 345 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 350 "../src/headers/tsip_header_Content_Type.c" */
 		}
 	}
 
@@ -354,12 +359,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 112 "tsip_parser_header_Content_Type.rl" */
+/* #line 117 "tsip_parser_header_Content_Type.rl" */
 	
 	if( cs < 
-/* #line 361 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 366 "../src/headers/tsip_header_Content_Type.c" */
 60
-/* #line 113 "tsip_parser_header_Content_Type.rl" */
+/* #line 118 "tsip_parser_header_Content_Type.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);
@@ -387,6 +392,8 @@ static void* tsip_header_Content_Type_create(void *self, va_list * app)
 	{
 		TSIP_HEADER(Content_Type)->type = tsip_htype_Content_Type;
 		TSIP_HEADER(Content_Type)->tostring = tsip_header_Content_Type_tostring;
+
+		Content_Type->type = tsk_strdup( va_arg(*app, const char*) );
 	}
 	else
 	{

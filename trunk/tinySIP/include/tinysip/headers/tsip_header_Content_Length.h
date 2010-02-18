@@ -39,9 +39,9 @@ TSIP_BEGIN_DECLS
 * Creates new sip 'Content-Length' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-
 #define TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(length)	tsip_header_Content_Length_def_t, (uint32_t)length
 #define TSIP_HEADER_CONTENT_LENGTH_CREATE(length)	tsk_object_new(TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(length))
+#define TSIP_HEADER_CONTENT_LENGTH_CREATE_NULL()	TSIP_HEADER_CONTENT_LENGTH_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

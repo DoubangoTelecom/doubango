@@ -39,10 +39,10 @@
 
 #define TSIP_SUBSCRIBE_EVENT_CREATE( type)		tsk_object_new(tsip_subscribe_event_def_t, type)
 
-int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, struct tsip_stack_s *stack, tsip_operation_id_t opid, short status_code, const char *phrase, unsigned incoming)
+int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, struct tsip_stack_s *stack, tsip_operation_id_t opid, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_subscribe_event_t* sipevent = TSIP_SUBSCRIBE_EVENT_CREATE(type);
-	tsip_event_init(TSIP_EVENT(sipevent), stack, opid, status_code, phrase, incoming, tsip_event_subscribe);
+	tsip_event_init(TSIP_EVENT(sipevent), stack, opid, status_code, phrase, sipmessage, tsip_event_subscribe);
 
 	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), sipevent);
 

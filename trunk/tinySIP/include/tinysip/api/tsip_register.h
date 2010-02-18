@@ -40,18 +40,15 @@ TSIP_BEGIN_DECLS
 
 typedef enum tsip_register_event_type_e
 {
-	tsip_register_ok,
-	tsip_register_nok,
-	tsip_unregister_ok,
-	tsip_unregister_nok,
-	tsip_registering,
-	tsip_unregistering,
-	tsip_register_sent,
-	tsip_register_cancelled,
-	tsip_register_auth_nok,
-	tsip_register_secagree_nok,
-	tsip_register_transporterr,
-	tsip_register_terminated,
+	tsip_i_register,
+	tsip_ai_register,
+	tsip_o_register,
+	tsip_ao_register,
+	
+	tsip_i_unregister,
+	tsip_ai_unregister,
+	tsip_o_unregister,
+	tsip_ao_unregister,
 }
 tsip_register_event_type_t;
 
@@ -63,7 +60,7 @@ typedef struct tsip_register_event_e
 }
 tsip_register_event_t;
 
-int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_operation_id_t opid, short status_code, const char *phrase, unsigned incoming);
+int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_operation_id_t opid, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
 typedef int (*tsip_register_callback)(const tsip_register_event_t *sipevent);
 

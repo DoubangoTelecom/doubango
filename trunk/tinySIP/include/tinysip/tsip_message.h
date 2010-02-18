@@ -79,19 +79,20 @@ TSIP_BEGIN_DECLS
 #define TSIP_REQUEST_METHOD(self)			 ((self)->method)
 #define TSIP_REQUEST_URI(self)				 ((self)->uri)
 
-#define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)(((message) && (message)->Content_Length) ? (message)->Content_Length->length : 0)
-#define TSIP_MESSAGE_CONTENT(message)		 (TSIP_MESSAGE_HAS_CONTENT(message) ? (message)->Content : 0)
 #define TSIP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content)
+#define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)(((message) && (message)->Content_Length) ? (message)->Content_Length->length : 0)
+#define TSIP_MESSAGE_CONTENT(message)		 (TSIP_MESSAGE_HAS_CONTENT(message) ? (message)->Content->data : 0)
+
 
 #define TSIP_RESPONSE_IS(self, code)		(TSIP_RESPONSE_CODE((self)) == code)
-#define TSIP_RESPONSE_IS_NXX(self, N)		(N##00<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= N##99)
+#define TSIP_RESPONSE_IS_NXX(self, N)		(TSIP_MESSAGE_IS_RESPONSE((self)) && N##00<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= N##99)
 #define TSIP_RESPONSE_IS_1XX(self)			TSIP_RESPONSE_IS_NXX(self, 1)
 #define TSIP_RESPONSE_IS_2XX(self)			TSIP_RESPONSE_IS_NXX(self, 2)
 #define TSIP_RESPONSE_IS_3XX(self)			TSIP_RESPONSE_IS_NXX(self, 3)
 #define TSIP_RESPONSE_IS_4XX(self)			TSIP_RESPONSE_IS_NXX(self, 4)
 #define TSIP_RESPONSE_IS_5XX(self)			TSIP_RESPONSE_IS_NXX(self, 5)
 #define TSIP_RESPONSE_IS_6XX(self)			TSIP_RESPONSE_IS_NXX(self, 6)
-#define TSIP_RESPONSE_IS_23456(self)		(200<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
+#define TSIP_RESPONSE_IS_23456(self)		(TSIP_MESSAGE_IS_RESPONSE((self)) && 200<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
 
 /**
  * @enum	tsip_message_type_t
@@ -210,6 +211,7 @@ typedef tsip_message_t tsip_response_t; /**< SIP response message. */
 
 TINYSIP_API int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr);
 TINYSIP_API int tsip_message_add_headers(tsip_message_t *self, const tsip_headers_L_t *headers);
+TINYSIP_API int tsip_message_add_content(tsip_message_t *self, const char* content_type, const void* content, size_t size);
 
 #if !defined(_MSC_VER) || defined(__GNUC__)
 static void TSIP_MESSAGE_ADD_HEADER(tsip_message_t *self, ...)

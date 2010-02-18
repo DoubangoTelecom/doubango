@@ -36,7 +36,7 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_EVENT_CREATE(stack, opid, code, phrase, incoming, type)		tsk_object_new(tsip_event_def_t, stack, opid, code, phrase, incoming, type)
+#define TSIP_EVENT_CREATE(stack, opid, code, phrase, sipmessage, type)		tsk_object_new(tsip_event_def_t, stack, opid, code, phrase, (const tsip_message_t*)sipmessage, type)
 
 #define TSIP_EVENT(self)		((tsip_event_t*)(self))
 
@@ -48,7 +48,6 @@ typedef enum tsip_event_type_e
 	tsip_event_register,
 	tsip_event_subscribe,
 	
-
 	tsip_event_transporterr,
 
 }
@@ -64,15 +63,15 @@ typedef struct tsip_event_s
 	short code;
 	char *phrase;
 
-	unsigned incoming:1;
 	tsip_event_type_t type;
+	struct tsip_message_s *sipmessage;
 }
 tsip_event_t;
 #define TSIP_DECLARE_EVENT	tsip_event_t sipevent
 
 TINYSIP_GEXTERN const void *tsip_event_def_t;
 
-int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_operation_id_t opid, short code, const char *phrase, unsigned incoming, tsip_event_type_t type);
+int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_operation_id_t opid, short code, const char *phrase, const struct tsip_message_s* sipmessage, tsip_event_type_t type);
 int tsip_event_deinit(tsip_event_t* self);
 
 typedef int (*tsip_stack_callback)(const tsip_event_t *sipevent);
