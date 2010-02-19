@@ -122,8 +122,58 @@ void test_uri_parser()
 	}
 }
 
+struct test_uri_bundle
+{
+	const char* uri1;
+	const char* uri2;
+
+	unsigned match:1;
+};
+
+// From RFC 3261 - 19.1.4 URI Comparison
+struct test_uri_bundle test_uri_bundles[] = 
+{
+	/* Match */
+	{ "sip:%61lice@atlanta.com;transport=TCP", "sip:alice@AtLanTa.CoM;Transport=tcp", 1 },
+	{ "sip:carol@chicago.com", "sip:carol@chicago.com;newparam=5", 1 },
+	{ "sip:carol@chicago.com", "sip:carol@chicago.com;security=on", 1 },
+	{ "sip:carol@chicago.com;newparam=5", "sip:carol@chicago.com;security=on", 1 },
+	{ "sip:biloxi.com;transport=tcp;method=REGISTER?to=sip:bob%40biloxi.com", "sip:biloxi.com;method=REGISTER;transport=tcp?to=sip:bob%40biloxi.com", 1 },
+	{ "sip:alice@atlanta.com?subject=project%20x&priority=urgent", "sip:alice@atlanta.com?priority=urgent&subject=project%20x", 1 },
+
+	/* Do not match */
+	{ "SIP:ALICE@AtLanTa.CoM;Transport=udp", "sip:alice@AtLanTa.CoM;Transport=UDP", 0 }, /* different usernames */
+	{ "sip:bob@biloxi.com", "sip:bob@biloxi.com:5060", 0 }, /* can resolve to different ports */
+	{ "sip:bob@biloxi.com", "sip:bob@biloxi.com;transport=udp", 0 }, /* can resolve to different transports */
+	{ "sip:bob@biloxi.com", "sip:bob@biloxi.com:6000;transport=tcp", 0 }, /* can resolve to different port and transports */
+	{ "sip:carol@chicago.com", "sip:carol@chicago.com?Subject=next%20meeting", 0 }, /* different header component */
+	{ "sip:bob@phone21.boxesbybob.com", "sip:bob@192.0.2.4", 0 }, /* even though that's what phone21.boxesbybob.com resolves to*/
+};
+
+void test_uri_cmp()
+{
+	size_t i;
+
+	for(i=0; i< sizeof(test_uri_bundles)/sizeof(struct test_uri_bundle); i++)
+	{
+		tsip_uri_t *uri1 = tsip_uri_parse(test_uri_bundles[i].uri1, strlen(test_uri_bundles[i].uri1));
+		tsip_uri_t *uri2 = tsip_uri_parse(test_uri_bundles[i].uri2, strlen(test_uri_bundles[i].uri2));
+
+		if(tsk_object_cmp(uri1, uri2) && test_uri_bundles[i].match){
+			TSK_DEBUG_ERROR("URI Comparison failed.");
+		}
+		else{
+			TSK_DEBUG_INFO("URI Comparison ok.");
+		}
+
+		TSK_OBJECT_SAFE_FREE(uri1);
+		TSK_OBJECT_SAFE_FREE(uri2);
+	}
+}
+
 void test_uri()
 {
+	test_uri_cmp();
 	test_uri_parser();
 }
 

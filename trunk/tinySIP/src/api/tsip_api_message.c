@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/api/tsip_message.h"
+#include "tinysip/api/tsip_api_message.h"
 
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 #include "tinysip/dialogs/tsip_dialog_message.h"
@@ -75,18 +75,6 @@ int tsip_message(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *ope
 
 bail:
 	return ret;
-}
-
-int tsip_unmessage(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation)
-{
-	if(_stack && operation)
-	{
-		//const tsip_stack_t *stack = self;
-		//tsip_operation_handle_t *op = tsip_operation_clone(operation);
-
-		//tsk_list_push_back_data(stack->operations, (void**)&op);
-	}
-	return -1;
 }
 
 

@@ -30,6 +30,8 @@
 #include "tinysip/dialogs/tsip_dialog_message.h"
 #include "tinysip/parsers/tsip_parser_uri.h"
 
+#include "tinysip/api/tsip_api_message.h"
+
 #include "tinysip/headers/tsip_header_Min_Expires.h"
 
 #include "tsk_memory.h"
