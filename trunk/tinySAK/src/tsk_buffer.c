@@ -142,7 +142,10 @@ int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size)
 {
 	if(self)
 	{
-		if((position + size) > self->size)
+		if((position == 0) && ((position + size) == self->size)){ /* Very common case. */
+			return tsk_buffer_cleanup(self);
+		}
+		else if((position + size) < self->size)
 		{
 			size = self->size - position;
 			memcpy(((uint8_t*)self->data) + position, ((uint8_t*)self->data) + position + size, 

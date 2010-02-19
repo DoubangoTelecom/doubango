@@ -35,9 +35,9 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message);
+static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message, TSIP_BOOLEAN extract_content);
 static void tsip_message_parser_init(tsk_ragel_state_t *state);
-static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message);
+static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message, TSIP_BOOLEAN extract_content);
 
 /***********************************
 *	Ragel state machine.
@@ -166,7 +166,7 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 		state->pe = pe;
 		state->eof = eof;
 
-		tsip_message_parser_eoh(state, message);
+		tsip_message_parser_eoh(state, message, extract_content);
 
 		cs = state->cs;
 		p = state->p;
@@ -186,22 +186,8 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 /* Regel data */
 %%write data;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t *result)
-///
-/// @brief	Parse a SIP message. Both requests and reponses messages. 
-///
-/// @author	Mamadou
-/// @date	12/4/2009
-///
-/// @param [in,out]	state	The ragel state to use. 
-/// @param [out]	result	Non-null sip message created using @ref TSIP_MESSAGE_CREATE. You must use @ref TSK_OBJECT_SAFE_FREE to
-///							free the result.
-///
-/// @return	@ref TSIP_TRUE if succeed and @ref TSIP_FALSE otherwise.
-///
-////////////////////////////////////////////////////////////////////////////////////////////////////
-TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result)
+
+TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result, TSIP_BOOLEAN extract_content)
 {
 	if(!state || state->pe <= state->p)
 	{
@@ -219,7 +205,7 @@ TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **resul
 	/*
 	*	State mechine execution.
 	*/
-	tsip_message_parser_execute(state, *result);
+	tsip_message_parser_execute(state, *result, extract_content);
 
 	/* Check result */
 
@@ -242,7 +228,7 @@ static void tsip_message_parser_init(tsk_ragel_state_t *state)
 	state->cs = cs;
 }
 
-static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message)
+static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message, TSIP_BOOLEAN extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;
@@ -257,14 +243,14 @@ static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t
 	state->eof = eof;
 }
 
-static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message)
+static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message, TSIP_BOOLEAN extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;
 	const char *pe = state->pe;
 	const char *eof = state->eof;
 
-	if(message)
+	if(extract_content && message)
 	{
 		uint32_t clen = tsip_message_getContent_length(message);
 		if((p+clen) <pe && !message->Content)

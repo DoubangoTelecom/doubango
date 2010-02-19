@@ -52,6 +52,7 @@
 #include "tinysip/headers/tsip_header_Record_Route.h"
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Route.h"
+#include "tinysip/headers/tsip_header_Security_Client.h"
 #include "tinysip/headers/tsip_header_Server.h"
 #include "tinysip/headers/tsip_header_Service_Route.h"
 #include "tinysip/headers/tsip_header_Subscription_State.h"
@@ -589,7 +590,8 @@
 	# /*== Security_Client: ==*/
 	action parse_header_Security_Client
 	{
-		TSK_DEBUG_ERROR("parse_header_Security_Client NOT IMPLEMENTED");
+		tsip_header_Security_Clients_L_t* headers =  tsip_header_Security_Client_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADERS(headers);
 	}
 
 	# /*== Security-Server: ==*/

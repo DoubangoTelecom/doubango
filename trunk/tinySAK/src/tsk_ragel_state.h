@@ -37,6 +37,13 @@
 
 TSK_BEGIN_DECLS
 
+
+#if defined(_MSC_VER)
+#	define atoi64	_atoi64
+#else
+#	define atoi64	atoll
+#endif
+
 #define TSK_SCANNER_SET_STRING(string) \
 	if(!string) \
 	{ \
@@ -66,17 +73,22 @@ TSK_BEGIN_DECLS
 		} \
 	}
 
-#define TSK_PARSER_SET_INTEGER(integer) \
+#define TSK_PARSER_SET_INTEGER_EX(retval, type, func) \
 	{ \
 		int len = (int)(p  - tag_start); \
 		if(len>=0) \
 		{ \
 			char* tmp = tsk_calloc(len+1, sizeof(char)); \
 			memcpy(tmp, tag_start, len); \
-			integer = atoi(tmp); \
+			retval = (##type)##func(tmp); \
 			free(tmp); \
 		} \
 	}
+#define TSK_PARSER_SET_INTEGER(retval) TSK_PARSER_SET_INTEGER_EX(retval, int, atoi)
+#define TSK_PARSER_SET_INT(retval) TSK_PARSER_SET_INTEGER(retval)
+#define TSK_PARSER_SET_UINT(retval) TSK_PARSER_SET_INTEGER_EX(retval, uint32_t, atoi64)
+#define TSK_PARSER_SET_FLOAT(retval) TSK_PARSER_SET_INTEGER_EX(retval, float, atof)
+#define TSK_PARSER_SET_DOUBLE(retval) TSK_PARSER_SET_INTEGER_EX(retval, double, atof)
 
 #define TSK_PARSER_ADD_PARAM(dest) \
 	{ \

@@ -64,13 +64,11 @@ void* tsk_object_new(const tsk_object_def_t *objdef, ...)
 		TSK_DEBUG_INFO("N° objects:%d", ++tsk_objects_count);
 #endif
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_WARN("No constructor found.");
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new tsk_object.");
 	}
 
@@ -88,13 +86,11 @@ void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 		{ 
 			newobj = objdef->constructor(newobj, ap);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_WARN("No constructor found.");
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new tsk_object.");
 	}
 
@@ -104,12 +100,10 @@ void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 size_t tsk_object_sizeof(const void *self)
 {
 	const tsk_object_def_t **objdef = self;
-	if(objdef && *objdef)
-	{
+	if(objdef && *objdef){
 		return (*objdef)->size;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL tsk obkect.");
 		return 0;
 	}
@@ -118,8 +112,8 @@ size_t tsk_object_sizeof(const void *self)
 int tsk_object_cmp(const void *self, const void *object)
 {
 	const tsk_object_def_t **objdef = self;
-	if(objdef && *objdef && (*objdef)->objcmp)
-	{
+
+	if(objdef && *objdef && (*objdef)->objcmp){
 		return (*objdef)->objcmp(self, object);
 	}
 	return -1;
@@ -137,8 +131,7 @@ int tsk_object_cmp(const void *self, const void *object)
 
 void* tsk_object_ref(void *self)
 {
-	if(self)
-	{
+	if(self){
 		TSK_OBJECT_HEADER_GET(self)->refCount++;
 		return self;
 	}
@@ -149,8 +142,7 @@ void* tsk_object_unref(void *self)
 {
 	if(self)
 	{
-		if(!--(TSK_OBJECT_HEADER_GET(self)->refCount))
-		{
+		if(!--(TSK_OBJECT_HEADER_GET(self)->refCount)){
 			tsk_object_delete(self);
 			return 0;
 		}
@@ -163,15 +155,13 @@ void tsk_object_delete(void *self)
 	const tsk_object_def_t ** objdef = self;
 	if(self && *objdef)
 	{
-		if((*objdef)->destructor)
-		{
+		if((*objdef)->destructor){
 			self = (*objdef)->destructor(self);
 #if TSK_DEBUG_OBJECTS
 		TSK_DEBUG_INFO("N° objects:%d", --tsk_objects_count);
 #endif
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_WARN("No destructor found.");
 		}
 		free(self);

@@ -61,6 +61,8 @@ typedef struct tsip_transport_s
 	const char *protocol;
 	const char *via_protocol;
 	const char *service; /**< NAPTR service name */
+
+	tsk_buffer_t *buff_stream;
 }
 tsip_transport_t;
 

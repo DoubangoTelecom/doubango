@@ -544,10 +544,10 @@ void *tnet_transport_mainthread(void *param)
 				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), buffer);
 			}
 		}
-
-
-
-
+		
+		
+		
+		
 		/*================== FD_WRITE ==================*/
 		if(networkEvents.lNetworkEvents & FD_WRITE)
 		{

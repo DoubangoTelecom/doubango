@@ -864,57 +864,23 @@
 				Name="api"
 				>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_invite.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_invite.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_message.c"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)\$(InputName)1.obj"
-							XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							ObjectFile="$(IntDir)/$(InputName)1.obj"
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_publish.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_message.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_register.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_publish.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_subscribe.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_register.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_subscribe.h"
 					>
 				</File>
 			</Filter>
@@ -1436,23 +1402,23 @@
 				Name="api"
 				>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_invite.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_invite.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_message.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_message.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_publish.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_publish.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_register.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_register.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_subscribe.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_subscribe.c"
 					>
 				</File>
 			</Filter>

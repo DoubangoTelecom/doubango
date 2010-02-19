@@ -156,16 +156,20 @@ char* tsk_strndup(const char *s1, size_t n)
 	return ret;
 }
 
-/**@ingroup tsk_string_group
-* Checks if @ref str1 contains an occurrence of @ref str2.
-* @param str1 The master.
-* @param size The size of @b str1.
-* @param str2 The string for which to search an occcurrence.
-* @retval 1 if @ref str1 contains an occurrence of @ref str2 and Zero otherwise.
-*/
-int tsk_strcontains(const char * str1, size_t size, const char * str2)
+int tsk_strcontains(const char * str, size_t size, const char * sub_str)
 {
-	return ((str1 && str2) && (strstr(str1, str2) && strstr(str1, str2) < (str1 + size)));
+	return (tsk_strindexOf(str, size, sub_str) >= 0);
+}
+
+int tsk_strindexOf(const char * str, size_t size, const char * sub_str)
+{
+	if(str && sub_str){
+		const char* sub_start = strstr(str, sub_str);
+		if(sub_start && (sub_start < (str + size))){
+			return (sub_start - str);
+		}
+	}
+	return -1;
 }
 
 /**@ingroup tsk_string_group
