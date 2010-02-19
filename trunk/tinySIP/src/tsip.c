@@ -399,6 +399,13 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		{
 			// What to do ?
 		}
+
+		/*	ALL IS OK
+		*	
+		*/
+		if(stack->layer_transac){
+			stack->layer_transac->reliable = TNET_SOCKET_TYPE_IS_STREAM(stack->proxy_cscf_type);
+		}
 		
 		TSK_DEBUG_INFO("SIP STACK -- START");
 

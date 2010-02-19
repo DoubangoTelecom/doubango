@@ -173,8 +173,8 @@ void test_uri_cmp()
 
 void test_uri()
 {
-	test_uri_cmp();
 	test_uri_parser();
+	test_uri_cmp();
 }
 
 #endif /* _TEST_SIPURI_H */

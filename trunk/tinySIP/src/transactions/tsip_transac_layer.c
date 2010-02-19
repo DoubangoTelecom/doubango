@@ -56,7 +56,7 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BO
 				else
 				{
 					// NON-INVITE Client transaction (NICT)
-					tsip_transac_nict_t *transac = TSIP_TRANSAC_NICT_CREATE(self->stack, 0, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
+					tsip_transac_nict_t *transac = TSIP_TRANSAC_NICT_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
 					ret = TSIP_TRANSAC(transac);
 
 					tsk_list_push_back_data(self->transactions, (void**)&transac);
@@ -71,7 +71,7 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BO
 				else
 				{
 					// NON-INVITE Server transaction (NIST)
-					tsip_transac_nist_t *transac = TSIP_TRANSAC_NIST_CREATE(self->stack, 0, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
+					tsip_transac_nist_t *transac = TSIP_TRANSAC_NIST_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
 					ret = TSIP_TRANSAC(transac);
 					
 					tsk_list_push_back_data(self->transactions, (void**)&transac);

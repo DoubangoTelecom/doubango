@@ -126,11 +126,15 @@ int tsip_message_add_content(tsip_message_t *self, const char* content_type, con
 {
 	if(self)
 	{
-		TSK_OBJECT_SAFE_FREE(self->Content_Type);
+		if(content_type){
+			TSK_OBJECT_SAFE_FREE(self->Content_Type);
+		}
 		TSK_OBJECT_SAFE_FREE(self->Content_Length);
 		TSK_OBJECT_SAFE_FREE(self->Content);
 
-		TSIP_MESSAGE_ADD_HEADER(self, TSIP_HEADER_CONTENT_TYPE_VA_ARGS(content_type));
+		if(content_type){
+			TSIP_MESSAGE_ADD_HEADER(self, TSIP_HEADER_CONTENT_TYPE_VA_ARGS(content_type));
+		}
 		TSIP_MESSAGE_ADD_HEADER(self, TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(size));
 		self->Content = TSK_BUFFER_CREATE(content, size);
 
@@ -406,7 +410,7 @@ tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_u
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CSEQ_VA_ARGS(cseq, method));
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT));
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT));
-
+	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
 
 	/*request->From = TSIP_HEADER_FROM_CREATE(0, from, 0);
 	request->To = TSIP_HEADER_TO_CREATE(0, to, 0);
@@ -436,6 +440,7 @@ tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase,
 	{
 		response = TSIP_RESPONSE_CREATE(request, status_code, reason_phrase);
 		TSIP_MESSAGE_ADD_HEADER(response, TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT)); /* To be compliant with OMA SIMPLE IM v1.0*/
+		TSIP_MESSAGE_ADD_HEADER(response, TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
 		/*
 			Copy other headers
 		*/

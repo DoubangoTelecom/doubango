@@ -35,25 +35,13 @@
 #include "tinysip/parsers/tsip_parser_message.h"
 
 #include "tsk_thread.h"
+#include "tsk_debug.h"
 
-/*== Non-blocking callback function
-*/
-static int tsip_transport_layer_stream_data_read(const tsip_transport_t *transport, const void* data, size_t size)
-{
-	return 0;
-}
-
-/*== Non-blocking callback function
-*/
-static int tsip_transport_layer_dgram_data_read(const tsip_transport_t *transport, const void* data, size_t size)
+int tsip_transport_layer_handle_incoming_msg(const tsip_transport_t *transport, tsip_message_t *message)
 {
 	int ret = -1;
-	tsk_ragel_state_t state;
-	tsip_message_t *message = 0;
 
-	tsk_ragel_state_init(&state, data, size);
-	if(tsip_message_parse(&state, &message) == TSIP_TRUE 
-		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
+	if(message)
 	{
 		const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(transport->stack);
 		const tsip_dialog_layer_t *layer_dialog = tsip_stack_get_dialog_layer(transport->stack);
@@ -65,6 +53,97 @@ static int tsip_transport_layer_dgram_data_read(const tsip_transport_t *transpor
 		{	/* NO MATCHING TRANSACTION FOUND ==> LOOK INTO DIALOG LAYER */
 			ret = tsip_dialog_layer_handle_incoming_msg(layer_dialog, message);
 		}
+	}
+	return ret;
+}
+
+/*== Non-blocking callback function (STREAM)
+*/
+static int tsip_transport_layer_stream_data_read(const tsip_transport_t *transport, const void* data, size_t size)
+{
+	int ret = -1;
+	tsk_ragel_state_t state;
+	tsip_message_t *message = TSIP_NULL;
+	int endOfheaders = -1;
+
+
+	/* RFC 3261 - 7.5 Framing SIP Messages
+		
+	   Unlike HTTP, SIP implementations can use UDP or other unreliable
+	   datagram protocols.  Each such datagram carries one request or
+	   response.  See Section 18 on constraints on usage of unreliable
+	   transports.
+
+	   Implementations processing SIP messages over stream-oriented
+	   transports MUST ignore any CRLF appearing before the start-line
+	   [H4.1].
+
+		  The Content-Length header field value is used to locate the end of
+		  each SIP message in a stream.  It will always be present when SIP
+		  messages are sent over stream-oriented transports.
+	*/
+
+	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
+	if(TSK_BUFFER_SIZE(transport->buff_stream) >= 0xFFFF){
+		tsk_buffer_cleanup(transport->buff_stream);
+	}
+
+	/* Append new content. */
+	tsk_buffer_append(transport->buff_stream, data, size);
+
+	/* Check if we have all SIP headers. */
+	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
+		TSK_DEBUG_INFO("No all SIP headers in the TCP buffer.");
+		goto bail;
+	}
+
+	/* If we are there this mean that we have all SIP headers.
+	*	==> Parse the SIP message without the content.
+	*/
+	tsk_ragel_state_init(&state, data, size);
+	if(tsip_message_parse(&state, &message, TSIP_FALSE/* do not extract the content */) == TSIP_TRUE 
+		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
+	{
+		size_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
+		if(clen == 0){ /* No content */
+			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove SIP headers and CRLF */
+		}
+		else{ /* There is a content */
+			if((endOfheaders + 4/*2CRLF*/ + clen) > TSK_BUFFER_SIZE(transport->buff_stream)){ /* There is content but not all the content. */
+				TSK_DEBUG_INFO("No all SIP content in the TCP buffer.");
+				goto bail;
+			}
+			else{
+				/* Add the content to the message. */
+				tsip_message_add_content(message, TSIP_NULL, TSK_BUFFER_TO_U8(transport->buff_stream) + endOfheaders + 4/*2CRLF*/, clen);
+				/* Remove SIP headers, CRLF and the content. */
+				tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/ + clen));
+			}
+		}
+	}
+
+	/* Handle the incoming message. */
+	ret = tsip_transport_layer_handle_incoming_msg(transport, message);
+
+bail:
+	TSK_OBJECT_SAFE_FREE(message);
+
+	return ret;
+}
+
+/*== Non-blocking callback function (DGRAM)
+*/
+static int tsip_transport_layer_dgram_data_read(const tsip_transport_t *transport, const void* data, size_t size)
+{
+	int ret = -1;
+	tsk_ragel_state_t state;
+	tsip_message_t *message = 0;
+
+	tsk_ragel_state_init(&state, data, size);
+	if(tsip_message_parse(&state, &message, TSIP_TRUE) == TSIP_TRUE 
+		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
+	{
+		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 	}
 	TSK_OBJECT_SAFE_FREE(message);
 

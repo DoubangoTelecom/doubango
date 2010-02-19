@@ -267,6 +267,9 @@ static void* tsip_transport_create(void * self, va_list * app)
 				transport->via_protocol = "TLS";
 				transport->service = "SIPS+D2T";
 			}
+
+			/* Stream buffer */
+			transport->buff_stream = TSK_BUFFER_CREATE_NULL();
 		}
 		else
 		{
@@ -286,7 +289,8 @@ static void* tsip_transport_destroy(void * self)
 	if(transport)
 	{
 		TSK_OBJECT_SAFE_FREE(transport->net_transport);
-
+		TSK_OBJECT_SAFE_FREE(transport->buff_stream);
+		
 		/*TSK_FREE(transport->scheme);
 		TSK_FREE(transport->protocol);
 		TSK_FREE(transport->via_protocol);

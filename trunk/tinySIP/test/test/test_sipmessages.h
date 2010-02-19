@@ -92,7 +92,8 @@
 	"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n" \
 	"User-Agent: IM-client/OMA1.0 Mercuro-Bronze/v4.0.1508.0\r\n" \
 	"c: text/plain; charset=utf-8\r\n" \
-	"Security-Client: ipsec-3gpp;alg=hmac-md5-96;ealg=aes-cbc;prot=esp;mod=trans;port-c=61676;port-s=61662;spi-c=12345;spi-s=67890\r\n" \
+	"Security-Client: ipsec-3gpp;alg=hmac-md5-96;ealg=aes-cbc;prot=esp;mod=trans;port-c=61676;port-s=61662;spi-c=4294967295;spi-s=67890,tls;q=0.2\r\n" \
+	"Security-Client: ipsec-ike;q=0.1,tls;q=0.2\r\n" \
 	"Security-Server: ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=78952;port-s=77854\r\n" \
 	"Security-Verify: ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=9999;port-s=20000\r\n" \
 	"Service-Route: <sip:orig@open-ims.test:6060;lr;transport=udp>,<sip:atlanta.com>,<sip:orig2@open-ims.test:6060;lr>\r\n" \
@@ -124,7 +125,7 @@ void test_parser()
 	uint32_t clength;
 
 	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, strlen(SIP_MSG_2_TEST));
-	tsip_message_parse(&state, &message);
+	tsip_message_parse(&state, &message, TSIP_TRUE);
 
 	enabled = tsip_message_allowed(message, "REFER");
 	enabled = tsip_message_allowed(message, "MESSAGE");
@@ -175,7 +176,7 @@ void test_responses()
 	tsip_request_t *response = 0;
 
 	tsk_ragel_state_init(&state, SIP_MESSAGE, strlen(SIP_MESSAGE));
-	tsip_message_parse(&state, &request);
+	tsip_message_parse(&state, &request, TSIP_TRUE);
 
 	/* Create the response and destroy the request */
 	response = tsip_response_new(200, "OK you can move forward", request);

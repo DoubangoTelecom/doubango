@@ -137,8 +137,7 @@ void* tsk_realloc (void* ptr, size_t size)
 	void *ret = 0;
 	
 	ret = realloc(ptr, size);
-	if(!ret)
-	{
+	if(!ret){
 		TSK_DEBUG_ERROR("Memory reallocation failed");
 	}
 
@@ -175,8 +174,7 @@ void tsk_free(void** ptr)
 void* tsk_calloc(size_t num, size_t size)
 {
 	void* ret = calloc(num, size);
-	if(!ret)
-	{
+	if(!ret){
 		TSK_DEBUG_ERROR("Memory allocation failed. num=%u and size=%u", num, size);
 	}
 
