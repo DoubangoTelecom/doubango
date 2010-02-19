@@ -51,7 +51,7 @@
 #define RUN_TEST_SHA1				0
 #define RUN_TEST_BASE64				0
 #define RUN_TEST_UUID				0
-#define RUN_TEST_FSM				1
+#define RUN_TEST_FSM				0
 
 #if RUN_TEST_LISTS || RUN_TEST_ALL
 #include "test_lists.h"

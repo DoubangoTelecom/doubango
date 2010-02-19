@@ -32,7 +32,7 @@
 #include "tsk_debug.h"
 
 #if defined (_DEBUG) || defined (DEBUG)
-#	define TSK_DEBUG_OBJECTS	1
+#	define TSK_DEBUG_OBJECTS	0
 static int tsk_objects_count = 0;
 #else
 #	define TSK_DEBUG_OBJECTS	0
@@ -122,7 +122,7 @@ int tsk_object_cmp(const void *self, const void *object)
 	{
 		return (*objdef)->objcmp(self, object);
 	}
-	return 0;
+	return -1;
 }
 
 /*int tsk_object_icmp(const void *self, const void *object)

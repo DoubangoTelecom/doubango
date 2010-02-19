@@ -103,7 +103,7 @@ tsip_header_Supported_t *tsip_header_Supported_parse(const char *data, size_t si
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Supported_t *hdr_supported = TSIP_HEADER_SUPPORTED_CREATE();
+	tsip_header_Supported_t *hdr_supported = TSIP_HEADER_SUPPORTED_CREATE_NULL();
 	
 	const char *tag_start;
 
@@ -136,8 +136,17 @@ static void* tsip_header_Supported_create(void *self, va_list * app)
 	tsip_header_Supported_t *Supported = self;
 	if(Supported)
 	{
+		const char* option;
+
 		TSIP_HEADER(Supported)->type = tsip_htype_Supported;
 		TSIP_HEADER(Supported)->tostring = tsip_header_Supported_tostring;
+
+		if((option = va_arg(*app, const char*))){
+			tsk_string_t* string = TSK_STRING_CREATE(option);
+			Supported->options = TSK_LIST_CREATE();
+
+			tsk_list_push_back_data(Supported->options, ((void**) &string));
+		}
 	}
 	else
 	{

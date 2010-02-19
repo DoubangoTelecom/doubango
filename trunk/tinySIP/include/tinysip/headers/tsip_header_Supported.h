@@ -39,7 +39,9 @@ TSIP_BEGIN_DECLS
 * Creates new sip 'Supported' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define TSIP_HEADER_SUPPORTED_CREATE()		tsk_object_new(tsip_header_Supported_def_t)
+#define TSIP_HEADER_SUPPORTED_VA_ARGS(option)	tsip_header_Supported_def_t, (const char*)option
+#define TSIP_HEADER_SUPPORTED_CREATE(option)			tsk_object_new(TSIP_HEADER_SUPPORTED_VA_ARGS(option))
+#define TSIP_HEADER_SUPPORTED_CREATE_NULL()			TSIP_HEADER_SUPPORTED_CREATE(TSIP_NULL)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

@@ -34,8 +34,9 @@
 #include "tinysip/headers/tsip_header_P_Associated_URI.h"
 #include "tinysip/headers/tsip_header_Min_Expires.h"
 #include "tinysip/headers/tsip_header_Service_Route.h"
+#include "tinysip/headers/tsip_header_Supported.h"
 
-#include "tinysip/api/tsip_register.h"
+#include "tinysip/api/tsip_api_register.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -406,6 +407,43 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 		}
 	}
 
+	/* 3GPP TS 24.229 - 5.1.1.2 Initial registration */
+	if((TSIP_DIALOG(self)->state ==tsip_initial))
+	{
+		int barred = 1;
+		const tsk_list_item_t *item;
+		const tsip_uri_t *uri;
+		const tsip_uri_t *uri_first = 0;
+
+	/*	
+		b) store as the default public user identity the first URI on the list of URIs present in the P-Associated-URI header
+		field and bind it to the respective contact address of the UE and the associated set of security associations or TLS
+		session;
+		NOTE 4: When using the respective contact address and associated set of security associations or TLS session, the
+		UE can utilize additional URIs contained in the P-Associated-URI header field and bound it to the
+		respective contact address of the UE and the associated set of security associations or TLS session, e.g. for
+		application purposes.
+		c) treat the identity under registration as a barred public user identity, if it is not included in the P-Associated-URI
+		header field;
+	*/
+		tsk_list_foreach(item, TSIP_DIALOG_GET_STACK(self)->associated_uris)
+		{
+			uri = item->data;
+			if(item == TSIP_DIALOG_GET_STACK(self)->associated_uris->head){
+				uri_first = item->data;
+			}
+			if(!tsk_object_cmp(TSIP_DIALOG_GET_STACK(self)->preferred_identity, uri)){
+				barred = 0;
+				break;
+			}
+		}
+
+		if(barred && uri_first){
+			TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->preferred_identity);
+			TSIP_DIALOG_GET_STACK(self)->preferred_identity = tsk_object_ref((void*)uri_first);
+		}
+	}
+
 	/* Update the dialog state. */
 	tsip_dialog_update(TSIP_DIALOG(self), message);
 
@@ -604,8 +642,7 @@ int send_register(tsip_dialog_register_t *self)
 	{
 		/* == RCS phase 2
 		*/
-		if(TSIP_DIALOG_GET_STACK(self)->enable_gsmarcs)
-		{
+		if(TSIP_DIALOG_GET_STACK(self)->enable_gsmarcs){
 			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.oma.sip-im.large-message", 0);
 			TSIP_HEADER_ADD_PARAM(request->Contact, "audio", 0);
 			TSIP_HEADER_ADD_PARAM(request->Contact, "video", 0);
@@ -614,28 +651,39 @@ int send_register(tsip_dialog_register_t *self)
 		}
 
 		/* mobility */
-		if(TSIP_DIALOG_GET_STACK(self)->mobility)
-		{
+		if(TSIP_DIALOG_GET_STACK(self)->mobility){
 			TSIP_HEADER_ADD_PARAM(request->Contact, "mobility", TSIP_DIALOG_GET_STACK(self)->mobility);
 		}
 
 		/* deviceID - FIXME: find reference. */
-		if(TSIP_DIALOG_GET_STACK(self)->device_id)
-		{
+		if(TSIP_DIALOG_GET_STACK(self)->device_id){
 			TSIP_HEADER_ADD_PARAM(request->Contact, "+deviceID", TSIP_DIALOG_GET_STACK(self)->device_id);
 		}
 
 		/* GSMA Image Sharing */
-		if(TSIP_DIALOG_GET_STACK(self)->enable_gsmais)
-		{
+		if(TSIP_DIALOG_GET_STACK(self)->enable_gsmais){
 			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.app_ref", TSIP_IARI_QUOTED_GSMAIS);
 		}
 
 		/* 3GPP TS 24.341 subclause 5.3.2.2 */
-		if(TSIP_DIALOG_GET_STACK(self)->enable_3gppsms)
-		{
+		if(TSIP_DIALOG_GET_STACK(self)->enable_3gppsms){
 			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.smsip", 0);
-		}		
+		}
+
+		/* 3GPP TS 24.229 - 5.1.1.2 Initial registration */
+		if(TSIP_DIALOG(self)->state ==tsip_initial)
+		{
+			/*
+				g) the Supported header field containing the option-tag "path", and
+				1) if GRUU is supported, the option-tag "gruu"; and
+				2) if multiple registrations is supported, the option-tag "outbound".
+			*/
+			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_SUPPORTED_VA_ARGS("path"));
+			//if(1==2/* gruu*/){
+			//}
+			//else if(2 == 3 /* multiple registrations */){
+			//}
+		}
 		
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 		TSK_OBJECT_SAFE_FREE(request);

@@ -791,38 +791,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="smc"
-				>
-				<File
-					RelativePath=".\src\smc\tsip_dialog_message_sm.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\smc\tsip_dialog_register_sm.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\smc\tsip_dialog_subscribe_sm.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\smc\tsip_transac_ict_sm.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\smc\tsip_transac_ist_sm.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\smc\tsip_transac_nict_sm.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\smc\tsip_transac_nist_sm.c"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="transports"
 				>
 				<File
@@ -894,23 +862,23 @@
 				Name="api"
 				>
 				<File
-					RelativePath=".\src\api\tsip_invite.c"
+					RelativePath=".\src\api\tsip_api_invite.c"
 					>
 				</File>
 				<File
-					RelativePath=".\src\api\tsip_message.c"
+					RelativePath=".\src\api\tsip_api_message.c"
 					>
 				</File>
 				<File
-					RelativePath=".\src\api\tsip_publish.c"
+					RelativePath=".\src\api\tsip_api_publish.c"
 					>
 				</File>
 				<File
-					RelativePath=".\src\api\tsip_register.c"
+					RelativePath=".\src\api\tsip_api_register.c"
 					>
 				</File>
 				<File
-					RelativePath=".\src\api\tsip_subscribe.c"
+					RelativePath=".\src\api\tsip_api_subscribe.c"
 					>
 				</File>
 			</Filter>
@@ -1373,34 +1341,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="smc"
-				>
-				<File
-					RelativePath=".\include\tinysip\smc\tsip_dialog_message_sm.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysip\smc\tsip_dialog_register_sm.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysip\smc\tsip_transac_ict_sm.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysip\smc\tsip_transac_ist_sm.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysip\smc\tsip_transac_nict_sm.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysip\smc\tsip_transac_nist_sm.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="transports"
 				>
 				<File
@@ -1460,23 +1400,23 @@
 				Name="api"
 				>
 				<File
-					RelativePath=".\include\tinysip\api\tsip_invite.h"
+					RelativePath=".\include\tinysip\api\tsip_api_invite.h"
 					>
 				</File>
 				<File
-					RelativePath=".\include\tinysip\api\tsip_message.h"
+					RelativePath=".\include\tinysip\api\tsip_api_message.h"
 					>
 				</File>
 				<File
-					RelativePath=".\include\tinysip\api\tsip_publish.h"
+					RelativePath=".\include\tinysip\api\tsip_api_publish.h"
 					>
 				</File>
 				<File
-					RelativePath=".\include\tinysip\api\tsip_register.h"
+					RelativePath=".\include\tinysip\api\tsip_api_register.h"
 					>
 				</File>
 				<File
-					RelativePath=".\include\tinysip\api\tsip_subscribe.h"
+					RelativePath=".\include\tinysip\api\tsip_api_subscribe.h"
 					>
 				</File>
 			</Filter>
@@ -1878,38 +1818,6 @@
 			>
 			<File
 				RelativePath=".\abnf\core.abnf"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="smc"
-			>
-			<File
-				RelativePath=".\smc\tsip_dialog_message.sm"
-				>
-			</File>
-			<File
-				RelativePath=".\smc\tsip_dialog_register.sm"
-				>
-			</File>
-			<File
-				RelativePath=".\smc\tsip_dialog_subscribe.sm"
-				>
-			</File>
-			<File
-				RelativePath=".\smc\tsip_transac_ict.sm"
-				>
-			</File>
-			<File
-				RelativePath=".\smc\tsip_transac_ist.sm"
-				>
-			</File>
-			<File
-				RelativePath=".\smc\tsip_transac_nict.sm"
-				>
-			</File>
-			<File
-				RelativePath=".\smc\tsip_transac_nist.sm"
 				>
 			</File>
 		</Filter>

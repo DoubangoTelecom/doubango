@@ -36,9 +36,9 @@
 #include "tinysip/tsip_timers.h"
 #include "tinysip/tsip_event.h"
 
-#include "tinysip/api/tsip_register.h"
-#include "tinysip/api/tsip_subscribe.h"
-#include "tinysip/api/tsip_message.h"
+#include "tinysip/api/tsip_api_register.h"
+#include "tinysip/api/tsip_api_subscribe.h"
+#include "tinysip/api/tsip_api_message.h"
 
 #include "tinysip/tsip_uri.h"
 

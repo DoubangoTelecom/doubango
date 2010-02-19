@@ -186,25 +186,28 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 	
 	/* Update authorizations */
-	if(TSK_LIST_IS_EMPTY(self->challenges))
+	if(self->state == tsip_initial && TSK_LIST_IS_EMPTY(self->challenges))
 	{
 		if(tsk_striequals("REGISTER", method) && !TSIP_STACK(self->stack)->enable_earlyIMS)
 		{
-			/*	3GPP TS 34.229 - 5.1.1.1A === 3GPP TS 33.978 - 6.2.3.1
+			/*	3GPP TS 24.229 - 5.1.1.2.2 Initial registration using IMS AKA
 				On sending a REGISTER request, the UE shall populate the header fields as follows:
-					a)	the Authorization header, with:
-					-	the username directive, set to the value of the private user identity;
-					-	the realm directive, set to the domain name of the home network;
-					-	the uri directive, set to the SIP URI of the domain name of the home network;
-					-	the nonce directive, set to an empty value; and
-					-	the response directive, set to an empty value.
+					a) an Authorization header field, with:
+					- the "username" header field parameter, set to the value of the private user identity;
+					- the "realm" header field parameter, set to the domain name of the home network;
+					- the "uri" header field parameter, set to the SIP URI of the domain name of the home network;
+					- the "nonce" header field parameter, set to an empty value; and
+					- the "response" header field parameter, set to an empty value;
 			*/
-			tsip_header_t* auth_hdr = tsip_challenge_create_empty_header_authorization("sip:fixme@micromethod.com", "fixme:realm", "uri");
+			const char* realm = TSIP_STACK(self->stack)->realm ? TSIP_STACK(self->stack)->realm->host : "(null)";
+			char* request_uri = tsip_uri_tostring(request->uri, TSIP_FALSE, TSIP_FALSE);
+			tsip_header_t* auth_hdr = tsip_challenge_create_empty_header_authorization(TSIP_STACK(self->stack)->private_identity, realm, request_uri);
 			tsip_message_add_header(request, auth_hdr);
 			tsk_object_unref(auth_hdr), auth_hdr = 0;
+			TSK_FREE(request_uri);
 		}
 	}
-	else
+	else if(!TSK_LIST_IS_EMPTY(self->challenges))
 	{
 		tsk_list_item_t *item;
 		tsip_challenge_t *challenge;
