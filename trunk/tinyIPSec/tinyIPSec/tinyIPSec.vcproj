@@ -41,13 +41,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYIPSEC_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				WarnAsError="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -62,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fwpuclnt.lib Ws2_32.lib"
+				AdditionalDependencies="Fwpuclnt.lib Ws2_32.lib $(OutDir)\tinySAK.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -175,19 +177,23 @@
 			Name="source"
 			>
 			<File
-				RelativePath=".\src\ipsec.c"
+				RelativePath=".\src\tipsec.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\ipsec.linux.c"
+				RelativePath=".\src\tipsec_common.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\ipsec.win32.c"
+				RelativePath=".\src\tipsec_racoon.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\ipsec_utils.c"
+				RelativePath=".\src\tipsec_vista.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tipsec_xp.c"
 				>
 			</File>
 		</Filter>
@@ -195,22 +201,30 @@
 			Name="include"
 			>
 			<File
-				RelativePath=".\src\ipsec.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\ipsec_utils.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\tinyipsec_config.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\tipsec.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tipsec_common.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tipsec_racoon.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tipsec_vista.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tipsec_xp.h"
+				>
+			</File>
 		</Filter>
-		<File
-			RelativePath=".\src\ipsec_api.h"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
