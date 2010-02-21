@@ -162,7 +162,11 @@ static void* tnet_socket_create(void * self, va_list * app)
 		hints.ai_family = TNET_SOCKET_TYPE_IS_IPV6(sock->type) ? AF_INET6 : AF_INET;
 		hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? SOCK_STREAM : SOCK_DGRAM;
 		hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? IPPROTO_TCP : IPPROTO_UDP;
-		hints.ai_flags = AI_PASSIVE /*| AI_ADDRCONFIG*/; /* Bind to the local machine. */
+		hints.ai_flags = AI_PASSIVE
+#if !TNET_UNDER_WINDOWS
+			| AI_ADDRCONFIG
+#endif
+			;
 
 		/* Performs getaddrinfo */
 		if((status = tnet_getaddrinfo(local_hostname, port, &hints, &result)))
@@ -177,31 +181,22 @@ static void* tnet_socket_create(void * self, va_list * app)
 			//if(ptr->ai_family == hints.ai_family && ptr->ai_socktype == hints.ai_socktype && ptr->ai_protocol == hints.ai_protocol)
 			{
 				sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-				/* Get local IP string. */
-				if((status = tnet_getnameinfo(ptr->ai_addr, ptr->ai_addrlen, sock->ip, sizeof(sock->ip), 0, 0, NI_NUMERICHOST)))
+				
+				/* Bind the socket */
+				if((status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
 				{
-					TNET_PRINT_LAST_ERROR("getnameinfo have failed");
+					TNET_PRINT_LAST_ERROR("bind have failed.");
 					tnet_socket_close(sock);
 					continue;
 				}
-				else
+
+				/* Get local IP string. */
+				if(status = tnet_get_ip_n_port(sock->fd , &sock->ip, &sock->port)) /* % */
+				//if((status = tnet_getnameinfo(ptr->ai_addr, ptr->ai_addrlen, sock->ip, sizeof(sock->ip), 0, 0, NI_NUMERICHOST)))
 				{
-					if((status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
-					{
-						TNET_PRINT_LAST_ERROR("bind have failed.");
-						tnet_socket_close(sock);
-						continue;
-					}
-					else
-					{
-						if(sock->port == TNET_SOCKET_PORT_ANY && (status = tnet_get_port(sock->fd, &(sock->port))))
-						{
-							TNET_PRINT_LAST_ERROR("Failed to retrieve IP and Port.");
-							tnet_socket_close(sock);
-							continue;
-						}
-						else break;
-					}
+					TNET_PRINT_LAST_ERROR("Failed to get local IP and port.");
+					tnet_socket_close(sock);
+					continue;
 				}
 			}
 		}

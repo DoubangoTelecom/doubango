@@ -99,19 +99,19 @@ void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 
 size_t tsk_object_sizeof(const void *self)
 {
-	const tsk_object_def_t **objdef = self;
+	const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
 	if(objdef && *objdef){
 		return (*objdef)->size;
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL tsk obkect.");
+		TSK_DEBUG_ERROR("NULL object definition.");
 		return 0;
 	}
 }
 
 int tsk_object_cmp(const void *self, const void *object)
 {
-	const tsk_object_def_t **objdef = self;
+	const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
 
 	if(objdef && *objdef && (*objdef)->objcmp){
 		return (*objdef)->objcmp(self, object);

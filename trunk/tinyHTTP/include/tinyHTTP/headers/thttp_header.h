@@ -47,6 +47,9 @@ THTTP_BEGIN_DECLS
 #define THTTP_HEADER(self)			((thttp_header_t*)(self))
 #define THTTP_HEADER_PARAMS(self)	(THTTP_HEADER(self)->params)
 
+// FD
+struct thttp_header_s;
+
 typedef int (*thttp_header_value_tostring)(const struct thttp_header_s* header, tsk_buffer_t* output);
 
 /**

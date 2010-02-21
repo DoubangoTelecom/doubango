@@ -13,6 +13,7 @@ OBJS = tsk.o\
 	tsk_buffer.o\
 	tsk_condwait.o\
 	tsk_debug.o\
+	tsk_fsm.o\
 	tsk_heap.o\
 	tsk_hmac.o\
 	tsk_list.o\
@@ -23,6 +24,7 @@ OBJS = tsk.o\
 	tsk_params.o\
 	tsk_ppfcs16.o\
 	tsk_ppfcs32.o\
+	tsk_ragel_state.o\
 	tsk_runnable.o\
 	tsk_safeobj.o\
 	tsk_semaphore.o\

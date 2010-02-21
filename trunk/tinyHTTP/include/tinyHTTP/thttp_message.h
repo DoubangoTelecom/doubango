@@ -164,43 +164,43 @@ thttp_message_t;
 typedef thttp_message_t thttp_request_t; /**< HTTP request message. */
 typedef thttp_message_t thttp_response_t; /**< HTTP response message. */
 
-
+//
 TINYHTTP_API int	thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr);
-TINYHTTP_API int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *headers);
-
-#if !defined(_MSC_VER) || defined(__GNUC__)
-static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)
-	{
-		va_list ap;
-		thttp_header_t *header;
-		const tsk_object_def_t *objdef;
-		
-		va_start(ap, self);
-		objdef = va_arg(ap, const tsk_object_def_t*);
-		header = tsk_object_new2(objdef, &ap);
-		va_end(ap);
-
-		thttp_message_add_header(self, header);
-		tsk_object_unref(header);
-	}
-#else
-#define THTTP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
-	{																	\
-		thttp_header_t *header = tsk_object_new(objdef, __VA_ARGS__);	\
-		thttp_message_add_header(self, header);							\
-		tsk_object_unref(header);										\
-	}
-#endif
-
-TINYHTTP_API const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, thttp_header_type_t type, size_t index);
-TINYHTTP_API const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thttp_header_type_t type);
-
+//TINYHTTP_API int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *headers);
+//
+//#if !defined(_MSC_VER) || defined(__GNUC__)
+//static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)
+//	{
+//		va_list ap;
+//		thttp_header_t *header;
+//		const tsk_object_def_t *objdef;
+//		
+//		va_start(ap, self);
+//		objdef = va_arg(ap, const tsk_object_def_t*);
+//		header = tsk_object_new2(objdef, &ap);
+//		va_end(ap);
+//
+//		thttp_message_add_header(self, header);
+//		tsk_object_unref(header);
+//	}
+//#else
+//#define THTTP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
+//	{																	\
+//		thttp_header_t *header = tsk_object_new(objdef, __VA_ARGS__);	\
+//		thttp_message_add_header(self, header);							\
+//		tsk_object_unref(header);										\
+//	}
+//#endif
+//
+//TINYHTTP_API const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, thttp_header_type_t type, size_t index);
+//TINYHTTP_API const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thttp_header_type_t type);
+//
 TINYHTTP_API uint32_t	thttp_message_getContent_length(const thttp_message_t *message);
-
-TINYHTTP_API int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output);
-
-TINYHTTP_API thttp_request_t *thttp_request_new(const char* method, const thttp_url_t *request_url, const thttp_url_t *from, const thttp_url_t *to, const char *call_id, int32_t cseq);
-TINYHTTP_API thttp_response_t *thttp_response_new(short status_code, const char* reason_phrase, const thttp_request_t *request);
+//
+//TINYHTTP_API int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output);
+//
+//TINYHTTP_API thttp_request_t *thttp_request_new(const char* method, const thttp_url_t *request_url, const thttp_url_t *from, const thttp_url_t *to, const char *call_id, int32_t cseq);
+//TINYHTTP_API thttp_response_t *thttp_response_new(short status_code, const char* reason_phrase, const thttp_request_t *request);
 
 TINYHTTP_GEXTERN const void *thttp_message_def_t;
 

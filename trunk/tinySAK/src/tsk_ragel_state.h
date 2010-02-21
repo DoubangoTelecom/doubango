@@ -80,7 +80,7 @@ TSK_BEGIN_DECLS
 		{ \
 			char* tmp = tsk_calloc(len+1, sizeof(char)); \
 			memcpy(tmp, tag_start, len); \
-			retval = (##type)##func(tmp); \
+			retval = (type) func(tmp); \
 			free(tmp); \
 		} \
 	}
