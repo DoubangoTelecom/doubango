@@ -70,8 +70,8 @@ void tnet_getlasterror(tnet_error_t *error)
 		  0);
 	}
 #else
-	//FIXME: use strerror(errno);
-	sprintf(*error, "Network error (%d).", err);
+	strerror_r(err, *error, sizeof(*error));
+	//sprintf(*error, "Network error (%d).", err);
 #endif
 }
 
@@ -117,8 +117,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 		TSK_DEBUG_ERROR("Error allocating memory needed to call GetAdaptersinfo.");
 		goto bail;
 	}
-	// Make an initial call to GetAdaptersInfo to get
-	// the necessary size into the ulOutBufLen variable
+	// Make an initial call to GetAdaptersInfo to get the necessary size into the ulOutBufLen variable
 	if (GetAdaptersInfo(pAdapterInfo, &ulOutBufLen) == ERROR_BUFFER_OVERFLOW)
 	{
 		FREE(pAdapterInfo);
@@ -135,7 +134,13 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 		pAdapter = pAdapterInfo;
 		while(pAdapter) 
 		{
-			tnet_interface_t *iface = TNET_INTERFACE_CREATE(pAdapter->Description, pAdapter->Address, pAdapter->AddressLength);
+			tnet_interface_t *iface;
+
+			if(pAdapter->Type == MIB_IF_TYPE_LOOPBACK){
+				continue;
+			}
+
+			iface = TNET_INTERFACE_CREATE(pAdapter->Description, pAdapter->Address, pAdapter->AddressLength);
 			iface->index = pAdapter->Index;
 			tsk_list_push_back_data(ifaces, &(iface));
 			
@@ -264,7 +269,7 @@ bail:
 	return ifaces;
 }
 
-tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver)
+tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index)
 {
 	tnet_addresses_L_t *addresses = TSK_LIST_CREATE();
 	tnet_ip_t ip;
@@ -320,12 +325,16 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
         pCurrAddresses = pAddresses;
 		while (pCurrAddresses)
 		{
+			if((if_index != -1) && (pCurrAddresses->IfIndex != if_index && pCurrAddresses->Ipv6IfIndex != if_index)){
+				goto next;
+			}
+
 			/* UNICAST addresses
 			*/
 			pUnicast = pCurrAddresses->FirstUnicastAddress;
             while(unicast && pUnicast)
 			{
-				memset(ip, '\0', sizeof(ip));
+				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pUnicast->Address.lpSockaddr, &ip);
 				{
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
@@ -342,7 +351,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 			pAnycast = pCurrAddresses->FirstAnycastAddress;
             while(anycast && pAnycast)
 			{
-				memset(ip, '\0', sizeof(ip));
+				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pAnycast->Address.lpSockaddr, &ip);
 				{
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
@@ -359,7 +368,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 			pMulticast = pCurrAddresses->FirstMulticastAddress;
             while(multicast && pMulticast)
 			{
-				memset(ip, '\0', sizeof(ip));
+				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pMulticast->Address.lpSockaddr, &ip);
 				{
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
@@ -376,7 +385,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 			pDnServer = pCurrAddresses->FirstDnsServerAddress;
             while(dnsserver && pDnServer)
 			{
-				memset(ip, '\0', sizeof(ip));
+				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pDnServer->Address.lpSockaddr, &ip);
 				{
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
@@ -387,7 +396,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 
                 pDnServer = pDnServer->Next;
             }
-
+next:
 			pCurrAddresses = pCurrAddresses->Next;
 		}
 	}
@@ -414,6 +423,56 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 bail:
 	return addresses;
 }
+
+
+int tnet_getbestsource(const char* destination, tnet_socket_type_t type, tnet_ip_t *source)
+{
+	int ret = -1;
+	struct sockaddr_storage destAddr;
+	tnet_addresses_L_t* addresses = 0;
+	const tsk_list_item_t* item;
+#if TNET_UNDER_WINDOWS
+	DWORD dwBestIfIndex;
+#endif
+
+	if(!destination || !source){
+		goto bail;
+	}
+
+	if((ret = tnet_sockaddr_init(destination, 0, type, &destAddr))){
+		goto bail;
+	}
+
+#if TNET_UNDER_WINDOWS
+	if(GetBestInterfaceEx((struct sockaddr*)&destAddr, &dwBestIfIndex) != NO_ERROR){
+		ret = WSAGetLastError();
+		TNET_PRINT_LAST_ERROR("GetBestInterfaceEx failed.");
+		goto bail;
+	}
+#endif
+
+	if(!(addresses = tnet_get_addresses(TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET, 1, 0, 0, 0, dwBestIfIndex))){
+		ret = -2;
+		TSK_DEBUG_ERROR("Failed to retrieve addresses.");
+		goto bail;
+	}
+
+	tsk_list_foreach(item, addresses)
+	{
+		const tnet_address_t* address = item->data;
+		if(address && address->ip){
+			memset(*source, '\0', sizeof(*source));
+			memcpy(*source, address->ip, strlen(address->ip) > sizeof(*source) ? sizeof(*source) : strlen(address->ip));
+			ret = 0;
+			goto bail; // First is good for us.
+		}
+	}
+
+bail:
+	TSK_OBJECT_SAFE_FREE(addresses);
+	return ret;
+}
+
 
 /**
  * @fn	int tnet_getaddrinfo(const char *node, const char *service,
@@ -512,6 +571,9 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 	else if(addr->sa_family == AF_INET6)
 	{
 		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)addr;
+#if TNET_UNDER_WINDOWS
+		int index;
+#endif
 		if(port)
 		{
 			*port = ntohs(sin6->sin6_port);
@@ -523,6 +585,12 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 			{
 				return status;
 			}
+
+#if TNET_UNDER_WINDOWS
+			if((index = tsk_strindexOf(*ip, strlen(*ip), "%")) > 0){
+				*(*ip + index) = '\0';
+			}
+#endif
 		}
 	}
 	else
@@ -536,7 +604,9 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 
 int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
-	*port = 0;
+	if(port){
+		*port = 0;
+	}
 
 	if(fd > 0)
 	{

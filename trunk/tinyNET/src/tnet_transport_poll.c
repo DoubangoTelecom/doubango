@@ -54,6 +54,7 @@ typedef struct transport_context_s
 	size_t count;
 	short events;
 	tnet_fd_t pipeW;
+	tnet_fd_t pipeR;
 	tnet_pollfd_t ufds[TNET_MAX_FDS];
 	transport_socket_t* sockets[TNET_MAX_FDS];
 }
@@ -108,7 +109,8 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		transport_socket_add(fd, context);
 	
 		// signal
-		return (write(context->pipeW, &c, 1) > 0);
+		ret = write(context->pipeW, &c, 1);
+		return (ret > 0 ? 0 : ret);
 	}
 
 	// ...
@@ -357,7 +359,7 @@ void *tnet_transport_mainthread(void *param)
 	transport_socket_t* active_socket;
 	
 	context = (transport_context_t*)tsk_calloc(1, sizeof(transport_context_t));
-	context->events = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? TNET_POLLIN : TNET_POLLIN | TNET_POLLOUT | TNET_POLLPRI;
+	context->events = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? TNET_POLLIN : TNET_POLLIN /*| TNET_POLLOUT*/ | TNET_POLLPRI;
 	transport->context = context;
 
 	/* Start listening */
@@ -376,8 +378,11 @@ void *tnet_transport_mainthread(void *param)
 		TNET_PRINT_LAST_ERROR("Failed to create new pipes.");
 		goto bail;
 	}
-	transport_socket_add(pipes[0], context); // Add pipeR
+
+	context->pipeR = pipes[0];
 	context->pipeW = pipes[1];
+
+	transport_socket_add(context->pipeR, context);
 
 	/* Add the current transport socket to the context. */
 	transport_socket_add(transport->master->fd, context);
@@ -406,7 +411,9 @@ void *tnet_transport_mainthread(void *param)
 		*/
 		for(i=0; i<context->count; i++)
 		{
-			if(!context->ufds[i].revents) continue;
+			if(!context->ufds[i].revents || context->ufds[i].fd == context->pipeR){
+				continue;
+			}
 
 			/* Get active event and socket */
 			active_socket = context->sockets[i];
@@ -436,7 +443,7 @@ void *tnet_transport_mainthread(void *param)
 				}
 
 				/* Receive the waiting data. */
-				if(recv(active_socket->fd, buffer, len, 0) < 0)
+				if((ret = recv(active_socket->fd, buffer, len, 0)) < 0)
 				{
 					TSK_FREE(buffer);
 					//if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK)

@@ -28,9 +28,6 @@
  *
  * @brief	poll() method implementation for multiplexing network sockets. 
  *
- * @author	Mamadou Diop <diopmamadou(at)yahoo.fr>
- * @date	Created: Sat Nov 8 16:54:58 2009 mdiop /
- *
  * @param	fds		An array of pollfd structures. 
  * @param	nfds	The number of file descriptors set in fds[ ]. 
  * @param	timeout	How long poll() should wait for an event to occur (in milliseconds). 

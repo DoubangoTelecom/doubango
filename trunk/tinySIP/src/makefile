@@ -23,11 +23,11 @@ OBJS = \
 	###################
 	## api
 	###################
-OBJS += api/tsip_invite.o\
-	api/tsip_message.o\
-	api/tsip_publish.o\
-	api/tsip_register.o\
-	api/tsip_subscribe.o
+OBJS += api/tsip_api_invite.o\
+	api/tsip_api_message.o\
+	api/tsip_api_publish.o\
+	api/tsip_api_register.o\
+	api/tsip_api_subscribe.o
 	###################
 	## authentication
 	###################
@@ -147,17 +147,7 @@ OBJS += headers/tsip_header.o\
 	###################
 OBJS += parsers/tsip_parser_header.o\
 	parsers/tsip_parser_message.o\
-	parsers/tsip_parser_uri.o\
-	parsers/tsip_ragel_state.o
-	###################
-	## smc
-	###################
-OBJS += smc/tsip_dialog_register_sm.o\
-	smc/tsip_dialog_message_sm.o\
-	smc/tsip_transac_ict_sm.o\
-	smc/tsip_transac_ist_sm.o\
-	smc/tsip_transac_nict_sm.o\
-	smc/tsip_transac_nist_sm.o
+	parsers/tsip_parser_uri.o
 	###################
 	## transactions
 	###################

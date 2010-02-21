@@ -38,6 +38,9 @@
 
 TSIP_BEGIN_DECLS
 
+//FD
+struct tsip_message_s;
+
 #define TSIP_OPERATION_CREATE(stack, ...)		tsk_object_new(tsip_operation_def_t, stack, __VA_ARGS__)
 
 typedef uint64_t tsip_operation_id_t;			

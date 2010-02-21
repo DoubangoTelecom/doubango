@@ -10,7 +10,7 @@ all: $(APP)
 OBJS = \
 	thttp.o\
 	thttp_message.o\
-	thttp_utl.o
+	thttp_url.o
 	###################
 	## auth
 	###################
@@ -18,7 +18,17 @@ OBJS +=	auth/thttp_auth.o
 	###################
 	## headers
 	###################
-
+OBJS +=	headers/thttp_header.o\
+	headers/thttp_header_Authorization.o\
+	headers/thttp_header_Proxy_Authenticate.o\
+	headers/thttp_header_WWW_Authenticate.o
+	###################
+	## parsers
+	###################
+OBJS +=	parsers/thttp_parser_header.o\
+	parsers/thttp_parser_message.o\
+	parsers/thttp_parser_url.o
+	
 $(APP): $(OBJS)
 	$(CPP) $(LDFLAGS) -o $@ $^ 
 

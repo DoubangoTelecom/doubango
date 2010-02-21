@@ -22,6 +22,25 @@
 #ifndef TNET_TEST_IFACES_H
 #define TNET_TEST_IFACES_H
 
+void test_faces_bestsource()
+{
+	tnet_ip_t source;
+	// IPv6
+	if(!tnet_getbestsource("2a01:e35:8b32:7050:212:f0ff:fe4c:3ea1", tnet_socket_type_udp_ipv6, &source)){
+		TSK_DEBUG_INFO("Best IPv6 source is [%s]", source);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to get best IPv6 source.");
+	}
+	// IPv4
+	if(!tnet_getbestsource("192.168.0.11", tnet_socket_type_udp_ipv4, &source)){
+		TSK_DEBUG_INFO("Best IPv4 source is [%s]", source);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to get best IPv4 source.");
+	}
+}
+
 void test_ifaces_dump_ifaces()
 {
 	tnet_interfaces_L_t* ifaces = tnet_get_interfaces();
@@ -67,6 +86,7 @@ void test_ifaces_dump_addresses()
 
 void test_ifaces()
 {
+	test_faces_bestsource();
 	test_ifaces_dump_ifaces();
 	test_ifaces_dump_addresses();
 }
