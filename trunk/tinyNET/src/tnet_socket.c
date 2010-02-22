@@ -142,19 +142,25 @@ static void* tnet_socket_create(void * self, va_list * app)
 		sock->type = va_arg(*app, tnet_socket_type_t);
 		nonblocking = va_arg(*app, int);
 
+		memset(local_hostname, 0, sizeof(local_hostname));
+
 		/* Get the local host name */
-		if(host != TNET_SOCKET_HOST_ANY && !tsk_strempty(host))
-		{
-			memset(local_hostname, 0, sizeof(local_hostname));
+		if(host != TNET_SOCKET_HOST_ANY && !tsk_strempty(host)){
 			memcpy(local_hostname, host, strlen(host)>sizeof(local_hostname)-1 ? sizeof(local_hostname)-1 : strlen(host));
 		}
 		else
 		{
-			if((status = tnet_gethostname(&local_hostname)))
-			{
-				TNET_PRINT_LAST_ERROR("gethostname have failed.");
-				goto bail;
+			if(TNET_SOCKET_TYPE_IS_IPV6(sock->type)){
+				memcpy(local_hostname, "::", 2);
 			}
+			else{
+				memcpy(local_hostname, "0.0.0.0", 7);
+			}
+			//if((status = tnet_gethostname(&local_hostname)))
+			//{
+			//	TNET_PRINT_LAST_ERROR("gethostname have failed.");
+			//	goto bail;
+			//}
 		}
 
 		/* hints address info structure */
@@ -163,7 +169,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? SOCK_STREAM : SOCK_DGRAM;
 		hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? IPPROTO_TCP : IPPROTO_UDP;
 		hints.ai_flags = AI_PASSIVE
-#if !TNET_UNDER_WINDOWS
+#if !TNET_UNDER_WINDOWS || _WIN32_WINNT>=600
 			| AI_ADDRCONFIG
 #endif
 			;

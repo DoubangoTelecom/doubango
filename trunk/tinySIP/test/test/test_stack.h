@@ -132,7 +132,7 @@ void test_stack()
 		TSIP_STACK_SET_REALM("sip:sip2sip.info"), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
 		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
-		TSIP_STACK_SET_PROXY_CSCF("proxy.sipthor.net", "udp", 1),
+		TSIP_STACK_SET_PROXY_CSCF("proxy.sipthor.net", "udp", 0),
 		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
 		TSIP_STACK_SET_SEC_AGREE_MECH("ipsec-3gpp"),
