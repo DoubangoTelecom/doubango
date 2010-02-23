@@ -88,21 +88,25 @@ typedef enum tsip_stack_param_type_e
 	pname_proxy_cscf_port,
 	pname_device_id,
 	pname_mobility,
-	pname_sec_agree_mech,
-#define TSIP_STACK_SET_LOCAL_IP(STR)											pname_local_ip, (const char*)STR
-#define TSIP_STACK_SET_LOCAL_PORT(INT)											pname_local_port, (int)INT
-#define TSIP_STACK_SET_PRIVACY(STR)												pname_privacy, (const char*)STR
-#define TSIP_STACK_SET_POPERATOR_ID(OPERATOR_ID)								pname_privacy, (operator_id_t)OPERATOR_ID
-#define TSIP_STACK_SET_AMF(AMF)													pname_amf, (amf_t)AMF
-#define TSIP_STACK_SET_NETINFO(STR)												pname_netinfo, (const char*)STR
-#define TSIP_STACK_SET_REALM(FQDN_STR)											pname_realm, (const char*)FQDN_STR
-#define TSIP_STACK_SET_DISCOVERY_NAPTR(USE_NAPTR_UINT)							pname_discovery_naptr, (unsigned)USE_NAPTR_UINT
-#define TSIP_STACK_SET_DISCOVERY_DHCP(USE_DHCP_UINT)							pname_discovery_dhcp, (unsigned)USE_DHCP_UINT
-#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, TRANSPORT_STR, USE_IPV6_INT)		pname_proxy_cscf, (const char*)FQDN_STR, (const char*)TRANSPORT_STR, (int)USE_IPV6_INT
-#define TSIP_STACK_SET_PROXY_CSCF_PORT(UINT16)									pname_proxy_cscf_port, (uint16_t)UINT16
-#define TSIP_STACK_SET_DEVICE_ID(UUID_STR)										pname_device_id, (const char*)UUID_STR
-#define TSIP_STACK_SET_MOBILITY(MOB_STR)										pname_mobility, (const char*)MOB_STR
-#define TSIP_STACK_SET_SEC_AGREE_MECH(MECH_STR)									pname_sec_agree_mech, (const char*)MECH_STR
+#define TSIP_STACK_SET_LOCAL_IP(STR)												pname_local_ip, (const char*)STR
+#define TSIP_STACK_SET_LOCAL_PORT(INT)												pname_local_port, (int)INT
+#define TSIP_STACK_SET_PRIVACY(STR)													pname_privacy, (const char*)STR
+#define TSIP_STACK_SET_POPERATOR_ID(OPERATOR_ID)									pname_privacy, (operator_id_t)OPERATOR_ID
+#define TSIP_STACK_SET_AMF(AMF)														pname_amf, (amf_t)AMF
+#define TSIP_STACK_SET_NETINFO(STR)													pname_netinfo, (const char*)STR
+#define TSIP_STACK_SET_REALM(FQDN_STR)												pname_realm, (const char*)FQDN_STR
+#define TSIP_STACK_SET_DISCOVERY_NAPTR(USE_NAPTR_UINT)								pname_discovery_naptr, (unsigned)USE_NAPTR_UINT
+#define TSIP_STACK_SET_DISCOVERY_DHCP(USE_DHCP_UINT)								pname_discovery_dhcp, (unsigned)USE_DHCP_UINT
+#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, TRANSPORT_STR, USE_IPV6_INT)			pname_proxy_cscf, (const char*)FQDN_STR, (const char*)TRANSPORT_STR, (int)USE_IPV6_INT
+#define TSIP_STACK_SET_PROXY_CSCF_PORT(UINT16)										pname_proxy_cscf_port, (uint16_t)UINT16
+#define TSIP_STACK_SET_DEVICE_ID(UUID_STR)											pname_device_id, (const char*)UUID_STR
+#define TSIP_STACK_SET_MOBILITY(MOB_STR)											pname_mobility, (const char*)MOB_STR
+	
+	/* Security */
+	pname_secagree_ipsec,
+#define TSIP_STACK_SET_SECAGREE_IPSEC(ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR)	pname_secagree_ipsec, (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR
+
+
 	/* Features */
 	pname_enable_100rel,
 	pname_enable_gsmais,
@@ -155,10 +159,18 @@ typedef struct tsip_stack_s
 	unsigned use_dhcp:1;
 	char* device_id;
 	char* mobility;
-	char* sec_agree_mech;
 	tsip_uris_L_t* paths;
 	tsip_uris_L_t* service_routes;
 	tsip_uris_L_t* associated_uris;
+
+	/* Security */
+	char* secagree_mech;
+	struct{
+		char* alg;
+		char* ealg;
+		char* mode;
+		char* protocol;
+	} secagree_ipsec;
 
 	/* DNS */
 	tnet_dns_ctx_t *dns_ctx;

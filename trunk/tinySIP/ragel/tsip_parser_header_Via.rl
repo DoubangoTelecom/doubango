@@ -149,13 +149,14 @@ int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
 	{
 		const tsip_header_Via_t *Via = header;
 		tsk_istr_t port, rport, ttl;
+		int ipv6 = (Via->host && tsk_strcontains(Via->host, strlen(Via->host), ":"));
 
 		if(Via->port) tsk_itoa(Via->port, &port);
 		if(Via->rport) tsk_itoa(Via->rport, &rport);
 		if(Via->ttl) tsk_itoa(Via->ttl, &ttl);
 
 		/* SIP/2.0/UDP [::]:1988;test=1234;comp=sigcomp;rport=254;ttl=457;received=192.0.2.101;branch=z9hG4bK1245420841406\r\n" */
-		return tsk_buffer_appendEx(output, "%s/%s/%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+		return tsk_buffer_appendEx(output, "%s/%s/%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 
 			Via->proto_name ? Via->proto_name : "SIP",
 
@@ -163,7 +164,9 @@ int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
 
 			Via->transport ? Via->transport : "UDP",
 
+			ipv6 ? "[" : "",
 			Via->host ? Via->host : "127.0.0.1",
+			ipv6 ? "]" : "",
 
 			Via->port ? ":" : "",
 			Via->port ? port : "",

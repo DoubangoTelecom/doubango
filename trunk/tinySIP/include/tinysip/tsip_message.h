@@ -107,6 +107,27 @@ typedef enum tsip_message_type_e
 }
 tsip_message_type_t;
 
+typedef enum tsip_request_type_e
+{
+	tsip_NONE,
+
+	tsip_ACK,
+	tsip_BYE,
+	tsip_INVITE,
+	tsip_OPTIONS,
+	tsip_REGISTER,
+	tsip_SUBSCRIBE,
+	tsip_NOTIFY,
+	tsip_REFER,
+	tsip_INFO,
+	tsip_UPDATE,
+	tsip_MESSAGE,
+	tsip_PUBLISH,
+	tsip_PRACK
+}
+tsip_request_type_t;
+
+
 ///**
 // * @struct	tsip_request_line_t
 // *
@@ -172,6 +193,7 @@ typedef struct tsip_message_s
 			tsip_uri_t *uri;	/**< The Request-URI is a SIP or SIPS URI as described in Section 19.1 or a general URI (RFC 2396 [5]).  It indicates
 				   the user or service to which this request is being addressed. The Request-URI MUST NOT contain unescaped spaces or control
 				   characters and MUST NOT be enclosed in "<>". */
+			tsip_request_type_t request_type;
 #if !defined(__C99__)
 		};
 		struct
@@ -251,6 +273,7 @@ TINYSIP_API int32_t		tsip_message_getCSeq(const tsip_message_t *message);
 
 TINYSIP_API int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output);
 
+TINYSIP_API tsip_request_type_t tsip_request_get_type(const char* method);
 TINYSIP_API tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq);
 TINYSIP_API tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase, const tsip_request_t *request);
 

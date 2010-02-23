@@ -87,8 +87,7 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	tnet_ip_t ip;
 	tnet_port_t port;
 
-	if(tsip_transport_get_ip_n_port(self, &ip, &port))
-	{
+	if(tsip_transport_get_ip_n_port(self, &ip, &port)){
 		return -1;
 	}
 
@@ -99,9 +98,11 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	{			
 		if(msg->Contact->uri && TSIP_HEADER_HAS_PARAM(msg->Contact, "doubs"))
 		{
+			tnet_socket_type_t type = tsip_transport_get_socket_type(self);
 			tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
 			tsk_strupdate(&(msg->Contact->uri->host), ip);
 			msg->Contact->uri->port = port;
+			msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(type) ? host_ipv6 : host_ipv4;
 			tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
 
 			TSIP_HEADER_REMOVE_PARAM(msg->Contact, "doubs");
@@ -209,16 +210,20 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr)
 		if(!tnet_get_ip_n_port(self->connectedFD, &ip, &port))
 		{
 			char* uristring = 0;
-			tsk_sprintf(&uristring, "%s:%s:%d;%s;transport=%s",
+			tnet_socket_type_t type = tsip_transport_get_socket_type(self);
+			int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(type);
+
+			tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
 				self->scheme,
+				ipv6 ? "[" : "",
 				ip,
+				ipv6 ? "]" : "",
 				port,
 				lr ? "lr" : "",
 				self->protocol);
 			if(uristring){
 				if((uri = tsip_uri_parse(uristring, strlen(uristring)))){
-					tnet_socket_type_t type = tsip_transport_get_socket_type(self);
-					uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(type) ? host_ipv6 : host_ipv4;
+					uri->host_type = ipv6 ? host_ipv6 : host_ipv4;
 				}
 				TSK_FREE(uristring);
 			}
@@ -229,6 +234,53 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr)
 }
 
 
+int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const tsip_stack_handle_t *stack, const char *host, tnet_port_t port, const char* description)
+{
+	if(!self || self->initialized){
+		return -1;
+	}
+
+	self->stack = stack;
+	self->net_transport = TNET_TRANSPORT_CREATE(host, port, type, description);
+		
+	self->scheme = TNET_SOCKET_TYPE_IS_TLS(type) ? "sips" : "sip";
+
+	if(TNET_SOCKET_TYPE_IS_STREAM(type)){
+		self->protocol = "tcp";
+		self->via_protocol = "TCP";
+		self->service = "SIP+D2T";
+
+		if(TNET_SOCKET_TYPE_IS_TLS(type)){
+			self->via_protocol = "TLS";
+			self->service = "SIPS+D2T";
+		}
+
+		/* Stream buffer */
+		self->buff_stream = TSK_BUFFER_CREATE_NULL();
+	}
+	else{
+		self->protocol = "udp";
+		self->via_protocol = "UDP";
+		self->service = "SIP+D2U";
+	}
+	self->connectedFD = TNET_INVALID_FD;
+	self->initialized = 1;
+	
+	return 0;
+}
+
+int tsip_transport_deinit(tsip_transport_t* self)
+{
+	if(!self || !self->initialized){
+		return -1;
+	}
+
+	TSK_OBJECT_SAFE_FREE(self->net_transport);
+	TSK_OBJECT_SAFE_FREE(self->buff_stream);
+
+	self->initialized = 0;
+	return 0;
+}
 
 
 
@@ -244,41 +296,16 @@ static void* tsip_transport_create(void * self, va_list * app)
 		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t*);
 		const char *host = va_arg(*app, const char*);
 #if defined(__GNUC__)
-		uint16_t port = (uint16_t)va_arg(*app, unsigned);
+		tnet_port_t port = (tnet_port_t)va_arg(*app, unsigned);
 #else
-		uint16_t port = va_arg(*app, tnet_port_t);
+		tnet_port_t port = va_arg(*app, tnet_port_t);
 #endif
 		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);
 		const char *description = va_arg(*app, const char*);
 		
-		transport->stack = stack;
-		transport->net_transport = TNET_TRANSPORT_CREATE(host, port, type, description);
-		
-		transport->scheme = TNET_SOCKET_TYPE_IS_TLS(type) ? "sips" : "sip";
-
-		if(TNET_SOCKET_TYPE_IS_STREAM(type))
-		{
-			transport->protocol = "tcp";
-			transport->via_protocol = "TCP";
-			transport->service = "SIP+D2T";
-
-			if(TNET_SOCKET_TYPE_IS_TLS(type))
-			{
-				transport->via_protocol = "TLS";
-				transport->service = "SIPS+D2T";
-			}
-
-			/* Stream buffer */
-			transport->buff_stream = TSK_BUFFER_CREATE_NULL();
+		if(tsip_transport_init(transport, type, stack, host, port, description)){
+			// Print error?
 		}
-		else
-		{
-			transport->protocol = "udp";
-			transport->via_protocol = "UDP";
-			transport->service = "SIP+D2U";
-		}
-		
-		transport->connectedFD = TNET_INVALID_FD;
 	}
 	return self;
 }
@@ -288,13 +315,7 @@ static void* tsip_transport_destroy(void * self)
 	tsip_transport_t *transport = self;
 	if(transport)
 	{
-		TSK_OBJECT_SAFE_FREE(transport->net_transport);
-		TSK_OBJECT_SAFE_FREE(transport->buff_stream);
-		
-		/*TSK_FREE(transport->scheme);
-		TSK_FREE(transport->protocol);
-		TSK_FREE(transport->via_protocol);
-		TSK_FREE(transport->service);*/
+		tsip_transport_deinit(transport);
 	}
 	return self;
 }

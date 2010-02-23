@@ -45,7 +45,7 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 *	Ragel state machine.
 */
 
-/* #line 183 "tsip_parser_message.rl" */
+/* #line 184 "tsip_parser_message.rl" */
 
 
 
@@ -179,7 +179,7 @@ static const int tsip_machine_parser_message_error = 0;
 static const int tsip_machine_parser_message_en_main = 1;
 
 
-/* #line 188 "tsip_parser_message.rl" */
+/* #line 189 "tsip_parser_message.rl" */
 
 
 TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result, TSIP_BOOLEAN extract_content)
@@ -207,7 +207,7 @@ TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **resul
 	if( state->cs < 
 /* #line 209 "../src/parsers/tsip_parser_message.c" */
 42
-/* #line 212 "tsip_parser_message.rl" */
+/* #line 213 "tsip_parser_message.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(*result);
@@ -228,7 +228,7 @@ static void tsip_message_parser_init(tsk_ragel_state_t *state)
 	cs = tsip_machine_parser_message_start;
 	}
 
-/* #line 227 "tsip_parser_message.rl" */
+/* #line 228 "tsip_parser_message.rl" */
 	
 	state->cs = cs;
 }
@@ -335,6 +335,7 @@ _match:
 			{
 				message->method = tsk_calloc(1, len+1);
 				memcpy(message->method, state->tag_start, len);
+				message->request_type = tsip_request_get_type(message->method);
 			}
 		}
 		else
@@ -344,7 +345,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 78 "tsip_parser_message.rl" */
+/* #line 79 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -357,7 +358,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 91 "tsip_parser_message.rl" */
+/* #line 92 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -371,7 +372,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 105 "tsip_parser_message.rl" */
+/* #line 106 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -389,7 +390,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 123 "tsip_parser_message.rl" */
+/* #line 124 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -403,7 +404,7 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 137 "tsip_parser_message.rl" */
+/* #line 138 "tsip_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
@@ -420,7 +421,7 @@ _match:
 	}
 	break;
 	case 7:
-/* #line 163 "tsip_parser_message.rl" */
+/* #line 164 "tsip_parser_message.rl" */
 	{
 		state->cs = cs;
 		state->p = p;
@@ -435,7 +436,7 @@ _match:
 		eof = state->eof;
 	}
 	break;
-/* #line 439 "../src/parsers/tsip_parser_message.c" */
+/* #line 440 "../src/parsers/tsip_parser_message.c" */
 		}
 	}
 
@@ -448,7 +449,7 @@ _again:
 	_out: {}
 	}
 
-/* #line 239 "tsip_parser_message.rl" */
+/* #line 240 "tsip_parser_message.rl" */
 
 	state->cs = cs;
 	state->p = p;

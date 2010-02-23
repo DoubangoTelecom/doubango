@@ -46,11 +46,14 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSPORT_CREATE(stack, host, port, type, description)		tsk_object_new(tsip_transport_def_t, stack, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
 
-#define TSIP_TRANSPORT_IS_SECURE(self)									(self && )
+//#define TSIP_TRANSPORT_IS_SECURE(self)								(self && )
+#define TSIP_TRANSPORT(self)											((tsip_transport_t*)(self))
 
 typedef struct tsip_transport_s
 {
 	TSK_DECLARE_OBJECT;
+
+	unsigned initialized:1;
 
 	const tsip_stack_handle_t *stack;
 
@@ -66,7 +69,11 @@ typedef struct tsip_transport_s
 }
 tsip_transport_t;
 
+#define TSIP_DECLARE_TRANSPORT tsip_transport_t transport
 typedef tsk_list_t tsip_transports_L_t; /**< List of @ref tsip_transport_t elements. */
+
+int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const tsip_stack_handle_t *stack, const char *host, tnet_port_t port, const char* description);
+int tsip_transport_deinit(tsip_transport_t* self);
 
 size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
@@ -84,7 +91,9 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 #define tsip_transport_set_callback(transport, callback, callback_data)		(transport ? tnet_transport_set_callback(transport->net_transport, callback, callback_data) : -1)
 
-#define tsip_transport_has_socket(transport, fd)							(transport ? tnet_transport_has_socket(transport->net_transport, fd) : 0)
+#define tsip_transport_have_socket(transport, fd)							(transport ? tnet_transport_have_socket(transport->net_transport, fd) : 0)
+#define tsip_transport_add_socket(transport, fd, take_ownership)			(transport ? tnet_transport_add_socket(transport->net_transport, fd, take_ownership) : -1)
+#define tsip_transport_remove_socket(transport, fd)							(transport ? tnet_transport_remove_socket(transport->net_transport, fd) : -1)
 
 #define tsip_transport_get_socket_type(transport)							(transport ? tnet_transport_get_socket_type(transport->net_transport) : tnet_socket_type_invalid)
 

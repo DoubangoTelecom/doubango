@@ -65,6 +65,7 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 			{
 				message->method = tsk_calloc(1, len+1);
 				memcpy(message->method, state->tag_start, len);
+				message->request_type = tsip_request_get_type(message->method);
 			}
 		}
 		else

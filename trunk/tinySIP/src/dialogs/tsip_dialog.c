@@ -39,6 +39,7 @@
 #include "tinysip/headers/tsip_header_Authorization.h"
 #include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_Expires.h"
+#include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
 #include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
 #include "tinysip/headers/tsip_header_Proxy_Authorization.h"
 #include "tinysip/headers/tsip_header_Route.h"
@@ -48,6 +49,7 @@
 #include "tsk_debug.h"
 
 int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, int acceptNewVector);
+int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request);
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
 {
@@ -179,15 +181,13 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		TSK_FREE(contact);
 	}
 	
-	/* P-Access-Network-Info */
-	if(TSIP_STACK(self->stack)->netinfo)
-	{
-		TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(TSIP_STACK(self->stack)->netinfo));
-	}
-	
 	/* Update authorizations */
 	if(self->state == tsip_initial && TSK_LIST_IS_EMPTY(self->challenges))
 	{
+		/* 3GPP TS 33.978 6.2.3.1 Procedures at the UE
+			On sending a REGISTER request in order to indicate support for early IMS security procedures, the UE shall not
+			include an Authorization header field and not include header fields or header field values as required by RFC3329.
+		*/
 		if(tsk_striequals("REGISTER", method) && !TSIP_STACK(self->stack)->enable_earlyIMS)
 		{
 			/*	3GPP TS 24.229 - 5.1.1.2.2 Initial registration using IMS AKA
@@ -234,7 +234,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		*	==> http://betelco.blogspot.com/2008/11/proxy-and-service-route-discovery-in.html
 		* The dialog Routes have been copied above.
 	*/
-	if(!tsk_striequals("REGISTER", method))
+	if(request->type != tsip_REGISTER /*!tsk_striequals("REGISTER", method)*/)
 	{	// According to the above link ==> Initial/Re/De registration do not have routes.
 		tsk_list_item_t* item;
 		if(copy_routes_start !=-1)
@@ -271,6 +271,8 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		}
 	}
 
+	/* Add common headers */
+	tsip_dialog_add_common_headers(self, request);
 
 	TSK_OBJECT_SAFE_FREE(request_uri);
 	TSK_OBJECT_SAFE_FREE(from_uri);
@@ -679,6 +681,75 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 	}	
 	return 0;
 
+}
+
+int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request)
+{
+	int earlyIMS = 0;
+	const tsip_uri_t* preferred_identity = 0;
+	const char* netinfo = 0;
+
+	if(!self || !request){
+		return -1;
+	}
+
+	earlyIMS = TSIP_DIALOG_GET_STACK(self)->enable_earlyIMS;
+	preferred_identity = TSIP_DIALOG_GET_STACK(self)->preferred_identity;
+	netinfo = TSIP_DIALOG_GET_STACK(self)->netinfo;
+	//
+	//	P-Preferred-Identity
+	//
+	if(preferred_identity)
+	{
+		/*	3GPP TS 33.978 6.2.3.1 Procedures at the UE
+			The UE shall use the temporary public user identity (IMSI-derived IMPU, cf. section 6.1.2) only in registration
+			messages (i.e. initial registration, re-registration or de-registration), but not in any other type of SIP requests.
+		*/
+		switch(request->request_type){
+			case tsip_BYE:
+			case tsip_INVITE:
+			case tsip_OPTIONS:
+			case tsip_SUBSCRIBE:
+			case tsip_NOTIFY:
+			case tsip_REFER:
+			case tsip_MESSAGE:
+			case tsip_PUBLISH:
+			case tsip_REGISTER:
+				{
+					if(!earlyIMS || (earlyIMS && request->request_type == tsip_REGISTER)){
+						TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(preferred_identity));
+					}
+					break;
+				}
+		}
+	}
+
+	//
+	//	P-Access-Network-Info
+	//
+	if(netinfo)
+	{
+		switch(request->request_type){
+			case tsip_BYE:
+			case tsip_INVITE:
+			case tsip_OPTIONS:
+			case tsip_REGISTER:
+			case tsip_SUBSCRIBE:
+			case tsip_NOTIFY:
+			case tsip_PRACK:
+			case tsip_INFO:
+			case tsip_UPDATE:
+			case tsip_REFER:
+			case tsip_MESSAGE:
+			case tsip_PUBLISH:
+				{
+					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(netinfo));
+					break;
+				}
+		}
+	}
+
+	return 0;
 }
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_handle_t * stack, const char* call_id, tsip_operation_handle_t* operation)

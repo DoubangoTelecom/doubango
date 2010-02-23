@@ -41,6 +41,7 @@ typedef struct transport_socket_s
 {
 	tnet_fd_t fd;
 	unsigned connected:1;
+	unsigned owner:1;
 }
 transport_socket_t;
 
@@ -53,7 +54,7 @@ typedef struct transport_context_s
 }
 transport_context_t;
 
-static void transport_socket_add(tnet_fd_t fd, transport_context_t *context);
+static void transport_socket_add(tnet_fd_t fd, transport_context_t *context, int take_ownership);
 static void transport_socket_remove(int index, transport_context_t *context);
 
 /* Checks if socket is connected */
@@ -82,7 +83,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 	return 0;
 }
 
-int tnet_transport_has_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
@@ -110,32 +111,74 @@ int tnet_transport_has_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 /* 
 * Add new socket to the watcher.
 */
-int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, int take_ownership)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
 	int ret = -1;
 
-	if(!transport)
-	{
+	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return ret;
 	}
 
-	context = (transport_context_t*)transport->context;
-	transport_socket_add(fd, context);
-	if(WSAEventSelect(fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR)
-	{
+	if(!(context = (transport_context_t*)transport->context)){
+		TSK_DEBUG_ERROR("Invalid context.");
+		return -2;
+	}
+
+	transport_socket_add(fd, context, take_ownership);
+	if(WSAEventSelect(fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR){
 		transport_socket_remove((context->count - 1), context);
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 		return -1;
 	}
 
 	/* Signal */
-	if(context)
-	{
-		WSASetEvent(context->events[0]);
+	if(WSASetEvent(context->events[0])){
+		TSK_DEBUG_INFO("New socket added to the network transport.");
 		return 0;
+	}
+
+	// ...
+	
+	return -1;
+}
+
+/* Remove socket
+*/
+int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t *context;
+	int ret = -1;
+	size_t i;
+	int found = 0;
+
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid server handle.");
+		return ret;
+	}
+
+	if(!(context = (transport_context_t*)transport->context)){
+		TSK_DEBUG_ERROR("Invalid context.");
+		return -2;
+	}
+
+	for(i=0; i<context->count; i++){
+		if(context->sockets[i]->fd == fd){
+			transport_socket_remove(i, context);
+			found = 1;
+			break;
+		}
+	}
+
+	if(found){
+		/* Signal */
+		if(WSASetEvent(context->events[0])){
+			TSK_DEBUG_INFO("Old socket removed from the network transport.");
+			return 0;
+		}
 	}
 
 	// ...
@@ -167,7 +210,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	}
 
 	/*
-	* STREAM ==> create new socket add connect it to the remote host.
+	* STREAM ==> create new socket and connect it to the remote host.
 	* DGRAM ==> connect the master to the remote host.
 	*/
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
@@ -181,7 +224,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		}
 
 		/* Add the socket */
-		if(status = tnet_transport_add_socket(handle, fd))
+		if(status = tnet_transport_add_socket(handle, fd, 1))
 		{
 			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
 
@@ -311,14 +354,15 @@ int CALLBACK AcceptCondFunc(LPWSABUF lpCallerId, LPWSABUF lpCallerData, LPQOS lp
 }
 
 /*== Add new socket ==*/
-static void transport_socket_add(tnet_fd_t fd, transport_context_t *context)
+static void transport_socket_add(tnet_fd_t fd, transport_context_t *context, int take_ownership)
 {
 	transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
 	sock->fd = fd;
+	sock->owner = take_ownership ? 1 : 0;
 	
 	context->events[context->count] = WSACreateEvent();
 	context->sockets[context->count] = sock;
-
+	
 	context->count++;
 }
 
@@ -329,13 +373,14 @@ static void transport_socket_remove(int index, transport_context_t *context)
 
 	if(index < (int)context->count)
 	{
-		tnet_sockfd_close(&(context->sockets[index]->fd));
-		//if(context->sockets[index]->wsaBuffer.buf)
-		//{
-		//	TSK_FREE(context->sockets[index]->wsaBuffer.buf);
-		//}
+		/* Close the socket if we are the owner. */
+		if(context->sockets[index]->owner){
+			tnet_sockfd_close(&(context->sockets[index]->fd));
+		}
+
 		TSK_FREE(context->sockets[index]);
 
+		// Close event
 		WSACloseEvent(context->events[index]);
 
 		for(i=index ; i<context->count-1; i++)
@@ -393,7 +438,7 @@ void *tnet_transport_mainthread(void *param)
 	}
 
 	/* Add the current transport socket to the context. */
-	transport_socket_add(transport->master->fd, context);
+	transport_socket_add(transport->master->fd, context, 1);
 	if(ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)
 	{
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
@@ -448,7 +493,7 @@ void *tnet_transport_mainthread(void *param)
 			if((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET)
 			{
 				/* Add the new fd to the server context */
-				transport_socket_add(fd, context);
+				transport_socket_add(fd, context, 1);
 				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
 				{
 					transport_socket_remove((context->count - 1), context);
@@ -583,11 +628,11 @@ bail:
 
 	transport->active = 0;
 
-	/* cleanup */
-	while(context->count)
-	{
+	/* Cleanup */
+	while(context->count){
 		transport_socket_remove(0, context);
 	}
+	TSK_FREE(context);
 
 	TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	return 0;

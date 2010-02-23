@@ -41,7 +41,6 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(value)	tsip_header_P_Access_Network_Info_def_t, (const char*)value
 #define TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE(value)		tsk_object_new(TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(value))
-
 #define TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE_NULL()		TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

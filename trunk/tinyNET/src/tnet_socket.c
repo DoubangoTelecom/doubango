@@ -126,6 +126,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 	{
 		int status;
 		int nonblocking;
+		int bindsocket;
 		tsk_istr_t port;
 		struct addrinfo *result = 0;
 		struct addrinfo *ptr = 0;
@@ -141,6 +142,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		tsk_itoa(sock->port, &port);
 		sock->type = va_arg(*app, tnet_socket_type_t);
 		nonblocking = va_arg(*app, int);
+		bindsocket = va_arg(*app, int);
 
 		memset(local_hostname, 0, sizeof(local_hostname));
 
@@ -169,7 +171,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? SOCK_STREAM : SOCK_DGRAM;
 		hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? IPPROTO_TCP : IPPROTO_UDP;
 		hints.ai_flags = AI_PASSIVE
-#if !TNET_UNDER_WINDOWS || _WIN32_WINNT>=600
+#if !TNET_UNDER_WINDOWS || _WIN32_WINNT>=0x600
 			| AI_ADDRCONFIG
 #endif
 			;
@@ -184,10 +186,10 @@ static void* tnet_socket_create(void * self, va_list * app)
 		/* Find our address. */
 		for(ptr = result; ptr; ptr = ptr->ai_next)
 		{
-			//if(ptr->ai_family == hints.ai_family && ptr->ai_socktype == hints.ai_socktype && ptr->ai_protocol == hints.ai_protocol)
+			sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+			
+			if(bindsocket)
 			{
-				sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-				
 				/* Bind the socket */
 				if((status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
 				{
@@ -205,6 +207,8 @@ static void* tnet_socket_create(void * self, va_list * app)
 					continue;
 				}
 			}
+
+			break;
 		}
 		
 		/* Check socket validity. */
@@ -253,8 +257,7 @@ bail:
 static void* tnet_socket_destroy(void * self)
 { 
 	tnet_socket_t *sock = self;
-	if(sock && sock->fd > 0)
-	{
+	if(sock && sock->fd > 0){
 		/* Close the socket. */
 		tnet_socket_close(sock);
 	}

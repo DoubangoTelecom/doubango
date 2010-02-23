@@ -166,13 +166,13 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 
 				TSK_DEBUG_INFO("P-CSCF ==>%s", self->proxy_cscf);
 
-				if(tsk_striequals(transport, "UDP")) TNET_SOCKET_TYPE_AS_UDP(self->proxy_cscf_type);
-				else if(tsk_striequals(transport, "TCP")) TNET_SOCKET_TYPE_AS_TCP(self->proxy_cscf_type);
-				else if(tsk_striequals(transport, "TLS")) TNET_SOCKET_TYPE_AS_TLS(self->proxy_cscf_type);
-				else if(tsk_striequals(transport, "SCTP")) TNET_SOCKET_TYPE_AS_SCTP(self->proxy_cscf_type);
+				if(tsk_striequals(transport, "UDP")) TNET_SOCKET_TYPE_SET_UDP(self->proxy_cscf_type);
+				else if(tsk_striequals(transport, "TCP")) TNET_SOCKET_TYPE_SET_TCP(self->proxy_cscf_type);
+				else if(tsk_striequals(transport, "TLS")) TNET_SOCKET_TYPE_SET_TLS(self->proxy_cscf_type);
+				else if(tsk_striequals(transport, "SCTP")) TNET_SOCKET_TYPE_SET_SCTP(self->proxy_cscf_type);
 
-				if(use_ipv6) TNET_SOCKET_TYPE_AS_IPV6(self->proxy_cscf_type);
-				else TNET_SOCKET_TYPE_AS_IPV4(self->proxy_cscf_type);
+				if(use_ipv6) TNET_SOCKET_TYPE_SET_IPV6(self->proxy_cscf_type);
+				else TNET_SOCKET_TYPE_SET_IPV4(self->proxy_cscf_type);
 				break;
 			}
 
@@ -196,11 +196,19 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 				break;
 			}
 
-			case pname_sec_agree_mech:
+			/*
+			*	Security
+			*/
+			case pname_secagree_ipsec:
 			{
-				tsk_strupdate(&self->sec_agree_mech, va_arg(values, const char*));
+				tsk_strupdate(&self->secagree_mech, "ipsec-3gpp");
+				tsk_strupdate(&self->secagree_ipsec.alg, va_arg(values, const char*));
+				tsk_strupdate(&self->secagree_ipsec.ealg, va_arg(values, const char*));
+				tsk_strupdate(&self->secagree_ipsec.mode, va_arg(values, const char*));
+				tsk_strupdate(&self->secagree_ipsec.protocol, va_arg(values, const char*));
 				break;
 			}
+			
 
 			/* 
 			* Features 
@@ -361,29 +369,50 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			return ret;
 		}
 
+		/* Set P-Preferred-Identity */
+		if(!stack->preferred_identity && stack->public_identity){
+			stack->preferred_identity = tsk_object_ref((void*)stack->public_identity);
+		}
+		/* Transport type */
+		if(stack->secagree_mech){
+			if(tsk_striequals(stack->secagree_mech, "ipsec-3gpp")){
+				TNET_SOCKET_TYPE_SET_IPSEC(stack->proxy_cscf_type);
+			}
+			//else if if(tsk_striquals(stack->secagree_mech, "ipsec-ike"))
+		}
+
 		/* Use DNS NAPTR for the P-CSCF discovery? */
 		if(stack->use_dns_naptr)
 		{
 			char* hostname = 0;
 			tnet_port_t port = 0;
 
-			if(!tnet_dns_query_naptr_srv(stack->dns_ctx, stack->realm->host, "SIP+D2U"/*FIXME*/, &hostname, &port))
-			{
+			if(!tnet_dns_query_naptr_srv(stack->dns_ctx, stack->realm->host, "SIP+D2U"/*FIXME*/, &hostname, &port)){
 				tsk_strupdate(&stack->proxy_cscf, hostname);
 				stack->proxy_cscf_port = port;
 			}
-			else
-			{
+			else{
 				TSK_DEBUG_ERROR("P-CSCF discovery using DNS NAPTR failed. The stack will use the user supplied address and port.");
 			}
 
 			TSK_FREE(hostname);
 		}
 
+		/* Get Best source address */
+		if(stack->local_ip == TNET_SOCKET_HOST_ANY){
+			tnet_ip_t bestsource;
+			if((ret = tnet_getbestsource(stack->proxy_cscf, stack->proxy_cscf_type, &bestsource))){
+				TSK_DEBUG_ERROR("Failed to get best source [%d].", ret);
+			}
+			else{
+				tsk_strupdate(&stack->local_ip, bestsource);
+			}
+		}
+
 		/*
 		* FIXME:
 		*/
-		if(tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, stack->proxy_cscf_type, "FIXME")){
+		if(tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, stack->proxy_cscf_type, "SIP transport")){
 			// WHAT ???
 		}
 
@@ -536,11 +565,18 @@ int tsip_stack_destroy(tsip_stack_handle_t *self)
 		TSK_FREE(stack->proxy_cscf);
 		TSK_FREE(stack->device_id);
 		TSK_FREE(stack->mobility);
-		TSK_FREE(stack->sec_agree_mech);
 		TSK_OBJECT_SAFE_FREE(stack->paths);
 		TSK_OBJECT_SAFE_FREE(stack->service_routes);
 		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
 		
+		/* Security */
+		TSK_FREE(stack->secagree_mech);
+		TSK_FREE(stack->secagree_ipsec.alg);
+		TSK_FREE(stack->secagree_ipsec.ealg);
+		TSK_FREE(stack->secagree_ipsec.mode);
+		TSK_FREE(stack->secagree_ipsec.protocol);
+
+
 		/* DNS */
 		TSK_OBJECT_SAFE_FREE(stack->dns_ctx);
 
@@ -603,18 +639,22 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr)
 			if(transport)
 			{
 				tsip_uri_t* uri = 0;
+				tnet_socket_type_t type = tsip_transport_get_socket_type(transport);
+				int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(type);
+				int quote_ip = (ipv6 && tsk_strcontains(stack->proxy_cscf, strlen(stack->proxy_cscf), ":")) /* IPv6 IP string?*/;
 			
 				char* uristring = 0;
-				tsk_sprintf(&uristring, "%s:%s:%d;%s;transport=%s",
+				tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
 					transport->scheme,
+					quote_ip ? "[" : "",
 					stack->proxy_cscf,
+					quote_ip ? "]" : "",
 					stack->proxy_cscf_port,
 					lr ? "lr" : "",
 					transport->protocol);
 				if(uristring){
 					if((uri = tsip_uri_parse(uristring, strlen(uristring)))){
-						tnet_socket_type_t type = tsip_transport_get_socket_type(transport);
-						uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(type) ? host_ipv6 : host_ipv4;
+						//uri->host_type = ipv6 ? host_ipv6 : host_ipv4;
 					}
 					TSK_FREE(uristring);
 				}
