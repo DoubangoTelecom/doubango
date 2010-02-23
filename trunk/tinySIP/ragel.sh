@@ -80,6 +80,9 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Privacy.c tsip_parser_header_Pr
 # ==Proxy-Authorization
 #########ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Authorization.c tsip_parser_header_Proxy_Authorization.rl
 
+# ==Proxy-Require
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Require.c tsip_parser_header_Proxy_Require.rl
+
 # ==Record-Route
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Record_Route.c tsip_parser_header_Record_Route.rl
 

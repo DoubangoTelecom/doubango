@@ -36,8 +36,8 @@
 
 TSK_BEGIN_DECLS
 
-#define TIPSEC_CONTEXT_CREATE(ipproto, use_ipv6, mode, ealg, alg, protocol, ik, ck)\
-	tsk_object_new(tipsec_context_def_t, (tipsec_ipproto_t)ipproto, (int)use_ipv6, (tipsec_mode_t)mode, (tipsec_ealgorithm_t)ealg, (tipsec_algorithm_t)alg, (tipsec_protocol_t)protocol, (const tipsec_key_t*)ik, (const tipsec_key_t*)ck)
+#define TIPSEC_CONTEXT_CREATE(ipproto, use_ipv6, mode, ealg, alg, protocol)\
+	tsk_object_new(tipsec_context_def_t, (tipsec_ipproto_t)ipproto, (int)use_ipv6, (tipsec_mode_t)mode, (tipsec_ealgorithm_t)ealg, (tipsec_algorithm_t)alg, (tipsec_protocol_t)protocol)
 
 #define TIPSEC_CONTEXT(ctx) ((tipsec_context_t*)(ctx))
 
@@ -53,7 +53,7 @@ TSK_BEGIN_DECLS
 #define TIPSEC_ALG_FROM_STR(alg) (tsk_strequals(alg, "hmac-sha-1-96") ? algo_hmac_sha_1_96 : algo_hmac_md5_96)
 #define TIPSEC_ALG_TO_STR(alg)	(alg == algo_hmac_sha_1_96 ? "hmac-sha-1-96" : "hmac-md5-96")
 
-#define TIPSEC_PROTOCOL_FROM_STR(protocol) (tsk_strequals(protocol, "ah") ? proto_ah : ((tsk_strequals(protocol, "esp")) ? proto_esp : proto_both)
+#define TIPSEC_PROTOCOL_FROM_STR(protocol) (tsk_strequals(protocol, "ah") ? proto_ah : ((tsk_strequals(protocol, "esp")) ? proto_esp : proto_both))
 #define TIPSEC_PROTOCOL_TO_STR(protocol)	(protocol == proto_esp ? "esp" : (protocol == proto_ah ? "ah" : "ah/esp"))
 
 /**
@@ -229,6 +229,7 @@ TINYIPSEC_GEXTERN const void *tipsec_context_def_t;
 
 TINYIPSEC_API int tipsec_start(tipsec_context_t* ctx);
 TINYIPSEC_API int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* addr_remote, tipsec_port_t port_uc, tipsec_port_t port_us);
+TINYIPSEC_API int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck);
 TINYIPSEC_API int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime);
 TINYIPSEC_API int tipsec_stop(tipsec_context_t* ctx);
 

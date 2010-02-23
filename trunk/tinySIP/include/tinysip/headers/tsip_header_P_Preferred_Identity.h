@@ -40,7 +40,9 @@ TSIP_BEGIN_DECLS
 * Creates new sip 'P-Preferred-Identity' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE()		tsk_object_new(tsip_header_P_Preferred_Identity_def_t)
+#define TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(uri)	tsip_header_P_Preferred_Identity_def_t, (const tsip_uri_t*)uri
+#define TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE(uri)	tsk_object_new(TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(uri))
+#define TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE_NULL()	TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE(TSIP_NULL)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

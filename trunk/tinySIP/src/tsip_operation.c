@@ -34,7 +34,6 @@
 
 #include "tsk_debug.h"
 
-
 typedef struct tsip_operation_s
 {
 	TSK_DECLARE_OBJECT;
@@ -42,6 +41,8 @@ typedef struct tsip_operation_s
 	tsip_operation_id_t id;
 	const tsip_stack_handle_t* stack;
 	tsk_params_L_t *params;
+	tsk_params_L_t *capabilities;
+	tsk_params_L_t *headers;
 }
 tsip_operation_t;
 
@@ -112,6 +113,8 @@ static void* tsip_operation_create(void * self, va_list * app)
 
 		operation->stack = va_arg(*app, const tsip_stack_handle_t*);
 		operation->params = TSK_LIST_CREATE();
+		operation->capabilities = TSK_LIST_CREATE();
+		operation->headers = TSK_LIST_CREATE();
 
 		while((curr=va_arg(*app, tsip_operation_param_type_t)) != oppname_null)
 		{
@@ -148,6 +151,8 @@ static void* tsip_operation_destroy(void * self)
 	if(operation)
 	{
 		TSK_OBJECT_SAFE_FREE(operation->params);
+		TSK_OBJECT_SAFE_FREE(operation->capabilities);
+		TSK_OBJECT_SAFE_FREE(operation->headers);
 	}
 	return self;
 }

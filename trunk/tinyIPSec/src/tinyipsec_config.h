@@ -68,15 +68,17 @@
 #endif
 
 #if TIPSEC_UNDER_WINDOWS && !defined(_WIN32_WCE)
-#	include <ws2tcpip.h>
+#	include <windows.h>
+//#	include <ws2tcpip.h>
 #endif
+
 
 //
 // IPSEC
 //
-#if (_WIN32_WINNT >= 0x0600)
+#if (WINVER >= 0x0600)
 #	define HAVE_IPSEC_VISTA		1
-#elif (_WIN32_WINNT >= 0x0501)
+#elif (WINVER >= 0x0501)
 #	define HAVE_IPSEC_XP		1
 #elif HAVE_IPSEC_TOOLS
 #	define HAVE_IPSEC_RACOON	1

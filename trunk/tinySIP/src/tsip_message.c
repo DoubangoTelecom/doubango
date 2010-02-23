@@ -396,6 +396,43 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	return 0;
 }
 
+tsip_request_type_t tsip_request_get_type(const char* method)
+{
+	if(!method){
+		return tsip_NONE;
+	}
+
+	if(tsk_striequals(method, "ACK")){
+		return tsip_ACK;
+	}else if(tsk_striequals(method, "BYE")){
+		return tsip_BYE;
+	}else if(tsk_striequals(method, "INVITE")){
+		return tsip_INVITE;
+	}else if(tsk_striequals(method, "OPTIONS")){
+		return tsip_OPTIONS;
+	}else if(tsk_striequals(method, "REGISTER")){
+		return tsip_REGISTER;
+	}else if(tsk_striequals(method, "SUBSCRIBE")){
+		return tsip_SUBSCRIBE;
+	}else if(tsk_striequals(method, "NOTIFY")){
+		return tsip_NOTIFY;
+	}else if(tsk_striequals(method, "REFER")){
+		return tsip_REFER;
+	}else if(tsk_striequals(method, "INFO")){
+		return tsip_INFO;
+	}else if(tsk_striequals(method, "UPDATE")){
+		return tsip_UPDATE;
+	}else if(tsk_striequals(method, "MESSAGE")){
+		return tsip_MESSAGE;
+	}else if(tsk_striequals(method, "PUBLISH")){
+		return tsip_PUBLISH;
+	}else if(tsk_striequals(method, "PRACK")){
+		return tsip_PRACK;
+	}
+
+	return tsip_NONE;
+}
+
 tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq)
 {
 	tsip_request_t* request;
@@ -471,7 +508,7 @@ static void* tsip_message_create(void *self, va_list * app)
 		message->type = va_arg(*app, tsip_message_type_t); 
 		message->headers = TSK_LIST_CREATE();
 		message->sockfd = TNET_INVALID_FD;
-		//message->Content_Length = TSIP_HEADER_CONTENT_LENGTH_CREATE(0);
+		message->request_type = tsip_NONE;
 
 
 		switch(message->type)
@@ -484,7 +521,9 @@ static void* tsip_message_create(void *self, va_list * app)
 		case tsip_request:
 			{
 				message->method = tsk_strdup(va_arg(*app, const char*));
-				message->uri = tsk_object_ref((void*)va_arg(*app, const tsip_uri_t*)); 
+				message->uri = tsk_object_ref((void*)va_arg(*app, const tsip_uri_t*));
+
+				message->request_type = tsip_request_get_type(message->method);
 				break;
 			}
 

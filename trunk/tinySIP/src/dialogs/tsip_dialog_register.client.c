@@ -33,6 +33,8 @@
 #include "tinysip/headers/tsip_header_Path.h"
 #include "tinysip/headers/tsip_header_P_Associated_URI.h"
 #include "tinysip/headers/tsip_header_Min_Expires.h"
+#include "tinysip/headers/tsip_header_Proxy_Require.h"
+#include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Service_Route.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 
@@ -289,14 +291,9 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 
 			TSK_FSM_ADD_NULL());
 
-
-
+	
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_register_event_callback);
 	
-	//TSIP_DIALOG(self)->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
-	//TSIP_DIALOG(self)->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
-	//TSIP_DIALOG(self)->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->realm);
-
 	self->timerrefresh.id = TSK_INVALID_TIMER_ID;
 	self->timerrefresh.timeout = TSIP_DIALOG(self)->expires;
 
@@ -683,6 +680,18 @@ int send_register(tsip_dialog_register_t *self)
 			//}
 			//else if(2 == 3 /* multiple registrations */){
 			//}
+		}
+
+		/* RFC 3329 - 2.3.1 Client Initiated 
+			The client MUST add both a Require and Proxy-Require header field with the value "sec-agree" to its request.
+		*/
+		if(TSIP_DIALOG_GET_STACK(self)->secagree_mech){
+			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_REQUIRE_VA_ARGS("sec-agree"));
+			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_PROXY_REQUIRE_VA_ARGS("sec-agree"));
+
+			if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+
+			}
 		}
 		
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);

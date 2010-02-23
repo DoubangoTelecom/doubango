@@ -103,7 +103,7 @@ tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Require_t *hdr_require = TSIP_HEADER_REQUIRE_CREATE();
+	tsip_header_Require_t *hdr_require = TSIP_HEADER_REQUIRE_CREATE_NULL();
 	
 	const char *tag_start;
 
@@ -136,8 +136,17 @@ static void* tsip_header_Require_create(void *self, va_list * app)
 	tsip_header_Require_t *Require = self;
 	if(Require)
 	{
+		const char* option;
+
 		TSIP_HEADER(Require)->type = tsip_htype_Require;
 		TSIP_HEADER(Require)->tostring = tsip_header_Require_tostring;
+
+		if((option = va_arg(*app, const char*))){
+			tsk_string_t* string = TSK_STRING_CREATE(option);
+			Require->options = TSK_LIST_CREATE();
+
+			tsk_list_push_back_data(Require->options, ((void**) &string));
+		}
 	}
 	else
 	{

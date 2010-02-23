@@ -34,6 +34,10 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#if defined(_MSC_VER)
+#	pragma comment(lib, "Fwpuclnt.lib")
+#endif
+
 #include <Fwpmu.h>
 
 

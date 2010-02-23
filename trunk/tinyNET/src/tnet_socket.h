@@ -46,8 +46,8 @@ TNET_BEGIN_DECLS
 * @sa @ref TSK_OBJECT_SAFE_FREE.
 */
 
-#define TNET_SOCKET_CREATE_EX(host, port, type, nonblocking)	tsk_object_new(tnet_socket_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (int)nonblocking)
-#define TNET_SOCKET_CREATE(host, port, type)					TNET_SOCKET_CREATE_EX(host, port, type, 1)
+#define TNET_SOCKET_CREATE_EX(host, port, type, nonblocking, bindsocket)	tsk_object_new(tnet_socket_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (int)nonblocking, (int)bindsocket)
+#define TNET_SOCKET_CREATE(host, port, type)					TNET_SOCKET_CREATE_EX(host, port, type, 1, 1)
 
 /**
  * @enum	tnet_socket_type_e
@@ -107,17 +107,17 @@ tnet_socket_type_t;
 
 #define TNET_SOCKET_TYPE_IS_SECURE(type)	(TNET_SOCKET_TYPE_IS_IPSEC(type) || TNET_SOCKET_TYPE_IS_TLS(type) )
 
-#define TNET_SOCKET_TYPE_DEL(type, OP)		(type = TNET_SOCKET_TYPE_IS_##OP(type) ? type ^= TNET_SOCKET_TYPE_##OP : type)
+#define TNET_SOCKET_TYPE_UNSET(type, OP)		(type = TNET_SOCKET_TYPE_IS_##OP(type) ? type ^= TNET_SOCKET_TYPE_##OP : type)
 
-#define TNET_SOCKET_TYPE_AS_IPV4(type)	(type = TNET_SOCKET_TYPE_IS_IPV6(type) ? (type ^TNET_SOCKET_TYPE_IPV6)|TNET_SOCKET_TYPE_IPV4 : type)
-#define TNET_SOCKET_TYPE_AS_IPV6(type)	(type = TNET_SOCKET_TYPE_IS_IPV4(type) ? (type ^TNET_SOCKET_TYPE_IPV4)|TNET_SOCKET_TYPE_IPV6 : type)
+#define TNET_SOCKET_TYPE_SET_IPV4(type)	(type = TNET_SOCKET_TYPE_IS_IPV6(type) ? (type ^TNET_SOCKET_TYPE_IPV6)|TNET_SOCKET_TYPE_IPV4 : type)
+#define TNET_SOCKET_TYPE_SET_IPV6(type)	(type = TNET_SOCKET_TYPE_IS_IPV4(type) ? (type ^TNET_SOCKET_TYPE_IPV4)|TNET_SOCKET_TYPE_IPV6 : type)
 
-#define TNET_SOCKET_TYPE_AS_IPSEC(type)	(type |=TNET_SOCKET_TYPE_IPSEC)
+#define TNET_SOCKET_TYPE_SET_IPSEC(type)	(type |=TNET_SOCKET_TYPE_IPSEC)
 
-#define TNET_SOCKET_TYPE_AS_UDP(type)	(TNET_SOCKET_TYPE_DEL(type,TCP), TNET_SOCKET_TYPE_DEL(type,TLS), TNET_SOCKET_TYPE_DEL(type,SCTP), type |=TNET_SOCKET_TYPE_UDP)
-#define TNET_SOCKET_TYPE_AS_TCP(type)	(TNET_SOCKET_TYPE_DEL(type,UDP), TNET_SOCKET_TYPE_DEL(type,TLS), TNET_SOCKET_TYPE_DEL(type,SCTP), type |=TNET_SOCKET_TYPE_TCP)
-#define TNET_SOCKET_TYPE_AS_TLS(type)	(TNET_SOCKET_TYPE_DEL(type,TCP), TNET_SOCKET_TYPE_DEL(type,UDP), TNET_SOCKET_TYPE_DEL(type,SCTP), type |=TNET_SOCKET_TYPE_TLS)
-#define TNET_SOCKET_TYPE_AS_SCTP(type)	(TNET_SOCKET_TYPE_DEL(type,TCP), TNET_SOCKET_TYPE_DEL(type,TLS), TNET_SOCKET_TYPE_DEL(type,UDP), type |=TNET_SOCKET_TYPE_SCTP)
+#define TNET_SOCKET_TYPE_SET_UDP(type)	(TNET_SOCKET_TYPE_UNSET(type,TCP), TNET_SOCKET_TYPE_UNSET(type,TLS), TNET_SOCKET_TYPE_UNSET(type,SCTP), type |=TNET_SOCKET_TYPE_UDP)
+#define TNET_SOCKET_TYPE_SET_TCP(type)	(TNET_SOCKET_TYPE_UNSET(type,UDP), TNET_SOCKET_TYPE_UNSET(type,TLS), TNET_SOCKET_TYPE_UNSET(type,SCTP), type |=TNET_SOCKET_TYPE_TCP)
+#define TNET_SOCKET_TYPE_SET_TLS(type)	(TNET_SOCKET_TYPE_UNSET(type,TCP), TNET_SOCKET_TYPE_UNSET(type,UDP), TNET_SOCKET_TYPE_UNSET(type,SCTP), type |=TNET_SOCKET_TYPE_TLS)
+#define TNET_SOCKET_TYPE_SET_SCTP(type)	(TNET_SOCKET_TYPE_UNSET(type,TCP), TNET_SOCKET_TYPE_UNSET(type,TLS), TNET_SOCKET_TYPE_UNSET(type,UDP), type |=TNET_SOCKET_TYPE_SCTP)
 
 #define TNET_SOCKET_HOST_ANY 0
 #define TNET_SOCKET_PORT_ANY 0

@@ -116,7 +116,7 @@ tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Preferred_Identity_t *hdr_pi = TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE();
+	tsip_header_P_Preferred_Identity_t *hdr_pi = TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE_NULL();
 	
 	const char *tag_start;
 
@@ -149,8 +149,14 @@ static void* tsip_header_P_Preferred_Identity_create(void *self, va_list * app)
 	tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = self;
 	if(P_Preferred_Identity)
 	{
+		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
+
 		TSIP_HEADER(P_Preferred_Identity)->type = tsip_htype_P_Preferred_Identity;
 		TSIP_HEADER(P_Preferred_Identity)->tostring = tsip_header_Preferred_Identity_tostring;
+
+		if(uri){
+			P_Preferred_Identity->uri = tsk_object_ref((void*)uri);
+		}
 	}
 	else
 	{

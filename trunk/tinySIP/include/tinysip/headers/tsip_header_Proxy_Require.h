@@ -21,7 +21,7 @@
 */
 
 /**@file tsip_header_Proxy_Require.h
- * @brief SIP header 'Proxy_Require'.
+ * @brief SIP header 'Proxy-Require'.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -35,21 +35,35 @@
 
 TSIP_BEGIN_DECLS
 
+/**@def TSIP_HEADER_PROXY_REQUIRE_CREATE
+* Creates new sip 'Proxy_Require' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
+*/
+#define TSIP_HEADER_PROXY_REQUIRE_VA_ARGS(option)	tsip_header_Proxy_Require_def_t, (const char*)option
+#define TSIP_HEADER_PROXY_REQUIRE_CREATE(option)			tsk_object_new(TSIP_HEADER_PROXY_REQUIRE_VA_ARGS(option))
+#define TSIP_HEADER_PROXY_REQUIRE_CREATE_NULL()			TSIP_HEADER_PROXY_REQUIRE_CREATE(TSIP_NULL)
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP header 'Proxy-Require'.
+/// @brief	SIP header 'Proxy-Proxy_Require'.
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
-/// @par ABNF
+/// @par ABNF: Proxy_Require	= 	"Proxy_Require" HCOLON option-tag *(COMMA option-tag)
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Proxy_Require_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	tsk_strings_L_t *options;
 }
 tsip_header_Proxy_Require_t;
+
+tsip_header_Proxy_Require_t *tsip_header_Proxy_Require_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_Proxy_Require_def_t;
 
 TSIP_END_DECLS
 

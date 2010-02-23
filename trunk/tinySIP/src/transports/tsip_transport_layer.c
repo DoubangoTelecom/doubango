@@ -29,6 +29,8 @@
  */
 #include "tinysip/transports/tsip_transport_layer.h"
 
+#include "tinysip/transports/tsip_transport_ipsec.h"
+
 #include "tinysip/transactions/tsip_transac_layer.h"
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 
@@ -57,7 +59,7 @@ int tsip_transport_layer_handle_incoming_msg(const tsip_transport_t *transport, 
 	return ret;
 }
 
-/*== Non-blocking callback function (STREAM)
+/*== Non-blocking callback function (STREAM: TCP, TLS and SCTP)
 */
 static int tsip_transport_layer_stream_data_read(const tsip_transport_t *transport, const void* data, size_t size)
 {
@@ -131,7 +133,7 @@ bail:
 	return ret;
 }
 
-/*== Non-blocking callback function (DGRAM)
+/*== Non-blocking callback function (DGRAM: UDP)
 */
 static int tsip_transport_layer_dgram_data_read(const tsip_transport_t *transport, const void* data, size_t size)
 {
@@ -278,7 +280,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 			tsk_list_foreach(item, self->transports)
 			{
 				curr = item->data;
-				if(tsip_transport_has_socket(curr,msg->sockfd))
+				if(tsip_transport_have_socket(curr,msg->sockfd))
 				{
 					transport = curr;
 					break;
@@ -295,7 +297,11 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 	// FIXME: CHECK IF already exist
 	if(self && description)
 	{
-		tsip_transport_t *transport = TSIP_TRANSPORT_CREATE(self->stack, local_host, local_port, type, description);
+		tsip_transport_t *transport = 
+			TNET_SOCKET_TYPE_IS_IPSEC(type) ? 
+			TSIP_TRANSPORT_IPSEC_CREATE(self->stack, local_host, local_port, type, description) /* IPSec is a special case. All other are ok. */
+			: TSIP_TRANSPORT_CREATE(self->stack, local_host, local_port, type, description); /* UDP, SCTP, TCP, TLS */
+			
 		if(transport)
 		{
 			tsk_list_push_back_data(self->transports, (void**)&transport);

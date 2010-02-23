@@ -190,6 +190,21 @@ bail:
 	return ret;
 }
 
+int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck)
+{
+	if(!ctx){
+		return -1;
+	}
+
+	TSK_FREE(ctx->ik);
+	TSK_FREE(ctx->ck);
+
+	ctx->ik = tsk_strndup(ik, TIPSEC_KEY_LEN);
+	ctx->ck = tsk_strndup(ck, TIPSEC_KEY_LEN); /* XP version of IPSec do not support encryption key but we copy ck (Who know?). */				
+
+	return 0;
+}
+
 int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime)
 {
 	tipsec_context_xp_t* ctx_xp = TIPSEC_CONTEXT_XP(ctx);
@@ -533,18 +548,12 @@ static void* tipsec_context_create(void * self, va_list * app)
 	tipsec_context_xp_t *context = self;
 	if(context)
 	{
-		const tipsec_key_t *ik;
-		const tipsec_key_t *ck;
-
 		TIPSEC_CONTEXT(context)->ipproto = va_arg(*app, tipsec_ipproto_t);
 		TIPSEC_CONTEXT(context)->use_ipv6 = va_arg(*app, int);
 		TIPSEC_CONTEXT(context)->mode = va_arg(*app, tipsec_mode_t);
 		TIPSEC_CONTEXT(context)->ealg = va_arg(*app, tipsec_ealgorithm_t);
 		TIPSEC_CONTEXT(context)->alg = va_arg(*app, tipsec_algorithm_t);
 		TIPSEC_CONTEXT(context)->protocol = va_arg(*app, tipsec_protocol_t);
-
-		ik = va_arg(*app, const tipsec_key_t*);
-		ck = va_arg(*app, const tipsec_key_t*);
 
 		/* Open engine */
 		if(!TIPSEC_CONTEXT(context)->use_ipv6){
@@ -556,10 +565,6 @@ static void* tipsec_context_create(void * self, va_list * app)
 		else{
 			TIPSEC_CONTEXT(context)->initialized = 1;
 		}
-		
-		/* Compute ik and ck */
-		TIPSEC_CONTEXT(context)->ik = tsk_strndup(ik, TIPSEC_KEY_LEN);
-		TIPSEC_CONTEXT(context)->ck = tsk_strndup(ck, TIPSEC_KEY_LEN); /* XP version of IPSec do not support encryption key but we copy ck (Who know?). */				
 		
 		TIPSEC_CONTEXT(context)->state = state_initial;
 	}
