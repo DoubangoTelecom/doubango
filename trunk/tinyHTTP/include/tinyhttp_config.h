@@ -64,6 +64,12 @@
 #	define _CRT_SECURE_NO_WARNINGS
 #endif
 
+/* Detecting C99 compilers
+ */
+#if (__STDC_VERSION__ == 199901L) && !defined(__C99__)
+#	define __C99__
+#endif
+
 #include <stdint.h>
 #ifdef __SYMBIAN32__
 #include <stdlib.h>

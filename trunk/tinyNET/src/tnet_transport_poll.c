@@ -45,6 +45,7 @@ typedef struct transport_socket_s
 {
 	tnet_fd_t fd;
 	unsigned connected:1;
+	unsigned owner:1;
 }
 transport_socket_t;
 
@@ -60,9 +61,9 @@ typedef struct transport_context_s
 }
 transport_context_t;
 
-static void transport_socket_add(tnet_fd_t fd, transport_context_t *context);
-static void transport_socket_set_connected(tnet_fd_t fd, transport_context_t *context, int connected);
-static void transport_socket_remove(int index, transport_context_t *context);
+static void addSocket(tnet_fd_t fd, transport_context_t *context, int take_ownership);
+static void setConnected(tnet_fd_t fd, transport_context_t *context, int connected);
+static void removeSocket(int index, transport_context_t *context);
 
 /* Checks if socket is connected */
 int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd)
@@ -90,29 +91,67 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 	return 0;
 }
 
-int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, int take_ownership)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
 	int ret = -1;
 
-	if(!transport)
-	{
+	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return ret;
 	}
 
-	context = (transport_context_t*)transport->context;
-	if(context)
-	{
+	
+	if((context = (transport_context_t*)transport->context)){
 		static char c = '\0';
-		transport_socket_add(fd, context);
+		addSocket(fd, context, take_ownership);
 	
 		// signal
 		ret = write(context->pipeW, &c, 1);
 		return (ret > 0 ? 0 : ret);
 	}
 
+	// ...
+	
+	return -1;
+}
+
+/* Remove socket
+ */
+int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t *context;
+	int ret = -1;
+	size_t i;
+	int found = 0;
+	
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid server handle.");
+		return ret;
+	}
+	
+	if(!(context = (transport_context_t*)transport->context)){
+		TSK_DEBUG_ERROR("Invalid context.");
+		return -2;
+	}
+	
+	for(i=0; i<context->count; i++){
+		if(context->sockets[i]->fd == fd){
+			removeSocket(i, context);
+			found = 1;
+			break;
+		}
+	}
+	
+	if(found){
+		/* Signal */
+		static char c = '\0';
+		ret = write(context->pipeW, &c, 1);
+		return (ret > 0 ? 0 : ret);
+	}
+	
 	// ...
 	
 	return -1;
@@ -153,7 +192,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		}
 
 		/* Add the socket */
-		if((status = tnet_transport_add_socket(handle, fd)))
+		if((status = tnet_transport_add_socket(handle, fd, 1)))
 		{
 			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
 
@@ -187,7 +226,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	}
 
 	/* update connection status */
-	transport_socket_set_connected(fd, transport->context, (status==0));
+	setConnected(fd, transport->context, (status==0));
 	
 bail:
 	return fd;
@@ -243,14 +282,13 @@ bail:
 	return numberOfBytesSent;
 }
 
-int tnet_transport_has_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
 	size_t i;
 	
-	if(!transport)
-	{
+	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return 0;
 	}
@@ -269,10 +307,11 @@ int tnet_transport_has_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 }
 
 /*== Add new socket ==*/
-void transport_socket_add(tnet_fd_t fd, transport_context_t *context)
+void addSocket(tnet_fd_t fd, transport_context_t *context, int take_ownership)
 {
 	transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
 	sock->fd = fd;
+	sock->owner = take_ownership ? 1 : 0;
 	
 	context->ufds[context->count].fd = fd;
 	context->ufds[context->count].events = context->events;
@@ -282,7 +321,7 @@ void transport_socket_add(tnet_fd_t fd, transport_context_t *context)
 }
 
 /*== change connection state ==*/
-static void transport_socket_set_connected(tnet_fd_t fd, transport_context_t *context, int connected)
+static void setConnected(tnet_fd_t fd, transport_context_t *context, int connected)
 {
 	size_t i;
 
@@ -296,18 +335,21 @@ static void transport_socket_set_connected(tnet_fd_t fd, transport_context_t *co
 }
 
 /*== Remove socket ==*/
-void transport_socket_remove(int index, transport_context_t *context)
+void removeSocket(int index, transport_context_t *context)
 {
 	int i;
 	
 	if(index < (int)context->count)
 	{
-		tnet_sockfd_close(&(context->sockets[index]->fd));
+		/* Close the socket if we are the owner. */
+		if(context->sockets[index]->owner){
+			tnet_sockfd_close(&(context->sockets[index]->fd));
+		}
 
+		// Free socket
 		TSK_FREE(context->sockets[index]);
 		
-		for(i=index ; i<context->count-1; i++)
-		{			
+		for(i=index ; i<context->count-1; i++){			
 			context->sockets[i] = context->sockets[i+1];
 		}
 		
@@ -382,10 +424,10 @@ void *tnet_transport_mainthread(void *param)
 	context->pipeR = pipes[0];
 	context->pipeW = pipes[1];
 
-	transport_socket_add(context->pipeR, context);
+	addSocket(context->pipeR, context, 1);
 
-	/* Add the current transport socket to the context. */
-	transport_socket_add(transport->master->fd, context);
+	/* Add the master socket to the context. */
+	addSocket(transport->master->fd, context, 1);
 
 	/* Set transport to active */
 	transport->active = 1;
@@ -452,7 +494,7 @@ void *tnet_transport_mainthread(void *param)
 					}
 					//else
 					{
-						transport_socket_remove(i, context);
+						removeSocket(i, context);
 						TNET_PRINT_LAST_ERROR("recv have failed.");
 						continue;
 					}
@@ -493,10 +535,10 @@ bail:
 	transport->active = 0;
 
 	/* cleanup */
-	while(context->count)
-	{
-		transport_socket_remove(0, context);
+	while(context->count){
+		removeSocket(0, context);
 	}
+	TSK_FREE(context);
 
 	TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	return 0;

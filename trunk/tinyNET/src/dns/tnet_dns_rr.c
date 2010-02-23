@@ -46,6 +46,8 @@
 #include "tsk_debug.h"
 #include "tsk_string.h"
 
+#include <string.h> /* strtok, strlen ... */
+
 int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_t qclass)
 {
 	if(rr)
@@ -92,7 +94,7 @@ int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** cha
 	
 	if(length < size)
 	{
-		*charstring = tsk_strndup((dataPtr + 1), length);
+		*charstring = tsk_strndup((const char*)(dataPtr + 1), length);
 		*offset += (1 + length);
 		
 		return 0;
@@ -138,7 +140,7 @@ int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, si
 			length = *dataPtr;
 			*offset+=1, dataPtr++;
 
-			tsk_strncat(name, dataPtr, length);
+			tsk_strncat(name, (const char*)dataPtr, length);
 			*offset += length, dataPtr += length;
 		}
 	}
