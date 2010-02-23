@@ -54,8 +54,8 @@ typedef struct transport_context_s
 }
 transport_context_t;
 
-static void transport_socket_add(tnet_fd_t fd, transport_context_t *context, int take_ownership);
-static void transport_socket_remove(int index, transport_context_t *context);
+static void addSocket(tnet_fd_t fd, transport_context_t *context, int take_ownership);
+static void removeSocket(int index, transport_context_t *context);
 
 /* Checks if socket is connected */
 int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd)
@@ -167,7 +167,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 
 	for(i=0; i<context->count; i++){
 		if(context->sockets[i]->fd == fd){
-			transport_socket_remove(i, context);
+			removeSocket(i, context);
 			found = 1;
 			break;
 		}
@@ -354,7 +354,7 @@ int CALLBACK AcceptCondFunc(LPWSABUF lpCallerId, LPWSABUF lpCallerData, LPQOS lp
 }
 
 /*== Add new socket ==*/
-static void transport_socket_add(tnet_fd_t fd, transport_context_t *context, int take_ownership)
+static void addSocket(tnet_fd_t fd, transport_context_t *context, int take_ownership)
 {
 	transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
 	sock->fd = fd;
@@ -367,7 +367,7 @@ static void transport_socket_add(tnet_fd_t fd, transport_context_t *context, int
 }
 
 /*== Remove socket ==*/
-static void transport_socket_remove(int index, transport_context_t *context)
+static void removeSocket(int index, transport_context_t *context)
 {
 	size_t i;
 
@@ -383,8 +383,7 @@ static void transport_socket_remove(int index, transport_context_t *context)
 		// Close event
 		WSACloseEvent(context->events[index]);
 
-		for(i=index ; i<context->count-1; i++)
-		{			
+		for(i=index ; i<context->count-1; i++){			
 			context->sockets[i] = context->sockets[i+1];
 			context->events[i] = context->events[i+1];
 		}

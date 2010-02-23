@@ -45,7 +45,7 @@ int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* 
 	return -1;
 }
 
-int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps)
+int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime)
 {
 	TSK_DEBUG_ERROR("No IPSec implementation found.");
 	return -1;
@@ -57,4 +57,44 @@ int tipsec_stop(tipsec_context_t* ctx)
 	return -1;
 }
 
+
+
+//=================================================================================================
+//	IPSec context object definition
+//
+static void* tipsec_context_create(void * self, va_list * app)
+{
+	tipsec_context_t *context = self;
+	if(context)
+	{
+	}
+bail:
+	return self;
+}
+
+static void* tipsec_context_destroy(void * self)
+{ 
+	tipsec_context_t *context = self;
+	if(context)
+	{
+	}
+	
+	return self;
+}
+
+static int tipsec_context_cmp(const void *obj1, const void *obj2)
+{
+	return-1;
+}
+
+static const tsk_object_def_t tipsec_context_def_s = 
+{
+sizeof(tipsec_context_t),
+tipsec_context_create, 
+tipsec_context_destroy,
+tipsec_context_cmp, 
+};
+
+
+const void *tipsec_context_def_t = &tipsec_context_def_s;
 #endif

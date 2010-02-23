@@ -36,10 +36,13 @@
 
 TSIP_BEGIN_DECLS
 
+// FD
+struct tsip_transport_ipsec_s;
+
 #define TSIP_TRANSPORT_IPSEC_CREATE(stack, host, port, type, description)		tsk_object_new(tsip_transport_ipsec_def_t, stack, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
 #define TSIP_TRANSPORT_IPSEC(self)										((tsip_transport_ipsec_t*)(self))
 
-int tsip_transport_ipsec_send(struct tsip_transport_ipsec_s* self, tsip_message_t* msg);
+//int tsip_transport_ipsec_send(struct tsip_transport_ipsec_s* self, tsip_message_t* msg);
 int tsip_transport_ipsec_asso_kill(struct tsip_transport_ipsec_s* self);
 
 TINYSIP_GEXTERN const void *tsip_transport_ipsec_def_t;

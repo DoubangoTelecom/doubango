@@ -431,9 +431,8 @@ int tnet_getbestsource(const char* destination, tnet_socket_type_t type, tnet_ip
 	struct sockaddr_storage destAddr;
 	tnet_addresses_L_t* addresses = 0;
 	const tsk_list_item_t* item;
-#if TNET_UNDER_WINDOWS
-	DWORD dwBestIfIndex;
-#endif
+
+	long dwBestIfIndex;
 
 	if(!destination || !source){
 		goto bail;
