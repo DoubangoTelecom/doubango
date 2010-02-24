@@ -41,8 +41,8 @@ TSK_BEGIN_DECLS
 
 #define TIPSEC_CONTEXT(ctx) ((tipsec_context_t*)(ctx))
 
-#define TIPSEC_IPPROTO_FROM_STR(ipproto) (tsk_strequals(ipproto, "tcp") ? ipproto_tcp : ipproto_udp)
-#define TIPSEC_IPPROTO_TO_STR(ipproto)	(ipproto == ipproto_tcp ? "tcp" : "udp")
+#define TIPSEC_IPPROTO_FROM_STR(ipproto) (tsk_strequals(ipproto, "tcp") ? ipproto_tcp : (tsk_strequals(ipproto, "icmp") ? ipproto_icmp : ipproto_udp))
+#define TIPSEC_IPPROTO_TO_STR(ipproto)	(ipproto == ipproto_tcp ? "tcp" : (ipproto == ipproto_icmp ? "icmp" : "udp"))
 
 #define TIPSEC_MODE_FROM_STR(mode) (tsk_strequals(mode, "tun") ? mode_tun : mode_trans)
 #define TIPSEC_MODE_TO_STR(mode)	(mode == mode_tun ? "tun" : "trans")
@@ -113,7 +113,9 @@ typedef enum tipsec_ipproto_e
 	//! UDP. 
 	ipproto_udp,
 	//! TCP. 
-	ipproto_tcp
+	ipproto_tcp,
+	//! ICMP. 
+	ipproto_icmp
 }
 tipsec_ipproto_t;
 

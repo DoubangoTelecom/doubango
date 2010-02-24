@@ -31,6 +31,8 @@
 
 #include "tinysip/transports/tsip_transport.h"
 
+#include "tinysip/headers/tsip_header_Proxy_Require.h"
+#include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Security_Client.h"
 #include "tinysip/headers/tsip_header_Security_Server.h"
 
@@ -43,41 +45,6 @@ TINYSIP_GEXTERN const void *tsip_ipsec_association_def_t;
 #define TSIP_IPSEC_ASSOCIATION_CREATE(transport)\
 	tsk_object_new(tsip_ipsec_association_def_t, (const tsip_transport_t*)transport)
 
-
-int add_Security_Client(const tsip_ipsec_association_t* association, tsip_message_t* msg)
-{
-	tsip_header_Security_Client_t* header;
-
-	if(!association || !association->ctx || !msg){
-		return -1;
-	}
-	/*	RFC 3329 - 2.3.1 Client Initiated
-		
-		A client wishing to use the security agreement of this specification
-		MUST add a Security-Client header field to a request addressed to its
-		first-hop proxy (i.e., the destination of the request is the first-
-		hop proxy).  This header field contains a list of all the security
-		mechanisms that the client supports.  The client SHOULD NOT add
-		preference parameters to this list.
-
-		example: Security-Client: ipsec-3gpp; alg=hmac-md5-96; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
-	*/
-
-	header = TSIP_HEADER_SECURITY_CLIENT_CREATE_NULL();
-	header->mech = tsk_strdup("ipsec-3gpp");
-	header->alg = tsk_strdup(TIPSEC_ALG_TO_STR(association->ctx->alg));
-	header->ealg = tsk_strdup(TIPSEC_EALG_TO_STR(association->ctx->ealg));
-	header->spi_c = association->ctx->spi_uc;
-	header->spi_s = association->ctx->spi_us;
-	header->port_c = association->ctx->port_uc;
-	header->port_s = association->ctx->port_us;
-
-	tsip_message_add_header(msg, TSIP_HEADER(header));
-
-	TSK_OBJECT_SAFE_FREE(msg);
-
-	return 0;
-}
 
 int tsip_transport_ipsec_createTempSAs(tsip_transport_ipsec_t* self)
 {
@@ -153,7 +120,11 @@ int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_
 	/* Cleanup old Security-Verifies */
 	TSK_OBJECT_SAFE_FREE(self->secVerifies);
 
-	/* Match security server. */
+	/*	RFC 3329 - 2.3.1 Client Initiated
+		
+		When the client receives a response with a Security-Server header field, it MUST choose the security mechanism in the server's list
+		with the highest "q" value among all the mechanisms that are known to the client.
+	*/
 	for(index = 0; (ssHdr = (const tsip_header_Security_Server_t *)tsip_message_get_headerAt(r401_407, tsip_htype_Security_Server, index)); index++)
 	{
 		tsip_header_Security_Verify_t* svHdr;
@@ -212,8 +183,26 @@ copy:
 		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u].", self->asso_temporary->ctx->addr_remote, self->asso_temporary->ctx->port_ps);
 		goto bail;
 	}
-	if((ret = tnet_sockfd_connetto(self->asso_temporary->socket_uc->fd, (const struct sockaddr *)&to))){
+	if((ret = tnet_sockfd_connetto(self->asso_temporary->socket_uc->fd, &to))){
 		TSK_DEBUG_ERROR("Failed to connect port_uc to port_ps.");
+		goto bail;
+	}
+
+bail:
+	return ret;
+}
+
+int tsip_transport_ipsec_startSAs(tsip_transport_ipsec_t* self, const tipsec_key_t* ik, const tipsec_key_t* ck)
+{
+	int ret = -1;
+
+	if(!self){
+		goto bail;
+	}
+	
+	if(!self->asso_temporary){
+		TSK_DEBUG_ERROR("Failed to find temporary SAs");
+		ret = -2;
 		goto bail;
 	}
 
@@ -221,6 +210,10 @@ copy:
 	TSK_OBJECT_SAFE_FREE(self->asso_active); /* delete old active SAs */
 	self->asso_active = tsk_object_ref((void*)self->asso_temporary); /* promote */
 	TSK_OBJECT_SAFE_FREE(self->asso_temporary); /* delete old temp SAs */
+
+	if(!(ret = tipsec_set_keys(self->asso_active->ctx, ik, ck))){
+		ret = tipsec_start(self->asso_active->ctx);
+	}
 
 bail:
 	return ret;
@@ -244,8 +237,16 @@ bail:
 int tsip_transport_ipsec_updateMSG(tsip_transport_ipsec_t* self, tsip_message_t *msg)
 {
 	int ret = -1;
+	const tsip_ipsec_association_t* asso;
 
 	if(!self){
+		goto bail;
+	}
+
+	asso = self->asso_temporary ? self->asso_temporary : self->asso_active;
+	if(!asso || !asso->ctx){
+		TSK_DEBUG_ERROR("No IPSec association found.");
+		ret = -2;
 		goto bail;
 	}
 
@@ -253,7 +254,52 @@ int tsip_transport_ipsec_updateMSG(tsip_transport_ipsec_t* self, tsip_message_t 
 		return 0;
 	}
 
-	/* Add Security-Client header */
+	/* Security-Client, Require, Proxy-Require and Security Verify */
+	switch(msg->request_type)
+	{
+		case tsip_BYE:
+		case tsip_INVITE:
+		case tsip_OPTIONS:
+		case tsip_REGISTER:
+		case tsip_SUBSCRIBE:
+		case tsip_NOTIFY:
+		case tsip_REFER:
+		case tsip_INFO:
+		case tsip_UPDATE:
+		case tsip_MESSAGE:
+		case tsip_PUBLISH:
+		case tsip_PRACK:
+			{
+				const tsk_list_item_t *item;
+				TSIP_MESSAGE_ADD_HEADER(msg, TSIP_HEADER_SECURITY_CLIENT_VA_ARGS("ipsec-3gpp",
+						TIPSEC_ALG_TO_STR(asso->ctx->alg),
+						TIPSEC_PROTOCOL_TO_STR(asso->ctx->protocol),
+						TIPSEC_MODE_TO_STR(asso->ctx->mode),
+						TIPSEC_EALG_TO_STR(asso->ctx->ealg),
+						asso->ctx->port_uc,
+						asso->ctx->port_us,
+						asso->ctx->spi_uc,
+						asso->ctx->spi_us
+					));
+				/*	RFC 3329 - 2.3.1 Client Initiated 
+					All the subsequent SIP requests sent by the client to that server
+					SHOULD make use of the security mechanism initiated in the previous
+					step.  These requests MUST contain a Security-Verify header field
+					that mirrors the server's list received previously in the Security-
+					Server header field.  These requests MUST also have both a Require
+					and Proxy-Require header fields with the value "sec-agree".
+				*/
+				tsk_list_foreach(item, self->secVerifies){
+					tsip_message_add_header(msg, (const tsip_header_t*)item->data);
+				}
+				TSIP_MESSAGE_ADD_HEADER(msg, TSIP_HEADER_REQUIRE_VA_ARGS("sec-agree"));
+				TSIP_MESSAGE_ADD_HEADER(msg, TSIP_HEADER_PROXY_REQUIRE_VA_ARGS("sec-agree"));
+				break;
+			}
+	}
+
+	ret = 0;
+
 	/* Add Security-Server headers */
 bail:
 	return ret;
@@ -392,14 +438,15 @@ static void* tsip_ipsec_association_create(void * self, va_list * app)
 
 		const tsip_transport_t* transport = va_arg(*app, const tsip_transport_t *);
 
-		tnet_ip_t ip;
+		tnet_ip_t ip_local;
+		tnet_ip_t ip_remote;
 		tnet_port_t port;
-		
+
 		/* Set transport */
 		association->transport = transport;
 
-		/* Get local IP and port */
-		tsip_transport_get_ip_n_port(transport, &ip, &port);
+		/* Get local IP and port. */
+		tsip_transport_get_ip_n_port(transport, &ip_local, &port);
 		
 		/* Create IPSec context */
 		association->ctx = TIPSEC_CONTEXT_CREATE(
@@ -411,15 +458,20 @@ static void* tsip_ipsec_association_create(void * self, va_list * app)
 			TIPSEC_PROTOCOL_FROM_STR(TSIP_STACK(transport->stack)->secagree_ipsec.protocol));
 		
 		/* Create Both client and Server legs */
-		association->socket_us = TNET_SOCKET_CREATE(ip, TNET_SOCKET_PORT_ANY, transport->type);
-		association->socket_uc = TNET_SOCKET_CREATE(ip, TNET_SOCKET_PORT_ANY, transport->type);
+		association->socket_us = TNET_SOCKET_CREATE(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
+		association->socket_uc = TNET_SOCKET_CREATE(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
 
 		/* Add Both sockets to the network transport */
 		tsip_transport_add_socket(transport, association->socket_us->fd, 0);
 		tsip_transport_add_socket(transport, association->socket_uc->fd, 0);
 		
 		/* Set local */
-		tipsec_set_local(association->ctx, ip, TSIP_STACK(transport->stack)->proxy_cscf, association->socket_uc->port, association->socket_us->port);
+		if(!tnet_get_peerip(transport->connectedFD, &ip_remote)){ /* Get remote IP string */
+			tipsec_set_local(association->ctx, ip_local, ip_remote, association->socket_uc->port, association->socket_us->port);
+		}
+		else{
+			tipsec_set_local(association->ctx, ip_local, TSIP_STACK(transport->stack)->proxy_cscf, association->socket_uc->port, association->socket_us->port);
+		}
 	}	 	
 	return self;
 }

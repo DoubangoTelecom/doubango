@@ -554,13 +554,11 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 	if(addr->sa_family == AF_INET)
 	{
 		struct sockaddr_in *sin = (struct sockaddr_in *)addr;
-		if(port)
-		{
+		if(port){
 			*port = ntohs(sin->sin_port);
 			status = 0;
 		}
-		if(ip)
-		{
+		if(ip){
 			if((status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
 			{
 				return status;
@@ -573,13 +571,11 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 #if TNET_UNDER_WINDOWS
 		int index;
 #endif
-		if(port)
-		{
+		if(port){
 			*port = ntohs(sin6->sin6_port);
 			status = 0;
 		}
-		if(ip)
-		{
+		if(ip){
 			if((status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
 			{
 				return status;
@@ -601,18 +597,41 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 	return status;
 }
 
+// MUST be connect()ed
+int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_port_t *port)
+{
+	if(port){
+		*port = 0;
+	}
+
+	if(localFD > 0){
+		int status;
+		socklen_t len;
+		struct sockaddr_storage ss;
+
+		len = sizeof(ss);
+		if((status = getpeername(localFD, (struct sockaddr *)&ss, &len))){
+			TSK_DEBUG_ERROR("TNET_GET_SOCKADDR has failed with status code: %d", status);
+			return -1;
+		}
+
+		return tnet_get_sockip_n_port(((struct sockaddr *)&ss), ip, port);
+	}
+
+	TSK_DEBUG_ERROR("Could not use an invalid socket description.");
+	return -1;
+}
+
 int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
 	if(port){
 		*port = 0;
 	}
 
-	if(fd > 0)
-	{
+	if(fd > 0){
 		int status;
 		struct sockaddr_storage ss;
-		if((status = tnet_get_sockaddr(fd, &ss)))
-		{
+		if((status = tnet_get_sockaddr(fd, &ss))){
 			TSK_DEBUG_ERROR("TNET_GET_SOCKADDR has failed with status code: %d", status);
 			return -1;
 		}
@@ -850,34 +869,53 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 
 int tnet_sockfd_send(tnet_fd_t fd, void* buf, size_t size, int flags)
 {
+	int ret = -1;
+
 	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to send data.");
-		return -1;
+		goto bail;
 	}
 
-	return send(fd, buf, size, flags);
+	if((ret = send(fd, buf, size, flags)) <= 0){
+		TNET_PRINT_LAST_ERROR("send failed.");
+		// Under Windows XP if WSAGetLastError()==WSAEINTR then try to disable both the ICS and the Firewall
+		// More info about How to disable the ISC: http://support.microsoft.com/?scid=kb%3Ben-us%3B230112&x=6&y=11
+		goto bail;
+	}
+
+bail:
+	return ret;
 }
 
 int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags)
 {
+	int ret = -1;
+
 	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to recv data.");
-		return -1;
+		goto bail;
 	}
 
-	return recv(fd, buf, size, flags);
+	if((ret = recv(fd, buf, size, flags)) <= 0){
+		TNET_PRINT_LAST_ERROR("recv failed.");
+		goto bail;
+	}
+
+bail:
+	return ret;
 }
 
-int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr *to)
+int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 {
 	int status = -1;
 
 #if TNET_UNDER_WINDOWS
 
-	if((status = WSAConnect(fd, (LPSOCKADDR)&to, sizeof(to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
+	if((status = WSAConnect(fd, (LPSOCKADDR)to, sizeof(*to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
 	{
-		if((status = WSAGetLastError()) == WSAEWOULDBLOCK){
-			TSK_DEBUG_INFO("WSAEWOULDBLOCK error for WSAConnect operation");
+		status = WSAGetLastError();
+		if(status == WSAEWOULDBLOCK || status == WSAEINTR || status == WSAEINPROGRESS ){
+			TSK_DEBUG_WARN("WSAEWOULDBLOCK/WSAEINTR/WSAEINPROGRESS  error for WSAConnect operation");
 			status = 0;
 		}
 		else{
@@ -888,14 +926,14 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr *to)
 #else /* !TNET_UNDER_WINDOWS */
 
 #	if TNET_HAVE_SS_LEN
-		if((status = connect(fd, (struct sockaddr*)&to, to.ss_len)))
+		if((status = connect(fd, (struct sockaddr*)to, to.ss_len)))
 #	else
-		if((status = connect(fd, (struct sockaddr*)&to, sizeof(to))))
+		if((status = connect(fd, (struct sockaddr*)to, sizeof(*to))))
 #	endif
 		{
 			status = tnet_geterrno();
-			if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS){
-				TSK_DEBUG_INFO("TNET_ERROR_WOULDBLOCK/TNET_ERROR_INPROGRESS error for Connect operation");
+			if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS || status == EAGAIN){
+				TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_INPROGRESS/EAGAIN error for Connect operation");
 				status = 0;
 			}
 			else{

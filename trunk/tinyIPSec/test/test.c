@@ -24,9 +24,11 @@
 
 #include "tsk_debug.h"
 
-#define ADDR_REMOTE		"192.168.0.9" //"2a01:e35:8b32:7050:6122:2706:2124:32ca"//"192.168.0.15"
-#define ADDR_LOCAL		"192.168.0.12" //"2a01:e35:8b32:7050:6122:2706:2124:32cb"//"192.168.0.14"
-#define USE_IPV6		0
+//#define ADDR_REMOTE		"192.168.0.9" //"2a01:e35:8b32:7050:6122:2706:2124:32ca"//"192.168.0.15"
+//#define ADDR_LOCAL		"192.168.0.12" //"2a01:e35:8b32:7050:6122:2706:2124:32cb"//"192.168.0.14"
+#define ADDR_REMOTE		"2001:5c0:1502:1800::225"
+#define ADDR_LOCAL		"2001:5c0:1502:1800:5cc8:4a4e:3ef7:3314"
+#define USE_IPV6		1
 
 #define IK		"1234567890123456"
 #define CK		"1234567890121234"
@@ -44,7 +46,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	int ret;
 	tipsec_lifetime_t lifetime = 600000; /* Always set it to the maximum value. (Not possible to update the value after REGISTER 200OK. ) */
 
-	tipsec_context_t * ctx = TIPSEC_CONTEXT_CREATE(ipproto_udp, USE_IPV6, mode_trans, ealg_aes, algo_hmac_md5_96, proto_both);
+	tipsec_context_t * ctx = TIPSEC_CONTEXT_CREATE(ipproto_icmp, USE_IPV6, mode_trans, ealg_aes, algo_hmac_md5_96, proto_both);
 
 	if((ret = tipsec_set_local(ctx, ADDR_LOCAL, ADDR_REMOTE, PORT_UC, PORT_US))){
 		goto bail;
@@ -60,11 +62,11 @@ int _tmain(int argc, _TCHAR* argv[])
 	/* get and process the 401/407
 	*/
 
-	tipsec_set_keys(ctx, IK, CK);
-
 	if((ret = tipsec_set_remote(ctx, SPI_PC, SPI_PS, PORT_PC, PORT_PS, lifetime))){
 		goto bail;
 	}
+
+	tipsec_set_keys(ctx, IK, CK);
 
 	/* Start */
 	if((ret = tipsec_start(ctx))){

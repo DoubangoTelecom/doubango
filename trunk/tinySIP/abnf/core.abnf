@@ -335,7 +335,7 @@ COLON	= 	SWS 	":" 	SWS 	; colon
 LDQUOT	= 	SWS 	DQUOTE 		; open double quotation mark
 RDQUOT	= 		DQUOTE 	SWS 	; close double quotation mark 
 
-;;;; tocken
+;;;; token
 token	=  	1*( alphanum /   "-"   /   "."   /   "!"   /   "%"   /   "*" /   "_"   /   "+"   /   "`"   /   "'"   /   "~" )
 
 ;;;; quoted-string

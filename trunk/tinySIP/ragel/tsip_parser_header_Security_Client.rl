@@ -126,6 +126,14 @@
 		}
 	}
 
+	action parse_prot
+	{
+		if(curr_securityclient)
+		{
+			TSK_PARSER_SET_STRING(curr_securityclient->prot);
+		}
+	}
+
 	action parse_preference
 	{
 		if(curr_securityclient)
@@ -155,8 +163,9 @@
 	spi_c = "spi-c"i EQUAL DIGIT+>tag %parse_spi_c;
 	ealg = "ealg"i EQUAL token>tag %parse_ealg;
 	alg = "alg"i EQUAL token>tag %parse_alg;
+	prot = "prot"i EQUAL token>tag %parse_prot;
 	preference = "q"i EQUAL qvalue>tag %parse_preference;
-	mech_parameters = (preference | alg | ealg | spi_c | spi_s | port_c | port_s) @1 | mech_extension @0;
+	mech_parameters = (preference |prot | alg | ealg | spi_c | spi_s | port_c | port_s) @1 | mech_extension @0;
 	mechanism_name = token>tag %parse_mech;
 	sec_mechanism = (mechanism_name ( SEMI mech_parameters )*) >create_securityclient %add_securityclient;
 	Security_Client = "Security-Client"i HCOLON sec_mechanism ( COMMA sec_mechanism )*;
@@ -176,7 +185,7 @@ int tsip_header_Security_Client_tostring(const void* header, tsk_buffer_t* outpu
 		// ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
 		if(tsk_striequals(Security_Client->mech, "ipsec-3gpp"))
 		{
-			tsk_buffer_appendEx(output, "%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
+			tsk_buffer_appendEx(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
 				Security_Client->mech,
 				
 				Security_Client->alg ? ";alg=" : "",
@@ -184,6 +193,9 @@ int tsip_header_Security_Client_tostring(const void* header, tsk_buffer_t* outpu
 				
 				Security_Client->ealg ? ";ealg=" : "",
 				Security_Client->ealg ? Security_Client->ealg : "",
+
+				Security_Client->prot ? ";prot=" : "",
+				Security_Client->prot ? Security_Client->prot : "",
 				
 				Security_Client->spi_c,
 				Security_Client->spi_s,
@@ -245,11 +257,29 @@ static void* tsip_header_Security_Client_create(void *self, va_list * app)
 	tsip_header_Security_Client_t *Security_Client = self;
 	if(Security_Client)
 	{
+		const char* mech = va_arg(*app, const char*);
 
 		TSIP_HEADER(Security_Client)->type = tsip_htype_Security_Client;
 		TSIP_HEADER(Security_Client)->tostring = tsip_header_Security_Client_tostring;
 
 		Security_Client->q = -1;
+
+		if(mech){
+			Security_Client->mech = tsk_strdup(mech);
+			Security_Client->alg = tsk_strdup(va_arg(*app, const char*));
+			Security_Client->prot = tsk_strdup(va_arg(*app, const char*));
+			Security_Client->mod = tsk_strdup(va_arg(*app, const char*));
+			Security_Client->ealg = tsk_strdup(va_arg(*app, const char*));
+#if defined(__GNUC__)
+			Security_Client->port_c = (tnet_port_t)va_arg(*app, unsigned);
+			Security_Client->port_s = (tnet_port_t)va_arg(*app, unsigned);
+#else
+			Security_Client->port_c = va_arg(*app, tnet_port_t);
+			Security_Client->port_s = va_arg(*app, tnet_port_t);
+#endif
+			Security_Client->spi_c = va_arg(*app, uint32_t);
+			Security_Client->spi_s = va_arg(*app, uint32_t);
+		}
 	}
 	else
 	{

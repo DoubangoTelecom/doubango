@@ -376,9 +376,32 @@ int tsip_transport_ensureTempSAs(const tsip_transport_layer_t *self, const tsip_
 	tsk_list_foreach(item, self->transports)
 	{
 		transport = item->data;
-		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type))
-		{
+		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type)){
 			ret = tsip_transport_ipsec_ensureTempSAs(TSIP_TRANSPORT_IPSEC(transport), r401_407, expires);
+			break;
+		}
+	}
+
+bail:
+	return ret;
+}
+
+int tsip_transport_startSAs(const tsip_transport_layer_t* self, const void* ik, const void* ck)
+{
+	int ret = -1;
+
+	tsk_list_item_t *item;
+	tsip_transport_t* transport;
+	
+	if(!self){
+		goto bail;
+	}
+
+	tsk_list_foreach(item, self->transports)
+	{
+		transport = item->data;
+		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type)){
+			ret = tsip_transport_ipsec_startSAs(TSIP_TRANSPORT_IPSEC(transport), (const tipsec_key_t*)ik, (const tipsec_key_t*)ck);
 			break;
 		}
 	}

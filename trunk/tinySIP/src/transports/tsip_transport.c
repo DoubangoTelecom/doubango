@@ -29,6 +29,8 @@
  */
 #include "tinysip/transports/tsip_transport.h"
 
+#include "tinysip/transports/tsip_transport_ipsec.h"
+
 #include "tinysip/parsers/tsip_parser_uri.h"
 
 #include "tsk_string.h"
@@ -86,18 +88,15 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 {
 	tnet_ip_t ip;
 	tnet_port_t port;
+	int ret = 0;
 
 	if(tsip_transport_get_ip_n_port(self, &ip, &port)){
 		return -1;
 	}
 
-	/*
-	* Update the contact header.
-	*/
-	if(msg->Contact)
-	{			
-		if(msg->Contact->uri && TSIP_HEADER_HAS_PARAM(msg->Contact, "doubs"))
-		{
+	/* Update the contact header.*/
+	if(msg->Contact){			
+		if(msg->Contact->uri && TSIP_HEADER_HAS_PARAM(msg->Contact, "doubs")){
 			tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
 			tsk_strupdate(&(msg->Contact->uri->host), ip);
 			msg->Contact->uri->port = port;
@@ -106,14 +105,17 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 
 			TSIP_HEADER_REMOVE_PARAM(msg->Contact, "doubs");
 		}
-	}	
+	}
+
+	/*	IPSec. */
+	if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
+		ret = tsip_transport_ipsec_updateMSG(TSIP_TRANSPORT_IPSEC(self), msg);
+	}
 	
 
-	/*
-	*	Sigcomp
-	*/
+	/* SigComp. */
 	
-	return 0;
+	return ret;
 }
 
 
@@ -153,8 +155,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 		{
 			tsip_message_tostring(msg, buffer);
 
-			if(buffer->size >1300)
-			{
+			if(buffer->size >1300){
 				/*	RFC 3261 - 18.1.1 Sending Requests (FIXME)
 					If a request is within 200 bytes of the path MTU, or if it is larger
 					than 1300 bytes and the path MTU is unknown, the request MUST be sent
@@ -169,23 +170,34 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 				*/
 			}
 			
-			/*if(destIP && destPort)
-			{
-				struct sockaddr_storage to;
-				if(tnet_sockaddr_init(destIP, destPort, tsip_transport_get_socket_type(self), &to))
-				{
-					goto bail;
-				}
-				if(tnet_transport_sendto(self->net_transport, self->connectedFD, &to, buffer->data, buffer->size))
-				{
-					ret = 0;
+			if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
+				tnet_fd_t fd = tsip_transport_ipsec_getFD(TSIP_TRANSPORT_IPSEC(self), TSIP_MESSAGE_IS_REQUEST(msg));
+				if(fd != TNET_INVALID_FD){
+					//struct sockaddr_storage to;
+					//tnet_sockaddr_init("2001:5c0:1502:1800::225", 4060, self->type, &to);
+
+					//tnet_sockfd_sendto(fd, (const struct sockaddr *)&to, buffer->data, buffer->size);
+					ret = tnet_sockfd_send(fd, buffer->data, buffer->size, 0);
 				}
 			}
-			else*/
-			{
-				if(tnet_transport_send(self->net_transport, self->connectedFD, buffer->data, buffer->size))
+			else{
+				/*if(destIP && destPort)
 				{
-					ret = 0;
+					struct sockaddr_storage to;
+					if(tnet_sockaddr_init(destIP, destPort, tsip_transport_get_socket_type(self), &to))
+					{
+						goto bail;
+					}
+					if(tnet_transport_sendto(self->net_transport, self->connectedFD, &to, buffer->data, buffer->size))
+					{
+						ret = 0;
+					}
+				}
+				else*/
+				{
+					if(tnet_transport_send(self->net_transport, self->connectedFD, buffer->data, buffer->size)){
+						ret = 0;
+					}
 				}
 			}
 
