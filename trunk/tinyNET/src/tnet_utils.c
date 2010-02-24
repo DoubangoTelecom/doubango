@@ -834,8 +834,7 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 {
 	socklen_t fromlen;
 
-	if(fd == TNET_INVALID_FD)
-	{
+	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to recv data.");
 		return -1;
 	}
@@ -851,8 +850,7 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 
 int tnet_sockfd_send(tnet_fd_t fd, void* buf, size_t size, int flags)
 {
-	if(fd == TNET_INVALID_FD)
-	{
+	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to send data.");
 		return -1;
 	}
@@ -862,13 +860,52 @@ int tnet_sockfd_send(tnet_fd_t fd, void* buf, size_t size, int flags)
 
 int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags)
 {
-	if(fd == TNET_INVALID_FD)
-	{
+	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to recv data.");
 		return -1;
 	}
 
 	return recv(fd, buf, size, flags);
+}
+
+int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr *to)
+{
+	int status = -1;
+
+#if TNET_UNDER_WINDOWS
+
+	if((status = WSAConnect(fd, (LPSOCKADDR)&to, sizeof(to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
+	{
+		if((status = WSAGetLastError()) == WSAEWOULDBLOCK){
+			TSK_DEBUG_INFO("WSAEWOULDBLOCK error for WSAConnect operation");
+			status = 0;
+		}
+		else{
+			TNET_PRINT_LAST_ERROR("WSAConnect have failed.");
+		}
+	}
+
+#else /* !TNET_UNDER_WINDOWS */
+
+#	if TNET_HAVE_SS_LEN
+		if((status = connect(fd, (struct sockaddr*)&to, to.ss_len)))
+#	else
+		if((status = connect(fd, (struct sockaddr*)&to, sizeof(to))))
+#	endif
+		{
+			status = tnet_geterrno();
+			if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS){
+				TSK_DEBUG_INFO("TNET_ERROR_WOULDBLOCK/TNET_ERROR_INPROGRESS error for Connect operation");
+				status = 0;
+			}
+			else{
+				TNET_PRINT_LAST_ERROR("connect have failed.");
+			}
+		}
+
+#endif /* TNET_UNDER_WINDOWS */
+
+	return status;
 }
 
 int tnet_sockfd_close(tnet_fd_t *fd)

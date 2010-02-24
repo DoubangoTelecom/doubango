@@ -36,6 +36,8 @@
 #include "tinysip/tsip_message.h"
 #include "tsip.h"
 
+#include "tipsec.h"
+
 TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSPORT_LAYER_CREATE(stack)				tsk_object_new(tsip_transport_layer_def_t, stack)
@@ -55,6 +57,10 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 int tsip_transport_layer_remove(tsip_transport_layer_t* self, const char* description);
 
 int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, const tsip_message_t *msg);
+
+int tsip_transport_createTempSAs(const tsip_transport_layer_t *self);
+int tsip_transport_ensureTempSAs(const tsip_transport_layer_t *self, const tsip_response_t *r401_407, int32_t expires);
+int tsip_transport_cleanupSAs(const tsip_transport_layer_t *self);
 
 int tsip_transport_layer_start(const tsip_transport_layer_t* self);
 int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self);

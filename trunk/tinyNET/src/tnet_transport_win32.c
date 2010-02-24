@@ -127,9 +127,9 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		return -2;
 	}
 
-	transport_socket_add(fd, context, take_ownership);
+	addSocket(fd, context, take_ownership);
 	if(WSAEventSelect(fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR){
-		transport_socket_remove((context->count - 1), context);
+		removeSocket((context->count - 1), context);
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 		return -1;
 	}
@@ -203,9 +203,8 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	}
 
 	/* Init destination sockaddr fields */
-	if(status = tnet_sockaddr_init(host, port, transport->master->type, &to))
-	{
-		TSK_DEBUG_ERROR("Invalid HOST/PORT.");
+	if((status = tnet_sockaddr_init(host, port, transport->master->type, &to))){
+		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u]", host, port);
 		goto bail;
 	}
 
@@ -213,44 +212,30 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	* STREAM ==> create new socket and connect it to the remote host.
 	* DGRAM ==> connect the master to the remote host.
 	*/
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
-	{		
+	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){		
 		/* Create client socket descriptor. */
-		if(status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd))
-		{
+		if(status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd)){
 			TSK_DEBUG_ERROR("Failed to create new sockfd.");
-			
 			goto bail;
 		}
 
 		/* Add the socket */
-		if(status = tnet_transport_add_socket(handle, fd, 1))
-		{
+		if(status = tnet_transport_add_socket(handle, fd, 1)){
 			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
 
 			tnet_sockfd_close(&fd);
 			goto bail;
 		}
 	}
-	else
-	{
+	else{
 		fd = transport->master->fd;
 	}
 
-	if((status = WSAConnect(fd, (LPSOCKADDR)&to, sizeof(to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
-	{
-		if((status = WSAGetLastError()) == WSAEWOULDBLOCK)
-		{
-			TSK_DEBUG_INFO("WSAEWOULDBLOCK error for WSAConnect operation");
-			status = 0;
-		}
-		else
-		{
-			TNET_PRINT_LAST_ERROR("WSAConnect have failed.");
-
+	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr *)&to))){
+		if(fd != transport->master->fd){
 			tnet_sockfd_close(&fd);
-			goto bail;
 		}
+		goto bail;
 	}
 	
 bail:
@@ -437,7 +422,7 @@ void *tnet_transport_mainthread(void *param)
 	}
 
 	/* Add the current transport socket to the context. */
-	transport_socket_add(transport->master->fd, context, 1);
+	addSocket(transport->master->fd, context, 1);
 	if(ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)
 	{
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
@@ -492,10 +477,10 @@ void *tnet_transport_mainthread(void *param)
 			if((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET)
 			{
 				/* Add the new fd to the server context */
-				transport_socket_add(fd, context, 1);
+				addSocket(fd, context, 1);
 				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
 				{
-					transport_socket_remove((context->count - 1), context);
+					removeSocket((context->count - 1), context);
 					TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 					continue;
 				}
@@ -574,7 +559,7 @@ void *tnet_transport_mainthread(void *param)
 				{
 					TSK_FREE(wsaBuffer.buf);
 
-					transport_socket_remove(index, context);
+					removeSocket(index, context);
 					TNET_PRINT_LAST_ERROR("WSARecv have failed.");
 					continue;
 				}
@@ -629,7 +614,7 @@ bail:
 
 	/* Cleanup */
 	while(context->count){
-		transport_socket_remove(0, context);
+		removeSocket(0, context);
 	}
 	TSK_FREE(context);
 

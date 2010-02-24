@@ -30,6 +30,8 @@
 #include "tinysip/dialogs/tsip_dialog_register.h"
 #include "tinysip/parsers/tsip_parser_uri.h"
 
+#include "tinysip/transports/tsip_transport_layer.h"
+
 #include "tinysip/headers/tsip_header_Path.h"
 #include "tinysip/headers/tsip_header_P_Associated_URI.h"
 #include "tinysip/headers/tsip_header_Min_Expires.h"
@@ -51,7 +53,7 @@
 
 
 /* ======================== internal functions ======================== */
-int send_register(tsip_dialog_register_t *self);
+int send_register(tsip_dialog_register_t *self, TSIP_BOOLEAN initial);
 int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self);
 
 /* ======================== transitions ======================== */
@@ -335,7 +337,7 @@ int tsip_dialog_register_Started_2_Trying_X_send(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	return send_register(self);
+	return send_register(self, TSIP_TRUE);
 }
 
 /* Trying -> (1xx) -> Trying
@@ -473,16 +475,20 @@ int tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(va_list *app)
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 	int ret;
 
-	if((ret = tsip_dialog_update(TSIP_DIALOG(self), message)))
-	{
+	if((ret = tsip_dialog_update(TSIP_DIALOG(self), message))){
 		/* Alert the user. */
 		TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register,
 			TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
 		
 		return ret;
 	}
+
+	/* Ensure IPSec SAs */
+	if(TSIP_DIALOG_GET_STACK(self)->secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+		tsip_transport_ensureTempSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport, message, TSIP_DIALOG(self)->expires);
+	}
 	
-	return send_register(self);
+	return send_register(self, TSIP_FALSE);
 }
 
 /*	Trying -> (423) -> Trying
@@ -509,7 +515,7 @@ int tsip_dialog_register_Trying_2_Trying_X_423(va_list *app)
 	{
 		TSIP_DIALOG(self)->expires = hdr->value;
 
-		ret = send_register(self);
+		ret = send_register(self, TSIP_FALSE);
 	}
 	else
 	{
@@ -564,7 +570,7 @@ int tsip_dialog_register_Connected_2_Trying_X_refresh(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	return send_register(self);
+	return send_register(self, TSIP_TRUE);
 }
 
 /* Any -> (hangup) -> Trying
@@ -575,7 +581,7 @@ int tsip_dialog_register_Any_2_Trying_X_hangup(va_list *app)
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
 	self->unregistering = 1;
-	return send_register(self);
+	return send_register(self, TSIP_TRUE);
 }
 
 /* Any -> (transport error) -> Terminated
@@ -623,7 +629,7 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app)
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int send_register(tsip_dialog_register_t *self)
+int send_register(tsip_dialog_register_t *self, TSIP_BOOLEAN initial)
 {
 	tsip_request_t *request;
 	int ret = -1;
@@ -689,8 +695,8 @@ int send_register(tsip_dialog_register_t *self)
 			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_REQUIRE_VA_ARGS("sec-agree"));
 			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_PROXY_REQUIRE_VA_ARGS("sec-agree"));
 
-			if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
-
+			if(initial && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+				tsip_transport_createTempSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
 			}
 		}
 		
@@ -719,6 +725,11 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 	/* Cancel all timers */
 	DIALOG_TIMER_CANCEL(refresh);
 	
+	/* Cleanup IPSec SAs */
+	if(TSIP_DIALOG_GET_STACK(self)->secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+		tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
+	}
+
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));
 }

@@ -192,7 +192,7 @@ bail:
 
 int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck)
 {
-	if(!ctx){
+	if(!ctx || !ik || !ck){
 		return -1;
 	}
 

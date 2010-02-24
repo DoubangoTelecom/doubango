@@ -229,6 +229,26 @@ bail:
 	return ret;
 }
 
+int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck)
+{
+	if(!ctx || !ik || !ck){
+		return -1;
+	}
+
+	/* Compute ik and ck */
+	TIPSEC_CONTEXT(ctx)->ik = tsk_calloc(1, sizeof(FWP_BYTE_BLOB));
+	TIPSEC_CONTEXT(ctx)->ck = tsk_calloc(1, sizeof(FWP_BYTE_BLOB));
+
+	((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(ctx)->ik)->data = tsk_calloc(1, TIPSEC_IK_LEN);
+	memcpy(((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(ctx)->ik)->data, ik, TIPSEC_KEY_LEN);
+	((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(ctx)->ik)->size = TIPSEC_KEY_LEN;
+
+	((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(ctx)->ck)->data = tsk_calloc(1, TIPSEC_CK_LEN);
+	memcpy(((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(ctx)->ck)->data, ck, TIPSEC_KEY_LEN);
+	((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(ctx)->ck)->size = TIPSEC_KEY_LEN;
+
+	return 0;
+}
 
 int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime)
 {
@@ -610,31 +630,13 @@ static void* tipsec_context_create(void * self, va_list * app)
 	if(context)
 	{
 		DWORD code;
-
-		const tipsec_key_t *ik;
-		const tipsec_key_t *ck;
-
+	
 		TIPSEC_CONTEXT(context)->ipproto = va_arg(*app, tipsec_ipproto_t);
 		TIPSEC_CONTEXT(context)->use_ipv6 = va_arg(*app, int);
 		TIPSEC_CONTEXT(context)->mode = va_arg(*app, tipsec_mode_t);
 		TIPSEC_CONTEXT(context)->ealg = va_arg(*app, tipsec_ealgorithm_t);
 		TIPSEC_CONTEXT(context)->alg = va_arg(*app, tipsec_algorithm_t);
 		TIPSEC_CONTEXT(context)->protocol = va_arg(*app, tipsec_protocol_t);
-
-		ik = va_arg(*app, const tipsec_key_t*);
-		ck = va_arg(*app, const tipsec_key_t*);
-		
-		/* Compute ik and ck */
-		TIPSEC_CONTEXT(context)->ik = tsk_calloc(1, sizeof(FWP_BYTE_BLOB));
-		TIPSEC_CONTEXT(context)->ck = tsk_calloc(1, sizeof(FWP_BYTE_BLOB));
-
-		((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(context)->ik)->data = tsk_calloc(1, TIPSEC_IK_LEN);
-		memcpy(((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(context)->ik)->data, ik, TIPSEC_KEY_LEN);
-		((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(context)->ik)->size = TIPSEC_KEY_LEN;
-
-		((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(context)->ck)->data = tsk_calloc(1, TIPSEC_CK_LEN);
-		memcpy(((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(context)->ck)->data, ck, TIPSEC_KEY_LEN);
-		((PFWP_BYTE_BLOB)TIPSEC_CONTEXT(context)->ck)->size = TIPSEC_KEY_LEN;
 
 		/* Open engine */
 		if((code = FwpmEngineOpen0(NULL, RPC_C_AUTHN_WINNT, NULL, NULL, &context->engine))){

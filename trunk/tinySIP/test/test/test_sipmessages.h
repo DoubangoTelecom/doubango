@@ -93,9 +93,9 @@
 	"User-Agent: IM-client/OMA1.0 Mercuro-Bronze/v4.0.1508.0\r\n" \
 	"c: text/plain; charset=utf-8\r\n" \
 	"Security-Client: ipsec-3gpp;alg=hmac-md5-96;ealg=aes-cbc;prot=esp;mod=trans;port-c=61676;port-s=61662;spi-c=4294967295;spi-s=67890,tls;q=0.2\r\n" \
-	"Security-Client: ipsec-ike;q=0.1,tls;q=0.2\r\n" \
-	"Security-Server: ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=78952;port-s=77854\r\n" \
-	"Security-Verify: ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=9999;port-s=20000\r\n" \
+	"Security-Client: ipsec-ike;q=0.1,tls;q=0.2;test=123\r\n" \
+	"Security-Server: ipsec-ike;q=0.1,ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=78952;port-s=77854\r\n" \
+	"Security-Verify: ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=9999;port-s=20000,ipsec-ike;q=0.1;test=458;toto\r\n" \
 	"Service-Route: <sip:orig@open-ims.test:6060;lr;transport=udp>,<sip:atlanta.com>,<sip:orig2@open-ims.test:6060;lr>\r\n" \
 	"Path: <sip:term@open-ims.test:4060;lr>\r\n" \
 	"Route: <sip:pcscf.open-ims.test:4060;lr;transport=udp>,<sip:orig@scscf.open-ims.test:6060;lr>\r\n" \

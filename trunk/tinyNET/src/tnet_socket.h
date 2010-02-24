@@ -148,8 +148,8 @@ typedef tnet_socket_t tnet_socket_tls_t; /**< TLS socket. */
 typedef tnet_socket_t tnet_socket_ipsec_t; /**< IPSec socket. */
 typedef tsk_list_t tnet_sockets_L_t; /**< List of @ref tnet_socket_t elements. */
 
-TINYNET_API int tnet_socket_stream_connectto(tnet_socket_tcp_t *socket, const char* host, tnet_port_t port);
-TINYNET_API int tnet_socket_sendto(tnet_socket_t *socket, const struct sockaddr *to, const void* buf, size_t size);
+//TINYNET_API int tnet_socket_stream_connectto(tnet_socket_tcp_t *socket, const char* host, tnet_port_t port);
+//TINYNET_API int tnet_socket_sendto(tnet_socket_t *socket, const struct sockaddr *to, const void* buf, size_t size);
 
 
 TINYNET_GEXTERN const void *tnet_socket_def_t;

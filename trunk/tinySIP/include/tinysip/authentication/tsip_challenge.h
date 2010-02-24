@@ -37,6 +37,8 @@
 #include "tinysip/tsip_message.h"
 #include "tinysip/headers/tsip_header.h"
 
+#include "tinysip/authentication/tsip_milenage.h"
+
 #include "tinyhttp/auth/thttp_auth.h"
 
 #include "tsk_object.h"
@@ -63,6 +65,9 @@ typedef struct tsip_challenge_s
 	char* opaque;
 	char* algorithm;
 	const char* qop;
+
+	uint8_t ck[AKA_CK_SIZE];
+	uint8_t ik[AKA_IK_SIZE];
 
 	tsk_md5string_t cnonce;
 	unsigned nc;

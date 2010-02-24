@@ -57,6 +57,7 @@ typedef struct tsip_transport_s
 
 	const tsip_stack_handle_t *stack;
 
+	tnet_socket_type_t type;
 	tnet_fd_t connectedFD;
 	tnet_transport_handle_t *net_transport;
 
@@ -95,7 +96,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 #define tsip_transport_add_socket(transport, fd, take_ownership)			(transport ? tnet_transport_add_socket(transport->net_transport, fd, take_ownership) : -1)
 #define tsip_transport_remove_socket(transport, fd)							(transport ? tnet_transport_remove_socket(transport->net_transport, fd) : -1)
 
-#define tsip_transport_get_socket_type(transport)							(transport ? tnet_transport_get_socket_type(transport->net_transport) : tnet_socket_type_invalid)
+//#define tsip_transport_get_socket_type(transport)							(transport ? tnet_transport_get_socket_type(transport->net_transport) : tnet_socket_type_invalid)
 
 #define tsip_transport_shutdown(transport)									(transport ? tnet_transport_shutdown(transport->net_transport) : -1)
 

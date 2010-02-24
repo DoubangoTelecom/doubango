@@ -68,8 +68,9 @@
 #endif
 
 #if TIPSEC_UNDER_WINDOWS && !defined(_WIN32_WCE)
-#	include <windows.h>
-//#	include <ws2tcpip.h>
+//#	include <windows.h>
+#	include <ws2tcpip.h>
+#	include <winsock2.h>
 #endif
 
 

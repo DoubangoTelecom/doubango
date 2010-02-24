@@ -29,8 +29,6 @@
  */
 #include "tinysip/authentication/tsip_challenge.h"
 
-#include "tinysip/authentication/tsip_milenage.h"
-
 #include "tinysip/headers/tsip_header_Authorization.h"
 #include "tinysip/headers/tsip_header_Proxy_Authorization.h"
 
@@ -72,7 +70,7 @@ int tsip_challenge_reset_cnonce(tsip_challenge_t *self)
 }
 
 //3GPP TS 35.205/6/7/8/9 and RFC 3310
-int tsip_challenge_get_akares(const tsip_challenge_t *self, char const *password, char** result)
+int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char** result)
 {
 #define SQN_XOR_AK() (AUTN + 0)
 #define SERVER_DATA() (nonce + AKA_RAND_SIZE + AKA_AUTN_SIZE)
@@ -211,6 +209,10 @@ int tsip_challenge_get_akares(const tsip_challenge_t *self, char const *password
 
 		ret = 0;
 	}
+
+	/* Copy CK and IK */
+	memcpy(self->ck, CK, AKA_CK_SIZE);
+	memcpy(self->ik, IK, AKA_IK_SIZE);
 
 bail:
 	TSK_FREE(nonce);

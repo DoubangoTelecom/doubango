@@ -171,9 +171,8 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	}
 
 	/* Init destination sockaddr fields */
-	if((status = tnet_sockaddr_init(host, port, transport->master->type, &to)))
-	{
-		TSK_DEBUG_ERROR("Invalid HOST/PORT.");
+	if((status = tnet_sockaddr_init(host, port, transport->master->type, &to))){
+		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u]", host, port);
 		goto bail;
 	}
 
@@ -181,48 +180,30 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	* STREAM ==> create new socket add connect it to the remote host.
 	* DGRAM ==> connect the master to the remote host.
 	*/
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
-	{		
+	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){		
 		/* Create client socket descriptor. */
-		if((status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd)))
-		{
+		if((status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd))){
 			TSK_DEBUG_ERROR("Failed to create new sockfd.");
-			
 			goto bail;
 		}
 
 		/* Add the socket */
-		if((status = tnet_transport_add_socket(handle, fd, 1)))
-		{
+		if((status = tnet_transport_add_socket(handle, fd, 1))){
 			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
 
 			tnet_sockfd_close(&fd);
 			goto bail;
 		}
 	}
-	else
-	{
+	else{
 		fd = transport->master->fd;
 	}
-#if TNET_HAVE_SS_LEN
-	if((status = connect(fd, (struct sockaddr*)&to, to.ss_len)))
-#else
-	if((status = connect(fd, (struct sockaddr*)&to, sizeof(to))))
-#endif
-	{
-		status = tnet_geterrno();
-		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS)
-		{
-			TSK_DEBUG_INFO("TNET_ERROR_WOULDBLOCK/TNET_ERROR_INPROGRESS error for Connect operation");
-			status = 0;
-		}
-		else
-		{
-			TNET_PRINT_LAST_ERROR("connect have failed.");
 
-			//--tnet_sockfd_close(&fd);
-			goto bail;
+	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr *)&to))){
+		if(fd != transport->master->fd){
+			tnet_sockfd_close(&fd);
 		}
+		goto bail;
 	}
 
 	/* update connection status */

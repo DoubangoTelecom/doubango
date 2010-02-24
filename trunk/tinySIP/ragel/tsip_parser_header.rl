@@ -54,6 +54,8 @@
 #include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Route.h"
 #include "tinysip/headers/tsip_header_Security_Client.h"
+#include "tinysip/headers/tsip_header_Security_Server.h"
+#include "tinysip/headers/tsip_header_Security_Verify.h"
 #include "tinysip/headers/tsip_header_Server.h"
 #include "tinysip/headers/tsip_header_Service_Route.h"
 #include "tinysip/headers/tsip_header_Subscription_State.h"
@@ -599,13 +601,15 @@
 	# /*== Security-Server: ==*/
 	action parse_header_Security_Server
 	{
-		TSK_DEBUG_ERROR("parse_header_Security_Server NOT IMPLEMENTED");
+		tsip_header_Security_Servers_L_t* headers =  tsip_header_Security_Server_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADERS(headers);
 	}
 
 	# /*== Security-Verify: ==*/
 	action parse_header_Security_Verify
 	{
-		TSK_DEBUG_ERROR("parse_header_Security_Verify NOT IMPLEMENTED");
+		tsip_header_Security_Verifies_L_t* headers =  tsip_header_Security_Verify_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADERS(headers);
 	}
 
 	# /*== Server: ==*/

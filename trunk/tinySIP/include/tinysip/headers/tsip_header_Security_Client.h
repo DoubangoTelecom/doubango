@@ -36,7 +36,7 @@
 TSIP_BEGIN_DECLS
 
 /**@def TSIP_HEADER_ROUTE_CREATE
-* Creates new sip 'Security_Client' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* Creates new sip 'Security-Client' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
 #define TSIP_HEADER_SECURITY_CLIENT_VA_ARGS()		tsip_header_Security_Client_def_t
@@ -46,7 +46,7 @@ TSIP_BEGIN_DECLS
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP header 'Security-Client'.
+/// @brief	SIP header 'Security-Client' as per RFC 3329.
 /// @author	Mamadou
 /// @date	12/3/2009
 ///
