@@ -22,6 +22,7 @@
 
 /**@file tipsec_xp.c
  * @brief Windows XP/2003 IPsec implementation using ipsec6 tool.
+ * @sa http://technet.microsoft.com/en-us/library/cc787900.aspx
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -37,7 +38,7 @@
 #define TINYIPSEC_XP_GET_ALGO(algo) ((algo ==  algo_hmac_md5_96) ? "HMAC-MD5-96" : "HMAC-SHA1")
 #define TINYIPSEC_XP_GET_MODE(mode)	 ((mode == mode_tun) ? "TUNNEL" : "TRANSPORT")
 #define TINYIPSEC_XP_GET_PROTO(proto)	 ((proto == proto_ah) ? "AH" : "ESP")
-#define TINYIPSEC_XP_GET_IPPROTO(ipproto)	 ((ipproto == ipproto_tcp) ? "TCP" : "UDP")
+#define TINYIPSEC_XP_GET_IPPROTO(ipproto)	 ((ipproto == ipproto_tcp) ? "TCP" : ((ipproto == ipproto_icmp) ? "ICMP" : "UDP"))
 
 #define TINYIPSEC_IPSEC6_FILE				"tinyIPSec"
 #define TINYIPSEC_IPSEC6_FILE_KEY			TINYIPSEC_IPSEC6_FILE".key"
