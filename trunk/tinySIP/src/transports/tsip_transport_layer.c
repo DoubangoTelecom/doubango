@@ -176,7 +176,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 		tsk_list_foreach(item, self->transports)
 		{
 			curr = item->data;
-			if(tsip_transport_get_socket_type(curr) == TSIP_STACK(self->stack)->proxy_cscf_type)
+			if(curr->type == TSIP_STACK(self->stack)->proxy_cscf_type)
 			{
 				transport = curr;
 				break;
@@ -337,6 +337,80 @@ int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *br
 }
 
 
+int tsip_transport_createTempSAs(const tsip_transport_layer_t *self)
+{
+	int ret = -1;
+	
+	tsk_list_item_t *item;
+	tsip_transport_t* transport;
+
+	if(!self){
+		goto bail;
+	}
+
+	tsk_list_foreach(item, self->transports)
+	{
+		transport = item->data;
+		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type))
+		{
+			ret = tsip_transport_ipsec_createTempSAs(TSIP_TRANSPORT_IPSEC(transport));
+			break;
+		}
+	}
+
+bail:
+	return ret;
+}
+
+int tsip_transport_ensureTempSAs(const tsip_transport_layer_t *self, const tsip_response_t *r401_407, int32_t expires)
+{
+	int ret = -1;
+
+	tsk_list_item_t *item;
+	tsip_transport_t* transport;
+	
+	if(!self){
+		goto bail;
+	}
+
+	tsk_list_foreach(item, self->transports)
+	{
+		transport = item->data;
+		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type))
+		{
+			ret = tsip_transport_ipsec_ensureTempSAs(TSIP_TRANSPORT_IPSEC(transport), r401_407, expires);
+			break;
+		}
+	}
+
+bail:
+	return ret;
+}
+
+int tsip_transport_cleanupSAs(const tsip_transport_layer_t *self)
+{
+	int ret = -1;
+
+	tsk_list_item_t *item;
+	tsip_transport_t* transport;
+	
+	if(!self){
+		goto bail;
+	}
+
+	tsk_list_foreach(item, self->transports)
+	{
+		transport = item->data;
+		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type))
+		{
+			ret = tsip_transport_ipsec_cleanupSAs(TSIP_TRANSPORT_IPSEC(transport));
+			break;
+		}
+	}
+
+bail:
+	return ret;
+}
 
 
 
@@ -351,7 +425,6 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 			int ret = 0;
 			tsk_list_item_t *item;
 			tsip_transport_t* transport;
-			tnet_socket_type_t type;
 
 			/* START */
 			tsk_list_foreach(item, self->transports)
@@ -377,8 +450,7 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 					isready = tsip_transport_isready(transport);
 				}
 
-				type = tsip_transport_get_socket_type(transport);
-				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(type) ? TNET_TRANSPORT_DATA_READ(tsip_transport_layer_dgram_data_read) : TNET_TRANSPORT_DATA_READ(tsip_transport_layer_stream_data_read), transport);
+				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(transport->type) ? TNET_TRANSPORT_DATA_READ(tsip_transport_layer_dgram_data_read) : TNET_TRANSPORT_DATA_READ(tsip_transport_layer_stream_data_read), transport);
 				tsip_transport_connectto(transport, TSIP_STACK(self->stack)->proxy_cscf, TSIP_STACK(self->stack)->proxy_cscf_port);
 			}
 
@@ -386,10 +458,9 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 			tsk_list_foreach(item, self->transports)
 			{
 				int connected;
-				type = tsip_transport_get_socket_type(transport);
 				transport = item->data;
 				
-				connected = TNET_SOCKET_TYPE_IS_DGRAM(type);
+				connected = TNET_SOCKET_TYPE_IS_DGRAM(transport->type);
 
 				while(!connected)
 				{

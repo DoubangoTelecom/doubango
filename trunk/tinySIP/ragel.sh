@@ -98,6 +98,12 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Route.c tsip_parser_header_Rout
 # == Security-Client
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Security_Client.c tsip_parser_header_Security_Client.rl
 
+# == Security-Server
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Security_Server.c tsip_parser_header_Security_Server.rl
+
+# == Security-Verify
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Security_Verify.c tsip_parser_header_Security_Verify.rl
+
 # == Service-Route
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Service_Route.c tsip_parser_header_Service_Route.rl
 

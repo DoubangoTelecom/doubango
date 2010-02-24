@@ -44,8 +44,8 @@ TSK_BEGIN_DECLS
 #define TIPSEC_IPPROTO_FROM_STR(ipproto) (tsk_strequals(ipproto, "tcp") ? ipproto_tcp : ipproto_udp)
 #define TIPSEC_IPPROTO_TO_STR(ipproto)	(ipproto == ipproto_tcp ? "tcp" : "udp")
 
-#define TIPSEC_MODE_FROM_STR(mode) (tsk_strequals(mode, "trans") ? mode_trans : mode_tun)
-#define TIPSEC_MODE_TO_STR(mode)	(mode == mode_trans ? "trans" : "tun")
+#define TIPSEC_MODE_FROM_STR(mode) (tsk_strequals(mode, "tun") ? mode_tun : mode_trans)
+#define TIPSEC_MODE_TO_STR(mode)	(mode == mode_tun ? "tun" : "trans")
 
 #define TIPSEC_EALG_FROM_STR(ealg) (tsk_strequals(ealg, "des-ede3-cbc") ? ealg_des_ede3_cbc : (tsk_strequals(ealg, "aes") ? ealg_aes : ealg_null))
 #define TIPSEC_EALG_TO_STR(ealg)	(ealg == ealg_des_ede3_cbc ? "des-ede3-cbc" : (ealg == ealg_aes ? "aes" : "null"))
@@ -53,8 +53,8 @@ TSK_BEGIN_DECLS
 #define TIPSEC_ALG_FROM_STR(alg) (tsk_strequals(alg, "hmac-sha-1-96") ? algo_hmac_sha_1_96 : algo_hmac_md5_96)
 #define TIPSEC_ALG_TO_STR(alg)	(alg == algo_hmac_sha_1_96 ? "hmac-sha-1-96" : "hmac-md5-96")
 
-#define TIPSEC_PROTOCOL_FROM_STR(protocol) (tsk_strequals(protocol, "ah") ? proto_ah : ((tsk_strequals(protocol, "esp")) ? proto_esp : proto_both))
-#define TIPSEC_PROTOCOL_TO_STR(protocol)	(protocol == proto_esp ? "esp" : (protocol == proto_ah ? "ah" : "ah/esp"))
+#define TIPSEC_PROTOCOL_FROM_STR(protocol) (tsk_strequals(protocol, "ah") ? proto_ah : ((tsk_strequals(protocol, "ah/esp")) ? proto_both : proto_esp))
+#define TIPSEC_PROTOCOL_TO_STR(protocol)	(protocol == proto_ah ? "ah" : (protocol == proto_both ? "ah/esp" : "esp"))
 
 /**
  * @def	TIPSEC_KEY_SIZE

@@ -639,8 +639,7 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr)
 			if(transport)
 			{
 				tsip_uri_t* uri = 0;
-				tnet_socket_type_t type = tsip_transport_get_socket_type(transport);
-				int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(type);
+				int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(transport->type);
 				int quote_ip = (ipv6 && tsk_strcontains(stack->proxy_cscf, strlen(stack->proxy_cscf), ":")) /* IPv6 IP string?*/;
 			
 				char* uristring = 0;

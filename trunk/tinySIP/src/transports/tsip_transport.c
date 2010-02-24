@@ -98,11 +98,10 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	{			
 		if(msg->Contact->uri && TSIP_HEADER_HAS_PARAM(msg->Contact, "doubs"))
 		{
-			tnet_socket_type_t type = tsip_transport_get_socket_type(self);
 			tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
 			tsk_strupdate(&(msg->Contact->uri->host), ip);
 			msg->Contact->uri->port = port;
-			msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(type) ? host_ipv6 : host_ipv4;
+			msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4;
 			tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
 
 			TSIP_HEADER_REMOVE_PARAM(msg->Contact, "doubs");
@@ -210,8 +209,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr)
 		if(!tnet_get_ip_n_port(self->connectedFD, &ip, &port))
 		{
 			char* uristring = 0;
-			tnet_socket_type_t type = tsip_transport_get_socket_type(self);
-			int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(type);
+			int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(self->type);
 
 			tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
 				self->scheme,
@@ -241,6 +239,7 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const t
 	}
 
 	self->stack = stack;
+	self->type = type;
 	self->net_transport = TNET_TRANSPORT_CREATE(host, port, type, description);
 		
 	self->scheme = TNET_SOCKET_TYPE_IS_TLS(type) ? "sips" : "sip";
