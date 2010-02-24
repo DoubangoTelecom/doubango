@@ -128,12 +128,14 @@ int tipsec_start(tipsec_context_t* ctx)
 		goto bail;
 	}
 
-	/* Load previous Policies */
+	/* delete previous Policies */
 	tipsec_run_command(TEXT("d sp "TEXT(TINYIPSEC_IPSEC6_UCPS_POLICY)));
 	tipsec_run_command(TEXT("d sp "TEXT(TINYIPSEC_IPSEC6_USPC_POLICY)));
 
 	/* Load new policies */
-	ret = tipsec_run_command(TEXT("l "TEXT(TINYIPSEC_IPSEC6_FILE)));
+	if(!(ret = tipsec_run_command(TEXT("l "TEXT(TINYIPSEC_IPSEC6_FILE))))){
+		TIPSEC_CONTEXT(ctx_xp)->started = 1;
+	}
 	
 bail:
 	/* Remove files */

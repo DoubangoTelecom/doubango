@@ -234,8 +234,7 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 			In case of AKAv1-MD5 and AKAv2-MD5 the secret must be computed as per RFC 3310 + 3GPP TS 206/7/8/9.
 			The resulting AKA RES parameter is treated as a "password"/"secret" when calculating the response directive of RFC 2617.
 		*/
-		if(TSIP_CHALLENGE_IS_AKAv1(self) || TSIP_CHALLENGE_IS_AKAv2(self))
-		{
+		if(TSIP_CHALLENGE_IS_AKAv1(self) || TSIP_CHALLENGE_IS_AKAv2(self)){
 			char* akaresult = 0;
 			tsip_challenge_get_akares(self, TSIP_CHALLENGE_STACK(self)->password, &akaresult);
 			if(thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, akaresult, &ha1))
@@ -244,8 +243,7 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 			}
 			TSK_FREE(akaresult);
 		}
-		else
-		{
+		else{
 			thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, TSIP_CHALLENGE_STACK(self)->password, &ha1);
 		}
 

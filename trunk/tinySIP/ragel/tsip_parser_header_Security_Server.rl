@@ -127,6 +127,14 @@
 		}
 	}
 
+	action parse_prot
+	{
+		if(curr_securityserver)
+		{
+			TSK_PARSER_SET_STRING(curr_securityserver->prot);
+		}
+	}
+
 	action parse_preference
 	{
 		if(curr_securityserver)
@@ -156,8 +164,9 @@
 	spi_c = "spi-c"i EQUAL DIGIT+>tag %parse_spi_c;
 	ealg = "ealg"i EQUAL token>tag %parse_ealg;
 	alg = "alg"i EQUAL token>tag %parse_alg;
+	prot = "prot"i EQUAL token>tag %parse_prot;
 	preference = "q"i EQUAL qvalue>tag %parse_preference;
-	mech_parameters = (preference | alg | ealg | spi_c | spi_s | port_c | port_s) @1 | mech_extension @0;
+	mech_parameters = (preference | prot | alg | ealg | spi_c | spi_s | port_c | port_s) @1 | mech_extension @0;
 	mechanism_name = token>tag %parse_mech;
 	sec_mechanism = (mechanism_name ( SEMI mech_parameters )*) >create_securityserver %add_securityserver;
 	Security_Server = "Security-Server"i HCOLON sec_mechanism ( COMMA sec_mechanism )*;
@@ -177,7 +186,7 @@ int tsip_header_Security_Server_tostring(const void* header, tsk_buffer_t* outpu
 		// ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
 		if(tsk_striequals(Security_Server->mech, "ipsec-3gpp"))
 		{
-			tsk_buffer_appendEx(output, "%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
+			tsk_buffer_appendEx(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
 				Security_Server->mech,
 				
 				Security_Server->alg ? ";alg=" : "",
@@ -185,6 +194,9 @@ int tsip_header_Security_Server_tostring(const void* header, tsk_buffer_t* outpu
 				
 				Security_Server->ealg ? ";ealg=" : "",
 				Security_Server->ealg ? Security_Server->ealg : "",
+
+				Security_Server->prot ? ";prot=" : "",
+				Security_Server->prot ? Security_Server->prot : "",
 				
 				Security_Server->spi_c,
 				Security_Server->spi_s,

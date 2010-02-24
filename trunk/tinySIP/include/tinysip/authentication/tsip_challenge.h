@@ -66,8 +66,8 @@ typedef struct tsip_challenge_s
 	char* algorithm;
 	const char* qop;
 
-	uint8_t ck[AKA_CK_SIZE];
-	uint8_t ik[AKA_IK_SIZE];
+	AKA_CK_T ck;
+	AKA_IK_T ik;
 
 	tsk_md5string_t cnonce;
 	unsigned nc;

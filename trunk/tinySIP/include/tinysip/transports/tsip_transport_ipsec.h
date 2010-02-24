@@ -70,6 +70,7 @@ tsip_transport_ipsec_t;
 
 int tsip_transport_ipsec_createTempSAs(tsip_transport_ipsec_t* self);
 int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_response_t *r401_407, int32_t expires);
+int tsip_transport_ipsec_startSAs(tsip_transport_ipsec_t* self, const tipsec_key_t* ik, const tipsec_key_t* ck);
 int tsip_transport_ipsec_cleanupSAs(tsip_transport_ipsec_t* self);
 tnet_fd_t tsip_transport_ipsec_getFD(tsip_transport_ipsec_t* self, int isRequest);
 int tsip_transport_ipsec_updateMSG(tsip_transport_ipsec_t* self, tsip_message_t *msg);

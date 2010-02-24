@@ -231,7 +231,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		fd = transport->master->fd;
 	}
 
-	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr *)&to))){
+	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr_storage *)&to))){
 		if(fd != transport->master->fd){
 			tnet_sockfd_close(&fd);
 		}

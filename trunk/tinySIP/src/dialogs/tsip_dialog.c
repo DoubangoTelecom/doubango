@@ -216,8 +216,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		{
 			challenge = item->data;
 			auth_hdr = tsip_challenge_create_header_authorization(challenge, request);
-			if(auth_hdr)
-			{
+			if(auth_hdr){
 				tsip_message_add_header(request, auth_hdr);
 				tsk_object_unref(auth_hdr), auth_hdr = 0;
 			}
@@ -225,8 +224,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 
 	/* Update CSeq */
-	if(!tsk_striequals(method, "ACK") && !tsk_striequals(method, "CANCEL"))
-	{
+	if(!tsk_striequals(method, "ACK") && !tsk_striequals(method, "CANCEL")){
 		request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
 	}
 
@@ -234,7 +232,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		*	==> http://betelco.blogspot.com/2008/11/proxy-and-service-route-discovery-in.html
 		* The dialog Routes have been copied above.
 	*/
-	if(request->type != tsip_REGISTER /*!tsk_striequals("REGISTER", method)*/)
+	if(request->type != tsip_REGISTER)
 	{	// According to the above link ==> Initial/Re/De registration do not have routes.
 		tsk_list_item_t* item;
 		if(copy_routes_start !=-1)
@@ -554,6 +552,27 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 		}
 	}
 	return -1;
+}
+
+int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik)
+{
+	tsk_list_item_t *item;
+	tsip_challenge_t *challenge;
+
+	if(!self){
+		return -1;
+	}
+	
+	tsk_list_foreach(item, self->challenges)
+	{
+		if((challenge = item->data)){
+			memcpy(*ck, challenge->ck, AKA_CK_SIZE);
+			memcpy(*ik, challenge->ik, AKA_IK_SIZE);
+			return 0;
+		}
+	}
+	TSK_DEBUG_ERROR("No challenge found. Fail to set IK and CK.");
+	return -2;
 }
 
 int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, int acceptNewVector)

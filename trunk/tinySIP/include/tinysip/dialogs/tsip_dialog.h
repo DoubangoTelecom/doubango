@@ -151,6 +151,7 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 
 int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
+int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik);
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_handle_t * stack, const char* call_id, tsip_operation_handle_t* operation);
 int tsip_dialog_hangup(tsip_dialog_t *self);

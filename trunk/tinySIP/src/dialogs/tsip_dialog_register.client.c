@@ -35,8 +35,6 @@
 #include "tinysip/headers/tsip_header_Path.h"
 #include "tinysip/headers/tsip_header_P_Associated_URI.h"
 #include "tinysip/headers/tsip_header_Min_Expires.h"
-#include "tinysip/headers/tsip_header_Proxy_Require.h"
-#include "tinysip/headers/tsip_header_Require.h"
 #include "tinysip/headers/tsip_header_Service_Route.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 
@@ -511,14 +509,18 @@ int tsip_dialog_register_Trying_2_Trying_X_423(va_list *app)
 	(Interval Too Brief) response.
 	*/
 	hdr = (tsip_header_Min_Expires_t*)tsip_message_get_header(message, tsip_htype_Min_Expires);
-	if(hdr)
-	{
+	if(hdr){
 		TSIP_DIALOG(self)->expires = hdr->value;
 
-		ret = send_register(self, TSIP_FALSE);
+		if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+			tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
+			ret = send_register(self, TSIP_TRUE);
+		}
+		else{
+			ret = send_register(self, TSIP_FALSE);
+		}
 	}
-	else
-	{
+	else{
 		ret = -1;
 	}
 
@@ -687,16 +689,19 @@ int send_register(tsip_dialog_register_t *self, TSIP_BOOLEAN initial)
 			//else if(2 == 3 /* multiple registrations */){
 			//}
 		}
-
-		/* RFC 3329 - 2.3.1 Client Initiated 
-			The client MUST add both a Require and Proxy-Require header field with the value "sec-agree" to its request.
-		*/
+		
+		/* Create temorary SAs if initial register. */
 		if(TSIP_DIALOG_GET_STACK(self)->secagree_mech){
-			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_REQUIRE_VA_ARGS("sec-agree"));
-			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_PROXY_REQUIRE_VA_ARGS("sec-agree"));
-
-			if(initial && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
-				tsip_transport_createTempSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
+			if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+				if(initial){
+					tsip_transport_createTempSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
+				}
+				else{
+					AKA_CK_T ck;
+					AKA_IK_T ik;
+					tsip_dialog_getCKIK(TSIP_DIALOG(self), &ck, &ik);
+					tsip_transport_startSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport, (const tipsec_key_t*)ik, (const tipsec_key_t*)ck);
+				}
 			}
 		}
 		
