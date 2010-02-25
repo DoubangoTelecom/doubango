@@ -38,6 +38,9 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Contact.c tsip_parser_header_Co
 # ==CSeq
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_CSeq.c tsip_parser_header_CSeq.rl
 
+# ==Dummy
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Dummy.c tsip_parser_header_Dummy.rl
+
 # ==Event
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Event.c tsip_parser_header_Event.rl
 

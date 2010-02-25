@@ -29,6 +29,8 @@
  */
 #include "tinysip/headers/tsip_header.h"
 
+#include "tinysip/headers/tsip_header_Dummy.h"
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @fn	const char *tsip_header_get_name(tsip_header_type_t type)
 ///
@@ -175,39 +177,34 @@ int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 	{
 		tsk_list_item_t *item;
 		
-		hname = tsip_header_get_name(self->type);
+		if(self->type == tsip_htype_Dummy){
+			hname = ((tsip_header_Dummy_t*)self)->name;
+		}
+		else{
+			hname = tsip_header_get_name(self->type);
+		}
 		ret = 0; // for empty lists
 
-		/*
-		* Header name
-		*/
+		/* Header name */
 		tsk_buffer_appendEx(output, "%s: ", hname);
 
-		/*
-		* Header value.
-		*/
-		if((ret=TSIP_HEADER(self)->tostring(self, output)))
-		{
+		/*  Header value.*/
+		if((ret = TSIP_HEADER(self)->tostring(self, output))){
 			// CHECK all headers return value!
 			//return ret;
 		}
 
-		/*
-		* Parameters
-		*/
+		/* Parameters */
 		tsk_list_foreach(item, self->params)
 		{
 			tsk_param_t* param = item->data;
 			separator = tsip_header_get_param_separator(self);
-			if(ret=tsk_buffer_appendEx(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value))
-			{
+			if(ret = tsk_buffer_appendEx(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value)){
 				return ret;
 			}
 		}
 
-		/*
-		* CRLF
-		*/
+		/* CRLF */
 		tsk_buffer_append(output, "\r\n", 2);
 	}
 	return ret;

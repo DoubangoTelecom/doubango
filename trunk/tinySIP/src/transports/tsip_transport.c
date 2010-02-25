@@ -94,26 +94,31 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 		return -1;
 	}
 
+	/* VERY IMPORTANT: Only request/response with a contact header containing "doubs" parameter will be updated.
+	*	The update will concern the contact header(sigcomp uuid, host, port, ...), ipsec headers (Security-Client, Security-Verify, ...), ...
+	*/
+
 	/* Update the contact header.*/
-	if(msg->Contact){			
-		if(msg->Contact->uri && TSIP_HEADER_HAS_PARAM(msg->Contact, "doubs")){
+	if(msg->Contact && TSIP_HEADER_HAVE_PARAM(msg->Contact, "doubs")){
+		/* Host and port */
+		if(msg->Contact->uri){
 			tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
 			tsk_strupdate(&(msg->Contact->uri->host), ip);
 			msg->Contact->uri->port = port;
 			msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4;
 			tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
-
-			TSIP_HEADER_REMOVE_PARAM(msg->Contact, "doubs");
 		}
-	}
 
-	/*	IPSec. */
-	if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
-		ret = tsip_transport_ipsec_updateMSG(TSIP_TRANSPORT_IPSEC(self), msg);
-	}
-	
+		/* IPSec headers */
+		if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
+			ret = tsip_transport_ipsec_updateMSG(TSIP_TRANSPORT_IPSEC(self), msg);
+		}
 
-	/* SigComp. */
+		/* SigComp */
+
+		/* Remove the parameter */
+		TSIP_HEADER_REMOVE_PARAM(msg->Contact, "doubs");
+	}
 	
 	return ret;
 }

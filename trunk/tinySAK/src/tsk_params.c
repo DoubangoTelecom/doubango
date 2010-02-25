@@ -74,7 +74,7 @@ tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 	return 0;
 }
 
-int tsk_params_has_param(const tsk_params_L_t *self, const char* name)
+int tsk_params_have_param(const tsk_params_L_t *self, const char* name)
 {
 	if(self)
 	{
@@ -90,8 +90,7 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 
 	if(!name) return -1;
 
-	if(!*self)
-	{
+	if(!*self){
 		*self = TSK_LIST_CREATE();
 	}
 
@@ -223,8 +222,7 @@ static void* tsk_param_create(void * self, va_list * app)
 		if(name) 
 		{
 			param->name = tsk_strdup(name);
-			if(value) 
-			{
+			if(value && !tsk_strempty(value)) {
 				param->value = tsk_strdup(value);
 			}
 		}

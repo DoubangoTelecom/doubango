@@ -53,7 +53,7 @@ typedef tsk_list_t tsk_params_L_t; /**< List of @ref tsk_param_t elements. */
 
 TINYSAK_API tsk_param_t *tsk_params_parse_param(const char* line, size_t size);
 
-TINYSAK_API int tsk_params_has_param(const tsk_params_L_t *self, const char* name);
+TINYSAK_API int tsk_params_have_param(const tsk_params_L_t *self, const char* name);
 TINYSAK_API int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* value);
 TINYSAK_API int tsk_params_remove_param(tsk_params_L_t *self, const char* name);
 TINYSAK_API const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, const char* name);

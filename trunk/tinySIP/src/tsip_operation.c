@@ -41,7 +41,7 @@ typedef struct tsip_operation_s
 	tsip_operation_id_t id;
 	const tsip_stack_handle_t* stack;
 	tsk_params_L_t *params;
-	tsk_params_L_t *capabilities;
+	tsk_params_L_t *caps;
 	tsk_params_L_t *headers;
 }
 tsip_operation_t;
@@ -73,10 +73,72 @@ tsip_operation_handle_t *tsip_operation_createex(const struct tsip_message_s* me
 	return operation;
 }
 
+int __tsip_operation_set(tsip_operation_t *self, va_list values)
+{
+	tsip_operation_param_type_t curr;
+
+	if(!self){
+		return -1;
+	}
+
+	while((curr=va_arg(values, tsip_operation_param_type_t)) != optype_null)
+	{
+		switch(curr)
+		{
+			case optype_param:
+			case optype_header:
+			case optype_caps:
+				{
+					const char* name = va_arg(values, const char *);
+					const char* value = va_arg(values, const char *);
+					
+					tsk_param_t *param = TSK_PARAM_CREATE(name, value);
+					if(curr == optype_param){
+						tsk_list_push_back_data(self->params, ((void**) &param));
+					} else if(curr == optype_header){
+						tsk_list_push_back_data(self->headers, ((void**) &param));
+					}else if(curr == optype_caps){
+						tsk_list_push_back_data(self->caps, ((void**) &param));
+					}
+					break;
+				}
+
+			default:
+				{
+					TSK_DEBUG_ERROR("NOT SUPPORTED.");
+					goto bail;
+				}
+		}
+	}
+
+bail:
+	return 0;
+}
+
+int tsip_operation_set(tsip_operation_handle_t *self, ...)
+{
+	if(self){
+		int ret;
+		va_list params;
+
+		tsip_operation_t *operation = self;
+
+		if(operation->id == TSIP_OPERATION_INVALID_ID){
+			return -2;
+		}
+		
+		va_start(params, self);
+		ret = __tsip_operation_set(operation, params);
+		va_end(params);
+		return ret;
+	}
+
+	return -1;
+}
+
 tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self)
 {
-	if(self)
-	{
+	if(self){
 		const tsip_operation_t *operation = self;
 		return operation->id;
 	}
@@ -85,15 +147,36 @@ tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self)
 
 const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self, const char* pname)
 {
-	if(self)
-	{
+	if(self){
 		const tsip_operation_t *operation = self;
 		return tsk_params_get_param_by_name(operation->params, pname);
 	}
 	return TSIP_NULL;
 }
 
+const tsk_params_L_t* tsip_operation_get_headers(const tsip_operation_handle_t *self)
+{
+	if(self){
+		return ((const tsip_operation_t *)self)->headers;
+	}
+	return TSIP_NULL;
+}
 
+const tsk_params_L_t* tsip_operation_get_params(const tsip_operation_handle_t *self)
+{
+	if(self){
+		return ((const tsip_operation_t *)self)->params;
+	}
+	return TSIP_NULL;
+}
+
+const tsk_params_L_t* tsip_operation_get_caps(const tsip_operation_handle_t *self)
+{
+	if(self){
+		return ((const tsip_operation_t *)self)->caps;
+	}
+	return TSIP_NULL;
+}
 
 
 
@@ -109,39 +192,19 @@ static void* tsip_operation_create(void * self, va_list * app)
 	static tsip_operation_id_t unique_id = 0;
 	if(operation)
 	{
-		tsip_operation_param_type_t curr;
-
 		operation->stack = va_arg(*app, const tsip_stack_handle_t*);
 		operation->params = TSK_LIST_CREATE();
-		operation->capabilities = TSK_LIST_CREATE();
+		operation->caps = TSK_LIST_CREATE();
 		operation->headers = TSK_LIST_CREATE();
 
-		while((curr=va_arg(*app, tsip_operation_param_type_t)) != oppname_null)
-		{
-			switch(curr)
-			{
-				case oppname_nvp:
-					{
-						const char* name = va_arg(*app, const char *);
-						const char* value = va_arg(*app, const char *);
-						
-						tsk_param_t *param = TSK_PARAM_CREATE(name, value);
-						tsk_list_push_back_data(operation->params, ((void**) &param));
-						break;
-					}
-
-				default:
-					{
-						TSK_DEBUG_ERROR("NOT SUPPORTED.");
-						goto bail;
-					}
-			}
+		if(__tsip_operation_set(self, *app)){
+			operation->id = TSIP_OPERATION_INVALID_ID;
 		}
-		
-		operation->id = ++unique_id;
+		else{
+			operation->id = ++unique_id;
+		}
 	}
 
-bail:
 	return self;
 }
 
@@ -151,7 +214,7 @@ static void* tsip_operation_destroy(void * self)
 	if(operation)
 	{
 		TSK_OBJECT_SAFE_FREE(operation->params);
-		TSK_OBJECT_SAFE_FREE(operation->capabilities);
+		TSK_OBJECT_SAFE_FREE(operation->caps);
 		TSK_OBJECT_SAFE_FREE(operation->headers);
 	}
 	return self;

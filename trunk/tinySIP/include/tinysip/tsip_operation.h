@@ -49,20 +49,27 @@ typedef uint64_t tsip_operation_id_t;
 
 typedef enum tsip_operation_param_type_e
 {
-	oppname_nvp,
-
-	oppname_null
+	optype_param,
+	optype_header,
+	optype_caps,
+	optype_null
 }
 tsip_operation_param_type_t;
 
-#define TSIP_OPERATION_SET_PARAM(NAME_STR, VALUE_STR)			oppname_nvp, (const char*)NAME_STR, (const char*)VALUE_STR
-#define TSIP_OPERATION_SET_NULL()								oppname_null
+#define TSIP_OPERATION_SET_PARAM(NAME_STR, VALUE_STR)			optype_param, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_OPERATION_SET_HEADER(NAME_STR, VALUE_STR)			optype_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_OPERATION_SET_CAPS(NAME_STR, VALUE_STR)			optype_caps, (const char*)NAME_STR, (const char*)VALUE_STR /* RFC 3840 */
+#define TSIP_OPERATION_SET_NULL()								optype_null
 
 typedef void tsip_operation_handle_t;
 
 tsip_operation_handle_t *tsip_operation_createex(const struct tsip_message_s* message);
+TINYSIP_API int tsip_operation_set(tsip_operation_handle_t *self, ...);
 TINYSIP_API tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self);
 const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self, const char* pname);
+const tsk_params_L_t* tsip_operation_get_headers(const tsip_operation_handle_t *self);
+const tsk_params_L_t* tsip_operation_get_params(const tsip_operation_handle_t *self);
+const tsk_params_L_t* tsip_operation_get_caps(const tsip_operation_handle_t *self);
 
 typedef tsk_list_t tsip_operations_L_t; /**< List of @ref tsip_operation_handle_t elements. */
 TINYSIP_GEXTERN const void *tsip_operation_def_t;

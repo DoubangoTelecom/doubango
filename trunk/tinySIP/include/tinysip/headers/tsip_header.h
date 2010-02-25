@@ -76,6 +76,7 @@ typedef enum tsip_header_type_e
 	tsip_htype_Content_Type,
 	tsip_htype_CSeq,
 	tsip_htype_Date,
+	tsip_htype_Dummy,
 	tsip_htype_Error_Info,
 	tsip_htype_Event,
 	tsip_htype_Expires,
@@ -171,7 +172,7 @@ TINYSIP_API const char *tsip_header_get_name(tsip_header_type_t type);
 TINYSIP_API char tsip_header_get_param_separator(const tsip_header_t *self);
 TINYSIP_API int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output);
 
-#define TSIP_HEADER_HAS_PARAM(self, name)					tsk_params_has_param(self ? TSIP_HEADER(self)->params : 0, name)
+#define TSIP_HEADER_HAVE_PARAM(self, name)					tsk_params_have_param(self ? TSIP_HEADER(self)->params : 0, name)
 #define TSIP_HEADER_ADD_PARAM(self, name, value)			tsk_params_add_param(self ? &TSIP_HEADER(self)->params : 0, name, value)
 #define TSIP_HEADER_REMOVE_PARAM(self, name)				tsk_params_remove_param(self ? TSIP_HEADER(self)->params : 0, name)
 #define TSIP_HEADER_GET_PARAM_BY_NAME(self, name)			tsk_params_get_param_by_name(self ? TSIP_HEADER(self)->params : 0, name)

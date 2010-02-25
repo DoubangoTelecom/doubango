@@ -20,15 +20,15 @@
 *
 */
 
-/**@file tsip_dialog_subscribe.h
- * @brief SIP dialog SUBSCRIBE as per RFC 3265.
+/**@file tsip_dialog_publish.h
+ * @brief SIP dialog PUBLISH as per RFC 3903.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYSIP_DIALOG_SUBSCRIBE_H
-#define TINYSIP_DIALOG_SUBSCRIBE_H
+#ifndef TINYSIP_DIALOG_PUBLISH_H
+#define TINYSIP_DIALOG_PUBLISH_H
 
 #include "tinysip_config.h"
 #include "tinysip/dialogs/tsip_dialog.h"
@@ -37,11 +37,11 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_SUBSCRIBE_CREATE(stack, operation)		tsk_object_new(tsip_dialog_subscribe_def_t, (tsip_stack_handle_t *)stack, (tsip_operation_handle_t*) operation)
+#define TSIP_DIALOG_PUBLISH_CREATE(stack, operation)		tsk_object_new(tsip_dialog_publish_def_t, (tsip_stack_handle_t *)stack, (tsip_operation_handle_t*) operation)
 
-#define TSIP_DIALOG_SUBSCRIBE(self)							((tsip_dialog_subscribe_t*)(self))
+#define TSIP_DIALOG_PUBLISH(self)							((tsip_dialog_publish_t*)(self))
 
-typedef struct tsip_dialog_subscribe
+typedef struct tsip_dialog_publish
 {
 	TSIP_DECLARE_DIALOG;
 
@@ -49,16 +49,18 @@ typedef struct tsip_dialog_subscribe
 		
 	tsip_timer_t timerrefresh;
 
-	unsigned unsubscribing:1;
+	unsigned unpublishing:1;
 
 	char* package;
 }
-tsip_dialog_subscribe_t;
+tsip_dialog_publish_t;
 
-int tsip_dialog_subscribe_start(tsip_dialog_subscribe_t *self);
+int tsip_dialog_publish_start(tsip_dialog_publish_t *self);
 
-TINYSIP_GEXTERN const void *tsip_dialog_subscribe_def_t;
+TINYSIP_GEXTERN const void *tsip_dialog_publish_def_t;
+
 
 TSIP_END_DECLS
 
-#endif /* TINYSIP_DIALOG_SUBSCRIBE_H */
+
+#endif /* TINYSIP_DIALOG_PUBLISH_H */
