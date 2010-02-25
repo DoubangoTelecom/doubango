@@ -34,7 +34,15 @@
 
 TSK_BEGIN_DECLS
 
+/**@ingroup tsk_base64_group
+* Guess the output(encoded) size.
+* @param IN_LEN The input size.
+*/
 #define TSK_BASE64_ENCODE_LEN(IN_LEN)		((2 + (IN_LEN) - (((IN_LEN) + 2) % 3)) * 4 / 3)
+/**@ingroup tsk_base64_group
+* Guess the output(decoded) size.
+* @param IN_LEN The input size.
+*/
 #define TSK_BASE64_DECODE_LEN(IN_LEN)		(((IN_LEN * 3)/4) + 2)
 
 TINYSAK_API size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output);

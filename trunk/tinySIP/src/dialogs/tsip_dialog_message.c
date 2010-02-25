@@ -228,28 +228,24 @@ int tsip_dialog_message_start(tsip_dialog_message_t *self)
 		const tsk_param_t* param;
 		const void* content = TSIP_NULL;
 		size_t content_length = 0;
-		const char* content_type = "text/plain";
+		tsip_request_t* request;
 
-		tsip_request_t* request = tsip_dialog_request_new(TSIP_DIALOG(self), "MESSAGE");
 
-		/* content-type */
-		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content-type"))){
-			content_type = param->value;
-		}
-		/* content-length */
-		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content-length"))){
-			content_length = atoi(param->value);
-		}
-		/* content */
-		if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content"))){
-			content = param->value;
-			if(!content_length && content){
-				content_length = strlen(content);
+		if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "MESSAGE"))){
+			/* content-length */
+			if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content-length"))){
+				content_length = atoi(param->value);
 			}
-		}
-
-		if(content){
-			tsip_message_add_content(request, content_type, content, content_length);
+			/* content */
+			if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content"))){
+				content = param->value;
+				if(!content_length && content){
+					content_length = strlen(content);
+				}
+				if(content){
+					tsip_message_add_content(request, TSIP_NULL, content, content_length);
+				}
+			}
 		}
 
 		/* Send request */

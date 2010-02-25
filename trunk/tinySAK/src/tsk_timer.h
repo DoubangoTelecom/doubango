@@ -20,8 +20,8 @@
 *
 */
 
-/**@file tsk_timers.h
- * @brief Timer Management.
+/**@file tsk_timer.h
+ * @brief Timer Manager.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -43,7 +43,7 @@ TSK_BEGIN_DECLS
 
 typedef void tsk_timer_manager_handle_t;
 typedef uint64_t tsk_timer_id_t;
-typedef int (*tsk_timer_callback)(const void* arg, tsk_timer_id_t timer_id); /**< Callback function called when scheduled timer timeout. */
+typedef int (*tsk_timer_callback)(const void* arg, tsk_timer_id_t timer_id);
 
 TINYSAK_API int tsk_timer_manager_start(tsk_timer_manager_handle_t *self);
 TINYSAK_API int tsk_timer_manager_isready(tsk_timer_manager_handle_t *self);

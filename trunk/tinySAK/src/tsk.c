@@ -28,16 +28,18 @@
 *
 * This file is an overview of TinySAK API.
 *
-* TinySAK (aka Tiny Swiss Army Knife) is a tiny but fully featured utility API.
-* This API is designed to efficiently work on embedded systems whith limited memory
-* and low computing power.
+* TinySAK (a.k.a <b>T</b>iny <b>S</b>wiss <b>A</b>rmy <b>K</b>nife) is a tiny but fully featured utility API.
+* This API is designed to efficiently work on embedded systems whith limited memory and low computing power.<br>
+* This library provide a base object class to ease Object Oriented Programming in C. There are many other
+* features like multi-threading, time management, encoding, encryption or content management.
 *
 * @par Getting Started
 *
-* - @ref tsk_list_page
-* - @ref tsk_heap_page
-* - @ref tsk_memory_page
-* - @ref tsk_string_page
+* - @ref tsk_object_group
+* - @ref tsk_base64_group
+* - @ref tsk_binaryutils_group
+* - @ref tsk_buffer_group
+* - @ref tsk_condwait_group
 *
 * @par Supported Systems
 * 

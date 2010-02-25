@@ -50,8 +50,6 @@ typedef struct tsip_dialog_subscribe
 	tsip_timer_t timerrefresh;
 
 	unsigned unsubscribing:1;
-
-	char* package;
 }
 tsip_dialog_subscribe_t;
 

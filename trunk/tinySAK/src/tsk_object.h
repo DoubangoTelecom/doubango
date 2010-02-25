@@ -37,46 +37,114 @@
 
 TSK_BEGIN_DECLS
 
-/**
- * @def	TSK_OBJECT_SAFE_FREE(self) tsk_object_unref(self), self = 0
- *
- * @brief	Safely free an object. If the reference count of the object was equal to 1 then this
- * 			object will be freed otherwise the refrence count will be decremented. 
- *			In all all case this operation will set the pointer (the object itself) to NULL. 
- *
- * @remarks	Mamadou, 1/20/2010. 
- *
+/**@ingroup tsk_object_group
+* Safely free any object created using @ref tsk_object_new and declared using @ref TSK_DECLARE_OBJECT. If the reference count of the object was equal to 1 then this
+ * 	object will be freed otherwise the refrence counter will be decremented. 
+ *	In all case this operation will set the pointer (the object itself) to NULL.
  * @param	self	The object to free or unref. 
 **/
 #define TSK_OBJECT_SAFE_FREE(self)		tsk_object_unref(self), self = 0
 
+/**@ingroup tsk_object_group
+* tag a structure as an object. If this macro is used then you MUST
+* provide a constructor and a destructor functions into an object definition (or meta-data).
+* @ref tsk_object_new or @ref tsk_object_new2 are used to create the object and  @ref tsk_object_unref or @ref tsk_object_delete to destroy it.
+* @code
+* typedef struct person_s{
+*	TSK_DECLARE_OBJECT;
+*	int id;
+*	char* firstName;
+*	char* lastName;
+* } person_t;
+* @endcode
+* To create the object:
+* @code
+* // person_def_t: See bellow to understand how to create an object definition.
+* person_t* person = tsk_object_new(person_def_t, "My First Name", "My last Name");
+* @endcode
+* To safely free the object:
+* @code
+* TSK_OBJECT_SAFE_FREE(person);
+* @endcode
+*/
 #define TSK_DECLARE_OBJECT \
 	const void* base; \
 	size_t	refCount
 
-#define TSK_DECLARE_DEF(prefix, name) \
-	static const tsk_object_def_t ##prefix##_##name##_def_s = \
-	{\
-		sizeof(##prefix##_##name##_t),	\
-		##prefix##_##name##_create,		\
-		##prefix##_##name##_destroy,	\
-		##prefix##_##name##_clone,		\
-		##prefix##_##name##_cmp,		\
-		##prefix##_##name##_icmp,		\
-	};\
-	const void *##prefix##_##name##_def_t = &##prefix##_##name##_def_s;
-
+/**@ingroup tsk_object_group
+* Internal macro to get the definition of the object.
+*/
 #define TSK_OBJECT_DEF(self)			((const tsk_object_def_t*)self)
 
-/**
-* Base object.
+/**@ingroup tsk_object_group
+* Meta-data used of define an object.
+* You MUST provide at least a constructor and a destructor. The comparator should
+* be provided if you would like to compare opaque object or sort linked lists.
+* @code
+*
+* // constructor
+* static void* person_create(void * self, va_list * app)
+* {
+* 	static int unique_id = 0;
+* 	person_t *person = self;
+* 	if(person){
+* 		person->id = ++unique_id;
+* 		person->firstName = tsk_strdup(va_arg(*app, const char *));
+* 		person->lastName = tsk_strdup(va_arg(*app, const char *));
+* 	}
+* 	return self;
+* }
+* 
+* // destructor
+* static void* person_destroy(void * self)
+* { 
+* 	person_t *person = self;
+* 	if(person){
+* 		TSK_FREE(person->firstName);
+* 		TSK_FREE(person->lastName);
+* 	}
+* 	return self;
+* }
+* 
+* // comparator
+* static int person_cmp(const void *object1, const void *object1)
+* {
+* 	const person_t *person1 = object1;
+* 	const person_t *person2 = object2;
+* 
+* 	return (person1 && person2) ? (person1->id - person2->id) : -1;
+* }
+*
+* // Meta-data (Object defnition)
+* static const tsk_object_def_t person_def_s = 
+* {
+* 	sizeof(person_t),
+* 	person_create,
+* 	person_destroy,
+* 	person_cmp, 
+* }person_def_t;
+* 
+* @endcode
+* Now, to create your object:
+* @code
+* person_t* person = tsk_object_new(person_def_t, "My First Name", "My last Name"); // Will call "person_create" function.
+* @endcode
+* Or
+* @code
+* #define PERSON_CREATE(firstName, lastName) tsk_object_new(person_def_t, firstName, lastName)
+* person_t* person = PERSON_CREATE("My First Name", "My last Name") // For clarity, this form will be used in all projects declared using @ref TSK_DECLARE_OBJECT.
+* @endcode
+* To safely free your object:
+* @code
+* TSK_OBJECT_SAFE_FREE(person); // Will call "person_destroy" function.
+* @endcode
 */
 typedef struct tsk_object_def_s
 {
-	size_t size;													/**< The size of an tsk object. */
-	void*	(* constructor) (void *self, va_list *app);				/**< The constructor. */
-	void*	(* destructor) (void *);								/**< The destructor. */
-	int		(* objcmp) (const void *object1, const void *object2);	/**< Compare two object */
+	size_t size;													/**< The size of the object. */
+	void*	(* constructor) (void *self, va_list *app);				/**< Pointer to the constructor. */
+	void*	(* destructor) (void *);								/**< Pointer to the destructor. */
+	int		(* objcmp) (const void *object1, const void *object2);	/**< Pointer to the comparator. */
 }
 tsk_object_def_t;
 
@@ -84,7 +152,6 @@ TINYSAK_API void* tsk_object_new(const tsk_object_def_t *objdef, ...);
 TINYSAK_API void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap);
 TINYSAK_API size_t tsk_object_sizeof(const void *self);
 TINYSAK_API int tsk_object_cmp(const void *self, const void *object);
-//TINYSAK_API int tsk_object_icmp(const void *self, const void *object);
 TINYSAK_API void* tsk_object_ref(void *self);
 TINYSAK_API void* tsk_object_unref(void *self);
 TINYSAK_API void tsk_object_delete(void *self);

@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_binaryutils.c
- * @brief Binary utils
+ * @brief Utility functions for binary manipulation.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -29,3 +29,5 @@
  */
 #include "tsk_binaryutils.h"
 
+/**@defgroup tsk_binaryutils_group Binary utility functions.
+*/

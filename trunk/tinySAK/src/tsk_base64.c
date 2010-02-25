@@ -31,11 +31,16 @@
 
 #include "tsk_memory.h"
 
+/**@defgroup tsk_base64_group Base64 encoder/decoder as per RFC 4648.
+* @brief Provides base64 encoder and decoder functions.
+*/
+
+/** Pad char.*/
 #define TSK_BASE64_PAD '='
 
-#define TSK_IS_BASE64(c) ( isalnum((c)) || ((c) == '+') || ((c) == '/') )
-
+/** Encoding block size. */
 #define TSK_BASE64_ENCODE_BLOCK_SIZE	3 /* 24-bit input group */
+/** Decoding block size. */
 #define TSK_BASE64_DECODE_BLOCK_SIZE	4
 
 /*==================================================================
@@ -61,16 +66,16 @@
 		RFC 4548 - Table 1: The Base 64 Alphabet
 */
 
-/**
+/**@ingroup tsk_base64_group
 * Encodes arbitrary data into base64 format.
 * @param input The input data to encode in base64 format.
-* @param input_size The size of the @ref input data.
+* @param input_size The size of the @a input data.
 * @param output A pointer where to copy the encoded data. 
 * If you don't know what will be the size of the output result then set the pointer value to NULL to let the function allocate it of you.
-* If @ref output is NULL then it will be up to you to free the allocated buffer. 
+* In all case it is up to you to free the @a ouput.
 * You can also use @ref TSK_BASE64_ENCODE_LEN to allocate the buffer before calling this method.
 *
-* @retval The size of the encoded data (sizeof(@ref output))
+* @retval The size of the encoded data (sizeof(@a output))
 */
 size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output)
 {
@@ -140,16 +145,16 @@ quantum:
 	return output_size;
 }
 
-/**
+/**@ingroup tsk_base64_group
 * Decodes arbitrary base64 data.
 * @param input The input base64 data to decode.
-* @param input_size The size of the @ref input data.
+* @param input_size The size of the @a input data.
 * @param output A pointer where to copy the decoded data. 
 * If you don't know what will be the size of the output result then set the pointer value to NULL to let the function allocate it of you.
-* If @ref output is NULL then it will be up to you to free the allocated buffer. 
+* In all case it is up to you to free the @a ouput.
 * You can also use @ref TSK_BASE64_DECODE_LEN to allocate the buffer before calling this method.
 *
-* @retval The size of the decoded data (sizeof(@ref output))
+* @retval The size of the decoded data (sizeof(@a output))
 */
 size_t tsk_base64_decode(const uint8_t* input, size_t input_size, char **output)
 {

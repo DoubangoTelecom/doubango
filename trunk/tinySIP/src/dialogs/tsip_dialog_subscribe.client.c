@@ -249,9 +249,7 @@ int tsip_dialog_subscribe_timer_callback(const tsip_dialog_subscribe_t* self, ts
  * @param [in,out]	self	The dialog to initialize. 
 **/
 int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
-{
-	const tsk_param_t* param;
-	
+{	
 	/* Initialize the State Machine. */
 	tsk_fsm_set(self->fsm,
 			
@@ -312,11 +310,6 @@ int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 			// Any -> (hangup) -> Trying
 
 			TSK_FSM_ADD_NULL());
-	
-	/* Package. */
-	if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "package"))){
-		self->package = tsk_strdup(param->value);
-	}
 
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_subscribe_event_callback);
 
@@ -600,11 +593,6 @@ int send_subscribe(tsip_dialog_subscribe_t *self)
 	}
 
 	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "SUBSCRIBE"))){
-		/* Event package. */
-		if(self->package){
-			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EVENT_VA_ARGS(self->package));
-		}
-
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 		TSK_OBJECT_SAFE_FREE(request);
 	}
@@ -681,8 +669,6 @@ static void* tsip_dialog_subscribe_destroy(void * self)
 
 		/* FSM */
 		TSK_OBJECT_SAFE_FREE(dialog->fsm);
-
-		TSK_FREE(dialog->package);
 	}
 	return self;
 }

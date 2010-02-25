@@ -158,6 +158,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	request = tsip_request_new(method, request_uri, from_uri, to_uri, call_id, self->cseq_value);
 	request->To->tag = tsk_strdup(self->tag_remote);
 	request->From->tag = tsk_strdup(self->tag_local);
+	request->update = 1; /* No signal that the message should be updated by the transport layer (Contact, SigComp, IPSec, ...) */
 
 
 	/*
@@ -172,26 +173,36 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	provide a new contact address, should its address change during the
 	duration of the dialog.
 	*/
+	switch(request->request_type)
 	{
-		char* contact = 0;
-		tsip_header_Contacts_L_t *hdr_contacts;
-		tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d;doubs\r\n", /*self->issecure*/0?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, self->expires);
-		hdr_contacts = tsip_header_Contact_parse(contact, strlen(contact));
-		if(!TSK_LIST_IS_EMPTY(hdr_contacts)){
-			request->Contact = tsk_object_ref(hdr_contacts->head->data);
-		}
-		TSK_OBJECT_SAFE_FREE(hdr_contacts);
-		TSK_FREE(contact);
+		case tsip_MESSAGE:
+		case tsip_PUBLISH:
+				break;
 
-		/* Add capabilities as per RFC 3840. */
-		params = tsip_operation_get_caps(self->operation);
-		if(request->Contact){
-			tsk_list_foreach(item, params)
+		default:
 			{
-				param = (const tsk_param_t*)item->data;
-				tsk_params_add_param(&TSIP_HEADER(request->Contact)->params, param->name, param->value);
+				char* contact = 0;
+				tsip_header_Contacts_L_t *hdr_contacts;
+				tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/0?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, self->expires);
+				hdr_contacts = tsip_header_Contact_parse(contact, strlen(contact));
+				if(!TSK_LIST_IS_EMPTY(hdr_contacts)){
+					request->Contact = tsk_object_ref(hdr_contacts->head->data);
+				}
+				TSK_OBJECT_SAFE_FREE(hdr_contacts);
+				TSK_FREE(contact);
+
+				/* Add capabilities as per RFC 3840. */
+				params = tsip_operation_get_caps(self->operation);
+				if(request->Contact){
+					tsk_list_foreach(item, params)
+					{
+						param = (const tsk_param_t*)item->data;
+						tsk_params_add_param(&TSIP_HEADER(request->Contact)->params, param->name, param->value);
+					}
+				}
+
+				break;
 			}
-		}
 	}
 	
 	/* Update authorizations */

@@ -35,8 +35,8 @@
 
 TSK_BEGIN_DECLS
 
-/**
-* Pthread condwait handle.
+/**@ingroup tsk_condwait_group
+*	An opaque handle to a condwait object.
 */
 typedef void tsk_condwait_handle_t;
 

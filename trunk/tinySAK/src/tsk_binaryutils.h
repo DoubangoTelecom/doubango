@@ -36,16 +36,38 @@
 
 TSK_BEGIN_DECLS
 
+/**@ingroup tsk_binaryutils_group
+* Reverse (bit per bit) a 2-byte value.
+* @param value The 2-byte value to reverse.
+*/
 #define TSK_BINARY_REVERSE_2BYTE(value) ((Tsk_BitReverseTable256[value & 0xff] << 8) | (Tsk_BitReverseTable256[(value >> 8)]))
 
+/**@ingroup tsk_binaryutils_group
+* Converts to uint8_t pointer.
+*/
 #define TSK_TO_U8(buffer) ((uint8_t*)buffer)
+/**@ingroup tsk_binaryutils_group
+* Gets the value of the fist byte.
+*/
 #define TSK_BINARY_GET_1BYTE(buffer) *TSK_TO_U8(buffer)// 1-byte
 
+/**@ingroup tsk_binaryutils_group
+* Converts from Little to Big endian.
+*/
 static uint16_t TSK_LSB_2_MSB( void const * buffer )
 {
     const uint8_t* dummy = (const uint8_t*)buffer;
     return ( ((uint16_t)dummy[0] << 8) | dummy[1] );
 } 
+
+/**@ingroup tsk_binaryutils_group
+* @def TSK_BINARY_GET_2BYTES
+* Gets the first 2-bytes value.
+*/
+/**@ingroup tsk_binaryutils_group
+* @def TSK_BINARY_SET_2BYTES
+* Sets the first 2-bytes value.
+*/
 
 #if 0 /*BIG_ENDIAN*/// Do not change this (it's for my own tests)
 #	define	TSK_BINARY_GET_2BYTES(buffer) *((uint16_t*)buffer)
@@ -106,6 +128,9 @@ static const int8_t operand_multitype_indexes [256] =
 };
 
 //	Used LSB<->MSB bits reverse/swap
+/**@ingroup tsk_binaryutils_group
+* Lookup table for bit reversing.
+*/
 static const unsigned char Tsk_BitReverseTable256[] = 
 {
   0x00, 0x80, 0x40, 0xC0, 0x20, 0xA0, 0x60, 0xE0, 0x10, 0x90, 0x50, 0xD0, 0x30, 0xB0, 0x70, 0xF0, 

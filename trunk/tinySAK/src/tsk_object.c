@@ -31,6 +31,10 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+/**@defgroup tsk_object_group Base object implementation.
+* @brief Provides utility functions to ease Object Oriented Programming in C.
+*/
+
 #if defined (_DEBUG) || defined (DEBUG)
 #	define TSK_DEBUG_OBJECTS	0
 static int tsk_objects_count = 0;
@@ -38,14 +42,22 @@ static int tsk_objects_count = 0;
 #	define TSK_DEBUG_OBJECTS	0
 #endif
 
-typedef struct tsk_object_header_s
-{
-	const void* base;
-	size_t	refCount;
+/** Object meta-data (definition).
+*/
+typedef struct tsk_object_header_s{
+	const void* base; /**< Opaque data holding a pointer to the actual meta-data(size, constructor, destructor and comparator) */
+	size_t	refCount; /**< Reference counter. */
 }
 tsk_object_header_t;
 #define TSK_OBJECT_HEADER_GET(object)	((tsk_object_header_t*)object)
 
+/**@ingroup tsk_object_group
+* Creates new object. The object MUST be declared using @ref TSK_DECLARE_OBJECT macro.
+* @param objdef The object meta-data (definition). For more infomation see @ref tsk_object_def_t.
+* @param ... List of parameters to pass to the constructor(defined in the meta-data).
+* @retval The newly calloc()ed object with a reference counter equal to 1.
+* @sa @ref tsk_object_new2.
+*/
 void* tsk_object_new(const tsk_object_def_t *objdef, ...)
 {
 	void *newobj = tsk_calloc(1, objdef->size);
@@ -75,6 +87,13 @@ void* tsk_object_new(const tsk_object_def_t *objdef, ...)
 	return newobj;
 }
 
+/**@ingroup tsk_object_group
+* Creates new object. The object MUST be declared using @ref TSK_DECLARE_OBJECT macro.
+* @param objdef The object meta-data (definition). For more infomation see @ref tsk_object_def_t.
+* @param ap Variable argument list to pass to the constructor(defined in the meta-data).
+* @retval The newly calloc()ed object with a reference counter equal to 1.
+* @sa @ref tsk_object_new.
+*/
 void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 {
 	void *newobj = tsk_calloc(1, objdef->size);
@@ -97,6 +116,12 @@ void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 	return newobj;
 }
 
+/**@ingroup tsk_object_group
+* Gets the size of an opaque object.
+* @param self The object for which we want to get the size.
+* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
+* @retval The size of the object.
+*/
 size_t tsk_object_sizeof(const void *self)
 {
 	const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
@@ -109,26 +134,32 @@ size_t tsk_object_sizeof(const void *self)
 	}
 }
 
-int tsk_object_cmp(const void *self, const void *object)
+/**@ingroup tsk_object_group
+* Compares two objects. Both object MUST be declared using @ref TSK_DECLARE_OBJECT and created using @ref tsk_object_new or @ref tsk_object_new2.
+* If the meta-data (definition) of the first object (@a object1) do not include a function comparator then this method will amlways return -1.
+* @param object1 The first object to compare.
+* @param object2 The second object to compare.
+* @retval Zero if the two object are equal.
+* Positive value if @a object1 is greater than @a object2 and a negative value otherwise.
+*/
+int tsk_object_cmp(const void *object1, const void *object2)
 {
-	const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
+	const tsk_object_def_t **objdef = (const tsk_object_def_t **)object1;
 
 	if(objdef && *objdef && (*objdef)->objcmp){
-		return (*objdef)->objcmp(self, object);
+		return (*objdef)->objcmp(object1, object2);
 	}
 	return -1;
 }
 
-/*int tsk_object_icmp(const void *self, const void *object)
-{
-	const tsk_object_def_t **objdef = self;
-	if(objdef && *objdef && (*objdef)->objicmp)
-	{
-		return (*objdef)->objicmp(self, object);
-	}
-	return 0;
-}*/
-
+/**@ingroup tsk_object_group
+* Increment the refrence counting of the object.<br>
+* Refernce counting: http://en.wikipedia.org/wiki/Reference_counting.<br>
+* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
+* @param self The object holding the counter to increment.
+* @retval The new object (incremented).
+* @sa tsk_object_unref.
+*/
 void* tsk_object_ref(void *self)
 {
 	if(self){
@@ -138,6 +169,15 @@ void* tsk_object_ref(void *self)
 	return 0;
 }
 
+/**@ingroup tsk_object_group
+* Decrement the refrence counting of the object.<br>
+* Refernce counting: http://en.wikipedia.org/wiki/Reference_counting.<br>
+* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
+* @param self The object holding the counter to decrement.
+* @retval If the refernce counter is equal to zero then NULL is returned otherwise a new object (decremented) is returned.
+* @sa ref tsk_object_ref.
+* @sa ref TSK_OBJECT_SAFE_FREE.
+*/
 void* tsk_object_unref(void *self)
 {
 	if(self)
@@ -150,6 +190,13 @@ void* tsk_object_unref(void *self)
 	return self;
 }
 
+/**@ingroup tsk_object_group
+* Delete an object. This function will delete the object even if it's reference counter is greater than 1.
+* This mean that this function is not safe. You should use @ref TSK_OBJECT_SAFE_FREE to safely delete an object.
+* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
+* @param self The object to delete.
+* @sa @ref TSK_OBJECT_SAFE_FREE.
+*/
 void tsk_object_delete(void *self)
 {
 	const tsk_object_def_t ** objdef = self;

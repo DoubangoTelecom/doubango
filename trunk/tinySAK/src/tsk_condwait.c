@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_condwait.c
- * @brief Pthread CondWait
+ * @brief Pthread/Windows functions for waiting an signaling on condition variables.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -31,7 +31,6 @@
 #include "tsk_condwait.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
-#include "tsk_macros.h"
 #include "tsk_time.h"
 #include <time.h>
 
@@ -53,25 +52,44 @@
 #	include <errno.h>
 #endif
 
-
-
-
-/**@defgroup tsk_condwait_group Pthread CondWait
+/**@defgroup tsk_condwait_group Pthread/Windows functions for waiting and signaling on condition variables (conwait).
+* @code
+* tsk_condwait_handle_t *condwait = tsk_condwait_create();
+* @endcode
+*
+* In thread-1:
+* @code
+* // Bock the current thread until the condition is opened or until 1000ms have passed.
+* int ret = tsk_condwait_timedwait(condwait, 1000);
+* @endcode
+*
+* In thread-2:
+* @code
+* // Wakes up
+* int ret = tsk_condwait_signal(condwait);
+* // or tsk_condwait_broadcast(condwait)
+* @endcode
+*
+* To free the condwait object:
+* @code
+* tsk_condwait_destroy(&condwait);
+* @endcode
 */
 
-/** Pthread CondWait.
+/**@ingroup tsk_condwait_group
+* Represents both PThread an Windows condwait object.
 */
 typedef struct tsk_condwait_s
 {
-	CONDWAIT_T pcond; /**< Handle pointing to the condwait */
+	CONDWAIT_T pcond; /**< Pthread handle pointing to the internal condwait object. */
 #if !TSK_UNDER_WINDOWS
-	tsk_mutex_handle_t* mutex;  /**< Locker*/
+	tsk_mutex_handle_t* mutex;  /**< Locker. */
 #endif
 }
 tsk_condwait_t;
 
 /**@ingroup tsk_condwait_group
-* Creates new Pthread conwait handle. You MUST call @ref tsk_condwait_destroy to free the handle.
+* Creates new conwait handle. You MUST call @ref tsk_condwait_destroy to free the handle.
 * @retval New condwait handle.
 * @sa @ref tsk_condwait_destroy.
 */
@@ -112,7 +130,7 @@ tsk_condwait_handle_t* tsk_condwait_create()
 }
 
 /**@ingroup tsk_condwait_group
-* Wait for a condition indefinitely.
+* Block the current thread until the condition is opened. 
 * @param handle CondWait handle created using @ref tsk_condwait_create.
 * @retval Zero if succeed and non-zero otherwise.
 * @sa @ref tsk_condwait_timedwait.
@@ -123,13 +141,11 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 #if TSK_UNDER_WINDOWS
-	if((ret = (WaitForSingleObject(condwait->pcond, INFINITE) == WAIT_FAILED) ? -1 : 0))
-	{
+	if((ret = (WaitForSingleObject(condwait->pcond, INFINITE) == WAIT_FAILED) ? -1 : 0)){
 		TSK_DEBUG_ERROR("WaitForSingleObject function failed: %d", ret);
 	}
 #else
-	if(condwait && condwait->mutex)
-	{
+	if(condwait && condwait->mutex){
 		tsk_mutex_lock(condwait->mutex);
 		if(ret = pthread_cond_wait(condwait->pcond, (pthread_mutex_t*)condwait->mutex))
 		{
@@ -142,10 +158,10 @@ int tsk_condwait_wait(tsk_condwait_handle_t* handle)
 }
 
 /**@ingroup tsk_condwait_group
-* Wait for a condition @ref ms milliseconds.
-* @param handle CondWait context created using @ref tsk_condwait_create.
+* Block the current thread until the condition is opened or until @a ms milliseconds have passed. 
+* @param handle condwait handle created using @ref tsk_condwait_create.
 * @param ms The number of milliseconds to wait for a given condition.
-* @retval Zero if succeed or @ref ETIMEDOUT if timedout and non-zero otherwise.
+* @retval Zero if succeed and non-zero error code otherwise.
 * @sa @ref tsk_condwait_wait.
 */
 int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
@@ -160,12 +176,10 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 #if TSK_UNDER_WINDOWS
 	if((ret = WaitForSingleObject(condwait->pcond, (DWORD)ms)) != WAIT_OBJECT_0)
 	{
-		if(ret == TIMED_OUT)
-		{
+		if(ret == TIMED_OUT){
 			//TSK_DEBUG_INFO("WaitForSingleObject function timedout: %d", ret);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_ERROR("WaitForSingleObject function failed: %d", ret);
 		}
 		return (ret == TIMED_OUT ? 0 : ret);
@@ -204,7 +218,7 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 }
 
 /**@ingroup tsk_condwait_group
-* Wakes up at least one thread that is currently waiting on @ref condwait variable.
+* Wakes up at least one thread that is currently waiting.
 * @param handle CondWait handle created using @ref tsk_condwait_create.
 * @retval Zero if succeed and non-zero otherwise.
 * @sa @ref tsk_condwait_broadcast.
@@ -215,14 +229,12 @@ int tsk_condwait_signal(tsk_condwait_handle_t* handle)
 	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
 
 #if TSK_UNDER_WINDOWS
-	if(ret = ((SetEvent(condwait->pcond) && ResetEvent(condwait->pcond)) ? 0 : -1))
-	{
+	if(ret = ((SetEvent(condwait->pcond) && ResetEvent(condwait->pcond)) ? 0 : -1)){
 		ret = GetLastError();
 		TSK_DEBUG_ERROR("SetEvent/ResetEvent function failed: %d", ret);
 	}
 #else
-	if(condwait && condwait->mutex)
-	{
+	if(condwait && condwait->mutex){
 		tsk_mutex_lock(condwait->mutex);
 
 		if(ret = pthread_cond_signal(condwait->pcond))
@@ -235,23 +247,9 @@ int tsk_condwait_signal(tsk_condwait_handle_t* handle)
 	return ret;
 }
 
-///**@ingroup tsk_condwait_group
-//* Gets the internal mutex used by the CondWait object.
-//* @param handle The CondWait object holding the mutex.
-//* @retval The internal mutex.
-//*/
-//tsk_mutex_handle_t* tsk_condwait_get_mutex(tsk_condwait_handle_t* handle)
-//{
-//	tsk_condwait_t *condwait = (tsk_condwait_t*)handle;
-//	if(condwait)
-//	{
-//		return condwait->mutex;
-//	}
-//	return 0;
-//}
 
 /**@ingroup tsk_condwait_group
-* Wakes up all threads that are currently waiting on @ref condwait variable.
+* Wakes up all threads that are currently waiting for the condition.
 * @param handle CondWait handle created using @ref tsk_condwait_create.
 * @retval Zero if succeed and non-zero otherwise.
 * @sa @ref tsk_condwait_signal.
@@ -283,7 +281,7 @@ int tsk_condwait_broadcast(tsk_condwait_handle_t* handle)
 }
 
 /**@ingroup tsk_condwait_group
-* Destroy/Free a condwait variable previously created using @ref tsk_condwait_create.
+* Safely free a condwait variable previously created using @ref tsk_condwait_create.
 * @param handle The condwait handle to free.
 * @sa @ref tsk_condwait_create
 */
@@ -291,8 +289,7 @@ void tsk_condwait_destroy(tsk_condwait_handle_t** handle)
 {
 	tsk_condwait_t **condwait = (tsk_condwait_t**)handle;
 	
-	if(condwait && *condwait)
-	{
+	if(condwait && *condwait){
 #if TSK_UNDER_WINDOWS
 		CloseHandle((*condwait)->pcond);
 #else
@@ -302,8 +299,7 @@ void tsk_condwait_destroy(tsk_condwait_handle_t** handle)
 #endif
 		tsk_free((void**)condwait);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("Cannot free an uninitialized condwait object");
 	}
 }
