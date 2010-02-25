@@ -31,7 +31,6 @@
 #define _TINYSAK_MEMORY_H_
 
 #include "tinySAK_config.h"
-#include "tsk_heap.h"
 
 #include <stdlib.h> /* size_t */
 

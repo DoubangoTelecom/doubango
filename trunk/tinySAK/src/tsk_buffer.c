@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_buffer.c
- * @brief Data buffer.
+ * @brief Buffer manager.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -33,10 +33,28 @@
 #include <stdio.h>
 #include <string.h>
 
+/**@defgroup tsk_buffer_group Buffer management.
+*/
+
 #if defined(_MSC_VER) || TSK_UNDER_WINDOWS
 #	define vsnprintf	_vsnprintf
 #endif
 
+/**@ingroup tsk_buffer_group
+* Appends new data to the buffer.
+* @param self The buffer to append to. The buffer should be created using @ref TSK_BUFFER_CREATE or @ref TSK_BUFFER_CREATE_NULL.
+* @param format A string with embedded tag to be substituted.
+* @param ... List of parameters.
+* @retval Zero if succeed and non-zero error code otherwise.
+* @sa @ref tsk_buffer_append.
+*
+* @code
+* tsk_buffer_t* buffer = TSK_BUFFER_CREATE_NULL();
+* tsk_buffer_appendEx(buffer, "str1=%s, c1=%c and val1=%x", "str1", 'c', 0x2554);
+* printf(TSK_BUFFER_TO_STRING(buffer));
+* TSK_OBJECT_SAFE_FREE(buffer);
+* @endcode
+*/
 int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 {
 	/*
@@ -47,8 +65,7 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 	char *buffer;
 	size_t oldsize;
 
-	if(!self)
-	{
+	if(!self){
 		return -1;
 	}
 
@@ -98,7 +115,21 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 	return 0;
 }
 
-
+/**@ingroup tsk_buffer_group
+* Appends data to the buffer.
+* @param self The buffer to append to. The buffer should be created using @ref TSK_BUFFER_CREATE or @ref TSK_BUFFER_CREATE_NULL.
+* @param data The data to append to the buffer.
+* @param size The size of the @a data to append.
+* @retval Zero if succeed and non-zero error code otherwise.
+* @sa @ref tsk_buffer_appendEx.
+*
+* @code
+* tsk_buffer_t* buffer = TSK_BUFFER_CREATE_NULL();
+* tsk_buffer_append(buffer, "doubango", strlen("doubango"));
+* printf(TSK_BUFFER_TO_STRING(buffer));
+* TSK_OBJECT_SAFE_FREE(buffer);
+* @endcode
+*/
 int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size)
 {
 	if(self && size)
@@ -117,6 +148,12 @@ int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size)
 	return -1;
 }
 
+/**@ingroup tsk_buffer_group
+* Reallocates the buffer.
+* @param self The buffer to realloc.
+* @param size The new size.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tsk_buffer_realloc(tsk_buffer_t* self, size_t size)
 {
 	if(self)
@@ -138,6 +175,13 @@ int tsk_buffer_realloc(tsk_buffer_t* self, size_t size)
 	return -1;
 }
 
+/**@ingroup tsk_buffer_group
+* Removes a chunck of data from the buffer.
+* @param self The buffer from which to remove the chunck.
+* @param position The chunck start position.
+* @param size The size of the chunck.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size)
 {
 	if(self)
@@ -156,7 +200,15 @@ int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size)
 	return -1;
 }
 
-int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void*data, size_t size)
+/**@ingroup tsk_buffer_group
+* Inserts a chunck of data into the buffer.
+* @param self The buffer to insert to.
+* @param position The starting position to insert to.
+* @param data A pointer to the chunck to insert.
+* @param size The size of the chunck.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void* data, size_t size)
 {
 	if(self && size)
 	{
@@ -184,10 +236,14 @@ int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void*data, size
 	return -1;
 }
 
+/**@ingroup tsk_buffer_group
+* Cleanups the internal data and reset the size..
+* @param self The buffer holding the internal data to free.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tsk_buffer_cleanup(tsk_buffer_t* self)
 {
-	if(self && self->data)
-	{
+	if(self && self->data){
 		tsk_free(&(self->data));
 		self->size = 0;
 	}

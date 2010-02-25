@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_timer.c
-* @brief Timers Mangement.
+* @brief Timer Manager.
 *
 * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
 *

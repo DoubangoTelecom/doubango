@@ -224,6 +224,7 @@ typedef struct tsip_message_s
 
 	/*== */
 	tnet_fd_t sockfd;
+	unsigned update:1;
 }
 tsip_message_t;
 

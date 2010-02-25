@@ -394,10 +394,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinySAK\src\tsk_macros.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tinySAK\src\tsk_md5.h"
 				>
 			</File>
@@ -447,10 +443,6 @@
 			</File>
 			<File
 				RelativePath="..\..\tinySAK\src\tsk_string.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinySAK\src\tsk_thread.h"
 				>
 			</File>
 			<File
@@ -505,10 +497,6 @@
 			</File>
 			<File
 				RelativePath="..\..\tinySAK\src\tsk_fsm.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinySAK\src\tsk_heap.c"
 				>
 			</File>
 			<File

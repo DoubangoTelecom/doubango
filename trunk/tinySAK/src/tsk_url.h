@@ -32,8 +32,6 @@
 
 #include "tinySAK_config.h"
 
-#include "tsk_heap.h"
-
 TSK_BEGIN_DECLS
 
 TINYSAK_API char* tsk_url_encode(const char* url);

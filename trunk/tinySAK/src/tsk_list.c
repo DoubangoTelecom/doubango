@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_list.c
- * @brief Linked list
+ * @brief Linked list. For more information about linked list you can visit http://en.wikipedia.org/wiki/Linked_list.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -29,7 +29,6 @@
  */
 #include "tsk_list.h"
 #include "tsk_memory.h"
-#include "tsk_macros.h"
 #include "tsk_debug.h"
 
 //#include <assert.h>

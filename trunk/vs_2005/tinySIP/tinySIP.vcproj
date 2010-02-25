@@ -460,6 +460,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinySIP\src\headers\tsip_header_Dummy.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinySIP\src\headers\tsip_header_Error_Info.c"
 					>
 				</File>
@@ -832,6 +836,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_publish.client.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_register.client.c"
 					>
 				</File>
@@ -1007,6 +1015,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinySIP\include\tinysip\headers\tsip_header_Date.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\include\tinysip\headers\tsip_header_Dummy.h"
 					>
 				</File>
 				<File
@@ -1379,6 +1391,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinySIP\include\tinysip\dialogs\tsip_dialog_message.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\include\tinysip\dialogs\tsip_dialog_publish.h"
 					>
 				</File>
 				<File

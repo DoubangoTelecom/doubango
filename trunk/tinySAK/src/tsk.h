@@ -37,7 +37,6 @@ TSK_BEGIN_DECLS
 
 #include "tsk_list.h"
 #include "tsk_string.h"
-#include "tsk_heap.h"
 #include "tsk_buffer.h"
 #include "tsk_memory.h"
 #include "tsk_url.h"
@@ -54,7 +53,6 @@ TSK_BEGIN_DECLS
 #include "tsk_safeobj.h"
 #include "tsk_object.h"
 
-#include "tsk_macros.h"
 #include "tsk_debug.h"
 
 #include "tsk_ppfcs16.h"

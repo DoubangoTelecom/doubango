@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_buffer.h
- * @brief Data buffer.
+ * @brief Buffer manager.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -33,28 +33,71 @@
 #include "tinySAK_config.h"
 #include "tsk_list.h"
 
+/**@ingroup tsk_buffer_group
+* @def TSK_BUFFER_CREATE
+* Creates new buffer.
+* @param data A pointer to the data to copy into the newly created buffer.
+* @param size The size of the data to copy.
+* @retval A new buffer object.
+* @sa TSK_BUFFER_CREATE_NULL.
+*/
+/**@ingroup tsk_buffer_group
+* @def TSK_BUFFER_CREATE_NULL
+* Creates a new empty buffer.
+* @retval A new empty buffer object.
+* @sa TSK_BUFFER_CREATE.
+*/
+
 TSK_BEGIN_DECLS
 
 #define TSK_BUFFER_CREATE(data, size)		tsk_object_new(tsk_buffer_def_t, (const void*)data, (size_t)size)
 #define TSK_BUFFER_CREATE_NULL()			TSK_BUFFER_CREATE(0,0)
 
+/**@ingroup tsk_buffer_group
+* @def TSK_BUFFER
+* Converts to @ref tsk_buffer_t object.
+* @param self @ref tsk_buffer_t object.
+*/
+/**@ingroup tsk_buffer_group
+* @def TSK_BUFFER_DATA
+* Gets the internal buffer.
+* @param self @ref tsk_buffer_t object.
+*/
+/**@ingroup tsk_buffer_group
+* @def TSK_BUFFER_SIZE
+* Gets the size of the internal buffer.
+* @param self @ref tsk_buffer_t object.
+*/
 #define TSK_BUFFER(self)					((tsk_buffer_t*)self)
 #define TSK_BUFFER_DATA(self)				(self ? TSK_BUFFER(self)->data : 0)
 #define TSK_BUFFER_SIZE(self)				(self ? TSK_BUFFER(self)->size : 0)
 
+/**@ingroup tsk_buffer_group
+* @def TSK_BUFFER_TO_STRING
+* Gets a the internal buffer as a pointer to a string (const char*).
+* @param self @ref tsk_buffer_t object.
+*/
+/**@ingroup tsk_buffer_group
+* @def TSK_BUFFER_TO_U8
+* Gets a the internal buffer as a pointer to an unsigned string (uint8_t*).
+* @param self @ref tsk_buffer_t object.
+*/
 #define TSK_BUFFER_TO_STRING(self)			(self ? (const char*)TSK_BUFFER_DATA(self) : 0)
 #define TSK_BUFFER_TO_U8(self)				(self ? (uint8_t*)TSK_BUFFER_DATA(self) : 0)
 
+/**@ingroup tsk_buffer_group
+* Buffer object.
+*/
 typedef struct tsk_buffer_s
 {
 	TSK_DECLARE_OBJECT;
 
-	void *data;
-	size_t size;
+	void *data; /**< Interanl data. */
+	size_t size; /**< The size of the internal data. */
 }
 tsk_buffer_t;
 
-typedef tsk_list_t tsk_buffers_L_t; /**< List of @ref tsk_buffer_t elements. */
+typedef tsk_list_t tsk_buffers_L_t; /**<@ingroup tsk_buffer_group List of @ref tsk_buffer_t elements. */
 
 TINYSAK_API int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...);
 TINYSAK_API int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size);
