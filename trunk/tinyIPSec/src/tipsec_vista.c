@@ -38,6 +38,7 @@
 #	pragma comment(lib, "Fwpuclnt.lib")
 #endif
 
+#include <ws2tcpip.h>
 #include <Fwpmu.h>
 
 

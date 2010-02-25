@@ -385,7 +385,11 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->associated_uris, (void**)&uri);
 		}
 
-		/* Service-Route */
+		/*	Service-Route (3GPP TS 24.229)
+			store the list of service route values contained in the Service-Route header field and bind the list to the contact
+			address used in registration, in order to build a proper preloaded Route header field value for new dialogs and
+			standalone transactions when using the respective contact address.
+		*/
 		for(index = 0; (hdr_Service_Route = (const tsip_header_Service_Route_t*)tsip_message_get_headerAt(message, tsip_htype_Service_Route, index)); index++){
 			if(!TSIP_DIALOG_GET_STACK(self)->service_routes){
 				TSIP_DIALOG_GET_STACK(self)->service_routes = TSK_LIST_CREATE();

@@ -21,7 +21,7 @@
 */
 
 /**@file tsip_dialog_subscribe.client.c
- * @brief SIP dialog subscribe (Client side).
+ * @brief SIP dialog SUBSCRIBE (Client side) as per RFC 3265.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *

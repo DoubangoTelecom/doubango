@@ -458,6 +458,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\headers\tsip_header_Dummy.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\headers\tsip_header_Error_Info.c"
 					>
 				</File>
@@ -830,6 +834,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dialogs\tsip_dialog_publish.client.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dialogs\tsip_dialog_register.client.c"
 					>
 				</File>
@@ -1005,6 +1013,10 @@
 				</File>
 				<File
 					RelativePath=".\include\tinysip\headers\tsip_header_Date.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\headers\tsip_header_Dummy.h"
 					>
 				</File>
 				<File
@@ -1380,6 +1392,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_publish.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinysip\dialogs\tsip_dialog_register.h"
 					>
 				</File>
@@ -1522,6 +1538,10 @@
 			</File>
 			<File
 				RelativePath=".\ragel\tsip_parser_header_Date.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\tsip_parser_header_Dummy.rl"
 				>
 			</File>
 			<File

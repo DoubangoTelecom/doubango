@@ -22,6 +22,8 @@
 #ifndef _TEST_SIPMESSAGES_H
 #define _TEST_SIPMESSAGES_H
 
+#include "tinysip/headers/tsip_header_Dummy.h"
+
 #define SIP_REQUEST \
 	"REGISTER sip:open-ims.test SIP/2.0\r\n" \
 	"Test-Header: 0\r\n" \
@@ -141,6 +143,10 @@ void test_parser()
 
 	expires = tsip_message_getExpires(message);
 	clength = TSIP_MESSAGE_CONTENT_LENGTH(message);
+
+	/* Add new headers */
+	TSIP_MESSAGE_ADD_HEADER(message, TSIP_HEADER_DUMMY_VA_ARGS("MyHeader1", "Value1; test=123;m"));
+	TSIP_MESSAGE_ADD_HEADER(message, TSIP_HEADER_DUMMY_VA_ARGS("MyHeader2", "Value2"));
 	
 	tsip_message_tostring(message, buffer);
 	TSK_DEBUG_INFO("Buffer=\n%s", TSK_BUFFER_TO_STRING(buffer));

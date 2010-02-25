@@ -38,6 +38,7 @@
 
 #include "tinysip/headers/tsip_header_Authorization.h"
 #include "tinysip/headers/tsip_header_Contact.h"
+#include "tinysip/headers/tsip_header_Dummy.h"
 #include "tinysip/headers/tsip_header_Expires.h"
 #include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
 #include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
@@ -57,6 +58,9 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	tsip_uri_t *to_uri, *from_uri, *request_uri;
 	const char *call_id;
 	int copy_routes_start = -1; /* NONE */
+	const tsk_list_item_t* item;
+	const tsk_params_L_t* params;
+	const tsk_param_t* param;
 
 	/*
 	RFC 3261 - 12.2.1.1 Generating the Request
@@ -137,7 +141,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	else
 	{
 		tsip_uri_t *first_route = self->routes->head->data;
-		if(tsk_params_has_param(first_route->params, "lr"))
+		if(tsk_params_have_param(first_route->params, "lr"))
 		{
 			request_uri = tsk_object_ref(self->uri_remote_target);
 			copy_routes_start = 0; /* Copy all */
@@ -173,12 +177,21 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		tsip_header_Contacts_L_t *hdr_contacts;
 		tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d;doubs\r\n", /*self->issecure*/0?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, self->expires);
 		hdr_contacts = tsip_header_Contact_parse(contact, strlen(contact));
-		if(!TSK_LIST_IS_EMPTY(hdr_contacts))
-		{
+		if(!TSK_LIST_IS_EMPTY(hdr_contacts)){
 			request->Contact = tsk_object_ref(hdr_contacts->head->data);
 		}
 		TSK_OBJECT_SAFE_FREE(hdr_contacts);
 		TSK_FREE(contact);
+
+		/* Add capabilities as per RFC 3840. */
+		params = tsip_operation_get_caps(self->operation);
+		if(request->Contact){
+			tsk_list_foreach(item, params)
+			{
+				param = (const tsk_param_t*)item->data;
+				tsk_params_add_param(&TSIP_HEADER(request->Contact)->params, param->name, param->value);
+			}
+		}
 	}
 	
 	/* Update authorizations */
@@ -209,7 +222,6 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 	else if(!TSK_LIST_IS_EMPTY(self->challenges))
 	{
-		tsk_list_item_t *item;
 		tsip_challenge_t *challenge;
 		tsip_header_t* auth_hdr;
 		tsk_list_foreach(item, self->challenges)
@@ -231,11 +243,24 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	/* Route generation 
 		*	==> http://betelco.blogspot.com/2008/11/proxy-and-service-route-discovery-in.html
 		* The dialog Routes have been copied above.
+
+		3GPP TS 24.229 - 5.1.2A.1 UE-originating case
+
+		The UE shall build a proper preloaded Route header field value for all new dialogs and standalone transactions. The UE
+		shall build a list of Route header field values made out of the following, in this order:
+		a) the P-CSCF URI containing the IP address or the FQDN learnt through the P-CSCF discovery procedures; and
+		b) the P-CSCF port based on the security mechanism in use:
+
+		- if IMS AKA or SIP digest with TLS is in use as a security mechanism, the protected server port learnt during
+		the registration procedure;
+		- if SIP digest without TLS, NASS-IMS bundled authentciation or GPRS-IMS-Bundled authentication is in
+		use as a security mechanism, the unprotected server port used during the registration procedure;
+		c) and the values received in the Service-Route header field saved from the 200 (OK) response to the last
+		registration or re-registration of the public user identity with associated contact address.
 	*/
-	if(request->type != tsip_REGISTER)
+	if(request->request_type != tsip_REGISTER)
 	{	// According to the above link ==> Initial/Re/De registration do not have routes.
-		tsk_list_item_t* item;
-		if(copy_routes_start !=-1)
+		if(copy_routes_start != -1)
 		{	/* The dialog already have routes ==> copy them. */
 			if(self->state == tsip_early || self->state == tsip_established)
 			{
@@ -269,8 +294,17 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		}
 	}
 
+	/* Add headers associated to the dialog's operation. */
+	params = tsip_operation_get_headers(self->operation);
+	tsk_list_foreach(item, params)
+	{
+		param = (const tsk_param_t*)item->data;
+		TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(param->name, param->value));
+	}
+
 	/* Add common headers */
 	tsip_dialog_add_common_headers(self, request);
+
 
 	TSK_OBJECT_SAFE_FREE(request_uri);
 	TSK_OBJECT_SAFE_FREE(from_uri);
