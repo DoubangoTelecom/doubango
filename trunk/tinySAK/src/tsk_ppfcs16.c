@@ -30,9 +30,8 @@
 
 #include "tsk_ppfcs16.h"
 
-//
-// RFC 1662: PPP in HDLC-like Framing
-//
+/**@defgroup tsk_ppfcs16_group PPP in HDLC-like Framing (RFC 1662).
+*/
 
 static uint16_t fcstab[256] = 
 {
@@ -70,13 +69,12 @@ static uint16_t fcstab[256] =
   0x7bc7, 0x6a4e, 0x58d5, 0x495c, 0x3de3, 0x2c6a, 0x1ef1, 0x0f78
 };
 
-/*
+/**@ingroup tsk_ppfcs16_group
 * Calculate a new fcs given the current fcs and the new data.
 */
 uint16_t tsk_pppfcs16(register uint16_t fcs, register const uint8_t* cp, register int32_t len)
 {
-   while (len--)
-   {
+   while (len--){
        fcs = (fcs >> 8) ^ fcstab[(fcs ^ *cp++) & 0xff];
    }
    return (fcs);

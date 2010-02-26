@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_debug.h
- * @brief Useful functions for debugging.
+ * @brief Useful functions for debugging purpose.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -39,14 +39,26 @@ TSK_BEGIN_DECLS
 #define DEBUG_LEVEL DEBUG_LEVEL_ERROR
 #endif
 
-#define DEBUG_LEVEL_INFO		4 /**< Info level */
-#define DEBUG_LEVEL_WARN		3 /**< Warn level */
-#define DEBUG_LEVEL_ERROR		2 /**< Error level */
-#define DEBUG_LEVEL_FATAL		1 /**< Fatal level */
-
-/**@ref TSK_DEBUG_INFO
-* Level >= @ref DEBUG_LEVEL_INFO: Nothing important (informational about application progress).
+/**@ingroup tsk_debug_group
+* @def DEBUG_LEVEL_INFO
+* @a INFO level (4). This is the lowest possible level and will turn on all logging.
 */
+/**@ingroup tsk_debug_group
+* @def DEBUG_LEVEL_WARN
+* @a WARN level (3). Warning are error which could change the normal process without blocking the application.
+*/
+/**@ingroup tsk_debug_group
+* @def DEBUG_LEVEL_ERROR
+* @a ERROR level (2). This level log error which might change the application behavior.
+*/
+/**@ingroup tsk_debug_group
+* @def DEBUG_LEVEL_FATAL
+* @a FATAL level (1). This level log fatal errors which might abort the application.
+*/
+#define DEBUG_LEVEL_INFO		4
+#define DEBUG_LEVEL_WARN		3
+#define DEBUG_LEVEL_ERROR		2
+#define DEBUG_LEVEL_FATAL		1
 
 #if (DEBUG_LEVEL >= DEBUG_LEVEL_INFO)
 #	if USE_GNUC_VA_ARGS
@@ -63,9 +75,6 @@ TSK_BEGIN_DECLS
 #endif
 
 
-/**@ref TSK_DEBUG_WARN
-* Level >= @ref DEBUG_LEVEL_WARN: Take care.
-*/
 #if (DEBUG_LEVEL >= DEBUG_LEVEL_WARN)
 #	if USE_GNUC_VA_ARGS
 #		define TSK_DEBUG_WARN(...)			fprintf(stderr, __VA_ARGS__);
@@ -80,9 +89,6 @@ TSK_BEGIN_DECLS
 #	endif
 #endif
 
-/**@ref TSK_ERROR_WARN
-* Level >= @ref DEBUG_LEVEL_ERROR: Could cause crash or instability.
-*/
 #if (DEBUG_LEVEL >= DEBUG_LEVEL_ERROR)
 #	if USE_GNUC_VA_ARGS
 #		define TSK_DEBUG_ERROR(...)				fprintf(stderr, __VA_ARGS__);
@@ -98,9 +104,6 @@ TSK_BEGIN_DECLS
 #endif
 
 
-/**@ref TSK_DEBUG_FATAL
-* Level >= @ref DEBUG_LEVEL_FATAL: The application should abort or behave unexpectedly.
-*/
 #if (DEBUG_LEVEL >= DEBUG_LEVEL_FATAL)
 #	if USE_GNUC_VA_ARGS
 #		define TSK_DEBUG_FATAL(...)				fprintf(stderr, __VA_ARGS__);

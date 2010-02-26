@@ -35,9 +35,17 @@
 #include "tsk_object.h"
 #include "tsk_list.h"
 
+/**@ingroup tsk_string_group
+* @def TSK_STRING_CREATE
+* Creates new @ref tsk_string_t object. 
+*/
+/**@ingroup tsk_string_group
+* @def TSK_STRING_STR
+* Gets the internal string pointer. 
+*/
 TSK_BEGIN_DECLS
 
-#define TSK_STRING_CREATE(str)				tsk_object_new(tsk_string_def_t, str)
+#define TSK_STRING_CREATE(str)				tsk_object_new(tsk_string_def_t, (const char*)str)
 #define TSK_STRING_STR(self)				((tsk_string_t*)self)->value
 
 typedef char tsk_istr_t[21]; /**< Integer number as string value. */
@@ -51,8 +59,8 @@ TINYSAK_API int tsk_strcmp(const char * str1, const char * str2);
 TINYSAK_API int tsk_strncmp(const char * str1, const char * str2, size_t n);
 TINYSAK_API char* tsk_strdup(const char *s1);
 TINYSAK_API char* tsk_strndup(const char *s1, size_t n);
-TINYSAK_API int tsk_strcontains(const char * str, size_t size, const char * sub_str);
-TINYSAK_API int tsk_strindexOf(const char * str, size_t size, const char * sub_str);
+TINYSAK_API int tsk_strcontains(const char * str, size_t size, const char * substring);
+TINYSAK_API int tsk_strindexOf(const char * str, size_t size, const char * substring);
 TINYSAK_API void tsk_strcat(char** destination, const char* source);
 TINYSAK_API void tsk_strncat(char** destination, const char* source, size_t n);
 TINYSAK_API int tsk_sprintf(char** str, const char* format, ...);
@@ -68,6 +76,24 @@ TINYSAK_API void tsk_strrandom(tsk_istr_t *result);
 TINYSAK_API void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str);
 TINYSAK_API void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex);
 
+/**@ingroup tsk_string_group
+* @def tsk_strtrim_both
+*/
+/**@ingroup tsk_string_group
+* @def tsk_strempty
+*/
+/**@ingroup tsk_string_group
+* @def tsk_striequals
+*/
+/**@ingroup tsk_string_group
+* @def tsk_strniequals
+*/
+/**@ingroup tsk_string_group
+* @def tsk_strequals
+*/
+/**@ingroup tsk_string_group
+* @def tsk_strnequals
+*/
 #define tsk_strtrim_both(str) tsk_strtrim_left(str), tsk_strtrim_right(str);
 #define tsk_strempty(s) (*s == '\0')
 #define tsk_striequals(s1, s2) (tsk_stricmp((const char*)(s1), (const char*)(s2)) ? 0 : 1)
@@ -75,11 +101,14 @@ TINYSAK_API void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex);
 #define tsk_strequals(s1, s2) (tsk_strcmp((const char*)(s1), (const char*)(s2)) ? 0 : 1)
 #define tsk_strnequals(s1, s2, n) (tsk_strncmp((const char*)(s1), (const char*)(s2), n) ? 0 : 1)
 
+/**@ingroup tsk_string_group
+* String object.
+*/
 typedef struct tsk_string_s
 {
 	TSK_DECLARE_OBJECT;
 
-	char *value;
+	char *value; /**< The value of the string object. */
 }
 tsk_string_t;
 

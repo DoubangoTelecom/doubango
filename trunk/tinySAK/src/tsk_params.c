@@ -33,6 +33,11 @@
 
 #include <string.h>
 
+/**@defgroup tsk_params_group SIP/MSRP/XCAP Parameters parser.
+*/
+
+/* Predicate function used to find a parameter by name.
+*/
 static int pred_find_param_by_name(const tsk_list_item_t *item, const void *name)
 {
 	if(item && item->data)
@@ -43,6 +48,12 @@ static int pred_find_param_by_name(const tsk_list_item_t *item, const void *name
 	return 0;
 }
 
+/**@ingroup tsk_params_group
+* Converts a key-value-pair string (kvp) to @ref tsk_param_t object.
+* @param line The kvp (e.g. 'branch=z9hG4bK652hsge') string to parse.
+* @param size The size (length) of the kvp string.
+* @retval @ref tsk_param_t object.
+*/
 tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 {
 	if(line && size)
@@ -73,22 +84,35 @@ tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 	}
 	return 0;
 }
-
+/**@ingroup tsk_params_group
+* Checks if the supplied list of parameters contains a parameter named @a name.
+* @param self The list of parameters into which to search.
+* @param name The name of the parameter to search.
+* @retval 1 if the parameter exist and zero otherwise.
+*/
 int tsk_params_have_param(const tsk_params_L_t *self, const char* name)
 {
-	if(self)
-	{
+	if(self){
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
 		return item_const ? 1 : 0;
 	}
 	return 0;
 }
 
+/**@ingroup tsk_params_group
+* Adds a parameter to the list of parameters.
+* @param self The destination list.
+* @param name The name of the parameter to add.
+* @param value The value of the parameter to add.
+* @retval Zero if succeed and -1 otherwise.
+*/
 int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* value)
 {
 	tsk_param_t *param;
 
-	if(!name) return -1;
+	if(!name) {
+		return -1;
+	}
 
 	if(!*self){
 		*self = TSK_LIST_CREATE();
@@ -100,37 +124,51 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 	return 0;
 }
 
-
+/**@ingroup tsk_params_group
+* Removes a parameter from the list of parameters.
+* @param self The source list.
+* @param name The name of the parameter to remove.
+* @retval Zero if succeed and -1 otherwise.
+*/
 int tsk_params_remove_param(tsk_params_L_t *self, const char* name)
 {
-	if(self)
-	{
+	if(self){
 		tsk_list_remove_item_by_pred(self, pred_find_param_by_name, name);
 		return 0;
 	}
 	return -1;
 }
 
+/**@ingroup tsk_params_group
+* Gets a parameter from the list of parameters by name.
+* @param self The source list.
+* @param name The name of the parameter to retrieve.
+* @retval @ref tsk_param_t if succeed and NULL otherwise.
+*/
 const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, const char* name)
 {
 	if(self)
 	{
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
-		if(item_const)
-		{
+		if(item_const){
 			return item_const->data;
 		}
 	}
 	return 0;
 }
 
+/**@ingroup tsk_params_group
+* Gets the value of a parameter.
+* @param self The source list.
+* @param name The name of the parameter to retrieve.
+* @retval The value of the parameter if succeed and NULL otherwise.
+*/
 const char *tsk_params_get_param_value(const tsk_params_L_t *self, const char* name)
 {
 	if(self)
 	{
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
-		if(item_const && item_const->data)
-		{
+		if(item_const && item_const->data){
 			tsk_param_t *param = item_const->data;
 			return param->value;
 		}
@@ -138,22 +176,39 @@ const char *tsk_params_get_param_value(const tsk_params_L_t *self, const char* n
 	return 0;
 }
 
+/**@ingroup tsk_params_group
+* Gets the value of a parameter.
+* @param self The source list.
+* @param name The name of the parameter to retrieve.
+* @retval The value of the parameter if succeed and -1 otherwise.
+*/
 int tsk_params_get_param_value_as_int(const tsk_params_L_t *self, const char* name)
 {
 	const char *value = tsk_params_get_param_value(self, name);
 	return value ? atoi(value) : -1;
 }
 
+/**@ingroup tsk_params_group
+* Serializes a @ref tsk_param_t object.
+* @param param The parameter to serialize.
+* @param output The output buffer.
+* @retval Zero if succeed and -1 otherwise.
+*/
 int tsk_params_param_tostring(const tsk_param_t *param, tsk_buffer_t* output)
 {
-	if(param)
-	{
+	if(param){
 		return tsk_buffer_appendEx(output, param->value?"%s=%s":"%s", param->name, param->value);
 	}
 	return -1;
 }
 
-
+/**@ingroup tsk_params_group
+* Serializes a @ref tsk_params_L_t object.
+* @param self The list of parameters to serialize.
+* @param separator The character to use as separator between params.
+* @param output The output buffer.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_buffer_t* output)
 {
 	int ret = -1;
@@ -168,15 +223,13 @@ int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_bu
 			//tsk_params_param_tostring(param, output);
 			if(item == self->head)
 			{
-				if(ret=tsk_buffer_appendEx(output, param->value?"%s=%s":"%s", param->name, param->value))
-				{
+				if(ret = tsk_buffer_appendEx(output, param->value?"%s=%s":"%s", param->name, param->value)){
 					goto bail;
 				}
 			}
 			else
 			{
-				if(ret=tsk_buffer_appendEx(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value))
-				{
+				if(ret = tsk_buffer_appendEx(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value)){
 					goto bail;
 				}
 			}

@@ -30,9 +30,8 @@
 
 #include "tsk_ppfcs32.h"
 
-//
-// RFC 1662: PPP in HDLC-like Framing
-//
+/**@defgroup tsk_ppfcs32_group PPP in HDLC-like Framing (RFC 1662).
+*/
 
 static uint32_t fcstab_32[256] =
 {
@@ -102,7 +101,7 @@ static uint32_t fcstab_32[256] =
 	0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
 
-/*
+/**@ingroup tsk_ppfcs32_group
 * Calculate a new fcs given the current fcs and the new data.
 */
 uint32_t tsk_pppfcs32(register uint32_t fcs, register const uint8_t* cp, register int32_t len)

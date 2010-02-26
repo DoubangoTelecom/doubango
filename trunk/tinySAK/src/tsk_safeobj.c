@@ -29,4 +29,5 @@
  */
 #include "tsk_safeobj.h"
 
-
+/**@defgroup tsk_safeobj_group Helper macros to declare thread-safe objects.
+*/

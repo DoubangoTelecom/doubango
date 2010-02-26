@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_semaphore.c
-* @brief Pthread Semaphore.
+* @brief Pthread/Windows Semaphore utility functions.
 *
 * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
 *
@@ -79,13 +79,14 @@
 
 
 
-/**@defgroup tsk_semaphore_group Pthread Semaphore
+/**@defgroup tsk_semaphore_group Pthread/Windows Semaphore functions.
 */
 
 /**@ingroup tsk_semaphore_group
-* Creates new Pthread semaphore. You MUST use @ref tsk_semaphore_free to free the handle.
-* @retval The New semaphore handle.
-* @sa @ref tsk_semaphore_free
+* Creates new semaphore handle.
+* @retval A New semaphore handle.
+* You MUST call @ref tsk_semaphore_destroy to free the semaphore.
+* @sa @ref tsk_semaphore_destroy
 */
 tsk_semaphore_handle_t* tsk_semaphore_create()
 {
@@ -119,7 +120,7 @@ tsk_semaphore_handle_t* tsk_semaphore_create()
 }
 
 /**@ingroup tsk_semaphore_group
-* Increment a semaphore. You should use @ref tsk_semaphore_decrement to decrement the semaphore.
+* Increments a semaphore.
 * @param handle The semaphore to increment.
 * @retval Zero if succeed and otherwise the function returns -1 and sets errno to indicate the error.
 * @sa @ref tsk_semaphore_decrement.
@@ -142,7 +143,7 @@ int tsk_semaphore_increment(tsk_semaphore_handle_t* handle)
 }
 
 /**@ingroup tsk_semaphore_group
-* Decrement a semaphore. You should use @ref tsk_semaphore_increment to increment a semaphore.
+* Decrements a semaphore.
 * @param handle The semaphore to decrement.
 * @retval Zero if succeed and otherwise the function returns -1 and sets errno to indicate the error.
 * @sa @ref tsk_semaphore_increment.

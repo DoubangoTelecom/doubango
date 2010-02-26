@@ -22,7 +22,7 @@
 
 /**@file tsk_memory.c
  * @brief Useful memory management functions to handle memory.
- * As I'm a lazy man, some definition come from this <ahref="http://www.cplusplus.com">this website</a>
+ * As I'm a lazy man, some definition come from <ahref="http://www.cplusplus.com">this website</a>
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -35,75 +35,15 @@
 #include <ctype.h>
 #include <stdio.h>
 
-/**@defgroup tsk_memory_group Memory management utils
+/**@defgroup tsk_memory_group Utility functions for memory management.
 */
-
-
-/**@page tsk_memory_page Memory management Tutorial
-* <H2>== Memory allocation using Heap mechanism ==</H2>
-* Allocating memory using heap mechanism is not mandatory but is useful. This mechanism is useful because
-* all newly allocated memories are holded by the heap and could be freed when for example your progam exit.
-* The main goal is to avoid memory leaks. Here is an example of how to use this feature:
-*
-* @code
-char* mystr = 0;
-tsk_heap_t heap;
-
-// initialize our memory heap => MANDATORY before using the heap
-tsk_heap_init(&heap);
-for(i=0; i<10;i++)
-{
-	mystr = tsk_strdup(&heap, "testing the heap (1)");
-	... use the string ...
-
-	mystr = (char*)tsk_malloc(&heap, 10);
-	mystr = tsk_realloc(&heap, mystr, 100);
-	... use the string ...
-}
-// This call will free all allocated strings (20 in our case)
-tsk_heap_cleanup(&heap);
-
-// This call will free one memory block
-tsk_free(&heap, &test);
-*@endcode
-*
-* <H2>== Memory allocation without Heap mechanism ==</H2>
-* All tsk_[name] functions could be replaced by [name]. For example:
-* replace tsk_[strdup] by [strdup].
-*
-* * @code
-char* mystr = 0;
-
-// initialize our memory heap => MANDATORY before using the heap
-for(i=0; i<10;i++)
-{
-	mystr = tsk_strdup2("testing the heap (1)");
-	... use the string ...
-	TSK_FREE(mystr);
-
-	mystr = (char*)tsk_malloc2(10);
-	mystr = tsk_realloc2(mystr, 100);
-	... use the string ...
-	TSK_FREE(mystr);
-}
-*@endcode
-*/
-
-/**@ingroup tsk_memory_group
-* Predicate function used to retrive an address by ref
-*/
-/*static int tsk_memory_find_by_address(const tsk_heap_address_t* item, const void* address)
-{
-	return (item->data == address) ? 1 : 0;
-}*/
 
 /**@ingroup tsk_memory_group
 * Allocates a block of size bytes of memory, returning a pointer to the beginning of the block.
 * The content of the newly allocated block of memory is not initialized, remaining with indeterminate values.
-* @param heap The memory heap from which to free @a ptr. Set to NULL if you don't want to use heap allocation mechanism.
 * @param size Size of the memory block, in bytes.
 * @retval On success, a pointer to the memory block allocated by the function.
-* You MUST call @a tsk_free to free the newly allocated memory.
+* It is up to you to free the returned pointer.
 */
 void* tsk_malloc(size_t size)
 {
@@ -117,12 +57,11 @@ void* tsk_malloc(size_t size)
 }
 
 /**@ingroup tsk_memory_group
-* Reallocate memory block
+* Reallocate memory block.
 * In case that ptr is NULL, the function behaves exactly as @a tsk_malloc, assigning a new block of size bytes and returning a pointer to the beginning of it.
 * The function may move the memory block to a new location, in which case the new location is returned. The content of the memory block is preserved up to the lesser of the 
 * new and old sizes, even if the block is moved. If the new size is larger, the value of the newly allocated portion is indeterminate.
 * In case that the size is 0, the memory previously allocated in ptr is deallocated as if a call to free was made, and a NULL pointer is returned.
-* @param heap The memory heap from which to free @a ptr. Set to NULL if you don't want to use heap allocation mechanism.
 * @param ptr Pointer to a memory block previously allocated with malloc, calloc or realloc to be reallocated.
 * If this is NULL, a new block is allocated and a pointer to it is returned by the function.
 * @param size New size for the memory block, in bytes.
@@ -130,7 +69,7 @@ void* tsk_malloc(size_t size)
 * @retval A pointer to the reallocated memory block, which may be either the same as the ptr argument or a new location.
 * The type of this pointer is void*, which can be cast to the desired type of data pointer in order to be dereferenceable.
 * If the function failed to allocate the requested block of memory, a NULL pointer is returned.
-* You MUST call @a tsk_free to free the newly reallocated memory.
+* It is up to you to free the returned pointer.
 */
 void* tsk_realloc (void* ptr, size_t size)
 {
@@ -145,15 +84,13 @@ void* tsk_realloc (void* ptr, size_t size)
 }
 
 /**@ingroup tsk_memory_group
-* Deallocate space in memory
-* @param heap The memory heap from which to free @a ptr. Set to NULL if @a ptr had not been allocated using heap allocation mechanism.
+* Deallocate space in memory.
 * @param ptr Pointer to a memory block previously allocated with @a tsk_malloc, @a tsk_calloc or @a tsk_realloc to be deallocated.
 * If a null pointer is passed as argument, no action occurs. 
 */
 void tsk_free(void** ptr)
 {
-	if(ptr && *ptr)
-	{
+	if(ptr && *ptr){
 		free(*ptr);
 		*ptr = 0;
 	}
@@ -162,14 +99,11 @@ void tsk_free(void** ptr)
 /**@ingroup tsk_memory_group
 * Allocates a block of memory for an array of num elements, each of them size bytes long, and initializes all its bits to zero.
 * The effective result is the allocation of an zero-initialized memory block of (num * size) bytes.
-* @param heap The memory heap on which to allocate the newly allocated memory. Set to NULL if
-* you don't want to use heap allocation mechanism.
 * @param num Number of elements to be allocated
 * @param size Size of elements
 * @retval A pointer to the memory block allocated by the function. The type of this pointer is always void*, which can be cast to the desired type of data pointer in order to be dereferenceable.
 * If the function failed to allocate the requested block of memory, a NULL pointer is returned.
-* The returned pointer can be passed to free() if you are not using memory heap mechanism.
-* You MUST not directly free the returned pointer if you are using heap mechanism.
+* It is up to you to free the returned pointer.
 */
 void* tsk_calloc(size_t num, size_t size)
 {

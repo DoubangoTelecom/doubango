@@ -50,12 +50,9 @@
 #	define strnicmp		strncasecmp
 #endif
 
-/**@defgroup tsk_string_group String utils
+/**@defgroup tsk_string_group String utillity functions.
 */
 
-
-/**@page tsk_string_page String utils Tutorial
-*/
 
 static char HEX[] = "0123456789abcdef";
 
@@ -118,14 +115,11 @@ int tsk_strncmp(const char * str1, const char * str2, size_t n)
 
 /**@ingroup tsk_string_group
 * Duplicate a string
-* @param heap The memory heap on which to allocate the duplicated string. Set to NULL if
-* you don't want to use heap allocation mechanism.
 * @param s1 The string to duplicate
 * @retval The duplicated string. */
 char* tsk_strdup(const char *s1)
 {
-	if(s1)
-	{
+	if(s1){
 		return strdup(s1);
 	}
 	return TSK_NULL;
@@ -156,15 +150,30 @@ char* tsk_strndup(const char *s1, size_t n)
 	return ret;
 }
 
-int tsk_strcontains(const char * str, size_t size, const char * sub_str)
+/**@ingroup tsk_string_group
+* Checks if @a str contains @a substring.
+* @param str The master string.
+* @param size The size of the master string.
+* @param substring the substring.
+* @retval 1 if @a str contains at least one occurence of @a substring and zero othewise.
+*/
+int tsk_strcontains(const char * str, size_t size, const char * substring)
 {
-	return (tsk_strindexOf(str, size, sub_str) >= 0);
+	return (tsk_strindexOf(str, size, substring) >= 0);
 }
 
-int tsk_strindexOf(const char * str, size_t size, const char * sub_str)
+/**@ingroup tsk_string_group
+* Gets the first occurrence of @a substring within @a str.
+* @param str The master string.
+* @param size The size of the master string.
+* @param substring The substring that is to be searched for within @a str.
+* @retval The index of the first ocurrence of @a substring in @a str.
+* If no occurrence of @a substring is found, then -1 is returned.
+*/
+int tsk_strindexOf(const char * str, size_t size, const char * substring)
 {
-	if(str && sub_str){
-		const char* sub_start = strstr(str, sub_str);
+	if(str && substring){
+		const char* sub_start = strstr(str, substring);
 		if(sub_start && (sub_start < (str + size))){
 			return (sub_start - str);
 		}
@@ -209,8 +218,6 @@ void tsk_strncat(char** destination, const char* source, size_t n)
 * the function expects at least as many additional arguments as specified in format.
 * This function behaves exactly as printf does, but writing its results to a string instead of stdout. The size of the array passed as str should be enough to 
 * contain the entire formatted string.
-* @param heap The memory heap on which to allocate the concatened string. Set to NULL if
-* you don't want to use heap allocation mechanism.
 * @param str Pointer to an array of char elements where the resulting C string is stored. 
 * MUST be NULL.
 * @param format C string that contains the text to be written to the buffer. For more information see definiton of C function @a sprintf
@@ -361,15 +368,10 @@ void tsk_itoa(int64_t i, tsk_istr_t *result)
 }
 
 
-/**
- * @fn	void tsk_strrandom(tsk_istr_t *result)
+/**@ingroup tsk_string_group
+ * Generates a random string.
  *
- * @brief	Generates a random string.
- *
- * @author	Mamadou
- * @date	12/27/2009
- *
- * @param [out]	result	A pointer to the result. 
+ * @param result	A pointer to the result. 
 **/
 void tsk_strrandom(tsk_istr_t *result)
 {
@@ -377,18 +379,14 @@ void tsk_strrandom(tsk_istr_t *result)
 	tsk_itoa(epoch, result);
 }
 
-/**
- * @fn	void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str)
+/**@ingroup tsk_string_group
  *
- * @brief	Converts hexadecimal bytes into string representation.
+ * Converts hexadecimal bytes into string representation.
  *
- * @author	Mamadou
- * @date	12/27/2009
- *
- * @param [in,out]	hex	The hexadecimal bytes to convert. 
+ * @param hex	The hexadecimal bytes to convert. 
  * @param	size		The size of the hexadecimal bytes. 
- * @param [in,out]	str	The pointer to the result. MUST be enought large to hold the result.
- *						It is up to you to add the final '\0'.
+ * @param str	The pointer to the result. MUST be enought large to hold the result.
+ *						It is up to you to add the final '\\0'.
  * @sa @ref tsk_str_to_hex
 **/
 void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str)
@@ -403,17 +401,12 @@ void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str)
 	}
 }
 
-/**
- * @fn	void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex)
+/**@ingroup tsk_string_group
+ * Converts string chars into hexadecimal bytes.
  *
- * @brief	Converts string chars into hexadecimal bytes.
- *
- * @author	Mamadou
- * @date	12/27/2009
- *
- * @param [in,out]	str	If non-null, the string. 
+ * @param str	If non-null, the string. 
  * @param	size		The size. 
- * @param [in,out]	hex	If non-null, the hexadecimal. 
+ * @param hex	If non-null, the hexadecimal. 
 **/
 void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex)
 {
