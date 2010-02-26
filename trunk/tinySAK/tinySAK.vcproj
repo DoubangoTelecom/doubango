@@ -395,10 +395,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsk_macros.h"
-				>
-			</File>
-			<File
 				RelativePath=".\src\tsk_md5.h"
 				>
 			</File>
@@ -506,10 +502,6 @@
 			</File>
 			<File
 				RelativePath=".\src\tsk_fsm.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\tsk_heap.c"
 				>
 			</File>
 			<File

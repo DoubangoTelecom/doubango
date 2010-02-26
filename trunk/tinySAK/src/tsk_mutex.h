@@ -34,8 +34,8 @@
 
 TSK_BEGIN_DECLS
 
-/**
-* Pthread Mutex handle.
+/**@ingroup tsk_mutex_group
+* Mutex handle.
 */
 typedef void tsk_mutex_handle_t;
 

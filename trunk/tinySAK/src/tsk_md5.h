@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_md5.h
- * @brief Message-Digest algorithm 5 (RFC 1321).
+ * @brief Implements Message-Digest algorithm 5 (RFC 1321).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -33,6 +33,29 @@
 #include "tinySAK_config.h"
 
 TSK_BEGIN_DECLS
+
+/**@ingroup tsk_md5_group
+* @def TSK_MD5_DIGEST_SIZE
+*/
+/**@ingroup tsk_md5_group
+* @def TSK_MD5_BLOCK_SIZE
+*/
+/**@ingroup tsk_md5_group
+* @def TSK_MD5_EMPTY
+*/
+/**@ingroup tsk_md5_group
+* @def TSK_MD5_STRING_SIZE
+*/
+/**@ingroup tsk_md5_group
+* @def tsk_md5string_t
+*/
+/**@ingroup tsk_md5_group
+* @def tsk_md5digest_t
+*/
+/**@ingroup TSK_MD5_DIGEST_CALC
+* @def tsk_md5digest_t
+*/
+
 
 #define TSK_MD5_DIGEST_SIZE		16
 #define TSK_MD5_BLOCK_SIZE		64

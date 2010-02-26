@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_mutex.c
- * @brief Pthread Mutex.
+ * @brief Pthread/Windows Mutex utility functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -50,13 +50,13 @@
 
 // FIXME: Momory leaks in mutex
 
-/**@defgroup tsk_mutex_group Pthread Mutex
+/**@defgroup tsk_mutex_group Pthread/Windows Mutex utility functions.
 */
 
 /**@ingroup tsk_mutex_group
-* Creates new mutex handle. You MUST use @ref tsk_mutex_destroy to free the mutex handle.
-* @retval New mutex handle.
-* @sa @ref tsk_mutex_destroy
+* Creates new mutex handle.
+* @retval New mutex handle. It is up to you free the returned handle using  @ref tsk_mutex_destroy.
+* @sa @ref tsk_mutex_destroy.
 */
 tsk_mutex_handle_t* tsk_mutex_create()
 {	
@@ -66,14 +66,12 @@ tsk_mutex_handle_t* tsk_mutex_create()
 	handle = CreateMutex(NULL, FALSE, NULL);
 #else
 	handle = tsk_calloc(1, sizeof(MUTEX_S));
-	if(pthread_mutex_init((MUTEX_T)handle, 0))
-	{
+	if(pthread_mutex_init((MUTEX_T)handle, 0)){
 		TSK_FREE(handle);
 	}
 #endif
 	
-	if(!handle)
-	{
+	if(!handle){
 		TSK_DEBUG_ERROR("Failed to create new mutex.");
 	}
 	return handle;
@@ -82,7 +80,7 @@ tsk_mutex_handle_t* tsk_mutex_create()
 /**@ingroup tsk_mutex_group
 * Lock a mutex. You must use @ref tsk_mutex_unlock to unlock the mutex.
 * @param handle The handle of the mutex to lock.
-* @retval Zero if succeed and non-zero otherwise.
+* @retval Zero if succeed and non-zero error code otherwise.
 * @sa @ref tsk_mutex_unlock.
 */
 int tsk_mutex_lock(tsk_mutex_handle_t* handle)
@@ -135,9 +133,9 @@ int tsk_mutex_unlock(tsk_mutex_handle_t* handle)
 }
 
 /**@ingroup tsk_mutex_group
-* Internal function to free a mutex previously created using @ref TSK_MUTEX_CREATE. You MUST use @ref TSK_MUTEX_SAFE_FREE to safely free a mutex.
-* @param mutex The mutex to free.
-* @sa @ref TSK_OBJECT_SAFE_FREE
+* Free/destroy a mutex.
+* @param handle The mutex to free.
+* @sa @ref tsk_mutex_create.
 */
 void tsk_mutex_destroy(tsk_mutex_handle_t** handle)
 {

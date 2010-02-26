@@ -34,13 +34,19 @@
 
 #include <stdlib.h> /* size_t */
 
+/**@ingroup tsk_memory_group
+* @def TSK_SAFE_FREE
+* Safely free the memory pointed by @a ptr.
+*/
+/**@ingroup tsk_memory_group
+* @def TSK_FREE
+* Safely free the memory pointed by @a ptr.
+*/
+
 TSK_BEGIN_DECLS
 
-/** Safely free a pointer
-*/
 #define TSK_SAFE_FREE(ptr) (void)tsk_free((void**)(&ptr));
 #define TSK_FREE(ptr) TSK_SAFE_FREE(ptr)
-#define TSK_SAFE_DELETE_ARRAY(ptr) { if(ptr){ delete []ptr; ptr=NULL; } }
 
 TINYSAK_API void* tsk_malloc(size_t size);
 TINYSAK_API void* tsk_realloc (void * ptr, size_t size);

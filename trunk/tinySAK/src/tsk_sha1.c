@@ -94,7 +94,24 @@
 
 #include "tsk_string.h"
 
-/*
+/**@defgroup tsk_sha1_group SHA1 (RFC 3174) utility functions.
+ *  Copyright (C) The Internet Society (2001).  All Rights Reserved.<br>
+ *  Copyright (C) Mamadou Diop		   (2009)<br>
+ *
+ *	This file implements the Secure Hashing Algorithm 1 as
+ *	defined in FIPS PUB 180-1 published April 17, 1995.
+ *
+ *	  The SHA-1, produces a 160-bit message digest for a given
+ *	  data stream.  It should take about 2**n steps to find a
+ *	  message with the same digest as a given message and
+ *	  2**(n/2) to find any two messages with the same digest,
+ *	  when n is the digest size in bits.  Therefore, this
+ *	  algorithm can serve as a means of providing a
+ *	  "fingerprint" for a message.
+ * 
+*/
+
+/**@ingroup tsk_sha1_group
  *  Define the SHA1 circular left shift macro
  */
 #define SHA1CircularShift(bits,word) \
@@ -104,25 +121,18 @@
 void SHA1PadMessage(tsk_sha1context_t *);
 void SHA1ProcessMessageBlock(tsk_sha1context_t *);
 
-/*
- *  SHA1Reset
+/**@ingroup tsk_sha1_group
  *
- *  Description:
- *      This function will initialize the tsk_sha1context_t in preparation
- *      for computing a new SHA1 message digest.
+ *  This function will initialize the @a context in preparation
+ *  for computing a new SHA1 message digest.
  *
- *  Parameters:
- *      context: [in/out]
- *          The context to reset.
+ *@param context The context to reset.
  *
- *  Returns:
- *      sha Error Code.
- *
+ *@retval @ref tsk_sha1_errcode_t code.
  */
 tsk_sha1_errcode_t tsk_sha1reset(tsk_sha1context_t *context)
 {
-    if (!context)
-    {
+    if (!context){
         return shaNull;
     }
 
@@ -142,44 +152,30 @@ tsk_sha1_errcode_t tsk_sha1reset(tsk_sha1context_t *context)
     return shaSuccess;
 }
 
-/*
- *  SHA1Result
- *
- *  Description:
- *      This function will return the 160-bit message digest into the
- *      Message_Digest array  provided by the caller.
- *      NOTE: The first octet of hash is stored in the 0th element,
- *            the last octet of hash in the 19th element.
- *
- *  Parameters:
- *      context: [in/out]
- *          The context to use to calculate the SHA-1 hash.
- *      Message_Digest: [out]
- *          Where the digest is returned.
- *
- *  Returns:
- *      sha Error Code.
- *
+/**@ingroup tsk_sha1_group
+ *  This function will return the 160-bit message digest into the
+ *  Message_Digest array  provided by the caller.
+ *  NOTE: The first octet of hash is stored in the 0th element,
+ *        the last octet of hash in the 19th element.
+ * @param context The @a context to use to calculate the SHA-1 hash.
+ * @param Message_Digest A pointer the the sha1 digest result.
+ * @retval @ref tsk_sha1_errcode_t code.
  */
 tsk_sha1_errcode_t tsk_sha1result( tsk_sha1context_t *context, tsk_sha1digest_t Message_Digest)
 {
     int32_t i;
 
-    if (!context || !Message_Digest)
-    {
+    if (!context || !Message_Digest){
         return shaNull;
     }
 
-    if (context->Corrupted)
-    {
+    if (context->Corrupted){
         return context->Corrupted;
     }
 
-    if (!context->Computed)
-    {
+    if (!context->Computed){
         SHA1PadMessage(context);
-        for(i=0; i<64; ++i)
-        {
+        for(i=0; i<64; ++i){
             /* message may be sensitive, clear it out */
             context->Message_Block[i] = 0;
         }
@@ -189,8 +185,7 @@ tsk_sha1_errcode_t tsk_sha1result( tsk_sha1context_t *context, tsk_sha1digest_t 
 
     }
 
-    for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i)
-    {
+    for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i){
         Message_Digest[i] = context->Intermediate_Hash[i>>2]
                             >> 8 * ( 3 - ( i & 0x03 ) );
     }
@@ -198,49 +193,34 @@ tsk_sha1_errcode_t tsk_sha1result( tsk_sha1context_t *context, tsk_sha1digest_t 
     return shaSuccess;
 }
 
-/*
- *  SHA1Input
+/**@ingroup tsk_sha1_group
  *
- *  Description:
- *      This function accepts an array of octets as the next portion
- *      of the message.
+ * This function accepts an array of octets as the next portion of the message.
  *
- *  Parameters:
- *      context: [in/out]
- *          The SHA context to update
- *      message_array: [in]
- *          An array of characters representing the next portion of
- *          the message.
- *      length: [in]
- *          The length of the message in message_array
- *
- *  Returns:
- *      sha Error Code.
- *
+ * @param context The sha1 context.
+ * @param message_array An array of characters representing the next portion of the message.
+ * @param length The @a length of the message in message_array
+ * @retval @ref tsk_sha1_errcode_t code.
  */
-tsk_sha1_errcode_t tsk_sha1input(    tsk_sha1context_t    *context,
-                  const uint8_t  *message_array,
-                  unsigned       length)
+tsk_sha1_errcode_t tsk_sha1input(tsk_sha1context_t    *context,
+								 const uint8_t  *message_array,
+								 unsigned  length)
 {
-    if (!length)
-    {
+    if (!length){
         return shaSuccess;
     }
 
-    if (!context || !message_array)
-    {
+    if (!context || !message_array){
         return shaNull;
     }
 
-    if (context->Computed)
-    {
+    if (context->Computed){
         context->Corrupted = shaStateError;
 
         return shaStateError;
     }
 
-    if (context->Corrupted)
-    {
+    if (context->Corrupted){
          return context->Corrupted;
     }
     while(length-- && !context->Corrupted)
@@ -249,8 +229,7 @@ tsk_sha1_errcode_t tsk_sha1input(    tsk_sha1context_t    *context,
                     (*message_array & 0xFF);
 
     context->Length_Low += 8;
-    if (context->Length_Low == 0)
-    {
+    if (context->Length_Low == 0){
         context->Length_High++;
         if (context->Length_High == 0)
         {
@@ -259,8 +238,7 @@ tsk_sha1_errcode_t tsk_sha1input(    tsk_sha1context_t    *context,
         }
     }
 
-    if (context->Message_Block_Index == 64)
-    {
+    if (context->Message_Block_Index == 64){
         SHA1ProcessMessageBlock(context);
     }
 
@@ -270,29 +248,21 @@ tsk_sha1_errcode_t tsk_sha1input(    tsk_sha1context_t    *context,
     return shaSuccess;
 }
 
-/*
- *  SHA1ProcessMessageBlock
+/**@ingroup tsk_sha1_group
  *
- *  Description:
  *      This function will process the next 512 bits of the message
  *      stored in the Message_Block array.
  *
- *  Parameters:
- *      None.
- *
- *  Returns:
- *      Nothing.
- *
- *  Comments:
-
- *      Many of the variable names in this code, especially the
- *      single character names, were used because those were the
- *      names used in the publication.
- *
+ * @param context The sha1 context.
  *
  */
 void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
 {
+	/*
+	*      Many of the variable names in this code, especially the
+	*      single character names, were used because those were the
+	*      names used in the publication.
+	*/
     const uint32_t K[] =    {       /* Constants defined in SHA-1   */
                             0x5A827999,
                             0x6ED9EBA1,
@@ -378,11 +348,8 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
     context->Message_Block_Index = 0;
 }
 
-/*
- *  SHA1PadMessage
+/**@ingroup tsk_sha1_group
  *
-
- *  Description:
  *      According to the standard, the message must be padded to an even
  *      512 bits.  The first padding bit must be a '1'.  The last 64
  *      bits represent the length of the original message.  All bits in
@@ -392,13 +359,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
  *      provided appropriately.  When it returns, it can be assumed that
  *      the message digest has been computed.
  *
- *  Parameters:
- *      context: [in/out]
- *          The context to pad
- *      ProcessMessageBlock: [in]
- *          The appropriate SHA*ProcessMessageBlock function
- *  Returns:
- *      Nothing.
+ *  @param context The sha1 context.
  *
  */
 
@@ -450,40 +411,37 @@ void SHA1PadMessage(tsk_sha1context_t *context)
     SHA1ProcessMessageBlock(context);
 }
 
-
+/**@ingroup tsk_sha1_group
+* Computes the sha1 digest result.
+* @param Message_Digest A pointer to the sha1 digest result.
+* @param context The sha1 context.
+*/
 void tsk_sha1final(uint8_t *Message_Digest, tsk_sha1context_t *context)
 {	
 	int32_t i;
 
 	SHA1PadMessage(context);
-	for(i = 0; i<64; ++i) 
-	{
+	for(i = 0; i<64; ++i) {
 		context->Message_Block[i] = 0;
 	}
 	context->Length_Low = 0;    /* and clear length */
 	context->Length_High = 0;
 	
-	for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i) 
-	{
+	for(i = 0; i < TSK_SHA1_DIGEST_SIZE; ++i) {
 		Message_Digest[i] = context->Intermediate_Hash[i>>2] >> 8*(3-(i&0x03));
 	}
 }
 
 
-/**
- * @fn	tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size,
- * 		tsk_sha1string_t *result)
+/**@ingroup tsk_sha1_group
+ *	Calculates sha1 digest result and format it as a hexadecimal string. 
  *
- * @brief	Calculate SHA-1 HASH for @ref input data. 
+ * @param input	The input data for which to calculate the SHA-1 hash. 
+ * @param size	The size of the input data. 
+ * @param result SHA-1 hash result as a hexadecimal string. 
  *
- * @author	Mamadou
- * @date	12/28/2009
- *
- * @param [in,out]	input	The input data for which to calculate the SHA-1 hash. 
- * @param	size			The size of the input data. 
- * @param [out]	result		SHA-1 hash result as hexadecimal string. 
- *
- * @return	@ref shaSuccess if succeed and error code otherwise. 
+ * @retval @ref tsk_sha1_errcode_t code.
+ * @sa @ref TSK_SHA1_DIGEST_CALC.
 **/
 tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1string_t *result)
 {
@@ -493,19 +451,15 @@ tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1strin
 	
 	(*result)[TSK_SHA1_STRING_SIZE] = '\0';
 
-	if( (ret = tsk_sha1reset(&sha)) != shaSuccess )
-	{
+	if( (ret = tsk_sha1reset(&sha)) != shaSuccess ){
 		return ret;
 	}
-	else if ( (ret = tsk_sha1input(&sha, (uint8_t*)input, size)) != shaSuccess )
-	{
+	else if ( (ret = tsk_sha1input(&sha, (uint8_t*)input, size)) != shaSuccess ){
 		return ret;
 	}
-	else if( (ret = tsk_sha1result(&sha, (char*)digest)) != shaSuccess )
-	{
+	else if( (ret = tsk_sha1result(&sha, (char*)digest)) != shaSuccess ){
 		return ret;
 	}
-
 
 	tsk_str_from_hex(digest, TSK_SHA1_DIGEST_SIZE, *result);
 

@@ -35,10 +35,21 @@
 *
 * @par Getting Started
 *
+* - @ref tsk_debug_group
 * - @ref tsk_object_group
+* - @ref tsk_memory_group
+* - @ref tsk_params_group
+* - @ref tsk_string_group
 * - @ref tsk_base64_group
+* - @ref tsk_ppfcs16_group
+* - @ref tsk_ppfcs32_group
+* - @ref tsk_md5_group
+* - @ref tsk_sha1_group
 * - @ref tsk_binaryutils_group
 * - @ref tsk_buffer_group
+* - @ref tsk_safeobj_group
+* - @ref tsk_mutex_group
+* - @ref tsk_semaphore_group
 * - @ref tsk_condwait_group
 *
 * @par Supported Systems

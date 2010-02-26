@@ -35,17 +35,28 @@
 #include "tsk_list.h"
 #include "tsk_buffer.h"
 
+/**@ingroup tsk_params_group
+* @def TSK_PARAM_CREATE
+* Creates new @ref tsk_param_t object.
+*/
+/**@ingroup tsk_params_group
+* @def TSK_PARAM_CREATE
+* Creates new @ref tsk_param_t object.
+*/
 TSK_BEGIN_DECLS
 
-#define TSK_PARAM_CREATE(name, value)		tsk_object_new(tsk_param_def_t, name, value)
-#define TSK_PARAM_CREATE_NULL()				TSK_PARAM_CREATE(0,0)
+#define TSK_PARAM_CREATE(name, value)		tsk_object_new(tsk_param_def_t, (const char*)name, (const char*)value)
+#define TSK_PARAM_CREATE_NULL()				TSK_PARAM_CREATE(TSK_NULL, TSK_NULL)
 
+/**@ingroup tsk_params_group
+* Parameter.
+*/
 typedef struct tsk_param_s
 {
 	TSK_DECLARE_OBJECT;
 
-	char *name;
-	char *value;
+	char *name;/**< The name of the parameter. */
+	char *value;/**< The value of the parameter. */
 }
 tsk_param_t;
 

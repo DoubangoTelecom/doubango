@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_debug.c
- * @brief Useful functions for debugging.
+ * @brief Utility functions for debugging purpose.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -29,4 +29,5 @@
  */
 #include "tsk_debug.h"
 
-
+/**@defgroup tsk_debug_group Utility functions for debugging purpose.
+*/

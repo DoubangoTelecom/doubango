@@ -21,8 +21,9 @@
 */
 
 /**@file tsk_md5.c
- * @brief Message-Digest algorithm 5 (RFC 1321).
+ * @brief Implements Message-Digest algorithm 5 (RFC 1321).
  *
+ * @author Colin Plumb
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
@@ -33,27 +34,20 @@
 
 #include <string.h>
 
-/**
- *	The code in this package is a modified version of an implementation placed in the public domain by the following persons: 
- *	* @author Colin Plumb <>
- *	* @author Mamadou Diop <diopmamadou@yahoo.fr>
+/**@defgroup tsk_md5_group MD5 (RFC 1321) utility functions.
+ *	The code in this file is a modified version of an implementation placed in the public domain by the following persons: 
+ *	@author Colin Plumb
+ *	@author Mamadou Diop <diopmamadou(at)yahoo.fr>
 */
 
-/*
- * Copyright (C) 1993 Colin Plumb
- *				 2009 Diop Mamadou
- */
-
-/*
- *	Byte swap
+/**@ingroup tsk_md5_group
 */
 #if defined(_BIG_ENDIAN)
 void tsk_byteReverse(uint32_t *buf, unsigned words)
 {
     uint8_t *p = (uint8_t *)buf;
 
-    do
-    {
+    do{
         *buf++ = (uint32_t)((unsigned)p[3] << 8 | p[2]) << 16 |
                  ((unsigned)p[1] << 8 | p[0]);
         p += 4;
@@ -64,7 +58,7 @@ void tsk_byteReverse(uint32_t *buf, unsigned words)
 #define tsk_byteReverse(buf,words) /* do nothing*/
 #endif
 
-/*
+/**@ingroup tsk_md5_group
  * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
  * initialization constants.
  */
@@ -79,7 +73,7 @@ void tsk_md5init(tsk_md5context_t *ctx)
     ctx->bytes[1] = 0;
 }
 
-/*
+/**@ingroup tsk_md5_group
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
@@ -120,7 +114,7 @@ void tsk_md5update(tsk_md5context_t *ctx, uint8_t const *buf, size_t len)
     memcpy(ctx->in, buf, len);
 }
 
-/*
+/**@ingroup tsk_md5_group
  * Final wrapup - pad to 64-byte boundary with the bit pattern 
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
@@ -168,7 +162,7 @@ void tsk_md5final(tsk_md5digest_t digest, tsk_md5context_t *ctx)
 #define MD5STEP(f,w,x,y,z,in,s) \
 (w += f(x,y,z) + in, w = (w<<s | w>>(32-s)) + x)
 
-/*
+/**@ingroup tsk_md5_group
  * The core of the MD5 algorithm, this alters an existing MD5 hash to
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
@@ -257,19 +251,15 @@ void tsk_md5transform(uint32_t buf[4], uint32_t const in[TSK_MD5_DIGEST_SIZE])
 }
 
 
-/**
- * @fn	int tsk_md5compute(const char* input, size_t size, tsk_md5string_t *result)
+/**@ingroup tsk_md5_group
  *
- * @brief	Calculate MD5 HASH for @ref input data. 
+ * @brief	Calculate MD5 HASH for @a input data. 
  *
- * @author	Mamadou
- * @date	12/28/2009
+ * @param input	The input data. 
+ * @param size	The size of the input data. 
+ * @param result MD5 hash result as Hexadecimal string. 
  *
- * @param [in,out]	input	The input data for which to calculate the MD5 hash. 
- * @param	size			The size of the input data. 
- * @param [out]	result		MD5 hash result as Hexadecimal string. 
- *
- * @return	Zero if succeed and error code otherwise. 
+ * @return	Zero if succeed and non-zero error code otherwise. 
 **/
 int tsk_md5compute(const char* input, size_t size, tsk_md5string_t *result)
 {
