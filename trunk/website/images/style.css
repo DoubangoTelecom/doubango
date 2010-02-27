@@ -16,7 +16,7 @@ body {
 	width: 800px;
 	position:relative; 
 	height: 162px;
-	background-image:url(header.png);
+	background-image:url(http://doubango.googlecode.com/svn/trunk/website/images/header.png);
 	background-repeat:no-repeat;
 }
 /*COMPANY NAME IN HEADER*/
@@ -70,7 +70,7 @@ body {
 .footer{
 	width: 779px;
 	height: 32px;
-	background-image:url(bg_footer.gif);
+	background-image:url(http://doubango.googlecode.com/svn/trunk/website/images/bg_footer.gif);
 	background-repeat:no-repeat;
 	clear:both;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -94,12 +94,12 @@ body {
 .table_top{
 	width: 204px; 
 	height: 27px;
-	background-image:url(table_top.jpg);
+	background-image:url(http://doubango.googlecode.com/svn/trunk/website/images/table_top.jpg);
 	background-repeat:no-repeat;
 }
 .table_content{
 	width: 204px;
-	background-image:url(table_content.jpg);
+	background-image:url(http://doubango.googlecode.com/svn/trunk/website/images/table_content.jpg);
 	background-repeat:repeat-y;
 }
 .table_text{
