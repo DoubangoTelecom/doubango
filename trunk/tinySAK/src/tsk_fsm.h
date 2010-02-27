@@ -35,18 +35,59 @@
 #include "tsk_list.h"
 #include "tsk_safeobj.h"
 
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_CREATE
+*/
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_ENTRY_CREATE
+*/
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_ONTERMINATED
+*/
+
 TSK_BEGIN_DECLS
 
 #define TSK_FSM_CREATE(state_curr, state_term)		tsk_object_new(tsk_fsm_def_t, (tsk_fsm_state_id)state_curr, (tsk_fsm_state_id)state_term)
 #define TSK_FSM_ENTRY_CREATE()						tsk_object_new(tsk_fsm_entry_def_t)
 #define TSK_FSM_ONTERMINATED(self)					(tsk_fsm_onterminated)(self)
 
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_state_any
+*/
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_state_default
+*/
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_state_none
+*/
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_state_final
+*/
 #define tsk_fsm_state_any -0xFFFF
 #define tsk_fsm_state_default -0xFFF0
 #define tsk_fsm_state_none -0xFF00
 #define tsk_fsm_state_final -0xF000
 
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_action_any
+*/
 #define tsk_fsm_action_any -0xFFFF
+
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_state_id
+*/
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_action_id
+*/
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_cond
+*/
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_exec
+*/
+/**@ingroup tsk_fsm_group
+* @def tsk_fsm_onterminated
+*/
 
 typedef int tsk_fsm_state_id;
 typedef int tsk_fsm_action_id;
@@ -54,6 +95,25 @@ typedef int (*tsk_fsm_cond)(const void*, const void*);
 typedef int (*tsk_fsm_exec)(va_list *app);
 typedef int (*tsk_fsm_onterminated)(const void*);
 
+
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_ADD
+*/
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_ADD_ALWAYS
+*/
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_ADD_NOTING
+*/
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_ADD_ALWAYS_NOTHING
+*/
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_ADD_DEFAULT
+*/
+/**@ingroup tsk_fsm_group
+* @def TSK_FSM_ADD_NULL
+*/
 #define TSK_FSM_ADD(from, action, cond, to, exec, desc)\
 	1,\
 	(tsk_fsm_state_id)from, \
@@ -67,8 +127,11 @@ typedef int (*tsk_fsm_onterminated)(const void*);
 #define TSK_FSM_ADD_ALWAYS_NOTHING(from, desc)	TSK_FSM_ADD(from, tsk_fsm_action_any, tsk_fsm_cond_always, from, tsk_fsm_exec_nothing, desc)
 #define TSK_FSM_ADD_DEFAULT()
 #define TSK_FSM_ADD_NULL()\
-	0
+	TSK_NULL
 
+/**@ingroup tsk_fsm_group
+* FSM entry.
+*/
 typedef struct tsk_fsm_entry_s
 {
 	TSK_DECLARE_OBJECT;
@@ -81,8 +144,15 @@ typedef struct tsk_fsm_entry_s
 	const char* desc;
 }
 tsk_fsm_entry_t;
+
+/**@ingroup tsk_fsm_group
+* List of @ref tsk_fsm_entry_t elements. 
+*/
 typedef tsk_list_t tsk_fsm_entries_L_t;
 
+/**@ingroup tsk_fsm_group
+* FSM.
+*/
 typedef struct tsk_fsm_s
 {
 	TSK_DECLARE_OBJECT;

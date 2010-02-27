@@ -20,8 +20,8 @@
 *
 */
 
-/**@file tsk_ragel_state.h.
- * @brief Ragel state for sak parsing.
+/**@file tsk_ragel_state.h
+ * @brief Ragel state for SIP, HTTP and MSRP parsing.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -44,6 +44,8 @@ TSK_BEGIN_DECLS
 #	define atoi64	atoll
 #endif
 
+/**@ingroup tsk_ragel_state_group
+*/
 #define TSK_SCANNER_SET_STRING(string) \
 	if(!string) \
 	{ \
@@ -54,6 +56,8 @@ TSK_BEGIN_DECLS
 		} \
 	}
 
+/**@ingroup tsk_ragel_state_group
+*/
 #define TSK_PARSER_SET_STRING(string) \
 	if(!string) \
 	{ \
@@ -61,6 +65,8 @@ TSK_BEGIN_DECLS
 		string = tsk_calloc(len+1, sizeof(char)), memcpy(string, tag_start, len); \
 	}
 
+/**@ingroup tsk_ragel_state_group
+*/
 #define TSK_SCANNER_SET_INTEGER(integer) \
 	{ \
 		int len = (int)(te  - ts); \
@@ -73,6 +79,8 @@ TSK_BEGIN_DECLS
 		} \
 	}
 
+/**@ingroup tsk_ragel_state_group
+*/
 #define TSK_PARSER_SET_INTEGER_EX(retval, type, func) \
 	{ \
 		int len = (int)(p  - tag_start); \
@@ -84,12 +92,29 @@ TSK_BEGIN_DECLS
 			free(tmp); \
 		} \
 	}
+/**@ingroup tsk_ragel_state_group
+* @def TSK_PARSER_SET_INTEGER
+*/
+/**@ingroup tsk_ragel_state_group
+* @def TSK_PARSER_SET_INT
+*/
+/**@ingroup tsk_ragel_state_group
+* @def TSK_PARSER_SET_UINT
+*/
+/**@ingroup tsk_ragel_state_group
+* @def TSK_PARSER_SET_FLOAT
+*/
+/**@ingroup tsk_ragel_state_group
+* @def TSK_PARSER_SET_DOUBLE
+*/
 #define TSK_PARSER_SET_INTEGER(retval) TSK_PARSER_SET_INTEGER_EX(retval, int, atoi)
 #define TSK_PARSER_SET_INT(retval) TSK_PARSER_SET_INTEGER(retval)
 #define TSK_PARSER_SET_UINT(retval) TSK_PARSER_SET_INTEGER_EX(retval, uint32_t, atoi64)
 #define TSK_PARSER_SET_FLOAT(retval) TSK_PARSER_SET_INTEGER_EX(retval, float, atof)
 #define TSK_PARSER_SET_DOUBLE(retval) TSK_PARSER_SET_INTEGER_EX(retval, double, atof)
 
+/**@ingroup tsk_ragel_state_group
+*/
 #define TSK_PARSER_ADD_PARAM(dest) \
 	{ \
 		size_t len = (size_t)(p  - tag_start); \
@@ -101,6 +126,8 @@ TSK_BEGIN_DECLS
 		} \
 	}
 
+/**@ingroup tsk_ragel_state_group
+*/
 #define TSK_SACANNER_ADD_PARAM(dest) \
 	{ \
 		int len = (int)(te  - ts); \
@@ -115,6 +142,8 @@ TSK_BEGIN_DECLS
 		} \
 	}
 
+/**@ingroup tsk_ragel_state_group
+*/
 #define TSK_PARSER_ADD_STRING(dest) \
 	{ \
 		size_t len = (size_t)(p  - tag_start); \
@@ -127,14 +156,9 @@ TSK_BEGIN_DECLS
 		tsk_list_push_back_data(dest, ((void**) &string)); \
 	}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	tsk_parser_s
-///
-/// @brief	Ragel state.
-///
-/// @author	Mamadou
-/// @date	12/4/2009
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**@ingroup tsk_ragel_state_group
+* Ragel state.
+*/
 typedef struct tsk_ragel_state_s
 {
 	int cs; /**< Ragel current state. */

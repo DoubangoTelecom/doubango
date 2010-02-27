@@ -34,6 +34,11 @@
 
 #include <string.h>
 
+/**@defgroup tsk_hmac_group Keyed-Hashing for Message Authentication (RFC 2104/ FIPS-198-1).
+*/
+
+/**@ingroup tsk_hmac_group
+*/
 typedef enum tsk_hash_type_e { md5, sha1 } tsk_hash_type_t;
 
 int tsk_hmac_xxxcompute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_hash_type_t type, uint8_t* digest)
@@ -58,22 +63,18 @@ int tsk_hmac_xxxcompute(const uint8_t* input, size_t input_size, const char* key
 	*/
 
 	// Check key len
-	if (key_size > block_size)
-	{
-		if(type == md5)
-		{
+	if (key_size > block_size){
+		if(type == md5){
 			TSK_MD5_DIGEST_CALC(key, key_size, (uint8_t*)hkey);
 		}
-		else if(type == sha1)
-		{
+		else if(type == sha1){
 			TSK_SHA1_DIGEST_CALC((uint8_t*)key, key_size, hkey);
 		}
 		else return -3;
 		
 		newkey_size = digest_size;
 	}
-	else
-	{
+	else{
 		memcpy(hkey, key, key_size);
 		newkey_size = key_size;
 	}
@@ -82,8 +83,7 @@ int tsk_hmac_xxxcompute(const uint8_t* input, size_t input_size, const char* key
 	memcpy(opad, hkey, newkey_size);
 	
 	/* [K XOR ipad] and [K XOR opad]*/
-	for (i=0; i<block_size; i++)
-	{
+	for (i=0; i<block_size; i++){
 		ipad[i] ^= 0x36;
 		opad[i] ^= 0x5c;
 	}
@@ -97,22 +97,18 @@ int tsk_hmac_xxxcompute(const uint8_t* input, size_t input_size, const char* key
 		tsk_buffer_append(passx, input, input_size);
 
 digest_compute:
-		if(type == md5)
-		{
+		if(type == md5){
 			TSK_MD5_DIGEST_CALC(TSK_BUFFER_TO_U8(passx), TSK_BUFFER_SIZE(passx), digest);
 		}
-		else
-		{
+		else{
 			TSK_SHA1_DIGEST_CALC(TSK_BUFFER_TO_U8(passx), TSK_BUFFER_SIZE(passx), (char*)digest);
 		}
 
-		if(pass1_done)
-		{
+		if(pass1_done){
 			TSK_OBJECT_SAFE_FREE(passx);
 			goto pass1_and_pass2_done;
 		}
-		else
-		{
+		else{
 			pass1_done = 1;
 		}
 
@@ -129,11 +125,9 @@ pass1_and_pass2_done:
 }
 
 
-/**
- * @fn	int hmac_md5_compute(const uint8_t* input, size_t input_size, const char* key,
- * 		size_t key_size, tsk_md5string_t *result)
+/**@ingroup tsk_hmac_group
  *
- * @brief	Calculate HMAC-MD5 hash (hexa-string) as per RFC 2104.
+ * Calculate HMAC-MD5 hash (hexa-string) as per RFC 2104.
  *
  * @author	Mamadou
  * @date	12/29/2009
@@ -151,8 +145,7 @@ int hmac_md5_compute(const uint8_t* input, size_t input_size, const char* key, s
 	tsk_md5digest_t digest;
 	int ret;
 
-	if((ret = hmac_md5digest_compute(input, input_size, key, key_size, digest)))
-	{
+	if((ret = hmac_md5digest_compute(input, input_size, key, key_size, digest))){
 		return ret;
 	}
 	tsk_str_from_hex(digest, TSK_MD5_DIGEST_SIZE, *result);
@@ -162,11 +155,9 @@ int hmac_md5_compute(const uint8_t* input, size_t input_size, const char* key, s
 }
 
 
-/**
- * @fn	int hmac_md5digest_compute(const uint8_t* input, size_t input_size, const char* key,
- * 		size_t key_size, tsk_md5digest_t result)
+/**@ingroup tsk_hmac_group
  *
- * @brief	Calculate HMAC-MD5 hash (bytes) as per RFC 2104. 
+ * Calculate HMAC-MD5 hash (bytes) as per RFC 2104. 
  *
  * @author	Mamadou
  * @date	12/29/2009
@@ -184,11 +175,9 @@ int hmac_md5digest_compute(const uint8_t* input, size_t input_size, const char* 
 	return tsk_hmac_xxxcompute(input, input_size, key, key_size, md5, result);
 }
 
-/**
- * @fn	int hmac_sha1_compute(const uint8_t* input, size_t input_size, const char* key,
- * 		size_t key_size, tsk_sha1string_t *result)
+/**@ingroup tsk_hmac_group
  *
- * @brief	Calculate HMAC-SHA-1 hash (hexa-string) as per RFC 2104.
+ * Calculate HMAC-SHA-1 hash (hexa-string) as per RFC 2104.
  *
  * @author	Mamadou
  * @date	12/29/2009
@@ -206,8 +195,7 @@ int hmac_sha1_compute(const uint8_t* input, size_t input_size, const char* key, 
 	tsk_sha1digest_t digest;
 	int ret;
 
-	if((ret = hmac_sha1digest_compute(input, input_size, key, key_size, digest)))
-	{
+	if((ret = hmac_sha1digest_compute(input, input_size, key, key_size, digest))){
 		return ret;
 	}
 	tsk_str_from_hex((uint8_t*)digest, TSK_SHA1_DIGEST_SIZE, *result);
@@ -216,11 +204,9 @@ int hmac_sha1_compute(const uint8_t* input, size_t input_size, const char* key, 
 	return 0;
 }
 
-/**
- * @fn	int hmac_sha1digest_compute(const uint8_t* input, size_t input_size, const char* key,
- * 		size_t key_size, tsk_sha1digest_t result)
+/**@ingroup tsk_hmac_group
  *
- * @brief	Calculate HMAC-SHA-1 hash (bytes) as per RFC 2104.
+ * Calculate HMAC-SHA-1 hash (bytes) as per RFC 2104.
  *
  * @author	Mamadou
  * @date	12/29/2009

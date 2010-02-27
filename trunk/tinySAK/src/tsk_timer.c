@@ -122,7 +122,8 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 	
 	return err;
 }
-
+/**@ingroup tsk_timer_group
+*/
 int tsk_timer_manager_isready(tsk_timer_manager_handle_t *self)
 {
 	tsk_timer_manager_t *manager = self;
@@ -134,6 +135,8 @@ int tsk_timer_manager_isready(tsk_timer_manager_handle_t *self)
 }
 
 #if defined(DEBUG) || defined(_DEBUG) || !defined(NDEBUG)
+/**@ingroup tsk_timer_group
+*/
 void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 {
 	tsk_timer_manager_t *manager = self;
@@ -155,6 +158,8 @@ void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 }
 #endif
 
+/**@ingroup tsk_timer_group
+*/
 int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 {
 	int ret = -1;
@@ -174,6 +179,8 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 	return ret;
 }
 
+/**@ingroup tsk_timer_group
+*/
 tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback callback, const void *arg)
 {
 	tsk_timer_id_t timer_id = TSK_INVALID_TIMER_ID;
@@ -198,6 +205,8 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 	return timer_id;
 }
 
+/**@ingroup tsk_timer_group
+*/
 int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id)
 {
 	int ret = -1;

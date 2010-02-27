@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_time.c
-* @brief Useful datetime functions.
+* @brief Datetime functions.
 *
 * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
 *
@@ -42,7 +42,7 @@
 
 #include <time.h>
 
-/**@defgroup tsk_time_group Useful datetime functions
+/**@defgroup tsk_time_group Datetime functions.
 */
 
 #if !HAVE_GETTIMEOFDAY
@@ -108,7 +108,7 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
 
 #endif /* !HAVE_GETTIMEOFDAY */
 
-/**
+/**@ingroup tsk_time_group
 * The tsk_gettimeofday() function shall obtain the current time, expressed as seconds and microseconds since EPOCH (00:00:00 UTC on 1 January 1970). 
 * The resolution of the system clock is unspecified.
 * @param tv The current time, expressed as seconds and microseconds since EPOCH(00:00:00 UTC on 1 January 1970).
@@ -120,7 +120,7 @@ int tsk_gettimeofday(struct timeval *tv, struct timezone *tz)
 	return gettimeofday(tv, tz);
 }
 
-/**
+/**@ingroup tsk_time_group
 * Gets the number of milliseconds since the EPOCH.
 * @retval The number of milliseconds since EPOCH.
 */

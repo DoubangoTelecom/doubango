@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_time.h
- * @brief Useful datetime functions.
+ * @brief Datetime functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -39,12 +39,14 @@ struct timeval;
 struct timezone;
 //#endif
 
+/**@ingroup tsk_time_group
+*/
 #define TSK_TIME_S_2_MS(S) (S*1000)
 
 TINYSAK_API int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
 TINYSAK_API uint64_t tsk_time_epoch();
 
-/**
+/**@ingroup tsk_time_group
 * Gets the number of milliseconds since the EPOCH.
 */
 #define tsk_time_now() tsk_time_epoch()

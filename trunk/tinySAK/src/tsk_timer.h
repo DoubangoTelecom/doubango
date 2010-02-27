@@ -34,13 +34,33 @@
 
 TSK_BEGIN_DECLS
 
+/**@ingroup tsk_timer_group
+* @def TSK_TIMER_MANAGER_CREATE
+*/
+/**@ingroup tsk_timer_group
+* @def TSK_TIMER_CALLBACK
+*/
 #define TSK_TIMER_MANAGER_CREATE()					tsk_object_new(tsk_timer_manager_def_t)
 #define TSK_TIMER_CALLBACK(callback)				((tsk_timer_callback)callback)
 
+/**@ingroup tsk_timer_group
+* @def TSK_INVALID_TIMER_ID
+*/
+/**@ingroup tsk_timer_group
+* @def TSK_TIMER_ID_IS_VALID
+*/
 #define TSK_INVALID_TIMER_ID						0
 #define TSK_TIMER_ID_IS_VALID(id)					(id != TSK_INVALID_TIMER_ID)
 
-
+/**@ingroup tsk_timer_group
+* @def tsk_timer_manager_handle_t
+*/
+/**@ingroup tsk_timer_group
+* @def tsk_timer_id_t
+*/
+/**@ingroup tsk_timer_group
+* @def tsk_timer_callback
+*/
 typedef void tsk_timer_manager_handle_t;
 typedef uint64_t tsk_timer_id_t;
 typedef int (*tsk_timer_callback)(const void* arg, tsk_timer_id_t timer_id);

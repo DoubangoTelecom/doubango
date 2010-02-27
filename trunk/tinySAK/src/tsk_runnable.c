@@ -31,8 +31,10 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
+/**@defgroup tsk_runnable_group Base class for runnable object.
+*/
 
-/**
+/**@ingroup tsk_runnable_group
 * Initializes a runnable object and allocate it's internal fields.
 * @param self The runnable object to initialize.
 * @param objdef Internal objects definition class.
@@ -56,7 +58,7 @@ static int tsk_runnable_init(tsk_runnable_t *self, const tsk_object_def_t *objde
 	return -1;
 }
 
-/**
+/**@ingroup tsk_runnable_group
 * DeInitializes a runnable object.
 * @param self The runnable object to deinitialize.
 * @retval Zero if succeed and nonzero error code otherwise.
@@ -79,9 +81,10 @@ static int tsk_runnable_deinit(tsk_runnable_t *self)
 	return -1;
 }
 
-/**
+/**@ingroup tsk_runnable_group
 * Starts a runnable object.
 * @param self The runnable object to start.
+* @param objdef Internal objects definition (meta-data) class.
 * @retval Zero if succeed and nonzero error code otherwise.
 * @sa tsk_runnable_stop.
 */
@@ -105,7 +108,7 @@ int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 	return ret;
 }
 
-/**
+/**@ingroup tsk_runnable_group
 * Stops a runnable object.
 * @param self The runnable object to stop.
 * @retval Zero if succeed and nonzero error code otherwise.

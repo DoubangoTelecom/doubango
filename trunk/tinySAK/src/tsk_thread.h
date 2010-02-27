@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_thread.h
- * @brief Useful functions for threading.
+ * @brief Utility functions for threading.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
