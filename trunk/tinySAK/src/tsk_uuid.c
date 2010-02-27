@@ -37,6 +37,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/**@defgroup tsk_uuid_group niversally Unique Identifier (UUID version 5) implementation (RFC 4122).
+*/
+
+/**@ingroup tsk_uuid_group
+*/
 int tsk_uuidgenerate(tsk_uuidstring_t *result)
 {
 	/* From wikipedia

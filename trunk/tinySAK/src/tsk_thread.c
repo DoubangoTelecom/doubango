@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_thread.c
- * @brief Useful functions for threading.
+ * @brief Utility functions for threading.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -36,10 +36,11 @@
 #	include <pthread.h>
 #endif
 
-/**@defgroup tsk_thread_group Useful functions for threading.
+/**@defgroup tsk_thread_group Utility functions for threading.
 */
 
-
+/**@ingroup tsk_thread_group
+*/
 void tsk_thread_sleep(uint64_t ms)
 {
 #if TSK_UNDER_WINDOWS

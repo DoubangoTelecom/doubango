@@ -38,10 +38,20 @@
 
 TSK_BEGIN_DECLS
 
+/**@ingroup tsk_runnable_group
+*/
 typedef void * (*tsk_runnable_func_run)(void* self);
 
+/**@ingroup tsk_runnable_group
+*/
 #define TSK_RUNNABLE(self)	((tsk_runnable_t*)(self))
 
+/**@ingroup tsk_runnable_group
+* @def TSK_RUNNABLE_RUN_BEGIN
+*/
+/**@ingroup tsk_runnable_group
+* @def TSK_RUNNABLE_RUN_END
+*/
 #define TSK_RUNNABLE_RUN_BEGIN(self)						\
 	TSK_RUNNABLE(self)->running = 1;						\
 	for(;;) {												\
@@ -52,7 +62,11 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 	}														\
 	TSK_RUNNABLE(self)->running = 0;
 
-/** ENQUEUE data
+/**@ingroup tsk_runnable_group
+* @def TSK_RUNNABLE_ENQUEUE
+*/
+/**@ingroup tsk_runnable_group
+* @def TSK_RUNNABLE_ENQUEUE_OBJECT
 */
 #define TSK_RUNNABLE_ENQUEUE(self, ...)												\
 {																					\
@@ -77,10 +91,14 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 		TSK_DEBUG_WARN("Invalid/uninitialized runnable object.");					\
 }
 
+/**@ingroup tsk_runnable_group
+*/
 #define TSK_RUNNABLE_POP_FIRST(self)	tsk_list_pop_first_item(TSK_RUNNABLE(self)->objects)
 
 
-
+/**@ingroup tsk_runnable_group
+* Runnable.
+*/
 typedef struct tsk_runnable_s
 {
 	TSK_DECLARE_OBJECT;
@@ -98,6 +116,8 @@ typedef struct tsk_runnable_s
 }
 tsk_runnable_t;
 
+/**@ingroup tsk_runnable_group
+*/
 #define TSK_DECLARE_RUNNABLE tsk_runnable_t runnable
 
 TINYSAK_API int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef);

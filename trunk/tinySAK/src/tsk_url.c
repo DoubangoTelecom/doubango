@@ -21,7 +21,7 @@
 */
 
 /**@file tsk_url.c
- * @brief Useful functions to encode/decode urls.
+ * @brief Utility functions to encode/decode urls.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -34,21 +34,16 @@
 #include <ctype.h>
 #include <string.h>
 
-/**@defgroup tsk_url_group URL encoding/decoding utils
+/**@defgroup tsk_url_group Utility functions to encode/decode urls.
 */
 
-
-/**@page tsk_url_page URL encoding/decoding utils Tutorial
-*/
 
 /**@ingroup tsk_url_group
-* Encode an url
-* @param heap The memory heap on which to allocate the returned string. Set to NULL if
-* you don't want to use heap allocation mechanism.
+* Encode an url.
 * @param url The url to encode
-* @retval The encoded url. You MUST call @a tsk_free to free the returned url
+* @retval The encoded url. It is up to you to free the returned string.
 *
-* @sa tsk_url_encode
+* @sa tsk_url_decode
 *
 */
 char* tsk_url_encode(const char* url) {
@@ -67,11 +62,9 @@ char* tsk_url_encode(const char* url) {
 }
 
 /**@ingroup tsk_url_group
-* Decode an url
-* @param heap The memory heap on which to allocate the returned string. Set to NULL if
-* you don't want to use heap allocation mechanism.
+* Decode an url.
 * @param url The url to encode
-* @retval The decoded url. You MUST call @a tsk_free to free the returned url.
+* @retval The decoded url. It is up to you to free the returned string.
 *
 * @sa tsk_url_encode
 */

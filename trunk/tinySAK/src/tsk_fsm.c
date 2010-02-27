@@ -32,9 +32,14 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+/**@defgroup tsk_fsm_group Finite-state machine (FSM) implementation.
+*/
+
 int tsk_fsm_exec_nothing(va_list *app){ return 1; }
 int tsk_fsm_cond_always(const void* data1, const void* data2) { return 1; }
 
+/**@ingroup tsk_fsm_group
+*/
 int tsk_fsm_set(tsk_fsm_t* self, ...)
 {
 	va_list args;
@@ -67,8 +72,7 @@ int tsk_fsm_set(tsk_fsm_t* self, ...)
 
 int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callback, const void* callbackdata)
 {
-	if(self)
-	{
+	if(self){
 		self->callback_term = callback;
 		self->callback_data = callbackdata;
 		return 0;
@@ -76,6 +80,8 @@ int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callba
 	return -1;
 }
 
+/**@ingroup tsk_fsm_group
+*/
 int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data1, const void* cond_data2, ...)
 {
 	tsk_list_item_t *item;

@@ -35,22 +35,26 @@
 
 TSK_BEGIN_DECLS
 
-/** Create and initialize a linked list object.
+/**@ingroup tsk_list_group
+* Creates a linked list object.
 * You MUST use @ref TSK_OBJECT_SAFE_FREE to safely free the object.
 */
 #define TSK_LIST_CREATE()					tsk_object_new(tsk_list_def_t)
 
-/** Create and initialize an item to be added to a linked list.
+/**@ingroup tsk_list_group
+* Create and initialize an item to be added to a linked list.
 * You MUST use @ref TSK_OBJECT_SAFE_FREE to safely free the object.
 */
 #define TSK_LIST_ITEM_CREATE()				tsk_object_new(tsk_list_item_def_t)
 
-/** Check if the the linked list is empty or not.
+/**@ingroup tsk_list_group
+* Check if the the linked list is empty or not.
 *	This function will fail if the list is NULL.
 */
 #define TSK_LIST_IS_EMPTY(self)				(self ? (!self->head) : 1)
 
-/** Item for linked list. 
+/**@ingroup tsk_list_group
+* Item for linked list. 
 */
 typedef struct tsk_list_item_s
 {
@@ -60,7 +64,8 @@ typedef struct tsk_list_item_s
 }
 tsk_list_item_t;
 
-/** A Linked list.
+/**@ingroup tsk_list_group
+* Linked list.
 */
 typedef struct tsk_list_s
 {
@@ -70,15 +75,16 @@ typedef struct tsk_list_s
 }
 tsk_list_t;
 
-/** Function predicate used to match an item.
+/**@ingroup tsk_list_group 
+* Function predicate used to match an item.
 * @param item The current item to match.
-* @data data Arbitrary data holding the object to compare.
+* @param data Arbitrary data holding the object to compare.
 * @retval 0 if match and <0 if first<second and >0 otherwise
 */
 typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* data);
 
 
-/** tsk_list_foreach
+/**@ingroup tsk_list_group
 * Loop through the linked list.
 * @param item The current item.
 * @param list Pointer to the list for which we want to get items.

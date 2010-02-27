@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsk_ragel_state.c.
+/**@file tsk_ragel_state.c
  * @brief Ragel state for SIP, HTTP and MSRP parsing.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
@@ -29,19 +29,15 @@
  */
 #include "tsk_ragel_state.h"
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, size_t size)
-///
-/// @brief	Initialize/Reset the ragel state with default values. 
-///
-/// @author	Mamadou
-/// @date	12/4/2009
-///
-/// @param [in,out]	state	The ragel state to initialize. 
-/// @param [in,out]	data	The data to parse. 
-/// @param	size			The size of the data. 
-///
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**@defgroup tsk_ragel_state_group Ragel state for SIP, HTTP and MSRP parsing.
+*/
+
+/**@ingroup tsk_ragel_state_group
+* Initialize/Reset the ragel state with default values.
+* @param state The ragel @a state to initialize.
+* @param data The @a data to parse.
+* @param size The @a size of the data.
+*/
 void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, size_t size)
 {
 	state->cs = 0;

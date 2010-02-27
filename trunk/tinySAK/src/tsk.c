@@ -29,7 +29,7 @@
 * This file is an overview of TinySAK API.
 *
 * TinySAK (a.k.a <b>T</b>iny <b>S</b>wiss <b>A</b>rmy <b>K</b>nife) is a tiny but fully featured utility API.
-* This API is designed to efficiently work on embedded systems whith limited memory and low computing power.<br>
+* This API is designed to efficiently work on embedded systems with limited memory and low computing power.<br>
 * This library provide a base object class to ease Object Oriented Programming in C. There are many other
 * features like multi-threading, time management, encoding, encryption or content management.
 *
@@ -40,13 +40,23 @@
 * - @ref tsk_memory_group
 * - @ref tsk_params_group
 * - @ref tsk_string_group
+* - @ref tsk_list_group
+* - @ref tsk_ragel_state_group
+* - @ref tsk_fsm_group
+* - @ref tsk_url_group
+* - @ref tsk_uuid_group
 * - @ref tsk_base64_group
 * - @ref tsk_ppfcs16_group
 * - @ref tsk_ppfcs32_group
 * - @ref tsk_md5_group
 * - @ref tsk_sha1_group
+* - @ref tsk_hmac_group
 * - @ref tsk_binaryutils_group
 * - @ref tsk_buffer_group
+* - @ref tsk_time_group
+* - @ref tsk_timer_group
+* - @ref tsk_thread_group
+* - @ref tsk_runnable_group
 * - @ref tsk_safeobj_group
 * - @ref tsk_mutex_group
 * - @ref tsk_semaphore_group
