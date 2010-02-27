@@ -4,6 +4,10 @@ Wink Hosting (www.winkhosting.com)
 Designed By Alexis Corredor
 alexis.corredor@gmail.com
 */
+a { 
+	text-decoration:none;
+}
+
 body {
 	margin-top: 0px;
 	margin-left: 0px;
@@ -42,7 +46,7 @@ body {
 }
 #menu a{
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 10px;
+	font-size: 12px;
 	font-weight: bold;
 	color:#333333;
 	text-decoration:none;
