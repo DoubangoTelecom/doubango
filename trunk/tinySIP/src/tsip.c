@@ -401,7 +401,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		/* Get Best source address */
 		if(stack->local_ip == TNET_SOCKET_HOST_ANY){
 			tnet_ip_t bestsource;
-			if((ret = tnet_getbestsource(stack->proxy_cscf, stack->proxy_cscf_type, &bestsource))){
+			if((ret = tnet_getbestsource(stack->proxy_cscf, stack->proxy_cscf_port, stack->proxy_cscf_type, &bestsource))){
 				TSK_DEBUG_ERROR("Failed to get best source [%d].", ret);
 			}
 			else{

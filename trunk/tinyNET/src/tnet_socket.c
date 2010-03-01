@@ -37,83 +37,19 @@
 
 #include <string.h>
 
-/**
- * @fn	int tnet_socket_close(const tnet_socket_t *socket)
- *
- * @brief	Closes a socket. 
- *
- * @author	Mamadou
- * @date	12/11/2009
- *
- * @param [in]	sock	If non-null, the socket. 
- *
- * @return	Zero if succeed and nonzero error code otherwise. 
+/**@defgroup tnet_socket_group Protocol agnostic socket.
+* Protocol agnostic BSD/Windows sockets.
+*/
+
+/**@ingroup tnet_socket_group
+ * 	Closes a socket.
+ * @param sock The socket to close. 
+ * @retval	Zero if succeed and nonzero error code otherwise. 
 **/
 int tnet_socket_close(tnet_socket_t *sock)
 {
 	return tnet_sockfd_close(&(sock->fd));	
 }
-
-
-//int tnet_socket_stream_connectto(tnet_socket_tcp_t *sock, const char* host, tnet_port_t port)
-//{
-//	int status = 0;
-//	tsk_istr_t _port;
-//	struct addrinfo *result = 0;
-//	struct addrinfo *ptr = 0;
-//	struct addrinfo hints;
-//
-//	if(!TNET_SOCKET_IS_VALID(sock))
-//	{
-//		TSK_DEBUG_ERROR("Could not connect invalid socket.");
-//		return -1;
-//	}
-//
-//	tsk_itoa(port, &_port);
-//
-//	memset(&hints, 0, sizeof(hints));
-//	hints.ai_family = TNET_SOCKET_TYPE_IS_IPV6(sock->type) ? AF_INET6 : AF_INET;
-//	hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? SOCK_STREAM : SOCK_DGRAM;
-//	hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? IPPROTO_TCP : IPPROTO_UDP;
-//
-//	
-//	if((status = tnet_getaddrinfo(host, _port, &hints, &result)))
-//	{
-//		TNET_PRINT_LAST_ERROR("getaddrinfo have failed.");
-//		goto bail;
-//	}
-//
-//	for(ptr = result; ptr; ptr = ptr->ai_next) 
-//	{
-//		if(ptr->ai_family == hints.ai_family && ptr->ai_socktype == hints.ai_socktype && ptr->ai_protocol == hints.ai_protocol)
-//		{
-//			if((status = connect(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
-//			{
-//				TNET_PRINT_LAST_ERROR("connect have failed.");
-//				goto bail;
-//			}
-//
-//			TSK_DEBUG_INFO("Successfuly connected to: %s on port %d\n", host, port);
-//			break;
-//		}
-//	}
-//
-//bail:
-//	tnet_freeaddrinfo(result);
-//	return status;
-//}
-//
-//
-//int tnet_socket_sendto(tnet_socket_t *socket, const struct sockaddr *to, const void* buf, size_t size)
-//{
-//	if(socket)
-//	{
-//		return tnet_sockfd_sendto(socket->fd, to, buf, size);
-//	}
-//	return -1;
-//}
-
-
 
 
 //=================================================================================================
@@ -177,8 +113,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 			;
 
 		/* Performs getaddrinfo */
-		if((status = tnet_getaddrinfo(local_hostname, port, &hints, &result)))
-		{
+		if((status = tnet_getaddrinfo(local_hostname, port, &hints, &result))){
 			TNET_PRINT_LAST_ERROR("getaddrinfo have failed.");
 			goto bail;
 		}
@@ -206,6 +141,14 @@ static void* tnet_socket_create(void * self, va_list * app)
 					tnet_socket_close(sock);
 					continue;
 				}
+//				else{
+//#if TNET_UNDER_WINDOWS
+//					int index;
+//					if((index = tsk_strindexOf(sock->ip, strlen(sock->ip), "%")) > 0){
+//						*(sock->ip + index) = '\0';
+//					}
+//#endif
+//				}
 			}
 
 			break;

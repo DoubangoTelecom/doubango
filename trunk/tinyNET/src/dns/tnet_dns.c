@@ -20,7 +20,7 @@
 *
 */
 /**@file tnet_dns.c
- * @brief DNS utilities functions (RFCS [1034 1035] [3401 3402 3403 3404]).
+ * @brief DNS utility functions (RFCS [1034 1035] [3401 3402 3403 3404]).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -45,6 +45,11 @@ int tnet_dns_cache_maintenance(tnet_dns_ctx_t *ctx);
 int tnet_dns_cache_entry_add(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response);
 const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
 
+/**@defgroup tnet_dns_group DNS utility functions (RFCS [1034 1035] [3401 3402 3403 3404]).
+*/
+
+/**@ingroup tnet_dns_group
+*/
 tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
 	tsk_buffer_t *output = 0;
@@ -53,8 +58,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 	unsigned from_cache = 0;
 	
 	/* Check validity */
-	if(!ctx || !query)
-	{
+	if(!ctx || !query){
 		goto bail;
 	}
 
@@ -68,8 +72,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 	if(ctx->enable_cache)
 	{
 		tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
-		if(entry)
-		{
+		if(entry){
 			response = tsk_object_ref(entry->response);
 			from_cache = 1;
 			goto bail;
@@ -83,8 +86,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 	if(ctx->enable_edns0)
 	{
 		tnet_dns_opt_t *rr_opt = TNET_DNS_OPT_CREATE(TNET_DNS_DGRAM_SIZE_DEFAULT);
-		if(!query->Additionals)
-		{
+		if(!query->Additionals){
 			query->Additionals = TSK_LIST_CREATE();
 		}
 		tsk_list_push_back_data(query->Additionals, (void**)&rr_opt);
@@ -92,8 +94,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 	}
 	
 	/* Serialize and send to the server. */
-	if(!(output = tnet_dns_message_serialize(query)))
-	{
+	if(!(output = tnet_dns_message_serialize(query))){
 		TSK_DEBUG_ERROR("Failed to serialize the DNS message.");
 		goto bail;
 	}
@@ -123,13 +124,11 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 		/* Set FD */
 		FD_ZERO(&set);
 		FD_SET(localsocket4->fd, &set);
-		if(TNET_SOCKET_IS_VALID(localsocket6))
-		{
+		if(TNET_SOCKET_IS_VALID(localsocket6)){
 			FD_SET(localsocket6->fd, &set);
 			maxFD = TSK_MAX(localsocket4->fd, localsocket6->fd);
 		}
-		else
-		{
+		else{
 			maxFD = localsocket4->fd;
 		}
 
@@ -247,6 +246,8 @@ bail:
 	return response;
 }
 
+/**@ingroup tnet_dns_group
+*/
 int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname, tnet_port_t* port)
 {
 	tnet_dns_response_t *response;
@@ -277,6 +278,8 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 	return (hostname && !tsk_strempty(*hostname)) ? 0 : -2;
 }
 
+/**@ingroup tnet_dns_group
+*/
 int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char* service, char** hostname, tnet_port_t* port)
 {
 	tnet_dns_response_t *response;

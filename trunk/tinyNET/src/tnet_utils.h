@@ -21,7 +21,7 @@
 */
 
 /**@file tnet_utils.h
- * @brief Network utilities functions.
+ * @brief Network utility functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -37,11 +37,22 @@
 
 #include "tsk_list.h"
 
+/**@ingroup tnet_utils_group
+* @def TNET_INTERFACE_CREATE
+* Creates new @ref tnet_interface_t object.
+*/
+/**@ingroup tnet_utils_group
+* @def TNET_ADDRESS_CREATE
+* Creates new @ref tnet_address_t object.
+*/
 TNET_BEGIN_DECLS
 
 #define TNET_INTERFACE_CREATE(description, mac_address, mac_address_length)	tsk_object_new(tnet_interface_def_t, (const char*)description, (const uint8_t*)mac_address, (size_t)mac_address_length)
 #define TNET_ADDRESS_CREATE(ip)												tsk_object_new(tnet_address_def_t, (const char*)ip)
 
+/**@ingroup tnet_utils_group
+* Interface.
+*/
 typedef struct tnet_interface_s
 {
 	TSK_DECLARE_OBJECT;
@@ -53,8 +64,11 @@ typedef struct tnet_interface_s
 	size_t mac_address_length;
 }
 tnet_interface_t;
-typedef tsk_list_t tnet_interfaces_L_t;
+typedef tsk_list_t tnet_interfaces_L_t; /**< List of @ref tnet_interface_t elements.*/
 
+/**@ingroup tnet_utils_group
+* Address.
+*/
 typedef struct tnet_address_s
 {
 	TSK_DECLARE_OBJECT;
@@ -69,7 +83,7 @@ typedef struct tnet_address_s
 	char* ip;
 }
 tnet_address_t;
-typedef tsk_list_t tnet_addresses_L_t;
+typedef tsk_list_t tnet_addresses_L_t; /**< List of @ref tnet_address_t elements.*/
 
 TINYNET_API void tnet_getlasterror(tnet_error_t *error);
 TINYNET_API int tnet_geterrno();
@@ -90,7 +104,7 @@ TINYNET_API tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigne
 #define tnet_get_addresses_dnsservers4()	tnet_get_addresses(AF_INET, 0, 0, 0, 1, -1)
 #define tnet_get_addresses_dnsservers6()	tnet_get_addresses(AF_INET6, 0, 0, 0, 1, -1)
 
-TINYNET_API int tnet_getbestsource(const char* destination, tnet_socket_type_t type, tnet_ip_t *source);
+TINYNET_API int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_type_t type, tnet_ip_t *source);
 TINYNET_API int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res);
 TINYNET_API void tnet_freeaddrinfo(struct addrinfo *ai);
 TINYNET_API int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result);
@@ -127,6 +141,9 @@ TINYNET_API int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage
 
 TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
+/**@ingroup tnet_utils_group
+* Prints last network error to @b stderr.
+*/
 #define TNET_PRINT_LAST_ERROR(msg) \
 	{ \
 		tnet_error_t error; \

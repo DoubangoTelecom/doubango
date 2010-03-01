@@ -36,7 +36,13 @@
 #include "tsk_thread.h"
 
 
+/**@defgroup tnet_dhcp6_group DHCPv6 implementation.
+* Dynamic Host Configuration Protocol for IPv6 (DHCPv6) as per RFC 3315.
+* Also implement: RFC 3319, 3633, 3646, 3736, 4242, 5007 ...
+*/
 
+/**@ingroup tnet_dhcpv_group
+*/
 tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dhcp6_request_t* request)
 {
 	tsk_buffer_t *output;
@@ -47,18 +53,26 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 	uint64_t timeout = 0;
 	tsk_list_item_t *item;
 	const tnet_interface_t *iface;
+	tnet_ip_t bestsource;
 	
 	tnet_socket_t *localsocket6 = 0;
 	struct sockaddr_storage server;
 	
-	if(!ctx || !request)
-	{
+	if(!ctx || !request){
 		goto bail;
 	}
+
+	if((ret = tnet_getbestsource(TNET_DHCP6_All_DHCP_Relay_Agents_and_Servers, ctx->server_port, tnet_socket_type_udp_ipv6, &bestsource))){
+		TSK_DEBUG_WARN("Failed to get best source for [%s]:%u.", TNET_DHCP6_All_DHCP_Relay_Agents_and_Servers, ctx->server_port);
+		//fe80::21b:63ff:fea9:c14e%4
+		localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv6);
+	}
+	else{
+		localsocket6 = TNET_SOCKET_CREATE(bestsource, ctx->port_client, tnet_socket_type_udp_ipv6);
+	}
 	
-	localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY /*"fe80::283c:168a:5c70:81eb"*/, ctx->port_client, tnet_socket_type_udp_ipv6);
-	if(!TNET_SOCKET_IS_VALID(localsocket6))
-	{
+	/* Check local socket. */
+	if(!TNET_SOCKET_IS_VALID(localsocket6)){
 		TSK_DEBUG_ERROR("Failed to create/bind DHCPv6 client socket.");
 		goto bail;
 	}
@@ -67,8 +81,7 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 	tv.tv_sec = 0;
 	tv.tv_usec = (200 * 1000);
 
-	if(tnet_sockaddr_init(TNET_DHCP6_All_DHCP_Relay_Agents_and_Servers, ctx->server_port, tnet_socket_type_udp_ipv6, &server))
-	{
+	if(tnet_sockaddr_init(TNET_DHCP6_All_DHCP_Relay_Agents_and_Servers, ctx->server_port, tnet_socket_type_udp_ipv6, &server)){
 		TNET_PRINT_LAST_ERROR("Failed to initialize the DHCPv6 server address.");
 		goto bail;
 	}
@@ -184,14 +197,15 @@ tnet_dhcp6_reply_t* tnet_dhcp6_requestinfo(const tnet_dhcp6_ctx_t* ctx, const tn
 {
 	tnet_dhcp6_reply_t* reply = 0;
 	tnet_dhcp6_request_t* request = TNET_DHCP6_REQUEST_CREATE(dhcp6_type_information_request);
+	tnet_dhcp6_option_t* option = 0;
 
-	if(!ctx || !orequest || !request)
-	{
+	if(!ctx || !orequest || !request){
 		goto bail;
 	}
 
-	orequest = tsk_object_ref((void*)orequest);
-	tsk_list_push_back_data(request->options, (void**)&orequest);
+	if((option = TNET_DHCP6_OPTION_CREATE(dhcp6_code_oro, orequest, sizeof(*orequest)))){
+		tsk_list_push_back_data(request->options, (void**)&option);
+	}
 
 	/* Vendor class */
 	{
@@ -201,7 +215,6 @@ tnet_dhcp6_reply_t* tnet_dhcp6_requestinfo(const tnet_dhcp6_ctx_t* ctx, const tn
 	reply = tnet_dhcp6_send_request(ctx, request);
 
 bail:
-	TSK_OBJECT_SAFE_FREE(request);
 
 	return reply;
 }

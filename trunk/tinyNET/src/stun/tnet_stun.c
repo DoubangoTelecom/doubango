@@ -40,18 +40,16 @@
 
 #include <string.h>
 
+/**@defgroup tnet_stun_group STUN2 (RFC 5389) implementation.
+*/
 
-/**
- * @fn	tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_binding_t* binding)
+/**@ingroup tnet_stun_group
  *
- * @brief	Create generic STUN2 request with all mandatory headers and attributes. 
- *
- * @author	Mamadou
- * @date	1/23/2010
+ * Create generic STUN2 request with all mandatory headers and attributes. 
  *
  * @param [in,out]	binding	The binding object from which to create the request. 
  *
- * @return	STUN2 request if succeed and NULL otherwise. 
+ * @retval	STUN2 request if succeed and NULL otherwise. 
 **/
 tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_binding_t* binding)
 {
@@ -91,14 +89,10 @@ int tnet_stun_send_reliably(const tnet_stun_message_t* message)
 }
 
 
-/**
- * @fn	tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
- * 		uint16_t Rc, const tnet_stun_message_t* message, struct sockaddr* server)
+/**@ingroup tnet_stun_group
  *
- * @brief	Internal function to send a STUN message using unrealiable protocol such as UDP.
+ * Internal function to send a STUN message using unrealiable protocol such as UDP.
  *
- * @author	Mamadou
- * @date	1/23/2010
  *
  * @param	localFD			The local file descriptor. 
  * @param	RTO				The Retransmission TimeOut. 
@@ -225,13 +219,8 @@ bail:
 	return response;
 }
 
-/**
- * @fn	int tnet_stun_send_bind(const tnet_nat_context_t* context, tnet_stun_binding_t *binding)
- *
- * @brief	Internal function to send a STUN2 binding request over the network.
- *
- * @author	Mamadou
- * @date	1/23/2010
+/**@ingroup tnet_stun_group
+ * 	Internal function to send a STUN2 binding request over the network.
  *
  * @param [in,out]	context	The NAT context holding the user preferences. 
  * @param [in,out]	binding	The STUN binding object used to create the message to send. 
@@ -324,13 +313,9 @@ bail:
 	return ret;
 }
 
-/**
- * @fn	tnet_stun_binding_id_t tnet_stun_bind(const tnet_nat_context_t* nat_context, tnet_fd_t localFD)
+/**@ingroup tnet_stun_group
  *
- * @brief	Public function to create a binding context.
- *
- * @author	Mamadou
- * @date	1/23/2010
+ * Public function to create a binding context.
  *
  * @param [in,out]	nat_context	The NAT context. 
  * @param	localFD				The local file descriptor for which to create the binding context. 
@@ -365,11 +350,8 @@ bail:
 	return id;
 }
 
-/**
- * @fn	int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1,
- * 		const tnet_stun_transacid_t id2)
- *
- * @brief	Compares two transaction ids.
+/**@ingroup tnet_stun_group
+ * Compares two transaction ids.
  *
  * @author	Mamadou
  * @date	1/23/2010

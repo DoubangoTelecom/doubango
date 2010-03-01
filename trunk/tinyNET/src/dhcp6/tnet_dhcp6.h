@@ -102,6 +102,9 @@ TNET_BEGIN_DECLS
 /**< Destination port(Server) for outgoing DHCP messages as per RFC 3315 subclause 5.2. */
 #define TNET_DHCP6_SERVER_PORT		547
 
+/**@ingroup tnet_dhcpv_group
+* DHCPv6 context.
+*/
 typedef struct tnet_dhcp6_ctx_s
 {
 	TSK_DECLARE_OBJECT;

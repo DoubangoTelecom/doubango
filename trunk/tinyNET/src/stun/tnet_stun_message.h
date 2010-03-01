@@ -35,6 +35,18 @@
 
 #include "tsk_buffer.h"
 
+/**@ingroup tnet_stun_group
+* @def TNET_STUN_MESSAGE_CREATE
+* Creates new STUN message.
+* @retval @ref tnet_stun_message_t object.
+* @sa TNET_STUN_MESSAGE_CREATE_NULL.
+*/
+/**@ingroup tnet_stun_group
+* @def TNET_STUN_MESSAGE_CREATE_NULL
+* Creates new STUN message.
+* @retval @ref tnet_stun_message_t object.
+* @sa TNET_STUN_MESSAGE_CREATE.
+*/
 TNET_BEGIN_DECLS
 
 #define TNET_STUN_MESSAGE_CREATE(username, password)			tsk_object_new(tnet_stun_message_def_t, (const char*)username, (const char*)password)
@@ -45,21 +57,33 @@ TNET_BEGIN_DECLS
 #define TNET_STUN_CLASS_SUCCESS_MASK		(0x0100)
 #define TNET_STUN_CLASS_ERROR_MASK			(0x0110)
 
+/**@ingroup tnet_stun_group
+* @def TNET_STUN_RESPONSE_IS_REQUEST
+* Checks whether the STUN message is a request or not.
+*/
+/**@ingroup tnet_stun_group
+* @def TNET_STUN_RESPONSE_IS_INDICATION
+* Checks whether the STUN message is an indicaton message or not.
+*/
+/**@ingroup tnet_stun_group
+* @def TNET_STUN_RESPONSE_IS_SUCCESS
+* Checks whether the STUN message is a success response or not.
+*/
+/**@ingroup tnet_stun_group
+* @def TNET_STUN_RESPONSE_IS_ERROR
+* Checks whether the STUN message is an error response or not.
+*/
 #define TNET_STUN_RESPONSE_IS_REQUEST(self)						((self->type & TNET_STUN_CLASS_REQUEST_MASK) == TNET_STUN_CLASS_REQUEST_MASK)
 #define TNET_STUN_RESPONSE_IS_INDICATION(self)					((self->type & TNET_STUN_CLASS_INDICATION_MASK) == TNET_STUN_CLASS_INDICATION_MASK)
 #define TNET_STUN_RESPONSE_IS_SUCCESS(self)						((self->type & TNET_STUN_CLASS_SUCCESS_MASK) == TNET_STUN_CLASS_SUCCESS_MASK)
 #define TNET_STUN_RESPONSE_IS_ERROR(self)						((self->type & TNET_STUN_CLASS_ERROR_MASK) == TNET_STUN_CLASS_ERROR_MASK)
 
-/**
- * @def	TNET_IS_STUN2(PU8)
- *
- * @brief	Check if the pointer to the buffer hold a STUN header by checking that it starts with 0b00 and contain the magic cookie.
+/**@ingroup tnet_stun_group
+ * Checks if the pointer to the buffer hold a STUN header by checking that it starts with 0b00 and contain the magic cookie.
  *			As per RFC 5389 subclause 19: Explicitly point out that the most significant 2 bits of STUN are
  *			0b00, allowing easy differentiation with RTP packets when used with ICE.
  *			As per RFC 5389 subclause 6: The magic cookie field MUST contain the fixed value 0x2112A442 in
  *			network byte order.
- *
- * @remarks	Mamadou, 1/14/2010. 
  *
  * @param	PU8	The pointer to the buffer holding the STUN raw data.
 **/
@@ -67,26 +91,18 @@ TNET_BEGIN_DECLS
 	(((PU8)[0] & 0xc0) == 0x00) && \
 	( (*(((uint32_t *)(PU8))+1)) == htonl(TNET_STUN_MAGIC_COOKIE) )
 
-/**
- * @def	TNET_STUN_TRANSACID_SIZE
- *
- * @brief	STUN trasactionn ID size (96bits = 12bytes).
- *
- * @remarks	Mamadou, 1/14/2010. 
-**/
+/**@ingroup tnet_stun_group
+ * STUN trasactionn ID size (96bits = 12bytes).
+*/
 #define TNET_STUN_TRANSACID_SIZE		12
 
-/**
- * @typedef	char tnet_stun_transacid_t[TNET_STUN_TRANSACID_SIZE+1]
- *
- * @brief	Defines an alias representing the stun transaction id type.
+/**@ingroup tnet_stun_group
+ * Defines an alias representing the STUN transaction id type.
 **/
 typedef uint8_t tnet_stun_transacid_t[TNET_STUN_TRANSACID_SIZE];
 
-/**
- * @enum	tnet_stun_class_type_e
- *
- * @brief	List of STUN classes as per RFC 5389 subcaluse 6.
+/**@ingroup tnet_stun_group
+ * List of all supported STUN classes as per RFC 5389 subcaluse 6.
 **/
 typedef enum tnet_stun_class_type_e
 {
@@ -97,13 +113,10 @@ typedef enum tnet_stun_class_type_e
 }
 tnet_stun_class_type_t;
 
-/**
- * @enum	tnet_stun_method_type_e
- *
- * @brief	List of STUN methods. 
- *			RFC 5389 only define one method(Bining). All other methods have been defined
- *			by TURN (draft-ietf-behave-turn-16 and draft-ietf-behave-turn-tcp-05).
- *			
+/**@ingroup tnet_stun_group
+ * List of all supported STUN methods. 
+ * RFC 5389 only define one method(Bining). All other methods have been defined
+ * by TURN (draft-ietf-behave-turn-16 and draft-ietf-behave-turn-tcp-05).		
 **/
 typedef enum tnet_stun_method_type_e
 {
@@ -118,6 +131,9 @@ typedef enum tnet_stun_method_type_e
 }
 tnet_stun_method_type_t;
 
+/**@ingroup tnet_stun_group
+* List of all supported STUN types.
+*/
 typedef enum tnet_stun_message_type_e
 {
 	/*	RFC 5389 - 6.  STUN Message Structure
@@ -172,15 +188,11 @@ typedef enum tnet_stun_message_type_e
 }
 tnet_stun_message_type_t;
 
-/**
- * @struct	tnet_stun_message_s
+/**@ingroup tnet_stun_group
  *
- * @brief	STUN Message structure as per RFC 5389 subclause 6.
+ * STUN Message structure as per RFC 5389 subclause 6.
  *			http://tools.ietf.org/html/rfc5389#section-6
- *
- * @author	Mamadou
- * @date	1/14/2010
-**/
+*/
 typedef struct tnet_stun_message_s
 {
 	TSK_DECLARE_OBJECT;

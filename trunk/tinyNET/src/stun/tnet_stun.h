@@ -37,66 +37,53 @@
 
 #include "tsk_object.h"
 
+/**@ingroup tnet_stun_group
+* Create new @ref tnet_stun_binding_t object.
+*/
+
 TNET_BEGIN_DECLS
+
 
 #define TNET_STUN_BINDING_CREATE(fd, socket_type, server_address, server_port, username, password)	\
 	tsk_object_new(tnet_stun_binding_def_t, (tnet_fd_t)fd, (tnet_socket_type_t)socket_type, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
 
+/**@ingroup tnet_stun_group
+*/
 typedef uint64_t tnet_stun_binding_id_t;
-/**
+/**@ingroup tnet_stun_group
  * @def	TNET_STUN_INVALID_BINDING_ID
- *
- * @brief	STUN2 invalid binding id.
- *
- * @remarks	Mamadou, 1/23/2010. 
+ * STUN2 invalid binding id.
+**/
+/**@ingroup tnet_stun_group
+ * @def	TNET_STUN_IS_VALID_BINDING_ID
+ * Checks the validity of the STUN @a id.
 **/
 #define TNET_STUN_INVALID_BINDING_ID				0
 #define TNET_STUN_IS_VALID_BINDING_ID(id)			(id != TNET_STUN_INVALID_BINDING_ID)
 
-/**
- * @def	TNET_STUN_TCP_UDP_DEFAULT_PORT
- *
- * @brief	Default port for both TCP and UDP protos as per RFC 5389 subclause 9.
- *
- * @remarks	Mamadou, 1/14/2010. 
+/**@ingroup tnet_stun_group
+ * Default port for both TCP and UDP protos as per RFC 5389 subclause 9.
 **/
 #define TNET_STUN_TCP_UDP_DEFAULT_PORT 3478
 
-/**
- * @def	TNET_STUN_TLS_DEFAULT_PORT
- *
- * @brief	Default port for TLS proto as per RFC 5389 subclause 9.
- *
- * @remarks	Mamadou, 1/14/2010. 
+/**@ingroup tnet_stun_group
+ * Default port for TLS protocol as per RFC 5389 subclause 9.
 **/
 #define TNET_STUN_TLS_DEFAULT_PORT 5349
 
 
-/**
- * @def	TNET_STUN_MAGIC_COOKIE
- *
- * @brief	STUN magic cookie value in network byte order as per RFC 5389 subclause 6.
- *
- * @remarks	Mamadou, 1/14/2010. 
+/**@ingroup tnet_stun_group
+ * STUN2 magic cookie value in network byte order as per RFC 5389 subclause 6.
 **/
 #define TNET_STUN_MAGIC_COOKIE		0x2112A442
 
-/**
- * @def	TNET_STUN_HEADER_SIZE
- *
- * @brief	STUN2 header size as per RFC 5389 subclause 6.
- *
- * @remarks	Mamadou, 1/20/2010. 
+/**@ingroup tnet_stun_group
+ * STUN2 header size as per RFC 5389 subclause 6.
 **/
 #define TNET_STUN_HEADER_SIZE		20
 
-/**
- * @struct	tnet_stun_binding_s
- *
- * @brief	Object definition for STUN binding context.
- *
- * @author	Mamadou
- * @date	1/22/2010
+/**@ingroup tnet_stun_group
+ * STUN2 binding context.
 **/
 typedef struct tnet_stun_binding_s
 {
@@ -128,10 +115,8 @@ typedef struct tnet_stun_binding_s
 }tnet_stun_binding_t;
 
 TINYNET_GEXTERN const void *tnet_stun_binding_def_t;
-/**
- * @typedef	tsk_list_t tnet_stun_bindings_L_t
- *
- * @brief	List of @ref tnet_stun_binding_t elements.
+/**@ingroup tnet_stun_group
+ * List of @ref tnet_stun_binding_t elements.
 **/
 typedef tsk_list_t tnet_stun_bindings_L_t;
 
