@@ -38,50 +38,90 @@
 #include "tsk_buffer.h"
 #include "tsk_sha1.h"
 
+/**@ingroup tnet_stun_group
+* @def TNET_STUN_ATTRIBUTE
+* Converts (cast) any STUN attribute to @ref tnet_stun_attribute_t pointer.
+* @param self The attribute to convert (cast).
+* @retval A pointer to @ref tnet_stun_attribute_t object.
+*/
 TNET_BEGIN_DECLS
 
 #define TNET_STUN_ATTRIBUTE(self)		((tnet_stun_attribute_t*)(self))
 
-/* RFC 5389 - 15.  STUN Attributes */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.  STUN Attributes 
+* Creates new @ref tnet_stun_attribute_def_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_CREATE()						tsk_object_new(tnet_stun_attribute_def_t)
 
-/* RFC 5389 - 15.1.  MAPPED-ADDRESS */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.1.  MAPPED-ADDRESS.
+* Creates new @ref tnet_stun_attribute_mapped_addr_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_MAPPED_ADDRESS_CREATE(payload, payload_size)			tsk_object_new(tnet_stun_attribute_mapped_addr_def_t, (const void*)payload, (size_t)payload_size)
 
-/* RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS. 
+* Creates new @ref tnet_stun_attribute_xmapped_addr_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_XMAPPED_ADDRESS_CREATE(payload, payload_size)			tsk_object_new(tnet_stun_attribute_xmapped_addr_def_t, (const void*)payload, (size_t)payload_size)
 
-/* RFC 5389 - 15.3.  USERNAME */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.3.  USERNAME.
+* Creates new @ref tnet_stun_attribute_username_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_USERNAME_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_username_def_t, (const void*)payload, (size_t)payload_size)
 
-/* RFC 5389 - 15.4.  MESSAGE-INTEGRITY */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.4.  MESSAGE-INTEGRITY.
+* Creates new @ref tnet_stun_attribute_integrity_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_INTEGRITY_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_integrity_def_t, (const void*)payload, (size_t)payload_size)
 
-/* RFC 5389 - 15.5.  FINGERPRINT */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.5.  FINGERPRINT.
+* Creates new @ref tnet_stun_attribute_fingerprint_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_FINGERPRINT_CREATE(fingerprint)							tsk_object_new(tnet_stun_attribute_fingerprint_def_t, (uint32_t)fingerprint)
 
-/*	RFC 5389 - 15.6.  ERROR-CODE  */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.6.  ERROR-CODE
+* Creates new @ref tnet_stun_attribute_errorcode_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_ERRORCODE_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_errorcode_def_t, (const void*)payload, (size_t)payload_size)
 
-/*	RFC 5389 - 15.7.  REALM */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.7.  REALM.
+* Creates new @ref tnet_stun_attribute_realm_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_REALM_CREATE(payload, payload_size)						tsk_object_new(tnet_stun_attribute_realm_def_t, (const void*)payload, (size_t)payload_size)
 
-/*	RFC 5389 - 15.8.  NONCE */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.8.  NONCE.
+* Creates new @ref tnet_stun_attribute_nonce_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_NONCE_CREATE(payload, payload_size)						tsk_object_new(tnet_stun_attribute_nonce_def_t, (const void*)payload, (size_t)payload_size)
 
-/*	RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES.
+* Creates new @ref tnet_stun_attribute_unknowns_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_UNKNOWNS_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_unknowns_def_t, (const void*)payload, (size_t)payload_size)
 
-/*	RFC 5389 - 15.10.  SOFTWARE */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.10.  SOFTWARE.
+* Creates new @ref tnet_stun_attribute_software_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_software_def_t, (const void*)payload, (size_t)payload_size)
 
-/*	RFC 5389 - 15.11.  ALTERNATE-SERVER */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.11.  ALTERNATE-SERVER.
+* Creates new @ref tnet_stun_attribute_altserver_t object.
+*/
 #define TNET_STUN_ATTRIBUTE_ALTSERVER_CREATE(payload, payload_size)					tsk_object_new(tnet_stun_attribute_altserver_def_t, (const void*)payload, (size_t)payload_size)
 
-/**
- * @enum	tnet_stun_addr_family_e
- *
- * @brief	STUN IP family as per RFC 5389 subclause 15.1.
+/**@ingroup tnet_stun_group
+ * STUN IP family as per RFC 5389 subclause 15.1.
 **/
 typedef enum tnet_stun_addr_family_e
 {
@@ -90,13 +130,8 @@ typedef enum tnet_stun_addr_family_e
 }
 tnet_stun_addr_family_t;
 
-/**
- * @enum	tnet_stun_attribute_type_e
- *
- * @brief	STUN attribute types as per RFC 5389 subclause 18.2. http:
- * 			//tools.ietf.org/html/rfc5389#page-31. 
- * @author	Mamadou. 
- * @date	1/14/2010. 
+/**@ingroup tnet_stun_group
+ * STUN attribute types as per RFC 5389 subclause 18.2.
 **/
 typedef enum tnet_stun_attribute_type_e
 {
@@ -141,7 +176,13 @@ typedef enum tnet_stun_attribute_type_e
 tnet_stun_attribute_type_t;
 
 
-/** RFC 5389 - 15.  STUN Attributes
+/**@ingroup tnet_stun_group
+	RFC 5389 - 15.  STUN Attributes
+*/
+typedef struct tnet_stun_attribute_s
+{
+	TSK_DECLARE_OBJECT;
+	/*
 	0                   1                   2                   3
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -149,11 +190,7 @@ tnet_stun_attribute_type_t;
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	|                         Value (variable)                ....
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-*/
-typedef struct tnet_stun_attribute_s
-{
-	TSK_DECLARE_OBJECT;
-
+	*/
 	tnet_stun_attribute_type_t type;
 	uint16_t length;
 }
@@ -165,7 +202,14 @@ TINYNET_GEXTERN const void *tnet_stun_attribute_def_t;
 #define TNET_STUN_DECLARE_ATTRIBUTE tnet_stun_attribute_t attribute
 
 
-/*	RFC 5389 - 15.1.  MAPPED-ADDRESS
+/**@ingroup tnet_stun_group
+	*RFC 5389 - 15.1.  MAPPED-ADDRESS
+	*/
+typedef struct tnet_stun_attribute_mapped_addr_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+
+	/* 	
 	0                   1                   2                   3
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -176,10 +220,6 @@ TINYNET_GEXTERN const void *tnet_stun_attribute_def_t;
 	|                                                               |
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
-typedef struct tnet_stun_attribute_mapped_addr_s
-{
-	TNET_STUN_DECLARE_ATTRIBUTE;
-
 	tnet_stun_addr_family_t family;
 	uint16_t port;
 	uint8_t address[16];
@@ -189,7 +229,14 @@ tnet_stun_attribute_mapped_addr_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_mapped_addr_def_t;
 
 
-/*	RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS
+*/
+typedef struct tnet_stun_attribute_xmapped_addr_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+
+	/*	
 	0                   1                   2                   3
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -198,10 +245,6 @@ TINYNET_GEXTERN const void *tnet_stun_attribute_mapped_addr_def_t;
 	|                X-Address (Variable)
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
-typedef struct tnet_stun_attribute_xmapped_addr_s
-{
-	TNET_STUN_DECLARE_ATTRIBUTE;
-
 	tnet_stun_addr_family_t family;
 	uint16_t xport;
 	uint8_t xaddress[16];
@@ -210,7 +253,8 @@ tnet_stun_attribute_xmapped_addr_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_xmapped_addr_def_t;
 
 
-/*	RFC 5389 - 15.3.  USERNAME
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.3.  USERNAME.
 */
 typedef struct tnet_stun_attribute_username_s
 {
@@ -222,7 +266,8 @@ tnet_stun_attribute_username_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_username_def_t;
 
 
-/*	RFC 5389 - 15.4.  MESSAGE-INTEGRITY
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.4.  MESSAGE-INTEGRITY.
 */
 typedef struct tnet_stun_attribute_integrity_s
 {
@@ -234,7 +279,9 @@ tnet_stun_attribute_integrity_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_integrity_def_t;
 
 
-/* RFC 5389 - 15.5.  FINGERPRINT */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.5.  FINGERPRINT.
+*/
 typedef struct tnet_stun_attribute_fingerprint_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;
@@ -244,7 +291,13 @@ typedef struct tnet_stun_attribute_fingerprint_s
 tnet_stun_attribute_fingerprint_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_fingerprint_def_t;
 
-/*	RFC 5389 - 15.6.  ERROR-CODE 
+/**@ingroup tnet_stun_group
+	*RFC 5389 - 15.6.  ERROR-CODE 
+*/
+typedef struct tnet_stun_attribute_errorcode_s
+{
+	TNET_STUN_DECLARE_ATTRIBUTE;
+	/*
 	0                   1                   2                   3
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -252,11 +305,7 @@ TINYNET_GEXTERN const void *tnet_stun_attribute_fingerprint_def_t;
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	|      Reason Phrase (variable)                                ..
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-*/
-typedef struct tnet_stun_attribute_errorcode_s
-{
-	TNET_STUN_DECLARE_ATTRIBUTE;
-	
+	*/
 	uint8_t _class;
 	uint8_t number;
 	char* reason_phrase;
@@ -266,7 +315,8 @@ TINYNET_GEXTERN const void *tnet_stun_attribute_errorcode_def_t;
 
 
 
-/*	RFC 5389 - 15.7.  REALM */
+/**@ingroup tnet_stun_group	
+* RFC 5389 - 15.7.  REALM. */
 typedef struct tnet_stun_attribute_realm_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;
@@ -277,7 +327,8 @@ tnet_stun_attribute_realm_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_realm_def_t;
 
 
-/*	RFC 5389 - 15.8.  NONCE */
+/**@ingroup tnet_stun_group	
+* RFC 5389 - 15.8.  NONCE. */
 typedef struct tnet_stun_attribute_nonce_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;
@@ -287,7 +338,8 @@ typedef struct tnet_stun_attribute_nonce_s
 tnet_stun_attribute_nonce_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_nonce_def_t;
 
-/*	RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES. */
 typedef struct tnet_stun_attribute_unknowns_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;
@@ -297,7 +349,8 @@ typedef struct tnet_stun_attribute_unknowns_s
 tnet_stun_attribute_unknowns_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_unknowns_def_t;
 
-/*	RFC 5389 - 15.10.  SOFTWARE */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.10.  SOFTWARE. */
 typedef struct tnet_stun_attribute_software_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;
@@ -307,7 +360,8 @@ typedef struct tnet_stun_attribute_software_s
 tnet_stun_attribute_software_t;
 TINYNET_GEXTERN const void *tnet_stun_attribute_software_def_t;
 
-/*	RFC 5389 - 15.11.  ALTERNATE-SERVER */
+/**@ingroup tnet_stun_group
+* RFC 5389 - 15.11.  ALTERNATE-SERVER. */
 typedef struct tnet_stun_attribute_altserver_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;

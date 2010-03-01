@@ -27,14 +27,15 @@ void test_sockets()
 	int test;
 	tnet_socket_tcp_t * tcp_socket;
 	tnet_socket_type_t type = tnet_socket_type_udp_ipv4;
+	struct sockaddr_storage to;
 	
-	TNET_SOCKET_TYPE_AS_IPV6(type);
-	TNET_SOCKET_TYPE_AS_IPV4(type);
+	TNET_SOCKET_TYPE_SET_IPV6(type);
+	TNET_SOCKET_TYPE_SET_IPV4(type);
 
-	TNET_SOCKET_TYPE_AS_TLS(type);
-	TNET_SOCKET_TYPE_AS_UDP(type);
-	TNET_SOCKET_TYPE_AS_SCTP(type);
-	TNET_SOCKET_TYPE_AS_TCP(type);
+	TNET_SOCKET_TYPE_SET_TLS(type);
+	TNET_SOCKET_TYPE_SET_UDP(type);
+	TNET_SOCKET_TYPE_SET_SCTP(type);
+	TNET_SOCKET_TYPE_SET_TCP(type);
 	
 	tcp_socket = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, type);
 	
@@ -45,7 +46,9 @@ void test_sockets()
 		return;
 	}
 
-	test = tnet_socket_stream_connectto(tcp_socket, "www.google.com", 80);
+	if(!(test = tnet_sockaddr_init("www.google.com", 80, type, &to))){
+		test = tnet_sockfd_connetto(tcp_socket->fd, (const struct sockaddr_storage *)&to);
+	}
 
 	TSK_OBJECT_SAFE_FREE(tcp_socket);
 }

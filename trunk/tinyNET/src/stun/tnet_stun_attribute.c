@@ -41,6 +41,12 @@
 
 #include <string.h>
 
+/**@ingroup tnet_stun_group
+* Creates @ref tnet_stun_attribute_t from raw buffer.
+* @param data Raw buffer from which to create the STUN attribute.*
+* @param size The size of the eaw buffer.
+* @retval @ref tnet_stun_attribute_t object if succeed and NULL other wise.
+*/
 tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t size)
 {
 	tnet_stun_attribute_t *attribute = 0;
@@ -180,7 +186,12 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 	return attribute;
 }
 
-
+/**@ingroup tnet_stun_group
+* Serializes a @ref tnet_stun_attribute_t objet in binary format.
+* @param attribute The STUN attribute to serialize.
+* @param output The output binary buffer.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output)
 {
 	if(!attribute || !output)
@@ -311,6 +322,11 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	}
 }
 
+/**@ingroup tnet_stun_group
+* Pads a STUN attribute to align it on 4 octets.
+* @param attribute The STUN attribute to pad.
+* @param output The output buffer into which to put zeros.
+*/
 void tnet_stun_attribute_pad(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output)
 {
 	if(attribute->length%4)

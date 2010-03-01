@@ -21,7 +21,7 @@
 */
 
 /**@file tnet_utils.c
- * @brief Network utilities functions.
+ * @brief Network utility functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -38,13 +38,12 @@
 
 #include <string.h>
 
-/**
- * @fn	void tnet_getlasterror(tnet_error_t *error)
+/**@defgroup tnet_utils_group Network utility functions.
+*/
+
+/**@ingroup tnet_utils_group
  *
- * @brief	Gets last network error description.
- *
- * @author	Mamadou
- * @date	12/12/2009
+ * Gets last network error description.
  *
  * @param [out]	error	The short description of the last network error. 
 **/
@@ -75,6 +74,11 @@ void tnet_getlasterror(tnet_error_t *error)
 #endif
 }
 
+/**@ingroup tnet_utils_group
+* Gets last error number. Will call @a WSAGetLastError() on Windows and
+* errno on unix-like systems.
+* @retval Error number.
+*/
 int tnet_geterrno()
 {
 #if TNET_UNDER_WINDOWS
@@ -85,17 +89,10 @@ int tnet_geterrno()
 }
 
 
-/**
- * @fn	tnet_interfaces_L_t* tnet_get_interfaces()
+/**@ingroup tnet_utils_group
+ * Gets the list of all network interfaces/adapters. 
  *
- * @brief	Gets list of all network interfaces/adapters. 
- *
- * @author	Mamadou
- * @date	1/25/2010
- *
- * @return	List of interfaces. 
- *			It is up to the caller to free the returned list using @ref TSK_OBJECT_SAFE_FREE. 
- *
+ * @retval	Network interfaces.
 **/
 tnet_interfaces_L_t* tnet_get_interfaces()
 {
@@ -269,6 +266,17 @@ bail:
 	return ifaces;
 }
 
+/**@ingroup tnet_utils_group
+* Get all IP addresses of the local machine.
+* @param family The @a family of the addresses to return.
+* @param unicast Indicates whether to return @a unicast addresses or not (1=yes and 0=no).
+* @param anycast Indicates whether to return @a anycast addresses or not (1=yes and 0=no).
+* @param multicast Indicates whether to return @a multicast addresses or not (1=yes and 0=no).
+* @param dnsserver Indicates whether to include dns servers or not (1=yes and 0=no).
+* @param if_index the index of the interface for which to to retrieve IP addresses.
+* -1 mean all interfaces.
+* @retval List of all addresses.
+*/
 tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index)
 {
 	tnet_addresses_L_t *addresses = TSK_LIST_CREATE();
@@ -424,8 +432,15 @@ bail:
 	return addresses;
 }
 
-
-int tnet_getbestsource(const char* destination, tnet_socket_type_t type, tnet_ip_t *source)
+/**@ingroup tnet_utils_group
+* Retrieves the @a source IP address that has the best route to the specified IPv4 or IPv6 @a destination.
+* @param destination The destination address.
+* @param port The destination port.
+* @param type The socket type.
+* @param source The best @a source.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_type_t type, tnet_ip_t *source)
 {
 	int ret = -1;
 	struct sockaddr_storage destAddr;
@@ -438,7 +453,7 @@ int tnet_getbestsource(const char* destination, tnet_socket_type_t type, tnet_ip
 		goto bail;
 	}
 
-	if((ret = tnet_sockaddr_init(destination, 0, type, &destAddr))){
+	if((ret = tnet_sockaddr_init(destination, port, type, &destAddr))){
 		goto bail;
 	}
 
@@ -473,22 +488,17 @@ bail:
 }
 
 
-/**
- * @fn	int tnet_getaddrinfo(const char *node, const char *service,
- * 		const struct addrinfo *hints, struct addrinfo **res)
+/**@ingroup tnet_utils_group
  *
- * @brief	converts human-readable text strings representing hostnames or IP addresses into a dynamically allocated linked list of struct addrinfo structures. 
+ * Converts human-readable text strings representing hostnames or IP addresses into a dynamically allocated linked list of struct addrinfo structures. 
  *			You MUST call @ref tnet_freeaddrinfo() function to free the result.
- *
- * @author	Mamadou
- * @date	12/11/2009
  *
  * @param [in]	node	A pointer to a NULL-terminated ANSI string that contains a host (node) name or a numeric host address string. For the Internet protocol, the numeric host address string is a dotted-decimal IPv4 address or an IPv6 hex address.. 
  * @param [in]	service	A pointer to a NULL-terminated ANSI string that contains either a service name or port number represented as a string. 
  * @param [in]	hints	A pointer to an addrinfo structure that provides hints about the type of socket the caller supports. 
  * @param [out]	res		A pointer to a linked list of one or more addrinfo structures that contains response information about the host. 
  *
- * @return	Success returns zero. Failure returns a nonzero error code.
+ * @retval	Success returns zero. Failure returns a nonzero error code.
 **/
 int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res)
 {
@@ -499,31 +509,37 @@ int tnet_getaddrinfo(const char *node, const char *service, const struct addrinf
 	return ret;
 }
 
-/**
- * @fn	void tnet_freeaddrinfo(struct addrinfo *ai)
+/**@ingroup tnet_utils_group
  *
- * @brief	This function frees address information previously allocated using @ref tnet_getaddrinfo.
+ * This function frees address information previously allocated using @ref tnet_getaddrinfo.
  *
- * @author	Mamadou
- * @date	12/11/2009
- *
- * @param [in]	The address information to free. 
+ * @param [in] ai	The address information to free. 
 **/
 void tnet_freeaddrinfo(struct addrinfo *ai)
 {
 	freeaddrinfo(ai);
 }
 
+/**@ingroup tnet_utils_group
+* Converts a descriptor to @b sockaddr_storage structure.
+* @param fd The descriptor to convert.
+* @param result @b sockaddr_storage structre representing the desciptor.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result)
 {
-	if(fd >0)
-	{
+	if(fd >0){
 		socklen_t namelen = sizeof(*result);
 		return getsockname(fd, (struct sockaddr*)result, &namelen);
 	}
 	return -1;
 }
 
+/**@ingroup tnet_utils_group
+* Retrieves the socket type of a File Descriptor.
+* @param fd The File descriptor for which to retrive the type.
+* @retval @ref tnet_socket_type_t.
+*/
 tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd)
 {
 	tnet_socket_type_t type = tnet_socket_type_invalid;
@@ -547,6 +563,13 @@ tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd)
 	return type;
 }
 
+/**@ingroup tnet_utils_group
+* Gets the IP address and the Port of a @b sockaddr object.
+* @param addr [in] A pointer to @b sockaddr structure for which to retrieve the IP address and port.
+* @param ip [out] The IP address.
+* @param port [out] The port.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port)
 {
 	int status = -1;
@@ -559,8 +582,7 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 			status = 0;
 		}
 		if(ip){
-			if((status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
-			{
+			if((status = tnet_getnameinfo((struct sockaddr*)sin, sizeof(*sin), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))){
 				return status;
 			}
 		}
@@ -576,8 +598,7 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 			status = 0;
 		}
 		if(ip){
-			if((status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST)))
-			{
+			if((status = tnet_getnameinfo((struct sockaddr*)sin6, sizeof(*sin6), *ip, sizeof(*ip), 0, 0, NI_NUMERICHOST))){
 				return status;
 			}
 
@@ -597,7 +618,14 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 	return status;
 }
 
-// MUST be connect()ed
+/**@ingroup tnet_utils_group
+* Gets the IP address and port of the remote peer.
+* <b>The socket MUST be connect()ed.</b>
+* @param localFD Local socket.
+* @param ip [out] The IP address of the remote peer.
+* @param port [out] The remote (peer) port.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_port_t *port)
 {
 	if(port){
@@ -622,6 +650,13 @@ int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_port_t *port)
 	return -1;
 }
 
+/**@ingroup tnet_utils_group
+* Gets the IP address and the Port of a local socket (File descriptor).
+* @param fd The decriptor for which to retrive the IP address and port.
+* @param ip [out] The IP address of the local socket.
+* @param port [out] The port of the local socket.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
 	if(port){
@@ -643,16 +678,35 @@ int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 	return -1;
 }
 
+/**@ingroup tnet_utils_group
+* Provides protocol-independent name resolution from an address to an ANSI host name and from a port number to the ANSI service name.
+* @param sa A pointer to a socket address structure that contains the address and port number of the socket. For IPv4, the sa parameter points to a sockaddr_in structure. For IPv6, the sa parameter points to a @b sockaddr_in6 structure.
+* @param salen The length, in bytes, of the structure pointed to by the sa parameter.
+* @param node A pointer to an ANSI string used to hold the host name. On success, a pointer to the host name is returned as a Fully Qualified Domain Name (FQDN) by default. If the host parameter is NULL, this indicates the caller does not want to receive a host name string.
+* @param nodelen The length, in bytes, of the buffer pointed to by the host parameter. The caller must provide a buffer large enough to hold the host name, including the terminating NULL character.
+* @param service A pointer to an ANSI string to hold the service name. On success, a pointer is returned to an ANSI string that represents the service name associated with the port number. If the serv parameter is NULL, this indicates the caller does not want to receive a service name string.
+* @param servicelen The length, in bytes, of the buffer pointed to by the serv parameter. The caller must provide a buffer large enough to hold the service name, including the terminating NULL character.
+* @param flags A value used to customize processing of the @b getnameinfo function. See the Remarks section.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags)
 {
 	return getnameinfo(sa, salen, node, nodelen, service, servicelen, flags);
 }
 
+/**@ingroup tnet_utils_group
+* Retrieves the standard host name for the local computer.
+* @param result A pointer to a buffer that receives the local host name.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_gethostname(tnet_host_t* result)
 {
 	return gethostname(*result, sizeof(*result));
 }
 
+/**@ingroup tnet_utils_group
+* NOT IMPLEMENTED.
+*/
 int tnet_sockfd_joingroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index)
 {
 	int ret = -1;
@@ -675,7 +729,9 @@ int tnet_sockfd_joingroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_i
 
 	return ret;
 }
-
+/**@ingroup tnet_utils_group
+* NOT IMPLEMENTED.
+*/
 int tnet_sockfd_leavegroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index)
 {
 	//if(multiaddr)
@@ -684,6 +740,9 @@ int tnet_sockfd_leavegroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_
 	return -1;
 }
 
+/**@ingroup tnet_utils_group
+* Converts human-readable text strings representing hostnames or IP addresses into a dynamically allocated linked list of struct addrinfo structures.
+*/
 int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, struct sockaddr_storage *ai_addr, int *ai_family, int *ai_socktype, int *ai_protocol)
 {
 	int status = 0;
@@ -737,6 +796,14 @@ bail:
 	return status;
 }
 
+/**@ingroup tnet_utils_group
+* Converts human-readable text strings representing hostnames or IP addresses into a @b sockaddr_storage structure.
+* @param host The hostname/IP address to convert.
+* @param port The local port associated to the host.
+* @param type The type of the socket to create.
+* @param addr [out] @b sockaddr_storage structure representing the @a host:port address.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_socket_type_t type, struct sockaddr_storage *addr)
 {
 	int status;
@@ -752,6 +819,14 @@ int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_socket_type_t ty
 	return status;
 }
 
+/**@ingroup tnet_utils_group
+* Converts human-readable text strings representing hostnames or IP addresses as socket (File descriptor).
+* @param host The hostname/IP address to convert.
+* @param port The local port associated to the host.
+* @param type The type of the socket to create.
+* @param fd [out] The socket  representing the @a host:port address.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e type, tnet_fd_t *fd)
 {
 	int status = -1;
@@ -793,7 +868,12 @@ bail:
 	return (*fd == TNET_INVALID_SOCKET) ? status : 0;
 }
 
-
+/**@ingroup tnet_utils_group
+* Changes the blocking mode of the socket.
+* @param fd The socket for which to change to mode.
+* @param nonBlocking The new mode (0 =blocking and 1=non-blocking).
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 {
 	if(fd != TNET_INVALID_FD)
@@ -827,15 +907,22 @@ int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 	return 0;
 }
 
+/**@ingroup tnet_utils_group
+* Sends data to a specific destination.
+* @param fd The source socket.
+* @param to The destination socket.
+* @param buf A pointer to the buffer to send over the network.
+* @param size The size of the buffer.
+* @retval If no error occurs, sendto returns the total number of bytes sent, which can be less than the number indicated by @b size.
+* Otherwise, non-zero (negative) error code is returned.
+*/
 int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size)
 {
-	if(fd == TNET_INVALID_FD)
-	{
+	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to send data.");
 		return -1;
 	}
-	if(!buf || !size)
-	{
+	if(!buf || !size){
 		TSK_DEBUG_ERROR("Using invalid BUFFER.");
 		return -2;
 	}
@@ -849,6 +936,17 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 #endif
 }
 
+/**@ingroup tnet_utils_group
+* Receives a datagram and stores the source address.
+* @param fd A descriptor identifying a bound socket.
+* @param buf A buffer for the incoming data.
+* @param size The length, in bytes, of the buffer pointed to by the buf parameter.
+* @param flags A set of options that modify the behavior of the function call beyond the options specified for the associated socket.
+* All flags which can be passed to @b recvfrom.
+* @param from An optional pointer to a buffer in a @b sockaddr structure that will hold the source address upon return.
+* If no error occurs, recvfrom returns the number of bytes received. If the connection has been gracefully closed, the return value is zero. 
+* Otherwise, non-zero (negative) error code is returned.
+*/
 int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct sockaddr *from)
 {
 	socklen_t fromlen;
@@ -867,6 +965,15 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 	return recvfrom(fd, buf, size, flags, from, &fromlen);
 }
 
+/**@ingroup tnet_utils_group
+* Sends data on a connected socket.
+* @param fd A descriptor identifying a connected socket.
+* @param buf A pointer to a buffer containing the data to be transmitted.
+* @param size The length, in bytes, of the data in buffer pointed to by the buf parameter.
+* @param flags A set of flags that specify the way in which the call is made.
+* All flags which can be passed to @b recv.
+* @retval If no error occurs, send returns the total number of bytes sent, which can be less than the number requested to be sent in the @b size parameter.
+*/
 int tnet_sockfd_send(tnet_fd_t fd, void* buf, size_t size, int flags)
 {
 	int ret = -1;
@@ -887,6 +994,16 @@ bail:
 	return ret;
 }
 
+/**@ingroup tnet_utils_group
+* Receives data from a connected socket or a bound connectionless socket.
+* @param fd The descriptor that identifies a connected socket.
+* @param buf A pointer to the buffer to receive the incoming data.
+* @param size The length, in bytes, of the buffer pointed to by the buf parameter.
+* @param flags A set of flags that influences the behavior of this function.
+* All flags which can be passed to @b recv.
+* @retval If no error occurs, recv returns the number of bytes received and the buffer pointed to by the buf parameter will contain this data received. If the connection has been gracefully closed, the return value is zero.
+* Otherwise, non-zero (negative) error code is returned.
+*/
 int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags)
 {
 	int ret = -1;
@@ -905,6 +1022,12 @@ bail:
 	return ret;
 }
 
+/**@ingroup tnet_utils_group
+* Establishes a connection to a specified socket.
+* @param fd A descriptor identifying an unconnected socket.
+* @param to A pointer to the @b sockaddr_storage structure to which the connection should be established.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 {
 	int status = -1;
@@ -946,6 +1069,11 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 	return status;
 }
 
+/**@ingroup tnet_utils_group
+* Closes an existing socket.
+* @param fd A descriptor identifying the socket to close.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_sockfd_close(tnet_fd_t *fd)
 {
 	int ret;

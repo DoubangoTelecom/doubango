@@ -48,6 +48,13 @@
 
 #include <string.h> /* strtok, strlen ... */
 
+/**@ingroup tnet_dns_group
+* Initializes any DNS RR (either NAPTR or SRV ...).
+* @param rr The DNS RR to initialize.
+* @param qtype The type of the RR.
+* @param qclass The class of the RR.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_t qclass)
 {
 	if(rr)
@@ -65,6 +72,11 @@ int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_
 	return -1;
 }
 
+/**@ingroup tnet_dns_group
+* Deinitializes any DNS RR (either NAPTR or SRV ...).
+* @param rr The DNS RR to deinitialize.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 {
 	if(rr)
@@ -82,6 +94,9 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 	return -1;
 }
 
+/**@ingroup tnet_dns_group
+* Deserialize <character-string>.
+*/
 int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** charstring, size_t *offset)
 {
 	/* RFC 1035 - 3.3. Standard RRs
@@ -102,7 +117,9 @@ int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** cha
 	else return -1;
 }
 
-
+/**@ingroup tnet_dns_group
+* Deserializes a QName.
+*/
 int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, size_t *offset)
 {
 	/* RFC 1035 - 4.1.4. Message compression
@@ -190,6 +207,9 @@ int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, si
 //	return 0;
 //}
 
+/**@ingroup tnet_dns_group
+* Serializes a QName.
+*/
 int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 {
 	/*
@@ -227,6 +247,9 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 	return 0;
 }
 
+/**@ingroup tnet_dns_group
+* Deserializes a DNS RR.
+*/
 tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* offset)
 {
 	tnet_dns_rr_t *rr = 0;
@@ -349,7 +372,9 @@ bail:
 	return rr;
 }
 
-
+/**@ingroup tnet_dns_group
+* Serializes a DNS RR.
+*/
 int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 {
 	if(!rr || !output)

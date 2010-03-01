@@ -167,7 +167,7 @@ void test_stack()
 		TSIP_STACK_SET_REALM("sip:ims.inexbee.com"), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
 		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
-		TSIP_STACK_SET_PROXY_CSCF("pcscf.ims.inexbee.com", "udp", 0),
+		TSIP_STACK_SET_PROXY_CSCF("pcscf.ims.inexbee.com", "udp", 1),
 		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(4060),
 		//TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),

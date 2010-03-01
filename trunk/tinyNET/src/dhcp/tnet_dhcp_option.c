@@ -40,9 +40,6 @@
  *
  * @brief	Initializes DHCPv4 option. 
  *
- * @author	Mamadou
- * @date	2/11/2010
- *
  * @param [in,out]	self	The option to initialize. 
  * @param	code			The code of the option to initialize. 
  *
@@ -91,8 +88,7 @@ tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, size_t size)
 	uint8_t len;
 
 	/* Check validity */
-	if(!dataPtr || size<2/*Code Len*/)
-	{
+	if(!dataPtr || size<2/*Code Len*/){
 		goto bail;
 	}
 

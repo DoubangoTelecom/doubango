@@ -116,8 +116,6 @@ int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id
 }
 
 /**
- * @fn	int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family,
- * 		int XORed, char** out_ip)
  *
  * @brief	Formats binary IP address as string.
  *
@@ -126,7 +124,6 @@ int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id
  *
  * @param	in_ip			The binary IP address to format. 
  * @param	family			The address family. 
- * @param	XORed			Indicates whether the address is obfucated (XORed) or not. 
  * @param [in,out]	out_ip	The output string 
  *
  * @return	Zero if current list item hold a binding with the same id and -1 otherwise. 

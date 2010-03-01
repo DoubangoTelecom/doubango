@@ -38,23 +38,42 @@
 
 #include "tsk_safeobj.h"
 
+/**@ingroup tnet_dns_group
+* @def TNET_DNS_CTX_CREATE
+* Creates new DNS context.
+* @retval @ref tnet_dns_ctx_t object.
+*/
+/**@ingroup tnet_dns_group
+* @def TNET_DNS_CACHE_ENTRY_CREATE
+* Creates new DNS cache entry.
+* @retval @ref tnet_dns_cache_entry_t object.
+*/
 TNET_BEGIN_DECLS
 
 #define TNET_DNS_CTX_CREATE()											tsk_object_new(tnet_dns_ctx_def_t)
 #define TNET_DNS_CACHE_ENTRY_CREATE(qname, qclass, qtype, answer)		tsk_object_new(tnet_dns_cache_entry_def_t, (const char*)qname, (tnet_dns_qclass_t)qclass, (tnet_dns_qtype_t)qtype, (tnet_dns_response_t*)answer)
 
+/**@ingroup tnet_dns_group
+*/
 #define TNET_DNS_CACHE_TTL						(15000 * 1000)
 
-/** Default timeout (in milliseconds) value for DNS queries. 
+/**@ingroup tnet_dns_group
+* Default timeout (in milliseconds) value for DNS queries. 
 */
 #define TNET_DNS_TIMEOUT_DEFAULT				2000
 
-/** Maximum supported Dgram size to advertise using EDNS0. 
+/**@ingroup tnet_dns_group
+* Maximum supported Dgram size to advertise using EDNS0. 
 */
 #define TNET_DNS_DGRAM_SIZE_DEFAULT				4096
 
+/**@ingroup tnet_dns_group
+*/
 #define TNET_DNS_SERVER_PORT_DEFAULT			53
 
+/**@ingroup tnet_dns_group
+* DNS cache entry.
+*/
 typedef struct tnet_dns_cache_entry_s
 {
 	TSK_DECLARE_OBJECT;
@@ -71,11 +90,14 @@ tnet_dns_cache_entry_t;
 typedef tsk_list_t  tnet_dns_cache_entries_L_t;
 typedef tnet_dns_cache_entries_L_t tnet_dns_cache_t;
 
+/**@ingroup tnet_dns_group
+* DNS context.
+*/
 typedef struct tnet_dns_ctx_s
 {
 	TSK_DECLARE_OBJECT;
 
-	uint64_t timeout; /**< In milliseconds. Default: @ref tnet_dns_ctx_tIMEOUT_DEFAULT. */
+	uint64_t timeout; /**< In milliseconds. Default: @ref TNET_DNS_TIMEOUT_DEFAULT. */
 	unsigned enable_recursion:1; /**< Indicates whether to direct the name server to pursue the query recursively. Default: enabled.*/
 	unsigned enable_edns0:1; /**< Indicates whether to enable EDNS0 (Extension Mechanisms for DNS) or not. Default: enabled. */
 	unsigned enable_cache:1; /**< Indicates whether to enable the DNS cache or not. */

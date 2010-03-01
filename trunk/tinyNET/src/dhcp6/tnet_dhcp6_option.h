@@ -39,6 +39,9 @@
 
 TNET_BEGIN_DECLS
 
+#define TNET_DHCP6_OPTION_CREATE(code, payload, payload_size)		tsk_object_new(tnet_dhcp6_option_def_t, (tnet_dhcp6_option_code_t)code, (const void*)payload, (size_t)payload_size)
+
+
 #define TNET_DHCP6_OPTION_INDENTIFER_CREATE(code, payload, payload_size)		tsk_object_new(tnet_dhcp6_option_identifier_def_t, (tnet_dhcp6_option_code_t)code, (const void*)payload, (size_t)payload_size)
 #define TNET_DHCP6_OPTION_CLIENTID_CREATE(payload, payload_size)				TNET_DHCP6_OPTION_INDENTIFER_CREATE(dhcp6_code_clientid, payload, payload_size)
 #define TNET_DHCP6_OPTION_SERVERID_CREATE(payload, payload_size)				TNET_DHCP6_OPTION_INDENTIFER_CREATE(dhcp6_code_serverid, payload, payload_size)
@@ -100,11 +103,19 @@ tnet_dhcp6_statuscode_t;
 *	RFC 3315 - 22.1. Format of DHCP Options
 *=======================================================================================*/
 
+/**@ingroup tnet_dhcpv_group
+* DHCPv6 option-data.
+*/
+typedef struct tnet_dhcp6_option_data_s
+{
+	TSK_DECLARE_OBJECT;
+}
+tnet_dhcp6_option_data_t;
+#define TNET_DECLARE_DHCP6_OPTION_DATA tnet_dhcp6_option_data_t dhcp6_option_data
+
 typedef struct tnet_dhcp6_option_s
 {
 	TSK_DECLARE_OBJECT;
-
-	unsigned initialized:1;
 
 	/* RFC 3315 - 22.1. Format of DHCP Options
 	0                   1                   2                   3
@@ -121,8 +132,8 @@ typedef struct tnet_dhcp6_option_s
 	tnet_dhcp6_option_code_t code;
 	/* Option length. Same as strlen(data buffer)*/
 	uint16_t len;
-	/* The data for the option */
-	tsk_buffer_t *data;
+	/* opton-data */
+	tnet_dhcp6_option_data_t *data;
 }
 tnet_dhcp6_option_t;
 
@@ -130,12 +141,11 @@ typedef tsk_list_t tnet_dhcp6_options_L_t;
 
 #define TNET_DECLARE_DHCP6_OPTION tnet_dhcp6_option_t dhcp6_option
 
-int tnet_dhcp6_option_init(tnet_dhcp6_option_t *self, tnet_dhcp6_option_code_t code);
-int tnet_dhcp6_option_deinit(tnet_dhcp6_option_t *self);
-
 tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, size_t size);
 int tnet_dhcp6_option_serialize(const tnet_dhcp6_option_t* self, tsk_buffer_t *output);
 int tnet_dhcp6_option_serializeex(tnet_dhcp6_option_code_t code, uint8_t length, const void* value, tsk_buffer_t *output);
+
+
 
 
 /*======================================================================================
@@ -147,7 +157,7 @@ int tnet_dhcp6_option_serializeex(tnet_dhcp6_option_code_t code, uint8_t length,
 */
 typedef struct tnet_dhcp6_option_identifier_s
 {
-	TNET_DECLARE_DHCP6_OPTION;
+	TNET_DECLARE_DHCP6_OPTION_DATA;
 	/*
 	0                   1                   2                   3
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -180,7 +190,7 @@ typedef tnet_dhcp6_option_identifier_t tnet_dhcp6_option_serverid_t;
 */
 typedef struct tnet_dhcp6_option_orequest_s
 {
-	TNET_DECLARE_DHCP6_OPTION;
+	TNET_DECLARE_DHCP6_OPTION_DATA;
 	/*
 	0                   1                   2                   3
 	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -192,6 +202,7 @@ typedef struct tnet_dhcp6_option_orequest_s
 	|                              ...                              |
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
+	tsk_buffer_t* codes;
 }
 tnet_dhcp6_option_orequest_t;
 
@@ -205,7 +216,7 @@ TINYNET_API int tnet_dhcp6_option_orequest_add_code(tnet_dhcp6_option_orequest_t
 */
 typedef struct tnet_dhcp6_option_vendorclass_s
 {
-	TNET_DECLARE_DHCP6_OPTION;
+	TNET_DECLARE_DHCP6_OPTION_DATA;
 	/*
 	 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
       +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+

@@ -33,10 +33,19 @@
 
 #include "tnet_dns_rr.h"
 
+/**@ingroup tnet_dns_group
+* @def TNET_DNS_OPT_CREATE
+* Creates new DNS OPT Resource Record.
+* @retval @ref tnet_dns_opt_t object.
+*/
+
 TNET_BEGIN_DECLS
 
 #define TNET_DNS_OPT_CREATE(payload_size)						tsk_object_new(tnet_dns_opt_def_t, (unsigned)payload_size)
 
+/**@ingroup tnet_dns_group
+* DNS OPT Resource Record
+*/
 typedef struct tnet_dns_opt_s
 {
 	TNET_DECLARE_DNS_RR;

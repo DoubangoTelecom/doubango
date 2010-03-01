@@ -35,6 +35,13 @@
 
 #include <string.h>
 
+/**@ingroup tnet_dns_group
+* Serializes a STUN message in binary data.
+* @param message The STUN message to seriablize.
+* @retval The binary data representing the message if succeed.
+* Otherwise, NULL is returned.
+* @sa tnet_dns_message_deserialize.
+*/
 tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message)
 {
 	tsk_buffer_t* output = 0;
@@ -146,6 +153,13 @@ bail:
 	return output;
 }
 
+/**@ingroup tnet_dns_group
+* Deserialize a STUN message from binary data.
+* @param data A pointer to the binary data.
+* @param size The size of the bnary data buffer.
+* @retval @ref tnet_dns_message_t object if succeed or NULL otherwise.
+* @sa @ref tnet_dns_message_serialize.
+*/
 tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t size)
 {
 	tnet_dns_message_t *message = 0;

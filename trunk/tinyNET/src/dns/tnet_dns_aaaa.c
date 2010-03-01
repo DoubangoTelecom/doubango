@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-/**@file tnet_dns_aaaaaaa.c
+/**@file tnet_dns_aaaA.c
  * @brief DNS IPv6 address record - RR - (RFC 3596).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

@@ -47,48 +47,10 @@
 		tnet_stun_attribute_pad(attribute, output); \
 		TSK_OBJECT_SAFE_FREE(attribute);
 
-//int tnet_stun_message_set_type(tnet_stun_message_t *message, tnet_stun_message_type_t type)
-//{
-//	tnet_stun_message_t* msg = message;
-//	if(message)
-//	{
-//		msg->type = type;
-//		return 0;
-//	}
-//	return -1;
-//}
-
-//int tnet_stun_message_set_random_transacid(tnet_stun_message_handle_t *message)
-//{
-//	tnet_stun_message_t* msg = message;
-//	if(msg)
-//	{
-//		tsk_istr_t random;
-//		tsk_md5digest_t digest;
-//
-//		tsk_strrandom(&random);
-//		TSK_MD5_DIGEST_CALC(random, sizeof(random), digest);
-//
-//		memcpy(msg->transaction_id, digest, TNET_STUN_TRANSACID_SIZE);
-//		return 0;
-//	}
-//	return -1;
-//}
-
-
-
-/**
- * @fn	tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
- *
- * @brief	Serialize a STUN message into binary data.
- *
- * @author	Mamadou
- * @date	1/14/2010
- *
- * @param [in,out]	self	The STUN message to serialize. 
- *
- * @return	A buffer holding the binary data (result) if serialization succeed and zero otherwise.
- *			It is up to the caller of this method to free the returned buffer using @ref TSK_BUFFER_SAFE_FREE.
+/**@ingroup tnet_stun_group
+ * Serializes a STUN message as binary data.
+ * @param [in,out]	self	The STUN message to serialize.
+ * @retval	A buffer holding the binary data (result) if serialization succeed and zero otherwise.
 **/
 tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 {
@@ -231,19 +193,14 @@ bail:
 }
 
 
-/**
- * @fn	tnet_stun_message_t message* tnet_stun_message_deserialize(const uint8_t *data,
- * 		size_t size)
+/**@ingroup tnet_stun_group
  *
- * @brief	Deserialize a STUN message from binary data.
- *
- * @author	Mamadou
- * @date	1/14/2010
+ * Deserializes a STUN message from binary data.
  *
  * @param [in,out]	data	A pointer to the binary data. 
  * @param	size			The size of the binary data. 
  *
- * @return	A STUN message if deserialization succeed and zero otherwise.
+ * @retval	A STUN message if deserialization succeed or NULL otherwise.
 **/
 tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t size)
 {
@@ -316,6 +273,12 @@ bail:
 	return message;
 }
 
+/**@ingroup tnet_stun_group
+* Adds an attribute to a STUN message.
+* @param self The STUN message into which to add the attribute.
+* @param attribute The attribute to add.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribute_t** attribute)
 {
 	//if(self && attribute)
@@ -326,6 +289,12 @@ int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribu
 	return -1;
 }
 
+/**@ingroup tnet_stun_group
+* Gets a STUN attribute from a message.
+* @param self The message from which to get the attribute.
+* @param type The type of the attribute to retrieve.
+* @retval @ref tnet_stun_attribute_t object if found and NULL otherwise.
+*/
 const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type)
 {
 	tnet_stun_attribute_t* attribute;
@@ -344,41 +313,57 @@ const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_mes
 	return 0;
 }
 
+/**@ingroup tnet_stun_group
+* Gets the STUN error-code attribute value from the message.
+* @param self The STUN message from which to get the error code.
+* @retval The error code if the message contain such attribute or -1 otherwise.
+*/
 short tnet_stun_message_get_errorcode(const tnet_stun_message_t *self)
 {
 	const tnet_stun_attribute_errorcode_t* error = (const tnet_stun_attribute_errorcode_t*)tnet_stun_message_get_attribute(self, stun_error_code);
-	if(error)
-	{
+	if(error){
 		return  ((error->_class*100) + error->number);
 	}
 	return -1;
 }
 
+/**@ingroup tnet_stun_group
+* Gets the STUN @b realm attribute value from the message.
+* @param self The STUN message from which to get the @b realm.
+* @retval The @b realm as a string pointer code if the message contain such attribute or NULL otherwise.
+*/
 const char* tnet_stun_message_get_realm(const tnet_stun_message_t *self)
 {
 	const tnet_stun_attribute_realm_t* realm = (const tnet_stun_attribute_realm_t*)tnet_stun_message_get_attribute(self, stun_realm);
-	if(realm)
-	{
+	if(realm){
 		return realm->value;
 	}
 	return 0;
 }
 
+/**@ingroup tnet_stun_group
+* Gets the STUN @b nonce attribute value from the message.
+* @param self The STUN message from which to get the @b nonce.
+* @retval The @b nonce as a string pointer code if the message contain such attribute or NULL otherwise.
+*/
 const char* tnet_stun_message_get_nonce(const tnet_stun_message_t *self)
 {
 	const tnet_stun_attribute_nonce_t* nonce = (const tnet_stun_attribute_nonce_t*)tnet_stun_message_get_attribute(self, stun_nonce);
-	if(nonce)
-	{
+	if(nonce){
 		return nonce->value;
 	}
 	return 0;
 }
 
+/**@ingroup tnet_stun_group
+* Gets the STUN @b lifetime attribute value from the message.
+* @param self The STUN message from which to get the @b lifetime.
+* @retval The @b lifetime (any positive value) if the message contain such attribute or -1 otherwise.
+*/
 int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self)
 {
 	const tnet_turn_attribute_lifetime_t* lifetime = (const tnet_turn_attribute_lifetime_t*)tnet_stun_message_get_attribute(self, stun_lifetime);
-	if(lifetime)
-	{
+	if(lifetime){
 		return lifetime->value;
 	}
 	return -1;

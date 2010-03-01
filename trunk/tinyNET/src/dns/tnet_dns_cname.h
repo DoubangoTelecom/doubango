@@ -33,11 +33,19 @@
 
 #include "tnet_dns_rr.h"
 
+/**@ingroup tnet_dns_group
+* @def TNET_DNS_CNAME_CREATE
+* Creates new DNS CNAME Resource Record.
+* @retval @ref tnet_dns_cname_t object.
+*/
+
 TNET_BEGIN_DECLS
 
 #define TNET_DNS_CNAME_CREATE(name, qclass, ttl, rdlength, data, offset)			tsk_object_new(tnet_dns_cname_def_t, (const char*)name, (tnet_dns_qclass_t)qclass, (uint32_t)ttl, (uint16_t)rdlength, (const void*)data, (size_t)offset)
 
-
+/**@ingroup tnet_dns_group
+* DNS CNAME Resource Record
+*/
 typedef struct tnet_dns_cname_s
 {
 	TNET_DECLARE_DNS_RR;
