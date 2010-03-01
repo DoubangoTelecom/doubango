@@ -37,7 +37,10 @@
 
 TCOMP_BEGIN_DECLS
 
-#define TCOMP_MESSAGE_CREATE(input_ptr, input_size, stream)	tsk_object_new(tcomp_message_def_t, input_ptr, input_size, stream)
+/**@ingroup tcomp_message_group
+* Creates new SigComp message.
+*/
+#define TCOMP_MESSAGE_CREATE(input_ptr, input_size, stream)	tsk_object_new(tcomp_message_def_t, (const void*)input_ptr, (size_t)input_size, (int)stream)
 
 /**
 * SigComp Message Format as per RFC 3320 subclause 7.

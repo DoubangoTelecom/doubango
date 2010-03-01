@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_result.c
- * @brief  SIGCOMP decompresion result.
+ * @brief  SigComp decompresion result.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -31,7 +31,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-/**@defgroup tcomp_result_group SIGCOMP decompresion result.
+/**@defgroup tcomp_result_group SigComp decompresion result.
 */
 
 /**@ingroup tcomp_result_group
@@ -190,8 +190,6 @@ uint8_t tcomp_result_getTempStatesToFreeSize(const tcomp_result_t *result)
 //	SigComp result object definition
 //
 
-/**@ingroup tcomp_result_group
-*/
 static void* tcomp_result_create(void *self, va_list * app)
 {
 	tcomp_result_t* result = self;
@@ -244,8 +242,6 @@ const void *tcomp_result_def_t = &tcomp_result_def_s;
 //	SigComp temporary state object definition
 //
 
-/**@ingroup tcomp_result_group
-*/
 static void* tcomp_tempstate_to_free_create(void *self, va_list * app)
 {
 	tcomp_tempstate_to_free_t* tempstate_to_free = self;

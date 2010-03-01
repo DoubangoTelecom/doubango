@@ -43,10 +43,15 @@ TCOMP_BEGIN_DECLS
 
 #define MAX_TEMP_SATES	4
 
+/**@ingroup tcomp_result_group
+* Creates new SigComp result object.
+*/
 #define TCOMP_RESULT_CREATE()						tsk_object_new(tcomp_result_def_t)
 
 #define TCOMP_TEMPSTATE_TO_FREE_CREATE()			tsk_object_new(tcomp_tempstate_to_free_def_t)
 
+/**@ingroup tcomp_result_group
+*/
 typedef struct tcomp_tempstate_to_free_s
 {
 	TSK_DECLARE_OBJECT;
@@ -61,7 +66,7 @@ tcomp_tempstate_to_free_t;
 
 TINYSIGCOMP_GEXTERN const void *tcomp_tempstate_to_free_def_t;
 
-/**
+/**@ingroup tcomp_result_group
 * SigComp decompression result.
 */
 typedef struct tcomp_result_s

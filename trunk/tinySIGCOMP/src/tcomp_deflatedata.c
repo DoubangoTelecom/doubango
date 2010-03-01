@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_compressor.h
- * @brief  Deflate compressor data.
+ * @brief  SigComp Deflate compressor(Compressor data).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -31,11 +31,8 @@
 
 #include "tsk_debug.h"
 
-/**@defgroup tcomp_deflatedata_group Deflate compressor data.
-*/
 
-
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 int tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata)
 {
@@ -59,8 +56,6 @@ int tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata)
 //	Deflate compressor data object definition
 //
 
-/**@ingroup tcomp_deflatedata_group
-*/
 static void* tcomp_deflatedata_create(void * self, va_list * app)
 {
 	tcomp_deflatedata_t *deflatedata = self;
@@ -78,8 +73,6 @@ static void* tcomp_deflatedata_create(void * self, va_list * app)
 	return self;
 }
 
-/**@ingroup tcomp_deflatedata_group
-*/
 static void* tcomp_deflatedata_destroy(void *self)
 {
 	tcomp_deflatedata_t *deflatedata = self;

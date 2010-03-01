@@ -36,6 +36,8 @@
 
 TCOMP_BEGIN_DECLS
 
+/** Creates new Requested feedback.
+*/
 #define TCOMP_REQFEED_CREATE()				tsk_object_new(tcomp_reqfeed_def_t)
 
 /*
@@ -49,8 +51,7 @@ TCOMP_BEGIN_DECLS
 +---+---+---+---+---+---+---+---+
 */
 
-/**@typedef tcomp_reqfeed_t
-* SigComp Requested feedback item as per RFC 3320 subclause 9.4.9.
+/** SigComp Requested feedback item as per RFC 3320 subclause 9.4.9.
 */
 typedef struct tcomp_reqfeed_s
 {

@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_udvm.nack.c
- * @brief  The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
+ * @brief  SigComp UDVM machine (byte copying).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -29,9 +29,6 @@
  */
 #include "tcomp_udvm.h"
 
-/**@defgroup tcomp_udvm_group SIGCOMP UDVM machine.
-* The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
-*/
 
 #define TCOMP_UDVM_MEMORY_REGISTERS_PTR TCOMP_UDVM_GET_BUFFER_AT(UDVM_REGISTERS_START)
 
@@ -39,10 +36,6 @@
 /**@ingroup tcomp_udvm_group
 RFC3320-Setction_8.4.  Byte copying
 From UDVM to UDVM
-@param destination
-@param source
-@param size_tocopy
-@returns
 */
 int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy)
 {
@@ -77,10 +70,6 @@ int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t
 /**@ingroup tcomp_udvm_group
 RFC3320-Setction_8.4.  Byte copying
 From EXTERNAL to UDVM
-@param destination
-@param source
-@param size_tocopy
-@returns
 */
 int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t* source, uint16_t size_tocopy)
 {
@@ -114,10 +103,6 @@ int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint16_t destination, const uint8
 /**@ingroup tcomp_udvm_group
 RFC3320-Setction_8.4.  Byte copying
 From UDVM to EXTERNAL
-@param destination
-@param source
-@param size_tocopy
-@returns
 */
 int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint16_t source, uint16_t size_tocopy)
 {

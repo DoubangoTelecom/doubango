@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_udvm.statemanagment.c
- * @brief  The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
+ * @brief  SigComp UDVM machine (State managment)
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -29,21 +29,11 @@
  */
 #include "tcomp_udvm.h"
 
-/**@defgroup tcomp_udvm_group SIGCOMP UDVM machine.
-* The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
-*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
+/// @ingroup tcomp_udvm_group
 ///
 /// @brief	Tcomp udvm byte copy temp states. 
-///
-/// @author	Mamadou
-/// @date	11/26/2009
-///
-/// @param [in,out]	udvm	If non-null, the udvm. 
-///
-/// @return	. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
@@ -82,14 +72,9 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	int tcomp_udvm_createTempState(tcomp_udvm_t *udvm, uint16_t state_length,
-/// 	uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length,
-/// 	uint16_t state_retention_priority, int end_msg)
+/// @ingroup tcomp_udvm_group
 ///
-/// @brief	Tcomp udvm create temp state. 
-///
-/// @author	Mamadou
-/// @date	11/26/2009
+/// @brief	Tcomp udvm create temp state.
 ///
 /// @param [in,out]	udvm				If non-null, the udvm. 
 /// @param	state_length				Length of the state. 
@@ -99,7 +84,7 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 /// @param	state_retention_priority	The state retention priority. 
 /// @param	end_msg						Message describing the end. 
 ///
-/// @return	. 
+/// @return	1 if succeed an zero otherwise.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int tcomp_udvm_createTempState(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, 

@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_compressor.h
- * @brief  Deflate compressor data.
+ * @brief  SigComp Deflate compressor(Compressor data).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -41,16 +41,32 @@
 #	include "zlib.h"
 #endif
 
+/**@ingroup tcomp_compressor_deflate_group
+* @def _TCOMP_DEFLATEDATA_CREATE
+*/
+/**@ingroup tcomp_compressor_deflate_group
+* @def TCOMP_DEFLATEDATA_CREATE
+*/
+
 TCOMP_BEGIN_DECLS
 
 #define _TCOMP_DEFLATEDATA_CREATE(isStream, z_level, z_windowBits)		tsk_object_new(tcomp_deflatedata_def_t, (int)isStream, (int)z_level,(int) z_windowBits)
 #define TCOMP_DEFLATEDATA_CREATE(isStream)								tsk_object_new(tcomp_deflatedata_def_t, (int)isStream, Z_BEST_COMPRESSION, Z_DEFAULT_WINDOW_BITS)
 
-/** [[[[[[[[[[[[[[[[[ **/
+//============================================================//
+/**@ingroup tcomp_compressor_deflate_group
+*/
 #define USE_DICTS_FOR_COMPRESSION				0
 
+/**@ingroup tcomp_compressor_deflate_group
+*/
 #define Z_DEFAULT_WINDOW_BITS 10 /* 1024*/
 
+/**@ingroup tcomp_compressor_deflate_group
+*/
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_UDVM_CIRCULAR_START_INDEX
+*/
 #define DEFLATE_DECOMPRESSION_PTR_INDEX			70
 #if USE_DICTS_FOR_COMPRESSION
 #	define DEFLATE_UDVM_CIRCULAR_START_INDEX	701
@@ -58,12 +74,37 @@ TCOMP_BEGIN_DECLS
 #	define DEFLATE_UDVM_CIRCULAR_START_INDEX	630
 #endif
 
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_SIP_DICT_ONLY
+*/
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_PRES_DICT_ONLY
+*/
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_SIP_PRES_DICTS
+*/
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_NO_DICT
+*/
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_FIXME_DICT
+*/
 #define DEFLATE_SIP_DICT_ONLY					0x00
 #define DEFLATE_PRES_DICT_ONLY					0x01
 #define DEFLATE_SIP_PRES_DICTS					0x02
 #define DEFLATE_NO_DICT							0x03
 #define DEFLATE_FIXME_DICT						DEFLATE_NO_DICT
 
+
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_BYTECODE_DESTINATION_START
+*/
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_BYTECODE_DESTINATION_CODE
+*/
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATE_BYTECODE_LEN
+*/
 #define DEFLATE_BYTECODE_DESTINATION_START		320
 #define DEFLATE_BYTECODE_DESTINATION_CODE		0x04 // 320
 #if USE_DICTS_FOR_COMPRESSION
@@ -71,9 +112,11 @@ TCOMP_BEGIN_DECLS
 #else
 #	define DEFLATE_BYTECODE_LEN					310
 #endif
-/**	]]]]]]]]]]]]]] **/
+//==========================================================//
 
-
+/**@ingroup tcomp_compressor_deflate_group
+* @def DEFLATEDATA_DEFLATE_BYTECODE
+*/
 #if USE_DICTS_FOR_COMPRESSION
 #define DEFLATEDATA_DEFLATE_BYTECODE \
 	"\x0f\x86\x7a\xa2\xbd\x8d\x05\xa2\xbd\x00\x03\x00\x04\x00\x05\x00\x06\x00\x07\x00\x08\x00" \
@@ -114,6 +157,8 @@ TCOMP_BEGIN_DECLS
 
 #endif /* USE_DICTS_FOR_COMPRESSION */
 
+/**@ingroup tcomp_compressor_deflate_group
+*/
 typedef struct tcomp_deflateStream_s
 {
 	z_stream zs;
@@ -125,6 +170,8 @@ tcomp_deflateStream_t;
 int tcomp_deflateStream_end(tcomp_deflateStream_t *stream);
 int tcomp_deflateStream_copy(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source);
 
+/**@ingroup tcomp_compressor_deflate_group
+*/
 typedef struct tcomp_deflatedata_s
 {
 	TSK_DECLARE_OBJECT;

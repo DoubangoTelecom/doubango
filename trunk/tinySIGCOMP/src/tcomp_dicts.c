@@ -35,10 +35,11 @@
 
 #include "tsk_debug.h"
 
-/**@defgroup tcomp_dicts_group SIGCOMP dictionaries.
+/**@defgroup tcomp_dicts_group SigComp dictionaries.
 */
 
 /**@ingroup tcomp_dicts_group
+* Presence-Specific Static Dictionary for Signaling Compression as per RFC 5112.
 */
 tcomp_dictionary_t* tcomp_dicts_create_presence_dict()
 {
@@ -69,6 +70,7 @@ tcomp_dictionary_t* tcomp_dicts_create_presence_dict()
 }
 
 /**@ingroup tcomp_dicts_group
+* The Session Initiation Protocol (SIP) and Session Description Protocol (SDP) Static Dictionary for Signaling Compression as per RFC 3485.
 */
 tcomp_dictionary_t* tcomp_dicts_create_sip_dict()
 {

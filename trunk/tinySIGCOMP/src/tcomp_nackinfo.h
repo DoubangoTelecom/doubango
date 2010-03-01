@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tcomp_nakinfo.h
+/**@file tcomp_nackinfo.h
  * @brief  RFC 4077 - A Negative Acknowledgement Mechanism for Signaling Compression (NACK)
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
@@ -37,6 +37,9 @@
 
 TCOMP_BEGIN_DECLS
 
+/**@ingroup tcomp_nackinfo_group
+* Creates new NACK object.
+*/
 #define TCOMP_NACKINFO_CREATE()				tsk_object_new(tsk_nackinfo_def_t)
 
 /*
@@ -61,7 +64,7 @@ TCOMP_BEGIN_DECLS
 |                               |
 +---+---+---+---+---+---+---+---+
 */
-/**@typedef tcomp_nackinfo_t
+/**@ingroup tcomp_nackinfo_group
 * NACK info as per rfc 4077 subclause 3.1.
 * You MUST use @ref TCOMP_NACKINFO_CREATE to create new nackinfo object.
 */

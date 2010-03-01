@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_state.c
- * @brief  SIGCOMP state.
+ * @brief  SigComp state.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -32,12 +32,11 @@
 #include "tsk_debug.h"
 #include "tsk_sha1.h"
 
-/**@defgroup tcomp_state_group SIGCOMP decompresion result.
-* Data saved for retrieval by later SigComp messages.
+/**@defgroup tcomp_state_group SigComp state.
 */
 
 /**@ingroup tcomp_state_group
-* Compare two sigomp states.
+* Compares two sigomp states.
 * @param state1 First state to compare.
 * @param state2 Second state to compare.
 * @retval 1 if the two handles are equals and 0 otherwise.
@@ -53,7 +52,7 @@ int tcomp_state_equals(const tcomp_state_t *state1, const tcomp_state_t *state2)
 }
 
 /**@ingroup tcomp_state_group
-* Compute the state identifier by calculating a 20-byte SHA-1 hash [RFC-3174] over the
+* Computes the state identifier by calculating a 20-byte SHA-1 hash [RFC-3174] over the
 *  byte string formed by concatenating the state_length, state_address,
 *  state_instruction, minimum_access_length and state_value (in the order given).
 * @param state The state to make valid.
@@ -120,11 +119,6 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 //========================================================
 //	State object definition
 //
-/**@ingroup tcomp_state_group
-* Creates new SigComp state. You MUST use @ref tcomp_state_destroy to free the state.
-* @retval New SigComp state.
-* @sa @ref tcomp_state_destroy.
-*/
 static void* tcomp_state_create(void * self, va_list * app)
 {
 	tcomp_state_t *state = self;
@@ -157,11 +151,6 @@ static void* tcomp_state_create(void * self, va_list * app)
 	return state;
 }
 
-/**@ingroup tcomp_state_group
-* Destroy a SigComp state previously created using @ref tcomp_state_create.
-* @param state The SigComp state to destroy.
-* @sa @ref tcomp_state_create.
-*/
 static void* tcomp_state_destroy(void *self)
 {
 	tcomp_state_t *state = self;

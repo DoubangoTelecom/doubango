@@ -38,18 +38,29 @@
 
 TCOMP_BEGIN_DECLS
 
+/**@ingroup tcomp_state_group
+* Creates new SigComp state.
+*/
 #define TCOMP_STATE_CREATE(length, address, instruction, minimum_access_length, retention_priority)	\
 	tsk_object_new(tcomp_state_def_t, length, address, instruction, minimum_access_length, retention_priority)
 
-// FIXME:
+/**@ingroup tcomp_state_group
+* @def TCOMP_PARTIAL_ID_LEN_CODE
+*/
+/**@ingroup tcomp_state_group
+* @def TCOMP_PARTIAL_ID_LEN_VALUE
+*/
 #define TCOMP_PARTIAL_ID_LEN_CODE		0x01
 #define TCOMP_PARTIAL_ID_LEN_VALUE		0x06
 
-/*
+/**@ingroup tcomp_state_group
 * For the purpose of calculation, each state item is considered to cost (state_length + 64) bytes.
 */
 #define TCOMP_GET_STATE_SIZE(state) ( (state) ? ((state)->length + 64) : 0 )
 
+/**@ingroup tcomp_state_group
+* SigComp state.
+*/
 typedef struct tcomp_state_s
 {
 	TSK_DECLARE_OBJECT;

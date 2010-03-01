@@ -454,8 +454,6 @@ int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buff
 //	State object definition
 //
 
-/**@ingroup tcomp_compartment_group
-*/
 static void* tcomp_compartment_create(void * self, va_list * app)
 {
 	tcomp_compartment_t *compartment = self;
@@ -505,8 +503,6 @@ static void* tcomp_compartment_create(void * self, va_list * app)
 	return self;
 }
 
-/**@ingroup tcomp_compartment_group
-*/
 static void* tcomp_compartment_destroy(void *self)
 {
 	tcomp_compartment_t *compartment = self;

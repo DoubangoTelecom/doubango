@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_compressor_dummy.h
- * @brief  SigComp dummy compresor. Used if none match. See RFC 4896 subclause 11.
+ * @brief  SigComp Dummy compressor. Used if none match. See RFC 4896 subclause 11.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -37,6 +37,7 @@
 #define UNCOMPRESSED_BYTECODE_DESTINATION_CODE		0x01 /* 128 */
 #define DUMMYCOMPRESSOR_UNCOMPRESSED_BYTECODE \
 	"\xf8\x00\xa1\x1c\x01\x86\x09\x22\x86\x01\x16\xf9\x23"
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

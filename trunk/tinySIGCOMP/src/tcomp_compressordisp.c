@@ -37,17 +37,17 @@
 
 #include <string.h>
 
-/**@defgroup tcomp_compressordisp_group SIGCOMP decompressor dispatcher.
+/**@defgroup tcomp_compressordisp_group SigComp compressor dispatcher.
 * Entity that receives application messages, invokes a compressor,and forwards the resulting SigComp compressed messages to a remote
 * endpoint.
 */
 
+/**@ingroup tcomp_compressordisp_group
+*/
 #define TCOMP_NACK_SUPPORTED (dispatcher->stateHandler->sigcomp_parameters->SigComp_version >= 0x02)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher,
-/// 	uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr,
-/// 	size_t *output_size, int stream)
+/// @ingroup tcomp_compressordisp_group
 ///
 /// @brief	Tcomp compressordisp compress. 
 ///
@@ -64,7 +64,6 @@
 ///
 /// @return	1 if succeed and 0 otherwize. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)
 {
 	int ret = 1;
@@ -146,8 +145,7 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	void tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher,
-/// 	tcomp_compressor_compress compressor)
+/// @ingroup tcomp_compressordisp_group
 ///
 /// @brief	Add new compressor the list of the compressors. 
 ///
@@ -181,9 +179,6 @@ void tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcom
 //========================================================
 //	SigComp compressor dispatcher object definition
 //
-
-/**@ingroup tcomp_compressordisp_group
-*/
 static void* tcomp_compressordisp_create(void * self, va_list * app)
 {
 	tcomp_compressordisp_t *compressordisp = self;
@@ -211,8 +206,6 @@ static void* tcomp_compressordisp_create(void * self, va_list * app)
 	return self;
 }
 
-/**@ingroup tcomp_compressordisp_group
-*/
 static void* tcomp_compressordisp_destroy(void *self)
 {
 	tcomp_compressordisp_t *compressordisp = self;

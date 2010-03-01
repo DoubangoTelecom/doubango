@@ -20,8 +20,8 @@
 *
 */
 
-/**@file tcomp_nakinfo.c
- * @brief  RFC 4077 - A Negative Acknowledgement Mechanism for Signaling Compression (NACK)
+/**@file tcomp_nackinfo.c
+ * @brief  RFC 4077 - A Negative Acknowledgement Mechanism for Signaling Compression (NACK).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -39,7 +39,7 @@
 //	NackInfo object definition
 //
 
-/**@ingroup tcomp_nackinfo_group
+/*
 * Creates a nack info message. You MUST use @ref tcomp_nackinfo_destroy to free the nackinfo.
 * @retval The NACK info message.
 * @sa @ref tcomp_nackinfo_destroy.
@@ -59,7 +59,7 @@ static void* tcomp_nackinfo_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tcomp_nackinfo_group
+/*
 * Destroy a nackinfo message previously created using @ref tcomp_nackinfo_create.
 * @param nackinfo The NACK info message to free.
 * @sa @ref tcomp_nackinfo_create.

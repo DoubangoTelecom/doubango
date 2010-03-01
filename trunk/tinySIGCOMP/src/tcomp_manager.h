@@ -39,7 +39,9 @@ TCOMP_BEGIN_DECLS
 
 typedef void tcomp_manager_handle_t;
 
-
+/**@ingroup tcomp_manager_group
+* Creates new SigComp manager.
+*/
 #define TCOMP_MANAGER_CREATE()					(tcomp_manager_handle_t*)tsk_object_new(tcomp_manager_def_t)
 
 //

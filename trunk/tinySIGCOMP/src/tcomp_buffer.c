@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_buffer.c
- * @brief SigComp Buffer
+ * @brief SigComp Buffer.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -34,10 +34,10 @@
 
 #include <string.h> 
 
-/**@defgroup tcomp_buffer_group SigComp Buffer
+/**@defgroup tcomp_buffer_group SigComp Buffer.
 */
 
-/**@typedef tcomp_buffer_t
+/**@ingroup tcomp_buffer_group
 * SigComp buffer.
 */
 typedef struct tcomp_buffer_s
@@ -630,14 +630,6 @@ void tcomp_buffer_reset(tcomp_buffer_handle_t* handle)
 //========================================================
 //	SigComp buffer object definition
 //
-
-/**@ingroup tcomp_buffer_group
-* Create SigComp buffer handle. You MUST use @ref tcomp_buffer_destroy to free the handle.
-* @param data Reference to an external buffer
-* @param len The length of the external buffer
-* @retval Returns a new buffer handle.
-* @sa @ref tcomp_buffer_destroy.
-*/
 static void* _tcomp_buffer_create(void *self, va_list * app)
 {
 	tcomp_buffer_t* buffer = self;
@@ -663,11 +655,6 @@ static void* _tcomp_buffer_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tcomp_buffer_group
-* Destroy a SigComp buffer handle previously allocated using @ref _tcomp_buffer_create or @a tcomp_buffer_create.
-* @param handle The SigComp buffer handle to free.
-* @sa @a tcomp_buffer_create @ref _tcomp_buffer_create.
-*/
 static void* tcomp_buffer_destroy(void *self)
 {
 	tcomp_buffer_t* buffer = self;

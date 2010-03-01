@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_compressor.h
- * @brief  Deflate compressor data.
+ * @brief  SiComp Deflate compressor (zlib).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -30,7 +30,7 @@
 #include "tcomp_deflatedata.h"
 #include "tsk_debug.h"
 
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 int tcomp_deflateStream_end(tcomp_deflateStream_t *stream)
 {
@@ -43,7 +43,7 @@ int tcomp_deflateStream_end(tcomp_deflateStream_t *stream)
 	return deflateEnd(&(stream->zs));
 }
 
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 int tcomp_deflateStream_copy(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source)
 {
@@ -56,7 +56,7 @@ int tcomp_deflateStream_copy(tcomp_deflateStream_t *stream, tcomp_deflateStream_
 	return deflateCopy(&(stream->zs), &(source->zs));
 }
 
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 int tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata)
 {
@@ -101,7 +101,7 @@ int tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata)
 	return 1;
 }
 
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 int tcomp_deflatedata_zUnInit(tcomp_deflatedata_t *deflatedata)
 {
@@ -123,7 +123,7 @@ int tcomp_deflatedata_zUnInit(tcomp_deflatedata_t *deflatedata)
 	return 1;
 }
 
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 int tcomp_deflatedata_zReset(tcomp_deflatedata_t *deflatedata)
 {
@@ -141,7 +141,7 @@ int tcomp_deflatedata_zReset(tcomp_deflatedata_t *deflatedata)
 	return ret;
 }
 
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 int tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in, size_t inLen, void* out, size_t* outLen, int *stateChanged)
 {
@@ -218,7 +218,7 @@ int tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in
 	return (ret == Z_OK);
 }
 
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 int tcomp_deflatedata_zGetWindowBits(tcomp_deflatedata_t *deflatedata)
 {
@@ -231,7 +231,7 @@ int tcomp_deflatedata_zGetWindowBits(tcomp_deflatedata_t *deflatedata)
 	return deflatedata->zWindowBits;
 }
 
-/**@ingroup tcomp_deflatedata_group
+/**@ingroup tcomp_compressor_deflate_group
 */
 void tcomp_deflatedata_zSetWindowBits(tcomp_deflatedata_t *deflatedata, int windowSize)
 {
