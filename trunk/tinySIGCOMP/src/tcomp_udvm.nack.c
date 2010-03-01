@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_udvm.nack.c
- * @brief  The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
+ * @brief  SigComp UDVM machine (NACK).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -31,10 +31,8 @@
 
 #include "tsk_sha1.h"
 
-/**@defgroup tcomp_udvm_group SIGCOMP UDVM machine.
-* The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
+/**@ingroup tcomp_udvm_group
 */
-
 void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buffer_handle_t* lpDetails, int16_t memory_address_of_instruction)
 {
 #define NACK_HEADER_INDEX		0

@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_params.c
- * @brief  SIGCOMP parameters as per rfc 3320 subclause 3.3.
+ * @brief  SigComp parameters as per rfc 3320 subclause 3.3.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -32,7 +32,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-/**@defgroup tcomp_params_group SIGCOMP parameters as per rfc 3320 subclause 3.3.
+/**@defgroup tcomp_params_group SigComp parameters.
 */
 
 /**@ingroup tcomp_params_group

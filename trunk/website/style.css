@@ -139,11 +139,12 @@ body {
 	color: #CCCCCC;
 }
 .title_blue {font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: bold; font-size: 26px; color: #7DA5E0; }
+.title_black {font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: bold; font-size: 26px; color: #000000; }
 .title_panel {	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
 	font-weight: bold;
 }
-.section_blue {font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: bold; font-size: 16px; color: #7DA5E0; }
+.section_blue {font-family: Verdana, Arial, Helvetica, sans-serif; font-weight: bold; font-size: 12px; color: #7DA5E0; }
 .section_text {	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 }

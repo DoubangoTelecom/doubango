@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_udvm.operands.c
- * @brief  The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
+ * @brief  SigComp UDVM machine (Operands).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -33,16 +33,14 @@
 
 #include <math.h>
 
-/**@defgroup tcomp_udvm_group SIGCOMP UDVM machine.
-* The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
-*/
-
 /**@ingroup tcomp_udvm_group
-literal (#)
-Bytecode:                       Operand value:      Range:
-0nnnnnnn                        N                   0 - 127
-10nnnnnn nnnnnnnn               N                   0 - 16383
-11000000 nnnnnnnn nnnnnnnn      N                   0 - 65535
+literal (#)<br>
+<table>
+<tr> <td>Bytecode</td>                       <td>Operand value</td>		<td>Range</td></tr>
+<tr> <td>0nnnnnnn</td>                        <td>N</td>                  <td>0 - 127</td></tr>
+<tr> <td>10nnnnnn nnnnnnnn</td>               <td>N</td>                  <td>0 - 16383</td></tr>
+<tr> <td>11000000 nnnnnnnn nnnnnnnn</td>      <td>N</td>                  <td>0 - 65535</td></tr>
+</table>
 */
 uint16_t tcomp_udvm_opget_literal_param(tcomp_udvm_t *udvm)
 {
@@ -84,12 +82,13 @@ uint16_t tcomp_udvm_opget_literal_param(tcomp_udvm_t *udvm)
 }
 
 /**@ingroup tcomp_udvm_group
-reference ($)
-Bytecode:                       Operand value:      Range:
-
-0nnnnnnn                        memory[2 * N]       0 - 65535
-10nnnnnn nnnnnnnn               memory[2 * N]       0 - 65535
-11000000 nnnnnnnn nnnnnnnn      memory[N]           0 - 65535
+reference ($)<br>
+<table>
+<tr><td>Bytecode</td>                       <td>Operand value</td>      <td>Range</td></tr>
+<tr><td>0nnnnnnn</td>                        <td>memory[2 * N]</td>       <td>0 - 65535</td></tr>
+<tr><td>10nnnnnn nnnnnnnn </td>              <td>memory[2 * N]</td>       <td>0 - 65535</td></tr>
+<tr><td>11000000 nnnnnnnn nnnnnnnn</td>      <td>memory[N]</td>           <td>0 - 65535</td></tr>
+</table>
 */
 uint16_t tcomp_udvm_opget_reference_param(tcomp_udvm_t *udvm)
 {
@@ -135,19 +134,20 @@ uint16_t tcomp_udvm_opget_reference_param(tcomp_udvm_t *udvm)
 }
 
 /**@ingroup tcomp_udvm_group
-multitype(%)
-Bytecode:                       Operand value:      Range:
-
-00nnnnnn                        N                   0 - 63
-01nnnnnn                        memory[2 * N]       0 - 65535
-1000011n                        2 ^ (N + 6)        64 , 128
-10001nnn                        2 ^ (N + 8)    256 , ... , 32768
-111nnnnn                        N + 65504       65504 - 65535
-1001nnnn nnnnnnnn               N + 61440       61440 - 65535
-101nnnnn nnnnnnnn               N                   0 - 8191
-110nnnnn nnnnnnnn               memory[N]           0 - 65535
-10000000 nnnnnnnn nnnnnnnn      N                   0 - 65535
-10000001 nnnnnnnn nnnnnnnn      memory[N]           0 - 65535
+multitype(%)<br>
+<table>
+<tr><td>Bytecode</td>               <td>Operand value</td>     <td>Range</td></tr>
+<tr><td>00nnnnnn</td>                        <td>N</td>					<td>0 - 63</td></tr>
+<tr><td>01nnnnnn</td>                        <td>memory[2 * N]</td>       <td>0 - 65535</td></tr>
+<tr><td>1000011n</td>                        <td>2 ^ (N + 6)</td>			<td>64 , 128</td></tr>
+<tr><td>10001nnn</td>                        <td>2 ^ (N + 8)</td>			<td>256 , ... , 32768</td></tr>
+<tr><td>111nnnnn</td>						<td>N + 65504</td>			<td>65504 - 65535</td></tr>
+<tr><td>1001nnnn nnnnnnnn</td>               <td>N + 61440</td>			<td>61440 - 65535</td></tr>
+<tr><td>101nnnnn nnnnnnnn</td>              <td>N</td>					<td>0 - 8191</td></tr>
+<tr><td>110nnnnn nnnnnnnn</td>				<td>memory[N]</td>           <td>0 - 65535</td></tr>
+<tr><td>10000000 nnnnnnnn nnnnnnnn</td>      <td>N</td>                   <td>0 - 65535</td></tr>
+<tr><td>10000001 nnnnnnnn nnnnnnnn</td>      <td>memory[N]</td>           <td>0 - 65535</td></tr>
+</table>
 */
 uint16_t tcomp_udvm_opget_multitype_param(tcomp_udvm_t *udvm)
 {

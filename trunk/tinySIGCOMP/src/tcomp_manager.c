@@ -41,10 +41,11 @@
 #define MAX_SMS	131072
 #define MAX_CPB	128
 
-/**@defgroup tcomp_manager_group SIGCOMP manager.
-* SigComp manager.
+/**@defgroup tcomp_manager_group SigComp manager.
 */
 
+/**@ingroup tcomp_manager_group
+*/
 typedef struct tcomp_manager_s
 {
 	TSK_DECLARE_OBJECT;
@@ -280,8 +281,6 @@ void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle)
 //	SigComp manager object definition
 //
 
-/**@ingroup tcomp_manager_group
-*/
 static void* tcomp_manager_create(void * self, va_list * app)
 {
 	tcomp_manager_t *manager = self;
@@ -302,8 +301,6 @@ static void* tcomp_manager_create(void * self, va_list * app)
 	return self;
 }
 
-/**@ingroup tcomp_manager_group
-*/
 static void* tcomp_manager_destroy(void *self)
 {
 	tcomp_manager_t *manager = self;

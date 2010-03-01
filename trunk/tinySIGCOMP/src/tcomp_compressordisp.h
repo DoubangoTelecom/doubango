@@ -44,10 +44,18 @@
 
 TCOMP_BEGIN_DECLS
 
+/**@ingroup tcomp_compressordisp_group
+*/
 #define TCOMP_MAX_COMPRESSORS		5
 
+/**@ingroup tcomp_compressordisp_group
+* Creates new compressor dispatcher.
+*/
 #define TCOMP_COMPRESSORDISP_CREATE(statehandler)		tsk_object_new(tcomp_compressordisp_def_t, (const tcomp_statehandler_t*)statehandler)
 
+/**@ingroup tcomp_compressordisp_group
+* Compressor dispatcher.
+*/
 typedef struct tcomp_compressordisp_s
 {
 	TSK_DECLARE_OBJECT;

@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_udvm.c
- * @brief  The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
+ * @brief  SigComp UDVM machine.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -32,8 +32,7 @@
 
 #include <string.h>
 
-/**@defgroup tcomp_udvm_group SIGCOMP UDVM machine.
-* The machine architecture described in this document.  The UDVM is used to decompress SigComp messages.
+/**@defgroup tcomp_udvm_group SigComp UDVM machine.
 */
 
 #define TCOMP_UDVM_HEADER_RESERVED_SIZE 22
@@ -408,8 +407,6 @@ int tcomp_udvm_decompress(tcomp_udvm_t *udvm)
 //========================================================
 //	UDVM machine definition
 //
-/**@ingroup tcomp_udvm_group
-*/
 static void* tcomp_udvm_create(void * self, va_list * app)
 {
 	tcomp_udvm_t *udvm = self;
@@ -538,8 +535,6 @@ static void* tcomp_udvm_create(void * self, va_list * app)
 	return self;
 }
 
-/**@ingroup tcomp_udvm_group
-*/
 static void* tcomp_udvm_destroy(void *self)
 {
 	tcomp_udvm_t *udvm = self;

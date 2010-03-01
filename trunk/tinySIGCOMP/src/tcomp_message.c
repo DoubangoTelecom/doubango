@@ -51,7 +51,7 @@
 #define HEADER_GET_STATE_LENGTH(length) ( sigcomp_encoding_partial_id_length[length] )
 
 
-/*== initFeedbackItem
+/**@ingroup tcomp_message_group
 */
 void initFeedbackItem(tcomp_message_t *message, uint8_t** start_ptr)
 {
@@ -79,7 +79,7 @@ void initFeedbackItem(tcomp_message_t *message, uint8_t** start_ptr)
 	TSK_DEBUG_INFO("SigComp - Create feedback item.");
 }
 
-/*== initStateId
+/**@ingroup tcomp_message_group
 */
 void initStateId(tcomp_message_t *message, uint8_t** start_ptr, uint8_t state_len)
 {
@@ -87,7 +87,7 @@ void initStateId(tcomp_message_t *message, uint8_t** start_ptr, uint8_t state_le
 	*start_ptr += state_len;
 }
 
-/*== initStateful
+/**@ingroup tcomp_message_group
 */
 void initStateful(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 {
@@ -111,7 +111,7 @@ void initStateful(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_pt
 	TSK_DEBUG_INFO("SigComp - Creating stateful message.");
 }
 	
-/*== initStateless
+/**@ingroup tcomp_message_group
 */
 void initStateless(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 {
@@ -182,7 +182,7 @@ void initStateless(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_p
 	TSK_DEBUG_INFO("SigComp - Creating stateless message.");
 }
 
-/*== initNack
+/**@ingroup tcomp_message_group
 */
 void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 {
@@ -244,15 +244,6 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 //	SigComp message object definition
 //
 
-
-/**@ingroup tcomp_message_group
-* Creates new SigComp message. You MUST call @ref tcomp_message_destroy to free the message.
-* @param input_ptr Pointer to the input buffer.
-* @param input_size The size of the input buffer.
-* @param stream The transport type. 1 if stream (e.g. TCP) and 0 otherwise (e.g. UDP).
-* @retval New SigComp message or NULL if error.
-* @sa @ref tcomp_message_destroy
-*/
 static void* tcomp_message_create(void *self, va_list * app)
 {
 	tcomp_message_t *message = self;
@@ -266,8 +257,7 @@ static void* tcomp_message_create(void *self, va_list * app)
 		uint8_t *dummy_ptr, *end_ptr;
 		uint8_t state_len;
 		
-		if(input_size < MIN_LEN)
-		{
+		if(input_size < MIN_LEN){
 			TSK_DEBUG_ERROR("SigComp Message too short.");
 			message->isOK = 0;
 			goto bail;
@@ -345,11 +335,6 @@ bail:
 	return message;
 }
 
-/**@ingroup tcomp_message_group
-* Destroy a SigComp message previously created using @ref tcomp_message_create.
-* @param message The SigComp message to destroy.
-* @sa @ref tcomp_message_create.
-*/
 static void* tcomp_message_destroy(void *self)
 {
 	tcomp_message_t *message = self;

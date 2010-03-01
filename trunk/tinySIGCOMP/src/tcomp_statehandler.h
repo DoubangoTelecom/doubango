@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_statehandler.h
- * @brief  SIGCOMP state handler.
+ * @brief  SigComp state handler.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -45,8 +45,13 @@
 
 TCOMP_BEGIN_DECLS
 
+/**@ingroup tcomp_statehandler_group
+* Creates new SigComp state handler.
+*/
 #define TCOMP_STATEHANDLER_CREATE()				tsk_object_new(tcomp_statehandler_def_t)
 
+/**@ingroup tcomp_statehandler_group
+*/
 typedef struct tcomp_statehandler_s
 {
 	TSK_DECLARE_OBJECT;

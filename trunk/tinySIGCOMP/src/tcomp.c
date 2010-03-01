@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp.c
- * @brief SIGCOMP (RFC 3320) Implementation for 2.5G and 3G cellular networks.
+ * @brief SigComp (RFC 3320) Implementation for 2.5G and 3G cellular networks.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -29,11 +29,11 @@
  */
 #include "tcomp.h"
 
-/** @mainpage TinySIGCOMP API Overview
+/** @mainpage tinySigComp API Overview
 *
-* This file is an overview of TinySIGCOMP API.
+* This file is an overview of <b>tinySigComp</b> API.
 *
-* TinySIGCOMP is a tiny but fully featured SIGCOMP implementation for 2.5G, 3G and 4G cellular networks. This library is also used in Doubango project to provide SIGCOMP
+* <b>tinySigComp</b> is a tiny but fully featured SigComp implementation for 2.5G, 3G and 4G cellular networks. This library is also used in Doubango project to provide SigComp
 * support for 3GPP IMS and OMA networks.
 * This API is designed to efficiently work on embedded systems whith limited memory and low computing power.
 *
@@ -47,11 +47,11 @@
 * @image html SigComp_Architecture.png "SigComp Architecture (From wikimedia)"
 *
 * Many application protocols used for multimedia communications are text-based and engineered for bandwidth rich links. As a result the messages have not been optimized in 
-* terms of size. For example, typical IMS/SIP messages range from a few hundred bytes up to two thousand bytes or more. For this reason, SIGCOMP is mandatory for 
+* terms of size. For example, typical IMS/SIP messages range from a few hundred bytes up to two thousand bytes or more. For this reason, SigComp is mandatory for 
 * 3GPP IMS netwoks and <a href="http://en.wikipedia.org/wiki/Push_to_Talk_over_Cellular">PoC systems</a>. 
 *
-* SIGCOMP could also be useful for RCS (Rich Communication Suite) networks because of the size of the SIP packets (more than three thousand bytes for presence publication). 
-* Using SIGCOMP in IMS/RCS context will reduce the round-trip over slow radio links.
+* SigComp could also be useful for RCS (Rich Communication Suite) networks because of the size of the SIP packets (more than three thousand bytes for presence publication). 
+* Using SigComp in IMS/RCS context will reduce the round-trip over slow radio links.
 *
 * @par Supported OS
 *
@@ -95,9 +95,87 @@
 * - <a href="http://www.ietf.org/rfc/rfc3174.txt">RFC 3174</a>: US Secure Hash Algorithm 1 (SHA1)
 * - 3GPP TR23.979 Annex C: Required SigComp performance
 *
-* @par Getting Started
+* @par Getting started
 *
+* - @ref tcomp_udp_compression_page
+* - @ref tcomp_udp_decompression_page
 */
 
-/**@defgroup tcomp_group SIGCOMP
+/** @page tcomp_udp_compression_page SigComp UDP compression
+* It is easy to compress SIP a message and send it over UDP connection. The compression can be safely done in multithreaded appilaction because
+* <a href ="http://doubango.org/API/tinySigComp/">tinySigComp</a> is thread-safe.
+* You need <a href ="http://doubango.org/API/tinySAK/">tinySAK</a> in order to compile the code below.
+*
+* Include header files:
+* @code
+* #include "tsk_debug.h" // tinySAK debugging functions.
+* #include "tcomp_manager.h" // tinySigComp API functions.
+* @endcode
+*
+* Compartment Identifier: Used in SIP messages (sigomp-id) and tinySigComp to allocate/deallocate memory associated
+* to a compartment.
+* @code 
+* #define COMPARTMENT_ID		"urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a475"
+* @endcode
+*
+* Preparation:
+* @code
+* #define MAX_BUFFER_SIZE 0xFFFF
+* 
+* int i = 0;
+* size_t outLen = 0;
+* tcomp_result_t *result = 0;
+* char outputBuffer[MAX_BUFFER_SIZE]; 
+* 
+* tcomp_manager_handle_t *manager = 0;
+
+* // Create SigComp manager
+* manager = TCOMP_MANAGER_CREATE();
+
+* // Add SIP/Presence dictionnaries (not mandatory)
+* tcomp_manager_addSipSdpDictionary(manager);
+* tcomp_manager_addPresenceDictionary(manager);
+
+* // Create result object and set compartment id --> It is recomanded to use one result object per manager.
+* result = TCOMP_RESULT_CREATE();
+* tcomp_result_setCompartmentId(result, COMPARTMENT_ID, strlen(COMPARTMENT_ID));
+
+* // Set user parameters (not mandatory)
+* tcomp_manager_setDecompression_Memory_Size(manager, 8192);
+* tcomp_manager_setCycles_Per_Bit(manager, 64);
+* tcomp_manager_setState_Memory_Size(manager, 8192);
+*
+* @endcode
+* Compress one or several messages using the code below:
+* @code
+* // Compress the SIP message
+* outLen = tcomp_manager_compress(manager, 
+* COMPARTMENT_ID, strlen(COMPARTMENT_ID), // Compartment
+* "REGISTER ...", strlen("REGISTER ..."), // Sip message to compress and it's size
+* outputBuffer, sizeof(outputBuffer), // The ouptut buffer and it's size
+* FALSE // Indicates whether to compress as stream (SCTP, TCP...) message or not
+* );
+* 
+* if(outLen){
+* 		// send SigComp message over UDP connection
+* 		sendto(sock, outputBuffer, outLen , 0, (SOCKADDR *)address, sizeof(address));
+* 	}
+* 	else{
+* 		// MUST never happen.
+* }
+* @endcode
+* To safely release all resources:
+* @code
+* // Close the compartment
+* tcomp_manager_closeCompartment(manager, COMPARTMENT_ID, strlen(COMPARTMENT_ID));
+* // Delete the result object
+* TSK_OBJECT_SAFE_FREE(result);
+* // Delete the manager
+* TSK_OBJECT_SAFE_FREE(manager);
+* @endcode
+*/
+
+
+/** @page tcomp_udp_decompression_page SigComp UDP decompression
+* Decompression is as easy as compression (thread-safe).
 */

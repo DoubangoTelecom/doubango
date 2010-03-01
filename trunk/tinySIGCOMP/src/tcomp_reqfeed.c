@@ -33,11 +33,9 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-/**@defgroup tcomp_reqfeed_group SigComp requested feedback item.
-*/
 
 
-/**@ingroup tcomp_reqfeed_group
+/**
 * Reset the feedback.
 * @param feedback The feedback to reset.
 */
@@ -59,11 +57,6 @@ void tcomp_reqfeed_reset(tcomp_reqfeed_t* feedback)
 //========================================================
 //	Requested feedback object definition
 //
-/**@ingroup tcomp_reqfeed_group
-* Create new feedback item. You MUST use @ref tcomp_reqfeed_destroy to free the feedback.
-* @retval The new feedback item.
-* @sa @ref tcomp_reqfeed_destroy.
-*/
 static void* tcomp_reqfeed_create(void * self, va_list * app)
 {
 	tcomp_reqfeed_t *feedback = self;
@@ -75,12 +68,6 @@ static void* tcomp_reqfeed_create(void * self, va_list * app)
 
 	return self;
 }
-
-/**@ingroup tcomp_reqfeed_group
-* Free a feedback item previously created using @ref tcomp_reqfeed_create.
-* @param feedback The feedback to free.
-* @sa @ref tcomp_reqfeed_create.
-*/
 static void* tcomp_reqfeed_destroy(void* self)
 {
 	tcomp_reqfeed_t *feedback = self;

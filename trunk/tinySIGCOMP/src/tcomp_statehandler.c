@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_statehandler.c
- * @brief  SIGCOMP state handler.
+ * @brief  SigComp state handler.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -35,7 +35,7 @@
 
 #include "tsk_debug.h"
 
-/**@defgroup tcomp_statehandler_group SIGCOMP state handler.
+/**@defgroup tcomp_statehandler_group SigComp state handler.
 * Entity responsible for accessing and storing state information once permission is granted by the application.
 */
 
@@ -396,8 +396,6 @@ void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler
 //	State hanlder object definition
 //
 
-/**@ingroup tcomp_statehandler_group
-*/
 static void* tcomp_statehandler_create(void * self, va_list * app)
 {
 	tcomp_statehandler_t *statehandler = self;
@@ -422,8 +420,6 @@ static void* tcomp_statehandler_create(void * self, va_list * app)
 	return self;
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
 static void* tcomp_statehandler_destroy(void *self)
 {
 	tcomp_statehandler_t *statehandler = self;

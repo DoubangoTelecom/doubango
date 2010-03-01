@@ -39,7 +39,7 @@
 #define TCOMP_MAX_STREAM_BUFFER_SIZE		65535
 #define TCOMP_NACK_SUPPORTED(dispatcher)	(dispatcher->stateHandler->sigcomp_parameters->SigComp_version >= 0x02)
 
-/**@defgroup tcomp_decompressordisp_group SIGCOMP decompressor dispatcher.
+/**@defgroup tcomp_decompressordisp_group SigComp decompressor dispatcher.
 * Entity that receives SigComp messages, invokes a UDVM, and forwards the resulting decompressed messages to the application.
 */
 

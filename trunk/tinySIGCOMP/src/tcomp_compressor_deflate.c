@@ -21,7 +21,7 @@
 */
 
 /**@file tcomp_compressor.h
- * @brief  Deflate compressor.
+ * @brief  SigComp Deflate compressor.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -36,10 +36,11 @@
 
 #define TCOMP_MIN(a, b) (a < b ? a : b)
 
+/**@defgroup tcomp_compressor_deflate_group SigComp Deflate Compressor.
+*/
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment,
-/// 	const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size,
-/// 	int stream)
+/// @ingroup tcomp_compressor_deflate_group
 ///
 /// @brief	Compress SIgComp message using deflate algorithm. 
 ///
