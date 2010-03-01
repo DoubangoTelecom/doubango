@@ -40,21 +40,29 @@
 
 #include "tsk_object.h"
 
+/**@ingroup tnet_nat_group
+* @def TNET_NAT_CONTEXT_CREATE
+* Creates new NAT context.
+* @retval tnet_nat_context_t context.
+*/
 TNET_BEGIN_DECLS
 
 #define TNET_NAT_CONTEXT_CREATE(socket_type, username, password)	tsk_object_new(tnet_nat_context_def_t, (tnet_socket_type_t) socket_type, (const char*)username, (const char*)password)
 
-#define TNET_NAT_DEFAULT_RTO			500 /**< Estimate of the round-trip time (RTT) in millisecond. */
-#define TNET_NAT_DEFAULT_RC				7	/**< Number of retransmission for UDP retransmission in millisecond. */
+/**@ingroup tnet_nat_group
+* Estimate of the round-trip time (RTT) in millisecond.
+*/
+#define TNET_NAT_DEFAULT_RTO			500
+/**@ingroup tnet_nat_group
+* Number of retransmission for UDP retransmission in millisecond.
+*/
+#define TNET_NAT_DEFAULT_RC				7
+/**@ingroup tnet_nat_group
+*/
 #define TNET_NAT_TCP_UDP_DEFAULT_PORT	3478
 
-/**
- * @struct	tnet_nat_context_s
- *
- * @brief	NAT context.
- *
- * @author	Mamadou
- * @date	1/23/2010
+/**@ingroup tnet_nat_group
+ *	NAT context.
 **/
 typedef struct tnet_nat_context_s
 {
@@ -84,10 +92,8 @@ typedef struct tnet_nat_context_s
 }
 tnet_nat_context_t;
 
-/**
- * @typedef	void tnet_nat_context_handle_t
- *
- * @brief	Handle to the NAT context(@ref tnet_nat_context_t).
+/**@ingroup tnet_nat_group
+ * Handle to the NAT context(@ref tnet_nat_context_t).
 **/
 typedef void tnet_nat_context_handle_t;
 

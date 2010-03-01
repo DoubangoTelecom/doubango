@@ -43,8 +43,12 @@
 // RFC 3319 Dynamic Host Configuration Protocol (DHCPv6) Options for Session Initiation Protocol (SIP) Servers
 // RFC 3361  Dynamic Host Configuration Protocol (DHCP-for-IPv4) Option for Session Initiation Protocol (SIP) Servers
 
+/**@defgroup tnet_dhcp_group DHCPv4/BOOTP (RFC 2131) implementation.
+*/
 
 /* FIXME: USE retransmission mech (*2*2...)
+*/
+/**@ingroup tnet_dhcp_group
 */
 tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_request_t* request)
 {
@@ -203,6 +207,8 @@ bail:
 	return reply;
 }
 
+/**@ingroup tnet_dhcp_group
+*/
 tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_message_type_t type, tnet_dhcp_params_t* params)
 {
 	tnet_dhcp_reply_t* reply = 0;
@@ -224,7 +230,8 @@ bail:
 	return reply;
 }
 
-
+/**@ingroup tnet_dhcp_group
+*/
 int tnet_dhcp_params_add_code(tnet_dhcp_params_t* params, tnet_dhcp_option_code_t code)
 {
 	if(params){

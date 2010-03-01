@@ -35,7 +35,8 @@
 
 #include <string.h>
 
-
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_t type, uint16_t length, const void* payload, size_t payload_size)
 {
 	tnet_stun_attribute_t *attribute = 0;
@@ -127,7 +128,8 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	return attribute;
 }
 
-
+/**@ingroup tnet_turn_group
+*/
 int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output)
 {
 	if(!attribute || !output)

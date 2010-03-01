@@ -36,32 +36,42 @@
 
 TNET_BEGIN_DECLS
 
-/* draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
 #define TNET_TURN_ATTRIBUTE_CHANNELNUM_CREATE(number)						tsk_object_new(tnet_turn_attribute_channelnum_def_t, (uint16_t)number)
 
-/*	draft-ietf-behave-turn-16 - 14.2.  LIFETIME */
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.2.  LIFETIME */
 #define TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(lifetime)						tsk_object_new(tnet_turn_attribute_lifetime_def_t, (uint32_t)lifetime)
 
-/*	draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS */
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS */
 #define TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE(payload, payload_size)		tsk_object_new(tnet_turn_attribute_xpeer_addr_def_t, (const void*)payload, (size_t)payload_size)
 #define TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE_NULL()						TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE(0,0)
 
-/*	draft-ietf-behave-turn-16 - 14.4.  DATA */
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.4.  DATA */
 #define TNET_TURN_ATTRIBUTE_DATA_CREATE(payload, payload_size)				tsk_object_new(tnet_turn_attribute_data_def_t, (const void*)payload, (size_t)payload_size)
 
-/*	draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS */
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS */
 #define TNET_TURN_ATTRIBUTE_XRELAYED_ADDR_CREATE(payload, payload_size)		tsk_object_new(tnet_turn_attribute_xrelayed_addr_def_t, (const void*)payload, (size_t)payload_size)
 
-/*	draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT */
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT */
 #define TNET_TURN_ATTRIBUTE_EVEN_PORT_CREATE(R)								tsk_object_new(tnet_turn_attribute_even_port_def_t, (unsigned)R)
 
-/*	draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT */
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT */
 #define TNET_TURN_ATTRIBUTE_REQTRANS_CREATE(protocol)						tsk_object_new(tnet_turn_attribute_reqtrans_def_t, (tnet_proto_t)protocol)
 
-/*	draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT */
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT */
 #define TNET_TURN_ATTRIBUTE_DONTFRAG_CREATE()								tsk_object_new(tnet_turn_attribute_dontfrag_def_t)
 
-/*	draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN */
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN */
 #define TNET_TURN_ATTRIBUTE_RESTOKEN_CREATE(payload, payload_size)			tsk_object_new(tnet_turn_attribute_restoken_def_t, (const void*)payload, (size_t)payload_size)
 
 typedef tnet_stun_attribute_t tnet_turn_attribute_t;
@@ -72,6 +82,8 @@ typedef tnet_stun_attribute_t tnet_turn_attribute_t;
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	|        Channel Number         |         RFFU = 0              |
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+/**@ingroup tnet_turn_group
 */
 typedef struct tnet_turn_attribute_channelnum_s
 {
@@ -84,7 +96,8 @@ tnet_turn_attribute_channelnum_t;
 TINYNET_GEXTERN const void *tnet_turn_attribute_channelnum_def_t;
 
 
-/*	draft-ietf-behave-turn-16 - 14.2.  LIFETIME
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.2.  LIFETIME
 */
 typedef struct tnet_turn_attribute_lifetime_s
 {
@@ -96,7 +109,8 @@ tnet_turn_attribute_lifetime_t;
 TINYNET_GEXTERN const void *tnet_turn_attribute_lifetime_def_t;
 
 
-/*	draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS
 */
 typedef struct tnet_turn_attribute_xpeer_addr_s
 {
@@ -109,7 +123,8 @@ typedef struct tnet_turn_attribute_xpeer_addr_s
 tnet_turn_attribute_xpeer_addr_t;
 TINYNET_GEXTERN const void *tnet_turn_attribute_xpeer_addr_def_t;
 
-/*	draft-ietf-behave-turn-16 - 14.4.  DATA
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.4.  DATA
 */
 typedef struct tnet_turn_attribute_data_s
 {
@@ -120,7 +135,8 @@ typedef struct tnet_turn_attribute_data_s
 tnet_turn_attribute_data_t;
 TINYNET_GEXTERN const void *tnet_turn_attribute_data_def_t;
 
-/*	draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS
 */
 typedef struct tnet_turn_attribute_xrelayed_addr_s
 {
@@ -133,34 +149,39 @@ typedef struct tnet_turn_attribute_xrelayed_addr_s
 tnet_turn_attribute_xrelayed_addr_t;
 TINYNET_GEXTERN const void *tnet_turn_attribute_xrelayed_addr_def_t;
 
-/*	draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT
-0
-0 1 2 3 4 5 6 7
-+-+-+-+-+-+-+-+-+
-|R|    RFFU     |
-+-+-+-+-+-+-+-+-+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT
 */
 typedef struct tnet_turn_attribute_even_port_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;
-
+	
+/*
+	0 1 2 3 4 5 6 7
+	+-+-+-+-+-+-+-+-+
+	|R|    RFFU     |
+	+-+-+-+-+-+-+-+-+
+*/
 	unsigned R:1;
 	unsigned rffu:7;
 }
 tnet_turn_attribute_even_port_t;
 TINYNET_GEXTERN const void *tnet_turn_attribute_even_port_def_t;
 
-/*	draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT
-0                   1                   2                   3
-0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|    Protocol   |                    RFFU                       |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+/**@ingroup tnet_turn_group
 */
 typedef struct tnet_turn_attribute_reqtrans_s
 {
 	TNET_STUN_DECLARE_ATTRIBUTE;
-
+/*	
+	draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT
+	0                   1                   2                   3
+	0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+	|    Protocol   |                    RFFU                       |
+	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
 	tnet_proto_t protocol;
 	uint8_t rffu[3];
 }
@@ -169,7 +190,8 @@ TINYNET_GEXTERN const void *tnet_turn_attribute_reqtrans_def_t;
 
 
 
-/*	draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT
 */
 typedef struct tnet_turn_attribute_dontfrag_s
 {
@@ -179,7 +201,8 @@ tnet_turn_attribute_dontfrag_t;
 TINYNET_GEXTERN const void *tnet_turn_attribute_dontfrag_def_t;
 
 
-/*	draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN
 */
 typedef struct tnet_turn_attribute_restoken_s
 {

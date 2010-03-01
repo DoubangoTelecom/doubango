@@ -21,7 +21,7 @@
 */
 
 /**@file tnet.h
- * @brief Network utilities.
+ * @brief Network stack.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *

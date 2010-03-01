@@ -39,14 +39,9 @@ TNET_BEGIN_DECLS
 #define TNET_TURN_CHANNEL_DATA_CREATE(number, length, data)		tsk_object_new(tnet_turn_channel_data_def_t, (uint16_t)number, (uint16_t)length, (const void*)data)
 #define TNET_TURN_CHANNEL_DATA_CREATE_NULL()					TNET_TURN_CHANNEL_DATA_CREATE(0,0,0)
 
-/**
- * @struct	tnet_turn_channel_data_s
- *
- * @brief	TURN channel data message as per draft-ietf-behave-turn-16 subclause 11.4.
- *
- * @author	Mamadou
- * @date	1/24/2010
-**/
+/**@ingroup tnet_turn_group
+ * TURN channel data message as per draft-ietf-behave-turn-16 subclause 11.4.
+*/
 typedef struct tnet_turn_channel_data_s
 {
 	TSK_DECLARE_OBJECT;

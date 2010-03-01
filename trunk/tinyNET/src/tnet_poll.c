@@ -24,7 +24,6 @@
 #if TNET_USE_POLL && !TNET_HAVE_POLL
 
 /**
- * @fn	int tnet_poll(tnet_pollfd_t fds[ ], nfds_t nfds, int timeout)
  *
  * @brief	poll() method implementation for multiplexing network sockets. 
  *

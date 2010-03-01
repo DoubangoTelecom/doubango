@@ -34,13 +34,11 @@
 
 #include "tsk_debug.h"
 
+/**@defgroup tnet_nat_group NAT Traversal API (STUN, TURN and ICE).
+*/
+
 /**
- * @fn	int __pred_find_turn_allocation(const tsk_list_item_t* item, const void* id)
- *
- * @brief	Predicate function to find turn allocation by id. 
- *
- * @author	Mamadou
- * @date	1/23/2010
+ * Predicate function to find turn allocation by id.
  *
  * @param [in,out]	item	The current list item. 
  * @param [in,out]	id	A pointer to the allocation identifier. 
@@ -116,11 +114,7 @@ int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id
 }
 
 /**
- *
- * @brief	Formats binary IP address as string.
- *
- * @author	Mamadou
- * @date	1/23/2010
+ * Formats binary IP address as string.
  *
  * @param	in_ip			The binary IP address to format. 
  * @param	family			The address family. 
@@ -153,14 +147,9 @@ int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t 
 }
 
 
-/**
- * @fn	int tnet_nat_set_server_address(tnet_nat_context_handle_t* self,
- * 		const char* server_address)
+/**@ingroup tnet_nat_group
  *
- * @brief	Sets the address of the STUN/TURN server.
- *
- * @author	Mamadou
- * @date	1/23/2010
+ * Sets the address of the STUN/TURN server.
  *
  * @param [in,out]	self			The NAT context. 
  * @param [in,out]	server_address	The address of server. 
@@ -179,14 +168,9 @@ int tnet_nat_set_server_address(tnet_nat_context_handle_t* self, const char* ser
 	return -1;
 }
 
-/**
- * @fn	int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_address,
- * 		tnet_port_t server_port)
+/**@ingroup tnet_nat_group
  *
- * @brief	Sets the address and port of the STUN/TURN server.
- *
- * @author	Mamadou
- * @date	1/23/2010
+ * Sets the address and port of the STUN/TURN server.
  *
  * @param [in,out]	self			The NAT context. 
  * @param [in,out]	server_address	The address of server. 
@@ -208,15 +192,10 @@ int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_addr
 	return -1;
 }
 
-/**
- * @fn	tnet_stun_binding_id_t tnet_nat_stun_bind(const tnet_nat_context_handle_t* self,
- * 		const tnet_fd_t localFD)
+/**@ingroup tnet_nat_group
  *
- * @brief	Creates and sends a STUN2 binding request to the STUN/TURN server in order to get the server reflexive
+ * Creates and sends a STUN2 binding request to the STUN/TURN server in order to get the server reflexive
  *			address associated to this file descriptor (or socket). The caller should call @ref tnet_nat_stun_unbind to destroy the binding.
- *
- * @author	Mamadou
- * @date	1/23/2010
  *
  * @param [in,out]	self	The NAT context.  
  * @param	localFD			The local file descriptor (or socket) for which to get the reflexive server address.
@@ -236,14 +215,9 @@ tnet_stun_binding_id_t tnet_nat_stun_bind(const tnet_nat_context_handle_t* self,
 	return TNET_STUN_INVALID_BINDING_ID;
 }
 
-/**
- * @fn	int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self,
- * 		tnet_stun_binding_id_t id, char** ipaddress, tnet_port_t *port)
+/**@ingroup tnet_nat_group
+ * Gets the server reflexive address associated to this STUN2 binding.
  *
- * @brief	Gets the server reflexive address associated to this STUN2 binding.
- *
- * @author	Mamadou
- * @date	1/23/2010
  *
  * @param [in,out]	self		The NAT context. 
  * @param	id					The id of the STUN2 binding conetxt (obtained using @ref tnet_nat_stun_bind) holding the server-reflexive address. 
@@ -281,13 +255,10 @@ int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 	return -1;
 }
 
-/**
- * @fn	int tnet_nat_stun_unbind(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id)
+/**@ingroup tnet_nat_group
  *
- * @brief	Removes a STUN2 binding from the NAT context.
+ * Removes a STUN2 binding from the NAT context.
  *
- * @author	Mamadou
- * @date	1/23/2010
  *
  * @param [in,out]	self	The NAT context from which to remove the STUN2 binding. 
  * @param	id				The id of the STUN2 binding to remove. 
@@ -325,15 +296,10 @@ int tnet_nat_stun_unbind(const tnet_nat_context_handle_t* self, tnet_stun_bindin
 
 
 
-/**
- * @fn	tnet_turn_allocation_id_t tnet_nat_turn_allocate(const tnet_nat_context_handle_t* self,
- * 		const tnet_fd_t localFD)
+/**@ingroup tnet_nat_group
  *
- * @brief	Creates TURN allocation as per draft-ietf-behave-turn-16 subclause 6. This function  will also 
+ * Creates TURN allocation as per draft-ietf-behave-turn-16 subclause 6. This function  will also 
  *			send an allocation request to the server (subclause 6.1).
- *
- * @author	Mamadou
- * @date	1/24/2010
  *
  * @param [in,out]	self	The NAT context. 
  * @param	localFD			The local file descriptor. 
@@ -354,14 +320,8 @@ tnet_turn_allocation_id_t tnet_nat_turn_allocate(const tnet_nat_context_handle_t
 	return TNET_TURN_INVALID_ALLOCATION_ID;
 }
 
-/**
- * @fn	int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self,
- * 		tnet_turn_allocation_id_t id, char** ipaddress, tnet_port_t *port)
- *
- * @brief	Gets the STUN server-refelexive IP address and port associated to this TURN allocation.
- *
- * @author	Mamadou
- * @date	1/24/2010
+/**@ingroup tnet_nat_group
+ * Gets the STUN server-refelexive IP address and port associated to this TURN allocation.
  *
  * @param [in,out]	self		The NAT context. 
  * @param	id					The id of the TURN allocation for which to to get server-reflexive IP address and port. 
@@ -399,14 +359,9 @@ int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 	return -1;
 }
 
-/**
- * @fn	int tnet_nat_turn_allocation_refresh(const tnet_nat_context_handle_t* self,
- * 		tnet_turn_allocation_id_t id)
+/**@ingroup tnet_nat_group
  *
- * @brief	Refresh a TURN allocation previously created using @ref tnet_nat_turn_allocate.
- *
- * @author	Mamadou
- * @date	1/24/2010
+ * Refresh a TURN allocation previously created using @ref tnet_nat_turn_allocate.
  *
  * @param [in,out]	self	The NAT context.
  * @param	id				The id of the TURN allocation to refresh. 
@@ -429,14 +384,9 @@ int tnet_nat_turn_allocation_refresh(const tnet_nat_context_handle_t* self, tnet
 	return -1;
 }
 
-/**
- * @fn	int tnet_nat_turn_unallocate(const tnet_nat_context_handle_t* self,
- * 		tnet_turn_allocation_id_t id)
+/**@ingroup tnet_nat_group
  *
- * @brief	Unallocate/remove a TURN allocation from the server.
- *
- * @author	Mamadou
- * @date	1/24/2010
+ * Unallocate/remove a TURN allocation from the server.
  *
  * @param [in,out]	self	The NAT context from which to remove the allocation. 
  * @param	id				The id of the TURN allocation to remove. 
@@ -461,15 +411,10 @@ int tnet_nat_turn_unallocate(const tnet_nat_context_handle_t* self, tnet_turn_al
 	return -1;
 }
 
-/**
- * @fn	tnet_turn_channel_binding_id_t tnet_nat_turn_channel_bind(const tnet_nat_context_handle_t* self,
- * 		tnet_turn_allocation_id_t id, struct sockaddr_storage *peer)
- *
- * @brief	Creates TURN channel binding as per draft-ietf-behave-turn-16 sublause 11 and send it to the
+/**@ingroup tnet_nat_group
+ * Creates TURN channel binding as per draft-ietf-behave-turn-16 sublause 11 and send it to the
  *			server as per subclause 11.1.
  *
- * @author	Mamadou
- * @date	1/24/2010
  *
  * @param [in,out]	self	The NAT context. 
  * @param	id				The id of the TURN allocation associated to this binding. 
@@ -493,6 +438,8 @@ tnet_turn_channel_binding_id_t tnet_nat_turn_channel_bind(const tnet_nat_context
 	return TNET_TURN_INVALID_CHANNEL_BINDING_ID;
 }
 
+/**@ingroup tnet_nat_group
+*/
 int tnet_nat_turn_channel_refresh(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id)
 {
 	const tnet_nat_context_t* context = self;
@@ -512,6 +459,8 @@ int tnet_nat_turn_channel_refresh(const tnet_nat_context_handle_t* self, tnet_tu
 	return -1;
 }
 
+/**@ingroup tnet_nat_group
+*/
 int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id, const void* data, size_t size, int indication)
 {
 	const tnet_nat_context_t* context = self;
@@ -531,6 +480,8 @@ int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_
 	return -1;
 }
 
+/**@ingroup tnet_nat_group
+*/
 int tnet_nat_turn_add_permission(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, const char* ipaddress, uint32_t timeout)
 {
 	const tnet_nat_context_t* context = self;
