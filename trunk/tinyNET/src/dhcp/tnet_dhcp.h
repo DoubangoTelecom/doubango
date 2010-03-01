@@ -40,25 +40,49 @@
 #include "tsk_object.h"
 #include "tsk_safeobj.h"
 
+/**@ingroup tnet_dhcp_group
+* @def TNET_DHCP_CTX_CREATE
+* Creates new DHCPv4 context.
+* @retval @ref tnet_dhcp_ctx_t object.
+*/
+/**@ingroup tnet_dhcp_group
+* @def TNET_DHCP_PARAMS_CREATE
+* Creates new DHCPv4 parameters.
+* @retval @ref tnet_dhcp_params_t object.
+*/
+
 TNET_BEGIN_DECLS
 
 #define TNET_DHCP_CTX_CREATE()			tsk_object_new(tnet_dhcp_ctx_def_t)
 #define TNET_DHCP_PARAMS_CREATE()		tsk_object_new(tnet_dhcp_params_def_t)
 
-/** Default timeout (in milliseconds) value for DHCP requests. 
+/**@ingroup tnet_dhcp_group 
+* Default timeout (in milliseconds) value for DHCP requests. 
 */
 #define TNET_DHCP_TIMEOUT_DEFAULT				2000
 
-/**< Local port(client) to bind to for incoming DHCP messages as per RFC 2131 subclause 4.1. */
+/**@ingroup tnet_dhcp_group
+* Local port(client) to bind to for incoming DHCP messages as per RFC 2131 subclause 4.1. */
 #define TNET_DHCP_CLIENT_PORT		68
-/**< Destination port(Server) for outgoing DHCP messages as per RFC 2131 subclause 4.1. */
+/**@ingroup tnet_dhcp_group
+* Destination port(Server) for outgoing DHCP messages as per RFC 2131 subclause 4.1. */
 #define TNET_DHCP_SERVER_PORT		67
 
+/**@ingroup tnet_dhcp_group
+* @def TNET_DHCP_VENDOR_ID_DEFAULT
+*/
+/**@ingroup tnet_dhcp_group
+* @def TNET_DHCP_MAX_CODES
+*/
+/**@ingroup tnet_dhcp_group
+* @def TNET_DHCP_MAX_MSG_SIZE
+*/
 #define TNET_DHCP_VENDOR_ID_DEFAULT				"doubango/v0.0.0"
 #define TNET_DHCP_MAX_CODES						20
 #define TNET_DHCP_MAX_MSG_SIZE					1500
 
-/** Parameter Request List (55)
+/**@ingroup tnet_dhcp_group
+* Parameter Request List (55)
 */
 typedef struct tnet_dhcp_params_s
 {
@@ -69,6 +93,8 @@ typedef struct tnet_dhcp_params_s
 }
 tnet_dhcp_params_t;
 
+/**@ingroup tnet_dhcp_group
+*/
 typedef struct tnet_dhcp_ctx_s
 {
 	TSK_DECLARE_OBJECT;

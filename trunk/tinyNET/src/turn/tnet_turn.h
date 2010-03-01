@@ -44,28 +44,60 @@
 
 #include "tsk_object.h"
 
+/**@ingroup tnet_turn_group
+* @def TNET_TURN_PERMISSION_TIMEOUT_DEFAULT
+*/
+/**@ingroup tnet_turn_group
+* @def TNET_TURN_CHANBIND_TIMEOUT_DEFAULT
+*/
 TNET_BEGIN_DECLS
 
 #define TNET_TURN_PERMISSION_TIMEOUT_DEFAULT	300 /* draft-ietf-behave-turn-16 subclause 8 */
 #define TNET_TURN_CHANBIND_TIMEOUT_DEFAULT		600 /* draft-ietf-behave-turn-16 subclause 11 */
 
+/**@ingroup tnet_turn_group
+*/
 #define TNET_TURN_CHANNEL_BINDING_CREATE(allocation)	\
 	tsk_object_new(tnet_turn_channel_binding_def_t, (const tnet_turn_allocation_t *)allocation)
 
+/**@ingroup tnet_turn_group
+*/
 #define TNET_TURN_PERMISSION_CREATE(timeout) \
 	tsk_object_new(tnet_turn_permission_def_t, (uint32_t)timeout)
 
+/**@ingroup tnet_turn_group
+*/
 #define TNET_TURN_ALLOCATION_CREATE(fd, socket_type, server_address, server_port, username, password) \
 	tsk_object_new(tnet_turn_allocation_def_t, (tnet_fd_t)fd, (tnet_socket_type_t)socket_type, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
 
+/**@ingroup tnet_turn_group
+* @def tnet_turn_allocation_id_t.
+*/
+/**@ingroup tnet_turn_group
+* @def TNET_TURN_INVALID_ALLOCATION_ID.
+*/
+/**@ingroup tnet_turn_group
+* @def TNET_TURN_IS_VALID_ALLOCATION_ID.
+*/
 typedef uint64_t tnet_turn_allocation_id_t;
 #define TNET_TURN_INVALID_ALLOCATION_ID				0
 #define TNET_TURN_IS_VALID_ALLOCATION_ID(id)		(id != TNET_TURN_INVALID_ALLOCATION_ID)
 
+/**@ingroup tnet_turn_group
+* @def tnet_turn_channel_binding_id_t.
+*/
+/**@ingroup tnet_turn_group
+* @def TNET_TURN_INVALID_CHANNEL_BINDING_ID.
+*/
+/**@ingroup tnet_turn_group
+* @def TNET_TURN_IS_VALID_CHANNEL_BINDING_ID.
+*/
 typedef uint16_t tnet_turn_channel_binding_id_t;
 #define TNET_TURN_INVALID_CHANNEL_BINDING_ID			0x00
 #define TNET_TURN_IS_VALID_CHANNEL_BINDING_ID(id)		( (0x4000 <= id) && (id <= 0x7FFF) ) /* see draft-ietf-behave-turn-16 subcaluse 11. */
 
+/**@ingroup tnet_turn_group
+*/
 typedef struct tnet_turn_permission_s
 {
 	TSK_DECLARE_OBJECT;
@@ -74,8 +106,10 @@ typedef struct tnet_turn_permission_s
 	uint32_t timeout; /**< Timeout value in seconds. Default is 300s(5 minutes). */
 }
 tnet_turn_permission_t;
-typedef tsk_list_t tnet_turn_permissions_L_t;
+typedef tsk_list_t tnet_turn_permissions_L_t; /**< List of @ref tnet_turn_permission_t elements. */
 
+/**@ingroup tnet_turn_group
+*/
 typedef struct tnet_turn_channel_binding_s
 {
 	TSK_DECLARE_OBJECT;
@@ -86,8 +120,10 @@ typedef struct tnet_turn_channel_binding_s
 	uint32_t timeout; /**< Timeout value in seconds. Default is 600s(10 minutes). */
 }
 tnet_turn_channel_binding_t;
-typedef tsk_list_t tnet_turn_channel_bindings_L_t;
+typedef tsk_list_t tnet_turn_channel_bindings_L_t; /**< List of @ref tnet_turn_channel_binding_t elements. */
 
+/**@ingroup tnet_turn_group
+*/
 typedef struct tnet_turn_allocation_s
 {
 	TSK_DECLARE_OBJECT;
@@ -128,7 +164,7 @@ typedef struct tnet_turn_allocation_s
 	tnet_turn_permissions_L_t *permissions;
 }
 tnet_turn_allocation_t;
-typedef tsk_list_t tnet_turn_allocations_L_t;
+typedef tsk_list_t tnet_turn_allocations_L_t; /**< List of @ref tnet_turn_allocation_t elements. */
 
 TINYNET_GEXTERN const void *tnet_turn_permission_def_t;
 TINYNET_GEXTERN const void *tnet_turn_channel_binding_def_t;

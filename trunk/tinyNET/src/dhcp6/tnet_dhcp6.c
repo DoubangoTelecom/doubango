@@ -36,12 +36,12 @@
 #include "tsk_thread.h"
 
 
-/**@defgroup tnet_dhcp6_group DHCPv6 implementation.
+/**@defgroup tnet_dhcp6_group DHCPv6 (RFC 3315) implementation.
 * Dynamic Host Configuration Protocol for IPv6 (DHCPv6) as per RFC 3315.
 * Also implement: RFC 3319, 3633, 3646, 3736, 4242, 5007 ...
 */
 
-/**@ingroup tnet_dhcpv_group
+/**@ingroup tnet_dhcp6_group
 */
 tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dhcp6_request_t* request)
 {
@@ -192,7 +192,8 @@ bail:
 
 
 
-
+/**@ingroup tnet_dhcp6_group
+*/
 tnet_dhcp6_reply_t* tnet_dhcp6_requestinfo(const tnet_dhcp6_ctx_t* ctx, const tnet_dhcp6_option_orequest_t *orequest)
 {
 	tnet_dhcp6_reply_t* reply = 0;

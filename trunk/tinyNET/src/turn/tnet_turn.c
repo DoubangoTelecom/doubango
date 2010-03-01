@@ -46,6 +46,9 @@
 
 #include <string.h>
 
+/**@defgroup tnet_turn_group TURN(draft-ietf-behave-turn-16) implementation.
+*/
+
 /*
 - IMPORTANT: 16.  Detailed Example
 - It is suggested that the client refresh the allocation roughly 1 minute before it expires.
@@ -54,6 +57,8 @@
 
 typedef tnet_stun_request_t* (*tnet_turn_create_request_func)(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app);
 
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_request_t* tnet_turn_create_request(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, tnet_stun_message_type_t type)
 {
 	tnet_stun_attribute_t* attribute;
@@ -91,6 +96,8 @@ tnet_stun_request_t* tnet_turn_create_request(const tnet_nat_context_t* context,
 	return request;
 }
 
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_request_t* tnet_turn_create_request_allocate(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_allocate_request);
@@ -120,6 +127,8 @@ tnet_stun_request_t* tnet_turn_create_request_allocate(const tnet_nat_context_t*
 	return request;
 }
 
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_request_t* tnet_turn_create_request_refresh(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t *request = tnet_turn_create_request_allocate(context, allocation, app);
@@ -130,6 +139,8 @@ tnet_stun_request_t* tnet_turn_create_request_refresh(const tnet_nat_context_t* 
 	return request;
 }
 
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_request_t* tnet_turn_create_request_unallocate(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t *request = tnet_turn_create_request_refresh(context, allocation, app);
@@ -140,7 +151,8 @@ tnet_stun_request_t* tnet_turn_create_request_unallocate(const tnet_nat_context_
 	return request;
 }
 
-
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_request_t* tnet_turn_create_request_channel_bind(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_channelbind_request);
@@ -175,11 +187,15 @@ tnet_stun_request_t* tnet_turn_create_request_channel_bind(const tnet_nat_contex
 	return request;
 }
 
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_request_t* tnet_turn_create_request_channel_refresh(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	return tnet_turn_create_request_channel_bind(context, allocation, app);
 }
 
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_request_t* tnet_turn_create_request_sendindication(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_send_indication);
@@ -212,6 +228,8 @@ tnet_stun_request_t* tnet_turn_create_request_sendindication(const tnet_nat_cont
 	return request;
 }
 
+/**@ingroup tnet_turn_group
+*/
 tnet_stun_request_t* tnet_turn_create_request_permission(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_createpermission_request);
@@ -239,6 +257,8 @@ tnet_stun_request_t* tnet_turn_create_request_permission(const tnet_nat_context_
 	return request;
 }
 
+/**@ingroup tnet_turn_group
+*/
 int tnet_turn_send_request(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, tnet_turn_create_request_func funcptr, ...)
 {
 	tnet_stun_request_t *request;
@@ -329,6 +349,8 @@ int tnet_turn_send_request(const tnet_nat_context_t* context, tnet_turn_allocati
 	return ret;
 }
 
+/**@ingroup tnet_turn_group
+*/
 tnet_turn_allocation_id_t tnet_turn_allocate(const tnet_nat_context_t* nat_context, const tnet_fd_t localFD, tnet_socket_type_t socket_type)
 {
 	tnet_turn_allocation_id_t id = TNET_TURN_INVALID_ALLOCATION_ID;
@@ -354,6 +376,8 @@ tnet_turn_allocation_id_t tnet_turn_allocate(const tnet_nat_context_t* nat_conte
 	return id;
 }
 
+/**@ingroup tnet_turn_group
+*/
 int tnet_turn_allocation_refresh(const struct tnet_nat_context_s* nat_context, tnet_turn_allocation_t *allocation)
 {
 	if(nat_context && allocation)
@@ -370,6 +394,8 @@ int tnet_turn_allocation_refresh(const struct tnet_nat_context_s* nat_context, t
 	return -1;
 }
 
+/**@ingroup tnet_turn_group
+*/
 int tnet_turn_unallocate(const tnet_nat_context_t* nat_context, tnet_turn_allocation_t *allocation)
 {
 	if(nat_context && allocation)
@@ -390,6 +416,8 @@ int tnet_turn_unallocate(const tnet_nat_context_t* nat_context, tnet_turn_alloca
 	return -1;
 }
 
+/**@ingroup tnet_turn_group
+*/
 tnet_turn_channel_binding_id_t tnet_turn_channel_bind(const tnet_nat_context_t* nat_context, tnet_turn_allocation_t *allocation, struct sockaddr_storage *peer)
 {
 	tnet_turn_channel_binding_id_t id = TNET_TURN_INVALID_CHANNEL_BINDING_ID;
@@ -448,6 +476,8 @@ bail:
 	return id;
 }
 
+/**@ingroup tnet_turn_group
+*/
 int tnet_turn_channel_refresh(const struct tnet_nat_context_s* nat_context, const tnet_turn_channel_binding_t * channel_bind)
 {
 	if(nat_context && channel_bind)
@@ -464,6 +494,8 @@ int tnet_turn_channel_refresh(const struct tnet_nat_context_s* nat_context, cons
 	return -1;
 }
 
+/**@ingroup tnet_turn_group
+*/
 int tnet_turn_channel_senddata(const struct tnet_nat_context_s* nat_context, const tnet_turn_channel_binding_t * channel_bind, const void* data, size_t size, int indication)
 {
 	tnet_turn_channel_data_t *channel_data = 0;
@@ -515,6 +547,8 @@ bail:
 	return ret;
 }
 
+/**@ingroup tnet_turn_group
+*/
 int tnet_turn_add_permission(const tnet_nat_context_t* nat_context, tnet_turn_allocation_t *allocation, const char* ipaddress, uint32_t timeout)
 {
 	if(nat_context && allocation)

@@ -21,7 +21,7 @@
 */
 
 /**@file tnet.c
- * @brief Network utilities.
+ * @brief Network stack.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -44,10 +44,10 @@
 * @par Highlights
 * 
 * - <b>STUN2</b>: Session Traversal Utilities for NAT (STUN) is a protocol that serves
-*   as a tool for other protocols in dealing with Network Address Translator (NAT) traversal.  
-*   It can be used by an endpoint to determine the IP address and port allocated to it by a NAT.  
+*   as a tool for other protocols in dealing with Network Address Translator (NAT) traversal. <br>
+*   It can be used by an endpoint to determine the IP address and port allocated to it by a NAT.  <br>
 *   It can also be used to check connectivity between two endpoints, and as a
-*   keep-alive protocol to maintain NAT bindings.  STUN works with many existing NATs, and does not require any special behavior from them.
+*   keep-alive protocol to maintain NAT bindings.  STUN works with many existing NATs, and does not require any special behavior from them.<br>
 *	<b>tinyNET</b> fully support STUN2(RFC 5389) and partialy implement STUN1 (RFC 3489) which is obsolete.
 * 
 * - <b>TURN</b>: 
@@ -60,8 +60,10 @@
 *
 * - @ref tnet_socket_group
 * - @ref tnet_utils_group
-* 
-* - @ref tnet_stun_group
+* - @ref tnet_dns_group
+* - @ref tnet_dhcp_group
+* - @ref tnet_dhcp6_group
+* - @ref tnet_nat_group (@ref tnet_stun_group, @ref tnet_turn_group and ICE)
 * 
 * @par IMPORTANT
 *
@@ -71,9 +73,7 @@
 static int __tnet_started = 0;
 
 /**
- * @fn	int tnet_startup()
- *
- * This is probably the most important function. You MUST call this function to initialize the network stack before calling any tnet_* function. 
+ * This is probably the most important function. You MUST call this function to initialize the network stack before calling any <b>tnet_*</b> function. 
  *			You MUST call @ref tnet_cleanup to cleanup the network stack.
  *
  * @sa @ref tnet_cleanup.
@@ -120,9 +120,7 @@ bail:
 
 
 /**
- * @fn	int tnet_cleanup()
- *
- * @brief	Cleanup the network stack.
+ * Cleanup the network stack.
  *
  * @sa @ref tnet_startup.
  * @retval	Zero if succeed and non-zero error code otherwise.

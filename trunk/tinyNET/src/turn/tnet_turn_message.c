@@ -36,7 +36,8 @@
 
 
 
-
+/**@ingroup tnet_turn_group
+*/
 tsk_buffer_t* tnet_turn_channel_data_serialize(const tnet_turn_channel_data_t *message)
 {
 	tsk_buffer_t *output = 0;
