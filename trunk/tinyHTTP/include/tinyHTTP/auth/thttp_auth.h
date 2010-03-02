@@ -33,6 +33,12 @@
 
 #include "tsk_md5.h"
 
+/**@ingroup thttp_auth_group
+* @def nonce_count_t
+*/
+/**@ingroup thttp_auth_group
+* @def THTTP_NCOUNT_2_STRING
+*/
 THTTP_BEGIN_DECLS
 
 typedef char nonce_count_t[9];

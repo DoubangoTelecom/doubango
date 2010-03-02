@@ -26,9 +26,9 @@
 
 /** @mainpage TinySAK API Overview
 *
-* This file is an overview of TinySAK API.
+* This file is an overview of <b>tinySAK</b> API.
 *
-* TinySAK (a.k.a <b>T</b>iny <b>S</b>wiss <b>A</b>rmy <b>K</b>nife) is a tiny but fully featured utility API.
+* <b>tinySAK</b> (a.k.a <b>T</b>iny <b>S</b>wiss <b>A</b>rmy <b>K</b>nife) is a tiny but fully featured utility API.
 * This API is designed to efficiently work on embedded systems with limited memory and low computing power.<br>
 * This library provide a base object class to ease Object Oriented Programming in C. There are many other
 * features like multi-threading, time management, encoding, encryption or content management.

@@ -31,6 +31,10 @@
 
 #include "tsk_debug.h"
 
+/**@defgroup tipsec_common_group IPSec common.
+* Common to all OSes.
+*/
+
 #if !HAVE_IPSEC_VISTA && !HAVE_IPSEC_XP && !HAVE_IPSEC_RACOON
 
 int tipsec_start(tipsec_context_t* ctx)

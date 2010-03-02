@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_transport_ipsec.h
+/**@file tsip_transport_ipsec.c
  * @brief SIP/IPSec transport.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

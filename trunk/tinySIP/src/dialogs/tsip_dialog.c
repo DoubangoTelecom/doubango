@@ -494,17 +494,13 @@ compute:
 }
 
 /**
- * @fn	int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
  *
- * @brief	Updates the dialog state:
- *			- Authorizations (using challenges from the @ref response message)
+ * Updates the dialog state:
+ *			- Authorizations (using challenges from the @a response message)
  *			- State (early, established, disconnected, ...)
  *			- Routes (and Service-Route)
  *			- Target (remote)
  *			- ...
- *
- * @author	Mamadou
- * @date	1/4/2010
  *
  * @param [in,out]	self		The calling dialog.
  * @param [in,out]	response	The SIP/IMS response from which to get the new information. 

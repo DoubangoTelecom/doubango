@@ -20,28 +20,22 @@
 *
 */
 
-/**@file tipsec.c
- * @brief IPSec manager.
+/**@file tsip_api.h
+ * @brief Public API functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tipsec.h"
+#ifndef TINYSIP_TSIP_API_H
+#define TINYSIP_TSIP_API_H
 
-/** @mainpage TinyIPSec API Overview
-*
-* This file is an overview of TinyIPSec API.
-*
-* <b>tinyIPSec</b> is responsible for IPSec SAs managment. It is used in conjunction with security agreement mechanism (RFC 3329)
-* to create, manage and terminate SAs. <br>
-*
-* @par Getting started
-*
-* - @ref tipsec_common_group
-*
-* - @ref tipsec_xp_group
-* - @ref tipsec_vista_group
-* - @ref tipsec_racoon_group
-*
-*/
+#include "tinysip_config.h"
+
+#include "tinysip/api/tsip_api_invite.h"
+#include "tinysip/api/tsip_api_message.h"
+#include "tinysip/api/tsip_api_publish.h"
+#include "tinysip/api/tsip_api_register.h"
+#include "tinysip/api/tsip_api_subscribe.h"
+
+#endif /* TINYSIP_TSIP_API_H */

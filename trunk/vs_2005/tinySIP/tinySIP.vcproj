@@ -876,23 +876,23 @@
 				Name="api"
 				>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_invite.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_invite.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_message.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_message.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_publish.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_publish.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_register.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_register.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_subscribe.h"
+					RelativePath="..\..\tinySIP\src\api\tsip_api_subscribe.c"
 					>
 				</File>
 			</Filter>
@@ -1426,23 +1426,27 @@
 				Name="api"
 				>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_api_invite.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_api_message.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_invite.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_api_publish.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_message.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_api_register.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_publish.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinySIP\src\api\tsip_api_subscribe.c"
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_register.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_subscribe.h"
 					>
 				</File>
 			</Filter>

@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_dialog_message.client.c
+/**@file tsip_dialog_message.c
  * @brief SIP dialog message (Client side).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

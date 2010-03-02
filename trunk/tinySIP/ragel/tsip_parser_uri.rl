@@ -114,8 +114,7 @@
 							( (IPv6reference >is_ipv6)>89 | (IPv4address >is_ipv4)>88 | (hostname >is_hostname)>87 ) @90
 							{
 								TSK_SCANNER_SET_STRING(uri->host);
-								if(uri->host_type == host_ipv6)
-								{
+								if(uri->host_type == host_ipv6){
 									tsk_strunquoteex(&uri->host, '[', ']');
 								}
 							};							

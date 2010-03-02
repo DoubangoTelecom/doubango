@@ -29,6 +29,15 @@
  */
 #include "tipsec_vista.h"
 
+/**@defgroup tipsec_vista_group IPSec Vista/7 implementation (WFP).
+* Supported algo: <b>hmac-md5-96</b> and <b>hmac-sha-1-96</b>.<br>
+* Supported ealg: <b>des-ede3-cbc</b>, <b>aes-cbc</b> and <b>null</b>.<br>
+* Supported mode: <b>transport</b> only.<br>
+* Supported proto: <b>ah</b> and <b>esp</b>.<br>
+* Supported IP proto: <b>tcp</b> and <b>udp</b>.<br>
+* Supported IP version: <b>IPv4</b> and <b>IPv6</b>.
+*/
+
 #if HAVE_IPSEC_VISTA
 
 #include "tsk_memory.h"
@@ -41,12 +50,20 @@
 #include <ws2tcpip.h>
 #include <Fwpmu.h>
 
-
 typedef FWP_BYTE_BLOB* PFWP_BYTE_BLOB;
 
+/**@ingroup tipsec_vista_group
+* @def TINYIPSEC_FILTER_NAME
+*/
 #define TINYIPSEC_FILTER_NAME					TEXT("tinyIPSEC")
 #define TINYIPSEC_PROVIDER_KEY					NULL
 
+/**@ingroup tipsec_vista_group
+* @def TINYIPSEC_SA_NUM_ENTRIES_TO_REQUEST
+*/
+/**@ingroup tipsec_vista_group
+* @def TINYIPSEC_SA_MAX_LIFETIME
+*/
 #define TINYIPSEC_SA_NUM_ENTRIES_TO_REQUEST		20
 #define TINYIPSEC_SA_MAX_LIFETIME				172799
 
@@ -64,6 +81,9 @@ static const IPSEC_CIPHER_TRANSFORM_ID0 IPSEC_CIPHER_TRANSFORM_ID_NULL_NULL=
    (IPSEC_CIPHER_TYPE)NULL
 };
 
+/**@ingroup tipsec_vista_group
+* IPSec context.
+*/
 typedef struct tipsec_context_vista_s
 {
 	TINYIPSEC_DECLARE_CONTEXT;
@@ -75,6 +95,8 @@ typedef struct tipsec_context_vista_s
 }
 tipsec_context_vista_t;
 
+/**@ingroup tipsec_vista_group
+*/
 #define TIPSEC_CONTEXT_VISTA(ctx) ((tipsec_context_vista_t*)(ctx))
 
 int tipsec_create_localSA(__in const tipsec_context_vista_t* context, __in tipsec_port_t local_port, __out tipsec_spi_t *spi, UINT64 *saId);
@@ -83,6 +105,8 @@ int tipsec_boundSA(__in const tipsec_context_vista_t* context, __in UINT64 local
 int tipsec_flush_all(const tipsec_context_vista_t* context);
 void DeleteSaContextAndFilters(__in HANDLE engine, __in UINT64 inFilterId, __in UINT64 outFilterId, __in UINT64 saId);
 
+/**@ingroup tipsec_vista_group
+*/
 int tipsec_start(tipsec_context_t* ctx)
 {
 	tipsec_context_vista_t* ctx_vista = TIPSEC_CONTEXT_VISTA(ctx);
@@ -145,6 +169,8 @@ bail:
 	return ret;
 }
 
+/**@ingroup tipsec_vista_group
+*/
 int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* addr_remote, tipsec_port_t port_uc, tipsec_port_t port_us)
 {
 	tipsec_context_vista_t* ctx_vista = TIPSEC_CONTEXT_VISTA(ctx);
@@ -230,6 +256,8 @@ bail:
 	return ret;
 }
 
+/**@ingroup tipsec_vista_group
+*/
 int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck)
 {
 	if(!ctx || !ik || !ck){
@@ -251,6 +279,8 @@ int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_
 	return 0;
 }
 
+/**@ingroup tipsec_vista_group
+*/
 int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime)
 {
 	tipsec_context_vista_t* ctx_vista = TIPSEC_CONTEXT_VISTA(ctx);
@@ -291,6 +321,8 @@ bail:
 	return ret;
 }
 
+/**@ingroup tipsec_vista_group
+*/
 int tipsec_stop(tipsec_context_t* ctx)
 {
 	tipsec_context_vista_t* ctx_vista = TIPSEC_CONTEXT_VISTA(ctx);

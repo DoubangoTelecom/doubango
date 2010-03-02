@@ -22,6 +22,7 @@
 #ifndef _TEST_STACK_H
 #define _TEST_STACK_H
 
+#include "tinysip/api/tsip_api.h"
 
 #ifndef LOCAL_IP
 #	ifdef ANDROID
@@ -33,93 +34,157 @@
 
 int test_stack_callback(const tsip_event_t *sipevent)
 {
-	//tsip_operation_id_t opid = sipevent->opid;
+	TSK_DEBUG_INFO("\n====\nSTACK event: %d [%s] with opid=%lld\n=====", 
+		sipevent->code, sipevent->phrase, sipevent->opid);
 
-	// find operation by id
+	switch(sipevent->type)
+	{
+		//
+		// REGISTER 
+		//
+		case tsip_event_register:
+			{
+				const tsip_register_event_t* _event;
+				TSK_DEBUG_INFO("SIP event(REGISTER)");
+				
+				_event = TSIP_REGISTER_EVENT(sipevent);
+				switch(_event->type){
+					case tsip_ao_register: /* Answer to Outgoing REGISTER */
+						{
+							if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
+								TSK_DEBUG_INFO("Registration succeed.");
+							}
+							else{
+								TSK_DEBUG_INFO("Registration failed.");
+							}
+							break;
+						}
+					case tsip_ao_unregister: /* Answer to Outgoing UNREGISTER */
+						{
+							if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
+								TSK_DEBUG_INFO("UnRegistration succeed.");
+							}
+							else{
+								TSK_DEBUG_INFO("UnRegistration failed.");
+							}
+							break;
+						}
+					default:
+						break;
+				}
 
-	TSK_DEBUG_INFO("\n====\nSTACK event: %d [%s]\n=====", sipevent->code, sipevent->phrase);
+				break;
+			}
+
+		//
+		// INVITE
+		//
+		case tsip_event_invite:
+			{
+				TSK_DEBUG_INFO("SIP event(INVITE)");
+				break;
+			}
+
+		// 
+		// MESSAGE
+		//
+		case tsip_event_message:
+			{
+				const tsip_message_event_t* _event;
+				TSK_DEBUG_INFO("SIP event(MESSAGE)");
+				
+				_event = TSIP_MESSAGE_EVENT(sipevent);
+				switch(_event->type)
+				{
+					case tsip_i_message: /* Incoming MESSAGE */
+						{
+							if(TSIP_MESSAGE_HAS_CONTENT(sipevent->sipmessage)){
+								TSK_DEBUG_INFO("MESSAGE Content: %s", TSIP_MESSAGE_CONTENT(sipevent->sipmessage));
+							}
+							break;
+						}
+					case tsip_ao_message: /* Answer to Outgoing MESSAGE */
+						{
+							if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
+								TSK_DEBUG_INFO("MESSAGE successfully sent.");
+							}
+							else{
+								TSK_DEBUG_INFO("Failed to send MESSAGE (sip code:%d).", TSIP_RESPONSE_CODE(sipevent->sipmessage));
+							}
+						}
+					default:
+						break;
+				}
+				
+				break;
+			}
+		
+		// 
+		// PUBLISH
+		//
+		case tsip_event_publish:
+			{
+				TSK_DEBUG_INFO("SIP event(PUBLISH)");
+				break;
+			}
+		
+		//
+		// SUBSCRIBE
+		//
+		case tsip_event_subscribe:
+			{
+				const tsip_subscribe_event_t* _event;
+				TSK_DEBUG_INFO("SIP event(SUBSCRIBE)");
+				
+				_event = TSIP_SUBSCRIBE_EVENT(sipevent);
+				switch(_event->type)
+				{
+				case tsip_i_notify: /* Incoming NOTIFY */
+					{
+						if(TSIP_MESSAGE_HAS_CONTENT(sipevent->sipmessage)){
+							TSK_DEBUG_INFO("NOTIFY Content: %s", TSIP_MESSAGE_CONTENT(sipevent->sipmessage));
+						}
+						break;
+					}
+				case tsip_ao_subscribe: /* Answer to Outgoing SUBSCRIBE */
+					{
+						if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
+							TSK_DEBUG_INFO("Subscription succeed.");
+						}
+						else{
+							TSK_DEBUG_INFO("Subscription failed.");
+						}
+						break;
+					}
+				case tsip_ao_unsubscribe: /* Answer to Outgoing UNSUBSCRIBE */
+					{
+						if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
+							TSK_DEBUG_INFO("UnSubscription succeed.");
+						}
+						else{
+							TSK_DEBUG_INFO("UnSubscription failed.");
+						}
+						break;
+					}
+				default:
+					break;
+				}
+
+				break;
+			}
+
+		default:
+			{
+				TSK_DEBUG_INFO("SIP event(UNKNOWN)");
+				break;
+			}
+	}
 
 	//tsk_thread_sleep(1000000);
 
 	return 0;
 }
 
-int tsip_subscription_callback(const tsip_subscribe_event_t *sipevent)
-{
-	/* common part */
-	TSK_DEBUG_INFO("\n====\nSUBSCRIBTION event: %d [%s]\n=====", TSIP_EVENT(sipevent)->code, TSIP_EVENT(sipevent)->phrase);
-	/* subscribtion part */
-	switch(sipevent->type)
-	{
-	case tsip_i_notify:
-		{
-			if(TSIP_MESSAGE_HAS_CONTENT(TSIP_EVENT(sipevent)->sipmessage))
-			{
-				TSK_DEBUG_INFO("NOTIFY Content: %s", TSIP_MESSAGE_CONTENT(TSIP_EVENT(sipevent)->sipmessage));
-			}
-			break;
-		}
-	default:
-		break;
-	}
-	return 0;
-}
-
-int tsip_messaging_callback(const tsip_message_event_t *sipevent)
-{
-	/* common part */
-	TSK_DEBUG_INFO("\n====\nMESSAGE event: %d [%s]\n=====", TSIP_EVENT(sipevent)->code, TSIP_EVENT(sipevent)->phrase);
-	/* message part */
-	switch(sipevent->type)
-	{
-	case tsip_i_message:
-		{
-			if(TSIP_MESSAGE_HAS_CONTENT(TSIP_EVENT(sipevent)->sipmessage))
-			{
-				TSK_DEBUG_INFO("MESSAGE Content: %s", TSIP_MESSAGE_CONTENT(TSIP_EVENT(sipevent)->sipmessage));
-			}
-			break;
-		}
-	default:
-		break;
-	}
-	return 0;
-}
-
-int tsip_registration_callback(const tsip_register_event_t *sipevent)
-{
-	/* common part */
-	TSK_DEBUG_INFO("\n====\nREGISTRATION event: %d [%s]\n=====", TSIP_EVENT(sipevent)->code, TSIP_EVENT(sipevent)->phrase);
-	/* registration part */
-	switch(sipevent->type)
-	{
-	case tsip_ao_register:
-		{
-			if(TSIP_RESPONSE_IS_2XX(TSIP_EVENT(sipevent)->sipmessage)){
-				TSK_DEBUG_INFO("Registration succeed.");
-			}
-			else{
-				TSK_DEBUG_INFO("Registration failed.");
-			}
-			break;
-		}
-
-	case tsip_ao_unregister:
-		{
-			if(TSIP_RESPONSE_IS_2XX(TSIP_EVENT(sipevent)->sipmessage)){
-				TSK_DEBUG_INFO("Unregistration succeed.");
-			}
-			else{
-				TSK_DEBUG_INFO("Unregistration failed.");
-			}
-			break;
-		}
-
-	default:
-		break;
-	}
-	return 0;
-}
 
 void test_stack()
 {
@@ -189,11 +254,6 @@ void test_stack()
 		TSIP_OPERATION_SET_NULL());
 
 	tsip_operation_id_t opid = tsip_operation_get_id(op);
-
-	/* Callbacks */
-	tsip_stack_set_callback_register(stack, tsip_registration_callback);
-	tsip_stack_set_callback_subscribe(stack, tsip_subscription_callback);
-	tsip_stack_set_callback_message(stack, tsip_messaging_callback);
 
 	tsip_stack_start(stack);
 

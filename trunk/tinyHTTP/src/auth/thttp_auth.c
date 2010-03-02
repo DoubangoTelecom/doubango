@@ -35,14 +35,12 @@
 
 #include <string.h>
 
-/**
- * @fn	size_t thttp_auth_basic_response(const char* userid, const char* password,
- * 		char** response)
+/**@defgroup thttp_auth_group HTTP basic/digest authentication (RFC 2617).
+*/
+
+/**@ingroup thttp_auth_group
  *
- * @brief	Generates HTTP-basic response as per RFC 2617.
- *
- * @author	Mamadou
- * @date	12/30/2009
+ * Generates HTTP-basic response as per RFC 2617.
  *
  * @param [in,out]	userid		The user-id. 
  * @param [in,out]	password	The user-password.
@@ -70,15 +68,11 @@ size_t thttp_auth_basic_response(const char* userid, const char* password, char*
 }
 
 
-/**
- * @fn	size_t thttp_auth_digest_HA1(const char* username, const char* realm, const char* password, char** ha1)
+/**@ingroup thttp_auth_group
+ * Generates digest HA1 value as per RFC 2617 subclause 3.2.2.2. 
  *
- * @brief	Generates digest HA1 value as per RFC 2617 subclause 3.2.2.2. 
  *
- * @author	Mamadou
- * @date	12/30/2009
- *
- * @param [in,out]	username	The user's name (unquoted) in the specified @ref realm. 
+ * @param [in,out]	username	The user's name (unquoted) in the specified @a realm. 
  * @param [in,out]	realm		The realm. (unquoted) 
  * @param [in,out]	password	The user's password. 
  * @param [in,out]	ha1			A pointer to the result. 
@@ -100,16 +94,12 @@ int thttp_auth_digest_HA1(const char* username, const char* realm, const char* p
 	return ret;
 }
 
-/**
- * @fn	size_t thttp_auth_digest_HA1sess(const char* username, const char* realm,
- * 		const char* password, const char* nonce, const char* cnonce, tsk_md5string_t ha1sess)
+/**@ingroup thttp_auth_group
  *
- * @brief	Generates digest HA1 value for 'MD5-sess' algo as per RFC 2617 subclause 3.2.2.2.
+ * Generates digest HA1 value for 'MD5-sess' algo as per RFC 2617 subclause 3.2.2.2.
  *
- * @author	Mamadou
- * @date	12/30/2009
  *
- * @param [in,out]	username	The user's name (unquoted) in the specified @ref realm.
+ * @param [in,out]	username	The user's name (unquoted) in the specified @a realm.
  * @param [in,out]	realm		The realm (unquoted). 
  * @param [in,out]	password	The user's password.  
  * @param [in,out]	nonce		The nonce (unquoted).
@@ -136,14 +126,9 @@ int thttp_auth_digest_HA1sess(const char* username, const char* realm, const cha
 	return ret;
 }
 
-/**
- * @fn	int thttp_auth_digest_HA2(const char* method, const char* url, const char* entity_body,
- * 		const char* qop, tsk_md5string_t* ha2)
+/**@ingroup thttp_auth_group
+ * Generates digest HA2 value as per RFC 2617 subclause 3.2.2.3. 
  *
- * @brief	Generates digest HA2 value as per RFC 2617 subclause 3.2.2.3. 
- *
- * @author	Mamadou
- * @date	12/30/2009
  *
  * @param [in,out]	method		The HTTP/SIP method name. 
  * @param [in,out]	url			The HTTP URL or SIP URI of the request. 
@@ -198,15 +183,9 @@ bail:
 }
 
 
-/**
- * @fn	int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce,
- * 		const nonce_count_t noncecount, const char* cnonce, const char* qop, const tsk_md5string_t* ha2,
- * 		tsk_md5string_t* response)
+/**@ingroup thttp_auth_group
  *
- * @brief	Generates HTTP digest response as per RFC 2617 subclause 3.2.2.1.
- *
- * @author	Mamadou
- * @date	12/31/2009
+ * Generates HTTP digest response as per RFC 2617 subclause 3.2.2.1.
  *
  * @param [in,out]	ha1			HA1 string generated using  @ref thttp_auth_digest_HA1 or @ref thttp_auth_digest_HA1sess.
  * @param [in,out]	nonce		The nonce value. 

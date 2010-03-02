@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_message.c
+/**@file tsip_api_message.c
  * @brief Public short messaging (MESSAGE) functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

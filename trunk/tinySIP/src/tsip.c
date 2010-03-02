@@ -35,6 +35,10 @@
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 #include "tinysip/transports/tsip_transport_layer.h"
 
+#include "tinysip/api/tsip_api_register.h"
+#include "tinysip/api/tsip_api_subscribe.h"
+#include "tinysip/api/tsip_api_message.h"
+
 #include "tnet.h"
 
 #include "tsk_memory.h"
@@ -460,45 +464,6 @@ int tsip_stack_set(tsip_stack_handle_t *self, ...)
 	return -1;
 }
 
-int tsip_stack_set_callback_register(tsip_stack_handle_t *self, tsip_register_callback callback)
-{
-	if(self)
-	{
-		tsip_stack_t *stack = self;
-		stack->callback_register = callback;
-		
-		return 0;
-	}
-
-	return -1;
-}
-
-int tsip_stack_set_callback_subscribe(tsip_stack_handle_t *self, tsip_subscribe_callback callback)
-{
-	if(self)
-	{
-		tsip_stack_t *stack = self;
-		stack->callback_subscribe = callback;
-		
-		return 0;
-	}
-
-	return -1;
-}
-
-int tsip_stack_set_callback_message(tsip_stack_handle_t *self, tsip_message_callback callback)
-{
-	if(self)
-	{
-		tsip_stack_t *stack = self;
-		stack->callback_message = callback;
-		
-		return 0;
-	}
-
-	return -1;
-}
-
 //int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type)
 //{
 //	if(self)
@@ -723,44 +688,12 @@ void *run(void* self)
 
 	TSK_DEBUG_INFO("STACK::run -- START");
 	
-	if(curr = TSK_RUNNABLE_POP_FIRST(stack))
+	if((curr = TSK_RUNNABLE_POP_FIRST(stack)))
 	{
 		tsip_event_t *sipevent = (tsip_event_t*)curr->data;
-		
-		switch(sipevent->type)
-		{
-		case tsip_event_register:
-			{
-				if(stack->callback_register){
-					stack->callback_register(TSIP_REGISTER_EVENT(sipevent));
-					break;
-				}
-			}
-
-		case tsip_event_subscribe:
-			{
-				if(stack->callback_subscribe){
-					stack->callback_subscribe(TSIP_SUBSCRIBE_EVENT(sipevent));
-					break;
-				}
-			}
-
-		case tsip_event_message:
-			{
-				if(stack->callback_message){
-					stack->callback_message(TSIP_MESSAGE_EVENT(sipevent));
-					break;
-				}
-			}
-		default:
-			{
-				if(stack->callback){
-					stack->callback(sipevent);
-				}
-				break;
-			}
-		}
-		
+		if(stack->callback){
+			stack->callback(sipevent);
+		}				
 		tsk_object_unref(curr);
 	}
 	

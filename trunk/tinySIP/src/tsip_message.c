@@ -224,19 +224,14 @@ const tsip_header_t *tsip_message_get_header(const tsip_message_t *self, tsip_he
 	return tsip_message_get_headerAt(self, type, 0);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	TSIP_BOOLEAN tsip_message_allowed(const tsip_message_t *message, const char* method)
-///
-/// @brief	Indicates whether the sepecified method is listed in the SIP 'Allow' header. 
-///
-/// @author	Mamadou
-/// @date	12/9/2009
-///
-/// @param [in,out]	self	The SIP message holding the 'Allow' header. 
-/// @param [in,out]	method	The method to look for. 
-///
-/// @return	@ref TSIP_TRUE if succeed and @ref TSIP_FALSE otherwise. 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+* Indicates whether the sepecified method is listed in the SIP 'Allow' header. 
+*
+* @param [in,out]	self	The SIP message holding the 'Allow' header. 
+* @param [in,out]	method	The method to look for. 
+*
+* @return	@a TSIP_TRUE if succeed and @a TSIP_FALSE otherwise. 
+*/
 TSIP_BOOLEAN tsip_message_allowed(const tsip_message_t *self, const char* method)
 {
 	int index = 0;

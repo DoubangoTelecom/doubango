@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_headers.c
+/**@file tsip_header.c
  * @brief Defines a SIP header (field-name: field-value).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

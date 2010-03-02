@@ -21,7 +21,7 @@
 */
 
 /**@file thttp_url.c
- * @brief SIP/SIPS/TEL URL.
+ * @brief HTTP URL.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -37,7 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup thttp_url_group
+/**@defgroup thttp_url_group HTTP URL.
 */
 
 int __thttp_url_serialize(const thttp_url_t *url, tsk_buffer_t *output)
