@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_register.c
+/**@file tsip_api_register.c
  * @brief Public registration (REGISTER) functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

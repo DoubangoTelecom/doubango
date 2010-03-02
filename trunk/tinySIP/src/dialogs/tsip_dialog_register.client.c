@@ -624,14 +624,12 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app)
 
 
 /**
- * @fn	int send_register(tsip_dialog_register_t *self)
  *
- * @brief	Sends a REGISTER request. 
- *
- * @author	Mamadou
- * @date	1/4/2010
+ * Sends a REGISTER request. 
  *
  * @param [in,out]	self	The caller.
+ * @param [in] initial Indicates whether it's an initial (new CSeq) REGISTER or not.
+ * Initial REGISTER request will creates new IPSec temporary SAs.
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
@@ -640,8 +638,7 @@ int send_register(tsip_dialog_register_t *self, TSIP_BOOLEAN initial)
 	tsip_request_t *request;
 	int ret = -1;
 	
-	if(self->unregistering)
-	{
+	if(self->unregistering){
 		TSIP_DIALOG(self)->expires = 0;
 	}
 	

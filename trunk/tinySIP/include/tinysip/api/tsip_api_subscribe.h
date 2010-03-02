@@ -20,8 +20,8 @@
 *
 */
 
-/**@file tsip_subscribe.h
- * @brief Public registration (SUBSCRIBE) functions.
+/**@file tsip_api_subscribe.h
+ * @brief Public subscription (SUBSCRIBE) functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *

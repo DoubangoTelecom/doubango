@@ -34,49 +34,102 @@
 
 #include "tsk_string.h"
 
+/**@ingroup tipsec_common_group
+* @def TIPSEC_CONTEXT_CREATE
+* Creates new IPSec context.
+* @retval @ref tipsec_context_t object.
+*/
+
 TSK_BEGIN_DECLS
 
 #define TIPSEC_CONTEXT_CREATE(ipproto, use_ipv6, mode, ealg, alg, protocol)\
 	tsk_object_new(tipsec_context_def_t, (tipsec_ipproto_t)ipproto, (int)use_ipv6, (tipsec_mode_t)mode, (tipsec_ealgorithm_t)ealg, (tipsec_algorithm_t)alg, (tipsec_protocol_t)protocol)
 
+/**@ingroup tipsec_common_group
+* Converts any IPSec context (XP, Vista, racoon ...) to the common IPSec context.
+* @param ctx The context to convert. MUST be declared using @ref TINYIPSEC_DECLARE_CONTEXT.
+* @retval A pointer to @ref tipsec_context_t.
+*/
 #define TIPSEC_CONTEXT(ctx) ((tipsec_context_t*)(ctx))
 
+/**@ingroup tipsec_common_group
+* @def TIPSEC_IPPROTO_FROM_STR
+*/
+/**@ingroup tipsec_common_group
+* @def TIPSEC_IPPROTO_TO_STR
+*/
 #define TIPSEC_IPPROTO_FROM_STR(ipproto) (tsk_strequals(ipproto, "tcp") ? ipproto_tcp : (tsk_strequals(ipproto, "icmp") ? ipproto_icmp : ipproto_udp))
 #define TIPSEC_IPPROTO_TO_STR(ipproto)	(ipproto == ipproto_tcp ? "tcp" : (ipproto == ipproto_icmp ? "icmp" : "udp"))
 
+/**@ingroup tipsec_common_group
+* @def TIPSEC_MODE_FROM_STR
+*/
+/**@ingroup tipsec_common_group
+* @def TIPSEC_MODE_TO_STR
+*/
 #define TIPSEC_MODE_FROM_STR(mode) (tsk_strequals(mode, "tun") ? mode_tun : mode_trans)
 #define TIPSEC_MODE_TO_STR(mode)	(mode == mode_tun ? "tun" : "trans")
 
+/**@ingroup tipsec_common_group
+* @def TIPSEC_EALG_FROM_STR
+*/
+/**@ingroup tipsec_common_group
+* @def TIPSEC_EALG_TO_STR
+*/
 #define TIPSEC_EALG_FROM_STR(ealg) (tsk_strequals(ealg, "des-ede3-cbc") ? ealg_des_ede3_cbc : (tsk_strequals(ealg, "aes") ? ealg_aes : ealg_null))
 #define TIPSEC_EALG_TO_STR(ealg)	(ealg == ealg_des_ede3_cbc ? "des-ede3-cbc" : (ealg == ealg_aes ? "aes" : "null"))
 
+/**@ingroup tipsec_common_group
+* @def TIPSEC_ALG_FROM_STR
+*/
+/**@ingroup tipsec_common_group
+* @def TIPSEC_ALG_TO_STR
+*/
 #define TIPSEC_ALG_FROM_STR(alg) (tsk_strequals(alg, "hmac-sha-1-96") ? algo_hmac_sha_1_96 : algo_hmac_md5_96)
 #define TIPSEC_ALG_TO_STR(alg)	(alg == algo_hmac_sha_1_96 ? "hmac-sha-1-96" : "hmac-md5-96")
 
+/**@ingroup tipsec_common_group
+* @def TIPSEC_PROTOCOL_FROM_STR
+*/
+/**@ingroup tipsec_common_group
+* @def TIPSEC_PROTOCOL_TO_STR
+*/
 #define TIPSEC_PROTOCOL_FROM_STR(protocol) (tsk_strequals(protocol, "ah") ? proto_ah : ((tsk_strequals(protocol, "ah/esp")) ? proto_both : proto_esp))
 #define TIPSEC_PROTOCOL_TO_STR(protocol)	(protocol == proto_ah ? "ah" : (protocol == proto_both ? "ah/esp" : "esp"))
 
-/**
- * @def	TIPSEC_KEY_SIZE
- *
- * @brief	Size of IK (Integrity Key) and CK (Confidentiality Key).
- *
- * @remarks	Mamadou, 2/21/2010. 
+/**@ingroup tipsec_common_group
+* @def TIPSEC_KEY_LEN
+ * Size of IK (Integrity Key) and CK (Confidentiality Key).
 **/
+/**@ingroup tipsec_common_group
+* @def TIPSEC_IK_LEN
+*/
+/**@ingroup tipsec_common_group
+* @def TIPSEC_CK_LEN
+*/
 #define TIPSEC_KEY_LEN			16
 #define TIPSEC_IK_LEN			20
 #define TIPSEC_CK_LEN			24
 
+/**@ingroup tipsec_common_group
+* @def tipsec_lifetime_t
+*/
+/**@ingroup tipsec_common_group
+* @def tipsec_spi_t
+*/
+/**@ingroup tipsec_common_group
+* @def tipsec_port_t
+*/
+/**@ingroup tipsec_common_group
+* @def tipsec_key_t
+*/
 typedef uint32_t tipsec_lifetime_t;
 typedef uint32_t tipsec_spi_t;
 typedef uint16_t tipsec_port_t;
-//typedef uint8_t tipsec_key_t[TIPSEC_KEY_SIZE];
 typedef void tipsec_key_t;
 
-/**
- * @enum	tipsec_mode_e
- *
- * @brief	List of IPSec modes.
+/**@ingroup tipsec_common_group
+ * List of IPSec modes.
 **/
 typedef enum tipsec_mode_e
 {
@@ -87,10 +140,8 @@ typedef enum tipsec_mode_e
 }
 tipsec_mode_t;
 
-/**
- * @enum	tipsec_protocol_e
- *
- * @brief	List of IPSec protocols.
+/**@ingroup tipsec_common_group
+ * List of IPSec protocols.
 **/
 typedef enum tipsec_protocol_e
 {
@@ -103,10 +154,8 @@ typedef enum tipsec_protocol_e
 }
 tipsec_protocol_t;
 
-/**
- * @enum	tipsec_ipproto_e
- *
- * @brief	List of Internet protocols.
+/**@ingroup tipsec_common_group
+ * List of Internet protocols.
 **/
 typedef enum tipsec_ipproto_e
 {
@@ -119,10 +168,8 @@ typedef enum tipsec_ipproto_e
 }
 tipsec_ipproto_t;
 
-/**
- * @enum	tipsec_algorithm_e
- *
- * @brief	List of IPSec algorithms.
+/**@ingroup tipsec_common_group
+ * List of IPSec algorithms.
 **/
 typedef enum tipsec_algorithm_e
 {
@@ -133,10 +180,8 @@ typedef enum tipsec_algorithm_e
 }
 tipsec_algorithm_t;
 
-/**
- * @enum	tipsec_ealgorithm_e
- *
- * @brief	List of IPSec encrypt-algorithms.
+/**@ingroup tipsec_common_group
+ * List of IPSec encrypt-algorithms.
 **/
 typedef enum tipsec_ealgorithm_e
 {
@@ -149,10 +194,8 @@ typedef enum tipsec_ealgorithm_e
 }
 tipsec_ealgorithm_t;
 
-/**
- * @enum	tipsec_state_e
- *
- * @brief	List of IPSec states.
+/**@ingroup tipsec_common_group
+ * List of IPSec states.
 **/
 typedef enum tipsec_state_e
 {
@@ -167,6 +210,9 @@ typedef enum tipsec_state_e
 }
 tipsec_state_t;
 
+/**@ingroup tipsec_common_group
+* IPSec context. Common fields.
+*/
 typedef struct tipsec_context_s
 {
 	TSK_DECLARE_OBJECT;
@@ -225,6 +271,8 @@ typedef struct tipsec_context_s
 }
 tipsec_context_t;
 
+/**@ingroup tipsec_common_group
+*/
 #define TINYIPSEC_DECLARE_CONTEXT tipsec_context_t context
 
 TINYIPSEC_GEXTERN const void *tipsec_context_def_t;

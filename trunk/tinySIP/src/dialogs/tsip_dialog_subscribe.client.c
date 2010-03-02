@@ -33,6 +33,8 @@
 #include "tinysip/headers/tsip_header_Min_Expires.h"
 #include "tinysip/headers/tsip_header_Subscription_State.h"
 
+#include "tinysip/api/tsip_api_subscribe.h"
+
 #include "tsk_debug.h"
 #include "tsk_time.h"
 

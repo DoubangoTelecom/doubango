@@ -28,18 +28,40 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tipsec_common.h"
+#include "tipsec_xp.h"
+
+/**@defgroup tipsec_xp_group IPSec XP implementation.
+* Supported algo: <b>hmac-md5-96</b> and <b>hmac-sha-1-96</b>.<br>
+* Supported ealg: <b>null</b> only.<br>
+* Supported mode: <b>tunnel</b> and <b>transport</b>.<br>
+* Supported proto: <b>ah</b> and <b>esp</b>.<br>
+* Supported IP proto: <b>tcp</b> and <b>udp</b>.<br>
+* Supported IP version: <b>IPv6</b> only.
+*/
 
 #if HAVE_IPSEC_XP
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
+
 #define TINYIPSEC_XP_GET_ALGO(algo) ((algo ==  algo_hmac_md5_96) ? "HMAC-MD5-96" : "HMAC-SHA1")
 #define TINYIPSEC_XP_GET_MODE(mode)	 ((mode == mode_tun) ? "TUNNEL" : "TRANSPORT")
 #define TINYIPSEC_XP_GET_PROTO(proto)	 ((proto == proto_ah) ? "AH" : "ESP")
 #define TINYIPSEC_XP_GET_IPPROTO(ipproto)	 ((ipproto == ipproto_tcp) ? "TCP" : ((ipproto == ipproto_icmp) ? "ICMP" : "UDP"))
 
+/**@ingroup tipsec_xp_group
+* @def TINYIPSEC_IPSEC6_FILE
+*/
+/**@ingroup tipsec_xp_group
+* @def TINYIPSEC_IPSEC6_FILE_KEY
+*/
+/**@ingroup tipsec_xp_group
+* @def TINYIPSEC_IPSEC6_FILE_SAD
+*/
+/**@ingroup tipsec_xp_group
+* @def TINYIPSEC_IPSEC6_FILE_SPD
+*/
 #define TINYIPSEC_IPSEC6_FILE				"tinyIPSec"
 #define TINYIPSEC_IPSEC6_FILE_KEY			TINYIPSEC_IPSEC6_FILE".key"
 #define TINYIPSEC_IPSEC6_FILE_SAD			TINYIPSEC_IPSEC6_FILE".sad"
@@ -67,9 +89,16 @@
 "%s %u %s %s %s %s %s %s %s %s %s %s ;\n"\
 "___________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________\n"
 
+/**@ingroup tipsec_xp_group
+*/
 #define TINYIPSEC_IPSEC6_UCPS_POLICY	"11111983"
+/**@ingroup tipsec_xp_group
+*/
 #define TINYIPSEC_IPSEC6_USPC_POLICY	"22221983"
 
+/**@ingroup tipsec_xp_group
+* IPSec context.
+*/
 typedef struct tipsec_context_xp_s
 {
 	TINYIPSEC_DECLARE_CONTEXT;
@@ -77,6 +106,8 @@ typedef struct tipsec_context_xp_s
 }
 tipsec_context_xp_t;
 
+/**@ingroup tipsec_xp_group
+*/
 #define TIPSEC_CONTEXT_XP(ctx) ((tipsec_context_xp_t*)(ctx))
 
 int tipsec_set_IKey(tipsec_context_xp_t* ctx_xp);
@@ -91,6 +122,8 @@ struct handleInfo{
 int tipsec_run_command(TCHAR *args);
 DWORD WINAPI  tipsec_waitForExit(void *arg);
 
+/**@ingroup tipsec_xp_group
+*/
 int tipsec_start(tipsec_context_t* ctx)
 {
 	tipsec_context_xp_t* ctx_xp = TIPSEC_CONTEXT_XP(ctx);
@@ -146,6 +179,8 @@ bail:
 	return ret;
 }
 
+/**@ingroup tipsec_xp_group
+*/
 int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* addr_remote, tipsec_port_t port_uc, tipsec_port_t port_us)
 {
 	tipsec_context_xp_t* ctx_xp = TIPSEC_CONTEXT_XP(ctx);
@@ -193,6 +228,8 @@ bail:
 	return ret;
 }
 
+/**@ingroup tipsec_xp_group
+*/
 int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck)
 {
 	if(!ctx || !ik || !ck){
@@ -208,6 +245,8 @@ int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_
 	return 0;
 }
 
+/**@ingroup tipsec_xp_group
+*/
 int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime)
 {
 	tipsec_context_xp_t* ctx_xp = TIPSEC_CONTEXT_XP(ctx);
@@ -248,6 +287,8 @@ bail:
 	return ret;
 }
 
+/**@ingroup tipsec_xp_group
+*/
 int tipsec_stop(tipsec_context_t* ctx)
 {
 	tipsec_context_xp_t* ctx_xp = TIPSEC_CONTEXT_XP(ctx);

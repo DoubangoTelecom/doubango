@@ -63,6 +63,9 @@
 	action parse_host
 	{
 		TSK_PARSER_SET_STRING(hdr_via->host);
+		if(hdr_via->host && *hdr_via->host == '['){
+			tsk_strunquoteex(&hdr_via->host, '[', ']');
+		}
 	}
 
 	action parse_port
@@ -107,8 +110,7 @@
 
 	action has_rport
 	{
-		if(hdr_via->rport <0)
-		{
+		if(hdr_via->rport <0){
 			hdr_via->rport = 0;
 		}
 	}

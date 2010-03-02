@@ -42,7 +42,7 @@
 *	Ragel state machine.
 */
 
-/* #line 138 "tsip_parser_uri.rl" */
+/* #line 137 "tsip_parser_uri.rl" */
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,7 +386,7 @@ static const int tsip_machine_parser_uri_en_sip_usrinfo = 65;
 static const int tsip_machine_parser_uri_en_main = 73;
 
 
-/* #line 168 "tsip_parser_uri.rl" */
+/* #line 167 "tsip_parser_uri.rl" */
 	
 /* #line 392 "../src/parsers/tsip_parser_uri.c" */
 	{
@@ -396,7 +396,7 @@ static const int tsip_machine_parser_uri_en_main = 73;
 	act = 0;
 	}
 
-/* #line 169 "tsip_parser_uri.rl" */
+/* #line 168 "tsip_parser_uri.rl" */
 	
 /* #line 402 "../src/parsers/tsip_parser_uri.c" */
 	{
@@ -545,8 +545,7 @@ _eof_trans:
 /* #line 115 "tsip_parser_uri.rl" */
 	{te = p+1;{
 								TSK_SCANNER_SET_STRING(uri->host);
-								if(uri->host_type == host_ipv6)
-								{
+								if(uri->host_type == host_ipv6){
 									tsk_strunquoteex(&uri->host, '[', ']');
 								}
 							}}
@@ -568,25 +567,24 @@ _eof_trans:
 /* #line 115 "tsip_parser_uri.rl" */
 	{te = p;p--;{
 								TSK_SCANNER_SET_STRING(uri->host);
-								if(uri->host_type == host_ipv6)
-								{
+								if(uri->host_type == host_ipv6){
 									tsk_strunquoteex(&uri->host, '[', ']');
 								}
 							}}
 	break;
 	case 18:
-/* #line 124 "tsip_parser_uri.rl" */
+/* #line 123 "tsip_parser_uri.rl" */
 	{te = p;p--;{
 								ts++;
 								TSK_SCANNER_SET_INTEGER(uri->port);
 							}}
 	break;
 	case 19:
-/* #line 129 "tsip_parser_uri.rl" */
+/* #line 128 "tsip_parser_uri.rl" */
 	{te = p;p--;{  }}
 	break;
 	case 20:
-/* #line 130 "tsip_parser_uri.rl" */
+/* #line 129 "tsip_parser_uri.rl" */
 	{te = p;p--;{  }}
 	break;
 	case 21:
@@ -597,17 +595,16 @@ _eof_trans:
 /* #line 115 "tsip_parser_uri.rl" */
 	{{p = ((te))-1;}{
 								TSK_SCANNER_SET_STRING(uri->host);
-								if(uri->host_type == host_ipv6)
-								{
+								if(uri->host_type == host_ipv6){
 									tsk_strunquoteex(&uri->host, '[', ']');
 								}
 							}}
 	break;
 	case 23:
-/* #line 129 "tsip_parser_uri.rl" */
+/* #line 128 "tsip_parser_uri.rl" */
 	{{p = ((te))-1;}{  }}
 	break;
-/* #line 611 "../src/parsers/tsip_parser_uri.c" */
+/* #line 608 "../src/parsers/tsip_parser_uri.c" */
 		}
 	}
 
@@ -620,7 +617,7 @@ _again:
 /* #line 1 "tsip_parser_uri.rl" */
 	{ts = 0;}
 	break;
-/* #line 624 "../src/parsers/tsip_parser_uri.c" */
+/* #line 621 "../src/parsers/tsip_parser_uri.c" */
 		}
 	}
 
@@ -640,12 +637,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 170 "tsip_parser_uri.rl" */
+/* #line 169 "tsip_parser_uri.rl" */
 	
 	if( cs < 
-/* #line 647 "../src/parsers/tsip_parser_uri.c" */
+/* #line 644 "../src/parsers/tsip_parser_uri.c" */
 73
-/* #line 171 "tsip_parser_uri.rl" */
+/* #line 170 "tsip_parser_uri.rl" */
  )
 	{
 		TSK_DEBUG_ERROR("Failed to parse SIP/SIPS/TEL URI.");

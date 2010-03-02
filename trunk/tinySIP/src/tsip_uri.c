@@ -39,7 +39,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_uri_group
+/**@defgroup tsip_uri_group SIP/SIPS/TEL URI
 */
 
 int __tsip_uri_serialize(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, tsk_buffer_t *output)

@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_message.h
+/**@file tsip_api_message.h
  * @brief Public registration (MESSAGE) functions.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

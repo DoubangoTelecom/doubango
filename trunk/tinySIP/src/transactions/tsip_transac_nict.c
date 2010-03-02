@@ -128,10 +128,7 @@ _fsm_state_t;
 
 
 /**
- * @fn	int tsip_transac_nict_event_callback(const void *arg, tsip_transac_event_type_t type,
- * 		const tsip_message_t *msg)
- *
- * @brief	Callback function called by the transport layer to alert the transaction for incoming messages
+ * Callback function called by the transport layer to alert the transaction for incoming messages
  *			or errors (e.g. transport error).
  *
  * @author	Mamadou
@@ -303,12 +300,7 @@ int tsip_transac_nict_init(tsip_transac_nict_t *self)
 
 
 /**
- * @fn	int tsip_transac_nict_start(tsip_transac_nict_t *self, tsip_request_t* request)
- *
- * @brief	Starts the client transaction.
- *
- * @author	Mamadou
- * @date	12/24/2009
+ * Starts the client transaction.
  *
  * @param [in,out]	self	The client transaction to start. 
  * @param [in,out]	request	The SIP/IMS request to send. 
