@@ -170,24 +170,17 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 				//
 				//	REQUEST
 				//
-				if(tsk_striequals(TSIP_REQUEST_METHOD(msg), "NOTIFY")){
+				if(msg->request_type == tsip_NOTIFY){
 					ret = tsk_fsm_act((self)->fsm, _fsm_action_notify, self, msg, self, msg);
-				}
-				else{
-					if(tsk_striequals(TSIP_REQUEST_METHOD(msg), "SUBSCRIBE")){
-						// FIXME: send loop detected
-					}
-					else{
-						// FIXME: Method not suported
-					}
 				}
 			}
 			break;
 		}
 
 	case tsip_dialog_hang_up:
+	case tsip_dialog_shuttingdown:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_hangup, self, msg, self, msg);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_hangup, self, msg, self, msg, (TSIP_BOOLEAN)(type == tsip_dialog_shuttingdown));
 			break;
 		}
 
@@ -233,6 +226,9 @@ int tsip_dialog_subscribe_timer_callback(const tsip_dialog_subscribe_t* self, ts
 		if(timer_id == self->timerrefresh.id){
 			tsk_fsm_act(self->fsm, _fsm_action_refresh, self, TSK_NULL, self, TSK_NULL);
 			ret = 0;
+		}
+		else if(timer_id == self->timershutdown.id){
+			ret = tsk_fsm_act((self)->fsm, _fsm_action_error, self, TSK_NULL, self, TSK_NULL);
 		}
 	}
 	return ret;
@@ -293,25 +289,27 @@ int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 			TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_notify, _fsm_cond_notify_not_terminated, _fsm_state_Connected, tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY, "tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY"),
 			// Connected -> (NOTIFY) -> Terminated
 			TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_notify, _fsm_cond_notify_terminated, _fsm_state_Terminated, tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY, "tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY"),
-			// Connected -> (Any) -> Connected
-			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Connected, "tsip_dialog_subscribe_Connected_2_Connected_X_any"),
 
 			/*=======================
 			* === Any === 
 			*/
 			// Any -> (transport error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_dialog_subscribe_Any_2_Terminated_X_transportError, "tsip_dialog_subscribe_Any_2_Terminated_X_transportError"),
-			// Any -> (transport error) -> Terminated
+			// Any -> (error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_dialog_subscribe_Any_2_Terminated_X_Error, "tsip_dialog_subscribe_Any_2_Terminated_X_Error"),
 			// Any -> (hangup) -> Trying
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_hangup, _fsm_state_Trying, tsip_dialog_subscribe_Any_2_Trying_X_hangup, "tsip_dialog_subscribe_Any_2_Trying_X_hangup"),
 
 			TSK_FSM_ADD_NULL());
 
+	/* Sets callback function */
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_subscribe_event_callback);
-
+	
+	/* Timers */
 	self->timerrefresh.id = TSK_INVALID_TIMER_ID;
 	self->timerrefresh.timeout = TSIP_DIALOG(self)->expires;
+	self->timershutdown.id = TSK_INVALID_TIMER_ID;
+	self->timershutdown.timeout = TSIP_DIALOG_SHUTDOWN_TIMEOUT;
 
 	return 0;
 }
@@ -538,8 +536,15 @@ int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app)
 {
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	TSIP_BOOLEAN shuttingdown = va_arg(*app, TSIP_BOOLEAN);
 
-	return 0;
+	/* Schedule timeout (shutdown). */
+	if(shuttingdown){
+		TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(shutdown);
+	}
+
+	self->unsubscribing = 1;
+	return send_subscribe(self);
 }
 
 /* Any -> (transport error) -> Terminated
@@ -614,6 +619,7 @@ int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 
 	/* Cancel all timers */
 	DIALOG_TIMER_CANCEL(refresh);
+	DIALOG_TIMER_CANCEL(shutdown);
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));
@@ -637,7 +643,7 @@ static void* tsip_dialog_subscribe_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_subscribe_OnTerminated), (const void*)dialog);
 
 		/* Initialize base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_subscribe, stack, 0, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_SUBSCRIBE, stack, 0, operation);
 
 		/* Initialize the class itself */
 		tsip_dialog_subscribe_init(self);

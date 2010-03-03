@@ -150,16 +150,13 @@ int tsip_transac_nict_event_callback(const tsip_transac_nict_t *self, tsip_trans
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
-				if(TSIP_RESPONSE_IS_1XX(msg))
-				{
+				if(TSIP_RESPONSE_IS_1XX(msg)){
 					ret = tsk_fsm_act(self->fsm, _fsm_action_1xx, self, msg, self, msg);
 				}
-				else if(TSIP_RESPONSE_IS_23456(msg))
-				{
+				else if(TSIP_RESPONSE_IS_23456(msg)){
 					ret = tsk_fsm_act(self->fsm, _fsm_action_200_to_699, self, msg, self, msg);
 				}
-				else
-				{
+				else{
 					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
 				}
 			}
@@ -193,16 +190,13 @@ int tsip_transac_nict_timer_callback(const tsip_transac_nict_t* self, tsk_timer_
 
 	if(self)
 	{
-		if(timer_id == self->timerE.id)
-		{
+		if(timer_id == self->timerE.id){
 			ret = tsk_fsm_act(self->fsm, _fsm_action_timerE, self, TSK_NULL, self, TSK_NULL);
 		}
-		else if(timer_id == self->timerF.id)
-		{
+		else if(timer_id == self->timerF.id){
 			ret = tsk_fsm_act(self->fsm, _fsm_action_timerF, self, TSK_NULL, self, TSK_NULL);
 		}
-		else if(timer_id == self->timerK.id)
-		{
+		else if(timer_id == self->timerK.id){
 			ret = tsk_fsm_act(self->fsm, _fsm_action_timerK, self, TSK_NULL, self, TSK_NULL);
 		}
 	}

@@ -48,6 +48,7 @@ typedef struct tsip_dialog_register
 	tsk_fsm_t *fsm;
 
 	tsip_timer_t timerrefresh;
+	tsip_timer_t timershutdown;
 
 	unsigned unregistering:1;
 }

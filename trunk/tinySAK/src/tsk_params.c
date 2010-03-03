@@ -36,12 +36,11 @@
 /**@defgroup tsk_params_group SIP/MSRP/XCAP Parameters parser.
 */
 
-/* Predicate function used to find a parameter by name.
+/* Predicate function used to find a parameter by name (case-insensitive).
 */
 static int pred_find_param_by_name(const tsk_list_item_t *item, const void *name)
 {
-	if(item && item->data)
-	{
+	if(item && item->data){
 		tsk_param_t *param = item->data;
 		return tsk_stricmp(param->name, name);
 	}
@@ -85,7 +84,7 @@ tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 	return 0;
 }
 /**@ingroup tsk_params_group
-* Checks if the supplied list of parameters contains a parameter named @a name.
+* Checks if the supplied list of parameters contains a parameter named @a name (case-insensitive).
 * @param self The list of parameters into which to search.
 * @param name The name of the parameter to search.
 * @retval 1 if the parameter exist and zero otherwise.
@@ -100,7 +99,7 @@ int tsk_params_have_param(const tsk_params_L_t *self, const char* name)
 }
 
 /**@ingroup tsk_params_group
-* Adds a parameter to the list of parameters. If the parameter already exist, then it's value will be updated.
+* Adds a parameter to the list of parameters. If the parameter already exist(case-insensitive), then it's value will be updated.
 * @param self The destination list.
 * @param name The name of the parameter to add.
 * @param value The value of the parameter to add.
@@ -132,7 +131,7 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 /**@ingroup tsk_params_group
 * Removes a parameter from the list of parameters.
 * @param self The source list.
-* @param name The name of the parameter to remove.
+* @param name The name(case-insensitive) of the parameter to remove.
 * @retval Zero if succeed and -1 otherwise.
 */
 int tsk_params_remove_param(tsk_params_L_t *self, const char* name)
@@ -147,7 +146,7 @@ int tsk_params_remove_param(tsk_params_L_t *self, const char* name)
 /**@ingroup tsk_params_group
 * Gets a parameter from the list of parameters by name.
 * @param self The source list.
-* @param name The name of the parameter to retrieve.
+* @param name The name(case-insensitive) of the parameter to retrieve.
 * @retval @ref tsk_param_t if succeed and NULL otherwise.
 */
 const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, const char* name)
@@ -165,7 +164,7 @@ const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, cons
 /**@ingroup tsk_params_group
 * Gets the value of a parameter.
 * @param self The source list.
-* @param name The name of the parameter to retrieve.
+* @param name The name(case-insensitive) of the parameter to retrieve.
 * @retval The value of the parameter if succeed and NULL otherwise.
 */
 const char *tsk_params_get_param_value(const tsk_params_L_t *self, const char* name)
@@ -184,7 +183,7 @@ const char *tsk_params_get_param_value(const tsk_params_L_t *self, const char* n
 /**@ingroup tsk_params_group
 * Gets the value of a parameter.
 * @param self The source list.
-* @param name The name of the parameter to retrieve.
+* @param name The name(case-insensitive) of the parameter to retrieve.
 * @retval The value of the parameter if succeed and -1 otherwise.
 */
 int tsk_params_get_param_value_as_int(const tsk_params_L_t *self, const char* name)

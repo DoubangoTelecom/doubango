@@ -86,9 +86,15 @@
 #endif
 
 #if TNET_UNDER_WINDOWS
-#	define TNET_USE_POLL	0 /* Do not use WSAPoll event if under Vista. */
+#	define TNET_USE_POLL		0 /* Do not use WSAPoll event if under Vista. */
 #else
-#	define TNET_USE_POLL	1
+#	define TNET_USE_POLL		1
+#endif
+
+#if TNET_UNDER_WINDOWS && !defined(_WIN32_WCE)
+#	define TNET_HAVE_OPENSSL_H	1
+#else
+#	define TNET_HAVE_OPENSSL_H	0
 #endif
 
 #if defined(__APPLE__) /*|| defined(__SYMBIAN32__)*/

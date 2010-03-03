@@ -71,6 +71,7 @@ const tsk_param_t* tsip_operation_get_header(const tsip_operation_handle_t *self
 const tsk_params_L_t* tsip_operation_get_headers(const tsip_operation_handle_t *self);
 const tsk_params_L_t* tsip_operation_get_params(const tsip_operation_handle_t *self);
 const tsk_params_L_t* tsip_operation_get_caps(const tsip_operation_handle_t *self);
+TINYSIP_API int tsip_operation_hangup(const tsip_operation_handle_t *self);
 
 typedef tsk_list_t tsip_operations_L_t; /**< List of @ref tsip_operation_handle_t elements. */
 TINYSIP_GEXTERN const void *tsip_operation_def_t;

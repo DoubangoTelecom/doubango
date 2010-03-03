@@ -77,19 +77,15 @@ int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request)
 	int ret = -1;
 	if(self)
 	{
-		if(self->type == tsip_nist)
-		{
+		if(self->type == tsip_nist){
 			ret = tsip_transac_nist_start(TSIP_TRANSAC_NIST(self), request);
 		}
-		else if(self->type == tsip_ist)
-		{
+		else if(self->type == tsip_ist){
 		}
-		else if(self->type == tsip_nict)
-		{
+		else if(self->type == tsip_nict){
 			ret = tsip_transac_nict_start(TSIP_TRANSAC_NICT(self), request);
 		}
-		else if(self->type == tsip_ict)
-		{
+		else if(self->type == tsip_ict){
 		}
 	}
 

@@ -189,8 +189,7 @@ const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t 
 
 	/*	Check first Via/CSeq validity.
 	*/
-	if(!message->firstVia || !message->CSeq)
-	{
+	if(!message->firstVia || !message->CSeq){
 		return 0;
 	}
 
@@ -244,12 +243,10 @@ int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, con
 
 	//tsk_safeobj_lock(self);
 
-	if(TSIP_MESSAGE_IS_REQUEST(message))
-	{
+	if(TSIP_MESSAGE_IS_REQUEST(message)){
 		transac = tsip_transac_layer_find_server(self, /*TSIP_MESSAGE_AS_REQUEST*/(message));
 	}
-	else
-	{
+	else{
 		transac = tsip_transac_layer_find_client(self, /*TSIP_MESSAGE_AS_RESPONSE*/(message));
 	}
 

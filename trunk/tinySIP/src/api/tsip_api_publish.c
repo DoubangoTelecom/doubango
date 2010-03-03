@@ -58,10 +58,8 @@ int tsip_publish(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *ope
 		tsip_stack_t *stack = _stack;
 		tsip_dialog_publish_t *dialog;
 		
-		if((dialog = (tsip_dialog_publish_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, tsip_dialog_publish, operation))){
-			TSK_DEBUG_WARN("Already published.");// FIXME: update
-			ret = -2;
-			goto bail;
+		if((dialog = (tsip_dialog_publish_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, operation))){
+			ret = tsip_dialog_publish_modify(dialog); /* Dialog already exist ==> update it */
 		}
 		else{
 			dialog = TSIP_DIALOG_PUBLISH_CREATE(stack, operation);
@@ -69,63 +67,8 @@ int tsip_publish(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *ope
 			tsk_list_push_back_data(stack->layer_dialog->dialogs, (void**)&dialog);
 		}
 	}
-
-bail:
 	return ret;
 }
-
-int tsip_publish_modify(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation)
-{
-	int ret = -1;
-
-	if(_stack && operation)
-	{
-		tsip_stack_t *stack = _stack;
-		tsip_dialog_publish_t *dialog;
-		
-		if((dialog = (tsip_dialog_publish_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, tsip_dialog_publish, operation))){
-			ret = tsip_dialog_publish_modify(dialog);
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to find PUBLISH dialog with this opid [%lld]", tsip_operation_get_id(operation));
-		}
-	}
-
-	return ret;
-}
-
-int tsip_publish_remove(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation)
-{
-	int ret = -1;
-
-	if(_stack && operation)
-	{
-		tsip_stack_t *stack = _stack;
-		tsip_dialog_publish_t *dialog;
-		
-		if((dialog = (tsip_dialog_publish_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, tsip_dialog_publish, operation))){
-			ret = tsip_dialog_publish_remove(dialog);
-		}
-		else{
-			TSK_DEBUG_ERROR("Failed to find PUBLISH dialog with this opid [%lld]", tsip_operation_get_id(operation));
-		}
-	}
-
-	return ret;
-}
-
-int tsip_unpublish(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation)
-{
-	if(_stack && operation)
-	{
-		//const tsip_stack_t *stack = self;
-		//tsip_operation_handle_t *op = tsip_operation_clone(operation);
-
-		//tsk_list_push_back_data(stack->operations, (void**)&op);
-	}
-	return -1;
-}
-
 
 
 

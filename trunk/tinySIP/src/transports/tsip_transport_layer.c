@@ -362,7 +362,7 @@ bail:
 	return ret;
 }
 
-int tsip_transport_ensureTempSAs(const tsip_transport_layer_t *self, const tsip_response_t *r401_407, int32_t expires)
+int tsip_transport_ensureTempSAs(const tsip_transport_layer_t *self, const tsip_response_t *r401_407, int64_t expires)
 {
 	int ret = -1;
 

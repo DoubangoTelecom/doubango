@@ -76,6 +76,7 @@ typedef char tnet_ip_t[INET6_ADDRSTRLEN];
 #	define TNET_ERROR_INPROGRESS			WSAEINPROGRESS
 #	define TNET_ERROR_CONNRESET				WSAECONNRESET
 #	define TNET_ERROR_INTR					WSAEINTR
+#	define TNET_ERROR_EAGAIN				TNET_ERROR_WOULDBLOCK /* WinSock FIX */
 #	if defined(_WIN32_WCE)
 #		define tnet_gai_strerror(...)		"FIXME"
 #	else
@@ -87,6 +88,7 @@ typedef char tnet_ip_t[INET6_ADDRSTRLEN];
 #	define TNET_ERROR_INPROGRESS			EINPROGRESS
 #	define TNET_ERROR_CONNRESET				ECONNRESET
 #	define TNET_ERROR_INTR					EINTR
+#	define TNET_ERROR_EAGAIN				EAGAIN
 #	define tnet_gai_strerror				gai_strerror
 #endif
 #define TNET_INVALID_FD				TNET_INVALID_SOCKET
