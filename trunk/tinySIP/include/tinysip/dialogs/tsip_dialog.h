@@ -53,10 +53,12 @@ TSIP_BEGIN_DECLS
 #define DIALOG_TIMER_CANCEL(TX) \
 	tsk_timer_manager_cancel(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.id)
 
+// TX MUST be in seconds
 #define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)								\
-	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, TSK_TIME_S_2_MS(self->timer##TX.timeout), TSK_TIMER_CALLBACK(tsip_dialog_##name##_timer_callback), self)	
+	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK(tsip_dialog_##name##_timer_callback), self)	
 
-#define TSIP_DIALOG_EXPIRES_DEFAULT											3600
+#define TSIP_DIALOG_EXPIRES_DEFAULT		3600000 /* miliseconds. */
+#define TSIP_DIALOG_SHUTDOWN_TIMEOUT	4000 /* miliseconds. */
 
 typedef enum tsip_dialog_state_e
 {
@@ -70,14 +72,12 @@ tsip_dialog_state_t;
 typedef enum tsip_dialog_type_e
 {
 	tsip_dialog_unknown,
-	tsip_dialog_invite,
-	tsip_dialog_message,
-	tsip_dialog_options,
-	tsip_dialog_prack,
-	tsip_dialog_publish,
-	tsip_dialog_refer,
-	tsip_dialog_register,
-	tsip_dialog_subscribe,
+	tsip_dialog_INVITE,
+	tsip_dialog_MESSAGE,
+	tsip_dialog_OPTIONS,
+	tsip_dialog_PUBLISH,
+	tsip_dialog_REGISTER,
+	tsip_dialog_SUBSCRIBE,
 }
 tsip_dialog_type_t;
 
@@ -91,7 +91,8 @@ typedef enum tsip_dialog_event_type_e
 	tsip_dialog_timedout,
 	tsip_dialog_error,
 	tsip_dialog_transport_error,
-	tsip_dialog_hang_up
+	tsip_dialog_hang_up,
+	tsip_dialog_shuttingdown /**< Shutting down the stack. */
 }
 tsip_dialog_event_type_t;
 
@@ -125,7 +126,7 @@ typedef struct tsip_dialog_s
 	char* cseq_method;
 	int32_t rseq_value;
 	
-	int32_t expires;
+	int64_t expires; /* in milliseconds */
 	
 	char* callid;
 	
@@ -149,12 +150,13 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short status, const char* phrase, const tsip_request_t* request);
 int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* response);
 
-int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response);
+int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik);
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_handle_t * stack, const char* call_id, tsip_operation_handle_t* operation);
 int tsip_dialog_hangup(tsip_dialog_t *self);
+int tsip_dialog_shutdown(tsip_dialog_t *self);
 int tsip_dialog_remove(const tsip_dialog_t* self);
 int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2);
 int tsip_dialog_deinit(tsip_dialog_t *self);

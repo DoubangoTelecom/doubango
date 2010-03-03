@@ -462,7 +462,7 @@ static void* tsip_dialog_message_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_message_OnTerminated), (const void*)dialog);
 
 		/* Initialize base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_message, stack, 0, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_MESSAGE, stack, 0, operation);
 
 		/* Initialize the class itself */
 		tsip_dialog_message_init(self);

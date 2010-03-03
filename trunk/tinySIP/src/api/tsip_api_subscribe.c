@@ -58,7 +58,7 @@ int tsip_subscribe(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *o
 		tsip_stack_t *stack = _stack;
 		tsip_dialog_subscribe_t *dialog;
 		
-		dialog = (tsip_dialog_subscribe_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, tsip_dialog_subscribe, operation);
+		dialog = (tsip_dialog_subscribe_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, operation);
 		if(dialog){
 			TSK_DEBUG_WARN("Already subscribeed.");
 			ret = -2;
@@ -74,19 +74,6 @@ int tsip_subscribe(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *o
 bail:
 	return ret;
 }
-
-int tsip_unsubscribe(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation)
-{
-	if(_stack && operation)
-	{
-		//const tsip_stack_t *stack = self;
-		//tsip_operation_handle_t *op = tsip_operation_clone(operation);
-
-		//tsk_list_push_back_data(stack->operations, (void**)&op);
-	}
-	return -1;
-}
-
 
 
 

@@ -1037,7 +1037,7 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 	if((status = WSAConnect(fd, (LPSOCKADDR)to, sizeof(*to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
 	{
 		status = WSAGetLastError();
-		if(status == WSAEWOULDBLOCK || status == WSAEINTR || status == WSAEINPROGRESS ){
+		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INTR || status == TNET_ERROR_INPROGRESS){
 			TSK_DEBUG_WARN("WSAEWOULDBLOCK/WSAEINTR/WSAEINPROGRESS  error for WSAConnect operation");
 			status = 0;
 		}
@@ -1055,7 +1055,7 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 #	endif
 		{
 			status = tnet_geterrno();
-			if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS || status == EAGAIN){
+			if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS || status == TNET_ERROR_EAGAIN){
 				TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_INPROGRESS/EAGAIN error for Connect operation");
 				status = 0;
 			}

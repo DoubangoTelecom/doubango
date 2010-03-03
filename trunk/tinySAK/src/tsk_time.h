@@ -41,7 +41,8 @@ struct timezone;
 
 /**@ingroup tsk_time_group
 */
-#define TSK_TIME_S_2_MS(S) (S*1000)
+#define TSK_TIME_S_2_MS(S) ((S)*1000)
+#define TSK_TIME_MS_2_S(MS) ((MS)/1000)
 
 TINYSAK_API int tsk_gettimeofday(struct timeval *tv, struct timezone *tz);
 TINYSAK_API uint64_t tsk_time_epoch();

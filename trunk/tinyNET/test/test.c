@@ -41,6 +41,7 @@
 #include "test_dns.h"
 #include "test_dhcp.h"
 #include "test_dhcp6.h"
+#include "test_tls.h"
 
 #define RUN_TEST_LOOP		1
 
@@ -53,7 +54,8 @@
 #define RUN_TEST_IFACES		0
 #define RUN_TEST_DNS		0
 #define RUN_TEST_DHCP		0
-#define RUN_TEST_DHCP6		1
+#define RUN_TEST_DHCP6		0
+#define RUN_TEST_TLS		1
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -106,6 +108,10 @@ int main()
 
 #if RUN_TEST_ALL || RUN_TEST_DHCP6
 		test_dhcp6();
+#endif
+
+#if RUN_TEST_ALL || RUN_TEST_TLS
+		test_tls();
 #endif
 
 	}	

@@ -129,8 +129,7 @@ int tsip_transac_nist_event_callback(const tsip_transac_nist_t *self, tsip_trans
 	{
 	case tsip_transac_incoming_msg:
 		{
-			if(msg && TSIP_MESSAGE_IS_REQUEST(msg))
-			{
+			if(msg && TSIP_MESSAGE_IS_REQUEST(msg)){
 				ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, msg, self, msg);
 			}
 			break;
@@ -140,12 +139,10 @@ int tsip_transac_nist_event_callback(const tsip_transac_nist_t *self, tsip_trans
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
-				if(TSIP_RESPONSE_IS_1XX(msg))
-				{
+				if(TSIP_RESPONSE_IS_1XX(msg)){
 					ret = tsk_fsm_act(self->fsm, _fsm_action_send_1xx, self, msg, self, msg);
 				}
-				else if(TSIP_RESPONSE_IS_23456(msg))
-				{
+				else if(TSIP_RESPONSE_IS_23456(msg)){
 					ret = tsk_fsm_act(self->fsm, _fsm_action_send_200_to_699, self, msg, self, msg);
 				}
 			}

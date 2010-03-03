@@ -90,7 +90,7 @@ bail:
 	return ret;
 }
 
-int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_response_t *r401_407, int32_t expires)
+int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_response_t *r401_407, int64_t expires)
 {
 	int ret = -1;
 	struct sockaddr_storage to;

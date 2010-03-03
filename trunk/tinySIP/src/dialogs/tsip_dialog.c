@@ -48,6 +48,7 @@
 #include "tinysip/headers/tsip_header_WWW_Authenticate.h"
 
 #include "tsk_debug.h"
+#include "tsk_time.h"
 
 int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, int acceptNewVector);
 int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request);
@@ -111,8 +112,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	into the Request-URI.  The UAC MUST NOT add a Route header field to
 	the request.
 	*/
-	if(!self->routes || TSK_LIST_IS_EMPTY(self->routes))
-	{
+	if(!self->routes || TSK_LIST_IS_EMPTY(self->routes)){
 		request_uri = tsk_object_ref((void*)self->uri_remote_target);
 	}
 
@@ -176,14 +176,18 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	switch(request->request_type)
 	{
 		case tsip_MESSAGE:
-		case tsip_PUBLISH:
 				break;
+		case tsip_PUBLISH:
+			{
+				TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
+				break;
+			}
 
 		default:
 			{
 				char* contact = 0;
 				tsip_header_Contacts_L_t *hdr_contacts;
-				tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/0?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, self->expires);
+				tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/0?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
 				hdr_contacts = tsip_header_Contact_parse(contact, strlen(contact));
 				if(!TSK_LIST_IS_EMPTY(hdr_contacts)){
 					request->Contact = tsk_object_ref(hdr_contacts->head->data);
@@ -310,7 +314,9 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	tsk_list_foreach(item, params)
 	{
 		param = (const tsk_param_t*)item->data;
-		TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(param->name, param->value));
+		if(!param->tag){
+			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(param->name, param->value));
+		}
 	}
 
 	/* Add common headers */
@@ -416,23 +422,19 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 }
 
 /**
- * @fn	int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response)
- *
- * @brief	Gets the number of milliseconds to wait before retransmission.
+ * Gets the number of milliseconds to wait before retransmission.
  *			e.g. ==> delay before refreshing registrations (REGISTER), subscribtions (SUBSCRIBE), publication (PUBLISH) ...
  *
- * @author	Mamadou
- * @date	1/4/2010
  *
  * @param [in,out]	self		The calling dialog.
  * @param [in,out]	response	The SIP/IMS response containing the new delay (expires, subscription-state ...).
  *
  * @return	Zero if succeed and no-zero error code otherwise. 
 **/
-int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response)
+int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* response)
 {
-	int expires = self->expires;
-	int newdelay = expires;	/* default value */
+	int64_t expires = self->expires;
+	int64_t newdelay = expires;	/* default value */
 	const tsip_header_t* hdr;
 	size_t i;
 
@@ -442,7 +444,7 @@ int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* respons
 		const tsip_header_Subscription_State_t *hdr_state;
 		if((hdr_state = (const tsip_header_Subscription_State_t*)tsip_message_get_header(response, tsip_htype_Subscription_State))){
 			if(hdr_state->expires >0){
-				expires = hdr_state->expires;
+				expires = TSK_TIME_S_2_MS(hdr_state->expires);
 				goto compute;
 			}
 		}
@@ -451,7 +453,7 @@ int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* respons
 	/*== Expires header.
 	*/
 	if((hdr = tsip_message_get_header(response, tsip_htype_Expires))){
-		expires = ((const tsip_header_Expires_t*)hdr)->delta_seconds;
+		expires = TSK_TIME_S_2_MS(((const tsip_header_Expires_t*)hdr)->delta_seconds);
 		goto compute;
 	}
 
@@ -469,7 +471,7 @@ int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* respons
 					&& contact->uri->port == contactUri->port)
 				{
 					if(contact->expires>=0){ /* No expires parameter ==> -1*/
-						expires = contact->expires;
+						expires = TSK_TIME_S_2_MS(contact->expires);
 
 						TSK_OBJECT_SAFE_FREE(contactUri);
 						goto compute;
@@ -488,9 +490,10 @@ int tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* respons
 	*	was for 1200 seconds or less.
 	*/
 compute:
+	expires = TSK_TIME_MS_2_S(expires);
 	newdelay = (expires > 1200) ? (expires-600) : (expires/2);
 
-	return newdelay;
+	return TSK_TIME_S_2_MS(newdelay);
 }
 
 /**
@@ -831,6 +834,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 		if(!self->challenges){
 			self->challenges = TSK_LIST_CREATE();
 		}
+		/* Sets default expires value. */
 		self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
 		
 		if(call_id){
@@ -861,26 +865,26 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 			tsip_uri_t* uri;
 
 			/* Expires */
-			if((param = tsip_operation_get_param(self->operation, "expires"))){
-				self->expires = atoi(param->value);
-			}
-			else{
-				self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
+			if((param = tsip_operation_get_header(self->operation, "Expires"))){
+				self->expires = TSK_TIME_S_2_MS(atoi(param->value));
+				((tsk_param_t*)param)->tag = 1;
 			}
 
-			/* from */
-			if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "from")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
+			/* From */
+			if((param = tsip_operation_get_header(TSIP_DIALOG(self)->operation, "From")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
 				self->uri_local = uri;
+				((tsk_param_t*)param)->tag = 1;
 			}
 			else{
 				self->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
 			}
 			
-			/* to */
-			if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "to")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
+			/* To */
+			if((param = tsip_operation_get_header(TSIP_DIALOG(self)->operation, "To")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
 				self->uri_remote_target = tsk_object_ref(uri); /* the to uri will be used as request uri. */
 				self->uri_remote = tsk_object_ref(uri);
 				tsk_object_unref(uri);
+				((tsk_param_t*)param)->tag = 1;
 			}
 			else{
 				self->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
@@ -900,9 +904,16 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 
 int tsip_dialog_hangup(tsip_dialog_t *self)
 {
-	if(self)
-	{
-		return self->callback(self, tsip_dialog_hang_up, 0);
+	if(self){
+		return self->callback(self, tsip_dialog_hang_up, TSIP_NULL);
+	}
+	return -1;
+}
+
+int tsip_dialog_shutdown(tsip_dialog_t *self)
+{
+	if(self){
+		return self->callback(self, tsip_dialog_shuttingdown, TSIP_NULL);
 	}
 	return -1;
 }

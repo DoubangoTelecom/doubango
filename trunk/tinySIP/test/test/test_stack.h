@@ -240,7 +240,7 @@ void test_stack()
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
 */
-
+/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@ericsson.com"),
@@ -257,7 +257,7 @@ void test_stack()
 		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
-
+*/
 /*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
@@ -276,11 +276,27 @@ void test_stack()
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
 */
+		tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
+		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
+		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@micromethod.com"),
+		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@micromethod.com"),
+		TSIP_STACK_SET_PASSWORD("mamadou"),
+		TSIP_STACK_SET_REALM("sip:micromethod.com"), // FIXME: without sip:
+		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
+		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
+		TSIP_STACK_SET_PROXY_CSCF("192.168.16.104", "udp", 0),
+		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
+		TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
+		//TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),
+		TSIP_STACK_SET_MOBILITY("fixed"),
+		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
+		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
+		TSIP_STACK_SET_PRIVACY("header;id"),
 
 		TSIP_STACK_SET_NULL());
 
 	tsip_operation_handle_t *op = TSIP_OPERATION_CREATE(stack,
-		TSIP_OPERATION_SET_PARAM("expires", "30"),
+		TSIP_OPERATION_SET_HEADER("expires", "30"),
 		
 		TSIP_OPERATION_SET_CAPS("language", "\"en,fr\""),
 		TSIP_OPERATION_SET_CAPS("+audio", ""),
@@ -295,13 +311,12 @@ void test_stack()
 
 	tsip_register(stack, op);
 
-	tsk_thread_sleep(2000);
+	tsk_thread_sleep(1000);
 
 	///* SUBSCRIBE */
 	//{
 	//	tsip_operation_handle_t *op2 = TSIP_OPERATION_CREATE(stack,
-	//	TSIP_OPERATION_SET_PARAM("to", "sip:mamadou@ims.inexbee.com"),
-	//	TSIP_OPERATION_SET_PARAM("expires", "30"),
+	//	TSIP_OPERATION_SET_HEADER("expires", "30"),
 	//	TSIP_OPERATION_SET_HEADER("Event", "reg"),
 	//	TSIP_OPERATION_SET_HEADER("Accept", "application/reginfo+xml"),
 	//	TSIP_OPERATION_SET_HEADER("Allow-Events", "refer, presence, presence.winfo, xcap-diff"),
@@ -311,10 +326,10 @@ void test_stack()
 	//	tsip_subscribe(stack, op2);
 	//}
 	
-	///* MESSAGE */
+	/* MESSAGE */
 	//{
 	//	tsip_operation_handle_t *op3 = TSIP_OPERATION_CREATE(stack,
-	//	TSIP_OPERATION_SET_PARAM("to", "sip:laurent@ims.inexbee.com"),
+	//	TSIP_OPERATION_SET_HEADER("to", "sip:laurent@micromethod.com"),
 	//	TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"),
 	//	TSIP_OPERATION_SET_HEADER("Content-Type", "text/plain"),
 
@@ -327,13 +342,27 @@ void test_stack()
 	/* PUBLISH */
 	{
 		tsip_operation_handle_t *op4 = TSIP_OPERATION_CREATE(stack,
-		TSIP_OPERATION_SET_PARAM("to", "sip:mamadou@ericsson.com"),
-		TSIP_OPERATION_SET_HEADER("Content-Type", "application/pidf+xml"),
-
-		TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
+			TSIP_OPERATION_SET_HEADER("expires", "30"),
+			TSIP_OPERATION_SET_HEADER("to", "sip:mamadou@micromethod.com"),
+			TSIP_OPERATION_SET_HEADER("Content-Type", "application/pidf+xml"),
+			TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"), 
+			TSIP_OPERATION_SET_HEADER("Event", "presence"),
 		
-		TSIP_OPERATION_SET_NULL());
+			TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
+		
+			TSIP_OPERATION_SET_NULL());
 		tsip_publish(stack, op4);
+
+		/*getchar();
+		tsip_operation_set(op4,
+			TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
+
+			TSIP_OPERATION_SET_NULL());
+		tsip_publish(stack, op4);*/
+		
+		getchar();
+		tsip_operation_hangup(op4);
+		
 	}
 
 	//while(1);//tsk_thread_sleep(500);

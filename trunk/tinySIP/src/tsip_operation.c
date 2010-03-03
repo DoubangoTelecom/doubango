@@ -30,6 +30,7 @@
 #include "tinysip/tsip_operation.h"
 #include "tsip.h"
 
+#include "tinysip/dialogs/tsip_dialog_layer.h"
 #include "tinysip/tsip_message.h"
 
 #include "tsk_debug.h"
@@ -184,6 +185,30 @@ const tsk_params_L_t* tsip_operation_get_caps(const tsip_operation_handle_t *sel
 		return ((const tsip_operation_t *)self)->caps;
 	}
 	return TSIP_NULL;
+}
+
+int tsip_operation_hangup(const tsip_operation_handle_t *self)
+{
+	int ret = -1;
+
+	if(self)
+	{
+		const tsip_stack_t *stack = ((const tsip_operation_t *)self)->stack;
+		tsip_dialog_t *dialog;
+		
+		if(!stack){
+			TSK_DEBUG_ERROR("Invalid stack.");
+		}
+		else{
+			if((dialog = tsip_dialog_layer_find_by_op(stack->layer_dialog, self))){
+				ret = tsip_dialog_hangup(dialog);
+			}
+			else{
+				TSK_DEBUG_ERROR("Failed to find PUBLISH dialog with this opid [%lld]", tsip_operation_get_id(self));
+			}
+		}
+	}
+	return ret;
 }
 
 

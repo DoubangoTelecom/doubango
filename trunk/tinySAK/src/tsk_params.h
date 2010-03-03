@@ -57,6 +57,8 @@ typedef struct tsk_param_s
 
 	char *name;/**< The name of the parameter. */
 	char *value;/**< The value of the parameter. */
+	
+	unsigned tag:1;/**< tag to be used for any use case (e.g. validity of the parameter, whether to ignore the param., ...). Default value: 0.*/
 }
 tsk_param_t;
 

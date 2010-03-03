@@ -50,7 +50,7 @@ TSK_BEGIN_DECLS
 * @def TSK_TIMER_ID_IS_VALID
 */
 #define TSK_INVALID_TIMER_ID						0
-#define TSK_TIMER_ID_IS_VALID(id)					(id != TSK_INVALID_TIMER_ID)
+#define TSK_TIMER_ID_IS_VALID(id)					((id) != TSK_INVALID_TIMER_ID)
 
 /**@ingroup tsk_timer_group
 * @def tsk_timer_manager_handle_t

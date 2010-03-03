@@ -59,6 +59,7 @@ typedef struct tsip_dialog_publish
 	tsk_fsm_t *fsm;
 		
 	tsip_timer_t timerrefresh;
+	tsip_timer_t timershutdown;
 
 	unsigned unpublishing:1;
 	char* etag;
@@ -68,7 +69,6 @@ tsip_dialog_publish_t;
 
 int tsip_dialog_publish_start(tsip_dialog_publish_t *self);
 int tsip_dialog_publish_modify(tsip_dialog_publish_t *self);
-int tsip_dialog_publish_remove(tsip_dialog_publish_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_publish_def_t;
 

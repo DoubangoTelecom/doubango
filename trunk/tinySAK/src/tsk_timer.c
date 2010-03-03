@@ -211,6 +211,12 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 {
 	int ret = -1;
 	tsk_timer_manager_t *manager = self;
+
+	/* Check validity. */
+	if(!TSK_TIMER_ID_IS_VALID(id)){ /* Very common. */
+		return 0;
+	}
+
 	if(!TSK_LIST_IS_EMPTY(manager->timers) && TSK_RUNNABLE(manager)->running)
 	{
 		const tsk_list_item_t *item;
@@ -221,8 +227,8 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 			tsk_timer_t *timer = item->data;
 			timer->canceled = 1;
 			
-			if(item == manager->timers->head)
-			{	/* The timer we are waiting on ? ==> remove it now. */
+			if(item == manager->timers->head){
+				/* The timer we are waiting on ? ==> remove it now. */
 				tsk_condwait_signal(manager->condwait);
 			}
 			

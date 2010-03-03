@@ -395,6 +395,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyNET\test\test_tls.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyNET\test\test_transport.h"
 				>
 			</File>

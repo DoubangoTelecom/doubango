@@ -465,8 +465,7 @@ tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase,
 {
 	tsip_response_t *response = 0;
 
-	if(request)
-	{
+	if(request){
 		response = TSIP_RESPONSE_CREATE(request, status_code, reason_phrase);
 		TSIP_MESSAGE_ADD_HEADER(response, TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT)); /* To be compliant with OMA SIMPLE IM v1.0*/
 		TSIP_MESSAGE_ADD_HEADER(response, TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
