@@ -313,8 +313,6 @@ _again:
 //	Allow_events header object definition
 //
 
-/**@ingroup tsip_header_Allow_events_group
-*/
 static void* tsip_header_Allow_Events_create(void *self, va_list * app)
 {
 	tsip_header_Allow_Events_t *Allow_events = self;
@@ -330,8 +328,6 @@ static void* tsip_header_Allow_Events_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Allow_events_group
-*/
 static void* tsip_header_Allow_Events_destroy(void *self)
 {
 	tsip_header_Allow_Events_t *Allow_events = self;

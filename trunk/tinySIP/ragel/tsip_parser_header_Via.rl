@@ -235,8 +235,6 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 //	Via header object definition
 //
 
-/**@ingroup tsip_header_Via_group
-*/
 static void* tsip_header_Via_create(void *self, va_list * app)
 {
 	tsip_header_Via_t *via = self;
@@ -271,8 +269,6 @@ static void* tsip_header_Via_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Via_group
-*/
 static void* tsip_header_Via_destroy(void *self)
 {
 	tsip_header_Via_t *via = self;

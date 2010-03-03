@@ -128,8 +128,6 @@ tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size)
 //	Allow header object definition
 //
 
-/**@ingroup tsip_header_Allow_group
-*/
 static void* tsip_header_Allow_create(void *self, va_list * app)
 {
 	tsip_header_Allow_t *Allow = self;
@@ -150,8 +148,6 @@ static void* tsip_header_Allow_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Allow_group
-*/
 static void* tsip_header_Allow_destroy(void *self)
 {
 	tsip_header_Allow_t *Allow = self;

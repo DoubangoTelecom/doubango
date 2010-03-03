@@ -58,6 +58,8 @@
 #include "tinysip/headers/tsip_header_Security_Verify.h"
 #include "tinysip/headers/tsip_header_Server.h"
 #include "tinysip/headers/tsip_header_Service_Route.h"
+#include "tinysip/headers/tsip_header_SIP_ETag.h"
+#include "tinysip/headers/tsip_header_SIP_If_Match.h"
 #include "tinysip/headers/tsip_header_Subscription_State.h"
 #include "tinysip/headers/tsip_header_Supported.h"
 #include "tinysip/headers/tsip_header_To.h"
@@ -635,13 +637,15 @@
 	# /*== SIP-ETag: ==*/
 	action parse_header_SIP_ETag
 	{
-		TSK_DEBUG_ERROR("parse_header_SIP_ETag NOT IMPLEMENTED");
+		tsip_header_SIP_ETag_t *header = tsip_header_SIP_ETag_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
 	}
 
 	# /*== SIP-If-Match: ==*/
 	action parse_header_SIP_If_Match
 	{
-		TSK_DEBUG_ERROR("parse_header_SIP_If_Match NOT IMPLEMENTED");
+		tsip_header_SIP_If_Match_t *header = tsip_header_SIP_If_Match_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
 	}
 
 	# /*== Subject: ==*/

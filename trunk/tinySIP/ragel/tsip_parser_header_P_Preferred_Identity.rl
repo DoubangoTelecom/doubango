@@ -142,8 +142,6 @@ tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const
 //	P_Preferred_Identity header object definition
 //
 
-/**@ingroup tsip_header_P_Preferred_Identity_group
-*/
 static void* tsip_header_P_Preferred_Identity_create(void *self, va_list * app)
 {
 	tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = self;
@@ -165,8 +163,6 @@ static void* tsip_header_P_Preferred_Identity_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_P_Preferred_Identity_group
-*/
 static void* tsip_header_P_Preferred_Identity_destroy(void *self)
 {
 	tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = self;

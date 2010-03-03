@@ -146,8 +146,6 @@ tsip_header_Subscription_State_t *tsip_header_Subscription_State_parse(const cha
 //	Subscription_State header object definition
 //
 
-/**@ingroup tsip_header_Subscription_State_group
-*/
 static void* tsip_header_Subscription_State_create(void *self, va_list * app)
 {
 	tsip_header_Subscription_State_t *Subscription_State = self;
@@ -166,8 +164,6 @@ static void* tsip_header_Subscription_State_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Subscription_State_group
-*/
 static void* tsip_header_Subscription_State_destroy(void *self)
 {
 	tsip_header_Subscription_State_t *Subscription_State = self;

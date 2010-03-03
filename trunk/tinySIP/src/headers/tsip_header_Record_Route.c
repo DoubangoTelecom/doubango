@@ -276,8 +276,6 @@ _again:
 //	Record_Route header object definition
 //
 
-/**@ingroup tsip_header_Record_Route_group
-*/
 static void* tsip_header_Record_Route_create(void *self, va_list * app)
 {
 	tsip_header_Record_Route_t *Record_Route = self;
@@ -294,8 +292,6 @@ static void* tsip_header_Record_Route_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Record_Route_group
-*/
 static void* tsip_header_Record_Route_destroy(void *self)
 {
 	tsip_header_Record_Route_t *Record_Route = self;

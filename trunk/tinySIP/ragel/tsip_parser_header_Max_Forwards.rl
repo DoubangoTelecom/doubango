@@ -113,8 +113,6 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, siz
 //	Max_Forwards header object definition
 //
 
-/**@ingroup tsip_header_Max_Forwards_group
-*/
 static void* tsip_header_Max_Forwards_create(void *self, va_list * app)
 {
 	tsip_header_Max_Forwards_t *Max_Forwards = self;
@@ -131,8 +129,6 @@ static void* tsip_header_Max_Forwards_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Max_Forwards_group
-*/
 static void* tsip_header_Max_Forwards_destroy(void *self)
 {
 	tsip_header_Max_Forwards_t *Max_Forwards = self;

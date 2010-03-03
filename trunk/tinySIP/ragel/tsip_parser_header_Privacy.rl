@@ -140,8 +140,6 @@ tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size)
 //	Privacy header object definition
 //
 
-/**@ingroup tsip_header_Privacy_group
-*/
 static void* tsip_header_Privacy_create(void *self, va_list * app)
 {
 	tsip_header_Privacy_t *Privacy = self;
@@ -157,8 +155,6 @@ static void* tsip_header_Privacy_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Privacy_group
-*/
 static void* tsip_header_Privacy_destroy(void *self)
 {
 	tsip_header_Privacy_t *Privacy = self;

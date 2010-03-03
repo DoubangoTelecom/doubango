@@ -913,8 +913,6 @@ _again:
 //	Security_Server header object definition
 //
 
-/**@ingroup tsip_header_Security_Server_group
-*/
 static void* tsip_header_Security_Server_create(void *self, va_list * app)
 {
 	tsip_header_Security_Server_t *Security_Server = self;
@@ -933,8 +931,6 @@ static void* tsip_header_Security_Server_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Security_Server_group
-*/
 static void* tsip_header_Security_Server_destroy(void *self)
 {
 	tsip_header_Security_Server_t *Security_Server = self;

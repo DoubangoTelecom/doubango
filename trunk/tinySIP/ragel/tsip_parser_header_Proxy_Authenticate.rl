@@ -201,8 +201,6 @@
 ////	Proxy_Authenticate header object definition
 ////
 //
-///**@ingroup tsip_header_Proxy_Authenticate_group
-//*/
 //static void* tsip_header_Proxy_Authenticate_create(void *self, va_list * app)
 //{
 //	tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = self;
@@ -218,8 +216,6 @@
 //	return self;
 //}
 //
-///**@ingroup tsip_header_Proxy_Authenticate_group
-//*/
 //static void* tsip_header_Proxy_Authenticate_destroy(void *self)
 //{
 //	tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = self;

@@ -121,8 +121,6 @@ tsip_header_Server_t *tsip_header_Server_parse(const char *data, size_t size)
 //	Server header object definition
 //
 
-/**@ingroup tsip_header_Server_group
-*/
 static void* tsip_header_Server_create(void *self, va_list * app)
 {
 	tsip_header_Server_t *Server = self;
@@ -139,8 +137,6 @@ static void* tsip_header_Server_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Server_group
-*/
 static void* tsip_header_Server_destroy(void *self)
 {
 	tsip_header_Server_t *Server = self;

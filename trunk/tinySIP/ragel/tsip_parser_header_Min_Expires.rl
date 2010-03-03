@@ -113,8 +113,6 @@ tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_
 //	Min-Expires header object definition
 //
 
-/**@ingroup tsip_header_Min_Expires_group
-*/
 static void* tsip_header_Min_Expires_create(void *self, va_list * app)
 {
 	tsip_header_Min_Expires_t *Min_Expires = self;
@@ -131,8 +129,6 @@ static void* tsip_header_Min_Expires_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Min_Expires_group
-*/
 static void* tsip_header_Min_Expires_destroy(void *self)
 {
 	tsip_header_Min_Expires_t *Min_Expires = self;

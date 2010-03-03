@@ -286,8 +286,6 @@ _again:
 //	CSeq header object definition
 //
 
-/**@ingroup tsip_header_CSeq_group
-*/
 static void* tsip_header_CSeq_create(void *self, va_list * app)
 {
 	tsip_header_CSeq_t *CSeq = self;
@@ -305,8 +303,6 @@ static void* tsip_header_CSeq_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_CSeq_group
-*/
 static void* tsip_header_CSeq_destroy(void *self)
 {
 	tsip_header_CSeq_t *CSeq = self;

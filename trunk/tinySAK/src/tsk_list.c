@@ -386,8 +386,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 		tsk_list_item_t *item;
 		tsk_list_foreach(item, list)
 		{
-			if(!predicate(item, data))
-			{
+			if(!predicate(item, data)){
 				return item;
 			}
 		}

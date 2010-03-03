@@ -300,8 +300,6 @@ _again:
 //	Require header object definition
 //
 
-/**@ingroup tsip_header_Require_group
-*/
 static void* tsip_header_Require_create(void *self, va_list * app)
 {
 	tsip_header_Require_t *Require = self;
@@ -326,8 +324,6 @@ static void* tsip_header_Require_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Require_group
-*/
 static void* tsip_header_Require_destroy(void *self)
 {
 	tsip_header_Require_t *Require = self;

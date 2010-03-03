@@ -95,6 +95,12 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Require.c tsip_parser_header_Re
 # == Server
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Server.c tsip_parser_header_Server.rl
 
+# == SIP-ETag
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_SIP_ETag.c tsip_parser_header_SIP_ETag.rl
+
+# == SIP-If-Match
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_SIP_If_Match.c tsip_parser_header_SIP_If_Match.rl
+
 # == Route
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Route.c tsip_parser_header_Route.rl
 

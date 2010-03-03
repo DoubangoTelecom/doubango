@@ -250,8 +250,6 @@ tsip_header_Security_Verifies_L_t *tsip_header_Security_Verify_parse(const char 
 //	Security_Verify header object definition
 //
 
-/**@ingroup tsip_header_Security_Verify_group
-*/
 static void* tsip_header_Security_Verify_create(void *self, va_list * app)
 {
 	tsip_header_Security_Verify_t *Security_Verify = self;
@@ -270,8 +268,6 @@ static void* tsip_header_Security_Verify_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Security_Verify_group
-*/
 static void* tsip_header_Security_Verify_destroy(void *self)
 {
 	tsip_header_Security_Verify_t *Security_Verify = self;

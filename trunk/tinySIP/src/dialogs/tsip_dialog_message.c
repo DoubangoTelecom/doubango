@@ -122,8 +122,8 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 						TSK_DEBUG_WARN("Not supported status code: %d", status_code);
 					}
 				}
-				else // REQUEST ==> Incoming MESSAGE
-				{
+				else{
+					// REQUEST ==> Incoming MESSAGE
 					ret = tsk_fsm_act(self->fsm, _fsm_action_receiveMESSAGE, self, msg, self, msg);
 				}
 			}
@@ -230,10 +230,9 @@ int tsip_dialog_message_start(tsip_dialog_message_t *self)
 		size_t content_length = 0;
 		tsip_request_t* request;
 
-
 		if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "MESSAGE"))){
 			/* content-length */
-			if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content-length"))){
+			if((param = tsip_operation_get_header(TSIP_DIALOG(self)->operation, "Content-Length"))){
 				content_length = atoi(param->value);
 			}
 			/* content */

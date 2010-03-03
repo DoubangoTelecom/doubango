@@ -170,8 +170,6 @@ tsip_header_Routes_L_t *tsip_header_Route_parse(const char *data, size_t size)
 //	Route header object definition
 //
 
-/**@ingroup tsip_header_Route_group
-*/
 static void* tsip_header_Route_create(void *self, va_list * app)
 {
 	tsip_header_Route_t *Route = self;
@@ -193,8 +191,6 @@ static void* tsip_header_Route_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Route_group
-*/
 static void* tsip_header_Route_destroy(void *self)
 {
 	tsip_header_Route_t *Route = self;

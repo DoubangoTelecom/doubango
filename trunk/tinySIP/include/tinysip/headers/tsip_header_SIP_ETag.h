@@ -35,21 +35,33 @@
 
 TSIP_BEGIN_DECLS
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
-///
-/// @brief	SIP header 'SIP-ETag'.
-/// @author	Mamadou
-/// @date	12/3/2009
-///
-/// @par ABNF
-/// 	
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**@def TSIP_HEADER_SIP_ETAG_CREATE
+* Creates new sip 'SIP-ETag' header as per RFC 3903.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
+*/
+#define TSIP_HEADER_SIP_ETAG_VA_ARGS(etag)		tsip_header_SIP_ETag_def_t, (const char*)etag
+#define TSIP_HEADER_SIP_ETAG_CREATE(etag)		tsk_object_new(TSIP_HEADER_SIP_ETAG_VA_ARGS(etag))
+#define TSIP_HEADER_SIP_ETAG_CREATE_NULL()		TSIP_HEADER_SIP_ETAG_CREATE(TSIP_NULL)
+
+
+/**
+ * @struct	tsip_header_SIP_ETag_s
+ *
+ * 	SIP header 'SIP-ETag' as per RFC 3903.
+ * 	@par ABNF 
+ *	SIP-ETag	= 	"SIP-ETag" HCOLON entity-tag
+ *	entity-tag = token 
+**/
 typedef struct tsip_header_SIP_ETag_s
 {	
 	TSIP_DECLARE_HEADER;
+	char *value;
 }
 tsip_header_SIP_ETag_t;
+
+tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_SIP_ETag_def_t;
 
 TSIP_END_DECLS
 

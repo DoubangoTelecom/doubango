@@ -642,8 +642,6 @@ _again:
 //	Contact header object definition
 //
 
-/**@ingroup tsip_header_Contact_group
-*/
 static void* tsip_header_Contact_create(void *self, va_list * app)
 {
 	tsip_header_Contact_t *Contact = self;
@@ -660,8 +658,6 @@ static void* tsip_header_Contact_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Contact_group
-*/
 static void* tsip_header_Contact_destroy(void *self)
 {
 	tsip_header_Contact_t *Contact = self;
@@ -707,8 +703,6 @@ const void *tsip_header_Contact_def_t = &tsip_header_Contact_def_s;
 //	return self;
 //}
 //
-///**@ingroup tsip_header_Contact_group
-//*/
 //static void* tsip_contact_destroy(void *self)
 //{
 //	tsip_contact_t *contact = self;

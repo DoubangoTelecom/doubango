@@ -92,13 +92,12 @@ int __tsip_operation_set(tsip_operation_t *self, va_list values)
 					const char* name = va_arg(values, const char *);
 					const char* value = va_arg(values, const char *);
 					
-					tsk_param_t *param = TSK_PARAM_CREATE(name, value);
 					if(curr == optype_param){
-						tsk_list_push_back_data(self->params, ((void**) &param));
+						tsk_params_add_param(&self->params, name, value); // Add or Update a param
 					} else if(curr == optype_header){
-						tsk_list_push_back_data(self->headers, ((void**) &param));
+						tsk_params_add_param(&self->headers, name, value);
 					}else if(curr == optype_caps){
-						tsk_list_push_back_data(self->caps, ((void**) &param));
+						tsk_params_add_param(&self->caps, name, value);
 					}
 					break;
 				}
@@ -150,6 +149,15 @@ const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self,
 	if(self){
 		const tsip_operation_t *operation = self;
 		return tsk_params_get_param_by_name(operation->params, pname);
+	}
+	return TSIP_NULL;
+}
+
+const tsk_param_t* tsip_operation_get_header(const tsip_operation_handle_t *self, const char* hname)
+{
+	if(self){
+		const tsip_operation_t *operation = self;
+		return tsk_params_get_param_by_name(operation->headers, hname);
 	}
 	return TSIP_NULL;
 }

@@ -32,6 +32,41 @@
 #	endif
 #endif
 
+#define TEST_STACK_PIDF \
+	"<?xml version=\"1.0\" encoding=\"utf-8\"?>"\
+	"<presence xmlns:cp=\"urn:ietf:params:xml:ns:pidf:cipid\" xmlns:caps=\"urn:ietf:params:xml:ns:pidf:caps\" xmlns:rpid=\"urn:ietf:params:xml:ns:pidf:rpid\" xmlns:pdm=\"urn:ietf:params:xml:ns:pidf:data-model\" xmlns:p=\"urn:ietf:params:xml:ns:pidf-diff\" xmlns:op=\"urn:oma:xml:prs:pidf:oma-pres\" entity=\"sip:mamadou@ericsson.com\" xmlns=\"urn:ietf:params:xml:ns:pidf\">"\
+	"  <pdm:person id=\"CRUVREZS\">"\
+	"	<op:overriding-willingness>"\
+	"	  <op:basic>open</op:basic>"\
+	"	</op:overriding-willingness>"\
+	"	<rpid:activities>"\
+	"	  <rpid:unknown />"\
+	"	</rpid:activities>"\
+	"	<rpid:mood>"\
+	"	  <rpid:neutral />"\
+	"	</rpid:mood>"\
+	"	<pdm:note>Hello world</pdm:note>"\
+	"  </pdm:person>"\
+	"  <pdm:device id=\"d0001\">"\
+	"	<status>"\
+	"	  <basic>open</basic>"\
+	"	</status>"\
+	"	<caps:devcaps>"\
+	"	  <caps:mobility>"\
+	"		<caps:supported>"\
+	"		  <caps:fixed />"\
+	"		</caps:supported>"\
+	"	  </caps:mobility>"\
+	"	</caps:devcaps>"\
+	"	<op:network-availability>"\
+	"	  <op:network id=\"IMS\">"\
+	"		<op:active />"\
+	"	  </op:network>"\
+	"	</op:network-availability>"\
+	"	<pdm:deviceID>urn:uuid:dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc</pdm:deviceID>"\
+	"  </pdm:device>"\
+	"</presence>"
+
 int test_stack_callback(const tsip_event_t *sipevent)
 {
 	TSK_DEBUG_INFO("\n====\nSTACK event: %d [%s] with opid=%lld\n=====", 
@@ -188,7 +223,7 @@ int test_stack_callback(const tsip_event_t *sipevent)
 
 void test_stack()
 {
-	/*
+/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("2233392625"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:2233392625@sip2sip.info"),
@@ -201,11 +236,11 @@ void test_stack()
 		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(5060),
 		TSIP_STACK_SET_MOBILITY("fixed"),
-		TSIP_STACK_SET_DEVICE_ID("DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC"),
+		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
-	*/
-/*
+*/
+
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@ericsson.com"),
@@ -217,13 +252,13 @@ void test_stack()
 		TSIP_STACK_SET_PROXY_CSCF("192.168.0.11", "udp", 0),
 		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(5081),
-		TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),
+		//TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),
 		TSIP_STACK_SET_MOBILITY("fixed"),
-		TSIP_STACK_SET_DEVICE_ID("DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC"),
+		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
-*/
-	
+
+/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@ims.inexbee.com"),
@@ -237,9 +272,10 @@ void test_stack()
 		TSIP_STACK_SET_PROXY_CSCF_PORT(4060),
 		//TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),
 		TSIP_STACK_SET_MOBILITY("fixed"),
-		TSIP_STACK_SET_DEVICE_ID("DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC"),
+		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
+*/
 
 		TSIP_STACK_SET_NULL());
 
@@ -261,29 +297,43 @@ void test_stack()
 
 	tsk_thread_sleep(2000);
 
+	///* SUBSCRIBE */
+	//{
+	//	tsip_operation_handle_t *op2 = TSIP_OPERATION_CREATE(stack,
+	//	TSIP_OPERATION_SET_PARAM("to", "sip:mamadou@ims.inexbee.com"),
+	//	TSIP_OPERATION_SET_PARAM("expires", "30"),
+	//	TSIP_OPERATION_SET_HEADER("Event", "reg"),
+	//	TSIP_OPERATION_SET_HEADER("Accept", "application/reginfo+xml"),
+	//	TSIP_OPERATION_SET_HEADER("Allow-Events", "refer, presence, presence.winfo, xcap-diff"),
+	//	TSIP_OPERATION_SET_HEADER("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER"),
+	//	
+	//	TSIP_OPERATION_SET_NULL());
+	//	tsip_subscribe(stack, op2);
+	//}
+	
+	///* MESSAGE */
+	//{
+	//	tsip_operation_handle_t *op3 = TSIP_OPERATION_CREATE(stack,
+	//	TSIP_OPERATION_SET_PARAM("to", "sip:laurent@ims.inexbee.com"),
+	//	TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"),
+	//	TSIP_OPERATION_SET_HEADER("Content-Type", "text/plain"),
+
+	//	TSIP_OPERATION_SET_PARAM("content", "test"),
+	//	
+	//	TSIP_OPERATION_SET_NULL());
+	//	tsip_message(stack, op3);
+	//}
+
+	/* PUBLISH */
 	{
-		tsip_operation_handle_t *op2 = TSIP_OPERATION_CREATE(stack,
-		TSIP_OPERATION_SET_PARAM("to", "sip:mamadou@ims.inexbee.com"),
-		TSIP_OPERATION_SET_PARAM("expires", "30"),
-		TSIP_OPERATION_SET_HEADER("Event", "reg"),
-		TSIP_OPERATION_SET_HEADER("Accept", "application/reginfo+xml"),
-		TSIP_OPERATION_SET_HEADER("Allow-Events", "refer, presence, presence.winfo, xcap-diff"),
-		TSIP_OPERATION_SET_HEADER("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER"),
+		tsip_operation_handle_t *op4 = TSIP_OPERATION_CREATE(stack,
+		TSIP_OPERATION_SET_PARAM("to", "sip:mamadou@ericsson.com"),
+		TSIP_OPERATION_SET_HEADER("Content-Type", "application/pidf+xml"),
+
+		TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
 		
 		TSIP_OPERATION_SET_NULL());
-		tsip_subscribe(stack, op2);
-	}
-
-	{
-		tsip_operation_handle_t *op3 = TSIP_OPERATION_CREATE(stack,
-		TSIP_OPERATION_SET_PARAM("to", "sip:laurent@ims.inexbee.com"),
-		TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"),
-		TSIP_OPERATION_SET_HEADER("Content-Type", "text/plain"),
-
-		TSIP_OPERATION_SET_PARAM("content", "test"),
-		
-		TSIP_OPERATION_SET_NULL());
-		tsip_message(stack, op3);
+		tsip_publish(stack, op4);
 	}
 
 	//while(1);//tsk_thread_sleep(500);

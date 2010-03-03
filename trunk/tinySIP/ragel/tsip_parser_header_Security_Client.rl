@@ -250,8 +250,6 @@ tsip_header_Security_Clients_L_t *tsip_header_Security_Client_parse(const char *
 //	Security_Client header object definition
 //
 
-/**@ingroup tsip_header_Security_Client_group
-*/
 static void* tsip_header_Security_Client_create(void *self, va_list * app)
 {
 	tsip_header_Security_Client_t *Security_Client = self;
@@ -288,8 +286,6 @@ static void* tsip_header_Security_Client_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Security_Client_group
-*/
 static void* tsip_header_Security_Client_destroy(void *self)
 {
 	tsip_header_Security_Client_t *Security_Client = self;

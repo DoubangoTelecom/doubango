@@ -140,8 +140,6 @@ tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size)
 //	To header object definition
 //
 
-/**@ingroup tsip_header_To_group
-*/
 static void* tsip_header_To_create(void *self, va_list * app)
 {
 	tsip_header_To_t *To = self;
@@ -165,8 +163,6 @@ static void* tsip_header_To_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_To_group
-*/
 static void* tsip_header_To_destroy(void *self)
 {
 	tsip_header_To_t *To = self;

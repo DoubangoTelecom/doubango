@@ -39,6 +39,11 @@ int tsk_fsm_exec_nothing(va_list *app){ return 1; }
 int tsk_fsm_cond_always(const void* data1, const void* data2) { return 1; }
 
 /**@ingroup tsk_fsm_group
+* Add entries (states) to the FSM.
+* @param self The FSM.
+* @param ... One of these  helper macros: @b TSK_FSM_ADD_*. MUST end with 
+* @b TSK_FSM_ADD_NULL.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
 int tsk_fsm_set(tsk_fsm_t* self, ...)
 {
@@ -70,6 +75,13 @@ int tsk_fsm_set(tsk_fsm_t* self, ...)
 	return 0;
 }
 
+/**@ingroup tsk_fsm_group
+* Sets the @a callback function to call when the FSM enter in the final state.
+* @param self The FSM.
+* @param callback The callback function to call.
+* @param callbackdata Opaque data (user-data) to pass to the callback function.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callback, const void* callbackdata)
 {
 	if(self){
@@ -81,6 +93,13 @@ int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callba
 }
 
 /**@ingroup tsk_fsm_group
+* Execute an @a action. This action will probably change the current state of the FSM.
+* @param self The FSM.
+* @param action The id of the action to execute.
+* @param cond_data1 The first opaque data to pass to the @a condition function.
+* @param cond_data2 The first opaque data to pass to the @a condition function.
+* @param ... Variable parameters to pass to the @a exec function.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
 int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data1, const void* cond_data2, ...)
 {

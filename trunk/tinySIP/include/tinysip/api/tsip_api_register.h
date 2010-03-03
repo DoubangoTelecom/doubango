@@ -62,8 +62,6 @@ tsip_register_event_t;
 
 int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_operation_id_t opid, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
-typedef int (*tsip_register_callback)(const tsip_register_event_t *sipevent);
-
 TINYSIP_GEXTERN const void *tsip_register_event_def_t;
 
 TSIP_END_DECLS

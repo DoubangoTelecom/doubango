@@ -523,8 +523,6 @@ _again:
 //	P_Associated_URI header object definition
 //
 
-/**@ingroup tsip_header_P_Associated_URI_group
-*/
 static void* tsip_header_P_Associated_URI_create(void *self, va_list * app)
 {
 	tsip_header_P_Associated_URI_t *P_Associated_URI = self;
@@ -545,8 +543,6 @@ static void* tsip_header_P_Associated_URI_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_P_Associated_URI_group
-*/
 static void* tsip_header_P_Associated_URI_destroy(void *self)
 {
 	tsip_header_P_Associated_URI_t *P_Associated_URI = self;

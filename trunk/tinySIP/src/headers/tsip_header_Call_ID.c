@@ -295,8 +295,6 @@ _again:
 //	Call_ID header object definition
 //
 
-/**@ingroup tsip_header_Call_ID_group
-*/
 static void* tsip_header_Call_ID_create(void *self, va_list * app)
 {
 	tsip_header_Call_ID_t *Call_ID = self;
@@ -313,8 +311,6 @@ static void* tsip_header_Call_ID_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Call_ID_group
-*/
 static void* tsip_header_Call_ID_destroy(void *self)
 {
 	tsip_header_Call_ID_t *Call_ID = self;

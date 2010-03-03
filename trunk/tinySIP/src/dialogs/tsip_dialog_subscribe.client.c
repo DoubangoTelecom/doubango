@@ -38,6 +38,9 @@
 #include "tsk_debug.h"
 #include "tsk_time.h"
 
+/**@defgroup tsip_dialog_subscribe_group SIP dialog SUBSCRIBE (Client side) as per RFC 3265.
+*/
+
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(subscribe, TX)
 #define TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, message)	\
@@ -123,13 +126,7 @@ typedef enum _fsm_state_e
 _fsm_state_t;
 
 /**
- * @fn	int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, tsip_dialog_event_type_t type,
- * 		const tsip_message_t *msg)
- *
- * @brief	Callback function called to alert the dialog for new events from the transaction/transport layers.
- *
- * @author	Mamadou
- * @date	1/4/2010
+ * Callback function called to alert the dialog for new events from the transaction/transport layers.
  *
  * @param [in,out]	self	A reference to the dialog.
  * @param	type		The event type. 
@@ -150,24 +147,19 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 				//
 				//	RESPONSE
 				//
-				if(TSIP_RESPONSE_IS_1XX(msg))
-				{
+				if(TSIP_RESPONSE_IS_1XX(msg)){
 					ret = tsk_fsm_act(self->fsm, _fsm_action_1xx, self, msg, self, msg);
 				}
-				else if(TSIP_RESPONSE_IS_2XX(msg))
-				{
+				else if(TSIP_RESPONSE_IS_2XX(msg)){
 					ret = tsk_fsm_act(self->fsm, _fsm_action_2xx, self, msg, self, msg);
 				}
-				else if(TSIP_RESPONSE_IS(msg,401) || TSIP_RESPONSE_IS(msg,407) || TSIP_RESPONSE_IS(msg,421) || TSIP_RESPONSE_IS(msg,494))
-				{
+				else if(TSIP_RESPONSE_IS(msg,401) || TSIP_RESPONSE_IS(msg,407) || TSIP_RESPONSE_IS(msg,421) || TSIP_RESPONSE_IS(msg,494)){
 					ret = tsk_fsm_act(self->fsm, _fsm_action_401_407_421_494, self, msg, self, msg);
 				}
-				else if(TSIP_RESPONSE_IS(msg,423))
-				{
+				else if(TSIP_RESPONSE_IS(msg,423)){
 					ret = tsk_fsm_act(self->fsm, _fsm_action_423, self, msg, self, msg);
 				}
-				else
-				{
+				else{
 					// Alert User
 					ret = tsk_fsm_act(self->fsm, _fsm_action_error, self, msg, self, msg);
 					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
@@ -181,9 +173,13 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 				if(tsk_striequals(TSIP_REQUEST_METHOD(msg), "NOTIFY")){
 					ret = tsk_fsm_act((self)->fsm, _fsm_action_notify, self, msg, self, msg);
 				}
-				else
-				{
-					// FIXME: send something
+				else{
+					if(tsk_striequals(TSIP_REQUEST_METHOD(msg), "SUBSCRIBE")){
+						// FIXME: send loop detected
+					}
+					else{
+						// FIXME: Method not suported
+					}
 				}
 			}
 			break;
@@ -234,8 +230,7 @@ int tsip_dialog_subscribe_timer_callback(const tsip_dialog_subscribe_t* self, ts
 
 	if(self)
 	{
-		if(timer_id == self->timerrefresh.id)
-		{
+		if(timer_id == self->timerrefresh.id){
 			tsk_fsm_act(self->fsm, _fsm_action_refresh, self, TSK_NULL, self, TSK_NULL);
 			ret = 0;
 		}
@@ -308,8 +303,8 @@ int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_dialog_subscribe_Any_2_Terminated_X_transportError, "tsip_dialog_subscribe_Any_2_Terminated_X_transportError"),
 			// Any -> (transport error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_dialog_subscribe_Any_2_Terminated_X_Error, "tsip_dialog_subscribe_Any_2_Terminated_X_Error"),
-			// Any -> (hangup) -> Terminated
 			// Any -> (hangup) -> Trying
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_hangup, _fsm_state_Trying, tsip_dialog_subscribe_Any_2_Trying_X_hangup, "tsip_dialog_subscribe_Any_2_Trying_X_hangup"),
 
 			TSK_FSM_ADD_NULL());
 
@@ -343,6 +338,8 @@ int tsip_dialog_subscribe_Started_2_Trying_X_send(va_list *app)
 {
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	TSIP_DIALOG(self)->running = 1;
 
 	return send_subscribe(self);
 }
@@ -399,8 +396,7 @@ int tsip_dialog_subscribe_Trying_2_Trying_X_401_407_421_494(va_list *app)
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	if(tsip_dialog_update(TSIP_DIALOG(self), response))
-	{
+	if(tsip_dialog_update(TSIP_DIALOG(self), response)){
 		/* Alert the user. */
 		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
 			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
@@ -430,13 +426,11 @@ int tsip_dialog_subscribe_Trying_2_Trying_X_423(va_list *app)
 	(Interval Too Brief) response.
 	*/
 	hdr = (tsip_header_Min_Expires_t*)tsip_message_get_header(response, tsip_htype_Min_Expires);
-	if(hdr)
-	{
+	if(hdr){
 		TSIP_DIALOG(self)->expires = hdr->value;
 		send_subscribe(self);
 	}
-	else
-	{
+	else{
 		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
 			715, "Invalid SIP response.", response);
 
@@ -501,7 +495,7 @@ int tsip_dialog_subscribe_Connected_2_Trying_X_refresh(va_list *app)
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	return 0;
+	return send_subscribe(self);
 }
 
 /* Connected -> (NOTIFY) -> Connected
@@ -574,12 +568,7 @@ int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 /**
- * @fn	int send_subscribe(tsip_dialog_subscribe_t *self)
- *
- * @brief	Sends a SUBSCRIBE request. 
- *
- * @author	Mamadou
- * @date	1/4/2010
+ * Sends a SUBSCRIBE request. 
  *
  * @param [in,out]	self	The caller.
  *
@@ -615,12 +604,7 @@ int send_notify_200ok(tsip_dialog_subscribe_t *self, const tsip_request_t* reque
 }
 
 /**
- * @fn	int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
- *
- * @brief	Callback function called by the state machine manager to signal that the final state has been reached.
- *
- * @author	Mamadou
- * @date	1/5/2010
+ * Callback function called by the state machine manager to signal that the final state has been reached.
  *
  * @param [in,out]	self	The state machine owner.
 **/

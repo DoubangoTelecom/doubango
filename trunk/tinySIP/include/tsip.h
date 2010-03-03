@@ -220,10 +220,15 @@ const struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack
 const struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self);
 
 TINYSIP_API int tsip_register(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
-int tsip_unregister(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_unregister(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 
 TINYSIP_API int tsip_subscribe(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
-int tsip_unsubscribe(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_unsubscribe(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+
+TINYSIP_API int tsip_publish(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_publish_modify(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_publish_remove(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation);
+
 
 TINYSIP_API int tsip_message(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 
