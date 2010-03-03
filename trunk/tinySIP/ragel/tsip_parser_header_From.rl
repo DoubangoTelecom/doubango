@@ -140,8 +140,6 @@ tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size)
 //	From header object definition
 //
 
-/**@ingroup tsip_header_From_group
-*/
 static void* tsip_header_From_create(void *self, va_list * app)
 {
 	tsip_header_From_t *From = self;
@@ -165,8 +163,6 @@ static void* tsip_header_From_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_From_group
-*/
 static void* tsip_header_From_destroy(void *self)
 {
 	tsip_header_From_t *From = self;

@@ -512,8 +512,6 @@ _again:
 //	Service_Route header object definition
 //
 
-/**@ingroup tsip_header_Service_Route_group
-*/
 static void* tsip_header_Service_Route_create(void *self, va_list * app)
 {
 	tsip_header_Service_Route_t *Service_Route = self;
@@ -534,8 +532,6 @@ static void* tsip_header_Service_Route_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Service_Route_group
-*/
 static void* tsip_header_Service_Route_destroy(void *self)
 {
 	tsip_header_Service_Route_t *Service_Route = self;

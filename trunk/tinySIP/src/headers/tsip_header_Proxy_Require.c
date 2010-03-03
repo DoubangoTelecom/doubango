@@ -310,8 +310,6 @@ _again:
 //	Proxy_Require header object definition
 //
 
-/**@ingroup tsip_header_Proxy_Require_group
-*/
 static void* tsip_header_Proxy_Require_create(void *self, va_list * app)
 {
 	tsip_header_Proxy_Require_t *Proxy_Require = self;
@@ -336,8 +334,6 @@ static void* tsip_header_Proxy_Require_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Proxy_Require_group
-*/
 static void* tsip_header_Proxy_Require_destroy(void *self)
 {
 	tsip_header_Proxy_Require_t *Proxy_Require = self;

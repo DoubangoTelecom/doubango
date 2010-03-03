@@ -267,8 +267,6 @@ _again:
 //	Expires header object definition
 //
 
-/**@ingroup tsip_header_Expires_group
-*/
 static void* tsip_header_Expires_create(void *self, va_list * app)
 {
 	tsip_header_Expires_t *Expires = self;
@@ -285,8 +283,6 @@ static void* tsip_header_Expires_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Expires_group
-*/
 static void* tsip_header_Expires_destroy(void *self)
 {
 	tsip_header_Expires_t *Expires = self;

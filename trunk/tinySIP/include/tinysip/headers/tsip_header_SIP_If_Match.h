@@ -35,21 +35,33 @@
 
 TSIP_BEGIN_DECLS
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
-///
-/// @brief	SIP header 'SIP-If-Match'.
-/// @author	Mamadou
-/// @date	12/3/2009
-///
-/// @par ABNF
-/// 	
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**@def TSIP_HEADER_SIP_IF_MATCH_CREATE
+* Creates new sip 'SIP-If-Match' header as per RFC 3903.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+* @sa TSK_OBJECT_SAFE_FREE.
+*/
+#define TSIP_HEADER_SIP_IF_MATCH_VA_ARGS(etag)		tsip_header_SIP_If_Match_def_t, (const char*)etag
+#define TSIP_HEADER_SIP_IF_MATCH_CREATE(etag)		tsk_object_new(TSIP_HEADER_SIP_IF_MATCH_VA_ARGS(etag))
+#define TSIP_HEADER_SIP_IF_MATCH_CREATE_NULL()		TSIP_HEADER_SIP_IF_MATCH_CREATE(TSIP_NULL)
+
+
+/**
+ * @struct	tsip_header_SIP_If_Match_s
+ *
+ * 	SIP header 'SIP-If-Match' as per RFC 3903.
+ * 	@par ABNF 
+ *	SIP-If-Match	= 	"SIP-If-Match" HCOLON entity-tag
+ *	entity-tag = token 
+**/
 typedef struct tsip_header_SIP_If_Match_s
 {	
 	TSIP_DECLARE_HEADER;
+	char *value;
 }
 tsip_header_SIP_If_Match_t;
+
+tsip_header_SIP_If_Match_t *tsip_header_SIP_If_Match_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_SIP_If_Match_def_t;
 
 TSIP_END_DECLS
 

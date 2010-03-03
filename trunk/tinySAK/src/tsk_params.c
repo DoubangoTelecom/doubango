@@ -100,7 +100,7 @@ int tsk_params_have_param(const tsk_params_L_t *self, const char* name)
 }
 
 /**@ingroup tsk_params_group
-* Adds a parameter to the list of parameters.
+* Adds a parameter to the list of parameters. If the parameter already exist, then it's value will be updated.
 * @param self The destination list.
 * @param name The name of the parameter to add.
 * @param value The value of the parameter to add.
@@ -118,8 +118,13 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 		*self = TSK_LIST_CREATE();
 	}
 
-	param = TSK_PARAM_CREATE(name, value);
-	tsk_list_push_back_data(*self, (void**)&param);
+	if((param = (tsk_param_t*)tsk_params_get_param_by_name(*self, name))){
+		tsk_strupdate(&param->value, value); /* Already exist ==> update the value. */
+	}
+	else{
+		param = TSK_PARAM_CREATE(name, value);
+		tsk_list_push_back_data(*self, (void**)&param);
+	}
 
 	return 0;
 }

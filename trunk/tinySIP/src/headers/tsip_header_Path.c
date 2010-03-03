@@ -503,8 +503,6 @@ _again:
 //	Path header object definition
 //
 
-/**@ingroup tsip_header_Path_group
-*/
 static void* tsip_header_Path_create(void *self, va_list * app)
 {
 	tsip_header_Path_t *Path = self;
@@ -525,8 +523,6 @@ static void* tsip_header_Path_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Path_group
-*/
 static void* tsip_header_Path_destroy(void *self)
 {
 	tsip_header_Path_t *Path = self;

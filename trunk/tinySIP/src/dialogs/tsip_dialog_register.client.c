@@ -216,8 +216,7 @@ int tsip_dialog_register_timer_callback(const tsip_dialog_register_t* self, tsk_
 
 	if(self)
 	{
-		if(timer_id == self->timerrefresh.id)
-		{
+		if(timer_id == self->timerrefresh.id){
 			ret = tsk_fsm_act((self)->fsm, _fsm_action_refresh, self, TSK_NULL, self, TSK_NULL);
 		}
 	}
@@ -334,6 +333,8 @@ int tsip_dialog_register_Started_2_Trying_X_send(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	TSIP_DIALOG(self)->running = 1;
 
 	return send_register(self, TSIP_TRUE);
 }

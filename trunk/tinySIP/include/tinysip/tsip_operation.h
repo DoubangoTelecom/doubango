@@ -67,6 +67,7 @@ tsip_operation_handle_t *tsip_operation_createex(const struct tsip_message_s* me
 TINYSIP_API int tsip_operation_set(tsip_operation_handle_t *self, ...);
 TINYSIP_API tsip_operation_id_t tsip_operation_get_id(const tsip_operation_handle_t *self);
 const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self, const char* pname);
+const tsk_param_t* tsip_operation_get_header(const tsip_operation_handle_t *self, const char* pname);
 const tsk_params_L_t* tsip_operation_get_headers(const tsip_operation_handle_t *self);
 const tsk_params_L_t* tsip_operation_get_params(const tsip_operation_handle_t *self);
 const tsk_params_L_t* tsip_operation_get_caps(const tsip_operation_handle_t *self);

@@ -307,8 +307,6 @@ _again:
 //	Supported header object definition
 //
 
-/**@ingroup tsip_header_Supported_group
-*/
 static void* tsip_header_Supported_create(void *self, va_list * app)
 {
 	tsip_header_Supported_t *Supported = self;
@@ -333,8 +331,6 @@ static void* tsip_header_Supported_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Supported_group
-*/
 static void* tsip_header_Supported_destroy(void *self)
 {
 	tsip_header_Supported_t *Supported = self;

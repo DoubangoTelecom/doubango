@@ -160,8 +160,6 @@ tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_
 //	P_Charging_Function_Addresses header object definition
 //
 
-/**@ingroup tsip_header_P_Charging_Function_Addresses_group
-*/
 static void* tsip_header_P_Charging_Function_Addresses_create(void *self, va_list * app)
 {
 	tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = self;
@@ -177,8 +175,6 @@ static void* tsip_header_P_Charging_Function_Addresses_create(void *self, va_lis
 	return self;
 }
 
-/**@ingroup tsip_header_P_Charging_Function_Addresses_group
-*/
 static void* tsip_header_P_Charging_Function_Addresses_destroy(void *self)
 {
 	tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = self;

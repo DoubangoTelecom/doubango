@@ -518,8 +518,6 @@ _again:
 //	Warning header object definition
 //
 
-/**@ingroup tsip_header_Warning_group
-*/
 static void* tsip_header_Warning_create(void *self, va_list * app)
 {
 	tsip_header_Warning_t *Warning = self;
@@ -537,8 +535,6 @@ static void* tsip_header_Warning_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Warning_group
-*/
 static void* tsip_header_Warning_destroy(void *self)
 {
 	tsip_header_Warning_t *Warning = self;

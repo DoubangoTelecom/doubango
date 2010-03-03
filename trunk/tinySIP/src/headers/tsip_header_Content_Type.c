@@ -383,8 +383,6 @@ _again:
 //	Content_Type header object definition
 //
 
-/**@ingroup tsip_header_Content_Type_group
-*/
 static void* tsip_header_Content_Type_create(void *self, va_list * app)
 {
 	tsip_header_Content_Type_t *Content_Type = self;
@@ -402,8 +400,6 @@ static void* tsip_header_Content_Type_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Content_Type_group
-*/
 static void* tsip_header_Content_Type_destroy(void *self)
 {
 	tsip_header_Content_Type_t *Content_Type = self;

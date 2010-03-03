@@ -37,8 +37,6 @@
 //
 //#include <string.h>
 //
-///**@defgroup tsip_header_WWW_Authenticate_group SIP WWW-Authenticate header.
-//*/
 //
 ///***********************************
 //*	Ragel state machine.
@@ -201,8 +199,6 @@
 ////	WWW_Authenticate header object definition
 ////
 //
-///**@ingroup tsip_header_WWW_Authenticate_group
-//*/
 //static void* tsip_header_WWW_Authenticate_create(void *self, va_list * app)
 //{
 //	tsip_header_WWW_Authenticate_t *WWW_Authenticate = self;
@@ -218,8 +214,6 @@
 //	return self;
 //}
 //
-///**@ingroup tsip_header_WWW_Authenticate_group
-//*/
 //static void* tsip_header_WWW_Authenticate_destroy(void *self)
 //{
 //	tsip_header_WWW_Authenticate_t *WWW_Authenticate = self;

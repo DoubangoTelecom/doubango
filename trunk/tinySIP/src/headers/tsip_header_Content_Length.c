@@ -273,8 +273,6 @@ _again:
 //	Content_Length header object definition
 //
 
-/**@ingroup tsip_header_Content_Length_group
-*/
 static void* tsip_header_Content_Length_create(void *self, va_list * app)
 {
 	tsip_header_Content_Length_t *Content_Length = self;
@@ -292,8 +290,6 @@ static void* tsip_header_Content_Length_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Content_Length_group
-*/
 static void* tsip_header_Content_Length_destroy(void *self)
 {
 	tsip_header_Content_Length_t *Content_Length = self;

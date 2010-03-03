@@ -657,8 +657,8 @@
     <member kind="function">
       <type>int</type>
       <name>tsk_fsm_set_callback_terminated</name>
-      <anchorfile>tsk__fsm_8c.html</anchorfile>
-      <anchor>af522979f49aaac6acbf7d5ef5712776f</anchor>
+      <anchorfile>group__tsk__fsm__group.html</anchorfile>
+      <anchor>gaf522979f49aaac6acbf7d5ef5712776f</anchor>
       <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated callback, const void *callbackdata)</arglist>
     </member>
     <member kind="function">
@@ -870,8 +870,8 @@
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_fsm_set_callback_terminated</name>
-      <anchorfile>tsk__fsm_8h.html</anchorfile>
-      <anchor>a5ae65679e4a53f3f672560b3c30097b4</anchor>
+      <anchorfile>group__tsk__fsm__group.html</anchorfile>
+      <anchor>gaf522979f49aaac6acbf7d5ef5712776f</anchor>
       <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated callback, const void *callbackdata)</arglist>
     </member>
     <member kind="function">
@@ -4024,6 +4024,13 @@
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
       <anchor>ga9059c5c9cdccf14f4c963bfee38b5ba4</anchor>
       <arglist>(tsk_fsm_t *self,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_fsm_set_callback_terminated</name>
+      <anchorfile>group__tsk__fsm__group.html</anchorfile>
+      <anchor>gaf522979f49aaac6acbf7d5ef5712776f</anchor>
+      <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated callback, const void *callbackdata)</arglist>
     </member>
     <member kind="function">
       <type>int</type>

@@ -41,6 +41,17 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_DIALOG_PUBLISH(self)							((tsip_dialog_publish_t*)(self))
 
+/** Type of refresh to perform.
+*/
+typedef enum refresh_type_e
+{
+	rt_initial,
+	rt_timedout,
+	rt_modify,
+	rt_remove
+}
+refresh_type_t;
+
 typedef struct tsip_dialog_publish
 {
 	TSIP_DECLARE_DIALOG;
@@ -50,12 +61,14 @@ typedef struct tsip_dialog_publish
 	tsip_timer_t timerrefresh;
 
 	unsigned unpublishing:1;
-
-	char* package;
+	char* etag;
+	refresh_type_t last_rtype;
 }
 tsip_dialog_publish_t;
 
 int tsip_dialog_publish_start(tsip_dialog_publish_t *self);
+int tsip_dialog_publish_modify(tsip_dialog_publish_t *self);
+int tsip_dialog_publish_remove(tsip_dialog_publish_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_publish_def_t;
 

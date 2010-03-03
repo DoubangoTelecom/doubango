@@ -272,8 +272,6 @@ _again:
 //	User_Agent header object definition
 //
 
-/**@ingroup tsip_header_User_Agent_group
-*/
 static void* tsip_header_User_Agent_create(void *self, va_list * app)
 {
 	tsip_header_User_Agent_t *User_Agent = self;
@@ -290,8 +288,6 @@ static void* tsip_header_User_Agent_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_User_Agent_group
-*/
 static void* tsip_header_User_Agent_destroy(void *self)
 {
 	tsip_header_User_Agent_t *User_Agent = self;

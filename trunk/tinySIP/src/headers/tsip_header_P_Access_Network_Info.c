@@ -296,8 +296,6 @@ _again:
 //	P_Access_Network_Info header object definition
 //
 
-/**@ingroup tsip_header_P_Access_Network_Info_group
-*/
 static void* tsip_header_P_Access_Network_Info_create(void *self, va_list * app)
 {
 	tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = self;
@@ -314,8 +312,6 @@ static void* tsip_header_P_Access_Network_Info_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_P_Access_Network_Info_group
-*/
 static void* tsip_header_P_Access_Network_Info_destroy(void *self)
 {
 	tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = self;

@@ -278,8 +278,6 @@ _again:
 //	Dummy header object definition
 //
 
-/**@ingroup tsip_header_Dummy_group
-*/
 static void* tsip_header_Dummy_create(void *self, va_list * app)
 {
 	tsip_header_Dummy_t *Dummy = self;
@@ -298,8 +296,6 @@ static void* tsip_header_Dummy_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_Dummy_group
-*/
 static void* tsip_header_Dummy_destroy(void *self)
 {
 	tsip_header_Dummy_t *Dummy = self;
