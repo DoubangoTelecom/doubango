@@ -834,20 +834,17 @@ int tnet_sockfd_init(const char *host, tnet_port_t port, enum tnet_socket_type_e
 	int ai_family, ai_socktype, ai_protocol;
 	*fd = TNET_INVALID_SOCKET;
 	
-	if((status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, &ai_family, &ai_socktype, &ai_protocol)))
-	{
+	if((status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, &ai_family, &ai_socktype, &ai_protocol))){
 		goto bail;
 	}
 	
-	if((*fd = socket(ai_family, ai_socktype, ai_protocol)) == TNET_INVALID_SOCKET)
-	{
+	if((*fd = socket(ai_family, ai_socktype, ai_protocol)) == TNET_INVALID_SOCKET){
 		TNET_PRINT_LAST_ERROR("Failed to create new socket.");
 		goto bail;
 	}
 
 #if TNET_USE_POLL /* For win32 WSA* function the socket is auto. set to nonblocking mode. */
-	if((status = tnet_sockfd_set_nonblocking(*fd)))
-	{
+	if((status = tnet_sockfd_set_nonblocking(*fd))){
 		goto bail;
 	}
 #endif
@@ -905,6 +902,29 @@ int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 
 	}
 	return 0;
+}
+
+tnet_tls_socket_handle_t* tnet_sockfd_set_tlsfiles(tnet_fd_t fd, int isClient, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk)
+{
+	tnet_tls_socket_handle_t* tlshandle = 0;
+	if(fd == TNET_INVALID_FD){
+		return 0;
+	}
+
+	if(isClient){
+		tlshandle = TNET_TLS_SOCKET_CLIENT_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk);
+	}
+	else{
+		tlshandle = TNET_TLS_SOCKET_SERVER_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk);
+	}
+
+	if(tnet_tls_socket_isok(tlshandle)){
+		return tlshandle;
+	}
+	else{
+		TSK_OBJECT_SAFE_FREE(tlshandle);
+		return 0;
+	}
 }
 
 /**@ingroup tnet_utils_group

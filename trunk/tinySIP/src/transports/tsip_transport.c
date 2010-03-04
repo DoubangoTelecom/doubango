@@ -129,13 +129,11 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 		tsk_buffer_t *buffer = 0;
 
 		/* Add Via */
-		if(TSIP_MESSAGE_IS_REQUEST(msg) && !tsk_striequals(msg->method, "CANCEL"))
-		{
+		if(TSIP_MESSAGE_IS_REQUEST(msg) && msg->request_type != tsip_CANCEL){
 			tsip_transport_addvia(self, branch, msg);
 			tsip_transport_msg_update(self, msg);
 		}
-		else if(TSIP_MESSAGE_IS_RESPONSE(msg))
-		{
+		else if(TSIP_MESSAGE_IS_RESPONSE(msg)){
 			/*	RFC 3581 - 4.  Server Behavior
 				When a server compliant to this specification (which can be a proxy
 				or UAS) receives a request, it examines the topmost Via header field
@@ -143,8 +141,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 				with no value, it MUST set the value of the parameter to the source
 				port of the request.
 			*/
-			if(msg->firstVia->rport == 0)
-			{
+			if(msg->firstVia->rport == 0){
 				/* As the response message has been built from the request ...then it's first via is the same as
 					the request's first via.
 				*/

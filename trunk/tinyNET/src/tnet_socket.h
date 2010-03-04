@@ -32,6 +32,7 @@
 
 #include "tinyNET_config.h"
 #include "tnet_types.h"
+#include "tls/tnet_tls.h"
 
 #include "tsk_list.h"
 
@@ -153,6 +154,8 @@ typedef struct tnet_socket_s
 	tnet_fd_t fd;
 	tnet_ip_t ip;
 	uint16_t port;
+
+	tnet_tls_socket_handle_t* tlshandle;
 }
 tnet_socket_t;
 
@@ -161,6 +164,8 @@ typedef tnet_socket_t tnet_socket_tcp_t; /**< TCP socket. */
 typedef tnet_socket_t tnet_socket_tls_t; /**< TLS socket. */
 typedef tnet_socket_t tnet_socket_ipsec_t; /**< IPSec socket. */
 typedef tsk_list_t tnet_sockets_L_t; /**< List of @ref tnet_socket_t elements. */
+
+int tnet_socket_set_tlsfiles(tnet_socket_tls_t* socket, int isClient, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk);
 
 TINYNET_GEXTERN const void *tnet_socket_def_t;
 

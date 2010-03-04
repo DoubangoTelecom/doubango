@@ -73,7 +73,7 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 
 	if(tnet_transport_start(transport))
 	{
-		TSK_DEBUG_ERROR("Failed to create TCP/IPv4 transport.");
+		TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
 		return;
 	}
 
@@ -85,9 +85,9 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 	//tsk_thread_sleep(500);
 
 	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto(transport, REMOTE_IP, 5060)) == TNET_INVALID_FD)
+	if((fd = tnet_transport_connectto2(transport, REMOTE_IP, 5060)) == TNET_INVALID_FD)
 	{
-		TSK_DEBUG_ERROR("Failed to connect TCP/IPv4 transport.");
+		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
 		return;
 	}
 
@@ -108,7 +108,7 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 
 		if(!tnet_transport_send(transport, fd, message, strlen(message)))
 		{
-			TSK_DEBUG_ERROR("Failed to send data using TCP/IPv4 transport.");
+			TSK_DEBUG_ERROR("Failed to send data using %s.", tnet_transport_get_description(transport));
 			TSK_FREE(message);
 			return;
 		}
@@ -126,7 +126,7 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	
 	if(tnet_transport_start(transport))
 	{
-		TSK_DEBUG_ERROR("Failed to create UDP/IPv4 transport.");
+		TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
 		return -1;
 	}
 
@@ -137,9 +137,9 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	}
 
 	/* Connect to our SIP REGISTRAR */
-	if((fd = tnet_transport_connectto(transport, REMOTE_IP, 5060)) == TNET_INVALID_FD)
+	if((fd = tnet_transport_connectto2(transport, REMOTE_IP, 5060)) == TNET_INVALID_FD)
 	{
-		TSK_DEBUG_ERROR("Failed to connect UDP/IPv4 transport.");
+		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
 		//tnet_transport_shutdown(transport);
 		return -2;
 	}
@@ -159,7 +159,7 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 
 		if(!tnet_transport_send(transport, fd, message, strlen(message)))
 		{
-			TSK_DEBUG_ERROR("Failed to send data using UDP/IPv4 transport.");
+			TSK_DEBUG_ERROR("Failed to send data using %s.", tnet_transport_get_description(transport));
 			//tnet_transport_shutdown(transport);
 			TSK_FREE(message);
 			return -3;
@@ -197,7 +197,7 @@ void test_transport()
 #endif
 
 #if TEST_TCP
-	tnet_transport_shutdown(tcp);
+	TSK_OBJECT_SAFE_FREE(tcp);
 #endif
 }
 
