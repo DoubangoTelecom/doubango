@@ -123,7 +123,7 @@ TSK_BEGIN_DECLS
 /**@ingroup tipsec_common_group
 * @def tipsec_key_t
 */
-typedef uint32_t tipsec_lifetime_t;
+typedef uint64_t tipsec_lifetime_t;
 typedef uint32_t tipsec_spi_t;
 typedef uint16_t tipsec_port_t;
 typedef void tipsec_key_t;

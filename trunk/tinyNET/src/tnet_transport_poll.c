@@ -44,8 +44,11 @@
 typedef struct transport_socket_s
 {
 	tnet_fd_t fd;
-	unsigned connected:1;
 	unsigned owner:1;
+	unsigned connected:1;
+
+	tnet_socket_type_t type;
+	tnet_tls_socket_handle_t* tlshandle;
 }
 transport_socket_t;
 
@@ -61,7 +64,7 @@ typedef struct transport_context_s
 }
 transport_context_t;
 
-static void addSocket(tnet_fd_t fd, transport_context_t *context, int take_ownership);
+static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client);
 static void setConnected(tnet_fd_t fd, transport_context_t *context, int connected);
 static void removeSocket(int index, transport_context_t *context);
 
@@ -102,6 +105,9 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		return ret;
 	}
 
+	if(TNET_SOCKET_TYPE_IS_TLS(type)){
+		transport->have_tls = 1;
+	}
 	
 	if((context = (transport_context_t*)transport->context)){
 		static char c = '\0';
@@ -157,75 +163,73 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	return -1;
 }
 
-tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port)
-{
-	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	struct sockaddr_storage to;
-	int status = -1;
-	tnet_fd_t fd = TNET_INVALID_SOCKET;
-
-	if(!transport || !transport->master)
-	{
-		TSK_DEBUG_ERROR("Invalid transport handle.");
-		goto bail;
-	}
-
-	/* Init destination sockaddr fields */
-	if((status = tnet_sockaddr_init(host, port, transport->master->type, &to))){
-		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u]", host, port);
-		goto bail;
-	}
-
-	/*
-	* STREAM ==> create new socket add connect it to the remote host.
-	* DGRAM ==> connect the master to the remote host.
-	*/
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){		
-		/* Create client socket descriptor. */
-		if((status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd))){
-			TSK_DEBUG_ERROR("Failed to create new sockfd.");
-			goto bail;
-		}
-
-		/* Add the socket */
-		if((status = tnet_transport_add_socket(handle, fd, 1))){
-			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
-
-			tnet_sockfd_close(&fd);
-			goto bail;
-		}
-	}
-	else{
-		fd = transport->master->fd;
-	}
-
-	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr *)&to))){
-		if(fd != transport->master->fd){
-			tnet_sockfd_close(&fd);
-		}
-		goto bail;
-	}
-
-	/* update connection status */
-	setConnected(fd, transport->context, (status==0));
-	
-bail:
-	return fd;
-}
+//tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port)
+//{
+//	tnet_transport_t *transport = (tnet_transport_t*)handle;
+//	struct sockaddr_storage to;
+//	int status = -1;
+//	tnet_fd_t fd = TNET_INVALID_SOCKET;
+//
+//	if(!transport || !transport->master)
+//	{
+//		TSK_DEBUG_ERROR("Invalid transport handle.");
+//		goto bail;
+//	}
+//
+//	/* Init destination sockaddr fields */
+//	if((status = tnet_sockaddr_init(host, port, transport->master->type, &to))){
+//		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u]", host, port);
+//		goto bail;
+//	}
+//
+//	/*
+//	* STREAM ==> create new socket add connect it to the remote host.
+//	* DGRAM ==> connect the master to the remote host.
+//	*/
+//	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){		
+//		/* Create client socket descriptor. */
+//		if((status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd))){
+//			TSK_DEBUG_ERROR("Failed to create new sockfd.");
+//			goto bail;
+//		}
+//
+//		/* Add the socket */
+//		if((status = tnet_transport_add_socket(handle, fd, 1))){
+//			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
+//
+//			tnet_sockfd_close(&fd);
+//			goto bail;
+//		}
+//	}
+//	else{
+//		fd = transport->master->fd;
+//	}
+//
+//	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr *)&to))){
+//		if(fd != transport->master->fd){
+//			tnet_sockfd_close(&fd);
+//		}
+//		goto bail;
+//	}
+//
+//	/* update connection status */
+//	setConnected(fd, transport->context, (status==0));
+//	
+//bail:
+//	return fd;
+//}
 
 size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	int numberOfBytesSent = 0;
 
-	if(!transport)
-	{
+	if(!transport){
 		TSK_DEBUG_ERROR("Invalid transport handle.");
 		goto bail;
 	}
 
-	if((numberOfBytesSent = send(from, buf, size, 0)) <= 0)
-	{
+	if((numberOfBytesSent = send(from, buf, size, 0)) <= 0){
 		TNET_PRINT_LAST_ERROR("send have failed.");
 
 		//tnet_sockfd_close(&from);
@@ -273,7 +277,7 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return 0;
 	}
-	
+	getSocket
 	context = (transport_context_t*)transport->context;
 	
 	for(i=0; i<context->count; i++)
@@ -288,17 +292,27 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 }
 
 /*== Add new socket ==*/
-void addSocket(tnet_fd_t fd, transport_context_t *context, int take_ownership)
+void addSocket(tnet_fd_t fd, transport_context_t *context, int take_ownership, int is_client)
 {
-	transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
-	sock->fd = fd;
-	sock->owner = take_ownership ? 1 : 0;
-	
-	context->ufds[context->count].fd = fd;
-	context->ufds[context->count].events = context->events;
-	context->sockets[context->count] = sock;
+	if(context){
+		transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
+		sock->fd = fd;
+		sock->type = type;
+		sock->owner = take_ownership ? 1 : 0;
 
-	context->count++;
+		if(TNET_SOCKET_TYPE_IS_TLS(sock->type)){
+			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, 0, 0, 0);
+		}
+		
+		context->ufds[context->count].fd = fd;
+		context->ufds[context->count].events = context->events;
+		context->sockets[context->count] = sock;
+
+		context->count++;
+	}
+	else{
+		TSK_DEBUG_ERROR("Context is Null.");
+	}
 }
 
 /*== change connection state ==*/
@@ -326,7 +340,11 @@ void removeSocket(int index, transport_context_t *context)
 		if(context->sockets[index]->owner){
 			tnet_sockfd_close(&(context->sockets[index]->fd));
 		}
-
+		
+		/* Free tls context */
+		if(context->sockets[index]->tlshandle){
+			TSK_OBJECT_SAFE_FREE(context->sockets[index]->tlshandle);
+		}
 		// Free socket
 		TSK_FREE(context->sockets[index]);
 		

@@ -113,6 +113,7 @@ typedef enum tsip_request_type_e
 
 	tsip_ACK,
 	tsip_BYE,
+	tsip_CANCEL,
 	tsip_INVITE,
 	tsip_OPTIONS,
 	tsip_REGISTER,

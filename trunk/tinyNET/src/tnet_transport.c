@@ -86,13 +86,11 @@ int tnet_transport_issecure(const tnet_transport_handle_t *handle)
 	if(handle)
 	{
 		const tnet_transport_t *transport = handle;
-		if(transport->master)
-		{
+		if(transport->master){
 			return TNET_SOCKET_TYPE_IS_SECURE(transport->master->type);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
 	}
 	return 0;
@@ -100,13 +98,11 @@ int tnet_transport_issecure(const tnet_transport_handle_t *handle)
 
 const char* tnet_transport_get_description(const tnet_transport_handle_t *handle)
 {
-	if(handle)
-	{
+	if(handle){
 		const tnet_transport_t *transport = handle;
 		return transport->description;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
 		return 0;
 	}
@@ -114,30 +110,92 @@ const char* tnet_transport_get_description(const tnet_transport_handle_t *handle
 
 int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port)
 {
-	if(handle)
-	{
-		//const tnet_transport_t *transport = handle;
+	if(handle){
 		return tnet_get_ip_n_port(fd, ip, port);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
 	}
 	return -1;
 }
 
-tnet_socket_type_t tnet_transport_get_socket_type(const tnet_transport_handle_t *handle)
+tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle)
 {
-	if(handle)
-	{
+	if(handle){
 		const tnet_transport_t *transport = handle;
 		return transport->master->type;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
 	}
 	return tnet_socket_type_invalid;
+}
+
+tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port, tnet_socket_type_t type)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	struct sockaddr_storage to;
+	int status = -1;
+	tnet_fd_t fd = INVALID_SOCKET;
+	
+	if(!transport || !transport->master){
+		TSK_DEBUG_ERROR("Invalid transport handle.");
+		goto bail;
+	}
+	
+	if((TNET_SOCKET_TYPE_IS_STREAM(transport->master->type) && !TNET_SOCKET_TYPE_IS_STREAM(type)) ||
+		(TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) && !TNET_SOCKET_TYPE_IS_DGRAM(type))){
+		TSK_DEBUG_ERROR("Master/destination types mismatch [%u/%u]", transport->master->type, type);
+		goto bail;
+	}
+
+	/* Init destination sockaddr fields */
+	if((status = tnet_sockaddr_init(host, port, type, &to))){
+		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u]", host, port);
+		goto bail;
+	}
+	
+	/*
+	* STREAM ==> create new socket and connect it to the remote host.
+	* DGRAM ==> connect the master to the remote host.
+	*/
+	if(TNET_SOCKET_TYPE_IS_STREAM(type)){		
+		/* Create client socket descriptor. */
+		if(status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, type, &fd)){
+			TSK_DEBUG_ERROR("Failed to create new sockfd.");
+			goto bail;
+		}
+		
+		/* Add the socket */
+		if(status = tnet_transport_add_socket(handle, fd, type, 1, 1)){
+			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
+
+			tnet_sockfd_close(&fd);
+			goto bail;
+		}
+	}
+	else{
+		fd = transport->master->fd;
+	}
+	
+	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr_storage *)&to))){
+		if(fd != transport->master->fd){
+			tnet_sockfd_close(&fd);
+		}
+		goto bail;
+	}
+	else{
+		if(TNET_SOCKET_TYPE_IS_TLS(type)){
+			transport->have_tls = 1;
+			transport->connected = !tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd));
+		}
+		else{
+			transport->connected = 1;
+		}
+	}
+	
+bail:
+	return fd;
 }
 
 int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_data_read callback, const void* callback_data)
@@ -222,8 +280,7 @@ static void* tnet_transport_create(void * self, va_list * app)
 		tnet_socket_type_t type = va_arg(*app, tnet_socket_type_t);
 		const char *description = va_arg(*app, const char*);
 
-		if(description)
-		{
+		if(description){
 			transport->description = tsk_strdup(description);
 		}
 		

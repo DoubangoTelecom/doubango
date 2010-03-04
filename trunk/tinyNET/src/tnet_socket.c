@@ -51,6 +51,29 @@ int tnet_socket_close(tnet_socket_t *sock)
 	return tnet_sockfd_close(&(sock->fd));	
 }
 
+int tnet_socket_set_tlsfiles(tnet_socket_tls_t* socket, int isClient, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk)
+{
+	if(socket){
+		return -1;
+	}
+	
+	if(!TNET_SOCKET_TYPE_IS_TLS(socket->type)){
+		TSK_DEBUG_ERROR("Not TLS socket.");
+		return -2;
+	}
+
+	if(socket->tlshandle){
+		TSK_DEBUG_ERROR("TLS files already set.");
+		return -3;
+	}
+	
+	if((socket->tlshandle = tnet_sockfd_set_tlsfiles(socket->fd, isClient, tlsfile_ca, tlsfile_pvk, tlsfile_pbk))){
+		return 0;
+	}
+	else{
+		return -4;
+	}
+}
 
 //=================================================================================================
 //	SOCKET object definition
@@ -168,17 +191,14 @@ static void* tnet_socket_create(void * self, va_list * app)
 #else
 			int yes = 1;
 #endif
-			if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(int)))
-			{
+			if(setsockopt(sock->fd, SOL_SOCKET, SO_REUSEADDR, (char*)&yes, sizeof(int))){
 				TNET_PRINT_LAST_ERROR("setsockopt(SO_REUSEADDR) have failed.");
 			}
 		}
 
 		/* Sets the socket to nonblocking mode */
-		if(nonblocking)
-		{
-			if((status = tnet_sockfd_set_nonblocking(sock->fd)))
-			{
+		if(nonblocking){
+			if((status = tnet_sockfd_set_nonblocking(sock->fd))){
 				goto bail;
 			}
 		}
@@ -188,8 +208,7 @@ bail:
 		tnet_freeaddrinfo(result);
 
 		/* Close socket if failed. */
-		if(status)
-		{
+		if(status){
 			tnet_socket_close(sock);
 		}
 
@@ -200,10 +219,18 @@ bail:
 static void* tnet_socket_destroy(void * self)
 { 
 	tnet_socket_t *sock = self;
-	if(sock && sock->fd > 0){
+	
+	if(sock){
 		/* Close the socket. */
-		tnet_socket_close(sock);
+		if(sock->fd > 0){
+			tnet_socket_close(sock);
+		}
+		/* Clean up TLS handle*/
+		if(sock->tlshandle){
+			TSK_OBJECT_SAFE_FREE(sock->tlshandle);
+		}
 	}
+
 
 	return self;
 }

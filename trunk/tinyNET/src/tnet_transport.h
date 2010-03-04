@@ -57,15 +57,17 @@ TINYNET_API int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *hand
 
 TINYNET_API int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd);
 TINYNET_API int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd);
-TINYNET_API int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, int take_ownership);
+TINYNET_API const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd);
+TINYNET_API int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient);
 TINYNET_API int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd);
-TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port);
+TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port, tnet_socket_type_t type);
+#define tnet_transport_connectto2(handle, host, port) tnet_transport_connectto(handle, host, port, tnet_transport_get_type(handle))
 TINYNET_API size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size);
 TINYNET_API size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, size_t size);
 
 TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_data_read callback, const void* callback_data);
 
-TINYNET_API tnet_socket_type_t tnet_transport_get_socket_type(const tnet_transport_handle_t *handle);
+TINYNET_API tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_shutdown(tnet_transport_handle_t* handle);
 
 typedef struct tnet_transport_s
@@ -76,6 +78,7 @@ typedef struct tnet_transport_s
 
 	void *context;
 
+	unsigned connected:1;
 	unsigned active:1;
 	void* mainThreadId[1];
 
@@ -83,6 +86,12 @@ typedef struct tnet_transport_s
 
 	tnet_transport_data_read callback;
 	const void* callback_data;
+
+	/* TLS certs */
+	char* tlsfile_ca;
+	char* tlsfile_pvk;
+	char* tlsfile_pbk;
+	unsigned have_tls:1;
 }
 tnet_transport_t;
 
