@@ -514,6 +514,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="tls"
+				>
+				<File
+					RelativePath=".\src\tls\tnet_tls.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -699,6 +707,14 @@
 				</File>
 				<File
 					RelativePath=".\src\dhcp6\tnet_dhcp6_option.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="tls"
+				>
+				<File
+					RelativePath=".\src\tls\tnet_tls.h"
 					>
 				</File>
 			</Filter>
