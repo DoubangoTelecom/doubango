@@ -462,8 +462,8 @@ static void* tsip_ipsec_association_create(void * self, va_list * app)
 		association->socket_uc = TNET_SOCKET_CREATE(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
 
 		/* Add Both sockets to the network transport */
-		tsip_transport_add_socket(transport, association->socket_us->fd, 0);
-		tsip_transport_add_socket(transport, association->socket_uc->fd, 0);
+		tsip_transport_add_socket(transport, association->socket_us->fd, transport->type, 0, 0);
+		tsip_transport_add_socket(transport, association->socket_uc->fd, transport->type, 0, 1);
 		
 		/* Set local */
 		if(!tnet_get_peerip(transport->connectedFD, &ip_remote)){ /* Get remote IP string */

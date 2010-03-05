@@ -34,7 +34,7 @@
 
 #define TEST_STACK_PIDF \
 	"<?xml version=\"1.0\" encoding=\"utf-8\"?>"\
-	"<presence xmlns:cp=\"urn:ietf:params:xml:ns:pidf:cipid\" xmlns:caps=\"urn:ietf:params:xml:ns:pidf:caps\" xmlns:rpid=\"urn:ietf:params:xml:ns:pidf:rpid\" xmlns:pdm=\"urn:ietf:params:xml:ns:pidf:data-model\" xmlns:p=\"urn:ietf:params:xml:ns:pidf-diff\" xmlns:op=\"urn:oma:xml:prs:pidf:oma-pres\" entity=\"sip:mamadou@ericsson.com\" xmlns=\"urn:ietf:params:xml:ns:pidf\">"\
+	"<presence xmlns:cp=\"urn:ietf:params:xml:ns:pidf:cipid\" xmlns:caps=\"urn:ietf:params:xml:ns:pidf:caps\" xmlns:rpid=\"urn:ietf:params:xml:ns:pidf:rpid\" xmlns:pdm=\"urn:ietf:params:xml:ns:pidf:data-model\" xmlns:p=\"urn:ietf:params:xml:ns:pidf-diff\" xmlns:op=\"urn:oma:xml:prs:pidf:oma-pres\" entity=\"sip:mamadou@"DOMAIN"\" xmlns=\"urn:ietf:params:xml:ns:pidf\">"\
 	"  <pdm:person id=\"CRUVREZS\">"\
 	"	<op:overriding-willingness>"\
 	"	  <op:basic>open</op:basic>"\
@@ -223,13 +223,17 @@ int test_stack_callback(const tsip_event_t *sipevent)
 
 void test_stack()
 {
+#define DOMAIN "ericsson.com"
+//#define DOMAIN "ims.inexbee.com"
+//#define DOMAIN "sip2sip.info"
+
 /*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("2233392625"),
-		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:2233392625@sip2sip.info"),
+		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:2233392625@DOMAIN"),
 		TSIP_STACK_SET_PRIVATE_IDENTITY("2233392625"),
 		TSIP_STACK_SET_PASSWORD("d3sb7j4fb8"),
-		TSIP_STACK_SET_REALM("sip:sip2sip.info"), // FIXME: without sip:
+		TSIP_STACK_SET_REALM("sip:DOMAIN"), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
 		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
 		TSIP_STACK_SET_PROXY_CSCF("proxy.sipthor.net", "udp", 0),
@@ -240,16 +244,16 @@ void test_stack()
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
 */
-/*
+
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
-		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@ericsson.com"),
-		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@ericsson.com"),
+		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@"DOMAIN),
+		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@"DOMAIN),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
-		TSIP_STACK_SET_REALM("sip:ericsson.com"), // FIXME: without sip:
+		TSIP_STACK_SET_REALM("sip:"DOMAIN), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
 		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
-		TSIP_STACK_SET_PROXY_CSCF("192.168.0.11", "udp", 0),
+		TSIP_STACK_SET_PROXY_CSCF("192.168.0.11", "tcp", 0),
 		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(5081),
 		//TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),
@@ -257,14 +261,14 @@ void test_stack()
 		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
-*/
+
 /*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
-		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@ims.inexbee.com"),
-		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@ims.inexbee.com"),
+		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@"DOMAIN),
+		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@"DOMAIN),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
-		TSIP_STACK_SET_REALM("sip:ims.inexbee.com"), // FIXME: without sip:
+		TSIP_STACK_SET_REALM("sip:"DOMAIN), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
 		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
 		TSIP_STACK_SET_PROXY_CSCF("pcscf.ims.inexbee.com", "udp", 1),
@@ -276,12 +280,13 @@ void test_stack()
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
 */
+	/*
 		tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
-		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@micromethod.com"),
-		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@micromethod.com"),
+		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@"DOMAIN),
+		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@"DOMAIN),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
-		TSIP_STACK_SET_REALM("sip:micromethod.com"), // FIXME: without sip:
+		TSIP_STACK_SET_REALM("sip:"DOMAIN), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
 		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
 		TSIP_STACK_SET_PROXY_CSCF("192.168.16.104", "udp", 0),
@@ -292,7 +297,7 @@ void test_stack()
 		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
-
+*/
 		TSIP_STACK_SET_NULL());
 
 	tsip_operation_handle_t *op = TSIP_OPERATION_CREATE(stack,
@@ -329,7 +334,7 @@ void test_stack()
 	/* MESSAGE */
 	//{
 	//	tsip_operation_handle_t *op3 = TSIP_OPERATION_CREATE(stack,
-	//	TSIP_OPERATION_SET_HEADER("to", "sip:laurent@micromethod.com"),
+	//	TSIP_OPERATION_SET_HEADER("to", "sip:alice@"DOMAIN),
 	//	TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"),
 	//	TSIP_OPERATION_SET_HEADER("Content-Type", "text/plain"),
 
@@ -343,7 +348,7 @@ void test_stack()
 	{
 		tsip_operation_handle_t *op4 = TSIP_OPERATION_CREATE(stack,
 			TSIP_OPERATION_SET_HEADER("expires", "30"),
-			TSIP_OPERATION_SET_HEADER("to", "sip:mamadou@micromethod.com"),
+			TSIP_OPERATION_SET_HEADER("to", "sip:mamadou@"DOMAIN),
 			TSIP_OPERATION_SET_HEADER("Content-Type", "application/pidf+xml"),
 			TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"), 
 			TSIP_OPERATION_SET_HEADER("Event", "presence"),

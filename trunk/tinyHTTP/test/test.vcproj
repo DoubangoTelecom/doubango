@@ -206,6 +206,10 @@
 				RelativePath=".\test_auth.h"
 				>
 			</File>
+			<File
+				RelativePath=".\test_stack.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

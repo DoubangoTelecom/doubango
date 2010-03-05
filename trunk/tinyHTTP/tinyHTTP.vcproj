@@ -343,7 +343,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\thttp_event.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\thttp_message.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\thttp_operation.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\thttp_transport.c"
 				>
 			</File>
 			<File
@@ -403,7 +415,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinyHTTP\thttp_event.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinyHTTP\thttp_message.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinyHTTP\thttp_operation.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinyHTTP\thttp_transport.h"
 				>
 			</File>
 			<File

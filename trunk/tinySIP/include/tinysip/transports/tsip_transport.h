@@ -79,26 +79,26 @@ int tsip_transport_deinit(tsip_transport_t* self);
 size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
-#define tsip_transport_start(transport)										(transport ? tnet_transport_start(transport->net_transport) : -1)
-#define tsip_transport_isready(transport)									(transport ? tnet_transport_isready(transport->net_transport) : -1)
-#define tsip_transport_issecure(transport)									(transport ? tnet_transport_issecure(transport->net_transport) : 0)
-#define tsip_transport_isconnected(transport)								(transport ? tnet_transport_isconnected(transport->net_transport, transport->connectedFD) : 0)
-#define tsip_transport_get_description(transport)							(transport ? tnet_transport_get_description(transport->net_transport) : 0)
-#define tsip_transport_get_ip_n_port(transport, ip, port)					(transport ? tnet_transport_get_ip_n_port(transport->net_transport, transport->connectedFD, ip, port) : -1)
+#define tsip_transport_start(transport)													(transport ? tnet_transport_start(transport->net_transport) : -1)
+#define tsip_transport_isready(transport)												(transport ? tnet_transport_isready(transport->net_transport) : -1)
+#define tsip_transport_issecure(transport)												(transport ? tnet_transport_issecure(transport->net_transport) : 0)
+#define tsip_transport_isconnected(transport)											(transport ? tnet_transport_isconnected(transport->net_transport, transport->connectedFD) : 0)
+#define tsip_transport_get_description(transport)										(transport ? tnet_transport_get_description(transport->net_transport) : 0)
+#define tsip_transport_get_ip_n_port(transport, ip, port)								(transport ? tnet_transport_get_ip_n_port(transport->net_transport, transport->connectedFD, ip, port) : -1)
 
-#define tsip_transport_connectto(transport, host, port)						(transport ? (transport->connectedFD=tnet_transport_connectto(transport->net_transport, host, port)) : TNET_INVALID_FD)
-//#define tsip_transport_send(transport, buf, size)							(transport ? tnet_transport_send(transport->net_transport, transport->connectedFD, buf, size) : 0)
-#define tsip_transport_sendto(transport, to, buf, size)						(transport ? tnet_transport_sendto(transport->net_transport, transport->connectedFD, to, buf, size) : 0)
+#define tsip_transport_connectto(transport, host, port, type)							(transport ? (transport->connectedFD=tnet_transport_connectto(transport->net_transport, host, port, type)) : TNET_INVALID_FD)
+#define tsip_transport_connectto2(transport, host, port)								(transport ? (transport->connectedFD=tnet_transport_connectto2(transport->net_transport, host, port)) : TNET_INVALID_FD)
+#define tsip_transport_sendto(transport, to, buf, size)									(transport ? tnet_transport_sendto(transport->net_transport, transport->connectedFD, to, buf, size) : 0)
 
-#define tsip_transport_set_callback(transport, callback, callback_data)		(transport ? tnet_transport_set_callback(transport->net_transport, callback, callback_data) : -1)
+#define tsip_transport_set_callback(transport, callback, callback_data)					(transport ? tnet_transport_set_callback(transport->net_transport, callback, callback_data) : -1)
 
-#define tsip_transport_have_socket(transport, fd)							(transport ? tnet_transport_have_socket(transport->net_transport, fd) : 0)
-#define tsip_transport_add_socket(transport, fd, take_ownership)			(transport ? tnet_transport_add_socket(transport->net_transport, fd, take_ownership) : -1)
-#define tsip_transport_remove_socket(transport, fd)							(transport ? tnet_transport_remove_socket(transport->net_transport, fd) : -1)
+#define tsip_transport_have_socket(transport, fd)										(transport ? tnet_transport_have_socket(transport->net_transport, fd) : 0)
+#define tsip_transport_add_socket(transport, fd, type, take_ownership, isClient)		(transport ? tnet_transport_add_socket(transport->net_transport, fd, type, take_ownership, isClient) : -1)
+#define tsip_transport_remove_socket(transport, fd)										(transport ? tnet_transport_remove_socket(transport->net_transport, fd) : -1)
 
-//#define tsip_transport_get_socket_type(transport)							(transport ? tnet_transport_get_socket_type(transport->net_transport) : tnet_socket_type_invalid)
+//#define tsip_transport_get_socket_type(transport)										(transport ? tnet_transport_get_socket_type(transport->net_transport) : tnet_socket_type_invalid)
 
-#define tsip_transport_shutdown(transport)									(transport ? tnet_transport_shutdown(transport->net_transport) : -1)
+#define tsip_transport_shutdown(transport)												(transport ? tnet_transport_shutdown(transport->net_transport) : -1)
 
 TINYSIP_GEXTERN const void *tsip_transport_def_t;
 
