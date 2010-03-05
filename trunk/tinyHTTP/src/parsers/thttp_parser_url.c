@@ -42,7 +42,7 @@
 *	Ragel state machine.
 */
 
-/* #line 63 "thttp_parser_url.rl" */
+/* #line 92 "thttp_parser_url.rl" */
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,6 +60,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 thttp_url_t *thttp_url_parse(const char *data, size_t size)
 {
+	int have_port = 0;
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
@@ -73,71 +74,218 @@ thttp_url_t *thttp_url_parse(const char *data, size_t size)
 	const char *tag_start = 0;
 	
 	
-/* #line 77 "../src/parsers/thttp_parser_url.c" */
+/* #line 78 "../src/parsers/thttp_parser_url.c" */
 static const char _thttp_machine_parser_url_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
-	3, 2, 1, 3, 2, 2, 3
+	6, 1, 7, 1, 8, 1, 9, 1, 
+	10, 2, 0, 4, 2, 0, 8, 2, 
+	0, 9, 2, 0, 10, 2, 6, 10, 
+	2, 7, 10, 2, 8, 10, 3, 0, 
+	3, 5, 3, 0, 5, 10, 3, 0, 
+	8, 10
 };
 
-static const char _thttp_machine_parser_url_key_offsets[] = {
+static const short _thttp_machine_parser_url_key_offsets[] = {
 	0, 0, 2, 4, 6, 8, 11, 12, 
-	12, 12
+	13, 20, 28, 35, 43, 49, 56, 58, 
+	64, 72, 78, 86, 92, 100, 108, 116, 
+	124, 132, 140, 147, 155, 163, 171, 173, 
+	180, 189, 191, 194, 196, 199, 201, 204, 
+	207, 208, 211, 212, 215, 216, 225, 234, 
+	242, 250, 258, 266, 268, 274, 283, 292, 
+	301, 303, 306, 309, 310, 311, 312, 313, 
+	323, 331, 332, 333, 333, 333, 336, 346, 
+	356, 366
 };
 
 static const char _thttp_machine_parser_url_trans_keys[] = {
 	72, 104, 84, 116, 84, 116, 80, 112, 
-	58, 83, 115, 58, 0
+	58, 83, 115, 47, 47, 91, 48, 57, 
+	65, 90, 97, 122, 45, 46, 48, 57, 
+	65, 90, 97, 122, 45, 48, 57, 65, 
+	90, 97, 122, 45, 46, 48, 57, 65, 
+	90, 97, 122, 48, 57, 65, 90, 97, 
+	122, 45, 48, 57, 65, 90, 97, 122, 
+	48, 57, 48, 57, 65, 90, 97, 122, 
+	45, 46, 48, 57, 65, 90, 97, 122, 
+	48, 57, 65, 90, 97, 122, 45, 46, 
+	48, 57, 65, 90, 97, 122, 48, 57, 
+	65, 90, 97, 122, 45, 46, 48, 57, 
+	65, 90, 97, 122, 45, 46, 48, 57, 
+	65, 90, 97, 122, 45, 46, 48, 57, 
+	65, 90, 97, 122, 45, 46, 48, 57, 
+	65, 90, 97, 122, 45, 46, 48, 57, 
+	65, 90, 97, 122, 45, 46, 48, 57, 
+	65, 90, 97, 122, 58, 48, 57, 65, 
+	70, 97, 102, 58, 93, 48, 57, 65, 
+	70, 97, 102, 58, 93, 48, 57, 65, 
+	70, 97, 102, 58, 93, 48, 57, 65, 
+	70, 97, 102, 58, 93, 58, 48, 57, 
+	65, 70, 97, 102, 46, 58, 93, 48, 
+	57, 65, 70, 97, 102, 48, 57, 46, 
+	48, 57, 48, 57, 46, 48, 57, 48, 
+	57, 93, 48, 57, 93, 48, 57, 93, 
+	46, 48, 57, 46, 46, 48, 57, 46, 
+	46, 58, 93, 48, 57, 65, 70, 97, 
+	102, 46, 58, 93, 48, 57, 65, 70, 
+	97, 102, 58, 93, 48, 57, 65, 70, 
+	97, 102, 58, 93, 48, 57, 65, 70, 
+	97, 102, 58, 93, 48, 57, 65, 70, 
+	97, 102, 58, 93, 48, 57, 65, 70, 
+	97, 102, 58, 93, 48, 57, 65, 70, 
+	97, 102, 46, 58, 93, 48, 57, 65, 
+	70, 97, 102, 46, 58, 93, 48, 57, 
+	65, 70, 97, 102, 46, 58, 93, 48, 
+	57, 65, 70, 97, 102, 48, 57, 46, 
+	48, 57, 46, 48, 57, 46, 58, 58, 
+	47, 45, 46, 47, 58, 48, 57, 65, 
+	90, 97, 122, 47, 58, 48, 57, 65, 
+	90, 97, 122, 63, 63, 47, 48, 57, 
+	45, 46, 47, 58, 48, 57, 65, 90, 
+	97, 122, 45, 46, 47, 58, 48, 57, 
+	65, 90, 97, 122, 45, 46, 47, 58, 
+	48, 57, 65, 90, 97, 122, 47, 58, 
+	0
 };
 
 static const char _thttp_machine_parser_url_single_lengths[] = {
-	0, 2, 2, 2, 2, 3, 1, 0, 
-	0, 0
+	0, 2, 2, 2, 2, 3, 1, 1, 
+	1, 2, 1, 2, 0, 1, 0, 0, 
+	2, 0, 2, 0, 2, 2, 2, 2, 
+	2, 2, 1, 2, 2, 2, 2, 1, 
+	3, 0, 1, 0, 1, 0, 1, 1, 
+	1, 1, 1, 1, 1, 3, 3, 2, 
+	2, 2, 2, 2, 0, 3, 3, 3, 
+	0, 1, 1, 1, 1, 1, 1, 4, 
+	2, 1, 1, 0, 0, 1, 4, 4, 
+	4, 2
 };
 
 static const char _thttp_machine_parser_url_range_lengths[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0
+	3, 3, 3, 3, 3, 3, 1, 3, 
+	3, 3, 3, 3, 3, 3, 3, 3, 
+	3, 3, 3, 3, 3, 3, 0, 3, 
+	3, 1, 1, 1, 1, 1, 1, 1, 
+	0, 1, 0, 1, 0, 3, 3, 3, 
+	3, 3, 3, 0, 3, 3, 3, 3, 
+	1, 1, 1, 0, 0, 0, 0, 3, 
+	3, 0, 0, 0, 0, 1, 3, 3, 
+	3, 0
 };
 
-static const char _thttp_machine_parser_url_index_offsets[] = {
+static const short _thttp_machine_parser_url_index_offsets[] = {
 	0, 0, 3, 6, 9, 12, 16, 18, 
-	19, 20
+	20, 25, 31, 36, 42, 46, 51, 53, 
+	57, 63, 67, 73, 77, 83, 89, 95, 
+	101, 107, 113, 118, 124, 130, 136, 139, 
+	144, 151, 153, 156, 158, 161, 163, 166, 
+	169, 171, 174, 176, 179, 181, 188, 195, 
+	201, 207, 213, 219, 222, 226, 233, 240, 
+	247, 249, 252, 255, 257, 259, 261, 263, 
+	271, 277, 279, 281, 282, 283, 286, 294, 
+	302, 310
+};
+
+static const char _thttp_machine_parser_url_indicies[] = {
+	0, 0, 1, 2, 2, 1, 3, 3, 
+	1, 4, 4, 1, 5, 6, 6, 1, 
+	7, 1, 8, 1, 11, 9, 10, 10, 
+	1, 12, 13, 14, 15, 15, 1, 12, 
+	15, 15, 15, 1, 12, 16, 15, 15, 
+	15, 1, 15, 17, 17, 1, 18, 17, 
+	17, 17, 1, 19, 1, 20, 17, 17, 
+	1, 12, 21, 22, 15, 15, 1, 23, 
+	17, 17, 1, 12, 24, 25, 15, 15, 
+	1, 26, 17, 17, 1, 12, 24, 27, 
+	15, 15, 1, 12, 24, 15, 15, 15, 
+	1, 12, 21, 28, 15, 15, 1, 12, 
+	21, 15, 15, 15, 1, 12, 13, 29, 
+	15, 15, 1, 12, 13, 15, 15, 15, 
+	1, 31, 30, 30, 30, 1, 33, 34, 
+	32, 32, 32, 1, 33, 34, 35, 35, 
+	35, 1, 33, 34, 36, 36, 36, 1, 
+	33, 34, 1, 38, 37, 30, 30, 1, 
+	39, 33, 34, 40, 32, 32, 1, 41, 
+	1, 42, 43, 1, 44, 1, 45, 46, 
+	1, 47, 1, 34, 48, 1, 34, 49, 
+	1, 34, 1, 45, 50, 1, 45, 1, 
+	42, 51, 1, 42, 1, 39, 33, 34, 
+	52, 35, 35, 1, 39, 33, 34, 36, 
+	36, 36, 1, 54, 34, 53, 53, 53, 
+	1, 56, 34, 55, 55, 55, 1, 56, 
+	34, 57, 57, 57, 1, 56, 34, 58, 
+	58, 58, 1, 56, 34, 1, 59, 53, 
+	53, 1, 39, 56, 34, 60, 55, 55, 
+	1, 39, 56, 34, 61, 57, 57, 1, 
+	39, 56, 34, 58, 58, 58, 1, 62, 
+	1, 39, 63, 1, 39, 64, 1, 39, 
+	1, 38, 1, 65, 1, 66, 1, 18, 
+	67, 68, 69, 17, 17, 17, 1, 68, 
+	69, 15, 17, 17, 1, 71, 70, 73, 
+	72, 74, 75, 76, 77, 1, 12, 16, 
+	68, 69, 78, 15, 15, 1, 12, 16, 
+	68, 69, 79, 15, 15, 1, 12, 16, 
+	68, 69, 15, 15, 15, 1, 68, 69, 
+	1, 0
 };
 
 static const char _thttp_machine_parser_url_trans_targs[] = {
-	2, 2, 0, 3, 3, 0, 4, 4, 
-	0, 5, 5, 0, 7, 6, 6, 0, 
-	9, 0, 8, 8, 8, 0
+	2, 0, 3, 4, 5, 6, 61, 7, 
+	8, 9, 63, 26, 10, 15, 24, 11, 
+	12, 63, 13, 69, 16, 17, 22, 18, 
+	19, 20, 70, 21, 23, 25, 27, 60, 
+	28, 31, 73, 29, 30, 32, 47, 33, 
+	45, 34, 35, 43, 36, 37, 41, 38, 
+	39, 40, 42, 44, 46, 48, 56, 49, 
+	52, 50, 51, 53, 54, 55, 57, 58, 
+	59, 62, 7, 64, 65, 14, 66, 67, 
+	66, 67, 68, 68, 65, 69, 71, 72
 };
 
 static const char _thttp_machine_parser_url_trans_actions[] = {
-	1, 1, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 7, 0, 0, 0, 
-	7, 0, 9, 7, 12, 0
+	1, 0, 0, 0, 0, 0, 0, 3, 
+	0, 38, 42, 17, 0, 0, 0, 0, 
+	0, 15, 0, 26, 0, 0, 0, 0, 
+	0, 0, 15, 0, 0, 0, 0, 0, 
+	0, 0, 15, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 5, 15, 29, 7, 26, 46, 
+	15, 35, 26, 15, 32, 15, 15, 15
 };
 
 static const char _thttp_machine_parser_url_eof_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 3, 
-	0, 5
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 7, 
+	7, 20, 11, 23, 13, 9, 7, 7, 
+	7, 7
 };
 
 static const int thttp_machine_parser_url_start = 1;
-static const int thttp_machine_parser_url_first_final = 7;
+static const int thttp_machine_parser_url_first_final = 63;
 static const int thttp_machine_parser_url_error = 0;
 
 static const int thttp_machine_parser_url_en_main = 1;
 
 
-/* #line 93 "thttp_parser_url.rl" */
+/* #line 123 "thttp_parser_url.rl" */
 	
-/* #line 134 "../src/parsers/thttp_parser_url.c" */
+/* #line 282 "../src/parsers/thttp_parser_url.c" */
 	{
 	cs = thttp_machine_parser_url_start;
 	}
 
-/* #line 94 "thttp_parser_url.rl" */
+/* #line 124 "thttp_parser_url.rl" */
 	
-/* #line 141 "../src/parsers/thttp_parser_url.c" */
+/* #line 289 "../src/parsers/thttp_parser_url.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -199,6 +347,7 @@ _resume:
 	}
 
 _match:
+	_trans = _thttp_machine_parser_url_indicies[_trans];
 	cs = _thttp_machine_parser_url_trans_targs[_trans];
 
 	if ( _thttp_machine_parser_url_trans_actions[_trans] == 0 )
@@ -226,10 +375,41 @@ _match:
 	break;
 	case 3:
 /* #line 58 "thttp_parser_url.rl" */
+	{ url->host_type = url->host_type = host_ipv4; }
+	break;
+	case 4:
+/* #line 59 "thttp_parser_url.rl" */
+	{ url->host_type = url->host_type = host_ipv6; }
+	break;
+	case 5:
+/* #line 60 "thttp_parser_url.rl" */
+	{ url->host_type = url->host_type = host_hostname; }
+	break;
+	case 6:
+/* #line 62 "thttp_parser_url.rl" */
+	{
+		TSK_PARSER_SET_STRING(url->host);
+	}
+	break;
+	case 7:
+/* #line 66 "thttp_parser_url.rl" */
+	{
+		have_port = 1;
+		TSK_PARSER_SET_INT(url->port);
+	}
+	break;
+	case 8:
+/* #line 71 "thttp_parser_url.rl" */
+	{
+		TSK_PARSER_SET_STRING(url->hpath);
+	}
+	break;
+	case 10:
+/* #line 79 "thttp_parser_url.rl" */
 	{
 	}
 	break;
-/* #line 233 "../src/parsers/thttp_parser_url.c" */
+/* #line 413 "../src/parsers/thttp_parser_url.c" */
 		}
 	}
 
@@ -245,15 +425,38 @@ _again:
 	unsigned int __nacts = (unsigned int) *__acts++;
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
-	case 1:
-/* #line 54 "thttp_parser_url.rl" */
-	{ url->scheme = tsk_strdup("http"), url->type = url_http; }
+	case 0:
+/* #line 49 "thttp_parser_url.rl" */
+	{
+		tag_start = p;
+	}
 	break;
-	case 2:
-/* #line 55 "thttp_parser_url.rl" */
-	{ url->scheme = tsk_strdup("https"), url->type = url_https; }
+	case 6:
+/* #line 62 "thttp_parser_url.rl" */
+	{
+		TSK_PARSER_SET_STRING(url->host);
+	}
 	break;
-/* #line 257 "../src/parsers/thttp_parser_url.c" */
+	case 7:
+/* #line 66 "thttp_parser_url.rl" */
+	{
+		have_port = 1;
+		TSK_PARSER_SET_INT(url->port);
+	}
+	break;
+	case 8:
+/* #line 71 "thttp_parser_url.rl" */
+	{
+		TSK_PARSER_SET_STRING(url->hpath);
+	}
+	break;
+	case 9:
+/* #line 75 "thttp_parser_url.rl" */
+	{
+		TSK_PARSER_SET_STRING(url->search);
+	}
+	break;
+/* #line 460 "../src/parsers/thttp_parser_url.c" */
 		}
 	}
 	}
@@ -261,16 +464,23 @@ _again:
 	_out: {}
 	}
 
-/* #line 95 "thttp_parser_url.rl" */
+/* #line 125 "thttp_parser_url.rl" */
 	
 	if( cs < 
-/* #line 268 "../src/parsers/thttp_parser_url.c" */
-7
-/* #line 96 "thttp_parser_url.rl" */
- )
-	{
+/* #line 471 "../src/parsers/thttp_parser_url.c" */
+63
+/* #line 126 "thttp_parser_url.rl" */
+ ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP/HTTPS URL.");
 		TSK_OBJECT_SAFE_FREE(url);
+	}
+	else if(!have_port){
+		if(url->type == url_https){
+			url->port = 443;
+		}
+		else{
+			url->port = 80;
+		}
 	}
 	
 	return url;

@@ -144,6 +144,19 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 	}
 }
 
+const char *tsip_header_get_nameex(const tsip_header_t *self)
+{
+	if(self){
+		if(self->type == tsip_htype_Dummy){
+			return ((tsip_header_Dummy_t*)self)->name;
+		}
+		else{
+			return tsip_header_get_name(self->type);
+		}
+	}
+	return "unknown-header";
+}
+
 char tsip_header_get_param_separator(const tsip_header_t *self)
 {
 	if(self)
@@ -177,12 +190,7 @@ int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 	{
 		tsk_list_item_t *item;
 		
-		if(self->type == tsip_htype_Dummy){
-			hname = ((tsip_header_Dummy_t*)self)->name;
-		}
-		else{
-			hname = tsip_header_get_name(self->type);
-		}
+		hname = tsip_header_get_nameex(self);
 		ret = 0; // for empty lists
 
 		/* Header name */

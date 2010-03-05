@@ -253,7 +253,7 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 
 	if(extract_content && message)
 	{
-		uint32_t clen = tsip_message_getContent_length(message);
+		uint32_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message);
 		if((p+clen) <pe && !message->Content)
 		{
 			message->Content = TSK_BUFFER_CREATE((p+1), clen);

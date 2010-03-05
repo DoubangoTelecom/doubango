@@ -115,12 +115,10 @@ char* tsip_uri_tostring(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BO
 	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
 	char* ret = 0;
 
-	if(!tsip_uri_serialize(uri, with_params, quote, output))
-	{
+	if(!tsip_uri_serialize(uri, with_params, quote, output)){
 		ret = tsk_strndup((const char*)output->data, output->size);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to serialize URI.");
 	}
 
@@ -130,7 +128,7 @@ char* tsip_uri_tostring(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BO
 
 tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, TSIP_BOOLEAN with_params, TSIP_BOOLEAN quote)
 {
-	tsip_uri_t *newuri;
+	tsip_uri_t *newuri = 0;
 	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
 	tsip_uri_serialize(uri, with_params, quote, output);
 	newuri = tsip_uri_parse(output->data, output->size);

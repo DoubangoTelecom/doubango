@@ -68,8 +68,10 @@ thttp_host_type_t;
 ///
 /// @brief	HTTP/HTTPS URL.
 ///
-/// @author	Mamadou
-/// @date	12/6/2009
+/// ABNF (Compact: From RFC 1738): httpurl        = "http://" hostport [ "/" hpath [ "?" search ]]
+/// hpath          = hsegment *[ "/" hsegment ]
+/// hsegment       = *[ uchar | ";" | ":" | "@" | "&" | "=" ]
+/// search         = *[ uchar | ";" | ":" | "@" | "&" | "=" ]
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct thttp_url_s
 {
@@ -78,9 +80,10 @@ typedef struct thttp_url_s
 	thttp_url_type_t type;
 	char *scheme;
 	char *host; /**< Host name. Hostname or IPv4address or IPv6address. */
+	char *hpath;
+	char *search;
 	thttp_host_type_t host_type; /**< IPv4 or IPv6 or domain name. */
 	uint16_t port;
-	char *password;
 }
 thttp_url_t;
 

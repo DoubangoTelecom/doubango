@@ -22,6 +22,9 @@ ragel.exe $OPTIONS -o ../src/headers/thttp_header_Authorization.c thttp_parser_h
 # ==Content-Length
 ragel.exe $OPTIONS -o ../src/headers/thttp_header_Content_Length.c thttp_parser_header_Content_Length.rl
 
+# ==Dummy
+ragel.exe $OPTIONS -o ../src/headers/thttp_header_Dummy.c thttp_parser_header_Dummy.rl
+
 # ==Content-Type
 ragel.exe $OPTIONS -o ../src/headers/thttp_header_Content_Type.c thttp_parser_header_Content_Type.rl
 

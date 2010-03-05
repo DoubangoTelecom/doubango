@@ -28,6 +28,7 @@
  */
 #include "thttp.h"
 #include "tinyHTTP/thttp_event.h"
+#include "tinyHTTP/thttp_message.h"
 
 #include "tnet.h"
 #include "tnet_transport.h"
@@ -35,6 +36,9 @@
 #include "tsk_runnable.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"
+#include "tsk_memory.h"
+#include "tsk_string.h"
+#include "tsk_fsm.h"
 
 //#include <stdarg.h>
 //#include <string.h>
@@ -51,11 +55,13 @@
 // KeepAlive : http://www.io.com/~maus/HttpKeepAlive.html
 
 static unsigned __thttp_initialized = 0;
-static void *run(void* self);
 
 typedef struct thttp_stack_s
 {
 	TSK_DECLARE_OBJECT;
+
+	thttp_stack_callback callback;
+	tsk_fsm_t *fsm;
 
 	/* Identity */
 	char* username;
@@ -70,10 +76,6 @@ typedef struct thttp_stack_s
 	char* local_ip;
 	int local_port;
 	tnet_transport_t *transport;
-
-
-
-	unsigned running;
 }
 thttp_stack_t;
 
@@ -122,8 +124,19 @@ int __thttp_stack_set(thttp_stack_t *self, va_list values)
 				break;
 			}
 
+
+
+		default:
+			{
+				TSK_DEBUG_WARN("Found unknown pname.");
+				goto bail;
+			}
+
 		}/* switch */
 	}/* while */
+
+bail:
+	return 0;
 }
 
 int thttp_global_init()
@@ -151,39 +164,116 @@ int thttp_global_deinit()
 	return -1;
 }
 
-thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...)
+thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, int tls, ...)
 {
+	thttp_stack_t* stack = tsk_object_new(thttp_stack_def_t);
+	va_list params;
 
+	if(!stack){
+		return 0;
+	}
+	stack->local_ip = TNET_SOCKET_HOST_ANY;
+	stack->local_port = TNET_SOCKET_PORT_ANY;
+
+	stack->callback = callback;
+	va_start(params, tls);
+	if(__thttp_stack_set(stack, params)){
+		// Delete the stack?
+	}
+	va_end(params);
+
+	stack->transport = TNET_TRANSPORT_CREATE(stack->local_ip, stack->local_port,
+		tls?tnet_socket_type_tls_ipv4:tnet_socket_type_tcp_ipv4, "HTTP/HTTPS transport");
+
+	return stack;
 }
 
 int thttp_stack_start(thttp_stack_handle_t *self)
 {
+	thttp_stack_t *stack = self;
 
+	if(!stack){
+		return -1;
+	}
+	return tnet_transport_start(stack->transport);
 }
 
 int thttp_stack_set(thttp_stack_handle_t *self, ...)
 {
+	if(self){
+		int ret;
+		thttp_stack_t *stack = self;
 
+		va_list params;
+		va_start(params, self);
+		ret = __thttp_stack_set(stack, params);
+		va_end(params);
+		return ret;
+	}
+
+	return -1;
+}
+
+int thttp_stack_send(thttp_stack_handle_t *self, thttp_operation_handle_t* op, const thttp_message_t* message)
+{
+	int ret = -1;
+	tsk_buffer_t* output = TSK_BUFFER_CREATE_NULL();
+	tnet_socket_type_t type;
+	thttp_stack_t *stack;
+	tnet_fd_t fd;
+	
+	if(!self || !op || !message->url){ /* Only requests are supported for now. */
+		goto bail;
+	}
+
+	stack = self;
+	type = tnet_transport_get_type(stack->transport);
+
+	/* Serialize the message and send it */
+	if((ret = thttp_message_tostring(message, output))){
+		goto bail;
+	}
+	else{
+		if(message->url->type == url_https){
+			TNET_SOCKET_TYPE_SET_TLS(type);
+		}
+		else{
+			TNET_SOCKET_TYPE_SET_TCP(type);
+		}
+	}
+
+	/* Gets the fd associated to this operation */
+	fd = thttp_operation_get_fd(op);
+
+	if(fd == TNET_INVALID_FD){
+		if((fd = tnet_transport_connectto(stack->transport, message->url->host, message->url->port, type)) == TNET_INVALID_FD){
+			goto bail;
+		}
+		else{
+			thttp_operation_set_fd(op, fd);
+		}
+	}
+
+	if(tnet_transport_send(stack->transport, fd, output->data, output->size)){
+		ret = 0;
+	}
+	else{
+		ret = -15;
+	}
+
+bail:
+	TSK_OBJECT_SAFE_FREE(output);
+	return ret;
 }
 
 int thttp_stack_stop(thttp_stack_handle_t *self)
 {
+	thttp_stack_t *stack = self;
 
-}
-
-
-int thttp_stack_start(thttp_stack_handle_t *self)
-{
-	if(self)
-	{
-		int ret;
-		thttp_stack_t *stack = self;
-		
-		TSK_RUNNABLE(stack)->run = run;
-		if(ret = tsk_runnable_start(TSK_RUNNABLE(stack), thttp_event_def_t)){
-			return ret;
-		}
+	if(!stack){
+		return -1;
 	}
+	return tnet_transport_start(stack->transport);
 }
 
 
@@ -211,3 +301,43 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 
 
 
+//========================================================
+//	HTTP stack object definition
+//
+static void* _thttp_stack_create(void * self, va_list * app)
+{
+	thttp_stack_t *stack = self;
+	if(stack){
+	}
+	return self;
+}
+
+static void* thttp_stack_destroy(void * self)
+{ 
+	thttp_stack_t *stack = self;
+	if(stack){
+		TSK_OBJECT_SAFE_FREE(stack->fsm);
+
+		/* Identity */
+		TSK_FREE(stack->username);
+		TSK_FREE(stack->password);
+		TSK_FREE(stack->proxy_host);
+		TSK_FREE(stack->proxy_username);
+		TSK_FREE(stack->proxy_password);
+		TSK_FREE(stack->user_agent);
+
+		/* Network */
+		TSK_FREE(stack->local_ip);
+		TSK_OBJECT_SAFE_FREE(stack->transport);
+	}
+	return self;
+}
+
+static const tsk_object_def_t thttp_stack_def_s = 
+{
+	sizeof(thttp_stack_t),
+	_thttp_stack_create, 
+	thttp_stack_destroy,
+	0, 
+};
+const void *thttp_stack_def_t = &thttp_stack_def_s;

@@ -62,6 +62,7 @@ typedef enum thttp_header_type_e
 	thttp_htype_Authorization,
 	thttp_htype_Content_Length,
 	thttp_htype_Content_Type,
+	thttp_htype_Dummy,
 	thttp_htype_Proxy_Authenticate,
 	thttp_htype_Proxy_Authorization,
 	thttp_htype_WWW_Authenticate,
@@ -85,6 +86,8 @@ typedef tsk_list_t thttp_headers_L_t; /**< List of @ref thttp_header_t elements.
 ================================*/
 
 TINYHTTP_API const char *thttp_header_get_name(thttp_header_type_t type);
+TINYHTTP_API const char *thttp_header_get_nameex(const thttp_header_t *self);
+TINYHTTP_API char thttp_header_get_param_separator(const thttp_header_t *self);
 TINYHTTP_API int thttp_header_tostring(const thttp_header_t *self, tsk_buffer_t *output);
 
 THTTP_END_DECLS

@@ -50,6 +50,7 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -69,84 +70,6 @@
 				GenerateDebugInformation="true"
 				SubSystem="0"
 				TargetMachine="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="1"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYHTTP_EXPORTS"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				DebugInformationFormat="3"
-				CompileAs="1"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				LinkIncremental="1"
-				GenerateDebugInformation="true"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -254,6 +177,84 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="1"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				EnableIntrinsicFunctions="true"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYHTTP_EXPORTS"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				WarningLevel="3"
+				DebugInformationFormat="3"
+				CompileAs="1"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 			OutputDirectory="$(SolutionDir)Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
 			IntermediateDirectory="Windows Mobile 5.0 Pocket PC SDK (ARMV4I)\$(ConfigurationName)"
@@ -344,7 +345,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyHTTP\src\thttp_event.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyHTTP\src\thttp_message.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\src\thttp_operation.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\src\thttp_transport.c"
 				>
 			</File>
 			<File
@@ -363,6 +376,10 @@
 				Name="headers"
 				>
 				<File
+					RelativePath="..\..\tinyHTTP\src\headers\thttp_header.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_Authorization.c"
 					>
 				</File>
@@ -372,6 +389,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_Content_Type.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_Dummy.c"
 					>
 				</File>
 				<File
@@ -408,7 +429,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_event.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_message.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_operation.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_transport.h"
 				>
 			</File>
 			<File
@@ -444,6 +477,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyHTTP\include\tinyHTTP\headers\thttp_header_Content_Type.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyHTTP\include\tinyHTTP\headers\thttp_header_Dummy.h"
 					>
 				</File>
 				<File
@@ -517,6 +554,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyHTTP\ragel\thttp_parser_header_Content_Type.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\ragel\thttp_parser_header_Dummy.rl"
 				>
 			</File>
 			<File

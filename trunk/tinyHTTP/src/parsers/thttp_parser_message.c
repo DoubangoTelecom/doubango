@@ -468,7 +468,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 
 	if(message)
 	{
-		uint32_t clen = thttp_message_getContent_length(message);
+		uint32_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message);
 		if((p+clen) <pe && !message->Content)
 		{
 			message->Content = TSK_BUFFER_CREATE((p+1), clen);

@@ -27,6 +27,7 @@
 #include "tsk.h"
 
 #include "thttp.h"
+#include "tinyHTTP/thttp_operation.h"
 #include "tinyHTTP/auth/thttp_auth.h"
 
 #define LOOP						1
@@ -34,9 +35,11 @@
 #define RUN_TEST_ALL				0
 #define RUN_TEST_AUTH				0
 #define RUN_TEST_STACK				1
+#define RUN_TEST_URL				0
 
 #include "test_auth.h"
 #include "test_stack.h"
+#include "test_url.h"
 
 
 #ifdef _WIN32_WCE
@@ -63,6 +66,9 @@ int main()
 		test_stack();
 #endif
 
+#if RUN_TEST_URL || RUN_TEST_ALL
+		test_url();
+#endif
 	}
 
 	thttp_global_deinit();

@@ -15,7 +15,7 @@
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
+* GNU General Public License for more details.
 *	
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
@@ -63,7 +63,7 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, s
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Content_Type_t *hdr_ctype = THTTP_HEADER_CONTENT_TYPE_CREATE();
+	thttp_header_Content_Type_t *hdr_ctype = THTTP_HEADER_CONTENT_TYPE_CREATE_NULL();
 	
 	const char *tag_start;
 
@@ -387,6 +387,8 @@ static void* thttp_header_Content_Type_create(void *self, va_list * app)
 	{
 		THTTP_HEADER(Content_Type)->type = thttp_htype_Content_Type;
 		THTTP_HEADER(Content_Type)->tostring = thttp_header_Content_Type_tostring;
+
+		Content_Type->type = tsk_strdup( va_arg(*app, const char*) );
 	}
 	else
 	{

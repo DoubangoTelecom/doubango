@@ -578,7 +578,6 @@ static void* tsip_message_create(void *self, va_list * app)
 				}
 				message->To = tsk_object_ref((void*)request->To);
 				
-				// FIXME: What about record routes?
 				break;
 			}
 		}
