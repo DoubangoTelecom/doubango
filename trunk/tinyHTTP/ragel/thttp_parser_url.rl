@@ -54,11 +54,40 @@
 	action is_http { url->scheme = tsk_strdup("http"), url->type = url_http; }
 	action is_https { url->scheme = tsk_strdup("https"), url->type = url_https; }
 
-	action eob
-	{
+	#/* Sets HOST type */
+	action is_ipv4 { url->host_type = url->host_type = host_ipv4; }
+	action is_ipv6 { url->host_type = url->host_type = host_ipv6; }
+	action is_hostname { url->host_type = url->host_type = host_hostname; }
+
+	action parse_host{
+		TSK_PARSER_SET_STRING(url->host);
 	}
 
-	main := (("http:"i>tag %is_http | "https:"i>tag %is_https) any*) @eob;
+	action parse_port{
+		have_port = 1;
+		TSK_PARSER_SET_INT(url->port);
+	}
+
+	action parse_hpath{
+		TSK_PARSER_SET_STRING(url->hpath);
+	}
+
+	action parse_search{
+		TSK_PARSER_SET_STRING(url->search);
+	}
+
+	action eob{
+	}
+
+	#// RFC 1738: "http://" hostport [ "/" hpath [ "?" search ]]
+	#// FIXME: hpath is no optional (see above) but in my def. I use it as opt (any*).
+
+	search = any* >tag %parse_search;
+	hpath = any* >tag %parse_hpath;
+	port = DIGIT+ >tag %parse_port;
+	myhost = ((IPv6reference >is_ipv6) | (IPv4address >is_ipv4) | (hostname >is_hostname)) >tag %parse_host;
+	hostport = myhost ( ":" port )?;
+	main := (("http:"i>tag %is_http | "https:"i>tag %is_https) "//" hostport :>("/" hpath :>("?" search)?)? ) @eob;
 	
 }%%
 
@@ -77,6 +106,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 thttp_url_t *thttp_url_parse(const char *data, size_t size)
 {
+	int have_port = 0;
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
@@ -93,10 +123,17 @@ thttp_url_t *thttp_url_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP/HTTPS URL.");
 		TSK_OBJECT_SAFE_FREE(url);
+	}
+	else if(!have_port){
+		if(url->type == url_https){
+			url->port = 443;
+		}
+		else{
+			url->port = 80;
+		}
 	}
 	
 	return url;

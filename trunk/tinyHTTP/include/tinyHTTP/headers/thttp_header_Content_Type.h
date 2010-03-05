@@ -39,7 +39,9 @@ THTTP_BEGIN_DECLS
 * Creates new http 'Content-Type' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define THTTP_HEADER_CONTENT_TYPE_CREATE()			tsk_object_new(thttp_header_Content_Type_def_t)
+#define THTTP_HEADER_CONTENT_TYPE_VA_ARGS(type)			thttp_header_Content_Type_def_t, (const char*)type
+#define THTTP_HEADER_CONTENT_TYPE_CREATE(type)			tsk_object_new(THTTP_HEADER_CONTENT_TYPE_VA_ARGS(type))
+#define THTTP_HEADER_CONTENT_TYPE_CREATE_NULL()			THTTP_HEADER_CONTENT_TYPE_CREATE(THTTP_NULL)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

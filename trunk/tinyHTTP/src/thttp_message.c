@@ -30,17 +30,227 @@
  */
 #include "tinyHTTP/thttp_message.h"
 
+#include "tsk_debug.h"
+
+static int pred_find_string_by_value(const tsk_list_item_t *item, const void *stringVal)
+{
+	if(item && item->data)
+	{
+		tsk_string_t *string = item->data;
+		return tsk_stricmp(string->value, stringVal);
+	}
+	return -1;
+}
+
+/*== Predicate function to find thttp_header_t object by type. */
+static int pred_find_header_by_type(const tsk_list_item_t *item, const void *thttp_htype)
+{
+	if(item && item->data)
+	{
+		thttp_header_t *header = item->data;
+		thttp_header_type_t htype = *((thttp_header_type_t*)thttp_htype);
+		return (header->type - htype);
+	}
+	return -1;
+}
+
+/*== Predicate function to find thttp_header_t object by name. */
+static int pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
+{
+	if(item && item->data)
+	{
+		thttp_header_t *header = item->data;
+		return tsk_stricmp(thttp_header_get_nameex(header), name);
+	}
+	return -1;
+}
 
 int	thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr)
 {
+	#define ADD_HEADER(type, field) \
+		case thttp_htype_##type: \
+			{ \
+				if(!self->field) \
+				{ \
+					self->field = (thttp_header_##type##_t*)header; \
+					return 0; \
+				} \
+				break; \
+			}
+	
+	if(self && hdr)
+	{
+		thttp_header_t *header = tsk_object_ref((void*)hdr);
+
+		switch(header->type)
+		{
+			ADD_HEADER(Content_Type, Content_Type);
+			ADD_HEADER(Content_Length, Content_Length);
+
+			default: break;
+		}
+
+		tsk_list_push_back_data(self->headers, (void**)&header);
+
+		return 0;
+	}
 	return -1;
 }
 
-uint32_t thttp_message_getContent_length(const thttp_message_t *message)
+int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *headers)
 {
+	tsk_list_item_t *item = 0;
+	if(self)
+	{
+		tsk_list_foreach(item, headers){
+			thttp_message_add_header(self, item->data);
+		}
+		return 0;
+	}
+	return -1;
+}
+
+int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, size_t size)
+{
+	if(self)
+	{
+		if(content_type){
+			TSK_OBJECT_SAFE_FREE(self->Content_Type);
+		}
+		TSK_OBJECT_SAFE_FREE(self->Content_Length);
+		TSK_OBJECT_SAFE_FREE(self->Content);
+
+		if(content_type){
+			THTTP_MESSAGE_ADD_HEADER(self, THTTP_HEADER_CONTENT_TYPE_VA_ARGS(content_type));
+		}
+		THTTP_MESSAGE_ADD_HEADER(self, THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(size));
+		self->Content = TSK_BUFFER_CREATE(content, size);
+
+		return 0;
+	}
+	return -1;
+}
+
+const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, thttp_header_type_t type, size_t index)
+{
+	size_t pos = 0;
+	tsk_list_item_t *item;
+	const thttp_header_t* hdr = 0;
+
+	if(self)
+	{		
+		switch(type)
+		{
+		case thttp_htype_Content_Type:
+			if(index == 0){
+				hdr = (const thttp_header_t*)self->Content_Type;
+				goto bail;
+			}else pos++; break;
+		case thttp_htype_Content_Length:
+			if(index == 0){
+				hdr = (const thttp_header_t*)self->Content_Length;
+				goto bail;
+			}else pos++; break;
+		default:
+			break;
+		}
+
+		tsk_list_foreach(item, self->headers)
+		{
+			if(!pred_find_header_by_type(item, &type))
+			{
+				if(pos++ >= index)
+				{
+					hdr = item->data;
+					break;
+				}
+			}
+		}
+	}
+
+bail:
+	return hdr;
+}
+
+const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thttp_header_type_t type)
+{
+	return thttp_message_get_headerAt(self, type, 0);
+}
+
+int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output)
+{
+	if(!self){
+		return -1;
+	}
+
+	if(THTTP_MESSAGE_IS_REQUEST(self)){
+		/*Method SP Request-URI SP HTTP-Version CRLF*/
+		/* Method */
+		tsk_buffer_appendEx(output, "%s ", self->method);
+		/* Request URI */
+		thttp_url_serialize(self->url, output);
+		/* HTTP VERSION */
+		tsk_buffer_appendEx(output, " %s\r\n", THTTP_MESSAGE_VERSION_DEFAULT);
+	}
+	else{
+		/*HTTP-Version SP Status-Code SP Reason-Phrase CRLF*/
+		tsk_buffer_appendEx(output, "%s %hi %s\r\n", THTTP_MESSAGE_VERSION_DEFAULT, THTTP_RESPONSE_CODE(self), THTTP_RESPONSE_PHRASE(self));
+	}
+
+	/* Content-Type */
+	if(self->Content_Type){
+		thttp_header_tostring(THTTP_HEADER(self->Content_Type), output);
+	}
+	/* Content-Length*/
+	if(self->Content_Length){
+		thttp_header_tostring(THTTP_HEADER(self->Content_Length), output);
+	}
+
+	/* All other headers */
+	{
+		tsk_list_item_t *item;
+		tsk_list_foreach(item, self->headers)
+		{
+			thttp_header_t *hdr = item->data;
+			thttp_header_tostring(hdr, output);
+		}
+	}
+
+	/* EMPTY LINE */
+	tsk_buffer_append(output, "\r\n", 2);
+
+	/* CONTENT */
+	if(THTTP_MESSAGE_HAS_CONTENT(self)){
+		tsk_buffer_append(output, TSK_BUFFER_TO_STRING(self->Content), TSK_BUFFER_SIZE(self->Content));
+	}
+
 	return 0;
 }
 
+thttp_request_t *thttp_request_new(const char* method, const thttp_url_t *request_url)
+{
+	thttp_request_t* request = 0;
+	
+	if((request = THTTP_REQUEST_CREATE(method, request_url))){
+		THTTP_MESSAGE_ADD_HEADER(request, THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
+	}
+	return request;
+}
+
+thttp_response_t *thttp_response_new(short status_code, const char* reason_phrase, const thttp_request_t *request)
+{
+	thttp_response_t *response = 0;
+
+	if(request){
+		response = THTTP_RESPONSE_CREATE(request, status_code, reason_phrase);
+		THTTP_MESSAGE_ADD_HEADER(response, THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
+		/*
+			Copy other headers
+		*/
+	}
+
+	return response;
+}
 
 
 
@@ -50,42 +260,90 @@ uint32_t thttp_message_getContent_length(const thttp_message_t *message)
 
 
 
-
-
-
-
-//=================================================================================================
-//	THTTP mesage object definition
+//========================================================
+//	HTTP message object definition
 //
-static void* thttp_message_create(void * self, va_list * app)
+
+/**@ingroup thttp_message_group
+*/
+static void* thttp_message_create(void *self, va_list * app)
 {
 	thttp_message_t *message = self;
 	if(message)
 	{
+		message->type = va_arg(*app, thttp_message_type_t); 
+		message->headers = TSK_LIST_CREATE();
+
+		switch(message->type)
+		{
+		case thttp_unknown:
+			{
+				break;
+			}
+
+		case thttp_request:
+			{
+				message->method = tsk_strdup(va_arg(*app, const char*));
+				message->url = tsk_object_ref((void*)va_arg(*app, const thttp_url_t*));
+				break;
+			}
+
+		case thttp_response:
+			{
+				const thttp_request_t* request = va_arg(*app, const thttp_request_t*);
+#if defined(__GNUC__)
+				message->status_code = (short)va_arg(*app, int);
+#else
+				message->status_code = va_arg(*app, short);
+#endif
+				message->reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
+				break;
+			}
+		}
+	}
+	else
+	{
+		TSK_DEBUG_ERROR("Failed to create new http message.");
 	}
 	return self;
 }
 
-static void* thttp_message_destroy(void * self)
-{ 
+/**@ingroup thttp_message_group
+*/
+static void* thttp_message_destroy(void *self)
+{
 	thttp_message_t *message = self;
 	if(message)
 	{
+		if(THTTP_MESSAGE_IS_REQUEST(message))
+		{
+			TSK_FREE(message->method);
+			TSK_OBJECT_SAFE_FREE(message->url);
+		}
+		else if(THTTP_MESSAGE_IS_RESPONSE(message))
+		{
+			TSK_FREE(message->reason_phrase);
+		}
+
+		TSK_FREE(message->http_version);
+
+		TSK_OBJECT_SAFE_FREE(message->Content_Length);
+		TSK_OBJECT_SAFE_FREE(message->Content_Type);
+		
+		TSK_OBJECT_SAFE_FREE(message->Content);
+
+		TSK_OBJECT_SAFE_FREE(message->headers);
 	}
+	else TSK_DEBUG_ERROR("Null HTTP message.");
 
 	return self;
-}
-
-static int thttp_message_cmp(const void *obj1, const void *obj2)
-{
-	return -1;
 }
 
 static const tsk_object_def_t thttp_message_def_s = 
 {
 	sizeof(thttp_message_t),
-	thttp_message_create, 
+	thttp_message_create,
 	thttp_message_destroy,
-	thttp_message_cmp, 
+	0
 };
 const void *thttp_message_def_t = &thttp_message_def_s;

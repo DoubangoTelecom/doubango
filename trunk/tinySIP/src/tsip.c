@@ -274,11 +274,13 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 
 			default:
 			{
-				return -1;
+				TSK_DEBUG_WARN("Found unknown pname.");
+				goto bail;
 			}
 		}/* switch */
 	}/* while */
 
+bail:
 	return 0;
 }
 
@@ -316,7 +318,9 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	tsip_stack_t *stack = tsk_calloc(1, sizeof(tsip_stack_t));
 	va_list params;
 
-	if(!stack) return 0;
+	if(!stack){
+		return 0;
+	}
 
 	/*
 	* Default values
@@ -328,8 +332,7 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	stack->proxy_cscf_type = tnet_socket_type_udp_ipv4;
 	
 	va_start(params, callback);
-	if(__tsip_stack_set(stack, params))
-	{
+	if(__tsip_stack_set(stack, params)){
 		// Delete the stack?
 	}
 	va_end(params);

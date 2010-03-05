@@ -47,6 +47,7 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -209,6 +210,14 @@
 			>
 			<File
 				RelativePath="..\..\tinyHTTP\test\test_auth.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\test\test_stack.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\test\test_url.h"
 				>
 			</File>
 		</Filter>

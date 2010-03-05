@@ -20,51 +20,51 @@
 *
 */
 
-/**@file tsip_header_Dummy.h
- * @brief SIP dummy header.
+/**@file thttp_header_Dummy.h
+ * @brief HTTP dummy header.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef _TSIP_HEADER_DUMMY_H_
-#define _TSIP_HEADER_DUMMY_H_
+#ifndef _THTTP_HEADER_DUMMY_H_
+#define _THTTP_HEADER_DUMMY_H_
 
-#include "tinysip_config.h"
-#include "tinysip/headers/tsip_header.h"
+#include "tinyhttp_config.h"
+#include "tinyhttp/headers/thttp_header.h"
 
-TSIP_BEGIN_DECLS
+THTTP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_DUMMY_CREATE
-* Creates new sip Dummy header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
+/**@def THTTP_HEADER_DUMMY_CREATE
+* Creates new http Dummy header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define TSIP_HEADER_DUMMY_VA_ARGS(name, value)		tsip_header_Dummy_def_t, (const char*)name, (const char*)value
-#define TSIP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(TSIP_HEADER_DUMMY_VA_ARGS(name, value))
-#define TSIP_HEADER_DUMMY_CREATE_NULL()				TSIP_HEADER_DUMMY_CREATE(TSIP_NULL, TSIP_NULL)
+#define THTTP_HEADER_DUMMY_VA_ARGS(name, value)		thttp_header_Dummy_def_t, (const char*)name, (const char*)value
+#define THTTP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(THTTP_HEADER_DUMMY_VA_ARGS(name, value))
+#define THTTP_HEADER_DUMMY_CREATE_NULL()				THTTP_HEADER_DUMMY_CREATE(THTTP_NULL, THTTP_NULL)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP Dummy header.
+/// @brief	HTTP Dummy header.
 ///
 /// @par ABNF : token SP* HCOLON SP*<: any*
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-typedef struct tsip_header_Dummy_s
+typedef struct thttp_header_Dummy_s
 {	
-	TSIP_DECLARE_HEADER;
+	THTTP_DECLARE_HEADER;
 
 	char *name;
 	char *value;
 }
-tsip_header_Dummy_t;
+thttp_header_Dummy_t;
 
-tsip_header_Dummy_t *tsip_header_Dummy_parse(const char *data, size_t size);
+thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size);
 
-TINYSIP_GEXTERN const void *tsip_header_Dummy_def_t;
+TINYHTTP_GEXTERN const void *thttp_header_Dummy_def_t;
 
-TSIP_END_DECLS
+THTTP_END_DECLS
 
-#endif /* _TSIP_HEADER_DUMMY_H_ */
+#endif /* _THTTP_HEADER_DUMMY_H_ */
 
