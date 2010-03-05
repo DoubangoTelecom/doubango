@@ -31,7 +31,43 @@
 
 #include "tinyhttp_config.h"
 
+#include "tinyHTTP/thttp_event.h"
+
 THTTP_BEGIN_DECLS
+
+typedef enum thttp_stack_param_type_e
+{
+	/* Identity */
+	pname_usr,
+	pname_proxy,
+	pname_useragent,
+#define THTTP_STACK_SET_USER(USRNAME_STR, PASSWORD_STR)										pname_usr, (const char*)USRNAME_STR, (const char*)PASSWORD_STR
+#define THTTP_STACK_SET_PROXY(HOST_STR, PORT_INT, USRNAME_STR, PASSWORD_STR)				pname_proxy, (const char*)HOST_STR, (int)PORT_INT, (const char*)USRNAME_STR, (const char*)PASSWORD_STR
+#define THTTP_STACK_SET_USER_AGENT(UA_STR)													pname_useragent, (const char*)UA_STR
+
+	/* Network */
+	pname_local_ip,
+	pname_local_port,
+#define THTTP_STACK_SET_LOCAL_IP(STR)														pname_local_ip, (const char*)STR
+#define THTTP_STACK_SET_LOCAL_PORT(INT)														pname_local_port, (int)INT
+
+
+	pname_null,
+#define THTTP_STACK_SET_NULL()																pname_null
+}
+thttp_stack_param_type_t;
+
+typedef void thttp_stack_handle_t;
+
+TINYHTTP_API int thttp_global_init();
+TINYHTTP_API int thttp_global_deinit();
+
+
+TINYHTTP_API thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...);
+TINYHTTP_API int thttp_stack_start(thttp_stack_handle_t *self);
+TINYHTTP_API int thttp_stack_set(thttp_stack_handle_t *self, ...);
+TINYHTTP_API int thttp_stack_stop(thttp_stack_handle_t *self);
+
 THTTP_END_DECLS
 
 #endif /* TINYHTTP_THTTP_H */

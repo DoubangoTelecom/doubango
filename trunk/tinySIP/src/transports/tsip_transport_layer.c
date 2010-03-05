@@ -474,7 +474,7 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 				}
 
 				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(transport->type) ? TNET_TRANSPORT_DATA_READ(tsip_transport_layer_dgram_data_read) : TNET_TRANSPORT_DATA_READ(tsip_transport_layer_stream_data_read), transport);
-				tsip_transport_connectto(transport, TSIP_STACK(self->stack)->proxy_cscf, TSIP_STACK(self->stack)->proxy_cscf_port);
+				tsip_transport_connectto2(transport, TSIP_STACK(self->stack)->proxy_cscf, TSIP_STACK(self->stack)->proxy_cscf_port);
 			}
 
 			/* FIXME: CONNECTED ?*/

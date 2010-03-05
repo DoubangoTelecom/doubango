@@ -809,6 +809,10 @@
 					RelativePath=".\src\transports\tsip_transport_layer.c"
 					>
 				</File>
+				<File
+					RelativePath=".\src\transports\tsip_transport_tls.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="dialogs"
@@ -1369,6 +1373,10 @@
 				</File>
 				<File
 					RelativePath=".\include\tinysip\transports\tsip_transport_layer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\transports\tsip_transport_tls.h"
 					>
 				</File>
 			</Filter>

@@ -276,8 +276,8 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			{
 				return -1;
 			}
-		}
-	}
+		}/* switch */
+	}/* while */
 
 	return 0;
 }
@@ -368,8 +368,7 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		tsip_stack_t *stack = self;
 		
 		TSK_RUNNABLE(stack)->run = run;
-		if(ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))
-		{
+		if(ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t)){
 			return ret;
 		}
 
@@ -686,7 +685,7 @@ void *run(void* self)
 
 	TSK_RUNNABLE_RUN_BEGIN(stack);
 
-	TSK_DEBUG_INFO("STACK::run -- START");
+	TSK_DEBUG_INFO("SIP STACK::run -- START");
 	
 	if((curr = TSK_RUNNABLE_POP_FIRST(stack)))
 	{
@@ -699,6 +698,6 @@ void *run(void* self)
 	
 	TSK_RUNNABLE_RUN_END(self);
 
-	TSK_DEBUG_INFO("STACK::run -- STOP");
+	TSK_DEBUG_INFO("SIP STACK::run -- STOP");
 	return 0;
 }

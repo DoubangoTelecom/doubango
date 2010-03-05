@@ -26,14 +26,17 @@
 
 #include "tsk.h"
 
+#include "thttp.h"
 #include "tinyHTTP/auth/thttp_auth.h"
 
 #define LOOP						1
 
 #define RUN_TEST_ALL				0
-#define RUN_TEST_AUTH				1
+#define RUN_TEST_AUTH				0
+#define RUN_TEST_STACK				1
 
 #include "test_auth.h"
+#include "test_stack.h"
 
 
 #ifdef _WIN32_WCE
@@ -42,21 +45,27 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
+		thttp_global_init();
+
 #if LOOP
-	while(1)
+	for(;;)
 #endif
 	{
 		/* Print copyright information */
-		printf("Doubango Project\nCopyright (C) 2009 Mamadou Diop \n\n");
+		printf("Doubango Project\nCopyright (C) 2009-2010 Mamadou Diop \n\n");
 
 #if RUN_TEST_AUTH || RUN_TEST_ALL
 		test_basic_auth();
 		test_digest_auth();
 #endif
 
+#if RUN_TEST_STACK || RUN_TEST_ALL
+		test_stack();
+#endif
+
 	}
 
-	getchar();
+	thttp_global_deinit();
 
 	return 0;
 }

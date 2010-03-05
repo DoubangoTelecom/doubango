@@ -550,7 +550,7 @@ int tipsec_boundSA(__in const tipsec_context_vista_t* context, __in UINT64 local
 	bundle.numSAs = 1;
 	bundle.saList = &sa;
 	bundle.ipVersion = TINYIPSEC_VISTA_GET_IPVER(TIPSEC_CONTEXT(context)->use_ipv6);
-	bundle.lifetime.lifetimeSeconds = (TIPSEC_CONTEXT(context)->lifetime > TINYIPSEC_SA_MAX_LIFETIME) ? TINYIPSEC_SA_MAX_LIFETIME : TIPSEC_CONTEXT(context)->lifetime;
+	bundle.lifetime.lifetimeSeconds = (UINT32)((TIPSEC_CONTEXT(context)->lifetime > TINYIPSEC_SA_MAX_LIFETIME) ? TINYIPSEC_SA_MAX_LIFETIME : TIPSEC_CONTEXT(context)->lifetime);
 
 	/* From remote to local (inbound) ? */
 	if(toInbound){
