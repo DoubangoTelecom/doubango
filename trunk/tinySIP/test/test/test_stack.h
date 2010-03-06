@@ -224,6 +224,7 @@ int test_stack_callback(const tsip_event_t *sipevent)
 void test_stack()
 {
 #define DOMAIN "ericsson.com"
+
 //#define DOMAIN "ims.inexbee.com"
 //#define DOMAIN "sip2sip.info"
 
@@ -312,7 +313,9 @@ void test_stack()
 
 	tsip_operation_id_t opid = tsip_operation_get_id(op);
 
-	tsip_stack_start(stack);
+	if(tsip_stack_start(stack)){
+		goto bail;
+	}
 
 	tsip_register(stack, op);
 
@@ -345,31 +348,31 @@ void test_stack()
 	//}
 
 	/* PUBLISH */
-	{
-		tsip_operation_handle_t *op4 = TSIP_OPERATION_CREATE(stack,
-			TSIP_OPERATION_SET_HEADER("expires", "30"),
-			TSIP_OPERATION_SET_HEADER("to", "sip:mamadou@"DOMAIN),
-			TSIP_OPERATION_SET_HEADER("Content-Type", "application/pidf+xml"),
-			TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"), 
-			TSIP_OPERATION_SET_HEADER("Event", "presence"),
-		
-			TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
-		
-			TSIP_OPERATION_SET_NULL());
-		tsip_publish(stack, op4);
+	//{
+	//	tsip_operation_handle_t *op4 = TSIP_OPERATION_CREATE(stack,
+	//		TSIP_OPERATION_SET_HEADER("expires", "30"),
+	//		TSIP_OPERATION_SET_HEADER("to", "sip:mamadou@"DOMAIN),
+	//		TSIP_OPERATION_SET_HEADER("Content-Type", "application/pidf+xml"),
+	//		TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"), 
+	//		TSIP_OPERATION_SET_HEADER("Event", "presence"),
+	//	
+	//		TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
+	//	
+	//		TSIP_OPERATION_SET_NULL());
+	//	tsip_publish(stack, op4);
 
-		/*getchar();
-		tsip_operation_set(op4,
-			TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
+	//	/*getchar();
+	//	tsip_operation_set(op4,
+	//		TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
 
-			TSIP_OPERATION_SET_NULL());
-		tsip_publish(stack, op4);*/
-		
-		getchar();
-		tsip_operation_hangup(op4);
-		
-	}
-
+	//		TSIP_OPERATION_SET_NULL());
+	//	tsip_publish(stack, op4);*/
+	//	
+	//	getchar();
+	//	tsip_operation_hangup(op4);
+	//	
+	//}
+bail:
 	//while(1);//tsk_thread_sleep(500);
 	//while(1)
 		//tsk_thread_sleep(50000);
@@ -378,7 +381,7 @@ void test_stack()
 	tsip_stack_stop(stack);
 
 	TSK_OBJECT_SAFE_FREE(op);
-	tsip_stack_destroy(stack);
+	TSK_OBJECT_SAFE_FREE(stack);
 }
 
 

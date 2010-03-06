@@ -22,9 +22,11 @@
 #ifndef TNET_TEST_TRANSPORT_H
 #define TNET_TEST_TRANSPORT_H
 
-#define REMOTE_IP4	"proxy.sipthor.net"//"192.168.0.15"
+//#define REMOTE_IP4	"proxy.sipthor.net"//"192.168.0.15"
+#define REMOTE_IP4	"192.168.0.11"
 #define REMOTE_IP6	"2a01:e35:8632:7050:6122:2706:2124:32cb"
 #define REMOTE_IP REMOTE_IP4
+#define REMOTE_PORT 5081
 
 #if defined(ANDROID) /* FIXME */
 #	define LOCAL_IP4	"10.0.2.15"
@@ -52,15 +54,39 @@
 	"\r\n"
 
 
-static int tnet_tcp_data_read(const void *callback_data, const void* data, size_t size)
+static int tnet_tcp_cb(const tnet_transport_event_t* e)
 {
-	TSK_DEBUG_INFO("--- TCP ---\n%s\n", data);
+	switch(e->type){
+		case event_data:
+			{
+				TSK_DEBUG_INFO("--- TCP ---\n%s\n", e->data);
+				break;
+			}
+		case event_closed:
+		case event_connected:
+		default:
+			{
+				break;
+			}
+	}
 	return 0;
 }
 
-static int tnet_udp_data_read(const void *callback_data, const void* data, size_t size)
+static int tnet_udp_cb(const tnet_transport_event_t* e)
 {
-	TSK_DEBUG_INFO("--- UDP ---\n%s\n", data);
+	switch(e->type){
+		case event_data:
+			{
+				TSK_DEBUG_INFO("--- UDP ---\n%s\n", e->data);
+				break;
+			}
+		case event_closed:
+		case event_connected:
+		default:
+			{
+				break;
+			}
+	}
 	return 0;
 }
 
@@ -71,33 +97,24 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 	tnet_port_t port;
 	tnet_fd_t fd = TNET_INVALID_FD;
 
-	if(tnet_transport_start(transport))
-	{
+	/* Set our callback function */
+	tnet_transport_set_callback(transport, tnet_tcp_cb, "callbackdata");
+
+	if(tnet_transport_start(transport)){
 		TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
 		return;
 	}
 
-	while(!tnet_transport_isready(transport))
-	{
-		tsk_thread_sleep(500);
-	}
-
-	//tsk_thread_sleep(500);
-
 	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto2(transport, REMOTE_IP, 5060)) == TNET_INVALID_FD)
-	{
+	if((fd = tnet_transport_connectto2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
 		return;
 	}
 
-	/* Set our callback function */
-	tnet_transport_set_callback(transport, tnet_tcp_data_read, "callbackdata");
-
-	while(!tnet_transport_isconnected(transport, fd))
-	{
-		/* Connecto succeed but not connected yet.*/
-		tsk_thread_sleep(500);
+	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
+		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+		tnet_transport_remove_socket(transport, fd);
+		return;
 	}
 
 	/* Send our SIP message */
@@ -124,30 +141,28 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	tnet_port_t port;
 	tnet_fd_t fd = TNET_INVALID_FD;
 	
-	if(tnet_transport_start(transport))
-	{
+	/* Set our callback function */
+	tnet_transport_set_callback(transport, tnet_udp_cb, "callbackdata");
+
+	if(tnet_transport_start(transport)){
 		TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
 		return -1;
 	}
 
-	
-	while(!tnet_transport_isready(transport))
-	{
-		tsk_thread_sleep(500);
-	}
-
 	/* Connect to our SIP REGISTRAR */
-	if((fd = tnet_transport_connectto2(transport, REMOTE_IP, 5060)) == TNET_INVALID_FD)
-	{
+	if((fd = tnet_transport_connectto2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
 		//tnet_transport_shutdown(transport);
 		return -2;
 	}
 
-	//tsk_thread_sleep(2000);
+	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
+		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+		tnet_transport_remove_socket(transport, fd);
+		return -3;
+	}
 
-	/* Set our callback function */
-	tnet_transport_set_callback(transport, tnet_udp_data_read, "callbackdata");
+	//tsk_thread_sleep(2000);
 
 	/* Send our SIP message */
 	/*while(1)*/{
@@ -162,7 +177,7 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 			TSK_DEBUG_ERROR("Failed to send data using %s.", tnet_transport_get_description(transport));
 			//tnet_transport_shutdown(transport);
 			TSK_FREE(message);
-			return -3;
+			return -4;
 		}
 		TSK_FREE(message);
 	}
@@ -172,8 +187,8 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 
 void test_transport()
 {
-#define TEST_TCP 0
-#define TEST_UDP 1
+#define TEST_TCP 1
+#define TEST_UDP 0
 
 
 #if TEST_UDP

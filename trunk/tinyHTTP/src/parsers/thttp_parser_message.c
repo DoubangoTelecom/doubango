@@ -37,9 +37,9 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message);
+static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content);
 static void thttp_message_parser_init(tsk_ragel_state_t *state);
-static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message);
+static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content);
 
 /***********************************
 *	Ragel state machine.
@@ -201,15 +201,13 @@ static const int thttp_machine_parser_message_en_main = 1;
 /// @return	@ref zero if succeed and non-zero error code otherwise.
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result)
+int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, int extract_content)
 {
-	if(!state || state->pe <= state->p)
-	{
+	if(!state || state->pe <= state->p){
 		return -1;
 	}
 
-	if(!*result)
-	{
+	if(!*result){
 		*result = THTTP_MESSAGE_CREATE();
 	}
 
@@ -219,14 +217,14 @@ int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result)
 	/*
 	*	State mechine execution.
 	*/
-	thttp_message_parser_execute(state, *result);
+	thttp_message_parser_execute(state, *result, extract_content);
 
 	/* Check result */
 
 	if( state->cs < 
-/* #line 228 "../src/parsers/thttp_parser_message.c" */
+/* #line 226 "../src/parsers/thttp_parser_message.c" */
 44
-/* #line 226 "thttp_parser_message.rl" */
+/* #line 224 "thttp_parser_message.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(*result);
@@ -242,17 +240,17 @@ static void thttp_message_parser_init(tsk_ragel_state_t *state)
 
 	/* Regel machine initialization. */
 	
-/* #line 246 "../src/parsers/thttp_parser_message.c" */
+/* #line 244 "../src/parsers/thttp_parser_message.c" */
 	{
 	cs = thttp_machine_parser_message_start;
 	}
 
-/* #line 241 "thttp_parser_message.rl" */
+/* #line 239 "thttp_parser_message.rl" */
 	
 	state->cs = cs;
 }
 
-static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message)
+static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;
@@ -260,7 +258,7 @@ static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message
 	const char *eof = state->eof;
 
 	
-/* #line 264 "../src/parsers/thttp_parser_message.c" */
+/* #line 262 "../src/parsers/thttp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -438,7 +436,7 @@ _match:
 		}
 	}
 	break;
-/* #line 442 "../src/parsers/thttp_parser_message.c" */
+/* #line 440 "../src/parsers/thttp_parser_message.c" */
 		}
 	}
 
@@ -451,7 +449,7 @@ _again:
 	_out: {}
 	}
 
-/* #line 253 "thttp_parser_message.rl" */
+/* #line 251 "thttp_parser_message.rl" */
 
 	state->cs = cs;
 	state->p = p;
@@ -459,23 +457,21 @@ _again:
 	state->eof = eof;
 }
 
-static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message)
+static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;
 	const char *pe = state->pe;
 	const char *eof = state->eof;
 
-	if(message)
+	if(extract_content && message)
 	{
 		uint32_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message);
-		if((p+clen) <pe && !message->Content)
-		{
+		if((p+clen) <pe && !message->Content){
 			message->Content = TSK_BUFFER_CREATE((p+1), clen);
 			p = (p+clen);
 		}
-		else
-		{
+		else{
 			p = (pe-1);
 		}
 	}

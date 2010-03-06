@@ -382,6 +382,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\headers\thttp_header_Content_Length.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\headers\thttp_header_Content_Type.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\headers\thttp_header_Dummy.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\headers\thttp_header_Proxy_Authenticate.c"
 					>
 				</File>
@@ -463,6 +475,10 @@
 				</File>
 				<File
 					RelativePath=".\include\tinyHTTP\headers\thttp_header_Content_Type.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\headers\thttp_header_Dummy.h"
 					>
 				</File>
 				<File

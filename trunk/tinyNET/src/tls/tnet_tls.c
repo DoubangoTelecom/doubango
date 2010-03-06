@@ -29,15 +29,21 @@
  */
 #include "tnet_tls.h"
 
+#include "tnet_utils.h"
+
 #include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
+#include "tsk_safeobj.h"
 
 #define TNET_CIPHER_LIST "AES128-SHA"
 
 #if TNET_HAVE_OPENSSL_H
 #	include <openssl/ssl.h>
 #endif
+
+#define TNET_TLS_TIMEOUT		2000
+#define TNET_TLS_RETRY_COUNT	5
 
 typedef struct tnet_tls_socket_s
 {
@@ -62,6 +68,8 @@ typedef struct tnet_tls_socket_s
 	unsigned initialized;
 	unsigned isClient:1;
 	unsigned mutual_auth:1;
+
+	TSK_DECLARE_SAFEOBJ;
 }
 tnet_tls_socket_t;
 
@@ -75,8 +83,14 @@ int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self)
 
 int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 {
+#if !TNET_HAVE_OPENSSL_H
+	return -200;
+#else
 	int ret = -1;
 	tnet_tls_socket_t* socket;
+#if defined(DEBUG) || defined(_DEBUG)
+	X509* svr_cert;
+#endif
 
 	if(!self){
 		return -1;
@@ -89,65 +103,83 @@ int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 		return -2;
 	}
 
-	if((ret = SSL_connect(socket->ssl)) < 1){
+	//ret = SSL_do_handshake(socket->ssl);
+	if((ret = SSL_connect(socket->ssl)) != 1){
 		ret = SSL_get_error(socket->ssl, ret);
-		if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
-			ret = 0;
+		if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ || ret == SSL_ERROR_SYSCALL){
+			ret = 0; /* Up to the caller to check that the socket is writable and valid. */
 		}
 		else{
 			TSK_DEBUG_ERROR("SSL_connect failed [%d].", ret);
+			//if(ret == SSL_ERROR_SYSCALL){
+			//	TNET_PRINT_LAST_ERROR("SSL_connect returned SSL_ERROR_SYSCALL:");
+			//}
 		}
 	}
 	else ret = 0;
-	
-	return ret;
-}
 
-int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, size_t size)
-{
-	int ret = -1;
-	tnet_tls_socket_t* socket;
-#if defined(DEBUG)
-	X509* svr_cert;
-#endif
-	if(!self){
-		return -1;
-	}
-	
-	socket = self;
-
-	if(!socket->initialized){
-		TSK_DEBUG_ERROR("TLS socket not properly initialized.");
-		return -2;
-	}
-	
-#if defined(DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 	/* Print Server cert */
-    if((svr_cert = SSL_get_peer_certificate(socket->ssl))) {
+    if((ret == 0) && (svr_cert = SSL_get_peer_certificate(socket->ssl))) {
       TSK_DEBUG_INFO("Server cert - Subject: %s", X509_NAME_oneline(X509_get_subject_name(svr_cert), 0, 0));
       TSK_DEBUG_INFO("Server cert - Issuer: %s", X509_NAME_oneline(X509_get_issuer_name(svr_cert), 0, 0));
 	   X509_free(svr_cert);
     }
 #endif
+	
+	return ret;
+#endif
+}
+
+int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, size_t size)
+{
+#if !TNET_HAVE_OPENSSL_H
+	return -200;
+#else
+	int ret = -1;
+	int rcount = TNET_TLS_RETRY_COUNT;
+	tnet_tls_socket_t* socket;
+	
+	if(!self){
+		return -1;
+	}
+	
+	socket = self;
+
+	if(!socket->initialized){
+		TSK_DEBUG_ERROR("TLS socket not properly initialized.");
+		return -2;
+	}
 
 	/* Write */
-	if((ret = SSL_write(socket->ssl, data, size)) < 1){
+	tsk_safeobj_lock(socket);
+ssl_write:
+	if((rcount--) && ((ret = SSL_write(socket->ssl, data, size)) <= 0)){
 		ret = SSL_get_error(socket->ssl, ret);
 		if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
-			ret = 0;
+			if(!(ret = tnet_sockfd_waitUntil(socket->fd, TNET_TLS_TIMEOUT, (ret == SSL_ERROR_WANT_WRITE)))){
+				goto ssl_write;
+			}
 		}
 		else{
 			TSK_DEBUG_ERROR("SSL_write failed [%d].", ret);
+			ret = -3;
 		}
 	}
-	else ret = 0;
+	tsk_safeobj_unlock(socket);
 
+	ret = (ret > 0) ? 0 : -3;
 	return ret;
+#endif
 }
 
-int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void* data, size_t size)
+int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void* data, size_t *size, int *isEncrypted)
 {
+#if !TNET_HAVE_OPENSSL_H
+	return -200;
+#else
 	int ret = -1;
+	int rcount = TNET_TLS_RETRY_COUNT;
 	tnet_tls_socket_t* socket;
 
 	if(!self){
@@ -161,25 +193,63 @@ int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void* data, size_t size
 		return -2;
 	}
 	
-	/* Read */
-	if((ret = SSL_read(socket->ssl, data, size)) < 1){
+	tsk_safeobj_lock(socket);
+
+	*isEncrypted = SSL_is_init_finished(socket->ssl) ? 0 : 1;
+
+	/* SSL handshake has completed? */
+	if(*isEncrypted){
+		char* buffer[1024];
+		if((ret = SSL_read(socket->ssl, buffer, 1024)) <= 0){
+			ret = SSL_get_error(socket->ssl, ret);
+			if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
+				ret = 0;
+			}
+			*size = 0;
+		}
+		else{
+			*size = ret;
+			ret = 0;
+		}
+		
+		goto bail;
+	}
+
+	/* Read Application data */
+ssl_read:	
+	if((rcount--) && ((ret = SSL_read(socket->ssl, data, *size)) <= 0)){
 		ret = SSL_get_error(socket->ssl, ret);
 		if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
+			if(!(ret = tnet_sockfd_waitUntil(socket->fd, TNET_TLS_TIMEOUT, (ret == SSL_ERROR_WANT_WRITE)))){
+				goto ssl_read;
+			}
+		}
+		else if(SSL_ERROR_ZERO_RETURN){ /* connection closed: do nothing, the transport layer will be alerted. */
+			*size = ret;
 			ret = 0;
+			TSK_DEBUG_INFO("TLS connection closed.");
 		}
 		else{
 			TSK_DEBUG_ERROR("SSL_read failed [%d].", ret);
 		}
 	}
-	else ret = 0;
+	else{
+		*size = ret;
+		ret = 0;
+	}
+	return 0;
 
+bail:
+	tsk_safeobj_unlock(socket);
+	
 	return ret;
+#endif
 }
 
 int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 {
 #if !TNET_HAVE_OPENSSL_H
-	return -2;
+	return -200;
 #else
 	int ret = -1;
 
@@ -193,7 +263,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 			socket->ssl_meth = SSLv23_client_method();
 		}
 		else{
-			socket->ssl_meth = TLSv1_client_method();
+			socket->ssl_meth = TLSv1_client_method()/*SSLv23_client_method()*/;
 		}
 	}
 	else{
@@ -208,6 +278,9 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 	/* Creates the context */
 	if(!(socket->ssl_ctx = SSL_CTX_new(socket->ssl_meth))){
 		return -3;
+	}
+	else{
+		SSL_CTX_set_mode(socket->ssl_ctx, SSL_MODE_AUTO_RETRY);
 	}
 
 	/*Set cipher list*/
@@ -252,7 +325,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 		TSK_DEBUG_ERROR("SSL_new(CTX) failed.");
 		return -15;
 	}
-
+	
 	/* Sets FD */
 	if((ret = SSL_set_fd(socket->ssl, socket->fd)) == 0){
 		TSK_DEBUG_ERROR("SSL_set_fd(%u) failed.", socket->fd);
@@ -275,6 +348,9 @@ static void* tnet_tls_socket_create(void * self, va_list * app)
 	tnet_tls_socket_t *socket = self;
 	if(socket){
 		int ret;
+
+		tsk_safeobj_init(socket);
+
 #if defined(__GNUC__)
 		socket->fd = (tnet_fd_t)va_arg(*app, unsigned);
 #else
@@ -316,6 +392,9 @@ static void* tnet_tls_socket_destroy(void * self)
 { 
 	tnet_tls_socket_t *socket = self;
 	if(socket){
+
+		tsk_safeobj_deinit(socket);
+
 		TSK_FREE(socket->tlsdir_cas);
 		TSK_FREE(socket->tlsfile_ca);
 		TSK_FREE(socket->tlsfile_pvk);
@@ -324,8 +403,8 @@ static void* tnet_tls_socket_destroy(void * self)
 
 #if TNET_HAVE_OPENSSL_H
 		if(socket->ssl){
+			//SSL_shutdown(socket->ssl);
 			SSL_free(socket->ssl);
-			SSL_shutdown(socket->ssl);
 		}
 		if(socket->ssl_ctx){
 			SSL_CTX_free(socket->ssl_ctx);

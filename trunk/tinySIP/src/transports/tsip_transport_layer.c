@@ -48,9 +48,6 @@ int tsip_transport_layer_handle_incoming_msg(const tsip_transport_t *transport, 
 		const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(transport->stack);
 		const tsip_dialog_layer_t *layer_dialog = tsip_stack_get_dialog_layer(transport->stack);
 
-		// FIXME: what if IPsec is used?
-		message->sockfd = transport->connectedFD;
-
 		if((ret=tsip_transac_layer_handle_incoming_msg(layer_transac, message)))
 		{	/* NO MATCHING TRANSACTION FOUND ==> LOOK INTO DIALOG LAYER */
 			ret = tsip_dialog_layer_handle_incoming_msg(layer_dialog, message);
@@ -61,12 +58,24 @@ int tsip_transport_layer_handle_incoming_msg(const tsip_transport_t *transport, 
 
 /*== Non-blocking callback function (STREAM: TCP, TLS and SCTP)
 */
-static int tsip_transport_layer_stream_data_read(const tsip_transport_t *transport, const void* data, size_t size)
+static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
 	tsk_ragel_state_t state;
 	tsip_message_t *message = TSIP_NULL;
 	int endOfheaders = -1;
+	const tsip_transport_t *transport = e->callback_data;
+	
+	switch(e->type){
+		case event_data: {
+				break;
+			}
+		case event_closed:
+		case event_connected:
+		default:{
+				return 0;
+			}
+	}
 
 
 	/* RFC 3261 - 7.5 Framing SIP Messages
@@ -91,7 +100,7 @@ static int tsip_transport_layer_stream_data_read(const tsip_transport_t *transpo
 	}
 
 	/* Append new content. */
-	tsk_buffer_append(transport->buff_stream, data, size);
+	tsk_buffer_append(transport->buff_stream, e->data, e->size);
 
 	/* Check if we have all SIP headers. */
 	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
@@ -102,7 +111,7 @@ static int tsip_transport_layer_stream_data_read(const tsip_transport_t *transpo
 	/* If we are there this mean that we have all SIP headers.
 	*	==> Parse the SIP message without the content.
 	*/
-	tsk_ragel_state_init(&state, data, size);
+	tsk_ragel_state_init(&state, e->data, e->size);
 	if(tsip_message_parse(&state, &message, TSIP_FALSE/* do not extract the content */) == TSIP_TRUE 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
@@ -126,6 +135,8 @@ static int tsip_transport_layer_stream_data_read(const tsip_transport_t *transpo
 
 	/* Handle the incoming message. */
 	ret = tsip_transport_layer_handle_incoming_msg(transport, message);
+	/* Set fd */
+	message->sockfd = e->fd;
 
 bail:
 	TSK_OBJECT_SAFE_FREE(message);
@@ -135,17 +146,31 @@ bail:
 
 /*== Non-blocking callback function (DGRAM: UDP)
 */
-static int tsip_transport_layer_dgram_data_read(const tsip_transport_t *transport, const void* data, size_t size)
+static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
 	tsk_ragel_state_t state;
 	tsip_message_t *message = 0;
+	const tsip_transport_t *transport = e->callback_data;
 
-	tsk_ragel_state_init(&state, data, size);
+	switch(e->type){
+		case event_data: {
+				break;
+			}
+		case event_closed:
+		case event_connected:
+		default:{
+				return 0;
+			}
+	}
+
+	tsk_ragel_state_init(&state, e->data, e->size);
 	if(tsip_message_parse(&state, &message, TSIP_TRUE) == TSIP_TRUE 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
+		/* Set fd */
+		message->sockfd = e->fd;
 	}
 	TSK_OBJECT_SAFE_FREE(message);
 
@@ -449,46 +474,29 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 			tsk_list_item_t *item;
 			tsip_transport_t* transport;
 
-			/* START */
+			/* start() */
 			tsk_list_foreach(item, self->transports)
 			{
 				transport = item->data;
-				if(ret = tsip_transport_start(transport))
-				{
+				if(ret = tsip_transport_start(transport)){
 					return ret;
 				}
 			}
 			
-			/* FIXME: CONNECT */
+			/* connect() */
 			tsk_list_foreach(item, self->transports)
 			{
-				int isready;
+				tnet_fd_t fd;
 				transport = item->data;
 
-				isready = tsip_transport_isready(transport);
-
-				while(!isready)
-				{
-					tsk_thread_sleep(100);
-					isready = tsip_transport_isready(transport);
+				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(transport->type) ? TNET_TRANSPORT_CB_F(tsip_transport_layer_dgram_cb) : TNET_TRANSPORT_CB_F(tsip_transport_layer_stream_cb), transport);
+				if((fd = tsip_transport_connectto2(transport, TSIP_STACK(self->stack)->proxy_cscf, TSIP_STACK(self->stack)->proxy_cscf_port)) == TNET_INVALID_FD){
+					return -3;
 				}
-
-				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(transport->type) ? TNET_TRANSPORT_DATA_READ(tsip_transport_layer_dgram_data_read) : TNET_TRANSPORT_DATA_READ(tsip_transport_layer_stream_data_read), transport);
-				tsip_transport_connectto2(transport, TSIP_STACK(self->stack)->proxy_cscf, TSIP_STACK(self->stack)->proxy_cscf_port);
-			}
-
-			/* FIXME: CONNECTED ?*/
-			tsk_list_foreach(item, self->transports)
-			{
-				int connected;
-				transport = item->data;
-				
-				connected = TNET_SOCKET_TYPE_IS_DGRAM(transport->type);
-
-				while(!connected)
-				{
-					tsk_thread_sleep(100);
-					connected = tsip_transport_isconnected(transport);
+				if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
+					TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+					tnet_transport_remove_socket(transport->net_transport, fd);
+					return ret;
 				}
 			}
 
@@ -512,8 +520,7 @@ int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self)
 			tsk_list_foreach(item, self->transports)
 			{
 				transport = item->data;
-				if(ret = tsip_transport_shutdown(transport))
-				{
+				if(ret = tsip_transport_shutdown(transport)){
 					return ret;
 				}
 			}

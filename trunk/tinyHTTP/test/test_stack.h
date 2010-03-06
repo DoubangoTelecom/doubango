@@ -30,27 +30,47 @@ int test_stack_callback(const thttp_event_t *httpevent)
 void test_stack()
 {
 	thttp_operation_handle_t *op = 0;
-	thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback, 0, 
+	thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback, 
 		THTTP_STACK_SET_NULL());
 
 	if(thttp_stack_start(stack)){
 		goto bail;
 	}
-
+/*
 	op = THTTP_OPERATION_CREATE(stack,
 		THTTP_OPERATION_SET_PARAM("method", "GET"),
-		THTTP_OPERATION_SET_PARAM("URI", "http://www.google.com"),
-
-		THTTP_OPERATION_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v0.0.0"),
-		THTTP_OPERATION_SET_HEADER("X-XCAP-Asserted-Identity", "sip:mamadou@ericsson.com"),
+		THTTP_OPERATION_SET_PARAM("URL", "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/index"),
+		
+		THTTP_OPERATION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
+		THTTP_OPERATION_SET_HEADER("Pragma", "No-Cache"),
+		THTTP_OPERATION_SET_HEADER("Connection", "Keep-Alive"),
+		THTTP_OPERATION_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
+		THTTP_OPERATION_SET_HEADER("X-3GPP-Intended-Identity", "sip:mercuro1@colibria.com"),
 		
 		THTTP_OPERATION_SET_NULL());
-
 	thttp_operation_perform(op);
-
+*/
+	op = THTTP_OPERATION_CREATE(stack,
+		THTTP_OPERATION_SET_PARAM("method", "GET"),
+		//THTTP_OPERATION_SET_PARAM("URL", "https://msp.f-secure.com/web-test/common/test.html"),
+		THTTP_OPERATION_SET_PARAM("URL", "http://www.doubango.org"),
+		
+		THTTP_OPERATION_SET_HEADER("Pragma", "No-Cache"),
+		THTTP_OPERATION_SET_HEADER("Connection", "Keep-Alive"),
+		THTTP_OPERATION_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
+				
+		THTTP_OPERATION_SET_NULL());
+	thttp_operation_perform(op);
+	
+	/*thttp_operation_set(op,
+		THTTP_OPERATION_SET_PARAM("method", "HEAD"),
+		
+		THTTP_OPERATION_SET_NULL());
+	thttp_operation_perform(op);*/
 
 	getchar();
 bail:
+	TSK_OBJECT_SAFE_FREE(op);
 	TSK_OBJECT_SAFE_FREE(stack);
 }
 

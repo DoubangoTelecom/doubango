@@ -56,8 +56,7 @@ int tnet_poll(tnet_pollfd_t fds[ ], tnet_nfds_t nfds, int timeout)
 	/*
 	*	set timeout
 	*/
-	if(timeout >=0)
-	{
+	if(timeout >=0){
 		timetowait.tv_sec = (timeout/1000);
 		timetowait.tv_usec = (timeout%1000) * 1000;
 	}

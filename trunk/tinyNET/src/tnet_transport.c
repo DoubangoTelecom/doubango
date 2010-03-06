@@ -47,20 +47,21 @@ int tnet_transport_start(tnet_transport_handle_t* handle)
 	{
 		tnet_transport_t *transport = handle;
 		
-		TSK_RUNNABLE(transport)->run = run;
-		if((ret = tsk_runnable_start(TSK_RUNNABLE(transport), tsk_buffer_def_t)))
-		{
+		if((ret = tnet_transport_create_context(handle))){ /* context will be used by the main thread ==> create it before the tread. */
 			return ret;
 		}
-
-		if((ret = tsk_thread_create(&(transport->mainThreadId[0]), tnet_transport_mainthread, transport)))
-		{
+		if((ret = tsk_thread_create(&(transport->mainThreadId[0]), tnet_transport_mainthread, transport))){ /* More important than "tsk_runnable_start" ==> start it first. */
+			TSK_FREE(transport->context); /* Otherwise (tsk_thread_create is ok) will be freed when mainthread exit. */
 			tsk_runnable_stop(TSK_RUNNABLE(transport));
 			return ret;
 		}
+
+		TSK_RUNNABLE(transport)->run = run;
+		if((ret = tsk_runnable_start(TSK_RUNNABLE(transport), tnet_transport_event_def_t))){
+			return ret;
+		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
 	}
 
@@ -69,13 +70,11 @@ int tnet_transport_start(tnet_transport_handle_t* handle)
 
 int tnet_transport_isready(const tnet_transport_handle_t *handle)
 {
-	if(handle)
-	{
+	if(handle){
 		const tnet_transport_t *transport = handle;
 		return (TSK_RUNNABLE(transport)->running && transport->active);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
 		return 0;
 	}
@@ -131,6 +130,16 @@ tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle
 	return tnet_socket_type_invalid;
 }
 
+/**
+* Connects a socket.
+* @param handle The transport to use to connect() the socket. The new socket will be managed by this transport.
+* @param host The remote @a host to connect() to.
+* @pram type The remote @a port to connect() to.
+* @type The type of the socket to use to connect() to the remote @a host.
+* @retval The newly connected socket. For non-blocking sockets you should use @ref tnet_sockfd_waitUntilWritable to check
+* the socket for writability.
+* @sa tnet_sockfd_waitUntilWritable.
+*/
 tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port, tnet_socket_type_t type)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
@@ -187,7 +196,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	else{
 		if(TNET_SOCKET_TYPE_IS_TLS(type)){
 			transport->have_tls = 1;
-			transport->connected = !tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd));
+			transport->connected = !tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd)); // FIXME: the transport itself not connected
 		}
 		else{
 			transport->connected = 1;
@@ -198,13 +207,12 @@ bail:
 	return fd;
 }
 
-int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_data_read callback, const void* callback_data)
+int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_cb_f callback, const void* callback_data)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	int ret = -1;
 	
-	if(!transport)
-	{
+	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return ret;
 	}
@@ -244,11 +252,10 @@ void *run(void* self)
 	
 	if((curr = TSK_RUNNABLE_POP_FIRST(transport)))
 	{
-		const tsk_buffer_t *buffer = (const tsk_buffer_t*)curr->data;
+		const tnet_transport_event_t *e = (const tnet_transport_event_t*)curr->data;
 		
-		if(transport->callback)
-		{
-			transport->callback(transport->callback_data, TSK_BUFFER_DATA(buffer), TSK_BUFFER_SIZE(buffer));
+		if(transport->callback){
+			transport->callback(e);
 		}
 		tsk_object_unref(curr);
 	}
@@ -310,4 +317,39 @@ static const tsk_object_def_t tnet_transport_def_s =
 	0, 
 };
 const void *tnet_transport_def_t = &tnet_transport_def_s;
+
+
+
+//=================================================================================================
+//	Transport event object definition
+//
+static void* tnet_transport_event_create(void * self, va_list * app)
+{
+	tnet_transport_event_t *e = self;
+	if(e){
+		e->type = va_arg(*app, tnet_transport_event_type_t);
+		e->callback_data = va_arg(*app, const void*);
+		e->fd = va_arg(*app, tnet_fd_t);	
+	}
+	return self;
+}
+
+static void* tnet_transport_event_destroy(void * self)
+{ 
+	tnet_transport_event_t *e = self;
+	if(e){
+		TSK_FREE(e->data);
+	}
+
+	return self;
+}
+
+static const tsk_object_def_t tnet_transport_event_def_s = 
+{
+	sizeof(tnet_transport_event_t),
+	tnet_transport_event_create, 
+	tnet_transport_event_destroy,
+	0, 
+};
+const void *tnet_transport_event_def_t = &tnet_transport_event_def_s;
 

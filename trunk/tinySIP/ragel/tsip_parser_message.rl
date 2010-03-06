@@ -190,13 +190,11 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 
 TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result, TSIP_BOOLEAN extract_content)
 {
-	if(!state || state->pe <= state->p)
-	{
+	if(!state || state->pe <= state->p){
 		return TSIP_FALSE;
 	}
 
-	if(!*result)
-	{
+	if(!*result){
 		*result = TSIP_MESSAGE_CREATE();
 	}
 
@@ -254,13 +252,11 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 	if(extract_content && message)
 	{
 		uint32_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message);
-		if((p+clen) <pe && !message->Content)
-		{
+		if((p+clen) <pe && !message->Content){
 			message->Content = TSK_BUFFER_CREATE((p+1), clen);
 			p = (p+clen);
 		}
-		else
-		{
+		else{
 			p = (pe-1);
 		}
 	}

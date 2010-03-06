@@ -210,6 +210,10 @@
 				RelativePath=".\test_stack.h"
 				>
 			</File>
+			<File
+				RelativePath=".\test_url.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

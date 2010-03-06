@@ -705,6 +705,47 @@ int tnet_gethostname(tnet_host_t* result)
 }
 
 /**@ingroup tnet_utils_group
+* Waits until the socket becomes writable/readable or @a timeout milliseconds passed.
+* This function could be used just after you have @a connect()ed a non-blocking socket.
+* @param fd The socket for which to check writability/readability.
+* @param timeout The number of milliseconds to wait. The function will immediately return if the socket
+* is already connected and writable/readable. Set the @a timeout value to -1 to wait indefinitely.
+* @param writable Indicates whether to wait for writability(=1) or readability(=0).
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tnet_sockfd_waitUntil(tnet_fd_t fd, long timeout, int writable)
+{
+	int ret = -1;
+	fd_set fds;
+	struct timeval timetowait;
+
+	if(fd<=0){
+		goto bail;
+	}
+
+	if(timeout >=0){
+		timetowait.tv_sec = (timeout/1000);
+		timetowait.tv_usec = (timeout%1000) * 1000;
+	}
+	
+	FD_ZERO(&fds);
+	FD_SET(fd, &fds);
+
+	ret = select(fd + 1, writable?0:&fds, writable?&fds:0, 0, (timeout >=0) ? &timetowait : 0);
+
+	if(ret == 0){ /* timedout */
+		ret = -2;
+	}
+	else if(ret == 1/* the total number of socket handles that are ready */){
+		ret = 0; // Ok
+	}
+	//else: error
+
+bail:
+	return ret;
+}
+
+/**@ingroup tnet_utils_group
 * NOT IMPLEMENTED.
 */
 int tnet_sockfd_joingroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index)
@@ -1058,7 +1099,7 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 	{
 		status = WSAGetLastError();
 		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INTR || status == TNET_ERROR_INPROGRESS){
-			TSK_DEBUG_WARN("WSAEWOULDBLOCK/WSAEINTR/WSAEINPROGRESS  error for WSAConnect operation");
+			TSK_DEBUG_WARN("WSAEWOULDBLOCK/WSAEINTR/WSAEINPROGRESS  ==> use tnet_sockfd_waitUntilWritable.");
 			status = 0;
 		}
 		else{
@@ -1076,7 +1117,7 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 		{
 			status = tnet_geterrno();
 			if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS || status == TNET_ERROR_EAGAIN){
-				TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_INPROGRESS/EAGAIN error for Connect operation");
+				TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_INPROGRESS/EAGAIN  ==> use tnet_sockfd_waitUntilWritable.");
 				status = 0;
 			}
 			else{

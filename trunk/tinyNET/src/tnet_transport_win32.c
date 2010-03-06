@@ -61,6 +61,24 @@ static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client);
 static void removeSocket(int index, transport_context_t *context);
 
+int tnet_transport_create_context(tnet_transport_handle_t* handle)
+{
+	tnet_transport_t* transport;
+	if(!handle){
+		return -1;
+	}
+
+	if((transport = handle) && transport->context){
+		return 0;
+	}
+	else if((transport->context = tsk_calloc(1, sizeof(transport_context_t)))){
+		return 0;
+	}
+	else{
+		return -1;
+	}
+}
+
 /* Checks if socket is connected */
 int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
@@ -448,7 +466,7 @@ int tnet_transport_stop(tnet_transport_t *transport)
 void *tnet_transport_mainthread(void *param)
 {
 	tnet_transport_t *transport = param;
-	transport_context_t *context;
+	transport_context_t *context = transport->context;
 	DWORD evt;
 	WSANETWORKEVENTS networkEvents;
 	DWORD flags = 0;
@@ -458,9 +476,6 @@ void *tnet_transport_mainthread(void *param)
 	transport_socket_t* active_socket;
 	int index;
 	
-	context = (transport_context_t*)tsk_calloc(1, sizeof(transport_context_t));
-	transport->context = context;
-
 	/* Start listening */
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
 	{
@@ -493,8 +508,7 @@ void *tnet_transport_mainthread(void *param)
 			goto bail;
 		}
 
-		if(!TSK_RUNNABLE(transport)->running)
-		{
+		if(!TSK_RUNNABLE(transport)->running){
 			goto bail;
 		}
 
@@ -504,8 +518,7 @@ void *tnet_transport_mainthread(void *param)
 		active_socket = context->sockets[index];
 
 		/* Get the network events flags */
-		if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR)
-		{
+		if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR){
 			TNET_PRINT_LAST_ERROR("WSAEnumNetworkEvents have failed.");
 			goto bail;
 		}
@@ -553,13 +566,12 @@ void *tnet_transport_mainthread(void *param)
 
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CONNECT", transport->description);
 
-			if(networkEvents.iErrorCode[FD_CONNECT_BIT])
-			{
+			if(networkEvents.iErrorCode[FD_CONNECT_BIT]){
 				TNET_PRINT_LAST_ERROR("CONNECT FAILED.");
 				continue;
 			}
-			else
-			{
+			else{
+				TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, active_socket->fd);
 				active_socket->connected = 1;
 			}
 		}
@@ -580,24 +592,41 @@ void *tnet_transport_mainthread(void *param)
 			}
 
 			/* Retrieve the amount of pending data */
-			if(tnet_ioctlt(active_socket->fd, FIONREAD, &(wsaBuffer.len)) < 0)
-			{
+			if(tnet_ioctlt(active_socket->fd, FIONREAD, &(wsaBuffer.len)) < 0){
 				TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
 				continue;
 			}
-			/* Alloc data */
-			if(!(wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t))))
-			{
-				TSK_DEBUG_ERROR("TSK_CALLOC FAILED.");
+
+			if(!wsaBuffer.len){
 				continue;
 			}
 
+			/* Alloc data */
+			wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t)); // Will return NULL for TLS handshake.
+
 			/* Receive the waiting data. */
-			if(WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0) == SOCKET_ERROR)
+			if(active_socket->tlshandle){
+				int isEncrypted;
+				size_t len = wsaBuffer.len;
+				if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, wsaBuffer.buf, &len, &isEncrypted))){
+					if(isEncrypted){
+						TSK_FREE(wsaBuffer.buf);
+						continue;
+					}
+					else if(len != wsaBuffer.len){
+						wsaBuffer.len = len;
+						wsaBuffer.buf = tsk_realloc(wsaBuffer.buf, len);
+					}
+				}
+			}
+			else{
+				ret = WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0);
+			}
+
+			if(ret)
 			{
 				ret = WSAGetLastError();
-				if(ret == WSAEWOULDBLOCK)
-				{
+				if(ret == WSAEWOULDBLOCK){
 					TSK_DEBUG_WARN("WSAEWOULDBLOCK error for READ operation");
 				}
 				else if(ret == WSAECONNRESET && TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type))
@@ -616,11 +645,11 @@ void *tnet_transport_mainthread(void *param)
 			}
 			else
 			{	
-				tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
-				buffer->data = wsaBuffer.buf;
-				buffer->size = wsaBuffer.len;
+				tnet_transport_event_t* e = TNET_TRANSPORT_EVENT_CREATE(event_data, transport->callback_data, active_socket->fd);
+				e->data = wsaBuffer.buf;
+				e->size = wsaBuffer.len;
 
-				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), buffer);
+				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), e);
 			}
 		}
 		
@@ -632,8 +661,7 @@ void *tnet_transport_mainthread(void *param)
 		{
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_WRITE", transport->description);
 
-			if(networkEvents.iErrorCode[FD_WRITE_BIT])
-			{
+			if(networkEvents.iErrorCode[FD_WRITE_BIT]){
 				TNET_PRINT_LAST_ERROR("WRITE FAILED.");
 				continue;
 			}			
@@ -642,9 +670,11 @@ void *tnet_transport_mainthread(void *param)
 
 
 		/*================== FD_CLOSE ==================*/
-		if(networkEvents.lNetworkEvents & FD_CLOSE)
-		{
+		if(networkEvents.lNetworkEvents & FD_CLOSE){
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CLOSE", transport->description);
+
+			TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
+			removeSocket(index, context);
 		}
 
 		/*	http://msdn.microsoft.com/en-us/library/ms741690(VS.85).aspx

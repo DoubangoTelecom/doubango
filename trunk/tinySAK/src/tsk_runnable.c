@@ -119,20 +119,17 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 	int ret = -1;
 	if(self)
 	{
-		if(!self->initialized) 
-		{
+		if(!self->initialized) {
 			return -2;
 		}
-		else if(!self->running) 
-		{
+		else if(!self->running) {
 			return -3;
 		}
 
 		self->running = 0;
 		tsk_semaphore_increment(self->semaphore);
 
-		if(ret = tsk_thread_join(&(self->tid[0])))
-		{
+		if(ret = tsk_thread_join(&(self->tid[0]))){
 			self->running = 1;
 			TSK_DEBUG_ERROR("Failed to join a thread.");
 			return ret;

@@ -315,7 +315,7 @@ int tsip_global_deinit()
 
 tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 {
-	tsip_stack_t *stack = tsk_calloc(1, sizeof(tsip_stack_t));
+	tsip_stack_t* stack = tsk_object_new(tsip_stack_def_t);
 	va_list params;
 
 	if(!stack){
@@ -375,6 +375,11 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			return ret;
 		}
 
+		/*  Timer manager */
+		if(ret = tsk_timer_manager_start(stack->timer_mgr)){
+			// What to do ?
+		}
+
 		/* Set P-Preferred-Identity */
 		if(!stack->preferred_identity && stack->public_identity){
 			stack->preferred_identity = tsk_object_ref((void*)stack->public_identity);
@@ -415,24 +420,12 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			}
 		}
 
-		/*
-		* FIXME:
-		*/
-		if(tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, stack->proxy_cscf_type, "SIP transport")){
-			// WHAT ???
-		}
-
-		/*
-		* Transport Layer
-		*/
-		tsip_transport_layer_start(stack->layer_transport);
-
-		/* 
-		* Timer manager
-		*/
-		if(ret = tsk_timer_manager_start(stack->timer_mgr))
-		{
-			// What to do ?
+		/*  Transport Layer */
+		if((ret = tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, stack->proxy_cscf_type, "SIP transport"))){
+			return ret;
+		}		
+		if((ret = tsip_transport_layer_start(stack->layer_transport))){
+			return ret;
 		}
 
 		/*	ALL IS OK
@@ -497,72 +490,13 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 		/* Stop timer manager. */
 		ret = tsk_timer_manager_stop(stack->timer_mgr);
 
-		if(ret = tsk_runnable_stop(TSK_RUNNABLE(stack)))
-		{
+		if(ret = tsk_runnable_stop(TSK_RUNNABLE(stack))){
 			//return ret;
 		}
 
 		TSK_DEBUG_INFO("SIP STACK -- STOP");
 
 		return ret;
-	}
-
-	return -1;
-}
-
-int tsip_stack_destroy(tsip_stack_handle_t *self)
-{
-	if(self)
-	{
-		tsip_stack_t *stack = self;
-
-		/* Identity */
-		TSK_FREE(stack->display_name);
-		TSK_OBJECT_SAFE_FREE(stack->public_identity);
-		TSK_OBJECT_SAFE_FREE(stack->preferred_identity);
-		//TSK_OBJECT_SAFE_FREE(stack->associated_identity);
-		TSK_FREE(stack->private_identity);
-		TSK_FREE(stack->password);
-
-		/* Network */
-		TSK_FREE(stack->local_ip);
-		TSK_FREE(stack->privacy);
-		TSK_FREE(stack->netinfo);
-		TSK_OBJECT_SAFE_FREE(stack->realm);
-		TSK_FREE(stack->proxy_cscf);
-		TSK_FREE(stack->device_id);
-		TSK_FREE(stack->mobility);
-		TSK_OBJECT_SAFE_FREE(stack->paths);
-		TSK_OBJECT_SAFE_FREE(stack->service_routes);
-		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
-		
-		/* Security */
-		TSK_FREE(stack->secagree_mech);
-		TSK_FREE(stack->secagree_ipsec.alg);
-		TSK_FREE(stack->secagree_ipsec.ealg);
-		TSK_FREE(stack->secagree_ipsec.mode);
-		TSK_FREE(stack->secagree_ipsec.protocol);
-
-
-		/* DNS */
-		TSK_OBJECT_SAFE_FREE(stack->dns_ctx);
-
-		/* DHCP */
-
-		/* features */
-
-		/* QoS */
-
-		/* Internals. */
-		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
-		TSK_OBJECT_SAFE_FREE(stack->operations);
-
-		/* Layers */
-		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
-		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
-		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
-
-		return 0;
 	}
 
 	return -1;
@@ -704,3 +638,88 @@ void *run(void* self)
 	TSK_DEBUG_INFO("SIP STACK::run -- STOP");
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+//========================================================
+//	SIP stack object definition
+//
+static void* _tsip_stack_create(void * self, va_list * app)
+{
+	tsip_stack_t *stack = self;
+	if(stack){
+	}
+	return self;
+}
+
+static void* tsip_stack_destroy(void * self)
+{ 
+	tsip_stack_t *stack = self;
+	if(stack){
+		/* Stop */
+		tsip_stack_stop(stack);
+
+		/* Identity */
+		TSK_FREE(stack->display_name);
+		TSK_OBJECT_SAFE_FREE(stack->public_identity);
+		TSK_OBJECT_SAFE_FREE(stack->preferred_identity);
+		//TSK_OBJECT_SAFE_FREE(stack->associated_identity);
+		TSK_FREE(stack->private_identity);
+		TSK_FREE(stack->password);
+
+		/* Network */
+		TSK_FREE(stack->local_ip);
+		TSK_FREE(stack->privacy);
+		TSK_FREE(stack->netinfo);
+		TSK_OBJECT_SAFE_FREE(stack->realm);
+		TSK_FREE(stack->proxy_cscf);
+		TSK_FREE(stack->device_id);
+		TSK_FREE(stack->mobility);
+		TSK_OBJECT_SAFE_FREE(stack->paths);
+		TSK_OBJECT_SAFE_FREE(stack->service_routes);
+		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
+		
+		/* Security */
+		TSK_FREE(stack->secagree_mech);
+		TSK_FREE(stack->secagree_ipsec.alg);
+		TSK_FREE(stack->secagree_ipsec.ealg);
+		TSK_FREE(stack->secagree_ipsec.mode);
+		TSK_FREE(stack->secagree_ipsec.protocol);
+
+
+		/* DNS */
+		TSK_OBJECT_SAFE_FREE(stack->dns_ctx);
+
+		/* DHCP */
+
+		/* features */
+
+		/* QoS */
+
+		/* Internals. */
+		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
+		TSK_OBJECT_SAFE_FREE(stack->operations);
+
+		/* Layers */
+		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
+		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
+		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tsip_stack_def_s = 
+{
+	sizeof(tsip_stack_t),
+	_tsip_stack_create, 
+	tsip_stack_destroy,
+	0, 
+};
+const void *tsip_stack_def_t = &tsip_stack_def_s;

@@ -50,6 +50,11 @@ TNET_BEGIN_DECLS
 #define TNET_INTERFACE_CREATE(description, mac_address, mac_address_length)	tsk_object_new(tnet_interface_def_t, (const char*)description, (const uint8_t*)mac_address, (size_t)mac_address_length)
 #define TNET_ADDRESS_CREATE(ip)												tsk_object_new(tnet_address_def_t, (const char*)ip)
 
+
+/**@ingroup tnet_utils_group
+*/
+#define TNET_CONNECT_TIMEOUT		2000
+
 /**@ingroup tnet_utils_group
 * Interface.
 */
@@ -122,6 +127,9 @@ TINYNET_API int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_po
 TINYNET_API int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
 TINYNET_API int tnet_gethostname(tnet_host_t* result);
 
+TINYNET_API int tnet_sockfd_waitUntil(tnet_fd_t fd, long timeout, int writable);
+#define tnet_sockfd_waitUntilWritable(fd, timeout) tnet_sockfd_waitUntil(fd, timeout, 1)
+#define tnet_sockfd_waitUntilReadable(fd, timeout) tnet_sockfd_waitUntil(fd, timeout, 0)
 TINYNET_API int tnet_sockfd_joingroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index);
 TINYNET_API int tnet_sockfd_leavegroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index);
 

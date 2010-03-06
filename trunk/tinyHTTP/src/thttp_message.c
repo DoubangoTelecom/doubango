@@ -187,10 +187,16 @@ int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output)
 		/*Method SP Request-URI SP HTTP-Version CRLF*/
 		/* Method */
 		tsk_buffer_appendEx(output, "%s ", self->method);
-		/* Request URI */
-		thttp_url_serialize(self->url, output);
+		/* Request URI: hpath?search */
+		tsk_buffer_appendEx(output, "/%s%s%s ", 
+			self->url->hpath ? self->url->hpath : "",
+			self->url->search ? "?" : "",
+			self->url->search ? self->url->search : ""
+			);
 		/* HTTP VERSION */
 		tsk_buffer_appendEx(output, " %s\r\n", THTTP_MESSAGE_VERSION_DEFAULT);
+		/* HOST */
+		tsk_buffer_appendEx(output, "Host: %s:%u\r\n", self->url->host, self->url->port);
 	}
 	else{
 		/*HTTP-Version SP Status-Code SP Reason-Phrase CRLF*/

@@ -48,7 +48,7 @@ int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self);
 int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self);
 int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, size_t size);
 #define tnet_tls_socket_send(self, data, size) tnet_tls_socket_write(self, data, size)
-int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void* data, size_t size);
+int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void* data, size_t *size, int *isEncrypted);
 
 TINYNET_GEXTERN const void *tnet_tls_socket_def_t;
 

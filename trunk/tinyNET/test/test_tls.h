@@ -37,11 +37,24 @@
 	"Expires: 10\r\n" \
 	"\r\n"
 
-static int tnet_tls_data_read(const void *callback_data, const void* data, size_t size)
+static int tnet_tls_cb(const tnet_transport_event_t* e)
 {
-	TSK_DEBUG_INFO("--- TCP ---\n%s\n", data);
+	switch(e->type){
+		case event_data:
+			{
+				TSK_DEBUG_INFO("--- TLS ---\n%s\n", e->data);
+				break;
+			}
+		case event_closed:
+		case event_connected:
+		default:
+			{
+				break;
+			}
+	}
 	return 0;
 }
+
 
 void test_tls()
 {
@@ -56,11 +69,10 @@ void test_tls()
 		return;
 	}
 
-	while(!tnet_transport_isready(transport)){
-		tsk_thread_sleep(500);
-	}
+	/* Set our callback function */
+	tnet_transport_set_callback(transport, tnet_tls_cb, "callbackdata");
 
-	//tsk_thread_sleep(500);
+	
 
 	/* Connect to the SIP Registrar */
 	if((fd = tnet_transport_connectto2(transport, TEST_TLS_REMOTE_IP, TEST_TLS_REMOTE_PORT)) == TNET_INVALID_FD){
@@ -68,12 +80,10 @@ void test_tls()
 		return;
 	}
 
-	/* Set our callback function */
-	tnet_transport_set_callback(transport, tnet_tcp_data_read, "callbackdata");
-
-	while(!tnet_transport_isconnected(transport, fd)){
-		/* Connecto succeed but not connected yet.*/
-		tsk_thread_sleep(500);
+	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
+		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+		tnet_transport_remove_socket(transport, fd);
+		return;
 	}
 
 	/* Send our SIP message */

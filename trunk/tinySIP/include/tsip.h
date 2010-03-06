@@ -210,7 +210,6 @@ TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 //int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
-TINYSIP_API int tsip_stack_destroy(tsip_stack_handle_t *self);
 
 tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const char* protocol);
 tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr);
@@ -229,6 +228,9 @@ TINYSIP_API int tsip_message(tsip_stack_handle_t *stack, const tsip_operation_ha
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);
+
+
+TINYSIP_GEXTERN const void *tsip_stack_def_t;
 
 TSIP_END_DECLS
 
