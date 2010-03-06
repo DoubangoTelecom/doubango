@@ -79,6 +79,26 @@ typedef struct thttp_stack_s
 }
 thttp_stack_t;
 
+
+static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
+{
+	const thttp_stack_t *stack = e->callback_data;
+	
+	switch(e->type){
+		case event_data: {
+				TSK_DEBUG_INFO("DATA ==> %s", e->data);
+				break;
+			}
+		case event_closed:
+		case event_connected:
+		default:{
+				return 0;
+			}
+	}
+
+	return 0;
+}
+
 int __thttp_stack_set(thttp_stack_t *self, va_list values)
 {
 	thttp_stack_param_type_t curr;
@@ -164,7 +184,7 @@ int thttp_global_deinit()
 	return -1;
 }
 
-thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, int tls, ...)
+thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...)
 {
 	thttp_stack_t* stack = tsk_object_new(thttp_stack_def_t);
 	va_list params;
@@ -176,14 +196,11 @@ thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, int tls,
 	stack->local_port = TNET_SOCKET_PORT_ANY;
 
 	stack->callback = callback;
-	va_start(params, tls);
+	va_start(params, callback);
 	if(__thttp_stack_set(stack, params)){
 		// Delete the stack?
 	}
 	va_end(params);
-
-	stack->transport = TNET_TRANSPORT_CREATE(stack->local_ip, stack->local_port,
-		tls?tnet_socket_type_tls_ipv4:tnet_socket_type_tcp_ipv4, "HTTP/HTTPS transport");
 
 	return stack;
 }
@@ -192,9 +209,13 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 {
 	thttp_stack_t *stack = self;
 
-	if(!stack){
+	if(!stack){ // check if running
 		return -1;
 	}
+
+	stack->transport = TNET_TRANSPORT_CREATE(stack->local_ip, stack->local_port, tnet_socket_type_tcp_ipv4, "HTTP/HTTPS transport");
+	tnet_transport_set_callback(stack->transport, TNET_TRANSPORT_CB_F(thttp_transport_layer_stream_cb), self);
+
 	return tnet_transport_start(stack->transport);
 }
 
@@ -247,6 +268,12 @@ int thttp_stack_send(thttp_stack_handle_t *self, thttp_operation_handle_t* op, c
 
 	if(fd == TNET_INVALID_FD){
 		if((fd = tnet_transport_connectto(stack->transport, message->url->host, message->url->port, type)) == TNET_INVALID_FD){
+			goto bail;
+		}
+		/* Wait for the socket for writability */
+		if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
+			TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
+			tnet_transport_remove_socket(stack->transport, fd);
 			goto bail;
 		}
 		else{

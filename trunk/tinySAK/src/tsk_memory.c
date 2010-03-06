@@ -107,9 +107,12 @@ void tsk_free(void** ptr)
 */
 void* tsk_calloc(size_t num, size_t size)
 {
-	void* ret = calloc(num, size);
-	if(!ret){
-		TSK_DEBUG_ERROR("Memory allocation failed. num=%u and size=%u", num, size);
+	void* ret = 0;
+	if(num && size){
+		ret = calloc(num, size);
+		if(!ret){
+			TSK_DEBUG_ERROR("Memory allocation failed. num=%u and size=%u", num, size);
+		}
 	}
 
 	return ret;

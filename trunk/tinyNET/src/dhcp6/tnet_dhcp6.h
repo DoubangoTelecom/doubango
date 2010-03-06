@@ -44,8 +44,7 @@ TNET_BEGIN_DECLS
 
 #define TNET_DHCP6_CTX_CREATE()			tsk_object_new(tnet_dhcp6_ctx_def_t)
 
-#define TNET_DHCP6_ENTERPRISE_NUM_DEFAULT			37627 /**< Will be replaced by a valid number. 
-	I've requested a number from IANA (http://pen.iana.org/pen/PenApplication.page). 
+#define TNET_DHCP6_ENTERPRISE_NUM_DEFAULT			35368 /**< PEN number assigned by the IANA. 
 	The list of assigned numbers could be found here http://www.iana.org/assignments/enterprise-numbers. */
 #define TNET_DHCP6_VENDOR_CLASS_DATA_DEFAULT			"doubango/v0.0.0"
 

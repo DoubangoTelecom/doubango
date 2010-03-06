@@ -193,7 +193,7 @@ int thttp_operation_perform(thttp_operation_handle_t* self)
 	if((param = tsk_params_get_param_by_name(op->params, "method")) && param->value){ /* REQUEST */
 		const char* method = param->value;
 		thttp_url_t* url = 0;
-		if((param = tsk_params_get_param_by_name(op->params, "URI")) && param->value && (url = thttp_url_parse(param->value, strlen(param->value)))){
+		if((param = tsk_params_get_param_by_name(op->params, "URL")) && param->value && (url = thttp_url_parse(param->value, strlen(param->value)))){
 			message = THTTP_REQUEST_CREATE(method, url);
 			TSK_OBJECT_SAFE_FREE(url);
 		}

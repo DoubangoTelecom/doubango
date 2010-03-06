@@ -166,8 +166,7 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 	tsk_timer_manager_t *manager = self;
 	if(manager && TSK_RUNNABLE(manager)->running)
 	{
-		if(ret = tsk_runnable_stop(TSK_RUNNABLE(manager)))
-		{
+		if(ret = tsk_runnable_stop(TSK_RUNNABLE(manager))){
 			return ret;
 		}
 		
@@ -350,7 +349,7 @@ peek_first:
 
 
 //=================================================================================================
-//	Timer object definition
+//	Timer manager object definition
 //
 static void* tsk_timer_manager_create(void * self, va_list * app)
 {

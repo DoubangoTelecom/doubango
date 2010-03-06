@@ -35,9 +35,9 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message);
+static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content);
 static void thttp_message_parser_init(tsk_ragel_state_t *state);
-static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message);
+static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content);
 
 /***********************************
 *	Ragel state machine.
@@ -166,7 +166,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 		state->pe = pe;
 		state->eof = eof;
 
-		thttp_message_parser_eoh(state, message);
+		thttp_message_parser_eoh(state, message, extract_content);
 
 		cs = state->cs;
 		p = state->p;
@@ -201,15 +201,13 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 /// @return	@ref zero if succeed and non-zero error code otherwise.
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result)
+int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, int extract_content)
 {
-	if(!state || state->pe <= state->p)
-	{
+	if(!state || state->pe <= state->p){
 		return -1;
 	}
 
-	if(!*result)
-	{
+	if(!*result){
 		*result = THTTP_MESSAGE_CREATE();
 	}
 
@@ -219,7 +217,7 @@ int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result)
 	/*
 	*	State mechine execution.
 	*/
-	thttp_message_parser_execute(state, *result);
+	thttp_message_parser_execute(state, *result, extract_content);
 
 	/* Check result */
 
@@ -242,7 +240,7 @@ static void thttp_message_parser_init(tsk_ragel_state_t *state)
 	state->cs = cs;
 }
 
-static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message)
+static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;
@@ -257,23 +255,21 @@ static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message
 	state->eof = eof;
 }
 
-static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message)
+static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;
 	const char *pe = state->pe;
 	const char *eof = state->eof;
 
-	if(message)
+	if(extract_content && message)
 	{
 		uint32_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message);
-		if((p+clen) <pe && !message->Content)
-		{
+		if((p+clen) <pe && !message->Content){
 			message->Content = TSK_BUFFER_CREATE((p+1), clen);
 			p = (p+clen);
 		}
-		else
-		{
+		else{
 			p = (pe-1);
 		}
 	}

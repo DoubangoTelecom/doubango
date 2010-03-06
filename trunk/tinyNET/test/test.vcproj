@@ -400,6 +400,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_tls.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_transport.h"
 				>
 			</File>

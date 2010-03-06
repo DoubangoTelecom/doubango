@@ -64,7 +64,7 @@ TINYHTTP_API int thttp_global_init();
 TINYHTTP_API int thttp_global_deinit();
 
 
-TINYHTTP_API thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, int tls, ...);
+TINYHTTP_API thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...);
 TINYHTTP_API int thttp_stack_start(thttp_stack_handle_t *self);
 TINYHTTP_API int thttp_stack_set(thttp_stack_handle_t *self, ...);
 int thttp_stack_send(thttp_stack_handle_t *self, thttp_operation_handle_t* op, const struct thttp_message_s* message);
