@@ -200,14 +200,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECED61BB10F988E7006B4DC9 /* tinySAK */;
+			remoteGlobalIDString = ECED61BB10F988E7006B4DC9;
 			remoteInfo = tinySAK;
 		};
 		ECF4BDA811434CC200B7C09B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECF4BCB311434BA800B7C09B /* tinyNET */;
+			remoteGlobalIDString = ECF4BCB311434BA800B7C09B;
 			remoteInfo = tinyNET;
 		};
 /* End PBXContainerItemProxy section */

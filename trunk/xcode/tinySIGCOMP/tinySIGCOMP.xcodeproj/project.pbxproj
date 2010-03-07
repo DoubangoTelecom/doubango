@@ -137,28 +137,27 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECED630410F98D55006B4DC9 /* tinySAK */;
+			remoteGlobalIDString = ECED630410F98D55006B4DC9;
 			remoteInfo = tinySAK;
 		};
 		ECED638D10F9916E006B4DC9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC0620554660B00DB518D /* tinySIGCOMP */;
+			remoteGlobalIDString = D2AAC0620554660B00DB518D;
 			remoteInfo = tinySIGCOMP;
 		};
 		ECED638F10F9916E006B4DC9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECED630410F98D55006B4DC9 /* tinySAK */;
+			remoteGlobalIDString = ECED630410F98D55006B4DC9;
 			remoteInfo = tinySAK;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		D2AAC0630554660B00DB518D /* libtinySIGCOMP.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySIGCOMP.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		ECED627610F98C41006B4DC9 /* asm */ = {isa = PBXFileReference; lastKnownFileType = folder; name = asm; path = ../../tinySIGCOMP/asm; sourceTree = SOURCE_ROOT; };
 		ECED627B10F98C67006B4DC9 /* adler32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = adler32.c; path = ../../tinySIGCOMP/src/adler32.c; sourceTree = SOURCE_ROOT; };
 		ECED627C10F98C67006B4DC9 /* compress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = compress.c; path = ../../tinySIGCOMP/src/compress.c; sourceTree = SOURCE_ROOT; };
 		ECED627D10F98C67006B4DC9 /* deflate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = deflate.c; path = ../../tinySIGCOMP/src/deflate.c; sourceTree = SOURCE_ROOT; };
@@ -319,7 +318,6 @@
 			children = (
 				ECED639B10F99193006B4DC9 /* test */,
 				ECED630910F98DA7006B4DC9 /* tinySAK */,
-				ECED627610F98C41006B4DC9 /* asm */,
 				ECED627310F98C27006B4DC9 /* include */,
 				08FB7795FE84155DC02AAC07 /* Source */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,

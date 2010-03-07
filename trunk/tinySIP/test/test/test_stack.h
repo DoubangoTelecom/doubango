@@ -348,18 +348,18 @@ void test_stack()
 	//}
 
 	/* PUBLISH */
-	//{
-	//	tsip_operation_handle_t *op4 = TSIP_OPERATION_CREATE(stack,
-	//		TSIP_OPERATION_SET_HEADER("expires", "30"),
-	//		TSIP_OPERATION_SET_HEADER("to", "sip:mamadou@"DOMAIN),
-	//		TSIP_OPERATION_SET_HEADER("Content-Type", "application/pidf+xml"),
-	//		TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"), 
-	//		TSIP_OPERATION_SET_HEADER("Event", "presence"),
-	//	
-	//		TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
-	//	
-	//		TSIP_OPERATION_SET_NULL());
-	//	tsip_publish(stack, op4);
+	{
+		tsip_operation_handle_t *op4 = TSIP_OPERATION_CREATE(stack,
+			TSIP_OPERATION_SET_HEADER("expires", "30"),
+			TSIP_OPERATION_SET_HEADER("to", "sip:mamadou@"DOMAIN),
+			TSIP_OPERATION_SET_HEADER("Content-Type", "application/pidf+xml"),
+			TSIP_OPERATION_SET_HEADER("Accept-Contact", "*;+g.oma.sip-im"), 
+			TSIP_OPERATION_SET_HEADER("Event", "presence"),
+		
+			TSIP_OPERATION_SET_PARAM("content", TEST_STACK_PIDF),
+		
+			TSIP_OPERATION_SET_NULL());
+		tsip_publish(stack, op4);
 
 	//	/*getchar();
 	//	tsip_operation_set(op4,
@@ -371,7 +371,7 @@ void test_stack()
 	//	getchar();
 	//	tsip_operation_hangup(op4);
 	//	
-	//}
+	}
 bail:
 	//while(1);//tsk_thread_sleep(500);
 	//while(1)
