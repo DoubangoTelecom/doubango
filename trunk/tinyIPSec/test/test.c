@@ -41,7 +41,11 @@
 #define SPI_PC			2222
 #define SPI_PS			3333
 
+#ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
+#else
+int main()
+#endif
 {
 	int ret;
 	tipsec_lifetime_t lifetime = 600000; /* Always set it to the maximum value. (Not possible to update the value after REGISTER 200OK. ) */

@@ -5,9 +5,8 @@ CFLAGS += -I$(DOUBANGO_HOME)/$(PROJECT)/include
 CFLAGS += -I$(DOUBANGO_HOME)/tinySAK/src
 CFLAGS += -I$(DOUBANGO_HOME)/tinyNET/src
 CFLAGS += -I$(DOUBANGO_HOME)/tinyHTTP/include
-CFLAGS += -I$(DOUBANGO_HOME)/thirdparties/android/include/smc
 
-LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -ltinyNET -ltinyHTTP -l$(PROJECT)
+LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -ltinyNET -ltinyHTTP -ltinyIPSec -l$(PROJECT)
 
 all: $(APP)
 

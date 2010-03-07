@@ -25,7 +25,7 @@
 <builder arguments="OPTIONS=&quot;-O0 -g3 -DDEBUG_LEVEL=DEBUG_LEVEL_INFO&quot;" autoBuildTarget="all" cleanBuildTarget="clean" command="make" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="org.eclipse.cdt.build.core.settings.default.builder.1108010119" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="1" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
 <tool id="org.eclipse.cdt.build.core.settings.holder.libs.3257326" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 <tool id="org.eclipse.cdt.build.core.settings.holder.1957503900" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
-<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1763668133" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols"/>
+<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1763668133" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols"/>
 <inputType id="org.eclipse.cdt.build.core.settings.holder.inType.2092821952" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 </tool>
 <tool id="org.eclipse.cdt.build.core.settings.holder.1724636093" name="UPC" superClass="org.eclipse.cdt.build.core.settings.holder">

@@ -5,11 +5,11 @@ INSTALL_DIR = /system/lib
 CFLAGS := $(CFLAGS)
 CFLAGS += -I$(DOUBANGO_HOME)/$(PROJECT)/include
 CFLAGS += -I$(DOUBANGO_HOME)/tinySAK/src
+CFLAGS += -I$(DOUBANGO_HOME)/tinyIPSec/src
 CFLAGS += -I$(DOUBANGO_HOME)/tinyNET/src
 CFLAGS += -I$(DOUBANGO_HOME)/tinyHTTP/include
-CFLAGS += -I$(DOUBANGO_HOME)/thirdparties/android/include/smc
 
-LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK -ltinyNET -ltinyHTTP
+LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK -ltinyNET -ltinyHTTP -ltinyIPSec
 
 all: $(APP)
 	
@@ -42,6 +42,7 @@ OBJS += dialogs/tsip_dialog.o\
 	dialogs/tsip_dialog_invite.server.o\
 	dialogs/tsip_dialog_layer.o\
 	dialogs/tsip_dialog_message.o\
+	dialogs/tsip_dialog_publish.client.o\
 	dialogs/tsip_dialog_register.client.o\
 	dialogs/tsip_dialog_register.server.o\
 	dialogs/tsip_dialog_subscribe.client.o\
@@ -70,6 +71,7 @@ OBJS += headers/tsip_header.o\
 	headers/tsip_header_Content_Type.o\
 	headers/tsip_header_CSeq.o\
 	headers/tsip_header_Date.o\
+	headers/tsip_header_Dummy.o\
 	headers/tsip_header_Error_Info.o\
 	headers/tsip_header_Event.o\
 	headers/tsip_header_Expires.o\
@@ -161,7 +163,9 @@ OBJS += transactions/tsip_transac.o\
 	## transport
 	###################
 OBJS += transports/tsip_transport.o\
-	transports/tsip_transport_layer.o
+	transports/tsip_transport_ipsec.o\
+	transports/tsip_transport_layer.o\
+	transports/tsip_transport_tls.o
 
 $(APP): $(OBJS)
 	$(CPP) $(LDFLAGS) -o $@ $^ 

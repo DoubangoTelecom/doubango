@@ -35,7 +35,7 @@
 
 #include "tipsec_common.h"
 
-TSK_BEGIN_DECLS
+TIPSEC_BEGIN_DECLS
 
 #if HAVE_IPSEC_XP
 
@@ -44,7 +44,7 @@ TSK_BEGIN_DECLS
 #endif /* HAVE_IPSEC_XP */
 
 
-TSK_END_DECLS
+TIPSEC_END_DECLS
 
 
 #endif /* TINYIPSEC_IPSEC_XP_H */

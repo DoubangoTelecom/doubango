@@ -1,7 +1,7 @@
 APP := test
 
-CFLAGS := $(CFLAGS) -I$(DOUBANGO_HOME)/$(PROJECT)/src -I$(DOUBANGO_HOME)/tinyHTTP/include -I$(DOUBANGO_HOME)/tinySAK/src -I$(DOUBANGO_HOME)/tinyNET/src
-LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -ltinyNET -l$(PROJECT)
+CFLAGS := $(CFLAGS) -I$(DOUBANGO_HOME)/$(PROJECT)/src -I$(DOUBANGO_HOME)/tinySAK/src
+LDFLAGS := $(LDFLAGS) -Bsymbolic -l$(PROJECT) -ltinySAK
 
 all: $(APP)
 
@@ -23,10 +23,6 @@ run:
 #dbg:
 #	$(MAKE) $(MAKEFILE) DEBUG="-g -DDEBUG"
 #	$(MAKE) $(MAKEFILE) install
-
-#c
-#set solib-search-path /cygdrive/c/Projects/Doubango/android-projects/output
-#set solib-absolute-prefix /cygdrive/c/Projects/Doubango/android-projects/output	
-
+	
 clean:
 	@rm -f $(OBJS) $(APP)

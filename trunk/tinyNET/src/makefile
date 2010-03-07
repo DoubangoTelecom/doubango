@@ -59,6 +59,10 @@ OBJS +=	stun/tnet_stun.o\
 	stun/tnet_stun_attribute.o\
 	stun/tnet_stun_message.o
 	###################
+	## TLS
+	###################
+OBJS +=	tls/tnet_tls.o
+	###################
 	## TURN
 	###################
 OBJS +=	turn/tnet_turn.o\

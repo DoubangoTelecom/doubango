@@ -487,8 +487,8 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 		tsip_dialog_layer_hangupAll(stack->layer_dialog);
 		//tsk_thread_sleep(50000000);
 
-		/* Stop timer manager. */
-		ret = tsk_timer_manager_stop(stack->timer_mgr);
+		/* Do not Stop timer manager ==> Dialogs have ref to the stack and rely on the timer manager(to gracefully shutdown).*/
+		//ret = tsk_timer_manager_stop(stack->timer_mgr);
 
 		if(ret = tsk_runnable_stop(TSK_RUNNABLE(stack))){
 			//return ret;
@@ -711,6 +711,8 @@ static void* tsip_stack_destroy(void * self)
 		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
+
+		TSK_DEBUG_INFO("STACK - DESTROYED");
 	}
 	return self;
 }

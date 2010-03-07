@@ -33,6 +33,7 @@
 #include "tsk_debug.h"
 #include "tsk_thread.h"
 #include "tsk_buffer.h"
+#include "tsk_safeobj.h"
 
 #if TNET_UNDER_WINDOWS && !TNET_USE_POLL
 
@@ -56,6 +57,8 @@ typedef struct transport_context_s
 	size_t count;
 	WSAEVENT events[WSA_MAXIMUM_WAIT_EVENTS];
 	transport_socket_t* sockets[WSA_MAXIMUM_WAIT_EVENTS];
+
+	TSK_DECLARE_SAFEOBJ;
 }
 transport_context_t;
 
@@ -305,15 +308,20 @@ int CALLBACK AcceptCondFunc(LPWSABUF lpCallerId, LPWSABUF lpCallerData, LPQOS lp
 static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 {
 	size_t i;
+	transport_socket_t* ret = 0;
+
 	if(context){
+		tsk_safeobj_lock(context);
 		for(i=0; i<context->count; i++){
 			if(context->sockets[i]->fd == fd){
-				return context->sockets[i];
+				ret = context->sockets[i];
+				break;
 			}
 		}
+		tsk_safeobj_unlock(context);
 	}
 
-	return 0;
+	return ret;
 }
 
 /*== Add new socket ==*/
@@ -329,10 +337,12 @@ static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t
 			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, 0, 0, 0);
 		}
 		
+		tsk_safeobj_lock(context);
 		context->events[context->count] = WSACreateEvent();
 		context->sockets[context->count] = sock;
 		
 		context->count++;
+		tsk_safeobj_unlock(context);
 	}
 	else{
 		TSK_DEBUG_ERROR("Context is Null.");
@@ -346,6 +356,8 @@ static void removeSocket(int index, transport_context_t *context)
 
 	if(index < (int)context->count)
 	{
+		tsk_safeobj_lock(context);
+
 		/* Close the socket if we are the owner. */
 		if(context->sockets[index]->owner){
 			tnet_sockfd_close(&(context->sockets[index]->fd));
@@ -370,6 +382,8 @@ static void removeSocket(int index, transport_context_t *context)
 		context->events[context->count-1] = 0;
 
 		context->count--;
+
+		tsk_safeobj_unlock(context);
 	}
 }
 
@@ -525,7 +539,7 @@ void *tnet_transport_mainthread(void *param)
 			}
 
 			/* Alloc data */
-			if((wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t)))){
+			if(!(wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t)))){
 				continue;
 			}
 
@@ -634,7 +648,8 @@ bail:
 static void* transport_context_create(void * self, va_list * app)
 {
 	transport_context_t *context = self;
-	if(context){	
+	if(context){
+		tsk_safeobj_init(context);
 	}
 	return self;
 }
@@ -646,6 +661,7 @@ static void* transport_context_destroy(void * self)
 		while(context->count){
 			removeSocket(0, context);
 		}
+		tsk_safeobj_deinit(context);
 	}
 	return self;
 }

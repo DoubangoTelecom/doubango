@@ -1,11 +1,17 @@
-APP := test
+APP := lib$(PROJECT).so
 
-CFLAGS := $(CFLAGS) -I$(DOUBANGO_HOME)/$(PROJECT)/src -I$(DOUBANGO_HOME)/tinyHTTP/include -I$(DOUBANGO_HOME)/tinySAK/src -I$(DOUBANGO_HOME)/tinyNET/src
-LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -ltinyNET -l$(PROJECT)
+INSTALL_DIR = /system/lib
+
+CFLAGS := $(CFLAGS) -I$(DOUBANGO_HOME)/tinySAK/src
+LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive
 
 all: $(APP)
 
-OBJS += $(APP).o
+OBJS = tipsec_common.o\
+	tipsec_racoon.o\
+	tipsec_vista.o\
+	tipsec_xp.o\
+	tipsec.o
 
 $(APP): $(OBJS)
 	$(CPP) $(LDFLAGS) -o $@ $^ 
@@ -14,8 +20,12 @@ $(APP): $(OBJS)
 	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
 	
 install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
 	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(INSTALL_DIR)/$(APP)
 	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(INSTALL_DIR)/$(APP)
+
+shell:
+	$(ANDROID_SDK_ROOT)/tools/adb shell
 
 run:
 	$(ANDROID_SDK_ROOT)/tools/adb shell $(INSTALL_DIR)/$(APP)
@@ -23,10 +33,6 @@ run:
 #dbg:
 #	$(MAKE) $(MAKEFILE) DEBUG="-g -DDEBUG"
 #	$(MAKE) $(MAKEFILE) install
-
-#c
-#set solib-search-path /cygdrive/c/Projects/Doubango/android-projects/output
-#set solib-absolute-prefix /cygdrive/c/Projects/Doubango/android-projects/output	
-
+	
 clean:
 	@rm -f $(OBJS) $(APP)

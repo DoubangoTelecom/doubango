@@ -237,8 +237,7 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 		if(TSIP_CHALLENGE_IS_AKAv1(self) || TSIP_CHALLENGE_IS_AKAv2(self)){
 			char* akaresult = 0;
 			tsip_challenge_get_akares(self, TSIP_CHALLENGE_STACK(self)->password, &akaresult);
-			if(thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, akaresult, &ha1))
-			{
+			if(thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, akaresult, &ha1)){
 				// return -1;
 			}
 			TSK_FREE(akaresult);
@@ -260,12 +259,12 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 		if(self->nc){
 			THTTP_NCOUNT_2_STRING(self->nc, nc);
 		}
-		thttp_auth_digest_response(&ha1, 
+		thttp_auth_digest_response((const tsk_md5string_t *)&ha1, 
 			self->nonce,
 			nc,
 			self->cnonce,
 			self->qop,
-			&ha2,
+			(const tsk_md5string_t *)&ha2,
 			response);
 		
 		if(self->qop){

@@ -73,18 +73,12 @@ typedef struct tnet_pollfd_s
 }
 tnet_pollfd_t;
 
-#define TNET_POLLRDNORM  0x0100
-#define TNET_POLLRDBAND  0x0200
-#define TNET_POLLIN      (TNET_POLLRDNORM | TNET_POLLRDBAND)
-#define TNET_POLLPRI     0x0400
-
-#define TNET_POLLWRNORM  0x0010
-#define TNET_POLLOUT     (TNET_POLLWRNORM)
-#define TNET_POLLWRBAND  0x0020
-
-#define TNET_POLLERR     0x0001
-#define TNET_POLLHUP     0x0002
-#define TNET_POLLNVAL    0x0004
+#define TNET_POLLIN      0x0001    /* There is data to read */
+#define TNET_POLLPRI     0x0002    /* There is urgent data to read */
+#define TNET_POLLOUT     0x0004    /* Writing now will not block */
+#define TNET_POLLERR     0x0008    /* Error condition */
+#define TNET_POLLHUP     0x0010    /* Hung up */
+#define TNET_POLLNVAL    0x0020    /* Invalid request: fd not open */
 
 int tnet_poll(tnet_pollfd_t fds[ ], tnet_nfds_t nfds, int timeout);
 

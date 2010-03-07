@@ -979,22 +979,38 @@ tnet_tls_socket_handle_t* tnet_sockfd_set_tlsfiles(tnet_fd_t fd, int isClient, c
 */
 int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size)
 {
+	size_t sent = 0;
+	int ret = -1;
+
 	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to send data.");
-		return -1;
+		goto bail;
 	}
 	if(!buf || !size){
 		TSK_DEBUG_ERROR("Using invalid BUFFER.");
-		return -2;
+		ret = -2;
+		goto bail;
 	}
 
+	while(sent < size)
+	{
 #if TNET_HAVE_SA_LEN
-	return sendto(fd, buf, size, 0, to, to->sa_len);
+		ret = sendto(fd, (buf+sent), (size-sent), 0, to, to->sa_len);
 #else
-	//return sendto(fd, buf, size, 0, to, sizeof(*to));
-	return sendto(fd, buf, size, 0, to, 
-		to->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6): (to->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(*to))); //FIXME: why sizeof(*to) don't work for IPv6 on XP?
+		//return sendto(fd, (buf+sent), (size-sent), 0, to, sizeof(*to));
+		ret = sendto(fd, (((const uint8_t*)buf)+sent), (size-sent), 0, to, 
+			to->sa_family == AF_INET6 ? sizeof(struct sockaddr_in6): (to->sa_family == AF_INET ? sizeof(struct sockaddr_in) : sizeof(*to))); //FIXME: why sizeof(*to) don't work for IPv6 on XP?
 #endif
+		if(ret <= 0){
+			goto bail;
+		}
+		else{
+			sent += ret;
+		}
+	}
+
+bail:
+	return (size == sent) ? sent : ret;
 }
 
 /**@ingroup tnet_utils_group
@@ -1035,24 +1051,31 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 * All flags which can be passed to @b recv.
 * @retval If no error occurs, send returns the total number of bytes sent, which can be less than the number requested to be sent in the @b size parameter.
 */
-int tnet_sockfd_send(tnet_fd_t fd, void* buf, size_t size, int flags)
+int tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags)
 {
 	int ret = -1;
+	size_t sent = 0;
 
 	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to send data.");
 		goto bail;
 	}
 
-	if((ret = send(fd, buf, size, flags)) <= 0){
-		TNET_PRINT_LAST_ERROR("send failed.");
-		// Under Windows XP if WSAGetLastError()==WSAEINTR then try to disable both the ICS and the Firewall
-		// More info about How to disable the ISC: http://support.microsoft.com/?scid=kb%3Ben-us%3B230112&x=6&y=11
-		goto bail;
+	while(sent < size)
+	{
+		if((ret = send(fd, (((const uint8_t*)buf)+sent), (size-sent), flags)) <= 0){
+			TNET_PRINT_LAST_ERROR("send failed.");
+			// Under Windows XP if WSAGetLastError()==WSAEINTR then try to disable both the ICS and the Firewall
+			// More info about How to disable the ISC: http://support.microsoft.com/?scid=kb%3Ben-us%3B230112&x=6&y=11
+			goto bail;
+		}
+		else{
+			sent += ret;
+		}
 	}
 
 bail:
-	return ret;
+	return (size == sent) ? sent : ret;
 }
 
 /**@ingroup tnet_utils_group

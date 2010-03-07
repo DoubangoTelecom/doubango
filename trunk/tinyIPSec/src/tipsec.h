@@ -34,8 +34,8 @@
 
 #include "tipsec_common.h"
 
-TSK_BEGIN_DECLS
+TIPSEC_BEGIN_DECLS
 
-TSK_END_DECLS
+TIPSEC_END_DECLS
 
 #endif /* TINYIPSEC_IPSEC_H */
