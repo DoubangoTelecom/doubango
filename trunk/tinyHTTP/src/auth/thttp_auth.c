@@ -222,13 +222,11 @@ int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, co
 
 	char *res = 0;
 
-	if(tsk_striequals(qop, "auth") || tsk_striequals(qop, "auth-int"))
-	{
+	if(tsk_striequals(qop, "auth") || tsk_striequals(qop, "auth-int")){
 		/* CASE 1 */
 		tsk_sprintf(&res, "%s:%s:%s:%s:%s:%s", *ha1, nonce, noncecount, cnonce, qop, *ha2);
 	}
-	else
-	{
+	else{
 		/* CASE 2 */
 		tsk_sprintf(&res, "%s:%s:%s", *ha1, nonce, *ha2);
 	}

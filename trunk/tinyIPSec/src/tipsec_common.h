@@ -40,7 +40,7 @@
 * @retval @ref tipsec_context_t object.
 */
 
-TSK_BEGIN_DECLS
+TIPSEC_BEGIN_DECLS
 
 #define TIPSEC_CONTEXT_CREATE(ipproto, use_ipv6, mode, ealg, alg, protocol)\
 	tsk_object_new(tipsec_context_def_t, (tipsec_ipproto_t)ipproto, (int)use_ipv6, (tipsec_mode_t)mode, (tipsec_ealgorithm_t)ealg, (tipsec_algorithm_t)alg, (tipsec_protocol_t)protocol)
@@ -283,6 +283,6 @@ TINYIPSEC_API int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik,
 TINYIPSEC_API int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime);
 TINYIPSEC_API int tipsec_stop(tipsec_context_t* ctx);
 
-TSK_END_DECLS
+TIPSEC_END_DECLS
 
 #endif /* TINYIPSEC_IPSEC_COMMON_H */

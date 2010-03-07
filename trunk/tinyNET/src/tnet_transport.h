@@ -53,6 +53,7 @@ typedef enum tnet_transport_event_type_e
 {
 	event_data,
 	event_closed,
+	event_error,
 	event_connected
 }
 tnet_transport_event_type_t;

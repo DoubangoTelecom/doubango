@@ -53,7 +53,6 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
-
 	tsip_global_init();
 
 #if RUN_TEST_LOOP

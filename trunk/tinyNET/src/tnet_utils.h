@@ -145,7 +145,7 @@ TINYNET_API tnet_tls_socket_handle_t* tnet_sockfd_set_tlsfiles(tnet_fd_t fd, int
 
 TINYNET_API int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size);
 TINYNET_API int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct sockaddr *from);
-TINYNET_API int tnet_sockfd_send(tnet_fd_t fd, void* buf, size_t size, int flags);
+TINYNET_API int tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags);
 TINYNET_API int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags);
 TINYNET_API int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to);
 

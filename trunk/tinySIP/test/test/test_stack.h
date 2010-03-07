@@ -254,7 +254,7 @@ void test_stack()
 		TSIP_STACK_SET_REALM("sip:"DOMAIN), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
 		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
-		TSIP_STACK_SET_PROXY_CSCF("192.168.0.11", "udp", 0),
+		TSIP_STACK_SET_PROXY_CSCF("192.168.0.11", "tcp", 0),
 		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
 		TSIP_STACK_SET_PROXY_CSCF_PORT(5081),
 		//TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),
@@ -382,6 +382,11 @@ bail:
 
 	TSK_OBJECT_SAFE_FREE(op);
 	TSK_OBJECT_SAFE_FREE(stack);
+
+	TSK_DEBUG_INFO("==================");
+	TSK_DEBUG_INFO("==================");
+	TSK_DEBUG_INFO("==================");
+	TSK_DEBUG_INFO("==================");
 }
 
 

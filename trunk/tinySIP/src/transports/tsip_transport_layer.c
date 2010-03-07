@@ -500,6 +500,8 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 				}
 			}
 
+			((tsip_transport_layer_t*)self)->running = 1;
+
 			return 0;
 		}
 		else return -2;
@@ -512,7 +514,7 @@ int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self)
 {
 	if(self)
 	{
-		if(!self->running)
+		if(self->running)
 		{
 			int ret = 0;
 			tsk_list_item_t *item;
@@ -556,7 +558,7 @@ static void* tsip_transport_layer_destroy(void * self)
 	tsip_transport_layer_t *layer = self;
 	if(layer)
 	{
-		//tsip_transport_layer_shutdown(self);
+		tsip_transport_layer_shutdown(self);
 
 		TSK_OBJECT_SAFE_FREE(layer->transports);
 	}

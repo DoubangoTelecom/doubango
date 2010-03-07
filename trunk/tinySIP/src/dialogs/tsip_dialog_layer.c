@@ -106,13 +106,18 @@ int tsip_dialog_layer_hangupAll(tsip_dialog_layer_t *self)
 {
 	if(self)
 	{
-		tsk_list_item_t *item;
+		tsk_list_item_t *item = 0;
 		tsip_dialog_t *dialog;
+
+		tsk_safeobj_lock(self);
+
 		tsk_list_foreach(item, self->dialogs)
 		{
 			dialog = item->data;
 			tsip_dialog_hangup(dialog);
 		}
+
+		tsk_safeobj_unlock(self);
 		return 0;
 	}
 	return -1;
