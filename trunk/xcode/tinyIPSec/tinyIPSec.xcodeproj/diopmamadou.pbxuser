@@ -1,0 +1,134 @@
+// !$*UTF8*$!
+{
+	08FB7793FE84155DC02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeTarget = D2AAC0620554660B00DB518D /* tinyIPSec */;
+		addToTargets = (
+			D2AAC0620554660B00DB518D /* tinyIPSec */,
+		);
+		codeSenseManager = EC2E021A1144458D0021A2A6 /* Code sense */;
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					748,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					708,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 289686900;
+			PBXWorkspaceStateSaveDate = 289686900;
+		};
+		perUserProjectItems = {
+			EC2E0238114445D40021A2A6 /* PBXTextBookmark */ = EC2E0238114445D40021A2A6 /* PBXTextBookmark */;
+			EC2E0239114445D40021A2A6 /* PBXTextBookmark */ = EC2E0239114445D40021A2A6 /* PBXTextBookmark */;
+			EC2E023A114445D40021A2A6 /* PBXTextBookmark */ = EC2E023A114445D40021A2A6 /* PBXTextBookmark */;
+			EC2E0266114447090021A2A6 /* PBXTextBookmark */ = EC2E0266114447090021A2A6 /* PBXTextBookmark */;
+		};
+		sourceControlManager = EC2E02191144458D0021A2A6 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	D2AAC0620554660B00DB518D /* tinyIPSec */ = {
+		activeExec = 0;
+	};
+	EC2E02191144458D0021A2A6 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+		};
+	};
+	EC2E021A1144458D0021A2A6 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	EC2E021D114445AD0021A2A6 /* tinyipsec_config.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {926, 1134}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 632}";
+		};
+	};
+	EC2E0221114445AD0021A2A6 /* tipsec_common.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {926, 4102}}";
+			sepNavSelRange = "{1031, 25}";
+			sepNavVisRange = "{819, 379}";
+		};
+	};
+	EC2E0238114445D40021A2A6 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC2E021D114445AD0021A2A6 /* tinyipsec_config.h */;
+		name = "tinyipsec_config.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 632;
+		vrLoc = 0;
+	};
+	EC2E0239114445D40021A2A6 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: tsk_string.h: No such file or directory";
+		fRef = EC2E0221114445AD0021A2A6 /* tipsec_common.h */;
+		rLen = 1;
+		rLoc = 34;
+		rType = 1;
+	};
+	EC2E023A114445D40021A2A6 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC2E021D114445AD0021A2A6 /* tinyipsec_config.h */;
+		name = "tinyipsec_config.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 632;
+		vrLoc = 0;
+	};
+	EC2E0266114447090021A2A6 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC2E0221114445AD0021A2A6 /* tipsec_common.h */;
+		name = "tipsec_common.h: 35";
+		rLen = 25;
+		rLoc = 1031;
+		rType = 0;
+		vrLen = 379;
+		vrLoc = 819;
+	};
+}

@@ -82,7 +82,7 @@ thttp_stack_t;
 
 static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
-	const thttp_stack_t *stack = e->callback_data;
+	//const thttp_stack_t *stack = e->callback_data;
 	
 	switch(e->type){
 		case event_data: {

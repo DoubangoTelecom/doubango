@@ -32,6 +32,8 @@
 
 #include "tsk_memory.h"
 
+#include <string.h>
+
 tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, size_t size)
 {
 	tnet_dhcp6_option_t *option = 0;
