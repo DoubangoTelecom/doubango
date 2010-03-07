@@ -5,7 +5,7 @@
 		activeExecutable = EC6C55ED10EDE65C000E1B18 /* test */;
 		activeTarget = EC6C55EB10EDE65C000E1B18 /* test */;
 		addToTargets = (
-			EC6C55EB10EDE65C000E1B18 /* test */,
+			D2AAC0620554660B00DB518D /* tinySAK */,
 		);
 		breakpoints = (
 			EC6C562F10EDE941000E1B18 /* test.c:128 */,
@@ -59,7 +59,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					779,
+					1359,
 					20,
 					48,
 					43,
@@ -121,7 +121,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					739,
+					1319,
 					60,
 					20,
 					48,
@@ -138,8 +138,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 284780978;
-			PBXWorkspaceStateSaveDate = 284780978;
+			PBXPerProjectTemplateStateSaveDate = 289623567;
+			PBXWorkspaceStateSaveDate = 289623567;
 		};
 		perUserProjectItems = {
 			ECED5FC910F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FC910F96ABE006B4DC9 /* PBXTextBookmark */;
@@ -147,17 +147,17 @@
 			ECED5FCC10F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FCC10F96ABE006B4DC9 /* PBXTextBookmark */;
 			ECED5FCD10F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FCD10F96ABE006B4DC9 /* PBXTextBookmark */;
 			ECED5FCE10F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FCE10F96ABE006B4DC9 /* PBXTextBookmark */;
-			ECED5FCF10F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FCF10F96ABE006B4DC9 /* PBXTextBookmark */;
 			ECED5FD010F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FD010F96ABE006B4DC9 /* PBXTextBookmark */;
 			ECED5FD110F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FD110F96ABE006B4DC9 /* PBXTextBookmark */;
 			ECED5FD210F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FD210F96ABE006B4DC9 /* PBXTextBookmark */;
-			ECED5FD410F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FD410F96ABE006B4DC9 /* PBXTextBookmark */;
-			ECED5FD510F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FD510F96ABE006B4DC9 /* PBXTextBookmark */;
-			ECED5FD710F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FD710F96ABE006B4DC9 /* PBXTextBookmark */;
 			ECED5FD810F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FD810F96ABE006B4DC9 /* PBXTextBookmark */;
 			ECED5FD910F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FD910F96ABE006B4DC9 /* PBXTextBookmark */;
-			ECED5FDA10F96ABE006B4DC9 /* PBXTextBookmark */ = ECED5FDA10F96ABE006B4DC9 /* PBXTextBookmark */;
-			ECED5FE810F96BA6006B4DC9 /* PBXTextBookmark */ = ECED5FE810F96BA6006B4DC9 /* PBXTextBookmark */;
+			ECF4BE7711434EAB00B7C09B /* PBXTextBookmark */ = ECF4BE7711434EAB00B7C09B /* PBXTextBookmark */;
+			ECF4BE7811434EAB00B7C09B /* PBXTextBookmark */ = ECF4BE7811434EAB00B7C09B /* PBXTextBookmark */;
+			ECF4BE7911434EAB00B7C09B /* PBXTextBookmark */ = ECF4BE7911434EAB00B7C09B /* PBXTextBookmark */;
+			ECF4BE7A11434EAB00B7C09B /* PBXTextBookmark */ = ECF4BE7A11434EAB00B7C09B /* PBXTextBookmark */;
+			ECF4BE7B11434EAB00B7C09B /* PBXTextBookmark */ = ECF4BE7B11434EAB00B7C09B /* PBXTextBookmark */;
+			ECF4BE7C11434EAB00B7C09B /* PBXTextBookmark */ = ECF4BE7C11434EAB00B7C09B /* PBXTextBookmark */;
 		};
 		sourceControlManager = EC6C557810EDE5AA000E1B18 /* Source Control */;
 		userBuildSettings = {
@@ -297,50 +297,13 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
-	EC6C557A10EDE5EF000E1B18 /* tinySAK_config.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1456}}";
-			sepNavSelRange = "{2182, 0}";
-			sepNavVisRange = "{1085, 876}";
-		};
-	};
-	EC6C557B10EDE5EF000E1B18 /* tsk.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1651, 922}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1228}";
-			sepNavWindowFrame = "{{15, 615}, {750, 558}}";
-		};
-	};
-	EC6C557C10EDE5EF000E1B18 /* tsk.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1651, 854}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1183}";
-		};
-	};
-	EC6C557D10EDE5EF000E1B18 /* tsk_base64.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 3388}}";
-			sepNavSelRange = "{759, 0}";
-			sepNavVisRange = "{0, 1036}";
-		};
-	};
-	EC6C557E10EDE5EF000E1B18 /* tsk_base64.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 630}}";
-			sepNavSelRange = "{657, 0}";
-			sepNavVisRange = "{363, 1084}";
-		};
-	};
-	EC6C558010EDE5EF000E1B18 /* tsk_binaryutils.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 2072}}";
-			sepNavSelRange = "{2134, 53}";
-			sepNavVisRange = "{1413, 1454}";
-		};
-	};
 	EC6C558110EDE5EF000E1B18 /* tsk_buffer.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tsk_buffer.c;
+		path = /Users/diopmamadou/Documents/doubango/tinySAK/src/tsk_buffer.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {957, 2562}}";
 			sepNavSelRange = "{939, 0}";
@@ -348,186 +311,30 @@
 			sepNavWindowFrame = "{{15, 615}, {750, 558}}";
 		};
 	};
-	EC6C558210EDE5EF000E1B18 /* tsk_buffer.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 938}}";
-			sepNavSelRange = "{967, 0}";
-			sepNavVisRange = "{761, 940}";
-		};
-	};
-	EC6C558310EDE5EF000E1B18 /* tsk_condwait.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {899, 4592}}";
-			sepNavSelRange = "{2246, 15}";
-			sepNavVisRange = "{1820, 775}";
-		};
-	};
-	EC6C558610EDE5EF000E1B18 /* tsk_debug.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1170, 1848}}";
-			sepNavSelRange = "{2819, 0}";
-			sepNavVisRange = "{1557, 1325}";
-		};
-	};
-	EC6C558710EDE5EF000E1B18 /* tsk_errno.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1260}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 983}";
-		};
-	};
-	EC6C558810EDE5EF000E1B18 /* tsk_heap.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1470}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1108}";
-		};
-	};
-	EC6C558910EDE5EF000E1B18 /* tsk_heap.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1036}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1113}";
-		};
-	};
-	EC6C558A10EDE5EF000E1B18 /* tsk_hmac.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 3290}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1041}";
-		};
-	};
-	EC6C558B10EDE5EF000E1B18 /* tsk_hmac.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 770}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1078}";
-		};
-	};
-	EC6C558C10EDE5EF000E1B18 /* tsk_list.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 8764}}";
-			sepNavSelRange = "{8703, 0}";
-			sepNavVisRange = "{8314, 774}";
-		};
-	};
-	EC6C558D10EDE5EF000E1B18 /* tsk_list.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1651, 1974}}";
-			sepNavSelRange = "{4967, 11}";
-			sepNavVisRange = "{2775, 2308}";
-		};
-	};
-	EC6C559110EDE5EF000E1B18 /* tsk_memory.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1176, 2660}}";
-			sepNavSelRange = "{6803, 47}";
-			sepNavVisRange = "{5713, 1155}";
-		};
-	};
-	EC6C559310EDE5EF000E1B18 /* tsk_mutex.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 2156}}";
-			sepNavSelRange = "{2657, 0}";
-			sepNavVisRange = "{2691, 788}";
-		};
-	};
-	EC6C559410EDE5EF000E1B18 /* tsk_mutex.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 700}}";
-			sepNavSelRange = "{1023, 33}";
-			sepNavVisRange = "{585, 758}";
-		};
-	};
-	EC6C559510EDE5EF000E1B18 /* tsk_object.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 2072}}";
-			sepNavSelRange = "{1480, 0}";
-			sepNavVisRange = "{1389, 620}";
-		};
-	};
-	EC6C559610EDE5EF000E1B18 /* tsk_object.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1148}}";
-			sepNavSelRange = "{1893, 71}";
-			sepNavVisRange = "{735, 743}";
-		};
-	};
-	EC6C559710EDE5EF000E1B18 /* tsk_params.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 3500}}";
-			sepNavSelRange = "{3757, 0}";
-			sepNavVisRange = "{3906, 326}";
-		};
-	};
-	EC6C559B10EDE5EF000E1B18 /* tsk_runnable.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1848}}";
-			sepNavSelRange = "{2260, 0}";
-			sepNavVisRange = "{2010, 789}";
-		};
-	};
 	EC6C559C10EDE5EF000E1B18 /* tsk_runnable.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = tsk_runnable.h;
+		path = /Users/diopmamadou/Documents/doubango/tinySAK/src/tsk_runnable.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {957, 1540}}";
 			sepNavSelRange = "{2644, 0}";
 			sepNavVisRange = "{2464, 669}";
 		};
 	};
-	EC6C559E10EDE5EF000E1B18 /* tsk_safeobj.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1008}}";
-			sepNavSelRange = "{1355, 0}";
-			sepNavVisRange = "{762, 1009}";
-		};
-	};
 	EC6C559F10EDE5EF000E1B18 /* tsk_semaphore.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tsk_semaphore.c;
+		path = /Users/diopmamadou/Documents/doubango/tinySAK/src/tsk_semaphore.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {899, 2800}}";
 			sepNavSelRange = "{2926, 50}";
 			sepNavVisRange = "{2514, 991}";
-		};
-	};
-	EC6C55A010EDE5EF000E1B18 /* tsk_semaphore.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 658}}";
-			sepNavSelRange = "{1008, 37}";
-			sepNavVisRange = "{394, 982}";
-		};
-	};
-	EC6C55A310EDE5EF000E1B18 /* tsk_string.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {899, 5922}}";
-			sepNavSelRange = "{9479, 15}";
-			sepNavVisRange = "{9036, 733}";
-		};
-	};
-	EC6C55A410EDE5EF000E1B18 /* tsk_string.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1246}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{40, 1055}";
-		};
-	};
-	EC6C55A510EDE5EF000E1B18 /* tsk_thread.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1260}}";
-			sepNavSelRange = "{1220, 0}";
-			sepNavVisRange = "{960, 941}";
-		};
-	};
-	EC6C55A910EDE5EF000E1B18 /* tsk_timer.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 6006}}";
-			sepNavSelRange = "{2918, 0}";
-			sepNavVisRange = "{2562, 955}";
-		};
-	};
-	EC6C55AA10EDE5EF000E1B18 /* tsk_timer.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 1022}}";
-			sepNavSelRange = "{564, 0}";
-			sepNavVisRange = "{214, 1115}";
 		};
 	};
 	EC6C55EB10EDE65C000E1B18 /* test */ = {
@@ -619,9 +426,9 @@
 	};
 	EC6C55FB10EDE6E1000E1B18 /* test_buffer.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1140, 644}}";
-			sepNavSelRange = "{863, 0}";
-			sepNavVisRange = "{469, 1029}";
+			sepNavIntBoundsRect = "{{0, 0}, {1537, 644}}";
+			sepNavSelRange = "{598, 0}";
+			sepNavVisRange = "{0, 1442}";
 		};
 	};
 	EC6C55FC10EDE6E1000E1B18 /* test_condwait.h */ = {
@@ -640,9 +447,9 @@
 	};
 	EC6C55FE10EDE6E1000E1B18 /* test_lists.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {957, 3794}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1537, 3710}}";
 			sepNavSelRange = "{2195, 0}";
-			sepNavVisRange = "{1915, 824}";
+			sepNavVisRange = "{1614, 1160}";
 		};
 	};
 	EC6C55FF10EDE6E1000E1B18 /* test_md5.h */ = {
@@ -829,6 +636,7 @@
 	};
 	ECED5FCB10F96ABE006B4DC9 /* string.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = string.h;
 		path = /Developer/SDKs/MacOSX10.5.sdk/usr/include/string.h;
 		sourceTree = "<absolute>";
@@ -863,13 +671,6 @@
 		vrLen = 490;
 		vrLoc = 2543;
 	};
-	ECED5FCF10F96ABE006B4DC9 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = EC6C55FE10EDE6E1000E1B18 /* test_lists.h */;
-		rLen = 0;
-		rLoc = 89;
-		rType = 1;
-	};
 	ECED5FD010F96ABE006B4DC9 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = EC6C559C10EDE5EF000E1B18 /* tsk_runnable.h */;
@@ -902,45 +703,10 @@
 	};
 	ECED5FD310F96ABE006B4DC9 /* string.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = string.h;
 		path = /Developer/SDKs/MacOSX10.5.sdk/usr/include/string.h;
 		sourceTree = "<absolute>";
-	};
-	ECED5FD410F96ABE006B4DC9 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = EC6C558110EDE5EF000E1B18 /* tsk_buffer.c */;
-		name = "tsk_buffer.c: 111";
-		rLen = 6;
-		rLoc = 2357;
-		rType = 0;
-		vrLen = 486;
-		vrLoc = 2095;
-	};
-	ECED5FD510F96ABE006B4DC9 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = ECED5FD610F96ABE006B4DC9 /* string.h */;
-		name = "string.h: 83";
-		rLen = 44;
-		rLoc = 3369;
-		rType = 0;
-		vrLen = 690;
-		vrLoc = 2803;
-	};
-	ECED5FD610F96ABE006B4DC9 /* string.h */ = {
-		isa = PBXFileReference;
-		name = string.h;
-		path = /Developer/SDKs/MacOSX10.5.sdk/usr/include/string.h;
-		sourceTree = "<absolute>";
-	};
-	ECED5FD710F96ABE006B4DC9 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = EC6C558110EDE5EF000E1B18 /* tsk_buffer.c */;
-		name = "tsk_buffer.c: 31";
-		rLen = 0;
-		rLoc = 939;
-		rType = 0;
-		vrLen = 515;
-		vrLoc = 784;
 	};
 	ECED5FD810F96ABE006B4DC9 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -962,24 +728,71 @@
 		vrLen = 525;
 		vrLoc = 868;
 	};
-	ECED5FDA10F96ABE006B4DC9 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = EC6C55F910EDE6E1000E1B18 /* test.c */;
-		name = "test.c: 169";
-		rLen = 0;
-		rLoc = 3360;
-		rType = 0;
-		vrLen = 490;
-		vrLoc = 2543;
+	ECF4BE2F11434E5400B7C09B /* tsk_timer.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1537, 6104}}";
+			sepNavSelRange = "{3927, 0}";
+			sepNavVisRange = "{3502, 868}";
+		};
 	};
-	ECED5FE810F96BA6006B4DC9 /* PBXTextBookmark */ = {
+	ECF4BE7711434EAB00B7C09B /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = EC6C55FE10EDE6E1000E1B18 /* test_lists.h */;
 		name = "test_lists.h: 90";
 		rLen = 0;
 		rLoc = 2195;
 		rType = 0;
-		vrLen = 824;
-		vrLoc = 1915;
+		vrLen = 1160;
+		vrLoc = 1614;
+	};
+	ECF4BE7811434EAB00B7C09B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF4BE2F11434E5400B7C09B /* tsk_timer.c */;
+		name = "tsk_timer.c: 152";
+		rLen = 0;
+		rLoc = 3927;
+		rType = 0;
+		vrLen = 872;
+		vrLoc = 3502;
+	};
+	ECF4BE7911434EAB00B7C09B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC6C55FB10EDE6E1000E1B18 /* test_buffer.h */;
+		name = "test_buffer.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1442;
+		vrLoc = 0;
+	};
+	ECF4BE7A11434EAB00B7C09B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC6C55FE10EDE6E1000E1B18 /* test_lists.h */;
+		name = "test_lists.h: 90";
+		rLen = 0;
+		rLoc = 2195;
+		rType = 0;
+		vrLen = 1160;
+		vrLoc = 1614;
+	};
+	ECF4BE7B11434EAB00B7C09B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF4BE2F11434E5400B7C09B /* tsk_timer.c */;
+		name = "tsk_timer.c: 152";
+		rLen = 0;
+		rLoc = 3927;
+		rType = 0;
+		vrLen = 872;
+		vrLoc = 3502;
+	};
+	ECF4BE7C11434EAB00B7C09B /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC6C55FB10EDE6E1000E1B18 /* test_buffer.h */;
+		name = "test_buffer.h: 15";
+		rLen = 0;
+		rLoc = 598;
+		rType = 0;
+		vrLen = 1442;
+		vrLoc = 0;
 	};
 }

@@ -51,6 +51,8 @@ transport_socket_t;
 /*== Transport context structure definition ==*/
 typedef struct transport_context_s
 {
+	TSK_DECLARE_OBJECT;
+	
 	size_t count;
 	WSAEVENT events[WSA_MAXIMUM_WAIT_EVENTS];
 	transport_socket_t* sockets[WSA_MAXIMUM_WAIT_EVENTS];
@@ -60,24 +62,6 @@ transport_context_t;
 static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
 static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client);
 static void removeSocket(int index, transport_context_t *context);
-
-int tnet_transport_create_context(tnet_transport_handle_t* handle)
-{
-	tnet_transport_t* transport;
-	if(!handle){
-		return -1;
-	}
-
-	if((transport = handle) && transport->context){
-		return 0;
-	}
-	else if((transport->context = tsk_calloc(1, sizeof(transport_context_t)))){
-		return 0;
-	}
-	else{
-		return -1;
-	}
-}
 
 /* Checks if socket is connected */
 int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd)
@@ -214,61 +198,6 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	return -1;
 }
 
-///*
-//* Connect stream/datagram socket to the specified destination. 
-//*/
-//tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port)
-//{
-//	tnet_transport_t *transport = (tnet_transport_t*)handle;
-//	struct sockaddr_storage to;
-//	int status = -1;
-//	tnet_fd_t fd = INVALID_SOCKET;
-//
-//	if(!transport || !transport->master){
-//		TSK_DEBUG_ERROR("Invalid transport handle.");
-//		goto bail;
-//	}
-//
-//	/* Init destination sockaddr fields */
-//	if((status = tnet_sockaddr_init(host, port, transport->master->type, &to))){
-//		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u]", host, port);
-//		goto bail;
-//	}
-//
-//	/*
-//	* STREAM ==> create new socket and connect it to the remote host.
-//	* DGRAM ==> connect the master to the remote host.
-//	*/
-//	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){		
-//		/* Create client socket descriptor. */
-//		if(status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd)){
-//			TSK_DEBUG_ERROR("Failed to create new sockfd.");
-//			goto bail;
-//		}
-//
-//		/* Add the socket */
-//		if(status = tnet_transport_add_socket(handle, fd, 1)){
-//			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
-//
-//			tnet_sockfd_close(&fd);
-//			goto bail;
-//		}
-//	}
-//	else{
-//		fd = transport->master->fd;
-//	}
-//
-//	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr_storage *)&to))){
-//		if(fd != transport->master->fd){
-//			tnet_sockfd_close(&fd);
-//		}
-//		goto bail;
-//	}
-//	
-//bail:
-//	return fd;
-//}
-
 /*
 * Sends stream/dgram data to the remote peer (previously connected to using @tnet_transport_connectto).
 */
@@ -330,14 +259,12 @@ size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t fr
 	DWORD numberOfBytesSent = 0;
 	int ret = -1;
 	
-	if(!transport)
-	{
+	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return ret;
 	}
 	
-	if(!TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type))
-	{
+	if(!TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)){
 		TSK_DEBUG_ERROR("In order to use WSASendTo you must use an udp transport.");
 		return ret;
 	}
@@ -347,13 +274,11 @@ size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t fr
 	
     if((ret = WSASendTo(from, &wsaBuffer, 1, &numberOfBytesSent, 0, to, sizeof(*to), 0, 0)) == SOCKET_ERROR)
 	{
-		if((ret = WSAGetLastError()) == WSA_IO_PENDING)
-		{
+		if((ret = WSAGetLastError()) == WSA_IO_PENDING){
 			TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASendTo operation");
 			ret = 0;
 		}
-		else
-		{
+		else{
 			TNET_PRINT_LAST_ERROR("WSASendTo have failed.");
 			return ret;
 		}
@@ -453,8 +378,7 @@ int tnet_transport_stop(tnet_transport_t *transport)
 {	
 	int ret;
 
-	if(ret = tsk_runnable_stop(TSK_RUNNABLE(transport)))
-	{
+	if(ret = tsk_runnable_stop(TSK_RUNNABLE(transport))){
 		return ret;
 	}
 	
@@ -585,8 +509,7 @@ void *tnet_transport_mainthread(void *param)
 
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description);
 
-			if(networkEvents.iErrorCode[FD_READ_BIT])
-			{
+			if(networkEvents.iErrorCode[FD_READ_BIT]){
 				TNET_PRINT_LAST_ERROR("READ FAILED.");
 				continue;
 			}
@@ -602,7 +525,9 @@ void *tnet_transport_mainthread(void *param)
 			}
 
 			/* Alloc data */
-			wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t)); // Will return NULL for TLS handshake.
+			if((wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t)))){
+				continue;
+			}
 
 			/* Receive the waiting data. */
 			if(active_socket->tlshandle){
@@ -691,16 +616,47 @@ void *tnet_transport_mainthread(void *param)
 bail:
 
 	transport->active = 0;
-
-	/* Cleanup */
-	while(context->count){
-		removeSocket(0, context);
-	}
-	TSK_FREE(context);
+	TSK_OBJECT_SAFE_FREE(context);
 
 	TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	return 0;
 }
 
+
+
+
+
+
+
+//=================================================================================================
+//	Transport context object definition
+//
+static void* transport_context_create(void * self, va_list * app)
+{
+	transport_context_t *context = self;
+	if(context){	
+	}
+	return self;
+}
+
+static void* transport_context_destroy(void * self)
+{ 
+	transport_context_t *context = self;
+	if(context){
+		while(context->count){
+			removeSocket(0, context);
+		}
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_transport_context_def_s = 
+{
+sizeof(transport_context_t),
+transport_context_create, 
+transport_context_destroy,
+0, 
+};
+const void *tnet_transport_context_def_t = &tnet_transport_context_def_s;
 #endif /* TNET_UNDER_WINDOWS */
 

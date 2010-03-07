@@ -51,7 +51,6 @@ void test_url_tostring(const thttp_url_t *url)
 void test_url_parser()
 {
 	int i;
-	tsk_list_item_t *item = 0;
 
 	for(i=0; i<sizeof(urls)/sizeof(const char*); i++)
 	{

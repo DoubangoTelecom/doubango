@@ -344,7 +344,9 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 //
 static void* tnet_tls_socket_create(void * self, va_list * app)
 {
+#if TNET_HAVE_OPENSSL_H
 	static int __ssl_initialized = 0;
+#endif
 	tnet_tls_socket_t *socket = self;
 	if(socket){
 		int ret;

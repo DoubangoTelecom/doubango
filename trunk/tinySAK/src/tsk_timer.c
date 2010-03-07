@@ -142,7 +142,7 @@ void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 	tsk_timer_manager_t *manager = self;
 	if(manager)
 	{
-		int index = 0;
+		//int index = 0;
 		tsk_list_item_t *item = 0;
 
 		tsk_mutex_lock(manager->mutex);

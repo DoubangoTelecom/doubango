@@ -47,17 +47,13 @@ int tnet_transport_start(tnet_transport_handle_t* handle)
 	{
 		tnet_transport_t *transport = handle;
 		
-		if((ret = tnet_transport_create_context(handle))){ /* context will be used by the main thread ==> create it before the tread. */
+		TSK_RUNNABLE(transport)->run = run;
+		if((ret = tsk_runnable_start(TSK_RUNNABLE(transport), tnet_transport_event_def_t))){
 			return ret;
 		}
 		if((ret = tsk_thread_create(&(transport->mainThreadId[0]), tnet_transport_mainthread, transport))){ /* More important than "tsk_runnable_start" ==> start it first. */
 			TSK_FREE(transport->context); /* Otherwise (tsk_thread_create is ok) will be freed when mainthread exit. */
 			tsk_runnable_stop(TSK_RUNNABLE(transport));
-			return ret;
-		}
-
-		TSK_RUNNABLE(transport)->run = run;
-		if((ret = tsk_runnable_start(TSK_RUNNABLE(transport), tnet_transport_event_def_t))){
 			return ret;
 		}
 	}
@@ -145,7 +141,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	struct sockaddr_storage to;
 	int status = -1;
-	tnet_fd_t fd = INVALID_SOCKET;
+	tnet_fd_t fd = TNET_INVALID_FD;
 	
 	if(!transport || !transport->master){
 		TSK_DEBUG_ERROR("Invalid transport handle.");
@@ -291,7 +287,8 @@ static void* tnet_transport_create(void * self, va_list * app)
 			transport->description = tsk_strdup(description);
 		}
 		
-		transport->master = TNET_SOCKET_CREATE(host, port, type);		
+		transport->master = TNET_SOCKET_CREATE(host, port, type);
+		transport->context = TNET_TRANSPORT_CONTEXT_CREATE();
 	}
 	return self;
 }
@@ -303,6 +300,7 @@ static void* tnet_transport_destroy(void * self)
 	{
 		tnet_transport_shutdown(transport);
 		TSK_OBJECT_SAFE_FREE(transport->master);
+		TSK_OBJECT_SAFE_FREE(transport->context);
 		TSK_FREE(transport->description);
 	}
 

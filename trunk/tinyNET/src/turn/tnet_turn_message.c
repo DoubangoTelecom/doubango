@@ -33,7 +33,7 @@
 
 #include "tsk_memory.h"
 
-
+#include <string.h>
 
 
 /**@ingroup tnet_turn_group

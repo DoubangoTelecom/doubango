@@ -55,6 +55,8 @@ transport_socket_t;
 /*== Transport context structure definition ==*/
 typedef struct transport_context_s
 {
+	TSK_DECLARE_OBJECT;
+	
 	size_t count;
 	short events;
 	tnet_fd_t pipeW;
@@ -64,6 +66,7 @@ typedef struct transport_context_s
 }
 transport_context_t;
 
+static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
 static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client);
 static void setConnected(tnet_fd_t fd, transport_context_t *context, int connected);
 static void removeSocket(int index, transport_context_t *context);
@@ -75,8 +78,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 	transport_context_t *context;
 	size_t i;
 
-	if(!transport)
-	{
+	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return 0;
 	}
@@ -85,8 +87,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 	for(i=0; i<context->count; i++)
 	{
 		const transport_socket_t* socket = context->sockets[i];
-		if(socket->fd == fd)
-		{
+		if(socket->fd == fd){
 			return socket->connected;
 		}
 	}
@@ -94,7 +95,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 	return 0;
 }
 
-int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, int take_ownership)
+int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
@@ -111,7 +112,7 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	
 	if((context = (transport_context_t*)transport->context)){
 		static char c = '\0';
-		addSocket(fd, context, take_ownership);
+		addSocket(fd, type, context, take_ownership, isClient);
 	
 		// signal
 		ret = write(context->pipeW, &c, 1);
@@ -163,61 +164,6 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	return -1;
 }
 
-//tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port)
-//{
-//	tnet_transport_t *transport = (tnet_transport_t*)handle;
-//	struct sockaddr_storage to;
-//	int status = -1;
-//	tnet_fd_t fd = TNET_INVALID_SOCKET;
-//
-//	if(!transport || !transport->master)
-//	{
-//		TSK_DEBUG_ERROR("Invalid transport handle.");
-//		goto bail;
-//	}
-//
-//	/* Init destination sockaddr fields */
-//	if((status = tnet_sockaddr_init(host, port, transport->master->type, &to))){
-//		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u]", host, port);
-//		goto bail;
-//	}
-//
-//	/*
-//	* STREAM ==> create new socket add connect it to the remote host.
-//	* DGRAM ==> connect the master to the remote host.
-//	*/
-//	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){		
-//		/* Create client socket descriptor. */
-//		if((status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, transport->master->type, &fd))){
-//			TSK_DEBUG_ERROR("Failed to create new sockfd.");
-//			goto bail;
-//		}
-//
-//		/* Add the socket */
-//		if((status = tnet_transport_add_socket(handle, fd, 1))){
-//			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
-//
-//			tnet_sockfd_close(&fd);
-//			goto bail;
-//		}
-//	}
-//	else{
-//		fd = transport->master->fd;
-//	}
-//
-//	if((status = tnet_sockfd_connetto(fd, (const struct sockaddr *)&to))){
-//		if(fd != transport->master->fd){
-//			tnet_sockfd_close(&fd);
-//		}
-//		goto bail;
-//	}
-//
-//	/* update connection status */
-//	setConnected(fd, transport->context, (status==0));
-//	
-//bail:
-//	return fd;
-//}
 
 size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size)
 {
@@ -229,7 +175,19 @@ size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from
 		goto bail;
 	}
 
-	if((numberOfBytesSent = send(from, buf, size, 0)) <= 0){
+	if(transport->have_tls){
+		transport_socket_t* socket = getSocket(transport->context, from);
+		if(socket && socket->tlshandle){
+			if(!tnet_tls_socket_send(socket->tlshandle, buf, size)){
+				numberOfBytesSent = size;
+			}
+			else{
+				numberOfBytesSent = 0;
+			}
+			goto bail;
+		}
+	}
+	else if((numberOfBytesSent = send(from, buf, size, 0)) <= 0){
 		TNET_PRINT_LAST_ERROR("send have failed.");
 
 		//tnet_sockfd_close(&from);
@@ -245,20 +203,17 @@ size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t fr
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	int numberOfBytesSent = 0;
 	
-	if(!transport)
-	{
+	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		goto bail;
 	}
 	
-	if(!TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type))
-	{
+	if(!TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)){
 		TSK_DEBUG_ERROR("In order to use WSASendTo you must use an udp transport.");
 		goto bail;
 	}
 	
-    if((numberOfBytesSent = sendto(from, buf, size, 0, to, sizeof(*to))) <= 0)
-	{
+    if((numberOfBytesSent = sendto(from, buf, size, 0, to, sizeof(*to))) <= 0){
 		TNET_PRINT_LAST_ERROR("sendto have failed.");
 		goto bail;
 	}
@@ -270,21 +225,40 @@ bail:
 int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	transport_context_t *context;
-	size_t i;
 	
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return 0;
 	}
-	getSocket
-	context = (transport_context_t*)transport->context;
 	
-	for(i=0; i<context->count; i++)
-	{
-		if(context->sockets[i]->fd == fd)
-		{
-			return 1;
+	return (getSocket((transport_context_t*)transport->context, fd) != 0);
+}
+const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+{
+	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_socket_t *socket;
+	
+	if(!transport){
+		TSK_DEBUG_ERROR("Invalid server handle.");
+		return 0;
+	}
+	
+	if((socket = getSocket((transport_context_t*)transport->context, fd))){
+		return socket->tlshandle;
+	}
+	return 0;
+}
+
+
+/*== Get socket ==*/
+static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
+{
+	size_t i;
+	if(context){
+		for(i=0; i<context->count; i++){
+			if(context->sockets[i]->fd == fd){
+				return context->sockets[i];
+			}
 		}
 	}
 	
@@ -292,7 +266,7 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 }
 
 /*== Add new socket ==*/
-void addSocket(tnet_fd_t fd, transport_context_t *context, int take_ownership, int is_client)
+void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client)
 {
 	if(context){
 		transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
@@ -322,8 +296,7 @@ static void setConnected(tnet_fd_t fd, transport_context_t *context, int connect
 
 	for(i=0; i<context->count; i++)
 	{
-		if(context->sockets[i]->fd == fd)
-		{
+		if(context->sockets[i]->fd == fd){
 			context->sockets[i]->connected = connected;
 		}
 	}
@@ -363,20 +336,17 @@ int tnet_transport_stop(tnet_transport_t *transport)
 	int ret;
 	transport_context_t *context;
 
-	if(!transport)
-	{
+	if(!transport){
 		return -1;
 	}
 	
 	context = transport->context;
 	
-	if((ret = tsk_runnable_stop(TSK_RUNNABLE(transport))))
-	{
+	if((ret = tsk_runnable_stop(TSK_RUNNABLE(transport)))){
 		return ret;
 	}
 	
-	if(context)
-	{
+	if(context){
 		static char c = '\0';
 		
 		// signal
@@ -392,15 +362,14 @@ int tnet_transport_stop(tnet_transport_t *transport)
 void *tnet_transport_mainthread(void *param)
 {
 	tnet_transport_t *transport = param;
-	transport_context_t *context;
+	transport_context_t *context = transport->context;
 	tnet_fd_t pipes[2];
 	int ret;
 	size_t i;
 
 	transport_socket_t* active_socket;
 	
-	context = (transport_context_t*)tsk_calloc(1, sizeof(transport_context_t));
-	context->events = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? TNET_POLLIN : TNET_POLLIN /*| TNET_POLLOUT*/ | TNET_POLLPRI;
+	context->events = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? TNET_POLLIN : TNET_POLLIN | TNET_POLLHUP | TNET_POLLPRI;
 	transport->context = context;
 
 	/* Start listening */
@@ -423,10 +392,10 @@ void *tnet_transport_mainthread(void *param)
 	context->pipeR = pipes[0];
 	context->pipeW = pipes[1];
 
-	addSocket(context->pipeR, context, 1);
+	addSocket(context->pipeR, transport->master->type, context, 1, 0);
 
 	/* Add the master socket to the context. */
-	addSocket(transport->master->fd, context, 1);
+	addSocket(transport->master->fd, transport->master->type, context, 1, 0);
 
 	/* Set transport to active */
 	transport->active = 1;
@@ -436,14 +405,12 @@ void *tnet_transport_mainthread(void *param)
 	while(TSK_RUNNABLE(transport)->running)
 	{
 
-		if((ret = tnet_poll(context->ufds, context->count, -1)) < 0)
-		{
+		if((ret = tnet_poll(context->ufds, context->count, -1)) < 0){
 			TNET_PRINT_LAST_ERROR("poll have failed.");
 			goto bail;
 		}
 
-		if(!TSK_RUNNABLE(transport)->running)
-		{
+		if(!TSK_RUNNABLE(transport)->running){
 			goto bail;
 		}
 		
@@ -464,6 +431,7 @@ void *tnet_transport_mainthread(void *param)
 			{
 				size_t len = 0;
 				void* buffer = 0;
+				tnet_transport_event_t* e;
 				
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
 				
@@ -472,19 +440,37 @@ void *tnet_transport_mainthread(void *param)
 				 * This apply whatever you are using the 3rd or 5th edition.
 				 * Download link: http://wiki.forum.nokia.com/index.php/Open_C/C%2B%2B_Release_History
 				 */
-				if(tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0)
-				{
+				if(tnet_ioctlt(active_socket->fd, FIONREAD, &len) < 0){
 					TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
 					continue;
 				}
-				if(!(buffer = tsk_calloc(len, sizeof(uint8_t))))
-				{
+				
+				if(!len){
+					continue;
+				}
+				
+				if(!(buffer = tsk_calloc(len, sizeof(uint8_t)))){
 					TSK_DEBUG_ERROR("TSK_CALLOC FAILED.");
 					continue;
 				}
+				
 
 				/* Receive the waiting data. */
-				if((ret = recv(active_socket->fd, buffer, len, 0)) < 0)
+				if(active_socket->tlshandle){
+					int isEncrypted;
+					size_t tlslen = len;
+					if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, buffer, &tlslen, &isEncrypted))){
+						if(isEncrypted){
+							TSK_FREE(buffer);
+							continue;
+						}
+						else if(tlslen != len){
+							len = tlslen;
+							buffer = tsk_realloc(buffer, tlslen);
+						}
+					}
+				}
+				else if((ret = recv(active_socket->fd, buffer, len, 0)) < 0)
 				{
 					TSK_FREE(buffer);
 					//if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK)
@@ -498,17 +484,13 @@ void *tnet_transport_mainthread(void *param)
 						continue;
 					}
 				}
-				else
-				{	
-					tsk_buffer_t *BUFFER = TSK_BUFFER_CREATE_NULL();
+				
 					
-					BUFFER->data = buffer;
-					BUFFER->size = len;
-					
-					//printf("====\n\n%s\n\n====", buffer);
-					
-					TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), BUFFER);
-				}
+				e = TNET_TRANSPORT_EVENT_CREATE(event_data, transport->callback_data, active_socket->fd);
+				e->data = buffer;
+				e->size = len;
+				
+				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(transport), e);
 			}
 
 
@@ -524,6 +506,15 @@ void *tnet_transport_mainthread(void *param)
 			{
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLPRI", transport->description);
 			}
+			
+			/*================== TNET_POLLHUP ==================*/
+			if(context->ufds[i].revents & TNET_POLLHUP)
+			{
+				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLPRI", transport->description);
+				
+				TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
+				removeSocket(i, context);
+			}
 
 
 		}/* for */
@@ -532,16 +523,52 @@ void *tnet_transport_mainthread(void *param)
 bail:
 	
 	transport->active = 0;
-
-	/* cleanup */
-	while(context->count){
-		removeSocket(0, context);
-	}
-	TSK_FREE(context);
+	TSK_OBJECT_SAFE_FREE(context);
 
 	TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
+//	Transport context object definition
+//
+static void* transport_context_create(void * self, va_list * app)
+{
+	transport_context_t *context = self;
+	if(context){	
+	}
+	return self;
+}
+
+static void* transport_context_destroy(void * self)
+{ 
+	transport_context_t *context = self;
+	if(context){
+		while(context->count){
+			removeSocket(0, context);
+		}
+	}
+	return self;
+}
+
+static const tsk_object_def_t tnet_transport_context_def_s = 
+{
+sizeof(transport_context_t),
+transport_context_create, 
+transport_context_destroy,
+0, 
+};
+const void *tnet_transport_context_def_t = &tnet_transport_context_def_s;
 
 #endif /* HAVE_POLL_H */
 

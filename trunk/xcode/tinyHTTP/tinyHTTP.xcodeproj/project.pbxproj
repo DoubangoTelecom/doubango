@@ -10,10 +10,6 @@
 		ECED61AA10F9885E006B4DC9 /* thttp_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61A910F9885E006B4DC9 /* thttp_auth.h */; };
 		ECED61AD10F98876006B4DC9 /* thttp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61AB10F98876006B4DC9 /* thttp.h */; };
 		ECED61AE10F98876006B4DC9 /* tinyhttp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61AC10F98876006B4DC9 /* tinyhttp_config.h */; };
-		ECED61B210F98893006B4DC9 /* thttp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61AF10F98893006B4DC9 /* thttp.c */; };
-		ECED61B310F98893006B4DC9 /* thttp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61B010F98893006B4DC9 /* thttp_message.c */; };
-		ECED61B410F98893006B4DC9 /* thttp_utl.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61B110F98893006B4DC9 /* thttp_utl.c */; };
-		ECED61B610F988B3006B4DC9 /* thttp_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61B510F988B3006B4DC9 /* thttp_auth.c */; };
 		ECED61F610F98926006B4DC9 /* tinySAK_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C110F98926006B4DC9 /* tinySAK_config.h */; };
 		ECED61F710F98926006B4DC9 /* tsk.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61C210F98926006B4DC9 /* tsk.c */; };
 		ECED61F810F98926006B4DC9 /* tsk.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C310F98926006B4DC9 /* tsk.h */; };
@@ -28,13 +24,10 @@
 		ECED620110F98926006B4DC9 /* tsk_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61CC10F98926006B4DC9 /* tsk_debug.c */; };
 		ECED620210F98926006B4DC9 /* tsk_debug.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61CD10F98926006B4DC9 /* tsk_debug.h */; };
 		ECED620310F98926006B4DC9 /* tsk_errno.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61CE10F98926006B4DC9 /* tsk_errno.h */; };
-		ECED620410F98926006B4DC9 /* tsk_heap.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61CF10F98926006B4DC9 /* tsk_heap.c */; };
-		ECED620510F98926006B4DC9 /* tsk_heap.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D010F98926006B4DC9 /* tsk_heap.h */; };
 		ECED620610F98926006B4DC9 /* tsk_hmac.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61D110F98926006B4DC9 /* tsk_hmac.c */; };
 		ECED620710F98926006B4DC9 /* tsk_hmac.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D210F98926006B4DC9 /* tsk_hmac.h */; };
 		ECED620810F98926006B4DC9 /* tsk_list.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61D310F98926006B4DC9 /* tsk_list.c */; };
 		ECED620910F98926006B4DC9 /* tsk_list.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D410F98926006B4DC9 /* tsk_list.h */; };
-		ECED620A10F98926006B4DC9 /* tsk_macros.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D510F98926006B4DC9 /* tsk_macros.h */; };
 		ECED620B10F98926006B4DC9 /* tsk_md5.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61D610F98926006B4DC9 /* tsk_md5.c */; };
 		ECED620C10F98926006B4DC9 /* tsk_md5.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61D710F98926006B4DC9 /* tsk_md5.h */; };
 		ECED620D10F98926006B4DC9 /* tsk_memory.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61D810F98926006B4DC9 /* tsk_memory.c */; };
@@ -68,10 +61,117 @@
 		ECED622910F98926006B4DC9 /* tsk_xml.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61F410F98926006B4DC9 /* tsk_xml.c */; };
 		ECED622A10F98926006B4DC9 /* tsk_xml.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61F510F98926006B4DC9 /* tsk_xml.h */; };
 		ECED622F10F989A3006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */; };
-		ECED624810F98B6A006B4DC9 /* stdafx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED624210F98B6A006B4DC9 /* stdafx.c */; };
-		ECED624910F98B6A006B4DC9 /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED624510F98B6A006B4DC9 /* test.c */; };
 		ECED624F10F98B8B006B4DC9 /* libtinyHTTP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC0630554660B00DB518D /* libtinyHTTP.dylib */; };
 		ECED625010F98B8B006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */; };
+		ECF4BC8C11434AEB00B7C09B /* thttp_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7811434AEB00B7C09B /* thttp_auth.c */; };
+		ECF4BC8D11434AEB00B7C09B /* thttp_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7A11434AEB00B7C09B /* thttp_header.c */; };
+		ECF4BC8E11434AEB00B7C09B /* thttp_header_Authorization.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7B11434AEB00B7C09B /* thttp_header_Authorization.c */; };
+		ECF4BC8F11434AEB00B7C09B /* thttp_header_Content_Length.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7C11434AEB00B7C09B /* thttp_header_Content_Length.c */; };
+		ECF4BC9011434AEB00B7C09B /* thttp_header_Content_Type.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7D11434AEB00B7C09B /* thttp_header_Content_Type.c */; };
+		ECF4BC9111434AEB00B7C09B /* thttp_header_Dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7E11434AEB00B7C09B /* thttp_header_Dummy.c */; };
+		ECF4BC9211434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7F11434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c */; };
+		ECF4BC9311434AEB00B7C09B /* thttp_header_WWW_Authenticate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8011434AEB00B7C09B /* thttp_header_WWW_Authenticate.c */; };
+		ECF4BC9511434AEB00B7C09B /* thttp_parser_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8311434AEB00B7C09B /* thttp_parser_header.c */; };
+		ECF4BC9611434AEB00B7C09B /* thttp_parser_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8411434AEB00B7C09B /* thttp_parser_message.c */; };
+		ECF4BC9711434AEB00B7C09B /* thttp_parser_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8511434AEB00B7C09B /* thttp_parser_url.c */; };
+		ECF4BC9811434AEB00B7C09B /* thttp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8611434AEB00B7C09B /* thttp.c */; };
+		ECF4BC9911434AEB00B7C09B /* thttp_event.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8711434AEB00B7C09B /* thttp_event.c */; };
+		ECF4BC9A11434AEB00B7C09B /* thttp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8811434AEB00B7C09B /* thttp_message.c */; };
+		ECF4BC9B11434AEB00B7C09B /* thttp_operation.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8911434AEB00B7C09B /* thttp_operation.c */; };
+		ECF4BC9C11434AEB00B7C09B /* thttp_transport.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8A11434AEB00B7C09B /* thttp_transport.c */; };
+		ECF4BC9D11434AEB00B7C09B /* thttp_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8B11434AEB00B7C09B /* thttp_url.c */; };
+		ECF4BCAA11434B0E00B7C09B /* stdafx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCA111434B0E00B7C09B /* stdafx.c */; };
+		ECF4BCAB11434B0E00B7C09B /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCA411434B0E00B7C09B /* test.c */; };
+		ECF4BCBA11434BF900B7C09B /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */; };
+		ECF4BD3311434C1100B7C09B /* tnet_dhcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCC811434C1000B7C09B /* tnet_dhcp.c */; };
+		ECF4BD3411434C1100B7C09B /* tnet_dhcp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCC911434C1000B7C09B /* tnet_dhcp.h */; };
+		ECF4BD3511434C1100B7C09B /* tnet_dhcp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCCA11434C1000B7C09B /* tnet_dhcp_message.c */; };
+		ECF4BD3611434C1100B7C09B /* tnet_dhcp_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCCB11434C1000B7C09B /* tnet_dhcp_message.h */; };
+		ECF4BD3711434C1100B7C09B /* tnet_dhcp_option.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCCC11434C1000B7C09B /* tnet_dhcp_option.c */; };
+		ECF4BD3811434C1100B7C09B /* tnet_dhcp_option.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCCD11434C1000B7C09B /* tnet_dhcp_option.h */; };
+		ECF4BD3911434C1100B7C09B /* tnet_dhcp_option_sip.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCCE11434C1000B7C09B /* tnet_dhcp_option_sip.c */; };
+		ECF4BD3A11434C1100B7C09B /* tnet_dhcp_option_sip.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCCF11434C1000B7C09B /* tnet_dhcp_option_sip.h */; };
+		ECF4BD3B11434C1100B7C09B /* tnet_dhcp6.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCD111434C1000B7C09B /* tnet_dhcp6.c */; };
+		ECF4BD3C11434C1100B7C09B /* tnet_dhcp6.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCD211434C1000B7C09B /* tnet_dhcp6.h */; };
+		ECF4BD3D11434C1100B7C09B /* tnet_dhcp6_duid.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCD311434C1000B7C09B /* tnet_dhcp6_duid.c */; };
+		ECF4BD3E11434C1100B7C09B /* tnet_dhcp6_duid.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCD411434C1000B7C09B /* tnet_dhcp6_duid.h */; };
+		ECF4BD3F11434C1100B7C09B /* tnet_dhcp6_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCD511434C1000B7C09B /* tnet_dhcp6_message.c */; };
+		ECF4BD4011434C1100B7C09B /* tnet_dhcp6_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCD611434C1000B7C09B /* tnet_dhcp6_message.h */; };
+		ECF4BD4111434C1100B7C09B /* tnet_dhcp6_option.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCD711434C1000B7C09B /* tnet_dhcp6_option.c */; };
+		ECF4BD4211434C1100B7C09B /* tnet_dhcp6_option.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCD811434C1100B7C09B /* tnet_dhcp6_option.h */; };
+		ECF4BD4311434C1100B7C09B /* tnet_dns.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCDA11434C1100B7C09B /* tnet_dns.c */; };
+		ECF4BD4411434C1100B7C09B /* tnet_dns.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCDB11434C1100B7C09B /* tnet_dns.h */; };
+		ECF4BD4511434C1100B7C09B /* tnet_dns_a.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCDC11434C1100B7C09B /* tnet_dns_a.c */; };
+		ECF4BD4611434C1100B7C09B /* tnet_dns_a.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCDD11434C1100B7C09B /* tnet_dns_a.h */; };
+		ECF4BD4711434C1100B7C09B /* tnet_dns_aaaa.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCDE11434C1100B7C09B /* tnet_dns_aaaa.c */; };
+		ECF4BD4811434C1100B7C09B /* tnet_dns_aaaa.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCDF11434C1100B7C09B /* tnet_dns_aaaa.h */; };
+		ECF4BD4911434C1100B7C09B /* tnet_dns_cname.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCE011434C1100B7C09B /* tnet_dns_cname.c */; };
+		ECF4BD4A11434C1100B7C09B /* tnet_dns_cname.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCE111434C1100B7C09B /* tnet_dns_cname.h */; };
+		ECF4BD4B11434C1100B7C09B /* tnet_dns_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCE211434C1100B7C09B /* tnet_dns_message.c */; };
+		ECF4BD4C11434C1100B7C09B /* tnet_dns_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCE311434C1100B7C09B /* tnet_dns_message.h */; };
+		ECF4BD4D11434C1100B7C09B /* tnet_dns_mx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCE411434C1100B7C09B /* tnet_dns_mx.c */; };
+		ECF4BD4E11434C1100B7C09B /* tnet_dns_mx.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCE511434C1100B7C09B /* tnet_dns_mx.h */; };
+		ECF4BD4F11434C1100B7C09B /* tnet_dns_naptr.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCE611434C1100B7C09B /* tnet_dns_naptr.c */; };
+		ECF4BD5011434C1100B7C09B /* tnet_dns_naptr.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCE711434C1100B7C09B /* tnet_dns_naptr.h */; };
+		ECF4BD5111434C1100B7C09B /* tnet_dns_ns.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCE811434C1100B7C09B /* tnet_dns_ns.c */; };
+		ECF4BD5211434C1100B7C09B /* tnet_dns_ns.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCE911434C1100B7C09B /* tnet_dns_ns.h */; };
+		ECF4BD5311434C1100B7C09B /* tnet_dns_opt.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCEA11434C1100B7C09B /* tnet_dns_opt.c */; };
+		ECF4BD5411434C1100B7C09B /* tnet_dns_opt.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCEB11434C1100B7C09B /* tnet_dns_opt.h */; };
+		ECF4BD5511434C1100B7C09B /* tnet_dns_ptr.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCEC11434C1100B7C09B /* tnet_dns_ptr.c */; };
+		ECF4BD5611434C1100B7C09B /* tnet_dns_ptr.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCED11434C1100B7C09B /* tnet_dns_ptr.h */; };
+		ECF4BD5711434C1100B7C09B /* tnet_dns_rr.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCEE11434C1100B7C09B /* tnet_dns_rr.c */; };
+		ECF4BD5811434C1100B7C09B /* tnet_dns_rr.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCEF11434C1100B7C09B /* tnet_dns_rr.h */; };
+		ECF4BD5911434C1100B7C09B /* tnet_dns_soa.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCF011434C1100B7C09B /* tnet_dns_soa.c */; };
+		ECF4BD5A11434C1100B7C09B /* tnet_dns_soa.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCF111434C1100B7C09B /* tnet_dns_soa.h */; };
+		ECF4BD5B11434C1100B7C09B /* tnet_dns_srv.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCF211434C1100B7C09B /* tnet_dns_srv.c */; };
+		ECF4BD5C11434C1100B7C09B /* tnet_dns_srv.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCF311434C1100B7C09B /* tnet_dns_srv.h */; };
+		ECF4BD5D11434C1100B7C09B /* tnet_dns_txt.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCF411434C1100B7C09B /* tnet_dns_txt.c */; };
+		ECF4BD5E11434C1100B7C09B /* tnet_dns_txt.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCF511434C1100B7C09B /* tnet_dns_txt.h */; };
+		ECF4BD5F11434C1100B7C09B /* tnet_ice.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCF711434C1100B7C09B /* tnet_ice.c */; };
+		ECF4BD6011434C1100B7C09B /* tnet_ice.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCF811434C1100B7C09B /* tnet_ice.h */; };
+		ECF4BD6211434C1100B7C09B /* tnet_stun.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCFC11434C1100B7C09B /* tnet_stun.c */; };
+		ECF4BD6311434C1100B7C09B /* tnet_stun.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCFD11434C1100B7C09B /* tnet_stun.h */; };
+		ECF4BD6411434C1100B7C09B /* tnet_stun_attribute.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCFE11434C1100B7C09B /* tnet_stun_attribute.c */; };
+		ECF4BD6511434C1100B7C09B /* tnet_stun_attribute.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCFF11434C1100B7C09B /* tnet_stun_attribute.h */; };
+		ECF4BD6611434C1100B7C09B /* tnet_stun_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD0011434C1100B7C09B /* tnet_stun_message.c */; };
+		ECF4BD6711434C1100B7C09B /* tnet_stun_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0111434C1100B7C09B /* tnet_stun_message.h */; };
+		ECF4BD6811434C1100B7C09B /* tinyNET_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0211434C1100B7C09B /* tinyNET_config.h */; };
+		ECF4BD6911434C1100B7C09B /* tnet_tls.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD0411434C1100B7C09B /* tnet_tls.c */; };
+		ECF4BD6A11434C1100B7C09B /* tnet_tls.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0511434C1100B7C09B /* tnet_tls.h */; };
+		ECF4BD6B11434C1100B7C09B /* tnet.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD0611434C1100B7C09B /* tnet.c */; };
+		ECF4BD6C11434C1100B7C09B /* tnet.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0711434C1100B7C09B /* tnet.h */; };
+		ECF4BD6D11434C1100B7C09B /* tnet_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD0811434C1100B7C09B /* tnet_auth.c */; };
+		ECF4BD6E11434C1100B7C09B /* tnet_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0911434C1100B7C09B /* tnet_auth.h */; };
+		ECF4BD6F11434C1100B7C09B /* tnet_hardwares.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0A11434C1100B7C09B /* tnet_hardwares.h */; };
+		ECF4BD7011434C1100B7C09B /* tnet_nat.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD0B11434C1100B7C09B /* tnet_nat.c */; };
+		ECF4BD7111434C1100B7C09B /* tnet_nat.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0C11434C1100B7C09B /* tnet_nat.h */; };
+		ECF4BD7211434C1100B7C09B /* tnet_poll.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD0D11434C1100B7C09B /* tnet_poll.c */; };
+		ECF4BD7311434C1100B7C09B /* tnet_poll.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0E11434C1100B7C09B /* tnet_poll.h */; };
+		ECF4BD7411434C1100B7C09B /* tnet_proto.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD0F11434C1100B7C09B /* tnet_proto.h */; };
+		ECF4BD7511434C1100B7C09B /* tnet_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD1011434C1100B7C09B /* tnet_socket.c */; };
+		ECF4BD7611434C1100B7C09B /* tnet_socket.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD1111434C1100B7C09B /* tnet_socket.h */; };
+		ECF4BD7711434C1100B7C09B /* tnet_transport.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD1211434C1100B7C09B /* tnet_transport.c */; };
+		ECF4BD7811434C1100B7C09B /* tnet_transport.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD1311434C1100B7C09B /* tnet_transport.h */; };
+		ECF4BD7911434C1100B7C09B /* tnet_transport_poll.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD1411434C1100B7C09B /* tnet_transport_poll.c */; };
+		ECF4BD7A11434C1100B7C09B /* tnet_transport_win32.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD1511434C1100B7C09B /* tnet_transport_win32.c */; };
+		ECF4BD7B11434C1100B7C09B /* tnet_types.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD1611434C1100B7C09B /* tnet_types.h */; };
+		ECF4BD7C11434C1100B7C09B /* tnet_utils.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD1711434C1100B7C09B /* tnet_utils.c */; };
+		ECF4BD7D11434C1100B7C09B /* tnet_utils.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD1811434C1100B7C09B /* tnet_utils.h */; };
+		ECF4BD7E11434C1100B7C09B /* tnet_turn.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD1A11434C1100B7C09B /* tnet_turn.c */; };
+		ECF4BD7F11434C1100B7C09B /* tnet_turn.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD1B11434C1100B7C09B /* tnet_turn.h */; };
+		ECF4BD8011434C1100B7C09B /* tnet_turn_attribute.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD1C11434C1100B7C09B /* tnet_turn_attribute.c */; };
+		ECF4BD8111434C1100B7C09B /* tnet_turn_attribute.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD1D11434C1100B7C09B /* tnet_turn_attribute.h */; };
+		ECF4BD8211434C1100B7C09B /* tnet_turn_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD1E11434C1100B7C09B /* tnet_turn_message.c */; };
+		ECF4BD8311434C1100B7C09B /* tnet_turn_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD1F11434C1100B7C09B /* tnet_turn_message.h */; };
+		ECF4BD9D11434CA000B7C09B /* tsk_fsm.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD9511434CA000B7C09B /* tsk_fsm.c */; };
+		ECF4BD9E11434CA000B7C09B /* tsk_fsm.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD9611434CA000B7C09B /* tsk_fsm.h */; };
+		ECF4BD9F11434CA000B7C09B /* tsk_ppfcs32.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD9711434CA000B7C09B /* tsk_ppfcs32.c */; };
+		ECF4BDA011434CA000B7C09B /* tsk_ppfcs32.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD9811434CA000B7C09B /* tsk_ppfcs32.h */; };
+		ECF4BDA111434CA000B7C09B /* tsk_ragel_state.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD9911434CA000B7C09B /* tsk_ragel_state.c */; };
+		ECF4BDA211434CA000B7C09B /* tsk_ragel_state.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD9A11434CA000B7C09B /* tsk_ragel_state.h */; };
+		ECF4BDA311434CA000B7C09B /* tsk_uuid.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BD9B11434CA000B7C09B /* tsk_uuid.c */; };
+		ECF4BDA411434CA000B7C09B /* tsk_uuid.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BD9C11434CA000B7C09B /* tsk_uuid.h */; };
+		ECF4BDAA11434CC600B7C09B /* libtinyNET.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECF4BCB411434BA800B7C09B /* libtinyNET.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,22 +179,36 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = ECED61BB10F988E7006B4DC9 /* tinySAK */;
+			remoteGlobalIDString = ECED61BB10F988E7006B4DC9;
 			remoteInfo = tinySAK;
 		};
 		ECED624B10F98B85006B4DC9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D2AAC0620554660B00DB518D /* tinyHTTP */;
+			remoteGlobalIDString = D2AAC0620554660B00DB518D;
 			remoteInfo = tinyHTTP;
 		};
 		ECED624D10F98B85006B4DC9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
+			remoteGlobalIDString = ECED61BB10F988E7006B4DC9;
+			remoteInfo = tinySAK;
+		};
+		ECF4BCB811434BF400B7C09B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
 			remoteGlobalIDString = ECED61BB10F988E7006B4DC9 /* tinySAK */;
 			remoteInfo = tinySAK;
+		};
+		ECF4BDA811434CC200B7C09B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECF4BCB311434BA800B7C09B /* tinyNET */;
+			remoteInfo = tinyNET;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -106,10 +220,6 @@
 		ECED61A910F9885E006B4DC9 /* thttp_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp_auth.h; path = ../../tinyHTTP/include/tinyHTTP/auth/thttp_auth.h; sourceTree = SOURCE_ROOT; };
 		ECED61AB10F98876006B4DC9 /* thttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp.h; path = ../../tinyHTTP/include/thttp.h; sourceTree = SOURCE_ROOT; };
 		ECED61AC10F98876006B4DC9 /* tinyhttp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyhttp_config.h; path = ../../tinyHTTP/include/tinyhttp_config.h; sourceTree = SOURCE_ROOT; };
-		ECED61AF10F98893006B4DC9 /* thttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp.c; path = ../../tinyHTTP/source/thttp.c; sourceTree = SOURCE_ROOT; };
-		ECED61B010F98893006B4DC9 /* thttp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp_message.c; path = ../../tinyHTTP/source/thttp_message.c; sourceTree = SOURCE_ROOT; };
-		ECED61B110F98893006B4DC9 /* thttp_utl.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp_utl.c; path = ../../tinyHTTP/source/thttp_utl.c; sourceTree = SOURCE_ROOT; };
-		ECED61B510F988B3006B4DC9 /* thttp_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = thttp_auth.c; path = ../../tinyHTTP/source/auth/thttp_auth.c; sourceTree = SOURCE_ROOT; };
 		ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySAK.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECED61C110F98926006B4DC9 /* tinySAK_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinySAK_config.h; path = ../../tinySAK/src/tinySAK_config.h; sourceTree = SOURCE_ROOT; };
 		ECED61C210F98926006B4DC9 /* tsk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk.c; path = ../../tinySAK/src/tsk.c; sourceTree = SOURCE_ROOT; };
@@ -125,13 +235,10 @@
 		ECED61CC10F98926006B4DC9 /* tsk_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_debug.c; path = ../../tinySAK/src/tsk_debug.c; sourceTree = SOURCE_ROOT; };
 		ECED61CD10F98926006B4DC9 /* tsk_debug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_debug.h; path = ../../tinySAK/src/tsk_debug.h; sourceTree = SOURCE_ROOT; };
 		ECED61CE10F98926006B4DC9 /* tsk_errno.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_errno.h; path = ../../tinySAK/src/tsk_errno.h; sourceTree = SOURCE_ROOT; };
-		ECED61CF10F98926006B4DC9 /* tsk_heap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_heap.c; path = ../../tinySAK/src/tsk_heap.c; sourceTree = SOURCE_ROOT; };
-		ECED61D010F98926006B4DC9 /* tsk_heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_heap.h; path = ../../tinySAK/src/tsk_heap.h; sourceTree = SOURCE_ROOT; };
 		ECED61D110F98926006B4DC9 /* tsk_hmac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_hmac.c; path = ../../tinySAK/src/tsk_hmac.c; sourceTree = SOURCE_ROOT; };
 		ECED61D210F98926006B4DC9 /* tsk_hmac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_hmac.h; path = ../../tinySAK/src/tsk_hmac.h; sourceTree = SOURCE_ROOT; };
 		ECED61D310F98926006B4DC9 /* tsk_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_list.c; path = ../../tinySAK/src/tsk_list.c; sourceTree = SOURCE_ROOT; };
 		ECED61D410F98926006B4DC9 /* tsk_list.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_list.h; path = ../../tinySAK/src/tsk_list.h; sourceTree = SOURCE_ROOT; };
-		ECED61D510F98926006B4DC9 /* tsk_macros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_macros.h; path = ../../tinySAK/src/tsk_macros.h; sourceTree = SOURCE_ROOT; };
 		ECED61D610F98926006B4DC9 /* tsk_md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_md5.c; path = ../../tinySAK/src/tsk_md5.c; sourceTree = SOURCE_ROOT; };
 		ECED61D710F98926006B4DC9 /* tsk_md5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_md5.h; path = ../../tinySAK/src/tsk_md5.h; sourceTree = SOURCE_ROOT; };
 		ECED61D810F98926006B4DC9 /* tsk_memory.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_memory.c; path = ../../tinySAK/src/tsk_memory.c; sourceTree = SOURCE_ROOT; };
@@ -165,12 +272,120 @@
 		ECED61F410F98926006B4DC9 /* tsk_xml.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_xml.c; path = ../../tinySAK/src/tsk_xml.c; sourceTree = SOURCE_ROOT; };
 		ECED61F510F98926006B4DC9 /* tsk_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_xml.h; path = ../../tinySAK/src/tsk_xml.h; sourceTree = SOURCE_ROOT; };
 		ECED623D10F98B46006B4DC9 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
-		ECED624210F98B6A006B4DC9 /* stdafx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = stdafx.c; path = ../../tinyHTTP/test/stdafx.c; sourceTree = SOURCE_ROOT; };
-		ECED624310F98B6A006B4DC9 /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = stdafx.h; path = ../../tinyHTTP/test/stdafx.h; sourceTree = SOURCE_ROOT; };
-		ECED624410F98B6A006B4DC9 /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = targetver.h; path = ../../tinyHTTP/test/targetver.h; sourceTree = SOURCE_ROOT; };
-		ECED624510F98B6A006B4DC9 /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = test.c; path = ../../tinyHTTP/test/test.c; sourceTree = SOURCE_ROOT; };
-		ECED624610F98B6A006B4DC9 /* test.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = test.vcproj; path = ../../tinyHTTP/test/test.vcproj; sourceTree = SOURCE_ROOT; };
-		ECED624710F98B6A006B4DC9 /* test_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = test_auth.h; path = ../../tinyHTTP/test/test_auth.h; sourceTree = SOURCE_ROOT; };
+		ECF4BC7811434AEB00B7C09B /* thttp_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_auth.c; sourceTree = "<group>"; };
+		ECF4BC7A11434AEB00B7C09B /* thttp_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header.c; sourceTree = "<group>"; };
+		ECF4BC7B11434AEB00B7C09B /* thttp_header_Authorization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Authorization.c; sourceTree = "<group>"; };
+		ECF4BC7C11434AEB00B7C09B /* thttp_header_Content_Length.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Content_Length.c; sourceTree = "<group>"; };
+		ECF4BC7D11434AEB00B7C09B /* thttp_header_Content_Type.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Content_Type.c; sourceTree = "<group>"; };
+		ECF4BC7E11434AEB00B7C09B /* thttp_header_Dummy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Dummy.c; sourceTree = "<group>"; };
+		ECF4BC7F11434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Proxy_Authenticate.c; sourceTree = "<group>"; };
+		ECF4BC8011434AEB00B7C09B /* thttp_header_WWW_Authenticate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_WWW_Authenticate.c; sourceTree = "<group>"; };
+		ECF4BC8311434AEB00B7C09B /* thttp_parser_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_header.c; sourceTree = "<group>"; };
+		ECF4BC8411434AEB00B7C09B /* thttp_parser_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_message.c; sourceTree = "<group>"; };
+		ECF4BC8511434AEB00B7C09B /* thttp_parser_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_url.c; sourceTree = "<group>"; };
+		ECF4BC8611434AEB00B7C09B /* thttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp.c; sourceTree = "<group>"; };
+		ECF4BC8711434AEB00B7C09B /* thttp_event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_event.c; sourceTree = "<group>"; };
+		ECF4BC8811434AEB00B7C09B /* thttp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_message.c; sourceTree = "<group>"; };
+		ECF4BC8911434AEB00B7C09B /* thttp_operation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_operation.c; sourceTree = "<group>"; };
+		ECF4BC8A11434AEB00B7C09B /* thttp_transport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_transport.c; sourceTree = "<group>"; };
+		ECF4BC8B11434AEB00B7C09B /* thttp_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_url.c; sourceTree = "<group>"; };
+		ECF4BCA111434B0E00B7C09B /* stdafx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stdafx.c; sourceTree = "<group>"; };
+		ECF4BCA211434B0E00B7C09B /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		ECF4BCA311434B0E00B7C09B /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		ECF4BCA411434B0E00B7C09B /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
+		ECF4BCA511434B0E00B7C09B /* test.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.vcproj; sourceTree = "<group>"; };
+		ECF4BCA611434B0E00B7C09B /* test_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_auth.h; sourceTree = "<group>"; };
+		ECF4BCA711434B0E00B7C09B /* test_stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_stack.h; sourceTree = "<group>"; };
+		ECF4BCA811434B0E00B7C09B /* test_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_url.h; sourceTree = "<group>"; };
+		ECF4BCB411434BA800B7C09B /* libtinyNET.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyNET.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECF4BCC811434C1000B7C09B /* tnet_dhcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp.c; sourceTree = "<group>"; };
+		ECF4BCC911434C1000B7C09B /* tnet_dhcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp.h; sourceTree = "<group>"; };
+		ECF4BCCA11434C1000B7C09B /* tnet_dhcp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp_message.c; sourceTree = "<group>"; };
+		ECF4BCCB11434C1000B7C09B /* tnet_dhcp_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp_message.h; sourceTree = "<group>"; };
+		ECF4BCCC11434C1000B7C09B /* tnet_dhcp_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp_option.c; sourceTree = "<group>"; };
+		ECF4BCCD11434C1000B7C09B /* tnet_dhcp_option.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp_option.h; sourceTree = "<group>"; };
+		ECF4BCCE11434C1000B7C09B /* tnet_dhcp_option_sip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp_option_sip.c; sourceTree = "<group>"; };
+		ECF4BCCF11434C1000B7C09B /* tnet_dhcp_option_sip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp_option_sip.h; sourceTree = "<group>"; };
+		ECF4BCD111434C1000B7C09B /* tnet_dhcp6.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp6.c; sourceTree = "<group>"; };
+		ECF4BCD211434C1000B7C09B /* tnet_dhcp6.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp6.h; sourceTree = "<group>"; };
+		ECF4BCD311434C1000B7C09B /* tnet_dhcp6_duid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp6_duid.c; sourceTree = "<group>"; };
+		ECF4BCD411434C1000B7C09B /* tnet_dhcp6_duid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp6_duid.h; sourceTree = "<group>"; };
+		ECF4BCD511434C1000B7C09B /* tnet_dhcp6_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp6_message.c; sourceTree = "<group>"; };
+		ECF4BCD611434C1000B7C09B /* tnet_dhcp6_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp6_message.h; sourceTree = "<group>"; };
+		ECF4BCD711434C1000B7C09B /* tnet_dhcp6_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp6_option.c; sourceTree = "<group>"; };
+		ECF4BCD811434C1100B7C09B /* tnet_dhcp6_option.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp6_option.h; sourceTree = "<group>"; };
+		ECF4BCDA11434C1100B7C09B /* tnet_dns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns.c; sourceTree = "<group>"; };
+		ECF4BCDB11434C1100B7C09B /* tnet_dns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns.h; sourceTree = "<group>"; };
+		ECF4BCDC11434C1100B7C09B /* tnet_dns_a.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_a.c; sourceTree = "<group>"; };
+		ECF4BCDD11434C1100B7C09B /* tnet_dns_a.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_a.h; sourceTree = "<group>"; };
+		ECF4BCDE11434C1100B7C09B /* tnet_dns_aaaa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_aaaa.c; sourceTree = "<group>"; };
+		ECF4BCDF11434C1100B7C09B /* tnet_dns_aaaa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_aaaa.h; sourceTree = "<group>"; };
+		ECF4BCE011434C1100B7C09B /* tnet_dns_cname.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_cname.c; sourceTree = "<group>"; };
+		ECF4BCE111434C1100B7C09B /* tnet_dns_cname.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_cname.h; sourceTree = "<group>"; };
+		ECF4BCE211434C1100B7C09B /* tnet_dns_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_message.c; sourceTree = "<group>"; };
+		ECF4BCE311434C1100B7C09B /* tnet_dns_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_message.h; sourceTree = "<group>"; };
+		ECF4BCE411434C1100B7C09B /* tnet_dns_mx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_mx.c; sourceTree = "<group>"; };
+		ECF4BCE511434C1100B7C09B /* tnet_dns_mx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_mx.h; sourceTree = "<group>"; };
+		ECF4BCE611434C1100B7C09B /* tnet_dns_naptr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_naptr.c; sourceTree = "<group>"; };
+		ECF4BCE711434C1100B7C09B /* tnet_dns_naptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_naptr.h; sourceTree = "<group>"; };
+		ECF4BCE811434C1100B7C09B /* tnet_dns_ns.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_ns.c; sourceTree = "<group>"; };
+		ECF4BCE911434C1100B7C09B /* tnet_dns_ns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_ns.h; sourceTree = "<group>"; };
+		ECF4BCEA11434C1100B7C09B /* tnet_dns_opt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_opt.c; sourceTree = "<group>"; };
+		ECF4BCEB11434C1100B7C09B /* tnet_dns_opt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_opt.h; sourceTree = "<group>"; };
+		ECF4BCEC11434C1100B7C09B /* tnet_dns_ptr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_ptr.c; sourceTree = "<group>"; };
+		ECF4BCED11434C1100B7C09B /* tnet_dns_ptr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_ptr.h; sourceTree = "<group>"; };
+		ECF4BCEE11434C1100B7C09B /* tnet_dns_rr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_rr.c; sourceTree = "<group>"; };
+		ECF4BCEF11434C1100B7C09B /* tnet_dns_rr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_rr.h; sourceTree = "<group>"; };
+		ECF4BCF011434C1100B7C09B /* tnet_dns_soa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_soa.c; sourceTree = "<group>"; };
+		ECF4BCF111434C1100B7C09B /* tnet_dns_soa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_soa.h; sourceTree = "<group>"; };
+		ECF4BCF211434C1100B7C09B /* tnet_dns_srv.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_srv.c; sourceTree = "<group>"; };
+		ECF4BCF311434C1100B7C09B /* tnet_dns_srv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_srv.h; sourceTree = "<group>"; };
+		ECF4BCF411434C1100B7C09B /* tnet_dns_txt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_txt.c; sourceTree = "<group>"; };
+		ECF4BCF511434C1100B7C09B /* tnet_dns_txt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_txt.h; sourceTree = "<group>"; };
+		ECF4BCF711434C1100B7C09B /* tnet_ice.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_ice.c; sourceTree = "<group>"; };
+		ECF4BCF811434C1100B7C09B /* tnet_ice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_ice.h; sourceTree = "<group>"; };
+		ECF4BCFC11434C1100B7C09B /* tnet_stun.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_stun.c; sourceTree = "<group>"; };
+		ECF4BCFD11434C1100B7C09B /* tnet_stun.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_stun.h; sourceTree = "<group>"; };
+		ECF4BCFE11434C1100B7C09B /* tnet_stun_attribute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_stun_attribute.c; sourceTree = "<group>"; };
+		ECF4BCFF11434C1100B7C09B /* tnet_stun_attribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_stun_attribute.h; sourceTree = "<group>"; };
+		ECF4BD0011434C1100B7C09B /* tnet_stun_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_stun_message.c; sourceTree = "<group>"; };
+		ECF4BD0111434C1100B7C09B /* tnet_stun_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_stun_message.h; sourceTree = "<group>"; };
+		ECF4BD0211434C1100B7C09B /* tinyNET_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyNET_config.h; sourceTree = "<group>"; };
+		ECF4BD0411434C1100B7C09B /* tnet_tls.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_tls.c; sourceTree = "<group>"; };
+		ECF4BD0511434C1100B7C09B /* tnet_tls.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_tls.h; sourceTree = "<group>"; };
+		ECF4BD0611434C1100B7C09B /* tnet.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet.c; sourceTree = "<group>"; };
+		ECF4BD0711434C1100B7C09B /* tnet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet.h; sourceTree = "<group>"; };
+		ECF4BD0811434C1100B7C09B /* tnet_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_auth.c; sourceTree = "<group>"; };
+		ECF4BD0911434C1100B7C09B /* tnet_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_auth.h; sourceTree = "<group>"; };
+		ECF4BD0A11434C1100B7C09B /* tnet_hardwares.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_hardwares.h; sourceTree = "<group>"; };
+		ECF4BD0B11434C1100B7C09B /* tnet_nat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_nat.c; sourceTree = "<group>"; };
+		ECF4BD0C11434C1100B7C09B /* tnet_nat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_nat.h; sourceTree = "<group>"; };
+		ECF4BD0D11434C1100B7C09B /* tnet_poll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_poll.c; sourceTree = "<group>"; };
+		ECF4BD0E11434C1100B7C09B /* tnet_poll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_poll.h; sourceTree = "<group>"; };
+		ECF4BD0F11434C1100B7C09B /* tnet_proto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_proto.h; sourceTree = "<group>"; };
+		ECF4BD1011434C1100B7C09B /* tnet_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_socket.c; sourceTree = "<group>"; };
+		ECF4BD1111434C1100B7C09B /* tnet_socket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_socket.h; sourceTree = "<group>"; };
+		ECF4BD1211434C1100B7C09B /* tnet_transport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_transport.c; sourceTree = "<group>"; };
+		ECF4BD1311434C1100B7C09B /* tnet_transport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_transport.h; sourceTree = "<group>"; };
+		ECF4BD1411434C1100B7C09B /* tnet_transport_poll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_transport_poll.c; sourceTree = "<group>"; };
+		ECF4BD1511434C1100B7C09B /* tnet_transport_win32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_transport_win32.c; sourceTree = "<group>"; };
+		ECF4BD1611434C1100B7C09B /* tnet_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_types.h; sourceTree = "<group>"; };
+		ECF4BD1711434C1100B7C09B /* tnet_utils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_utils.c; sourceTree = "<group>"; };
+		ECF4BD1811434C1100B7C09B /* tnet_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_utils.h; sourceTree = "<group>"; };
+		ECF4BD1A11434C1100B7C09B /* tnet_turn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_turn.c; sourceTree = "<group>"; };
+		ECF4BD1B11434C1100B7C09B /* tnet_turn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_turn.h; sourceTree = "<group>"; };
+		ECF4BD1C11434C1100B7C09B /* tnet_turn_attribute.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_turn_attribute.c; sourceTree = "<group>"; };
+		ECF4BD1D11434C1100B7C09B /* tnet_turn_attribute.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_turn_attribute.h; sourceTree = "<group>"; };
+		ECF4BD1E11434C1100B7C09B /* tnet_turn_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_turn_message.c; sourceTree = "<group>"; };
+		ECF4BD1F11434C1100B7C09B /* tnet_turn_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_turn_message.h; sourceTree = "<group>"; };
+		ECF4BD9511434CA000B7C09B /* tsk_fsm.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_fsm.c; path = ../../tinySAK/src/tsk_fsm.c; sourceTree = SOURCE_ROOT; };
+		ECF4BD9611434CA000B7C09B /* tsk_fsm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_fsm.h; path = ../../tinySAK/src/tsk_fsm.h; sourceTree = SOURCE_ROOT; };
+		ECF4BD9711434CA000B7C09B /* tsk_ppfcs32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_ppfcs32.c; path = ../../tinySAK/src/tsk_ppfcs32.c; sourceTree = SOURCE_ROOT; };
+		ECF4BD9811434CA000B7C09B /* tsk_ppfcs32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_ppfcs32.h; path = ../../tinySAK/src/tsk_ppfcs32.h; sourceTree = SOURCE_ROOT; };
+		ECF4BD9911434CA000B7C09B /* tsk_ragel_state.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_ragel_state.c; path = ../../tinySAK/src/tsk_ragel_state.c; sourceTree = SOURCE_ROOT; };
+		ECF4BD9A11434CA000B7C09B /* tsk_ragel_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_ragel_state.h; path = ../../tinySAK/src/tsk_ragel_state.h; sourceTree = SOURCE_ROOT; };
+		ECF4BD9B11434CA000B7C09B /* tsk_uuid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_uuid.c; path = ../../tinySAK/src/tsk_uuid.c; sourceTree = SOURCE_ROOT; };
+		ECF4BD9C11434CA000B7C09B /* tsk_uuid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_uuid.h; path = ../../tinySAK/src/tsk_uuid.h; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +394,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				ECED622F10F989A3006B4DC9 /* libtinySAK.dylib in Frameworks */,
+				ECF4BDAA11434CC600B7C09B /* libtinyNET.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,40 +414,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ECF4BCB211434BA800B7C09B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECF4BCBA11434BF900B7C09B /* libtinySAK.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		08FB7794FE84155DC02AAC07 /* tinyHTTP */ = {
 			isa = PBXGroup;
 			children = (
-				ECED624210F98B6A006B4DC9 /* stdafx.c */,
-				ECED624310F98B6A006B4DC9 /* stdafx.h */,
-				ECED624410F98B6A006B4DC9 /* targetver.h */,
-				ECED624510F98B6A006B4DC9 /* test.c */,
-				ECED624610F98B6A006B4DC9 /* test.vcproj */,
-				ECED624710F98B6A006B4DC9 /* test_auth.h */,
-				ECED623910F98B38006B4DC9 /* test */,
+				ECF4BCBB11434C1000B7C09B /* tinyNET */,
+				ECF4BC9F11434B0E00B7C09B /* test */,
+				ECF4BC7611434AEB00B7C09B /* src */,
 				ECED61BF10F988F6006B4DC9 /* tinySAK */,
 				ECED619F10F987B4006B4DC9 /* ragel */,
 				ECED619E10F987A5006B4DC9 /* abnf */,
 				ECED619D10F9878B006B4DC9 /* include */,
-				08FB7795FE84155DC02AAC07 /* Source */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
 			name = tinyHTTP;
-			sourceTree = "<group>";
-		};
-		08FB7795FE84155DC02AAC07 /* Source */ = {
-			isa = PBXGroup;
-			children = (
-				ECED61AF10F98893006B4DC9 /* thttp.c */,
-				ECED61B010F98893006B4DC9 /* thttp_message.c */,
-				ECED61B110F98893006B4DC9 /* thttp_utl.c */,
-				ECED61A210F987D2006B4DC9 /* parsers */,
-				ECED61A110F987CA006B4DC9 /* headers */,
-				ECED61A010F987C2006B4DC9 /* auth */,
-			);
-			name = Source;
 			sourceTree = "<group>";
 		};
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
@@ -240,6 +446,7 @@
 				D2AAC0630554660B00DB518D /* libtinyHTTP.dylib */,
 				ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */,
 				ECED623D10F98B46006B4DC9 /* test */,
+				ECF4BCB411434BA800B7C09B /* libtinyNET.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -273,28 +480,6 @@
 			name = ragel;
 			sourceTree = "<group>";
 		};
-		ECED61A010F987C2006B4DC9 /* auth */ = {
-			isa = PBXGroup;
-			children = (
-				ECED61B510F988B3006B4DC9 /* thttp_auth.c */,
-			);
-			name = auth;
-			sourceTree = "<group>";
-		};
-		ECED61A110F987CA006B4DC9 /* headers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = headers;
-			sourceTree = "<group>";
-		};
-		ECED61A210F987D2006B4DC9 /* parsers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = parsers;
-			sourceTree = "<group>";
-		};
 		ECED61A310F987E3006B4DC9 /* auth */ = {
 			isa = PBXGroup;
 			children = (
@@ -320,6 +505,14 @@
 		ECED61BF10F988F6006B4DC9 /* tinySAK */ = {
 			isa = PBXGroup;
 			children = (
+				ECF4BD9511434CA000B7C09B /* tsk_fsm.c */,
+				ECF4BD9611434CA000B7C09B /* tsk_fsm.h */,
+				ECF4BD9711434CA000B7C09B /* tsk_ppfcs32.c */,
+				ECF4BD9811434CA000B7C09B /* tsk_ppfcs32.h */,
+				ECF4BD9911434CA000B7C09B /* tsk_ragel_state.c */,
+				ECF4BD9A11434CA000B7C09B /* tsk_ragel_state.h */,
+				ECF4BD9B11434CA000B7C09B /* tsk_uuid.c */,
+				ECF4BD9C11434CA000B7C09B /* tsk_uuid.h */,
 				ECED61C110F98926006B4DC9 /* tinySAK_config.h */,
 				ECED61C210F98926006B4DC9 /* tsk.c */,
 				ECED61C310F98926006B4DC9 /* tsk.h */,
@@ -334,13 +527,10 @@
 				ECED61CC10F98926006B4DC9 /* tsk_debug.c */,
 				ECED61CD10F98926006B4DC9 /* tsk_debug.h */,
 				ECED61CE10F98926006B4DC9 /* tsk_errno.h */,
-				ECED61CF10F98926006B4DC9 /* tsk_heap.c */,
-				ECED61D010F98926006B4DC9 /* tsk_heap.h */,
 				ECED61D110F98926006B4DC9 /* tsk_hmac.c */,
 				ECED61D210F98926006B4DC9 /* tsk_hmac.h */,
 				ECED61D310F98926006B4DC9 /* tsk_list.c */,
 				ECED61D410F98926006B4DC9 /* tsk_list.h */,
-				ECED61D510F98926006B4DC9 /* tsk_macros.h */,
 				ECED61D610F98926006B4DC9 /* tsk_md5.c */,
 				ECED61D710F98926006B4DC9 /* tsk_md5.h */,
 				ECED61D810F98926006B4DC9 /* tsk_memory.c */,
@@ -377,11 +567,229 @@
 			name = tinySAK;
 			sourceTree = "<group>";
 		};
-		ECED623910F98B38006B4DC9 /* test */ = {
+		ECF4BC7611434AEB00B7C09B /* src */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BC7711434AEB00B7C09B /* auth */,
+				ECF4BC7911434AEB00B7C09B /* headers */,
+				ECF4BC8211434AEB00B7C09B /* parsers */,
+				ECF4BC8611434AEB00B7C09B /* thttp.c */,
+				ECF4BC8711434AEB00B7C09B /* thttp_event.c */,
+				ECF4BC8811434AEB00B7C09B /* thttp_message.c */,
+				ECF4BC8911434AEB00B7C09B /* thttp_operation.c */,
+				ECF4BC8A11434AEB00B7C09B /* thttp_transport.c */,
+				ECF4BC8B11434AEB00B7C09B /* thttp_url.c */,
+			);
+			name = src;
+			path = ../../tinyHTTP/src;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECF4BC7711434AEB00B7C09B /* auth */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BC7811434AEB00B7C09B /* thttp_auth.c */,
+			);
+			path = auth;
+			sourceTree = "<group>";
+		};
+		ECF4BC7911434AEB00B7C09B /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BC7A11434AEB00B7C09B /* thttp_header.c */,
+				ECF4BC7B11434AEB00B7C09B /* thttp_header_Authorization.c */,
+				ECF4BC7C11434AEB00B7C09B /* thttp_header_Content_Length.c */,
+				ECF4BC7D11434AEB00B7C09B /* thttp_header_Content_Type.c */,
+				ECF4BC7E11434AEB00B7C09B /* thttp_header_Dummy.c */,
+				ECF4BC7F11434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c */,
+				ECF4BC8011434AEB00B7C09B /* thttp_header_WWW_Authenticate.c */,
+			);
+			path = headers;
+			sourceTree = "<group>";
+		};
+		ECF4BC8211434AEB00B7C09B /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BC8311434AEB00B7C09B /* thttp_parser_header.c */,
+				ECF4BC8411434AEB00B7C09B /* thttp_parser_message.c */,
+				ECF4BC8511434AEB00B7C09B /* thttp_parser_url.c */,
+			);
+			path = parsers;
+			sourceTree = "<group>";
+		};
+		ECF4BC9F11434B0E00B7C09B /* test */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BCA111434B0E00B7C09B /* stdafx.c */,
+				ECF4BCA211434B0E00B7C09B /* stdafx.h */,
+				ECF4BCA311434B0E00B7C09B /* targetver.h */,
+				ECF4BCA411434B0E00B7C09B /* test.c */,
+				ECF4BCA511434B0E00B7C09B /* test.vcproj */,
+				ECF4BCA611434B0E00B7C09B /* test_auth.h */,
+				ECF4BCA711434B0E00B7C09B /* test_stack.h */,
+				ECF4BCA811434B0E00B7C09B /* test_url.h */,
+			);
+			name = test;
+			path = ../../tinyHTTP/test;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECF4BCBB11434C1000B7C09B /* tinyNET */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BCC611434C1000B7C09B /* src */,
+			);
+			name = tinyNET;
+			path = ../../tinyNET;
+			sourceTree = SOURCE_ROOT;
+		};
+		ECF4BCC611434C1000B7C09B /* src */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BCC711434C1000B7C09B /* dhcp */,
+				ECF4BCD011434C1000B7C09B /* dhcp6 */,
+				ECF4BCD911434C1100B7C09B /* dns */,
+				ECF4BCF611434C1100B7C09B /* ice */,
+				ECF4BCFA11434C1100B7C09B /* parsers */,
+				ECF4BCFB11434C1100B7C09B /* stun */,
+				ECF4BD0211434C1100B7C09B /* tinyNET_config.h */,
+				ECF4BD0311434C1100B7C09B /* tls */,
+				ECF4BD0611434C1100B7C09B /* tnet.c */,
+				ECF4BD0711434C1100B7C09B /* tnet.h */,
+				ECF4BD0811434C1100B7C09B /* tnet_auth.c */,
+				ECF4BD0911434C1100B7C09B /* tnet_auth.h */,
+				ECF4BD0A11434C1100B7C09B /* tnet_hardwares.h */,
+				ECF4BD0B11434C1100B7C09B /* tnet_nat.c */,
+				ECF4BD0C11434C1100B7C09B /* tnet_nat.h */,
+				ECF4BD0D11434C1100B7C09B /* tnet_poll.c */,
+				ECF4BD0E11434C1100B7C09B /* tnet_poll.h */,
+				ECF4BD0F11434C1100B7C09B /* tnet_proto.h */,
+				ECF4BD1011434C1100B7C09B /* tnet_socket.c */,
+				ECF4BD1111434C1100B7C09B /* tnet_socket.h */,
+				ECF4BD1211434C1100B7C09B /* tnet_transport.c */,
+				ECF4BD1311434C1100B7C09B /* tnet_transport.h */,
+				ECF4BD1411434C1100B7C09B /* tnet_transport_poll.c */,
+				ECF4BD1511434C1100B7C09B /* tnet_transport_win32.c */,
+				ECF4BD1611434C1100B7C09B /* tnet_types.h */,
+				ECF4BD1711434C1100B7C09B /* tnet_utils.c */,
+				ECF4BD1811434C1100B7C09B /* tnet_utils.h */,
+				ECF4BD1911434C1100B7C09B /* turn */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		ECF4BCC711434C1000B7C09B /* dhcp */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BCC811434C1000B7C09B /* tnet_dhcp.c */,
+				ECF4BCC911434C1000B7C09B /* tnet_dhcp.h */,
+				ECF4BCCA11434C1000B7C09B /* tnet_dhcp_message.c */,
+				ECF4BCCB11434C1000B7C09B /* tnet_dhcp_message.h */,
+				ECF4BCCC11434C1000B7C09B /* tnet_dhcp_option.c */,
+				ECF4BCCD11434C1000B7C09B /* tnet_dhcp_option.h */,
+				ECF4BCCE11434C1000B7C09B /* tnet_dhcp_option_sip.c */,
+				ECF4BCCF11434C1000B7C09B /* tnet_dhcp_option_sip.h */,
+			);
+			path = dhcp;
+			sourceTree = "<group>";
+		};
+		ECF4BCD011434C1000B7C09B /* dhcp6 */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BCD111434C1000B7C09B /* tnet_dhcp6.c */,
+				ECF4BCD211434C1000B7C09B /* tnet_dhcp6.h */,
+				ECF4BCD311434C1000B7C09B /* tnet_dhcp6_duid.c */,
+				ECF4BCD411434C1000B7C09B /* tnet_dhcp6_duid.h */,
+				ECF4BCD511434C1000B7C09B /* tnet_dhcp6_message.c */,
+				ECF4BCD611434C1000B7C09B /* tnet_dhcp6_message.h */,
+				ECF4BCD711434C1000B7C09B /* tnet_dhcp6_option.c */,
+				ECF4BCD811434C1100B7C09B /* tnet_dhcp6_option.h */,
+			);
+			path = dhcp6;
+			sourceTree = "<group>";
+		};
+		ECF4BCD911434C1100B7C09B /* dns */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BCDA11434C1100B7C09B /* tnet_dns.c */,
+				ECF4BCDB11434C1100B7C09B /* tnet_dns.h */,
+				ECF4BCDC11434C1100B7C09B /* tnet_dns_a.c */,
+				ECF4BCDD11434C1100B7C09B /* tnet_dns_a.h */,
+				ECF4BCDE11434C1100B7C09B /* tnet_dns_aaaa.c */,
+				ECF4BCDF11434C1100B7C09B /* tnet_dns_aaaa.h */,
+				ECF4BCE011434C1100B7C09B /* tnet_dns_cname.c */,
+				ECF4BCE111434C1100B7C09B /* tnet_dns_cname.h */,
+				ECF4BCE211434C1100B7C09B /* tnet_dns_message.c */,
+				ECF4BCE311434C1100B7C09B /* tnet_dns_message.h */,
+				ECF4BCE411434C1100B7C09B /* tnet_dns_mx.c */,
+				ECF4BCE511434C1100B7C09B /* tnet_dns_mx.h */,
+				ECF4BCE611434C1100B7C09B /* tnet_dns_naptr.c */,
+				ECF4BCE711434C1100B7C09B /* tnet_dns_naptr.h */,
+				ECF4BCE811434C1100B7C09B /* tnet_dns_ns.c */,
+				ECF4BCE911434C1100B7C09B /* tnet_dns_ns.h */,
+				ECF4BCEA11434C1100B7C09B /* tnet_dns_opt.c */,
+				ECF4BCEB11434C1100B7C09B /* tnet_dns_opt.h */,
+				ECF4BCEC11434C1100B7C09B /* tnet_dns_ptr.c */,
+				ECF4BCED11434C1100B7C09B /* tnet_dns_ptr.h */,
+				ECF4BCEE11434C1100B7C09B /* tnet_dns_rr.c */,
+				ECF4BCEF11434C1100B7C09B /* tnet_dns_rr.h */,
+				ECF4BCF011434C1100B7C09B /* tnet_dns_soa.c */,
+				ECF4BCF111434C1100B7C09B /* tnet_dns_soa.h */,
+				ECF4BCF211434C1100B7C09B /* tnet_dns_srv.c */,
+				ECF4BCF311434C1100B7C09B /* tnet_dns_srv.h */,
+				ECF4BCF411434C1100B7C09B /* tnet_dns_txt.c */,
+				ECF4BCF511434C1100B7C09B /* tnet_dns_txt.h */,
+			);
+			path = dns;
+			sourceTree = "<group>";
+		};
+		ECF4BCF611434C1100B7C09B /* ice */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BCF711434C1100B7C09B /* tnet_ice.c */,
+				ECF4BCF811434C1100B7C09B /* tnet_ice.h */,
+			);
+			path = ice;
+			sourceTree = "<group>";
+		};
+		ECF4BCFA11434C1100B7C09B /* parsers */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			name = test;
+			path = parsers;
+			sourceTree = "<group>";
+		};
+		ECF4BCFB11434C1100B7C09B /* stun */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BCFC11434C1100B7C09B /* tnet_stun.c */,
+				ECF4BCFD11434C1100B7C09B /* tnet_stun.h */,
+				ECF4BCFE11434C1100B7C09B /* tnet_stun_attribute.c */,
+				ECF4BCFF11434C1100B7C09B /* tnet_stun_attribute.h */,
+				ECF4BD0011434C1100B7C09B /* tnet_stun_message.c */,
+				ECF4BD0111434C1100B7C09B /* tnet_stun_message.h */,
+			);
+			path = stun;
+			sourceTree = "<group>";
+		};
+		ECF4BD0311434C1100B7C09B /* tls */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BD0411434C1100B7C09B /* tnet_tls.c */,
+				ECF4BD0511434C1100B7C09B /* tnet_tls.h */,
+			);
+			path = tls;
+			sourceTree = "<group>";
+		};
+		ECF4BD1911434C1100B7C09B /* turn */ = {
+			isa = PBXGroup;
+			children = (
+				ECF4BD1A11434C1100B7C09B /* tnet_turn.c */,
+				ECF4BD1B11434C1100B7C09B /* tnet_turn.h */,
+				ECF4BD1C11434C1100B7C09B /* tnet_turn_attribute.c */,
+				ECF4BD1D11434C1100B7C09B /* tnet_turn_attribute.h */,
+				ECF4BD1E11434C1100B7C09B /* tnet_turn_message.c */,
+				ECF4BD1F11434C1100B7C09B /* tnet_turn_message.h */,
+			);
+			path = turn;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -409,10 +817,8 @@
 				ECED620010F98926006B4DC9 /* tsk_condwait.h in Headers */,
 				ECED620210F98926006B4DC9 /* tsk_debug.h in Headers */,
 				ECED620310F98926006B4DC9 /* tsk_errno.h in Headers */,
-				ECED620510F98926006B4DC9 /* tsk_heap.h in Headers */,
 				ECED620710F98926006B4DC9 /* tsk_hmac.h in Headers */,
 				ECED620910F98926006B4DC9 /* tsk_list.h in Headers */,
-				ECED620A10F98926006B4DC9 /* tsk_macros.h in Headers */,
 				ECED620C10F98926006B4DC9 /* tsk_md5.h in Headers */,
 				ECED620E10F98926006B4DC9 /* tsk_memory.h in Headers */,
 				ECED621010F98926006B4DC9 /* tsk_mutex.h in Headers */,
@@ -429,6 +835,58 @@
 				ECED622610F98926006B4DC9 /* tsk_timer.h in Headers */,
 				ECED622810F98926006B4DC9 /* tsk_url.h in Headers */,
 				ECED622A10F98926006B4DC9 /* tsk_xml.h in Headers */,
+				ECF4BD9E11434CA000B7C09B /* tsk_fsm.h in Headers */,
+				ECF4BDA011434CA000B7C09B /* tsk_ppfcs32.h in Headers */,
+				ECF4BDA211434CA000B7C09B /* tsk_ragel_state.h in Headers */,
+				ECF4BDA411434CA000B7C09B /* tsk_uuid.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECF4BCB011434BA800B7C09B /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECF4BD3411434C1100B7C09B /* tnet_dhcp.h in Headers */,
+				ECF4BD3611434C1100B7C09B /* tnet_dhcp_message.h in Headers */,
+				ECF4BD3811434C1100B7C09B /* tnet_dhcp_option.h in Headers */,
+				ECF4BD3A11434C1100B7C09B /* tnet_dhcp_option_sip.h in Headers */,
+				ECF4BD3C11434C1100B7C09B /* tnet_dhcp6.h in Headers */,
+				ECF4BD3E11434C1100B7C09B /* tnet_dhcp6_duid.h in Headers */,
+				ECF4BD4011434C1100B7C09B /* tnet_dhcp6_message.h in Headers */,
+				ECF4BD4211434C1100B7C09B /* tnet_dhcp6_option.h in Headers */,
+				ECF4BD4411434C1100B7C09B /* tnet_dns.h in Headers */,
+				ECF4BD4611434C1100B7C09B /* tnet_dns_a.h in Headers */,
+				ECF4BD4811434C1100B7C09B /* tnet_dns_aaaa.h in Headers */,
+				ECF4BD4A11434C1100B7C09B /* tnet_dns_cname.h in Headers */,
+				ECF4BD4C11434C1100B7C09B /* tnet_dns_message.h in Headers */,
+				ECF4BD4E11434C1100B7C09B /* tnet_dns_mx.h in Headers */,
+				ECF4BD5011434C1100B7C09B /* tnet_dns_naptr.h in Headers */,
+				ECF4BD5211434C1100B7C09B /* tnet_dns_ns.h in Headers */,
+				ECF4BD5411434C1100B7C09B /* tnet_dns_opt.h in Headers */,
+				ECF4BD5611434C1100B7C09B /* tnet_dns_ptr.h in Headers */,
+				ECF4BD5811434C1100B7C09B /* tnet_dns_rr.h in Headers */,
+				ECF4BD5A11434C1100B7C09B /* tnet_dns_soa.h in Headers */,
+				ECF4BD5C11434C1100B7C09B /* tnet_dns_srv.h in Headers */,
+				ECF4BD5E11434C1100B7C09B /* tnet_dns_txt.h in Headers */,
+				ECF4BD6011434C1100B7C09B /* tnet_ice.h in Headers */,
+				ECF4BD6311434C1100B7C09B /* tnet_stun.h in Headers */,
+				ECF4BD6511434C1100B7C09B /* tnet_stun_attribute.h in Headers */,
+				ECF4BD6711434C1100B7C09B /* tnet_stun_message.h in Headers */,
+				ECF4BD6811434C1100B7C09B /* tinyNET_config.h in Headers */,
+				ECF4BD6A11434C1100B7C09B /* tnet_tls.h in Headers */,
+				ECF4BD6C11434C1100B7C09B /* tnet.h in Headers */,
+				ECF4BD6E11434C1100B7C09B /* tnet_auth.h in Headers */,
+				ECF4BD6F11434C1100B7C09B /* tnet_hardwares.h in Headers */,
+				ECF4BD7111434C1100B7C09B /* tnet_nat.h in Headers */,
+				ECF4BD7311434C1100B7C09B /* tnet_poll.h in Headers */,
+				ECF4BD7411434C1100B7C09B /* tnet_proto.h in Headers */,
+				ECF4BD7611434C1100B7C09B /* tnet_socket.h in Headers */,
+				ECF4BD7811434C1100B7C09B /* tnet_transport.h in Headers */,
+				ECF4BD7B11434C1100B7C09B /* tnet_types.h in Headers */,
+				ECF4BD7D11434C1100B7C09B /* tnet_utils.h in Headers */,
+				ECF4BD7F11434C1100B7C09B /* tnet_turn.h in Headers */,
+				ECF4BD8111434C1100B7C09B /* tnet_turn_attribute.h in Headers */,
+				ECF4BD8311434C1100B7C09B /* tnet_turn_message.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -447,6 +905,7 @@
 			);
 			dependencies = (
 				ECED622E10F9899F006B4DC9 /* PBXTargetDependency */,
+				ECF4BDA911434CC200B7C09B /* PBXTargetDependency */,
 			);
 			name = tinyHTTP;
 			productName = tinyHTTP;
@@ -488,6 +947,24 @@
 			productReference = ECED623D10F98B46006B4DC9 /* test */;
 			productType = "com.apple.product-type.tool";
 		};
+		ECF4BCB311434BA800B7C09B /* tinyNET */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ECF4BCB711434BC700B7C09B /* Build configuration list for PBXNativeTarget "tinyNET" */;
+			buildPhases = (
+				ECF4BCB011434BA800B7C09B /* Headers */,
+				ECF4BCB111434BA800B7C09B /* Sources */,
+				ECF4BCB211434BA800B7C09B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				ECF4BCB911434BF400B7C09B /* PBXTargetDependency */,
+			);
+			name = tinyNET;
+			productName = tinyNET;
+			productReference = ECF4BCB411434BA800B7C09B /* libtinyNET.dylib */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -503,6 +980,7 @@
 				D2AAC0620554660B00DB518D /* tinyHTTP */,
 				ECED61BB10F988E7006B4DC9 /* tinySAK */,
 				ECED623C10F98B46006B4DC9 /* test */,
+				ECF4BCB311434BA800B7C09B /* tinyNET */,
 			);
 		};
 /* End PBXProject section */
@@ -512,10 +990,23 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECED61B210F98893006B4DC9 /* thttp.c in Sources */,
-				ECED61B310F98893006B4DC9 /* thttp_message.c in Sources */,
-				ECED61B410F98893006B4DC9 /* thttp_utl.c in Sources */,
-				ECED61B610F988B3006B4DC9 /* thttp_auth.c in Sources */,
+				ECF4BC8C11434AEB00B7C09B /* thttp_auth.c in Sources */,
+				ECF4BC8D11434AEB00B7C09B /* thttp_header.c in Sources */,
+				ECF4BC8E11434AEB00B7C09B /* thttp_header_Authorization.c in Sources */,
+				ECF4BC8F11434AEB00B7C09B /* thttp_header_Content_Length.c in Sources */,
+				ECF4BC9011434AEB00B7C09B /* thttp_header_Content_Type.c in Sources */,
+				ECF4BC9111434AEB00B7C09B /* thttp_header_Dummy.c in Sources */,
+				ECF4BC9211434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c in Sources */,
+				ECF4BC9311434AEB00B7C09B /* thttp_header_WWW_Authenticate.c in Sources */,
+				ECF4BC9511434AEB00B7C09B /* thttp_parser_header.c in Sources */,
+				ECF4BC9611434AEB00B7C09B /* thttp_parser_message.c in Sources */,
+				ECF4BC9711434AEB00B7C09B /* thttp_parser_url.c in Sources */,
+				ECF4BC9811434AEB00B7C09B /* thttp.c in Sources */,
+				ECF4BC9911434AEB00B7C09B /* thttp_event.c in Sources */,
+				ECF4BC9A11434AEB00B7C09B /* thttp_message.c in Sources */,
+				ECF4BC9B11434AEB00B7C09B /* thttp_operation.c in Sources */,
+				ECF4BC9C11434AEB00B7C09B /* thttp_transport.c in Sources */,
+				ECF4BC9D11434AEB00B7C09B /* thttp_url.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,7 +1020,6 @@
 				ECED61FD10F98926006B4DC9 /* tsk_buffer.c in Sources */,
 				ECED61FF10F98926006B4DC9 /* tsk_condwait.c in Sources */,
 				ECED620110F98926006B4DC9 /* tsk_debug.c in Sources */,
-				ECED620410F98926006B4DC9 /* tsk_heap.c in Sources */,
 				ECED620610F98926006B4DC9 /* tsk_hmac.c in Sources */,
 				ECED620810F98926006B4DC9 /* tsk_list.c in Sources */,
 				ECED620B10F98926006B4DC9 /* tsk_md5.c in Sources */,
@@ -548,6 +1038,10 @@
 				ECED622510F98926006B4DC9 /* tsk_timer.c in Sources */,
 				ECED622710F98926006B4DC9 /* tsk_url.c in Sources */,
 				ECED622910F98926006B4DC9 /* tsk_xml.c in Sources */,
+				ECF4BD9D11434CA000B7C09B /* tsk_fsm.c in Sources */,
+				ECF4BD9F11434CA000B7C09B /* tsk_ppfcs32.c in Sources */,
+				ECF4BDA111434CA000B7C09B /* tsk_ragel_state.c in Sources */,
+				ECF4BDA311434CA000B7C09B /* tsk_uuid.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -555,8 +1049,54 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECED624810F98B6A006B4DC9 /* stdafx.c in Sources */,
-				ECED624910F98B6A006B4DC9 /* test.c in Sources */,
+				ECF4BCAA11434B0E00B7C09B /* stdafx.c in Sources */,
+				ECF4BCAB11434B0E00B7C09B /* test.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ECF4BCB111434BA800B7C09B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ECF4BD3311434C1100B7C09B /* tnet_dhcp.c in Sources */,
+				ECF4BD3511434C1100B7C09B /* tnet_dhcp_message.c in Sources */,
+				ECF4BD3711434C1100B7C09B /* tnet_dhcp_option.c in Sources */,
+				ECF4BD3911434C1100B7C09B /* tnet_dhcp_option_sip.c in Sources */,
+				ECF4BD3B11434C1100B7C09B /* tnet_dhcp6.c in Sources */,
+				ECF4BD3D11434C1100B7C09B /* tnet_dhcp6_duid.c in Sources */,
+				ECF4BD3F11434C1100B7C09B /* tnet_dhcp6_message.c in Sources */,
+				ECF4BD4111434C1100B7C09B /* tnet_dhcp6_option.c in Sources */,
+				ECF4BD4311434C1100B7C09B /* tnet_dns.c in Sources */,
+				ECF4BD4511434C1100B7C09B /* tnet_dns_a.c in Sources */,
+				ECF4BD4711434C1100B7C09B /* tnet_dns_aaaa.c in Sources */,
+				ECF4BD4911434C1100B7C09B /* tnet_dns_cname.c in Sources */,
+				ECF4BD4B11434C1100B7C09B /* tnet_dns_message.c in Sources */,
+				ECF4BD4D11434C1100B7C09B /* tnet_dns_mx.c in Sources */,
+				ECF4BD4F11434C1100B7C09B /* tnet_dns_naptr.c in Sources */,
+				ECF4BD5111434C1100B7C09B /* tnet_dns_ns.c in Sources */,
+				ECF4BD5311434C1100B7C09B /* tnet_dns_opt.c in Sources */,
+				ECF4BD5511434C1100B7C09B /* tnet_dns_ptr.c in Sources */,
+				ECF4BD5711434C1100B7C09B /* tnet_dns_rr.c in Sources */,
+				ECF4BD5911434C1100B7C09B /* tnet_dns_soa.c in Sources */,
+				ECF4BD5B11434C1100B7C09B /* tnet_dns_srv.c in Sources */,
+				ECF4BD5D11434C1100B7C09B /* tnet_dns_txt.c in Sources */,
+				ECF4BD5F11434C1100B7C09B /* tnet_ice.c in Sources */,
+				ECF4BD6211434C1100B7C09B /* tnet_stun.c in Sources */,
+				ECF4BD6411434C1100B7C09B /* tnet_stun_attribute.c in Sources */,
+				ECF4BD6611434C1100B7C09B /* tnet_stun_message.c in Sources */,
+				ECF4BD6911434C1100B7C09B /* tnet_tls.c in Sources */,
+				ECF4BD6B11434C1100B7C09B /* tnet.c in Sources */,
+				ECF4BD6D11434C1100B7C09B /* tnet_auth.c in Sources */,
+				ECF4BD7011434C1100B7C09B /* tnet_nat.c in Sources */,
+				ECF4BD7211434C1100B7C09B /* tnet_poll.c in Sources */,
+				ECF4BD7511434C1100B7C09B /* tnet_socket.c in Sources */,
+				ECF4BD7711434C1100B7C09B /* tnet_transport.c in Sources */,
+				ECF4BD7911434C1100B7C09B /* tnet_transport_poll.c in Sources */,
+				ECF4BD7A11434C1100B7C09B /* tnet_transport_win32.c in Sources */,
+				ECF4BD7C11434C1100B7C09B /* tnet_utils.c in Sources */,
+				ECF4BD7E11434C1100B7C09B /* tnet_turn.c in Sources */,
+				ECF4BD8011434C1100B7C09B /* tnet_turn_attribute.c in Sources */,
+				ECF4BD8211434C1100B7C09B /* tnet_turn_message.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,6 +1118,16 @@
 			target = ECED61BB10F988E7006B4DC9 /* tinySAK */;
 			targetProxy = ECED624D10F98B85006B4DC9 /* PBXContainerItemProxy */;
 		};
+		ECF4BCB911434BF400B7C09B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECED61BB10F988E7006B4DC9 /* tinySAK */;
+			targetProxy = ECF4BCB811434BF400B7C09B /* PBXContainerItemProxy */;
+		};
+		ECF4BDA911434CC200B7C09B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECF4BCB311434BA800B7C09B /* tinyNET */;
+			targetProxy = ECF4BDA811434CC200B7C09B /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -591,7 +1141,10 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = ../../../doubango/tinyHTTP/include;
+				HEADER_SEARCH_PATHS = (
+					../../../doubango/tinyHTTP/include,
+					../../../doubango/tinySAK/src,
+				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = "";
 				PRODUCT_NAME = tinyHTTP;
@@ -699,6 +1252,42 @@
 			};
 			name = Release;
 		};
+		ECF4BCB511434BA800B7C09B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				HEADER_SEARCH_PATHS = (
+					../../../doubango/tinySAK/src,
+					../../../doubango/tinyNET/src,
+				);
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyNET;
+			};
+			name = Debug;
+		};
+		ECF4BCB611434BA800B7C09B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXECUTABLE_PREFIX = lib;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/lib;
+				PREBINDING = NO;
+				PRODUCT_NAME = tinyNET;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -734,6 +1323,15 @@
 			buildConfigurations = (
 				ECED623F10F98B47006B4DC9 /* Debug */,
 				ECED624010F98B47006B4DC9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ECF4BCB711434BC700B7C09B /* Build configuration list for PBXNativeTarget "tinyNET" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ECF4BCB511434BA800B7C09B /* Debug */,
+				ECF4BCB611434BA800B7C09B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
