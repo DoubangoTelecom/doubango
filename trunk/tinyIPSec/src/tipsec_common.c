@@ -49,6 +49,12 @@ int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* 
 	return -1;
 }
 
+int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck)
+{
+	TSK_DEBUG_ERROR("No IPSec implementation found.");
+	return -1;
+}
+
 int tipsec_set_remote(tipsec_context_t* ctx, tipsec_spi_t spi_pc, tipsec_spi_t spi_ps, tipsec_port_t port_pc, tipsec_port_t port_ps, tipsec_lifetime_t lifetime)
 {
 	TSK_DEBUG_ERROR("No IPSec implementation found.");

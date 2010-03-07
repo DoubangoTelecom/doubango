@@ -1109,8 +1109,8 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 
 #else /* !TNET_UNDER_WINDOWS */
 
-#	if TNET_HAVE_SS_LEN
-		if((status = connect(fd, (struct sockaddr*)to, to.ss_len)))
+#if TNET_HAVE_SS_LEN
+		if((status = connect(fd, (struct sockaddr*)to, to->ss_len)))
 #	else
 		if((status = connect(fd, (struct sockaddr*)to, sizeof(*to))))
 #	endif

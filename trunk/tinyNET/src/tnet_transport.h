@@ -43,6 +43,7 @@ TNET_BEGIN_DECLS
 
 #define TNET_TRANSPORT_CREATE(host, port, type, description)		tsk_object_new(tnet_transport_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
 #define TNET_TRANSPORT_EVENT_CREATE(type, callback_data, fd)		tsk_object_new(tnet_transport_event_def_t, (tnet_transport_event_type_t)type, (const void*)callback_data, (tnet_fd_t)fd)
+#define TNET_TRANSPORT_CONTEXT_CREATE()								tsk_object_new(tnet_transport_context_def_t)
 
 #define TNET_TRANSPORT_CB_F(callback)							((tnet_transport_cb_f)callback)
 
@@ -73,7 +74,6 @@ tnet_transport_event_t;
 typedef int (*tnet_transport_cb_f)(const tnet_transport_event_t* e);
 
 TINYNET_API int tnet_transport_start(tnet_transport_handle_t* transport);
-TINYNET_API int tnet_transport_create_context(tnet_transport_handle_t* handle);
 TINYNET_API int tnet_transport_isready(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_issecure(const tnet_transport_handle_t *handle);
 TINYNET_API const char* tnet_transport_get_description(const tnet_transport_handle_t *handle);
@@ -121,6 +121,7 @@ tnet_transport_t;
 
 TINYNET_GEXTERN const void *tnet_transport_def_t;
 TINYNET_GEXTERN const void *tnet_transport_event_def_t;
+TINYNET_GEXTERN const void *tnet_transport_context_def_t;
 
 TNET_END_DECLS
 
