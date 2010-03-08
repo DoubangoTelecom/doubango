@@ -76,6 +76,7 @@ typedef tsk_list_t tsip_transports_L_t; /**< List of @ref tsip_transport_t eleme
 int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const tsip_stack_handle_t *stack, const char *host, tnet_port_t port, const char* description);
 int tsip_transport_deinit(tsip_transport_t* self);
 
+int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
 size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 

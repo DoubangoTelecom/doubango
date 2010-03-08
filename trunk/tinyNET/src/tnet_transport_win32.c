@@ -63,7 +63,7 @@ typedef struct transport_context_s
 transport_context_t;
 
 static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
-static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client);
+static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client);
 static void removeSocket(int index, transport_context_t *context);
 
 /* Checks if socket is connected */
@@ -125,7 +125,7 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	transport_context_t *context;
+	transport_context_t* context;
 	int ret = -1;
 
 	if(!transport){
@@ -139,10 +139,10 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 	}
 
 	if(TNET_SOCKET_TYPE_IS_TLS(type)){
-		transport->have_tls = 1;
+		transport->tls.have_tls = 1;
 	}
 
-	addSocket(fd, type, context, take_ownership, isClient);
+	addSocket(fd, type, transport, take_ownership, isClient);
 	if(WSAEventSelect(fd, context->events[context->count - 1], FD_ALL_EVENTS) == SOCKET_ERROR){
 		removeSocket((context->count - 1), context);
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
@@ -215,7 +215,7 @@ size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from
 		goto bail;
 	}
 
-	if(transport->have_tls){
+	if(transport->tls.have_tls){
 		transport_socket_t* socket = getSocket(transport->context, from);
 		if(socket && socket->tlshandle){
 			if(!tnet_tls_socket_send(socket->tlshandle, buf, size)){
@@ -325,8 +325,10 @@ static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 }
 
 /*== Add new socket ==*/
-static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client)
+static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client)
 {
+	transport_context_t *context = transport?transport->context:0;
+
 	if(context){
 		transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
 		sock->fd = fd;
@@ -334,7 +336,7 @@ static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t
 		sock->owner = take_ownership ? 1 : 0;
 
 		if(TNET_SOCKET_TYPE_IS_TLS(sock->type)){
-			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, 0, 0, 0);
+			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, transport->tls.ca, transport->tls.pvk, transport->tls.pbk);
 		}
 		
 		tsk_safeobj_lock(context);
@@ -425,7 +427,7 @@ void *tnet_transport_mainthread(void *param)
 	}
 
 	/* Add the current transport socket to the context. */
-	addSocket(transport->master->fd, transport->master->type, context, 1, 0);
+	addSocket(transport->master->fd, transport->master->type, transport, 1, 0);
 	if(ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)
 	{
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
@@ -478,7 +480,7 @@ void *tnet_transport_mainthread(void *param)
 			if((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET)
 			{
 				/* Add the new fd to the server context */
-				addSocket(fd, transport->master->type, context, 1, 0);
+				addSocket(fd, transport->master->type, transport, 1, 0);
 				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
 				{
 					removeSocket((context->count - 1), context);
@@ -547,15 +549,12 @@ void *tnet_transport_mainthread(void *param)
 			if(active_socket->tlshandle){
 				int isEncrypted;
 				size_t len = wsaBuffer.len;
-				if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, wsaBuffer.buf, &len, &isEncrypted))){
+				if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, &wsaBuffer.buf, &len, &isEncrypted))){
 					if(isEncrypted){
 						TSK_FREE(wsaBuffer.buf);
 						continue;
 					}
-					else if(len != wsaBuffer.len){
-						wsaBuffer.len = len;
-						wsaBuffer.buf = tsk_realloc(wsaBuffer.buf, len);
-					}
+					wsaBuffer.len = len;
 				}
 			}
 			else{

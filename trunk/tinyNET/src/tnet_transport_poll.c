@@ -70,7 +70,7 @@ typedef struct transport_context_s
 transport_context_t;
 
 static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
-static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client);
+static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client);
 static void setConnected(tnet_fd_t fd, transport_context_t *context, int connected);
 static void removeSocket(int index, transport_context_t *context);
 
@@ -101,7 +101,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	transport_context_t *context;
+	static char c = '\0';
 	int ret = -1;
 
 	if(!transport){
@@ -113,18 +113,16 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		transport->have_tls = 1;
 	}
 	
-	if((context = (transport_context_t*)transport->context)){
-		static char c = '\0';
-		addSocket(fd, type, context, take_ownership, isClient);
-	
-		// signal
-		ret = write(context->pipeW, &c, 1);
-		return (ret > 0 ? 0 : ret);
-	}
+	static char c = '\0';
+	addSocket(fd, type, transport, take_ownership, isClient);
 
-	// ...
-	
-	return -1;
+	// signal
+	if((ret = write(context->pipeW, &c, 1)) > 0){
+		return 0;
+	}
+	else{
+		return ret;
+	}
 }
 
 /* Remove socket
@@ -274,8 +272,9 @@ static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 }
 
 /*== Add new socket ==*/
-void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *context, int take_ownership, int is_client)
+void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client)
 {
+	transport_context_t *context = transport?transport->context:0;
 	if(context){
 		transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
 		sock->fd = fd;
@@ -283,7 +282,7 @@ void addSocket(tnet_fd_t fd, tnet_socket_type_t type, transport_context_t *conte
 		sock->owner = take_ownership ? 1 : 0;
 
 		if(TNET_SOCKET_TYPE_IS_TLS(sock->type)){
-			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, 0, 0, 0);
+			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, transport->tls.ca, transport->tls.pvk, transport->tls.pbk);
 		}
 		
 		tsk_safeobj_lock(context);
@@ -408,10 +407,10 @@ void *tnet_transport_mainthread(void *param)
 	context->pipeR = pipes[0];
 	context->pipeW = pipes[1];
 
-	addSocket(context->pipeR, transport->master->type, context, 1, 0);
+	addSocket(context->pipeR, transport->master->type, transport, 1, 0);
 
 	/* Add the master socket to the context. */
-	addSocket(transport->master->fd, transport->master->type, context, 1, 0);
+	addSocket(transport->master->fd, transport->master->type, transport, 1, 0);
 
 	/* Set transport to active */
 	transport->active = 1;
@@ -483,15 +482,12 @@ void *tnet_transport_mainthread(void *param)
 				if(active_socket->tlshandle){
 					int isEncrypted;
 					size_t tlslen = len;
-					if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, buffer, &tlslen, &isEncrypted))){
+					if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, &buffer, &tlslen, &isEncrypted))){
 						if(isEncrypted){
 							TSK_FREE(buffer);
 							continue;
 						}
-						else if(tlslen != len){
-							len = tlslen;
-							buffer = tsk_realloc(buffer, tlslen);
-						}
+						len = tlslen;
 					}
 				}
 				else if((ret = recv(active_socket->fd, buffer, len, 0)) < 0)

@@ -113,10 +113,12 @@ typedef struct tnet_transport_s
 	const void* callback_data;
 
 	/* TLS certs */
-	char* tlsfile_ca;
-	char* tlsfile_pvk;
-	char* tlsfile_pbk;
-	unsigned have_tls:1;
+	struct {
+		char* ca;
+		char* pvk;
+		char* pbk;
+		unsigned have_tls:1;
+	}tls;
 }
 tnet_transport_t;
 

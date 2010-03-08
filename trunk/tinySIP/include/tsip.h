@@ -54,6 +54,7 @@ typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
 typedef void tsip_stack_handle_t;
 
+// Only for internal use
 #define TSIP_STACK(self)		((tsip_stack_t*)(self))
 
 typedef enum tsip_stack_param_type_e
@@ -100,8 +101,11 @@ typedef enum tsip_stack_param_type_e
 	
 	/* Security */
 	pname_secagree_ipsec,
+	pname_secagree_tls,
+	pname_tls_certs,
 #define TSIP_STACK_SET_SECAGREE_IPSEC(ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR)	pname_secagree_ipsec, (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR
-
+#define TSIP_STACK_SET_SECAGREE_TLS(USE_TLS_SECAGREE_INT)							pname_secagree_tls, (int)USE_TLS_SECAGREE_INT
+#define TSIP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
 
 	/* Features */
 	pname_enable_100rel,
@@ -158,12 +162,19 @@ typedef struct tsip_stack_s
 
 	/* Security */
 	char* secagree_mech;
+	unsigned enable_secagree_tls:1;
+	unsigned enable_secagree_ipsec:1;
 	struct{
 		char* alg;
 		char* ealg;
 		char* mode;
 		char* protocol;
 	} secagree_ipsec;
+	struct {
+		char* ca;
+		char* pbk;
+		char* pvk;
+	}tls;
 
 	/* DNS */
 	tnet_dns_ctx_t *dns_ctx;
