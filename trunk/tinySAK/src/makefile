@@ -1,9 +1,9 @@
-APP := libtinySAK.so
+APP := lib$(PROJECT).so
 
 INSTALL_DIR = /system/lib
 
 CFLAGS := $(CFLAGS)
-LDFLAGS := $(LDFLAGS) -Wl,-soname,libtinySAK.so,-Bsymbolic,-shared,--whole-archive -Wl,-Map=$(OUTPUT_DIR)/libtinySAK.map
+LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive
 
 all: $(APP)
 
@@ -14,7 +14,6 @@ OBJS = tsk.o\
 	tsk_condwait.o\
 	tsk_debug.o\
 	tsk_fsm.o\
-	tsk_heap.o\
 	tsk_hmac.o\
 	tsk_list.o\
 	tsk_md5.o\

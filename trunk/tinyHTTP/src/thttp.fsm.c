@@ -19,24 +19,11 @@
 * along with DOUBANGO.
 *
 */
-#ifndef _TEST_OBJECT_H_
-#define _TEST_OBJECT_H_
-
-/* test object */
-void test_object()
-{
-	tsk_string_t *a = tsk_object_new(tsk_string_def_t, "first string");
-	tsk_string_t *b = tsk_object_new(tsk_string_def_t, "second string");
-
-	a = tsk_object_ref(a);
-	a = tsk_object_ref(a);
-
-	a = tsk_object_unref(a);
-	a = tsk_object_unref(a);
-	a = tsk_object_unref(a);
-
-	tsk_object_delete(a);
-	tsk_object_delete(b);
-}
-
-#endif /* _TEST_OBJECT_H_ */
+/**@file thttp.c
+ * @brief HTTP (RFC 2616) and HTTP basic/digest authetication (RFC 2617) implementations.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#include "thttp.h"

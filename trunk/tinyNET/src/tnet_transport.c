@@ -166,7 +166,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	*/
 	if(TNET_SOCKET_TYPE_IS_STREAM(type)){		
 		/* Create client socket descriptor. */
-		if(status = tnet_sockfd_init(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, type, &fd)){
+		if(status = tnet_sockfd_init(transport->master->ip, TNET_SOCKET_PORT_ANY, type, &fd)){
 			TSK_DEBUG_ERROR("Failed to create new sockfd.");
 			goto bail;
 		}
