@@ -33,7 +33,7 @@
 
 #define LOOP						1
 
-#define RUN_TEST_ALL				0
+#define RUN_TEST_ALL				1
 #define RUN_TEST_LISTS				0
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
