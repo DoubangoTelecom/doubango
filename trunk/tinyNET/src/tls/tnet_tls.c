@@ -35,6 +35,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 #include "tsk_safeobj.h"
+#include "tsk_thread.h"
 
 #define TNET_CIPHER_LIST "AES128-SHA"
 
@@ -154,12 +155,45 @@ int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, size
 	/* Write */
 	tsk_safeobj_lock(socket);
 ssl_write:
-	if((rcount--) && ((ret = SSL_write(socket->ssl, data, size)) <= 0)){
+	if(rcount && ((ret = SSL_write(socket->ssl, data, size)) <= 0)){
+		int want_read;
 		ret = SSL_get_error(socket->ssl, ret);
-		if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
-			if(!(ret = tnet_sockfd_waitUntil(socket->fd, TNET_TLS_TIMEOUT, (ret == SSL_ERROR_WANT_WRITE)))){
+		want_read = (ret == SSL_ERROR_WANT_READ);
+
+		if(ret == SSL_ERROR_WANT_WRITE || want_read){
+
+			if(!(ret = tnet_sockfd_waitUntil(socket->fd, TNET_TLS_TIMEOUT, !want_read))){
+				rcount--;
+
+				if(want_read && !SSL_is_init_finished(socket->ssl)){
+					tsk_thread_sleep(200); // FIXME
+				}
 				goto ssl_write;
 			}
+
+			//if(ret == SSL_ERROR_WANT_READ){
+			//	if(!SSL_is_init_finished(socket->ssl)){
+			//		size_t size = 1024;
+			//		char* buffer = tsk_calloc(size, sizeof(uint8_t));
+			//		int isEncrypted = 1;
+			//		
+			//		// read()
+			//		tsk_safeobj_unlock(socket);
+			//		tnet_tls_socket_recv(socket, &buffer, &size, &isEncrypted);
+			//		TSK_FREE(buffer);
+			//		tsk_safeobj_lock(socket);
+			//	}
+			//	rcount--;
+			//	goto ssl_write;
+			//}
+			//else{
+			//	if(!(ret = tnet_sockfd_waitUntilWritable(socket->fd, TNET_TLS_TIMEOUT))){
+			//		rcount--;
+			//		goto ssl_write;
+			//	}
+			//	else goto bail;
+			//}
+			
 		}
 		else{
 			TSK_DEBUG_ERROR("SSL_write failed [%d].", ret);
@@ -168,17 +202,20 @@ ssl_write:
 	}
 	tsk_safeobj_unlock(socket);
 
+//bail:
 	ret = (ret > 0) ? 0 : -3;
 	return ret;
 #endif
 }
 
-int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void* data, size_t *size, int *isEncrypted)
+int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, size_t *size, int *isEncrypted)
 {
 #if !TNET_HAVE_OPENSSL_H
 	return -200;
 #else
 	int ret = -1;
+	size_t read = 0;
+	size_t to_read = *size;
 	int rcount = TNET_TLS_RETRY_COUNT;
 	tnet_tls_socket_t* socket;
 
@@ -217,10 +254,11 @@ int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void* data, size_t *siz
 
 	/* Read Application data */
 ssl_read:	
-	if((rcount--) && ((ret = SSL_read(socket->ssl, data, *size)) <= 0)){
+	if(rcount && ((ret = SSL_read(socket->ssl, (((uint8_t*)*data)+read), to_read)) <= 0)){
 		ret = SSL_get_error(socket->ssl, ret);
 		if(ret == SSL_ERROR_WANT_WRITE || ret == SSL_ERROR_WANT_READ){
 			if(!(ret = tnet_sockfd_waitUntil(socket->fd, TNET_TLS_TIMEOUT, (ret == SSL_ERROR_WANT_WRITE)))){
+				rcount--;
 				goto ssl_read;
 			}
 		}
@@ -233,16 +271,30 @@ ssl_read:
 			TSK_DEBUG_ERROR("SSL_read failed [%d].", ret);
 		}
 	}
-	else{
-		*size = ret;
-		ret = 0;
+	else if(ret >=0){
+		read += (size_t)ret;
+
+		if((ret = SSL_pending(socket->ssl)) > 0){
+			void *ptr;
+			to_read = ret;
+
+			if((ptr = tsk_realloc(*data, (read + to_read)))){
+				*data = ptr;
+				goto ssl_read;
+			}
+		}
 	}
-	return 0;
 
 bail:
 	tsk_safeobj_unlock(socket);
-	
-	return ret;
+
+	if(read){
+		*size = read;
+		return 0;
+	}
+	else{
+		return ret;
+	}
 #endif
 }
 
@@ -258,23 +310,8 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 	}
 
 	/* Sets SSL method */
-	if(socket->isClient){
-		if(socket->mutual_auth){
-			socket->ssl_meth = SSLv23_client_method();
-		}
-		else{
-			socket->ssl_meth = TLSv1_client_method()/*SSLv23_client_method()*/;
-		}
-	}
-	else{
-		if(socket->mutual_auth){
-			socket->ssl_meth = SSLv23_server_method();
-		}
-		else{
-			socket->ssl_meth = TLSv1_server_method();
-		}
-	}
-
+	socket->ssl_meth = socket->isClient ? TLSv1_client_method() : SSLv23_server_method();
+	
 	/* Creates the context */
 	if(!(socket->ssl_ctx = SSL_CTX_new(socket->ssl_meth))){
 		return -3;
@@ -374,9 +411,9 @@ static void* tnet_tls_socket_create(void * self, va_list * app)
 		/* Initialize SSL: http://www.openssl.org/docs/ssl/SSL_library_init.html */
 #if TNET_HAVE_OPENSSL_H
 		if(!__ssl_initialized){
+			__ssl_initialized = 1;
 			SSL_library_init();
 			SSL_load_error_strings();
-			__ssl_initialized = 1;
 		}
 #endif
 		/* Initialize the socket itself: CTX, method, ... */

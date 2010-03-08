@@ -101,17 +101,17 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 
 	/* Append new content. */
 	tsk_buffer_append(transport->buff_stream, e->data, e->size);
-
+	
 	/* Check if we have all SIP headers. */
 	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
 		TSK_DEBUG_INFO("No all SIP headers in the TCP buffer.");
 		goto bail;
 	}
-
+	
 	/* If we are there this mean that we have all SIP headers.
 	*	==> Parse the SIP message without the content.
 	*/
-	tsk_ragel_state_init(&state, e->data, e->size);
+	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(transport->buff_stream), endOfheaders + 4/*2CRLF*/);
 	if(tsip_message_parse(&state, &message, TSIP_FALSE/* do not extract the content */) == TSIP_TRUE 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
@@ -133,10 +133,13 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		}
 	}
 
-	/* Handle the incoming message. */
-	ret = tsip_transport_layer_handle_incoming_msg(transport, message);
-	/* Set fd */
-	message->sockfd = e->fd;
+	if(message){
+		/* Handle the incoming message. */
+		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
+		/* Set fd */
+		message->sockfd = e->fd;
+	}
+	else ret = -15;
 
 bail:
 	TSK_OBJECT_SAFE_FREE(message);
@@ -327,14 +330,15 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 			TSIP_TRANSPORT_IPSEC_CREATE(self->stack, local_host, local_port, type, description) /* IPSec is a special case. All other are ok. */
 			: TSIP_TRANSPORT_CREATE(self->stack, local_host, local_port, type, description); /* UDP, SCTP, TCP, TLS */
 			
-		if(transport)
-		{
+		if(transport && transport->net_transport && self->stack){
+			/* Set TLS certs */
+			if(TNET_SOCKET_TYPE_IS_TLS(type) || TSIP_STACK(self->stack)->enable_secagree_tls){
+				tsip_transport_set_tlscerts(transport, TSIP_STACK(self->stack)->tls.ca, TSIP_STACK(self->stack)->tls.pbk, TSIP_STACK(self->stack)->tls.pvk);
+			}
 			tsk_list_push_back_data(self->transports, (void**)&transport);
 			return 0;
 		}
-		else 
-		{
-			//TSK_OBJECT_SAFE_FREE(transport);
+		else {
 			return -2;
 		}
 	}

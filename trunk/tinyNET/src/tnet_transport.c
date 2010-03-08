@@ -191,7 +191,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	}
 	else{
 		if(TNET_SOCKET_TYPE_IS_TLS(type)){
-			transport->have_tls = 1;
+			transport->tls.have_tls = 1;
 			transport->connected = !tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd)); // FIXME: the transport itself not connected
 		}
 		else{
@@ -302,6 +302,11 @@ static void* tnet_transport_destroy(void * self)
 		TSK_OBJECT_SAFE_FREE(transport->master);
 		TSK_OBJECT_SAFE_FREE(transport->context);
 		TSK_FREE(transport->description);
+
+		// tls
+		TSK_FREE(transport->tls.ca);
+		TSK_FREE(transport->tls.pbk);
+		TSK_FREE(transport->tls.pvk);
 	}
 
 	return self;

@@ -120,6 +120,20 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	return ret;
 }
 
+int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk)
+{
+	tnet_transport_t *transport = self->net_transport;
+
+	if(!self || !transport){
+		return -1;
+	}
+	
+	tsk_strupdate(&transport->tls.ca, ca);
+	tsk_strupdate(&transport->tls.pvk, pvk);
+	tsk_strupdate(&transport->tls.pbk, pbk);
+
+	return 0;
+}
 
 size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort)
 {

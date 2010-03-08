@@ -204,14 +204,27 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			*	Security
 			*/
 			case pname_secagree_ipsec:
-			{
-				tsk_strupdate(&self->secagree_mech, "ipsec-3gpp");
-				tsk_strupdate(&self->secagree_ipsec.alg, va_arg(values, const char*));
-				tsk_strupdate(&self->secagree_ipsec.ealg, va_arg(values, const char*));
-				tsk_strupdate(&self->secagree_ipsec.mode, va_arg(values, const char*));
-				tsk_strupdate(&self->secagree_ipsec.protocol, va_arg(values, const char*));
-				break;
-			}
+				{	/* ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR */
+					tsk_strupdate(&self->secagree_mech, "ipsec-3gpp");
+					tsk_strupdate(&self->secagree_ipsec.alg, va_arg(values, const char*));
+					tsk_strupdate(&self->secagree_ipsec.ealg, va_arg(values, const char*));
+					tsk_strupdate(&self->secagree_ipsec.mode, va_arg(values, const char*));
+					tsk_strupdate(&self->secagree_ipsec.protocol, va_arg(values, const char*));
+					self->enable_secagree_ipsec = 1;
+					break;
+				}
+			case pname_secagree_tls:
+				{	/* USE_TLS_SECAGREE_INT */
+					self->enable_secagree_tls = va_arg(values, int) ? 1 : 0;
+					break;
+				}
+			case pname_tls_certs:
+				{	/*CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR*/
+					tsk_strupdate(&self->tls.ca, va_arg(values, const char*));
+					tsk_strupdate(&self->tls.pbk, va_arg(values, const char*));
+					tsk_strupdate(&self->tls.pvk, va_arg(values, const char*));
+					break;
+				}
 			
 
 			/* 
@@ -692,6 +705,10 @@ static void* tsip_stack_destroy(void * self)
 		TSK_FREE(stack->secagree_ipsec.ealg);
 		TSK_FREE(stack->secagree_ipsec.mode);
 		TSK_FREE(stack->secagree_ipsec.protocol);
+
+		TSK_FREE(stack->tls.ca);
+		TSK_FREE(stack->tls.pbk);
+		TSK_FREE(stack->tls.pvk);
 
 
 		/* DNS */
