@@ -63,11 +63,11 @@ body {
 
 /*CONTENT*/
 #content{
-	width: 800px;
+	width: 1000px;
 }
 #contenttext{
 	float:right;
-	width: 580px;
+	width: 700px;
 }
 
 /*FOOTER*/
