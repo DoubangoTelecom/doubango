@@ -138,7 +138,7 @@ int thttp_auth_digest_HA1sess(const char* username, const char* realm, const cha
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int thttp_auth_digest_HA2(const char* method, const char* url, const char* entity_body, const char* qop, tsk_md5string_t* ha2)
+int thttp_auth_digest_HA2(const char* method, const char* url, const tsk_buffer_t* entity_body, const char* qop, tsk_md5string_t* ha2)
 {
 	int ret;
 	/* RFC 2617 - 3.2.2.3 A2
@@ -153,23 +153,19 @@ int thttp_auth_digest_HA2(const char* method, const char* url, const char* entit
 
 	char *a2 = 0;
 
-	if(!qop || tsk_strempty(qop) || tsk_striequals(qop, "auth"))
-	{
+	if(!qop || tsk_strempty(qop) || tsk_striequals(qop, "auth")){
 		tsk_sprintf(&a2, "%s:%s", method, url);
 	}
 	else if(tsk_striequals(qop, "auth-int"))
 	{
-		if(entity_body)
-		{
+		if(entity_body && entity_body->data){
 			tsk_md5string_t hEntity;
-			if((ret = tsk_md5compute(entity_body, strlen(entity_body), &hEntity)))
-			{
+			if((ret = tsk_md5compute(entity_body->data, entity_body->size, &hEntity))){
 				goto bail;
 			}
 			tsk_sprintf(&a2, "%s:%s:%s", method, url, hEntity);
 		}
-		else
-		{
+		else{
 			tsk_sprintf(&a2, "%s:%s:%s", method, url, TSK_MD5_EMPTY);
 		}
 	}

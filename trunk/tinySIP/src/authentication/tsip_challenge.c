@@ -222,7 +222,7 @@ bail:
 #undef SERVER_DATA
 }
 
-int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, const char* uristring, const char* entity_body, tsk_md5string_t* response)
+int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, const char* uristring, const tsk_buffer_t* entity_body, tsk_md5string_t* response)
 {
 	if(TSIP_CHALLENGE_IS_DIGEST(self) && self->stack)
 	{
@@ -341,12 +341,11 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 		THTTP_NCOUNT_2_STRING(self->nc, nc);
 	}
 
-	// FIXME: entity_body ==> request-content
-	if(tsip_challenge_get_response(self, request->method, uristring, 0/*FIXME*/, &response))
-	{
+	/* entity_body ==> request-content */
+	if(tsip_challenge_get_response(self, request->method, uristring, request->Content, &response)){
 		goto bail;
 	}
-
+	
 
 #define TSIP_AUTH_COPY_VALUES(hdr)															\
 		hdr->username = tsk_strdup(TSIP_CHALLENGE_USERNAME(self));							\
