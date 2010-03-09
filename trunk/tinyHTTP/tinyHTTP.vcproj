@@ -373,6 +373,10 @@
 					RelativePath=".\src\auth\thttp_auth.c"
 					>
 				</File>
+				<File
+					RelativePath=".\src\auth\thttp_challenge.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="headers"
@@ -395,10 +399,6 @@
 				</File>
 				<File
 					RelativePath=".\src\headers\thttp_header_Dummy.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\headers\thttp_header_Proxy_Authenticate.c"
 					>
 				</File>
 				<File
@@ -461,6 +461,10 @@
 					RelativePath=".\include\tinyHTTP\auth\thttp_auth.h"
 					>
 				</File>
+				<File
+					RelativePath=".\include\tinyHTTP\auth\thttp_challenge.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="headers"
@@ -483,10 +487,6 @@
 				</File>
 				<File
 					RelativePath=".\include\tinyHTTP\headers\thttp_header_Dummy.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinyHTTP\headers\thttp_header_Proxy_Authenticate.h"
 					>
 				</File>
 				<File
