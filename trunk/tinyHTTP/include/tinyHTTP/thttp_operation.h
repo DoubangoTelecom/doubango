@@ -62,6 +62,7 @@ thttp_operation_param_type_t;
 #define THTTP_OPERATION_SET_NULL()								optype_null
 
 typedef void thttp_operation_handle_t;
+typedef tsk_list_t thttp_operation_handles_L_t;
 
 TINYHTTP_API int thttp_operation_set(thttp_operation_handle_t *self, ...);
 TINYHTTP_API thttp_operation_id_t thttp_operation_get_id(const thttp_operation_handle_t *self);

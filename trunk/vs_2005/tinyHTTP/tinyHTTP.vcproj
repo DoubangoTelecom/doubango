@@ -371,6 +371,10 @@
 					RelativePath="..\..\tinyHTTP\src\auth\thttp_auth.c"
 					>
 				</File>
+				<File
+					RelativePath="..\..\tinyHTTP\src\auth\thttp_challenge.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="headers"
@@ -457,6 +461,10 @@
 				>
 				<File
 					RelativePath="..\..\tinyHTTP\include\tinyHTTP\auth\thttp_auth.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyHTTP\include\tinyHTTP\auth\thttp_challenge.h"
 					>
 				</File>
 			</Filter>
