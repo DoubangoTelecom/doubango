@@ -105,6 +105,7 @@ void test_digest_auth()
 
 	for(i=0; i<sizeof(auth_digest_msgs)/sizeof(struct auth_digest_msg); i++)
 	{
+		tsk_buffer_t* entitybody;
 		/* HA1 */
 		thttp_auth_digest_HA1(auth_digest_msgs[i].username, 
 			auth_digest_msgs[i].realm, 
@@ -112,11 +113,13 @@ void test_digest_auth()
 			&ha1);
 
 		/* HA2 */
+		entitybody = TSK_BUFFER_CREATE(auth_digest_msgs[i].entitybody, strlen(auth_digest_msgs[i].entitybody));
 		thttp_auth_digest_HA2(auth_digest_msgs[i].method,
 			auth_digest_msgs[i].uri,
-			auth_digest_msgs[i].entitybody,
+			entitybody,
 			auth_digest_msgs[i].qop,
 			&ha2);
+		TSK_OBJECT_SAFE_FREE(entitybody);
 
 		/* RESPONSE */
 		thttp_auth_digest_response(&ha1, 

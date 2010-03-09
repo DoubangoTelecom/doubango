@@ -44,11 +44,13 @@ typedef struct thttp_operation_s
 	TSK_DECLARE_OBJECT;
 
 	thttp_operation_id_t id;
-	const thttp_stack_handle_t* stack;
+
+	thttp_stack_handle_t* stack;
 	tsk_params_L_t *params;
 	tsk_params_L_t *headers;
 
 	tnet_fd_t fd;
+	tsk_buffer_t* buf;
 }
 thttp_operation_t;
 
@@ -240,10 +242,11 @@ static void* thttp_operation_create(void * self, va_list * app)
 	static thttp_operation_id_t unique_id = 0;
 	if(operation)
 	{
-		operation->stack = va_arg(*app, const thttp_stack_handle_t*);
+		operation->stack = tsk_object_ref( va_arg(*app, thttp_stack_handle_t*) );
 		operation->params = TSK_LIST_CREATE();
 		operation->headers = TSK_LIST_CREATE();
 		operation->fd = TNET_INVALID_FD;
+		operation->buf = TSK_BUFFER_CREATE_NULL();
 
 		if(__thttp_operation_set(self, *app)){
 			operation->id = THTTP_OPERATION_INVALID_ID;
@@ -260,8 +263,10 @@ static void* thttp_operation_destroy(void * self)
 { 
 	thttp_operation_t *operation = self;
 	if(operation){
+		TSK_OBJECT_SAFE_FREE(operation->stack);
 		TSK_OBJECT_SAFE_FREE(operation->params);
 		TSK_OBJECT_SAFE_FREE(operation->headers);
+		TSK_OBJECT_SAFE_FREE(operation->buf);
 
 		tnet_sockfd_close(&operation->fd);
 	}

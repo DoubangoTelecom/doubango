@@ -52,8 +52,8 @@ void test_stack()
 */
 	op = THTTP_OPERATION_CREATE(stack,
 		THTTP_OPERATION_SET_PARAM("method", "GET"),
-		THTTP_OPERATION_SET_PARAM("URL", "https://msp.f-secure.com/web-test/common/test.html"),
-		//THTTP_OPERATION_SET_PARAM("URL", "http://www.doubango.org"),
+		//THTTP_OPERATION_SET_PARAM("URL", "https://msp.f-secure.com/web-test/common/test.html"),
+		THTTP_OPERATION_SET_PARAM("URL", "http://www.doubango.org"),
 		
 		THTTP_OPERATION_SET_HEADER("Pragma", "No-Cache"),
 		THTTP_OPERATION_SET_HEADER("Connection", "Keep-Alive"),
