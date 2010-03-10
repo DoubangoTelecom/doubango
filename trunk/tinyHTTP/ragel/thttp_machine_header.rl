@@ -59,6 +59,7 @@
 	Last_Modified = "Last-Modified"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Last_Modified;
 	Max_Forwards = "Max-Forwards"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Max_Forwards; 
 	Pragma = "Pragma"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Pragma;
+	Proxy_Authenticate = "Proxy-Authenticate"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Proxy_Authenticate;
 	Proxy_Authorization = "Proxy-Authorization"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Proxy_Authorization;
 	Range = "Range"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Range;
 	Referer = "Referer"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Referer;
@@ -69,13 +70,15 @@
 	User_Agent = "User-Agent"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_User_Agent;
 	Via = "Via"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Via;
 	Warning = "Warning"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Warning;
+	WWW_Authenticate = "WWW-Authenticate"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_WWW_Authenticate;
 	
 	######
 	extension_header = (token) SP* HCOLON SP*<: any* :>CRLF  @parse_header_extension_header;
-
+	
 	general_header = Cache_Control | Connection | Date | Pragma | Trailer | Transfer_Encoding | Upgrade | Via | Warning;
-	request_header = Accept | Accept_Charset | Accept_Encoding | Accept_Language | Authorization | Expect | From | Host | If_Match | If_Modified_Since | If_None_Match | If_Range | If_Unmodified_Since | Max_Forwards | Proxy_Authorization | Range | Referer | TE | User_Agent;
+	auth_header = Authorization | WWW_Authenticate | Proxy_Authorization | Proxy_Authenticate;
+	request_header = Accept | Accept_Charset | Accept_Encoding | Accept_Language | Expect | From | Host | If_Match | If_Modified_Since | If_None_Match | If_Range | If_Unmodified_Since | Max_Forwards | Range | Referer | TE | User_Agent;
 	entity_header = Allow | Content_Encoding | Content_Language | Content_Length | Content_Location | Content_MD5 | Content_Range | Content_Type | Expires | Last_Modified;
 	
-	HEADER = (general_header | request_header | entity_header)@1 | extension_header@0;
+	HEADER = (general_header | auth_header | request_header | entity_header)@1 | extension_header@0;
 }%%

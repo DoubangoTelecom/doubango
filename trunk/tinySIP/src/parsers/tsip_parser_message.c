@@ -45,7 +45,7 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 *	Ragel state machine.
 */
 
-/* #line 184 "tsip_parser_message.rl" */
+/* #line 182 "tsip_parser_message.rl" */
 
 
 
@@ -179,18 +179,16 @@ static const int tsip_machine_parser_message_error = 0;
 static const int tsip_machine_parser_message_en_main = 1;
 
 
-/* #line 189 "tsip_parser_message.rl" */
+/* #line 187 "tsip_parser_message.rl" */
 
 
 TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result, TSIP_BOOLEAN extract_content)
 {
-	if(!state || state->pe <= state->p)
-	{
+	if(!state || state->pe <= state->p){
 		return TSIP_FALSE;
 	}
 
-	if(!*result)
-	{
+	if(!*result){
 		*result = TSIP_MESSAGE_CREATE();
 	}
 
@@ -205,9 +203,9 @@ TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **resul
 	/* Check result */
 
 	if( state->cs < 
-/* #line 209 "../src/parsers/tsip_parser_message.c" */
+/* #line 207 "../src/parsers/tsip_parser_message.c" */
 42
-/* #line 213 "tsip_parser_message.rl" */
+/* #line 209 "tsip_parser_message.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(*result);
@@ -223,12 +221,12 @@ static void tsip_message_parser_init(tsk_ragel_state_t *state)
 
 	/* Regel machine initialization. */
 	
-/* #line 227 "../src/parsers/tsip_parser_message.c" */
+/* #line 225 "../src/parsers/tsip_parser_message.c" */
 	{
 	cs = tsip_machine_parser_message_start;
 	}
 
-/* #line 228 "tsip_parser_message.rl" */
+/* #line 224 "tsip_parser_message.rl" */
 	
 	state->cs = cs;
 }
@@ -241,7 +239,7 @@ static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t
 	const char *eof = state->eof;
 
 	
-/* #line 245 "../src/parsers/tsip_parser_message.c" */
+/* #line 243 "../src/parsers/tsip_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -410,18 +408,16 @@ _match:
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(tsip_header_parse(state, message))
-		{
+		if(tsip_header_parse(state, message)){
 			//TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
 		}
 	}
 	break;
 	case 7:
-/* #line 164 "tsip_parser_message.rl" */
+/* #line 162 "tsip_parser_message.rl" */
 	{
 		state->cs = cs;
 		state->p = p;
@@ -436,7 +432,7 @@ _match:
 		eof = state->eof;
 	}
 	break;
-/* #line 440 "../src/parsers/tsip_parser_message.c" */
+/* #line 436 "../src/parsers/tsip_parser_message.c" */
 		}
 	}
 
@@ -449,7 +445,7 @@ _again:
 	_out: {}
 	}
 
-/* #line 240 "tsip_parser_message.rl" */
+/* #line 236 "tsip_parser_message.rl" */
 
 	state->cs = cs;
 	state->p = p;
@@ -466,14 +462,12 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 
 	if(extract_content && message)
 	{
-		uint32_t clen = tsip_message_getContent_length(message);
-		if((p+clen) <pe && !message->Content)
-		{
+		uint32_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message);
+		if((p+clen) <pe && !message->Content){
 			message->Content = TSK_BUFFER_CREATE((p+1), clen);
 			p = (p+clen);
 		}
-		else
-		{
+		else{
 			p = (pe-1);
 		}
 	}

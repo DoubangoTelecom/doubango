@@ -36,7 +36,7 @@
 */
 
 #if defined (_DEBUG) || defined (DEBUG)
-#	define TSK_DEBUG_OBJECTS	1
+#	define TSK_DEBUG_OBJECTS	0
 static int tsk_objects_count = 0;
 #else
 #	define TSK_DEBUG_OBJECTS	0
@@ -46,7 +46,7 @@ static int tsk_objects_count = 0;
 */
 typedef struct tsk_object_header_s{
 	const void* base; /**< Opaque data holding a pointer to the actual meta-data(size, constructor, destructor and comparator) */
-	size_t	refCount; /**< Reference counter. */
+	int	refCount; /**< Reference counter. */
 }
 tsk_object_header_t;
 #define TSK_OBJECT_HEADER_GET(object)	((tsk_object_header_t*)object)
@@ -101,8 +101,7 @@ void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 	{
 		(*(const tsk_object_def_t **) newobj) = objdef;
 		TSK_OBJECT_HEADER_GET(newobj)->refCount = 1;
-		if(objdef->constructor)
-		{ 
+		if(objdef->constructor){ 
 			newobj = objdef->constructor(newobj, ap);
 		}
 		else{
@@ -182,7 +181,7 @@ void* tsk_object_unref(void *self)
 {
 	if(self)
 	{
-		if(!--(TSK_OBJECT_HEADER_GET(self)->refCount)){
+		if(0 == --(TSK_OBJECT_HEADER_GET(self)->refCount)){ // If refCount is < 0 then, nothing should happen.
 			tsk_object_delete(self);
 			return 0;
 		}

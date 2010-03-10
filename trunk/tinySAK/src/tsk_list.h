@@ -93,8 +93,10 @@ typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* 
 #define tsk_list_foreach(item, list) for(item = list?list->head:0; item; item= item->next)
 
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
+TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const void * tskobj);
 TINYSAK_API void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj);
 TINYSAK_API void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
+TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 TINYSAK_API void tsk_list_clear_items(tsk_list_t* list);
 
 TINYSAK_API tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list);

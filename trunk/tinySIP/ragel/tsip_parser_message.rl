@@ -140,12 +140,10 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(tsip_header_parse(state, message))
-		{
+		if(tsip_header_parse(state, message)){
 			//TSK_DEBUG_INFO("TSIP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
 		}
 	}

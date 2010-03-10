@@ -36,6 +36,8 @@
 
 THTTP_BEGIN_DECLS
 
+#define THTTP_MAX_CONTENT_SIZE 0xFFFF
+
 typedef enum thttp_stack_param_type_e
 {
 	/* Identity */
@@ -70,8 +72,8 @@ TINYHTTP_API int thttp_stack_set(thttp_stack_handle_t *self, ...);
 TINYHTTP_API int thttp_stack_stop(thttp_stack_handle_t *self);
 
 int thttp_stack_send(thttp_stack_handle_t *self, thttp_operation_handle_t* op, const struct thttp_message_s* message);
-int thttp_stack_add_op(thttp_stack_handle_t *self, thttp_operation_handle_t* op);
-int thttp_stack_remove_op(thttp_stack_handle_t *self, thttp_operation_handle_t* op);
+int thttp_stack_push_op(thttp_stack_handle_t *self, thttp_operation_handle_t* op);
+int thttp_stack_pop_op(thttp_stack_handle_t *self, thttp_operation_handle_t* op);
 
 TINYHTTP_GEXTERN const void *thttp_stack_def_t;
 

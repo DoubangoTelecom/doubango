@@ -58,51 +58,45 @@ void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 }
 
 /**@ingroup tsk_list_group
-* Remove an object from the @a list.
-* @param list The list from which to remove the object.
+* Pops an object from the @a list.
+* @param list The list from which to pop the object.
 * @param tskobj Any valid object(declared using @ref TSK_DECLARE_OBJECT) to remove.
+* @retval The item.
 */
-void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
+tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const void * tskobj)
 {
 	if(list)
 	{
 		tsk_list_item_t *prev = 0;
 		tsk_list_item_t *curr = prev = list->head;
 
-		//assert((list && list->tail) ? !list->tail->next : 1);
-
 		while(curr)
 		{
 			if(!tsk_object_cmp(curr->data, tskobj))
 			{
-				if(prev == curr)
-				{	/* Found at first position. */
-
-					if(list->head == list->tail)
-					{	/* There was only one item */
-
+				if(prev == curr){
+					/* Found at first position. */
+					if(list->head == list->tail){
+						/* There was only one item */
 						list->head = list->tail = 0;
 					}
-					else
-					{
+					else{
 						list->head = curr->next;
 					}
 				}
 				else 
 				{
-					if(curr == list->tail)
-					{	/* Found at last position */
+					if(curr == list->tail){
+						/* Found at last position */
 						list->tail = prev;
 						list->tail->next = 0;
 					}
-					else
-					{
+					else{
 						prev->next = curr->next;
 					}
 				}
 
-				/*curr =*/ tsk_object_unref(curr);
-				break;
+				return curr;
 			}
 			
 			prev = curr;
@@ -110,16 +104,30 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
 		}
 	}
 
-	//assert((list && list->tail) ? !list->tail->next : 1);
+	return 0;
 }
 
 /**@ingroup tsk_list_group
-* Remove an item from the @a list using a predicate function.
-* @param list The list from which to remove the item.
+* Removes an object from the @a list.
+* @param list The list from which to remove the object.
+* @param tskobj Any valid object(declared using @ref TSK_DECLARE_OBJECT) to remove.
+*/
+void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
+{
+	tsk_list_item_t* item;
+	if((item = tsk_list_pop_item_by_data(list, tskobj))){
+		tsk_object_unref(item);
+	}
+}
+
+/**@ingroup tsk_list_group
+* Pops an item from the @a list using a predicate function.
+* @param list The list from which to pop the item.
 * @param predicate The predicate function used to match the item.
 * @param data Arbitrary data to pass to the predicate function.
+* @retval The item
 */
-void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
+tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
 	if(list)
 	{
@@ -130,40 +138,51 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 		{
 			if(!predicate(curr, data))
 			{
-				if(prev == curr)
-				{	/* Found at first position. */
-					
-					if(list->head == list->tail)
-					{	/* There was only one item */
+				if(prev == curr){
+					/* Found at first position. */
+					if(list->head == list->tail){
+						/* There was only one item */
 						list->head = list->tail = 0;
 					}
-					else
-					{
+					else{
 						list->head = curr->next;
 					}
 				}
 				else 
 				{
-					if(curr == list->tail)
-					{	/* Found at last position */
+					if(curr == list->tail){
+						/* Found at last position */
 						list->tail = prev;
 						list->tail->next = 0;
 					}
-					else
-					{
+					else{
 						prev->next = curr->next;
 					}
 				}
 
-				/*curr =*/ tsk_object_unref(curr);
-				break;
+				return curr;
 			}
 			
 			prev = curr;
 			curr = curr->next;
 		}
 	}
-	//assert((list && list->tail) ? !list->tail->next : 1);
+
+	return 0;
+}
+
+/**@ingroup tsk_list_group
+* Removes an item from the @a list using a predicate function.
+* @param list The list from which to remove the item.
+* @param predicate The predicate function used to match the item.
+* @param data Arbitrary data to pass to the predicate function.
+*/
+void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
+{
+	tsk_list_item_t* item;
+	if((item = tsk_list_pop_item_by_pred(list, predicate, data))){
+		tsk_object_unref(item);
+	}
 }
 
 /**@ingroup tsk_list_group
@@ -177,8 +196,7 @@ void tsk_list_clear_items(tsk_list_t* list)
 		tsk_list_item_t* next = 0;
 		tsk_list_item_t* curr = list->head;
 
-		while(curr)
-		{
+		while(curr){
 			next = curr->next;
 			tsk_object_unref(curr);
 			curr = next;
@@ -200,17 +218,13 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 		item = list->head;
 		if(list->head)
 		{
-			if(list->head->next)
-			{
+			if(list->head->next){
 				list->head = list->head->next;
 			}
-			else
-			{
+			else{
 				list->head = list->tail = 0;
 			}
 		}
-
-		//assert((list && list->tail) ? !list->tail->next : 1);
 	}
 
 	return item;
@@ -237,8 +251,6 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 		list->tail = list->head = *item;
 	}
 	(*item) = 0;
-
-	//assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 /**@ingroup tsk_list_group
@@ -259,12 +271,10 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 			int diff = tsk_object_cmp((*item), curr);
 			if((diff <= 0 && ascending) || (diff >=0 && !ascending))
 			{
-				if(curr == list->head)
-				{
+				if(curr == list->head){
 					tsk_list_push_front_item(list, item);
 				}
-				else
-				{
+				else{
 					(*item)->next = curr;
 					prev->next = (*item);
 				}
@@ -293,8 +303,7 @@ void tsk_list_push_list(tsk_list_t* dest, tsk_list_t** src, int back)
 	tsk_list_item_t* next = 0;
 	tsk_list_item_t* curr = (*src)->head;
 
-	while(curr)
-	{
+	while(curr){
 		next = curr->next;
 		tsk_list_push_item(dest, &curr, back);
 		curr = next->next;
@@ -318,11 +327,9 @@ void tsk_list_push_data(tsk_list_t* list, void** data, int back)
 		tsk_list_push_item(list, &item, back);
 		(*data) = 0;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
 	}
-	//assert((list && list->tail) ? !list->tail->next : 1);
 }
 
 /**@ingroup tsk_list_group
@@ -340,8 +347,6 @@ void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending)
 		
 		tsk_list_push_filtered_item(list, &item, ascending);
 		(*data) = 0;
-
-		//assert((list && list->tail) ? !list->tail->next : 1);
 	}
 	else
 	{
@@ -362,8 +367,7 @@ const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const 
 		tsk_list_item_t *item;
 		tsk_list_foreach(item, list)
 		{
-			if(!tsk_object_cmp(item->data, tskobj))
-			{
+			if(!tsk_object_cmp(item->data, tskobj)){
 				return item;
 			}
 		}
@@ -391,8 +395,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 			}
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("Cannot use an uninitialized predicate function");
 	}
 	return 0;
@@ -420,12 +423,10 @@ static void* tsk_list_item_create(void * self, va_list * app)
 static void* tsk_list_item_destroy(void *self)
 {
 	tsk_list_item_t *item = self;
-	if(item)
-	{
+	if(item){
 		item->data = tsk_object_unref(item->data);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("Cannot free an uninitialized item");
 	}
 	return item;
@@ -467,8 +468,7 @@ static void* tsk_list_destroy(void *self)
 		tsk_list_item_t* next = 0;
 		tsk_list_item_t* curr = list->head;
 
-		while(curr)
-		{
+		while(curr){
 			next = curr->next;
 			/*curr =*/ tsk_object_unref(curr);
 			curr = next;

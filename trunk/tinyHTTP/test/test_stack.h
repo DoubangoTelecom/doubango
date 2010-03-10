@@ -24,6 +24,30 @@
 
 int test_stack_callback(const thttp_event_t *httpevent)
 {
+	switch(httpevent->type){
+		case thttp_event_message: /* New HTTP message */
+			{
+				TSK_DEBUG_INFO("opid=%llu", httpevent->opid);
+				if(THTTP_RESPONSE_IS_2XX(httpevent->message)){
+					TSK_DEBUG_INFO("=== 2xx ==> %s", THTTP_MESSAGE_CONTENT(httpevent->message));
+					// You can use 
+				}
+				else{
+					if(THTTP_MESSAGE_IS_RESPONSE(httpevent->message)){
+						TSK_DEBUG_INFO("=== code ==> %u", THTTP_RESPONSE_CODE(httpevent->message));
+					}
+				}
+				break;
+			}
+
+		case thttp_event_closed: /* HTTP connection closed */
+			{
+				TSK_DEBUG_INFO("opid=%llu", httpevent->opid);
+				// Delete the associated operation if you want
+				// perform(op) on a closed operation will open a new TCP/TLS connection.
+			}
+	}
+	
 	return 0;
 }
 
@@ -33,10 +57,10 @@ void test_stack()
 	thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback, 
 		THTTP_STACK_SET_NULL());
 
-	//if(thttp_stack_start(stack)){
-	//	goto bail;
-	//}
-/*
+	if(thttp_stack_start(stack)){
+		goto bail;
+	}
+
 	op = THTTP_OPERATION_CREATE(stack,
 		THTTP_OPERATION_SET_PARAM("method", "GET"),
 		THTTP_OPERATION_SET_PARAM("URL", "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/index"),
@@ -49,7 +73,8 @@ void test_stack()
 		
 		THTTP_OPERATION_SET_NULL());
 	thttp_operation_perform(op);
-*/
+
+/*
 	op = THTTP_OPERATION_CREATE(stack,
 		THTTP_OPERATION_SET_PARAM("method", "GET"),
 		//THTTP_OPERATION_SET_PARAM("URL", "https://msp.f-secure.com/web-test/common/test.html"),
@@ -60,8 +85,8 @@ void test_stack()
 		THTTP_OPERATION_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
 				
 		THTTP_OPERATION_SET_NULL());
-	//thttp_operation_perform(op);
-	
+	thttp_operation_perform(op);
+*/
 	/*thttp_operation_set(op,
 		THTTP_OPERATION_SET_PARAM("method", "HEAD"),
 		

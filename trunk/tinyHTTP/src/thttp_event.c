@@ -49,13 +49,10 @@ static void* thttp_event_create(void * self, va_list * app)
 {
 	thttp_event_t *httpevent = self;
 	if(httpevent)
-	{
-#if defined(__GNUC__)
-		httpevent->code = (short)va_arg(*app, int);
-#else
-		httpevent->code = va_arg(*app, short);
-#endif
-		httpevent->phrase = tsk_strdup( va_arg(*app, const char *) );
+	{		
+		httpevent->type = va_arg(*app, thttp_event_type_t);
+		httpevent->opid = va_arg(*app, thttp_operation_id_t);
+		httpevent->description = tsk_strdup( va_arg(*app, const char *) );
 		httpevent->message = tsk_object_ref((void*)va_arg(*app, thttp_message_t *));
 	}
 	return self;
@@ -66,7 +63,7 @@ static void* thttp_event_destroy(void * self)
 	thttp_event_t *httpevent = self;
 	if(httpevent)
 	{
-		TSK_FREE(httpevent->phrase);
+		TSK_FREE(httpevent->description);
 		TSK_OBJECT_SAFE_FREE(httpevent->message);
 	}
 	return self;
