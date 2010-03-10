@@ -552,8 +552,7 @@ void *tnet_transport_mainthread(void *param)
 bail:
 	
 	transport->active = 0;
-	TSK_OBJECT_SAFE_FREE(context);
-
+	
 	TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	return 0;
 }

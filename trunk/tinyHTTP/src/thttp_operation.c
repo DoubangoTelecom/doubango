@@ -254,6 +254,9 @@ static void* thttp_operation_create(void * self, va_list * app)
 		else{
 			operation->id = ++unique_id;
 		}
+
+		/* Add the operation to the stack. The stack will not own the op. */
+		thttp_stack_add_op(operation->stack, operation);
 	}
 
 	return self;
@@ -263,6 +266,10 @@ static void* thttp_operation_destroy(void * self)
 { 
 	thttp_operation_t *operation = self;
 	if(operation){
+
+		/* Remove the operation from the stack. The stack do not own the op. */
+		thttp_stack_remove_op(operation->stack, operation);
+
 		TSK_OBJECT_SAFE_FREE(operation->stack);
 		TSK_OBJECT_SAFE_FREE(operation->params);
 		TSK_OBJECT_SAFE_FREE(operation->headers);

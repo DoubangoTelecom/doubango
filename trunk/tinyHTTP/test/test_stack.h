@@ -33,9 +33,9 @@ void test_stack()
 	thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback, 
 		THTTP_STACK_SET_NULL());
 
-	if(thttp_stack_start(stack)){
-		goto bail;
-	}
+	//if(thttp_stack_start(stack)){
+	//	goto bail;
+	//}
 /*
 	op = THTTP_OPERATION_CREATE(stack,
 		THTTP_OPERATION_SET_PARAM("method", "GET"),
@@ -60,7 +60,7 @@ void test_stack()
 		THTTP_OPERATION_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
 				
 		THTTP_OPERATION_SET_NULL());
-	thttp_operation_perform(op);
+	//thttp_operation_perform(op);
 	
 	/*thttp_operation_set(op,
 		THTTP_OPERATION_SET_PARAM("method", "HEAD"),

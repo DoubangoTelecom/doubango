@@ -221,12 +221,10 @@ int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_tran
 
 int tnet_transport_shutdown(tnet_transport_handle_t* handle)
 {
-	if(handle)
-	{
+	if(handle){
 		return tnet_transport_stop(handle);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
 	}
 
