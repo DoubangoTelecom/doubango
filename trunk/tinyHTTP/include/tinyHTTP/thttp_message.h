@@ -74,14 +74,14 @@ THTTP_BEGIN_DECLS
 #define THTTP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(thttp_message_def_t, (thttp_message_type_t)thttp_response, (const thttp_request_t*)request, (short)status_code, (const char*)reason_phrase)
 
 
-#define THTTP_RESPONSE_CODE(self)			 ((self)->status_code)
+#define THTTP_RESPONSE_CODE(self)			 (THTTP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
 #define THTTP_RESPONSE_PHRASE(self)			 ((self)->reason_phrase)
 
 #define THTTP_REQUEST_METHOD(self)			 ((self)->method)
 #define THTTP_REQUEST_URI(self)				 ((self)->url)
 
 #define THTTP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)(((message) && (message)->Content_Length) ? (message)->Content_Length->length : 0)
-#define THTTP_MESSAGE_CONTENT(message)		 (THTTP_MESSAGE_HAS_CONTENT(message) ? (message)->Content : 0)
+#define THTTP_MESSAGE_CONTENT(message)		 (THTTP_MESSAGE_HAS_CONTENT(message) ? (message)->Content->data : 0)
 #define THTTP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content)
 
 #define THTTP_RESPONSE_IS(self, code)		(THTTP_RESPONSE_CODE((self)) == code)
@@ -158,8 +158,9 @@ typedef thttp_message_t thttp_request_t; /**< HTTP request message. */
 typedef thttp_message_t thttp_response_t; /**< HTTP response message. */
 
 //
-TINYHTTP_API int	thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr);
+TINYHTTP_API int thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr);
 TINYHTTP_API int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *headers);
+TINYHTTP_API int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, size_t size);
 
 #if !defined(_MSC_VER) || defined(__GNUC__)
 static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)

@@ -73,7 +73,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_response, (const tsip_request_t*)request, (short)status_code, (const char*)reason_phrase)
 
 
-#define TSIP_RESPONSE_CODE(self)			 ((self)->status_code)
+#define TSIP_RESPONSE_CODE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
 #define TSIP_RESPONSE_PHRASE(self)			 ((self)->reason_phrase)
 
 #define TSIP_REQUEST_METHOD(self)			 ((self)->method)

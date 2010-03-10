@@ -400,10 +400,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_Proxy_Authenticate.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_WWW_Authenticate.c"
 					>
 				</File>
@@ -489,10 +485,6 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyHTTP\include\tinyHTTP\headers\thttp_header_Dummy.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\tinyHTTP\include\tinyHTTP\headers\thttp_header_Proxy_Authenticate.h"
 					>
 				</File>
 				<File

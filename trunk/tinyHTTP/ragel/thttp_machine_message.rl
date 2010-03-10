@@ -46,6 +46,5 @@
 	Request = Request_Line (message_header* :>CRLF);
 
 	# HTTP MESSAGE
-	HTTP_message = Request | Response;
-
+	HTTP_message = (Response | Request)>1 @eoh message_body?>0;
 }%%

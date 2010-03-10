@@ -213,6 +213,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyHTTP\test\test_messages.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyHTTP\test\test_stack.h"
 				>
 			</File>

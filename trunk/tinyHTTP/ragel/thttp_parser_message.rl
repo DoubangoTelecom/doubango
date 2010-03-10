@@ -80,8 +80,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(!message->url)
-		{
+		if(!message->url){
 			message->url = thttp_url_parse(state->tag_start, (size_t)len);
 		}
 	}
@@ -93,8 +92,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(!message->http_version)
-		{
+		if(!message->http_version){
 			message->http_version = tsk_calloc(1, len+1);
 			memcpy(message->http_version, state->tag_start, len);
 		}
@@ -107,13 +105,11 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(message->type == thttp_unknown)
-		{
+		if(message->type == thttp_unknown){
 			message->type = thttp_response;
 			message->status_code = atoi(state->tag_start);
 		}
-		else
-		{
+		else{
 			state->cs = thttp_machine_parser_message_error;
 		}
 	}
@@ -125,8 +121,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(!message->reason_phrase)
-		{
+		if(!message->reason_phrase){
 			message->reason_phrase = tsk_calloc(1, len+1);
 			memcpy(message->reason_phrase, state->tag_start, len);
 		}
@@ -139,13 +134,11 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(thttp_header_parse(state, message))
-		{
-			//TSK_DEBUG_INFO("THTTP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
-		}
-		else
-		{
+		if(thttp_header_parse(state, message)){
 			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
+		}
+		else{
+			//TSK_DEBUG_INFO("THTTP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
 		}
 	}
 

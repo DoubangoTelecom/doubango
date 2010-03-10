@@ -65,7 +65,7 @@ int thttp_challenge_reset_cnonce(thttp_challenge_t *self)
 	return -1;
 }
 
-int thttp_challenge_get_response(thttp_challenge_t *self, const char* method, const char* uristring, const tsk_buffer_t* entity_body, tsk_md5string_t* response)
+int thttp_challenge_get_response(thttp_challenge_t *self, const char* username, const char* password, const char* method, const char* uristring, const tsk_buffer_t* entity_body, tsk_md5string_t* response)
 {
 	if(THTTP_CHALLENGE_IS_DIGEST(self))
 	{
@@ -75,7 +75,7 @@ int thttp_challenge_get_response(thttp_challenge_t *self, const char* method, co
 		/* ===
 			Calculate HA1 = MD5(A1) = M5(username:realm:secret)
 		*/
-		thttp_auth_digest_HA1(self->username, self->realm, self->password, &ha1);
+		thttp_auth_digest_HA1(username, self->realm, password, &ha1);
 		
 		/* ===
 			HA2 
@@ -131,7 +131,7 @@ int thttp_challenge_update(thttp_challenge_t *self, const char* scheme, const ch
 	return -1;
 }
 
-thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *self, const thttp_request_t *request)
+thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *self, const char* username, const char* password, const thttp_request_t *request)
 {
 	tsk_md5string_t response;
 	nonce_count_t nc;
@@ -154,14 +154,14 @@ thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *s
 	}
 
 	// FIXME: entity_body ==> request-content
-	if(thttp_challenge_get_response(self, request->method, uristring, 0/*FIXME*/, &response))
+	if(thttp_challenge_get_response(self, username, password, request->method, uristring, request->Content, &response))
 	{
 		goto bail;
 	}
 
 
 #define THTTP_AUTH_COPY_VALUES(hdr)															\
-		hdr->username = tsk_strdup(self->username);											\
+		hdr->username = tsk_strdup(username);											\
 		hdr->scheme = tsk_strdup(self->scheme);												\
 		hdr->realm = tsk_strdup(self->realm);												\
 		hdr->nonce = tsk_strdup(self->nonce);												\
@@ -230,8 +230,6 @@ static void* thttp_challenge_create(void *self, va_list * app)
 	{
 		const char* qop;
 
-		challenge->username = tsk_strdup(va_arg(*app, const char*));
-		challenge->password = tsk_strdup(va_arg(*app, const char*));
 		challenge->isproxy = va_arg(*app, unsigned);
 		challenge->scheme = tsk_strdup(va_arg(*app, const char*));
 		challenge->realm = tsk_strdup(va_arg(*app, const char*));
@@ -260,8 +258,6 @@ static void* thttp_challenge_destroy(void *self)
 	thttp_challenge_t *challenge = self;
 	if(challenge)
 	{
-		TSK_FREE(challenge->username);
-		TSK_FREE(challenge->password);
 		TSK_FREE(challenge->scheme);
 		TSK_FREE(challenge->realm);
 		TSK_FREE(challenge->nonce);

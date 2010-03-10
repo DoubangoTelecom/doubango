@@ -35,6 +35,7 @@
 #include "tinysip/headers/tsip_header_Call_ID.h"
 #include "tinysip/headers/tsip_header_Contact.h"
 #include "tinysip/headers/tsip_header_CSeq.h"
+#include "tinysip/headers/tsip_header_Dummy.h"
 #include "tinysip/headers/tsip_header_Event.h"
 #include "tinysip/headers/tsip_header_Expires.h"
 #include "tinysip/headers/tsip_header_From.h"
@@ -102,37 +103,49 @@
 	# /*== Accept: ==*/
 	action parse_header_Accept
 	{
-		TSK_DEBUG_ERROR("parse_header_Accept NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Accept NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Accept-Contact: ==*/
 	action parse_header_Accept_Contact 
 	{
-		TSK_DEBUG_ERROR("parse_header_Accept_Contact NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Accept_Contact NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Accept-Encoding: ==*/
 	action parse_header_Accept_Encoding
 	{
-		TSK_DEBUG_ERROR("parse_header_Accept_Encoding NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Accept_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Accept-Language: ==*/
 	action parse_header_Accept_Language
 	{
-		TSK_DEBUG_ERROR("parse_header_Accept_Language NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Accept_Language NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Accept-Resource-Priority : ==*/
 	action parse_header_Accept_Resource_Priority 
 	{
-		TSK_DEBUG_ERROR("parse_header_Accept_Resource_Priority NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Accept_Resource_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Alert-Info: ==*/
 	action parse_header_Alert_Info
 	{
-		TSK_DEBUG_ERROR("parse_header_Alert_Info NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Alert_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Allow: ==*/
@@ -152,7 +165,9 @@
 	# /*== Authentication-Info: ==*/
 	action parse_header_Authentication_Info 
 	{
-		TSK_DEBUG_ERROR("parse_header_Authentication_Info NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Authentication_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Authorization: ==*/
@@ -165,16 +180,22 @@
 	# /*== Call-ID: ==*/
 	action parse_header_Call_ID
 	{
-		if(!message->Call_ID)
-		{
+		if(!message->Call_ID){
 			message->Call_ID = tsip_header_Call_ID_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
+		else{
+			tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+			ADD_HEADER(header);
+			TSK_DEBUG_WARN("The message already have 'Call-ID' header.");
 		}
 	}
 
 	# /*== Call-Info: ==*/
 	action parse_header_Call_Info
 	{
-		TSK_DEBUG_ERROR("parse_header_Call_Info NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Call_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Contact: ==*/
@@ -202,58 +223,80 @@
 	# /*== Content-Disposition: ==*/
 	action parse_header_Content_Disposition
 	{
-		TSK_DEBUG_ERROR("parse_header_Content_Disposition NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Content_Disposition NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Content-Encoding: ==*/
 	action parse_header_Content_Encoding
 	{
-		TSK_DEBUG_ERROR("PARSE_HEADER_ACCEPT NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("PARSE_HEADER_ACCEPT NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Content-Language: ==*/
 	action parse_header_Content_Language
 	{
-		TSK_DEBUG_ERROR("parse_header_Content_Language NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Content_Language NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Content-Length: ==*/
 	action parse_header_Content_Length
 	{
-		if(!message->Content_Length)
-		{
+		if(!message->Content_Length){
 			message->Content_Length = tsip_header_Content_Length_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
+		else{
+			tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+			ADD_HEADER(header);
+			TSK_DEBUG_WARN("The message already have 'Content-Length' header.");
 		}
 	}
 
 	# /*== Content-Type: ==*/
 	action parse_header_Content_Type
 	{
-		if(!message->Content_Type)
-		{
+		if(!message->Content_Type){
 			message->Content_Type = tsip_header_Content_Type_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
+		else{
+			tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+			ADD_HEADER(header);
+			TSK_DEBUG_WARN("The message already have 'Content-Type' header.");
 		}
 	}
 
 	# /*== CSeq: ==*/
 	action parse_header_CSeq
 	{
-		if(!message->CSeq)
-		{
+		if(!message->CSeq){
 			message->CSeq = tsip_header_CSeq_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
+		else{
+			tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+			ADD_HEADER(header);
+			TSK_DEBUG_WARN("The message already have 'CSeq' header.");
 		}
 	}
 
 	# /*== Date: ==*/
 	action parse_header_Date
 	{
-		TSK_DEBUG_ERROR("parse_header_Date NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Date NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Error-Info: ==*/
 	action parse_header_Error_Info
 	{
-		TSK_DEBUG_ERROR("parse_header_Error_Info NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Error_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Event: ==*/
@@ -266,49 +309,67 @@
 	# /*== Expires: ==*/
 	action parse_header_Expires
 	{
-		if(!message->Expires)
-		{
+		if(!message->Expires){
 			message->Expires = tsip_header_Expires_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
+		else{
+			tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+			ADD_HEADER(header);
+			TSK_DEBUG_WARN("The message already have 'Expires' header.");
 		}
 	}
 
 	# /*== From: ==*/
 	action parse_header_From
 	{
-		if(!message->From)
-		{
+		if(!message->From){
 			message->From = tsip_header_From_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
+		else{
+			tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+			ADD_HEADER(header);
+			TSK_DEBUG_WARN("The message already have 'From' header.");
 		}
 	}
 
 	# /*== History-Info: ==*/
 	action parse_header_History_Info 
 	{
-		TSK_DEBUG_ERROR("parse_header_History_Info NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_History_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Identity: ==*/
 	action parse_header_Identity
 	{
-		TSK_DEBUG_ERROR("parse_header_Identity NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Identity NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Identity-Info: ==*/
 	action parse_header_Identity_Info
 	{
-		TSK_DEBUG_ERROR("parse_header_Identity_Info NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Identity_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== In_Reply-To: ==*/
 	action parse_header_In_Reply_To
 	{
-		TSK_DEBUG_ERROR("parse_header_In_Reply_To NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_In_Reply_To NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Join: ==*/
 	action parse_header_Join
 	{
-		TSK_DEBUG_ERROR("parse_header_Join NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Join NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Max-Forwards: ==*/
@@ -321,7 +382,9 @@
 	# /*== MIME-Version: ==*/
 	action parse_header_MIME_Version
 	{
-		TSK_DEBUG_ERROR("parse_header_MIME_Version NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_MIME_Version NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Min-Expires: ==*/
@@ -334,13 +397,17 @@
 	# /*== Min-SE: ==*/
 	action parse_header_Min_SE
 	{
-		TSK_DEBUG_ERROR("parse_header_Min_SE NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Min_SE NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Organization: ==*/
 	action parse_header_Organization 
 	{
-		TSK_DEBUG_ERROR("parse_header_Organization NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Organization NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-Access-Network-Info: ==*/
@@ -353,7 +420,9 @@
 	# /*== P-Answer-State: ==*/
 	action parse_header_P_Answer_State
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Answer_State NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_Answer_State NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-Asserted-Identity: ==*/
@@ -373,7 +442,9 @@
 	# /*== P-Called-Party-ID: ==*/
 	action parse_header_P_Called_Party_ID
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Called_Party_ID NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_Called_Party_ID NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-Charging-Function-Addresses : ==*/
@@ -386,49 +457,65 @@
 	# /*== P_Charging_Vector: ==*/
 	action parse_header_P_Charging_Vector
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Charging_Vector NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_Charging_Vector NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-DCS-Billing-Info: ==*/
 	action parse_header_P_DCS_Billing_Info
 	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_Billing_Info NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_DCS_Billing_Info NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-DCS-LAES: ==*/
 	action parse_header_P_DCS_LAES
 	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_LAES NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_DCS_LAES NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-DCS-OSPS: ==*/
 	action parse_header_P_DCS_OSPS
 	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_OSPS NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_DCS_OSPS NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-DCS-Redirect: ==*/
 	action parse_header_P_DCS_Redirect
 	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_Redirect NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_DCS_Redirect NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-DCS-Trace-Party-ID: ==*/
 	action parse_header_P_DCS_Trace_Party_ID
 	{
-		TSK_DEBUG_ERROR("parse_header_P_DCS_Trace_Party_ID NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_DCS_Trace_Party_ID NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-Early-Media: ==*/
 	action parse_header_P_Early_Media
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Early_Media NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_Early_Media NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-Media-Authorization: ==*/
 	action parse_header_P_Media_Authorization
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Media_Authorization NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_Media_Authorization NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-Preferred-Identity: ==*/
@@ -441,19 +528,25 @@
 	# /*== P-Profile-Key: ==*/
 	action parse_header_P_Profile_Key
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Profile_Key NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_Profile_Key NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-User-Database: ==*/
 	action parse_header_P_User_Database
 	{
-		TSK_DEBUG_ERROR("parse_header_P_User_Database NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_User_Database NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== P-Visited-Network-ID: ==*/
 	action parse_header_P_Visited_Network_ID
 	{
-		TSK_DEBUG_ERROR("parse_header_P_Visited_Network_ID NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_P_Visited_Network_ID NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Path: ==*/
@@ -466,7 +559,9 @@
 	# /* == Priority: ==*/
 	action parse_header_Priority
 	{
-		TSK_DEBUG_ERROR("parse_header_Priority NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Privacy: ==*/
@@ -500,13 +595,17 @@
 	# /*== RAck: ==*/
 	action parse_header_RAck
 	{
-		TSK_DEBUG_ERROR("parse_header_RAck NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_RAck NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Reason: ==*/
 	action parse_header_Reason 
 	{
-		TSK_DEBUG_ERROR("parse_header_Reason NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Reason NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Record-Route: ==*/
@@ -519,65 +618,80 @@
 	# /*== Refer-Sub: ==*/
 	action parse_header_Refer_Sub 
 	{
-		TSK_DEBUG_ERROR("parse_header_Refer_Sub NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Refer_Sub NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Refer-To: ==*/
 	action parse_header_Refer_To
 	{
-		TSK_DEBUG_ERROR("parse_header_Refer_To NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Refer_To NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Referred-By: ==*/
 	action parse_header_Referred_By
 	{
-		TSK_DEBUG_ERROR("parse_header_Referred_By NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Referred_By NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Reject-Contact: ==*/
 	action parse_header_Reject_Contact
 	{
-		TSK_DEBUG_ERROR("parse_header_Reject_Contact NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Reject_Contact NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Replaces: ==*/
 	action parse_header_Replaces
 	{
-		TSK_DEBUG_ERROR("parse_header_Replaces NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Replaces NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Reply-To: ==*/
 	action parse_header_Reply_To
 	{
-		TSK_DEBUG_ERROR("parse_header_Reply_To NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Reply_To NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Request-Disposition: ==*/
 	action parse_header_Request_Disposition
 	{
-		TSK_DEBUG_ERROR("parse_header_Request_Disposition NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Request_Disposition NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Require: ==*/
 	action parse_header_Require
 	{
 		tsip_header_Require_t *header = tsip_header_Require_parse(state->tag_start, (state->tag_end-state->tag_start));
-		if(header)
-		{
-			tsk_list_push_back_data(message->headers, ((void**) &header));
-		}
+		ADD_HEADER(header);
 	}
 
 	# /*== Resource-Priority: ==*/
 	action parse_header_Resource_Priority
 	{
-		TSK_DEBUG_ERROR("parse_header_Resource_Priority NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Resource_Priority NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Retry-After: ==*/
 	action parse_header_Retry_After
 	{
-		TSK_DEBUG_ERROR("parse_header_Retry_After NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Retry_After NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Route: ==*/
@@ -590,7 +704,9 @@
 	# /*== RSeq: ==*/
 	action parse_header_RSeq
 	{
-		TSK_DEBUG_ERROR("parse_header_RSeq NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_RSeq NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Security_Client: ==*/
@@ -631,7 +747,9 @@
 	# /*== Session-Expires: ==*/
 	action parse_header_Session_Expires
 	{
-		TSK_DEBUG_ERROR("parse_header_Session_Expires NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Session_Expires NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== SIP-ETag: ==*/
@@ -651,7 +769,9 @@
 	# /*== Subject: ==*/
 	action parse_header_Subject
 	{
-		TSK_DEBUG_ERROR("parse_header_Subject NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Subject NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Subscription-State: ==*/
@@ -671,28 +791,38 @@
 	# /*== Target-Dialog: ==*/
 	action parse_header_Target_Dialog
 	{
-		TSK_DEBUG_ERROR("parse_header_Target_Dialog NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Target_Dialog NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Timestamp: ==*/
 	action parse_header_Timestamp
 	{
-		TSK_DEBUG_ERROR("parse_header_Timestamp NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Timestamp NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== To: ==*/
 	action parse_header_To
 	{
-		if(!message->To)
-		{
+		if(!message->To){
 			message->To = tsip_header_To_parse(state->tag_start, (state->tag_end-state->tag_start));
+		}
+		else{
+			tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+			ADD_HEADER(header);
+			TSK_DEBUG_WARN("The message already have 'To' header.");
 		}
 	}
 
 	# /*== Unsupported: ==*/
 	action parse_header_Unsupported
 	{
-		TSK_DEBUG_ERROR("parse_header_Unsupported NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+		TSK_DEBUG_WARN("parse_header_Unsupported NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== User-Agent: ==*/
@@ -705,17 +835,12 @@
 	# /*== Via: ==*/
 	action parse_header_Via
 	{		
-		if(!message->firstVia)
-		{
+		if(!message->firstVia){
 			message->firstVia = tsip_header_Via_parse(state->tag_start, (state->tag_end-state->tag_start));
 		}
-		else
-		{
+		else{
 			tsip_header_Via_t *header = tsip_header_Via_parse(state->tag_start, (state->tag_end-state->tag_start));
-			if(header)
-			{
-				tsk_list_push_back_data(message->headers, ((void**) &header));
-			}
+			ADD_HEADER(header);
 		}
 	}
 
@@ -736,7 +861,8 @@
 	# /*== extension_header: ==*/
 	action parse_header_extension_header
 	{
-		TSK_DEBUG_ERROR("parse_header_extension_header NOT IMPLEMENTED");
+		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
 	}
 
 

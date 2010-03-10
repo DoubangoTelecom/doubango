@@ -45,7 +45,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 *	Ragel state machine.
 */
 
-/* #line 183 "thttp_parser_message.rl" */
+/* #line 176 "thttp_parser_message.rl" */
 
 
 
@@ -54,8 +54,8 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 /* #line 55 "../src/parsers/thttp_parser_message.c" */
 static const char _thttp_machine_parser_message_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
-	3, 1, 4, 1, 5, 1, 6, 2, 
-	0, 5, 2, 6, 0
+	3, 1, 4, 1, 5, 1, 6, 1, 
+	7, 2, 0, 5, 2, 6, 0
 };
 
 static const unsigned char _thttp_machine_parser_message_key_offsets[] = {
@@ -152,7 +152,7 @@ static const char _thttp_machine_parser_message_indicies[] = {
 	1, 50, 51, 52, 53, 54, 1, 1, 
 	1, 1, 1, 49, 49, 1, 50, 1, 
 	51, 1, 52, 1, 53, 1, 57, 57, 
-	57, 1, 49, 49, 49, 1, 1, 0
+	57, 1, 49, 49, 49, 1, 58, 0
 };
 
 static const char _thttp_machine_parser_message_trans_targs[] = {
@@ -163,18 +163,18 @@ static const char _thttp_machine_parser_message_trans_targs[] = {
 	27, 28, 29, 30, 31, 32, 33, 34, 
 	35, 36, 37, 38, 39, 40, 41, 17, 
 	42, 36, 37, 38, 39, 40, 41, 17, 
-	42, 43
+	42, 43, 44
 };
 
 static const char _thttp_machine_parser_message_trans_actions[] = {
 	1, 0, 1, 3, 0, 1, 0, 0, 
 	0, 0, 5, 1, 0, 0, 0, 0, 
 	0, 0, 0, 7, 0, 1, 0, 0, 
-	0, 0, 18, 13, 0, 0, 0, 0, 
+	0, 0, 20, 13, 15, 0, 0, 0, 
 	0, 0, 0, 0, 7, 1, 0, 0, 
-	9, 1, 1, 1, 1, 1, 1, 15, 
+	9, 1, 1, 1, 1, 1, 1, 17, 
 	1, 0, 0, 0, 0, 0, 0, 11, 
-	0, 0
+	0, 0, 0
 };
 
 static const int thttp_machine_parser_message_start = 1;
@@ -184,7 +184,7 @@ static const int thttp_machine_parser_message_error = 0;
 static const int thttp_machine_parser_message_en_main = 1;
 
 
-/* #line 188 "thttp_parser_message.rl" */
+/* #line 181 "thttp_parser_message.rl" */
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @fn	int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t *result)
@@ -224,7 +224,7 @@ int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, int 
 	if( state->cs < 
 /* #line 226 "../src/parsers/thttp_parser_message.c" */
 44
-/* #line 224 "thttp_parser_message.rl" */
+/* #line 217 "thttp_parser_message.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(*result);
@@ -245,7 +245,7 @@ static void thttp_message_parser_init(tsk_ragel_state_t *state)
 	cs = thttp_machine_parser_message_start;
 	}
 
-/* #line 239 "thttp_parser_message.rl" */
+/* #line 232 "thttp_parser_message.rl" */
 	
 	state->cs = cs;
 }
@@ -367,76 +367,85 @@ _match:
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(!message->url)
-		{
+		if(!message->url){
 			message->url = thttp_url_parse(state->tag_start, (size_t)len);
 		}
 	}
 	break;
 	case 3:
-/* #line 91 "thttp_parser_message.rl" */
+/* #line 90 "thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(!message->http_version)
-		{
+		if(!message->http_version){
 			message->http_version = tsk_calloc(1, len+1);
 			memcpy(message->http_version, state->tag_start, len);
 		}
 	}
 	break;
 	case 4:
-/* #line 105 "thttp_parser_message.rl" */
+/* #line 103 "thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(message->type == thttp_unknown)
-		{
+		if(message->type == thttp_unknown){
 			message->type = thttp_response;
 			message->status_code = atoi(state->tag_start);
 		}
-		else
-		{
+		else{
 			state->cs = thttp_machine_parser_message_error;
 		}
 	}
 	break;
 	case 5:
-/* #line 123 "thttp_parser_message.rl" */
+/* #line 119 "thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(!message->reason_phrase)
-		{
+		if(!message->reason_phrase){
 			message->reason_phrase = tsk_calloc(1, len+1);
 			memcpy(message->reason_phrase, state->tag_start, len);
 		}
 	}
 	break;
 	case 6:
-/* #line 137 "thttp_parser_message.rl" */
+/* #line 132 "thttp_parser_message.rl" */
 	{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(thttp_header_parse(state, message))
-		{
-			//TSK_DEBUG_INFO("THTTP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
-		}
-		else
-		{
+		if(thttp_header_parse(state, message)){
 			TSK_DEBUG_ERROR("Failed to parse header - %s", state->tag_start);
+		}
+		else{
+			//TSK_DEBUG_INFO("THTTP_MESSAGE_PARSER::PARSE_HEADER len=%d state=%d", len, state->cs);
 		}
 	}
 	break;
-/* #line 440 "../src/parsers/thttp_parser_message.c" */
+	case 7:
+/* #line 156 "thttp_parser_message.rl" */
+	{
+		state->cs = cs;
+		state->p = p;
+		state->pe = pe;
+		state->eof = eof;
+
+		thttp_message_parser_eoh(state, message, extract_content);
+
+		cs = state->cs;
+		p = state->p;
+		pe = state->pe;
+		eof = state->eof;
+	}
+	break;
+/* #line 449 "../src/parsers/thttp_parser_message.c" */
 		}
 	}
 
@@ -449,7 +458,7 @@ _again:
 	_out: {}
 	}
 
-/* #line 251 "thttp_parser_message.rl" */
+/* #line 244 "thttp_parser_message.rl" */
 
 	state->cs = cs;
 	state->p = p;

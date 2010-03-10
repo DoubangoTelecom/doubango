@@ -567,13 +567,12 @@ void *tnet_transport_mainthread(void *param)
 				if(ret == WSAEWOULDBLOCK){
 					TSK_DEBUG_WARN("WSAEWOULDBLOCK error for READ operation");
 				}
-				else if(ret == WSAECONNRESET && TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type))
-				{	/* For DGRAM ==> The sent packet gernerated "ICMP Destination/Port unreachable" result. */
+				else if(ret == WSAECONNRESET && TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)){
+					/* For DGRAM ==> The sent packet gernerated "ICMP Destination/Port unreachable" result. */
 					TSK_FREE(wsaBuffer.buf);
 					continue; // ignore and retry.
 				}
-				else
-				{
+				else{
 					TSK_FREE(wsaBuffer.buf);
 
 					removeSocket(index, context);

@@ -37,6 +37,7 @@
 #include "tsk_object.h"
 #include "tsk_list.h"
 #include "tsk_params.h"
+#include "tsk_fsm.h"
 
 THTTP_BEGIN_DECLS
 
@@ -71,8 +72,10 @@ const tsk_param_t* thttp_operation_get_header(const thttp_operation_handle_t *se
 const tsk_params_L_t* thttp_operation_get_headers(const thttp_operation_handle_t *self);
 const tsk_params_L_t* thttp_operation_get_params(const thttp_operation_handle_t *self);
 tnet_fd_t thttp_operation_get_fd(const thttp_operation_handle_t *self);
+tsk_buffer_t* thttp_operation_get_buf(const thttp_operation_handle_t *self);
 int thttp_operation_set_fd(thttp_operation_handle_t *self, tnet_fd_t fd);
 TINYHTTP_API int thttp_operation_perform(thttp_operation_handle_t* self);
+TINYHTTP_API int thttp_operation_cancel(thttp_operation_handle_t* self); // TODO
 
 typedef tsk_list_t thttp_operations_L_t; /**< List of @ref thttp_operation_handle_t elements. */
 TINYHTTP_GEXTERN const void *thttp_operation_def_t;

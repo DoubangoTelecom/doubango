@@ -32,20 +32,31 @@
 
 #include "tinyhttp_config.h"
 
+#include "tinyHTTP/thttp_operation.h"
+
 #include "tsk_object.h"
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_EVENT_CREATE(code, phrase, message)		tsk_object_new(thttp_event_def_t, code, phrase, (const thttp_message_t*)message)
+#define THTTP_EVENT_CREATE(type, opid, description, message)		tsk_object_new(thttp_event_def_t, (thttp_event_type_t)type, (thttp_operation_id_t)opid, (const char*)description, (const thttp_message_t*)message)
 #define THTTP_EVENT(self)		((thttp_event_t*)(self))
+
+typedef enum thttp_event_type_e
+{
+	thttp_event_message,	
+	thttp_event_closed,
+}
+thttp_event_type_t;
 
 typedef struct thttp_event_s
 {
 	TSK_DECLARE_OBJECT;
-
-	short code;
-	char* phrase;
-
+	
+	thttp_event_type_t type;
+	thttp_operation_id_t opid;
+	
+	char* description;
+	
 	struct thttp_message_s *message;
 }
 thttp_event_t;
