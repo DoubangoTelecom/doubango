@@ -87,72 +87,72 @@ thttp_operation_handle_t* thttp_stack_get_op(thttp_stack_handle_t *self, tnet_fd
 static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
-	tsk_ragel_state_t state;
-	thttp_message_t *message = THTTP_NULL;
-	int endOfheaders = -1;
-	const thttp_t *stack = e->callback_data;
-	
-	switch(e->type){
-		case event_data: {
-				break;
-			}
-		case event_closed:
-		case event_connected:
-		default:{
-				return 0;
-			}
-	}
-	
-
-	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
-	if(TSK_BUFFER_SIZE(transport->buff_stream) >= 0xFFFF){
-		tsk_buffer_cleanup(transport->buff_stream);
-	}
-
-	/* Append new content. */
-	tsk_buffer_append(transport->buff_stream, e->data, e->size);
-	
-	/* Check if we have all HTTP headers. */
-	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
-		TSK_DEBUG_INFO("No all HTTP headers in the TCP buffer.");
-		goto bail;
-	}
-	
-	/* If we are there this mean that we have all HTTP headers.
-	*	==> Parse the HTTP message without the content.
-	*/
-	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(transport->buff_stream), endOfheaders + 4/*2CRLF*/);
-	if(thttp_message_parse(&state, &message, THTTP_FALSE/* do not extract the content */) == THTTP_TRUE 
-		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
-	{
-		size_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
-		if(clen == 0){ /* No content */
-			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF */
-		}
-		else{ /* There is a content */
-			if((endOfheaders + 4/*2CRLF*/ + clen) > TSK_BUFFER_SIZE(transport->buff_stream)){ /* There is content but not all the content. */
-				TSK_DEBUG_INFO("No all HTTP content in the TCP buffer.");
-				goto bail;
-			}
-			else{
-				/* Add the content to the message. */
-				thttp_message_add_content(message, THTTP_NULL, TSK_BUFFER_TO_U8(transport->buff_stream) + endOfheaders + 4/*2CRLF*/, clen);
-				/* Remove HTTP headers, CRLF and the content. */
-				tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/ + clen));
-			}
-		}
-	}
-
-	if(message){
-		/* Handle the incoming message. */
-		ret = thttp_transport_layer_handle_incoming_msg(transport, message);
-		/* Set fd */
-		message->sockfd = e->fd;
-	}
-	else ret = -15;
-
-bail:
-	TSK_OBJECT_SAFE_FREE(message);
+//	tsk_ragel_state_t state;
+//	thttp_message_t *message = THTTP_NULL;
+//	int endOfheaders = -1;
+//	const thttp_t *stack = e->callback_data;
+//	
+//	switch(e->type){
+//		case event_data: {
+//				break;
+//			}
+//		case event_closed:
+//		case event_connected:
+//		default:{
+//				return 0;
+//			}
+//	}
+//	
+//
+//	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
+//	if(TSK_BUFFER_SIZE(transport->buff_stream) >= 0xFFFF){
+//		tsk_buffer_cleanup(transport->buff_stream);
+//	}
+//
+//	/* Append new content. */
+//	tsk_buffer_append(transport->buff_stream, e->data, e->size);
+//	
+//	/* Check if we have all HTTP headers. */
+//	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
+//		TSK_DEBUG_INFO("No all HTTP headers in the TCP buffer.");
+//		goto bail;
+//	}
+//	
+//	/* If we are there this mean that we have all HTTP headers.
+//	*	==> Parse the HTTP message without the content.
+//	*/
+//	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(transport->buff_stream), endOfheaders + 4/*2CRLF*/);
+//	if(thttp_message_parse(&state, &message, THTTP_FALSE/* do not extract the content */) == THTTP_TRUE 
+//		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
+//	{
+//		size_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
+//		if(clen == 0){ /* No content */
+//			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF */
+//		}
+//		else{ /* There is a content */
+//			if((endOfheaders + 4/*2CRLF*/ + clen) > TSK_BUFFER_SIZE(transport->buff_stream)){ /* There is content but not all the content. */
+//				TSK_DEBUG_INFO("No all HTTP content in the TCP buffer.");
+//				goto bail;
+//			}
+//			else{
+//				/* Add the content to the message. */
+//				thttp_message_add_content(message, THTTP_NULL, TSK_BUFFER_TO_U8(transport->buff_stream) + endOfheaders + 4/*2CRLF*/, clen);
+//				/* Remove HTTP headers, CRLF and the content. */
+//				tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/ + clen));
+//			}
+//		}
+//	}
+//
+//	if(message){
+//		/* Handle the incoming message. */
+//		ret = thttp_transport_layer_handle_incoming_msg(transport, message);
+//		/* Set fd */
+//		message->sockfd = e->fd;
+//	}
+//	else ret = -15;
+//
+//bail:
+//	TSK_OBJECT_SAFE_FREE(message);
 
 	return ret;
 }
@@ -366,9 +366,8 @@ thttp_operation_handle_t* thttp_stack_get_op(thttp_stack_handle_t *self, tnet_fd
 	thttp_operation_handle_t* ret = 0;
 	thttp_stack_t *stack = self;
 	tsk_list_item_t *item;
-	thttp_operation_id_t id;
 	
-	if(!stack || !stack->ops || !op){
+	if(!stack || !stack->ops){
 		return 0;
 	}
 	
@@ -396,8 +395,12 @@ int thttp_stack_add_op(thttp_stack_handle_t *self, thttp_operation_handle_t* op)
 	}
 	
 	tsk_safeobj_lock(stack);
+	/* ref() called by the operation's ctor, 
+		unref will be called when removed from the list. */
 	tsk_list_push_back_data(stack->ops, &op);
 	tsk_safeobj_unlock(stack);
+
+	return 0;
 }
 
 int thttp_stack_remove_op(thttp_stack_handle_t *self, thttp_operation_handle_t* op)
@@ -449,7 +452,7 @@ static void* _thttp_stack_create(void * self, va_list * app)
 	if(stack){
 		tsk_safeobj_init(stack);
 
-		stack->ops = TSK_LIST_CREATE();
+		stack->ops = TSK_LIST_CREATE_AS_NOT_OWNER();
 	}
 	return self;
 }
@@ -472,9 +475,9 @@ static void* thttp_stack_destroy(void * self)
 		TSK_FREE(stack->local_ip);
 		TSK_OBJECT_SAFE_FREE(stack->transport);
 
-
+		/* Operations */
 		tsk_safeobj_lock(stack);
-		TSK_OBJECT_SAFREE(stack->ops);
+		TSK_OBJECT_SAFE_FREE(stack->ops);
 		tsk_safeobj_unlock(stack);
 
 		tsk_safeobj_deinit(stack);
