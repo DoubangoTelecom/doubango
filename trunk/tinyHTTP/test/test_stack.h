@@ -74,6 +74,10 @@ void test_stack()
 		THTTP_OPERATION_SET_NULL());
 	thttp_operation_perform(op);
 
+	getchar();
+
+	thttp_operation_perform(op);
+
 /*
 	op = THTTP_OPERATION_CREATE(stack,
 		THTTP_OPERATION_SET_PARAM("method", "GET"),

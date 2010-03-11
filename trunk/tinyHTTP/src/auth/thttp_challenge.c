@@ -138,24 +138,20 @@ thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *s
 	char *uristring = 0;
 	thttp_header_t *header = 0;
 
-	if(!self || !request){
+	if(!self || !request || !request->url){
 		goto bail;
 	}
 
-	/* Create the request uri string from uri object
-	*/
-	if(!(uristring = thttp_url_tostring(request->url))){
-		goto bail;
-	}
+	/* Sets URI: hpath do not start with / ==> append a '/'*/
+	tsk_sprintf(&uristring, "/%s", request->url->hpath ? request->url->hpath : "");
 
 	/* We compute the nc here because @ref thttp_challenge_get_response function will increment it's value. */
 	if(self->nc){
 		THTTP_NCOUNT_2_STRING(self->nc, nc);
 	}
 
-	// FIXME: entity_body ==> request-content
-	if(thttp_challenge_get_response(self, username, password, request->method, uristring, request->Content, &response))
-	{
+	/* Computes the response */
+	if(thttp_challenge_get_response(self, username, password, request->method, uristring, request->Content, &response)){
 		goto bail;
 	}
 
