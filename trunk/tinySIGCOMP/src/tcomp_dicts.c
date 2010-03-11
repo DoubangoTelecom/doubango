@@ -55,15 +55,16 @@ tcomp_dictionary_t* tcomp_dicts_create_presence_dict()
 			RFC5112_DICTIONARY_PRESENCE_MINIMUM_ACCESS_LENGTH,
 			65535);
 
-		if(pres_dict)
-		{
+		if(pres_dict){
 			tcomp_buffer_referenceBuff(pres_dict->value, (uint8_t*)pres_dict_data, RFC5112_DICTIONARY_PRESENCE_VALUE_LENGTH);
 			tcomp_state_makeValid(pres_dict);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_ERROR("Failed to create Presence dictionary.");
 		}
+	}
+	else{
+		pres_dict = tsk_object_ref(pres_dict);
 	}
 
 	return pres_dict;
@@ -87,15 +88,16 @@ tcomp_dictionary_t* tcomp_dicts_create_sip_dict()
 			RFC3485_DICTIONARY_SIP_MINIMUM_ACCESS_LENGTH,
 			65535);
 		
-		if(sip_dict)
-		{
+		if(sip_dict){
 			tcomp_buffer_referenceBuff(sip_dict->value, (uint8_t*)sip_dict_data, RFC3485_DICTIONARY_SIP_VALUE_LENGTH);
 			tcomp_state_makeValid(sip_dict);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_ERROR("Failed to create SIP/SDP dictionary.");
 		}
+	}
+	else{
+		sip_dict = tsk_object_ref(sip_dict);
 	}
 
 	return sip_dict;

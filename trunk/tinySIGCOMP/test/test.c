@@ -1151,6 +1151,8 @@ int main()
 	// Delete managers
 	TSK_OBJECT_SAFE_FREE(manager1);
 	TSK_OBJECT_SAFE_FREE(manager2);
+
+	getchar();
 }
 
 

@@ -65,8 +65,7 @@ size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compar
 	tcomp_manager_t *manager = handle;
 	size_t ret_size = output_size;
 
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return 0;
 	}
@@ -85,14 +84,13 @@ size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compar
 size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return 0;
 	}
 	
-	if(!lpResult || !lpResult->output_buffer)
-	{
+	if(!lpResult || !lpResult->output_buffer){
 		TSK_DEBUG_ERROR("You MUST initialize the sigcomp result and set a valid output buffer.");
 		return 0;
 	}
@@ -100,8 +98,7 @@ size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* inpu
 	/* Reset previous values */
 	tcomp_result_reset(lpResult);
 	
-	if(tcomp_decompressordisp_decompress(manager->dispatcher_decompressor, input_ptr, input_size, lpResult))
-	{
+	if(tcomp_decompressordisp_decompress(manager->dispatcher_decompressor, input_ptr, input_size, lpResult)){
 		return *tcomp_buffer_getIndexBytes(lpResult->output_buffer);
 	}
 
@@ -113,28 +110,24 @@ size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* inpu
 size_t tcomp_manager_getNextStreamMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return 0;
 	}
 
-	if(!lpResult || !tcomp_buffer_getSize(lpResult->output_buffer))
-	{
+	if(!lpResult || !tcomp_buffer_getSize(lpResult->output_buffer)){
 		TSK_DEBUG_ERROR("Invalid result.");
 		return 0;
 	}
 
-	if(!lpResult->isStreamBased)
-	{
+	if(!lpResult->isStreamBased){
 		TSK_DEBUG_ERROR("You MUST provide stream buffer.");
 		return 0;
 	}
 
 	_tcomp_result_reset(lpResult, 0, 0);
 	
-	if(tcomp_decompressordisp_getNextMessage(manager->dispatcher_decompressor, lpResult))
-	{
+	if(tcomp_decompressordisp_getNextMessage(manager->dispatcher_decompressor, lpResult)){
 		return *tcomp_buffer_getIndexBytes(lpResult->output_buffer);
 	}
 
@@ -146,8 +139,7 @@ size_t tcomp_manager_getNextStreamMessage(tcomp_manager_handle_t *handle, tcomp_
 void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -160,8 +152,7 @@ void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_re
 void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -174,8 +165,7 @@ void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, const void *
 void tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, uint32_t dms)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -188,8 +178,7 @@ void tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, 
 void tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t sms)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -202,8 +191,7 @@ void tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t
 void tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -216,8 +204,7 @@ void tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb
 void tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -230,8 +217,7 @@ void tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t ve
 void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress compressor)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -244,8 +230,7 @@ void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compresso
 void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -258,8 +243,7 @@ void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle)
 void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle)
 {
 	tcomp_manager_t *manager = handle;
-	if(!manager)
-	{
+	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
 		return;
 	}
@@ -293,8 +277,7 @@ static void* tcomp_manager_create(void * self, va_list * app)
 		/* Initialize safeobject */
 		tsk_safeobj_init(manager);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new manager.");
 	}
 
@@ -309,9 +292,9 @@ static void* tcomp_manager_destroy(void *self)
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(manager);
 		
-		TSK_OBJECT_SAFE_FREE(manager->dispatcher_decompressor);
-		TSK_OBJECT_SAFE_FREE(manager->dispatcher_compressor);
 		TSK_OBJECT_SAFE_FREE(manager->stateHandler);
+		TSK_OBJECT_SAFE_FREE(manager->dispatcher_compressor);
+		TSK_OBJECT_SAFE_FREE(manager->dispatcher_decompressor);
 	}
 	else TSK_DEBUG_ERROR("Null manager.");
 	

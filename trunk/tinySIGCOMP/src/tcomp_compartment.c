@@ -522,7 +522,7 @@ static void* tcomp_compartment_destroy(void *self)
 		TSK_OBJECT_SAFE_FREE(compartment->nacks);
 		
 		/* Delete Compressor data */
-		tsk_object_unref(compartment->compressorData);
+		TSK_OBJECT_SAFE_FREE(compartment->compressorData);
 		compartment->ackGhost = 0;
 		compartment->freeGhostState = 0;
 		
