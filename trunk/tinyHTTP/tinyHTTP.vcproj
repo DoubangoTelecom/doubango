@@ -343,10 +343,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\thttp.fsm.c"
-				>
-			</File>
-			<File
 				RelativePath=".\src\thttp_event.c"
 				>
 			</File>

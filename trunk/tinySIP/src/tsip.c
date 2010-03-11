@@ -50,6 +50,11 @@
 
 void *run(void* self);
 
+/* For tests:
+* http://www.voip-info.org/wiki/view/PROTOS+Test-Suite
+* http://tools.ietf.org/html/rfc4475
+* http://portal.etsi.org/docbox/EC_Files/EC_Files/ts_10202702v030101p.pdf
+*/
 
 int __tsip_stack_set(tsip_stack_t *self, va_list values)
 {

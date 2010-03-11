@@ -35,8 +35,8 @@
 /**@defgroup tsk_fsm_group Finite-state machine (FSM) implementation.
 */
 
-int tsk_fsm_exec_nothing(va_list *app){ return 1; }
-int tsk_fsm_cond_always(const void* data1, const void* data2) { return 1; }
+int tsk_fsm_exec_nothing(va_list *app){ return 0/*success*/; }
+int tsk_fsm_cond_always(const void* data1, const void* data2) { return 1/*boolean*/; }
 
 /**@ingroup tsk_fsm_group
 * Add entries (states) to the FSM.

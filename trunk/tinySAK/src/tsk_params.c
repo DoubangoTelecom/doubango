@@ -173,8 +173,7 @@ const char *tsk_params_get_param_value(const tsk_params_L_t *self, const char* n
 	{
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
 		if(item_const && item_const->data){
-			tsk_param_t *param = item_const->data;
-			return param->value;
+			return ((const tsk_param_t *)item_const->data)->value;
 		}
 	}
 	return 0;

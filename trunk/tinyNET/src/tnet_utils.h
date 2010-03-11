@@ -53,7 +53,7 @@ TNET_BEGIN_DECLS
 
 /**@ingroup tnet_utils_group
 */
-#define TNET_CONNECT_TIMEOUT		2000
+#define TNET_CONNECT_TIMEOUT		5000
 
 /**@ingroup tnet_utils_group
 * Interface.
