@@ -80,6 +80,8 @@ static void* tcomp_deflatedata_destroy(void *self)
 	{
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(deflatedata);
+		
+		TSK_OBJECT_SAFE_FREE(deflatedata->ghostState);
 
 		tcomp_deflatedata_zUnInit(deflatedata);
 	}

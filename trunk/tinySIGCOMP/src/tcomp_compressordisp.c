@@ -51,9 +51,6 @@
 ///
 /// @brief	Tcomp compressordisp compress. 
 ///
-/// @author	Mamadou
-/// @date	11/29/2009
-///
 /// @param [in,out]	dispatcher	The compressor dispatcher. 
 /// @param	compartmentId		The compartment to use to compress the message. 
 /// @param [in,out]	input_ptr	The message to compress. 
@@ -72,8 +69,7 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 	/* For each compartment id create/retrieve one compressor instance */
 	tcomp_compartment_t *lpCompartment = tcomp_statehandler_getCompartment(dispatcher->stateHandler, compartmentId);
 	
-	if(!lpCompartment)
-	{
+	if(!lpCompartment){
 		TSK_DEBUG_ERROR("You must provide a valid compartment to perform compression.");
 		return 0;
 	}
@@ -86,13 +82,13 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 	
 	for( i = 0; (i < TCOMP_MAX_COMPRESSORS && dispatcher->compressors[i]); i++ )
 	{
-		if((ret = dispatcher->compressors[i](lpCompartment, input_ptr, input_size, output_ptr, output_size, stream))) 
-		{
+		if((ret = dispatcher->compressors[i](lpCompartment, input_ptr, input_size, output_ptr, output_size, stream))) {
 			break;
 		}
 	}
 
 	tsk_safeobj_unlock(dispatcher);
+
 
 	/*
 	*	STREAM case. FIXME:Because I'm a lazy man I only support 0xFF00 case
@@ -103,17 +99,14 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 		size_t i, j;
 		size_t escapedBufferSize = (*output_size + 2); /* 2 = strlen(0xffff) */
 
-		for(i = 0; i < *output_size ; i++) 
-		{
+		for(i = 0; i < *output_size ; i++) {
 			escapedBufferSize += ((uint8_t*)output_ptr)[i] == 0xff ? 1 : 0;
 		}
 		escapedBuffer = (uint8_t*)tsk_calloc(escapedBufferSize, sizeof(uint8_t));
 
-		for(i = 0, j = 0; i < *output_size; i++, j++)
-		{
+		for(i = 0, j = 0; i < *output_size; i++, j++){
 			escapedBuffer[j] = ((uint8_t*)output_ptr)[i];
-			if(escapedBuffer[j] == 0xff) 
-			{
+			if(escapedBuffer[j] == 0xff) {
 				escapedBuffer[++j] = 0x00;
 			}
 		}
@@ -161,8 +154,7 @@ void tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcom
 
 	for(i = 0; i < TCOMP_MAX_COMPRESSORS; i++)
 	{
-		if(!dispatcher->compressors[i])
-		{
+		if(!dispatcher->compressors[i]){
 			dispatcher->compressors[i] = compressor;
 		}
 	}
@@ -190,8 +182,7 @@ static void* tcomp_compressordisp_create(void * self, va_list * app)
 		compressordisp->compressors[0] = tcomp_compressor_deflate_compress;	/* If you don't want deflate compressor then remove this line. */
 		compressordisp->compressors[1] = tcomp_compressor_dummy_compress;	/* RFC 4896 [11. Uncompressed Bytecode]. */
 		
-		for(i = 2; i < TCOMP_MAX_COMPRESSORS; i++)
-		{
+		for(i = 2; i < TCOMP_MAX_COMPRESSORS; i++){
 			compressordisp->compressors[i] = 0;
 		}
 
