@@ -56,7 +56,7 @@
 #ifndef TINYSIP_AUTHENTICATION_MILENAGE_H
 #define TINYSIP_AUTHENTICATION_MILENAGE_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
 TSIP_BEGIN_DECLS
 

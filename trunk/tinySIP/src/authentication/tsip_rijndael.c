@@ -56,7 +56,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/authentication/tsip_rijndael.h"
+#include "tinySIP/authentication/tsip_rijndael.h"
 
 #if TSIP_UNDER_WINDOWS || defined(__SYMBIAN32__) || defined(__LITTLE_ENDIAN__)
 #	define LITTLE_ENDIAN	/* For INTEL architecture */

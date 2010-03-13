@@ -30,8 +30,8 @@
 #ifndef TINYSIP_DIALOG_PUBLISH_H
 #define TINYSIP_DIALOG_PUBLISH_H
 
-#include "tinysip_config.h"
-#include "tinysip/dialogs/tsip_dialog.h"
+#include "tinySIP_config.h"
+#include "tinySIP/dialogs/tsip_dialog.h"
 
 #include "tsk_fsm.h"
 

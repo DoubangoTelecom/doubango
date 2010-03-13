@@ -38,6 +38,11 @@
 TSK_BEGIN_DECLS
 
 /**@ingroup tsk_object_group
+* Plain object.
+*/
+typedef void tsk_object_t;
+
+/**@ingroup tsk_object_group
 * Safely free any object created using @ref tsk_object_new and declared using @ref TSK_DECLARE_OBJECT. If the reference count of the object was equal to 1 then this
  * 	object will be freed otherwise the refrence counter will be decremented. 
  *	In all case this operation will set the pointer (the object itself) to NULL.
@@ -142,19 +147,19 @@ TSK_BEGIN_DECLS
 typedef struct tsk_object_def_s
 {
 	size_t size;													/**< The size of the object. */
-	void*	(* constructor) (void *self, va_list *app);				/**< Pointer to the constructor. */
-	void*	(* destructor) (void *);								/**< Pointer to the destructor. */
-	int		(* objcmp) (const void *object1, const void *object2);	/**< Pointer to the comparator. */
+	void*	(* constructor) (tsk_object_t *, va_list *);				/**< Pointer to the constructor. */
+	void*	(* destructor) (tsk_object_t *);								/**< Pointer to the destructor. */
+	int		(* objcmp) (const tsk_object_t *, const tsk_object_t *);	/**< Pointer to the comparator. */
 }
 tsk_object_def_t;
 
-TINYSAK_API void* tsk_object_new(const tsk_object_def_t *objdef, ...);
-TINYSAK_API void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap);
-TINYSAK_API size_t tsk_object_sizeof(const void *self);
-TINYSAK_API int tsk_object_cmp(const void *self, const void *object);
-TINYSAK_API void* tsk_object_ref(void *self);
-TINYSAK_API void* tsk_object_unref(void *self);
-TINYSAK_API void tsk_object_delete(void *self);
+TINYSAK_API tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...);
+TINYSAK_API tsk_object_t* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap);
+TINYSAK_API size_t tsk_object_sizeof(const void *tsk_object_t);
+TINYSAK_API int tsk_object_cmp(const void *self, const tsk_object_t *object);
+TINYSAK_API tsk_object_t* tsk_object_ref(tsk_object_t *self);
+TINYSAK_API tsk_object_t* tsk_object_unref(tsk_object_t *self);
+TINYSAK_API void tsk_object_delete(tsk_object_t *self);
 
 TSK_END_DECLS
 

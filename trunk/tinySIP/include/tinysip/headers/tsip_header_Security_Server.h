@@ -28,8 +28,8 @@
 #ifndef _TSIP_HEADER_SECURITY_SERVER_H_
 #define _TSIP_HEADER_SECURITY_SERVER_H_
 
-#include "tinysip_config.h"
-#include "tinysip/headers/tsip_header.h"
+#include "tinySIP_config.h"
+#include "tinySIP/headers/tsip_header.h"
 
 #include "tnet_types.h"
 

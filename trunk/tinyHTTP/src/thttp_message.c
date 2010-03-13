@@ -179,7 +179,7 @@ const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thtt
 
 int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output)
 {
-	if(!self){
+	if(!self || !output){
 		return -1;
 	}
 

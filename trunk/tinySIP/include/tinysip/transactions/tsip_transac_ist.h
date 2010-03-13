@@ -30,8 +30,8 @@
 #ifndef TINYSIP_TRANSAC_IST_H
 #define TINYSIP_TRANSAC_IST_H
 
-#include "tinysip_config.h"
-#include "tinysip/transactions/tsip_transac.h"
+#include "tinySIP_config.h"
+#include "tinySIP/transactions/tsip_transac.h"
 
 #include "tsk_fsm.h"
 

@@ -336,7 +336,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
+			Name="source(*.c)"
 			>
 			<File
 				RelativePath=".\src\tnet.c"
@@ -524,7 +524,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="include"
+			Name="include(*.h)"
 			>
 			<File
 				RelativePath=".\src\tinyNET_config.h"
@@ -718,22 +718,6 @@
 					>
 				</File>
 			</Filter>
-		</Filter>
-		<Filter
-			Name="smc"
-			>
-			<File
-				RelativePath=".\smc\ice.sm"
-				>
-			</File>
-			<File
-				RelativePath=".\smc\stun.sm"
-				>
-			</File>
-			<File
-				RelativePath=".\smc\turn.sm"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

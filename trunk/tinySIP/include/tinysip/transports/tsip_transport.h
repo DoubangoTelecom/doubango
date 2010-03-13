@@ -30,11 +30,11 @@
 #ifndef TINYSIP_TRANSPORT_H
 #define TINYSIP_TRANSPORT_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
 #include "tsip.h"
 
-#include "tinysip/tsip_message.h"
+#include "tinySIP/tsip_message.h"
 
 #include "tnet_transport.h"
 

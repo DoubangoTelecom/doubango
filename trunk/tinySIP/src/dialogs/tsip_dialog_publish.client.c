@@ -27,15 +27,15 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/dialogs/tsip_dialog_publish.h"
+#include "tinySIP/dialogs/tsip_dialog_publish.h"
 
-#include "tinysip/headers/tsip_header_Min_Expires.h"
-#include "tinysip/headers/tsip_header_SIP_ETag.h"
-#include "tinysip/headers/tsip_header_SIP_If_Match.h"
+#include "tinySIP/headers/tsip_header_Min_Expires.h"
+#include "tinySIP/headers/tsip_header_SIP_ETag.h"
+#include "tinySIP/headers/tsip_header_SIP_If_Match.h"
 
-#include "tinysip/tsip_message.h"
+#include "tinySIP/tsip_message.h"
 
-#include "tinysip/api/tsip_api_publish.h"
+#include "tinySIP/api/tsip_api_publish.h"
 
 #include "tsk_debug.h"
 #include "tsk_time.h"

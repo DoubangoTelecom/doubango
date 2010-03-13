@@ -30,8 +30,8 @@
 #ifndef TINYSIP_HEADER_VIA_H
 #define TINYSIP_HEADER_VIA_H
 
-#include "tinysip_config.h"
-#include "tinysip/headers/tsip_header.h"
+#include "tinySIP_config.h"
+#include "tinySIP/headers/tsip_header.h"
 
 #include "tsk_object.h"
 

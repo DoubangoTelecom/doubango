@@ -216,6 +216,7 @@ int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, int 
 
 	if( state->cs < %%{ write first_final; }%% )
 	{
+		TSK_DEBUG_ERROR("Failed to parse HTTP message.");
 		TSK_OBJECT_SAFE_FREE(*result);
 		return -2;
 	}

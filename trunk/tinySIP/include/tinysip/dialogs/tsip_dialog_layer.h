@@ -30,10 +30,10 @@
 #ifndef TINYSIP_DIALOG_LAYER_H
 #define TINYSIP_DIALOG_LAYER_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
 #include "tsip.h"
-#include "tinysip/dialogs/tsip_dialog.h"
+#include "tinySIP/dialogs/tsip_dialog.h"
 
 #include "tsk_safeobj.h"
 #include "tsk_list.h"

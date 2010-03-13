@@ -30,9 +30,9 @@
 #ifndef TINYSIP_HEADERS_H
 #define TINYSIP_HEADERS_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
-#include "tinysip/headers/tsip_header_accept.h"
+#include "tinySIP/headers/tsip_header_accept.h"
 
 TSIP_BEGIN_DECLS
 

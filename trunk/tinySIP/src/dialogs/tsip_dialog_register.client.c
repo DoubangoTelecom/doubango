@@ -27,18 +27,18 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/dialogs/tsip_dialog_register.h"
-#include "tinysip/parsers/tsip_parser_uri.h"
+#include "tinySIP/dialogs/tsip_dialog_register.h"
+#include "tinySIP/parsers/tsip_parser_uri.h"
 
-#include "tinysip/transports/tsip_transport_layer.h"
+#include "tinySIP/transports/tsip_transport_layer.h"
 
-#include "tinysip/headers/tsip_header_Path.h"
-#include "tinysip/headers/tsip_header_P_Associated_URI.h"
-#include "tinysip/headers/tsip_header_Min_Expires.h"
-#include "tinysip/headers/tsip_header_Service_Route.h"
-#include "tinysip/headers/tsip_header_Supported.h"
+#include "tinySIP/headers/tsip_header_Path.h"
+#include "tinySIP/headers/tsip_header_P_Associated_URI.h"
+#include "tinySIP/headers/tsip_header_Min_Expires.h"
+#include "tinySIP/headers/tsip_header_Service_Route.h"
+#include "tinySIP/headers/tsip_header_Supported.h"
 
-#include "tinysip/api/tsip_api_register.h"
+#include "tinySIP/api/tsip_api_register.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"

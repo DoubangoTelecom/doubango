@@ -27,13 +27,13 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/dialogs/tsip_dialog_layer.h"
+#include "tinySIP/dialogs/tsip_dialog_layer.h"
 
-#include "tinysip/dialogs/tsip_dialog_register.h"
-#include "tinysip/dialogs/tsip_dialog_message.h"
+#include "tinySIP/dialogs/tsip_dialog_register.h"
+#include "tinySIP/dialogs/tsip_dialog_message.h"
 
-#include "tinysip/transactions/tsip_transac_layer.h"
-#include "tinysip/transports/tsip_transport_layer.h"
+#include "tinySIP/transactions/tsip_transac_layer.h"
+#include "tinySIP/transports/tsip_transport_layer.h"
 
 tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation)
 {

@@ -30,7 +30,7 @@
 #ifndef TINYSIP_TIMERS_H
 #define TINYSIP_TIMERS_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
 #include "tsk_timer.h"
 

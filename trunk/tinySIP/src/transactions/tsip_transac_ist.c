@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/transactions/tsip_transac_ist.h"
+#include "tinySIP/transactions/tsip_transac_ist.h"
 
 int tsip_transac_ist_init(tsip_transac_ist_t *self)
 {

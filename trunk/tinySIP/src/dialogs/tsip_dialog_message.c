@@ -27,12 +27,12 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/dialogs/tsip_dialog_message.h"
-#include "tinysip/parsers/tsip_parser_uri.h"
+#include "tinySIP/dialogs/tsip_dialog_message.h"
+#include "tinySIP/parsers/tsip_parser_uri.h"
 
-#include "tinysip/api/tsip_api_message.h"
+#include "tinySIP/api/tsip_api_message.h"
 
-#include "tinysip/headers/tsip_header_Min_Expires.h"
+#include "tinySIP/headers/tsip_header_Min_Expires.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"

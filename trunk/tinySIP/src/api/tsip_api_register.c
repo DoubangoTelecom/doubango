@@ -27,10 +27,10 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/api/tsip_api_register.h"
+#include "tinySIP/api/tsip_api_register.h"
 
-#include "tinysip/dialogs/tsip_dialog_layer.h"
-#include "tinysip/dialogs/tsip_dialog_register.h"
+#include "tinySIP/dialogs/tsip_dialog_layer.h"
+#include "tinySIP/dialogs/tsip_dialog_register.h"
 
 #include "tsip.h"
 
