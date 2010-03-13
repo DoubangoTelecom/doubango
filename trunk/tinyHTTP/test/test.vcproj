@@ -207,6 +207,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_messages.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_stack.h"
 				>
 			</File>

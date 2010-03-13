@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/tsip_timers.h"
+#include "tinySIP/tsip_timers.h"
 
 /*
 	Timer    Value            Section               Meaning

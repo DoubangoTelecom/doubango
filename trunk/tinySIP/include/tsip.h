@@ -30,13 +30,13 @@
 #ifndef TINYSIP_TSIP_H
 #define TINYSIP_TSIP_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
-#include "tinysip/tsip_operation.h"
-#include "tinysip/tsip_timers.h"
-#include "tinysip/tsip_event.h"
+#include "tinySIP/tsip_operation.h"
+#include "tinySIP/tsip_timers.h"
+#include "tinySIP/tsip_event.h"
 
-#include "tinysip/tsip_uri.h"
+#include "tinySIP/tsip_uri.h"
 
 #include "tnet_socket.h"
 #include "dns/tnet_dns.h"

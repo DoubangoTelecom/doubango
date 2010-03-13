@@ -27,22 +27,15 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/headers/tsip_header.h"
+#include "tinySIP/headers/tsip_header.h"
 
-#include "tinysip/headers/tsip_header_Dummy.h"
+#include "tinySIP/headers/tsip_header_Dummy.h"
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	const char *tsip_header_get_name(tsip_header_type_t type)
-///
-/// @brief	Retrieves a header name by type. 
-///
-/// @author	Mamadou
-/// @date	12/2/2009
-///
-/// @param	type	The type of the headers. 
-///
-/// @return	The name of the header. 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/** Gets the name of the SIP header with a type equal to @a type. 
+ * @param	type	The @a type of the header for which to retrieve the name. 
+ *
+ * @return	The name of the header.
+**/
 const char *tsip_header_get_name(tsip_header_type_t type)
 {
 	switch(type)

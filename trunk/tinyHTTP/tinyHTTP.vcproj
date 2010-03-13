@@ -336,7 +336,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="src"
+			Name="source(*.c)"
 			>
 			<File
 				RelativePath=".\src\thttp.c"
@@ -420,7 +420,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="include"
+			Name="include(*.h)"
 			>
 			<File
 				RelativePath=".\include\thttp.h"
@@ -508,7 +508,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="abnf"
+			Name="abnf(*.abnf)"
 			>
 			<File
 				RelativePath=".\abnf\http.abnf"
@@ -524,7 +524,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="ragel"
+			Name="ragel(*.rl)"
 			>
 			<File
 				RelativePath=".\ragel\thttp_machine_header.rl"

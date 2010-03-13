@@ -27,13 +27,13 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/dialogs/tsip_dialog_subscribe.h"
+#include "tinySIP/dialogs/tsip_dialog_subscribe.h"
 
-#include "tinysip/headers/tsip_header_Event.h"
-#include "tinysip/headers/tsip_header_Min_Expires.h"
-#include "tinysip/headers/tsip_header_Subscription_State.h"
+#include "tinySIP/headers/tsip_header_Event.h"
+#include "tinySIP/headers/tsip_header_Min_Expires.h"
+#include "tinySIP/headers/tsip_header_Subscription_State.h"
 
-#include "tinysip/api/tsip_api_subscribe.h"
+#include "tinySIP/api/tsip_api_subscribe.h"
 
 #include "tsk_debug.h"
 #include "tsk_time.h"

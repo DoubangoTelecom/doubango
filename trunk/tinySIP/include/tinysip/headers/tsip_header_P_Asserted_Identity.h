@@ -30,10 +30,10 @@
 #ifndef _TSIP_HEADER_P_ASSERTED_IDENTITY_H_
 #define _TSIP_HEADER_P_ASSERTED_IDENTITY_H_
 
-#include "tinysip_config.h"
-#include "tinysip/headers/tsip_header.h"
+#include "tinySIP_config.h"
+#include "tinySIP/headers/tsip_header.h"
 
-#include "tinysip/tsip_uri.h"
+#include "tinySIP/tsip_uri.h"
 
 TSIP_BEGIN_DECLS
 

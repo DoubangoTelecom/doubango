@@ -27,12 +27,12 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/transactions/tsip_transac_layer.h"
+#include "tinySIP/transactions/tsip_transac_layer.h"
 
-#include "tinysip/transactions/tsip_transac_ict.h"
-#include "tinysip/transactions/tsip_transac_ist.h"
-#include "tinysip/transactions/tsip_transac_nict.h"
-#include "tinysip/transactions/tsip_transac_nist.h"
+#include "tinySIP/transactions/tsip_transac_ict.h"
+#include "tinySIP/transactions/tsip_transac_ist.h"
+#include "tinySIP/transactions/tsip_transac_nict.h"
+#include "tinySIP/transactions/tsip_transac_nist.h"
 
 #include "tsk_string.h"
 #include "tsk_debug.h"

@@ -59,7 +59,7 @@
 #ifndef TINYSIP_AUTHENTICATION_RIJNDAEL_H
 #define TINYSIP_AUTHENTICATION_RIJNDAEL_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
 TSIP_BEGIN_DECLS
 

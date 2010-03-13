@@ -30,8 +30,8 @@
 #ifndef _TSIP_HEADER_ACCEPT_ENCODING_H_
 #define _TSIP_HEADER_ACCEPT_ENCODING_H_
 
-#include "tinysip_config.h"
-#include "tinysip/headers/tsip_header.h"
+#include "tinySIP_config.h"
+#include "tinySIP/headers/tsip_header.h"
 
 TSIP_BEGIN_DECLS
 

@@ -30,14 +30,14 @@
 #ifndef TINYSIP_AUTHENTICATION_CHALLENGE_H
 #define TINYSIP_AUTHENTICATION_CHALLENGE_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
 #include "tsip.h"
 
-#include "tinysip/tsip_message.h"
-#include "tinysip/headers/tsip_header.h"
+#include "tinySIP/tsip_message.h"
+#include "tinySIP/headers/tsip_header.h"
 
-#include "tinysip/authentication/tsip_milenage.h"
+#include "tinySIP/authentication/tsip_milenage.h"
 
 #include "tinyhttp/auth/thttp_auth.h"
 

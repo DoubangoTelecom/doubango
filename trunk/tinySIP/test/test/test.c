@@ -60,7 +60,7 @@ int main()
 #endif
 	{
 		/* Print copyright information */
-		printf("Doubango Project\nCopyright (C) 2009 Mamadou Diop \n\n");
+		printf("Doubango Project\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
 	
 #if RUN_TEST_ALL  || RUN_TEST_MESSAGES
 		test_messages();

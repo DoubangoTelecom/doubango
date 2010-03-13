@@ -55,12 +55,12 @@ tsk_object_header_t;
 * Creates new object. The object MUST be declared using @ref TSK_DECLARE_OBJECT macro.
 * @param objdef The object meta-data (definition). For more infomation see @ref tsk_object_def_t.
 * @param ... List of parameters to pass to the constructor(defined in the meta-data).
-* @retval The newly calloc()ed object with a reference counter equal to 1.
+* @retval @ref tsk_object_t object with a reference counter equal to 1.
 * @sa @ref tsk_object_new2.
 */
-void* tsk_object_new(const tsk_object_def_t *objdef, ...)
+tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 {
-	void *newobj = tsk_calloc(1, objdef->size);
+	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
 	if(newobj)
 	{
 		(*(const tsk_object_def_t **) newobj) = objdef;
@@ -91,12 +91,12 @@ void* tsk_object_new(const tsk_object_def_t *objdef, ...)
 * Creates new object. The object MUST be declared using @ref TSK_DECLARE_OBJECT macro.
 * @param objdef The object meta-data (definition). For more infomation see @ref tsk_object_def_t.
 * @param ap Variable argument list to pass to the constructor(defined in the meta-data).
-* @retval The newly calloc()ed object with a reference counter equal to 1.
+* @retval @ref tsk_object_t object with a reference counter equal to 1.
 * @sa @ref tsk_object_new.
 */
-void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
+tsk_object_t* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 {
-	void *newobj = tsk_calloc(1, objdef->size);
+	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
 	if(newobj)
 	{
 		(*(const tsk_object_def_t **) newobj) = objdef;
@@ -121,7 +121,7 @@ void* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 * The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
 * @retval The size of the object.
 */
-size_t tsk_object_sizeof(const void *self)
+size_t tsk_object_sizeof(const tsk_object_t *self)
 {
 	const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
 	if(objdef && *objdef){
@@ -141,7 +141,7 @@ size_t tsk_object_sizeof(const void *self)
 * @retval Zero if the two object are equal.
 * Positive value if @a object1 is greater than @a object2 and a negative value otherwise.
 */
-int tsk_object_cmp(const void *object1, const void *object2)
+int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 {
 	const tsk_object_def_t **objdef = (const tsk_object_def_t **)object1;
 
@@ -159,7 +159,7 @@ int tsk_object_cmp(const void *object1, const void *object2)
 * @retval The new object (incremented).
 * @sa tsk_object_unref.
 */
-void* tsk_object_ref(void *self)
+tsk_object_t* tsk_object_ref(tsk_object_t *self)
 {
 	if(self){
 		TSK_OBJECT_HEADER_GET(self)->refCount++;
@@ -177,7 +177,7 @@ void* tsk_object_ref(void *self)
 * @sa ref tsk_object_ref.
 * @sa ref TSK_OBJECT_SAFE_FREE.
 */
-void* tsk_object_unref(void *self)
+tsk_object_t* tsk_object_unref(tsk_object_t *self)
 {
 	if(self)
 	{
@@ -196,7 +196,7 @@ void* tsk_object_unref(void *self)
 * @param self The object to delete.
 * @sa @ref TSK_OBJECT_SAFE_FREE.
 */
-void tsk_object_delete(void *self)
+void tsk_object_delete(tsk_object_t *self)
 {
 	const tsk_object_def_t ** objdef = self;
 	if(self && *objdef)

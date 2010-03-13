@@ -53,6 +53,9 @@ TSK_BEGIN_DECLS
 */
 #define TSK_LIST_IS_EMPTY(self)				(self ? (!self->head) : 1)
 
+#define TSK_LIST_IS_FIRST(self, item)		(self ? (self->head == item) : 0)
+#define TSK_LIST_IS_LAST(self, item)		(self ? (self->tail == item) : 0)
+
 /**@ingroup tsk_list_group
 * Item for linked list. 
 */

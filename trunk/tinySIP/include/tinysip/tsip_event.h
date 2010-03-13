@@ -30,9 +30,9 @@
 #ifndef TINYSIP_TSIP_EVENT_H
 #define TINYSIP_TSIP_EVENT_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
-#include "tinysip/tsip_operation.h"
+#include "tinySIP/tsip_operation.h"
 
 TSIP_BEGIN_DECLS
 

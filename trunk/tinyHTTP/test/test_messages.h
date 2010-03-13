@@ -63,7 +63,7 @@ void test_messages()
 
 		/* serialize the message */
 		thttp_message_tostring(message, buffer);
-		TSK_DEBUG_INFO("Response=\n%s", TSK_BUFFER_TO_STRING(buffer));
+		TSK_DEBUG_INFO("HTTP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
 
 		TSK_OBJECT_SAFE_FREE(buffer);
 	}

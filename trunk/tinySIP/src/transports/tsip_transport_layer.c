@@ -27,14 +27,14 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/transports/tsip_transport_layer.h"
+#include "tinySIP/transports/tsip_transport_layer.h"
 
-#include "tinysip/transports/tsip_transport_ipsec.h"
+#include "tinySIP/transports/tsip_transport_ipsec.h"
 
-#include "tinysip/transactions/tsip_transac_layer.h"
-#include "tinysip/dialogs/tsip_dialog_layer.h"
+#include "tinySIP/transactions/tsip_transac_layer.h"
+#include "tinySIP/dialogs/tsip_dialog_layer.h"
 
-#include "tinysip/parsers/tsip_parser_message.h"
+#include "tinySIP/parsers/tsip_parser_message.h"
 
 #include "tsk_thread.h"
 #include "tsk_debug.h"

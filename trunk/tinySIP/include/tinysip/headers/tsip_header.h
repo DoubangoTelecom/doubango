@@ -30,7 +30,7 @@
 #ifndef TINYSIP_HEADER_H
 #define TINYSIP_HEADER_H
 
-#include "tinysip_config.h"
+#include "tinySIP_config.h"
 
 #include "tsk_ragel_state.h"
 
@@ -44,10 +44,11 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_HEADER(self)			((tsip_header_t*)(self))
-#define TSIP_HEADER_PARAMS(self)	(TSIP_HEADER(self)->params)
+#define TSIP_HEADER(self)					((tsip_header_t*)(self))
+#define TSIP_HEADER_PARAMS(self)			(TSIP_HEADER(self)->params)
+#define TSIP_HEADER_VALUE_TOSTRING_F(self)	((tsip_header_value_tostring_f)(self))
 
-typedef int (*tsip_header_value_tostring)(const void* header/*FIXME*/, tsk_buffer_t* output);
+typedef int (*tsip_header_value_tostring_f)(const struct tsip_header_s* header, tsk_buffer_t* output);
 
 /**
  * @enum	tsip_header_type_e
@@ -158,7 +159,7 @@ typedef struct tsip_header_s
 {
 	TSK_DECLARE_OBJECT;
 	tsip_header_type_t type;
-	tsip_header_value_tostring tostring;
+	tsip_header_value_tostring_f tostring;
 	tsk_params_L_t *params;
 }
 tsip_header_t;

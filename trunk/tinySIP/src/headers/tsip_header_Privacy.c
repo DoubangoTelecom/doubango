@@ -37,9 +37,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/headers/tsip_header_Privacy.h"
+#include "tinySIP/headers/tsip_header_Privacy.h"
 
-#include "tinysip/parsers/tsip_parser_uri.h"
+#include "tinySIP/parsers/tsip_parser_uri.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"

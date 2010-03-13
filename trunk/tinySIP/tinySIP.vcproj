@@ -338,7 +338,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="src"
+			Name="source(*.c)"
 			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
@@ -900,7 +900,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="include"
+			Name="include(*.h)"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
@@ -1454,7 +1454,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="ragel"
+			Name="ragel(*.rl)"
 			>
 			<File
 				RelativePath=".\ragel\tsip_machine_header.rl"
@@ -1850,7 +1850,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="abnf"
+			Name="abnf(*.abnf)"
 			>
 			<File
 				RelativePath=".\abnf\core.abnf"

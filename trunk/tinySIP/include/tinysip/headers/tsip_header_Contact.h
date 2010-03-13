@@ -30,9 +30,9 @@
 #ifndef _TSIP_HEADER_CONTACT_H_
 #define _TSIP_HEADER_CONTACT_H_
 
-#include "tinysip_config.h"
-#include "tinysip/tsip_uri.h"
-#include "tinysip/headers/tsip_header.h"
+#include "tinySIP_config.h"
+#include "tinySIP/tsip_uri.h"
+#include "tinySIP/headers/tsip_header.h"
 
 TSIP_BEGIN_DECLS
 
