@@ -81,6 +81,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/* FIXME */
+#define TMSRP_NULL 0
 
 #endif /* _TINYMSRP_H_ */
 
