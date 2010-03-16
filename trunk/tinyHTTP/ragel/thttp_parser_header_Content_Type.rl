@@ -78,7 +78,7 @@
 
 	media_type = (m_type SLASH m_subtype)@1 >tag %parse_content_type ((SEMI m_parameter)*)@0;
 
-	Content_Type = ( "Content-Type"i | "c"i ) HCOLON media_type;
+	Content_Type = ( "Content-Type"i ) HCOLON media_type;
 	
 	# Entry point
 	main := Content_Type :>CRLF @eob;

@@ -69,8 +69,6 @@ tsip_host_type_t;
 ///
 /// @brief	SIP/SIPS/TEL URI.
 ///
-/// @author	Mamadou
-/// @date	12/6/2009
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_uri_s
 {
@@ -85,7 +83,7 @@ typedef struct tsip_uri_s
 	char *password;
 	char *display_name;
 
-	tsk_params_L_t *params; /**< list of tsk_param_t elements containing all parameters. */
+	tsk_params_L_t *params; /**< list of @ref tsk_param_t elements containing all parameters. */
 }
 tsip_uri_t;
 

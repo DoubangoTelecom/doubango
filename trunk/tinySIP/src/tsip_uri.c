@@ -217,7 +217,7 @@ int tsip_uri_strcmp(const char* s1, const char* s2, int case_sensitive)
 #define tsip_uri_strequals(s1, s2) !tsip_uri_strcmp(s1, s2, 1)
 #define tsip_uri_striequals(s1, s2) !tsip_uri_strcmp(s1, s2, 0)
 
-static int tsip_uri_cmp(const void *obj1, const void *obj2)
+static int tsip_uri_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	if(obj1 && obj2)
 	{
