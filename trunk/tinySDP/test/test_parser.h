@@ -19,8 +19,8 @@
 * along with DOUBANGO.
 *
 */
-#ifndef _TEST_SDPMESSAGES_H
-#define _TEST_SDPMESSAGES_H
+#ifndef _TEST_SDPPARSER_H
+#define _TEST_SDPPARSER_H
 
 #include "tinySDP/headers/tsdp_header_Dummy.h"
 
@@ -39,14 +39,24 @@
 	"t=3034423619 3042462419\r\n" \
     "r=7d 1h 0 25h\r\n" \
 	"r=604800 3600 0 90000\r\n" \
+	"w=my dummy header\r\n" \
 	"m=audio 49170 RTP/AVP 0 8 97\r\n" \
+	"i=Audio line\r\n" \
+	"c=IN IP4 otherhost.biloxi.example.com\r\n" \
+	"k=base64:ZWFzdXJlLgdddddddddddddddddddddd==\r\n" \
 	"a=rtpmap:0 PCMU/8000\r\n" \
 	"a=rtpmap:8 PCMA/8000\r\n" \
 	"a=rtpmap:97 iLBC/8000\r\n" \
 	"m=video 51372 RTP/AVP 31 32\r\n" \
+	"i=Video line\r\n" \
+	"b=A-YZ:92\r\n" \
+	"b=B-YZ:256\r\n" \
 	"a=rtpmap:31 H261/90000\r\n" \
-	"a=rtpmap:32 MPV/90000\r\n"
+	"a=rtpmap:32 MPV/90000\r\n" \
+	"a=sendonly\r\n"
 	
+#define SDP_MSG2 \
+	"v=0\r\n"
 
 
 #define SDP_MSG_TO_TEST SDP_MSG1
@@ -72,4 +82,4 @@ void test_parser()
 	TSK_OBJECT_SAFE_FREE(message);
 }
 
-#endif /* _TEST_SDPMESSAGES_H */
+#endif /* _TEST_SDPPARSER_H */

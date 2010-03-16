@@ -51,14 +51,11 @@
 	action parse_version{
 		TSK_PARSER_SET_INT(hdr_V->version);
 	}
-
-	action eob{
-	}
 		
 	V = 'v' SP* "=" SP*<: DIGIT+>tag %parse_version;
 	
 	# Entry point
-	main := V :>CRLF @eob;
+	main := V :>CRLF?;
 
 }%%
 

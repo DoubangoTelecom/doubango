@@ -102,7 +102,15 @@ int tsdp_header_tostring(const tsdp_header_t *self, tsk_buffer_t *output)
 	}
 
 	/* CRLF*/
-	ret = tsk_buffer_append(output, "\r\n", 2);
+	if(output->size>2){
+		if(*(TSK_BUFFER_TO_U8(output)+TSK_BUFFER_SIZE(output)-2) != '\r' 
+			&& *(TSK_BUFFER_TO_U8(output)+TSK_BUFFER_SIZE(output)-1) != '\n'){
+			ret = tsk_buffer_append(output, "\r\n", 2);
+		}
+	}
+	else{
+		ret = tsk_buffer_append(output, "\r\n", 2);
+	}
 
 	return ret;
 }

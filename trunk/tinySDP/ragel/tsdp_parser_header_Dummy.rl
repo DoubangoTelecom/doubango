@@ -21,7 +21,7 @@
 */
 
 /**@file tsdp_header_Dummy.c
- * @brief SDP DUmmy header.
+ * @brief SDP Dummy header.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -55,14 +55,11 @@
 	action parse_value{
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
-
-	action eob{
-	}
 		
 	Dummy = alpha>tag %parse_name SP* "=" SP*<: any*>tag %parse_value;
 	
 	# Entry point
-	main := Dummy :>CRLF @eob;
+	main := Dummy :>CRLF?;
 
 }%%
 
@@ -72,7 +69,7 @@ int tsdp_header_Dummy_tostring(const tsdp_header_t* header, tsk_buffer_t* output
 	{
 		const tsdp_header_Dummy_t *Dummy = (const tsdp_header_Dummy_t *)header;
 		if(Dummy->value){
-			tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
+			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
 		}
 		return 0;
 	}
@@ -95,6 +92,7 @@ tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size)
 	%%write exec;
 	
 	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse dummy header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}
 	

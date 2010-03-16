@@ -69,9 +69,6 @@
 			tsk_list_push_back_data(hdr_T->repeat_fields, (void**)&header_R);
 		}
 	}
-
-	action eob{
-	}
 	
 	start_time = DIGIT+ >tag %parse_start_time;
 	stop_time = DIGIT+ >tag %parse_stop_time;
@@ -80,7 +77,7 @@
 	T = 't' SP* "=" SP*<: start_time :>SP stop_time (CRLF <:repeat_fields)?;
 	
 	# Entry point
-	main := T :>CRLF @eob;
+	main := T :>CRLF?;
 
 }%%
 

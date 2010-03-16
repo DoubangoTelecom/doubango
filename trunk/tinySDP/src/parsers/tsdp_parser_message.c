@@ -30,12 +30,14 @@
  */
 #include "tinySDP/parsers/tsdp_parser_message.h"
 
+#include "tinySDP/headers/tsdp_header_A.h"
 #include "tinySDP/headers/tsdp_header_B.h"
 #include "tinySDP/headers/tsdp_header_C.h"
 #include "tinySDP/headers/tsdp_header_Dummy.h"
 #include "tinySDP/headers/tsdp_header_E.h"
 #include "tinySDP/headers/tsdp_header_I.h"
 #include "tinySDP/headers/tsdp_header_K.h"
+#include "tinySDP/headers/tsdp_header_M.h"
 #include "tinySDP/headers/tsdp_header_O.h"
 #include "tinySDP/headers/tsdp_header_P.h"
 #include "tinySDP/headers/tsdp_header_R.h"
@@ -48,132 +50,48 @@
 #include "tsk_debug.h"
 
 
-/* #line 225 "tsdp_parser_message.rl" */
+/* #line 244 "tsdp_parser_message.rl" */
 
 
 /* Ragel data */
 
-/* #line 57 "../src/parsers/tsdp_parser_message.c" */
+/* #line 59 "../src/parsers/tsdp_parser_message.c" */
 static const char _tsdp_machine_message_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
 	7, 1, 8, 1, 9, 1, 10, 1, 
 	11, 1, 12, 1, 13, 1, 14, 1, 
-	15, 1, 16, 2, 1, 0, 2, 2, 
-	0, 2, 3, 0, 2, 4, 0, 2, 
-	5, 0, 2, 6, 0, 2, 7, 0, 
-	2, 8, 0, 2, 9, 0, 2, 10, 
-	0, 2, 11, 0, 2, 12, 0, 2, 
-	13, 0, 2, 14, 0, 2, 15, 0, 
-	2, 16, 0
+	15, 1, 16
 };
 
-static const short _tsdp_machine_message_key_offsets[] = {
-	0, 0, 2, 3, 4, 6, 7, 8, 
-	10, 11, 12, 14, 15, 16, 18, 19, 
-	20, 22, 23, 24, 26, 27, 28, 30, 
-	31, 32, 34, 35, 36, 38, 39, 40, 
-	42, 43, 44, 46, 47, 48, 50, 51, 
-	52, 54, 55, 56, 58, 59, 60, 62, 
-	63, 64, 98, 132, 166, 200, 234, 268, 
-	302, 336, 370, 404, 438, 472, 506, 540, 
-	574, 608
+static const char _tsdp_machine_message_key_offsets[] = {
+	0, 0, 2, 3, 4, 6, 7, 9, 
+	10, 12, 13, 15, 16, 18, 19, 21, 
+	22, 24, 25, 27, 28, 30, 31, 33, 
+	34, 36, 37, 39, 40, 42, 43, 45, 
+	46, 48, 49
 };
 
 static const char _tsdp_machine_message_trans_keys[] = {
-	32, 61, 13, 10, 32, 61, 13, 10, 
-	32, 61, 13, 10, 32, 61, 13, 10, 
-	32, 61, 13, 10, 32, 61, 13, 10, 
-	32, 61, 13, 10, 32, 61, 13, 10, 
-	32, 61, 13, 10, 32, 61, 13, 10, 
-	32, 61, 13, 10, 32, 61, 13, 10, 
-	32, 61, 13, 10, 32, 61, 13, 10, 
-	32, 61, 13, 10, 32, 61, 13, 10, 
-	65, 66, 67, 69, 73, 75, 77, 79, 
-	80, 82, 83, 84, 85, 86, 90, 97, 
-	98, 99, 101, 105, 107, 109, 111, 112, 
-	114, 115, 116, 117, 118, 122, 68, 89, 
-	100, 121, 65, 66, 67, 69, 73, 75, 
-	77, 79, 80, 82, 83, 84, 85, 86, 
-	90, 97, 98, 99, 101, 105, 107, 109, 
-	111, 112, 114, 115, 116, 117, 118, 122, 
-	68, 89, 100, 121, 65, 66, 67, 69, 
-	73, 75, 77, 79, 80, 82, 83, 84, 
-	85, 86, 90, 97, 98, 99, 101, 105, 
-	107, 109, 111, 112, 114, 115, 116, 117, 
-	118, 122, 68, 89, 100, 121, 65, 66, 
-	67, 69, 73, 75, 77, 79, 80, 82, 
-	83, 84, 85, 86, 90, 97, 98, 99, 
-	101, 105, 107, 109, 111, 112, 114, 115, 
-	116, 117, 118, 122, 68, 89, 100, 121, 
-	65, 66, 67, 69, 73, 75, 77, 79, 
-	80, 82, 83, 84, 85, 86, 90, 97, 
-	98, 99, 101, 105, 107, 109, 111, 112, 
-	114, 115, 116, 117, 118, 122, 68, 89, 
-	100, 121, 65, 66, 67, 69, 73, 75, 
-	77, 79, 80, 82, 83, 84, 85, 86, 
-	90, 97, 98, 99, 101, 105, 107, 109, 
-	111, 112, 114, 115, 116, 117, 118, 122, 
-	68, 89, 100, 121, 65, 66, 67, 69, 
-	73, 75, 77, 79, 80, 82, 83, 84, 
-	85, 86, 90, 97, 98, 99, 101, 105, 
-	107, 109, 111, 112, 114, 115, 116, 117, 
-	118, 122, 68, 89, 100, 121, 65, 66, 
-	67, 69, 73, 75, 77, 79, 80, 82, 
-	83, 84, 85, 86, 90, 97, 98, 99, 
-	101, 105, 107, 109, 111, 112, 114, 115, 
-	116, 117, 118, 122, 68, 89, 100, 121, 
-	65, 66, 67, 69, 73, 75, 77, 79, 
-	80, 82, 83, 84, 85, 86, 90, 97, 
-	98, 99, 101, 105, 107, 109, 111, 112, 
-	114, 115, 116, 117, 118, 122, 68, 89, 
-	100, 121, 65, 66, 67, 69, 73, 75, 
-	77, 79, 80, 82, 83, 84, 85, 86, 
-	90, 97, 98, 99, 101, 105, 107, 109, 
-	111, 112, 114, 115, 116, 117, 118, 122, 
-	68, 89, 100, 121, 65, 66, 67, 69, 
-	73, 75, 77, 79, 80, 82, 83, 84, 
-	85, 86, 90, 97, 98, 99, 101, 105, 
-	107, 109, 111, 112, 114, 115, 116, 117, 
-	118, 122, 68, 89, 100, 121, 65, 66, 
-	67, 69, 73, 75, 77, 79, 80, 82, 
-	83, 84, 85, 86, 90, 97, 98, 99, 
-	101, 105, 107, 109, 111, 112, 114, 115, 
-	116, 117, 118, 122, 68, 89, 100, 121, 
-	65, 66, 67, 69, 73, 75, 77, 79, 
-	80, 82, 83, 84, 85, 86, 90, 97, 
-	98, 99, 101, 105, 107, 109, 111, 112, 
-	114, 115, 116, 117, 118, 122, 68, 89, 
-	100, 121, 65, 66, 67, 69, 73, 75, 
-	77, 79, 80, 82, 83, 84, 85, 86, 
-	90, 97, 98, 99, 101, 105, 107, 109, 
-	111, 112, 114, 115, 116, 117, 118, 122, 
-	68, 89, 100, 121, 65, 66, 67, 69, 
-	73, 75, 77, 79, 80, 82, 83, 84, 
-	85, 86, 90, 97, 98, 99, 101, 105, 
-	107, 109, 111, 112, 114, 115, 116, 117, 
-	118, 122, 68, 89, 100, 121, 65, 66, 
-	67, 69, 73, 75, 77, 79, 80, 82, 
-	83, 84, 85, 86, 90, 97, 98, 99, 
-	101, 105, 107, 109, 111, 112, 114, 115, 
-	116, 117, 118, 122, 68, 89, 100, 121, 
-	65, 66, 67, 69, 73, 75, 77, 79, 
-	80, 82, 83, 84, 85, 86, 90, 97, 
-	98, 99, 101, 105, 107, 109, 111, 112, 
-	114, 115, 116, 117, 118, 122, 68, 89, 
-	100, 121, 0
+	32, 61, 13, 10, 32, 61, 13, 32, 
+	61, 13, 32, 61, 13, 32, 61, 13, 
+	32, 61, 13, 32, 61, 13, 32, 61, 
+	13, 32, 61, 13, 32, 61, 13, 32, 
+	61, 13, 32, 61, 13, 32, 61, 13, 
+	32, 61, 13, 32, 61, 13, 32, 61, 
+	13, 65, 66, 67, 69, 73, 75, 77, 
+	79, 80, 82, 83, 84, 85, 86, 90, 
+	97, 98, 99, 101, 105, 107, 109, 111, 
+	112, 114, 115, 116, 117, 118, 122, 68, 
+	89, 100, 121, 0
 };
 
 static const char _tsdp_machine_message_single_lengths[] = {
-	0, 2, 1, 1, 2, 1, 1, 2, 
-	1, 1, 2, 1, 1, 2, 1, 1, 
-	2, 1, 1, 2, 1, 1, 2, 1, 
-	1, 2, 1, 1, 2, 1, 1, 2, 
-	1, 1, 2, 1, 1, 2, 1, 1, 
-	2, 1, 1, 2, 1, 1, 2, 1, 
-	1, 30, 30, 30, 30, 30, 30, 30, 
-	30, 30, 30, 30, 30, 30, 30, 30, 
-	30, 30
+	0, 2, 1, 1, 2, 1, 2, 1, 
+	2, 1, 2, 1, 2, 1, 2, 1, 
+	2, 1, 2, 1, 2, 1, 2, 1, 
+	2, 1, 2, 1, 2, 1, 2, 1, 
+	2, 1, 30
 };
 
 static const char _tsdp_machine_message_range_lengths[] = {
@@ -181,221 +99,61 @@ static const char _tsdp_machine_message_range_lengths[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 2, 2, 2, 2, 2, 2, 2, 
-	2, 2, 2, 2, 2, 2, 2, 2, 
-	2, 2
+	0, 0, 2
 };
 
-static const short _tsdp_machine_message_index_offsets[] = {
-	0, 0, 3, 5, 7, 10, 12, 14, 
-	17, 19, 21, 24, 26, 28, 31, 33, 
-	35, 38, 40, 42, 45, 47, 49, 52, 
-	54, 56, 59, 61, 63, 66, 68, 70, 
-	73, 75, 77, 80, 82, 84, 87, 89, 
-	91, 94, 96, 98, 101, 103, 105, 108, 
-	110, 112, 145, 178, 211, 244, 277, 310, 
-	343, 376, 409, 442, 475, 508, 541, 574, 
-	607, 640
+static const char _tsdp_machine_message_index_offsets[] = {
+	0, 0, 3, 5, 7, 10, 12, 15, 
+	17, 20, 22, 25, 27, 30, 32, 35, 
+	37, 40, 42, 45, 47, 50, 52, 55, 
+	57, 60, 62, 65, 67, 70, 72, 75, 
+	77, 80, 82
 };
 
 static const char _tsdp_machine_message_trans_targs[] = {
-	1, 2, 0, 3, 2, 50, 0, 4, 
-	5, 0, 6, 5, 51, 0, 7, 8, 
-	0, 9, 8, 52, 0, 10, 11, 0, 
-	12, 11, 53, 0, 13, 14, 0, 15, 
-	14, 54, 0, 16, 17, 0, 18, 17, 
-	55, 0, 19, 20, 0, 21, 20, 56, 
-	0, 22, 23, 0, 24, 23, 57, 0, 
-	25, 26, 0, 27, 26, 58, 0, 28, 
-	29, 0, 30, 29, 59, 0, 31, 32, 
-	0, 33, 32, 60, 0, 34, 35, 0, 
-	36, 35, 61, 0, 37, 38, 0, 39, 
-	38, 62, 0, 40, 41, 0, 42, 41, 
-	63, 0, 43, 44, 0, 45, 44, 64, 
-	0, 46, 47, 0, 48, 47, 65, 0, 
-	1, 4, 7, 13, 16, 19, 22, 25, 
-	28, 31, 34, 37, 40, 43, 46, 1, 
-	4, 7, 13, 16, 19, 22, 25, 28, 
-	31, 34, 37, 40, 43, 46, 10, 10, 
-	0, 1, 4, 7, 13, 16, 19, 22, 
-	25, 28, 31, 34, 37, 40, 43, 46, 
-	1, 4, 7, 13, 16, 19, 22, 25, 
-	28, 31, 34, 37, 40, 43, 46, 10, 
-	10, 0, 1, 4, 7, 13, 16, 19, 
-	22, 25, 28, 31, 34, 37, 40, 43, 
-	46, 1, 4, 7, 13, 16, 19, 22, 
-	25, 28, 31, 34, 37, 40, 43, 46, 
-	10, 10, 0, 1, 4, 7, 13, 16, 
-	19, 22, 25, 28, 31, 34, 37, 40, 
-	43, 46, 1, 4, 7, 13, 16, 19, 
-	22, 25, 28, 31, 34, 37, 40, 43, 
-	46, 10, 10, 0, 1, 4, 7, 13, 
-	16, 19, 22, 25, 28, 31, 34, 37, 
-	40, 43, 46, 1, 4, 7, 13, 16, 
-	19, 22, 25, 28, 31, 34, 37, 40, 
-	43, 46, 10, 10, 0, 1, 4, 7, 
-	13, 16, 19, 22, 25, 28, 31, 34, 
-	37, 40, 43, 46, 1, 4, 7, 13, 
-	16, 19, 22, 25, 28, 31, 34, 37, 
-	40, 43, 46, 10, 10, 0, 1, 4, 
-	7, 13, 16, 19, 22, 25, 28, 31, 
-	34, 37, 40, 43, 46, 1, 4, 7, 
-	13, 16, 19, 22, 25, 28, 31, 34, 
-	37, 40, 43, 46, 10, 10, 0, 1, 
-	4, 7, 13, 16, 19, 22, 25, 28, 
-	31, 34, 37, 40, 43, 46, 1, 4, 
-	7, 13, 16, 19, 22, 25, 28, 31, 
-	34, 37, 40, 43, 46, 10, 10, 0, 
-	1, 4, 7, 13, 16, 19, 22, 25, 
-	28, 31, 34, 37, 40, 43, 46, 1, 
-	4, 7, 13, 16, 19, 22, 25, 28, 
-	31, 34, 37, 40, 43, 46, 10, 10, 
-	0, 1, 4, 7, 13, 16, 19, 22, 
-	25, 28, 31, 34, 37, 40, 43, 46, 
-	1, 4, 7, 13, 16, 19, 22, 25, 
-	28, 31, 34, 37, 40, 43, 46, 10, 
-	10, 0, 1, 4, 7, 13, 16, 19, 
-	22, 25, 28, 31, 34, 37, 40, 43, 
-	46, 1, 4, 7, 13, 16, 19, 22, 
-	25, 28, 31, 34, 37, 40, 43, 46, 
-	10, 10, 0, 1, 4, 7, 13, 16, 
-	19, 22, 25, 28, 31, 34, 37, 40, 
-	43, 46, 1, 4, 7, 13, 16, 19, 
-	22, 25, 28, 31, 34, 37, 40, 43, 
-	46, 10, 10, 0, 1, 4, 7, 13, 
-	16, 19, 22, 25, 28, 31, 34, 37, 
-	40, 43, 46, 1, 4, 7, 13, 16, 
-	19, 22, 25, 28, 31, 34, 37, 40, 
-	43, 46, 10, 10, 0, 1, 4, 7, 
-	13, 16, 19, 22, 25, 28, 31, 34, 
-	37, 40, 43, 46, 1, 4, 7, 13, 
-	16, 19, 22, 25, 28, 31, 34, 37, 
-	40, 43, 46, 10, 10, 0, 1, 4, 
-	7, 13, 16, 19, 22, 25, 28, 31, 
-	34, 37, 40, 43, 46, 1, 4, 7, 
-	13, 16, 19, 22, 25, 28, 31, 34, 
-	37, 40, 43, 46, 10, 10, 0, 1, 
-	4, 7, 13, 16, 19, 22, 25, 28, 
-	31, 34, 37, 40, 43, 46, 1, 4, 
-	7, 13, 16, 19, 22, 25, 28, 31, 
-	34, 37, 40, 43, 46, 10, 10, 0, 
-	1, 4, 7, 13, 16, 19, 22, 25, 
-	28, 31, 34, 37, 40, 43, 46, 1, 
-	4, 7, 13, 16, 19, 22, 25, 28, 
-	31, 34, 37, 40, 43, 46, 10, 10, 
-	0, 0
+	1, 2, 0, 3, 2, 34, 0, 4, 
+	5, 0, 3, 5, 6, 7, 0, 3, 
+	7, 8, 9, 0, 3, 9, 10, 11, 
+	0, 3, 11, 12, 13, 0, 3, 13, 
+	14, 15, 0, 3, 15, 16, 17, 0, 
+	3, 17, 18, 19, 0, 3, 19, 20, 
+	21, 0, 3, 21, 22, 23, 0, 3, 
+	23, 24, 25, 0, 3, 25, 26, 27, 
+	0, 3, 27, 28, 29, 0, 3, 29, 
+	30, 31, 0, 3, 31, 32, 33, 0, 
+	3, 33, 1, 4, 6, 10, 12, 14, 
+	16, 18, 20, 22, 24, 26, 28, 30, 
+	32, 1, 4, 6, 10, 12, 14, 16, 
+	18, 20, 22, 24, 26, 28, 30, 32, 
+	8, 8, 0, 0
 };
 
 static const char _tsdp_machine_message_trans_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 3, 0, 0, 0, 0, 
+	0, 0, 5, 0, 0, 0, 0, 7, 
+	0, 0, 0, 0, 9, 0, 0, 0, 
+	0, 11, 0, 0, 0, 0, 13, 0, 
+	0, 0, 0, 15, 0, 0, 0, 0, 
+	17, 0, 0, 0, 0, 19, 0, 0, 
+	0, 0, 21, 0, 0, 0, 0, 23, 
+	0, 0, 0, 0, 25, 0, 0, 0, 
+	0, 27, 0, 0, 0, 0, 29, 0, 
+	0, 0, 0, 31, 0, 0, 0, 0, 
+	33, 0, 1, 1, 1, 1, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 1, 
 	1, 1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 1, 
-	0, 35, 35, 35, 35, 35, 35, 35, 
-	35, 35, 35, 35, 35, 35, 35, 35, 
-	35, 35, 35, 35, 35, 35, 35, 35, 
-	35, 35, 35, 35, 35, 35, 35, 35, 
-	35, 0, 38, 38, 38, 38, 38, 38, 
-	38, 38, 38, 38, 38, 38, 38, 38, 
-	38, 38, 38, 38, 38, 38, 38, 38, 
-	38, 38, 38, 38, 38, 38, 38, 38, 
-	38, 38, 0, 41, 41, 41, 41, 41, 
-	41, 41, 41, 41, 41, 41, 41, 41, 
-	41, 41, 41, 41, 41, 41, 41, 41, 
-	41, 41, 41, 41, 41, 41, 41, 41, 
-	41, 41, 41, 0, 44, 44, 44, 44, 
-	44, 44, 44, 44, 44, 44, 44, 44, 
-	44, 44, 44, 44, 44, 44, 44, 44, 
-	44, 44, 44, 44, 44, 44, 44, 44, 
-	44, 44, 44, 44, 0, 47, 47, 47, 
-	47, 47, 47, 47, 47, 47, 47, 47, 
-	47, 47, 47, 47, 47, 47, 47, 47, 
-	47, 47, 47, 47, 47, 47, 47, 47, 
-	47, 47, 47, 47, 47, 0, 50, 50, 
-	50, 50, 50, 50, 50, 50, 50, 50, 
-	50, 50, 50, 50, 50, 50, 50, 50, 
-	50, 50, 50, 50, 50, 50, 50, 50, 
-	50, 50, 50, 50, 50, 50, 0, 53, 
-	53, 53, 53, 53, 53, 53, 53, 53, 
-	53, 53, 53, 53, 53, 53, 53, 53, 
-	53, 53, 53, 53, 53, 53, 53, 53, 
-	53, 53, 53, 53, 53, 53, 53, 0, 
-	56, 56, 56, 56, 56, 56, 56, 56, 
-	56, 56, 56, 56, 56, 56, 56, 56, 
-	56, 56, 56, 56, 56, 56, 56, 56, 
-	56, 56, 56, 56, 56, 56, 56, 56, 
-	0, 59, 59, 59, 59, 59, 59, 59, 
-	59, 59, 59, 59, 59, 59, 59, 59, 
-	59, 59, 59, 59, 59, 59, 59, 59, 
-	59, 59, 59, 59, 59, 59, 59, 59, 
-	59, 0, 62, 62, 62, 62, 62, 62, 
-	62, 62, 62, 62, 62, 62, 62, 62, 
-	62, 62, 62, 62, 62, 62, 62, 62, 
-	62, 62, 62, 62, 62, 62, 62, 62, 
-	62, 62, 0, 65, 65, 65, 65, 65, 
-	65, 65, 65, 65, 65, 65, 65, 65, 
-	65, 65, 65, 65, 65, 65, 65, 65, 
-	65, 65, 65, 65, 65, 65, 65, 65, 
-	65, 65, 65, 0, 68, 68, 68, 68, 
-	68, 68, 68, 68, 68, 68, 68, 68, 
-	68, 68, 68, 68, 68, 68, 68, 68, 
-	68, 68, 68, 68, 68, 68, 68, 68, 
-	68, 68, 68, 68, 0, 71, 71, 71, 
-	71, 71, 71, 71, 71, 71, 71, 71, 
-	71, 71, 71, 71, 71, 71, 71, 71, 
-	71, 71, 71, 71, 71, 71, 71, 71, 
-	71, 71, 71, 71, 71, 0, 74, 74, 
-	74, 74, 74, 74, 74, 74, 74, 74, 
-	74, 74, 74, 74, 74, 74, 74, 74, 
-	74, 74, 74, 74, 74, 74, 74, 74, 
-	74, 74, 74, 74, 74, 74, 0, 77, 
-	77, 77, 77, 77, 77, 77, 77, 77, 
-	77, 77, 77, 77, 77, 77, 77, 77, 
-	77, 77, 77, 77, 77, 77, 77, 77, 
-	77, 77, 77, 77, 77, 77, 77, 0, 
-	80, 80, 80, 80, 80, 80, 80, 80, 
-	80, 80, 80, 80, 80, 80, 80, 80, 
-	80, 80, 80, 80, 80, 80, 80, 80, 
-	80, 80, 80, 80, 80, 80, 80, 80, 
-	0, 0
+	1, 1, 0, 0
 };
 
-static const char _tsdp_machine_message_eof_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 3, 5, 7, 9, 11, 13, 
-	15, 17, 19, 21, 23, 25, 27, 29, 
-	31, 33
-};
-
-static const int tsdp_machine_message_start = 49;
-static const int tsdp_machine_message_first_final = 49;
+static const int tsdp_machine_message_start = 34;
+static const int tsdp_machine_message_first_final = 34;
 static const int tsdp_machine_message_error = 0;
 
-static const int tsdp_machine_message_en_main = 49;
+static const int tsdp_machine_message_en_main = 34;
 
 
-/* #line 229 "tsdp_parser_message.rl" */
+/* #line 248 "tsdp_parser_message.rl" */
 
 tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
 {
@@ -403,6 +161,7 @@ tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
 	const char* tag_start = TSDP_NULL;
 	tsdp_header_t *header = TSDP_NULL;
 	tsdp_header_T_t *hdr_T = TSDP_NULL;
+	tsdp_header_M_t *hdr_M = TSDP_NULL;
 
 	/* Ragel variables */
 	int cs = 0;
@@ -421,16 +180,16 @@ tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
 
 	/* Ragel init */
 	
-/* #line 425 "../src/parsers/tsdp_parser_message.c" */
+/* #line 184 "../src/parsers/tsdp_parser_message.c" */
 	{
 	cs = tsdp_machine_message_start;
 	}
 
-/* #line 254 "tsdp_parser_message.rl" */
+/* #line 274 "tsdp_parser_message.rl" */
 
 	/* Ragel execute */
 	
-/* #line 434 "../src/parsers/tsdp_parser_message.c" */
+/* #line 193 "../src/parsers/tsdp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -504,105 +263,128 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 56 "tsdp_parser_message.rl" */
+/* #line 58 "tsdp_parser_message.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 63 "tsdp_parser_message.rl" */
+/* #line 65 "tsdp_parser_message.rl" */
 	{
-		TSK_DEBUG_INFO("Header A");
+		if(hdr_M){
+			if(!hdr_M->Attributes){
+				hdr_M->Attributes = TSK_LIST_CREATE();
+			}
+			if((header = (tsdp_header_t*)tsdp_header_A_parse(tag_start, (p - tag_start)))){
+				tsk_list_push_back_data(hdr_M->Attributes, (void**)&header);
+			}
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_A_parse(tag_start, (p - tag_start)))){
+			tsdp_message_add_header(sdp_msg, header);
+			tsk_object_unref(header);
+		}
 	}
 	break;
 	case 2:
-/* #line 67 "tsdp_parser_message.rl" */
+/* #line 80 "tsdp_parser_message.rl" */
 	{
-		if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
+		if(hdr_M){
+			if(!hdr_M->Bandwidths){
+				hdr_M->Bandwidths = TSK_LIST_CREATE();
+			}
+			if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
+				tsk_list_push_back_data(hdr_M->Bandwidths, (void**)&header);
+			}
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header B");
 	}
 	break;
 	case 3:
-/* #line 75 "tsdp_parser_message.rl" */
+/* #line 95 "tsdp_parser_message.rl" */
 	{
-		if((header = (tsdp_header_t*)tsdp_header_C_parse(tag_start, (p - tag_start)))){
+		if(hdr_M && !hdr_M->C){
+			hdr_M->C = tsdp_header_C_parse(tag_start, (p - tag_start));
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_C_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header C");
 	}
 	break;
 	case 4:
-/* #line 83 "tsdp_parser_message.rl" */
+/* #line 105 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_Dummy_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header Dummy");
 	}
 	break;
 	case 5:
-/* #line 91 "tsdp_parser_message.rl" */
+/* #line 112 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_E_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header E");
 	}
 	break;
 	case 6:
-/* #line 99 "tsdp_parser_message.rl" */
+/* #line 119 "tsdp_parser_message.rl" */
 	{
-		if((header = (tsdp_header_t*)tsdp_header_I_parse(tag_start, (p - tag_start)))){
+		if(hdr_M && !hdr_M->I){
+			hdr_M->I = tsdp_header_I_parse(tag_start, (p - tag_start));
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_I_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header I");
 	}
 	break;
 	case 7:
-/* #line 107 "tsdp_parser_message.rl" */
+/* #line 129 "tsdp_parser_message.rl" */
 	{
-		if((header = (tsdp_header_t*)tsdp_header_K_parse(tag_start, (p - tag_start)))){
+		if(hdr_M && !hdr_M->K){
+			hdr_M->K = tsdp_header_K_parse(tag_start, (p - tag_start));
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_K_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header K");
 	}
 	break;
 	case 8:
-/* #line 115 "tsdp_parser_message.rl" */
+/* #line 139 "tsdp_parser_message.rl" */
 	{
-		TSK_DEBUG_INFO("Header M");
+		if((hdr_M = tsdp_header_M_parse(tag_start, (p - tag_start)))){
+			tsdp_message_add_header(sdp_msg, TSDP_HEADER(hdr_M));
+			hdr_M = tsk_object_unref(hdr_M);
+		}
 	}
 	break;
 	case 9:
-/* #line 119 "tsdp_parser_message.rl" */
+/* #line 146 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_O_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header O");
 	}
 	break;
 	case 10:
-/* #line 127 "tsdp_parser_message.rl" */
+/* #line 153 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_P_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header P");
 	}
 	break;
 	case 11:
-/* #line 135 "tsdp_parser_message.rl" */
+/* #line 160 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_R_parse(tag_start, (p - tag_start)))){
 			if(hdr_T){
@@ -616,60 +398,54 @@ _match:
 				tsk_object_unref(header);
 			}
 		}
-		TSK_DEBUG_INFO("Header R");
 	}
 	break;
 	case 12:
-/* #line 151 "tsdp_parser_message.rl" */
+/* #line 175 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_S_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header S");
 	}
 	break;
 	case 13:
-/* #line 159 "tsdp_parser_message.rl" */
+/* #line 182 "tsdp_parser_message.rl" */
 	{
 		if((hdr_T = tsdp_header_T_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, TSDP_HEADER(hdr_T));
 			hdr_T = tsk_object_unref(hdr_T);
 		}
-		TSK_DEBUG_INFO("Header T");
 	}
 	break;
 	case 14:
-/* #line 167 "tsdp_parser_message.rl" */
+/* #line 189 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_U_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header U");
 	}
 	break;
 	case 15:
-/* #line 175 "tsdp_parser_message.rl" */
+/* #line 196 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_V_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header V");
 	}
 	break;
 	case 16:
-/* #line 183 "tsdp_parser_message.rl" */
+/* #line 203 "tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_Z_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header Z");
 	}
 	break;
-/* #line 673 "../src/parsers/tsdp_parser_message.c" */
+/* #line 449 "../src/parsers/tsdp_parser_message.c" */
 		}
 	}
 
@@ -679,187 +455,16 @@ _again:
 	if ( ++p != pe )
 		goto _resume;
 	_test_eof: {}
-	if ( p == eof )
-	{
-	const char *__acts = _tsdp_machine_message_actions + _tsdp_machine_message_eof_actions[cs];
-	unsigned int __nacts = (unsigned int) *__acts++;
-	while ( __nacts-- > 0 ) {
-		switch ( *__acts++ ) {
-	case 1:
-/* #line 63 "tsdp_parser_message.rl" */
-	{
-		TSK_DEBUG_INFO("Header A");
-	}
-	break;
-	case 2:
-/* #line 67 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header B");
-	}
-	break;
-	case 3:
-/* #line 75 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_C_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header C");
-	}
-	break;
-	case 4:
-/* #line 83 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_Dummy_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header Dummy");
-	}
-	break;
-	case 5:
-/* #line 91 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_E_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header E");
-	}
-	break;
-	case 6:
-/* #line 99 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_I_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header I");
-	}
-	break;
-	case 7:
-/* #line 107 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_K_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header K");
-	}
-	break;
-	case 8:
-/* #line 115 "tsdp_parser_message.rl" */
-	{
-		TSK_DEBUG_INFO("Header M");
-	}
-	break;
-	case 9:
-/* #line 119 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_O_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header O");
-	}
-	break;
-	case 10:
-/* #line 127 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_P_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header P");
-	}
-	break;
-	case 11:
-/* #line 135 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_R_parse(tag_start, (p - tag_start)))){
-			if(hdr_T){
-				if(!hdr_T->repeat_fields){
-					hdr_T->repeat_fields = TSK_LIST_CREATE();
-				}
-				tsk_list_push_back_data(hdr_T->repeat_fields, (void**)&header);
-			}
-			else{
-				tsdp_message_add_header(sdp_msg, header);
-				tsk_object_unref(header);
-			}
-		}
-		TSK_DEBUG_INFO("Header R");
-	}
-	break;
-	case 12:
-/* #line 151 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_S_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header S");
-	}
-	break;
-	case 13:
-/* #line 159 "tsdp_parser_message.rl" */
-	{
-		if((hdr_T = tsdp_header_T_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, TSDP_HEADER(hdr_T));
-			hdr_T = tsk_object_unref(hdr_T);
-		}
-		TSK_DEBUG_INFO("Header T");
-	}
-	break;
-	case 14:
-/* #line 167 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_U_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header U");
-	}
-	break;
-	case 15:
-/* #line 175 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_V_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header V");
-	}
-	break;
-	case 16:
-/* #line 183 "tsdp_parser_message.rl" */
-	{
-		if((header = (tsdp_header_t*)tsdp_header_Z_parse(tag_start, (p - tag_start)))){
-			tsdp_message_add_header(sdp_msg, header);
-			tsk_object_unref(header);
-		}
-		TSK_DEBUG_INFO("Header Z");
-	}
-	break;
-/* #line 849 "../src/parsers/tsdp_parser_message.c" */
-		}
-	}
-	}
-
 	_out: {}
 	}
 
-/* #line 257 "tsdp_parser_message.rl" */
+/* #line 277 "tsdp_parser_message.rl" */
 
 	/* Check result */
 	if( cs < 
-/* #line 861 "../src/parsers/tsdp_parser_message.c" */
-49
-/* #line 259 "tsdp_parser_message.rl" */
+/* #line 466 "../src/parsers/tsdp_parser_message.c" */
+34
+/* #line 279 "tsdp_parser_message.rl" */
  )
 	{
 		TSK_DEBUG_ERROR("Failed to parse SDP message.");

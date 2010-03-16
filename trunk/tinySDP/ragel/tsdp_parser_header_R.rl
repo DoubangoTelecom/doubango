@@ -62,9 +62,6 @@
 		}
 	}
 
-	action eob{
-	}
-
 	fixed_len_time_unit	=  	"d" | "h" | "m" | "s";
 
 	repeat_interval = (DIGIT+ fixed_len_time_unit?) >tag %parse_repeat_interval;
@@ -73,7 +70,7 @@
 	R = 'r' SP* "=" SP*<: repeat_interval :>SP typed_time (SP<: typed_time)+;
 	
 	# Entry point
-	main := R :>CRLF @eob;
+	main := R :>CRLF?;
 
 }%%
 

@@ -79,9 +79,6 @@
 		}
 	}	
 
-	action eob{
-	}
-
 	fixed_len_time_unit	=  	"d" | "h" | "m" | "s";
 
 	time = DIGIT+ >tag %parse_time;
@@ -91,7 +88,7 @@
 		(SP time SP ("-"%shifted)? typed_time)* >create_zone %add_zone;
 	
 	# Entry point
-	main := Z :>CRLF @eob;
+	main := Z :>CRLF?;
 
 }%%
 

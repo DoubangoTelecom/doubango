@@ -72,9 +72,6 @@
 		TSK_PARSER_SET_STRING(hdr_O->addr);
 	}
 
-	action eob{
-	}	
-
 	username = any*>tag %parse_username;
 	sess_id = DIGIT+>tag %parse_sess_id;
 	sess_version = DIGIT+>tag %parse_sess_version;
@@ -84,7 +81,7 @@
 	O = 'o' SP* "=" SP*<: username :>SP sess_id :>SP sess_version :>SP nettype :>SP addrtype :>SP addr;
 	
 	# Entry point
-	main := O :>CRLF @eob;
+	main := O :>CRLF?;
 
 }%%
 
