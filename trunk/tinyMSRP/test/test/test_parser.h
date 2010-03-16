@@ -1,0 +1,81 @@
+/*
+* Copyright (C) 2009 Mamadou Diop.
+*
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+*	
+* This file is part of Open Source Doubango Framework.
+*
+* DOUBANGO is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*	
+* DOUBANGO is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU General Public License for more details.
+*	
+* You should have received a copy of the GNU General Public License
+* along with DOUBANGO.
+*
+*/
+#ifndef _TEST_MSRPPARSER_H
+#define _TEST_MSRPPARSER_H
+
+#include "tinyMSRP/headers/tmsrp_header_Dummy.h"
+
+#define MSRP_MSG_REQUEST \
+	"MSRP a786hjs2 SEND\r\n" \
+	"To-Path: msrp://biloxi.example.com:12763/kjhd37s2s20w2a;tcp\r\n" \
+	"From-Path: msrp://atlanta.example.com:7654/jshA7weztas;tcp\r\n" \
+	"Message-ID: 87652491\r\n" \
+	"Byte-Dummy: 1-25/25\r\n" \
+	"Byte-Range: 1-25/25\r\n" \
+	"Byte-Range: 1-25/*\r\n" \
+	"Byte-Range: 1-*/*\r\n" \
+	"Failure-Report: partial\r\n" \
+    "Success-Report: yes\r\n" \
+	"Content-Type: text/plain;charset=utf8\r\n" \
+	"\r\n" \
+	"-------fake-tid+ Hey Bob, are you there?\r\n" \
+	"-------a786hjs2$\r\n"
+
+#define MSRP_MSG_RESPONSE \
+	"MSRP a786hjs2 200 OK\r\n" \
+	"To-Path: msrp://atlanta.example.com:7654/jshA7weztas;tcp\r\n" \
+	"From-Path: msrp://biloxi.example.com:12763/kjhd37s2s20w2a;tcp\r\n" \
+	"-------a786hjs2$\r\n"
+
+#define MSRP_MSG_REPORT \
+	"MSRP dkei38sd REPORT\r\n" \
+	"To-Path: msrp://alicepc.example.com:7777/iau39soe2843z;tcp\r\n" \
+	"From-Path: msrp://bob.example.com:8888/9di4eae923wzd;tcp\r\n" \
+	"Message-ID: 12339sdqwer\r\n" \
+	"Byte-Range: 1-106/106\r\n" \
+	"Status: 000 200 OK\r\n" \
+	"-------dkei38sd$\r\n"
+
+#define MSRP_MSG_TO_TEST MSRP_MSG_REQUEST
+
+void test_parser()
+{
+	tmsrp_message_t *message = 0;
+	
+	/* deserialize the message */
+	if((message = tmsrp_message_parse(MSRP_MSG_TO_TEST, strlen(MSRP_MSG_TO_TEST)))){
+		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+
+		/* serialize the message */
+		tmsrp_message_tostring(message, buffer);
+		TSK_DEBUG_INFO("\nMSRP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
+
+		TSK_OBJECT_SAFE_FREE(buffer);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to parse MSRP message.");
+	}
+
+	TSK_OBJECT_SAFE_FREE(message);
+}
+
+#endif /* _TEST_MSRPPARSER_H */
