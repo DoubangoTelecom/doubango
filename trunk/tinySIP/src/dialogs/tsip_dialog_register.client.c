@@ -47,7 +47,7 @@
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(register, TX)
 #define TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, message)	\
-	tsip_register_event_signal(type, TSIP_DIALOG_GET_STACK(self),tsip_operation_get_id(TSIP_DIALOG(self)->operation), code, phrase, message)
+	tsip_register_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->operation, code, phrase, message)
 
 
 /* ======================== internal functions ======================== */
@@ -778,7 +778,7 @@ static void* tsip_dialog_register_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_register_OnTerminated), (const void*)dialog);
 
 		/* Initialize base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_REGISTER, stack, 0, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_REGISTER, stack, TSIP_NULL, operation);
 
 		/* Initialize the class itself */
 		tsip_dialog_register_init(self);

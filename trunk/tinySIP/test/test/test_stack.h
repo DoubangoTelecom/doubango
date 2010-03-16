@@ -70,8 +70,11 @@
 int test_stack_callback(const tsip_event_t *sipevent)
 {
 	TSK_DEBUG_INFO("\n====\nSTACK event: %d [%s] with opid=%lld\n=====", 
-		sipevent->code, sipevent->phrase, sipevent->opid);
+		sipevent->code, sipevent->phrase, tsip_operation_get_id(sipevent->operation));
 
+	// For operations created by the stack ==> call tsk_object_ref(sipevent->operation);
+	// to take ownership.
+	
 	switch(sipevent->type)
 	{
 		//
@@ -223,8 +226,8 @@ int test_stack_callback(const tsip_event_t *sipevent)
 
 void test_stack()
 {
-#define DOMAIN "ericsson.com"
-
+//#define DOMAIN "ericsson.com"
+#define DOMAIN "micromethod.com"
 //#define DOMAIN "ims.inexbee.com"
 //#define DOMAIN "sip2sip.info"
 
@@ -245,7 +248,7 @@ void test_stack()
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
 */
-
+/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@"DOMAIN),
@@ -262,7 +265,7 @@ void test_stack()
 		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
-
+*/
 /*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
@@ -272,17 +275,17 @@ void test_stack()
 		TSIP_STACK_SET_REALM("sip:"DOMAIN), // FIXME: without sip:
 		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
 		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
-		TSIP_STACK_SET_PROXY_CSCF("pcscf.ims.inexbee.com", "tls", 0),
+		TSIP_STACK_SET_PROXY_CSCF("pcscf.ims.inexbee.com", "tcp", 0),
 		TSIP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\mamadou-crt.pem", "C:\\tls\\mamadou-key.pem"),
 		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
-		TSIP_STACK_SET_PROXY_CSCF_PORT(4061),
+		TSIP_STACK_SET_PROXY_CSCF_PORT(4060),
 		//TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),
 		TSIP_STACK_SET_MOBILITY("fixed"),
 		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
 */
-/*
+
 		tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@"DOMAIN),
@@ -299,7 +302,7 @@ void test_stack()
 		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
-*/
+
 		TSIP_STACK_SET_NULL());
 
 	tsip_operation_handle_t *op = TSIP_OPERATION_CREATE(stack,
@@ -322,18 +325,18 @@ void test_stack()
 
 	tsk_thread_sleep(1000);
 
-	///* SUBSCRIBE */
-	//{
-	//	tsip_operation_handle_t *op2 = TSIP_OPERATION_CREATE(stack,
-	//	TSIP_OPERATION_SET_HEADER("expires", "30"),
-	//	TSIP_OPERATION_SET_HEADER("Event", "reg"),
-	//	TSIP_OPERATION_SET_HEADER("Accept", "application/reginfo+xml"),
-	//	TSIP_OPERATION_SET_HEADER("Allow-Events", "refer, presence, presence.winfo, xcap-diff"),
-	//	TSIP_OPERATION_SET_HEADER("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER"),
-	//	
-	//	TSIP_OPERATION_SET_NULL());
-	//	tsip_subscribe(stack, op2);
-	//}
+	/* SUBSCRIBE */
+	{
+		tsip_operation_handle_t *op2 = TSIP_OPERATION_CREATE(stack,
+		TSIP_OPERATION_SET_HEADER("expires", "30"),
+		TSIP_OPERATION_SET_HEADER("Event", "reg"),
+		TSIP_OPERATION_SET_HEADER("Accept", "application/reginfo+xml"),
+		TSIP_OPERATION_SET_HEADER("Allow-Events", "refer, presence, presence.winfo, xcap-diff"),
+		TSIP_OPERATION_SET_HEADER("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER"),
+		
+		TSIP_OPERATION_SET_NULL());
+		tsip_subscribe(stack, op2);
+	}
 	
 	/* MESSAGE */
 	//{

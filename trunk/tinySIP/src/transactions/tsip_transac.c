@@ -97,8 +97,7 @@ int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_messa
 	if(self && self->stack)
 	{
 		const tsip_transport_layer_t *layer = tsip_stack_get_transport_layer(self->stack);
-		if(layer)
-		{
+		if(layer){
 			return tsip_transport_layer_send(layer, branch, msg);
 		}
 	}

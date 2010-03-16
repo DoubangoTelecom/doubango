@@ -338,7 +338,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
+			Name="source(*.c)"
 			>
 			<File
 				RelativePath="..\..\tinyHTTP\src\thttp.c"
@@ -422,7 +422,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="include"
+			Name="include(*.h)"
 			>
 			<File
 				RelativePath="..\..\tinyHTTP\include\thttp.h"
@@ -510,7 +510,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="abnf"
+			Name="abnf(*.abnf)"
 			>
 			<File
 				RelativePath="..\..\tinyHTTP\abnf\http.abnf"
@@ -526,7 +526,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="ragel"
+			Name="ragel(*.rl)"
 			>
 			<File
 				RelativePath="..\..\tinyHTTP\ragel\thttp_machine_header.rl"

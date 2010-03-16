@@ -39,12 +39,12 @@
 
 
 
-int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_operation_id_t opid, short code, const char *phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
+int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_operation_handle_t *operation, short code, const char *phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
 {
 	if(self && stack)
 	{
 		self->stack = tsk_object_ref(stack);
-		self->opid = opid;
+		self->operation = tsk_object_ref(operation);
 		self->code = code;
 		tsk_strupdate(&(self->phrase), phrase);
 		self->type = type;
@@ -61,9 +61,11 @@ int tsip_event_deinit(tsip_event_t* self)
 	if(self)
 	{
 		TSK_OBJECT_SAFE_FREE(self->stack);
+		TSK_OBJECT_SAFE_FREE(self->operation);
 
 		TSK_FREE(self->phrase);
 		TSK_OBJECT_SAFE_FREE(self->sipmessage);
+		
 		return 0;
 	}
 	return -1;
@@ -92,13 +94,13 @@ static void* tsip_event_create(void * self, va_list * app)
 	{
 		const tsip_message_t* sipmessage;
 		tsip_stack_t *stack;
-		tsip_operation_id_t opid;
+		tsip_operation_handle_t *operation;
 		short code;
 		const char *phrase;
 		tsip_event_type_t type;
 		
 		stack = va_arg(*app, tsip_stack_handle_t *);
-		opid = va_arg(*app, tsip_operation_id_t);
+		operation = va_arg(*app, tsip_operation_handle_t*);
 
 #if defined(__GNUC__)
 		code = (short)va_arg(*app, int);
@@ -110,7 +112,7 @@ static void* tsip_event_create(void * self, va_list * app)
 		sipmessage = va_arg(*app, const tsip_message_t*);
 		type = va_arg(*app, tsip_event_type_t);
 		
-		tsip_event_init(self, stack, opid, code, phrase, sipmessage, type);
+		tsip_event_init(self, stack, operation, code, phrase, sipmessage, type);
 	}
 	return self;
 }
@@ -118,8 +120,7 @@ static void* tsip_event_create(void * self, va_list * app)
 static void* tsip_event_destroy(void * self)
 { 
 	tsip_event_t *sipevent = self;
-	if(sipevent)
-	{
+	if(sipevent){
 		tsip_event_deinit(sipevent);
 	}
 	return self;

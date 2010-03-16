@@ -76,7 +76,6 @@ TMSRP_BEGIN_DECLS
 #define TMSRP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content && (message)->Content->data)
 #define TMSRP_MESSAGE_CONTENT(message)		 (TMSRP_MESSAGE_HAS_CONTENT(message) ? (message)->Content->data : 0)
 
-
 #define TMSRP_RESPONSE_IS(self, code)		(TMSRP_RESPONSE_CODE((self)) == code)
 #define TMSRP_RESPONSE_IS_NXX(self, N)		(TMSRP_MESSAGE_IS_RESPONSE((self)) && N##00<= TMSRP_RESPONSE_CODE((self)) && TMSRP_RESPONSE_CODE((self)) <= N##99)
 #define TMSRP_RESPONSE_IS_1XX(self)			TMSRP_RESPONSE_IS_NXX(self, 1)
@@ -103,7 +102,7 @@ typedef struct tmsrp_message_s
 	
 	tmsrp_message_type_t type;
 	char* tid;
-	union{
+	/*union*/struct{
 		struct{
 			char* method;
 		} request;

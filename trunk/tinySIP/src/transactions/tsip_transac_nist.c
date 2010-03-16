@@ -383,8 +383,7 @@ int tsip_transac_nist_Proceeding_2_Proceeding_X_request(va_list *app)
 		recently sent provisional response MUST be passed to the transport
 		layer for retransmission.
 	*/
-	if(self->lastResponse)
-	{
+	if(self->lastResponse){
 		tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->lastResponse);
 	}
 
@@ -431,8 +430,7 @@ int tsip_transac_nist_Completed_2_Completed_X_request(va_list *app)
 		While in the "Completed" state, the server transaction MUST pass the final response to the transport
 		layer for retransmission whenever a retransmission of the request is received.
 	*/
-	if(self->lastResponse)
-	{
+	if(self->lastResponse){
 		tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->lastResponse);
 	}
 

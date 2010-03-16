@@ -302,7 +302,29 @@ _again:
 	return header;
 }
 
+tmsrp_header_To_Path_t *tmsrp_header_To_Path_clone(const tmsrp_header_To_Path_t* To_Path)
+{
+	tmsrp_header_To_Path_t* clone = TMSRP_NULL;
+	
+	if(!To_Path){
+		goto bail;
+	}
 
+	clone = TMSRP_HEADER_TO_PATH_CREATE_NULL();
+	clone->uri = tmsrp_uri_clone(To_Path->uri);
+	if(To_Path->otherURIs){
+		tsk_list_item_t *item;
+		clone->otherURIs = TSK_LIST_CREATE();
+
+		tsk_list_foreach(item, To_Path->otherURIs){
+			tmsrp_uri_t *uri = tmsrp_uri_clone(TMSRP_URI(item->data));
+			tsk_list_push_back_data(clone->otherURIs, (void**)&uri);
+		}
+	}
+
+bail:
+	return clone;
+}
 
 
 
