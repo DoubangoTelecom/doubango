@@ -49,8 +49,8 @@ typedef int (*tsdp_header_value_tostring_f)(const struct tsdp_header_s* header, 
 #define TSDP_HTYPE_U_RANK		4
 #define TSDP_HTYPE_E_RANK		5
 #define TSDP_HTYPE_P_RANK		6
-//#define TSDP_HTYPE_C_RANK		7
-//#define TSDP_HTYPE_B_RANK		8
+#define TSDP_HTYPE_C_RANK		7
+#define TSDP_HTYPE_B_RANK		8
 #define TSDP_HTYPE_Z_RANK		9
 #define TSDP_HTYPE_K_RANK		10
 #define TSDP_HTYPE_A_RANK		11
@@ -58,8 +58,8 @@ typedef int (*tsdp_header_value_tostring_f)(const struct tsdp_header_s* header, 
 #define TSDP_HTYPE_R_RANK		13
 #define TSDP_HTYPE_M_RANK		14
 //#define TSDP_HTYPE_I_RANK		15
-#define TSDP_HTYPE_C_RANK		16
-#define TSDP_HTYPE_B_RANK		17
+//#define TSDP_HTYPE_C_RANK		16
+//#define TSDP_HTYPE_B_RANK		17
 
 #define TSDP_HTYPE_DUMMY_RANK	255
 

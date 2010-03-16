@@ -41,7 +41,7 @@
 *	Ragel state machine.
 */
 
-/* #line 67 "tsdp_parser_header_Dummy.rl" */
+/* #line 64 "tsdp_parser_header_Dummy.rl" */
 
 
 int tsdp_header_Dummy_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
@@ -71,21 +71,21 @@ tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size)
 	
 /* #line 73 "../src/headers/tsdp_header_Dummy.c" */
 static const char _tsdp_machine_parser_header_Dummy_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 1, 
-	3, 2, 0, 2
+	0, 1, 0, 1, 1, 1, 2, 2, 
+	0, 2
 };
 
 static const char _tsdp_machine_parser_header_Dummy_key_offsets[] = {
-	0, 0, 4, 6, 8, 10, 11, 12
+	0, 0, 4, 6, 8, 9, 11, 12
 };
 
 static const char _tsdp_machine_parser_header_Dummy_trans_keys[] = {
 	65, 90, 97, 122, 32, 61, 32, 61, 
-	13, 32, 13, 10, 0
+	10, 13, 32, 13, 0
 };
 
 static const char _tsdp_machine_parser_header_Dummy_single_lengths[] = {
-	0, 0, 2, 2, 2, 1, 1, 0
+	0, 0, 2, 2, 1, 2, 1, 0
 };
 
 static const char _tsdp_machine_parser_header_Dummy_range_lengths[] = {
@@ -93,38 +93,42 @@ static const char _tsdp_machine_parser_header_Dummy_range_lengths[] = {
 };
 
 static const char _tsdp_machine_parser_header_Dummy_index_offsets[] = {
-	0, 0, 3, 6, 9, 12, 14, 16
+	0, 0, 3, 6, 9, 11, 14, 16
 };
 
 static const char _tsdp_machine_parser_header_Dummy_trans_targs[] = {
-	2, 2, 0, 3, 4, 0, 3, 4, 
-	0, 6, 4, 5, 6, 5, 7, 0, 
+	2, 2, 0, 3, 5, 0, 3, 5, 
+	0, 7, 0, 4, 5, 6, 4, 6, 
 	0, 0
 };
 
 static const char _tsdp_machine_parser_header_Dummy_trans_actions[] = {
 	1, 1, 0, 3, 3, 0, 0, 0, 
-	0, 9, 0, 1, 5, 0, 7, 0, 
+	0, 0, 0, 7, 0, 1, 5, 0, 
 	0, 0
 };
 
+static const char _tsdp_machine_parser_header_Dummy_eof_actions[] = {
+	0, 0, 0, 0, 0, 7, 5, 0
+};
+
 static const int tsdp_machine_parser_header_Dummy_start = 1;
-static const int tsdp_machine_parser_header_Dummy_first_final = 7;
+static const int tsdp_machine_parser_header_Dummy_first_final = 5;
 static const int tsdp_machine_parser_header_Dummy_error = 0;
 
 static const int tsdp_machine_parser_header_Dummy_en_main = 1;
 
 
-/* #line 94 "tsdp_parser_header_Dummy.rl" */
+/* #line 91 "tsdp_parser_header_Dummy.rl" */
 	
-/* #line 121 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 125 "../src/headers/tsdp_header_Dummy.c" */
 	{
 	cs = tsdp_machine_parser_header_Dummy_start;
 	}
 
-/* #line 95 "tsdp_parser_header_Dummy.rl" */
+/* #line 92 "tsdp_parser_header_Dummy.rl" */
 	
-/* #line 128 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 132 "../src/headers/tsdp_header_Dummy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -215,12 +219,7 @@ _match:
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 	break;
-	case 3:
-/* #line 59 "tsdp_parser_header_Dummy.rl" */
-	{
-	}
-	break;
-/* #line 224 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 223 "../src/headers/tsdp_header_Dummy.c" */
 		}
 	}
 
@@ -230,15 +229,38 @@ _again:
 	if ( ++p != pe )
 		goto _resume;
 	_test_eof: {}
+	if ( p == eof )
+	{
+	const char *__acts = _tsdp_machine_parser_header_Dummy_actions + _tsdp_machine_parser_header_Dummy_eof_actions[cs];
+	unsigned int __nacts = (unsigned int) *__acts++;
+	while ( __nacts-- > 0 ) {
+		switch ( *__acts++ ) {
+	case 0:
+/* #line 47 "tsdp_parser_header_Dummy.rl" */
+	{
+		tag_start = p;
+	}
+	break;
+	case 2:
+/* #line 55 "tsdp_parser_header_Dummy.rl" */
+	{
+		TSK_PARSER_SET_STRING(hdr_Dummy->value);
+	}
+	break;
+/* #line 251 "../src/headers/tsdp_header_Dummy.c" */
+		}
+	}
+	}
+
 	_out: {}
 	}
 
-/* #line 96 "tsdp_parser_header_Dummy.rl" */
+/* #line 93 "tsdp_parser_header_Dummy.rl" */
 	
 	if( cs < 
-/* #line 240 "../src/headers/tsdp_header_Dummy.c" */
-7
-/* #line 97 "tsdp_parser_header_Dummy.rl" */
+/* #line 262 "../src/headers/tsdp_header_Dummy.c" */
+5
+/* #line 94 "tsdp_parser_header_Dummy.rl" */
  ){
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}

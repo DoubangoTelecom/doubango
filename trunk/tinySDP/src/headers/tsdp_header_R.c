@@ -42,7 +42,7 @@
 *	Ragel state machine.
 */
 
-/* #line 78 "tsdp_parser_header_R.rl" */
+/* #line 75 "tsdp_parser_header_R.rl" */
 
 
 int tsdp_header_R_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
@@ -82,74 +82,78 @@ tsdp_header_R_t *tsdp_header_R_parse(const char *data, size_t size)
 	
 /* #line 84 "../src/headers/tsdp_header_R.c" */
 static const char _tsdp_machine_parser_header_R_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 1, 
-	3
+	0, 1, 0, 1, 1, 1, 2
 };
 
 static const char _tsdp_machine_parser_header_R_key_offsets[] = {
 	0, 0, 1, 3, 6, 13, 15, 22, 
-	24, 32, 33, 35, 36, 37
+	24, 25, 26, 27, 35, 35
 };
 
 static const char _tsdp_machine_parser_header_R_trans_keys[] = {
 	114, 32, 61, 32, 48, 57, 32, 100, 
 	104, 109, 115, 48, 57, 48, 57, 32, 
 	100, 104, 109, 115, 48, 57, 48, 57, 
-	13, 32, 100, 104, 109, 115, 48, 57, 
-	10, 13, 32, 32, 32, 0
+	10, 32, 32, 13, 32, 100, 104, 109, 
+	115, 48, 57, 13, 32, 0
 };
 
 static const char _tsdp_machine_parser_header_R_single_lengths[] = {
 	0, 1, 2, 1, 5, 0, 5, 0, 
-	6, 1, 2, 1, 1, 0
+	1, 1, 1, 6, 0, 2
 };
 
 static const char _tsdp_machine_parser_header_R_range_lengths[] = {
 	0, 0, 0, 1, 1, 1, 1, 1, 
-	1, 0, 0, 0, 0, 0
+	0, 0, 0, 1, 0, 0
 };
 
 static const char _tsdp_machine_parser_header_R_index_offsets[] = {
 	0, 0, 2, 5, 8, 15, 17, 24, 
-	26, 34, 36, 39, 41, 43
+	26, 28, 30, 32, 40, 41
 };
 
 static const char _tsdp_machine_parser_header_R_indicies[] = {
 	0, 1, 0, 2, 1, 2, 3, 1, 
 	4, 6, 6, 6, 6, 5, 1, 7, 
 	1, 8, 10, 10, 10, 10, 9, 1, 
-	11, 1, 12, 8, 14, 14, 14, 14, 
-	13, 1, 15, 1, 12, 8, 1, 8, 
-	1, 4, 1, 1, 0
+	11, 1, 12, 1, 8, 1, 4, 1, 
+	13, 8, 15, 15, 15, 15, 14, 1, 
+	1, 13, 8, 1, 0
 };
 
 static const char _tsdp_machine_parser_header_R_trans_targs[] = {
-	2, 0, 3, 4, 5, 4, 12, 6, 
-	7, 6, 11, 8, 9, 8, 10, 13
+	2, 0, 3, 4, 5, 4, 10, 6, 
+	7, 6, 9, 11, 12, 8, 11, 13
 };
 
 static const char _tsdp_machine_parser_header_R_trans_actions[] = {
 	0, 0, 0, 1, 3, 0, 0, 1, 
-	5, 0, 0, 1, 5, 0, 0, 7
+	5, 0, 0, 1, 0, 5, 0, 0
+};
+
+static const char _tsdp_machine_parser_header_R_eof_actions[] = {
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 5, 0, 5
 };
 
 static const int tsdp_machine_parser_header_R_start = 1;
-static const int tsdp_machine_parser_header_R_first_final = 13;
+static const int tsdp_machine_parser_header_R_first_final = 11;
 static const int tsdp_machine_parser_header_R_error = 0;
 
 static const int tsdp_machine_parser_header_R_en_main = 1;
 
 
-/* #line 115 "tsdp_parser_header_R.rl" */
+/* #line 112 "tsdp_parser_header_R.rl" */
 	
-/* #line 146 "../src/headers/tsdp_header_R.c" */
+/* #line 150 "../src/headers/tsdp_header_R.c" */
 	{
 	cs = tsdp_machine_parser_header_R_start;
 	}
 
-/* #line 116 "tsdp_parser_header_R.rl" */
+/* #line 113 "tsdp_parser_header_R.rl" */
 	
-/* #line 153 "../src/headers/tsdp_header_R.c" */
+/* #line 157 "../src/headers/tsdp_header_R.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -246,12 +250,7 @@ _match:
 		}
 	}
 	break;
-	case 3:
-/* #line 65 "tsdp_parser_header_R.rl" */
-	{
-	}
-	break;
-/* #line 255 "../src/headers/tsdp_header_R.c" */
+/* #line 254 "../src/headers/tsdp_header_R.c" */
 		}
 	}
 
@@ -261,15 +260,37 @@ _again:
 	if ( ++p != pe )
 		goto _resume;
 	_test_eof: {}
+	if ( p == eof )
+	{
+	const char *__acts = _tsdp_machine_parser_header_R_actions + _tsdp_machine_parser_header_R_eof_actions[cs];
+	unsigned int __nacts = (unsigned int) *__acts++;
+	while ( __nacts-- > 0 ) {
+		switch ( *__acts++ ) {
+	case 2:
+/* #line 56 "tsdp_parser_header_R.rl" */
+	{
+		if(!hdr_R->typed_time){
+			TSK_PARSER_SET_STRING(hdr_R->typed_time);
+		}
+		else{
+			TSK_PARSER_ADD_STRING(hdr_R->typed_times);
+		}
+	}
+	break;
+/* #line 281 "../src/headers/tsdp_header_R.c" */
+		}
+	}
+	}
+
 	_out: {}
 	}
 
-/* #line 117 "tsdp_parser_header_R.rl" */
+/* #line 114 "tsdp_parser_header_R.rl" */
 	
 	if( cs < 
-/* #line 271 "../src/headers/tsdp_header_R.c" */
-13
-/* #line 118 "tsdp_parser_header_R.rl" */
+/* #line 292 "../src/headers/tsdp_header_R.c" */
+11
+/* #line 115 "tsdp_parser_header_R.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"r=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_R);

@@ -51,14 +51,11 @@
 	action parse_value{
 		TSK_PARSER_SET_STRING(hdr_S->value);
 	}
-
-	action eob{
-	}
 		
 	S = 's' SP* "=" SP*<: any*>tag %parse_value;
 	
 	# Entry point
-	main := S :>CRLF @eob;
+	main := S :>CRLF?;
 
 }%%
 

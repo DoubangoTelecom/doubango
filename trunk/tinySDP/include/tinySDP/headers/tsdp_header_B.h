@@ -70,5 +70,5 @@ TINYSDP_GEXTERN const void *tsdp_header_B_def_t;
 
 TSDP_END_DECLS
 
-#endif /* _TSDP_HEADER_I_H_ */
+#endif /* _TSDP_HEADER_B_H_ */
 

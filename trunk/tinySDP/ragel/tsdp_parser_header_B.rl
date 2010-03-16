@@ -56,17 +56,14 @@
 	action parse_bandwidth{
 		TSK_PARSER_SET_UINT(hdr_B->bandwidth);
 	}
-
-	action eob{
-	}
 	
 	bwtype = token>tag %parse_bwtype;
 	bandwidth = DIGIT+>tag %parse_bandwidth;
 
-	B = 'b' SP* "=" SP*<: bwtype HCOLON bandwidth;
+	B = 'b' SP* "=" SP*<: bwtype ":" bandwidth;
 	
 	# Entry point
-	main := B :>CRLF @eob;
+	main := B :>CRLF?;
 
 }%%
 

@@ -60,16 +60,14 @@
 	action parse_addr{
 		TSK_PARSER_SET_STRING(hdr_C->addr);
 	}
-
-	action eob{
-	}
+	
 	nettype = any* >tag %parse_nettype;
 	addrtype = any* >tag %parse_addrtype;
 	addr = any* >tag %parse_addr;
 	C = 'c' SP* "=" SP*<: nettype :>SP addrtype :>SP addr;
 	
 	# Entry point
-	main := C :>CRLF @eob;
+	main := C :>CRLF?;
 
 }%%
 

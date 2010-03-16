@@ -28,12 +28,14 @@
  */
 #include "tinySDP/parsers/tsdp_parser_message.h"
 
+#include "tinySDP/headers/tsdp_header_A.h"
 #include "tinySDP/headers/tsdp_header_B.h"
 #include "tinySDP/headers/tsdp_header_C.h"
 #include "tinySDP/headers/tsdp_header_Dummy.h"
 #include "tinySDP/headers/tsdp_header_E.h"
 #include "tinySDP/headers/tsdp_header_I.h"
 #include "tinySDP/headers/tsdp_header_K.h"
+#include "tinySDP/headers/tsdp_header_M.h"
 #include "tinySDP/headers/tsdp_header_O.h"
 #include "tinySDP/headers/tsdp_header_P.h"
 #include "tinySDP/headers/tsdp_header_R.h"
@@ -61,23 +63,43 @@
 	#	Actions
 	###########################################
 	action parse_header_A{
-		TSK_DEBUG_INFO("Header A");
+		if(hdr_M){
+			if(!hdr_M->Attributes){
+				hdr_M->Attributes = TSK_LIST_CREATE();
+			}
+			if((header = (tsdp_header_t*)tsdp_header_A_parse(tag_start, (p - tag_start)))){
+				tsk_list_push_back_data(hdr_M->Attributes, (void**)&header);
+			}
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_A_parse(tag_start, (p - tag_start)))){
+			tsdp_message_add_header(sdp_msg, header);
+			tsk_object_unref(header);
+		}
 	}
 
 	action parse_header_B{
-		if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
+		if(hdr_M){
+			if(!hdr_M->Bandwidths){
+				hdr_M->Bandwidths = TSK_LIST_CREATE();
+			}
+			if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
+				tsk_list_push_back_data(hdr_M->Bandwidths, (void**)&header);
+			}
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header B");
 	}
 	
 	action parse_header_C{
-		if((header = (tsdp_header_t*)tsdp_header_C_parse(tag_start, (p - tag_start)))){
+		if(hdr_M && !hdr_M->C){
+			hdr_M->C = tsdp_header_C_parse(tag_start, (p - tag_start));
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_C_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header C");
 	}
 	
 	action parse_header_Dummy{
@@ -85,7 +107,6 @@
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header Dummy");
 	}
 	
 	action parse_header_E{
@@ -93,27 +114,33 @@
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header E");
 	}
 	
 	action parse_header_I{
-		if((header = (tsdp_header_t*)tsdp_header_I_parse(tag_start, (p - tag_start)))){
+		if(hdr_M && !hdr_M->I){
+			hdr_M->I = tsdp_header_I_parse(tag_start, (p - tag_start));
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_I_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header I");
 	}
 	
 	action parse_header_K{
-		if((header = (tsdp_header_t*)tsdp_header_K_parse(tag_start, (p - tag_start)))){
+		if(hdr_M && !hdr_M->K){
+			hdr_M->K = tsdp_header_K_parse(tag_start, (p - tag_start));
+		}
+		else if((header = (tsdp_header_t*)tsdp_header_K_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header K");
 	}
 	
 	action parse_header_M{
-		TSK_DEBUG_INFO("Header M");
+		if((hdr_M = tsdp_header_M_parse(tag_start, (p - tag_start)))){
+			tsdp_message_add_header(sdp_msg, TSDP_HEADER(hdr_M));
+			hdr_M = tsk_object_unref(hdr_M);
+		}
 	}
 	
 	action parse_header_O{
@@ -121,7 +148,6 @@
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header O");
 	}
 	
 	action parse_header_P{
@@ -129,7 +155,6 @@
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header P");
 	}
 
 	action parse_header_R{
@@ -145,7 +170,6 @@
 				tsk_object_unref(header);
 			}
 		}
-		TSK_DEBUG_INFO("Header R");
 	}
 	
 	action parse_header_S{
@@ -153,7 +177,6 @@
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header S");
 	}
 	
 	action parse_header_T{
@@ -161,7 +184,6 @@
 			tsdp_message_add_header(sdp_msg, TSDP_HEADER(hdr_T));
 			hdr_T = tsk_object_unref(hdr_T);
 		}
-		TSK_DEBUG_INFO("Header T");
 	}
 
 	action parse_header_U{
@@ -169,7 +191,6 @@
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header U");
 	}
 
 	action parse_header_V{
@@ -177,7 +198,6 @@
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header V");
 	}
 
 	action parse_header_Z{
@@ -185,32 +205,31 @@
 			tsdp_message_add_header(sdp_msg, header);
 			tsk_object_unref(header);
 		}
-		TSK_DEBUG_INFO("Header Z");
 	}
 
 	###########################################
 	#	Headers
 	###########################################
 
-	A = "a"i SP* "=" SP*<: any* :>CRLF  %parse_header_A;
-	B = "b"i SP* "=" SP*<: any* :>CRLF  %parse_header_B;
-	C = "c"i SP* "=" SP*<: any* :>CRLF  %parse_header_C;
-	E = "e"i SP* "=" SP*<: any* :>CRLF  %parse_header_E;
-	I = "i"i SP* "=" SP*<: any* :>CRLF  %parse_header_I;
-	K = "k"i SP* "=" SP*<: any* :>CRLF  %parse_header_K;
-	M = "m"i SP* "=" SP*<: any* :>CRLF  %parse_header_M;
-	O = "o"i SP* "=" SP*<: any* :>CRLF  %parse_header_O;
-	P = "p"i SP* "=" SP*<: any* :>CRLF  %parse_header_P;
-	R = "r"i SP* "=" SP*<: any* :>CRLF  %parse_header_R;
-	S = "s"i SP* "=" SP*<: any* :>CRLF  %parse_header_S;
-	T = "t"i SP* "=" SP*<: any* :>CRLF  %parse_header_T;
-	U = "u"i SP* "=" SP*<: any* :>CRLF  %parse_header_U;
-	V = "v"i SP* "=" SP*<: any* :>CRLF  %parse_header_V;
-	Z = "z"i SP* "=" SP*<: any* :>CRLF  %parse_header_Z;
+	A = "a"i SP* "=" SP*<: any* %parse_header_A :>CRLF;
+	B = "b"i SP* "=" SP*<: any* %parse_header_B :>CRLF;
+	C = "c"i SP* "=" SP*<: any* %parse_header_C :>CRLF;
+	E = "e"i SP* "=" SP*<: any* %parse_header_E :>CRLF;
+	I = "i"i SP* "=" SP*<: any* %parse_header_I :>CRLF;
+	K = "k"i SP* "=" SP*<: any* %parse_header_K :>CRLF;
+	M = "m"i SP* "=" SP*<: any* %parse_header_M :>CRLF;
+	O = "o"i SP* "=" SP*<: any* %parse_header_O :>CRLF;
+	P = "p"i SP* "=" SP*<: any* %parse_header_P :>CRLF;
+	R = "r"i SP* "=" SP*<: any* %parse_header_R :>CRLF;
+	S = "s"i SP* "=" SP*<: any* %parse_header_S :>CRLF;
+	T = "t"i SP* "=" SP*<: any* %parse_header_T :>CRLF;
+	U = "u"i SP* "=" SP*<: any* %parse_header_U :>CRLF;
+	V = "v"i SP* "=" SP*<: any* %parse_header_V :>CRLF;
+	Z = "z"i SP* "=" SP*<: any* %parse_header_Z :>CRLF;
 
-	Dummy = alpha SP* "=" SP*<: any* :>CRLF  %parse_header_Dummy;
+	Dummy = alpha SP* "=" SP*<: any* %parse_header_Dummy :>CRLF;
 
-	Header = (A | B | C | E | I | K | M | O | P | R | S | T | U | V | Z)>tag @1 | (Dummy>tag) @0;
+	Header = (A | B | C | E | I | K | M | O | P | R | S | T | U | V | Z)>tag >1 | (Dummy>tag) >0;
 
 
 	###########################################
@@ -233,6 +252,7 @@ tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
 	const char* tag_start = TSDP_NULL;
 	tsdp_header_t *header = TSDP_NULL;
 	tsdp_header_T_t *hdr_T = TSDP_NULL;
+	tsdp_header_M_t *hdr_M = TSDP_NULL;
 
 	/* Ragel variables */
 	int cs = 0;
