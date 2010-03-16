@@ -57,9 +57,9 @@
 	action is_tel { uri->scheme = tsk_strdup("tel"), uri->type = uri_tel; }
 
 	#/* Sets HOST type */
-	action is_ipv4 { uri->host_type = uri->host_type = host_ipv4; }
-	action is_ipv6 { uri->host_type = uri->host_type = host_ipv6; }
-	action is_hostname { uri->host_type = uri->host_type = host_hostname; }
+	action is_ipv4 { uri->host_type = host_ipv4; }
+	action is_ipv6 { uri->host_type = host_ipv6; }
+	action is_hostname { uri->host_type = host_hostname; }
 
 	action parse_scheme
 	{

@@ -68,8 +68,6 @@ const char* uris[] =
     "tel:863-1234;phone-context=+1-914-555",
 	"tel:#666#",
 };
-#include "tsk_string.h"
-
 void test_uri_tostring(const tsip_uri_t *uri)
 {
 	char* ret = tsip_uri_tostring(uri, 1, 1);

@@ -51,7 +51,7 @@ THTTP_BEGIN_DECLS
 /// @date	12/3/2009
 ///
 /// @par ABNF= Content-Type
-///					Content-Type	= 	( "Content-Type" / "c" ) HCOLON media-type
+///					Content-Type	= 	( "Content-Type" ) HCOLON media-type
 ///					media-type	= 	m-type SLASH m-subtype *( SEMI m-parameter)
 /// 				m-type	= 	discrete-type / composite-type
 ///					discrete-type	= 	"text" / "image" / "audio" / "video" / "application" / extension-token

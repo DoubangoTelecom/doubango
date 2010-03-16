@@ -79,7 +79,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_REQUEST_METHOD(self)			 ((self)->method)
 #define TSIP_REQUEST_URI(self)				 ((self)->uri)
 
-#define TSIP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content)
+#define TSIP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content && (message)->Content->data)
 #define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)(((message) && (message)->Content_Length) ? (message)->Content_Length->length : 0)
 #define TSIP_MESSAGE_CONTENT(message)		 (TSIP_MESSAGE_HAS_CONTENT(message) ? (message)->Content->data : 0)
 

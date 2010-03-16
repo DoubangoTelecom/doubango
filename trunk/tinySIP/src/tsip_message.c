@@ -111,10 +111,8 @@ int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr)
 int tsip_message_add_headers(tsip_message_t *self, const tsip_headers_L_t *headers)
 {
 	tsk_list_item_t *item = 0;
-	if(self)
-	{
-		tsk_list_foreach(item, headers)
-		{
+	if(self){
+		tsk_list_foreach(item, headers){
 			tsip_message_add_header(self, item->data);
 		}
 		return 0;

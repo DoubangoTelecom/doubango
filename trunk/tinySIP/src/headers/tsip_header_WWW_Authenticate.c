@@ -39,16 +39,6 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_WWW_Authenticate_group SIP WWW-Authenticate header.
-*/
-
-/***********************************
-*	Ragel state machine.
-*/
-
-/* #line 131 "tsip_parser_header_WWW_Authenticate.rl" */
-
-
 int tsip_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -124,8 +114,6 @@ tsip_header_WWW_Authenticate_t *tsip_header_WWW_Authenticate_parse(const char *d
 //	WWW_Authenticate header object definition
 //
 
-/**@ingroup tsip_header_WWW_Authenticate_group
-*/
 static void* tsip_header_WWW_Authenticate_create(void *self, va_list * app)
 {
 	tsip_header_WWW_Authenticate_t *WWW_Authenticate = self;
@@ -141,8 +129,6 @@ static void* tsip_header_WWW_Authenticate_create(void *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_header_WWW_Authenticate_group
-*/
 static void* tsip_header_WWW_Authenticate_destroy(void *self)
 {
 	tsip_header_WWW_Authenticate_t *WWW_Authenticate = self;

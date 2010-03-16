@@ -224,7 +224,7 @@ int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_bu
 		{
 			tsk_param_t* param = item->data;
 			//tsk_params_param_tostring(param, output);
-			if(item == self->head)
+			if(TSK_LIST_IS_FIRST(self, item))
 			{
 				if(ret = tsk_buffer_appendEx(output, param->value?"%s=%s":"%s", param->name, param->value)){
 					goto bail;

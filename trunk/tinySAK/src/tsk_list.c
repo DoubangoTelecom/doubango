@@ -269,7 +269,7 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 		while(curr)
 		{
 			int diff = tsk_object_cmp((*item), curr);
-			if((diff <= 0 && ascending) || (diff >=0 && !ascending))
+			if((diff </*=*/ 0 && ascending) || (diff >/*=*/0 && !ascending))
 			{
 				if(curr == list->head){
 					tsk_list_push_front_item(list, item);
