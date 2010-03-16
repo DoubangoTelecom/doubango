@@ -116,7 +116,29 @@ tmsrp_header_From_Path_t *tmsrp_header_From_Path_parse(const char *data, size_t 
 }
 
 
+tmsrp_header_From_Path_t *tmsrp_header_From_Path_clone(const tmsrp_header_From_Path_t* From_Path)
+{
+	tmsrp_header_From_Path_t* clone = TMSRP_NULL;
+	
+	if(!From_Path){
+		goto bail;
+	}
 
+	clone = TMSRP_HEADER_FROM_PATH_CREATE_NULL();
+	clone->uri = tmsrp_uri_clone(From_Path->uri);
+	if(From_Path->otherURIs){
+		tsk_list_item_t *item;
+		clone->otherURIs = TSK_LIST_CREATE();
+
+		tsk_list_foreach(item, From_Path->otherURIs){
+			tmsrp_uri_t *uri = tmsrp_uri_clone(TMSRP_URI(item->data));
+			tsk_list_push_back_data(clone->otherURIs, (void**)&uri);
+		}
+	}
+
+bail:
+	return clone;
+}
 
 
 

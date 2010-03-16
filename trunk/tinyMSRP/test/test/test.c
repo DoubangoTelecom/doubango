@@ -24,6 +24,7 @@
 
 #include "tsk.h"
 
+#include "tmsrp.h"
 #include "tinyMSRP/parsers/tmsrp_parser_message.h"
 
 #include "test_parser.h"

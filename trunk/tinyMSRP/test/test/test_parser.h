@@ -61,21 +61,73 @@ void test_parser()
 {
 	tmsrp_message_t *message = 0;
 	
+	//
+	//	Serialization / Deserialization
+	//
 	/* deserialize the message */
 	if((message = tmsrp_message_parse(MSRP_MSG_TO_TEST, strlen(MSRP_MSG_TO_TEST)))){
 		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
 
 		/* serialize the message */
 		tmsrp_message_tostring(message, buffer);
-		TSK_DEBUG_INFO("\nMSRP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
+		TSK_DEBUG_INFO("\nMSRP Message=\n%s\n\n", TSK_BUFFER_TO_STRING(buffer));
 
 		TSK_OBJECT_SAFE_FREE(buffer);
 	}
 	else{
-		TSK_DEBUG_ERROR("Failed to parse MSRP message.");
+		TSK_DEBUG_ERROR("Failed to parse MSRP message(1).");
 	}
-
 	TSK_OBJECT_SAFE_FREE(message);
+
+	//
+	//	Create Response from Request
+	//
+	if((message = tmsrp_message_parse(MSRP_MSG_REQUEST, strlen(MSRP_MSG_REQUEST)))){
+		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+		tmsrp_response_t* response = tmsrp_create_response(message, 202, "Accepted");
+
+		tmsrp_message_tostring(response, buffer);
+		TSK_DEBUG_INFO("\nMSRP Response=\n%s\n\n", TSK_BUFFER_TO_STRING(buffer));
+
+		TSK_OBJECT_SAFE_FREE(buffer);
+		TSK_OBJECT_SAFE_FREE(response);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to parse MSRP message(2).");
+	}
+	TSK_OBJECT_SAFE_FREE(message);
+
+	//
+	//	Create Report from Request
+	//
+	if((message = tmsrp_message_parse(MSRP_MSG_REQUEST, strlen(MSRP_MSG_REQUEST)))){
+		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+		tmsrp_request_t* report = tmsrp_create_report(message, 403, "Stop-sending-message");
+
+		tmsrp_message_tostring(report, buffer);
+		TSK_DEBUG_INFO("\nMSRP Response=\n%s\n\n", TSK_BUFFER_TO_STRING(buffer));
+
+		TSK_OBJECT_SAFE_FREE(buffer);
+		TSK_OBJECT_SAFE_FREE(report);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to parse MSRP message(2).");
+	}
+	TSK_OBJECT_SAFE_FREE(message);
+
+	//
+	// Create bodiless Request
+	//
+	{
+		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+		tmsrp_request_t* bodiless = tmsrp_create_bodiless();
+
+		tmsrp_message_tostring(bodiless, buffer);
+		TSK_DEBUG_INFO("\nMSRP Bodiless=\n%s\n\n", TSK_BUFFER_TO_STRING(buffer));
+
+		TSK_OBJECT_SAFE_FREE(buffer);
+		TSK_OBJECT_SAFE_FREE(bodiless);
+	}
 }
 
 #endif /* _TEST_MSRPPARSER_H */

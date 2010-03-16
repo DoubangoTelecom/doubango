@@ -44,7 +44,7 @@
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(subscribe, TX)
 #define TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, message)	\
-	tsip_subscribe_event_signal(type, TSIP_DIALOG_GET_STACK(self), tsip_operation_get_id(TSIP_DIALOG(self)->operation), code, phrase, message)
+	tsip_subscribe_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->operation, code, phrase, message)
 
 /* ======================== internal functions ======================== */
 int send_subscribe(tsip_dialog_subscribe_t *self);
@@ -643,7 +643,7 @@ static void* tsip_dialog_subscribe_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_subscribe_OnTerminated), (const void*)dialog);
 
 		/* Initialize base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_SUBSCRIBE, stack, 0, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_SUBSCRIBE, stack, TSIP_NULL, operation);
 
 		/* Initialize the class itself */
 		tsip_dialog_subscribe_init(self);

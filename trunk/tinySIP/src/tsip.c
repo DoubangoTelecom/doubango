@@ -477,22 +477,6 @@ int tsip_stack_set(tsip_stack_handle_t *self, ...)
 	return -1;
 }
 
-//int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type)
-//{
-//	if(self)
-//	{
-//		const tsip_stack_t *stack = self;
-//
-//		TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), stack, opid, status_code, reason_phrase, incoming, type);
-//		//tsip_event_t *event = TSIP_EVENT_CREATE(stack, opid, status_code, reason_phrase, incoming, type);
-//		//TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), event);
-//
-//		return 0;
-//	}
-//	return -1;
-//}
-
-//#include "tsk_thread.h"
 int tsip_stack_stop(tsip_stack_handle_t *self)
 {
 	if(self)

@@ -261,7 +261,9 @@ int tmsrp_message_tostring(const tmsrp_message_t *self, tsk_buffer_t *output)
 		tmsrp_header_tostring(TMSRP_HEADER(self->Status), output);
 	}
 		
-	/* All other headers (Other-Mime-headers)*/
+	/* All other headers (Other-Mime-headers)
+		- Should be empty if no content is added (see below) but ...
+	*/
 	{
 		tsk_list_item_t *item;
 		tsk_list_foreach(item, self->headers){
@@ -269,13 +271,19 @@ int tmsrp_message_tostring(const tmsrp_message_t *self, tsk_buffer_t *output)
 			tmsrp_header_tostring(hdr, output);
 		}
 	}
-	/* Content-Type */
-	if(self->ContentType){
-		tmsrp_header_tostring(TMSRP_HEADER(self->ContentType), output);
-	}
 	
+	/* RFC 4975 - 7.1. Constructing Requests
+		A request with no body MUST NOT include a Content-Type or any other
+		MIME-specific header fields.  A request without a body MUST contain
+		an end-line after the final header field.  No extra CRLF will be
+		present between the header section and the end-line.
+	*/
 	/* CONTENT */
 	if(TMSRP_MESSAGE_HAS_CONTENT(self)){
+		/* Content-Type */
+		if(self->ContentType){
+			tmsrp_header_tostring(TMSRP_HEADER(self->ContentType), output);
+		}
 		tsk_buffer_append(output, "\r\n", 2);
 		tsk_buffer_append(output, TSK_BUFFER_TO_STRING(self->Content), TSK_BUFFER_SIZE(self->Content));
 		tsk_buffer_append(output, "\r\n", 2);
@@ -349,13 +357,13 @@ static void* tmsrp_message_destroy(void * self)
 		TSK_FREE(message->tid);
 		
 		// request
-		if(TMSRP_MESSAGE_IS_REQUEST(message)){
+		//if(TMSRP_MESSAGE_IS_REQUEST(message)){
 			TSK_FREE(message->line.request.method);
-		}
+		//}
 		// response
-		if(TMSRP_MESSAGE_IS_RESPONSE(message)){
+		//if(TMSRP_MESSAGE_IS_RESPONSE(message)){
 			TSK_FREE(message->line.response.comment);
-		}
+		//}
 		
 		// Very common headers
 		TSK_OBJECT_SAFE_FREE(message->To);

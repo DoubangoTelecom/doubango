@@ -39,10 +39,10 @@
 
 #define TSIP_PUBLISH_EVENT_CREATE( type)		tsk_object_new(tsip_publish_event_def_t, type)
 
-int tsip_publish_event_signal(tsip_publish_event_type_t type, struct tsip_stack_s *stack, tsip_operation_id_t opid, short status_code, const char *phrase, const tsip_message_t* sipmessage)
+int tsip_publish_event_signal(tsip_publish_event_type_t type, struct tsip_stack_s *stack, tsip_operation_handle_t* operation, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_publish_event_t* sipevent = TSIP_PUBLISH_EVENT_CREATE(type);
-	tsip_event_init(TSIP_EVENT(sipevent), stack, opid, status_code, phrase, sipmessage, tsip_event_publish);
+	tsip_event_init(TSIP_EVENT(sipevent), stack, operation, status_code, phrase, sipmessage, tsip_event_publish);
 
 	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), sipevent);
 

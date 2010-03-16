@@ -65,6 +65,7 @@ tmsrp_header_To_Path_t;
 typedef tsk_list_t tmsrp_headers_To_Path_L_t;
 
 tmsrp_header_To_Path_t *tmsrp_header_To_Path_parse(const char *data, size_t size);
+tmsrp_header_To_Path_t *tmsrp_header_To_Path_clone(const tmsrp_header_To_Path_t* );
 
 TINYMSRP_GEXTERN const void *tmsrp_header_To_Path_def_t;
 

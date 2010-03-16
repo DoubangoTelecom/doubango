@@ -412,8 +412,7 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 			/* As this is a response ...then there should be a matching server transaction.
 			*/
 			const tsip_transac_t *transac = tsip_transac_layer_find_server(layer, response);
-			if(transac)
-			{
+			if(transac){
 				ret = transac->callback(transac, tsip_transac_outgoing_msg, response);
 			}
 		}

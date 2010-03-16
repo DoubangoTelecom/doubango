@@ -46,7 +46,7 @@
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_PUBLISH_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(publish, TX)
 #define TSIP_DIALOG_PUBLISH_SIGNAL(self, type, code, phrase, message)	\
-	tsip_publish_event_signal(type, TSIP_DIALOG_GET_STACK(self), tsip_operation_get_id(TSIP_DIALOG(self)->operation), code, phrase, message)
+	tsip_publish_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->operation, code, phrase, message)
 
 /* ======================== internal functions ======================== */
 int send_publish(tsip_dialog_publish_t *self, refresh_type_t rtype);
@@ -631,7 +631,7 @@ static void* tsip_dialog_publish_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_publish_OnTerminated), (const void*)dialog);
 
 		/* init base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_PUBLISH, stack, 0, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_PUBLISH, stack, TSIP_NULL, operation);
 
 		/* init the class itself */
 		tsip_dialog_publish_init(self);

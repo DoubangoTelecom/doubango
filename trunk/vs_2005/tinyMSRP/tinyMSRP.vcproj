@@ -40,13 +40,16 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinyMSRP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMSRP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="4"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -59,6 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -121,7 +125,9 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="3"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -171,25 +177,117 @@
 	</References>
 	<Files>
 		<Filter
-			Name="include"
+			Name="include(*.h)"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\tinyMSRP\src\tinyMSRP_config.h"
+				RelativePath="..\..\tinyMSRP\include\tinyMSRP_config.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyMSRP\src\tmsrp.h"
+				RelativePath="..\..\tinyMSRP\include\tmsrp.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyMSRP\src\tmsrp_message.h"
+				RelativePath="..\..\tinyMSRP\include\tinyMSRP\tmsrp_message.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\include\tinyMSRP\tmsrp_uri.h"
+				>
+			</File>
+			<Filter
+				Name="headers"
+				>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Authentication-Info.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Authorization.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Byte-Range.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Content-Type.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Dummy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Expires.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Failure-Report.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_From-Path.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Max-Expires.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Message-ID.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Min-Expires.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Status.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Success-Report.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_To-Path.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_Use-Path.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\headers\tmsrp_header_WWW-Authenticate.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="parsers"
+				>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\parsers\tmsrp_parser_header.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\parsers\tmsrp_parser_message.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\parsers\tmsrp_parser_uri.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
-			Name="source"
+			Name="source(*.c)"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
@@ -199,6 +297,174 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyMSRP\src\tmsrp_message.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\src\tmsrp_uri.c"
+				>
+			</File>
+			<Filter
+				Name="headers"
+				>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Authentication-Info.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Authorization.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Byte-Range.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Content-Type.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Dummy.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Expires.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Failure-Report.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_From-Path.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Max-Expires.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Message-ID.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Min-Expires.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Status.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Success-Report.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_To-Path.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_Use-Path.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\headers\tmsrp_header_WWW-Authenticate.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="parsers"
+				>
+				<File
+					RelativePath="..\..\tinyMSRP\src\parsers\tmsrp_parser_message.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\parsers\tmsrp_parser_uri.c"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="abnf(*.abnf)"
+			>
+		</Filter>
+		<Filter
+			Name="ragel(*.rl)"
+			>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_machine_utils.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Authentication-Info.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Authorization.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Byte-Range.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Content-Type.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Dummy.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Expires.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Failure-Report.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_From-Path.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Max-Expires.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Message-ID.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Min-Expires.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Status.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Success-Report.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_To-Path.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_header_Use-Path.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_message.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMSRP\ragel\tmsrp_parser_uri.rl"
 				>
 			</File>
 		</Filter>

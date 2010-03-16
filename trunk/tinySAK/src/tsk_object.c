@@ -165,7 +165,7 @@ tsk_object_t* tsk_object_ref(tsk_object_t *self)
 		TSK_OBJECT_HEADER_GET(self)->refCount++;
 		return self;
 	}
-	return 0;
+	return TSK_NULL;
 }
 
 /**@ingroup tsk_object_group

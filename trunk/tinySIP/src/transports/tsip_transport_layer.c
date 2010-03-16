@@ -134,10 +134,10 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	}
 
 	if(message){
-		/* Handle the incoming message. */
-		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 		/* Set fd */
 		message->sockfd = e->fd;
+		/* Alert transaction/dialog layer */
+		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 	}
 	else ret = -15;
 
@@ -171,9 +171,10 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 	if(tsip_message_parse(&state, &message, TSIP_TRUE) == TSIP_TRUE 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
-		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 		/* Set fd */
 		message->sockfd = e->fd;
+		/* Alert transaction/dialog layer */
+		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
 	}
 	TSK_OBJECT_SAFE_FREE(message);
 
@@ -187,8 +188,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 	destIP = TSIP_STACK(self->stack)->proxy_cscf;
 	*destPort = TSIP_STACK(self->stack)->proxy_cscf_port;
 
-	if(!self)
-	{
+	if(!self){
 		return 0;
 	}
 
@@ -354,8 +354,7 @@ int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *br
 		tsip_transport_t *transport = tsip_transport_layer_find(self, msg, destIP, &destPort);
 		if(transport)
 		{
-			if(tsip_transport_send(transport, branch, TSIP_MESSAGE(msg), destIP, destPort))
-			{
+			if(tsip_transport_send(transport, branch, TSIP_MESSAGE(msg), destIP, destPort)){
 				return 0;
 			}
 			else return -3;

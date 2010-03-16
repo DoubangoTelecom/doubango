@@ -52,6 +52,7 @@
 				WarningLevel="3"
 				WarnAsError="true"
 				DebugInformationFormat="4"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -209,7 +210,9 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="0"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -339,7 +342,7 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
+			Name="source(*.c)"
 			>
 			<File
 				RelativePath="..\..\tinyNET\src\tnet.c"
@@ -527,7 +530,7 @@
 			</Filter>
 		</Filter>
 		<Filter
-			Name="include"
+			Name="include(*.h)"
 			>
 			<File
 				RelativePath="..\..\tinyNET\src\tinyNET_config.h"
