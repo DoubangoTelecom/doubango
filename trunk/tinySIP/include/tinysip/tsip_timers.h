@@ -52,6 +52,8 @@ TSIP_BEGIN_DECLS
 //extern const char *timerI;
 //extern const char *timerJ;
 //extern const char *timerK;
+//extern const char *timerL;
+//extern const char *timerM;
 
 typedef struct tsip_timer_s
 {
@@ -76,6 +78,8 @@ typedef struct tsip_timers_s
 	uint32_t I;
 	uint32_t J;
 	uint32_t K;
+	uint32_t L;
+	uint32_t M;
 }
 tsip_timers_t;
 
@@ -93,6 +97,8 @@ TINYSIP_API void tsip_timers_setH(uint32_t h);
 TINYSIP_API void tsip_timers_setI(uint32_t i);
 TINYSIP_API void tsip_timers_setJ(uint32_t j);
 TINYSIP_API void tsip_timers_setK(uint32_t k);
+TINYSIP_API void tsip_timers_setL(uint32_t l);
+TINYSIP_API void tsip_timers_setM(uint32_t m);
 
 TINYSIP_API uint32_t tsip_timers_getT1();
 TINYSIP_API uint32_t tsip_timers_getT2();
@@ -108,6 +114,8 @@ TINYSIP_API uint32_t tsip_timers_getH();
 TINYSIP_API uint32_t tsip_timers_getI();
 TINYSIP_API uint32_t tsip_timers_getJ();
 TINYSIP_API uint32_t tsip_timers_getK();
+TINYSIP_API uint32_t tsip_timers_getL();
+TINYSIP_API uint32_t tsip_timers_getM();
 
 TSIP_END_DECLS
 

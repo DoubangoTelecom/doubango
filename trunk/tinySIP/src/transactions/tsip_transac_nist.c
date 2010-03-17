@@ -198,7 +198,6 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_request, _fsm_state_Trying, tsip_transac_nist_Started_2_Trying_X_request, "tsip_transac_nist_Started_2_Trying_X_request"),
 			// Started -> (Any) -> Started
 			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_transac_nist_Started_2_Started_X_any"),
-			
 
 			/*=======================
 			* === Trying === 
@@ -207,7 +206,6 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_send_1xx, _fsm_state_Proceeding, tsip_transac_nist_Trying_2_Proceeding_X_send_1xx, "tsip_transac_nist_Trying_2_Proceeding_X_send_1xx"),
 			// Trying -> (send 200 to 699) -> Completed
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_send_200_to_699, _fsm_state_Completed, tsip_transac_nist_Trying_2_Completed_X_send_200_to_699, "tsip_transac_nist_Trying_2_Completed_X_send_200_to_699"),
-			
 			
 			/*=======================
 			* === Proceeding === 
@@ -219,7 +217,6 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 			// Proceeding -> (receive request) -> Proceeding
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Proceeding, _fsm_action_request, _fsm_state_Proceeding, tsip_transac_nist_Proceeding_2_Proceeding_X_request, "tsip_transac_nist_Proceeding_2_Proceeding_X_request"),
 			
-			
 			/*=======================
 			* === Completed === 
 			*/
@@ -227,7 +224,6 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Completed, _fsm_action_request, _fsm_state_Completed, tsip_transac_nist_Completed_2_Completed_X_request, "tsip_transac_nist_Completed_2_Completed_X_request"),
 			// Completed -> (timer J) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Completed, _fsm_action_timerJ, _fsm_state_Terminated, tsip_transac_nist_Completed_2_Terminated_X_tirmerJ, "tsip_transac_nist_Completed_2_Terminated_X_tirmerJ"),
-			
 
 			/*=======================
 			* === Any === 
@@ -563,7 +559,7 @@ static void* tsip_transac_nist_destroy(void * self)
 	return self;
 }
 
-static int tsip_transac_nist_cmp(const void *t1, const void *t2)
+static int tsip_transac_nist_cmp(const tsk_object_t *t1, const tsk_object_t *t2)
 {
 	return tsip_transac_cmp(t1, t2);
 }

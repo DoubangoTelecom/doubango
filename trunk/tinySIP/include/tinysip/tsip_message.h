@@ -83,6 +83,20 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_CONTENT_LENGTH(message) (uint32_t)(((message) && (message)->Content_Length) ? (message)->Content_Length->length : 0)
 #define TSIP_MESSAGE_CONTENT(message)		 (TSIP_MESSAGE_HAS_CONTENT(message) ? (message)->Content->data : 0)
 
+#define TSIP_REQUEST_IS_ACK(self)			((self) &&((self)->request_type==tsip_ACK))
+#define TSIP_REQUEST_IS_BYE(self)			((self) &&((self)->request_type==tsip_BYE))
+#define TSIP_REQUEST_IS_CANCEL(self)		((self) &&((self)->request_type==tsip_CANCEL))
+#define TSIP_REQUEST_IS_INVITE(self)		((self) &&((self)->request_type==tsip_INVITE))
+#define TSIP_REQUEST_IS_OPTIONS(self)		((self) &&((self)->request_type==tsip_OPTIONS))
+#define TSIP_REQUEST_IS_REGISTER(self)		((self) &&((self)->request_type==tsip_REGISTER))
+#define TSIP_REQUEST_IS_SUBSCRIBE(self)		((self) &&((self)->request_type==tsip_SUBSCRIBE))
+#define TSIP_REQUEST_IS_NOTIFY(self)		((self) &&((self)->request_type==tsip_NOTIFY))
+#define TSIP_REQUEST_IS_REFER(self)			((self) &&((self)->request_type==tsip_REFER))
+#define TSIP_REQUEST_IS_INFO(self)			((self) &&((self)->request_type==tsip_INFO))
+#define TSIP_REQUEST_IS_UPDATE(self)		((self) &&((self)->request_type==tsip_UPDATE))
+#define TSIP_REQUEST_IS_MESSAGE(self)		((self) &&((self)->request_type==tsip_MESSAGE))
+#define TSIP_REQUEST_IS_PUBLISH(self)		((self) &&((self)->request_type==tsip_PUBLISH))
+#define TSIP_REQUEST_IS_PRACK(self)			((self) &&((self)->request_type==tsip_PRACK))
 
 #define TSIP_RESPONSE_IS(self, code)		(TSIP_RESPONSE_CODE((self)) == code)
 #define TSIP_RESPONSE_IS_NXX(self, N)		(TSIP_MESSAGE_IS_RESPONSE((self)) && N##00<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= N##99)
@@ -93,6 +107,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_RESPONSE_IS_5XX(self)			TSIP_RESPONSE_IS_NXX(self, 5)
 #define TSIP_RESPONSE_IS_6XX(self)			TSIP_RESPONSE_IS_NXX(self, 6)
 #define TSIP_RESPONSE_IS_23456(self)		(TSIP_MESSAGE_IS_RESPONSE((self)) && 200<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
+#define TSIP_RESPONSE_IS_3456(self)			(TSIP_MESSAGE_IS_RESPONSE((self)) && 300<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
 
 /**
  * @enum	tsip_message_type_t

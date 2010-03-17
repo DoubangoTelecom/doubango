@@ -273,7 +273,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		c) and the values received in the Service-Route header field saved from the 200 (OK) response to the last
 		registration or re-registration of the public user identity with associated contact address.
 	*/
-	if(request->request_type != tsip_REGISTER)
+	if(!TSIP_REQUEST_IS_REGISTER(request))
 	{	// According to the above link ==> Initial/Re/De registration do not have routes.
 		if(copy_routes_start != -1)
 		{	/* The dialog already have routes ==> copy them. */
@@ -778,7 +778,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 			case tsip_PUBLISH:
 			case tsip_REGISTER:
 				{
-					if(!earlyIMS || (earlyIMS && request->request_type == tsip_REGISTER)){
+					if(!earlyIMS || (earlyIMS && TSIP_REQUEST_IS_REGISTER(request))){
 						TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(preferred_identity));
 					}
 					break;

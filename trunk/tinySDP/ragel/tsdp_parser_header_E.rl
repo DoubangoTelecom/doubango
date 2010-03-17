@@ -21,8 +21,8 @@
 */
 
 
-/**@file tsdp_header_I.c
- * @brief SDP "i=" header (Session Information).
+/**@file tsdp_header_E.c
+ * @brief SDP "e=" header (Session Information).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *

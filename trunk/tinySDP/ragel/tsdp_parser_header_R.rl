@@ -21,7 +21,7 @@
 */
 
 
-/**@file tsdp_header_C.c
+/**@file tsdp_header_R.c
  * @brief SDP "r=" header (Repeat Times).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
