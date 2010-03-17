@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_dialog_publish.c
+/**@file tsip_dialog_publish.client.c
  * @brief SIP dialog PUBLISH as per RFC 3903.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

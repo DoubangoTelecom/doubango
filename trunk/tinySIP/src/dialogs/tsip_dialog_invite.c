@@ -6,7 +6,7 @@
 * This file is part of Open Source Doubango Framework.
 *
 * DOUBANGO is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
+* it under the terms of the GNU General Public License as publishd by
 * the Free Software Foundation, either version 3 of the License, or
 * (at your option) any later version.
 *	
@@ -20,38 +20,12 @@
 *
 */
 
-#include "stdafx.h"
-
-#include "tsk.h"
-
-#include "tsdp.h"
-#include "tinySDP/parsers/tsdp_parser_message.h"
-
-#include "test_parser.h"
-
-
-#define RUN_TEST_LOOP		1
-
-#define RUN_TEST_ALL		0
-#define RUN_TEST_PARSER		1
-
-
-#ifdef _WIN32_WCE
-int _tmain(int argc, _TCHAR* argv[])
-#else
-int main()
-#endif
-{
-#if RUN_TEST_LOOP
-	for(;;)
-#endif
-	{
-		/* Print copyright information */
-		printf("Doubango Project\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
-	
-#if RUN_TEST_ALL  || RUN_TEST_PARSER
-		test_parser();
-#endif
-
-	}
-}
+/**@file tsip_dialog_invite.c
+ * @brief SIP dialog INVITE as per RFC 3261.
+ * The SOA machine is designed as per RFC 3264 and draft-ietf-sipping-sip-offeranswer-12.
+ *
+ * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#include "tinySIP/dialogs/tsip_dialog_invite.h"

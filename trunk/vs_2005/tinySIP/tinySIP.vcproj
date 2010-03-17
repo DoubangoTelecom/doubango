@@ -824,6 +824,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.client.c"
 					>
 				</File>

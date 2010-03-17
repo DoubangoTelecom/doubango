@@ -31,8 +31,18 @@
 
 #include "tinysdp_config.h"
 
+#include "tinySDP/tsdp_message.h"
+
 TSDP_BEGIN_DECLS
 
+#define TSDP_LINE_S_VALUE_DEFAULT "-"	/* as per RFC 3264 subclause 5 */
+
+#define TSDP_LINE_O_USERNAME_DEFAULT	"doubango"
+#define TSDP_LINE_O_SESSION_VER_DEFAULT	2301
+#define TSDP_LINE_O_SESSION_ID_DEFAULT	1983
+
+
+TINYSDP_API tsdp_message_t* tsdp_create_empty(const char* addr, int isIPv6);
 
 TSDP_END_DECLS
 

@@ -27,3 +27,51 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tsdp.h"
+
+#include "tinySDP/headers/tsdp_header_O.h"
+#include "tinySDP/headers/tsdp_header_S.h"
+#include "tinySDP/headers/tsdp_header_T.h"
+#include "tinySDP/headers/tsdp_header_V.h"
+
+tsdp_message_t* tsdp_create_empty(const char* addr, int isIPv6)
+{
+	tsdp_message_t* ret = 0;
+
+	if(!(ret = TSDP_MESSAGE_CREATE())){
+		return TSDP_NULL;
+	}
+
+	/*	RFC 3264 - 5 Generating the Initial Offer
+		The numeric value of the session id and version in the o line MUST be 
+		representable with a 64 bit signed integer.  The initial value of the version MUST be less than
+	   (2**62)-1, to avoid rollovers.
+	*/
+	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_V_VA_ARGS(0));
+	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_O_VA_ARGS(
+		TSDP_LINE_O_USERNAME_DEFAULT,
+		TSDP_LINE_O_SESSION_ID_DEFAULT,
+		TSDP_LINE_O_SESSION_VER_DEFAULT,
+		"IN",
+		isIPv6 ? "IP6" : "IP4",
+		addr));
+
+	/*	RFC 3264 - 5 Generating the Initial Offer
+		The SDP "s=" line conveys the subject of the session, which is
+		reasonably defined for multicast, but ill defined for unicast.  For
+		unicast sessions, it is RECOMMENDED that it consist of a single space
+		character (0x20) or a dash (-).
+
+		Unfortunately, SDP does not allow the "s=" line to be empty.
+	*/
+	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_S_VA_ARGS(TSDP_LINE_S_VALUE_DEFAULT));
+
+	/*	RFC 3264 - 5 Generating the Initial Offer
+		The SDP "t=" line conveys the time of the session.  Generally,
+		streams for unicast sessions are created and destroyed through
+		external signaling means, such as SIP.  In that case, the "t=" line
+		SHOULD have a value of "0 0".
+	*/
+	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_T_VA_ARGS(0, 0));
+	
+	return ret;
+}
