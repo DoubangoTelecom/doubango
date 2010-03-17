@@ -243,7 +243,7 @@ int tsip_transport_ipsec_updateMSG(tsip_transport_ipsec_t* self, tsip_message_t 
 		goto bail;
 	}
 
-	asso = (self->asso_temporary && msg->request_type == tsip_REGISTER) ? self->asso_temporary : self->asso_active;
+	asso = (self->asso_temporary && TSIP_REQUEST_IS_REGISTER(msg)) ? self->asso_temporary : self->asso_active;
 	if(!asso || !asso->ctx){
 		TSK_DEBUG_ERROR("No IPSec association found.");
 		ret = -2;

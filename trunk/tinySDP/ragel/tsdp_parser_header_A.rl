@@ -21,7 +21,7 @@
 */
 
 
-/**@file tsdp_header_B.c
+/**@file tsdp_header_A.c
  * @brief SDP "a=" header (Attributes).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>

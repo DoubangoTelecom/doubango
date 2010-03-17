@@ -84,6 +84,8 @@
 //const char *timerI = "timerI";
 //const char *timerJ = "timerJ";
 //const char *timerK = "timerK";
+//const char *timerL = "timerL";
+//const char *timerM = "timerM";
 
 
 static uint32_t T1 = TIMER_T1;
@@ -100,150 +102,139 @@ static uint32_t H = 64*TIMER_T1;
 static uint32_t I = TIMER_T4;
 static uint32_t J = 64*TIMER_T1;
 static uint32_t K = TIMER_T4;
+static uint32_t L = 64*TIMER_T1; // draft-sparks-sip-invfix
+static uint32_t M = 64*TIMER_T1; // draft-sparks-sip-invfix
 
 
 
 
-void tsip_timers_setT1(uint32_t t1)
-{
+void tsip_timers_setT1(uint32_t t1){
 	T1 = t1;
 	A = E = G = T1;
 	B = F = H = J = (T1*64);
 }
 
-void tsip_timers_setT2(uint32_t t2)
-{
+void tsip_timers_setT2(uint32_t t2){
 	T2 = t2;
 }
 
-void tsip_timers_setT4(uint32_t t4)
-{
+void tsip_timers_setT4(uint32_t t4){
 	T4 = t4;
 	I = K = T4;
 }
 
-void tsip_timers_setA(uint32_t a)
-{
+void tsip_timers_setA(uint32_t a){
 	A = a;
 }
 
-void tsip_timers_setB(uint32_t b)
-{
+void tsip_timers_setB(uint32_t b){
 	B = b;
 }
 
-void tsip_timers_setc(uint32_t c)
-{
+void tsip_timers_setc(uint32_t c){
 	C = c;
 }
 
-void tsip_timers_setD(uint32_t d)
-{
+void tsip_timers_setD(uint32_t d){
 	D = d;
 }
 
-void tsip_timers_setE(uint32_t e)
-{
+void tsip_timers_setE(uint32_t e){
 	E = e;
 }
 
-void tsip_timers_setF(uint32_t f)
-{
+void tsip_timers_setF(uint32_t f){
 	F = f;
 }
 
-void tsip_timers_setG(uint32_t g)
-{
+void tsip_timers_setG(uint32_t g){
 	G = g;
 }
 
-void tsip_timers_setH(uint32_t h)
-{
+void tsip_timers_setH(uint32_t h){
 	H = h;
 }
 
-void tsip_timers_setI(uint32_t i)
-{
+void tsip_timers_setI(uint32_t i){
 	I = i;
 }
 
-void tsip_timers_setJ(uint32_t j)
-{
+void tsip_timers_setJ(uint32_t j){
 	J = j;
 }
 
-void tsip_timers_setK(uint32_t k)
-{
+void tsip_timers_setK(uint32_t k){
 	K = k;
 }
 
+void tsip_timers_setL(uint32_t l){
+	L = l;
+}
 
-uint32_t tsip_timers_getT1()
-{
+void tsip_timers_setM(uint32_t m){
+	M = m;
+}
+
+uint32_t tsip_timers_getT1(){
 	return T1;
 }
 
-uint32_t tsip_timers_getT2()
-{
+uint32_t tsip_timers_getT2(){
 	return T2;
 }
 
-uint32_t tsip_timers_getT4()
-{
+uint32_t tsip_timers_getT4(){
 	return T4;
 }
 
-uint32_t tsip_timers_getA()
-{
+uint32_t tsip_timers_getA(){
 	return A;
 }
 
-uint32_t tsip_timers_getB()
-{
+uint32_t tsip_timers_getB(){
 	return B;
 }
 
-uint32_t tsip_timers_getC()
-{
+uint32_t tsip_timers_getC(){
 	return C;
 }
 
-uint32_t tsip_timers_getD()
-{
+uint32_t tsip_timers_getD(){
 	return D;
 }
 
-uint32_t tsip_timers_getE()
-{
+uint32_t tsip_timers_getE(){
 	return E;
 }
 
-uint32_t tsip_timers_getF()
-{
+uint32_t tsip_timers_getF(){
 	return F;
 }
 
-uint32_t tsip_timers_getG()
-{
+uint32_t tsip_timers_getG(){
 	return G;
 }
 
-uint32_t tsip_timers_getH()
-{
+uint32_t tsip_timers_getH(){
 	return H;
 }
 
-uint32_t tsip_timers_getI()
-{
+uint32_t tsip_timers_getI(){
 	return I;
 }
 
-uint32_t tsip_timers_getJ()
-{
+uint32_t tsip_timers_getJ(){
 	return J;
 }
 
-uint32_t tsip_timers_getK()
-{
+uint32_t tsip_timers_getK(){
 	return K;
+}
+
+uint32_t tsip_timers_getL(){
+	return L;
+}
+
+uint32_t tsip_timers_getM(){
+	return M;
 }

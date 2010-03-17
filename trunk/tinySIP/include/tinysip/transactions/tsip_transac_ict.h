@@ -31,21 +31,33 @@
 #define TINYSIP_TRANSAC_ICT_H
 
 #include "tinySIP_config.h"
+
 #include "tinySIP/transactions/tsip_transac.h"
+#include "tinySIP/tsip_message.h"
 
 #include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
+#define TSIP_TRANSAC_ICT_CREATE(stack, reliable, cseq_value, callid)		tsk_object_new(tsip_transac_ict_def_t, (const tsip_stack_handle_t *)stack, (unsigned)reliable, (int32_t)cseq_value, (const char*)callid)
+
+#define TSIP_TRANSAC_ICT(self)															((tsip_transac_ict_t*)(self))
+
 typedef struct tsip_transac_ict
 {
 	TSIP_DECLARE_TRANSAC;
-
+	
 	tsk_fsm_t *fsm;
+	
+	tsip_request_t* request;
+	tsip_timer_t timerA;
+	tsip_timer_t timerB;
+	tsip_timer_t timerD;
+	tsip_timer_t timerM;
 }
 tsip_transac_ict_t;
 
-int tsip_transac_ict_init(tsip_transac_ict_t *self);
+int tsip_transac_ict_start(tsip_transac_ict_t *self, const tsip_request_t* request);
 
 TSIP_END_DECLS
 

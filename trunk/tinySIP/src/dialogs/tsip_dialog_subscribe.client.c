@@ -170,7 +170,7 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 				//
 				//	REQUEST
 				//
-				if(msg->request_type == tsip_NOTIFY){
+				if(TSIP_REQUEST_IS_NOTIFY(msg)){
 					ret = tsk_fsm_act((self)->fsm, _fsm_action_notify, self, msg, self, msg);
 				}
 			}

@@ -21,7 +21,7 @@
 */
 
 
-/**@file tsdp_header_B.c
+/**@file tsdp_header_M.c
  * @brief SDP "m=" header (Media Descriptions).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
