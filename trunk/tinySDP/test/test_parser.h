@@ -65,7 +65,9 @@ void test_parser()
 {
 	tsdp_message_t *message = 0;
 	
-	/* deserialize the message */
+	//
+	// deserialize/serialize the message
+	//
 	if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))){
 		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
 
@@ -74,12 +76,25 @@ void test_parser()
 		TSK_DEBUG_INFO("SDP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
 
 		TSK_OBJECT_SAFE_FREE(buffer);
+		TSK_OBJECT_SAFE_FREE(message);
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to parse SDP message.");
-	}
+	}	
 
-	TSK_OBJECT_SAFE_FREE(message);
+	//
+	// create empty message
+	//
+	if((message = tsdp_create_empty("127.0.0.1", 0))){
+		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+
+		/* serialize the message */
+		tsdp_message_tostring(message, buffer);
+		TSK_DEBUG_INFO("\n\nEmpty SDP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
+
+		TSK_OBJECT_SAFE_FREE(buffer);
+		TSK_OBJECT_SAFE_FREE(message);
+	}
 }
 
 #endif /* _TEST_SDPPARSER_H */

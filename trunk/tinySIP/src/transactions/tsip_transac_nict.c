@@ -596,13 +596,11 @@ int tsip_transac_nict_Completed_2_Terminated_X_timerK(va_list *app)
 int tsip_transac_nict_Any_2_Terminated_X_transportError(va_list *app)
 {
 	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
-
-	return 0;
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, TSIP_NULL);
 }
 
 /* Any -> (Error) -> Terminated
@@ -610,9 +608,11 @@ int tsip_transac_nict_Any_2_Terminated_X_transportError(va_list *app)
 int tsip_transac_nict_Any_2_Terminated_X_Error(va_list *app)
 {
 	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	return 0;
+	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
+
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, TSIP_NULL);
 }
 
 

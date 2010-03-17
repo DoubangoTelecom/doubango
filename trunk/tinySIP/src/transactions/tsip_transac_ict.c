@@ -66,7 +66,7 @@
     to take                     +------------+
 
 
-                   draft-sparks-sip-invfix-02.txt - Figure 3: INVITE client transaction
+                   	draft-sparks-sip-invfix-03.txt - Figure 3: INVITE client transaction
 
 =============================================================================*/
 
@@ -102,7 +102,7 @@ int tsip_transac_ict_Proceeding_2_Completed_X_300_to_699(va_list *app);
 int tsip_transac_ict_Proceeding_2_Accepted_X_2xx(va_list *app);
 int tsip_transac_ict_Completed_2_Completed_X_300_to_699(va_list *app);
 int tsip_transac_ict_Completed_2_Terminated_X_timerD(va_list *app);
-int tsip_transac_ict_Accepted_2_Accepted_X_1xx(va_list *app);
+int tsip_transac_ict_Accepted_2_Accepted_X_2xx(va_list *app);
 int tsip_transac_ict_Accepted_2_Terminated_X_timerM(va_list *app);
 int tsip_transac_ict_Any_2_Terminated_X_transportError(va_list *app);
 int tsip_transac_ict_Any_2_Terminated_X_Error(va_list *app);
@@ -152,6 +152,9 @@ int tsip_transac_ict_event_callback(const tsip_transac_ict_t *self, tsip_transac
 {	
 	int ret = 0;
 
+	/*	draft-sparks-sip-invfix-03 - 7.2. UAC Impacts
+		Any response received which does not match an existing client transaction state machine is simply dropped.
+	*/
 	switch(type)
 	{
 	case tsip_transac_incoming_msg:
@@ -274,8 +277,8 @@ int tsip_transac_ict_init(tsip_transac_ict_t *self)
 			/*=======================
 			* === Accepted === 
 			*/
-			// Accepted -> (1xx) -> Accepted
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_1xx, _fsm_state_Accepted, tsip_transac_ict_Accepted_2_Accepted_X_1xx, "tsip_transac_ict_Accepted_2_Accepted_X_1xx"),
+			// Accepted -> (2xx) -> Accepted
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_2xx, _fsm_state_Accepted, tsip_transac_ict_Accepted_2_Accepted_X_2xx, "tsip_transac_ict_Accepted_2_Accepted_X_2xx"),
 			// Accepted -> (timerM) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Accepted, _fsm_action_timerM, _fsm_state_Terminated, tsip_transac_ict_Accepted_2_Terminated_X_timerM, "tsip_transac_ict_Accepted_2_Terminated_X_timerM"),
 		
@@ -433,16 +436,17 @@ int tsip_transac_ict_Calling_2_Completed_X_300_to_699(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 	int ret;
 
-	/*	RFC 3261 - 17.1.1.2 Formal Description
-		When in either the "Calling" or "Proceeding" states, reception of a
-		response with status code from 300-699 MUST cause the client
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		When in either the "Calling" or "Proceeding" states, reception of
+		a response with status code from 300-699 MUST cause the client
 		transaction to transition to "Completed".  The client transaction
 		MUST pass the received response up to the TU, and the client
 		transaction MUST generate an ACK request, even if the transport is
-		reliable (guidelines for constructing the ACK from the response are
-		given in Section 17.1.1.3) and then pass the ACK to the transport
-		layer for transmission.  The ACK MUST be sent to the same address,
-		port, and transport to which the original request was sent.
+		reliable (guidelines for constructing the ACK from the response
+		are given in Section 17.1.1.3) and then pass the ACK to the
+		transport layer for transmission.  The ACK MUST be sent to the
+		same address, port, and transport to which the original request
+		was sent.
 	*/
 	/* Do not retransmit */
 	if(!TSIP_TRANSAC(self)->reliable){
@@ -450,27 +454,23 @@ int tsip_transac_ict_Calling_2_Completed_X_300_to_699(va_list *app)
 	}
 	TRANSAC_TIMER_CANCEL(B); /* Now it's up to the UAS to update the FSM. */
 
-	/*	RFC 3261 - 17.1.1.2 Formal Description
-		The client transaction SHOULD start timer D when it enters the
-		"Completed" state, with a value of at least 32 seconds for unreliable
-		transports, and a value of zero seconds for reliable transports.
-		Timer D reflects the amount of time that the server transaction can
-		remain in the "Completed" state when unreliable transports are used.
-		This is equal to Timer H in the INVITE server transaction, whose
-
-		default is 64*T1.  However, the client transaction does not know the
-		value of T1 in use by the server transaction, so an absolute minimum
-		of 32s is used instead of basing Timer D on T1.
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		The client transaction MUST start timer D when it enters the
+		"Completed" state for any reason, with a value of at least 32
+		seconds for unreliable transports, and a value of zero seconds for
+		reliable transports.  Timer D reflects the amount of time that the
+		server transaction can remain in the "Completed" state when
+		unreliable transports are used.
    */
 	TRANSAC_ICT_TIMER_SCHEDULE(D); /* timerD already have the right value (0 if reliable and non-zero otherwise) */
 
 	/* Send ACK */
-	ret = tsip_transac_ict_send_ack(response);
+	if((ret = tsip_transac_ict_send_ack(response))){
+		return ret;
+	}
 
 	/* Pass the response to the dialog. */
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
-
-	return ret;
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
 }
 
 /* Calling -> (1xx) -> Proceeding
@@ -505,7 +505,23 @@ int tsip_transac_ict_Calling_2_Proceeding_X_1xx(va_list *app)
 */
 int tsip_transac_ict_Calling_2_Accepted_X_2xx(va_list *app)
 {
-	return 0;
+	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		When a 2xx response is received while in either the "Calling" or
+		"Proceeding" states, the client transaction MUST transition to the
+		"Accepted" state, and Timer M MUST be started with a value of
+		64*T1.  The 2xx response MUST be passed up to the TU.  The client
+		transaction MUST NOT generate an ACK to the 2xx response - its
+		handling is delegated to the TU.
+	*/
+	
+	/* Schedule timer M */
+	TRANSAC_ICT_TIMER_SCHEDULE(M);
+
+	/* pass the response to the TU (dialog) */
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
 }
 
 /* Proceeding -> (1xx) -> Proceeding
@@ -523,16 +539,17 @@ int tsip_transac_ict_Proceeding_2_Completed_X_300_to_699(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 	int ret;
 
-	/*	RFC 3261 - 17.1.1.2 Formal Description
-		When in either the "Calling" or "Proceeding" states, reception of a
-		response with status code from 300-699 MUST cause the client
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		When in either the "Calling" or "Proceeding" states, reception of
+		a response with status code from 300-699 MUST cause the client
 		transaction to transition to "Completed".  The client transaction
 		MUST pass the received response up to the TU, and the client
 		transaction MUST generate an ACK request, even if the transport is
-		reliable (guidelines for constructing the ACK from the response are
-		given in Section 17.1.1.3) and then pass the ACK to the transport
-		layer for transmission.  The ACK MUST be sent to the same address,
-		port, and transport to which the original request was sent.
+		reliable (guidelines for constructing the ACK from the response
+		are given in Section 17.1.1.3) and then pass the ACK to the
+		transport layer for transmission.  The ACK MUST be sent to the
+		same address, port, and transport to which the original request
+		was sent.
 	*/
 	/* Do not retransmit */
 	if(!TSIP_TRANSAC(self)->reliable){
@@ -540,25 +557,23 @@ int tsip_transac_ict_Proceeding_2_Completed_X_300_to_699(va_list *app)
 	}
 	TRANSAC_TIMER_CANCEL(B); /* Now it's up to the UAS to update the FSM. */
 
-	/*	RFC 3261 - 17.1.1.2 Formal Description
-		The client transaction SHOULD start timer D when it enters the
-		"Completed" state, with a value of at least 32 seconds for unreliable
-		transports, and a value of zero seconds for reliable transports.
-		Timer D reflects the amount of time that the server transaction can
-		remain in the "Completed" state when unreliable transports are used.
-		This is equal to Timer H in the INVITE server transaction, whose
-
-		default is 64*T1.  However, the client transaction does not know the
-		value of T1 in use by the server transaction, so an absolute minimum
-		of 32s is used instead of basing Timer D on T1.
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		The client transaction MUST start timer D when it enters the
+		"Completed" state for any reason, with a value of at least 32
+		seconds for unreliable transports, and a value of zero seconds for
+		reliable transports.  Timer D reflects the amount of time that the
+		server transaction can remain in the "Completed" state when
+		unreliable transports are used.
    */
 	TRANSAC_ICT_TIMER_SCHEDULE(D); /* timerD already have the right value (0 if reliable and non-zero otherwise) */
 
 	/* Send ACK */
-	ret = tsip_transac_ict_send_ack(response);
+	if((ret = tsip_transac_ict_send_ack(response))){
+		return ret;
+	}
 
 	/* Pass the response to the dialog. */
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
 
 	return ret;
 }
@@ -567,10 +582,23 @@ int tsip_transac_ict_Proceeding_2_Completed_X_300_to_699(va_list *app)
 */
 int tsip_transac_ict_Proceeding_2_Accepted_X_2xx(va_list *app)
 {
-	/*	draft-sparks-sip-invfix-02 - 8.5.  Pages 134 to 135
-		........ TO BE CONTINUED
+	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		When a 2xx response is received while in either the "Calling" or
+		"Proceeding" states, the client transaction MUST transition to the
+		"Accepted" state, and Timer M MUST be started with a value of
+		64*T1.  The 2xx response MUST be passed up to the TU.  The client
+		transaction MUST NOT generate an ACK to the 2xx response - its
+		handling is delegated to the TU.
 	*/
-	return 0;
+
+	/* Schedule timer M */
+	TRANSAC_ICT_TIMER_SCHEDULE(M);
+
+	/* pass the response to the TU (dialog) */
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
 }
 
 /* Completed -> (300-699) -> Completed
@@ -580,13 +608,11 @@ int tsip_transac_ict_Completed_2_Completed_X_300_to_699(va_list *app)
 	//tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	/*	RFC 3261 - 17.1.1.2 Formal Description
-		Any retransmissions of the final response that are received while in
-		the "Completed" state MUST cause the ACK to be re-passed to the
-		transport layer for retransmission, but the newly received response
-		MUST NOT be passed up to the TU.  A retransmission of the response is
-		defined as any response which would match the same client transaction
-		based on the rules of Section 17.1.3.
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		Any retransmissions of a response with status code 300-699 that
+		are received while in the "Completed" state MUST cause the ACK to
+		be re-passed to the transport layer for retransmission, but the
+		newly received response MUST NOT be passed up to the TU.
 	*/
 	
 	return tsip_transac_ict_send_ack(response);
@@ -596,19 +622,33 @@ int tsip_transac_ict_Completed_2_Completed_X_300_to_699(va_list *app)
 */
 int tsip_transac_ict_Completed_2_Terminated_X_timerD(va_list *app)
 {
-	/*	RFC 3261 - 17.1.1.2 Formal Description
-		If timer D fires while the client transaction is in the "Completed"
-		state, the client transaction MUST move to the terminated state.
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		If timer D fires while the client transaction is in the
+		"Completed" state, the client transaction MUST move to the
+		"Terminated" state.
 	*/
 	
 	/* Timers will be canceled by "tsip_transac_ict_OnTerminated" */
 	return 0;
 }
 
-/* Accepted -> (1xx) -> Accepted
+/* Accepted -> (2xx) -> Accepted
 */
-int tsip_transac_ict_Accepted_2_Accepted_X_1xx(va_list *app)
+int tsip_transac_ict_Accepted_2_Accepted_X_2xx(va_list *app)
 {
+	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	/*	draft-sparks-sip-invfix-03 - 7.2. UAC Impacts
+		A 2xx response received while in the "Accepted" state MUST be passed to the TU and
+		the machine remains in the "Accepted" state.  The client transaction
+		MUST NOT generate an ACK to any 2xx response on its own.  The TU
+		responsible for the transaction will generate the ACK.
+	*/
+	
+	/* Pass the response to the TU. */
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
+	
 	return 0;
 }
 
@@ -616,6 +656,10 @@ int tsip_transac_ict_Accepted_2_Accepted_X_1xx(va_list *app)
 */
 int tsip_transac_ict_Accepted_2_Terminated_X_timerM(va_list *app)
 {
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		If timer M fires while the client transaction is in the "Accepted"
+		state, the client transaction MUST move to the "Terminated" state.
+	*/
 	return 0;
 }
 
@@ -623,14 +667,24 @@ int tsip_transac_ict_Accepted_2_Terminated_X_timerM(va_list *app)
 */
 int tsip_transac_ict_Any_2_Terminated_X_transportError(va_list *app)
 {
-	return 0;
+	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
+	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
+
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, TSIP_NULL);
 }
 
 /* Any -> (Error) -> Terminated
 */
 int tsip_transac_ict_Any_2_Terminated_X_Error(va_list *app)
 {
-	return 0;
+	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
+	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+
+	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
+
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, TSIP_NULL);
 }
 
 
@@ -649,12 +703,10 @@ int tsip_transac_ict_send_ack(const tsip_response_t* response)
 */
 int tsip_transac_ict_OnTerminated(tsip_transac_ict_t *self)
 {
-	/*	RFC 3261 - 17.1.1.2 Formal Description
-		The client transaction MUST be destroyed the instant it enters the
-		"Terminated" state.  This is actually necessary to guarantee correct
-		operation.
+	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
+		The client transaction MUST be destroyed the instant it enters the "Terminated" state.
 	*/
-
+	
 	/* Cancel timers */
 	if(!TSIP_TRANSAC(self)->reliable){
 		TRANSAC_TIMER_CANCEL(A);
@@ -662,9 +714,9 @@ int tsip_transac_ict_OnTerminated(tsip_transac_ict_t *self)
 	TRANSAC_TIMER_CANCEL(B);
 	TRANSAC_TIMER_CANCEL(D);
 	TRANSAC_TIMER_CANCEL(M);
-
+	
 	TSIP_TRANSAC(self)->running = 0;
-
+	
 	TSK_DEBUG_INFO("=== ICT terminated ===");
 	
 	/* Remove (and destroy) the transaction from the layer. */
