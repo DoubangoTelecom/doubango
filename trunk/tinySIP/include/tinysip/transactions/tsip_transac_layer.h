@@ -48,7 +48,7 @@ typedef struct tsip_transac_layer_s
 
 	const tsip_stack_handle_t *stack;
 
-	unsigned reliable:1;
+	tsk_bool_t reliable;
 
 	tsip_transacs_L_t *transactions;
 
@@ -60,7 +60,7 @@ typedef tsk_list_t tsip_transac_layers_L_t;
 TINYSIP_GEXTERN const void *tsip_transac_layer_def_t;
 
 
-tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BOOLEAN isCT, const tsip_message_t* msg);
+tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_bool_t isCT, const tsip_message_t* msg);
 int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *transac);
 
 const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_message_t* message);

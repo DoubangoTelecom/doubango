@@ -64,7 +64,7 @@ int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_
 			rr->qtype = qtype;
 			rr->qclass = qclass;
 			
-			rr->initialized = 1;
+			rr->initialized = tsk_true;
 			return 0;
 		}
 		return -2;
@@ -86,7 +86,7 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 			TSK_FREE(rr->name);
 			TSK_FREE(rr->rpdata);
 			
-			rr->initialized = 0;
+			rr->initialized = tsk_false;
 			return 0;
 		}
 		return -2;

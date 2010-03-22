@@ -180,7 +180,7 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 	case tsip_dialog_hang_up:
 	case tsip_dialog_shuttingdown:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_hangup, self, msg, self, msg, (TSIP_BOOLEAN)(type == tsip_dialog_shuttingdown));
+			ret = tsk_fsm_act(self->fsm, _fsm_action_hangup, self, msg, self, msg, (tsk_bool_t)(type == tsip_dialog_shuttingdown));
 			break;
 		}
 
@@ -224,11 +224,11 @@ int tsip_dialog_subscribe_timer_callback(const tsip_dialog_subscribe_t* self, ts
 	if(self)
 	{
 		if(timer_id == self->timerrefresh.id){
-			tsk_fsm_act(self->fsm, _fsm_action_refresh, self, TSK_NULL, self, TSK_NULL);
+			tsk_fsm_act(self->fsm, _fsm_action_refresh, self, tsk_null, self, tsk_null);
 			ret = 0;
 		}
 		else if(timer_id == self->timershutdown.id){
-			ret = tsk_fsm_act((self)->fsm, _fsm_action_error, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act((self)->fsm, _fsm_action_error, self, tsk_null, self, tsk_null);
 		}
 	}
 	return ret;
@@ -320,7 +320,7 @@ int tsip_dialog_subscribe_start(tsip_dialog_subscribe_t *self)
 	if(self && !TSIP_DIALOG(self)->running)
 	{
 		/* Send request */
-		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, TSK_NULL, self, TSK_NULL);
+		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, tsk_null, self, tsk_null);
 	}
 	return ret;
 }
@@ -337,7 +337,7 @@ int tsip_dialog_subscribe_Started_2_Trying_X_send(va_list *app)
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	TSIP_DIALOG(self)->running = 1;
+	TSIP_DIALOG(self)->running = tsk_true;
 
 	return send_subscribe(self);
 }
@@ -461,7 +461,7 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-		701, "Subscription cancelled", TSIP_NULL);
+		701, "Subscription cancelled", tsk_null);
 
 	return 0;
 }
@@ -536,14 +536,14 @@ int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app)
 {
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
-	TSIP_BOOLEAN shuttingdown = va_arg(*app, TSIP_BOOLEAN);
+	tsk_bool_t shuttingdown = va_arg(*app, tsk_bool_t);
 
 	/* Schedule timeout (shutdown). */
 	if(shuttingdown){
 		TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(shutdown);
 	}
 
-	self->unsubscribing = 1;
+	self->unsubscribing = tsk_true;
 	return send_subscribe(self);
 }
 
@@ -643,7 +643,7 @@ static void* tsip_dialog_subscribe_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_subscribe_OnTerminated), (const void*)dialog);
 
 		/* Initialize base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_SUBSCRIBE, stack, TSIP_NULL, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_SUBSCRIBE, stack, tsk_null, operation);
 
 		/* Initialize the class itself */
 		tsip_dialog_subscribe_init(self);

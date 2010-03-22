@@ -108,16 +108,26 @@ int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr)
 	return -1;
 }
 
-int tsip_message_add_headers(tsip_message_t *self, const tsip_headers_L_t *headers)
+int tsip_message_add_headers(tsip_message_t *self, ...)
 {
-	tsk_list_item_t *item = 0;
-	if(self){
-		tsk_list_foreach(item, headers){
-			tsip_message_add_header(self, item->data);
-		}
-		return 0;
+	const tsk_object_def_t* objdef;
+	tsip_header_t *header;
+	va_list ap;
+
+	if(!self){
+		return -1;
 	}
-	return -1;
+
+	va_start(ap, self);
+	while((objdef = va_arg(ap, const tsk_object_def_t*))){
+		if((header = tsk_object_new2(objdef, &ap))){
+			tsip_message_add_header(self, header);
+			TSK_OBJECT_SAFE_FREE(header);
+		}
+	}
+	va_end(ap);
+
+	return 0;
 }
 
 int tsip_message_add_content(tsip_message_t *self, const char* content_type, const void* content, size_t size)
@@ -228,9 +238,9 @@ const tsip_header_t *tsip_message_get_header(const tsip_message_t *self, tsip_he
 * @param [in,out]	self	The SIP message holding the 'Allow' header. 
 * @param [in,out]	method	The method to look for. 
 *
-* @return	@a TSIP_TRUE if succeed and @a TSIP_FALSE otherwise. 
+* @return	@a tsk_true if succeed and @a tsk_false otherwise. 
 */
-TSIP_BOOLEAN tsip_message_allowed(const tsip_message_t *self, const char* method)
+tsk_bool_t tsip_message_allowed(const tsip_message_t *self, const char* method)
 {
 	int index = 0;
 	tsip_header_Allow_t *hdr_allow;
@@ -241,14 +251,14 @@ TSIP_BOOLEAN tsip_message_allowed(const tsip_message_t *self, const char* method
 		{
 			if(tsk_list_find_item_by_pred(hdr_allow->methods, pred_find_string_by_value, method))
 			{
-				return TSIP_TRUE;
+				return tsk_true;
 			}
 		}
 	}
-	return TSIP_FALSE;
+	return tsk_false;
 }
 
-TSIP_BOOLEAN tsip_message_supported(const tsip_message_t *self, const char* option)
+tsk_bool_t tsip_message_supported(const tsip_message_t *self, const char* option)
 {
 	int index = 0;
 	tsip_header_Supported_t *hdr_supported;
@@ -259,15 +269,15 @@ TSIP_BOOLEAN tsip_message_supported(const tsip_message_t *self, const char* opti
 		{
 			if(tsk_list_find_item_by_pred(hdr_supported->options, pred_find_string_by_value, option))
 			{
-				return TSIP_TRUE;
+				return tsk_true;
 			}
 		}
 		}
-	return TSIP_FALSE;
+	return tsk_false;
 }
 
 
-TSIP_BOOLEAN tsip_message_required(const tsip_message_t *self, const char* option)
+tsk_bool_t tsip_message_required(const tsip_message_t *self, const char* option)
 {
 	int index = 0;
 	tsip_header_Require_t *hdr_require;
@@ -278,11 +288,11 @@ TSIP_BOOLEAN tsip_message_required(const tsip_message_t *self, const char* optio
 		{
 			if(tsk_list_find_item_by_pred(hdr_require->options, pred_find_string_by_value, option))
 			{
-				return TSIP_TRUE;
+				return tsk_true;
 			}
 		}
 	}
-	return TSIP_FALSE;
+	return tsk_false;
 }
 
 int32_t tsip_message_getExpires(const tsip_message_t *self)
@@ -426,50 +436,35 @@ tsip_request_type_t tsip_request_get_type(const char* method)
 tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq)
 {
 	tsip_request_t* request;
-	//tsip_header_Allow_t *allow;
-	//tsip_header_Max_Forwards_t *maxfor;
 
-	request = TSIP_REQUEST_CREATE(method, request_uri);
+	if((request = TSIP_REQUEST_CREATE(method, request_uri))){
+		tsip_message_add_headers(request,
+			TSIP_HEADER_FROM_VA_ARGS(tsk_null, from, tsk_null),
+			TSIP_HEADER_TO_VA_ARGS(tsk_null, to, tsk_null),
+			TSIP_HEADER_CALL_ID_VA_ARGS(call_id),
+			TSIP_HEADER_CSEQ_VA_ARGS(cseq, method),
+			TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT),
+			TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT),
+			TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0),
 
-	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_FROM_VA_ARGS(0, from, 0));
-	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_TO_VA_ARGS(0, to, 0));
-	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CALL_ID_VA_ARGS(call_id));
-	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CSEQ_VA_ARGS(cseq, method));
-	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT));
-	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT));
-	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
-
-	/*request->From = TSIP_HEADER_FROM_CREATE(0, from, 0);
-	request->To = TSIP_HEADER_TO_CREATE(0, to, 0);
-	request->Call_ID = TSIP_HEADER_CALL_ID_CREATE(call_id);
-	request->CSeq = TSIP_HEADER_CSEQ_CREATE(1);*/
+			tsk_null);
+	}
 	
-	/* allow */
-	/*allow = tsip_header_Allow_parse(TSIP_HEADER_STR, strlen(TSIP_HEADER_STR));
-	tsip_message_add_header(request, TSIP_HEADER(allow));
-	TSK_OBJECT_SAFE_FREE(allow);*/
-
-	/* max forward */
-	/*maxfor = TSIP_HEADER_MAX_FORWARDS_CREATE(TSIP_HEADER_MAX_FORWARDS_DEFAULT);
-	tsip_message_add_header(request, TSIP_HEADER(maxfor));
-	TSK_OBJECT_SAFE_FREE(maxfor);*/
-
-	/* User-Agent */
-
 	return request;
 }
 
 tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase, const tsip_request_t *request)
 {
-	tsip_response_t *response = 0;
+	tsip_response_t *response = tsk_null;
 
 	if(request){
-		response = TSIP_RESPONSE_CREATE(request, status_code, reason_phrase);
-		TSIP_MESSAGE_ADD_HEADER(response, TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT)); /* To be compliant with OMA SIMPLE IM v1.0*/
-		TSIP_MESSAGE_ADD_HEADER(response, TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
-		/*
-			Copy other headers
-		*/
+		if((response = TSIP_RESPONSE_CREATE(request, status_code, reason_phrase))){
+			tsip_message_add_headers(response,
+				TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT), /* To be compliant with OMA SIMPLE IM v1.0*/
+				TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0),
+
+				tsk_null);
+		}
 	}
 
 	return response;

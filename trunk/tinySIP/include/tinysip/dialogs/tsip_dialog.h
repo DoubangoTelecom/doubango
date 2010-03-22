@@ -112,8 +112,8 @@ typedef struct tsip_dialog_s
 	
 	tsip_dialog_state_t state;
 	
-	unsigned initialized:1;
-	unsigned running:1;
+	tsk_bool_t initialized;
+	tsk_bool_t running;
 	
 	char* tag_local;
 	tsip_uri_t* uri_local;

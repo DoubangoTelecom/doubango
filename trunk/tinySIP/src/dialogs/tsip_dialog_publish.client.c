@@ -159,7 +159,7 @@ int tsip_dialog_publish_event_callback(const tsip_dialog_publish_t *self, tsip_d
 	case tsip_dialog_hang_up:
 	case tsip_dialog_shuttingdown:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_hangup, self, msg, self, msg, (TSIP_BOOLEAN)(type == tsip_dialog_shuttingdown));
+			ret = tsk_fsm_act(self->fsm, _fsm_action_hangup, self, msg, self, msg, (tsk_bool_t)(type == tsip_dialog_shuttingdown));
 			break;
 		}
 
@@ -197,11 +197,11 @@ int tsip_dialog_publish_timer_callback(const tsip_dialog_publish_t* self, tsk_ti
 	if(self)
 	{
 		if(timer_id == self->timerrefresh.id){
-			tsk_fsm_act(self->fsm, _fsm_action_refresh, self, TSK_NULL, self, TSK_NULL, rt_timedout);
+			tsk_fsm_act(self->fsm, _fsm_action_refresh, self, tsk_null, self, tsk_null, rt_timedout);
 			ret = 0;
 		}
 		else if(timer_id == self->timershutdown.id){
-			ret = tsk_fsm_act((self)->fsm, _fsm_action_error, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act((self)->fsm, _fsm_action_error, self, tsk_null, self, tsk_null);
 		}
 	}
 	return ret;
@@ -285,7 +285,7 @@ int tsip_dialog_publish_start(tsip_dialog_publish_t *self)
 {
 	int ret = -1;
 	if(self && !TSIP_DIALOG(self)->running){
-		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, TSK_NULL, self, TSK_NULL);
+		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, tsk_null, self, tsk_null);
 	}
 	return ret;
 }
@@ -293,7 +293,7 @@ int tsip_dialog_publish_start(tsip_dialog_publish_t *self)
 int tsip_dialog_publish_modify(tsip_dialog_publish_t *self)
 {
 	if(self && TSIP_DIALOG(self)->running){
-		return tsk_fsm_act(self->fsm, _fsm_action_refresh, self, TSK_NULL, self, TSK_NULL, rt_modify);
+		return tsk_fsm_act(self->fsm, _fsm_action_refresh, self, tsk_null, self, tsk_null, rt_modify);
 	}
 	return -1;
 }
@@ -310,7 +310,7 @@ int tsip_dialog_publish_Started_2_Trying_X_send(va_list *app)
 	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	TSIP_DIALOG(self)->running = 1;
+	TSIP_DIALOG(self)->running = tsk_true;
 
 	return send_publish(self, rt_initial);
 }
@@ -444,7 +444,7 @@ int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-		701, "Subscription cancelled", TSIP_NULL);
+		701, "Subscription cancelled", tsk_null);
 
 	return 0;
 }
@@ -476,14 +476,14 @@ int tsip_dialog_publish_Any_2_Trying_X_hangup(va_list *app)
 {
 	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
-	TSIP_BOOLEAN shuttingdown = va_arg(*app, TSIP_BOOLEAN);
+	tsk_bool_t shuttingdown = va_arg(*app, tsk_bool_t);
 
 	/* Schedule timeout (shutdown). */
 	if(shuttingdown){
 		TSIP_DIALOG_PUBLISH_TIMER_SCHEDULE(shutdown);
 	}
 
-	self->unpublishing = 1;
+	self->unpublishing = tsk_true;
 	return send_publish(self, rt_remove);
 }
 
@@ -559,7 +559,7 @@ int send_publish(tsip_dialog_publish_t *self, refresh_type_t rtype)
 		/*Body*/
 		if(addbody){
 			const tsk_param_t* param;
-			const void* content = TSIP_NULL;
+			const void* content = tsk_null;
 			size_t content_length = 0;
 
 			/* content-length */
@@ -573,7 +573,7 @@ int send_publish(tsip_dialog_publish_t *self, refresh_type_t rtype)
 					content_length = strlen(content);
 				}
 				if(content){
-					tsip_message_add_content(request, TSIP_NULL, content, content_length);
+					tsip_message_add_content(request, tsk_null, content, content_length);
 				}
 			}
 		}
@@ -631,7 +631,7 @@ static void* tsip_dialog_publish_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_publish_OnTerminated), (const void*)dialog);
 
 		/* init base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_PUBLISH, stack, TSIP_NULL, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_PUBLISH, stack, tsk_null, operation);
 
 		/* init the class itself */
 		tsip_dialog_publish_init(self);

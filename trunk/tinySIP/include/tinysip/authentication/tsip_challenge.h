@@ -57,7 +57,7 @@ typedef struct tsip_challenge_s
 
 	const tsip_stack_handle_t *stack;
 
-	unsigned isproxy:1;
+	tsk_bool_t isproxy;
 
 	char* scheme;
 	char* realm;

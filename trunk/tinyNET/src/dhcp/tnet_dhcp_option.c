@@ -54,7 +54,7 @@ int tnet_dhcp_option_init(tnet_dhcp_option_t *self, tnet_dhcp_option_code_t code
 			self->code = code;
 			//option->value = TSK_BUFFER_CREATE_NULL();
 			
-			self->initialized = 1;
+			self->initialized = tsk_true;
 			return 0;
 		}
 		return -2;
@@ -70,7 +70,7 @@ int tnet_dhcp_option_deinit(tnet_dhcp_option_t *self)
 		{
 			TSK_OBJECT_SAFE_FREE(self->value);
 			
-			self->initialized = 0;
+			self->initialized = tsk_false;
 			return 0;
 		}
 		return -2;

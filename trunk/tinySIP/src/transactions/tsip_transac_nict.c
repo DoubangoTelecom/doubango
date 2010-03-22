@@ -188,13 +188,13 @@ int tsip_transac_nict_timer_callback(const tsip_transac_nict_t* self, tsk_timer_
 	if(self)
 	{
 		if(timer_id == self->timerE.id){
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerE, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerE, self, tsk_null, self, tsk_null);
 		}
 		else if(timer_id == self->timerF.id){
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerF, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerF, self, tsk_null, self, tsk_null);
 		}
 		else if(timer_id == self->timerK.id){
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerK, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerK, self, tsk_null, self, tsk_null);
 		}
 	}
 
@@ -308,7 +308,7 @@ int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* req
 		TSIP_TRANSAC(self)->running = 1;
 		self->request = tsk_object_ref((void*)request);
 
-		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, TSK_NULL, self, TSK_NULL);
+		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, tsk_null, self, tsk_null);
 	}
 	return ret;
 }
@@ -391,7 +391,7 @@ int tsip_transac_nict_Trying_2_Terminated_X_timerF(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 	
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_timedout, TSIP_NULL);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_timedout, tsk_null);
 
 	return 0;
 }
@@ -405,7 +405,7 @@ int tsip_transac_nict_Trying_2_Terminated_X_transportError(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, TSIP_NULL);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
 
 	return 0;
 }
@@ -600,7 +600,7 @@ int tsip_transac_nict_Any_2_Terminated_X_transportError(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, TSIP_NULL);
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
 }
 
 /* Any -> (Error) -> Terminated
@@ -612,7 +612,7 @@ int tsip_transac_nict_Any_2_Terminated_X_Error(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, TSIP_NULL);
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, tsk_null);
 }
 
 
@@ -628,16 +628,6 @@ int tsip_transac_nict_Any_2_Terminated_X_Error(va_list *app)
 */
 int tsip_transac_nict_OnTerminated(tsip_transac_nict_t *self)
 {
-	/* Cancel timers */
-	if(!TSIP_TRANSAC(self)->reliable)
-	{
-		TRANSAC_TIMER_CANCEL(E);
-	}
-	TRANSAC_TIMER_CANCEL(F);
-	TRANSAC_TIMER_CANCEL(K);
-
-	TSIP_TRANSAC(self)->running = 0;
-
 	TSK_DEBUG_INFO("=== NICT terminated ===");
 	
 	/* Remove (and destroy) the transaction from the layer. */
@@ -668,7 +658,7 @@ static void* tsip_transac_nict_create(void * self, va_list * app)
 	if(transac)
 	{
 		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t *);
-		unsigned reliable = va_arg(*app, unsigned);
+		tsk_bool_t reliable = va_arg(*app, tsk_bool_t);
 		int32_t cseq_value = va_arg(*app, int32_t);
 		const char *cseq_method = va_arg(*app, const char *);
 		const char *callid = va_arg(*app, const char *);
@@ -687,21 +677,28 @@ static void* tsip_transac_nict_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_transac_nict_destroy(void * self)
+static void* tsip_transac_nict_destroy(void * _self)
 { 
-	tsip_transac_nict_t *transac = self;
-	if(transac)
+	tsip_transac_nict_t *self = _self;
+	if(self)
 	{
-		TSIP_TRANSAC(transac)->running = 0;
-		TSK_OBJECT_SAFE_FREE(transac->request);
+		/* Cancel timers */
+		if(!TSIP_TRANSAC(self)->reliable){
+			TRANSAC_TIMER_CANCEL(E);
+		}
+		TRANSAC_TIMER_CANCEL(F);
+		TRANSAC_TIMER_CANCEL(K);
+
+		TSIP_TRANSAC(self)->running = 0;
+		TSK_OBJECT_SAFE_FREE(self->request);
 
 		/* DeInitialize base class */
-		tsip_transac_deinit(TSIP_TRANSAC(transac));
+		tsip_transac_deinit(TSIP_TRANSAC(self));
 
 		/* FSM */
-		TSK_OBJECT_SAFE_FREE(transac->fsm);
+		TSK_OBJECT_SAFE_FREE(self->fsm);
 	}
-	return self;
+	return _self;
 }
 
 static int tsip_transac_nict_cmp(const tsk_object_t *t1, const tsk_object_t *t2)

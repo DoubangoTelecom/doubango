@@ -58,6 +58,15 @@ int tsdp_header_S_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_S_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_S_t *S = (const tsdp_header_S_t *)header;
+		return TSDP_HEADER_S_CREATE(S->value);
+	}
+	return tsk_null;
+}
+
 tsdp_header_S_t *tsdp_header_S_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -69,7 +78,7 @@ tsdp_header_S_t *tsdp_header_S_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 73 "../src/headers/tsdp_header_S.c" */
+/* #line 82 "../src/headers/tsdp_header_S.c" */
 static const char _tsdp_machine_parser_header_S_actions[] = {
 	0, 1, 0, 1, 1, 2, 0, 1
 	
@@ -116,16 +125,16 @@ static const int tsdp_machine_parser_header_S_error = 0;
 static const int tsdp_machine_parser_header_S_en_main = 1;
 
 
-/* #line 87 "tsdp_parser_header_S.rl" */
+/* #line 96 "tsdp_parser_header_S.rl" */
 	
-/* #line 122 "../src/headers/tsdp_header_S.c" */
+/* #line 131 "../src/headers/tsdp_header_S.c" */
 	{
 	cs = tsdp_machine_parser_header_S_start;
 	}
 
-/* #line 88 "tsdp_parser_header_S.rl" */
+/* #line 97 "tsdp_parser_header_S.rl" */
 	
-/* #line 129 "../src/headers/tsdp_header_S.c" */
+/* #line 138 "../src/headers/tsdp_header_S.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -210,7 +219,7 @@ _match:
 		TSK_PARSER_SET_STRING(hdr_S->value);
 	}
 	break;
-/* #line 214 "../src/headers/tsdp_header_S.c" */
+/* #line 223 "../src/headers/tsdp_header_S.c" */
 		}
 	}
 
@@ -238,7 +247,7 @@ _again:
 		TSK_PARSER_SET_STRING(hdr_S->value);
 	}
 	break;
-/* #line 242 "../src/headers/tsdp_header_S.c" */
+/* #line 251 "../src/headers/tsdp_header_S.c" */
 		}
 	}
 	}
@@ -246,12 +255,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 89 "tsdp_parser_header_S.rl" */
+/* #line 98 "tsdp_parser_header_S.rl" */
 	
 	if( cs < 
-/* #line 253 "../src/headers/tsdp_header_S.c" */
+/* #line 262 "../src/headers/tsdp_header_S.c" */
 4
-/* #line 90 "tsdp_parser_header_S.rl" */
+/* #line 99 "tsdp_parser_header_S.rl" */
  ){
 		TSK_OBJECT_SAFE_FREE(hdr_S);
 	}
@@ -276,6 +285,7 @@ static void* tsdp_header_S_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(S)->type = tsdp_htype_S;
 		TSDP_HEADER(S)->tostring = tsdp_header_S_tostring;
+		TSDP_HEADER(S)->clone = tsdp_header_S_clone;
 		TSDP_HEADER(S)->rank = TSDP_HTYPE_S_RANK;
 		
 		S->value = tsk_strdup(va_arg(*app, const char*));

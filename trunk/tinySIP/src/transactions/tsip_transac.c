@@ -32,13 +32,15 @@
 #include "tinySIP/transports/tsip_transport_layer.h"
 #include "tinySIP/transactions/tsip_transac_layer.h"
 
+#include "tinySIP/transactions/tsip_transac_ist.h"
 #include "tinySIP/transactions/tsip_transac_nist.h"
 #include "tinySIP/transactions/tsip_transac_nict.h"
+#include "tinySIP/transactions/tsip_transac_ict.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
-int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, unsigned reliable, int32_t cseq_value, const char* cseq_method, const char* callid)
+int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid)
 {
 	if(self && !self->initialized)
 	{
@@ -65,7 +67,7 @@ int tsip_transac_deinit(tsip_transac_t *self)
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
 
-		self->initialized = 0;
+		self->initialized = tsk_false;
 
 		return 0;
 	}
@@ -77,15 +79,23 @@ int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request)
 	int ret = -1;
 	if(self)
 	{
-		if(self->type == tsip_nist){
-			ret = tsip_transac_nist_start(TSIP_TRANSAC_NIST(self), request);
-		}
-		else if(self->type == tsip_ist){
-		}
-		else if(self->type == tsip_nict){
-			ret = tsip_transac_nict_start(TSIP_TRANSAC_NICT(self), request);
-		}
-		else if(self->type == tsip_ict){
+		switch(self->type){
+			case tsip_nist:{
+					ret = tsip_transac_nist_start(TSIP_TRANSAC_NIST(self), request);
+					break;
+				}
+			case tsip_ist:{
+					ret = tsip_transac_ist_start(TSIP_TRANSAC_IST(self), request);
+					break;
+				}
+			case tsip_nict:{
+					ret = tsip_transac_nict_start(TSIP_TRANSAC_NICT(self), request);
+					break;
+				}
+			case tsip_ict:{
+					ret = tsip_transac_ict_start(TSIP_TRANSAC_ICT(self), request);
+					break;
+				}
 		}
 	}
 
@@ -106,10 +116,8 @@ int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_messa
 
 int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2)
 {
-	if(t1 && t2)
-	{
-		if(tsk_strequals(t1->branch, t2->branch) && tsk_strequals(t1->cseq_method, t2->cseq_method))
-		{
+	if(t1 && t2){
+		if(tsk_strequals(t1->branch, t2->branch) && tsk_strequals(t1->cseq_method, t2->cseq_method)){
 			return 0;
 		}
 	}

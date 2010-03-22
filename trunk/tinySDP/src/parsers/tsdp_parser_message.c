@@ -157,17 +157,17 @@ static const int tsdp_machine_message_en_main = 34;
 
 tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
 {
-	tsdp_message_t* sdp_msg = TSDP_NULL;
-	const char* tag_start = TSDP_NULL;
-	tsdp_header_t *header = TSDP_NULL;
-	tsdp_header_T_t *hdr_T = TSDP_NULL;
-	tsdp_header_M_t *hdr_M = TSDP_NULL;
+	tsdp_message_t* sdp_msg = tsk_null;
+	const char* tag_start = tsk_null;
+	tsdp_header_t *header = tsk_null;
+	tsdp_header_T_t *hdr_T = tsk_null;
+	tsdp_header_M_t *hdr_M = tsk_null;
 
 	/* Ragel variables */
 	int cs = 0;
 	const char* p = input;
 	const char* pe = p + size;
-	const char* eof = TSDP_NULL;
+	const char* eof = tsk_null;
 
 	if(!input || !size){
 		TSK_DEBUG_ERROR("Null or empty buffer.");

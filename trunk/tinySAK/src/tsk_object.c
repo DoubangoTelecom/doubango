@@ -30,6 +30,7 @@
 #include "tsk_object.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
+#include "tsk_common.h"
 
 /**@defgroup tsk_object_group Base object implementation.
 * @brief Provides utility functions to ease Object Oriented Programming in C.
@@ -165,7 +166,7 @@ tsk_object_t* tsk_object_ref(tsk_object_t *self)
 		TSK_OBJECT_HEADER_GET(self)->refCount++;
 		return self;
 	}
-	return TSK_NULL;
+	return tsk_null;
 }
 
 /**@ingroup tsk_object_group

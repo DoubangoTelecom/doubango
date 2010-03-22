@@ -75,7 +75,4 @@
 #include <stdlib.h>
 #endif
 
-/* FIXME */
-#define THTTP_NULL 0
-
 #endif // TINYHTTP_CONFIG_H

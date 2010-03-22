@@ -76,7 +76,7 @@ tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size)
 	const char *pe = p + size;
 	const char *eof = pe;
 	tsdp_header_Z_t *hdr_Z = TSDP_HEADER_Z_CREATE_NULL();
-	tsdp_zone_t* zone = TSDP_NULL;
+	tsdp_zone_t* zone = tsk_null;
 	
 	const char *tag_start;
 

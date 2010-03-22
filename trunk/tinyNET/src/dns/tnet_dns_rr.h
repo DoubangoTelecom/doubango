@@ -133,7 +133,7 @@ typedef struct tnet_dns_rr_s
 		+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 	*/
 
-	unsigned initialized:1;
+	tsk_bool_t initialized;
 
 	/** An owner name, i.e., the name of the node to which this resource record pertains. */
 	char* name;

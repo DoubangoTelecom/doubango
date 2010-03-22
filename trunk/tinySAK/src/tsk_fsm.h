@@ -127,7 +127,7 @@ typedef int (*tsk_fsm_onterminated)(const void*);
 #define TSK_FSM_ADD_ALWAYS_NOTHING(from, desc)	TSK_FSM_ADD(from, tsk_fsm_action_any, tsk_fsm_cond_always, from, tsk_fsm_exec_nothing, desc)
 #define TSK_FSM_ADD_DEFAULT()
 #define TSK_FSM_ADD_NULL()\
-	TSK_NULL
+	tsk_null
 
 /**@ingroup tsk_fsm_group
 * FSM entry.

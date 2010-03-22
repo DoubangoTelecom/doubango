@@ -34,6 +34,8 @@
 
 #include "tinySDP/headers/tsdp_header.h"
 
+#include "tinySDP/headers/tsdp_header_M.h"
+
 TSDP_BEGIN_DECLS
 
 #define TSDP_MESSAGE_CREATE()	tsk_object_new(tsdp_message_def_t)
@@ -47,8 +49,12 @@ typedef struct tsdp_message_s
 }
 tsdp_message_t;
 
+typedef tsdp_message_t tsdp_offer_t;
+typedef tsdp_message_t tsdp_answer_t;
+typedef tsdp_message_t tsdp_caps_t;
+
 TINYSDP_API int tsdp_message_add_header(tsdp_message_t *self, const tsdp_header_t *hdr);
-TINYSDP_API int tsdp_message_add_headers(tsdp_message_t *self, const tsdp_headers_L_t *headers);
+TINYSDP_API int tsdp_message_add_headers(tsdp_message_t *self, ...);
 
 #if !defined(_MSC_VER) || defined(__GNUC__)
 static void TSDP_MESSAGE_ADD_HEADER(tsdp_message_t *self, ...)
@@ -80,6 +86,9 @@ TINYSDP_API const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_messag
 
 TINYSDP_API int tsdp_message_tostring(const tsdp_message_t *self, tsk_buffer_t *output);
 
+TINYSDP_API tsdp_message_t* tsdp_message_clone(const tsdp_message_t *self);
+TINYSDP_API int tsdp_message_add_media(tsdp_message_t *self, const char* media, uint32_t port, const char* proto, ...);
+TINYSDP_API int tsdp_message_remove_media(tsdp_message_t *self, const char* media);
 
 TINYSDP_GEXTERN const void *tsdp_message_def_t;
 

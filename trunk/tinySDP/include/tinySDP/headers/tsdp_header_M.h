@@ -49,7 +49,19 @@ TSDP_BEGIN_DECLS
 */
 #define TSDP_HEADER_M_VA_ARGS(media, port, proto)		tsdp_header_M_def_t, (const char*)media, (uint32_t)port, (const char*)proto
 #define TSDP_HEADER_M_CREATE(media, port, proto)			tsk_object_new(TSDP_HEADER_M_VA_ARGS(media, port, proto))
-#define TSDP_HEADER_M_CREATE_NULL()			TSDP_HEADER_M_CREATE(TSDP_NULL, TSDP_NULL, TSDP_NULL)
+#define TSDP_HEADER_M_CREATE_NULL()			TSDP_HEADER_M_CREATE(tsk_null, tsk_null, tsk_null)
+
+#define TSDP_FMT_VA_ARGS(fmt)				tsdp_fmt_def_t, (const char*)fmt
+#define TSDP_FMT_CREATE(fmt)				tsk_object_new(TSDP_FMT_VA_ARGS(fmt))
+
+typedef tsk_string_t tsdp_fmt_t;
+typedef tsk_strings_L_t tsk_fmts_L_t;
+#define tsdp_fmt_def_t tsk_string_def_t
+#define TSDP_FMT_STR(self) TSK_STRING_STR(self)
+
+//#define TSDP_HEADER_M_SET_FMT(fmt)			(int)0x01, (const char*)fmt
+//#define TSDP_HEADER_M_SET_A(field, value)	(int)0x02, (const char*)field, (const char*)value
+//#define TSDP_HEADER_M_SET_NULL()			(int)0x00
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -78,7 +90,7 @@ typedef struct tsdp_header_M_s
 	uint32_t port;
 	uint32_t nports; /**< <number of ports> */
 	char* proto;
-	tsk_strings_L_t* FMTs;
+	tsk_fmts_L_t* FMTs;
 	
 	// Fields below will be set by the message parser.
 	tsdp_header_I_t* I;
@@ -92,6 +104,8 @@ tsdp_header_M_t;
 typedef tsk_list_t tsdp_headers_M_L_t;
 
 tsdp_header_M_t *tsdp_header_M_parse(const char *data, size_t size);
+int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header);
+//int tsdp_header_M_set(tsdp_header_M_t* self, ...);
 
 TINYSDP_GEXTERN const void *tsdp_header_M_def_t;
 

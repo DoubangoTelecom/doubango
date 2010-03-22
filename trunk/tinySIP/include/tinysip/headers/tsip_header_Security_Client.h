@@ -41,7 +41,7 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_HEADER_SECURITY_CLIENT_VA_ARGS(mech, alg, prot, mod, ealg, port_c, port_s, spi_c, spi_s)		tsip_header_Security_Client_def_t, (const char*)mech, (const char*)alg, (const char*)prot, (const char*)mod, (const char*)ealg, (tnet_port_t)port_c, (tnet_port_t)port_s, (uint32_t)spi_c, (uint32_t)spi_s
 #define TSIP_HEADER_SECURITY_CLIENT_CREATE(mech, alg, prot, mod, ealg, port_c, port_s, spi_c, spi_s)		tsk_object_new(TSIP_HEADER_SECURITY_CLIENT_VA_ARGS(mech, alg, prot, mod, ealg, port_c, port_s, spi_c, spi_s))
-#define TSIP_HEADER_SECURITY_CLIENT_CREATE_NULL()		TSIP_HEADER_SECURITY_CLIENT_CREATE(TSIP_NULL, TSIP_NULL, TSIP_NULL, TSIP_NULL, TSIP_NULL, TSIP_NULL, TSIP_NULL, TSIP_NULL, TSIP_NULL)
+#define TSIP_HEADER_SECURITY_CLIENT_CREATE_NULL()		TSIP_HEADER_SECURITY_CLIENT_CREATE(tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

@@ -62,7 +62,7 @@ typedef struct tnet_dhcp6_duid_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	unsigned initialized:1;
+	tsk_bool_t initialized;
 
 	tnet_dhcp6_duid_type_t type; /* DUID type. 2-bytes value. */
 }

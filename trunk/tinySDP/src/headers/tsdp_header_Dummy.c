@@ -23,7 +23,7 @@
 */
 
 /**@file tsdp_header_Dummy.c
- * @brief SDP DUmmy header.
+ * @brief SDP Dummy header.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -50,12 +50,21 @@ int tsdp_header_Dummy_tostring(const tsdp_header_t* header, tsk_buffer_t* output
 	{
 		const tsdp_header_Dummy_t *Dummy = (const tsdp_header_Dummy_t *)header;
 		if(Dummy->value){
-			tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
+			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
 		}
 		return 0;
 	}
 
 	return -1;
+}
+
+tsdp_header_t* tsdp_header_Dummy_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_Dummy_t *Dummy = (const tsdp_header_Dummy_t *)header;
+		return TSDP_HEADER_DUMMY_CREATE(Dummy->name, Dummy->value);
+	}
+	return tsk_null;
 }
 
 tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size)
@@ -69,7 +78,7 @@ tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 73 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 82 "../src/headers/tsdp_header_Dummy.c" */
 static const char _tsdp_machine_parser_header_Dummy_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 2
@@ -119,16 +128,16 @@ static const int tsdp_machine_parser_header_Dummy_error = 0;
 static const int tsdp_machine_parser_header_Dummy_en_main = 1;
 
 
-/* #line 91 "tsdp_parser_header_Dummy.rl" */
+/* #line 100 "tsdp_parser_header_Dummy.rl" */
 	
-/* #line 125 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 134 "../src/headers/tsdp_header_Dummy.c" */
 	{
 	cs = tsdp_machine_parser_header_Dummy_start;
 	}
 
-/* #line 92 "tsdp_parser_header_Dummy.rl" */
+/* #line 101 "tsdp_parser_header_Dummy.rl" */
 	
-/* #line 132 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 141 "../src/headers/tsdp_header_Dummy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -219,7 +228,7 @@ _match:
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 	break;
-/* #line 223 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 232 "../src/headers/tsdp_header_Dummy.c" */
 		}
 	}
 
@@ -247,7 +256,7 @@ _again:
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 	break;
-/* #line 251 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 260 "../src/headers/tsdp_header_Dummy.c" */
 		}
 	}
 	}
@@ -255,13 +264,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 93 "tsdp_parser_header_Dummy.rl" */
+/* #line 102 "tsdp_parser_header_Dummy.rl" */
 	
 	if( cs < 
-/* #line 262 "../src/headers/tsdp_header_Dummy.c" */
+/* #line 271 "../src/headers/tsdp_header_Dummy.c" */
 5
-/* #line 94 "tsdp_parser_header_Dummy.rl" */
+/* #line 103 "tsdp_parser_header_Dummy.rl" */
  ){
+		TSK_DEBUG_ERROR("Failed to parse dummy header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}
 	
@@ -285,6 +295,7 @@ static void* tsdp_header_Dummy_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(Dummy)->type = tsdp_htype_Dummy;
 		TSDP_HEADER(Dummy)->tostring = tsdp_header_Dummy_tostring;
+		TSDP_HEADER(Dummy)->clone = tsdp_header_Dummy_clone;
 		TSDP_HEADER(Dummy)->rank = TSDP_HTYPE_DUMMY_RANK;
 
 		Dummy->name = va_arg(*app, const char);

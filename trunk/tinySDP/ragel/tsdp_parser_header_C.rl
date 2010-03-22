@@ -89,6 +89,15 @@ int tsdp_header_C_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_C_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_C_t *C = (const tsdp_header_C_t *)header;
+		return TSDP_HEADER_C_CREATE(C->nettype, C->addrtype, C->addr);
+	}
+	return tsk_null;
+}
+
 tsdp_header_C_t *tsdp_header_C_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -128,6 +137,7 @@ static void* tsdp_header_C_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(C)->type = tsdp_htype_C;
 		TSDP_HEADER(C)->tostring = tsdp_header_C_tostring;
+		TSDP_HEADER(C)->clone = tsdp_header_C_clone;
 		TSDP_HEADER(C)->rank = TSDP_HTYPE_C_RANK;
 		
 		C->nettype = tsk_strdup(va_arg(*app, const char*));

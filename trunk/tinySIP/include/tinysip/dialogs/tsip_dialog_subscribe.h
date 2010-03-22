@@ -50,7 +50,7 @@ typedef struct tsip_dialog_subscribe
 	tsip_timer_t timerrefresh;
 	tsip_timer_t timershutdown;
 
-	unsigned unsubscribing:1;
+	tsk_bool_t unsubscribing;
 }
 tsip_dialog_subscribe_t;
 

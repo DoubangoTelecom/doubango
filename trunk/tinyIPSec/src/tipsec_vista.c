@@ -673,11 +673,11 @@ static void* tipsec_context_create(void * self, va_list * app)
 
 		/* Open engine */
 		if((code = FwpmEngineOpen0(NULL, RPC_C_AUTHN_WINNT, NULL, NULL, &context->engine))){
-			TIPSEC_CONTEXT(context)->initialized = 0;
+			TIPSEC_CONTEXT(context)->initialized = tsk_false;
 			TSK_DEBUG_ERROR("FwpmEngineOpen0 failed with error code [%x].", code);
 		}
 		else{
-			TIPSEC_CONTEXT(context)->initialized = 1;
+			TIPSEC_CONTEXT(context)->initialized = tsk_true;
 		}
 		
 		TIPSEC_CONTEXT(context)->state = state_initial;

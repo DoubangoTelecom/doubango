@@ -36,7 +36,7 @@
 
 TSIP_BEGIN_DECLS
 
-TSIP_BOOLEAN tsip_header_parse(tsk_ragel_state_t *state, tsip_message_t *message);
+tsk_bool_t tsip_header_parse(tsk_ragel_state_t *state, tsip_message_t *message);
 
 TSIP_END_DECLS
 

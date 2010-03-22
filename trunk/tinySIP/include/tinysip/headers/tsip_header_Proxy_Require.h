@@ -41,7 +41,7 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_HEADER_PROXY_REQUIRE_VA_ARGS(option)	tsip_header_Proxy_Require_def_t, (const char*)option
 #define TSIP_HEADER_PROXY_REQUIRE_CREATE(option)			tsk_object_new(TSIP_HEADER_PROXY_REQUIRE_VA_ARGS(option))
-#define TSIP_HEADER_PROXY_REQUIRE_CREATE_NULL()			TSIP_HEADER_PROXY_REQUIRE_CREATE(TSIP_NULL)
+#define TSIP_HEADER_PROXY_REQUIRE_CREATE_NULL()			TSIP_HEADER_PROXY_REQUIRE_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

@@ -41,7 +41,7 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_HEADER_SUPPORTED_VA_ARGS(option)	tsip_header_Supported_def_t, (const char*)option
 #define TSIP_HEADER_SUPPORTED_CREATE(option)			tsk_object_new(TSIP_HEADER_SUPPORTED_VA_ARGS(option))
-#define TSIP_HEADER_SUPPORTED_CREATE_NULL()			TSIP_HEADER_SUPPORTED_CREATE(TSIP_NULL)
+#define TSIP_HEADER_SUPPORTED_CREATE_NULL()			TSIP_HEADER_SUPPORTED_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

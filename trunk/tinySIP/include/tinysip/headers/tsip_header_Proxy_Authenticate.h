@@ -71,7 +71,7 @@ typedef struct tsip_header_Proxy_Authenticate_s
 	char* domain;
 	char* nonce;
 	char* opaque;
-	unsigned stale:1;
+	tsk_bool_t stale;
 	char* algorithm;
 	char* qop;
 }

@@ -205,16 +205,16 @@ int tsip_transac_ict_timer_callback(const tsip_transac_ict_t* self, tsk_timer_id
 	if(self)
 	{
 		if(timer_id == self->timerA.id){
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerA, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerA, self, tsk_null, self, tsk_null);
 		}
 		else if(timer_id == self->timerB.id){
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerB, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerB, self, tsk_null, self, tsk_null);
 		}
 		else if(timer_id == self->timerD.id){
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerD, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerD, self, tsk_null, self, tsk_null);
 		}
 		else if(timer_id == self->timerM.id){
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerM, self, TSK_NULL, self, TSK_NULL);
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerM, self, tsk_null, self, tsk_null);
 		}
 	}
 
@@ -337,7 +337,7 @@ int tsip_transac_ict_start(tsip_transac_ict_t *self, const tsip_request_t* reque
 		TSIP_TRANSAC(self)->running = 1;
 		self->request = tsk_object_ref((void*)request);
 
-		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, TSK_NULL, self, TSK_NULL);
+		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, tsk_null, self, tsk_null);
 	}
 	return ret;
 }
@@ -423,7 +423,7 @@ int tsip_transac_ict_Calling_2_Terminated_X_timerB(va_list *app)
 		value of 64*T1 is equal to the amount of time required to send seven
 		requests in the case of an unreliable transport.
 	*/
-	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_timedout, TSIP_NULL);
+	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_timedout, tsk_null);
 	
 	return 0;
 }
@@ -672,7 +672,7 @@ int tsip_transac_ict_Any_2_Terminated_X_transportError(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, TSIP_NULL);
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
 }
 
 /* Any -> (Error) -> Terminated
@@ -684,7 +684,7 @@ int tsip_transac_ict_Any_2_Terminated_X_Error(va_list *app)
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
-	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, TSIP_NULL);
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, tsk_null);
 }
 
 
@@ -705,18 +705,7 @@ int tsip_transac_ict_OnTerminated(tsip_transac_ict_t *self)
 {
 	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
 		The client transaction MUST be destroyed the instant it enters the "Terminated" state.
-	*/
-	
-	/* Cancel timers */
-	if(!TSIP_TRANSAC(self)->reliable){
-		TRANSAC_TIMER_CANCEL(A);
-	}
-	TRANSAC_TIMER_CANCEL(B);
-	TRANSAC_TIMER_CANCEL(D);
-	TRANSAC_TIMER_CANCEL(M);
-	
-	TSIP_TRANSAC(self)->running = 0;
-	
+	*/	
 	TSK_DEBUG_INFO("=== ICT terminated ===");
 	
 	/* Remove (and destroy) the transaction from the layer. */
@@ -758,7 +747,7 @@ static void* tsip_transac_ict_create(void * self, va_list * app)
 	if(transac)
 	{
 		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t *);
-		unsigned reliable = va_arg(*app, unsigned);
+		tsk_bool_t reliable = va_arg(*app, tsk_bool_t);
 		int32_t cseq_value = va_arg(*app, int32_t);
 		const char *cseq_method = "INVITE";
 		const char *callid = va_arg(*app, const char *);
@@ -777,21 +766,29 @@ static void* tsip_transac_ict_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_transac_ict_destroy(void * self)
+static void* tsip_transac_ict_destroy(void * _self)
 { 
-	tsip_transac_ict_t *transac = self;
-	if(transac)
+	tsip_transac_ict_t *self = _self;
+	if(self)
 	{
-		TSIP_TRANSAC(transac)->running = 0;
-		TSK_OBJECT_SAFE_FREE(transac->request);
+		/* Cancel timers */
+		if(!TSIP_TRANSAC(self)->reliable){
+			TRANSAC_TIMER_CANCEL(A);
+		}
+		TRANSAC_TIMER_CANCEL(B);
+		TRANSAC_TIMER_CANCEL(D);
+		TRANSAC_TIMER_CANCEL(M);
+
+		TSIP_TRANSAC(self)->running = 0;
+		TSK_OBJECT_SAFE_FREE(self->request);
 
 		/* DeInitialize base class */
-		tsip_transac_deinit(TSIP_TRANSAC(transac));
+		tsip_transac_deinit(TSIP_TRANSAC(self));
 
 		/* FSM */
-		TSK_OBJECT_SAFE_FREE(transac->fsm);
+		TSK_OBJECT_SAFE_FREE(self->fsm);
 	}
-	return self;
+	return _self;
 }
 
 static int tsip_transac_ict_cmp(const tsk_object_t *t1, const tsk_object_t *t2)

@@ -109,8 +109,8 @@ typedef struct tsk_runnable_s
 	tsk_runnable_func_run run;
 	tsk_semaphore_handle_t *semaphore;
 	
-	unsigned running:1;
-	unsigned initialized:1;
+	tsk_bool_t running;
+	tsk_bool_t initialized;
 	
 	tsk_list_t *objects;
 }

@@ -23,8 +23,8 @@
 */
 
 
-/**@file tsdp_header_I.c
- * @brief SDP "i=" header (Session Information).
+/**@file tsdp_header_E.c
+ * @brief SDP "e=" header (Session Information).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -59,6 +59,15 @@ int tsdp_header_E_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_E_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_E_t *E = (const tsdp_header_E_t *)header;
+		return TSDP_HEADER_E_CREATE(E->value);
+	}
+	return tsk_null;
+}
+
 tsdp_header_E_t *tsdp_header_E_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -70,7 +79,7 @@ tsdp_header_E_t *tsdp_header_E_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 74 "../src/headers/tsdp_header_E.c" */
+/* #line 83 "../src/headers/tsdp_header_E.c" */
 static const char _tsdp_machine_parser_header_E_actions[] = {
 	0, 1, 0, 1, 1, 2, 0, 1
 	
@@ -117,16 +126,16 @@ static const int tsdp_machine_parser_header_E_error = 0;
 static const int tsdp_machine_parser_header_E_en_main = 1;
 
 
-/* #line 88 "tsdp_parser_header_E.rl" */
+/* #line 97 "tsdp_parser_header_E.rl" */
 	
-/* #line 123 "../src/headers/tsdp_header_E.c" */
+/* #line 132 "../src/headers/tsdp_header_E.c" */
 	{
 	cs = tsdp_machine_parser_header_E_start;
 	}
 
-/* #line 89 "tsdp_parser_header_E.rl" */
+/* #line 98 "tsdp_parser_header_E.rl" */
 	
-/* #line 130 "../src/headers/tsdp_header_E.c" */
+/* #line 139 "../src/headers/tsdp_header_E.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -211,7 +220,7 @@ _match:
 		TSK_PARSER_SET_STRING(hdr_E->value);
 	}
 	break;
-/* #line 215 "../src/headers/tsdp_header_E.c" */
+/* #line 224 "../src/headers/tsdp_header_E.c" */
 		}
 	}
 
@@ -239,7 +248,7 @@ _again:
 		TSK_PARSER_SET_STRING(hdr_E->value);
 	}
 	break;
-/* #line 243 "../src/headers/tsdp_header_E.c" */
+/* #line 252 "../src/headers/tsdp_header_E.c" */
 		}
 	}
 	}
@@ -247,12 +256,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 90 "tsdp_parser_header_E.rl" */
+/* #line 99 "tsdp_parser_header_E.rl" */
 	
 	if( cs < 
-/* #line 254 "../src/headers/tsdp_header_E.c" */
+/* #line 263 "../src/headers/tsdp_header_E.c" */
 4
-/* #line 91 "tsdp_parser_header_E.rl" */
+/* #line 100 "tsdp_parser_header_E.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"e=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_E);
@@ -278,6 +287,7 @@ static void* tsdp_header_E_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(E)->type = tsdp_htype_E;
 		TSDP_HEADER(E)->tostring = tsdp_header_E_tostring;
+		TSDP_HEADER(E)->clone = tsdp_header_E_clone;
 		TSDP_HEADER(E)->rank = TSDP_HTYPE_E_RANK;
 		
 		E->value = tsk_strdup(va_arg(*app, const char*));

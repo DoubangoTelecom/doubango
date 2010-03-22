@@ -52,7 +52,7 @@ static int tsk_runnable_init(tsk_runnable_t *self, const tsk_object_def_t *objde
 		self->objdef = objdef;
 		self->objects = TSK_LIST_CREATE();
 
-		self->initialized = 1;
+		self->initialized = tsk_true;
 		return 0;
 	}
 	return -1;
@@ -74,7 +74,7 @@ static int tsk_runnable_deinit(tsk_runnable_t *self)
 		tsk_semaphore_destroy(&self->semaphore);
 		TSK_OBJECT_SAFE_FREE(self->objects);
 
-		self->initialized = 0;
+		self->initialized = tsk_false;
 
 		return 0;
 	}

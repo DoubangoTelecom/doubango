@@ -90,7 +90,7 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_User_Agent_t *hdr_user_agent = TSIP_HEADER_USER_AGENT_CREATE(TSIP_NULL);
+	tsip_header_User_Agent_t *hdr_user_agent = TSIP_HEADER_USER_AGENT_CREATE(tsk_null);
 	
 	const char *tag_start;
 

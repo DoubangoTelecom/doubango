@@ -41,7 +41,7 @@ TSDP_BEGIN_DECLS
 */
 #define TSDP_HEADER_C_VA_ARGS(nettype, addrtype, addr)		tsdp_header_C_def_t, (const char*)nettype, (const char*)addrtype, (const char*)addr
 #define TSDP_HEADER_C_CREATE(nettype, addrtype, addr)			tsk_object_new(TSDP_HEADER_C_VA_ARGS(nettype, addrtype, addr))
-#define TSDP_HEADER_C_CREATE_NULL()			TSDP_HEADER_C_CREATE(TSDP_NULL, TSDP_NULL, TSDP_NULL)
+#define TSDP_HEADER_C_CREATE_NULL()			TSDP_HEADER_C_CREATE(tsk_null, tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

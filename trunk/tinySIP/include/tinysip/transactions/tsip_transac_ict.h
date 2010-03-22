@@ -39,7 +39,7 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_TRANSAC_ICT_CREATE(stack, reliable, cseq_value, callid)		tsk_object_new(tsip_transac_ict_def_t, (const tsip_stack_handle_t *)stack, (unsigned)reliable, (int32_t)cseq_value, (const char*)callid)
+#define TSIP_TRANSAC_ICT_CREATE(stack, reliable, cseq_value, callid)		tsk_object_new(tsip_transac_ict_def_t, (const tsip_stack_handle_t *)stack, (tsk_bool_t)reliable, (int32_t)cseq_value, (const char*)callid)
 
 #define TSIP_TRANSAC_ICT(self)															((tsip_transac_ict_t*)(self))
 
@@ -58,6 +58,8 @@ typedef struct tsip_transac_ict
 tsip_transac_ict_t;
 
 int tsip_transac_ict_start(tsip_transac_ict_t *self, const tsip_request_t* request);
+
+TINYSIP_GEXTERN const void *tsip_transac_ict_def_t;
 
 TSIP_END_DECLS
 

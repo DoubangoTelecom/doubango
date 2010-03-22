@@ -86,8 +86,7 @@ int tsdp_header_R_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 			R->repeat_interval,
 			R->typed_time
 			);
-		tsk_list_foreach(item, R->typed_times)
-		{
+		tsk_list_foreach(item, R->typed_times){
 			tsk_string_t* string = item->data;
 			tsk_buffer_appendEx(output, " %s", TSK_STRING_STR(string));
 		}
@@ -96,6 +95,31 @@ int tsdp_header_R_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	}
 
 	return -1;
+}
+
+tsdp_header_t* tsdp_header_R_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_R_t *R = (const tsdp_header_R_t *)header;
+		tsdp_header_R_t* clone;
+		const tsk_list_item_t* item;
+
+		if((clone = TSDP_HEADER_R_CREATE_NULL())){
+			clone->repeat_interval = tsk_strdup(R->repeat_interval);
+			clone->typed_time = tsk_strdup(R->typed_time);
+
+			if(R->typed_times){
+				clone->typed_times = TSK_LIST_CREATE();
+			}
+
+			tsk_list_foreach(item, R->typed_times){
+				tsk_string_t* string = TSK_STRING_CREATE(TSK_STRING_STR(item->data));
+				tsk_list_push_back_data(clone->typed_times, (void**)&string);
+			}
+		}
+		return TSDP_HEADER(clone);
+	}
+	return tsk_null;
 }
 
 tsdp_header_R_t *tsdp_header_R_parse(const char *data, size_t size)
@@ -137,6 +161,7 @@ static void* tsdp_header_R_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(R)->type = tsdp_htype_R;
 		TSDP_HEADER(R)->tostring = tsdp_header_R_tostring;
+		TSDP_HEADER(R)->clone = tsdp_header_R_clone;
 		TSDP_HEADER(R)->rank = TSDP_HTYPE_R_RANK;
 	}
 	else{

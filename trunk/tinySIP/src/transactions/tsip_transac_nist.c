@@ -78,10 +78,14 @@
 #define DEBUG_STATE_MACHINE						1
 
 #define TRANSAC_NIST_TIMER_SCHEDULE(TX)			TRANSAC_TIMER_SCHEDULE(nist, TX)
+#define TRANSAC_NIST_SET_LAST_RESPONSE(self, response) \
+	if(response){ \
+		TSK_OBJECT_SAFE_FREE(self->lastResponse); \
+		self->lastResponse = tsk_object_ref((void*)response); \
+	}
 
 /* ======================== internal functions ======================== */
 int tsip_transac_nist_init(tsip_transac_nist_t *self);
-int tsip_transac_nist_handle_request(const tsip_transac_nist_t *self, const tsip_request_t* request);
 int tsip_transac_nist_OnTerminated(tsip_transac_nist_t *self);
 
 /* ======================== transitions ======================== */
@@ -127,7 +131,7 @@ int tsip_transac_nist_event_callback(const tsip_transac_nist_t *self, tsip_trans
 
 	switch(type)
 	{
-	case tsip_transac_incoming_msg:
+	case tsip_transac_incoming_msg: /* From Transport Layer to Transaction Layer */
 		{
 			if(msg && TSIP_MESSAGE_IS_REQUEST(msg)){
 				ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, msg, self, msg);
@@ -135,7 +139,7 @@ int tsip_transac_nist_event_callback(const tsip_transac_nist_t *self, tsip_trans
 			break;
 		}
 
-	case tsip_transac_outgoing_msg:
+	case tsip_transac_outgoing_msg: /* From TU to Transport Layer */
 		{
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
@@ -174,11 +178,9 @@ int tsip_transac_nist_timer_callback(const tsip_transac_nist_t* self, tsk_timer_
 {
 	int ret = -1;
 
-	if(self)
-	{
-		if(timer_id == self->timerJ.id)
-		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerJ, self, TSK_NULL, self, TSK_NULL);
+	if(self){
+		if(timer_id == self->timerJ.id){
+			ret = tsk_fsm_act(self->fsm, _fsm_action_timerJ, self, tsk_null, self, tsk_null);
 		}
 	}
 
@@ -196,7 +198,7 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 			*/
 			// Started -> (receive request) -> Trying
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_request, _fsm_state_Trying, tsip_transac_nist_Started_2_Trying_X_request, "tsip_transac_nist_Started_2_Trying_X_request"),
-			// Started -> (Any) -> Started
+			// Started -> (Any other) -> Started
 			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_transac_nist_Started_2_Started_X_any"),
 
 			/*=======================
@@ -236,12 +238,13 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 			
 			TSK_FSM_ADD_NULL());
 
-	/* Set callback function to call when new messages arrive or errors happen in
-		the transport layer.
+	/* Set callback function to call when new messages arrive or errors happen at
+	the transport layer.
 	*/
 	TSIP_TRANSAC(self)->callback = TSIP_TRANSAC_EVENT_CALLBACK(tsip_transac_nist_event_callback);
 
-	 self->timerJ.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(J); /* RFC 3261 - 17.2.2*/
+	/* Set Timers */
+	self->timerJ.timeout = TSIP_TRANSAC(self)->reliable ? 0 : TSIP_TIMER_GET(J); /* RFC 3261 - 17.2.2*/
 
 	 return 0;
 }
@@ -253,19 +256,10 @@ int tsip_transac_nist_start(tsip_transac_nist_t *self, const tsip_request_t* req
 	if(self && !TSIP_TRANSAC(self)->running && request)
 	{
 		TSIP_TRANSAC(self)->running = 1;
-		tsip_transac_nist_handle_request(self, request);
-
-		ret = 0;
-	}
-	return ret;
-}
-
-int tsip_transac_nist_handle_request(const tsip_transac_nist_t *self, const tsip_request_t* request)
-{
-	int ret = -1;
-	if(!(ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, TSK_NULL, self, TSK_NULL))){
-		/* Alert the dialog */
-		ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
+		if(!(ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, tsk_null, self, tsk_null))){
+			/* Alert the dialog for the incoming msg */
+			ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
+		}
 	}
 	return ret;
 }
@@ -307,6 +301,7 @@ int tsip_transac_nist_Trying_2_Proceeding_X_send_1xx(va_list *app)
 {
 	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	int ret;
 
 	/*	RFC 3261 - 17.2.2
 		While in the "Trying" state, if the TU passes a provisional response
@@ -314,13 +309,12 @@ int tsip_transac_nist_Trying_2_Proceeding_X_send_1xx(va_list *app)
 		"Proceeding" state.  The response MUST be passed to the transport
 		layer for transmission.
 	*/
-	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
 
 	/* Update last response */
-	TSK_OBJECT_SAFE_FREE(self->lastResponse);
-	self->lastResponse = tsk_object_ref((void*)response);
+	TRANSAC_NIST_SET_LAST_RESPONSE(self, response);
 
-	return 0;
+	return ret;
 }
 
 /*	Trying --> (200-699) --> Completed
@@ -329,8 +323,9 @@ int tsip_transac_nist_Trying_2_Completed_X_send_200_to_699(va_list *app)
 {
 	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	int ret;
 
-	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
 
 	/*	RFC 3261 - 17.2.2
 		When the server transaction enters the "Completed" state, it MUST set
@@ -340,10 +335,9 @@ int tsip_transac_nist_Trying_2_Completed_X_send_200_to_699(va_list *app)
 	TRANSAC_NIST_TIMER_SCHEDULE(J);
 
 	/* Update last response */
-	TSK_OBJECT_SAFE_FREE(self->lastResponse);
-	self->lastResponse = tsk_object_ref((void*)response);
+	TRANSAC_NIST_SET_LAST_RESPONSE(self, response);
 
-	return 0;
+	return ret;
 }
 
 /*	Proceeding --> (1xx) --> Proceeding
@@ -361,8 +355,7 @@ int tsip_transac_nist_Proceeding_2_Proceeding_X_send_1xx(va_list *app)
 	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
 
 	/* Update last response */
-	TSK_OBJECT_SAFE_FREE(self->lastResponse);
-	self->lastResponse = tsk_object_ref((void*)response);
+	TRANSAC_NIST_SET_LAST_RESPONSE(self, response);
 
 	return 0;
 }
@@ -392,6 +385,7 @@ int tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(va_list *app)
 {
 	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	int ret;
 
 	/*	RFC 3261 - 17.2.2
 		If the TU passes a final response (status
@@ -399,7 +393,7 @@ int tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(va_list *app)
 		transaction MUST enter the "Completed" state, and the response MUST
 		be passed to the transport layer for transmission.
 	*/
-	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
+	ret = tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, response);
 
 	/*	RFC 3261 - 17.2.2
 		When the server transaction enters the "Completed" state, it MUST set
@@ -409,10 +403,9 @@ int tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(va_list *app)
 	TRANSAC_NIST_TIMER_SCHEDULE(J);
 
 	/* Update last response */
-	TSK_OBJECT_SAFE_FREE(self->lastResponse);
-	self->lastResponse = tsk_object_ref((void*)response);
+	TRANSAC_NIST_SET_LAST_RESPONSE(self, response);
 
-	return 0;
+	return ret;
 }
 
 /* Completed --> (INCOMING REQUEST) --> Completed
@@ -451,24 +444,28 @@ int tsip_transac_nist_Completed_2_Terminated_X_tirmerJ(va_list *app)
 	return 0;
 }
 
-/* Any --> (Transport error) --> Terminated
+/* Any -> (Transport Error) -> Terminated
 */
 int tsip_transac_nist_Any_2_Terminated_X_transportError(va_list *app)
 {
 	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	return 0;
+	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
+
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
 }
 
-/* Any --> (error) --> Terminated
+/* Any -> (Error) -> Terminated
 */
 int tsip_transac_nist_Any_2_Terminated_X_Error(va_list *app)
 {
 	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	return 0;
+	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
+
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, tsk_null);
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -483,11 +480,6 @@ int tsip_transac_nist_Any_2_Terminated_X_Error(va_list *app)
 */
 int tsip_transac_nist_OnTerminated(tsip_transac_nist_t *self)
 {
-	/* Cancel timers */
-	TRANSAC_TIMER_CANCEL(J);
-
-	TSIP_TRANSAC(self)->running = 0;
-
 	TSK_DEBUG_INFO("=== NIST terminated ===");
 	
 	/* Remove (and destroy) the transaction from the layer. */
@@ -523,7 +515,7 @@ static void* tsip_transac_nist_create(void * self, va_list * app)
 	if(transac)
 	{
 		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t *);
-		unsigned reliable = va_arg(*app, unsigned);
+		tsk_bool_t reliable = va_arg(*app, tsk_bool_t);
 		int32_t cseq_value = va_arg(*app, int32_t);
 		const char *cseq_method = va_arg(*app, const char *);
 		const char *callid = va_arg(*app, const char *);
@@ -542,21 +534,24 @@ static void* tsip_transac_nist_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_transac_nist_destroy(void * self)
+static void* tsip_transac_nist_destroy(void * _self)
 { 
-	tsip_transac_nist_t *transac = self;
-	if(transac)
+	tsip_transac_nist_t *self = _self;
+	if(self)
 	{
-		TSIP_TRANSAC(transac)->running = 0;
-		TSK_OBJECT_SAFE_FREE(transac->lastResponse);
+		/* Cancel timers */
+		TRANSAC_TIMER_CANCEL(J);
+
+		TSIP_TRANSAC(self)->running = 0;
+		TSK_OBJECT_SAFE_FREE(self->lastResponse);
 
 		/* DeInitialize base class */
-		tsip_transac_deinit(TSIP_TRANSAC(transac));
+		tsip_transac_deinit(TSIP_TRANSAC(self));
 
 		/* FSM */
-		TSK_OBJECT_SAFE_FREE(transac->fsm);
+		TSK_OBJECT_SAFE_FREE(self->fsm);
 	}
-	return self;
+	return _self;
 }
 
 static int tsip_transac_nist_cmp(const tsk_object_t *t1, const tsk_object_t *t2)

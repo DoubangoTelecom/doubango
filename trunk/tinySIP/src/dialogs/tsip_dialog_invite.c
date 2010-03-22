@@ -23,9 +23,12 @@
 /**@file tsip_dialog_invite.c
  * @brief SIP dialog INVITE as per RFC 3261.
  * The SOA machine is designed as per RFC 3264 and draft-ietf-sipping-sip-offeranswer-12.
+ * MMTel services implementation follow 3GPP TS 24.173.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinySIP/dialogs/tsip_dialog_invite.h"
+
+// http://cdnet.stpi.org.tw/techroom/market/_pdf/2009/eetelecomm_09_009_OneVoiceProfile.pdf

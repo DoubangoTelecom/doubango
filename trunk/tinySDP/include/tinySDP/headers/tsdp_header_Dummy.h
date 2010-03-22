@@ -41,7 +41,7 @@ TSDP_BEGIN_DECLS
 */
 #define TSDP_HEADER_DUMMY_VA_ARGS(name, value)		tsdp_header_Dummy_def_t, (char)name, (const char*)value
 #define TSDP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(TSDP_HEADER_DUMMY_VA_ARGS(name, value))
-#define TSDP_HEADER_DUMMY_CREATE_NULL()				TSDP_HEADER_DUMMY_CREATE(TSDP_NULL, TSDP_NULL)
+#define TSDP_HEADER_DUMMY_CREATE_NULL()				TSDP_HEADER_DUMMY_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

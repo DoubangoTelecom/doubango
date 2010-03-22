@@ -35,14 +35,26 @@
 
 TSDP_BEGIN_DECLS
 
+#define TSDP_CTX_CREATE()	tsk_object_new(tsdp_ctx_def_t)
+
 #define TSDP_LINE_S_VALUE_DEFAULT "-"	/* as per RFC 3264 subclause 5 */
 
 #define TSDP_LINE_O_USERNAME_DEFAULT	"doubango"
 #define TSDP_LINE_O_SESSION_VER_DEFAULT	2301
 #define TSDP_LINE_O_SESSION_ID_DEFAULT	1983
 
+typedef struct tsdp_ctx_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	tsdp_caps_t* caps;
+}
+tsdp_ctx_t;
 
-TINYSDP_API tsdp_message_t* tsdp_create_empty(const char* addr, int isIPv6);
+TINYSDP_API tsdp_message_t* tsdp_create_empty(const char* addr, tsk_bool_t ipv6);
+
+
+TINYSDP_GEXTERN const void *tsdp_ctx_def_t;
 
 TSDP_END_DECLS
 

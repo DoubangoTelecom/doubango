@@ -62,7 +62,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
 	tsk_ragel_state_t state;
-	tsip_message_t *message = TSIP_NULL;
+	tsip_message_t *message = tsk_null;
 	int endOfheaders = -1;
 	const tsip_transport_t *transport = e->callback_data;
 	
@@ -112,7 +112,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	*	==> Parse the SIP message without the content.
 	*/
 	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(transport->buff_stream), endOfheaders + 4/*2CRLF*/);
-	if(tsip_message_parse(&state, &message, TSIP_FALSE/* do not extract the content */) == TSIP_TRUE 
+	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
 		size_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
@@ -126,7 +126,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 			else{
 				/* Add the content to the message. */
-				tsip_message_add_content(message, TSIP_NULL, TSK_BUFFER_TO_U8(transport->buff_stream) + endOfheaders + 4/*2CRLF*/, clen);
+				tsip_message_add_content(message, tsk_null, TSK_BUFFER_TO_U8(transport->buff_stream) + endOfheaders + 4/*2CRLF*/, clen);
 				/* Remove SIP headers, CRLF and the content. */
 				tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/ + clen));
 			}
@@ -168,7 +168,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 	}
 
 	tsk_ragel_state_init(&state, e->data, e->size);
-	if(tsip_message_parse(&state, &message, TSIP_TRUE) == TSIP_TRUE 
+	if(tsip_message_parse(&state, &message, tsk_true) == tsk_true 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
 		/* Set fd */

@@ -50,20 +50,20 @@ tsip_operation_t;
 
 tsip_operation_handle_t *tsip_operation_createex(const struct tsip_message_s* message)
 {
-	tsip_operation_handle_t* operation = TSIP_NULL;
+	tsip_operation_handle_t* operation = tsk_null;
 
 	if(message)
 	{
-		char* from = TSIP_NULL, *to = TSIP_NULL;
+		char* from = tsk_null, *to = tsk_null;
 
 		if(message->From && message->From->uri){ /* MUST be not null */
-			from = tsip_uri_tostring(message->From->uri, TSIP_FALSE, TSIP_FALSE);
+			from = tsip_uri_tostring(message->From->uri, tsk_false, tsk_false);
 		}
 		if(message->To && message->To->uri){ /* MUST be not null */
-			to = tsip_uri_tostring(message->To->uri, TSIP_FALSE, TSIP_FALSE);
+			to = tsip_uri_tostring(message->To->uri, tsk_false, tsk_false);
 		}
 
-		operation = TSIP_OPERATION_CREATE(TSIP_NULL,
+		operation = TSIP_OPERATION_CREATE(tsk_null,
 			TSIP_OPERATION_SET_PARAM("to", to),
 			TSIP_OPERATION_SET_PARAM("from", from),
 			TSIP_OPERATION_SET_NULL());
@@ -151,7 +151,7 @@ const tsk_param_t* tsip_operation_get_param(const tsip_operation_handle_t *self,
 		const tsip_operation_t *operation = self;
 		return tsk_params_get_param_by_name(operation->params, pname);
 	}
-	return TSIP_NULL;
+	return tsk_null;
 }
 
 const tsk_param_t* tsip_operation_get_header(const tsip_operation_handle_t *self, const char* hname)
@@ -160,7 +160,7 @@ const tsk_param_t* tsip_operation_get_header(const tsip_operation_handle_t *self
 		const tsip_operation_t *operation = self;
 		return tsk_params_get_param_by_name(operation->headers, hname);
 	}
-	return TSIP_NULL;
+	return tsk_null;
 }
 
 const tsk_params_L_t* tsip_operation_get_headers(const tsip_operation_handle_t *self)
@@ -168,7 +168,7 @@ const tsk_params_L_t* tsip_operation_get_headers(const tsip_operation_handle_t *
 	if(self){
 		return ((const tsip_operation_t *)self)->headers;
 	}
-	return TSIP_NULL;
+	return tsk_null;
 }
 
 const tsk_params_L_t* tsip_operation_get_params(const tsip_operation_handle_t *self)
@@ -176,7 +176,7 @@ const tsk_params_L_t* tsip_operation_get_params(const tsip_operation_handle_t *s
 	if(self){
 		return ((const tsip_operation_t *)self)->params;
 	}
-	return TSIP_NULL;
+	return tsk_null;
 }
 
 const tsk_params_L_t* tsip_operation_get_caps(const tsip_operation_handle_t *self)
@@ -184,7 +184,7 @@ const tsk_params_L_t* tsip_operation_get_caps(const tsip_operation_handle_t *sel
 	if(self){
 		return ((const tsip_operation_t *)self)->caps;
 	}
-	return TSIP_NULL;
+	return tsk_null;
 }
 
 int tsip_operation_hangup(const tsip_operation_handle_t *self)

@@ -226,7 +226,7 @@ int tsip_dialog_message_start(tsip_dialog_message_t *self)
 	if(self && !TSIP_DIALOG(self)->running)
 	{
 		const tsk_param_t* param;
-		const void* content = TSIP_NULL;
+		const void* content = tsk_null;
 		size_t content_length = 0;
 		tsip_request_t* request;
 
@@ -242,7 +242,7 @@ int tsip_dialog_message_start(tsip_dialog_message_t *self)
 					content_length = strlen(content);
 				}
 				if(content){
-					tsip_message_add_content(request, TSIP_NULL, content, content_length);
+					tsip_message_add_content(request, tsk_null, content, content_length);
 				}
 			}
 		}
@@ -462,7 +462,7 @@ static void* tsip_dialog_message_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_message_OnTerminated), (const void*)dialog);
 
 		/* Initialize base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_MESSAGE, stack, TSIP_NULL, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_MESSAGE, stack, tsk_null, operation);
 
 		/* Initialize the class itself */
 		tsip_dialog_message_init(self);

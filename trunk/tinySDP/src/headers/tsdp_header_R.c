@@ -23,7 +23,7 @@
 */
 
 
-/**@file tsdp_header_C.c
+/**@file tsdp_header_R.c
  * @brief SDP "r=" header (Repeat Times).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
@@ -57,8 +57,7 @@ int tsdp_header_R_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 			R->repeat_interval,
 			R->typed_time
 			);
-		tsk_list_foreach(item, R->typed_times)
-		{
+		tsk_list_foreach(item, R->typed_times){
 			tsk_string_t* string = item->data;
 			tsk_buffer_appendEx(output, " %s", TSK_STRING_STR(string));
 		}
@@ -67,6 +66,31 @@ int tsdp_header_R_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	}
 
 	return -1;
+}
+
+tsdp_header_t* tsdp_header_R_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_R_t *R = (const tsdp_header_R_t *)header;
+		tsdp_header_R_t* clone;
+		const tsk_list_item_t* item;
+
+		if((clone = TSDP_HEADER_R_CREATE_NULL())){
+			clone->repeat_interval = tsk_strdup(R->repeat_interval);
+			clone->typed_time = tsk_strdup(R->typed_time);
+
+			if(R->typed_times){
+				clone->typed_times = TSK_LIST_CREATE();
+			}
+
+			tsk_list_foreach(item, R->typed_times){
+				tsk_string_t* string = TSK_STRING_CREATE(TSK_STRING_STR(item->data));
+				tsk_list_push_back_data(clone->typed_times, (void**)&string);
+			}
+		}
+		return TSDP_HEADER(clone);
+	}
+	return tsk_null;
 }
 
 tsdp_header_R_t *tsdp_header_R_parse(const char *data, size_t size)
@@ -80,7 +104,7 @@ tsdp_header_R_t *tsdp_header_R_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 84 "../src/headers/tsdp_header_R.c" */
+/* #line 108 "../src/headers/tsdp_header_R.c" */
 static const char _tsdp_machine_parser_header_R_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -144,16 +168,16 @@ static const int tsdp_machine_parser_header_R_error = 0;
 static const int tsdp_machine_parser_header_R_en_main = 1;
 
 
-/* #line 112 "tsdp_parser_header_R.rl" */
+/* #line 136 "tsdp_parser_header_R.rl" */
 	
-/* #line 150 "../src/headers/tsdp_header_R.c" */
+/* #line 174 "../src/headers/tsdp_header_R.c" */
 	{
 	cs = tsdp_machine_parser_header_R_start;
 	}
 
-/* #line 113 "tsdp_parser_header_R.rl" */
+/* #line 137 "tsdp_parser_header_R.rl" */
 	
-/* #line 157 "../src/headers/tsdp_header_R.c" */
+/* #line 181 "../src/headers/tsdp_header_R.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -250,7 +274,7 @@ _match:
 		}
 	}
 	break;
-/* #line 254 "../src/headers/tsdp_header_R.c" */
+/* #line 278 "../src/headers/tsdp_header_R.c" */
 		}
 	}
 
@@ -277,7 +301,7 @@ _again:
 		}
 	}
 	break;
-/* #line 281 "../src/headers/tsdp_header_R.c" */
+/* #line 305 "../src/headers/tsdp_header_R.c" */
 		}
 	}
 	}
@@ -285,12 +309,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 114 "tsdp_parser_header_R.rl" */
+/* #line 138 "tsdp_parser_header_R.rl" */
 	
 	if( cs < 
-/* #line 292 "../src/headers/tsdp_header_R.c" */
+/* #line 316 "../src/headers/tsdp_header_R.c" */
 11
-/* #line 115 "tsdp_parser_header_R.rl" */
+/* #line 139 "tsdp_parser_header_R.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"r=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_R);
@@ -316,6 +340,7 @@ static void* tsdp_header_R_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(R)->type = tsdp_htype_R;
 		TSDP_HEADER(R)->tostring = tsdp_header_R_tostring;
+		TSDP_HEADER(R)->clone = tsdp_header_R_clone;
 		TSDP_HEADER(R)->rank = TSDP_HTYPE_R_RANK;
 	}
 	else{

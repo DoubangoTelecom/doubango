@@ -43,13 +43,13 @@
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_CHALLENGE_CREATE(isproxy, scheme, realm, nonce, opaque, algorithm, qop)		tsk_object_new(thttp_challenge_def_t, (unsigned)isproxy,(const char*)scheme, (const char*)realm, (const char*)nonce, (const char*)opaque, (const char*)algorithm, (const char*)qop)
+#define THTTP_CHALLENGE_CREATE(isproxy, scheme, realm, nonce, opaque, algorithm, qop)		tsk_object_new(thttp_challenge_def_t, (tsk_bool_t)isproxy,(const char*)scheme, (const char*)realm, (const char*)nonce, (const char*)opaque, (const char*)algorithm, (const char*)qop)
 
 typedef struct thttp_challenge_s
 {
 	TSK_DECLARE_OBJECT;
 
-	unsigned isproxy:1;
+	tsk_bool_t isproxy;
 
 	char* scheme;
 	char* realm;

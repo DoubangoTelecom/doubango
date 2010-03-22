@@ -49,7 +49,7 @@ typedef struct tsip_dialog_message
 	
 	tsip_message_t *msg;
 
-	unsigned sender:1;
+	tsk_bool_t sender;
 }
 tsip_dialog_message_t;
 
