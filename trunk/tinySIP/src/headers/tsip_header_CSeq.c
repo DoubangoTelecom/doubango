@@ -43,7 +43,7 @@
 *	Ragel state machine.
 */
 
-/* #line 73 "tsip_parser_header_CSeq.rl" */
+/* #line 69 "tsip_parser_header_CSeq.rl" */
 
 
 int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
@@ -51,7 +51,7 @@ int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const tsip_header_CSeq_t *CSeq = header;
-		return tsk_buffer_appendEx(output, "%d %s", CSeq->seq, CSeq->method);
+		return tsk_buffer_appendEx(output, "%u %s", CSeq->seq, CSeq->method);
 	}
 	return -1;
 }
@@ -143,14 +143,14 @@ static const int tsip_machine_parser_header_CSeq_error = 0;
 static const int tsip_machine_parser_header_CSeq_en_main = 1;
 
 
-/* #line 96 "tsip_parser_header_CSeq.rl" */
+/* #line 92 "tsip_parser_header_CSeq.rl" */
 	
 /* #line 149 "../src/headers/tsip_header_CSeq.c" */
 	{
 	cs = tsip_machine_parser_header_CSeq_start;
 	}
 
-/* #line 97 "tsip_parser_header_CSeq.rl" */
+/* #line 93 "tsip_parser_header_CSeq.rl" */
 	
 /* #line 156 "../src/headers/tsip_header_CSeq.c" */
 	{
@@ -227,25 +227,25 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tsip_parser_header_CSeq.rl" */
+/* #line 49 "tsip_parser_header_CSeq.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "tsip_parser_header_CSeq.rl" */
+/* #line 53 "tsip_parser_header_CSeq.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_cseq->method);
 	}
 	break;
 	case 2:
-/* #line 60 "tsip_parser_header_CSeq.rl" */
+/* #line 57 "tsip_parser_header_CSeq.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_cseq->seq);
 	}
 	break;
 	case 3:
-/* #line 65 "tsip_parser_header_CSeq.rl" */
+/* #line 61 "tsip_parser_header_CSeq.rl" */
 	{
 	}
 	break;
@@ -262,14 +262,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 98 "tsip_parser_header_CSeq.rl" */
+/* #line 94 "tsip_parser_header_CSeq.rl" */
 	
 	if( cs < 
 /* #line 269 "../src/headers/tsip_header_CSeq.c" */
 17
-/* #line 99 "tsip_parser_header_CSeq.rl" */
- )
-	{
+/* #line 95 "tsip_parser_header_CSeq.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'CSeq' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_cseq);
 	}
 	
@@ -293,7 +293,7 @@ static void* tsip_header_CSeq_create(void *self, va_list * app)
 	{
 		TSIP_HEADER(CSeq)->type = tsip_htype_CSeq;
 		TSIP_HEADER(CSeq)->tostring = tsip_header_CSeq_tostring;
-		CSeq->seq = va_arg(*app, int32_t);
+		CSeq->seq = va_arg(*app, uint32_t);
 		CSeq->method = tsk_strdup(va_arg(*app, const char*));
 	}
 	else
@@ -321,7 +321,7 @@ static const tsk_object_def_t tsip_header_CSeq_def_s =
 	sizeof(tsip_header_CSeq_t),
 	tsip_header_CSeq_create,
 	tsip_header_CSeq_destroy,
-	0
+	tsk_null
 };
 const void *tsip_header_CSeq_def_t = &tsip_header_CSeq_def_s;
 

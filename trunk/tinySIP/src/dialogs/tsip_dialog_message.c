@@ -102,27 +102,21 @@ int tsip_dialog_message_event_callback(const tsip_dialog_message_t *self, tsip_d
 			{
 				if(TSIP_MESSAGE_IS_RESPONSE(msg))
 				{
-					short status_code = TSIP_RESPONSE_CODE(msg);
-					if(status_code <=199)
-					{
+					if(TSIP_RESPONSE_IS_1XX(msg)){
 						ret = tsk_fsm_act(self->fsm, _fsm_action_1xx, self, msg, self, msg);
 					}
-					else if(status_code<=299)
-					{
+					else if(TSIP_RESPONSE_IS_2XX(msg)){
 						ret = tsk_fsm_act(self->fsm, _fsm_action_2xx, self, msg, self, msg);
 					}
-					else if(status_code == 401 || status_code == 407 || status_code == 421 || status_code == 494)
-					{
+					else if(TSIP_RESPONSE_CODE(msg) == 401 || TSIP_RESPONSE_CODE(msg) == 407 || TSIP_RESPONSE_CODE(msg) == 421 || TSIP_RESPONSE_CODE(msg) == 494){
 						ret = tsk_fsm_act(self->fsm, _fsm_action_401_407_421_494, self, msg, self, msg);
 					}
-					else
-					{
-						// Alert User
-						ret = tsk_fsm_act(self->fsm, _fsm_action_error, self, msg, self, msg);
-						TSK_DEBUG_WARN("Not supported status code: %d", status_code);
+					else if(TSIP_RESPONSE_IS_3456(msg)){
+						ret = tsk_fsm_act(self->fsm, _fsm_action_300_to_699, self, msg, self, msg);
 					}
+					else; // Ignore
 				}
-				else{
+				else if (TSIP_REQUEST_IS_MESSAGE(msg)){ /* have been checked by dialog layer... */
 					// REQUEST ==> Incoming MESSAGE
 					ret = tsk_fsm_act(self->fsm, _fsm_action_receiveMESSAGE, self, msg, self, msg);
 				}
@@ -220,6 +214,7 @@ int tsip_dialog_message_init(tsip_dialog_message_t *self)
 	return 0;
 }
 
+// start sending
 int tsip_dialog_message_start(tsip_dialog_message_t *self)
 {
 	int ret = -1;

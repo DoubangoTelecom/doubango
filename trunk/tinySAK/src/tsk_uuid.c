@@ -59,7 +59,7 @@ int tsk_uuidgenerate(tsk_uuidstring_t *result)
 
 	/* XOR the SHA-1 result with random numbers. */
 	for(i=0; i<(TSK_UUID_DIGEST_SIZE*2); i+=4){
-		*((uint32_t*)&sha1result[i]) ^= rand();
+		*((uint32_t*)&sha1result[i]) ^= tsk_urand();
 		
 		for(k=0; k<sizeof(uint32_t); k++){
 			sha1result[i+k] = HEX[sha1result[i+k] & 0x0F]; /* To hexa. */

@@ -90,6 +90,8 @@
 	"To: <sip:mamadou@open-ims.test>\r\n" \
 	"Call-ID: 1262767804423\r\n" \
 	"CSeq: 8 MESSAGE\r\n" \
+	"RSeq: 17422\r\n" \
+	"RAck: 776656 1 INVITE\r\n" \
 	"Max-Forwards: 70\r\n" \
 	"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n" \
 	"User-Agent: IM-client/OMA1.0 Mercuro-Bronze/v4.0.1508.0\r\n" \

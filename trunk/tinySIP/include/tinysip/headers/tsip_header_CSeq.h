@@ -43,7 +43,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_CSEQ_VA_ARGS(seq, method)		tsip_header_CSeq_def_t, (int32_t) seq, (const char*)method
 #define TSIP_HEADER_CSEQ_CREATE(seq, method)		tsk_object_new(TSIP_HEADER_CSEQ_VA_ARGS(seq, method))
 
-#define TSIP_HEADER_CSEQ_NONE						-1
+#define TSIP_HEADER_CSEQ_NONE						0
 #define TSIP_HEADER_CSEQ_DEFAULT					1
 
 
@@ -62,7 +62,7 @@ typedef struct tsip_header_CSeq_s
 	TSIP_DECLARE_HEADER;
 
 	char *method;
-	int32_t seq;
+	uint32_t seq;
 }
 tsip_header_CSeq_t;
 

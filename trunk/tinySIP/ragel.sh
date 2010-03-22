@@ -86,11 +86,20 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_Privacy.c tsip_parser_header_Pr
 # ==Proxy-Require
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Require.c tsip_parser_header_Proxy_Require.rl
 
+# ==RAck
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_RAck.c tsip_parser_header_RAck.rl
+
 # ==Record-Route
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Record_Route.c tsip_parser_header_Record_Route.rl
 
 # ==Require
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Require.c tsip_parser_header_Require.rl
+
+# == Route
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_Route.c tsip_parser_header_Route.rl
+
+# ==RSeq
+ragel.exe $OPTIONS -o ../src/headers/tsip_header_RSeq.c tsip_parser_header_RSeq.rl
 
 # == Server
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Server.c tsip_parser_header_Server.rl
@@ -100,9 +109,6 @@ ragel.exe $OPTIONS -o ../src/headers/tsip_header_SIP_ETag.c tsip_parser_header_S
 
 # == SIP-If-Match
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_SIP_If_Match.c tsip_parser_header_SIP_If_Match.rl
-
-# == Route
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Route.c tsip_parser_header_Route.rl
 
 # == Security-Client
 ragel.exe $OPTIONS -o ../src/headers/tsip_header_Security_Client.c tsip_parser_header_Security_Client.rl

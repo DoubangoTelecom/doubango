@@ -50,6 +50,7 @@ typedef struct tsip_transac_ict
 	tsk_fsm_t *fsm;
 	
 	tsip_request_t* request;
+
 	tsip_timer_t timerA;
 	tsip_timer_t timerB;
 	tsip_timer_t timerD;

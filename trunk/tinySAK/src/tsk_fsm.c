@@ -36,7 +36,8 @@
 */
 
 int tsk_fsm_exec_nothing(va_list *app){ return 0/*success*/; }
-int tsk_fsm_cond_always(const void* data1, const void* data2) { return 1/*boolean*/; }
+tsk_bool_t tsk_fsm_cond_always(const void* data1, const void* data2) { return tsk_true; }
+
 
 /**@ingroup tsk_fsm_group
 * Add entries (states) to the FSM.
@@ -105,14 +106,14 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 {
 	tsk_list_item_t *item;
 	va_list ap;
-	int found = 0;
+	tsk_bool_t found = tsk_false;
 	int ret_exec = 0;
 	
 	if(!self){
 		TSK_DEBUG_ERROR("Null FSM.");
 		return -1;
 	}
-	if(self->current == self->term){
+	if(tsk_fsm_terminated(self)){
 		TSK_DEBUG_WARN("The FSM is in the final state.");
 		return -2;
 	}
@@ -138,7 +139,11 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 			if(self->debug){
 				TSK_DEBUG_INFO("State machine: %s", entry->desc);
 			}
-			self->current = entry->to;
+			
+			if(entry->to != tsk_fsm_action_any){ /* Stay at the current state if dest. state is Any */
+				self->current = entry->to;
+			}
+			
 			if(entry->exec){
 				if((ret_exec = entry->exec(&ap))){
 					TSK_DEBUG_INFO("State machine: Exec function failed. Moving to terminal state.");
@@ -146,7 +151,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 				}
 			}
 
-			found = 1;
+			found = tsk_true;
 			break;
 		}
 	}
@@ -168,7 +173,13 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 	return 0;
 }
 
-
+tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self)
+{
+	if(self){
+		return (self->current == self->term);
+	}
+	return tsk_false;
+}
 
 
 //=================================================================================================

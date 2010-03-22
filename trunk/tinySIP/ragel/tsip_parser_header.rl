@@ -51,9 +51,11 @@
 #include "tinySIP/headers/tsip_header_Proxy_Authenticate.h"
 #include "tinySIP/headers/tsip_header_Proxy_Authorization.h"
 #include "tinySIP/headers/tsip_header_Proxy_Require.h"
+#include "tinySIP/headers/tsip_header_RAck.h"
 #include "tinySIP/headers/tsip_header_Record_Route.h"
 #include "tinySIP/headers/tsip_header_Require.h"
 #include "tinySIP/headers/tsip_header_Route.h"
+#include "tinySIP/headers/tsip_header_RSeq.h"
 #include "tinySIP/headers/tsip_header_Security_Client.h"
 #include "tinySIP/headers/tsip_header_Security_Server.h"
 #include "tinySIP/headers/tsip_header_Security_Verify.h"
@@ -595,9 +597,8 @@
 	# /*== RAck: ==*/
 	action parse_header_RAck
 	{
-		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		tsip_header_RAck_t *header = tsip_header_RAck_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_RAck NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Reason: ==*/
@@ -704,9 +705,8 @@
 	# /*== RSeq: ==*/
 	action parse_header_RSeq
 	{
-		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		tsip_header_RSeq_t *header = tsip_header_RSeq_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_RSeq NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Security_Client: ==*/

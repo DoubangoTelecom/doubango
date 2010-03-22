@@ -46,10 +46,6 @@ typedef struct tsip_dialog_message
 	TSIP_DECLARE_DIALOG;
 
 	tsk_fsm_t *fsm;
-	
-	tsip_message_t *msg;
-
-	tsk_bool_t sender;
 }
 tsip_dialog_message_t;
 

@@ -35,21 +35,31 @@
 
 TSIP_BEGIN_DECLS
 
+#define TSIP_HEADER_RSEQ_VA_ARGS(seq)		tsip_header_RSeq_def_t, (int32_t) seq
+#define TSIP_HEADER_RSEQ_CREATE(seq)		tsk_object_new(TSIP_HEADER_RSEQ_VA_ARGS(seq))
+#define TSIP_HEADER_RSEQ_CREATE_NULL()		TSIP_HEADER_RSEQ_CREATE(0)
+
+#define TSIP_HEADER_RSEQ_NONE						0
+#define TSIP_HEADER_RSEQ_DEFAULT					1
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP header 'RSeq'.
-/// @author	Mamadou
-/// @date	12/3/2009
+/// @brief	SIP header 'RSeq' as per RFC 3262.
 ///
-/// @par ABNF
+/// @par ABNF: "RSeq" HCOLON response-num
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_RSeq_s
 {	
 	TSIP_DECLARE_HEADER;
+	uint32_t seq;
 }
 tsip_header_RSeq_t;
+
+tsip_header_RSeq_t *tsip_header_RSeq_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_RSeq_def_t;
 
 TSIP_END_DECLS
 

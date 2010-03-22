@@ -35,21 +35,31 @@
 
 TSIP_BEGIN_DECLS
 
+#define TSIP_HEADER_RACK_VA_ARGS(seq, cseq, method)		tsip_header_RAck_def_t, (int32_t)seq, (int32_t)cseq, (const char*)method
+#define TSIP_HEADER_RACK_CREATE(seq, cseq, method)		tsk_object_new(TSIP_HEADER_RACK_VA_ARGS(seq, cseq, method))
+#define TSIP_HEADER_RACK_CREATE_NULL()		TSIP_HEADER_RACK_CREATE(0, 0, tsk_null)
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
-/// @brief	SIP header 'RAck'.
-/// @author	Mamadou
-/// @date	12/3/2009
+/// @brief	SIP header 'RAck' as per RFC 3262.
 ///
-/// @par ABNF
+/// @par ABNF : "RAck" HCOLON response-num  LWS  CSeq-num  LWS  Method
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_RAck_s
 {	
 	TSIP_DECLARE_HEADER;
+
+	uint32_t seq;
+	uint32_t cseq;
+	char* method;
 }
 tsip_header_RAck_t;
+
+tsip_header_RAck_t *tsip_header_RAck_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const void *tsip_header_RAck_def_t;
 
 TSIP_END_DECLS
 

@@ -346,6 +346,8 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 **/
 int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 {
+	int ret = -1;
+
 	if(self && self->stack)
 	{	
 		const tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
@@ -366,26 +368,17 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 				switch(transac->type)
 				{
 				case tsip_ict:
-					{
-						/* Start the newly create IC transaction */
-						break;
-					}
-
 				case tsip_nict:
 					{
-						/* Start the newly created NIC transaction */
-						tsip_transac_start(transac, request);
+						/* Start the newly create IC/NIC transaction */
+						ret = tsip_transac_start(transac, request);
 						break;
 					}
-
-				default: return -1;
 				}
-
-				return 0;
 			}
 		}
 	}
-	return -1;
+	return ret;
 }
 
 tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short status, const char* phrase, const tsip_request_t* request)
@@ -854,9 +847,9 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 			tsk_strrandom(&tag);
 			tsk_strupdate(&self->tag_local, tag);
 		}
-
+		
 		/* CSeq */
-		self->cseq_value = rand();
+		self->cseq_value = (tsk_urand() + 1);
 
 		/*== Operation */
 		if(self->operation != TSIP_OPERATION_INVALID_HANDLE)

@@ -377,7 +377,7 @@ void tsk_itoa(int64_t i, tsk_istr_t *result)
 void tsk_strrandom(tsk_istr_t *result)
 {
 	static uint64_t __counter = 1;
-	tsk_itoa((tsk_time_epoch() ^ rand()) ^ ++__counter, result);
+	tsk_itoa((tsk_time_epoch() ^ (tsk_urand())) ^ ++__counter, result);
 }
 
 /**@ingroup tsk_string_group

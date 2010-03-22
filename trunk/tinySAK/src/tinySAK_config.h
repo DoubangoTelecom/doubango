@@ -92,14 +92,6 @@
 #	define USE_GNUC_VA_ARGS		0
 #endif
 
-#ifndef TSK_MIN
-#define TSK_MIN(a,b)            (((a) < (b)) ? (a) : (b))
-#endif /* TSK_MIN */
-
-#ifndef TSK_MAX
-#define TSK_MAX(a,b)            (((a) > (b)) ? (a) : (b))
-#endif /* TSK_MAX */
-
 #include <stdint.h>
 #include <stddef.h>
 #include "tsk_common.h"

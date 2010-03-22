@@ -91,7 +91,7 @@ TSK_BEGIN_DECLS
 
 typedef int tsk_fsm_state_id;
 typedef int tsk_fsm_action_id;
-typedef int (*tsk_fsm_cond)(const void*, const void*);
+typedef tsk_bool_t (*tsk_fsm_cond)(const void*, const void*);
 typedef int (*tsk_fsm_exec)(va_list *app);
 typedef int (*tsk_fsm_onterminated)(const void*);
 
@@ -170,10 +170,11 @@ typedef struct tsk_fsm_s
 tsk_fsm_t;
 
 TINYSAK_API int tsk_fsm_exec_nothing(va_list *app);
-TINYSAK_API int tsk_fsm_cond_always(const void*, const void*);
+TINYSAK_API tsk_bool_t tsk_fsm_cond_always(const void*, const void*);
 TINYSAK_API int tsk_fsm_set(tsk_fsm_t* self, ...);
 TINYSAK_API int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callback, const void* callbackdata);
 TINYSAK_API int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data1, const void* cond_data2, ...);
+TINYSAK_API tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self);
 
 TINYSAK_GEXTERN const void *tsk_fsm_def_t;
 TINYSAK_GEXTERN const void *tsk_fsm_entry_def_t;
