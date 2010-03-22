@@ -237,6 +237,8 @@ TINYSIP_API int tsip_publish(tsip_stack_handle_t *_stack, const tsip_operation_h
 
 TINYSIP_API int tsip_message(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
 
+TINYSIP_API int tsip_invite(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);
 

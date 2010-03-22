@@ -256,9 +256,8 @@ int tsip_transac_nist_start(tsip_transac_nist_t *self, const tsip_request_t* req
 	if(self && !TSIP_TRANSAC(self)->running && request)
 	{
 		TSIP_TRANSAC(self)->running = 1;
-		if(!(ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, tsk_null, self, tsk_null))){
-			/* Alert the dialog for the incoming msg */
-			ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
+		if((ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, request, self, request))){
+			//
 		}
 	}
 	return ret;
@@ -281,7 +280,7 @@ int tsip_transac_nist_start(tsip_transac_nist_t *self, const tsip_request_t* req
 int tsip_transac_nist_Started_2_Trying_X_request(va_list *app)
 {
 	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
 
 	/*	RFC 3261 - 17.2.2
 		The state machine is initialized in the "Trying" state and is passed
@@ -291,8 +290,7 @@ int tsip_transac_nist_Started_2_Trying_X_request(va_list *app)
 		matches the same server transaction, using the rules specified in
 		Section 17.2.3.
 	*/
-
-	return 0;
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
 }
 
 /* Trying --> (1xx) --> Proceeding

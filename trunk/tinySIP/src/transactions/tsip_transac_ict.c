@@ -87,7 +87,7 @@
 
 /* ======================== internal functions ======================== */
 int tsip_transac_ict_init(tsip_transac_ict_t *self);
-int tsip_transac_ict_send_ack(const tsip_response_t* response);
+int tsip_transac_ict_send_ACK(tsip_transac_ict_t *self, const tsip_response_t* response); // ACK
 int tsip_transac_ict_OnTerminated(tsip_transac_ict_t *self);
 
 /* ======================== transitions ======================== */
@@ -465,7 +465,7 @@ int tsip_transac_ict_Calling_2_Completed_X_300_to_699(va_list *app)
 	TRANSAC_ICT_TIMER_SCHEDULE(D); /* timerD already have the right value (0 if reliable and non-zero otherwise) */
 
 	/* Send ACK */
-	if((ret = tsip_transac_ict_send_ack(response))){
+	if((ret = tsip_transac_ict_send_ACK(self, response))){
 		return ret;
 	}
 
@@ -568,7 +568,7 @@ int tsip_transac_ict_Proceeding_2_Completed_X_300_to_699(va_list *app)
 	TRANSAC_ICT_TIMER_SCHEDULE(D); /* timerD already have the right value (0 if reliable and non-zero otherwise) */
 
 	/* Send ACK */
-	if((ret = tsip_transac_ict_send_ack(response))){
+	if((ret = tsip_transac_ict_send_ACK(self, response))){
 		return ret;
 	}
 
@@ -605,7 +605,7 @@ int tsip_transac_ict_Proceeding_2_Accepted_X_2xx(va_list *app)
 */
 int tsip_transac_ict_Completed_2_Completed_X_300_to_699(va_list *app)
 {
-	//tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
+	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/*	draft-sparks-sip-invfix-03 - 8.4.  Pages 126 through 128
@@ -615,7 +615,7 @@ int tsip_transac_ict_Completed_2_Completed_X_300_to_699(va_list *app)
 		newly received response MUST NOT be passed up to the TU.
 	*/
 	
-	return tsip_transac_ict_send_ack(response);
+	return tsip_transac_ict_send_ACK(self, response);
 }
 
 /* Completed -> (timerD) -> Terminated
@@ -670,7 +670,7 @@ int tsip_transac_ict_Any_2_Terminated_X_transportError(va_list *app)
 	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
 	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
+	/* Timers will be canceled by "tsip_transac_ict_OnTerminated" */
 
 	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, tsk_null);
 }
@@ -682,7 +682,7 @@ int tsip_transac_ict_Any_2_Terminated_X_Error(va_list *app)
 	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
 	//const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
+	/* Timers will be canceled by "tsip_transac_ict_OnTerminated" */
 
 	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, tsk_null);
 }
@@ -693,10 +693,83 @@ int tsip_transac_ict_Any_2_Terminated_X_Error(va_list *app)
 //				== STATE MACHINE END ==
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-/* Send ACK message*/
-int tsip_transac_ict_send_ack(const tsip_response_t* response)
+/* Send ACK message
+*/
+int tsip_transac_ict_send_ACK(tsip_transac_ict_t *self, const tsip_response_t* response)
 {
-	return -1;
+	int ret = -1;
+	tsip_request_t *request = tsk_null;
+	const tsk_list_item_t* item;
+
+	if(!self || !self->request || !response){
+		goto bail;
+	}
+
+	// check lastINVITE
+	if(	!self->request->firstVia ||
+		!self->request->From || 
+		!self->request->uri || 
+		!self->request->Call_ID || 
+		!self->request->CSeq)
+	{
+		ret = -2;
+		goto bail;
+	}
+
+	// check response
+	if(!response->To){
+		ret = -3;
+		goto bail;
+	}
+
+	/*	RFC 3261 - 17.1.1.3 Construction of the ACK Request
+		
+		The ACK request constructed by the client transaction MUST contain
+		values for the Call-ID, From, and Request-URI that are equal to the
+		values of those header fields in the request passed to the transport
+		by the client transaction (call this the "original request").  The To
+		header field in the ACK MUST equal the To header field in the
+		response being acknowledged, and therefore will usually differ from
+		the To header field in the original request by the addition of the
+		tag parameter.  The ACK MUST contain a single Via header field, and
+		this MUST be equal to the top Via header field of the original
+		request.  The CSeq header field in the ACK MUST contain the same
+		value for the sequence number as was present in the original request,
+		but the method parameter MUST be equal to "ACK".
+
+		If the INVITE request whose response is being acknowledged had Route
+		header fields, those header fields MUST appear in the ACK.  This is
+		to ensure that the ACK can be routed properly through any downstream
+		stateless proxies.
+
+		Although any request MAY contain a body, a body in an ACK is special
+		since the request cannot be rejected if the body is not understood.
+		Therefore, placement of bodies in ACK for non-2xx is NOT RECOMMENDED,
+		but if done, the body types are restricted to any that appeared in
+		the INVITE, assuming that the response to the INVITE was not 415.  If
+		it was, the body in the ACK MAY be any type listed in the Accept
+		header field in the 415.
+	*/
+	if((request = tsip_request_new("ACK", self->request->uri,  self->request->From->uri, response->To->uri, self->request->Call_ID->value, self->request->CSeq->seq))){
+		// Via
+		request->firstVia = tsk_object_ref((void*)self->request->firstVia);
+		// Routes
+		tsk_list_foreach(item, self->request->headers){
+			const tsip_header_t* curr = item->data;
+			if(curr->type == tsip_htype_Route){
+				tsip_message_add_header(request, curr);
+			}
+		}
+		// sockfd: 
+		//request->sockfd = response->sockfd;
+
+		// send the request
+		ret = tsip_transac_send(TSIP_TRANSAC(self), request->firstVia->branch, request);
+		TSK_OBJECT_SAFE_FREE(request);
+	}
+
+bail:
+	return ret;
 }
 
 /*== TERMINATED

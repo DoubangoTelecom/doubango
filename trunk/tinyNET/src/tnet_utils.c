@@ -1051,7 +1051,7 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 * All flags which can be passed to @b recv.
 * @retval If no error occurs, send returns the total number of bytes sent, which can be less than the number requested to be sent in the @b size parameter.
 */
-int tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags)
+size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags)
 {
 	int ret = -1;
 	size_t sent = 0;
@@ -1075,7 +1075,8 @@ int tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags)
 	}
 
 bail:
-	return (size == sent) ? sent : ret;
+	//return (size == sent) ? sent : ret;
+	return sent;
 }
 
 /**@ingroup tnet_utils_group

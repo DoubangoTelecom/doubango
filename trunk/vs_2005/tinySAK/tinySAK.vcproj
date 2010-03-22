@@ -366,6 +366,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinySAK\src\tsk_common.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySAK\src\tsk_condwait.h"
 				>
 			</File>

@@ -44,7 +44,7 @@
 #include "tsk_debug.h"
 #include "tsk_time.h"
 
-#define DEBUG_STATE_MACHINE											1
+#define DEBUG_STATE_MACHINE											0
 #define TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(register, TX)
 #define TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, message)	\
 	tsip_register_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->operation, code, phrase, message)
@@ -314,10 +314,11 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 int tsip_dialog_register_start(tsip_dialog_register_t *self)
 {
 	int ret = -1;
-	if(self && !TSIP_DIALOG(self)->running)
-	{
+	if(self && !TSIP_DIALOG(self)->running){
 		/* Send request */
-		ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, tsk_null, self, tsk_null);
+		if(!(ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, tsk_null, self, tsk_null))){
+			TSIP_DIALOG(self)->running = tsk_true;
+		}
 	}
 	return ret;
 }
@@ -333,8 +334,6 @@ int tsip_dialog_register_Started_2_Trying_X_send(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
-
-	TSIP_DIALOG(self)->running = tsk_true;
 
 	return send_register(self, tsk_true);
 }
@@ -735,10 +734,6 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 {
 	TSK_DEBUG_INFO("=== REGISTER Dialog terminated ===");
 	
-	/* Cancel all timers */
-	DIALOG_TIMER_CANCEL(refresh);
-	DIALOG_TIMER_CANCEL(shutdown);
-	
 	/* Cleanup IPSec SAs */
 	if(TSIP_DIALOG_GET_STACK(self)->secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
 		tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
@@ -786,16 +781,20 @@ static void* tsip_dialog_register_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_dialog_register_destroy(void * self)
+static void* tsip_dialog_register_destroy(void * _self)
 { 
-	tsip_dialog_register_t *dialog = self;
-	if(dialog)
+	tsip_dialog_register_t *self = _self;
+	if(self)
 	{
+		/* Cancel all timers */
+		DIALOG_TIMER_CANCEL(refresh);
+		DIALOG_TIMER_CANCEL(shutdown);
+
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 		
 		/* FSM */
-		TSK_OBJECT_SAFE_FREE(dialog->fsm);
+		TSK_OBJECT_SAFE_FREE(self->fsm);
 	}
 	return self;
 }

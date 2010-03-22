@@ -29,8 +29,9 @@
  */
 #include "tinySIP/dialogs/tsip_dialog_layer.h"
 
-#include "tinySIP/dialogs/tsip_dialog_register.h"
+#include "tinySIP/dialogs/tsip_dialog_invite.h"
 #include "tinySIP/dialogs/tsip_dialog_message.h"
+#include "tinySIP/dialogs/tsip_dialog_register.h"
 
 #include "tinySIP/transactions/tsip_transac_layer.h"
 #include "tinySIP/transports/tsip_transport_layer.h"
@@ -142,7 +143,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	int ret = -1;
 	tsk_bool_t cid_matched;
 	const tsip_dialog_t* dialog;
-	tsip_transac_t* transac = 0;
+	tsip_transac_t* transac = tsk_null;
 	const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
 
 	if(!layer_transac){
@@ -162,23 +163,23 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 		}
 	}
 	else{		
-		if(TSIP_MESSAGE_IS_REQUEST(message))
-		{
+		if(TSIP_MESSAGE_IS_REQUEST(message)){
 			tsip_operation_handle_t* op = tsip_operation_createex(message);
+			tsip_dialog_t* newdialog = tsk_null;
+
+			// The incioming request will be passed to the dialog by the server transaction (tsip_dialog_i_msg)
+			// As the request will be recived from the callback function, the dialog MUST not be started
 
 			switch(message->request_type){
 				case tsip_MESSAGE:
 					{
-						tsip_dialog_message_t *dlg_msg = TSIP_DIALOG_MESSAGE_CREATE(self->stack, op);
-						if((transac = tsip_transac_layer_new(layer_transac, tsk_false, message))){
-							TSIP_TRANSAC(transac)->dialog = TSIP_DIALOG(dlg_msg);
-						}
-						tsk_list_push_back_data(self->dialogs, (void**)&dlg_msg);
+						newdialog = TSIP_DIALOG_MESSAGE_CREATE(self->stack, op);
 						break;
 					}
 
 				case tsip_INVITE:
 					{
+						newdialog = TSIP_DIALOG_INVITE_CREATE(self->stack, op);
 						break;
 					}
 
@@ -186,6 +187,13 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 					{
 						break;
 					}
+			}//switch
+
+			if(newdialog){
+				if((transac = tsip_transac_layer_new(layer_transac, tsk_false, message))){
+					TSIP_TRANSAC(transac)->dialog = newdialog;
+				}
+				tsk_list_push_back_data(self->dialogs, (void**)&newdialog);
 			}
 
 			TSK_OBJECT_SAFE_FREE(op);
@@ -195,7 +203,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	if(transac){
 		ret = tsip_transac_start(transac, message);
 	}
-	else{
+	else if(TSIP_MESSAGE_IS_REQUEST(message)){ /* No transaction match for the SIP request */
 		const tsip_transport_layer_t *layer;
 		tsip_response_t* response;
 

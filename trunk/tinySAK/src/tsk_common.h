@@ -31,11 +31,30 @@
 #ifndef _TINYSAK_COMMON_H_
 #define _TINYSAK_COMMON_H_
 
-typedef int tsk_bool_tean_t;
-#define tsk_bool_t tsk_bool_tean_t
+typedef int tsk_boolean_t;
+#define tsk_bool_t tsk_boolean_t
 
 #define tsk_true	1
 #define tsk_false	0
+
+#define TSK_MIN(a,b)            (((a) < (b)) ? (a) : (b))
+#define TSK_MAX(a,b)            (((a) > (b)) ? (a) : (b))
+#define TSK_ABS(a)				(((a)< 0) ? -(a) : (a))
+
+#define tsk_rand()				rand()
+#define tsk_urand()				TSK_ABS(rand())
+
+typedef int tsk_ssize_t;
+typedef unsigned int tsk_size_t;
+
+typedef enum tsk_error_e
+{
+	tsk_e_success = 0,
+	tsk_e_unitialized = -1,
+	
+	tsk_e_globalfailure = -2,
+}
+tsk_error_t;;
 
 #define tsk_null	0
 

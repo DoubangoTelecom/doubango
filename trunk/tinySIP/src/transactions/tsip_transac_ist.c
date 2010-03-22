@@ -316,9 +316,8 @@ int tsip_transac_ist_start(tsip_transac_ist_t *self, const tsip_request_t* reque
 	if(self && !TSIP_TRANSAC(self)->running && request)
 	{
 		TSIP_TRANSAC(self)->running = 1;
-		if(!(ret = tsk_fsm_act(self->fsm, _fsm_action_recv_INVITE, self, tsk_null, self, tsk_null))){
-			/* Alert the dialog for the incoming msg */
-			ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
+		if((ret = tsk_fsm_act(self->fsm, _fsm_action_recv_INVITE, self, request, self, request))){
+			//
 		}
 	}
 	return ret;
@@ -346,6 +345,9 @@ int tsip_transac_ist_Started_2_Proceeding_X_INVITE(va_list *app)
 		(Trying) response unless it knows that the TU will generate a
 		provisional or final response within 200 ms, in which case it MAY
 		generate a 100 (Trying) response.
+
+		RFC 3262 - 3. UAS Behavior
+		A UAS MUST NOT attempt to send a 100 (Trying) response reliably.
 	*/
 	if(request){
 		tsip_response_t* response;
@@ -354,6 +356,9 @@ int tsip_transac_ist_Started_2_Proceeding_X_INVITE(va_list *app)
 			TRANSAC_IST_SET_LAST_RESPONSE(self, response); /* Update last response */
 			TSK_OBJECT_SAFE_FREE(response);
 		}
+	}
+	if(!ret){ /* Send "100 Trying" is OK ==> alert dialog for the incoming INVITE */
+		ret = TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, request);
 	}
 	return ret;
 }
@@ -678,7 +683,7 @@ static void* tsip_transac_ist_create(void * self, va_list * app)
 		/* Initialize base class */
 		tsip_transac_init(TSIP_TRANSAC(transac), stack, tsip_ist, reliable, cseq_value, cseq_method, callid);
 
-		/* Initialize NICT object */
+		/* Initialize ICT object */
 		tsip_transac_ist_init(transac);
 	}
 	return self;

@@ -505,15 +505,15 @@ _eof_trans:
 	break;
 	case 4:
 /* #line 60 "tsip_parser_uri.rl" */
-	{ uri->host_type = uri->host_type = host_ipv4; }
+	{ uri->host_type = host_ipv4; }
 	break;
 	case 5:
 /* #line 61 "tsip_parser_uri.rl" */
-	{ uri->host_type = uri->host_type = host_ipv6; }
+	{ uri->host_type = host_ipv6; }
 	break;
 	case 6:
 /* #line 62 "tsip_parser_uri.rl" */
-	{ uri->host_type = uri->host_type = host_hostname; }
+	{ uri->host_type = host_hostname; }
 	break;
 	case 7:
 /* #line 70 "tsip_parser_uri.rl" */

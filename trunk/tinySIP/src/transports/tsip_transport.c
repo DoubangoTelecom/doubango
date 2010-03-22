@@ -137,13 +137,13 @@ int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const ch
 
 size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort)
 {
-	int ret = -1;
+	size_t ret = 0;
 	if(self)
 	{
 		tsk_buffer_t *buffer = 0;
 
 		/* Add Via */
-		if(TSIP_MESSAGE_IS_REQUEST(msg) && !TSIP_REQUEST_IS_CANCEL(msg)){
+		if(TSIP_MESSAGE_IS_REQUEST(msg) && !TSIP_REQUEST_IS_CANCEL(msg) && !TSIP_REQUEST_IS_ACK(msg)){
 			tsip_transport_addvia(self, branch, msg);
 			tsip_transport_msg_update(self, msg);
 		}
@@ -208,8 +208,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 				}
 				else*/
 				{
-					if(tnet_transport_send(self->net_transport, self->connectedFD, buffer->data, buffer->size)){
-						ret = 0;
+					if((ret = tnet_transport_send(self->net_transport, self->connectedFD, buffer->data, buffer->size))){
 					}
 				}
 			}

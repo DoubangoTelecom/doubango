@@ -37,17 +37,21 @@
 
 TSIP_BEGIN_DECLS
 
+#define TSIP_DIALOG_INVITE_CREATE(stack, operation)		tsk_object_new(tsip_dialog_invite_def_t, (const tsip_stack_handle_t *)stack, (const tsip_operation_handle_t*) operation)
+
+#define TSIP_DIALOG_INVITE(self)							((tsip_dialog_invite_t*)(self))
+
 typedef struct tsip_dialog_invite
 {
 	TSIP_DECLARE_DIALOG;
 	
 	tsk_fsm_t *fsm;
 	
-	tsk_bool_t sender;
+	uint32_t rseq;
 }
 tsip_dialog_invite_t;
 
-int tsip_dialog_invite_start(tsip_dialog_invite_t *self, int isSender);
+int tsip_dialog_invite_start(tsip_dialog_invite_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_invite_def_t;
 

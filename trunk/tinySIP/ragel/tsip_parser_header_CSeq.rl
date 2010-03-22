@@ -46,23 +46,19 @@
 	# Includes
 	include tsip_machine_utils "./tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action parse_method
-	{
+	action parse_method{
 		TSK_PARSER_SET_STRING(hdr_cseq->method);
 	}
 
-	action parse_seq
-	{
+	action parse_seq{
 		TSK_PARSER_SET_INTEGER(hdr_cseq->seq);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	CSeq = "CSeq"i HCOLON DIGIT+>tag %parse_seq LWS Method >tag %parse_method;
@@ -77,7 +73,7 @@ int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const tsip_header_CSeq_t *CSeq = header;
-		return tsk_buffer_appendEx(output, "%d %s", CSeq->seq, CSeq->method);
+		return tsk_buffer_appendEx(output, "%u %s", CSeq->seq, CSeq->method);
 	}
 	return -1;
 }
@@ -96,8 +92,8 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'CSeq' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_cseq);
 	}
 	
@@ -121,7 +117,7 @@ static void* tsip_header_CSeq_create(void *self, va_list * app)
 	{
 		TSIP_HEADER(CSeq)->type = tsip_htype_CSeq;
 		TSIP_HEADER(CSeq)->tostring = tsip_header_CSeq_tostring;
-		CSeq->seq = va_arg(*app, int32_t);
+		CSeq->seq = va_arg(*app, uint32_t);
 		CSeq->method = tsk_strdup(va_arg(*app, const char*));
 	}
 	else
@@ -149,7 +145,7 @@ static const tsk_object_def_t tsip_header_CSeq_def_s =
 	sizeof(tsip_header_CSeq_t),
 	tsip_header_CSeq_create,
 	tsip_header_CSeq_destroy,
-	0
+	tsk_null
 };
 const void *tsip_header_CSeq_def_t = &tsip_header_CSeq_def_s;
 

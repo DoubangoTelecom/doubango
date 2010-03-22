@@ -217,8 +217,8 @@ int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* 
 	TIPSEC_CONTEXT(ctx_xp)->port_us = port_us;
 
 	/* Set SPIs */
-	TIPSEC_CONTEXT(ctx_xp)->spi_uc = abs(rand() ^ rand());
-	TIPSEC_CONTEXT(ctx_xp)->spi_us = abs(rand() ^ rand());
+	TIPSEC_CONTEXT(ctx_xp)->spi_uc = (tsk_urand() ^ tsk_urand());
+	TIPSEC_CONTEXT(ctx_xp)->spi_us = (tsk_urand() ^ tsk_urand());
 
 	TIPSEC_CONTEXT(ctx_xp)->state = state_inbound;
 

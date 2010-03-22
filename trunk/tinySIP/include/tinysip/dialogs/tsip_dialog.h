@@ -122,9 +122,8 @@ typedef struct tsip_dialog_s
 
 	tsip_uri_t* uri_remote_target;
 	
-	int32_t cseq_value;
+	uint32_t cseq_value;
 	char* cseq_method;
-	int32_t rseq_value;
 	
 	int64_t expires; /* in milliseconds */
 	
