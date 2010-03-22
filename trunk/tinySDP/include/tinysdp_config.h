@@ -75,7 +75,4 @@
 #include <stdlib.h>
 #endif
 
-/* FIXME */
-#define TSDP_NULL 0
-
 #endif // TINYSDP_CONFIG_H

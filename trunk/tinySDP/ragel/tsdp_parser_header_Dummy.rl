@@ -77,6 +77,15 @@ int tsdp_header_Dummy_tostring(const tsdp_header_t* header, tsk_buffer_t* output
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_Dummy_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_Dummy_t *Dummy = (const tsdp_header_Dummy_t *)header;
+		return TSDP_HEADER_DUMMY_CREATE(Dummy->name, Dummy->value);
+	}
+	return tsk_null;
+}
+
 tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -116,6 +125,7 @@ static void* tsdp_header_Dummy_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(Dummy)->type = tsdp_htype_Dummy;
 		TSDP_HEADER(Dummy)->tostring = tsdp_header_Dummy_tostring;
+		TSDP_HEADER(Dummy)->clone = tsdp_header_Dummy_clone;
 		TSDP_HEADER(Dummy)->rank = TSDP_HTYPE_DUMMY_RANK;
 
 		Dummy->name = va_arg(*app, const char);

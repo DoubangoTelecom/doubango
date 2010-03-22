@@ -41,11 +41,11 @@ TSDP_BEGIN_DECLS
 */
 #define TSDP_HEADER_Z_VA_ARGS(time, shifted_back, typed_time)		tsdp_header_Z_def_t, (uint64_t)time, (unsigned)shifted_back, (const char*)typed_time
 #define TSDP_HEADER_Z_CREATE(time, shifted_back, typed_time)			tsk_object_new(TSDP_HEADER_Z_VA_ARGS(time, shifted_back, typed_time))
-#define TSDP_HEADER_Z_CREATE_NULL()			TSDP_HEADER_Z_CREATE(0, 0, TSDP_NULL)
+#define TSDP_HEADER_Z_CREATE_NULL()			TSDP_HEADER_Z_CREATE(0, 0, tsk_null)
 
 
 #define TSDP_ZONE_CREATE(time, shifted_back, typed_time) tsk_object_new(tsdp_zone_def_t, (uint64_t)time, (unsigned)shifted_back, (const char*)typed_time)
-#define TSDP_ZONE_CREATE_NULL() TSDP_ZONE_CREATE(0, 0, TSDP_NULL)
+#define TSDP_ZONE_CREATE_NULL() TSDP_ZONE_CREATE(0, 0, tsk_null)
 
 typedef struct tsdp_zone_s
 {

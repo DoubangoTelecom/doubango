@@ -41,7 +41,7 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_HEADER_CONTENT_TYPE_VA_ARGS(type)	tsip_header_Content_Type_def_t, (const char*)type
 #define TSIP_HEADER_CONTENT_TYPE_CREATE(type)			tsk_object_new(TSIP_HEADER_CONTENT_TYPE_VA_ARGS(type))
-#define TSIP_HEADER_CONTENT_TYPE_CREATE_NULL()			TSIP_HEADER_CONTENT_TYPE_CREATE(TSIP_NULL)
+#define TSIP_HEADER_CONTENT_TYPE_CREATE_NULL()			TSIP_HEADER_CONTENT_TYPE_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

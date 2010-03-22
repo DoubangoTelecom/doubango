@@ -48,7 +48,7 @@ struct thttp_message_s;
 
 typedef uint64_t thttp_operation_id_t;			
 #define THTTP_OPERATION_INVALID_ID				0
-#define THTTP_OPERATION_INVALID_HANDLE			THTTP_NULL
+#define THTTP_OPERATION_INVALID_HANDLE			tsk_null
 
 typedef enum thttp_operation_param_type_e
 {

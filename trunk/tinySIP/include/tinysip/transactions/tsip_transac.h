@@ -105,10 +105,9 @@ typedef struct tsip_transac_s
 	
 	tsip_transac_type_t type;
 	
-	unsigned reliable:1;
-	
-	unsigned running:1;
-	unsigned initialized;
+	tsk_bool_t reliable;
+	tsk_bool_t running;
+	tsk_bool_t initialized;
 	
 	char *branch;
 	
@@ -127,7 +126,7 @@ typedef tsk_list_t tsip_transacs_L_t; /**< List of @ref tsip_transac_t elements.
 /*
 ================================*/
 
-int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, unsigned reliable, int32_t cseq_value, const char* cseq_method, const char* callid);
+int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid);
 int tsip_transac_deinit(tsip_transac_t *self);
 int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request);
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg);

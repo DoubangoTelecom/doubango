@@ -35,9 +35,9 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message, TSIP_BOOLEAN extract_content);
+static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message, tsk_bool_t extract_content);
 static void tsip_message_parser_init(tsk_ragel_state_t *state);
-static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message, TSIP_BOOLEAN extract_content);
+static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message, tsk_bool_t extract_content);
 
 /***********************************
 *	Ragel state machine.
@@ -186,10 +186,10 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 %%write data;
 
 
-TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result, TSIP_BOOLEAN extract_content)
+tsk_bool_t tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result, tsk_bool_t extract_content)
 {
 	if(!state || state->pe <= state->p){
-		return TSIP_FALSE;
+		return tsk_false;
 	}
 
 	if(!*result){
@@ -209,9 +209,9 @@ TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **resul
 	if( state->cs < %%{ write first_final; }%% )
 	{
 		TSK_OBJECT_SAFE_FREE(*result);
-		return TSIP_FALSE;
+		return tsk_false;
 	}
-	return TSIP_TRUE;
+	return tsk_true;
 }
 
 
@@ -225,7 +225,7 @@ static void tsip_message_parser_init(tsk_ragel_state_t *state)
 	state->cs = cs;
 }
 
-static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message, TSIP_BOOLEAN extract_content)
+static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t *message, tsk_bool_t extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;
@@ -240,7 +240,7 @@ static void tsip_message_parser_execute(tsk_ragel_state_t *state, tsip_message_t
 	state->eof = eof;
 }
 
-static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message, TSIP_BOOLEAN extract_content)
+static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *message, tsk_bool_t extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;

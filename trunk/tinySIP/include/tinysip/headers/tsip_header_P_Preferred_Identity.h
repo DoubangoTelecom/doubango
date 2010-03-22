@@ -42,7 +42,7 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(uri)	tsip_header_P_Preferred_Identity_def_t, (const tsip_uri_t*)uri
 #define TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE(uri)	tsk_object_new(TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(uri))
-#define TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE_NULL()	TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE(TSIP_NULL)
+#define TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE_NULL()	TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

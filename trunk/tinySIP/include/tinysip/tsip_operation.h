@@ -45,7 +45,7 @@ struct tsip_message_s;
 
 typedef uint64_t tsip_operation_id_t;			
 #define TSIP_OPERATION_INVALID_ID				0
-#define TSIP_OPERATION_INVALID_HANDLE			TSIP_NULL
+#define TSIP_OPERATION_INVALID_HANDLE			tsk_null
 
 typedef enum tsip_operation_param_type_e
 {

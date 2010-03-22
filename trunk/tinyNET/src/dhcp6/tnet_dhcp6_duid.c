@@ -41,7 +41,7 @@ int tnet_dhcp6_duid_init(tnet_dhcp6_duid_t *self, tnet_dhcp6_duid_type_t type)
 		if(!self->initialized)
 		{
 			self->type = type;			
-			self->initialized = 1;
+			self->initialized = tsk_true;
 			return 0;
 		}
 		return -2;
@@ -55,7 +55,7 @@ int tnet_dhcp6_duid_deinit(tnet_dhcp6_duid_t *self)
 	{
 		if(self->initialized)
 		{			
-			self->initialized = 0;
+			self->initialized = tsk_true;
 			return 0;
 		}
 		return -2;

@@ -41,7 +41,7 @@ TSDP_BEGIN_DECLS
 */
 #define TSDP_HEADER_B_VA_ARGS(bwtype, bandwidth)		tsdp_header_B_def_t, (const char*)bwtype, (uint32_t)bandwidth
 #define TSDP_HEADER_B_CREATE(bwtype, bandwidth)			tsk_object_new(TSDP_HEADER_B_VA_ARGS(bwtype, bandwidth))
-#define TSDP_HEADER_B_CREATE_NULL()			TSDP_HEADER_B_CREATE(TSDP_NULL, TSDP_NULL)
+#define TSDP_HEADER_B_CREATE_NULL()			TSDP_HEADER_B_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

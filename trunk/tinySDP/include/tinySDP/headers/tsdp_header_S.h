@@ -41,7 +41,7 @@ TSDP_BEGIN_DECLS
 */
 #define TSDP_HEADER_S_VA_ARGS(value)		tsdp_header_S_def_t, (const char*)value
 #define TSDP_HEADER_S_CREATE(value)			tsk_object_new(TSDP_HEADER_S_VA_ARGS(value))
-#define TSDP_HEADER_S_CREATE_NULL()			TSDP_HEADER_S_CREATE(TSDP_NULL)
+#define TSDP_HEADER_S_CREATE_NULL()			TSDP_HEADER_S_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

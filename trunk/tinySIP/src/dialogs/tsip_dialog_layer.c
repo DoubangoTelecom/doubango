@@ -57,13 +57,13 @@ tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsi
 	return ret;
 }
 
-const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, TSIP_BOOLEAN *cid_matched)
+const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, tsk_bool_t *cid_matched)
 {
 	tsip_dialog_t *ret = 0;
 	tsip_dialog_t *dialog;
 	tsk_list_item_t *item;
 
-	*cid_matched = TSIP_FALSE;
+	*cid_matched = tsk_false;
 
 	tsk_safeobj_lock(self);
 
@@ -71,7 +71,7 @@ const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, con
 	{
 		dialog = item->data;
 		if(tsk_strequals(dialog->callid, callid)){
-			*cid_matched = TSIP_TRUE;
+			*cid_matched = tsk_true;
 			if(tsk_strequals(dialog->tag_local, from_tag) && tsk_strequals(dialog->tag_remote, to_tag)){
 				ret = dialog;
 				break;
@@ -140,7 +140,7 @@ int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dia
 int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message)
 {
 	int ret = -1;
-	TSIP_BOOLEAN cid_matched;
+	tsk_bool_t cid_matched;
 	const tsip_dialog_t* dialog;
 	tsip_transac_t* transac = 0;
 	const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
@@ -157,7 +157,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	
 	if(dialog){
 		dialog->callback(dialog, tsip_dialog_i_msg, message);
-		if((transac = tsip_transac_layer_new(layer_transac, TSIP_FALSE, message))){
+		if((transac = tsip_transac_layer_new(layer_transac, tsk_false, message))){
 			TSIP_TRANSAC(transac)->dialog = dialog;
 		}
 	}
@@ -170,7 +170,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 				case tsip_MESSAGE:
 					{
 						tsip_dialog_message_t *dlg_msg = TSIP_DIALOG_MESSAGE_CREATE(self->stack, op);
-						if((transac = tsip_transac_layer_new(layer_transac, TSIP_FALSE, message))){
+						if((transac = tsip_transac_layer_new(layer_transac, tsk_false, message))){
 							TSIP_TRANSAC(transac)->dialog = TSIP_DIALOG(dlg_msg);
 						}
 						tsk_list_push_back_data(self->dialogs, (void**)&dlg_msg);
@@ -199,7 +199,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 		const tsip_transport_layer_t *layer;
 		tsip_response_t* response;
 
-		if((layer = layer = tsip_stack_get_transport_layer(self->stack)))
+		if((layer = tsip_stack_get_transport_layer(self->stack)))
 		{	
 			if(cid_matched){ /* We are receiving our own message. */
 				response = tsip_response_new(482, "Loop Detected (Check your iFCs)", message);

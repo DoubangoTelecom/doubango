@@ -36,7 +36,7 @@
 
 TSIP_BEGIN_DECLS
 
-TINYSIP_API TSIP_BOOLEAN tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result, TSIP_BOOLEAN extract_content);
+TINYSIP_API tsk_bool_t tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result, tsk_bool_t extract_content);
 
 TSIP_END_DECLS
 

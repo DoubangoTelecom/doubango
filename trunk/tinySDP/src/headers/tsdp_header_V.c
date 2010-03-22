@@ -58,6 +58,15 @@ int tsdp_header_V_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_V_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_V_t *V = (const tsdp_header_V_t *)header;
+		return TSDP_HEADER_V_CREATE(V->version);
+	}
+	return tsk_null;
+}
+
 tsdp_header_V_t *tsdp_header_V_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -69,7 +78,7 @@ tsdp_header_V_t *tsdp_header_V_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 73 "../src/headers/tsdp_header_V.c" */
+/* #line 82 "../src/headers/tsdp_header_V.c" */
 static const char _tsdp_machine_parser_header_V_actions[] = {
 	0, 1, 0, 1, 1
 };
@@ -116,16 +125,16 @@ static const int tsdp_machine_parser_header_V_error = 0;
 static const int tsdp_machine_parser_header_V_en_main = 1;
 
 
-/* #line 87 "tsdp_parser_header_V.rl" */
+/* #line 96 "tsdp_parser_header_V.rl" */
 	
-/* #line 122 "../src/headers/tsdp_header_V.c" */
+/* #line 131 "../src/headers/tsdp_header_V.c" */
 	{
 	cs = tsdp_machine_parser_header_V_start;
 	}
 
-/* #line 88 "tsdp_parser_header_V.rl" */
+/* #line 97 "tsdp_parser_header_V.rl" */
 	
-/* #line 129 "../src/headers/tsdp_header_V.c" */
+/* #line 138 "../src/headers/tsdp_header_V.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -210,7 +219,7 @@ _match:
 		TSK_PARSER_SET_INT(hdr_V->version);
 	}
 	break;
-/* #line 214 "../src/headers/tsdp_header_V.c" */
+/* #line 223 "../src/headers/tsdp_header_V.c" */
 		}
 	}
 
@@ -232,7 +241,7 @@ _again:
 		TSK_PARSER_SET_INT(hdr_V->version);
 	}
 	break;
-/* #line 236 "../src/headers/tsdp_header_V.c" */
+/* #line 245 "../src/headers/tsdp_header_V.c" */
 		}
 	}
 	}
@@ -240,12 +249,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 89 "tsdp_parser_header_V.rl" */
+/* #line 98 "tsdp_parser_header_V.rl" */
 	
 	if( cs < 
-/* #line 247 "../src/headers/tsdp_header_V.c" */
+/* #line 256 "../src/headers/tsdp_header_V.c" */
 5
-/* #line 90 "tsdp_parser_header_V.rl" */
+/* #line 99 "tsdp_parser_header_V.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"v=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_V);
@@ -271,6 +280,7 @@ static void* tsdp_header_V_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(V)->type = tsdp_htype_V;
 		TSDP_HEADER(V)->tostring = tsdp_header_V_tostring;
+		TSDP_HEADER(V)->clone = tsdp_header_V_clone;
 		TSDP_HEADER(V)->rank = TSDP_HTYPE_V_RANK;
 		
 		V->version = va_arg(*app, int32_t);

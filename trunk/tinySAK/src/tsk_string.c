@@ -32,6 +32,7 @@
 #include "tsk_memory.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"
+#include "tsk_common.h"
 
 #include <stdarg.h>
 #include <ctype.h>
@@ -122,7 +123,7 @@ char* tsk_strdup(const char *s1)
 	if(s1){
 		return strdup(s1);
 	}
-	return TSK_NULL;
+	return tsk_null;
 }
 
 /**
@@ -155,9 +156,9 @@ char* tsk_strndup(const char *s1, size_t n)
 * @param str The master string.
 * @param size The size of the master string.
 * @param substring the substring.
-* @retval 1 if @a str contains at least one occurence of @a substring and zero othewise.
+* @retval @a tsk_true if @a str contains at least one occurence of @a substring and @a tsk_false othewise.
 */
-int tsk_strcontains(const char * str, size_t size, const char * substring)
+tsk_bool_t tsk_strcontains(const char * str, size_t size, const char * substring)
 {
 	return (tsk_strindexOf(str, size, substring) >= 0);
 }

@@ -107,6 +107,15 @@ int tsdp_header_O_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_O_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_O_t *O = (const tsdp_header_O_t *)header;
+		return TSDP_HEADER_O_CREATE(O->username, O->sess_id, O->sess_version, O->nettype, O->addrtype, O->addr);
+	}
+	return tsk_null;
+}
+
 tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -146,6 +155,7 @@ static void* tsdp_header_O_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(O)->type = tsdp_htype_O;
 		TSDP_HEADER(O)->tostring = tsdp_header_O_tostring;
+		TSDP_HEADER(O)->clone = tsdp_header_O_clone;
 		TSDP_HEADER(O)->rank = TSDP_HTYPE_O_RANK;
 		
 		O->username = tsk_strdup(va_arg(*app, const char*));

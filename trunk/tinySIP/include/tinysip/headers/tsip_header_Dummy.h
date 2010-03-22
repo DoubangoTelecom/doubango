@@ -41,7 +41,7 @@ TSIP_BEGIN_DECLS
 */
 #define TSIP_HEADER_DUMMY_VA_ARGS(name, value)		tsip_header_Dummy_def_t, (const char*)name, (const char*)value
 #define TSIP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(TSIP_HEADER_DUMMY_VA_ARGS(name, value))
-#define TSIP_HEADER_DUMMY_CREATE_NULL()				TSIP_HEADER_DUMMY_CREATE(TSIP_NULL, TSIP_NULL)
+#define TSIP_HEADER_DUMMY_CREATE_NULL()				TSIP_HEADER_DUMMY_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

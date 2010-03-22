@@ -216,7 +216,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 			On sending a REGISTER request in order to indicate support for early IMS security procedures, the UE shall not
 			include an Authorization header field and not include header fields or header field values as required by RFC3329.
 		*/
-		if(tsk_striequals("REGISTER", method) && !TSIP_STACK(self->stack)->enable_earlyIMS)
+		if(TSIP_REQUEST_IS_REGISTER(request) && !TSIP_STACK(self->stack)->enable_earlyIMS)
 		{
 			/*	3GPP TS 24.229 - 5.1.1.2.2 Initial registration using IMS AKA
 				On sending a REGISTER request, the UE shall populate the header fields as follows:
@@ -228,7 +228,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 					- the "response" header field parameter, set to an empty value;
 			*/
 			const char* realm = TSIP_STACK(self->stack)->realm ? TSIP_STACK(self->stack)->realm->host : "(null)";
-			char* request_uri = tsip_uri_tostring(request->uri, TSIP_FALSE, TSIP_FALSE);
+			char* request_uri = tsip_uri_tostring(request->uri, tsk_false, tsk_false);
 			tsip_header_t* auth_hdr = tsip_challenge_create_empty_header_authorization(TSIP_STACK(self->stack)->private_identity, realm, request_uri);
 			tsip_message_add_header(request, auth_hdr);
 			tsk_object_unref(auth_hdr), auth_hdr = 0;
@@ -251,7 +251,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 
 	/* Update CSeq */
-	if(!tsk_striequals(method, "ACK") && !tsk_striequals(method, "CANCEL")){
+	if(!TSIP_REQUEST_IS_ACK(request) && !TSIP_REQUEST_IS_CANCEL(request)){
 		request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
 	}
 
@@ -367,16 +367,13 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 				{
 				case tsip_ict:
 					{
-						/* Start the newly create IC transaction.
-						*/
-						
+						/* Start the newly create IC transaction */
 						break;
 					}
 
 				case tsip_nict:
 					{
-						/* Start the newly created NIC transaction.
-						*/
+						/* Start the newly created NIC transaction */
 						tsip_transac_start(transac, request);
 						break;
 					}
@@ -409,11 +406,15 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 		const tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(self->stack);
 		if(layer)
 		{
-			/* As this is a response ...then there should be a matching server transaction.
+			/* As this is a response ...then use the associate server transaction.
 			*/
 			const tsip_transac_t *transac = tsip_transac_layer_find_server(layer, response);
 			if(transac){
 				ret = transac->callback(transac, tsip_transac_outgoing_msg, response);
+			}
+			else{
+				TSK_DEBUG_ERROR("Failed to find associated server transaction.");
+				// Send "408 Request Timeout" (should be done by the transaction layer)?
 			}
 		}
 	}
@@ -515,7 +516,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 	{
 		short code = response->status_code;
 		const char *tag = response->To->tag;
-		int isRegister = response->CSeq ? tsk_striequals(response->CSeq->method, "REGISTER") : 0;
+		tsk_bool_t isRegister = response->CSeq ? tsk_striequals(response->CSeq->method, "REGISTER") : tsk_false;
 
 		/* 
 		*	1xx (!100) or 2xx 
@@ -866,13 +867,13 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 			/* Expires */
 			if((param = tsip_operation_get_header(self->operation, "Expires"))){
 				self->expires = TSK_TIME_S_2_MS(atoi(param->value));
-				((tsk_param_t*)param)->tag = 1;
+				((tsk_param_t*)param)->tag = tsk_true;
 			}
 
 			/* From */
 			if((param = tsip_operation_get_header(TSIP_DIALOG(self)->operation, "From")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
 				self->uri_local = uri;
-				((tsk_param_t*)param)->tag = 1;
+				((tsk_param_t*)param)->tag = tsk_true;
 			}
 			else{
 				self->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
@@ -883,7 +884,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 				self->uri_remote_target = tsk_object_ref(uri); /* the to uri will be used as request uri. */
 				self->uri_remote = tsk_object_ref(uri);
 				tsk_object_unref(uri);
-				((tsk_param_t*)param)->tag = 1;
+				((tsk_param_t*)param)->tag = tsk_true;
 			}
 			else{
 				self->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
@@ -895,7 +896,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 			TSK_DEBUG_ERROR("Invalid operation id.");
 		}
 
-		self->initialized = 1;
+		self->initialized = tsk_true;
 		return 0;
 	}
 	return -1;
@@ -904,7 +905,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_ha
 int tsip_dialog_hangup(tsip_dialog_t *self)
 {
 	if(self){
-		return self->callback(self, tsip_dialog_hang_up, TSIP_NULL);
+		return self->callback(self, tsip_dialog_hang_up, tsk_null);
 	}
 	return -1;
 }
@@ -912,7 +913,7 @@ int tsip_dialog_hangup(tsip_dialog_t *self)
 int tsip_dialog_shutdown(tsip_dialog_t *self)
 {
 	if(self){
-		return self->callback(self, tsip_dialog_shuttingdown, TSIP_NULL);
+		return self->callback(self, tsip_dialog_shuttingdown, tsk_null);
 	}
 	return -1;
 }

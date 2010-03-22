@@ -122,12 +122,12 @@ void test_parser()
 	tsk_ragel_state_t state;
 	tsip_message_t *message = 0;
 	tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
-	TSIP_BOOLEAN enabled;
+	tsk_bool_t enabled;
 	int32_t expires;
 	uint32_t clength;
 
 	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, strlen(SIP_MSG_2_TEST));
-	tsip_message_parse(&state, &message, TSIP_TRUE);
+	tsip_message_parse(&state, &message, tsk_true);
 
 	enabled = tsip_message_allowed(message, "REFER");
 	enabled = tsip_message_allowed(message, "MESSAGE");
@@ -182,7 +182,7 @@ void test_responses()
 	tsip_request_t *response = 0;
 
 	tsk_ragel_state_init(&state, SIP_MESSAGE, strlen(SIP_MESSAGE));
-	tsip_message_parse(&state, &request, TSIP_TRUE);
+	tsip_message_parse(&state, &request, tsk_true);
 
 	/* Create the response and destroy the request */
 	response = tsip_response_new(200, "OK you can move forward", request);

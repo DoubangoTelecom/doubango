@@ -92,7 +92,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
 	tsk_ragel_state_t state;
-	thttp_message_t *message = THTTP_NULL;
+	thttp_message_t *message = tsk_null;
 	int endOfheaders = -1;
 	const thttp_stack_t *stack = e->callback_data;
 	const thttp_operation_handle_t* operation = 0;
@@ -157,7 +157,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 			else{
 				/* Add the content to the message. */
-				thttp_message_add_content(message, THTTP_NULL, TSK_BUFFER_TO_U8(buf) + endOfheaders + 4/*2CRLF*/, clen);
+				thttp_message_add_content(message, tsk_null, TSK_BUFFER_TO_U8(buf) + endOfheaders + 4/*2CRLF*/, clen);
 				/* Remove HTTP headers, CRLF and the content. */
 				tsk_buffer_remove(buf, 0, (endOfheaders + 4/*2CRLF*/ + clen));
 			}

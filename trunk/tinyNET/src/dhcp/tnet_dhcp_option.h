@@ -224,7 +224,7 @@ typedef struct tnet_dhcp_option_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	unsigned initialized:1;
+	tsk_bool_t initialized;
 	
 	tnet_dhcp_option_code_t code; /**< 1-byte option-code. */
 	tsk_buffer_t *value;

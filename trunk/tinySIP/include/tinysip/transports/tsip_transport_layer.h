@@ -48,7 +48,7 @@ typedef struct tsip_transport_layer_s
 
 	const tsip_stack_handle_t *stack;
 
-	unsigned running:1;
+	tsk_bool_t running;
 	tsip_transports_L_t *transports;
 }
 tsip_transport_layer_t;

@@ -61,7 +61,7 @@ typedef struct tsip_dialog_publish
 	tsip_timer_t timerrefresh;
 	tsip_timer_t timershutdown;
 
-	unsigned unpublishing:1;
+	tsk_bool_t unpublishing;
 	char* etag;
 	refresh_type_t last_rtype;
 }

@@ -43,9 +43,9 @@ typedef struct tsip_dialog_invite
 	
 	tsk_fsm_t *fsm;
 	
-	unsigned sender:1;
+	tsk_bool_t sender;
 }
-tsip_dialog_message_t;
+tsip_dialog_invite_t;
 
 int tsip_dialog_invite_start(tsip_dialog_invite_t *self, int isSender);
 

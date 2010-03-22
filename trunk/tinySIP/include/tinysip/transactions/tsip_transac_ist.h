@@ -37,15 +37,29 @@
 
 TSIP_BEGIN_DECLS
 
+#define TSIP_TRANSAC_IST_CREATE(stack, reliable, cseq_value, callid)		tsk_object_new(tsip_transac_ist_def_t, (const tsip_stack_handle_t *)stack, (tsk_bool_t)reliable, (int32_t)cseq_value, (const char*)callid)
+
+#define TSIP_TRANSAC_IST(self)												((tsip_transac_ist_t*)(self))
+
+
 typedef struct tsip_transac_ist
 {
 	TSIP_DECLARE_TRANSAC;
 
 	tsk_fsm_t *fsm;
+
+	tsip_response_t* lastResponse;
+
+	tsip_timer_t timerH;
+	tsip_timer_t timerI;
+	tsip_timer_t timerG;
+	tsip_timer_t timerL;
 }
 tsip_transac_ist_t;
 
-int tsip_transac_ist_init(tsip_transac_ist_t *self);
+int tsip_transac_ist_start(tsip_transac_ist_t *self, const tsip_request_t* request);
+
+TINYSIP_GEXTERN const void *tsip_transac_ist_def_t;
 
 TSIP_END_DECLS
 

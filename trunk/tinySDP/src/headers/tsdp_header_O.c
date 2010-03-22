@@ -66,6 +66,15 @@ int tsdp_header_O_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_O_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_O_t *O = (const tsdp_header_O_t *)header;
+		return TSDP_HEADER_O_CREATE(O->username, O->sess_id, O->sess_version, O->nettype, O->addrtype, O->addr);
+	}
+	return tsk_null;
+}
+
 tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -77,7 +86,7 @@ tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 81 "../src/headers/tsdp_header_O.c" */
+/* #line 90 "../src/headers/tsdp_header_O.c" */
 static const char _tsdp_machine_parser_header_U_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -144,16 +153,16 @@ static const int tsdp_machine_parser_header_U_error = 0;
 static const int tsdp_machine_parser_header_U_en_main = 1;
 
 
-/* #line 121 "tsdp_parser_header_O.rl" */
+/* #line 130 "tsdp_parser_header_O.rl" */
 	
-/* #line 150 "../src/headers/tsdp_header_O.c" */
+/* #line 159 "../src/headers/tsdp_header_O.c" */
 	{
 	cs = tsdp_machine_parser_header_U_start;
 	}
 
-/* #line 122 "tsdp_parser_header_O.rl" */
+/* #line 131 "tsdp_parser_header_O.rl" */
 	
-/* #line 157 "../src/headers/tsdp_header_O.c" */
+/* #line 166 "../src/headers/tsdp_header_O.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -268,7 +277,7 @@ _match:
 		TSK_PARSER_SET_STRING(hdr_O->addr);
 	}
 	break;
-/* #line 272 "../src/headers/tsdp_header_O.c" */
+/* #line 281 "../src/headers/tsdp_header_O.c" */
 		}
 	}
 
@@ -296,7 +305,7 @@ _again:
 		TSK_PARSER_SET_STRING(hdr_O->addr);
 	}
 	break;
-/* #line 300 "../src/headers/tsdp_header_O.c" */
+/* #line 309 "../src/headers/tsdp_header_O.c" */
 		}
 	}
 	}
@@ -304,12 +313,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 123 "tsdp_parser_header_O.rl" */
+/* #line 132 "tsdp_parser_header_O.rl" */
 	
 	if( cs < 
-/* #line 311 "../src/headers/tsdp_header_O.c" */
+/* #line 320 "../src/headers/tsdp_header_O.c" */
 14
-/* #line 124 "tsdp_parser_header_O.rl" */
+/* #line 133 "tsdp_parser_header_O.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"o=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_O);
@@ -335,6 +344,7 @@ static void* tsdp_header_O_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(O)->type = tsdp_htype_O;
 		TSDP_HEADER(O)->tostring = tsdp_header_O_tostring;
+		TSDP_HEADER(O)->clone = tsdp_header_O_clone;
 		TSDP_HEADER(O)->rank = TSDP_HTYPE_O_RANK;
 		
 		O->username = tsk_strdup(va_arg(*app, const char*));

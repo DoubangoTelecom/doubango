@@ -51,7 +51,7 @@
 TSK_BEGIN_DECLS
 
 #define TSK_BUFFER_CREATE(data, size)		tsk_object_new(tsk_buffer_def_t, (const void*)data, (size_t)size)
-#define TSK_BUFFER_CREATE_NULL()			TSK_BUFFER_CREATE(TSK_NULL, TSK_NULL)
+#define TSK_BUFFER_CREATE_NULL()			TSK_BUFFER_CREATE(tsk_null, tsk_null)
 
 /**@ingroup tsk_buffer_group
 * @def TSK_BUFFER

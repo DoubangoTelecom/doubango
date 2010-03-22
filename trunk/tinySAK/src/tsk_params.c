@@ -30,6 +30,7 @@
 #include "tsk_params.h"
 #include "tsk_memory.h"
 #include "tsk_string.h"
+#include "tsk_common.h"
 
 #include <string.h>
 

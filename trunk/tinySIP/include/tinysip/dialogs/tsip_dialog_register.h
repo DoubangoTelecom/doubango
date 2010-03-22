@@ -50,7 +50,7 @@ typedef struct tsip_dialog_register
 	tsip_timer_t timerrefresh;
 	tsip_timer_t timershutdown;
 
-	unsigned unregistering:1;
+	tsk_bool_t unregistering;
 }
 tsip_dialog_register_t;
 

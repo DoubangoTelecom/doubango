@@ -328,7 +328,7 @@ void test_stack()
 	tsk_thread_sleep(1000);
 
 	/* SUBSCRIBE */
-	{
+	/*{
 		tsip_operation_handle_t *op2 = TSIP_OPERATION_CREATE(stack,
 		TSIP_OPERATION_SET_HEADER("expires", "30"),
 		TSIP_OPERATION_SET_HEADER("Event", "reg"),
@@ -338,7 +338,7 @@ void test_stack()
 		
 		TSIP_OPERATION_SET_NULL());
 		tsip_subscribe(stack, op2);
-	}
+	}*/
 	
 	/* MESSAGE */
 	//{

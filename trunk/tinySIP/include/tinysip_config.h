@@ -76,10 +76,4 @@
 #include <stdlib.h>
 #endif
 
-/* FIXME */
-#define TSIP_TRUE	1
-#define TSIP_FALSE	0
-typedef int TSIP_BOOLEAN;
-#define TSIP_NULL 0
-
 #endif // TINYSIP_CONFIG_H

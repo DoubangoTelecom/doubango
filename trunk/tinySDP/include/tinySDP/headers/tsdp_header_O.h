@@ -42,7 +42,7 @@ TSDP_BEGIN_DECLS
 #define TSDP_HEADER_O_VA_ARGS(username, sess_id, sess_version, nettype, addrtype, addr)			tsdp_header_O_def_t, (const char*)username, (uint32_t)sess_version, (uint32_t)sess_id, (const char*)nettype, (const char*)addrtype, (const char*)addr
 #define TSDP_HEADER_O_VA_ARGS_DEFAULT(username, nettype, addrtype, addr)						TSDP_HEADER_O_VA_ARGS(username, TSDP_HEADER_O_SESS_ID_DEFAULT, TSDP_HEADER_O_SESS_VERSION_DEFAULT, nettype, addrtype, addr)
 #define TSDP_HEADER_O_CREATE(username, sess_id, sess_version, nettype, addrtype, addr)			tsk_object_new(TSDP_HEADER_O_VA_ARGS(username, sess_id, sess_version, nettype, addrtype, addr))
-#define TSDP_HEADER_O_CREATE_NULL()																TSDP_HEADER_O_CREATE(TSDP_NULL, 0, 0, TSDP_NULL, TSDP_NULL, TSDP_NULL)
+#define TSDP_HEADER_O_CREATE_NULL()																TSDP_HEADER_O_CREATE(tsk_null, 0, 0, tsk_null, tsk_null, tsk_null)
 #define TSDP_HEADER_O_CREATE_DEFAULT(username, nettype, addrtype, addr)							TSDP_HEADER_O_CREATE(username, TSDP_HEADER_O_SESS_ID_DEFAULT, TSDP_HEADER_O_SESS_VERSION_DEFAULT, nettype, addrtype, addr)
 
 #define TSDP_HEADER_O_SESS_ID_DEFAULT		123456

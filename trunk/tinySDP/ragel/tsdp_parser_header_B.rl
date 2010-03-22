@@ -82,6 +82,15 @@ int tsdp_header_B_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_B_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_B_t *B = (const tsdp_header_B_t *)header;
+		return TSDP_HEADER_B_CREATE(B->bwtype, B->bandwidth);
+	}
+	return tsk_null;
+}
+
 tsdp_header_B_t *tsdp_header_B_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -121,6 +130,7 @@ static void* tsdp_header_B_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(B)->type = tsdp_htype_B;
 		TSDP_HEADER(B)->tostring = tsdp_header_B_tostring;
+		TSDP_HEADER(B)->clone = tsdp_header_B_clone;
 		TSDP_HEADER(B)->rank = TSDP_HTYPE_B_RANK;
 		
 		B->bwtype = tsk_strdup(va_arg(*app, const char*));

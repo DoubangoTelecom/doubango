@@ -33,12 +33,12 @@
 #include "tinySDP/headers/tsdp_header_T.h"
 #include "tinySDP/headers/tsdp_header_V.h"
 
-tsdp_message_t* tsdp_create_empty(const char* addr, int isIPv6)
+tsdp_message_t* tsdp_create_empty(const char* addr, tsk_bool_t ipv6)
 {
 	tsdp_message_t* ret = 0;
 
 	if(!(ret = TSDP_MESSAGE_CREATE())){
-		return TSDP_NULL;
+		return tsk_null;
 	}
 
 	/*	RFC 3264 - 5 Generating the Initial Offer
@@ -52,7 +52,7 @@ tsdp_message_t* tsdp_create_empty(const char* addr, int isIPv6)
 		TSDP_LINE_O_SESSION_ID_DEFAULT,
 		TSDP_LINE_O_SESSION_VER_DEFAULT,
 		"IN",
-		isIPv6 ? "IP6" : "IP4",
+		ipv6 ? "IP6" : "IP4",
 		addr));
 
 	/*	RFC 3264 - 5 Generating the Initial Offer
@@ -75,3 +75,48 @@ tsdp_message_t* tsdp_create_empty(const char* addr, int isIPv6)
 	
 	return ret;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//=================================================================================================
+//	Sdp ctx object definition
+//
+static void* tsdp_ctx_create(void * self, va_list * app)
+{
+	tsdp_ctx_t *ctx = self;
+	if(ctx){
+	}
+	return self;
+}
+
+static void* tsdp_ctx_destroy(void * self)
+{ 
+	tsdp_ctx_t *ctx = self;
+	if(ctx){
+		TSK_OBJECT_SAFE_FREE(ctx->caps);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tsdp_ctx_def_s = 
+{
+	sizeof(tsdp_ctx_t),
+	tsdp_ctx_create,
+	tsdp_ctx_destroy,
+	tsk_null,
+};
+const void *tsdp_ctx_def_t = &tsdp_ctx_def_s;

@@ -41,6 +41,7 @@ TSDP_BEGIN_DECLS
 #define TSDP_HEADER_VALUE_TOSTRING_F(self)	((tsdp_header_value_tostring_f)(self))
 
 typedef int (*tsdp_header_value_tostring_f)(const struct tsdp_header_s* header, tsk_buffer_t* output);
+typedef struct tsdp_header_s* (*tsdp_header_clone_f)(const struct tsdp_header_s* header);
 
 #define TSDP_HTYPE_V_RANK		0
 #define TSDP_HTYPE_O_RANK		1
@@ -99,6 +100,7 @@ typedef struct tsdp_header_s
 	// Info: RFC 4566 - 5. SDP Specification.
 	uint8_t rank;
 	tsdp_header_value_tostring_f tostring;
+	tsdp_header_clone_f clone;
 }
 tsdp_header_t;
 

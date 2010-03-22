@@ -23,7 +23,7 @@
 */
 
 
-/**@file tsdp_header_B.c
+/**@file tsdp_header_A.c
  * @brief SDP "a=" header (Attributes).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
@@ -62,6 +62,15 @@ int tsdp_header_A_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_A_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_A_t *A = (const tsdp_header_A_t *)header;
+		return TSDP_HEADER_A_CREATE(A->field, A->value);
+	}
+	return tsk_null;
+}
+
 tsdp_header_A_t *tsdp_header_A_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -73,7 +82,7 @@ tsdp_header_A_t *tsdp_header_A_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 77 "../src/headers/tsdp_header_A.c" */
+/* #line 86 "../src/headers/tsdp_header_A.c" */
 static const char _tsdp_machine_parser_header_A_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 2
@@ -137,16 +146,16 @@ static const int tsdp_machine_parser_header_A_error = 0;
 static const int tsdp_machine_parser_header_A_en_main = 1;
 
 
-/* #line 98 "tsdp_parser_header_A.rl" */
+/* #line 107 "tsdp_parser_header_A.rl" */
 	
-/* #line 143 "../src/headers/tsdp_header_A.c" */
+/* #line 152 "../src/headers/tsdp_header_A.c" */
 	{
 	cs = tsdp_machine_parser_header_A_start;
 	}
 
-/* #line 99 "tsdp_parser_header_A.rl" */
+/* #line 108 "tsdp_parser_header_A.rl" */
 	
-/* #line 150 "../src/headers/tsdp_header_A.c" */
+/* #line 159 "../src/headers/tsdp_header_A.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -238,7 +247,7 @@ _match:
 		TSK_PARSER_SET_STRING(hdr_A->value);
 	}
 	break;
-/* #line 242 "../src/headers/tsdp_header_A.c" */
+/* #line 251 "../src/headers/tsdp_header_A.c" */
 		}
 	}
 
@@ -272,7 +281,7 @@ _again:
 		TSK_PARSER_SET_STRING(hdr_A->value);
 	}
 	break;
-/* #line 276 "../src/headers/tsdp_header_A.c" */
+/* #line 285 "../src/headers/tsdp_header_A.c" */
 		}
 	}
 	}
@@ -280,12 +289,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 100 "tsdp_parser_header_A.rl" */
+/* #line 109 "tsdp_parser_header_A.rl" */
 	
 	if( cs < 
-/* #line 287 "../src/headers/tsdp_header_A.c" */
+/* #line 296 "../src/headers/tsdp_header_A.c" */
 5
-/* #line 101 "tsdp_parser_header_A.rl" */
+/* #line 110 "tsdp_parser_header_A.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"a=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_A);
@@ -311,6 +320,7 @@ static void* tsdp_header_A_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(A)->type = tsdp_htype_A;
 		TSDP_HEADER(A)->tostring = tsdp_header_A_tostring;
+		TSDP_HEADER(A)->clone = tsdp_header_A_clone;
 		TSDP_HEADER(A)->rank = TSDP_HTYPE_A_RANK;
 		
 		A->field = tsk_strdup(va_arg(*app, const char*));

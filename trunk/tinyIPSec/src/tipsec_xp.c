@@ -603,11 +603,11 @@ static void* tipsec_context_create(void * self, va_list * app)
 		if(!TIPSEC_CONTEXT(context)->use_ipv6){
 			TSK_DEBUG_ERROR("IPSec/IPv4 is not supported on Windows XP.");
 
-			TIPSEC_CONTEXT(context)->initialized = 0;
+			TIPSEC_CONTEXT(context)->initialized = tsk_false;
 			goto bail;
 		}
 		else{
-			TIPSEC_CONTEXT(context)->initialized = 1;
+			TIPSEC_CONTEXT(context)->initialized = tsk_true;
 		}
 		
 		TIPSEC_CONTEXT(context)->state = state_initial;

@@ -41,7 +41,7 @@ THTTP_BEGIN_DECLS
 */
 #define THTTP_HEADER_CONTENT_TYPE_VA_ARGS(type)			thttp_header_Content_Type_def_t, (const char*)type
 #define THTTP_HEADER_CONTENT_TYPE_CREATE(type)			tsk_object_new(THTTP_HEADER_CONTENT_TYPE_VA_ARGS(type))
-#define THTTP_HEADER_CONTENT_TYPE_CREATE_NULL()			THTTP_HEADER_CONTENT_TYPE_CREATE(THTTP_NULL)
+#define THTTP_HEADER_CONTENT_TYPE_CREATE_NULL()			THTTP_HEADER_CONTENT_TYPE_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

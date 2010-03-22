@@ -186,7 +186,7 @@ const tsk_param_t* thttp_operation_get_param(const thttp_operation_handle_t *sel
 		const thttp_operation_t *operation = self;
 		return tsk_params_get_param_by_name(operation->params, pname);
 	}
-	return THTTP_NULL;
+	return tsk_null;
 }
 
 const tsk_param_t* thttp_operation_get_header(const thttp_operation_handle_t *self, const char* hname)
@@ -195,7 +195,7 @@ const tsk_param_t* thttp_operation_get_header(const thttp_operation_handle_t *se
 		const thttp_operation_t *operation = self;
 		return tsk_params_get_param_by_name(operation->headers, hname);
 	}
-	return THTTP_NULL;
+	return tsk_null;
 }
 
 const tsk_params_L_t* thttp_operation_get_headers(const thttp_operation_handle_t *self)
@@ -203,7 +203,7 @@ const tsk_params_L_t* thttp_operation_get_headers(const thttp_operation_handle_t
 	if(self){
 		return ((const thttp_operation_t *)self)->headers;
 	}
-	return THTTP_NULL;
+	return tsk_null;
 }
 
 const tsk_params_L_t* thttp_operation_get_params(const thttp_operation_handle_t *self)
@@ -211,7 +211,7 @@ const tsk_params_L_t* thttp_operation_get_params(const thttp_operation_handle_t 
 	if(self){
 		return ((const thttp_operation_t *)self)->params;
 	}
-	return THTTP_NULL;
+	return tsk_null;
 }
 
 tnet_fd_t thttp_operation_get_fd(const thttp_operation_handle_t *self)

@@ -64,7 +64,17 @@
 												   retransmits
 	Timer K  T4 for UDP       Section 17.1.2.2     Wait time for
 			 0s for TCP/SCTP                       response retransmits
+	
+    Timer L  64*T1             Section 17.2.1         Wait time for
+                                                     accepted INVITE
+                                                     request retransmits
 
+   Timer M  64*T1             Section 17.1.1         Wait time for
+                                                     retransmission of
+                                                     2xx to INVITE or
+                                                     additional 2xx from
+                                                     other branches of
+                                                     a forked INVITE
 */
 
 #define TIMER_T1 500

@@ -116,6 +116,30 @@ int tsdp_header_T_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_T_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_T_t *T = (const tsdp_header_T_t *)header;
+		tsdp_header_T_t* clone;
+		const tsk_list_item_t *item;
+
+		if((clone = TSDP_HEADER_T_CREATE(T->start, T->stop))){
+
+			if(T->repeat_fields){
+				clone->repeat_fields = TSK_LIST_CREATE();
+			}
+
+			tsk_list_foreach(item, T->repeat_fields){
+				const tsdp_header_t* curr = item->data;
+				tsdp_header_t* hdr_clone = curr->clone(curr);
+				tsk_list_push_back_data(clone->repeat_fields, (void**)&hdr_clone);
+			}
+		}
+		return TSDP_HEADER(clone);
+	}
+	return tsk_null;
+}
+
 tsdp_header_T_t *tsdp_header_T_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -155,6 +179,7 @@ static void* tsdp_header_T_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(T)->type = tsdp_htype_T;
 		TSDP_HEADER(T)->tostring = tsdp_header_T_tostring;
+		TSDP_HEADER(T)->clone = tsdp_header_T_clone;
 		TSDP_HEADER(T)->rank = TSDP_HTYPE_T_RANK;
 	}
 	else{

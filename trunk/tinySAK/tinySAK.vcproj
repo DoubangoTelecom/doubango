@@ -367,6 +367,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsk_common.h"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsk_condwait.h"
 				>
 			</File>

@@ -53,7 +53,7 @@ typedef struct tsip_transport_s
 {
 	TSK_DECLARE_OBJECT;
 
-	unsigned initialized:1;
+	tsk_bool_t initialized;
 
 	const tsip_stack_handle_t *stack;
 

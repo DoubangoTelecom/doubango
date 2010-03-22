@@ -382,7 +382,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 static void* tnet_tls_socket_create(void * self, va_list * app)
 {
 #if TNET_HAVE_OPENSSL_H
-	static int __ssl_initialized = 0;
+	static tsk_bool_t __ssl_initialized = tsk_false;
 #endif
 	tnet_tls_socket_t *socket = self;
 	if(socket){
@@ -411,7 +411,7 @@ static void* tnet_tls_socket_create(void * self, va_list * app)
 		/* Initialize SSL: http://www.openssl.org/docs/ssl/SSL_library_init.html */
 #if TNET_HAVE_OPENSSL_H
 		if(!__ssl_initialized){
-			__ssl_initialized = 1;
+			__ssl_initialized = tsk_true;
 			SSL_library_init();
 			SSL_load_error_strings();
 		}
@@ -421,7 +421,7 @@ static void* tnet_tls_socket_create(void * self, va_list * app)
 			TSK_DEBUG_ERROR("Failed to initialize SSL socket [%d].", ret);
 		}
 		else{
-			socket->initialized = 1;
+			socket->initialized = tsk_true;
 		}
 	}
 	return self;

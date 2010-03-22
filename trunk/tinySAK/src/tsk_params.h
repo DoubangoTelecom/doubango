@@ -46,7 +46,7 @@
 TSK_BEGIN_DECLS
 
 #define TSK_PARAM_CREATE(name, value)		tsk_object_new(tsk_param_def_t, (const char*)name, (const char*)value)
-#define TSK_PARAM_CREATE_NULL()				TSK_PARAM_CREATE(TSK_NULL, TSK_NULL)
+#define TSK_PARAM_CREATE_NULL()				TSK_PARAM_CREATE(tsk_null, tsk_null)
 
 #define TSK_PARAM(self)				((tsk_param_t*)(self))
 
@@ -60,7 +60,7 @@ typedef struct tsk_param_s
 	char *name;/**< The name of the parameter. */
 	char *value;/**< The value of the parameter. */
 	
-	unsigned tag:1;/**< tag to be used for any use case (e.g. validity of the parameter, whether to ignore the param., ...). Default value: 0.*/
+	tsk_bool_t tag;/**< tag to be used for any use case (e.g. validity of the parameter, whether to ignore the param., ...). Default value: 0.*/
 }
 tsk_param_t;
 

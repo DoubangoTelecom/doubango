@@ -74,6 +74,15 @@ int tsdp_header_E_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
+tsdp_header_t* tsdp_header_E_clone(const tsdp_header_t* header)
+{
+	if(header){
+		const tsdp_header_E_t *E = (const tsdp_header_E_t *)header;
+		return TSDP_HEADER_E_CREATE(E->value);
+	}
+	return tsk_null;
+}
+
 tsdp_header_E_t *tsdp_header_E_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -113,6 +122,7 @@ static void* tsdp_header_E_create(void *self, va_list * app)
 	{
 		TSDP_HEADER(E)->type = tsdp_htype_E;
 		TSDP_HEADER(E)->tostring = tsdp_header_E_tostring;
+		TSDP_HEADER(E)->clone = tsdp_header_E_clone;
 		TSDP_HEADER(E)->rank = TSDP_HTYPE_E_RANK;
 		
 		E->value = tsk_strdup(va_arg(*app, const char*));

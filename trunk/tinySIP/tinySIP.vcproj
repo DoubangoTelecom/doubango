@@ -822,6 +822,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dialogs\tsip_dialog_invite.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dialogs\tsip_dialog_invite.client.c"
 					>
 				</File>

@@ -37,9 +37,10 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
-tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BOOLEAN isCT, const tsip_message_t* msg)
+tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_bool_t isCT, const tsip_message_t* msg)
 {
-	tsip_transac_t *ret = 0;
+	tsip_transac_t *ret = tsk_null;
+	tsip_transac_t *transac = tsk_null;
 
 	tsk_safeobj_lock(self);
 
@@ -47,39 +48,37 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, TSIP_BO
 	{
 		if(TSIP_MESSAGE_IS_REQUEST(msg))
 		{
-			if(isCT)
+			if(isCT)	/* Client transaction */
 			{
-				if(tsk_striequals(TSIP_MESSAGE_AS_REQUEST(msg)->method, "INVITE"))
-				{
+				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Client transaction (ICT)
+					transac = TSIP_TRANSAC_ICT_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->Call_ID->value);
 				}
-				else
-				{
+				else{
 					// NON-INVITE Client transaction (NICT)
-					tsip_transac_nict_t *transac = TSIP_TRANSAC_NICT_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
-					ret = TSIP_TRANSAC(transac);
-
-					tsk_list_push_back_data(self->transactions, (void**)&transac);
+					transac = TSIP_TRANSAC_NICT_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
 				}
 			}
-			else
+			else	/* Server transaction */
 			{
-				if(tsk_striequals(TSIP_MESSAGE_AS_REQUEST(msg)->method, "INVITE"))
-				{
+				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Server transaction (IST)
+					transac = TSIP_TRANSAC_IST_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->Call_ID->value);
 				}
-				else
-				{
+				else{
 					// NON-INVITE Server transaction (NIST)
-					tsip_transac_nist_t *transac = TSIP_TRANSAC_NIST_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
-					ret = TSIP_TRANSAC(transac);
-					
-					tsk_list_push_back_data(self->transactions, (void**)&transac);
+					transac = TSIP_TRANSAC_NIST_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
 				}
-
-				if(ret){
-					ret->branch = tsk_strdup(msg->firstVia->branch);
+				
+				if(transac){ /* Copy branch from the message */
+					transac->branch = tsk_strdup(msg->firstVia->branch);
 				}
+			}
+			
+			/* Add new transaction */
+			if(transac){
+				ret = transac;
+				tsk_list_push_back_data(self->transactions, (void**)&transac);
 			}
 		}
 	}
