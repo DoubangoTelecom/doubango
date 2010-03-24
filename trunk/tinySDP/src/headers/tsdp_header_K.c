@@ -328,4 +328,4 @@ static const tsk_object_def_t tsdp_header_K_def_s =
 	tsdp_header_K_cmp
 };
 
-const void *tsdp_header_K_def_t = &tsdp_header_K_def_s;
+const tsk_object_def_t *tsdp_header_K_def_t = &tsdp_header_K_def_s;

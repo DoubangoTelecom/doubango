@@ -110,6 +110,7 @@ typedef tsk_list_t tsdp_headers_L_t; /**< List of @ref tsdp_header_t elements. *
 ================================*/
 
 int tsdp_header_rank_cmp(const tsdp_header_t*, const tsdp_header_t*);
+TINYSDP_API tsdp_header_t* tsdp_header_clone(const tsdp_header_t*);
 TINYSDP_API char tsdp_header_get_name(tsdp_header_type_t type);
 TINYSDP_API char tsdp_header_get_nameex(const tsdp_header_t *self);
 TINYSDP_API int tsdp_header_tostring(const tsdp_header_t *self, tsk_buffer_t *output);

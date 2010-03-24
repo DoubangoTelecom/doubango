@@ -97,7 +97,7 @@ int x9999_Any_2_Any_X_Error(va_list *app);
 tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
 	if(message->CSeq){
-		return tsk_striequals(message->CSeq->method, "INVITE");
+		return tsk_striequals(TSIP_MESSAGE_CSEQ_METHOD(message), "INVITE");
 	}
 	return tsk_false;
 }
@@ -412,7 +412,12 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 		self->rseq = RSeq->seq;
 	}
 
-	// Add RAck header
+	/* RFC 3262 - 7.2 RAck
+		The first number is the value from the RSeq header in the provisional
+		response that is being acknowledged.  The next number, and the
+		method, are copied from the CSeq in the response that is being
+		acknowledged.  The method name in the RAck header is case sensitive.
+	*/
 	TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_RACK_VA_ARGS(self->rseq, r1xx->CSeq->seq, r1xx->CSeq->method));
 
 	ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
@@ -486,6 +491,8 @@ static void* tsip_dialog_invite_destroy(void * self)
 
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
+
+		TSK_OBJECT_SAFE_FREE(dialog->session);
 	}
 	return self;
 }

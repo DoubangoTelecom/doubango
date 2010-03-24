@@ -41,6 +41,14 @@ int tsdp_header_rank_cmp(const tsdp_header_t* hdr1, const tsdp_header_t* hdr2)
 	}
 }
 
+tsdp_header_t* tsdp_header_clone(const tsdp_header_t* self)
+{
+	if(self){
+		return self->clone(self);
+	}
+	return tsk_null;
+}
+
 /** Gets the name of the SDP header with a type equal to @a type. 
  * @param	type	The @a type of the header for which to retrieve the name. 
  *

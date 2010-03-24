@@ -43,6 +43,8 @@ TSDP_BEGIN_DECLS
 #define TSDP_HEADER_A_CREATE(field, value)			tsk_object_new(TSDP_HEADER_A_VA_ARGS(field, value))
 #define TSDP_HEADER_A_CREATE_NULL()			TSDP_HEADER_A_CREATE(tsk_null, tsk_null)
 
+#define TSDP_HEADER_A(self)		((tsdp_header_A_t*)(self))
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -67,7 +69,7 @@ typedef tsk_list_t tsdp_headers_A_L_t;
 
 tsdp_header_A_t *tsdp_header_A_parse(const char *data, size_t size);
 
-TINYSDP_GEXTERN const void *tsdp_header_A_def_t;
+TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_A_def_t;
 
 TSDP_END_DECLS
 

@@ -28,55 +28,142 @@
  */
 #include "tsdp.h"
 
-#include "tinySDP/headers/tsdp_header_O.h"
-#include "tinySDP/headers/tsdp_header_S.h"
-#include "tinySDP/headers/tsdp_header_T.h"
-#include "tinySDP/headers/tsdp_header_V.h"
+#include "tinySDP/parsers/tsdp_parser_message.h"
 
-tsdp_message_t* tsdp_create_empty(const char* addr, tsk_bool_t ipv6)
+// Defined in tsdp_message.c
+extern int __pred_find_media_by_name(const tsk_list_item_t *item, const void *name);
+
+
+typedef struct tsdp_ctx_s
 {
-	tsdp_message_t* ret = 0;
-
-	if(!(ret = TSDP_MESSAGE_CREATE())){
-		return tsk_null;
-	}
-
-	/*	RFC 3264 - 5 Generating the Initial Offer
-		The numeric value of the session id and version in the o line MUST be 
-		representable with a 64 bit signed integer.  The initial value of the version MUST be less than
-	   (2**62)-1, to avoid rollovers.
-	*/
-	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_V_VA_ARGS(0));
-	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_O_VA_ARGS(
-		TSDP_LINE_O_USERNAME_DEFAULT,
-		TSDP_LINE_O_SESSION_ID_DEFAULT,
-		TSDP_LINE_O_SESSION_VER_DEFAULT,
-		"IN",
-		ipv6 ? "IP6" : "IP4",
-		addr));
-
-	/*	RFC 3264 - 5 Generating the Initial Offer
-		The SDP "s=" line conveys the subject of the session, which is
-		reasonably defined for multicast, but ill defined for unicast.  For
-		unicast sessions, it is RECOMMENDED that it consist of a single space
-		character (0x20) or a dash (-).
-
-		Unfortunately, SDP does not allow the "s=" line to be empty.
-	*/
-	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_S_VA_ARGS(TSDP_LINE_S_VALUE_DEFAULT));
-
-	/*	RFC 3264 - 5 Generating the Initial Offer
-		The SDP "t=" line conveys the time of the session.  Generally,
-		streams for unicast sessions are created and destroyed through
-		external signaling means, such as SIP.  In that case, the "t=" line
-		SHOULD have a value of "0 0".
-	*/
-	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_T_VA_ARGS(0, 0));
+	TSK_DECLARE_OBJECT;
 	
-	return ret;
+	tsdp_message_t* local;
+	tsdp_message_t* remote;
+	tsdp_message_t* negotiated;
+}
+tsdp_ctx_t;
+
+const tsdp_message_t* tsdp_ctx_local_get_sdp(const tsdp_ctx_handle_t* self)
+{
+	const tsdp_ctx_t* ctx = self;
+
+	if(ctx){
+		return ctx->local;
+	}
+	else return tsk_null;
 }
 
+int tsdp_ctx_local_create_sdp(tsdp_ctx_handle_t* self, const tsdp_message_t* local)
+{
+	tsdp_ctx_t* ctx = self;
+	tsdp_message_t* newsdp;
 
+	if(!ctx || !local){
+		return -1;
+	}
+
+	// set new local sdp
+	if((newsdp = tsdp_message_clone(local))){
+		TSK_OBJECT_SAFE_FREE(ctx->local);
+		ctx->local = newsdp;
+		return 0;
+	}
+	else return -2;
+}
+
+int tsdp_ctx_local_create_sdp_2(tsdp_ctx_handle_t* self, const char* sdp, size_t size)
+{
+	tsdp_ctx_t* ctx = self;
+	tsdp_message_t* newsdp;
+
+	if(!ctx || !sdp || !size){
+		return -1;
+	}
+
+	if((newsdp = tsdp_message_parse(sdp, size))){
+		TSK_OBJECT_SAFE_FREE(ctx->local);
+		ctx->local = newsdp;
+		return 0;
+	}
+	else return -2;
+}
+
+int tsdp_ctx_local_add_headers(tsdp_ctx_handle_t* self, ...)
+{
+	tsdp_ctx_t* ctx = self;
+	const tsk_object_def_t* objdef;
+	tsdp_header_t *header;
+	va_list ap;
+	
+	if(!ctx || !ctx->local){
+		return -1;
+	}
+	
+	va_start(ap, self);
+	while((objdef = va_arg(ap, const tsk_object_def_t*))){
+		if((header = tsk_object_new2(objdef, &ap))){
+			tsdp_message_add_header(ctx->local, header);
+			TSK_OBJECT_SAFE_FREE(header);
+		}
+	}
+	va_end(ap);
+
+	return 0;
+}
+
+int tsdp_ctx_local_add_media(tsdp_ctx_handle_t* self, const tsdp_header_M_t* media)
+{
+	tsdp_ctx_t* ctx = self;
+	
+	if(!ctx || !media){
+		return -1;
+	}
+	
+	if(ctx->local){
+		return tsdp_message_add_header(ctx->local, TSDP_HEADER(media));
+	}
+	else return -2;
+}
+
+int tsdp_ctx_local_add_media_2(tsdp_ctx_handle_t* self, const char* media, uint32_t port, const char* proto, ...)
+{
+	tsdp_ctx_t* ctx = self;
+	va_list ap;
+
+	if(!ctx || !media || !proto){
+		return -1;
+	}
+
+	if(ctx->local){
+		int ret;
+		va_start(ap, proto);
+		ret = tsdp_message_add_media_2(ctx->local, media, port, proto, &ap);
+		va_end(ap);
+		return ret;
+	}
+	else return -2;
+}
+
+const tsdp_message_t* tsdp_ctx_remote_get_sdp(const tsdp_ctx_handle_t* self)
+{
+	const tsdp_ctx_t* ctx = self;
+
+	if(ctx){
+		return ctx->remote;
+	}
+	else return tsk_null;
+}
+
+const tsdp_message_t* tsdp_ctx_negotiated_get_sdp(const tsdp_ctx_handle_t* self)
+{
+	const tsdp_ctx_t* ctx = self;
+
+	if(ctx){
+		return ctx->negotiated;
+	}
+	else return tsk_null;
+}
 
 
 
@@ -107,7 +194,9 @@ static void* tsdp_ctx_destroy(void * self)
 { 
 	tsdp_ctx_t *ctx = self;
 	if(ctx){
-		TSK_OBJECT_SAFE_FREE(ctx->caps);
+		TSK_OBJECT_SAFE_FREE(ctx->local);
+		TSK_OBJECT_SAFE_FREE(ctx->remote);
+		TSK_OBJECT_SAFE_FREE(ctx->negotiated);
 	}
 	return self;
 }
@@ -119,4 +208,4 @@ static const tsk_object_def_t tsdp_ctx_def_s =
 	tsdp_ctx_destroy,
 	tsk_null,
 };
-const void *tsdp_ctx_def_t = &tsdp_ctx_def_s;
+const tsk_object_def_t *tsdp_ctx_def_t = &tsdp_ctx_def_s;

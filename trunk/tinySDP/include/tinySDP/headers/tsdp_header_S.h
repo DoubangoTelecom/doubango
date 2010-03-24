@@ -60,7 +60,7 @@ tsdp_header_S_t;
 
 tsdp_header_S_t *tsdp_header_S_parse(const char *data, size_t size);
 
-TINYSDP_GEXTERN const void *tsdp_header_S_def_t;
+TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_S_def_t;
 
 TSDP_END_DECLS
 

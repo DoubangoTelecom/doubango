@@ -126,13 +126,7 @@ char* tsk_strdup(const char *s1)
 	return tsk_null;
 }
 
-/**
- * @fn	char* tsk_strndup(const char *s1, size_t n)
- *
- * @brief	Duplicates the first @a n chars of @a s1.
- *
- * @author	Mamadou
- * @date	1/16/2010
+/**	Duplicates the first @a n chars of @a s1.
  *
  * @param [in,out]	s1	The string to duplicate. 
  * @param	n			The number of chars to copy to the new string. 
@@ -141,12 +135,15 @@ char* tsk_strdup(const char *s1)
 **/
 char* tsk_strndup(const char *s1, size_t n)
 {
-	char *ret = 0;
-	size_t len = strlen(s1);
-	size_t nret = (n > len) ? (len) : (n);
+	char *ret = tsk_null;
 
-	ret = tsk_calloc((nret+1), sizeof(uint8_t));
-	memcpy(ret, s1, nret);
+	if(s1 && n){
+		size_t len = strlen(s1);
+		size_t nret = (n > len) ? (len) : (n);
+
+		ret = tsk_calloc((nret+1), sizeof(uint8_t));
+		memcpy(ret, s1, nret);
+	}
 
 	return ret;
 }

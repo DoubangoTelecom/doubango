@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_session.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_uri.h"
 				>
 			</File>

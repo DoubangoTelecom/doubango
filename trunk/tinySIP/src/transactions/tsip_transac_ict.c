@@ -753,6 +753,13 @@ int tsip_transac_ict_send_ACK(tsip_transac_ict_t *self, const tsip_response_t* r
 	if((request = tsip_request_new("ACK", self->request->uri,  self->request->From->uri, response->To->uri, self->request->Call_ID->value, self->request->CSeq->seq))){
 		// Via
 		request->firstVia = tsk_object_ref((void*)self->request->firstVia);
+		// tags
+		if(request->From){
+			request->From->tag = tsk_strdup(self->request->From->tag);
+		}
+		if(request->To){
+			request->To->tag = tsk_strdup(response->To->tag);
+		}
 		// Routes
 		tsk_list_foreach(item, self->request->headers){
 			const tsip_header_t* curr = item->data;
