@@ -264,6 +264,24 @@ int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header)
 	return 0;
 }
 
+const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field)
+{
+	const tsk_list_item_t *item;
+
+	if(!self){
+		return tsk_null;
+	}
+
+	tsk_list_foreach(item, self->Attributes)
+	{
+		if(tsk_strequals(TSDP_HEADER_A(item->data)->field, field)){
+			return TSDP_HEADER_A(item->data);
+		}
+	}
+
+	return tsk_null;
+}
+
 //
 //int tsdp_header_M_set(tsdp_header_M_t* self, ...)
 //{
@@ -372,4 +390,4 @@ static const tsk_object_def_t tsdp_header_M_def_s =
 	tsdp_header_M_cmp
 };
 
-const void *tsdp_header_M_def_t = &tsdp_header_M_def_s;
+const tsk_object_def_t *tsdp_header_M_def_t = &tsdp_header_M_def_s;

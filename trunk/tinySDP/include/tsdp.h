@@ -37,24 +37,25 @@ TSDP_BEGIN_DECLS
 
 #define TSDP_CTX_CREATE()	tsk_object_new(tsdp_ctx_def_t)
 
-#define TSDP_LINE_S_VALUE_DEFAULT "-"	/* as per RFC 3264 subclause 5 */
+typedef void tsdp_ctx_handle_t;
 
-#define TSDP_LINE_O_USERNAME_DEFAULT	"doubango"
-#define TSDP_LINE_O_SESSION_VER_DEFAULT	2301
-#define TSDP_LINE_O_SESSION_ID_DEFAULT	1983
+TINYSDP_API const tsdp_message_t* tsdp_ctx_local_get_sdp(const tsdp_ctx_handle_t* self);
+TINYSDP_API int tsdp_ctx_local_create_sdp(tsdp_ctx_handle_t* self, const tsdp_message_t* local);
+TINYSDP_API int tsdp_ctx_local_create_sdp_2(tsdp_ctx_handle_t* self, const char* sdp, size_t size);
+TINYSDP_API int tsdp_ctx_local_add_headers(tsdp_ctx_handle_t* self, ...);
+TINYSDP_API int tsdp_ctx_local_add_media(tsdp_ctx_handle_t* self, const tsdp_header_M_t* media);
+TINYSDP_API int tsdp_ctx_local_add_media_2(tsdp_ctx_handle_t* self, const char* media, uint32_t port, const char* proto, ...);
 
-typedef struct tsdp_ctx_s
-{
-	TSK_DECLARE_OBJECT;
-	
-	tsdp_caps_t* caps;
-}
-tsdp_ctx_t;
+TINYSDP_API const tsdp_message_t* tsdp_ctx_remote_get_sdp(const tsdp_ctx_handle_t* self);
 
-TINYSDP_API tsdp_message_t* tsdp_create_empty(const char* addr, tsk_bool_t ipv6);
+TINYSDP_API const tsdp_message_t* tsdp_ctx_negotiated_get_sdp(const tsdp_ctx_handle_t* self);
 
 
-TINYSDP_GEXTERN const void *tsdp_ctx_def_t;
+// 3GPP TS 24.610 Communication HOLD
+TINYSDP_API int tsdp_ctx_hold(tsdp_ctx_handle_t* self, const char* media);
+TINYSDP_API int tsdp_ctx_resume(tsdp_ctx_handle_t* self, const char* media);
+
+TINYSDP_GEXTERN const tsk_object_def_t *tsdp_ctx_def_t;
 
 TSDP_END_DECLS
 

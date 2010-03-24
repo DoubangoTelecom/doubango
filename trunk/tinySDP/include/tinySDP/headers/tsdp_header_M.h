@@ -49,7 +49,9 @@ TSDP_BEGIN_DECLS
 */
 #define TSDP_HEADER_M_VA_ARGS(media, port, proto)		tsdp_header_M_def_t, (const char*)media, (uint32_t)port, (const char*)proto
 #define TSDP_HEADER_M_CREATE(media, port, proto)			tsk_object_new(TSDP_HEADER_M_VA_ARGS(media, port, proto))
-#define TSDP_HEADER_M_CREATE_NULL()			TSDP_HEADER_M_CREATE(tsk_null, tsk_null, tsk_null)
+#define TSDP_HEADER_M_CREATE_NULL()			TSDP_HEADER_M_CREATE(tsk_null, 0, tsk_null)
+
+#define TSDP_HEADER_M(self)					((tsdp_header_M_t*)(self))
 
 #define TSDP_FMT_VA_ARGS(fmt)				tsdp_fmt_def_t, (const char*)fmt
 #define TSDP_FMT_CREATE(fmt)				tsk_object_new(TSDP_FMT_VA_ARGS(fmt))
@@ -105,9 +107,9 @@ typedef tsk_list_t tsdp_headers_M_L_t;
 
 tsdp_header_M_t *tsdp_header_M_parse(const char *data, size_t size);
 int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header);
-//int tsdp_header_M_set(tsdp_header_M_t* self, ...);
+const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field);
 
-TINYSDP_GEXTERN const void *tsdp_header_M_def_t;
+TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_M_def_t;
 
 TSDP_END_DECLS
 

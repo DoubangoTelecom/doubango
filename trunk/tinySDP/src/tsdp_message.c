@@ -30,8 +30,19 @@
 
 #include "tinySDP/tsdp_message.h"
 
+#include "tinySDP/headers/tsdp_header_O.h"
+#include "tinySDP/headers/tsdp_header_S.h"
+#include "tinySDP/headers/tsdp_header_T.h"
+#include "tinySDP/headers/tsdp_header_V.h"
+
+#define TSDP_LINE_S_VALUE_DEFAULT "-"	/* as per RFC 3264 subclause 5 */
+
+#define TSDP_LINE_O_USERNAME_DEFAULT	"doubango"
+#define TSDP_LINE_O_SESSION_VER_DEFAULT	2301
+#define TSDP_LINE_O_SESSION_ID_DEFAULT	1983
+
 /*== Predicate function to find tsdp_header_t object by type. */
-static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tsdp_htype)
+int __pred_find_header_by_type(const tsk_list_item_t *item, const void *tsdp_htype)
 {
 	if(item && item->data)
 	{
@@ -43,7 +54,7 @@ static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tsd
 }
 
 /*== Predicate function to find tsdp_header_t object by name. */
-static int pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
+int __pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
 {
 	if(item && item->data && name)
 	{
@@ -54,7 +65,7 @@ static int pred_find_header_by_name(const tsk_list_item_t *item, const void *nam
 }
 
 /*== Predicate function to find media object by name. */
-static int pred_find_media_by_name(const tsk_list_item_t *item, const void *name)
+int __pred_find_media_by_name(const tsk_list_item_t *item, const void *name)
 {
 	if(item && item->data && name)
 	{
@@ -66,6 +77,32 @@ static int pred_find_media_by_name(const tsk_list_item_t *item, const void *name
 	return -1;
 }
 
+/*== Add headers/fmt to the media line */
+int __add_headers(tsdp_header_M_t* m, va_list *ap)
+{
+	const tsk_object_def_t* objdef;
+	tsdp_header_t *header;
+	tsdp_fmt_t* fmt;
+	
+	if(!m){
+		return -1;
+	}
+	
+	while((objdef = va_arg(*ap, const tsk_object_def_t*))){
+		if(objdef == tsdp_fmt_def_t){
+			if((fmt = tsk_object_new2(objdef, ap))){
+				tsk_list_push_back_data(m->FMTs, (void**)&fmt);
+			}
+		}
+		else{
+			if((header = tsk_object_new2(objdef, ap))){
+				tsdp_header_M_add(m, header);
+				TSK_OBJECT_SAFE_FREE(header);
+			}
+		}
+	}
+	return 0;
+}
 
 int tsdp_message_add_header(tsdp_message_t *self, const tsdp_header_t *hdr)
 {
@@ -133,14 +170,14 @@ const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_message_t *self, c
 {
 	if(self && self->headers){
 		const tsk_list_item_t* item;
-		if((item = tsk_list_find_item_by_pred(self->headers, pred_find_header_by_name, &name))){
+		if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_header_by_name, &name))){
 			return item->data;
 		}
 	}
 	return tsk_null;
 }
 
-int tsdp_message_tostring(const tsdp_message_t *self, tsk_buffer_t *output)
+int tsdp_message_serialize(const tsdp_message_t *self, tsk_buffer_t *output)
 {
 	const tsk_list_item_t* item;
 
@@ -158,10 +195,67 @@ int tsdp_message_tostring(const tsdp_message_t *self, tsk_buffer_t *output)
 	return 0;
 }
 
+char* tsdp_message_tostring(const tsdp_message_t *self)
+{
+	tsk_buffer_t* output = TSK_BUFFER_CREATE_NULL();
+	char* ret = tsk_null;
+
+	if(!tsdp_message_serialize(self, output)){
+		ret = tsk_strndup(TSK_BUFFER_DATA(output), TSK_BUFFER_SIZE(output));
+	}
+
+	TSK_OBJECT_SAFE_FREE(output);
+	return ret;
+}
+
+tsdp_message_t* tsdp_message_create_empty(const char* addr, tsk_bool_t ipv6)
+{
+	tsdp_message_t* ret = 0;
+
+	if(!(ret = TSDP_MESSAGE_CREATE())){
+		return tsk_null;
+	}
+
+	/*	RFC 3264 - 5 Generating the Initial Offer
+		The numeric value of the session id and version in the o line MUST be 
+		representable with a 64 bit signed integer.  The initial value of the version MUST be less than
+	   (2**62)-1, to avoid rollovers.
+	*/
+	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_V_VA_ARGS(0));
+	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_O_VA_ARGS(
+		TSDP_LINE_O_USERNAME_DEFAULT,
+		TSDP_LINE_O_SESSION_ID_DEFAULT,
+		TSDP_LINE_O_SESSION_VER_DEFAULT,
+		"IN",
+		ipv6 ? "IP6" : "IP4",
+		addr));
+
+	/*	RFC 3264 - 5 Generating the Initial Offer
+		The SDP "s=" line conveys the subject of the session, which is
+		reasonably defined for multicast, but ill defined for unicast.  For
+		unicast sessions, it is RECOMMENDED that it consist of a single space
+		character (0x20) or a dash (-).
+
+		Unfortunately, SDP does not allow the "s=" line to be empty.
+	*/
+	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_S_VA_ARGS(TSDP_LINE_S_VALUE_DEFAULT));
+
+	/*	RFC 3264 - 5 Generating the Initial Offer
+		The SDP "t=" line conveys the time of the session.  Generally,
+		streams for unicast sessions are created and destroyed through
+		external signaling means, such as SIP.  In that case, the "t=" line
+		SHOULD have a value of "0 0".
+	*/
+	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_T_VA_ARGS(0, 0));
+	
+	return ret;
+}
+
 tsdp_message_t* tsdp_message_clone(const tsdp_message_t *self)
 {
 	tsdp_message_t* clone = tsk_null;
 	tsk_list_item_t* item;
+	tsdp_header_t* header;
 
 	if(!self){
 		goto bail;
@@ -169,8 +263,9 @@ tsdp_message_t* tsdp_message_clone(const tsdp_message_t *self)
 
 	if((clone =  TSDP_MESSAGE_CREATE())){
 		tsk_list_foreach(item, self->headers){
-			tsdp_header_t* header = TSDP_HEADER(item->data)->clone(TSDP_HEADER(item->data));
-			tsk_list_push_back_data(clone->headers, (void**)&header);
+			if((header = tsdp_header_clone(TSDP_HEADER(item->data)))){
+				tsk_list_push_back_data(clone->headers, (void**)&header);
+			}
 		}
 	}
 
@@ -181,41 +276,32 @@ bail:
 
 int tsdp_message_add_media(tsdp_message_t *self, const char* media, uint32_t port, const char* proto, ...)
 {
-	int ret = -1;
-	tsdp_header_M_t* m;
 	va_list ap;
-	const tsk_object_def_t* objdef;
-	tsdp_header_t* header;
-	tsdp_fmt_t* fmt;
-
-	if(!self){
-		goto bail;
-	}
-
-	if(!(m = TSDP_HEADER_M_CREATE(media, port, proto))){
-		goto bail;
-	}
-
+	int ret;
+		
 	va_start(ap, proto);
-	while((objdef = va_arg(ap, const tsk_object_def_t*))){
-		if(objdef == tsdp_fmt_def_t){
-			if((fmt = tsk_object_new2(objdef, &ap))){
-				tsk_list_push_back_data(m->FMTs, (void**)&fmt);
-			}
-		}
-		else{
-			if((header = tsk_object_new2(objdef, &ap))){
-				tsdp_header_M_add(m, header);
-				TSK_OBJECT_SAFE_FREE(header);
-			}
-		}
-	}
+	ret = tsdp_message_add_media_2(self, media, port, proto, &ap);
 	va_end(ap);
 
-	ret = tsdp_message_add_header(self, TSDP_HEADER(m));
-	TSK_OBJECT_SAFE_FREE(m);
+	return ret;
+}
 
-bail:
+int tsdp_message_add_media_2(tsdp_message_t *self, const char* media, uint32_t port, const char* proto, va_list *ap)
+{
+	int ret = -1;
+	tsdp_header_M_t* m;
+
+	if(!self){
+		return -1;
+	}
+
+	if((m = TSDP_HEADER_M_CREATE(media, port, proto))){
+		__add_headers(m, ap);
+		
+		ret = tsdp_message_add_header(self, TSDP_HEADER(m));
+		TSK_OBJECT_SAFE_FREE(m);
+	}
+	
 	return ret;
 }
 
@@ -227,7 +313,7 @@ int tsdp_message_remove_media(tsdp_message_t *self, const char* media)
 		goto bail;
 	}
 
-	tsk_list_remove_item_by_pred(self->headers, pred_find_media_by_name, media);
+	tsk_list_remove_item_by_pred(self->headers, __pred_find_media_by_name, media);
 
 bail:
 	return ret;
@@ -235,11 +321,66 @@ bail:
 
 
 
+/* ================= 3GPP TS 34.610 :: Communication HOLD (HOLD) using IP Multimedia (IM) Core ================*/
+int tsdp_message_hold(tsdp_message_t* self, const char* media)
+{
+	tsdp_header_M_t* m;
+	const tsdp_header_A_t* a;
+	const tsk_list_item_t* item;
 
+	if(!self){
+		return -1;
+	}
+	// 3GPP TS 34.610-900 - 4.5.2.1	Actions at the invoking UE
+	if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_media_by_name, media))){
+		m = TSDP_HEADER_M(item->data);
+		if((a = tsdp_header_M_findA(m, "recvonly"))){
+			// an "inactive" SDP attribute if the stream was previously set to "recvonly" media stream
+			tsk_strupdate(&(TSDP_HEADER_A(a)->field), "inactive");
+		}
+		else if((a = tsdp_header_M_findA(m, "sendrecv"))){
+			// a "sendonly" SDP attribute if the stream was previously set to "sendrecv" media stream
+			tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendonly");
+		}
+		else{
+			// default value is sendrecv. hold on default --> sendonly
+			if(!(a = tsdp_header_M_findA(m, "sendonly")) && !(a = tsdp_header_M_findA(m, "inactive"))){
+				tsdp_header_A_t* newA;
+				if((newA = TSDP_HEADER_A_CREATE("sendonly", tsk_null))){
+					tsdp_header_M_add(m, TSDP_HEADER(newA));
+					TSK_OBJECT_SAFE_FREE(newA);
+				}
+			}
+		}
+	}
 
+	return 0;
+}
 
+int tsdp_message_resume(tsdp_message_t* self, const char* media)
+{
+	tsdp_header_M_t* m;
+	const tsdp_header_A_t* a;
+	const tsk_list_item_t* item;
 
+	if(!self){
+		return -1;
+	}
+	// 3GPP TS 34.610-900 - 4.5.2.1	Actions at the invoking UE
+	if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_media_by_name, media))){
+		m = TSDP_HEADER_M(item->data);
+		if((a = tsdp_header_M_findA(m, "inactive"))){
+			// a "recvonly" SDP attribute if the stream was previously an inactive media stream
+			tsk_strupdate(&(TSDP_HEADER_A(a)->field), "recvonly");
+		}
+		else if((a = tsdp_header_M_findA(m, "sendonly"))){
+			// a "sendrecv" SDP attribute if the stream was previously a sendonly media stream, or the attribute may be omitted, since sendrecv is the default
+			tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendrecv");
+		}
+	}
 
+	return 0;
+}
 
 
 
@@ -293,4 +434,4 @@ static const tsk_object_def_t tsdp_message_def_s =
 	tsdp_message_destroy,
 	tsdp_message_cmp, 
 };
-const void *tsdp_message_def_t = &tsdp_message_def_s;
+const tsk_object_def_t *tsdp_message_def_t = &tsdp_message_def_s;

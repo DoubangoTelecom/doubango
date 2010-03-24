@@ -68,7 +68,7 @@ typedef tsk_list_t tsdp_headers_K_L_t;
 
 tsdp_header_K_t *tsdp_header_K_parse(const char *data, size_t size);
 
-TINYSDP_GEXTERN const void *tsdp_header_K_def_t;
+TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_K_def_t;
 
 TSDP_END_DECLS
 

@@ -84,13 +84,22 @@ TINYSDP_API const tsdp_header_t *tsdp_message_get_headerAt(const tsdp_message_t 
 TINYSDP_API const tsdp_header_t *tsdp_message_get_header(const tsdp_message_t *self, tsdp_header_type_t type);
 TINYSDP_API const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_message_t *self, char name);
 
-TINYSDP_API int tsdp_message_tostring(const tsdp_message_t *self, tsk_buffer_t *output);
+TINYSDP_API int tsdp_message_serialize(const tsdp_message_t *self, tsk_buffer_t *output);
+TINYSDP_API char* tsdp_message_tostring(const tsdp_message_t *self);
 
+TINYSDP_API tsdp_message_t* tsdp_message_create_empty(const char* addr, tsk_bool_t ipv6);
 TINYSDP_API tsdp_message_t* tsdp_message_clone(const tsdp_message_t *self);
 TINYSDP_API int tsdp_message_add_media(tsdp_message_t *self, const char* media, uint32_t port, const char* proto, ...);
+TINYSDP_API int tsdp_message_add_media_2(tsdp_message_t *self, const char* media, uint32_t port, const char* proto, va_list *ap);
 TINYSDP_API int tsdp_message_remove_media(tsdp_message_t *self, const char* media);
 
-TINYSDP_GEXTERN const void *tsdp_message_def_t;
+
+// 3GPP TS 24.610 Communication HOLD
+TINYSDP_API int tsdp_message_hold(tsdp_message_t* self, const char* media);
+TINYSDP_API int tsdp_message_resume(tsdp_message_t* self, const char* media);
+
+
+TINYSDP_GEXTERN const tsk_object_def_t *tsdp_message_def_t;
 
 TSDP_END_DECLS
 

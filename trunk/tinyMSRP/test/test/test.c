@@ -35,7 +35,8 @@
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_URI		0
-#define RUN_TEST_PARSER		1
+#define RUN_TEST_PARSER		0
+#define RUN_TEST_SESSION	1
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -56,6 +57,10 @@ int main()
 
 #if RUN_TEST_ALL  || RUN_TEST_PARSER
 		test_parser();
+#endif
+
+#if RUN_TEST_ALL  || RUN_TEST_SESSION
+		test_session();
 #endif
 
 	}

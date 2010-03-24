@@ -58,7 +58,7 @@
 	"b=B-YZ:256\r\n" \
 	"a=rtpmap:31 H261/90000\r\n" \
 	"a=rtpmap:32 MPV/90000\r\n" \
-	"a=sendonly\r\n"
+	"a=recvonly\r\n"
 	
 #define SDP_MSG2 \
 	"v=0\r\n"
@@ -67,24 +67,27 @@
 #define SDP_MSG_TO_TEST SDP_MSG1
 
 void test_caps();
+void test_holdresume();
 
 void test_parser()
 {
 	tsdp_message_t *message = tsk_null;
+	char* str;
 	
 	test_caps();
+	test_holdresume();
 
 	//
 	// deserialize/serialize the message
 	//
 	if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))){
-		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
 
 		/* serialize the message */
-		tsdp_message_tostring(message, buffer);
-		TSK_DEBUG_INFO("SDP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
+		if((str = tsdp_message_tostring(message))){
+			TSK_DEBUG_INFO("SDP Message=\n%s", str);
+			TSK_FREE(str);
+		}
 
-		TSK_OBJECT_SAFE_FREE(buffer);
 		TSK_OBJECT_SAFE_FREE(message);
 	}
 	else{
@@ -94,8 +97,7 @@ void test_parser()
 	//
 	// create empty message
 	//
-	if((message = tsdp_create_empty("127.0.0.1", tsk_false))){
-		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+	if((message = tsdp_message_create_empty("127.0.0.1", tsk_false))){
 
 		/* add media */
 		tsdp_message_add_media(message, "audio", 8956, "RTP/AVP",
@@ -126,10 +128,11 @@ void test_parser()
 		//tsdp_message_remove_media(message, "audio");
 
 		/* serialize the message */
-		tsdp_message_tostring(message, buffer);
-		TSK_DEBUG_INFO("\n\nEmpty SDP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
+		if((str = tsdp_message_tostring(message))){
+			TSK_DEBUG_INFO("\n\nEmpty SDP Message=\n%s", str);
+			TSK_FREE(str);
+		}
 
-		TSK_OBJECT_SAFE_FREE(buffer);
 		TSK_OBJECT_SAFE_FREE(message);
 	}
 }
@@ -137,9 +140,9 @@ void test_parser()
 void test_caps()
 {
 	tsdp_message_t *message = tsk_null;
+	char* str;
 	
-	if((message = tsdp_create_empty("100.3.6.6", tsk_false))){
-		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+	if((message = tsdp_message_create_empty("100.3.6.6", tsk_false))){
 
 		tsdp_message_add_headers(message,
 			TSDP_HEADER_C_VA_ARGS("IN", "IP4", "192.0.2.4"),
@@ -181,12 +184,40 @@ void test_caps()
 			tsk_null);
 		
 		/* serialize the message */
-		tsdp_message_tostring(message, buffer);
-		TSK_DEBUG_INFO("\n\nCapabilities SDP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
+		if((str = tsdp_message_tostring(message))){
+			TSK_DEBUG_INFO("\n\nCapabilities SDP Message=\n%s", str);
+			TSK_FREE(str);
+		}
 		
-		TSK_OBJECT_SAFE_FREE(buffer);
 		TSK_OBJECT_SAFE_FREE(message);
 	}
+}
+
+
+void test_holdresume()
+{
+	tsdp_message_t *message = tsk_null;
+	char* str;
+
+	if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))){		
+
+		// hold audio
+		tsdp_message_hold(message, "audio");
+		tsdp_message_hold(message, "audio");
+		tsdp_message_hold(message, "video");
+		tsdp_message_resume(message, "video");
+
+		/* serialize the message */
+		if((str = tsdp_message_tostring(message))){
+			TSK_DEBUG_INFO("SDP Message=\n%s", str);
+			TSK_FREE(str);
+		}
+
+		TSK_OBJECT_SAFE_FREE(message);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to parse SDP message.");
+	}	
 }
 
 #endif /* _TEST_SDPPARSER_H */

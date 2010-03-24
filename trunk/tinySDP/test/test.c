@@ -28,12 +28,14 @@
 #include "tinySDP/parsers/tsdp_parser_message.h"
 
 #include "test_parser.h"
+#include "test_soa.h"
 
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
-#define RUN_TEST_PARSER		1
+#define RUN_TEST_PARSER		0
+#define RUN_TEST_SOA		1
 
 
 #ifdef _WIN32_WCE
@@ -51,6 +53,10 @@ int main()
 	
 #if RUN_TEST_ALL  || RUN_TEST_PARSER
 		test_parser();
+#endif
+
+#if RUN_TEST_ALL  || RUN_TEST_SOA
+		test_soa();
 #endif
 
 	}

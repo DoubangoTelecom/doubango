@@ -147,15 +147,15 @@ typedef void tsk_object_t;
 typedef struct tsk_object_def_s
 {
 	size_t size;													/**< The size of the object. */
-	void*	(* constructor) (tsk_object_t *, va_list *);				/**< Pointer to the constructor. */
-	void*	(* destructor) (tsk_object_t *);								/**< Pointer to the destructor. */
+	tsk_object_t*	(* constructor) (tsk_object_t *, va_list *);				/**< Pointer to the constructor. */
+	tsk_object_t*	(* destructor) (tsk_object_t *);								/**< Pointer to the destructor. */
 	int		(* objcmp) (const tsk_object_t *, const tsk_object_t *);	/**< Pointer to the comparator. */
 }
 tsk_object_def_t;
 
 TINYSAK_API tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...);
 TINYSAK_API tsk_object_t* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap);
-TINYSAK_API size_t tsk_object_sizeof(const void *tsk_object_t);
+TINYSAK_API size_t tsk_object_sizeof(const tsk_object_t *);
 TINYSAK_API int tsk_object_cmp(const void *self, const tsk_object_t *object);
 TINYSAK_API tsk_object_t* tsk_object_ref(tsk_object_t *self);
 TINYSAK_API tsk_object_t* tsk_object_unref(tsk_object_t *self);

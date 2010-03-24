@@ -211,7 +211,7 @@ static const tsk_object_def_t tsdp_header_Z_def_s =
 	tsdp_header_Z_cmp
 };
 
-const void *tsdp_header_Z_def_t = &tsdp_header_Z_def_s;
+const tsk_object_def_t *tsdp_header_Z_def_t = &tsdp_header_Z_def_s;
 
 
 
@@ -256,4 +256,4 @@ static const tsk_object_def_t tsdp_zone_def_s =
 	0
 };
 
-const void *tsdp_zone_def_t = &tsdp_zone_def_s;
+const tsk_object_def_t *tsdp_zone_def_t = &tsdp_zone_def_s;

@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyIPSec\src&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyIPSec\src&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyIPSec.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -902,6 +902,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="media"
+				>
+				<File
+					RelativePath=".\src\media\tsip_msession.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include(*.h)"
@@ -1453,6 +1461,14 @@
 				</File>
 				<File
 					RelativePath=".\include\tinysip\api\tsip_api_subscribe.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="media"
+				>
+				<File
+					RelativePath=".\include\tinysip\media\tsip_msession.h"
 					>
 				</File>
 			</Filter>
