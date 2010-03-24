@@ -31,6 +31,8 @@
 
 #include "tinySDP/headers/tsdp_header_Dummy.h"
 
+#include "tsk_string.h"
+
 int tsdp_header_rank_cmp(const tsdp_header_t* hdr1, const tsdp_header_t* hdr2)
 {
 	if(hdr1 && hdr2){
@@ -92,7 +94,7 @@ char tsdp_header_get_nameex(const tsdp_header_t *self)
 }
 
 
-int tsdp_header_tostring(const tsdp_header_t *self, tsk_buffer_t *output)
+int tsdp_header_serialize(const tsdp_header_t *self, tsk_buffer_t *output)
 {
 	static char name;
 	int ret = -1;
@@ -121,4 +123,17 @@ int tsdp_header_tostring(const tsdp_header_t *self, tsk_buffer_t *output)
 	}
 
 	return ret;
+}
+
+char* tsdp_header_tostring(const tsdp_header_t *self)
+{
+	tsk_buffer_t* output = TSK_BUFFER_CREATE_NULL();
+	char* str = tsk_null;
+
+	if(!(tsdp_header_serialize(self, output))){
+		str = tsk_strndup(TSK_BUFFER_DATA(output), TSK_BUFFER_SIZE(output));
+	}
+	
+	TSK_OBJECT_SAFE_FREE(output);
+	return str;
 }

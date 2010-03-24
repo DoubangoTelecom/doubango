@@ -327,7 +327,7 @@ int tmsrp_message_tostring(const tmsrp_message_t *self, tsk_buffer_t *output)
 //=================================================================================================
 //	MSRP object definition
 //
-static void* tmsrp_message_create(void * self, va_list * app)
+static void* tmsrp_message_create(tsk_object_t * self, va_list * app)
 {
 	tmsrp_message_t *message = self;
 	if(message){
@@ -350,7 +350,7 @@ static void* tmsrp_message_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_message_destroy(void * self)
+static void* tmsrp_message_destroy(tsk_object_t * self)
 { 
 	tmsrp_message_t *message = self;
 	if(message){
@@ -389,7 +389,7 @@ static void* tmsrp_message_destroy(void * self)
 	return self;
 }
 
-static int tmsrp_message_cmp(const void *obj1, const void *obj2)
+static int tmsrp_message_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
@@ -401,4 +401,4 @@ static const tsk_object_def_t tmsrp_message_def_s =
 	tmsrp_message_destroy,
 	tmsrp_message_cmp, 
 };
-const void *tmsrp_message_def_t = &tmsrp_message_def_s;
+const tsk_object_def_t *tmsrp_message_def_t = &tmsrp_message_def_s;

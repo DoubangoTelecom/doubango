@@ -105,9 +105,10 @@ tsdp_header_M_t;
 
 typedef tsk_list_t tsdp_headers_M_L_t;
 
-tsdp_header_M_t *tsdp_header_M_parse(const char *data, size_t size);
-int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header);
-const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field);
+TINYSDP_API tsdp_header_M_t *tsdp_header_M_parse(const char *data, size_t size);
+TINYSDP_API int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header);
+TINYSDP_API int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...);
+TINYSDP_API const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_M_def_t;
 

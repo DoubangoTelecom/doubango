@@ -187,7 +187,7 @@ int tsdp_message_serialize(const tsdp_message_t *self, tsk_buffer_t *output)
 	
 	tsk_list_foreach(item, self->headers)
 	{
-		if(tsdp_header_tostring(TSDP_HEADER(item->data), output)){
+		if(tsdp_header_serialize(TSDP_HEADER(item->data), output)){
 			// Abort?
 		}
 	}
