@@ -33,7 +33,6 @@ int main()
 	while(1)
 	{
 		tmedia_t* dummy = tsk_null;
-		char* str;
 		
 		// Register dummy media
 		tmedia_plugin_register(dummy_plugin_def_t);
@@ -42,15 +41,11 @@ int main()
 		// ...again and again
 		
 		// Create dummy media
-		if((dummy = tmedia_factory_create("dummy"))){
+		if((dummy = tmedia_factory_create("dummy plugin", "127.0.0.1", tnet_socket_type_udp_ipv4))){
 
-			if((str = tmedia_get_local_offer(dummy))){
-				TSK_FREE(str);
-			}
-			if((str = tmedia_get_negotiated_offer(dummy))){
-				TSK_FREE(str);
-			}
-			tmedia_set_remote_offer(dummy, "sdp ...");
+			tmedia_get_local_offer(dummy);
+			tmedia_get_negotiated_offer(dummy);
+			tmedia_set_remote_offer(dummy, tsk_null);
 			
 			tmedia_start(dummy);
 			tmedia_pause(dummy);

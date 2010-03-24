@@ -390,7 +390,7 @@ void *tnet_transport_mainthread(void *param)
 	/* Start listening */
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
 	{
-		if(listen(transport->master->fd, TNET_MAX_FDS))
+		if(tnet_sockfd_listen(transport->master->fd, TNET_MAX_FDS))
 		{
 			TNET_PRINT_LAST_ERROR("listen have failed.");
 			goto bail;

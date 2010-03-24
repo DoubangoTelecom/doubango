@@ -178,7 +178,7 @@ TINYMSRP_API int tmsrp_message_add_content(tmsrp_message_t *self, const char* co
 TINYMSRP_API int tmsrp_message_tostring(const tmsrp_message_t *self, tsk_buffer_t *output);
 
 
-TINYMSRP_GEXTERN const void *tmsrp_message_def_t;
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_message_def_t;
 
 TMSRP_END_DECLS
 

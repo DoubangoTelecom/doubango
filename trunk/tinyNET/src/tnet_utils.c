@@ -1155,6 +1155,29 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 }
 
 /**@ingroup tnet_utils_group
+*/
+int tnet_sockfd_listen(tnet_fd_t fd, int backlog)
+{
+	if(fd>0){
+		return listen(fd, backlog);
+	}
+	else return -1;
+}
+
+/**@ingroup tnet_utils_group
+*/
+tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, int *addrlen)
+{
+	tnet_fd_t ret = TNET_INVALID_FD;
+
+	if(fd>0){
+		ret = accept(fd, addr, addrlen);
+	}
+	
+	return ret;
+}
+
+/**@ingroup tnet_utils_group
 * Closes an existing socket.
 * @param fd A descriptor identifying the socket to close.
 * @retval Zero if succeed and non-zero error code otherwise.

@@ -78,7 +78,7 @@ int tmedia_plugin_register(const tmedia_plugin_def_t* plugin)
 	return -2;
 }
 
-tmedia_t* tmedia_factory_create(const char* name)
+tmedia_t* tmedia_factory_create(const char* name, const char* host, tnet_socket_type_t socket_type)
 {
 	tmedia_t* ret =  tsk_null;
 	const tmedia_plugin_def_t* plugin;
@@ -86,7 +86,7 @@ tmedia_t* tmedia_factory_create(const char* name)
 
 	while((i < TMED_MAX_PLUGINS) && (plugin = __tmedia_plugins[i++])){
 		if(plugin->objdef && tsk_strequals(plugin->name, name)){
-			if((ret = tsk_object_new(plugin->objdef, name))){
+			if((ret = tsk_object_new(plugin->objdef, name, host, socket_type))){
 				ret->plugin = plugin;
 				break;
 			}
@@ -151,7 +151,7 @@ int tmedia_stop(tmedia_t* self)
 	}
 }
 
-char* tmedia_get_local_offer(tmedia_t* self)
+const tsdp_header_M_t* tmedia_get_local_offer(tmedia_t* self)
 {
 	if(!self || !self->plugin){
 		return tsk_null;
@@ -165,7 +165,7 @@ char* tmedia_get_local_offer(tmedia_t* self)
 	}
 }
 
-char* tmedia_get_negotiated_offer(tmedia_t* self)
+const tsdp_header_M_t* tmedia_get_negotiated_offer(tmedia_t* self)
 {
 	if(!self || !self->plugin){
 		return tsk_null;
@@ -179,7 +179,7 @@ char* tmedia_get_negotiated_offer(tmedia_t* self)
 	}
 }
 
-int tmedia_set_remote_offer(tmedia_t* self, const char* offer)
+int tmedia_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 {
 	if(!self || !self->plugin){
 		return -1;
@@ -204,7 +204,9 @@ static void* tmedia_create(tsk_object_t *self, va_list * app)
 	if(media)
 	{
 		const char* name = va_arg(*app, const char*);
-
+		const char* host = va_arg(*app, const char*);
+		tnet_socket_type_t socket_type = va_arg(*app, tnet_socket_type_t);
+		
 		tmedia_init(media, name);
 	}
 	else{

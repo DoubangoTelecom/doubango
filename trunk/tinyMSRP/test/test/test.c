@@ -22,13 +22,18 @@
 
 #include "stdafx.h"
 
+#include "tnet.h"
+
 #include "tsk.h"
 
 #include "tmsrp.h"
+
+#include "tinyMSRP/session/tmsrp_media.h"
 #include "tinyMSRP/parsers/tmsrp_parser_message.h"
 
 #include "test_parser.h"
 #include "test_uri.h"
+#include "test_session.h"
 
 
 #define RUN_TEST_LOOP		1
@@ -48,6 +53,8 @@ int main()
 	for(;;)
 #endif
 	{
+		tnet_startup();
+
 		/* Print copyright information */
 		printf("Doubango Project\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
 	
@@ -63,5 +70,6 @@ int main()
 		test_session();
 #endif
 
+		tnet_cleanup();
 	}
 }

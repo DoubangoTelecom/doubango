@@ -32,13 +32,17 @@
 
 #include "tinymedia_config.h"
 
+#include "tinySDP/tsdp_message.h"
+
+#include "tnet_socket.h"
+
 #include "tsk_params.h"
 
 TMEDIA_BEGIN_DECLS
 
-#define TMEDIA_VA_ARGS(name)		tmedia_def_t, (const char*)name
-#define TMEDIA_CREATE(name)			tsk_object_new(name))
-#define TMEDIA_CREATE_NULL()		TSDP_HEADER_M_CREATE(tsk_null)
+#define TMEDIA_VA_ARGS(name, host, socket_type)		tmedia_def_t, (const char*) name, (const char*) host, (tnet_socket_type_t) socket_type
+#define TMEDIA_CREATE(name, host, socket_type)			tsk_object_new(name, host, socket_type))
+#define TMEDIA_CREATE_NULL()		TSDP_HEADER_M_CREATE(tsk_null, TNET_SOCKET_HOST_ANY, tnet_socket_type_invalid)
 
 #define TMEDIA(self)		((tmedia_t*)(self))
 
@@ -47,7 +51,7 @@ typedef struct tmedia_s
 	TSK_DECLARE_OBJECT;
 
 	const struct tmedia_plugin_def_s* plugin;
-
+	
 	char* name;
 	uint32_t port;
 	char* protocol;
@@ -61,16 +65,17 @@ typedef struct tmedia_plugin_def_s
 {
 	const tsk_object_def_t* objdef;
 	const char* name;
-
+	const char* media;
+	
 	int (* set_params) (tmedia_t* , const tsk_params_L_t* );
-
+	
 	int	(* start) (tmedia_t* );
 	int	(* pause) (tmedia_t* );
 	int	(* stop) (tmedia_t* );
 
-	char* (* get_local_offer) (tmedia_t* );
-	char* (* get_negotiated_offer) (tmedia_t* );
-	int (* set_remote_offer) (tmedia_t* , const char* );
+	const tsdp_header_M_t* (* get_local_offer) (tmedia_t* );
+	const tsdp_header_M_t* (* get_negotiated_offer) (tmedia_t* );
+	int (* set_remote_offer) (tmedia_t* , const tsdp_message_t* );	
 }
 tmedia_plugin_def_t;
 
@@ -78,7 +83,7 @@ TINYMEDIA_API int tmedia_init(tmedia_t* self, const char* name);
 TINYMEDIA_API int tmedia_deinit(tmedia_t* self);
 
 TINYMEDIA_API int tmedia_plugin_register(const tmedia_plugin_def_t* def);
-TINYMEDIA_API tmedia_t* tmedia_factory_create(const char* name);
+TINYMEDIA_API tmedia_t* tmedia_factory_create(const char* name, const char* host, tnet_socket_type_t socket_type);
 
 TINYMEDIA_API int tmedia_set_params(tmedia_t* , const tsk_params_L_t* );
 
@@ -86,9 +91,9 @@ TINYMEDIA_API int tmedia_start(tmedia_t* );
 TINYMEDIA_API int tmedia_pause(tmedia_t* );
 TINYMEDIA_API int tmedia_stop(tmedia_t* );
 
-TINYMEDIA_API char* tmedia_get_local_offer(tmedia_t* );
-TINYMEDIA_API char* tmedia_get_negotiated_offer(tmedia_t* );
-TINYMEDIA_API int tmedia_set_remote_offer(tmedia_t* , const char* );
+TINYMEDIA_API const tsdp_header_M_t* tmedia_get_local_offer(tmedia_t* );
+TINYMEDIA_API const tsdp_header_M_t* tmedia_get_negotiated_offer(tmedia_t* );
+TINYMEDIA_API int tmedia_set_remote_offer(tmedia_t* , const tsdp_message_t* );
 
 TINYMEDIA_GEXTERN const void *tmedia_def_t;
 

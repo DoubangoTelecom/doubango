@@ -59,23 +59,23 @@ int	dummy_stop(tmedia_t* self)
 	return 0;
 }
 
-char* dummy_get_local_offer(tmedia_t* self)
+const tsdp_header_M_t* dummy_get_local_offer(tmedia_t* self)
 {
 	dummy_t *dummy = DUMMY(self);
 	TSK_DEBUG_INFO("dummy_get_local_offer");
 
-	return tsk_strdup(dummy->local_sdp);
+	return tsk_null;
 }
 
-char* dummy_get_negotiated_offer(tmedia_t* self)
+const tsdp_header_M_t* dummy_get_negotiated_offer(tmedia_t* self)
 {
 	dummy_t *dummy = DUMMY(self);
 	TSK_DEBUG_INFO("dummy_get_negotiated_offer");
 
-	return tsk_strdup(dummy->negotiated_sdp);
+	return tsk_null;
 }
 
-int dummy_set_remote_offer(tmedia_t* self, const char* offer)
+int dummy_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 {
 	dummy_t *dummy = DUMMY(self);
 	TSK_DEBUG_INFO("dummy_set_remote_offer");
@@ -94,8 +94,12 @@ static void* dummy_create(tsk_object_t *self, va_list * app)
 	dummy_t *dummy = self;
 	if(dummy)
 	{
-		// Parameters include at least the media name		
-		tmedia_init(TMEDIA(dummy), va_arg(*app, const char*));
+		// Parameters MUST appear in this order
+		const char* name = va_arg(*app, const char*);
+		const char* host = va_arg(*app, const char*);
+		tnet_socket_type_t socket_type = va_arg(*app, tnet_socket_type_t);
+
+		tmedia_init(TMEDIA(dummy), name);
 
 		TMEDIA(dummy)->protocol = tsk_strdup("TCP/DUMMY");
 	}
@@ -141,7 +145,8 @@ const tsk_object_def_t *dummy_def_t = &dummy_def_s;
 static const tmedia_plugin_def_t dummy_plugin_def_s = 
 {
 	&dummy_def_s,
-	"dummy",
+	"dummy plugin",
+	"audio",
 
 	dummy_set_params,
 

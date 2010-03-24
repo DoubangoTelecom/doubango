@@ -118,28 +118,29 @@ int tsdp_header_M_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 		tsk_buffer_append(output, "\r\n", 2); // close the "m=" line.
 		// i=* (media title)
 		if(M->I){
-			tsdp_header_tostring(TSDP_HEADER(M->I), output);
+			tsdp_header_serialize(TSDP_HEADER(M->I), output);
 		}
 		// c=* (connection information -- optional if included at session level)
 		if(M->C){
-			tsdp_header_tostring(TSDP_HEADER(M->C), output);
+			tsdp_header_serialize(TSDP_HEADER(M->C), output);
 		}
 		// b=* (zero or more bandwidth information lines)
 		if(M->Bandwidths){
 			tsk_list_foreach(item, M->Bandwidths){
-				tsdp_header_tostring(TSDP_HEADER(item->data), output);
+				tsdp_header_serialize(TSDP_HEADER(item->data), output);
 			}
 		}
 		// k=* (encryption key)
 		if(M->K){
-			tsdp_header_tostring(TSDP_HEADER(M->K), output);
+			tsdp_header_serialize(TSDP_HEADER(M->K), output);
 		}
 		// a=* (zero or more media attribute lines)
 		if(M->Attributes){
 			tsk_list_foreach(item, M->Attributes){
-				tsdp_header_tostring(TSDP_HEADER(item->data), output);
+				tsdp_header_serialize(TSDP_HEADER(item->data), output);
 			}
 		}
+		return 0;
 	}
 
 	return -1;
@@ -261,6 +262,36 @@ int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header)
 			}
 	}
 	
+	return 0;
+}
+
+int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...)
+{
+	const tsk_object_def_t* objdef;
+	tsdp_header_t *header;
+	tsdp_fmt_t* fmt;
+	va_list ap;
+	
+	if(!self){
+		return -1;
+	}
+	
+	va_start(ap, self);
+	while((objdef = va_arg(ap, const tsk_object_def_t*))){
+		if(objdef == tsdp_fmt_def_t){
+			if((fmt = tsk_object_new2(objdef, &ap))){
+				tsk_list_push_back_data(self->FMTs, (void**)&fmt);
+			}
+		}
+		else{
+			if((header = tsk_object_new2(objdef, &ap))){
+				tsdp_header_M_add(self, header);
+				TSK_OBJECT_SAFE_FREE(header);
+			}
+		}
+	}
+	va_end(ap);
+
 	return 0;
 }
 

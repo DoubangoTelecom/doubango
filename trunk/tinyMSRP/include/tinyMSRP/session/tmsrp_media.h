@@ -39,16 +39,37 @@ TMSRP_BEGIN_DECLS
 
 #define TMSRP_MEDIA(self)	((tmsrp_media_t*)(self))
 
+typedef enum tmsrp_session_setup_e
+{
+	setup_active,
+	setup_passive,
+	setup_actpass,
+	setup_holdconn
+}
+tmsrp_session_setup_t;
+
 typedef struct tmsrp_media_s
 {
 	TMED_DECLARE_MEDIA;
-
+	
 	tsdp_ctx_handle_t* sdp_ctx;
+	
+	tsdp_header_M_t *local;
+	tsdp_header_M_t *remote;
+	tsdp_header_M_t *negociated;
+	
+	tmsrp_session_setup_t setup;
+	
+	tnet_fd_t connectedFD; // FullDuplex Socket
+	tnet_socket_t* localSocket;
 }
 tmsrp_media_t;
 
-const tsk_object_def_t *tmsrp_media_def_t;
-const tmedia_plugin_def_t *tmsrp_media_plugin_def_t;
+int tmsrp_send_file(tmsrp_media_t* self, const char* path);
+int tmsrp_send_text(tmsrp_media_t* self, const char* text, const char* ctype);
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_media_def_t;
+TINYMSRP_GEXTERN const tmedia_plugin_def_t *tmsrp_media_plugin_def_t;
 
 TMSRP_END_DECLS
 
