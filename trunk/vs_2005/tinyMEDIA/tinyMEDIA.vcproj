@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="test"
-	ProjectGUID="{C7732B19-4EF5-40EB-939B-4F1F5F2D3B18}"
-	RootNamespace="test"
+	Name="tinyMEDIA"
+	ProjectGUID="{52814B0D-7DCA-45B8-9A16-8B147040D619}"
+	RootNamespace="tinyMEDIA"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -19,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -40,8 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMSRP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySDP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -97,7 +97,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -120,7 +120,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -142,7 +142,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="1"
+				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -177,48 +177,26 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
-			>
-			<File
-				RelativePath="..\..\tinyMSRP\test\test\stdafx.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMSRP\test\test\test.c"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="include"
+			Name="headers(*.h)"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\tinyMSRP\test\test\stdafx.h"
+				RelativePath="..\..\tinyMEDIA\include\tinymedia_config.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyMSRP\test\test\targetver.h"
+				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="tests"
+			Name="source(*.c)"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath="..\..\tinyMSRP\test\test\test_parser.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMSRP\test\test\test_session.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMSRP\test\test\test_uri.h"
+				RelativePath="..\..\tinyMEDIA\src\tmedia.c"
 				>
 			</File>
 		</Filter>

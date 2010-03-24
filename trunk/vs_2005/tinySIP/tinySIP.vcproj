@@ -904,6 +904,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="media"
+				>
+				<File
+					RelativePath="..\..\tinySIP\src\media\tsip_msession.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include"
@@ -1459,6 +1467,14 @@
 				</File>
 				<File
 					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_subscribe.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="media"
+				>
+				<File
+					RelativePath="..\..\tinySIP\include\tinysip\media\tsip_msession.h"
 					>
 				</File>
 			</Filter>

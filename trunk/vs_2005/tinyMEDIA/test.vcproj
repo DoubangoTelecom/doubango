@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="test"
-	ProjectGUID="{C7732B19-4EF5-40EB-939B-4F1F5F2D3B18}"
+	ProjectGUID="{6ED4F246-C3B7-4DD5-9434-3A3F69CC0AD6}"
 	RootNamespace="test"
 	Keyword="Win32Proj"
 	>
@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMSRP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMSRP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -178,47 +178,21 @@
 	<Files>
 		<Filter
 			Name="source"
-			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tinyMSRP\test\test\stdafx.c"
+				RelativePath="..\..\tinyMEDIA\test\dummy.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyMSRP\test\test\test.c"
+				RelativePath="..\..\tinyMEDIA\test\test.c"
 				>
 			</File>
 		</Filter>
 		<Filter
 			Name="include"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\tinyMSRP\test\test\stdafx.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMSRP\test\test\targetver.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="tests"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-			<File
-				RelativePath="..\..\tinyMSRP\test\test\test_parser.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMSRP\test\test\test_session.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMSRP\test\test\test_uri.h"
+				RelativePath="..\..\tinyMEDIA\test\dummy.h"
 				>
 			</File>
 		</Filter>

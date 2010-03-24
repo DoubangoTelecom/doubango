@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinyMSRP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinyMSRP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMSRP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyHTTP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -285,6 +285,26 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="session"
+				>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\session\tmsrp_media.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\session\tmsrp_receiver.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\session\tmsrp_sender.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\session\tmsrp_session.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="source(*.c)"
@@ -384,6 +404,26 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyMSRP\src\parsers\tmsrp_parser_uri.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="session"
+				>
+				<File
+					RelativePath="..\..\tinyMSRP\src\session\tmsrp_media.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\session\tmsrp_receiver.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\session\tmsrp_sender.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyMSRP\src\session\tmsrp_session.c"
 					>
 				</File>
 			</Filter>
