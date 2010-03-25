@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyMSRP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyMSRP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMSRP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"

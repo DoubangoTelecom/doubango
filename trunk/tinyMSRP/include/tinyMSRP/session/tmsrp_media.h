@@ -52,16 +52,22 @@ typedef struct tmsrp_media_s
 {
 	TMED_DECLARE_MEDIA;
 	
-	tsdp_ctx_handle_t* sdp_ctx;
-	
-	tsdp_header_M_t *local;
-	tsdp_header_M_t *remote;
-	tsdp_header_M_t *negociated;
-	
 	tmsrp_session_setup_t setup;
-	
 	tnet_fd_t connectedFD; // FullDuplex Socket
-	tnet_socket_t* localSocket;
+	
+	struct{
+		struct tsdp_header_M_s* M;
+		tnet_socket_t* socket;
+	}local;
+
+	struct{
+		struct tsdp_header_M_s* M;
+		//struct tsdp_header_C_s* C;
+	}remote;
+
+	struct{
+		struct tsdp_header_M_s* M;
+	}negociated;
 }
 tmsrp_media_t;
 
