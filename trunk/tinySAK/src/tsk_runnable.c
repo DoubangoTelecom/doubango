@@ -98,12 +98,14 @@ int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 		else if(tsk_runnable_init(self, objdef)) return -4;
 
 		/* call run() function in new thread. */
-		if(ret = tsk_thread_create(&(self->tid[0]), self->run, self))
-		{
+		if((ret = tsk_thread_create(&(self->tid[0]), self->run, self))){
 			TSK_DEBUG_ERROR("Failed to start new thread.");
 			return ret;
 		}
-		self->running = 1;
+		// Do not set "running" to true here
+		// Problem: When you try to stop the thread before it start
+		// Will be done by "TSK_RUNNABLE_RUN_BEGIN" which is called into the thread
+		//self->running = tsk_true;
 	}
 	return ret;
 }
@@ -126,11 +128,11 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 			return -3;
 		}
 
-		self->running = 0;
+		self->running = tsk_false;
 		tsk_semaphore_increment(self->semaphore);
 
-		if(ret = tsk_thread_join(&(self->tid[0]))){
-			self->running = 1;
+		if((ret = tsk_thread_join(&(self->tid[0])))){
+			self->running = tsk_true;
 			TSK_DEBUG_ERROR("Failed to join a thread.");
 			return ret;
 		}

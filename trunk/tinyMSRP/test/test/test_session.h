@@ -26,7 +26,7 @@
 #include "tinySDP/parsers/tsdp_parser_message.h"
 
 #define REMOTE_SDP1 \
-	"c=IN IP4 192.168.0.15\r\n" \
+	"c=IN IP4 192.168.16.104\r\n" \
     "m=message 5060 TCP/MSRP *\r\n" \
     "a=accept-types:text/plain\r\n" \
     "a=path:msrp://atlanta.example.com:7654/jshA7weztas;tcp\r\n" \
@@ -35,7 +35,7 @@
 
 #define REMOTE_SDP2 \
     "m=message 5060 TCP/MSRP *\r\n" \
-	"c=IN IP4 192.168.0.15\r\n" \
+	"c=IN IP4 192.168.16.104\r\n" \
     "a=accept-types:text/plain\r\n" \
     "a=path:msrp://atlanta.example.com:7654/jshA7weztas;tcp\r\n" \
 	"a=setup:passive\r\n" \
@@ -72,7 +72,8 @@ void test_session()
 		tmedia_get_negotiated_offer(msrp);
 		
 		tmedia_start(msrp);
-		tmedia_pause(msrp);
+		//tmedia_pause(msrp);
+		tsk_thread_sleep(1);
 		tmedia_stop(msrp);
 		
 		TSK_OBJECT_SAFE_FREE(msrp);

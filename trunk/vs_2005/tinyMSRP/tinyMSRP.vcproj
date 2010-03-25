@@ -41,7 +41,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinyMSRP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyMEDIA\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMSRP_EXPORTS"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMSRP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -289,6 +289,10 @@
 				Name="session"
 				>
 				<File
+					RelativePath="..\..\tinyMSRP\include\tinyMSRP\session\tmsrp_data.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyMSRP\include\tinyMSRP\session\tmsrp_media.h"
 					>
 				</File>
@@ -410,6 +414,10 @@
 			<Filter
 				Name="session"
 				>
+				<File
+					RelativePath="..\..\tinyMSRP\src\session\tmsrp_data.c"
+					>
+				</File>
 				<File
 					RelativePath="..\..\tinyMSRP\src\session\tmsrp_media.c"
 					>

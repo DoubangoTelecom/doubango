@@ -114,7 +114,7 @@ tsk_string_t;
 
 typedef tsk_list_t tsk_strings_L_t;
 
-TINYSAK_GEXTERN const void *tsk_string_def_t;
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_string_def_t;
 
 TSK_END_DECLS
 

@@ -92,7 +92,7 @@
 #endif
 
 #if TNET_UNDER_WINDOWS && !defined(_WIN32_WCE)
-#	define TNET_HAVE_OPENSSL_H	1
+#	define TNET_HAVE_OPENSSL_H	0
 #else
 #	define TNET_HAVE_OPENSSL_H	0
 #endif
