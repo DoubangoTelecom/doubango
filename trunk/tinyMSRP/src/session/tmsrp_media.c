@@ -133,12 +133,14 @@ int	tmsrp_media_start(tmedia_t* self)
 						TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TMSRP_CONNECT_TIMEOUT);
 						goto bail;
 					}
-					/*	draft-denis-simple-msrp-comedia-02 - 4.2.3. Setting up the connection
-					   Once the TCP session is established, and if the answerer was the
-					   active connection endpoint, it MUST send an MSRP request.  In
-					   particular, if it has no pending data to send, it MUST send an empty
-					   MSRP SEND request.  That is necessary for the other endpoint to
-					   authenticate this TCP session.
+					/*		draft-denis-simple-msrp-comedia-02 - 4.2.3. Setting up the connection
+						   Once the TCP session is established, and if the answerer was the
+						   active connection endpoint, it MUST send an MSRP request.  In
+						   particular, if it has no pending data to send, it MUST send an empty
+						   MSRP SEND request.  That is necessary for the other endpoint to
+						   authenticate this TCP session.
+
+						   ...RFC 4975 - 7.1
 				   */
 					// ... send bodiless message
 				}
@@ -151,6 +153,15 @@ int	tmsrp_media_start(tmedia_t* self)
 				//
 				break;
 			}
+	}
+
+	// create and start the sender
+	if(!msrp->sender){
+		if((msrp->sender = TMSRP_SENDER_CREATE(msrp->remote.M->C->addr, msrp->remote.M->port))){
+			if((ret = tmsrp_sender_start(msrp->sender))){
+				goto bail;
+			}
+		}
 	}
 
 bail:
@@ -168,8 +179,11 @@ int	tmsrp_media_pause(tmedia_t* self)
 int	tmsrp_media_stop(tmedia_t* self)
 {
 	tmsrp_media_t *msrp = TMSRP_MEDIA(self);
-	TSK_DEBUG_INFO("tmsrp_media_stop");
-
+	
+	if(msrp->sender){
+		tmsrp_sender_stop(msrp->sender);
+	}
+	
 	return 0;
 }
 
@@ -383,7 +397,8 @@ static void* tmsrp_media_create(tsk_object_t *self, va_list * app)
 		const char* name = va_arg(*app, const char*);
 		const char* host = va_arg(*app, const char*);
 		tnet_socket_type_t socket_type = va_arg(*app, tnet_socket_type_t);
-
+		
+		// init base
 		tmedia_init(TMEDIA(msrp), name);
 
 		msrp->setup = setup_actpass; // draft-denis-simple-msrp-comedia-02 - 4.1.1. Sending the offer
@@ -421,6 +436,9 @@ static void* tmsrp_media_destroy(tsk_object_t *self)
 		//TSK_OBJECT_SAFE_FREE(msrp->remote.C);
 		// negociated
 		TSK_OBJECT_SAFE_FREE(msrp->negociated.M);
+
+		// sender
+		TSK_OBJECT_SAFE_FREE(msrp->sender);
 		
 		if(closeFD){
 			tnet_sockfd_close(&msrp->connectedFD);

@@ -427,8 +427,7 @@ static void* tsk_string_create(void * self, va_list * app)
 {
 	tsk_string_t *string = self;
 	const char *value = va_arg(*app, const char *);
-	if(value)
-	{
+	if(value){
 		string->value = tsk_strdup(value);
 	}
 	return self;
@@ -437,7 +436,9 @@ static void* tsk_string_create(void * self, va_list * app)
 static void* tsk_string_destroy(void * self)
 { 
 	tsk_string_t *string = self;
-	free(string->value), string->value = 0;
+	if(string){
+		TSK_FREE(string->value);
+	}
 
 	return self;
 }
@@ -447,8 +448,7 @@ static int tsk_string_cmp(const void *obj1, const void *obj2)
 	const tsk_string_t *s1 = obj1;
 	const tsk_string_t *s2 = obj2;
 
-	if(s1 && s2)
-	{
+	if(s1 && s2){
 		return tsk_stricmp(s1->value, s2->value);
 	}
 	else if(!s1 && !s2) return 0;
@@ -462,5 +462,5 @@ static const tsk_object_def_t tsk_string_def_s =
 	tsk_string_destroy,
 	tsk_string_cmp, 
 };
-const void *tsk_string_def_t = &tsk_string_def_s;
+const tsk_object_def_t *tsk_string_def_t = &tsk_string_def_s;
 

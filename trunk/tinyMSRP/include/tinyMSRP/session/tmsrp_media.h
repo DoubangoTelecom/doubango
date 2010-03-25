@@ -32,6 +32,9 @@
 
 #include "tinyMSRP_config.h"
 
+#include "tinyMSRP/session/tmsrp_sender.h"
+#include "tinyMSRP/session/tmsrp_receiver.h"
+
 #include "tinyMEDIA/tmedia.h"
 #include "tsdp.h"
 
@@ -54,6 +57,7 @@ typedef struct tmsrp_media_s
 	
 	tmsrp_session_setup_t setup;
 	tnet_fd_t connectedFD; // FullDuplex Socket
+	tmsrp_sender_t* sender;
 	
 	struct{
 		struct tsdp_header_M_s* M;

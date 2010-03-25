@@ -389,12 +389,12 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		tsip_stack_t *stack = self;
 		
 		TSK_RUNNABLE(stack)->run = run;
-		if(ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t)){
+		if((ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))){
 			return ret;
 		}
 
 		/*  Timer manager */
-		if(ret = tsk_timer_manager_start(stack->timer_mgr)){
+		if((ret = tsk_timer_manager_start(stack->timer_mgr))){
 			// What to do ?
 		}
 
@@ -492,7 +492,7 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 		/* Do not Stop timer manager ==> Dialogs have ref to the stack and rely on the timer manager(to gracefully shutdown).*/
 		//ret = tsk_timer_manager_stop(stack->timer_mgr);
 
-		if(ret = tsk_runnable_stop(TSK_RUNNABLE(stack))){
+		if((ret = tsk_runnable_stop(TSK_RUNNABLE(stack)))){
 			//return ret;
 		}
 
