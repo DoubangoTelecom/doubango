@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -143,7 +143,7 @@ typedef tmsrp_message_t tmsrp_request_t; /**< MSRP request message. */
 typedef tmsrp_message_t tmsrp_response_t; /**< MSRP response message. */
 
 TINYMSRP_API int tmsrp_message_add_header(tmsrp_message_t *self, const tmsrp_header_t *hdr);
-TINYMSRP_API int tmsrp_message_add_headers(tmsrp_message_t *self, const tmsrp_headers_L_t *headers);
+TINYMSRP_API int tmsrp_message_add_headers(tmsrp_message_t *self, ...);
 
 #if !defined(_MSC_VER) || defined(__GNUC__)
 static void TMSRP_MESSAGE_ADD_HEADER(tmsrp_message_t *self, ...)
@@ -175,7 +175,8 @@ TINYMSRP_API const tmsrp_header_t *tmsrp_message_get_headerByName(const tmsrp_me
 
 TINYMSRP_API int tmsrp_message_add_content(tmsrp_message_t *self, const char* content_type, const void* content, size_t size);
 
-TINYMSRP_API int tmsrp_message_tostring(const tmsrp_message_t *self, tsk_buffer_t *output);
+TINYMSRP_API int tmsrp_message_serialize(const tmsrp_message_t *self, tsk_buffer_t *output);
+TINYMSRP_API char* tmsrp_message_tostring(const tmsrp_message_t *self);
 
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_message_def_t;

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -95,17 +95,26 @@ int tmsrp_message_add_header(tmsrp_message_t *self, const tmsrp_header_t *hdr)
 	return -1;
 }
 
-int tmsrp_message_add_headers(tmsrp_message_t *self, const tmsrp_headers_L_t *headers)
+int tmsrp_message_add_headers(tmsrp_message_t *self, ...)
 {
-	tsk_list_item_t *item = 0;
-	if(self && headers)
-	{
-		tsk_list_foreach(item, headers){
-			tmsrp_message_add_header(self, item->data);
-		}
-		return 0;
+	const tsk_object_def_t* objdef;
+	tmsrp_header_t *header;
+	va_list ap;
+
+	if(!self){
+		return -1;
 	}
-	return -1;
+
+	va_start(ap, self);
+	while((objdef = va_arg(ap, const tsk_object_def_t*))){
+		if((header = tsk_object_new2(objdef, &ap))){
+			tmsrp_message_add_header(self, header);
+			TSK_OBJECT_SAFE_FREE(header);
+		}
+	}
+	va_end(ap);
+
+	return 0;
 }
 
 const tmsrp_header_t *tmsrp_message_get_headerAt(const tmsrp_message_t *self, tmsrp_header_type_t type, size_t index)
@@ -212,7 +221,7 @@ int tmsrp_message_add_content(tmsrp_message_t *self, const char* content_type, c
 	return -1;
 }
 
-int tmsrp_message_tostring(const tmsrp_message_t *self, tsk_buffer_t *output)
+int tmsrp_message_serialize(const tmsrp_message_t *self, tsk_buffer_t *output)
 {
 	if(!self || !output){
 		return -1;
@@ -290,12 +299,25 @@ int tmsrp_message_tostring(const tmsrp_message_t *self, tsk_buffer_t *output)
 	}
 
 	/* END LINE */
-	tsk_buffer_appendEx(output, "-------%s%c", self->end_line.tid, self->end_line.cflag);
+	tsk_buffer_appendEx(output, "-------%s%c\r\n", self->end_line.tid, self->end_line.cflag);
 	
 	return 0;
 }
 
 
+char* tmsrp_message_tostring(const tmsrp_message_t *self)
+{
+	tsk_buffer_t* output;
+	char* ret = tsk_null;
+
+	if((output = TSK_BUFFER_CREATE_NULL())){
+		if(!tmsrp_message_serialize(self, output)){
+			ret = tsk_strndup(output->data, output->size);
+		}
+		TSK_OBJECT_SAFE_FREE(output);
+	}
+	return ret;
+}
 
 
 

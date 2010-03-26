@@ -284,6 +284,14 @@
 				Name="session"
 				>
 				<File
+					RelativePath=".\include\tinyMSRP\session\tmsrp_config.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinyMSRP\session\tmsrp_data.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinyMSRP\session\tmsrp_media.h"
 					>
 				</File>
@@ -405,6 +413,14 @@
 			<Filter
 				Name="session"
 				>
+				<File
+					RelativePath=".\src\session\tmsrp_config.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\session\tmsrp_data.c"
+					>
+				</File>
 				<File
 					RelativePath=".\src\session\tmsrp_media.c"
 					>

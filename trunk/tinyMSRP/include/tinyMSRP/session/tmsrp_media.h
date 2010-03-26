@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -55,6 +55,7 @@ typedef struct tmsrp_media_s
 {
 	TMED_DECLARE_MEDIA;
 	
+	tmsrp_config_t* config;
 	tmsrp_session_setup_t setup;
 	tnet_fd_t connectedFD; // FullDuplex Socket
 	tmsrp_sender_t* sender;
@@ -76,7 +77,7 @@ typedef struct tmsrp_media_s
 tmsrp_media_t;
 
 int tmsrp_send_file(tmsrp_media_t* self, const char* path);
-int tmsrp_send_text(tmsrp_media_t* self, const char* text, const char* ctype);
+int tmsrp_send_data(tmsrp_media_t* self, const void* data, size_t size, const char* ctype);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_media_def_t;
 TINYMSRP_GEXTERN const tmedia_plugin_def_t *tmsrp_media_plugin_def_t;

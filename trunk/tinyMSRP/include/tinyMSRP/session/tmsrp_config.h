@@ -20,34 +20,44 @@
 *
 */
 
-/**@file tsk_base64.h
- * @brief Base64 encoder and decoder as per RFC 4648.
+/**@file tmsrp_media.h
+ * @brief MSRP Session config.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYSAK_BASE64_H
-#define TINYSAK_BASE64_H
+#ifndef TINYMSRP_CONFIG_H
+#define TINYMSRP_CONFIG_H
 
-#include "tinySAK_config.h"
+#include "tinyMSRP_config.h"
 
-TSK_BEGIN_DECLS
+#include "tinyMSRP/headers/tmsrp_header_From-Path.h"
+#include "tinyMSRP/headers/tmsrp_header_To-Path.h"
 
-/**@ingroup tsk_base64_group
-* Guess the output(encoded) size.
-* @param IN_LEN The input size.
-*/
-#define TSK_BASE64_ENCODE_LEN(IN_LEN)		((2 + (IN_LEN) - (((IN_LEN) + 2) % 3)) * 4 / 3)
-/**@ingroup tsk_base64_group
-* Guess the output(decoded) size.
-* @param IN_LEN The input size.
-*/
-#define TSK_BASE64_DECODE_LEN(IN_LEN)		(((IN_LEN * 3)/4) + 2)
+#include "tsk_object.h"
 
-TINYSAK_API size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output);
-TINYSAK_API size_t tsk_base64_decode(const uint8_t* input, size_t input_size, char **output);
+TMSRP_BEGIN_DECLS
 
-TSK_END_DECLS
+#define TMSRP_CONFIG_CREATE()	tsk_object_new(tmsrp_config_def_t)
 
-#endif /* TINYSAK_BASE64_H */
+#define TMSRP_MAX_CHUNK_SIZE				2
+
+typedef struct tmsrp_config_s
+{
+	TSK_DECLARE_OBJECT;
+
+	tmsrp_header_To_Path_t* To_Path;
+	tmsrp_header_From_Path_t* From_Path;
+
+	tsk_bool_t Failure_Report;
+	tsk_bool_t Success_Report;
+	tsk_bool_t OMA_Final_Report;
+}
+tmsrp_config_t;
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_config_def_t;
+
+TMSRP_END_DECLS
+
+#endif /* TINYMSRP_CONFIG_H */

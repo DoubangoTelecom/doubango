@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -45,7 +45,8 @@
 */
 TSK_BEGIN_DECLS
 
-#define TSK_PARAM_CREATE(name, value)		tsk_object_new(tsk_param_def_t, (const char*)name, (const char*)value)
+#define TSK_PARAM_VA_ARGS(name, value)		tsk_param_def_t, (const char*)name, (const char*)value
+#define TSK_PARAM_CREATE(name, value)		tsk_object_new(TSK_PARAM_VA_ARGS(name, value))
 #define TSK_PARAM_CREATE_NULL()				TSK_PARAM_CREATE(tsk_null, tsk_null)
 
 #define TSK_PARAM(self)				((tsk_param_t*)(self))
@@ -70,6 +71,7 @@ TINYSAK_API tsk_param_t *tsk_params_parse_param(const char* line, size_t size);
 
 TINYSAK_API int tsk_params_have_param(const tsk_params_L_t *self, const char* name);
 TINYSAK_API int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* value);
+TINYSAK_API int tsk_params_add_param_2(tsk_params_L_t **self, const tsk_param_t* param);
 TINYSAK_API int tsk_params_remove_param(tsk_params_L_t *self, const char* name);
 TINYSAK_API const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, const char* name);
 TINYSAK_API const char *tsk_params_get_param_value(const tsk_params_L_t *self, const char* name);

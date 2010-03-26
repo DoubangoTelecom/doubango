@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -110,7 +110,7 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 {
 	tsk_param_t *param;
 
-	if(!name) {
+	if(!self || !name) {
 		return -1;
 	}
 
@@ -127,6 +127,17 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 	}
 
 	return 0;
+}
+
+int tsk_params_add_param_2(tsk_params_L_t **self, const tsk_param_t* param)
+{
+	int ret = -1;
+	if(!self || !param || !param){
+		return ret;
+	}
+
+	ret = tsk_params_add_param(self, param->name, param->value);
+	return ret;
 }
 
 /**@ingroup tsk_params_group

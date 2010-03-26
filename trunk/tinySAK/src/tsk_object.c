@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -37,7 +37,7 @@
 */
 
 #if defined (_DEBUG) || defined (DEBUG)
-#	define TSK_DEBUG_OBJECTS	1
+#	define TSK_DEBUG_OBJECTS	0
 static int tsk_objects_count = 0;
 #else
 #	define TSK_DEBUG_OBJECTS	0
@@ -66,8 +66,7 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 	{
 		(*(const tsk_object_def_t **) newobj) = objdef;
 		TSK_OBJECT_HEADER_GET(newobj)->refCount = 1;
-		if(objdef->constructor)
-		{ 
+		if(objdef->constructor){ 
 			va_list ap;
 			va_start(ap, objdef);
 			newobj = objdef->constructor(newobj, &ap);
@@ -104,6 +103,10 @@ tsk_object_t* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 		TSK_OBJECT_HEADER_GET(newobj)->refCount = 1;
 		if(objdef->constructor){ 
 			newobj = objdef->constructor(newobj, ap);
+
+#if TSK_DEBUG_OBJECTS
+		TSK_DEBUG_INFO("N° objects:%d", ++tsk_objects_count);
+#endif
 		}
 		else{
 			TSK_DEBUG_WARN("No constructor found.");

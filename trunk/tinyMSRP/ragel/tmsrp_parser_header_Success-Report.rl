@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -110,7 +110,7 @@ static void* tmsrp_header_Success_Report_create(void *self, va_list * app)
 		TMSRP_HEADER(Success_Report)->type = tmsrp_htype_Success_Report;
 		TMSRP_HEADER(Success_Report)->tostring = tmsrp_header_Success_Report_tostring;
 		
-		Success_Report->yes = va_arg(*app, unsigned) ? 1 : 0;
+		Success_Report->yes = va_arg(*app, tsk_bool_t) ? 1 : 0;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Success-Report header.");

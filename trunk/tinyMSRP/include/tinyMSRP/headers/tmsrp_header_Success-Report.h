@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -39,7 +39,7 @@ TMSRP_BEGIN_DECLS
 * Creates new msrp Success-Report header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
 * @sa TSK_OBJECT_SAFE_FREE.
 */
-#define TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(isSuccess)		tmsrp_header_Success_Report_def_t, (unsigned)isSuccess
+#define TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(isSuccess)		tmsrp_header_Success_Report_def_t, (tsk_bool_t)isSuccess
 #define TMSRP_HEADER_SUCCESS_REPORT_CREATE(isSuccess)		tsk_object_new(TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(isSuccess))
 #define TMSRP_HEADER_SUCCESS_REPORT_CREATE_NULL()				TMSRP_HEADER_SUCCESS_REPORT_CREATE(0)
 

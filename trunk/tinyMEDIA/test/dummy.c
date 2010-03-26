@@ -25,16 +25,6 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-
-
-int dummy_set_params(tmedia_t* self, const tsk_params_L_t* params)
-{
-	dummy_t *dummy = DUMMY(self);
-	TSK_DEBUG_INFO("dummy_set_params");
-
-	return 0;
-}
-
 int	dummy_start(tmedia_t* self)
 {
 	dummy_t *dummy = DUMMY(self);
@@ -83,7 +73,21 @@ int dummy_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 	return 0;
 }
 
+int dummy_perform(tmedia_t* self, tmedia_action_t action, const tsk_params_L_t* params)
+{
+	dummy_t *dummy = DUMMY(self);
+	const tsk_list_item_t* item;
+	const tsk_param_t* param;
 
+	TSK_DEBUG_INFO("dummy_perform");
+
+	tsk_list_foreach(item, params){
+		param = item->data;
+		TSK_DEBUG_INFO("name=%s/value=%s", param->name, param->value);
+	}
+	
+	return 0;
+}
 
 
 //========================================================
@@ -148,15 +152,15 @@ static const tmedia_plugin_def_t dummy_plugin_def_s =
 	"dummy plugin",
 	"audio",
 
-	dummy_set_params,
-
 	dummy_start,
 	dummy_pause,
 	dummy_stop,
 
 	dummy_get_local_offer,
 	dummy_get_negotiated_offer,
-	dummy_set_remote_offer
+	dummy_set_remote_offer,
+
+	dummy_perform
 };
 const tmedia_plugin_def_t *dummy_plugin_def_t = &dummy_plugin_def_s;
 

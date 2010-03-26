@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -68,7 +68,7 @@ int tmedia_plugin_register(const tmedia_plugin_def_t* plugin)
 	}
 
 	for(i=0; i<TMED_MAX_PLUGINS; i++){
-		if(!__tmedia_plugins[i]){
+		if(!__tmedia_plugins[i] || __tmedia_plugins[i] == plugin){
 			__tmedia_plugins[i] = plugin;
 			return 0;
 		}
@@ -94,21 +94,6 @@ tmedia_t* tmedia_factory_create(const char* name, const char* host, tnet_socket_
 	}
 
 	return ret;
-}
-
-
-int tmedia_set_params(tmedia_t* self, const tsk_params_L_t* params)
-{
-	if(!self || !self->plugin){
-		return -1;
-	}
-
-	if(!self->plugin->set_params){
-		return -2;
-	}
-	else{
-		return self->plugin->set_params(self, params);
-	}
 }
 
 int tmedia_start(tmedia_t* self)
@@ -193,6 +178,44 @@ int tmedia_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 	}
 }
 
+int tmedia_perform(tmedia_t* self, tmedia_action_t action, ... )
+{
+	int ret = -1;
+
+	if(!self || !self->plugin){
+		return -1;
+	}
+
+	if(!self->plugin->perform){
+		return -2;
+	}
+	else{
+		const tsk_object_def_t* objdef;
+		tsk_param_t *param;
+		tsk_params_L_t* params;
+		va_list ap;	
+		
+		va_start(ap, action);
+		params = TSK_LIST_CREATE();
+		while((objdef = va_arg(ap, const tsk_object_def_t*))){
+			if(objdef != tsk_param_def_t){ // sanity check
+				continue;
+			}
+			if((param = tsk_object_new2(objdef, &ap))){
+				tsk_params_add_param_2(&params, param);
+				TSK_OBJECT_SAFE_FREE(param);
+			}
+		}
+
+		// Perform
+		ret = self->plugin->perform(self, action, params);
+
+		TSK_OBJECT_SAFE_FREE(params);
+		va_end(ap);
+
+		return ret;
+	}
+}
 
 //========================================================
 //	Media object definition
