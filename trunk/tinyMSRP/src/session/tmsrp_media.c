@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -80,20 +80,6 @@ const char* setup_to_string(tmsrp_session_setup_t setup)
 
 /* =========================== Plugin ============================= */
 
-int tmsrp_media_set_params(tmedia_t* self, const tsk_params_L_t* params)
-{
-	const tsk_param_t* param;
-	tmsrp_media_t *msrp = TMSRP_MEDIA(self);
-	TSK_DEBUG_INFO("tmsrp_media_set_params");
-	
-	// setup
-	if((param = tsk_params_get_param_by_name(params, "msrp/setup"))){
-		msrp->setup = setup_from_string(param->value);
-	}
-
-	return 0;
-}
-
 int	tmsrp_media_start(tmedia_t* self)
 {
 	int ret = -1;
@@ -157,7 +143,7 @@ int	tmsrp_media_start(tmedia_t* self)
 
 	// create and start the sender
 	if(!msrp->sender){
-		if((msrp->sender = TMSRP_SENDER_CREATE(msrp->remote.M->C->addr, msrp->remote.M->port))){
+		if((msrp->sender = TMSRP_SENDER_CREATE(msrp->config, msrp->connectedFD))){
 			if((ret = tmsrp_sender_start(msrp->sender))){
 				goto bail;
 			}
@@ -213,7 +199,7 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self)
 
 	if(!msrp->local.M){
 		char* path = tsk_null;
-		
+		tmsrp_uri_t* uri;
 		tsk_strrandom(&sessionid);
 		tsk_sprintf(&path, "%s://%s:%u/%s;tcp", sheme, msrp->local.socket->ip, msrp->local.socket->port, sessionid); //tcp is ok even if tls is used.
 
@@ -228,6 +214,14 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self)
 				
 				tsk_null
 				);
+			
+			if((uri = tmsrp_uri_parse(path, path?strlen(path):0))){
+				if(msrp->config->From_Path){
+					TSK_OBJECT_SAFE_FREE(msrp->config->From_Path);
+				}
+				msrp->config->From_Path = TMSRP_HEADER_FROM_PATH_CREATE(uri);
+				TSK_OBJECT_SAFE_FREE(uri);
+			}
 			TSK_FREE(path);
 
 			if(answer){ /* We are about to send 2xx INVITE(sdp) */
@@ -331,6 +325,18 @@ int tmsrp_media_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 		goto bail;
 	}
 
+	/* To-Path */
+	if((A = tsdp_header_M_findA(msrp->remote.M, "path"))){
+		tmsrp_uri_t* uri;
+		if((uri = tmsrp_uri_parse(A->value, A->value?strlen(A->value):0))){
+			if(msrp->config->To_Path){
+				TSK_OBJECT_SAFE_FREE(msrp->config->To_Path);
+			}
+			msrp->config->To_Path = TMSRP_HEADER_TO_PATH_CREATE(uri);
+			TSK_OBJECT_SAFE_FREE(uri);
+		}
+	}
+
 	if(answer){ /* We are about to receive 2xx INVITE(sdp) */
 	}
 	else{ /* We are about to receive INVITE(sdp) */
@@ -353,6 +359,47 @@ int tmsrp_media_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 bail:
 	return ret;
 }
+
+
+int tmsrp_media_perform(tmedia_t* self, tmedia_action_t action, const tsk_params_L_t* params)
+{
+	tmsrp_media_t *msrp = TMSRP_MEDIA(self);
+	int ret = -1;
+
+	if(!msrp || !msrp->sender){
+		return -1;
+	}
+
+	switch(action){
+		case tma_msrp_send_data:
+			{
+				const char* content = tsk_params_get_param_value(params, "content");
+				const char* ctype = tsk_params_get_param_value(params, "content-type");
+				if(content){
+					tsmrp_sender_send_data(msrp->sender, content, strlen(content), ctype);
+				}
+				else{
+					TSK_DEBUG_ERROR("%s param not found.", "content");
+				}
+				break;
+			}
+
+		case tma_msrp_send_file:
+			{
+				const char* filepath = tsk_params_get_param_value(params, "path");
+				const char* ctype = tsk_params_get_param_value(params, "content-type");
+				if(filepath){
+					tsmrp_sender_send_file(msrp->sender, filepath);
+				}
+				else{
+					TSK_DEBUG_ERROR("%s param not found.", "path");
+				}
+				break;
+			}
+	}
+		
+	return 0;
+}
 /* ======================================================== */
 
 
@@ -370,13 +417,14 @@ int tmsrp_send_file(tmsrp_media_t* self, const char* path)
 	return 0;
 }
 
-int tmsrp_send_text(tmsrp_media_t* self, const char* text, const char* ctype)
+tmsrp_send_data(tmsrp_media_t* self, const void* data, size_t size, const char* ctype)
 {
-	if(!self){
+	if(!self || !data || !size || !self->sender){
 		return -1;
 	}
-
-	return 0;
+	else{
+		return tsmrp_sender_send_data(self->sender, data, size, ctype);
+	}
 }
 
 
@@ -401,6 +449,7 @@ static void* tmsrp_media_create(tsk_object_t *self, va_list * app)
 		// init base
 		tmedia_init(TMEDIA(msrp), name);
 
+		msrp->config = TMSRP_CONFIG_CREATE();
 		msrp->setup = setup_actpass; // draft-denis-simple-msrp-comedia-02 - 4.1.1. Sending the offer
 		TMEDIA(msrp)->protocol = tsk_strdup("TCP/MSRP");
 
@@ -427,6 +476,8 @@ static void* tmsrp_media_destroy(tsk_object_t *self)
 	if(msrp){
 		tsk_bool_t closeFD = (msrp->local.socket && msrp->local.socket->fd != msrp->connectedFD);
 		tmedia_deinit(TMEDIA(msrp));
+
+		TSK_OBJECT_SAFE_FREE(msrp->config);
 		
 		// local
 		TSK_OBJECT_SAFE_FREE(msrp->local.M);
@@ -474,15 +525,15 @@ static const tmedia_plugin_def_t tmsrp_media_plugin_def_s =
 	"msrp",
 	"message",
 
-	tmsrp_media_set_params,
-
 	tmsrp_media_start,
 	tmsrp_media_pause,
 	tmsrp_media_stop,
 
 	tmsrp_media_get_local_offer,
 	tmsrp_media_get_negotiated_offer,
-	tmsrp_media_set_remote_offer
+	tmsrp_media_set_remote_offer,
+
+	tmsrp_media_perform
 };
 const tmedia_plugin_def_t *tmsrp_media_plugin_def_t = &tmsrp_media_plugin_def_s;
 

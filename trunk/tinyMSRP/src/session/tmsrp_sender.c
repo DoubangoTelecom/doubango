@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -29,7 +29,12 @@
  */
 #include "tinyMSRP/session/tmsrp_sender.h"
 
+#include "tnet_utils.h"
+
+#include "tsk_memory.h"
+#include "tsk_string.h"
 #include "tsk_debug.h"
+
 
 void *run(void* self);
 
@@ -50,7 +55,7 @@ bail:
 	return ret;
 }
 
-int tsmrp_sender_send_message(tmsrp_sender_t* self, const void* pdata, size_t size)
+int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* pdata, size_t size, const char* ctype)
 {
 	tmsrp_data_out_t* data_out;
 
@@ -103,6 +108,12 @@ void *run(void* self)
 {
 	tsk_list_item_t *curr;
 	tmsrp_sender_t *sender = self;
+	tmsrp_data_out_t *data_out;
+	tsk_buffer_t* chunck;
+	char* str;
+	size_t start = 1;
+	size_t end;
+	tsk_istr_t tid;
 
 	TSK_DEBUG_INFO("MSRP SENDER::run -- START");
 
@@ -110,8 +121,44 @@ void *run(void* self)
 
 	if((curr = TSK_RUNNABLE_POP_FIRST(sender)))
 	{
-		tmsrp_data_out_t *data_out = (tmsrp_data_out_t*)curr->data;
+		if(!(data_out = (tmsrp_data_out_t*)curr->data)){
+			continue;
+		}
 		
+		while((chunck = tmsrp_data_out_get(data_out))){
+			tmsrp_request_t* SEND;
+			// set end
+			end = start + chunck->size;
+			// compute new transaction id
+			tsk_strrandom(&tid);
+			// create SEND request
+			SEND = TMSRP_REQUEST_CREATE(tid, "SEND");
+			// T-Path and From-Path (because of otherURIs)
+			SEND->To = tsk_object_ref(sender->config->To_Path);
+			SEND->From = tsk_object_ref(sender->config->From_Path);
+			// add other headers
+			tmsrp_message_add_headers(SEND,
+				TMSRP_HEADER_MESSAGE_ID_VA_ARGS(TMSRP_DATA(data_out)->id),
+				TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, -1),
+				TMSRP_HEADER_FAILURE_REPORT_VA_ARGS(sender->config->Failure_Report ? freport_yes : freport_no),
+				TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(sender->config->Success_Report),
+				//TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(TMSRP_DATA(data_out)->ctype),
+
+				tsk_null);
+			// add data
+			tmsrp_message_add_content(SEND, TMSRP_DATA(data_out)->ctype, chunck->data, chunck->size);
+			// serialize and send
+			if((str = tmsrp_message_tostring(SEND))){
+				tnet_sockfd_send(sender->fd, str, strlen(str), 0);
+				TSK_FREE(str);
+			}
+			
+			// set start
+			start = end;
+			// cleanup
+			TSK_OBJECT_SAFE_FREE(chunck);
+			TSK_OBJECT_SAFE_FREE(SEND);
+		}
 		
 
 		tsk_object_unref(curr);
@@ -129,10 +176,13 @@ void *run(void* self)
 //=================================================================================================
 //	MSRP sender object definition
 //
-static void* tmsrp_sender_create(void * self, va_list * app)
+static void* tmsrp_sender_create(void * self, va_list *app)
 {
 	tmsrp_sender_t *sender = self;
 	if(sender){
+		sender->config = tsk_object_ref(va_arg(*app, tmsrp_config_t*));
+		sender->fd = va_arg(*app, tnet_fd_t);	
+
 		sender->outputList = TSK_LIST_CREATE();
 	}
 	return self;
@@ -145,7 +195,9 @@ static void* tmsrp_sender_destroy(void * self)
 		/* Stop */
 		tmsrp_sender_stop(sender);
 
+		TSK_OBJECT_SAFE_FREE(sender->config);
 		TSK_OBJECT_SAFE_FREE(sender->outputList);
+		// the FD is owned by the media ...do not close it
 	}
 	return self;
 }

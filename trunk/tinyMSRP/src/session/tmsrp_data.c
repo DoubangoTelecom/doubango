@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -28,6 +28,7 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinyMSRP/session/tmsrp_data.h"
+#include "tinyMSRP/session/tmsrp_config.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -39,11 +40,11 @@
 
 int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, size_t size, tsk_bool_t isfilepath, const char* ctype)
 {
+	tsk_istr_t id;
+	
 	if(!self || !pdata || !size){
 		return -1;
 	}
-	
-	self->start = 1;
 	
 	if(isfilepath){
 		if(self->file){
@@ -65,7 +66,11 @@ int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, 
 	else{
 		self->buffer = TSK_BUFFER_CREATE(pdata, size);
 	}
+	// ctype
 	tsk_strupdate(&self->ctype, ctype);
+	// random id
+	tsk_strrandom(&id);
+	tsk_strupdate(&self->id, id);
 
 	return 0;
 }
@@ -121,10 +126,21 @@ tmsrp_request_t* tmsrp_data_in_get(tmsrp_data_in_t* self)
 tsk_buffer_t* tmsrp_data_out_get(tmsrp_data_out_t* self)
 {
 	tsk_buffer_t* ret = tsk_null;
+	size_t toread;
 
 	if(!self){
 		return tsk_null;
 	}
+
+	if(TMSRP_DATA_IS_DATA_TRANSFER(self)){
+		if((toread = TSK_BUFFER_SIZE(TMSRP_DATA(self)->buffer) > TMSRP_MAX_CHUNK_SIZE ? TMSRP_MAX_CHUNK_SIZE : TSK_BUFFER_SIZE(TMSRP_DATA(self)->buffer))){		
+			ret = TSK_BUFFER_CREATE(TSK_BUFFER_DATA(TMSRP_DATA(self)->buffer), toread);
+			tsk_buffer_remove(TMSRP_DATA(self)->buffer, 0, toread);
+		}
+	}
+	else if(TMSRP_DATA_IS_FILE_TRANSFER(self)){
+	}
+	
 
 	return ret;
 }

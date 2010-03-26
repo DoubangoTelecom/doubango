@@ -45,10 +45,17 @@ int main()
 
 			tmedia_get_local_offer(dummy);
 			tmedia_get_negotiated_offer(dummy);
-			tmedia_set_remote_offer(dummy, tsk_null);
-			
+			tmedia_set_remote_offer(dummy, tsk_null);		
+
 			tmedia_start(dummy);
 			tmedia_pause(dummy);
+
+			tmedia_perform(dummy, tma_msrp_send_data,
+				TSK_PARAM_VA_ARGS("content", "hello world!"),
+				TSK_PARAM_VA_ARGS("content-type", "text/plain"),
+
+				tsk_null);
+
 			tmedia_stop(dummy);
 			
 			TSK_OBJECT_SAFE_FREE(dummy);

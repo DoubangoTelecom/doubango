@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -184,14 +184,13 @@ int tsk_buffer_realloc(tsk_buffer_t* self, size_t size)
 */
 int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size)
 {
-	if(self)
+	if(self && self->data)
 	{
-		if((position == 0) && ((position + size) == self->size)){ /* Very common case. */
+		if((position == 0) && ((position + size) >= self->size)){ /* Very common case. */
 			return tsk_buffer_cleanup(self);
 		}
 		else if((position + size) < self->size)
 		{
-			size = self->size - position;
 			memcpy(((uint8_t*)self->data) + position, ((uint8_t*)self->data) + position + size, 
 				self->size-(position+size));
 			return tsk_buffer_realloc(self, (self->size-size));

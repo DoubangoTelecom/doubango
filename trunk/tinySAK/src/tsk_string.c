@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -232,7 +232,9 @@ int tsk_sprintf(char** str, const char* format, ...)
 	va_start(list, format);
 
 	/* free previous value */
-	if(*str) tsk_free((void**)str);
+	if(*str){
+		tsk_free((void**)str);
+	}
 	
 	/* compute destination len for windows mobile
 	*/

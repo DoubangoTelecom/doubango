@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -33,23 +33,28 @@
 #include "tinyMSRP_config.h"
 
 #include "tinyMSRP/session/tmsrp_data.h"
+#include "tinyMSRP/session/tmsrp_config.h"
+
+#include "tnet_types.h"
 
 #include "tsk_runnable.h"
 
 TMSRP_BEGIN_DECLS
 
-#define TMSRP_SENDER_CREATE(destIP, port)	tsk_object_new(tmsrp_sender_def_t, (const char*)destIP, (unsigned)port)
+#define TMSRP_SENDER_CREATE(config, fd)	tsk_object_new(tmsrp_sender_def_t, (tmsrp_config_t*)config, (tnet_fd_t) fd)
 
 typedef struct tmsrp_sender_s
 {
 	TSK_DECLARE_RUNNABLE;
 
 	tmsrp_datas_L_t* outputList;
+	tmsrp_config_t* config;
+	tnet_fd_t fd;
 }
 tmsrp_sender_t;
 
 int tmsrp_sender_start(tmsrp_sender_t* self);
-int tsmrp_sender_send_message(tmsrp_sender_t* self, const void* pdata, size_t size);
+int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* data, size_t size, const char* ctype);
 int tsmrp_sender_send_file(tmsrp_sender_t* self, const char* filepath);
 int tmsrp_sender_stop(tmsrp_sender_t* self);
 
