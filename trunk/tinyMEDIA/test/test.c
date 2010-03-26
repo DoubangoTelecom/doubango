@@ -50,9 +50,8 @@ int main()
 			tmedia_start(dummy);
 			tmedia_pause(dummy);
 
-			tmedia_perform(dummy, tma_msrp_send_data,
-				TSK_PARAM_VA_ARGS("content", "hello world!"),
-				TSK_PARAM_VA_ARGS("content-type", "text/plain"),
+			tmedia_perform(dummy, tma_dummy_say_hello,
+				TSK_PARAM_VA_ARGS("to", "doubango"),
 
 				tsk_null);
 

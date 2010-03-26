@@ -48,6 +48,9 @@ TMEDIA_BEGIN_DECLS
 
 typedef enum tmedia_action_e
 {
+	// Dummy
+	tma_dummy_say_hello,
+
 	// MSRP
 	tma_msrp_send_data,
 	tma_msrp_send_file,

@@ -76,15 +76,14 @@ int dummy_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 int dummy_perform(tmedia_t* self, tmedia_action_t action, const tsk_params_L_t* params)
 {
 	dummy_t *dummy = DUMMY(self);
-	const tsk_list_item_t* item;
-	const tsk_param_t* param;
 
-	TSK_DEBUG_INFO("dummy_perform");
-
-	tsk_list_foreach(item, params){
-		param = item->data;
-		TSK_DEBUG_INFO("name=%s/value=%s", param->name, param->value);
-	}
+	switch(action){
+		case tma_dummy_say_hello:
+			{
+				TSK_DEBUG_INFO("dummy_perform (hello to \"%s\")", tsk_params_get_param_value(params, "to"));
+				break;
+			}
+	}	
 	
 	return 0;
 }
