@@ -41,7 +41,7 @@ TMSRP_BEGIN_DECLS
 */
 #define TMSRP_HEADER_MESSAGE_ID_VA_ARGS(value)		tmsrp_header_Message_ID_def_t, (const char*)value
 #define TMSRP_HEADER_MESSAGE_ID_CREATE(value)		tsk_object_new(TMSRP_HEADER_MESSAGE_ID_VA_ARGS(value))
-#define TMSRP_HEADER_MESSAGE_ID_CREATE_NULL()				TMSRP_HEADER_MESSAGE_ID_CREATE(TMSRP_NULL)
+#define TMSRP_HEADER_MESSAGE_ID_CREATE_NULL()				TMSRP_HEADER_MESSAGE_ID_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

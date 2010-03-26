@@ -43,7 +43,7 @@ TMSRP_BEGIN_DECLS
 */
 #define TMSRP_HEADER_FROM_PATH_VA_ARGS(uri)		tmsrp_header_From_Path_def_t, (const tmsrp_uri_t*)uri
 #define TMSRP_HEADER_FROM_PATH_CREATE(uri)		tsk_object_new(TMSRP_HEADER_FROM_PATH_VA_ARGS(uri))
-#define TMSRP_HEADER_FROM_PATH_CREATE_NULL()				TMSRP_HEADER_FROM_PATH_CREATE(TMSRP_NULL)
+#define TMSRP_HEADER_FROM_PATH_CREATE_NULL()				TMSRP_HEADER_FROM_PATH_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

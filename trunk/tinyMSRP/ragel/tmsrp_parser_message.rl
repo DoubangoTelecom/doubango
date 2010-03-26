@@ -35,8 +35,10 @@
 #include "tinyMSRP/headers/tmsrp_header_Use-Path.h"
 #include "tinyMSRP/headers/tmsrp_header_WWW-Authenticate.h"
 
-#include "tsk_debug.h"
+#include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
+
 
 #define TMSRP_MSG_PARSER_ADD_HEADER(name) \
 	if((header = (tmsrp_header_t*)tmsrp_header_##name##_parse(tag_start, (p - tag_start)))){ \
@@ -132,6 +134,7 @@
 		if(msrp_msg->type == tmsrp_unknown){
 			msrp_msg->type = tmsrp_request;
 			TSK_PARSER_SET_STRING(msrp_msg->line.request.method);
+			 msrp_msg->line.request.type = tmsrp_request_get_type(msrp_msg->line.request.method);
 		}
 		else{
 			//cs = %%{ write first_final; }%%;
@@ -160,8 +163,14 @@
 
 	action parse_data{
 		int len = (int)(p  - tag_start); 
-		if(len>0 && !msrp_msg->Content){
-			msrp_msg->Content = TSK_BUFFER_CREATE(tag_start, (size_t)len);
+		if(len>0){
+			if(msrp_msg->Content){
+				tsk_buffer_cleanup(msrp_msg->Content);
+				tsk_buffer_append(msrp_msg->Content, tag_start, (size_t)len);
+			}
+			else{
+				msrp_msg->Content = TSK_BUFFER_CREATE(tag_start, (size_t)len);
+			}
 		}
 	}
 
@@ -174,6 +183,17 @@
 			msrp_msg->end_line.cflag = *tag_start;
 		}
 		else msrp_msg->end_line.cflag = '#';
+	}
+
+	action outside_endline{
+		*msg_size = (p - (const char*)input) + 1;
+	}
+	
+	action into_endline{
+		into_endline = tsk_true;
+	}
+	action endtid_match{
+		( into_endline || (((pe-p) >7/*seven hyphens*/) && (msrp_msg->tid) && tsk_strniequals(msrp_msg->tid, (p+7), strlen(msrp_msg->tid))) )
 	}
 
 
@@ -224,8 +244,8 @@
 	###########################################
 	req_start = "MSRP" SP transact_id>tag %parse_tid SP method>tag %parse_method CRLF;
 	#content_stuff = (Other_Mime_header)* CRLF data>tag %parse_data :>CRLF;
-	content_stuff = CRLF<: data>tag %parse_data :>CRLF;
-	msrp_request = req_start headers>1 (content_stuff)?>0 end_line;
+	content_stuff = data>tag %parse_data;
+	msrp_request = req_start headers>10 (CRLF content_stuff CRLF)?>5 :>end_line when endtid_match >into_endline;
 
 	###########################################
 	#	Response
@@ -236,7 +256,7 @@
 	###########################################
 	#	Message
 	###########################################
-	msrp_req_or_resp = (msrp_request | msrp_response);
+	msrp_req_or_resp = (msrp_request | msrp_response)>1 @outside_endline any*>0;
 
 	###########################################
 	#	Entry Point
@@ -249,18 +269,27 @@
 
 tmsrp_message_t* tmsrp_message_parse(const void *input, size_t size)
 {
-	tmsrp_message_t* msrp_msg = TMSRP_NULL;
-	const char* tag_start = TMSRP_NULL;
-	tmsrp_header_t* header = TMSRP_NULL;
+	size_t msg_size;
+	return tmsrp_message_parse_2(input, size, &msg_size);
+}
 
+tmsrp_message_t* tmsrp_message_parse_2(const void *input, size_t size, size_t* msg_size)
+{
+	tmsrp_message_t* msrp_msg = tsk_null;
+	const char* tag_start = tsk_null;
+	tmsrp_header_t* header = tsk_null;
+	tsk_bool_t into_endline = tsk_false;
+	
 	/* Ragel variables */
 	int cs = 0;
 	const char* p = input;
 	const char* pe = p + size;
-	const char* eof = TMSRP_NULL;
+	const char* eof = tsk_null;
+
+	*msg_size = 0;
 
 	if(!input || !size){
-		TSK_DEBUG_ERROR("Null or empty buffer.");
+		//TSK_DEBUG_ERROR("Null or empty buffer."); // --> very common case(stream): do not bother us...
 		goto bail;
 	}
 
@@ -276,7 +305,7 @@ tmsrp_message_t* tmsrp_message_parse(const void *input, size_t size)
 
 	/* Check result */
 	if( cs < %%{ write first_final; }%% ){
-		TSK_DEBUG_ERROR("Failed to parse MSRP message.");
+		//TSK_DEBUG_ERROR("Failed to parse MSRP message."); --> very common case(stream): do not bother us...
 		TSK_OBJECT_SAFE_FREE(msrp_msg);
 		goto bail;
 	}

@@ -117,7 +117,7 @@ tmsrp_header_To_Path_t *tmsrp_header_To_Path_parse(const char *data, size_t size
 
 tmsrp_header_To_Path_t *tmsrp_header_To_Path_clone(const tmsrp_header_To_Path_t* To_Path)
 {
-	tmsrp_header_To_Path_t* clone = TMSRP_NULL;
+	tmsrp_header_To_Path_t* clone = tsk_null;
 	
 	if(!To_Path){
 		goto bail;

@@ -37,14 +37,14 @@
     "Success-Report: yes\r\n" \
 	"Content-Type: text/plain;charset=utf8\r\n" \
 	"\r\n" \
-	"-------fake-tid+ Hey Bob, are you there?\r\n" \
-	"-------a786hjs2$\r\n"
+	"\r\n-------fake-tid+\r\n Hey Bob, are you there?\r\n" \
+	"-------a786hjs2$\r\nMSRP 000"
 
 #define MSRP_MSG_RESPONSE \
 	"MSRP a786hjs2 200 OK\r\n" \
 	"To-Path: msrp://atlanta.example.com:7654/jshA7weztas;tcp\r\n" \
 	"From-Path: msrp://biloxi.example.com:12763/kjhd37s2s20w2a;tcp\r\n" \
-	"-------a786hjs2$\r\n"
+	"-------a786hjs2$\r\nMSRP 000"
 
 #define MSRP_MSG_REPORT \
 	"MSRP dkei38sd REPORT\r\n" \
@@ -53,20 +53,21 @@
 	"Message-ID: 12339sdqwer\r\n" \
 	"Byte-Range: 1-106/106\r\n" \
 	"Status: 000 200 OK\r\n" \
-	"-------dkei38sd$\r\n"
+	"-------dkei38sd$\r\nMSRP 000"
 
 #define MSRP_MSG_TO_TEST MSRP_MSG_REQUEST
 
 void test_parser()
 {
 	tmsrp_message_t *message = 0;
+	size_t msg_size;
 	char* str;
 	
 	//
 	//	Serialization / Deserialization
 	//
 	/* deserialize the message */
-	if((message = tmsrp_message_parse(MSRP_MSG_TO_TEST, strlen(MSRP_MSG_TO_TEST)))){
+	if((message = tmsrp_message_parse_2(MSRP_MSG_TO_TEST, strlen(MSRP_MSG_TO_TEST), &msg_size))){
 		
 		/* serialize the message */
 		if((str = tmsrp_message_tostring(message))){
@@ -119,7 +120,7 @@ void test_parser()
 	// Create bodiless Request
 	//
 	{
-		tmsrp_request_t* bodiless = tmsrp_create_bodiless();
+		tmsrp_request_t* bodiless = tmsrp_create_bodiless(tsk_null, tsk_null);
 
 		if((str = tmsrp_message_tostring(bodiless))){
 			TSK_DEBUG_INFO("\nMSRP Bodiless=\n%s\n\n", str);

@@ -47,7 +47,7 @@ typedef struct tmsrp_sender_s
 {
 	TSK_DECLARE_RUNNABLE;
 
-	tmsrp_datas_L_t* outputList;
+	tmsrp_datas_L_t* outgoingList;
 	tmsrp_config_t* config;
 	tnet_fd_t fd;
 }

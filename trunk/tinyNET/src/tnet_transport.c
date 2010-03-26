@@ -114,6 +114,20 @@ int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_
 	return -1;
 }
 
+int tnet_transport_get_ip_n_port_2(const tnet_transport_handle_t *handle, tnet_ip_t *ip, tnet_port_t *port)
+{
+	const tnet_transport_t *transport = handle;
+	if(transport){
+		// do not check the master, let the apllication die if "null"
+		memcpy(*ip, transport->master->ip, sizeof(transport->master->ip));
+		*port = transport->master->port;
+	}
+	else{
+		TSK_DEBUG_ERROR("NULL transport object.");
+	}
+	return -1;
+}
+
 tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle)
 {
 	if(handle){

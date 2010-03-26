@@ -41,7 +41,7 @@ TMSRP_BEGIN_DECLS
 */
 #define TMSRP_HEADER_STATUS_VA_ARGS(namespace, code, reason)		tmsrp_header_Status_def_t, (short)namespace, (short)code, (const char*)reason
 #define TMSRP_HEADER_STATUS_CREATE(namespace, code, reason)		tsk_object_new(TMSRP_HEADER_STATUS_VA_ARGS(namespace, code, reason))
-#define TMSRP_HEADER_STATUS_CREATE_NULL()				TMSRP_HEADER_STATUS_CREATE(0, 200, TMSRP_NULL)
+#define TMSRP_HEADER_STATUS_CREATE_NULL()				TMSRP_HEADER_STATUS_CREATE(0, 200, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

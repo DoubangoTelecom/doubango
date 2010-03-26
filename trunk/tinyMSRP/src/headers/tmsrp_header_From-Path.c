@@ -311,7 +311,7 @@ _again:
 
 tmsrp_header_From_Path_t *tmsrp_header_From_Path_clone(const tmsrp_header_From_Path_t* From_Path)
 {
-	tmsrp_header_From_Path_t* clone = TMSRP_NULL;
+	tmsrp_header_From_Path_t* clone = tsk_null;
 	
 	if(!From_Path){
 		goto bail;

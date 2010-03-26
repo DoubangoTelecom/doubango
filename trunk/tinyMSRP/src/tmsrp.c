@@ -32,11 +32,9 @@
 #include "tsk_time.h"
 #include "tsk_string.h"
 
-#include <stdlib.h> /* rand() */
-
 #define TMSR_DEFAULT_NAMESPACE	0 // "000"
 
-tmsrp_request_t* tmsrp_create_bodiless()
+tmsrp_request_t* tmsrp_create_bodiless(const tmsrp_uri_t* To, const tmsrp_uri_t* From)
 {
 	/* RFC 4975 - 7.1. Constructing Requests
 		Requests with no bodies are useful when a client wishes to send
@@ -52,29 +50,33 @@ tmsrp_request_t* tmsrp_create_bodiless()
 		value and will generally be rendered to the recipient according to
 		the rules for that type.
 	*/
-	tmsrp_request_t* bodiless = TMSRP_NULL;
+	tmsrp_request_t* BODILESS = tsk_null;
 	tsk_istr_t tid;
 	tsk_istr_t mid;
 
 	tsk_strrandom(&tid);
 	tsk_strrandom(&mid);
 
-	if(!(bodiless = TMSRP_REQUEST_CREATE(tid, "SEND"))){
+	if(!(BODILESS = TMSRP_REQUEST_CREATE(tid, "SEND"))){
 		goto bail;
 	}
-	//FIXME: To-Path
-	//FIXME: From-Path
+	// To-Path
+	// From-Path
+	// Message-ID
+	tmsrp_message_add_headers(BODILESS,
+		TMSRP_HEADER_TO_PATH_VA_ARGS(To),
+		TMSRP_HEADER_FROM_PATH_VA_ARGS(From),
+		TMSRP_HEADER_MESSAGE_ID_VA_ARGS(mid),
 
-	/* Message-ID */
-	TMSRP_MESSAGE_ADD_HEADER(bodiless, TMSRP_HEADER_MESSAGE_ID_VA_ARGS(mid));
+		tsk_null);
 
 bail:
-	return bodiless;
+	return BODILESS;
 }
 
 tmsrp_response_t* tmsrp_create_response(const tmsrp_request_t* request, short status, const char* comment)
 {
-	tmsrp_response_t* response = TMSRP_NULL;
+	tmsrp_response_t* response = tsk_null;
 
 	if(!request){
 		goto bail;
@@ -95,7 +97,7 @@ bail:
 	return response;
 }
 
-tmsrp_request_t* tmsrp_create_report(const tmsrp_request_t* request, short status, const char* reason)
+tmsrp_request_t* tmsrp_create_report(const tmsrp_request_t* SEND, short status, const char* reason)
 {
 	/*	RFC 4975 - 7.1.2. Sending REPORT Requests
 	
@@ -104,10 +106,13 @@ tmsrp_request_t* tmsrp_create_report(const tmsrp_request_t* request, short statu
 	* fields, and MUST contain a Status header field.  REPORT requests MUST
 	* contain the Message-ID header field from the original SEND request.
 	*/
-	tmsrp_request_t* report = TMSRP_NULL;
+	tmsrp_request_t* REPORT = tsk_null;
 	tsk_istr_t tid;
 	
-	if(!request || !request->MessageID){
+	/*	If an MSRP element receives a REPORT for a Message-ID it does not
+		recognize, it SHOULD silently ignore the REPORT.
+	*/
+	if(!SEND || !SEND->MessageID){
 		goto bail;
 	}
 
@@ -115,45 +120,44 @@ tmsrp_request_t* tmsrp_create_report(const tmsrp_request_t* request, short statu
 	tsk_strrandom(&tid);
 
 	/* MSRP response will have the same tid ==> nothing to do */
-	if(!(report = TMSRP_REQUEST_CREATE(tid, "REPORT"))){
+	if(!(REPORT = TMSRP_REQUEST_CREATE(tid, "REPORT"))){
 		goto bail;
 	}
-
-	/* reverse To-Path and From-Path */
-	report->To = (tmsrp_header_To_Path_t*)tmsrp_header_From_Path_clone(request->From);
-	TMSRP_HEADER(report->To)->type = tmsrp_htype_To_Path; /* as it's a clone we shall change type */
-	report->From = (tmsrp_header_From_Path_t*)tmsrp_header_To_Path_clone(request->To);
-	TMSRP_HEADER(report->From)->type = tmsrp_htype_From_Path; /* as it's a clone we shall change type */
-	/* Message ID */
-	TMSRP_MESSAGE_ADD_HEADER(report, TMSRP_HEADER_MESSAGE_ID_VA_ARGS(request->MessageID->value));
-	/* Byte-Range */
-	report->ByteRange = tsk_object_ref((void*)request->ByteRange);
-	/* Status */
-	TMSRP_MESSAGE_ADD_HEADER(report, TMSRP_HEADER_STATUS_VA_ARGS(TMSR_DEFAULT_NAMESPACE, status, reason));
 	
+	/* reverse To-Path and From-Path */
+	REPORT->To = (tmsrp_header_To_Path_t*)tmsrp_header_From_Path_clone(SEND->From);
+	TMSRP_HEADER(REPORT->To)->type = tmsrp_htype_To_Path; /* as it's a clone we shall change type */
+	REPORT->From = (tmsrp_header_From_Path_t*)tmsrp_header_To_Path_clone(SEND->To);
+	TMSRP_HEADER(REPORT->From)->type = tmsrp_htype_From_Path; /* as it's a clone we shall change type */
+	/* Byte-Range */
+	REPORT->ByteRange = tsk_object_ref((void*)SEND->ByteRange);
+	
+	/* Message ID */
+	/* Status */
+	tmsrp_message_add_headers(REPORT,
+		TMSRP_HEADER_MESSAGE_ID_VA_ARGS(SEND->MessageID->value),
+		TMSRP_HEADER_STATUS_VA_ARGS(TMSR_DEFAULT_NAMESPACE, status, reason),
+
+		tsk_null);
 bail:
-	return report;
+	return REPORT;
 }
 
-int tmsrp_isReportRequired(const tmsrp_request_t* request)
+tsk_bool_t tmsrp_isReportRequired(const tmsrp_request_t* request, tsk_bool_t failed)
 {
 	if(!request){
-		return 0;
+		return tsk_false;
 	}
 
 	/* Success Report. */
 	if(request->SuccessReport && request->SuccessReport->yes){
-		if(request->Status && (request->Status->code>199 && request->Status->code<300)){
-			return 1;
-		}
+		return tsk_true;
 	}
 
 	/* Failure Report */
 	if(!request->FailureReport || (request->FailureReport && request->FailureReport->type != freport_no)){
-		if(request->Status && (request->Status->code<=199 && request->Status->code>=300)){
-			return 1;
-		}
+		return failed;
 	}
 
-	return 0;
+	return tsk_false;
 }

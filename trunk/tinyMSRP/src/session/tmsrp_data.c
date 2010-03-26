@@ -28,7 +28,10 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinyMSRP/session/tmsrp_data.h"
+
 #include "tinyMSRP/session/tmsrp_config.h"
+
+#include "tinyMSRP/parsers/tmsrp_parser_message.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -36,62 +39,58 @@
 
 #include <stdio.h> /* fopen, fclose ... */
 
+#define TMSRP_DATA_IN_MAX_BUFFER 0xFFFF
 /* =========================== Common ============================= */
 
-int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, size_t size, tsk_bool_t isfilepath, const char* ctype)
-{
-	tsk_istr_t id;
-	
-	if(!self || !pdata || !size){
-		return -1;
-	}
-	
-	if(isfilepath){
-		if(self->file){
-			fclose(self->file);
-		}
-		if(outgoing){
-			if(!(self->file = fopen((const char*)pdata, "rb"))){
-				TSK_DEBUG_ERROR("Failed to open(rb) this file:%s", pdata);
-				return -2;
-			}
-		}
-		else{
-			if(!(self->file = fopen((const char*)pdata, "wb"))){
-				TSK_DEBUG_ERROR("Failed to open(wb) this file:%s", pdata);
-				return -3;
-			}
-		}
-	}
-	else{
-		self->buffer = TSK_BUFFER_CREATE(pdata, size);
-	}
-	// ctype
-	tsk_strupdate(&self->ctype, ctype);
-	// random id
-	tsk_strrandom(&id);
-	tsk_strupdate(&self->id, id);
+//int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, size_t size, tsk_bool_t isfilepath, const char* ctype)
+//{	
+//	if(!self || !pdata || !size){
+//		return -1;
+//	}
+//	
+//	if(isfilepath){
+//		if(self->file){
+//			fclose(self->file);
+//		}
+//		if(outgoing){
+//			if(!(self->file = fopen((const char*)pdata, "rb"))){
+//				TSK_DEBUG_ERROR("Failed to open(rb) this file:%s", pdata);
+//				return -2;
+//			}
+//		}
+//		else{
+//			if(!(self->file = fopen((const char*)pdata, "wb"))){
+//				TSK_DEBUG_ERROR("Failed to open(wb) this file:%s", pdata);
+//				return -3;
+//			}
+//		}
+//	}
+//	else{
+//		self->buffer = TSK_BUFFER_CREATE(pdata, size);
+//	}
+//	// ctype
+//	tsk_strupdate(&self->ctype, ctype);
+//
+//	return 0;
+//}
 
-	return 0;
-}
-
-int tmsrp_data_deinit(tmsrp_data_t* self)
-{
-	if(!self){
-		return -1;
-	}
-
-	TSK_FREE(self->id);
-	TSK_FREE(self->ctype);
-	TSK_OBJECT_SAFE_FREE(self->buffer);
-	
-	if(self->file){
-		fclose(self->file);
-		self->file = tsk_null;
-	}
-
-	return 0;
-}
+//int tmsrp_data_deinit(tmsrp_data_t* self)
+//{
+//	if(!self){
+//		return -1;
+//	}
+//
+//	TSK_FREE(self->id);
+//	TSK_FREE(self->ctype);
+//	TSK_OBJECT_SAFE_FREE(self->buffer);
+//	
+//	if(self->file){
+//		fclose(self->file);
+//		self->file = tsk_null;
+//	}
+//
+//	return 0;
+//}
 
 
 
@@ -102,22 +101,41 @@ int tmsrp_data_deinit(tmsrp_data_t* self)
 
 int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, size_t size)
 {
-	if(!self || !pdata || !size){
-		return -1;
+	int ret = -1;
+	if(!self || !self->buffer || !pdata || !size){
+		return ret;
 	}
 
-	return 0;
+	if((ret = tsk_buffer_append(self->buffer, pdata, size))){
+		tsk_buffer_cleanup(self->buffer);
+		return ret;
+	}
+	else{
+		if(TSK_BUFFER_SIZE(self->buffer) > TMSRP_DATA_IN_MAX_BUFFER){
+			tsk_buffer_cleanup(self->buffer);
+			TSK_DEBUG_ERROR("Too many bytes are waiting.");
+			return -3;
+		}
+	}
+	return ret;
 }
 
-tmsrp_request_t* tmsrp_data_in_get(tmsrp_data_in_t* self)
+tmsrp_message_t* tmsrp_data_in_get(tmsrp_data_in_t* self)
 {
-	tmsrp_request_t* ret = tsk_null;
+	tmsrp_message_t* ret;
+	size_t msg_size;
 
-	if(!self){
+	if(!self || !self->buffer || !TSK_BUFFER_DATA(self->buffer) || !TSK_BUFFER_SIZE(self->buffer)){
+		//...this is not an error
 		return tsk_null;
 	}
 
-	return ret;
+	if((ret = tmsrp_message_parse_2(self->buffer->data, self->buffer->size, &msg_size))){
+		tsk_buffer_remove(self->buffer, 0, msg_size);
+		return ret;
+	}
+
+	return tsk_null;
 }
 
 
@@ -132,13 +150,13 @@ tsk_buffer_t* tmsrp_data_out_get(tmsrp_data_out_t* self)
 		return tsk_null;
 	}
 
-	if(TMSRP_DATA_IS_DATA_TRANSFER(self)){
-		if((toread = TSK_BUFFER_SIZE(TMSRP_DATA(self)->buffer) > TMSRP_MAX_CHUNK_SIZE ? TMSRP_MAX_CHUNK_SIZE : TSK_BUFFER_SIZE(TMSRP_DATA(self)->buffer))){		
-			ret = TSK_BUFFER_CREATE(TSK_BUFFER_DATA(TMSRP_DATA(self)->buffer), toread);
-			tsk_buffer_remove(TMSRP_DATA(self)->buffer, 0, toread);
+	if(self->message){
+		if((toread = TSK_BUFFER_SIZE(self->message) > TMSRP_MAX_CHUNK_SIZE ? TMSRP_MAX_CHUNK_SIZE : TSK_BUFFER_SIZE(self->message))){		
+			ret = TSK_BUFFER_CREATE(TSK_BUFFER_DATA(self->message), toread);
+			tsk_buffer_remove(self->message, 0, toread);
 		}
 	}
-	else if(TMSRP_DATA_IS_FILE_TRANSFER(self)){
+	else if(self->file){
 	}
 	
 
@@ -159,16 +177,7 @@ static void* tmsrp_data_in_create(void * self, va_list * app)
 {
 	tmsrp_data_in_t *data_in = self;
 	if(data_in){
-		const void* pdata = va_arg(*app, const void*);
-		size_t size = va_arg(*app, size_t);
-		tsk_bool_t isfilepath = va_arg(*app, tsk_bool_t);
-
-		if(tmsrp_data_init(TMSRP_DATA(data_in), tsk_false, pdata, size, isfilepath, "text/plain")){
-			TMSRP_DATA(data_in)->isOK = tsk_false;
-		}
-		else{
-			TMSRP_DATA(data_in)->isOK = tsk_true;
-		}
+		data_in->buffer = TSK_BUFFER_CREATE_NULL();
 	}
 	return self;
 }
@@ -177,7 +186,10 @@ static void* tmsrp_data_in_destroy(void * self)
 { 
 	tmsrp_data_in_t *data_in = self;
 	if(data_in){
-		tmsrp_data_deinit(TMSRP_DATA(data_in));
+		TSK_FREE(TMSRP_DATA(data_in)->id);
+		TSK_FREE(TMSRP_DATA(data_in)->ctype);
+
+		TSK_OBJECT_SAFE_FREE(data_in->buffer);
 	}
 
 	return self;
@@ -199,16 +211,25 @@ static void* tmsrp_data_out_create(void * self, va_list * app)
 {
 	tmsrp_data_out_t *data_out = self;
 	if(data_out){
+		tsk_istr_t id;
 		const void* pdata = va_arg(*app, const void*);
 		size_t size = va_arg(*app, size_t);
 		tsk_bool_t isfilepath = va_arg(*app, tsk_bool_t);
-
-		if(tmsrp_data_init(TMSRP_DATA(data_out), tsk_true, pdata, size, isfilepath, "text/plain")){
-			TMSRP_DATA(data_out)->isOK = tsk_false;
+		
+		if(isfilepath){
 		}
 		else{
-			TMSRP_DATA(data_out)->isOK = tsk_true;
+			if((data_out->message = TSK_BUFFER_CREATE(pdata, size))){
+				TMSRP_DATA(data_out)->isOK = (data_out->message->size == size);
+				data_out->size = data_out->message->size;
+			}
 		}
+		
+		// content type
+		TMSRP_DATA(data_out)->ctype = tsk_strdup("text/plain");
+		// random id
+		tsk_strrandom(&id);
+		TMSRP_DATA(data_out)->id = tsk_strdup(id);
 	}
 	return self;
 }
@@ -217,7 +238,14 @@ static void* tmsrp_data_out_destroy(void * self)
 { 
 	tmsrp_data_out_t *data_out = self;
 	if(data_out){
-		tmsrp_data_deinit(TMSRP_DATA(data_out));
+		TSK_FREE(TMSRP_DATA(data_out)->id);
+		TSK_FREE(TMSRP_DATA(data_out)->ctype);
+		TSK_OBJECT_SAFE_FREE(data_out->message);
+		
+		if(data_out->file){
+			fclose(data_out->file);
+			data_out->file = tsk_null;
+		}
 	}
 
 	return self;

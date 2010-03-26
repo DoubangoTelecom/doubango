@@ -41,7 +41,7 @@ TMSRP_BEGIN_DECLS
 */
 #define TMSRP_HEADER_DUMMY_VA_ARGS(name, value)		tmsrp_header_Dummy_def_t, (const char*)name, (const char*)value
 #define TMSRP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(TMSRP_HEADER_DUMMY_VA_ARGS(name, value))
-#define TMSRP_HEADER_DUMMY_CREATE_NULL()				TMSRP_HEADER_DUMMY_CREATE(TMSRP_NULL, TMSRP_NULL)
+#define TMSRP_HEADER_DUMMY_CREATE_NULL()				TMSRP_HEADER_DUMMY_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
