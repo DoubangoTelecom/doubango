@@ -45,8 +45,8 @@
 
 TMSRP_BEGIN_DECLS
 
-#define TMSRP_MESSAGE_IS_REQUEST(self) ((self) ? (self)->type == tmsrp_request : 0)
-#define TMSRP_MESSAGE_IS_RESPONSE(self) ((self) ? (self)->type == tmsrp_response : 0)
+#define TMSRP_MESSAGE_IS_REQUEST(self) ((self) ? (self)->type == tmsrp_request : tsk_false)
+#define TMSRP_MESSAGE_IS_RESPONSE(self) ((self) ? (self)->type == tmsrp_response : tsk_false)
 
 #define TMSRP_MESSAGE(self)				((tmsrp_message_t*)(self))
 #define TMSRP_MESSAGE_AS_RESPONSE(self)	((tmsrp_response_t*)(self))
@@ -61,17 +61,20 @@ TMSRP_BEGIN_DECLS
 #define TMSRP_MESSAGE_CREATE(type, tid, method, status, comment)\
 	tsk_object_new(tmsrp_message_def_t, (tmsrp_message_type_t)type, (const char*)tid, (const char*)method, (short)status, (const char*)comment)
 #define TMSRP_REQUEST_CREATE(tid, method)\
-	TMSRP_MESSAGE_CREATE(tmsrp_request, tid, method, 0, TMSRP_NULL)
+	TMSRP_MESSAGE_CREATE(tmsrp_request, tid, method, 0, tsk_null)
 #define TMSRP_RESPONSE_CREATE(tid, status, comment)\
-	TMSRP_MESSAGE_CREATE(tmsrp_response, tid, TMSRP_NULL, status, comment)
+	TMSRP_MESSAGE_CREATE(tmsrp_response, tid, tsk_null, status, comment)
 #define TMSRP_MESSAGE_CREATE_NULL()\
-	TMSRP_MESSAGE_CREATE(tmsrp_unknown, TMSRP_NULL, TMSRP_NULL, 0, TMSRP_NULL)
+	TMSRP_MESSAGE_CREATE(tmsrp_unknown, tsk_null, tsk_null, 0, tsk_null)
 
 #define TMSRP_RESPONSE_CODE(self)			 (TMSRP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
 #define TMSRP_RESPONSE_PHRASE(self)			 ((self)->reason_phrase)
 
 #define TMSRP_REQUEST_METHOD(self)			 ((self)->method)
 #define TMSRP_REQUEST_URI(self)				 ((self)->uri)
+#define TMSRP_REQUEST_IS_SEND(self)			 (TMSRP_MESSAGE_IS_REQUEST(self) && (self)->line.request.type == tmsrp_SEND)
+#define TMSRP_REQUEST_IS_REPORT(self)		 (TMSRP_MESSAGE_IS_REQUEST(self) && (self)->line.request.type == tmsrp_REPORT)
+#define TMSRP_REQUEST_IS_AUTH(self)			 (TMSRP_MESSAGE_IS_REQUEST(self) && (self)->line.request.type == tmsrp_AUTH)
 
 #define TMSRP_MESSAGE_HAS_CONTENT(message)	 ((message) && (message)->Content && (message)->Content->data)
 #define TMSRP_MESSAGE_CONTENT(message)		 (TMSRP_MESSAGE_HAS_CONTENT(message) ? (message)->Content->data : 0)
@@ -96,6 +99,17 @@ typedef enum tmsrp_message_type_e
 }
 tmsrp_message_type_t;
 
+typedef enum tmsrp_request_type_e
+{
+	tmsrp_NONE = 0,
+
+	tmsrp_SEND,
+	tmsrp_REPORT,
+	tmsrp_AUTH
+	//... 
+}
+tmsrp_request_type_t;
+
 typedef struct tmsrp_message_s
 {
 	TSK_DECLARE_OBJECT;
@@ -105,6 +119,7 @@ typedef struct tmsrp_message_s
 	/*union*/struct{
 		struct{
 			char* method;
+			tmsrp_request_type_t type;
 		} request;
 
 		struct{
@@ -169,6 +184,7 @@ static void TMSRP_MESSAGE_ADD_HEADER(tmsrp_message_t *self, ...)
 	}
 #endif
 
+TINYMSRP_API tmsrp_request_type_t tmsrp_request_get_type(const char* method);
 TINYMSRP_API const tmsrp_header_t *tmsrp_message_get_headerAt(const tmsrp_message_t *self, tmsrp_header_type_t type, size_t index);
 TINYMSRP_API const tmsrp_header_t *tmsrp_message_get_header(const tmsrp_message_t *self, tmsrp_header_type_t type);
 TINYMSRP_API const tmsrp_header_t *tmsrp_message_get_headerByName(const tmsrp_message_t *self, char name);

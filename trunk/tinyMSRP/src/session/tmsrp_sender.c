@@ -128,7 +128,7 @@ void *run(void* self)
 		while((chunck = tmsrp_data_out_get(data_out))){
 			tmsrp_request_t* SEND;
 			// set end
-			end = start + chunck->size;
+			end = (start + chunck->size) - 1;
 			// compute new transaction id
 			tsk_strrandom(&tid);
 			// create SEND request
@@ -139,7 +139,7 @@ void *run(void* self)
 			// add other headers
 			tmsrp_message_add_headers(SEND,
 				TMSRP_HEADER_MESSAGE_ID_VA_ARGS(TMSRP_DATA(data_out)->id),
-				TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, -1),
+				TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, data_out->size),
 				TMSRP_HEADER_FAILURE_REPORT_VA_ARGS(sender->config->Failure_Report ? freport_yes : freport_no),
 				TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(sender->config->Success_Report),
 				//TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(TMSRP_DATA(data_out)->ctype),
@@ -154,7 +154,7 @@ void *run(void* self)
 			}
 			
 			// set start
-			start = end;
+			start = (end + 1);
 			// cleanup
 			TSK_OBJECT_SAFE_FREE(chunck);
 			TSK_OBJECT_SAFE_FREE(SEND);
@@ -183,7 +183,7 @@ static void* tmsrp_sender_create(void * self, va_list *app)
 		sender->config = tsk_object_ref(va_arg(*app, tmsrp_config_t*));
 		sender->fd = va_arg(*app, tnet_fd_t);	
 
-		sender->outputList = TSK_LIST_CREATE();
+		sender->outgoingList = TSK_LIST_CREATE();
 	}
 	return self;
 }
@@ -196,8 +196,8 @@ static void* tmsrp_sender_destroy(void * self)
 		tmsrp_sender_stop(sender);
 
 		TSK_OBJECT_SAFE_FREE(sender->config);
-		TSK_OBJECT_SAFE_FREE(sender->outputList);
-		// the FD is owned by the media ...do not close it
+		TSK_OBJECT_SAFE_FREE(sender->outgoingList);
+		// the FD is owned by the transport ...do not close it
 	}
 	return self;
 }

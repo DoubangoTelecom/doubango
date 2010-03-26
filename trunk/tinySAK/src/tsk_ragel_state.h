@@ -59,10 +59,14 @@ TSK_BEGIN_DECLS
 /**@ingroup tsk_ragel_state_group
 */
 #define TSK_PARSER_SET_STRING(string) \
-	if(!string) \
-	{ \
+	{  \
 		int len = (int)(p  - tag_start);  \
-		string = tsk_calloc(len+1, sizeof(char)), memcpy(string, tag_start, len); \
+		if(len && tag_start){ \
+			if(string){ \
+				TSK_FREE(string); \
+			} \
+			string = tsk_calloc(len+1, sizeof(char)), memcpy(string, tag_start, len); \
+		}  \
 	}
 
 /**@ingroup tsk_ragel_state_group

@@ -50,7 +50,7 @@ typedef struct tsk_object_header_s{
 	int	refCount; /**< Reference counter. */
 }
 tsk_object_header_t;
-#define TSK_OBJECT_HEADER_GET(object)	((tsk_object_header_t*)object)
+#define TSK_OBJECT_HEADER(object)	((tsk_object_header_t*)object)
 
 /**@ingroup tsk_object_group
 * Creates new object. The object MUST be declared using @ref TSK_DECLARE_OBJECT macro.
@@ -61,11 +61,12 @@ tsk_object_header_t;
 */
 tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 {
+	// Do not check "objdef", let the application die if it's null
 	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
 	if(newobj)
 	{
 		(*(const tsk_object_def_t **) newobj) = objdef;
-		TSK_OBJECT_HEADER_GET(newobj)->refCount = 1;
+		TSK_OBJECT_HEADER(newobj)->refCount = 1;
 		if(objdef->constructor){ 
 			va_list ap;
 			va_start(ap, objdef);
@@ -100,7 +101,7 @@ tsk_object_t* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 	if(newobj)
 	{
 		(*(const tsk_object_def_t **) newobj) = objdef;
-		TSK_OBJECT_HEADER_GET(newobj)->refCount = 1;
+		TSK_OBJECT_HEADER(newobj)->refCount = 1;
 		if(objdef->constructor){ 
 			newobj = objdef->constructor(newobj, ap);
 
@@ -166,7 +167,7 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 tsk_object_t* tsk_object_ref(tsk_object_t *self)
 {
 	if(self){
-		TSK_OBJECT_HEADER_GET(self)->refCount++;
+		TSK_OBJECT_HEADER(self)->refCount++;
 		return self;
 	}
 	return tsk_null;
@@ -185,7 +186,8 @@ tsk_object_t* tsk_object_unref(tsk_object_t *self)
 {
 	if(self)
 	{
-		if(0 == --(TSK_OBJECT_HEADER_GET(self)->refCount)){ // If refCount is < 0 then, nothing should happen.
+		tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
+		if(!--objhdr->refCount){ // If refCount is < 0 then, nothing should happen.
 			tsk_object_delete(self);
 			return 0;
 		}

@@ -63,7 +63,7 @@
 	
 	action parse_total{
 		if(tag_start && *tag_start == '*'){
-			hdr_Byte_Range->end = -1;
+			hdr_Byte_Range->total = -1;
 		}
 		else{
 			TSK_PARSER_SET_INTEGER_EX(hdr_Byte_Range->total, int64_t, atoi64);

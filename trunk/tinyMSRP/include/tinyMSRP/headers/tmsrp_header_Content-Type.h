@@ -41,7 +41,7 @@ TMSRP_BEGIN_DECLS
 */
 #define TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(type)			tmsrp_header_Content_Type_def_t, (const char*)type
 #define TMSRP_HEADER_CONTENT_TYPE_CREATE(type)			tsk_object_new(TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(type))
-#define TMSRP_HEADER_CONTENT_TYPE_CREATE_NULL()			TMSRP_HEADER_CONTENT_TYPE_CREATE(TMSRP_NULL)
+#define TMSRP_HEADER_CONTENT_TYPE_CREATE_NULL()			TMSRP_HEADER_CONTENT_TYPE_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	

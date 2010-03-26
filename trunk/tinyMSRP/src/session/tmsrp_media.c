@@ -33,6 +33,8 @@
 #include "tinySDP/headers/tsdp_header_C.h"
 #include "tinySDP/headers/tsdp_header_M.h"
 
+#include "tmsrp.h"
+
 #include "tnet_utils.h"
 
 #include "tsk_string.h"
@@ -83,10 +85,10 @@ const char* setup_to_string(tmsrp_session_setup_t setup)
 int	tmsrp_media_start(tmedia_t* self)
 {
 	int ret = -1;
+	tsk_bool_t send_bodiless = tsk_false;
 	tmsrp_media_t *msrp = TMSRP_MEDIA(self);
-	struct sockaddr_storage to;
-	
-	if(!msrp || !msrp->local.socket || msrp->local.socket->fd <= 0){
+		
+	if(!msrp){
 		goto bail;
 	}
 
@@ -99,7 +101,12 @@ int	tmsrp_media_start(tmedia_t* self)
 		ret = -3;
 		goto bail;
 	}
-
+	
+	// start the transport
+	if((ret = tnet_transport_start(msrp->transport))){
+		goto bail;
+	}
+	
 	switch(msrp->setup){
 		case setup_active:
 		case setup_actpass:
@@ -107,28 +114,24 @@ int	tmsrp_media_start(tmedia_t* self)
 				//
 				//	ACTIVE
 				//
-				if((ret = tnet_sockaddr_init(msrp->remote.M->C->addr, msrp->remote.M->port, msrp->local.socket->type, &to))){
+				if((msrp->connectedFD = tnet_transport_connectto_2(msrp->transport, msrp->remote.M->C->addr, msrp->remote.M->port)) == TNET_INVALID_FD){
 					goto bail;
 				}
-				if((ret = tnet_sockfd_connetto(msrp->local.socket->fd, &to))){
-					goto bail;
-				}
-				else{
-					msrp->connectedFD = msrp->local.socket->fd;
-					if((ret = tnet_sockfd_waitUntilWritable(msrp->connectedFD, TMSRP_CONNECT_TIMEOUT))){
-						TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TMSRP_CONNECT_TIMEOUT);
-						goto bail;
-					}
-					/*		draft-denis-simple-msrp-comedia-02 - 4.2.3. Setting up the connection
-						   Once the TCP session is established, and if the answerer was the
-						   active connection endpoint, it MUST send an MSRP request.  In
-						   particular, if it has no pending data to send, it MUST send an empty
-						   MSRP SEND request.  That is necessary for the other endpoint to
-						   authenticate this TCP session.
+				else{						
+						if((ret = tnet_sockfd_waitUntilWritable(msrp->connectedFD, TMSRP_CONNECT_TIMEOUT))){
+							TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TMSRP_CONNECT_TIMEOUT);
+							goto bail;
+						}
+						/*	draft-denis-simple-msrp-comedia-02 - 4.2.3. Setting up the connection
+							Once the TCP session is established, and if the answerer was the
+							active connection endpoint, it MUST send an MSRP request.  In
+							particular, if it has no pending data to send, it MUST send an empty
+							MSRP SEND request.  That is necessary for the other endpoint to
+							authenticate this TCP session.
 
-						   ...RFC 4975 - 7.1
-				   */
-					// ... send bodiless message
+							...RFC 4975 - 7.1
+						*/
+						send_bodiless = tsk_true;
 				}
 				break;
 			}
@@ -140,12 +143,39 @@ int	tmsrp_media_start(tmedia_t* self)
 				break;
 			}
 	}
+	
+	// create and start the receiver
+	if(!msrp->receiver){
+		if((msrp->receiver = TMSRP_RECEIVER_CREATE(msrp->config, msrp->connectedFD))){
+			tnet_transport_set_callback(msrp->transport, TNET_TRANSPORT_CB_F(tmsrp_transport_layer_stream_cb), msrp->receiver);
+			if((ret = tmsrp_receiver_start(msrp->receiver))){
+				goto bail;
+			}
+		}
+	}
 
 	// create and start the sender
 	if(!msrp->sender){
 		if((msrp->sender = TMSRP_SENDER_CREATE(msrp->config, msrp->connectedFD))){
 			if((ret = tmsrp_sender_start(msrp->sender))){
 				goto bail;
+			}
+			else if(send_bodiless){
+				// ... send bodiless message
+				tmsrp_request_t* BODILESS;
+				if(msrp->config->To_Path && msrp->config->From_Path){
+					if((BODILESS = tmsrp_create_bodiless(msrp->config->To_Path->uri, msrp->config->From_Path->uri))){
+						char* str;
+						if((str = tmsrp_message_tostring(BODILESS))){
+							if(tnet_sockfd_send(msrp->connectedFD, str, strlen(str), 0)){
+								TSK_DEBUG_WARN("Failed to send bodiless request.");
+							}
+							TSK_FREE(str);
+						}
+
+						TSK_OBJECT_SAFE_FREE(BODILESS);
+					}
+				}
 			}
 		}
 	}
@@ -169,6 +199,13 @@ int	tmsrp_media_stop(tmedia_t* self)
 	if(msrp->sender){
 		tmsrp_sender_stop(msrp->sender);
 	}
+	if(msrp->receiver){
+		tmsrp_receiver_stop(msrp->receiver);
+	}
+
+	if(msrp->transport){
+		tnet_transport_shutdown(msrp->transport);
+	}
 	
 	return 0;
 }
@@ -182,17 +219,24 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self)
 	tsk_bool_t answer;
 	tsk_bool_t ipv6;
 	tsk_istr_t sessionid;
+	tnet_socket_type_t type;
+	tnet_ip_t ip = "127.0.0.1";
+	tnet_port_t port = 0;
 
-	if(!msrp || !msrp->local.socket || msrp->local.socket->fd <= 0){
+	if(!msrp || !msrp->transport){
 		goto bail;
 	}
 
+	// get socket type
+	type = tnet_transport_get_type(msrp->transport);
+	// get ip and port
+	tnet_transport_get_ip_n_port_2(msrp->transport, &ip, &port); 
 	// answer or initial offer?
 	answer = (msrp->remote.M != tsk_null);
 	// using ipv6?
-	ipv6 = TNET_SOCKET_TYPE_IS_IPV6(msrp->local.socket->type);
+	ipv6 = TNET_SOCKET_TYPE_IS_IPV6(type);
 	
-	if(TNET_SOCKET_TYPE_IS_TLS(msrp->local.socket->type)){
+	if(TNET_SOCKET_TYPE_IS_TLS(type)){
 		proto = "TCP/TLS/MSRP";
 		sheme = "msrps";
 	}
@@ -201,12 +245,12 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self)
 		char* path = tsk_null;
 		tmsrp_uri_t* uri;
 		tsk_strrandom(&sessionid);
-		tsk_sprintf(&path, "%s://%s:%u/%s;tcp", sheme, msrp->local.socket->ip, msrp->local.socket->port, sessionid); //tcp is ok even if tls is used.
+		tsk_sprintf(&path, "%s://%s:%u/%s;tcp", sheme, ip, port, sessionid); //tcp is ok even if tls is used.
 
-		if((msrp->local.M = TSDP_HEADER_M_CREATE(self->plugin->media, msrp->local.socket->port, proto))){
+		if((msrp->local.M = TSDP_HEADER_M_CREATE(self->plugin->media, port, proto))){
 			tsdp_header_M_add_headers(msrp->local.M,
 				TSDP_FMT_VA_ARGS("*"),
-				TSDP_HEADER_C_VA_ARGS("IN", ipv6?"IP6":"IP4", &msrp->local.socket->ip),
+				TSDP_HEADER_C_VA_ARGS("IN", ipv6?"IP6":"IP4", ip),
 
 				TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
 				TSDP_HEADER_A_VA_ARGS("path", path),
@@ -293,7 +337,7 @@ int tmsrp_media_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 	tsk_bool_t found = tsk_false;
 	tsk_bool_t answer;
 
-	if(!offer || !msrp || !msrp->local.socket || msrp->local.socket->fd <= 0){
+	if(!offer || !msrp){
 		goto bail;
 	}
 	
@@ -458,10 +502,10 @@ static void* tmsrp_media_create(tsk_object_t *self, va_list * app)
 			// if this is not used then the host address will be equal to "0.0.0.0" or "::"
 			// when used with SIP, the stack will provide a routable IP (e.g. 192.168.16.104)
 			tnet_gethostname(&local);
-			msrp->local.socket = TNET_SOCKET_CREATE(local, TNET_SOCKET_PORT_ANY, socket_type);
+			msrp->transport = TNET_TRANSPORT_CREATE(local, TNET_SOCKET_PORT_ANY, socket_type, "MSRP/MSRPS transport");
 		}
 		else{
-			msrp->local.socket = TNET_SOCKET_CREATE(host, TNET_SOCKET_PORT_ANY, socket_type);
+			msrp->transport = TNET_TRANSPORT_CREATE(host, TNET_SOCKET_PORT_ANY, socket_type, "MSRP/MSRPS transport");
 		}
 	}
 	else{
@@ -474,14 +518,12 @@ static void* tmsrp_media_destroy(tsk_object_t *self)
 {
 	tmsrp_media_t *msrp = self;
 	if(msrp){
-		tsk_bool_t closeFD = (msrp->local.socket && msrp->local.socket->fd != msrp->connectedFD);
 		tmedia_deinit(TMEDIA(msrp));
 
 		TSK_OBJECT_SAFE_FREE(msrp->config);
 		
 		// local
 		TSK_OBJECT_SAFE_FREE(msrp->local.M);
-		TSK_OBJECT_SAFE_FREE(msrp->local.socket);
 		// remote
 		TSK_OBJECT_SAFE_FREE(msrp->remote.M);
 		//TSK_OBJECT_SAFE_FREE(msrp->remote.C);
@@ -490,10 +532,13 @@ static void* tmsrp_media_destroy(tsk_object_t *self)
 
 		// sender
 		TSK_OBJECT_SAFE_FREE(msrp->sender);
+		// receiver
+		TSK_OBJECT_SAFE_FREE(msrp->receiver);
+
+		// transrport
+		TSK_OBJECT_SAFE_FREE(msrp->transport);
 		
-		if(closeFD){
-			tnet_sockfd_close(&msrp->connectedFD);
-		}
+		// do not close the connectedFD ...it's uo to the transport
 	}
 	else{
 		TSK_DEBUG_ERROR("Null dummy media.");
@@ -501,17 +546,13 @@ static void* tmsrp_media_destroy(tsk_object_t *self)
 
 	return self;
 }
-static int tmsrp_media_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_media_def_s = 
 {
 	sizeof(tmsrp_media_t),
 	tmsrp_media_create,
 	tmsrp_media_destroy,
-	tmsrp_media_cmp
+	tsk_null
 };
 
 const tsk_object_def_t *tmsrp_media_def_t = &tmsrp_media_def_s;

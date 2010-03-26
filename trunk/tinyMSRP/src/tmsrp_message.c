@@ -117,6 +117,22 @@ int tmsrp_message_add_headers(tmsrp_message_t *self, ...)
 	return 0;
 }
 
+tmsrp_request_type_t tmsrp_request_get_type(const char* method)
+{
+	if(method){
+		if(tsk_strequals(method, "SEND")){
+			return tmsrp_SEND;
+		}
+		else if(tsk_strequals(method, "REPORT")){
+			return tmsrp_REPORT;
+		}
+		else if(tsk_strequals(method, "AUTH")){
+			return tmsrp_AUTH;
+		}
+	}
+	return tmsrp_NONE;
+}
+
 const tmsrp_header_t *tmsrp_message_get_headerAt(const tmsrp_message_t *self, tmsrp_header_type_t type, size_t index)
 {
 	size_t pos = 0;
@@ -199,7 +215,7 @@ const tmsrp_header_t *tmsrp_message_get_headerByName(const tmsrp_message_t *self
 			return item->data;
 		}
 	}
-	return TMSRP_NULL;
+	return tsk_null;
 }
 
 int tmsrp_message_add_content(tmsrp_message_t *self, const char* content_type, const void* content, size_t size)
@@ -368,6 +384,8 @@ static void* tmsrp_message_create(tsk_object_t * self, va_list * app)
 
 		message->end_line.tid = tsk_strdup(message->tid);
 		message->end_line.cflag = '$';
+
+		message->line.request.type = tmsrp_request_get_type(message->line.request.method);
 	}
 	return self;
 }

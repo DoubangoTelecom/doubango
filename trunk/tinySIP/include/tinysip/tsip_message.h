@@ -125,7 +125,7 @@ tsip_message_type_t;
 
 typedef enum tsip_request_type_e
 {
-	tsip_NONE,
+	tsip_NONE = 0,
 
 	tsip_ACK,
 	tsip_BYE,

@@ -26,7 +26,7 @@
 #include "tinySDP/parsers/tsdp_parser_message.h"
 
 #define REMOTE_SDP1 \
-	"c=IN IP4 192.168.0.15\r\n" \
+	"c=IN IP4 192.168.16.33\r\n" \
     "m=message 2000 TCP/MSRP *\r\n" \
     "a=accept-types:text/plain\r\n" \
     "a=path:msrp://atlanta.example.com:7654/jshA7weztas;tcp\r\n" \
@@ -35,7 +35,7 @@
 
 #define REMOTE_SDP2 \
     "m=message 2000 TCP/MSRP *\r\n" \
-	"c=IN IP4 192.168.0.15\r\n" \
+	"c=IN IP4 192.168.16.33\r\n" \
     "a=accept-types:text/plain\r\n" \
     "a=path:msrp://atlanta.example.com:7654/jshA7weztas;tcp\r\n" \
 	"a=setup:passive\r\n" \
@@ -73,13 +73,12 @@ void test_session()
 		
 		tmedia_start(msrp);
 		//tmedia_pause(msrp);
-
+		
 		tmedia_perform(msrp, tma_msrp_send_data,
 				TSK_PARAM_VA_ARGS("content", "hello world!"),
 				TSK_PARAM_VA_ARGS("content-type", "text/plain"),
 
 				tsk_null);
-
 		/*
 		tmedia_perform(msrp, tma_msrp_send_file,
 			TSK_PARAM_VA_ARGS("path", "C:\\ppppp"),

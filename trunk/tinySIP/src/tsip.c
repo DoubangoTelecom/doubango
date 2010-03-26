@@ -491,7 +491,7 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 
 		/* Do not Stop timer manager ==> Dialogs have ref to the stack and rely on the timer manager(to gracefully shutdown).*/
 		//ret = tsk_timer_manager_stop(stack->timer_mgr);
-
+		
 		if((ret = tsk_runnable_stop(TSK_RUNNABLE(stack)))){
 			//return ret;
 		}

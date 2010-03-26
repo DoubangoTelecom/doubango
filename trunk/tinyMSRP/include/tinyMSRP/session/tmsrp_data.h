@@ -39,17 +39,14 @@
 TMSRP_BEGIN_DECLS
 
 #define TMSRP_DATA(self)					((tmsrp_data_t*)(self))
-#define TMSRP_DATA_IS_FILE_TRANSFER(self)	(TMSRP_DATA(self)->file != tsk_null)
-#define TMSRP_DATA_IS_DATA_TRANSFER(self)	(TMSRP_DATA(self)->buffer != tsk_null)
 #define TMSRP_DATA_IS_OUTGOING(self)		(TMSRP_DATA(self)->outgoing)
 
-#define _TMSRP_DATA_IN_CREATE(pdata, size, isfilepath)	tsk_object_new(tmsrp_data_in_def_t, (const void*)pdata, (size_t)size, (tsk_bool_t)isfilepath)
-#define TMSRP_DATA_IN_CREATE(pdata, size) _TMSRP_DATA_IN_CREATE(pdata, size, tsk_false)
-#define TMSRP_DATA_IN_FILE_CREATE(pdata, size) _TMSRP_DATA_IN_CREATE(pdata, size, tsk_true)
+#define TMSRP_DATA_IN_CREATE() tsk_object_new(tmsrp_data_in_def_t)
 
 #define _TMSRP_DATA_OUT_CREATE(pdata, size, isfilepath)	tsk_object_new(tmsrp_data_out_def_t, (const void*)pdata, (size_t)size, (tsk_bool_t)isfilepath)
 #define TMSRP_DATA_OUT_CREATE(pdata, size) _TMSRP_DATA_OUT_CREATE(pdata, size, tsk_false)
 #define TMSRP_DATA_OUT_FILE_CREATE(filepath) _TMSRP_DATA_OUT_CREATE(filepath, strlen(filepath), tsk_true)
+
 
 typedef struct tmsrp_data_s
 {
@@ -60,33 +57,30 @@ typedef struct tmsrp_data_s
 	
 	char* id;
 	char* ctype;
-	FILE* file;
-	tsk_buffer_t* buffer;
 }
 tmsrp_data_t;
 
 #define TMSRP_DECLARE_DATA tmsrp_data_t data
 typedef tsk_list_t tmsrp_datas_L_t;
 
-int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, size_t size, tsk_bool_t isfile, const char* ctype);
-int tmsrp_data_deinit(tmsrp_data_t* self);
-
-
 typedef struct tmsrp_data_in_s
 {
 	TMSRP_DECLARE_DATA;
-	
+
+	tsk_buffer_t* buffer;
 }
 tmsrp_data_in_t;
 
 int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, size_t size);
-tmsrp_request_t* tmsrp_data_in_get(tmsrp_data_in_t* self);
+tmsrp_message_t* tmsrp_data_in_get(tmsrp_data_in_t* self);
 
 typedef struct tmsrp_data_out_s
 {
 	TMSRP_DECLARE_DATA;
 	
-
+	FILE* file;
+	tsk_buffer_t* message;
+	size_t size; // File/message size
 }
 tmsrp_data_out_t;
 

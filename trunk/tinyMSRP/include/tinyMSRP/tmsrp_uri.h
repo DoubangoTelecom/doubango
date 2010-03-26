@@ -52,7 +52,7 @@ TMSRP_BEGIN_DECLS
 #define TMSRP_URI_CREATE(scheme, host, host_type, port, session_id, transport)\
 	tsk_object_new(tmsrp_uri_def_t, (const char*)scheme, (const char*)host, (tmsrp_host_type_t)host_type, (int32_t)port, (const char*)session_id, (const char*)transport)
 
-#define TMSRP_URI_CREATE_NULL()	TMSRP_URI_CREATE(TMSRP_NULL, TMSRP_NULL, host_unknown, -1, TMSRP_NULL, TMSRP_NULL)
+#define TMSRP_URI_CREATE_NULL()	TMSRP_URI_CREATE(tsk_null, tsk_null, host_unknown, -1, tsk_null, tsk_null)
 
 #define TMSRP_URI_IS_SECURE(uri)		((uri) && (tsk_striequals(uri->scheme, "msrps") ? 1 : 0))
 #define TMSRP_URI(self)					((tmsrp_uri_t*)(self))
