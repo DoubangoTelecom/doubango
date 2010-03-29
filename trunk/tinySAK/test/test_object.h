@@ -22,6 +22,65 @@
 #ifndef _TEST_OBJECT_H_
 #define _TEST_OBJECT_H_
 
+typedef struct person_s
+{
+	TSK_DECLARE_OBJECT; // Mandatory
+
+	char* name;
+	person_t* mother;
+}
+person_t;
+
+// constructor
+static void* person_create(tsk_object_t * self, va_list * app)
+{
+ 	person_t *person = self;
+ 	if(person){
+ 		person->name = tsk_strdup(va_arg(*app, const char *));
+ 	}
+ 	return self;
+ }
+
+ // destructor
+ static void* person_destroy(tsk_object_t * self)
+ { 
+ 	person_t *person = self;
+ 	if(person){
+ 		TSK_FREE(person->firstName);
+ 		TSK_FREE(person->lastName);
+ 	}
+ 	return self;
+ }
+ 
+ // comparator
+ static int person_cmp(const tsk_object_t *object1, const tsk_object_t *object1)
+ {
+ 	const person_t *person1 = object1;
+ 	const person_t *person2 = object2;
+	int ret;
+	
+	// do they have the same name?
+	if((ret = tsk_stricmp(person1->name, person2->name))){
+		return ret;
+	}
+	// do they have the same mother?
+	if((ret = tsk_object_cmp(person1->mother, person2->mother))){
+		return ret;
+	}
+	
+	// they are the same
+	return 0;
+ }
+
+ //(Object defnition)
+ static const tsk_object_def_t person_def_s = 
+ {
+ 	sizeof(person_t),
+ 	person_create,
+ 	person_destroy,
+ 	person_cmp, 
+ }person_def_t;
+
 /* test object */
 void test_object()
 {

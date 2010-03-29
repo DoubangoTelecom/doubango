@@ -310,7 +310,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 	}
 
 	/* Sets SSL method */
-	socket->ssl_meth = socket->isClient ? TLSv1_client_method() : SSLv23_server_method();
+	socket->ssl_meth = socket->isClient ? TLSv1_client_method() : TLSv1_server_method();
 	
 	/* Creates the context */
 	if(!(socket->ssl_ctx = SSL_CTX_new(socket->ssl_meth))){

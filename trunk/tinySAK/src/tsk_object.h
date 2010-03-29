@@ -53,7 +53,7 @@ typedef void tsk_object_t;
 /**@ingroup tsk_object_group
 * tag a structure as an object. If this macro is used then you MUST
 * provide a constructor and a destructor functions into an object definition (or meta-data).
-* @ref tsk_object_new or @ref tsk_object_new2 are used to create the object and  @ref tsk_object_unref or @ref tsk_object_delete to destroy it.
+* @ref tsk_object_new or @ref tsk_object_new_2 are used to create the object and  @ref tsk_object_unref or @ref tsk_object_delete to destroy it.
 * @code
 * typedef struct person_s{
 *	TSK_DECLARE_OBJECT;
@@ -88,7 +88,7 @@ typedef void tsk_object_t;
 * @code
 *
 * // constructor
-* static void* person_create(void * self, va_list * app)
+* static void* person_create(tsk_object_t * self, va_list * app)
 * {
 * 	static int unique_id = 0;
 * 	person_t *person = self;
@@ -101,7 +101,7 @@ typedef void tsk_object_t;
 * }
 * 
 * // destructor
-* static void* person_destroy(void * self)
+* static void* person_destroy(tsk_object_t * self)
 * { 
 * 	person_t *person = self;
 * 	if(person){
@@ -112,7 +112,7 @@ typedef void tsk_object_t;
 * }
 * 
 * // comparator
-* static int person_cmp(const void *object1, const void *object1)
+* static int person_cmp(const tsk_object_t *object1, const tsk_object_t *object1)
 * {
 * 	const person_t *person1 = object1;
 * 	const person_t *person2 = object2;
@@ -146,15 +146,19 @@ typedef void tsk_object_t;
 */
 typedef struct tsk_object_def_s
 {
-	size_t size;													/**< The size of the object. */
-	tsk_object_t*	(* constructor) (tsk_object_t *, va_list *);				/**< Pointer to the constructor. */
-	tsk_object_t*	(* destructor) (tsk_object_t *);								/**< Pointer to the destructor. */
-	int		(* objcmp) (const tsk_object_t *, const tsk_object_t *);	/**< Pointer to the comparator. */
+	//! The size of the object.
+	size_t size;
+	//! Pointer to the constructor.
+	tsk_object_t*	(* constructor) (tsk_object_t *, va_list *);
+	//! Pointer to the destructor.
+	tsk_object_t*	(* destructor) (tsk_object_t *);
+	//! Pointer to the comparator.
+	int		(* comparator) (const tsk_object_t *, const tsk_object_t *);
 }
 tsk_object_def_t;
 
 TINYSAK_API tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...);
-TINYSAK_API tsk_object_t* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap);
+TINYSAK_API tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap);
 TINYSAK_API size_t tsk_object_sizeof(const tsk_object_t *);
 TINYSAK_API int tsk_object_cmp(const void *self, const tsk_object_t *object);
 TINYSAK_API tsk_object_t* tsk_object_ref(tsk_object_t *self);

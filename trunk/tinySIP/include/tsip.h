@@ -64,7 +64,7 @@ typedef enum tsip_stack_param_type_e
 	pname_preferred_identity,
 	pname_private_identity,
 	pname_password,
-#define TSIP_STACK_SET_DISPLAY_NAME(STR)				pname_display_name, (const char*)STR
+#define TSIP_STACK_SET_DISPLAY_NAME(NAME_STR)			pname_display_name, (const char*)NAME_STR
 #define TSIP_STACK_SET_PUBLIC_IDENTITY(URI_STR)			pname_public_identity, (const char*)URI_STR
 #define TSIP_STACK_SET_PREFERRED_IDENTITY(URI_STR)		pname_preferred_identity, (const char*)URI_STR
 #define TSIP_STACK_SET_PRIVATE_IDENTITY(STR)			pname_private_identity, (const char*)STR
