@@ -57,7 +57,7 @@ tsk_object_header_t;
 * @param objdef The object meta-data (definition). For more infomation see @ref tsk_object_def_t.
 * @param ... List of parameters to pass to the constructor(defined in the meta-data).
 * @retval @ref tsk_object_t object with a reference counter equal to 1.
-* @sa @ref tsk_object_new2.
+* @sa @ref tsk_object_new_2.
 */
 tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 {
@@ -95,7 +95,7 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 * @retval @ref tsk_object_t object with a reference counter equal to 1.
 * @sa @ref tsk_object_new.
 */
-tsk_object_t* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
+tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap)
 {
 	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
 	if(newobj)
@@ -123,7 +123,7 @@ tsk_object_t* tsk_object_new2(const tsk_object_def_t *objdef, va_list* ap)
 /**@ingroup tsk_object_group
 * Gets the size of an opaque object.
 * @param self The object for which we want to get the size.
-* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
+* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new_2.
 * @retval The size of the object.
 */
 size_t tsk_object_sizeof(const tsk_object_t *self)
@@ -139,7 +139,7 @@ size_t tsk_object_sizeof(const tsk_object_t *self)
 }
 
 /**@ingroup tsk_object_group
-* Compares two objects. Both object MUST be declared using @ref TSK_DECLARE_OBJECT and created using @ref tsk_object_new or @ref tsk_object_new2.
+* Compares two objects. Both object MUST be declared using @ref TSK_DECLARE_OBJECT and created using @ref tsk_object_new or @ref tsk_object_new_2.
 * If the meta-data (definition) of the first object (@a object1) do not include a function comparator then this method will amlways return -1.
 * @param object1 The first object to compare.
 * @param object2 The second object to compare.
@@ -150,8 +150,8 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 {
 	const tsk_object_def_t **objdef = (const tsk_object_def_t **)object1;
 
-	if(objdef && *objdef && (*objdef)->objcmp){
-		return (*objdef)->objcmp(object1, object2);
+	if(objdef && *objdef && (*objdef)->comparator){
+		return (*objdef)->comparator(object1, object2);
 	}
 	return -1;
 }
@@ -159,7 +159,7 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 /**@ingroup tsk_object_group
 * Increment the refrence counting of the object.<br>
 * Refernce counting: http://en.wikipedia.org/wiki/Reference_counting.<br>
-* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
+* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new_2.
 * @param self The object holding the counter to increment.
 * @retval The new object (incremented).
 * @sa tsk_object_unref.
@@ -176,7 +176,7 @@ tsk_object_t* tsk_object_ref(tsk_object_t *self)
 /**@ingroup tsk_object_group
 * Decrement the refrence counting of the object.<br>
 * Refernce counting: http://en.wikipedia.org/wiki/Reference_counting.<br>
-* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
+* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new_2.
 * @param self The object holding the counter to decrement.
 * @retval If the refernce counter is equal to zero then NULL is returned otherwise a new object (decremented) is returned.
 * @sa ref tsk_object_ref.
@@ -198,7 +198,7 @@ tsk_object_t* tsk_object_unref(tsk_object_t *self)
 /**@ingroup tsk_object_group
 * Delete an object. This function will delete the object even if it's reference counter is greater than 1.
 * This mean that this function is not safe. You should use @ref TSK_OBJECT_SAFE_FREE to safely delete an object.
-* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new2.
+* The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new_2.
 * @param self The object to delete.
 * @sa @ref TSK_OBJECT_SAFE_FREE.
 */

@@ -171,7 +171,7 @@ static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)
 		
 		va_start(ap, self);
 		objdef = va_arg(ap, const tsk_object_def_t*);
-		header = tsk_object_new2(objdef, &ap);
+		header = tsk_object_new_2(objdef, &ap);
 		va_end(ap);
 
 		thttp_message_add_header(self, header);
