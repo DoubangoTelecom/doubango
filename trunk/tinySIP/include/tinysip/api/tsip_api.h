@@ -32,6 +32,8 @@
 
 #include "tinysip_config.h"
 
+#include "tinysip/tsip_action.h"
+
 #include "tinysip/api/tsip_api_invite.h"
 #include "tinysip/api/tsip_api_message.h"
 #include "tinysip/api/tsip_api_publish.h"

@@ -826,11 +826,11 @@ static void* tsip_transac_ict_create(void * self, va_list * app)
 	tsip_transac_ict_t *transac = self;
 	if(transac)
 	{
-		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t *);
 		tsk_bool_t reliable = va_arg(*app, tsk_bool_t);
 		int32_t cseq_value = va_arg(*app, int32_t);
 		const char *cseq_method = "INVITE";
 		const char *callid = va_arg(*app, const char *);
+		tsip_dialog_t* dialog = va_arg(*app, tsip_dialog_t*);
 
 		/* create FSM */
 		transac->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
@@ -838,7 +838,7 @@ static void* tsip_transac_ict_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(transac->fsm, TSK_FSM_ONTERMINATED(tsip_transac_ict_OnTerminated), (const void*)transac);
 
 		/* Initialize base class */
-		tsip_transac_init(TSIP_TRANSAC(transac), stack, tsip_ict, reliable, cseq_value, cseq_method, callid);
+		tsip_transac_init(TSIP_TRANSAC(transac), tsip_ict, reliable, cseq_value, cseq_method, callid, dialog);
 
 		/* Initialize ICT object */
 		tsip_transac_ict_init(transac);

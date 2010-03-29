@@ -56,12 +56,13 @@ tsip_dialog_layer_t;
 
 typedef tsk_list_t tsip_dialog_layers_L_t;
 
-//int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation);
+//int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *SSESSION);
 
-tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation);
+tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss);
 
 int tsip_dialog_layer_shutdownAllExceptRegister(tsip_dialog_layer_t *self);
 int tsip_dialog_layer_hangupAll(tsip_dialog_layer_t *self);
+tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_ssession_t *ss);
 int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dialog);
 
 int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message);

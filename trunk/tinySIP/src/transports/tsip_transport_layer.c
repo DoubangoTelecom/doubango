@@ -185,8 +185,8 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 {
 	tsip_transport_t* transport = 0;
 
-	destIP = TSIP_STACK(self->stack)->proxy_cscf;
-	*destPort = TSIP_STACK(self->stack)->proxy_cscf_port;
+	destIP = self->stack->proxy_cscf;
+	*destPort = self->stack->proxy_cscf_port;
 
 	if(!self){
 		return 0;
@@ -204,7 +204,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 		tsk_list_foreach(item, self->transports)
 		{
 			curr = item->data;
-			if(curr->type == TSIP_STACK(self->stack)->proxy_cscf_type)
+			if(curr->type == self->stack->proxy_cscf_type)
 			{
 				transport = curr;
 				break;
@@ -332,8 +332,8 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 			
 		if(transport && transport->net_transport && self->stack){
 			/* Set TLS certs */
-			if(TNET_SOCKET_TYPE_IS_TLS(type) || TSIP_STACK(self->stack)->enable_secagree_tls){
-				tsip_transport_set_tlscerts(transport, TSIP_STACK(self->stack)->tls.ca, TSIP_STACK(self->stack)->tls.pbk, TSIP_STACK(self->stack)->tls.pvk);
+			if(TNET_SOCKET_TYPE_IS_TLS(type) || self->stack->enable_secagree_tls){
+				tsip_transport_set_tlscerts(transport, self->stack->tls.ca, self->stack->tls.pbk, self->stack->tls.pvk);
 			}
 			tsk_list_push_back_data(self->transports, (void**)&transport);
 			return 0;
@@ -493,7 +493,7 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 				transport = item->data;
 
 				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(transport->type) ? TNET_TRANSPORT_CB_F(tsip_transport_layer_dgram_cb) : TNET_TRANSPORT_CB_F(tsip_transport_layer_stream_cb), transport);
-				if((fd = tsip_transport_connectto2(transport, TSIP_STACK(self->stack)->proxy_cscf, TSIP_STACK(self->stack)->proxy_cscf_port)) == TNET_INVALID_FD){
+				if((fd = tsip_transport_connectto_2(transport, self->stack->proxy_cscf, self->stack->proxy_cscf_port)) == TNET_INVALID_FD){
 					return -3;
 				}
 				if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){

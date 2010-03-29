@@ -360,7 +360,7 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	*/
 	stack->callback = callback;
 	stack->timer_mgr = TSK_TIMER_MANAGER_CREATE();
-	stack->operations = TSK_LIST_CREATE();
+	stack->ssessions = TSK_LIST_CREATE();
 
 	/* 
 	*	Layers 
@@ -570,8 +570,7 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr)
 
 const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self)
 {
-	if(self)
-	{
+	if(self){
 		const tsip_stack_t *stack = self;
 		return stack->timer_mgr;
 	}
@@ -580,8 +579,7 @@ const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_hand
 
 const struct tsip_dialog_layer_s * tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self)
 {
-	if(self)
-	{
+	if(self){
 		const tsip_stack_t *stack = self;
 		return stack->layer_dialog;
 	}
@@ -590,8 +588,7 @@ const struct tsip_dialog_layer_s * tsip_stack_get_dialog_layer(const tsip_stack_
 
 const struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self)
 {
-	if(self)
-	{
+	if(self){
 		const tsip_stack_t *stack = self;
 		return stack->layer_transac;
 	}
@@ -600,8 +597,7 @@ const struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack
 
 const struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self)
 {
-	if(self)
-	{
+	if(self){
 		const tsip_stack_t *stack = self;
 		return stack->layer_transport;
 	}
@@ -653,7 +649,7 @@ void *run(void* self)
 //========================================================
 //	SIP stack object definition
 //
-static void* _tsip_stack_create(void * self, va_list * app)
+static tsk_object_t* _tsip_stack_create(void * self, va_list * app)
 {
 	tsip_stack_t *stack = self;
 	if(stack){
@@ -661,7 +657,7 @@ static void* _tsip_stack_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_stack_destroy(void * self)
+static tsk_object_t* tsip_stack_destroy(void * self)
 { 
 	tsip_stack_t *stack = self;
 	if(stack){
@@ -711,7 +707,7 @@ static void* tsip_stack_destroy(void * self)
 
 		/* Internals. */
 		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
-		TSK_OBJECT_SAFE_FREE(stack->operations);
+		TSK_OBJECT_SAFE_FREE(stack->ssessions);
 
 		/* Layers */
 		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
@@ -728,6 +724,6 @@ static const tsk_object_def_t tsip_stack_def_s =
 	sizeof(tsip_stack_t),
 	_tsip_stack_create, 
 	tsip_stack_destroy,
-	0, 
+	tsk_null, 
 };
 const void *tsip_stack_def_t = &tsip_stack_def_s;

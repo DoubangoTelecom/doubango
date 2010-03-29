@@ -351,6 +351,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsip_action.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsip_event.c"
 				>
 			</File>
@@ -359,7 +363,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsip_operation.c"
+				RelativePath=".\src\tsip_ssession.c"
 				>
 			</File>
 			<File
@@ -925,6 +929,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinysip\tsip_action.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinysip\tsip_event.h"
 				>
 			</File>
@@ -933,7 +941,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\tinysip\tsip_operation.h"
+				RelativePath=".\include\tinysip\tsip_ssession.h"
 				>
 			</File>
 			<File

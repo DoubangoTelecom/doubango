@@ -452,10 +452,10 @@ static void* tsip_ipsec_association_create(void * self, va_list * app)
 		association->ctx = TIPSEC_CONTEXT_CREATE(
 			TIPSEC_IPPROTO_FROM_STR(transport->protocol),
 			TNET_SOCKET_TYPE_IS_IPV6(transport->type),
-			TIPSEC_MODE_FROM_STR(TSIP_STACK(transport->stack)->secagree_ipsec.mode),
-			TIPSEC_EALG_FROM_STR(TSIP_STACK(transport->stack)->secagree_ipsec.ealg),
-			TIPSEC_ALG_FROM_STR(TSIP_STACK(transport->stack)->secagree_ipsec.alg),
-			TIPSEC_PROTOCOL_FROM_STR(TSIP_STACK(transport->stack)->secagree_ipsec.protocol));
+			TIPSEC_MODE_FROM_STR(transport->stack->secagree_ipsec.mode),
+			TIPSEC_EALG_FROM_STR(transport->stack->secagree_ipsec.ealg),
+			TIPSEC_ALG_FROM_STR(transport->stack->secagree_ipsec.alg),
+			TIPSEC_PROTOCOL_FROM_STR(transport->stack->secagree_ipsec.protocol));
 		
 		/* Create Both client and Server legs */
 		association->socket_us = TNET_SOCKET_CREATE(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
@@ -470,7 +470,7 @@ static void* tsip_ipsec_association_create(void * self, va_list * app)
 			tipsec_set_local(association->ctx, ip_local, ip_remote, association->socket_uc->port, association->socket_us->port);
 		}
 		else{
-			tipsec_set_local(association->ctx, ip_local, TSIP_STACK(transport->stack)->proxy_cscf, association->socket_uc->port, association->socket_us->port);
+			tipsec_set_local(association->ctx, ip_local, transport->stack->proxy_cscf, association->socket_uc->port, association->socket_us->port);
 		}
 	}	 	
 	return self;

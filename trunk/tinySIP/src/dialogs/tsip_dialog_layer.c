@@ -31,12 +31,17 @@
 
 #include "tinySIP/dialogs/tsip_dialog_invite.h"
 #include "tinySIP/dialogs/tsip_dialog_message.h"
+#include "tinySIP/dialogs/tsip_dialog_publish.h"
 #include "tinySIP/dialogs/tsip_dialog_register.h"
+#include "tinySIP/dialogs/tsip_dialog_subscribe.h"
 
 #include "tinySIP/transactions/tsip_transac_layer.h"
 #include "tinySIP/transports/tsip_transport_layer.h"
 
-tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_operation_handle_t *operation)
+#include "tsk_debug.h"
+
+// MUST tsk_object_unref(ret)
+tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss)
 {
 	tsip_dialog_t *ret = 0;
 	tsip_dialog_t *dialog;
@@ -47,7 +52,7 @@ tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsi
 	tsk_list_foreach(item, self->dialogs)
 	{
 		dialog = item->data;
-		if( tsip_operation_get_id(dialog->operation) == tsip_operation_get_id(operation) ){
+		if( tsip_ssession_get_id(dialog->ss) == tsip_ssession_get_id(ss) ){
 			ret = dialog;
 			break;
 		}
@@ -55,7 +60,7 @@ tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsi
 
 	tsk_safeobj_unlock(self);
 
-	return ret;
+	return tsk_object_ref(ret);
 }
 
 const tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const char* callid, const char* to_tag, const char* from_tag, tsk_bool_t *cid_matched)
@@ -95,7 +100,7 @@ int tsip_dialog_layer_shutdownAllExceptRegister(tsip_dialog_layer_t *self)
 		{
 			dialog = item->data;
 			if(dialog->type != tsip_dialog_REGISTER){
-				tsip_dialog_shutdown(dialog);
+				//tsip_dialog_shutdown(dialog);
 			}
 		}
 		return 0;
@@ -115,13 +120,74 @@ int tsip_dialog_layer_hangupAll(tsip_dialog_layer_t *self)
 		tsk_list_foreach(item, self->dialogs)
 		{
 			dialog = item->data;
-			tsip_dialog_hangup(dialog);
+			tsip_dialog_hangup(dialog, tsk_null);
 		}
 
 		tsk_safeobj_unlock(self);
 		return 0;
 	}
 	return -1;
+}
+
+tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_ssession_t *ss)
+{
+	tsip_dialog_t* ret = tsk_null;
+	tsip_dialog_t* dialog;
+	if(!self){
+		goto bail;
+	}
+
+	switch(type){
+		case tsip_dialog_INVITE:
+			{
+				break;
+			}
+		case tsip_dialog_MESSAGE:
+			{
+				if((dialog = TSIP_DIALOG_MESSAGE_CREATE(ss))){
+					ret = tsk_object_ref(dialog);
+					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
+				}
+				break;
+			}
+		case tsip_dialog_OPTIONS:
+			{
+				break;
+			}
+		case tsip_dialog_PUBLISH:
+			{
+				if((dialog = TSIP_DIALOG_PUBLISH_CREATE(ss))){
+					ret = tsk_object_ref(dialog);
+					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
+				}
+				break;
+			}
+		case tsip_dialog_REGISTER:
+			{
+				if((dialog = TSIP_DIALOG_REGISTER_CREATE(ss))){
+					ret = tsk_object_ref(dialog);
+					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
+				}
+				break;
+			}
+		case tsip_dialog_SUBSCRIBE:
+			{
+				if((dialog = TSIP_DIALOG_SUBSCRIBE_CREATE(ss))){
+					ret = tsk_object_ref(dialog);
+					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
+				}
+				break;
+			}
+
+		default:
+			{
+				TSK_DEBUG_ERROR("Dialog type not supported.");
+				break;
+			}
+	}
+
+bail:
+	return ret;
 }
 
 int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dialog)
@@ -158,28 +224,29 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	
 	if(dialog){
 		dialog->callback(dialog, tsip_dialog_i_msg, message);
-		if((transac = tsip_transac_layer_new(layer_transac, tsk_false, message))){
-			TSIP_TRANSAC(transac)->dialog = dialog;
-		}
+		transac = tsip_transac_layer_new(layer_transac, tsk_false, message, TSIP_DIALOG(dialog));
 	}
 	else{		
 		if(TSIP_MESSAGE_IS_REQUEST(message)){
-			tsip_operation_handle_t* op = tsip_operation_createex(message);
+			tsip_ssession_t* ss = tsip_ssession_createex(self->stack, message);
 			tsip_dialog_t* newdialog = tsk_null;
-
-			// The incioming request will be passed to the dialog by the server transaction (tsip_dialog_i_msg)
+			
+			// The incoming request will be passed to the dialog by the server transaction (tsip_dialog_i_msg)
 			// As the request will be recived from the callback function, the dialog MUST not be started
-
+			
+			/* user do not own the session */
+			ss->owner = tsk_false;
+			
 			switch(message->request_type){
 				case tsip_MESSAGE:
 					{
-						newdialog = TSIP_DIALOG_MESSAGE_CREATE(self->stack, op);
+						newdialog = TSIP_DIALOG_MESSAGE_CREATE(ss);
 						break;
 					}
 
 				case tsip_INVITE:
 					{
-						newdialog = TSIP_DIALOG_INVITE_CREATE(self->stack, op);
+						newdialog = TSIP_DIALOG_INVITE_CREATE(ss);
 						break;
 					}
 
@@ -190,18 +257,17 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 			}//switch
 
 			if(newdialog){
-				if((transac = tsip_transac_layer_new(layer_transac, tsk_false, message))){
-					TSIP_TRANSAC(transac)->dialog = newdialog;
-				}
+				transac = tsip_transac_layer_new(layer_transac, tsk_false, message, newdialog);
 				tsk_list_push_back_data(self->dialogs, (void**)&newdialog);
 			}
 
-			TSK_OBJECT_SAFE_FREE(op);
+			TSK_OBJECT_SAFE_FREE(ss);
 		}
 	}
 
 	if(transac){
 		ret = tsip_transac_start(transac, message);
+		tsk_object_unref(transac);
 	}
 	else if(TSIP_MESSAGE_IS_REQUEST(message)){ /* No transaction match for the SIP request */
 		const tsip_transport_layer_t *layer;

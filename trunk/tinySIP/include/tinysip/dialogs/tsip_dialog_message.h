@@ -33,23 +33,17 @@
 #include "tinySIP_config.h"
 #include "tinySIP/dialogs/tsip_dialog.h"
 
-#include "tsk_fsm.h"
-
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_MESSAGE_CREATE(stack, operation)		tsk_object_new(tsip_dialog_message_def_t, (const tsip_stack_handle_t *)stack, (const tsip_operation_handle_t*) operation)
+#define TSIP_DIALOG_MESSAGE_CREATE(ss)		tsk_object_new(tsip_dialog_message_def_t, (const tsip_ssession_handle_t*) ss)
 
 #define TSIP_DIALOG_MESSAGE(self)							((tsip_dialog_message_t*)(self))
 
 typedef struct tsip_dialog_message
 {
 	TSIP_DECLARE_DIALOG;
-
-	tsk_fsm_t *fsm;
 }
 tsip_dialog_message_t;
-
-int tsip_dialog_message_start(tsip_dialog_message_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_message_def_t;
 

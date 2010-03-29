@@ -29,6 +29,7 @@
  */
 #include "tinySIP/dialogs/tsip_dialog_publish.h"
 
+#include "tinySIP/headers/tsip_header_Dummy.h"
 #include "tinySIP/headers/tsip_header_Min_Expires.h"
 #include "tinySIP/headers/tsip_header_SIP_ETag.h"
 #include "tinySIP/headers/tsip_header_SIP_If_Match.h"
@@ -46,14 +47,14 @@
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_PUBLISH_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(publish, TX)
 #define TSIP_DIALOG_PUBLISH_SIGNAL(self, type, code, phrase, message)	\
-	tsip_publish_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->operation, code, phrase, message)
+	tsip_publish_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->ss, code, phrase, message)
 
 /* ======================== internal functions ======================== */
-int send_PUBLISH(tsip_dialog_publish_t *self, refresh_type_t rtype);
+int send_PUBLISH(tsip_dialog_publish_t *self);
 int tsip_dialog_publish_OnTerminated(tsip_dialog_publish_t *self);
 
 /* ======================== transitions ======================== */
-int tsip_dialog_publish_Started_2_Trying_X_send(va_list *app);
+int tsip_dialog_publish_Started_2_Trying_X_publish(va_list *app);
 int tsip_dialog_publish_Trying_2_Trying_X_1xx(va_list *app);
 int tsip_dialog_publish_Trying_2_Terminated_X_2xx(va_list *app);
 int tsip_dialog_publish_Trying_2_Connected_X_2xx(va_list *app);
@@ -61,8 +62,7 @@ int tsip_dialog_publish_Trying_2_Trying_X_401_407_421_494(va_list *app);
 int tsip_dialog_publish_Trying_2_Trying_X_423(va_list *app);
 int tsip_dialog_publish_Trying_2_Terminated_X_300_to_699(va_list *app);
 int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app);
-int tsip_dialog_publish_Connected_2_Trying_X_unpublish(va_list *app);
-int tsip_dialog_publish_Connected_2_Trying_X_refresh(va_list *app);
+int tsip_dialog_publish_Connected_2_Trying_X_publish(va_list *app);
 int tsip_dialog_publish_Any_2_Trying_X_hangup(va_list *app);
 int tsip_dialog_publish_Any_2_Terminated_X_transportError(va_list *app);
 int tsip_dialog_publish_Any_2_Terminated_X_Error(va_list *app);
@@ -81,16 +81,15 @@ int _fsm_cond_publishing(tsip_dialog_publish_t* dialog, tsip_message_t* message)
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
-	_fsm_action_send,
-	_fsm_action_1xx,
+	_fsm_action_publish = atype_publish,
+	_fsm_action_cancel = atype_cancel,
+	_fsm_action_hangup = atype_unpublish,
+
+	_fsm_action_1xx = 0xFF,
 	_fsm_action_2xx,
 	_fsm_action_401_407_421_494,
 	_fsm_action_423,
-	_fsm_action_300_to_699,
-	_fsm_action_cancel,
-	_fsm_action_unpublish,
-	_fsm_action_refresh,
-	_fsm_action_hangup,
+	_fsm_action_300_to_699,	
 	_fsm_action_transporterror,
 	_fsm_action_error,
 }
@@ -130,20 +129,20 @@ int tsip_dialog_publish_event_callback(const tsip_dialog_publish_t *self, tsip_d
 				//	RESPONSE
 				//
 				if(TSIP_RESPONSE_IS_1XX(msg)){
-					ret = tsk_fsm_act(self->fsm, _fsm_action_1xx, self, msg, self, msg);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_1xx, msg, tsk_null);
 				}
 				else if(TSIP_RESPONSE_IS_2XX(msg)){
-					ret = tsk_fsm_act(self->fsm, _fsm_action_2xx, self, msg, self, msg);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_2xx, msg, tsk_null);
 				}
 				else if(TSIP_RESPONSE_IS(msg,401) || TSIP_RESPONSE_IS(msg,407) || TSIP_RESPONSE_IS(msg,421) || TSIP_RESPONSE_IS(msg,494)){
-					ret = tsk_fsm_act(self->fsm, _fsm_action_401_407_421_494, self, msg, self, msg);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_401_407_421_494, msg, tsk_null);
 				}
 				else if(TSIP_RESPONSE_IS(msg,423)){
-					ret = tsk_fsm_act(self->fsm, _fsm_action_423, self, msg, self, msg);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_423, msg, tsk_null);
 				}
 				else{
 					// Alert User
-					ret = tsk_fsm_act(self->fsm, _fsm_action_error, self, msg, self, msg);
+					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, tsk_null);
 					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
 				}
 			}
@@ -156,16 +155,9 @@ int tsip_dialog_publish_event_callback(const tsip_dialog_publish_t *self, tsip_d
 			break;
 		}
 
-	case tsip_dialog_hang_up:
-	case tsip_dialog_shuttingdown:
-		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_hangup, self, msg, self, msg, (tsk_bool_t)(type == tsip_dialog_shuttingdown));
-			break;
-		}
-
 	case tsip_dialog_canceled:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_cancel, self, msg, self, msg);
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_cancel, msg, tsk_null);
 			break;
 		}
 
@@ -174,7 +166,7 @@ int tsip_dialog_publish_event_callback(const tsip_dialog_publish_t *self, tsip_d
 	case tsip_dialog_error:
 	case tsip_dialog_transport_error:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_transporterror, self, msg, self, msg);
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_transporterror, msg, tsk_null);
 			break;
 		}
 	}
@@ -197,11 +189,11 @@ int tsip_dialog_publish_timer_callback(const tsip_dialog_publish_t* self, tsk_ti
 	if(self)
 	{
 		if(timer_id == self->timerrefresh.id){
-			tsk_fsm_act(self->fsm, _fsm_action_refresh, self, tsk_null, self, tsk_null, rt_timedout);
+			tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_publish, tsk_null, tsk_null);
 			ret = 0;
 		}
 		else if(timer_id == self->timershutdown.id){
-			ret = tsk_fsm_act((self)->fsm, _fsm_action_error, self, tsk_null, self, tsk_null);
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, tsk_null, tsk_null);
 		}
 	}
 	return ret;
@@ -215,13 +207,13 @@ int tsip_dialog_publish_timer_callback(const tsip_dialog_publish_t* self, tsk_ti
 int tsip_dialog_publish_init(tsip_dialog_publish_t *self)
 {	
 	/* Initialize the State Machine. */
-	tsk_fsm_set(self->fsm,
+	tsk_fsm_set(TSIP_DIALOG_GET_FSM(self),
 			
 			/*=======================
 			* === Started === 
 			*/
-			// Started -> (Send) -> Trying
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_send, _fsm_state_Trying, tsip_dialog_publish_Started_2_Trying_X_send, "tsip_dialog_publish_Started_2_Trying_X_send"),
+			// Started -> (PUBLISH) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_publish, _fsm_state_Trying, tsip_dialog_publish_Started_2_Trying_X_publish, "tsip_dialog_publish_Started_2_Trying_X_publish"),
 			// Started -> (Any) -> Started
 			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_dialog_publish_Started_2_Started_X_any"),
 			
@@ -250,10 +242,8 @@ int tsip_dialog_publish_init(tsip_dialog_publish_t *self)
 			/*=======================
 			* === Connected === 
 			*/
-			// Connected -> (unpublish) -> Trying
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_unpublish, _fsm_state_Trying, tsip_dialog_publish_Connected_2_Trying_X_unpublish, "tsip_dialog_publish_Connected_2_Trying_X_unpublish"),
-			// Connected -> (refresh) -> Trying
-			TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_refresh, _fsm_state_Trying, tsip_dialog_publish_Connected_2_Trying_X_refresh, "tsip_dialog_publish_Connected_2_Trying_X_refresh"),
+			// Connected -> (PUBLISH) -> Trying
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_publish, _fsm_state_Trying, tsip_dialog_publish_Connected_2_Trying_X_publish, "tsip_dialog_publish_Connected_2_Trying_X_publish"),
 			
 			/*=======================
 			* === Any === 
@@ -276,28 +266,7 @@ int tsip_dialog_publish_init(tsip_dialog_publish_t *self)
 	self->timershutdown.id = TSK_INVALID_TIMER_ID;
 	self->timershutdown.timeout = TSIP_DIALOG_SHUTDOWN_TIMEOUT;
 
-	self->last_rtype = rt_initial;
-
 	return 0;
-}
-
-int tsip_dialog_publish_start(tsip_dialog_publish_t *self)
-{
-	int ret = -1;
-	if(self && !TSIP_DIALOG(self)->running){
-		if(!(ret = tsk_fsm_act(self->fsm, _fsm_action_send, self, tsk_null, self, tsk_null))){
-			TSIP_DIALOG(self)->running = tsk_true;
-		}
-	}
-	return ret;
-}
-
-int tsip_dialog_publish_modify(tsip_dialog_publish_t *self)
-{
-	if(self && TSIP_DIALOG(self)->running){
-		return tsk_fsm_act(self->fsm, _fsm_action_refresh, self, tsk_null, self, tsk_null, rt_modify);
-	}
-	return -1;
 }
 
 //--------------------------------------------------------
@@ -307,12 +276,19 @@ int tsip_dialog_publish_modify(tsip_dialog_publish_t *self)
 
 /* Started -> (send) -> Trying
 */
-int tsip_dialog_publish_Started_2_Trying_X_send(va_list *app)
+int tsip_dialog_publish_Started_2_Trying_X_publish(va_list *app)
 {
-	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
-	//const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	tsip_dialog_publish_t *self;
+	const tsip_action_t* action;
 
-	return send_PUBLISH(self, rt_initial);
+	self = va_arg(*app, tsip_dialog_publish_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
+
+	TSIP_DIALOG(self)->running = tsk_true;
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+
+	return send_PUBLISH(self);
 }
 
 /* Trying -> (1xx) -> Trying
@@ -345,6 +321,7 @@ int tsip_dialog_publish_Trying_2_Connected_X_2xx(va_list *app)
 {
 	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	int ret;
 
 	/*	RFC 3903 - 4.1.  Identification of Published Event State
 		For each successful PUBLISH request, the ESC will generate and assign
@@ -361,7 +338,12 @@ int tsip_dialog_publish_Trying_2_Connected_X_2xx(va_list *app)
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
 	/* Update the dialog state. */
-	tsip_dialog_update(TSIP_DIALOG(self), response);
+	if((ret = tsip_dialog_update(TSIP_DIALOG(self), response))){
+		return ret;
+	}
+
+	/* Reset current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), tsk_null);
 
 	/* Request timeout for dialog refresh (re-publish). */
 	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), response);
@@ -386,7 +368,7 @@ int tsip_dialog_publish_Trying_2_Trying_X_401_407_421_494(va_list *app)
 		return ret;
 	}
 	
-	return send_PUBLISH(self, self->last_rtype);
+	return send_PUBLISH(self);
 }
 
 /* Trying -> (423) -> Trying
@@ -410,7 +392,7 @@ int tsip_dialog_publish_Trying_2_Trying_X_423(va_list *app)
 	hdr = (tsip_header_Min_Expires_t*)tsip_message_get_header(response, tsip_htype_Min_Expires);
 	if(hdr){
 		TSIP_DIALOG(self)->expires = hdr->value;
-		send_PUBLISH(self, self->last_rtype);
+		send_PUBLISH(self);
 	}
 	else{
 		TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
@@ -450,42 +432,47 @@ int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app)
 	return 0;
 }
 
-/* Connected -> (unpublish) -> Trying
+/* Connected -> (PUBLISH) -> Trying
 */
-int tsip_dialog_publish_Connected_2_Trying_X_unpublish(va_list *app)
+int tsip_dialog_publish_Connected_2_Trying_X_publish(va_list *app)
 {
-	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	tsip_dialog_publish_t *self;
+	const tsip_action_t* action;
 
-	return 0;
-}
+	self = va_arg(*app, tsip_dialog_publish_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
+	
+	/* Set  current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
-/* Connected -> (refresh) -> Trying
-*/
-int tsip_dialog_publish_Connected_2_Trying_X_refresh(va_list *app)
-{
-	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
-	refresh_type_t rtype = va_arg(*app, refresh_type_t);
-
-	return send_PUBLISH(self, rtype);
+	return send_PUBLISH(self);
 }
 
 /* Connected -> (hangup) -> Trying
 */
 int tsip_dialog_publish_Any_2_Trying_X_hangup(va_list *app)
 {
-	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
-	tsk_bool_t shuttingdown = va_arg(*app, tsk_bool_t);
+	tsip_dialog_publish_t *self;
+	const tsip_action_t* action;
 
-	/* Schedule timeout (shutdown). */
-	if(shuttingdown){
-		TSIP_DIALOG_PUBLISH_TIMER_SCHEDULE(shutdown);
-	}
-
+	self = va_arg(*app, tsip_dialog_publish_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
+	
+	///* Schedule timeout (shutdown). */
+	//if(shuttingdown){
+	//	TSIP_DIALOG_PUBLISH_TIMER_SCHEDULE(shutdown);
+	//}
+	
+	//self->unpublishing = tsk_true;
+	//return send_PUBLISH(self, rt_remove);
+	
+	/* Set  current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+	
 	self->unpublishing = tsk_true;
-	return send_PUBLISH(self, rt_remove);
+	return send_PUBLISH(self);
 }
 
 /* Any -> (transport error) -> Terminated
@@ -518,64 +505,49 @@ int tsip_dialog_publish_Any_2_Terminated_X_Error(va_list *app)
 /**
  * Sends a PUBLISH request. 
 **/
-int send_PUBLISH(tsip_dialog_publish_t *self, refresh_type_t rtype)
+int send_PUBLISH(tsip_dialog_publish_t *self)
 {
 	tsip_request_t *request = tsk_null;
 	int ret = -1;
-	tsk_bool_t addbody;
+	const tsip_action_t* action;
 	
-	/* IMPORTANT: Update last refresh type before trying (because of 423, 401, 407, ...)*/
+	if(!self){
+		return -1;
+	}
+	
+	// action
+	action = TSIP_DIALOG(self)->curr_action;
 
 	if(self->unpublishing){
 		TSIP_DIALOG(self)->expires = 0;
-		self->last_rtype = rt_remove; /* Who know? */
 	}
-	else{
-		self->last_rtype = rtype;
-	}
-
-
-
+	
 	/*	RFC 3903 - 4.1.  Identification of Published Event State
 		The presence of a body and the SIP-If-Match header field determine
-		the specific operation that the request is performing, as described in Table 1.
+		the specific SSESSION that the request is performing, as described in Table 1.
 		+-----------+-------+---------------+---------------+
-		| Operation | Body? | SIP-If-Match? | Expires Value |
+		| SSESSION | Body? | SIP-If-Match? | Expires Value |
 		+-----------+-------+---------------+---------------+
 		| Initial   | yes   | no            | > 0           |
 		| Refresh   | no    | yes           | > 0           |
 		| Modify    | yes   | yes           | > 0           |
 		| Remove    | no    | yes           | 0             |
 		+-----------+-------+---------------+---------------+
-		Table 1: Publication Operations
-	*/
-	addbody = (TSIP_DIALOG(self)->expires > 0 && rtype == rt_initial) /* Initial */
-		|| (TSIP_DIALOG(self)->expires > 0 && rtype == rt_modify); /* Modify */
-	
+		Table 1: Publication ssessions
+	*/	
 	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "PUBLISH"))){
 		/*Etag. If initial then etag is null. */
 		if(self->etag){
 			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_SIP_IF_MATCH_VA_ARGS(self->etag));
 		}
 		/*Body*/
-		if(addbody){
-			const tsk_param_t* param;
-			const void* content = tsk_null;
-			size_t content_length = 0;
-
-			/* content-length */
-			if((param = tsip_operation_get_header(TSIP_DIALOG(self)->operation, "Content-Length"))){
-				content_length = atoi(param->value);
+		if(action && action->payload && !self->unpublishing){
+			const tsk_list_item_t* item;
+			tsk_list_foreach(item, action->headers){
+				TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
 			}
-			/* content */
-			if((param = tsip_operation_get_param(TSIP_DIALOG(self)->operation, "content"))){
-				content = param->value;
-				if(!content_length && content){
-					content_length = strlen(content);
-				}
-				if(content){
-					tsip_message_add_content(request, tsk_null, content, content_length);
-				}
+			if(action->payload){
+				tsip_message_add_content(request, tsk_null, TSK_BUFFER_DATA(action->payload), TSK_BUFFER_SIZE(action->payload));
 			}
 		}
 
@@ -619,16 +591,14 @@ static void* tsip_dialog_publish_create(void * self, va_list * app)
 	tsip_dialog_publish_t *dialog = self;
 	if(dialog)
 	{
-		tsip_stack_handle_t *stack = va_arg(*app, tsip_stack_handle_t *);
-		tsip_operation_handle_t *operation = va_arg(*app, tsip_operation_handle_t *);
-
-		/* create FSM */
-		dialog->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
-		dialog->fsm->debug = DEBUG_STATE_MACHINE;
-		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_publish_OnTerminated), (const void*)dialog);
+		tsip_ssession_handle_t *ss = va_arg(*app, tsip_ssession_handle_t *);
 
 		/* init base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_PUBLISH, stack, tsk_null, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_PUBLISH, tsk_null, ss, _fsm_state_Started, _fsm_state_Terminated);
+
+		/* FSM */
+		TSIP_DIALOG_GET_FSM(self)->debug = DEBUG_STATE_MACHINE;
+		tsk_fsm_set_callback_terminated(TSIP_DIALOG_GET_FSM(self), TSK_FSM_ONTERMINATED(tsip_dialog_publish_OnTerminated), (const void*)dialog);
 
 		/* init the class itself */
 		tsip_dialog_publish_init(self);
@@ -641,6 +611,8 @@ static void* tsip_dialog_publish_destroy(void * _self)
 	tsip_dialog_publish_t *self = _self;
 	if(self)
 	{
+		TSK_DEBUG_INFO("*** PUBLISH Dialog destroyed ***");
+
 		/* Cancel all timers */
 		DIALOG_TIMER_CANCEL(refresh);
 		DIALOG_TIMER_CANCEL(shutdown);
@@ -648,18 +620,15 @@ static void* tsip_dialog_publish_destroy(void * _self)
 		/* deinit base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 
-		/* FSM */
-		TSK_OBJECT_SAFE_FREE(self->fsm);
-
 		/* deinit self*/
 		TSK_FREE(self->etag);
 	}
 	return self;
 }
 
-static int tsip_dialog_publish_cmp(const void *dialog1, const void *dialog2)
+static int tsip_dialog_publish_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
-	return tsip_dialog_cmp(dialog1, dialog2);
+	return tsip_dialog_cmp(obj1, obj2);
 }
 
 static const tsk_object_def_t tsip_dialog_publish_def_s = 

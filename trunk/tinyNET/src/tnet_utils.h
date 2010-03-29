@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -53,7 +53,7 @@ TNET_BEGIN_DECLS
 
 /**@ingroup tnet_utils_group
 */
-#define TNET_CONNECT_TIMEOUT		5000
+#define TNET_CONNECT_TIMEOUT		1500
 
 /**@ingroup tnet_utils_group
 * Interface.
@@ -127,9 +127,9 @@ TINYNET_API int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_po
 TINYNET_API int tnet_getnameinfo(const struct sockaddr *sa, socklen_t salen, char* node, socklen_t nodelen, char* service, socklen_t servicelen, int flags);
 TINYNET_API int tnet_gethostname(tnet_host_t* result);
 
-TINYNET_API int tnet_sockfd_waitUntil(tnet_fd_t fd, long timeout, int writable);
-#define tnet_sockfd_waitUntilWritable(fd, timeout) tnet_sockfd_waitUntil(fd, timeout, 1)
-#define tnet_sockfd_waitUntilReadable(fd, timeout) tnet_sockfd_waitUntil(fd, timeout, 0)
+TINYNET_API int tnet_sockfd_waitUntil(tnet_fd_t fd, long timeout, tsk_bool_t writable);
+#define tnet_sockfd_waitUntilWritable(fd, timeout) tnet_sockfd_waitUntil(fd, timeout, tsk_true)
+#define tnet_sockfd_waitUntilReadable(fd, timeout) tnet_sockfd_waitUntil(fd, timeout, tsk_false)
 TINYNET_API int tnet_sockfd_joingroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index);
 TINYNET_API int tnet_sockfd_leavegroup6(tnet_fd_t fd, const char* multiaddr, unsigned iface_index);
 

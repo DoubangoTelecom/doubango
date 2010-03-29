@@ -25,7 +25,7 @@ LOCAL_MODULE    := tinySIP
 LOCAL_SRC_FILES := \
 	tsip.c\
 	tsip_message.c\
-	tsip_operation.c\
+	tsip_SSESSION.c\
 	tsip_timers.c\
 	tsip_uri.c\
 	\

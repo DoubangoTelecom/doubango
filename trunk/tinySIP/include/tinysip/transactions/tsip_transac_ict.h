@@ -39,7 +39,7 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_TRANSAC_ICT_CREATE(stack, reliable, cseq_value, callid)		tsk_object_new(tsip_transac_ict_def_t, (const tsip_stack_handle_t *)stack, (tsk_bool_t)reliable, (int32_t)cseq_value, (const char*)callid)
+#define TSIP_TRANSAC_ICT_CREATE(reliable, cseq_value, callid, dialog)		tsk_object_new(tsip_transac_ict_def_t, (tsk_bool_t)reliable, (int32_t)cseq_value, (const char*)callid, (tsip_dialog_t*)dialog)
 
 #define TSIP_TRANSAC_ICT(self)															((tsip_transac_ict_t*)(self))
 

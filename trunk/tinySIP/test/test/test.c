@@ -26,7 +26,7 @@
 
 #include "tsip.h"
 #include "tinysip/parsers/tsip_parser_uri.h"
-#include "tinysip/tsip_operation.h"
+#include "tinysip/tsip_SSESSION.h"
 #include "tinysip/tsip_message.h"
 #include "tinysip/headers/tsip_headers.h"
 #include "tinysip/parsers/tsip_parser_message.h"

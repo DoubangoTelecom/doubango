@@ -45,6 +45,8 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSAC(self)						((tsip_transac_t*)(self))
 #define TSIP_TRANSAC_GET_TYPE(self)				TSIP_TRANSAC(self)->type
+#define TSIP_TRANSAC_GET_STACK(self)			TSIP_TRANSAC(self)->dialog->ss->stack
+#define TSIP_TRANSAC_GET_TIMER_MGR(self)		TSIP_TRANSAC(self)->dialog->ss->stack->timer_mgr
 
 #define TSIP_TRANSAC_MAGIC_COOKIE				"z9hG4bK"
 
@@ -52,10 +54,10 @@ TSIP_BEGIN_DECLS
 #define TSIP_TRANSAC_SYNC_END(self)				tsk_safeobj_unlock(TSIP_TRANSAC(self))
 
 #define TRANSAC_TIMER_SCHEDULE(name, TX) \
-	self->timer##TX.id = tsk_timer_manager_schedule((tsk_timer_manager_handle_t*)TSIP_TRANSAC(self)->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK(tsip_transac_##name##_timer_callback), self)
+	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_TRANSAC_GET_TIMER_MGR(self), self->timer##TX.timeout, TSK_TIMER_CALLBACK(tsip_transac_##name##_timer_callback), self)
 
 #define TRANSAC_TIMER_CANCEL(TX) \
-	tsk_timer_manager_cancel((tsk_timer_manager_handle_t*)TSIP_TRANSAC(self)->timer_mgr, self->timer##TX.id)
+	tsk_timer_manager_cancel(TSIP_TRANSAC_GET_TIMER_MGR(self), self->timer##TX.id)
 
 typedef enum tsip_transac_event_type_e
 {
@@ -98,10 +100,7 @@ typedef struct tsip_transac_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	const tsip_stack_handle_t * stack;
-	const tsk_timer_manager_handle_t *timer_mgr;
-	
-	const tsip_dialog_t *dialog;
+	tsip_dialog_t *dialog;
 	
 	tsip_transac_type_t type;
 	
@@ -126,7 +125,7 @@ typedef tsk_list_t tsip_transacs_L_t; /**< List of @ref tsip_transac_t elements.
 /*
 ================================*/
 
-int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid);
+int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog);
 int tsip_transac_deinit(tsip_transac_t *self);
 int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request);
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg);

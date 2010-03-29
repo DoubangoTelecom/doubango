@@ -46,7 +46,7 @@ typedef struct tsip_transport_layer_s
 {
 	TSK_DECLARE_OBJECT;
 
-	const tsip_stack_handle_t *stack;
+	const tsip_stack_t *stack;
 
 	tsk_bool_t running;
 	tsip_transports_L_t *transports;

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -65,7 +65,7 @@ static void TSDP_MESSAGE_ADD_HEADER(tsdp_message_t *self, ...)
 		
 		va_start(ap, self);
 		objdef = va_arg(ap, const tsk_object_def_t*);
-		header = tsk_object_new2(objdef, &ap);
+		header = tsk_object_new_2(objdef, &ap);
 		va_end(ap);
 
 		tsdp_message_add_header(self, header);

@@ -37,7 +37,7 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
-tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_bool_t isCT, const tsip_message_t* msg)
+tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_bool_t isCT, const tsip_message_t* msg, tsip_dialog_t* dialog)
 {
 	tsip_transac_t *ret = tsk_null;
 	tsip_transac_t *transac = tsk_null;
@@ -52,22 +52,22 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_boo
 			{
 				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Client transaction (ICT)
-					transac = TSIP_TRANSAC_ICT_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->Call_ID->value);
+					transac = TSIP_TRANSAC_ICT_CREATE(self->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
 				}
 				else{
 					// NON-INVITE Client transaction (NICT)
-					transac = TSIP_TRANSAC_NICT_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
+					transac = TSIP_TRANSAC_NICT_CREATE(self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
 				}
 			}
 			else	/* Server transaction */
 			{
 				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Server transaction (IST)
-					transac = TSIP_TRANSAC_IST_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->Call_ID->value);
+					transac = TSIP_TRANSAC_IST_CREATE(self->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
 				}
 				else{
 					// NON-INVITE Server transaction (NIST)
-					transac = TSIP_TRANSAC_NIST_CREATE(self->stack, self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value);
+					transac = TSIP_TRANSAC_NIST_CREATE(self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
 				}
 				
 				if(transac){ /* Copy branch from the message */
@@ -77,7 +77,7 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_boo
 			
 			/* Add new transaction */
 			if(transac){
-				ret = transac;
+				ret = tsk_object_ref(transac);
 				tsk_list_push_back_data(self->transactions, (void**)&transac);
 			}
 		}

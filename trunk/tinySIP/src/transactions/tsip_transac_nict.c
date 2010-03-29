@@ -657,11 +657,11 @@ static void* tsip_transac_nict_create(void * self, va_list * app)
 	tsip_transac_nict_t *transac = self;
 	if(transac)
 	{
-		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t *);
 		tsk_bool_t reliable = va_arg(*app, tsk_bool_t);
 		int32_t cseq_value = va_arg(*app, int32_t);
 		const char *cseq_method = va_arg(*app, const char *);
 		const char *callid = va_arg(*app, const char *);
+		tsip_dialog_t* dialog = va_arg(*app, tsip_dialog_t*);
 
 		/* create FSM */
 		transac->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
@@ -669,7 +669,7 @@ static void* tsip_transac_nict_create(void * self, va_list * app)
 		tsk_fsm_set_callback_terminated(transac->fsm, TSK_FSM_ONTERMINATED(tsip_transac_nict_OnTerminated), (const void*)transac);
 
 		/* Initialize base class */
-		tsip_transac_init(TSIP_TRANSAC(transac), stack, tsip_nict, reliable, cseq_value, cseq_method, callid);
+		tsip_transac_init(TSIP_TRANSAC(transac), tsip_nict, reliable, cseq_value, cseq_method, callid, dialog);
 
 		/* Initialize NICT object */
 		tsip_transac_nict_init(transac);
@@ -682,6 +682,8 @@ static void* tsip_transac_nict_destroy(void * _self)
 	tsip_transac_nict_t *self = _self;
 	if(self)
 	{
+		TSK_DEBUG_INFO("*** NICT destroyed ***");
+
 		/* Cancel timers */
 		if(!TSIP_TRANSAC(self)->reliable){
 			TRANSAC_TIMER_CANCEL(E);

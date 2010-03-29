@@ -33,11 +33,9 @@
 #include "tinySIP_config.h"
 #include "tinySIP/dialogs/tsip_dialog.h"
 
-#include "tsk_fsm.h"
-
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_REGISTER_CREATE(stack, operation)		tsk_object_new(tsip_dialog_register_def_t, (tsip_stack_handle_t *)stack, (tsip_operation_handle_t*) operation)
+#define TSIP_DIALOG_REGISTER_CREATE(ss)		tsk_object_new(tsip_dialog_register_def_t, (tsip_ssession_handle_t*) ss)
 
 #define TSIP_DIALOG_REGISTER(self)							((tsip_dialog_register_t*)(self))
 
@@ -45,17 +43,12 @@ typedef struct tsip_dialog_register
 {
 	TSIP_DECLARE_DIALOG;
 
-	tsk_fsm_t *fsm;
-
 	tsip_timer_t timerrefresh;
 	tsip_timer_t timershutdown;
 
 	tsk_bool_t unregistering;
 }
 tsip_dialog_register_t;
-
-//void tsip_dialog_register_init(tsip_dialog_register_t *self);
-int tsip_dialog_register_start(tsip_dialog_register_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_register_def_t;
 

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -49,11 +49,6 @@ int tnet_transport_start(tnet_transport_handle_t* handle)
 		
 		TSK_RUNNABLE(transport)->run = run;
 		if((ret = tsk_runnable_start(TSK_RUNNABLE(transport), tnet_transport_event_def_t))){
-			return ret;
-		}
-		if((ret = tsk_thread_create(&(transport->mainThreadId[0]), tnet_transport_mainthread, transport))){ /* More important than "tsk_runnable_start" ==> start it first. */
-			TSK_FREE(transport->context); /* Otherwise (tsk_thread_create is ok) will be freed when mainthread exit. */
-			tsk_runnable_stop(TSK_RUNNABLE(transport));
 			return ret;
 		}
 	}
@@ -252,10 +247,20 @@ int tnet_transport_shutdown(tnet_transport_handle_t* handle)
 */
 void *run(void* self)
 {
-	//int i = 0;
+	int ret = 0;
 	tsk_list_item_t *curr;
 	tnet_transport_t *transport = self;
 
+	TSK_RUNNABLE(transport)->running = tsk_true; // VERY IMPORTANT --> needed by the main thread
+
+	/* create main thread */
+	if((ret = tsk_thread_create(&(transport->mainThreadId[0]), tnet_transport_mainthread, transport))){ /* More important than "tsk_runnable_start" ==> start it first. */
+		TSK_FREE(transport->context); /* Otherwise (tsk_thread_create is ok) will be freed when mainthread exit. */
+		TSK_DEBUG_FATAL("Failed to create main thread [%d]", ret);
+		return tsk_null;
+	}
+
+	
 	TSK_RUNNABLE_RUN_BEGIN(transport);
 	
 	if((curr = TSK_RUNNABLE_POP_FIRST(transport)))
@@ -270,7 +275,7 @@ void *run(void* self)
 	
 	TSK_RUNNABLE_RUN_END(transport);
 
-	return 0;
+	return tsk_null;
 }
 
 

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -102,7 +102,7 @@ int tsdp_ctx_local_add_headers(tsdp_ctx_handle_t* self, ...)
 	
 	va_start(ap, self);
 	while((objdef = va_arg(ap, const tsk_object_def_t*))){
-		if((header = tsk_object_new2(objdef, &ap))){
+		if((header = tsk_object_new_2(objdef, &ap))){
 			tsdp_message_add_header(ctx->local, header);
 			TSK_OBJECT_SAFE_FREE(header);
 		}

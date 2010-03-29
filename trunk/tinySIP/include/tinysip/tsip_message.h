@@ -55,8 +55,8 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_VERSION_20					"SIP/2.0"
 #define TSIP_MESSAGE_VERSION_DEFAULT			TSIP_MESSAGE_VERSION_20
 
-#define TSIP_MESSAGE_IS_REQUEST(self) ((self) ? (self)->type == tsip_request : 0)
-#define TSIP_MESSAGE_IS_RESPONSE(self) ((self) ? (self)->type == tsip_response : 0)
+#define TSIP_MESSAGE_IS_REQUEST(self) ((self) ? (self)->type == tsip_request : tsk_false)
+#define TSIP_MESSAGE_IS_RESPONSE(self) ((self) ? (self)->type == tsip_response : tsk_false)
 
 #define TSIP_MESSAGE(self)				((tsip_message_t*)(self))
 #define TSIP_MESSAGE_AS_RESPONSE(self)	((tsip_response_t*)(self))
@@ -74,7 +74,7 @@ TSIP_BEGIN_DECLS
 
 
 #define TSIP_RESPONSE_CODE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
-#define TSIP_RESPONSE_PHRASE(self)			 ((self)->reason_phrase)
+#define TSIP_RESPONSE_PHRASE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->reason_phrase : tsk_null)
 
 #define TSIP_REQUEST_METHOD(self)			 ((self)->method)
 #define TSIP_REQUEST_URI(self)				 ((self)->uri)
@@ -262,7 +262,7 @@ static void TSIP_MESSAGE_ADD_HEADER(tsip_message_t *self, ...)
 		
 		va_start(ap, self);
 		objdef = va_arg(ap, const tsk_object_def_t*);
-		header = tsk_object_new2(objdef, &ap);
+		header = tsk_object_new_2(objdef, &ap);
 		va_end(ap);
 
 		tsip_message_add_header(self, header);

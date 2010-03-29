@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -710,10 +710,10 @@ int tnet_gethostname(tnet_host_t* result)
 * @param fd The socket for which to check writability/readability.
 * @param timeout The number of milliseconds to wait. The function will immediately return if the socket
 * is already connected and writable/readable. Set the @a timeout value to -1 to wait indefinitely.
-* @param writable Indicates whether to wait for writability(=1) or readability(=0).
+* @param writable Indicates whether to wait for writability or readability.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tnet_sockfd_waitUntil(tnet_fd_t fd, long timeout, int writable)
+int tnet_sockfd_waitUntil(tnet_fd_t fd, long timeout, tsk_bool_t writable)
 {
 	int ret = -1;
 	fd_set fds;
@@ -1064,10 +1064,19 @@ size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags)
 	while(sent < size)
 	{
 		if((ret = send(fd, (((const uint8_t*)buf)+sent), (size-sent), flags)) <= 0){
-			TNET_PRINT_LAST_ERROR("send failed.");
-			// Under Windows XP if WSAGetLastError()==WSAEINTR then try to disable both the ICS and the Firewall
-			// More info about How to disable the ISC: http://support.microsoft.com/?scid=kb%3Ben-us%3B230112&x=6&y=11
-			goto bail;
+			if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK){
+				// FIXME: HORRIBLE HACK
+				if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
+					break;
+				}
+				else continue;
+			}
+			else{
+				TNET_PRINT_LAST_ERROR("send failed.");
+				// Under Windows XP if WSAGetLastError()==WSAEINTR then try to disable both the ICS and the Firewall
+				// More info about How to disable the ISC: http://support.microsoft.com/?scid=kb%3Ben-us%3B230112&x=6&y=11
+				goto bail;
+			}
 		}
 		else{
 			sent += ret;
@@ -1122,8 +1131,8 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 	if((status = WSAConnect(fd, (LPSOCKADDR)to, sizeof(*to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
 	{
 		status = WSAGetLastError();
-		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INTR || status == TNET_ERROR_INPROGRESS){
-			TSK_DEBUG_WARN("WSAEWOULDBLOCK/WSAEINTR/WSAEINPROGRESS  ==> use tnet_sockfd_waitUntilWritable.");
+		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_ISCONN || status == TNET_ERROR_INTR || status == TNET_ERROR_INPROGRESS){
+			TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_ISCONN/TNET_ERROR_INTR/TNET_ERROR_INPROGRESS  ==> use tnet_sockfd_waitUntilWritable.");
 			status = 0;
 		}
 		else{
@@ -1140,8 +1149,8 @@ int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
 #	endif
 		{
 			status = tnet_geterrno();
-			if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_INPROGRESS || status == TNET_ERROR_EAGAIN){
-				TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_INPROGRESS/EAGAIN  ==> use tnet_sockfd_waitUntilWritable.");
+			if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_ISCONN || status == TNET_ERROR_INPROGRESS || status == TNET_ERROR_EAGAIN){
+				TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_ISCONN/TNET_ERROR_INPROGRESS/TNET_ERROR_EAGAIN  ==> use tnet_sockfd_waitUntilWritable.");
 				status = 0;
 			}
 			else{

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -235,7 +235,7 @@ size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from
 		if((ret = WSASend(from, &wsaBuffer, 1, &numberOfBytesSent, 0, NULL, NULL)) == SOCKET_ERROR)
 		{
 			if((ret = WSAGetLastError()) == WSA_IO_PENDING){
-				TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASend operation");
+				TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASend SSESSION");
 				ret = 0;
 			}
 			else{
@@ -278,7 +278,7 @@ size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t fr
     if((ret = WSASendTo(from, &wsaBuffer, 1, &numberOfBytesSent, 0, to, sizeof(*to), 0, 0)) == SOCKET_ERROR)
 	{
 		if((ret = WSAGetLastError()) == WSA_IO_PENDING){
-			TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASendTo operation");
+			TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASendTo SSESSION");
 			ret = 0;
 		}
 		else{
@@ -565,7 +565,7 @@ void *tnet_transport_mainthread(void *param)
 			{
 				ret = WSAGetLastError();
 				if(ret == WSAEWOULDBLOCK){
-					TSK_DEBUG_WARN("WSAEWOULDBLOCK error for READ operation");
+					TSK_DEBUG_WARN("WSAEWOULDBLOCK error for READ SSESSION");
 				}
 				else if(ret == WSAECONNRESET && TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)){
 					/* For DGRAM ==> The sent packet gernerated "ICMP Destination/Port unreachable" result. */

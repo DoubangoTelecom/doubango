@@ -40,17 +40,18 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
-int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid)
+int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog)
 {
 	if(self && !self->initialized)
 	{
-		self->stack = stack;
-		self->timer_mgr = tsip_stack_get_timer_mgr(stack);
 		self->type = type;
 		self->reliable = reliable;
 		self->cseq_value = cseq_value;
 		self->cseq_method = tsk_strdup(cseq_method);
 		self->callid = tsk_strdup(callid);
+		self->dialog = tsk_object_ref(dialog);
+
+		self->initialized = tsk_true;
 				
 		return 0;
 	}
@@ -60,12 +61,11 @@ int tsip_transac_init(tsip_transac_t *self, const tsip_stack_handle_t * stack, t
 int tsip_transac_deinit(tsip_transac_t *self)
 {
 	if(self && self->initialized)
-	{
-		self->stack = 0;
-		
+	{	
 		TSK_FREE(self->branch);
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
+		TSK_OBJECT_SAFE_FREE(self->dialog);
 
 		self->initialized = tsk_false;
 
@@ -104,9 +104,9 @@ int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request)
 
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg)
 {
-	if(self && self->stack)
+	if(self && TSIP_TRANSAC_GET_STACK(self))
 	{
-		const tsip_transport_layer_t *layer = tsip_stack_get_transport_layer(self->stack);
+		const tsip_transport_layer_t *layer = tsip_stack_get_transport_layer(TSIP_TRANSAC_GET_STACK(self));
 		if(layer){
 			return tsip_transport_layer_send(layer, branch, msg);
 		}
@@ -126,5 +126,5 @@ int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2)
 
 int tsip_transac_remove(const tsip_transac_t* self)
 {
-	return tsip_transac_layer_remove(TSIP_STACK(self->stack)->layer_transac, TSIP_TRANSAC(self));
+	return tsip_transac_layer_remove(TSIP_TRANSAC_GET_STACK(self)->layer_transac, TSIP_TRANSAC(self));
 }

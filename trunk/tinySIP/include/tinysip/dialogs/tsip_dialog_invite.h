@@ -35,20 +35,17 @@
 
 #include "tinySIP/media/tsip_msession.h"
 
-#include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_INVITE_CREATE(stack, operation)		tsk_object_new(tsip_dialog_invite_def_t, (const tsip_stack_handle_t *)stack, (const tsip_operation_handle_t*) operation)
+#define TSIP_DIALOG_INVITE_CREATE(ss)		tsk_object_new(tsip_dialog_invite_def_t, (const tsip_ssession_handle_t*) ss)
 
 #define TSIP_DIALOG_INVITE(self)							((tsip_dialog_invite_t*)(self))
 
 typedef struct tsip_dialog_invite
 {
 	TSIP_DECLARE_DIALOG;
-	
-	tsk_fsm_t *fsm;
-	
+
 	uint32_t rseq;
 	
 	tsip_msession_t* session; /**< Media session Manager. */

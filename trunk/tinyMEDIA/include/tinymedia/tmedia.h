@@ -86,7 +86,7 @@ typedef struct tmedia_plugin_def_s
 	int	(* pause) (tmedia_t* );
 	int	(* stop) (tmedia_t* );
 
-	const tsdp_header_M_t* (* get_local_offer) (tmedia_t* );
+	const tsdp_header_M_t* (* get_local_offer) (tmedia_t* , va_list* );
 	const tsdp_header_M_t* (* get_negotiated_offer) (tmedia_t* );
 	int (* set_remote_offer) (tmedia_t* , const tsdp_message_t* );
 
@@ -104,7 +104,7 @@ TINYMEDIA_API int tmedia_start(tmedia_t* );
 TINYMEDIA_API int tmedia_pause(tmedia_t* );
 TINYMEDIA_API int tmedia_stop(tmedia_t* );
 
-TINYMEDIA_API const tsdp_header_M_t* tmedia_get_local_offer(tmedia_t* );
+TINYMEDIA_API const tsdp_header_M_t* tmedia_get_local_offer(tmedia_t* , ...);
 TINYMEDIA_API const tsdp_header_M_t* tmedia_get_negotiated_offer(tmedia_t* );
 TINYMEDIA_API int tmedia_set_remote_offer(tmedia_t* , const tsdp_message_t* );
 

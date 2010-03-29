@@ -41,7 +41,7 @@ TMSRP_BEGIN_DECLS
 
 #define TMSRP_CONFIG_CREATE()	tsk_object_new(tmsrp_config_def_t)
 
-#define TMSRP_MAX_CHUNK_SIZE				2
+#define TMSRP_MAX_CHUNK_SIZE				2048
 
 typedef struct tmsrp_config_s
 {
