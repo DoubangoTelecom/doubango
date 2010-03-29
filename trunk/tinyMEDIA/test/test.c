@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -43,7 +43,11 @@ int main()
 		// Create dummy media
 		if((dummy = tmedia_factory_create("dummy plugin", "127.0.0.1", tnet_socket_type_udp_ipv4))){
 
-			tmedia_get_local_offer(dummy);
+			tmedia_get_local_offer(dummy,
+				TSDP_HEADER_A_VA_ARGS("file-disposition", "attachment"),
+				
+				tsk_null
+				);
 			tmedia_get_negotiated_offer(dummy);
 			tmedia_set_remote_offer(dummy, tsk_null);		
 

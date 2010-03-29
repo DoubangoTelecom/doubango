@@ -63,7 +63,7 @@
 
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_INVITE_SIGNAL(self, type, code, phrase, message)	\
-	tsip_invite_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->operation, code, phrase, message)
+	tsip_invite_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->ss, code, phrase, message)
 
 /* ======================== internal functions ======================== */
 int send_INVITE(tsip_dialog_invite_t *self);
@@ -151,32 +151,32 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 				if(TSIP_MESSAGE_IS_RESPONSE(msg)) /* Response */
 				{
 					if(TSIP_RESPONSE_IS_1XX(msg)){ // 100-199
-						ret = tsk_fsm_act(self->fsm, _fsm_action_i1xx, self, msg, self, msg);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i1xx, msg, tsk_null);
 					}
 					else if(TSIP_RESPONSE_IS_2XX(msg)){ // 200-299
-						ret = tsk_fsm_act(self->fsm, _fsm_action_i2xx, self, msg, self, msg);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i2xx, msg, tsk_null);
 					}
 					else if(TSIP_RESPONSE_CODE(msg) == 401 || TSIP_RESPONSE_CODE(msg) == 407 || TSIP_RESPONSE_CODE(msg) == 421 || TSIP_RESPONSE_CODE(msg) == 494){ // 401,407,421,494
-						ret = tsk_fsm_act(self->fsm, _fsm_action_i401_i407_i421_i494, self, msg, self, msg);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i401_i407_i421_i494, msg, tsk_null);
 					}
 					else if(TSIP_RESPONSE_IS_3456(msg)){ // 300-699
-						ret = tsk_fsm_act(self->fsm, _fsm_action_i300_to_i699, self, msg, self, msg);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i300_to_i699, msg, tsk_null);
 					}
 					else; // Ignore
 				}
 				else /* Request */
 				{
 					if(TSIP_REQUEST_IS_INVITE(msg)){ // INVITE
-						ret = tsk_fsm_act(self->fsm, _fsm_action_iINVITE, self, msg, self, msg);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iINVITE, msg, tsk_null);
 					}
 					else if(TSIP_REQUEST_IS_UPDATE(msg)){ // UPDATE
-						ret = tsk_fsm_act(self->fsm, _fsm_action_iUPDATE, self, msg, self, msg);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iUPDATE, msg, tsk_null);
 					}
 					else if(TSIP_REQUEST_IS_PRACK(msg)){ // PRACK
-						ret = tsk_fsm_act(self->fsm, _fsm_action_iPRACK, self, msg, self, msg);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iPRACK, msg, tsk_null);
 					}
 					else if(TSIP_REQUEST_IS_ACK(msg)){ // ACK
-						ret = tsk_fsm_act(self->fsm, _fsm_action_iACK, self, msg, self, msg);
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iACK, msg, tsk_null);
 					}
 				}
 			}
@@ -185,7 +185,7 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 
 	case tsip_dialog_canceled:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_oCANCEL, self, msg, self, msg);
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_oCANCEL, msg, tsk_null);
 			break;
 		}
 
@@ -194,7 +194,7 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 	case tsip_dialog_error:
 	case tsip_dialog_transport_error:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_transporterror, self, msg, self, msg);
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_transporterror, msg, tsk_null);
 			break;
 		}
 	}
@@ -208,7 +208,7 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 	//const tsk_param_t* param;
 
 	/* Initialize the state machine. */
-	tsk_fsm_set(self->fsm,
+	tsk_fsm_set(TSIP_DIALOG_GET_FSM(self),
 
 		/*=======================
 		* === Started === 
@@ -256,7 +256,7 @@ int tsip_dialog_invite_start(tsip_dialog_invite_t *self)
 {
 	int ret = -1;
 	if(self && !TSIP_DIALOG(self)->running){
-		if(!(ret = tsk_fsm_act(self->fsm, _fsm_action_oINVITE, self, tsk_null, self, tsk_null))){
+		if(!(ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_oINVITE, tsk_null, tsk_null))){
 			TSIP_DIALOG(self)->running = tsk_true;
 		}
 	}
@@ -359,7 +359,6 @@ int send_INVITE(tsip_dialog_invite_t *self)
 	}
 
 	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "INVITE"))){
-
 
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 		TSK_OBJECT_SAFE_FREE(request);
@@ -464,16 +463,14 @@ static void* tsip_dialog_invite_create(void * self, va_list * app)
 	tsip_dialog_invite_t *dialog = self;
 	if(dialog)
 	{
-		tsip_stack_handle_t *stack = va_arg(*app, tsip_stack_handle_t *);
-		tsip_operation_handle_t *operation = va_arg(*app, tsip_operation_handle_t *);
-
-		/* create FSM */
-		dialog->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
-		dialog->fsm->debug = DEBUG_STATE_MACHINE;
-		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED(tsip_dialog_invite_OnTerminated), (const void*)dialog);
+		tsip_ssession_handle_t *ss = va_arg(*app, tsip_ssession_handle_t *);
 
 		/* Initialize base class */
-		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_INVITE, stack, tsk_null, operation);
+		tsip_dialog_init(TSIP_DIALOG(self), tsip_dialog_INVITE, tsk_null, ss, _fsm_state_Started, _fsm_state_Terminated);
+
+		/* FSM */
+		TSIP_DIALOG_GET_FSM(dialog)->debug = DEBUG_STATE_MACHINE;
+		tsk_fsm_set_callback_terminated(TSIP_DIALOG_GET_FSM(dialog), TSK_FSM_ONTERMINATED(tsip_dialog_invite_OnTerminated), (const void*)dialog);
 
 		/* Initialize the class itself */
 		tsip_dialog_invite_init(self);
@@ -486,9 +483,6 @@ static void* tsip_dialog_invite_destroy(void * self)
 	tsip_dialog_invite_t *dialog = self;
 	if(dialog)
 	{
-		/* FSM */
-		TSK_OBJECT_SAFE_FREE(dialog->fsm);
-
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 
@@ -497,9 +491,9 @@ static void* tsip_dialog_invite_destroy(void * self)
 	return self;
 }
 
-static int tsip_dialog_invite_cmp(const void *obj1, const void *obj2)
+static int tsip_dialog_invite_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
-	return -1;
+	return tsip_dialog_cmp(obj1, obj2);
 }
 
 static const tsk_object_def_t tsip_dialog_invite_def_s = 

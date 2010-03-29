@@ -36,19 +36,22 @@
 #include "tinySIP/tsip_uri.h"
 #include "tinySIP/tsip_timers.h"
 #include "tinySIP/tsip_message.h"
-#include "tinySIP/tsip_operation.h"
+#include "tinySIP/tsip_ssession.h"
 
 #include "tinySIP/authentication/tsip_challenge.h"
+#include "tinySIP/tsip_action.h"
 
 #include "tsk_safeobj.h"
 #include "tsk_list.h"
 #include "tsk_string.h"
+#include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
 #define TSIP_DIALOG(self)													((tsip_dialog_t*)(self))
 #define TSIP_DIALOG_GET_STATE(self)											TSIP_DIALOG(self)->state
-#define TSIP_DIALOG_GET_STACK(self)											TSIP_STACK(TSIP_DIALOG(self)->stack)
+#define TSIP_DIALOG_GET_FSM(self)											TSIP_DIALOG(self)->fsm
+#define TSIP_DIALOG_GET_STACK(self)											TSIP_STACK(TSIP_DIALOG(self)->ss->stack)
 
 #define DIALOG_TIMER_CANCEL(TX) \
 	tsk_timer_manager_cancel(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.id)
@@ -91,8 +94,6 @@ typedef enum tsip_dialog_event_type_e
 	tsip_dialog_timedout,
 	tsip_dialog_error,
 	tsip_dialog_transport_error,
-	tsip_dialog_hang_up,
-	tsip_dialog_shuttingdown /**< Shutting down the stack. */
 }
 tsip_dialog_event_type_t;
 
@@ -107,8 +108,10 @@ typedef struct tsip_dialog_s
 	
 	tsip_dialog_type_t type;
 
-	tsip_stack_handle_t *stack;
-	tsip_operation_handle_t* operation;
+	tsk_fsm_t* fsm;
+	
+	tsip_ssession_t* ss;
+	tsip_action_t* curr_action;
 	
 	tsip_dialog_state_t state;
 	
@@ -119,7 +122,7 @@ typedef struct tsip_dialog_s
 	tsip_uri_t* uri_local;
 	char* tag_remote;
 	tsip_uri_t* uri_remote;
-
+	
 	tsip_uri_t* uri_remote_target;
 	
 	uint32_t cseq_value;
@@ -153,9 +156,11 @@ int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* res
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response);
 int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik);
 
-int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, tsip_stack_handle_t * stack, const char* call_id, tsip_operation_handle_t* operation);
-int tsip_dialog_hangup(tsip_dialog_t *self);
-int tsip_dialog_shutdown(tsip_dialog_t *self);
+int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* call_id, tsip_ssession_t* ss, tsk_fsm_state_id curr, tsk_fsm_state_id term);
+int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id , const tsip_message_t* , const tsip_action_handle_t*);
+int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action);
+int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action);
+int tsip_dialog_shutdown(tsip_dialog_t *self, const tsip_action_t* action);
 int tsip_dialog_remove(const tsip_dialog_t* self);
 int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2);
 int tsip_dialog_deinit(tsip_dialog_t *self);

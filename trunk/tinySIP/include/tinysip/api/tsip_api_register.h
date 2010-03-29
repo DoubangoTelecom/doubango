@@ -60,7 +60,7 @@ typedef struct tsip_register_event_e
 }
 tsip_register_event_t;
 
-int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_operation_handle_t* operation, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
+int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
 TINYSIP_GEXTERN const void *tsip_register_event_def_t;
 

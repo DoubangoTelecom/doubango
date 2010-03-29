@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -45,14 +45,22 @@ int	dummy_stop(tmedia_t* self)
 {
 	dummy_t *dummy = DUMMY(self);
 	TSK_DEBUG_INFO("dummy_stop");
-
+	
 	return 0;
 }
 
-const tsdp_header_M_t* dummy_get_local_offer(tmedia_t* self)
+const tsdp_header_M_t* dummy_get_local_offer(tmedia_t* self, va_list *app)
 {
 	dummy_t *dummy = DUMMY(self);
+	const tsk_object_def_t* objdef;
+	tsdp_header_t* header;
+
 	TSK_DEBUG_INFO("dummy_get_local_offer");
+	while((objdef = va_arg(*app, const tsk_object_def_t*))){
+		header = tsk_object_new_2(objdef, app);
+
+		TSK_OBJECT_SAFE_FREE(header);
+	}
 
 	return tsk_null;
 }

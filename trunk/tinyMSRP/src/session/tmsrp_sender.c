@@ -79,8 +79,14 @@ int tsmrp_sender_send_file(tmsrp_sender_t* self, const char* filepath)
 	}
 
 	if((data_out = TMSRP_DATA_OUT_FILE_CREATE(filepath))){
-		TSK_RUNNABLE_ENQUEUE_OBJECT(self, data_out);
-		return 0;
+		if(TMSRP_DATA(data_out)->isOK){
+			TSK_RUNNABLE_ENQUEUE_OBJECT(self, data_out);
+			return 0;
+		}
+		else{
+			TSK_OBJECT_SAFE_FREE(data_out);
+			return -3;
+		}
 	}
 	return -2;
 }
@@ -113,7 +119,9 @@ void *run(void* self)
 	char* str;
 	size_t start = 1;
 	size_t end;
+	size_t total;
 	tsk_istr_t tid;
+	tsk_bool_t error = tsk_false;
 
 	TSK_DEBUG_INFO("MSRP SENDER::run -- START");
 
@@ -125,7 +133,9 @@ void *run(void* self)
 			continue;
 		}
 		
-		while((chunck = tmsrp_data_out_get(data_out))){
+		total = data_out->size;
+		
+		while(!error && (chunck = tmsrp_data_out_get(data_out))){
 			tmsrp_request_t* SEND;
 			// set end
 			end = (start + chunck->size) - 1;
@@ -139,7 +149,7 @@ void *run(void* self)
 			// add other headers
 			tmsrp_message_add_headers(SEND,
 				TMSRP_HEADER_MESSAGE_ID_VA_ARGS(TMSRP_DATA(data_out)->id),
-				TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, data_out->size),
+				TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, total),
 				TMSRP_HEADER_FAILURE_REPORT_VA_ARGS(sender->config->Failure_Report ? freport_yes : freport_no),
 				TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(sender->config->Success_Report),
 				//TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(TMSRP_DATA(data_out)->ctype),
@@ -149,7 +159,10 @@ void *run(void* self)
 			tmsrp_message_add_content(SEND, TMSRP_DATA(data_out)->ctype, chunck->data, chunck->size);
 			// serialize and send
 			if((str = tmsrp_message_tostring(SEND))){
-				tnet_sockfd_send(sender->fd, str, strlen(str), 0);
+				if(tnet_sockfd_send(sender->fd, str, strlen(str), 0) == 0){
+					error = tsk_true;
+					// abort
+				}
 				TSK_FREE(str);
 			}
 			

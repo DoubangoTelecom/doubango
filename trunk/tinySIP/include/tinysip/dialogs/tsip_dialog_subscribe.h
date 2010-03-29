@@ -33,19 +33,15 @@
 #include "tinySIP_config.h"
 #include "tinySIP/dialogs/tsip_dialog.h"
 
-#include "tsk_fsm.h"
-
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_SUBSCRIBE_CREATE(stack, operation)		tsk_object_new(tsip_dialog_subscribe_def_t, (tsip_stack_handle_t *)stack, (tsip_operation_handle_t*) operation)
+#define TSIP_DIALOG_SUBSCRIBE_CREATE(ss)		tsk_object_new(tsip_dialog_subscribe_def_t, (tsip_ssession_handle_t*)ss)
 
 #define TSIP_DIALOG_SUBSCRIBE(self)							((tsip_dialog_subscribe_t*)(self))
 
 typedef struct tsip_dialog_subscribe
 {
 	TSIP_DECLARE_DIALOG;
-
-	tsk_fsm_t *fsm;
 		
 	tsip_timer_t timerrefresh;
 	tsip_timer_t timershutdown;
@@ -53,8 +49,6 @@ typedef struct tsip_dialog_subscribe
 	tsk_bool_t unsubscribing;
 }
 tsip_dialog_subscribe_t;
-
-int tsip_dialog_subscribe_start(tsip_dialog_subscribe_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_subscribe_def_t;
 

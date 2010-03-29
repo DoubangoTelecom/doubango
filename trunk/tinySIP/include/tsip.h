@@ -32,7 +32,7 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/tsip_operation.h"
+#include "tinySIP/tsip_ssession.h"
 #include "tinySIP/tsip_timers.h"
 #include "tinySIP/tsip_event.h"
 
@@ -50,12 +50,11 @@ TSIP_BEGIN_DECLS
 #define TSIP_ICSI_MMTEL_PSVOICE			"urn%3Aurn-7%3A3gpp-service.ims.icsi.mmtel"
 #define TSIP_ICSI_QUOTED_MMTEL_PSVOICE	"\""TSIP_ICSI_MMTEL_PSVOICE"\""
 
+#define TSIP_STACK(self)		((tsip_stack_t*)(self))
+
 typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
 typedef void tsip_stack_handle_t;
-
-// Only for internal use
-#define TSIP_STACK(self)		((tsip_stack_t*)(self))
 
 typedef enum tsip_stack_param_type_e
 {
@@ -198,7 +197,7 @@ typedef struct tsip_stack_s
 	/* Internals. */
 	tsk_timer_manager_handle_t* timer_mgr;
 	tsip_timers_t timers;
-	tsip_operations_L_t *operations;
+	tsip_ssessions_L_t *ssessions;
 
 	/* Layers */
 	struct tsip_dialog_layer_s *layer_dialog;
@@ -219,7 +218,7 @@ TINYSIP_API int tsip_global_deinit();
 TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback callback, ...);
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
-//int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_operation_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
+//int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_ssession_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 
 tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const char* protocol);
@@ -229,15 +228,18 @@ const struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_h
 const struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);
 const struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self);
 
-TINYSIP_API int tsip_register(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_register(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_unregister(const tsip_ssession_handle_t *ss, ...);
 
-TINYSIP_API int tsip_subscribe(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_subscribe(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_unsubscribe(const tsip_ssession_handle_t *ss, ...);
 
-TINYSIP_API int tsip_publish(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_publish(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_unpublish(const tsip_ssession_handle_t *ss, ...);
 
-TINYSIP_API int tsip_message(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_message(const tsip_ssession_handle_t *ss, ...);
 
-TINYSIP_API int tsip_invite(tsip_stack_handle_t *stack, const tsip_operation_handle_t *operation);
+TINYSIP_API int tsip_invite(tsip_stack_handle_t *stack, const tsip_ssession_handle_t *ss);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);

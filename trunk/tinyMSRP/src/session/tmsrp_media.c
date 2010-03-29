@@ -41,7 +41,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-#define TMSRP_CONNECT_TIMEOUT	2500
+#define TMSRP_CONNECT_TIMEOUT	1500
 
 tmsrp_session_setup_t setup_from_string(const char* setup)
 {
@@ -167,7 +167,7 @@ int	tmsrp_media_start(tmedia_t* self)
 					if((BODILESS = tmsrp_create_bodiless(msrp->config->To_Path->uri, msrp->config->From_Path->uri))){
 						char* str;
 						if((str = tmsrp_message_tostring(BODILESS))){
-							if(tnet_sockfd_send(msrp->connectedFD, str, strlen(str), 0)){
+							if(!tnet_sockfd_send(msrp->connectedFD, str, strlen(str), 0)){
 								TSK_DEBUG_WARN("Failed to send bodiless request.");
 							}
 							TSK_FREE(str);
@@ -210,7 +210,7 @@ int	tmsrp_media_stop(tmedia_t* self)
 	return 0;
 }
 
-const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self)
+const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self, va_list *app)
 {
 	tmsrp_media_t *msrp = TMSRP_MEDIA(self);
 	const tsdp_header_A_t* A;
@@ -244,6 +244,9 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self)
 	if(!msrp->local.M){
 		char* path = tsk_null;
 		tmsrp_uri_t* uri;
+		const tsk_object_def_t* objdef;
+		tsdp_header_t* header;
+
 		tsk_strrandom(&sessionid);
 		tsk_sprintf(&path, "%s://%s:%u/%s;tcp", sheme, ip, port, sessionid); //tcp is ok even if tls is used.
 
@@ -251,10 +254,8 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self)
 			tsdp_header_M_add_headers(msrp->local.M,
 				TSDP_FMT_VA_ARGS("*"),
 				TSDP_HEADER_C_VA_ARGS("IN", ipv6?"IP6":"IP4", ip),
-
-				TSDP_HEADER_A_VA_ARGS("sendrecv", tsk_null),
-				TSDP_HEADER_A_VA_ARGS("path", path),
 				
+				TSDP_HEADER_A_VA_ARGS("path", path),
 				
 				tsk_null
 				);
@@ -267,6 +268,18 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self)
 				TSK_OBJECT_SAFE_FREE(uri);
 			}
 			TSK_FREE(path);
+
+			//
+			// Add user headers
+			//
+			while((objdef = va_arg(*app, const tsk_object_def_t*))){
+				if((header = tsk_object_new_2(objdef, app))){
+					tsdp_header_M_add(msrp->local.M, header);
+					TSK_OBJECT_SAFE_FREE(header);
+				}
+				else break;
+			}
+
 
 			if(answer){ /* We are about to send 2xx INVITE(sdp) */
 				/*	RFC 4145 - 4.1.  The Setup Attribute in the Offer/Answer Model
@@ -417,10 +430,9 @@ int tmsrp_media_perform(tmedia_t* self, tmedia_action_t action, const tsk_params
 	switch(action){
 		case tma_msrp_send_data:
 			{
-				const char* content = tsk_params_get_param_value(params, "content");
-				const char* ctype = tsk_params_get_param_value(params, "content-type");
-				if(content){
-					tsmrp_sender_send_data(msrp->sender, content, strlen(content), ctype);
+				const char* content;
+				if((content = tsk_params_get_param_value(params, "content"))){
+					ret = tsmrp_sender_send_data(msrp->sender, content, strlen(content), tsk_null);
 				}
 				else{
 					TSK_DEBUG_ERROR("%s param not found.", "content");
@@ -430,10 +442,9 @@ int tmsrp_media_perform(tmedia_t* self, tmedia_action_t action, const tsk_params
 
 		case tma_msrp_send_file:
 			{
-				const char* filepath = tsk_params_get_param_value(params, "path");
-				const char* ctype = tsk_params_get_param_value(params, "content-type");
-				if(filepath){
-					tsmrp_sender_send_file(msrp->sender, filepath);
+				const char* filepath;
+				if((filepath = tsk_params_get_param_value(params, "path"))){
+					ret = tsmrp_sender_send_file(msrp->sender, filepath);
 				}
 				else{
 					TSK_DEBUG_ERROR("%s param not found.", "path");
@@ -442,7 +453,7 @@ int tmsrp_media_perform(tmedia_t* self, tmedia_action_t action, const tsk_params
 			}
 	}
 		
-	return 0;
+	return ret;
 }
 /* ======================================================== */
 

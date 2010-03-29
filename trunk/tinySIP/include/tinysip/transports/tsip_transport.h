@@ -55,7 +55,7 @@ typedef struct tsip_transport_s
 
 	tsk_bool_t initialized;
 
-	const tsip_stack_handle_t *stack;
+	const tsip_stack_t *stack;
 
 	tnet_socket_type_t type;
 	tnet_fd_t connectedFD;
@@ -88,7 +88,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 #define tsip_transport_get_ip_n_port(transport, ip, port)								(transport ? tnet_transport_get_ip_n_port(transport->net_transport, transport->connectedFD, ip, port) : -1)
 
 #define tsip_transport_connectto(transport, host, port, type)							(transport ? (transport->connectedFD=tnet_transport_connectto(transport->net_transport, host, port, type)) : TNET_INVALID_FD)
-#define tsip_transport_connectto2(transport, host, port)								(transport ? (transport->connectedFD=tnet_transport_connectto2(transport->net_transport, host, port)) : TNET_INVALID_FD)
+#define tsip_transport_connectto_2(transport, host, port)								(transport ? (transport->connectedFD=tnet_transport_connectto_2(transport->net_transport, host, port)) : TNET_INVALID_FD)
 #define tsip_transport_sendto(transport, to, buf, size)									(transport ? tnet_transport_sendto(transport->net_transport, transport->connectedFD, to, buf, size) : 0)
 
 #define tsip_transport_set_callback(transport, callback, callback_data)					(transport ? tnet_transport_set_callback(transport->net_transport, callback, callback_data) : -1)

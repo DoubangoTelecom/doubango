@@ -39,39 +39,39 @@
 
 #define TSIP_INVITE_EVENT_CREATE( type)		tsk_object_new(tsip_invite_event_def_t, type)
 
-int tsip_invite_event_signal(tsip_invite_event_type_t type, struct tsip_stack_s *stack, tsip_operation_handle_t* operation, short status_code, const char *phrase, const tsip_message_t* sipmessage)
+int tsip_invite_event_signal(tsip_invite_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_invite_event_t* sipevent = TSIP_INVITE_EVENT_CREATE(type);
-	tsip_event_init(TSIP_EVENT(sipevent), stack, operation, status_code, phrase, sipmessage, tsip_event_invite);
+	tsip_event_init(TSIP_EVENT(sipevent), stack, SSESSION, status_code, phrase, sipmessage, tsip_event_invite);
 
 	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), sipevent);
 
 	return 0;
 }
 
-int tsip_invite(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation)
+int tsip_invite(tsip_stack_handle_t *_stack, const tsip_ssession_handle_t *SSESSION)
 {
 	int ret = -1;
 
-	if(_stack && operation)
-	{
-		tsip_stack_t *stack = _stack;
-		tsip_dialog_invite_t *dialog;
-		
-		dialog = (tsip_dialog_invite_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, operation);
-		if(dialog){
-			TSK_DEBUG_WARN("Dialog with same opid already exist.");
-			ret = -2;
-			goto bail;
-		}
-		else{
-			dialog = TSIP_DIALOG_INVITE_CREATE(stack, operation);
-			ret = tsip_dialog_invite_start(dialog);
-			tsk_list_push_back_data(stack->layer_dialog->dialogs, (void**)&dialog);
-		}
-	}
+	//if(_stack && SSESSION)
+	//{
+	//	tsip_stack_t *stack = _stack;
+	//	tsip_dialog_invite_t *dialog;
+	//	
+	//	dialog = (tsip_dialog_invite_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, SSESSION);
+	//	if(dialog){
+	//		TSK_DEBUG_WARN("Dialog with same opid already exist.");
+	//		ret = -2;
+	//		goto bail;
+	//	}
+	//	else{
+	//		dialog = TSIP_DIALOG_INVITE_CREATE(stack, SSESSION);
+	//		ret = tsip_dialog_invite_start(dialog);
+	//		tsk_list_push_back_data(stack->layer_dialog->dialogs, (void**)&dialog);
+	//	}
+	//}
 
-bail:
+//bail:
 	return ret;
 }
 

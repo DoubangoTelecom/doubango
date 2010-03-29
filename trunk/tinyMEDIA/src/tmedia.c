@@ -136,8 +136,10 @@ int tmedia_stop(tmedia_t* self)
 	}
 }
 
-const tsdp_header_M_t* tmedia_get_local_offer(tmedia_t* self)
+// Only SDP headers
+const tsdp_header_M_t* tmedia_get_local_offer(tmedia_t* self, ...)
 {
+	
 	if(!self || !self->plugin){
 		return tsk_null;
 	}
@@ -146,7 +148,12 @@ const tsdp_header_M_t* tmedia_get_local_offer(tmedia_t* self)
 		return tsk_null;
 	}
 	else{
-		return self->plugin->get_local_offer(self);
+		va_list ap;
+		const tsdp_header_M_t* M;
+		va_start(ap, self);
+		M = self->plugin->get_local_offer(self, &ap);
+		va_end(ap);
+		return M;
 	}
 }
 
@@ -199,9 +206,9 @@ int tmedia_perform(tmedia_t* self, tmedia_action_t action, ... )
 		params = TSK_LIST_CREATE();
 		while((objdef = va_arg(ap, const tsk_object_def_t*))){
 			if(objdef != tsk_param_def_t){ // sanity check
-				continue;
+				break;
 			}
-			if((param = tsk_object_new2(objdef, &ap))){
+			if((param = tsk_object_new_2(objdef, &ap))){
 				tsk_params_add_param_2(&params, param);
 				TSK_OBJECT_SAFE_FREE(param);
 			}

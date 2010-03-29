@@ -33,42 +33,23 @@
 #include "tinySIP_config.h"
 #include "tinySIP/dialogs/tsip_dialog.h"
 
-#include "tsk_fsm.h"
-
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_PUBLISH_CREATE(stack, operation)		tsk_object_new(tsip_dialog_publish_def_t, (tsip_stack_handle_t *)stack, (tsip_operation_handle_t*) operation)
+#define TSIP_DIALOG_PUBLISH_CREATE(ss)		tsk_object_new(tsip_dialog_publish_def_t, (tsip_ssession_handle_t*) ss)
 
 #define TSIP_DIALOG_PUBLISH(self)							((tsip_dialog_publish_t*)(self))
-
-/** Type of refresh to perform.
-*/
-typedef enum refresh_type_e
-{
-	rt_initial,
-	rt_timedout,
-	rt_modify,
-	rt_remove
-}
-refresh_type_t;
 
 typedef struct tsip_dialog_publish
 {
 	TSIP_DECLARE_DIALOG;
-
-	tsk_fsm_t *fsm;
 		
 	tsip_timer_t timerrefresh;
 	tsip_timer_t timershutdown;
 
 	tsk_bool_t unpublishing;
 	char* etag;
-	refresh_type_t last_rtype;
 }
 tsip_dialog_publish_t;
-
-int tsip_dialog_publish_start(tsip_dialog_publish_t *self);
-int tsip_dialog_publish_modify(tsip_dialog_publish_t *self);
 
 TINYSIP_GEXTERN const void *tsip_dialog_publish_def_t;
 

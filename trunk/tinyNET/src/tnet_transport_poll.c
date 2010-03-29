@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -495,7 +495,7 @@ void *tnet_transport_mainthread(void *param)
 					TSK_FREE(buffer);
 					//if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK)
 					{
-						//TSK_DEBUG_INFO("WSAEWOULDBLOCK error for READ operation");
+						//TSK_DEBUG_INFO("WSAEWOULDBLOCK error for READ SSESSION");
 					}
 					//else
 					{

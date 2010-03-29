@@ -33,52 +33,70 @@
 #include "tinySIP/dialogs/tsip_dialog_register.h"
 
 #include "tsip.h"
+#include "tinySIP/tsip_action.h"
 
 #include "tsk_runnable.h"
 #include "tsk_debug.h"
 
 #define TSIP_REGISTER_EVENT_CREATE( type)		tsk_object_new(tsip_register_event_def_t, type)
 
-int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_operation_handle_t* operation, short status_code, const char *phrase, const tsip_message_t* sipmessage)
+int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_register_event_t* sipevent = TSIP_REGISTER_EVENT_CREATE(type);
-	tsip_event_init(TSIP_EVENT(sipevent), stack, operation, status_code, phrase, sipmessage, tsip_event_register);
+	tsip_event_init(TSIP_EVENT(sipevent), stack, ss, status_code, phrase, sipmessage, tsip_event_register);
 
 	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), sipevent);
 
 	return 0;
 }
 
-int tsip_register(tsip_stack_handle_t *_stack, const tsip_operation_handle_t *operation)
+int tsip_register(const tsip_ssession_handle_t *ss, ...)
 {
+	const tsip_ssession_t* session = ss;
+	va_list ap;
+	tsip_action_t* action;
+	tsip_dialog_t* dialog;
 	int ret = -1;
 
-	if(_stack && operation)
-	{
-		tsip_stack_t *stack = _stack;
-		tsip_dialog_register_t *dialog;
-		
-		dialog = (tsip_dialog_register_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, operation);
-		if(dialog)
-		{
-			TSK_DEBUG_WARN("Already registered.");
-			ret = -2;
-			goto bail;
-		}
-		else
-		{
-			dialog = TSIP_DIALOG_REGISTER_CREATE(stack, operation);
-			ret = tsip_dialog_register_start(dialog);
-			tsk_list_push_back_data(stack->layer_dialog->dialogs, (void**)&dialog);
-		}
+	if(!session || !session->stack){
+		return ret;
 	}
+	
+	va_start(ap, ss);
+	if((action = TSIP_ACTION_CREATE(atype_register, &ap))){
+		if(!(dialog = tsip_dialog_layer_find_by_op(session->stack->layer_dialog, ss))){
+			dialog = tsip_dialog_layer_new(session->stack->layer_dialog, tsip_dialog_REGISTER, ss);
+		}
+		ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
+		
+		tsk_object_unref(dialog);
+		TSK_OBJECT_SAFE_FREE(action);
+	}
+	va_end(ap);
 
-bail:
 	return ret;
 }
 
+int tsip_unregister(const tsip_ssession_handle_t *ss, ...)
+{
+	const tsip_ssession_t* session = ss;
+	va_list ap;
+	tsip_action_t* action;
+	int ret = -1;
 
+	if(!session || !session->stack){
+		return ret;
+	}
+	
+	va_start(ap, ss);
+	if((action = TSIP_ACTION_CREATE(atype_unregister, &ap))){
+		ret = tsip_ssession_hangup(ss, action);
+		TSK_OBJECT_SAFE_FREE(action);
+	}
+	va_end(ap);
 
+	return 0;
+}
 
 
 
@@ -95,8 +113,7 @@ bail:
 static void* tsip_register_event_create(void * self, va_list * app)
 {
 	tsip_register_event_t *sipevent = self;
-	if(sipevent)
-	{
+	if(sipevent){
 		sipevent->type = va_arg(*app, tsip_register_event_type_t);
 	}
 	return self;
@@ -105,8 +122,7 @@ static void* tsip_register_event_create(void * self, va_list * app)
 static void* tsip_register_event_destroy(void * self)
 { 
 	tsip_register_event_t *sipevent = self;
-	if(sipevent)
-	{
+	if(sipevent){
 		tsip_event_deinit(TSIP_EVENT(sipevent));
 	}
 	return self;

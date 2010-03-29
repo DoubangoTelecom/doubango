@@ -120,7 +120,7 @@ int tsip_message_add_headers(tsip_message_t *self, ...)
 
 	va_start(ap, self);
 	while((objdef = va_arg(ap, const tsk_object_def_t*))){
-		if((header = tsk_object_new2(objdef, &ap))){
+		if((header = tsk_object_new_2(objdef, &ap))){
 			tsip_message_add_header(self, header);
 			TSK_OBJECT_SAFE_FREE(header);
 		}

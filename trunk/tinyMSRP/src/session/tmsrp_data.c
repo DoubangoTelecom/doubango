@@ -149,14 +149,28 @@ tsk_buffer_t* tmsrp_data_out_get(tmsrp_data_out_t* self)
 	if(!self){
 		return tsk_null;
 	}
+	
+	if(!(toread = self->size > TMSRP_MAX_CHUNK_SIZE ? TMSRP_MAX_CHUNK_SIZE : self->size)){
+		return tsk_null;
+	}
 
 	if(self->message){
-		if((toread = TSK_BUFFER_SIZE(self->message) > TMSRP_MAX_CHUNK_SIZE ? TMSRP_MAX_CHUNK_SIZE : TSK_BUFFER_SIZE(self->message))){		
-			ret = TSK_BUFFER_CREATE(TSK_BUFFER_DATA(self->message), toread);
-			tsk_buffer_remove(self->message, 0, toread);
-		}
+		ret = TSK_BUFFER_CREATE(TSK_BUFFER_DATA(self->message), toread);
+		tsk_buffer_remove(self->message, 0, toread);
+		self->size = self->message->size;
 	}
 	else if(self->file){
+		// Buffer hack
+		size_t read;
+		ret = TSK_BUFFER_CREATE_NULL();
+		ret->data = tsk_calloc(toread, sizeof(uint8_t));
+		ret->size = toread;
+		if((read = fread(ret->data, sizeof(uint8_t), toread, self->file)) == toread){
+			self->size -= toread;
+		}
+		else{
+			TSK_OBJECT_SAFE_FREE(ret);
+		}
 	}
 	
 
@@ -217,6 +231,27 @@ static void* tmsrp_data_out_create(void * self, va_list * app)
 		tsk_bool_t isfilepath = va_arg(*app, tsk_bool_t);
 		
 		if(isfilepath){
+			if((data_out->file = fopen((const char*)pdata, "rb"))){
+				int ret;
+				if((ret = fseek(data_out->file, 0L, SEEK_END))){
+					TSK_DEBUG_ERROR("fseek for file:%s failed with error code %d.", pdata, ret);
+					TMSRP_DATA(data_out)->isOK = tsk_false;
+				}
+				else{
+					data_out->size = ftell(data_out->file);
+					if((ret = fseek(data_out->file, 0L, SEEK_SET))){
+						TSK_DEBUG_ERROR("fseek for file:%s failed with error code %d.", pdata, ret);
+						TMSRP_DATA(data_out)->isOK = tsk_false;
+					}
+					else{
+						TMSRP_DATA(data_out)->isOK = tsk_true;
+					}
+				}
+			}
+			else{
+				TSK_DEBUG_ERROR("Failed to open(rb) this file:%s", pdata);
+				TMSRP_DATA(data_out)->isOK = tsk_false;
+			}
 		}
 		else{
 			if((data_out->message = TSK_BUFFER_CREATE(pdata, size))){
