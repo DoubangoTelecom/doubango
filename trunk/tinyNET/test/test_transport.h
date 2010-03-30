@@ -106,7 +106,7 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 	}
 
 	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
+	if((fd = tnet_transport_connectto_2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
 		return;
 	}
@@ -150,7 +150,7 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 	}
 
 	/* Connect to our SIP REGISTRAR */
-	if((fd = tnet_transport_connectto2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
+	if((fd = tnet_transport_connectto_2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
 		//tnet_transport_shutdown(transport);
 		return -2;

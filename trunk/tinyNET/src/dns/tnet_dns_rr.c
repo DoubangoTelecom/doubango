@@ -41,6 +41,7 @@
 #include "tnet_dns_txt.h"
 
 #include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -252,7 +253,7 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 */
 tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* offset)
 {
-	tnet_dns_rr_t *rr = 0;
+	tnet_dns_rr_t *rr = tsk_null;
 	uint8_t* dataStart = (uint8_t*)data;
 	uint8_t* dataPtr = (dataStart + *offset);
 	uint8_t* dataEnd = (dataPtr+size);
@@ -260,33 +261,27 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* of
 	tnet_dns_qclass_t qclass;
 	uint32_t ttl;
 	uint16_t rdlength;
-	char* qname = 0;
+	char* qname = tsk_null;
 
 	/* Check validity */
-	if(!dataPtr || !size)
-	{
+	if(!dataPtr || !size){
 		goto bail;
 	}
 
-	/* == Parse QNAME
-	*/
+	/* == Parse QNAME == */
 	tnet_dns_rr_qname_deserialize(dataStart, size, &qname, offset);
 	dataPtr = (dataStart + *offset);
-	/* == Parse QTYPE
-	*/
-	qtype = (tnet_dns_qtype_t)ntohs(*((uint16_t*)dataPtr));
+	/* == Parse QTYPE == */
+	qtype = (tnet_dns_qtype_t)tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2, *offset += 2;
-	/* == Parse QCLASS
-	*/
-	qclass = (tnet_dns_qclass_t)ntohs(*((uint16_t*)dataPtr));
+	/* == Parse QCLASS == */
+	qclass = (tnet_dns_qclass_t)tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2, *offset += 2;
-	/* == Parse TTL
-	*/
-	ttl = ntohl(*((uint32_t*)dataPtr));
+	/* == Parse TTL == */
+	ttl = tnet_ntohl(*((uint32_t*)dataPtr));
 	dataPtr += 4, *offset += 4;
-	/* == Parse RDLENGTH
-	*/
-	rdlength = ntohs(*((uint16_t*)dataPtr));
+	/* == Parse RDLENGTH == */
+	rdlength = tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2, *offset += 2;
 
 	switch(qtype)
@@ -377,145 +372,81 @@ bail:
 */
 int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 {
-	if(!rr || !output)
-	{
+	if(!rr || !output){
 		return -1;
 	}
 
-	/* NAME
-	*/
+	/*=== NAME ===*/
 	{
 		tnet_dns_rr_qname_serialize(rr->name, output);
 	}
 	
-	/* TYPE
-	*/
+	/*=== TYPE ===*/
 	{
-		uint16_t qtype = htons(rr->qtype);
+		uint16_t qtype = tnet_htons(rr->qtype);
 		tsk_buffer_append(output, &(qtype), 2);
 	}
 
-	/* CLASS
-	*/
+	/*=== CLASS ===*/
 	{
-		uint16_t qclass = htons(rr->qclass);
+		uint16_t qclass = tnet_htons(rr->qclass);
 		tsk_buffer_append(output, &(qclass), 2);
 	}
 
-	/* TTL
-	*/
+	/*=== TTL ===*/
 	{
-		uint32_t ttl = htonl(rr->ttl);
+		uint32_t ttl = tnet_htonl(rr->ttl);
 		tsk_buffer_append(output, &(ttl), 4);
 	}
 
-	/* RDLENGTH
-	*/
+	/*=== RDLENGTH ===*/
 	{
-		uint16_t length = htons(rr->rdlength);
+		uint16_t length = tnet_htons(rr->rdlength);
 		tsk_buffer_append(output, &(length), 2);
 	}
 	
-	/* RDATA
-	*/
-	
+	/*===  RDATA : Request never contains data
+	===*/
 	switch(rr->qtype)
 	{
 		case qtype_a:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_aaaa:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_cname:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_mx:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_naptr:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_ns:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_opt:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_ptr:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_soa:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_srv:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		case qtype_txt:
-			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
-				break;
-			}
-
 		default:
 			{
-				TSK_DEBUG_ERROR("NOT IMPLEMENTED");
+				TSK_DEBUG_WARN("DNS Request should not contains RDATA.");
 				break;
 			}
 	}
 
-	return -1;
+	return 0;
 }
 
 
 //=================================================================================================
 //	[[DNS RR]] object definition
 //
-static void* tnet_dns_rr_create(void * self, va_list * app)
+static void* tnet_dns_rr_create(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_rr_t *rr = self;
-	if(rr)
-	{
+	if(rr){
 		tnet_dns_rr_init(rr, qtype_any, qclass_any);
 	}
 	return self;
 }
 
-static void* tnet_dns_rr_destroy(void * self) 
+static void* tnet_dns_rr_destroy(tsk_object_t * self) 
 { 
 	tnet_dns_rr_t *rr = self;
-	if(rr)
-	{
+	if(rr){
 		tnet_dns_rr_deinit(rr);
 	}
 	return self;
@@ -526,6 +457,6 @@ static const tsk_object_def_t tnet_dns_rr_def_s =
 	sizeof(tnet_dns_rr_t),
 	tnet_dns_rr_create,
 	tnet_dns_rr_destroy,
-	0,
+	tsk_null,
 };
 const void *tnet_dns_rr_def_t = &tnet_dns_rr_def_s;

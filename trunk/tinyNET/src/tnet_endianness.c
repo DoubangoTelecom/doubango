@@ -20,26 +20,39 @@
 *
 */
 
-/**@file tnet.h
- * @brief Network stack.
+/**@file tnet_endianness.c
+ * @brief Byte Ordering.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TNET_TNET_H
-#define TNET_TNET_H
+#include "tnet_endianness.h"
 
-#include "tinyNET_config.h"
+#include "tnet.h"
 
-#include "tsk_common.h"
+extern tsk_bool_t tnet_isBigEndian;
 
-TNET_BEGIN_DECLS
+unsigned short tnet_htons(unsigned short x)
+{
+	if(tnet_isBigEndian){
+		return x;
+	}
+	else{
+		return ((((uint16_t)(x) & 0xff00) >> 8)		|
+						(((uint16_t)(x) & 0x00ff) << 8));
+	}
+}
 
-TINYNET_API int tnet_startup();
-TINYNET_API int tnet_cleanup();
-
-TNET_END_DECLS
-
-#endif /* TNET_TNET_H */
-
+unsigned long tnet_htonl(unsigned long x)
+{
+	if(tnet_isBigEndian){
+		return x;
+	}
+	else{
+		return ((((uint32_t)(x) & 0xff000000) >> 24)	| \
+						(((uint32_t)(x) & 0x00ff0000) >> 8)		| \
+						(((uint32_t)(x) & 0x0000ff00) << 8)		| \
+						(((uint32_t)(x) & 0x000000ff) << 24));
+	}
+}

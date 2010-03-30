@@ -30,6 +30,7 @@
 
 
 #include "../tnet_types.h"
+#include "./tnet_endianness.h"
 
 #include "tsk_memory.h"
 #include "tsk_string.h"
@@ -67,10 +68,10 @@ static void* tnet_dns_naptr_create(void * self, va_list * app)
 		if(rddata && rdlength)
 		{	// ==> DESERIALIZATION
 			/* ORDER */
-			naptr->order = ntohs(*((uint16_t*)rddata));
+			naptr->order = tnet_ntohs(*((uint16_t*)rddata));
 			rddata += 2, offset += 2;
 			/* PREFERENCE */
-			naptr->preference = ntohs(*((uint16_t*)rddata));
+			naptr->preference = tnet_ntohs(*((uint16_t*)rddata));
 			rddata += 2, offset += 2;
 			/* FLAGS */
 			tnet_dns_rr_charstring_deserialize(data, (dataEnd - rddata), &(naptr->flags), &offset);

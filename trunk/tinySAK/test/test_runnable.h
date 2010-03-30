@@ -52,8 +52,7 @@ tsk_obj_t;
 static void* tsk_obj_create(void * self, va_list * app)
 {
 	tsk_obj_t *obj = self;
-	if(obj)
-	{
+	if(obj){
 		obj->timer_id = va_arg(*app, tsk_timer_id_t);
 	}
 	return self;

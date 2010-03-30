@@ -28,7 +28,8 @@
  */
 #include "tnet_dhcp6_option.h"
 
-#include "tnet_types.h"
+#include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_memory.h"
 
@@ -48,10 +49,10 @@ tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, size_t size
 		goto bail;
 	}
 
-	code = (tnet_dhcp6_option_code_t) ntohs(*((uint16_t*)dataPtr));
+	code = (tnet_dhcp6_option_code_t) tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 
-	len = ntohs(*((uint16_t*)dataPtr));
+	len = tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 
 	switch(code)
@@ -81,7 +82,7 @@ int tnet_dhcp6_option_serialize(const tnet_dhcp6_option_t* self, tsk_buffer_t *o
 	}
 
 	/*== Code */
-	_2bytes = htons(self->code);
+	_2bytes = tnet_htons(self->code);
 	tsk_buffer_append(output, &(_2bytes), 2);
 
 	switch(self->code)
@@ -100,7 +101,7 @@ int tnet_dhcp6_option_serialize(const tnet_dhcp6_option_t* self, tsk_buffer_t *o
 				const tnet_dhcp6_option_orequest_t* opt = (const tnet_dhcp6_option_orequest_t*)self->data;
 				if(opt->codes){
 					/* option-len */
-					_2bytes = htons(opt->codes->size);
+					_2bytes = tnet_htons(opt->codes->size);
 					tsk_buffer_append(output, &(_2bytes), 2);
 					/* option-data */
 					ret = tsk_buffer_append(output, opt->codes->data, opt->codes->size);
@@ -219,7 +220,7 @@ int tnet_dhcp6_option_orequest_add_code(tnet_dhcp6_option_orequest_t* self, uint
 				return -3;
 			}
 		}
-		_2bytes = ntohs(code);
+		_2bytes = tnet_ntohs(code);
 		if(!(ret = tsk_buffer_append(self->codes, &_2bytes, 2))){
 			TNET_DHCP6_OPTION(self)->len += 2;
 		}

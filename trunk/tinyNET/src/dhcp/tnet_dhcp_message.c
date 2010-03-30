@@ -30,6 +30,7 @@
 #include "tnet_dhcp.h"
 
 #include "../tnet_utils.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_time.h"
 #include "tsk_memory.h"
@@ -56,29 +57,29 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 	_4bytes = (((uint32_t)(message->op)) << 24) |
 				(((uint32_t)(message->htype)) << 16) |
 				(((uint16_t)(message->hlen)) << 8) | message->hops;
-	_4bytes = ntohl(_4bytes);
+	_4bytes = tnet_ntohl(_4bytes);
 	tsk_buffer_append(output, &(_4bytes), 4);
 	
 	/*== XID */
-	_4bytes = ntohl(message->xid);
+	_4bytes = tnet_ntohl(message->xid);
 	tsk_buffer_append(output, &(_4bytes), 4);
 	/*== SECS */
-	_2bytes = ntohs(message->secs);
+	_2bytes = tnet_ntohs(message->secs);
 	tsk_buffer_append(output, &(_2bytes), 2);
 	/*== FLAGS */
-	_2bytes = ntohs(message->flags);
+	_2bytes = tnet_ntohs(message->flags);
 	tsk_buffer_append(output, &(_2bytes), 2);
 	/*== CIADDR */
-	_4bytes = ntohl(message->ciaddr);
+	_4bytes = tnet_ntohl(message->ciaddr);
 	tsk_buffer_append(output, &(_4bytes), 4);
 	/*== YIADDR */
-	_4bytes = ntohl(message->yiaddr);
+	_4bytes = tnet_ntohl(message->yiaddr);
 	tsk_buffer_append(output, &(_4bytes), 4);
 	/*== SIADDR */
-	_4bytes = ntohl(message->siaddr);
+	_4bytes = tnet_ntohl(message->siaddr);
 	tsk_buffer_append(output, &(_4bytes), 4);
 	/*== GIADDR */
-	_4bytes = ntohl(message->giaddr);
+	_4bytes = tnet_ntohl(message->giaddr);
 	tsk_buffer_append(output, &(_4bytes), 4);
 	/*== CHADDR */
 	tsk_buffer_append(output, message->chaddr, sizeof(message->chaddr));
@@ -87,7 +88,7 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 	/*== file (unused) */
 	tsk_buffer_append(output, message->file, sizeof(message->file));
 	/*== Magic Cookie */
-	_4bytes = ntohl(TNET_DHCP_MAGIC_COOKIE);
+	_4bytes = tnet_ntohl(TNET_DHCP_MAGIC_COOKIE);
 	tsk_buffer_append(output, &(_4bytes), 4);
 
 	/*== Message Type (option 53)
@@ -134,7 +135,7 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 		+-----+-----+-----+-----+
 	*/
 	if(TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->max_msg_size){
-		_2bytes = ntohs(ctx->max_msg_size);
+		_2bytes = tnet_ntohs(ctx->max_msg_size);
 		tnet_dhcp_option_serializeex(dhcp_code_DHCP_Max_Msg_Size, 2, &_2bytes, output);
 	}
 
@@ -195,25 +196,25 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 	/*== htype (1) */
 	message->hops = *(dataPtr++);
 	/*== xid (4) */
-	message->xid= ntohl(*((uint32_t*)dataPtr));
+	message->xid= tnet_ntohl(*((uint32_t*)dataPtr));
 	dataPtr += 4;
 	/*== secs (2) */
-	message->secs = ntohs(*((uint16_t*)dataPtr));
+	message->secs = tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 	/*== flags (2) */
-	message->flags = ntohs(*((uint16_t*)dataPtr));
+	message->flags = tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 	/*== ciaddr  (4) */
-	message->ciaddr= ntohl(*((uint32_t*)dataPtr));
+	message->ciaddr= tnet_ntohl(*((uint32_t*)dataPtr));
 	dataPtr += 4;
 	/*== yiaddr  (4) */
-	message->yiaddr= ntohl(*((uint32_t*)dataPtr));
+	message->yiaddr= tnet_ntohl(*((uint32_t*)dataPtr));
 	dataPtr += 4;
 	/*== siaddr  (4) */
-	message->siaddr= ntohl(*((uint32_t*)dataPtr));
+	message->siaddr= tnet_ntohl(*((uint32_t*)dataPtr));
 	dataPtr += 4;
 	/*== giaddr  (4) */
-	message->giaddr= ntohl(*((uint32_t*)dataPtr));
+	message->giaddr= tnet_ntohl(*((uint32_t*)dataPtr));
 	dataPtr += 4;
 	/*== chaddr  (16[max]) */
 	memcpy(message->chaddr, dataPtr, message->hlen>16 ? 16 : message->hlen);
@@ -225,7 +226,7 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 	memcpy(message->file, dataPtr, 128);
 	dataPtr += 128;
 	/*== Magic Cookie (4) */
-	if(ntohl(*((uint32_t*)dataPtr)) != TNET_DHCP_MAGIC_COOKIE){
+	if(tnet_ntohl(*((uint32_t*)dataPtr)) != TNET_DHCP_MAGIC_COOKIE){
 		TSK_DEBUG_ERROR("Invalid DHCP magic cookie.");
 		// Do not exit ==> continue parsing.
 	}

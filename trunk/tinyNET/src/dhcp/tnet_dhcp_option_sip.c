@@ -31,7 +31,8 @@
 
 #include "dns/tnet_dns_rr.h"
 
-#include "tnet_types.h"
+#include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_memory.h"
 #include "tsk_string.h"
@@ -88,7 +89,7 @@ static void* tnet_dhcp_option_sip_create(void * self, va_list * app)
 			char* ip4 = 0;
 
 			while(payloadPtr < payloadEnd){
-				address = ntohl(*((uint32_t*)++payloadPtr));
+				address = tnet_ntohl(*((uint32_t*)++payloadPtr));
 				
 				tsk_sprintf(&ip4, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 				

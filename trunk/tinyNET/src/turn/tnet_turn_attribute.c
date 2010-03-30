@@ -31,6 +31,8 @@
 
 #include "../stun/tnet_stun.h"
 
+#include "../tnet_endianness.h"
+
 #include "tsk_debug.h"
 
 #include <string.h>
@@ -50,7 +52,7 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	/*	draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
 	case stun_channel_number:
 		{
-			uint32_t number = ntohl(*((uint32_t*)dataPtr));
+			uint32_t number = tnet_ntohl(*((uint32_t*)dataPtr));
 			attribute = TNET_TURN_ATTRIBUTE_CHANNELNUM_CREATE(number);
 			break;
 		}
@@ -58,7 +60,7 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	/*	draft-ietf-behave-turn-16 - 14.2.  LIFETIME */
 	case stun_lifetime:
 		{
-			uint32_t lifetime = ntohl(*((uint32_t*)dataPtr));
+			uint32_t lifetime = tnet_ntohl(*((uint32_t*)dataPtr));
 			attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(lifetime);
 			break;
 		}
@@ -291,7 +293,7 @@ static void* tnet_turn_attribute_lifetime_create(void * self, va_list * app)
 	tnet_turn_attribute_lifetime_t *attribute = self;
 	if(attribute)
 	{
-		attribute->value = /*htonl*/(va_arg(*app, uint32_t));
+		attribute->value = /*tnet_htonl*/(va_arg(*app, uint32_t));
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_lifetime;
 		TNET_STUN_ATTRIBUTE(attribute)->length = 4;
 	}
@@ -422,7 +424,7 @@ static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app
 			
 			attribute->family = (tnet_stun_addr_family_t)(*(payloadPtr++));
 
-			attribute->xport = ntohs(*((uint16_t*)payloadPtr));
+			attribute->xport = tnet_ntohs(*((uint16_t*)payloadPtr));
 			attribute->xport ^= 0x2112;
 			payloadPtr+=2;
 
@@ -435,7 +437,7 @@ static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app
 
 					for(i=0; i<addr_size; i+=4)
 					{
-						addr = ntohl(*((uint32_t*)payloadPtr));
+						addr = tnet_ntohl(*((uint32_t*)payloadPtr));
 						addr ^= TNET_STUN_MAGIC_COOKIE;
 						memcpy(&attribute->xaddress[i], &addr, 4);
 						payloadPtr+=4;

@@ -29,6 +29,7 @@
 #include "tnet_dns_aaaa.h"
 
 #include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -67,8 +68,8 @@ static void* tnet_dns_aaaa_create(void * self, va_list * app)
 		{	// ==> DESERIALIZATION
 			/* ADDRESS */
 			tsk_sprintf(&(aaaa->address), "%x:%x:%x:%x:%x:%x:%x:%x",
-				ntohs(*((uint16_t*)&rddata[0])), ntohs(*((uint16_t*)&rddata[2])), ntohs(*((uint16_t*)&rddata[4])), ntohs(*((uint16_t*)&rddata[6])),
-				ntohs(*((uint16_t*)&rddata[8])), ntohs(*((uint16_t*)&rddata[10])), ntohs(*((uint16_t*)&rddata[12])), ntohs(*((uint16_t*)&rddata[14])));
+				tnet_ntohs(*((uint16_t*)&rddata[0])), tnet_ntohs(*((uint16_t*)&rddata[2])), tnet_ntohs(*((uint16_t*)&rddata[4])), tnet_ntohs(*((uint16_t*)&rddata[6])),
+				tnet_ntohs(*((uint16_t*)&rddata[8])), tnet_ntohs(*((uint16_t*)&rddata[10])), tnet_ntohs(*((uint16_t*)&rddata[12])), tnet_ntohs(*((uint16_t*)&rddata[14])));
 		}
 		else
 		{

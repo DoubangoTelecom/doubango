@@ -32,6 +32,7 @@
 #include "tnet_stun.h"
 
 #include "../tnet_types.h"
+#include "../tnet_endianness.h"
 #include "../turn/tnet_turn_attribute.h"
 
 #include "tsk_memory.h"
@@ -79,7 +80,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 	/* STUN Message Type 
 	*/
 	{
-		uint16_t type = htons(self->type);
+		uint16_t type = tnet_htons(self->type);
 		tsk_buffer_append(output, &(type), 2);
 	}
 	
@@ -92,7 +93,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 	/* Magic Cookie
 	*/
 	{
-		uint32_t cookie = htonl(self->cookie);
+		uint32_t cookie = tnet_htonl(self->cookie);
 		tsk_buffer_append(output, &(cookie), 4);
 	}
 
@@ -143,7 +144,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		if(compute_integrity)
 			length += (2/* Type */ + 2 /* Length */+ TSK_SHA1_DIGEST_SIZE /* INTEGRITY VALUE*/);
 		
-		*(((uint16_t*)output->data)+1)  = htons(length);
+		*(((uint16_t*)output->data)+1)  = tnet_htons(length);
 	}
 
 	/* MESSAGE-INTEGRITY */
@@ -181,7 +182,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		*/
 		uint32_t fingerprint = tsk_pppfcs32(TSK_PPPINITFCS32, output->data, output->size);
 		fingerprint ^= 0x5354554e;
-		fingerprint = htonl(fingerprint);
+		fingerprint = tnet_htonl(fingerprint);
 		
 		attribute = TNET_STUN_ATTRIBUTE_FINGERPRINT_CREATE(fingerprint);
 		tnet_stun_attribute_serialize(attribute, output);
@@ -220,12 +221,12 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t s
 
 	/* Message Type 
 	*/
-	message->type = (tnet_stun_message_type_t)ntohs(*((uint16_t*)dataPtr));
+	message->type = (tnet_stun_message_type_t)tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 
 	/* Message Length 
 	*/
-	message->length = ntohs(*((uint16_t*)dataPtr));
+	message->length = tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 
 	/* Check message validity
