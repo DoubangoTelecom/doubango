@@ -75,7 +75,7 @@ void test_tls()
 	
 
 	/* Connect to the SIP Registrar */
-	if((fd = tnet_transport_connectto2(transport, TEST_TLS_REMOTE_IP, TEST_TLS_REMOTE_PORT)) == TNET_INVALID_FD){
+	if((fd = tnet_transport_connectto_2(transport, TEST_TLS_REMOTE_IP, TEST_TLS_REMOTE_PORT)) == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
 		return;
 	}

@@ -29,6 +29,7 @@
 #include "tnet_dns_mx.h"
 
 #include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -64,7 +65,7 @@ static void* tnet_dns_mx_create(void * self, va_list * app)
 		if(rddata && rdlength)
 		{	// ==> DESERIALIZATION
 			/* PREFERENCE */
-			mx->preference = ntohs(*((uint16_t*)rddata));
+			mx->preference = tnet_ntohs(*((uint16_t*)rddata));
 			rddata += 2, offset += 2;
 			/* EXCHANGE */
 			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(mx->exchange), &offset);

@@ -29,6 +29,8 @@
 #include "tnet_dhcp6_message.h"
 #include "tnet_dhcp6.h"
 
+#include "../tnet_endianness.h"
+
 #include "tsk_debug.h"
 
 #include <string.h>
@@ -49,17 +51,17 @@ tsk_buffer_t* tnet_dhcp6_message_serialize(const tnet_dhcp6_ctx_t *ctx, const tn
 
 	/*== msg-type + transaction-id */
 	_4bytes = (((uint32_t)(self->type)) << 24) | (self->transaction_id & 0xFFFFFF);
-	_4bytes = ntohl(_4bytes);
+	_4bytes = tnet_ntohl(_4bytes);
 	tsk_buffer_append(output, &(_4bytes), 4);
 
 	/*== Vendor class
 	*/
 	{
-		_2bytes = htons(dhcp6_code_vendor_class);
+		_2bytes = tnet_htons(dhcp6_code_vendor_class);
 		tsk_buffer_append(output, &(_2bytes), 2);
-		_2bytes = htons(4 + strlen(ctx->vendor_class_data));
+		_2bytes = tnet_htons(4 + strlen(ctx->vendor_class_data));
 		tsk_buffer_append(output, &(_2bytes), 2);
-		_4bytes = ntohl(ctx->enterprise_number);
+		_4bytes = tnet_ntohl(ctx->enterprise_number);
 		tsk_buffer_append(output, &(_4bytes), 4);
 		tsk_buffer_append(output, ctx->vendor_class_data, strlen(ctx->vendor_class_data));
 	}

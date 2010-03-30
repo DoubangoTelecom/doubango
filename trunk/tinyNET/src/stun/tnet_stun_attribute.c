@@ -32,6 +32,7 @@
 #include "tnet_stun.h"
 
 #include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "../turn/tnet_turn_attribute.h"
 
@@ -52,8 +53,8 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 	tnet_stun_attribute_t *attribute = 0;
 	const uint8_t* dataPtr = data;
 
-	tnet_stun_attribute_type_t type = (tnet_stun_attribute_type_t)ntohs(*((uint16_t*)dataPtr));
-	uint16_t length = ntohs(*(((uint16_t*)dataPtr)+1));
+	tnet_stun_attribute_type_t type = (tnet_stun_attribute_type_t)tnet_ntohs(*((uint16_t*)dataPtr));
+	uint16_t length = tnet_ntohs(*(((uint16_t*)dataPtr)+1));
 
 	/* Check validity */
 	if(!data || size<=4/* Type(2-bytes) plus Length (2-bytes) */)
@@ -103,7 +104,7 @@ tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t 
 		/* RFC 5389 -  15.5.  FINGERPRINT*/
 	case stun_fingerprint:
 		{
-			uint32_t fingerprint = ntohl(*((uint32_t*)dataPtr));
+			uint32_t fingerprint = tnet_ntohl(*((uint32_t*)dataPtr));
 			attribute = TNET_STUN_ATTRIBUTE_FINGERPRINT_CREATE(fingerprint);
 			break;
 		}
@@ -202,14 +203,14 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	/* Attribute Type 
 	*/
 	{
-		uint16_t type = htons(attribute->type);
+		uint16_t type = tnet_htons(attribute->type);
 		tsk_buffer_append(output, &(type), 2);
 	}
 	
 	/* Attribute Length
 	*/
 	{
-		uint16_t length = htons(attribute->length);
+		uint16_t length = tnet_htons(attribute->length);
 		tsk_buffer_append(output, &(length), 2);
 	}
 	
@@ -252,7 +253,7 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 		/* RFC 5389 -  15.5.  FINGERPRINT*/
 	case stun_fingerprint:
 		{
-			uint32_t fingerprint = /*htonl*/(((tnet_stun_attribute_fingerprint_t*)attribute)->value);
+			uint32_t fingerprint = /*tnet_htonl*/(((tnet_stun_attribute_fingerprint_t*)attribute)->value);
 			tsk_buffer_append(output, &fingerprint, 4);
 			return 0;
 		}
@@ -392,12 +393,12 @@ static void* tnet_stun_attribute_mapped_addr_create(void * self, va_list * app)
 			TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
 
 			attribute->family = (tnet_stun_addr_family_t) (*(payloadPtr++));
-			attribute->port = ntohs(*((uint16_t*)payloadPtr));
+			attribute->port = tnet_ntohs(*((uint16_t*)payloadPtr));
 			payloadPtr+=2;
 
 			if(attribute->family == stun_ipv4)
 			{
-				uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
+				uint32_t addr = tnet_ntohl(*((uint32_t*)payloadPtr));
 				memcpy(attribute->address, &addr, 4);
 				payloadPtr+=4;
 			}
@@ -411,7 +412,7 @@ static void* tnet_stun_attribute_mapped_addr_create(void * self, va_list * app)
 
 					for(i=0; i<addr_size; i+=4)
 					{
-						addr = ntohl(*((uint32_t*)payloadPtr));
+						addr = tnet_ntohl(*((uint32_t*)payloadPtr));
 						memcpy(&attribute->address[i], &addr, 4);
 						payloadPtr+=4;
 					}
@@ -471,7 +472,7 @@ static void* tnet_stun_attribute_xmapped_addr_create(void * self, va_list * app)
 				XOR'ing it with the most significant 16 bits of the magic cookie, and
 				then the converting the result to network byte order.
 			*/
-			attribute->xport = ntohs(*((uint16_t*)payloadPtr));
+			attribute->xport = tnet_ntohs(*((uint16_t*)payloadPtr));
 			attribute->xport ^= 0x2112;
 			payloadPtr+=2;
 			
@@ -491,7 +492,7 @@ static void* tnet_stun_attribute_xmapped_addr_create(void * self, va_list * app)
 
 					for(i=0; i<addr_size; i+=4)
 					{
-						addr = ntohl(*((uint32_t*)payloadPtr));
+						addr = tnet_ntohl(*((uint32_t*)payloadPtr));
 						addr ^= TNET_STUN_MAGIC_COOKIE;
 						memcpy(&attribute->xaddress[i], &addr, 4);
 						payloadPtr+=4;
@@ -659,7 +660,7 @@ static void* tnet_stun_attribute_errorcode_create(void * self, va_list * app)
 
 		if(payload_size >4)
 		{
-			uint32_t code = ntohl(*((uint32_t*)payload));
+			uint32_t code = tnet_ntohl(*((uint32_t*)payload));
 			payload += 4;
 
 			attribute->_class = code >>8;
@@ -863,12 +864,12 @@ static void* tnet_stun_attribute_altserver_create(void * self, va_list * app)
 		TNET_STUN_ATTRIBUTE(attribute)->length = payload_size;
 
 		attribute->family = (tnet_stun_addr_family_t) (*(payloadPtr++));
-		attribute->port = ntohs(*((uint16_t*)payloadPtr));
+		attribute->port = tnet_ntohs(*((uint16_t*)payloadPtr));
 		payloadPtr+=2;
 
 		if(attribute->family == stun_ipv4)
 		{
-			uint32_t addr = ntohl(*((uint32_t*)payloadPtr));
+			uint32_t addr = tnet_ntohl(*((uint32_t*)payloadPtr));
 			memcpy(attribute->server, &addr, 4);
 			payloadPtr+=4;
 		}

@@ -55,8 +55,6 @@ void test_mutex()
 	void*       tid[1] = {0};
 
 	printf("test_mutex//\n");
-
-
 	
 	//tsk_mutex_lock(mutex);
 	

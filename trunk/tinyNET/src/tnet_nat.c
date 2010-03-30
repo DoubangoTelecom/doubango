@@ -29,6 +29,8 @@
  */
 #include "tnet_nat.h"
 
+#include "tnet_endianness.h"
+
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
@@ -127,13 +129,13 @@ int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t 
 	if(family == stun_ipv6)
 	{
 		tsk_sprintf(out_ip, "%x:%x:%x:%x:%x:%x:%x:%x",
-				ntohs(*((uint16_t*)&in_ip[0])), ntohs(*((uint16_t*)&in_ip[2])), ntohs(*((uint16_t*)&in_ip[4])), ntohs(*((uint16_t*)&in_ip[6])),
-				ntohs(*((uint16_t*)&in_ip[8])), ntohs(*((uint16_t*)&in_ip[10])), ntohs(*((uint16_t*)&in_ip[12])), ntohs(*((uint16_t*)&in_ip[14])));
+				tnet_ntohs(*((uint16_t*)&in_ip[0])), tnet_ntohs(*((uint16_t*)&in_ip[2])), tnet_ntohs(*((uint16_t*)&in_ip[4])), tnet_ntohs(*((uint16_t*)&in_ip[6])),
+				tnet_ntohs(*((uint16_t*)&in_ip[8])), tnet_ntohs(*((uint16_t*)&in_ip[10])), tnet_ntohs(*((uint16_t*)&in_ip[12])), tnet_ntohs(*((uint16_t*)&in_ip[14])));
 	}
 	else if(family == stun_ipv4)
 	{
 		uint32_t address = *((uint32_t*)in_ip);
-		address = /*ntohl*/(address);
+		address = /*tnet_ntohl*/(address);
 		tsk_sprintf(out_ip, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 		
 		return 0;
@@ -239,7 +241,7 @@ int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 			if(binding->xmaddr)
 			{
 				int ret = tnet_stun_address_tostring(binding->xmaddr->xaddress, binding->xmaddr->family, ipaddress);
-				*port = /*ntohs*/(binding->xmaddr->xport);
+				*port = /*tnet_ntohs*/(binding->xmaddr->xport);
 				return ret;
 			}
 
@@ -247,7 +249,7 @@ int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 			if(binding->maddr)
 			{
 				int ret = tnet_stun_address_tostring(binding->maddr->address, binding->maddr->family, ipaddress);
-				*port = /*ntohs*/(binding->maddr->port);
+				*port = /*tnet_ntohs*/(binding->maddr->port);
 				return ret;
 			}
 		}
@@ -343,7 +345,7 @@ int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 			if(allocation->xmaddr)
 			{
 				int ret = tnet_stun_address_tostring(allocation->xmaddr->xaddress, allocation->xmaddr->family, ipaddress);
-				*port = /*ntohs*/(allocation->xmaddr->xport);
+				*port = /*tnet_ntohs*/(allocation->xmaddr->xport);
 				return ret;
 			}
 
@@ -351,7 +353,7 @@ int tnet_nat_turn_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 			if(allocation->maddr)
 			{
 				int ret = tnet_stun_address_tostring(allocation->maddr->address, allocation->maddr->family, ipaddress);
-				*port = /*ntohs*/(allocation->maddr->port);
+				*port = /*tnet_ntohs*/(allocation->maddr->port);
 				return ret;
 			}
 		}

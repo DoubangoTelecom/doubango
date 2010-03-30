@@ -38,7 +38,6 @@ void test_sockets()
 	TNET_SOCKET_TYPE_SET_TCP(type);
 	
 	tcp_socket = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, type);
-	
 
 	if(!TNET_SOCKET_IS_VALID(tcp_socket))
 	{

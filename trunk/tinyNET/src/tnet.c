@@ -71,6 +71,7 @@
 * @ref tnet_cleanup is used to uninitialize the stack.
 */
 static int __tnet_started = 0;
+tsk_bool_t tnet_isBigEndian = tsk_false;
 
 /**
  * This is probably the most important function. You MUST call this function to initialize the network stack before calling any <b>tnet_*</b> function. 
@@ -82,7 +83,19 @@ static int __tnet_started = 0;
 int tnet_startup()
 {
 	int err = 0;
-	if(__tnet_started) goto bail;
+	short word = 0x4321;
+
+	if(__tnet_started){
+		goto bail;
+	}
+
+	// endianness
+	tnet_isBigEndian = ((*(int8_t *)&word) != 0x21);
+#if TNET_UNDER_WINDOWS
+	if(tnet_isBigEndian){
+		TSK_DEBUG_ERROR("Big endian on Windows machine. Is it right?");
+	}
+#endif
 
 #if TNET_UNDER_WINDOWS
 	{

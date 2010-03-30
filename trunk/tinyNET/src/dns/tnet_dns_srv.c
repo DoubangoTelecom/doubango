@@ -29,6 +29,7 @@
 #include "tnet_dns_srv.h"
 
 #include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -64,13 +65,13 @@ static void* tnet_dns_srv_create(void * self, va_list * app)
 		if(rddata && rdlength)
 		{	// ==> DESERIALIZATION
 			/* Priority */
-			srv->priority = ntohs(*((uint16_t*)rddata));
+			srv->priority = tnet_ntohs(*((uint16_t*)rddata));
 			rddata += 2, offset += 2;
 			/* Weight */
-			srv->weight = ntohs(*((uint16_t*)rddata));
+			srv->weight = tnet_ntohs(*((uint16_t*)rddata));
 			rddata += 2, offset += 2;
 			/* Port */
-			srv->port = ntohs(*((uint16_t*)rddata));
+			srv->port = tnet_ntohs(*((uint16_t*)rddata));
 			rddata += 2, offset += 2;
 			/* Target */
 			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(srv->target), &offset);

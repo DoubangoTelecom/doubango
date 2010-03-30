@@ -35,6 +35,7 @@
 #include "tsk_memory.h"
 
 #include "tnet_socket.h"
+#include "tnet_endianness.h"
 
 #include <string.h>
 
@@ -314,14 +315,13 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 
     // Make an initial call to GetAdaptersAddresses to get the 
     // size needed into the outBufLen variable
-    if(GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen) == ERROR_BUFFER_OVERFLOW)
-	{
+    if(GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen) == ERROR_BUFFER_OVERFLOW){
         FREE(pAddresses);
         pAddresses = (IP_ADAPTER_ADDRESSES *) MALLOC(outBufLen);
     }
+	else goto bail;
 
-    if(pAddresses == NULL)
-	{
+    if(pAddresses == NULL){
         TSK_DEBUG_ERROR("Memory allocation failed for IP_ADAPTER_ADDRESSES struct.");
         goto bail;
     }
@@ -399,7 +399,12 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
 					address->family = pDnServer->Address.lpSockaddr->sa_family;
 					address->dnsserver = 1;
-					tsk_list_push_back_data(addresses, &address);
+					// IPv4 first
+					if(address->family == AF_INET){
+						tsk_list_push_front_data(addresses, &address);
+					}else{
+						tsk_list_push_back_data(addresses, &address);
+					}
 				}
 
                 pDnServer = pDnServer->Next;
@@ -578,7 +583,7 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 	{
 		struct sockaddr_in *sin = (struct sockaddr_in *)addr;
 		if(port){
-			*port = ntohs(sin->sin_port);
+			*port = tnet_ntohs(sin->sin_port);
 			status = 0;
 		}
 		if(ip){
@@ -594,7 +599,7 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 		int index;
 #endif
 		if(port){
-			*port = ntohs(sin6->sin6_port);
+			*port = tnet_ntohs(sin6->sin6_port);
 			status = 0;
 		}
 		if(ip){

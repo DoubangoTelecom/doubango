@@ -20,26 +20,27 @@
 *
 */
 
-/**@file tnet.h
- * @brief Network stack.
+/**@file tnet_endianness.h
+ * @brief Byte Ordering.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TNET_TNET_H
-#define TNET_TNET_H
+#ifndef TNET_ENDIANNESS_H
+#define TNET_ENDIANNESS_H
 
 #include "tinyNET_config.h"
 
-#include "tsk_common.h"
+TNET_BEGIN_DECLS
+
+unsigned short tnet_htons(unsigned short x);
+unsigned long tnet_htonl(unsigned long x);
+
+#define tnet_ntohs(x) tnet_htons(x)
+#define tnet_ntohl(x) tnet_htonl(x)
 
 TNET_BEGIN_DECLS
 
-TINYNET_API int tnet_startup();
-TINYNET_API int tnet_cleanup();
-
-TNET_END_DECLS
-
-#endif /* TNET_TNET_H */
+#endif /*TNET_ENDIANNESS_H*/
 

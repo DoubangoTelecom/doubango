@@ -30,7 +30,8 @@
 
 #include "tnet_dhcp_option_sip.h"
 
-#include "tnet_types.h"
+#include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -287,7 +288,7 @@ static void* tnet_dhcp_option_dns_create(void * self, va_list * app)
 				|  6  |  n  |  a1 |  a2 |  a3 |  a4 |  a1 |  a2 |  ...
 				+-----+-----+-----+-----+-----+-----+-----+-----+--
 				*/
-				address = ntohl(*((uint32_t*)payloadPtr));
+				address = tnet_ntohl(*((uint32_t*)payloadPtr));
 				tsk_sprintf(&ip4, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 				
 				addrstring = TSK_STRING_CREATE(ip4);

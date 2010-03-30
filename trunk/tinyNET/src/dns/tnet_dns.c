@@ -49,13 +49,27 @@ const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, cons
 */
 
 /**@ingroup tnet_dns_group
+* Sends DNS request over the network.
+* @param ctx The DNS context to use. The context contains the user preference.
+* @param qname The domain name (e.g. google.com).
+* @param qclass The CLASS of the query.
+* @param qtype The type of the query.
+* @retval The DNS response. The @a answers in the @a response are already filtered.
+* MUST be destroyed using @ref TSK_OBJECT_SAFE_FREE macro.
+*
+* @code
+* tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+* tnet_dns_response_t *response = tnet_dns_resolve(ctx, "sip2sip.info", qclass_in, qtype_srv);
+* TSK_OBJECT_SAFE_FREE(response);
+* TSK_OBJECT_SAFE_FREE(ctx);
+* @endcode
 */
 tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
 	tsk_buffer_t *output = 0;
 	tnet_dns_query_t* query = TNET_DNS_QUERY_CREATE(qname, qclass, qtype);
 	tnet_dns_response_t *response = 0;
-	unsigned from_cache = 0;
+	tsk_bool_t from_cache = tsk_false;
 	
 	/* Check validity */
 	if(!ctx || !query){
@@ -63,18 +77,18 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 	}
 
 	/* Cache maintenance */
-	if(!TSK_LIST_IS_EMPTY(ctx->cache))
-	{	/* Only do maintenance if the cache is not empty */
+	if(!TSK_LIST_IS_EMPTY(ctx->cache)){	
+		/* Only do maintenance if the cache is not empty */
 		tnet_dns_cache_maintenance(ctx);
 	}
 
 	/* Retrieve data from cache. */
 	if(ctx->enable_cache)
 	{
-		tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
+		const tnet_dns_cache_entry_t *entry = tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
 		if(entry){
-			response = tsk_object_ref(entry->response);
-			from_cache = 1;
+			response = tsk_object_ref(((tnet_dns_cache_entry_t*)entry)->response);
+			from_cache = tsk_true;
 			goto bail;
 		}
 	}
@@ -99,6 +113,9 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 		goto bail;
 	}
 	
+	/* ============================ */
+	//	Send and Recaive data
+	/* ============================ */
 	{
 		int ret;
 		struct timeval tv;
@@ -112,16 +129,15 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 		tnet_socket_t *localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
 		
 		/* Check socket validity */
-		if(!TNET_SOCKET_IS_VALID(localsocket4))
-		{
+		if(!TNET_SOCKET_IS_VALID(localsocket4)){
 			goto done;
 		}
 
-		/* Always wait for 300ms before retransmission */
+		/* Always wait 500ms before retransmission */
 		tv.tv_sec = 0;
-		tv.tv_usec = (300 * 1000);
+		tv.tv_usec = (500 * 1000);
 
-		/* Set FD */
+		/* Set FDs */
 		FD_ZERO(&set);
 		FD_SET(localsocket4->fd, &set);
 		if(TNET_SOCKET_IS_VALID(localsocket6)){
@@ -131,9 +147,12 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 		else{
 			maxFD = localsocket4->fd;
 		}
-
+		
 		do
 		{
+			//
+			//	Send data (loop through all intefaces)
+			//
 			tsk_list_foreach(item, ctx->servers)
 			{
 				address = item->data;
@@ -144,68 +163,69 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 					continue;
 				}
 				
-				if(tnet_sockaddr_init(address->ip, ctx->server_port, (address->family == AF_INET ? tnet_socket_type_udp_ipv4 : tnet_socket_type_udp_ipv6), &server))
-				{
+				if(tnet_sockaddr_init(address->ip, ctx->server_port, (address->family == AF_INET ? tnet_socket_type_udp_ipv4 : tnet_socket_type_udp_ipv6), &server)){
 					TSK_DEBUG_ERROR("Failed to initialize the DNS server address: \"%s\"", address->ip);
 					continue;
 				}
 
 				TSK_DEBUG_INFO("Send DNS query to \"%s\"", address->ip);
 
-				if(address->family == AF_INET6)
-				{
-					tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size);
+				if(address->family == AF_INET6){
+					if((ret = tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size))){
+						// succeed?
+						break;
+					}
 				}
-				else
-				{
-					tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size);
+				else{
+					if((ret = tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size))){
+						// succeed?
+						break;
+					}
 				}
 			}
 
+			//
+			//	Received data
+			//
 			/* First time? ==> set timeout value */
-			if(!timeout) timeout = tsk_time_epoch() + ctx->timeout;
+			if(!timeout){
+				timeout = tsk_time_epoch() + ctx->timeout;
+			}
 
 			/* wait for response */
-			if((ret = select(maxFD+1, &set, NULL, NULL, &tv))<0)
-			{	/* Error */
+			if((ret = select(maxFD+1, &set, NULL, NULL, &tv))<0){ /* Error */
 				goto done;
 			}
-			else if(ret == 0)
-			{	/* timeout ==> do nothing */
+			else if(ret == 0){ /* timeout ==> do nothing */
+				
 			}
-			else
-			{	/* there is data to read */
+			else{ /* there is data to read */
 				size_t len = 0;
 				void* data = 0;
 				tnet_fd_t active_fd;
 
 				/* Find active file descriptor */
-				if(FD_ISSET(localsocket4->fd, &set))
-				{
+				if(FD_ISSET(localsocket4->fd, &set)){
 					active_fd = localsocket4->fd;
 				}
-				else if(FD_ISSET(localsocket6->fd, &set))
-				{
+				else if(FD_ISSET(localsocket6->fd, &set)){
 					active_fd = localsocket4->fd;
 				}
-				else
-				{
+				else{
 					TSK_DEBUG_ERROR("FD_ISSET ==> Invalid file descriptor.");
 					continue;
 				}
 
 				/* Check how how many bytes are pending */
-				if((ret = tnet_ioctlt(active_fd, FIONREAD, &len))<0)
-				{
+				if((ret = tnet_ioctlt(active_fd, FIONREAD, &len))<0){
 					goto done;
 				}
 				
 				/* Receive pending data */
 				data = tsk_calloc(len, sizeof(uint8_t));
-				if((ret = tnet_sockfd_recv(active_fd, data, len, 0))<0)
-				{
+				if((ret = tnet_sockfd_recv(active_fd, data, len, 0))<0){
 					TSK_FREE(data);
-									
+					
 					TSK_DEBUG_ERROR("Recving DNS dgrams failed with error code:%d", tnet_geterrno());
 					goto done;
 				}
@@ -216,8 +236,8 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 				
 				if(response)
 				{	/* response successfuly parsed */
-					if(query->Header.ID != response->Header.ID || !TNET_DNS_MESSAGE_IS_RESPONSE(response))
-					{ /* Not same transaction id ==> continue*/
+					if(query->Header.ID != response->Header.ID || !TNET_DNS_MESSAGE_IS_RESPONSE(response)){
+						/* Not same transaction id ==> continue*/
 						TSK_OBJECT_SAFE_FREE(response);
 					}
 					else goto done;
@@ -225,7 +245,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 			}
 		}
 		while(timeout > tsk_time_epoch());
-
+		
 done:
 		TSK_OBJECT_SAFE_FREE(localsocket4);
 		TSK_OBJECT_SAFE_FREE(localsocket6);
@@ -238,8 +258,7 @@ bail:
 	TSK_OBJECT_SAFE_FREE(output);
 
 	/* Add the result to the cache. */
-	if(response && !from_cache && ctx->enable_cache)
-	{
+	if(response && !from_cache && ctx->enable_cache){
 		tnet_dns_cache_entry_add(ctx, qname, qclass, qtype, response);
 	}
 
@@ -247,6 +266,25 @@ bail:
 }
 
 /**@ingroup tnet_dns_group
+* Performs DNS SRV resolution.
+* @param ctx The DNS context. Contains the use preferences.
+* @param service The name of the service (e.g. SIP+D2U).
+* @param hostname The result containing an IP address or FQDN.
+* @param port The port associated to the result.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @code
+* tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+* char* hostname = 0;
+* tnet_port_t port = 0;
+* 
+* if(!tnet_dns_query_srv(ctx, "_sip._udp.sip2sip.info", &hostname, &port)){
+* 	TSK_DEBUG_INFO("DNS SRV succeed ==> hostname=%s and port=%u", hostname, port);
+* }
+* 
+* TSK_FREE(hostname);
+* TSK_OBJECT_SAFE_FREE(ctx);
+* @endcode
 */
 int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname, tnet_port_t* port)
 {
@@ -258,13 +296,13 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 
 	if((response = tnet_dns_resolve(ctx, service, qclass_in, qtype_srv)))
 	{
-		tsk_list_item_t *item;
-		tnet_dns_rr_t* rr;
+		const tsk_list_item_t *item;
+		const tnet_dns_rr_t* rr;
 		tsk_list_foreach(item, response->Answers) /* Already Filtered ==> Peek the first One */
 		{
 			rr = item->data;
 			if(rr->qtype == qtype_srv){
-				tnet_dns_srv_t *srv = (tnet_dns_srv_t*)rr;
+				const tnet_dns_srv_t *srv = (const tnet_dns_srv_t*)rr;
 				
 				tsk_strupdate(hostname, srv->target);
 				*port = srv->port;
@@ -279,6 +317,26 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 }
 
 /**@ingroup tnet_dns_group
+* Performs DNS NAPTR followed by DNS SRV resolution.
+* @param ctx The DNS context. Contains the use preferences.
+* @param domain The Name of the domain (e.g. google.com).
+* @param service The name of the service (e.g. SIP+D2U).
+* @param hostname The result containing an IP address or FQDN.
+* @param port The port associated to the result.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @code
+* tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+* char* hostname = 0;
+* tnet_port_t port = 0;
+* 
+* if(!tnet_dns_query_naptr_srv(ctx, "sip2sip.info", "SIP+D2U", &hostname, &port)){
+* 	TSK_DEBUG_INFO("DNS NAPTR+SRV succeed ==> hostname=%s and port=%u", hostname, port);
+* }
+* 
+* TSK_FREE(hostname);
+* TSK_OBJECT_SAFE_FREE(ctx);
+* @endcode
 */
 int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char* service, char** hostname, tnet_port_t* port)
 {
@@ -290,8 +348,8 @@ int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char
 
 	if((response = tnet_dns_resolve(ctx, domain, qclass_in, qtype_naptr)))
 	{
-		tsk_list_item_t *item;
-		tnet_dns_rr_t* rr;
+		const tsk_list_item_t *item;
+		const tnet_dns_rr_t* rr;
 
 		char* replacement = 0; /* e.g. _sip._udp.example.com */
 		char* flags = 0;/* e.g. S, A, AAAA, A6, U, P ... */
@@ -419,8 +477,7 @@ const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, cons
 		tsk_list_foreach(item, ctx->cache)
 		{
 			tnet_dns_cache_entry_t *entry = (tnet_dns_cache_entry_t*)item->data;
-			if(entry->qtype == qtype && entry->qclass == qclass && tsk_strequals(entry->qname, qname))
-			{
+			if(entry->qtype == qtype && entry->qclass == qclass && tsk_strequals(entry->qname, qname)){
 				ret = entry;
 				goto bail;
 			}

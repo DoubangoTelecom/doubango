@@ -31,6 +31,19 @@ typedef struct person_s
 }
 person_t;
 
+// (a student is a person)
+typedef struct student_s
+{
+	struct person_s* person; // Must be the first element
+	char* school;
+}
+student_t;
+
+//// (as a student is a person you can do)
+//student_t* s;
+//((person_t*)s)->name = tsk_strdup("bob");
+
+
 // constructor
 static void* person_create(tsk_object_t * self, va_list * app)
 {

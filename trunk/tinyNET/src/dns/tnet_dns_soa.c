@@ -29,6 +29,7 @@
 #include "tnet_dns_soa.h"
 
 #include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
@@ -70,19 +71,19 @@ static void* tnet_dns_soa_create(void * self, va_list * app)
 			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(soa->rname), &offset);
 			rddata += offset;
 			/* SERIAL */
-			soa->serial = ntohl(*((uint32_t*)rddata));
+			soa->serial = tnet_ntohl(*((uint32_t*)rddata));
 			rddata += 2, offset += 2;
 			/* REFRESH */
-			soa->refresh = ntohl(*((uint32_t*)rddata));
+			soa->refresh = tnet_ntohl(*((uint32_t*)rddata));
 			rddata += 2, offset += 2;
 			/* RETRY */
-			soa->retry = ntohl(*((uint32_t*)rddata));
+			soa->retry = tnet_ntohl(*((uint32_t*)rddata));
 			rddata += 2, offset += 2;
 			/* EXPIRE */
-			soa->expire = ntohl(*((uint32_t*)rddata));
+			soa->expire = tnet_ntohl(*((uint32_t*)rddata));
 			rddata += 2, offset += 2;
 			/* MINIMUM */
-			soa->minimum = ntohl(*((uint32_t*)rddata));
+			soa->minimum = tnet_ntohl(*((uint32_t*)rddata));
 			rddata += 2, offset += 2;
 		}
 	}

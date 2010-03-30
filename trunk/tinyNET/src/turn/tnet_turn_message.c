@@ -30,6 +30,7 @@
 #include "tnet_turn_message.h"
 
 #include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_memory.h"
 
@@ -64,14 +65,14 @@ tsk_buffer_t* tnet_turn_channel_data_serialize(const tnet_turn_channel_data_t *m
 	/* Channel Number
 	*/
 	{
-		uint16_t number = htons(message->chanel_number);
+		uint16_t number = tnet_htons(message->chanel_number);
 		tsk_buffer_append(output, &(number), 2);
 	}
 
 	/* Length
 	*/
 	{
-		uint16_t length = htons(message->length);
+		uint16_t length = tnet_htons(message->length);
 		tsk_buffer_append(output, &(length), 2);
 	}
 

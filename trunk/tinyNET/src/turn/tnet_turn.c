@@ -40,6 +40,7 @@
 
 #include "../tnet_nat.h"
 #include "../tnet_utils.h"
+#include "../tnet_endianness.h"
 
 #include "tsk_md5.h"
 #include "tsk_debug.h"
@@ -112,7 +113,7 @@ tnet_stun_request_t* tnet_turn_create_request_allocate(const tnet_nat_context_t*
 		}
 
 		/* Add lifetime */
-		if((attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(ntohl(allocation->timeout))))
+		if((attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(tnet_ntohl(allocation->timeout))))
 		{
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
@@ -165,8 +166,8 @@ tnet_stun_request_t* tnet_turn_create_request_channel_bind(const tnet_nat_contex
 		
 		
 		channel_binding = va_arg(*app, const tnet_turn_channel_binding_t *);
-		number = htons(channel_binding->id);
-		lifetime = htonl(channel_binding->timeout);
+		number = tnet_htons(channel_binding->id);
+		lifetime = tnet_htonl(channel_binding->timeout);
 		attribute = tsk_object_ref(channel_binding->xpeer);
 
 		/* XOR-PEER */
@@ -437,9 +438,9 @@ tnet_turn_channel_binding_id_t tnet_turn_channel_bind(const tnet_nat_context_t* 
 
 				channel_binding->xpeer = TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE_NULL();
 				channel_binding->xpeer->family = stun_ipv4;
-				channel_binding->xpeer->xport = ((sin->sin_port) ^ htons(0x2112));
+				channel_binding->xpeer->xport = ((sin->sin_port) ^ tnet_htons(0x2112));
 				
-				*((uint32_t*)channel_binding->xpeer->xaddress) = ((*((uint32_t*)&sin->sin_addr)) ^htonl(TNET_STUN_MAGIC_COOKIE));
+				*((uint32_t*)channel_binding->xpeer->xaddress) = ((*((uint32_t*)&sin->sin_addr)) ^tnet_htonl(TNET_STUN_MAGIC_COOKIE));
 			}
 			else if(((struct sockaddr*)peer)->sa_family == AF_INET6)
 			{

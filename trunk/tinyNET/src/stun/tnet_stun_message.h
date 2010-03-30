@@ -89,7 +89,7 @@ TNET_BEGIN_DECLS
 **/
 #define TNET_IS_STUN2(PU8)	\
 	(((PU8)[0] & 0xc0) == 0x00) && \
-	( (*(((uint32_t *)(PU8))+1)) == htonl(TNET_STUN_MAGIC_COOKIE) )
+	( (*(((uint32_t *)(PU8))+1)) == tnet_htonl(TNET_STUN_MAGIC_COOKIE) )
 
 /**@ingroup tnet_stun_group
  * STUN trasactionn ID size (96bits = 12bytes).

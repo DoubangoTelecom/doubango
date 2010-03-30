@@ -28,7 +28,8 @@
  */
 #include "tnet_dhcp6_duid.h"
 
-#include "tnet_types.h"
+#include "../tnet_types.h"
+#include "../tnet_endianness.h"
 
 int tnet_dhcp6_duid_llt_serialize(const tnet_dhcp6_duid_llt_t* self, tsk_buffer_t *output);
 int tnet_dhcp6_duid_en_serialize(const tnet_dhcp6_duid_en_t* self, tsk_buffer_t *output);
@@ -78,7 +79,7 @@ tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, size_t size)
 		goto bail;
 	}
 
-	type = (tnet_dhcp6_duid_type_t) ntohs(*((uint16_t*)dataPtr));
+	type = (tnet_dhcp6_duid_type_t) tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 
 bail:

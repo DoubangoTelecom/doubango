@@ -67,7 +67,7 @@ void test_semaphore()
 	tsk_thread_join(&tid[0]);
 	tsk_thread_join(&tid[1]);
 
-	tsk_semaphore_destroy(&semaphore);
+	tsk_semaphore_destroy(&semaphore);	
 }
 
 #endif /* _TEST_SEMAPHORE_H_ */
