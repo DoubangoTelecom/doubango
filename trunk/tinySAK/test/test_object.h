@@ -27,7 +27,7 @@ typedef struct person_s
 	TSK_DECLARE_OBJECT; // Mandatory
 
 	char* name;
-	person_t* mother;
+	struct person_s* mother;
 }
 person_t;
 
@@ -46,14 +46,14 @@ static void* person_create(tsk_object_t * self, va_list * app)
  { 
  	person_t *person = self;
  	if(person){
- 		TSK_FREE(person->firstName);
- 		TSK_FREE(person->lastName);
+ 		TSK_FREE(person->name);
+		tsk_object_unref(person->mother);
  	}
- 	return self;
+ 	return self; // return
  }
  
  // comparator
- static int person_cmp(const tsk_object_t *object1, const tsk_object_t *object1)
+ static int person_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
  {
  	const person_t *person1 = object1;
  	const person_t *person2 = object2;
@@ -73,29 +73,26 @@ static void* person_create(tsk_object_t * self, va_list * app)
  }
 
  //(Object defnition)
- static const tsk_object_def_t person_def_s = 
+ static const tsk_object_def_t person_def_t = 
  {
  	sizeof(person_t),
  	person_create,
  	person_destroy,
- 	person_cmp, 
- }person_def_t;
+ 	person_cmp
+ };
+
+ // create a person
+#define PERSON_CREATE(name)				tsk_object_new(&person_def_t, (const char*)name)
 
 /* test object */
 void test_object()
 {
-	tsk_string_t *a = tsk_object_new(tsk_string_def_t, "first string");
-	tsk_string_t *b = tsk_object_new(tsk_string_def_t, "second string");
-
-	a = tsk_object_ref(a);
-	a = tsk_object_ref(a);
-
-	a = tsk_object_unref(a);
-	a = tsk_object_unref(a);
-	a = tsk_object_unref(a);
-
-	tsk_object_delete(a);
-	tsk_object_delete(b);
+	// create a person: will call the constructor
+	person_t* bob = PERSON_CREATE("bob");
+	// create bob's mother
+	bob->mother = PERSON_CREATE("alice");
+	// delete bob: will delete both bob and bob's mother field by calling their destructors
+	TSK_OBJECT_SAFE_FREE(bob);
 }
 
 #endif /* _TEST_OBJECT_H_ */

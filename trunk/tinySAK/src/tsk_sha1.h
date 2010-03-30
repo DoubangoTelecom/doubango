@@ -88,7 +88,7 @@ typedef char tsk_sha1digest_t[TSK_SHA1_DIGEST_SIZE]; /**< SHA-1 digest bytes. */
 
 /**@ingroup tsk_sha1_group
  *  This structure will hold context information for the SHA-1
- *  hashing operation
+ *  hashing SSESSION
  */
 typedef struct tsk_sha1context_s
 {

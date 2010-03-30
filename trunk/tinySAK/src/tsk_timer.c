@@ -46,11 +46,7 @@
 
 /**
  * @struct	tsk_timer_s
- *
  * @brief	Timer.
- *
- * @author	Mamadou
- * @date	12/20/2009
 **/
 typedef struct tsk_timer_s
 {
@@ -70,15 +66,11 @@ typedef tsk_list_t tsk_timers_L_t; /**< List of @ref tsk_timer_t elements. */
  * @struct	tsk_timer_manager_s
  *
  * @brief	Timer manager.
- *
- * @author	Mamadou
- * @date	12/20/2009
 **/
 typedef struct tsk_timer_manager_s
 {
 	TSK_DECLARE_RUNNABLE;
 
-	unsigned active:1;
 	void* mainThreadId[1];
 	tsk_condwait_handle_t *condwait;
 	tsk_mutex_handle_t *mutex;
@@ -96,7 +88,7 @@ static void __tsk_timer_manager_raise(tsk_timer_t *timer);
 static void *run(void* self);
 
 /**@ingroup tsk_timer_group
-* Start the timer manager.
+* Starts the timer manager.
 */
 int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 {
@@ -105,33 +97,13 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 	if(manager && !TSK_RUNNABLE(manager)->running)
 	{				
 		TSK_RUNNABLE(manager)->run = run;
-		if(err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t))
-		{
-			TSK_OBJECT_SAFE_FREE(manager);
-			return err;
-		}
-
-		if(err = tsk_thread_create(&(manager->mainThreadId[0]), __tsk_timer_manager_mainthread, manager))
-		{
-			TSK_OBJECT_SAFE_FREE(manager);
-			
-			TSK_DEBUG_FATAL("Failed to start timer manager: %d\n", err);
+		if(err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t)){
+			//TSK_OBJECT_SAFE_FREE(manager);
 			return err;
 		}
 	}
 	
 	return err;
-}
-/**@ingroup tsk_timer_group
-*/
-int tsk_timer_manager_isready(tsk_timer_manager_handle_t *self)
-{
-	tsk_timer_manager_t *manager = self;
-	if(manager)
-	{
-		return (TSK_RUNNABLE(manager)->running && manager->active);
-	}
-	return 0;
 }
 
 #if defined(DEBUG) || defined(_DEBUG) || !defined(NDEBUG)
@@ -147,8 +119,7 @@ void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 
 		tsk_mutex_lock(manager->mutex);
 		
-		tsk_list_foreach(item, manager->timers)
-		{
+		tsk_list_foreach(item, manager->timers){
 			tsk_timer_t* timer = item->data;
 			TSK_DEBUG_INFO("timer [%d]- %llu, %llu", timer->id, timer->timeout, tsk_time_epoch());
 		}
@@ -185,8 +156,7 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 	tsk_timer_id_t timer_id = TSK_INVALID_TIMER_ID;
 	tsk_timer_manager_t *manager = self;
 
-	if(manager && TSK_RUNNABLE(manager)->running)
-	{
+	if(manager && TSK_RUNNABLE(manager)->running){
 		tsk_timer_t *timer;
 
 		timer = TSK_TIMER_CREATE(timeout, callback, arg);
@@ -240,16 +210,23 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 
 static void *run(void* self)
 {
+	int ret;
 	tsk_list_item_t *curr;
 	tsk_timer_manager_t *manager = self;
+
+	TSK_RUNNABLE(manager)->running = tsk_true; // VERY IMPORTANT --> needed by the main thread
 	
+	/* create main thread */
+	if((ret = tsk_thread_create(&(manager->mainThreadId[0]), __tsk_timer_manager_mainthread, manager))){
+		TSK_DEBUG_FATAL("Failed to create mainthread: %d\n", ret);
+		return tsk_null;
+	}
+
 	TSK_RUNNABLE_RUN_BEGIN(manager);
 
-	if(curr = TSK_RUNNABLE_POP_FIRST(manager))
-	{
+	if(curr = TSK_RUNNABLE_POP_FIRST(manager)){
 		tsk_timer_t *timer = (tsk_timer_t *)curr->data;
-		if(timer->callback)
-		{
+		if(timer->callback){
 			timer->callback(timer->arg, timer->id);
 		}
 		tsk_object_unref(curr);
@@ -257,14 +234,13 @@ static void *run(void* self)
 
 	TSK_RUNNABLE_RUN_END(manager);
 
-	return 0;
+	return tsk_null;
 }
 
 static int __tsk_pred_find_timer_by_id(const tsk_list_item_t *item, const void *id)
 {
 	tsk_timer_t *timer;
-	if(item && item->data)
-	{
+	if(item && item->data){
 		timer = item->data;
 		return (int)(timer->id - *((tsk_timer_id_t*)id));
 	}
@@ -273,20 +249,19 @@ static int __tsk_pred_find_timer_by_id(const tsk_list_item_t *item, const void *
 
 static void *__tsk_timer_manager_mainthread(void *param)
 {
+	int ret;
 	tsk_timer_t *curr;
 	uint64_t epoch;
 	tsk_timer_manager_t *manager = param;
 
 	TSK_DEBUG_INFO("TIMER MANAGER -- START");
 	
-	manager->active = 1;
 	while(TSK_RUNNABLE(manager)->running)
 	{
 		tsk_semaphore_decrement(manager->sem);
 
 peek_first:
-		if(!TSK_RUNNABLE(manager)->running)
-		{
+		if(!TSK_RUNNABLE(manager)->running){
 			break;
 		}
 
@@ -294,39 +269,35 @@ peek_first:
 		curr = TSK_TIMER_GET_FIRST();
 		tsk_mutex_unlock(manager->mutex);
 
-		if(curr && !curr->canceled) 
-		{
+		if(curr && !curr->canceled) {
 			epoch = tsk_time_epoch();
-			if(epoch >= curr->timeout)
-			{
+			if(epoch >= curr->timeout){
 				tsk_timer_t *timer = tsk_object_ref(curr);
+				//TSK_DEBUG_INFO("Timer raise %llu", timer->id);
 
 				tsk_mutex_lock(manager->mutex);
 				TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(manager), timer);
 				tsk_list_remove_item_by_data(manager->timers, curr);
 				tsk_mutex_unlock(manager->mutex);
 			}
-			else
-			{
-				if(tsk_condwait_timedwait(manager->condwait, (curr->timeout - epoch)))
-				{
+			else{
+				if((ret = tsk_condwait_timedwait(manager->condwait, (curr->timeout - epoch)))){
+					TSK_DEBUG_ERROR("CONWAIT for timer manager failed [%d]", ret);
 					break;
 				}
-				else
-				{
+				else{
 					goto peek_first;
 				}
 			}
 		}
-		else if(curr)
-		{
+		else if(curr){
 			tsk_mutex_lock(manager->mutex);
+			//TSK_DEBUG_INFO("Timer canceled %llu", curr->id);
 			tsk_list_remove_item_by_data(manager->timers, curr);
 			tsk_mutex_unlock(manager->mutex);
 		}
 	}
 	
-	manager->active = 0;
 	TSK_DEBUG_INFO("TIMER MANAGER -- STOP");
 
 	return 0;
@@ -354,8 +325,7 @@ peek_first:
 static void* tsk_timer_manager_create(void * self, va_list * app)
 {
 	tsk_timer_manager_t *manager = self;
-	if(manager)
-	{
+	if(manager){
 		manager->timers = TSK_LIST_CREATE();
 		manager->sem = tsk_semaphore_create();
 		manager->condwait = tsk_condwait_create();
@@ -368,8 +338,7 @@ static void* tsk_timer_manager_destroy(void * self)
 { 
 	tsk_timer_manager_t *manager = self;
 	
-	if(manager)
-	{
+	if(manager){
 		tsk_timer_manager_stop(manager);
 
 		tsk_semaphore_destroy(&manager->sem);
@@ -386,7 +355,7 @@ static const tsk_object_def_t tsk_timer_manager_def_s =
 	sizeof(tsk_timer_manager_t),
 	tsk_timer_manager_create, 
 	tsk_timer_manager_destroy,
-	0, 
+	tsk_null, 
 };
 const void * tsk_timer_manager_def_t = &tsk_timer_manager_def_s;
 
@@ -402,8 +371,7 @@ static void* tsk_timer_create(void * self, va_list * app)
 {
 	static tsk_timer_id_t tsk_unique_timer_id = 1;
 	tsk_timer_t *timer = self;
-	if(timer)
-	{
+	if(timer){
 		timer->id = tsk_unique_timer_id++;
 		timer->timeout = va_arg(*app, uint64_t);
 		timer->callback = va_arg(*app, tsk_timer_callback);
@@ -418,8 +386,7 @@ static void* tsk_timer_destroy(void * self)
 { 
 	tsk_timer_t *timer = self;
 	
-	if(timer)
-	{
+	if(timer){
 	}
 
 	return self;
@@ -430,8 +397,7 @@ static int tsk_timer_cmp(const void *obj1, const void *obj2)
 	const tsk_timer_t *t1 = obj1;
 	const tsk_timer_t *t2 = obj2;
 
-	if(t1 && t2)
-	{
+	if(t1 && t2){
 		return (int)(t1->timeout - t2->timeout);
 	}
 	else if(!t1 && !t2) return 0;

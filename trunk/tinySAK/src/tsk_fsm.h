@@ -74,10 +74,10 @@ TSK_BEGIN_DECLS
 #define tsk_fsm_action_any -0xFFFF
 
 /**@ingroup tsk_fsm_group
-* @def tsk_fsm_state_id
+* @def tsk_fsm_state_id_t
 */
 /**@ingroup tsk_fsm_group
-* @def tsk_fsm_action_id
+* @def tsk_fsm_action_id_t
 */
 /**@ingroup tsk_fsm_group
 * @def tsk_fsm_cond

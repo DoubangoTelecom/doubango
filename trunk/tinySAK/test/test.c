@@ -38,11 +38,12 @@
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
 #define RUN_TEST_URL				0
+#define RUN_TEST_THREADS			1
 #define RUN_TEST_MUTEX				0
 #define RUN_TEST_CONDWAIT			0
 #define RUN_TEST_SEMAPHORE			0 /* FIXME: android */
 #define RUN_TEST_SAFEOBJECT			0
-#define RUN_TEST_OBJECT				1
+#define RUN_TEST_OBJECT				0
 #define RUN_TEST_PARAMS				0
 #define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
@@ -67,6 +68,10 @@
 
 #if RUN_TEST_URL || RUN_TEST_ALL
 #include "test_url.h"
+#endif
+
+#if RUN_TEST_THREADS || RUN_TEST_ALL
+#include "test_threads.h"
 #endif
 
 #if RUN_TEST_MUTEX || RUN_TEST_ALL
@@ -164,6 +169,12 @@ int main()
 #if RUN_TEST_URL || RUN_TEST_ALL
 		/* url */
 		test_url();
+		printf("\n\n");
+#endif
+
+#if RUN_TEST_THREADS || RUN_TEST_ALL
+		/* threads */
+		test_threads();
 		printf("\n\n");
 #endif
 
