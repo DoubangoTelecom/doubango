@@ -428,6 +428,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_threads.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_timer.h"
 				>
 			</File>

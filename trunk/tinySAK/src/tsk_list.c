@@ -63,7 +63,7 @@ void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 * @param tskobj Any valid object(declared using @ref TSK_DECLARE_OBJECT) to remove.
 * @retval The item.
 */
-tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const void * tskobj)
+tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj)
 {
 	if(list)
 	{
@@ -112,7 +112,7 @@ tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const void * tskobj
 * @param list The list from which to remove the object.
 * @param tskobj Any valid object(declared using @ref TSK_DECLARE_OBJECT) to remove.
 */
-void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj)
+void tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj)
 {
 	tsk_list_item_t* item;
 	if((item = tsk_list_pop_item_by_data(list, tskobj))){
@@ -177,7 +177,7 @@ tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predi
 * @param predicate The predicate function used to match the item.
 * @param data Arbitrary data to pass to the predicate function.
 */
-void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
+void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const tsk_object_t * data)
 {
 	tsk_list_item_t* item;
 	if((item = tsk_list_pop_item_by_pred(list, predicate, data))){
@@ -360,7 +360,7 @@ void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending)
 * @param tskobj The @a object to find.
 * @retval A @ref tsk_list_item_t item if found and NULL otherwize.
 */
-const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const void * tskobj)
+const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj)
 {
 	if(list && tskobj)
 	{
@@ -383,7 +383,7 @@ const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const 
 * @param data data passed to the predicate function for comparaison
 * @retval the item which match the criteria and NULL otherwise
 */
-const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
+const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const tsk_object_t * data)
 {
 	if(predicate)
 	{

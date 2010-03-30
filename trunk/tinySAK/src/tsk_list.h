@@ -96,10 +96,10 @@ typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* 
 #define tsk_list_foreach(item, list) for(item = list?list->head:0; item; item= item->next)
 
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
-TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const void * tskobj);
-TINYSAK_API void tsk_list_remove_item_by_data(tsk_list_t* list, const void * tskobj);
-TINYSAK_API void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
-TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
+TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);
+TINYSAK_API void tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);
+TINYSAK_API void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const tsk_object_t * data);
+TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const tsk_object_t * data);
 TINYSAK_API void tsk_list_clear_items(tsk_list_t* list);
 
 TINYSAK_API tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list);
@@ -121,7 +121,7 @@ TINYSAK_API void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int 
 #define tsk_list_push_ascending_data(list, data) tsk_list_push_filtered_data(list, data, 1)
 #define tsk_list_push_descending_data(list, data) tsk_list_push_filtered_data(list, data, 0)
 
-TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const void * tskobj);
+TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj);
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 
 TINYSAK_GEXTERN const void *tsk_list_def_t;

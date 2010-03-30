@@ -43,12 +43,12 @@ TSK_BEGIN_DECLS
 typedef void tsk_object_t;
 
 /**@ingroup tsk_object_group
-* Safely free any object created using @ref tsk_object_new and declared using @ref TSK_DECLARE_OBJECT. If the reference count of the object was equal to 1 then this
+* Safely free any well-defined object. If the reference count of the object was equal to 1 then this
  * 	object will be freed otherwise the refrence counter will be decremented. 
  *	In all case this operation will set the pointer (the object itself) to NULL.
  * @param	self	The object to free or unref. 
 **/
-#define TSK_OBJECT_SAFE_FREE(self)		tsk_object_unref(self), self = 0
+#define TSK_OBJECT_SAFE_FREE(self)		tsk_object_unref(self), self = tsk_null
 
 /**@ingroup tsk_object_group
 * tag a structure as an object. If this macro is used then you MUST

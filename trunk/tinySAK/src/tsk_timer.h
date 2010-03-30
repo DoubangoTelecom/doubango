@@ -66,7 +66,6 @@ typedef uint64_t tsk_timer_id_t;
 typedef int (*tsk_timer_callback)(const void* arg, tsk_timer_id_t timer_id);
 
 TINYSAK_API int tsk_timer_manager_start(tsk_timer_manager_handle_t *self);
-TINYSAK_API int tsk_timer_manager_isready(tsk_timer_manager_handle_t *self);
 TINYSAK_API int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self);
 #if defined(DEBUG) || defined(_DEBUG)
 TINYSAK_API void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self);
