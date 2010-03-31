@@ -98,7 +98,7 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 /**@ingroup tnet_dns_group
 * Deserialize <character-string>.
 */
-int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** charstring, size_t *offset)
+int tnet_dns_rr_charstring_deserialize(const void* data, char** charstring, size_t *offset)
 {
 	/* RFC 1035 - 3.3. Standard RRs
 		<character-string> is a single length octet followed by that number of characters. 
@@ -108,20 +108,16 @@ int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** cha
 	uint8_t* dataPtr = (((uint8_t*)data)+ *offset);
 	uint8_t length = *dataPtr;
 	
-	if(length < size)
-	{
-		*charstring = tsk_strndup((const char*)(dataPtr + 1), length);
-		*offset += (1 + length);
-		
-		return 0;
-	}
-	else return -1;
+	*charstring = tsk_strndup((const char*)(dataPtr + 1), length);
+	*offset += (1 + length);
+	
+	return 0;	
 }
 
 /**@ingroup tnet_dns_group
 * Deserializes a QName.
 */
-int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, size_t *offset)
+int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset)
 {
 	/* RFC 1035 - 4.1.4. Message compression
 
@@ -131,27 +127,23 @@ int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, si
 		+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
 	*/
 	uint8_t* dataPtr = (((uint8_t*)data) + *offset);
-	uint8_t* dataEnd = (dataPtr + size);
 	unsigned usingPtr = 0; /* Do not change. */
 
 	while(*dataPtr)
 	{
 		usingPtr = ((*dataPtr & 0xC0) == 0xC0);
 
-		if(usingPtr)
-		{
+		if(usingPtr){
 			size_t ptr_offset = (*dataPtr & 0x3F);
 			ptr_offset = ptr_offset << 8 | *(dataPtr+1);
 			
 			*offset += 2;
-			return tnet_dns_rr_qname_deserialize(data, size, name, &ptr_offset);
+			return tnet_dns_rr_qname_deserialize(data, name, &ptr_offset);
 		}
-		else
-		{
+		else{
 			uint8_t length;
 
-			if(*name)
-			{
+			if(*name){
 				tsk_strcat(name, ".");
 			}	
 
@@ -269,7 +261,7 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* of
 	}
 
 	/* == Parse QNAME == */
-	tnet_dns_rr_qname_deserialize(dataStart, size, &qname, offset);
+	tnet_dns_rr_qname_deserialize(dataStart, &qname, offset);
 	dataPtr = (dataStart + *offset);
 	/* == Parse QTYPE == */
 	qtype = (tnet_dns_qtype_t)tnet_ntohs(*((uint16_t*)dataPtr));

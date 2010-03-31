@@ -425,7 +425,7 @@ void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex)
 //=================================================================================================
 //	String object definition
 //
-static void* tsk_string_create(void * self, va_list * app)
+static tsk_object_t* tsk_string_create(tsk_object_t * self, va_list * app)
 {
 	tsk_string_t *string = self;
 	const char *value = va_arg(*app, const char *);
@@ -435,7 +435,7 @@ static void* tsk_string_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsk_string_destroy(void * self)
+static tsk_object_t* tsk_string_destroy(tsk_object_t * self)
 { 
 	tsk_string_t *string = self;
 	if(string){
@@ -445,10 +445,10 @@ static void* tsk_string_destroy(void * self)
 	return self;
 }
 
-static int tsk_string_cmp(const void *obj1, const void *obj2)
+static int tsk_string_cmp(const tsk_object_t *_s1, const tsk_object_t *_s2)
 {
-	const tsk_string_t *s1 = obj1;
-	const tsk_string_t *s2 = obj2;
+	const tsk_string_t *s1 = _s1;
+	const tsk_string_t *s2 = _s2;
 
 	if(s1 && s2){
 		return tsk_stricmp(s1->value, s2->value);

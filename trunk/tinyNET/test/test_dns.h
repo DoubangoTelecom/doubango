@@ -23,6 +23,7 @@
 #define TNET_TEST_DNS_H
 
 #include "dns/tnet_dns_naptr.h"
+#include "dns/tnet_dns_regexp.h"
 
 void test_dns_query()
 {
@@ -40,7 +41,7 @@ void test_dns_query()
 			tsk_list_foreach(item, response->Answers){
 				rr = item->data;
 				if(rr->qtype == qtype_naptr){
-					tnet_dns_naptr_t *naptr = (tnet_dns_naptr_t*)rr;
+					const tnet_dns_naptr_t *naptr = (const tnet_dns_naptr_t*)rr;
 					
 					TSK_DEBUG_INFO("order=%u pref=%u flags=%s services=%s regexp=%s replacement=%s", 
 						naptr->order,
@@ -101,15 +102,81 @@ void test_dns_naptr_srv()
 void test_enum()
 {
 	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+	tnet_dns_response_t* response = tsk_null;
+//	const tsk_list_item_t* item;
+//	const tnet_dns_naptr_t* record;
+	char* uri = tsk_null;
 
-	//if(!tnet_dns_enum(ctx, "+442079460148")){
-	if(!tnet_dns_enum(ctx, "tel:+33660188661")){
-		TSK_DEBUG_INFO("DNS ENUM succeed");
+	//if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", "+33660188661", "e164.org"))){
+	if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", "+1-800-555-5555", "e164.org"))){
+		TSK_DEBUG_INFO("URI=%s", uri);
+		TSK_FREE(uri);
 	}
+	
+	/*if((response = tnet_dns_enum(ctx, "+1-800-555-5555", "e164.org"))){
+		if(TNET_DNS_RESPONSE_IS_SUCCESS(response)){
+			TSK_DEBUG_INFO("We got a success response from the DNS server.");
+			// loop through the answers
+			tsk_list_foreach(item, response->Answers){
+				record = item->data;
+				
+				TSK_DEBUG_INFO("order=%u pref=%u flags=%s services=%s regexp=%s replacement=%s", 
+					record->order,
+					record->preference,
+					record->flags,
+					record->services,
+					record->regexp,
+					record->replacement);
+			}
+		}
+		else{
+			TSK_DEBUG_ERROR("We got an error response from the DNS server. Erro code: %u", response->Header.RCODE);
+		}
+	}*/
 
+	
+	TSK_OBJECT_SAFE_FREE(response);
 	TSK_OBJECT_SAFE_FREE(ctx);
 
 	tsk_thread_sleep(2000);
+}
+
+
+typedef struct regexp_test_s{
+	const char* e164num;
+	const char* regexp;
+	const char* xres;
+}
+regexp_test_t;
+
+regexp_test_t regexp_tests[] = {
+/*	"+18005551234", "!^.*$!sip:customer-service@example.com!i", "sip:customer-service@example.com",
+	"+18005551234", "!^.*$!mailto:information@example.com!i", "mailto:information@example.com",
+*/
+	"+1800555-5555", "!^\\+1800(.*)$!sip:1641641800\\1@tollfree.sip-happens.com!", "sip:16416418005555555@tollfree.sip-happens.com",
+	"+1800555-5555", "!^\\+1800(.*)$!sip:1641641800\\1@sip.tollfreegateway.com!", "sip:16416418005555555@sip.tollfreegateway.com",
+
+	"+468971234", "!^+46(.*)$!ldap://ldap.telco.se/cn=0\\1!", "ldap://ldap.telco.se/cn=08971234",
+	"+468971234", "!^+46(.*)$!^.*$!mailto:spam@paf.se!", "mailto:spam@paf.se",
+
+	"urn:cid:199606121851.1@bar.example.com", "!!^urn:cid:.+@([^\\.]+\\.)(.*)$!\\2!i", "example.com",
+};
+
+void test_regex()
+{
+	char* ret;
+	size_t i;
+
+	for(i=0; i< sizeof(regexp_tests)/sizeof(regexp_test_t); i++)
+	{
+		if((ret = tnet_dns_regex_parse(regexp_tests[i].e164num, regexp_tests[i].regexp))){
+			TSK_DEBUG_INFO("ENUM(%s) = %s", regexp_tests[i].e164num, ret);
+			TSK_FREE(ret);
+		}
+		else{
+			TSK_DEBUG_ERROR("ENUM(%s) failed", regexp_tests[i].e164num);
+		}
+	}
 }
 
 void test_dns()
@@ -117,7 +184,8 @@ void test_dns()
 	//test_dns_naptr_srv();
 	//test_dns_srv();
 	//test_dns_query();
-	test_enum();
+	//test_enum();
+	test_regex();
 }
 
 

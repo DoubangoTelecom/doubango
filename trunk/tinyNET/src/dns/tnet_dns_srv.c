@@ -53,28 +53,25 @@ static void* tnet_dns_srv_create(void * self, va_list * app)
 		const void* data = va_arg(*app, const void*);
 		size_t offset = va_arg(*app, size_t);
 
-		const uint8_t* rddata = (((uint8_t*)data) + offset);
-		const uint8_t* dataEnd = (rddata + rdlength);
-
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(srv), qtype_srv, qclass);
 		TNET_DNS_RR(srv)->name = tsk_strdup(name);
 		TNET_DNS_RR(srv)->rdlength = rdlength;
 		TNET_DNS_RR(srv)->ttl = ttl;
 
-		if(rddata && rdlength)
+		if(rdlength)
 		{	// ==> DESERIALIZATION
 			/* Priority */
-			srv->priority = tnet_ntohs(*((uint16_t*)rddata));
-			rddata += 2, offset += 2;
+			srv->priority = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset))),
+			offset += 2;
 			/* Weight */
-			srv->weight = tnet_ntohs(*((uint16_t*)rddata));
-			rddata += 2, offset += 2;
+			srv->weight = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset))),
+			offset += 2;
 			/* Port */
-			srv->port = tnet_ntohs(*((uint16_t*)rddata));
-			rddata += 2, offset += 2;
+			srv->port = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset))),
+			offset += 2;
 			/* Target */
-			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(srv->target), &offset);
+			tnet_dns_rr_qname_deserialize(data, &(srv->target), &offset);
 		}
 	}
 	return self;

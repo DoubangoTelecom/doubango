@@ -166,9 +166,9 @@ typedef tsk_list_t  tnet_dns_rrs_L_t; /**< List of @ref tnet_dns_rr_t elements. 
 int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_t qclass);
 int tnet_dns_rr_deinit(tnet_dns_rr_t *rr);
 
-int tnet_dns_rr_charstring_deserialize(const void* data, size_t size, char** name, size_t *offset);
+int tnet_dns_rr_charstring_deserialize(const void* data, char** name, size_t *offset);
 
-int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, size_t *offset);
+int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset);
 int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output);
 
 tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* offset);

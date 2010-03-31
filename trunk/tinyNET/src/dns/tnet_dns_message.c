@@ -168,8 +168,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 	uint16_t i;
 	size_t offset = 0;
 
-	if(!data || !size)
-	{
+	if(!data || !size){
 		goto bail;
 	}
 
@@ -217,7 +216,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 	{
 		/* Do not need to parse queries in the response ==> silently ignore */
 		char* name = 0;
-		tnet_dns_rr_qname_deserialize(dataStart, (dataEnd-dataPtr), &name, &offset); /* QNAME */
+		tnet_dns_rr_qname_deserialize(dataStart, &name, &offset); /* QNAME */
 		dataPtr+=offset;
 		dataPtr+=4, offset+=4; /* QTYPE + QCLASS */
 		TSK_FREE(name);

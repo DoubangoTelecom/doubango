@@ -28,6 +28,7 @@
  */
 #include "tnet_dns.h"
 
+#include "tnet_dns_regexp.h"
 #include "tnet_dns_message.h"
 #include "tnet_dns_opt.h"
 #include "tnet_dns_srv.h"
@@ -292,17 +293,18 @@ bail:
 * Gets list of URIs associated to this telephone number by using ENUM protocol (RFC 3761).
 * @param ctx The DNS context. 
 * The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
-* @param e164num A valid E.164 number (e.g. +3360000000).
+* @param e164num A valid E.164 number (e.g. +1-800-555-5555).
+* @param domain The domain name (e.g e164.arpa, e164.org, ...). If Null, default value is "e164.arpa" (IANA).
 * @retval The DNS response with NAPTR RRs. The @a answers in the @a response are already filtered.
 * MUST be destroyed using @ref TSK_OBJECT_SAFE_FREE macro.
 * @sa @ref tnet_dns_resolve, @ref tnet_dns_enum_2.
 */
-tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num)
+tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num, const char* domain)
 {
 	char e164domain[255];
 	tnet_dns_response_t* ret = tsk_null;
 	size_t e164size;
-	size_t i, j;
+	int i, j; // must be signed
 	
 	e164size = strlen(e164num);
 	
@@ -336,14 +338,21 @@ tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num)
 		the end result or, if the flags field is blank, produces new keys in
 		the form of domain-names from the DNS.
 	*/
-	for(i = e164size-1, j=0; i; i--){
+	for(i = e164size-1, j=0; i>=0; i--){
 		if(!isdigit(e164num[i])){
 			continue;
 		}
 		e164domain[j++] = e164num[i];
 		e164domain[j++] = '.';
 	}
-	memcpy(&e164domain[j], "e164.arpa", 9); 
+
+	// append domain name
+	if(domain){
+		memcpy( &e164domain[j], domain, ((strlen(domain) + j) >= sizeof(e164domain)-1) ? (sizeof(e164domain)-j-1) : strlen(domain) );
+	}
+	else{
+		memcpy(&e164domain[j], "e164.arpa", 9);
+	}
 	
 	/* == Performs DNS (NAPTR) lookup  == */
 	ret = tnet_dns_resolve(ctx, e164domain, qclass_in, qtype_naptr);
@@ -353,10 +362,64 @@ bail:
 	return ret;
 }
 
-char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164num)
+/**@ingroup tnet_dns_group
+* Gets the internate address associated to this telephone number by using ENUM protocol (RFC 3761).
+* Only terminale rules containing uris(flags="u") will be considered and the regex string will be executed on the original string for
+* substitution. <br>
+* <b> Parsing complex regexp will probably fail (99.99% chance). Please use @ref tnet_dns_enum if you want to use your own regexp parser. </b>
+* @param ctx The DNS context. 
+* The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
+* @param service The ENUM service (e.g. E2U+SIP).
+* @param e164num A valid E.164 number (e.g. +1-800-555-5555).
+* @param domain The domain name (e.g e164.arpa, e164.org, ...). If Null, default value is "e164.arpa" (IANA).
+* @retval The Internet address (SIP, email, ICQ, fax, ...) associated to this service.
+* MUST be freed using @ref TSK_FREE macro.
+* @sa @ref tnet_dns_resolve, @ref tnet_dns_enum.
+*/
+char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164num, const char* domain)
 {
-	// service e.g. E2U+sip
-	return 0;
+	tnet_dns_response_t* response;
+	const tsk_list_item_t* item;
+	char* ret = tsk_null;
+	const tnet_dns_rr_t* rr;
+
+	if((response = tnet_dns_enum(ctx, e164num, domain))){
+		if(TNET_DNS_RESPONSE_IS_SUCCESS(response)){
+			tsk_list_foreach(item, response->Answers){
+				rr = item->data;
+				if(rr->qtype == qtype_naptr){
+					const tnet_dns_naptr_t *naptr = (const tnet_dns_naptr_t*)rr;
+					/*	RFC 3403 - 6.2 E164 Example
+						Both the ENUM [18] and URI  Resolution [4] Applications use the 'u'
+						flag.  This flag states that the Rule is terminal and that the output
+						is a URI which contains the information needed to contact that
+						telephone service.
+					   */
+					if( tsk_striequals(naptr->flags, "u") && tsk_striequals(naptr->services, service)){
+						/* RFC 3403 - 4.1 Packet Format
+							The fields (replacement and regexp) are also mutually exclusive.  If a record is
+							returned that has values for both fields then it is considered to
+							be in error and SHOULD be either ignored or an error returned.
+						*/
+						if(naptr->regexp && naptr->replacement){
+							continue;
+						}
+
+						if((ret = tnet_dns_regex_parse(e164num, naptr->regexp))){
+							break;
+						}
+					}
+				}
+			}	
+		}
+		else{
+			TSK_DEBUG_ERROR("We got an error response from the DNS server. Error code: %u", response->Header.RCODE);
+		}
+
+		TSK_OBJECT_SAFE_FREE(response);
+	}
+
+	return ret;
 }
 
 /**@ingroup tnet_dns_group
