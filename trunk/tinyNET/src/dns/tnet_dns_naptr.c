@@ -56,34 +56,28 @@ static void* tnet_dns_naptr_create(void * self, va_list * app)
 		const void* data = va_arg(*app, const void*);
 		size_t offset = va_arg(*app, size_t);
 
-		const uint8_t* rddata = (((uint8_t*)data) + offset);
-		const uint8_t* dataEnd = (rddata + rdlength);
-
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(naptr), qtype_naptr, qclass);
 		TNET_DNS_RR(naptr)->name = tsk_strdup(name);
 		TNET_DNS_RR(naptr)->rdlength = rdlength;
 		TNET_DNS_RR(naptr)->ttl = ttl;
 
-		if(rddata && rdlength)
+		if(rdlength)
 		{	// ==> DESERIALIZATION
 			/* ORDER */
-			naptr->order = tnet_ntohs(*((uint16_t*)rddata));
-			rddata += 2, offset += 2;
+			naptr->order = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset)));
+			offset += 2;
 			/* PREFERENCE */
-			naptr->preference = tnet_ntohs(*((uint16_t*)rddata));
-			rddata += 2, offset += 2;
+			naptr->preference = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset)));
+			offset += 2;
 			/* FLAGS */
-			tnet_dns_rr_charstring_deserialize(data, (dataEnd - rddata), &(naptr->flags), &offset);
-			rddata += offset;
+			tnet_dns_rr_charstring_deserialize(data, &(naptr->flags), &offset);
 			/* SERVICES */
-			tnet_dns_rr_charstring_deserialize(data, (dataEnd - rddata), &(naptr->services), &offset);
-			rddata += offset;
+			tnet_dns_rr_charstring_deserialize(data, &(naptr->services), &offset);
 			/* REGEXP */
-			tnet_dns_rr_charstring_deserialize(data, (dataEnd - rddata), &(naptr->regexp), &offset);
-			rddata += offset;
+			tnet_dns_rr_charstring_deserialize(data, &(naptr->regexp), &offset);
 			/* REPLACEMENT */
-			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(naptr->replacement), &offset);
+			tnet_dns_rr_qname_deserialize(data, &(naptr->replacement), &offset);
 		}
 	}
 	return self;

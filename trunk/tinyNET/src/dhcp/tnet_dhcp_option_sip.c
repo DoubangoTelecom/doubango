@@ -69,7 +69,7 @@ static void* tnet_dhcp_option_sip_create(void * self, va_list * app)
 			size_t offset = 1;
 			char* server = 0;
 			payloadPtr++;
-			while((payloadPtr < payloadEnd) && !tnet_dns_rr_qname_deserialize(payload, (payloadEnd - payloadPtr), &server, &offset))
+			while((payloadPtr < payloadEnd) && !tnet_dns_rr_qname_deserialize(payload, &server, &offset))
 			{
 				tsk_string_t* string = TSK_STRING_CREATE(server);
 				tsk_list_push_back_data(option->servers, (void*)&string);

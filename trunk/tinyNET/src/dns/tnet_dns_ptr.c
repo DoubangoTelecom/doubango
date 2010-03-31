@@ -52,19 +52,16 @@ static void* tnet_dns_ptr_create(void * self, va_list * app)
 		const void* data = va_arg(*app, const void*);
 		size_t offset = va_arg(*app, size_t);
 
-		const uint8_t* rddata = (((uint8_t*)data) + offset);
-		const uint8_t* dataEnd = (rddata + rdlength);
-
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(ptr), qtype_ptr, qclass);
 		TNET_DNS_RR(ptr)->name = tsk_strdup(name);
 		TNET_DNS_RR(ptr)->rdlength = rdlength;
 		TNET_DNS_RR(ptr)->ttl = ttl;
 
-		if(rddata && rdlength)
+		if(rdlength)
 		{	// ==> DESERIALIZATION
 			/* PTRDNAME */
-			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(ptr->ptrdname), &offset);
+			tnet_dns_rr_qname_deserialize(data, &(ptr->ptrdname), &offset);
 		}
 	}
 	return self;

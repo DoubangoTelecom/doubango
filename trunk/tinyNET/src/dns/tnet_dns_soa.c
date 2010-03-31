@@ -53,38 +53,33 @@ static void* tnet_dns_soa_create(void * self, va_list * app)
 		const void* data = va_arg(*app, const void*);
 		size_t offset = va_arg(*app, size_t);
 
-		const uint8_t* rddata = (((uint8_t*)data) + offset);
-		const uint8_t* dataEnd = (rddata + rdlength);
-
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(soa), qtype_soa, qclass);
 		TNET_DNS_RR(soa)->name = tsk_strdup(name);
 		TNET_DNS_RR(soa)->rdlength = rdlength;
 		TNET_DNS_RR(soa)->ttl = ttl;
 
-		if(rddata && rdlength)
+		if(rdlength)
 		{	// ==> DESERIALIZATION
 			/* MNAME */
-			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(soa->mname), &offset);
-			rddata += offset;
+			tnet_dns_rr_qname_deserialize(data, &(soa->mname), &offset);
 			/* RNAME */
-			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(soa->rname), &offset);
-			rddata += offset;
+			tnet_dns_rr_qname_deserialize(data, &(soa->rname), &offset);
 			/* SERIAL */
-			soa->serial = tnet_ntohl(*((uint32_t*)rddata));
-			rddata += 2, offset += 2;
+			soa->serial = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			offset += 2;
 			/* REFRESH */
-			soa->refresh = tnet_ntohl(*((uint32_t*)rddata));
-			rddata += 2, offset += 2;
+			soa->refresh = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			offset += 2;
 			/* RETRY */
-			soa->retry = tnet_ntohl(*((uint32_t*)rddata));
-			rddata += 2, offset += 2;
+			soa->retry = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			offset += 2;
 			/* EXPIRE */
-			soa->expire = tnet_ntohl(*((uint32_t*)rddata));
-			rddata += 2, offset += 2;
+			soa->expire = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			offset += 2;
 			/* MINIMUM */
-			soa->minimum = tnet_ntohl(*((uint32_t*)rddata));
-			rddata += 2, offset += 2;
+			soa->minimum = tnet_ntohl(*((uint32_t*)(((uint8_t*)data) + offset))),
+			offset += 2;
 		}
 	}
 	return self;

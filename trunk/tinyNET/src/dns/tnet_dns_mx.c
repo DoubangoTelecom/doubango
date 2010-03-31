@@ -53,22 +53,19 @@ static void* tnet_dns_mx_create(void * self, va_list * app)
 		const void* data = va_arg(*app, const void*);
 		size_t offset = va_arg(*app, size_t);
 
-		const uint8_t* rddata = (((uint8_t*)data) + offset);
-		const uint8_t* dataEnd = (rddata + rdlength);
-
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(mx), qtype_mx, qclass);
 		TNET_DNS_RR(mx)->name = tsk_strdup(name);
 		TNET_DNS_RR(mx)->rdlength = rdlength;
 		TNET_DNS_RR(mx)->ttl = ttl;
 
-		if(rddata && rdlength)
+		if(rdlength)
 		{	// ==> DESERIALIZATION
 			/* PREFERENCE */
-			mx->preference = tnet_ntohs(*((uint16_t*)rddata));
-			rddata += 2, offset += 2;
+			mx->preference = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset)));
+			offset += 2;
 			/* EXCHANGE */
-			tnet_dns_rr_qname_deserialize(data, (dataEnd - rddata), &(mx->exchange), &offset);
+			tnet_dns_rr_qname_deserialize(data, &(mx->exchange), &offset);
 		}
 	}
 	return self;

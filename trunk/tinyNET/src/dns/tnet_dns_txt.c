@@ -52,19 +52,16 @@ static void* tnet_dns_txt_create(void * self, va_list * app)
 		const void* data = va_arg(*app, const void*);
 		size_t offset = va_arg(*app, size_t);
 
-		const uint8_t* rddata = (((uint8_t*)data) + offset);
-		const uint8_t* dataEnd = (rddata + rdlength);
-
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(txt), qtype_txt, qclass);
 		TNET_DNS_RR(txt)->name = tsk_strdup(name);
 		TNET_DNS_RR(txt)->rdlength = rdlength;
 		TNET_DNS_RR(txt)->ttl = ttl;
 
-		if(rddata && rdlength)
+		if(rdlength)
 		{	// ==> DESERIALIZATION
 			/* TXT-DATA  */
-			tnet_dns_rr_charstring_deserialize(data, (dataEnd - rddata), &(txt->txt_data), &offset);
+			tnet_dns_rr_charstring_deserialize(data, &(txt->txt_data), &offset);
 		}
 	}
 	return self;

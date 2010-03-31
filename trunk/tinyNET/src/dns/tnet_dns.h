@@ -60,7 +60,7 @@ TNET_BEGIN_DECLS
 /**@ingroup tnet_dns_group
 * Default timeout (in milliseconds) value for DNS queries. 
 */
-#define TNET_DNS_TIMEOUT_DEFAULT				3000 //(3 seconds)
+#define TNET_DNS_TIMEOUT_DEFAULT				5000 //(5 seconds)
 
 /**@ingroup tnet_dns_group
 * Maximum supported Dgram size to advertise using EDNS0. 
@@ -115,8 +115,8 @@ tnet_dns_ctx_t;
 
 TINYNET_API int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx);
 TINYNET_API tnet_dns_response_t* tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
-TINYNET_API tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num);
-TINYNET_API char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164num);
+TINYNET_API tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num, const char* domain);
+TINYNET_API char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164num, const char* domain);
 TINYNET_API int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname, tnet_port_t* port);
 TINYNET_API int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char* service, char** hostname, tnet_port_t* port);
 
