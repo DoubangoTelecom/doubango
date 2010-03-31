@@ -347,6 +347,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tnet_endianness.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tnet_nat.c"
 				>
 			</File>
@@ -536,6 +540,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tnet_auth.h"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tnet_endianness.h"
 				>
 			</File>
 			<File

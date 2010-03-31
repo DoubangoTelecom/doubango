@@ -20,7 +20,7 @@
 *
 */
 /**@file tnet_dns.h
- * @brief DNS utilities functions (RFCS [1034 1035] [2671] [3401 3402 3403 3404]).
+ * @brief DNS utilities functions (RFCS [1034 1035] [2671] [3401 3402 3403 3404] [3761]).
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -60,7 +60,7 @@ TNET_BEGIN_DECLS
 /**@ingroup tnet_dns_group
 * Default timeout (in milliseconds) value for DNS queries. 
 */
-#define TNET_DNS_TIMEOUT_DEFAULT				2500 //(2.5 seconds)
+#define TNET_DNS_TIMEOUT_DEFAULT				3000 //(3 seconds)
 
 /**@ingroup tnet_dns_group
 * Maximum supported Dgram size to advertise using EDNS0. 
@@ -98,11 +98,11 @@ typedef struct tnet_dns_ctx_s
 	TSK_DECLARE_OBJECT;
 
 	uint64_t timeout; /**< In milliseconds. Default: @ref TNET_DNS_TIMEOUT_DEFAULT. */
-	unsigned enable_recursion:1; /**< Indicates whether to direct the name server to pursue the query recursively. Default: enabled.*/
-	unsigned enable_edns0:1; /**< Indicates whether to enable EDNS0 (Extension Mechanisms for DNS) or not. Default: enabled. */
-	unsigned enable_cache:1; /**< Indicates whether to enable the DNS cache or not. */
+	tsk_bool_t recursion; /**< Indicates whether to direct the name server to pursue the query recursively. Default: enabled.*/
+	tsk_bool_t edns0; /**< Indicates whether to enable EDNS0 (Extension Mechanisms for DNS) or not. Default: enabled. */
+	tsk_bool_t caching; /**< Indicates whether to enable the DNS cache or not. */
 
-	uint64_t cache_ttl;
+	int32_t cache_ttl;
 
 	tnet_port_t server_port; /**< Default port (@a TNET_DNS_SERVER_PORT_DEFAULT)) */
 
@@ -113,7 +113,10 @@ typedef struct tnet_dns_ctx_s
 }
 tnet_dns_ctx_t;
 
-TINYNET_API tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
+TINYNET_API int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx);
+TINYNET_API tnet_dns_response_t* tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
+TINYNET_API tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num);
+TINYNET_API char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164num);
 TINYNET_API int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname, tnet_port_t* port);
 TINYNET_API int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char* service, char** hostname, tnet_port_t* port);
 

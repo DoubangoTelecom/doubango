@@ -27,7 +27,7 @@ typedef struct person_s
 	TSK_DECLARE_OBJECT; // Mandatory
 
 	char* name;
-	struct person_s* mother;
+	struct person_s* girlfriend;
 }
 person_t;
 
@@ -45,7 +45,7 @@ student_t;
 
 
 // constructor
-static void* person_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* person_create(tsk_object_t * self, va_list * app)
 {
  	person_t *person = self;
  	if(person){
@@ -55,29 +55,29 @@ static void* person_create(tsk_object_t * self, va_list * app)
  }
 
  // destructor
- static void* person_destroy(tsk_object_t * self)
+ static tsk_object_t* person_destroy(tsk_object_t * self)
  { 
  	person_t *person = self;
  	if(person){
  		TSK_FREE(person->name);
-		tsk_object_unref(person->mother);
+		tsk_object_unref(person->girlfriend);
  	}
  	return self; // return
  }
  
  // comparator
- static int person_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
+ static int person_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
  {
- 	const person_t *person1 = object1;
- 	const person_t *person2 = object2;
+ 	const person_t *p1 = _p1;
+ 	const person_t *p1 = _p2;
 	int ret;
 	
 	// do they have the same name?
-	if((ret = tsk_stricmp(person1->name, person2->name))){
+	if((ret = tsk_stricmp(p1->name, p2->name))){
 		return ret;
 	}
-	// do they have the same mother?
-	if((ret = tsk_object_cmp(person1->mother, person2->mother))){
+	// do they have the same girlfriend?
+	if((ret = tsk_object_cmp(p1->girlfriend, p2->girlfriend))){
 		return ret;
 	}
 	
@@ -100,11 +100,11 @@ static void* person_create(tsk_object_t * self, va_list * app)
 /* test object */
 void test_object()
 {
-	// create a person: will call the constructor
+	// creates a person: will call the constructor
 	person_t* bob = PERSON_CREATE("bob");
-	// create bob's mother
-	bob->mother = PERSON_CREATE("alice");
-	// delete bob: will delete both bob and bob's mother field by calling their destructors
+	// creates bob's girlfriend
+	bob->girlfriend = PERSON_CREATE("alice");
+	// deletes bob: will delete both bob and bob's girlfriend field by calling their destructors
 	TSK_OBJECT_SAFE_FREE(bob);
 }
 

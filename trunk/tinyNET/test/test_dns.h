@@ -57,6 +57,8 @@ void test_dns_query()
 		}
 	}
 	
+	tnet_dns_cache_clear(ctx);
+
 	TSK_OBJECT_SAFE_FREE(response);
 	TSK_OBJECT_SAFE_FREE(ctx);
 
@@ -83,7 +85,7 @@ void test_dns_srv()
 void test_dns_naptr_srv()
 {
 	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
-	char* hostname = 0;
+	char* hostname = tsk_null;
 	tnet_port_t port = 0;
 
 	if(!tnet_dns_query_naptr_srv(ctx, "sip2sip.info", "SIP+D2U", &hostname, &port)){
@@ -96,11 +98,26 @@ void test_dns_naptr_srv()
 	tsk_thread_sleep(2000);
 }
 
+void test_enum()
+{
+	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+
+	//if(!tnet_dns_enum(ctx, "+442079460148")){
+	if(!tnet_dns_enum(ctx, "tel:+33660188661")){
+		TSK_DEBUG_INFO("DNS ENUM succeed");
+	}
+
+	TSK_OBJECT_SAFE_FREE(ctx);
+
+	tsk_thread_sleep(2000);
+}
+
 void test_dns()
 {
 	//test_dns_naptr_srv();
 	//test_dns_srv();
-	test_dns_query();
+	//test_dns_query();
+	test_enum();
 }
 
 

@@ -407,6 +407,10 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 	
 	/*===  RDATA : Request never contains data
 	===*/
+	if(!rr->rpdata){
+		goto done;
+	}
+
 	switch(rr->qtype)
 	{
 		case qtype_a:
@@ -422,11 +426,12 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 		case qtype_txt:
 		default:
 			{
-				TSK_DEBUG_WARN("DNS Request should not contains RDATA.");
+				TSK_DEBUG_WARN("DNS Request should not contains RDATA (not supported).");
 				break;
 			}
 	}
 
+done:
 	return 0;
 }
 
