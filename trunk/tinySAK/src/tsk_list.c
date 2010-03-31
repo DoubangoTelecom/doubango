@@ -193,7 +193,7 @@ void tsk_list_clear_items(tsk_list_t* list)
 {
 	if(list)
 	{
-		tsk_list_item_t* next = 0;
+		tsk_list_item_t* next = tsk_null;
 		tsk_list_item_t* curr = list->head;
 
 		while(curr){
@@ -201,7 +201,8 @@ void tsk_list_clear_items(tsk_list_t* list)
 			tsk_object_unref(curr);
 			curr = next;
 		}
-		list->head = 0;
+		list->head = tsk_null;
+		list->tail = tsk_null;
 	}
 }
 

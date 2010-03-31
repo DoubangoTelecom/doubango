@@ -144,7 +144,7 @@ typedef struct tnet_dns_rr_s
 	/** Two octets containing one of the RR CLASS codes. */
 	tnet_dns_qclass_t qclass;
 
-	/** A 32 bit signed integer that specifies the time interval that the resource record may be cached before the source
+	/** A 32 bit signed integer that specifies the time interval (seconds) that the resource record may be cached before the source
 		of the information should again be consulted.  
 		Zero values are interpreted to mean that the RR can only be used for the transaction in progress, and should not be cached.  
 		For example, SOA records are always distributed with a zero TTL to prohibit caching.  Zero values can also be used for extremely volatile data. */

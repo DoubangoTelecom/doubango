@@ -410,8 +410,8 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			//else if if(tsk_striquals(stack->secagree_mech, "ipsec-ike"))
 		}
 
-		/* Use DNS NAPTR for the P-CSCF discovery? */
-		if(stack->use_dns_naptr)
+		/* Use DNS NAPTR+SRV for the P-CSCF discovery? */
+		if(stack->use_dns_naptr || !stack->proxy_cscf)
 		{
 			char* hostname = 0;
 			tnet_port_t port = 0;

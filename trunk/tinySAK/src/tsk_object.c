@@ -139,7 +139,7 @@ size_t tsk_object_sizeof(const tsk_object_t *self)
 }
 
 /**@ingroup tsk_object_group
-* Compares two objects. Both object MUST be declared using @ref TSK_DECLARE_OBJECT and created using @ref tsk_object_new or @ref tsk_object_new_2.
+* Compares two well-defined objects.
 * If the meta-data (definition) of the first object (@a object1) do not include a function comparator then this method will amlways return -1.
 * @param object1 The first object to compare.
 * @param object2 The second object to compare.
@@ -187,9 +187,9 @@ tsk_object_t* tsk_object_unref(tsk_object_t *self)
 	if(self)
 	{
 		tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
-		if(!--objhdr->refCount){ // If refCount is < 0 then, nothing should happen.
+		if(objhdr->refCount && !--objhdr->refCount){ // If refCount is == 0 then, nothing should happen.
 			tsk_object_delete(self);
-			return 0;
+			return tsk_null;
 		}
 	}
 	return self;
