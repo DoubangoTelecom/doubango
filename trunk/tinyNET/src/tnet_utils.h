@@ -147,7 +147,7 @@ TINYNET_API size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, 
 TINYNET_API int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags);
 TINYNET_API int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to);
 TINYNET_API int tnet_sockfd_listen(tnet_fd_t fd, int backlog);
-TINYNET_API tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, int *addrlen);
+TINYNET_API tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, socklen_t *addrlen);
 
 
 

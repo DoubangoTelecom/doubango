@@ -8,26 +8,23 @@
 			D2AAC0620554660B00DB518D /* tinyNET */,
 		);
 		breakpoints = (
-			EC057C9410EF7A2D00280149 /* tnet_utils.c:331 */,
-			EC057CFB10EF7EB200280149 /* tnet_transport.c:183 */,
+			EC057CFB10EF7EB200280149 /* tnet_transport.c:185 */,
 			EC057D0710EF80E300280149 /* test_transport.h:40 */,
 			ECED607810F96FDD006B4DC9 /* tnet_socket.c:86 */,
-			ECED608F10F97808006B4DC9 /* tnet_transport_poll.c:336 */,
-			ECED609710F978D7006B4DC9 /* tnet_transport_poll.c:281 */,
-			ECED60B510F979E1006B4DC9 /* tnet_transport_poll.c:274 */,
-			ECED60C310F97A49006B4DC9 /* tnet_transport_poll.c:341 */,
-			ECED60C710F97A69006B4DC9 /* tnet_transport_poll.c:339 */,
-			ECED60F310F97E82006B4DC9 /* tnet_transport_poll.c:342 */,
+			ECED608F10F97808006B4DC9 /* tnet_transport_poll.c:341 */,
+			ECED609710F978D7006B4DC9 /* tnet_transport_poll.c:286 */,
+			ECED60B510F979E1006B4DC9 /* tnet_transport_poll.c:279 */,
+			ECED60C310F97A49006B4DC9 /* tnet_transport_poll.c:346 */,
+			ECED60C710F97A69006B4DC9 /* tnet_transport_poll.c:344 */,
+			ECED60F310F97E82006B4DC9 /* tnet_transport_poll.c:347 */,
 			EC9A8E761124C78C0046F5EC /* test_ifaces.h:70 */,
-			EC9A8EA81124C99E0046F5EC /* tnet_dns.c:184 */,
-			EC9A8EAC1124C9B10046F5EC /* tnet_dns.c:162 */,
-			EC9A8EC01124CA580046F5EC /* tnet_dns.c:138 */,
 			EC9A8ED31124CAF70046F5EC /* tnet_dhcp.c:68 */,
 			EC9A8EDF1124CBE00046F5EC /* tnet_socket.c:189 */,
 			ECF4BC2C1143490800B7C09B /* asm write$UNIX2003  0x959b1c74:8 */,
 			ECF4BC2E1143490F00B7C09B /* test_transport.h:114 */,
 			ECF4BC3F1143497C00B7C09B /* test.c:82 */,
-			ECF4BC6511434A8700B7C09B /* tnet_transport_poll.c:414 */,
+			ECF4BC6511434A8700B7C09B /* tnet_transport_poll.c:419 */,
+			ECF2B2781165590300AA69D2 /* test_dhcp.h:117 */,
 		);
 		codeSenseManager = ECE5B90510EF65C200B7EDDD /* Code sense */;
 		executables = (
@@ -118,53 +115,103 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 289611810;
-			PBXWorkspaceStateSaveDate = 289611810;
+			PBXPerProjectTemplateStateSaveDate = 291854564;
+			PBXWorkspaceStateSaveDate = 291854564;
 		};
 		perUserProjectItems = {
-			ECF4BB35114328E800B7C09B /* PBXTextBookmark */ = ECF4BB35114328E800B7C09B /* PBXTextBookmark */;
-			ECF4BB38114328E800B7C09B /* PBXTextBookmark */ = ECF4BB38114328E800B7C09B /* PBXTextBookmark */;
-			ECF4BB39114328E800B7C09B /* PBXTextBookmark */ = ECF4BB39114328E800B7C09B /* PBXTextBookmark */;
-			ECF4BB4E1143295D00B7C09B /* PBXTextBookmark */ = ECF4BB4E1143295D00B7C09B /* PBXTextBookmark */;
-			ECF4BB511143296600B7C09B /* PBXTextBookmark */ = ECF4BB511143296600B7C09B /* PBXTextBookmark */;
-			ECF4BB591143299000B7C09B /* PBXTextBookmark */ = ECF4BB591143299000B7C09B /* PBXTextBookmark */;
-			ECF4BB6611433E6F00B7C09B /* PBXTextBookmark */ = ECF4BB6611433E6F00B7C09B /* PBXTextBookmark */;
-			ECF4BB75114342F000B7C09B /* PBXTextBookmark */ = ECF4BB75114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB76114342F000B7C09B /* PBXTextBookmark */ = ECF4BB76114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB79114342F000B7C09B /* PBXTextBookmark */ = ECF4BB79114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB7A114342F000B7C09B /* PBXTextBookmark */ = ECF4BB7A114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB7B114342F000B7C09B /* PBXTextBookmark */ = ECF4BB7B114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB7C114342F000B7C09B /* PBXTextBookmark */ = ECF4BB7C114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB7D114342F000B7C09B /* PBXTextBookmark */ = ECF4BB7D114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB7E114342F000B7C09B /* PBXTextBookmark */ = ECF4BB7E114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB7F114342F000B7C09B /* PBXTextBookmark */ = ECF4BB7F114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB80114342F000B7C09B /* PBXTextBookmark */ = ECF4BB80114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB81114342F000B7C09B /* PBXTextBookmark */ = ECF4BB81114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB82114342F000B7C09B /* PBXTextBookmark */ = ECF4BB82114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB83114342F000B7C09B /* PBXTextBookmark */ = ECF4BB83114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB84114342F000B7C09B /* PBXTextBookmark */ = ECF4BB84114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BB85114342F000B7C09B /* PBXTextBookmark */ = ECF4BB85114342F000B7C09B /* PBXTextBookmark */;
-			ECF4BBAA114344E500B7C09B /* PBXTextBookmark */ = ECF4BBAA114344E500B7C09B /* PBXTextBookmark */;
-			ECF4BBAC114344E500B7C09B /* PBXTextBookmark */ = ECF4BBAC114344E500B7C09B /* PBXTextBookmark */;
-			ECF4BBAD114344E500B7C09B /* PBXTextBookmark */ = ECF4BBAD114344E500B7C09B /* PBXTextBookmark */;
-			ECF4BBEE1143475800B7C09B /* PBXTextBookmark */ = ECF4BBEE1143475800B7C09B /* PBXTextBookmark */;
-			ECF4BBF11143475800B7C09B /* PBXTextBookmark */ = ECF4BBF11143475800B7C09B /* PBXTextBookmark */;
-			ECF4BBF21143475800B7C09B /* PBXTextBookmark */ = ECF4BBF21143475800B7C09B /* PBXTextBookmark */;
-			ECF4BBF31143475800B7C09B /* PBXTextBookmark */ = ECF4BBF31143475800B7C09B /* PBXTextBookmark */;
-			ECF4BC0F1143485A00B7C09B /* PBXTextBookmark */ = ECF4BC0F1143485A00B7C09B /* PBXTextBookmark */;
-			ECF4BC101143485A00B7C09B /* PBXTextBookmark */ = ECF4BC101143485A00B7C09B /* PBXTextBookmark */;
-			ECF4BC111143485A00B7C09B /* PBXTextBookmark */ = ECF4BC111143485A00B7C09B /* PBXTextBookmark */;
-			ECF4BC27114348EB00B7C09B /* PBXTextBookmark */ = ECF4BC27114348EB00B7C09B /* PBXTextBookmark */;
-			ECF4BC321143491700B7C09B /* PBXTextBookmark */ = ECF4BC321143491700B7C09B /* PBXTextBookmark */;
-			ECF4BC411143498C00B7C09B /* PBXTextBookmark */ = ECF4BC411143498C00B7C09B /* PBXTextBookmark */;
-			ECF4BC421143498C00B7C09B /* PBXTextBookmark */ = ECF4BC421143498C00B7C09B /* PBXTextBookmark */;
-			ECF4BC441143498C00B7C09B /* PBXTextBookmark */ = ECF4BC441143498C00B7C09B /* PBXTextBookmark */;
-			ECF4BC451143498C00B7C09B /* PBXTextBookmark */ = ECF4BC451143498C00B7C09B /* PBXTextBookmark */;
-			ECF4BC461143498C00B7C09B /* PBXTextBookmark */ = ECF4BC461143498C00B7C09B /* PBXTextBookmark */;
-			ECF4BC5711434A7100B7C09B /* PBXTextBookmark */ = ECF4BC5711434A7100B7C09B /* PBXTextBookmark */;
-			ECF4BC5E11434A7100B7C09B /* PBXTextBookmark */ = ECF4BC5E11434A7100B7C09B /* PBXTextBookmark */;
-			ECF4BC6111434A7E00B7C09B /* PBXTextBookmark */ = ECF4BC6111434A7E00B7C09B /* PBXTextBookmark */;
-			ECF4BC6B11434AB500B7C09B /* PBXTextBookmark */ = ECF4BC6B11434AB500B7C09B /* PBXTextBookmark */;
+			ECF2B2311165590300AA69D2 /* PBXTextBookmark */ = ECF2B2311165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2321165590300AA69D2 /* PBXTextBookmark */ = ECF2B2321165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2331165590300AA69D2 /* PBXTextBookmark */ = ECF2B2331165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2341165590300AA69D2 /* PBXTextBookmark */ = ECF2B2341165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2441165590300AA69D2 /* PBXTextBookmark */ = ECF2B2441165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2451165590300AA69D2 /* PBXTextBookmark */ = ECF2B2451165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2461165590300AA69D2 /* PBXTextBookmark */ = ECF2B2461165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2471165590300AA69D2 /* PBXTextBookmark */ = ECF2B2471165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2481165590300AA69D2 /* PBXTextBookmark */ = ECF2B2481165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2491165590300AA69D2 /* PBXTextBookmark */ = ECF2B2491165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B24A1165590300AA69D2 /* PBXTextBookmark */ = ECF2B24A1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B24B1165590300AA69D2 /* PBXTextBookmark */ = ECF2B24B1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B24C1165590300AA69D2 /* PBXTextBookmark */ = ECF2B24C1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B24D1165590300AA69D2 /* PBXTextBookmark */ = ECF2B24D1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B24E1165590300AA69D2 /* PBXTextBookmark */ = ECF2B24E1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B24F1165590300AA69D2 /* PBXTextBookmark */ = ECF2B24F1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2501165590300AA69D2 /* PBXTextBookmark */ = ECF2B2501165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2511165590300AA69D2 /* PBXTextBookmark */ = ECF2B2511165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2521165590300AA69D2 /* PBXTextBookmark */ = ECF2B2521165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2531165590300AA69D2 /* PBXTextBookmark */ = ECF2B2531165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2541165590300AA69D2 /* PBXTextBookmark */ = ECF2B2541165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B25E1165590300AA69D2 /* PBXTextBookmark */ = ECF2B25E1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B25F1165590300AA69D2 /* PBXTextBookmark */ = ECF2B25F1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2611165590300AA69D2 /* PBXTextBookmark */ = ECF2B2611165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2621165590300AA69D2 /* PBXTextBookmark */ = ECF2B2621165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2631165590300AA69D2 /* PBXTextBookmark */ = ECF2B2631165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2691165590300AA69D2 /* PBXTextBookmark */ = ECF2B2691165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B26B1165590300AA69D2 /* PBXTextBookmark */ = ECF2B26B1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B26C1165590300AA69D2 /* PBXTextBookmark */ = ECF2B26C1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B26D1165590300AA69D2 /* PBXTextBookmark */ = ECF2B26D1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B26E1165590300AA69D2 /* PBXTextBookmark */ = ECF2B26E1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B26F1165590300AA69D2 /* PBXTextBookmark */ = ECF2B26F1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2701165590300AA69D2 /* PBXTextBookmark */ = ECF2B2701165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2711165590300AA69D2 /* PBXTextBookmark */ = ECF2B2711165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2721165590300AA69D2 /* PBXTextBookmark */ = ECF2B2721165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2731165590300AA69D2 /* PBXTextBookmark */ = ECF2B2731165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2741165590300AA69D2 /* PBXTextBookmark */ = ECF2B2741165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2751165590300AA69D2 /* PBXTextBookmark */ = ECF2B2751165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2761165590300AA69D2 /* PBXTextBookmark */ = ECF2B2761165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B27A1165590300AA69D2 /* PBXTextBookmark */ = ECF2B27A1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B27B1165590300AA69D2 /* PBXTextBookmark */ = ECF2B27B1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B27C1165590300AA69D2 /* PBXTextBookmark */ = ECF2B27C1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B27D1165590300AA69D2 /* PBXTextBookmark */ = ECF2B27D1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B27E1165590300AA69D2 /* PBXTextBookmark */ = ECF2B27E1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B27F1165590300AA69D2 /* PBXTextBookmark */ = ECF2B27F1165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2801165590300AA69D2 /* PBXTextBookmark */ = ECF2B2801165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2811165590300AA69D2 /* PBXTextBookmark */ = ECF2B2811165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2821165590300AA69D2 /* PBXTextBookmark */ = ECF2B2821165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2831165590300AA69D2 /* PBXTextBookmark */ = ECF2B2831165590300AA69D2 /* PBXTextBookmark */;
+			ECF2B2841165590300AA69D2 /* PBXTextBookmark */ = ECF2B2841165590300AA69D2 /* PBXTextBookmark */;
+			ECF4BB35114328E800B7C09B = ECF4BB35114328E800B7C09B /* PBXTextBookmark */;
+			ECF4BB38114328E800B7C09B = ECF4BB38114328E800B7C09B /* PBXTextBookmark */;
+			ECF4BB39114328E800B7C09B = ECF4BB39114328E800B7C09B /* PBXTextBookmark */;
+			ECF4BB4E1143295D00B7C09B = ECF4BB4E1143295D00B7C09B /* PBXTextBookmark */;
+			ECF4BB511143296600B7C09B = ECF4BB511143296600B7C09B /* PBXTextBookmark */;
+			ECF4BB591143299000B7C09B = ECF4BB591143299000B7C09B /* PBXTextBookmark */;
+			ECF4BB6611433E6F00B7C09B = ECF4BB6611433E6F00B7C09B /* PBXTextBookmark */;
+			ECF4BB75114342F000B7C09B = ECF4BB75114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB76114342F000B7C09B = ECF4BB76114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB79114342F000B7C09B = ECF4BB79114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB7A114342F000B7C09B = ECF4BB7A114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB7B114342F000B7C09B = ECF4BB7B114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB7C114342F000B7C09B = ECF4BB7C114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB7D114342F000B7C09B = ECF4BB7D114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB7E114342F000B7C09B = ECF4BB7E114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB7F114342F000B7C09B = ECF4BB7F114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB80114342F000B7C09B = ECF4BB80114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB81114342F000B7C09B = ECF4BB81114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB82114342F000B7C09B = ECF4BB82114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB83114342F000B7C09B = ECF4BB83114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB84114342F000B7C09B = ECF4BB84114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BB85114342F000B7C09B = ECF4BB85114342F000B7C09B /* PBXTextBookmark */;
+			ECF4BBAA114344E500B7C09B = ECF4BBAA114344E500B7C09B /* PBXTextBookmark */;
+			ECF4BBAC114344E500B7C09B = ECF4BBAC114344E500B7C09B /* PBXTextBookmark */;
+			ECF4BBAD114344E500B7C09B = ECF4BBAD114344E500B7C09B /* PBXTextBookmark */;
+			ECF4BBEE1143475800B7C09B = ECF4BBEE1143475800B7C09B /* PBXTextBookmark */;
+			ECF4BBF11143475800B7C09B = ECF4BBF11143475800B7C09B /* PBXTextBookmark */;
+			ECF4BBF21143475800B7C09B = ECF4BBF21143475800B7C09B /* PBXTextBookmark */;
+			ECF4BBF31143475800B7C09B = ECF4BBF31143475800B7C09B /* PBXTextBookmark */;
+			ECF4BC0F1143485A00B7C09B = ECF4BC0F1143485A00B7C09B /* PBXTextBookmark */;
+			ECF4BC101143485A00B7C09B = ECF4BC101143485A00B7C09B /* PBXTextBookmark */;
+			ECF4BC111143485A00B7C09B = ECF4BC111143485A00B7C09B /* PBXTextBookmark */;
+			ECF4BC27114348EB00B7C09B = ECF4BC27114348EB00B7C09B /* PBXTextBookmark */;
+			ECF4BC321143491700B7C09B = ECF4BC321143491700B7C09B /* PBXTextBookmark */;
+			ECF4BC411143498C00B7C09B = ECF4BC411143498C00B7C09B /* PBXTextBookmark */;
+			ECF4BC421143498C00B7C09B = ECF4BC421143498C00B7C09B /* PBXTextBookmark */;
+			ECF4BC441143498C00B7C09B = ECF4BC441143498C00B7C09B /* PBXTextBookmark */;
+			ECF4BC451143498C00B7C09B = ECF4BC451143498C00B7C09B /* PBXTextBookmark */;
+			ECF4BC461143498C00B7C09B = ECF4BC461143498C00B7C09B /* PBXTextBookmark */;
+			ECF4BC5711434A7100B7C09B = ECF4BC5711434A7100B7C09B /* PBXTextBookmark */;
+			ECF4BC5E11434A7100B7C09B = ECF4BC5E11434A7100B7C09B /* PBXTextBookmark */;
+			ECF4BC6111434A7E00B7C09B = ECF4BC6111434A7E00B7C09B /* PBXTextBookmark */;
+			ECF4BC6B11434AB500B7C09B = ECF4BC6B11434AB500B7C09B /* PBXTextBookmark */;
 		};
 		sourceControlManager = ECE5B90410EF65C200B7EDDD /* Source Control */;
 		userBuildSettings = {
@@ -173,24 +220,7 @@
 	D2AAC0620554660B00DB518D /* tinyNET */ = {
 		activeExec = 0;
 	};
-	EC057C9410EF7A2D00280149 /* tnet_utils.c:331 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = ECE5B91410EF65EF00B7EDDD /* tnet_utils.c */;
-		functionName = "tnet_sockfd_init()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 331;
-		location = libtinyNET.dylib;
-		modificationTime = 289622682.557045;
-		state = 1;
-	};
-	EC057CFB10EF7EB200280149 /* tnet_transport.c:183 */ = {
+	EC057CFB10EF7EB200280149 /* tnet_transport.c:185 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -202,9 +232,9 @@
 		functionName = "run()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 183;
+		lineNumber = 185;
 		location = libtinyNET.dylib;
-		modificationTime = 289622681.317986;
+		modificationTime = 291849728.146146;
 		state = 2;
 	};
 	EC057D0710EF80E300280149 /* test_transport.h:40 */ = {
@@ -220,14 +250,22 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 40;
-		modificationTime = 289622691.7294;
+		location = test;
+		modificationTime = 291849729.583823;
 		state = 1;
+	};
+	EC9A8CCD1124B74C0046F5EC /* test_dhcp.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1486, 1736}}";
+			sepNavSelRange = "{2837, 0}";
+			sepNavVisRange = "{1887, 1114}";
+		};
 	};
 	EC9A8CCF1124B74C0046F5EC /* test_dns.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1113, 1288}}";
-			sepNavSelRange = "{1899, 0}";
-			sepNavVisRange = "{1344, 867}";
+			sepNavIntBoundsRect = "{{0, 0}, {1693, 3248}}";
+			sepNavSelRange = "{2151, 0}";
+			sepNavVisRange = "{1784, 768}";
 		};
 	};
 	EC9A8CD01124B74C0046F5EC /* test_ifaces.h */ = {
@@ -251,24 +289,6 @@
 		name = tnet_dhcp.c;
 		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/dhcp/tnet_dhcp.c;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1113, 4396}}";
-			sepNavSelRange = "{2227, 0}";
-			sepNavVisRange = "{1139, 1317}";
-		};
-	};
-	EC9A8D561124B8160046F5EC /* tnet_dns.c */ = {
-		isa = PBXFileReference;
-		fileEncoding = 4;
-		lastKnownFileType = sourcecode.c.c;
-		name = tnet_dns.c;
-		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/dns/tnet_dns.c;
-		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1113, 7280}}";
-			sepNavSelRange = "{1777, 0}";
-			sepNavVisRange = "{3636, 1190}";
-		};
 	};
 	EC9A8D891124B8160046F5EC /* tnet_socket.c */ = {
 		isa = PBXFileReference;
@@ -277,11 +297,6 @@
 		name = tnet_socket.c;
 		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_socket.c;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1113, 3710}}";
-			sepNavSelRange = "{4371, 0}";
-			sepNavVisRange = "{4358, 1287}";
-		};
 	};
 	EC9A8E761124C78C0046F5EC /* test_ifaces.h:70 */ = {
 		isa = PBXFileBreakpoint;
@@ -296,58 +311,8 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 70;
-		modificationTime = 289622691.729608;
-		state = 1;
-	};
-	EC9A8EA81124C99E0046F5EC /* tnet_dns.c:184 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = EC9A8D561124B8160046F5EC /* tnet_dns.c */;
-		functionName = "tnet_dns_resolve()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 184;
-		location = libtinyNET.dylib;
-		modificationTime = 289622681.319429;
-		state = 1;
-	};
-	EC9A8EAC1124C9B10046F5EC /* tnet_dns.c:162 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = EC9A8D561124B8160046F5EC /* tnet_dns.c */;
-		functionName = "tnet_dns_resolve()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 162;
-		location = libtinyNET.dylib;
-		modificationTime = 289622681.319541;
-		state = 1;
-	};
-	EC9A8EC01124CA580046F5EC /* tnet_dns.c:138 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = EC9A8D561124B8160046F5EC /* tnet_dns.c */;
-		functionName = "tnet_dns_resolve()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 138;
-		location = libtinyNET.dylib;
-		modificationTime = 289622681.319649;
+		location = test;
+		modificationTime = 291849729.601891;
 		state = 1;
 	};
 	EC9A8ED31124CAF70046F5EC /* tnet_dhcp.c:68 */ = {
@@ -360,11 +325,11 @@
 		delayBeforeContinue = 0;
 		fileReference = EC9A8D441124B8160046F5EC /* tnet_dhcp.c */;
 		functionName = "tnet_dhcp_send_request()";
-		hitCount = 0;
+		hitCount = 1;
 		ignoreCount = 0;
 		lineNumber = 68;
 		location = libtinyNET.dylib;
-		modificationTime = 289622682.58064;
+		modificationTime = 291849729.54584;
 		state = 1;
 	};
 	EC9A8EDF1124CBE00046F5EC /* tnet_socket.c:189 */ = {
@@ -381,7 +346,7 @@
 		ignoreCount = 0;
 		lineNumber = 189;
 		location = libtinyNET.dylib;
-		modificationTime = 289622681.319862;
+		modificationTime = 291849728.147059;
 		state = 2;
 	};
 	ECE5B90410EF65C200B7EDDD /* Source Control */ = {
@@ -395,27 +360,6 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
-	ECE5B90610EF65EF00B7EDDD /* tinyNET_config.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1323, 1372}}";
-			sepNavSelRange = "{2114, 0}";
-			sepNavVisRange = "{1417, 1166}";
-		};
-	};
-	ECE5B90810EF65EF00B7EDDD /* tnet.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1323, 710}}";
-			sepNavSelRange = "{753, 0}";
-			sepNavVisRange = "{0, 1128}";
-		};
-	};
-	ECE5B90C10EF65EF00B7EDDD /* tnet_poll.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1652, 1330}}";
-			sepNavSelRange = "{1173, 38}";
-			sepNavVisRange = "{0, 1321}";
-		};
-	};
 	ECE5B90D10EF65EF00B7EDDD /* tnet_socket.c */ = {
 		isa = PBXFileReference;
 		fileEncoding = 4;
@@ -424,13 +368,6 @@
 		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_socket.c;
 		sourceTree = "<absolute>";
 	};
-	ECE5B90E10EF65EF00B7EDDD /* tnet_socket.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1572, 2380}}";
-			sepNavSelRange = "{7241, 9}";
-			sepNavVisRange = "{7034, 664}";
-		};
-	};
 	ECE5B90F10EF65EF00B7EDDD /* tnet_transport.c */ = {
 		isa = PBXFileReference;
 		fileEncoding = 4;
@@ -438,12 +375,10 @@
 		name = tnet_transport.c;
 		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_transport.c;
 		sourceTree = "<absolute>";
-	};
-	ECE5B91010EF65EF00B7EDDD /* tnet_transport.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1652, 1162}}";
-			sepNavSelRange = "{520, 0}";
-			sepNavVisRange = "{756, 2452}";
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 5334}}";
+			sepNavSelRange = "{1811, 0}";
+			sepNavVisRange = "{933, 1170}";
 		};
 	};
 	ECE5B91110EF65EF00B7EDDD /* tnet_transport_poll.c */ = {
@@ -453,33 +388,6 @@
 		name = tnet_transport_poll.c;
 		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_transport_poll.c;
 		sourceTree = "<absolute>";
-	};
-	ECE5B91310EF65EF00B7EDDD /* tnet_types.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1652, 1400}}";
-			sepNavSelRange = "{2366, 0}";
-			sepNavVisRange = "{639, 885}";
-		};
-	};
-	ECE5B91410EF65EF00B7EDDD /* tnet_utils.c */ = {
-		isa = PBXFileReference;
-		fileEncoding = 4;
-		lastKnownFileType = sourcecode.c.c;
-		name = tnet_utils.c;
-		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_utils.c;
-		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1652, 17850}}";
-			sepNavSelRange = "{33114, 0}";
-			sepNavVisRange = "{32174, 856}";
-		};
-	};
-	ECE5B91510EF65EF00B7EDDD /* tnet_utils.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1498, 1092}}";
-			sepNavSelRange = "{1738, 56}";
-			sepNavVisRange = "{222, 1574}";
-		};
 	};
 	ECE5B98310EF6B6F00B7EDDD /* tinySAK */ = {
 		activeExec = 0;
@@ -612,9 +520,9 @@
 	};
 	ECE5BAAA10EF6E4800B7EDDD /* test.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1859, 1750}}";
-			sepNavSelRange = "{1848, 0}";
-			sepNavVisRange = "{1499, 546}";
+			sepNavIntBoundsRect = "{{0, 0}, {1486, 1554}}";
+			sepNavSelRange = "{1162, 9}";
+			sepNavVisRange = "{759, 985}";
 		};
 	};
 	ECE5BAAB10EF6E4800B7EDDD /* test.vcproj */ = {
@@ -660,61 +568,10 @@
 		ignoreCount = 0;
 		lineNumber = 86;
 		location = libtinyNET.dylib;
-		modificationTime = 289622681.318262;
+		modificationTime = 291849728.146358;
 		state = 2;
 	};
-	ECED608F10F97808006B4DC9 /* tnet_transport_poll.c:336 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = ECE5B91110EF65EF00B7EDDD /* tnet_transport_poll.c */;
-		functionName = "tnet_transport_mainthread()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 336;
-		location = libtinyNET.dylib;
-		modificationTime = 289622681.318363;
-		state = 2;
-	};
-	ECED609710F978D7006B4DC9 /* tnet_transport_poll.c:281 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = ECE5B91110EF65EF00B7EDDD /* tnet_transport_poll.c */;
-		functionName = "tnet_transport_stop()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 281;
-		location = libtinyNET.dylib;
-		modificationTime = 289622681.318524;
-		state = 2;
-	};
-	ECED60B510F979E1006B4DC9 /* tnet_transport_poll.c:274 */ = {
-		isa = PBXFileBreakpoint;
-		actions = (
-		);
-		breakpointStyle = 0;
-		continueAfterActions = 0;
-		countType = 0;
-		delayBeforeContinue = 0;
-		fileReference = ECE5B91110EF65EF00B7EDDD /* tnet_transport_poll.c */;
-		functionName = "tnet_transport_stop()";
-		hitCount = 0;
-		ignoreCount = 0;
-		lineNumber = 274;
-		location = libtinyNET.dylib;
-		modificationTime = 289622681.318685;
-		state = 2;
-	};
-	ECED60C310F97A49006B4DC9 /* tnet_transport_poll.c:341 */ = {
+	ECED608F10F97808006B4DC9 /* tnet_transport_poll.c:341 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -728,10 +585,44 @@
 		ignoreCount = 0;
 		lineNumber = 341;
 		location = libtinyNET.dylib;
-		modificationTime = 289622681.318845;
+		modificationTime = 291849728.146431;
 		state = 2;
 	};
-	ECED60C710F97A69006B4DC9 /* tnet_transport_poll.c:339 */ = {
+	ECED609710F978D7006B4DC9 /* tnet_transport_poll.c:286 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = ECE5B91110EF65EF00B7EDDD /* tnet_transport_poll.c */;
+		functionName = "tnet_transport_stop()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 286;
+		location = libtinyNET.dylib;
+		modificationTime = 291849728.146515;
+		state = 2;
+	};
+	ECED60B510F979E1006B4DC9 /* tnet_transport_poll.c:279 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = ECE5B91110EF65EF00B7EDDD /* tnet_transport_poll.c */;
+		functionName = "tnet_transport_stop()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 279;
+		location = libtinyNET.dylib;
+		modificationTime = 291849728.146591;
+		state = 2;
+	};
+	ECED60C310F97A49006B4DC9 /* tnet_transport_poll.c:346 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -743,12 +634,12 @@
 		functionName = "tnet_transport_mainthread()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 339;
+		lineNumber = 346;
 		location = libtinyNET.dylib;
-		modificationTime = 289622681.319002;
+		modificationTime = 291849728.146666;
 		state = 2;
 	};
-	ECED60F310F97E82006B4DC9 /* tnet_transport_poll.c:342 */ = {
+	ECED60C710F97A69006B4DC9 /* tnet_transport_poll.c:344 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -760,12 +651,692 @@
 		functionName = "tnet_transport_mainthread()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 342;
+		lineNumber = 344;
 		location = libtinyNET.dylib;
-		modificationTime = 289622681.319161;
+		modificationTime = 291849728.146739;
 		state = 2;
+	};
+	ECED60F310F97E82006B4DC9 /* tnet_transport_poll.c:347 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = ECE5B91110EF65EF00B7EDDD /* tnet_transport_poll.c */;
+		functionName = "tnet_transport_mainthread()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 347;
+		location = libtinyNET.dylib;
+		modificationTime = 291849728.14682;
+		state = 2;
+	};
+	ECF2B1671165590300AA69D2 /* tsk_common.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 882}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1428}";
+		};
+	};
+	ECF2B17C1165590300AA69D2 /* tnet_dhcp.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1486, 4480}}";
+			sepNavSelRange = "{2055, 0}";
+			sepNavVisRange = "{1383, 1499}";
+		};
+	};
+	ECF2B17D1165590300AA69D2 /* tnet_dhcp.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1486, 1974}}";
+			sepNavSelRange = "{853, 0}";
+			sepNavVisRange = "{1276, 1436}";
+		};
+	};
+	ECF2B1801165590300AA69D2 /* tnet_dhcp_option.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 4578}}";
+			sepNavSelRange = "{2167, 0}";
+			sepNavVisRange = "{1912, 507}";
+		};
+	};
+	ECF2B1871165590300AA69D2 /* tnet_dhcp6_duid.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 3948}}";
+			sepNavSelRange = "{2018, 0}";
+			sepNavVisRange = "{1598, 514}";
+		};
+	};
+	ECF2B18B1165590300AA69D2 /* tnet_dhcp6_option.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 4074}}";
+			sepNavSelRange = "{4227, 0}";
+			sepNavVisRange = "{3921, 745}";
+		};
+	};
+	ECF2B18E1165590300AA69D2 /* tnet_dns.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1261, 10654}}";
+			sepNavSelRange = "{4672, 0}";
+			sepNavVisRange = "{5540, 1172}";
+		};
+	};
+	ECF2B1901165590300AA69D2 /* tnet_dns_a.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 1358}}";
+			sepNavSelRange = "{1736, 0}";
+			sepNavVisRange = "{1588, 786}";
+		};
+	};
+	ECF2B1921165590300AA69D2 /* tnet_dns_aaaa.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 1400}}";
+			sepNavSelRange = "{2495, 0}";
+			sepNavVisRange = "{1932, 820}";
+		};
+	};
+	ECF2B1A41165590300AA69D2 /* tnet_dns_resolvconf.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1261, 3990}}";
+			sepNavSelRange = "{4206, 0}";
+			sepNavVisRange = "{3868, 821}";
+		};
+	};
+	ECF2B1A61165590300AA69D2 /* tnet_dns_rr.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 6230}}";
+			sepNavSelRange = "{6195, 0}";
+			sepNavVisRange = "{5964, 766}";
+		};
+	};
+	ECF2B1B31165590300AA69D2 /* tnet_stun.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 6272}}";
+			sepNavSelRange = "{3356, 0}";
+			sepNavVisRange = "{2858, 784}";
+		};
+	};
+	ECF2B1B51165590300AA69D2 /* tnet_stun_attribute.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 12418}}";
+			sepNavSelRange = "{19950, 0}";
+			sepNavVisRange = "{19575, 750}";
+		};
+	};
+	ECF2B1CB1165590300AA69D2 /* tnet_transport.c */ = {
+		uiCtxt = {
+			sepNavFolds = "{\n    c =     (\n                {\n            l = \"void * \";\n            r = \"{1088, 11}\";\n            s = 1;\n        },\n                {\n            l = \"const void * \";\n            r = \"{1101, 17}\";\n            s = 1;\n        },\n                {\n            l = \"size_t \";\n            r = \"{1120, 11}\";\n            s = 1;\n        }\n    );\n    r = \"{0, 9510}\";\n    s = 0;\n}";
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 5278}}";
+			sepNavSelRange = "{1299, 0}";
+			sepNavVisRange = "{900, 617}";
+		};
+	};
+	ECF2B1CD1165590300AA69D2 /* tnet_transport_poll.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 8582}}";
+			sepNavSelRange = "{4288, 0}";
+			sepNavVisRange = "{3986, 726}";
+		};
+	};
+	ECF2B1CE1165590300AA69D2 /* tnet_transport_win32.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 9548}}";
+			sepNavSelRange = "{3684, 0}";
+			sepNavVisRange = "{3168, 1300}";
+		};
+	};
+	ECF2B1D01165590300AA69D2 /* tnet_utils.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1054, 19432}}";
+			sepNavSelRange = "{11029, 0}";
+			sepNavVisRange = "{10503, 962}";
+		};
+	};
+	ECF2B1D11165590300AA69D2 /* tnet_utils.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 2338}}";
+			sepNavSelRange = "{6971, 0}";
+			sepNavVisRange = "{6334, 1049}";
+		};
+	};
+	ECF2B1D31165590300AA69D2 /* tnet_turn.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 9674}}";
+			sepNavSelRange = "{7840, 0}";
+			sepNavVisRange = "{7493, 916}";
+		};
+	};
+	ECF2B1D51165590300AA69D2 /* tnet_turn_attribute.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1652, 8568}}";
+			sepNavSelRange = "{15022, 0}";
+			sepNavVisRange = "{14687, 746}";
+		};
+	};
+	ECF2B2311165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1671165590300AA69D2 /* tsk_common.h */;
+		name = "tsk_common.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1428;
+		vrLoc = 0;
+	};
+	ECF2B2321165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: 'struct tnet_transport_s' has no member named 'have_tls'";
+		fRef = ECF2B1CD1165590300AA69D2 /* tnet_transport_poll.c */;
+		rLen = 1;
+		rLoc = 118;
+		rType = 1;
+	};
+	ECF2B2331165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1671165590300AA69D2 /* tsk_common.h */;
+		name = "tsk_common.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1428;
+		vrLoc = 0;
+	};
+	ECF2B2341165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1CD1165590300AA69D2 /* tnet_transport_poll.c */;
+		name = "tnet_transport_poll.c: 97";
+		rLen = 0;
+		rLoc = 2547;
+		rType = 0;
+		vrLen = 1159;
+		vrLoc = 2217;
+	};
+	ECF2B2441165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1CD1165590300AA69D2 /* tnet_transport_poll.c */;
+		name = "tnet_transport_poll.c: 119";
+		rLen = 47;
+		rLoc = 3174;
+		rType = 0;
+		vrLen = 552;
+		vrLoc = 2543;
+	};
+	ECF2B2451165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1CE1165590300AA69D2 /* tnet_transport_win32.c */;
+		name = "tnet_transport_win32.c: 141";
+		rLen = 0;
+		rLoc = 3684;
+		rType = 0;
+		vrLen = 1300;
+		vrLoc = 3168;
+	};
+	ECF2B2461165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECE5BAAA10EF6E4800B7EDDD /* test.c */;
+		name = "test.c: 41";
+		rLen = 8;
+		rLoc = 1140;
+		rType = 0;
+		vrLen = 1023;
+		vrLoc = 759;
+	};
+	ECF2B2471165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B18E1165590300AA69D2 /* tnet_dns.c */;
+		name = "tnet_dns.c: 36";
+		rLen = 0;
+		rLoc = 1140;
+		rType = 0;
+		vrLen = 1403;
+		vrLoc = 3607;
+	};
+	ECF2B2481165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1D01165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 424";
+		rLen = 25;
+		rLoc = 11111;
+		rType = 0;
+		vrLen = 1263;
+		vrLoc = 10366;
+	};
+	ECF2B2491165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1A41165590300AA69D2 /* tnet_dns_resolvconf.c */;
+		name = "tnet_dns_resolvconf.c: 153";
+		rLen = 0;
+		rLoc = 4387;
+		rType = 0;
+		vrLen = 1256;
+		vrLoc = 3837;
+	};
+	ECF2B24A1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: syntax error before ')' token";
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		rLen = 1;
+		rLoc = 215;
+		rType = 1;
+	};
+	ECF2B24B1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1CD1165590300AA69D2 /* tnet_transport_poll.c */;
+		name = "tnet_transport_poll.c: 97";
+		rLen = 0;
+		rLoc = 2547;
+		rType = 0;
+		vrLen = 603;
+		vrLoc = 2217;
+	};
+	ECF2B24C1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1CE1165590300AA69D2 /* tnet_transport_win32.c */;
+		name = "tnet_transport_win32.c: 143";
+		rLen = 0;
+		rLoc = 3718;
+		rType = 0;
+		vrLen = 696;
+		vrLoc = 3348;
+	};
+	ECF2B24D1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1CD1165590300AA69D2 /* tnet_transport_poll.c */;
+		name = "tnet_transport_poll.c: 119";
+		rLen = 47;
+		rLoc = 3174;
+		rType = 0;
+		vrLen = 552;
+		vrLoc = 2543;
+	};
+	ECF2B24E1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1CE1165590300AA69D2 /* tnet_transport_win32.c */;
+		name = "tnet_transport_win32.c: 141";
+		rLen = 0;
+		rLoc = 3684;
+		rType = 0;
+		vrLen = 1300;
+		vrLoc = 3168;
+	};
+	ECF2B24F1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECE5BAAA10EF6E4800B7EDDD /* test.c */;
+		name = "test.c: 41";
+		rLen = 8;
+		rLoc = 1140;
+		rType = 0;
+		vrLen = 1023;
+		vrLoc = 759;
+	};
+	ECF2B2501165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 208";
+		rLen = 0;
+		rLoc = 6095;
+		rType = 0;
+		vrLen = 1430;
+		vrLoc = 2884;
+	};
+	ECF2B2511165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B18E1165590300AA69D2 /* tnet_dns.c */;
+		name = "tnet_dns.c: 36";
+		rLen = 0;
+		rLoc = 1140;
+		rType = 0;
+		vrLen = 1403;
+		vrLoc = 3607;
+	};
+	ECF2B2521165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1D01165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 424";
+		rLen = 25;
+		rLoc = 11111;
+		rType = 0;
+		vrLen = 1263;
+		vrLoc = 10366;
+	};
+	ECF2B2531165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1A41165590300AA69D2 /* tnet_dns_resolvconf.c */;
+		name = "tnet_dns_resolvconf.c: 153";
+		rLen = 0;
+		rLoc = 4387;
+		rType = 0;
+		vrLen = 1256;
+		vrLoc = 3837;
+	};
+	ECF2B2541165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 216";
+		rLen = 0;
+		rLoc = 6296;
+		rType = 0;
+		vrLen = 1754;
+		vrLoc = 3806;
+	};
+	ECF2B25E1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 216";
+		rLen = 0;
+		rLoc = 6296;
+		rType = 0;
+		vrLen = 1378;
+		vrLoc = 3806;
+	};
+	ECF2B25F1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B2601165590300AA69D2 /* tnet_utils.c */;
+		rLen = 0;
+		rLoc = 423;
+		rType = 1;
+	};
+	ECF2B2601165590300AA69D2 /* tnet_utils.c */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.c;
+		name = tnet_utils.c;
+		path = /Users/diopmamadou/Documents/doubango/xcode/tinyNET/../../tinyNET/src/tnet_utils.c;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1486, 19404}}";
+			sepNavSelRange = "{11029, 0}";
+			sepNavVisRange = "{10503, 1256}";
+		};
+	};
+	ECF2B2611165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 216";
+		rLen = 0;
+		rLoc = 6296;
+		rType = 0;
+		vrLen = 1378;
+		vrLoc = 3806;
+	};
+	ECF2B2621165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1D01165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 420";
+		rLen = 0;
+		rLoc = 11029;
+		rType = 0;
+		vrLen = 962;
+		vrLoc = 10503;
+	};
+	ECF2B2631165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B2601165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 420";
+		rLen = 0;
+		rLoc = 11029;
+		rType = 0;
+		vrLen = 1055;
+		vrLoc = 10687;
+	};
+	ECF2B2691165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B2601165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 420";
+		rLen = 0;
+		rLoc = 11029;
+		rType = 0;
+		vrLen = 942;
+		vrLoc = 10687;
+	};
+	ECF2B26B1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1A41165590300AA69D2 /* tnet_dns_resolvconf.c */;
+		name = "tnet_dns_resolvconf.c: 148";
+		rLen = 0;
+		rLoc = 4206;
+		rType = 0;
+		vrLen = 789;
+		vrLoc = 3896;
+	};
+	ECF2B26C1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B2601165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 424";
+		rLen = 0;
+		rLoc = 11092;
+		rType = 0;
+		vrLen = 625;
+		vrLoc = 10687;
+	};
+	ECF2B26D1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B18E1165590300AA69D2 /* tnet_dns.c */;
+		name = "tnet_dns.c: 141";
+		rLen = 0;
+		rLoc = 4672;
+		rType = 0;
+		vrLen = 1172;
+		vrLoc = 5540;
+	};
+	ECF2B26E1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		rLen = 0;
+		rLoc = 101;
+		rType = 1;
+	};
+	ECF2B26F1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B2601165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 423";
+		rLen = 0;
+		rLoc = 11091;
+		rType = 0;
+		vrLen = 758;
+		vrLoc = 10503;
+	};
+	ECF2B2701165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B1A41165590300AA69D2 /* tnet_dns_resolvconf.c */;
+		name = "tnet_dns_resolvconf.c: 148";
+		rLen = 0;
+		rLoc = 4206;
+		rType = 0;
+		vrLen = 789;
+		vrLoc = 3896;
+	};
+	ECF2B2711165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 118";
+		rLen = 0;
+		rLoc = 3391;
+		rType = 0;
+		vrLen = 1160;
+		vrLoc = 2831;
+	};
+	ECF2B2721165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B18E1165590300AA69D2 /* tnet_dns.c */;
+		name = "tnet_dns.c: 212";
+		rLen = 0;
+		rLoc = 6809;
+		rType = 0;
+		vrLen = 1264;
+		vrLoc = 12933;
+	};
+	ECF2B2731165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 214";
+		rLen = 0;
+		rLoc = 6224;
+		rType = 0;
+		vrLen = 987;
+		vrLoc = 2176;
+	};
+	ECF2B2741165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B2601165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 424";
+		rLen = 0;
+		rLoc = 11092;
+		rType = 0;
+		vrLen = 625;
+		vrLoc = 10687;
+	};
+	ECF2B2751165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B18E1165590300AA69D2 /* tnet_dns.c */;
+		name = "tnet_dns.c: 141";
+		rLen = 0;
+		rLoc = 4672;
+		rType = 0;
+		vrLen = 1172;
+		vrLoc = 5540;
+	};
+	ECF2B2761165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 71";
+		rLen = 0;
+		rLoc = 2151;
+		rType = 0;
+		vrLen = 858;
+		vrLoc = 2055;
+	};
+	ECF2B2781165590300AA69D2 /* test_dhcp.h:117 */ = {
+		isa = PBXFileBreakpoint;
+		actions = (
+		);
+		breakpointStyle = 0;
+		continueAfterActions = 0;
+		countType = 0;
+		delayBeforeContinue = 0;
+		fileReference = EC9A8CCD1124B74C0046F5EC /* test_dhcp.h */;
+		functionName = "test_dhcp()";
+		hitCount = 0;
+		ignoreCount = 0;
+		lineNumber = 117;
+		location = test;
+		modificationTime = 291849729.622581;
+		state = 1;
+	};
+	ECF2B27A1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B2601165590300AA69D2 /* tnet_utils.c */;
+		name = "tnet_utils.c: 420";
+		rLen = 0;
+		rLoc = 11029;
+		rType = 0;
+		vrLen = 1256;
+		vrLoc = 10503;
+	};
+	ECF2B27B1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 71";
+		rLen = 0;
+		rLoc = 2151;
+		rType = 0;
+		vrLen = 1204;
+		vrLoc = 1892;
+	};
+	ECF2B27C1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECE5BAAA10EF6E4800B7EDDD /* test.c */;
+		name = "test.c: 42";
+		rLen = 9;
+		rLoc = 1162;
+		rType = 0;
+		vrLen = 985;
+		vrLoc = 759;
+	};
+	ECF2B27D1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCD1124B74C0046F5EC /* test_dhcp.h */;
+		name = "test_dhcp.h: 114";
+		rLen = 0;
+		rLoc = 2837;
+		rType = 0;
+		vrLen = 1114;
+		vrLoc = 1887;
+	};
+	ECF2B27E1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B17C1165590300AA69D2 /* tnet_dhcp.c */;
+		rLen = 0;
+		rLoc = 68;
+		rType = 1;
+	};
+	ECF2B27F1165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 71";
+		rLen = 0;
+		rLoc = 2151;
+		rType = 0;
+		vrLen = 1204;
+		vrLoc = 1892;
+	};
+	ECF2B2801165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECE5BAAA10EF6E4800B7EDDD /* test.c */;
+		name = "test.c: 42";
+		rLen = 9;
+		rLoc = 1162;
+		rType = 0;
+		vrLen = 985;
+		vrLoc = 759;
+	};
+	ECF2B2811165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCD1124B74C0046F5EC /* test_dhcp.h */;
+		name = "test_dhcp.h: 114";
+		rLen = 0;
+		rLoc = 2837;
+		rType = 0;
+		vrLen = 1114;
+		vrLoc = 1887;
+	};
+	ECF2B2821165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B17C1165590300AA69D2 /* tnet_dhcp.c */;
+		name = "tnet_dhcp.c: 69";
+		rLen = 0;
+		rLoc = 2249;
+		rType = 0;
+		vrLen = 1556;
+		vrLoc = 1302;
+	};
+	ECF2B2831165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = EC9A8CCF1124B74C0046F5EC /* test_dns.h */;
+		name = "test_dns.h: 71";
+		rLen = 0;
+		rLoc = 2151;
+		rType = 0;
+		vrLen = 768;
+		vrLoc = 1784;
+	};
+	ECF2B2841165590300AA69D2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = ECF2B17C1165590300AA69D2 /* tnet_dhcp.c */;
+		name = "tnet_dhcp.c: 58";
+		rLen = 0;
+		rLoc = 2055;
+		rType = 0;
+		vrLen = 961;
+		vrLoc = 1755;
 	};
 	ECF4BAC41143287400B7C09B /* tnet_tls.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tnet_tls.c;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tls/tnet_tls.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1652, 5964}}";
 			sepNavSelRange = "{8198, 0}";
@@ -773,6 +1344,12 @@
 		};
 	};
 	ECF4BACE1143287400B7C09B /* tnet_poll.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = tnet_poll.h;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_poll.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1652, 1386}}";
 			sepNavSelRange = "{2126, 12}";
@@ -780,6 +1357,12 @@
 		};
 	};
 	ECF4BAD01143287400B7C09B /* tnet_socket.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tnet_socket.c;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_socket.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1652, 3374}}";
 			sepNavSelRange = "{2180, 0}";
@@ -787,6 +1370,12 @@
 		};
 	};
 	ECF4BAD21143287400B7C09B /* tnet_transport.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tnet_transport.c;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_transport.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1652, 4830}}";
 			sepNavSelRange = "{1811, 0}";
@@ -794,6 +1383,12 @@
 		};
 	};
 	ECF4BAD31143287400B7C09B /* tnet_transport.h */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.h;
+		name = tnet_transport.h;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_transport.h;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1652, 1820}}";
 			sepNavSelRange = "{4127, 0}";
@@ -801,6 +1396,12 @@
 		};
 	};
 	ECF4BAD41143287400B7C09B /* tnet_transport_poll.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tnet_transport_poll.c;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_transport_poll.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1859, 7994}}";
 			sepNavSelRange = "{9650, 0}";
@@ -808,6 +1409,12 @@
 		};
 	};
 	ECF4BAD51143287400B7C09B /* tnet_transport_win32.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tnet_transport_win32.c;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_transport_win32.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1859, 9184}}";
 			sepNavSelRange = "{1471, 0}";
@@ -815,6 +1422,12 @@
 		};
 	};
 	ECF4BAD71143287400B7C09B /* tnet_utils.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tnet_utils.c;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_utils.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1770, 17542}}";
 			sepNavSelRange = "{20858, 0}";
@@ -822,6 +1435,12 @@
 		};
 	};
 	ECF4BADE1143287400B7C09B /* tnet_turn_message.c */ = {
+		isa = PBXFileReference;
+		fileEncoding = 4;
+		lastKnownFileType = sourcecode.c.c;
+		name = tnet_turn_message.c;
+		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/turn/tnet_turn_message.c;
+		sourceTree = "<absolute>";
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1652, 2310}}";
 			sepNavSelRange = "{1050, 0}";
@@ -893,7 +1512,7 @@
 		fRef = ECF4BAD41143287400B7C09B /* tnet_transport_poll.c */;
 		name = "tnet_transport_poll.c: 516";
 		rLen = 0;
-		rLoc = 11857;
+		rLoc = 11990;
 		rType = 0;
 		vrLen = 941;
 		vrLoc = 11820;
@@ -933,7 +1552,7 @@
 		fRef = ECF4BAD41143287400B7C09B /* tnet_transport_poll.c */;
 		name = "tnet_transport_poll.c: 442";
 		rLen = 0;
-		rLoc = 9782;
+		rLoc = 9915;
 		rType = 0;
 		vrLen = 1319;
 		vrLoc = 11469;
@@ -963,7 +1582,7 @@
 		fRef = ECF4BAD21143287400B7C09B /* tnet_transport.c */;
 		name = "tnet_transport.c: 322";
 		rLen = 790;
-		rLoc = 7967;
+		rLoc = 8051;
 		rType = 0;
 		vrLen = 1194;
 		vrLoc = 7566;
@@ -1003,7 +1622,7 @@
 		fRef = ECF4BAD41143287400B7C09B /* tnet_transport_poll.c */;
 		name = "tnet_transport_poll.c: 553";
 		rLen = 0;
-		rLoc = 13262;
+		rLoc = 13395;
 		rType = 0;
 		vrLen = 955;
 		vrLoc = 12166;
@@ -1033,7 +1652,7 @@
 		fRef = ECF4BAD41143287400B7C09B /* tnet_transport_poll.c */;
 		name = "tnet_transport_poll.c: 509";
 		rLen = 0;
-		rLoc = 12273;
+		rLoc = 12406;
 		rType = 0;
 		vrLen = 1373;
 		vrLoc = 11007;
@@ -1073,7 +1692,7 @@
 		fRef = ECF4BAD41143287400B7C09B /* tnet_transport_poll.c */;
 		name = "tnet_transport_poll.c: 387";
 		rLen = 0;
-		rLoc = 8878;
+		rLoc = 9011;
 		rType = 0;
 		vrLen = 1611;
 		vrLoc = 8851;
@@ -1090,6 +1709,7 @@
 	};
 	ECF4BBEF1143475800B7C09B /* string.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = string.h;
 		path = /Developer/SDKs/MacOSX10.5.sdk/usr/include/string.h;
 		sourceTree = "<absolute>";
@@ -1126,6 +1746,7 @@
 	};
 	ECF4BBF41143475800B7C09B /* string.h */ = {
 		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
 		name = string.h;
 		path = /Developer/SDKs/MacOSX10.5.sdk/usr/include/string.h;
 		sourceTree = "<absolute>";
@@ -1136,11 +1757,6 @@
 		name = tnet_transport_poll.c;
 		path = /Users/diopmamadou/Documents/doubango/xcode/tinyNET/../../tinyNET/src/tnet_transport_poll.c;
 		sourceTree = "<absolute>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1859, 7994}}";
-			sepNavSelRange = "{9650, 0}";
-			sepNavVisRange = "{9230, 1076}";
-		};
 	};
 	ECF4BC0F1143485A00B7C09B /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -1157,7 +1773,7 @@
 		fRef = ECF4BC071143483600B7C09B /* tnet_transport_poll.c */;
 		name = "tnet_transport_poll.c: 422";
 		rLen = 0;
-		rLoc = 9720;
+		rLoc = 9853;
 		rType = 0;
 		vrLen = 1662;
 		vrLoc = 9078;
@@ -1167,7 +1783,7 @@
 		fRef = ECF4BC071143483600B7C09B /* tnet_transport_poll.c */;
 		name = "tnet_transport_poll.c: 422";
 		rLen = 0;
-		rLoc = 9720;
+		rLoc = 9853;
 		rType = 0;
 		vrLen = 1662;
 		vrLoc = 9078;
@@ -1200,7 +1816,7 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 8;
-		modificationTime = 289622681.319967;
+		modificationTime = 291849728.147143;
 		state = 1;
 	};
 	ECF4BC2E1143490F00B7C09B /* test_transport.h:114 */ = {
@@ -1216,7 +1832,7 @@
 		hitCount = 0;
 		ignoreCount = 0;
 		lineNumber = 114;
-		modificationTime = 289622681.320073;
+		modificationTime = 291849728.147228;
 		state = 2;
 	};
 	ECF4BC321143491700B7C09B /* PBXTextBookmark */ = {
@@ -1243,7 +1859,7 @@
 		ignoreCount = 0;
 		lineNumber = 82;
 		location = test;
-		modificationTime = 289622681.320185;
+		modificationTime = 291849728.147311;
 		state = 2;
 	};
 	ECF4BC411143498C00B7C09B /* PBXTextBookmark */ = {
@@ -1301,7 +1917,7 @@
 		fRef = ECF4BAD71143287400B7C09B /* tnet_utils.c */;
 		name = "tnet_utils.c: 724";
 		rLen = 0;
-		rLoc = 20942;
+		rLoc = 20906;
 		rType = 0;
 		vrLen = 1162;
 		vrLoc = 20196;
@@ -1311,7 +1927,7 @@
 		fRef = ECF4BAD21143287400B7C09B /* tnet_transport.c */;
 		name = "tnet_transport.c: 60";
 		rLen = 0;
-		rLoc = 1811;
+		rLoc = 1895;
 		rType = 0;
 		vrLen = 1031;
 		vrLoc = 930;
@@ -1321,7 +1937,7 @@
 		fRef = ECF4BAD71143287400B7C09B /* tnet_utils.c */;
 		name = "tnet_utils.c: 718";
 		rLen = 0;
-		rLoc = 20858;
+		rLoc = 20822;
 		rType = 0;
 		vrLen = 1798;
 		vrLoc = 19560;
@@ -1332,13 +1948,8 @@
 		name = tnet_transport_poll.c;
 		path = /Users/diopmamadou/Documents/doubango/tinyNET/src/tnet_transport_poll.c;
 		sourceTree = "<group>";
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1859, 8008}}";
-			sepNavSelRange = "{9650, 0}";
-			sepNavVisRange = "{9230, 1076}";
-		};
 	};
-	ECF4BC6511434A8700B7C09B /* tnet_transport_poll.c:414 */ = {
+	ECF4BC6511434A8700B7C09B /* tnet_transport_poll.c:419 */ = {
 		isa = PBXFileBreakpoint;
 		actions = (
 		);
@@ -1350,9 +1961,9 @@
 		functionName = "tnet_transport_mainthread()";
 		hitCount = 0;
 		ignoreCount = 0;
-		lineNumber = 414;
+		lineNumber = 419;
 		location = libtinyNET.dylib;
-		modificationTime = 289622682.622463;
+		modificationTime = 291849729.485014;
 		state = 1;
 	};
 	ECF4BC6B11434AB500B7C09B /* PBXTextBookmark */ = {
@@ -1360,7 +1971,7 @@
 		fRef = ECF4BAD21143287400B7C09B /* tnet_transport.c */;
 		name = "tnet_transport.c: 58";
 		rLen = 0;
-		rLoc = 1811;
+		rLoc = 1895;
 		rType = 0;
 		vrLen = 1431;
 		vrLoc = 954;

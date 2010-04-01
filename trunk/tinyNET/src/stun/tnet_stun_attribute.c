@@ -780,8 +780,8 @@ static void* tnet_stun_attribute_unknowns_create(void * self, va_list * app)
 	tnet_stun_attribute_unknowns_t *attribute = self;
 	if(attribute)
 	{
-		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		//--const void *payload = va_arg(*app, const void*);
+		//--size_t payload_size = va_arg(*app, size_t);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_unknown_attributes;
 		attribute->value = TSK_BUFFER_CREATE_NULL();

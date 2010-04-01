@@ -35,6 +35,8 @@
 #include "tsk_thread.h"
 #include "tsk_buffer.h"
 
+#include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#size_t #>) */
+
 extern void *tnet_transport_mainthread(void *param);
 extern int tnet_transport_stop(tnet_transport_t *transport);
 

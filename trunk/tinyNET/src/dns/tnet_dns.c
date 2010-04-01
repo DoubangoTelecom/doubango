@@ -41,6 +41,9 @@
 #include "tsk_debug.h"
 #include "tsk_string.h"
 
+#include <string.h> /* strlen, memser, .... */
+#include <ctype.h> /* isdigist */
+
 /* DNS cache functions */
 int tnet_dns_cache_maintenance(tnet_dns_ctx_t *ctx);
 int tnet_dns_cache_entry_add(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* response);

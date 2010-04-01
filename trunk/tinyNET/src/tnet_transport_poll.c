@@ -101,6 +101,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
+	transport_context_t* context;
 	static char c = '\0';
 	int ret = -1;
 
@@ -108,12 +109,16 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		TSK_DEBUG_ERROR("Invalid server handle.");
 		return ret;
 	}
+	
+	if(!(context = (transport_context_t*)transport->context)){
+		TSK_DEBUG_ERROR("Invalid context.");
+		return -2;
+	}
 
 	if(TNET_SOCKET_TYPE_IS_TLS(type)){
-		transport->have_tls = 1;
+		transport->tls.have_tls = 1;
 	}
 	
-	static char c = '\0';
 	addSocket(fd, type, transport, take_ownership, isClient);
 
 	// signal
@@ -176,7 +181,7 @@ size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from
 		goto bail;
 	}
 
-	if(transport->have_tls){
+	if(transport->tls.have_tls){
 		transport_socket_t* socket = getSocket(transport->context, from);
 		if(socket && socket->tlshandle){
 			if(!tnet_tls_socket_send(socket->tlshandle, buf, size)){

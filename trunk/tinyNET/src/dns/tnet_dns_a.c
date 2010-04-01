@@ -56,7 +56,7 @@ static void* tnet_dns_a_create(void * self, va_list * app)
 		size_t offset = va_arg(*app, size_t);
 
 		const uint8_t* rddata = (((uint8_t*)data) + offset);
-		const uint8_t* dataEnd = (rddata + rdlength);
+		//const uint8_t* dataEnd = (rddata + rdlength);
 
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(a), qtype_a, qclass);
@@ -70,8 +70,7 @@ static void* tnet_dns_a_create(void * self, va_list * app)
 			uint32_t address = tnet_ntohl(*((uint32_t*)rddata));
 			tsk_sprintf(&(a->address), "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_ERROR("Invalid IPv4 address.");
 		}
 

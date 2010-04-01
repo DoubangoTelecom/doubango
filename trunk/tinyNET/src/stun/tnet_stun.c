@@ -108,7 +108,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 		STUN indications are not retransmitted; thus, indication transactions over UDP 
 		are not reliable.
 	*/
-	int retransmit = (message->type == stun_binding_request);
+	//int retransmit = (message->type == stun_binding_request);
 
 	int ret = -1;
 	uint16_t i, rto = RTO;
