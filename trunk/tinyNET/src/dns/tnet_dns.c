@@ -69,7 +69,7 @@ int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 }
 
 /**@ingroup tnet_dns_group
-* Sends DNS request over the network. The request will be sent each 200 milliseconds until @ref TNET_DNS_TIMEOUT_DEFAULT milliseconds is reached.
+* Sends DNS request over the network. The request will be sent each 500 milliseconds until @ref TNET_DNS_TIMEOUT_DEFAULT milliseconds is reached.
 * @param ctx The DNS context to use. The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
 * @param qname The domain name (e.g. google.com).
 * @param qclass The CLASS of the query.
@@ -87,13 +87,19 @@ int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 */
 tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
-	tsk_buffer_t *output = 0;
+	tsk_buffer_t *output = tsk_null;
 	tnet_dns_query_t* query = TNET_DNS_QUERY_CREATE(qname, qclass, qtype);
-	tnet_dns_response_t *response = 0;
+	tnet_dns_response_t *response = tsk_null;
 	tsk_bool_t from_cache = tsk_false;
 	
 	/* Check validity */
 	if(!ctx || !query){
+		goto bail;
+	}
+
+	/* Is there any DNS Server? */
+	if(TSK_LIST_IS_EMPTY(ctx->servers)){
+		TSK_DEBUG_ERROR("Failed to load DNS Servers. You can add new DNS servers by using \"tnet_dns_add_server\".");
 		goto bail;
 	}
 
@@ -138,7 +144,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 	//	Send and Recaive data
 	/* ============================ */
 	{
-		int ret;
+		int ret = -1;
 		struct timeval tv;
 		fd_set set;
 		tnet_fd_t maxFD;
@@ -157,9 +163,9 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 			goto done;
 		}
 
-		/* Always wait 200ms before retransmission */
+		/* Always wait 500ms before retransmission */
 		tv.tv_sec = 0;
-		tv.tv_usec = (200 * 1000);
+		tv.tv_usec = (500 * 1000);
 		
 		do
 		{
@@ -194,7 +200,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 						break;
 					}
 				}
-			}
+			}			
 
 			//
 			//	Received data
@@ -659,6 +665,35 @@ const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, cons
 	return ret;
 }
 
+
+/**
+* Adds new DNS server to the list of the list of servers to query.
+* @param ctx DNS context containing the user parameters. The new DNS server will be added to this context.
+* @param host The IP address (or FQDN) of the dns server to add to the server.
+* @retval zero if succeed and non-zero error code otherwise.
+*/
+int tnet_dns_add_server(tnet_dns_ctx_t *ctx, const char* host)
+{
+	tnet_address_t *address;
+	
+	if(!ctx || !host){
+		return -1;
+	}
+	
+	if(!ctx->servers){
+		ctx->servers = TSK_LIST_CREATE();
+	}
+	
+	if((address = TNET_ADDRESS_CREATE(host))){
+		address->family = tnet_get_family(host);
+		address->dnsserver = 1;
+		tsk_list_push_ascending_data(ctx->servers, (void**)&address);
+
+		return 0;
+	}
+	
+	return -2;
+}
 
 //=================================================================================================
 //	[[DNS CACHE ENTRY]] object definition

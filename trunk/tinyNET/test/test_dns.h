@@ -24,6 +24,9 @@
 
 #include "dns/tnet_dns_naptr.h"
 #include "dns/tnet_dns_regexp.h"
+#include "dns/tnet_dns_resolvconf.h"
+
+//#include "tnet_utils.h" /* tnet_address_t */
 
 void test_dns_query()
 {
@@ -109,6 +112,8 @@ void test_enum()
 	const char* e164num = "+1-800-555-5555";
 	//const char* e164num = "+33660188661";
 
+	//tnet_dns_add_server(ctx, "192.168.16.9");
+
 	//if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", e164num, "e164.org"))){
 	if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", e164num, "e164.org"))){
 		TSK_DEBUG_INFO("URI=%s", uri);
@@ -189,6 +194,29 @@ void test_regex()
 	}
 }
 
+void test_resolvconf()
+{
+	tnet_addresses_L_t * servers;
+	const tnet_address_t* address;
+	const tsk_list_item_t* item;
+	const char* path = "C:\\tmp\\resolv32.conf";
+	//const char* path = "C:\\tmp\\resolv.conf";
+	//const char* path = "/etc/resolv.conf";
+	
+	if((servers = tnet_dns_resolvconf_parse(path))){
+		tsk_list_foreach(item, servers){
+			address = item->data;
+
+			TSK_DEBUG_INFO("DNS Server host=%s Family=%d", address->ip, address->family);
+		}
+
+		TSK_OBJECT_SAFE_FREE(servers);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to parse DNS servers from %s.", );
+	}
+}
+
 void test_dns()
 {
 	//test_dns_naptr_srv();
@@ -196,6 +224,7 @@ void test_dns()
 	//test_dns_query();
 	test_enum();
 	//test_regex();
+	//test_resolvconf();
 }
 
 

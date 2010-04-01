@@ -60,6 +60,7 @@
 #endif
 
 #include "tsk_errno.h"
+#include "tsk_list.h"
 
 TNET_BEGIN_DECLS
 
@@ -69,6 +70,8 @@ typedef int32_t tnet_family_t;
 typedef char tnet_host_t[NI_MAXHOST];
 typedef char tnet_ip_t[INET6_ADDRSTRLEN];
 
+typedef tsk_list_t tnet_interfaces_L_t; /**< List of @ref tnet_interface_t elements.*/
+typedef tsk_list_t tnet_addresses_L_t; /**< List of @ref tnet_address_t elements.*/
 
 #if TNET_UNDER_WINDOWS
 #	define TNET_INVALID_SOCKET				INVALID_SOCKET
