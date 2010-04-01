@@ -110,9 +110,9 @@ TINYSAK_API void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t**
 #define tsk_list_push_ascending_item(list, item) tsk_list_pushfiltered_item(list, item, 1)
 #define tsk_list_push_descending_item(list, item) tsk_list_pushfiltered_item(list, item, 0)
 
-TINYSAK_API void tsk_list_push_list(tsk_list_t* destination, tsk_list_t** source, int back);
-#define tsk_list_pushback_list(destination, source) tsk_list_push_list(destination, source, 1)
-#define tsk_list_pushfront_list(destination, source) tsk_list_push_list(destination, source, 0)
+TINYSAK_API void tsk_list_push_list(tsk_list_t* destination, const tsk_list_t* source, tsk_bool_t back);
+#define tsk_list_pushback_list(destination, source) tsk_list_push_list(destination, source, tsk_true)
+#define tsk_list_pushfront_list(destination, source) tsk_list_push_list(destination, source, tsk_false)
 
 TINYSAK_API void tsk_list_push_data(tsk_list_t* list, void** data, int back);
 #define tsk_list_push_back_data(list, data) tsk_list_push_data(list, data, 1)
@@ -124,8 +124,8 @@ TINYSAK_API void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int 
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj);
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
 
-TINYSAK_GEXTERN const void *tsk_list_def_t;
-TINYSAK_GEXTERN const void *tsk_list_item_def_t;
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_list_def_t;
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_list_item_def_t;
 
 
 TSK_END_DECLS
