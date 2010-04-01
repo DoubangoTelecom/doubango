@@ -462,6 +462,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dns\tnet_dns_regexp.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dns\tnet_dns_rr.c"
 					>
 				</File>
@@ -662,6 +666,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dns\tnet_dns_regexp.h"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dns\tnet_dns_rr.h"
 					>
 				</File>
@@ -726,6 +734,14 @@
 					>
 				</File>
 			</Filter>
+		</Filter>
+		<Filter
+			Name="ragel(.rl)"
+			>
+			<File
+				RelativePath=".\ragel\tnet_dns_regexp.rl"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

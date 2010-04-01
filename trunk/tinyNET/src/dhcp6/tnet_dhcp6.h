@@ -42,11 +42,8 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP6_CTX_CREATE()			tsk_object_new(tnet_dhcp6_ctx_def_t)
-
-#define TNET_DHCP6_ENTERPRISE_NUM_DEFAULT			35368 /**< PEN number assigned by the IANA. 
-	The list of assigned numbers could be found here http://www.iana.org/assignments/enterprise-numbers. */
-#define TNET_DHCP6_VENDOR_CLASS_DATA_DEFAULT			"doubango/v0.0.0"
+#define TNET_DHCP6_CTX_CREATE()						tsk_object_new(tnet_dhcp6_ctx_def_t)
+#define TNET_DHCP6_VENDOR_CLASS_DATA_DEFAULT		"doubango/v0.0.0"
 
 /** RFC 3315 - 5.1. Multicast Addresses
 *	A link-scoped multicast address used by a client to communicate with
@@ -108,7 +105,7 @@ typedef struct tnet_dhcp6_ctx_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	uint16_t enterprise_number;
+	uint16_t pen; /**< Private Enterprise Number assigned by the IANA. Default= @ref TNET_IANA_PEN.*/
 	char* vendor_class_data;
 
 	uint64_t timeout;

@@ -33,6 +33,10 @@
 
 extern tsk_bool_t tnet_isBigEndian;
 
+/** Converts a 16-bit value from host to TCP/IP network byte order (big-endian).
+* @param x The 16-bit (in host byte order) value to convert.
+* @retval @a x in TCP/IP network byte order.
+*/
 unsigned short tnet_htons(unsigned short x)
 {
 	if(tnet_isBigEndian){
@@ -44,6 +48,10 @@ unsigned short tnet_htons(unsigned short x)
 	}
 }
 
+/** Converts a 32-bit value from host to TCP/IP network byte order (big-endian).
+* @param x The 32-bit (in host byte order) value to convert.
+* @retval @a x in TCP/IP network byte order.
+*/
 unsigned long tnet_htonl(unsigned long x)
 {
 	if(tnet_isBigEndian){

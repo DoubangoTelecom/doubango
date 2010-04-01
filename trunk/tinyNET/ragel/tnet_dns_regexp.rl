@@ -45,21 +45,20 @@
 
 	action parse_prefix{
 		TSK_PARSER_SET_STRING(prefix);
-		TSK_DEBUG_INFO("parse_prefix %s", prefix);
 	}
 
 	action cat_any{
 		int len = (int)(p  - tag_start);
-		TSK_DEBUG_INFO("cat_any %s %d", tag_start, len);
 		if(len){
 			tsk_strncat(&ret, tag_start, len);
 		}
 	}
 
 	action cat_group{
-		int len = (int)(p  - tag_start);
-		TSK_DEBUG_INFO("cat_group %s %d", tag_start, len);
-		tsk_strncat(&ret, tag_start, len);
+		if(prefix){
+			int prefixlen = strlen(prefix);
+			tsk_strncat(&ret, e164num + prefixlen, (e164len - prefixlen));
+		}
 	}
 
 	#	http://www.itu.int/itudoc/itu-t/workshop/enum/012_pp7.ppt
@@ -70,12 +69,11 @@
 	#	
 	
 	regexp = (".*") | ("\\"? <:any*>tag %parse_prefix :>"(.*)");
-	#string = any+>tag %cat_any :>(("\\" digit+) %cat_group)? <: any+>tag %cat_any;
-	group = "\\" digit+;
-	string = (any-group)*>tag @cat_any (group >tag %cat_group)? (any-group)*>tag @cat_any;
+	group = "\\" digit;
+	string = (any -- "\\")*>tag %cat_any (group >tag %cat_group)? (any -- "\\")*>tag %cat_any;
 	
-	# Supported regexp --> =^.*$= or =^+1800(.*)= where "1800" is called the prefix
-	main := "!^"<: regexp :> "$!" <: string :> "!" "i"?;
+	# Supported regexp --> !^.*$! or !^+1800(.*)! where "1800" is called the prefix
+	main := "!^"<: regexp :> "$!" <: string :>"!" "i"?;
 }%%
 
 /**
@@ -91,6 +89,7 @@ char* tnet_dns_regex_parse(const char* e164num, const char* regexp)
 	char* ret = tsk_null;
 	char* prefix = tsk_null;
 	const char* tag_start;
+	size_t e164len;
 		
 	// Ragel
 	int cs = 0;
@@ -109,6 +108,7 @@ char* tnet_dns_regex_parse(const char* e164num, const char* regexp)
 		goto bail;
 	}
 	
+	e164len = strlen(e164num);
 	pe = p + strlen(regexp);
 	eof = pe;
 	
