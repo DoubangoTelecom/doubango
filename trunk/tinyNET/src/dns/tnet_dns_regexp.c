@@ -39,7 +39,7 @@
 
 /* ===	Ragel state machine === */
 
-/* #line 79 "./ragel/tnet_dns_regexp.rl" */
+/* #line 77 "./ragel/tnet_dns_regexp.rl" */
 
 
 /**
@@ -55,6 +55,7 @@ char* tnet_dns_regex_parse(const char* e164num, const char* regexp)
 	char* ret = tsk_null;
 	char* prefix = tsk_null;
 	const char* tag_start;
+	size_t e164len;
 		
 	// Ragel
 	int cs = 0;
@@ -63,71 +64,70 @@ char* tnet_dns_regex_parse(const char* e164num, const char* regexp)
 	const char *eof;
 	
 	
-/* #line 67 "./src/dns/tnet_dns_regexp.c" */
+/* #line 68 "./src/dns/tnet_dns_regexp.c" */
 static const char _tdns_machine_regexp_actions[] = {
-	0, 1, 0, 1, 1, 2, 0, 1, 
-	2, 0, 2, 2, 2, 0, 2, 3, 
-	0, 3, 2, 0, 3, 3, 2, 3, 
-	0
+	0, 1, 0, 1, 1, 1, 2, 2, 
+	0, 1, 2, 0, 2, 2, 2, 0, 
+	2, 3, 0, 3, 3, 0, 2
 };
 
 static const char _tdns_machine_regexp_key_offsets[] = {
 	0, 0, 1, 2, 5, 6, 7, 8, 
-	9, 10, 11, 13, 15, 19, 23, 25, 
-	27, 28, 29
+	9, 10, 11, 13, 15, 17, 19, 21, 
+	23, 25, 26, 27
 };
 
 static const char _tdns_machine_regexp_trans_keys[] = {
 	33, 94, 40, 46, 92, 40, 46, 42, 
-	41, 36, 33, 33, 92, 33, 92, 33, 
-	92, 48, 57, 33, 92, 48, 57, 40, 
-	42, 36, 40, 40, 105, 0
+	41, 36, 33, 33, 92, 33, 92, 48, 
+	57, 33, 92, 33, 92, 40, 42, 36, 
+	40, 40, 105, 0
 };
 
 static const char _tdns_machine_regexp_single_lengths[] = {
 	0, 1, 1, 3, 1, 1, 1, 1, 
-	1, 1, 2, 2, 2, 2, 2, 2, 
-	1, 1, 0
+	1, 1, 2, 2, 0, 2, 2, 2, 
+	2, 1, 1, 0
 };
 
 static const char _tdns_machine_regexp_range_lengths[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 1, 1, 0, 0, 
-	0, 0, 0
+	0, 0, 0, 0, 1, 0, 0, 0, 
+	0, 0, 0, 0
 };
 
 static const char _tdns_machine_regexp_index_offsets[] = {
 	0, 0, 2, 4, 8, 10, 12, 14, 
-	16, 18, 20, 23, 26, 30, 34, 37, 
-	40, 42, 44
+	16, 18, 20, 23, 26, 28, 31, 34, 
+	37, 40, 42, 44
 };
 
 static const char _tdns_machine_regexp_trans_targs[] = {
-	2, 0, 3, 0, 5, 14, 16, 4, 
+	2, 0, 3, 0, 5, 15, 17, 4, 
 	5, 4, 6, 0, 7, 0, 8, 0, 
-	9, 0, 10, 0, 17, 12, 11, 17, 
-	12, 11, 17, 12, 13, 11, 17, 12, 
-	13, 11, 5, 15, 4, 9, 5, 4, 
-	5, 4, 18, 0, 0, 0
+	9, 0, 10, 0, 18, 12, 11, 18, 
+	12, 11, 13, 0, 18, 0, 14, 18, 
+	0, 14, 5, 16, 4, 9, 5, 4, 
+	5, 4, 19, 0, 0, 0
 };
 
 static const char _tdns_machine_regexp_trans_actions[] = {
-	0, 0, 0, 0, 5, 1, 0, 1, 
+	0, 0, 0, 0, 7, 1, 0, 1, 
 	3, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 1, 8, 8, 1, 
-	11, 11, 1, 11, 11, 11, 14, 17, 
-	21, 21, 3, 0, 0, 0, 3, 0, 
-	5, 1, 0, 0, 0, 0
+	0, 0, 0, 0, 10, 10, 10, 13, 
+	13, 13, 0, 0, 19, 0, 16, 5, 
+	0, 0, 3, 0, 0, 0, 3, 0, 
+	7, 1, 0, 0, 0, 0
 };
 
 static const int tdns_machine_regexp_start = 1;
-static const int tdns_machine_regexp_first_final = 17;
+static const int tdns_machine_regexp_first_final = 18;
 static const int tdns_machine_regexp_error = 0;
 
 static const int tdns_machine_regexp_en_main = 1;
 
 
-/* #line 102 "./ragel/tnet_dns_regexp.rl" */
+/* #line 101 "./ragel/tnet_dns_regexp.rl" */
 	
 	if(!e164num){
 		goto bail;
@@ -138,18 +138,19 @@ static const int tdns_machine_regexp_en_main = 1;
 		goto bail;
 	}
 	
+	e164len = strlen(e164num);
 	pe = p + strlen(regexp);
 	eof = pe;
 	
 	
-/* #line 146 "./src/dns/tnet_dns_regexp.c" */
+/* #line 147 "./src/dns/tnet_dns_regexp.c" */
 	{
 	cs = tdns_machine_regexp_start;
 	}
 
 /* #line 116 "./ragel/tnet_dns_regexp.rl" */
 	
-/* #line 153 "./src/dns/tnet_dns_regexp.c" */
+/* #line 154 "./src/dns/tnet_dns_regexp.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -232,25 +233,24 @@ _match:
 /* #line 46 "./ragel/tnet_dns_regexp.rl" */
 	{
 		TSK_PARSER_SET_STRING(prefix);
-		TSK_DEBUG_INFO("parse_prefix %s", prefix);
 	}
 	break;
 	case 2:
-/* #line 51 "./ragel/tnet_dns_regexp.rl" */
+/* #line 50 "./ragel/tnet_dns_regexp.rl" */
 	{
 		int len = (int)(p  - tag_start);
-		TSK_DEBUG_INFO("cat_any %s %d", tag_start, len);
 		if(len){
 			tsk_strncat(&ret, tag_start, len);
 		}
 	}
 	break;
 	case 3:
-/* #line 59 "./ragel/tnet_dns_regexp.rl" */
+/* #line 57 "./ragel/tnet_dns_regexp.rl" */
 	{
-		int len = (int)(p  - tag_start);
-		TSK_DEBUG_INFO("cat_group %s %d", tag_start, len);
-		tsk_strncat(&ret, tag_start, len);
+		if(prefix){
+			int prefixlen = strlen(prefix);
+			tsk_strncat(&ret, e164num + prefixlen, (e164len - prefixlen));
+		}
 	}
 	break;
 /* #line 257 "./src/dns/tnet_dns_regexp.c" */
@@ -270,7 +270,7 @@ _again:
 	
 	if( cs < 
 /* #line 273 "./src/dns/tnet_dns_regexp.c" */
-17
+18
 /* #line 118 "./ragel/tnet_dns_regexp.rl" */
  ){
 		TSK_DEBUG_ERROR("regexp substitition failed.");

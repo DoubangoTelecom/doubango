@@ -46,8 +46,7 @@
 	include tsip_machine_utils "./tsip_machine_utils.rl";
 	#include tsip_machine_userinfo;
 		
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
@@ -61,38 +60,31 @@
 	action is_ipv6 { uri->host_type = host_ipv6; }
 	action is_hostname { uri->host_type = host_hostname; }
 
-	action parse_scheme
-	{
+	action parse_scheme{
 		TSK_PARSER_SET_STRING(uri->scheme);
 	}
 
-	action parse_user_name
-	{
+	action parse_user_name{
 		TSK_PARSER_SET_STRING(uri->user_name);
 	}
 
-	action parse_password
-	{
+	action parse_password{
 		TSK_PARSER_SET_STRING(uri->password);
 	}
 
-	action parse_host
-	{
+	action parse_host{
 		TSK_PARSER_SET_STRING(uri->host);
 	}
 
-	action parse_port
-	{
+	action parse_port{
 		TSK_PARSER_SET_INTEGER(uri->port);	
 	}
 
-	action parse_param
-	{
+	action parse_param{
 		TSK_PARSER_ADD_PARAM(uri->params);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	my_uri_parameter = (pname ( "=" pvalue )?) >tag %parse_param;
@@ -103,8 +95,7 @@
 	main			:= |*
 							("sip:"i>tag %is_sip | "sips:"i>tag %is_sips) @100
 							{
-								if(tsk_strcontains(te, (pe - te), "@"))
-								{
+								if(tsk_strcontains(te, (pe - te), "@")){
 									fgoto sip_usrinfo;
 								}
 							};

@@ -232,7 +232,7 @@ static void* tnet_dhcp6_ctx_create(void * self, va_list * app)
 	tnet_dhcp6_ctx_t *ctx = self;
 	if(ctx)
 	{
-		ctx->enterprise_number = TNET_DHCP6_ENTERPRISE_NUM_DEFAULT;
+		ctx->pen = TNET_IANA_PEN;
 		ctx->vendor_class_data = tsk_strdup(TNET_DHCP6_VENDOR_CLASS_DATA_DEFAULT);
 		
 		ctx->port_client = TNET_DHCP6_CLIENT_PORT;

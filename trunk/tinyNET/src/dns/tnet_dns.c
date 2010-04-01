@@ -69,7 +69,7 @@ int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 }
 
 /**@ingroup tnet_dns_group
-* Sends DNS request over the network. The request will be sent each 500 milliseconds until @ref TNET_DNS_TIMEOUT_DEFAULT milliseconds is reached.
+* Sends DNS request over the network. The request will be sent each 200 milliseconds until @ref TNET_DNS_TIMEOUT_DEFAULT milliseconds is reached.
 * @param ctx The DNS context to use. The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
 * @param qname The domain name (e.g. google.com).
 * @param qclass The CLASS of the query.
@@ -148,6 +148,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 		struct sockaddr_storage server;
 		tnet_socket_t *localsocket4 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
 		tnet_socket_t *localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
+		tsk_bool_t useIPv6 = TNET_SOCKET_IS_VALID(localsocket6);
 		
 		tsk_safeobj_lock(ctx);
 
@@ -156,20 +157,9 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 			goto done;
 		}
 
-		/* Always wait 500ms before retransmission */
+		/* Always wait 200ms before retransmission */
 		tv.tv_sec = 0;
-		tv.tv_usec = (500 * 1000);
-
-		/* Set FDs */
-		FD_ZERO(&set);
-		FD_SET(localsocket4->fd, &set);
-		if(TNET_SOCKET_IS_VALID(localsocket6)){
-			FD_SET(localsocket6->fd, &set);
-			maxFD = TSK_MAX(localsocket4->fd, localsocket6->fd);
-		}
-		else{
-			maxFD = localsocket4->fd;
-		}
+		tv.tv_usec = (200 * 1000);
 		
 		do
 		{
@@ -214,8 +204,20 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 				timeout = tsk_time_epoch() + ctx->timeout;
 			}
 
+			/* Set FDs */
+			FD_ZERO(&set);
+			FD_SET(localsocket4->fd, &set);
+			if(useIPv6){
+				FD_SET(localsocket6->fd, &set);
+				maxFD = TSK_MAX(localsocket4->fd, localsocket6->fd);
+			}
+			else{
+				maxFD = localsocket4->fd;
+			}
+
 			/* wait for response */
 			if((ret = select(maxFD+1, &set, NULL, NULL, &tv))<0){ /* Error */
+				TNET_PRINT_LAST_ERROR("Select failed.");
 				goto done;
 			}
 			else if(ret == 0){ /* timeout ==> do nothing */
@@ -225,7 +227,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 				size_t len = 0;
 				void* data = 0;
 				tnet_fd_t active_fd;
-
+				
 				/* Find active file descriptor */
 				if(FD_ISSET(localsocket4->fd, &set)){
 					active_fd = localsocket4->fd;
@@ -240,6 +242,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 
 				/* Check how how many bytes are pending */
 				if((ret = tnet_ioctlt(active_fd, FIONREAD, &len))<0){
+					TSK_DEBUG_ERROR("tnet_ioctlt failed with error code:%d", tnet_geterrno());
 					goto done;
 				}
 				
@@ -248,7 +251,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 				if((ret = tnet_sockfd_recv(active_fd, data, len, 0))<0){
 					TSK_FREE(data);
 					
-					TSK_DEBUG_ERROR("Recving DNS dgrams failed with error code:%d", tnet_geterrno());
+					TSK_DEBUG_ERROR("tnet_sockfd_recv failed with error code:%d", tnet_geterrno());
 					goto done;
 				}
 
@@ -282,8 +285,13 @@ bail:
 	TSK_OBJECT_SAFE_FREE(output);
 
 	/* Add the result to the cache. */
-	if(response && !from_cache && ctx->caching){
-		tnet_dns_cache_entry_add(ctx, qname, qclass, qtype, response);
+	if(response){
+		if(!from_cache && ctx->caching){
+			tnet_dns_cache_entry_add(ctx, qname, qclass, qtype, response);
+		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to contact the DNS server.");
 	}
 
 	return response;

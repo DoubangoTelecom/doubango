@@ -106,11 +106,16 @@ void test_enum()
 //	const tsk_list_item_t* item;
 //	const tnet_dns_naptr_t* record;
 	char* uri = tsk_null;
+	const char* e164num = "+1-800-555-5555";
+	//const char* e164num = "+33660188661";
 
-	//if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", "+33660188661", "e164.org"))){
-	if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", "+1-800-555-5555", "e164.org"))){
+	//if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", e164num, "e164.org"))){
+	if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", e164num, "e164.org"))){
 		TSK_DEBUG_INFO("URI=%s", uri);
 		TSK_FREE(uri);
+	}
+	else{
+		TSK_DEBUG_ERROR("ENUM(%s) failed", e164num);
 	}
 	
 	/*if((response = tnet_dns_enum(ctx, "+1-800-555-5555", "e164.org"))){
@@ -150,14 +155,14 @@ typedef struct regexp_test_s{
 regexp_test_t;
 
 regexp_test_t regexp_tests[] = {
-/*	"+18005551234", "!^.*$!sip:customer-service@example.com!i", "sip:customer-service@example.com",
+	"+18005551234", "!^.*$!sip:customer-service@example.com!i", "sip:customer-service@example.com",
 	"+18005551234", "!^.*$!mailto:information@example.com!i", "mailto:information@example.com",
-*/
-	"+1800555-5555", "!^\\+1800(.*)$!sip:1641641800\\1@tollfree.sip-happens.com!", "sip:16416418005555555@tollfree.sip-happens.com",
-	"+1800555-5555", "!^\\+1800(.*)$!sip:1641641800\\1@sip.tollfreegateway.com!", "sip:16416418005555555@sip.tollfreegateway.com",
 
+	"+18005555555", "!^\\+1800(.*)$!sip:1641641800\\1@tollfree.sip-happens.com!", "sip:16416418005555555@tollfree.sip-happens.com",
+	"+18005555555", "!^\\+1800(.*)$!sip:1641641800\\1@sip.tollfreegateway.com!", "sip:16416418005555555@sip.tollfreegateway.com",
+	
 	"+468971234", "!^+46(.*)$!ldap://ldap.telco.se/cn=0\\1!", "ldap://ldap.telco.se/cn=08971234",
-	"+468971234", "!^+46(.*)$!^.*$!mailto:spam@paf.se!", "mailto:spam@paf.se",
+	"+468971234", "!^+46(.*)$!mailto:spam@paf.se!", "mailto:spam@paf.se",
 
 	"urn:cid:199606121851.1@bar.example.com", "!!^urn:cid:.+@([^\\.]+\\.)(.*)$!\\2!i", "example.com",
 };
@@ -171,11 +176,16 @@ void test_regex()
 	{
 		if((ret = tnet_dns_regex_parse(regexp_tests[i].e164num, regexp_tests[i].regexp))){
 			TSK_DEBUG_INFO("ENUM(%s) = %s", regexp_tests[i].e164num, ret);
+			if(!tsk_strequals(ret, regexp_tests[i].xres)){
+				TSK_DEBUG_ERROR("Failed to match ENUM(%s)", regexp_tests[i].e164num);
+			}
 			TSK_FREE(ret);
 		}
 		else{
-			TSK_DEBUG_ERROR("ENUM(%s) failed", regexp_tests[i].e164num);
+			TSK_DEBUG_ERROR("Failed to parse ENUM(%s)", regexp_tests[i].e164num);
 		}
+
+		TSK_DEBUG_INFO("---------");
 	}
 }
 
@@ -184,8 +194,8 @@ void test_dns()
 	//test_dns_naptr_srv();
 	//test_dns_srv();
 	//test_dns_query();
-	//test_enum();
-	test_regex();
+	test_enum();
+	//test_regex();
 }
 
 
