@@ -67,7 +67,7 @@ tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t 
 {
 	if(list)
 	{
-		tsk_list_item_t *prev = 0;
+		tsk_list_item_t *prev = tsk_null;
 		tsk_list_item_t *curr = prev = list->head;
 
 		while(curr)
@@ -78,7 +78,7 @@ tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t 
 					/* Found at first position. */
 					if(list->head == list->tail){
 						/* There was only one item */
-						list->head = list->tail = 0;
+						list->head = list->tail = tsk_null;
 					}
 					else{
 						list->head = curr->next;
@@ -89,7 +89,7 @@ tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t 
 					if(curr == list->tail){
 						/* Found at last position */
 						list->tail = prev;
-						list->tail->next = 0;
+						list->tail->next = tsk_null;
 					}
 					else{
 						prev->next = curr->next;
@@ -131,7 +131,7 @@ tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predi
 {
 	if(list)
 	{
-		tsk_list_item_t *prev = 0;
+		tsk_list_item_t *prev = tsk_null;
 		tsk_list_item_t *curr = prev = list->head;
 
 		while(curr)
@@ -142,7 +142,7 @@ tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predi
 					/* Found at first position. */
 					if(list->head == list->tail){
 						/* There was only one item */
-						list->head = list->tail = 0;
+						list->head = list->tail = tsk_null;
 					}
 					else{
 						list->head = curr->next;
@@ -153,7 +153,7 @@ tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predi
 					if(curr == list->tail){
 						/* Found at last position */
 						list->tail = prev;
-						list->tail->next = 0;
+						list->tail->next = tsk_null;
 					}
 					else{
 						prev->next = curr->next;
@@ -213,7 +213,7 @@ void tsk_list_clear_items(tsk_list_t* list)
 */
 tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 {
-	tsk_list_item_t* item = 0;
+	tsk_list_item_t* item = tsk_null;
 	if(list)
 	{
 		item = list->head;
@@ -223,7 +223,7 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 				list->head = list->head->next;
 			}
 			else{
-				list->head = list->tail = 0;
+				list->head = list->tail = tsk_null;
 			}
 		}
 	}
@@ -242,7 +242,7 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 	int first = !list->head;
 
 	if(back && list->tail){
-		list->tail->next = *item, list->tail = *item;
+		list->tail->next = *item, list->tail = *item, (*item)->next = tsk_null;
 	}
 	else {
 		(*item)->next = list->head, list->head = *item;
@@ -251,7 +251,7 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 	if(first){
 		list->tail = list->head = *item;
 	}
-	(*item) = 0;
+	(*item) = tsk_null;
 }
 
 /**@ingroup tsk_list_group
@@ -264,7 +264,7 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 {
 	if(list)
 	{
-		tsk_list_item_t *prev = 0;
+		tsk_list_item_t *prev = tsk_null;
 		tsk_list_item_t *curr = prev = list->head;
 		
 		while(curr)
@@ -297,19 +297,22 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 * Add all items in @a src into @a dest.
 * @param dest The destination list.
 * @param src The source list.
-* @param back Indicates whether to put the list back (1=yes and 0=no).
+* @param back Indicates whether to put the list back or not.
 **/
-void tsk_list_push_list(tsk_list_t* dest, tsk_list_t** src, int back)
+void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
 {
-	tsk_list_item_t* next = 0;
-	tsk_list_item_t* curr = (*src)->head;
+	const tsk_list_item_t* next = tsk_null;
+	const tsk_list_item_t* curr = (src)->head;
+	tsk_list_item_t* copy;
 
 	while(curr){
 		next = curr->next;
-		tsk_list_push_item(dest, &curr, back);
+
+		copy = tsk_object_ref((void*)curr);
+		tsk_list_push_filtered_item(dest, &copy, back);
+
 		curr = next->next;
 	}
-	(*src) = 0;
 }
 
 /**@ingroup tsk_list_group
@@ -326,7 +329,7 @@ void tsk_list_push_data(tsk_list_t* list, void** data, int back)
 		item->data = *data;
 		
 		tsk_list_push_item(list, &item, back);
-		(*data) = 0;
+		(*data) = tsk_null;
 	}
 	else{
 		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
@@ -347,7 +350,7 @@ void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending)
 		item->data = *data;
 		
 		tsk_list_push_filtered_item(list, &item, ascending);
-		(*data) = 0;
+		(*data) = tsk_null;
 	}
 	else
 	{
@@ -416,12 +419,15 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 //=================================================================================================
 //	Item object definition
 //
-static void* tsk_list_item_create(void * self, va_list * app)
+static tsk_object_t* tsk_list_item_create(tsk_object_t * self, va_list * app)
 {
+	tsk_list_item_t *item = self;
+	if(item){
+	}
 	return self;
 }
 
-static void* tsk_list_item_destroy(void *self)
+static tsk_object_t* tsk_list_item_destroy(tsk_object_t *self)
 {
 	tsk_list_item_t *item = self;
 	if(item){
@@ -433,12 +439,15 @@ static void* tsk_list_item_destroy(void *self)
 	return item;
 }
 
-static int tsk_list_item_cmp(const void *self, const void *object)
+static int tsk_list_item_cmp(const tsk_object_t *_item1, const tsk_object_t *_item2)
 {	
-	const tsk_list_item_t* item1 = self;
-	const tsk_list_item_t* item2 = object;
-
-	return tsk_object_cmp(item1->data, item2->data);
+	const tsk_list_item_t* item1 = _item1;
+	const tsk_list_item_t* item2 = _item2;
+	
+	if(item1 && item2){
+		return tsk_object_cmp(item1->data, item2->data);
+	}
+	else return -1;
 }
 
 //TSK_DECLARE_DEF(tsk, list_item);
@@ -449,24 +458,26 @@ static const tsk_object_def_t tsk_list_item_def_s =
 	tsk_list_item_destroy,
 	tsk_list_item_cmp,
 };
-const void *tsk_list_item_def_t = &tsk_list_item_def_s;
+const tsk_object_def_t *tsk_list_item_def_t = &tsk_list_item_def_s;
 
 //=================================================================================================
 //	List object definition
 //
-static void* tsk_list_create(void *self, va_list *app)
+static tsk_object_t* tsk_list_create(tsk_object_t *self, va_list *app)
 {
-	//tsk_list_t *list = self;
+	tsk_list_t *list = self;
+	if(list){
+	}
 
 	return self;
 }
 
-static void* tsk_list_destroy(void *self)
+static tsk_object_t* tsk_list_destroy(tsk_object_t *self)
 { 
 	tsk_list_t *list = self;
 	if(list)
 	{
-		tsk_list_item_t* next = 0;
+		tsk_list_item_t* next = tsk_null;
 		tsk_list_item_t* curr = list->head;
 
 		while(curr){
@@ -488,7 +499,7 @@ static const tsk_object_def_t tsk_list_def_s =
 	sizeof(tsk_list_t),
 	tsk_list_create,
 	tsk_list_destroy,
-	0,
+	tsk_null,
 };
-const void *tsk_list_def_t = &tsk_list_def_s;
+const tsk_object_def_t *tsk_list_def_t = &tsk_list_def_s;
 
