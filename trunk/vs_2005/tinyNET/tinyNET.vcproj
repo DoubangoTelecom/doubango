@@ -472,6 +472,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_resolvconf.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_rr.c"
 					>
 				</File>
@@ -672,6 +676,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinyNET\src\dns\tnet_dns_resolvconf.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyNET\src\dns\tnet_dns_rr.h"
 					>
 				</File>
@@ -742,6 +750,10 @@
 			>
 			<File
 				RelativePath="..\..\tinyNET\ragel\tnet_dns_regexp.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyNET\ragel\tnet_dns_resolvconf.rl"
 				>
 			</File>
 		</Filter>

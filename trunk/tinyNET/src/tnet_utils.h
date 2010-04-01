@@ -35,8 +35,6 @@
 #include "tnet_socket.h"
 #include "tnet_types.h"
 
-#include "tsk_list.h"
-
 /**@ingroup tnet_utils_group
 * @def TNET_INTERFACE_CREATE
 * Creates new @ref tnet_interface_t object.
@@ -69,7 +67,7 @@ typedef struct tnet_interface_s
 	size_t mac_address_length;
 }
 tnet_interface_t;
-typedef tsk_list_t tnet_interfaces_L_t; /**< List of @ref tnet_interface_t elements.*/
+
 
 /**@ingroup tnet_utils_group
 * Address.
@@ -88,7 +86,6 @@ typedef struct tnet_address_s
 	char* ip;
 }
 tnet_address_t;
-typedef tsk_list_t tnet_addresses_L_t; /**< List of @ref tnet_address_t elements.*/
 
 TINYNET_API void tnet_getlasterror(tnet_error_t *error);
 TINYNET_API int tnet_geterrno();
@@ -114,6 +111,7 @@ TINYNET_API int tnet_getaddrinfo(const char *node, const char *service, const st
 TINYNET_API void tnet_freeaddrinfo(struct addrinfo *ai);
 TINYNET_API int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result);
 TINYNET_API tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd);
+TINYNET_API tnet_family_t tnet_get_family(const char* host);
 TINYNET_API int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
 TINYNET_API int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port);
 TINYNET_API int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_port_t *port);
@@ -173,8 +171,8 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 #endif
 
 
-TINYNET_GEXTERN const void *tnet_interface_def_t;
-TINYNET_GEXTERN const void *tnet_address_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_interface_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_address_def_t;
 
 TNET_END_DECLS
 

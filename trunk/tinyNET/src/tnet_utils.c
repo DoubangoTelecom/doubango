@@ -36,6 +36,7 @@
 
 #include "tnet_socket.h"
 #include "tnet_endianness.h"
+#include "dns/tnet_dns_resolvconf.h"
 
 #include <string.h>
 
@@ -281,14 +282,14 @@ bail:
 tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index)
 {
 	tnet_addresses_L_t *addresses = TSK_LIST_CREATE();
-	tnet_ip_t ip;
 
 #if TSK_UNDER_WINDOWS
-
+	
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
 
 	/* Declare and initialize variables */
+	tnet_ip_t ip;
     DWORD dwSize = 0;
     DWORD dwRetVal = 0;
 
@@ -337,8 +338,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 				goto next;
 			}
 
-			/* UNICAST addresses
-			*/
+			/* == UNICAST addresses == */
 			pUnicast = pCurrAddresses->FirstUnicastAddress;
             while(unicast && pUnicast)
 			{
@@ -348,14 +348,13 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
 					address->family = pUnicast->Address.lpSockaddr->sa_family;
 					address->unicast = 1;
-					tsk_list_push_back_data(addresses, &address);
+					tsk_list_push_ascending_data(addresses, &address);
 				}
 
                 pUnicast = pUnicast->Next;
             }
 
-			/* ANYCAST addresses
-			*/
+			/* == ANYCAST addresses == */
 			pAnycast = pCurrAddresses->FirstAnycastAddress;
             while(anycast && pAnycast)
 			{
@@ -365,14 +364,13 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
 					address->family = pAnycast->Address.lpSockaddr->sa_family;
 					address->anycast = 1;
-					tsk_list_push_back_data(addresses, &address);
+					tsk_list_push_ascending_data(addresses, &address);
 				}
 
                 pAnycast = pAnycast->Next;
             }
 
-			/* MULTYCAST addresses
-			*/
+			/* == MULTYCAST addresses == */
 			pMulticast = pCurrAddresses->FirstMulticastAddress;
             while(multicast && pMulticast)
 			{
@@ -382,14 +380,13 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
 					address->family = pMulticast->Address.lpSockaddr->sa_family;
 					address->multicast = 1;
-					tsk_list_push_back_data(addresses, &address);
+					tsk_list_push_ascending_data(addresses, &address);
 				}
 
                 pMulticast = pMulticast->Next;
             }
 
-			/* DNS servers
-			*/
+			/* == DNS servers == */
 			pDnServer = pCurrAddresses->FirstDnsServerAddress;
             while(dnsserver && pDnServer)
 			{
@@ -399,12 +396,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
 					address->family = pDnServer->Address.lpSockaddr->sa_family;
 					address->dnsserver = 1;
-					// IPv4 first
-					if(address->family == AF_INET){
-						tsk_list_push_front_data(addresses, &address);
-					}else{
-						tsk_list_push_back_data(addresses, &address);
-					}
+					tsk_list_push_ascending_data(addresses, &address);
 				}
 
                 pDnServer = pDnServer->Next;
@@ -414,26 +406,30 @@ next:
 		}
 	}
 
-	if(pAddresses)
-	{
+	if(pAddresses){
 		FREE(pAddresses);
 	}
 
 #undef MALLOC
 #undef FREE
 
+bail:
 
 
+#else	/* !TSK_UNDER_WINDOWS (MAC OX, UNIX, ANDROID ...) */
 
-#else	/* !TSK_UNDER_WINDOWS */
+	tnet_addresses_L_t * dns_servers;	
 
-
+	/* == DNS servers == */
+	if((dns_servers = tnet_dns_resolvconf_parse("/etc/resolv.conf"))){
+		tsk_list_pushback_list(addresses, dns_servers);
+		TSK_OBJECT_SAFE_FREE(dns_servers);
+	}
 
 
 #endif
 
 
-bail:
 	return addresses;
 }
 
@@ -566,6 +562,42 @@ tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd)
 	}*/
 
 	return type;
+}
+
+/**@ingroup tnet_utils_group
+* Gets the IP family of the @a host (e.g. "google.com" or "192.168.16.104" or "::1").
+* If the @a host is FQDN associated with both IPv4 and IPv6 then the result is unpredictable.
+* @retval @a AF_* if succeed and @a AF_UNSPEC otherwise.
+*/
+tnet_family_t tnet_get_family(const char* host)
+{
+	tnet_family_t ret = AF_UNSPEC;
+	if(host){
+		int status;
+		struct addrinfo *result = tsk_null;
+		struct addrinfo *ptr = tsk_null;
+		struct addrinfo hints;
+		
+		memset(&hints, 0, sizeof(hints));
+		hints.ai_family = AF_UNSPEC;
+		hints.ai_socktype = SOCK_DGRAM;
+		hints.ai_protocol = IPPROTO_UDP;
+
+		if((status = tnet_getaddrinfo(host, "", &hints, &result))){
+			TNET_PRINT_LAST_ERROR("getaddrinfo failed:");
+			goto done;
+		}
+
+		/* Get the First result. */
+		if(result){
+			ret = result->ai_family;
+			goto done;
+		}
+done:
+		freeaddrinfo(result);
+	}
+
+	return ret;
 }
 
 /**@ingroup tnet_utils_group
@@ -1252,7 +1284,7 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 //=================================================================================================
 //	INTERFACE object definition
 //
-static void* tnet_interface_create(void * self, va_list * app)
+static tsk_object_t* tnet_interface_create(tsk_object_t * self, va_list * app)
 {
 	tnet_interface_t *iface = self;
 	if(iface)
@@ -1270,11 +1302,10 @@ static void* tnet_interface_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_interface_destroy(void * self)
+static tsk_object_t* tnet_interface_destroy(tsk_object_t * self)
 { 
 	tnet_interface_t *iface = self;
-	if(iface)
-	{
+	if(iface){
 		TSK_FREE(iface->description);
 		TSK_FREE(iface->mac_address);
 	}
@@ -1282,13 +1313,12 @@ static void* tnet_interface_destroy(void * self)
 	return self;
 }
 
-static int tnet_interface_cmp(const void *if1, const void *if2)
+static int tnet_interface_cmp(const tsk_object_t *if1, const tsk_object_t *if2)
 {
 	const tnet_interface_t *iface1 = if1;
 	const tnet_interface_t *iface2 = if2;
 	
-	if(iface1 && iface2)
-	{
+	if(iface1 && iface2){
 		return tsk_stricmp(iface1->description, iface1->description);
 	}
 	else if(!iface1 && !iface2) return 0;
@@ -1302,7 +1332,7 @@ static const tsk_object_def_t tnet_interface_def_s =
 	tnet_interface_destroy,
 	tnet_interface_cmp, 
 };
-const void *tnet_interface_def_t = &tnet_interface_def_s;
+const tsk_object_def_t *tnet_interface_def_t = &tnet_interface_def_s;
 
 
 
@@ -1310,25 +1340,36 @@ const void *tnet_interface_def_t = &tnet_interface_def_s;
 //=================================================================================================
 //	ADDRESS object definition
 //
-static void* tnet_address_create(void * self, va_list * app)
+static tsk_object_t* tnet_address_create(tsk_object_t * self, va_list * app)
 {
 	tnet_address_t *address = self;
-	if(address)
-	{
+	if(address){
 		address->ip = tsk_strdup(va_arg(*app, const char*));
 	}
 	return self;
 }
 
-static void* tnet_address_destroy(void * self)
+static tsk_object_t* tnet_address_destroy(tsk_object_t * self)
 { 
 	tnet_address_t *address = self;
-	if(address)
-	{
+	if(address){
 		TSK_FREE(address->ip);
 	}
 
 	return self;
+}
+
+static int tnet_address_cmp(const tsk_object_t *_a1, const tsk_object_t *_a2)
+{
+	const tnet_address_t *a1 = _a1;
+	const tnet_address_t *a2 = _a2;
+	
+	if(a1 && a2){
+		// to have AF_UNSPEC, AF_UNIX, AF_INET, ... first
+		return (a1->family - a2->family);
+	}
+	else if(!a1 && !a2) return 0;
+	else return -1;
 }
 
 static const tsk_object_def_t tnet_address_def_s = 
@@ -1336,7 +1377,7 @@ static const tsk_object_def_t tnet_address_def_s =
 	sizeof(tnet_address_t),
 	tnet_address_create, 
 	tnet_address_destroy,
-	0, 
+	tnet_address_cmp, 
 };
-const void *tnet_address_def_t = &tnet_address_def_s;
+const tsk_object_def_t *tnet_address_def_t = &tnet_address_def_s;
 

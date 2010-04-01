@@ -99,8 +99,8 @@ typedef struct tnet_dns_ctx_s
 
 	uint64_t timeout; /**< In milliseconds. Default: @ref TNET_DNS_TIMEOUT_DEFAULT. */
 	tsk_bool_t recursion; /**< Indicates whether to direct the name server to pursue the query recursively. Default: enabled.*/
-	tsk_bool_t edns0; /**< Indicates whether to enable EDNS0 (Extension Mechanisms for DNS) or not. Default: enabled. */
-	tsk_bool_t caching; /**< Indicates whether to enable the DNS cache or not. */
+	tsk_bool_t edns0; /**< Indicates whether to enable EDNS0 (Extension Mechanisms for DNS) or not. This option will allow you to send DNS packet larger than 512 bytes. Default: enabled. */
+	tsk_bool_t caching; /**< Indicates whether to enable the DNS cache or not. Default: no. */
 
 	int32_t cache_ttl;
 
@@ -119,6 +119,8 @@ TINYNET_API tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* 
 TINYNET_API char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164num, const char* domain);
 TINYNET_API int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname, tnet_port_t* port);
 TINYNET_API int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char* service, char** hostname, tnet_port_t* port);
+
+TINYNET_API int tnet_dns_add_server(tnet_dns_ctx_t *ctx, const char* host);
 
 TINYNET_GEXTERN const void *tnet_dns_ctx_def_t;
 TINYNET_GEXTERN const void *tnet_dns_cache_entry_def_t;
