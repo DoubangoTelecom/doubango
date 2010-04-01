@@ -175,7 +175,7 @@ static void* tnet_dhcp6_option_identifier_create(void * self, va_list * app)
 	tnet_dhcp6_option_identifier_t *option = self;
 	if(option)
 	{
-		tnet_dhcp6_option_code_t code = va_arg(*app, tnet_dhcp6_option_code_t);
+		//tnet_dhcp6_option_code_t code = va_arg(*app, tnet_dhcp6_option_code_t);
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 

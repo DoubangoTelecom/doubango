@@ -575,7 +575,6 @@ tnet_family_t tnet_get_family(const char* host)
 	if(host){
 		int status;
 		struct addrinfo *result = tsk_null;
-		struct addrinfo *ptr = tsk_null;
 		struct addrinfo hints;
 		
 		memset(&hints, 0, sizeof(hints));
@@ -1212,7 +1211,7 @@ int tnet_sockfd_listen(tnet_fd_t fd, int backlog)
 
 /**@ingroup tnet_utils_group
 */
-tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, int *addrlen)
+tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, socklen_t *addrlen)
 {
 	tnet_fd_t ret = TNET_INVALID_FD;
 

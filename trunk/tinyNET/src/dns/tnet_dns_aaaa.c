@@ -56,7 +56,7 @@ static void* tnet_dns_aaaa_create(void * self, va_list * app)
 		size_t offset = va_arg(*app, size_t);
 
 		const uint8_t* rddata = (((uint8_t*)data) + offset);
-		const uint8_t* dataEnd = (rddata + rdlength);
+		//const uint8_t* dataEnd = (rddata + rdlength);
 
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(aaaa), qtype_aaaa, qclass);
@@ -71,8 +71,7 @@ static void* tnet_dns_aaaa_create(void * self, va_list * app)
 				tnet_ntohs(*((uint16_t*)&rddata[0])), tnet_ntohs(*((uint16_t*)&rddata[2])), tnet_ntohs(*((uint16_t*)&rddata[4])), tnet_ntohs(*((uint16_t*)&rddata[6])),
 				tnet_ntohs(*((uint16_t*)&rddata[8])), tnet_ntohs(*((uint16_t*)&rddata[10])), tnet_ntohs(*((uint16_t*)&rddata[12])), tnet_ntohs(*((uint16_t*)&rddata[14])));
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_ERROR("Invalid IPv6 address.");
 		}
 

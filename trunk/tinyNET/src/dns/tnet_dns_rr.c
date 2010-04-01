@@ -248,7 +248,7 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* of
 	tnet_dns_rr_t *rr = tsk_null;
 	uint8_t* dataStart = (uint8_t*)data;
 	uint8_t* dataPtr = (dataStart + *offset);
-	uint8_t* dataEnd = (dataPtr+size);
+	//uint8_t* dataEnd = (dataPtr+size);
 	tnet_dns_qtype_t qtype;
 	tnet_dns_qclass_t qclass;
 	uint32_t ttl;

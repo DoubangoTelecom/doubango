@@ -236,7 +236,7 @@ tnet_stun_request_t* tnet_turn_create_request_permission(const tnet_nat_context_
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_createpermission_request);
 	if(request)
 	{
-		const char* ipaddress = va_arg(*app, const char *);
+		//--const char* ipaddress = va_arg(*app, const char *);
 
 		/* XOR-PEER-ADDRESS */
 		tnet_turn_attribute_xpeer_addr_t* attribute = TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE_NULL();

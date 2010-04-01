@@ -213,16 +213,16 @@ void test_resolvconf()
 		TSK_OBJECT_SAFE_FREE(servers);
 	}
 	else{
-		TSK_DEBUG_ERROR("Failed to parse DNS servers from %s.", );
+		TSK_DEBUG_ERROR("Failed to parse DNS servers from %s.", path);
 	}
 }
 
 void test_dns()
 {
-	//test_dns_naptr_srv();
+	test_dns_naptr_srv();
 	//test_dns_srv();
 	//test_dns_query();
-	test_enum();
+	//test_enum();
 	//test_regex();
 	//test_resolvconf();
 }

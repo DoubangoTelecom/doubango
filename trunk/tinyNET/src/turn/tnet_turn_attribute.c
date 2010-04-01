@@ -590,8 +590,8 @@ static void* tnet_turn_attribute_restoken_create(void * self, va_list * app)
 	tnet_turn_attribute_restoken_t *attribute = self;
 	if(attribute)
 	{
-		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		//--const void *payload = va_arg(*app, const void*);
+		//--size_t payload_size = va_arg(*app, size_t);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_reservation_token;
 	}

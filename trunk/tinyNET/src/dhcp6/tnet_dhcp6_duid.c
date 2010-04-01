@@ -68,10 +68,10 @@ tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, size_t size)
 {
 	tnet_dhcp6_duid_t *duid = 0;
 	uint8_t* dataPtr = ((uint8_t*)data);
-	uint8_t* dataEnd = (dataPtr+size);
+	//uint8_t* dataEnd = (dataPtr+size);
 
 	tnet_dhcp6_duid_type_t type;
-	uint8_t len = 0;
+	//uint8_t len = 0;
 
 	/* Check validity */
 	if(!dataPtr || size<2/*Type*/)
