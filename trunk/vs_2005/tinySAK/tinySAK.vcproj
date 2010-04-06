@@ -414,6 +414,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinySAK\src\tsk_options.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySAK\src\tsk_params.h"
 				>
 			</File>
@@ -525,6 +529,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinySAK\src\tsk_object.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySAK\src\tsk_options.c"
 				>
 			</File>
 			<File

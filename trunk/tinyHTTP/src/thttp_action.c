@@ -33,9 +33,32 @@
 
 #include "tsk_debug.h"
 
+/**@defgroup thttp_action_group Sending Requests
+*/
 
+/**@ingroup thttp_action_group
+* Sends a custom HTTP/HTTPS request.
+* @param session The @a session (or connection) to use.
+* @param urlstring The Request-URI. If the url scheme is 'https', then the default port will be 443, otherwise the port value will be 80.
+* @param method The method to use for the HTTP request (e.g. GET, PUT, DELETE, POST ...).
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @code
+thttp_action_perform(session, "http://www.google.com", "GET"
+		// request-level parameters
+		THTTP_ACTION_SET_PARAM("timeout", "6000"),
 
-int thttp_action_perform(thttp_session_handle_t *session, const char* url, const char* method, ...)
+		// request-level headers
+		THTTP_ACTION_SET_HEADER("Pragma", "No-Cache"),
+		THTTP_ACTION_SET_HEADER("Connection", "Keep-Alive"),
+		
+		// close parameters
+		THTTP_ACTION_SET_NULL());
+* @endcode
+* @sa @ref thttp_action_CONNECT<br>@ref thttp_action_DELETE<br>@ref thttp_action_GET<br>@ref thttp_action_HEAD<br>@ref thttp_action_OPTIONS<br>
+* @ref thttp_action_PATCH<br>@ref thttp_action_POST<br>@ref thttp_action_PUT<br>@ref thttp_action_TRACE
+*/
+int thttp_action_perform(thttp_session_handle_t *session, const char* urlstring, const char* method, ...)
 {
 	thttp_session_t* sess = session;
 	va_list ap;
@@ -43,12 +66,12 @@ int thttp_action_perform(thttp_session_handle_t *session, const char* url, const
 	thttp_dialog_t* dialog;
 	int ret = -1;	
 
-	if(!sess || !sess->stack || !url || !method){
+	if(!sess || !sess->stack || !urlstring || !method){
 		return ret;
 	}
 	
 	va_start(ap, method);
-	if((action = THTTP_ACTION_CREATE(atype_o_request, url, method, &ap))){		
+	if((action = THTTP_ACTION_CREATE(atype_o_request, urlstring, method, &ap))){		
 		if((dialog = thttp_dialog_new(sess))){
 			ret = thttp_dialog_fsm_act(dialog, action->type, tsk_null, action);
 			
@@ -83,24 +106,26 @@ static tsk_object_t* thttp_action_create(tsk_object_t * self, va_list * app)
 		action->method = tsk_strdup(va_arg(*app, const char*));
 		app_2 = va_arg(*app, va_list*);	
 
-		action->params = TSK_LIST_CREATE();
+		action->options = TSK_LIST_CREATE();
 		action->headers = TSK_LIST_CREATE();
 
 		while((curr=va_arg(*app_2, thttp_action_param_type_t)) != aptype_null)
 		{
 			switch(curr)
 			{
-				case aptype_param:
+				case aptype_option:
+					{
+						thhtp_action_option_t id = va_arg(*app_2, thhtp_action_option_t);
+						const char* value = va_arg(*app_2, const char *);
+						tsk_options_add_option(&action->options, id, value);
+						break;
+					}
+
 				case aptype_header:
 					{
 						const char* name = va_arg(*app_2, const char *);
 						const char* value = va_arg(*app_2, const char *);
-						
-						if(curr == aptype_param){
-							tsk_params_add_param(&action->params, name, value);
-						}else{
-							tsk_params_add_param(&action->headers, name, value);
-						}
+						tsk_params_add_param(&action->headers, name, value);
 						break;
 					}
 
@@ -134,7 +159,7 @@ static tsk_object_t* thttp_action_destroy(tsk_object_t * self)
 		TSK_FREE(action->url);
 		TSK_FREE(action->method);
 
-		TSK_OBJECT_SAFE_FREE(action->params);
+		TSK_OBJECT_SAFE_FREE(action->options);
 		TSK_OBJECT_SAFE_FREE(action->headers);
 		TSK_OBJECT_SAFE_FREE(action->payload);
 	}

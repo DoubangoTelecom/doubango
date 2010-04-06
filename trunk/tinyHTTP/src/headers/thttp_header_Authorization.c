@@ -1,5 +1,5 @@
 
-/* #line 1 "thttp_parser_header_Authorization.rl" */
+/* #line 1 "./ragel/thttp_parser_header_Authorization.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -43,7 +43,7 @@
 *	Ragel state machine.
 */
 
-/* #line 161 "thttp_parser_header_Authorization.rl" */
+/* #line 161 "./ragel/thttp_parser_header_Authorization.rl" */
 
 
 int thttp_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
@@ -111,7 +111,7 @@ thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data,
 	const char *tag_start;
 
 	
-/* #line 115 "../src/headers/thttp_header_Authorization.c" */
+/* #line 115 "./src/headers/thttp_header_Authorization.c" */
 static const char _thttp_machine_parser_header_Authorization_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -9490,16 +9490,16 @@ static const int thttp_machine_parser_header_Authorization_error = 0;
 static const int thttp_machine_parser_header_Authorization_en_main = 1;
 
 
-/* #line 228 "thttp_parser_header_Authorization.rl" */
+/* #line 228 "./ragel/thttp_parser_header_Authorization.rl" */
 	
-/* #line 9496 "../src/headers/thttp_header_Authorization.c" */
+/* #line 9496 "./src/headers/thttp_header_Authorization.c" */
 	{
 	cs = thttp_machine_parser_header_Authorization_start;
 	}
 
-/* #line 229 "thttp_parser_header_Authorization.rl" */
+/* #line 229 "./ragel/thttp_parser_header_Authorization.rl" */
 	
-/* #line 9503 "../src/headers/thttp_header_Authorization.c" */
+/* #line 9503 "./src/headers/thttp_header_Authorization.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -9574,109 +9574,109 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "thttp_parser_header_Authorization.rl" */
+/* #line 50 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "thttp_parser_header_Authorization.rl" */
+/* #line 55 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		#//FIXME: Only Digest is supported
 		hdr_Authorization->scheme = tsk_strdup("Digest");
 	}
 	break;
 	case 2:
-/* #line 61 "thttp_parser_header_Authorization.rl" */
+/* #line 61 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		THTTP_HEADER(hdr_Authorization)->type = thttp_htype_Authorization;
 	}
 	break;
 	case 3:
-/* #line 66 "thttp_parser_header_Authorization.rl" */
+/* #line 66 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		THTTP_HEADER(hdr_Authorization)->type = thttp_htype_Proxy_Authorization;
 	}
 	break;
 	case 4:
-/* #line 71 "thttp_parser_header_Authorization.rl" */
+/* #line 71 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->username);
 		tsk_strunquote(&hdr_Authorization->username);
 	}
 	break;
 	case 5:
-/* #line 77 "thttp_parser_header_Authorization.rl" */
+/* #line 77 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->realm);
 		tsk_strunquote(&hdr_Authorization->realm);
 	}
 	break;
 	case 6:
-/* #line 83 "thttp_parser_header_Authorization.rl" */
+/* #line 83 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->nonce);
 		tsk_strunquote(&hdr_Authorization->nonce);
 	}
 	break;
 	case 7:
-/* #line 89 "thttp_parser_header_Authorization.rl" */
+/* #line 89 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->uri);
 	}
 	break;
 	case 8:
-/* #line 94 "thttp_parser_header_Authorization.rl" */
+/* #line 94 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->response);
 		tsk_strunquote(&hdr_Authorization->response);
 	}
 	break;
 	case 9:
-/* #line 100 "thttp_parser_header_Authorization.rl" */
+/* #line 100 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->algorithm);
 	}
 	break;
 	case 10:
-/* #line 105 "thttp_parser_header_Authorization.rl" */
+/* #line 105 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->cnonce);
 		tsk_strunquote(&hdr_Authorization->cnonce);
 	}
 	break;
 	case 11:
-/* #line 111 "thttp_parser_header_Authorization.rl" */
+/* #line 111 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->opaque);
 		tsk_strunquote(&hdr_Authorization->opaque);
 	}
 	break;
 	case 12:
-/* #line 117 "thttp_parser_header_Authorization.rl" */
+/* #line 117 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->qop);
 		//tsk_strunquote(&hdr_Authorization->qop);
 	}
 	break;
 	case 13:
-/* #line 123 "thttp_parser_header_Authorization.rl" */
+/* #line 123 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Authorization->nc);
 	}
 	break;
 	case 14:
-/* #line 128 "thttp_parser_header_Authorization.rl" */
+/* #line 128 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_Authorization));
 	}
 	break;
 	case 15:
-/* #line 133 "thttp_parser_header_Authorization.rl" */
+/* #line 133 "./ragel/thttp_parser_header_Authorization.rl" */
 	{
 	}
 	break;
-/* #line 9680 "../src/headers/thttp_header_Authorization.c" */
+/* #line 9680 "./src/headers/thttp_header_Authorization.c" */
 		}
 	}
 
@@ -9689,14 +9689,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 230 "thttp_parser_header_Authorization.rl" */
+/* #line 230 "./ragel/thttp_parser_header_Authorization.rl" */
 	
 	if( cs < 
-/* #line 9696 "../src/headers/thttp_header_Authorization.c" */
+/* #line 9696 "./src/headers/thttp_header_Authorization.c" */
 1391
-/* #line 231 "thttp_parser_header_Authorization.rl" */
- )
-	{
+/* #line 231 "./ragel/thttp_parser_header_Authorization.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse Authorization header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Authorization);
 	}
 	

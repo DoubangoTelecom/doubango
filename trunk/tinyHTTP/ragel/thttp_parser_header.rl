@@ -51,7 +51,7 @@
 //#include "tinyHTTP/headers/thttp_header_Route.h"
 //#include "tinyHTTP/headers/thttp_header_Service_Route.h"
 //#include "tinyHTTP/headers/thttp_header_Supported.h"
-//#include "tinyHTTP/headers/thttp_header_To.h"
+#include "tinyHTTP/headers/thttp_header_Transfer_Encoding.h"
 //#include "tinyHTTP/headers/thttp_header_User_Agent.h"
 //#include "tinyHTTP/headers/thttp_header_Via.h"
 #include "tinyHTTP/headers/thttp_header_WWW_Authenticate.h"
@@ -374,16 +374,7 @@
 		ADD_HEADER(header);
 
 		//TSK_DEBUG_WARN("parse_header_Referer NOT IMPLEMENTED. Will be added as Dummy header.");
-	}
-	
-	# /*== Transfer_Encoding: ==*/
-	action parse_header_Transfer_Encoding
-	{
-		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
-		ADD_HEADER(header);
-
-		//TSK_DEBUG_WARN("parse_header_Transfer_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
-	}
+	}	
 	
 	# /*== TE: ==*/
 	action parse_header_TE
@@ -398,6 +389,15 @@
 	action parse_header_Trailer
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+
+		//TSK_DEBUG_WARN("parse_header_Trailer NOT IMPLEMENTED. Will be added as Dummy header.");
+	}
+
+	# /*== Transfer_Encoding: ==*/
+	action parse_header_Transfer_Encoding
+	{
+		thttp_header_Transfer_Encoding_t *header = thttp_header_Transfer_Encoding_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
 		//TSK_DEBUG_WARN("parse_header_Trailer NOT IMPLEMENTED. Will be added as Dummy header.");
@@ -457,8 +457,8 @@
 
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
-	include thttp_machine_header "./thttp_machine_header.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
+	include thttp_machine_header "./ragel/thttp_machine_header.rl";
 
 	# Entry point
 	main := HEADER;

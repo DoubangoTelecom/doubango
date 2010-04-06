@@ -1,5 +1,5 @@
 
-/* #line 1 "thttp_parser_header_Content_Length.rl" */
+/* #line 1 "./ragel/thttp_parser_header_Content_Length.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -38,7 +38,7 @@
 *	Ragel state machine.
 */
 
-/* #line 63 "thttp_parser_header_Content_Length.rl" */
+/* #line 63 "./ragel/thttp_parser_header_Content_Length.rl" */
 
 
 int thttp_header_Content_Length_tostring(const void* header, tsk_buffer_t* output)
@@ -65,7 +65,7 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 	const char *tag_start;
 
 	
-/* #line 69 "../src/headers/thttp_header_Content_Length.c" */
+/* #line 69 "./src/headers/thttp_header_Content_Length.c" */
 static const char _thttp_machine_parser_header_Content_Length_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -134,16 +134,16 @@ static const int thttp_machine_parser_header_Content_Length_error = 0;
 static const int thttp_machine_parser_header_Content_Length_en_main = 1;
 
 
-/* #line 89 "thttp_parser_header_Content_Length.rl" */
+/* #line 89 "./ragel/thttp_parser_header_Content_Length.rl" */
 	
-/* #line 140 "../src/headers/thttp_header_Content_Length.c" */
+/* #line 140 "./src/headers/thttp_header_Content_Length.c" */
 	{
 	cs = thttp_machine_parser_header_Content_Length_start;
 	}
 
-/* #line 90 "thttp_parser_header_Content_Length.rl" */
+/* #line 90 "./ragel/thttp_parser_header_Content_Length.rl" */
 	
-/* #line 147 "../src/headers/thttp_header_Content_Length.c" */
+/* #line 147 "./src/headers/thttp_header_Content_Length.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -218,23 +218,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 45 "thttp_parser_header_Content_Length.rl" */
+/* #line 45 "./ragel/thttp_parser_header_Content_Length.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 50 "thttp_parser_header_Content_Length.rl" */
+/* #line 50 "./ragel/thttp_parser_header_Content_Length.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_clength->length);
 	}
 	break;
 	case 2:
-/* #line 55 "thttp_parser_header_Content_Length.rl" */
+/* #line 55 "./ragel/thttp_parser_header_Content_Length.rl" */
 	{
 	}
 	break;
-/* #line 238 "../src/headers/thttp_header_Content_Length.c" */
+/* #line 238 "./src/headers/thttp_header_Content_Length.c" */
 		}
 	}
 
@@ -247,12 +247,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 91 "thttp_parser_header_Content_Length.rl" */
+/* #line 91 "./ragel/thttp_parser_header_Content_Length.rl" */
 	
 	if( cs < 
-/* #line 254 "../src/headers/thttp_header_Content_Length.c" */
+/* #line 254 "./src/headers/thttp_header_Content_Length.c" */
 22
-/* #line 92 "thttp_parser_header_Content_Length.rl" */
+/* #line 92 "./ragel/thttp_parser_header_Content_Length.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(hdr_clength);

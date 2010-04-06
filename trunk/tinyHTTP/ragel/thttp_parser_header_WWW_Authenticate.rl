@@ -45,7 +45,7 @@
 	machine thttp_machine_parser_header_WWW_Authenticate;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
 	action tag
 	{
@@ -193,8 +193,8 @@ thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char 
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse WWW-Authenticate header.");
 		TSK_OBJECT_SAFE_FREE(hdr_WWW_Authenticate);
 	}
 	

@@ -35,7 +35,7 @@
 
 #include <string.h>
 
-/**@defgroup thttp_auth_group HTTP basic/digest authentication (RFC 2617).
+/**@defgroup thttp_auth_group HTTP basic/digest authentication (RFC 2617)
 */
 
 /**@ingroup thttp_auth_group

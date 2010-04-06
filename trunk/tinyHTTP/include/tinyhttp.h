@@ -27,6 +27,13 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "thttp.h"
+
 #include "tinyHTTP/thttp_action.h"
 
+#include "tinyHTTP/parsers/thttp_parser_message.h"
+#include "tinyHTTP/parsers/thttp_parser_url.h"
+#include "tinyHTTP/parsers/thttp_parser_header.h"
 
+#include "tnet.h"
+
+#include "tsk.h"

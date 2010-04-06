@@ -61,7 +61,7 @@ typedef struct tsk_param_s
 	char *name;/**< The name of the parameter. */
 	char *value;/**< The value of the parameter. */
 	
-	tsk_bool_t tag;/**< tag to be used for any use case (e.g. validity of the parameter, whether to ignore the param., ...). Default value: 0.*/
+	tsk_bool_t tag;/**< tag to be used for any use case (e.g. validity of the parameter, whether to ignore the param., ...). Default value: @ref tsk_false.*/
 }
 tsk_param_t;
 
@@ -69,7 +69,7 @@ typedef tsk_list_t tsk_params_L_t; /**< List of @ref tsk_param_t elements. */
 
 TINYSAK_API tsk_param_t *tsk_params_parse_param(const char* line, size_t size);
 
-TINYSAK_API int tsk_params_have_param(const tsk_params_L_t *self, const char* name);
+TINYSAK_API tsk_bool_t tsk_params_have_param(const tsk_params_L_t *self, const char* name);
 TINYSAK_API int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* value);
 TINYSAK_API int tsk_params_add_param_2(tsk_params_L_t **self, const tsk_param_t* param);
 TINYSAK_API int tsk_params_remove_param(tsk_params_L_t *self, const char* name);
@@ -80,7 +80,7 @@ TINYSAK_API int tsk_params_get_param_value_as_int(const tsk_params_L_t *self, co
 TINYSAK_API int tsk_params_param_tostring(const tsk_param_t *param, tsk_buffer_t* output);
 TINYSAK_API int tsk_params_tostring(const tsk_params_L_t *self, const char separator, tsk_buffer_t* output);
 
-TINYSAK_GEXTERN const void *tsk_param_def_t;
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_param_def_t;
 
 TSK_END_DECLS
 

@@ -41,25 +41,21 @@
 	machine thttp_machine_parser_header_Content_Type;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_content_type
-	{
+	action parse_content_type{
 		TSK_PARSER_SET_STRING(hdr_ctype->type);
 	}
 
-	action parse_param
-	{		
+	action parse_param{		
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_ctype));
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	extension_token = ietf_token | x_token;
@@ -84,8 +80,7 @@
 
 int thttp_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const thttp_header_Content_Type_t *Content_Type = header;	
 		return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
 	}
@@ -109,8 +104,8 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, s
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse Content-Type header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);
 	}
 	
@@ -129,18 +124,16 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, s
 
 /**@ingroup thttp_header_Content_Type_group
 */
-static void* thttp_header_Content_Type_create(void *self, va_list * app)
+static tsk_object_t* thttp_header_Content_Type_create(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Content_Type_t *Content_Type = self;
-	if(Content_Type)
-	{
+	if(Content_Type){
 		THTTP_HEADER(Content_Type)->type = thttp_htype_Content_Type;
 		THTTP_HEADER(Content_Type)->tostring = thttp_header_Content_Type_tostring;
 
 		Content_Type->type = tsk_strdup( va_arg(*app, const char*) );
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Content_Type header.");
 	}
 	return self;
@@ -148,15 +141,16 @@ static void* thttp_header_Content_Type_create(void *self, va_list * app)
 
 /**@ingroup thttp_header_Content_Type_group
 */
-static void* thttp_header_Content_Type_destroy(void *self)
+static tsk_object_t* thttp_header_Content_Type_destroy(tsk_object_t *self)
 {
 	thttp_header_Content_Type_t *Content_Type = self;
-	if(Content_Type)
-	{
+	if(Content_Type){
 		TSK_FREE(Content_Type->type);
 		TSK_OBJECT_SAFE_FREE(THTTP_HEADER_PARAMS(Content_Type));
 	}
-	else TSK_DEBUG_ERROR("Null Content_Type header.");
+	else{
+		TSK_DEBUG_ERROR("Null Content_Type header.");
+	}
 
 	return self;
 }
@@ -166,6 +160,6 @@ static const tsk_object_def_t thttp_header_Content_Type_def_s =
 	sizeof(thttp_header_Content_Type_t),
 	thttp_header_Content_Type_create,
 	thttp_header_Content_Type_destroy,
-	0
+	tsk_null
 };
-const void *thttp_header_Content_Type_def_t = &thttp_header_Content_Type_def_s;
+const tsk_object_def_t *thttp_header_Content_Type_def_t = &thttp_header_Content_Type_def_s;

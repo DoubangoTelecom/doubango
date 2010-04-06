@@ -43,7 +43,7 @@
 	machine thttp_machine_parser_header_Dummy;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
 	action tag
 	{

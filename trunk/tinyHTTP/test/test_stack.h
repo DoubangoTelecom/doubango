@@ -22,8 +22,6 @@
 #ifndef _TEST_STACK_H_
 #define _TEST_STACK_H_
 
-#include "tinyhttp.h"
-
 int test_stack_callback(const thttp_event_t *httpevent)
 {
 	thttp_session_id_t id = thttp_session_get_id(httpevent->session);
@@ -57,6 +55,10 @@ int test_stack_callback(const thttp_event_t *httpevent)
 	return 0;
 }
 
+#define PAYLOAD "<entry uri=\"sip:samba@micromethod.com\" xmlns=\"urn:ietf:params:xml:ns:resource-lists\">" \
+				"<display-name>samba</display-name>" \
+				"</entry>"
+
 void test_stack()
 {
 	thttp_session_handle_t *session = tsk_null;
@@ -87,14 +89,14 @@ void test_stack()
 
 	/* creates session */
 	session = thttp_session_create(stack,
-		// session-level parameters
-		THTTP_SESSION_SET_PARAM("timeout", "6000"),
+		// session-level options
+		THTTP_SESSION_SET_OPTION(THTTP_SESSION_OPTION_TIMEOUT, "6000"),
 
 		// session-level headers
 		THTTP_SESSION_SET_HEADER("Pragma", "No-Cache"),
 		THTTP_SESSION_SET_HEADER("Connection", "Keep-Alive"),
 		THTTP_SESSION_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
-		THTTP_SESSION_SET_HEADER("X-3GPP-Intended-Identity", "sip:mercuro1@colibria.com"),
+		THTTP_SESSION_SET_HEADER("X-3GPP-Intended-Identity", "sip:mamadou@micromethod.com"),
 		
 		THTTP_SESSION_SET_NULL()); /* MUST always be present */
 
@@ -103,11 +105,42 @@ void test_stack()
 		THTTP_SESSION_SET_CRED("sip:mercuro1@colibria.com", "mercuro13"),
 
 		THTTP_SESSION_SET_NULL());
-	
-	//thttp_action_GET(session, "http://ipv6.google.com",
-	//	THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
+/*
+	thttp_action_GET(session, "http://ipv6.google.com",
+		// action-level options
+		THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
 		
-	//	THTTP_ACTION_SET_NULL());
+		// action-level headers
+		THTTP_ACTION_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
+		THTTP_ACTION_SET_HEADER("Connection", "Keep-Alive"),
+		
+		THTTP_ACTION_SET_NULL());
+*/
+	/*
+	ret = thttp_action_GET(session, "http://192.168.16.104:8080/services/xcap-caps/global/index",
+			// action-level options
+			THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
+			
+			// action-level headers
+			THTTP_ACTION_SET_HEADER("Content-Type", "application/xcap-caps+xml"),
+			
+			THTTP_ACTION_SET_NULL());
+*/
+	ret = thttp_action_PUT(session, "http://192.168.16.104:8080/services/resource-lists/users/sip:mamadou@micromethod.com/index/~~/resource-lists/list%5B@name=%22rcs%22%5D/entry%5B@uri=%22sip%3Asamba%40micromethod.com%22%5D",
+			// action-level options
+			THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
+			
+			// Payload
+			THTTP_ACTION_SET_PAYLOAD(PAYLOAD, strlen(PAYLOAD)),
+
+			// action-level headers
+			
+			THTTP_ACTION_SET_HEADER("Content-Type", " application/xcap-el+xml"),
+			THTTP_ACTION_SET_HEADER("Expect", "100-continue"),
+			
+			THTTP_ACTION_SET_NULL());
+
+	getchar();
 
 	//thttp_action_GET(session, "http://www.google.com",
 		//THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),

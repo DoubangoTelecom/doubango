@@ -42,6 +42,7 @@
 #include "tsk_object.h"
 #include "tsk_list.h"
 #include "tsk_params.h"
+#include "tsk_options.h"
 
 THTTP_BEGIN_DECLS
 
@@ -52,11 +53,21 @@ typedef uint64_t thttp_session_id_t;
 #define THTTP_SESSION_INVALID_ID				0
 #define THTTP_SESSION_INVALID_HANDLE			tsk_null
 
+/** List of all supported options.
+* To pass an option to the sesion, use @ref THTTP_SESSION_SET_OPTION() macro.
+*/
+typedef enum thhtp_session_option_e
+{
+	THTTP_SESSION_OPTION_TIMEOUT,
+
+}
+thhtp_session_option_t;
+
 typedef enum thttp_session_param_type_e
 {
 	sptype_null = tsk_null,
 
-	sptype_param,
+	sptype_option,
 	sptype_cred,
 	sptype_header,
 	sptype_context,
@@ -64,15 +75,16 @@ typedef enum thttp_session_param_type_e
 thttp_session_param_type_t;
 
 /**@ingroup thttp_session_group
-* @def THTTP_SESSION_SET_PARAM
-* Adds or updates a parameter. 
+* @def THTTP_SESSION_SET_OPTION
+* Adds or updates an option. 
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
-* @param NAME_STR The name of the parameter to add/update (const char*).
-* @param VALUE_STR The new value of the parameter (const char*).
+* @param ID_INT The id of the option to add/update (@ref thhtp_session_option_t).
+* @param VALUE_STR The new value of the parameter (<i>const char*</i>).
+*
 * @code
 // session = thttp_session_create(stack,
 thttp_session_set(session,
-	THTTP_SESSION_SET_PARAM("timeout", "6000"),
+	THTTP_SESSION_SET_PARAM(THTTP_SESSION_OPTION_TIMEOUT, "6000"),
 	THTTP_SESSION_SET_NULL());
 * @endcode
 */
@@ -82,10 +94,11 @@ thttp_session_set(session,
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
 * @param USERNAME_STR The username (const char*).
 * @param PASSWORD_STR The password(const char*).
+*
 * @code
 // session = thttp_session_create(stack,
 thttp_session_set(session,
-	THTTP_SESSION_SET_CRED("sip:bob@example.com", "mysecret"),
+	THTTP_SESSION_SET_CRED("ali baba", "open sesame"),
 	THTTP_SESSION_SET_NULL());
 * @endcode
 */
@@ -93,8 +106,9 @@ thttp_session_set(session,
 * @def THTTP_SESSION_SET_HEADER
 * Adds new HTTP headers to the session.
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
-* @param NAME_STR The name of the header (const char*).
-* @param VALUE_STR The value of the header (const char*).
+* @param NAME_STR The name of the header (<i>const char*</i>).
+* @param VALUE_STR The value of the header (<i>const char*</i>). Should not contains the trailing CRLF.
+*
 * @code
 // session = thttp_session_create(stack,
 thttp_session_set(session,
@@ -108,6 +122,7 @@ thttp_session_set(session,
 * Sets user data (context). Will be return to the application layer each time the callback function is called.
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
 * @param CTX_PTR A pointer to the data(const void*).
+*
 * @code
 // session = thttp_session_create(stack,
 thttp_session_set(session,
@@ -119,7 +134,7 @@ thttp_session_set(session,
 * @def THTTP_SESSION_SET_NULL
 * Ends session parameters. Must always be the last one.
 */
-#define THTTP_SESSION_SET_PARAM(NAME_STR, VALUE_STR)			sptype_param, (const char*)NAME_STR, (const char*)VALUE_STR
+#define THTTP_SESSION_SET_OPTION(ID_INT, VALUE_STR)			sptype_option, (thhtp_session_option_t)ID_INT, (const char*)VALUE_STR
 #define THTTP_SESSION_SET_CRED(USERNAME_STR, PASSWORD_STR)		sptype_cred, (const char*)USERNAME_STR, (const char*)PASSWORD_STR
 #define THTTP_SESSION_SET_HEADER(NAME_STR, VALUE_STR)			sptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define THTTP_SESSION_SET_CONTEXT(CTX_PTR)						sptype_context, (const void*)CTX_PTR
@@ -132,7 +147,7 @@ typedef struct thttp_session_s
 	thttp_session_id_t id;
 	const struct thttp_stack_s* stack;
 	const void* context; // usr context
-	tsk_params_L_t *params;
+	tsk_options_L_t *options;
 	tsk_params_L_t *headers;
 
 	tnet_fd_t fd;
@@ -144,6 +159,8 @@ typedef struct thttp_session_s
 		char* usename;
 		char* password;
 	}cred;
+
+	TSK_DECLARE_SAFEOBJ;
 }
 thttp_session_t;
 

@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyHTTP.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"

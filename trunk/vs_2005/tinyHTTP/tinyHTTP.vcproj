@@ -345,6 +345,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyHTTP\src\thttp_action.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\src\thttp_dialog.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyHTTP\src\thttp_event.c"
 				>
 			</File>
@@ -353,11 +361,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyHTTP\src\thttp_operation.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyHTTP\src\thttp_transport.c"
+				RelativePath="..\..\tinyHTTP\src\thttp_session.c"
 				>
 			</File>
 			<File
@@ -400,6 +404,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_Transfer_Encoding.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_WWW_Authenticate.c"
 					>
 				</File>
@@ -429,6 +437,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_action.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_dialog.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_event.h"
 				>
 			</File>
@@ -437,15 +453,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_operation.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_transport.h"
+				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_session.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\tinyHTTP\include\tinyHTTP\thttp_url.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\include\tinyhttp.h"
 				>
 			</File>
 			<File
@@ -485,6 +501,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyHTTP\include\tinyHTTP\headers\thttp_header_Dummy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyHTTP\include\tinyHTTP\headers\thttp_header_Transfer_Encoding.h"
 					>
 				</File>
 				<File
@@ -558,6 +578,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyHTTP\ragel\thttp_parser_header_Dummy.rl"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyHTTP\ragel\thttp_parser_header_Transfer_Encoding.rl"
 				>
 			</File>
 			<File

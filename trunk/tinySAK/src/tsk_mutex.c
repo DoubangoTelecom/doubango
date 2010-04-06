@@ -112,19 +112,16 @@ int tsk_mutex_unlock(tsk_mutex_handle_t* handle)
 	if(handle)
 	{
 #if TSK_UNDER_WINDOWS
-		if((ret = ReleaseMutex((MUTEX_T)handle) ? 0 : -1))
-		{
+		if((ret = ReleaseMutex((MUTEX_T)handle) ? 0 : -1)){
 			ret = GetLastError();
 #else
 		if(ret = pthread_mutex_unlock((MUTEX_T)handle))
 		{
 #endif
-			if(ret == TSK_ERROR_NOT_OWNER)
-			{
+			if(ret == TSK_ERROR_NOT_OWNER){
 				TSK_DEBUG_WARN("The calling thread does not own the mutex: %d", ret);
 			}
-			else
-			{
+			else{
 				TSK_DEBUG_ERROR("Failed to unlock the mutex: %d", ret);
 			}
 		}
@@ -139,8 +136,7 @@ int tsk_mutex_unlock(tsk_mutex_handle_t* handle)
 */
 void tsk_mutex_destroy(tsk_mutex_handle_t** handle)
 {
-	if(handle && *handle)
-	{
+	if(handle && *handle){
 #if TSK_UNDER_WINDOWS
 		CloseHandle((MUTEX_T)*handle);
 		*handle = 0;
@@ -149,8 +145,7 @@ void tsk_mutex_destroy(tsk_mutex_handle_t** handle)
 		tsk_free(handle);
 #endif
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("Cannot free an uninitialized mutex");
 	}
 }
