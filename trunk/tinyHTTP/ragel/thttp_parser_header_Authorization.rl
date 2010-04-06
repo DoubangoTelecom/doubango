@@ -44,7 +44,7 @@
 	machine thttp_machine_parser_header_Authorization;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
 	action tag
 	{
@@ -228,8 +228,8 @@ thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data,
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse Authorization header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Authorization);
 	}
 	

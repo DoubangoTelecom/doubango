@@ -57,6 +57,7 @@ extern int thttp_stack_alert(const thttp_stack_t *self, const thttp_event_t* e);
 /* ======================== transitions ======================== */
 int thttp_dialog_Started_2_Transfering_X_request(va_list *app);
 int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app);
+int thttp_dialog_Transfering_2_Transfering_X_1xx(va_list *app);
 int thttp_dialog_Transfering_2_Terminated_X_message(va_list *app); /* Any other HTTP message except 401/407 */
 int thttp_dialog_Any_2_Terminated_X_closed(va_list *app);
 int thttp_dialog_Any_2_Terminated_X_Error(va_list *app);
@@ -64,14 +65,12 @@ int thttp_dialog_Any_2_Terminated_X_Error(va_list *app);
 /* ======================== conds ======================== */
 tsk_bool_t _fsm_cond_i_401_407(thttp_dialog_t* self, thttp_message_t* message)
 {
-	return THTTP_MESSAGE_IS_RESPONSE(message) 
-		&& (THTTP_RESPONSE_CODE(message) == 401 || THTTP_RESPONSE_CODE(message) == 407);
+	return (THTTP_RESPONSE_CODE(message) == 401 || THTTP_RESPONSE_CODE(message) == 407);
 }
-tsk_bool_t _fsm_cond_i_n401_n407(thttp_dialog_t* self, thttp_message_t* message)
+tsk_bool_t _fsm_cond_i_1xx(thttp_dialog_t* self, thttp_message_t* message)
 {
-	return !_fsm_cond_i_401_407(self, message);
+	return THTTP_RESPONSE_IS_1XX(message);
 }
-
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
@@ -151,6 +150,13 @@ int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app)
 	return thttp_dialog_send_request(self);
 }
 
+/* Transfering -> (1xx) -> Transfering */
+int thttp_dialog_Transfering_2_Transfering_X_1xx(va_list *app)
+{
+	// reset timer?
+	return 0;
+}
+
 /* Transfering -> (message) -> Terminated */
 int thttp_dialog_Transfering_2_Terminated_X_message(va_list *app)
 {
@@ -196,33 +202,14 @@ int thttp_dialog_Any_2_Terminated_X_Error(va_list *app)
 //				== STATE MACHINE END ==
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+/** Execute action (moves the FSM).
+*/
 int thttp_dialog_fsm_act(thttp_dialog_t* self, tsk_fsm_action_id action_id, const thttp_message_t* message, const thttp_action_t* action)
 {
 	if(!self || !self->fsm){
 		return -1;
 	}
 	return tsk_fsm_act(self->fsm, action_id, self, message, self, message, action);
-}
-
-thttp_dialog_t* thttp_dialog_get_by_session(thttp_dialogs_L_t* dialogs, const struct thttp_session_s* session)
-{
-	thttp_dialog_t* ret = tsk_null;
-	const tsk_list_item_t *item;
-	
-	if(!dialogs){
-		goto bail;
-	}
-	
-	tsk_list_foreach(item, dialogs)
-	{
-		if(!tsk_object_cmp(((thttp_dialog_t*)item->data)->session, session)){
-			ret = tsk_object_ref(item->data);
-			goto bail;
-		}
-	}
-
-bail:
-	return ret;
 }
 
 // create new dialog and add it to the stack's list of dialogs
@@ -240,7 +227,9 @@ thttp_dialog_t* thttp_dialog_new(thttp_session_t* session)
 	return ret;
 }
 
-thttp_dialog_t* thttp_dialog_get_by_age(thttp_dialogs_L_t* dialogs)
+/** Returns the oldest dialog.
+*/
+thttp_dialog_t* thttp_dialog_get_oldest(thttp_dialogs_L_t* dialogs)
 {
 	thttp_dialog_t* ret = tsk_null;
 	thttp_dialog_t* dialog = tsk_null;
@@ -256,6 +245,8 @@ thttp_dialog_t* thttp_dialog_get_by_age(thttp_dialogs_L_t* dialogs)
 	return ret;
 }
 
+/** Sends a request.
+*/
 int thttp_dialog_send_request(thttp_dialog_t *self)
 {
 	int ret = -1;
@@ -288,12 +279,15 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 		THTTP_MESSAGE_ADD_HEADER(request, THTTP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
 	}
 
-	/* ==Add headers associated to the action== */
+	/* ==Add headers and content associated to the action== */
 	if(self->action){
+		if(self->action->payload){
+			thttp_message_add_content(request, tsk_null, self->action->payload->data, self->action->payload->size);
+		}
 		tsk_list_foreach(item, self->action->headers){
 			THTTP_MESSAGE_ADD_HEADER(request, THTTP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
 		}
-	}
+	}	
 
 	/* ==Add creadentials== */
 	if(!TSK_LIST_IS_EMPTY(self->session->challenges))
@@ -361,6 +355,8 @@ bail:
 	return ret;
 }
 
+/** Update timestamp (used to match requests with responses)
+*/
 int thttp_dialog_update_timestamp(thttp_dialog_t *self)
 {
 	static uint64_t timestamp = 0;
@@ -371,25 +367,17 @@ int thttp_dialog_update_timestamp(thttp_dialog_t *self)
 	return -1;
 }
 
+/** Called by the FSM manager when the dialog enters in the terminal state.
+*/
 int thttp_dialog_OnTerminated(thttp_dialog_t *self)
 {
-//	thttp_stack_t* stack;
-	int ret = -1;
 	TSK_DEBUG_INFO("=== HTTP/HTTPS Dialog terminated ===");
-
+	
+	/* removes the dialog from the session */
 	if(self->session){
 		tsk_list_remove_item_by_data(self->session->dialogs, self);
 		return 0;
 	}
-
-	//if(self && self->session && self->session->stack){
-	//	/* Remove from the dialog layer. */
-	//	stack = (thttp_stack_t*)self->session->stack;
-	//	tsk_safeobj_lock(stack);
-	//	tsk_list_remove_item_by_data(stack->dialogs, self);
-	//	tsk_safeobj_unlock(stack);
-	//	return 0;
-	//}
 
 	return -1;
 }
@@ -436,8 +424,10 @@ static tsk_object_t* thttp_dialog_create(tsk_object_t * self, va_list * app)
 			*/
 			// Transfering -> (401/407) -> Transfering
 			TSK_FSM_ADD(_fsm_state_Transfering, _fsm_action_message, _fsm_cond_i_401_407, _fsm_state_Transfering, thttp_dialog_Transfering_2_Transfering_X_401_407, "thttp_dialog_Transfering_2_Transfering_X_401_407"),
-			// Transfering -> (message-non 401/407-) -> Terminated
-			TSK_FSM_ADD(_fsm_state_Transfering, _fsm_action_message, _fsm_cond_i_n401_n407, _fsm_state_Terminated, thttp_dialog_Transfering_2_Terminated_X_message, "thttp_dialog_Transfering_2_Terminated_X_message"),
+			// Transfering -> (1xx) -> Transfering
+			TSK_FSM_ADD(_fsm_state_Transfering, _fsm_action_message, _fsm_cond_i_1xx, _fsm_state_Transfering, thttp_dialog_Transfering_2_Transfering_X_1xx, "thttp_dialog_Transfering_2_Transfering_X_1xx"),			
+			// Transfering -> (any other response) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Transfering, _fsm_action_message, _fsm_state_Terminated, thttp_dialog_Transfering_2_Terminated_X_message, "thttp_dialog_Transfering_2_Terminated_X_message"),
 			/*=======================
 			* === Any === 
 			*/

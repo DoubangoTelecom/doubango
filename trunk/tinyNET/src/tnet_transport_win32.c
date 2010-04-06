@@ -452,7 +452,9 @@ void *tnet_transport_mainthread(void *param)
 		/* Get active event and socket */
 		index = (evt - WSA_WAIT_EVENT_0);
 		active_event = context->events[index];
-		active_socket = context->sockets[index];
+		if(!(active_socket = context->sockets[index])){
+			goto done;
+		}
 
 		/* Get the network events flags */
 		if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR){

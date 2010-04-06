@@ -32,7 +32,7 @@ struct auth_basic_msg
 
 struct auth_basic_msg auth_basic_msgs[] = 
 {
-	{ "Aladdin", "open sesame", "QWxhZGRpbjpvcGVuIHNlc2FtZQ==" },
+	{ "Aladdin"/*Ali baba*/, "open sesame", "QWxhZGRpbjpvcGVuIHNlc2FtZQ==" },
 };
 
 void test_basic_auth()

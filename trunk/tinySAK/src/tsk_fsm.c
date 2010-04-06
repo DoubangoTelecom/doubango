@@ -185,7 +185,7 @@ tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self)
 //=================================================================================================
 //	fsm object definition
 //
-static void* tsk_fsm_create(void * self, va_list * app)
+static tsk_object_t* tsk_fsm_create(tsk_object_t * self, va_list * app)
 {
 	tsk_fsm_t *fsm = self;
 	if(fsm)
@@ -204,11 +204,18 @@ static void* tsk_fsm_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsk_fsm_destroy(void * self)
+static tsk_object_t* tsk_fsm_destroy(tsk_object_t * self)
 { 
 	tsk_fsm_t *fsm = self;
-	if(fsm)
-	{
+	if(fsm){
+		/* If not in the terminal state ==>do it */
+		if(fsm->current != fsm->term){
+			tsk_safeobj_lock(fsm);
+			if(fsm->callback_term){
+				fsm->callback_term(fsm->callback_data);
+			}
+			tsk_safeobj_unlock(fsm);
+		}
 		tsk_safeobj_deinit(fsm);
 
 		TSK_OBJECT_SAFE_FREE(fsm->entries);
@@ -222,34 +229,32 @@ static const tsk_object_def_t tsk_fsm_def_s =
 	sizeof(tsk_fsm_t),
 	tsk_fsm_create, 
 	tsk_fsm_destroy,
-	0, 
+	tsk_null, 
 };
-const void *tsk_fsm_def_t = &tsk_fsm_def_s;
+const tsk_object_def_t *tsk_fsm_def_t = &tsk_fsm_def_s;
 
 //=================================================================================================
 //	fsm entry object definition
 //
-static void* tsk_fsm_entry_create(void * self, va_list * app)
+static tsk_object_t* tsk_fsm_entry_create(tsk_object_t * self, va_list * app)
 {
 	tsk_fsm_entry_t *fsm_entry = self;
-	if(fsm_entry)
-	{
+	if(fsm_entry){
 	}
 
 	return self;
 }
 
-static void* tsk_fsm_entry_destroy(void * self)
+static tsk_object_t* tsk_fsm_entry_destroy(tsk_object_t * self)
 { 
 	tsk_fsm_entry_t *fsm_entry = self;
-	if(fsm_entry)
-	{
+	if(fsm_entry){
 		//TSK_FREE(fsm_entry->desc);
 	}
 
 	return self;
 }
-static int tsk_fsm_entry_cmp(const void *obj1, const void *obj2)
+static int tsk_fsm_entry_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	const tsk_fsm_entry_t* entry1 = obj1;
 	const tsk_fsm_entry_t* entry2 = obj2;
@@ -281,4 +286,4 @@ static const tsk_object_def_t tsk_fsm_entry_def_s =
 	tsk_fsm_entry_destroy,
 	tsk_fsm_entry_cmp, 
 };
-const void *tsk_fsm_entry_def_t = &tsk_fsm_entry_def_s;
+const tsk_object_def_t *tsk_fsm_entry_def_t = &tsk_fsm_entry_def_s;

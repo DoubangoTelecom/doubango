@@ -1,5 +1,5 @@
 
-/* #line 1 "thttp_parser_header.rl" */
+/* #line 1 "./ragel/thttp_parser_header.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -53,7 +53,7 @@
 //#include "tinyHTTP/headers/thttp_header_Route.h"
 //#include "tinyHTTP/headers/thttp_header_Service_Route.h"
 //#include "tinyHTTP/headers/thttp_header_Supported.h"
-//#include "tinyHTTP/headers/thttp_header_To.h"
+#include "tinyHTTP/headers/thttp_header_Transfer_Encoding.h"
 //#include "tinyHTTP/headers/thttp_header_User_Agent.h"
 //#include "tinyHTTP/headers/thttp_header_Via.h"
 #include "tinyHTTP/headers/thttp_header_WWW_Authenticate.h"
@@ -85,7 +85,7 @@
 *	Ragel state machine.
 */
 
-/* #line 465 "thttp_parser_header.rl" */
+/* #line 465 "./ragel/thttp_parser_header.rl" */
 
 
 int thttp_header_parse(tsk_ragel_state_t *state, thttp_message_t *message)
@@ -96,7 +96,7 @@ int thttp_header_parse(tsk_ragel_state_t *state, thttp_message_t *message)
 	const char *eof = pe;
 
 	
-/* #line 100 "../src/parsers/thttp_parser_header.c" */
+/* #line 100 "./src/parsers/thttp_parser_header.c" */
 static const char _thttp_machine_parser_headers_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -2061,11 +2061,11 @@ static const char _thttp_machine_parser_headers_trans_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 61, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 63, 0, 0, 0, 0, 
-	0, 0, 0, 0, 67, 0, 0, 0, 
+	0, 0, 0, 0, 65, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 69, 0, 0, 0, 0, 0, 0, 
+	0, 67, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 65, 0, 0, 
+	0, 0, 0, 0, 0, 69, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 71, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
@@ -2084,16 +2084,16 @@ static const int thttp_machine_parser_headers_error = 0;
 static const int thttp_machine_parser_headers_en_main = 1;
 
 
-/* #line 475 "thttp_parser_header.rl" */
+/* #line 475 "./ragel/thttp_parser_header.rl" */
 	
-/* #line 2090 "../src/parsers/thttp_parser_header.c" */
+/* #line 2090 "./src/parsers/thttp_parser_header.c" */
 	{
 	cs = thttp_machine_parser_headers_start;
 	}
 
-/* #line 476 "thttp_parser_header.rl" */
+/* #line 476 "./ragel/thttp_parser_header.rl" */
 	
-/* #line 2097 "../src/parsers/thttp_parser_header.c" */
+/* #line 2097 "./src/parsers/thttp_parser_header.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -2168,7 +2168,7 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 91 "thttp_parser_header.rl" */
+/* #line 91 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2177,7 +2177,7 @@ _match:
 	}
 	break;
 	case 1:
-/* #line 100 "thttp_parser_header.rl" */
+/* #line 100 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2186,7 +2186,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 109 "thttp_parser_header.rl" */
+/* #line 109 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2195,7 +2195,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 118 "thttp_parser_header.rl" */
+/* #line 118 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2204,7 +2204,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 127 "thttp_parser_header.rl" */
+/* #line 127 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2213,14 +2213,14 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 136 "thttp_parser_header.rl" */
+/* #line 136 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Authorization_t *header = thttp_header_Authorization_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 6:
-/* #line 143 "thttp_parser_header.rl" */
+/* #line 143 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2229,7 +2229,7 @@ _match:
 	}
 	break;
 	case 7:
-/* #line 152 "thttp_parser_header.rl" */
+/* #line 152 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2238,7 +2238,7 @@ _match:
 	}
 	break;
 	case 8:
-/* #line 161 "thttp_parser_header.rl" */
+/* #line 161 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2247,7 +2247,7 @@ _match:
 	}
 	break;
 	case 9:
-/* #line 170 "thttp_parser_header.rl" */
+/* #line 170 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2256,7 +2256,7 @@ _match:
 	}
 	break;
 	case 10:
-/* #line 179 "thttp_parser_header.rl" */
+/* #line 179 "./ragel/thttp_parser_header.rl" */
 	{
 		if(!message->Content_Length){
 			message->Content_Length = thttp_header_Content_Length_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -2269,7 +2269,7 @@ _match:
 	}
 	break;
 	case 11:
-/* #line 192 "thttp_parser_header.rl" */
+/* #line 192 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2278,7 +2278,7 @@ _match:
 	}
 	break;
 	case 12:
-/* #line 201 "thttp_parser_header.rl" */
+/* #line 201 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2287,7 +2287,7 @@ _match:
 	}
 	break;
 	case 13:
-/* #line 210 "thttp_parser_header.rl" */
+/* #line 210 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2296,7 +2296,7 @@ _match:
 	}
 	break;
 	case 14:
-/* #line 219 "thttp_parser_header.rl" */
+/* #line 219 "./ragel/thttp_parser_header.rl" */
 	{
 		if(!message->Content_Type){
 			message->Content_Type = thttp_header_Content_Type_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -2309,7 +2309,7 @@ _match:
 	}
 	break;
 	case 15:
-/* #line 232 "thttp_parser_header.rl" */
+/* #line 232 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2318,7 +2318,7 @@ _match:
 	}
 	break;
 	case 16:
-/* #line 241 "thttp_parser_header.rl" */
+/* #line 241 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2327,7 +2327,7 @@ _match:
 	}
 	break;
 	case 17:
-/* #line 250 "thttp_parser_header.rl" */
+/* #line 250 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2336,7 +2336,7 @@ _match:
 	}
 	break;
 	case 18:
-/* #line 259 "thttp_parser_header.rl" */
+/* #line 259 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2345,7 +2345,7 @@ _match:
 	}
 	break;
 	case 19:
-/* #line 268 "thttp_parser_header.rl" */
+/* #line 268 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2354,7 +2354,7 @@ _match:
 	}
 	break;
 	case 20:
-/* #line 277 "thttp_parser_header.rl" */
+/* #line 277 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2363,7 +2363,7 @@ _match:
 	}
 	break;
 	case 21:
-/* #line 286 "thttp_parser_header.rl" */
+/* #line 286 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2372,7 +2372,7 @@ _match:
 	}
 	break;
 	case 22:
-/* #line 295 "thttp_parser_header.rl" */
+/* #line 295 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2381,7 +2381,7 @@ _match:
 	}
 	break;
 	case 23:
-/* #line 304 "thttp_parser_header.rl" */
+/* #line 304 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2390,7 +2390,7 @@ _match:
 	}
 	break;
 	case 24:
-/* #line 313 "thttp_parser_header.rl" */
+/* #line 313 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2399,7 +2399,7 @@ _match:
 	}
 	break;
 	case 25:
-/* #line 322 "thttp_parser_header.rl" */
+/* #line 322 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2408,7 +2408,7 @@ _match:
 	}
 	break;
 	case 26:
-/* #line 331 "thttp_parser_header.rl" */
+/* #line 331 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2417,7 +2417,7 @@ _match:
 	}
 	break;
 	case 27:
-/* #line 340 "thttp_parser_header.rl" */
+/* #line 340 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2426,21 +2426,21 @@ _match:
 	}
 	break;
 	case 28:
-/* #line 349 "thttp_parser_header.rl" */
+/* #line 349 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Proxy_Authenticate_t *header = thttp_header_Proxy_Authenticate_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 29:
-/* #line 356 "thttp_parser_header.rl" */
+/* #line 356 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Proxy_Authorization_t *header = thttp_header_Proxy_Authorization_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 30:
-/* #line 363 "thttp_parser_header.rl" */
+/* #line 363 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2449,7 +2449,7 @@ _match:
 	}
 	break;
 	case 31:
-/* #line 372 "thttp_parser_header.rl" */
+/* #line 372 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2458,16 +2458,7 @@ _match:
 	}
 	break;
 	case 32:
-/* #line 381 "thttp_parser_header.rl" */
-	{
-		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
-		ADD_HEADER(header);
-
-		//TSK_DEBUG_WARN("parse_header_Transfer_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
-	}
-	break;
-	case 33:
-/* #line 390 "thttp_parser_header.rl" */
+/* #line 381 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2475,8 +2466,8 @@ _match:
 		//TSK_DEBUG_WARN("parse_header_TE NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
-	case 34:
-/* #line 399 "thttp_parser_header.rl" */
+	case 33:
+/* #line 390 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2484,8 +2475,17 @@ _match:
 		//TSK_DEBUG_WARN("parse_header_Trailer NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
+	case 34:
+/* #line 399 "./ragel/thttp_parser_header.rl" */
+	{
+		thttp_header_Transfer_Encoding_t *header = thttp_header_Transfer_Encoding_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+
+		//TSK_DEBUG_WARN("parse_header_Trailer NOT IMPLEMENTED. Will be added as Dummy header.");
+	}
+	break;
 	case 35:
-/* #line 408 "thttp_parser_header.rl" */
+/* #line 408 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2494,7 +2494,7 @@ _match:
 	}
 	break;
 	case 36:
-/* #line 417 "thttp_parser_header.rl" */
+/* #line 417 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2503,7 +2503,7 @@ _match:
 	}
 	break;
 	case 37:
-/* #line 426 "thttp_parser_header.rl" */
+/* #line 426 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2512,7 +2512,7 @@ _match:
 	}
 	break;
 	case 38:
-/* #line 435 "thttp_parser_header.rl" */
+/* #line 435 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2521,14 +2521,14 @@ _match:
 	}
 	break;
 	case 39:
-/* #line 444 "thttp_parser_header.rl" */
+/* #line 444 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_WWW_Authenticate_t *header = thttp_header_WWW_Authenticate_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 40:
-/* #line 451 "thttp_parser_header.rl" */
+/* #line 451 "./ragel/thttp_parser_header.rl" */
 	{
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -2536,7 +2536,7 @@ _match:
 		//TSK_DEBUG_WARN("parse_header_extension_header NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	break;
-/* #line 2540 "../src/parsers/thttp_parser_header.c" */
+/* #line 2540 "./src/parsers/thttp_parser_header.c" */
 		}
 	}
 
@@ -2549,11 +2549,11 @@ _again:
 	_out: {}
 	}
 
-/* #line 477 "thttp_parser_header.rl" */
+/* #line 477 "./ragel/thttp_parser_header.rl" */
 
 	return ( cs >= 
-/* #line 2556 "../src/parsers/thttp_parser_header.c" */
+/* #line 2556 "./src/parsers/thttp_parser_header.c" */
 568
-/* #line 478 "thttp_parser_header.rl" */
+/* #line 478 "./ragel/thttp_parser_header.rl" */
  ) ? 0 : -1;
 }

@@ -30,8 +30,12 @@
 
 #include "tinyHTTP/thttp_action.h"
 #include "tinyHTTP/thttp_event.h"
+
 #include "tinyHTTP/thttp_message.h"
 #include "tinyHTTP/parsers/thttp_parser_message.h"
+
+#include "tinyHTTP/headers/thttp_header_Transfer_Encoding.h"
+
 #include "tinyHTTP/thttp_dialog.h"
 
 #include "tnet.h"
@@ -53,7 +57,7 @@
 // KeepAlive : http://www.io.com/~maus/HttpKeepAlive.html
 
 
-/**@defgroup thttp_stack_group HTTP/HTTPS stack.
+/**@defgroup thttp_stack_group HTTP/HTTPS stack
 */
 
 /** Callback function used by the transport layer to alert the stack when new messages come.
@@ -67,7 +71,10 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	const thttp_stack_t *stack = e->callback_data;
 	thttp_dialog_t* dialog = tsk_null;
 	thttp_session_t* session = tsk_null;
-		
+	tsk_bool_t have_all_content = tsk_false;
+	
+	tsk_safeobj_lock(stack);
+
 	switch(e->type){
 		case event_data: {
 				break;
@@ -84,12 +91,10 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 				return 0;
 			}
 	}
-
-	tsk_safeobj_lock(stack);
 	
 	/* Gets the associated dialog */
 	if((session = thttp_session_get_by_fd(stack->sessions, e->fd))){
-		if(!(dialog = thttp_dialog_get_by_age(session->dialogs))){
+		if(!(dialog = thttp_dialog_get_oldest(session->dialogs))){
 			TSK_DEBUG_ERROR("Failed to found associated dialog.");
 			ret = -5;
 			goto bail;
@@ -121,27 +126,63 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(dialog->buf), endOfheaders + 4/*2CRLF*/);
 	if(!(ret = thttp_message_parse(&state, &message, tsk_false/* do not extract the content */)))
 	{
-		size_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header. */
-		if(clen == 0){ /* No content */
-			tsk_buffer_remove(dialog->buf, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF ==> must never happen */
-		}
-		else{ /* There is a content */
-			if((endOfheaders + 4/*2CRLF*/ + clen) > TSK_BUFFER_SIZE(dialog->buf)){ /* There is content but not all the content. */
-				TSK_DEBUG_INFO("No all HTTP content in the TCP buffer.");
-				goto bail;
+		const thttp_header_Transfer_Encoding_t* transfer_Encoding;
+
+		/* chunked? */
+		if((transfer_Encoding = (const thttp_header_Transfer_Encoding_t*)thttp_message_get_header(message, thttp_htype_Transfer_Encoding)) && tsk_striequals(transfer_Encoding->encoding, "chunked")){
+			const char* start = TSK_BUFFER_TO_U8(dialog->buf) + (endOfheaders + 4/*2CRLF*/);
+			const char* end = TSK_BUFFER_TO_U8(dialog->buf) + TSK_BUFFER_SIZE(dialog->buf);
+			int index;
+
+			TSK_DEBUG_INFO("CHUNKED transfer.");
+			while(start < end){
+				/* RFC 2616 - 19.4.6 Introduction of Transfer-Encoding */
+				// read chunk-size, chunk-extension (if any) and CRLF
+				size_t chunk_size = atoi(start);
+				if((index = tsk_strindexOf(start, (end-start), "\r\n")) >=0){
+					start += index + 2/*CRLF*/;
+				}
+				else{
+					TSK_DEBUG_INFO("Parsing chunked data has failed.");
+					break;
+				}
+
+				if(chunk_size == 0 && ((start + 2) <= end) && *start == '\r' && *(start+ 1) == '\n'){
+					have_all_content = tsk_true;
+					break;
+				}
+					
+				thttp_message_append_content(message, start, chunk_size);
+				start += chunk_size + 2/*CRLF*/;
 			}
-			else{
-				/* Add the content to the message. */
-				thttp_message_add_content(message, tsk_null, TSK_BUFFER_TO_U8(dialog->buf) + endOfheaders + 4/*2CRLF*/, clen);
-				/* Remove HTTP headers, CRLF and the content. */
-				tsk_buffer_remove(dialog->buf, 0, (endOfheaders + 4/*2CRLF*/ + clen));
+		}
+		else{
+			size_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header. */
+			if(clen == 0){ /* No content */
+				tsk_buffer_remove(dialog->buf, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF ==> must never happen */
+				have_all_content = tsk_true;
+			}
+			else{ /* There is a content */
+				if((endOfheaders + 4/*2CRLF*/ + clen) > TSK_BUFFER_SIZE(dialog->buf)){ /* There is content but not all the content. */
+					TSK_DEBUG_INFO("No all HTTP content in the TCP buffer.");
+					goto bail;
+				}
+				else{
+					/* Add the content to the message. */
+					thttp_message_add_content(message, tsk_null, TSK_BUFFER_TO_U8(dialog->buf) + endOfheaders + 4/*2CRLF*/, clen);
+					/* Remove HTTP headers, CRLF and the content. */
+					tsk_buffer_remove(dialog->buf, 0, (endOfheaders + 4/*2CRLF*/ + clen));
+					have_all_content = tsk_true;
+				}
 			}
 		}
 	}
 	
 	/* Alert the operation (FSM) */
 	if(message){
-		ret = thttp_dialog_fsm_act(dialog, atype_i_message, message, tsk_null);
+		if(have_all_content){ /* only if we have all data */
+			ret = thttp_dialog_fsm_act(dialog, atype_i_message, message, tsk_null);
+		}
 	}
 
 bail:
@@ -211,12 +252,14 @@ bail:
 * The list of parameters must end with @ref THTTP_STACK_SET_NULL() even if there is no parameter.<br>
 * @retval A Pointer to the newly created stack if succeed and @a Null otherwise.
 * A session is a well-defined object.
+*
 * @code
 * thttp_stack_create(callback,
 *	THTTP_STACK_SET_*(),
 *	THTTP_STACK_SET_NULL());
 * @endcode
-* @sa @ref thttp_stack_set.
+*
+* @sa @ref thttp_stack_set
 */
 thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...)
 {
@@ -243,7 +286,7 @@ thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...)
 * Starts the stack.
 * @param self A pointer to the stack to start. The stack must be create using @ref thttp_stack_create.
 * @retval Zero if succeed and non-zero error code otherwise.
-* @sa @ref thttp_stack_stop.
+* @sa @ref thttp_stack_stop
 */
 int thttp_stack_start(thttp_stack_handle_t *self)
 {
@@ -274,6 +317,7 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 * @param ... Configuration parameters. You must use @a THTTP_STACK_SET_* macros to set these parameters.
 * The list of parameters must end with @ref THTTP_STACK_SET_NULL() even if there is no parameter.<br>
 * @retval A Pointer to the newly created stack if succeed and @a Null otherwise.
+*
 * @code
 * thttp_stack_set(stack, 
 *	THTTP_STACK_SET_*(),
@@ -285,7 +329,7 @@ int thttp_stack_set(thttp_stack_handle_t *self, ...)
 	if(self){
 		int ret;
 		thttp_stack_t *stack = self;
-
+		
 		va_list params;
 		va_start(params, self);
 		ret = __thttp_stack_set(stack, params);
@@ -300,7 +344,7 @@ int thttp_stack_set(thttp_stack_handle_t *self, ...)
 * Stops the stack. The stack must be already started.
 * @param self A pointer to the stack to stop. The stack must be create using @ref thttp_stack_create.
 * @retval Zero if succeed and non-zero error code otherwise.
-* @sa @ref thttp_stack_start.
+* @sa @ref thttp_stack_start
 */
 int thttp_stack_stop(thttp_stack_handle_t *self)
 {

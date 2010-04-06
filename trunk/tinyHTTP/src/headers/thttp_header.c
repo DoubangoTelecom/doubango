@@ -31,7 +31,7 @@
 
 #include "tinyHTTP/headers/thttp_header_Dummy.h"
 
-/**@defgroup thttp_header_group HTTP Headers.
+/**@defgroup thttp_header_group HTTP Headers
 */
 
 const char *thttp_header_get_name(thttp_header_type_t type)
@@ -43,6 +43,7 @@ const char *thttp_header_get_name(thttp_header_type_t type)
 		case thttp_htype_Content_Type: return "Content-Type";
 		case thttp_htype_Proxy_Authenticate: return "Proxy-Authenticate";
 		case thttp_htype_Proxy_Authorization: return "Proxy-Authorization";
+		case thttp_htype_Transfer_Encoding: return "Transfer-Encoding";
 		case thttp_htype_WWW_Authenticate: return "WWW-Authenticate";
 
 		default: return "unknown-header";

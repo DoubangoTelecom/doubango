@@ -403,6 +403,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinySAK\test\test_options.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySAK\test\test_params.h"
 				>
 			</File>

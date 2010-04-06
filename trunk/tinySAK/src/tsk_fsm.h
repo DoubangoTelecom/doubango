@@ -176,8 +176,8 @@ TINYSAK_API int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_ontermi
 TINYSAK_API int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data1, const void* cond_data2, ...);
 TINYSAK_API tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self);
 
-TINYSAK_GEXTERN const void *tsk_fsm_def_t;
-TINYSAK_GEXTERN const void *tsk_fsm_entry_def_t;
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_fsm_def_t;
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_fsm_entry_def_t;
 
 TSK_END_DECLS
 

@@ -1,5 +1,5 @@
 
-/* #line 1 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 1 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -44,7 +44,7 @@
 *	Ragel state machine.
 */
 
-/* #line 139 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 139 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 
 
 int thttp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
@@ -99,7 +99,7 @@ thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char 
 	const char *tag_start;
 
 	
-/* #line 103 "../src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 103 "./src/headers/thttp_header_WWW_Authenticate.c" */
 static const char _thttp_machine_parser_header_WWW_Authenticate_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -6242,16 +6242,16 @@ static const int thttp_machine_parser_header_WWW_Authenticate_error = 0;
 static const int thttp_machine_parser_header_WWW_Authenticate_en_main = 1;
 
 
-/* #line 193 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 193 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	
-/* #line 6248 "../src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 6248 "./src/headers/thttp_header_WWW_Authenticate.c" */
 	{
 	cs = thttp_machine_parser_header_WWW_Authenticate_start;
 	}
 
-/* #line 194 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 194 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	
-/* #line 6255 "../src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 6255 "./src/headers/thttp_header_WWW_Authenticate.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -6326,89 +6326,89 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 51 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 51 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 56 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		#//FIXME: Only Digest is supported
 		hdr_WWW_Authenticate->scheme = tsk_strdup("Digest");
 	}
 	break;
 	case 2:
-/* #line 62 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 62 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		THTTP_HEADER(hdr_WWW_Authenticate)->type = thttp_htype_WWW_Authenticate;
 	}
 	break;
 	case 3:
-/* #line 67 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 67 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		THTTP_HEADER(hdr_WWW_Authenticate)->type = thttp_htype_Proxy_Authenticate;
 	}
 	break;
 	case 4:
-/* #line 72 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 72 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->realm);
 		tsk_strunquote(&hdr_WWW_Authenticate->realm);
 	}
 	break;
 	case 5:
-/* #line 78 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 78 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->domain);
 		//tsk_strunquote(&hdr_WWW_Authenticate->domain);
 	}
 	break;
 	case 6:
-/* #line 84 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 84 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->nonce);
 		tsk_strunquote(&hdr_WWW_Authenticate->nonce);
 	}
 	break;
 	case 7:
-/* #line 90 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 90 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->opaque);
 		tsk_strunquote(&hdr_WWW_Authenticate->opaque);
 	}
 	break;
 	case 8:
-/* #line 96 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 96 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		hdr_WWW_Authenticate->stale = tsk_strniequals(tag_start, "true", 4);
 	}
 	break;
 	case 9:
-/* #line 101 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 101 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->algorithm);
 	}
 	break;
 	case 10:
-/* #line 106 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 106 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->qop);
 		//tsk_strunquote(&hdr_WWW_Authenticate->qop);
 	}
 	break;
 	case 11:
-/* #line 112 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 112 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_WWW_Authenticate));
 	}
 	break;
 	case 12:
-/* #line 117 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 117 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	{
 	}
 	break;
-/* #line 6412 "../src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 6412 "./src/headers/thttp_header_WWW_Authenticate.c" */
 		}
 	}
 
@@ -6421,14 +6421,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 195 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 195 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	
 	if( cs < 
-/* #line 6428 "../src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 6428 "./src/headers/thttp_header_WWW_Authenticate.c" */
 961
-/* #line 196 "thttp_parser_header_WWW_Authenticate.rl" */
- )
-	{
+/* #line 196 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse WWW-Authenticate header.");
 		TSK_OBJECT_SAFE_FREE(hdr_WWW_Authenticate);
 	}
 	

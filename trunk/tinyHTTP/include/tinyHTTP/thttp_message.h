@@ -43,7 +43,6 @@
 //#include "tinyHTTP/headers/thttp_header_Expires.h"
 //#include "tinyHTTP/headers/thttp_header_From.h"
 //#include "tinyHTTP/headers/thttp_header_P_Access_Network_Info.h"
-//#include "tinyHTTP/headers/thttp_header_To.h"
 //#include "tinyHTTP/headers/thttp_header_Via.h"
 
 #include "tsk_object.h"
@@ -112,7 +111,7 @@ THTTP_BEGIN_DECLS
 * @def THTTP_MESSAGE_CREATE
 * Creates new HTTP message. Could be either a request or a response.
 * @retval @ref thttp_message_t object.
-* @sa @ref THTTP_REQUEST_CREATE, @ref THTTP_RESPONSE_CREATE.
+* @sa @ref THTTP_REQUEST_CREATE<br>@ref THTTP_RESPONSE_CREATE
 */
 /**@ingroup thttp_message_group
 *@def THTTP_REQUEST_CREATE
@@ -120,6 +119,7 @@ THTTP_BEGIN_DECLS
 * @param method The method (const char*). e.g. GET, POST, HEAD ...
 * @param url The url (@ref thttp_url_t).
 * @retval @ref thttp_request_t object.
+*
 * @code
 // example
 thttp_url_t* url;
@@ -139,6 +139,7 @@ if((url = thttp_url_parse("http://www.google.com", strlen("http://www.google.com
 * @param status_code The status code (short).
 * @param reason_phrase The reason phrase (const char*).
 * @retval @ref thttp_response_t object.
+*
 * @code
 // example
 //thttp_request_t* request;
@@ -274,6 +275,7 @@ typedef thttp_message_t thttp_response_t; /**< HTTP response message. */
 TINYHTTP_API int thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr);
 TINYHTTP_API int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *headers);
 TINYHTTP_API int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, size_t size);
+TINYHTTP_API int thttp_message_append_content(thttp_message_t *self, const void* content, size_t size);
 
 #if !defined(_MSC_VER) || defined(__GNUC__)
 static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)

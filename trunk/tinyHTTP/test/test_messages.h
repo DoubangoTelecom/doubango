@@ -22,8 +22,6 @@
 #ifndef _TEST_MESSAGES_H_
 #define _TEST_MESSAGES_H_
 
-#include "tinyHTTP/parsers/thttp_parser_message.h"
-
 #define TEST_MSG_200 \
 	"HTTP/1.1 200 OK\r\n" \
 	"Date: Wed, 10 Mar 2010 13:37:13 GMT\r\n" \
@@ -43,7 +41,7 @@
 	"HTTP/1.1 401 Unauthorized\r\n" \
 	"Server: Apache-Coyote/1.1\r\n" \
 	"WWW-Authenticate: Digest realm=\"example.com\", qop=\"auth\", nonce=\"f39d20a4dbfbd32d943de9b285d59a30\", opaque=\"c5ad02feb52eb050e464cec3740c0f2e\"\r\n" \
-	"Content-Length: 0\r\n" \
+	"Transfer-Encoding: chunked;test=21;tes7\r\n" \
 	"Date: Wed, 10 Mar 2010 14:20:47 GMT\r\n" \
 	"\r\n"
 
@@ -62,7 +60,7 @@ void test_messages()
 		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
 
 		/* serialize the message */
-		thttp_message_tostring(message, buffer);
+		thttp_message_serialize(message, buffer);
 		TSK_DEBUG_INFO("HTTP Message=\n%s", TSK_BUFFER_TO_STRING(buffer));
 
 		TSK_OBJECT_SAFE_FREE(buffer);

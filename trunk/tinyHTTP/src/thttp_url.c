@@ -37,7 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup thttp_url_group HTTP/HTTPS URL.
+/**@defgroup thttp_url_group HTTP/HTTPS URL
 */
 
 /**@ingroup thttp_url_group

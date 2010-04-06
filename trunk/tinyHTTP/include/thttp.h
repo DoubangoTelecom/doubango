@@ -51,19 +51,20 @@
 *	THTTP_STACK_SET_LOCAL_IP("192.168.0.15"),
 *	THTTP_STACK_SET_NULL());
 * @endcode
-* @sa @ref THTTP_STACK_SET_LOCAL_PORT, @ref thttp_stack_create, @ref thttp_stack_set.
+*
+* @sa @ref THTTP_STACK_SET_LOCAL_PORT<br>@ref thttp_stack_create<br>@ref thttp_stack_set
 */
 /**@def THTTP_STACK_SET_LOCAL_PORT(PORT_INT)
 * Sets local Port to bind to. By default, the stack will bind to a random port.
 * This is a helper macro for @ref thttp_stack_create and @ref thttp_stack_set.
 * @param PORT_INT The Port (int32_t).
-
+*
 * @code
 * thttp_stack_create(callback, 
 *	THTTP_STACK_SET_LOCAL_PORT(1234),
 *	THTTP_STACK_SET_NULL());
 * @endcode
-* @sa @ref THTTP_STACK_SET_LOCAL_IP, @ref thttp_stack_create, @ref thttp_stack_set.
+* @sa @ref THTTP_STACK_SET_LOCAL_IP<br>@ref thttp_stack_create<br>@ref thttp_stack_set
 */
 
 /**@def THTTP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)
@@ -72,6 +73,7 @@
 * @param CA_FILE_STR Path to the Certification Authority File.
 * @param PUB_FILE_STR Path to the Public key file.
 * @param PRIV_FILE_STR Path to the Private key file.
+*
 * @code
 * thttp_stack_create(callback, 
 *	THTTP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\pub-crt.pem", "C:\\tls\\pub-key.pem"),

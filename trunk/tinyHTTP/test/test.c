@@ -24,12 +24,14 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#include "tsk.h"
-#include "tnet.h"
+//#include "tsk.h"
+//#include "tnet.h"
 
-#include "thttp.h"
-#include "tinyHTTP/thttp_message.h"
-#include "tinyHTTP/auth/thttp_auth.h"
+#include "tinyhttp.h"
+
+//#include "thttp.h"
+//#include "tinyHTTP/thttp_message.h"
+//#include "tinyHTTP/auth/thttp_auth.h"
 
 #define LOOP						1
 

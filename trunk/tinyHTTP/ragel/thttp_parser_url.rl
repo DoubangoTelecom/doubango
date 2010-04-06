@@ -40,7 +40,7 @@
 	machine thttp_machine_parser_url;
 
 	# Includes
-	include thttp_machine_utils "./thttp_machine_utils.rl";
+	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 			
 	action tag
 	{
@@ -89,13 +89,24 @@
 }%%
 
 /**@ingroup thttp_url_group
+* Parses a HTTP/HTTPS url.
+* @param urlstring A pointer to a valid url string. If the port is missing, then it's default value will be 443 if
+* the scheme is 'https' and 80 otherwise.<br>
+* @param length The length of the url string.
+* @retval A well-defined object representing the url string.
+*
+* @code
+* thttp_url_t* url = thttp_url_parse("http://www.google.com", strlen("http://www.google.com"));
+* @endcode
+*
+* @sa @ref thttp_url_tostring<br>@ref thttp_url_serialize
 **/
-thttp_url_t *thttp_url_parse(const char *data, size_t size)
+thttp_url_t *thttp_url_parse(const char *urlstring, size_t length)
 {
-	int have_port = 0;
+	tsk_bool_t have_port = tsk_false;
 	int cs = 0;
-	const char *p = data;
-	const char *pe = p + size;
+	const char *p = urlstring;
+	const char *pe = p + length;
 	const char *eof = pe;
 
 	const char *ts = 0, *te = 0;

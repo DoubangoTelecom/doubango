@@ -37,7 +37,7 @@
 
 #include "tsk_debug.h"
 
-/**@defgroup thttp_session_group HTTP Session.
+/**@defgroup thttp_session_group HTTP Session
 */
 
 /**Sets parameters.
@@ -54,17 +54,19 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 	{
 		switch(curr)
 		{
-			case sptype_param:
+			case sptype_option:
+				{
+					thhtp_session_option_t id = va_arg(*app, thhtp_session_option_t);
+					const char* value = va_arg(*app, const char *);
+					tsk_options_add_option(&self->options, id, value);
+					break;
+				}
+
 			case sptype_header:
 				{
 					const char* name = va_arg(*app, const char *);
 					const char* value = va_arg(*app, const char *);
-					
-					if(curr == sptype_param){
-						tsk_params_add_param(&self->params, name, value);
-					} else if(curr == sptype_header){
-						tsk_params_add_param(&self->headers, name, value);
-					}
+					tsk_params_add_param(&self->headers, name, value);
 					break;
 				}
 			
@@ -113,7 +115,8 @@ thttp_session_handle_t * session = thttp_session_create(stack,
 			
 	THTTP_SESSION_SET_NULL());
 * @endcode
-* @sa @ref thttp_session_set.
+*
+* @sa @ref thttp_session_set
 */
 thttp_session_handle_t* thttp_session_create(const struct thttp_stack_s* stack, ...)
 {
@@ -148,7 +151,8 @@ int ret = thttp_session_set(session,
 			
 	THTTP_SESSION_SET_NULL());
 * @endcode
-* @sa @ref thttp_session_create.
+*
+* @sa @ref thttp_session_create
 */
 int thttp_session_set(thttp_session_handle_t *self, ...)
 {
@@ -189,7 +193,7 @@ thttp_session_id_t thttp_session_get_id(const thttp_session_handle_t *self)
 * Gets the user context (user/application data).
 * @param self A pointer to the session from which to get the context.
 * @retval A pointer to the context. Previously defined by using @ref THTTP_SESSION_SET_CONTEXT() macro.
-* @sa @ref THTTP_SESSION_SET_CONTEXT.
+* @sa @ref THTTP_SESSION_SET_CONTEXT
 */
 const void* thttp_session_get_context(const thttp_session_handle_t *self)
 {
@@ -203,7 +207,7 @@ const void* thttp_session_get_context(const thttp_session_handle_t *self)
 */
 int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_t* response, tsk_bool_t first)
 {
-	int ret = -1;
+	int ret = 0;
 	size_t i;
 
 	tsk_list_item_t *item;
@@ -212,6 +216,8 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 	
 	const thttp_header_WWW_Authenticate_t *WWW_Authenticate;
 	const thttp_header_Proxy_Authenticate_t *Proxy_Authenticate;
+
+	tsk_safeobj_lock(self);
 
 	/* RFC 2617 - Digest Operation
 
@@ -257,7 +263,8 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 				}
 			}
 			else{
-				return -1;
+				ret = -1;
+				goto bail;
 			}
 		}
 
@@ -272,7 +279,8 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 				tsk_list_push_back_data(self->challenges, (void**)&challenge);
 			}
 			else{
-				return -1;
+				ret = -1;
+				goto bail;
 			}
 		}
 	}
@@ -295,14 +303,17 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 					Proxy_Authenticate->algorithm, 
 					Proxy_Authenticate->qop)))
 				{
-					return ret;
+					goto bail;
 				}
 				else{
 					isnew = tsk_false;
 					continue;
 				}
 			}
-			else return -1;
+			else{
+				ret = -1;
+				goto bail;
+			}
 		}
 
 		if(isnew){
@@ -317,11 +328,15 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 				tsk_list_push_back_data(self->challenges, (void**)&challenge);
 			}
 			else{
-				return -1;
+				ret = -1;
+				goto bail;
 			}
 		}
-	}	
-	return 0;
+	}
+
+bail:
+	tsk_safeobj_unlock(self);
+	return ret;
 
 }
 
@@ -335,10 +350,16 @@ int thttp_session_signal_closed(thttp_session_t *self)
 		return -1;
 	}
 	
+	tsk_safeobj_lock(self);
+
 	tsk_list_foreach(item, self->dialogs){
-		thttp_dialog_fsm_act((thttp_dialog_t*)item->data, atype_closed, tsk_null, tsk_null);
+		// FIXME: not thread-safe
+		//--thttp_dialog_fsm_act((thttp_dialog_t*)item->data, atype_closed, tsk_null, tsk_null);
 	}
 	self->fd = TNET_INVALID_FD;
+	
+	tsk_safeobj_unlock(self);
+
 	return 0;
 }
 
@@ -352,7 +373,7 @@ thttp_session_t* thttp_session_get_by_fd(thttp_sessions_L_t* sessions, tnet_fd_t
 	if(!sessions){
 		goto bail;
 	}
-	
+
 	tsk_list_foreach(item, sessions){
 		if(((thttp_session_t*)item->data)->fd == fd){
 			ret = tsk_object_ref(item->data);
@@ -375,8 +396,10 @@ static tsk_object_t* _thttp_session_create(tsk_object_t * self, va_list * app)
 	thttp_session_t *session = self;
 	static thttp_session_id_t unique_id = 0;
 	if(session){
+		tsk_safeobj_init(session);
+
 		session->stack = va_arg(*app, const thttp_stack_handle_t*);
-		session->params = TSK_LIST_CREATE();
+		session->options = TSK_LIST_CREATE();
 		session->headers = TSK_LIST_CREATE();
 		session->challenges = TSK_LIST_CREATE();
 		session->dialogs = TSK_LIST_CREATE();
@@ -404,7 +427,7 @@ static tsk_object_t* thttp_session_destroy(tsk_object_t * self)
 			tsk_list_remove_item_by_data(session->stack->sessions, session);
 		}
 		
-		TSK_OBJECT_SAFE_FREE(session->params);
+		TSK_OBJECT_SAFE_FREE(session->options);
 		TSK_OBJECT_SAFE_FREE(session->headers);
 		TSK_OBJECT_SAFE_FREE(session->challenges);
 		TSK_OBJECT_SAFE_FREE(session->dialogs);
@@ -419,6 +442,8 @@ static tsk_object_t* thttp_session_destroy(tsk_object_t * self)
 				tnet_sockfd_close(&session->fd);
 			}
 		}
+
+		tsk_safeobj_deinit(session);
 	}
 	return self;
 }

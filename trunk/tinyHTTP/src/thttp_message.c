@@ -32,7 +32,7 @@
 
 #include "tsk_debug.h"
 
-/**@defgroup thttp_message_group HTTP Message.
+/**@defgroup thttp_message_group HTTP Message
 */
 
 static int pred_find_string_by_value(const tsk_list_item_t *item, const void *stringVal)
@@ -121,7 +121,7 @@ int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *he
 */
 int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, size_t size)
 {
-	if(self)
+	if(self && content && size)
 	{
 		if(content_type){
 			TSK_OBJECT_SAFE_FREE(self->Content_Type);
@@ -138,6 +138,30 @@ int thttp_message_add_content(thttp_message_t *self, const char* content_type, c
 		return 0;
 	}
 	return -1;
+}
+
+/**@ingroup thttp_message_group
+*/
+int thttp_message_append_content(thttp_message_t *self, const void* content, size_t size)
+{
+	if(self && content && size){
+		if(!self->Content){
+			self->Content = TSK_BUFFER_CREATE(content, size);
+		}
+		else{
+			tsk_buffer_append(self->Content, content, size);
+		}
+
+		if(!self->Content_Length){
+			THTTP_MESSAGE_ADD_HEADER(self, THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(size));
+		}
+		else{
+			self->Content_Length->length += size;
+		}
+		return 0;
+	}
+
+	return -1; 
 }
 
 /**@ingroup thttp_message_group
@@ -209,7 +233,7 @@ int thttp_message_serialize(const thttp_message_t *self, tsk_buffer_t *output)
 			self->url->search ? self->url->search : ""
 			);
 		/* HTTP VERSION */
-		tsk_buffer_appendEx(output, " %s\r\n", THTTP_MESSAGE_VERSION_DEFAULT);
+		tsk_buffer_appendEx(output, "%s\r\n", THTTP_MESSAGE_VERSION_DEFAULT);
 		/* HOST */
 		tsk_buffer_appendEx(output, "Host: %s:%u\r\n", self->url->host, self->url->port);
 	}

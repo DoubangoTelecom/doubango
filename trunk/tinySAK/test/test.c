@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -38,13 +38,14 @@
 #define RUN_TEST_HEAP				0
 #define RUN_TEST_STRINGS			0
 #define RUN_TEST_URL				0
-#define RUN_TEST_THREADS			1
+#define RUN_TEST_THREADS			0
 #define RUN_TEST_MUTEX				0
 #define RUN_TEST_CONDWAIT			0
 #define RUN_TEST_SEMAPHORE			0 /* FIXME: android */
 #define RUN_TEST_SAFEOBJECT			0
 #define RUN_TEST_OBJECT				0
 #define RUN_TEST_PARAMS				0
+#define RUN_TEST_OPTIONS			1
 #define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
 #define RUN_TEST_BUFFER				0
@@ -96,6 +97,10 @@
 
 #if RUN_TEST_PARAMS || RUN_TEST_ALL
 #include "test_params.h"
+#endif
+
+#if RUN_TEST_OPTIONS || RUN_TEST_ALL
+#include "test_options.h"
 #endif
 
 #if RUN_TEST_TIMER || RUN_TEST_ALL
@@ -211,6 +216,12 @@ int main()
 #if RUN_TEST_PARAMS || RUN_TEST_ALL
 		/* parameters */
 		test_params();
+		printf("\n\n");
+#endif
+
+#if RUN_TEST_OPTIONS || RUN_TEST_ALL
+		/* options */
+		test_options();
 		printf("\n\n");
 #endif
 

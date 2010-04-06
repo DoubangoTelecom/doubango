@@ -45,7 +45,7 @@ static int pred_find_param_by_name(const tsk_list_item_t *item, const void *name
 		tsk_param_t *param = item->data;
 		return tsk_stricmp(param->name, name);
 	}
-	return 0;
+	return -1;
 }
 
 /**@ingroup tsk_params_group
@@ -88,15 +88,16 @@ tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 * Checks if the supplied list of parameters contains a parameter named @a name (case-insensitive).
 * @param self The list of parameters into which to search.
 * @param name The name of the parameter to search.
-* @retval 1 if the parameter exist and zero otherwise.
+* @retval @ref tsk_true if the parameter exist and @ref tsk_false otherwise.
 */
-int tsk_params_have_param(const tsk_params_L_t *self, const char* name)
+tsk_bool_t tsk_params_have_param(const tsk_params_L_t *self, const char* name)
 {
 	if(self){
-		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
-		return item_const ? 1 : 0;
+		if(tsk_list_find_item_by_pred(self, pred_find_param_by_name, name)){
+			return tsk_true;
+		}
 	}
-	return 0;
+	return tsk_false;
 }
 
 /**@ingroup tsk_params_group
@@ -159,7 +160,7 @@ int tsk_params_remove_param(tsk_params_L_t *self, const char* name)
 * Gets a parameter from the list of parameters by name.
 * @param self The source list.
 * @param name The name(case-insensitive) of the parameter to retrieve.
-* @retval @ref tsk_param_t if succeed and NULL otherwise.
+* @retval @ref tsk_param_t if succeed and @ref tsk_null otherwise.
 */
 const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, const char* name)
 {
@@ -170,7 +171,7 @@ const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, cons
 			return item_const->data;
 		}
 	}
-	return 0;
+	return tsk_null;
 }
 
 /**@ingroup tsk_params_group
@@ -279,7 +280,7 @@ bail:
 //=================================================================================================
 //	param object definition
 //
-static void* tsk_param_create(void * self, va_list * app)
+static tsk_object_t* tsk_param_create(tsk_object_t* self, va_list * app)
 {
 	tsk_param_t *param = self;
 	if(param)
@@ -299,11 +300,10 @@ static void* tsk_param_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsk_param_destroy(void * self)
+static tsk_object_t* tsk_param_destroy(tsk_object_t* self)
 { 
 	tsk_param_t *param = self;
-	if(param)
-	{
+	if(param){
 		TSK_FREE(param->name);
 		TSK_FREE(param->value);
 	}
@@ -316,7 +316,7 @@ static const tsk_object_def_t tsk_param_def_s =
 	sizeof(tsk_param_t),
 	tsk_param_create, 
 	tsk_param_destroy,
-	0, 
+	tsk_null, 
 };
-const void *tsk_param_def_t = &tsk_param_def_s;
+const tsk_object_def_t *tsk_param_def_t = &tsk_param_def_s;
 
