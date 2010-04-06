@@ -402,6 +402,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\headers\thttp_header_Transfer_Encoding.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\headers\thttp_header_WWW_Authenticate.c"
 					>
 				</File>
@@ -498,6 +502,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\tinyHTTP\headers\thttp_header_Transfer_Encoding.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinyHTTP\headers\thttp_header_WWW_Authenticate.h"
 					>
 				</File>
@@ -568,6 +576,10 @@
 			</File>
 			<File
 				RelativePath=".\ragel\thttp_parser_header_Dummy.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_header_Transfer_Encoding.rl"
 				>
 			</File>
 			<File
