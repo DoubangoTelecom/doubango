@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,13 +24,16 @@
  * @brief Represents a HTTP message. A HTTP message is either a request from a client to a server, or a
  * response from a server to a client.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinyHTTP/thttp_message.h"
 
 #include "tsk_debug.h"
+
+/**@defgroup thttp_message_group HTTP Message.
+*/
 
 static int pred_find_string_by_value(const tsk_list_item_t *item, const void *stringVal)
 {
@@ -65,6 +68,8 @@ static int pred_find_header_by_name(const tsk_list_item_t *item, const void *nam
 	return -1;
 }
 
+/**@ingroup thttp_message_group
+*/
 int	thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr)
 {
 	#define ADD_HEADER(type, field) \
@@ -97,6 +102,8 @@ int	thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr)
 	return -1;
 }
 
+/**@ingroup thttp_message_group
+*/
 int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *headers)
 {
 	tsk_list_item_t *item = 0;
@@ -110,6 +117,8 @@ int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *he
 	return -1;
 }
 
+/**@ingroup thttp_message_group
+*/
 int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, size_t size)
 {
 	if(self)
@@ -131,6 +140,8 @@ int thttp_message_add_content(thttp_message_t *self, const char* content_type, c
 	return -1;
 }
 
+/**@ingroup thttp_message_group
+*/
 const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, thttp_header_type_t type, size_t index)
 {
 	size_t pos = 0;
@@ -172,12 +183,16 @@ bail:
 	return hdr;
 }
 
+/**@ingroup thttp_message_group
+*/
 const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thttp_header_type_t type)
 {
 	return thttp_message_get_headerAt(self, type, 0);
 }
 
-int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output)
+/**@ingroup thttp_message_group
+*/
+int thttp_message_serialize(const thttp_message_t *self, tsk_buffer_t *output)
 {
 	if(!self || !output){
 		return -1;
@@ -205,11 +220,11 @@ int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output)
 
 	/* Content-Type */
 	if(self->Content_Type){
-		thttp_header_tostring(THTTP_HEADER(self->Content_Type), output);
+		thttp_header_serialize(THTTP_HEADER(self->Content_Type), output);
 	}
 	/* Content-Length*/
 	if(self->Content_Length){
-		thttp_header_tostring(THTTP_HEADER(self->Content_Length), output);
+		thttp_header_serialize(THTTP_HEADER(self->Content_Length), output);
 	}
 
 	/* All other headers */
@@ -218,7 +233,7 @@ int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output)
 		tsk_list_foreach(item, self->headers)
 		{
 			thttp_header_t *hdr = item->data;
-			thttp_header_tostring(hdr, output);
+			thttp_header_serialize(hdr, output);
 		}
 	}
 
@@ -233,6 +248,23 @@ int thttp_message_tostring(const thttp_message_t *self, tsk_buffer_t *output)
 	return 0;
 }
 
+/**@ingroup thttp_message_group
+*/
+char* thttp_message_tostring(const thttp_message_t *self)
+{
+	char* ret = tsk_null;
+	tsk_buffer_t* output = TSK_BUFFER_CREATE_NULL();
+
+	if(!thttp_message_serialize(self, output)){
+		ret = tsk_strndup(output->data, output->size);
+	}
+
+	TSK_OBJECT_SAFE_FREE(output);
+	return ret;
+}
+
+/**@ingroup thttp_message_group
+*/
 thttp_request_t *thttp_request_new(const char* method, const thttp_url_t *request_url)
 {
 	thttp_request_t* request = 0;
@@ -243,6 +275,8 @@ thttp_request_t *thttp_request_new(const char* method, const thttp_url_t *reques
 	return request;
 }
 
+/**@ingroup thttp_message_group
+*/
 thttp_response_t *thttp_response_new(short status_code, const char* reason_phrase, const thttp_request_t *request)
 {
 	thttp_response_t *response = 0;

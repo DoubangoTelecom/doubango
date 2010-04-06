@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_challenge.c
  * @brief SIP authentication challenge.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -436,7 +436,7 @@ static void* tsip_challenge_create(void *self, va_list * app)
 		const char* qop;
 
 		challenge->stack = va_arg(*app, const tsip_stack_handle_t *);
-		challenge->isproxy = va_arg(*app, unsigned);
+		challenge->isproxy = va_arg(*app, tsk_bool_t);
 		challenge->scheme = tsk_strdup(va_arg(*app, const char*));
 		challenge->realm = tsk_strdup(va_arg(*app, const char*));
 		challenge->nonce = tsk_strdup(va_arg(*app, const char*));

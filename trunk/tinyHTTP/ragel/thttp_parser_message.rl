@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,21 +23,21 @@
 /**@file thttp_parser_message.c
  * @brief HTTP parser.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyhttp/parsers/thttp_parser_message.h"
-#include "tinyhttp/parsers/thttp_parser_header.h"
+#include "tinyHTTP/parsers/thttp_parser_message.h"
+#include "tinyHTTP/parsers/thttp_parser_header.h"
 
-#include "tinyhttp/parsers/thttp_parser_url.h"
+#include "tinyHTTP/parsers/thttp_parser_url.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content);
+static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message, tsk_bool_t extract_content);
 static void thttp_message_parser_init(tsk_ragel_state_t *state);
-static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content);
+static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message, tsk_bool_t extract_content);
 
 /***********************************
 *	Ragel state machine.
@@ -179,22 +179,16 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 /* Regel data */
 %%write data;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t *result)
-///
-/// @brief	Parse a HTTP message. Both requests and reponses messages. 
-///
-/// @author	Mamadou
-/// @date	12/4/2009
-///
-/// @param [in,out]	state	The ragel state to use. 
-/// @param [out]	result	Non-null http message created using @ref THTTP_MESSAGE_CREATE. You must use @ref TSK_OBJECT_SAFE_FREE to
-///							free the result.
-///
-/// @return	@ref zero if succeed and non-zero error code otherwise.
-///
-////////////////////////////////////////////////////////////////////////////////////////////////////
-int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, int extract_content)
+/**	Parses raw HTTP buffer.
+ *
+ * @param state	Ragel state containing the buffer references.
+ * @param result @ref thttp_message_t object representing the raw buffer.
+ * @param	extract_content	Indicates wheteher to parse the message content or not. If set to true, then
+ * only headers will be parsed.
+ *
+ * @retval	Zero if succeed and non-zero error code otherwise. 
+**/
+int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, tsk_bool_t extract_content)
 {
 	if(!state || state->pe <= state->p){
 		return -1;
@@ -234,7 +228,7 @@ static void thttp_message_parser_init(tsk_ragel_state_t *state)
 	state->cs = cs;
 }
 
-static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content)
+static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message_t *message, tsk_bool_t extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;
@@ -249,7 +243,7 @@ static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message
 	state->eof = eof;
 }
 
-static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message, int extract_content)
+static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *message, tsk_bool_t extract_content)
 {
 	int cs = state->cs;
 	const char *p = state->p;

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,15 +23,15 @@
 /**@file thttp_parser_url.h
  * @brief HTTP/HTTPS URL parser.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #ifndef TINYHTTP_PARSER_URL_H
 #define TINYHTTP_PARSER_URL_H
 
-#include "tinyhttp_config.h"
-#include "tinyhttp/thttp_url.h"
+#include "tinyHTTP_config.h"
+#include "tinyHTTP/thttp_url.h"
 
 #include "tsk_ragel_state.h"
 

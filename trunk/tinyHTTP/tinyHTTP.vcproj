@@ -343,6 +343,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\thttp_action.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\thttp_dialog.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\thttp_event.c"
 				>
 			</File>
@@ -351,11 +359,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\thttp_operation.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\thttp_transport.c"
+				RelativePath=".\src\thttp_session.c"
 				>
 			</File>
 			<File
@@ -427,6 +431,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinyHTTP\thttp_action.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinyHTTP\thttp_dialog.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinyHTTP\thttp_event.h"
 				>
 			</File>
@@ -435,15 +447,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\include\tinyHTTP\thttp_operation.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinyHTTP\thttp_transport.h"
+				RelativePath=".\include\tinyHTTP\thttp_session.h"
 				>
 			</File>
 			<File
 				RelativePath=".\include\tinyHTTP\thttp_url.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinyhttp.h"
 				>
 			</File>
 			<File
@@ -552,6 +564,10 @@
 			</File>
 			<File
 				RelativePath=".\ragel\thttp_parser_header_Content_Type.rl"
+				>
+			</File>
+			<File
+				RelativePath=".\ragel\thttp_parser_header_Dummy.rl"
 				>
 			</File>
 			<File

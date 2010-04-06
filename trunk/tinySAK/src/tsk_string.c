@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
  * @brief Useful string functions to manipulate strings.
  * As I'm a lazy man, some comments come from <ahref="http://www.cplusplus.com">this website</a>
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -78,15 +78,16 @@ char tsk_b16tob10(char c)
 }
 
 /**@ingroup tsk_string_group
-* Compare two strings (case insensitive)
+* Compare two Null-terminated strings (case insensitive)
 * Compares the C string str1 to the C string str2.
 * This function starts comparing the first character of each string. If they are equal to each other, it continues with the following pairs 
 * until the characters differ or until a terminanting null-character is reached.
-* @param str1 C string to be compared. 
-* @param str2 C string to be compared. 
+* @param str1 First C string to be compared. 
+* @param str2 Second C string to be compared. 
 * @retval Returns an integral value indicating the relationship between the strings:
-* A zero value indicates that both strings are equal.
-* A value greater than zero indicates that the first character that does not match has a greater value in str1 than in str2; And a value less than zero indicates the opposite.
+* <0 : str1 less than str2.<br>
+* 0  : str1 identical to str1.<br>
+* >0 : str1 greater than str2.<br>
 */
 int tsk_stricmp(const char * str1, const char * str2)
 {
@@ -94,6 +95,17 @@ int tsk_stricmp(const char * str1, const char * str2)
 }
 
 /**@ingroup tsk_string_group
+* Compare two Null-terminated strings (case insensitive)
+* Compares the C string str1 to the C string str2.
+* This function starts comparing the first character of each string. If they are equal to each other, it continues with the following pairs 
+* until the characters differ or until a terminanting null-character is reached or @a n characters passed.
+* @param str1 First C string to be compared. 
+* @param str2 Second C string to be compared. 
+* @param n The maximum number of characters to compare.
+* @retval Returns an integral value indicating the relationship between the strings:
+* <0 : str1 less than str2.<br>
+* 0  : str1 identical to str1.<br>
+* >0 : str1 greater than str2.<br>
 */
 int tsk_strnicmp(const char * str1, const char * str2, size_t n)
 {
@@ -108,6 +120,17 @@ int tsk_strcmp(const char * str1, const char * str2)
 }
 
 /**@ingroup tsk_string_group
+* Compare two Null-terminated strings (case sensitive)
+* Compares the C string str1 to the C string str2.
+* This function starts comparing the first character of each string. If they are equal to each other, it continues with the following pairs 
+* until the characters differ or until a terminanting null-character is reached.
+* @param str1 First C string to be compared. 
+* @param str2 Second C string to be compared.
+* @param n The maximum number of characters to compare.
+* @retval Returns an integral value indicating the relationship between the strings:
+* <0 : str1 less than str2.<br>
+* 0  : str1 identical to str1.<br>
+* >0 : str1 greater than str2.<br>
 */
 int tsk_strncmp(const char * str1, const char * str2, size_t n)
 {
@@ -115,9 +138,10 @@ int tsk_strncmp(const char * str1, const char * str2, size_t n)
 }
 
 /**@ingroup tsk_string_group
-* Duplicate a string
-* @param s1 The string to duplicate
-* @retval The duplicated string. */
+* Duplicate a Null-terminated string.
+* @param s1 The string to duplicate.
+* @retval The duplicated string. It's up to you to free the returned string.
+*/
 char* tsk_strdup(const char *s1)
 {
 	if(s1){
@@ -127,11 +151,9 @@ char* tsk_strdup(const char *s1)
 }
 
 /**	Duplicates the first @a n chars of @a s1.
- *
- * @param [in,out]	s1	The string to duplicate. 
- * @param	n			The number of chars to copy to the new string. 
- *
- * @return	null A copy of @a s1. 
+ * @param s1 The string to duplicate. 
+ * @param n The number of characters to copy to the new string. 
+ * @retval	null A copy of @a s1. 
 **/
 char* tsk_strndup(const char *s1, size_t n)
 {
@@ -276,6 +298,9 @@ done:
 }
 
 /**@ingroup tsk_string_group
+* Updates the value of @a str.
+* @param str The string to update.
+* @param newval The new value of @a str.
 */
 void tsk_strupdate(char** str, const char* newval)
 {
@@ -285,49 +310,67 @@ void tsk_strupdate(char** str, const char* newval)
 
 
 /**@ingroup tsk_string_group
+* Removes all occurrences of white space characters from the beginning of this @a str.
+* @param str The string to trim.
 */
 void tsk_strtrim_left(char **str)
 {
-	if(str && *str)
-	{
+	if(str && *str){
 		size_t count = 0;
 		while(isspace(*((*str)+count))) count++;
-		if(count)
-		{
+		if(count){
 			strcpy((*str), (*str)+count);
 		}
 	}
 }
 
 /**@ingroup tsk_string_group
+* Removes all occurrences of white space characters from the end of @a str.
+* @param str The string to trim.
 */
 void tsk_strtrim_right(char **str)
 {
 	if(str && *str)
 	{
 		size_t size = strlen(*str);
-		if(size)
-		{
+		if(size){
 			while(isspace(*((*str)+size-1))) size--;
 			*(*str + size) = '\0';
 		}
 	}
 }
-
 /**@ingroup tsk_string_group
+* Removes all occurrences of white space characters from the beginning and end of @a str.
+* @param str The string to trim.
 */
-void tsk_strquote(char **str)
+void tsk_strtrim(char **str)
 {
-	tsk_strquoteex(str, '"', '"');
+	// left
+	tsk_strtrim_left(str);
+	// right
+	tsk_strtrim_right(str);
 }
 
 /**@ingroup tsk_string_group
+* Adds quotes ("") to the beginning and end of @a str.<br>
+* @param str The string to quote.
+* Example: tsk_strquote("doubango") = ""doubango\"".
 */
-void tsk_strquoteex(char **str, char lquote, char rquote)
+void tsk_strquote(char **str)
 {
-	if(str && *str)
-	{
-		char *result = 0;
+	tsk_strquote_2(str, '"', '"');
+}
+
+/**@ingroup tsk_string_group
+* Adds quotes to the beginning and end of @a str.
+* @param str The string to quote.
+* @param lquote Quote to add to the begining of @a str.
+* @param rquote Quote to add to the end of @a str.
+*/
+void tsk_strquote_2(char **str, char lquote, char rquote)
+{
+	if(str && *str){
+		char *result = tsk_null;
 		tsk_sprintf(&result, "%c%s%c", lquote, *str, rquote);
 		tsk_free((void**)str);
 		*str = result;
@@ -335,15 +378,23 @@ void tsk_strquoteex(char **str, char lquote, char rquote)
 }
 
 /**@ingroup tsk_string_group
+* Removes quotes ("") from the beginning and end of @a str.<br>
+* @param str The string to unquote.
+* Example: tsk_strunquote(""doubango"") = "doubango".
 */
 void tsk_strunquote(char **str)
 {
-	tsk_strunquoteex(str, '"', '"');
+	tsk_strunquote_2(str, '"', '"');
 }
 
 /**@ingroup tsk_string_group
+* Removes quotes from the beginning and end of @a str. The string must starts with @a lquote
+* and end with @a rquote.
+* @param str The string to unquote.
+* @param lquote Quote to remove from the begining of @a str.
+* @param rquote Quote to remove from the end of @a str.
 */
-void tsk_strunquoteex(char **str, char lquote, char rquote)
+void tsk_strunquote_2(char **str, char lquote, char rquote)
 {
 	if(str && *str)
 	{
@@ -394,8 +445,7 @@ void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str)
 	static const char *TSK_HEXA_VALUES = {"0123456789abcdef"};
 	size_t i;
 
-	for (i = 0 ; i<size; i++)
-	{
+	for (i = 0 ; i<size; i++){
 		str[2*i] = TSK_HEXA_VALUES [ (*(hex+i) & 0xf0) >> 4 ];
 		str[(2*i)+1] = TSK_HEXA_VALUES [ (*(hex+i) & 0x0f)		];
 	}

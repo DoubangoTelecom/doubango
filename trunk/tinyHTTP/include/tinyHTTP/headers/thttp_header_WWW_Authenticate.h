@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,30 +23,23 @@
 /**@file thttp_header_WWW_Authenticate.h
  * @brief HTTP header 'WWW-Authenticate'.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #ifndef _THTTP_HEADER_WWW_Authenticate_H_
 #define _THTTP_HEADER_WWW_Authenticate_H_
 
-#include "tinyhttp_config.h"
-#include "tinyhttp/headers/thttp_header.h"
+#include "tinyHTTP_config.h"
+#include "tinyHTTP/headers/thttp_header.h"
 
 THTTP_BEGIN_DECLS
 
-/**@def THTTP_HEADER_WWW_AUTHENTICATE_CREATE
-* Creates new http 'WWW-AUTHENTICATE' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define THTTP_HEADER_WWW_AUTHENTICATE_CREATE()				tsk_object_new(thttp_header_WWW_Authenticate_def_t)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
-/// @brief	HTTP header 'WWW-Authenticate'.
-/// @author	Mamadou
-/// @date	12/3/2009
+/// HTTP header 'WWW-Authenticate'.
 ///
 /// @par ABNF = WWW-Authenticate	= 	"WWW-Authenticate" HCOLON challenge
 ///				challenge	= 	("Digest" LWS digest-cln *(COMMA digest-cln)) / other-challenge

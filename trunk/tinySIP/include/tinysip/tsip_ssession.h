@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_ssession.h
  * @brief SIP ssession.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -88,7 +88,7 @@ TINYSIP_API tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t
 TINYSIP_API int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, size_t size, const struct tsip_message_s* request, ...);
 TINYSIP_API const void* tsip_ssession_get_context(const tsip_ssession_handle_t *self);
 
-tsip_ssession_handle_t *tsip_ssession_createex(const struct tsip_stack_s* stack, const struct tsip_message_s* message);
+tsip_ssession_handle_t *tsip_ssession_create_2(const struct tsip_stack_s* stack, const struct tsip_message_s* message);
 //const tsk_param_t* tsip_ssession_get_param(const tsip_ssession_handle_t *self, const char* pname);
 //const tsk_param_t* tsip_ssession_get_header(const tsip_ssession_handle_t *self, const char* pname);
 //const tsk_params_L_t* tsip_ssession_get_headers(const tsip_ssession_handle_t *self);

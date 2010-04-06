@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
  * @brief Finite-state machine (FSM) implementation.
  * @sa http://en.wikipedia.org/wiki/Finite-state_machine.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -49,7 +49,7 @@ TSK_BEGIN_DECLS
 
 #define TSK_FSM_CREATE(state_curr, state_term)		tsk_object_new(tsk_fsm_def_t, (tsk_fsm_state_id)state_curr, (tsk_fsm_state_id)state_term)
 #define TSK_FSM_ENTRY_CREATE()						tsk_object_new(tsk_fsm_entry_def_t)
-#define TSK_FSM_ONTERMINATED(self)					(tsk_fsm_onterminated)(self)
+#define TSK_FSM_ONTERMINATED_F(self)				(tsk_fsm_onterminated_f)(self)
 
 /**@ingroup tsk_fsm_group
 * @def tsk_fsm_state_any
@@ -93,7 +93,7 @@ typedef int tsk_fsm_state_id;
 typedef int tsk_fsm_action_id;
 typedef tsk_bool_t (*tsk_fsm_cond)(const void*, const void*);
 typedef int (*tsk_fsm_exec)(va_list *app);
-typedef int (*tsk_fsm_onterminated)(const void*);
+typedef int (*tsk_fsm_onterminated_f)(const void*);
 
 
 /**@ingroup tsk_fsm_group
@@ -162,7 +162,7 @@ typedef struct tsk_fsm_s
 	tsk_fsm_state_id term;
 	tsk_fsm_entries_L_t* entries;
 
-	tsk_fsm_onterminated callback_term;
+	tsk_fsm_onterminated_f callback_term;
 	const void* callback_data;
 
 	TSK_DECLARE_SAFEOBJ;
@@ -172,7 +172,7 @@ tsk_fsm_t;
 TINYSAK_API int tsk_fsm_exec_nothing(va_list *app);
 TINYSAK_API tsk_bool_t tsk_fsm_cond_always(const void*, const void*);
 TINYSAK_API int tsk_fsm_set(tsk_fsm_t* self, ...);
-TINYSAK_API int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callback, const void* callbackdata);
+TINYSAK_API int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated_f callback, const void* callbackdata);
 TINYSAK_API int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data1, const void* cond_data2, ...);
 TINYSAK_API tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self);
 

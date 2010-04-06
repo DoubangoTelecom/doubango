@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,29 +23,33 @@
 /**@file thttp_url.h
  * @brief HTTP/HTTPS URL.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #ifndef TINYHTTP_URL_H
 #define TINYHTTP_URL_H
 
-#include "tinyhttp_config.h"
+#include "tinyHTTP_config.h"
 
 #include "tsk_object.h"
 #include "tsk_params.h"
 #include "tsk_buffer.h"
 
+/**@ingroup thttp_url_group
+* @def THTTP_URL_CREATE(type)
+* @param type The type of the url to create (@ref thttp_url_type_t).
+* Creates new HTTP/HTTPS url.
+*/
+
 THTTP_BEGIN_DECLS
 
-/**@def THTTP_URL_CREATE
-* Creates new http/https/tel url.  You must call @ref TSK_OBJECT_SAFE_FREE to free the url.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define THTTP_URL_CREATE(type)				tsk_object_new(thttp_url_def_t, (thttp_url_type_t) type)
 
 #define THTTP_URL_IS_SECURE(url)		((url && url->type==url_https) ? 1 : 0)
 
+/** Url type.
+*/
 typedef enum thttp_url_type_e
 {
 	url_unknown,

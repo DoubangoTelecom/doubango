@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -20,41 +20,41 @@
 *
 */
 
-/**@file thttp_parser_headers.c
+/**@file thttp_parser_header.c
  * @brief HTTP headers parser.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyhttp/parsers/thttp_parser_header.h"
+#include "tinyHTTP/parsers/thttp_parser_header.h"
 
-//#include "tinyhttp/headers/thttp_header_Allow.h"
-//#include "tinyhttp/headers/thttp_header_Allow_Events.h"
-#include "tinyhttp/headers/thttp_header_Authorization.h"
-//#include "tinyhttp/headers/thttp_header_Call_ID.h"
-//#include "tinyhttp/headers/thttp_header_Contact.h"
-//#include "tinyhttp/headers/thttp_header_CSeq.h"
-#include "tinyhttp/headers/thttp_header_Dummy.h"
-//#include "tinyhttp/headers/thttp_header_Expires.h"
-//#include "tinyhttp/headers/thttp_header_From.h"
-//#include "tinyhttp/headers/thttp_header_Max_Forwards.h"
-//#include "tinyhttp/headers/thttp_header_Min_Expires.h"
-//#include "tinyhttp/headers/thttp_header_Path.h"
-//#include "tinyhttp/headers/thttp_header_P_Access_Network_Info.h" 
-//#include "tinyhttp/headers/thttp_header_P_Preferred_Identity.h"
-//#include "tinyhttp/headers/thttp_header_Privacy.h"
-//#include "tinyhttp/headers/thttp_header_Proxy_Authenticate.h"
-//#include "tinyhttp/headers/thttp_header_Proxy_Authorization.h"
-//#include "tinyhttp/headers/thttp_header_Record_Route.h"
-//#include "tinyhttp/headers/thttp_header_Require.h"
-//#include "tinyhttp/headers/thttp_header_Route.h"
-//#include "tinyhttp/headers/thttp_header_Service_Route.h"
-//#include "tinyhttp/headers/thttp_header_Supported.h"
-//#include "tinyhttp/headers/thttp_header_To.h"
-//#include "tinyhttp/headers/thttp_header_User_Agent.h"
-//#include "tinyhttp/headers/thttp_header_Via.h"
-#include "tinyhttp/headers/thttp_header_WWW_Authenticate.h"
+//#include "tinyHTTP/headers/thttp_header_Allow.h"
+//#include "tinyHTTP/headers/thttp_header_Allow_Events.h"
+#include "tinyHTTP/headers/thttp_header_Authorization.h"
+//#include "tinyHTTP/headers/thttp_header_Call_ID.h"
+//#include "tinyHTTP/headers/thttp_header_Contact.h"
+//#include "tinyHTTP/headers/thttp_header_CSeq.h"
+#include "tinyHTTP/headers/thttp_header_Dummy.h"
+//#include "tinyHTTP/headers/thttp_header_Expires.h"
+//#include "tinyHTTP/headers/thttp_header_From.h"
+//#include "tinyHTTP/headers/thttp_header_Max_Forwards.h"
+//#include "tinyHTTP/headers/thttp_header_Min_Expires.h"
+//#include "tinyHTTP/headers/thttp_header_Path.h"
+//#include "tinyHTTP/headers/thttp_header_P_Access_Network_Info.h" 
+//#include "tinyHTTP/headers/thttp_header_P_Preferred_Identity.h"
+//#include "tinyHTTP/headers/thttp_header_Privacy.h"
+//#include "tinyHTTP/headers/thttp_header_Proxy_Authenticate.h"
+//#include "tinyHTTP/headers/thttp_header_Proxy_Authorization.h"
+//#include "tinyHTTP/headers/thttp_header_Record_Route.h"
+//#include "tinyHTTP/headers/thttp_header_Require.h"
+//#include "tinyHTTP/headers/thttp_header_Route.h"
+//#include "tinyHTTP/headers/thttp_header_Service_Route.h"
+//#include "tinyHTTP/headers/thttp_header_Supported.h"
+//#include "tinyHTTP/headers/thttp_header_To.h"
+//#include "tinyHTTP/headers/thttp_header_User_Agent.h"
+//#include "tinyHTTP/headers/thttp_header_Via.h"
+#include "tinyHTTP/headers/thttp_header_WWW_Authenticate.h"
 
 #include "tsk_debug.h"
 
@@ -92,7 +92,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Accept NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Accept NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Accept_Charset: ==*/
@@ -101,7 +101,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Accept_Charset NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Accept_Charset NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Accept_Encoding: ==*/
@@ -110,7 +110,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Accept_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Accept_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Accept_Language: ==*/
@@ -119,7 +119,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Accept_Language NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Accept_Language NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Allow: ==*/
@@ -128,7 +128,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Allow NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Allow NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Authorization: ==*/
@@ -144,7 +144,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Cache_Control NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Cache_Control NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Connection: ==*/
@@ -153,7 +153,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Connection NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Connection NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Content_Encoding: ==*/
@@ -162,7 +162,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Content_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Content_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Content_Language: ==*/
@@ -171,7 +171,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Content_Language NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Content_Language NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Content_Length: ==*/
@@ -183,7 +183,7 @@
 		else{
 			thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 			ADD_HEADER(header);
-			TSK_DEBUG_WARN("The message already have 'Content-Length' header.");
+			//TSK_DEBUG_WARN("The message already have 'Content-Length' header.");
 		}
 	}
 
@@ -193,7 +193,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Content_Location NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Content_Location NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Content_MD5: ==*/
@@ -202,7 +202,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Content_MD5 NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Content_MD5 NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Content_Range: ==*/
@@ -211,7 +211,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Content_Range NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Content_Range NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Content_Type: ==*/
@@ -223,7 +223,7 @@
 		else{
 			thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 			ADD_HEADER(header);
-			TSK_DEBUG_WARN("The message already have 'Content-Type' header.");
+			//TSK_DEBUG_WARN("The message already have 'Content-Type' header.");
 		}
 	}
 
@@ -233,7 +233,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Date NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Date NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Expect: ==*/
@@ -242,7 +242,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Expect NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Expect NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Expires: ==*/
@@ -251,7 +251,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Expires NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Expires NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== From: ==*/
@@ -260,7 +260,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_From NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_From NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Host: ==*/
@@ -269,7 +269,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Host NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Host NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== If_Match: ==*/
@@ -278,7 +278,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_If_Match NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_If_Match NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== If_Modified_Since: ==*/
@@ -287,7 +287,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_If_Modified_Since NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_If_Modified_Since NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== If_None_Match: ==*/
@@ -296,7 +296,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_If_None_Match NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_If_None_Match NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== If_Range: ==*/
@@ -305,7 +305,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_If_Range NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_If_Range NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== If_Unmodified_Since: ==*/
@@ -314,7 +314,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_If_Unmodified_Since NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_If_Unmodified_Since NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Last_Modified: ==*/
@@ -323,7 +323,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Last_Modified NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Last_Modified NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Max_Forwards: ==*/
@@ -332,7 +332,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Max_Forwards NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Max_Forwards NOT IMPLEMENTED. Will be added as Dummy header.");
 	} 
 	
 	# /*== Pragma: ==*/
@@ -341,7 +341,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Pragma NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Pragma NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Proxy_Authenticate: ==*/
@@ -364,7 +364,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Range NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Range NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Referer: ==*/
@@ -373,7 +373,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Referer NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Referer NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Transfer_Encoding: ==*/
@@ -382,7 +382,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Transfer_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Transfer_Encoding NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== TE: ==*/
@@ -391,7 +391,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_TE NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_TE NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Trailer: ==*/
@@ -400,7 +400,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Trailer NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Trailer NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Upgrade: ==*/
@@ -409,7 +409,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Upgrade NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Upgrade NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== User_Agent: ==*/
@@ -418,7 +418,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_User_Agent NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_User_Agent NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Via: ==*/
@@ -427,7 +427,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Via NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Via NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 	
 	# /*== Warning: ==*/
@@ -436,7 +436,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_Warning NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_Warning NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== WWW-Authenticate: ==*/
@@ -452,7 +452,7 @@
 		thttp_header_Dummy_t *header = thttp_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 
-		TSK_DEBUG_WARN("parse_header_extension_header NOT IMPLEMENTED. Will be added as Dummy header.");
+		//TSK_DEBUG_WARN("parse_header_extension_header NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 

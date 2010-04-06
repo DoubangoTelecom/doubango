@@ -1,6 +1,6 @@
 # Copyright (C) 2009 Mamadou Diop.
 #
-# Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+# Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 #	
 # This file is part of Open Source Doubango Framework.
 #

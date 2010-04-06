@@ -9,6 +9,7 @@
     <name>tinySAK_config.h</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tiny_s_a_k__config_8h</filename>
+    <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TINYSAK_API</name>
@@ -49,27 +50,6 @@
       <name>USE_GNUC_VA_ARGS</name>
       <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
       <anchor>a367d0d80c5d63edd9ca0fb687308b9c6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSK_MIN</name>
-      <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
-      <anchor>af453d02f1103c2b559869388e3e06691</anchor>
-      <arglist>(a, b)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSK_MAX</name>
-      <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
-      <anchor>aaab1cdd48d7a13eb531d4b2f5274af2c</anchor>
-      <arglist>(a, b)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSK_NULL</name>
-      <anchorfile>tiny_s_a_k__config_8h.html</anchorfile>
-      <anchor>a7f128a7cb642b012f7268fbdd1f336ca</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -410,6 +390,126 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>tsk_common.h</name>
+    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <filename>tsk__common_8h</filename>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_bool_t</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a32e17114f759223130cec639c6b53d1f</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_true</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a5202cc7c9131f77e728a0c5c616110d0</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_false</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>ac5590fee35fe792eceee64d601c2117a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_MIN</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>af453d02f1103c2b559869388e3e06691</anchor>
+      <arglist>(a, b)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_MAX</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>aaab1cdd48d7a13eb531d4b2f5274af2c</anchor>
+      <arglist>(a, b)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_ABS</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a7ca41ecea51e673e7e58dc4362e0524a</anchor>
+      <arglist>(a)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_rand</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>ac857d76655f5797b65a27807fb5588c2</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_urand</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a1076de932f657a8f502e7aa2aedbf4a3</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>tsk_null</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a1ac412f55bd0cc0e2a8100cea25cee95</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>int</type>
+      <name>tsk_boolean_t</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a3077e2af3329e6b8df84f83ba5db2e24</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>int</type>
+      <name>tsk_ssize_t</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a1a7b96419b10bbb4970ba092109b08a2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>unsigned int</type>
+      <name>tsk_size_t</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>aa5603826497451951bace4f20f62bba2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>enum tsk_error_e</type>
+      <name>tsk_error_t</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>afb1e2c60d543149e276c619672f5797a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>tsk_error_e</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a02a70907f4c65d6d3be7c07606f4179e</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_e_success</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a02a70907f4c65d6d3be7c07606f4179eaffef8129068eef5070648ede88790c9c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_e_unitialized</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a02a70907f4c65d6d3be7c07606f4179ea2884c8aa5cb0e8d05eab4d339cb71b15</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>tsk_e_globalfailure</name>
+      <anchorfile>tsk__common_8h.html</anchorfile>
+      <anchor>a02a70907f4c65d6d3be7c07606f4179ea2b38d13a91eebc803e0ce1121500debb</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>tsk_condwait.c</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__condwait_8c</filename>
@@ -641,10 +741,10 @@
       <arglist>(va_list *app)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tsk_fsm_cond_always</name>
       <anchorfile>tsk__fsm_8c.html</anchorfile>
-      <anchor>aec3eb10c3f76f3cf924976f58a8d402b</anchor>
+      <anchor>aae046fdfd21dbee82cd583cff85713d1</anchor>
       <arglist>(const void *data1, const void *data2)</arglist>
     </member>
     <member kind="function">
@@ -658,8 +758,8 @@
       <type>int</type>
       <name>tsk_fsm_set_callback_terminated</name>
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>gaf522979f49aaac6acbf7d5ef5712776f</anchor>
-      <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated callback, const void *callbackdata)</arglist>
+      <anchor>ga609f68b40066be6caebe0c088239f8fa</anchor>
+      <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated_f callback, const void *callbackdata)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -667,6 +767,13 @@
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
       <anchor>gaad1a993a8149a9bda8b67922c1bfa575</anchor>
       <arglist>(tsk_fsm_t *self, tsk_fsm_action_id action, const void *cond_data1, const void *cond_data2,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tsk_fsm_terminated</name>
+      <anchorfile>tsk__fsm_8c.html</anchorfile>
+      <anchor>a9a401a7ad2e0fe27fd365914e57f99d9</anchor>
+      <arglist>(tsk_fsm_t *self)</arglist>
     </member>
     <member kind="variable">
       <type>const void *</type>
@@ -708,9 +815,9 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TSK_FSM_ONTERMINATED</name>
-      <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>gae45732e959706a70dd729c30ca7f02ad</anchor>
+      <name>TSK_FSM_ONTERMINATED_F</name>
+      <anchorfile>tsk__fsm_8h.html</anchorfile>
+      <anchor>a14aa95a9f36477137a566458496ae3c9</anchor>
       <arglist>(self)</arglist>
     </member>
     <member kind="define">
@@ -805,10 +912,10 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
-      <type>int(*</type>
+      <type>tsk_bool_t(*</type>
       <name>tsk_fsm_cond</name>
       <anchorfile>tsk__fsm_8h.html</anchorfile>
-      <anchor>a03f1a115e1eb5a185a4caab8f83dedb9</anchor>
+      <anchor>ae4c19aefc43ba7f006583f9187857722</anchor>
       <arglist>)(const void *, const void *)</arglist>
     </member>
     <member kind="typedef">
@@ -820,9 +927,9 @@
     </member>
     <member kind="typedef">
       <type>int(*</type>
-      <name>tsk_fsm_onterminated</name>
+      <name>tsk_fsm_onterminated_f</name>
       <anchorfile>tsk__fsm_8h.html</anchorfile>
-      <anchor>a6cf21b25ea7a7792dfa4177d03723057</anchor>
+      <anchor>a795596f9aeff2d9ff8bd1f6064117b5b</anchor>
       <arglist>)(const void *)</arglist>
     </member>
     <member kind="typedef">
@@ -854,10 +961,10 @@
       <arglist>(va_list *app)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API int</type>
+      <type>TINYSAK_API tsk_bool_t</type>
       <name>tsk_fsm_cond_always</name>
       <anchorfile>tsk__fsm_8h.html</anchorfile>
-      <anchor>a25830f8f8910b6907422abd7f83fbcab</anchor>
+      <anchor>a5f1802d27d36c6c1a45e84837f2daf41</anchor>
       <arglist>(const void *, const void *)</arglist>
     </member>
     <member kind="function">
@@ -871,8 +978,8 @@
       <type>TINYSAK_API int</type>
       <name>tsk_fsm_set_callback_terminated</name>
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>gaf522979f49aaac6acbf7d5ef5712776f</anchor>
-      <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated callback, const void *callbackdata)</arglist>
+      <anchor>ga609f68b40066be6caebe0c088239f8fa</anchor>
+      <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated_f callback, const void *callbackdata)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -880,6 +987,13 @@
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
       <anchor>gaad1a993a8149a9bda8b67922c1bfa575</anchor>
       <arglist>(tsk_fsm_t *self, tsk_fsm_action_id action, const void *cond_data1, const void *cond_data2,...)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_bool_t</type>
+      <name>tsk_fsm_terminated</name>
+      <anchorfile>tsk__fsm_8h.html</anchorfile>
+      <anchor>a0496f698deb3cfa7c7dc7d3e2ca52c3c</anchor>
+      <arglist>(tsk_fsm_t *self)</arglist>
     </member>
     <member kind="variable">
       <type>TINYSAK_GEXTERN const void *</type>
@@ -1022,18 +1136,32 @@
       <arglist>(tsk_list_t *list, tsk_list_item_t *item)</arglist>
     </member>
     <member kind="function">
+      <type>tsk_list_item_t *</type>
+      <name>tsk_list_pop_item_by_data</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gab0fd61b7818ab2bc66089a8f2df08329</anchor>
+      <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>tsk_list_remove_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga5d3a5761bb0ccb2ce09d5603a16f653d</anchor>
-      <arglist>(tsk_list_t *list, const void *tskobj)</arglist>
+      <anchor>ga49ab1be4f114420c5b4b8c7f2b8374ad</anchor>
+      <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_list_item_t *</type>
+      <name>tsk_list_pop_item_by_pred</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gac19d6873b2ba28e0e94c0124de6e03ad</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_list_remove_item_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gab5478ab7b7aa79074972d7013228af60</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+      <anchor>gacc1b42538856ec9f756de13fe9d56ddd</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1067,8 +1195,8 @@
       <type>void</type>
       <name>tsk_list_push_list</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gadc3c77495bc9655964d2b835cfc6e775</anchor>
-      <arglist>(tsk_list_t *dest, tsk_list_t **src, int back)</arglist>
+      <anchor>ga08a8c7f5b243f333c924caad88e3d07f</anchor>
+      <arglist>(tsk_list_t *dest, const tsk_list_t *src, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1088,28 +1216,28 @@
       <type>const tsk_list_item_t *</type>
       <name>tsk_list_find_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga2560ceed8c02f76e428cdec253a490d2</anchor>
-      <arglist>(const tsk_list_t *list, const void *tskobj)</arglist>
+      <anchor>ga126667d805e5cc53af126bbd69ef6b53</anchor>
+      <arglist>(const tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
       <type>const tsk_list_item_t *</type>
       <name>tsk_list_find_item_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga830c02dde8ebc3f009365358e42c90f0</anchor>
-      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+      <anchor>ga7f6691d8d4d9652ffc55aac1af542a40</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_list_item_def_t</name>
       <anchorfile>tsk__list_8c.html</anchorfile>
-      <anchor>a8d09a7444202c22f6337f4d077be5d10</anchor>
+      <anchor>a2d8374f72591187b9366fc490657a376</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_list_def_t</name>
       <anchorfile>tsk__list_8c.html</anchorfile>
-      <anchor>ab6402d022fb5a2276a523370fc1b777f</anchor>
+      <anchor>ab1bcb3571ff95e9050099b7ceae580d1</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -1141,6 +1269,20 @@
       <anchorfile>group__tsk__list__group.html</anchorfile>
       <anchor>ga3b505dbb26ce90b203d54c83afac4f22</anchor>
       <arglist>(self)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_LIST_IS_FIRST</name>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>a118c7f663f34373010999aa31ac3d77f</anchor>
+      <arglist>(self, item)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_LIST_IS_LAST</name>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>a857dafa2338b17558205c41b683b3123</anchor>
+      <arglist>(self, item)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1248,18 +1390,32 @@
       <arglist>(tsk_list_t *list, tsk_list_item_t *item)</arglist>
     </member>
     <member kind="function">
+      <type>TINYSAK_API tsk_list_item_t *</type>
+      <name>tsk_list_pop_item_by_data</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gab0fd61b7818ab2bc66089a8f2df08329</anchor>
+      <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_list_remove_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga5d3a5761bb0ccb2ce09d5603a16f653d</anchor>
-      <arglist>(tsk_list_t *list, const void *tskobj)</arglist>
+      <anchor>ga49ab1be4f114420c5b4b8c7f2b8374ad</anchor>
+      <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_list_remove_item_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gab5478ab7b7aa79074972d7013228af60</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+      <anchor>gacc1b42538856ec9f756de13fe9d56ddd</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API tsk_list_item_t *</type>
+      <name>tsk_list_pop_item_by_pred</name>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>adcf2ef7b8bec0a4a5733f957273d06b7</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
@@ -1293,8 +1449,8 @@
       <type>TINYSAK_API void</type>
       <name>tsk_list_push_list</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gadc3c77495bc9655964d2b835cfc6e775</anchor>
-      <arglist>(tsk_list_t *destination, tsk_list_t **source, int back)</arglist>
+      <anchor>ga08a8c7f5b243f333c924caad88e3d07f</anchor>
+      <arglist>(tsk_list_t *destination, const tsk_list_t *source, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
@@ -1314,28 +1470,28 @@
       <type>TINYSAK_API const tsk_list_item_t *</type>
       <name>tsk_list_find_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga2560ceed8c02f76e428cdec253a490d2</anchor>
-      <arglist>(const tsk_list_t *list, const void *tskobj)</arglist>
+      <anchor>ga126667d805e5cc53af126bbd69ef6b53</anchor>
+      <arglist>(const tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API const tsk_list_item_t *</type>
       <name>tsk_list_find_item_by_pred</name>
-      <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga830c02dde8ebc3f009365358e42c90f0</anchor>
+      <anchorfile>tsk__list_8h.html</anchorfile>
+      <anchor>a3c7e83b6514731c3dac3ad51746ba79c</anchor>
       <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_list_def_t</name>
       <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a57a95641431a21748608e3fec7c0446a</anchor>
+      <anchor>a60a97db634e7b9ef3e3878400d710312</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_list_item_def_t</name>
       <anchorfile>tsk__list_8h.html</anchorfile>
-      <anchor>a9ee06abfcd866a6d645d10683c766668</anchor>
+      <anchor>ab91ea3e24622a03f5110f7cafa534be3</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -1709,6 +1865,7 @@
     <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
+    <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
     <class kind="struct">tsk_object_header_s</class>
     <member kind="define">
       <type>#define</type>
@@ -1719,9 +1876,9 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TSK_OBJECT_HEADER_GET</name>
+      <name>TSK_OBJECT_HEADER</name>
       <anchorfile>tsk__object_8c.html</anchorfile>
-      <anchor>a4855f8814f89614498584a03a2b097cd</anchor>
+      <anchor>a58c9c81151b88e275c7de73df458e7a6</anchor>
       <arglist>(object)</arglist>
     </member>
     <member kind="typedef">
@@ -1732,53 +1889,53 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
+      <type>tsk_object_t *</type>
       <name>tsk_object_new</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gae62418368c3d693debeddebd8b54d20e</anchor>
+      <anchor>gaa3ee920a46dea8ba02932aa8e6a6060e</anchor>
       <arglist>(const tsk_object_def_t *objdef,...)</arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
-      <name>tsk_object_new2</name>
+      <type>tsk_object_t *</type>
+      <name>tsk_object_new_2</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga84b6087cacfbfb6393f3ce3ac8d9f576</anchor>
+      <anchor>ga63893a9927979180dfc7621492f334c4</anchor>
       <arglist>(const tsk_object_def_t *objdef, va_list *ap)</arglist>
     </member>
     <member kind="function">
       <type>size_t</type>
       <name>tsk_object_sizeof</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga2efd77c736f57751195ee4b8e8ddbc97</anchor>
-      <arglist>(const void *self)</arglist>
+      <anchor>gad7c100b741ce980a63ccdc262f49ffa0</anchor>
+      <arglist>(const tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_object_cmp</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga1babbf0d92086a24fd9931610e3dc34f</anchor>
-      <arglist>(const void *object1, const void *object2)</arglist>
+      <anchor>gacf253f86208fb586b8d86f0e9bb3c549</anchor>
+      <arglist>(const tsk_object_t *object1, const tsk_object_t *object2)</arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
+      <type>tsk_object_t *</type>
       <name>tsk_object_ref</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gaeb09e0c94c7f7c0c2c7a82dcfc9e3ad3</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>gaaea32a7f461d6f2fd1e0e5a19bbb986f</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
+      <type>tsk_object_t *</type>
       <name>tsk_object_unref</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga218f2b4ff94ded71666f343b2f1a1d70</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>ga32ef69f32a1dd6bc0d0be0e164ea2843</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_object_delete</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga42236338490b1d596e2f26dd9d8ea9b0</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>ga4f4eb990f3cf2f579f439870e8fec35d</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1816,53 +1973,60 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API void *</type>
+      <type>TINYSAK_API tsk_object_t *</type>
       <name>tsk_object_new</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gae62418368c3d693debeddebd8b54d20e</anchor>
+      <anchor>gaa3ee920a46dea8ba02932aa8e6a6060e</anchor>
       <arglist>(const tsk_object_def_t *objdef,...)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API void *</type>
-      <name>tsk_object_new2</name>
+      <type>TINYSAK_API tsk_object_t *</type>
+      <name>tsk_object_new_2</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga84b6087cacfbfb6393f3ce3ac8d9f576</anchor>
+      <anchor>ga63893a9927979180dfc7621492f334c4</anchor>
       <arglist>(const tsk_object_def_t *objdef, va_list *ap)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API size_t</type>
       <name>tsk_object_sizeof</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga2efd77c736f57751195ee4b8e8ddbc97</anchor>
-      <arglist>(const void *self)</arglist>
+      <anchor>gad7c100b741ce980a63ccdc262f49ffa0</anchor>
+      <arglist>(const tsk_object_t *)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
       <name>tsk_object_cmp</name>
-      <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga1babbf0d92086a24fd9931610e3dc34f</anchor>
-      <arglist>(const void *self, const void *object)</arglist>
+      <anchorfile>tsk__object_8h.html</anchorfile>
+      <anchor>a8e0d191d361623dc0312d1e1ba82e540</anchor>
+      <arglist>(const void *self, const tsk_object_t *object)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API void *</type>
+      <type>TINYSAK_API tsk_object_t *</type>
       <name>tsk_object_ref</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gaeb09e0c94c7f7c0c2c7a82dcfc9e3ad3</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>gaaea32a7f461d6f2fd1e0e5a19bbb986f</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API void *</type>
+      <type>TINYSAK_API tsk_object_t *</type>
       <name>tsk_object_unref</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga218f2b4ff94ded71666f343b2f1a1d70</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>ga32ef69f32a1dd6bc0d0be0e164ea2843</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_object_delete</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga42236338490b1d596e2f26dd9d8ea9b0</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>ga4f4eb990f3cf2f579f439870e8fec35d</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
+    </member>
+    <member kind="variable">
+      <type>TSK_BEGIN_DECLS typedef void</type>
+      <name>tsk_object_t</name>
+      <anchorfile>group__tsk__object__group.html</anchorfile>
+      <anchor>ga854eac17e0c0bdfa29862f294d22f7fb</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
@@ -1872,6 +2036,7 @@
     <includes id="tsk__params_8h" name="tsk_params.h" local="yes" imported="no">tsk_params.h</includes>
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
+    <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
     <member kind="function">
       <type>tsk_param_t *</type>
       <name>tsk_params_parse_param</name>
@@ -1892,6 +2057,13 @@
       <anchorfile>group__tsk__params__group.html</anchorfile>
       <anchor>ga42acaefd481f3af60bd7029b968630d2</anchor>
       <arglist>(tsk_params_L_t **self, const char *name, const char *value)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_params_add_param_2</name>
+      <anchorfile>tsk__params_8c.html</anchorfile>
+      <anchor>a3f82a14a8cb75bc1251d7d537875cfae</anchor>
+      <arglist>(tsk_params_L_t **self, const tsk_param_t *param)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1954,6 +2126,13 @@
     <class kind="struct">tsk_param_s</class>
     <member kind="define">
       <type>#define</type>
+      <name>TSK_PARAM_VA_ARGS</name>
+      <anchorfile>tsk__params_8h.html</anchorfile>
+      <anchor>a82d8ee4b4d65e09902bd7182232c9b56</anchor>
+      <arglist>(name, value)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>TSK_PARAM_CREATE</name>
       <anchorfile>group__tsk__params__group.html</anchorfile>
       <anchor>gab80b4f4e128b4b61d1c3ff6390440535</anchor>
@@ -1965,6 +2144,13 @@
       <anchorfile>tsk__params_8h.html</anchorfile>
       <anchor>a62dda1bd23ca2d54b0b12c10608eca23</anchor>
       <arglist>()</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_PARAM</name>
+      <anchorfile>tsk__params_8h.html</anchorfile>
+      <anchor>a646bb88b397a6de55b4daa74b432b1eb</anchor>
+      <arglist>(self)</arglist>
     </member>
     <member kind="typedef">
       <type>struct tsk_param_s</type>
@@ -2000,6 +2186,13 @@
       <anchorfile>group__tsk__params__group.html</anchorfile>
       <anchor>ga42acaefd481f3af60bd7029b968630d2</anchor>
       <arglist>(tsk_params_L_t **self, const char *name, const char *value)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_params_add_param_2</name>
+      <anchorfile>tsk__params_8h.html</anchorfile>
+      <anchor>a35a9c7e7e43a4d393705b5c199e27757</anchor>
+      <arglist>(tsk_params_L_t **self, const tsk_param_t *param)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API int</type>
@@ -2701,7 +2894,7 @@
       <name>tsk_sha1input</name>
       <anchorfile>group__tsk__sha1__group.html</anchorfile>
       <anchor>gaba598c7c2bd12c5e40a5b9f51b64e599</anchor>
-      <arglist>(tsk_sha1context_t *, const uint8_t *, unsigned int32_t)</arglist>
+      <arglist>(tsk_sha1context_t *, const uint8_t *, unsigned length)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API tsk_sha1_errcode_t</type>
@@ -2733,6 +2926,7 @@
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__time_8h" name="tsk_time.h" local="yes" imported="no">tsk_time.h</includes>
     <includes id="tsk__debug_8h" name="tsk_debug.h" local="yes" imported="no">tsk_debug.h</includes>
+    <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
     <member kind="function">
       <type>char</type>
       <name>tsk_b10tob16</name>
@@ -2786,14 +2980,14 @@
       <type>char *</type>
       <name>tsk_strndup</name>
       <anchorfile>tsk__string_8c.html</anchorfile>
-      <anchor>a90f0105eab4d2a1cabfee502fb7cbc7f</anchor>
+      <anchor>a92ceafb3bf81f7f8635483f841bc18ed</anchor>
       <arglist>(const char *s1, size_t n)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tsk_strcontains</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gabcf8908f7c10fd2bc78154f53d5cb24b</anchor>
+      <anchor>gaa5e78bdce0147d0fb62b3c55bb8a7b9f</anchor>
       <arglist>(const char *str, size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
@@ -2847,6 +3041,13 @@
     </member>
     <member kind="function">
       <type>void</type>
+      <name>tsk_strtrim</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gaed7321cf4459dca45ea7000ad9b02df3</anchor>
+      <arglist>(char **str)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
       <name>tsk_strquote</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
       <anchor>gae13ac415b2b77aac738aa02c8d4394a7</anchor>
@@ -2854,9 +3055,9 @@
     </member>
     <member kind="function">
       <type>void</type>
-      <name>tsk_strquoteex</name>
+      <name>tsk_strquote_2</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga3a1fcf0da3cbd123240598c6ce330630</anchor>
+      <anchor>ga304c5e49f5887284cfd6139781608a0f</anchor>
       <arglist>(char **str, char lquote, char rquote)</arglist>
     </member>
     <member kind="function">
@@ -2868,9 +3069,9 @@
     </member>
     <member kind="function">
       <type>void</type>
-      <name>tsk_strunquoteex</name>
+      <name>tsk_strunquote_2</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga329c12083a85a3d5167de84ff00ab597</anchor>
+      <anchor>gab22896e63325d6f5c90c29611a12f581</anchor>
       <arglist>(char **str, char lquote, char rquote)</arglist>
     </member>
     <member kind="function">
@@ -2902,10 +3103,10 @@
       <arglist>(const char *str, size_t size, uint8_t *hex)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_string_def_t</name>
       <anchorfile>tsk__string_8c.html</anchorfile>
-      <anchor>ace7dc0ec7e7754c7e91ee9d219e1c3a4</anchor>
+      <anchor>aaafad466c06e88e7649751c74a08e833</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -3051,10 +3252,10 @@
       <arglist>(const char *s1, size_t n)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API int</type>
+      <type>TINYSAK_API tsk_bool_t</type>
       <name>tsk_strcontains</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gabcf8908f7c10fd2bc78154f53d5cb24b</anchor>
+      <anchor>gaa5e78bdce0147d0fb62b3c55bb8a7b9f</anchor>
       <arglist>(const char *str, size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
@@ -3108,6 +3309,13 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
+      <name>tsk_strtrim</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gaed7321cf4459dca45ea7000ad9b02df3</anchor>
+      <arglist>(char **str)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API void</type>
       <name>tsk_strquote</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
       <anchor>gae13ac415b2b77aac738aa02c8d4394a7</anchor>
@@ -3115,9 +3323,9 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
-      <name>tsk_strquoteex</name>
+      <name>tsk_strquote_2</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga3a1fcf0da3cbd123240598c6ce330630</anchor>
+      <anchor>ga304c5e49f5887284cfd6139781608a0f</anchor>
       <arglist>(char **str, char lquote, char rquote)</arglist>
     </member>
     <member kind="function">
@@ -3129,9 +3337,9 @@
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
-      <name>tsk_strunquoteex</name>
+      <name>tsk_strunquote_2</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga329c12083a85a3d5167de84ff00ab597</anchor>
+      <anchor>gab22896e63325d6f5c90c29611a12f581</anchor>
       <arglist>(char **str, char lquote, char rquote)</arglist>
     </member>
     <member kind="function">
@@ -3163,10 +3371,10 @@
       <arglist>(const char *str, size_t size, uint8_t *hex)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_string_def_t</name>
       <anchorfile>tsk__string_8h.html</anchorfile>
-      <anchor>a74b2df639c047017a8478e9680c69519</anchor>
+      <anchor>a44cff13a4554b5e71bd4e1f4375fa7a1</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -3259,6 +3467,13 @@
     </member>
     <member kind="define">
       <type>#define</type>
+      <name>TSK_TIME_MS_2_S</name>
+      <anchorfile>tsk__time_8h.html</anchorfile>
+      <anchor>a1388ef737c6353aa181d45eac401f9e5</anchor>
+      <arglist>(MS)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
       <name>tsk_time_now</name>
       <anchorfile>group__tsk__time__group.html</anchorfile>
       <anchor>ga08190c30f608b1397602ccba62592b09</anchor>
@@ -3347,13 +3562,6 @@
       <name>tsk_timer_manager_start</name>
       <anchorfile>group__tsk__timer__group.html</anchorfile>
       <anchor>ga25b764d9f2e9baa9ec1560a7f9cc3ba6</anchor>
-      <arglist>(tsk_timer_manager_handle_t *self)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tsk_timer_manager_isready</name>
-      <anchorfile>group__tsk__timer__group.html</anchorfile>
-      <anchor>gac289d016e7e912ce23db90928eae8de2</anchor>
       <arglist>(tsk_timer_manager_handle_t *self)</arglist>
     </member>
     <member kind="function">
@@ -3458,13 +3666,6 @@
       <name>tsk_timer_manager_start</name>
       <anchorfile>group__tsk__timer__group.html</anchorfile>
       <anchor>ga25b764d9f2e9baa9ec1560a7f9cc3ba6</anchor>
-      <arglist>(tsk_timer_manager_handle_t *self)</arglist>
-    </member>
-    <member kind="function">
-      <type>TINYSAK_API int</type>
-      <name>tsk_timer_manager_isready</name>
-      <anchorfile>group__tsk__timer__group.html</anchorfile>
-      <anchor>gac289d016e7e912ce23db90928eae8de2</anchor>
       <arglist>(tsk_timer_manager_handle_t *self)</arglist>
     </member>
     <member kind="function">
@@ -3915,13 +4116,6 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>TSK_FSM_ONTERMINATED</name>
-      <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>gae45732e959706a70dd729c30ca7f02ad</anchor>
-      <arglist>(self)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
       <name>tsk_fsm_state_any</name>
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
       <anchor>ga9b23f7aef02f0583de042cdfdbed36fd</anchor>
@@ -4029,8 +4223,8 @@
       <type>int</type>
       <name>tsk_fsm_set_callback_terminated</name>
       <anchorfile>group__tsk__fsm__group.html</anchorfile>
-      <anchor>gaf522979f49aaac6acbf7d5ef5712776f</anchor>
-      <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated callback, const void *callbackdata)</arglist>
+      <anchor>ga609f68b40066be6caebe0c088239f8fa</anchor>
+      <arglist>(tsk_fsm_t *self, tsk_fsm_onterminated_f callback, const void *callbackdata)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -4161,18 +4355,32 @@
       <arglist>(tsk_list_t *list, tsk_list_item_t *item)</arglist>
     </member>
     <member kind="function">
+      <type>tsk_list_item_t *</type>
+      <name>tsk_list_pop_item_by_data</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gab0fd61b7818ab2bc66089a8f2df08329</anchor>
+      <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>tsk_list_remove_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga5d3a5761bb0ccb2ce09d5603a16f653d</anchor>
-      <arglist>(tsk_list_t *list, const void *tskobj)</arglist>
+      <anchor>ga49ab1be4f114420c5b4b8c7f2b8374ad</anchor>
+      <arglist>(tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_list_item_t *</type>
+      <name>tsk_list_pop_item_by_pred</name>
+      <anchorfile>group__tsk__list__group.html</anchorfile>
+      <anchor>gac19d6873b2ba28e0e94c0124de6e03ad</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_list_remove_item_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gab5478ab7b7aa79074972d7013228af60</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+      <anchor>gacc1b42538856ec9f756de13fe9d56ddd</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -4206,8 +4414,8 @@
       <type>void</type>
       <name>tsk_list_push_list</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gadc3c77495bc9655964d2b835cfc6e775</anchor>
-      <arglist>(tsk_list_t *dest, tsk_list_t **src, int back)</arglist>
+      <anchor>ga08a8c7f5b243f333c924caad88e3d07f</anchor>
+      <arglist>(tsk_list_t *dest, const tsk_list_t *src, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -4227,15 +4435,15 @@
       <type>const tsk_list_item_t *</type>
       <name>tsk_list_find_item_by_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga2560ceed8c02f76e428cdec253a490d2</anchor>
-      <arglist>(const tsk_list_t *list, const void *tskobj)</arglist>
+      <anchor>ga126667d805e5cc53af126bbd69ef6b53</anchor>
+      <arglist>(const tsk_list_t *list, const tsk_object_t *tskobj)</arglist>
     </member>
     <member kind="function">
       <type>const tsk_list_item_t *</type>
       <name>tsk_list_find_item_by_pred</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga830c02dde8ebc3f009365358e42c90f0</anchor>
-      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const void *data)</arglist>
+      <anchor>ga7f6691d8d4d9652ffc55aac1af542a40</anchor>
+      <arglist>(const tsk_list_t *list, tsk_list_func_predicate predicate, const tsk_object_t *data)</arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -4427,53 +4635,60 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
+      <type>tsk_object_t *</type>
       <name>tsk_object_new</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gae62418368c3d693debeddebd8b54d20e</anchor>
+      <anchor>gaa3ee920a46dea8ba02932aa8e6a6060e</anchor>
       <arglist>(const tsk_object_def_t *objdef,...)</arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
-      <name>tsk_object_new2</name>
+      <type>tsk_object_t *</type>
+      <name>tsk_object_new_2</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga84b6087cacfbfb6393f3ce3ac8d9f576</anchor>
+      <anchor>ga63893a9927979180dfc7621492f334c4</anchor>
       <arglist>(const tsk_object_def_t *objdef, va_list *ap)</arglist>
     </member>
     <member kind="function">
       <type>size_t</type>
       <name>tsk_object_sizeof</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga2efd77c736f57751195ee4b8e8ddbc97</anchor>
-      <arglist>(const void *self)</arglist>
+      <anchor>gad7c100b741ce980a63ccdc262f49ffa0</anchor>
+      <arglist>(const tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tsk_object_cmp</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga1babbf0d92086a24fd9931610e3dc34f</anchor>
-      <arglist>(const void *object1, const void *object2)</arglist>
+      <anchor>gacf253f86208fb586b8d86f0e9bb3c549</anchor>
+      <arglist>(const tsk_object_t *object1, const tsk_object_t *object2)</arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
+      <type>tsk_object_t *</type>
       <name>tsk_object_ref</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>gaeb09e0c94c7f7c0c2c7a82dcfc9e3ad3</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>gaaea32a7f461d6f2fd1e0e5a19bbb986f</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
-      <type>void *</type>
+      <type>tsk_object_t *</type>
       <name>tsk_object_unref</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga218f2b4ff94ded71666f343b2f1a1d70</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>ga32ef69f32a1dd6bc0d0be0e164ea2843</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_object_delete</name>
       <anchorfile>group__tsk__object__group.html</anchorfile>
-      <anchor>ga42236338490b1d596e2f26dd9d8ea9b0</anchor>
-      <arglist>(void *self)</arglist>
+      <anchor>ga4f4eb990f3cf2f579f439870e8fec35d</anchor>
+      <arglist>(tsk_object_t *self)</arglist>
+    </member>
+    <member kind="variable">
+      <type>TSK_BEGIN_DECLS typedef void</type>
+      <name>tsk_object_t</name>
+      <anchorfile>group__tsk__object__group.html</anchorfile>
+      <anchor>ga854eac17e0c0bdfa29862f294d22f7fb</anchor>
+      <arglist></arglist>
     </member>
   </compound>
   <compound kind="group">
@@ -5095,10 +5310,10 @@
       <arglist>(const char *s1)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tsk_strcontains</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>gabcf8908f7c10fd2bc78154f53d5cb24b</anchor>
+      <anchor>gaa5e78bdce0147d0fb62b3c55bb8a7b9f</anchor>
       <arglist>(const char *str, size_t size, const char *substring)</arglist>
     </member>
     <member kind="function">
@@ -5152,6 +5367,13 @@
     </member>
     <member kind="function">
       <type>void</type>
+      <name>tsk_strtrim</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gaed7321cf4459dca45ea7000ad9b02df3</anchor>
+      <arglist>(char **str)</arglist>
+    </member>
+    <member kind="function">
+      <type>void</type>
       <name>tsk_strquote</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
       <anchor>gae13ac415b2b77aac738aa02c8d4394a7</anchor>
@@ -5159,9 +5381,9 @@
     </member>
     <member kind="function">
       <type>void</type>
-      <name>tsk_strquoteex</name>
+      <name>tsk_strquote_2</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga3a1fcf0da3cbd123240598c6ce330630</anchor>
+      <anchor>ga304c5e49f5887284cfd6139781608a0f</anchor>
       <arglist>(char **str, char lquote, char rquote)</arglist>
     </member>
     <member kind="function">
@@ -5173,9 +5395,9 @@
     </member>
     <member kind="function">
       <type>void</type>
-      <name>tsk_strunquoteex</name>
+      <name>tsk_strunquote_2</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
-      <anchor>ga329c12083a85a3d5167de84ff00ab597</anchor>
+      <anchor>gab22896e63325d6f5c90c29611a12f581</anchor>
       <arglist>(char **str, char lquote, char rquote)</arglist>
     </member>
     <member kind="function">
@@ -5296,13 +5518,6 @@
       <name>tsk_timer_manager_start</name>
       <anchorfile>group__tsk__timer__group.html</anchorfile>
       <anchor>ga25b764d9f2e9baa9ec1560a7f9cc3ba6</anchor>
-      <arglist>(tsk_timer_manager_handle_t *self)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tsk_timer_manager_isready</name>
-      <anchorfile>group__tsk__timer__group.html</anchorfile>
-      <anchor>gac289d016e7e912ce23db90928eae8de2</anchor>
       <arglist>(tsk_timer_manager_handle_t *self)</arglist>
     </member>
     <member kind="function">
@@ -5500,10 +5715,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>tsk_fsm_onterminated</type>
+      <type>tsk_fsm_onterminated_f</type>
       <name>callback_term</name>
       <anchorfile>structtsk__fsm__s.html</anchorfile>
-      <anchor>ad025103635c30e27e3a757216e8ae717</anchor>
+      <anchor>acd217b4cb125852391ae16854eff11a5</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -5607,25 +5822,25 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>void *(*</type>
+      <type>tsk_object_t *(*</type>
       <name>constructor</name>
       <anchorfile>structtsk__object__def__s.html</anchorfile>
-      <anchor>ac344d9e615a2cb83ca28f714b11839ee</anchor>
-      <arglist>)(void *self, va_list *app)</arglist>
+      <anchor>abcb503a9230afd7767e3c4ab307d3c99</anchor>
+      <arglist>)(tsk_object_t *, va_list *)</arglist>
     </member>
     <member kind="variable">
-      <type>void *(*</type>
+      <type>tsk_object_t *(*</type>
       <name>destructor</name>
       <anchorfile>structtsk__object__def__s.html</anchorfile>
-      <anchor>a6663c9f422b8c145ae97c741df2104e1</anchor>
-      <arglist>)(void *)</arglist>
+      <anchor>aa4bf0e0658dea6f0e025aaed27b0546e</anchor>
+      <arglist>)(tsk_object_t *)</arglist>
     </member>
     <member kind="variable">
       <type>int(*</type>
-      <name>objcmp</name>
+      <name>comparator</name>
       <anchorfile>structtsk__object__def__s.html</anchorfile>
-      <anchor>ad203f303a070719f37bc18387e604e03</anchor>
-      <arglist>)(const void *object1, const void *object2)</arglist>
+      <anchor>a0824a6ffaa1bd6ba839f9a62a145a3d6</anchor>
+      <arglist>)(const tsk_object_t *, const tsk_object_t *)</arglist>
     </member>
   </compound>
   <compound kind="struct">
@@ -5639,10 +5854,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>size_t</type>
+      <type>int</type>
       <name>refCount</name>
       <anchorfile>structtsk__object__header__s.html</anchorfile>
-      <anchor>acbf678751ae4fa53c7c026cdecd5ea22</anchor>
+      <anchor>a43ab0d8eafd71383b2233bdee65911de</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -5668,6 +5883,13 @@
       <name>value</name>
       <anchorfile>structtsk__param__s.html</anchorfile>
       <anchor>a4e9aec275e566b978a3ccb4e043d8c61</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>tag</name>
+      <anchorfile>structtsk__param__s.html</anchorfile>
+      <anchor>aaa2611208b8b4033e9d78cdf6c87a299</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -5756,17 +5978,24 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>unsigned</type>
+      <type>tsk_bool_t</type>
       <name>running</name>
       <anchorfile>structtsk__runnable__s.html</anchorfile>
-      <anchor>ac2943ad835fb9b7bef5952b9ec716eab</anchor>
+      <anchor>aa0199ca7619b90647ac6abcfcd1b2288</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>unsigned</type>
+      <type>tsk_bool_t</type>
+      <name>started</name>
+      <anchorfile>structtsk__runnable__s.html</anchorfile>
+      <anchor>a3e87319b1ebccbd0529514c298ec4fe2</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
       <name>initialized</name>
       <anchorfile>structtsk__runnable__s.html</anchorfile>
-      <anchor>a8ac8977c8c92fcb0ed6caa2e0d04accf</anchor>
+      <anchor>adfdbb2f146565c87384f0090dba7a73e</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -5856,13 +6085,6 @@
       <name>TSK_DECLARE_RUNNABLE</name>
       <anchorfile>structtsk__timer__manager__s.html</anchorfile>
       <anchor>ae8fba71ac54cd6376ba9e5ed1cc87cf3</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="variable">
-      <type>unsigned</type>
-      <name>active</name>
-      <anchorfile>structtsk__timer__manager__s.html</anchorfile>
-      <anchor>a29452076328d0b337b364ebc99883925</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">

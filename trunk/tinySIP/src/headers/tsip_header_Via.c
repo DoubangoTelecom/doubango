@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
 /**@file tsip_header_Via.c
  * @brief SIP Via/v header as per RFC 3261 subclause 20.42.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -1176,7 +1176,7 @@ _match:
 	{
 		TSK_PARSER_SET_STRING(hdr_via->host);
 		if(hdr_via->host && *hdr_via->host == '['){
-			tsk_strunquoteex(&hdr_via->host, '[', ']');
+			tsk_strunquote_2(&hdr_via->host, '[', ']');
 		}
 	}
 	break;

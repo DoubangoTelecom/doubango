@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -38,14 +38,11 @@
 
 #include <string.h>
 
-/**@defgroup thttp_header_Dummy_group HTTP Dummy header.
-*/
-
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 75 "thttp_parser_header_Dummy.rl" */
+/* #line 72 "thttp_parser_header_Dummy.rl" */
 
 
 int thttp_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
@@ -63,6 +60,8 @@ int thttp_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
+/**@ingroup thttp_header_group
+*/
 thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -74,7 +73,7 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 78 "../src/headers/thttp_header_Dummy.c" */
+/* #line 77 "../src/headers/thttp_header_Dummy.c" */
 static const char _thttp_machine_parser_header_Dummy_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 2, 0, 2
@@ -135,16 +134,16 @@ static const int thttp_machine_parser_header_Dummy_error = 0;
 static const int thttp_machine_parser_header_Dummy_en_main = 1;
 
 
-/* #line 103 "thttp_parser_header_Dummy.rl" */
+/* #line 102 "thttp_parser_header_Dummy.rl" */
 	
-/* #line 141 "../src/headers/thttp_header_Dummy.c" */
+/* #line 140 "../src/headers/thttp_header_Dummy.c" */
 	{
 	cs = thttp_machine_parser_header_Dummy_start;
 	}
 
-/* #line 104 "thttp_parser_header_Dummy.rl" */
+/* #line 103 "thttp_parser_header_Dummy.rl" */
 	
-/* #line 148 "../src/headers/thttp_header_Dummy.c" */
+/* #line 147 "../src/headers/thttp_header_Dummy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -219,29 +218,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "thttp_parser_header_Dummy.rl" */
+/* #line 49 "thttp_parser_header_Dummy.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 57 "thttp_parser_header_Dummy.rl" */
+/* #line 54 "thttp_parser_header_Dummy.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Dummy->name);
 	}
 	break;
 	case 2:
-/* #line 62 "thttp_parser_header_Dummy.rl" */
+/* #line 59 "thttp_parser_header_Dummy.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 	break;
 	case 3:
-/* #line 67 "thttp_parser_header_Dummy.rl" */
+/* #line 64 "thttp_parser_header_Dummy.rl" */
 	{
 	}
 	break;
-/* #line 245 "../src/headers/thttp_header_Dummy.c" */
+/* #line 244 "../src/headers/thttp_header_Dummy.c" */
 		}
 	}
 
@@ -254,12 +253,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 105 "thttp_parser_header_Dummy.rl" */
+/* #line 104 "thttp_parser_header_Dummy.rl" */
 	
 	if( cs < 
-/* #line 261 "../src/headers/thttp_header_Dummy.c" */
+/* #line 260 "../src/headers/thttp_header_Dummy.c" */
 10
-/* #line 106 "thttp_parser_header_Dummy.rl" */
+/* #line 105 "thttp_parser_header_Dummy.rl" */
  )
 	{
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);

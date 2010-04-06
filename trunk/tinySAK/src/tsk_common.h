@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_common.h
  * Commons.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -34,6 +34,12 @@
 typedef int tsk_boolean_t;
 #define tsk_bool_t tsk_boolean_t
 
+/**@def tsk_true
+* True (1).
+*/
+/**@def tsk_false
+* False (0).
+*/
 #define tsk_true	1
 #define tsk_false	0
 

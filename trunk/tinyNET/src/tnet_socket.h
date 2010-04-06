@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet.h
  * @brief Protocol agnostic socket.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -96,6 +96,16 @@ typedef enum tnet_socket_type_e
 	tnet_socket_type_tcp_ipsec_ipv6			= (TNET_SOCKET_TYPE_IPSEC | tnet_socket_type_tcp_ipv6), /**< TCP/IPSec/IPv6 socket.*/
 	tnet_socket_type_tls_ipsec_ipv6			= (TNET_SOCKET_TYPE_IPSEC | tnet_socket_type_tls_ipv6),	/**< TLS/IPSec/IPv6 socket.*/
 	tnet_socket_type_sctp_ipsec_ipv6		= (TNET_SOCKET_TYPE_IPSEC | tnet_socket_type_sctp_ipv6),/**< SCTP/IPSec/IPv6 socket.*/
+
+#define TNET_SOCKET_TYPE_IPV46				(TNET_SOCKET_TYPE_IPV4 | TNET_SOCKET_TYPE_IPV6)
+	tnet_socket_type_udp_ipv46				= (TNET_SOCKET_TYPE_IPV46 | (tnet_socket_type_udp_ipv4 | tnet_socket_type_udp_ipv6)),	/**< UDP/IPv4/6 socket.*/
+	tnet_socket_type_tcp_ipv46				= (TNET_SOCKET_TYPE_IPV46 | (tnet_socket_type_tcp_ipv4 | tnet_socket_type_tcp_ipv6)),	/**< TCP/IPv4/6 socket.*/
+	tnet_socket_type_tls_ipv46				= (TNET_SOCKET_TYPE_IPV46 | (tnet_socket_type_tls_ipv4 | tnet_socket_type_tls_ipv6)),	/**< TLS/IPv4/6 socket.*/
+	tnet_socket_type_sctp_ipv46				= (TNET_SOCKET_TYPE_IPV46 | (tnet_socket_type_sctp_ipv4 | tnet_socket_type_sctp_ipv6)),	/**< SCTP/IPv4/6 socket.*/
+	tnet_socket_type_udp_ipsec_ipv46		= (TNET_SOCKET_TYPE_IPSEC | tnet_socket_type_udp_ipv46), /**< UDP/IPSec/IPv4/6 socket.*/
+	tnet_socket_type_tcp_ipsec_ipv46		= (TNET_SOCKET_TYPE_IPSEC | tnet_socket_type_tcp_ipv46), /**< TCP/IPSec/IPv4/6 socket.*/
+	tnet_socket_type_tls_ipsec_ipv46		= (TNET_SOCKET_TYPE_IPSEC | tnet_socket_type_tls_ipv46),	/**< TLS/IPSec/IPv4/6 socket.*/
+	tnet_socket_type_sctp_ipsec_ipv46		= (TNET_SOCKET_TYPE_IPSEC | tnet_socket_type_sctp_ipv46),/**< SCTP/IPSec/IPv4/6 socket.*/
 }
 tnet_socket_type_t;
 
@@ -110,6 +120,7 @@ tnet_socket_type_t;
 
 #define TNET_SOCKET_TYPE_IS_IPV4(type)		( ((type & TNET_SOCKET_TYPE_IPV4) ==  TNET_SOCKET_TYPE_IPV4) )
 #define TNET_SOCKET_TYPE_IS_IPV6(type)		( ((type & TNET_SOCKET_TYPE_IPV6) ==  TNET_SOCKET_TYPE_IPV6) )
+#define TNET_SOCKET_TYPE_IS_IPV46(type)		( TNET_SOCKET_TYPE_IS_IPV4(type) && TNET_SOCKET_TYPE_IS_IPV6(type) )
 
 #define TNET_SOCKET_TYPE_IS_IPSEC(type)		( ((type & TNET_SOCKET_TYPE_IPSEC) ==  TNET_SOCKET_TYPE_IPSEC) )
 
@@ -122,8 +133,10 @@ tnet_socket_type_t;
 
 #define TNET_SOCKET_TYPE_UNSET(type, OP)		(type = TNET_SOCKET_TYPE_IS_##OP(type) ? type ^= TNET_SOCKET_TYPE_##OP : type)
 
-#define TNET_SOCKET_TYPE_SET_IPV4(type)	(type = TNET_SOCKET_TYPE_IS_IPV6(type) ? (type ^TNET_SOCKET_TYPE_IPV6)|TNET_SOCKET_TYPE_IPV4 : type)
-#define TNET_SOCKET_TYPE_SET_IPV6(type)	(type = TNET_SOCKET_TYPE_IS_IPV4(type) ? (type ^TNET_SOCKET_TYPE_IPV4)|TNET_SOCKET_TYPE_IPV6 : type)
+#define TNET_SOCKET_TYPE_SET_IPV4(type)		(type |= TNET_SOCKET_TYPE_IPV4)
+#define TNET_SOCKET_TYPE_SET_IPV4Only(type)	(type = TNET_SOCKET_TYPE_IS_IPV6(type) ? (type ^TNET_SOCKET_TYPE_IPV6)|TNET_SOCKET_TYPE_IPV4 : type)
+#define TNET_SOCKET_TYPE_SET_IPV6(type)		(type |= TNET_SOCKET_TYPE_IPV6)
+#define TNET_SOCKET_TYPE_SET_IPV6Only(type)	(type = TNET_SOCKET_TYPE_IS_IPV4(type) ? (type ^TNET_SOCKET_TYPE_IPV4)|TNET_SOCKET_TYPE_IPV6 : type)
 
 #define TNET_SOCKET_TYPE_SET_IPSEC(type)	(type |=TNET_SOCKET_TYPE_IPSEC)
 

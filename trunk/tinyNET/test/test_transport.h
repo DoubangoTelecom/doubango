@@ -113,7 +113,7 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 
 	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
 		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
-		tnet_transport_remove_socket(transport, fd);
+		tnet_transport_remove_socket(transport, &fd);
 		return;
 	}
 
@@ -158,7 +158,7 @@ int test_transport_udp_ipv4(tnet_transport_handle_t *transport)
 
 	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
 		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
-		tnet_transport_remove_socket(transport, fd);
+		tnet_transport_remove_socket(transport, &fd);
 		return -3;
 	}
 

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_action.h
  * @brief SIP action.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -41,7 +41,7 @@
 //=================================================================================================
 //	SIP action object definition
 //
-static void* tsip_action_create(void * self, va_list * app)
+static tsk_object_t* tsip_action_create(tsk_object_t * self, va_list * app)
 {
 	tsip_action_t *action = self;
 	if(action){
@@ -95,7 +95,7 @@ bail:
 	return self;
 }
 
-static void* tsip_action_destroy(void * self)
+static tsk_object_t* tsip_action_destroy(tsk_object_t * self)
 { 
 	tsip_action_t *action = self;
 	if(action){

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_transport.c
  * @brief Network transport layer.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -59,18 +59,6 @@ int tnet_transport_start(tnet_transport_handle_t* handle)
 	}
 
 	return ret;
-}
-
-int tnet_transport_isready(const tnet_transport_handle_t *handle)
-{
-	if(handle){
-		const tnet_transport_t *transport = handle;
-		return (TSK_RUNNABLE(transport)->running && transport->active);
-	}
-	else{
-		TSK_DEBUG_ERROR("NULL transport object.");
-		return 0;
-	}
 }
 
 int tnet_transport_issecure(const tnet_transport_handle_t *handle)
@@ -129,7 +117,7 @@ tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle
 {
 	if(handle){
 		const tnet_transport_t *transport = handle;
-		return transport->master->type;
+		return transport->type;
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
@@ -141,8 +129,8 @@ tnet_socket_type_t tnet_transport_get_type(const tnet_transport_handle_t *handle
 * Connects a socket.
 * @param handle The transport to use to connect() the socket. The new socket will be managed by this transport.
 * @param host The remote @a host to connect() to.
-* @pram type The remote @a port to connect() to.
-* @type The type of the socket to use to connect() to the remote @a host.
+* @param port The remote @a port to connect() to.
+* @param type The type of the socket to use to connect() to the remote @a host.
 * @retval The newly connected socket. For non-blocking sockets you should use @ref tnet_sockfd_waitUntilWritable to check
 * the socket for writability.
 * @sa tnet_sockfd_waitUntilWritable.
@@ -170,6 +158,15 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u]", host, port);
 		goto bail;
 	}
+	else if(TNET_SOCKET_TYPE_IS_IPV46(type)){
+		/* Update the type (unambiguously) */
+		if(to.ss_family == AF_INET6){
+			TNET_SOCKET_TYPE_SET_IPV6Only(type);
+		}
+		else{
+			TNET_SOCKET_TYPE_SET_IPV4Only(type);
+		}
+	}
 	
 	/*
 	* STREAM ==> create new socket and connect it to the remote host.
@@ -177,7 +174,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	*/
 	if(TNET_SOCKET_TYPE_IS_STREAM(type)){		
 		/* Create client socket descriptor. */
-		if(status = tnet_sockfd_init(transport->master->ip, TNET_SOCKET_PORT_ANY, type, &fd)){
+		if(status = tnet_sockfd_init(transport->local_ip, TNET_SOCKET_PORT_ANY, type, &fd)){
 			TSK_DEBUG_ERROR("Failed to create new sockfd.");
 			goto bail;
 		}
@@ -306,8 +303,17 @@ static void* tnet_transport_create(void * self, va_list * app)
 			transport->description = tsk_strdup(description);
 		}
 		
+		transport->type = type;
+
 		transport->master = TNET_SOCKET_CREATE(host, port, type);
 		transport->context = TNET_TRANSPORT_CONTEXT_CREATE();
+
+		if(TNET_SOCKET_TYPE_IS_IPV46(transport->type)){
+			transport->local_ip = tsk_strdup(host); /* FQDN */
+		}
+		else{
+			transport->local_ip = tsk_strdup(transport->master->ip); /* IP address */
+		}
 	}
 	return self;
 }
@@ -321,6 +327,7 @@ static void* tnet_transport_destroy(void * self)
 		TSK_OBJECT_SAFE_FREE(transport->master);
 		TSK_OBJECT_SAFE_FREE(transport->context);
 		TSK_FREE(transport->description);
+		TSK_FREE(transport->local_ip);
 
 		// tls
 		TSK_FREE(transport->tls.ca);
@@ -336,7 +343,7 @@ static const tsk_object_def_t tnet_transport_def_s =
 	sizeof(tnet_transport_t),
 	tnet_transport_create, 
 	tnet_transport_destroy,
-	0, 
+	tsk_null, 
 };
 const void *tnet_transport_def_t = &tnet_transport_def_s;
 

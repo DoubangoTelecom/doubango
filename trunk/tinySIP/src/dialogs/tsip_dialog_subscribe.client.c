@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog_subscribe.client.c
  * @brief SIP dialog SUBSCRIBE (Client side) as per RFC 3265.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -309,9 +309,12 @@ int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 */
 int tsip_dialog_subscribe_Started_2_Trying_X_subscribe(va_list *app)
 {
-	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
-	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
+	tsip_dialog_subscribe_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_subscribe_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
 
 	TSIP_DIALOG(self)->running = tsk_true;
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);

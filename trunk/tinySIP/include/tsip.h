@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip.h
  * @brief SIP (RFC 3261) and 3GPP IMS (TS 24.229) implementation.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -58,6 +58,9 @@ typedef void tsip_stack_handle_t;
 
 typedef enum tsip_stack_param_type_e
 {
+	pname_null = tsk_null,
+#define TSIP_STACK_SET_NULL()							pname_null
+
 	/* Identity */
 	pname_display_name,
 	pname_public_identity,
@@ -120,8 +123,6 @@ typedef enum tsip_stack_param_type_e
 
 	/* QoS */
 
-	pname_null,
-#define TSIP_STACK_SET_NULL()							pname_null
 }
 tsip_stack_param_type_t;
 

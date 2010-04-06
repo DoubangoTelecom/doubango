@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_runnable.c
  * @brief Base class for runnable object.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -106,6 +106,8 @@ int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 		// Problem: When you try to stop the thread before it start
 		// Will be done by "TSK_RUNNABLE_RUN_BEGIN" which is called into the thread
 		//self->running = tsk_true;
+
+		self->started = tsk_true;
 	}
 	return ret;
 }
@@ -125,9 +127,21 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 			return -2;
 		}
 		else if(!self->running) {
+
+			if(self->started){
+				size_t count = 0;
+				/* Thread is started but not running ==> Give it time.*/
+				while(++count <= 5){
+					tsk_thread_sleep(count * 200);
+					if(self->running){
+						goto stop;
+					}
+				}
+			}
 			return -3;
 		}
 
+stop:
 		self->running = tsk_false;
 		tsk_semaphore_increment(self->semaphore);
 
@@ -137,6 +151,8 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 			return ret;
 		}
 		tsk_runnable_deinit(self);
+
+		self->started = tsk_false;
 	}
 	return ret;
 }

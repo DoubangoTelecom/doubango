@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_transport.h
  * @brief Network transport layer.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -75,7 +75,6 @@ tnet_transport_event_t;
 typedef int (*tnet_transport_cb_f)(const tnet_transport_event_t* e);
 
 TINYNET_API int tnet_transport_start(tnet_transport_handle_t* transport);
-TINYNET_API int tnet_transport_isready(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_issecure(const tnet_transport_handle_t *handle);
 TINYNET_API const char* tnet_transport_get_description(const tnet_transport_handle_t *handle);
 TINYNET_API int tnet_transport_get_ip_n_port(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
@@ -85,7 +84,7 @@ TINYNET_API int tnet_transport_isconnected(const tnet_transport_handle_t *handle
 TINYNET_API int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd);
 TINYNET_API const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd);
 TINYNET_API int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient);
-TINYNET_API int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd);
+TINYNET_API int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t* fd);
 TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port, tnet_socket_type_t type);
 #define tnet_transport_connectto_2(handle, host, port) tnet_transport_connectto(handle, host, port, tnet_transport_get_type(handle))
 TINYNET_API size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size);
@@ -100,12 +99,13 @@ typedef struct tnet_transport_s
 {
 	TSK_DECLARE_RUNNABLE;
 
+	tnet_socket_type_t type;
+	char* local_ip;
 	tnet_socket_t *master;
 
 	void *context;
 
 	unsigned connected:1;
-	unsigned active:1;
 	void* mainThreadId[1];
 
 	char *description;

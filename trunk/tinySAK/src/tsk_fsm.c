@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
  * @brief Finite-state machine (FSM) implementation.
  * @sa http://en.wikipedia.org/wiki/Finite-state_machine.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -83,7 +83,7 @@ int tsk_fsm_set(tsk_fsm_t* self, ...)
 * @param callbackdata Opaque data (user-data) to pass to the callback function.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated callback, const void* callbackdata)
+int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated_f callback, const void* callbackdata)
 {
 	if(self){
 		self->callback_term = callback;

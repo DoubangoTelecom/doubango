@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_utils.c
  * @brief Network utility functions.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -832,14 +832,13 @@ int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_
 
 	/* hints address info structure */
 	memset(&hints, 0, sizeof(hints));
-	hints.ai_family = TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET;
+	hints.ai_family =  TNET_SOCKET_TYPE_IS_IPV46(type) ? AF_UNSPEC : (TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET);
 	hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(type) ? SOCK_STREAM : SOCK_DGRAM;
 	hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(type) ? IPPROTO_TCP : IPPROTO_UDP;
 	hints.ai_flags = AI_PASSIVE;
 
 	/* Performs getaddrinfo */
-	if((status = tnet_getaddrinfo(host, p, &hints, &result)))
-	{
+	if((status = tnet_getaddrinfo(host, p, &hints, &result))){
 		TNET_PRINT_LAST_ERROR("getaddrinfo have failed.");
 		goto bail;
 	}
@@ -847,22 +846,26 @@ int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_
 	/* Find our address. */
 	for(ptr = result; ptr; ptr = ptr->ai_next)
 	{
-		if(ptr->ai_family == hints.ai_family && ptr->ai_socktype == hints.ai_socktype && ptr->ai_protocol == hints.ai_protocol)
-		{
-			/* duplicate addrinfo ==> Bad idea
-			*ai = tsk_calloc(1, sizeof (struct addrinfo));
-			memcpy (*ai, ptr, sizeof (struct addrinfo));
-			(*ai)->ai_addr = tsk_calloc(1, ptr->ai_addrlen);
-			memcpy((*ai)->ai_addr, ptr->ai_addr, ptr->ai_addrlen);
-			(*ai)->ai_addrlen = ptr->ai_addrlen;
-			(*ai)->ai_next = 0;
-			(*ai)->ai_canonname = 0;*/
+		/* Only IPv4 and IPv6 are supported */
+		if(ptr->ai_family != AF_INET6 && ptr->ai_family != AF_INET){
+			continue;
+		}
+		/* duplicate addrinfo ==> Bad idea
+		*ai = tsk_calloc(1, sizeof (struct addrinfo));
+		memcpy (*ai, ptr, sizeof (struct addrinfo));
+		(*ai)->ai_addr = tsk_calloc(1, ptr->ai_addrlen);
+		memcpy((*ai)->ai_addr, ptr->ai_addr, ptr->ai_addrlen);
+		(*ai)->ai_addrlen = ptr->ai_addrlen;
+		(*ai)->ai_next = 0;
+		(*ai)->ai_canonname = 0;*/
 
-			if(ai_addr)memcpy(ai_addr, ptr->ai_addr, ptr->ai_addrlen);
-			if(ai_family) *ai_family = ptr->ai_family;
-			if(ai_socktype) *ai_socktype = ptr->ai_socktype;
-			if(ai_protocol) *ai_protocol = ptr->ai_protocol;
-			
+		if(ai_addr)memcpy(ai_addr, ptr->ai_addr, ptr->ai_addrlen);
+		if(ai_family) *ai_family = ptr->ai_family;
+		if(ai_socktype) *ai_socktype = ptr->ai_socktype;
+		if(ai_protocol) *ai_protocol = ptr->ai_protocol;
+		
+		/* We prefer IPv4 but IPv6 can also work */
+		if(ptr->ai_family == AF_INET){
 			break;
 		}
 	}
@@ -886,8 +889,7 @@ int tnet_sockaddr_init(const char *host, tnet_port_t port, tnet_socket_type_t ty
 	int status;
 	struct sockaddr_storage ai_addr;
 
-	if((status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, 0, 0, 0)))
-	{
+	if((status = tnet_sockaddrinfo_init(host, port, type, &ai_addr, 0, 0, 0))){
 		return status;
 	}
 	

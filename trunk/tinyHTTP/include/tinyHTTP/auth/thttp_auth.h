@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,36 +22,29 @@
 /**@file thttp_auth.h
  * @brief HTTP basic/digest authetication (RFC 2617) implementations.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #ifndef TINYHTTP_THTTP_AUTH_H
 #define TINYHTTP_THTTP_AUTH_H
 
-#include "tinyhttp_config.h"
+#include "tinyHTTP_config.h"
 
 #include "tsk_md5.h"
 #include "tsk_buffer.h"
 
-/**@ingroup thttp_auth_group
-* @def nonce_count_t
-*/
-/**@ingroup thttp_auth_group
-* @def THTTP_NCOUNT_2_STRING
-*/
 THTTP_BEGIN_DECLS
 
 typedef char nonce_count_t[9];
-#define THTTP_NCOUNT_2_STRING(nc_int32, nc_string)						\
-	{																	\
-		size_t i = 7;													\
-		do																\
-		{																\
+#define THTTP_NCOUNT_2_STRING(nc_int32, nc_string)							\
+	{																		\
+		size_t i = 7;														\
+		do{																	\
 			nc_string[7-i]= "0123456789abcdef"[(nc_int32 >> i*4) & 0xF];	\
-		}																\
-		while(i--);														\
-		nc_string[8] = '\0';											\
+		}																	\
+		while(i--);															\
+		nc_string[8] = '\0';												\
 	}
 
 TINYHTTP_API size_t thttp_auth_basic_response(const char* userid, const char* password, char** response);

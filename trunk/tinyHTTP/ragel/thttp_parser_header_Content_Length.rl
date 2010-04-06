@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,17 +23,14 @@
 /**@file thttp_header_Content_Length.c
  * @brief HTTP Content-Length header.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyhttp/headers/thttp_header_Content_Length.h"
+#include "tinyHTTP/headers/thttp_header_Content_Length.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
-
-/**@defgroup thttp_header_Content_Length_group HTTP Content_Length header.
-*/
 
 /***********************************
 *	Ragel state machine.
@@ -76,6 +73,8 @@ int thttp_header_Content_Length_tostring(const void* header, tsk_buffer_t* outpu
 	return -1;
 }
 
+/**@ingroup thttp_header_group
+*/
 thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *data, size_t size)
 {
 	int cs = 0;

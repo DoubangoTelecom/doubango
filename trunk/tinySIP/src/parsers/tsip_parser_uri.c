@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,7 +25,7 @@
 /**@file tsip_parser_uri.c
  * @brief SIP/SIPS/TEL URI parser.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -546,7 +546,7 @@ _eof_trans:
 	{te = p+1;{
 								TSK_SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6){
-									tsk_strunquoteex(&uri->host, '[', ']');
+									tsk_strunquote_2(&uri->host, '[', ']');
 								}
 							}}
 	break;
@@ -568,7 +568,7 @@ _eof_trans:
 	{te = p;p--;{
 								TSK_SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6){
-									tsk_strunquoteex(&uri->host, '[', ']');
+									tsk_strunquote_2(&uri->host, '[', ']');
 								}
 							}}
 	break;
@@ -596,7 +596,7 @@ _eof_trans:
 	{{p = ((te))-1;}{
 								TSK_SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6){
-									tsk_strunquoteex(&uri->host, '[', ']');
+									tsk_strunquote_2(&uri->host, '[', ']');
 								}
 							}}
 	break;

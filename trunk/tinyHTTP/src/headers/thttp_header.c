@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,13 +23,16 @@
 /**@file thttp_header.c
  * @brief Defines a HTTP header (field-name: field-value).
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinyHTTP/headers/thttp_header.h"
 
 #include "tinyHTTP/headers/thttp_header_Dummy.h"
+
+/**@defgroup thttp_header_group HTTP Headers.
+*/
 
 const char *thttp_header_get_name(thttp_header_type_t type)
 {
@@ -77,7 +80,9 @@ char thttp_header_get_param_separator(const thttp_header_t *self)
 	return 0;
 }
 
-int thttp_header_tostring(const thttp_header_t *self, tsk_buffer_t *output)
+/**@ingroup thttp_header_group
+*/
+int thttp_header_serialize(const thttp_header_t *self, tsk_buffer_t *output)
 {
 	int ret = -1;
 	static const char* hname;
@@ -112,5 +117,20 @@ int thttp_header_tostring(const thttp_header_t *self, tsk_buffer_t *output)
 		/* CRLF */
 		tsk_buffer_append(output, "\r\n", 2);
 	}
+	return ret;
+}
+
+/**@ingroup thttp_header_group
+*/
+char* thttp_header_tostring(const thttp_header_t *self)
+{
+	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	char* ret = tsk_null;
+
+	if(!thttp_header_serialize(self, output)){
+		ret = tsk_strndup(output->data, output->size);
+	}
+
+	TSK_OBJECT_SAFE_FREE(output);
 	return ret;
 }

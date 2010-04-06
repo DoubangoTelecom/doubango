@@ -46,14 +46,14 @@
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
-#define RUN_TEST_SOCKETS	0 /* FIXME: Android */
+#define RUN_TEST_SOCKETS	1 /* FIXME: Android */
 #define RUN_TEST_TRANSPORT	0
 #define RUN_TEST_AUTH		0
 #define RUN_TEST_STUN		0
 #define RUN_TEST_NAT		0
 #define RUN_TEST_IFACES		0
 #define RUN_TEST_DNS		0
-#define RUN_TEST_DHCP		1
+#define RUN_TEST_DHCP		0
 #define RUN_TEST_DHCP6		0
 #define RUN_TEST_TLS		0
 

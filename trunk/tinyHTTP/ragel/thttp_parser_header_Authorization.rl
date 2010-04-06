@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,22 +23,19 @@
 /**@file thttp_header_Authorization.c
  * @brief HTTP Authorization header.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyhttp/headers/thttp_header_Authorization.h"
+#include "tinyHTTP/headers/thttp_header_Authorization.h"
 
-#include "tinyhttp/parsers/thttp_parser_url.h"
+#include "tinyHTTP/parsers/thttp_parser_url.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 #include "tsk_time.h"
 
 #include <string.h>
-
-/**@defgroup thttp_header_Authorization_group HTTP Proxy-Authenticate header.
-*/
 
 /***********************************
 *	Ragel state machine.
@@ -215,6 +212,8 @@ int thttp_header_Authorization_tostring(const void* header, tsk_buffer_t* output
 	return -1;
 }
 
+/**@ingroup thttp_header_group
+*/
 thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -237,6 +236,8 @@ thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data,
 	return hdr_Authorization;
 }
 
+/**@ingroup thttp_header_group
+*/
 thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const char *data, size_t size)
 {
 	return thttp_header_Authorization_parse(data, size);
