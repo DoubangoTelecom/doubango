@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet.h
  * @brief Protocol agnostic socket.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -126,7 +126,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 
 		/* hints address info structure */
 		memset(&hints, 0, sizeof(hints));
-		hints.ai_family = TNET_SOCKET_TYPE_IS_IPV6(sock->type) ? AF_INET6 : AF_INET;
+		hints.ai_family = TNET_SOCKET_TYPE_IS_IPV46(sock->type) ? AF_UNSPEC : (TNET_SOCKET_TYPE_IS_IPV6(sock->type) ? AF_INET6 : AF_INET);
 		hints.ai_socktype = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? SOCK_STREAM : SOCK_DGRAM;
 		hints.ai_protocol = TNET_SOCKET_TYPE_IS_STREAM(sock->type) ? IPPROTO_TCP : IPPROTO_UDP;
 		hints.ai_flags = AI_PASSIVE
@@ -145,12 +145,13 @@ static void* tnet_socket_create(void * self, va_list * app)
 		for(ptr = result; ptr; ptr = ptr->ai_next)
 		{
 			sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+			if(ptr->ai_family != AF_INET6 && ptr->ai_family != AF_INET){
+				continue;
+			}
 			
-			if(bindsocket)
-			{
+			if(bindsocket){
 				/* Bind the socket */
-				if((status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen)))
-				{
+				if((status = bind(sock->fd, ptr->ai_addr, ptr->ai_addrlen))){
 					TNET_PRINT_LAST_ERROR("bind have failed.");
 					tnet_socket_close(sock);
 					continue;
@@ -174,6 +175,13 @@ static void* tnet_socket_create(void * self, va_list * app)
 //				}
 			}
 
+			/* sets the real socket type (if ipv46) */
+			if(ptr->ai_family == AF_INET6){
+				TNET_SOCKET_TYPE_SET_IPV6Only(sock->type);
+			}
+			else{
+				TNET_SOCKET_TYPE_SET_IPV4Only(sock->type);
+			}
 			break;
 		}
 		

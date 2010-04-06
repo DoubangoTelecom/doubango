@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
  * @brief Dynamic Host Configuration Protocol for IPv6 (DHCPv6) as per RFC 3315.
  *		  Also implement: RFC 3319, 3633, 3646, 3736, 4242, 5007 ...
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */

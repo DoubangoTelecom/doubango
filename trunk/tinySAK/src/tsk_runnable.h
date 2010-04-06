@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_runnable.h
  * @brief Base class for runnable object.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -112,6 +112,7 @@ typedef struct tsk_runnable_s
 	tsk_semaphore_handle_t *semaphore;
 	
 	tsk_bool_t running;
+	tsk_bool_t started;
 	tsk_bool_t initialized;
 	
 	tsk_list_t *objects;

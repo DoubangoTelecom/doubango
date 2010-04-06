@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,7 +24,7 @@
 /**@file tnet_dns_resolvconf.c
  * @brief Parser for "/etc/resolv.conf" file to retrive DNS servers.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -47,9 +47,9 @@
 
 /** Gets list of DNS servers from a conf file.
 * @param path Path of the conf file from which to retrieve the DNS servers.
-* should be @a "/etc/resolv.conf". You can adjust the value by modifying @ref TNET_RESOLV_CONF_PATH.<br />
-* If you are using <b>Android</b> and the resolv.conf file is missing, then run the following line in a command window: <br />
-* <i>ln -s /private/var/run/resolv.conf /etc/resolv.conf</i><br /> If this fail, then try to manually add the file.
+* should be @a "/etc/resolv.conf". You can adjust the value by modifying @ref TNET_RESOLV_CONF_PATH.<br>
+* If you are using <b>Android</b> and the resolv.conf file is missing, then run the following line in a command window: <br>
+* <i>ln -s /private/var/run/resolv.conf /etc/resolv.conf</i><br> If this fails, then try to manually add the file.
 * @retval List of DNS servers.
 */
 tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)

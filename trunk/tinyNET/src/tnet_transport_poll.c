@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_transport_poll.c
  * @brief Network transport layer using polling.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -132,13 +132,13 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 
 /* Remove socket
  */
-int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t *fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
 	int ret = -1;
 	size_t i;
-	int found = 0;
+	tsk_bool_t found = tsk_false;
 	
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
@@ -151,9 +151,10 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	}
 	
 	for(i=0; i<context->count; i++){
-		if(context->sockets[i]->fd == fd){
+		if(context->sockets[i]->fd == *fd){
 			removeSocket(i, context);
-			found = 1;
+			found = tsk_true;
+			*fd = TNET_INVALID_FD;
 			break;
 		}
 	}
@@ -417,9 +418,6 @@ void *tnet_transport_mainthread(void *param)
 	/* Add the master socket to the context. */
 	addSocket(transport->master->fd, transport->master->type, transport, 1, 0);
 
-	/* Set transport to active */
-	transport->active = 1;
-
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 
 	while(TSK_RUNNABLE(transport)->running)
@@ -434,9 +432,10 @@ void *tnet_transport_mainthread(void *param)
 			goto bail;
 		}
 		
-		/*
-		*	
-		*/
+		/* lock context */
+		tsk_safeobj_lock(context);
+
+		/* == == */
 		for(i=0; i<context->count; i++)
 		{
 			if(!context->ufds[i].revents || context->ufds[i].fd == context->pipeR){
@@ -552,11 +551,15 @@ void *tnet_transport_mainthread(void *param)
 
 
 		}/* for */
-	}
+
+done:
+		/* unlock context */
+		tsk_safeobj_unlock(context);
+
+	} /* while */
 
 bail:
 	
-	transport->active = 0;
 	
 	TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	return 0;
@@ -601,7 +604,7 @@ static const tsk_object_def_t tnet_transport_context_def_s =
 sizeof(transport_context_t),
 transport_context_create, 
 transport_context_destroy,
-0, 
+tsk_null, 
 };
 const void *tnet_transport_context_def_t = &tnet_transport_context_def_s;
 

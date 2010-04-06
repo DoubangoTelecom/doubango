@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,14 +23,14 @@
 /**@file thttp_header.h
  * @brief Defines a HTTP header (field-name: field-value).
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #ifndef TINYHTTP_HEADER_H
 #define TINYHTTP_HEADER_H
 
-#include "tinyhttp_config.h"
+#include "tinyHTTP_config.h"
 
 #include "tsk_ragel_state.h"
 
@@ -88,7 +88,8 @@ typedef tsk_list_t thttp_headers_L_t; /**< List of @ref thttp_header_t elements.
 TINYHTTP_API const char *thttp_header_get_name(thttp_header_type_t type);
 TINYHTTP_API const char *thttp_header_get_nameex(const thttp_header_t *self);
 TINYHTTP_API char thttp_header_get_param_separator(const thttp_header_t *self);
-TINYHTTP_API int thttp_header_tostring(const thttp_header_t *self, tsk_buffer_t *output);
+TINYHTTP_API int thttp_header_serialize(const thttp_header_t *self, tsk_buffer_t *output);
+TINYHTTP_API char* thttp_header_tostring(const thttp_header_t *self);
 
 THTTP_END_DECLS
 

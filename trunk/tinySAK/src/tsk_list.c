@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_list.c
  * @brief Linked list.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -217,8 +217,7 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 	if(list)
 	{
 		item = list->head;
-		if(list->head)
-		{
+		if(list->head){
 			if(list->head->next){
 				list->head = list->head->next;
 			}
@@ -239,6 +238,7 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 */
 void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 {
+	// do not test
 	int first = !list->head;
 
 	if(back && list->tail){
@@ -477,6 +477,8 @@ static tsk_object_t* tsk_list_destroy(tsk_object_t *self)
 	tsk_list_t *list = self;
 	if(list)
 	{
+#if 0
+		/* Not thread-safe */
 		tsk_list_item_t* next = tsk_null;
 		tsk_list_item_t* curr = list->head;
 
@@ -485,15 +487,20 @@ static tsk_object_t* tsk_list_destroy(tsk_object_t *self)
 			/*curr =*/ tsk_object_unref(curr);
 			curr = next;
 		}
+#else
+		/* Thread-safe method */
+		tsk_list_item_t* item;
+		while((item = tsk_list_pop_first_item(list))){
+			tsk_object_unref(item);
+		}
+#endif
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("Cannot free an uninitialized list");
 	}
 	return list;
 }
 
-//TSK_DECLARE_DEF(tsk, list);
 static const tsk_object_def_t tsk_list_def_s =
 {
 	sizeof(tsk_list_t),

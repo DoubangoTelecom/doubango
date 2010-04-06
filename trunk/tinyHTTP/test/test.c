@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,9 +25,9 @@
 #include <assert.h>
 
 #include "tsk.h"
+#include "tnet.h"
 
 #include "thttp.h"
-#include "tinyHTTP/thttp_operation.h"
 #include "tinyHTTP/thttp_message.h"
 #include "tinyHTTP/auth/thttp_auth.h"
 
@@ -51,7 +51,7 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
-		thttp_global_init();
+		tnet_startup();
 
 #if LOOP
 	for(;;)
@@ -79,7 +79,7 @@ int main()
 
 	}
 
-	thttp_global_deinit();
+	tnet_cleanup();
 
 	return 0;
 }

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file thttp_event.c
  * @brief HTTP/HTTPS event.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -51,7 +51,7 @@ static void* thttp_event_create(void * self, va_list * app)
 	if(httpevent)
 	{		
 		httpevent->type = va_arg(*app, thttp_event_type_t);
-		httpevent->opid = va_arg(*app, thttp_operation_id_t);
+		httpevent->session = va_arg(*app, const thttp_session_handle_t*);
 		httpevent->description = tsk_strdup( va_arg(*app, const char *) );
 		httpevent->message = tsk_object_ref((void*)va_arg(*app, thttp_message_t *));
 	}
@@ -69,16 +69,11 @@ static void* thttp_event_destroy(void * self)
 	return self;
 }
 
-static int thttp_event_cmp(const void *obj1, const void *obj2)
-{
-	return -1;
-}
-
 static const tsk_object_def_t thttp_event_def_s = 
 {
 	sizeof(thttp_event_t),
 	thttp_event_create, 
 	thttp_event_destroy,
-	thttp_event_cmp, 
+	tsk_null, 
 };
 const void *thttp_event_def_t = &thttp_event_def_s;

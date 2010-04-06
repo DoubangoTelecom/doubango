@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog_layer.c
  * @brief SIP dialog layer.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -228,7 +228,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	}
 	else{		
 		if(TSIP_MESSAGE_IS_REQUEST(message)){
-			tsip_ssession_t* ss = tsip_ssession_createex(self->stack, message);
+			tsip_ssession_t* ss = tsip_ssession_create_2(self->stack, message);
 			tsip_dialog_t* newdialog = tsk_null;
 			
 			// The incoming request will be passed to the dialog by the server transaction (tsip_dialog_i_msg)

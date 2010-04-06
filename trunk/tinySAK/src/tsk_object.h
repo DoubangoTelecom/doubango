@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_object.h
  * @brief Base object implementation.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -43,6 +43,7 @@ TSK_BEGIN_DECLS
 typedef void tsk_object_t;
 
 /**@ingroup tsk_object_group
+* @def TSK_OBJECT_SAFE_FREE
 * Safely free any well-defined object. If the reference count of the object was equal to 1 then this
  * 	object will be freed otherwise the refrence counter will be decremented. 
  *	In all case this operation will set the pointer (the object itself) to NULL.

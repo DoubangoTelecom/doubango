@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,32 +23,23 @@
 /**@file thttp_header_Content_Length.h
  * @brief HTTP header 'Content-Length'.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #ifndef _THTTP_HEADER_CONTENT_LENGTH_H_
 #define _THTTP_HEADER_CONTENT_LENGTH_H_
 
-#include "tinyhttp_config.h"
-#include "tinyhttp/headers/thttp_header.h"
+#include "tinyHTTP_config.h"
+#include "tinyHTTP/headers/thttp_header.h"
 
 THTTP_BEGIN_DECLS
-
-/**@def THTTP_HEADER_CONTENT_LENGTH_CREATE
-* Creates new http 'Content-Length' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 
 #define THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(length)	thttp_header_Content_Length_def_t, (uint32_t)length
 #define THTTP_HEADER_CONTENT_LENGTH_CREATE(length)	tsk_object_new(THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(length))
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
-///
-/// @brief	HTTP header 'Content-Length'.
-/// @author	Mamadou
-/// @date	12/3/2009
+/// HTTP header 'Content-Length'.
 ///
 /// @par ABNF: Content-Length / l
 /// Content-Length	= 	"Content-Length" HCOLON 1*DIGIT

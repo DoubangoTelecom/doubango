@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_dialog.c
  * @brief SIP dialog base class as per RFC 3261 subclause 17.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -50,7 +50,7 @@
 #include "tsk_debug.h"
 #include "tsk_time.h"
 
-int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, int acceptNewVector);
+int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, tsk_bool_t acceptNewVector);
 int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request);
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
@@ -224,7 +224,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 			char* request_uri = tsip_uri_tostring(request->uri, tsk_false, tsk_false);
 			tsip_header_t* auth_hdr = tsip_challenge_create_empty_header_authorization(TSIP_DIALOG_GET_STACK(self)->private_identity, realm, request_uri);
 			tsip_message_add_header(request, auth_hdr);
-			tsk_object_unref(auth_hdr), auth_hdr = 0;
+			tsk_object_unref(auth_hdr), auth_hdr = tsk_null;
 			TSK_FREE(request_uri);
 		}
 	}
@@ -238,7 +238,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 			auth_hdr = tsip_challenge_create_header_authorization(challenge, request);
 			if(auth_hdr){
 				tsip_message_add_header(request, auth_hdr);
-				tsk_object_unref(auth_hdr), auth_hdr = 0;
+				tsk_object_unref(auth_hdr), auth_hdr = tsk_null;
 			}
 		}
 	}
@@ -509,7 +509,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 		*/
 		if(code == 401 || code == 407 || code == 421 || code == 494)
 		{
-			int acceptNewVector;
+			tsk_bool_t acceptNewVector;
 
 			/* 3GPP IMS - Each authentication vector is used only once.
 			*	==> Re-registration/De-registration ==> Allow 401/407 challenge.
@@ -632,7 +632,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 
 	for(i =0; (WWW_Authenticate = (const tsip_header_WWW_Authenticate_t*)tsip_message_get_headerAt(response, tsip_htype_WWW_Authenticate, i)); i++)
 	{
-		int isnew = 1;
+		tsk_bool_t isnew = tsk_true;
 
 		tsk_list_foreach(item, self->challenges)
 		{
@@ -654,7 +654,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 				}
 				else
 				{
-					isnew = 0;
+					isnew = tsk_false;
 					continue;
 				}
 			}
@@ -664,7 +664,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 		if(isnew)
 		{
 			if((challenge = TSIP_CHALLENGE_CREATE(TSIP_DIALOG_GET_STACK(self),
-					0, 
+					tsk_false, 
 					WWW_Authenticate->scheme, 
 					WWW_Authenticate->realm, 
 					WWW_Authenticate->nonce, 
@@ -680,7 +680,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 	
 	for(i=0; (Proxy_Authenticate = (const tsip_header_Proxy_Authenticate_t*)tsip_message_get_headerAt(response, tsip_htype_Proxy_Authenticate, i)); i++)
 	{
-		int isnew = 1;
+		tsk_bool_t isnew = tsk_true;
 
 		tsk_list_foreach(item, self->challenges)
 		{
@@ -702,7 +702,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 				}
 				else
 				{
-					isnew = 0;
+					isnew = tsk_false;
 					continue;
 				}
 			}
@@ -712,7 +712,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 		if(isnew)
 		{
 			if((challenge = TSIP_CHALLENGE_CREATE(TSIP_DIALOG_GET_STACK(self),
-					1, 
+					tsk_true, 
 					Proxy_Authenticate->scheme, 
 					Proxy_Authenticate->realm, 
 					Proxy_Authenticate->nonce, 

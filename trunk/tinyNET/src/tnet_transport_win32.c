@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tnet_transport_win32.c
  * @brief Network transport layer for WIN32(XP/Vista/7) and WINCE(5.0 or higher) systems.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -162,13 +162,13 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 
 /* Remove socket
 */
-int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd)
+int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t* fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
 	int ret = -1;
 	size_t i;
-	int found = 0;
+	tsk_bool_t found = tsk_false;
 
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
@@ -181,9 +181,10 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	}
 
 	for(i=0; i<context->count; i++){
-		if(context->sockets[i]->fd == fd){
+		if(context->sockets[i]->fd == *fd){
 			removeSocket(i, context);
-			found = 1;
+			found = tsk_true;
+			*fd = TNET_INVALID_FD;
 			break;
 		}
 	}
@@ -417,10 +418,8 @@ void *tnet_transport_mainthread(void *param)
 	int index;
 	
 	/* Start listening */
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
-	{
-		if(tnet_sockfd_listen(transport->master->fd, WSA_MAXIMUM_WAIT_EVENTS))
-		{
+	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
+		if(tnet_sockfd_listen(transport->master->fd, WSA_MAXIMUM_WAIT_EVENTS)){
 			TNET_PRINT_LAST_ERROR("listen have failed.");
 			goto bail;
 		}
@@ -428,22 +427,17 @@ void *tnet_transport_mainthread(void *param)
 
 	/* Add the current transport socket to the context. */
 	addSocket(transport->master->fd, transport->master->type, transport, 1, 0);
-	if(ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)
-	{
+	if(ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR){
 		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
 		goto bail;
 	}
-
-	/* Set transport to active */
-	transport->active = 1;
 
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	
 	while(TSK_RUNNABLE(transport)->running)
 	{
 		/* Wait for multiple events */
-		if((evt = WSAWaitForMultipleEvents(context->count, context->events, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED)
-		{
+		if((evt = WSAWaitForMultipleEvents(context->count, context->events, FALSE, WSA_INFINITE, FALSE)) == WSA_WAIT_FAILED){
 			TNET_PRINT_LAST_ERROR("WSAWaitForMultipleEvents have failed.");
 			goto bail;
 		}
@@ -451,6 +445,9 @@ void *tnet_transport_mainthread(void *param)
 		if(!TSK_RUNNABLE(transport)->running){
 			goto bail;
 		}
+	
+		/* lock context */
+		tsk_safeobj_lock(context);
 
 		/* Get active event and socket */
 		index = (evt - WSA_WAIT_EVENT_0);
@@ -460,6 +457,8 @@ void *tnet_transport_mainthread(void *param)
 		/* Get the network events flags */
 		if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR){
 			TNET_PRINT_LAST_ERROR("WSAEnumNetworkEvents have failed.");
+
+			tsk_safeobj_unlock(context);
 			goto bail;
 		}
 
@@ -470,28 +469,24 @@ void *tnet_transport_mainthread(void *param)
 			
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT", transport->description);
 
-			if(networkEvents.iErrorCode[FD_ACCEPT_BIT])
-			{
+			if(networkEvents.iErrorCode[FD_ACCEPT_BIT]){
 				TNET_PRINT_LAST_ERROR("ACCEPT FAILED.");
-				continue;
+				goto done;
 			}
 			
 			/* Accept the connection */
-			if((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET)
-			{
+			if((fd = WSAAccept(active_socket->fd, NULL, NULL, AcceptCondFunc, (DWORD_PTR)context)) != INVALID_SOCKET){
 				/* Add the new fd to the server context */
 				addSocket(fd, transport->master->type, transport, 1, 0);
-				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
-				{
+				if(WSAEventSelect(fd, context->events[context->count - 1], FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR){
 					removeSocket((context->count - 1), context);
 					TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
-					continue;
+					goto done;
 				}
 			}
-			else
-			{
+			else{
 				TNET_PRINT_LAST_ERROR("ACCEPT FAILED.");
-				continue;
+				goto done;
 			}
 
 			
@@ -508,7 +503,7 @@ void *tnet_transport_mainthread(void *param)
 
 			if(networkEvents.iErrorCode[FD_CONNECT_BIT]){
 				TNET_PRINT_LAST_ERROR("CONNECT FAILED.");
-				continue;
+				goto done;
 			}
 			else{
 				TSK_RUNNABLE_ENQUEUE(transport, event_connected, transport->callback_data, active_socket->fd);
@@ -527,22 +522,22 @@ void *tnet_transport_mainthread(void *param)
 
 			if(networkEvents.iErrorCode[FD_READ_BIT]){
 				TNET_PRINT_LAST_ERROR("READ FAILED.");
-				continue;
+				goto done;
 			}
 
 			/* Retrieve the amount of pending data */
 			if(tnet_ioctlt(active_socket->fd, FIONREAD, &(wsaBuffer.len)) < 0){
 				TNET_PRINT_LAST_ERROR("IOCTLT FAILED.");
-				continue;
+				goto done;
 			}
 
 			if(!wsaBuffer.len){
-				continue;
+				goto done;
 			}
 
 			/* Alloc data */
 			if(!(wsaBuffer.buf = tsk_calloc(wsaBuffer.len, sizeof(uint8_t)))){
-				continue;
+				goto done;
 			}
 
 			/* Receive the waiting data. */
@@ -552,7 +547,7 @@ void *tnet_transport_mainthread(void *param)
 				if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, &wsaBuffer.buf, &len, &isEncrypted))){
 					if(isEncrypted){
 						TSK_FREE(wsaBuffer.buf);
-						continue;
+						goto done;
 					}
 					wsaBuffer.len = len;
 				}
@@ -570,14 +565,14 @@ void *tnet_transport_mainthread(void *param)
 				else if(ret == WSAECONNRESET && TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type)){
 					/* For DGRAM ==> The sent packet gernerated "ICMP Destination/Port unreachable" result. */
 					TSK_FREE(wsaBuffer.buf);
-					continue; // ignore and retry.
+					goto done; // ignore and retry.
 				}
 				else{
 					TSK_FREE(wsaBuffer.buf);
 
 					removeSocket(index, context);
 					TNET_PRINT_LAST_ERROR("WSARecv have failed.");
-					continue;
+					goto done;
 				}
 			}
 			else
@@ -600,7 +595,7 @@ void *tnet_transport_mainthread(void *param)
 
 			if(networkEvents.iErrorCode[FD_WRITE_BIT]){
 				TNET_PRINT_LAST_ERROR("WRITE FAILED.");
-				continue;
+				goto done;
 			}			
 		}
 		
@@ -622,13 +617,16 @@ void *tnet_transport_mainthread(void *param)
 		*/
 		/* WSAResetEvent(active_event); <== DO NOT USE (see above) */
 
+done:
+		/* unlock context */
+		tsk_safeobj_unlock(context);
+
 	} /* while(transport->running) */
 	
 
 bail:
 
-	transport->active = 0;
-	
+
 	TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	return 0;
 }
@@ -668,7 +666,7 @@ static const tsk_object_def_t tnet_transport_context_def_s =
 sizeof(transport_context_t),
 transport_context_create, 
 transport_context_destroy,
-0, 
+tsk_null, 
 };
 const void *tnet_transport_context_def_t = &tnet_transport_context_def_s;
 #endif /* TNET_UNDER_WINDOWS */

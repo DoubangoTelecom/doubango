@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,14 +23,17 @@
 /**@file tnet.c
  * @brief Network stack.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tnet.h"
 #include "tnet_utils.h" 
 
+#include "tsk_time.h"
 #include "tsk_debug.h"
+
+#include <stdlib.h> /* srand */
 
 /** @mainpage TinyNET API Overview
 *
@@ -88,6 +91,9 @@ int tnet_startup()
 	if(__tnet_started){
 		goto bail;
 	}
+
+	// rand()
+	srand((unsigned int) tsk_time_epoch());
 
 	// endianness
 	tnet_isBigEndian = ((*(int8_t *)&word) != 0x21);

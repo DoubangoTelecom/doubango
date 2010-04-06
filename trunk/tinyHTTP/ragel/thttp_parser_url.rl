@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,18 +23,15 @@
 /**@file thttp_parser_url.c
  * @brief HTTP/HTTPS URL parser.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyhttp/parsers/thttp_parser_url.h"
+#include "tinyHTTP/parsers/thttp_parser_url.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
-
-/**@defgroup thttp_parser_url_group HTTP/HTTPS URL parser.
-*/
 
 /***********************************
 *	Ragel state machine.
@@ -91,19 +88,8 @@
 	
 }%%
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	thttp_url_t *thttp_url_parse(const char *data, size_t size)
-///
-/// @brief	Parses HTTP/HTTPS URL. 
-///
-/// @author	Mamadou
-/// @date	12/6/2009
-///
-/// @param [in,out]	data	Data from which to parse the url. 
-/// @param	size			The data size. 
-///
-/// @return	null if it fails, else the http/https/tel url. 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/**@ingroup thttp_url_group
+**/
 thttp_url_t *thttp_url_parse(const char *data, size_t size)
 {
 	int have_port = 0;

@@ -3,7 +3,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -25,13 +25,13 @@
 /**@file thttp_header_WWW_Authenticate.c
  * @brief HTTP WWW-Authenticate header.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyhttp/headers/thttp_header_WWW_Authenticate.h"
+#include "tinyHTTP/headers/thttp_header_WWW_Authenticate.h"
 
-#include "tinyhttp/parsers/thttp_parser_url.h"
+#include "tinyHTTP/parsers/thttp_parser_url.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
@@ -39,14 +39,12 @@
 
 #include <string.h>
 
-/**@defgroup thttp_header_WWW_Authenticate_group HTTP WWW-Authenticate header.
-*/
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 141 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 139 "thttp_parser_header_WWW_Authenticate.rl" */
 
 
 int thttp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
@@ -88,6 +86,8 @@ int thttp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* out
 	return -1;
 }
 
+/**@ingroup thttp_header_group
+*/
 thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char *data, size_t size)
 {
 	int cs = 0;
@@ -6326,85 +6326,85 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 53 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 51 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 58 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 56 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		#//FIXME: Only Digest is supported
 		hdr_WWW_Authenticate->scheme = tsk_strdup("Digest");
 	}
 	break;
 	case 2:
-/* #line 64 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 62 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		THTTP_HEADER(hdr_WWW_Authenticate)->type = thttp_htype_WWW_Authenticate;
 	}
 	break;
 	case 3:
-/* #line 69 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 67 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		THTTP_HEADER(hdr_WWW_Authenticate)->type = thttp_htype_Proxy_Authenticate;
 	}
 	break;
 	case 4:
-/* #line 74 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 72 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->realm);
 		tsk_strunquote(&hdr_WWW_Authenticate->realm);
 	}
 	break;
 	case 5:
-/* #line 80 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 78 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->domain);
 		//tsk_strunquote(&hdr_WWW_Authenticate->domain);
 	}
 	break;
 	case 6:
-/* #line 86 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 84 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->nonce);
 		tsk_strunquote(&hdr_WWW_Authenticate->nonce);
 	}
 	break;
 	case 7:
-/* #line 92 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 90 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->opaque);
 		tsk_strunquote(&hdr_WWW_Authenticate->opaque);
 	}
 	break;
 	case 8:
-/* #line 98 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 96 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		hdr_WWW_Authenticate->stale = tsk_strniequals(tag_start, "true", 4);
 	}
 	break;
 	case 9:
-/* #line 103 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 101 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->algorithm);
 	}
 	break;
 	case 10:
-/* #line 108 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 106 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->qop);
 		//tsk_strunquote(&hdr_WWW_Authenticate->qop);
 	}
 	break;
 	case 11:
-/* #line 114 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 112 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_WWW_Authenticate));
 	}
 	break;
 	case 12:
-/* #line 119 "thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 117 "thttp_parser_header_WWW_Authenticate.rl" */
 	{
 	}
 	break;

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsk_string.h
  * @brief Useful string functions to manipulate strings.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -67,10 +67,11 @@ TINYSAK_API int tsk_sprintf(char** str, const char* format, ...);
 TINYSAK_API void tsk_strupdate(char** str, const char* newval);
 TINYSAK_API void tsk_strtrim_left(char **str);
 TINYSAK_API void tsk_strtrim_right(char **str);
+TINYSAK_API void tsk_strtrim(char **str);
 TINYSAK_API void tsk_strquote(char **str);
-TINYSAK_API void tsk_strquoteex(char **str, char lquote, char rquote);
+TINYSAK_API void tsk_strquote_2(char **str, char lquote, char rquote);
 TINYSAK_API void tsk_strunquote(char **str);
-TINYSAK_API void tsk_strunquoteex(char **str, char lquote, char rquote);
+TINYSAK_API void tsk_strunquote_2(char **str, char lquote, char rquote);
 TINYSAK_API void tsk_itoa(int64_t i, tsk_istr_t *result);
 TINYSAK_API void tsk_strrandom(tsk_istr_t *result);
 TINYSAK_API void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str);

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_action.h
  * @brief SIP action.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -72,14 +72,15 @@ tsip_action_type_t;
 
 typedef enum tsip_action_param_type_e
 {
+	aptype_null = tsk_null,
+
 	aptype_param,
 	aptype_header,
 	aptype_payload,
-	aptype_null = 0
 }
 tsip_action_param_type_t;
 
-#define TSIP_ACTION_SET_PARAM(NAME_STR, VALUE_STR)			saptype_param, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_ACTION_SET_PARAM(NAME_STR, VALUE_STR)			aptype_param, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)			aptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (size_t)PAY_SIZE
 #define TSIP_ACTION_SET_NULL()								aptype_null

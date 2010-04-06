@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_ssession.c
  * @brief SIP session.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -37,7 +37,7 @@
 
 #include "tsk_debug.h"
 
-tsip_ssession_handle_t *tsip_ssession_createex(const tsip_stack_t* stack, const struct tsip_message_s* message)
+tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const struct tsip_message_s* message)
 {
 	tsip_ssession_t* ss = tsk_null;
 
@@ -105,9 +105,10 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list values)
 				}
 		}
 	}
+	return 0;
 
 bail:
-	return 0;
+	return -2;
 }
 
 int tsip_ssession_set(tsip_ssession_handle_t *self, ...)
@@ -116,14 +117,14 @@ int tsip_ssession_set(tsip_ssession_handle_t *self, ...)
 		int ret;
 		va_list params;
 
-		tsip_ssession_t *SSESSION = self;
+		tsip_ssession_t *session = self;
 
-		if(SSESSION->id == TSIP_SSESSION_INVALID_ID){
+		if(session->id == TSIP_SSESSION_INVALID_ID){
 			return -2;
 		}
 		
 		va_start(params, self);
-		ret = __tsip_ssession_set(SSESSION, params);
+		ret = __tsip_ssession_set(session, params);
 		va_end(params);
 		return ret;
 	}

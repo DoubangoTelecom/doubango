@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,7 +23,7 @@
 /**@file tsip_challenge.h
  * @brief SIP authentication challenge.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -47,7 +47,7 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_CHALLENGE_CREATE(stack, isproxy, scheme, realm, nonce, opaque, algorithm, qop)		tsk_object_new(tsip_challenge_def_t, stack, (unsigned)isproxy,(const char*)scheme, (const char*)realm, (const char*)nonce, (const char*)opaque, (const char*)algorithm, (const char*)qop)
+#define TSIP_CHALLENGE_CREATE(stack, isproxy, scheme, realm, nonce, opaque, algorithm, qop)		tsk_object_new(tsip_challenge_def_t, stack, (tsk_bool_t)isproxy,(const char*)scheme, (const char*)realm, (const char*)nonce, (const char*)opaque, (const char*)algorithm, (const char*)qop)
 
 #define TSIP_CHALLENGE_CREATE_NULL(stack)														TSIP_CHALLENGE_CREATE(stack, 0,0,0,0,0,0,0)
 

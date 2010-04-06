@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,15 +23,15 @@
 /**@file thttp_challenge.c
  * @brief HTTP authentication challenge.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyhttp/auth/thttp_challenge.h"
+#include "tinyHTTP/auth/thttp_challenge.h"
 
 #include "thttp.h"
 
-#include "tinyhttp/headers/thttp_header_Authorization.h"
+#include "tinyHTTP/headers/thttp_header_Authorization.h"
 
 #include "tsk_string.h"
 #include "tsk_debug.h"

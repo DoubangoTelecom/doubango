@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -22,58 +22,117 @@
 /**@file thttp.h
  * @brief HTTP (RFC 2616) and HTTP basic/digest authetication (RFC 2617) implementations.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #ifndef TINYHTTP_THTTP_H
 #define TINYHTTP_THTTP_H
 
-#include "tinyhttp_config.h"
+#include "tinyHTTP_config.h"
 
 #include "tinyHTTP/thttp_event.h"
-#include "tinyHTTP/thttp_operation.h"
+#include "tinyHTTP/thttp_session.h"
+
+#include "tnet_transport.h"
+
+/**@def THTTP_STACK_SET_NULL()
+* Ends stack parameters. Must always be the last one.
+*/
+
+/**@def THTTP_STACK_SET_LOCAL_IP(STR)
+* Sets local IP address to bind to. By default, the stack will bind to "0.0.0.0" or "::" depending on
+* whether IPv4 is used or not (IPv6). 
+* This is a helper macro for @ref thttp_stack_create and @ref thttp_stack_set.
+* @param IP_STR The IP address (const char*).
+*
+* @code
+* thttp_stack_create(callback, 
+*	THTTP_STACK_SET_LOCAL_IP("192.168.0.15"),
+*	THTTP_STACK_SET_NULL());
+* @endcode
+* @sa @ref THTTP_STACK_SET_LOCAL_PORT, @ref thttp_stack_create, @ref thttp_stack_set.
+*/
+/**@def THTTP_STACK_SET_LOCAL_PORT(PORT_INT)
+* Sets local Port to bind to. By default, the stack will bind to a random port.
+* This is a helper macro for @ref thttp_stack_create and @ref thttp_stack_set.
+* @param PORT_INT The Port (int32_t).
+
+* @code
+* thttp_stack_create(callback, 
+*	THTTP_STACK_SET_LOCAL_PORT(1234),
+*	THTTP_STACK_SET_NULL());
+* @endcode
+* @sa @ref THTTP_STACK_SET_LOCAL_IP, @ref thttp_stack_create, @ref thttp_stack_set.
+*/
+
+/**@def THTTP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)
+* Sets TLS certificates (Mutual Authentication). Not mandatory.
+* This is a helper macro for @ref thttp_stack_create and @ref thttp_stack_set.
+* @param CA_FILE_STR Path to the Certification Authority File.
+* @param PUB_FILE_STR Path to the Public key file.
+* @param PRIV_FILE_STR Path to the Private key file.
+* @code
+* thttp_stack_create(callback, 
+*	THTTP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\pub-crt.pem", "C:\\tls\\pub-key.pem"),
+*	THTTP_STACK_SET_NULL());
+* @endcode
+*/
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_MAX_CONTENT_SIZE 0xFFFF
-
 typedef enum thttp_stack_param_type_e
 {
-	/* Identity */
-	pname_usr,
-	pname_proxy,
-	pname_useragent,
-#define THTTP_STACK_SET_USER(USRNAME_STR, PASSWORD_STR)										pname_usr, (const char*)USRNAME_STR, (const char*)PASSWORD_STR
-#define THTTP_STACK_SET_PROXY(HOST_STR, PORT_INT, USRNAME_STR, PASSWORD_STR)				pname_proxy, (const char*)HOST_STR, (int)PORT_INT, (const char*)USRNAME_STR, (const char*)PASSWORD_STR
-#define THTTP_STACK_SET_USER_AGENT(UA_STR)													pname_useragent, (const char*)UA_STR
+	pname_null = tsk_null,
+#define THTTP_STACK_SET_NULL()																pname_null
 
 	/* Network */
 	pname_local_ip,
 	pname_local_port,
-#define THTTP_STACK_SET_LOCAL_IP(STR)														pname_local_ip, (const char*)STR
-#define THTTP_STACK_SET_LOCAL_PORT(INT)														pname_local_port, (int)INT
+#define THTTP_STACK_SET_LOCAL_IP(IP_STR)														pname_local_ip, (const char*)IP_STR
+#define THTTP_STACK_SET_LOCAL_PORT(PORT_INT)													pname_local_port, (int)PORT_INT
 
+	/* TLS */
+	pname_tls_certs,
+#define THTTP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
 
-	pname_null,
-#define THTTP_STACK_SET_NULL()																pname_null
 }
 thttp_stack_param_type_t;
 
+/** HTTP/HTTPS Stack.
+*/
+typedef struct thttp_stack_s
+{
+	TSK_DECLARE_OBJECT;
+
+	thttp_stack_callback callback;
+
+	/* Network */
+	char* local_ip;
+	int local_port;
+	tnet_transport_t *transport;
+
+	/* TLS */
+	struct {
+		char* ca;
+		char* pbk;
+		char* pvk;
+	}tls;
+
+	thttp_sessions_L_t* sessions;
+	
+	TSK_DECLARE_SAFEOBJ;
+}
+thttp_stack_t;
+
+/** Pointer to a valid HTTP/HTTPS stack object.
+*/
 typedef void thttp_stack_handle_t;
-
-TINYHTTP_API int thttp_global_init();
-TINYHTTP_API int thttp_global_deinit();
-
 
 TINYHTTP_API thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...);
 TINYHTTP_API int thttp_stack_start(thttp_stack_handle_t *self);
 TINYHTTP_API int thttp_stack_set(thttp_stack_handle_t *self, ...);
 TINYHTTP_API int thttp_stack_stop(thttp_stack_handle_t *self);
-
-int thttp_stack_send(thttp_stack_handle_t *self, thttp_operation_handle_t* op, const struct thttp_message_s* message);
-int thttp_stack_push_op(thttp_stack_handle_t *self, thttp_operation_handle_t* op);
-int thttp_stack_pop_op(thttp_stack_handle_t *self, thttp_operation_handle_t* op);
 
 TINYHTTP_GEXTERN const void *thttp_stack_def_t;
 

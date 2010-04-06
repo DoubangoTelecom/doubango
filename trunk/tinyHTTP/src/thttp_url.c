@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -23,13 +23,13 @@
 /**@file thttp_url.c
  * @brief HTTP URL.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyhttp/thttp_url.h"
+#include "tinyHTTP/thttp_url.h"
 
-#include "tinyhttp/parsers/thttp_parser_url.h"
+#include "tinyHTTP/parsers/thttp_parser_url.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
@@ -37,9 +37,11 @@
 
 #include <string.h>
 
-/**@defgroup thttp_url_group HTTP URL.
+/**@defgroup thttp_url_group HTTP/HTTPS URL.
 */
 
+/**@ingroup thttp_url_group
+*/
 int thttp_url_serialize(const thttp_url_t *url, tsk_buffer_t *output)
 {
 	/* RFC 1738: "http://" hostport [ "/" hpath [ "?" search ]] */
@@ -57,6 +59,8 @@ int thttp_url_serialize(const thttp_url_t *url, tsk_buffer_t *output)
 		);
 }
 
+/**@ingroup thttp_url_group
+*/
 char* thttp_url_tostring(const thttp_url_t *url)
 {
 	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
@@ -73,6 +77,8 @@ char* thttp_url_tostring(const thttp_url_t *url)
 	return ret;
 }
 
+/**@ingroup thttp_url_group
+*/
 thttp_url_t *thttp_url_clone(const thttp_url_t *url)
 {
 	thttp_url_t *newurl = 0;

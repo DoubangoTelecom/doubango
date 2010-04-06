@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -26,7 +26,7 @@
  * This file incude all your preferences or configuration. All specific configuration
  * must be defined in this file. You must include this file in all your header files.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
@@ -115,7 +115,7 @@
 #define TNET_SOFTWARE	"IM-client/OMA1.0 doubango/v0.0.0"
 #define TNET_IANA_PEN		35368 /**< PEN number assigned by the IANA. 
 	The list of assigned numbers could be found here http://www.iana.org/assignments/enterprise-numbers. */
-#define TNET_RESOLV_CONF_PATH "/etc/resolv.conf"
+#define TNET_RESOLV_CONF_PATH "/etc/resolv.conf" /**< Path to "/resolv.conf". */
 
 #include <stdint.h>
 

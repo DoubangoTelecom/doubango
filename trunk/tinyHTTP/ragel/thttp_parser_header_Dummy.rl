@@ -36,9 +36,6 @@
 
 #include <string.h>
 
-/**@defgroup thttp_header_Dummy_group HTTP Dummy header.
-*/
-
 /***********************************
 *	Ragel state machine.
 */
@@ -89,6 +86,8 @@ int thttp_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
 	return -1;
 }
 
+/**@ingroup thttp_header_group
+*/
 thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
 {
 	int cs = 0;
