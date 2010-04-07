@@ -19,13 +19,23 @@
 * along with DOUBANGO.
 *
 */
-/**@file tinyxcap.h
- * @brief API functions.
+/**@file txcap_selector.h
+ * @brief XCAP selector.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "txcap.h"
+#ifndef TINYXCAP_TXCAP_SELECTOR_H
+#define TINYXCAP_TXCAP_SELECTOR_H
 
-#include "tinyXCAP/txcap_document.h"
+#include "tinyXCAP_config.h"
+
+TXCAP_BEGIN_DECLS
+
+TINYXCAP_API char* txcap_selector_get_full(const txcap_stack_handle_t* stack, const char* auid_id, ...);
+TINYXCAP_API char* txcap_selector_get_full_2(const char* xcap_root, const char* auid_id, const char* xui, const char* doc_name, ...);
+
+TXCAP_END_DECLS
+
+#endif /* TINYXCAP_TXCAP_SELECTOR_H */

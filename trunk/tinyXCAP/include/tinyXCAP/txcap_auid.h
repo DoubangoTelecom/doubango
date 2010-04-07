@@ -35,12 +35,15 @@
 
 TXCAP_BEGIN_DECLS
 
-#define TXCAP_AUID_CREATE(type, id, content_type, document_name)	tsk_object_new(txcap_auid_def_t, (txcap_auid_type_t)type, (const char*)id, (const char*)content_type, (const char*)document_name)
+#define TXCAP_AUID_CREATE(type, id, mime_type, ns, document_name, is_global)\
+	tsk_object_new(txcap_auid_def_t, (txcap_auid_type_t)type, (const char*)id, (const char*)mime_type, (const char*)ns, (const char*)document_name, (tsk_bool_t)is_global)
 
 /** List of supported AUIDs.
 */
 typedef enum txcap_auid_type_e
 {
+	tauid_dummy, /**<  any auid */
+	
 	tauid_ietf_xcap_caps,			/**< xcap-caps */
 	tauid_ietf_resource_lists,	/**< resource-lists */
 	tauid_ietf_rls_services,		/**< rls-services */
@@ -52,7 +55,7 @@ typedef enum txcap_auid_type_e
 	tauid_oma_directory,			/**< org.openmobilealliance.xcap-directory */
 	tauid_oma_deferred_list,		/**< org.openmobilealliance.deferred-list */
 	tauid_oma_pres_content,		/**< org.openmobilealliance.pres-content*/
-	tauid_oma_shared_groups		/**< org.openmobilealliance.groups */
+	tauid_oma_shared_groups		/**< org.openmobilealliance.group-usage-list */
 }
 txcap_auid_type_t;
 
@@ -64,12 +67,19 @@ typedef struct txcap_auid_s
 
 	txcap_auid_type_t type;
 	char* id; /**< The id of the AUID (e.g. 'xcap-caps' or 'rls-services' or 'resource-lists' or ...)*/
-	char* content_type; /**< The default MIME-type of the document associated to this auid. */
+	char* mime_type; /**< The default MIME-type of the document associated to this auid. */
+	char* ns; /**< The namespace associated to this auid. */
 	char* document_name; /**< The default name of the document associated to this auid. */
+	tsk_bool_t global; /**< Indicates the auid scope. */
 }
 txcap_auid_t;
 
 typedef tsk_list_t txcap_auids_L_t;
+
+int txcap_auid_register(txcap_auids_L_t* auids, const char* id, const char* mime_type, const char* ns, const char* document_name, tsk_bool_t is_global);
+txcap_auid_t* txcap_auid_get_by_id(txcap_auids_L_t* auids, const char* id);
+int txcap_auids_init(txcap_auids_L_t** auids);
+
 
 TINYXCAP_GEXTERN const tsk_object_def_t *txcap_auid_def_t;
 

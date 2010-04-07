@@ -120,6 +120,8 @@
     <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
     <includes id="thttp__event_8h" name="thttp_event.h" local="yes" imported="no">tinyHTTP/thttp_event.h</includes>
     <includes id="thttp__session_8h" name="thttp_session.h" local="yes" imported="no">tinyHTTP/thttp_session.h</includes>
+    <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
+    <includes id="thttp__url_8h" name="thttp_url.h" local="yes" imported="no">tinyHTTP/thttp_url.h</includes>
   </compound>
   <compound kind="file">
     <name>thttp_auth.h</name>
@@ -326,6 +328,12 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
+      <name>thttp_htype_Transfer_Encoding</name>
+      <anchorfile>thttp__header_8h.html</anchorfile>
+      <anchor>ac740fe3f373d2a91913437e31e44d4b3a396cb186e47c23c5e52be304b6a5bd47</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
       <name>thttp_htype_WWW_Authenticate</name>
       <anchorfile>thttp__header_8h.html</anchorfile>
       <anchor>ac740fe3f373d2a91913437e31e44d4b3a2a2fb50fc02e75f40fd4e36e2d5d68cc</anchor>
@@ -503,10 +511,10 @@
       <arglist>(const char *data, size_t size)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYHTTP_GEXTERN const void *</type>
+      <type>TINYHTTP_GEXTERN const tsk_object_def_t *</type>
       <name>thttp_header_Content_Type_def_t</name>
       <anchorfile>thttp__header___content___type_8h.html</anchorfile>
-      <anchor>ae21fdcc8ed9d62d36bddfaee98d91d7b</anchor>
+      <anchor>aae2f5aaccb96719f11770748caa192b6</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -557,6 +565,56 @@
       <name>thttp_header_Dummy_def_t</name>
       <anchorfile>thttp__header___dummy_8h.html</anchorfile>
       <anchor>af3edaa30b5c8d0ded096dd8d01603158</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>thttp_header_Transfer_Encoding.h</name>
+    <path>C:/doubango/tinyHTTP/include/tinyHTTP/headers/</path>
+    <filename>thttp__header___transfer___encoding_8h</filename>
+    <includes id="tinyhttp__config_8h" name="tinyhttp_config.h" local="yes" imported="no">tinyHTTP_config.h</includes>
+    <includes id="thttp__header_8h" name="thttp_header.h" local="yes" imported="no">tinyHTTP/headers/thttp_header.h</includes>
+    <class kind="struct">thttp_header_Transfer_Encoding_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>THTTP_HEADER_TRANSFER_ENCODING_VA_ARGS</name>
+      <anchorfile>thttp__header___transfer___encoding_8h.html</anchorfile>
+      <anchor>af3d45684db89cc6a76d82e56abf46bd6</anchor>
+      <arglist>(encoding)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>THTTP_HEADER_TRANSFER_ENCODING_CREATE</name>
+      <anchorfile>thttp__header___transfer___encoding_8h.html</anchorfile>
+      <anchor>a8a99e4a81e5adfe47c4d027c0b8dde24</anchor>
+      <arglist>(encoding)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>THTTP_HEADER_TRANSFER_ENCODING_CREATE_NULL</name>
+      <anchorfile>thttp__header___transfer___encoding_8h.html</anchorfile>
+      <anchor>a8141d205a6b88ddc0123b8bc7e2a6a16</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct thttp_header_Transfer_Encoding_s</type>
+      <name>thttp_header_Transfer_Encoding_t</name>
+      <anchorfile>thttp__header___transfer___encoding_8h.html</anchorfile>
+      <anchor>a819c92eb51b3f91042057b99c1c33a78</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>thttp_header_Transfer_Encoding_t *</type>
+      <name>thttp_header_Transfer_Encoding_parse</name>
+      <anchorfile>group__thttp__header__group.html</anchorfile>
+      <anchor>ga3c59176f6b363090c3f89e5238cb3901</anchor>
+      <arglist>(const char *data, size_t size)</arglist>
+    </member>
+    <member kind="variable">
+      <type>TINYHTTP_GEXTERN const tsk_object_def_t *</type>
+      <name>thttp_header_Transfer_Encoding_def_t</name>
+      <anchorfile>thttp__header___transfer___encoding_8h.html</anchorfile>
+      <anchor>a8451162b13619940f0a0b438c840fe61</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -682,10 +740,10 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>THTTP_ACTION_SET_PARAM</name>
+      <name>THTTP_ACTION_SET_OPTION</name>
       <anchorfile>group__thttp__action__group.html</anchorfile>
-      <anchor>gad93eb89d30c8892263037a222bcc5b67</anchor>
-      <arglist>(NAME_STR, VALUE_STR)</arglist>
+      <anchor>gaad52574ad5dfd402db89f6d5f6367065</anchor>
+      <arglist>(ID_INT, VALUE_STR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -779,6 +837,13 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>enum thhtp_action_option_e</type>
+      <name>thhtp_action_option_t</name>
+      <anchorfile>thttp__action_8h.html</anchorfile>
+      <anchor>a0cdf56c18ad08a6123a05bf2d9310286</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>enum thttp_action_type_e</type>
       <name>thttp_action_type_t</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
@@ -811,6 +876,18 @@
       <name>thttp_actions_L_t</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
       <anchor>a2daa7482248c60ac251b34539f206712</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
+      <name>thhtp_action_option_e</name>
+      <anchorfile>thttp__action_8h.html</anchorfile>
+      <anchor>a82c6f0093fa0bf359c17ee07884206a8</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>THTTP_ACTION_OPTION_TIMEOUT</name>
+      <anchorfile>thttp__action_8h.html</anchorfile>
+      <anchor>a82c6f0093fa0bf359c17ee07884206a8ae29bc22ba4b0dbab91762df2498bec75</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumeration">
@@ -862,9 +939,9 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>aptype_param</name>
+      <name>aptype_option</name>
       <anchorfile>thttp__action_8h.html</anchorfile>
-      <anchor>ad990d5d648fad6d0d72b341c47d69db1ad776e52763a756961ec25b34c7f13723</anchor>
+      <anchor>ad990d5d648fad6d0d72b341c47d69db1aa407d88a84c1c7bf54c8890cea11122d</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
@@ -944,9 +1021,9 @@
     </member>
     <member kind="function">
       <type>thttp_dialog_t *</type>
-      <name>thttp_dialog_get_by_age</name>
+      <name>thttp_dialog_get_oldest</name>
       <anchorfile>thttp__dialog_8h.html</anchorfile>
-      <anchor>ac89c8e01aa2b847a0831f06be81b49a7</anchor>
+      <anchor>a11a7f172eec35d75c54445562db2733e</anchor>
       <arglist>(thttp_dialogs_L_t *dialogs)</arglist>
     </member>
     <member kind="variable">
@@ -1310,6 +1387,13 @@
       <arglist>(thttp_message_t *self, const char *content_type, const void *content, size_t size)</arglist>
     </member>
     <member kind="function">
+      <type>TINYHTTP_API int</type>
+      <name>thttp_message_append_content</name>
+      <anchorfile>group__thttp__message__group.html</anchorfile>
+      <anchor>ga3b5a87db25bc5e2056d406b64154e348</anchor>
+      <arglist>(thttp_message_t *self, const void *content, size_t size)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYHTTP_API const thttp_header_t *</type>
       <name>thttp_message_get_headerAt</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
@@ -1391,10 +1475,10 @@
     </member>
     <member kind="define">
       <type>#define</type>
-      <name>THTTP_SESSION_SET_PARAM</name>
+      <name>THTTP_SESSION_SET_OPTION</name>
       <anchorfile>group__thttp__session__group.html</anchorfile>
-      <anchor>gaa3552649971c1d05d289c422cfbea33d</anchor>
-      <arglist>(NAME_STR, VALUE_STR)</arglist>
+      <anchor>gaf4aedae9e645145e611d849b31bfb989</anchor>
+      <arglist>(ID_INT, VALUE_STR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1432,6 +1516,13 @@
       <arglist></arglist>
     </member>
     <member kind="typedef">
+      <type>enum thhtp_session_option_e</type>
+      <name>thhtp_session_option_t</name>
+      <anchorfile>thttp__session_8h.html</anchorfile>
+      <anchor>aa76da6e651655851903b8ea5a7c154a7</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
       <type>enum thttp_session_param_type_e</type>
       <name>thttp_session_param_type_t</name>
       <anchorfile>thttp__session_8h.html</anchorfile>
@@ -1460,6 +1551,18 @@
       <arglist></arglist>
     </member>
     <member kind="enumeration">
+      <name>thhtp_session_option_e</name>
+      <anchorfile>thttp__session_8h.html</anchorfile>
+      <anchor>ab12b176916b17dcff5531c4834fc13d3</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>THTTP_SESSION_OPTION_TIMEOUT</name>
+      <anchorfile>thttp__session_8h.html</anchorfile>
+      <anchor>ab12b176916b17dcff5531c4834fc13d3a94cc57900b9735e4313e16c36cfb3416</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumeration">
       <name>thttp_session_param_type_e</name>
       <anchorfile>thttp__session_8h.html</anchorfile>
       <anchor>ac60e1a2d905c79691f843b2ff333c7e3</anchor>
@@ -1472,9 +1575,9 @@
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
-      <name>sptype_param</name>
+      <name>sptype_option</name>
       <anchorfile>thttp__session_8h.html</anchorfile>
-      <anchor>ac60e1a2d905c79691f843b2ff333c7e3a715ca2bc9254a45be6b348648b7cc3de</anchor>
+      <anchor>ac60e1a2d905c79691f843b2ff333c7e3aa5801f22c8e7f0b21775ad29322e3b8a</anchor>
       <arglist></arglist>
     </member>
     <member kind="enumvalue">
@@ -1945,10 +2048,10 @@
       <arglist>(const char *data, size_t size)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>thttp_header_Content_Type_def_t</name>
       <anchorfile>thttp__header___content___type_8c.html</anchorfile>
-      <anchor>a5ae679ccb04566d4a0cdd09967db0de8</anchor>
+      <anchor>a911bb4b12f106ad2da6673169f6e37be</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -1975,6 +2078,33 @@
       <name>thttp_header_Dummy_def_t</name>
       <anchorfile>thttp__header___dummy_8c.html</anchorfile>
       <anchor>aec7f5a32ccbb7c58f7589658c6ed1411</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>thttp_header_Transfer_Encoding.c</name>
+    <path>C:/doubango/tinyHTTP/src/headers/</path>
+    <filename>thttp__header___transfer___encoding_8c</filename>
+    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Transfer_Encoding.h</includes>
+    <member kind="function">
+      <type>int</type>
+      <name>thttp_header_Transfer_Encoding_tostring</name>
+      <anchorfile>thttp__header___transfer___encoding_8c.html</anchorfile>
+      <anchor>ac1593a69da298d7fa2be1f4be559f982</anchor>
+      <arglist>(const void *header, tsk_buffer_t *output)</arglist>
+    </member>
+    <member kind="function">
+      <type>thttp_header_Transfer_Encoding_t *</type>
+      <name>thttp_header_Transfer_Encoding_parse</name>
+      <anchorfile>group__thttp__header__group.html</anchorfile>
+      <anchor>ga3c59176f6b363090c3f89e5238cb3901</anchor>
+      <arglist>(const char *data, size_t size)</arglist>
+    </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>thttp_header_Transfer_Encoding_def_t</name>
+      <anchorfile>thttp__header___transfer___encoding_8c.html</anchorfile>
+      <anchor>adefb146cda0858b796412ae5af31bb86</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -2020,6 +2150,7 @@
     <includes id="thttp__parser__header_8h" name="thttp_parser_header.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_header.h</includes>
     <includes id="thttp__header___authorization_8h" name="thttp_header_Authorization.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Authorization.h</includes>
     <includes id="thttp__header___dummy_8h" name="thttp_header_Dummy.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Dummy.h</includes>
+    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Transfer_Encoding.h</includes>
     <includes id="thttp__header___w_w_w___authenticate_8h" name="thttp_header_WWW_Authenticate.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_WWW_Authenticate.h</includes>
     <member kind="define">
       <type>#define</type>
@@ -2080,6 +2211,7 @@
     <includes id="thttp__event_8h" name="thttp_event.h" local="yes" imported="no">tinyHTTP/thttp_event.h</includes>
     <includes id="thttp__message_8h" name="thttp_message.h" local="yes" imported="no">tinyHTTP/thttp_message.h</includes>
     <includes id="thttp__parser__message_8h" name="thttp_parser_message.h" local="yes" imported="no">tinyHTTP/parsers/thttp_parser_message.h</includes>
+    <includes id="thttp__header___transfer___encoding_8h" name="thttp_header_Transfer_Encoding.h" local="yes" imported="no">tinyHTTP/headers/thttp_header_Transfer_Encoding.h</includes>
     <includes id="thttp__dialog_8h" name="thttp_dialog.h" local="yes" imported="no">tinyHTTP/thttp_dialog.h</includes>
     <member kind="function">
       <type>int</type>
@@ -2301,6 +2433,13 @@
     </member>
     <member kind="function">
       <type>int</type>
+      <name>thttp_dialog_Transfering_2_Transfering_X_1xx</name>
+      <anchorfile>thttp__dialog_8c.html</anchorfile>
+      <anchor>ac58361d510dad68eed62a8ccf8e3ba75</anchor>
+      <arglist>(va_list *app)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
       <name>thttp_dialog_Transfering_2_Terminated_X_message</name>
       <anchorfile>thttp__dialog_8c.html</anchorfile>
       <anchor>ab1728da2b2245a6768a00ce40e0861f7</anchor>
@@ -2329,9 +2468,9 @@
     </member>
     <member kind="function">
       <type>tsk_bool_t</type>
-      <name>_fsm_cond_i_n401_n407</name>
+      <name>_fsm_cond_i_1xx</name>
       <anchorfile>thttp__dialog_8c.html</anchorfile>
-      <anchor>a28523b05f86797b90eeb14e0564761a1</anchor>
+      <anchor>a900dbaa94550c911cf068916d7949b52</anchor>
       <arglist>(thttp_dialog_t *self, thttp_message_t *message)</arglist>
     </member>
     <member kind="function">
@@ -2343,13 +2482,6 @@
     </member>
     <member kind="function">
       <type>thttp_dialog_t *</type>
-      <name>thttp_dialog_get_by_session</name>
-      <anchorfile>thttp__dialog_8c.html</anchorfile>
-      <anchor>ab0c0bada4df232b6a11b6c5559f1219c</anchor>
-      <arglist>(thttp_dialogs_L_t *dialogs, const struct thttp_session_s *session)</arglist>
-    </member>
-    <member kind="function">
-      <type>thttp_dialog_t *</type>
       <name>thttp_dialog_new</name>
       <anchorfile>thttp__dialog_8c.html</anchorfile>
       <anchor>a47c02f0e16ba68f049d5721c479b8de0</anchor>
@@ -2357,9 +2489,9 @@
     </member>
     <member kind="function">
       <type>thttp_dialog_t *</type>
-      <name>thttp_dialog_get_by_age</name>
+      <name>thttp_dialog_get_oldest</name>
       <anchorfile>thttp__dialog_8c.html</anchorfile>
-      <anchor>ac89c8e01aa2b847a0831f06be81b49a7</anchor>
+      <anchor>a11a7f172eec35d75c54445562db2733e</anchor>
       <arglist>(thttp_dialogs_L_t *dialogs)</arglist>
     </member>
     <member kind="variable">
@@ -2416,6 +2548,13 @@
       <anchorfile>group__thttp__message__group.html</anchorfile>
       <anchor>ga90d831ed5c6d29560ded8e688ac60242</anchor>
       <arglist>(thttp_message_t *self, const char *content_type, const void *content, size_t size)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>thttp_message_append_content</name>
+      <anchorfile>group__thttp__message__group.html</anchorfile>
+      <anchor>ga3b5a87db25bc5e2056d406b64154e348</anchor>
+      <arglist>(thttp_message_t *self, const void *content, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>const thttp_header_t *</type>
@@ -2669,6 +2808,13 @@
       <arglist>(const char *data, size_t size)</arglist>
     </member>
     <member kind="function">
+      <type>thttp_header_Transfer_Encoding_t *</type>
+      <name>thttp_header_Transfer_Encoding_parse</name>
+      <anchorfile>group__thttp__header__group.html</anchorfile>
+      <anchor>ga3c59176f6b363090c3f89e5238cb3901</anchor>
+      <arglist>(const char *data, size_t size)</arglist>
+    </member>
+    <member kind="function">
       <type>thttp_header_WWW_Authenticate_t *</type>
       <name>thttp_header_WWW_Authenticate_parse</name>
       <anchorfile>group__thttp__header__group.html</anchorfile>
@@ -2715,10 +2861,10 @@
     <filename>group__thttp__action__group.html</filename>
     <member kind="define">
       <type>#define</type>
-      <name>THTTP_ACTION_SET_PARAM</name>
+      <name>THTTP_ACTION_SET_OPTION</name>
       <anchorfile>group__thttp__action__group.html</anchorfile>
-      <anchor>gad93eb89d30c8892263037a222bcc5b67</anchor>
-      <arglist>(NAME_STR, VALUE_STR)</arglist>
+      <anchor>gaad52574ad5dfd402db89f6d5f6367065</anchor>
+      <arglist>(ID_INT, VALUE_STR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -3010,6 +3156,13 @@
       <arglist>(thttp_message_t *self, const char *content_type, const void *content, size_t size)</arglist>
     </member>
     <member kind="function">
+      <type>int</type>
+      <name>thttp_message_append_content</name>
+      <anchorfile>group__thttp__message__group.html</anchorfile>
+      <anchor>ga3b5a87db25bc5e2056d406b64154e348</anchor>
+      <arglist>(thttp_message_t *self, const void *content, size_t size)</arglist>
+    </member>
+    <member kind="function">
       <type>const thttp_header_t *</type>
       <name>thttp_message_get_headerAt</name>
       <anchorfile>group__thttp__message__group.html</anchorfile>
@@ -3058,10 +3211,10 @@
     <filename>group__thttp__session__group.html</filename>
     <member kind="define">
       <type>#define</type>
-      <name>THTTP_SESSION_SET_PARAM</name>
+      <name>THTTP_SESSION_SET_OPTION</name>
       <anchorfile>group__thttp__session__group.html</anchorfile>
-      <anchor>gaa3552649971c1d05d289c422cfbea33d</anchor>
-      <arglist>(NAME_STR, VALUE_STR)</arglist>
+      <anchor>gaf4aedae9e645145e611d849b31bfb989</anchor>
+      <arglist>(ID_INT, VALUE_STR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -3192,10 +3345,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>tsk_params_L_t *</type>
-      <name>params</name>
+      <type>tsk_options_L_t *</type>
+      <name>options</name>
       <anchorfile>structthttp__action__s.html</anchorfile>
-      <anchor>a224e951a121249c4cd0d2356d3cce567</anchor>
+      <anchor>af5b6cc93a0b124046788312d128c9754</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -3568,6 +3721,24 @@
     </member>
   </compound>
   <compound kind="struct">
+    <name>thttp_header_Transfer_Encoding_s</name>
+    <filename>structthttp__header___transfer___encoding__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>THTTP_DECLARE_HEADER</name>
+      <anchorfile>structthttp__header___transfer___encoding__s.html</anchorfile>
+      <anchor>a54cf1e6c501a1773be1a8cffaf0aa865</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>encoding</name>
+      <anchorfile>structthttp__header___transfer___encoding__s.html</anchorfile>
+      <anchor>abfd0452ce0a5ba319ea4d624dc209250</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
     <name>thttp_header_WWW_Authenticate_s</name>
     <filename>structthttp__header___w_w_w___authenticate__s.html</filename>
     <member kind="variable">
@@ -3768,10 +3939,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>tsk_params_L_t *</type>
-      <name>params</name>
+      <type>tsk_options_L_t *</type>
+      <name>options</name>
       <anchorfile>structthttp__session__s.html</anchorfile>
-      <anchor>a224e951a121249c4cd0d2356d3cce567</anchor>
+      <anchor>af5b6cc93a0b124046788312d128c9754</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -3821,6 +3992,13 @@
       <name>password</name>
       <anchorfile>structthttp__session__s_1_1@7.html</anchorfile>
       <anchor>a59460a3ff2c12443d1022e5cc0fba85c</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_SAFEOBJ</name>
+      <anchorfile>structthttp__session__s.html</anchorfile>
+      <anchor>a9818e976fd73889027b42c32d628169f</anchor>
       <arglist></arglist>
     </member>
   </compound>

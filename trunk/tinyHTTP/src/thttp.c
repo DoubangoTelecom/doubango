@@ -239,19 +239,20 @@ int __thttp_stack_set(thttp_stack_t *self, va_list values)
 
 		}/* switch */
 	}/* while */
+	return 0;
 
 bail:
-	return 0;
+	return -2;
 }
 
 /**@ingroup thttp_stack_group
 * Creates new HTTP/HTTPS stack.
 * @param callback Pointer to the callback function to call when new messages come to the transport layer.
 * Can be set to Null if you don't want to be alerted.
-* @param ... Configuration parameters. You must use @a THTTP_STACK_SET_* macros to set these parameters.
-* The list of parameters must end with @ref THTTP_STACK_SET_NULL() even if there is no parameter.<br>
+* @param ... Configuration parameters. You must use @a THTTP_STACK_SET_*() macros to set these parameters.
+* The list of parameters must end with @ref THTTP_STACK_SET_NULL() even if there is no parameter to pass to the stack.<br>
 * @retval A Pointer to the newly created stack if succeed and @a Null otherwise.
-* A session is a well-defined object.
+* A stack is a well-defined object.
 *
 * @code
 * thttp_stack_create(callback,
@@ -284,7 +285,7 @@ thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...)
 
 /**@ingroup thttp_stack_group
 * Starts the stack.
-* @param self A pointer to the stack to start. The stack must be create using @ref thttp_stack_create.
+* @param self A pointer to the stack to start. The stack shall be created using @ref thttp_stack_create().
 * @retval Zero if succeed and non-zero error code otherwise.
 * @sa @ref thttp_stack_stop
 */
@@ -341,8 +342,8 @@ int thttp_stack_set(thttp_stack_handle_t *self, ...)
 }
 
 /**@ingroup thttp_stack_group
-* Stops the stack. The stack must be already started.
-* @param self A pointer to the stack to stop. The stack must be create using @ref thttp_stack_create.
+* Stops the stack. The stack must already be started.
+* @param self A pointer to the stack to stop. The stack shall be created using @ref thttp_stack_create.
 * @retval Zero if succeed and non-zero error code otherwise.
 * @sa @ref thttp_stack_start
 */
@@ -399,7 +400,7 @@ int thttp_stack_alert(const thttp_stack_t *self, const thttp_event_t* e)
 //========================================================
 //	HTTP stack object definition
 //
-static void* _thttp_stack_create(void * self, va_list * app)
+static tsk_object_t* _thttp_stack_create(tsk_object_t * self, va_list * app)
 {
 	thttp_stack_t *stack = self;
 	if(stack){
@@ -410,7 +411,7 @@ static void* _thttp_stack_create(void * self, va_list * app)
 	return self;
 }
 
-static void* thttp_stack_destroy(void * self)
+static tsk_object_t* thttp_stack_destroy(tsk_object_t * self)
 { 
 	thttp_stack_t *stack = self;
 	if(stack){	
@@ -438,6 +439,6 @@ static const tsk_object_def_t thttp_stack_def_s =
 	sizeof(thttp_stack_t),
 	_thttp_stack_create, 
 	thttp_stack_destroy,
-	0, 
+	tsk_null, 
 };
-const void *thttp_stack_def_t = &thttp_stack_def_s;
+const tsk_object_def_t *thttp_stack_def_t = &thttp_stack_def_s;

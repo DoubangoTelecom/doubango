@@ -136,7 +136,7 @@ TINYHTTP_API int thttp_stack_start(thttp_stack_handle_t *self);
 TINYHTTP_API int thttp_stack_set(thttp_stack_handle_t *self, ...);
 TINYHTTP_API int thttp_stack_stop(thttp_stack_handle_t *self);
 
-TINYHTTP_GEXTERN const void *thttp_stack_def_t;
+TINYHTTP_GEXTERN const tsk_object_def_t *thttp_stack_def_t;
 
 THTTP_END_DECLS
 

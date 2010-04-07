@@ -2,11 +2,10 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tinyXCAP"
-	ProjectGUID="{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}"
-	RootNamespace="tinyXCAP"
+	Name="test"
+	ProjectGUID="{2A476CAA-BA45-4379-AFEC-088645840527}"
+	RootNamespace="test"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -23,7 +22,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -44,15 +43,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYXCAP_EXPORTS"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
 				DebugInformationFormat="4"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -65,10 +64,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib $(OutDir)\tinySAK.lib &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\libxml\vs_libxml2.dll.a&quot; &quot;$(DOUBANGO_HOME)\thirdparties\win32\lib\curl\vs_libcurl.dll.a&quot;"
+				AdditionalDependencies="$(OutDir)\tinyXCAP.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -90,6 +89,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -97,7 +99,7 @@
 			Name="Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 			OutputDirectory="&quot;$(SolutionDir)$(ConfigurationName)\wce&quot;"
 			IntermediateDirectory="&quot;$(SolutionDir)$(ConfigurationName)&quot;"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -119,11 +121,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				ExecutionBucket="7"
-				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\smc&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\wcecompat&quot;"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;TINYXCAP_EXPORTS;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
+				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\wince\include&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\smc&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\wince\include\wcecompat&quot;"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;_CONSOLE;_DEBUG;_WIN32_WCE=$(CEVER);UNDER_CE;$(PLATFORMDEFINES);WINCE;DEBUG;_WINDOWS;_USRDLL;$(ARCHFAM);$(_ARCHFAM_)"
 				MinimalRebuild="true"
-				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
@@ -141,10 +141,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions=" /SUBSYSTEM:WINDOWSCE,5.01 /MACHINE:THUMB"
-				AdditionalDependencies="ws2.lib &quot;$(OutDir)\tinySAK.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\libxml\libxml2.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\curl\libcurl.lib&quot; &quot;$(DOUBANGO_HOME)\thirdparties\wince\lib\wcecompat\wcecompat.lib&quot;"
+				AdditionalDependencies="$(OutDir)\tinyXCAP.lib $(OutDir)\tinySAK.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
+				SubSystem="8"
+				EntryPointSymbol="mainWCRTStartup"
+				TargetMachine="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -156,9 +158,6 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -166,7 +165,7 @@
 			/>
 			<DeploymentTool
 				ForceDirty="-1"
-				RemoteDirectory="%CSIDL_PROGRAM_FILES%\test"
+				RemoteDirectory=""
 				RegisterOutput="0"
 				AdditionalFiles=""
 			/>
@@ -177,7 +176,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -200,12 +199,14 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYXCAP_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				DebugInformationFormat="3"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -220,7 +221,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -244,6 +245,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -251,7 +255,7 @@
 			Name="Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)"
 			OutputDirectory="&quot;$(SolutionDir)$(ConfigurationName)\wce&quot;"
 			IntermediateDirectory="&quot;$(SolutionDir)$(ConfigurationName)&quot;"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -276,7 +280,7 @@
 				ExecutionBucket="7"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYXCAP_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -312,9 +316,6 @@
 				Name="VCBscMakeTool"
 			/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
 				Name="VCCodeSignTool"
 			/>
 			<Tool
@@ -334,150 +335,42 @@
 	</References>
 	<Files>
 		<Filter
-			Name="source"
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\txc.c"
+				RelativePath="..\..\tinyXCAP\test\stdafx.c"
 				>
 			</File>
 			<File
-				RelativePath=".\src\txc_client.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_document.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_gsma_rcs.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_ietf-directory.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_ietf-presrules.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_node.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-directory.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-prescont.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-presrules.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_rlist.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_rls.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_xcap-caps.c"
+				RelativePath="..\..\tinyXCAP\test\test.c"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="include"
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\src\tinyxcap_config.h"
+				RelativePath="..\..\tinyXCAP\test\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\txc.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_api.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_client.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_document.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_gsma_rcs.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_ietf-directory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_ietf-pres-rules.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_macros.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_node.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-directory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-prescont.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma-presrules.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_oma.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_rlist.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_rls.h"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_xcap-caps.h"
+				RelativePath="..\..\tinyXCAP\test\targetver.h"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="statemachine"
+			Name="tests"
 			>
 			<File
-				RelativePath=".\src\txc_client.sm"
+				RelativePath="..\..\tinyXCAP\test\test_selector.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\txc_client_sm.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\txc_client_sm.h"
+				RelativePath="..\..\tinyXCAP\test\test_stack.h"
 				>
 			</File>
 		</Filter>
