@@ -50,11 +50,9 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 		return -1;
 	}
 
-	while((curr=va_arg(*app, thttp_session_param_type_t)) != sptype_null)
-	{
-		switch(curr)
-		{
-			case sptype_option:
+	while((curr=va_arg(*app, thttp_session_param_type_t)) != httpp_null){
+		switch(curr){
+			case httpp_option:
 				{
 					thhtp_session_option_t id = va_arg(*app, thhtp_session_option_t);
 					const char* value = va_arg(*app, const char *);
@@ -62,7 +60,7 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 					break;
 				}
 
-			case sptype_header:
+			case httpp_header:
 				{
 					const char* name = va_arg(*app, const char *);
 					const char* value = va_arg(*app, const char *);
@@ -70,14 +68,14 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 					break;
 				}
 			
-			case sptype_cred:
+			case httpp_cred:
 				{
 					tsk_strupdate(&self->cred.usename, va_arg(*app, const char *));
 					tsk_strupdate(&self->cred.password, va_arg(*app, const char *));
 					break;
 				}
 
-			case sptype_context:
+			case httpp_context:
 				{
 					self->context = va_arg(*app, const void *);
 					break;
@@ -88,8 +86,8 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 					TSK_DEBUG_ERROR("NOT SUPPORTED.");
 					goto bail;
 				}
-		}
-	}
+		} /* sxitch */
+	} /* while */
 	return 0;
 
 bail:
@@ -135,14 +133,14 @@ thttp_session_handle_t* thttp_session_create(const struct thttp_stack_s* stack, 
 
 /**@ingroup thttp_session_group
 * Updates the session parameters.
-* @param self The session to update. The session shall be created using @ref thttp_session_create.
+* @param self The session to update. The session shall be created using @ref thttp_session_create().
 * @param ... Any @b THTTP_SESSION_SET_*() macros. MUST ends with @ref THTTP_SESSION_SET_NULL().
 * @retval Zero if succeed and non zero error code otherwise.
 *
 * @code
 int ret = thttp_session_set(session,
 	// session-level parameters
-	THTTP_SESSION_SET_PARAM("timeout", "6000"),
+	THTTP_SESSION_SET_OPTION(THTTP_SESSION_OPTION_TIMEOUT, "6000"),
 
 	// session-level headers
 	THTTP_SESSION_SET_HEADER("Pragma", "No-Cache"),

@@ -94,6 +94,7 @@ thttp_url_t;
 TINYHTTP_API int thttp_url_serialize(const thttp_url_t *url, tsk_buffer_t *output);
 TINYHTTP_API char* thttp_url_tostring(const thttp_url_t *url);
 TINYHTTP_API thttp_url_t *thttp_url_clone(const thttp_url_t *url);
+TINYHTTP_API tsk_bool_t thttp_url_isok(const char* urlstring);
 
 TINYHTTP_GEXTERN const void *thttp_url_def_t;
 

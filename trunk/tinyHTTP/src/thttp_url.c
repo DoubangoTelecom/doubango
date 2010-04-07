@@ -90,7 +90,23 @@ thttp_url_t *thttp_url_clone(const thttp_url_t *url)
 	return newurl;
 }
 
-
+/**@ingroup thttp_url_group
+*/
+tsk_bool_t thttp_url_isok(const char* urlstring)
+{
+	thttp_url_t *url;
+	if(!urlstring){
+		return tsk_false;
+	}
+	
+	if((url = thttp_url_parse(urlstring, strlen(urlstring)))){
+		TSK_OBJECT_SAFE_FREE(url);
+		return tsk_true;
+	}
+	else{
+		return tsk_false;
+	}
+}
 
 
 

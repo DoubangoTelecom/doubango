@@ -13,19 +13,14 @@
 * DOUBANGO is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+* GNU Lesser General Public License for more details.
 *	
 * You should have received a copy of the GNU General Public License
 * along with DOUBANGO.
 *
 */
-/**@file tinyxcap.h
- * @brief API functions.
- *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
- */
-#include "txcap.h"
 
-#include "tinyXCAP/txcap_document.h"
+#include "stdafx.h"
+
+// TODO: reference any additional headers you need in STDAFX.H
+// and not in this file

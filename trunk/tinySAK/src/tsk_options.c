@@ -37,7 +37,7 @@
 /**@defgroup tsk_options_group Options.
 */
 
-/* Predicate function used to find an option by id.
+/** Predicate function used to find an option by id.
 */
 static int pred_find_option_by_id(const tsk_list_item_t *item, const void *id)
 {

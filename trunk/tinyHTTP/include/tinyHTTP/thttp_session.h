@@ -65,12 +65,12 @@ thhtp_session_option_t;
 
 typedef enum thttp_session_param_type_e
 {
-	sptype_null = tsk_null,
+	httpp_null = tsk_null,
 
-	sptype_option,
-	sptype_cred,
-	sptype_header,
-	sptype_context,
+	httpp_option,
+	httpp_cred,
+	httpp_header,
+	httpp_context,
 }
 thttp_session_param_type_t;
 
@@ -134,11 +134,11 @@ thttp_session_set(session,
 * @def THTTP_SESSION_SET_NULL
 * Ends session parameters. Must always be the last one.
 */
-#define THTTP_SESSION_SET_OPTION(ID_INT, VALUE_STR)			sptype_option, (thhtp_session_option_t)ID_INT, (const char*)VALUE_STR
-#define THTTP_SESSION_SET_CRED(USERNAME_STR, PASSWORD_STR)		sptype_cred, (const char*)USERNAME_STR, (const char*)PASSWORD_STR
-#define THTTP_SESSION_SET_HEADER(NAME_STR, VALUE_STR)			sptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
-#define THTTP_SESSION_SET_CONTEXT(CTX_PTR)						sptype_context, (const void*)CTX_PTR
-#define THTTP_SESSION_SET_NULL()								sptype_null
+#define THTTP_SESSION_SET_OPTION(ID_INT, VALUE_STR)			httpp_option, (thhtp_session_option_t)ID_INT, (const char*)VALUE_STR
+#define THTTP_SESSION_SET_CRED(USERNAME_STR, PASSWORD_STR)		httpp_cred, (const char*)USERNAME_STR, (const char*)PASSWORD_STR
+#define THTTP_SESSION_SET_HEADER(NAME_STR, VALUE_STR)			httpp_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define THTTP_SESSION_SET_CONTEXT(CTX_PTR)						httpp_context, (const void*)CTX_PTR
+#define THTTP_SESSION_SET_NULL()								httpp_null
 
 typedef struct thttp_session_s
 {
@@ -146,7 +146,7 @@ typedef struct thttp_session_s
 
 	thttp_session_id_t id;
 	const struct thttp_stack_s* stack;
-	const void* context; // usr context
+	const void* context; // user's context
 	tsk_options_L_t *options;
 	tsk_params_L_t *headers;
 
