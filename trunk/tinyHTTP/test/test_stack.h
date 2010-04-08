@@ -28,10 +28,16 @@ int test_stack_callback(const thttp_event_t *httpevent)
 	switch(httpevent->type){
 		case thttp_event_message: /* New HTTP message */
 			{
+				const thttp_header_t* etag;
 				TSK_DEBUG_INFO("sid=%llu", id);
 				if(THTTP_RESPONSE_IS_2XX(httpevent->message)){
 					TSK_DEBUG_INFO("=== 2xx ==> %s", THTTP_MESSAGE_CONTENT(httpevent->message));
-					// You can use 
+					// You can use
+					if((etag = thttp_message_get_headerByName(httpevent->message, "etag"))){
+						if(etag->type == thttp_htype_Dummy){
+							TSK_DEBUG_INFO("Etag=%s", ((thttp_header_Dummy_t*)etag)->value);
+						}
+					}
 				}
 				else{
 					if(THTTP_MESSAGE_IS_RESPONSE(httpevent->message)){
@@ -44,11 +50,13 @@ int test_stack_callback(const thttp_event_t *httpevent)
 		case thttp_event_auth_failed:
 			{
 				TSK_DEBUG_INFO("auth failed sid=%llu", id);
+				break;
 			}
 
 		case thttp_event_closed: /* HTTP connection closed (informational) */
 			{
 				TSK_DEBUG_INFO("closed sid=%llu", id);
+				break;
 			}
 	}
 	

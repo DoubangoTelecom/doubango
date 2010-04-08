@@ -234,13 +234,13 @@ tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 * Add an item to the @a list.
 * @param list The destination @a list.
 * @param item The @a item to add.
-* @param back Indicates whether to put the item back (1=yes and 0=no).
+* @param back Indicates whether to put the item back or not.
 */
-void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
+void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t back)
 {
 	// do not test
-	int first = !list->head;
-
+	tsk_bool_t first = !list->head;
+	
 	if(back && list->tail){
 		list->tail->next = *item, list->tail = *item, (*item)->next = tsk_null;
 	}
@@ -249,7 +249,7 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 	}
 	
 	if(first){
-		list->tail = list->head = *item;
+		list->tail = list->head = *item, list->tail->next = tsk_null;
 	}
 	(*item) = tsk_null;
 }
@@ -258,9 +258,9 @@ void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back)
 * Add an item to the list in ascending or descending order.
 * @param list The destination @a list.
 * @param item The  @a item to add.
-* @param ascending Indicates whether to put the @a item in ascending order(1=yes and 0=no).
+* @param ascending Indicates whether to put the @a item in ascending order or not.
 */
-void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int ascending)
+void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t ascending)
 {
 	if(list)
 	{
@@ -270,8 +270,7 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 		while(curr)
 		{
 			int diff = tsk_object_cmp((*item), curr);
-			if((diff </*=*/ 0 && ascending) || (diff >/*=*/0 && !ascending))
-			{
+			if((diff </*=*/ 0 && ascending) || (diff >/*=*/0 && !ascending)){
 				if(curr == list->head){
 					tsk_list_push_front_item(list, item);
 				}
@@ -288,8 +287,6 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 		}
 
 		tsk_list_push_back_item(list, item);
-		
-		//assert((list && list->tail) ? !list->tail->next : 1);
 	}
 }
 
@@ -299,32 +296,33 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int a
 * @param src The source list.
 * @param back Indicates whether to put the list back or not.
 **/
-void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
-{
-	const tsk_list_item_t* next = tsk_null;
-	const tsk_list_item_t* curr = (src)->head;
-	tsk_list_item_t* copy;
-
-	while(curr){
-		next = curr->next;
-
-		copy = tsk_object_ref((void*)curr);
-		tsk_list_push_filtered_item(dest, &copy, back);
-
-		curr = next->next;
-	}
-}
+//void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
+//{
+//	const tsk_list_item_t* next;
+//	const tsk_list_item_t* curr = (src)->head;
+//	tsk_list_item_t* copy;
+//
+//	while(curr){
+//		next = curr->next; // save next
+//
+//		copy = tsk_object_ref((void*)curr);
+//		tsk_list_push_filtered_item(dest, &copy, back);
+//		
+//		if(next){
+//			curr = next->next;
+//		}else break;
+//	}
+//}
 
 /**@ingroup tsk_list_group
 * Add an opaque data to the @a list.
 * @param list The destination @a list.
 * @param data The @a data to add.
-* @param back Indicates whether to put the item back (1=yes and 0=no).
+* @param back Indicates whether to put the item back or not.
 */
-void tsk_list_push_data(tsk_list_t* list, void** data, int back)
+void tsk_list_push_data(tsk_list_t* list, void** data, tsk_bool_t back)
 {
-	if(data)
-	{
+	if(data){
 		tsk_list_item_t *item = TSK_LIST_ITEM_CREATE();
 		item->data = *data;
 		
@@ -340,20 +338,18 @@ void tsk_list_push_data(tsk_list_t* list, void** data, int back)
 * Add an opaque data to the list in ascending or descending order.
 * @param list The destination @a list.
 * @param data The @a data to add.
-* @param ascending Indicates whether to put the @a data in ascending order(1=yes and 0=no).
+* @param ascending Indicates whether to put the @a data in ascending order or not.
 */
-void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending)
+void tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_bool_t ascending)
 {
-	if(data)
-	{
+	if(data){
 		tsk_list_item_t *item = TSK_LIST_ITEM_CREATE();
 		item->data = *data;
 		
 		tsk_list_push_filtered_item(list, &item, ascending);
 		(*data) = tsk_null;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
 	}
 }

@@ -170,7 +170,7 @@ const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, th
 {
 	size_t pos = 0;
 	tsk_list_item_t *item;
-	const thttp_header_t* hdr = 0;
+	const thttp_header_t* hdr = tsk_null;
 
 	if(self)
 	{		
@@ -212,6 +212,40 @@ bail:
 const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thttp_header_type_t type)
 {
 	return thttp_message_get_headerAt(self, type, 0);
+}
+
+/**@ingroup thttp_message_group
+*/
+const thttp_header_t *thttp_message_get_headerByName(const thttp_message_t *self, const char* name)
+{
+	size_t pos = 0;
+	tsk_list_item_t *item;
+	const thttp_header_t* hdr = tsk_null;
+
+	if(self)
+	{
+		if(tsk_striequals(name, "Content-Type")){
+			hdr = (const thttp_header_t*)self->Content_Type;
+			goto bail;
+		}
+		
+		if(tsk_striequals(name, "Content-Length")){
+			hdr = (const thttp_header_t*)self->Content_Length;
+			goto bail;
+		}
+
+		tsk_list_foreach(item, self->headers)
+		{
+			if(!pred_find_header_by_name(item, name))
+			{
+				hdr = item->data;
+				break;
+			}
+		}
+	}
+
+bail:
+	return hdr;
 }
 
 /**@ingroup thttp_message_group

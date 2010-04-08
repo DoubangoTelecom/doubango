@@ -283,13 +283,11 @@ bail:
 static tsk_object_t* tsk_param_create(tsk_object_t* self, va_list * app)
 {
 	tsk_param_t *param = self;
-	if(param)
-	{
+	if(param){
 		const char* name = va_arg(*app, const char *);
 		const char* value = va_arg(*app, const char *);
 
-		if(name) 
-		{
+		if(name) {
 			param->name = tsk_strdup(name);
 			if(value && !tsk_strempty(value)) {
 				param->value = tsk_strdup(value);

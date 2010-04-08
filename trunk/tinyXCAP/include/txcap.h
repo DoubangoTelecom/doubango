@@ -60,6 +60,9 @@ typedef enum txcap_stack_param_type_e
 }
 txcap_stack_param_type_t;
 
+/* For systems that support SIP applications, it is
+   RECOMMENDED that the XUI be equal to the Address-of-Record (AOR) for
+   the user (i.e., sip:joe@example.com) */
 
 #define TXCAP_STACK_SET_OPTION(ID_INT, VALUE_STR)											xcapp_option,  (txcap_stack_option_t)ID_INT, (const char*)VALUE_STR
 #define TXCAP_STACK_SET_PASSWORD(PASSWORD_STR)												TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_PASSWORD, PASSWORD_STR)
@@ -67,7 +70,6 @@ txcap_stack_param_type_t;
 #define TXCAP_STACK_SET_HEADER(NAME_STR, VALUE_STR)											xcapp_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TXCAP_STACK_SET_CONTEXT(CTX_PTR)													xcapp_context, (const void*)CTX_PTR
 #define TXCAP_STACK_SET_AUID(ID_STR, MIME_TYPE_STR, NS_STR, DOC_NAME_STR, IS_GLOBAL_BOOL)	xcapp_auid, (const char*)ID_STR, (const char*)MIME_TYPE_STR, (const char*)NS_STR, (const char*)DOC_NAME_STR, (tsk_bool_t)IS_GLOBAL_BOOL
-#define TXCAP_STACK_SET_SELECTOR(...)
 
 #define TXCAP_STACK_SET_NULL()							xcapp_null
 
@@ -95,7 +97,6 @@ typedef void txcap_stack_handle_t;
 TINYXCAP_API txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback callback, const char* xui, const char* password, const char* xcap_root, ...);
 TINYXCAP_API int txcap_stack_start(txcap_stack_handle_t* self);
 TINYXCAP_API int txcap_stack_set(txcap_stack_handle_t* self, ...);
-TINYXCAP_API int txcap_stack_perform(txcap_stack_handle_t* self, const char* urlstring, ...);
 TINYXCAP_API int txcap_stack_stop(txcap_stack_handle_t* self);
 
 TINYXCAP_GEXTERN const tsk_object_def_t *txcap_stack_def_t;

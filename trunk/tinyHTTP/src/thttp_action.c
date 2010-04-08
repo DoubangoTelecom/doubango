@@ -109,10 +109,12 @@ static tsk_object_t* thttp_action_create(tsk_object_t * self, va_list * app)
 		action->options = TSK_LIST_CREATE();
 		action->headers = TSK_LIST_CREATE();
 
-		while((curr=va_arg(*app_2, thttp_action_param_type_t)) != aptype_null)
-		{
-			switch(curr)
-			{
+		if(!app_2){ /* XCAP stack will pass null va_list */
+			goto bail;
+		}
+
+		while((curr = va_arg(*app_2, thttp_action_param_type_t)) != aptype_null){
+			switch(curr){
 				case aptype_option:
 					{
 						thhtp_action_option_t id = va_arg(*app_2, thhtp_action_option_t);
@@ -145,8 +147,8 @@ static tsk_object_t* thttp_action_create(tsk_object_t * self, va_list * app)
 						TSK_DEBUG_ERROR("NOT SUPPORTED.");
 						goto bail;
 					}
-			}
-		}
+			} /* switch */
+		} /* while */
 	}
 bail:
 	return self;

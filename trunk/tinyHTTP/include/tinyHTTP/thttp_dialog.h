@@ -61,8 +61,8 @@ thttp_dialog_t;
 
 typedef tsk_list_t thttp_dialogs_L_t;
 
-int thttp_dialog_fsm_act(thttp_dialog_t* self, tsk_fsm_action_id , const struct thttp_message_s* , const struct thttp_action_s*);
-thttp_dialog_t* thttp_dialog_new(struct thttp_session_s* session);
+TINYHTTP_API int thttp_dialog_fsm_act(thttp_dialog_t* self, tsk_fsm_action_id , const struct thttp_message_s* , const struct thttp_action_s*);
+TINYHTTP_API thttp_dialog_t* thttp_dialog_new(struct thttp_session_s* session);
 thttp_dialog_t* thttp_dialog_get_oldest(thttp_dialogs_L_t* dialogs);
 
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_dialog_def_t;

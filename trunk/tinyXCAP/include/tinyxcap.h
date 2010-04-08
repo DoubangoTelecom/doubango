@@ -28,4 +28,10 @@
  */
 #include "txcap.h"
 
+/* TINYHTTP */
+#include "tinyhttp.h"
+
+#include "tinyXCAP/txcap_selector.h"
 #include "tinyXCAP/txcap_document.h"
+#include "tinyXCAP/txcap_node.h"
+#include "tinyXCAP/txcap_action.h"

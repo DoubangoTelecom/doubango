@@ -103,23 +103,23 @@ TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_lis
 TINYSAK_API void tsk_list_clear_items(tsk_list_t* list);
 
 TINYSAK_API tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list);
-TINYSAK_API void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, int back);
-#define tsk_list_push_back_item(list, item) tsk_list_push_item(list, item, 1)
-#define tsk_list_push_front_item(list, item) tsk_list_push_item(list, item, 0)
-TINYSAK_API void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, int ascending);
-#define tsk_list_push_ascending_item(list, item) tsk_list_pushfiltered_item(list, item, 1)
-#define tsk_list_push_descending_item(list, item) tsk_list_pushfiltered_item(list, item, 0)
+TINYSAK_API void tsk_list_push_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t back);
+#define tsk_list_push_back_item(list, item) tsk_list_push_item(list, item, tsk_true)
+#define tsk_list_push_front_item(list, item) tsk_list_push_item(list, item, tsk_false)
+TINYSAK_API void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_bool_t ascending);
+#define tsk_list_push_ascending_item(list, item) tsk_list_pushfiltered_item(list, item, tsk_true)
+#define tsk_list_push_descending_item(list, item) tsk_list_pushfiltered_item(list, item, tsk_false)
 
 TINYSAK_API void tsk_list_push_list(tsk_list_t* destination, const tsk_list_t* source, tsk_bool_t back);
 #define tsk_list_pushback_list(destination, source) tsk_list_push_list(destination, source, tsk_true)
 #define tsk_list_pushfront_list(destination, source) tsk_list_push_list(destination, source, tsk_false)
 
-TINYSAK_API void tsk_list_push_data(tsk_list_t* list, void** data, int back);
-#define tsk_list_push_back_data(list, data) tsk_list_push_data(list, data, 1)
-#define tsk_list_push_front_data(list, data) tsk_list_push_data(list, data, 0)
-TINYSAK_API void tsk_list_push_filtered_data(tsk_list_t* list, void** data, int ascending);
-#define tsk_list_push_ascending_data(list, data) tsk_list_push_filtered_data(list, data, 1)
-#define tsk_list_push_descending_data(list, data) tsk_list_push_filtered_data(list, data, 0)
+TINYSAK_API void tsk_list_push_data(tsk_list_t* list, void** data, tsk_bool_t back);
+#define tsk_list_push_back_data(list, data) tsk_list_push_data(list, data, tsk_true)
+#define tsk_list_push_front_data(list, data) tsk_list_push_data(list, data, tsk_false)
+TINYSAK_API void tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_bool_t ascending);
+#define tsk_list_push_ascending_data(list, data) tsk_list_push_filtered_data(list, data, tsk_true)
+#define tsk_list_push_descending_data(list, data) tsk_list_push_filtered_data(list, data, tsk_false)
 
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj);
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
