@@ -161,6 +161,7 @@ int thttp_session_set(thttp_session_handle_t *self, ...)
 		thttp_session_t *session = self;
 
 		if(session->id == THTTP_SESSION_INVALID_ID){
+			TSK_DEBUG_ERROR("Using invalid session.");
 			return -2;
 		}
 		
@@ -289,7 +290,9 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 
 		tsk_list_foreach(item, self->challenges){
 			challenge = item->data;
-			if(!challenge->isproxy) continue;
+			if(!challenge->isproxy){
+				continue;
+			}
 			
 			if(tsk_strequals(challenge->realm, Proxy_Authenticate->realm) && (Proxy_Authenticate->stale || first)){
 				/*== (B) ==*/
@@ -392,7 +395,7 @@ bail:
 static tsk_object_t* _thttp_session_create(tsk_object_t * self, va_list * app)
 {
 	thttp_session_t *session = self;
-	static thttp_session_id_t unique_id = 0;
+	static thttp_session_id_t unique_id = THTTP_SESSION_INVALID_ID;
 	if(session){
 		tsk_safeobj_init(session);
 
@@ -407,6 +410,7 @@ static tsk_object_t* _thttp_session_create(tsk_object_t * self, va_list * app)
 
 		/* add the session to the stack */
 		if(session->stack){
+			session->id = ++unique_id;
 			tsk_list_push_back_data(session->stack->sessions, (void**)&session);
 		}
 	}

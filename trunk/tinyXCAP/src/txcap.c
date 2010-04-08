@@ -38,6 +38,7 @@
 int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 {
 	txcap_stack_param_type_t curr;
+	tsk_bool_t cred_updated = tsk_false;
 
 	if(!self || !self->http_session){
 		return -1;
@@ -49,7 +50,26 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 				{	/* (txcap_stack_option_t)ID_INT, (const char*)VALUE_STR */
 					txcap_stack_option_t ID_IN = va_arg(*app, txcap_stack_option_t);
 					const char* VALUE_STR = va_arg(*app, const char*);
-					tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, ID_IN, VALUE_STR);
+					switch(ID_IN){
+						/* PASSWORD and XUI are not used as options in the HTTP/HTTPS stack */
+						case TXCAP_STACK_OPTION_PASSWORD:
+							{
+								tsk_strupdate(&self->password, VALUE_STR);
+								cred_updated = tsk_true;
+								break;
+							}
+						case TXCAP_STACK_OPTION_XUI:
+							{
+								tsk_strupdate(&self->xui, VALUE_STR);
+								cred_updated = tsk_true;
+								break;
+							}
+						default:
+							{
+								tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, ID_IN, VALUE_STR);
+								break;
+							}
+					}
 					break;
 				}
 			
@@ -90,6 +110,13 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 				}
 		} /* switch */
 	} /* while */
+
+	if(cred_updated && self->http_session){
+		/* credentials */
+		thttp_session_set(self->http_session,
+			THTTP_SESSION_SET_CRED(self->xui, self->password),
+			THTTP_SESSION_SET_NULL());
+	}
 	return 0;
 
 bail:
@@ -119,7 +146,7 @@ bail:
 */
 txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback callback, const char* xui, const char* password, const char* xcap_root, ...)
 {
-	txcap_stack_handle_t* ret = tsk_null;
+	txcap_stack_t* ret = tsk_null;
 
 	if(!xui || !xcap_root){
 		TSK_DEBUG_ERROR("Both xui and xcap_root are mandatory and should be non-null");
@@ -142,6 +169,14 @@ txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback callback, const ch
 		va_start(ap, xcap_root);
 		__txcap_stack_set(ret, &ap);
 		va_end(ap);
+		/* credendials */
+		tsk_strupdate(&ret->xui, xui);
+		tsk_strupdate(&ret->password, password);
+		if(ret->http_session){
+			thttp_session_set(ret->http_session,
+				THTTP_SESSION_SET_CRED(ret->xui, ret->password),
+				THTTP_SESSION_SET_NULL());
+		}
 	}
 
 bail:

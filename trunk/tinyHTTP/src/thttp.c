@@ -88,6 +88,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 
 		case event_connected:
 		default:{
+				tsk_safeobj_unlock(stack);
 				return 0;
 			}
 	}
@@ -138,7 +139,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			while(start < end){
 				/* RFC 2616 - 19.4.6 Introduction of Transfer-Encoding */
 				// read chunk-size, chunk-extension (if any) and CRLF
-				size_t chunk_size = atoi(start);
+				size_t chunk_size = (size_t)tsk_atox(start);
 				if((index = tsk_strindexOf(start, (end-start), "\r\n")) >=0){
 					start += index + 2/*CRLF*/;
 				}

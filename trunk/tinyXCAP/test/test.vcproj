@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="test"
 	ProjectGUID="{2A476CAA-BA45-4379-AFEC-088645840527}"
 	RootNamespace="test"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="196613"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyHTTP\include;..\..\tinyXCAP\include;..\..\tinyNET\src;..\..\tinySAK\src;..\..\thirdparties\win32\include\smc"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,10 +65,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinyXCAP.lib $(OutDir)\tinySAK.lib"
+				AdditionalDependencies="$(OutDir)\tinyXCAP.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -144,6 +146,8 @@
 				GenerateDebugInformation="true"
 				SubSystem="8"
 				EntryPointSymbol="mainWCRTStartup"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -223,6 +227,8 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -300,6 +306,8 @@
 				SubSystem="8"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="0"
 			/>
 			<Tool
@@ -365,51 +373,11 @@
 			Name="tests"
 			>
 			<File
-				RelativePath=".\test_async.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_gsma_rcs.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_http.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_ietf-pres-rules.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_oma-directory.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_oma-pres-cont.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_oma-pres-rules.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_rlist.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_rls.h"
-				>
-			</File>
-			<File
 				RelativePath=".\test_selector.h"
 				>
 			</File>
 			<File
-				RelativePath=".\test_xcap-caps.h"
-				>
-			</File>
-			<File
-				RelativePath=".\test_xdmc.h"
+				RelativePath=".\test_stack.h"
 				>
 			</File>
 		</Filter>

@@ -52,6 +52,8 @@ int txcap_action_perform(txcap_stack_handle_t* stack, txcap_action_type_t type, 
 	const char* method = "GET";
 	const char* mime_type = tsk_null;
 	const char* AUID_STR = tsk_null;
+	const void* PAY_PTR = tsk_null;
+	size_t PAY_SIZE = 0;
 	va_list ap;
 	txcap_stack_t* xcap_stack = stack;
 
@@ -83,8 +85,8 @@ int txcap_action_perform(txcap_stack_handle_t* stack, txcap_action_type_t type, 
 				}
 			case txcap_apt_payload:
 				{	/*(const void*)PAY_PTR, (size_t)PAY_SIZE*/
-					const char* PAY_PTR = va_arg(ap, const char *);
-					size_t PAY_SIZE = va_arg(ap, size_t);
+					PAY_PTR = va_arg(ap, const void *);
+					PAY_SIZE = va_arg(ap, size_t);
 					break;
 				}
 			case txcap_apt_selector:
@@ -173,6 +175,11 @@ done:
 				if(!tsk_params_have_param(action->headers, "Content-Type")){
 					tsk_params_add_param(&action->headers, "Content-Type", mime_type);
 				}
+			}
+
+			/* payload */
+			if(PAY_PTR && PAY_SIZE){
+				action->payload = TSK_BUFFER_CREATE(PAY_PTR, PAY_SIZE);
 			}
 			
 			/* performs */
