@@ -28,11 +28,11 @@ int test_stack_callback(const thttp_event_t *httpevent)
 	switch(httpevent->type){
 		case thttp_event_message: /* New HTTP message */
 			{
-				const thttp_header_t* etag;
 				TSK_DEBUG_INFO("sid=%llu", id);
-				if(THTTP_RESPONSE_IS_2XX(httpevent->message)){
-					TSK_DEBUG_INFO("=== 2xx ==> %s", THTTP_MESSAGE_CONTENT(httpevent->message));
-					// You can use
+				if(THTTP_MESSAGE_IS_RESPONSE(httpevent->message)){
+					const thttp_header_t* etag;
+					TSK_DEBUG_INFO("=== %d ==> %s", THTTP_RESPONSE_CODE(httpevent->message), THTTP_MESSAGE_CONTENT(httpevent->message));
+					// You can use 
 					if((etag = thttp_message_get_headerByName(httpevent->message, "etag"))){
 						if(etag->type == thttp_htype_Dummy){
 							TSK_DEBUG_INFO("Etag=%s", ((thttp_header_Dummy_t*)etag)->value);
@@ -103,17 +103,11 @@ void test_stack()
 		// session-level headers
 		THTTP_SESSION_SET_HEADER("Pragma", "No-Cache"),
 		THTTP_SESSION_SET_HEADER("Connection", "Keep-Alive"),
-		THTTP_SESSION_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
-		THTTP_SESSION_SET_HEADER("X-3GPP-Intended-Identity", "sip:mamadou@micromethod.com"),
+		THTTP_SESSION_SET_HEADER("User-Agent", "doubango 1.0"),
 		
 		THTTP_SESSION_SET_NULL()); /* MUST always be present */
 
-	thttp_session_set(session,
-		// credentials
-		THTTP_SESSION_SET_CRED("sip:mercuro1@colibria.com", "mercuro13"),
 
-		THTTP_SESSION_SET_NULL());
-/*
 	thttp_action_GET(session, "http://ipv6.google.com",
 		// action-level options
 		THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
@@ -123,28 +117,10 @@ void test_stack()
 		THTTP_ACTION_SET_HEADER("Connection", "Keep-Alive"),
 		
 		THTTP_ACTION_SET_NULL());
-*/
-	/*
-	ret = thttp_action_GET(session, "http://192.168.16.104:8080/services/xcap-caps/global/index",
+	getchar();
+	ret = thttp_action_GET(session, "http://doubango.org",
 			// action-level options
 			THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
-			
-			// action-level headers
-			THTTP_ACTION_SET_HEADER("Content-Type", "application/xcap-caps+xml"),
-			
-			THTTP_ACTION_SET_NULL());
-*/
-	ret = thttp_action_PUT(session, "http://192.168.16.104:8080/services/resource-lists/users/sip:mamadou@micromethod.com/index/~~/resource-lists/list%5B@name=%22rcs%22%5D/entry%5B@uri=%22sip%3Asamba%40micromethod.com%22%5D",
-			// action-level options
-			THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
-			
-			// Payload
-			THTTP_ACTION_SET_PAYLOAD(PAYLOAD, strlen(PAYLOAD)),
-
-			// action-level headers
-			
-			THTTP_ACTION_SET_HEADER("Content-Type", " application/xcap-el+xml"),
-			THTTP_ACTION_SET_HEADER("Expect", "100-continue"),
 			
 			THTTP_ACTION_SET_NULL());
 

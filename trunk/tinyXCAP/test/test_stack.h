@@ -22,14 +22,21 @@
 #ifndef _TEST_STACK_H
 #define _TEST_STACK_H
 
+#define PAYLOAD_LIST "<list name=\"newlist\" xmlns=\"urn:ietf:params:xml:ns:resource-lists\">" \
+					 "<display-name>newlist</display-name>" \
+					 "</list>"
+#define PAYLOAD_ENTRY "<entry uri=\""XUI"\" xmlns=\"urn:ietf:params:xml:ns:resource-lists\">" \
+					  "<display-name>"XUI"</display-name>" \
+					  "</entry>"
+
 int test_stack_callback(const thttp_event_t *httpevent)
 {
 	switch(httpevent->type){
 		case thttp_event_message: /* New HTTP message */
 			{
-				if(THTTP_RESPONSE_IS_2XX(httpevent->message)){
+				if(THTTP_MESSAGE_IS_RESPONSE(httpevent->message)){
 					const thttp_header_t* etag;
-					TSK_DEBUG_INFO("=== 2xx ==> %s", THTTP_MESSAGE_CONTENT(httpevent->message));
+					TSK_DEBUG_INFO("=== %d ==> %s", THTTP_RESPONSE_CODE(httpevent->message), THTTP_MESSAGE_CONTENT(httpevent->message));
 					// You can use 
 					if((etag = thttp_message_get_headerByName(httpevent->message, "etag"))){
 						if(etag->type == thttp_htype_Dummy){
@@ -70,7 +77,7 @@ void test_stack()
 	txcap_stack_handle_t* stack = tsk_null;
 	int ret;
 
-	stack = txcap_stack_create(test_stack_callback, "sip:mamadou@micromethod.com", "mysecret", "http://192.168.16.104:8080/services",
+	stack = txcap_stack_create(test_stack_callback, XUI, PASSWORD, XCAP_ROOT,
 		
 		// stack-level options
 		TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),
@@ -78,6 +85,7 @@ void test_stack()
 		// stack-level headers
 		TXCAP_STACK_SET_HEADER("Connection", "Keep-Alive"),
 		TXCAP_STACK_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
+		TXCAP_STACK_SET_HEADER("X-3GPP-Intended-Identity", XUI),
 		
 		TXCAP_STACK_SET_NULL());
 	
@@ -93,7 +101,7 @@ void test_stack()
 		TXCAP_STACK_SET_NULL()); /* mandatory */
 
 	//== get xcap-caps document
-	ret = txcap_action_fetch_document(stack,
+	/*ret = txcap_action_fetch_document(stack,
 		// action-level options
 		TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
 		// action-level headers
@@ -108,7 +116,7 @@ void test_stack()
 	getchar();
 
 	//== get resource-lists document
-	/*ret = txcap_action_fetch_document(stack,
+	ret = txcap_action_fetch_document(stack,
 		// action-level options
 		TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
 		//action-level headers
@@ -168,10 +176,10 @@ void test_stack()
 		TXCAP_ACTION_SET_NULL()
 		);
 
-	getchar();*/
+	getchar();
 
 	//== Retrieve the entry with: uri=XUI and list='rcs'
-	/*ret = txcap_action_fetch_element(stack,
+	ret = txcap_action_fetch_element(stack,
 		// action-level options
 		TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
 		// headers
@@ -224,7 +232,7 @@ void test_stack()
 		getchar();
 
 	//== Retrieve the entry with: uri='XUI' from position 1 from 'rcs' list
-	ret = txcap_action_fetch_attribute(stack,
+	ret = txcap_action_fetch_element(stack,
 	// action-level options
 	TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
 	// headers
@@ -238,8 +246,57 @@ void test_stack()
 	TXCAP_ACTION_SET_NULL()
 	);
 
+	getchar();
+
+	//== Add newlist
+	ret = txcap_action_create_element(stack,
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("resource-lists",
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "newlist"),
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// payload
+		TXCAP_ACTION_SET_PAYLOAD(PAYLOAD_LIST, strlen(PAYLOAD_LIST)),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+	getchar();
+
+	//== Add entry
+	ret = txcap_action_create_element(stack,
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("resource-lists",
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "newlist"),
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("entry", "uri", XUI),
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// payload
+		TXCAP_ACTION_SET_PAYLOAD(PAYLOAD_ENTRY, strlen(PAYLOAD_ENTRY)),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+	getchar();
+
+	//== Add entry using dummy URI
+	ret = txcap_action_create_element(stack,
+		// dummy uri
+		TXCAP_ACTION_SET_REQUEST_URI("http://doubango.org/services/dummy/"XUI),
+		// payload
+		TXCAP_ACTION_SET_PAYLOAD(PAYLOAD_ENTRY, strlen(PAYLOAD_ENTRY)),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
 	getchar();*/
 
+	//== Delete entry
+	ret = txcap_action_delete_element(stack,
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("resource-lists",
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "newlist"),
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("entry", "uri", XUI),
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+	getchar();
 
 bail:
 	TSK_OBJECT_SAFE_FREE(stack);

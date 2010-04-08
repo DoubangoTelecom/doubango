@@ -418,6 +418,16 @@ void tsk_itoa(int64_t i, tsk_istr_t *result)
     sprintf(*result,"%lld",i);
 }
 
+/**@ingroup tsk_string_group
+*/
+long tsk_atox(const char* str)
+{
+	long ret = 0;
+	if(str){
+		sscanf(str, "%x", &ret);
+	}
+	return ret;
+}
 
 /**@ingroup tsk_string_group
  * Generates a random string.

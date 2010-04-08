@@ -30,9 +30,13 @@
 #define RUN_TEST_STACK				1
 
 
-#define XUI "sip:mamadou@micromethod.com"
-#define PASSWORD "mysecret"
-#define XCAP_ROOT "http://192.168.16.104:8080/services"
+//#define XUI "sip:mamadou@micromethod.com"
+//#define PASSWORD "mysecret"
+//#define XCAP_ROOT "http://192.168.16.104:8080/services"
+
+#define XUI "sip:mercuro1@colibria.com"
+#define PASSWORD "mercuro1"
+#define XCAP_ROOT "http://siptest.colibria.com:8080/services"
 
 
 #if RUN_TEST_SELECTOR || RUN_TEST_ALL
