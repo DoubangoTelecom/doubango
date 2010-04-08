@@ -39,7 +39,7 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 {
 	txcap_stack_param_type_t curr;
 
-	if(!self){
+	if(!self || !self->http_session){
 		return -1;
 	}
 
@@ -49,9 +49,7 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 				{	/* (txcap_stack_option_t)ID_INT, (const char*)VALUE_STR */
 					txcap_stack_option_t ID_IN = va_arg(*app, txcap_stack_option_t);
 					const char* VALUE_STR = va_arg(*app, const char*);
-					
-
-
+					tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, ID_IN, VALUE_STR);
 					break;
 				}
 			
@@ -59,12 +57,14 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 				{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* NAME_STR = va_arg(*app, const char*);
 					const char* VALUE_STR = va_arg(*app, const char*);
+					tsk_params_add_param(&((thttp_session_t*)self->http_session)->headers, NAME_STR, VALUE_STR);
 					break;
 				}
 			
 			case xcapp_context:
 				{	/* (const void*)CTX_PTR */
 					const void* CTX_PTR = va_arg(*app, const void*);
+					((thttp_session_t*)self->http_session)->context = CTX_PTR;
 					break;
 				}
 
@@ -136,6 +136,13 @@ txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback callback, const ch
 		TSK_DEBUG_FATAL("Failed to create the XCAP stack");
 		goto bail;
 	}
+	else{
+		/* set parameters */
+		va_list ap;
+		va_start(ap, xcap_root);
+		__txcap_stack_set(ret, &ap);
+		va_end(ap);
+	}
 
 bail:
 	return ret;
@@ -189,13 +196,6 @@ int txcap_stack_set(txcap_stack_handle_t* self, ...)
 
 bail:
 	return ret;
-}
-
-/**@ingroup txcap_stack_group
-*/
-int txcap_stack_perform(txcap_stack_handle_t* self, const char* urlstring, ...)
-{
-
 }
 
 /**@ingroup txcap_stack_group

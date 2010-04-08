@@ -89,11 +89,11 @@ char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 					break;
 				}
 			case xcapp_node_pos:
-				{	/* (const char*)QNAME_STR, (unsigned int)POS_INT */
+				{	/* (const char*)QNAME_STR, (unsigned int)POS_UINT */
 					const char* QNAME_STR = va_arg(*app, const char*);
-					unsigned int POS_INT = va_arg(*app, unsigned int);
+					unsigned int POS_UINT = va_arg(*app, unsigned int);
 					tsk_buffer_appendEx(buffer, "/%s%%5B%u%%5D", 
-						QNAME_STR, POS_INT);
+						QNAME_STR, POS_UINT);
 					break;
 				}
 			case xcapp_node_attribute:

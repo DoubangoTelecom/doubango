@@ -84,7 +84,7 @@ txcap_selector_param_type_t;
 * Ends node selection steps. Must always be present and should be the last one.
 */
 #define TXCAP_SELECTOR_NODE_SET_NAME(QNAME_STR)														xcapp_node_name, (const char*)QNAME_STR
-#define TXCAP_SELECTOR_NODE_SET_POS(QNAME_STR, POS_UINT)											xcapp_node_pos, (const char*)QNAME_STR, (unsigned int)POS_INT
+#define TXCAP_SELECTOR_NODE_SET_POS(QNAME_STR, POS_UINT)											xcapp_node_pos, (const char*)QNAME_STR, (unsigned int)POS_UINT
 #define TXCAP_SELECTOR_NODE_SET_ATTRIBUTE(QNAME_STR, ATT_QNAME_STR, ATT_VALUE_STR)					xcapp_node_attribute, (const char*)QNAME_STR, (const char*)ATT_QNAME_STR, (const char*)ATT_VALUE_STR
 #define TXCAP_SELECTOR_NODE_SET_POS_ATTRIBUTE(QNAME_STR, POS_UINT, ATT_QNAME_STR, ATT_VALUE_STR)	xcapp_node_pos_n_attribute, (const char*)QNAME_STR, (unsigned int)POS_UINT, (const char*)ATT_QNAME_STR, (const char*)ATT_VALUE_STR
 #define TXCAP_SELECTOR_NODE_SET_NAMESPACE(PREFIX_STR, VALUE_STR)									xcapp_node_namespace, (const char*)PREFIX_STR, (const char*)VALUE_STR

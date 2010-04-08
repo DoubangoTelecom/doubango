@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyXCAP\include\tinyXCAP\txcap_action.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyXCAP\include\tinyXCAP\txcap_auid.h"
 				>
 			</File>
@@ -217,6 +221,10 @@
 			>
 			<File
 				RelativePath="..\..\tinyXCAP\src\txcap.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyXCAP\src\txcap_action.c"
 				>
 			</File>
 			<File

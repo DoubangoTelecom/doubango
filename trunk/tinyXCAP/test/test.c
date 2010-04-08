@@ -26,13 +26,14 @@
 #define LOOP						1
 
 #define RUN_TEST_ALL				0
-#define RUN_TEST_SELECTOR			1
-#define RUN_TEST_STACK				0
+#define RUN_TEST_SELECTOR			0
+#define RUN_TEST_STACK				1
 
 
 #define XUI "sip:mamadou@micromethod.com"
 #define PASSWORD "mysecret"
 #define XCAP_ROOT "http://192.168.16.104:8080/services"
+
 
 #if RUN_TEST_SELECTOR || RUN_TEST_ALL
 #include "test_selector.h"

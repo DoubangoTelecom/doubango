@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinyXCAP.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinyXCAP.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
