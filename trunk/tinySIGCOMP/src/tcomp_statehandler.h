@@ -45,12 +45,11 @@
 
 TCOMP_BEGIN_DECLS
 
-/**@ingroup tcomp_statehandler_group
-* Creates new SigComp state handler.
+/**Creates new SigComp state handler.
 */
 #define TCOMP_STATEHANDLER_CREATE()				tsk_object_new(tcomp_statehandler_def_t)
 
-/**@ingroup tcomp_statehandler_group
+/**State handler.
 */
 typedef struct tcomp_statehandler_s
 {
@@ -69,16 +68,16 @@ tcomp_statehandler_t;
 
 tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_t *statehandler, uint64_t id);
 void tcomp_statehandler_deleteCompartment(tcomp_statehandler_t *statehandler, uint64_t id);
-int tcomp_statehandler_compartmentExist(tcomp_statehandler_t *statehandler, uint64_t id);
+tsk_bool_t tcomp_statehandler_compartmentExist(tcomp_statehandler_t *statehandler, uint64_t id);
 uint16_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t** lpState);
 
 void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_result_t **lpResult);
-int tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t *);
+tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t *);
 
 void tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler);
 void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler);
 
-TINYSIGCOMP_GEXTERN const void *tcomp_statehandler_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_statehandler_def_t;
 
 TCOMP_END_DECLS
 

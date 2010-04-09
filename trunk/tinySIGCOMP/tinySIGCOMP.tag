@@ -7,9 +7,9 @@
   </compound>
   <compound kind="file">
     <name>adler32.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>adler32_8c</filename>
-    <includes id="zlib_8h" name="zlib.h" local="yes" imported="no">zlib.h</includes>
+    <includes id="adler32_8c" name="adler32.c" local="yes" imported="no">zlib.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>ZLIB_INTERNAL</name>
@@ -97,7 +97,7 @@
   </compound>
   <compound kind="file">
     <name>compress.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>compress_8c</filename>
     <includes id="zlib_8h" name="zlib.h" local="yes" imported="no">zlib.h</includes>
     <member kind="define">
@@ -131,9 +131,10 @@
   </compound>
   <compound kind="file">
     <name>deflate.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>deflate_8c</filename>
-    <includes id="deflate_8h" name="deflate.h" local="yes" imported="no">deflate.h</includes>
+    <includes id="deflate_8c" name="deflate.c" local="yes" imported="no">deflate.h</includes>
+    <includes id="zlib_8h" name="zlib.h" local="yes" imported="no">zlib.h</includes>
     <class kind="struct">config_s</class>
     <class kind="struct">static_tree_desc_s</class>
     <member kind="define">
@@ -463,7 +464,7 @@
   </compound>
   <compound kind="file">
     <name>deflate.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>deflate_8h</filename>
     <includes id="zutil_8h" name="zutil.h" local="yes" imported="no">zutil.h</includes>
     <class kind="struct">ct_data_s</class>
@@ -738,21 +739,23 @@
   </compound>
   <compound kind="file">
     <name>tcomp.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp_8c</filename>
-    <includes id="tcomp_8h" name="tcomp.h" local="yes" imported="no">tcomp.h</includes>
+    <includes id="tcomp_8c" name="tcomp.c" local="yes" imported="no">tcomp.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
   </compound>
   <compound kind="file">
     <name>tcomp.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
   </compound>
   <compound kind="file">
     <name>tcomp_buffer.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__buffer_8c</filename>
-    <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
+    <includes id="tcomp__buffer_8c" name="tcomp_buffer.c" local="yes" imported="no">tcomp_buffer.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <class kind="struct">tcomp_buffer_s</class>
     <member kind="define">
       <type>#define</type>
@@ -771,203 +774,203 @@
     <member kind="typedef">
       <type>struct tcomp_buffer_s</type>
       <name>tcomp_buffer_t</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga00631535fe1bb8a1c3e4bcea429462ca</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a00631535fe1bb8a1c3e4bcea429462ca</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_buffer_equals</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga648cfce9e275749fcb6a92f45070b470</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a648cfce9e275749fcb6a92f45070b470</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle1, const tcomp_buffer_handle_t *handle2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_buffer_startsWith</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga536e7abae6bcf9d8c09407e3805037f2</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a536e7abae6bcf9d8c09407e3805037f2</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle1, const tcomp_buffer_handle_t *handle2)</arglist>
     </member>
     <member kind="function">
       <type>const uint8_t *</type>
       <name>tcomp_buffer_getReadOnlyBufferAtPos</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga07e8b7d6077e9b5fa595cd645f55350f</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a07e8b7d6077e9b5fa595cd645f55350f</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t *</type>
       <name>tcomp_buffer_getBufferAtPos</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga7fa5783b07830935e3e9dfab2b0d88d4</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a7fa5783b07830935e3e9dfab2b0d88d4</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
     </member>
     <member kind="function">
       <type>size_t</type>
       <name>tcomp_buffer_getSize</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga8a0feee2496555b59b2a56053f666c33</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a8a0feee2496555b59b2a56053f666c33</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>size_t</type>
       <name>tcomp_buffer_getRemainingBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga8d4e064d6d2bc4ac16e4282b2cdc5e1c</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a8d4e064d6d2bc4ac16e4282b2cdc5e1c</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t *</type>
       <name>tcomp_buffer_readBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga304f31d779262d58175b06b7035f2971</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a304f31d779262d58175b06b7035f2971</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_buffer_readLsbToMsb</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga2441e395531499627ab17dc2ff957598</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a2441e395531499627ab17dc2ff957598</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_buffer_readMsbToLsb</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gadd61bb3234115bcb8214016da0d10f80</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>add61bb3234115bcb8214016da0d10f80</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_discardBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaa1eb82e5dc1dcf5132ead711f36d5b7d</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>aa1eb82e5dc1dcf5132ead711f36d5b7d</anchor>
       <arglist>(tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_discardLastBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga3776db46a6db1354e8f4d005ee29df55</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a3776db46a6db1354e8f4d005ee29df55</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, uint16_t count)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_allocBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga310392d2a48ac26f8116b5946b7ff020</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a310392d2a48ac26f8116b5946b7ff020</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_referenceBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gae4e7f643560dff38397e3d0b4e19333d</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>ae4e7f643560dff38397e3d0b4e19333d</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, uint8_t *externalBuff, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_buffer_appendBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gab9b03fae8d86c26f267b71cc9a7825ab</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>ab9b03fae8d86c26f267b71cc9a7825ab</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, const void *data, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_buffer_removeBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaae0c8c3e1999b736fc17fdee7d192e2d</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>aae0c8c3e1999b736fc17fdee7d192e2d</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t pos, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_freeBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga6784139de22f5733384ea1fa2be25a74</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a6784139de22f5733384ea1fa2be25a74</anchor>
       <arglist>(tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>size_t *</type>
       <name>tcomp_buffer_getIndexBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga305d4f691c8e30a0273f71ada63b0518</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a305d4f691c8e30a0273f71ada63b0518</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>size_t *</type>
       <name>tcomp_buffer_getIndexBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gadd4e1e7c72885bcdeadbd61645151b01</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>add4e1e7c72885bcdeadbd61645151b01</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t *</type>
       <name>tcomp_buffer_getP_BIT</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga791d3f1c107a65c2fde0ad782315a5a6</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a791d3f1c107a65c2fde0ad782315a5a6</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>uint64_t</type>
       <name>tcomp_buffer_createHash</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gad2f920de44f214da94847311401c5669</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>ad2f920de44f214da94847311401c5669</anchor>
       <arglist>(const void *data, size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_nprint</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gae7081ba73675881e1f25757ac5b53203</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>ae7081ba73675881e1f25757ac5b53203</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_reset</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga885d54447fb62c4223b212f386d304e2</anchor>
+      <anchorfile>tcomp__buffer_8c.html</anchorfile>
+      <anchor>a885d54447fb62c4223b212f386d304e2</anchor>
       <arglist>(tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_buffer_def_t</name>
       <anchorfile>tcomp__buffer_8c.html</anchorfile>
-      <anchor>a8d99cf9e8689f7d7613e3dfb086805fe</anchor>
+      <anchor>a2c49d9356221b178839dc2892a3da27d</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_buffer.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__buffer_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_P_BIT_MSB_TO_LSB</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gafb63054a518d87c6fffcfd9b7c89b5c5</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>afb63054a518d87c6fffcfd9b7c89b5c5</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_P_BIT_LSB_TO_MSB</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga7b99c2f2efb0bd844d6a8ab097a84f03</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a7b99c2f2efb0bd844d6a8ab097a84f03</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>_TCOMP_BUFFER_CREATE</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga136ddc72ae5cb2ccddf36ce726b5a277</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a136ddc72ae5cb2ccddf36ce726b5a277</anchor>
       <arglist>(data, len)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_BUFFER_CREATE</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaea4f163777b093b4ef28a2b3256ed712</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>aea4f163777b093b4ef28a2b3256ed712</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="define">
@@ -994,272 +997,276 @@
     <member kind="typedef">
       <type>void</type>
       <name>tcomp_buffer_handle_t</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaeb155cac21d622093c9ea495b9b8e144</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>aeb155cac21d622093c9ea495b9b8e144</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_buffer_equals</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga648cfce9e275749fcb6a92f45070b470</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a648cfce9e275749fcb6a92f45070b470</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle1, const tcomp_buffer_handle_t *handle2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_buffer_startsWith</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga536e7abae6bcf9d8c09407e3805037f2</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a536e7abae6bcf9d8c09407e3805037f2</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle1, const tcomp_buffer_handle_t *handle2)</arglist>
     </member>
     <member kind="function">
       <type>const uint8_t *</type>
       <name>tcomp_buffer_getReadOnlyBufferAtPos</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga07e8b7d6077e9b5fa595cd645f55350f</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a07e8b7d6077e9b5fa595cd645f55350f</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
     </member>
     <member kind="function">
       <type>TINYSIGCOMP_API uint8_t *</type>
       <name>tcomp_buffer_getBufferAtPos</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga7fa5783b07830935e3e9dfab2b0d88d4</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a2ce783d03dcaaf64d78010b6ce5dde28</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
     </member>
     <member kind="function">
       <type>TINYSIGCOMP_API size_t</type>
       <name>tcomp_buffer_getSize</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga8a0feee2496555b59b2a56053f666c33</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a48a0221f12c4f1d2343ed8f6e6ae0986</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>size_t</type>
       <name>tcomp_buffer_getRemainingBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga8d4e064d6d2bc4ac16e4282b2cdc5e1c</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a8d4e064d6d2bc4ac16e4282b2cdc5e1c</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t *</type>
       <name>tcomp_buffer_readBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga304f31d779262d58175b06b7035f2971</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a03955252557e152af356f2485b205014</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_buffer_readLsbToMsb</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga2441e395531499627ab17dc2ff957598</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a2441e395531499627ab17dc2ff957598</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_buffer_readMsbToLsb</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gadd61bb3234115bcb8214016da0d10f80</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>add61bb3234115bcb8214016da0d10f80</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_discardBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaa1eb82e5dc1dcf5132ead711f36d5b7d</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>aa1eb82e5dc1dcf5132ead711f36d5b7d</anchor>
       <arglist>(tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_discardLastBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga3776db46a6db1354e8f4d005ee29df55</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a3776db46a6db1354e8f4d005ee29df55</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, uint16_t count)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_allocBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga310392d2a48ac26f8116b5946b7ff020</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a310392d2a48ac26f8116b5946b7ff020</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_referenceBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gae4e7f643560dff38397e3d0b4e19333d</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>ae4e7f643560dff38397e3d0b4e19333d</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, uint8_t *externalBuff, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_buffer_appendBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gab9b03fae8d86c26f267b71cc9a7825ab</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>ab9b03fae8d86c26f267b71cc9a7825ab</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, const void *data, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_buffer_removeBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaae0c8c3e1999b736fc17fdee7d192e2d</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>aae0c8c3e1999b736fc17fdee7d192e2d</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t pos, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_freeBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga6784139de22f5733384ea1fa2be25a74</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a6784139de22f5733384ea1fa2be25a74</anchor>
       <arglist>(tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>size_t *</type>
       <name>tcomp_buffer_getIndexBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga305d4f691c8e30a0273f71ada63b0518</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a305d4f691c8e30a0273f71ada63b0518</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>size_t *</type>
       <name>tcomp_buffer_getIndexBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gadd4e1e7c72885bcdeadbd61645151b01</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>add4e1e7c72885bcdeadbd61645151b01</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t *</type>
       <name>tcomp_buffer_getP_BIT</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga791d3f1c107a65c2fde0ad782315a5a6</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a791d3f1c107a65c2fde0ad782315a5a6</anchor>
       <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="function">
       <type>uint64_t</type>
       <name>tcomp_buffer_createHash</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gad2f920de44f214da94847311401c5669</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>ad2f920de44f214da94847311401c5669</anchor>
       <arglist>(const void *data, size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_nprint</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gae7081ba73675881e1f25757ac5b53203</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>ae7081ba73675881e1f25757ac5b53203</anchor>
       <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_buffer_reset</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga885d54447fb62c4223b212f386d304e2</anchor>
+      <anchorfile>tcomp__buffer_8h.html</anchorfile>
+      <anchor>a885d54447fb62c4223b212f386d304e2</anchor>
       <arglist>(tcomp_buffer_handle_t *handle)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_buffer_def_t</name>
       <anchorfile>tcomp__buffer_8h.html</anchorfile>
-      <anchor>a83800c227dd52cabe1bbfaa756820d94</anchor>
+      <anchor>ab999d1d75af8f413a39fc9f6a7bc6eb5</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_compartment.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compartment_8c</filename>
-    <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
+    <includes id="tcomp__compartment_8c" name="tcomp_compartment.c" local="yes" imported="no">tcomp_compartment.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
+    <includes id="tcomp__types_8h" name="tcomp_types.h" local="yes" imported="no">tcomp_types.h</includes>
+    <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
+    <includes id="tcomp__params_8h" name="tcomp_params.h" local="yes" imported="no">tcomp_params.h</includes>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_setRemoteParams</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga1e68190c2c83dba80461cbc81ec6463a</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a1e68190c2c83dba80461cbc81ec6463a</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_params_t *lpParams)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_setReqFeedback</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga9dd145ec13b7edfd3c28caf08971adad</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a9dd145ec13b7edfd3c28caf08971adad</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_setRetFeedback</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gad1011202565be1ddb9a2f65fbf3da366</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>ad1011202565be1ddb9a2f65fbf3da366</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_clearStates</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga0b9915ceb760196e51bc0ffa1f33ed48</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a0b9915ceb760196e51bc0ffa1f33ed48</anchor>
       <arglist>(tcomp_compartment_t *compartment)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_freeStateByPriority</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga00e53894db779de7ee81bd956b56e481</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a00e53894db779de7ee81bd956b56e481</anchor>
       <arglist>(tcomp_compartment_t *compartment)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_freeState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga4e1a157aaadda59389637c197407e918</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a4e1a157aaadda59389637c197407e918</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_state_t **lpState)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_freeStates</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga7e1a55b8673488be557da7f4b03c81c2</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a7e1a55b8673488be557da7f4b03c81c2</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_tempstate_to_free_t **tempStates, uint8_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_addState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga8dadab6275e5e795cc5113411ef8082e</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a8dadab6275e5e795cc5113411ef8082e</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_state_t **lpState)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_compartment_findState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gab72144795fc6997fcf2103b893ea17c8</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>ab72144795fc6997fcf2103b893ea17c8</anchor>
       <arglist>(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_freeGhostState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga2afc3585b73665d6dddf93e9889b19e1</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a2afc3585b73665d6dddf93e9889b19e1</anchor>
       <arglist>(tcomp_compartment_t *compartment)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_addNack</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga5c182d465dd341481e4b74ee77acbc9d</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>a5c182d465dd341481e4b74ee77acbc9d</anchor>
       <arglist>(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE])</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_compartment_hasNack</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gaad3df7869f23abef0ddf7707d8b86a9a</anchor>
+      <anchorfile>tcomp__compartment_8c.html</anchorfile>
+      <anchor>aad3df7869f23abef0ddf7707d8b86a9a</anchor>
       <arglist>(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_compartment_def_t</name>
       <anchorfile>tcomp__compartment_8c.html</anchorfile>
-      <anchor>aa7227e2c0850480084166fa5b06d4b18</anchor>
+      <anchor>af774aca2c83810a86731d25cf82bbd07</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_compartment.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compartment_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__types_8h" name="tcomp_types.h" local="yes" imported="no">tcomp_types.h</includes>
@@ -1284,115 +1291,120 @@
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_setRemoteParams</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga1e68190c2c83dba80461cbc81ec6463a</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a1e68190c2c83dba80461cbc81ec6463a</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_params_t *lpParams)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_setReqFeedback</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga9dd145ec13b7edfd3c28caf08971adad</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a9dd145ec13b7edfd3c28caf08971adad</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_setRetFeedback</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gad1011202565be1ddb9a2f65fbf3da366</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>ad1011202565be1ddb9a2f65fbf3da366</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_clearStates</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga0b9915ceb760196e51bc0ffa1f33ed48</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a0b9915ceb760196e51bc0ffa1f33ed48</anchor>
       <arglist>(tcomp_compartment_t *compartment)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_freeStateByPriority</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga00e53894db779de7ee81bd956b56e481</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a00e53894db779de7ee81bd956b56e481</anchor>
       <arglist>(tcomp_compartment_t *compartment)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_freeState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga4e1a157aaadda59389637c197407e918</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a4e1a157aaadda59389637c197407e918</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_state_t **lpState)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_freeStates</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga7e1a55b8673488be557da7f4b03c81c2</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a7e1a55b8673488be557da7f4b03c81c2</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_tempstate_to_free_t **tempStates, uint8_t size)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_addState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga8dadab6275e5e795cc5113411ef8082e</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a8dadab6275e5e795cc5113411ef8082e</anchor>
       <arglist>(tcomp_compartment_t *compartment, tcomp_state_t **lpState)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_compartment_findState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gab72144795fc6997fcf2103b893ea17c8</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>ab72144795fc6997fcf2103b893ea17c8</anchor>
       <arglist>(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_freeGhostState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga2afc3585b73665d6dddf93e9889b19e1</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a2afc3585b73665d6dddf93e9889b19e1</anchor>
       <arglist>(tcomp_compartment_t *compartment)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compartment_addNack</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga5c182d465dd341481e4b74ee77acbc9d</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>a5c182d465dd341481e4b74ee77acbc9d</anchor>
       <arglist>(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE])</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_compartment_hasNack</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gaad3df7869f23abef0ddf7707d8b86a9a</anchor>
+      <anchorfile>tcomp__compartment_8h.html</anchorfile>
+      <anchor>aad3df7869f23abef0ddf7707d8b86a9a</anchor>
       <arglist>(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_compartment_def_t</name>
       <anchorfile>tcomp__compartment_8h.html</anchorfile>
-      <anchor>a85b9f7f5d9e0447114e9dc1d06d619ab</anchor>
+      <anchor>a7fd4a96decbd8c096b50785b5b74d19d</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_compressor.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressor_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
     <member kind="typedef">
-      <type>int(*</type>
+      <type>tsk_bool_t(*</type>
       <name>tcomp_compressor_compress</name>
       <anchorfile>tcomp__compressor_8h.html</anchorfile>
-      <anchor>a571671eecb6336d810553928f2bf294a</anchor>
-      <arglist>)(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)</arglist>
+      <anchor>aab9cfb6bff1cef94bf241f5d2eb3e39b</anchor>
+      <arglist>)(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_compressor_deflate.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressor__deflate_8c</filename>
-    <includes id="tcomp__compressor__deflate_8h" name="tcomp_compressor_deflate.h" local="yes" imported="no">tcomp_compressor_deflate.h</includes>
-    <includes id="tcomp__deflatedata_8h" name="tcomp_deflatedata.h" local="yes" imported="no">tcomp_deflatedata.h</includes>
+    <includes id="tcomp__compressor__deflate_8c" name="tcomp_compressor_deflate.c" local="yes" imported="no">tcomp_compressor_deflate.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
+    <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
+    <includes id="tcomp__params_8h" name="tcomp_params.h" local="yes" imported="no">tcomp_params.h</includes>
+    <includes id="tcomp__state_8h" name="tcomp_state.h" local="yes" imported="no">tcomp_state.h</includes>
+    <includes id="tcomp__compressordata_8h" name="tcomp_compressordata.h" local="yes" imported="no">tcomp_compressordata.h</includes>
+    <includes id="zlib_8h" name="zlib.h" local="yes" imported="no">zlib.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_MIN</name>
@@ -1410,30 +1422,32 @@
     <member kind="function">
       <type>int</type>
       <name>tcomp_compressor_deflate_compress</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadfe52940fdd3ce97d70674195a40d516</anchor>
+      <anchorfile>tcomp__compressor__deflate_8c.html</anchorfile>
+      <anchor>adfe52940fdd3ce97d70674195a40d516</anchor>
       <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_compressor_deflate.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressor__deflate_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
     <member kind="function">
       <type>TCOMP_BEGIN_DECLS int</type>
       <name>tcomp_compressor_deflate_compress</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadfe52940fdd3ce97d70674195a40d516</anchor>
+      <anchorfile>tcomp__compressor__deflate_8h.html</anchorfile>
+      <anchor>aba3776fc239a5662a2deea62a7a10e3e</anchor>
       <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_compressor_dummy.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressor__dummy_8c</filename>
-    <includes id="tcomp__compressor__dummy_8h" name="tcomp_compressor_dummy.h" local="yes" imported="no">tcomp_compressor_dummy.h</includes>
+    <includes id="tcomp__compressor__dummy_8c" name="tcomp_compressor_dummy.c" local="yes" imported="no">tcomp_compressor_dummy.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
+    <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
     <member kind="define">
       <type>#define</type>
@@ -1466,7 +1480,7 @@
   </compound>
   <compound kind="file">
     <name>tcomp_compressor_dummy.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressor__dummy_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
@@ -1480,12 +1494,12 @@
   </compound>
   <compound kind="file">
     <name>tcomp_compressordata.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressordata_8c</filename>
   </compound>
   <compound kind="file">
     <name>tcomp_compressordata.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressordata_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
@@ -1520,43 +1534,50 @@
   </compound>
   <compound kind="file">
     <name>tcomp_compressordisp.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressordisp_8c</filename>
-    <includes id="tcomp__compressordisp_8h" name="tcomp_compressordisp.h" local="yes" imported="no">tcomp_compressordisp.h</includes>
+    <includes id="tcomp__compressordisp_8c" name="tcomp_compressordisp.c" local="yes" imported="no">tcomp_compressordisp.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
+    <includes id="tcomp__types_8h" name="tcomp_types.h" local="yes" imported="no">tcomp_types.h</includes>
+    <includes id="tcomp__params_8h" name="tcomp_params.h" local="yes" imported="no">tcomp_params.h</includes>
+    <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
+    <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
+    <includes id="tcomp__compartment_8h" name="tcomp_compartment.h" local="yes" imported="no">tcomp_compartment.h</includes>
+    <includes id="tcomp__state_8h" name="tcomp_state.h" local="yes" imported="no">tcomp_state.h</includes>
     <includes id="tcomp__compressor__dummy_8h" name="tcomp_compressor_dummy.h" local="yes" imported="no">tcomp_compressor_dummy.h</includes>
     <includes id="tcomp__compressor__deflate_8h" name="tcomp_compressor_deflate.h" local="yes" imported="no">tcomp_compressor_deflate.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_NACK_SUPPORTED</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga38e55ba6ae6fbbe1c82e843a7430ed4e</anchor>
+      <anchorfile>tcomp__compressordisp_8c.html</anchorfile>
+      <anchor>a38e55ba6ae6fbbe1c82e843a7430ed4e</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_compressordisp_compress</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga679f2a6f7669978d6c84261a2b0a27d8</anchor>
-      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)</arglist>
+      <anchorfile>tcomp__compressordisp_8c.html</anchorfile>
+      <anchor>a57ef7dfa31d31548047d5a06fe36f12b</anchor>
+      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compressordisp_addCompressor</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga04e47e8173e5979a541e622a21a66ccf</anchor>
+      <anchorfile>tcomp__compressordisp_8c.html</anchorfile>
+      <anchor>a04e47e8173e5979a541e622a21a66ccf</anchor>
       <arglist>(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress compressor)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_compressordisp_def_t</name>
       <anchorfile>tcomp__compressordisp_8c.html</anchorfile>
-      <anchor>a29adc0add3e6d3299abf90b8b22b9988</anchor>
+      <anchor>aad9a1d5ae9edb5d8fe3eeeabe92220c9</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_compressordisp.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__compressordisp_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__statehandler_8h" name="tcomp_statehandler.h" local="yes" imported="no">tcomp_statehandler.h</includes>
@@ -1568,53 +1589,59 @@
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_MAX_COMPRESSORS</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga8d2e7bb50fd6bbdc19ed27a1e846fca5</anchor>
+      <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
+      <anchor>a8d2e7bb50fd6bbdc19ed27a1e846fca5</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_COMPRESSORDISP_CREATE</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga0b0488d2687f3d46779b8752e4f16e52</anchor>
+      <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
+      <anchor>a0b0488d2687f3d46779b8752e4f16e52</anchor>
       <arglist>(statehandler)</arglist>
     </member>
     <member kind="typedef">
       <type>struct tcomp_compressordisp_s</type>
       <name>tcomp_compressordisp_t</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga23efaf69247656c591bee204825088dc</anchor>
+      <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
+      <anchor>a23efaf69247656c591bee204825088dc</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_compressordisp_compress</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga679f2a6f7669978d6c84261a2b0a27d8</anchor>
-      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)</arglist>
+      <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
+      <anchor>a57ef7dfa31d31548047d5a06fe36f12b</anchor>
+      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_compressordisp_addCompressor</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga04e47e8173e5979a541e622a21a66ccf</anchor>
+      <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
+      <anchor>a04e47e8173e5979a541e622a21a66ccf</anchor>
       <arglist>(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress compressor)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_compressordisp_def_t</name>
       <anchorfile>tcomp__compressordisp_8h.html</anchorfile>
-      <anchor>a56046cc2907ac7b0cbdd4bc8d0bb94d6</anchor>
+      <anchor>a92cc61440724991756c773342fccd17e</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_decompressordisp.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__decompressordisp_8c</filename>
-    <includes id="tcomp__decompressordisp_8h" name="tcomp_decompressordisp.h" local="yes" imported="no">tcomp_decompressordisp.h</includes>
+    <includes id="tcomp__decompressordisp_8c" name="tcomp_decompressordisp.c" local="yes" imported="no">tcomp_decompressordisp.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
+    <includes id="tcomp__statehandler_8h" name="tcomp_statehandler.h" local="yes" imported="no">tcomp_statehandler.h</includes>
+    <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
+    <includes id="tcomp__types_8h" name="tcomp_types.h" local="yes" imported="no">tcomp_types.h</includes>
+    <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
+    <includes id="tcomp__nackinfo_8h" name="tcomp_nackinfo.h" local="yes" imported="no">tcomp_nackinfo.h</includes>
     <includes id="tcomp__message_8h" name="tcomp_message.h" local="yes" imported="no">tcomp_message.h</includes>
-    <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
+    <includes id="tcomp__headers__index_8h" name="tcomp_headers_index.h" local="yes" imported="no">tcomp_headers_index.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_MAX_STREAM_BUFFER_SIZE</name>
@@ -1630,58 +1657,58 @@
       <arglist>(dispatcher)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_decompress</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga2b479f5f368ef6ba21f5f76049df03e8</anchor>
+      <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
+      <anchor>afa50dfb7271cc04bbd504a0f4061041b</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_getNextMessage</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga3380a0c81c00ebb14313fd9930dd0ec9</anchor>
+      <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
+      <anchor>aebe1904896d38c815f464353e6f5d8a0</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_internalDecompress</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>gab04f771af513b9b7391fa198d31aed61</anchor>
+      <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
+      <anchor>aaad653bbe5622331d335da1661f0616d</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, const size_t input_size, tcomp_result_t **lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_appendStream</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga771d7186ecdac8dc7556652353ca55a9</anchor>
+      <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
+      <anchor>a36dcb5e96ecee7ee2b2af93a45defcc4</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, uint64_t streamId)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_getNextStreamMsg</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga6d0b4ed352c6b9d46956d9c71c304a48</anchor>
+      <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
+      <anchor>a75908b7846e40f78ada577d7ee9f5be5</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_decompressordisp_def_t</name>
       <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
-      <anchor>ac0944010f4248926c4ca3a51efea3c58</anchor>
+      <anchor>a1782b0cf481d122093472b147fb944b6</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_stream_buffer_def_t</name>
       <anchorfile>tcomp__decompressordisp_8c.html</anchorfile>
-      <anchor>a57a47fc5c564c048bcb61412eac210d5</anchor>
+      <anchor>a94e7516c75f7a0076067b7d2640cccc3</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_decompressordisp.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__decompressordisp_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__statehandler_8h" name="tcomp_statehandler.h" local="yes" imported="no">tcomp_statehandler.h</includes>
@@ -1719,65 +1746,65 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_decompress</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga2b479f5f368ef6ba21f5f76049df03e8</anchor>
+      <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
+      <anchor>afa50dfb7271cc04bbd504a0f4061041b</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_getNextMessage</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga3380a0c81c00ebb14313fd9930dd0ec9</anchor>
+      <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
+      <anchor>aebe1904896d38c815f464353e6f5d8a0</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, tcomp_result_t *lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_internalDecompress</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>gab04f771af513b9b7391fa198d31aed61</anchor>
+      <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
+      <anchor>aaad653bbe5622331d335da1661f0616d</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, const size_t input_size, tcomp_result_t **lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_appendStream</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga771d7186ecdac8dc7556652353ca55a9</anchor>
+      <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
+      <anchor>a36dcb5e96ecee7ee2b2af93a45defcc4</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, uint64_t streamId)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_decompressordisp_getNextStreamMsg</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga6d0b4ed352c6b9d46956d9c71c304a48</anchor>
+      <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
+      <anchor>a75908b7846e40f78ada577d7ee9f5be5</anchor>
       <arglist>(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_stream_buffer_def_t</name>
       <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>a474652b4884dd10d0065621b97e831da</anchor>
+      <anchor>a74fb91763a99373e6338f2e473f0637c</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_decompressordisp_def_t</name>
       <anchorfile>tcomp__decompressordisp_8h.html</anchorfile>
-      <anchor>acbc9ac6b4c90a4c37822ee40ff9deeb1</anchor>
+      <anchor>a263d9f0ed06601f9458d841e0abf47b4</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_deflatedata.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__deflatedata_8c</filename>
     <includes id="tcomp__deflatedata_8h" name="tcomp_deflatedata.h" local="yes" imported="no">tcomp_deflatedata.h</includes>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_isStateful</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga69ae84d9d68505848279a2a3e8839695</anchor>
+      <anchorfile>tcomp__deflatedata_8c.html</anchorfile>
+      <anchor>a6f6fa6262b170743244a1905866e7a49</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="variable">
@@ -1790,98 +1817,98 @@
   </compound>
   <compound kind="file">
     <name>tcomp_deflatedata.ghost.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__deflatedata_8ghost_8c</filename>
     <includes id="tcomp__deflatedata_8h" name="tcomp_deflatedata.h" local="yes" imported="no">tcomp_deflatedata.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_CB_START_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaf61dd76b0f070596ff477fa5fb11ff95</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>af61dd76b0f070596ff477fa5fb11ff95</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_DMS_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaa0e73f1c8b5cc6579fe838c8f896bfe1</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>aa0e73f1c8b5cc6579fe838c8f896bfe1</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_0x0005_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga1361b59108a666ce5794c1fdcbf69cdd</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>a1361b59108a666ce5794c1fdcbf69cdd</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_CB_END_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga438bef24bb5c09d4cf891a28e973378a</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>a438bef24bb5c09d4cf891a28e973378a</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_HASH_LEN_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaaefce17480e56589a8bd181a4073cb0e</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>aaefce17480e56589a8bd181a4073cb0e</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_SMS_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gad79d54e5e2d4e9e37b4d5ba2302edc0e</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>ad79d54e5e2d4e9e37b4d5ba2302edc0e</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_CPB_DMS_SMS_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gad8b17d69112d417446dee27863e30350</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>ad8b17d69112d417446dee27863e30350</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_VERSION_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga8909b9553131b824cc647ae858eb0da0</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>a8909b9553131b824cc647ae858eb0da0</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_BYTECODE1_SIZE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadb3ba3e24b34c2226b1a867158733d68</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>adb3ba3e24b34c2226b1a867158733d68</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_STATE_ADDRESS</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaa3cb78c7b5d91c728d09c65fe9dd4d35</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>aa3cb78c7b5d91c728d09c65fe9dd4d35</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_STATE_INSTRUCTION</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadd6e53f528b0b7d81b7dbc774e173609</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>add6e53f528b0b7d81b7dbc774e173609</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_STATE_MIN_ACCESS_LEN</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga97b586450efa48aa8cd9f16a2d599b37</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>a97b586450efa48aa8cd9f16a2d599b37</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>GHOST_STATE_RETENTION_PRIORITY</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga4dfae63f9636d012a8b45851e8a971e8</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>a4dfae63f9636d012a8b45851e8a971e8</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -1943,42 +1970,42 @@
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_createGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga685b9a7b997d9aeca3174530211711c7</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>a685b9a7b997d9aeca3174530211711c7</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata, uint16_t state_length, tcomp_params_t *params)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_ackGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaadc5f39e93866e0cb2cd3b29bb99d12e</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>aadc5f39e93866e0cb2cd3b29bb99d12e</anchor>
       <arglist>(tcomp_compressordata_t *data, const tcomp_buffer_handle_t *stateid)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_updateGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga2745238a5c4c72d653724ff7808cf52c</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>a2745238a5c4c72d653724ff7808cf52c</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, size_t input_size)</arglist>
     </member>
     <member kind="function">
       <type>uint32_t *</type>
       <name>tcomp_deflatedata_getGhostCopyOffset</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gacd4ef201aad5c16cc01703429e152509</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>acd4ef201aad5c16cc01703429e152509</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_freeGhostState</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga5706f951dba8f9b03a2bddfa24be5264</anchor>
+      <anchorfile>tcomp__deflatedata_8ghost_8c.html</anchorfile>
+      <anchor>a5706f951dba8f9b03a2bddfa24be5264</anchor>
       <arglist>(tcomp_compressordata_t *data)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_deflatedata.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__deflatedata_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__params_8h" name="tcomp_params.h" local="yes" imported="no">tcomp_params.h</includes>
@@ -1990,29 +2017,29 @@
     <member kind="define">
       <type>#define</type>
       <name>_TCOMP_DEFLATEDATA_CREATE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga742310b7a82373880b47730d08e901d0</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a742310b7a82373880b47730d08e901d0</anchor>
       <arglist>(isStream, z_level, z_windowBits)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_DEFLATEDATA_CREATE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga49d4da0914f8584f70aafc508464e5e9</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a49d4da0914f8584f70aafc508464e5e9</anchor>
       <arglist>(isStream)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>USE_DICTS_FOR_COMPRESSION</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadc85d4d5b991939e39bf3fcd2b41e0e5</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>adc85d4d5b991939e39bf3fcd2b41e0e5</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>Z_DEFAULT_WINDOW_BITS</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga3ffc2b8c8034c6e80474b0ad988a4ab6</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a3ffc2b8c8034c6e80474b0ad988a4ab6</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -2025,183 +2052,183 @@
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_UDVM_CIRCULAR_START_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga297a076f50ac3d10649b26b083b6a4d9</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a297a076f50ac3d10649b26b083b6a4d9</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_SIP_DICT_ONLY</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga8a677017c1bf51b65dc49b541c46242c</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a8a677017c1bf51b65dc49b541c46242c</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_PRES_DICT_ONLY</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gab7869b22a284727e3bafa890de3f08f5</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>ab7869b22a284727e3bafa890de3f08f5</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_SIP_PRES_DICTS</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga56e78baa3f167e1222521a92b5411470</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a56e78baa3f167e1222521a92b5411470</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_NO_DICT</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga7b3a9bb16609d4529913a50ccd1e8117</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a7b3a9bb16609d4529913a50ccd1e8117</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_FIXME_DICT</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga70b3741fac20f597294e67ec88c1ffd2</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a70b3741fac20f597294e67ec88c1ffd2</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_BYTECODE_DESTINATION_START</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac519f027665fcff17a6adcf26ce13e87</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>ac519f027665fcff17a6adcf26ce13e87</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_BYTECODE_DESTINATION_CODE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga1bfccabe5485ea3856fb661a360fcdcc</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a1bfccabe5485ea3856fb661a360fcdcc</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATE_BYTECODE_LEN</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga5301d24aea35ac0ae5b82c8b209e7c96</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a5301d24aea35ac0ae5b82c8b209e7c96</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>DEFLATEDATA_DEFLATE_BYTECODE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga8ad70b4284af8f191f3e033784726a3c</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a8ad70b4284af8f191f3e033784726a3c</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>struct tcomp_deflateStream_s</type>
       <name>tcomp_deflateStream_t</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gafadd5ec8fe340558dde8db99700bcbab</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>afadd5ec8fe340558dde8db99700bcbab</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>struct tcomp_deflatedata_s</type>
       <name>tcomp_deflatedata_t</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga51603f0230b2555a35c740b64d95b7d7</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a51603f0230b2555a35c740b64d95b7d7</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflateStream_end</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gad5d168f2e8316efb1c984cb8858b2a20</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a1bdeb3020a7e79ac2e0752c3c9048de9</anchor>
       <arglist>(tcomp_deflateStream_t *stream)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflateStream_copy</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac9542ac256979e69110eccf6f05899fa</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a807b1c81bc1f376a5464a6e8e13f766d</anchor>
       <arglist>(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_freeGhostState</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga5706f951dba8f9b03a2bddfa24be5264</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a84abeb10334414bf025282d103f56c3e</anchor>
       <arglist>(tcomp_compressordata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_ackGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaadc5f39e93866e0cb2cd3b29bb99d12e</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a9ee70414f50b4c064e5502da176c7396</anchor>
       <arglist>(tcomp_compressordata_t *deflatedata, const tcomp_buffer_handle_t *stateid)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_createGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga685b9a7b997d9aeca3174530211711c7</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a416082cf8161cfd26293df7273300e7e</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata, uint16_t state_len, tcomp_params_t *params)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_updateGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga2745238a5c4c72d653724ff7808cf52c</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a2745238a5c4c72d653724ff7808cf52c</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, size_t input_size)</arglist>
     </member>
     <member kind="function">
       <type>uint32_t *</type>
       <name>tcomp_deflatedata_getGhostCopyOffset</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gacd4ef201aad5c16cc01703429e152509</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>acd4ef201aad5c16cc01703429e152509</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zReset</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga59b2152f3a1451e3d9c03658817e7084</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a87d68a52cbaa9a6500d00dbfad52cf16</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zCompress</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac11974f50fe8a3452e674a4f0b19069b</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, size_t inLen, void *out, size_t *outLen, int *stateChanged)</arglist>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a66b626e4f1d7f36fbc96ce106716241d</anchor>
+      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, size_t inLen, void *out, size_t *outLen, tsk_bool_t *stateChanged)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_deflatedata_zGetWindowBits</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac1db80d4be4336cd73f03ad7d0de84ec</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>ac1db80d4be4336cd73f03ad7d0de84ec</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_zSetWindowBits</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga0ad0c57a166fbf0700f2b4a0203b6581</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a0ad0c57a166fbf0700f2b4a0203b6581</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata, int windowSize)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_isStateful</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga69ae84d9d68505848279a2a3e8839695</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a6f6fa6262b170743244a1905866e7a49</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zInit</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga89316709478e25bc3dbb3eae8221fec9</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a279cfe52515a1de61335c1c2b5f3a64a</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zUnInit</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga390a152a46c393ed4c364a4ef633186a</anchor>
+      <anchorfile>tcomp__deflatedata_8h.html</anchorfile>
+      <anchor>a20c3dbe17e832df89b6ed65a49a56ef4</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="variable">
@@ -2214,113 +2241,113 @@
   </compound>
   <compound kind="file">
     <name>tcomp_deflatedata.zlib.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__deflatedata_8zlib_8c</filename>
     <includes id="tcomp__deflatedata_8h" name="tcomp_deflatedata.h" local="yes" imported="no">tcomp_deflatedata.h</includes>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflateStream_end</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gad5d168f2e8316efb1c984cb8858b2a20</anchor>
+      <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
+      <anchor>a1bdeb3020a7e79ac2e0752c3c9048de9</anchor>
       <arglist>(tcomp_deflateStream_t *stream)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflateStream_copy</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac9542ac256979e69110eccf6f05899fa</anchor>
+      <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
+      <anchor>a807b1c81bc1f376a5464a6e8e13f766d</anchor>
       <arglist>(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zInit</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga89316709478e25bc3dbb3eae8221fec9</anchor>
+      <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
+      <anchor>a279cfe52515a1de61335c1c2b5f3a64a</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zUnInit</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga390a152a46c393ed4c364a4ef633186a</anchor>
+      <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
+      <anchor>a20c3dbe17e832df89b6ed65a49a56ef4</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zReset</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga59b2152f3a1451e3d9c03658817e7084</anchor>
+      <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
+      <anchor>a87d68a52cbaa9a6500d00dbfad52cf16</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_deflatedata_zCompress</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac11974f50fe8a3452e674a4f0b19069b</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, size_t inLen, void *out, size_t *outLen, int *stateChanged)</arglist>
+      <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
+      <anchor>a66b626e4f1d7f36fbc96ce106716241d</anchor>
+      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, size_t inLen, void *out, size_t *outLen, tsk_bool_t *stateChanged)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_deflatedata_zGetWindowBits</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac1db80d4be4336cd73f03ad7d0de84ec</anchor>
+      <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
+      <anchor>ac1db80d4be4336cd73f03ad7d0de84ec</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_deflatedata_zSetWindowBits</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga0ad0c57a166fbf0700f2b4a0203b6581</anchor>
+      <anchorfile>tcomp__deflatedata_8zlib_8c.html</anchorfile>
+      <anchor>a0ad0c57a166fbf0700f2b4a0203b6581</anchor>
       <arglist>(tcomp_deflatedata_t *deflatedata, int windowSize)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_dicts.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__dicts_8c</filename>
-    <includes id="tcomp__dicts_8h" name="tcomp_dicts.h" local="yes" imported="no">tcomp_dicts.h</includes>
+    <includes id="tcomp__dicts_8c" name="tcomp_dicts.c" local="yes" imported="no">tcomp_dicts.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
+    <includes id="tcomp__state_8h" name="tcomp_state.h" local="yes" imported="no">tcomp_state.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
-    <includes id="tcomp__rfc3485__dictionary__sip_8h" name="tcomp_rfc3485_dictionary_sip.h" local="yes" imported="no">tcomp_rfc3485_dictionary_sip.h</includes>
-    <includes id="tcomp__rfc5112__dictionary__presence_8h" name="tcomp_rfc5112_dictionary_presence.h" local="yes" imported="no">tcomp_rfc5112_dictionary_presence.h</includes>
     <member kind="function">
       <type>tcomp_dictionary_t *</type>
       <name>tcomp_dicts_create_presence_dict</name>
-      <anchorfile>group__tcomp__dicts__group.html</anchorfile>
-      <anchor>ga252a72a1fd88d9e77ca46bdbe214be95</anchor>
+      <anchorfile>tcomp__dicts_8c.html</anchorfile>
+      <anchor>a252a72a1fd88d9e77ca46bdbe214be95</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>tcomp_dictionary_t *</type>
       <name>tcomp_dicts_create_sip_dict</name>
-      <anchorfile>group__tcomp__dicts__group.html</anchorfile>
-      <anchor>ga1810e66603f634d79120eb9da1400c05</anchor>
+      <anchorfile>tcomp__dicts_8c.html</anchorfile>
+      <anchor>a1810e66603f634d79120eb9da1400c05</anchor>
       <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_dicts.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__dicts_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__state_8h" name="tcomp_state.h" local="yes" imported="no">tcomp_state.h</includes>
     <member kind="function">
       <type>TCOMP_BEGIN_DECLS tcomp_dictionary_t *</type>
       <name>tcomp_dicts_create_presence_dict</name>
-      <anchorfile>group__tcomp__dicts__group.html</anchorfile>
-      <anchor>ga252a72a1fd88d9e77ca46bdbe214be95</anchor>
+      <anchorfile>tcomp__dicts_8h.html</anchorfile>
+      <anchor>af8882efbf74466dba5054791cdbefc8b</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="function">
       <type>tcomp_dictionary_t *</type>
       <name>tcomp_dicts_create_sip_dict</name>
-      <anchorfile>group__tcomp__dicts__group.html</anchorfile>
-      <anchor>ga1810e66603f634d79120eb9da1400c05</anchor>
+      <anchorfile>tcomp__dicts_8h.html</anchorfile>
+      <anchor>a1810e66603f634d79120eb9da1400c05</anchor>
       <arglist>()</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_headers_index.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__headers__index_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -2395,7 +2422,7 @@
   </compound>
   <compound kind="file">
     <name>tcomp_instructions.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__instructions_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -2652,9 +2679,12 @@
   </compound>
   <compound kind="file">
     <name>tcomp_manager.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__manager_8c</filename>
-    <includes id="tcomp__manager_8h" name="tcomp_manager.h" local="yes" imported="no">tcomp_manager.h</includes>
+    <includes id="tcomp__manager_8c" name="tcomp_manager.c" local="yes" imported="no">tcomp_manager.h</includes>
+    <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
+    <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
+    <includes id="tcomp__compressor_8h" name="tcomp_compressor.h" local="yes" imported="no">tcomp_compressor.h</includes>
     <includes id="tcomp__compressordisp_8h" name="tcomp_compressordisp.h" local="yes" imported="no">tcomp_compressordisp.h</includes>
     <includes id="tcomp__decompressordisp_8h" name="tcomp_decompressordisp.h" local="yes" imported="no">tcomp_decompressordisp.h</includes>
     <includes id="tcomp__statehandler_8h" name="tcomp_statehandler.h" local="yes" imported="no">tcomp_statehandler.h</includes>
@@ -2683,16 +2713,16 @@
     <member kind="typedef">
       <type>struct tcomp_manager_s</type>
       <name>tcomp_manager_t</name>
-      <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga2fdb922c98c0aa355479d03e8378ba61</anchor>
+      <anchorfile>tcomp__manager_8c.html</anchorfile>
+      <anchor>a2fdb922c98c0aa355479d03e8378ba61</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
       <type>size_t</type>
       <name>tcomp_manager_compress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga356ab233e42182e0e5fa6b10d645cdb7</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, int stream)</arglist>
+      <anchor>ga746d5ad4427ad02ac14db38c52223b45</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
       <type>size_t</type>
@@ -2781,7 +2811,7 @@
   </compound>
   <compound kind="file">
     <name>tcomp_manager.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__manager_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
@@ -2789,8 +2819,8 @@
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_MANAGER_CREATE</name>
-      <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>gacfa8dba96e664e47d017cd7963198831</anchor>
+      <anchorfile>tcomp__manager_8h.html</anchorfile>
+      <anchor>acfa8dba96e664e47d017cd7963198831</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="define">
@@ -2818,8 +2848,8 @@
       <type>TINYSIGCOMP_API size_t</type>
       <name>tcomp_manager_compress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga356ab233e42182e0e5fa6b10d645cdb7</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, int stream)</arglist>
+      <anchor>ga746d5ad4427ad02ac14db38c52223b45</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
       <type>TINYSIGCOMP_API size_t</type>
@@ -2915,7 +2945,7 @@
   </compound>
   <compound kind="file">
     <name>tcomp_message.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__message_8c</filename>
     <includes id="tcomp__message_8h" name="tcomp_message.h" local="yes" imported="no">tcomp_message.h</includes>
     <member kind="define">
@@ -2963,49 +2993,49 @@
     <member kind="function">
       <type>void</type>
       <name>initFeedbackItem</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga3e63e4c08ae337e106f4287534c4ab3d</anchor>
+      <anchorfile>tcomp__message_8c.html</anchorfile>
+      <anchor>a3e63e4c08ae337e106f4287534c4ab3d</anchor>
       <arglist>(tcomp_message_t *message, uint8_t **start_ptr)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>initStateId</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga0285ac7ac39e094b4f8ca95e78683774</anchor>
+      <anchorfile>tcomp__message_8c.html</anchorfile>
+      <anchor>a0285ac7ac39e094b4f8ca95e78683774</anchor>
       <arglist>(tcomp_message_t *message, uint8_t **start_ptr, uint8_t state_len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>initStateful</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga2a3548b1d814d6a0ebceac5322ffd124</anchor>
+      <anchorfile>tcomp__message_8c.html</anchorfile>
+      <anchor>a2a3548b1d814d6a0ebceac5322ffd124</anchor>
       <arglist>(tcomp_message_t *message, uint8_t **start_ptr, uint8_t *end_ptr)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>initStateless</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga150b495ddba63a17a67750ef84724a66</anchor>
+      <anchorfile>tcomp__message_8c.html</anchorfile>
+      <anchor>a150b495ddba63a17a67750ef84724a66</anchor>
       <arglist>(tcomp_message_t *message, uint8_t **start_ptr, uint8_t *end_ptr)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>initNack</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga7266ef0e2119275eed84d10a75eb5e3e</anchor>
+      <anchorfile>tcomp__message_8c.html</anchorfile>
+      <anchor>a7266ef0e2119275eed84d10a75eb5e3e</anchor>
       <arglist>(tcomp_message_t *message, uint8_t **start_ptr, uint8_t *end_ptr)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_message_def_t</name>
       <anchorfile>tcomp__message_8c.html</anchorfile>
-      <anchor>a73d1e23693e18c27d1bd8c0a3a5518be</anchor>
+      <anchor>a07e24e80145c143d56ae9b2b1d8752a0</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_message.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__message_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
@@ -3014,8 +3044,8 @@
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_MESSAGE_CREATE</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>gae9f7c05f5bc9a279fee48889247e4317</anchor>
+      <anchorfile>tcomp__message_8h.html</anchorfile>
+      <anchor>ae9f7c05f5bc9a279fee48889247e4317</anchor>
       <arglist>(input_ptr, input_size, stream)</arglist>
     </member>
     <member kind="typedef">
@@ -3026,16 +3056,16 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_message_def_t</name>
       <anchorfile>tcomp__message_8h.html</anchorfile>
-      <anchor>a3426fd090647a5b21e8cc3ed639be0ca</anchor>
+      <anchor>aac047410ea3d49e2b2734895872b5ff3</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_nack_codes.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__nack__codes_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -3215,20 +3245,20 @@
   </compound>
   <compound kind="file">
     <name>tcomp_nackinfo.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__nackinfo_8c</filename>
     <includes id="tcomp__nackinfo_8h" name="tcomp_nackinfo.h" local="yes" imported="no">tcomp_nackinfo.h</includes>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_nackinfo_def_t</name>
       <anchorfile>tcomp__nackinfo_8c.html</anchorfile>
-      <anchor>aebcbe19bf3f4912b6fd84d143adaacc3</anchor>
+      <anchor>a03d15007180cb15e356f06663a80d1fd</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_nackinfo.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__nackinfo_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
@@ -3236,28 +3266,28 @@
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_NACKINFO_CREATE</name>
-      <anchorfile>group__tcomp__nackinfo__group.html</anchorfile>
-      <anchor>ga00f9ae4609d003d2316d24c3f10e6cd8</anchor>
+      <anchorfile>tcomp__nackinfo_8h.html</anchorfile>
+      <anchor>a00f9ae4609d003d2316d24c3f10e6cd8</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="typedef">
       <type>struct tcomp_nackinfo_s</type>
       <name>tcomp_nackinfo_t</name>
-      <anchorfile>group__tcomp__nackinfo__group.html</anchorfile>
-      <anchor>gab1756a7b53f79219dd6ca8991c914b5f</anchor>
+      <anchorfile>tcomp__nackinfo_8h.html</anchorfile>
+      <anchor>ab1756a7b53f79219dd6ca8991c914b5f</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_nackinfo_def_t</name>
       <anchorfile>tcomp__nackinfo_8h.html</anchorfile>
-      <anchor>aa591372ab43b7a484da8cf38c8fce9e7</anchor>
+      <anchor>a02525ad190981cd6558e1cbd8f23f011</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_operands.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__operands_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -3290,90 +3320,90 @@
   </compound>
   <compound kind="file">
     <name>tcomp_params.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__params_8c</filename>
     <includes id="tcomp__params_8h" name="tcomp_params.h" local="yes" imported="no">tcomp_params.h</includes>
     <member kind="function">
       <type>int</type>
       <name>tcomp_params_hasCpbDmsSms</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gab7fbed594049a1ce4a4a665f62c799e5</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>ab7fbed594049a1ce4a4a665f62c799e5</anchor>
       <arglist>(tcomp_params_t *params)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setCpbCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga87c3e1ad7e61f83516de439c8a186fc2</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>a87c3e1ad7e61f83516de439c8a186fc2</anchor>
       <arglist>(tcomp_params_t *params, uint8_t cpbCode)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setCpbValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga543032d689cb84dedbbf768b89d1b12e</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>a543032d689cb84dedbbf768b89d1b12e</anchor>
       <arglist>(tcomp_params_t *params, uint8_t cpbValue)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setDmsCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga2acf1afd3d2e8359cbcbc771791e002b</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>a2acf1afd3d2e8359cbcbc771791e002b</anchor>
       <arglist>(tcomp_params_t *params, uint8_t dmsCode)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setDmsValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gaad4ba7d9e0ac69c863701697b9a2c286</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>aad4ba7d9e0ac69c863701697b9a2c286</anchor>
       <arglist>(tcomp_params_t *params, uint32_t dmsValue)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setSmsCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gaa3b641a96b532be62f6d0d33d1ef673f</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>aa3b641a96b532be62f6d0d33d1ef673f</anchor>
       <arglist>(tcomp_params_t *params, uint8_t smsCode)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setSmsValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga01dabb4646ea1e8a888ef6ad151f66c0</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>a01dabb4646ea1e8a888ef6ad151f66c0</anchor>
       <arglist>(tcomp_params_t *params, uint32_t smsValue)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_params_getParameters</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga636c5177d93ba294666f5dbaf34c7eb9</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>a636c5177d93ba294666f5dbaf34c7eb9</anchor>
       <arglist>(tcomp_params_t *params)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setParameters</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga08f982ab89d188f14fa91746e01019ca</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>a08f982ab89d188f14fa91746e01019ca</anchor>
       <arglist>(tcomp_params_t *params, uint16_t sigCompParameters)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_reset</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga283700e42a675ffd9ee4debf31ddab49</anchor>
+      <anchorfile>tcomp__params_8c.html</anchorfile>
+      <anchor>a283700e42a675ffd9ee4debf31ddab49</anchor>
       <arglist>(tcomp_params_t *params)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_params_def_t</name>
       <anchorfile>tcomp__params_8c.html</anchorfile>
-      <anchor>a211709faeabda5be8753dcb5f6e748cd</anchor>
+      <anchor>a9226f7f4b7cc832652edf20fd8ee7966</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_params.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__params_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__types_8h" name="tcomp_types.h" local="yes" imported="no">tcomp_types.h</includes>
@@ -3395,84 +3425,84 @@
     <member kind="function">
       <type>int</type>
       <name>tcomp_params_hasCpbDmsSms</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gab7fbed594049a1ce4a4a665f62c799e5</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>af0ed5127fe569d234341c16351901668</anchor>
       <arglist>(tcomp_params_t *)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setCpbCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga87c3e1ad7e61f83516de439c8a186fc2</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>acd7851a904ac910ad85647c365287162</anchor>
       <arglist>(tcomp_params_t *, uint8_t _cpbCode)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setCpbValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga543032d689cb84dedbbf768b89d1b12e</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>af06ca67d7a166ac597dea980b1ee1e33</anchor>
       <arglist>(tcomp_params_t *, uint8_t _cpbValue)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setDmsCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga2acf1afd3d2e8359cbcbc771791e002b</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>a1d5891be3add4a0027e5e106f7b25b01</anchor>
       <arglist>(tcomp_params_t *, uint8_t _dmsCode)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setDmsValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gaad4ba7d9e0ac69c863701697b9a2c286</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>a28942cb25172486de6383ece8c54d351</anchor>
       <arglist>(tcomp_params_t *, uint32_t _dmsValue)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setSmsCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gaa3b641a96b532be62f6d0d33d1ef673f</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>a19edf4c10c8e772f158865e36b0fcd57</anchor>
       <arglist>(tcomp_params_t *, uint8_t _smsCode)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setSmsValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga01dabb4646ea1e8a888ef6ad151f66c0</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>a8ee1c7fe645daa6264362b8b40486263</anchor>
       <arglist>(tcomp_params_t *, uint32_t _smsValue)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_params_getParameters</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga636c5177d93ba294666f5dbaf34c7eb9</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>add392eb935355e8d7a14c5974087a052</anchor>
       <arglist>(tcomp_params_t *)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_setParameters</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga08f982ab89d188f14fa91746e01019ca</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>ab65938f2959229825dc6b9a6f45282bf</anchor>
       <arglist>(tcomp_params_t *, uint16_t sigCompParameters)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_params_reset</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga283700e42a675ffd9ee4debf31ddab49</anchor>
+      <anchorfile>tcomp__params_8h.html</anchorfile>
+      <anchor>ac06b28bfef8e088704a4f789f91117d1</anchor>
       <arglist>(tcomp_params_t *)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_params_def_t</name>
       <anchorfile>tcomp__params_8h.html</anchorfile>
-      <anchor>affe6dff90f3c678a398c18e7c8dad567</anchor>
+      <anchor>a3600f7ce67b12c71981e3544c89828eb</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_reqfeed.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__reqfeed_8c</filename>
     <includes id="tcomp__reqfeed_8h" name="tcomp_reqfeed.h" local="yes" imported="no">tcomp_reqfeed.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
@@ -3493,7 +3523,7 @@
   </compound>
   <compound kind="file">
     <name>tcomp_reqfeed.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__reqfeed_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
@@ -3529,76 +3559,76 @@
   </compound>
   <compound kind="file">
     <name>tcomp_result.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__result_8c</filename>
     <includes id="tcomp__result_8h" name="tcomp_result.h" local="yes" imported="no">tcomp_result.h</includes>
     <member kind="function">
       <type>void</type>
       <name>_tcomp_result_reset</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga8a62f531a26334f397679729b754f1aa</anchor>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>a8a62f531a26334f397679729b754f1aa</anchor>
       <arglist>(tcomp_result_t *result, int isDestructor, int isResetOutput)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_result_setOutputBuffer</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>gac0dbbfb3f9a1a764c98b310e98d064bf</anchor>
-      <arglist>(tcomp_result_t *result, void *output_ptr, size_t output_size, int isStream, uint64_t streamId)</arglist>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>aad4fe4d9bb9126276e9ad3c18d976bc4</anchor>
+      <arglist>(tcomp_result_t *result, void *output_ptr, size_t output_size, tsk_bool_t isStream, uint64_t streamId)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_result_setCompartmentId</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga78b6a4d37819c20dd646fbb813503b0a</anchor>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>a78b6a4d37819c20dd646fbb813503b0a</anchor>
       <arglist>(tcomp_result_t *result, const void *id, size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_result_addTempStateToCreate</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga4fb2e9f9d04f140435ce7a4863ec972e</anchor>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>a4fb2e9f9d04f140435ce7a4863ec972e</anchor>
       <arglist>(tcomp_result_t *result, tcomp_state_t *lpState)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t</type>
       <name>tcomp_result_getTempStatesToCreateSize</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga30558503dcf2f741715a3d25502866d2</anchor>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>a30558503dcf2f741715a3d25502866d2</anchor>
       <arglist>(const tcomp_result_t *result)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_result_addTempStateToFree</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga49a90ce9760b500e40dee74760e2c59b</anchor>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>a49a90ce9760b500e40dee74760e2c59b</anchor>
       <arglist>(tcomp_result_t *result, tcomp_tempstate_to_free_t *lpDesc)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t</type>
       <name>tcomp_result_getTempStatesToFreeSize</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga76ee9b657de6b5384bc9b47c17bafa96</anchor>
+      <anchorfile>tcomp__result_8c.html</anchorfile>
+      <anchor>a76ee9b657de6b5384bc9b47c17bafa96</anchor>
       <arglist>(const tcomp_result_t *result)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_result_def_t</name>
       <anchorfile>tcomp__result_8c.html</anchorfile>
-      <anchor>ac9b2eea1a09787f0c035aaaacd89f14e</anchor>
+      <anchor>a3818667591ab0a590b7881bf0a793042</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_tempstate_to_free_def_t</name>
       <anchorfile>tcomp__result_8c.html</anchorfile>
-      <anchor>af43aaf6ca444c949a5ace08c74585d99</anchor>
+      <anchor>aaaa7af0f2d5c7821d28103e6fd49cd44</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_result.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__result_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__state_8h" name="tcomp_state.h" local="yes" imported="no">tcomp_state.h</includes>
@@ -3617,8 +3647,8 @@
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_RESULT_CREATE</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>gabf96c3c3eecaf2a152074e700f063824</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>abf96c3c3eecaf2a152074e700f063824</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="define">
@@ -3659,84 +3689,84 @@
     <member kind="typedef">
       <type>struct tcomp_tempstate_to_free_s</type>
       <name>tcomp_tempstate_to_free_t</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>gab2631fa5e7686e230adfcc7316b22f16</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>ab2631fa5e7686e230adfcc7316b22f16</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>struct tcomp_result_s</type>
       <name>tcomp_result_t</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga82894c74b022fc398e00ddfea27f7b27</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a82894c74b022fc398e00ddfea27f7b27</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>_tcomp_result_reset</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga8a62f531a26334f397679729b754f1aa</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a8a62f531a26334f397679729b754f1aa</anchor>
       <arglist>(tcomp_result_t *result, int isDestructor, int isResetOutput)</arglist>
     </member>
     <member kind="function">
       <type>TINYSIGCOMP_API void</type>
       <name>tcomp_result_setOutputBuffer</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>gac0dbbfb3f9a1a764c98b310e98d064bf</anchor>
-      <arglist>(tcomp_result_t *result, void *output_ptr, size_t output_size, int isStream, uint64_t streamId)</arglist>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a627c8dd94cc0257446dac131be5e71c4</anchor>
+      <arglist>(tcomp_result_t *result, void *output_ptr, size_t output_size, tsk_bool_t isStream, uint64_t streamId)</arglist>
     </member>
     <member kind="function">
       <type>TINYSIGCOMP_API void</type>
       <name>tcomp_result_setCompartmentId</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga78b6a4d37819c20dd646fbb813503b0a</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a9093f636e53760c5f2a45108af87a3da</anchor>
       <arglist>(tcomp_result_t *result, const void *id, size_t len)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_result_addTempStateToCreate</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga4fb2e9f9d04f140435ce7a4863ec972e</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a4fb2e9f9d04f140435ce7a4863ec972e</anchor>
       <arglist>(tcomp_result_t *result, tcomp_state_t *lpState)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t</type>
       <name>tcomp_result_getTempStatesToCreateSize</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga30558503dcf2f741715a3d25502866d2</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a30558503dcf2f741715a3d25502866d2</anchor>
       <arglist>(const tcomp_result_t *result)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_result_addTempStateToFree</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga49a90ce9760b500e40dee74760e2c59b</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a49a90ce9760b500e40dee74760e2c59b</anchor>
       <arglist>(tcomp_result_t *result, tcomp_tempstate_to_free_t *lpDesc)</arglist>
     </member>
     <member kind="function">
       <type>uint8_t</type>
       <name>tcomp_result_getTempStatesToFreeSize</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga76ee9b657de6b5384bc9b47c17bafa96</anchor>
+      <anchorfile>tcomp__result_8h.html</anchorfile>
+      <anchor>a76ee9b657de6b5384bc9b47c17bafa96</anchor>
       <arglist>(const tcomp_result_t *result)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_tempstate_to_free_def_t</name>
       <anchorfile>tcomp__result_8h.html</anchorfile>
-      <anchor>a01386b24b8ed121ff28b07887b5d03a0</anchor>
+      <anchor>ae5134c3378c12c8958abc01627e5dac6</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_result_def_t</name>
       <anchorfile>tcomp__result_8h.html</anchorfile>
-      <anchor>a628d0764ad41dfd8d69fb7cebff0b5cc</anchor>
+      <anchor>aed43d77f3b1024e3b8f2f2621a6aac9c</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_rfc3485_dictionary_sip.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__rfc3485__dictionary__sip_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -3790,7 +3820,7 @@
   </compound>
   <compound kind="file">
     <name>tcomp_rfc5049_sip.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__rfc5049__sip_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -3823,7 +3853,7 @@
   </compound>
   <compound kind="file">
     <name>tcomp_rfc5112_dictionary_presence.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__rfc5112__dictionary__presence_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -3877,34 +3907,34 @@
   </compound>
   <compound kind="file">
     <name>tcomp_state.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__state_8c</filename>
     <includes id="tcomp__state_8h" name="tcomp_state.h" local="yes" imported="no">tcomp_state.h</includes>
     <member kind="function">
       <type>int</type>
       <name>tcomp_state_equals</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga3d3fd6c9177e3b1eb636c659d003bf79</anchor>
+      <anchorfile>tcomp__state_8c.html</anchorfile>
+      <anchor>a3d3fd6c9177e3b1eb636c659d003bf79</anchor>
       <arglist>(const tcomp_state_t *state1, const tcomp_state_t *state2)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_state_makeValid</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga03e88223cd551855cec74d9d52846aec</anchor>
+      <anchorfile>tcomp__state_8c.html</anchorfile>
+      <anchor>a03e88223cd551855cec74d9d52846aec</anchor>
       <arglist>(tcomp_state_t *state)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_state_def_t</name>
       <anchorfile>tcomp__state_8c.html</anchorfile>
-      <anchor>a3841f626dc21807f981e6c9bf7959b91</anchor>
+      <anchor>a1c5967de31ecec8879549467ef3a18bb</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_state.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__state_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__buffer_8h" name="tcomp_buffer.h" local="yes" imported="no">tcomp_buffer.h</includes>
@@ -3912,36 +3942,36 @@
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_STATE_CREATE</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga8e15c4eae142c593304dbbd6fd05c666</anchor>
+      <anchorfile>tcomp__state_8h.html</anchorfile>
+      <anchor>a8e15c4eae142c593304dbbd6fd05c666</anchor>
       <arglist>(length, address, instruction, minimum_access_length, retention_priority)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_PARTIAL_ID_LEN_CODE</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>gaee3d499dc9e1ff74689cc26ae06a0b15</anchor>
+      <anchorfile>tcomp__state_8h.html</anchorfile>
+      <anchor>aee3d499dc9e1ff74689cc26ae06a0b15</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_PARTIAL_ID_LEN_VALUE</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga5f3ebc3b848b5430dbdfb91a4e3e39cd</anchor>
+      <anchorfile>tcomp__state_8h.html</anchorfile>
+      <anchor>a5f3ebc3b848b5430dbdfb91a4e3e39cd</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_GET_STATE_SIZE</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>gae43ac0c95eed7ad26bebf7d6bef9c889</anchor>
+      <anchorfile>tcomp__state_8h.html</anchorfile>
+      <anchor>ae43ac0c95eed7ad26bebf7d6bef9c889</anchor>
       <arglist>(state)</arglist>
     </member>
     <member kind="typedef">
       <type>struct tcomp_state_s</type>
       <name>tcomp_state_t</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga67df0787edba76e7ab0814bb350e7f77</anchor>
+      <anchorfile>tcomp__state_8h.html</anchorfile>
+      <anchor>a67df0787edba76e7ab0814bb350e7f77</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -3954,101 +3984,101 @@
     <member kind="function">
       <type>int</type>
       <name>tcomp_state_equals</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga3d3fd6c9177e3b1eb636c659d003bf79</anchor>
+      <anchorfile>tcomp__state_8h.html</anchorfile>
+      <anchor>a3d3fd6c9177e3b1eb636c659d003bf79</anchor>
       <arglist>(const tcomp_state_t *state1, const tcomp_state_t *state2)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_state_makeValid</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga03e88223cd551855cec74d9d52846aec</anchor>
+      <anchorfile>tcomp__state_8h.html</anchorfile>
+      <anchor>aa2181d1c22e09ed60a4d0afdb5716615</anchor>
       <arglist>(tcomp_state_t *)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_state_def_t</name>
       <anchorfile>tcomp__state_8h.html</anchorfile>
-      <anchor>adc1d429d422583bd255ddfe3c8011c63</anchor>
+      <anchor>acd942cf8e1e7ebbd2ff9cada79e0e627</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_statehandler.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__statehandler_8c</filename>
     <includes id="tcomp__statehandler_8h" name="tcomp_statehandler.h" local="yes" imported="no">tcomp_statehandler.h</includes>
-    <includes id="tcomp__rfc5049__sip_8h" name="tcomp_rfc5049_sip.h" local="yes" imported="no">tcomp_rfc5049_sip.h</includes>
+    <includes id="tcomp__statehandler_8c" name="tcomp_statehandler.c" local="yes" imported="no">tcomp_rfc5049_sip.h</includes>
     <includes id="tcomp__nack__codes_8h" name="tcomp_nack_codes.h" local="yes" imported="no">tcomp_nack_codes.h</includes>
     <includes id="tcomp__dicts_8h" name="tcomp_dicts.h" local="yes" imported="no">tcomp_dicts.h</includes>
     <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
     <member kind="function">
       <type>tcomp_compartment_t *</type>
       <name>tcomp_statehandler_getCompartment</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga797699092db01a2f4db2f2f260053746</anchor>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>a797699092db01a2f4db2f2f260053746</anchor>
       <arglist>(const tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_statehandler_deleteCompartment</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga5800845e0c96c2f1be8b3f415a7537d8</anchor>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>a5800845e0c96c2f1be8b3f415a7537d8</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_statehandler_compartmentExist</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga80b45e28f64abe701df96a1ea89a904d</anchor>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>a39aac43417c1c111a74679a118a58cba</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_statehandler_findState</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga73c0a026931ce0b721e1dc28943cf186</anchor>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>a73c0a026931ce0b721e1dc28943cf186</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_statehandler_handleResult</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga3c3b5ef6aada3d28e6f095f9de5c56d1</anchor>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>a3c3b5ef6aada3d28e6f095f9de5c56d1</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, tcomp_result_t **lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_statehandler_handleNack</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>gad10f9e4e7538b1988374e536921ae947</anchor>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>a5ad50cd29378cf5e0412913a5b28aead</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t *nackinfo)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_statehandler_addSipSdpDictionary</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga3a9505cf6aca1b1e13375e5946e77a44</anchor>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>a3a9505cf6aca1b1e13375e5946e77a44</anchor>
       <arglist>(tcomp_statehandler_t *statehandler)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_statehandler_addPresenceDictionary</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga6a5d8dcb445d698a35e22c57aea580b2</anchor>
+      <anchorfile>tcomp__statehandler_8c.html</anchorfile>
+      <anchor>a6a5d8dcb445d698a35e22c57aea580b2</anchor>
       <arglist>(tcomp_statehandler_t *statehandler)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_statehandler_def_t</name>
       <anchorfile>tcomp__statehandler_8c.html</anchorfile>
-      <anchor>ae7349503b6fcbf91d4da44d79f031795</anchor>
+      <anchor>a824d0d2dee7bf65b58b11882fb3c2ad0</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_statehandler.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__statehandler_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__types_8h" name="tcomp_types.h" local="yes" imported="no">tcomp_types.h</includes>
@@ -4062,84 +4092,84 @@
     <member kind="define">
       <type>#define</type>
       <name>TCOMP_STATEHANDLER_CREATE</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>gadb4d99130d0b2d0f0324fc423687d2b0</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>adb4d99130d0b2d0f0324fc423687d2b0</anchor>
       <arglist>()</arglist>
     </member>
     <member kind="typedef">
       <type>struct tcomp_statehandler_s</type>
       <name>tcomp_statehandler_t</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga4c542d4d892ee493c2453f5a78882261</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a4c542d4d892ee493c2453f5a78882261</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
       <type>tcomp_compartment_t *</type>
       <name>tcomp_statehandler_getCompartment</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga797699092db01a2f4db2f2f260053746</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a797699092db01a2f4db2f2f260053746</anchor>
       <arglist>(const tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_statehandler_deleteCompartment</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga5800845e0c96c2f1be8b3f415a7537d8</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a5800845e0c96c2f1be8b3f415a7537d8</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_statehandler_compartmentExist</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga80b45e28f64abe701df96a1ea89a904d</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a39aac43417c1c111a74679a118a58cba</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_statehandler_findState</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga73c0a026931ce0b721e1dc28943cf186</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a73c0a026931ce0b721e1dc28943cf186</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_statehandler_handleResult</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga3c3b5ef6aada3d28e6f095f9de5c56d1</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a3c3b5ef6aada3d28e6f095f9de5c56d1</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, tcomp_result_t **lpResult)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_statehandler_handleNack</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>gad10f9e4e7538b1988374e536921ae947</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a28e289f7334f2b4541f20f9bb9f217cb</anchor>
       <arglist>(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t *)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_statehandler_addSipSdpDictionary</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga3a9505cf6aca1b1e13375e5946e77a44</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a3a9505cf6aca1b1e13375e5946e77a44</anchor>
       <arglist>(tcomp_statehandler_t *statehandler)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_statehandler_addPresenceDictionary</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga6a5d8dcb445d698a35e22c57aea580b2</anchor>
+      <anchorfile>tcomp__statehandler_8h.html</anchorfile>
+      <anchor>a6a5d8dcb445d698a35e22c57aea580b2</anchor>
       <arglist>(tcomp_statehandler_t *statehandler)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_statehandler_def_t</name>
       <anchorfile>tcomp__statehandler_8h.html</anchorfile>
-      <anchor>a746f450d22ec098d697fc35f62716466</anchor>
+      <anchor>a1f7c842c3c935a11555a7b5b550b9a04</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_types.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__types_8h</filename>
     <member kind="typedef">
       <type>tsk_list_t</type>
@@ -4179,7 +4209,7 @@
   </compound>
   <compound kind="file">
     <name>tcomp_udvm.bytecopy.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__udvm_8bytecopy_8c</filename>
     <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
     <member kind="define">
@@ -4192,28 +4222,28 @@
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_self</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga9575d4a5586a4021237a7c4cfdc45ab9</anchor>
+      <anchorfile>tcomp__udvm_8bytecopy_8c.html</anchorfile>
+      <anchor>a9575d4a5586a4021237a7c4cfdc45ab9</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_to</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga1128b6b051866ef8d05f30e400a0bc78</anchor>
+      <anchorfile>tcomp__udvm_8bytecopy_8c.html</anchorfile>
+      <anchor>a1128b6b051866ef8d05f30e400a0bc78</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t *source, uint16_t size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_from</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga0280a192caa144d9b06c00e3e5a1ce2c</anchor>
+      <anchorfile>tcomp__udvm_8bytecopy_8c.html</anchorfile>
+      <anchor>a0280a192caa144d9b06c00e3e5a1ce2c</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint8_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_udvm.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__udvm_8c</filename>
     <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
     <member kind="define">
@@ -4224,23 +4254,23 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_udvm_decompress</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4881cbbd81f5c469a0e4a6feb10d917a</anchor>
+      <anchorfile>tcomp__udvm_8c.html</anchorfile>
+      <anchor>a02b9bb3cf2d898d80a37eab23cc24c31</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tcomp_udvm_def_t</name>
       <anchorfile>tcomp__udvm_8c.html</anchorfile>
-      <anchor>a178ac2232bfa784dc58f3201638091d8</anchor>
+      <anchor>af00e8ac0e2de8a88b47db6c6ce183ed7</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_udvm.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__udvm_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
     <includes id="tcomp__message_8h" name="tcomp_message.h" local="yes" imported="no">tcomp_message.h</includes>
@@ -4342,345 +4372,345 @@
       <arglist></arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tcomp_udvm_decompress</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4881cbbd81f5c469a0e4a6feb10d917a</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a02b9bb3cf2d898d80a37eab23cc24c31</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_udvm_opget_literal_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaba3b7b5e835a6b0b94d1e7431fdc9721</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>aba3b7b5e835a6b0b94d1e7431fdc9721</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_udvm_opget_reference_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaf8457bd036ee98ae3eb88194b7e99a81</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>af8457bd036ee98ae3eb88194b7e99a81</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_udvm_opget_multitype_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga28aa1c73369d612a37aadb899f1c40ce</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a28aa1c73369d612a37aadb899f1c40ce</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_udvm_opget_address_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga9127af6e5fed8885a8423e8aca9c9d8c</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a9127af6e5fed8885a8423e8aca9c9d8c</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t memory_address_of_instruction)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_self</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga9575d4a5586a4021237a7c4cfdc45ab9</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a9575d4a5586a4021237a7c4cfdc45ab9</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_to</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga1128b6b051866ef8d05f30e400a0bc78</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a1128b6b051866ef8d05f30e400a0bc78</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t *source, uint16_t size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_bytecopy_from</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga0280a192caa144d9b06c00e3e5a1ce2c</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a0280a192caa144d9b06c00e3e5a1ce2c</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint8_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_byteCopy_TempStates</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4c7c5fef14331240f01333f65fa26d0c</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a4c7c5fef14331240f01333f65fa26d0c</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_createTempState</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga201b466c9f6fdd801b95d85217f28616</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a201b466c9f6fdd801b95d85217f28616</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority, int end_msg)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tcomp_udvm_createNackInfo</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaa3bdee3985967a5386d64edf78e418fb</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>aa3bdee3985967a5386d64edf78e418fb</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buffer_handle_t *lpDetails, int16_t memory_address_of_instruction)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga86a7e100f355e799f7eb6570e0461779</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a86a7e100f355e799f7eb6570e0461779</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__AND</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga375366a0ca7c171ec32753ee1ac3e0e5</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a375366a0ca7c171ec32753ee1ac3e0e5</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__OR</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga39f5ee9122537a98d6fc217dd2762405</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a39f5ee9122537a98d6fc217dd2762405</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__NOT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gadac6eddb08a202c774ba2c7b1a258d72</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>adac6eddb08a202c774ba2c7b1a258d72</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__LSHIFT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gab74186fe701a51ad090bbc99e9c4349b</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>ab74186fe701a51ad090bbc99e9c4349b</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__RSHIFT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4435543276177e75725c864e70ee1f7f</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a4435543276177e75725c864e70ee1f7f</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__ADD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga09d5f76d9fb0cd40dca7273da4dc8545</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a09d5f76d9fb0cd40dca7273da4dc8545</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SUBTRACT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga20f8359d9768e9a8a4404be46f6335c3</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a20f8359d9768e9a8a4404be46f6335c3</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__MULTIPLY</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga5d538fc1a9afd3aa11ccd10f8209f8d0</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a5d538fc1a9afd3aa11ccd10f8209f8d0</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__DIVIDE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaac5c8f87637ee93e01c65769a9219086</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>aac5c8f87637ee93e01c65769a9219086</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__REMAINDER</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga3a46f5aba1be1be34c0fccb327f5ab2b</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a3a46f5aba1be1be34c0fccb327f5ab2b</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SORT_ASCENDING</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6f3df7d5f466d85debd404df87ad77e5</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a6f3df7d5f466d85debd404df87ad77e5</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SORT_DESCENDING</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4dce2102abe8198da342c1f766d43de6</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a4dce2102abe8198da342c1f766d43de6</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SHA_1</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga5d3cb8f294499c2695c5b23c6b45fb70</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a5d3cb8f294499c2695c5b23c6b45fb70</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__LOAD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga1bcf6f1ecda2a0af43cda5909d2cbcaf</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a1bcf6f1ecda2a0af43cda5909d2cbcaf</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t value)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__MULTILOAD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga11f4394d3e2223c5600baf82e8193b06</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a11f4394d3e2223c5600baf82e8193b06</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t n)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__PUSH</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6639bf4132c829060478b2e422632dc3</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a6639bf4132c829060478b2e422632dc3</anchor>
       <arglist>(tcomp_udvm_t *udvm, int16_t value)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__POP</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaf2a7c91d2ee8332f5ed555dd3145d9d8</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>af2a7c91d2ee8332f5ed555dd3145d9d8</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t *value)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__COPY</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga51214f62d13367960bd1ac4904983007</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a51214f62d13367960bd1ac4904983007</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__COPY_LITERAL</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga8ecc085db8a9ce891a93811a30c62839</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a8ecc085db8a9ce891a93811a30c62839</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__COPY_OFFSET</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga307309842b9b099e57817bf4e3904f89</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a307309842b9b099e57817bf4e3904f89</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t offset, uint16_t length, uint16_t destination)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__MEMSET</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga809a4b88b0877315a4857c7adc0b55cc</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a809a4b88b0877315a4857c7adc0b55cc</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t length, uint16_t start_value, uint16_t offset)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__JUMP</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga90fbc6ac0b55f5ddd517eea9a1e52de2</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a90fbc6ac0b55f5ddd517eea9a1e52de2</anchor>
       <arglist>(tcomp_udvm_t *udvm, int16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__COMPARE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6c6ae105da064d2926472bba2f5a4fe7</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a6c6ae105da064d2926472bba2f5a4fe7</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t value_1, uint16_t value_2, uint16_t address_1, uint16_t address_2, uint16_t address_3)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__CALL</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gad9249b3fdcf039d172a6849bfcba59b7</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>ad9249b3fdcf039d172a6849bfcba59b7</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__RETURN</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga60f6a19ea8a41f195f12b3ebfdb8483f</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a60f6a19ea8a41f195f12b3ebfdb8483f</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SWITCH</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga409c84ea19150c8d229674259f69a6f0</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a409c84ea19150c8d229674259f69a6f0</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t n, uint16_t j)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__CRC</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaab8dd4697eaa29883d7d6fff0e4f9aa7</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>aab8dd4697eaa29883d7d6fff0e4f9aa7</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t value, uint16_t position, uint16_t length, uint16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__INPUT_BYTES</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga3444808b37643c8988ca529b025deafa</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a3444808b37643c8988ca529b025deafa</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__INPUT_BITS</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga7fb133890ac07f6a4b152a4cdb00382a</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a7fb133890ac07f6a4b152a4cdb00382a</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga914eb570eec312714467aa8676333b72</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a914eb570eec312714467aa8676333b72</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t destination, uint16_t address, uint16_t n)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__STATE_ACCESS</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga24b0d77a5699fb297c54cfa99ca63ba2</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a24b0d77a5699fb297c54cfa99ca63ba2</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length, uint16_t state_begin, uint16_t state_length, uint16_t state_address, uint16_t state_instruction)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__STATE_CREATE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga01d57a879b5f3c6cca236af60c761970</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a01d57a879b5f3c6cca236af60c761970</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__STATE_FREE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga82b35765dd2895648db73fafd7b4f749</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a82b35765dd2895648db73fafd7b4f749</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__OUTPUT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga8612de109a0badb62df4b914531fd016</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a8612de109a0badb62df4b914531fd016</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__END_MESSAGE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga025688cd47950e3149f2b957f69714cd</anchor>
+      <anchorfile>tcomp__udvm_8h.html</anchorfile>
+      <anchor>a025688cd47950e3149f2b957f69714cd</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSIGCOMP_GEXTERN const void *</type>
+      <type>TINYSIGCOMP_GEXTERN const tsk_object_def_t *</type>
       <name>tcomp_udvm_def_t</name>
       <anchorfile>tcomp__udvm_8h.html</anchorfile>
-      <anchor>af9fc4399ec96bd3db6e571207f304b07</anchor>
+      <anchor>acd10495089ab209d659e9c240dc25a0a</anchor>
       <arglist></arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_udvm.instructions.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__udvm_8instructions_8c</filename>
     <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
     <class kind="struct">IndexValuePair_s</class>
@@ -4736,259 +4766,259 @@
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga86a7e100f355e799f7eb6570e0461779</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a86a7e100f355e799f7eb6570e0461779</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__AND</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga375366a0ca7c171ec32753ee1ac3e0e5</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a375366a0ca7c171ec32753ee1ac3e0e5</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__OR</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga39f5ee9122537a98d6fc217dd2762405</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a39f5ee9122537a98d6fc217dd2762405</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__NOT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gadac6eddb08a202c774ba2c7b1a258d72</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>adac6eddb08a202c774ba2c7b1a258d72</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__LSHIFT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gab74186fe701a51ad090bbc99e9c4349b</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>ab74186fe701a51ad090bbc99e9c4349b</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__RSHIFT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4435543276177e75725c864e70ee1f7f</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a4435543276177e75725c864e70ee1f7f</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__ADD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga09d5f76d9fb0cd40dca7273da4dc8545</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a09d5f76d9fb0cd40dca7273da4dc8545</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SUBTRACT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga20f8359d9768e9a8a4404be46f6335c3</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a20f8359d9768e9a8a4404be46f6335c3</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__MULTIPLY</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga5d538fc1a9afd3aa11ccd10f8209f8d0</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a5d538fc1a9afd3aa11ccd10f8209f8d0</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__DIVIDE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaac5c8f87637ee93e01c65769a9219086</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>aac5c8f87637ee93e01c65769a9219086</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__REMAINDER</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga3a46f5aba1be1be34c0fccb327f5ab2b</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a3a46f5aba1be1be34c0fccb327f5ab2b</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SORT_ASCENDING</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6f3df7d5f466d85debd404df87ad77e5</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a6f3df7d5f466d85debd404df87ad77e5</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SORT_DESCENDING</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4dce2102abe8198da342c1f766d43de6</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a4dce2102abe8198da342c1f766d43de6</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SHA_1</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga5d3cb8f294499c2695c5b23c6b45fb70</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a5d3cb8f294499c2695c5b23c6b45fb70</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__LOAD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga1bcf6f1ecda2a0af43cda5909d2cbcaf</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a1bcf6f1ecda2a0af43cda5909d2cbcaf</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t value)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__MULTILOAD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga11f4394d3e2223c5600baf82e8193b06</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a11f4394d3e2223c5600baf82e8193b06</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t n)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__PUSH</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6639bf4132c829060478b2e422632dc3</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a6639bf4132c829060478b2e422632dc3</anchor>
       <arglist>(tcomp_udvm_t *udvm, int16_t value)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__POP</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaf2a7c91d2ee8332f5ed555dd3145d9d8</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>af2a7c91d2ee8332f5ed555dd3145d9d8</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t *value)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__COPY</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga51214f62d13367960bd1ac4904983007</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a51214f62d13367960bd1ac4904983007</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__COPY_LITERAL</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga8ecc085db8a9ce891a93811a30c62839</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a8ecc085db8a9ce891a93811a30c62839</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__COPY_OFFSET</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga307309842b9b099e57817bf4e3904f89</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a307309842b9b099e57817bf4e3904f89</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t offset, uint16_t length, uint16_t destination)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__MEMSET</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga809a4b88b0877315a4857c7adc0b55cc</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a809a4b88b0877315a4857c7adc0b55cc</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t length, uint16_t start_value, uint16_t offset)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__JUMP</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga90fbc6ac0b55f5ddd517eea9a1e52de2</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a90fbc6ac0b55f5ddd517eea9a1e52de2</anchor>
       <arglist>(tcomp_udvm_t *udvm, int16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__COMPARE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6c6ae105da064d2926472bba2f5a4fe7</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a6c6ae105da064d2926472bba2f5a4fe7</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t value_1, uint16_t value_2, uint16_t address_1, uint16_t address_2, uint16_t address_3)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__CALL</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gad9249b3fdcf039d172a6849bfcba59b7</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>ad9249b3fdcf039d172a6849bfcba59b7</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__RETURN</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga60f6a19ea8a41f195f12b3ebfdb8483f</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a60f6a19ea8a41f195f12b3ebfdb8483f</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__SWITCH</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga409c84ea19150c8d229674259f69a6f0</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a409c84ea19150c8d229674259f69a6f0</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t n, uint16_t j)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__CRC</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaab8dd4697eaa29883d7d6fff0e4f9aa7</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>aab8dd4697eaa29883d7d6fff0e4f9aa7</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t value, uint16_t position, uint16_t length, uint16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__INPUT_BYTES</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga3444808b37643c8988ca529b025deafa</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a3444808b37643c8988ca529b025deafa</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__INPUT_BITS</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga7fb133890ac07f6a4b152a4cdb00382a</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a7fb133890ac07f6a4b152a4cdb00382a</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga914eb570eec312714467aa8676333b72</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a914eb570eec312714467aa8676333b72</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t destination, uint16_t address, uint16_t n)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__STATE_ACCESS</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga24b0d77a5699fb297c54cfa99ca63ba2</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a24b0d77a5699fb297c54cfa99ca63ba2</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length, uint16_t state_begin, uint16_t state_length, uint16_t state_address, uint16_t state_instruction)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__STATE_CREATE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga01d57a879b5f3c6cca236af60c761970</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a01d57a879b5f3c6cca236af60c761970</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__STATE_FREE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga82b35765dd2895648db73fafd7b4f749</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a82b35765dd2895648db73fafd7b4f749</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__OUTPUT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga8612de109a0badb62df4b914531fd016</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a8612de109a0badb62df4b914531fd016</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>TCOMP_UDVM_EXEC_INST__END_MESSAGE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga025688cd47950e3149f2b957f69714cd</anchor>
+      <anchorfile>tcomp__udvm_8instructions_8c.html</anchorfile>
+      <anchor>a025688cd47950e3149f2b957f69714cd</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_udvm.nack.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__udvm_8nack_8c</filename>
     <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
     <member kind="define">
@@ -5043,68 +5073,68 @@
     <member kind="function">
       <type>void</type>
       <name>tcomp_udvm_createNackInfo</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaa3bdee3985967a5386d64edf78e418fb</anchor>
+      <anchorfile>tcomp__udvm_8nack_8c.html</anchorfile>
+      <anchor>aa3bdee3985967a5386d64edf78e418fb</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buffer_handle_t *lpDetails, int16_t memory_address_of_instruction)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_udvm.operands.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__udvm_8operands_8c</filename>
     <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_udvm_opget_literal_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaba3b7b5e835a6b0b94d1e7431fdc9721</anchor>
+      <anchorfile>tcomp__udvm_8operands_8c.html</anchorfile>
+      <anchor>aba3b7b5e835a6b0b94d1e7431fdc9721</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_udvm_opget_reference_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaf8457bd036ee98ae3eb88194b7e99a81</anchor>
+      <anchorfile>tcomp__udvm_8operands_8c.html</anchorfile>
+      <anchor>af8457bd036ee98ae3eb88194b7e99a81</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_udvm_opget_multitype_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga28aa1c73369d612a37aadb899f1c40ce</anchor>
+      <anchorfile>tcomp__udvm_8operands_8c.html</anchorfile>
+      <anchor>a28aa1c73369d612a37aadb899f1c40ce</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>uint16_t</type>
       <name>tcomp_udvm_opget_address_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga9127af6e5fed8885a8423e8aca9c9d8c</anchor>
+      <anchorfile>tcomp__udvm_8operands_8c.html</anchorfile>
+      <anchor>a9127af6e5fed8885a8423e8aca9c9d8c</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t memory_address_of_instruction)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tcomp_udvm.statemanagment.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tcomp__udvm_8statemanagment_8c</filename>
     <includes id="tcomp__udvm_8h" name="tcomp_udvm.h" local="yes" imported="no">tcomp_udvm.h</includes>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_byteCopy_TempStates</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4c7c5fef14331240f01333f65fa26d0c</anchor>
+      <anchorfile>tcomp__udvm_8statemanagment_8c.html</anchorfile>
+      <anchor>a4c7c5fef14331240f01333f65fa26d0c</anchor>
       <arglist>(tcomp_udvm_t *udvm)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
       <name>tcomp_udvm_createTempState</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga201b466c9f6fdd801b95d85217f28616</anchor>
+      <anchorfile>tcomp__udvm_8statemanagment_8c.html</anchorfile>
+      <anchor>a201b466c9f6fdd801b95d85217f28616</anchor>
       <arglist>(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority, int end_msg)</arglist>
     </member>
   </compound>
   <compound kind="file">
     <name>tinysigcomp_config.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>tinysigcomp__config_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -5132,13 +5162,6 @@
       <name>TCOMP_END_DECLS</name>
       <anchorfile>tinysigcomp__config_8h.html</anchorfile>
       <anchor>a31258ce4dc26ff064422a1f004f89ef8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>FORCE_STATIC</name>
-      <anchorfile>tinysigcomp__config_8h.html</anchorfile>
-      <anchor>aff8ec2db7e49184b95d7bdc50523a308</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -5172,7 +5195,7 @@
   </compound>
   <compound kind="file">
     <name>trees.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>trees_8c</filename>
     <includes id="deflate_8h" name="deflate.h" local="yes" imported="no">deflate.h</includes>
     <class kind="struct">static_tree_desc_s</class>
@@ -5578,7 +5601,7 @@
   </compound>
   <compound kind="file">
     <name>trees.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>trees_8h</filename>
     <member kind="variable">
       <type>local const ct_data</type>
@@ -5625,16 +5648,9 @@
   </compound>
   <compound kind="file">
     <name>zconf.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>zconf_8h</filename>
     <includes id="tinysigcomp__config_8h" name="tinysigcomp_config.h" local="yes" imported="no">tinysigcomp_config.h</includes>
-    <member kind="define">
-      <type>#define</type>
-      <name>const</name>
-      <anchorfile>zconf_8h.html</anchorfile>
-      <anchor>a2c212835823e3c54a8ab6d95c652660e</anchor>
-      <arglist></arglist>
-    </member>
     <member kind="define">
       <type>#define</type>
       <name>MAX_MEM_LEVEL</name>
@@ -5661,6 +5677,27 @@
       <name>ZEXTERN</name>
       <anchorfile>zconf_8h.html</anchorfile>
       <anchor>a49b7f5eccfcc99e53178581632bc9589</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ZEXPORT</name>
+      <anchorfile>zconf_8h.html</anchorfile>
+      <anchor>a181415878f03b95a7094309d824a14b6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>ZEXPORTVA</name>
+      <anchorfile>zconf_8h.html</anchorfile>
+      <anchor>af38d1853df635eee27f1a02f96457b22</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>FAR</name>
+      <anchorfile>zconf_8h.html</anchorfile>
+      <anchor>aef060b3456fdcc093a7210a762d5f2ed</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -5771,7 +5808,7 @@
   </compound>
   <compound kind="file">
     <name>zlib.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>zlib_8h</filename>
     <includes id="zconf_8h" name="zconf.h" local="yes" imported="no">zconf.h</includes>
     <class kind="struct">z_stream_s</class>
@@ -6361,7 +6398,7 @@
   </compound>
   <compound kind="file">
     <name>zutil.c</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>zutil_8c</filename>
     <includes id="zutil_8h" name="zutil.h" local="yes" imported="no">zutil.h</includes>
     <class kind="struct">internal_state</class>
@@ -6452,7 +6489,7 @@
   </compound>
   <compound kind="file">
     <name>zutil.h</name>
-    <path>C:/Projects/Doubango/tinySIGCOMP/src/</path>
+    <path>C:/doubango/tinySIGCOMP/src/</path>
     <filename>zutil_8h</filename>
     <includes id="zlib_8h" name="zlib.h" local="yes" imported="no">zlib.h</includes>
     <member kind="define">
@@ -6460,13 +6497,6 @@
       <name>ZLIB_INTERNAL</name>
       <anchorfile>zutil_8h.html</anchorfile>
       <anchor>a59d4d7ef4d73655c759211ec33a5d44f</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>local</name>
-      <anchorfile>zutil_8h.html</anchorfile>
-      <anchor>a08023ea6765c99d60a6a3840cd07156e</anchor>
       <arglist></arglist>
     </member>
     <member kind="define">
@@ -6617,13 +6647,6 @@
       <arglist>(s, p)</arglist>
     </member>
     <member kind="typedef">
-      <type>unsigned char</type>
-      <name>uch</name>
-      <anchorfile>zutil_8h.html</anchorfile>
-      <anchor>af3307af5922c72924a837559c801a8a4</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
       <type>uch FAR</type>
       <name>uchf</name>
       <anchorfile>zutil_8h.html</anchorfile>
@@ -6697,756 +6720,23 @@
   <compound kind="page">
     <name>tcomp_udp_compression_page</name>
     <title>SigComp UDP compression</title>
-    <filename>tcomp_udp_compression_page</filename>
+    <filename>tcomp__udp__compression__page</filename>
   </compound>
   <compound kind="page">
     <name>tcomp_udp_decompression_page</name>
     <title>SigComp UDP decompression</title>
-    <filename>tcomp_udp_decompression_page</filename>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_buffer_group</name>
-    <title>SigComp Buffer.</title>
-    <filename>group__tcomp__buffer__group.html</filename>
-    <class kind="struct">tcomp_buffer_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_P_BIT_MSB_TO_LSB</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gafb63054a518d87c6fffcfd9b7c89b5c5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_P_BIT_LSB_TO_MSB</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga7b99c2f2efb0bd844d6a8ab097a84f03</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>_TCOMP_BUFFER_CREATE</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga136ddc72ae5cb2ccddf36ce726b5a277</anchor>
-      <arglist>(data, len)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_BUFFER_CREATE</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaea4f163777b093b4ef28a2b3256ed712</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_buffer_s</type>
-      <name>tcomp_buffer_t</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga00631535fe1bb8a1c3e4bcea429462ca</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>void</type>
-      <name>tcomp_buffer_handle_t</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaeb155cac21d622093c9ea495b9b8e144</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_buffer_equals</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga648cfce9e275749fcb6a92f45070b470</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle1, const tcomp_buffer_handle_t *handle2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_buffer_startsWith</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga536e7abae6bcf9d8c09407e3805037f2</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle1, const tcomp_buffer_handle_t *handle2)</arglist>
-    </member>
-    <member kind="function">
-      <type>const uint8_t *</type>
-      <name>tcomp_buffer_getReadOnlyBufferAtPos</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga07e8b7d6077e9b5fa595cd645f55350f</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint8_t *</type>
-      <name>tcomp_buffer_getBufferAtPos</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga7fa5783b07830935e3e9dfab2b0d88d4</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle, size_t position)</arglist>
-    </member>
-    <member kind="function">
-      <type>size_t</type>
-      <name>tcomp_buffer_getSize</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga8a0feee2496555b59b2a56053f666c33</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
-    </member>
-    <member kind="function">
-      <type>size_t</type>
-      <name>tcomp_buffer_getRemainingBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga8d4e064d6d2bc4ac16e4282b2cdc5e1c</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint8_t *</type>
-      <name>tcomp_buffer_readBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga304f31d779262d58175b06b7035f2971</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_buffer_readLsbToMsb</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga2441e395531499627ab17dc2ff957598</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_buffer_readMsbToLsb</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gadd61bb3234115bcb8214016da0d10f80</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t length)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_buffer_discardBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaa1eb82e5dc1dcf5132ead711f36d5b7d</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_buffer_discardLastBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga3776db46a6db1354e8f4d005ee29df55</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, uint16_t count)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_buffer_allocBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga310392d2a48ac26f8116b5946b7ff020</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_buffer_referenceBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gae4e7f643560dff38397e3d0b4e19333d</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, uint8_t *externalBuff, size_t size)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_buffer_appendBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gab9b03fae8d86c26f267b71cc9a7825ab</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, const void *data, size_t size)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_buffer_removeBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gaae0c8c3e1999b736fc17fdee7d192e2d</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t pos, size_t size)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_buffer_freeBuff</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga6784139de22f5733384ea1fa2be25a74</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle)</arglist>
-    </member>
-    <member kind="function">
-      <type>size_t *</type>
-      <name>tcomp_buffer_getIndexBytes</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga305d4f691c8e30a0273f71ada63b0518</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
-    </member>
-    <member kind="function">
-      <type>size_t *</type>
-      <name>tcomp_buffer_getIndexBits</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gadd4e1e7c72885bcdeadbd61645151b01</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint8_t *</type>
-      <name>tcomp_buffer_getP_BIT</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga791d3f1c107a65c2fde0ad782315a5a6</anchor>
-      <arglist>(const tcomp_buffer_handle_t *handle)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint64_t</type>
-      <name>tcomp_buffer_createHash</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gad2f920de44f214da94847311401c5669</anchor>
-      <arglist>(const void *data, size_t len)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_buffer_nprint</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>gae7081ba73675881e1f25757ac5b53203</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle, size_t size)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_buffer_reset</name>
-      <anchorfile>group__tcomp__buffer__group.html</anchorfile>
-      <anchor>ga885d54447fb62c4223b212f386d304e2</anchor>
-      <arglist>(tcomp_buffer_handle_t *handle)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_compartment_group</name>
-    <title>SigComp compartment.</title>
-    <filename>group__tcomp__compartment__group.html</filename>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_setRemoteParams</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga1e68190c2c83dba80461cbc81ec6463a</anchor>
-      <arglist>(tcomp_compartment_t *compartment, tcomp_params_t *lpParams)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_setReqFeedback</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga9dd145ec13b7edfd3c28caf08971adad</anchor>
-      <arglist>(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_setRetFeedback</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gad1011202565be1ddb9a2f65fbf3da366</anchor>
-      <arglist>(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_clearStates</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga0b9915ceb760196e51bc0ffa1f33ed48</anchor>
-      <arglist>(tcomp_compartment_t *compartment)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_freeStateByPriority</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga00e53894db779de7ee81bd956b56e481</anchor>
-      <arglist>(tcomp_compartment_t *compartment)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_freeState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga4e1a157aaadda59389637c197407e918</anchor>
-      <arglist>(tcomp_compartment_t *compartment, tcomp_state_t **lpState)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_freeStates</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga7e1a55b8673488be557da7f4b03c81c2</anchor>
-      <arglist>(tcomp_compartment_t *compartment, tcomp_tempstate_to_free_t **tempStates, uint8_t size)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_addState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga8dadab6275e5e795cc5113411ef8082e</anchor>
-      <arglist>(tcomp_compartment_t *compartment, tcomp_state_t **lpState)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_compartment_findState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gab72144795fc6997fcf2103b893ea17c8</anchor>
-      <arglist>(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_freeGhostState</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga2afc3585b73665d6dddf93e9889b19e1</anchor>
-      <arglist>(tcomp_compartment_t *compartment)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compartment_addNack</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>ga5c182d465dd341481e4b74ee77acbc9d</anchor>
-      <arglist>(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE])</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_compartment_hasNack</name>
-      <anchorfile>group__tcomp__compartment__group.html</anchorfile>
-      <anchor>gaad3df7869f23abef0ddf7707d8b86a9a</anchor>
-      <arglist>(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_compressor_deflate_group</name>
-    <title>SigComp Deflate Compressor.</title>
-    <filename>group__tcomp__compressor__deflate__group.html</filename>
-    <class kind="struct">tcomp_deflateStream_s</class>
-    <class kind="struct">tcomp_deflatedata_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_CB_START_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaf61dd76b0f070596ff477fa5fb11ff95</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_DMS_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaa0e73f1c8b5cc6579fe838c8f896bfe1</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_0x0005_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga1361b59108a666ce5794c1fdcbf69cdd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_CB_END_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga438bef24bb5c09d4cf891a28e973378a</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_HASH_LEN_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaaefce17480e56589a8bd181a4073cb0e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_SMS_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gad79d54e5e2d4e9e37b4d5ba2302edc0e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_CPB_DMS_SMS_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gad8b17d69112d417446dee27863e30350</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_VERSION_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga8909b9553131b824cc647ae858eb0da0</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_BYTECODE1_SIZE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadb3ba3e24b34c2226b1a867158733d68</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_STATE_ADDRESS</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaa3cb78c7b5d91c728d09c65fe9dd4d35</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_STATE_INSTRUCTION</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadd6e53f528b0b7d81b7dbc774e173609</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_STATE_MIN_ACCESS_LEN</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga97b586450efa48aa8cd9f16a2d599b37</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>GHOST_STATE_RETENTION_PRIORITY</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga4dfae63f9636d012a8b45851e8a971e8</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>_TCOMP_DEFLATEDATA_CREATE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga742310b7a82373880b47730d08e901d0</anchor>
-      <arglist>(isStream, z_level, z_windowBits)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_DEFLATEDATA_CREATE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga49d4da0914f8584f70aafc508464e5e9</anchor>
-      <arglist>(isStream)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>USE_DICTS_FOR_COMPRESSION</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadc85d4d5b991939e39bf3fcd2b41e0e5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>Z_DEFAULT_WINDOW_BITS</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga3ffc2b8c8034c6e80474b0ad988a4ab6</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_UDVM_CIRCULAR_START_INDEX</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga297a076f50ac3d10649b26b083b6a4d9</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_SIP_DICT_ONLY</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga8a677017c1bf51b65dc49b541c46242c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_PRES_DICT_ONLY</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gab7869b22a284727e3bafa890de3f08f5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_SIP_PRES_DICTS</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga56e78baa3f167e1222521a92b5411470</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_NO_DICT</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga7b3a9bb16609d4529913a50ccd1e8117</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_FIXME_DICT</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga70b3741fac20f597294e67ec88c1ffd2</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_BYTECODE_DESTINATION_START</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac519f027665fcff17a6adcf26ce13e87</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_BYTECODE_DESTINATION_CODE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga1bfccabe5485ea3856fb661a360fcdcc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATE_BYTECODE_LEN</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga5301d24aea35ac0ae5b82c8b209e7c96</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>DEFLATEDATA_DEFLATE_BYTECODE</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga8ad70b4284af8f191f3e033784726a3c</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_deflateStream_s</type>
-      <name>tcomp_deflateStream_t</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gafadd5ec8fe340558dde8db99700bcbab</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_deflatedata_s</type>
-      <name>tcomp_deflatedata_t</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga51603f0230b2555a35c740b64d95b7d7</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_compressor_deflate_compress</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gadfe52940fdd3ce97d70674195a40d516</anchor>
-      <arglist>(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_deflatedata_isStateful</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga69ae84d9d68505848279a2a3e8839695</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_deflatedata_createGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga685b9a7b997d9aeca3174530211711c7</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, uint16_t state_length, tcomp_params_t *params)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_deflatedata_ackGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gaadc5f39e93866e0cb2cd3b29bb99d12e</anchor>
-      <arglist>(tcomp_compressordata_t *data, const tcomp_buffer_handle_t *stateid)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_deflatedata_updateGhost</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga2745238a5c4c72d653724ff7808cf52c</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, size_t input_size)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint32_t *</type>
-      <name>tcomp_deflatedata_getGhostCopyOffset</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gacd4ef201aad5c16cc01703429e152509</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_deflatedata_freeGhostState</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga5706f951dba8f9b03a2bddfa24be5264</anchor>
-      <arglist>(tcomp_compressordata_t *data)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_deflateStream_end</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gad5d168f2e8316efb1c984cb8858b2a20</anchor>
-      <arglist>(tcomp_deflateStream_t *stream)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_deflateStream_copy</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac9542ac256979e69110eccf6f05899fa</anchor>
-      <arglist>(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_deflatedata_zInit</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga89316709478e25bc3dbb3eae8221fec9</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_deflatedata_zUnInit</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga390a152a46c393ed4c364a4ef633186a</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_deflatedata_zReset</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga59b2152f3a1451e3d9c03658817e7084</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_deflatedata_zCompress</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac11974f50fe8a3452e674a4f0b19069b</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, const void *in, size_t inLen, void *out, size_t *outLen, int *stateChanged)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_deflatedata_zGetWindowBits</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>gac1db80d4be4336cd73f03ad7d0de84ec</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_deflatedata_zSetWindowBits</name>
-      <anchorfile>group__tcomp__compressor__deflate__group.html</anchorfile>
-      <anchor>ga0ad0c57a166fbf0700f2b4a0203b6581</anchor>
-      <arglist>(tcomp_deflatedata_t *deflatedata, int windowSize)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_compressordata_group</name>
-    <title>SigComp NACK information.</title>
-    <filename>group__tcomp__compressordata__group.html</filename>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_compressordisp_group</name>
-    <title>SigComp compressor dispatcher.</title>
-    <filename>group__tcomp__compressordisp__group.html</filename>
-    <class kind="struct">tcomp_compressordisp_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_NACK_SUPPORTED</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga38e55ba6ae6fbbe1c82e843a7430ed4e</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_MAX_COMPRESSORS</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga8d2e7bb50fd6bbdc19ed27a1e846fca5</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_COMPRESSORDISP_CREATE</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga0b0488d2687f3d46779b8752e4f16e52</anchor>
-      <arglist>(statehandler)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_compressordisp_s</type>
-      <name>tcomp_compressordisp_t</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga23efaf69247656c591bee204825088dc</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_compressordisp_compress</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga679f2a6f7669978d6c84261a2b0a27d8</anchor>
-      <arglist>(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_compressordisp_addCompressor</name>
-      <anchorfile>group__tcomp__compressordisp__group.html</anchorfile>
-      <anchor>ga04e47e8173e5979a541e622a21a66ccf</anchor>
-      <arglist>(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress compressor)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_decompressordisp_group</name>
-    <title>SigComp decompressor dispatcher.</title>
-    <filename>group__tcomp__decompressordisp__group.html</filename>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_decompressordisp_decompress</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga2b479f5f368ef6ba21f5f76049df03e8</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, tcomp_result_t *lpResult)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_decompressordisp_getNextMessage</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga3380a0c81c00ebb14313fd9930dd0ec9</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, tcomp_result_t *lpResult)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_decompressordisp_internalDecompress</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>gab04f771af513b9b7391fa198d31aed61</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, const size_t input_size, tcomp_result_t **lpResult)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_decompressordisp_appendStream</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga771d7186ecdac8dc7556652353ca55a9</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, const void *input_ptr, size_t input_size, uint64_t streamId)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_decompressordisp_getNextStreamMsg</name>
-      <anchorfile>group__tcomp__decompressordisp__group.html</anchorfile>
-      <anchor>ga6d0b4ed352c6b9d46956d9c71c304a48</anchor>
-      <arglist>(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_dicts_group</name>
-    <title>SigComp dictionaries.</title>
-    <filename>group__tcomp__dicts__group.html</filename>
-    <member kind="function">
-      <type>tcomp_dictionary_t *</type>
-      <name>tcomp_dicts_create_presence_dict</name>
-      <anchorfile>group__tcomp__dicts__group.html</anchorfile>
-      <anchor>ga252a72a1fd88d9e77ca46bdbe214be95</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="function">
-      <type>tcomp_dictionary_t *</type>
-      <name>tcomp_dicts_create_sip_dict</name>
-      <anchorfile>group__tcomp__dicts__group.html</anchorfile>
-      <anchor>ga1810e66603f634d79120eb9da1400c05</anchor>
-      <arglist>()</arglist>
-    </member>
+    <filename>tcomp__udp__decompression__page</filename>
   </compound>
   <compound kind="group">
     <name>tcomp_manager_group</name>
     <title>SigComp manager.</title>
     <filename>group__tcomp__manager__group.html</filename>
-    <class kind="struct">tcomp_manager_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_MANAGER_CREATE</name>
-      <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>gacfa8dba96e664e47d017cd7963198831</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_manager_s</type>
-      <name>tcomp_manager_t</name>
-      <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga2fdb922c98c0aa355479d03e8378ba61</anchor>
-      <arglist></arglist>
-    </member>
     <member kind="function">
       <type>size_t</type>
       <name>tcomp_manager_compress</name>
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
-      <anchor>ga356ab233e42182e0e5fa6b10d645cdb7</anchor>
-      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, int stream)</arglist>
+      <anchor>ga746d5ad4427ad02ac14db38c52223b45</anchor>
+      <arglist>(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize, const void *input_ptr, size_t input_size, void *output_ptr, size_t output_size, tsk_bool_t stream)</arglist>
     </member>
     <member kind="function">
       <type>size_t</type>
@@ -7524,690 +6814,6 @@
       <anchorfile>group__tcomp__manager__group.html</anchorfile>
       <anchor>ga2df95903d444c1fd0d1acbb4def9994d</anchor>
       <arglist>(tcomp_manager_handle_t *handle)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_message_group</name>
-    <title>SigComp Message.</title>
-    <filename>group__tcomp__message__group.html</filename>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_MESSAGE_CREATE</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>gae9f7c05f5bc9a279fee48889247e4317</anchor>
-      <arglist>(input_ptr, input_size, stream)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>initFeedbackItem</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga3e63e4c08ae337e106f4287534c4ab3d</anchor>
-      <arglist>(tcomp_message_t *message, uint8_t **start_ptr)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>initStateId</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga0285ac7ac39e094b4f8ca95e78683774</anchor>
-      <arglist>(tcomp_message_t *message, uint8_t **start_ptr, uint8_t state_len)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>initStateful</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga2a3548b1d814d6a0ebceac5322ffd124</anchor>
-      <arglist>(tcomp_message_t *message, uint8_t **start_ptr, uint8_t *end_ptr)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>initStateless</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga150b495ddba63a17a67750ef84724a66</anchor>
-      <arglist>(tcomp_message_t *message, uint8_t **start_ptr, uint8_t *end_ptr)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>initNack</name>
-      <anchorfile>group__tcomp__message__group.html</anchorfile>
-      <anchor>ga7266ef0e2119275eed84d10a75eb5e3e</anchor>
-      <arglist>(tcomp_message_t *message, uint8_t **start_ptr, uint8_t *end_ptr)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_nackinfo_group</name>
-    <title>SigComp NACK information.</title>
-    <filename>group__tcomp__nackinfo__group.html</filename>
-    <class kind="struct">tcomp_nackinfo_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_NACKINFO_CREATE</name>
-      <anchorfile>group__tcomp__nackinfo__group.html</anchorfile>
-      <anchor>ga00f9ae4609d003d2316d24c3f10e6cd8</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_nackinfo_s</type>
-      <name>tcomp_nackinfo_t</name>
-      <anchorfile>group__tcomp__nackinfo__group.html</anchorfile>
-      <anchor>gab1756a7b53f79219dd6ca8991c914b5f</anchor>
-      <arglist></arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_params_group</name>
-    <title>SigComp parameters.</title>
-    <filename>group__tcomp__params__group.html</filename>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_params_hasCpbDmsSms</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gab7fbed594049a1ce4a4a665f62c799e5</anchor>
-      <arglist>(tcomp_params_t *params)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_params_setCpbCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga87c3e1ad7e61f83516de439c8a186fc2</anchor>
-      <arglist>(tcomp_params_t *params, uint8_t cpbCode)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_params_setCpbValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga543032d689cb84dedbbf768b89d1b12e</anchor>
-      <arglist>(tcomp_params_t *params, uint8_t cpbValue)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_params_setDmsCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga2acf1afd3d2e8359cbcbc771791e002b</anchor>
-      <arglist>(tcomp_params_t *params, uint8_t dmsCode)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_params_setDmsValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gaad4ba7d9e0ac69c863701697b9a2c286</anchor>
-      <arglist>(tcomp_params_t *params, uint32_t dmsValue)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_params_setSmsCode</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>gaa3b641a96b532be62f6d0d33d1ef673f</anchor>
-      <arglist>(tcomp_params_t *params, uint8_t smsCode)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_params_setSmsValue</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga01dabb4646ea1e8a888ef6ad151f66c0</anchor>
-      <arglist>(tcomp_params_t *params, uint32_t smsValue)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_params_getParameters</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga636c5177d93ba294666f5dbaf34c7eb9</anchor>
-      <arglist>(tcomp_params_t *params)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_params_setParameters</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga08f982ab89d188f14fa91746e01019ca</anchor>
-      <arglist>(tcomp_params_t *params, uint16_t sigCompParameters)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_params_reset</name>
-      <anchorfile>group__tcomp__params__group.html</anchorfile>
-      <anchor>ga283700e42a675ffd9ee4debf31ddab49</anchor>
-      <arglist>(tcomp_params_t *params)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_result_group</name>
-    <title>SigComp decompresion result.</title>
-    <filename>group__tcomp__result__group.html</filename>
-    <class kind="struct">tcomp_tempstate_to_free_s</class>
-    <class kind="struct">tcomp_result_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_RESULT_CREATE</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>gabf96c3c3eecaf2a152074e700f063824</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_tempstate_to_free_s</type>
-      <name>tcomp_tempstate_to_free_t</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>gab2631fa5e7686e230adfcc7316b22f16</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_result_s</type>
-      <name>tcomp_result_t</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga82894c74b022fc398e00ddfea27f7b27</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>_tcomp_result_reset</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga8a62f531a26334f397679729b754f1aa</anchor>
-      <arglist>(tcomp_result_t *result, int isDestructor, int isResetOutput)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_result_setOutputBuffer</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>gac0dbbfb3f9a1a764c98b310e98d064bf</anchor>
-      <arglist>(tcomp_result_t *result, void *output_ptr, size_t output_size, int isStream, uint64_t streamId)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_result_setCompartmentId</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga78b6a4d37819c20dd646fbb813503b0a</anchor>
-      <arglist>(tcomp_result_t *result, const void *id, size_t len)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_result_addTempStateToCreate</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga4fb2e9f9d04f140435ce7a4863ec972e</anchor>
-      <arglist>(tcomp_result_t *result, tcomp_state_t *lpState)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint8_t</type>
-      <name>tcomp_result_getTempStatesToCreateSize</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga30558503dcf2f741715a3d25502866d2</anchor>
-      <arglist>(const tcomp_result_t *result)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_result_addTempStateToFree</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga49a90ce9760b500e40dee74760e2c59b</anchor>
-      <arglist>(tcomp_result_t *result, tcomp_tempstate_to_free_t *lpDesc)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint8_t</type>
-      <name>tcomp_result_getTempStatesToFreeSize</name>
-      <anchorfile>group__tcomp__result__group.html</anchorfile>
-      <anchor>ga76ee9b657de6b5384bc9b47c17bafa96</anchor>
-      <arglist>(const tcomp_result_t *result)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_state_group</name>
-    <title>SigComp state.</title>
-    <filename>group__tcomp__state__group.html</filename>
-    <class kind="struct">tcomp_state_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_STATE_CREATE</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga8e15c4eae142c593304dbbd6fd05c666</anchor>
-      <arglist>(length, address, instruction, minimum_access_length, retention_priority)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_PARTIAL_ID_LEN_CODE</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>gaee3d499dc9e1ff74689cc26ae06a0b15</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_PARTIAL_ID_LEN_VALUE</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga5f3ebc3b848b5430dbdfb91a4e3e39cd</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_GET_STATE_SIZE</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>gae43ac0c95eed7ad26bebf7d6bef9c889</anchor>
-      <arglist>(state)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_state_s</type>
-      <name>tcomp_state_t</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga67df0787edba76e7ab0814bb350e7f77</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_state_equals</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga3d3fd6c9177e3b1eb636c659d003bf79</anchor>
-      <arglist>(const tcomp_state_t *state1, const tcomp_state_t *state2)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_state_makeValid</name>
-      <anchorfile>group__tcomp__state__group.html</anchorfile>
-      <anchor>ga03e88223cd551855cec74d9d52846aec</anchor>
-      <arglist>(tcomp_state_t *state)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_statehandler_group</name>
-    <title>SigComp state handler.</title>
-    <filename>group__tcomp__statehandler__group.html</filename>
-    <class kind="struct">tcomp_statehandler_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TCOMP_STATEHANDLER_CREATE</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>gadb4d99130d0b2d0f0324fc423687d2b0</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tcomp_statehandler_s</type>
-      <name>tcomp_statehandler_t</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga4c542d4d892ee493c2453f5a78882261</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="function">
-      <type>tcomp_compartment_t *</type>
-      <name>tcomp_statehandler_getCompartment</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga797699092db01a2f4db2f2f260053746</anchor>
-      <arglist>(const tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_statehandler_deleteCompartment</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga5800845e0c96c2f1be8b3f415a7537d8</anchor>
-      <arglist>(tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_statehandler_compartmentExist</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga80b45e28f64abe701df96a1ea89a904d</anchor>
-      <arglist>(tcomp_statehandler_t *statehandler, uint64_t id)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_statehandler_findState</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga73c0a026931ce0b721e1dc28943cf186</anchor>
-      <arglist>(tcomp_statehandler_t *statehandler, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_statehandler_handleResult</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga3c3b5ef6aada3d28e6f095f9de5c56d1</anchor>
-      <arglist>(tcomp_statehandler_t *statehandler, tcomp_result_t **lpResult)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_statehandler_handleNack</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>gad10f9e4e7538b1988374e536921ae947</anchor>
-      <arglist>(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t *nackinfo)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_statehandler_addSipSdpDictionary</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga3a9505cf6aca1b1e13375e5946e77a44</anchor>
-      <arglist>(tcomp_statehandler_t *statehandler)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_statehandler_addPresenceDictionary</name>
-      <anchorfile>group__tcomp__statehandler__group.html</anchorfile>
-      <anchor>ga6a5d8dcb445d698a35e22c57aea580b2</anchor>
-      <arglist>(tcomp_statehandler_t *statehandler)</arglist>
-    </member>
-  </compound>
-  <compound kind="group">
-    <name>tcomp_udvm_group</name>
-    <title>SigComp UDVM machine.</title>
-    <filename>group__tcomp__udvm__group.html</filename>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_udvm_bytecopy_self</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga9575d4a5586a4021237a7c4cfdc45ab9</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_udvm_bytecopy_to</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga1128b6b051866ef8d05f30e400a0bc78</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t *source, uint16_t size_tocopy)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_udvm_bytecopy_from</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga0280a192caa144d9b06c00e3e5a1ce2c</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint8_t *destination, uint16_t source, uint16_t size_tocopy)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_udvm_decompress</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4881cbbd81f5c469a0e4a6feb10d917a</anchor>
-      <arglist>(tcomp_udvm_t *udvm)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga86a7e100f355e799f7eb6570e0461779</anchor>
-      <arglist>(tcomp_udvm_t *udvm)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__AND</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga375366a0ca7c171ec32753ee1ac3e0e5</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__OR</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga39f5ee9122537a98d6fc217dd2762405</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__NOT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gadac6eddb08a202c774ba2c7b1a258d72</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__LSHIFT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gab74186fe701a51ad090bbc99e9c4349b</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__RSHIFT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4435543276177e75725c864e70ee1f7f</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__ADD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga09d5f76d9fb0cd40dca7273da4dc8545</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__SUBTRACT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga20f8359d9768e9a8a4404be46f6335c3</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__MULTIPLY</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga5d538fc1a9afd3aa11ccd10f8209f8d0</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__DIVIDE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaac5c8f87637ee93e01c65769a9219086</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__REMAINDER</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga3a46f5aba1be1be34c0fccb327f5ab2b</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__SORT_ASCENDING</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6f3df7d5f466d85debd404df87ad77e5</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__SORT_DESCENDING</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4dce2102abe8198da342c1f766d43de6</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__SHA_1</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga5d3cb8f294499c2695c5b23c6b45fb70</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__LOAD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga1bcf6f1ecda2a0af43cda5909d2cbcaf</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t value)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__MULTILOAD</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga11f4394d3e2223c5600baf82e8193b06</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t n)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__PUSH</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6639bf4132c829060478b2e422632dc3</anchor>
-      <arglist>(tcomp_udvm_t *udvm, int16_t value)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__POP</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaf2a7c91d2ee8332f5ed555dd3145d9d8</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t *value)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__COPY</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga51214f62d13367960bd1ac4904983007</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__COPY_LITERAL</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga8ecc085db8a9ce891a93811a30c62839</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__COPY_OFFSET</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga307309842b9b099e57817bf4e3904f89</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t offset, uint16_t length, uint16_t destination)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__MEMSET</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga809a4b88b0877315a4857c7adc0b55cc</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t address, uint16_t length, uint16_t start_value, uint16_t offset)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__JUMP</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga90fbc6ac0b55f5ddd517eea9a1e52de2</anchor>
-      <arglist>(tcomp_udvm_t *udvm, int16_t address)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__COMPARE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga6c6ae105da064d2926472bba2f5a4fe7</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t value_1, uint16_t value_2, uint16_t address_1, uint16_t address_2, uint16_t address_3)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__CALL</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gad9249b3fdcf039d172a6849bfcba59b7</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t address)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__RETURN</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga60f6a19ea8a41f195f12b3ebfdb8483f</anchor>
-      <arglist>(tcomp_udvm_t *udvm)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__SWITCH</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga409c84ea19150c8d229674259f69a6f0</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t n, uint16_t j)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__CRC</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaab8dd4697eaa29883d7d6fff0e4f9aa7</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t value, uint16_t position, uint16_t length, uint16_t address)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__INPUT_BYTES</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga3444808b37643c8988ca529b025deafa</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__INPUT_BITS</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga7fb133890ac07f6a4b152a4cdb00382a</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga914eb570eec312714467aa8676333b72</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t destination, uint16_t address, uint16_t n)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__STATE_ACCESS</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga24b0d77a5699fb297c54cfa99ca63ba2</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length, uint16_t state_begin, uint16_t state_length, uint16_t state_address, uint16_t state_instruction)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__STATE_CREATE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga01d57a879b5f3c6cca236af60c761970</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__STATE_FREE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga82b35765dd2895648db73fafd7b4f749</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__OUTPUT</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga8612de109a0badb62df4b914531fd016</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>TCOMP_UDVM_EXEC_INST__END_MESSAGE</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga025688cd47950e3149f2b957f69714cd</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)</arglist>
-    </member>
-    <member kind="function">
-      <type>void</type>
-      <name>tcomp_udvm_createNackInfo</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaa3bdee3985967a5386d64edf78e418fb</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buffer_handle_t *lpDetails, int16_t memory_address_of_instruction)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_udvm_opget_literal_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaba3b7b5e835a6b0b94d1e7431fdc9721</anchor>
-      <arglist>(tcomp_udvm_t *udvm)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_udvm_opget_reference_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>gaf8457bd036ee98ae3eb88194b7e99a81</anchor>
-      <arglist>(tcomp_udvm_t *udvm)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_udvm_opget_multitype_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga28aa1c73369d612a37aadb899f1c40ce</anchor>
-      <arglist>(tcomp_udvm_t *udvm)</arglist>
-    </member>
-    <member kind="function">
-      <type>uint16_t</type>
-      <name>tcomp_udvm_opget_address_param</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga9127af6e5fed8885a8423e8aca9c9d8c</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t memory_address_of_instruction)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_udvm_byteCopy_TempStates</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga4c7c5fef14331240f01333f65fa26d0c</anchor>
-      <arglist>(tcomp_udvm_t *udvm)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
-      <name>tcomp_udvm_createTempState</name>
-      <anchorfile>group__tcomp__udvm__group.html</anchorfile>
-      <anchor>ga201b466c9f6fdd801b95d85217f28616</anchor>
-      <arglist>(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority, int end_msg)</arglist>
     </member>
   </compound>
   <compound kind="struct">

@@ -98,7 +98,7 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId);
 
 
-TINYSIGCOMP_GEXTERN const void *tcomp_compartment_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_compartment_def_t;
 
 TCOMP_END_DECLS
 

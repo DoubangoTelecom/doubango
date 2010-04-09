@@ -36,11 +36,7 @@
 
 #define TCOMP_MIN(a, b) (a < b ? a : b)
 
-/**@defgroup tcomp_compressor_deflate_group SigComp Deflate Compressor.
-*/
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_compressor_deflate_group
 ///
 /// @brief	Compress SIgComp message using deflate algorithm. 
 ///

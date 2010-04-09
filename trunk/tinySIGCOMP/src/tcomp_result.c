@@ -31,28 +31,21 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-/**@defgroup tcomp_result_group SigComp decompresion result.
-*/
-
-/**@ingroup tcomp_result_group
+/**Resets the result.
 */
 void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput)
 {
-	if(result)
-	{
+	if(result){
 		uint8_t i;
-		for(i = 0; i < result->statesToCreateIndex; i++)
-		{
+		for(i = 0; i < result->statesToCreateIndex; i++){
 			result->statesToCreate[i] = TSK_OBJECT_SAFE_FREE(result->statesToCreate[i]);
 		}
 
-		for(i = 0; i < result->statesToFreeIndex; i++)
-		{
+		for(i = 0; i < result->statesToFreeIndex; i++){
 			result->statesToFree[i] = TSK_OBJECT_SAFE_FREE(result->statesToFree[i]);
 		}
 
-		if(!isDestructor)
-		{
+		if(!isDestructor){
 			result->statesToCreateIndex = 0;
 			result->statesToFreeIndex = 0;
 			result->consumed_cycles = 0;
@@ -71,112 +64,97 @@ void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOu
 			tcomp_buffer_freeBuff(result->nack_info);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL SigComp result.");
 	}
 }
 
-/**@ingroup tcomp_result_group
+/**Sets the output buffer.
 */
-void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, size_t output_size, int isStream, uint64_t streamId)
+void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, size_t output_size, tsk_bool_t isStream, uint64_t streamId)
 {
-	if(result)
-	{
+	if(result){
 		tcomp_buffer_referenceBuff(result->output_buffer, (uint8_t*)output_ptr, output_size);
 		result->isStreamBased = isStream;
 		result->streamId = streamId;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL SigComp result.");
 	}
 }
 
-/**@ingroup tcomp_result_group
+/**Sets the compartment identifier.
 */
 void tcomp_result_setCompartmentId(tcomp_result_t *result, const void *id, size_t len)
 {
-	if(result)
-	{
+	if(result){
 		result->compartmentId = tcomp_buffer_createHash(id, len);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL SigComp result.");
 	}
 }
 
-/**@ingroup tcomp_result_group
+/**Adds temporary state.
 */
 void tcomp_result_addTempStateToCreate(tcomp_result_t *result, tcomp_state_t* lpState)
 {
-	if(result)
-	{
+	if(result){
 		/*
 		* Note that there is a maximum limit of four state creation requestsper instance of the UDVM.
 		*/
-		if(result->statesToCreateIndex >= MAX_TEMP_SATES) 
-		{
+		if(result->statesToCreateIndex >= MAX_TEMP_SATES) {
 			return;
 		}
 					
 		// Add state
 		result->statesToCreate[result->statesToCreateIndex++] = lpState;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL SigComp result.");
 	}
 }
 
-/**@ingroup tcomp_result_group
+/**Gets the number of temporary state (to be created).
 */
 uint8_t tcomp_result_getTempStatesToCreateSize(const tcomp_result_t *result)
 {
-	if(result)
-	{
+	if(result){
 		return result->statesToCreateIndex;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL SigComp result.");
 	}
 	return 0;
 }
 
-/**@ingroup tcomp_result_group
+/**Adds temporary state (to be freed).
 */
 void tcomp_result_addTempStateToFree(tcomp_result_t *result, tcomp_tempstate_to_free_t* lpDesc)
 {
-	if(result)
-	{
+	if(result){
 		/*
 		* Decompression failure MUST occur if more than four state free
 		* requests are made before the END-MESSAGE instruction is encountered.
 		*/
-		if(result->statesToFreeIndex >= MAX_TEMP_SATES) 
-		{
+		if(result->statesToFreeIndex >= MAX_TEMP_SATES) {
 			return;
 		}
 		result->statesToFree[result->statesToFreeIndex++] = lpDesc;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL SigComp result.");
 	}
 }
 
-/**@ingroup tcomp_result_group
+/**Gets the number of temporary state (to be be freed).
 */
 uint8_t tcomp_result_getTempStatesToFreeSize(const tcomp_result_t *result)
 {
-	if(result)
-	{
+	if(result){
 		return result->statesToFreeIndex;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("NULL SigComp result.");
 	}
 	return 0;
@@ -190,12 +168,11 @@ uint8_t tcomp_result_getTempStatesToFreeSize(const tcomp_result_t *result)
 //	SigComp result object definition
 //
 
-static void* tcomp_result_create(void *self, va_list * app)
+static tsk_object_t* tcomp_result_create(tsk_object_t *self, va_list * app)
 {
 	tcomp_result_t* result = self;
 
-	if(result)
-	{
+	if(result){
 		result->output_buffer = TCOMP_BUFFER_CREATE();
 		result->ret_feedback = TCOMP_BUFFER_CREATE();
 		result->nack_info = TCOMP_BUFFER_CREATE();
@@ -203,18 +180,16 @@ static void* tcomp_result_create(void *self, va_list * app)
 		result->remote_parameters = TCOMP_PARAMS_CREATE();
 
 		result->req_feedback = TCOMP_REQFEED_CREATE();
-		
 	}
 
 	return self;
 }
 
-static void* tcomp_result_destroy(void * self)
+static tsk_object_t* tcomp_result_destroy(tsk_object_t * self)
 {
 	tcomp_result_t* result = self;
 
-	if(result)
-	{
+	if(result){
 		_tcomp_result_reset(result, 1, 1);
 		TSK_OBJECT_SAFE_FREE(result->output_buffer);
 		TSK_OBJECT_SAFE_FREE(result->ret_feedback);
@@ -233,34 +208,31 @@ static const tsk_object_def_t tcomp_result_def_s =
 	sizeof(tcomp_result_t),
 	tcomp_result_create, 
 	tcomp_result_destroy,
-	0
+	tsk_null
 };
-const void *tcomp_result_def_t = &tcomp_result_def_s;
+const tsk_object_def_t *tcomp_result_def_t = &tcomp_result_def_s;
 
 
 //========================================================
 //	SigComp temporary state object definition
 //
 
-static void* tcomp_tempstate_to_free_create(void *self, va_list * app)
+static tsk_object_t* tcomp_tempstate_to_free_create(tsk_object_t* self, va_list * app)
 {
 	tcomp_tempstate_to_free_t* tempstate_to_free = self;
 
-	if(tempstate_to_free)
-	{
-		
+	if(tempstate_to_free){
 		tempstate_to_free->identifier = TCOMP_BUFFER_CREATE();
 	}
 
 	return self;
 }
 
-static void* tcomp_tempstate_to_free_destroy(void * self)
+static tsk_object_t* tcomp_tempstate_to_free_destroy(tsk_object_t* self)
 {
 	tcomp_tempstate_to_free_t* tempstate_to_free = self;
 
-	if(tempstate_to_free)
-	{
+	if(tempstate_to_free){
 		TSK_OBJECT_SAFE_FREE(tempstate_to_free->identifier);
 	}
 
@@ -272,6 +244,6 @@ static const tsk_object_def_t tcomp_tempstate_to_free_def_s =
 	sizeof(tcomp_tempstate_to_free_t),
 	tcomp_tempstate_to_free_create, 
 	tcomp_tempstate_to_free_destroy,
-	0
+	tsk_null
 };
-const void *tcomp_tempstate_to_free_def_t = &tcomp_tempstate_to_free_def_s;
+const tsk_object_def_t* tcomp_tempstate_to_free_def_t = &tcomp_tempstate_to_free_def_s;

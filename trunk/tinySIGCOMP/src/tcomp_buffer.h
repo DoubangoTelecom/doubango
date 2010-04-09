@@ -34,32 +34,16 @@
 
 #include "tsk_object.h"
 
-/**@ingroup tcomp_buffer_group
-* @def TCOMP_P_BIT_MSB_TO_LSB
-*/
-/**@ingroup tcomp_buffer_group
-* @def TCOMP_P_BIT_LSB_TO_MSB
-*/
+
 TCOMP_BEGIN_DECLS
 
 #define TCOMP_P_BIT_MSB_TO_LSB 0
 #define TCOMP_P_BIT_LSB_TO_MSB 1
 
-/**@ingroup tcomp_buffer_group
-* Create SigComp buffer handle.
-* @def _TCOMP_BUFFER_CREATE
-* @sa TCOMP_BUFFER_CREATE
-*/
-/**@ingroup tcomp_buffer_group
-* Create SigComp buffer handle.
-* @def TCOMP_BUFFER_CREATE
-* @sa _TCOMP_BUFFER_CREATE
-*/
 #define _TCOMP_BUFFER_CREATE(data, len)	tsk_object_new(tcomp_buffer_def_t, data, len)
 #define TCOMP_BUFFER_CREATE()			_TCOMP_BUFFER_CREATE(0, 0)
 
-/**@ingroup tcomp_buffer_group
-* Sigcomp Buffer handle
+/**Sigcomp Buffer handle
 */
 typedef void tcomp_buffer_handle_t;
 
@@ -99,7 +83,7 @@ void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, size_t size);
 
 void tcomp_buffer_reset(tcomp_buffer_handle_t* handle);
 
-TINYSIGCOMP_GEXTERN const void *tcomp_buffer_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_buffer_def_t;
 
 TCOMP_END_DECLS
 

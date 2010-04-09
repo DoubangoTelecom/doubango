@@ -81,10 +81,8 @@ typedef struct tcomp_udvm_s
 }
 tcomp_udvm_t;
 
-/*
-*	Public function
-*/
-int tcomp_udvm_decompress(tcomp_udvm_t *udvm);
+
+tsk_bool_t tcomp_udvm_decompress(tcomp_udvm_t *udvm);
 
 /*
 *	Operands
@@ -159,7 +157,7 @@ int TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint
 int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority);
 
 
-TINYSIGCOMP_GEXTERN const void *tcomp_udvm_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_udvm_def_t;
 
 TCOMP_END_DECLS
 

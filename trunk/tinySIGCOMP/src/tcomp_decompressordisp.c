@@ -39,12 +39,8 @@
 #define TCOMP_MAX_STREAM_BUFFER_SIZE		65535
 #define TCOMP_NACK_SUPPORTED(dispatcher)	(dispatcher->stateHandler->sigcomp_parameters->SigComp_version >= 0x02)
 
-/**@defgroup tcomp_decompressordisp_group SigComp decompressor dispatcher.
-* Entity that receives SigComp messages, invokes a UDVM, and forwards the resulting decompressed messages to the application.
-*/
 
-
-/**@ingroup tcomp_decompressordisp_group
+/**Prefdicate function
 */
 static int pred_find_streambuffer_by_id(const tsk_list_item_t *item, const void *id)
 {
@@ -58,41 +54,36 @@ static int pred_find_streambuffer_by_id(const tsk_list_item_t *item, const void 
 }
 
 
-/**@ingroup tcomp_decompressordisp_group
+/**Decompress a message.
 */
-int tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult)
+tsk_bool_t tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult)
 {
-	int ret = 1;
+	tsk_bool_t ret = tsk_true;
 	uint64_t streamId = 0;
 	const tsk_list_item_t *item_const;
 
-	if(!dispatcher)
-	{
+	if(!dispatcher){
 		TSK_DEBUG_ERROR("NULL sigcomp decompressor dispatcher.");
-		return 0;
+		return tsk_false;
 	}
 
 	/*
 	* Check if transport type changed.
 	*/
-	if(lpResult->isStreamBased)
-	{
-		if(!dispatcher->streamBuffers)
-		{
+	if(lpResult->isStreamBased){
+		if(!dispatcher->streamBuffers){
 			dispatcher->streamBuffers = TSK_LIST_CREATE();
 		}
 
 		streamId = lpResult->streamId;
 		ret =   tcomp_decompressordisp_appendStream(dispatcher, input_ptr, input_size, streamId);
-		if(!ret)
-		{
+		if(!ret){
 			TSK_DEBUG_ERROR("Failed to append new stream buffer.");
 			return 0;
 		}
 	}
 	
-	if(lpResult->isStreamBased)
-	{
+	if(lpResult->isStreamBased){
 		size_t size = 0;
 		uint16_t discard_count = 0;
 		tcomp_stream_buffer_t *lpBuffer;
@@ -129,71 +120,66 @@ int tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, cons
 	return ret;
 }
 
-/**@ingroup tcomp_decompressordisp_group
+/**Gets the next message from the queue.
 */
-int tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispatcher, tcomp_result_t *lpResult)
+tsk_bool_t tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispatcher, tcomp_result_t *lpResult)
 {
-	int ret = 1;
+	tsk_bool_t ret = tsk_true;
 	size_t size=0;
 	uint16_t discard_count = 0;
 	uint64_t streamId;
 	tcomp_stream_buffer_t *lpBuffer;
 	const tsk_list_item_t *item_const;
 
-	if(!dispatcher)
-	{
+	if(!dispatcher){
 		TSK_DEBUG_ERROR("NULL sigcomp decompressor dispatcher.");
-		return 0;
+		return tsk_false;
 	}
 
 	streamId = lpResult->streamId;
 
 	item_const = tsk_list_find_item_by_pred(dispatcher->streamBuffers, pred_find_streambuffer_by_id, &streamId);
-	if(!item_const || !(lpBuffer = item_const->data))
-	{
+	if(!item_const || !(lpBuffer = item_const->data)){
 		TSK_DEBUG_ERROR("Failed to find stream buffer by id %llu.", streamId);
-		return 0;
+		return tsk_false;
 	}
 	
-	if(ret && tcomp_decompressordisp_getNextStreamMsg(dispatcher, streamId, &discard_count, &size))
-	{
+	if(ret && tcomp_decompressordisp_getNextStreamMsg(dispatcher, streamId, &discard_count, &size)){
 		ret &= tcomp_decompressordisp_internalDecompress(dispatcher, tcomp_buffer_getBuffer(lpBuffer->buffer), size, &lpResult);
 
 		/* remove buffer and discard */
 		tcomp_buffer_discardLastBytes(lpBuffer->buffer, discard_count);
 		ret &= tcomp_buffer_removeBuff(lpBuffer->buffer, 0, size);
 	}
-	else ret = 0; /* Is it right? */
+	else {
+		ret = tsk_false; /* Is it right? */
+	}
 
-	if(discard_count)
-	{
+	if(discard_count){
 		tcomp_buffer_discardLastBytes(lpBuffer->buffer, discard_count);
 	}
 	return ret;
 }
 
-/**@ingroup tcomp_decompressordisp_group
+/**Decompress a message.
 */
-int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, const size_t input_size, tcomp_result_t **lpResult)
+tsk_bool_t tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, const size_t input_size, tcomp_result_t **lpResult)
 {
-	tcomp_message_t *sigCompMessage = 0;
-	tcomp_udvm_t *sigCompUDVM = 0;
-	int ret = 0;
+	tcomp_message_t *sigCompMessage = tsk_null;
+	tcomp_udvm_t *sigCompUDVM = tsk_null;
+	tsk_bool_t ret = tsk_false;
 
-	if(!dispatcher)
-	{
+	if(!dispatcher){
 		TSK_DEBUG_ERROR("NULL sigcomp decompressor dispatcher.");
 		goto bail;
 	}		
 
 	sigCompMessage = TCOMP_MESSAGE_CREATE(input_ptr, input_size, (*lpResult)->isStreamBased);
-	if(!sigCompMessage || !sigCompMessage->isOK)
-	{
+	if(!sigCompMessage || !sigCompMessage->isOK){
 		TSK_DEBUG_ERROR("Failed to create new sigcomp message.");
 		goto bail;
 	}
-	else if(sigCompMessage->isNack && TCOMP_NACK_SUPPORTED(dispatcher))
-	{
+	else if(sigCompMessage->isNack && TCOMP_NACK_SUPPORTED(dispatcher)){
 		/* Remote party send us a NACK --> handle it */
 		tcomp_statehandler_handleNack((tcomp_statehandler_t*)dispatcher->stateHandler, (const tcomp_nackinfo_t*)sigCompMessage->nack_info);
 		(*lpResult)->isNack = 1;
@@ -208,8 +194,7 @@ int tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatch
 	ret = tcomp_udvm_decompress(sigCompUDVM);
 
 	/* decompression failed --> returns nack if supported */
-	if(!ret)
-	{
+	if(!ret){
 		/* Decompression failed --> return NACK message to the application layer */
 		(*lpResult)->isNack = TCOMP_NACK_SUPPORTED(dispatcher);
 	}
@@ -224,58 +209,52 @@ bail:
 	return ret;
 }
 
-/**@ingroup tcomp_decompressordisp_group
+/**Appends stream buffer.
 */
-int tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, size_t input_size, uint64_t streamId)
+tsk_bool_t tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, size_t input_size, uint64_t streamId)
 {
-	tcomp_stream_buffer_t* lpBuffer = 0;
+	tcomp_stream_buffer_t* lpBuffer = tsk_null;
 	const tsk_list_item_t *item_const;
 
-	if(!dispatcher)
-	{
+	if(!dispatcher){
 		TSK_DEBUG_ERROR("NULL sigcomp decompressor dispatcher.");
-		return 0;
+		return tsk_false;
 	}
 
 	item_const = tsk_list_find_item_by_pred(dispatcher->streamBuffers, pred_find_streambuffer_by_id, &streamId);
-	if(!item_const || !(lpBuffer = item_const->data))
-	{
+	if(!item_const || !(lpBuffer = item_const->data)){
 		/* First time we get this stream ID */
 		tcomp_buffer_handle_t *newbuf = TCOMP_STREAM_BUFFER_CREATE(streamId);
-		if(newbuf)
-		{
+		if(newbuf){
 			lpBuffer = newbuf;
 			lpBuffer->buffer = TCOMP_BUFFER_CREATE();
 			tsk_list_push_back_data(dispatcher->streamBuffers, ((void**) &newbuf));
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_ERROR("Failed to create new stream buffer.");
-			return 0;
+			return tsk_false;
 		}
 	}
 	
 	/*  Check if buffer is too large */
-	if(lpBuffer->buffer && (tcomp_buffer_getSize(lpBuffer->buffer) + input_size) > TCOMP_MAX_STREAM_BUFFER_SIZE)
-	{
+	if(lpBuffer->buffer && (tcomp_buffer_getSize(lpBuffer->buffer) + input_size) > TCOMP_MAX_STREAM_BUFFER_SIZE){
 		tcomp_buffer_freeBuff(lpBuffer->buffer);
-		return 0;
+		return tsk_false;
 	}
 
 	/* append new buffer */
-	if(!tcomp_buffer_appendBuff(lpBuffer->buffer, input_ptr, input_size))
-	{
+	if(!tcomp_buffer_appendBuff(lpBuffer->buffer, input_ptr, input_size)){
 		TSK_DEBUG_ERROR("Failed to append new buffer.");
 		tcomp_buffer_freeBuff(lpBuffer->buffer);
-		return 0;
+		return tsk_false;
 	}
 	
-	return 1;
+	return tsk_true;
 }
 
-/**@ingroup tcomp_decompressordisp_group
+/**Gets the next message from the queue.
 */
-int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size)
+tsk_bool_t tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size)
 {
 	tcomp_stream_buffer_t *lpBuffer;
 	const tsk_list_item_t *item_const;
@@ -284,20 +263,18 @@ int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher
 	uint8_t* start;
 	uint8_t* end;
 
-	if(!dispatcher)
-	{
+	if(!dispatcher){
 		TSK_DEBUG_ERROR("NULL sigcomp decompressor dispatcher.");
-		return 0;
+		return tsk_false;
 	}
 
 	/*
 	* RFC 3320 - 4.2.1.  Decompressor Dispatcher Strategies [strategie 1]
 	*/
 	item_const = tsk_list_find_item_by_pred(dispatcher->streamBuffers, pred_find_streambuffer_by_id, &streamId);
-	if(!item_const || !(lpBuffer = item_const->data))
-	{
+	if(!item_const || !(lpBuffer = item_const->data)){
 		TSK_DEBUG_ERROR("Failed to find stream buffer by id %llu.", streamId);
-		return 0;
+		return tsk_false;
 	}
 	
 	*size = 0;
@@ -313,7 +290,7 @@ int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher
 			start++;
 			if(*start==0xff)
 			{ /* end message */
-				if(*size) return 1;
+				if(*size) return tsk_true;
 				else /* message is empty --> delete this empty message(length=2) */
 				{ 
 					start--;
@@ -333,7 +310,7 @@ int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher
 		}else { start++; (*size)++; }
 	}
 
-	return 0;
+	return tsk_false;
 }
 
 
@@ -348,40 +325,34 @@ int tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher
 //========================================================
 //	SigComp decompressor dispatcher object definition
 //
-
-/**@ingroup tcomp_decompressordisp_group
-*/
-static void* tcomp_decompressordisp_create(void * self, va_list * app)
+static tsk_object_t* tcomp_decompressordisp_create(tsk_object_t* self, va_list * app)
 {
 	tcomp_decompressordisp_t *decompressordisp = self;
-	if(decompressordisp)
-	{
+	if(decompressordisp){
 		decompressordisp->stateHandler = va_arg(*app, const tcomp_statehandler_t*);
 
 		/* Initialize safeobject */
 		tsk_safeobj_init(decompressordisp);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new decompressor dispatcher.");
 	}
 
 	return self;
 }
 
-/**@ingroup tcomp_decompressordisp_group
-*/
-static void* tcomp_decompressordisp_destroy(void *self)
+static tsk_object_t* tcomp_decompressordisp_destroy(tsk_object_t *self)
 {
 	tcomp_decompressordisp_t *decompressordisp = self;
-	if(decompressordisp)
-	{
+	if(decompressordisp){
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(decompressordisp);
 
 		TSK_OBJECT_SAFE_FREE(decompressordisp->streamBuffers);
 	}
-	else TSK_DEBUG_ERROR("Null dispatcher.");
+	else{
+		TSK_DEBUG_ERROR("Null dispatcher.");
+	}
 	
 	return self;
 }
@@ -391,9 +362,9 @@ static const tsk_object_def_t tcomp_decompressordisp_def_s =
 	sizeof(tcomp_decompressordisp_t),
 	tcomp_decompressordisp_create,
 	tcomp_decompressordisp_destroy,
-	0
+	tsk_null
 };
-const void *tcomp_decompressordisp_def_t = &tcomp_decompressordisp_def_s;
+const tsk_object_def_t *tcomp_decompressordisp_def_t = &tcomp_decompressordisp_def_s;
 
 
 
@@ -402,33 +373,28 @@ const void *tcomp_decompressordisp_def_t = &tcomp_decompressordisp_def_s;
 //	SigComp stream buffer object definition
 //
 
-/**@ingroup tcomp_decompressordisp_group
-*/
-static void* tcomp_stream_buffer_create(void * self, va_list * app)
+static tsk_object_t* tcomp_stream_buffer_create(tsk_object_t* self, va_list * app)
 {
 	tcomp_stream_buffer_t *stream_buffer = self;
-	if(stream_buffer)
-	{
+	if(stream_buffer){
 		stream_buffer->id = va_arg(*app, uint64_t);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new stream buffer.");
 	}
 
 	return self;
 }
 
-/**@ingroup tcomp_decompressordisp_group
-*/
-static void* tcomp_stream_buffer_destroy(void *self)
+static tsk_object_t* tcomp_stream_buffer_destroy(tsk_object_t* self)
 {
 	tcomp_stream_buffer_t *stream_buffer = self;
-	if(stream_buffer)
-	{
+	if(stream_buffer){
 		TSK_OBJECT_SAFE_FREE(stream_buffer->buffer);
 	}
-	else TSK_DEBUG_ERROR("Null stream buffer.");
+	else{
+		TSK_DEBUG_ERROR("Null stream buffer.");
+	}
 	
 	return self;
 }
@@ -438,6 +404,6 @@ static const tsk_object_def_t tcomp_stream_buffer_def_s =
 	sizeof(tcomp_stream_buffer_t),
 	tcomp_stream_buffer_create,
 	tcomp_stream_buffer_destroy,
-	0
+	tsk_null
 };
-const void *tcomp_stream_buffer_def_t = &tcomp_stream_buffer_def_s;
+const tsk_object_def_t* tcomp_stream_buffer_def_t = &tcomp_stream_buffer_def_s;

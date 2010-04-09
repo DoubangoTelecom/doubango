@@ -33,7 +33,7 @@
 
 #include <math.h>
 
-/**@ingroup tcomp_udvm_group
+/**
 literal (#)<br>
 <table>
 <tr> <td>Bytecode</td>                       <td>Operand value</td>		<td>Range</td></tr>
@@ -81,7 +81,7 @@ uint16_t tcomp_udvm_opget_literal_param(tcomp_udvm_t *udvm)
 	return result;
 }
 
-/**@ingroup tcomp_udvm_group
+/**
 reference ($)<br>
 <table>
 <tr><td>Bytecode</td>                       <td>Operand value</td>      <td>Range</td></tr>
@@ -133,7 +133,7 @@ uint16_t tcomp_udvm_opget_reference_param(tcomp_udvm_t *udvm)
 	return result;
 }
 
-/**@ingroup tcomp_udvm_group
+/**
 multitype(%)<br>
 <table>
 <tr><td>Bytecode</td>               <td>Operand value</td>     <td>Range</td></tr>
@@ -243,7 +243,7 @@ uint16_t tcomp_udvm_opget_multitype_param(tcomp_udvm_t *udvm)
 	return result;
 }
 
-/**@ingroup tcomp_udvm_group
+/**
 address(@)
 This operand is decoded as a multitype operand followed by a further step: the memory address
 of the UDVM instruction containing the address operand is added to

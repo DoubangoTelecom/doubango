@@ -63,30 +63,7 @@ I suppose we would like to compress this message "libsigcomp":
 	......	--> no compressed message
 */
 
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_CB_START_INDEX
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_DMS_INDEX
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_0x0005_INDEX
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_CB_END_INDEX
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_HASH_LEN_INDEX
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_SMS_INDEX
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_CPB_DMS_SMS_INDEX
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_VERSION_INDEX
-*/
+
 #define GHOST_CB_START_INDEX				(0)
 #define GHOST_DMS_INDEX						(GHOST_CB_START_INDEX + 2)
 #define GHOST_0x0005_INDEX					(GHOST_DMS_INDEX + 2)
@@ -96,13 +73,10 @@ I suppose we would like to compress this message "libsigcomp":
 #define GHOST_CPB_DMS_SMS_INDEX				(GHOST_SMS_INDEX + 2)
 #define GHOST_VERSION_INDEX					(GHOST_CPB_DMS_SMS_INDEX + 1)
 
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_BYTECODE1_SIZE
-*/
+
 #define GHOST_BYTECODE1_SIZE				(GHOST_VERSION_INDEX + 1)
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
+
 static const char* DeflateData_deflate_bytecode1_ghost =
 {
 	"\xff\xff"	// Circular buffer Size (CBS)
@@ -125,38 +99,25 @@ static const char* DeflateData_deflate_bytecode1_ghost =
 	"\xff"		//	SigComp Version
 };
 
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_STATE_ADDRESS
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_STATE_INSTRUCTION
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_STATE_MIN_ACCESS_LEN
-*/
-/**@ingroup tcomp_compressor_deflate_group
-* @def GHOST_STATE_RETENTION_PRIORITY
-*/
+
 #define GHOST_STATE_ADDRESS				64
 #define GHOST_STATE_INSTRUCTION			492
 #define GHOST_STATE_MIN_ACCESS_LEN		6
 #define GHOST_STATE_RETENTION_PRIORITY	0
 
-/**@ingroup tcomp_compressor_deflate_group
+/**Creates a Ghost state.
 */
 void tcomp_deflatedata_createGhost(tcomp_deflatedata_t *deflatedata, uint16_t state_length, tcomp_params_t *params)
 {
 	uint8_t *ghostvalue_ptr = 0;
 #define GHOSTVALUE_AT(position) (ghostvalue_ptr + position)
 
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
 		return;
 	}
 
-	if(deflatedata->ghostState)
-	{
+	if(deflatedata->ghostState){
 		TSK_DEBUG_ERROR("The defalte data already have a ghost state. This MUST never happen.");
 		return;
 	}
@@ -208,13 +169,12 @@ void tcomp_deflatedata_createGhost(tcomp_deflatedata_t *deflatedata, uint16_t st
 #undef GHOSTVALUE_AT
 }
 
-/**@ingroup tcomp_compressor_deflate_group
+/**Acknowledge a Ghost state.
 */
 void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *data, const tcomp_buffer_handle_t *stateid)
 {
 	tcomp_deflatedata_t *deflatedata = data;
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
 		return;
 	}
@@ -222,11 +182,9 @@ void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *data, const tcomp_buffer
 	tsk_safeobj_lock(deflatedata);
 	
 #if USE_ONLY_ACKED_STATES
-	if(deflatedata->ghostState)
-	{
+	if(deflatedata->ghostState){
 		/* Update ghost */
-		if(tcomp_buffer_startsWith(deflatedata->ghostState->identifier, stateid))
-		{
+		if(tcomp_buffer_startsWith(deflatedata->ghostState->identifier, stateid)){
 			/* END() + COPY() */
 			tcomp_deflateStream_end(&(deflatedata->stream_acked));
 			tcomp_deflateStream_copy(&(deflatedata->stream_acked), &(deflatedata->stream_1));
@@ -239,7 +197,7 @@ void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *data, const tcomp_buffer
 	tsk_safeobj_unlock(deflatedata);
 }
 
-/**@ingroup tcomp_compressor_deflate_group
+/**Updates a Ghost state.
 */
 void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, size_t input_size)
 {
@@ -248,14 +206,12 @@ void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8
 
 #define GHOSTVALUE_AT(position) (ghostvalue_ptr + position)
 		
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
 		return;
 	}
 
-	if(!deflatedata->ghostState)
-	{
+	if(!deflatedata->ghostState){
 		TSK_DEBUG_ERROR("NULL ghost state.");
 		return;
 	}
@@ -265,8 +221,7 @@ void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8
 	ghostvalue_ptr = tcomp_buffer_getBuffer(deflatedata->ghostState->value);
 
 #define ZBUFF_LEN	(0x0001 << deflatedata->zWindowBits)
-	for(i = 0; i < input_size; i++)
-	{
+	for(i = 0; i < input_size; i++){
 #if 0
 		*GHOSTVALUE_AT(GHOST_INPUT_INDEX + ghost_copy_offset) = 0x00;
 #else
@@ -290,12 +245,10 @@ void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8
 #undef GHOSTVALUE_AT
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
+
 uint32_t* tcomp_deflatedata_getGhostCopyOffset(tcomp_deflatedata_t *deflatedata)
 {
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
 		return 0;
 	}
@@ -303,13 +256,10 @@ uint32_t* tcomp_deflatedata_getGhostCopyOffset(tcomp_deflatedata_t *deflatedata)
 	return &(deflatedata->ghost_copy_offset);
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
 void tcomp_deflatedata_freeGhostState(tcomp_compressordata_t *data)
 {
 	tcomp_deflatedata_t *deflatedata = data;
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
 		return;
 	}

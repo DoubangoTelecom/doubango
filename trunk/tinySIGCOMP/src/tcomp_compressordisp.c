@@ -37,19 +37,12 @@
 
 #include <string.h>
 
-/**@defgroup tcomp_compressordisp_group SigComp compressor dispatcher.
-* Entity that receives application messages, invokes a compressor,and forwards the resulting SigComp compressed messages to a remote
-* endpoint.
-*/
-
-/**@ingroup tcomp_compressordisp_group
+/**Checks whether NACK (RFC 4077) handling is supported
 */
 #define TCOMP_NACK_SUPPORTED (dispatcher->stateHandler->sigcomp_parameters->SigComp_version >= 0x02)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_compressordisp_group
-///
-/// @brief	Tcomp compressordisp compress. 
+/// Compress a message.
 ///
 /// @param [in,out]	dispatcher	The compressor dispatcher. 
 /// @param	compartmentId		The compartment to use to compress the message. 
@@ -57,13 +50,13 @@
 /// @param	input_size			The size of the input buffer. 
 /// @param [in,out]	output_ptr	The output buffer to copy the compressed data. 
 /// @param [in,out]	output_size	The size of the output buffer. 
-/// @param	stream				Indicates whether it's a stream buffer ot not. 
+/// @param	stream				Indicates whether it's a stream buffer or not. 
 ///
-/// @return	1 if succeed and 0 otherwize. 
+/// @return	@a tsk_true if succeed and @a tsk_false otherwize. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)
+tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)
 {
-	int ret = 1;
+	tsk_bool_t ret = tsk_true;
 	int i = 0;
 
 	/* For each compartment id create/retrieve one compressor instance */
@@ -71,7 +64,7 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 	
 	if(!lpCompartment){
 		TSK_DEBUG_ERROR("You must provide a valid compartment to perform compression.");
-		return 0;
+		return tsk_false;
 	}
 
 	
@@ -138,12 +131,8 @@ int tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t c
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_compressordisp_group
+/// Adds new compressor the list of the compressors. 
 ///
-/// @brief	Add new compressor the list of the compressors. 
-///
-/// @author	Mamadou
-/// @date	11/29/2009
 ///
 /// @param [in,out]	dispatcher	The compressor dispatcher. 
 /// @param	compressor			A function pointer to the new compressor. 
@@ -171,11 +160,10 @@ void tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcom
 //========================================================
 //	SigComp compressor dispatcher object definition
 //
-static void* tcomp_compressordisp_create(void * self, va_list * app)
+static tsk_object_t* tcomp_compressordisp_create(tsk_object_t * self, va_list * app)
 {
 	tcomp_compressordisp_t *compressordisp = self;
-	if(compressordisp)
-	{
+	if(compressordisp){
 		int i = 0;
 		compressordisp->stateHandler = va_arg(*app, const tcomp_statehandler_t*);
 
@@ -189,25 +177,25 @@ static void* tcomp_compressordisp_create(void * self, va_list * app)
 		/* Initialize safeobject */
 		tsk_safeobj_init(compressordisp);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new compressor dispatcher.");
 	}
 
 	return self;
 }
 
-static void* tcomp_compressordisp_destroy(void *self)
+static tsk_object_t* tcomp_compressordisp_destroy(tsk_object_t *self)
 {
 	tcomp_compressordisp_t *compressordisp = self;
-	if(compressordisp)
-	{
+	if(compressordisp){
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(compressordisp);
 
 		// FIXME: clear compressors
 	}
-	else TSK_DEBUG_ERROR("Null dispatcher.");
+	else{
+		TSK_DEBUG_ERROR("Null dispatcher.");
+	}
 	
 	return self;
 }
@@ -217,6 +205,6 @@ static const tsk_object_def_t tcomp_compressordisp_def_s =
 	sizeof(tcomp_compressordisp_t),
 	tcomp_compressordisp_create,
 	tcomp_compressordisp_destroy,
-	0
+	tsk_null
 };
-const void *tcomp_compressordisp_def_t = &tcomp_compressordisp_def_s;
+const tsk_object_def_t *tcomp_compressordisp_def_t = &tcomp_compressordisp_def_s;

@@ -22,6 +22,9 @@
 
 /**@file tcomp_message.c
  * @brief  SIGCOMP message as per RFC 3320 subclause 7.
+ * A message sent from the compressor dispatcher to the decompressordispatcher.  In case of a message-based transport such as UDP, a
+ * SigComp message corresponds to exactly one datagram.  For a stream-based transport such as TCP, the SigComp messages are
+ * separated by reserved delimiters.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -36,12 +39,6 @@
 
 #include <string.h>
 
-/**@defgroup tcomp_message_group SigComp Message.
-* A message sent from the compressor dispatcher to the decompressordispatcher.  In case of a message-based transport such as UDP, a
-* SigComp message corresponds to exactly one datagram.  For a stream-based transport such as TCP, the SigComp messages are
-* separated by reserved delimiters.
-*/
-
 #define MIN_LEN 2
 #define HEADER_GET_LEN(message)		(message->headerSigComp & 0x03)
 #define HEADER_GET_T(message)		(message->headerSigComp & 0x04)
@@ -51,7 +48,7 @@
 #define HEADER_GET_STATE_LENGTH(length) ( sigcomp_encoding_partial_id_length[length] )
 
 
-/**@ingroup tcomp_message_group
+/**Iniatizes the feedback item field.
 */
 void initFeedbackItem(tcomp_message_t *message, uint8_t** start_ptr)
 {
@@ -65,13 +62,11 @@ void initFeedbackItem(tcomp_message_t *message, uint8_t** start_ptr)
                                        |                               |
                                        +---+---+---+---+---+---+---+---+
 	*/
-	if((**start_ptr) <= 128)
-	{
+	if((**start_ptr) <= 128){
 		tcomp_buffer_referenceBuff(message->ret_feedback_buffer, *start_ptr, 1);
 		*start_ptr++;
 	}
-	else
-	{
+	else{
 		tcomp_buffer_referenceBuff(message->ret_feedback_buffer, *start_ptr, 1+(**start_ptr&0x7f));
 		*start_ptr += tcomp_buffer_getSize(message->ret_feedback_buffer);
 	}
@@ -79,7 +74,7 @@ void initFeedbackItem(tcomp_message_t *message, uint8_t** start_ptr)
 	TSK_DEBUG_INFO("SigComp - Create feedback item.");
 }
 
-/**@ingroup tcomp_message_group
+/**Initializes the state identifier field.
 */
 void initStateId(tcomp_message_t *message, uint8_t** start_ptr, uint8_t state_len)
 {
@@ -87,7 +82,7 @@ void initStateId(tcomp_message_t *message, uint8_t** start_ptr, uint8_t state_le
 	*start_ptr += state_len;
 }
 
-/**@ingroup tcomp_message_group
+/**Initializes a stateful SigComp message.
 */
 void initStateful(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 {
@@ -103,15 +98,14 @@ void initStateful(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_pt
    +---+---+---+---+---+---+---+---+
 	*/
 	message->isOK &= (*start_ptr<=end_ptr);
-	if(message->isOK)
-	{
+	if(message->isOK){
 		tcomp_buffer_referenceBuff(message->remaining_sigcomp_buffer, *start_ptr, 
 							((end_ptr-*start_ptr)));
 	}
 	TSK_DEBUG_INFO("SigComp - Creating stateful message.");
 }
 	
-/**@ingroup tcomp_message_group
+/**Initializes a stateless SigComp message.
 */
 void initStateless(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 {
@@ -151,8 +145,7 @@ void initStateless(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_p
 		
 		/* Starting memory address (code destination address). In UDVM. */
 		message->bytecodes_destination = HEADER_GET_DEST_VALUE(destination); 
-		if((message->bytecodes_destination < 128) || (message->bytecodes_destination > 1024))
-		{
+		if((message->bytecodes_destination < 128) || (message->bytecodes_destination > 1024)){
 			message->isOK = 0;
 			return;
 		}
@@ -167,8 +160,7 @@ void initStateless(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_p
 		remaining_SigComp_message = dummy_ptr;
 
 		/* check that remaining sigcomp message is valide */
-		if( !(message->isOK &= ( remaining_SigComp_message<=end_ptr )) )
-		{
+		if( !(message->isOK &= ( remaining_SigComp_message<=end_ptr )) ){
 			return;
 		}
 
@@ -182,7 +174,7 @@ void initStateless(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_p
 	TSK_DEBUG_INFO("SigComp - Creating stateless message.");
 }
 
-/**@ingroup tcomp_message_group
+/**Initializes a NACK message as per RFC 4077.
 */
 void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 {
@@ -210,16 +202,14 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 
 	uint8_t* dummy_ptr;
 	message->isNack = 1;
-	if( (end_ptr-*start_ptr)<25 )
-	{
+	if( (end_ptr-*start_ptr)<25 ){
 		message->isOK = 0;
 		return;
 	}
 
 	dummy_ptr = ((uint8_t*)*start_ptr);
 	dummy_ptr++; /* skip first code_len byte */
-	if(!(message->isOK = (*dummy_ptr++ == NACK_VERSION))) 
-	{
+	if(!(message->isOK = (*dummy_ptr++ == NACK_VERSION))) {
 		return;
 	}
 
@@ -227,8 +217,7 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 	message->nack_info->opcode = *dummy_ptr++;
 	message->nack_info->pc = TSK_BINARY_GET_2BYTES(dummy_ptr); dummy_ptr+=2;
 	memcpy(message->nack_info->sha1, dummy_ptr, TSK_SHA1_DIGEST_SIZE); dummy_ptr += TSK_SHA1_DIGEST_SIZE;
-	if(dummy_ptr < end_ptr)
-	{
+	if(dummy_ptr < end_ptr){
 		/* Has error details */
 		tcomp_buffer_appendBuff(message->nack_info->details, dummy_ptr, (end_ptr-dummy_ptr));
 	}
@@ -244,12 +233,11 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 //	SigComp message object definition
 //
 
-static void* tcomp_message_create(void *self, va_list * app)
+static tsk_object_t* tcomp_message_create(tsk_object_t *self, va_list * app)
 {
 	tcomp_message_t *message = self;
 	
-	if(message)
-	{
+	if(message){
 		const void* input_ptr = va_arg(*app, const void*);
 		size_t input_size = va_arg(*app, size_t);
 		int stream = va_arg(*app, int);
@@ -283,13 +271,16 @@ static void* tcomp_message_create(void *self, va_list * app)
 
 		/* Check message validity --> magic code (11111)? */
 		message->isOK = HEADER_IS_VALID(message);
-		if( !message->isOK ) goto bail;
+		if(!message->isOK){
+			goto bail;
+		}
 		
 		/* Feedback item */
-		if((HEADER_GET_T(message)!=0))
-		{
+		if((HEADER_GET_T(message)!=0)){
 			initFeedbackItem(message, &dummy_ptr);
-			if(!message->isOK) goto bail;
+			if(!message->isOK){
+				goto bail;
+			}
 		}
 
 		/*
@@ -297,19 +288,17 @@ static void* tcomp_message_create(void *self, va_list * app)
 		* to access a state item at the receiving endpoint.
 		*/
 		state_len = HEADER_GET_STATE_LENGTH( HEADER_GET_LEN(message) );
-		if(state_len)
-		{
+		if(state_len){
 			initStateId(message, &dummy_ptr, state_len);
 			initStateful(message, &dummy_ptr, end_ptr);
 		}
 		else
 		{
-			if( !*dummy_ptr && !(*(dummy_ptr+1)&0xf0) ) // "code_len" field of zero --> it's a nack
-			{
+			if( !*dummy_ptr && !(*(dummy_ptr+1)&0xf0) ){
+				// "code_len" field of zero --> it's a nack
 				initNack(message, &dummy_ptr, end_ptr);
 			}
-			else
-			{
+			else{
 				initStateless(message, &dummy_ptr, end_ptr);
 			}
 		}
@@ -320,34 +309,30 @@ static void* tcomp_message_create(void *self, va_list * app)
 		*/
 		message->header_size = ( message->totalSize - tcomp_buffer_getSize(message->remaining_sigcomp_buffer));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new SigComp message.");
 	}
 
 bail:
-	if(message && !message->isOK)
-	{
+	if(message && !message->isOK){
 		TSK_OBJECT_SAFE_FREE(message);
-		return 0;
+		return tsk_null;
 	}
 
 	return message;
 }
 
-static void* tcomp_message_destroy(void *self)
+static tsk_object_t* tcomp_message_destroy(tsk_object_t *self)
 {
 	tcomp_message_t *message = self;
 
-	if(message)
-	{
+	if(message){
 		TSK_OBJECT_SAFE_FREE(message->stateId);
 		TSK_OBJECT_SAFE_FREE(message->remaining_sigcomp_buffer);
 		TSK_OBJECT_SAFE_FREE(message->uploaded_UDVM_buffer);
 		TSK_OBJECT_SAFE_FREE(message->ret_feedback_buffer);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("NULL SigComp message.");
 	}
 
@@ -359,6 +344,6 @@ static const tsk_object_def_t tcomp_message_def_s =
 	sizeof(tcomp_message_t),
 	tcomp_message_create, 
 	tcomp_message_destroy,
-	0
+	tsk_null
 };
-const void *tcomp_message_def_t = &tcomp_message_def_s;
+const tsk_object_def_t* tcomp_message_def_t = &tcomp_message_def_s;
