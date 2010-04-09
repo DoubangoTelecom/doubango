@@ -107,6 +107,11 @@ void test_stack()
 		
 		THTTP_SESSION_SET_NULL()); /* MUST always be present */
 
+	thttp_action_GET(session, "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/index",
+		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
+		
+		tsk_null);
+	getchar();
 
 	thttp_action_GET(session, "http://ipv6.google.com",
 		// action-level options

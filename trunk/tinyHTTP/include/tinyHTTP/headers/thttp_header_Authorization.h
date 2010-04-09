@@ -69,7 +69,7 @@ typedef thttp_header_Authorization_t thttp_header_Proxy_Authorization_t;
 TINYHTTP_API  thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data, size_t size);
 TINYHTTP_API thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const char *data, size_t size);
 
-TINYHTTP_GEXTERN const void *thttp_header_Authorization_def_t;
+TINYHTTP_GEXTERN const tsk_object_def_t *thttp_header_Authorization_def_t;
 
 THTTP_END_DECLS
 

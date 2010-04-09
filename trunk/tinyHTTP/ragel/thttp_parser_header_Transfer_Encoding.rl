@@ -68,8 +68,11 @@
 int thttp_header_Transfer_Encoding_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header){
-		const thttp_header_Transfer_Encoding_t *Transfer_Encoding = header;	
-		return tsk_buffer_append(output, Transfer_Encoding->encoding, strlen(Transfer_Encoding->encoding));
+		const thttp_header_Transfer_Encoding_t *Transfer_Encoding = header;
+		if(Transfer_Encoding->encoding){
+			return tsk_buffer_append(output, Transfer_Encoding->encoding, strlen(Transfer_Encoding->encoding));
+		}
+		return 0;
 	}
 
 	return -1;
@@ -109,8 +112,6 @@ thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const cha
 //	Transfer_Encoding header object definition
 //
 
-/**@ingroup thttp_header_Transfer_Encoding_group
-*/
 static tsk_object_t* thttp_header_Transfer_Encoding_create(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Transfer_Encoding_t *Transfer_Encoding = self;
@@ -126,8 +127,6 @@ static tsk_object_t* thttp_header_Transfer_Encoding_create(tsk_object_t *self, v
 	return self;
 }
 
-/**@ingroup thttp_header_Transfer_Encoding_group
-*/
 static tsk_object_t* thttp_header_Transfer_Encoding_destroy(tsk_object_t* self)
 {
 	thttp_header_Transfer_Encoding_t *Transfer_Encoding = self;

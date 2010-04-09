@@ -42,8 +42,7 @@
 	# Includes
 	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 			
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 

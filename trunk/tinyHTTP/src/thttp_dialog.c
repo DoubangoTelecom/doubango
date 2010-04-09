@@ -132,7 +132,7 @@ int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app)
 	response = va_arg(*app, const thttp_response_t *);
 	// will use the current action parameters
 
-	if((ret = thttp_session_update_challenges(self->session, response, !self->challenged))){
+	if((ret = thttp_session_update_challenges(self->session, response, self->answered))){
 		thttp_event_t* e = tsk_null;
 		TSK_DEBUG_ERROR("HTTP authentication failed.");
 		
@@ -144,7 +144,7 @@ int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app)
 		return ret;
 	}
 	
-	self->challenged = tsk_true;
+	self->answered = tsk_true;
 
 	/* Retry with creadentials. */
 	return thttp_dialog_send_request(self);
@@ -294,8 +294,7 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 	{
 		thttp_challenge_t *challenge;
 		thttp_header_t* auth_hdr;
-		tsk_list_foreach(item, self->session->challenges)
-		{
+		tsk_list_foreach(item, self->session->challenges){
 			challenge = item->data;
 			if((auth_hdr = thttp_challenge_create_header_authorization(challenge, self->session->cred.usename, self->session->cred.password, request))){
 				thttp_message_add_header(request, auth_hdr);

@@ -45,23 +45,19 @@
 	# Includes
 	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_name
-	{
+	action parse_name{
 		TSK_PARSER_SET_STRING(hdr_Dummy->name);
 	}
 
-	action parse_value
-	{
+	action parse_value{
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 		
 	Dummy = token>tag %parse_name SP* HCOLON SP*<: any*>tag %parse_value;
@@ -76,9 +72,8 @@ int thttp_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const thttp_header_Dummy_t *Dummy = header;
-		if(Dummy->value)
-		{
-			tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
+		if(Dummy->value){
+			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
 		}
 		return 0;
 	}
@@ -102,8 +97,7 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}
 	
@@ -120,25 +114,23 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
 //	Dummy header object definition
 //
 
-static void* thttp_header_Dummy_create(void *self, va_list * app)
+static tsk_object_t* thttp_header_Dummy_create(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		THTTP_HEADER(Dummy)->type = thttp_htype_Dummy;
 		THTTP_HEADER(Dummy)->tostring = thttp_header_Dummy_tostring;
 
 		Dummy->name = tsk_strdup(va_arg(*app, const char*));
 		Dummy->value = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Dummy header.");
 	}
 	return self;
 }
 
-static void* thttp_header_Dummy_destroy(void *self)
+static tsk_object_t* thttp_header_Dummy_destroy(tsk_object_t *self)
 {
 	thttp_header_Dummy_t *Dummy = self;
 	if(Dummy)
@@ -148,7 +140,9 @@ static void* thttp_header_Dummy_destroy(void *self)
 
 		TSK_OBJECT_SAFE_FREE(THTTP_HEADER_PARAMS(Dummy));
 	}
-	else TSK_DEBUG_ERROR("Null Dummy header.");
+	else{
+		TSK_DEBUG_ERROR("Null Dummy header.");
+	}
 
 	return self;
 }
@@ -158,6 +152,6 @@ static const tsk_object_def_t thttp_header_Dummy_def_s =
 	sizeof(thttp_header_Dummy_t),
 	thttp_header_Dummy_create,
 	thttp_header_Dummy_destroy,
-	0
+	tsk_null
 };
-const void *thttp_header_Dummy_def_t = &thttp_header_Dummy_def_s;
+const tsk_object_def_t *thttp_header_Dummy_def_t = &thttp_header_Dummy_def_s;

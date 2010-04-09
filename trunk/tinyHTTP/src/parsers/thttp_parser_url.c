@@ -39,7 +39,7 @@
 *	Ragel state machine.
 */
 
-/* #line 89 "./ragel/thttp_parser_url.rl" */
+/* #line 88 "./ragel/thttp_parser_url.rl" */
 
 
 /**@ingroup thttp_url_group
@@ -273,14 +273,14 @@ static const int thttp_machine_parser_url_error = 0;
 static const int thttp_machine_parser_url_en_main = 1;
 
 
-/* #line 120 "./ragel/thttp_parser_url.rl" */
+/* #line 119 "./ragel/thttp_parser_url.rl" */
 	
 /* #line 279 "./src/parsers/thttp_parser_url.c" */
 	{
 	cs = thttp_machine_parser_url_start;
 	}
 
-/* #line 121 "./ragel/thttp_parser_url.rl" */
+/* #line 120 "./ragel/thttp_parser_url.rl" */
 	
 /* #line 286 "./src/parsers/thttp_parser_url.c" */
 	{
@@ -357,52 +357,52 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 46 "./ragel/thttp_parser_url.rl" */
+/* #line 45 "./ragel/thttp_parser_url.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/thttp_parser_url.rl" */
+/* #line 50 "./ragel/thttp_parser_url.rl" */
 	{ url->scheme = tsk_strdup("http"), url->type = url_http; }
 	break;
 	case 2:
-/* #line 52 "./ragel/thttp_parser_url.rl" */
+/* #line 51 "./ragel/thttp_parser_url.rl" */
 	{ url->scheme = tsk_strdup("https"), url->type = url_https; }
 	break;
 	case 3:
-/* #line 55 "./ragel/thttp_parser_url.rl" */
+/* #line 54 "./ragel/thttp_parser_url.rl" */
 	{ url->host_type = url->host_type = host_ipv4; }
 	break;
 	case 4:
-/* #line 56 "./ragel/thttp_parser_url.rl" */
+/* #line 55 "./ragel/thttp_parser_url.rl" */
 	{ url->host_type = url->host_type = host_ipv6; }
 	break;
 	case 5:
-/* #line 57 "./ragel/thttp_parser_url.rl" */
+/* #line 56 "./ragel/thttp_parser_url.rl" */
 	{ url->host_type = url->host_type = host_hostname; }
 	break;
 	case 6:
-/* #line 59 "./ragel/thttp_parser_url.rl" */
+/* #line 58 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->host);
 	}
 	break;
 	case 7:
-/* #line 63 "./ragel/thttp_parser_url.rl" */
+/* #line 62 "./ragel/thttp_parser_url.rl" */
 	{
 		have_port = 1;
 		TSK_PARSER_SET_INT(url->port);
 	}
 	break;
 	case 8:
-/* #line 68 "./ragel/thttp_parser_url.rl" */
+/* #line 67 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->hpath);
 	}
 	break;
 	case 10:
-/* #line 76 "./ragel/thttp_parser_url.rl" */
+/* #line 75 "./ragel/thttp_parser_url.rl" */
 	{
 	}
 	break;
@@ -423,32 +423,32 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 46 "./ragel/thttp_parser_url.rl" */
+/* #line 45 "./ragel/thttp_parser_url.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 6:
-/* #line 59 "./ragel/thttp_parser_url.rl" */
+/* #line 58 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->host);
 	}
 	break;
 	case 7:
-/* #line 63 "./ragel/thttp_parser_url.rl" */
+/* #line 62 "./ragel/thttp_parser_url.rl" */
 	{
 		have_port = 1;
 		TSK_PARSER_SET_INT(url->port);
 	}
 	break;
 	case 8:
-/* #line 68 "./ragel/thttp_parser_url.rl" */
+/* #line 67 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->hpath);
 	}
 	break;
 	case 9:
-/* #line 72 "./ragel/thttp_parser_url.rl" */
+/* #line 71 "./ragel/thttp_parser_url.rl" */
 	{
 		TSK_PARSER_SET_STRING(url->search);
 	}
@@ -461,12 +461,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 122 "./ragel/thttp_parser_url.rl" */
+/* #line 121 "./ragel/thttp_parser_url.rl" */
 	
 	if( cs < 
 /* #line 468 "./src/parsers/thttp_parser_url.c" */
 63
-/* #line 123 "./ragel/thttp_parser_url.rl" */
+/* #line 122 "./ragel/thttp_parser_url.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP/HTTPS URL.");
 		TSK_OBJECT_SAFE_FREE(url);
