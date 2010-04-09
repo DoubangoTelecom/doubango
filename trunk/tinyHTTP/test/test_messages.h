@@ -41,6 +41,7 @@
 	"HTTP/1.1 401 Unauthorized\r\n" \
 	"Server: Apache-Coyote/1.1\r\n" \
 	"WWW-Authenticate: Digest realm=\"example.com\", qop=\"auth\", nonce=\"f39d20a4dbfbd32d943de9b285d59a30\", opaque=\"c5ad02feb52eb050e464cec3740c0f2e\"\r\n" \
+	"WWW-Authenticate: Basic realm=\"WallyWorld\"\r\n" \
 	"Transfer-Encoding: chunked;test=21;tes7\r\n" \
 	"Date: Wed, 10 Mar 2010 14:20:47 GMT\r\n" \
 	"\r\n"

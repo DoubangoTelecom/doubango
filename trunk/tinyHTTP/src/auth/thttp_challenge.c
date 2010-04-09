@@ -41,9 +41,10 @@
 
 #include <string.h>
 
-#define THTTP_CHALLENGE_IS_DIGEST(self)	((self) ? tsk_striequals((self)->scheme, "Digest") : 0)
-#define THTTP_CHALLENGE_IS_AKAv1(self)	((self) ? tsk_striequals((self)->algorithm, "AKAv1-MD5") : 0)
-#define THTTP_CHALLENGE_IS_AKAv2(self)	((self) ? tsk_striequals((self)->algorithm, "AKAv2-MD5") : 0)
+#define THTTP_CHALLENGE_IS_DIGEST(self)	((self) ? tsk_striequals((self)->scheme, "Digest") : tsk_false)
+#define THTTP_CHALLENGE_IS_BASIC(self)	((self) ? tsk_striequals((self)->scheme, "Basic") : tsk_false)
+#define THTTP_CHALLENGE_IS_AKAv1(self)	((self) ? tsk_striequals((self)->algorithm, "AKAv1-MD5") : tsk_false)
+#define THTTP_CHALLENGE_IS_AKAv2(self)	((self) ? tsk_striequals((self)->algorithm, "AKAv2-MD5") : tsk_false)
 
 int thttp_challenge_reset_cnonce(thttp_challenge_t *self)
 {
@@ -65,11 +66,10 @@ int thttp_challenge_reset_cnonce(thttp_challenge_t *self)
 	return -1;
 }
 
-int thttp_challenge_get_response(thttp_challenge_t *self, const char* username, const char* password, const char* method, const char* uristring, const tsk_buffer_t* entity_body, tsk_md5string_t* response)
+int thttp_challenge_get_digest_response(thttp_challenge_t *self, const char* username, const char* password, const char* method, const char* uristring, const tsk_buffer_t* entity_body, char** response)
 {
-	if(THTTP_CHALLENGE_IS_DIGEST(self))
-	{
-		tsk_md5string_t ha1, ha2;
+	if(THTTP_CHALLENGE_IS_DIGEST(self)){
+		tsk_md5string_t ha1, ha2, md5_response;
 		nonce_count_t nc;
 
 		/* ===
@@ -96,10 +96,13 @@ int thttp_challenge_get_response(thttp_challenge_t *self, const char* username, 
 			self->cnonce,
 			self->qop,
 			(const tsk_md5string_t *)&ha2,
-			response);
+			&md5_response);
 		
 		if(self->qop){
 			self->nc++;
+		}
+		if(response && !*response){
+			*response = tsk_strdup(md5_response);
 		}
 
 		return 0;
@@ -133,9 +136,10 @@ int thttp_challenge_update(thttp_challenge_t *self, const char* scheme, const ch
 
 thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *self, const char* username, const char* password, const thttp_request_t *request)
 {
-	tsk_md5string_t response;
+	char* response = tsk_null;
+	size_t response_size = 0;
 	nonce_count_t nc;
-	char *uristring = 0;
+	char *uristring = tsk_null;
 	thttp_header_t *header = 0;
 
 	if(!self || !request || !request->url){
@@ -150,14 +154,24 @@ thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *s
 		THTTP_NCOUNT_2_STRING(self->nc, nc);
 	}
 
-	/* Computes the response */
-	if(thttp_challenge_get_response(self, username, password, request->method, uristring, request->Content, &response)){
+	/* Computes the response (Basic and Digest)*/
+	if(THTTP_CHALLENGE_IS_DIGEST(self)){
+		if(thttp_challenge_get_digest_response(self, username, password, request->method, uristring, request->Content, &response)){
+			goto bail;
+		}
+		response_size = (TSK_MD5_DIGEST_SIZE*2);
+	}
+	else if(THTTP_CHALLENGE_IS_BASIC(self)){
+		response_size = thttp_auth_basic_response(username, password, &response);
+	}
+	else{
+		TSK_DEBUG_ERROR("%s not supported as scheme.", self->scheme);
 		goto bail;
 	}
 
 
 #define THTTP_AUTH_COPY_VALUES(hdr)															\
-		hdr->username = tsk_strdup(username);											\
+		hdr->username = tsk_strdup(username);												\
 		hdr->scheme = tsk_strdup(self->scheme);												\
 		hdr->realm = tsk_strdup(self->realm);												\
 		hdr->nonce = tsk_strdup(self->nonce);												\
@@ -167,7 +181,7 @@ thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *s
 		hdr->cnonce = self->nc? tsk_strdup(self->cnonce) : 0;								\
 		hdr->uri = tsk_strdup(uristring);													\
 		hdr->nc = self->nc? tsk_strdup(nc) : 0;												\
-		hdr->response = tsk_strdup(response);												\
+		hdr->response = tsk_strndup(response, response_size);								\
 
 	if(self->isproxy){
 		thttp_header_Proxy_Authorization_t *proxy_auth = THTTP_HEADER_AUTHORIZATION_CREATE(); // Very bad way to create Proxy_auth header.
@@ -184,6 +198,7 @@ thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *s
 
 bail:
 	TSK_FREE(uristring);
+	TSK_FREE(response);
 
 	return header;
 

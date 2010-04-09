@@ -21,7 +21,7 @@
 */
 
 /**@file thttp_session.c
- * @brief HTTP session.
+ * @brief HTTP/HTTPS session.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
@@ -204,7 +204,7 @@ const void* thttp_session_get_context(const thttp_session_handle_t *self)
 
 /** Updates authentications headers.
 */
-int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_t* response, tsk_bool_t first)
+int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_t* response, tsk_bool_t answered)
 {
 	int ret = 0;
 	size_t i;
@@ -230,6 +230,9 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 		the server tells the client to retry with the new nonce, but without
 		prompting for a new username and password.
 	*/
+	/* RFC 2617 - 1.2 Access Authentication Framework
+		The realm directive (case-insensitive) is required for all authentication schemes that issue a challenge.
+	*/
 
 	/* FIXME: As we perform the same task ==> Use only one loop.
 	*/
@@ -245,10 +248,10 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 				continue;
 			}
 			
-			if(tsk_strequals(challenge->realm, WWW_Authenticate->realm) && (WWW_Authenticate->stale || first)){
+			if(tsk_striequals(challenge->realm, WWW_Authenticate->realm) && (WWW_Authenticate->stale || !answered)){
 				/*== (B) ==*/
 				if((ret = thttp_challenge_update(challenge, 
-					WWW_Authenticate->scheme, 
+					WWW_Authenticate->scheme,
 					WWW_Authenticate->realm, 
 					WWW_Authenticate->nonce, 
 					WWW_Authenticate->opaque, 
@@ -294,7 +297,7 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 				continue;
 			}
 			
-			if(tsk_strequals(challenge->realm, Proxy_Authenticate->realm) && (Proxy_Authenticate->stale || first)){
+			if(tsk_striequals(challenge->realm, Proxy_Authenticate->realm) && (Proxy_Authenticate->stale || !answered)){
 				/*== (B) ==*/
 				if((ret = thttp_challenge_update(challenge, 
 					Proxy_Authenticate->scheme, 

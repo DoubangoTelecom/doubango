@@ -55,7 +55,7 @@ typedef struct thttp_dialog_s
 	
 	struct thttp_session_s* session;
 	struct thttp_action_s* action;
-	tsk_bool_t challenged;
+	tsk_bool_t answered;
 }
 thttp_dialog_t;
 

@@ -47,74 +47,64 @@
 	# Includes
 	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action is_digest
-	{
-		#//FIXME: Only Digest is supported
+	action is_digest{
 		hdr_WWW_Authenticate->scheme = tsk_strdup("Digest");
 	}
 
-	action is_auth
-	{
+	action is_basic{
+		hdr_WWW_Authenticate->scheme = tsk_strdup("Basic");
+	}
+
+	action is_auth{
 		THTTP_HEADER(hdr_WWW_Authenticate)->type = thttp_htype_WWW_Authenticate;
 	}
 
-	action is_proxy
-	{
+	action is_proxy{
 		THTTP_HEADER(hdr_WWW_Authenticate)->type = thttp_htype_Proxy_Authenticate;
 	}
 
-	action parse_realm
-	{
+	action parse_realm{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->realm);
 		tsk_strunquote(&hdr_WWW_Authenticate->realm);
 	}
 
-	action parse_domain
-	{
+	action parse_domain{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->domain);
 		//tsk_strunquote(&hdr_WWW_Authenticate->domain);
 	}
 
-	action parse_nonce
-	{
+	action parse_nonce{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->nonce);
 		tsk_strunquote(&hdr_WWW_Authenticate->nonce);
 	}
 
-	action parse_opaque
-	{
+	action parse_opaque{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->opaque);
 		tsk_strunquote(&hdr_WWW_Authenticate->opaque);
 	}
 
-	action parse_stale
-	{
+	action parse_stale{
 		hdr_WWW_Authenticate->stale = tsk_strniequals(tag_start, "true", 4);
 	}
 
-	action parse_algorithm
-	{
+	action parse_algorithm{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->algorithm);
 	}
 
-	action parse_qop
-	{
+	action parse_qop{
 		TSK_PARSER_SET_STRING(hdr_WWW_Authenticate->qop);
 		//tsk_strunquote(&hdr_WWW_Authenticate->qop);
 	}
 
-	action parse_param
-	{
+	action parse_param{
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_WWW_Authenticate));
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	#FIXME: Only Digest (MD5, AKAv1-MD5 and AKAv2-MD5) is supported
@@ -130,7 +120,7 @@
 	qop_options = "qop"i EQUAL LDQUOT <: (any*)>tag %parse_qop :> RDQUOT;
 	
 	digest_cln = (realm | domain | nonce | opaque | stale | algorithm | qop_options)@1 | auth_param@0;
-	challenge = ( "Digest"i LWS digest_cln ( COMMA <:digest_cln )* )>is_digest | other_challenge;
+	challenge = ( ("Digest"i%is_digest | "Basic"i%is_basic) LWS digest_cln ( COMMA <:digest_cln )* ) | other_challenge;
 	WWW_Authenticate = ("WWW-Authenticate"i>is_auth | "Proxy-Authenticate"i>is_proxy) HCOLON challenge;
 
 	# Entry point
@@ -214,30 +204,23 @@ thttp_header_Proxy_Authenticate_t *thttp_header_Proxy_Authenticate_parse(const c
 //	WWW_Authenticate header object definition
 //
 
-/**@ingroup thttp_header_WWW_Authenticate_group
-*/
-static void* thttp_header_WWW_Authenticate_create(void *self, va_list * app)
+static tsk_object_t* thttp_header_WWW_Authenticate_create(tsk_object_t *self, va_list * app)
 {
 	thttp_header_WWW_Authenticate_t *WWW_Authenticate = self;
-	if(WWW_Authenticate)
-	{
+	if(WWW_Authenticate){
 		THTTP_HEADER(WWW_Authenticate)->type = thttp_htype_WWW_Authenticate;
 		THTTP_HEADER(WWW_Authenticate)->tostring = thttp_header_WWW_Authenticate_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new WWW_Authenticate header.");
 	}
 	return self;
 }
 
-/**@ingroup thttp_header_WWW_Authenticate_group
-*/
-static void* thttp_header_WWW_Authenticate_destroy(void *self)
+static tsk_object_t* thttp_header_WWW_Authenticate_destroy(tsk_object_t *self)
 {
 	thttp_header_WWW_Authenticate_t *WWW_Authenticate = self;
-	if(WWW_Authenticate)
-	{
+	if(WWW_Authenticate){
 		TSK_FREE(WWW_Authenticate->scheme);
 		TSK_FREE(WWW_Authenticate->realm);
 		TSK_FREE(WWW_Authenticate->domain);
@@ -248,7 +231,9 @@ static void* thttp_header_WWW_Authenticate_destroy(void *self)
 
 		TSK_OBJECT_SAFE_FREE(THTTP_HEADER_PARAMS(WWW_Authenticate));
 	}
-	else TSK_DEBUG_ERROR("Null WWW_Authenticate header.");
+	else{
+		TSK_DEBUG_ERROR("Null WWW_Authenticate header.");
+	}
 
 	return self;
 }
@@ -258,6 +243,6 @@ static const tsk_object_def_t thttp_header_WWW_Authenticate_def_s =
 	sizeof(thttp_header_WWW_Authenticate_t),
 	thttp_header_WWW_Authenticate_create,
 	thttp_header_WWW_Authenticate_destroy,
-	0
+	tsk_null
 };
-const void *thttp_header_WWW_Authenticate_def_t = &thttp_header_WWW_Authenticate_def_s;
+const tsk_object_def_t *thttp_header_WWW_Authenticate_def_t = &thttp_header_WWW_Authenticate_def_s;

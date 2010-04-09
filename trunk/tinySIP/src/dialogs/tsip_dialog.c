@@ -626,6 +626,9 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 		the server tells the client to retry with the new nonce, but without
 		prompting for a new username and password.
 	*/
+	/* RFC 2617 - 1.2 Access Authentication Framework
+		The realm directive (case-insensitive) is required for all authentication schemes that issue a challenge.
+	*/
 
 	/* FIXME: As we perform the same task ==> Use only one loop.
 	*/
@@ -639,7 +642,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 			challenge = item->data;
 			if(challenge->isproxy) continue;
 			
-			if(tsk_strequals(challenge->realm, WWW_Authenticate->realm) && (WWW_Authenticate->stale || acceptNewVector))
+			if(tsk_striequals(challenge->realm, WWW_Authenticate->realm) && (WWW_Authenticate->stale || acceptNewVector))
 			{
 				/*== (B) ==*/
 				if((ret = tsip_challenge_update(challenge, 
@@ -687,7 +690,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 			challenge = item->data;
 			if(!challenge->isproxy) continue;
 			
-			if(tsk_strequals(challenge->realm, Proxy_Authenticate->realm) && (Proxy_Authenticate->stale || acceptNewVector))
+			if(tsk_striequals(challenge->realm, Proxy_Authenticate->realm) && (Proxy_Authenticate->stale || acceptNewVector))
 			{
 				/*== (B) ==*/
 				if((ret = tsip_challenge_update(challenge, 

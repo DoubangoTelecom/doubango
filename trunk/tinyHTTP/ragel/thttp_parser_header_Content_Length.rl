@@ -41,18 +41,15 @@
 	# Includes
 	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_content_length
-	{
+	action parse_content_length{
 		TSK_PARSER_SET_INTEGER(hdr_clength->length);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	Content_Length = "Content-Length"i HCOLON (DIGIT+)>tag %parse_content_length;
@@ -64,8 +61,7 @@
 
 int thttp_header_Content_Length_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const thttp_header_Content_Length_t *Content_Length = header;		
 		return tsk_buffer_appendEx(output, "%d", Content_Length->length);
 	}
@@ -89,8 +85,7 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
 		TSK_OBJECT_SAFE_FREE(hdr_clength);
 	}
 	
@@ -107,35 +102,30 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 //	Content_Length header object definition
 //
 
-/**@ingroup thttp_header_Content_Length_group
-*/
-static void* thttp_header_Content_Length_create(void *self, va_list * app)
+static tsk_object_t* thttp_header_Content_Length_create(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Content_Length_t *Content_Length = self;
-	if(Content_Length)
-	{
+	if(Content_Length){
 		Content_Length->length = va_arg(*app, uint32_t);
 
 		THTTP_HEADER(Content_Length)->type = thttp_htype_Content_Length;
 		THTTP_HEADER(Content_Length)->tostring = thttp_header_Content_Length_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Content_Length header.");
 	}
 	return self;
 }
 
-/**@ingroup thttp_header_Content_Length_group
-*/
-static void* thttp_header_Content_Length_destroy(void *self)
+static tsk_object_t* thttp_header_Content_Length_destroy(tsk_object_t *self)
 {
 	thttp_header_Content_Length_t *Content_Length = self;
-	if(Content_Length)
-	{
+	if(Content_Length){
 		TSK_OBJECT_SAFE_FREE(THTTP_HEADER_PARAMS(Content_Length));
 	}
-	else TSK_DEBUG_ERROR("Null Content_Length header.");
+	else{
+		TSK_DEBUG_ERROR("Null Content_Length header.");
+	}
 
 	return self;
 }
@@ -145,6 +135,6 @@ static const tsk_object_def_t thttp_header_Content_Length_def_s =
 	sizeof(thttp_header_Content_Length_t),
 	thttp_header_Content_Length_create,
 	thttp_header_Content_Length_destroy,
-	0
+	tsk_null
 };
-const void *thttp_header_Content_Length_def_t = &thttp_header_Content_Length_def_s;
+const tsk_object_def_t *thttp_header_Content_Length_def_t = &thttp_header_Content_Length_def_s;

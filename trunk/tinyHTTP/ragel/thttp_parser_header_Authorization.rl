@@ -46,91 +46,78 @@
 	# Includes
 	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action is_digest
-	{
-		#//FIXME: Only Digest is supported
+	action is_digest{
 		hdr_Authorization->scheme = tsk_strdup("Digest");
 	}
 
-	action is_auth
-	{
+	action is_basic{
+		hdr_Authorization->scheme = tsk_strdup("Basic");
+	}
+
+	action is_auth{
 		THTTP_HEADER(hdr_Authorization)->type = thttp_htype_Authorization;
 	}
 
-	action is_proxy
-	{
+	action is_proxy{
 		THTTP_HEADER(hdr_Authorization)->type = thttp_htype_Proxy_Authorization;
 	}
 
-	action parse_username
-	{
+	action parse_username{
 		TSK_PARSER_SET_STRING(hdr_Authorization->username);
 		tsk_strunquote(&hdr_Authorization->username);
 	}
 
-	action parse_realm
-	{
+	action parse_realm{
 		TSK_PARSER_SET_STRING(hdr_Authorization->realm);
 		tsk_strunquote(&hdr_Authorization->realm);
 	}
 
-	action parse_nonce
-	{
+	action parse_nonce{
 		TSK_PARSER_SET_STRING(hdr_Authorization->nonce);
 		tsk_strunquote(&hdr_Authorization->nonce);
 	}
 
-	action parse_uri
-	{
+	action parse_uri{
 		TSK_PARSER_SET_STRING(hdr_Authorization->uri);
 	}
 
-	action parse_response
-	{
+	action parse_response{
 		TSK_PARSER_SET_STRING(hdr_Authorization->response);
 		tsk_strunquote(&hdr_Authorization->response);
 	}
 
-	action parse_algorithm
-	{
+	action parse_algorithm{
 		TSK_PARSER_SET_STRING(hdr_Authorization->algorithm);
 	}
 
-	action parse_cnonce
-	{
+	action parse_cnonce{
 		TSK_PARSER_SET_STRING(hdr_Authorization->cnonce);
 		tsk_strunquote(&hdr_Authorization->cnonce);
 	}
 
-	action parse_opaque
-	{
+	action parse_opaque{
 		TSK_PARSER_SET_STRING(hdr_Authorization->opaque);
 		tsk_strunquote(&hdr_Authorization->opaque);
 	}
 
-	action parse_qop
-	{
+	action parse_qop{
 		TSK_PARSER_SET_STRING(hdr_Authorization->qop);
 		//tsk_strunquote(&hdr_Authorization->qop);
 	}
 
-	action parse_nc
-	{
+	action parse_nc{
 		TSK_PARSER_SET_STRING(hdr_Authorization->nc);
 	}
 
-	action parse_param
-	{
+	action parse_param{
 		TSK_PARSER_ADD_PARAM(THTTP_HEADER_PARAMS(hdr_Authorization));
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	#FIXME: Only Digest (MD5, AKAv1-MD5 and AKAv2-MD5) is supported
@@ -152,7 +139,7 @@
 	
 	dig_resp = (username | realm | nonce | digest_uri | dresponse | algorithm | cnonce | opaque | message_qop | nonce_count)@1 | auth_param@0;
 	digest_response = dig_resp ( COMMA <:dig_resp )*;
-	credentials = ( "Digest"i LWS digest_response )>is_digest | other_response;
+	credentials = ( ("Digest"i%is_digest | "Basic"i%is_basic) LWS digest_response ) | other_response;
 	Authorization = ("Authorization"i>is_auth | "Proxy-Authorization"i>is_proxy) HCOLON credentials;
 
 	# Entry point
@@ -167,46 +154,52 @@ int thttp_header_Authorization_tostring(const void* header, tsk_buffer_t* output
 		const thttp_header_Authorization_t *Authorization = header;
 		if(Authorization && Authorization->scheme)
 		{
-			return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
-				Authorization->scheme,
+			if(tsk_striequals(Authorization->scheme, "Basic")){
+				return tsk_buffer_appendEx(output, "%s %s", 
+					Authorization->scheme, Authorization->response);
+			}
+			else{
+				return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+					Authorization->scheme,
 
-				Authorization->username ? "username=\"" : "",
-				Authorization->username ? Authorization->username : "",
-				Authorization->username ? "\"" : "",
+					Authorization->username ? "username=\"" : "",
+					Authorization->username ? Authorization->username : "",
+					Authorization->username ? "\"" : "",
 
-				Authorization->realm ? ",realm=\"" : "",
-				Authorization->realm ? Authorization->realm : "",
-				Authorization->realm ? "\"" : "",
+					Authorization->realm ? ",realm=\"" : "",
+					Authorization->realm ? Authorization->realm : "",
+					Authorization->realm ? "\"" : "",
 
-				Authorization->nonce ? ",nonce=\"" : "",
-				Authorization->nonce ? Authorization->nonce : "",
-				Authorization->nonce ? "\"" : "",
+					Authorization->nonce ? ",nonce=\"" : "",
+					Authorization->nonce ? Authorization->nonce : "",
+					Authorization->nonce ? "\"" : "",
 
-				Authorization->uri ? ",uri=\"" : "",
-				Authorization->uri ? Authorization->uri : "",
-				Authorization->uri ? "\"" : "",
-				
-				Authorization->response ? ",response=\"" : "",
-				Authorization->response ? Authorization->response : "",
-				Authorization->response ? "\"" : "",
-				
-				Authorization->algorithm ? ",algorithm=" : "",
-				Authorization->algorithm ? Authorization->algorithm : "",
+					Authorization->uri ? ",uri=\"" : "",
+					Authorization->uri ? Authorization->uri : "",
+					Authorization->uri ? "\"" : "",
+					
+					Authorization->response ? ",response=\"" : "",
+					Authorization->response ? Authorization->response : "",
+					Authorization->response ? "\"" : "",
+					
+					Authorization->algorithm ? ",algorithm=" : "",
+					Authorization->algorithm ? Authorization->algorithm : "",
 
-				Authorization->cnonce ? ",cnonce=\"" : "",
-				Authorization->cnonce ? Authorization->cnonce : "",
-				Authorization->cnonce ? "\"" : "",
+					Authorization->cnonce ? ",cnonce=\"" : "",
+					Authorization->cnonce ? Authorization->cnonce : "",
+					Authorization->cnonce ? "\"" : "",
 
-				Authorization->opaque ? ",opaque=\"" : "",
-				Authorization->opaque ? Authorization->opaque : "",
-				Authorization->opaque ? "\"" : "",
+					Authorization->opaque ? ",opaque=\"" : "",
+					Authorization->opaque ? Authorization->opaque : "",
+					Authorization->opaque ? "\"" : "",
 
-				Authorization->qop ? ",qop=" : "",
-				Authorization->qop ? Authorization->qop : "",
+					Authorization->qop ? ",qop=" : "",
+					Authorization->qop ? Authorization->qop : "",
 
-				Authorization->nc ? ",nc=" : "",
-				Authorization->nc ? Authorization->nc : ""
-				);
+					Authorization->nc ? ",nc=" : "",
+					Authorization->nc ? Authorization->nc : ""
+					);
+			}
 		}
 	}
 	return -1;
@@ -249,30 +242,23 @@ thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const
 //	Authorization header object definition
 //
 
-/**@ingroup thttp_header_Authorization_group
-*/
-static void* thttp_header_Authorization_create(void *self, va_list * app)
+static tsk_object_t* thttp_header_Authorization_create(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Authorization_t *Authorization = self;
-	if(Authorization)
-	{
+	if(Authorization){
 		THTTP_HEADER(Authorization)->type = thttp_htype_Authorization;
 		THTTP_HEADER(Authorization)->tostring = thttp_header_Authorization_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Authorization header.");
 	}
 	return self;
 }
 
-/**@ingroup thttp_header_Authorization_group
-*/
-static void* thttp_header_Authorization_destroy(void *self)
+static tsk_object_t* thttp_header_Authorization_destroy(tsk_object_t *self)
 {
 	thttp_header_Authorization_t *Authorization = self;
-	if(Authorization)
-	{
+	if(Authorization){
 		TSK_FREE(Authorization->scheme);
 		TSK_FREE(Authorization->username);
 		TSK_FREE(Authorization->realm);
@@ -287,7 +273,9 @@ static void* thttp_header_Authorization_destroy(void *self)
 		
 		TSK_OBJECT_SAFE_FREE(THTTP_HEADER_PARAMS(Authorization));
 	}
-	else TSK_DEBUG_ERROR("Null Authorization header.");
+	else{
+		TSK_DEBUG_ERROR("Null Authorization header.");
+	}
 
 	return self;
 }
@@ -297,6 +285,6 @@ static const tsk_object_def_t thttp_header_Authorization_def_s =
 	sizeof(thttp_header_Authorization_t),
 	thttp_header_Authorization_create,
 	thttp_header_Authorization_destroy,
-	0
+	tsk_null
 };
-const void *thttp_header_Authorization_def_t = &thttp_header_Authorization_def_s;
+const tsk_object_def_t *thttp_header_Authorization_def_t = &thttp_header_Authorization_def_s;

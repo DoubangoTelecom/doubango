@@ -46,36 +46,30 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	machine thttp_machine_parser_message;
 
 	#/* Tag the buffer (start point). */
-	action tag
-	{
+	action tag{
 		state->tag_start = p;
 	}
 
 	#/* HTTP method */
-	action parse_method
-	{
+	action parse_method{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(message->type == thttp_unknown)
-		{
+		if(message->type == thttp_unknown){
 			message->type = thttp_request;
-			if(!message->method)
-			{
+			if(!message->method){
 				message->method = tsk_calloc(1, len+1);
 				memcpy(message->method, state->tag_start, len);
 			}
 		}
-		else
-		{
+		else{
 			state->cs = thttp_machine_parser_message_error;
 		}
 	}
 
 	#/* Request URI parsing */
-	action parse_requesturl
-	{
+	action parse_requesturl{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
@@ -86,8 +80,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	}
 
 	#/* Sip Version */
-	action parse_httpversion
-	{
+	action parse_httpversion{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
@@ -99,8 +92,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	}
 
 	#/* Status Code */
-	action parse_status_code
-	{
+	action parse_status_code{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
@@ -115,8 +107,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	}
 
 	#/* Reason Phrase */
-	action parse_reason_phrase
-	{
+	action parse_reason_phrase{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
@@ -128,8 +119,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	}
 
 	#/* Parse http header */
-	action parse_header
-	{
+	action parse_header{
 		int len;
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
@@ -152,8 +142,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	#}
 
 	#/* End-Of-Headers */
-	action eoh
-	{
+	action eoh{
 		state->cs = cs;
 		state->p = p;
 		state->pe = pe;
@@ -208,8 +197,7 @@ int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, tsk_
 
 	/* Check result */
 
-	if( state->cs < %%{ write first_final; }%% )
-	{
+	if( state->cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP message.");
 		TSK_OBJECT_SAFE_FREE(*result);
 		return -2;

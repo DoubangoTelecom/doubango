@@ -37,18 +37,16 @@ struct auth_basic_msg auth_basic_msgs[] =
 
 void test_basic_auth()
 {
-	char *response = 0;
+	char *response = tsk_null;
 	size_t i, size;
 
 	for(i=0; i<sizeof(auth_basic_msgs)/sizeof(struct auth_basic_msg); i++)
 	{
 		size = thttp_auth_basic_response(auth_basic_msgs[i].userid, auth_basic_msgs[i].password, &response);
-		if(tsk_striequals(auth_basic_msgs[i].xres, response))
-		{
+		if(tsk_striequals(auth_basic_msgs[i].xres, response)){
 			TSK_DEBUG_INFO("[HTTP_BASIC-%d] ==> OK", i);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_INFO("[HTTP_BASIC-%d] ==> NOK", i);
 		}
 	
@@ -130,12 +128,10 @@ void test_digest_auth()
 			&ha2,
 			&response);
 
-		if(tsk_striequals(auth_digest_msgs[i].response, response))
-		{
+		if(tsk_striequals(auth_digest_msgs[i].response, response)){
 			TSK_DEBUG_INFO("[HTTP_DIGEST-%d] ==> OK", i);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_INFO("[HTTP_DIGEST-%d] ==> NOK", i);
 		}
 	}

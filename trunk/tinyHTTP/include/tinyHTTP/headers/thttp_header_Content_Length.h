@@ -55,7 +55,7 @@ thttp_header_Content_Length_t;
 
 thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *data, size_t size);
 
-TINYHTTP_GEXTERN const void *thttp_header_Content_Length_def_t;
+TINYHTTP_GEXTERN const tsk_object_def_t *thttp_header_Content_Length_def_t;
 
 THTTP_END_DECLS
 
