@@ -30,46 +30,37 @@
 #include "tcomp_deflatedata.h"
 #include "tsk_debug.h"
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
-int tcomp_deflateStream_end(tcomp_deflateStream_t *stream)
+
+tsk_bool_t tcomp_deflateStream_end(tcomp_deflateStream_t *stream)
 {
-	if(!stream)
-	{
+	if(!stream){
 		TSK_DEBUG_ERROR("NULL defalte stream.");
-		return 0;
+		return tsk_false;
 	}
 
 	return deflateEnd(&(stream->zs));
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
-int tcomp_deflateStream_copy(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source)
+tsk_bool_t tcomp_deflateStream_copy(tcomp_deflateStream_t *stream, tcomp_deflateStream_t *source)
 {
-	if(!stream)
-	{
+	if(!stream){
 		TSK_DEBUG_ERROR("NULL defalte stream.");
-		return 0;
+		return tsk_false;
 	}
 
 	return deflateCopy(&(stream->zs), &(source->zs));
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
-int tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata)
+tsk_bool_t tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata)
 {
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
-		return 0;
+		return tsk_false;
 	}
 
 	/* Already initialized? */
-	if(deflatedata->initialized) 
-	{
-		return 1;
+	if(deflatedata->initialized) {
+		return tsk_true;
 	}
 
 	/* allocate deflate state */
@@ -84,7 +75,7 @@ int tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata)
 	if( deflateInit2(&deflatedata->stream_1.zs, deflatedata->zLevel, Z_DEFLATED, -deflatedata->zWindowBits, MAX_MEM_LEVEL, Z_DEFAULT_STRATEGY) != Z_OK 
 		|| deflateInit2(&deflatedata->stream_acked.zs, deflatedata->zLevel, Z_DEFLATED, -deflatedata->zWindowBits, MAX_MEM_LEVEL, Z_DEFAULT_STRATEGY) != Z_OK )
 	{
-		return 0;
+		return tsk_false;
 	}
 #if USE_DICTS_FOR_COMPRESSION
 	if( deflateSetDictionary(this->stream_1.zs, (const Bytef*)RFC3485_DICTIONARY_SIP_VALUE, RFC3485_DICTIONARY_SIP_VALUE_LENGTH) != Z_OK 
@@ -98,21 +89,17 @@ int tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata)
 	deflatedata->stream_1.dataWaitingAck = deflatedata->stream_acked.dataWaitingAck = 0;
 	deflatedata->initialized = 1;
 
-	return 1;
+	return tsk_true;
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
-int tcomp_deflatedata_zUnInit(tcomp_deflatedata_t *deflatedata)
+tsk_bool_t tcomp_deflatedata_zUnInit(tcomp_deflatedata_t *deflatedata)
 {
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
-		return 0;
+		return tsk_false;
 	}
 
-	if(deflatedata->initialized)
-	{
+	if(deflatedata->initialized){
 		deflatedata->initialized = 0;
 		
 		deflatedata->stream_1.dataWaitingAck = deflatedata->stream_acked.dataWaitingAck = 0;
@@ -120,32 +107,27 @@ int tcomp_deflatedata_zUnInit(tcomp_deflatedata_t *deflatedata)
 
 		return (tcomp_deflateStream_end(&deflatedata->stream_1) != Z_STREAM_ERROR) && (tcomp_deflateStream_end(&deflatedata->stream_acked) != Z_STREAM_ERROR);
 	}
-	return 1;
+	return tsk_true;
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
-int tcomp_deflatedata_zReset(tcomp_deflatedata_t *deflatedata)
+tsk_bool_t tcomp_deflatedata_zReset(tcomp_deflatedata_t *deflatedata)
 {
-	int ret;
+	tsk_bool_t ret;
 
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
-		return 0;
+		return tsk_false;
 	}
 
-	ret = deflatedata->initialized ? tcomp_deflatedata_zUnInit(deflatedata) : 1; 
+	ret = deflatedata->initialized ? tcomp_deflatedata_zUnInit(deflatedata) : tsk_true; 
 	ret &= tcomp_deflatedata_zInit(deflatedata);
 	
 	return ret;
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
-int tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in, size_t inLen, void* out, size_t* outLen, int *stateChanged)
+tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in, size_t inLen, void* out, size_t* outLen, tsk_bool_t *stateChanged)
 {
-	int ret = 0;
+	int ret = tsk_false;
 /*
 	Two streams [1] and [2]
 	
@@ -163,34 +145,29 @@ int tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in
 		[2]<-COPY-[1]
 		updateGhost([1])
 */
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
-		return 0;
+		return tsk_false;
 	}
 
 	tsk_safeobj_lock(deflatedata);
 	
 	/* Initialized? */
-	if(!deflatedata->initialized)
-	{
-		if(!tcomp_deflatedata_zInit(deflatedata))
-		{
+	if(!deflatedata->initialized){
+		if(!tcomp_deflatedata_zInit(deflatedata)){
 			TSK_DEBUG_ERROR("Failed to initialize zlib resources..");
 			tsk_safeobj_unlock(deflatedata);
-			return 0;
+			return tsk_false;
 		}
 	}
 	
 #if USE_ONLY_ACKED_STATES
-	if(!deflatedata->stream_acked.dataWaitingAck)
-	{
+	if(!deflatedata->stream_acked.dataWaitingAck){
 		deflatedata->stream_acked.dataWaitingAck = 1;
-		*stateChanged = 1;
+		*stateChanged = tsk_true;
 	}
-	else
-	{
-		*stateChanged = 0;
+	else{
+		*stateChanged = tsk_false;
 	}
 
 	/* END() + COPY() ==> use acked state */
@@ -198,7 +175,7 @@ int tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in
 	tcomp_deflateStream_copy(&(deflatedata->stream_1), &(deflatedata->stream_acked));
 	
 #else
-	*stateChanged = 1;
+	*stateChanged = tsk_true;
 #endif
 	
 	// IN
@@ -218,12 +195,9 @@ int tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in
 	return (ret == Z_OK);
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
 int tcomp_deflatedata_zGetWindowBits(tcomp_deflatedata_t *deflatedata)
 {
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
 		return 0;
 	}
@@ -231,12 +205,9 @@ int tcomp_deflatedata_zGetWindowBits(tcomp_deflatedata_t *deflatedata)
 	return deflatedata->zWindowBits;
 }
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
 void tcomp_deflatedata_zSetWindowBits(tcomp_deflatedata_t *deflatedata, int windowSize)
 {
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
 		return;
 	}

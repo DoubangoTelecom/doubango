@@ -79,6 +79,14 @@ bail:
 *  result, performing a GET against the return URL would retrieve a document, element or attribute.
 *
 * @code
+// Retrieve the entry with: uri='sip:bob@example.com' and list='rcs'
+// Expected node: /resource-lists/list[@name="rcs"]/entry[@uri="sip:bob@example.com"]
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+	TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+	TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("entry", "uri", "sip:bob@example.com"),
+	TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
 * @endcode
 *
 * @sa @ref txcap_selector_get_node<br>@ref txcap_selector_get_document<br> @ref txcap_selector_get_document_2

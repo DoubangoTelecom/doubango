@@ -30,12 +30,6 @@
 #include "tcomp_udvm.h"
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
-///
-/// @brief	Tcomp udvm byte copy temp states. 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-
 int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 {
 	int ok = 1;
@@ -72,9 +66,8 @@ int tcomp_udvm_byteCopy_TempStates(tcomp_udvm_t *udvm)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
 ///
-/// @brief	Tcomp udvm create temp state.
+/// @brief	Creates temporary state.
 ///
 /// @param [in,out]	udvm				If non-null, the udvm. 
 /// @param	state_length				Length of the state. 

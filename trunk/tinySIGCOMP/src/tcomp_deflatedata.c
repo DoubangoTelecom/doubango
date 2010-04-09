@@ -32,14 +32,11 @@
 #include "tsk_debug.h"
 
 
-/**@ingroup tcomp_compressor_deflate_group
-*/
-int tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata)
+tsk_bool_t tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata)
 {
-	if(!deflatedata)
-	{
+	if(!deflatedata){
 		TSK_DEBUG_ERROR("NULL defalte data.");
-		return 0;
+		return tsk_false;
 	}
 
 	return deflatedata->stream_acked.stateful; 

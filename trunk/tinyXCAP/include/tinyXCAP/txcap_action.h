@@ -86,13 +86,19 @@ txcap_action_param_type_t;
 * @def TXCAP_ACTION_SET_OPTION
 * Adds or updates an option. 
 * This is a helper macro for @a txcap_action_*() functions.
-* @param ID_INT The id of the option to add/update (@ref thhtp_action_option_t).
-* @param VALUE_STR The new value of the parameter (<i>const char*</i>).
+* @param ID_INT The id of the option to add/update (@ref txcap_action_option_t).
+* @param VALUE_STR The new value of the option (<i>const char*</i>).
 *
 * @code
-txcap_action_GET(session, "xcap://www.google.com",
-	TXCAP_ACTION_SET_PARAM("timeout", "6000"),
-	TXCAP_ACTION_SET_NULL());
+int ret = txcap_action_fetch_document(stack,
+	// action-level options
+	TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
+	// selector
+	TXCAP_ACTION_SET_SELECTOR("resource-lists",
+		TXCAP_SELECTOR_NODE_SET_NULL()),
+	// ends parameters
+	TXCAP_ACTION_SET_NULL()
+	);
 * @endcode
 */
 /**@ingroup txcap_action_group
@@ -103,11 +109,19 @@ txcap_action_GET(session, "xcap://www.google.com",
 * @param VALUE_STR The value of the header (<i>const char*</i>). Should not contains the trailing CRLF.
 *
 * @code
-txcap_action_GET(session, "xcap://www.doubango.org"
+int ret = txcap_action_fetch_element(stack,
+	// action-level headers
 	TXCAP_ACTION_SET_HEADER("Pragma", "No-Cache"),
-	TXCAP_ACTION_SET_HEADER("Connection", "Keep-Alive"),
-	TXCAP_ACTION_SET_NULL());
+	// selector
+	TXCAP_ACTION_SET_SELECTOR("resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+		TXCAP_SELECTOR_NODE_SET_NULL()),
+	// ends parameters
+	TXCAP_ACTION_SET_NULL()
+	);
 * @endcode
+*
+* @sa @ref TXCAP_STACK_SET_HEADER
 */
 /**@ingroup txcap_action_group
 * @def TXCAP_ACTION_SET_PAYLOAD
@@ -118,18 +132,66 @@ txcap_action_GET(session, "xcap://www.doubango.org"
 * @param PAY_SIZE The size of the payload (<i>size_t</i>).
 *
 * @code
-txcap_action_PUT(session, "xcap://www.doubango.org"
-	TXCAP_ACTION_SET_HEADER("Pragma", "No-Cache"),
-	TXCAP_ACTION_SET_HEADER("Connection", "Keep-Alive"),
-	TXCAP_ACTION_SET_HEADER("Content-length", "application/mytype"),
-	
-	TXCAP_ACTION_SET_PAYLOAD("Salut", 5),
-
-	TXCAP_ACTION_SET_NULL());
+const char* PAYLOAD = "....";
+int ret = txcap_action_create_element(stack,
+	// selector
+	TXCAP_ACTION_SET_SELECTOR("resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "newlist"),
+		TXCAP_SELECTOR_NODE_SET_NULL()),
+	// payload
+	TXCAP_ACTION_SET_PAYLOAD(PAYLOAD, strlen(PAYLOAD)),
+	// ends parameters
+	TXCAP_ACTION_SET_NULL()
+	);
 * @endcode
 */
 /**@ingroup txcap_action_group
 * @def TXCAP_ACTION_SET_SELECTOR
+* Helps building the XCAP Request-URI. You should use @ref TXCAP_ACTION_SET_REQUEST_URI if you want to provide
+* your own URI.
+* @param AUID_STR The AUID (<i>const char*</i>) to use. You should use @ref TXCAP_STACK_SET_AUID macro to register the the AUID
+* if it's missing. This parameter is mandatory.
+* @param ... Node selection steps. You must use @a TXCAP_SELECTOR_NODE_SET_*() macros to set these parameters.
+* MUST always ends with @ref TXCAP_SELECTOR_NODE_SET_NULL.
+* 
+* @code
+int ret = txcap_action_fetch_attribute(stack,
+	// action-level options
+	TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
+	// headers
+	TXCAP_ACTION_SET_HEADER("Pragma", "No-Cache"),
+	// action-level selector
+	TXCAP_ACTION_SET_SELECTOR("resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+		TXCAP_SELECTOR_NODE_SET_POS("entry", 1),
+		TXCAP_SELECTOR_NODE_SET_NAME("display-name"),
+		TXCAP_SELECTOR_NODE_SET_NULL()),
+	// ends parameters
+	TXCAP_ACTION_SET_NULL()
+	);
+* @endcode
+*
+* @sa @ref TXCAP_ACTION_SET_REQUEST_URI
+*/
+/**@ingroup txcap_action_group
+* @def TXCAP_ACTION_SET_REQUEST_URI
+* Sets the request URI. This macro is useful if you want to provide your own request URI instead of using @ref TXCAP_ACTION_SET_SELECTOR.
+* @param URI_STR Fully Qualified HTTP/HTTPS URI.
+* 
+* @code
+const char* PAYLOAD = "....";
+int ret = txcap_action_create_element(stack,
+	// custom Request URI
+	TXCAP_ACTION_SET_REQUEST_URI("http://doubango.org:8080/services/mycustom/uri"),
+	// payload
+	TXCAP_ACTION_SET_PAYLOAD(PAYLOAD, strlen(PAYLOAD)),
+	// ends parameters
+	TXCAP_ACTION_SET_NULL()
+	);
+	getchar();
+* @endcode
+*
+* @sa @ref TXCAP_ACTION_SET_SELECTOR
 */
 /**@ingroup txcap_action_group
 * @def TXCAP_ACTION_SET_NULL
@@ -142,6 +204,88 @@ txcap_action_PUT(session, "xcap://www.doubango.org"
 #define TXCAP_ACTION_SET_REQUEST_URI(URI_STR)				txcap_apt_urlstring, (const char*)URI_STR
 #define TXCAP_ACTION_SET_NULL()								txcap_apt_null
 
+
+/**@ingroup txcap_action_group
+* @def txcap_action_create_element
+* Creates new element by sending a <i>HTTP/HTTPS PUT</i> request.
+* The default Content-Type will be "application/xcap-el+xml", unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_create_document
+* Creates new document by sending a <i>HTTP/HTTPS PUT</i> request.
+* The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_create_attribute
+* Creates new attribute by sending a <i>HTTP/HTTPS PUT</i> request.
+* The default Content-Type will be "application/xcap-att+xml", unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_replace_element
+* Replaces an element by sending a <i>HTTP/HTTPS PUT</i> request.
+* The default Content-Type will be "application/xcap-el+xml", unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_replace_document
+* Replaces a document by sending a <i>HTTP/HTTPS PUT</i> request.
+* The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_replace_attribute
+* Replaces an attribute by sending a <i>HTTP/HTTPS PUT</i> request.
+* The default Content-Type will be "application/xcap-att+xml", unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_fetch_element
+* Retrieves an element from the XDMS by sending a <i>HTTP/HTTPS GET</i> request.
+* The default Content-Type will be "application/xcap-el+xml", unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_fetch_document
+* Retrieves a document from the XDMS sending a <i>HTTP/HTTPS GET</i> request.
+* The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_fetch_attribute
+* Retrieves an attribute from the XDMS by sending a <i>HTTP/HTTPS GET</i> request.
+* The default Content-Type will be "application/xcap-att+xml", unless you provide your own Content-Type by using @ref TXCAP_ACTION_SET_HEADER().
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_delete_element
+* Deletes an element from the XDMS by sending a <i>HTTP/HTTPS DELETE</i> request.
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_delete_document
+* Deletes a document from the XDMS sending a <i>HTTP/HTTPS DELETE</i> request.
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
+/**@ingroup txcap_action_group
+* @def txcap_action_delete_attribute
+* Deletes an attribute from the XDMS by sending a <i>HTTP/HTTPS DELETE</i> request.
+* @param stack The HTTP/HTTPS stack created using @ref txcap_stack_create().
+* @param ... Any @a TXCAP_ACTION_SET_*() macros. MUST ends with @ref TXCAP_ACTION_SET_NULL().
+*/
 TINYXCAP_API int txcap_action_perform(txcap_stack_handle_t* stack, txcap_action_type_t type, txcap_action_target_t target, ...);
 #define txcap_action_create_element(stack, ...)	txcap_action_perform(stack, txcap_atp_create, txcap_atg_element, __VA_ARGS__)
 #define txcap_action_create_document(stack, ...) txcap_action_perform(stack, txcap_atp_create, txcap_atg_document, __VA_ARGS__)

@@ -75,7 +75,7 @@ void tcomp_params_setParameters(tcomp_params_t*, uint16_t sigCompParameters);
 
 void tcomp_params_reset(tcomp_params_t*);
 
-TINYSIGCOMP_GEXTERN const void *tcomp_params_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_params_def_t;
 
 TCOMP_END_DECLS
 

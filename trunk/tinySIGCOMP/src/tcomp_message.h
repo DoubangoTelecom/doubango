@@ -37,8 +37,7 @@
 
 TCOMP_BEGIN_DECLS
 
-/**@ingroup tcomp_message_group
-* Creates new SigComp message.
+/** Creates new SigComp message.
 */
 #define TCOMP_MESSAGE_CREATE(input_ptr, input_size, stream)	tsk_object_new(tcomp_message_def_t, (const void*)input_ptr, (size_t)input_size, (int)stream)
 
@@ -69,7 +68,7 @@ typedef struct tcomp_message_s
 }
 tcomp_message_t;
 
-TINYSIGCOMP_GEXTERN const void *tcomp_message_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_message_def_t;
 
 TCOMP_END_DECLS
 

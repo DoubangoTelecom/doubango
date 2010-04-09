@@ -21,7 +21,10 @@
 */
 
 /**@file tcomp_compartment.c
- * @brief  SIGCOMP compartment.
+ * @brief  SigComp compartment.
+ * An application-specific grouping of messages that relate to a peer endpoint.  Depending on the signaling protocol, this grouping may
+ * relate to application concepts such as "session", "dialog", "connection", or "association".  The application allocates state
+ * memory on a per-compartment basis, and determines when a compartment should be created or closed.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
@@ -33,13 +36,8 @@
 
 #include <assert.h>
 
-/**@defgroup tcomp_compartment_group SigComp compartment.
-* An application-specific grouping of messages that relate to a peer endpoint.  Depending on the signaling protocol, this grouping may
-* relate to application concepts such as "session", "dialog", "connection", or "association".  The application allocates state
-* memory on a per-compartment basis, and determines when a compartment should be created or closed.
-*/
 
-/**@ingroup tcomp_compartment_group
+/**Sets remote parameters
 */
 void tcomp_compartment_setRemoteParams(tcomp_compartment_t *compartment, tcomp_params_t *lpParams)
 {
@@ -78,7 +76,7 @@ void tcomp_compartment_setRemoteParams(tcomp_compartment_t *compartment, tcomp_p
 	}
 }
 
-/**@ingroup tcomp_compartment_group
+/**Sets requested feedback
 */
 void tcomp_compartment_setReqFeedback(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)
 {
@@ -98,7 +96,7 @@ void tcomp_compartment_setReqFeedback(tcomp_compartment_t *compartment, tcomp_bu
 	tsk_safeobj_unlock(compartment);
 }
 
-/**@ingroup tcomp_compartment_group
+/**Sets returned feedback
 */
 void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)
 {
@@ -130,7 +128,7 @@ void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_bu
 	tsk_safeobj_unlock(compartment);
 }
 
-/**@ingroup tcomp_compartment_group
+/**Clears are compartment from the history.
 */
 void tcomp_compartment_clearStates(tcomp_compartment_t *compartment)
 {
@@ -148,7 +146,7 @@ void tcomp_compartment_clearStates(tcomp_compartment_t *compartment)
 	tsk_safeobj_unlock(compartment);
 }
 
-/**@ingroup tcomp_compartment_group
+/**Removes a state from the compartment by priority.
 */
 void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 {
@@ -209,7 +207,7 @@ void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 	tsk_safeobj_unlock(compartment);
 }
 
-/**@ingroup tcomp_compartment_group
+/**Removes a state from the compartment.
 */
 void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t **lpState)
 {
@@ -229,7 +227,7 @@ void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t
 	tsk_safeobj_unlock(compartment);
 }
 
-/**@ingroup tcomp_compartment_group
+/**Remove states
 */
 void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempstate_to_free_t **tempStates, uint8_t size)
 {
@@ -289,7 +287,7 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 	}	
 }
 
-/**@ingroup tcomp_compartment_group
+/**Adds a state to the compartment.
 */
 void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t **lpState)
 {
@@ -311,7 +309,7 @@ void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t 
 	tsk_safeobj_unlock(compartment);
 }
 
-/**@ingroup tcomp_compartment_group
+/**Finds a state.
 */
 uint16_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t **lpState)
 {
@@ -344,7 +342,7 @@ uint16_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tco
 	return count;
 }
 
-/**@ingroup tcomp_compartment_group
+/**Removes a Ghost state.
 */
 void tcomp_compartment_freeGhostState(tcomp_compartment_t *compartment)
 {
@@ -368,7 +366,7 @@ void tcomp_compartment_freeGhostState(tcomp_compartment_t *compartment)
 	tsk_safeobj_unlock(compartment);
 }
 
-/**@ingroup tcomp_compartment_group
+/**Adds a NACK to the compartment.
 */
 void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE])
 {
@@ -407,7 +405,7 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 	tsk_safeobj_unlock(compartment);
 }
 
-/**@ingroup tcomp_compartment_group
+/**Checks is the NACK exist.
 */
 int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId)
 {
@@ -454,7 +452,7 @@ int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buff
 //	State object definition
 //
 
-static void* tcomp_compartment_create(void * self, va_list * app)
+static tsk_object_t* tcomp_compartment_create(tsk_object_t* self, va_list * app)
 {
 	tcomp_compartment_t *compartment = self;
 	if(compartment)
@@ -503,7 +501,7 @@ static void* tcomp_compartment_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tcomp_compartment_destroy(void *self)
+static tsk_object_t* tcomp_compartment_destroy(tsk_object_t* self)
 {
 	tcomp_compartment_t *compartment = self;
 	if(compartment)
@@ -540,7 +538,7 @@ static void* tcomp_compartment_destroy(void *self)
 	return self;
 }
 
-static int tcomp_compartment_cmp(const void *obj1, const void *obj2)
+static int tcomp_compartment_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	const tcomp_compartment_t *compartment1 = obj1;
 	const tcomp_compartment_t *compartment2 = obj2;
@@ -555,4 +553,4 @@ static const tsk_object_def_t tsk_compartment_def_s =
 	tcomp_compartment_destroy,
 	tcomp_compartment_cmp
 };
-const void *tcomp_compartment_def_t = &tsk_compartment_def_s;
+const tsk_object_def_t *tcomp_compartment_def_t = &tsk_compartment_def_s;

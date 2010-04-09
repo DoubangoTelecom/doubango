@@ -31,8 +31,6 @@
 
 #include "tsk_sha1.h"
 
-/**@ingroup tcomp_udvm_group
-*/
 void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buffer_handle_t* lpDetails, int16_t memory_address_of_instruction)
 {
 #define NACK_HEADER_INDEX		0

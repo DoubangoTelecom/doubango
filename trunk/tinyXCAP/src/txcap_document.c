@@ -58,7 +58,7 @@
 * }
 * @endcode
 *
-* @sa @ref txcap_selector_get_document_2<br>@ref txcap_selector_get_full<br>@ref txcap_selector_get_full_2
+* @sa @ref txcap_selector_get_document_2<br>@ref txcap_selector_get_url
 */
 char* txcap_selector_get_document(const txcap_stack_handle_t* stack, const char* auid_id)
 {
@@ -100,7 +100,7 @@ char* txcap_selector_get_document(const txcap_stack_handle_t* stack, const char*
 * @code
 * // resource-lists document
 * char* urlstring;
-* if((urlstring = txcap_selector_get_document("http://doubango.org:8080/services", "resource-lists", "sip:mamadou@doubango.org", "index"))){
+* if((urlstring = txcap_selector_get_document("http://doubango.org:8080/services", "resource-lists", "sip:bob@doubango.org", "index"))){
 *	TSK_FREE(urlstring);
 * }
 * @endcode
@@ -113,7 +113,7 @@ char* txcap_selector_get_document(const txcap_stack_handle_t* stack, const char*
 * }
 * @endcode
 *
-* @sa @ref txcap_selector_get_document<br>@ref txcap_selector_get_full<br>@ref txcap_selector_get_full_2
+* @sa @ref txcap_selector_get_document<br>@ref txcap_selector_get_url
 */
 char* txcap_selector_get_document_2(const char* xcap_root, const char* auid_id, const char* xui, const char* doc_name)
 {

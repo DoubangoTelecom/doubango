@@ -88,8 +88,7 @@ txcap_selector_param_type_t;
 #define TXCAP_SELECTOR_NODE_SET_ATTRIBUTE(QNAME_STR, ATT_QNAME_STR, ATT_VALUE_STR)					xcapp_node_attribute, (const char*)QNAME_STR, (const char*)ATT_QNAME_STR, (const char*)ATT_VALUE_STR
 #define TXCAP_SELECTOR_NODE_SET_POS_ATTRIBUTE(QNAME_STR, POS_UINT, ATT_QNAME_STR, ATT_VALUE_STR)	xcapp_node_pos_n_attribute, (const char*)QNAME_STR, (unsigned int)POS_UINT, (const char*)ATT_QNAME_STR, (const char*)ATT_VALUE_STR
 #define TXCAP_SELECTOR_NODE_SET_NAMESPACE(PREFIX_STR, VALUE_STR)									xcapp_node_namespace, (const char*)PREFIX_STR, (const char*)VALUE_STR
-
-#define TXCAP_SELECTOR_NODE_SET_NULL()					xcapp_node_null
+#define TXCAP_SELECTOR_NODE_SET_NULL()																xcapp_node_null
 
 TINYXCAP_API char* txcap_selector_get_node(const char* auid_id, ...);
 TINYXCAP_API char* txcap_selector_get_node_2(const char* auid_id, va_list* app);

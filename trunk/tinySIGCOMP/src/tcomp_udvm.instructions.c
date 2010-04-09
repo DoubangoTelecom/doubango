@@ -114,7 +114,7 @@ static int SortDescendingPredicate(const void *a, const void *b)
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	DECOMPRESSION-FAILURE
 /// Reference:  RFC3320 Section 9.4.1
@@ -133,7 +133,7 @@ int TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	AND ($operand_1, %operand_2)
 /// Reference:  RFC3320 Section 9.1.1
@@ -158,7 +158,7 @@ int TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t o
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	OR ($operand_1, %operand_2)
 /// Reference:  RFC3320 Section 9.1.1
@@ -183,7 +183,7 @@ int TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t op
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>NOT ($operand_1)</i><br><br>
 ///  Reference:  RFC3320 Section 9.1.1<br>
@@ -207,7 +207,7 @@ int TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint16_t operand_1)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>LSHIFT ($operand_1, %operand_2)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.1<br>
@@ -234,7 +234,7 @@ int TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>RSHIFT ($operand_1, %operand_2)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.1<br>
@@ -260,7 +260,7 @@ int TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>ADD ($operand_1, %operand_2)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.2<br>
@@ -285,7 +285,7 @@ int TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t o
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>SUBTRACT ($operand_1, %operand_2)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.2<br>
@@ -309,7 +309,7 @@ int TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint16_t operand_1, uint1
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>MULTIPLY ($operand_1, %operand_2)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.2<br>
@@ -333,7 +333,7 @@ int TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint16_t operand_1, uint1
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>DIVIDE ($operand_1, %operand_2)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.2<br>
@@ -364,7 +364,7 @@ int TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>REMAINDER ($operand_1, %operand_2)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.2<br>
@@ -395,7 +395,7 @@ int TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint16_t operand_1, uint
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>SORT-ASCENDING (%start, %n, %k)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.3<br>
@@ -464,7 +464,7 @@ __SEGFAULT:
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>SORT-DESCENDING (%start, %n, %k)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.3<br>
@@ -534,7 +534,7 @@ __SEGFAULT:
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>SHA-1 (%position, %length, %destination)</i><br><br>
 /// Reference:  RFC3320 Section 9.1.4<br>
@@ -608,7 +608,7 @@ bail:
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>LOAD(%address, %value)</i><br><br>
 /// Reference:  RFC3320 Section 9.2.1<br>
@@ -637,7 +637,7 @@ int TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t va
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>MULTILOAD(%address, \#n, %value_0, ..., %value_n-1)</i><br><br>
 /// Reference:  RFC3320 Section 9.2.2<br>
@@ -674,7 +674,7 @@ int TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address, uint16
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>PUSH (%value)</i><br><br>
 /// Reference:  RFC3320 Section 9.2.3<br>
@@ -715,7 +715,7 @@ int TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>POP (%address)</i><br><br>
 /// Reference:  RFC3320 Section 9.2.3<br>
@@ -774,7 +774,7 @@ end:
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>COPY(%position, %length, %destination)</i><br><br>
 /// Reference:  RFC3320 Section 9.2.4<br>
@@ -809,7 +809,7 @@ int TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint16_t position, uint16_t l
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>COPY-LITERAL(%position, %length, $destination)</i><br><br>
 /// Reference:  RFC3320 Section 9.2.5<br>
@@ -843,7 +843,7 @@ int TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint16_t position, ui
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>COPY-OFFSET(%offset, %length, $destination)</i><br><br>
 /// Reference:  RFC3320 Section 9.2.6<br>
@@ -936,7 +936,7 @@ int TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset, uint1
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>MEMSET(%address, %length, %start_value, %offset)</i><br><br>
 /// Reference:  RFC3320 Section 9.2.7<br>
@@ -987,7 +987,7 @@ int TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint16_t address, uint16_t 
 	return ok; 
 }
 
-/**@ingroup tcomp_udvm_group
+/**
 * @brief <i>JUMP (\@address)</i><br><br>
 * Reference:  RFC3320 Section 9.3.1<br>
 * This instruction moves program execution to the specified memory address.
@@ -1018,7 +1018,7 @@ int TCOMP_UDVM_EXEC_INST__JUMP(tcomp_udvm_t *udvm, int16_t address)
 }
 
 
-/**@ingroup tcomp_udvm_group
+/**
  *
  * @brief	<i>COMPARE(%value_1, %value_2, \@address_1, \@address_2, \@address_3)</i><br><br>
  * 			Reference:  RFC3320 Section 9.3.2<br>
@@ -1067,7 +1067,7 @@ end:
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>CALL(\@address)</i><br><br>
 /// Reference:  RFC3320 Section 9.3.3<br>
@@ -1089,7 +1089,7 @@ int TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint16_t address)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>RETURN</i><br><br>
 /// Reference:  RFC3320 Section 9.3.3<br>
@@ -1116,7 +1116,7 @@ int TCOMP_UDVM_EXEC_INST__RETURN(tcomp_udvm_t *udvm)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>SWITCH(\#n, %j, \@address_0, \@address_1, ... , \@address_n-1)</i><br><br>
 /// Reference:  RFC3320 Section 9.3.4<br>
@@ -1161,7 +1161,7 @@ end:
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>CRC(%value, %position, %length, \@address)</i><br><br>
 /// Reference:  RFC3320 Section 9.3.5<br>
@@ -1218,7 +1218,7 @@ int TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_t posit
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>INPUT-BYTES (%length, %destination, \@address)</i><br><br>
 /// Reference:  RFC3320 Section 9.4.2<br>
@@ -1272,7 +1272,7 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length, uint1
 	return ok;
 }
 
-/**@ingroup tcomp_udvm_group
+/**
  *
  * @brief	<i>INPUT-BITS (%length, %destination, \@address)</i><br><br>
  * Reference:  RFC3320 Section 9.4.3<br>
@@ -1400,7 +1400,7 @@ end:
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>INPUT-HUFFMAN(%destination, \@address, \#n, %bits_1, %lower_bound_1, %upper_bound_1, %uncompressed_1, ... , %bits_n, %lower_bound_n, %upper_bound_n, %uncompressed_n)</i><br><br>
 /// Reference:  RFC3320 Section 9.4.4<br>
@@ -1579,7 +1579,7 @@ end:
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>STATE-ACCESS(%partial_identifier_start, %partial_identifier_length, %state_begin, %state_length, %state_address, %state_instruction)</i><br><br>
 /// Reference:  RFC3320 Section 9.4.5<br>
@@ -1701,7 +1701,7 @@ int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_iden
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>STATE-CREATE (%state_length, %state_address, %state_instruction, %minimum_access_length, %state_retention_priority)</i><br><br>
 /// Reference:  RFC3320 Section 9.4.6<br>
@@ -1732,7 +1732,7 @@ int TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint16_t state_length
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i>STATE-FREE(%partial_identifier_start, %partial_identifier_length)</i><br><br>
 /// Reference:  RFC3320 Section 9.4.7<br>
@@ -1780,7 +1780,7 @@ int TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identi
 	return 1; 
 }
 
-/**@ingroup tcomp_udvm_group
+/**
 * @brief <i>OUTPUT (%output_start, %output_length)</i><br><br>
 * Reference:  RFC3320 Section 9.4.8<br>
 * This instruction provides successfully decompressed data to the dispatcher.
@@ -1818,7 +1818,7 @@ int TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @ingroup tcomp_udvm_group
+///
 ///
 /// @brief	<i> END-MESSAGE (%requested_feedback_location, %returned_parameters_location, %state_length, %state_address, %state_instruction, %minimum_access_length, %state_retention_priority)</i><br><br>
 /// Reference:  RFC3320 Section 9.4.9<br>

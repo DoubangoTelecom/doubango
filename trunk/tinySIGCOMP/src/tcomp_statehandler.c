@@ -22,7 +22,8 @@
 
 /**@file tcomp_statehandler.c
  * @brief  SigComp state handler.
- *
+ * Entity responsible for accessing and storing state information once permission is granted by the application.
+ *	
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
@@ -35,16 +36,9 @@
 
 #include "tsk_debug.h"
 
-/**@defgroup tcomp_statehandler_group SigComp state handler.
-* Entity responsible for accessing and storing state information once permission is granted by the application.
-*/
-
-/**@ingroup tcomp_statehandler_group
-*/
 static int pred_find_compartment_by_id(const tsk_list_item_t *item, const void *id)
 {
-	if(item && item->data)
-	{
+	if(item && item->data){
 		tcomp_compartment_t *compartment = item->data;
 		uint64_t res = (compartment->identifier - *((uint64_t*)id));
 		return res > 0 ? (int)1 : (res < 0 ? (int)-1 : (int)0);
@@ -52,16 +46,14 @@ static int pred_find_compartment_by_id(const tsk_list_item_t *item, const void *
 	return -1;
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
+
 tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_t *statehandler, uint64_t id)
 {
-	tcomp_compartment_t *result = 0;
-	tcomp_compartment_t* newcomp = 0;
+	tcomp_compartment_t *result = tsk_null;
+	tcomp_compartment_t* newcomp = tsk_null;
 	const tsk_list_item_t *item_const;
 
-	if(!statehandler)
-	{
+	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
 		return 0;
 	}
@@ -69,8 +61,7 @@ tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_
 	tsk_safeobj_lock(statehandler);
 
 	item_const = tsk_list_find_item_by_pred(statehandler->compartments, pred_find_compartment_by_id, &id);
-	if(!item_const || !(result = item_const->data))
-	{
+	if(!item_const || !(result = item_const->data)){
 		newcomp = TCOMP_COMPARTMENT_CREATE(id, tcomp_params_getParameters(statehandler->sigcomp_parameters));
 		result = newcomp;
 		tsk_list_push_back_data(statehandler->compartments, ((void**) &newcomp));
@@ -81,15 +72,12 @@ tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_
 	return result;
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
 void tcomp_statehandler_deleteCompartment(tcomp_statehandler_t *statehandler, uint64_t id)
 {
 	tcomp_compartment_t *compartment;
 	const tsk_list_item_t *item_const;
 
-	if(!statehandler)
-	{
+	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
 		return;
 	}
@@ -97,8 +85,7 @@ void tcomp_statehandler_deleteCompartment(tcomp_statehandler_t *statehandler, ui
 	tsk_safeobj_lock(statehandler);
 
 	item_const = tsk_list_find_item_by_pred(statehandler->compartments, pred_find_compartment_by_id, &id);
-	if(item_const && (compartment = item_const->data))
-	{
+	if(item_const && (compartment = item_const->data)){
 		TSK_DEBUG_INFO("SigComp - Delete compartment %lld", id);
 		tsk_list_remove_item_by_data(statehandler->compartments, compartment);
 	}
@@ -106,36 +93,30 @@ void tcomp_statehandler_deleteCompartment(tcomp_statehandler_t *statehandler, ui
 	tsk_safeobj_unlock(statehandler);
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
-int tcomp_statehandler_compartmentExist(tcomp_statehandler_t *statehandler, uint64_t id)
-{
-	int exist;
 
-	if(!statehandler)
-	{
+tsk_bool_t tcomp_statehandler_compartmentExist(tcomp_statehandler_t *statehandler, uint64_t id)
+{
+	tsk_bool_t exist;
+
+	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
-		return 0;
+		return tsk_false;
 	}
 
 	tsk_safeobj_lock(statehandler);
-
 	exist =  (tsk_list_find_item_by_pred(statehandler->compartments, pred_find_compartment_by_id, &id) ? 1 : 0);
-
 	tsk_safeobj_unlock(statehandler);
 
 	return exist;
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
+
 uint16_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const tcomp_buffer_handle_t *partial_identifier, tcomp_state_t** lpState)
 {
 	uint16_t count = 0;
 	tsk_list_item_t *item;
 
-	if(!statehandler)
-	{
+	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
 		return 0;
 	}
@@ -145,22 +126,21 @@ uint16_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const 
 	//
 	// Compartments
 	//
-	tsk_list_foreach(item, statehandler->compartments)
-	{
+	tsk_list_foreach(item, statehandler->compartments){
 		tcomp_compartment_t *compartment = item->data;
 		count = tcomp_compartment_findState(compartment, partial_identifier, lpState);
 	}
 	
-	if(count) goto bail;
+	if(count){
+		goto bail;
+	}
 
 	//
 	// Dictionaries
 	//
-	tsk_list_foreach(item, statehandler->dictionaries)
-	{
+	tsk_list_foreach(item, statehandler->dictionaries){
 		tcomp_dictionary_t *dictionary = item->data;
-		if(tcomp_buffer_startsWith(dictionary->identifier, partial_identifier))
-		{
+		if(tcomp_buffer_startsWith(dictionary->identifier, partial_identifier)){
 			*lpState = dictionary;
 			count++;
 		}
@@ -171,16 +151,13 @@ bail:
 	return count;
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
 void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_result_t **lpResult)
 {
 	tcomp_compartment_t *lpCompartment;
 	uint16_t compartment_total_size;
 	uint8_t i;
 
-	if(!statehandler)
-	{
+	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
 		return;
 	}
@@ -191,10 +168,8 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 	/*
 	* The compressor does not wish (or no longer wishes) to save state information?
 	*/
-	if((*lpResult)->ret_feedback && (*lpResult)->req_feedback->S)
-	{
-		if(tcomp_statehandler_compartmentExist(statehandler, (*lpResult)->compartmentId))
-		{
+	if((*lpResult)->ret_feedback && (*lpResult)->req_feedback->S){
+		if(tcomp_statehandler_compartmentExist(statehandler, (*lpResult)->compartmentId)){
 			tcomp_statehandler_deleteCompartment(statehandler, (*lpResult)->compartmentId);
 		}
 		return;
@@ -203,21 +178,20 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 	/*
 	* Find corresponding compartment (only if !S)
 	*/
-	if(lpCompartment = tcomp_statehandler_getCompartment(statehandler, (*lpResult)->compartmentId))
-	{
+	if(lpCompartment = tcomp_statehandler_getCompartment(statehandler, (*lpResult)->compartmentId)){
 		compartment_total_size = lpCompartment->total_memory_size;
 	}
-	else goto bail;
+	else{
+		goto bail;
+	}
 
 //compartment_create_states:
 	/*
 	* Request state creation now we have the corresponding compartement.
 	*/
-	if(tcomp_result_getTempStatesToCreateSize(*lpResult))
-	{
+	if(tcomp_result_getTempStatesToCreateSize(*lpResult)){
 		/* Check compartment allocated size*/
-		if(!compartment_total_size)
-		{
+		if(!compartment_total_size){
 			goto compartment_free_states;
 		}
 
@@ -232,8 +206,7 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 			* total state_memory_size for the compartment, the state handler
 			* deletes all but the first (state_memory_size - 64) bytes from the state_value.
 			*/
-			if(TCOMP_GET_STATE_SIZE(*lpState) > compartment_total_size)
-			{
+			if(TCOMP_GET_STATE_SIZE(*lpState) > compartment_total_size){
 				size_t oldSize, newSize;
 				tcomp_compartment_clearStates(lpCompartment);
 				oldSize =  tcomp_buffer_getSize((*lpState)->value);
@@ -250,10 +223,8 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 			* compartment are freed until enough memory is available to
 			* accommodate the new state.
 			*/
-			else
-			{
-				while(lpCompartment->total_memory_left < TCOMP_GET_STATE_SIZE(*lpState))
-				{
+			else{
+				while(lpCompartment->total_memory_left < TCOMP_GET_STATE_SIZE(*lpState)){
 					tcomp_compartment_freeStateByPriority(lpCompartment);
 				}
 				tcomp_compartment_addState(lpCompartment, lpState);
@@ -265,8 +236,7 @@ compartment_free_states:
 	/*
 	* Request state free now we have the correponding comprtement
 	*/
-	if(tcomp_result_getTempStatesToFreeSize((const tcomp_result_t*)*lpResult))
-	{
+	if(tcomp_result_getTempStatesToFreeSize((const tcomp_result_t*)*lpResult)){
 		tcomp_compartment_freeStates(lpCompartment, (*lpResult)->statesToFree, tcomp_result_getTempStatesToFreeSize((const tcomp_result_t*)*lpResult));
 	}
 
@@ -281,12 +251,10 @@ compartment_free_states:
 	*	Set both Returned and Requested feedbacks.
 	*/
 	
-	if(tcomp_buffer_getSize((*lpResult)->req_feedback->item))
-	{
+	if(tcomp_buffer_getSize((*lpResult)->req_feedback->item)){
 		tcomp_compartment_setReqFeedback(lpCompartment, (*lpResult)->req_feedback->item);
 	}
-	if(tcomp_buffer_getSize((*lpResult)->ret_feedback))
-	{
+	if(tcomp_buffer_getSize((*lpResult)->ret_feedback)){
 		tcomp_compartment_setRetFeedback(lpCompartment, (*lpResult)->ret_feedback);
 	}
 
@@ -295,16 +263,13 @@ bail: ;
 	//--tsk_safeobj_unlock(statehandler);
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
-int tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t * nackinfo)
+tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t * nackinfo)
 {
 	tcomp_buffer_handle_t *sha_id;
 	tsk_list_item_t *item;
-	if(!statehandler)
-	{
+	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
-		return 0;
+		return tsk_false;
 	}
 
 	tcomp_buffer_referenceBuff(&sha_id, ((tcomp_nackinfo_t*)nackinfo)->sha1, TSK_SHA1_DIGEST_SIZE);
@@ -339,23 +304,19 @@ int tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcom
 			}
 		}
 	}
-	return 0;
+	return tsk_true;
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
 void tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler)
 {
-	if(!statehandler)
-	{
+	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
 		return;
 	}
 	
 	tsk_safeobj_lock(statehandler);
 	
-	if(!statehandler->hasSipSdpDictionary)
-	{
+	if(!statehandler->hasSipSdpDictionary){
 		tcomp_dictionary_t* sip_dict = tcomp_dicts_create_sip_dict();
 		tsk_list_push_back_data(statehandler->dictionaries, ((void**) &sip_dict));
 		statehandler->hasSipSdpDictionary = 1;
@@ -364,20 +325,16 @@ void tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler)
 	tsk_safeobj_unlock(statehandler);
 }
 
-/**@ingroup tcomp_statehandler_group
-*/
 void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler)
 {
-	if(!statehandler)
-	{
+	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
 		return;
 	}
 
 	tsk_safeobj_lock(statehandler);
 
-	if(!statehandler->hasPresenceDictionary)
-	{
+	if(!statehandler->hasPresenceDictionary){
 		tcomp_dictionary_t* pres_dict = tcomp_dicts_create_presence_dict();
 		tsk_list_push_back_data(statehandler->dictionaries, ((void**) &pres_dict));
 		statehandler->hasPresenceDictionary = 1;
@@ -396,11 +353,10 @@ void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler
 //	State hanlder object definition
 //
 
-static void* tcomp_statehandler_create(void * self, va_list * app)
+static tsk_object_t* tcomp_statehandler_create(tsk_object_t * self, va_list * app)
 {
 	tcomp_statehandler_t *statehandler = self;
-	if(statehandler)
-	{
+	if(statehandler){
 		/* Initialize safeobject */
 		tsk_safeobj_init(statehandler);
 		
@@ -415,16 +371,17 @@ static void* tcomp_statehandler_create(void * self, va_list * app)
 
 		statehandler->sigcomp_parameters->SigComp_version = SIP_RFC5049_SIGCOMP_VERSION;
 	}
-	else TSK_DEBUG_ERROR("Null SigComp state handler.");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp state handler.");
+	}
 
 	return self;
 }
 
-static void* tcomp_statehandler_destroy(void *self)
+static void* tcomp_statehandler_destroy(tsk_object_t *self)
 {
 	tcomp_statehandler_t *statehandler = self;
-	if(statehandler)
-	{
+	if(statehandler){
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(statehandler);
 
@@ -433,7 +390,9 @@ static void* tcomp_statehandler_destroy(void *self)
 		TSK_OBJECT_SAFE_FREE(statehandler->dictionaries);
 		TSK_OBJECT_SAFE_FREE(statehandler->compartments);		
 	}
-	else TSK_DEBUG_ERROR("Null SigComp state handler.");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp state handler.");
+	}
 
 	return self;
 }
@@ -443,6 +402,6 @@ static const tsk_object_def_t tsk_statehandler_def_s =
 	sizeof(tcomp_statehandler_t),
 	tcomp_statehandler_create,
 	tcomp_statehandler_destroy,
-	0
+	tsk_null
 };
-const void *tcomp_statehandler_def_t = &tsk_statehandler_def_s;
+const tsk_object_def_t *tcomp_statehandler_def_t = &tsk_statehandler_def_s;

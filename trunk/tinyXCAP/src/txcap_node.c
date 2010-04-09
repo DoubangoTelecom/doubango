@@ -37,15 +37,21 @@
 
 /**@ingroup txcap_selector_group
 * Gets the Node Url.
-* @param The id of the AUID (e.g 'resource-lists').
+* @param auid_id The id of the AUID (e.g 'resource-lists').
 * @param ... Node selection steps. You must use @a TXCAP_SELECTOR_NODE_SET*() macros to set these steps.
 * The list of parameters must end with @ref TXCAP_SELECTOR_NODE_SET_NULL() even if there is no step.<br>
 * @retval The Url of the node (e.g. 'resource-lists/list[2]').
 *
 * @code
+char* node = txcap_selector_get_node("resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("entry", "uri", "sip:bob@example.com"),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+
+		TSK_FREE(node);
 * @endcode
 *
-* @sa @ref txcap_selector_get_node_2<br>@ref txcap_selector_get_document<br> @ref txcap_selector_get_document_2<br>@ref txcap_selector_get_full<br>@ref txcap_selector_get_full_2
+* @sa @ref txcap_selector_get_node_2<br>@ref txcap_selector_get_document<br> @ref txcap_selector_get_document_2<br>@ref txcap_selector_get_url
 */
 char* txcap_selector_get_node(const char* auid_id, ...)
 {
@@ -61,7 +67,7 @@ char* txcap_selector_get_node(const char* auid_id, ...)
 
 /**@ingroup txcap_selector_group
 * Gets the Node Url.
-* @param The id of the AUID (e.g 'resource-lists').
+* @param auid_id The id of the AUID (e.g 'resource-lists').
 * @param app Node selection steps. You must use @a TXCAP_SELECTOR_NODE_SET*() macros to set these steps.
 * The list of parameters must end with @ref TXCAP_SELECTOR_NODE_SET_NULL() even if there is no step.<br>
 * @retval The Url of the node (e.g. 'resource-lists/list[2]').
@@ -69,7 +75,7 @@ char* txcap_selector_get_node(const char* auid_id, ...)
 * @code
 * @endcode
 *
-* @sa @ref txcap_selector_get_node<br>@ref txcap_selector_get_document<br> @ref txcap_selector_get_document_2<br>@ref txcap_selector_get_full<br>@ref txcap_selector_get_full_2
+* @sa @ref txcap_selector_get_node<br>@ref txcap_selector_get_document<br> @ref txcap_selector_get_document_2<br>@ref txcap_selector_get_url
 */
 char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 {

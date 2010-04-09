@@ -95,6 +95,7 @@ void test_stack()
 
 	/* add user auids */
 	txcap_stack_set(stack,
+		// add new AUIDs
 		TXCAP_STACK_SET_AUID("xcap-caps2", "application/xcap-caps2+xml", "urn:ietf:params:xml:ns:xcap-caps2", "index2", tsk_true),
 		TXCAP_STACK_SET_AUID("resource-lists2", "application/resource-lists+xml2", "urn:ietf:params:xml:ns:resource-lists2", "index2", tsk_false),
 		
@@ -284,7 +285,7 @@ void test_stack()
 		// ends parameters
 		TXCAP_ACTION_SET_NULL()
 		);
-	getchar();*/
+	getchar();
 
 	//== Delete entry
 	ret = txcap_action_delete_element(stack,
@@ -297,7 +298,25 @@ void test_stack()
 		TXCAP_ACTION_SET_NULL()
 		);
 	getchar();
+*/
 
+
+
+	ret = txcap_action_fetch_document(stack,
+		// action-level options
+		TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
+		//action-level headers
+		TXCAP_ACTION_SET_HEADER("Pragma", "No-Cache"),
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("org.openmobilealliance.pres-content",
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+	
+
+	getchar();
+	
 bail:
 	TSK_OBJECT_SAFE_FREE(stack);
 }

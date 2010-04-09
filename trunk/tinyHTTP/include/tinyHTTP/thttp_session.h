@@ -79,7 +79,7 @@ thttp_session_param_type_t;
 * Adds or updates an option. 
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
 * @param ID_INT The id of the option to add/update (@ref thhtp_session_option_t).
-* @param VALUE_STR The new value of the parameter (<i>const char*</i>).
+* @param VALUE_STR The new value of the option (<i>const char*</i>).
 *
 * @code
 // session = thttp_session_create(stack,

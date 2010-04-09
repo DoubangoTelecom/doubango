@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-/**@file txcap_action.x
+/**@file txcap_action.c
  * @brief XCAP actions.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
@@ -32,6 +32,9 @@
 #include "tsk_params.h"
 #include "tinyXCAP/txcap_selector.h"
 
+/**@defgroup txcap_action_group XDMC (Sending Requests)
+*/
+
 #define	TXCAP_MIME_TYPE_ELEMENT			"application/xcap-el+xml" /**< as per rfc 4825 subclause 15.2.1 */
 #define	TXCAP_MIME_TYPE_ATTRIBUTE		"application/xcap-att+xml" /**< as per rfc 4825 subclause 15.2.2 */
 #define	TXCAP_MIME_TYPE_NS				"application/xcap-ns+xml" /**< as per rfc 4825 subclause 15.2.3 */
@@ -40,6 +43,8 @@
 extern char* __txcap_selector_get_url(const txcap_stack_handle_t* stack, const char* auid_id, va_list* app);
 
 
+/** Sends HTTP/HTTPS request to the XDMS.
+*/
 int txcap_action_perform(txcap_stack_handle_t* stack, txcap_action_type_t type, txcap_action_target_t target, ...)
 {
 	tsk_options_L_t* options = tsk_null;

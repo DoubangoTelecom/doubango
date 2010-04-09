@@ -43,15 +43,12 @@ TCOMP_BEGIN_DECLS
 
 #define MAX_TEMP_SATES	4
 
-/**@ingroup tcomp_result_group
-* Creates new SigComp result object.
+/** Creates new SigComp result object.
 */
 #define TCOMP_RESULT_CREATE()						tsk_object_new(tcomp_result_def_t)
 
 #define TCOMP_TEMPSTATE_TO_FREE_CREATE()			tsk_object_new(tcomp_tempstate_to_free_def_t)
 
-/**@ingroup tcomp_result_group
-*/
 typedef struct tcomp_tempstate_to_free_s
 {
 	TSK_DECLARE_OBJECT;
@@ -64,10 +61,9 @@ typedef struct tcomp_tempstate_to_free_s
 }
 tcomp_tempstate_to_free_t;
 
-TINYSIGCOMP_GEXTERN const void *tcomp_tempstate_to_free_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_tempstate_to_free_def_t;
 
-/**@ingroup tcomp_result_group
-* SigComp decompression result.
+/**SigComp decompression result.
 */
 typedef struct tcomp_result_s
 {
@@ -99,9 +95,9 @@ tcomp_result_t;
 void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput);
 #define tcomp_result_reset(result) _tcomp_result_reset((tcomp_result_t *)result, 0, 1)
 
-TINYSIGCOMP_API void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, size_t output_size, int isStream, uint64_t streamId);
-#define tcomp_result_setOutputUDPBuffer(result, output_ptr, output_size) tcomp_result_setOutputBuffer((tcomp_result_t *)result, (void *)output_ptr, (size_t) output_size, 0, 0)
-#define tcomp_result_setOutputTCPBuffer(result, output_ptr, output_size, streamId) tcomp_result_setOutputBuffer((tcomp_result_t *)result, (void *)output_ptr, (size_t) output_size, 1, (uint64_t)streamId)
+TINYSIGCOMP_API void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, size_t output_size, tsk_bool_t isStream, uint64_t streamId);
+#define tcomp_result_setOutputUDPBuffer(result, output_ptr, output_size) tcomp_result_setOutputBuffer((tcomp_result_t *)result, (void *)output_ptr, (size_t) output_size, tsk_false, 0)
+#define tcomp_result_setOutputTCPBuffer(result, output_ptr, output_size, streamId) tcomp_result_setOutputBuffer((tcomp_result_t *)result, (void *)output_ptr, (size_t) output_size, tsk_true, (uint64_t)streamId)
 #define tcomp_result_setOutputSCTPBuffer(result, output_ptr, output_size) tcomp_result_setOutputTCPBuffer
 
 TINYSIGCOMP_API void tcomp_result_setCompartmentId(tcomp_result_t *result, const void *id, size_t len);
@@ -112,8 +108,8 @@ uint8_t tcomp_result_getTempStatesToCreateSize(const tcomp_result_t *result);
 void tcomp_result_addTempStateToFree(tcomp_result_t *result, tcomp_tempstate_to_free_t* lpDesc);
 uint8_t tcomp_result_getTempStatesToFreeSize(const tcomp_result_t *result);
 
-TINYSIGCOMP_GEXTERN const void *tcomp_result_def_t;
-TINYSIGCOMP_GEXTERN const void *tcomp_tempstate_to_free_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_result_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_tempstate_to_free_def_t;
 
 TCOMP_END_DECLS
 

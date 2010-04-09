@@ -32,11 +32,8 @@
 #include "tsk_debug.h"
 #include "tsk_sha1.h"
 
-/**@defgroup tcomp_state_group SigComp state.
-*/
 
-/**@ingroup tcomp_state_group
-* Compares two sigomp states.
+/** Compares two sigomp states.
 * @param state1 First state to compare.
 * @param state2 Second state to compare.
 * @retval 1 if the two handles are equals and 0 otherwise.
@@ -51,8 +48,7 @@ int tcomp_state_equals(const tcomp_state_t *state1, const tcomp_state_t *state2)
 	else return 0;
 }
 
-/**@ingroup tcomp_state_group
-* Computes the state identifier by calculating a 20-byte SHA-1 hash [RFC-3174] over the
+/**Computes the state identifier by calculating a 20-byte SHA-1 hash [RFC-3174] over the
 *  byte string formed by concatenating the state_length, state_address,
 *  state_instruction, minimum_access_length and state_value (in the order given).
 * @param state The state to make valid.
@@ -119,7 +115,7 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 //========================================================
 //	State object definition
 //
-static void* tcomp_state_create(void * self, va_list * app)
+static tsk_object_t* tcomp_state_create(tsk_object_t * self, va_list * app)
 {
 	tcomp_state_t *state = self;
 	if(state)
@@ -144,25 +140,25 @@ static void* tcomp_state_create(void * self, va_list * app)
 		/* Initialize safeobject */
 		tsk_safeobj_init(state);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new state.");
 	}
 	return state;
 }
 
-static void* tcomp_state_destroy(void *self)
+static tsk_object_t* tcomp_state_destroy(tsk_object_t *self)
 {
 	tcomp_state_t *state = self;
-	if(state)
-	{
+	if(state){
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(state);
 
 		TSK_OBJECT_SAFE_FREE(state->identifier);
 		TSK_OBJECT_SAFE_FREE(state->value);
 	}
-	else TSK_DEBUG_ERROR("Null SigComp state.");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp state.");
+	}
 
 	return self;
 }
@@ -173,8 +169,7 @@ static int tcomp_state_cmp(const void *obj1, const void *obj2)
 	const tcomp_state_t *state1 = obj1;
 	const tcomp_state_t *state2 = obj2;
 
-	if(state1 && state2)
-	{
+	if(state1 && state2){
 		return tcomp_buffer_equals(state1->identifier, state2->identifier) ? 0 : -1;
 	}
 	else if(!state1 && !state2) return 0;
@@ -188,5 +183,5 @@ static const tsk_object_def_t tcomp_state_def_s =
 	tcomp_state_destroy,
 	tcomp_state_cmp
 };
-const void *tcomp_state_def_t = &tcomp_state_def_s;
+const tsk_object_def_t *tcomp_state_def_t = &tcomp_state_def_s;
 

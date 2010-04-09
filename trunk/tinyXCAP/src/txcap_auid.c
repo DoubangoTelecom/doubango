@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-/**@file txcap_auid.h
+/**@file txcap_auid.c
  * @brief XCAP AUID manager.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>

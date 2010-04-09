@@ -33,8 +33,7 @@
 #define TCOMP_UDVM_MEMORY_REGISTERS_PTR TCOMP_UDVM_GET_BUFFER_AT(UDVM_REGISTERS_START)
 
 
-/**@ingroup tcomp_udvm_group
-RFC3320-Setction_8.4.  Byte copying
+/**RFC3320-Setction_8.4.  Byte copying
 From UDVM to UDVM
 */
 int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy)
@@ -67,8 +66,7 @@ int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t
 	return 1;
 }
 
-/**@ingroup tcomp_udvm_group
-RFC3320-Setction_8.4.  Byte copying
+/**RFC3320-Setction_8.4.  Byte copying
 From EXTERNAL to UDVM
 */
 int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t* source, uint16_t size_tocopy)
@@ -100,8 +98,7 @@ int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint16_t destination, const uint8
 	return 1;
 }
 
-/**@ingroup tcomp_udvm_group
-RFC3320-Setction_8.4.  Byte copying
+/**RFC3320-Setction_8.4.  Byte copying
 From UDVM to EXTERNAL
 */
 int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint16_t source, uint16_t size_tocopy)

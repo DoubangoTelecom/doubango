@@ -33,8 +33,6 @@
 //
 //#include <assert.h>
 //
-///**@defgroup tcomp_compressordata_group SigComp NACK information.
-//*/
 //
 ///**@ingroup tcomp_compressordata_group
 //*/

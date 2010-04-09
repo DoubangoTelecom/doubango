@@ -44,7 +44,7 @@
 /**@defgroup tcomp_manager_group SigComp manager.
 */
 
-/**@ingroup tcomp_manager_group
+/**SigComp manager.
 */
 typedef struct tcomp_manager_s
 {
@@ -60,7 +60,7 @@ tcomp_manager_t;
 
 /**@ingroup tcomp_manager_group
 */
-size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compartmentId, size_t compartmentIdSize, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, int stream)
+size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compartmentId, size_t compartmentIdSize, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, tsk_bool_t stream)
 {
 	tcomp_manager_t *manager = handle;
 	size_t ret_size = output_size;

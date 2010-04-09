@@ -41,10 +41,14 @@ TXCAP_BEGIN_DECLS
 
 typedef enum txcap_stack_option_e
 {
+	//! request timeout
 	TXCAP_STACK_OPTION_TIMEOUT,
+	//! time to live
 	TXCAP_STACK_OPTION_TTL,
 	
+	//! user's password
 	TXCAP_STACK_OPTION_PASSWORD,
+	//! xcap user indentifier (e.g. sip:bob@example.com)
 	TXCAP_STACK_OPTION_XUI,
 }
 txcap_stack_option_t;
@@ -64,14 +68,106 @@ txcap_stack_param_type_t;
    RECOMMENDED that the XUI be equal to the Address-of-Record (AOR) for
    the user (i.e., sip:joe@example.com) */
 
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_OPTION
+* Adds or updates an option. 
+* This is a helper macro for @ref txcap_stack_create() and @ref txcap_stack_set().
+* @param ID_INT The id of the option to add/update (@ref txcap_stack_option_t).
+* @param VALUE_STR The new value of the option (<i>const char*</i>).
+*
+* @code
+stack = txcap_stack_set(stack,
+		// stack-level options
+		TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),	
+		TXCAP_STACK_SET_NULL());
+* @endcode
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_PASSWORD
+* Sets or updates the user's password.
+* @param PASSWORD_STR The new password (<i>const char*</i>).
+*
+* @code
+stack = txcap_stack_set(stack,
+		TXCAP_STACK_SET_PASSWORD("mysecret"),	
+		TXCAP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref TXCAP_STACK_OPTION_PASSWORD
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_XUI
+* Sets or updates the user's identifier.
+* @param XUI_STR The new identifier (<i>const char*</i>).For systems that support SIP applications, it is
+* RECOMMENDED that the XUI be equal to the Address-of-Record (AOR) for the user (i.e., sip:bob@example.com).
+*
+* @code
+stack = txcap_stack_set(stack,
+		TXCAP_STACK_SET_XUI("sip:bob@example.com"),
+		TXCAP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref TXCAP_STACK_OPTION_PASSWORD
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_HEADER
+* Adds new stack-level HTTP header. This header will be added to all outgoing requests.
+* If you want that the header only appear in the current outgoing request, then you should use
+* @ref TXCAP_ACTION_SET_HEADER().
+* @param NAME_STR The name of the header.
+* @param VALUE_STR The value of the header. Will be added "as is".
+*
+* @code
+stack = txcap_stack_set(stack,
+		TXCAP_STACK_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
+		TXCAP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref TXCAP_ACTION_SET_HEADER()
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_CONTEXT
+* Sets or updates the user's context. The context will be returned to the application layer
+* throught the callback function. 
+* @param CTX_PTR A pointer to the context (<i>const void*</i>).
+* 
+* @code
+const struct application_s context;
+stack = txcap_stack_set(stack,
+		TXCAP_STACK_SET_CONTEXT(&context),
+		TXCAP_STACK_SET_NULL());
+* @endcode
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_AUID
+* Register or update an AUID.
+* @param ID_STR The identifier associated to this aplication usage (e.g. "xcap-caps").
+* @param MIME_TYPE_STR The mime-type (e.g. "application/xcap-caps+xml").
+* @param NS_STR The namespace (e.g. "urn:ietf:params:xml:ns:xcap-caps").
+* @param DOC_NAME_STR The document name (e.g. "index").
+* @param IS_GLOBAL_BOOL The scope (@a tsk_true or @a tsk_false).
+*
+* @code
+// the code below shows how to register two new AUIDs
+txcap_stack_set(stack,
+	TXCAP_STACK_SET_AUID("my-xcap-caps", "application/my-xcap-caps+xml", "urn:ietf:params:xml:ns:my-xcap-caps", "my-document", tsk_true),
+	TXCAP_STACK_SET_AUID("my-resource-lists", "application/my-resource-lists+xml", "urn:ietf:params:xml:ns:my-resource-lists", "my-document", tsk_false),
+	
+	TXCAP_STACK_SET_NULL());
+* @endcode
+*/
+/**@ingroup txcap_stack_group
+* @def TXCAP_STACK_SET_NULL
+* Ends the stack parameters. Mandatory and should be the last one.
+*/
+
 #define TXCAP_STACK_SET_OPTION(ID_INT, VALUE_STR)											xcapp_option,  (txcap_stack_option_t)ID_INT, (const char*)VALUE_STR
 #define TXCAP_STACK_SET_PASSWORD(PASSWORD_STR)												TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_PASSWORD, PASSWORD_STR)
 #define TXCAP_STACK_SET_XUI(XUI_STR)														TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_XUI, XUI_STR)
 #define TXCAP_STACK_SET_HEADER(NAME_STR, VALUE_STR)											xcapp_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TXCAP_STACK_SET_CONTEXT(CTX_PTR)													xcapp_context, (const void*)CTX_PTR
 #define TXCAP_STACK_SET_AUID(ID_STR, MIME_TYPE_STR, NS_STR, DOC_NAME_STR, IS_GLOBAL_BOOL)	xcapp_auid, (const char*)ID_STR, (const char*)MIME_TYPE_STR, (const char*)NS_STR, (const char*)DOC_NAME_STR, (tsk_bool_t)IS_GLOBAL_BOOL
-
-#define TXCAP_STACK_SET_NULL()							xcapp_null
+#define TXCAP_STACK_SET_NULL()																xcapp_null
 
 
 typedef struct txcap_stack_s
@@ -92,7 +188,7 @@ typedef struct txcap_stack_s
 	TSK_DECLARE_SAFEOBJ;
 }
 txcap_stack_t;
-typedef void txcap_stack_handle_t;
+typedef void txcap_stack_handle_t;/**< Pointer to a XCAP stack. Should be created using @ref txcap_stack_create().*/
 
 TINYXCAP_API txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback callback, const char* xui, const char* password, const char* xcap_root, ...);
 TINYXCAP_API int txcap_stack_start(txcap_stack_handle_t* self);

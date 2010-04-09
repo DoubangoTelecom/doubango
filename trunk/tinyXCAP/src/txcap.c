@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-/**@file txcap.h
+/**@file txcap.c
  * @brief RFC 4825 (XCAP) implementation.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
@@ -139,7 +139,19 @@ bail:
 * A stack is a well-defined object.
 *
 * @code
-*
+int test_stack_callback(const thttp_event_t *httpevent);
+
+txcap_stack_handle_t* stack = txcap_stack_create(test_stack_callback, "sip:bob@example.com", "mysecret", "http://doubango.org:8080/services",
+		
+		// stack-level options
+		TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),
+		
+		// stack-level headers
+		TXCAP_STACK_SET_HEADER("Connection", "Keep-Alive"),
+		TXCAP_STACK_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
+		TXCAP_STACK_SET_HEADER("X-3GPP-Intended-Identity", XUI),
+		
+		TXCAP_STACK_SET_NULL());
 * @endcode
 *
 * @sa @ref txcap_stack_set
@@ -211,7 +223,18 @@ bail:
 * @retval Zero if succeed and non-zero error code otherwise.
 *
 * @code
-*
+txcap_stack_handle_t* stack;
+// ... create the stack
+
+txcap_stack_set(stack,
+		// add new AUIDs
+		TXCAP_STACK_SET_AUID("xcap-caps2", "application/xcap-caps2+xml", "urn:ietf:params:xml:ns:xcap-caps2", "index2", tsk_true),
+		TXCAP_STACK_SET_AUID("resource-lists2", "application/resource-lists+xml2", "urn:ietf:params:xml:ns:resource-lists2", "index2", tsk_false),
+		// stack-level headers
+		TXCAP_STACK_SET_HEADER("Connection", "Keep-Alive"),
+		TXCAP_STACK_SET_HEADER("User-Agent", "XDM-client/OMA1.1"), 
+		
+		TXCAP_STACK_SET_NULL());
 * @endcode
 *
 * @sa @ref txcap_stack_create
@@ -237,7 +260,7 @@ bail:
 * Stops the stack. The stack must already be started.
 * @param self A pointer to the stack to stop. The stack shall be created using @ref txcap_stack_create().
 * @retval Zero if succeed and non-zero error code otherwise.
-* @sa @ref txcap_stack_create
+* @sa @ref txcap_stack_start
 */
 int txcap_stack_stop(txcap_stack_handle_t* self)
 {

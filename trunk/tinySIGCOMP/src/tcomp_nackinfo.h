@@ -37,8 +37,7 @@
 
 TCOMP_BEGIN_DECLS
 
-/**@ingroup tcomp_nackinfo_group
-* Creates new NACK object.
+/** Creates new NACK object.
 */
 #define TCOMP_NACKINFO_CREATE()				tsk_object_new(tsk_nackinfo_def_t)
 
@@ -64,8 +63,7 @@ TCOMP_BEGIN_DECLS
 |                               |
 +---+---+---+---+---+---+---+---+
 */
-/**@ingroup tcomp_nackinfo_group
-* NACK info as per rfc 4077 subclause 3.1.
+/**NACK info as per rfc 4077 subclause 3.1.
 * You MUST use @ref TCOMP_NACKINFO_CREATE to create new nackinfo object.
 */
 typedef struct tcomp_nackinfo_s
@@ -81,7 +79,7 @@ typedef struct tcomp_nackinfo_s
 }
 tcomp_nackinfo_t;
 
-TINYSIGCOMP_GEXTERN const void *tcomp_nackinfo_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_nackinfo_def_t;
 
 TCOMP_END_DECLS
 
