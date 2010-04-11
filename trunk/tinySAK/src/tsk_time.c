@@ -88,10 +88,8 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
 		tv->tv_usec = (long)(tmpres % 1000000UL); 
 	}
 
-	if (tz)
-	{   
-		if (!tzflag)  
-		{    
+	if (tz){   
+		if (!tzflag){    
 			_tzset();   
 			tzflag++;  
 		}   

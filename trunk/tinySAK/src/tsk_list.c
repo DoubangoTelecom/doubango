@@ -296,23 +296,18 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_b
 * @param src The source list.
 * @param back Indicates whether to put the list back or not.
 **/
-//void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
-//{
-//	const tsk_list_item_t* next;
-//	const tsk_list_item_t* curr = (src)->head;
-//	tsk_list_item_t* copy;
-//
-//	while(curr){
-//		next = curr->next; // save next
-//
-//		copy = tsk_object_ref((void*)curr);
-//		tsk_list_push_filtered_item(dest, &copy, back);
-//		
-//		if(next){
-//			curr = next->next;
-//		}else break;
-//	}
-//}
+void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
+{
+	const tsk_list_item_t* curr = (src)->head;
+	tsk_object_t* copy;
+
+	while(curr){
+		copy = tsk_object_ref(curr->data);
+		tsk_list_push_data(dest, (void**)&copy, back);
+				
+		curr = curr->next;
+	}
+}
 
 /**@ingroup tsk_list_group
 * Add an opaque data to the @a list.

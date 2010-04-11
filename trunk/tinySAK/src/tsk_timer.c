@@ -94,8 +94,7 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 {
 	int err = -1;
 	tsk_timer_manager_t *manager = self;
-	if(manager && !TSK_RUNNABLE(manager)->running)
-	{				
+	if(manager && !TSK_RUNNABLE(manager)->running){				
 		TSK_RUNNABLE(manager)->run = run;
 		if(err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t)){
 			//TSK_OBJECT_SAFE_FREE(manager);
@@ -112,10 +111,9 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 {
 	tsk_timer_manager_t *manager = self;
-	if(manager)
-	{
+	if(manager){
 		//int index = 0;
-		tsk_list_item_t *item = 0;
+		tsk_list_item_t *item = tsk_null;
 
 		tsk_mutex_lock(manager->mutex);
 		
@@ -191,8 +189,7 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 		const tsk_list_item_t *item;
 		tsk_mutex_lock(manager->mutex);
 		item = tsk_list_find_item_by_pred(manager->timers, __tsk_pred_find_timer_by_id, &id);
-		if(item && item->data)
-		{
+		if(item && item->data){
 			tsk_timer_t *timer = item->data;
 			timer->canceled = 1;
 			
@@ -256,8 +253,7 @@ static void *__tsk_timer_manager_mainthread(void *param)
 
 	TSK_DEBUG_INFO("TIMER MANAGER -- START");
 	
-	while(TSK_RUNNABLE(manager)->running)
-	{
+	while(TSK_RUNNABLE(manager)->running){
 		tsk_semaphore_decrement(manager->sem);
 
 peek_first:
@@ -296,7 +292,7 @@ peek_first:
 			tsk_list_remove_item_by_data(manager->timers, curr);
 			tsk_mutex_unlock(manager->mutex);
 		}
-	}
+	} /* while() */
 	
 	TSK_DEBUG_INFO("TIMER MANAGER -- STOP");
 
@@ -322,7 +318,7 @@ peek_first:
 //=================================================================================================
 //	Timer manager object definition
 //
-static void* tsk_timer_manager_create(void * self, va_list * app)
+static tsk_object_t* tsk_timer_manager_create(tsk_object_t * self, va_list * app)
 {
 	tsk_timer_manager_t *manager = self;
 	if(manager){
@@ -334,7 +330,7 @@ static void* tsk_timer_manager_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsk_timer_manager_destroy(void * self)
+static tsk_object_t* tsk_timer_manager_destroy(tsk_object_t * self)
 { 
 	tsk_timer_manager_t *manager = self;
 	
@@ -357,7 +353,7 @@ static const tsk_object_def_t tsk_timer_manager_def_s =
 	tsk_timer_manager_destroy,
 	tsk_null, 
 };
-const void * tsk_timer_manager_def_t = &tsk_timer_manager_def_s;
+const tsk_object_def_t * tsk_timer_manager_def_t = &tsk_timer_manager_def_s;
 
 
 
@@ -367,7 +363,7 @@ const void * tsk_timer_manager_def_t = &tsk_timer_manager_def_s;
 //=================================================================================================
 //	Timer object definition
 //
-static void* tsk_timer_create(void * self, va_list * app)
+static tsk_object_t* tsk_timer_create(tsk_object_t * self, va_list * app)
 {
 	static tsk_timer_id_t tsk_unique_timer_id = 1;
 	tsk_timer_t *timer = self;
@@ -382,7 +378,7 @@ static void* tsk_timer_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsk_timer_destroy(void * self)
+static tsk_object_t* tsk_timer_destroy(tsk_object_t * self)
 { 
 	tsk_timer_t *timer = self;
 	
@@ -392,7 +388,7 @@ static void* tsk_timer_destroy(void * self)
 	return self;
 }
 
-static int tsk_timer_cmp(const void *obj1, const void *obj2)
+static int tsk_timer_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	const tsk_timer_t *t1 = obj1;
 	const tsk_timer_t *t2 = obj2;
@@ -411,6 +407,6 @@ static const tsk_object_def_t tsk_timer_def_s =
 	tsk_timer_destroy,
 	tsk_timer_cmp, 
 };
-const void * tsk_timer_def_t = &tsk_timer_def_s;
+const tsk_object_def_t * tsk_timer_def_t = &tsk_timer_def_s;
 
 

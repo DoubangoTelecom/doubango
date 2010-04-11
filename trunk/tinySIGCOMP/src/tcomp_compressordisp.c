@@ -137,18 +137,41 @@ tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uin
 /// @param [in,out]	dispatcher	The compressor dispatcher. 
 /// @param	compressor			A function pointer to the new compressor. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress compressor)
+int tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress_f compressor)
 {
-	int i;
+	size_t i;
 
-	for(i = 0; i < TCOMP_MAX_COMPRESSORS; i++)
-	{
+	if(!dispatcher){
+		return -1;
+	}
+
+	for(i = 0; i < TCOMP_MAX_COMPRESSORS; i++){
 		if(!dispatcher->compressors[i]){
 			dispatcher->compressors[i] = compressor;
+			return 0;
 		}
 	}
+	return -2;
 }
 
+/** Removes a compressor
+*/
+int tcomp_compressordisp_removeCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress_f compressor)
+{
+	size_t i;
+
+	if(!dispatcher){
+		return -1;
+	}
+
+	for(i = 0; i < TCOMP_MAX_COMPRESSORS; i++){
+		if(dispatcher->compressors[i] == compressor){
+			dispatcher->compressors[i] = tsk_null;
+			return 0;
+		}
+	}
+	return -2;
+}
 
 
 

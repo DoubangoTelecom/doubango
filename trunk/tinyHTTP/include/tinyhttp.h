@@ -35,6 +35,7 @@
 #include "tinyHTTP/parsers/thttp_parser_header.h"
 
 #include "tinyhttp/headers/thttp_header_Dummy.h"
+#include "tinyhttp/headers/thttp_header_ETag.h"
 
 /* TINYNET */
 #include "tnet.h"

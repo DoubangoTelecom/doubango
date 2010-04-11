@@ -161,94 +161,138 @@ void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, const void *
 }
 
 /**@ingroup tcomp_manager_group
+* Sets the decompression memory size (RFC 3320 section 3.3).
+* @param handle The SigComp manager.
+* @param dms The new decompression memory size value.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
-void tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, uint32_t dms)
+int tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, uint32_t dms)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
-		return;
+		return -1;
 	}
 	
-	tcomp_params_setDmsValue(manager->stateHandler->sigcomp_parameters, (dms > MAX_DMS ? MAX_DMS : dms));
+	return tcomp_params_setDmsValue(manager->stateHandler->sigcomp_parameters, (dms > MAX_DMS ? MAX_DMS : dms));
 }
 
 /**@ingroup tcomp_manager_group
+* Sets the state memory size (RFC 3320 section 3.3).
+* @param handle The SigComp manager.
+* @param sms The new state memory size value.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
-void tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t sms)
+int tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t sms)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
-		return;
+		return -1;
 	}
 
-	tcomp_params_setSmsValue(manager->stateHandler->sigcomp_parameters, (sms > MAX_SMS ? MAX_SMS : sms));
+	return tcomp_params_setSmsValue(manager->stateHandler->sigcomp_parameters, (sms > MAX_SMS ? MAX_SMS : sms));
 }
 
 /**@ingroup tcomp_manager_group
+* Sets the Cycle Per Bit (RFC 3320 section 3.3).
+* @param handle The SigComp manager.
+* @param cpb The new cycle per bit value.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
-void tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb)
+int tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
-		return;
+		return -1;
 	}
 
-	tcomp_params_setCpbValue(manager->stateHandler->sigcomp_parameters, (cpb > MAX_CPB ? MAX_CPB : cpb));
+	return tcomp_params_setCpbValue(manager->stateHandler->sigcomp_parameters, (cpb > MAX_CPB ? MAX_CPB : cpb));
 }
 
 /**@ingroup tcomp_manager_group
+* Sets the SigComp version (RFC 3320 section 3.3).
+* @param handle The SigComp manager.
+* @param cpb The new cycle per bit value.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
-void tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version)
+int tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
-		return;
+		return -1;
 	}
 
 	manager->stateHandler->sigcomp_parameters->SigComp_version = version;
+	return 0;
 }
 
 /**@ingroup tcomp_manager_group
+* Adds a new compressor to the dispatcher.
+* @param handle The SigComp manager holding the dispatcher.
+* @param compressor The compressor to add.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
-void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress compressor)
+int tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress_f compressor)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
-		return;
+		return -1;
 	}
 
-	tcomp_compressordisp_addCompressor(manager->dispatcher_compressor, compressor);
+	return tcomp_compressordisp_addCompressor(manager->dispatcher_compressor, compressor);
 }
 
 /**@ingroup tcomp_manager_group
+* Removes the compressor from the dispatcher.
+* @param handle The SigComp manager holding the dispatcher.
+* @param compressor The compressor to add.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
-void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle)
+int tcomp_manager_removeCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress_f compressor)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
-		return;
+		return -1;
 	}
 
-	tcomp_statehandler_addSipSdpDictionary(manager->stateHandler);
+	return tcomp_compressordisp_removeCompressor(manager->dispatcher_compressor, compressor);
 }
 
 /**@ingroup tcomp_manager_group
+* Adds SIP/SDP dictionary (RFC 3485) to the state handler.
+* @param handle The SigComp manager holding the state handler.
+* @retval Zero if succeed and non-zero otherwise.
 */
-void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle)
+int tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
 		TSK_DEBUG_ERROR("NULL sigcomp manager.");
-		return;
+		return -1;
 	}
 
-	tcomp_statehandler_addPresenceDictionary(manager->stateHandler);
+	return tcomp_statehandler_addSipSdpDictionary(manager->stateHandler);
+}
+
+/**@ingroup tcomp_manager_group
+* Adds Presence dictionary (RFC 5112) to the state handler.
+* @param handle The SigComp manager holding the state handler.
+* @retval Zero if succeed and non-zero otherwise.
+*/
+int tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle)
+{
+	tcomp_manager_t *manager = handle;
+	if(!manager){
+		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		return -1;
+	}
+
+	return tcomp_statehandler_addPresenceDictionary(manager->stateHandler);
 }
 
 

@@ -116,45 +116,45 @@ void tcomp_udvm_createNackInfo(tcomp_udvm_t *udvm, uint8_t reasonCode, tcomp_buf
 /*
 * Instructions
 */
-int TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm);
-int TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint16_t operand_1);
-int TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
-int TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k);
-int TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k);
-int TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination);
-int TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t value);
-int TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t n);
-int TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint16_t operand_1);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t value);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t n);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value);
 #define TCOMP_UDVM_EXEC_INST__PUSH2(udvm) TCOMP_UDVM_EXEC_INST__PUSH(udvm, -1)
-int TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint16_t* value);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint16_t* value);
 #define TCOMP_UDVM_EXEC_INST__POP2(udvm) TCOMP_UDVM_EXEC_INST__POP(udvm, 0)
-int TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination);
-int TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination);
-int TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset, uint16_t length, uint16_t destination);
-int TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint16_t address, uint16_t length, uint16_t start_value, uint16_t offset);
-int TCOMP_UDVM_EXEC_INST__JUMP(tcomp_udvm_t *udvm, int16_t address);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset, uint16_t length, uint16_t destination);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint16_t address, uint16_t length, uint16_t start_value, uint16_t offset);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__JUMP(tcomp_udvm_t *udvm, int16_t address);
 #define TCOMP_UDVM_EXEC_INST__JUMP2(udvm) TCOMP_UDVM_EXEC_INST__JUMP(udvm, -1)
-int TCOMP_UDVM_EXEC_INST__COMPARE(tcomp_udvm_t *udvm, uint16_t value_1, uint16_t value_2, uint16_t address_1, uint16_t address_2, uint16_t address_3);
-int TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint16_t address);
-int TCOMP_UDVM_EXEC_INST__RETURN(tcomp_udvm_t *udvm);
-int TCOMP_UDVM_EXEC_INST__SWITCH(tcomp_udvm_t *udvm, uint16_t n, uint16_t j);
-int TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_t position, uint16_t length, uint16_t address);
-int TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address);
-int TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address);
-int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination, uint16_t address, uint16_t n);
-int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length, uint16_t state_begin, uint16_t state_length, uint16_t state_address, uint16_t state_instruction);
-int TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority);
-int TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length);
-int TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length);
-int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COMPARE(tcomp_udvm_t *udvm, uint16_t value_1, uint16_t value_2, uint16_t address_1, uint16_t address_2, uint16_t address_3);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint16_t address);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__RETURN(tcomp_udvm_t *udvm);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SWITCH(tcomp_udvm_t *udvm, uint16_t n, uint16_t j);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_t position, uint16_t length, uint16_t address);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination, uint16_t address, uint16_t n);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length, uint16_t state_begin, uint16_t state_length, uint16_t state_address, uint16_t state_instruction);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length);
+tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority);
 
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_udvm_def_t;

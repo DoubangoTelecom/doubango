@@ -40,9 +40,6 @@
 ///
 /// @brief	Compress SIgComp message using deflate algorithm. 
 ///
-/// @author	Mamadou
-/// @date	11/29/2009
-///
 /// @param [in,out]	lpCompartment	If non-null, the pointer to a compartment. 
 /// @param [in,out]	input_ptr		If non-null, the input pointer. 
 /// @param	input_size				Size of the input. 
@@ -53,11 +50,12 @@
 /// @return	. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)
+tsk_bool_t tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)
 {
 #define GET_OUTPUT_BUFFER_AT(position) (((uint8_t*)output_ptr) + position)
 
-	int result = 1, stateChanged, stateful, windowBits, zret;
+	tsk_bool_t result = tsk_true;
+	int stateChanged, stateful, windowBits, zret;
 	tcomp_deflatedata_t *deflatedata = 0;
 	size_t pointer = 0, state_len_index = 0, compressedDataLen;
 	uint8_t smsCode, *header;
@@ -65,17 +63,14 @@ int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const 
 	tsk_safeobj_lock(lpCompartment);
 	
 	/* Compression Data */
-	if(!lpCompartment->compressorData)
-	{
+	if(!lpCompartment->compressorData){
 		lpCompartment->compressorData = TCOMP_DEFLATEDATA_CREATE(stream);
-		if(!lpCompartment->compressorData)
-		{
+		if(!lpCompartment->compressorData){
 			TSK_DEBUG_ERROR("Failed to create deflate compressor data.");
-			result = 0;
+			result = tsk_false;
 			goto bail;
 		}
-		else
-		{
+		else{
 			lpCompartment->ackGhost = tcomp_deflatedata_ackGhost;
 			lpCompartment->freeGhostState = tcomp_deflatedata_freeGhostState;
 			lpCompartment->compressorData_isStream  = stream;
@@ -97,23 +92,19 @@ int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const 
 	*/
 	windowBits = ( smsCode - (stream?2:1) ) + 10;
 	windowBits = (windowBits < 8) ? 8 : ( (windowBits > 15 ? 15 : windowBits) ); /* Because of zlib limitation (windowsize MUST be between 8 and 15) */
-	if(windowBits != deflatedata->zWindowBits)
-	{
+	if(windowBits != deflatedata->zWindowBits){
 		/* Window size changed */
 		tcomp_deflatedata_freeGhostState(deflatedata);
 		tcomp_deflatedata_zSetWindowBits(deflatedata, windowBits);
 
-		if( !(result = tcomp_deflatedata_zReset(deflatedata)) ) 
-		{
+		if( !(result = tcomp_deflatedata_zReset(deflatedata)) ) {
 			goto bail;
 		}
 	}
-	else if(!deflatedata->ghostState)
-	{
+	else if(!deflatedata->ghostState){
 		/* No ghost --> reset zlib */
 		deflatedata->ghost_copy_offset = 0;
-		if( !(result = tcomp_deflatedata_zReset(deflatedata)) ) 
-		{
+		if( !(result = tcomp_deflatedata_zReset(deflatedata)) ) {
 			goto bail;
 		}
 	}
@@ -125,23 +116,20 @@ int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const 
 
 	
 	/* SigComp Header */
-	if(lpCompartment->lpReqFeedback && tcomp_buffer_getSize(lpCompartment->lpReqFeedback))
-	{
+	if(lpCompartment->lpReqFeedback && tcomp_buffer_getSize(lpCompartment->lpReqFeedback)){
 		/* Return the requested feedback */
 		*header = 0xfc; /* T=1 */
 		memcpy(GET_OUTPUT_BUFFER_AT(pointer), tcomp_buffer_getBuffer(lpCompartment->lpReqFeedback), tcomp_buffer_getSize(lpCompartment->lpReqFeedback));
 		pointer += tcomp_buffer_getSize(lpCompartment->lpReqFeedback);
 	}
-	else
-	{
+	else{
 		*header = 0xf8;
 	}
 
 	/*
 	* Stateless or stateful?
 	*/
-	if(stateful)
-	{
+	if(stateful){
 		memcpy(GET_OUTPUT_BUFFER_AT(pointer), tcomp_buffer_getBuffer(deflatedata->ghostState->identifier), TCOMP_PARTIAL_ID_LEN_VALUE);
 
 		pointer += TCOMP_PARTIAL_ID_LEN_VALUE; 
@@ -149,8 +137,7 @@ int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const 
 
 		TSK_DEBUG_INFO("Compressing stateful message.");
 	}
-	else
-	{
+	else{
 		uint16_t codeLen = DEFLATE_BYTECODE_LEN;
 		/* first byte for codelen */
 		*GET_OUTPUT_BUFFER_AT(pointer++) = ((codeLen>>4)& 0x00ff);
@@ -188,9 +175,8 @@ int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const 
 	*/
 	compressedDataLen = (*output_size - pointer);
 	zret = tcomp_deflatedata_zCompress(deflatedata, input_ptr, input_size, GET_OUTPUT_BUFFER_AT(pointer), &compressedDataLen, &stateChanged);
-	if(!zret)
-	{
-		result = 0;
+	if(!zret){
+		result = tsk_false;
 		goto bail;
 	}
 	pointer += compressedDataLen;
@@ -199,8 +185,7 @@ int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const 
 	/*
 	* Update state length
 	*/
-	if(!stateful)
-	{	
+	if(!stateful){	
 		uint16_t state_len = ( (1<<(deflatedata->zWindowBits)) + DEFLATE_UDVM_CIRCULAR_START_INDEX - 64 );
 		uint32_t hash_len = (state_len + 8);
 		
@@ -211,8 +196,7 @@ int tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const 
 		*GET_OUTPUT_BUFFER_AT(state_len_index+3) = (state_len & 0x00ff);
 
 		/*	First time or synchronize failure (NACK reason=STATE_NOT_FOUND) */
-		if(!deflatedata->ghostState)
-		{
+		if(!deflatedata->ghostState){
 			tcomp_deflatedata_createGhost(deflatedata, state_len, lpCompartment->local_parameters);
 		}
 	}

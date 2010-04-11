@@ -277,16 +277,14 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
     /*
      *  Initialize the first 16 words in the array W
      */
-    for(t = 0; t < 16; t++)
-    {
+    for(t = 0; t < 16; t++){
         W[t] = context->Message_Block[t * 4] << 24;
         W[t] |= context->Message_Block[t * 4 + 1] << 16;
         W[t] |= context->Message_Block[t * 4 + 2] << 8;
         W[t] |= context->Message_Block[t * 4 + 3];
     }
 
-    for(t = 16; t < 80; t++)
-    {
+    for(t = 16; t < 80; t++){
        W[t] = SHA1CircularShift(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
     }
 
@@ -296,8 +294,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
     D = context->Intermediate_Hash[3];
     E = context->Intermediate_Hash[4];
 
-    for(t = 0; t < 20; t++)
-    {
+    for(t = 0; t < 20; t++){
         temp =  SHA1CircularShift(5,A) +
                 ((B & C) | ((~B) & D)) + E + W[t] + K[0];
         E = D;
@@ -308,8 +305,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
         A = temp;
     }
 
-    for(t = 20; t < 40; t++)
-    {
+    for(t = 20; t < 40; t++){
         temp = SHA1CircularShift(5,A) + (B ^ C ^ D) + E + W[t] + K[1];
         E = D;
         D = C;
@@ -318,8 +314,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
         A = temp;
     }
 
-    for(t = 40; t < 60; t++)
-    {
+    for(t = 40; t < 60; t++){
         temp = SHA1CircularShift(5,A) +
                ((B & C) | (B & D) | (C & D)) + E + W[t] + K[2];
         E = D;
@@ -329,8 +324,7 @@ void SHA1ProcessMessageBlock(tsk_sha1context_t *context)
         A = temp;
     }
 
-    for(t = 60; t < 80; t++)
-    {
+    for(t = 60; t < 80; t++){
         temp = SHA1CircularShift(5,A) + (B ^ C ^ D) + E + W[t] + K[3];
         E = D;
         D = C;
@@ -371,27 +365,21 @@ void SHA1PadMessage(tsk_sha1context_t *context)
      *  block, process it, and then continue padding into a second
      *  block.
      */
-    if (context->Message_Block_Index > 55)
-    {
+    if (context->Message_Block_Index > 55){
         context->Message_Block[context->Message_Block_Index++] = 0x80;
-        while(context->Message_Block_Index < 64)
-        {
+        while(context->Message_Block_Index < 64){
             context->Message_Block[context->Message_Block_Index++] = 0;
         }
 
         SHA1ProcessMessageBlock(context);
 
-        while(context->Message_Block_Index < 56)
-        {
+        while(context->Message_Block_Index < 56){
             context->Message_Block[context->Message_Block_Index++] = 0;
         }
     }
-    else
-    {
+    else{
         context->Message_Block[context->Message_Block_Index++] = 0x80;
-        while(context->Message_Block_Index < 56)
-        {
-
+        while(context->Message_Block_Index < 56){
             context->Message_Block[context->Message_Block_Index++] = 0;
         }
     }
@@ -434,14 +422,14 @@ void tsk_sha1final(uint8_t *Message_Digest, tsk_sha1context_t *context)
 
 
 /**@ingroup tsk_sha1_group
- *	Calculates sha1 digest result and format it as a hexadecimal string. 
+ *	Calculates sha1 digest result (hexadecimal string). 
  *
  * @param input	The input data for which to calculate the SHA-1 hash. 
  * @param size	The size of the input data. 
  * @param result SHA-1 hash result as a hexadecimal string. 
  *
  * @retval @ref tsk_sha1_errcode_t code.
- * @sa @ref TSK_SHA1_DIGEST_CALC.
+ * @sa @ref TSK_SHA1_DIGEST_CALC
 **/
 tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1string_t *result)
 {

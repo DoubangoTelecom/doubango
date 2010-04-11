@@ -102,12 +102,13 @@ static uint32_t fcstab_32[256] =
 };
 
 /**@ingroup tsk_ppfcs32_group
-* Calculate a new fcs given the current fcs and the new data.
+* Calculates a new fcs given the current fcs and the new data.
 */
 uint32_t tsk_pppfcs32(register uint32_t fcs, register const uint8_t* cp, register int32_t len)
 {
-	while (len--)
+	while (len--){
 		fcs = (((fcs) >> 8) ^ fcstab_32[((fcs) ^ (*cp++)) & 0xff]);
+	}
 
 	return (fcs);
 }

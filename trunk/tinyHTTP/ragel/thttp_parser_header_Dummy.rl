@@ -21,7 +21,7 @@
 */
 
 /**@file thttp_header_Dummy.c
- * @brief HTTP DUmmy header.
+ * @brief HTTP 'Dummy' header.
  *
  * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
  *

@@ -189,8 +189,7 @@ int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size)
 		if((position == 0) && ((position + size) >= self->size)){ /* Very common case. */
 			return tsk_buffer_cleanup(self);
 		}
-		else if((position + size) < self->size)
-		{
+		else if((position + size) < self->size){
 			memcpy(((uint8_t*)self->data) + position, ((uint8_t*)self->data) + position + size, 
 				self->size-(position+size));
 			return tsk_buffer_realloc(self, (self->size-size));
@@ -264,14 +263,13 @@ int tsk_buffer_cleanup(tsk_buffer_t* self)
 //=================================================================================================
 //	Buffer object definition
 //
-static void* tsk_buffer_create(void * self, va_list * app)
+static tsk_object_t* tsk_buffer_create(tsk_object_t * self, va_list * app)
 {
 	tsk_buffer_t *buffer = self;
 	const void *data = va_arg(*app, const void *);
 	size_t size = va_arg(*app, size_t);
 	
-	if(data && size)
-	{
+	if(data && size){
 		buffer->data = tsk_calloc((size+1), sizeof(uint8_t));
 		memcpy(buffer->data, data, size);
 		buffer->size = size;
@@ -279,11 +277,10 @@ static void* tsk_buffer_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsk_buffer_destroy(void * self)
+static tsk_object_t* tsk_buffer_destroy(tsk_object_t * self)
 { 
 	tsk_buffer_t *buffer = self;
-	if(buffer)
-	{
+	if(buffer){
 		TSK_FREE(buffer->data);
 		buffer->size = 0;
 	}
@@ -291,17 +288,12 @@ static void* tsk_buffer_destroy(void * self)
 	return self;
 }
 
-static int tsk_buffer_cmp(const void *obj1, const void *obj2)
-{
-	return -1;
-}
-
 static const tsk_object_def_t tsk_buffer_def_s = 
 {
 	sizeof(tsk_buffer_t),
 	tsk_buffer_create, 
 	tsk_buffer_destroy,
-	tsk_buffer_cmp, 
+	tsk_null, 
 };
-const void *tsk_buffer_def_t = &tsk_buffer_def_s;
+const tsk_object_def_t *tsk_buffer_def_t = &tsk_buffer_def_s;
 

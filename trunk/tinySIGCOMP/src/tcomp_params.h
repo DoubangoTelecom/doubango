@@ -59,16 +59,16 @@ typedef struct tcomp_params_s
 tcomp_params_t;
 
 
-int tcomp_params_hasCpbDmsSms(tcomp_params_t*);
+tsk_bool_t tcomp_params_hasCpbDmsSms(tcomp_params_t*);
 	
 void tcomp_params_setCpbCode(tcomp_params_t*, uint8_t _cpbCode);
-void tcomp_params_setCpbValue(tcomp_params_t*, uint8_t _cpbValue);
+int tcomp_params_setCpbValue(tcomp_params_t*, uint8_t _cpbValue);
 
 void tcomp_params_setDmsCode(tcomp_params_t*, uint8_t _dmsCode);
-void tcomp_params_setDmsValue(tcomp_params_t*, uint32_t _dmsValue);
+int tcomp_params_setDmsValue(tcomp_params_t*, uint32_t _dmsValue);
 
 void tcomp_params_setSmsCode(tcomp_params_t*, uint8_t _smsCode);
-void tcomp_params_setSmsValue(tcomp_params_t*, uint32_t _smsValue);
+int tcomp_params_setSmsValue(tcomp_params_t*, uint32_t _smsValue);
 
 uint16_t tcomp_params_getParameters(tcomp_params_t*);
 void tcomp_params_setParameters(tcomp_params_t*, uint16_t sigCompParameters);

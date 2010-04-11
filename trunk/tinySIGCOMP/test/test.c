@@ -1063,6 +1063,7 @@ int main()
 	tcomp_manager_setCycles_Per_Bit(manager2, 64);
 	tcomp_manager_setState_Memory_Size(manager1, 8192);
 	tcomp_manager_setState_Memory_Size(manager2, 8192);
+	
 
 	for(i = 0; i< (8*LOOP_COUNT); i++)
 	{

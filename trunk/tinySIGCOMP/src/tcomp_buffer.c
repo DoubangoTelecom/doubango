@@ -43,8 +43,8 @@ typedef struct tcomp_buffer_s
 	size_t		size;			/**< The size of the buffer */
 	uint8_t*	lpbuffer;		/**< Pointer to the buffer */
 	size_t		index_bytes;	/**< Bytes (8bit size) cursor */
-	size_t		index_bits;		/**< Bits (1bit size) cursor */
-	unsigned	owner:1;		/**< If we are the owner of the buffer or not (external buffer) */
+	size_t		index_bits;		/**< Bits (1-bit size) cursor */
+	unsigned	owner:1;		/**< Indicates whether we are the owner of the buffer or not (external buffer) */
 	uint8_t		P_BIT;			/**< P-BIT controller. */
 }
 tcomp_buffer_t;
@@ -52,36 +52,38 @@ tcomp_buffer_t;
 /**Compares two sigomp buffers.
 * @param handle1 First handle to compare.
 * @param handle2 Second handle to compare.
-* @retval 1 if the two handles are equals and 0 otherwise.
+* @retval @a tsk_true if the two handles are equals and @a tsk_false otherwise.
 */
-int tcomp_buffer_equals(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2)
+tsk_bool_t tcomp_buffer_equals(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2)
 {
 	if( tcomp_buffer_getSize(handle1) == tcomp_buffer_getSize(handle2) ){
 		return tcomp_buffer_startsWith(handle1, handle2);
 	}
 
-	return 0;
+	return tsk_false;
 }
 
 /**Checks if the first internal buffer starts with the second handle internal buffer.
 * @param handle1 First handle
 * @param handle2 Second handle
-* @retval Returns 1 if the first internal buffer starts with the second handle internal buffer and 0 otherwise.
+* @retval Returns @a tsk_true if the first internal buffer starts with the second handle internal buffer and @a tsk_false otherwise.
 */
-int tcomp_buffer_startsWith(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2) /*const*/
+tsk_bool_t tcomp_buffer_startsWith(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2) /*const*/
 {
 	size_t i;
 	tcomp_buffer_t* buffer1 = (tcomp_buffer_t*)handle1;
 	tcomp_buffer_t* buffer2 = (tcomp_buffer_t*)handle2;
 
-	if(buffer1->size < buffer2->size) return 0;
+	if(buffer1->size < buffer2->size){
+		return tsk_false;
+	}
 
 	for(i = 0; i< buffer2->size; i++){
 		if(buffer1->lpbuffer[i] != buffer2->lpbuffer[i]){
-			return 0;
+			return tsk_false;
 		}
 	}
-	return 1;
+	return tsk_true;
 }
 
 /**Gets a readonly pointer to the internal buffer.
@@ -98,7 +100,7 @@ const uint8_t* tcomp_buffer_getReadOnlyBufferAtPos(const tcomp_buffer_handle_t* 
 		TSK_DEBUG_ERROR("Null SigComp handle");
 	}
 
-	return 0;
+	return tsk_null;
 }
 
 /**Gets a read/write pointer to the internal buffer.
@@ -115,7 +117,7 @@ uint8_t* tcomp_buffer_getBufferAtPos(const tcomp_buffer_handle_t* handle, size_t
 		TSK_DEBUG_ERROR("Null SigComp handle");
 	}
 
-	return 0;
+	return tsk_null;
 }
 
 
@@ -158,14 +160,12 @@ size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*cons
 */
 uint8_t* tcomp_buffer_readBytes(tcomp_buffer_handle_t* handle, size_t length)
 {
-	if(handle)
-	{
+	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
 		size_t old_index;
 
-		if((buffer->index_bytes + length) > (buffer->size)) 
-		{
-			return 0;
+		if((buffer->index_bytes + length) > (buffer->size)) {
+			return tsk_null;
 		}
 
 		old_index = buffer->index_bytes;
@@ -173,9 +173,11 @@ uint8_t* tcomp_buffer_readBytes(tcomp_buffer_handle_t* handle, size_t length)
 
 		return tcomp_buffer_getBufferAtPos(handle, old_index);
 	}
-	else TSK_DEBUG_ERROR("Null SigComp handle");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp handle");
+	}
 
-	return 0;
+	return tsk_null;
 }
 
 /**Reads the internal buffer from LSB to MSB as per RFC 3320 subclause 8.2.
@@ -195,12 +197,10 @@ uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, size_t length)
 		char* end;
 		uint16_t result_val = 0;
 		char result_str[16]; memset(result_str, 0, 16);
-		while(pos < length)
-		{
+		while(pos < length){
 			result_str[pos++] = (buffer->lpbuffer[buffer->index_bytes]
 				&(1 << (buffer->index_bits))) ? '1' : '0';
-			if(++buffer->index_bits == 8)
-			{
+			if(++buffer->index_bits == 8){
 				buffer->index_bytes++;
 				buffer->index_bits = 0;
 			}
@@ -211,7 +211,9 @@ uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, size_t length)
 
 		return result_val;
 	}
-	else TSK_DEBUG_ERROR("Null SigComp handle");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp handle");
+	}
 
 	return 0;
 }
@@ -226,20 +228,17 @@ uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, size_t length)
 	// UDV Memory is always MSB first
 	// MSB  --> LSB
 	// FIXME: use mask
-	if(handle)
-	{
+	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
 		uint8_t pos = 0;
 		char* end;
 		uint16_t result_val = 0;
 		char result_str[16]; memset(result_str, 0, 16);
 
-		while(pos < length)
-		{
+		while(pos < length){
 			result_str[pos++] = (buffer->lpbuffer[buffer->index_bytes]
 				&(128 >> (buffer->index_bits))) ? '1' : '0';
-			if(++buffer->index_bits == 8)
-			{
+			if(++buffer->index_bits == 8){
 				buffer->index_bytes++;
 				buffer->index_bits = 0;
 			}
@@ -250,7 +249,9 @@ uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, size_t length)
 		
 		return result_val;
 	}
-	else TSK_DEBUG_ERROR("Null SigComp handle");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp handle");
+	}
 
 	return 0;
 }
@@ -260,16 +261,16 @@ uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, size_t length)
 */
 void tcomp_buffer_discardBits(tcomp_buffer_handle_t* handle)
 {
-	if(handle)
-	{
+	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		if(buffer->index_bits)
-		{
+		if(buffer->index_bits){
 			buffer->index_bits=0;
 			buffer->index_bytes++;
 		}
 	}
-	else TSK_DEBUG_ERROR("Null SigComp handle");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp handle");
+	}
 }
 
 /**Discards last bytes as per RFC 3320 subclause 8.2.
@@ -278,19 +279,18 @@ void tcomp_buffer_discardBits(tcomp_buffer_handle_t* handle)
 */
 void tcomp_buffer_discardLastBytes(tcomp_buffer_handle_t* handle, uint16_t count)
 {
-	if(handle)
-	{
+	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		if(buffer->size > count)
-		{
+		if(buffer->size > count){
 			buffer->size -= count;
 		}
-		else
-		{
+		else{
 			tcomp_buffer_freeBuff(handle);
 		}
 	}
-	else TSK_DEBUG_ERROR("Null SigComp handle");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp handle");
+	}
 }
 
 /**Allocs the internal buffer.
@@ -299,16 +299,13 @@ void tcomp_buffer_discardLastBytes(tcomp_buffer_handle_t* handle, uint16_t count
 */
 void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, size_t size)
 {
-	if(handle)
-	{
+	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		if(!buffer->owner)
-		{
+		if(!buffer->owner){
 			TSK_DEBUG_ERROR("The SigComp is not the owner of the internal buffer to alloc.");
 			return;
 		}
-		if(!size)
-		{
+		if(!size){
 			TSK_DEBUG_WARN("Cannot allocate zero bytes.");
 			return;
 		}
@@ -318,7 +315,9 @@ void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, size_t size)
 		buffer->lpbuffer = (uint8_t*) tsk_calloc(1, size );
 		buffer->size = size;
 	}
-	else TSK_DEBUG_ERROR("Null SigComp handle");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp handle");
+	}
 }
 
 /**Adds a buffer as a reference (not owned).
@@ -350,9 +349,9 @@ void tcomp_buffer_referenceBuff(tcomp_buffer_handle_t* handle, uint8_t* external
 * @param handle The handle to the SigComp buffer.
 * @param data Data to append to our internal buffer.
 * @param size The size of the data
-* @retval 1 if succeed and 0 otherwise.
+* @retval @a tsk_true if succeed an @a tsk_false otherwise.
 */
-int tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, size_t size)
+tsk_bool_t tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, size_t size)
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
@@ -368,7 +367,9 @@ int tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, siz
 			}
 		}
 
-		if(!buffer->lpbuffer) return 0;
+		if(!buffer->lpbuffer){
+			return tsk_false;
+		}
 
 		if(data){
 			memcpy((buffer->lpbuffer+oldSize), data, size);
@@ -378,22 +379,22 @@ int tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, siz
 		}
 
 		buffer->size = newSize;
-		return 1;
+		return tsk_true;
 	}
 	else{
 		TSK_DEBUG_ERROR("Null SigComp handle");
 	}
 
-	return 0;
+	return tsk_false;
 }
 
 /**Removes @a size bytes from the internal buffer.
 * @param handle SigComp handle holding the internal buffer from which to remove bytes.
 * @param pos The starting position from which to start removing bytes
 * @param size The number of bytes to remove
-* @retval 1 if succeed an zero otherwise.
+* @retval @a tsk_true if succeed an @a tsk_false otherwise.
 */
-int tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, size_t pos, size_t size)
+tsk_bool_t tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, size_t pos, size_t size)
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
@@ -414,15 +415,15 @@ int tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, size_t pos, size_t si
 		}
 		if(buffer->lpbuffer){
 			buffer->size = newSize;
-			return 1;
+			return tsk_true;
 		}
-		return 0;
+		return tsk_false;
 	}
 	else{
 		TSK_DEBUG_ERROR("Null SigComp handle");
 	}
 
-	return 0;
+	return tsk_false;
 }
 
 /**Free the internal buffer.
@@ -471,7 +472,7 @@ size_t* tcomp_buffer_getIndexBits(const tcomp_buffer_handle_t* handle)
 		TSK_DEBUG_ERROR("Null SigComp handle");
 	}
 
-	return 0;
+	return tsk_null;
 }
 
 /**Gets the P-bit controller value.
@@ -490,7 +491,7 @@ uint8_t* tcomp_buffer_getP_BIT(const tcomp_buffer_handle_t* handle)
 		TSK_DEBUG_ERROR("Null SigComp handle");
 	}
 
-	return 0;
+	return tsk_null;
 }
 
 /**Creates a random HASH number.
@@ -578,14 +579,12 @@ void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, size_t size)
 */
 void tcomp_buffer_reset(tcomp_buffer_handle_t* handle)
 {
-	if(handle)
-	{
+	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
 
 		buffer->index_bytes = 0;
 		buffer->index_bits = 0;
-		if(buffer->lpbuffer)
-		{
+		if(buffer->lpbuffer){
 			memset(buffer->lpbuffer, 0, buffer->size);
 		}
 	}

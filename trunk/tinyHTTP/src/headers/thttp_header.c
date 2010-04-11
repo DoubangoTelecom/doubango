@@ -41,6 +41,7 @@ const char *thttp_header_get_name(thttp_header_type_t type)
 		case thttp_htype_Authorization: return "Authorization";
 		case thttp_htype_Content_Length: return "Content-Length";
 		case thttp_htype_Content_Type: return "Content-Type";
+		case thttp_htype_ETag: return "ETag";
 		case thttp_htype_Proxy_Authenticate: return "Proxy-Authenticate";
 		case thttp_htype_Proxy_Authorization: return "Proxy-Authorization";
 		case thttp_htype_Transfer_Encoding: return "Transfer-Encoding";

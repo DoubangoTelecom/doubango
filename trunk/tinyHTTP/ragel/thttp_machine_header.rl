@@ -47,6 +47,7 @@
 	Content_Range = "Content-Range"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Content_Range;
 	Content_Type = ("Content-Type"i | "c") SP* HCOLON SP*<: any* :>CRLF  @parse_header_Content_Type;
 	Date = "Date"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Date;
+	ETag = "ETag"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_ETag;
 	Expect = "Expect"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Expect;
 	Expires = "Expires"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_Expires;
 	From = "From"i SP* HCOLON SP*<: any* :>CRLF  @parse_header_From;
@@ -78,7 +79,7 @@
 	general_header = Cache_Control | Connection | Date | Pragma | Trailer | Transfer_Encoding | Upgrade | Via | Warning;
 	auth_header = Authorization | WWW_Authenticate | Proxy_Authorization | Proxy_Authenticate;
 	request_header = Accept | Accept_Charset | Accept_Encoding | Accept_Language | Expect | From | Host | If_Match | If_Modified_Since | If_None_Match | If_Range | If_Unmodified_Since | Max_Forwards | Range | Referer | TE | User_Agent;
-	entity_header = Allow | Content_Encoding | Content_Language | Content_Length | Content_Location | Content_MD5 | Content_Range | Content_Type | Expires | Last_Modified;
+	entity_header = Allow | Content_Encoding | Content_Language | Content_Length | Content_Location | Content_MD5 | Content_Range | Content_Type | ETag | Expires | Last_Modified;
 	
 	HEADER = (general_header | auth_header | request_header | entity_header)@1 | extension_header@0;
 }%%

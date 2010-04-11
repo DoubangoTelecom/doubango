@@ -112,8 +112,7 @@ tsk_semaphore_handle_t* tsk_semaphore_create()
 	}
 #endif
 	
-	if(!handle)
-	{
+	if(!handle){
 		TSK_DEBUG_ERROR("Failed to create new mutex.");
 	}
 	return handle;
@@ -192,8 +191,7 @@ void tsk_semaphore_destroy(tsk_semaphore_handle_t** handle)
 	tsk_free(handle);
 #endif
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("Cannot free an uninitialized semaphore object");
 	}
 }

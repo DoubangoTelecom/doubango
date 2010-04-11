@@ -30,13 +30,11 @@ int test_stack_callback(const thttp_event_t *httpevent)
 			{
 				TSK_DEBUG_INFO("sid=%llu", id);
 				if(THTTP_MESSAGE_IS_RESPONSE(httpevent->message)){
-					const thttp_header_t* etag;
+					const thttp_header_ETag_t* etag;
 					TSK_DEBUG_INFO("=== %d ==> %s", THTTP_RESPONSE_CODE(httpevent->message), THTTP_MESSAGE_CONTENT(httpevent->message));
 					// You can use 
-					if((etag = thttp_message_get_headerByName(httpevent->message, "etag"))){
-						if(etag->type == thttp_htype_Dummy){
-							TSK_DEBUG_INFO("Etag=%s", ((thttp_header_Dummy_t*)etag)->value);
-						}
+					if((etag = (const thttp_header_ETag_t*)thttp_message_get_header(httpevent->message, thttp_htype_ETag))){
+						TSK_DEBUG_INFO("Etag=%s", etag->value);
 					}
 				}
 				else{

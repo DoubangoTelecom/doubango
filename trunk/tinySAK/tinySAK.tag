@@ -71,6 +71,7 @@
     <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
     <includes id="tsk__url_8h" name="tsk_url.h" local="yes" imported="no">tsk_url.h</includes>
     <includes id="tsk__params_8h" name="tsk_params.h" local="yes" imported="no">tsk_params.h</includes>
+    <includes id="tsk__options_8h" name="tsk_options.h" local="yes" imported="no">tsk_options.h</includes>
     <includes id="tsk__fsm_8h" name="tsk_fsm.h" local="yes" imported="no">tsk_fsm.h</includes>
     <includes id="tsk__time_8h" name="tsk_time.h" local="yes" imported="no">tsk_time.h</includes>
     <includes id="tsk__timer_8h" name="tsk_timer.h" local="yes" imported="no">tsk_timer.h</includes>
@@ -262,10 +263,10 @@
       <arglist>(tsk_buffer_t *self)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_buffer_def_t</name>
       <anchorfile>tsk__buffer_8c.html</anchorfile>
-      <anchor>a7d1db793de4189dc94abd9fd670efc7d</anchor>
+      <anchor>aea122411bde6027a05f0de2208d1ec15</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -382,10 +383,10 @@
       <arglist>(tsk_buffer_t *self)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_buffer_def_t</name>
       <anchorfile>tsk__buffer_8h.html</anchorfile>
-      <anchor>a09946e00bfff22754ae161eb3d84e790</anchor>
+      <anchor>ab9a49f04d1e341a1c0a33635d1527894</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -434,20 +435,6 @@
       <anchorfile>tsk__common_8h.html</anchorfile>
       <anchor>a7ca41ecea51e673e7e58dc4362e0524a</anchor>
       <arglist>(a)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>tsk_rand</name>
-      <anchorfile>tsk__common_8h.html</anchorfile>
-      <anchor>ac857d76655f5797b65a27807fb5588c2</anchor>
-      <arglist>()</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>tsk_urand</name>
-      <anchorfile>tsk__common_8h.html</anchorfile>
-      <anchor>a1076de932f657a8f502e7aa2aedbf4a3</anchor>
-      <arglist>()</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -776,17 +763,17 @@
       <arglist>(tsk_fsm_t *self)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_fsm_def_t</name>
       <anchorfile>tsk__fsm_8c.html</anchorfile>
-      <anchor>afd86e32ff6448dc91c3961a7273ec1a6</anchor>
+      <anchor>a433fc815f4741519d56ec34eeca223c9</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_fsm_entry_def_t</name>
       <anchorfile>tsk__fsm_8c.html</anchorfile>
-      <anchor>a0074276a452a31529a55b658b3058984</anchor>
+      <anchor>add408f4ece004a57dd3c20973f6bfad7</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -996,17 +983,17 @@
       <arglist>(tsk_fsm_t *self)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_fsm_def_t</name>
       <anchorfile>tsk__fsm_8h.html</anchorfile>
-      <anchor>a150593526003be985d767eba1f48f0f2</anchor>
+      <anchor>a8e917fdf70178d06cb691f888ed44e7f</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_fsm_entry_def_t</name>
       <anchorfile>tsk__fsm_8h.html</anchorfile>
-      <anchor>ad24526f2e624927a64bcca21f99979e8</anchor>
+      <anchor>af01d1250037316521f68c3ebe36e3492</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -1181,15 +1168,15 @@
       <type>void</type>
       <name>tsk_list_push_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gadbfca87d5a4b40fedfb964c5f7435dc5</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_item_t **item, int back)</arglist>
+      <anchor>ga78e84f4c8fb03171ed290b8019997aef</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_item_t **item, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_list_push_filtered_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga379e3b1c53e17848f8080d5fc0e14d7b</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_item_t **item, int ascending)</arglist>
+      <anchor>gad2e1c9d02af90c65b64880fe205c98c5</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_item_t **item, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -1202,15 +1189,15 @@
       <type>void</type>
       <name>tsk_list_push_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga9a3fd054d9910b59402a71cf923db101</anchor>
-      <arglist>(tsk_list_t *list, void **data, int back)</arglist>
+      <anchor>gab61875a8bdd1b738fda4ea50e314dc67</anchor>
+      <arglist>(tsk_list_t *list, void **data, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_list_push_filtered_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga7b880634be523e3ee7ec6c4dac0dd989</anchor>
-      <arglist>(tsk_list_t *list, void **data, int ascending)</arglist>
+      <anchor>ga9327008bce67e8a29ffc75338a66234f</anchor>
+      <arglist>(tsk_list_t *list, void **data, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>const tsk_list_item_t *</type>
@@ -1435,15 +1422,15 @@
       <type>TINYSAK_API void</type>
       <name>tsk_list_push_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gadbfca87d5a4b40fedfb964c5f7435dc5</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_item_t **item, int back)</arglist>
+      <anchor>ga78e84f4c8fb03171ed290b8019997aef</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_item_t **item, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_list_push_filtered_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga379e3b1c53e17848f8080d5fc0e14d7b</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_item_t **item, int ascending)</arglist>
+      <anchor>gad2e1c9d02af90c65b64880fe205c98c5</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_item_t **item, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
@@ -1456,15 +1443,15 @@
       <type>TINYSAK_API void</type>
       <name>tsk_list_push_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga9a3fd054d9910b59402a71cf923db101</anchor>
-      <arglist>(tsk_list_t *list, void **data, int back)</arglist>
+      <anchor>gab61875a8bdd1b738fda4ea50e314dc67</anchor>
+      <arglist>(tsk_list_t *list, void **data, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_list_push_filtered_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga7b880634be523e3ee7ec6c4dac0dd989</anchor>
-      <arglist>(tsk_list_t *list, void **data, int ascending)</arglist>
+      <anchor>ga9327008bce67e8a29ffc75338a66234f</anchor>
+      <arglist>(tsk_list_t *list, void **data, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>TINYSAK_API const tsk_list_item_t *</type>
@@ -2030,6 +2017,179 @@
     </member>
   </compound>
   <compound kind="file">
+    <name>tsk_options.c</name>
+    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <filename>tsk__options_8c</filename>
+    <includes id="tsk__options_8h" name="tsk_options.h" local="yes" imported="no">tsk_options.h</includes>
+    <includes id="tsk__memory_8h" name="tsk_memory.h" local="yes" imported="no">tsk_memory.h</includes>
+    <includes id="tsk__string_8h" name="tsk_string.h" local="yes" imported="no">tsk_string.h</includes>
+    <includes id="tsk__common_8h" name="tsk_common.h" local="yes" imported="no">tsk_common.h</includes>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tsk_options_have_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga95cd90fc62a7c94242ef3565e3d29c12</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_options_add_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gaf4a7e2b50370d3bacbfb02d6208bde48</anchor>
+      <arglist>(tsk_options_L_t **self, int id, const char *value)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_options_add_option_2</name>
+      <anchorfile>tsk__options_8c.html</anchorfile>
+      <anchor>a31a9228a18e61061490c6ab9983ac908</anchor>
+      <arglist>(tsk_options_L_t **self, const tsk_option_t *option)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_options_remove_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga22d21df71d29386129297cf1c1763edb</anchor>
+      <arglist>(tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tsk_option_t *</type>
+      <name>tsk_options_get_option_by_id</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gae91a373b327a62b3a8cc13682d6175c4</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tsk_options_get_option_value</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gaf4a3aa09b3c9e20cfad18639ef3b24b6</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_options_get_option_value_as_int</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga36f6819e19e19ffe6fe0ce8fe639673c</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="variable">
+      <type>const tsk_object_def_t *</type>
+      <name>tsk_option_def_t</name>
+      <anchorfile>tsk__options_8c.html</anchorfile>
+      <anchor>a35fd4e22079c851cb0936df89eef7f8d</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
+    <name>tsk_options.h</name>
+    <path>C:/Projects/Doubango/tinySAK/src/</path>
+    <filename>tsk__options_8h</filename>
+    <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
+    <includes id="tsk__list_8h" name="tsk_list.h" local="yes" imported="no">tsk_list.h</includes>
+    <includes id="tsk__buffer_8h" name="tsk_buffer.h" local="yes" imported="no">tsk_buffer.h</includes>
+    <class kind="struct">tsk_option_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OPTION_VA_ARGS</name>
+      <anchorfile>tsk__options_8h.html</anchorfile>
+      <anchor>adce46a405232a01fa92e26742a4e5781</anchor>
+      <arglist>(id, value)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OPTION_CREATE</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gad938cb749665c2f8e6bb1815aaf1dade</anchor>
+      <arglist>(id, value)</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OPTION_CREATE_NULL</name>
+      <anchorfile>tsk__options_8h.html</anchorfile>
+      <anchor>a2b25e5cc28c213a7d3feb1bb0b47902a</anchor>
+      <arglist>()</arglist>
+    </member>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OPTION</name>
+      <anchorfile>tsk__options_8h.html</anchorfile>
+      <anchor>a1a3ad89c5ce792a31e9310140eb74f06</anchor>
+      <arglist>(self)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tsk_option_s</type>
+      <name>tsk_option_t</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gaf060ef8c6afe37ae8c10b9814e005e21</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="typedef">
+      <type>tsk_list_t</type>
+      <name>tsk_options_L_t</name>
+      <anchorfile>tsk__options_8h.html</anchorfile>
+      <anchor>a1f619fbe43ff506f357e4518c063b2b6</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_options_have_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga95cd90fc62a7c94242ef3565e3d29c12</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_options_add_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gaf4a7e2b50370d3bacbfb02d6208bde48</anchor>
+      <arglist>(tsk_options_L_t **self, int id, const char *value)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_options_add_option_2</name>
+      <anchorfile>tsk__options_8h.html</anchorfile>
+      <anchor>a7f8e7bc2e6630c1745954c5047381465</anchor>
+      <arglist>(tsk_options_L_t **self, const tsk_option_t *option)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_options_remove_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga22d21df71d29386129297cf1c1763edb</anchor>
+      <arglist>(tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API const tsk_option_t *</type>
+      <name>tsk_options_get_option_by_id</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gae91a373b327a62b3a8cc13682d6175c4</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API const char *</type>
+      <name>tsk_options_get_option_value</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gaf4a3aa09b3c9e20cfad18639ef3b24b6</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>TINYSAK_API int</type>
+      <name>tsk_options_get_option_value_as_int</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga36f6819e19e19ffe6fe0ce8fe639673c</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="variable">
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
+      <name>tsk_option_def_t</name>
+      <anchorfile>tsk__options_8h.html</anchorfile>
+      <anchor>af61fed0795f478465c5b77ae6637f18b</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="file">
     <name>tsk_params.c</name>
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__params_8c</filename>
@@ -2045,10 +2205,10 @@
       <arglist>(const char *line, size_t size)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tsk_params_have_param</name>
       <anchorfile>group__tsk__params__group.html</anchorfile>
-      <anchor>gad76992eb747ba1b83da13b64000a0408</anchor>
+      <anchor>ga31cbb886619c8d00c1805a5feaed8ce6</anchor>
       <arglist>(const tsk_params_L_t *self, const char *name)</arglist>
     </member>
     <member kind="function">
@@ -2108,10 +2268,10 @@
       <arglist>(const tsk_params_L_t *self, const char separator, tsk_buffer_t *output)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_param_def_t</name>
       <anchorfile>tsk__params_8c.html</anchorfile>
-      <anchor>adf2231112e1c97638638adb22d6d5267</anchor>
+      <anchor>a4e9fd59fdcd636516a3d55e470b7e6bb</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -2174,10 +2334,10 @@
       <arglist>(const char *line, size_t size)</arglist>
     </member>
     <member kind="function">
-      <type>TINYSAK_API int</type>
+      <type>TINYSAK_API tsk_bool_t</type>
       <name>tsk_params_have_param</name>
       <anchorfile>group__tsk__params__group.html</anchorfile>
-      <anchor>gad76992eb747ba1b83da13b64000a0408</anchor>
+      <anchor>ga31cbb886619c8d00c1805a5feaed8ce6</anchor>
       <arglist>(const tsk_params_L_t *self, const char *name)</arglist>
     </member>
     <member kind="function">
@@ -2237,10 +2397,10 @@
       <arglist>(const tsk_params_L_t *self, const char separator, tsk_buffer_t *output)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_param_def_t</name>
       <anchorfile>tsk__params_8h.html</anchorfile>
-      <anchor>a485802c470257efb38696275da0b1c1a</anchor>
+      <anchor>a28ab451d4c278e33139d2468eef56071</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -3082,6 +3242,13 @@
       <arglist>(int64_t i, tsk_istr_t *result)</arglist>
     </member>
     <member kind="function">
+      <type>long</type>
+      <name>tsk_atox</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gac826f5cf2a464799101be484a48f3c29</anchor>
+      <arglist>(const char *str)</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>tsk_strrandom</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
@@ -3350,6 +3517,13 @@
       <arglist>(int64_t i, tsk_istr_t *result)</arglist>
     </member>
     <member kind="function">
+      <type>TINYSAK_API long</type>
+      <name>tsk_atox</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gac826f5cf2a464799101be484a48f3c29</anchor>
+      <arglist>(const char *)</arglist>
+    </member>
+    <member kind="function">
       <type>TINYSAK_API void</type>
       <name>tsk_strrandom</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
@@ -3593,17 +3767,17 @@
       <arglist>(tsk_timer_manager_handle_t *self, tsk_timer_id_t id)</arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_timer_manager_def_t</name>
       <anchorfile>tsk__timer_8c.html</anchorfile>
-      <anchor>ae49017ca9483cdbdba2c67ea29beea75</anchor>
+      <anchor>a1917d2dd70ce49d4f0461227fdf41438</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>const void *</type>
+      <type>const tsk_object_def_t *</type>
       <name>tsk_timer_def_t</name>
       <anchorfile>tsk__timer_8c.html</anchorfile>
-      <anchor>ac5bc24d9e9b86464d2f5eaec6f26b715</anchor>
+      <anchor>a067dac0810f769093c667a4eab6dc711</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -3612,6 +3786,7 @@
     <path>C:/Projects/Doubango/tinySAK/src/</path>
     <filename>tsk__timer_8h</filename>
     <includes id="tiny_s_a_k__config_8h" name="tinySAK_config.h" local="yes" imported="no">tinySAK_config.h</includes>
+    <includes id="tsk__object_8h" name="tsk_object.h" local="yes" imported="no">tsk_object.h</includes>
     <member kind="define">
       <type>#define</type>
       <name>TSK_TIMER_MANAGER_CREATE</name>
@@ -3690,17 +3865,17 @@
       <arglist>(tsk_timer_manager_handle_t *self, tsk_timer_id_t id)</arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_timer_def_t</name>
       <anchorfile>tsk__timer_8h.html</anchorfile>
-      <anchor>acd34e52c6048269d28ccd7aa37710ee0</anchor>
+      <anchor>a6e6fd981723ed8fa9e765f61882f917b</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>TINYSAK_GEXTERN const void *</type>
+      <type>TINYSAK_GEXTERN const tsk_object_def_t *</type>
       <name>tsk_timer_manager_def_t</name>
       <anchorfile>tsk__timer_8h.html</anchorfile>
-      <anchor>a269a128515b970dafad74120f1bd7d1b</anchor>
+      <anchor>a0eac54bd27229cbec14cdb899e4a1d74</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -4400,15 +4575,15 @@
       <type>void</type>
       <name>tsk_list_push_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>gadbfca87d5a4b40fedfb964c5f7435dc5</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_item_t **item, int back)</arglist>
+      <anchor>ga78e84f4c8fb03171ed290b8019997aef</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_item_t **item, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_list_push_filtered_item</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga379e3b1c53e17848f8080d5fc0e14d7b</anchor>
-      <arglist>(tsk_list_t *list, tsk_list_item_t **item, int ascending)</arglist>
+      <anchor>gad2e1c9d02af90c65b64880fe205c98c5</anchor>
+      <arglist>(tsk_list_t *list, tsk_list_item_t **item, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
@@ -4421,15 +4596,15 @@
       <type>void</type>
       <name>tsk_list_push_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga9a3fd054d9910b59402a71cf923db101</anchor>
-      <arglist>(tsk_list_t *list, void **data, int back)</arglist>
+      <anchor>gab61875a8bdd1b738fda4ea50e314dc67</anchor>
+      <arglist>(tsk_list_t *list, void **data, tsk_bool_t back)</arglist>
     </member>
     <member kind="function">
       <type>void</type>
       <name>tsk_list_push_filtered_data</name>
       <anchorfile>group__tsk__list__group.html</anchorfile>
-      <anchor>ga7b880634be523e3ee7ec6c4dac0dd989</anchor>
-      <arglist>(tsk_list_t *list, void **data, int ascending)</arglist>
+      <anchor>ga9327008bce67e8a29ffc75338a66234f</anchor>
+      <arglist>(tsk_list_t *list, void **data, tsk_bool_t ascending)</arglist>
     </member>
     <member kind="function">
       <type>const tsk_list_item_t *</type>
@@ -4692,6 +4867,68 @@
     </member>
   </compound>
   <compound kind="group">
+    <name>tsk_options_group</name>
+    <title>Options.</title>
+    <filename>group__tsk__options__group.html</filename>
+    <class kind="struct">tsk_option_s</class>
+    <member kind="define">
+      <type>#define</type>
+      <name>TSK_OPTION_CREATE</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gad938cb749665c2f8e6bb1815aaf1dade</anchor>
+      <arglist>(id, value)</arglist>
+    </member>
+    <member kind="typedef">
+      <type>struct tsk_option_s</type>
+      <name>tsk_option_t</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gaf060ef8c6afe37ae8c10b9814e005e21</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>tsk_bool_t</type>
+      <name>tsk_options_have_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga95cd90fc62a7c94242ef3565e3d29c12</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_options_add_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gaf4a7e2b50370d3bacbfb02d6208bde48</anchor>
+      <arglist>(tsk_options_L_t **self, int id, const char *value)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_options_remove_option</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga22d21df71d29386129297cf1c1763edb</anchor>
+      <arglist>(tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>const tsk_option_t *</type>
+      <name>tsk_options_get_option_by_id</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gae91a373b327a62b3a8cc13682d6175c4</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>const char *</type>
+      <name>tsk_options_get_option_value</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>gaf4a3aa09b3c9e20cfad18639ef3b24b6</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tsk_options_get_option_value_as_int</name>
+      <anchorfile>group__tsk__options__group.html</anchorfile>
+      <anchor>ga36f6819e19e19ffe6fe0ce8fe639673c</anchor>
+      <arglist>(const tsk_options_L_t *self, int id)</arglist>
+    </member>
+  </compound>
+  <compound kind="group">
     <name>tsk_params_group</name>
     <title>SIP/MSRP/XCAP Parameters parser.</title>
     <filename>group__tsk__params__group.html</filename>
@@ -4718,10 +4955,10 @@
       <arglist>(const char *line, size_t size)</arglist>
     </member>
     <member kind="function">
-      <type>int</type>
+      <type>tsk_bool_t</type>
       <name>tsk_params_have_param</name>
       <anchorfile>group__tsk__params__group.html</anchorfile>
-      <anchor>gad76992eb747ba1b83da13b64000a0408</anchor>
+      <anchor>ga31cbb886619c8d00c1805a5feaed8ce6</anchor>
       <arglist>(const tsk_params_L_t *self, const char *name)</arglist>
     </member>
     <member kind="function">
@@ -5408,6 +5645,13 @@
       <arglist>(int64_t i, tsk_istr_t *result)</arglist>
     </member>
     <member kind="function">
+      <type>long</type>
+      <name>tsk_atox</name>
+      <anchorfile>group__tsk__string__group.html</anchorfile>
+      <anchor>gac826f5cf2a464799101be484a48f3c29</anchor>
+      <arglist>(const char *str)</arglist>
+    </member>
+    <member kind="function">
       <type>void</type>
       <name>tsk_strrandom</name>
       <anchorfile>group__tsk__string__group.html</anchorfile>
@@ -5858,6 +6102,38 @@
       <name>refCount</name>
       <anchorfile>structtsk__object__header__s.html</anchorfile>
       <anchor>a43ab0d8eafd71383b2233bdee65911de</anchor>
+      <arglist></arglist>
+    </member>
+  </compound>
+  <compound kind="struct">
+    <name>tsk_option_s</name>
+    <filename>structtsk__option__s.html</filename>
+    <member kind="variable">
+      <type></type>
+      <name>TSK_DECLARE_OBJECT</name>
+      <anchorfile>structtsk__option__s.html</anchorfile>
+      <anchor>a6cb2c811d40d14ceb34bd3b2e7dc5e6a</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>int</type>
+      <name>id</name>
+      <anchorfile>structtsk__option__s.html</anchorfile>
+      <anchor>a7441ef0865bcb3db9b8064dd7375c1ea</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>char *</type>
+      <name>value</name>
+      <anchorfile>structtsk__option__s.html</anchorfile>
+      <anchor>a4e9aec275e566b978a3ccb4e043d8c61</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="variable">
+      <type>tsk_bool_t</type>
+      <name>tag</name>
+      <anchorfile>structtsk__option__s.html</anchorfile>
+      <anchor>aaa2611208b8b4033e9d78cdf6c87a299</anchor>
       <arglist></arglist>
     </member>
   </compound>
