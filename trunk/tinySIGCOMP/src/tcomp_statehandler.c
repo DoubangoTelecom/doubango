@@ -307,11 +307,11 @@ tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, con
 	return tsk_true;
 }
 
-void tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler)
+int tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler)
 {
 	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
-		return;
+		return -1;
 	}
 	
 	tsk_safeobj_lock(statehandler);
@@ -323,13 +323,14 @@ void tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler)
 	}
 
 	tsk_safeobj_unlock(statehandler);
+	return 0;
 }
 
-void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler)
+int tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler)
 {
 	if(!statehandler){
 		TSK_DEBUG_ERROR("NULL SigComp state handler.");
-		return;
+		return -1;
 	}
 
 	tsk_safeobj_lock(statehandler);
@@ -341,6 +342,7 @@ void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler
 	}
 
 	tsk_safeobj_unlock(statehandler);
+	return 0;
 }
 
 

@@ -36,18 +36,18 @@
 /**
 * Checks if CPB, DMS and SMS values have been initialized.
 * @param params The sigcomp parameters containing the values to check.
-* @retval 1 if values have been set and zero otherwise.
+* @retval @a tsk_true if values have been set and @a tsk_false otherwise.
 */
-int tcomp_params_hasCpbDmsSms(tcomp_params_t* params)
+tsk_bool_t tcomp_params_hasCpbDmsSms(tcomp_params_t* params)
 {
 	if(params){
-		return (params->cpbCode || params->dmsCode || params->smsCode) ? 1 : 0;
+		return (params->cpbCode || params->dmsCode || params->smsCode) ? tsk_true : tsk_false;
 	}
 	else{
 		TSK_DEBUG_WARN("NULL sigcomp parameters.");
 	}
 	
-	return 0;
+	return tsk_false;
 }
 
 /**
@@ -73,7 +73,7 @@ void tcomp_params_setCpbCode(tcomp_params_t* params, uint8_t cpbCode)
 * @param cpbValue The new CPB value.
 * @sa @ref tcomp_params_setCpbCode.
 */
-void tcomp_params_setCpbValue(tcomp_params_t* params, uint8_t cpbValue)
+int tcomp_params_setCpbValue(tcomp_params_t* params, uint8_t cpbValue)
 {
 	if(params)
 	{
@@ -85,9 +85,11 @@ void tcomp_params_setCpbValue(tcomp_params_t* params, uint8_t cpbValue)
 			}
 		}
 		params->cpbValue = cpbValue;
+		return 0;
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		return -1;
 	}
 }
 
@@ -114,7 +116,7 @@ void tcomp_params_setDmsCode(tcomp_params_t* params, uint8_t dmsCode)
 * @param dmsValue The new DMS value.
 * @sa @ref tcomp_params_setDmsCode.
 */
-void tcomp_params_setDmsValue(tcomp_params_t* params, uint32_t dmsValue)
+int tcomp_params_setDmsValue(tcomp_params_t* params, uint32_t dmsValue)
 {
 	if(params)
 	{
@@ -126,9 +128,11 @@ void tcomp_params_setDmsValue(tcomp_params_t* params, uint32_t dmsValue)
 			}
 		}
 		params->dmsValue = dmsValue;
+		return 0;
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		return -1;
 	}
 }
 
@@ -155,7 +159,7 @@ void tcomp_params_setSmsCode(tcomp_params_t* params, uint8_t smsCode)
 * @param smsValue The new SMS value.
 * @sa @ref tcomp_params_setSmsCode
 */
-void tcomp_params_setSmsValue(tcomp_params_t* params, uint32_t smsValue)
+int tcomp_params_setSmsValue(tcomp_params_t* params, uint32_t smsValue)
 {
 	if(params){
 		uint8_t code;
@@ -166,9 +170,11 @@ void tcomp_params_setSmsValue(tcomp_params_t* params, uint32_t smsValue)
 			}
 		}
 		params->smsValue = smsValue;
+		return 0;
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		return -1;
 	}
 }
 

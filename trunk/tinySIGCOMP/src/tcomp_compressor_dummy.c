@@ -41,15 +41,9 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	static int tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment,
-/// 	const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size,
-/// 	int stream)
 ///
 /// @brief	Dummy compressor as per RFC 4896 subclause 11. This function is used to create uncompressed sigcomp message.
 /// Used if none match. 
-///
-/// @author	Mamadou
-/// @date	11/28/2009
 ///
 /// @param [in,out]	lpCompartment	The compartment to use. 
 /// @param [in,out]	input_ptr		The input buffer containing the message to compress. 
@@ -60,7 +54,7 @@
 ///
 /// @return	1 if succedd and 0 otherwise. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, int stream)
+tsk_bool_t tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)
 {
 	tcomp_buffer_handle_t *output_buffer = TCOMP_BUFFER_CREATE();
 	size_t pointer = 0;
@@ -71,15 +65,13 @@ int tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const vo
 	header = tcomp_buffer_getBufferAtPos(output_buffer, pointer++);
 
 	/* SigComp Header */
-	if(lpCompartment->lpReqFeedback && tcomp_buffer_getSize(lpCompartment->lpReqFeedback))
-	{
+	if(lpCompartment->lpReqFeedback && tcomp_buffer_getSize(lpCompartment->lpReqFeedback)){
 		/* Return the requested feedback */
 		*header = 0xfc; /* T=1 */
 		memcpy(tcomp_buffer_getBufferAtPos(output_buffer, pointer), tcomp_buffer_getBuffer(lpCompartment->lpReqFeedback), tcomp_buffer_getSize(lpCompartment->lpReqFeedback));
 		pointer += tcomp_buffer_getSize(lpCompartment->lpReqFeedback);
 	}
-	else
-	{
+	else{
 		*header = 0xf8;
 	}
 
@@ -108,5 +100,5 @@ int tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const vo
 
 	TSK_OBJECT_SAFE_FREE(output_buffer);
 
-	return 1;
+	return tsk_true;
 }

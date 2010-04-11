@@ -47,8 +47,8 @@ TCOMP_BEGIN_DECLS
 */
 typedef void tcomp_buffer_handle_t;
 
-int tcomp_buffer_equals(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2);
-int tcomp_buffer_startsWith(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2) /*const*/;
+tsk_bool_t tcomp_buffer_equals(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2);
+tsk_bool_t tcomp_buffer_startsWith(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2) /*const*/;
 
 const uint8_t* tcomp_buffer_getReadOnlyBufferAtPos(const tcomp_buffer_handle_t* handle, size_t position) /*const*/;
 #define tcomp_buffer_getReadOnlyBuffer(buffer) tcomp_buffer_getReadOnlyBufferAtPos(buffer, 0)
@@ -67,8 +67,8 @@ void tcomp_buffer_discardLastBytes(tcomp_buffer_handle_t* handle, uint16_t count
 
 void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, size_t size);
 void tcomp_buffer_referenceBuff(tcomp_buffer_handle_t* handle, uint8_t* externalBuff, size_t size);
-int tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, size_t size);
-int tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, size_t pos, size_t size);
+tsk_bool_t tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, size_t size);
+tsk_bool_t tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, size_t pos, size_t size);
 void tcomp_buffer_freeBuff(tcomp_buffer_handle_t* handle);
 
 size_t* tcomp_buffer_getIndexBytes(const tcomp_buffer_handle_t* handle);

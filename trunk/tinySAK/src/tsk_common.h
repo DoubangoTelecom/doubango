@@ -47,9 +47,6 @@ typedef int tsk_boolean_t;
 #define TSK_MAX(a,b)            (((a) > (b)) ? (a) : (b))
 #define TSK_ABS(a)				(((a)< 0) ? -(a) : (a))
 
-#define tsk_rand()				rand()
-#define tsk_urand()				TSK_ABS(rand())
-
 typedef int tsk_ssize_t;
 typedef unsigned int tsk_size_t;
 

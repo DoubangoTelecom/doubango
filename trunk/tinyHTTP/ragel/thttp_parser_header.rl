@@ -36,6 +36,7 @@
 //#include "tinyHTTP/headers/thttp_header_Contact.h"
 //#include "tinyHTTP/headers/thttp_header_CSeq.h"
 #include "tinyHTTP/headers/thttp_header_Dummy.h"
+#include "tinyHTTP/headers/thttp_header_ETag.h"
 //#include "tinyHTTP/headers/thttp_header_Expires.h"
 //#include "tinyHTTP/headers/thttp_header_From.h"
 //#include "tinyHTTP/headers/thttp_header_Max_Forwards.h"
@@ -235,7 +236,16 @@
 
 		//TSK_DEBUG_WARN("parse_header_Date NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
-	
+
+	# /*== ETag: ==*/
+	action parse_header_ETag
+	{
+		thttp_header_ETag_t *header = thttp_header_ETag_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADER(header);
+
+		//TSK_DEBUG_WARN("parse_header_Expires NOT IMPLEMENTED. Will be added as Dummy header.");
+	}
+
 	# /*== Expect: ==*/
 	action parse_header_Expect
 	{

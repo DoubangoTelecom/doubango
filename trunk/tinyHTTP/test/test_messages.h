@@ -44,6 +44,7 @@
 	"WWW-Authenticate: Basic realm=\"WallyWorld\"\r\n" \
 	"Transfer-Encoding: chunked;test=21;tes7\r\n" \
 	"Date: Wed, 10 Mar 2010 14:20:47 GMT\r\n" \
+	"ETag: \"686897696a7c876b7e\"\r\n" \
 	"\r\n"
 
 #define TEST_MSG TEST_MSG_401

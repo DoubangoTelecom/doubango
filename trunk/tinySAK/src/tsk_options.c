@@ -68,7 +68,7 @@ tsk_bool_t tsk_options_have_option(const tsk_options_L_t *self, int id)
 /**@ingroup tsk_options_group
 * Adds an option to the list of options. If the option already exist(same id), then it's value will be updated.
 * @param self The destination list.
-* @param name The name of the option to add.
+* @param id The id of the option to add.
 * @param value The value of the option to add.
 * @retval Zero if succeed and -1 otherwise.
 */
@@ -142,7 +142,7 @@ const tsk_option_t *tsk_options_get_option_by_id(const tsk_options_L_t *self, in
 /**@ingroup tsk_options_group
 * Gets the value of a option.
 * @param self The source list.
-* @param name The id of the option to retrieve.
+* @param id The id of the option to retrieve.
 * @retval The value of the option if succeed and @ref tsk_null otherwise.
 */
 const char *tsk_options_get_option_value(const tsk_options_L_t *self, int id)

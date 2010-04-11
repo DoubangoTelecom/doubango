@@ -56,7 +56,7 @@
 	if( udvm->consumed_cycles > udvm->maximum_UDVM_cycles )			\
 	{																\
 		tcomp_udvm_createNackInfo2(udvm, NACK_CYCLES_EXHAUSTED);	\
-		return 0;													\
+		return tsk_false;													\
 	}
 
 /**
@@ -124,12 +124,12 @@ static int SortDescendingPredicate(const void *a, const void *b)
 
 /// @param [in,out]	udvm	The udvm state machine entity. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm)
 {
 	tcomp_udvm_createNackInfo2(udvm, NACK_USER_REQUESTED);
-	return 0; 
+	return tsk_false; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,17 +144,17 @@ int TCOMP_UDVM_EXEC_INST__DECOMPRESSION_FAILURE(tcomp_udvm_t *udvm)
 ///   this operand is overwritten with the result. 
 /// @param	operand_2		The second operand. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 	
 	TCOMP_UDVM_SET_2BYTES_VAL( operand_1, 
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) & operand_2) );
 	
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,17 +169,17 @@ int TCOMP_UDVM_EXEC_INST__AND(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t o
 ///    this operand is overwritten with the result. 
 /// @param	operand_2		The second operand. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
 	TCOMP_UDVM_SET_2BYTES_VAL( operand_1, 
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) | operand_2) );
 
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,17 +193,17 @@ int TCOMP_UDVM_EXEC_INST__OR(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t op
 /// @param	operand_1		2-byte value encoded by the operand. After the operation is complete, the 2-byte word at the memory address specified by
 ///   this operand is overwritten with the result. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint16_t operand_1)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint16_t operand_1)
 {
 	CONSUME_CYCLES(1);
 
 	TCOMP_UDVM_SET_2BYTES_VAL( operand_1, 
 		~( TCOMP_UDVM_GET_2BYTES_VAL(operand_1) ) );
 
-	return 1;
+	return tsk_true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -218,10 +218,10 @@ int TCOMP_UDVM_EXEC_INST__NOT(tcomp_udvm_t *udvm, uint16_t operand_1)
 ///  this operand is overwritten with the result. 
 /// @param	operand_2		2-byte value encoded by the operand. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
@@ -230,7 +230,7 @@ int TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_
 	TCOMP_UDVM_SET_2BYTES_VAL( operand_1, 
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) << operand_2) );
 
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,10 +245,10 @@ int TCOMP_UDVM_EXEC_INST__LSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_
 //     this operand is overwritten with the result. 
 /// @param	operand_2		2-byte value encoded by the operand. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 	
@@ -256,7 +256,7 @@ int TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_
 	TCOMP_UDVM_SET_2BYTES_VAL(operand_1,
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) >> operand_2) );
 
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -274,14 +274,14 @@ int TCOMP_UDVM_EXEC_INST__RSHIFT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
 	TCOMP_UDVM_SET_2BYTES_VAL(operand_1, 
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) + operand_2) );
 	
-	return 1;
+	return tsk_true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,14 +298,14 @@ int TCOMP_UDVM_EXEC_INST__ADD(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t o
 ///
 /// @retval	1 if succeed, otherwise returns 0.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 	
 	TCOMP_UDVM_SET_2BYTES_VAL(operand_1, 
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) - operand_2) );
 	
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,16 +320,16 @@ int TCOMP_UDVM_EXEC_INST__SUBTRACT(tcomp_udvm_t *udvm, uint16_t operand_1, uint1
 ///  this operand is overwritten with the result. 
 /// @param	operand_2		2-byte value encoded by the operand. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 	
 	TCOMP_UDVM_SET_2BYTES_VAL(operand_1, 
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) * operand_2) );
 	
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -345,22 +345,21 @@ int TCOMP_UDVM_EXEC_INST__MULTIPLY(tcomp_udvm_t *udvm, uint16_t operand_1, uint1
 ///   this operand is overwritten with the result.
 /// @param	operand_2		2-byte value encoded by the operand. Decompression failure occurs if this operand is zero. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
-	if(!operand_2)
-	{
+	if(!operand_2){
 		tcomp_udvm_createNackInfo2(udvm, NACK_DIV_BY_ZERO);
-		return 0;
+		return tsk_false;
 	}
 
 	TCOMP_UDVM_SET_2BYTES_VAL(operand_1, 
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) / operand_2) );
 
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -376,22 +375,21 @@ int TCOMP_UDVM_EXEC_INST__DIVIDE(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_
 ///   this operand is overwritten with the result. 
 /// @param	operand_2		2-byte value encoded by the operand. Decompression failure occurs if this operand is zero.
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint16_t operand_1, uint16_t operand_2)
 {
 	CONSUME_CYCLES(1);
 
-	if(!operand_2)
-	{
+	if(!operand_2){
 		tcomp_udvm_createNackInfo2(udvm, NACK_DIV_BY_ZERO);
-		return 0;
+		return tsk_false;
 	}
 
 	TCOMP_UDVM_SET_2BYTES_VAL(operand_1, 
 		(TCOMP_UDVM_GET_2BYTES_VAL(operand_1) % operand_2) );
 
-	return 1;
+	return tsk_true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -409,7 +407,7 @@ int TCOMP_UDVM_EXEC_INST__REMAINDER(tcomp_udvm_t *udvm, uint16_t operand_1, uint
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)
 {
 	int segfault = 0;
 	uint16_t* list_temp = 0;
@@ -419,15 +417,17 @@ int TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t start, uin
 	
 	CONSUME_CYCLES(( 1 + k *(CEILLINGLOG2(k) + n) )); /* 1 + k * (ceiling(log2(k)) + n) */
 
-	if(TCOMP_UDVM_GET_SIZE() <= (size_t)(start+(n*k*2)) ){ segfault = 1; goto __SEGFAULT; };
+	if(TCOMP_UDVM_GET_SIZE() <= (size_t)(start+(n*k*2)) ){ 
+		segfault = 1; 
+		goto __SEGFAULT; 
+	};
 
 	//
 	// Create FirstList with key-value pairs
 	//
 	list1_values = (IndexValuePair_t*)tsk_calloc(k, sizeof(IndexValuePair_t));
 	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
-	for(j=0, pos=0; pos<k; j+=2,pos++)
-	{
+	for(j=0, pos=0; pos<k; j+=2,pos++){
 		list1_values[pos].index = pos;
 		list1_values[pos].value = *((uint16_t*)TCOMP_UDVM_GET_BUFFER_AT(start+j));
 	}
@@ -440,12 +440,10 @@ int TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t start, uin
 	/* Sort all lists */
 	list_temp = tsk_calloc(k, sizeof(uint16_t));
 	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
-	for(list_index = 0; list_index < n; list_index++)
-	{
+	for(list_index = 0; list_index < n; list_index++){
 		uint16_t* list_start = (uint16_t*)TCOMP_UDVM_GET_BUFFER_AT( start + (list_index*k*2) );
 		memcpy(list_temp, list_start, k*2);
-		for(list_el=0; list_el<k; list_el++)
-		{
+		for(list_el=0; list_el<k; list_el++){
 			list_start[(list_el)] = list_temp[ list1_values[list_el].index ];
 		}
 	}
@@ -457,10 +455,10 @@ __SEGFAULT:
 	if(segfault)
 	{
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 
-	return 1;
+	return tsk_true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -478,7 +476,7 @@ __SEGFAULT:
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t start, uint16_t n, uint16_t k)
 {
 	int segfault = 0;
 	uint16_t* list_temp = 0;
@@ -495,8 +493,7 @@ int TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t start, ui
 	//
 	list1_values = (IndexValuePair_t*)tsk_calloc(k, sizeof(IndexValuePair_t));
 	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
-	for(j=0, pos=0; pos<k; j+=2,pos++)
-	{
+	for(j=0, pos=0; pos<k; j+=2,pos++){
 		list1_values[pos].index = pos;
 		list1_values[pos].value = *((uint16_t*)TCOMP_UDVM_GET_BUFFER_AT(start+j));
 	}
@@ -510,12 +507,10 @@ int TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t start, ui
 	/* Sort all lists. */
 	list_temp = tsk_calloc(k, sizeof(uint16_t));
 	if(!list1_values) { segfault = 1; goto __SEGFAULT; };
-	for(list_index = 0; list_index < n; list_index++)
-	{
+	for(list_index = 0; list_index < n; list_index++){
 		uint16_t* list_start = (uint16_t*)TCOMP_UDVM_GET_BUFFER_AT(start + (list_index*k*2));
 		memcpy(list_temp, list_start, k*2);
-		for(list_el=0; list_el<k; list_el++)
-		{
+		for(list_el=0; list_el<k; list_el++){
 			list_start[(list_el)] = list_temp[ list1_values[list_el].index ];
 		}
 	}
@@ -524,13 +519,12 @@ __SEGFAULT:
 	TSK_FREE(list_temp);
 	TSK_FREE(list1_values);
 
-	if(segfault)
-	{
+	if(segfault){
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 
-	return 1;
+	return tsk_true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -547,9 +541,9 @@ __SEGFAULT:
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
 {
-	int ok = 1;
+	tsk_bool_t ok = tsk_true;
 	uint8_t *data = 0;
 
 	tsk_sha1context_t sha;
@@ -558,9 +552,8 @@ int TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t 
 
 	CONSUME_CYCLES(1+length);
 
-	if(!length || ((destination+length) > (int32_t)TCOMP_UDVM_GET_SIZE()))
-	{
-		ok = 0;
+	if(!length || ((destination+length) > (int32_t)TCOMP_UDVM_GET_SIZE())){
+		ok = tsk_false;
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		goto bail;
 	}
@@ -576,22 +569,19 @@ int TCOMP_UDVM_EXEC_INST__SHA_1(tcomp_udvm_t *udvm, uint16_t position, uint16_t 
 	/*
 	* Compute SHA-1
 	*/
-	if( (err = tsk_sha1reset(&sha)) )
-	{
-		ok = 0;
+	if( (err = tsk_sha1reset(&sha)) ){
+		ok = tsk_false;
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
-	if ( (err = tsk_sha1input(&sha, data, length)) )
-	{
-		ok = 0;
+	if ( (err = tsk_sha1input(&sha, data, length)) ){
+		ok = tsk_false;
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
 
-	if( (err = tsk_sha1result(&sha, (char*)Message_Digest)) )
-	{
-		ok = 0;
+	if( (err = tsk_sha1result(&sha, (char*)Message_Digest)) ){
+		ok = tsk_false;
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
 		goto bail;
 	}
@@ -619,21 +609,20 @@ bail:
 /// @param	address			Specifies the starting address of a 2-byte word. 
 /// @param	value			Specifies the value to be loaded into this word. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t value)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t value)
 {
 	CONSUME_CYCLES(1);
 
-	if( address >= TCOMP_UDVM_GET_SIZE() )
-	{
+	if( address >= TCOMP_UDVM_GET_SIZE() ){
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 
 	TCOMP_UDVM_SET_2BYTES_VAL(address, value);
 
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -649,28 +638,26 @@ int TCOMP_UDVM_EXEC_INST__LOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t va
 /// @param	address			Starting address of the contiguous 2-byte words. 
 /// @param	n				Number of 2-bytes values to load. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t n)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address, uint16_t n)
 {
 	uint16_t index, _address;
 
 	CONSUME_CYCLES(1+n);
 
-	if( (address + (2*n)) > udvm->executionPointer && (udvm->executionPointer >= address) )
-	{
+	if( (address + (2*n)) > udvm->executionPointer && (udvm->executionPointer >= address) ){
 		tcomp_udvm_createNackInfo2(udvm, NACK_MULTILOAD_OVERWRITTEN);
-		return 0;
+		return tsk_false;
 	}
 
 	/* FIXME: check for overwritten ==> see Torture test "2.5.  LOAD and MULTILOAD" */
-	for(index = 0, _address = address; index < n; index++ , _address += 2)
-	{
+	for(index = 0, _address = address; index < n; index++ , _address += 2){
 		uint16_t value_n = tcomp_udvm_opget_multitype_param(udvm);
 		TCOMP_UDVM_SET_2BYTES_VAL(_address, value_n);
 	}
 
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -686,14 +673,13 @@ int TCOMP_UDVM_EXEC_INST__MULTILOAD(tcomp_udvm_t *udvm, uint16_t address, uint16
 /// @param [in,out]	udvm	The udvm state machine entity. 
 /// @param	value			2-byte word to push. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value)
 {
-	int callback = (value>=0);
+	tsk_bool_t callback = (value>=0);
 	uint16_t stack_location, stack_fill;
-	if(!callback)
-	{
+	if(!callback){
 		value = tcomp_udvm_opget_multitype_param(udvm);
 	}
 
@@ -711,7 +697,7 @@ int TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value)
 	/* increasing stack_fill by 1*/
 	TCOMP_UDVM_SET_2BYTES_VAL(stack_location, (stack_fill+1));
 
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -724,14 +710,14 @@ int TCOMP_UDVM_EXEC_INST__PUSH(tcomp_udvm_t *udvm, int16_t value)
 /// @param [in,out]	udvm	The udvm state machine entity. 
 /// @param [in,out]	value	2-byte word to pop from the stack. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint16_t* value)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint16_t* value)
 {
 	uint16_t address;
 	uint16_t stack_location, stack_fill, _value = 0;
 
-	int callback = (value != 0);
+	tsk_bool_t callback = (value != 0);
 
 	CONSUME_CYCLES(callback?0:1);
 
@@ -745,8 +731,7 @@ int TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint16_t* value)
 	* zero at the commencement of a popping operation.  POP and RETURN pop
 	* values from the stack.
 	*/
-	if(stack_fill == 0)
-	{
+	if(stack_fill == 0){
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 		_value = 0;
 		goto end;
@@ -762,15 +747,14 @@ int TCOMP_UDVM_EXEC_INST__POP(tcomp_udvm_t *udvm, uint16_t* value)
 	_value = TCOMP_UDVM_GET_2BYTES_VAL( (stack_location + (2*stack_fill) + 2) );
 
 end:
-	if(callback)
-	{
+	if(callback){
 		*value = _value;
-	}else
-	{
+	}
+	else{
 		TCOMP_UDVM_SET_2BYTES_VAL(address, _value);
 	}
 
-	return 1; 
+	return tsk_true; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -785,18 +769,17 @@ end:
 /// @param	length			Specifies the number of bytes to be copied. 
 /// @param	destination		Gives the address to which the first byte in the string will be copied. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
 {
-	int ok = 1;
+	tsk_bool_t ok = tsk_true;
 
 	CONSUME_CYCLES(1+length);
 	
-	if( (position + length) > (int32_t)TCOMP_UDVM_GET_SIZE() || (destination + length) > (int32_t)TCOMP_UDVM_GET_SIZE() )
-	{
+	if( (position + length) > (int32_t)TCOMP_UDVM_GET_SIZE() || (destination + length) > (int32_t)TCOMP_UDVM_GET_SIZE() ){
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
@@ -822,19 +805,18 @@ int TCOMP_UDVM_EXEC_INST__COPY(tcomp_udvm_t *udvm, uint16_t position, uint16_t l
 /// @param	length			Specifies the number of bytes to be copied. 
 /// @param	destination		Gives the address to which the first byte in the string will be copied. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint16_t position, uint16_t length, uint16_t destination)
 {
-	int ok;
+	tsk_bool_t ok;
 	uint16_t destination_index;
 	
 	CONSUME_CYCLES(1+length);
 	
 	destination_index = TCOMP_UDVM_GET_2BYTES_VAL(destination);
 	ok = tcomp_udvm_bytecopy_self(udvm, &destination_index, position, length);
-	if(ok)
-	{	
+	if(ok){	
 		/* set next byte */
 		TCOMP_UDVM_SET_2BYTES_VAL(destination, destination_index);
 	}
@@ -855,9 +837,9 @@ int TCOMP_UDVM_EXEC_INST__COPY_LITERAL(tcomp_udvm_t *udvm, uint16_t position, ui
 /// @param	length			Specifies the number of bytes to be copied. 
 /// @param	destination		Gives the address to which the first byte in the string will be copied. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset, uint16_t length, uint16_t destination)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset, uint16_t length, uint16_t destination)
 {
 	uint16_t DEST, LEFT, RIGTH;
 	int32_t position = -1;
@@ -901,38 +883,33 @@ int TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset, uint1
 	T = (RIGTH - LEFT);
 	O = offset;
 
-	if( D>=0 && O<=D )
-	{
+	if( D>=0 && O<=D ){
 		/* case 1: easy case */
 		position = (DEST-O);
 	}
-	else if( D>=0 && O>D )
-	{
+	else if( D>=0 && O>D ){
 		/* case 2: */
 		double PAD = (D + ((ceil(((double)O-(double)D)/(double)T))*T))-O;
 		position = LEFT+(int32_t)PAD;
 	}
-	else if( D<0 )
-	{
+	else if( D<0 ){
 		/* case 3: */
 		position = DEST-O;
 	}
 
 	/* Check position */
-	if(position<0)
-	{
+	if(position<0){
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 
 	/* EXEC_INST__COPY_LITERAL */
 	destination_index = TCOMP_UDVM_GET_2BYTES_VAL(destination);
-	if(tcomp_udvm_bytecopy_self(udvm, &destination_index, position, length))
-	{
+	if(tcomp_udvm_bytecopy_self(udvm, &destination_index, position, length)){
 		TCOMP_UDVM_SET_2BYTES_VAL(destination, destination_index);
 	}
 
-	return 1;
+	return tsk_true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -952,13 +929,13 @@ int TCOMP_UDVM_EXEC_INST__COPY_OFFSET(tcomp_udvm_t *udvm, uint16_t offset, uint1
 /// @param	start_value		The starting value. 
 /// @param	offset			The offset used for computation. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint16_t address, uint16_t length, uint16_t start_value, uint16_t offset)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint16_t address, uint16_t length, uint16_t start_value, uint16_t offset)
 {
 	uint8_t* seqs_temp;
 	uint16_t n;
-	int ok;
+	tsk_bool_t ok;
 
 	CONSUME_CYCLES(1+length);
 
@@ -969,10 +946,11 @@ int TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint16_t address, uint16_t 
 	* so on up to the last byte which has value Seq[length - 1].
 	*/
 	seqs_temp = tsk_calloc(length, sizeof(uint8_t));
-	if(!seqs_temp) return 0;
+	if(!seqs_temp){
+		return tsk_false;
+	}
 
-	for(n=0; n < length; n++)
-	{
+	for(n=0; n < length; n++){
 		seqs_temp[n] = (start_value + n * offset)%256;
 	}
 	/*
@@ -997,24 +975,22 @@ int TCOMP_UDVM_EXEC_INST__MEMSET(tcomp_udvm_t *udvm, uint16_t address, uint16_t 
 * @param address defines the address to jump to
 * @retval 1 if succeed, otherwise returns 0
 */
-int TCOMP_UDVM_EXEC_INST__JUMP(tcomp_udvm_t *udvm, int16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__JUMP(tcomp_udvm_t *udvm, int16_t address)
 {
 	int callback = (address >=0 );
 	CONSUME_CYCLES(callback?0:1);
 
-	if(!callback)
-	{
+	if(!callback){
 		address = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
 	}
 	
-	if(address > (int32_t)TCOMP_UDVM_GET_SIZE())
-	{
+	if(address > (int32_t)TCOMP_UDVM_GET_SIZE()){
 		tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-		return 0;
+		return tsk_false;
 	}
 	udvm->executionPointer = address;
 
-	return 1; 
+	return tsk_true; 
 }
 
 
@@ -1038,26 +1014,23 @@ int TCOMP_UDVM_EXEC_INST__JUMP(tcomp_udvm_t *udvm, int16_t address)
  * @param	address_3		address to jump to if (value_1 > value_2). 
  * @retval	1	if succeed, otherwise returns 0.
 **/
-int TCOMP_UDVM_EXEC_INST__COMPARE(tcomp_udvm_t *udvm, uint16_t value_1, uint16_t value_2, uint16_t address_1, uint16_t address_2, uint16_t address_3)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__COMPARE(tcomp_udvm_t *udvm, uint16_t value_1, uint16_t value_2, uint16_t address_1, uint16_t address_2, uint16_t address_3)
 {
-	int ok = 1;
+	tsk_bool_t ok = 1;
 
 	CONSUME_CYCLES(1);
 
-	if(value_1 < value_2)
-	{
+	if(value_1 < value_2){
 		ok &= TCOMP_UDVM_EXEC_INST__JUMP(udvm, address_1);
 		goto end;
 	}
 
-	if(value_1 == value_2)
-	{
+	if(value_1 == value_2){
 		ok &= TCOMP_UDVM_EXEC_INST__JUMP(udvm, address_2);
 		goto end;
 	}
 
-	if(value_1 > value_2)
-	{
+	if(value_1 > value_2){
 		ok &= TCOMP_UDVM_EXEC_INST__JUMP(udvm, address_3);
 		goto end;
 	}
@@ -1078,9 +1051,9 @@ end:
 /// @param [in,out]	udvm	The udvm state machine entity. 
 /// @param	address			The next address. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint16_t address)
 {
 	CONSUME_CYCLES(1);
 	
@@ -1100,15 +1073,14 @@ int TCOMP_UDVM_EXEC_INST__CALL(tcomp_udvm_t *udvm, uint16_t address)
 ///
 /// @retval	True if succeed, otherwise return false . 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__RETURN(tcomp_udvm_t *udvm)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__RETURN(tcomp_udvm_t *udvm)
 {
 	uint16_t value = 0;
-	int ok = 1;
+	tsk_bool_t ok = tsk_true;
 
 	CONSUME_CYCLES(1);	
 	
-	if( (ok = TCOMP_UDVM_EXEC_INST__POP(udvm, &value)) )
-	{
+	if( (ok = TCOMP_UDVM_EXEC_INST__POP(udvm, &value)) ){
 		ok &= TCOMP_UDVM_EXEC_INST__JUMP(udvm, value);
 	}
 
@@ -1128,32 +1100,29 @@ int TCOMP_UDVM_EXEC_INST__RETURN(tcomp_udvm_t *udvm)
 /// @param	n				The number of possibilities. 
 /// @param	j				The possibility. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__SWITCH(tcomp_udvm_t *udvm, uint16_t n, uint16_t j)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__SWITCH(tcomp_udvm_t *udvm, uint16_t n, uint16_t j)
 {
 	uint16_t next = 0;
-	int ok = 1;
+	tsk_bool_t ok = tsk_true;
 
 	CONSUME_CYCLES(1+n);
 
 	/* Decompression failure occurs if j specifies a value of n or more. */
-	if(j >= n)
-	{
+	if(j >= n){
 		tcomp_udvm_createNackInfo2(udvm, NACK_SWITCH_VALUE_TOO_HIGH);
-		ok = 0;
+		ok = tsk_false;
 		goto end;
 	}
 
-	do
-	{
+	do{
 		next = tcomp_udvm_opget_address_param(udvm, udvm->last_memory_address_of_instruction);
 	}
 	while(j--);
 
 end:
-	if(ok)
-	{
+	if(ok){
 		ok = TCOMP_UDVM_EXEC_INST__JUMP(udvm, next);
 	}
 
@@ -1176,19 +1145,18 @@ end:
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_t position, uint16_t length, uint16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_t position, uint16_t length, uint16_t address)
 {
-	int ok = 1;
+	tsk_bool_t ok = tsk_true;
 	uint8_t* data;
 	uint16_t crc_value;
 
 	CONSUME_CYCLES(1+length);
 
 	data = tsk_calloc(length, sizeof(uint8_t));
-	if(!data)
-	{
+	if(!data){
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
-		return 0;
+		return tsk_false;
 	}
 
 	/* copy data */
@@ -1209,8 +1177,7 @@ int TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_t posit
 	* Otherwise the UDVM jumps to the memory address specified by the
 	* address operand.
 	*/
-	if(value != crc_value)
-	{
+	if(value != crc_value){
 		TCOMP_UDVM_EXEC_INST__JUMP(udvm, address);
 	}
 
@@ -1231,9 +1198,9 @@ int TCOMP_UDVM_EXEC_INST__CRC(tcomp_udvm_t *udvm, uint16_t value, uint16_t posit
 ///
 /// @retval	True if succeed, otherwise return false.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)
 {
-	int ok = 1;
+	tsk_bool_t ok = tsk_true;
 	const uint8_t* compressedDataAddress;
 	uint8_t* destinationAddress;
 
@@ -1250,17 +1217,14 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length, uint1
 
 	compressedDataAddress = tcomp_buffer_readBytes(udvm->sigCompMessage->remaining_sigcomp_buffer, length);
 	destinationAddress  = TCOMP_UDVM_GET_BUFFER_AT(destination);
-	if(compressedDataAddress)
-	{
+	if(compressedDataAddress){
 		ok &= tcomp_udvm_bytecopy_to(udvm, destination, compressedDataAddress, length);
-		if(ok)
-		{
+		if(ok){
 			/* (8 * n + 1000) * cycles_per_bit */
 			udvm->maximum_UDVM_cycles += ((8*length+1000) * udvm->stateHandler->sigcomp_parameters->cpbCode);
 		}
 	}
-	else
-	{
+	else{
 		/*
 		* If the instruction requests data that lies beyond the end of the
 		* SigComp message, no data is returned.  Instead the UDVM moves program
@@ -1293,9 +1257,9 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BYTES(tcomp_udvm_t *udvm, uint16_t length, uint1
  *
  * @retval	1 if succeed, otherwise returns 0. 
 **/
-int TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16_t destination, uint16_t address)
 {
-	int ok = 1;
+	tsk_bool_t ok = tsk_true;
 	uint16_t input_bit_order, reserved;
 	uint8_t F_BIT, P_BIT;
 	uint8_t* old_P_BIT;
@@ -1317,10 +1281,10 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16
 	* instruction is encountered and the input_bit_order register does not
 	* lie between 0 and 7 inclusive.
 	*/
-	if(reserved) /* MUST BE ZEROS --> Only 3bits --> [0-7] */
-	{
+	if(reserved){
+		/* MUST BE ZEROS --> Only 3bits --> [0-7] */
 		tcomp_udvm_createNackInfo2(udvm, NACK_BAD_INPUT_BITORDER);
-		return 0;
+		return tsk_false;
 	}
 
 	/* F and P BITS */
@@ -1331,10 +1295,9 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16
 	* Decompression failure occurs if this operand (length) does not lie between 0
 	* and 16 inclusive.
 	*/
-	if(/*length<0 ||*/ length>16)
-	{
+	if(/*length<0 ||*/ length>16){
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_OPERAND);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
@@ -1344,8 +1307,7 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16
 	* P=1 --> LSB_TO_MSB
 	*/
 	old_P_BIT = tcomp_buffer_getP_BIT(udvm->sigCompMessage->remaining_sigcomp_buffer);
-	if(*old_P_BIT != P_BIT)
-	{
+	if(*old_P_BIT != P_BIT){
 		/*
 		* If the P-bit has changed since the last INPUT instruction, any fraction of a
 		* byte still held by the dispatcher MUST be discarded (even if the
@@ -1360,8 +1322,7 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16
 	* SigComp message, no data is returned.  Instead the UDVM moves program
 	* execution to the address specified by the address operand.
 	*/
-	if( (length) > tcomp_buffer_getRemainingBits(udvm->sigCompMessage->remaining_sigcomp_buffer) )
-	{
+	if( (length) > tcomp_buffer_getRemainingBits(udvm->sigCompMessage->remaining_sigcomp_buffer) ){
 		ok &= TCOMP_UDVM_EXEC_INST__JUMP(udvm, address);
 		goto end;
 	}
@@ -1372,22 +1333,18 @@ int TCOMP_UDVM_EXEC_INST__INPUT_BITS(tcomp_udvm_t *udvm, uint16_t length, uint16
 	* F=0 --> MSB_TO_LSB
 	* F=1 --> LSB_TO_MSB
 	*/
-	if(P_BIT == TCOMP_P_BIT_MSB_TO_LSB)
-	{
+	if(P_BIT == TCOMP_P_BIT_MSB_TO_LSB){
 		/* MSB_TO_LSB */
 		uint16_t value = tcomp_buffer_readMsbToLsb(udvm->sigCompMessage->remaining_sigcomp_buffer, length);
-		if(F_BIT == F_BIT_LSB_TO_MSB)
-		{
+		if(F_BIT == F_BIT_LSB_TO_MSB){
 			value = (TSK_BINARY_REVERSE_2BYTE(value)>>(16-length));
 		}
 		TCOMP_UDVM_SET_2BYTES_VAL(destination, value);
 	}
-	else
-	{
+	else{
 		/* LSB_TO_MSB */
 		uint16_t value = tcomp_buffer_readLsbToMsb(udvm->sigCompMessage->remaining_sigcomp_buffer, length);
-		if(F_BIT == F_BIT_LSB_TO_MSB) 
-		{
+		if(F_BIT == F_BIT_LSB_TO_MSB) {
 			value = (TSK_BINARY_REVERSE_2BYTE(value)>>(16-length));
 		}
 		TCOMP_UDVM_SET_2BYTES_VAL(destination, value);
@@ -1416,7 +1373,7 @@ end:
 ///
 /// @retval	 True if succeed, otherwise return false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination, uint16_t address, uint16_t n)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination, uint16_t address, uint16_t n)
 {
 	/* 
 	The input_bit_order register contains the following three flags:
@@ -1425,13 +1382,13 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 	|         reserved        |F|H|P|  68 - 69
 	+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 	*/
-	int ok = 1;
+	tsk_bool_t ok = tsk_true;
 	uint16_t input_bit_order, reserved;
 	uint8_t H_BIT, P_BIT, *old_P_BIT;
 
 	uint16_t bits_j, lower_bound_j, upper_bound_j, uncompressed_j;
 	uint16_t bits_total = 0, k = 0, H, J;
-	int criterion_ok = 0;
+	tsk_bool_t criterion_ok = tsk_false;
 
 	CONSUME_CYCLES(1+n);
 
@@ -1449,10 +1406,10 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 	* instruction is encountered and the input_bit_order register does not
 	* lie between 0 and 7 inclusive.
 	*/
-	if(reserved) /* MUST BE ZEROS --> Only 3bits --> [0-7] */
-	{
+	if(reserved){
+		/* MUST BE ZEROS --> Only 3bits --> [0-7] */
 		tcomp_udvm_createNackInfo2(udvm, NACK_BAD_INPUT_BITORDER);
-		return 0;
+		return tsk_false;
 	}
 
 	/* H and P */
@@ -1466,8 +1423,7 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 	* P=1 --> LSB_TO_MSB
 	*/
 	old_P_BIT = tcomp_buffer_getP_BIT(udvm->sigCompMessage->remaining_sigcomp_buffer);
-	if( *old_P_BIT != P_BIT )
-	{
+	if( *old_P_BIT != P_BIT ){
 		/*
 		* If the P-bit has changed since the last INPUT instruction, any fraction of a
 		* byte still held by the dispatcher MUST be discarded (even if the
@@ -1482,8 +1438,7 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 	*/
 
 	/* 1. Set j := 1 and set H := 0. */
-	for(J = 1, H = 0; J<=n; J++)
-	{
+	for(J = 1, H = 0; J<=n; J++){
 		/*
 		* Request bits_j compressed bits.  Interpret the returned bits as an
 		* integer k from 0 to 2^bits_j - 1, as explained in Section 8.2.
@@ -1495,14 +1450,15 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 		bits_total += bits_j;
 
 		/*Decompression failure occurs if (bits_1 + ... + bits_n) > 16.*/
-		if(bits_total > 16)
-		{
-			ok = 0;
+		if(bits_total > 16){
+			ok = tsk_false;
 			// FIXME: DECOMPRESSION failure TOO_MANY_BITS_REQUESTED
 			goto end;
 		}
 
-		if(criterion_ok) continue;
+		if(criterion_ok){
+			continue;
+		}
 
 //==step_4:
 		/*
@@ -1510,8 +1466,7 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 		* message, terminate the INPUT-HUFFMAN instruction and move program
 		* execution to the memory address specified by the address operand.
 		*/
-		if( (bits_j) > tcomp_buffer_getRemainingBits(udvm->sigCompMessage->remaining_sigcomp_buffer) )
-		{
+		if( (bits_j) > tcomp_buffer_getRemainingBits(udvm->sigCompMessage->remaining_sigcomp_buffer) ){
 			ok &= TCOMP_UDVM_EXEC_INST__JUMP(udvm, address);
 			goto end;
 		}
@@ -1521,19 +1476,15 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 		* 2. Request bits_j compressed bits.  Interpret the returned bits as an
 		* integer k from 0 to 2^bits_j - 1, as explained in Section 8.2.
 		*/
-		if(P_BIT == TCOMP_P_BIT_MSB_TO_LSB)
-		{
+		if(P_BIT == TCOMP_P_BIT_MSB_TO_LSB){
 			k = tcomp_buffer_readMsbToLsb(udvm->sigCompMessage->remaining_sigcomp_buffer, bits_j);
-			if(H_BIT == H_BIT_LSB_TO_MSB) 
-			{
+			if(H_BIT == H_BIT_LSB_TO_MSB) {
 				k = (TSK_BINARY_REVERSE_2BYTE(k)>>(16-bits_j));
 			}
 		}
-		else
-		{
+		else{
 			k = tcomp_buffer_readLsbToMsb(udvm->sigCompMessage->remaining_sigcomp_buffer, bits_j);
-			if(H_BIT == H_BIT_LSB_TO_MSB)
-			{
+			if(H_BIT == H_BIT_LSB_TO_MSB){
 				k = (TSK_BINARY_REVERSE_2BYTE(k)>>(16-bits_j));
 			}
 		}
@@ -1547,13 +1498,11 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 		* Then go back to Step 2, unless j > n in which case decompression
 		* failure occurs.
 		*/
-		if( (H < lower_bound_j) || (H > upper_bound_j) )
-		{
+		if( (H < lower_bound_j) || (H > upper_bound_j) ){
 			continue;
 			//goto step_2;
 		}
-		else
-		{
+		else{
 			/*
 			* Copy (H + uncompressed_j - lower_bound_j) modulo 2^16 to the
 			* memory address specified by the destination operand.
@@ -1563,14 +1512,12 @@ int TCOMP_UDVM_EXEC_INST__INPUT_HUFFMAN(tcomp_udvm_t *udvm, uint16_t destination
 		}
 	}
 
-	if(!criterion_ok)
-	{
+	if(!criterion_ok){
 		tcomp_udvm_createNackInfo2(udvm, NACK_HUFFMAN_NO_MATCH);
-		ok = 0;
+		ok = tsk_false;
 		goto end;
 	}
-	else if(ok)
-	{
+	else if(ok){
 		TCOMP_UDVM_SET_2BYTES_VAL(destination, H);
 		udvm->maximum_UDVM_cycles += (bits_total * udvm->stateHandler->sigcomp_parameters->cpbValue);
 	}
@@ -1593,9 +1540,9 @@ end:
 /// @param	state_address				Contains a UDVM memory address. 
 /// @param	state_instruction			Next instruction to jump to. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length, uint16_t state_begin, uint16_t state_length, uint16_t state_address, uint16_t state_instruction)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length, uint16_t state_begin, uint16_t state_length, uint16_t state_address, uint16_t state_instruction)
 {
 	tcomp_state_t* lpState = NULL;
 	tcomp_buffer_handle_t* partial_id;
@@ -1605,19 +1552,17 @@ int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_iden
 	* Decompression failure occurs if partial_identifier_length does not
 	* lie between 6 and 20 inclusive.
 	*/
-	if(partial_identifier_length<6 || partial_identifier_length>20)
-	{
+	if(partial_identifier_length<6 || partial_identifier_length>20){
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_STATE_ID_LENGTH);
-		return 0;
+		return tsk_false;
 	}
 	/*
 	* decompression failure will always occur if the state_length operand
 	* is set to 0 but the state_begin operand is non-zero.
 	*/
-	if(!state_length && state_begin)
-	{
+	if(!state_length && state_begin){
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_STATE_PROBE);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
@@ -1631,21 +1576,19 @@ int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_iden
 	* Decompression failure occurs if no state item matching the partial state identifier can be found, if
 	* more than one state item matches the partial identifier.
 	*/
-	if(!lpState || !match_count || match_count>1)
-	{
+	if(!lpState || !match_count || match_count>1){
 		tcomp_udvm_createNackInfo3(udvm, (match_count>1) ? NACK_ID_NOT_UNIQUE : NACK_STATE_NOT_FOUND, partial_id);
 		TSK_OBJECT_SAFE_FREE(partial_id);
-		return 0;
+		return tsk_false;
 	}
-	else if(partial_identifier_length < lpState->minimum_access_length)
-	{
+	else if(partial_identifier_length < lpState->minimum_access_length){
 		/*
 		* Decompression failure occurs if partial_identifier_length is less than the minimum_access_length of
 		* the matched state item.
 		*/
 		tcomp_udvm_createNackInfo3(udvm, NACK_STATE_NOT_FOUND, partial_id);
 		TSK_OBJECT_SAFE_FREE(partial_id);
-		return 0;
+		return tsk_false;
 	}
 	TSK_OBJECT_SAFE_FREE(partial_id);
 
@@ -1654,26 +1597,22 @@ int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_iden
 	* state_length is set to 0 then its value is taken from the returned
 	* item of state instead.
 	*/
-	if(!state_address) 
-	{
+	if(!state_address) {
 		state_address = lpState->address;
 	}
-	if(!state_instruction) 
-	{
+	if(!state_instruction) {
 		state_instruction = lpState->instruction;
 	}
-	if(!state_length) 
-	{
+	if(!state_length) {
 		state_length = lpState->length;
 	}
 
 	CONSUME_CYCLES(1+state_length);
 
 	/* Decompression failure occurs if bytes are copied from beyond the end of the state_value. */
-	if((size_t)(state_begin + state_length) > tcomp_buffer_getSize(lpState->value))
-	{
+	if((size_t)(state_begin + state_length) > tcomp_buffer_getSize(lpState->value)){
 		tcomp_udvm_createNackInfo3(udvm, NACK_STATE_TOO_SHORT, partial_id);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
@@ -1689,15 +1628,13 @@ int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_iden
 	* execution resumes at the next instruction following the STATE-ACCESS
 	* instruction.
 	*/
-	if(state_instruction)
-	{
-		if(!TCOMP_UDVM_EXEC_INST__JUMP(udvm, state_instruction))
-		{
-			return 0;
+	if(state_instruction){
+		if(!TCOMP_UDVM_EXEC_INST__JUMP(udvm, state_instruction)){
+			return tsk_false;
 		}
 	}
 
-	return 1;
+	return tsk_true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1714,21 +1651,21 @@ int TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t partial_iden
 /// @param	minimum_access_length		Defines the minimun access length. 
 /// @param	state_retention_priority	Defines the state retenion priority. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)
 {
 	CONSUME_CYCLES(1 + state_length);
 
 	/*
 	*	Create temporary state?
 	*/
-	if(!tcomp_udvm_createTempState(udvm, state_length, state_address, state_instruction, minimum_access_length, state_retention_priority, 0))
-	{
-		return 0;
+	if(!tcomp_udvm_createTempState(udvm, state_length, state_address, state_instruction, 
+		minimum_access_length, state_retention_priority, 0)){
+		return tsk_false;
 	}
 
-	return 1;
+	return tsk_true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1744,7 +1681,7 @@ int TCOMP_UDVM_EXEC_INST__STATE_CREATE(tcomp_udvm_t *udvm, uint16_t state_length
 ///
 /// @retval	True if succeed, otherwise return false . 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-int TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identifier_start, uint16_t partial_identifier_length)
 {
 	tcomp_tempstate_to_free_t *lpDesc;
 
@@ -1754,20 +1691,18 @@ int TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identi
 	* Decompression failure MUST occur if more than four state free
 	* requests are made before the END-MESSAGE instruction is encountered.
 	*/
-	if(tcomp_result_getTempStatesToFreeSize(udvm->lpResult) >=4)
-	{
+	if(tcomp_result_getTempStatesToFreeSize(udvm->lpResult) >=4){
 		tcomp_udvm_createNackInfo2(udvm, NACK_TOO_MANY_STATE_REQUESTS);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
 	* Decompression failure also occurs if partial_identifier_length does
 	* not lie between 6 and 20 inclusive.
 	*/
-	if(partial_identifier_length<6 || partial_identifier_length>20)
-	{
+	if(partial_identifier_length<6 || partial_identifier_length>20){
 		tcomp_udvm_createNackInfo2(udvm, NACK_INVALID_STATE_ID_LENGTH);
-		return 0;
+		return tsk_false;
 	}
 
 	lpDesc = TCOMP_TEMPSTATE_TO_FREE_CREATE();
@@ -1777,7 +1712,7 @@ int TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identi
 	
 	/*** Do not ByteCopy data, wait for END_MESSAGE --> see RFC 3320 subclause 9.4.9 **/
 	
-	return 1; 
+	return tsk_true; 
 }
 
 /**
@@ -1789,22 +1724,21 @@ int TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial_identi
 * @param output_length defines the length of the byte string to be provided to the dispatcher
 * @retval 1 if succeed, otherwise returns 0
 */
-int TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length)
 {
-	int ok;
+	tsk_bool_t ok;
 	size_t *outputbuffer_size;
 
 	CONSUME_CYCLES(1+output_length);
 
 	outputbuffer_size = tcomp_buffer_getIndexBytes(udvm->lpResult->output_buffer);
-	if( (*outputbuffer_size + output_length) > 65536 )
-	{
+	if( (*outputbuffer_size + output_length) > 65536 ){
 		/*
 		* Decompression failure occurs if the cumulative number of bytes
 		* provided to the dispatcher exceeds 65536 bytes.
 		*/
 		tcomp_udvm_createNackInfo2(udvm, NACK_OUTPUT_OVERFLOW);
-		return 0;
+		return tsk_false;
 	}
 
 	// FIXME: do it once?
@@ -1834,10 +1768,10 @@ int TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint
 /// @param	minimum_access_length			Defines the state's minimum access length.
 /// @param	state_retention_priority		Determines the order in which state will be deleted when the compartment exceeds its allocated state memory. 
 ///
-/// @retval	1 if succeed, otherwise returns 0. 
+/// @retval	@a tsk_true if succeed, otherwise returns @a tsk_false. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)
+tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)
 {
 	size_t udvm_size;
 
@@ -1848,30 +1782,26 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 	/*
 	*	Create temporary state provided by END_MESSAGE?
 	*/
-	if(!tcomp_udvm_createTempState(udvm, state_length, state_address, state_instruction, minimum_access_length, state_retention_priority, 1))
-	{
-		return 0;
+	if(!tcomp_udvm_createTempState(udvm, state_length, state_address, state_instruction, minimum_access_length, state_retention_priority, 1)){
+		return tsk_false;
 	}
 
 	/*
 	* Byte copy all waiting STATE-FREE/STATE-CREATE/END-MESSAGE states
 	*/
-	if(!tcomp_udvm_byteCopy_TempStates(udvm))
-	{
+	if(!tcomp_udvm_byteCopy_TempStates(udvm)){
 		tcomp_udvm_createNackInfo2(udvm, NACK_INTERNAL_ERROR);
-		return 0;
+		return tsk_false;
 	}
 
 	/*
 	*	Feedback has been requested?
 	*/
-	if(requested_feedback_location)
-	{
+	if(requested_feedback_location){
 		uint8_t r_f_l;
-		if(requested_feedback_location >= udvm_size)
-		{
+		if(requested_feedback_location >= udvm_size){
 			tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-			return 0;
+			return tsk_false;
 		}
 		/*
 		0   1   2   3   4   5   6   7
@@ -1889,21 +1819,18 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 		udvm->lpResult->req_feedback->Q = (r_f_l & 0x04) ? 1 : 0;
 
 		requested_feedback_location++; /* skip 1-byte header */
-		if(udvm->lpResult->req_feedback->Q)
-		{
+		if(udvm->lpResult->req_feedback->Q){
 			/* we have a requested feedback item */
 			uint8_t r_f_i = *TCOMP_UDVM_GET_BUFFER_AT(requested_feedback_location);
 			uint8_t length = 1; /* [1-128] */
-			if(r_f_i & 0x80)
-			{
+			if(r_f_i & 0x80){
 				/* case 2 */
 				length += (r_f_i & 0x7f); /* seven last bits */
 			}
 
-			if(requested_feedback_location >= TCOMP_UDVM_GET_SIZE())
-			{
+			if(requested_feedback_location >= TCOMP_UDVM_GET_SIZE()){
 				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-				return 0;
+				return tsk_false;
 			}
 			/* copy from udvm */
 			// FIXME: use realloc
@@ -1916,8 +1843,7 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 	//
 	//	SigComp parameters have been returned?
 	//
-	if(returned_parameters_location)
-	{
+	if(returned_parameters_location){
 		uint8_t r_p_l, SigComp_version;
 		uint16_t index;
 		tcomp_buffer_handle_t *partial_id;
@@ -1945,17 +1871,15 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 		+---+---+---+---+---+---+---+---+
 		*/
 
-		if(returned_parameters_location >= udvm_size)
-		{
+		if(returned_parameters_location >= udvm_size){
 			tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-			return 0;
+			return tsk_false;
 		}
 
 		/* cpb+dms+sms */
 		r_p_l = *TCOMP_UDVM_GET_BUFFER_AT(returned_parameters_location);
 		returned_parameters_location++;
-		if(r_p_l)
-		{
+		if(r_p_l){
 			tcomp_params_setCpbCode(udvm->lpResult->remote_parameters, ((r_p_l & 0xc0)>>6));
 			tcomp_params_setDmsCode(udvm->lpResult->remote_parameters, ((r_p_l & 0x38)>>3));
 			tcomp_params_setSmsCode(udvm->lpResult->remote_parameters, (r_p_l & 0x07));
@@ -1963,26 +1887,24 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 		/* sigcomp version */
 		SigComp_version = *TCOMP_UDVM_GET_BUFFER_AT(returned_parameters_location);
 		returned_parameters_location++;
-		if(SigComp_version)
-		{
+		if(SigComp_version){
 			udvm->lpResult->remote_parameters->SigComp_version = SigComp_version;
 		}
 		/* state items */
-		for(index = returned_parameters_location; index <(udvm_size-1); )
-		{
+		for(index = returned_parameters_location; index <(udvm_size-1); ){
 			uint8_t length = *TCOMP_UDVM_GET_BUFFER_AT(index); // 1-byte
-			if(length<6 || length>20) break;
+			if(length<6 || length>20){
+				break;
+			}
 			index++;
-			if((index+length) >= (uint16_t)udvm_size)
-			{
+			if((index+length) >= (uint16_t)udvm_size){
 				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-				return 0;
+				return tsk_false;
 			}
 			partial_id = TCOMP_BUFFER_CREATE();
 			tcomp_buffer_allocBuff(partial_id, length);
 			tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(partial_id), index, length);
-			if(!udvm->lpResult->remote_parameters->returnedStates)
-			{
+			if(!udvm->lpResult->remote_parameters->returnedStates){
 				udvm->lpResult->remote_parameters->returnedStates = TSK_LIST_CREATE();
 			}
 			tsk_list_push_back_data(udvm->lpResult->remote_parameters->returnedStates, (void**)&partial_id);
@@ -1990,6 +1912,6 @@ int TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_fee
 		}
 	}
 
-	return 1; 
+	return tsk_true; 
 }
 

@@ -63,6 +63,7 @@ typedef enum thttp_header_type_e
 	thttp_htype_Content_Length,
 	thttp_htype_Content_Type,
 	thttp_htype_Dummy,
+	thttp_htype_ETag,
 	thttp_htype_Proxy_Authenticate,
 	thttp_htype_Proxy_Authorization,
 	thttp_htype_Transfer_Encoding,

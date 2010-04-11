@@ -74,8 +74,8 @@ uint16_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const 
 void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_result_t **lpResult);
 tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, const tcomp_nackinfo_t *);
 
-void tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler);
-void tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler);
+int tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler);
+int tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler);
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_statehandler_def_t;
 

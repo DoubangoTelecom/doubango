@@ -106,7 +106,7 @@ TINYSAK_API int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t si
 TINYSAK_API int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void*data, size_t size);
 TINYSAK_API int tsk_buffer_cleanup(tsk_buffer_t* self);
 
-TINYSAK_GEXTERN const void *tsk_buffer_def_t;
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_buffer_def_t;
 
 TSK_END_DECLS
 

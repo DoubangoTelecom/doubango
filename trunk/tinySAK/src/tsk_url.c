@@ -49,12 +49,15 @@
 char* tsk_url_encode(const char* url) {
 	char *purl = (char*)url, *buf = tsk_malloc(strlen(url) * 3 + 1), *pbuf = buf;
 	while (*purl) {
-		if (isalnum(*purl) || *purl == '-' || *purl == '_' || *purl == '.' || *purl == '~') 
+		if (isalnum(*purl) || *purl == '-' || *purl == '_' || *purl == '.' || *purl == '~'){
 			*pbuf++ = *purl;
-		else if (*purl == ' ') 
+		}
+		else if (*purl == ' '){
 			*pbuf++ = '+';
-		else 
+		}
+		else{
 			*pbuf++ = '%', *pbuf++ = tsk_b10tob16(*purl >> 4), *pbuf++ = tsk_b10tob16(*purl & 15);
+		}
 		purl++;
 	}
 	*pbuf = '\0';

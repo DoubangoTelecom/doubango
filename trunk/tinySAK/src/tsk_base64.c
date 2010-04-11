@@ -96,19 +96,16 @@ size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output)
 	size_t output_size = 0;
 
 	/* Caller provided his own buffer? */
-	if(!*output)
-	{
+	if(!*output){
 		*output = tsk_calloc(1, (TSK_BASE64_ENCODE_LEN(input_size)+1));
 	}
 
 	/* Too short? */
-	if(input_size < TSK_BASE64_ENCODE_BLOCK_SIZE)
-	{
+	if(input_size < TSK_BASE64_ENCODE_BLOCK_SIZE){
 		goto quantum;
 	}
 	
-	do
-	{
+	do{
 		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ input[i]>> 2 ];
 		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i]<<4 | input[i+1]>>4) & 0x3F ];
 		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ (input[i+1]<<2 | input[i+2]>>6) & 0x3F ];
@@ -120,8 +117,7 @@ size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output)
 
 quantum:
 	
-	if((input_size - i) == 1)
-	{
+	if((input_size - i) == 1){
 		/* The final quantum of encoding input is exactly 8 bits; here, the
 		   final unit of encoded output will be two characters followed by
 		   two "=" padding characters. 
@@ -130,8 +126,7 @@ quantum:
 		*(*output + output_size++) = TSK_BASE64_ENCODE_ALPHABET [ input[i]<<4 & 0x3F ];
 		*(*output + output_size++) = TSK_BASE64_PAD, *(*output + output_size++) = TSK_BASE64_PAD;
 	}
-	else if((input_size-i) == 2)
-	{
+	else if((input_size-i) == 2){
 		/*	The final quantum of encoding input is exactly 16 bits; here, the
 			final unit of encoded output will be three characters followed by
 			one "=" padding character. 
@@ -191,46 +186,50 @@ size_t tsk_base64_decode(const uint8_t* input, size_t input_size, char **output)
 	size_t output_size = 0;
 
 	/* Caller provided his own buffer? */
-	if(!*output)
-	{
+	if(!*output){
 		*output = tsk_calloc(1, (TSK_BASE64_DECODE_LEN(input_size)+1));
 	}
 	
 	/* Count pads and remove them from the base64 string */
-	for(i = input_size, pay_size = input_size; i > 0; i--)
-	{
-		if(input[i-1] == TSK_BASE64_PAD) pay_size--;
-		else break;
+	for(i = input_size, pay_size = input_size; i > 0; i--){
+		if(input[i-1] == TSK_BASE64_PAD) {
+			pay_size--;
+		}
+		else{
+			break;
+		}
 	}
 
 	/* Reset i */
 	i = 0;
 
-	if(pay_size < TSK_BASE64_DECODE_BLOCK_SIZE)
-	{
+	if(pay_size < TSK_BASE64_DECODE_BLOCK_SIZE){
 		goto quantum;
 	}
 	
-	do
-	{
-		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i] ]<< 2 | TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]>>4);
-		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]<< 4 | TSK_BASE64_DECODE_ALPHABET [ input[i+2] ]>>2);
-		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i+2] ]<<6 | TSK_BASE64_DECODE_ALPHABET [ input[i+3] ]);
+	do{
+		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i] ]<< 2 
+			| TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]>>4);
+		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]<< 4 
+			| TSK_BASE64_DECODE_ALPHABET [ input[i+2] ]>>2);
+		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i+2] ]<<6 
+			| TSK_BASE64_DECODE_ALPHABET [ input[i+3] ]);
 		
-		i+= TSK_BASE64_DECODE_BLOCK_SIZE;
+		i += TSK_BASE64_DECODE_BLOCK_SIZE;
 	}
 	while(( i+ TSK_BASE64_DECODE_BLOCK_SIZE) <= pay_size);
 
 quantum:
 	
-	if((input_size - pay_size) == 1)
-	{
-		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i] ]<< 2 | TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]>>4);
-		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]<< 4 | TSK_BASE64_DECODE_ALPHABET [ input[i+2] ]>>2);
+	if((input_size - pay_size) == 1){
+		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i] ]<< 2 
+			| TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]>>4);
+		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]<< 4 
+			| TSK_BASE64_DECODE_ALPHABET [ input[i+2] ]>>2);
 	}
-	else if((input_size-pay_size) == 2)
-	{
-		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i] ]<< 2 | TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]>>4);
+	else if((input_size-pay_size) == 2){
+		*(*output + output_size++) = (TSK_BASE64_DECODE_ALPHABET [ input[i] ]<< 2 
+			| TSK_BASE64_DECODE_ALPHABET [ input[i+1] ]>>4);
 	}
 	
 	return output_size;

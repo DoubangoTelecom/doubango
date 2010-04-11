@@ -63,21 +63,22 @@ TINYSIGCOMP_API void tcomp_manager_closeCompartment(tcomp_manager_handle_t *hand
 /*
 *	SigComp Parameters
 */
-TINYSIGCOMP_API void tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, uint32_t dms);
-TINYSIGCOMP_API void tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t sms);
-TINYSIGCOMP_API void tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb);
-TINYSIGCOMP_API void tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version);
+TINYSIGCOMP_API int tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, uint32_t dms);
+TINYSIGCOMP_API int tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t sms);
+TINYSIGCOMP_API int tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb);
+TINYSIGCOMP_API int tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version);
 
 /*
 *	Compressors
 */
-TINYSIGCOMP_API void tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress compressor);
+TINYSIGCOMP_API int tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress_f compressor);
+TINYSIGCOMP_API int tcomp_manager_removeCompressor(tcomp_manager_handle_t *handle, tcomp_compressor_compress_f compressor);
 
 /*
 *	Dictionnaries
 */
-TINYSIGCOMP_API void tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle);
-TINYSIGCOMP_API void tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle);
+TINYSIGCOMP_API int tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle);
+TINYSIGCOMP_API int tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle);
 
 TINYSIGCOMP_GEXTERN const void *tcomp_manager_def_t;
 

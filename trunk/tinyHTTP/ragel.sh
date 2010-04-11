@@ -22,11 +22,14 @@ ragel.exe $OPTIONS -o ./src/headers/thttp_header_Authorization.c ./ragel/thttp_p
 # ==Content-Length
 ragel.exe $OPTIONS -o ./src/headers/thttp_header_Content_Length.c ./ragel/thttp_parser_header_Content_Length.rl
 
+# ==Content-Type
+ragel.exe $OPTIONS -o ./src/headers/thttp_header_Content_Type.c ./ragel/thttp_parser_header_Content_Type.rl
+
 # ==Dummy
 ragel.exe $OPTIONS -o ./src/headers/thttp_header_Dummy.c ./ragel/thttp_parser_header_Dummy.rl
 
-# ==Content-Type
-ragel.exe $OPTIONS -o ./src/headers/thttp_header_Content_Type.c ./ragel/thttp_parser_header_Content_Type.rl
+# ==ETag
+ragel.exe $OPTIONS -o ./src/headers/thttp_header_ETag.c ./ragel/thttp_parser_header_ETag.rl
 
 # == Transfer-Encoding
 ragel.exe $OPTIONS -o ./src/headers/thttp_header_Transfer_Encoding.c ./ragel/thttp_parser_header_Transfer_Encoding.rl
