@@ -184,8 +184,7 @@ tsk_object_t* tsk_object_ref(tsk_object_t *self)
 */
 tsk_object_t* tsk_object_unref(tsk_object_t *self)
 {
-	if(self)
-	{
+	if(self){
 		tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
 		if(objhdr->refCount && !--objhdr->refCount){ // If refCount is == 0 then, nothing should happen.
 			tsk_object_delete(self);

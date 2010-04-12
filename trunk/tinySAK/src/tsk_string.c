@@ -215,6 +215,25 @@ void tsk_strcat(char** destination, const char* source)
 
 /**@ingroup tsk_string_group
 */
+void tsk_strcat_2(char** destination, const char* format, ...)
+{
+	char* temp = tsk_null;
+	int len;
+	va_list ap;
+	
+	/* initialize variable arguments */
+	va_start(ap, format);
+	/* compute */
+	if((len = tsk_sprintf_2(&temp, format, &ap))){
+		tsk_strncat(destination, temp, len);
+	}
+	/* reset variable arguments */
+	va_end(ap);
+	TSK_FREE(temp);
+}
+
+/**@ingroup tsk_string_group
+*/
 void tsk_strncat(char** destination, const char* source, size_t n)
 {
 	size_t index = 0;
@@ -247,11 +266,24 @@ void tsk_strncat(char** destination, const char* source, size_t n)
 */
 int tsk_sprintf(char** str, const char* format, ...)
 {
-	int len = 0;
-	va_list list;
+	int len;
+	va_list ap;
 	
 	/* initialize variable arguments */
-	va_start(list, format);
+	va_start(ap, format);
+	/* compute */
+	len = tsk_sprintf_2(str, format, &ap);
+	/* reset variable arguments */
+	va_end(ap);
+	
+	return len;
+}
+
+/**@ingroup tsk_string_group
+*/
+int tsk_sprintf_2(char** str, const char* format, va_list* ap)
+{
+	int len = 0;
 
 	/* free previous value */
 	if(*str){
@@ -265,16 +297,13 @@ int tsk_sprintf(char** str, const char* format, ...)
 		int n;
 		len = (strlen(format)*2);
 		*str = (char*)tsk_calloc(1, len+1);
-		for(;;)
-		{
-			if( (n = vsnprintf(*str, len, format, list)) >= 0 && (n<len) )
-			{
+		for(;;){
+			if( (n = vsnprintf(*str, len, format, *ap)) >= 0 && (n<len) ){
 				len = n;
 				goto done;
 			}
-			else
-			{
-				len += 5;
+			else{
+				len += 10;
 				*str = tsk_realloc(*str, len+1);
 			}
 		}
@@ -282,17 +311,14 @@ done:
 		(*str)[len] = '\0';
 	}
 #else
-    len = vsnprintf(0, 0, format, list);
+    len = vsnprintf(0, 0, format, *ap);
     *str = (char*)tsk_calloc(1, len+1);
     vsnprintf(*str, len
 #if !defined(_MSC_VER) || defined(__GNUC__)
 		+1
 #endif
-		, format, list);
+		, format, *ap);
 #endif
-	
-	/* reset variable arguments */
-	va_end( list );
 	
 	return len;
 }

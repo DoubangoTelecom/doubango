@@ -32,16 +32,22 @@
 
 #include "tinysms_config.h"
 
-#include "tsk_object.h"
+#include "tsk_buffer.h"
 
 TSMS_BEGIN_DECLS
+
+typedef uint8_t tsms_address_t[12];
+typedef int (*tsms_tpdu_message_serialize_f)(const struct tsms_tpdu_message_s* self, const tsk_buffer_t* output);
 
 /** SMS alphabet values as per 3GPP TS 23.038 v911 section 4. 
 * Part of TP-DCS (SMS Data Coding Scheme).
 */
 typedef enum tsms_alphabet_e
 {
-
+	/*11*/ tsms_alpha_reserved = 0x03,
+	/*00*/ tsms_alpha_7bit = 0x00,
+	/*01*/ tsms_alpha_8bit = 0x01,
+    /*10*/ tsms_alpha_ucs2 = 0x02
 }
 tsms_alphabet_t;
 
@@ -65,10 +71,15 @@ typedef struct tsms_tpdu_message_s
 {
 	TSK_DECLARE_OBJECT;
 	tsms_tpdu_mti_t mti; /**< TP Message Type Indicator (TP MTI) as per TS 23.040 section 9.2.3.1. 2-bit field. */
+	tsms_tpdu_message_serialize_f serialize;
 }
 tsms_tpdu_message_t;
 
 #define TSMS_DECLARE_TPDU_MESSAGE tsms_tpdu_message_t tpdu
+#define TSMS_TPDU_MESSAGE(self) ((tsms_tpdu_message_t*)(self))
+#define TSMS_TPDU_MESSAGE_SERIALIZE_F(self) ((tsms_tpdu_message_serialize_f)(self))
+
+#define TSMS_TPDU_APPEND_SMSC	1
 
 TSMS_END_DECLS
 
