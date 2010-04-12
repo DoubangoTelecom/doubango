@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsms_tpdu.h
+/**@file tsms_tpdu_command.h
  * @brief SMS TPDU SMS-COMMAND message as per 3GPP TS 23.040 section 9.2.2.4.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
@@ -36,6 +36,8 @@
 
 
 TSMS_BEGIN_DECLS
+
+#define TSMS_TPDU_COMMAND_CREATE()				tsk_object_new(tsms_tpdu_command_def_t)
 
 /** SMS TPDU SMS-COMMAND message as per 3GPP TS 23.040 section 9.2.2.4.
 */
@@ -63,7 +65,7 @@ typedef struct tsms_tpdu_command_s
 	uint8_t mn;
 	/** TP Destination Address (M - 2-12o)
 	* Parameter indicating the Destination Address to which the TP Command refers. */
-	uint8_t da[12];
+	tsms_address_t da;
 	/** TP Command Data Length (M - o)
 	* Parameter indicating the length of the TP-CD field in octets. */
 	uint8_t cdl;
@@ -72,5 +74,7 @@ typedef struct tsms_tpdu_command_s
 	uint8_t cd;
 }
 tsms_tpdu_command_t;
+
+TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_command_def_t;
 
 #endif /* TINYSMS_TSMS_TPDU_COMMAND_H */

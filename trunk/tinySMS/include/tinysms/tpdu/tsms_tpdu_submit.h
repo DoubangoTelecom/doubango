@@ -37,6 +37,9 @@
 
 TSMS_BEGIN_DECLS
 
+
+#define TSMS_TPDU_SUBMIT_CREATE()				tsk_object_new(tsms_tpdu_submit_def_t)
+
 /** SMS TPDU SMS-SUBMIT message as per 3GPP TS 23.040 section 9.2.2.2
 */
 typedef struct tsms_tpdu_submit_s
@@ -65,7 +68,10 @@ typedef struct tsms_tpdu_submit_s
 	unsigned mr;
 	/** TP Destination Address (M - 2-12o)
 	* Address of the destination SME. */
-	uint8_t da[12];
+	tsms_address_t da;
+	/** TP Protocol Identifier (M - o)
+	* Parameter identifying the above layer protocol, if any. */
+	uint8_t pid;
 	/** TP Data Coding Scheme (M - o)
 	* Parameter identifying the coding scheme within the TP User Data. */
 	uint8_t dcs;
@@ -80,6 +86,9 @@ typedef struct tsms_tpdu_submit_s
 	uint8_t* ud;
 }
 tsms_tpdu_submit_t;
+
+
+TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_submit_def_t;
 
 TSMS_END_DECLS
 

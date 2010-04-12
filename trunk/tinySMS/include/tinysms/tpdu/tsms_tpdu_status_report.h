@@ -60,7 +60,7 @@ typedef struct tsms_tpdu_status_report_s
 	unsigned mr;
 	/** TP Recipient Address (M - 2-12o)
 	* Address of the recipient of the previously submitted mobile originated short message. */
-	uint8_t ra[12];
+	tsms_address_t ra;
 	/** TP Service Centre Time Stamp (M - 7o)
 	* Parameter identifying time when the SC received the previously sent SMS SUBMIT. */
 	uint8_t scts[7];

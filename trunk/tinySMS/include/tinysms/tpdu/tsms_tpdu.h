@@ -32,18 +32,33 @@
 
 #include "tinysms_config.h"
 
-#include "tsk_object.h"
+#include "tinySMS/tsms_common.h"
+
+#include "tsk_buffer.h"
 
 
 TSMS_BEGIN_DECLS
 
-typedef struct tsms_tpdu_s
+typedef struct tsms_tpdu_ctx_s
 {
 	TSK_DECLARE_OBJECT;
 
-
+	uint8_t mr;
+	char* smsc; /**< SMSC*/
+	char* phone; /**< Remote Phone number. */
+	tsms_alphabet_t alphabet; /**< User data. */
+	tsk_buffer_t* usrdata; /**< User data. */
 }
-tsms_tpdu_t;
+tsms_tpdu_ctx_t;
+
+typedef void tsms_tpdu_ctx_handle_t;
+
+TINYSMS_API tsms_tpdu_ctx_handle_t* tsms_pdu_ctx_create(uint8_t mr, tsms_address_t smsc, tsms_address_t phone);
+TINYSMS_API int tsms_pdu_ctx_set_alphabet(tsms_tpdu_ctx_handle_t* handle, tsms_alphabet_t alphabet);
+TINYSMS_API int tsms_pdu_ctx_set_usrdata(tsms_tpdu_ctx_handle_t* handle, const void* data, size_t size);
+TINYSMS_API tsk_buffer_t* tsms_pdu_ctx_getSUBMIT(tsms_tpdu_ctx_handle_t* handle);
+
+TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_ctx_def_t;
 
 TSMS_END_DECLS
 
