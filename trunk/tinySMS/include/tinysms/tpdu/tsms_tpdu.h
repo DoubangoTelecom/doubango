@@ -44,8 +44,8 @@ typedef struct tsms_tpdu_ctx_s
 	TSK_DECLARE_OBJECT;
 
 	uint8_t mr;
-	char* smsc; /**< SMSC*/
-	char* phone; /**< Remote Phone number. */
+	tsms_address_t* smsc; /**< SMSC*/
+	tsms_address_t* phone; /**< Remote Phone number. */
 	tsms_alphabet_t alphabet; /**< User data. */
 	tsk_buffer_t* usrdata; /**< User data. */
 }
@@ -53,7 +53,7 @@ tsms_tpdu_ctx_t;
 
 typedef void tsms_tpdu_ctx_handle_t;
 
-TINYSMS_API tsms_tpdu_ctx_handle_t* tsms_pdu_ctx_create(uint8_t mr, tsms_address_t smsc, tsms_address_t phone);
+TINYSMS_API tsms_tpdu_ctx_handle_t* tsms_pdu_ctx_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t phone);
 TINYSMS_API int tsms_pdu_ctx_set_alphabet(tsms_tpdu_ctx_handle_t* handle, tsms_alphabet_t alphabet);
 TINYSMS_API int tsms_pdu_ctx_set_usrdata(tsms_tpdu_ctx_handle_t* handle, const void* data, size_t size);
 TINYSMS_API tsk_buffer_t* tsms_pdu_ctx_getSUBMIT(tsms_tpdu_ctx_handle_t* handle);

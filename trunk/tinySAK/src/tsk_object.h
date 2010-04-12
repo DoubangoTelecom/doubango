@@ -49,7 +49,7 @@ typedef void tsk_object_t;
  *	In all case this operation will set the pointer (the object itself) to NULL.
  * @param	self	The object to free or unref. 
 **/
-#define TSK_OBJECT_SAFE_FREE(self)		tsk_object_unref(self), self = tsk_null
+#define TSK_OBJECT_SAFE_FREE(self)		if(self) tsk_object_unref(self), self = tsk_null
 
 /**@ingroup tsk_object_group
 * tag a structure as an object. If this macro is used then you MUST

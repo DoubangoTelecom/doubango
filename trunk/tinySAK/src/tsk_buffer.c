@@ -132,14 +132,12 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 */
 int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size)
 {
-	if(self && size)
-	{
+	if(self && size){
 		size_t oldsize = self->size;
 		size_t newsize = oldsize + size;
 		
 		self->data = tsk_realloc(self->data, newsize);
-		if(self->data)
-		{
+		if(self->data){
 			memcpy((void*)(TSK_BUFFER_TO_U8(self) + oldsize), data, size);
 			self->size = newsize;
 			return 0;

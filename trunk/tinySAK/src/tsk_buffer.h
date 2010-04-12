@@ -69,7 +69,7 @@ TSK_BEGIN_DECLS
 * @param self @ref tsk_buffer_t object.
 */
 #define TSK_BUFFER(self)					((tsk_buffer_t*)self)
-#define TSK_BUFFER_DATA(self)				(self ? TSK_BUFFER(self)->data : 0)
+#define TSK_BUFFER_DATA(self)				(self ? TSK_BUFFER(self)->data : tsk_null)
 #define TSK_BUFFER_SIZE(self)				(self ? TSK_BUFFER(self)->size : 0)
 
 /**@ingroup tsk_buffer_group

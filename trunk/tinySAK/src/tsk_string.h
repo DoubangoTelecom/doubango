@@ -99,7 +99,8 @@ TINYSAK_API void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex);
 * @def tsk_strnequals
 */
 #define tsk_strtrim_both(str) tsk_strtrim_left(str), tsk_strtrim_right(str);
-#define tsk_strempty(s) (*s == '\0')
+#define tsk_strempty(s) (*(s) == '\0')
+#define tsk_strnullORempty(s) (!(s) || tsk_strempty((s)))
 #define tsk_striequals(s1, s2) (tsk_stricmp((const char*)(s1), (const char*)(s2)) ? tsk_false : tsk_true)
 #define tsk_strniequals(s1, s2, n) (tsk_strnicmp((const char*)(s1), (const char*)(s2), n) ? tsk_false : tsk_true)
 #define tsk_strequals(s1, s2) (tsk_strcmp((const char*)(s1), (const char*)(s2)) ? tsk_false : tsk_true)

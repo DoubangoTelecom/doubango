@@ -32,12 +32,13 @@
 
 #include "tinysms_config.h"
 
+#include "tinySMS/tsms_address.h"
+
 #include "tsk_buffer.h"
 
 TSMS_BEGIN_DECLS
 
-typedef uint8_t tsms_address_t[12];
-typedef int (*tsms_tpdu_message_serialize_f)(const struct tsms_tpdu_message_s* self, const tsk_buffer_t* output);
+typedef int (*tsms_tpdu_message_serialize_f)(const tsms_address_t* smsc, const struct tsms_tpdu_message_s* self, tsk_buffer_t* output);
 
 /** SMS alphabet values as per 3GPP TS 23.038 v911 section 4. 
 * Part of TP-DCS (SMS Data Coding Scheme).
@@ -50,6 +51,9 @@ typedef enum tsms_alphabet_e
     /*10*/ tsms_alpha_ucs2 = 0x02
 }
 tsms_alphabet_t;
+
+/* 3GPP TS 23.038 v911 section 4 */
+#define TSMS_ALPHA_FROM_DCS(dcs) (((dcs) & 0x0C) >> 2) /* Bit3 and Bit2 */
 
 /** 3GPP TS 23.040 - 9.2.3.1	TP Message Type Indicator (TP MTI)
 */

@@ -60,7 +60,7 @@ typedef struct tsms_tpdu_deliver_s
 	unsigned sri:1;
 	/** TP Originating Address (M - 2-12o)
 	* Address of the originating SME. */
-	tsms_address_t oa;
+	tsms_address_t* oa;
 	/** TP Protocol Identifier (M - o)
 	* Parameter identifying the above layer protocol, if any. */
 	uint8_t pid;
