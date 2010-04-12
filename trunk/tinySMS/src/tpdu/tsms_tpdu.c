@@ -40,7 +40,7 @@
 
 /**@ingroup tsms_pdu_group
 */
-tsms_tpdu_ctx_handle_t* tsms_pdu_ctx_create(uint8_t mr, tsms_address_t smsc, tsms_address_t phone)
+tsms_tpdu_ctx_handle_t* tsms_pdu_ctx_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t phone)
 {
 	tsms_tpdu_ctx_t* ret = tsk_null;
 
@@ -98,7 +98,7 @@ tsk_buffer_t* tsms_pdu_ctx_getSUBMIT(tsms_tpdu_ctx_handle_t* handle)
 
 	if((submit = TSMS_TPDU_SUBMIT_CREATE())){
 		output = TSK_BUFFER_CREATE_NULL();
-		TSMS_TPDU_MESSAGE(submit)->serialize(TSMS_TPDU_MESSAGE(submit), output);
+		TSMS_TPDU_MESSAGE(submit)->serialize(ctx->smsc, TSMS_TPDU_MESSAGE(submit), output);
 	}
 	else{
 		goto bail;
@@ -119,13 +119,20 @@ static tsk_object_t* _tsms_tpdu_ctx_create(tsk_object_t * self, va_list * app)
 {
 	tsms_tpdu_ctx_t *ctx = self;
 	if(ctx){
+		const char* smsc, *phone;
+		uint8_t mr;
+
 #if defined(__GNUC__)
-		ctx->mr = va_arg(*app, unsigned);
+		mr = (uint8_t)va_arg(*app, unsigned);
 #else
-		ctx->mr = va_arg(*app, uint8_t);
+		mr = va_arg(*app, uint8_t);
 #endif
-		ctx->smsc = tsk_strdup( va_arg(*app, const char*) );
-		ctx->phone = tsk_strdup( va_arg(*app, const char*) );
+		smsc = va_arg(*app, const char*);
+		phone = va_arg(*app, const char*);
+
+		ctx->mr = mr;
+		ctx->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+		ctx->phone = TSMS_ADDRESS_DA_CREATE(phone);
 		ctx->alphabet = tsms_alpha_7bit;
 	}
 	return self;
@@ -135,9 +142,9 @@ static tsk_object_t* tsms_tpdu_ctx_destroy(tsk_object_t * self)
 { 
 	tsms_tpdu_ctx_t *ctx = self;
 	if(ctx){
-		TSK_FREE(ctx->smsc);
-		TSK_FREE(ctx->phone);
-
+		TSK_OBJECT_SAFE_FREE(ctx->smsc);
+		TSK_OBJECT_SAFE_FREE(ctx->phone);
+		
 		TSK_OBJECT_SAFE_FREE(ctx->usrdata);
 	}
 

@@ -21,7 +21,7 @@
 */
 
 /**@file tsms_tpdu_submit.h
- * @brief SMS TPDU SMS-SUBMIT message as per 3GPP TS 23.040 section 9.2.2.2.
+ * @brief SMS TPDU SMS-SUBMIT (MO) message as per 3GPP TS 23.040 section 9.2.2.2.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
@@ -33,7 +33,6 @@
 #include "tinysms_config.h"
 
 #include "tinySMS/tsms_common.h"
-
 
 TSMS_BEGIN_DECLS
 
@@ -68,7 +67,7 @@ typedef struct tsms_tpdu_submit_s
 	unsigned mr;
 	/** TP Destination Address (M - 2-12o)
 	* Address of the destination SME. */
-	tsms_address_t da;
+	tsms_address_t* da;
 	/** TP Protocol Identifier (M - o)
 	* Parameter identifying the above layer protocol, if any. */
 	uint8_t pid;
@@ -83,10 +82,12 @@ typedef struct tsms_tpdu_submit_s
 	unsigned udl;
 	/** TP User Data (O - v)
 	* User data. */
-	uint8_t* ud;
+	tsk_buffer_t* ud;
 }
 tsms_tpdu_submit_t;
 
+int tsms_submit_set_alpha(tsms_tpdu_submit_t* self, tsms_alphabet_t alpha);
+int tsms_submit_set_usrdata(tsms_tpdu_submit_t* self, const char* ascii, tsms_alphabet_t alpha);
 
 TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_submit_def_t;
 

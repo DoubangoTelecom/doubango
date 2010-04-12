@@ -21,7 +21,7 @@
 */
 
 /**@file tsms_tpdu_submit.c
- * @brief SMS TPDU SMS-SUBMIT message as per 3GPP TS 23.040 section 9.2.2.2.
+ * @brief SMS TPDU SMS-SUBMIT (MO) message as per 3GPP TS 23.040 section 9.2.2.2.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
@@ -29,17 +29,21 @@
  */
 #include "tinySMS/tpdu/tsms_tpdu_submit.h"
 
+#include "tinySMS/tsms_packing.h"
+
+#include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-int tsms_tpdu_submit_serialize(const tsms_tpdu_submit_t* self, const tsk_buffer_t* output)
+#include <string.h> /* strlen() */
+
+int tsms_tpdu_submit_serialize(const tsms_address_t* smsc, const tsms_tpdu_submit_t* self, tsk_buffer_t* output)
 {
 	uint8_t _1byte;
 
 	/* SMSC address */
 #if TSMS_TPDU_APPEND_SMSC
-	//address addr_smsc(this->smsc, true);
-	//result.append(addr_smsc.getString());
+	tsms_address_serialize(smsc, output);
 #endif
 
 	/* SMS-SUBMIT first Octect:
@@ -49,21 +53,24 @@ int tsms_tpdu_submit_serialize(const tsms_tpdu_submit_t* self, const tsk_buffer_
 		- TP-Reply-Path(1b)
 		- TP-User-Data-Header-Indicator(1b)
 		- TP-Status-Report-Request(1b)
+
+		+----+----+----+--------+----+--------+
+		|RP  |UDHI|SRR |VPF		| RD | MTI	  |
+		+----+----+----+--------+----+--------+
 	*/
 	_1byte = (TSMS_TPDU_MESSAGE(self)->mti & 0xF3); /*2b*/
 	_1byte |= ((uint8_t)self->rd) << 2; /*1b*/
-	_1byte |= ((uint8_t)self->vpf) << 3; /*1b*/
-	_1byte |= ((uint8_t)self->rp) << 4; /*1b*/
-	_1byte |= ((uint8_t)self->udhi) << 5; /*1b*/
-	_1byte |= ((uint8_t)self->srr) << 6; /*1b*/
+	_1byte |= ((uint8_t)self->vpf) << 3; /*2b*/
+	_1byte |= ((uint8_t)self->srr) << 5; /*1b*/
+	_1byte |= ((uint8_t)self->udhi) << 6; /*1b*/
+	//_1byte |= ((uint8_t)self->) << 7; /*1b*/
 	tsk_buffer_append(output, &_1byte, 1);
 
 	/* 3GPP TS 23.040 ==> 9.2.3.6 TP-Message-Reference (TP-MR) */
 	tsk_buffer_append(output, &self->mr, 1); /*0-255 ==> 1o*/
 
 	/* 3GPP TS 23.040 ==> 9.2.3.8 TP-Destination-Address (TP-DA) */
-	//address addr_desta(this->remote, false);
-	//result.append(addr_desta.getString());
+	tsms_address_serialize(self->da, output);
 
 	/* GSM 03.40 ==> 9.2.3.9 TP-Protocol-Identifier (TP-PID) */
 	tsk_buffer_append(output, &self->pid, 1); /*1o*/
@@ -72,56 +79,84 @@ int tsms_tpdu_submit_serialize(const tsms_tpdu_submit_t* self, const tsk_buffer_
 	tsk_buffer_append(output, &self->dcs, 1); /*1o*/
 
 	/* 3GPP TS 23.040 ==> 9.2.3.12 TP-Validity-Period
-	* Only TP-VP (Relative format) is supported. 1o
-	*/
+	* Only TP-VP (Relative format) is supported.*/
 	tsk_buffer_append(output, &self->vp, 1); /*1o*/
-	
+
+	/* 3GPP TS 23.040 ==> 9.2.3.16 TP-User-Data-Length (TP-UDL) */
+	tsk_buffer_append(output, &self->udl, 1); /*1o*/
+
+	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
+	tsk_buffer_append(output, TSK_BUFFER_DATA(self->ud), TSK_BUFFER_SIZE(self->ud)); 
+
+	return 0;
+}
+
+int tsms_submit_set_alpha(tsms_tpdu_submit_t* self, tsms_alphabet_t alpha)
+{
+/* SMS alphabet values as per 3GPP TS 23.038 v911 section 4. 
+* Part of TP-DCS (SMS Data Coding Scheme).
+*/
+	if(self){
+		self->dcs = ((self->dcs & 0xF3) | (alpha << 2)); /* Bit3 and Bit2 */
+		return 0;
+	}
+	return -1;
+}
+
+int tsms_submit_set_usrdata(tsms_tpdu_submit_t* self, const char* ascii, tsms_alphabet_t alpha)
+{
+	if(tsk_strnullORempty(ascii)){
+		TSK_DEBUG_WARN("User data is Null or Empty");
+		return -1;
+	}
+
+	// update DCS
+	tsms_submit_set_alpha(self, alpha);
+	// remove old ud
+	TSK_OBJECT_SAFE_FREE(self->ud);
 
 	/* 3GPP TS 23.040 ==> 9.2.3.16 TP-User-Data-Length (TP-UDL)
 	* (alpha = SMS_ALPHA_7bit) ==> number of septets.
 	* ((alpha == SMS_ALPHA_8bit) || (alpha == SMS_ALPHA_UCS2)) ==> number of octes.
 	*/
-	// result.append(b10_to_b16(this->userdata.length()/2)); ==> see the switch below
-	// this->userdata ==> The ascii string to send/encode
 
 	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
-	switch(this->alpha)
-	{
-	case SMS_ALPHA_7bit:
-		{
-			string pdu;
-			ascii_to_pdu(this->userdata, pdu);
-			result.append(b10_to_b16(this->userdata.length())); /* TP-UDL */
-			result.append(pdu); /* TP-UD */
-		}
-		break;
-
-	case SMS_ALPHA_8bit:
-		{
-			string bit8;
-			ascii_to_bit8(this->userdata, bit8);
-			result.append(b10_to_b16(bit8.length()/2)); /* TP-UDL */
-			result.append(bit8); /* TP-UD */
-		}
-		break;
-
-	case SMS_ALPHA_UCS2:
-		{
-			string ucs2;
-			ascii_to_ucs2(this->userdata, ucs2);
-			result.append(b10_to_b16(ucs2.length()/2)); /* TP-UDL */
-			result.append(ucs2); /* TP-UD */
-		}
-		break;
+	switch(alpha){
+		case tsms_alpha_7bit:
+			{
+				self->udl = strlen(ascii);
+				self->ud = tsms_pack_to_7bit(ascii);
+			}
+			break;
+		case tsms_alpha_8bit:
+			{
+				if((self->ud = tsms_pack_to_8bit(ascii))){
+					self->udl = self->ud->size;
+				}
+				else{
+					self->udl = 0;
+				}
+			}
+			break;
+		case tsms_alpha_ucs2:
+			{
+				if((self->ud = tsms_pack_to_ucs2(ascii))){
+					self->udl = self->ud->size;
+				}
+				else{
+					self->udl = 0;
+				}
+			}
+			break;
 
 	default:
-		throw "Unsupported alphabet";
+		{
+			TSK_DEBUG_ERROR("Invalid Alphabet.");
+			return -2;
+		}
 	}
-
-	return result;
+	return 0;
 }
-
-
 
 //=================================================================================================
 //	SMS TPDU SMS-COMMAND object definition
@@ -141,7 +176,9 @@ static tsk_object_t* tsms_tpdu_submit_destroy(tsk_object_t * self)
 { 
 	tsms_tpdu_submit_t *submit = self;
 	if(submit){
-		TSK_FREE(submit->ud);
+		TSK_OBJECT_SAFE_FREE(submit->ud);
+
+		TSK_OBJECT_SAFE_FREE(submit->da);
 	}
 	return self;
 }

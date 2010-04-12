@@ -29,7 +29,8 @@ void test_tpdu()
 
 	tsms_tpdu_ctx_handle_t* handle;
 	tsk_buffer_t* buffer = tsk_null;
-	
+	char* temp;
+
 	handle = tsms_pdu_ctx_create(__pdu_last_mr++, "+331000000", "+3361234567");
 	
 	if((buffer = tsms_pdu_ctx_getSUBMIT(handle))){

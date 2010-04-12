@@ -2,11 +2,10 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="tinySMS"
-	ProjectGUID="{9A3A5AF3-2333-4477-B880-7F901F9D8972}"
-	RootNamespace="tinySMS"
+	Name="test"
+	ProjectGUID="{BD24A663-4018-41EC-A250-4A57CDD2F13B}"
+	RootNamespace="test"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -20,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -41,14 +40,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;include;../tinySAK/src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSMS_EXPORTS"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinySMS\include"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 				CompileAs="1"
 			/>
@@ -63,10 +63,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySMS.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -88,6 +88,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -95,7 +98,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -116,14 +119,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSMS_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				WarnAsError="true"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				CompileAs="1"
 			/>
@@ -140,7 +141,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -164,6 +165,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -172,124 +176,50 @@
 	</References>
 	<Files>
 		<Filter
-			Name="headers(*.h)"
+			Name="Source Files"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
+			<File
+				RelativePath="..\..\tinySMS\test\stdafx.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySMS\test\test.c"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\include\tinysms_config.h"
+				RelativePath="..\..\tinySMS\test\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\tinysms\tsms.h"
+				RelativePath="..\..\tinySMS\test\targetver.h"
 				>
 			</File>
-			<File
-				RelativePath=".\include\tinysms\tsms_address.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinysms\tsms_common.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinysms\tsms_etsi_gsm_03_38.h"
-				>
-			</File>
-			<File
-				RelativePath=".\include\tinysms\tsms_packing.h"
-				>
-			</File>
-			<Filter
-				Name="tpdu"
-				>
-				<File
-					RelativePath=".\include\tinysms\tpdu\tsms_tpdu.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysms\tpdu\tsms_tpdu_command.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysms\tpdu\tsms_tpdu_deliver.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysms\tpdu\tsms_tpdu_report.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysms\tpdu\tsms_tpdu_status_report.h"
-					>
-				</File>
-				<File
-					RelativePath=".\include\tinysms\tpdu\tsms_tpdu_submit.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="rpdu"
-				>
-				<File
-					RelativePath=".\include\tinysms\rpdu\tsms_rpdu.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
-			Name="source(*.c)"
+			Name="Tests"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\src\tsms.c"
+				RelativePath="..\..\tinySMS\test\test_packing.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsms_address.c"
+				RelativePath="..\..\tinySMS\test\test_rpdu.h"
 				>
 			</File>
 			<File
-				RelativePath=".\src\tsms_packing.c"
+				RelativePath="..\..\tinySMS\test\test_tpdu.h"
 				>
 			</File>
-			<Filter
-				Name="tpdu"
-				>
-				<File
-					RelativePath=".\src\tpdu\tsms_tpdu.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\tpdu\tsms_tpdu_command.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\tpdu\tsms_tpdu_deliver.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\tpdu\tsms_tpdu_report.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\tpdu\tsms_tpdu_status_report.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\tpdu\tsms_tpdu_submit.c"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="rpdu"
-				>
-				<File
-					RelativePath=".\src\rpdu\tsms_rpdu.c"
-					>
-				</File>
-			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

@@ -34,7 +34,6 @@
 
 #include "tinySMS/tsms_common.h"
 
-
 TSMS_BEGIN_DECLS
 
 #define TSMS_TPDU_COMMAND_CREATE()				tsk_object_new(tsms_tpdu_command_def_t)
@@ -65,7 +64,7 @@ typedef struct tsms_tpdu_command_s
 	uint8_t mn;
 	/** TP Destination Address (M - 2-12o)
 	* Parameter indicating the Destination Address to which the TP Command refers. */
-	tsms_address_t da;
+	tsms_address_t* da;
 	/** TP Command Data Length (M - o)
 	* Parameter indicating the length of the TP-CD field in octets. */
 	uint8_t cdl;

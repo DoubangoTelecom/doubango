@@ -53,7 +53,7 @@ static tsk_object_t* tsms_tpdu_command_destroy(tsk_object_t * self)
 { 
 	tsms_tpdu_command_t *command = self;
 	if(command){
-		
+		TSK_OBJECT_SAFE_FREE(command->da);
 	}
 
 	return self;
