@@ -66,7 +66,7 @@ bail:
 int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 {
 	char* number = tsk_null;
-	size_t len = 0;
+	size_t i, num_len/*real len*/;
 	uint8_t type_of_address;
 	if(!address ||!output){
 		return -1;
@@ -84,19 +84,34 @@ int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 	number = tsms_address_swap(address->digits);
 
 	if(number){
-		len =  (address->type == tsms_addr_smsc) ? 
+		size_t len =  (address->type == tsms_addr_smsc) ? 
 			((strlen(number)/2) + 1) /* Number of octets plus 1. */
-			: strlen(number); /* Number of BCD digits */
+			: strlen(address->digits); /* Number of BCD digits */
+		/* 1 - Address-Length */
+		tsk_buffer_append(output, &len, 1);
 	}
-
-	/* 1 - Address-Length */
-	tsk_buffer_append(output, &len, 1);
+	else{
+		/* 1 - Address-Length */
+		static uint8_t _1bytes = 0x00;
+		tsk_buffer_append(output, &_1bytes, 1);
+		goto bail;
+	}
+		
 	/* 2 - Type-of-Address */
 	type_of_address = (address->npi | (((address->ton << 4) | 0x80)));
 	tsk_buffer_append(output, &type_of_address, 1);
-	/* 3 - Phone number in semi octets */
-	tsk_buffer_append(output, number, len);
+	/* 3 - Phone number in semi octets (BCD digits) */
+	if(((num_len = strlen(number)))){
+		unsigned _1bytes; /* do not use neither int8_t nor uint8_t */
+		/* as number comes from swap ==> num_len not odd */
+		for(i=0; i<num_len; i+=2){
+			if(sscanf(&number[i], "%2x", &_1bytes)){ /*do not use tsk_atox(str), because str should end with '\0'.*/
+				tsk_buffer_append(output, &_1bytes, 1);
+			}
+		}
+	}
 	
+bail:
 	TSK_FREE(number);
 	return 0;
 }

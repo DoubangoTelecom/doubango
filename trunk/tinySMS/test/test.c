@@ -30,7 +30,7 @@ char* tohex(uint8_t* ptr, size_t size)
 	char* ret = tsk_null;
 	size_t i;
 	for(i=0;i<size;i++){
-		tsk_strcat_2(&ret, "%.2x", *ptr++);
+		tsk_strcat_2(&ret, "%.2X", *ptr++);
 	}
 	return ret;
 }

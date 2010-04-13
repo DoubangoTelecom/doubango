@@ -44,6 +44,8 @@ typedef struct tsms_tpdu_report_s
 {
 	TSMS_DECLARE_TPDU_MESSAGE;
 
+	tsms_address_t* smsc;
+
 	/** Indicates whether the Report is for RP-ERROR or not (RP-ACK).*/
 	tsk_bool_t error;
 
@@ -51,8 +53,9 @@ typedef struct tsms_tpdu_report_s
 	* Parameter indicating that the TP-UD field contains a Header. */
 	unsigned udhi:1;
 	/** TP Failure Cause (M - I)
-	* Parameter indicating the reason for SMS DELIVER/SUBMIT failure. */
-	unsigned fcs;
+	* Parameter indicating the reason for SMS DELIVER/SUBMIT failure. 
+	See clause 9.2.3.22 */
+	uint8_t fcs;
 	/** TP Parameter Indicator (M - o)
 	* Parameter indicating the presence of any of the optional parameters which follow. */
 	uint8_t pi;
@@ -62,18 +65,32 @@ typedef struct tsms_tpdu_report_s
 	uint8_t scts[7];
 	/** TP Protocol Identifier (O - o)
 	* See clause 9.2.3.9. */
-	uint8_t pid;
+	//(base)uint8_t pid;
 	/** TP Data Coding Scheme (O - o)
 	* See clause 9.2.3.10. */
-	uint8_t dcs;
+	//(base)uint8_t dcs;
 	/** TP User Data Length (O- o)
 	* See clause 9.2.3.16. */
-	uint8_t udl;
+	//(base)uint8_t udl;
 	/** TP User Data (O - v)
 	* User data. */
-	uint8_t* ud;
+	//(base)tsk_buffer_t* ud;
 }
 tsms_tpdu_report_t;
+
+typedef void tsms_tpdu_report_handle_t;
+
+TINYSMS_API tsms_tpdu_report_handle_t* tsms_tpdu_report_create(tsms_address_string_t smsc, tsk_bool_t submit, tsk_bool_t error);
+TINYSMS_API int tsms_tpdu_report_set_fcs(tsms_tpdu_report_handle_t* self, uint8_t code);
+
+#define TSMS_TPDU_REPORT_IS_MO(self) (TSMS_TPDU_MESSAGE(self)->mti == tsms_tpdu_mti_deliver_report_mo)
+
+#define tsms_tpdu_report_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, TSMS_TPDU_REPORT_IS_MO(self))
+#define tsms_tpdu_report_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), TSMS_TPDU_REPORT_IS_MO(self))
+#define tsms_tpdu_report_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self), TSMS_TPDU_REPORT_IS_MO(self))
+#define tsms_tpdu_report_set_userdata(self, udata, alpha) tsms_tpdu_message_set_userdata(TSMS_TPDU_MESSAGE(self), udata, alpha)
+
+TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_report_def_t;
 
 TSMS_END_DECLS
 

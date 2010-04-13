@@ -37,13 +37,13 @@
 TSMS_BEGIN_DECLS
 
 
-#define TSMS_TPDU_SUBMIT_CREATE()				tsk_object_new(tsms_tpdu_submit_def_t)
-
 /** SMS TPDU SMS-SUBMIT message as per 3GPP TS 23.040 section 9.2.2.2
 */
 typedef struct tsms_tpdu_submit_s
 {
 	TSMS_DECLARE_TPDU_MESSAGE;
+
+	tsms_address_t* smsc;
 
 	/** TP Reject Duplicates (M - 1b)
 	* Parameter indicating whether or not the SC shall accept an SMS SUBMIT for an 
@@ -52,7 +52,7 @@ typedef struct tsms_tpdu_submit_s
 	unsigned rd:1;
 	/** TP Validity Period Format (M - 2b)
 	* Parameter indicating whether or not the TP VP field is present. */
-	unsigned vpf:2;
+	tsms_tpdu_vpf_t vpf;
 	/** TP Reply Path (M - 1b)
 	* Parameter indicating the request for Reply Path. */
 	unsigned rp:1;
@@ -64,30 +64,36 @@ typedef struct tsms_tpdu_submit_s
 	unsigned srr:1;
 	/** TP Message Reference (M - I)
 	* Parameter identifying the SMS SUBMIT. */
-	unsigned mr;
+	uint8_t mr;
 	/** TP Destination Address (M - 2-12o)
 	* Address of the destination SME. */
 	tsms_address_t* da;
 	/** TP Protocol Identifier (M - o)
 	* Parameter identifying the above layer protocol, if any. */
-	uint8_t pid;
+	//(base)uint8_t pid;
 	/** TP Data Coding Scheme (M - o)
 	* Parameter identifying the coding scheme within the TP User Data. */
-	uint8_t dcs;
+	//(base)uint8_t dcs;
 	/** TP Validity Period (O - o/7o)
 	* Parameter identifying the time from where the message is no longer valid. */
 	uint8_t vp[7];
 	/** TP User Data Length (M - I)
 	* Parameter indicating the length of the TP User Data field to follow. */
-	unsigned udl;
+	//(base)uint8_t udl;
 	/** TP User Data (O - v)
 	* User data. */
-	tsk_buffer_t* ud;
+	//(base)tsk_buffer_t* ud;
 }
 tsms_tpdu_submit_t;
 
-int tsms_submit_set_alpha(tsms_tpdu_submit_t* self, tsms_alphabet_t alpha);
-int tsms_submit_set_usrdata(tsms_tpdu_submit_t* self, const char* ascii, tsms_alphabet_t alpha);
+typedef void tsms_tpdu_submit_handle_t;
+
+TINYSMS_API tsms_tpdu_submit_handle_t* tsms_tpdu_submit_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t dest);
+
+#define tsms_tpdu_submit_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_true)
+#define tsms_tpdu_submit_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_true)
+#define tsms_tpdu_submit_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self), tsk_true)
+#define tsms_tpdu_submit_set_userdata(self, udata, alpha) tsms_tpdu_message_set_userdata(TSMS_TPDU_MESSAGE(self), udata, alpha)
 
 TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_submit_def_t;
 

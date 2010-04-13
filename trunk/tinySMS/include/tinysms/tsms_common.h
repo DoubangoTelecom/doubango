@@ -38,8 +38,6 @@
 
 TSMS_BEGIN_DECLS
 
-typedef int (*tsms_tpdu_message_serialize_f)(const tsms_address_t* smsc, const struct tsms_tpdu_message_s* self, tsk_buffer_t* output);
-
 /** SMS alphabet values as per 3GPP TS 23.038 v911 section 4. 
 * Part of TP-DCS (SMS Data Coding Scheme).
 */
@@ -55,8 +53,7 @@ tsms_alphabet_t;
 /* 3GPP TS 23.038 v911 section 4 */
 #define TSMS_ALPHA_FROM_DCS(dcs) (((dcs) & 0x0C) >> 2) /* Bit3 and Bit2 */
 
-/** 3GPP TS 23.040 - 9.2.3.1	TP Message Type Indicator (TP MTI)
-*/
+/** 3GPP TS 23.040 - 9.2.3.1	TP Message Type Indicator (TP MTI) */
 typedef enum tsms_tpdu_mti_e
 {
 	/*0 0*/ tsms_tpdu_mti_deliver_mt		= 0x00,	/**< SMS-DELIVER (in the direction SC to MS)*/
@@ -69,20 +66,66 @@ typedef enum tsms_tpdu_mti_e
 }
 tsms_tpdu_mti_t;
 
+#define TSMS_TPDU_MTI_IS_RESERVED(mti)	((mti) == tsms_tpdu_mti_reserved)
+#define TSMS_TPDU_MTI_IS_MO(mti)		(((mti) == tsms_tpdu_mti_deliver_report_mo) || ((mti) == tsms_tpdu_mti_command_mo) || ((mti) == tsms_tpdu_mti_submit_mo))
+
+/** 3GPP TS 23.040 - 9.2.3.1	TP Message Type Indicator (TP MTI) */
+typedef enum tsms_tpdu_vpf_e
+{
+	// Bit4 and Bit3
+	/*0	0*/	tsms_tpdu_vpf_not_present = 0x00, /**< TP VP field not present	*/
+	/*1	0*/	tsms_tpdu_vpf_relative = 0x02, /**< TP VP field present - relative format*/
+	/*0	1*/	tsms_tpdu_vpf_enhanced = 0x01, /**< TP-VP field present - enhanced format */
+	/*1	1*/	tsms_tpdu_vpf_absolute = 0x03, /**< TP VP field present - absolute format */
+}
+tsms_tpdu_vpf_t;
+
 /** SM-TL base type as per 3GPP TS 23.040 section 9.2.
 */
 typedef struct tsms_tpdu_message_s
 {
 	TSK_DECLARE_OBJECT;
-	tsms_tpdu_mti_t mti; /**< TP Message Type Indicator (TP MTI) as per TS 23.040 section 9.2.3.1. 2-bit field. */
-	tsms_tpdu_message_serialize_f serialize;
+	/** TP Message Type Indicator (TP MTI) as per TS 23.040 section 9.2.3.1. 2-bit field. */
+	tsms_tpdu_mti_t mti; 
+	/** TP Protocol Identifier (M - o)
+	* Parameter identifying the above layer protocol, if any. */
+	uint8_t pid;
+	/** TP Data Coding Scheme (M - o)
+	* Parameter identifying the coding scheme within the TP-User-Data. */
+	uint8_t dcs;
+	/** TP User Data Length (M - I)
+	* Parameter indicating the length of the TP User Data field to follow. */
+	uint8_t udl;
+	/** TP User Data (O - v)
+	* User data. */
+	tsk_buffer_t* ud;
 }
 tsms_tpdu_message_t;
 
 #define TSMS_DECLARE_TPDU_MESSAGE tsms_tpdu_message_t tpdu
 #define TSMS_TPDU_MESSAGE(self) ((tsms_tpdu_message_t*)(self))
-#define TSMS_TPDU_MESSAGE_SERIALIZE_F(self) ((tsms_tpdu_message_serialize_f)(self))
 
+int tsms_tpdu_message_init(tsms_tpdu_message_t* self, tsms_tpdu_mti_t mti);
+TINYSMS_API int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* output, tsk_bool_t MobOrig);
+TINYSMS_API tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size, tsk_bool_t MobOrig);
+TINYSMS_API char* tsms_tpdu_message_tostring(const tsms_tpdu_message_t* self, tsk_bool_t MobOrig);
+TINYSMS_API char* tsms_tpdu_message_tohexastring(const tsms_tpdu_message_t* self, tsk_bool_t MobOrig);
+TINYSMS_API int tsms_tpdu_message_set_userdata(tsms_tpdu_message_t* self, const tsk_buffer_t* udata, tsms_alphabet_t alpha);
+int tsms_tpdu_message_deinit(tsms_tpdu_message_t* self);
+
+/* ========== TPDU default values ========== */
+
+#define TSMS_TPDU_DEFAULT_PID			0x00					/**< 3GPP TS 23.040 section 9.2.3.9 - TP-Protocol-Identifier (TP-PID) */
+#define TSMS_TPDU_DEFAULT_DCS			0x00					/**< 3GPP TS 23.040 section  9.2.3.10 - TP-Data-Coding-Scheme (TP-DCS) (default class, 7 bit message) + GSM 03.38*/
+#define TSMS_TPDU_DEFAULT_VP			0xAA					/**< 3GPP TS 23.040 section 9.2.3.12 - TP-Validity-Period */
+#define TSMS_TPDU_DEFAULT_VPF			tsms_tpdu_vpf_relative	/**< 3GPP TS 23.040 section 9.2.3.3 - TP Validity Period Format (TP VPF) */
+#define TSMS_TPDU_DEFAULT_FCS			0xFF					/**< 3GPP TS 23.040 section  9.2.3.22 - TP-Failure-Cause (TP-FCS) */
+#define TSMS_TPDU_DEFAULT_PI			0x00					/**< 3GPP TS 23.040 section  9.2.3.27 - TP-Parameter-Indicator (TP-PI) */
+#define TSMS_TPDU_DEFAULT_SCTS			"00000000000000"		/**< 3GPP TS 23.040 section  9.2.3.11 - TP-Service-Centre-Time-Stamp (TP-SCTS) */
+#define TSMS_TPDU_DEFAULT_MMS			0x01					/**< 3GPP TS 23.040 section  9.2.3.2 - TP More Messages to Send (TP-MMS) */
+
+/**< Indicates whether to append SMSC address at the begining of the TPDU content.
+*/
 #define TSMS_TPDU_APPEND_SMSC	1
 
 TSMS_END_DECLS
