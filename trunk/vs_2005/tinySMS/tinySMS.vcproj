@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinySMS\include\tinysms\tsms_address.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySMS\include\tinysms\tsms_common.h"
 				>
 			</File>
@@ -249,6 +253,14 @@
 			>
 			<File
 				RelativePath="..\..\tinySMS\src\tsms.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySMS\src\tsms_address.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySMS\src\tsms_common.c"
 				>
 			</File>
 			<File

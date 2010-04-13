@@ -43,6 +43,8 @@ typedef struct tsms_tpdu_deliver_s
 {
 	TSMS_DECLARE_TPDU_MESSAGE;
 
+	tsms_address_t* smsc;
+
 	/** TP More Messages to Send (M - 1b)
 	* Parameter indicating whether or not there are more messages to send. */
 	unsigned mms:1;
@@ -50,10 +52,11 @@ typedef struct tsms_tpdu_deliver_s
 	* Parameter indicating that SMS applications should inhibit forwarding or automatic message generation that could cause infinite looping. */
 	unsigned lp:2;
 	/** TP Reply Path (M - 1b)
-	* Parameter indicating the request for Reply Path. */
+	* Parameter indicating the request for Reply Path. 
+	Section 9.2.3.28 */
 	unsigned rp:1;
 	/** TP User Data Header Indicator (O - 1b)
-	* Parameter indicating that Reply Path exists. */
+	* Parameter indicating that the TP UD field contains a Header. */
 	unsigned udhi:1;
 	/** TP Status Report Indicator (O - 1b)
 	* Parameter indicating if the SME has requested a status report. */
@@ -63,21 +66,32 @@ typedef struct tsms_tpdu_deliver_s
 	tsms_address_t* oa;
 	/** TP Protocol Identifier (M - o)
 	* Parameter identifying the above layer protocol, if any. */
-	uint8_t pid;
+	//(base)uint8_t pid;
 	/** TP Data Coding Scheme (M - o)
 	* Parameter identifying the coding scheme within the TP-User-Data. */
-	uint8_t dcs;
+	//(base)uint8_t dcs;
 	/** TP Service Centre Time Stamp (M - 7o)
 	* Parameter identifying time when the SC received the message. */
 	uint8_t scts[7];
 	/** TP User Data Length (M - I)
 	* Parameter indicating the length of the TP User Data field to follow. */
-	unsigned udl;
+	//(base)uint8_t udl;
 	/** TP User Data (O - v)
 	* User data. */
-	uint8_t* ud;
+	//(base)tsk_buffer_t* ud;
 }
 tsms_tpdu_deliver_t;
+
+typedef void tsms_tpdu_deliver_handle_t;
+
+TINYSMS_API tsms_tpdu_deliver_handle_t* tsms_tpdu_deliver_create(tsms_address_string_t smsc, tsms_address_string_t orig);
+
+#define tsms_tpdu_deliver_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_false)
+#define tsms_tpdu_deliver_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_false)
+#define tsms_tpdu_deliver_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self), tsk_false)
+#define tsms_tpdu_deliver_set_userdata(self, udata, alpha) tsms_tpdu_message_set_userdata(TSMS_TPDU_MESSAGE(self), udata, alpha)
+
+TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_deliver_def_t;
 
 TSMS_END_DECLS
 

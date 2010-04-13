@@ -37,12 +37,64 @@
 
 TSMS_BEGIN_DECLS
 
+/** 3GPP TS 23.040 v910 section 9.2.3.15 (TP-ST).
+* Used in SMS-STATUS-REPORT message.
+*/
+typedef enum tsms_tpdu_status_type_e
+{
+	/*== Short message transaction completed ==*/
+	tsms_tpdu_status_received = 0x00, /**< Short message received by the SME. */
+	tsms_tpdu_status_forwarded = 0x01, /**< Short message forwarded by the SC to the SME but the SC is unable to confirm delivery. */
+	tsms_tpdu_status_replaced = 0x02, /**< Short message replaced by the SC. */
+	/* 0000011..0001111		Reserved */
+	/* 0010000..0011111		Values specific to each SC */
+	
+	/*== Temporary error, SC still trying to transfer SM ==*/
+	tsms_tpdu_status_congestion = 0x20, /**< Congestion. */
+	tsms_tpdu_status_busy = 0x21, /**< ME busy. */
+	tsms_tpdu_status_no_response = 0x22, /**< No response from SME. */
+	tsms_tpdu_status_serv_rejected = 0x23, /**< Service rejected. */
+	tsms_tpdu_status_no_qos = 0x24, /**< Quality of service not available. */
+	tsms_tpdu_status_error_in_sme= 0x25, /**< Error in SME. */
+	/* 0100110..0101111		Reserved */
+	/* 0110000..0111111		Values specific to each SC */
+	
+	/*== Permanent error, SC is not making any more transfer attempts ==*/
+	tsms_tpdu_status_remote_error = 0x40, /**< Remote procedure error. */
+	tsms_tpdu_status_incompatible_dest = 0x41, /**< Incompatible destination. */
+	tsms_tpdu_status_conn_rejected = 0x42, /**< Connection rejected by SME. */
+	tsms_tpdu_status_not_obtainable = 0x43, /**< Not obtainable. */
+	tsms_tpdu_status_no_qos_2 = 0x44, /**< Quality of service not available. */
+	tsms_tpdu_status_no_inter_avail = 0x45, /**< No interworking available. */
+	tsms_tpdu_status_vp_expired = 0x46, /**< SM Validity Period Expired. */
+	tsms_tpdu_status_deleted_by_orig = 0x47, /**< SM Deleted by originating SME. */
+	tsms_tpdu_status_deleted_by_admin = 0x48, /**< SM Deleted by SC Administration. */
+	tsms_tpdu_status_sm_not_exist = 0x49, /**< SM does not exist (The SM may have previously existed in the SC but the SC 	no longer has knowledge of it or the SM may never have previously existed in the SC). */
+	/* 1001010..1001111		Reserved */
+	/* 1010000..1011111		Values specific to each SC */
+	
+	/*== Temporary error, SC is not making any more transfer attempts ==*/
+	tsms_tpdu_status_congestion_3 = 0x50, /**< Congestion. */
+	tsms_tpdu_status_busy_3 = 0x51, /**< SME busy. */
+	tsms_tpdu_status_no_response_3 = 0x52, /**< No response from SME. */
+	tsms_tpdu_status_serv_rejected_3 = 0x53, /**< Service rejected. */
+	tsms_tpdu_status_temp_no_qos_3 = 0x54, /**< Quality of service not available. */
+	tsms_tpdu_status_error_in_sme_3 = 0x55, /**< Error in SME. */
+	/* 1100110..1101001		Reserved */
+	/* 1101010..1101111		Reserved */
+	/* 1110000..1111111		Values specific to each SC */
+
+}
+tsms_tpdu_status_type_t;
+
 /** SMS TPDU SMS-STATUS-REPORT message as per 3GPP TS 23.040 section 9.2.2.3.
 */
 typedef struct tsms_tpdu_status_report_s
 {
 	TSMS_DECLARE_TPDU_MESSAGE;
 	
+	tsms_address_t* smsc;
+
 	/** TP User Data Header Indicator (O - 1b)
 	* Parameter indicating that the TP UD field contains a Header. */
 	unsigned udhi:1;
@@ -50,13 +102,15 @@ typedef struct tsms_tpdu_status_report_s
 	* Parameter indicating whether or not there are more messages to send. */
 	unsigned mms:1;
 	/** TP-Loop-Prevention (O - 1b)
-	* Parameter indicating that SMS applications should inhibit forwarding or automatic message generation that could cause infinite looping. */
+	* Parameter indicating that SMS applications should inhibit forwarding or automatic message generation that could cause infinite looping. 
+	Section 9.2.3.28 */
 	unsigned lp:1;
 	/** TP Status Report Qualifier (M - 1b)
 	* Parameter indicating whether the previously submitted TPDU was an SMS-SUBMIT or an SMS COMMAND. */
 	unsigned srq:1;
 	/** TP Message Reference (M - I)
-	* Parameter identifying the previously submitted SMS SUBMIT or SMS COMMAND. */
+	* Parameter identifying the previously submitted SMS SUBMIT or SMS COMMAND. 
+	* See section 9.2.3.26. */
 	unsigned mr;
 	/** TP Recipient Address (M - 2-12o)
 	* Address of the recipient of the previously submitted mobile originated short message. */
@@ -69,25 +123,35 @@ typedef struct tsms_tpdu_status_report_s
 	uint8_t dt[7];
 	/** TP Status (M - o)
 	* Parameter identifying the status of the previously sent mobile originated short message. */
-	uint8_t st;
+	tsms_tpdu_status_type_t st;
 	/** TP-Parameter-Indicator (O - o)
 	* Parameter indicating the presence of any of the optional parameters which follow. */
 	uint8_t pi;
 	/** TP Protocol Identifier (O - o)
 	* See clause 9.2.3.9. TP-PID of original SMS-SUBMIT. */
-	uint8_t pid;
+	//(base)uint8_t pid;
 	/** TP Data Coding Scheme (O - o)
 	* See clause 9.2.3.10. */
-	uint8_t dcs;
+	//(base)uint8_t dcs;
 	/** TP User Data Length (O- o)
 	* See clause 9.2.3.16. */
-	uint8_t udl;
+	//(base)uint8_t udl;
 	/** TP User Data (O - v)
 	* User data. See clause 9.2.3.24. */
-	uint8_t* ud;
+	//(base)uint8_t* ud;
 }
 tsms_tpdu_status_report_t;
 
+typedef void tsms_tpdu_status_report_handle_t;
+
+TINYSMS_API tsms_tpdu_status_report_handle_t* tsms_tpdu_status_report_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit);
+
+#define tsms_tpdu_status_report_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output)
+#define tsms_tpdu_status_report_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self))
+#define tsms_tpdu_status_report_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self))
+#define tsms_tpdu_status_report_set_userdata(self, udata, alpha) tsms_tpdu_message_set_userdata(TSMS_TPDU_MESSAGE(self), udata, alpha)
+
+TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_status_report_def_t;
 
 TSMS_END_DECLS
 

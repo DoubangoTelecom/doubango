@@ -22,4 +22,9 @@
 #include "tinySMS/tsms_packing.h"
 
 #include "tinySMS/rpdu/tsms_rpdu.h"
-#include "tinySMS/tpdu/tsms_tpdu.h"
+
+#include "tinySMS/tpdu/tsms_tpdu_submit.h"
+#include "tinySMS/tpdu/tsms_tpdu_deliver.h"
+#include "tinySMS/tpdu/tsms_tpdu_report.h"
+#include "tinySMS/tpdu/tsms_tpdu_command.h"
+#include "tinySMS/tpdu/tsms_tpdu_status_report.h"
