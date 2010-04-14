@@ -33,9 +33,104 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#define TSMS_ERROR_TOO_SHORT()\
+	TSK_DEBUG_ERROR("SMS-DELIVER-REPORT/MS-SUBMIT-REPORT == Data too short.");\
+	failed = tsk_true;\
+	goto bail;
+
+tsms_tpdu_message_t* _tsms_tpdu_report_deserialize_2(const void* data, size_t size, tsk_bool_t error)
+{
+	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
+	tsms_tpdu_report_t* self = tsms_tpdu_report_create(tsk_null, tsk_false, error);
+	tsk_bool_t failed = tsk_false;
+	size_t any_len;
+	const uint8_t* pdata = data;
+	const uint8_t* pend = pdata + size;
+
+	/* SMSC address */
+#if TSMS_TPDU_APPEND_SMSC
+	if(!(self->smsc = tsms_address_deserialize(data, size, tsms_addr_smsc, &any_len)) || !any_len){
+		TSK_DEBUG_ERROR("SMS-DELIVER == Failed to parse SMSC address");
+		failed = tsk_true;
+		goto bail;
+	}
+	else{
+		if((pdata += any_len) >= pend){
+			TSMS_ERROR_TOO_SHORT();
+		}
+	}
+#endif
+
+	/* SMS-DELIVER-REPORT/MS-SUBMIT-REPORT (both ACK and ERROR) first Octect:
+		- TP-Message-Type-Indicator(2b)
+		- TP-User-Data-Header-Indication(1b)
+
+		+----+----+----+----+----+----+----+----+
+		|    |UDHI|    |	|	 |    | MTI	    |
+		+----+----+----+----+----+----+----+----+
+	*/
+	TSMS_TPDU_MESSAGE(self)->mti = *pdata & 0x03;
+	self->udhi = (*pdata & 0x40)>>6;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	if(self->error){ /* FIXME ==> should comes from RP layer */
+		/* 3GPP TS 23.040 ==> 9.2.3.22 TP-Failure-Cause(TP-FCS) */
+		//tsk_buffer_append(output, &self->fcs, 1); /*0x00-0xFF ==> 1o*/
+	}
+	
+	/* 3GPP TS 23.040 ==> xxxx TP-Parameter-Indicator (TP-PI) 
+	* 1o */
+	self->pi = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	if(TSMS_TPDU_MESSAGE(self)->mti == tsms_tpdu_mti_submit_report_mt){
+		/* 3GPP TS 23.040 ==> TP-Service-Centre-Time-Stamp (TP-SCTS) 
+		* 7o */
+		if((pend - pdata)<=7){
+			TSMS_ERROR_TOO_SHORT();
+		}
+		memcpy(self->scts, pdata, 7);
+		pdata += 7;	
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.9 TP-Protocol-Identifier (TP-PID) 
+	* 1o */
+	TSMS_TPDU_MESSAGE(self)->pid = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.10 TP-Data-Coding-Scheme (TP-DCS) 
+	* 1o */
+	TSMS_TPDU_MESSAGE(self)->dcs = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.16 TP-User-Data-Length (TP-UDL) 
+	* 1o */
+	TSMS_TPDU_MESSAGE(self)->udl = *pdata;
+	pdata++;
+
+	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
+	if((pend-pdata) > 0){
+		TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+	}
+
+	bail:
+	if(failed){
+		TSK_OBJECT_SAFE_FREE(self);
+	}
+	return TSMS_TPDU_MESSAGE(self);
+}
+
 tsms_tpdu_message_t* _tsms_tpdu_report_deserialize(const void* data, size_t size)
 {
-	return tsk_null;
+	return _tsms_tpdu_report_deserialize_2(data, size, tsk_false);
 }
 
 int _tsms_tpdu_report_serialize(const tsms_tpdu_report_t* self, tsk_buffer_t* output)
@@ -91,7 +186,7 @@ int _tsms_tpdu_report_serialize(const tsms_tpdu_report_t* self, tsk_buffer_t* ou
 	return 0;
 }
 
-tsms_tpdu_report_handle_t* tsms_tpdu_report_create(tsms_address_string_t smsc, tsk_bool_t submit, tsk_bool_t error)
+tsms_tpdu_report_t* tsms_tpdu_report_create(const tsms_address_string_t smsc, tsk_bool_t submit, tsk_bool_t error)
 {
 	tsms_tpdu_report_t* ret = tsk_null;
 	
@@ -104,7 +199,7 @@ bail:
 }
 
 
-int tsms_tpdu_report_set_fcs(tsms_tpdu_report_handle_t* self, uint8_t code)
+int tsms_tpdu_report_set_fcs(tsms_tpdu_report_t* self, uint8_t code)
 {
 	if(self){
 		tsms_tpdu_report_t* report = self;
@@ -134,6 +229,12 @@ static tsk_object_t* _tsms_tpdu_report_create(tsk_object_t * self, va_list * app
 		/* init self */
 		if(smsc){
 			report->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+		}
+		report->error = error;
+		
+		/*init self*/
+		if(report->error){
+			report->fcs = TSMS_TPDU_DEFAULT_FCS;
 		}
 	}
 	else{

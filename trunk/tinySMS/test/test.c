@@ -35,6 +35,16 @@ char* tohex(uint8_t* ptr, size_t size)
 	return ret;
 }
 
+void printhex(const char* what, uint8_t* ptr, size_t size)
+{
+	size_t i;
+	printf("%s", what);
+	for(i=0;i<size;i++){
+		printf("%.2X", *ptr++);
+	}
+	printf("\n");
+}
+
 tsk_bool_t bin_equals(const uint8_t* b1, const uint8_t* b2, size_t size)
 {
 	size_t i;
@@ -61,8 +71,8 @@ tsk_bool_t bin_equals(const uint8_t* b1, const uint8_t* b2, size_t size)
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_PACKING	0
-#define RUN_TEST_TPDU		1
-#define RUN_TEST_RPDU		0
+#define RUN_TEST_TPDU		0
+#define RUN_TEST_RPDU		1
 
 
 #ifdef _WIN32_WCE

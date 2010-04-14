@@ -33,9 +33,131 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#define TSMS_ERROR_TOO_SHORT()\
+	TSK_DEBUG_ERROR("SMS-STATUS-REPORT == Data too short.");\
+	failed = tsk_true;\
+	goto bail;
+
 tsms_tpdu_message_t* _tsms_tpdu_status_report_deserialize(const void* data, size_t size)
 {
-	return tsk_null;
+	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
+	tsms_tpdu_status_report_t* self = tsms_tpdu_status_report_create(0, tsk_null, tsk_null, tsms_tpdu_status_received, tsk_false);
+	tsk_bool_t failed = tsk_false;
+	size_t any_len;
+	const uint8_t* pdata = data;
+	const uint8_t* pend = pdata + size;
+
+	/* SMSC address */
+#if TSMS_TPDU_APPEND_SMSC
+	if(!(self->smsc = tsms_address_deserialize(data, size, tsms_addr_smsc, &any_len)) || !any_len){
+		TSK_DEBUG_ERROR("SMS-STATUS-REPORT == Failed to parse SMSC address");
+		failed = tsk_true;
+		goto bail;
+	}
+	else{
+		if((pdata += any_len) >= pend){
+			TSMS_ERROR_TOO_SHORT();
+		}
+	}
+#endif
+
+	/* SMS-STATUS-REPORT first Octect:
+		- TP-Message-Type-Indicator(2b)
+		- TP-More-Messages-to-Send(1b)
+		- TP-Loop-Prevention(1b)
+		- TP-User-Data-Header-Indicator(1b)
+		- TP-Status-Report-Qualifier(1b)
+		+----+----+----+----+----+----+----+----+
+		|    |UDHI| SRQ|	|LP	 |MMS | MTI	    |
+		+----+----+----+----+----+----+----+----+
+	*/
+	TSMS_TPDU_MESSAGE(self)->mti = *pdata & 0x03;
+	self->mms = (*pdata & 0x04)>>2,
+	self->lp = (*pdata & 0x08)>>3,
+	self->srq = (*pdata & 0x20)>>5,
+	self->udhi = (*pdata & 0x40)>>6;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.6 TP-Message-Reference (TP-MR) 
+	* 1o */
+	self->mr = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> xxxx TP-Recipient-Address (TP-RA) */
+	if(!(self->ra = tsms_address_deserialize(pdata, (pend-pdata), tsms_addr_da, &any_len)) || !any_len){
+		TSK_DEBUG_ERROR("SMS-STATUS-REPORT == Failed to parse RA address");
+		failed = tsk_true;
+		goto bail;
+	}
+	else{
+		if((pdata += any_len) >= pend){
+			TSMS_ERROR_TOO_SHORT();
+		}
+	}
+	
+	/* 3GPP TS 23.040 ==> TP-Service-Centre-Time-Stamp (TP-SCTS) 
+	* 7o */
+	if((pend - pdata)<=7){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	memcpy(self->scts, pdata, 7);
+	pdata += 7;	
+	
+	/* 3GPP TS 23.040 ==> xxxx TP Discharge Time(TP-DT) 
+	* 7o */
+	if((pend - pdata)<=7){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	memcpy(self->dt, pdata, 7);
+	pdata += 7;
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.15 TP Status(TP-ST) 
+	* 1o */
+	self->st = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> xxxx TP-Parameter-Indicator (TP-PI) 
+	* 1o */
+	self->pi = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.9 TP-Protocol-Identifier (TP-PID) 
+	* 1o */
+	TSMS_TPDU_MESSAGE(self)->pid = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.10 TP-Data-Coding-Scheme (TP-DCS) 
+	* 1o */
+	TSMS_TPDU_MESSAGE(self)->dcs = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.16 TP-User-Data-Length (TP-UDL) 
+	* 1o */
+	TSMS_TPDU_MESSAGE(self)->udl = *pdata;
+	pdata++;
+
+	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
+	if((pend-pdata) > 0){
+		TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+	}
+
+	bail:
+	if(failed){
+		TSK_OBJECT_SAFE_FREE(self);
+	}
+	return TSMS_TPDU_MESSAGE(self);
 }
 
 int _tsms_tpdu_status_report_serialize(const tsms_tpdu_status_report_t* self, tsk_buffer_t* output)
@@ -103,7 +225,7 @@ int _tsms_tpdu_status_report_serialize(const tsms_tpdu_status_report_t* self, ts
 }
 
 // submit=0->SMS-COMMAND else SMS-COMMAND see 23.04 section 9.2.3.26 (TP-SRQ)
-tsms_tpdu_status_report_handle_t* tsms_tpdu_status_report_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit)
+tsms_tpdu_status_report_t* tsms_tpdu_status_report_create(uint8_t mr, const tsms_address_string_t smsc, tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit)
 {
 	tsms_tpdu_status_report_t* ret = tsk_null;
 	

@@ -29,9 +29,107 @@
  */
 #include "tinySMS/tpdu/tsms_tpdu_command.h"
 
+#include "tsk_debug.h"
+
+#define TSMS_ERROR_TOO_SHORT()\
+	TSK_DEBUG_ERROR("SMS-COMMAND == Data too short.");\
+	failed = tsk_true;\
+	goto bail;
+
 tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, size_t size)
 {
-	return tsk_null;
+	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
+	tsms_tpdu_command_t* self = tsms_tpdu_command_create(0, tsk_null, tsk_null, 0, tsms_tpdu_cmd_rel);
+	tsk_bool_t failed = tsk_false;
+	size_t any_len;
+	const uint8_t* pdata = data;
+	const uint8_t* pend = pdata + size;
+
+	/* SMSC address */
+#if TSMS_TPDU_APPEND_SMSC
+	if(!(self->smsc = tsms_address_deserialize(data, size, tsms_addr_smsc, &any_len)) || !any_len){
+		TSK_DEBUG_ERROR("SMS-COMMAND == Failed to parse SMSC address");
+		failed = tsk_true;
+		goto bail;
+	}
+	else{
+		if((pdata += any_len) >= pend){
+			TSMS_ERROR_TOO_SHORT();
+		}
+	}
+#endif
+
+	/* SMS-COMMAND first Octect:
+		- TP-Message-Type-Indicator(2b)
+		- TP-User-Data-Header-Indicator(1b)
+		- TP-Status-Report-Request(1b)
+
+		+----+----+----+----+----+----+----+----+
+		|    |UDHI|SRR |	|	 |    | MTI	    |
+		+----+----+----+----+----+----+----+----+
+	*/
+	TSMS_TPDU_MESSAGE(self)->mti = (*pdata & 0x03);
+	self->srr = (*pdata & 0x20)>>5,
+	self->udhi = (*pdata & 0x40)>>6;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+
+	/* 3GPP TS 23.040 ==> 9.2.3.6 TP-Message-Reference (TP-MR) 
+	* 1o */
+	self->mr = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+
+	/* 3GPP TS 23.040 ==> 9.2.3.9 TP-Protocol-Identifier (TP-PID) 
+	* 1o */
+	TSMS_TPDU_MESSAGE(self)->pid = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.19 TP-Command-Type (TP-CT) 
+	* 1o */
+	self->ct = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+
+	/* 3GPP TS 23.040 ==> 9.2.3.18 TP-Message-Number (TP-MN) 
+	* 1o */
+	self->mn = *pdata;
+	if((++pdata) >= pend){
+		TSMS_ERROR_TOO_SHORT();
+	}
+	
+	/* 3GPP TS 23.040 ==> 9.2.3.8 TP-Destination-Address (TP-DA) */
+	if(!(self->da = tsms_address_deserialize(pdata, (pend-pdata), tsms_addr_da, &any_len)) || !any_len){
+		TSK_DEBUG_ERROR("SMS-DELIVER == Failed to parse DA address");
+		failed = tsk_true;
+		goto bail;
+	}
+	else{
+		if((pdata += any_len) >= pend){
+			TSMS_ERROR_TOO_SHORT();
+		}
+	}
+
+	/* 3GPP TS 23.040 ==> 9.2.3.20	TP Command Data Length (TP CDL) 
+	* 1o */
+	TSMS_TPDU_MESSAGE(self)->udl = *pdata;
+	pdata++;
+
+	/* 3GPP TS 23.040 ==> 9.2.3.21	TP Command Data (TP CD) */
+	if((pend-pdata) > 0){
+		TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+	}
+
+	bail:
+	if(failed){
+		TSK_OBJECT_SAFE_FREE(self);
+	}
+	return TSMS_TPDU_MESSAGE(self);
 }
 
 int _tsms_tpdu_command_serialize(const tsms_tpdu_command_t* self, tsk_buffer_t* output)
@@ -53,7 +151,7 @@ int _tsms_tpdu_command_serialize(const tsms_tpdu_command_t* self, tsk_buffer_t* 
 		- TP-Status-Report-Request(1b)
 
 		+----+----+----+----+----+----+----+----+
-		|    |UDHI|SRR |	|	 | RD | MTI	    |
+		|    |UDHI|SRR |	|	 |    | MTI	    |
 		+----+----+----+----+----+----+----+----+
 	*/
 	_1byte = (TSMS_TPDU_MESSAGE(self)->mti & 0xF3); /*2b*/
@@ -89,7 +187,7 @@ int _tsms_tpdu_command_serialize(const tsms_tpdu_command_t* self, tsk_buffer_t* 
 }
 
 
-tsms_tpdu_command_handle_t* tsms_tpdu_command_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd)
+tsms_tpdu_command_t* tsms_tpdu_command_create(uint8_t mr, const tsms_address_string_t smsc, tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd)
 {
 	tsms_tpdu_command_t* ret = tsk_null;
 	

@@ -82,9 +82,7 @@ typedef struct tsms_tpdu_deliver_s
 }
 tsms_tpdu_deliver_t;
 
-typedef void tsms_tpdu_deliver_handle_t;
-
-TINYSMS_API tsms_tpdu_deliver_handle_t* tsms_tpdu_deliver_create(tsms_address_string_t smsc, tsms_address_string_t orig);
+TINYSMS_API tsms_tpdu_deliver_t* tsms_tpdu_deliver_create(const tsms_address_string_t smsc, const tsms_address_string_t orig);
 
 #define tsms_tpdu_deliver_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_false)
 #define tsms_tpdu_deliver_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_false)
