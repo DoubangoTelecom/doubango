@@ -37,6 +37,11 @@
 
 #include <string.h> /* strlen() */
 
+/**@defgroup tsms_tpdu_group Service provided by the SM-TL (Transport)
+*/
+/**@defgroup tsms_rpdu_group Service provided by the SM-RL (Relay)
+*/
+
 
 /* ======================== TPDU ======================== 
 =========================================================*/
@@ -65,7 +70,7 @@ int tsms_tpdu_message_init(tsms_tpdu_message_t* self, tsms_tpdu_mti_t mti)
 	return -1;
 }
 
-/**
+/** Serialize any TP-Message.
 */
 int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* output, tsk_bool_t MobOrig)
 {
@@ -101,6 +106,8 @@ int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* o
 	}
 }
 
+/** Deserialize any TP-Message.
+*/
 tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size,  tsk_bool_t MobOrig)
 {
 	tsms_tpdu_mti_t mti;

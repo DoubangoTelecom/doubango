@@ -151,7 +151,7 @@ tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_add
 		address = TSMS_ADDRESS_CREATE(tsk_null, xtype);
 		*length = 1 /*Address-Length*/ + 1 /*Type-of-Address*/ + addr_len /* digits */;
 	}
-
+	
 	/*	2 - Type-of-Address
 		+----+----+----+----+----+----+----+----+
 		| 1  |     TON      |		 NPI        |
@@ -173,7 +173,7 @@ tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_add
 			tsk_strcat_2(&address->digits, "%.2x", _1byte);
 		}
 	}
-
+	
 bail:
 	return address;
 }
