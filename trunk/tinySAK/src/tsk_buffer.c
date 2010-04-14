@@ -50,12 +50,12 @@
 *
 * @code
 * tsk_buffer_t* buffer = TSK_BUFFER_CREATE_NULL();
-* tsk_buffer_appendEx(buffer, "str1=%s, c1=%c and val1=%x", "str1", 'c', 0x2554);
+* tsk_buffer_append_2(buffer, "str1=%s, c1=%c and val1=%x", "str1", 'c', 0x2554);
 * printf(TSK_BUFFER_TO_STRING(buffer));
 * TSK_OBJECT_SAFE_FREE(buffer);
 * @endcode
 */
-int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
+int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 {
 	/*
 	 * I suppose that sizeof(char) = 1-byte
@@ -82,16 +82,13 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 		int n;
 		len = (strlen(format)*2);
 		buffer = tsk_realloc(buffer, (oldsize+len));
-		for(;;)
-		{
-			if( (n = vsnprintf((char*)(buffer + oldsize), len, format, list)) >= 0 && (n<=len) )
-			{
+		for(;;){
+			if( (n = vsnprintf((char*)(buffer + oldsize), len, format, list)) >= 0 && (n<=len) ){
 				len = n;
 				break;
 			}
-			else
-			{
-				len += 5;
+			else{
+				len += 10;
 				buffer = tsk_realloc(buffer, (oldsize+len));
 			}
 		}
@@ -121,7 +118,7 @@ int tsk_buffer_appendEx(tsk_buffer_t* self, const char* format, ...)
 * @param data The data to append to the buffer.
 * @param size The size of the @a data to append.
 * @retval Zero if succeed and non-zero error code otherwise.
-* @sa @ref tsk_buffer_appendEx.
+* @sa @ref tsk_buffer_append_2.
 *
 * @code
 * tsk_buffer_t* buffer = TSK_BUFFER_CREATE_NULL();

@@ -54,11 +54,11 @@ int thttp_header_Authorization_tostring(const void* header, tsk_buffer_t* output
 		if(Authorization && Authorization->scheme)
 		{
 			if(tsk_striequals(Authorization->scheme, "Basic")){
-				return tsk_buffer_appendEx(output, "%s %s", 
+				return tsk_buffer_append_2(output, "%s %s", 
 					Authorization->scheme, Authorization->response);
 			}
 			else{
-				return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+				return tsk_buffer_append_2(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 					Authorization->scheme,
 
 					Authorization->username ? "username=\"" : "",

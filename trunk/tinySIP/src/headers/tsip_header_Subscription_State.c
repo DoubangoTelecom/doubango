@@ -53,17 +53,17 @@ int tsip_header_Subscription_State_tostring(const void* header, tsk_buffer_t* ou
 		const tsip_header_Subscription_State_t *Subscription_State = header;
 		int ret = -1;
 		
-		ret = tsk_buffer_appendEx(output, "%s%s%s", 
+		ret = tsk_buffer_append_2(output, "%s%s%s", 
 			Subscription_State->state,
 			
 			Subscription_State->reason ? ";reason=" : "",
 			Subscription_State->reason ? Subscription_State->reason : ""				
 			);
 		if(!ret && Subscription_State->expires>=0){
-			ret = tsk_buffer_appendEx(output, ";expires=%d", Subscription_State->expires);
+			ret = tsk_buffer_append_2(output, ";expires=%d", Subscription_State->expires);
 		}
 		if(!ret && Subscription_State->retry_after>=0){
-			ret = tsk_buffer_appendEx(output, ";retry-after=%d", Subscription_State->retry_after);
+			ret = tsk_buffer_append_2(output, ";retry-after=%d", Subscription_State->retry_after);
 		}
 
 		return ret;

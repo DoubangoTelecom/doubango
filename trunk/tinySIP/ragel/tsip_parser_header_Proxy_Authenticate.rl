@@ -137,7 +137,7 @@
 //		const tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = header;
 //		if(Proxy_Authenticate && Proxy_Authenticate->scheme)
 //		{
-//			return tsk_buffer_appendEx(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
+//			return tsk_buffer_append_2(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
 //				Proxy_Authenticate->scheme,
 //				Proxy_Authenticate->realm ? Proxy_Authenticate->realm : "",
 //				

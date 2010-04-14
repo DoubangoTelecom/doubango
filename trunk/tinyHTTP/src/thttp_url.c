@@ -45,7 +45,7 @@
 int thttp_url_serialize(const thttp_url_t *url, tsk_buffer_t *output)
 {
 	/* RFC 1738: "http://" hostport [ "/" hpath [ "?" search ]] */
-	return tsk_buffer_appendEx(output, "%s://%s:%u%s%s%s%s", 
+	return tsk_buffer_append_2(output, "%s://%s:%u%s%s%s%s", 
 
 		url->scheme,
 		url->host,

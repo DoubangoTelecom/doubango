@@ -30,22 +30,28 @@ void test_submit()
 {
 	int ret;
 	tsms_tpdu_submit_handle_t* submit = tsk_null;
-	tsk_buffer_t* udata = tsk_null;
+	tsk_buffer_t* buffer = tsk_null;
 	char* hex;
 	
-	submit = tsms_tpdu_submit_create(__pdu_last_mr++, "+331000000", "+3361234567");
+	submit = tsms_tpdu_submit_create(__pdu_last_mr++, "+3310000095", "+3361234567");
 	
-	/* set user data */
-	if((udata = tsms_pack_to_7bit(USER_DATA))){
-		ret = tsms_tpdu_submit_set_userdata(submit, udata, tsms_alpha_7bit);
+	/* sending */
+	if((buffer = tsms_pack_to_7bit(USER_DATA))){
+		ret = tsms_tpdu_submit_set_userdata(submit, buffer, tsms_alpha_7bit);
 		if((hex = tsms_tpdu_submit_tohexastring(submit))){
 			TSK_DEBUG_INFO("SMS-SUBMIT=%s", hex);
 			TSK_FREE(hex);
 		}
-		TSK_OBJECT_SAFE_FREE(udata);
+		TSK_OBJECT_SAFE_FREE(buffer);
 	}
 
+	/* receiving */
+	buffer = TSK_BUFFER_CREATE_NULL();
+	tsms_tpdu_submit_serialize(submit, buffer);
+	tsms_tpdu_message_deserialize(buffer->data, buffer->size, tsk_true);
+
 	TSK_OBJECT_SAFE_FREE(submit);
+	TSK_OBJECT_SAFE_FREE(buffer);
 }
 
 void test_deliver()

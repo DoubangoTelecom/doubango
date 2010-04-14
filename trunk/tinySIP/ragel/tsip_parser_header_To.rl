@@ -102,7 +102,7 @@ int tsip_header_To_tostring(const void* header, tsk_buffer_t* output)
 		}
 		if(To->tag)
 		{
-			tsk_buffer_appendEx(output, ";tag=%s", To->tag);
+			tsk_buffer_append_2(output, ";tag=%s", To->tag);
 		}
 	}
 	return -1;

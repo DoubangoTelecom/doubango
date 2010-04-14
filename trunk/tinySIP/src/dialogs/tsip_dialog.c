@@ -839,7 +839,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 		}
 		
 		/* CSeq */
-		self->cseq_value = (tsk_urand() + 1);
+		self->cseq_value = (rand() + 1);
 
 		/* FSM */
 		self->fsm = TSK_FSM_CREATE(curr, term);

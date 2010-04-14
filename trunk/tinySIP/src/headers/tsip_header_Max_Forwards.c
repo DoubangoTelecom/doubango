@@ -53,7 +53,7 @@ int tsip_header_Max_Forwards_tostring(const void* header, tsk_buffer_t* output)
 		const tsip_header_Max_Forwards_t *Max_Forwards = header;
 		if(Max_Forwards->value >=0)
 		{
-			return tsk_buffer_appendEx(output, "%d", Max_Forwards->value);
+			return tsk_buffer_append_2(output, "%d", Max_Forwards->value);
 		}
 	}
 

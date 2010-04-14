@@ -31,19 +31,19 @@
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 #include <string.h>
 
 /** swaps the address from 'abcd' to 'badc'
 */
-char* tsms_address_swap(const char* in)
+char* tsms_address_swap(const char* in, size_t in_len)
 {
-	size_t i, in_len;
+	size_t i;
 	char* ret = tsk_null;
 	if(tsk_strnullORempty(in)){
 		goto bail;
 	}
-	in_len = strlen(in);
 	ret = tsk_calloc(in_len + 2/*\0 and trainling F*/, sizeof(uint8_t));
 
 	if(in_len>=2){
@@ -68,7 +68,7 @@ int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 	char* number = tsk_null;
 	size_t i, num_len/*real len*/;
 	uint8_t type_of_address;
-	if(!address ||!output){
+	if(!output){
 		return -1;
 	}
 	
@@ -81,7 +81,7 @@ int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 		+----+----+----+----+----+----+----+----+
 		3 - Phone number in semi octets
 	*/
-	number = tsms_address_swap(address->digits);
+	number = tsms_address_swap(address ? address->digits : tsk_null, address ? strlen(address->digits) : 0);
 
 	if(number){
 		size_t len =  (address->type == tsms_addr_smsc) ? 
@@ -94,7 +94,7 @@ int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 		/* 1 - Address-Length */
 		static uint8_t _1bytes = 0x00;
 		tsk_buffer_append(output, &_1bytes, 1);
-		goto bail;
+		goto bail; /* neither 2 nor 3 will be executed */
 	}
 		
 	/* 2 - Type-of-Address */
@@ -114,6 +114,68 @@ int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 bail:
 	TSK_FREE(number);
 	return 0;
+}
+
+
+tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_address_type_t xtype, size_t *length)
+{
+	tsms_address_t* address = tsk_null;
+	uint8_t addr_len, _1byte, i;
+	const uint8_t* pdata = data;
+	*length = 0;
+
+	if(!pdata || size<=2){
+		TSK_DEBUG_ERROR("Invalid Parameter.");
+		goto bail;
+	}
+
+	/* 1 - Address-Length */
+	addr_len = *pdata;
+	pdata++;
+
+	/*== len=0 ==*/
+	if(!addr_len){
+		address = TSMS_ADDRESS_CREATE(tsk_null, xtype);
+		*length = 1;
+		goto bail;
+	}
+	/*== check validity for non-zero-length address ==*/
+	addr_len = (xtype == tsms_addr_smsc) ? 
+			((addr_len - 1) * 2) /* Number of octets plus 1. */
+			: addr_len; /* Number of BCD digits */
+	if((size_t)(1 /*Address-Length*/ + 1 /*Type-of-Address*/ + addr_len /* digits */) >= size){
+		TSK_DEBUG_ERROR("Too short to contain an address.");
+		goto bail;
+	}
+	else{
+		address = TSMS_ADDRESS_CREATE(tsk_null, xtype);
+		*length = 1 /*Address-Length*/ + 1 /*Type-of-Address*/ + addr_len /* digits */;
+	}
+
+	/*	2 - Type-of-Address
+		+----+----+----+----+----+----+----+----+
+		| 1  |     TON      |		 NPI        |
+		+----+----+----+----+----+----+----+----+
+	*/
+	address->ton = ((*pdata &0x70) >> 4);
+	address->npi = (*pdata &0x0F);
+	pdata++;
+
+	/* 3 - Phone number in semi octets (BCD digits) */
+	//address->digits = tsk_calloc((addr_len/2) + 1, sizeof(uint8_t));
+	for(i=0; i<(addr_len/2); i++, pdata++){
+		_1byte = ((*pdata << 4) | (*pdata >> 4));
+		if((_1byte & 0x0F) == 0x0F){ /* ends with 'F'? */
+			_1byte = ((_1byte & 0xF0) >> 4);
+			tsk_strcat_2(&address->digits, "%.1x", _1byte);
+		}
+		else{
+			tsk_strcat_2(&address->digits, "%.2x", _1byte);
+		}
+	}
+
+bail:
+	return address;
 }
 
 //=================================================================================================

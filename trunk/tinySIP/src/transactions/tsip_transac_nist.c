@@ -521,7 +521,7 @@ static void* tsip_transac_nist_create(void * self, va_list * app)
 		/* create FSM */
 		transac->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
 		transac->fsm->debug = DEBUG_STATE_MACHINE;
-		tsk_fsm_set_callback_terminated(transac->fsm, TSK_FSM_ONTERMINATED(tsip_transac_nist_OnTerminated), (const void*)transac);
+		tsk_fsm_set_callback_terminated(transac->fsm, TSK_FSM_ONTERMINATED_F(tsip_transac_nist_OnTerminated), (const void*)transac);
 
 		/* Initialize base class */
 		tsip_transac_init(TSIP_TRANSAC(transac), tsip_nist, reliable, cseq_value, cseq_method, callid, dialog);

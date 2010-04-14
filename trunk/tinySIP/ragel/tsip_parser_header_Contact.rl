@@ -131,7 +131,7 @@ int tsip_header_Contact_tostring(const void* header, tsk_buffer_t* output)
 			/* Display name */
 			if(Contact->display_name)
 			{
-				tsk_buffer_appendEx(output, "\"%s\"", Contact->display_name);
+				tsk_buffer_append_2(output, "\"%s\"", Contact->display_name);
 			}
 
 			/* Uri */
@@ -143,7 +143,7 @@ int tsip_header_Contact_tostring(const void* header, tsk_buffer_t* output)
 			/* Expires */
 			if(Contact->expires >=0)
 			{
-				tsk_buffer_appendEx(output, ";expires=%d", Contact->expires);
+				tsk_buffer_append_2(output, ";expires=%d", Contact->expires);
 			}
 		}
 

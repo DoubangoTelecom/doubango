@@ -99,13 +99,22 @@ int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* o
 tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size,  tsk_bool_t MobOrig)
 {
 	tsms_tpdu_mti_t mti;
-
+	uint8_t smsc_len = 0;
+	
 	if(!data || size<=1){
 		TSK_DEBUG_ERROR("Invalid parameter.");
 		return tsk_null;
 	}
+
+#if TSMS_TPDU_APPEND_SMSC
+	smsc_len = *((uint8_t*)data) + 1/* len itself*/;
+	if(smsc_len>=size){
+		TSK_DEBUG_ERROR("Too short.");
+		return tsk_null;
+	}
+#endif
 	
-	mti = (*((uint8_t*)data) & 0x03);
+	mti = (*(((uint8_t*)data)+smsc_len) & 0x03);
 
 	/* 3GPP TS 23.040 - 9.2.3.1	TP Message Type Indicator (TP MTI)
 	bit1	bit0	Message type

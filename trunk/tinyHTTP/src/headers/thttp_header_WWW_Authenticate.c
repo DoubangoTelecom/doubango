@@ -54,7 +54,7 @@ int thttp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* out
 		const thttp_header_WWW_Authenticate_t *WWW_Authenticate = header;
 		if(WWW_Authenticate && WWW_Authenticate->scheme)
 		{
-			return tsk_buffer_appendEx(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
+			return tsk_buffer_append_2(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
 				WWW_Authenticate->scheme,
 				WWW_Authenticate->realm ? WWW_Authenticate->realm : "",
 				

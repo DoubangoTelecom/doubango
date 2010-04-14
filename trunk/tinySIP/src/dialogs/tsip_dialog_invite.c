@@ -470,7 +470,7 @@ static void* tsip_dialog_invite_create(void * self, va_list * app)
 
 		/* FSM */
 		TSIP_DIALOG_GET_FSM(dialog)->debug = DEBUG_STATE_MACHINE;
-		tsk_fsm_set_callback_terminated(TSIP_DIALOG_GET_FSM(dialog), TSK_FSM_ONTERMINATED(tsip_dialog_invite_OnTerminated), (const void*)dialog);
+		tsk_fsm_set_callback_terminated(TSIP_DIALOG_GET_FSM(dialog), TSK_FSM_ONTERMINATED_F(tsip_dialog_invite_OnTerminated), (const void*)dialog);
 
 		/* Initialize the class itself */
 		tsip_dialog_invite_init(self);

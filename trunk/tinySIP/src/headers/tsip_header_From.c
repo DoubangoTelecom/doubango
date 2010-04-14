@@ -58,7 +58,7 @@ int tsip_header_From_tostring(const void* header, tsk_buffer_t* output)
 		}
 		if(From->tag)
 		{
-			ret = tsk_buffer_appendEx(output, ";tag=%s", From->tag);
+			ret = tsk_buffer_append_2(output, ";tag=%s", From->tag);
 		}
 	}
 	return ret;

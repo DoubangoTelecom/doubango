@@ -52,7 +52,7 @@ int tsip_header_RSeq_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const tsip_header_RSeq_t *RSeq = header;
-		return tsk_buffer_appendEx(output, "%u", RSeq->seq);
+		return tsk_buffer_append_2(output, "%u", RSeq->seq);
 	}
 	return -1;
 }

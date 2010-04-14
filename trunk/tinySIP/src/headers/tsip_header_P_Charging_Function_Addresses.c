@@ -54,7 +54,7 @@ int tsip_header_P_Charging_Function_Addresses_tostring(const void* header, tsk_b
 	if(header)
 	{
 		const tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = header;		
-		return tsk_buffer_appendEx(output, "%s%s%s%s%s", 
+		return tsk_buffer_append_2(output, "%s%s%s%s%s", 
 			P_Charging_Function_Addresses->ecf ? "ecf=" : "",
 			P_Charging_Function_Addresses->ecf ? P_Charging_Function_Addresses->ecf : "",
 
