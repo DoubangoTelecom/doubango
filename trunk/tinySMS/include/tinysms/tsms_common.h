@@ -53,6 +53,10 @@ tsms_alphabet_t;
 /* 3GPP TS 23.038 v911 section 4 */
 #define TSMS_ALPHA_FROM_DCS(dcs) (((dcs) & 0x0C) >> 2) /* Bit3 and Bit2 */
 
+
+/* ======================== TPDU ======================== 
+=========================================================*/
+
 /** 3GPP TS 23.040 - 9.2.3.1	TP Message Type Indicator (TP MTI) */
 typedef enum tsms_tpdu_mti_e
 {
@@ -85,6 +89,9 @@ tsms_tpdu_vpf_t;
 typedef struct tsms_tpdu_message_s
 {
 	TSK_DECLARE_OBJECT;
+
+	tsk_bool_t MobOrig;
+
 	/** TP Message Type Indicator (TP MTI) as per TS 23.040 section 9.2.3.1. 2-bit field. */
 	tsms_tpdu_mti_t mti; 
 	/** TP Protocol Identifier (M - o)
@@ -107,13 +114,16 @@ tsms_tpdu_message_t;
 
 int tsms_tpdu_message_init(tsms_tpdu_message_t* self, tsms_tpdu_mti_t mti);
 TINYSMS_API int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* output, tsk_bool_t MobOrig);
+#define tsms_tpdu_message_serialize_mo(self, output) tsms_tpdu_message_serialize(self, output, tsk_true)
+#define tsms_tpdu_message_serialize_mt(self, output) tsms_tpdu_message_serialize(self, output, tsk_false)
 TINYSMS_API tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size, tsk_bool_t MobOrig);
+#define tsms_tpdu_message_deserialize_mo(data, size) tsms_tpdu_message_deserialize(data, size, tsk_true)
+#define tsms_tpdu_message_deserialize_mt(data, size) tsms_tpdu_message_deserialize(data, size, tsk_false)
 TINYSMS_API char* tsms_tpdu_message_tostring(const tsms_tpdu_message_t* self, tsk_bool_t MobOrig);
 TINYSMS_API char* tsms_tpdu_message_tohexastring(const tsms_tpdu_message_t* self, tsk_bool_t MobOrig);
+TINYSMS_API char* tsms_tpdu_message_get_content(const tsms_tpdu_message_t* self);
 TINYSMS_API int tsms_tpdu_message_set_userdata(tsms_tpdu_message_t* self, const tsk_buffer_t* udata, tsms_alphabet_t alpha);
 int tsms_tpdu_message_deinit(tsms_tpdu_message_t* self);
-
-/* ========== TPDU default values ========== */
 
 #define TSMS_TPDU_DEFAULT_PID			0x00					/**< 3GPP TS 23.040 section 9.2.3.9 - TP-Protocol-Identifier (TP-PID) */
 #define TSMS_TPDU_DEFAULT_DCS			0x00					/**< 3GPP TS 23.040 section  9.2.3.10 - TP-Data-Coding-Scheme (TP-DCS) (default class, 7 bit message) + GSM 03.38*/
@@ -127,6 +137,37 @@ int tsms_tpdu_message_deinit(tsms_tpdu_message_t* self);
 /**< Indicates whether to append SMSC address at the begining of the TPDU content.
 */
 #define TSMS_TPDU_APPEND_SMSC	1
+
+/* ======================== RPDU ======================== 
+=========================================================*/
+
+/** RP-MTI types as per 3GPP TS 24.011 section 8.2.2
+* 3bit field located in the first octet of all RP-Messages. */
+typedef enum tsms_rpdu_type_e
+{
+	/*000*/ tsms_rpdu_type_data_mo		= 0x00, /**< RP-DATA message ms->n */
+	/*001*/ tsms_rpdu_type_data_mt		= 0x01, /**< RP-DATA message n->ms */
+	/*010*/ tsms_rpdu_type_ack_mo		= 0x02, /**< RP-ACK message ms->n */
+	/*011*/ tsms_rpdu_type_ack_mt		= 0x03, /**< RP-ACK message n->ms */
+	/*100*/ tsms_rpdu_type_error_mo		= 0x04, /**< RP-ERROR message ms->n */
+	/*101*/ tsms_rpdu_type_error_mt		= 0x05, /**< RP-ERROR message n->ms */
+	/*110*/ tsms_rpdu_type_smma_mo		= 0x06, /**< RP-SMMA message ms->n */
+}
+tsms_rpdu_type_t;
+
+typedef struct tsms_rpdu_message_s
+{
+	TSK_DECLARE_OBJECT;
+
+	tsms_rpdu_type_t mti;
+	uint8_t mr; /**< Message Reference. */
+}
+tsms_rpdu_message_t;
+#define TSMS_DECLARE_RPDU_MESSAGE tsms_rpdu_message_t rpdu
+#define TSMS_RPDU_MESSAGE(self) ((tsms_rpdu_message_t*)(self))
+
+TINYSMS_API int tsms_rpdu_message_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output);
+TINYSMS_API tsms_rpdu_message_t* tsms_rpdu_message_deserialize(const void* data, size_t size);
 
 TSMS_END_DECLS
 

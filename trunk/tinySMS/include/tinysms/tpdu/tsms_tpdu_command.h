@@ -91,9 +91,7 @@ typedef struct tsms_tpdu_command_s
 }
 tsms_tpdu_command_t;
 
-typedef void tsms_tpdu_command_handle_t;
-
-TINYSMS_API tsms_tpdu_command_handle_t* tsms_tpdu_command_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd);
+TINYSMS_API tsms_tpdu_command_t* tsms_tpdu_command_create(uint8_t mr, const tsms_address_string_t smsc, tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd);
 
 #define tsms_tpdu_command_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_true)
 #define tsms_tpdu_command_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_true)

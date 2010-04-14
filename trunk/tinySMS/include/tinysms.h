@@ -21,8 +21,10 @@
 */
 #include "tinySMS/tsms_packing.h"
 
+// SM-RL
 #include "tinySMS/rpdu/tsms_rpdu.h"
 
+// SM-TL
 #include "tinySMS/tpdu/tsms_tpdu_submit.h"
 #include "tinySMS/tpdu/tsms_tpdu_deliver.h"
 #include "tinySMS/tpdu/tsms_tpdu_report.h"

@@ -78,10 +78,8 @@ typedef struct tsms_tpdu_report_s
 }
 tsms_tpdu_report_t;
 
-typedef void tsms_tpdu_report_handle_t;
-
-TINYSMS_API tsms_tpdu_report_handle_t* tsms_tpdu_report_create(tsms_address_string_t smsc, tsk_bool_t submit, tsk_bool_t error);
-TINYSMS_API int tsms_tpdu_report_set_fcs(tsms_tpdu_report_handle_t* self, uint8_t code);
+TINYSMS_API tsms_tpdu_report_t* tsms_tpdu_report_create(const tsms_address_string_t smsc, tsk_bool_t submit, tsk_bool_t error);
+TINYSMS_API int tsms_tpdu_report_set_fcs(tsms_tpdu_report_t* self, uint8_t code);
 
 #define TSMS_TPDU_REPORT_IS_MO(self) (TSMS_TPDU_MESSAGE(self)->mti == tsms_tpdu_mti_deliver_report_mo)
 

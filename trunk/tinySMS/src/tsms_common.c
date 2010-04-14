@@ -37,6 +37,10 @@
 
 #include <string.h> /* strlen() */
 
+
+/* ======================== TPDU ======================== 
+=========================================================*/
+
 extern tsms_tpdu_message_t* _tsms_tpdu_submit_deserialize(const void* data, size_t size);
 extern tsms_tpdu_message_t* _tsms_tpdu_deliver_deserialize(const void* data, size_t size);
 extern tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, size_t size);
@@ -52,6 +56,7 @@ extern int _tsms_tpdu_status_report_serialize(const tsms_tpdu_message_t* self, t
 int tsms_tpdu_message_init(tsms_tpdu_message_t* self, tsms_tpdu_mti_t mti)
 {
 	if(self){
+		self->MobOrig = tsk_true;
 		self->mti = mti;
 		self->pid = TSMS_TPDU_DEFAULT_PID;
 		self->dcs = TSMS_TPDU_DEFAULT_DCS;
@@ -100,6 +105,7 @@ tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size
 {
 	tsms_tpdu_mti_t mti;
 	uint8_t smsc_len = 0;
+	tsms_tpdu_message_t* ret = tsk_null;
 	
 	if(!data || size<=1){
 		TSK_DEBUG_ERROR("Invalid parameter.");
@@ -128,20 +134,25 @@ tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size
 	*/
 	if(MobOrig){ /* MO */
 		switch(mti){
-			case tsms_tpdu_mti_deliver_report_mo: return _tsms_tpdu_report_deserialize(data, size); /* SMS-DELIVER-REPORT */
-			case tsms_tpdu_mti_command_mo: return _tsms_tpdu_command_deserialize(data, size); /* SMS-COMMAND */
-			case tsms_tpdu_mti_submit_mo: return _tsms_tpdu_submit_deserialize(data, size); /* SMS-SUBMIT */
+			case tsms_tpdu_mti_deliver_report_mo: ret = _tsms_tpdu_report_deserialize(data, size); break; /* SMS-DELIVER-REPORT */
+			case tsms_tpdu_mti_command_mo: ret = _tsms_tpdu_command_deserialize(data, size); break; /* SMS-COMMAND */
+			case tsms_tpdu_mti_submit_mo: ret = _tsms_tpdu_submit_deserialize(data, size); break; /* SMS-SUBMIT */
 			default: return tsk_null;
 		}
 	}
 	else{ /* MT */
 		switch(mti){
-			case tsms_tpdu_mti_deliver_mt: return _tsms_tpdu_deliver_deserialize(data, size); /* SMS-DELIVER */
-			case tsms_tpdu_mti_status_report_mt: return _tsms_tpdu_status_report_deserialize(data, size); /* SMS-STATUS-REPORT */
-			case tsms_tpdu_mti_submit_report_mt: return _tsms_tpdu_report_deserialize(data, size); /* SMS-SUBMIT-REPORT */
+			case tsms_tpdu_mti_deliver_mt: ret = _tsms_tpdu_deliver_deserialize(data, size);  break;/* SMS-DELIVER */
+			case tsms_tpdu_mti_status_report_mt: ret = _tsms_tpdu_status_report_deserialize(data, size);  break;/* SMS-STATUS-REPORT */
+			case tsms_tpdu_mti_submit_report_mt: ret = _tsms_tpdu_report_deserialize(data, size);  break;/* SMS-SUBMIT-REPORT */
 			default: return tsk_null;
 		}
 	}
+
+	if(ret){
+		ret->MobOrig = MobOrig;
+	}
+	return ret;
 }
 
 char* tsms_tpdu_message_tostring(const tsms_tpdu_message_t* self, tsk_bool_t MobOrig)
@@ -183,6 +194,29 @@ char* tsms_tpdu_message_tohexastring(const tsms_tpdu_message_t* self, tsk_bool_t
 
 bail:
 	return ret;
+}
+
+char* tsms_tpdu_message_get_content(const tsms_tpdu_message_t* self)
+{
+	if(!self || !self->ud || !self->ud->data || !self->ud->size){
+		TSK_DEBUG_WARN("No content.");
+		return tsk_null;
+	}
+	
+	switch(TSMS_ALPHA_FROM_DCS(self->dcs)){
+		case tsms_alpha_7bit:
+			return tsms_pack_from_7bit(self->ud->data, self->ud->size);
+		case tsms_alpha_8bit:
+			return tsms_pack_from_8bit(self->ud->data, self->ud->size);
+		case tsms_alpha_ucs2:
+			return tsms_pack_from_ucs2(self->ud->data, self->ud->size);
+		case tsms_alpha_reserved: 
+		default:
+			{
+				TSK_DEBUG_ERROR("%d alpha not suported", TSMS_ALPHA_FROM_DCS(self->dcs));
+				return tsk_null;
+			}
+	}
 }
 
 int tsms_tpdu_message_set_userdata(tsms_tpdu_message_t* self, const tsk_buffer_t* udata, tsms_alphabet_t alpha)
@@ -232,4 +266,73 @@ int tsms_tpdu_message_deinit(tsms_tpdu_message_t* self)
 		return 0;
 	}
 	return -1;
+}
+
+
+
+/* ======================== RPDU ======================== 
+=========================================================*/
+
+extern int _tsms_rpdu_rpdata_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output);
+extern int _tsms_rpdu_rpsmma_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output);
+extern int _tsms_rpdu_rpack_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output);
+extern int _tsms_rpdu_rperror_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output);
+
+
+extern tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, size_t size);
+extern tsms_rpdu_message_t* _tsms_rpdu_rpsmma_deserialize(const void* data, size_t size);
+extern tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, size_t size);
+extern tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, size_t size);
+
+
+int tsms_rpdu_message_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output)
+{
+	if(!self || !output){
+		TSK_DEBUG_ERROR("Invalid Parameter");
+		return -1;
+	}
+
+	switch(self->mti){
+		case tsms_rpdu_type_data_mo:
+		case tsms_rpdu_type_data_mt: 
+			return _tsms_rpdu_rpdata_serialize(self, output);
+		case tsms_rpdu_type_ack_mo:
+		case tsms_rpdu_type_ack_mt:
+			 return _tsms_rpdu_rpack_serialize(self, output);
+		case tsms_rpdu_type_error_mo:
+		case tsms_rpdu_type_error_mt:
+			 return _tsms_rpdu_rperror_serialize(self, output);
+		case tsms_rpdu_type_smma_mo:
+			return _tsms_rpdu_rpsmma_serialize(self, output);
+	}
+
+	return -2;
+}
+
+tsms_rpdu_message_t* tsms_rpdu_message_deserialize(const void* data, size_t size)
+{
+	tsms_rpdu_type_t mti;
+	
+	if(!data || size<2 /* MTI and MR*/){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return tsk_null;
+	}
+	
+	mti = (*((uint8_t*)data) & 0x07);	
+
+	switch(mti){
+		case tsms_rpdu_type_data_mo:
+		case tsms_rpdu_type_data_mt: 
+			return _tsms_rpdu_rpdata_deserialize(data, size);
+		case tsms_rpdu_type_ack_mo:
+		case tsms_rpdu_type_ack_mt:
+			 return _tsms_rpdu_rpack_deserialize(data, size);
+		case tsms_rpdu_type_error_mo:
+		case tsms_rpdu_type_error_mt:
+			 return _tsms_rpdu_rperror_deserialize(data, size);
+		case tsms_rpdu_type_smma_mo:
+			return _tsms_rpdu_rpsmma_deserialize(data, size);
+	}
+
+	return tsk_null;
 }

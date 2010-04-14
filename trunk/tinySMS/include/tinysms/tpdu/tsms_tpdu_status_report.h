@@ -142,13 +142,11 @@ typedef struct tsms_tpdu_status_report_s
 }
 tsms_tpdu_status_report_t;
 
-typedef void tsms_tpdu_status_report_handle_t;
+TINYSMS_API tsms_tpdu_status_report_t* tsms_tpdu_status_report_create(uint8_t mr, const tsms_address_string_t smsc, tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit);
 
-TINYSMS_API tsms_tpdu_status_report_handle_t* tsms_tpdu_status_report_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit);
-
-#define tsms_tpdu_status_report_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output)
-#define tsms_tpdu_status_report_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self))
-#define tsms_tpdu_status_report_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self))
+#define tsms_tpdu_status_report_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_false)
+#define tsms_tpdu_status_report_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_false)
+#define tsms_tpdu_status_report_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self), tsk_false)
 #define tsms_tpdu_status_report_set_userdata(self, udata, alpha) tsms_tpdu_message_set_userdata(TSMS_TPDU_MESSAGE(self), udata, alpha)
 
 TINYSMS_GEXTERN const tsk_object_def_t *tsms_tpdu_status_report_def_t;

@@ -86,9 +86,7 @@ typedef struct tsms_tpdu_submit_s
 }
 tsms_tpdu_submit_t;
 
-typedef void tsms_tpdu_submit_handle_t;
-
-TINYSMS_API tsms_tpdu_submit_handle_t* tsms_tpdu_submit_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t dest);
+TINYSMS_API tsms_tpdu_submit_t* tsms_tpdu_submit_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t dest);
 
 #define tsms_tpdu_submit_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_true)
 #define tsms_tpdu_submit_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_true)

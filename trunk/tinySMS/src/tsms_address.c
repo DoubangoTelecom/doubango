@@ -141,8 +141,8 @@ tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_add
 	}
 	/*== check validity for non-zero-length address ==*/
 	addr_len = (xtype == tsms_addr_smsc) ? 
-			((addr_len - 1) * 2) /* Number of octets plus 1. */
-			: addr_len; /* Number of BCD digits */
+			(addr_len - 1) /* Number of octets plus 1. */
+			: ((addr_len/2) + (addr_len%2)); /* Number of BCD digits */
 	if((size_t)(1 /*Address-Length*/ + 1 /*Type-of-Address*/ + addr_len /* digits */) >= size){
 		TSK_DEBUG_ERROR("Too short to contain an address.");
 		goto bail;
@@ -163,7 +163,7 @@ tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_add
 
 	/* 3 - Phone number in semi octets (BCD digits) */
 	//address->digits = tsk_calloc((addr_len/2) + 1, sizeof(uint8_t));
-	for(i=0; i<(addr_len/2); i++, pdata++){
+	for(i=0; i<addr_len; i++, pdata++){
 		_1byte = ((*pdata << 4) | (*pdata >> 4));
 		if((_1byte & 0x0F) == 0x0F){ /* ends with 'F'? */
 			_1byte = ((_1byte & 0xF0) >> 4);

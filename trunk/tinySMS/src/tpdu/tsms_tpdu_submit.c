@@ -40,6 +40,7 @@
 
 tsms_tpdu_message_t* _tsms_tpdu_submit_deserialize(const void* data, size_t size)
 {
+	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
 	tsms_tpdu_submit_t* self = tsms_tpdu_submit_create(0, tsk_null, tsk_null);
 	tsk_bool_t failed = tsk_false;
 	size_t any_len;
@@ -141,7 +142,9 @@ tsms_tpdu_message_t* _tsms_tpdu_submit_deserialize(const void* data, size_t size
 	pdata++;
 
 	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
-	TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+	if((pend-pdata) > 0){
+		TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+	}
 
 bail:
 	if(failed){
@@ -207,7 +210,7 @@ int _tsms_tpdu_submit_serialize(const tsms_tpdu_submit_t* self, tsk_buffer_t* ou
 	return 0;
 }
 
-tsms_tpdu_submit_handle_t* tsms_tpdu_submit_create(uint8_t mr, tsms_address_string_t smsc, tsms_address_string_t dest)
+tsms_tpdu_submit_t* tsms_tpdu_submit_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t dest)
 {
 	tsms_tpdu_submit_t* ret = tsk_null;
 	
