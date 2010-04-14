@@ -51,7 +51,7 @@ int tsdp_header_C_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	{
 		const tsdp_header_C_t *C = (const tsdp_header_C_t *)header;
 		
-		return tsk_buffer_appendEx(output, "%s %s %s", 
+		return tsk_buffer_append_2(output, "%s %s %s", 
 			C->nettype,
 			C->addrtype,
 			C->addr

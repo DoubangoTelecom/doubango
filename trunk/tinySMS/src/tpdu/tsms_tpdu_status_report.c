@@ -141,8 +141,12 @@ static tsk_object_t* _tsms_tpdu_status_report_create(tsk_object_t * self, va_lis
 		tsms_tpdu_message_init(TSMS_TPDU_MESSAGE(status_report), tsms_tpdu_mti_status_report_mt);
 		/* init self */
 		status_report->mr = mr;
-		status_report->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
-		status_report->ra = TSMS_ADDRESS_DA_CREATE(recipient);
+		if(smsc){
+			status_report->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+		}
+		if(recipient){
+			status_report->ra = TSMS_ADDRESS_DA_CREATE(recipient);
+		}
 		status_report->st = status;
 		status_report->mms = TSMS_TPDU_DEFAULT_MMS;
 		status_report->srq = submit?0:1/*SMS-COMAND*/;

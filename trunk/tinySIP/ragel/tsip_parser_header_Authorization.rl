@@ -160,7 +160,7 @@
 //		const tsip_header_Authorization_t *Authorization = header;
 //		if(Authorization && Authorization->scheme)
 //		{
-//			return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+//			return tsk_buffer_append_2(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 //				Authorization->scheme,
 //
 //				Authorization->username ? "username=\"" : "",

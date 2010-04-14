@@ -45,7 +45,7 @@ int thttp_header_Content_Length_tostring(const void* header, tsk_buffer_t* outpu
 {
 	if(header){
 		const thttp_header_Content_Length_t *Content_Length = header;		
-		return tsk_buffer_appendEx(output, "%d", Content_Length->length);
+		return tsk_buffer_append_2(output, "%d", Content_Length->length);
 	}
 
 	return -1;

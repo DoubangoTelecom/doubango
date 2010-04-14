@@ -54,7 +54,7 @@ int tsip_header_Warning_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const tsip_header_Warning_t *Warning = header;
-		return tsk_buffer_appendEx(output, "%d %s %s", 
+		return tsk_buffer_append_2(output, "%d %s %s", 
 			Warning->code, Warning->agent, Warning->text); /* warn-code  SP warn-agent  SP warn-text */
 	}
 

@@ -57,7 +57,7 @@ int tsdp_header_Z_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 		{
 			zone = item->data;
 			// time  SP ["-"] typed-time
-			tsk_buffer_appendEx(output, "%s%llu %s%s",
+			tsk_buffer_append_2(output, "%s%llu %s%s",
 				TSK_LIST_IS_FIRST(Z->zones, item) ? "" : " ",
 				zone->time,
 				zone->shifted_back ? "-" : "",

@@ -46,7 +46,7 @@ int tsip_header_Proxy_Authorization_tostring(const void* header, tsk_buffer_t* o
 		const tsip_header_Proxy_Authorization_t *Proxy_Authorization = header;
 		if(Proxy_Authorization && Proxy_Authorization->scheme)
 		{
-			return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+			return tsk_buffer_append_2(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 				Proxy_Authorization->scheme,
 
 				Proxy_Authorization->username ? "username=\"" : "",

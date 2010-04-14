@@ -327,15 +327,15 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	if(TSIP_MESSAGE_IS_REQUEST(self)){
 		/*Method SP Request_URI SP SIP_Version CRLF*/
 		/* Method */
-		tsk_buffer_appendEx(output, "%s ", self->method);
+		tsk_buffer_append_2(output, "%s ", self->method);
 		/* Request URI */
 		tsip_uri_serialize(self->uri, 0, 0, output);
 		/* SIP VERSION */
-		tsk_buffer_appendEx(output, " %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT);
+		tsk_buffer_append_2(output, " %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT);
 	}
 	else{
 		/*SIP_Version SP Status_Code SP Reason_Phrase CRLF*/
-		tsk_buffer_appendEx(output, "%s %hi %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT, TSIP_RESPONSE_CODE(self), TSIP_RESPONSE_PHRASE(self));
+		tsk_buffer_append_2(output, "%s %hi %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT, TSIP_RESPONSE_CODE(self), TSIP_RESPONSE_PHRASE(self));
 	}
 
 	/* First Via */

@@ -54,7 +54,7 @@ int tsdp_header_T_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 		//"t=3034423619 3042462419\r\n"
 		//"r=7d 1h 0 25h\r\n"
 		// IMPORTANT: Do not append the last CRLF (because we only print the header value).
-		tsk_buffer_appendEx(output, "%llu %llu", 
+		tsk_buffer_append_2(output, "%llu %llu", 
 			T->start,
 			T->stop
 			);
@@ -64,7 +64,7 @@ int tsdp_header_T_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 			if(TSK_LIST_IS_FIRST(T->repeat_fields, item)){
 				tsk_buffer_append(output, "\r\n", 2);
 			}
-			tsk_buffer_appendEx(output, "%c=", tsdp_header_get_nameex(TSDP_HEADER(item->data)));
+			tsk_buffer_append_2(output, "%c=", tsdp_header_get_nameex(TSDP_HEADER(item->data)));
 			TSDP_HEADER(item->data)->tostring(TSDP_HEADER(item->data), output);
 			//tsdp_header_tostring(TSDP_HEADER(item->data), output);
 

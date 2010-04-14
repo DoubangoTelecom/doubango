@@ -251,6 +251,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tsms_common.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tsms_packing.c"
 				>
 			</File>

@@ -50,7 +50,7 @@ int tsdp_header_V_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	{
 		const tsdp_header_V_t *V = (const tsdp_header_V_t *)header;
 		if(V->version >=0){
-			tsk_buffer_appendEx(output, "%d", V->version);
+			tsk_buffer_append_2(output, "%d", V->version);
 		}
 		return 0;
 	}

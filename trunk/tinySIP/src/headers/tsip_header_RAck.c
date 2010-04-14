@@ -53,7 +53,7 @@ int tsip_header_RAck_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const tsip_header_RAck_t *RAck = header;
-		return tsk_buffer_appendEx(output, "%u %u %s", RAck->seq, RAck->cseq, RAck->method);
+		return tsk_buffer_append_2(output, "%u %u %s", RAck->seq, RAck->cseq, RAck->method);
 	}
 	return -1;
 }

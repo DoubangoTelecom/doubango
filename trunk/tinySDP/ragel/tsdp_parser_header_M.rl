@@ -102,7 +102,7 @@ int tsdp_header_M_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 			k=* (encryption key)
 			a=* (zero or more media attribute lines)
 		*/
-		tsk_buffer_appendEx(output, "%s %u%s%s %s",
+		tsk_buffer_append_2(output, "%s %u%s%s %s",
 			M->media,
 			M->port,
 			
@@ -113,7 +113,7 @@ int tsdp_header_M_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 			);
 		// FMTs
 		tsk_list_foreach(item, M->FMTs){
-			tsk_buffer_appendEx(output, " %s", TSDP_FMT_STR(item->data));
+			tsk_buffer_append_2(output, " %s", TSDP_FMT_STR(item->data));
 		}
 		tsk_buffer_append(output, "\r\n", 2); // close the "m=" line.
 		// i=* (media title)

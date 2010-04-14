@@ -743,7 +743,7 @@ static void* tsip_dialog_register_create(void * self, va_list * app)
 
 		/* create FSM */
 		TSIP_DIALOG_GET_FSM(self)->debug = DEBUG_STATE_MACHINE;
-		tsk_fsm_set_callback_terminated(TSIP_DIALOG_GET_FSM(self), TSK_FSM_ONTERMINATED(tsip_dialog_register_OnTerminated), (const void*)dialog);
+		tsk_fsm_set_callback_terminated(TSIP_DIALOG_GET_FSM(self), TSK_FSM_ONTERMINATED_F(tsip_dialog_register_OnTerminated), (const void*)dialog);
 
 		/* Initialize the class itself */
 		tsip_dialog_register_init(self);

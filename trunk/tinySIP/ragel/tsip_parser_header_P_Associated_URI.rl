@@ -121,7 +121,7 @@ int tsip_header_P_Associated_URI_tostring(const void* header, tsk_buffer_t* outp
 		int ret = 0;
 		
 		if(P_Associated_URI->display_name){ /* Display Name */
-			tsk_buffer_appendEx(output, "\"%s\"", P_Associated_URI->display_name);
+			tsk_buffer_append_2(output, "\"%s\"", P_Associated_URI->display_name);
 		}
 
 		if(ret=tsip_uri_serialize(P_Associated_URI->uri, 1, 1, output)){ /* P_Associated_URI */

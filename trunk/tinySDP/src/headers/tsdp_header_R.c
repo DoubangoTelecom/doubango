@@ -53,13 +53,13 @@ int tsdp_header_R_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 		const tsk_list_item_t* item;
 
 		// r=7d 1h 0 25h
-		tsk_buffer_appendEx(output, "%s %s", 
+		tsk_buffer_append_2(output, "%s %s", 
 			R->repeat_interval,
 			R->typed_time
 			);
 		tsk_list_foreach(item, R->typed_times){
 			tsk_string_t* string = item->data;
-			tsk_buffer_appendEx(output, " %s", TSK_STRING_STR(string));
+			tsk_buffer_append_2(output, " %s", TSK_STRING_STR(string));
 		}
 		
 		return 0;

@@ -49,7 +49,7 @@ int __tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_buff
 	if(uri->port) tsk_itoa(uri->port, &port);
 
 	/* sip:alice:secretword@atlanta.com:65535 */
-	tsk_buffer_appendEx(output, "%s%s%s%s%s%s%s%s%s%s%s", 
+	tsk_buffer_append_2(output, "%s%s%s%s%s%s%s%s%s%s%s", 
 
 		uri->scheme ? uri->scheme : "",
 		uri->scheme ? ":" : "",
@@ -86,7 +86,7 @@ int tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t
 		{
 			if(uri->display_name)
 			{
-				tsk_buffer_appendEx(output, "\"%s\"", uri->display_name);
+				tsk_buffer_append_2(output, "\"%s\"", uri->display_name);
 			}
 
 			tsk_buffer_append(output, "<", 1);

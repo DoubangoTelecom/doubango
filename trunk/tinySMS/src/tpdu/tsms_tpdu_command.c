@@ -134,8 +134,12 @@ static tsk_object_t* _tsms_tpdu_command_create(tsk_object_t * self, va_list * ap
 		tsms_tpdu_message_init(TSMS_TPDU_MESSAGE(command), tsms_tpdu_mti_command_mo);
 		/* init self */
 		command->mr = mr;
-		command->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
-		command->da = TSMS_ADDRESS_DA_CREATE(dest);
+		if(smsc){
+			command->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+		}
+		if(dest){
+			command->da = TSMS_ADDRESS_DA_CREATE(dest);
+		}
 		command->mn = msg_num;
 		command->ct = cmd;
 	}

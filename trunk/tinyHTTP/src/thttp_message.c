@@ -259,21 +259,21 @@ int thttp_message_serialize(const thttp_message_t *self, tsk_buffer_t *output)
 	if(THTTP_MESSAGE_IS_REQUEST(self)){
 		/*Method SP Request-URI SP HTTP-Version CRLF*/
 		/* Method */
-		tsk_buffer_appendEx(output, "%s ", self->method);
+		tsk_buffer_append_2(output, "%s ", self->method);
 		/* Request URI: hpath?search */
-		tsk_buffer_appendEx(output, "/%s%s%s ", 
+		tsk_buffer_append_2(output, "/%s%s%s ", 
 			self->url->hpath ? self->url->hpath : "",
 			self->url->search ? "?" : "",
 			self->url->search ? self->url->search : ""
 			);
 		/* HTTP VERSION */
-		tsk_buffer_appendEx(output, "%s\r\n", THTTP_MESSAGE_VERSION_DEFAULT);
+		tsk_buffer_append_2(output, "%s\r\n", THTTP_MESSAGE_VERSION_DEFAULT);
 		/* HOST */
-		tsk_buffer_appendEx(output, "Host: %s:%u\r\n", self->url->host, self->url->port);
+		tsk_buffer_append_2(output, "Host: %s:%u\r\n", self->url->host, self->url->port);
 	}
 	else{
 		/*HTTP-Version SP Status-Code SP Reason-Phrase CRLF*/
-		tsk_buffer_appendEx(output, "%s %hi %s\r\n", THTTP_MESSAGE_VERSION_DEFAULT, THTTP_RESPONSE_CODE(self), THTTP_RESPONSE_PHRASE(self));
+		tsk_buffer_append_2(output, "%s %hi %s\r\n", THTTP_MESSAGE_VERSION_DEFAULT, THTTP_RESPONSE_CODE(self), THTTP_RESPONSE_PHRASE(self));
 	}
 
 	/* Content-Type */

@@ -51,7 +51,7 @@ int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
 	if(header)
 	{
 		const tsip_header_CSeq_t *CSeq = header;
-		return tsk_buffer_appendEx(output, "%u %s", CSeq->seq, CSeq->method);
+		return tsk_buffer_append_2(output, "%u %s", CSeq->seq, CSeq->method);
 	}
 	return -1;
 }

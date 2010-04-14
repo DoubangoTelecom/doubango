@@ -67,7 +67,7 @@ int tsip_header_Allow_Event_tostring(const void* header, tsk_buffer_t* output)
 			}
 			else
 			{
-				tsk_buffer_appendEx(output, ",%s", str->value);
+				tsk_buffer_append_2(output, ",%s", str->value);
 			}
 		}
 

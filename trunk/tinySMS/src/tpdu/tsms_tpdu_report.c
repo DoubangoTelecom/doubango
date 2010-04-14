@@ -132,7 +132,9 @@ static tsk_object_t* _tsms_tpdu_report_create(tsk_object_t * self, va_list * app
 		tsms_tpdu_message_init(TSMS_TPDU_MESSAGE(report), submit?tsms_tpdu_mti_submit_report_mt
 			:tsms_tpdu_mti_deliver_report_mo);
 		/* init self */
-		report->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+		if(smsc){
+			report->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+		}
 	}
 	else{
 		TSK_DEBUG_ERROR("Null");

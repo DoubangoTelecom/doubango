@@ -74,7 +74,7 @@ int tsip_header_Min_Expires_tostring(const void* header, tsk_buffer_t* output)
 		const tsip_header_Min_Expires_t *Min_Expires = header;
 		if(Min_Expires->value >=0)
 		{
-			return tsk_buffer_appendEx(output, "%d", Min_Expires->value);
+			return tsk_buffer_append_2(output, "%d", Min_Expires->value);
 		}
 	}
 

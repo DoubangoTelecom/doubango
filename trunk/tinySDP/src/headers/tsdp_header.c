@@ -104,7 +104,7 @@ int tsdp_header_serialize(const tsdp_header_t *self, tsk_buffer_t *output)
 
 	/* Name */
 	name = tsdp_header_get_nameex(self);
-	tsk_buffer_appendEx(output, "%c=", name);
+	tsk_buffer_append_2(output, "%c=", name);
 
 	/* Value */
 	if((ret = self->tostring(self, output))){

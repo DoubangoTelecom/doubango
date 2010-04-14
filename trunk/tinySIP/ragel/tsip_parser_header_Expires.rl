@@ -74,7 +74,7 @@ int tsip_header_Expires_tostring(const void* header, tsk_buffer_t* output)
 		const tsip_header_Expires_t *Expires = header;
 		if(Expires->delta_seconds >=0)
 		{
-			return tsk_buffer_appendEx(output, "%d", Expires->delta_seconds);
+			return tsk_buffer_append_2(output, "%d", Expires->delta_seconds);
 		}
 	}
 

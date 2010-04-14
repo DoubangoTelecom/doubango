@@ -60,7 +60,7 @@ int tsip_header_Security_Server_tostring(const void* header, tsk_buffer_t* outpu
 		// ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
 		if(tsk_striequals(Security_Server->mech, "ipsec-3gpp"))
 		{
-			tsk_buffer_appendEx(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
+			tsk_buffer_append_2(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
 				Security_Server->mech,
 				
 				Security_Server->alg ? ";alg=" : "",
@@ -84,7 +84,7 @@ int tsip_header_Security_Server_tostring(const void* header, tsk_buffer_t* outpu
 
 		if(Security_Server->q >= 0){
 			/* qvalue	=  	("0" [ "." 0*3DIGIT ] ) / ( "1" [ "." 0*3("0") ] ) */
-			tsk_buffer_appendEx(output, ";q=%1.3f", Security_Server->q);
+			tsk_buffer_append_2(output, ";q=%1.3f", Security_Server->q);
 		}
 		
 		return ret;

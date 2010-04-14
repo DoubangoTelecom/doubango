@@ -51,7 +51,7 @@ int tsdp_header_O_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 		const tsdp_header_O_t *O = (const tsdp_header_O_t *)header;
 		
 		// o=alice 2890844526 2890844526 IN IP4 host.atlanta.example.com
-		return tsk_buffer_appendEx(output, "%s %u %u %s %s %s",
+		return tsk_buffer_append_2(output, "%s %u %u %s %s %s",
 			O->username,
 			O->sess_version,
 			O->sess_id,

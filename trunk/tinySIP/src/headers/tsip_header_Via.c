@@ -57,7 +57,7 @@ int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
 		if(Via->ttl) tsk_itoa(Via->ttl, &ttl);
 
 		/* SIP/2.0/UDP [::]:1988;test=1234;comp=sigcomp;rport=254;ttl=457;received=192.0.2.101;branch=z9hG4bK1245420841406\r\n" */
-		return tsk_buffer_appendEx(output, "%s/%s/%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
+		return tsk_buffer_append_2(output, "%s/%s/%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
 
 			Via->proto_name ? Via->proto_name : "SIP",
 
