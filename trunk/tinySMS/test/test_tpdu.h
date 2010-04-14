@@ -32,11 +32,15 @@ void test_submit()
 	tsms_tpdu_submit_t* submit = tsk_null;
 	tsk_buffer_t* buffer = tsk_null;
 	char* hex;
+	const char* smsc = "+331000009";
+	const char* destination = "+333361234567";
+	const char* short_message = "hello world";
+	uint8_t mr = 0xF5;
 	
-	submit = tsms_tpdu_submit_create(__pdu_last_mr++, "+3310000095", "+3361234567");
+	submit = tsms_tpdu_submit_create(mr, smsc, destination);
 	
-	/* sending */
-	if((buffer = tsms_pack_to_7bit(USER_DATA))){
+	/* encode the user data to GSM 7-bit alphabet */
+	if((buffer = tsms_pack_to_7bit(short_message))){
 		ret = tsms_tpdu_submit_set_userdata(submit, buffer, tsms_alpha_7bit);
 		if((hex = tsms_tpdu_submit_tohexastring(submit))){
 			TSK_DEBUG_INFO("SMS-SUBMIT=%s", hex);
@@ -47,7 +51,8 @@ void test_submit()
 
 	/* receiving */
 	buffer = TSK_BUFFER_CREATE_NULL();
-	tsms_tpdu_submit_serialize(submit, buffer);
+	ret = tsms_tpdu_submit_serialize(submit, buffer);
+	// send(socket, buffer->data, buffer->size);
 
 	TSK_OBJECT_SAFE_FREE(submit);
 	submit = (tsms_tpdu_submit_t*)tsms_tpdu_message_deserialize_mo(buffer->data, buffer->size);

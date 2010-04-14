@@ -204,10 +204,6 @@
 				Name="tpdu"
 				>
 				<File
-					RelativePath=".\include\tinysms\tpdu\tsms_tpdu.h"
-					>
-				</File>
-				<File
 					RelativePath=".\include\tinysms\tpdu\tsms_tpdu_command.h"
 					>
 				</File>
@@ -261,10 +257,6 @@
 			<Filter
 				Name="tpdu"
 				>
-				<File
-					RelativePath=".\src\tpdu\tsms_tpdu.c"
-					>
-				</File>
 				<File
 					RelativePath=".\src\tpdu\tsms_tpdu_command.c"
 					>

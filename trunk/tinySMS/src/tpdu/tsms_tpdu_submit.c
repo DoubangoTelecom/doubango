@@ -153,6 +153,9 @@ bail:
 	return TSMS_TPDU_MESSAGE(self);
 }
 
+
+/** internal function used to serialize a SMS-SUBMIT message
+*/
 int _tsms_tpdu_submit_serialize(const tsms_tpdu_submit_t* self, tsk_buffer_t* output)
 {
 	uint8_t _1byte;
@@ -198,8 +201,21 @@ int _tsms_tpdu_submit_serialize(const tsms_tpdu_submit_t* self, tsk_buffer_t* ou
 	tsk_buffer_append(output, &TSMS_TPDU_MESSAGE(self)->dcs, 1); /*1o*/
 
 	/* 3GPP TS 23.040 ==> 9.2.3.12 TP-Validity-Period
-	* Only TP-VP (Relative format) is supported. This field is used in conjonction with TP-VPF. */
-	tsk_buffer_append(output, &self->vp, 1); /*1o*/
+	* 1o for Relative format (9.2.3.12.1)
+	* 7o for Absolute format (9.2.3.12.2)
+	* 7o for Enhanced format (9.2.3.12.3)*/
+	switch(self->vpf){
+		case tsms_tpdu_vpf_relative: 
+			tsk_buffer_append(output, &self->vp, 1);
+			break;
+		case tsms_tpdu_vpf_enhanced:
+		case tsms_tpdu_vpf_absolute:
+			tsk_buffer_append(output, &self->vp, 7);
+			 break;
+		default:
+		case tsms_tpdu_vpf_not_present: 
+			break;
+	}
 
 	/* 3GPP TS 23.040 ==> 9.2.3.16 TP-User-Data-Length (TP-UDL) */
 	tsk_buffer_append(output, &TSMS_TPDU_MESSAGE(self)->udl, 1); /*1o*/
@@ -210,6 +226,16 @@ int _tsms_tpdu_submit_serialize(const tsms_tpdu_submit_t* self, tsk_buffer_t* ou
 	return 0;
 }
 
+/**@ingroup tsms_tpdu_group
+* Creates new SMS-SUBMIT message.
+* @a SMS-SUBMIT messages are used to convey short messages from the MS (Mobile Station) to the SC (Service Center). 
+* @a SMS-SUBMIT-REPORT messages are used for positive or negative acknowledgement to an @a SMS-DELIVER or @a SMS-STATUS-REPORT.
+* For more information, please refer to 3GPP TS 23.040 section 9.2.2.2.
+* @param mr TP-Message-Reference (TP-MR) as per 3GPP TS 23.040 section 9.2.3.6.
+* @param smsc SMSC address. e.g. "+331253688".
+* @param dest The destination address. e.g. "+331253688".
+* @retval @a SMS-SUBMIT message.
+*/
 tsms_tpdu_submit_t* tsms_tpdu_submit_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t dest)
 {
 	tsms_tpdu_submit_t* ret = tsk_null;
