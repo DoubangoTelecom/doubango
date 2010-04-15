@@ -37,12 +37,6 @@
 
 #include <string.h> /* strlen() */
 
-/**@defgroup tsms_tpdu_group Service provided by the SM-TL (Transport)
-*/
-/**@defgroup tsms_rpdu_group Service provided by the SM-RL (Relay)
-*/
-
-
 /* ======================== TPDU ======================== 
 =========================================================*/
 
@@ -70,7 +64,14 @@ int tsms_tpdu_message_init(tsms_tpdu_message_t* self, tsms_tpdu_mti_t mti)
 	return -1;
 }
 
-/** Serialize any TP-Message.
+/**@ingroup tsms_tpdu_group
+* Serialize a @a TP-Message (@a SMS-SUBMIT, @a SMS-COMMAND, @a SMS-DELIVER, ...) as binary content.
+* @param self The @a TP-Message to serialize.
+* @param output A pointer to the @a output buffer.
+* @param MobOrig Indicates whether the message is Mobile Originated or not.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @sa @ref tsms_tpdu_submit_serialize<br>@ref tsms_tpdu_command_serialize<br>@ref tsms_tpdu_deliver_serialize<br>@ref tsms_tpdu_report_serialize<br>@ref tsms_tpdu_status_report_serialize
 */
 int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* output, tsk_bool_t MobOrig)
 {
@@ -106,7 +107,12 @@ int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* o
 	}
 }
 
-/** Deserialize any TP-Message.
+/**@ingroup tsms_tpdu_group
+* Deserialize a @a TP-Message (@a SMS-SUBMIT, @a SMS-COMMAND, @a SMS-DELIVER, ...) from binary content.
+* @param data A pointer to the binary data.
+* @param size The size of the buffer holding the binary data.
+* @param MobOrig Indicates whether the binaray content is Mobile Originated (Sent by the MS) or not.
+* @retval @ref tsms_tpdu_message_t if succeed and @a Null otherwise.
 */
 tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size,  tsk_bool_t MobOrig)
 {
@@ -162,6 +168,9 @@ tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size
 	return ret;
 }
 
+/**@ingroup tsms_tpdu_group
+* For debugging.
+*/
 char* tsms_tpdu_message_tostring(const tsms_tpdu_message_t* self, tsk_bool_t MobOrig)
 {
 	char* ret = tsk_null;
@@ -181,6 +190,14 @@ bail:
 	return ret;
 }
 
+/**@ingroup tsms_tpdu_group
+* Serializes any  @a TP-Message(@a SMS-SUBMIT, @a SMS-DELIVER, @a SMS-COMMAND ...) as hexa-string content.
+* @param self A pointer to the @a TP-Message to serialize.
+* @param MobOrig Indicates whether its an Mobile originated message or not.
+* @retval A pointer to the hexa-string if succeed and Null otherwise.
+*
+* @sa @ref tsms_tpdu_submit_tohexastring<br>@ref tsms_tpdu_command_tohexastring<br>@ref tsms_tpdu_deliver_tohexastring<br>@ref tsms_tpdu_report_tohexastring<br>@ref tsms_tpdu_status_report_tohexastring
+*/
 char* tsms_tpdu_message_tohexastring(const tsms_tpdu_message_t* self, tsk_bool_t MobOrig)
 {
 	char* ret = tsk_null;
@@ -203,7 +220,12 @@ bail:
 	return ret;
 }
 
-char* tsms_tpdu_message_get_content(const tsms_tpdu_message_t* self)
+/**@ingroup tsms_tpdu_group
+* Gets the payload (ASCII string) of the @a TP-Message(@a SMS-SUBMIT, @a SMS-DELIVER, @a SMS-COMMAND ...).
+* @param self Any @a TP-Message which holds the user content. Should be @a SMS-SUBMIT or @a SMS-DELIVER.
+* @retval A pointer to the ascii string if succeed and non-zero error code otherwise.
+*/
+char* tsms_tpdu_message_get_payload(const tsms_tpdu_message_t* self)
 {
 	if(!self || !self->ud || !self->ud->data || !self->ud->size){
 		TSK_DEBUG_WARN("No content.");
@@ -226,6 +248,14 @@ char* tsms_tpdu_message_get_content(const tsms_tpdu_message_t* self)
 	}
 }
 
+/**@ingroup tsms_tpdu_group
+* Sets the content of any @a TP-Message(@a SMS-SUBMIT, @a SMS-DELIVER, @a SMS-COMMAND ...).
+* @param self A pointer to the message.
+* @param udata A pointer the content.
+* @param alpha The alphabet used to encode the content.
+* @retval Zero if succeed and non-zero error code otherwise.
+* @sa @ref tsms_tpdu_submit_set_userdata<br>@ref tsms_tpdu_command_set_cmddata<br>@ref tsms_tpdu_report_set_userdata<br>@ref tsms_tpdu_status_report_set_userdata
+*/
 int tsms_tpdu_message_set_userdata(tsms_tpdu_message_t* self, const tsk_buffer_t* udata, tsms_alphabet_t alpha)
 {
 	if(!self || !udata){
@@ -256,7 +286,7 @@ int tsms_tpdu_message_set_userdata(tsms_tpdu_message_t* self, const tsk_buffer_t
 				self->ud = TSK_BUFFER_CREATE(udata->data, udata->size);
 			}
 			break;
-
+		
 	default:
 		{
 			TSK_DEBUG_ERROR("Invalid Alphabet.");
@@ -266,6 +296,7 @@ int tsms_tpdu_message_set_userdata(tsms_tpdu_message_t* self, const tsk_buffer_t
 	return 0;
 }
 
+/** internal function used to deinit a TP-Message.*/
 int tsms_tpdu_message_deinit(tsms_tpdu_message_t* self)
 {
 	if(self){
@@ -292,6 +323,14 @@ extern tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, size_
 extern tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, size_t size);
 
 
+/**@ingroup tsms_rpdu_group
+* Serialize a @a RP-Message (@a RP-DATA, @a RP-SMMA, @a SMS-ACK, ...) as binary content.
+* @param self A pointer to the @a RP-Message to serialize.
+* @param output A pointer to the @a output buffer.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @sa @ref tsms_rpdu_data_serialize<br>@ref tsms_rpdu_smma_serialize<br>@ref tsms_rpdu_ack_serialize<br>@ref tsms_rpdu_error_serialize
+*/
 int tsms_rpdu_message_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output)
 {
 	if(!self || !output){
@@ -316,6 +355,12 @@ int tsms_rpdu_message_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* o
 	return -2;
 }
 
+/**@ingroup tsms_rpdu_group
+* Deserialize a @a RP-Message (@a RP-DATA, @a RP-SMMA, @a SMS-ACK, ...) from binary content.
+* @param data A pointer to the binary data.
+* @param size The size of the buffer holding the binary data.
+* @retval @ref tsms_rpdu_message_t if succeed and @a Null otherwise.
+*/
 tsms_rpdu_message_t* tsms_rpdu_message_deserialize(const void* data, size_t size)
 {
 	tsms_rpdu_type_t mti;
@@ -342,4 +387,31 @@ tsms_rpdu_message_t* tsms_rpdu_message_deserialize(const void* data, size_t size
 	}
 
 	return tsk_null;
+}
+
+/**@ingroup tsms_rpdu_group
+* Serializes any  @a RP-Message (@a RP-DATA, @a RP-SMMA, @a SMS-ACK, ...) as hexa-string content.
+* @param self A pointer to the @a RP-Message to serialize.
+* @retval A pointer to the hexa-string if succeed and Null otherwise.
+*/
+char* tsms_rpdu_message_tohexastring(const tsms_rpdu_message_t* self)
+{
+	char* ret = tsk_null;
+	tsk_buffer_t* output = tsk_null;
+	if(!self){
+		goto bail;
+	}
+
+	if((output = TSK_BUFFER_CREATE_NULL())){
+		if(!tsms_rpdu_message_serialize(self, output)){
+			size_t i;
+			for(i=0;i<output->size;i++){
+				tsk_strcat_2(&ret, "%.2X", *(TSK_BUFFER_TO_U8(output)+i));
+			}
+		}
+		TSK_OBJECT_SAFE_FREE(output);
+	}
+
+bail:
+	return ret;
 }

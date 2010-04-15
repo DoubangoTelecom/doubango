@@ -36,7 +36,7 @@
 
 TSMS_BEGIN_DECLS
 
-/** RP-DATA as per 3GPP TS 24.011 section 7.3.1. */
+/** @a RP-DATA as per 3GPP TS 24.011 section 7.3.1. */
 typedef struct tsms_rpdu_data_s
 {
 	TSMS_DECLARE_RPDU_MESSAGE;
@@ -50,9 +50,48 @@ typedef struct tsms_rpdu_data_s
 }
 tsms_rpdu_data_t;
 
+/** cast any pointer to @ref tsms_rpdu_data_t* */
 #define TSMS_RPDU_DATA(self) ((tsms_rpdu_data_t*)(self))
 
 TINYSMS_API tsms_rpdu_data_t* tsms_rpdu_data_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_tpdu_message_t* tpdu, tsk_bool_t MobOrig);
+
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_data_create_mo
+* Creates a Mobile Originated @a RP-DATA message.
+* @a RP-DATA messages are use to relay the TPDUs.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.1.
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param smsc The address of the SMSC. e.g. "+331253688".
+* @param tpdu A Pointer to the @a TP-Message to relay.
+* @retval Mobile Originated @a RP-DATA message.
+* @sa @ref tsms_rpdu_data_create_mt<br>@ref tsms_rpdu_data_create
+*
+* See For more information, see @ref tsms_rpdu_group_DATA "RP-DATA".
+*/
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_data_create_mt
+* Creates a Mobile Terminated @a RP-DATA message.
+* @a RP-DATA messages are use to relay the TPDUs.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.1.
+* @param mr RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param smsc The address of the SMSC. e.g. "+331253688".
+* @param tpdu A Pointer to the @a TP-Message to relay.
+* @retval Mobile Terminated RP-DATA message.
+* @sa @ref tsms_rpdu_data_create_mo<br>@ref tsms_rpdu_data_create
+*
+* See For more information, see @ref tsms_rpdu_group_DATA "RP-DATA".
+*/
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_data_serialize
+* Serialize a @a RP-DATA message as binary content.
+* @param self A pointer to the @a RP-DATA message to serialize.
+* @param output A pointer to the @a output buffer.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @sa @ref tsms_rpdu_message_serialize
+*
+* See For more information, see @ref tsms_rpdu_group_DATA "RP-DATA".
+*/
 #define tsms_rpdu_data_create_mo(mr, smsc, tpdu) tsms_rpdu_data_create(mr, smsc, tpdu, tsk_true)
 #define tsms_rpdu_data_create_mt(mr, smsc, tpdu) tsms_rpdu_data_create(mr, smsc, tpdu, tsk_false)
 #define tsms_rpdu_data_serialize(self, output) tsms_rpdu_message_serialize(TSMS_RPDU_MESSAGE(self), output)
@@ -68,9 +107,22 @@ typedef struct tsms_rpdu_smma_s
 }
 tsms_rpdu_smma_t;
 
+/** cast any pointer to @ref tsms_rpdu_smma_t* */
 #define TSMS_RPDU_SMMA(self) ((tsms_rpdu_smma_t*)(self))
 
 TINYSMS_API tsms_rpdu_smma_t* tsms_rpdu_smma_create(uint8_t mr);
+
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_smma_serialize
+* Serialize a @a RP-SMMA message as binary content.
+* @param self A pointer to the @a RP-SMMA message to serialize.
+* @param output A pointer to the @a output buffer.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @sa @ref tsms_rpdu_message_serialize
+*
+* See For more information, see @ref tsms_rpdu_group_SMMA "RP-SMMA".
+*/
 #define tsms_rpdu_smma_serialize(self, output) tsms_rpdu_message_serialize(TSMS_RPDU_MESSAGE(self), output)
 
 TINYSMS_GEXTERN const tsk_object_def_t *tsms_rpdu_smma_def_t;
@@ -85,9 +137,46 @@ typedef struct tsms_rpdu_ack_s
 }
 tsms_rpdu_ack_t;
 
+/** cast any pointer to @ref tsms_rpdu_ack_t* */
 #define TSMS_RPDU_ACK(self) ((tsms_rpdu_ack_t*)(self))
 
 TINYSMS_API tsms_rpdu_ack_t* tsms_rpdu_ack_create(uint8_t mr, const tsms_tpdu_message_t* tpdu, tsk_bool_t MobOrig);
+
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_ack_create_mo
+* Creates a Mobile Originated @a RP-ACK message.
+* @a RP-ACK is sent between the MSC and the mobile station in both directions and used to relay the acknowledgement of a RP-DATA or RP-SMMA message reception.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.2.3
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param tpdu A Pointer to the @a TP-Message to include as RP-User data.
+* @retval Mobile Originated @a RP-ACK message.
+* @sa @ref tsms_rpdu_ack_create_mt<br>@ref tsms_rpdu_ack_create
+*
+* See For more information, see @ref tsms_rpdu_group_ACK "RP-ACK".
+*/
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_ack_create_mt
+* Creates a Mobile Terminated @a RP-ACK message.
+* @a RP-ACK is sent between the MSC and the mobile station in both directions and used to relay the acknowledgement of a RP-DATA or RP-SMMA message reception.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.2.3
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param tpdu A Pointer to the @a TP-Message to include as RP-User data.
+* @retval Mobile Terminated @a RP-ACK message.
+* @sa @ref tsms_rpdu_ack_create_mo<br>@ref tsms_rpdu_ack_create
+*
+* See For more information, see @ref tsms_rpdu_group_ACK "RP-ACK".
+*/
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_ack_serialize
+* Serialize a @a RP-ACK message as binary content.
+* @param self A pointer to the @a RP-ACK message to serialize.
+* @param output A pointer to the @a output buffer.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @sa @ref tsms_rpdu_message_serialize
+*
+* See For more information, see @ref tsms_rpdu_group_ACK "RP-ACK".
+*/
 #define tsms_rpdu_ack_create_mo(mr, tpdu) tsms_rpdu_ack_create(mr, tpdu, tsk_true)
 #define tsms_rpdu_ack_create_mt(mr, tpdu) tsms_rpdu_ack_create(mr, tpdu, tsk_false)
 #define tsms_rpdu_ack_serialize(self, output) tsms_rpdu_message_serialize(TSMS_RPDU_MESSAGE(self), output)
@@ -106,9 +195,48 @@ typedef struct tsms_rpdu_error_s
 }
 tsms_rpdu_error_t;
 
+/** cast any pointer to @ref tsms_rpdu_error_t* */
 #define TSMS_RPDU_ERROR(self) ((tsms_rpdu_error_t*)(self))
 
 TINYSMS_API tsms_rpdu_error_t* tsms_rpdu_error_create(uint8_t mr, const tsms_tpdu_message_t* tpdu, uint8_t cause, tsk_bool_t MobOrig);
+
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_error_create_mo
+* Creates a Mobile Originated @a RP-ERROR message.
+* @a RP-ERROR is sent between the MSC and the mobile station in both directions and used to relay an error cause from an erroneous short message or notification transfer attempt.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.2.4.
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param tpdu A Pointer to the @a TP-Message to include as RP-User data.
+* @param cause RP-Cause value as per 3GPP TS 24.011 section 8.2.5.4.
+* @retval Mobile Originated @a RP-ERROR message.
+* @sa @ref tsms_rpdu_error_create_mt<br>@ref tsms_rpdu_error_create
+*
+* See For more information, see @ref tsms_rpdu_group_ERROR "RP-ERROR".
+*/
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_error_create_mt
+* Creates a Mobile Terminated @a RP-ERROR message.
+* @a RP-ERROR is sent between the MSC and the mobile station in both directions and used to relay an error cause from an erroneous short message or notification transfer attempt.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.2.4.
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param tpdu A Pointer to the @a TP-Message to include as RP-User data.
+* @param cause RP-Cause value as per 3GPP TS 24.011 section 8.2.5.4.
+* @retval Mobile Terminated @a RP-ERROR message.
+* @sa @ref tsms_rpdu_error_create_mo<br>@ref tsms_rpdu_error_create
+*
+* See For more information, see @ref tsms_rpdu_group_ERROR "RP-ERROR".
+*/
+/**@ingroup tsms_rpdu_group
+* @def tsms_rpdu_error_serialize
+* Serialize a @a RP-ERROR message as binary content.
+* @param self A pointer to the @a RP-ERROR message to serialize.
+* @param output A pointer to the @a output buffer.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @sa @ref tsms_rpdu_message_serialize
+*
+* See For more information, see @ref tsms_rpdu_group_ERROR "RP-ERROR".
+*/
 #define tsms_rpdu_error_create_mo(mr, tpdu, cause) tsms_rpdu_error_create(mr, tpdu, cause, tsk_true)
 #define tsms_rpdu_error_create_mt(mr, tpdu, cause) tsms_rpdu_error_create(mr, tpdu, cause, tsk_false)
 #define tsms_rpdu_error_serialize(self, output) tsms_rpdu_message_serialize(TSMS_RPDU_MESSAGE(self), output)

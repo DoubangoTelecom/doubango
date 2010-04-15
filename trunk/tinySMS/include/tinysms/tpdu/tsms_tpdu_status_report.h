@@ -142,8 +142,38 @@ typedef struct tsms_tpdu_status_report_s
 }
 tsms_tpdu_status_report_t;
 
-TINYSMS_API tsms_tpdu_status_report_t* tsms_tpdu_status_report_create(uint8_t mr, const tsms_address_string_t smsc, tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit);
+/** cast any pointer to @ref tsms_tpdu_status_report_t* */
+#define TSMS_TPDU_STATUS_REPORT(self) ((tsms_tpdu_status_report_t*)(self))
 
+TINYSMS_API tsms_tpdu_status_report_t* tsms_tpdu_status_report_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit);
+
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_status_report_serialize
+* Serializes a @a SMS-STATUS-REPORT message as binary content.
+* @param self A pointer to the @a SMS-STATUS-REPORT (@ref tsms_tpdu_status_report_t) message to serialize.
+* @param output A pointer to the output buffer. Should be valid.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_STATUS_REPORT  "SMS-STATUS-REPORT".
+*/
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_status_report_tohexastring
+* Serializes a @a SMS-STATUS-REPORT message as hexa-string content.
+* @param self A pointer to the @a SMS-STATUS-REPORT (@ref tsms_tpdu_status_report_t) message to serialize.
+* @retval A pointer to the hexa-string if succeed and Null otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_STATUS_REPORT  "SMS-STATUS-REPORT".
+*/
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_status_report_set_userdata
+* Sets the content of the @a SMS-STATUS-REPORT message.
+* @param self A pointer to the @a SMS-STATUS-REPORT (@ref tsms_tpdu_status_report_t).
+* @param udata A pointer to the content.
+* @param alpha The alphabet used to encode the content.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_STATUS_REPORT  "SMS-STATUS-REPORT".
+*/
 #define tsms_tpdu_status_report_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_false)
 #define tsms_tpdu_status_report_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_false)
 #define tsms_tpdu_status_report_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self), tsk_false)

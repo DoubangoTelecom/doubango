@@ -91,6 +91,20 @@ void test_deliver()
 	tsms_tpdu_deliver_serialize(deliver, buffer);
 
 	TSK_OBJECT_SAFE_FREE(deliver);
+	
+	//{
+	//	tsms_tpdu_message_t* sms_any = tsms_tpdu_message_deserialize_mt(buffer->data, buffer->size);
+	//	if(sms_any && sms_any->mti == tsms_tpdu_mti_deliver_mt){
+	//		//tsms_tpdu_deliver_t* sms_deliver = TSMS_TPDU_DELIVER(sms_any); ==> Yes we can !
+	//		char* ascii;
+	//		if((ascii = tsms_tpdu_message_get_payload(sms_any))){
+	//			TSK_DEBUG_INFO("Message=%s", ascii);
+	//			TSK_FREE(ascii);
+	//		}
+	//	}
+	//	TSK_OBJECT_SAFE_FREE(sms_any);
+	//}
+
 	deliver = (tsms_tpdu_deliver_t*)tsms_tpdu_message_deserialize_mt(buffer->data, buffer->size);
 	if((hex = tsms_tpdu_deliver_tohexastring(deliver))){
 		TSK_DEBUG_INFO("SMS-DELIVER=%s", hex);
@@ -110,8 +124,11 @@ void test_report()
 	tsms_tpdu_report_t* report = tsk_null;
 	tsk_buffer_t* buffer = tsk_null;
 	char* hex;
+	const char* smsc = "+331000009";
+	tsk_bool_t isSUBMIT = tsk_false;
+	tsk_bool_t isERROR = tsk_false;
 	
-	report = tsms_tpdu_report_create("+27381000015", tsk_false, tsk_true);
+	report = tsms_tpdu_report_create(smsc, isSUBMIT, isERROR);
 	
 	/* sending */
 	if((buffer = tsms_pack_to_7bit(USER_DATA))){
@@ -145,8 +162,12 @@ void test_command()
 	tsms_tpdu_command_t* command = tsk_null;
 	char* hex;
 	tsk_buffer_t* buffer = tsk_null;
-	
-	command = tsms_tpdu_command_create(__pdu_last_mr++, "+33100000", "+332666", 0xF8, tsms_tpdu_cmd_delete);
+	const char* smsc = "+331000009";
+	const char* destination = "+333361234567";
+	uint8_t mr = 0xF5;
+	uint8_t message_number = 0xF8;
+
+	command = tsms_tpdu_command_create(mr, smsc, destination, message_number, tsms_tpdu_cmd_delete);
 		
 	/*sending*/
 	if((hex = tsms_tpdu_command_tohexastring(command))){
@@ -187,6 +208,22 @@ void test_sreport()
 	/* receiving */
 	buffer = TSK_BUFFER_CREATE_NULL();
 	tsms_tpdu_status_report_serialize(sreport, buffer);
+
+	
+//tsms_tpdu_message_t* sms_any = tsms_tpdu_message_deserialize_mt(buffer->data, buffer->size);
+//if(sms_any && sms_any->mti == tsms_tpdu_mti_status_report_mt){
+//	tsms_tpdu_status_report_t* sms_status_report = TSMS_TPDU_STATUS_REPORT(sms_any);
+//	switch(sms_status_report->st){
+//		case tsms_tpdu_status_received:
+//		case tsms_tpdu_status_forwarded:
+//		case tsms_tpdu_status_replaced:
+//		// ...
+//		default:
+//			break;
+//	}
+//}
+//TSK_OBJECT_SAFE_FREE(sms_any);
+	
 
 	TSK_OBJECT_SAFE_FREE(sreport);
 	sreport = (tsms_tpdu_status_report_t*)tsms_tpdu_message_deserialize_mt(buffer->data, buffer->size);

@@ -82,8 +82,38 @@ typedef struct tsms_tpdu_deliver_s
 }
 tsms_tpdu_deliver_t;
 
+/** cast any pointer to @ref tsms_tpdu_deliver_t* */
+#define TSMS_TPDU_DELIVER(self) ((tsms_tpdu_deliver_t*)(self))
+
 TINYSMS_API tsms_tpdu_deliver_t* tsms_tpdu_deliver_create(const tsms_address_string_t smsc, const tsms_address_string_t orig);
 
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_deliver_serialize
+* Serializes a @a SMS-DELIVER message as binary content.
+* @param self A pointer to the @a SMS-DELIVER (@ref tsms_tpdu_deliver_t) message to serialize.
+* @param output A pointer to the output buffer. Should be valid.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_DELIVER "SMS-DELIVER".
+*/
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_deliver_tohexastring
+* Serializes a @a SMS-DELIVER message as hexa-string content.
+* @param self A pointer to the @a SMS-DELIVER (@ref tsms_tpdu_deliver_t) message to serialize.
+* @retval A pointer to the hexa-string if succeed and Null otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_DELIVER "SMS-DELIVER".
+*/
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_deliver_set_userdata
+* Sets the content of the @a SMS-DELIVER message.
+* @param self A pointer to the @a SMS-DELIVER (@ref tsms_tpdu_deliver_t).
+* @param udata A pointer to the content.
+* @param alpha The alphabet used to encode the content.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_DELIVER "SMS-DELIVER".
+*/
 #define tsms_tpdu_deliver_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_false)
 #define tsms_tpdu_deliver_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_false)
 #define tsms_tpdu_deliver_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self), tsk_false)

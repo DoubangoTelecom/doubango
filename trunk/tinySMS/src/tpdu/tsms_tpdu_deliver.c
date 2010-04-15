@@ -38,6 +38,7 @@
 	failed = tsk_true;\
 	goto bail;
 
+/** internal function used to deserialize a buffer containing a SMS-DELIVER message. */
 tsms_tpdu_message_t* _tsms_tpdu_deliver_deserialize(const void* data, size_t size)
 {
 	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
@@ -134,6 +135,7 @@ tsms_tpdu_message_t* _tsms_tpdu_deliver_deserialize(const void* data, size_t siz
 	return TSMS_TPDU_MESSAGE(self);
 }
 
+/** internal function used to serialize a SMS-DELIVER message. */
 int _tsms_tpdu_deliver_serialize(const tsms_tpdu_deliver_t* self, tsk_buffer_t* output)
 {
 	uint8_t _1byte;
@@ -188,7 +190,16 @@ int _tsms_tpdu_deliver_serialize(const tsms_tpdu_deliver_t* self, tsk_buffer_t* 
 	return 0;
 }
 
-
+/**@ingroup tsms_tpdu_group
+* Creates new @a SMS-DELIVER message.
+* @a SMS-DELIVER messages are used to convey short messages from the SC (Service Center) to the MS (Mobile Station).<br>
+* For more information, please refer to 3GPP TS 23.040 section 9.2.2.1.
+* @param smsc SMSC address. e.g. "+331253688".
+* @param orig The Originator address. e.g. "+331253688".
+* @retval SMS-DELIVER message.
+*
+* See For more information, see @ref tsms_tpdu_group_DELIVER "SMS-DELIVER".
+*/
 tsms_tpdu_deliver_t* tsms_tpdu_deliver_create(const tsms_address_string_t smsc, const tsms_address_string_t orig)
 {
 	tsms_tpdu_deliver_t* ret = tsk_null;

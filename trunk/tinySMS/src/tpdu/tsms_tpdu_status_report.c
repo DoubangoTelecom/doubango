@@ -38,6 +38,7 @@
 	failed = tsk_true;\
 	goto bail;
 
+/** internal function used to deserialize a SMS-STATUS-REPORT message from a binary buffer. */
 tsms_tpdu_message_t* _tsms_tpdu_status_report_deserialize(const void* data, size_t size)
 {
 	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
@@ -160,6 +161,7 @@ tsms_tpdu_message_t* _tsms_tpdu_status_report_deserialize(const void* data, size
 	return TSMS_TPDU_MESSAGE(self);
 }
 
+/* internal function used to serialize a SMS-STATUS-REPORT to binary content. */
 int _tsms_tpdu_status_report_serialize(const tsms_tpdu_status_report_t* self, tsk_buffer_t* output)
 {
 	uint8_t _1byte;
@@ -224,8 +226,21 @@ int _tsms_tpdu_status_report_serialize(const tsms_tpdu_status_report_t* self, ts
 	return 0;
 }
 
-// submit=0->SMS-COMMAND else SMS-COMMAND see 23.04 section 9.2.3.26 (TP-SRQ)
-tsms_tpdu_status_report_t* tsms_tpdu_status_report_create(uint8_t mr, const tsms_address_string_t smsc, tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit)
+/**@ingroup tsms_tpdu_group
+* Creates new @a SMS-STATUS-REPORT message.
+* @a SMS-STATUS-REPORT messages are used to convey status reports from the SC (Service Center) to the MS (Mobile Station).<br>
+* For more information, please refer to 3GPP TS 23.040 section 9.2.2.3.
+* @param mr TP-Message-Reference (TP-MR) as per 3GPP TS 23.040 section 9.2.3.6.
+* @param smsc The address of the SMSC. e.g. "+331253688".
+* @param recipient The address of the recipient. e.g. "+331253688".
+* @param status the status code as per 3GPP TS 23.040 v910 section 9.2.3.15 (TP-ST).
+* @param submit Indicates whether the report is for a @a SMS-SUBMIT message or not (@a SMS-COMMAND).<br>
+* See 3GPP TS 23.040 v910 section 9.2.3.26 (TP-SRQ).
+* @retval SMS-STATUS-REPORT  message.
+*
+* See For more information, see @ref tsms_tpdu_group_STATUS_REPORT  "SMS-STATUS-REPORT".
+*/
+tsms_tpdu_status_report_t* tsms_tpdu_status_report_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t recipient, tsms_tpdu_status_type_t status, tsk_bool_t submit)
 {
 	tsms_tpdu_status_report_t* ret = tsk_null;
 	
