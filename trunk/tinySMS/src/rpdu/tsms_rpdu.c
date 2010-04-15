@@ -39,6 +39,7 @@
 
 /*=== RP-DATA as per 3GPP TS 24.011 section 7.3.1. ===*/
 
+/** internal function used to deserialize a RP-DATA message from binary content. */
 tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
@@ -99,6 +100,7 @@ bail:
 	return TSMS_RPDU_MESSAGE(self);
 }
 
+/** internal function used to serialize a RP-DATA message as binary content.*/
 int _tsms_rpdu_rpdata_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t* output)
 {
 	/* don't need to test output and self --> already done by tsms_rpdu_message_serialize() */
@@ -129,6 +131,19 @@ int _tsms_rpdu_rpdata_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t* 
 	return 0;
 }
 
+/**@ingroup tsms_rpdu_group
+* Creates a @a RP-DATA message.
+* @a RP-DATA messages could be sent from the Network to Mobile Station (MT) or from the Mobile Station to the Network (MO).
+* For more information, please refer to 3GPP TS 24.011 section 7.3.1.
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param smsc The address of the SMSC. e.g. "+331253688".
+* @param tpdu A Pointer to the @a TP-Message to relay.
+* @param MobOrig Indicates whether to create a Mobile Originated @a RP-DATA message or not.
+* @retval Mobile Originated @a RP-DATA message.
+* @sa @ref tsms_rpdu_data_create_mt<br>@ref tsms_rpdu_data_create_mo
+*
+* See For more information, see @ref tsms_rpdu_group_DATA "RP-DATA".
+*/
 tsms_rpdu_data_t* tsms_rpdu_data_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_tpdu_message_t* tpdu, tsk_bool_t MobOrig)
 {
 	tsms_rpdu_data_t* ret = tsk_null;
@@ -205,6 +220,7 @@ const tsk_object_def_t *tsms_rpdu_data_def_t = &tsms_rpdu_data_def_s;
 
 /*=== RP-SMMA as per 3GPP TS 24.011 section 7.3.2. ===*/
 
+/** internal function used to deserialize a RP-SMMA message from binary content. */
 tsms_rpdu_message_t* _tsms_rpdu_rpsmma_deserialize(const void* data, size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
@@ -220,6 +236,7 @@ tsms_rpdu_message_t* _tsms_rpdu_rpsmma_deserialize(const void* data, size_t size
 	return TSMS_RPDU_MESSAGE(self);
 }
 
+/** internal function used to serialize a RP-SMMA message as binary content. */
 int _tsms_rpdu_rpsmma_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t* output)
 {
 	/* don't need to test output and self --> already done by tsms_rpdu_message_serialize() */
@@ -234,6 +251,15 @@ int _tsms_rpdu_rpsmma_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t* 
 	return 0;
 }
 
+/**@ingroup tsms_rpdu_group
+* Creates a @a RP-SMMA message.
+* This message is sent by the mobile station to relay a notification to the network that the mobile has memory available to receive one or more short messages.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.2.
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @retval Mobile Originated @a RP-SMMA message.
+*
+* See For more information, see @ref tsms_rpdu_group_SMMA "RP-SMMA".
+*/
 tsms_rpdu_smma_t* tsms_rpdu_smma_create(uint8_t mr)
 {
 	tsms_rpdu_smma_t* ret = tsk_null;
@@ -283,6 +309,7 @@ const tsk_object_def_t *tsms_rpdu_smma_def_t = &tsms_rpdu_smma_def_s;
 
 /*=== RP-ACK as per 3GPP TS 24.011 section 7.3.3. ===*/
 
+/** internal function used to deserialize an RP-ACK message from binary content. */
 tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
@@ -310,6 +337,7 @@ tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, size_t size)
 	return TSMS_RPDU_MESSAGE(self);
 }
 
+/** internal function used to serialize a RP-ACK message as binary content. */
 int _tsms_rpdu_rpack_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t* output)
 {
 	/* don't need to test output and self --> already done by tsms_rpdu_message_serialize() */
@@ -334,6 +362,17 @@ int _tsms_rpdu_rpack_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t* o
 	return 0;
 }
 
+/**@ingroup tsms_rpdu_group
+* Creates a @a RP-ACK message.
+* @a RP-ACK is sent between the MSC and the mobile station in both directions and used to relay the acknowledgement of a RP-DATA or RP-SMMA message reception.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.2.3
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param tpdu A Pointer to the @a TP-Message to include as RP-User data.
+* @param MobOrig Indicates whether to create a Mobile Originated @a RP-ACK message or not.
+* @retval Mobile Originated @a RP-ACK message.
+*
+* See For more information, see @ref tsms_rpdu_group_ACK "RP-ACK".
+*/
 tsms_rpdu_ack_t* tsms_rpdu_ack_create(uint8_t mr, const tsms_tpdu_message_t* tpdu, tsk_bool_t MobOrig)
 {
 	tsms_rpdu_ack_t* ret = tsk_null;
@@ -400,6 +439,7 @@ const tsk_object_def_t *tsms_rpdu_ack_def_t = &tsms_rpdu_ack_def_s;
 
 /*=== RP-ERROR as per 3GPP TS 24.011 section 7.3.4. ===*/
 
+/** internal function used to deserialize a RP-ERROR message from binary content. */
 tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
@@ -444,6 +484,7 @@ bail:
 	return TSMS_RPDU_MESSAGE(self);
 }
 
+/** internal function used to serialize a RP-ERROR message as binary content. */
 int _tsms_rpdu_rperror_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t* output)
 {
 	/* don't need to test output and self --> already done by tsms_rpdu_message_serialize() */
@@ -472,6 +513,18 @@ int _tsms_rpdu_rperror_serialize(const tsms_rpdu_message_t* _self, tsk_buffer_t*
 	return 0;
 }
 
+/**@ingroup tsms_rpdu_group
+* Creates a @a RP-ERROR message.
+* @a RP-ERROR is sent between the MSC and the mobile station in both directions and used to relay an error cause from an erroneous short message or notification transfer attempt.
+* For more information, please refer to 3GPP TS 24.011 section 7.3.2.4.
+* @param mr @a RP-Message Reference as per 3GPP TS 24.011 section 8.2.3.
+* @param tpdu A Pointer to the @a TP-Message to include as RP-User data.
+* @param cause RP-Cause value as per 3GPP TS 24.011 section 8.2.5.4.
+* @param MobOrig Indicates whether to create a Mobile Originated @a RP-ERROR message or not.
+* @retval Mobile Originated @a RP-ERROR message.
+*
+* See For more information, see @ref tsms_rpdu_group_ERROR "RP-ERROR".
+*/
 tsms_rpdu_error_t* tsms_rpdu_error_create(uint8_t mr, const tsms_tpdu_message_t* tpdu, uint8_t cause, tsk_bool_t MobOrig)
 {
 	tsms_rpdu_error_t* ret = tsk_null;

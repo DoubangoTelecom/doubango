@@ -86,6 +86,9 @@ typedef struct tsms_tpdu_submit_s
 }
 tsms_tpdu_submit_t;
 
+/** cast any pointer to tsms_tpdu_submit_t* */
+#define TSMS_TPDU_SUBMIT(self) ((tsms_tpdu_submit_t*)(self))
+
 TINYSMS_API tsms_tpdu_submit_t* tsms_tpdu_submit_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t dest);
 
 /**@ingroup tsms_tpdu_group
@@ -94,20 +97,26 @@ TINYSMS_API tsms_tpdu_submit_t* tsms_tpdu_submit_create(uint8_t mr, const tsms_a
 * @param self A pointer to the @a SMS-SUBMIT (@ref tsms_tpdu_submit_t) message to serialize.
 * @param output A pointer to the output buffer. Should be valid.
 * @retval Zero if succeed and non-zero error code otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_SUBMIT "SMS-SUBMIT".
 */
 /**@ingroup tsms_tpdu_group
 * @def tsms_tpdu_submit_tohexastring
 * Serializes a @a SMS-SUBMIT message as hexa-string content.
 * @param self A pointer to the @a SMS-SUBMIT (@ref tsms_tpdu_submit_t) message to serialize.
 * @retval A pointer to the hexa-string if succeed and Null otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_SUBMIT "SMS-SUBMIT".
 */
 /**@ingroup tsms_tpdu_group
 * @def tsms_tpdu_submit_set_userdata
 * Sets the content of the @a SMS-SUBMIT message.
 * @param self A pointer to the @a SMS-SUBMIT (@ref tsms_tpdu_submit_t).
-* @param udata A pointer the content.
+* @param udata A pointer to the content.
 * @param alpha The alphabet used to encode the content.
 * @retval Zero if succeed and non-zero error code otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_SUBMIT "SMS-SUBMIT".
 */
 #define tsms_tpdu_submit_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_true)
 #define tsms_tpdu_submit_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_true)

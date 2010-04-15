@@ -91,8 +91,37 @@ typedef struct tsms_tpdu_command_s
 }
 tsms_tpdu_command_t;
 
-TINYSMS_API tsms_tpdu_command_t* tsms_tpdu_command_create(uint8_t mr, const tsms_address_string_t smsc, tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd);
+/** cast any pointer to @ref tsms_tpdu_command_t* */
+#define TSMS_TPDU_COMMAND(self) ((tsms_tpdu_command_t*)(self))
 
+TINYSMS_API tsms_tpdu_command_t* tsms_tpdu_command_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd);
+
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_command_serialize
+* Serializes a @a SMS-COMMAND message as binary content.
+* @param self A pointer to the @a SMS-COMMAND (@ref tsms_tpdu_command_t) message to serialize.
+* @param output A pointer to the output buffer. Should be valid.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_COMMAND  "SMS-COMMAND".
+*/
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_command_tohexastring
+* Serializes a @a SMS-COMMAND message as hexa-string content.
+* @param self A pointer to the @a SMS-COMMAND (@ref tsms_tpdu_command_t) message to serialize.
+* @retval A pointer to the hexa-string if succeed and Null otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_COMMAND  "SMS-COMMAND".
+*/
+/**@ingroup tsms_tpdu_group
+* @def tsms_tpdu_command_set_cmddata
+* Sets the content of the @a SMS-COMMAND message.
+* @param self A pointer to the @a SMS-COMMAND (@ref tsms_tpdu_command_t).
+* @param cdata A pointer to the content.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* See For more information, see @ref tsms_tpdu_group_COMMAND  "SMS-COMMAND".
+*/
 #define tsms_tpdu_command_serialize(self, output) tsms_tpdu_message_serialize(TSMS_TPDU_MESSAGE(self), output, tsk_true)
 #define tsms_tpdu_command_tostring(self) tsms_tpdu_message_tostring(TSMS_TPDU_MESSAGE(self), tsk_true)
 #define tsms_tpdu_command_tohexastring(self) tsms_tpdu_message_tohexastring(TSMS_TPDU_MESSAGE(self), tsk_true)

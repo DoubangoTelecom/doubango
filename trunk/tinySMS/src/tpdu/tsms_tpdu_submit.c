@@ -38,6 +38,8 @@
 	failed = tsk_true;\
 	goto bail;
 
+/** internal function used to deserialize SMS-SUBMIT function.
+*/
 tsms_tpdu_message_t* _tsms_tpdu_submit_deserialize(const void* data, size_t size)
 {
 	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
@@ -227,14 +229,15 @@ int _tsms_tpdu_submit_serialize(const tsms_tpdu_submit_t* self, tsk_buffer_t* ou
 }
 
 /**@ingroup tsms_tpdu_group
-* Creates new SMS-SUBMIT message.
-* @a SMS-SUBMIT messages are used to convey short messages from the MS (Mobile Station) to the SC (Service Center). 
-* @a SMS-SUBMIT-REPORT messages are used for positive or negative acknowledgement to an @a SMS-DELIVER or @a SMS-STATUS-REPORT.
+* Creates new @a SMS-SUBMIT message.
+* @a SMS-SUBMIT messages are used to convey short messages from the MS (Mobile Station) to the SC (Service Center).<br>
 * For more information, please refer to 3GPP TS 23.040 section 9.2.2.2.
 * @param mr TP-Message-Reference (TP-MR) as per 3GPP TS 23.040 section 9.2.3.6.
-* @param smsc SMSC address. e.g. "+331253688".
+* @param smsc The address of the SMS. e.g. "+331253688".
 * @param dest The destination address. e.g. "+331253688".
-* @retval @a SMS-SUBMIT message.
+* @retval SMS-SUBMIT message.
+*
+* See For more information, see @ref tsms_tpdu_group_SUBMIT "SMS-SUBMIT".
 */
 tsms_tpdu_submit_t* tsms_tpdu_submit_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t dest)
 {

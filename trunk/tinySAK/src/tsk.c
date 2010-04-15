@@ -24,7 +24,7 @@
 */
 #include "tsk.h"
 
-/** @mainpage TinySAK API Overview
+/** @mainpage tinySAK API Overview
 *
 * This file is an overview of <b>tinySAK</b> API.
 *

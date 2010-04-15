@@ -40,7 +40,7 @@ void test_i_rpdata(const void* data, size_t size, tsk_bool_t MobOrig)
 				tsms_rpdu_data_t* rp_data = TSMS_RPDU_DATA(rp_message);
 				if((tpdu = tsms_tpdu_message_deserialize(rp_data->udata->data, rp_data->udata->size, MobOrig))){
 					if(tpdu->mti == tsms_tpdu_mti_deliver_mt || tpdu->mti == tsms_tpdu_mti_submit_mo){ /* SMS-SUBMIT or SMS-DELIVER? */
-						if((ascii = tsms_tpdu_message_get_content(tpdu))){
+						if((ascii = tsms_tpdu_message_get_payload(tpdu))){
 							TSK_DEBUG_INFO("ASCII message=%s", ascii);
 							TSK_FREE(ascii);
 						}
@@ -96,19 +96,28 @@ void test_o_rpdata_submit()
 	tsk_buffer_t* buffer = tsk_null;
 	tsms_tpdu_submit_t* sms_submit = tsk_null;
 	tsms_rpdu_data_t* rp_data = tsk_null;
-	const char* smsc = "+331000000";
-	const char* destination = "+3361234567";
-	const char* content = "hello world!";
+	const char* smsc = "+331000009";
+	const char* destination = "+333361234567";
+	const char* short_message = "hello world";
+	uint8_t mr = 0xF5;
+	uint8_t message_number = 0xF8;
+	char* hex;
 	
 	// create SMS-SUBMIT message
-	sms_submit = tsms_tpdu_submit_create(0x01, smsc, destination);
+	sms_submit = tsms_tpdu_submit_create(mr, smsc, destination);
 	// Set content for SMS-SUBMIT
-	if((buffer = tsms_pack_to_7bit(content))){
+	if((buffer = tsms_pack_to_7bit(short_message))){
 		ret = tsms_tpdu_submit_set_userdata(sms_submit, buffer, tsms_alpha_7bit);
 		TSK_OBJECT_SAFE_FREE(buffer);
 	}
-	// create RP-DATA message
-	rp_data = tsms_rpdu_data_create_mo(0x01, smsc, TSMS_TPDU_MESSAGE(sms_submit));
+	// create RP-DATA message and print its content (for test only)
+	rp_data = tsms_rpdu_data_create_mo(mr, smsc, TSMS_TPDU_MESSAGE(sms_submit));
+	if((hex = tsms_rpdu_message_tohexastring(TSMS_RPDU_MESSAGE(rp_data)))){
+		TSK_DEBUG_INFO("RP-DATA=%s", hex);
+		TSK_FREE(hex);
+	}
+
+
 	// serialize
 	buffer = TSK_BUFFER_CREATE_NULL();
 	ret = tsms_rpdu_data_serialize(rp_data, buffer);
@@ -165,9 +174,10 @@ void test_o_rpdata_smma()
 	int ret;
 	tsk_buffer_t* buffer = tsk_null;
 	tsms_rpdu_smma_t* rp_smma = tsk_null;
+	uint8_t mr = 0xF5;
 	
 	// create RP-SMMA message
-	rp_smma = tsms_rpdu_smma_create(0x0F);
+	rp_smma = tsms_rpdu_smma_create(mr);
 	// serialize
 	buffer = TSK_BUFFER_CREATE_NULL();
 	ret = tsms_rpdu_data_serialize(rp_smma, buffer);
@@ -190,18 +200,22 @@ void test_o_rpdata_ack()
 	tsms_tpdu_report_t* sms_report = tsk_null;
 	tsms_rpdu_ack_t* rp_ack= tsk_null;
 	const char* smsc = "+331000000";
-	
+	tsk_bool_t isSUBMIT = tsk_false; /* isDELIVER */
+	tsk_bool_t isERROR = tsk_false;
+	uint8_t mr = 0xF5;
+
 	// create SMS-DELIVER-REPORT message
-	sms_report = tsms_tpdu_report_create(smsc, tsk_false, tsk_false);
-	// create RP-ACK message
-	rp_ack = tsms_rpdu_ack_create_mo(0x01, TSMS_TPDU_MESSAGE(sms_report));
+	sms_report = tsms_tpdu_report_create(smsc, isSUBMIT, isERROR);
+	// create RP-ACK message (From MS to SC)
+	rp_ack = tsms_rpdu_ack_create_mo(mr, TSMS_TPDU_MESSAGE(sms_report));
 	// serialize
 	buffer = TSK_BUFFER_CREATE_NULL();
-	ret = tsms_rpdu_data_serialize(rp_ack, buffer);
-	// send(socket, buffer->data, buffer->size);
-	// print result (hex) to the console
-	printhex("==RP-ACK(SMS-DELIVER-REPORT):", buffer->data, buffer->size);
-	
+	if(!(ret = tsms_rpdu_data_serialize(rp_ack, buffer))){
+		// send(socket, buffer->data, buffer->size);
+		// print result (hex) to the console
+		printhex("==RP-ACK(SMS-DELIVER-REPORT):", buffer->data, buffer->size);
+	}
+
 	// receiving
 	test_i_rpdata(buffer->data, buffer->size, tsk_true);
 
@@ -217,19 +231,23 @@ void test_o_rpdata_error()
 	tsk_buffer_t* buffer = tsk_null;
 	tsms_tpdu_report_t* sms_report = tsk_null;
 	tsms_rpdu_error_t* rp_error= tsk_null;
+	tsk_bool_t isSUBMIT = tsk_false; /* isDELIVER */
+	tsk_bool_t isERROR = tsk_true;
 	const char* smsc = "+331000000";
-	
+	uint8_t mr = 0xF5;
+
 	// create SMS-DELIVER-REPORT message
-	sms_report = tsms_tpdu_report_create(smsc, tsk_false, tsk_true);
-	// create RP-ACK message
-	rp_error = tsms_rpdu_error_create_mo(0x01, TSMS_TPDU_MESSAGE(sms_report), 0x0A/*call barred*/);
+	sms_report = tsms_tpdu_report_create(smsc, isSUBMIT, isERROR);
+	// create RP-ERROR message
+	rp_error = tsms_rpdu_error_create_mo(mr, TSMS_TPDU_MESSAGE(sms_report), 0x0A/*call barred*/);
 	// serialize
 	buffer = TSK_BUFFER_CREATE_NULL();
-	ret = tsms_rpdu_data_serialize(rp_error, buffer);
-	// send(socket, buffer->data, buffer->size);
-	// print result (hex) to the console
-	printhex("==RP-ERROR(SMS-DELIVER-REPORT):", buffer->data, buffer->size);
-	
+	if(!(ret = tsms_rpdu_data_serialize(rp_error, buffer))){
+		// send(socket, buffer->data, buffer->size);
+		// print result (hex) to the console
+		printhex("==RP-ERROR(SMS-DELIVER-REPORT):", buffer->data, buffer->size);
+	}
+
 	// receiving
 	test_i_rpdata(buffer->data, buffer->size, tsk_true);
 

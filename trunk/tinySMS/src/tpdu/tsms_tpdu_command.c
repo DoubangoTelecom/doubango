@@ -36,6 +36,7 @@
 	failed = tsk_true;\
 	goto bail;
 
+/** internal function used to deserialse a SMS-COMMAND message from binary content. */
 tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, size_t size)
 {
 	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
@@ -132,6 +133,7 @@ tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, size_t siz
 	return TSMS_TPDU_MESSAGE(self);
 }
 
+/** internal function used to serialize a SMS-COMMAND message as binary content. */
 int _tsms_tpdu_command_serialize(const tsms_tpdu_command_t* self, tsk_buffer_t* output)
 {
 	uint8_t _1byte;
@@ -186,8 +188,20 @@ int _tsms_tpdu_command_serialize(const tsms_tpdu_command_t* self, tsk_buffer_t* 
 	return 0;
 }
 
-
-tsms_tpdu_command_t* tsms_tpdu_command_create(uint8_t mr, const tsms_address_string_t smsc, tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd)
+/**@ingroup tsms_tpdu_group
+* Creates new @a SMS-COMMAND message.
+* @a SMS-COMMAND messages are used to convey commands from the MS (Mobile Station) to the SC (Service Center).<br>
+* For more information, please refer to 3GPP TS 23.040 section 9.2.2.4.
+* @param mr TP-Message-Reference (TP-MR) as per 3GPP TS 23.040 section 9.2.3.6.
+* @param smsc The address of the SMSC. e.g. "+331253688".
+* @param dest The address of the destination. e.g. "+331253688".
+* @param msg_num The message number. For more information, please refer to 3GPP TS 23.040 section 9.2.3.18 (TP-MN). 
+* @param cmd The command type as per 3GPP TS 23.040 v910 section 9.2.3.19 (TP-CT).
+* @retval SMS-COMMAND  message.
+*
+* See For more information, see @ref tsms_tpdu_group_COMMAND  "SMS-COMMAND".
+*/
+tsms_tpdu_command_t* tsms_tpdu_command_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd)
 {
 	tsms_tpdu_command_t* ret = tsk_null;
 	
@@ -248,6 +262,9 @@ static tsk_object_t* tsms_tpdu_command_destroy(tsk_object_t * self)
 { 
 	tsms_tpdu_command_t *command = self;
 	if(command){
+		/*deinit base*/
+		tsms_tpdu_message_deinit(TSMS_TPDU_MESSAGE(command));
+		/*deinit self*/
 		TSK_OBJECT_SAFE_FREE(command->smsc);
 		TSK_OBJECT_SAFE_FREE(command->da);
 	}

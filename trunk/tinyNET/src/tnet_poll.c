@@ -64,48 +64,37 @@ int tnet_poll(tnet_pollfd_t fds[ ], tnet_nfds_t nfds, int timeout)
 	/*
 	* add descriptors to the fd_sets
 	*/
-	for(i = 0; i<nfds; i++)
-	{
-		if(fds[i].fd != TNET_INVALID_FD)
-		{
-			if(fds[i].events & TNET_POLLIN)
-			{
+	for(i = 0; i<nfds; i++){
+		if(fds[i].fd != TNET_INVALID_FD){
+			if(fds[i].events & TNET_POLLIN){
 				FD_SET(fds[i].fd, &readfds);
 			}
-			if(fds[i].events & TNET_POLLOUT)
-			{
+			if(fds[i].events & TNET_POLLOUT){
 				FD_SET(fds[i].fd, &writefds);
 			}
-			if(fds[i].events & TNET_POLLPRI)
-			{
+			if(fds[i].events & TNET_POLLPRI){
 				FD_SET(fds[i].fd, &exceptfds);
 			}
 		}
-
+		
 		highest_fd = (highest_fd < fds[i].fd)  ? fds[i].fd : highest_fd;
 	}
-
+	
 	/*======================================
 	* select
 	*/
-	if((ret = select(highest_fd + 1, &readfds, &writefds, &exceptfds, (timeout >=0) ? &timetowait : 0)) >= 0)
-	{
-		for(i = 0; i<nfds; i++)
-		{
-			if(fds[i].fd != TNET_INVALID_FD)
-			{
+	if((ret = select(highest_fd + 1, &readfds, &writefds, &exceptfds, (timeout >=0) ? &timetowait : 0)) >= 0){
+		for(i = 0; i<nfds; i++){
+			if(fds[i].fd != TNET_INVALID_FD){
 				fds[i].revents = 0;
 
-				if(FD_ISSET(fds[i].fd, &readfds))
-				{
+				if(FD_ISSET(fds[i].fd, &readfds)){
 					fds[i].revents |= TNET_POLLIN;
 				}
-				if(FD_ISSET(fds[i].fd, &writefds))
-				{
+				if(FD_ISSET(fds[i].fd, &writefds)){
 					fds[i].revents |= TNET_POLLOUT;
 				}
-				if(FD_ISSET(fds[i].fd, &exceptfds))
-				{
+				if(FD_ISSET(fds[i].fd, &exceptfds)){
 					fds[i].revents |= TNET_POLLPRI;
 				}
 			}
