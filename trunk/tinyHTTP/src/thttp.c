@@ -314,8 +314,8 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 
 		/* chunked? */
 		if((transfer_Encoding = (const thttp_header_Transfer_Encoding_t*)thttp_message_get_header(message, thttp_htype_Transfer_Encoding)) && tsk_striequals(transfer_Encoding->encoding, "chunked")){
-			const char* start = TSK_BUFFER_TO_U8(dialog->buf) + (endOfheaders + 4/*2CRLF*/);
-			const char* end = TSK_BUFFER_TO_U8(dialog->buf) + TSK_BUFFER_SIZE(dialog->buf);
+			const char* start = (const char*)(TSK_BUFFER_TO_U8(dialog->buf) + (endOfheaders + 4/*2CRLF*/));
+			const char* end = (const char*)(TSK_BUFFER_TO_U8(dialog->buf) + TSK_BUFFER_SIZE(dialog->buf));
 			int index;
 
 			TSK_DEBUG_INFO("CHUNKED transfer.");

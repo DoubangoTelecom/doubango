@@ -414,6 +414,7 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	
 	/* set events */
 	context->events = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? TNET_POLLIN : TNET_POLLIN | TNET_POLLHUP | TNET_POLLPRI;
+	context->events |= TNET_POLLNVAL | TNET_POLLERR;
 	
 	/* Start listening */
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
@@ -513,7 +514,7 @@ void *tnet_transport_mainthread(void *param)
 				
 				if(!len){
 					TSK_DEBUG_WARN("IOCTLT returned zero.");
-#if ANDROID /* On Android this mean that the socket has been closed.  */
+#if defined(ANDROID) || 1 /* FIXME: On Android/MAC OS X this mean that the socket has been closed?  */
 					TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
 					removeSocket(i, context);
 #else
@@ -592,6 +593,15 @@ void *tnet_transport_mainthread(void *param)
 			{
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLERR", transport->description);
 
+				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
+				removeSocket(i, context);
+			}
+			
+			/*================== TNET_POLLNVAL ==================*/
+			if(context->ufds[i].revents & (TNET_POLLNVAL))
+			{
+				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLNVAL", transport->description);
+				
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				removeSocket(i, context);
 			}
