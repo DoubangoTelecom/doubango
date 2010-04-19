@@ -36,6 +36,12 @@
 /**@defgroup thttp_action_group Sending Requests
 */
 
+thttp_action_t* thttp_action_create(thttp_action_type_t type, const char* urlstring, const char* method, va_list* app)
+{
+	return tsk_object_new(thttp_action_def_t, type, urlstring, method, app);
+}
+
+
 /**@ingroup thttp_action_group
 * Sends a custom HTTP/HTTPS request.
 * @param session The @a session (or connection) to use.
@@ -71,7 +77,7 @@ int thttp_action_perform(thttp_session_handle_t *session, const char* urlstring,
 	}
 	
 	va_start(ap, method);
-	if((action = THTTP_ACTION_CREATE(atype_o_request, urlstring, method, &ap))){		
+	if((action = thttp_action_create(atype_o_request, urlstring, method, &ap))){		
 		if((dialog = thttp_dialog_new(sess))){
 			ret = thttp_dialog_fsm_act(dialog, action->type, tsk_null, action);
 			
@@ -94,7 +100,7 @@ int thttp_action_perform(thttp_session_handle_t *session, const char* urlstring,
 //=================================================================================================
 //	HTTP action object definition
 //
-static tsk_object_t* thttp_action_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 {
 	thttp_action_t *action = self;
 	if(action){
@@ -106,8 +112,8 @@ static tsk_object_t* thttp_action_create(tsk_object_t * self, va_list * app)
 		action->method = tsk_strdup(va_arg(*app, const char*));
 		app_2 = va_arg(*app, va_list*);	
 
-		action->options = TSK_LIST_CREATE();
-		action->headers = TSK_LIST_CREATE();
+		action->options = tsk_list_create();
+		action->headers = tsk_list_create();
 
 		if(!app_2){ /* XCAP stack will pass null va_list */
 			goto bail;
@@ -137,7 +143,7 @@ static tsk_object_t* thttp_action_create(tsk_object_t * self, va_list * app)
 						size_t size = va_arg(*app_2, size_t);
 						if(payload && size){
 							TSK_OBJECT_SAFE_FREE(action->payload);
-							action->payload = TSK_BUFFER_CREATE(payload, size);
+							action->payload = tsk_buffer_create(payload, size);
 						}
 						break;
 					}
@@ -154,7 +160,7 @@ bail:
 	return self;
 }
 
-static tsk_object_t* thttp_action_destroy(tsk_object_t * self)
+static tsk_object_t* thttp_action_dtor(tsk_object_t * self)
 { 
 	thttp_action_t *action = self;
 	if(action){
@@ -172,8 +178,8 @@ static tsk_object_t* thttp_action_destroy(tsk_object_t * self)
 static const tsk_object_def_t thttp_action_def_s = 
 {
 	sizeof(thttp_action_t),
-	thttp_action_create, 
-	thttp_action_destroy,
+	thttp_action_ctor, 
+	thttp_action_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *thttp_action_def_t = &thttp_action_def_s;

@@ -230,7 +230,7 @@ void test_fsm()
 	for(i=0; i<TEST_FSM_ACTIONS_COUNT; i++)
 	{
 		size_t j;
-		tsk_fsm_t* fsm = TSK_FSM_CREATE(Started, Terminated);
+		tsk_fsm_t* fsm = tsk_fsm_create(Started, Terminated);
 		test_fsm_ctx_t ctx;
 		ctx.unsubscribing = 0;
 		
@@ -297,9 +297,8 @@ void test_fsm()
 			TSK_FSM_ADD_NULL());
 
 
-		for(j=0; j<TEST_FSM_ACTIONS_COUNT; j++)
-		{
-			tsk_fsm_act(fsm, test_fsm_tests[i][j], &ctx, TSK_NULL, &ctx, TSK_NULL /*message*/);
+		for(j=0; j<TEST_FSM_ACTIONS_COUNT; j++){
+			tsk_fsm_act(fsm, test_fsm_tests[i][j], &ctx, tsk_null, &ctx, tsk_null /*message*/);
 		}
 		
 		TSK_OBJECT_SAFE_FREE(fsm);

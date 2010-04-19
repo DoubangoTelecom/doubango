@@ -41,15 +41,37 @@
 #endif
 
 /**@ingroup tsk_buffer_group
+* Creates new buffer.
+* @param data A pointer to the data to copy into the newly created buffer.
+* @param size The size of the data to copy.
+* @retval A new buffer object.
+* @sa @ref tsk_buffer_create_null
+*/
+tsk_buffer_t* tsk_buffer_create(const void* data, size_t size)
+{
+	return tsk_object_new(tsk_buffer_def_t, data, size);
+}
+
+/**@ingroup tsk_buffer_group
+* Creates a new empty buffer.
+* @retval A new empty buffer object.
+* @sa tsk_buffer_create.
+*/
+tsk_buffer_t* tsk_buffer_create_null()
+{
+	return tsk_buffer_create(tsk_null, 0);
+}
+
+/**@ingroup tsk_buffer_group
 * Appends new data to the buffer.
-* @param self The buffer to append to. The buffer should be created using @ref TSK_BUFFER_CREATE or @ref TSK_BUFFER_CREATE_NULL.
+* @param self The buffer to append to. The buffer should be created using @ref tsk_buffer_create or @ref tsk_buffer_create_null.
 * @param format A string with embedded tag to be substituted.
 * @param ... List of parameters.
 * @retval Zero if succeed and non-zero error code otherwise.
 * @sa @ref tsk_buffer_append.
 *
 * @code
-* tsk_buffer_t* buffer = TSK_BUFFER_CREATE_NULL();
+* tsk_buffer_t* buffer = tsk_buffer_create_null();
 * tsk_buffer_append_2(buffer, "str1=%s, c1=%c and val1=%x", "str1", 'c', 0x2554);
 * printf(TSK_BUFFER_TO_STRING(buffer));
 * TSK_OBJECT_SAFE_FREE(buffer);
@@ -114,14 +136,14 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 
 /**@ingroup tsk_buffer_group
 * Appends data to the buffer.
-* @param self The buffer to append to. The buffer should be created using @ref TSK_BUFFER_CREATE or @ref TSK_BUFFER_CREATE_NULL.
+* @param self The buffer to append to. The buffer should be created using @ref tsk_buffer_create or @ref tsk_buffer_create_null.
 * @param data The data to append to the buffer.
 * @param size The size of the @a data to append.
 * @retval Zero if succeed and non-zero error code otherwise.
 * @sa @ref tsk_buffer_append_2.
 *
 * @code
-* tsk_buffer_t* buffer = TSK_BUFFER_CREATE_NULL();
+* tsk_buffer_t* buffer = tsk_buffer_create_null();
 * tsk_buffer_append(buffer, "doubango", strlen("doubango"));
 * printf(TSK_BUFFER_TO_STRING(buffer));
 * TSK_OBJECT_SAFE_FREE(buffer);
@@ -258,7 +280,7 @@ int tsk_buffer_cleanup(tsk_buffer_t* self)
 //=================================================================================================
 //	Buffer object definition
 //
-static tsk_object_t* tsk_buffer_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsk_buffer_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_buffer_t *buffer = self;
 	const void *data = va_arg(*app, const void *);
@@ -272,7 +294,7 @@ static tsk_object_t* tsk_buffer_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsk_buffer_destroy(tsk_object_t * self)
+static tsk_object_t* tsk_buffer_dtor(tsk_object_t * self)
 { 
 	tsk_buffer_t *buffer = self;
 	if(buffer){
@@ -286,8 +308,8 @@ static tsk_object_t* tsk_buffer_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsk_buffer_def_s = 
 {
 	sizeof(tsk_buffer_t),
-	tsk_buffer_create, 
-	tsk_buffer_destroy,
+	tsk_buffer_ctor, 
+	tsk_buffer_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsk_buffer_def_t = &tsk_buffer_def_s;

@@ -50,7 +50,7 @@ void test_submit()
 	}
 
 	/* receiving */
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	ret = tsms_tpdu_submit_serialize(submit, buffer);
 	// send(socket, buffer->data, buffer->size);
 
@@ -87,7 +87,7 @@ void test_deliver()
 	}
 
 	/* receiving */
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	tsms_tpdu_deliver_serialize(deliver, buffer);
 
 	TSK_OBJECT_SAFE_FREE(deliver);
@@ -141,7 +141,7 @@ void test_report()
 	}
 
 	/* receiving */
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	tsms_tpdu_report_serialize(report, buffer);
 
 	TSK_OBJECT_SAFE_FREE(report);
@@ -176,7 +176,7 @@ void test_command()
 	}
 
 	/* receiving */
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	tsms_tpdu_command_serialize(command, buffer);
 
 	TSK_OBJECT_SAFE_FREE(command);
@@ -206,7 +206,7 @@ void test_sreport()
 	}
 
 	/* receiving */
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	tsms_tpdu_status_report_serialize(sreport, buffer);
 
 	

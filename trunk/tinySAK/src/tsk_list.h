@@ -36,18 +36,6 @@
 TSK_BEGIN_DECLS
 
 /**@ingroup tsk_list_group
-* Creates a linked list object.
-* You MUST use @ref TSK_OBJECT_SAFE_FREE to safely free the object.
-*/
-#define TSK_LIST_CREATE()					tsk_object_new(tsk_list_def_t)
-
-/**@ingroup tsk_list_group
-* Create and initialize an item to be added to a linked list.
-* You MUST use @ref TSK_OBJECT_SAFE_FREE to safely free the object.
-*/
-#define TSK_LIST_ITEM_CREATE()				tsk_object_new(tsk_list_item_def_t)
-
-/**@ingroup tsk_list_group
 * Check if the the linked list is empty or not.
 *	This function will fail if the list is NULL.
 */
@@ -94,6 +82,9 @@ typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* 
 *
 */
 #define tsk_list_foreach(item, list) for(item = list?list->head:0; item; item= item->next)
+
+TINYSAK_API tsk_list_t* tsk_list_create();
+TINYSAK_API tsk_list_item_t* tsk_list_item_create();
 
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
 TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);

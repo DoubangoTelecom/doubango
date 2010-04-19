@@ -36,8 +36,6 @@
 THTTP_BEGIN_DECLS
 
 #define THTTP_HEADER_ETAG_VA_ARGS(value)		thttp_header_ETag_def_t, (const char*)value
-#define THTTP_HEADER_ETAG_CREATE(value)		tsk_object_new(THTTP_HEADER_ETAG_VA_ARGS(value))
-#define THTTP_HEADER_ETAG_CREATE_NULL()				THTTP_HEADER_ETAG_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// HTTP ETag header.
@@ -57,6 +55,9 @@ typedef struct thttp_header_ETag_s
 thttp_header_ETag_t;
 
 thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, size_t size);
+
+thttp_header_ETag_t* thttp_header_etag_create(const char* value);
+thttp_header_ETag_t* thttp_header_etag_create_null();
 
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_header_ETag_def_t;
 

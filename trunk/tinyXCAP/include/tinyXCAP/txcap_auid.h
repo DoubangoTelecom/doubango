@@ -35,9 +35,6 @@
 
 TXCAP_BEGIN_DECLS
 
-#define TXCAP_AUID_CREATE(type, id, mime_type, ns, document_name, is_global)\
-	tsk_object_new(txcap_auid_def_t, (txcap_auid_type_t)type, (const char*)id, (const char*)mime_type, (const char*)ns, (const char*)document_name, (tsk_bool_t)is_global)
-
 /** List of supported AUIDs.
 */
 typedef enum txcap_auid_type_e

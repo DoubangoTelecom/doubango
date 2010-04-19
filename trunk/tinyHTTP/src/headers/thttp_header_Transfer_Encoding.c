@@ -43,6 +43,17 @@
 /* #line 66 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 
 
+thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create(const char* encoding)
+{
+	return tsk_object_new(THTTP_HEADER_TRANSFER_ENCODING_VA_ARGS(encoding));
+}
+
+thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create_null()
+{
+	return thttp_header_transfer_encoding_create(tsk_null);
+}
+
+
 int thttp_header_Transfer_Encoding_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header){
@@ -64,12 +75,12 @@ thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const cha
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Transfer_Encoding_t *hdr_tencoding = THTTP_HEADER_TRANSFER_ENCODING_CREATE_NULL();
+	thttp_header_Transfer_Encoding_t *hdr_tencoding = thttp_header_transfer_encoding_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 73 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 84 "./src/headers/thttp_header_Transfer_Encoding.c" */
 static const char _thttp_machine_parser_header_Transfer_Encoding_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -179,16 +190,16 @@ static const int thttp_machine_parser_header_Transfer_Encoding_error = 0;
 static const int thttp_machine_parser_header_Transfer_Encoding_en_main = 1;
 
 
-/* #line 94 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 105 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	
-/* #line 185 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 196 "./src/headers/thttp_header_Transfer_Encoding.c" */
 	{
 	cs = thttp_machine_parser_header_Transfer_Encoding_start;
 	}
 
-/* #line 95 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 106 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	
-/* #line 192 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 203 "./src/headers/thttp_header_Transfer_Encoding.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -285,7 +296,7 @@ _match:
 	{
 	}
 	break;
-/* #line 289 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 300 "./src/headers/thttp_header_Transfer_Encoding.c" */
 		}
 	}
 
@@ -298,12 +309,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 96 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 107 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
 	
 	if( cs < 
-/* #line 305 "./src/headers/thttp_header_Transfer_Encoding.c" */
+/* #line 316 "./src/headers/thttp_header_Transfer_Encoding.c" */
 33
-/* #line 97 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
+/* #line 108 "./ragel/thttp_parser_header_Transfer_Encoding.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Tansfer-Encoding header.");
 		TSK_OBJECT_SAFE_FREE(hdr_tencoding);
@@ -322,7 +333,7 @@ _again:
 //	Transfer_Encoding header object definition
 //
 
-static tsk_object_t* thttp_header_Transfer_Encoding_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Transfer_Encoding_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Transfer_Encoding_t *Transfer_Encoding = self;
 	if(Transfer_Encoding){
@@ -337,7 +348,7 @@ static tsk_object_t* thttp_header_Transfer_Encoding_create(tsk_object_t *self, v
 	return self;
 }
 
-static tsk_object_t* thttp_header_Transfer_Encoding_destroy(tsk_object_t* self)
+static tsk_object_t* thttp_header_Transfer_Encoding_dtor(tsk_object_t* self)
 {
 	thttp_header_Transfer_Encoding_t *Transfer_Encoding = self;
 	if(Transfer_Encoding){
@@ -354,8 +365,8 @@ static tsk_object_t* thttp_header_Transfer_Encoding_destroy(tsk_object_t* self)
 static const tsk_object_def_t thttp_header_Transfer_Encoding_def_s = 
 {
 	sizeof(thttp_header_Transfer_Encoding_t),
-	thttp_header_Transfer_Encoding_create,
-	thttp_header_Transfer_Encoding_destroy,
+	thttp_header_Transfer_Encoding_ctor,
+	thttp_header_Transfer_Encoding_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Transfer_Encoding_def_t = &thttp_header_Transfer_Encoding_def_s;

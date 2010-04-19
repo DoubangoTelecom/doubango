@@ -36,7 +36,6 @@
 THTTP_BEGIN_DECLS
 
 #define THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(length)	thttp_header_Content_Length_def_t, (uint32_t)length
-#define THTTP_HEADER_CONTENT_LENGTH_CREATE(length)	tsk_object_new(THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(length))
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// HTTP header 'Content-Length'.

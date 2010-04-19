@@ -24,13 +24,13 @@
 
 void test_params()
 {
-	tsk_buffer_t *buffer = TSK_BUFFER_CREATE(0,0);
+	tsk_buffer_t *buffer = tsk_buffer_create_null();
 
 	tsk_param_t *param1 = tsk_params_parse_param("mamadou=diop", strlen("mamadou=diop"));
 	tsk_param_t *param2 = tsk_params_parse_param("project=doubango", strlen("project=doubango"));
 	tsk_param_t *param3 = tsk_params_parse_param("license=gpl", strlen("license=gpl"));
 
-	tsk_params_L_t *params = TSK_LIST_CREATE();
+	tsk_params_L_t *params = tsk_list_create();
 	tsk_list_push_back_data(params, (void**)&param1);
 	tsk_list_push_back_data(params, (void**)&param2);
 	tsk_list_push_back_data(params, (void**)&param3);

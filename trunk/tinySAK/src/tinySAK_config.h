@@ -34,10 +34,6 @@
 #ifndef _TINYSAK_H_
 #define _TINYSAK_H_
 
-#if HAVE_CONFIG_H
-	#include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
@@ -95,6 +91,11 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "tsk_common.h"
+
+
+#if HAVE_CONFIG_H
+#	include "../config.h"
+#endif
 
 #endif /* _TINYSAK_H_ */
 

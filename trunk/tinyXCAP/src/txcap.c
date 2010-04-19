@@ -33,6 +33,694 @@
 /**@defgroup txcap_stack_group XCAP stack
 */
 
+
+/**@mainpage tinyXCAP API Overview
+* 
+* 
+* <h1>16 XCAP</h1>
+* 
+* The XCAP Framework is mainly based on RFC 4825 and uses tinyHTTP project. The framework can be used to implements advanced OMA functionalities such Enhanced Address Book, Presence Authorization Rules, Service Configuration …
+* At startup the stack will load all supported AUIDs with their default values.
+* 
+* 
+* 
+* <h2>16.1 Initialization</h2>
+* 
+* As the XCAP stack depends on the HTTP/HTTPS stack (tinyHTTP) which uses the network library (tinyNET), you MUST call <a href="http://doubango.org/API/tinyNET/tnet_8c.html#affba6c2710347476f615b0135777c640"> tnet_startup()</a> before using any XCAP function (txcap_*). <br>
+* <a href="http://doubango.org/API/tinyNET/tnet_8c.html#ac42b22a7ac5831f04326aee9de033c84"> tnet_cleanup()</a> is used to terminate use of network functions. <br>
+* The example below demonstrates how to create and start a XCAP stack. In this example, the xcap-root URI is http://doubango.org:8080/services and the SIP AOR (used as XUI) is sip:bob@doubango.org.
+* 
+* @code
+txcap_stack_handle_t* stack = tsk_null;
+int ret;
+
+tnet_startup();
+
+stack = txcap_stack_create(test_stack_callback, "sip:bob@doubango.org", "mysecret", "http://doubango.org:8080/services",
+	
+	// options
+	TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),
+
+	// stack-level headers (not mandatory)
+	TXCAP_STACK_SET_HEADER("Pragma", "No-Cache"),
+	TXCAP_STACK_SET_HEADER("Connection", "Keep-Alive"),
+TXCAP_STACK_SET_HEADER("X-3GPP-Intended-Identity", "sip:bob@doubango.org"),
+	TXCAP_STACK_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
+	TXCAP_STACK_SET_NULL());
+
+if((ret = txcap_stack_start(stack))){
+	goto bail;
+}
+
+// …………
+
+bail:
+	TSK_OBJECT_SAFE_FREE(stack);
+tnet_cleanup();
+
+* @endcode
+* 
+* The stack-level headers will be added in all outgoing requests.
+* A stack is a well-defined object and must be destroyed by using @a TSK_OBJECT_SAFE_FREE() macro. The stack will be automatically stopped when destroyed.
+* 
+* 
+* 
+* <h2>16.2	Application Unique ID (AUID) object</h2>
+* 
+* An AUID object is defined by:
+* -	An id (e.g. “xcap-caps”),
+* -	A MIME-Type (e.g. “application/xcap-caps+xml”),
+* -	A namespace (e.g. “urn:ietf:params:xml:ns:xcap-caps”),
+* -	A document name (e.g. “index”), which defines the name of the default document associated with this AUID
+* -	A scope (“global” or “users”)
+* 
+* At startup, the stack will load all supported AUIDs with their default values. You can at any time change these values or register your own AUID object. The list of default AUIDs with their default values are shown in the next sections.
+* When you are about to send a request, it’s not mandatory to use a registered AUID but it’s easier to generate the selector as all parameters are pre-configured.
+* 
+* 
+* 
+* <h3>16.2.1	Default AUIDs</h3>
+* 
+* The table below shows the default AUIDs as they are defined by the stack at startup.
+* <TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0>
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139 BGCOLOR="#d9d9d9">
+* 
+* 			<P STYLE="border: none; padding: 0in"><B>Id</B></P>
+* 		</TD>
+* 		<TD WIDTH=132 BGCOLOR="#d9d9d9">
+* 			<P STYLE="border: none; padding: 0in"><B>MIME-Type</B></P>
+* 		</TD>
+* 		<TD WIDTH=120 BGCOLOR="#d9d9d9">
+* 			<P STYLE="border: none; padding: 0in"><B>Namespace</B></P>
+* 
+* 		</TD>
+* 		<TD WIDTH=84 BGCOLOR="#d9d9d9">
+* 			<P STYLE="border: none; padding: 0in"><B>Document </B>
+* 			</P>
+* 		</TD>
+* 		<TD WIDTH=53 BGCOLOR="#d9d9d9">
+* 			<P STYLE="border: none; padding: 0in"><B>Scope</B></P>
+* 		</TD>
+* 
+* 		<TD WIDTH=129 BGCOLOR="#d9d9d9">
+* 			<P STYLE="border: none; padding: 0in"><B>Reference</B></P>
+* 		</TD>
+* 	</TR>
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">xcap-caps</P>
+* 		</TD>
+* 
+* 		<TD WIDTH=132>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/xcap-caps+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 			<P STYLE="border: none; padding: 0in">urn:ietf:params:xml:ns:xcap-caps</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P STYLE="border: none; padding: 0in">index</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P STYLE="border: none; padding: 0in">global</P>
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">RFC
+* 			4825 section 12.1</P>
+* 		</TD>
+* 	</TR>
+* 
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">resource-lists</P>
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/resource-lists+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 
+* 			<P STYLE="border: none; padding: 0in">urn:ietf:params:xml:ns:resource-lists</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P STYLE="border: none; padding: 0in">index</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">RFC
+* 			4826 section 3.4.1</P>
+* 		</TD>
+* 	</TR>
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">rls-services</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/rls-services+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 			<P STYLE="border: none; padding: 0in">urn:ietf:params:xml:ns:rls-services&quot;</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 
+* 			<P STYLE="border: none; padding: 0in">index</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">RFC
+* 			4826 section 4.4.1</P>
+* 
+* 		</TD>
+* 	</TR>
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">pres-rules</P>
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/auth-policy+xml</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=120>
+* 			<P STYLE="border: none; padding: 0in">urn:ietf:params:xml:ns:pres-rules</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P STYLE="border: none; padding: 0in">index</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">RFC
+* 			5025 section 9.1</P>
+* 		</TD>
+* 	</TR>
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">org.openmobilealliance.pres-rules</P>
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/auth-policy+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 			<P STYLE="border: none; padding: 0in">urn:ietf:params:xml:ns:common-policy</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P STYLE="border: none; padding: 0in">pres-rules</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 		</TD>
+* 		<TD WIDTH=129>
+* 
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">[OMA-TS-Presence_SIMPLE_XDM-V1_1-20080627-A]
+* 			section 5.1.1.2</P>
+* 		</TD>
+* 	</TR>
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">directory</P>
+* 		</TD>
+* 		<TD WIDTH=132>
+* 
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/directory+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 			<P STYLE="border: none; padding: 0in">urn:ietf:params:xml:ns:xcap-directory</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P STYLE="border: none; padding: 0in">directory.xml</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">draft-garcia-simple-xcap-directory-00
+* 			section 9.1</P>
+* 		</TD>
+* 	</TR>
+* 
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">org.openmobilealliance.xcap-directory</P>
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/vnd.oma.xcap-directory+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 
+* 			<P STYLE="border: none; padding: 0in">urn:oma:xml:xdm:xcap-directory</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P STYLE="border: none; padding: 0in">directory.xml</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">[OMA-TS-XDM_Core-V1_1-20080627-A]
+* 			section 6.7.2.1</P>
+* 		</TD>
+* 	</TR>
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">org.openmobilealliance.pres-content</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/vnd.oma.pres-content+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">urn:oma:xml:prs:pres-content</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 
+* 			<P STYLE="border: none; padding: 0in">oma_status-icon/rcs_status_icon</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">[OMA-TS-Presence-SIMPLE_Content_XDM-V1_0-20081223-C]
+* 			section 5.1.2</P>
+* 
+* 		</TD>
+* 	</TR>
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">org.openmobilealliance.conv-history</P>
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="en-GB" STYLE="border: none; padding: 0in">application/vnd.oma.im.history-list+xml</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=120>
+* 			<P STYLE="border: none; padding: 0in">urn:oma:xml:im:history-list</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">conv-history</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P STYLE="border: none; padding: 0in">[OMA-TS-IM_XDM-V1_0-20070816-C]
+* 			<SPAN LANG="fr-FR">section</SPAN>
+* 			5.1.2</P>
+* 		</TD>
+* 	</TR>
+* 
+* 	<TR VALIGN=TOP>
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">org.openmobilealliance.deferred-list</P>
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="en-GB" STYLE="border: none; padding: 0in">application/vnd.oma.im.deferred-list+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 
+* 			<P STYLE="border: none; padding: 0in">urn:oma:xml:im:history-list</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">deferred-list</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P STYLE="border: none; padding: 0in">users</P>
+* 
+* 		</TD>
+* 		<TD WIDTH=129>
+* 			<P STYLE="border: none; padding: 0in">[OMA-TS-IM_XDM-V1_0-20070816-C]
+* 			<SPAN LANG="fr-FR">section</SPAN>
+* 			5.2.2</P>
+* 		</TD>
+* 	</TR>
+* 	<TR VALIGN=TOP>
+* 
+* 		<TD WIDTH=139>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">org.openmobilealliance.group-usage-list</P>
+* 		</TD>
+* 		<TD WIDTH=132>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">application/vnd.oma.group-usage-list+xml</P>
+* 		</TD>
+* 		<TD WIDTH=120>
+* 			<PRE CLASS="western" STYLE="margin-bottom: 0.2in; border: none; padding: 0in">rn:ietf:params:xml:ns:resource-lists</PRE><P STYLE="border: none; padding: 0in">
+* 
+* 			&nbsp;</P>
+* 		</TD>
+* 		<TD WIDTH=84>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">index</P>
+* 		</TD>
+* 		<TD WIDTH=53>
+* 			<P LANG="fr-FR" STYLE="border: none; padding: 0in">users</P>
+* 		</TD>
+* 
+* 		<TD WIDTH=129>
+* 			<P STYLE="border: none; padding: 0in">[OMA-TS-XDM_Shared-V1_1-20080627-A]
+* 			subclause 5.2.2</P>
+* 		</TD>
+* 	</TR>
+* </TABLE>
+* 
+* 
+* <h3>16.2.2	AUID registration</h3>
+* 
+* === The code below shows how to register two AUIDs. If the AUID object already exist (case-insensitive comparison on the id), then it will be updated. All fields are mandatory (id, mime-type, namespace, document and scope).
+* 
+* @code
+txcap_stack_set(stack,
+	TXCAP_STACK_SET_AUID("my-xcap-caps", "application/my-xcap-caps+xml", "urn:ietf:params:xml:ns:my-xcap-caps", "my-document", tsk_true),
+	TXCAP_STACK_SET_AUID("my-resource-lists", "application/my-resource-lists+xml", "urn:ietf:params:xml:ns:my-resource-lists", "my-document", tsk_false),
+	
+	TXCAP_STACK_SET_NULL()); // mandatory
+*
+* @endcode
+* 
+* The stack should be created as shown at section 16.1.
+* Only AUIDs which don’t appear in the table above should be registered using this method 
+* 
+* 
+
+* <h2>16.3	Selector</h2>
+* 
+* The selector is a helper function which could be used to construct XCAP URIs. XCAP URI is constructed as per RFC 4825 section 6. TXCAP_SELECTOR_NODE_SET*() macros are used to build a complete and well-formed URI (already percent encoded).
+* All examples below assume that our AOR (used as XUI) is sip:bob@doubango.com, we are using the ‘rcs’list and the xcap-root URI is http://doubango.org:8080/services. All these parameters should be set when the stack is created. You will also notice that TXCAP_SELECTOR_NODE_SET_NULL() macro is used to ends the node selection parameters passed to txcap_selector_get_url(), it’s mandatory and should always be the last one.
+* 
+* -	Select XDMS capabilities:
+* @code
+char* urlstring = txcap_selector_get_url(stack, "xcap-caps",
+		TXCAP_SELECTOR_NODE_SET_NULL());
+	TSK_DEBUG_INFO("%s\n", urlstring);
+	TSK_FREE(urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/xcap-caps/global/index</i>
+* -	Select 'resource-lists' document
+* @code
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
+* @endcode
+*
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index</i>
+* 
+* -	Select 'rcs' list
+* @code
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/list\%5B\@name=\%22rcs\%22\%5D</i>
+* 
+* -	Select the 2nd list
+* @code
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_POS("list", 2),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/list\%5B2\%5D</i>
+* 
+* -	Select the 4th list using wildcard
+* @code
+urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_POS("*", 4),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/*\%5B4\%5D</i>
+* 
+* -	Select bob's entry
+* @code
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("entry", "uri", "sip:bob@doubango.com"),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/list\%5B\@name=\%22rcs\%22\%5D/entry\%5B\@uri=\%22sip:bob@doubango.org\%22\%5D</i>
+* 
+* -	Select bob’s display-name
+* @code
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("entry", "uri", "sip:bob@doubango.org"),
+		TXCAP_SELECTOR_NODE_SET_NAME("display-name"),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/list\%5B\@name=\%22rcs\%22\%5D/entry\%5B\@uri=\%22sip:bob@doubango.org\%22\%5D/display-name</i>
+* 
+* -	Select the display-name of the 1st entry
+* @code
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+		TXCAP_SELECTOR_NODE_SET_POS("entry", 1),
+		TXCAP_SELECTOR_NODE_SET_NAME("display-name"),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/list\%5B\@name=\%22rcs\%22\%5D/entry\%5B1\%5D/display-name</i>
+* 
+* -	Select bob from position 23
+* @code
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "rcs"),
+		TXCAP_SELECTOR_NODE_SET_POS_ATTRIBUTE("entry", 23, "uri", "sip:bob@doubango.org"),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/list\%5B\@name=\%22rcs\%22\%5D/entry\%5B23\%5D\%5B\@uri=\%22sip:bob@doubango.org\%22\%5D</i>
+* 
+* -	Namespaces test
+* @code 
+char* urlstring = txcap_selector_get_url(stack, "resource-lists",
+		TXCAP_SELECTOR_NODE_SET_NAME("foo"),
+		TXCAP_SELECTOR_NODE_SET_NAME("a:bar"),
+		TXCAP_SELECTOR_NODE_SET_NAME("b:baz"),
+		TXCAP_SELECTOR_NODE_SET_NAMESPACE("a", "urn:namespace1-uri"),
+		TXCAP_SELECTOR_NODE_SET_NAMESPACE("b", "urn:namespace2-uri"),
+		TXCAP_SELECTOR_NODE_SET_NULL());
+TSK_DEBUG_INFO("%s\n", urlstring);
+TSK_FREE(urlstring);
+* @endcode
+* 
+* Console Output:
+* <i>http://doubango.org:8080/services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/foo/a:bar/b:baz%3Fxmlns(a=\%22urn:namespace1-uri\%22)xmlns(b=\%22urn:namespace2-uri\%22)</i>
+* 
+* <h2>16.4	XDMC Usage</h2>
+* 
+* It is assumed that the address of the XDMS (or aggregation Proxy) is “doubango.org:8080/services” and thus the XCAP Root URI is “doubango.org:8080/services”. “sip:bob@doubango.org” will be used as the XUI. 
+* An XDMC can perform twelve actions:
+* -	txcap_action_create_element: Creates new element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_create_document: Creates new document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_create_attribute: Creates new attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_replace_element: Replaces an element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_replace_document: Replaces a document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_replace_attribute: Replaces an attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_fetch_element: Retrieves an element from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_fetch_document: Retrieves a document from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_fetch_attribute: Retrieves an attribute from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	txcap_action_delete_element: Deletes an element from the XDMS by sending a HTTP/HTTPS DELETE request. 
+* -	txcap_action_delete_document: Deletes a document from the XDMS by sending a HTTP/HTTPS DELETE request.
+* -	 txcap_action_delete_attribute: Deletes an attribute from the XDMS by sending a HTTP/HTTPS DELETE request. 
+* 
+* To understand how the stack is created, please refer to section 16.1.
+* 
+* 
+* <h3>16.4.1	Retrieving XDMS capabilities</h3>
+* === The code below shows how an XDMC obtains the XDMS capabilities document.
+* @code
+int ret = txcap_action_fetch_document(stack,
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("xcap-caps",
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+* @endcode
+* 
+* The XDMC will send:
+* @code
+GET /services/xcap-caps/global/index HTTP/1.1
+Host: doubango.org:8080
+Connection: Keep-Alive
+User-Agent: XDM-client/OMA1.1
+X-3GPP-Intended-Identity: sip:bob@doubango.org
+Content-Type: application/xcap-caps+xml
+* @endcode
+*
+* <h3>16.4.2	Address Book</h3>
+*
+* ===	The code below shows how an XDMC obtains URI Lists (Address Book).
+*
+* @code
+int ret = txcap_action_fetch_document(stack,
+		// action-level options
+		TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
+		//action-level headers
+		TXCAP_ACTION_SET_HEADER("Pragma", "No-Cache"),
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("resource-lists",
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+* @endcode
+*
+* The XDMC will send:
+* @code
+GET /services/resource-lists/users/sip:bob@doubango.org/index HTTP/1.1
+Host: doubango.org:8080
+Connection: Keep-Alive
+User-Agent: XDM-client/OMA1.1
+X-3GPP-Intended-Identity: sip:bob@doubango.org
+Pragma: No-Cache
+Content-Type: application/resource-lists+xml
+* @endcode
+*
+* ===	The code below shows how to add a new list to the address book
+* @code
+int ret = txcap_action_create_element(stack,
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("resource-lists",
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "newlist"),
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// payload
+		TXCAP_ACTION_SET_PAYLOAD(PAYLOAD, strlen(PAYLOAD)),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+* @endcode
+*
+* The XDMC will send:
+* @code
+PUT /services/resource-lists/users/sip:bob@doubano.org/index/~~/resource-lists/list\%5B\@name=\%22newlist\%22\%5D HTTP/1.1
+Host: doubango.org:8080
+Content-Length: 110
+Connection: Keep-Alive
+User-Agent: XDM-client/OMA1.1
+X-3GPP-Intended-Identity: sip:bob@doubango.org
+Content-Type: application/xcap-el+xml
+
+<list name="newlist" xmlns="urn:ietf:params:xml:ns:resource-lists"><display-name>newlist</display-name></list>
+* @endcode
+*
+* ===	The code below shows how to retrieve the previously added list
+* @code
+int ret = txcap_action_fetch_element(stack,
+		// action-level selector
+		TXCAP_ACTION_SET_SELECTOR("resource-lists",
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "newlist"),
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+* @endcode
+*
+* The XDMC will send:
+* @code
+GET /services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/list\%5B\@name=\%22newlist\%22\%5D HTTP/1.1
+Host: doubango.org:8080
+Connection: Keep-Alive
+User-Agent: XDM-client/OMA1.1
+X-3GPP-Intended-Identity: sip:bob@doubango.org
+Content-Type: application/xcap-el+xml
+** @endcode
+*
+* ===	The code below shows how to add a new entry (“sip:alice@doubango.org”) to the previously added list
+* @code
+int ret = txcap_action_create_element(stack,
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("resource-lists",
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("list", "name", "newlist"),
+			TXCAP_SELECTOR_NODE_SET_ATTRIBUTE("entry", "uri", “sip:alice@doubango.org”),
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// payload
+		TXCAP_ACTION_SET_PAYLOAD(PAYLOAD, strlen(PAYLOAD)),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+* @endcode
+*
+* The XDMC will send:
+* @code
+PUT /services/resource-lists/users/sip:bob@doubango.org/index/~~/resource-lists/list\%5B\@name=\%22newlist\%22\%5D/entry\%5B\@uri=\%22sip:alice@doubango.org\%22\%5D HTTP/1.1
+Host: doubango.org:8080
+Content-Length: 125
+Connection: Keep-Alive
+User-Agent: XDM-client/OMA1.1
+X-3GPP-Intended-Identity: sip:bob@doubango.org
+Content-Type: application/xcap-el+xml
+
+<entry uri="sip:alice@doubango.org" xmlns="urn:ietf:params:xml:ns:resource-lists"><display-name>alice</display-name></entry>
+* @endcode
+*
+* <h3>16.4.3	Obtaining Presence Content Document </h3>
+*
+* === The code below shows how an XDMC obtains the Presence Content document (avatar).
+*
+* @code
+int ret = txcap_action_fetch_document(stack,
+		// action-level options
+		TXCAP_ACTION_SET_OPTION(TXCAP_ACTION_OPTION_TIMEOUT, "6000"),
+		//action-level headers
+		TXCAP_ACTION_SET_HEADER("Pragma", "No-Cache"),
+		// selector
+		TXCAP_ACTION_SET_SELECTOR("org.openmobilealliance.pres-content",
+			TXCAP_SELECTOR_NODE_SET_NULL()),
+		// ends parameters
+		TXCAP_ACTION_SET_NULL()
+		);
+* @endcode
+*
+* The XDMC will send:
+* 
+* @code
+GET /services/org.openmobilealliance.pres-content/users/sip:mamadou@micromethod.com/oma_status-icon/rcs_status_icon HTTP/1.1
+Host: doubango.org:8080
+Connection: Keep-Alive
+User-Agent: XDM-client/OMA1.1
+X-3GPP-Intended-Identity: sip:bob@doubango.org
+Pragma: No-Cache
+Content-Type: application/vnd.oma.pres-content+xml
+* @endcode
+*/
+
 /** Internal function used to set options.
 */
 int __txcap_stack_set(txcap_stack_t* self, va_list *app)
@@ -166,7 +854,7 @@ txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback callback, const ch
 	}
 
 	/* check url validity */
-	if(!thttp_url_isok(xcap_root)){
+	if(!thttp_url_isvalid(xcap_root)){
 		TSK_DEBUG_ERROR("%s is not a valid HTTP/HTTPS url", xcap_root);
 		goto bail;
 	}
@@ -308,7 +996,7 @@ static tsk_object_t* _txcap_stack_create(tsk_object_t * self, va_list * app)
 			THTTP_SESSION_SET_NULL());
 		
 		/* Options */
-		stack->options = TSK_LIST_CREATE();
+		stack->options = tsk_list_create();
 
 		/* AUIDs */
 		txcap_auids_init(&stack->auids);

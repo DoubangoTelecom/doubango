@@ -118,7 +118,7 @@ tsms_tpdu_message_t* _tsms_tpdu_report_deserialize_2(const void* data, size_t si
 
 	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
 	if((pend-pdata) > 0){
-		TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+		TSMS_TPDU_MESSAGE(self)->ud = tsk_buffer_create(pdata, (pend-pdata));
 	}
 
 	bail:
@@ -212,7 +212,7 @@ int tsms_tpdu_report_set_fcs(tsms_tpdu_report_t* self, uint8_t code)
 //=================================================================================================
 //	SMS TPDU SMS-DELIVER-REPORT/SMS-SUBMIT-REPORT object definition
 //
-static tsk_object_t* _tsms_tpdu_report_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_tpdu_report_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_tpdu_report_t *report = self;
 	if(report){
@@ -228,7 +228,7 @@ static tsk_object_t* _tsms_tpdu_report_create(tsk_object_t * self, va_list * app
 			:tsms_tpdu_mti_deliver_report_mo);
 		/* init self */
 		if(smsc){
-			report->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+			report->smsc = tsms_address_smsc_create(smsc);
 		}
 		report->error = error;
 		
@@ -243,7 +243,7 @@ static tsk_object_t* _tsms_tpdu_report_create(tsk_object_t * self, va_list * app
 	return self;
 }
 
-static tsk_object_t* tsms_tpdu_report_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_tpdu_report_dtor(tsk_object_t * self)
 { 
 	tsms_tpdu_report_t *report = self;
 	if(report){
@@ -261,8 +261,8 @@ static tsk_object_t* tsms_tpdu_report_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_tpdu_report_def_s = 
 {
 	sizeof(tsms_tpdu_report_t),
-	_tsms_tpdu_report_create, 
-	tsms_tpdu_report_destroy,
+	tsms_tpdu_report_ctor, 
+	tsms_tpdu_report_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_tpdu_report_def_t = &tsms_tpdu_report_def_s;

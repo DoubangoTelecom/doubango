@@ -36,14 +36,11 @@
 
 TSK_BEGIN_DECLS
 
-/**@ingroup tsk_timer_group
-* @def TSK_TIMER_MANAGER_CREATE
-*/
+
 /**@ingroup tsk_timer_group
 * @def TSK_TIMER_CALLBACK
 */
-#define TSK_TIMER_MANAGER_CREATE()					tsk_object_new(tsk_timer_manager_def_t)
-#define TSK_TIMER_CALLBACK(callback)				((tsk_timer_callback)callback)
+#define TSK_TIMER_CALLBACK_F(callback)				((tsk_timer_callback_f)callback)
 
 /**@ingroup tsk_timer_group
 * @def TSK_INVALID_TIMER_ID
@@ -65,7 +62,9 @@ TSK_BEGIN_DECLS
 */
 typedef void tsk_timer_manager_handle_t;
 typedef uint64_t tsk_timer_id_t;
-typedef int (*tsk_timer_callback)(const void* arg, tsk_timer_id_t timer_id);
+typedef int (*tsk_timer_callback_f)(const void* arg, tsk_timer_id_t timer_id);
+
+TINYSAK_API tsk_timer_manager_handle_t* tsk_timer_manager_create();
 
 TINYSAK_API int tsk_timer_manager_start(tsk_timer_manager_handle_t *self);
 TINYSAK_API int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self);
@@ -73,7 +72,7 @@ TINYSAK_API int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self);
 TINYSAK_API void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self);
 #endif
 
-TINYSAK_API tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback callback, const void *arg);
+TINYSAK_API tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback_f callback, const void *arg);
 TINYSAK_API int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_timer_def_t;

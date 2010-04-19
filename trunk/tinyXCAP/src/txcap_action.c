@@ -67,8 +67,8 @@ int txcap_action_perform(txcap_stack_handle_t* stack, txcap_action_type_t type, 
 	}
 	else{
 		xcap_stack = tsk_object_ref(stack);
-		options = TSK_LIST_CREATE();
-		headers = TSK_LIST_CREATE();
+		options = tsk_list_create();
+		headers = tsk_list_create();
 	}
 
 	va_start(ap, target);
@@ -161,7 +161,7 @@ done:
 	}
 
 	/* HTTP action */
-	if((action = THTTP_ACTION_CREATE(atype_o_request, urlstring, method, tsk_null))){
+	if((action = thttp_action_create(atype_o_request, urlstring, method, tsk_null))){
 		const tsk_list_item_t* item;
 		if((dialog = thttp_dialog_new(xcap_stack->http_session))){
 			/* copy options */
@@ -184,7 +184,7 @@ done:
 
 			/* payload */
 			if(PAY_PTR && PAY_SIZE){
-				action->payload = TSK_BUFFER_CREATE(PAY_PTR, PAY_SIZE);
+				action->payload = tsk_buffer_create(PAY_PTR, PAY_SIZE);
 			}
 			
 			/* performs */

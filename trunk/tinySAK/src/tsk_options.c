@@ -48,6 +48,20 @@ static int pred_find_option_by_id(const tsk_list_item_t *item, const void *id)
 	return -1;
 }
 
+/**@ingroup tsk_options_group
+*/
+tsk_option_t* tsk_option_create(int id, const char* value)
+{
+	return tsk_object_new(TSK_OPTION_VA_ARGS(id, value));
+}
+
+/**@ingroup tsk_options_group
+*/
+tsk_option_t* tsk_option_create_null()
+{
+	return tsk_option_create(0, tsk_null);
+}
+
 
 /**@ingroup tsk_options_group
 * Checks if the supplied list of options contains an option with this @a id.
@@ -81,14 +95,14 @@ int tsk_options_add_option(tsk_options_L_t **self, int id, const char* value)
 	}
 
 	if(!*self){
-		*self = TSK_LIST_CREATE();
+		*self = tsk_list_create();
 	}
 
 	if((option = (tsk_option_t*)tsk_options_get_option_by_id(*self, id))){
 		tsk_strupdate(&option->value, value); /* Already exist ==> update the value. */
 	}
 	else{
-		option = TSK_OPTION_CREATE(id, value);
+		option = tsk_option_create(id, value);
 		tsk_list_push_back_data(*self, (void**)&option);
 	}
 
@@ -192,7 +206,7 @@ int tsk_options_get_option_value_as_int(const tsk_options_L_t *self, int id)
 //=================================================================================================
 //	option object definition
 //
-static tsk_object_t* tsk_option_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsk_option_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_option_t *option = self;
 	if(option){
@@ -208,7 +222,7 @@ static tsk_object_t* tsk_option_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsk_option_destroy(tsk_object_t * self)
+static tsk_object_t* tsk_option_dtor(tsk_object_t * self)
 { 
 	tsk_option_t *option = self;
 	if(option){
@@ -221,8 +235,8 @@ static tsk_object_t* tsk_option_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsk_option_def_s = 
 {
 	sizeof(tsk_option_t),
-	tsk_option_create, 
-	tsk_option_destroy,
+	tsk_option_ctor, 
+	tsk_option_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t* tsk_option_def_t = &tsk_option_def_s;

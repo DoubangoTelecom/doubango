@@ -96,6 +96,10 @@ _fsm_state_t;
 
 
 
+thttp_dialog_t* thttp_dialog_create(struct thttp_session_s* session)
+{
+	return tsk_object_new(thttp_dialog_def_t, session);
+}
 
 
 
@@ -136,7 +140,7 @@ int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app)
 		thttp_event_t* e = tsk_null;
 		TSK_DEBUG_ERROR("HTTP authentication failed.");
 		
-		if((e = THTTP_EVENT_CREATE(thttp_event_auth_failed, self->session, "Authentication Failed.", tsk_null))){
+		if((e = thttp_event_create(thttp_event_auth_failed, self->session, "Authentication Failed.", tsk_null))){
 			thttp_stack_alert(self->session->stack, e);
 			TSK_OBJECT_SAFE_FREE(e);
 		}
@@ -166,7 +170,7 @@ int thttp_dialog_Transfering_2_Terminated_X_message(va_list *app)
 	int ret = -2;
 	
 	/* Alert the user. */
-	if((e = THTTP_EVENT_CREATE(thttp_event_message, self->session, THTTP_MESSAGE_DESCRIPTION(message), message))){
+	if((e = thttp_event_create(thttp_event_message, self->session, THTTP_MESSAGE_DESCRIPTION(message), message))){
 		ret = thttp_stack_alert(self->session->stack, e);
 		TSK_OBJECT_SAFE_FREE(e);
 	}
@@ -184,7 +188,7 @@ int thttp_dialog_Any_2_Terminated_X_closed(va_list *app)
 
 	// alert the user
 	/* Alert the user. */
-	if((e = THTTP_EVENT_CREATE(thttp_event_closed, self->session, "Connection closed", tsk_null))){
+	if((e = thttp_event_create(thttp_event_closed, self->session, "Connection closed", tsk_null))){
 		ret = thttp_stack_alert(self->session->stack, e);
 		TSK_OBJECT_SAFE_FREE(e);
 	}
@@ -219,7 +223,7 @@ thttp_dialog_t* thttp_dialog_new(thttp_session_t* session)
 	thttp_dialog_t* ret = tsk_null;
 	thttp_dialog_t* dialog;
 	if(session && session->stack){
-		if((dialog = THTTP_DIALOG_CREATE(session))){
+		if((dialog = thttp_dialog_create(session))){
 			ret = tsk_object_ref(dialog);
 			tsk_list_push_back_data(session->dialogs, (void**)&dialog);
 		}
@@ -265,7 +269,7 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 	}
 
 	if((url = thttp_url_parse(self->action->url, strlen(self->action->url)))){
-		request = THTTP_REQUEST_CREATE(self->action->method, url);
+		request = thttp_request_create(self->action->method, url);
 		TSK_OBJECT_SAFE_FREE(url);
 	}
 	else{
@@ -304,7 +308,7 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 	}
 
 	/* ==Sends the request== */
-	output = TSK_BUFFER_CREATE_NULL();
+	output = tsk_buffer_create_null();
 	type = tnet_transport_get_type(self->session->stack->transport);
 
 	/* Serialize the message and send it */
@@ -393,7 +397,7 @@ int thttp_dialog_OnTerminated(thttp_dialog_t *self)
 //=================================================================================================
 //	HTTP Dialog object definition
 //
-static tsk_object_t* thttp_dialog_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* thttp_dialog_ctor(tsk_object_t * self, va_list * app)
 {
 	thttp_dialog_t *dialog = self;
 	static thttp_dialog_id_t unique_id = 0;
@@ -401,10 +405,10 @@ static tsk_object_t* thttp_dialog_create(tsk_object_t * self, va_list * app)
 		dialog->id = ++unique_id;
 		dialog->session = tsk_object_ref(va_arg(*app, thttp_session_t*));
 		
-		dialog->buf = TSK_BUFFER_CREATE_NULL();
+		dialog->buf = tsk_buffer_create_null();
 
 		/* create and init FSM */
-		dialog->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
+		dialog->fsm = tsk_fsm_create(_fsm_state_Started, _fsm_state_Terminated);
 		dialog->fsm->debug = DEBUG_STATE_MACHINE;
 		tsk_fsm_set_callback_terminated(dialog->fsm, TSK_FSM_ONTERMINATED_F(thttp_dialog_OnTerminated), dialog);
 		tsk_fsm_set(dialog->fsm,
@@ -443,7 +447,7 @@ static tsk_object_t* thttp_dialog_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* thttp_dialog_destroy(tsk_object_t * self)
+static tsk_object_t* thttp_dialog_dtor(tsk_object_t * self)
 { 
 	thttp_dialog_t *dialog = self;
 	if(dialog){
@@ -474,8 +478,8 @@ static int thttp_dialog_cmp(const tsk_object_t *_d1, const tsk_object_t *_d2)
 static const tsk_object_def_t thttp_dialog_def_s = 
 {
 	sizeof(thttp_dialog_t),
-	thttp_dialog_create, 
-	thttp_dialog_destroy,
+	thttp_dialog_ctor, 
+	thttp_dialog_dtor,
 	thttp_dialog_cmp, 
 };
 const tsk_object_def_t *thttp_dialog_def_t = &thttp_dialog_def_s;

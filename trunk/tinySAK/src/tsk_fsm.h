@@ -36,19 +36,11 @@
 #include "tsk_safeobj.h"
 
 /**@ingroup tsk_fsm_group
-* @def TSK_FSM_CREATE
-*/
-/**@ingroup tsk_fsm_group
-* @def TSK_FSM_ENTRY_CREATE
-*/
-/**@ingroup tsk_fsm_group
 * @def TSK_FSM_ONTERMINATED
 */
 
 TSK_BEGIN_DECLS
 
-#define TSK_FSM_CREATE(state_curr, state_term)		tsk_object_new(tsk_fsm_def_t, (tsk_fsm_state_id)state_curr, (tsk_fsm_state_id)state_term)
-#define TSK_FSM_ENTRY_CREATE()						tsk_object_new(tsk_fsm_entry_def_t)
 #define TSK_FSM_ONTERMINATED_F(self)				(tsk_fsm_onterminated_f)(self)
 
 /**@ingroup tsk_fsm_group
@@ -168,6 +160,8 @@ typedef struct tsk_fsm_s
 	TSK_DECLARE_SAFEOBJ;
 }
 tsk_fsm_t;
+
+TINYSAK_API tsk_fsm_t* tsk_fsm_create(tsk_fsm_state_id state_curr, tsk_fsm_state_id state_term);
 
 TINYSAK_API int tsk_fsm_exec_nothing(va_list *app);
 TINYSAK_API tsk_bool_t tsk_fsm_cond_always(const void*, const void*);

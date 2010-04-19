@@ -41,8 +41,6 @@
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_ACTION_CREATE(type, urlstring, method, app)		tsk_object_new(thttp_action_def_t, (thttp_action_type_t)type, (const char*)urlstring, (const char*)method, (va_list*)app)
-
 typedef uint64_t thttp_action_id_t;			
 #define THTTP_ACTION_INVALID_ID				0
 #define THTTP_ACTION_INVALID_HANDLE			tsk_null
@@ -239,6 +237,8 @@ TINYHTTP_API int thttp_action_perform(thttp_session_handle_t *session, const cha
 #define thttp_action_POST(session, urlstring, ...) thttp_action_perform(session, urlstring, "POST", __VA_ARGS__)
 #define thttp_action_PUT(session, urlstring, ...) thttp_action_perform(session, urlstring, "PUT", __VA_ARGS__)
 #define thttp_action_TRACE(session, urlstring, ...) thttp_action_perform(session, urlstring, "TRACE", __VA_ARGS__)
+
+TINYHTTP_API thttp_action_t* thttp_action_create(thttp_action_type_t type, const char* urlstring, const char* method, va_list* app);
 
 typedef tsk_list_t thttp_actions_L_t; /**< List of @ref thttp_action_handle_t elements. */
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_action_def_t;

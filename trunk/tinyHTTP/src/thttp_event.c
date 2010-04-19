@@ -35,6 +35,10 @@
 
 
 
+thttp_event_t* thttp_event_create(thttp_event_type_t type, const thttp_session_handle_t* session, const char* description, const thttp_message_t* message)
+{
+	return tsk_object_new(thttp_event_def_t, type, session, description, message);
+}
 
 
 
@@ -45,7 +49,7 @@
 //========================================================
 //	HTTP event object definition
 //
-static void* thttp_event_create(void * self, va_list * app)
+static void* thttp_event_ctor(void * self, va_list * app)
 {
 	thttp_event_t *httpevent = self;
 	if(httpevent)
@@ -58,7 +62,7 @@ static void* thttp_event_create(void * self, va_list * app)
 	return self;
 }
 
-static void* thttp_event_destroy(void * self)
+static void* thttp_event_dtor(void * self)
 { 
 	thttp_event_t *httpevent = self;
 	if(httpevent)
@@ -72,8 +76,8 @@ static void* thttp_event_destroy(void * self)
 static const tsk_object_def_t thttp_event_def_s = 
 {
 	sizeof(thttp_event_t),
-	thttp_event_create, 
-	thttp_event_destroy,
+	thttp_event_ctor, 
+	thttp_event_dtor,
 	tsk_null, 
 };
 const void *thttp_event_def_t = &thttp_event_def_s;

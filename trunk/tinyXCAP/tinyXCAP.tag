@@ -1,16 +1,23 @@
 <?xml version='1.0' encoding='ISO-8859-1' standalone='yes' ?>
 <tagfile>
+  <compound kind="page">
+    <name>index</name>
+    <title>tinyXCAP API Overview</title>
+    <filename>index</filename>
+  </compound>
   <compound kind="file">
     <name>tinyxcap.h</name>
-    <path>C:/doubango/tinyXCAP/include/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/include/</path>
     <filename>tinyxcap_8h</filename>
-    <includes id="tinyxcap_8h" name="tinyxcap.h" local="yes" imported="no">txcap.h</includes>
-    <includes id="tinyxcap__config_8h" name="tinyxcap_config.h" local="yes" imported="no">tinyXCAP_config.h</includes>
     <includes id="txcap_8h" name="txcap.h" local="yes" imported="no">txcap.h</includes>
+    <includes id="txcap__selector_8h" name="txcap_selector.h" local="yes" imported="no">tinyXCAP/txcap_selector.h</includes>
+    <includes id="txcap__document_8h" name="txcap_document.h" local="yes" imported="no">tinyXCAP/txcap_document.h</includes>
+    <includes id="txcap__node_8h" name="txcap_node.h" local="yes" imported="no">tinyXCAP/txcap_node.h</includes>
+    <includes id="txcap__action_8h" name="txcap_action.h" local="yes" imported="no">tinyXCAP/txcap_action.h</includes>
   </compound>
   <compound kind="file">
     <name>txcap_action.h</name>
-    <path>C:/doubango/tinyXCAP/include/tinyXCAP/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/include/tinyXCAP/</path>
     <filename>txcap__action_8h</filename>
     <includes id="tinyxcap__config_8h" name="tinyxcap_config.h" local="yes" imported="no">tinyXCAP_config.h</includes>
     <includes id="txcap_8h" name="txcap.h" local="yes" imported="no">txcap.h</includes>
@@ -286,22 +293,15 @@
   </compound>
   <compound kind="file">
     <name>txcap_auid.h</name>
-    <path>C:/doubango/tinyXCAP/include/tinyXCAP/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/include/tinyXCAP/</path>
     <filename>txcap__auid_8h</filename>
     <includes id="tinyxcap__config_8h" name="tinyxcap_config.h" local="yes" imported="no">tinyXCAP_config.h</includes>
     <class kind="struct">txcap_auid_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TXCAP_AUID_CREATE</name>
-      <anchorfile>txcap__auid_8h.html</anchorfile>
-      <anchor>ae82223541047b9f1491f8b471053285c</anchor>
-      <arglist>(type, id, mime_type, ns, document_name, is_global)</arglist>
-    </member>
     <member kind="typedef">
-      <type>enum txcap_auid_type_e</type>
+      <type>TXCAP_BEGIN_DECLS enum txcap_auid_type_e</type>
       <name>txcap_auid_type_t</name>
       <anchorfile>txcap__auid_8h.html</anchorfile>
-      <anchor>a9bc9cf3be16c525121dd84dfb8136592</anchor>
+      <anchor>ac55e909f277ee04a3cd3025e083f1677</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
@@ -427,7 +427,7 @@
   </compound>
   <compound kind="file">
     <name>txcap_document.h</name>
-    <path>C:/doubango/tinyXCAP/include/tinyXCAP/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/include/tinyXCAP/</path>
     <filename>txcap__document_8h</filename>
     <includes id="tinyxcap__config_8h" name="tinyxcap_config.h" local="yes" imported="no">tinyXCAP_config.h</includes>
     <includes id="txcap_8h" name="txcap.h" local="yes" imported="no">txcap.h</includes>
@@ -448,7 +448,7 @@
   </compound>
   <compound kind="file">
     <name>txcap_node.h</name>
-    <path>C:/doubango/tinyXCAP/include/tinyXCAP/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/include/tinyXCAP/</path>
     <filename>txcap__node_8h</filename>
     <includes id="tinyxcap__config_8h" name="tinyxcap_config.h" local="yes" imported="no">tinyXCAP_config.h</includes>
     <member kind="define">
@@ -559,7 +559,7 @@
   </compound>
   <compound kind="file">
     <name>txcap_selector.h</name>
-    <path>C:/doubango/tinyXCAP/include/tinyXCAP/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/include/tinyXCAP/</path>
     <filename>txcap__selector_8h</filename>
     <includes id="tinyxcap__config_8h" name="tinyxcap_config.h" local="yes" imported="no">tinyXCAP_config.h</includes>
     <includes id="txcap_8h" name="txcap.h" local="yes" imported="no">txcap.h</includes>
@@ -573,7 +573,7 @@
   </compound>
   <compound kind="file">
     <name>tinyxcap_config.h</name>
-    <path>C:/doubango/tinyXCAP/include/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/include/</path>
     <filename>tinyxcap__config_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -606,7 +606,7 @@
   </compound>
   <compound kind="file">
     <name>txcap.h</name>
-    <path>C:/doubango/tinyXCAP/include/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/include/</path>
     <filename>txcap_8h</filename>
     <includes id="tinyxcap__config_8h" name="tinyxcap_config.h" local="yes" imported="no">tinyXCAP_config.h</includes>
     <includes id="txcap__auid_8h" name="txcap_auid.h" local="yes" imported="no">tinyXCAP/txcap_auid.h</includes>
@@ -792,7 +792,7 @@
   </compound>
   <compound kind="file">
     <name>txcap.c</name>
-    <path>C:/doubango/tinyXCAP/src/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/src/</path>
     <filename>txcap_8c</filename>
     <includes id="txcap_8h" name="txcap.h" local="yes" imported="no">txcap.h</includes>
     <member kind="function">
@@ -840,7 +840,7 @@
   </compound>
   <compound kind="file">
     <name>txcap_action.c</name>
-    <path>C:/doubango/tinyXCAP/src/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/src/</path>
     <filename>txcap__action_8c</filename>
     <includes id="txcap__action_8h" name="txcap_action.h" local="yes" imported="no">tinyXCAP/txcap_action.h</includes>
     <includes id="txcap__selector_8h" name="txcap_selector.h" local="yes" imported="no">tinyXCAP/txcap_selector.h</includes>
@@ -889,7 +889,7 @@
   </compound>
   <compound kind="file">
     <name>txcap_auid.c</name>
-    <path>C:/doubango/tinyXCAP/src/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/src/</path>
     <filename>txcap__auid_8c</filename>
     <includes id="txcap__auid_8h" name="txcap_auid.h" local="yes" imported="no">tinyXCAP/txcap_auid.h</includes>
     <class kind="struct">auid_s</class>
@@ -899,6 +899,13 @@
       <anchorfile>txcap__auid_8c.html</anchorfile>
       <anchor>a76340f60ec9c92fc02dbadd86908f7e6</anchor>
       <arglist></arglist>
+    </member>
+    <member kind="function">
+      <type>txcap_auid_t *</type>
+      <name>txcap_auid_create</name>
+      <anchorfile>txcap__auid_8c.html</anchorfile>
+      <anchor>a6b0802fefabdcad4dbddb263bf95796a</anchor>
+      <arglist>(txcap_auid_type_t type, const char *id, const char *mime_type, const char *ns, const char *document_name, tsk_bool_t is_global)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -931,7 +938,7 @@
   </compound>
   <compound kind="file">
     <name>txcap_document.c</name>
-    <path>C:/doubango/tinyXCAP/src/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/src/</path>
     <filename>txcap__document_8c</filename>
     <includes id="txcap__document_8h" name="txcap_document.h" local="yes" imported="no">tinyXCAP/txcap_document.h</includes>
     <includes id="txcap__auid_8h" name="txcap_auid.h" local="yes" imported="no">tinyXCAP/txcap_auid.h</includes>
@@ -952,7 +959,7 @@
   </compound>
   <compound kind="file">
     <name>txcap_node.c</name>
-    <path>C:/doubango/tinyXCAP/src/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/src/</path>
     <filename>txcap__node_8c</filename>
     <includes id="txcap__node_8h" name="txcap_node.h" local="yes" imported="no">tinyXCAP/txcap_node.h</includes>
     <member kind="function">
@@ -972,7 +979,7 @@
   </compound>
   <compound kind="file">
     <name>txcap_selector.c</name>
-    <path>C:/doubango/tinyXCAP/src/</path>
+    <path>C:/Projects/Doubango/tinyXCAP/src/</path>
     <filename>txcap__selector_8c</filename>
     <includes id="txcap__selector_8h" name="txcap_selector.h" local="yes" imported="no">tinyXCAP/txcap_selector.h</includes>
     <includes id="txcap__document_8h" name="txcap_document.h" local="yes" imported="no">tinyXCAP/txcap_document.h</includes>

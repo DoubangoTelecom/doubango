@@ -39,13 +39,13 @@
 #define RUN_TEST_STRINGS			0
 #define RUN_TEST_URL				0
 #define RUN_TEST_THREADS			0
-#define RUN_TEST_MUTEX				0
+#define RUN_TEST_MUTEX				1
 #define RUN_TEST_CONDWAIT			0
 #define RUN_TEST_SEMAPHORE			0 /* FIXME: android */
 #define RUN_TEST_SAFEOBJECT			0
 #define RUN_TEST_OBJECT				0
 #define RUN_TEST_PARAMS				0
-#define RUN_TEST_OPTIONS			1
+#define RUN_TEST_OPTIONS			0
 #define RUN_TEST_TIMER				0
 #define RUN_TEST_RUNNABLE			0
 #define RUN_TEST_BUFFER				0
@@ -209,7 +209,7 @@ int main()
 
 #if RUN_TEST_OBJECT || RUN_TEST_ALL
 	/* object */
-		test_object();
+		//test_object();
 		printf("\n\n");
 #endif
 

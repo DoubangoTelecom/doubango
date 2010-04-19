@@ -179,7 +179,7 @@ char* tsms_tpdu_message_tostring(const tsms_tpdu_message_t* self, tsk_bool_t Mob
 		goto bail;
 	}
 
-	if((output = TSK_BUFFER_CREATE_NULL())){
+	if((output = tsk_buffer_create_null())){
 		if(!tsms_tpdu_message_serialize(self, output, MobOrig)){
 			ret = tsk_strndup(output->data, output->size);
 		}
@@ -206,7 +206,7 @@ char* tsms_tpdu_message_tohexastring(const tsms_tpdu_message_t* self, tsk_bool_t
 		goto bail;
 	}
 
-	if((output = TSK_BUFFER_CREATE_NULL())){
+	if((output = tsk_buffer_create_null())){
 		if(!tsms_tpdu_message_serialize(self, output, MobOrig)){
 			size_t i;
 			for(i=0;i<output->size;i++){
@@ -277,13 +277,13 @@ int tsms_tpdu_message_set_userdata(tsms_tpdu_message_t* self, const tsk_buffer_t
 	switch(alpha){
 		case tsms_alpha_7bit: {
 				self->udl = (udata->size) + (udata->size/7);
-				self->ud = TSK_BUFFER_CREATE(udata->data, udata->size);
+				self->ud = tsk_buffer_create(udata->data, udata->size);
 			}
 			break;
 		case tsms_alpha_8bit:
 		case tsms_alpha_ucs2: {
 				self->udl = udata->size;
-				self->ud = TSK_BUFFER_CREATE(udata->data, udata->size);
+				self->ud = tsk_buffer_create(udata->data, udata->size);
 			}
 			break;
 		
@@ -402,7 +402,7 @@ char* tsms_rpdu_message_tohexastring(const tsms_rpdu_message_t* self)
 		goto bail;
 	}
 
-	if((output = TSK_BUFFER_CREATE_NULL())){
+	if((output = tsk_buffer_create_null())){
 		if(!tsms_rpdu_message_serialize(self, output)){
 			size_t i;
 			for(i=0;i<output->size;i++){

@@ -36,8 +36,6 @@
 THTTP_BEGIN_DECLS
 
 #define THTTP_HEADER_DUMMY_VA_ARGS(name, value)		thttp_header_Dummy_def_t, (const char*)name, (const char*)value
-#define THTTP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(THTTP_HEADER_DUMMY_VA_ARGS(name, value))
-#define THTTP_HEADER_DUMMY_CREATE_NULL()				THTTP_HEADER_DUMMY_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// HTTP Dummy header.

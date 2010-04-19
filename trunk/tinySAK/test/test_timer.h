@@ -52,16 +52,15 @@ static int test_timer_callback(const void* arg, tsk_timer_id_t timer_id)
 void test_timer()
 {
 	size_t i;
-	tsk_timer_manager_handle_t *handle = TSK_TIMER_MANAGER_CREATE();
+	tsk_timer_manager_handle_t *handle = tsk_timer_manager_create();
 	printf("test_timer//\n");
 
 	tsk_timer_manager_start(handle);
-	while(!tsk_timer_manager_isready(handle)) tsk_thread_sleep(1000);
+	//while(!tsk_timer_manager_isready(handle)) tsk_thread_sleep(1000);
 	
-	tsk_thread_sleep(1000);
+	//tsk_thread_sleep(1000);
 	
-	for(i=0; i<sizeof(timers)/sizeof(test_timer_t); ++i)
-	{
+	for(i=0; i<sizeof(timers)/sizeof(test_timer_t); ++i){
 		timers[i].id = tsk_timer_manager_schedule(handle, timers[i].timeout, test_timer_callback, timers[i].arg);
 	}
 	

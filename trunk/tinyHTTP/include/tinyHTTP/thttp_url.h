@@ -36,15 +36,7 @@
 #include "tsk_params.h"
 #include "tsk_buffer.h"
 
-/**@ingroup thttp_url_group
-* @def THTTP_URL_CREATE(type)
-* @param type The type of the url to create (@ref thttp_url_type_t).
-* Creates new HTTP/HTTPS url.
-*/
-
 THTTP_BEGIN_DECLS
-
-#define THTTP_URL_CREATE(type)				tsk_object_new(thttp_url_def_t, (thttp_url_type_t) type)
 
 #define THTTP_URL_IS_SECURE(url)		((url && url->type==url_https) ? 1 : 0)
 
@@ -94,9 +86,11 @@ thttp_url_t;
 TINYHTTP_API int thttp_url_serialize(const thttp_url_t *url, tsk_buffer_t *output);
 TINYHTTP_API char* thttp_url_tostring(const thttp_url_t *url);
 TINYHTTP_API thttp_url_t *thttp_url_clone(const thttp_url_t *url);
-TINYHTTP_API tsk_bool_t thttp_url_isok(const char* urlstring);
+TINYHTTP_API tsk_bool_t thttp_url_isvalid(const char* urlstring);
 
-TINYHTTP_GEXTERN const void *thttp_url_def_t;
+thttp_url_t* thttp_url_create(thttp_url_type_t type);
+
+TINYHTTP_GEXTERN const tsk_object_def_t *thttp_url_def_t;
 
 THTTP_END_DECLS
 

@@ -46,6 +46,11 @@
 #define THTTP_CHALLENGE_IS_AKAv1(self)	((self) ? tsk_striequals((self)->algorithm, "AKAv1-MD5") : tsk_false)
 #define THTTP_CHALLENGE_IS_AKAv2(self)	((self) ? tsk_striequals((self)->algorithm, "AKAv2-MD5") : tsk_false)
 
+thttp_challenge_t* thttp_challenge_create(tsk_bool_t isproxy,const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop)
+{
+	return tsk_object_new(thttp_challenge_def_t, isproxy, scheme, realm, nonce, opaque, algorithm, qop);
+}
+
 int thttp_challenge_reset_cnonce(thttp_challenge_t *self)
 {
 	if(self)
@@ -184,14 +189,14 @@ thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *s
 		hdr->response = tsk_strndup(response, response_size);								\
 
 	if(self->isproxy){
-		thttp_header_Proxy_Authorization_t *proxy_auth = THTTP_HEADER_AUTHORIZATION_CREATE(); // Very bad way to create Proxy_auth header.
+		thttp_header_Proxy_Authorization_t *proxy_auth = thttp_header_authorization_create(); // Very bad way to create Proxy_auth header.
 		THTTP_HEADER(proxy_auth)->type = thttp_htype_Proxy_Authorization;
 
 		THTTP_AUTH_COPY_VALUES(proxy_auth);
 		header = THTTP_HEADER(proxy_auth);
 	}
 	else{
-		thttp_header_Authorization_t *auth = THTTP_HEADER_AUTHORIZATION_CREATE();
+		thttp_header_Authorization_t *auth = thttp_header_authorization_create();
 		THTTP_AUTH_COPY_VALUES(auth);
 		header = THTTP_HEADER(auth);
 	}
@@ -234,14 +239,13 @@ bail:
 
 /**@ingroup thttp_challenge_group
 */
-static void* thttp_challenge_create(void *self, va_list * app)
+static tsk_object_t* thttp_challenge_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_challenge_t *challenge = self;
-	if(challenge)
-	{
+	if(challenge){
 		const char* qop;
 
-		challenge->isproxy = va_arg(*app, unsigned);
+		challenge->isproxy = va_arg(*app, tsk_bool_t);
 		challenge->scheme = tsk_strdup(va_arg(*app, const char*));
 		challenge->realm = tsk_strdup(va_arg(*app, const char*));
 		challenge->nonce = tsk_strdup(va_arg(*app, const char*));
@@ -264,11 +268,10 @@ static void* thttp_challenge_create(void *self, va_list * app)
 
 /**@ingroup thttp_challenge_group
 */
-static void* thttp_challenge_destroy(void *self)
+static tsk_object_t* thttp_challenge_dtor(tsk_object_t *self)
 {
 	thttp_challenge_t *challenge = self;
-	if(challenge)
-	{
+	if(challenge){
 		TSK_FREE(challenge->scheme);
 		TSK_FREE(challenge->realm);
 		TSK_FREE(challenge->nonce);
@@ -277,7 +280,9 @@ static void* thttp_challenge_destroy(void *self)
 		
 		//TSK_FREE(challenge->qop);
 	}
-	else TSK_DEBUG_ERROR("Null HTTP challenge object.");
+	else{
+		TSK_DEBUG_ERROR("Null HTTP challenge object.");
+	}
 
 	return self;
 }
@@ -285,8 +290,8 @@ static void* thttp_challenge_destroy(void *self)
 static const tsk_object_def_t thttp_challenge_def_s = 
 {
 	sizeof(thttp_challenge_t),
-	thttp_challenge_create,
-	thttp_challenge_destroy,
-	0
+	thttp_challenge_ctor,
+	thttp_challenge_dtor,
+	tsk_null
 };
-const void *thttp_challenge_def_t = &thttp_challenge_def_s;
+const tsk_object_def_t *thttp_challenge_def_t = &thttp_challenge_def_s;

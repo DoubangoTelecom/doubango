@@ -145,7 +145,7 @@ tsms_tpdu_message_t* _tsms_tpdu_submit_deserialize(const void* data, size_t size
 
 	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
 	if((pend-pdata) > 0){
-		TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+		TSMS_TPDU_MESSAGE(self)->ud = tsk_buffer_create(pdata, (pend-pdata));
 	}
 
 bail:
@@ -254,7 +254,7 @@ bail:
 //=================================================================================================
 //	SMS TPDU SMS-SUMBIT object definition
 //
-static tsk_object_t* _tsms_tpdu_submit_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_tpdu_submit_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_tpdu_submit_t *submit = self;
 	if(submit){
@@ -274,10 +274,10 @@ static tsk_object_t* _tsms_tpdu_submit_create(tsk_object_t * self, va_list * app
 		/* init self */
 		submit->mr = mr;
 		if(smsc){
-			submit->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+			submit->smsc = tsms_address_smsc_create(smsc);
 		}
 		if(dest){
-			submit->da = TSMS_ADDRESS_DA_CREATE(dest);
+			submit->da = tsms_address_da_create(dest);
 		}
 
 		submit->vp[0] = TSMS_TPDU_DEFAULT_VP;
@@ -289,7 +289,7 @@ static tsk_object_t* _tsms_tpdu_submit_create(tsk_object_t * self, va_list * app
 	return self;
 }
 
-static tsk_object_t* tsms_tpdu_submit_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_tpdu_submit_dtor(tsk_object_t * self)
 { 
 	tsms_tpdu_submit_t *submit = self;
 	if(submit){
@@ -308,8 +308,8 @@ static tsk_object_t* tsms_tpdu_submit_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_tpdu_submit_def_s = 
 {
 	sizeof(tsms_tpdu_submit_t),
-	_tsms_tpdu_submit_create, 
-	tsms_tpdu_submit_destroy,
+	tsms_tpdu_submit_ctor, 
+	tsms_tpdu_submit_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_tpdu_submit_def_t = &tsms_tpdu_submit_def_s;

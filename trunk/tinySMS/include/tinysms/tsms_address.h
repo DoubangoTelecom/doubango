@@ -36,11 +36,6 @@
 
 TSMS_BEGIN_DECLS
 
-#define TSMS_ADDRESS_CREATE(digits, type)				tsk_object_new(tsms_address_def_t, (/*tsms_address_string_t*/const char*)digits, (tsms_address_type_t)type)
-#define TSMS_ADDRESS_OA_CREATE(digits) TSMS_ADDRESS_CREATE(digits, tsms_addr_oa)
-#define TSMS_ADDRESS_DA_CREATE(digits) TSMS_ADDRESS_CREATE(digits, tsms_addr_da)
-#define TSMS_ADDRESS_SMSC_CREATE(digits) TSMS_ADDRESS_CREATE(digits, tsms_addr_smsc)
-
 typedef uint8_t tsms_address_string_t[13]; /* 12 + (+) */
 
 /** Address type
@@ -118,6 +113,12 @@ tsms_address_t;
 
 int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output);
 tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_address_type_t xtype, size_t *length);
+
+
+tsms_address_t* tsms_address_create(const tsms_address_string_t digits, tsms_address_type_t type);
+tsms_address_t* tsms_address_oa_create(const tsms_address_string_t digits);
+tsms_address_t* tsms_address_da_create(const tsms_address_string_t digits);
+tsms_address_t* tsms_address_smsc_create(const tsms_address_string_t digits);
 
 TINYSMS_GEXTERN const tsk_object_def_t *tsms_address_def_t;
 

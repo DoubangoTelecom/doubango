@@ -126,7 +126,7 @@ int thttp_header_serialize(const thttp_header_t *self, tsk_buffer_t *output)
 */
 char* thttp_header_tostring(const thttp_header_t *self)
 {
-	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *output = tsk_buffer_create_null();
 	char* ret = tsk_null;
 
 	if(!thttp_header_serialize(self, output)){

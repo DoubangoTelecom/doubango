@@ -38,6 +38,19 @@
 int tsk_fsm_exec_nothing(va_list *app){ return 0/*success*/; }
 tsk_bool_t tsk_fsm_cond_always(const void* data1, const void* data2) { return tsk_true; }
 
+/**@ingroup tsk_fsm_group
+*/
+tsk_fsm_t* tsk_fsm_create(tsk_fsm_state_id state_curr, tsk_fsm_state_id state_term)
+{
+	return tsk_object_new(tsk_fsm_def_t, state_curr, state_term);
+}
+
+/**@ingroup tsk_fsm_group
+*/
+tsk_fsm_entry_t* tsk_fsm_entry_create()
+{
+	return tsk_object_new(tsk_fsm_entry_def_t);
+}
 
 /**@ingroup tsk_fsm_group
 * Add entries (states) to the FSM.
@@ -59,7 +72,7 @@ int tsk_fsm_set(tsk_fsm_t* self, ...)
 	while((guard=va_arg(args, int)))
 	{		
 		tsk_fsm_entry_t* entry;
-		if((entry = TSK_FSM_ENTRY_CREATE()))
+		if((entry = tsk_fsm_entry_create()))
 		{
 			entry->from = va_arg(args, tsk_fsm_state_id);
 			entry->action = va_arg(args, tsk_fsm_action_id);
@@ -185,7 +198,7 @@ tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self)
 //=================================================================================================
 //	fsm object definition
 //
-static tsk_object_t* tsk_fsm_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsk_fsm_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_fsm_t *fsm = self;
 	if(fsm)
@@ -193,7 +206,7 @@ static tsk_object_t* tsk_fsm_create(tsk_object_t * self, va_list * app)
 		fsm->current = va_arg(*app, tsk_fsm_state_id);
 		fsm->term = va_arg(*app, tsk_fsm_state_id);
 
-		fsm->entries = TSK_LIST_CREATE();
+		fsm->entries = tsk_list_create();
 
 #if defined(DEBUG) || defined(_DEBUG)
 		fsm->debug = 1;
@@ -204,7 +217,7 @@ static tsk_object_t* tsk_fsm_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsk_fsm_destroy(tsk_object_t * self)
+static tsk_object_t* tsk_fsm_dtor(tsk_object_t * self)
 { 
 	tsk_fsm_t *fsm = self;
 	if(fsm){
@@ -227,8 +240,8 @@ static tsk_object_t* tsk_fsm_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsk_fsm_def_s = 
 {
 	sizeof(tsk_fsm_t),
-	tsk_fsm_create, 
-	tsk_fsm_destroy,
+	tsk_fsm_ctor, 
+	tsk_fsm_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsk_fsm_def_t = &tsk_fsm_def_s;
@@ -236,7 +249,7 @@ const tsk_object_def_t *tsk_fsm_def_t = &tsk_fsm_def_s;
 //=================================================================================================
 //	fsm entry object definition
 //
-static tsk_object_t* tsk_fsm_entry_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsk_fsm_entry_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_fsm_entry_t *fsm_entry = self;
 	if(fsm_entry){
@@ -245,7 +258,7 @@ static tsk_object_t* tsk_fsm_entry_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsk_fsm_entry_destroy(tsk_object_t * self)
+static tsk_object_t* tsk_fsm_entry_dtor(tsk_object_t * self)
 { 
 	tsk_fsm_entry_t *fsm_entry = self;
 	if(fsm_entry){
@@ -282,8 +295,8 @@ static int tsk_fsm_entry_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsk_fsm_entry_def_s = 
 {
 	sizeof(tsk_fsm_entry_t),
-	tsk_fsm_entry_create, 
-	tsk_fsm_entry_destroy,
+	tsk_fsm_entry_ctor, 
+	tsk_fsm_entry_dtor,
 	tsk_fsm_entry_cmp, 
 };
 const tsk_object_def_t *tsk_fsm_entry_def_t = &tsk_fsm_entry_def_s;

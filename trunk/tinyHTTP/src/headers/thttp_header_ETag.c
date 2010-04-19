@@ -45,10 +45,20 @@
 /* #line 71 "./ragel/thttp_parser_header_ETag.rl" */
 
 
+thttp_header_ETag_t* thttp_header_etag_create(const char* value)
+{
+	return tsk_object_new(THTTP_HEADER_ETAG_VA_ARGS(value));
+}
+
+thttp_header_ETag_t* thttp_header_etag_create_null()
+{ 
+	return thttp_header_etag_create(tsk_null);
+}
+
+
 int thttp_header_ETag_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const thttp_header_ETag_t *ETag = header;
 		if(ETag->value){
 			return tsk_buffer_append(output, ETag->value, strlen(ETag->value));
@@ -67,12 +77,12 @@ thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_ETag_t *hdr_ETag = THTTP_HEADER_ETAG_CREATE_NULL();
+	thttp_header_ETag_t *hdr_ETag = thttp_header_etag_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 76 "./src/headers/thttp_header_ETag.c" */
+/* #line 86 "./src/headers/thttp_header_ETag.c" */
 static const char _thttp_machine_parser_header_ETag_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -157,16 +167,16 @@ static const int thttp_machine_parser_header_ETag_error = 0;
 static const int thttp_machine_parser_header_ETag_en_main = 1;
 
 
-/* #line 100 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 110 "./ragel/thttp_parser_header_ETag.rl" */
 	
-/* #line 163 "./src/headers/thttp_header_ETag.c" */
+/* #line 173 "./src/headers/thttp_header_ETag.c" */
 	{
 	cs = thttp_machine_parser_header_ETag_start;
 	}
 
-/* #line 101 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 111 "./ragel/thttp_parser_header_ETag.rl" */
 	
-/* #line 170 "./src/headers/thttp_header_ETag.c" */
+/* #line 180 "./src/headers/thttp_header_ETag.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -263,7 +273,7 @@ _match:
 	{
 	}
 	break;
-/* #line 267 "./src/headers/thttp_header_ETag.c" */
+/* #line 277 "./src/headers/thttp_header_ETag.c" */
 		}
 	}
 
@@ -276,12 +286,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 102 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 112 "./ragel/thttp_parser_header_ETag.rl" */
 	
 	if( cs < 
-/* #line 283 "./src/headers/thttp_header_ETag.c" */
+/* #line 293 "./src/headers/thttp_header_ETag.c" */
 27
-/* #line 103 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 113 "./ragel/thttp_parser_header_ETag.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse ETag header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ETag);
@@ -300,7 +310,7 @@ _again:
 //	ETag header object definition
 //
 
-static tsk_object_t* thttp_header_ETag_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_ETag_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_ETag_t *ETag = self;
 	if(ETag){
@@ -315,7 +325,7 @@ static tsk_object_t* thttp_header_ETag_create(tsk_object_t *self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* thttp_header_ETag_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_ETag_dtor(tsk_object_t *self)
 {
 	thttp_header_ETag_t *ETag = self;
 	if(ETag)
@@ -334,8 +344,8 @@ static tsk_object_t* thttp_header_ETag_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_ETag_def_s = 
 {
 	sizeof(thttp_header_ETag_t),
-	thttp_header_ETag_create,
-	thttp_header_ETag_destroy,
+	thttp_header_ETag_ctor,
+	thttp_header_ETag_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_ETag_def_t = &thttp_header_ETag_def_s;

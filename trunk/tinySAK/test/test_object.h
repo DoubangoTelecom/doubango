@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-#ifndef _TEST_OBJECT_H_
+#if !defined(_TEST_OBJECT_H_) && 0
 #define _TEST_OBJECT_H_
 
 typedef struct person_s

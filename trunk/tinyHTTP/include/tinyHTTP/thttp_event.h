@@ -38,7 +38,6 @@
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_EVENT_CREATE(type, session, description, message)		tsk_object_new(thttp_event_def_t, (thttp_event_type_t)type, (const thttp_session_handle_t*)session, (const char*)description, (const thttp_message_t*)message)
 #define THTTP_EVENT(self)		((thttp_event_t*)(self))
 
 typedef enum thttp_event_type_e
@@ -63,6 +62,8 @@ typedef struct thttp_event_s
 thttp_event_t;
 
 typedef int (*thttp_stack_callback)(const thttp_event_t *httpevent);
+
+thttp_event_t* thttp_event_create(thttp_event_type_t type, const thttp_session_handle_t* session, const char* description, const thttp_message_t* message);
 
 TINYHTTP_GEXTERN const void *thttp_event_def_t;
 

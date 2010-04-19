@@ -25,7 +25,7 @@
 /* url encoding/decoding */
 void test_buffer()
 {
-	tsk_buffer_t *buffer = TSK_BUFFER_CREATE(0, 0); 
+	tsk_buffer_t *buffer = tsk_buffer_create_null(); 
 	
 	tsk_buffer_append(buffer, "Diop", strlen("Diop"));
 	tsk_buffer_append(buffer, " ", strlen(" "));
@@ -34,8 +34,8 @@ void test_buffer()
 
 	printf("1. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
 
-	tsk_buffer_appendEx(buffer, "val1=[%s] and val2=[%d]r\n", "value1", 12);
-	tsk_buffer_appendEx(buffer, "val3=[%s] and val4=[%s]r\n", "458888554778555LL", "1254852");
+	tsk_buffer_append_2(buffer, "val1=[%s] and val2=[%d]r\n", "value1", 12);
+	tsk_buffer_append_2(buffer, "val3=[%s] and val4=[%s]r\n", "458888554778555LL", "1254852");
 
 	printf("2. Buffer=%s", TSK_BUFFER_TO_STRING(buffer));
 

@@ -62,6 +62,26 @@ bail:
 	return ret;
 }
 
+tsms_address_t* tsms_address_create(const tsms_address_string_t digits, tsms_address_type_t type)
+{
+	return tsk_object_new(tsms_address_def_t, digits, type);
+}
+
+tsms_address_t* tsms_address_oa_create(const tsms_address_string_t digits)
+{
+	return tsms_address_create(digits, tsms_addr_oa);
+}
+
+tsms_address_t* tsms_address_da_create(const tsms_address_string_t digits)
+{
+	return tsms_address_create(digits, tsms_addr_da);
+}
+
+tsms_address_t* tsms_address_smsc_create(const tsms_address_string_t digits)
+{
+	return tsms_address_create(digits, tsms_addr_smsc);
+}
+
 /** Serialize the address as per 3GPP TS 23.040 v910 section 9.1.2.5. */
 int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 {
@@ -135,7 +155,7 @@ tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_add
 
 	/*== len=0 ==*/
 	if(!addr_len){
-		address = TSMS_ADDRESS_CREATE(tsk_null, xtype);
+		address = tsms_address_create(tsk_null, xtype);
 		*length = 1;
 		goto bail;
 	}
@@ -148,7 +168,7 @@ tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_add
 		goto bail;
 	}
 	else{
-		address = TSMS_ADDRESS_CREATE(tsk_null, xtype);
+		address = tsms_address_create(tsk_null, xtype);
 		*length = 1 /*Address-Length*/ + 1 /*Type-of-Address*/ + addr_len /* digits */;
 	}
 	
@@ -181,7 +201,7 @@ bail:
 //=================================================================================================
 //	SMS Address object definition
 //
-static tsk_object_t* tsms_address_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_address_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_address_t *address = self;
 	if(address){
@@ -209,7 +229,7 @@ static tsk_object_t* tsms_address_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsms_address_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_address_dtor(tsk_object_t * self)
 { 
 	tsms_address_t *address = self;
 	if(address){
@@ -222,8 +242,8 @@ static tsk_object_t* tsms_address_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_address_def_s = 
 {
 	sizeof(tsms_address_t),
-	tsms_address_create, 
-	tsms_address_destroy,
+	tsms_address_ctor, 
+	tsms_address_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_address_def_t = &tsms_address_def_s;

@@ -101,7 +101,7 @@ static int test_runnable_timer_callback(const void* arg, tsk_timer_id_t timer_id
 void test_runnable()
 {
 	size_t i;
-	tsk_timer_manager_handle_t *timer_mgr = TSK_TIMER_MANAGER_CREATE();
+	tsk_timer_manager_handle_t *timer_mgr = tsk_timer_manager_create();
 	tsk_runnable_t* runnable = tsk_calloc(1, sizeof(tsk_runnable_t));
 	runnable->run = run;
 	printf("test_runnable//\n");

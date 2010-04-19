@@ -41,6 +41,15 @@
 */
 
 /**@ingroup thttp_url_group
+* @param type The type of the url to create.
+* Creates new HTTP/HTTPS url.
+*/
+thttp_url_t* thttp_url_create(thttp_url_type_t type)
+{
+	return tsk_object_new(thttp_url_def_t, type);
+}
+
+/**@ingroup thttp_url_group
 */
 int thttp_url_serialize(const thttp_url_t *url, tsk_buffer_t *output)
 {
@@ -63,7 +72,7 @@ int thttp_url_serialize(const thttp_url_t *url, tsk_buffer_t *output)
 */
 char* thttp_url_tostring(const thttp_url_t *url)
 {
-	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *output = tsk_buffer_create_null();
 	char* ret = 0;
 
 	if(!thttp_url_serialize(url,  output)){
@@ -82,7 +91,7 @@ char* thttp_url_tostring(const thttp_url_t *url)
 thttp_url_t *thttp_url_clone(const thttp_url_t *url)
 {
 	thttp_url_t *newurl = 0;
-	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *output = tsk_buffer_create_null();
 	thttp_url_serialize(url, output);
 	newurl = thttp_url_parse(output->data, output->size);
 	TSK_OBJECT_SAFE_FREE(output);
@@ -92,7 +101,7 @@ thttp_url_t *thttp_url_clone(const thttp_url_t *url)
 
 /**@ingroup thttp_url_group
 */
-tsk_bool_t thttp_url_isok(const char* urlstring)
+tsk_bool_t thttp_url_isvalid(const char* urlstring)
 {
 	thttp_url_t *url;
 	if(!urlstring){
@@ -119,7 +128,7 @@ tsk_bool_t thttp_url_isok(const char* urlstring)
 
 /**@ingroup thttp_url_group
 */
-static void* thttp_url_create(void *self, va_list * app)
+static tsk_object_t* thttp_url_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_url_t *url = self;
 	if(url){
@@ -139,17 +148,18 @@ static void* thttp_url_create(void *self, va_list * app)
 
 /**@ingroup thttp_url_group
 */
-static void* thttp_url_destroy(void *self)
+static tsk_object_t* thttp_url_dtor(tsk_object_t *self)
 {
 	thttp_url_t *url = self;
-	if(url)
-	{
+	if(url){
 		TSK_FREE(url->scheme);
 		TSK_FREE(url->host);
 		TSK_FREE(url->hpath);
 		TSK_FREE(url->search);
 	}
-	else TSK_DEBUG_ERROR("Null HTTP/HTTPS URL.");
+	else{
+		TSK_DEBUG_ERROR("Null HTTP/HTTPS URL.");
+	}
 
 	return self;
 }
@@ -157,8 +167,8 @@ static void* thttp_url_destroy(void *self)
 static const tsk_object_def_t thttp_url_def_s = 
 {
 	sizeof(thttp_url_t),
-	thttp_url_create,
-	thttp_url_destroy,
-	0
+	thttp_url_ctor,
+	thttp_url_dtor,
+	tsk_null
 };
-const void *thttp_url_def_t = &thttp_url_def_s;
+const tsk_object_def_t *thttp_url_def_t = &thttp_url_def_s;

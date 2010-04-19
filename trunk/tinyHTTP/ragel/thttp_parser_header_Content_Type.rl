@@ -78,6 +78,16 @@
 
 }%%
 
+thttp_header_Content_Type_t* thttp_header_content_type_create(const char* type)
+{
+	return tsk_object_new(THTTP_HEADER_CONTENT_TYPE_VA_ARGS(type));
+}
+
+thttp_header_Content_Type_t* thttp_header_content_type_create_null()
+{
+	return thttp_header_content_type_create(tsk_null);
+}
+
 int thttp_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header){
@@ -96,7 +106,7 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, s
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Content_Type_t *hdr_ctype = THTTP_HEADER_CONTENT_TYPE_CREATE_NULL();
+	thttp_header_Content_Type_t *hdr_ctype = thttp_header_content_type_create_null();
 	
 	const char *tag_start;
 
@@ -124,7 +134,7 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, s
 
 /**@ingroup thttp_header_Content_Type_group
 */
-static tsk_object_t* thttp_header_Content_Type_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Content_Type_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Content_Type_t *Content_Type = self;
 	if(Content_Type){
@@ -141,7 +151,7 @@ static tsk_object_t* thttp_header_Content_Type_create(tsk_object_t *self, va_lis
 
 /**@ingroup thttp_header_Content_Type_group
 */
-static tsk_object_t* thttp_header_Content_Type_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_Content_Type_dtor(tsk_object_t *self)
 {
 	thttp_header_Content_Type_t *Content_Type = self;
 	if(Content_Type){
@@ -158,8 +168,8 @@ static tsk_object_t* thttp_header_Content_Type_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_Content_Type_def_s = 
 {
 	sizeof(thttp_header_Content_Type_t),
-	thttp_header_Content_Type_create,
-	thttp_header_Content_Type_destroy,
+	thttp_header_Content_Type_ctor,
+	thttp_header_Content_Type_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Content_Type_def_t = &thttp_header_Content_Type_def_s;

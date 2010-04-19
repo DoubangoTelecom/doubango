@@ -49,9 +49,192 @@
 
 /** @mainpage TinyHTTP API Overview
 *
-* This file is an overview of <b>tinyHTTP</b> API.
+* <h1>15 HTTP/HTTPS</h1>
+* <p>
+* The HTTP/HTTPS stack is a basic thread-safe client API and is used in conjunction with the XCAP protocol. 
+* Almost all HTTP methods such as OPTIONS, HEAD, GET, DELETE, POST, CONNET, TRACE or PUT … are supported for outgoing requests. Only response messages will be correctly handled by the stack. Requests will be passed to the application layer “as is” and no new connection will be opened.
+* </p>
+* <p>
+* Both IPv4 and IPv6 are supported. If the host name (FQDN) resolution leads to both IPv4 and IPv6 results, then IPv4 will be used by default.
+* </p>
+* <p>
+* When HTTPS is used, then both end-user and mutual authentication modes are supported. For mutual authentication the TLS/SSL certificate files MUST be sets by using @ref THTTP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR).
+* </p>
 *
-* <b>tinyHTTP</b> is a HTTP (RFC 2616) stack.
+*
+*
+* 
+* <h2>15.1	Initialization</h2>
+* <p>
+* As the HTTP/HTTPS stack depends on the network library (tinyNET), you MUST call tnet_startup() before using any HTTP/Network function (thttp_*). tnet_cleanup() is used to terminate use of network functions.
+* </p>
+* <p>
+* The example below demonstrates how to create and start a HTTP/HTTPS stack. The callback function shows the most common events.
+* @code
+int ret;
+
+int test_stack_callback(const thttp_event_t *httpevent)
+{
+	switch(httpevent->type){
+		case thttp_event_message: // New HTTP message
+			{
+				break;
+			}
+		case thttp_event_auth_failed: // Authentication failed
+			{
+				break;
+			}
+
+
+		case thttp_event_closed: // HTTP connection closed (informational)
+			{
+				break;
+			}
+	}
+	
+	return 0;
+}
+
+thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback,
+	// TLS certificates (not mandatory) to show how parameters are passed to the stack
+	THTTP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\pub-crt.pem", "C:\\tls\\pub-key.pem"),
+	THTTP_STACK_SET_NULL());// MUST always be present
+
+if((ret = thttp_stack_start(stack))){
+	TSK_DEBUG_ERROR("Failed to start the HTTP/HTTPS stack.");
+	goto bail;
+}
+* @endcode
+*
+* A stack is a well-defined object and must be destroyed by using @a TSK_OBJECT_SAFE_FREE() macro.
+*
+*
+*
+*<h2>15.2	Sessions</h2>
+* <p>
+* A session can be seen as a peer2peer persistent connection and will be maintained by the stack as long as you wish to keep the network connection opened (not explicitly destroyed). <br>
+* If the connection is closed by the remote peer, then the stack will automatically reopen it when you try to send a new HTTP/HTTP request. <br>
+* The network connection will be definitely closed when the session is destroyed.
+* </p>
+* <p>
+* As the connection is persistent, then you can send multiple requests without waiting for each response. This mode is called “Pipelining” and is defined as per RFC 2616 section 8.1.2.2.
+* </p>
+* <p>
+* You should not pipeline requests using non-idempotent methods or non-idempotent sequences of methods. This means that you can safely pipeline GET or HEAD methods but should not with PUT or POST requests. Only HTTP version 1.1(or later) requests should be pipelined.<br>
+* </p>
+* <p>
+* To avoid pipelining, you must use a session object (thttp_session_handle_t*) only once to send a single request.
+* </p>
+* <p>
+* The example below shows how to create and configure a session.
+* </p>
+*
+* @code
+
+// creates session
+thttp_session_handle_t * session = thttp_session_create(stack,
+	// session-level credentials
+THTTP_SESSION_SET_CRED("ali baba", "open sesame"),
+
+	// session-level options
+	THTTP_SESSION_SET_OPTION(THTTP_SESSION_OPTION_TIMEOUT, "6000"),
+
+	// session-level headers
+	THTTP_SESSION_SET_HEADER("Pragma", "No-Cache"),
+	THTTP_SESSION_SET_HEADER("Connection", "Keep-Alive"),
+	THTTP_SESSION_SET_HEADER("User-Agent", "doubango 1.0"),
+			
+	THTTP_SESSION_SET_NULL());// MUST always be present
+	
+* @endcode
+*
+* A session is a well-defined object and must be destroyed by using @a TSK_OBJECT_SAFE_FREE() macro.
+*
+*
+*
+* <h3>15.2.1 Credentials</h3>
+* <p>
+* Both HTTP digest and Basic authentication (RFC 2617) are supported in this version (1.0). The credentials (username and password) should be set when the session is created (@ref thttp_session_create()) or later, by using @ref thttp_session_set(). As credentials are configured at session level, you can use one stack to authenticate against multiple HTTP servers with different domains.
+* </p>
+* <p>
+* The stack will automatically add authorizations (as per RFC 2617) when it is challenged (401/407 responses), this is why you should set credentials before sending any requests which is susceptible to be challenged. 
+* </p>
+* 
+* 
+* 
+* <h3>15.2.2 Options</h3>
+* <p>
+* All options shall be set by using @ref THTTP_SESSION_SET_OPTION(id, value) macro. Session-level options will be applied to all underlying requests, unless the request redefines this option.
+* </p>
+*
+* 
+* 
+* <h3>15.2.3 Headers</h3>
+* <p>
+* All headers shall be set by using @ref THTTP_SESSION_SET_HEADER(name, value) macro. Session-level headers will be added to all underlying requests even if a request redefines this header. This means that if both the request and the session have the same header, then it will be duplicated.<br>
+* <i>Host</i> and <i>Content-Length</i> headers are automatically added by the stack.
+* </p>
+* 
+* 
+* 
+* <h2>15.3 Requests</h2>
+* <p>
+* A HTTP request is referred to as an “action” and is always associated to a session. There are nine well-know actions you can perform: <b>CONNET</b>, <b>DELETE</b>, <b>GET</b>, <b>HEAD</b>, <b>OPTIONS</b>, <b>PATCH</b>, <b>POST</b>, <b>PUT</b> and <b>TRACE</b>. You can use @ref thttp_action_perform(session, url, method, …) function to send a custom request. All <i>thttp_action_*()</i> functions are non-blocking.<br>
+* </p>
+* <p>
+* All requests are sent in an asynchronous manner and the result (HTTP messages, errors, time out …) will be passed to the callback function.
+* </p>
+*
+* The code below shows how to send HTTP <b>PUT</b> request.
+*
+* @code
+int ret = thttp_action_PUT(session, "http://www.doubango.org",
+		// action-level options
+		THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
+		
+		// payload
+		THTTP_ACTION_SET_PAYLOAD("Comment allez-vous?", strlen("Comment allez-vous?")),
+
+		// action-level headers
+		THTTP_ACTION_SET_HEADER("Content-Type", "text/plain"),
+		THTTP_ACTION_SET_HEADER("Expect", "100-continue"),
+		
+		THTTP_ACTION_SET_NULL());
+
+* @endcode
+
+* The code below uses HTTP <b>GET</b> request to connect to an IPv6 website
+*
+* @code
+int ret = thttp_action_GET(session, "http://ipv6.google.com",
+		// action-level options
+		THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "4500"),
+		
+		THTTP_ACTION_SET_NULL());
+
+* @endcode
+*
+* You can notice that, there is nothing special to do in order to connect to an IPv6 website.
+*
+*
+*
+* <h3>15.3.1	Options</h3>
+* <p>
+* All options shall be set by using @ref THTTP_ACTION_SET_OPTION(id, value) macro. 
+* Action-level options and headers are only applied to the current request. 
+* In the code, the timeout previously defined by the session has been redefined (from 6000ms to 2500ms).
+* </p>
+*
+* For more information, please visit the website.
+*
+*
+*
+* <h3>15.3.2 Headers</h3>
+* <p>
+* All headers shall be set by using @ref THTTP_ACTION_SET_HEADER(name, value) macro. 
+* Action-level headers will only be added to the current request. <i>Host</i> and <i>Content-Length</i> headers are automatically added by the stack.
+* </p>
+
 */
 
 // KeepAlive : http://www.io.com/~maus/HttpKeepAlive.html
@@ -299,7 +482,7 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 		return ret;
 	}
 
-	stack->transport = TNET_TRANSPORT_CREATE(stack->local_ip, stack->local_port, tnet_socket_type_tcp_ipv46, "HTTP/HTTPS transport");
+	stack->transport = tnet_transport_create(stack->local_ip, stack->local_port, tnet_socket_type_tcp_ipv46, "HTTP/HTTPS transport");
 	tnet_transport_set_callback(stack->transport, TNET_TRANSPORT_CB_F(thttp_transport_layer_stream_cb), self);
 
 	if(!(ret = tnet_transport_start(stack->transport))){
@@ -407,7 +590,7 @@ static tsk_object_t* _thttp_stack_create(tsk_object_t * self, va_list * app)
 	if(stack){
 		tsk_safeobj_init(stack);
 
-		stack->sessions = TSK_LIST_CREATE();
+		stack->sessions = tsk_list_create();
 	}
 	return self;
 }

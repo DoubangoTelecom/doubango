@@ -67,10 +67,20 @@
 
 }%%
 
+thttp_header_Dummy_t* thttp_header_dummy_create(const char* name, const char* value)
+{
+	return tsk_object_new(THTTP_HEADER_DUMMY_VA_ARGS(name, value));
+}
+
+thttp_header_Dummy_t* thttp_header_dummy_create_null()
+{
+	return thttp_header_dummy_create(tsk_null, tsk_null);
+}
+
+
 int thttp_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const thttp_header_Dummy_t *Dummy = header;
 		if(Dummy->value){
 			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
@@ -89,7 +99,7 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Dummy_t *hdr_Dummy = THTTP_HEADER_DUMMY_CREATE_NULL();
+	thttp_header_Dummy_t *hdr_Dummy = thttp_header_dummy_create_null();
 	
 	const char *tag_start;
 
@@ -114,7 +124,7 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
 //	Dummy header object definition
 //
 
-static tsk_object_t* thttp_header_Dummy_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Dummy_t *Dummy = self;
 	if(Dummy){
@@ -130,11 +140,10 @@ static tsk_object_t* thttp_header_Dummy_create(tsk_object_t *self, va_list * app
 	return self;
 }
 
-static tsk_object_t* thttp_header_Dummy_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_Dummy_dtor(tsk_object_t *self)
 {
 	thttp_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		TSK_FREE(Dummy->name);
 		TSK_FREE(Dummy->value);
 
@@ -150,8 +159,8 @@ static tsk_object_t* thttp_header_Dummy_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_Dummy_def_s = 
 {
 	sizeof(thttp_header_Dummy_t),
-	thttp_header_Dummy_create,
-	thttp_header_Dummy_destroy,
+	thttp_header_Dummy_ctor,
+	thttp_header_Dummy_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Dummy_def_t = &thttp_header_Dummy_def_s;

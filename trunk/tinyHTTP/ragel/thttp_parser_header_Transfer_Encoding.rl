@@ -65,6 +65,17 @@
 
 }%%
 
+thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create(const char* encoding)
+{
+	return tsk_object_new(THTTP_HEADER_TRANSFER_ENCODING_VA_ARGS(encoding));
+}
+
+thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create_null()
+{
+	return thttp_header_transfer_encoding_create(tsk_null);
+}
+
+
 int thttp_header_Transfer_Encoding_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header){
@@ -86,7 +97,7 @@ thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const cha
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Transfer_Encoding_t *hdr_tencoding = THTTP_HEADER_TRANSFER_ENCODING_CREATE_NULL();
+	thttp_header_Transfer_Encoding_t *hdr_tencoding = thttp_header_transfer_encoding_create_null();
 	
 	const char *tag_start;
 
@@ -112,7 +123,7 @@ thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const cha
 //	Transfer_Encoding header object definition
 //
 
-static tsk_object_t* thttp_header_Transfer_Encoding_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Transfer_Encoding_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Transfer_Encoding_t *Transfer_Encoding = self;
 	if(Transfer_Encoding){
@@ -127,7 +138,7 @@ static tsk_object_t* thttp_header_Transfer_Encoding_create(tsk_object_t *self, v
 	return self;
 }
 
-static tsk_object_t* thttp_header_Transfer_Encoding_destroy(tsk_object_t* self)
+static tsk_object_t* thttp_header_Transfer_Encoding_dtor(tsk_object_t* self)
 {
 	thttp_header_Transfer_Encoding_t *Transfer_Encoding = self;
 	if(Transfer_Encoding){
@@ -144,8 +155,8 @@ static tsk_object_t* thttp_header_Transfer_Encoding_destroy(tsk_object_t* self)
 static const tsk_object_def_t thttp_header_Transfer_Encoding_def_s = 
 {
 	sizeof(thttp_header_Transfer_Encoding_t),
-	thttp_header_Transfer_Encoding_create,
-	thttp_header_Transfer_Encoding_destroy,
+	thttp_header_Transfer_Encoding_ctor,
+	thttp_header_Transfer_Encoding_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Transfer_Encoding_def_t = &thttp_header_Transfer_Encoding_def_s;

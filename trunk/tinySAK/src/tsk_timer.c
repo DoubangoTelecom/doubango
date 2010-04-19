@@ -55,7 +55,7 @@ typedef struct tsk_timer_s
 	tsk_timer_id_t id;	/**< Unique timer identifier. */
 	const void *arg; /**< Opaque data to return with the callback function. */
 	uint64_t timeout; /**< When the timer will timeout(as EPOCH time). */
-	tsk_timer_callback callback; /**< The callback function to call after @ref timeout milliseconds. */
+	tsk_timer_callback_f callback; /**< The callback function to call after @ref timeout milliseconds. */
 
 	unsigned canceled:1;
 }
@@ -86,6 +86,13 @@ static void *__tsk_timer_manager_mainthread(void *param);
 static int __tsk_pred_find_timer_by_id(const tsk_list_item_t *item, const void *id);
 static void __tsk_timer_manager_raise(tsk_timer_t *timer);
 static void *run(void* self);
+
+/**@ingroup tsk_timer_group
+*/
+tsk_timer_manager_handle_t* tsk_timer_manager_create()
+{
+	return tsk_object_new(tsk_timer_manager_def_t);
+}
 
 /**@ingroup tsk_timer_group
 * Starts the timer manager.
@@ -149,7 +156,7 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 
 /**@ingroup tsk_timer_group
 */
-tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback callback, const void *arg)
+tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint64_t timeout, tsk_timer_callback_f callback, const void *arg)
 {
 	tsk_timer_id_t timer_id = TSK_INVALID_TIMER_ID;
 	tsk_timer_manager_t *manager = self;
@@ -318,11 +325,11 @@ peek_first:
 //=================================================================================================
 //	Timer manager object definition
 //
-static tsk_object_t* tsk_timer_manager_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsk_timer_manager_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_timer_manager_t *manager = self;
 	if(manager){
-		manager->timers = TSK_LIST_CREATE();
+		manager->timers = tsk_list_create();
 		manager->sem = tsk_semaphore_create();
 		manager->condwait = tsk_condwait_create();
 		manager->mutex = tsk_mutex_create();
@@ -330,7 +337,7 @@ static tsk_object_t* tsk_timer_manager_create(tsk_object_t * self, va_list * app
 	return self;
 }
 
-static tsk_object_t* tsk_timer_manager_destroy(tsk_object_t * self)
+static tsk_object_t* tsk_timer_manager_dtor(tsk_object_t * self)
 { 
 	tsk_timer_manager_t *manager = self;
 	
@@ -349,8 +356,8 @@ static tsk_object_t* tsk_timer_manager_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsk_timer_manager_def_s = 
 {
 	sizeof(tsk_timer_manager_t),
-	tsk_timer_manager_create, 
-	tsk_timer_manager_destroy,
+	tsk_timer_manager_ctor, 
+	tsk_timer_manager_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t * tsk_timer_manager_def_t = &tsk_timer_manager_def_s;
@@ -363,14 +370,14 @@ const tsk_object_def_t * tsk_timer_manager_def_t = &tsk_timer_manager_def_s;
 //=================================================================================================
 //	Timer object definition
 //
-static tsk_object_t* tsk_timer_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsk_timer_ctor(tsk_object_t * self, va_list * app)
 {
 	static tsk_timer_id_t tsk_unique_timer_id = 1;
 	tsk_timer_t *timer = self;
 	if(timer){
 		timer->id = tsk_unique_timer_id++;
 		timer->timeout = va_arg(*app, uint64_t);
-		timer->callback = va_arg(*app, tsk_timer_callback);
+		timer->callback = va_arg(*app, tsk_timer_callback_f);
 		timer->arg = va_arg(*app, const void *);
 
 		timer->timeout += tsk_time_epoch();
@@ -378,7 +385,7 @@ static tsk_object_t* tsk_timer_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsk_timer_destroy(tsk_object_t * self)
+static tsk_object_t* tsk_timer_dtor(tsk_object_t * self)
 { 
 	tsk_timer_t *timer = self;
 	
@@ -403,8 +410,8 @@ static int tsk_timer_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsk_timer_def_s = 
 {
 	sizeof(tsk_timer_t),
-	tsk_timer_create, 
-	tsk_timer_destroy,
+	tsk_timer_ctor, 
+	tsk_timer_dtor,
 	tsk_timer_cmp, 
 };
 const tsk_object_def_t * tsk_timer_def_t = &tsk_timer_def_s;

@@ -36,16 +36,11 @@
 #include "tsk_list.h"
 
 /**@ingroup tsk_string_group
-* @def TSK_STRING_CREATE
-* Creates new @ref tsk_string_t object. 
-*/
-/**@ingroup tsk_string_group
 * @def TSK_STRING_STR
 * Gets the internal string pointer. 
 */
 TSK_BEGIN_DECLS
 
-#define TSK_STRING_CREATE(str)				tsk_object_new(tsk_string_def_t, (const char*)str)
 #define TSK_STRING_STR(self)				((tsk_string_t*)self)->value
 
 typedef char tsk_istr_t[21]; /**< Integer number as string value. */
@@ -118,6 +113,8 @@ typedef struct tsk_string_s
 tsk_string_t;
 
 typedef tsk_list_t tsk_strings_L_t;
+
+TINYSAK_API tsk_string_t* tsk_string_create(const char* str);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_string_def_t;
 

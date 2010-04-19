@@ -151,7 +151,7 @@ tsms_tpdu_message_t* _tsms_tpdu_status_report_deserialize(const void* data, size
 
 	/* 3GPP TS 23.040 ==> 9.2.3.24 TP-User Data (TP-UD) */
 	if((pend-pdata) > 0){
-		TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+		TSMS_TPDU_MESSAGE(self)->ud = tsk_buffer_create(pdata, (pend-pdata));
 	}
 
 	bail:
@@ -255,7 +255,7 @@ bail:
 //=================================================================================================
 //	SMS TPDU SMS-SUMBIT object definition
 //
-static tsk_object_t* _tsms_tpdu_status_report_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_tpdu_status_report_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_tpdu_status_report_t *status_report = self;
 	if(status_report){
@@ -279,10 +279,10 @@ static tsk_object_t* _tsms_tpdu_status_report_create(tsk_object_t * self, va_lis
 		/* init self */
 		status_report->mr = mr;
 		if(smsc){
-			status_report->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+			status_report->smsc = tsms_address_smsc_create(smsc);
 		}
 		if(recipient){
-			status_report->ra = TSMS_ADDRESS_DA_CREATE(recipient);
+			status_report->ra = tsms_address_da_create(recipient);
 		}
 		status_report->st = status;
 		status_report->mms = TSMS_TPDU_DEFAULT_MMS;
@@ -294,7 +294,7 @@ static tsk_object_t* _tsms_tpdu_status_report_create(tsk_object_t * self, va_lis
 	return self;
 }
 
-static tsk_object_t* tsms_tpdu_status_report_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_tpdu_status_report_dtor(tsk_object_t * self)
 { 
 	tsms_tpdu_status_report_t *status_report = self;
 	if(status_report){
@@ -313,8 +313,8 @@ static tsk_object_t* tsms_tpdu_status_report_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_tpdu_status_report_def_s = 
 {
 	sizeof(tsms_tpdu_status_report_t),
-	_tsms_tpdu_status_report_create, 
-	tsms_tpdu_status_report_destroy,
+	tsms_tpdu_status_report_ctor, 
+	tsms_tpdu_status_report_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_tpdu_status_report_def_t = &tsms_tpdu_status_report_def_s;

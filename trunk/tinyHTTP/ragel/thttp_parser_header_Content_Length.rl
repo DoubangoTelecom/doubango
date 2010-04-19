@@ -59,6 +59,11 @@
 
 }%%
 
+thttp_header_Content_Length_t* thttp_header_content_length_create(uint32_t length)
+{
+	return tsk_object_new(THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(length));
+}
+
 int thttp_header_Content_Length_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header){
@@ -77,7 +82,7 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Content_Length_t *hdr_clength = THTTP_HEADER_CONTENT_LENGTH_CREATE(0);
+	thttp_header_Content_Length_t *hdr_clength = thttp_header_content_length_create(0);
 	
 	const char *tag_start;
 
@@ -102,7 +107,7 @@ thttp_header_Content_Length_t *thttp_header_Content_Length_parse(const char *dat
 //	Content_Length header object definition
 //
 
-static tsk_object_t* thttp_header_Content_Length_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Content_Length_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Content_Length_t *Content_Length = self;
 	if(Content_Length){
@@ -117,7 +122,7 @@ static tsk_object_t* thttp_header_Content_Length_create(tsk_object_t *self, va_l
 	return self;
 }
 
-static tsk_object_t* thttp_header_Content_Length_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_Content_Length_dtor(tsk_object_t *self)
 {
 	thttp_header_Content_Length_t *Content_Length = self;
 	if(Content_Length){
@@ -133,8 +138,8 @@ static tsk_object_t* thttp_header_Content_Length_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_Content_Length_def_s = 
 {
 	sizeof(thttp_header_Content_Length_t),
-	thttp_header_Content_Length_create,
-	thttp_header_Content_Length_destroy,
+	thttp_header_Content_Length_ctor,
+	thttp_header_Content_Length_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Content_Length_def_t = &thttp_header_Content_Length_def_s;

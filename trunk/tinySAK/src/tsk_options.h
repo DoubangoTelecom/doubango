@@ -35,19 +35,10 @@
 #include "tsk_list.h"
 #include "tsk_buffer.h"
 
-/**@ingroup tsk_options_group
-* @def TSK_OPTION_CREATE
-* Creates new @ref tsk_option_t object.
-*/
-/**@ingroup tsk_options_group
-* @def TSK_OPTION_CREATE
-* Creates new @ref tsk_option_t object.
-*/
+
 TSK_BEGIN_DECLS
 
 #define TSK_OPTION_VA_ARGS(id, value)		tsk_option_def_t, (int)id, (const char*)value
-#define TSK_OPTION_CREATE(id, value)		tsk_object_new(TSK_OPTION_VA_ARGS(id, value))
-#define TSK_OPTION_CREATE_NULL()			TSK_OPTION_CREATE(0, tsk_null)
 
 #define TSK_OPTION(self)				((tsk_option_t*)(self))
 

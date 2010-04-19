@@ -111,7 +111,7 @@ thttp_url_t *thttp_url_parse(const char *urlstring, size_t length)
 	const char *ts = 0, *te = 0;
 	int act =0;
 
-	thttp_url_t *url = THTTP_URL_CREATE(url_unknown);
+	thttp_url_t *url = thttp_url_create(url_unknown);
 	
 	const char *tag_start = 0;
 	
