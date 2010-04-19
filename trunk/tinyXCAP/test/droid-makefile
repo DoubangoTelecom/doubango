@@ -1,14 +1,14 @@
 APP := test
 
-CFLAGS := $(CFLAGS) -I$(DOUBANGO_HOME)/$(PROJECT)/src -I$(DOUBANGO_HOME)/tinySAK/src
-LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -l$(PROJECT)
+CFLAGS := $(CFLAGS) -I../include -I../../tinySAK/src -I../../tinyNET/src -I../../tinyHTTP/include
+LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -ltinyNET -ltinyHTTP -l$(PROJECT)
 
 all: $(APP)
 
 OBJS += $(APP).o
 
 $(APP): $(OBJS)
-	$(CPP) $(LDFLAGS) -o $@ $^ 
+	$(CC) $(LDFLAGS) -o $@ $^ 
 
 %.o: %.c
 	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@

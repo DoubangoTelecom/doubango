@@ -164,7 +164,7 @@ typedef struct thttp_session_s
 }
 thttp_session_t;
 
-typedef tsk_list_t thttp_sessions_L_t;
+typedef tsk_list_t thttp_sessions_L_t; /**< List of @ref thttp_session_handle_t elements. */
 
 /** Pointer to a HTTP/HTTPS session.
 */
@@ -179,7 +179,7 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 int thttp_session_signal_closed(thttp_session_t *self);
 thttp_session_t* thttp_session_get_by_fd(thttp_sessions_L_t* sessions, tnet_fd_t fd);
 
-typedef tsk_list_t thttp_sessions_L_t; /**< List of @ref thttp_session_handle_t elements. */
+
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_session_def_t;
 
 THTTP_END_DECLS

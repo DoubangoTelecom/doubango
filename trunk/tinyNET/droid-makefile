@@ -1,0 +1,87 @@
+APP := lib$(PROJECT).so
+
+INSTALL_DIR = /system/lib
+
+CFLAGS := $(CFLAGS) -I../tinySAK/src -I./src
+LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK
+
+all: $(APP)
+
+OBJS = \
+	src/tnet.o\
+	src/tnet_auth.o\
+	src/tnet_endianness.o\
+	src/tnet_nat.o\
+	src/tnet_poll.o\
+	src/tnet_socket.o\
+	src/tnet_transport.o\
+	src/tnet_transport_poll.o\
+	src/tnet_utils.o
+	###################
+	## DHCP
+	###################
+OBJS +=	src/dhcp/tnet_dhcp.o\
+	src/dhcp/tnet_dhcp_message.o\
+	src/dhcp/tnet_dhcp_option.o\
+	src/dhcp/tnet_dhcp_option_sip.o
+	###################
+	## DHCPv6
+	###################
+OBJS +=	src/dhcp6/tnet_dhcp6.o\
+	src/dhcp6/tnet_dhcp6_duid.o\
+	src/dhcp6/tnet_dhcp6_message.o\
+	src/dhcp6/tnet_dhcp6_option.o
+	###################
+	## DNS
+	###################
+OBJS +=	src/dns/tnet_dns.o\
+	src/dns/tnet_dns_a.o\
+	src/dns/tnet_dns_aaaa.o\
+	src/dns/tnet_dns_cname.o\
+	src/dns/tnet_dns_message.o\
+	src/dns/tnet_dns_mx.o\
+	src/dns/tnet_dns_naptr.o\
+	src/dns/tnet_dns_ns.o\
+	src/dns/tnet_dns_opt.o\
+	src/dns/tnet_dns_ptr.o\
+	src/dns/tnet_dns_regexp.o\
+	src/dns/tnet_dns_resolvconf.o\
+	src/dns/tnet_dns_rr.o\
+	src/dns/tnet_dns_soa.o\
+	src/dns/tnet_dns_srv.o\
+	src/dns/tnet_dns_txt.o
+	###################
+	## ICE
+	###################
+OBJS +=	src/ice/tnet_ice.o
+	
+	###################
+	## STUN
+	###################
+OBJS +=	src/stun/tnet_stun.o\
+	src/stun/tnet_stun_attribute.o\
+	src/stun/tnet_stun_message.o
+	###################
+	## TLS
+	###################
+OBJS +=	src/tls/tnet_tls.o
+	###################
+	## TURN
+	###################
+OBJS +=	src/turn/tnet_turn.o\
+	src/turn/tnet_turn_attribute.o\
+	src/turn/tnet_turn_message.o
+
+$(APP): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ 
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(INSTALL_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(INSTALL_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

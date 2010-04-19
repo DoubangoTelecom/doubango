@@ -3,9 +3,9 @@ include ../root.mk
 export PROJECT=tinySAK
 
 all:
-	(cd ../../tinySAK/src ; $(MAKE) all; $(MAKE) install; cp libtinySAK.so $(OUTPUT_DIR))
-	(cd ../../tinySAK/test; $(MAKE) all; $(MAKE) install; cp test $(OUTPUT_DIR))
+	(cd ../../$(PROJECT)/src ; $(MAKE) -f droid-makefile all; $(MAKE) -f droid-makefile install; cp lib$(PROJECT).so $(OUTPUT_DIR))
+	(cd ../../$(PROJECT)/test; $(MAKE) -f droid-makefile all; $(MAKE) -f droid-makefile install; cp test $(OUTPUT_DIR))
 	
 clean:
-	(cd ../../tinySAK/src; $(MAKE) clean)
-	(cd ../../tinySAK/test; $(MAKE) clean)
+	(cd ../../$(PROJECT)/src; $(MAKE) -f droid-makefile clean)
+	(cd ../../$(PROJECT)/test; $(MAKE) -f droid-makefile clean)

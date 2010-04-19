@@ -23,7 +23,7 @@
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildArguments</key>
-					<value>OPTIONS=&quot;-O0 -g3 -DDEBUG_LEVEL=DEBUG_LEVEL_INFO&quot;  -j1</value>
+					<value>PROJECT=tinySAK  DEBUG_FLAGS=&quot;-O0 -g3 -DDEBUG_LEVEL=DEBUG_LEVEL_INFO&quot;  -j1</value>
 				</dictionary>
 				<dictionary>
 					<key>org.eclipse.cdt.make.core.buildCommand</key>

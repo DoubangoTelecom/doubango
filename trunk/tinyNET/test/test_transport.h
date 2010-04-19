@@ -23,14 +23,14 @@
 #define TNET_TEST_TRANSPORT_H
 
 //#define REMOTE_IP4	"proxy.sipthor.net"//"192.168.0.15"
-#define REMOTE_IP4	"192.168.0.11"
+#define REMOTE_IP4	"192.168.16.104"
 #define REMOTE_IP6	"2a01:e35:8632:7050:6122:2706:2124:32cb"
 #define REMOTE_IP REMOTE_IP4
-#define REMOTE_PORT 5081
+#define REMOTE_PORT 5060
 
 #if defined(ANDROID) /* FIXME */
-#	define LOCAL_IP4	"10.0.2.15"
-#else
+//#	define LOCAL_IP4	"10.0.2.15"
+//#else
 #	define LOCAL_IP4	TNET_SOCKET_HOST_ANY
 #endif
 #define LOCAL_IP6	TNET_SOCKET_HOST_ANY

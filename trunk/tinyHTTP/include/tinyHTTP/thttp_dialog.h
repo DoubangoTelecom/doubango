@@ -38,6 +38,7 @@
 
 THTTP_BEGIN_DECLS
 
+struct thttp_message_s;
 
 typedef uint64_t thttp_dialog_id_t;
 

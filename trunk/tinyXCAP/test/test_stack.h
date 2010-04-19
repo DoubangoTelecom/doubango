@@ -76,6 +76,8 @@ void test_stack()
 	int ret;
 
 	stack = txcap_stack_create(test_stack_callback, XUI, PASSWORD, XCAP_ROOT,
+
+		//TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_LOCAL_IP, "10.0.2.15"),
 		
 		// stack-level options
 		TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),

@@ -38,9 +38,9 @@
 
 #define RUN_TEST_LOOP		1
 
-#define RUN_TEST_ALL		1
+#define RUN_TEST_ALL		0
 #define RUN_TEST_SOCKETS	0 /* FIXME: Android */
-#define RUN_TEST_TRANSPORT	0
+#define RUN_TEST_TRANSPORT	1
 #define RUN_TEST_AUTH		0
 #define RUN_TEST_STUN		0
 #define RUN_TEST_NAT		0
@@ -107,7 +107,7 @@ int main()
 		test_tls();
 #endif
 
-	}	
+	}
 
 	/* Cleanup the network stack */
 	tnet_cleanup();

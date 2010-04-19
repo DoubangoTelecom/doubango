@@ -1,0 +1,58 @@
+APP := lib$(PROJECT).so
+
+INSTALL_DIR = /system/lib
+
+CFLAGS := $(CFLAGS)
+LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive
+
+all: $(APP)
+
+OBJS = src/tsk.o\
+	src/tsk_base64.o\
+	src/tsk_binaryutils.o\
+	src/tsk_buffer.o\
+	src/tsk_condwait.o\
+	src/tsk_debug.o\
+	src/tsk_fsm.o\
+	src/tsk_hmac.o\
+	src/tsk_list.o\
+	src/tsk_md5.o\
+	src/tsk_memory.o\
+	src/tsk_mutex.o\
+	src/tsk_object.o\
+	src/tsk_options.o\
+	src/tsk_params.o\
+	src/tsk_ppfcs16.o\
+	src/tsk_ppfcs32.o\
+	src/tsk_ragel_state.o\
+	src/tsk_runnable.o\
+	src/tsk_safeobj.o\
+	src/tsk_semaphore.o\
+	src/tsk_sha1.o\
+	src/tsk_string.o\
+	src/tsk_thread.o\
+	src/tsk_time.o\
+	src/tsk_timer.o\
+	src/tsk_url.o\
+	src/tsk_uuid.o\
+	src/tsk_xml.o
+
+$(APP): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ 
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(INSTALL_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(INSTALL_DIR)/$(APP)
+
+shell:
+	$(ANDROID_SDK_ROOT)/tools/adb shell
+
+run:
+	$(ANDROID_SDK_ROOT)/tools/adb shell $(INSTALL_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

@@ -71,6 +71,7 @@ void test_stack()
 	int ret;
 
 	thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback,
+		THTTP_STACK_SET_LOCAL_IP("10.0.2.15"),
 		THTTP_STACK_SET_NULL());
 
 	if((ret = thttp_stack_start(stack))){
@@ -109,6 +110,7 @@ void test_stack()
 		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
 		
 		tsk_null);
+
 	getchar();
 
 	thttp_action_GET(session, "http://ipv6.google.com",

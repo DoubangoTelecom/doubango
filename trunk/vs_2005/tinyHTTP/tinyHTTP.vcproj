@@ -404,6 +404,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_ETag.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinyHTTP\src\headers\thttp_header_Transfer_Encoding.c"
 					>
 				</File>
@@ -501,6 +505,10 @@
 				</File>
 				<File
 					RelativePath="..\..\tinyHTTP\include\tinyHTTP\headers\thttp_header_Dummy.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyHTTP\include\tinyHTTP\headers\thttp_header_ETag.h"
 					>
 				</File>
 				<File

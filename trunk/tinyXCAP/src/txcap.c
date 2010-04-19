@@ -752,6 +752,19 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 								cred_updated = tsk_true;
 								break;
 							}
+						case TXCAP_STACK_OPTION_LOCAL_IP:
+							{
+								thttp_stack_set(self->http_stack, THTTP_STACK_SET_LOCAL_IP(VALUE_STR),
+									THTTP_STACK_SET_NULL());
+								break;
+							}
+						case TXCAP_STACK_OPTION_LOCAL_PORT:
+							{
+								int port = atoi(VALUE_STR);
+								thttp_stack_set(self->http_stack, THTTP_STACK_SET_LOCAL_PORT(port),
+									THTTP_STACK_SET_NULL());
+								break;
+							}
 						default:
 							{
 								tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, ID_IN, VALUE_STR);
