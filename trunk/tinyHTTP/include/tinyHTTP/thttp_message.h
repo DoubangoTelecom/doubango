@@ -108,52 +108,6 @@ THTTP_BEGIN_DECLS
 
 
 /**@ingroup thttp_message_group
-* @def THTTP_MESSAGE_CREATE
-* Creates new HTTP message. Could be either a request or a response.
-* @retval @ref thttp_message_t object.
-* @sa @ref THTTP_REQUEST_CREATE<br>@ref THTTP_RESPONSE_CREATE
-*/
-/**@ingroup thttp_message_group
-*@def THTTP_REQUEST_CREATE
-* Creates new HTTP request.
-* @param method The method (const char*). e.g. GET, POST, HEAD ...
-* @param url The url (@ref thttp_url_t).
-* @retval @ref thttp_request_t object.
-*
-* @code
-// example
-thttp_url_t* url;
-thttp_request_t* request;
-if((url = thttp_url_parse("http://www.google.com", strlen("http://www.google.com")))){
-	request = THTTP_REQUEST_CREATE("GET", url);
-	// ... 
-	TSK_OBJECT_SAFE_FREE(url);
-	TSK_OBJECT_SAFE_FREE(request);
-}
-* @endcode
-*/
-/**@ingroup thttp_message_group
-*@def THTTP_RESPONSE_CREATE
-* Creates a HTTP response.
-* @param request The request (@ref thttp_request_t) from which to create the response.
-* @param status_code The status code (short).
-* @param reason_phrase The reason phrase (const char*).
-* @retval @ref thttp_response_t object.
-*
-* @code
-// example
-//thttp_request_t* request;
-thttp_response_t* response;
-if((response = THTTP_RESPONSE_CREATE(request, 200, "OK"))){
-	TSK_OBJECT_SAFE_FREE(response);
-}
-* @endcode
-*/
-#define THTTP_MESSAGE_CREATE()											tsk_object_new(thttp_message_def_t, (thttp_message_type_t)thttp_unknown)
-#define THTTP_REQUEST_CREATE(method, url)								tsk_object_new(thttp_message_def_t, (thttp_message_type_t)thttp_request, (const char*)method, (const thttp_url_t*)url)
-#define THTTP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(thttp_message_def_t, (thttp_message_type_t)thttp_response, (const thttp_request_t*)request, (short)status_code, (const char*)reason_phrase)
-
-/**@ingroup thttp_message_group
 *@def THTTP_RESPONSE_CODE
 * Gets the status code of the response.
 * @param self A pointer to a @ref thttp_response_t object.
@@ -216,8 +170,7 @@ if((response = THTTP_RESPONSE_CREATE(request, 200, "OK"))){
 #define THTTP_RESPONSE_IS_6XX(self)			THTTP_RESPONSE_IS_NXX(self, 6)
 #define THTTP_RESPONSE_IS_23456(self)		(200<= THTTP_RESPONSE_CODE((self)) && THTTP_RESPONSE_CODE((self)) <= 699)
 
-/**@ingroup thttp_message_group
-* Defines the message type (Request or Response). 
+/**Defines the message type (Request or Response). 
 **/
 typedef enum thttp_message_type_e
 {
@@ -227,8 +180,7 @@ typedef enum thttp_message_type_e
 }
 thttp_message_type_t;
 
-/**@ingroup thttp_message_group
- *Represents a HTTP message. A HTTP message is either a request from a client to a server,
+/**Represents a HTTP message. A HTTP message is either a request from a client to a server,
  * 	or a response from a server to a client.
 **/
 typedef struct thttp_message_s
@@ -311,7 +263,10 @@ TINYHTTP_API char* thttp_message_tostring(const thttp_message_t *self);
 TINYHTTP_API thttp_request_t *thttp_request_new(const char* method, const thttp_url_t *request_url);
 TINYHTTP_API thttp_response_t *thttp_response_new(short status_code, const char* reason_phrase, const thttp_request_t *request);
 
-TINYHTTP_GEXTERN const void *thttp_message_def_t;
+TINYHTTP_API thttp_message_t* thttp_message_create();
+TINYHTTP_API thttp_request_t* thttp_request_create(const char* method, const thttp_url_t* url);
+
+TINYHTTP_GEXTERN const tsk_object_def_t *thttp_message_def_t;
 
 THTTP_END_DECLS
 

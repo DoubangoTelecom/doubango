@@ -45,10 +45,20 @@
 /* #line 68 "./ragel/thttp_parser_header_Dummy.rl" */
 
 
+thttp_header_Dummy_t* thttp_header_dummy_create(const char* name, const char* value)
+{
+	return tsk_object_new(THTTP_HEADER_DUMMY_VA_ARGS(name, value));
+}
+
+thttp_header_Dummy_t* thttp_header_dummy_create_null()
+{
+	return thttp_header_dummy_create(tsk_null, tsk_null);
+}
+
+
 int thttp_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const thttp_header_Dummy_t *Dummy = header;
 		if(Dummy->value){
 			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
@@ -67,12 +77,12 @@ thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Dummy_t *hdr_Dummy = THTTP_HEADER_DUMMY_CREATE_NULL();
+	thttp_header_Dummy_t *hdr_Dummy = thttp_header_dummy_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 76 "./src/headers/thttp_header_Dummy.c" */
+/* #line 86 "./src/headers/thttp_header_Dummy.c" */
 static const char _thttp_machine_parser_header_Dummy_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 2, 0, 2
@@ -133,16 +143,16 @@ static const int thttp_machine_parser_header_Dummy_error = 0;
 static const int thttp_machine_parser_header_Dummy_en_main = 1;
 
 
-/* #line 97 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 107 "./ragel/thttp_parser_header_Dummy.rl" */
 	
-/* #line 139 "./src/headers/thttp_header_Dummy.c" */
+/* #line 149 "./src/headers/thttp_header_Dummy.c" */
 	{
 	cs = thttp_machine_parser_header_Dummy_start;
 	}
 
-/* #line 98 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 108 "./ragel/thttp_parser_header_Dummy.rl" */
 	
-/* #line 146 "./src/headers/thttp_header_Dummy.c" */
+/* #line 156 "./src/headers/thttp_header_Dummy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -239,7 +249,7 @@ _match:
 	{
 	}
 	break;
-/* #line 243 "./src/headers/thttp_header_Dummy.c" */
+/* #line 253 "./src/headers/thttp_header_Dummy.c" */
 		}
 	}
 
@@ -252,12 +262,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 99 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 109 "./ragel/thttp_parser_header_Dummy.rl" */
 	
 	if( cs < 
-/* #line 259 "./src/headers/thttp_header_Dummy.c" */
+/* #line 269 "./src/headers/thttp_header_Dummy.c" */
 10
-/* #line 100 "./ragel/thttp_parser_header_Dummy.rl" */
+/* #line 110 "./ragel/thttp_parser_header_Dummy.rl" */
  ){
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}
@@ -275,7 +285,7 @@ _again:
 //	Dummy header object definition
 //
 
-static tsk_object_t* thttp_header_Dummy_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Dummy_t *Dummy = self;
 	if(Dummy){
@@ -291,11 +301,10 @@ static tsk_object_t* thttp_header_Dummy_create(tsk_object_t *self, va_list * app
 	return self;
 }
 
-static tsk_object_t* thttp_header_Dummy_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_Dummy_dtor(tsk_object_t *self)
 {
 	thttp_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		TSK_FREE(Dummy->name);
 		TSK_FREE(Dummy->value);
 
@@ -311,8 +320,8 @@ static tsk_object_t* thttp_header_Dummy_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_Dummy_def_s = 
 {
 	sizeof(thttp_header_Dummy_t),
-	thttp_header_Dummy_create,
-	thttp_header_Dummy_destroy,
+	thttp_header_Dummy_ctor,
+	thttp_header_Dummy_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Dummy_def_t = &thttp_header_Dummy_def_s;

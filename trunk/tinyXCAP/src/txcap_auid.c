@@ -148,6 +148,11 @@ static const auid_t __txcap_auids[] =
 	},
 };
 
+txcap_auid_t* txcap_auid_create(txcap_auid_type_t type, const char* id, const char* mime_type, const char* ns, const char* document_name, tsk_bool_t is_global)
+{
+	return tsk_object_new(txcap_auid_def_t, type, id, mime_type, ns, document_name, is_global);
+}
+
 /** Predicate function used to find an option by id.
 */
 static int pred_find_auid_by_id(const tsk_list_item_t *item, const void *id)
@@ -176,12 +181,12 @@ int txcap_auids_init(txcap_auids_L_t** auids)
 		TSK_DEBUG_WARN("auids already initialized.");
 	}
 	else{
-		*auids = TSK_LIST_CREATE();
+		*auids = tsk_list_create();
 	}
 	
 	count = sizeof(__txcap_auids)/sizeof(auid_t);
 	for(i = 0; i<count; i++){
-		txcap_auid_t* auid = TXCAP_AUID_CREATE(__txcap_auids[i].type,
+		txcap_auid_t* auid = txcap_auid_create(__txcap_auids[i].type,
 			__txcap_auids[i].id,
 			__txcap_auids[i].mime_type,
 			__txcap_auids[i].ns,
@@ -222,7 +227,7 @@ int txcap_auid_register(txcap_auids_L_t* auids, const char* id, const char* mime
 	}
 	else{
 		txcap_auid_t* auid;
-		if((auid = TXCAP_AUID_CREATE(tauid_dummy, id, mime_type, ns, document_name, is_global))){
+		if((auid = txcap_auid_create(tauid_dummy, id, mime_type, ns, document_name, is_global))){
 			tsk_list_push_back_data(auids, (void**)&auid);
 			ret = 0;
 		}else{
@@ -261,7 +266,7 @@ txcap_auid_t* txcap_auid_get_by_id(txcap_auids_L_t* auids, const char* id)
 //=================================================================================================
 //	AUID object definition
 //
-static tsk_object_t* txcap_auid_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* txcap_auid_ctor(tsk_object_t * self, va_list * app)
 {
 	txcap_auid_t *auid = self;
 	if(auid){
@@ -275,7 +280,7 @@ static tsk_object_t* txcap_auid_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* txcap_auid_destroy(tsk_object_t * self)
+static tsk_object_t* txcap_auid_dtor(tsk_object_t * self)
 { 
 	txcap_auid_t *auid = self;
 	if(auid){
@@ -304,8 +309,8 @@ static int txcap_auid_cmp(const tsk_object_t *_a1, const tsk_object_t *_a2)
 static const tsk_object_def_t txcap_auid_def_s = 
 {
 	sizeof(txcap_auid_t),
-	txcap_auid_create, 
-	txcap_auid_destroy,
+	txcap_auid_ctor, 
+	txcap_auid_dtor,
 	txcap_auid_cmp, 
 };
 const tsk_object_def_t *txcap_auid_def_t = &txcap_auid_def_s;

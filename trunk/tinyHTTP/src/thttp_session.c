@@ -271,7 +271,7 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 		}
 
 		if(isnew){
-			if((challenge = THTTP_CHALLENGE_CREATE(tsk_false, /* Not proxy */
+			if((challenge = thttp_challenge_create(tsk_false, /* Not proxy */
 					WWW_Authenticate->scheme, 
 					WWW_Authenticate->realm, 
 					WWW_Authenticate->nonce, 
@@ -321,7 +321,7 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 		}
 
 		if(isnew){
-			if((challenge = THTTP_CHALLENGE_CREATE(tsk_true, /* Proxy */
+			if((challenge = thttp_challenge_create(tsk_true, /* Proxy */
 					Proxy_Authenticate->scheme, 
 					Proxy_Authenticate->realm, 
 					Proxy_Authenticate->nonce,
@@ -403,10 +403,10 @@ static tsk_object_t* _thttp_session_create(tsk_object_t * self, va_list * app)
 		tsk_safeobj_init(session);
 
 		session->stack = va_arg(*app, const thttp_stack_handle_t*);
-		session->options = TSK_LIST_CREATE();
-		session->headers = TSK_LIST_CREATE();
-		session->challenges = TSK_LIST_CREATE();
-		session->dialogs = TSK_LIST_CREATE();
+		session->options = tsk_list_create();
+		session->headers = tsk_list_create();
+		session->challenges = tsk_list_create();
+		session->dialogs = tsk_list_create();
 		session->fd = TNET_INVALID_FD;
 		
 		session->id = THTTP_SESSION_INVALID_ID;

@@ -111,7 +111,7 @@ void test_digest_auth()
 			&ha1);
 
 		/* HA2 */
-		entitybody = TSK_BUFFER_CREATE(auth_digest_msgs[i].entitybody, strlen(auth_digest_msgs[i].entitybody));
+		entitybody = tsk_buffer_create(auth_digest_msgs[i].entitybody, strlen(auth_digest_msgs[i].entitybody));
 		thttp_auth_digest_HA2(auth_digest_msgs[i].method,
 			auth_digest_msgs[i].uri,
 			entitybody,

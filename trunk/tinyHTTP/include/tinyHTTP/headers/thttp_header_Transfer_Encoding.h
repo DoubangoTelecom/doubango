@@ -36,8 +36,6 @@
 THTTP_BEGIN_DECLS
 
 #define THTTP_HEADER_TRANSFER_ENCODING_VA_ARGS(encoding)			thttp_header_Transfer_Encoding_def_t, (const char*)encoding
-#define THTTP_HEADER_TRANSFER_ENCODING_CREATE(encoding)			tsk_object_new(THTTP_HEADER_TRANSFER_ENCODING_VA_ARGS(encoding))
-#define THTTP_HEADER_TRANSFER_ENCODING_CREATE_NULL()			THTTP_HEADER_TRANSFER_ENCODING_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// HTTP header 'Transfer-Encoding'.
@@ -61,6 +59,13 @@ thttp_header_Transfer_Encoding_t;
 
 
 thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const char *data, size_t size);
+
+thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create(const char* encoding);
+thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create_null();
+
+
+thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create(const char* encoding);
+thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create_null();
 
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_header_Transfer_Encoding_def_t;
 

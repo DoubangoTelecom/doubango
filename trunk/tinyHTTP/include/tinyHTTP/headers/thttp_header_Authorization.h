@@ -36,8 +36,6 @@
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_HEADER_AUTHORIZATION_CREATE()				tsk_object_new(thttp_header_Authorization_def_t)
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// HTTP header 'Authorization' .
 ///
@@ -68,6 +66,8 @@ typedef thttp_header_Authorization_t thttp_header_Proxy_Authorization_t;
 
 TINYHTTP_API  thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data, size_t size);
 TINYHTTP_API thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const char *data, size_t size);
+
+thttp_header_Authorization_t* thttp_header_authorization_create();
 
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_header_Authorization_def_t;
 

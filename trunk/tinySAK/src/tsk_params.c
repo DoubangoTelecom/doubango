@@ -49,6 +49,20 @@ static int pred_find_param_by_name(const tsk_list_item_t *item, const void *name
 }
 
 /**@ingroup tsk_params_group
+*/
+tsk_param_t* tsk_param_create(const char* name, const char* value)
+{
+	return tsk_object_new(TSK_PARAM_VA_ARGS(name, value));
+}
+
+/**@ingroup tsk_params_group
+*/
+tsk_param_t* tsk_param_create_null()
+{
+	return tsk_param_create(tsk_null, tsk_null);
+}
+
+/**@ingroup tsk_params_group
 * Converts a key-value-pair string (kvp) to @ref tsk_param_t object.
 * @param line The kvp (e.g. 'branch=z9hG4bK652hsge') string to parse.
 * @param size The size (length) of the kvp string.
@@ -61,7 +75,7 @@ tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 		const char* start = line;
 		const char* end = (line + size);
 		const char* equal = strstr(line, "=");
-		tsk_param_t *param = TSK_PARAM_CREATE_NULL();
+		tsk_param_t *param = tsk_param_create_null();
 
 		if(param && equal && equal<end)
 		{
@@ -116,14 +130,14 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 	}
 
 	if(!*self){
-		*self = TSK_LIST_CREATE();
+		*self = tsk_list_create();
 	}
 
 	if((param = (tsk_param_t*)tsk_params_get_param_by_name(*self, name))){
 		tsk_strupdate(&param->value, value); /* Already exist ==> update the value. */
 	}
 	else{
-		param = TSK_PARAM_CREATE(name, value);
+		param = tsk_param_create(name, value);
 		tsk_list_push_back_data(*self, (void**)&param);
 	}
 
@@ -280,7 +294,7 @@ bail:
 //=================================================================================================
 //	param object definition
 //
-static tsk_object_t* tsk_param_create(tsk_object_t* self, va_list * app)
+static tsk_object_t* tsk_param_ctor(tsk_object_t* self, va_list * app)
 {
 	tsk_param_t *param = self;
 	if(param){
@@ -298,7 +312,7 @@ static tsk_object_t* tsk_param_create(tsk_object_t* self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsk_param_destroy(tsk_object_t* self)
+static tsk_object_t* tsk_param_dtor(tsk_object_t* self)
 { 
 	tsk_param_t *param = self;
 	if(param){
@@ -312,8 +326,8 @@ static tsk_object_t* tsk_param_destroy(tsk_object_t* self)
 static const tsk_object_def_t tsk_param_def_s = 
 {
 	sizeof(tsk_param_t),
-	tsk_param_create, 
-	tsk_param_destroy,
+	tsk_param_ctor, 
+	tsk_param_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsk_param_def_t = &tsk_param_def_s;

@@ -59,7 +59,7 @@ void test_messages()
 	/* deserialize the message */
 	tsk_ragel_state_init(&state, TEST_MSG, strlen(TEST_MSG));
 	if(!(ret = thttp_message_parse(&state, &message, 1))){
-		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+		tsk_buffer_t *buffer = tsk_buffer_create_null();
 
 		/* serialize the message */
 		thttp_message_serialize(message, buffer);

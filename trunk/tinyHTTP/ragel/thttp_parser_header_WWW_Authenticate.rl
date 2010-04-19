@@ -128,13 +128,16 @@
 
 }%%
 
+thttp_header_WWW_Authenticate_t* thttp_header_www_authenticate_create()
+{
+	return tsk_object_new(thttp_header_WWW_Authenticate_def_t);
+}
+
 int thttp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const thttp_header_WWW_Authenticate_t *WWW_Authenticate = header;
-		if(WWW_Authenticate && WWW_Authenticate->scheme)
-		{
+		if(WWW_Authenticate && WWW_Authenticate->scheme){
 			return tsk_buffer_append_2(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
 				WWW_Authenticate->scheme,
 				WWW_Authenticate->realm ? WWW_Authenticate->realm : "",
@@ -175,7 +178,7 @@ thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char 
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_WWW_Authenticate_t *hdr_WWW_Authenticate = THTTP_HEADER_WWW_AUTHENTICATE_CREATE();
+	thttp_header_WWW_Authenticate_t *hdr_WWW_Authenticate = thttp_header_www_authenticate_create();
 	
 	const char *tag_start;
 
@@ -204,7 +207,7 @@ thttp_header_Proxy_Authenticate_t *thttp_header_Proxy_Authenticate_parse(const c
 //	WWW_Authenticate header object definition
 //
 
-static tsk_object_t* thttp_header_WWW_Authenticate_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_WWW_Authenticate_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_WWW_Authenticate_t *WWW_Authenticate = self;
 	if(WWW_Authenticate){
@@ -217,7 +220,7 @@ static tsk_object_t* thttp_header_WWW_Authenticate_create(tsk_object_t *self, va
 	return self;
 }
 
-static tsk_object_t* thttp_header_WWW_Authenticate_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_WWW_Authenticate_dtor(tsk_object_t *self)
 {
 	thttp_header_WWW_Authenticate_t *WWW_Authenticate = self;
 	if(WWW_Authenticate){
@@ -241,8 +244,8 @@ static tsk_object_t* thttp_header_WWW_Authenticate_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_WWW_Authenticate_def_s = 
 {
 	sizeof(thttp_header_WWW_Authenticate_t),
-	thttp_header_WWW_Authenticate_create,
-	thttp_header_WWW_Authenticate_destroy,
+	thttp_header_WWW_Authenticate_ctor,
+	thttp_header_WWW_Authenticate_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_WWW_Authenticate_def_t = &thttp_header_WWW_Authenticate_def_s;

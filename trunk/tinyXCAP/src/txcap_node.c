@@ -81,7 +81,7 @@ char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 {
 	char* ret = tsk_null;
 	char* namespace = tsk_null;
-	tsk_buffer_t* buffer = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t* buffer = tsk_buffer_create_null();
 	txcap_selector_param_type_t step;
 
 	while((step = va_arg(*app, txcap_selector_param_type_t)) != xcapp_node_null){
@@ -89,7 +89,7 @@ char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 			case xcapp_node_name:
 				{	/* (const char*)QNAME_STR */
 					const char* QNAME_STR = va_arg(*app, const char*);
-					if(tsk_buffer_appendEx(buffer, "/%s", QNAME_STR)){
+					if(tsk_buffer_append_2(buffer, "/%s", QNAME_STR)){
 						goto bail;
 					}
 					break;
@@ -98,7 +98,7 @@ char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 				{	/* (const char*)QNAME_STR, (unsigned int)POS_UINT */
 					const char* QNAME_STR = va_arg(*app, const char*);
 					unsigned int POS_UINT = va_arg(*app, unsigned int);
-					tsk_buffer_appendEx(buffer, "/%s%%5B%u%%5D", 
+					tsk_buffer_append_2(buffer, "/%s%%5B%u%%5D", 
 						QNAME_STR, POS_UINT);
 					break;
 				}
@@ -107,7 +107,7 @@ char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 					const char* QNAME_STR = va_arg(*app, const char*); 
 					const char* ATT_QNAME_STR = va_arg(*app, const char*); 
 					const char* ATT_VALUE_STR = va_arg(*app, const char*);
-					tsk_buffer_appendEx(buffer, "/%s%%5B@%s=%%22%s%%22%%5D", 
+					tsk_buffer_append_2(buffer, "/%s%%5B@%s=%%22%s%%22%%5D", 
 						QNAME_STR, ATT_QNAME_STR, ATT_VALUE_STR);
 					break;
 				}
@@ -117,7 +117,7 @@ char* txcap_selector_get_node_2(const char* auid_id, va_list* app)
 					unsigned int POS_UINT = va_arg(*app, unsigned int);
 					const char* ATT_QNAME_STR = va_arg(*app, const char*);
 					const char* ATT_VALUE_STR = va_arg(*app, const char*);
-					tsk_buffer_appendEx(buffer, "/%s%%5B%u%%5D%%5B@%s=%%22%s%%22%%5D", 
+					tsk_buffer_append_2(buffer, "/%s%%5B%u%%5D%%5B@%s=%%22%s%%22%%5D", 
 						QNAME_STR, POS_UINT, ATT_QNAME_STR, ATT_VALUE_STR);
 					break;
 				}

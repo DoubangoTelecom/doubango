@@ -50,7 +50,7 @@ static int tsk_runnable_init(tsk_runnable_t *self, const tsk_object_def_t *objde
 		
 		self->semaphore = tsk_semaphore_create();
 		self->objdef = objdef;
-		self->objects = TSK_LIST_CREATE();
+		self->objects = tsk_list_create();
 
 		self->initialized = tsk_true;
 		return 0;

@@ -46,6 +46,11 @@
 /* #line 148 "./ragel/thttp_parser_header_Authorization.rl" */
 
 
+thttp_header_Authorization_t* thttp_header_authorization_create()
+{
+	return tsk_object_new(thttp_header_Authorization_def_t);
+}
+
 int thttp_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -112,12 +117,12 @@ thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data,
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Authorization_t *hdr_Authorization = THTTP_HEADER_AUTHORIZATION_CREATE();
+	thttp_header_Authorization_t *hdr_Authorization = thttp_header_authorization_create();
 	
 	const char *tag_start;
 
 	
-/* #line 121 "./src/headers/thttp_header_Authorization.c" */
+/* #line 126 "./src/headers/thttp_header_Authorization.c" */
 static const char _thttp_machine_parser_header_Authorization_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -9509,16 +9514,16 @@ static const int thttp_machine_parser_header_Authorization_error = 0;
 static const int thttp_machine_parser_header_Authorization_en_main = 1;
 
 
-/* #line 221 "./ragel/thttp_parser_header_Authorization.rl" */
+/* #line 226 "./ragel/thttp_parser_header_Authorization.rl" */
 	
-/* #line 9515 "./src/headers/thttp_header_Authorization.c" */
+/* #line 9520 "./src/headers/thttp_header_Authorization.c" */
 	{
 	cs = thttp_machine_parser_header_Authorization_start;
 	}
 
-/* #line 222 "./ragel/thttp_parser_header_Authorization.rl" */
+/* #line 227 "./ragel/thttp_parser_header_Authorization.rl" */
 	
-/* #line 9522 "./src/headers/thttp_header_Authorization.c" */
+/* #line 9527 "./src/headers/thttp_header_Authorization.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -9700,7 +9705,7 @@ _match:
 	{
 	}
 	break;
-/* #line 9704 "./src/headers/thttp_header_Authorization.c" */
+/* #line 9709 "./src/headers/thttp_header_Authorization.c" */
 		}
 	}
 
@@ -9713,12 +9718,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 223 "./ragel/thttp_parser_header_Authorization.rl" */
+/* #line 228 "./ragel/thttp_parser_header_Authorization.rl" */
 	
 	if( cs < 
-/* #line 9720 "./src/headers/thttp_header_Authorization.c" */
+/* #line 9725 "./src/headers/thttp_header_Authorization.c" */
 1396
-/* #line 224 "./ragel/thttp_parser_header_Authorization.rl" */
+/* #line 229 "./ragel/thttp_parser_header_Authorization.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Authorization header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Authorization);
@@ -9740,7 +9745,7 @@ thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const
 //	Authorization header object definition
 //
 
-static tsk_object_t* thttp_header_Authorization_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Authorization_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Authorization_t *Authorization = self;
 	if(Authorization){
@@ -9753,7 +9758,7 @@ static tsk_object_t* thttp_header_Authorization_create(tsk_object_t *self, va_li
 	return self;
 }
 
-static tsk_object_t* thttp_header_Authorization_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_Authorization_dtor(tsk_object_t *self)
 {
 	thttp_header_Authorization_t *Authorization = self;
 	if(Authorization){
@@ -9781,8 +9786,8 @@ static tsk_object_t* thttp_header_Authorization_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_Authorization_def_s = 
 {
 	sizeof(thttp_header_Authorization_t),
-	thttp_header_Authorization_create,
-	thttp_header_Authorization_destroy,
+	thttp_header_Authorization_ctor,
+	thttp_header_Authorization_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Authorization_def_t = &thttp_header_Authorization_def_s;

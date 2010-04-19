@@ -119,7 +119,7 @@ void test_o_rpdata_submit()
 
 
 	// serialize
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	ret = tsms_rpdu_data_serialize(rp_data, buffer);
 	// send(socket, buffer->data, buffer->size);
 	// print result (hex) to the console
@@ -154,7 +154,7 @@ void test_o_rpdata_deliver()
 	// create RP-DATA message
 	rp_data = tsms_rpdu_data_create_mt(0x01, smsc, TSMS_TPDU_MESSAGE(sms_deliver));
 	// serialize
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	ret = tsms_rpdu_data_serialize(rp_data, buffer);
 	// send(socket, buffer->data, buffer->size);
 	// print result (hex) to the console
@@ -179,7 +179,7 @@ void test_o_rpdata_smma()
 	// create RP-SMMA message
 	rp_smma = tsms_rpdu_smma_create(mr);
 	// serialize
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	ret = tsms_rpdu_data_serialize(rp_smma, buffer);
 	// send(socket, buffer->data, buffer->size);
 	// print result (hex) to the console
@@ -209,7 +209,7 @@ void test_o_rpdata_ack()
 	// create RP-ACK message (From MS to SC)
 	rp_ack = tsms_rpdu_ack_create_mo(mr, TSMS_TPDU_MESSAGE(sms_report));
 	// serialize
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	if(!(ret = tsms_rpdu_data_serialize(rp_ack, buffer))){
 		// send(socket, buffer->data, buffer->size);
 		// print result (hex) to the console
@@ -241,7 +241,7 @@ void test_o_rpdata_error()
 	// create RP-ERROR message
 	rp_error = tsms_rpdu_error_create_mo(mr, TSMS_TPDU_MESSAGE(sms_report), 0x0A/*call barred*/);
 	// serialize
-	buffer = TSK_BUFFER_CREATE_NULL();
+	buffer = tsk_buffer_create_null();
 	if(!(ret = tsms_rpdu_data_serialize(rp_error, buffer))){
 		// send(socket, buffer->data, buffer->size);
 		// print result (hex) to the console

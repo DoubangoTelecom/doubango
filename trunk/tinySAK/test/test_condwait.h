@@ -81,9 +81,6 @@ void test_condwait()
 	tsk_thread_join(&tid[2]);
 
 	tsk_condwait_destroy(&condwait);
-
-	// (create condition variable)
-	tsk_condwait_handle_t *condition = tsk_condwait_create();
 }
 
 #endif /* _TEST_CONDWAIT_H_ */

@@ -68,6 +68,64 @@ static int pred_find_header_by_name(const tsk_list_item_t *item, const void *nam
 	return -1;
 }
 
+
+/**@ingroup thttp_message_group
+* Creates new HTTP message. Could be either a request or a response.
+* @retval @ref thttp_message_t object.
+* @sa @ref thttp_request_create()<br>@ref thttp_response_create()
+*/
+thttp_message_t* thttp_message_create()
+{
+	return tsk_object_new(thttp_message_def_t, thttp_unknown);
+}
+
+/**@ingroup thttp_message_group
+* Creates new HTTP request.
+* @param method The method (const char*). e.g. GET, POST, HEAD ...
+* @param url The url (@ref thttp_url_t).
+* @retval @ref thttp_request_t object.
+*
+* @code
+// example
+thttp_url_t* url;
+thttp_request_t* request;
+if((url = thttp_url_parse("http://www.google.com", strlen("http://www.google.com")))){
+	request = thttp_request_create("GET", url);
+	// ... 
+	TSK_OBJECT_SAFE_FREE(url);
+	TSK_OBJECT_SAFE_FREE(request);
+}
+* @endcode
+*/
+thttp_request_t* thttp_request_create(const char* method, const thttp_url_t* url)
+{
+	return tsk_object_new(thttp_message_def_t, thttp_request, method, url);
+}
+
+
+
+/**@ingroup thttp_message_group
+* Creates a HTTP response.
+* @param request The request (@ref thttp_request_t) from which to create the response.
+* @param status_code The status code (short).
+* @param reason_phrase The reason phrase (const char*).
+* @retval @ref thttp_response_t object.
+*
+* @code
+// example
+//thttp_request_t* request;
+thttp_response_t* response;
+if((response = thttp_response_create(request, 200, "OK"))){
+	TSK_OBJECT_SAFE_FREE(response);
+}
+* @endcode
+*/
+thttp_response_t* thttp_response_create(const thttp_request_t* request, short status_code, const char* reason_phrase)
+{
+	return tsk_object_new(thttp_message_def_t, thttp_response, request, status_code, reason_phrase);
+}
+
+
 /**@ingroup thttp_message_group
 */
 int	thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr)
@@ -133,7 +191,7 @@ int thttp_message_add_content(thttp_message_t *self, const char* content_type, c
 			THTTP_MESSAGE_ADD_HEADER(self, THTTP_HEADER_CONTENT_TYPE_VA_ARGS(content_type));
 		}
 		THTTP_MESSAGE_ADD_HEADER(self, THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(size));
-		self->Content = TSK_BUFFER_CREATE(content, size);
+		self->Content = tsk_buffer_create(content, size);
 
 		return 0;
 	}
@@ -146,7 +204,7 @@ int thttp_message_append_content(thttp_message_t *self, const void* content, siz
 {
 	if(self && content && size){
 		if(!self->Content){
-			self->Content = TSK_BUFFER_CREATE(content, size);
+			self->Content = tsk_buffer_create(content, size);
 		}
 		else{
 			tsk_buffer_append(self->Content, content, size);
@@ -311,7 +369,7 @@ int thttp_message_serialize(const thttp_message_t *self, tsk_buffer_t *output)
 char* thttp_message_tostring(const thttp_message_t *self)
 {
 	char* ret = tsk_null;
-	tsk_buffer_t* output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t* output = tsk_buffer_create_null();
 
 	if(!thttp_message_serialize(self, output)){
 		ret = tsk_strndup(output->data, output->size);
@@ -327,7 +385,7 @@ thttp_request_t *thttp_request_new(const char* method, const thttp_url_t *reques
 {
 	thttp_request_t* request = 0;
 	
-	if((request = THTTP_REQUEST_CREATE(method, request_url))){
+	if((request = thttp_request_create(method, request_url))){
 		THTTP_MESSAGE_ADD_HEADER(request, THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
 	}
 	return request;
@@ -340,7 +398,7 @@ thttp_response_t *thttp_response_new(short status_code, const char* reason_phras
 	thttp_response_t *response = 0;
 
 	if(request){
-		response = THTTP_RESPONSE_CREATE(request, status_code, reason_phrase);
+		response = thttp_response_create(request, status_code, reason_phrase);
 		THTTP_MESSAGE_ADD_HEADER(response, THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(0));
 		/*
 			Copy other headers
@@ -364,13 +422,13 @@ thttp_response_t *thttp_response_new(short status_code, const char* reason_phras
 
 /**@ingroup thttp_message_group
 */
-static void* thttp_message_create(void *self, va_list * app)
+static tsk_object_t* thttp_message_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_message_t *message = self;
 	if(message)
 	{
 		message->type = va_arg(*app, thttp_message_type_t); 
-		message->headers = TSK_LIST_CREATE();
+		message->headers = tsk_list_create();
 
 		switch(message->type)
 		{
@@ -399,8 +457,7 @@ static void* thttp_message_create(void *self, va_list * app)
 			}
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new http message.");
 	}
 	return self;
@@ -408,18 +465,15 @@ static void* thttp_message_create(void *self, va_list * app)
 
 /**@ingroup thttp_message_group
 */
-static void* thttp_message_destroy(void *self)
+static tsk_object_t* thttp_message_dtor(tsk_object_t *self)
 {
 	thttp_message_t *message = self;
-	if(message)
-	{
-		if(THTTP_MESSAGE_IS_REQUEST(message))
-		{
+	if(message){
+		if(THTTP_MESSAGE_IS_REQUEST(message)){
 			TSK_FREE(message->method);
 			TSK_OBJECT_SAFE_FREE(message->url);
 		}
-		else if(THTTP_MESSAGE_IS_RESPONSE(message))
-		{
+		else if(THTTP_MESSAGE_IS_RESPONSE(message)){
 			TSK_FREE(message->reason_phrase);
 		}
 
@@ -432,7 +486,9 @@ static void* thttp_message_destroy(void *self)
 
 		TSK_OBJECT_SAFE_FREE(message->headers);
 	}
-	else TSK_DEBUG_ERROR("Null HTTP message.");
+	else{
+		TSK_DEBUG_ERROR("Null HTTP message.");
+	}
 
 	return self;
 }
@@ -440,8 +496,8 @@ static void* thttp_message_destroy(void *self)
 static const tsk_object_def_t thttp_message_def_s = 
 {
 	sizeof(thttp_message_t),
-	thttp_message_create,
-	thttp_message_destroy,
-	0
+	thttp_message_ctor,
+	thttp_message_dtor,
+	tsk_null
 };
-const void *thttp_message_def_t = &thttp_message_def_s;
+const tsk_object_def_t *thttp_message_def_t = &thttp_message_def_s;

@@ -125,7 +125,7 @@ TSK_BEGIN_DECLS
 		tsk_param_t *param = tsk_params_parse_param(tag_start, len); \
 		if(param) \
 		{ \
-			if(!dest) dest = TSK_LIST_CREATE(); \
+			if(!dest) dest = tsk_list_create(); \
 			tsk_list_push_back_data(dest, ((void**) &param)); \
 		} \
 	}
@@ -140,7 +140,7 @@ TSK_BEGIN_DECLS
 			tsk_param_t *param = tsk_params_parse_param(ts, len); \
 			if(param) \
 			{ \
-				if(!dest) dest = TSK_LIST_CREATE(); \
+				if(!dest) dest = tsk_list_create(); \
 				tsk_list_push_back_data(dest, ((void**) &param)); \
 			} \
 		} \
@@ -151,11 +151,11 @@ TSK_BEGIN_DECLS
 #define TSK_PARSER_ADD_STRING(dest) \
 	{ \
 		size_t len = (size_t)(p  - tag_start); \
-		tsk_string_t *string = TSK_STRING_CREATE(0); \
+		tsk_string_t *string = tsk_string_create(tsk_null); \
 		string->value = tsk_calloc(len+1, sizeof(char)), memcpy(string->value, tag_start, len); \
 		if(!dest)  \
 		{  \
-			dest = TSK_LIST_CREATE(); \
+			dest = tsk_list_create(); \
 		} \
 		tsk_list_push_back_data(dest, ((void**) &string)); \
 	}

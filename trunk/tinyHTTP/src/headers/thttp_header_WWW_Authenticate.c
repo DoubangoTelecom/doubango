@@ -47,13 +47,16 @@
 /* #line 129 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 
 
+thttp_header_WWW_Authenticate_t* thttp_header_www_authenticate_create()
+{
+	return tsk_object_new(thttp_header_WWW_Authenticate_def_t);
+}
+
 int thttp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const thttp_header_WWW_Authenticate_t *WWW_Authenticate = header;
-		if(WWW_Authenticate && WWW_Authenticate->scheme)
-		{
+		if(WWW_Authenticate && WWW_Authenticate->scheme){
 			return tsk_buffer_append_2(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
 				WWW_Authenticate->scheme,
 				WWW_Authenticate->realm ? WWW_Authenticate->realm : "",
@@ -94,12 +97,12 @@ thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char 
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_WWW_Authenticate_t *hdr_WWW_Authenticate = THTTP_HEADER_WWW_AUTHENTICATE_CREATE();
+	thttp_header_WWW_Authenticate_t *hdr_WWW_Authenticate = thttp_header_www_authenticate_create();
 	
 	const char *tag_start;
 
 	
-/* #line 103 "./src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 106 "./src/headers/thttp_header_WWW_Authenticate.c" */
 static const char _thttp_machine_parser_header_WWW_Authenticate_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -6247,16 +6250,16 @@ static const int thttp_machine_parser_header_WWW_Authenticate_error = 0;
 static const int thttp_machine_parser_header_WWW_Authenticate_en_main = 1;
 
 
-/* #line 183 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 186 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	
-/* #line 6253 "./src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 6256 "./src/headers/thttp_header_WWW_Authenticate.c" */
 	{
 	cs = thttp_machine_parser_header_WWW_Authenticate_start;
 	}
 
-/* #line 184 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 187 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	
-/* #line 6260 "./src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 6263 "./src/headers/thttp_header_WWW_Authenticate.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -6418,7 +6421,7 @@ _match:
 	{
 	}
 	break;
-/* #line 6422 "./src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 6425 "./src/headers/thttp_header_WWW_Authenticate.c" */
 		}
 	}
 
@@ -6431,12 +6434,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 185 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 188 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
 	
 	if( cs < 
-/* #line 6438 "./src/headers/thttp_header_WWW_Authenticate.c" */
+/* #line 6441 "./src/headers/thttp_header_WWW_Authenticate.c" */
 966
-/* #line 186 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
+/* #line 189 "./ragel/thttp_parser_header_WWW_Authenticate.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse WWW-Authenticate header.");
 		TSK_OBJECT_SAFE_FREE(hdr_WWW_Authenticate);
@@ -6458,7 +6461,7 @@ thttp_header_Proxy_Authenticate_t *thttp_header_Proxy_Authenticate_parse(const c
 //	WWW_Authenticate header object definition
 //
 
-static tsk_object_t* thttp_header_WWW_Authenticate_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_WWW_Authenticate_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_WWW_Authenticate_t *WWW_Authenticate = self;
 	if(WWW_Authenticate){
@@ -6471,7 +6474,7 @@ static tsk_object_t* thttp_header_WWW_Authenticate_create(tsk_object_t *self, va
 	return self;
 }
 
-static tsk_object_t* thttp_header_WWW_Authenticate_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_WWW_Authenticate_dtor(tsk_object_t *self)
 {
 	thttp_header_WWW_Authenticate_t *WWW_Authenticate = self;
 	if(WWW_Authenticate){
@@ -6495,8 +6498,8 @@ static tsk_object_t* thttp_header_WWW_Authenticate_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_WWW_Authenticate_def_s = 
 {
 	sizeof(thttp_header_WWW_Authenticate_t),
-	thttp_header_WWW_Authenticate_create,
-	thttp_header_WWW_Authenticate_destroy,
+	thttp_header_WWW_Authenticate_ctor,
+	thttp_header_WWW_Authenticate_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_WWW_Authenticate_def_t = &thttp_header_WWW_Authenticate_def_s;

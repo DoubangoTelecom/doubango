@@ -2,19 +2,17 @@
 <tagfile>
   <compound kind="page">
     <name>index</name>
-    <title>18 SMS over IP</title>
+    <title>tinySMS API Overview</title>
     <filename>index</filename>
   </compound>
   <compound kind="file">
     <name>tinysms.h</name>
-    <path>C:/doubango/tinySMS/include/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/</path>
     <filename>tinysms_8h</filename>
-    <includes id="tinysms_8h" name="tinysms.h" local="yes" imported="no">tinySMS/tsms_packing.h</includes>
-    <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
   </compound>
   <compound kind="file">
     <name>tsms_rpdu.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/rpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/rpdu/</path>
     <filename>tsms__rpdu_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <class kind="struct">tsms_rpdu_data_s</class>
@@ -206,7 +204,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_command.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__command_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <class kind="struct">tsms_tpdu_command_s</class>
@@ -306,7 +304,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_deliver.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__deliver_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <class kind="struct">tsms_tpdu_deliver_s</class>
@@ -369,7 +367,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_report.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__report_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <class kind="struct">tsms_tpdu_report_s</class>
@@ -446,7 +444,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_status_report.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__status__report_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <class kind="struct">tsms_tpdu_status_report_s</class>
@@ -672,7 +670,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_submit.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/tpdu/</path>
     <filename>tsms__tpdu__submit_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <class kind="struct">tsms_tpdu_submit_s</class>
@@ -735,51 +733,16 @@
   </compound>
   <compound kind="file">
     <name>tsms.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/</path>
     <filename>tsms_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
   </compound>
   <compound kind="file">
     <name>tsms_address.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/</path>
     <filename>tsms__address_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <class kind="struct">tsms_address_s</class>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSMS_ADDRESS_CREATE</name>
-      <anchorfile>tsms__address_8h.html</anchorfile>
-      <anchor>ae20d0f7beec125be7ac3d95d928fc461</anchor>
-      <arglist>(digits, type)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSMS_ADDRESS_OA_CREATE</name>
-      <anchorfile>tsms__address_8h.html</anchorfile>
-      <anchor>aca3d861ec9b78463c98a4c6b5650923b</anchor>
-      <arglist>(digits)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSMS_ADDRESS_DA_CREATE</name>
-      <anchorfile>tsms__address_8h.html</anchorfile>
-      <anchor>a04c602f17663df48afe8ca607b66d7cd</anchor>
-      <arglist>(digits)</arglist>
-    </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TSMS_ADDRESS_SMSC_CREATE</name>
-      <anchorfile>tsms__address_8h.html</anchorfile>
-      <anchor>afeb619383cca68777bdc529e07edabb4</anchor>
-      <arglist>(digits)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>uint8_t</type>
-      <name>tsms_address_string_t</name>
-      <anchorfile>tsms__address_8h.html</anchorfile>
-      <anchor>a01eac0ff8524a9fb30983bde50824780</anchor>
-      <arglist>[13]</arglist>
-    </member>
     <member kind="typedef">
       <type>enum tsms_address_type_e</type>
       <name>tsms_address_type_t</name>
@@ -954,6 +917,41 @@
       <anchor>a7122f853adafd06405d4e85ad752f466</anchor>
       <arglist>(const void *data, size_t size, tsms_address_type_t xtype, size_t *length)</arglist>
     </member>
+    <member kind="function">
+      <type>tsms_address_t *</type>
+      <name>tsms_address_create</name>
+      <anchorfile>tsms__address_8h.html</anchorfile>
+      <anchor>ac56f24c7eca88ff0c3e14ea4ecccab10</anchor>
+      <arglist>(const tsms_address_string_t digits, tsms_address_type_t type)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsms_address_t *</type>
+      <name>tsms_address_oa_create</name>
+      <anchorfile>tsms__address_8h.html</anchorfile>
+      <anchor>ac76c474e2fba47adb26890326e4737ee</anchor>
+      <arglist>(const tsms_address_string_t digits)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsms_address_t *</type>
+      <name>tsms_address_da_create</name>
+      <anchorfile>tsms__address_8h.html</anchorfile>
+      <anchor>a43e6439ca43a91ad895dc06604d50013</anchor>
+      <arglist>(const tsms_address_string_t digits)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsms_address_t *</type>
+      <name>tsms_address_smsc_create</name>
+      <anchorfile>tsms__address_8h.html</anchorfile>
+      <anchor>a6537fd07058f579223b585ec3b40bf85</anchor>
+      <arglist>(const tsms_address_string_t digits)</arglist>
+    </member>
+    <member kind="variable">
+      <type>TSMS_BEGIN_DECLS typedef uint8_t</type>
+      <name>tsms_address_string_t</name>
+      <anchorfile>tsms__address_8h.html</anchorfile>
+      <anchor>aa639d2f581a1b27328d3366a24f3fc36</anchor>
+      <arglist>[13]</arglist>
+    </member>
     <member kind="variable">
       <type>TINYSMS_GEXTERN const tsk_object_def_t *</type>
       <name>tsms_address_def_t</name>
@@ -964,7 +962,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_common.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/</path>
     <filename>tsms__common_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <class kind="struct">tsms_tpdu_message_s</class>
@@ -1394,7 +1392,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_etsi_gsm_03_38.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/</path>
     <filename>tsms__etsi__gsm__03__38_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <member kind="define">
@@ -1407,7 +1405,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_packing.h</name>
-    <path>C:/doubango/tinySMS/include/tinysms/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/tinysms/</path>
     <filename>tsms__packing_8h</filename>
     <includes id="tinysms__config_8h" name="tinysms_config.h" local="yes" imported="no">tinysms_config.h</includes>
     <member kind="function">
@@ -1455,7 +1453,7 @@
   </compound>
   <compound kind="file">
     <name>tinysms_config.h</name>
-    <path>C:/doubango/tinySMS/include/</path>
+    <path>C:/Projects/Doubango/tinySMS/include/</path>
     <filename>tinysms__config_8h</filename>
     <member kind="define">
       <type>#define</type>
@@ -1488,7 +1486,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_rpdu.c</name>
-    <path>C:/doubango/tinySMS/src/rpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/rpdu/</path>
     <filename>tsms__rpdu_8c</filename>
     <member kind="define">
       <type>#define</type>
@@ -1612,7 +1610,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_command.c</name>
-    <path>C:/doubango/tinySMS/src/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__command_8c</filename>
     <member kind="define">
       <type>#define</type>
@@ -1652,7 +1650,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_deliver.c</name>
-    <path>C:/doubango/tinySMS/src/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__deliver_8c</filename>
     <member kind="define">
       <type>#define</type>
@@ -1692,7 +1690,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_report.c</name>
-    <path>C:/doubango/tinySMS/src/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__report_8c</filename>
     <member kind="define">
       <type>#define</type>
@@ -1746,7 +1744,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_status_report.c</name>
-    <path>C:/doubango/tinySMS/src/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__status__report_8c</filename>
     <member kind="define">
       <type>#define</type>
@@ -1786,7 +1784,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_tpdu_submit.c</name>
-    <path>C:/doubango/tinySMS/src/tpdu/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/tpdu/</path>
     <filename>tsms__tpdu__submit_8c</filename>
     <member kind="define">
       <type>#define</type>
@@ -1826,12 +1824,12 @@
   </compound>
   <compound kind="file">
     <name>tsms.c</name>
-    <path>C:/doubango/tinySMS/src/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/</path>
     <filename>tsms_8c</filename>
   </compound>
   <compound kind="file">
     <name>tsms_address.c</name>
-    <path>C:/doubango/tinySMS/src/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/</path>
     <filename>tsms__address_8c</filename>
     <member kind="function">
       <type>char *</type>
@@ -1839,6 +1837,34 @@
       <anchorfile>tsms__address_8c.html</anchorfile>
       <anchor>acfbe7bc61ad4dcc325f82f7d5a74a06e</anchor>
       <arglist>(const char *in, size_t in_len)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsms_address_t *</type>
+      <name>tsms_address_create</name>
+      <anchorfile>tsms__address_8c.html</anchorfile>
+      <anchor>ac56f24c7eca88ff0c3e14ea4ecccab10</anchor>
+      <arglist>(const tsms_address_string_t digits, tsms_address_type_t type)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsms_address_t *</type>
+      <name>tsms_address_oa_create</name>
+      <anchorfile>tsms__address_8c.html</anchorfile>
+      <anchor>ac76c474e2fba47adb26890326e4737ee</anchor>
+      <arglist>(const tsms_address_string_t digits)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsms_address_t *</type>
+      <name>tsms_address_da_create</name>
+      <anchorfile>tsms__address_8c.html</anchorfile>
+      <anchor>a43e6439ca43a91ad895dc06604d50013</anchor>
+      <arglist>(const tsms_address_string_t digits)</arglist>
+    </member>
+    <member kind="function">
+      <type>tsms_address_t *</type>
+      <name>tsms_address_smsc_create</name>
+      <anchorfile>tsms__address_8c.html</anchorfile>
+      <anchor>a6537fd07058f579223b585ec3b40bf85</anchor>
+      <arglist>(const tsms_address_string_t digits)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1864,7 +1890,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_common.c</name>
-    <path>C:/doubango/tinySMS/src/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/</path>
     <filename>tsms__common_8c</filename>
     <member kind="function">
       <type>tsms_tpdu_message_t *</type>
@@ -2072,7 +2098,7 @@
   </compound>
   <compound kind="file">
     <name>tsms_packing.c</name>
-    <path>C:/doubango/tinySMS/src/</path>
+    <path>C:/Projects/Doubango/tinySMS/src/</path>
     <filename>tsms__packing_8c</filename>
     <member kind="function">
       <type>tsk_buffer_t *</type>

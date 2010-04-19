@@ -43,6 +43,16 @@
 /* #line 79 "./ragel/thttp_parser_header_Content_Type.rl" */
 
 
+thttp_header_Content_Type_t* thttp_header_content_type_create(const char* type)
+{
+	return tsk_object_new(THTTP_HEADER_CONTENT_TYPE_VA_ARGS(type));
+}
+
+thttp_header_Content_Type_t* thttp_header_content_type_create_null()
+{
+	return thttp_header_content_type_create(tsk_null);
+}
+
 int thttp_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header){
@@ -61,12 +71,12 @@ thttp_header_Content_Type_t *thttp_header_Content_Type_parse(const char *data, s
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Content_Type_t *hdr_ctype = THTTP_HEADER_CONTENT_TYPE_CREATE_NULL();
+	thttp_header_Content_Type_t *hdr_ctype = thttp_header_content_type_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 70 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 80 "./src/headers/thttp_header_Content_Type.c" */
 static const char _thttp_machine_parser_header_Content_Type_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -232,16 +242,16 @@ static const int thttp_machine_parser_header_Content_Type_error = 0;
 static const int thttp_machine_parser_header_Content_Type_en_main = 1;
 
 
-/* #line 104 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 114 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
-/* #line 238 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 248 "./src/headers/thttp_header_Content_Type.c" */
 	{
 	cs = thttp_machine_parser_header_Content_Type_start;
 	}
 
-/* #line 105 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 115 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
-/* #line 245 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 255 "./src/headers/thttp_header_Content_Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -338,7 +348,7 @@ _match:
 	{
 	}
 	break;
-/* #line 342 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 352 "./src/headers/thttp_header_Content_Type.c" */
 		}
 	}
 
@@ -351,12 +361,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 106 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 116 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
 	if( cs < 
-/* #line 358 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 368 "./src/headers/thttp_header_Content_Type.c" */
 60
-/* #line 107 "./ragel/thttp_parser_header_Content_Type.rl" */
+/* #line 117 "./ragel/thttp_parser_header_Content_Type.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Content-Type header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);
@@ -377,7 +387,7 @@ _again:
 
 /**@ingroup thttp_header_Content_Type_group
 */
-static tsk_object_t* thttp_header_Content_Type_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Content_Type_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Content_Type_t *Content_Type = self;
 	if(Content_Type){
@@ -394,7 +404,7 @@ static tsk_object_t* thttp_header_Content_Type_create(tsk_object_t *self, va_lis
 
 /**@ingroup thttp_header_Content_Type_group
 */
-static tsk_object_t* thttp_header_Content_Type_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_Content_Type_dtor(tsk_object_t *self)
 {
 	thttp_header_Content_Type_t *Content_Type = self;
 	if(Content_Type){
@@ -411,8 +421,8 @@ static tsk_object_t* thttp_header_Content_Type_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_Content_Type_def_s = 
 {
 	sizeof(thttp_header_Content_Type_t),
-	thttp_header_Content_Type_create,
-	thttp_header_Content_Type_destroy,
+	thttp_header_Content_Type_ctor,
+	thttp_header_Content_Type_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Content_Type_def_t = &thttp_header_Content_Type_def_s;

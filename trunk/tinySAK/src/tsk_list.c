@@ -48,6 +48,24 @@ static int tsk_list_find_by_item(const tsk_list_item_t* item, const void* _item)
 }
 
 /**@ingroup tsk_list_group
+* Creates a linked list object.
+* You MUST use @ref TSK_OBJECT_SAFE_FREE() to safely free the object.
+*/
+tsk_list_t* tsk_list_create()
+{
+	return tsk_object_new(tsk_list_def_t);
+}
+
+/**@ingroup tsk_list_group
+* Create and initialize an item to be added to a linked list.
+* You MUST use @ref TSK_OBJECT_SAFE_FREE() to safely free the object.
+*/
+tsk_list_item_t* tsk_list_item_create()
+{
+	return tsk_object_new(tsk_list_item_def_t);
+}
+
+/**@ingroup tsk_list_group
 * Remove an item from the @a list.
 * @param list the list from which to remove the @a item.
 * @param item the item to remove from the @a list.
@@ -318,7 +336,7 @@ void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back
 void tsk_list_push_data(tsk_list_t* list, void** data, tsk_bool_t back)
 {
 	if(data){
-		tsk_list_item_t *item = TSK_LIST_ITEM_CREATE();
+		tsk_list_item_t *item = tsk_list_item_create();
 		item->data = *data;
 		
 		tsk_list_push_item(list, &item, back);
@@ -338,7 +356,7 @@ void tsk_list_push_data(tsk_list_t* list, void** data, tsk_bool_t back)
 void tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_bool_t ascending)
 {
 	if(data){
-		tsk_list_item_t *item = TSK_LIST_ITEM_CREATE();
+		tsk_list_item_t *item = tsk_list_item_create();
 		item->data = *data;
 		
 		tsk_list_push_filtered_item(list, &item, ascending);
@@ -410,7 +428,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 //=================================================================================================
 //	Item object definition
 //
-static tsk_object_t* tsk_list_item_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsk_list_item_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_list_item_t *item = self;
 	if(item){
@@ -418,7 +436,7 @@ static tsk_object_t* tsk_list_item_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsk_list_item_destroy(tsk_object_t *self)
+static tsk_object_t* tsk_list_item_dtor(tsk_object_t *self)
 {
 	tsk_list_item_t *item = self;
 	if(item){
@@ -441,12 +459,11 @@ static int tsk_list_item_cmp(const tsk_object_t *_item1, const tsk_object_t *_it
 	else return -1;
 }
 
-//TSK_DECLARE_DEF(tsk, list_item);
 static const tsk_object_def_t tsk_list_item_def_s =
 {
 	sizeof(tsk_list_item_t),	
-	tsk_list_item_create,
-	tsk_list_item_destroy,
+	tsk_list_item_ctor,
+	tsk_list_item_dtor,
 	tsk_list_item_cmp,
 };
 const tsk_object_def_t *tsk_list_item_def_t = &tsk_list_item_def_s;
@@ -454,7 +471,7 @@ const tsk_object_def_t *tsk_list_item_def_t = &tsk_list_item_def_s;
 //=================================================================================================
 //	List object definition
 //
-static tsk_object_t* tsk_list_create(tsk_object_t *self, va_list *app)
+static tsk_object_t* tsk_list_ctor(tsk_object_t *self, va_list *app)
 {
 	tsk_list_t *list = self;
 	if(list){
@@ -463,11 +480,10 @@ static tsk_object_t* tsk_list_create(tsk_object_t *self, va_list *app)
 	return self;
 }
 
-static tsk_object_t* tsk_list_destroy(tsk_object_t *self)
+static tsk_object_t* tsk_list_dtor(tsk_object_t *self)
 { 
 	tsk_list_t *list = self;
-	if(list)
-	{
+	if(list){
 #if 0
 		/* Not thread-safe */
 		tsk_list_item_t* next = tsk_null;
@@ -495,8 +511,8 @@ static tsk_object_t* tsk_list_destroy(tsk_object_t *self)
 static const tsk_object_def_t tsk_list_def_s =
 {
 	sizeof(tsk_list_t),
-	tsk_list_create,
-	tsk_list_destroy,
+	tsk_list_ctor,
+	tsk_list_dtor,
 	tsk_null,
 };
 const tsk_object_def_t *tsk_list_def_t = &tsk_list_def_s;

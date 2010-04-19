@@ -38,7 +38,6 @@
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_DIALOG_CREATE(session)		tsk_object_new(thttp_dialog_def_t, (struct thttp_session_s*)session)
 
 typedef uint64_t thttp_dialog_id_t;
 

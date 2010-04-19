@@ -60,21 +60,21 @@ struct b64_msg b64_msgs[] =
 		"* You should have received a copy of the GNU General Public License"
 		"* along with DOUBANGO."
 		,
-		"KiBDb3B5cmlnaHQgKEMpIDIwMDkgTWFtYWRvdSBEaW9wLioqIENvbnRhY3Q6IE1hbWF"
-		"kb3UgRGlvcCA8ZGlvcG1hbWFkb3VAeWFob28uZnI+KiogVGhpcyBmaWxlIGlzIHBhcn"
-		"Qgb2YgT3BlbiBTb3VyY2UgRG91YmFuZ28gRnJhbWV3b3JrLioqIERPVUJBTkdPIGlzI"
-		"GZyZWUgc29mdHdhcmU6IHlvdSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2Rp"
-		"ZnkqIGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIEx"
-		"pY2Vuc2UgYXMgcHVibGlzaGVkIGJ5KiB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW"
-		"9uLCBlaXRoZXIgdmVyc2lvbiAzIG9mIHRoZSBMaWNlbnNlLCBvciogKGF0IHlvdXIgb"
-		"3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4qKiBET1VCQU5HTyBpcyBkaXN0cmlidXRl"
-		"ZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLCogYnV0IFdJVEhPVVQ"
-		"gQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2"
-		"YqIE1FUkNIQU5UQUJJTElUWSBvciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSU"
-		"E9TRS4gIFNlZSB0aGUqIEdOVSBMZXNzZXIgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBm"
-		"b3IgbW9yZSBkZXRhaWxzLioqIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHk"
-		"gb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlKiBhbG9uZyB3aXRoIERPVU"
-		"JBTkdPLg=="
+		"KiBDb3B5cmlnaHQgKEMpIDIwMDkgTWFtYWRvdSBEaW9wLioqIENvbnRhY3Q6IE1hbW"
+		"Fkb3UgRGlvcCA8ZGlvcG1hbWFkb3UoYXQpZG91YmFuZ28ub3JnPioqIFRoaXMgZmls"
+		"ZSBpcyBwYXJ0IG9mIE9wZW4gU291cmNlIERvdWJhbmdvIEZyYW1ld29yay4qKiBET1"
+		"VCQU5HTyBpcyBmcmVlIHNvZnR3YXJlOiB5b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBh"
+		"bmQvb3IgbW9kaWZ5KiBpdCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIEdOVSBHZW5lcm"
+		"FsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieSogdGhlIEZyZWUgU29mdHdh"
+		"cmUgRm91bmRhdGlvbiwgZWl0aGVyIHZlcnNpb24gMyBvZiB0aGUgTGljZW5zZSwgb3"
+		"IqIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uKiogRE9VQkFOR08g"
+		"aXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBpdCB3aWxsIGJlIHVzZWZ1bC"
+		"wqIGJ1dCBXSVRIT1VUIEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBs"
+		"aWVkIHdhcnJhbnR5IG9mKiBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQS"
+		"BQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlKiBHTlUgR2VuZXJhbCBQdWJsaWMg"
+		"TGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLioqIFlvdSBzaG91bGQgaGF2ZSByZWNlaX"
+		"ZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlKiBhbG9u"
+		"ZyB3aXRoIERPVUJBTkdPLg=="
 	}
 };
 
@@ -83,18 +83,15 @@ void test_base64()
 	size_t i, size;
 	char *output_e = 0, *output_d = 0;
 
-	for(i=0; i<sizeof(b64_msgs)/sizeof(struct b64_msg); i++)
-	{
+	for(i=0; i<sizeof(b64_msgs)/sizeof(struct b64_msg); i++){
 		/*===========
 		*	Encoding 
 		*/
 		size = tsk_base64_encode((const uint8_t*)b64_msgs[i].ascii, strlen(b64_msgs[i].ascii), &output_e);
-		if(tsk_striequals(b64_msgs[i].base64, output_e))
-		{
+		if(tsk_striequals(b64_msgs[i].base64, output_e)){
 			TSK_DEBUG_INFO("[BASE64-%d encoding] ==> OK", i);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_INFO("[BASE64-%d encoding] ==> NOK", i);
 		}
 		TSK_FREE(output_e);
@@ -103,12 +100,10 @@ void test_base64()
 		*	Decoding 
 		*/
 		size = tsk_base64_decode((const uint8_t*)b64_msgs[i].base64, strlen(b64_msgs[i].base64), &output_d);
-		if(tsk_striequals(b64_msgs[i].ascii, output_d))
-		{
+		if(tsk_striequals(b64_msgs[i].ascii, output_d)){
 			TSK_DEBUG_INFO("[BASE64-%d decoding] ==> OK", i);
 		}
-		else
-		{
+		else{
 			TSK_DEBUG_INFO("[BASE64-%d decoding] ==> NOK", i);
 		}
 		TSK_FREE(output_d);

@@ -147,6 +147,11 @@
 
 }%%
 
+thttp_header_Authorization_t* thttp_header_authorization_create()
+{
+	return tsk_object_new(thttp_header_Authorization_def_t);
+}
+
 int thttp_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -213,7 +218,7 @@ thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data,
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_Authorization_t *hdr_Authorization = THTTP_HEADER_AUTHORIZATION_CREATE();
+	thttp_header_Authorization_t *hdr_Authorization = thttp_header_authorization_create();
 	
 	const char *tag_start;
 
@@ -242,7 +247,7 @@ thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const
 //	Authorization header object definition
 //
 
-static tsk_object_t* thttp_header_Authorization_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_Authorization_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_Authorization_t *Authorization = self;
 	if(Authorization){
@@ -255,7 +260,7 @@ static tsk_object_t* thttp_header_Authorization_create(tsk_object_t *self, va_li
 	return self;
 }
 
-static tsk_object_t* thttp_header_Authorization_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_Authorization_dtor(tsk_object_t *self)
 {
 	thttp_header_Authorization_t *Authorization = self;
 	if(Authorization){
@@ -283,8 +288,8 @@ static tsk_object_t* thttp_header_Authorization_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_Authorization_def_s = 
 {
 	sizeof(thttp_header_Authorization_t),
-	thttp_header_Authorization_create,
-	thttp_header_Authorization_destroy,
+	thttp_header_Authorization_ctor,
+	thttp_header_Authorization_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_Authorization_def_t = &thttp_header_Authorization_def_s;

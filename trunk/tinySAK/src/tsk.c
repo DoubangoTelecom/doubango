@@ -35,8 +35,8 @@
 * <h1>6	ANSI-C Object Programming</h1>
 * As you probably know, C is not an object oriented language.<br>
 * Today, OOP (Object-Oriented Programing) is the best way to program well designed softwares.<br>
-* In this document a “well-defined object” is a special C structure. All functions shown in this chapter are part of tinySAK project.<br>
-* To explain how well-defined objects are implemented and used I will give an example based on “Person” object.<br>
+* In this charpter a “well-defined object” is a special C structure. All functions shown in this chapter are part of tinySAK project.<br>
+* To explain how well-defined objects are implemented and used, I will give an example based on “Person” object.<br>
 * The person object is declared like this:<br>
 * @code
 * typedef struct person_s
@@ -44,7 +44,7 @@
 	TSK_DECLARE_OBJECT; // Mandatory
 
 	char* name;
-	person_t* girlfriend;
+	struct person_s* girlfriend;
 }
 person_t;
 * @endcode
@@ -68,8 +68,8 @@ typedef struct tsk_object_def_s
 tsk_object_def_t;
 * @endcode
 *
-* An object is created in two phases. The first phase consists of dynamically allocating the object on the heap; this is why its size is mandatory in the object definition structure. When a new object is allocated on the heap all its members (char*, void*, int, long …) will be zeroed. In the second phase, the newly created object will be initialized by calling the supplied constructor. To perform these two phases you should call @ref tsk_object_new or @ref tsk_object_new_2.<br>
-* The object is destroyed in two phases. The first phase consists of freeing its members (void*, char* …). It’s the destructor which is responsible of this task. In the second phase the object itself is destroyed. As the object cannot destroy itself you should use @ref tsk_object_unref or @ref tsk_object_delete to perform these two phases. The difference between these two functions is explained in the coming sections.<br>
+* An object is created in two phases. The first phase consists of dynamically allocating the object on the heap; this is why its size is mandatory in the object definition structure. When a new object is allocated on the heap, all its members (char*, void*, int, long …) will be zeroed. In the second phase, the newly created object will be initialized by calling the supplied constructor. To perform these two phases, you should call @ref tsk_object_new() or @ref tsk_object_new_2().<br>
+* The object is destroyed in two phases. The first phase consists of freeing its members (void*, char* …). It’s the destructor which is responsible of this task. In the second phase, the object itself is destroyed. As the object cannot destroy itself, you should use @ref tsk_object_unref() or @ref tsk_object_delete() to perform these two phases. The difference between these two functions is explained in the coming sections.<br>
 * A well-defined object must never be freed using free() standard C function.<br>
 * Below, an example of how to declare an object definition:<br>
 * @code
@@ -77,8 +77,8 @@ tsk_object_def_t;
  static const tsk_object_def_t person_def_t = 
  {
  	sizeof(person_t),
- 	person_create,
- 	person_destroy,
+ 	person_ctor,
+ 	person_dtor,
  	person_cmp
  };
 * @endcode 
@@ -87,7 +87,7 @@ tsk_object_def_t;
 * Here is an example:<br>
 * @code
 // (constructor)
-static tsk_object_t* person_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* person_ctor(tsk_object_t * self, va_list * app)
 {
  	person_t *person = self;
  	if(person){
@@ -101,7 +101,7 @@ static tsk_object_t* person_create(tsk_object_t * self, va_list * app)
 * Here is an example:<br>
 * @code
 // (destructor)
- static tsk_object_t * person_destroy(tsk_object_t * self)
+ static tsk_object_t * person_dtor(tsk_object_t * self)
  { 
  	person_t *person = self;
  	if(person){
@@ -137,8 +137,8 @@ static int person_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
 * @endcode
 <h2>6.5	Reference counting</h2>
 * Reference counting is used to emulate garbage collection. Each well-defined object contains a reference counter field which indicates how many object have a reference to the actual object.<br>
-* When an object is created (see below) the counter value is initialized to 1; this is automatically done and you have nothing to do. The counter is incremented by 1 when you call @ref tsk_object_ref and decremented (by 1) when you call @ref tsk_object_unref.<br>
-* When the counter value reach zero then the object is garbaged (freed).<br>
+* When an object is created (see below) the counter value is initialized to 1; this is automatically done and you have nothing to do. The counter is incremented by 1 when you call @ref tsk_object_ref() and decremented (by 1) when you call @ref tsk_object_unref().<br>
+* When the counter value reaches zero, then the object is garbaged (freed).<br>
 * 
 * <h2>6.6	Inheritence</h2>
 * As you expect, inheritance is not supported in ANSI-C. <br>
@@ -149,12 +149,13 @@ static int person_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
 typedef struct student_s
 {
 struct person_s* person; // Must be the first element
-	char* school;
+char* school;
 }
 student_t;
 
 // (as a student is a person you can do)
-student_t* s;
+student_t* s = tsk_null;
+//....
 ((person_t*)s)->name = tsk_strdup("bob");
 * @endcode
 * 
@@ -169,13 +170,15 @@ bob->girlfriend = tsk_object_new(&person_def_t, "alice");
 // deletes bob: will delete both bob and bob's girlfriend field by calling their destructors
 tsk_object_unref(bob);
 * @endcode
-* As it’s hard to guest which parameters the construct expected it’s common to use macro helpers. In our example the macro will look like this:
+* As it’s hard to guest which parameters the construct expects, it’s common to use macro (or function) helpers. In our example the macro will look like this:
 * @code
 // create a person
 #define PERSON_CREATE(name)	tsk_object_new(&person_def_t, (const char*)name)
 * @endcode
 * 
-* As the destructor has fixed parameters, there is a common macro to destroy all kind of well-defined objects. TSK_OBJECT_SAFE_FREE() is used to destroy any object. The object will be freed only if; when decremented by 1 the reference count of the object is equal to zero. In all case (freed or not) the pointer value will be set to NULL.<br>
+* As the destructor has fixed parameters, there is a common macro to destroy all kind of well-defined objects. <br>
+* TSK_OBJECT_SAFE_FREE() is used to destroy any object. <br>
+* The object will be freed only if; when decremented by 1 the reference count of the object is equal to zero. In all case (freed or not) the pointer value will be set to NULL.<br>
 * The above example can be rewritten like this:<br>
 * @code
 #include "tsk.h"
@@ -195,8 +198,8 @@ TSK_OBJECT_SAFE_FREE(bob);
 * 
 * <h2>7.1	Threads</h2>
 * You don’t need thousands of functions to manage threads. In the Framework we only need to create, pause and destroy threads.<br>
-* Threads can be created using @ref tsk_thread_create and joined using @ref tsk_thread_join.<br>
-* You can temporary cease the executing of a thread by calling @ref tsk_thread_sleep.<br>
+* Threads can be created using @ref tsk_thread_create() and joined using @ref tsk_thread_join().<br>
+* You can temporary cease the executing of a thread by calling @ref tsk_thread_sleep().<br>
 * @code
 #include "tsk.h"
 
@@ -219,7 +222,7 @@ void test_threads()
 }
 * @endcode
 * 
-* <h2>7.2	Mutexes</h2>
+* <h2>7.2 Mutexes</h2>
 * Mutexes (Mutual exclusion) are used to protect a portion of code or function against concurrent access. Concurrent access happens when two or several threads try to execute the same portion of code at nearly the same time.<br>
 * @code
 #include "tsk.h"
@@ -236,12 +239,12 @@ tsk_mutex_destroy(&mutex);
 * @endcode
 * Mutexes are not well-defined objects; you should use @ref tsk_mutex_destroy instead of TSK_OBJECT_SAFE_FREE() to destroy them.<br>
 * 
-* <h2>7.3	Thread-Safe Objects</h2>
+* <h2>7.3 Thread-Safe Objects</h2>
 * 
-* Any C Structure could be declared as thread-safe using TSK_DECLARE_SAFEOBJ macro. It’s not mandatory for the object to be well-defined.<br>
-* A thread-safe object is initialized using @ref tsk_safeobj_init and deinitilized using @ref tsk_safeobj_deinit. To lock and unlock a portion of code which accesses the object you should use @ref tsk_safeobj_lock and @ref tsk_safeobj_unlock respectively.<br>
+* Any C Structure could be declared as thread-safe using @ref TSK_DECLARE_SAFEOBJ macro. It’s not mandatory for the object to be well-defined.<br>
+* A thread-safe object is initialized using @ref tsk_safeobj_init() and deinitilized using @ref tsk_safeobj_deinit(). To lock and unlock a portion of code which accesses the object you should use @ref tsk_safeobj_lock() and @ref tsk_safeobj_unlock() respectively.<br>
 * 
-* <h2>7.4	Semaphores</h2>
+* <h2>7.4 Semaphores</h2>
 * Only counting semaphores are supported by the framework.
 * Counting semaphores are used to control the access to a portion of code which might be executed by multiple threads. A thread will have rights to execute the portion of code only if the semaphore’s internal counter value is different than zero. Before executing the code to control, a thread should decrement the counter to check if it has permit.<br>
 * @code
@@ -259,20 +262,20 @@ tsk_semaphore_destroy(&sem);
 * Semaphores are not well-defined objects; you should use @ref tsk_semaphore_destroy instead of TSK_OBJECT_SAFE_FREE() to destroy them.<br>
 * Mutexes are binary semaphores (counter value is always equals to 1 or 0).<br>
 * 
-* <h2>7.5	Condition Variables</h2>
+* <h2>7.5 Condition Variables</h2>
 * Condition variables are used to control the access to a portion of code which might be executed by multiple threads. Each thread will block until a certain condition is signaled or ms milliseconds have passed.<br>
-* @ref tsk_condwait_create is used to create a condition variable, @ref tsk_condwait_wait to wait indefinitely until the condition is signaled and @ref tsk_condwait_timedwait() to wait until the condition is signaled or ms milliseconds have passed.<br>
+* @ref tsk_condwait_create is used to create a condition variable, @ref tsk_condwait_wait() to wait indefinitely until the condition is signaled and @ref tsk_condwait_timedwait() to wait until the condition is signaled or ms milliseconds have passed.<br>
 * @ref tsk_condwait_signal() is used to alert the first waiting thread that the condition is now true and @ref tsk_condwait_broadcast() is used to alert all waiting threads.<br>
-* Condition variables are not well-defined objects; you should use @ref tsk_condwait_destroy instead of TSK_OBJECT_SAFE_FREE() to destroy them.<br>
+* Condition variables are not well-defined objects; you should use @ref tsk_condwait_destroy() instead of TSK_OBJECT_SAFE_FREE() to destroy them.<br>
 * 
-* <h2>7.6	Runnable</h2>
-* A Runnable object is a well-defined object and is declared using TSK_DECLARE_RUNNABLE macro.<br>
-* A Runnable object must be explicitly started using @ref tsk_runnable_start and is implicitly stopped when destroyed. You can explicitly stop the object by calling @ref tsk_runnable_stop.<br>
+* <h2>7.6 Runnable</h2>
+* A <i>runnable</i> object is a well-defined object and is declared using @ref TSK_DECLARE_RUNNABLE() macro.<br>
+* A <i>runnable</i> object must be explicitly started using @ref tsk_runnable_start() and is implicitly stopped when destroyed. You can explicitly stop the object by calling @ref tsk_runnable_stop().<br>
 * 
 * <h2>8	Final Sate Machine</h2>
 * 
 * <h2>9	Timer Manager</h2>
-
+*
 */
 
 

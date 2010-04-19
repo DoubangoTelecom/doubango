@@ -29,7 +29,19 @@
  */
 #include "tinySMS/tsms.h"
 
-/** @mainpage 18 SMS over IP
+/** @mainpage tinySMS API Overview
+*
+* ======
+*
+* - @ref tsms_packing_group
+* - @ref tsms_tpdu_group
+* - @ref tsms_rpdu_group
+*
+* ======
+*
+*
+* <h1> 18 SMS over IP</h1>
+*
 * SMS stands for Short Message Service or Silent Messaging Service and is a communication service standardized in the GSM mobile communication system, using standardized communications protocols allowing the interchange of short text messages between mobile telephone devices.
 *
 * SMS technology has been specified by the ETSI in GSM 03.40 and 03.38 documents (3GPP TS 23.040 and 3GPP TS 23.038 respectively). These documents only describe how to use SMS over mobile networks (nothing for IP networks). The support of SMS over IP networks has been defined in 3GPP TS 24.341, which is fully implemented by doubango through tinySMS.
@@ -55,12 +67,8 @@
 *
 * For IMS and LTE Networks, SMS messages shall be encapsulated in RPDUs (Relay Protocol Data Unit) data string as defined in 3GPP TS 24.011 section 7.3. The RPDU data is transferred from SM entity to SM entity using SIP MESSAGE requests. These SIP requests shall use the MIME type <b>"application/vnd.3gpp.sms"</b> for this purpose.
 *
-* List of all modules:
-*
-* - @ref tsms_packing_group
-* - @ref tsms_tpdu_group
-* - @ref tsms_rpdu_group
 */
+
 
 
 
@@ -155,7 +163,7 @@ const char* smsc = "+331000009";
 tsk_bool_t isSUBMIT = tsk_false;
 tsk_bool_t isERROR = tsk_false;
 report = tsms_tpdu_report_create(smsc, isSUBMIT, isERROR);
-buffer = TSK_BUFFER_CREATE_NULL();
+buffer = tsk_buffer_create_null();
 if(!(ret = tsms_tpdu_report_serialize(report, buffer))){
 //send(buffer->data, buffer->size);
 }
@@ -222,7 +230,7 @@ TSK_OBJECT_SAFE_FREE(command);
 #include "tsk.h"
 #include "tinysms.h"
 
-if ((buffer = TSK_BUFFER_CREATE_NULL())){
+if ((buffer = tsk_buffer_create_null())){
 ret = tsms_tpdu_command_serialize(command, buffer);
 // ret = send(socket, buffer->data, buffer->size);
 TSK_OBJECT_SAFE_FREE(buffer);
@@ -302,7 +310,7 @@ TSK_OBJECT_SAFE_FREE(rp_data);
 #include "tsk.h"
 #include "tinysms.h"
 
-if ((buffer = TSK_BUFFER_CREATE_NULL())){
+if ((buffer = tsk_buffer_create_null())){
 ret = tsms_rpdu_data_serialize(rp_data, buffer);
 // ret = send(socket, buffer->data, buffer->size);
 TSK_OBJECT_SAFE_FREE(buffer);
@@ -361,7 +369,7 @@ uint8_t mr = 0xF5;
 // create RP-SMMA message
 rp_smma = tsms_rpdu_smma_create(mr);
 // serialize
-buffer = TSK_BUFFER_CREATE_NULL();
+buffer = tsk_buffer_create_null();
 ret = tsms_rpdu_data_serialize(rp_smma, buffer);
 // send(socket, buffer->data, buffer->size);
 
@@ -394,7 +402,7 @@ sms_report = tsms_tpdu_report_create(smsc, isSUBMIT, isERROR);
 // create RP-ACK message (From MS to SC)
 rp_ack = tsms_rpdu_ack_create_mo(mr, TSMS_TPDU_MESSAGE(sms_report));
 // serialize
-buffer = TSK_BUFFER_CREATE_NULL();
+buffer = tsk_buffer_create_null();
 if(!(ret = tsms_rpdu_data_serialize(rp_ack, buffer))){
 // send(socket, buffer->data, buffer->size);
 }
@@ -432,7 +440,7 @@ rp_error = tsms_rpdu_error_create_mo(mr, TSMS_TPDU_MESSAGE(sms_report),
 0x0A//call barred
 );
 // serialize
-buffer = TSK_BUFFER_CREATE_NULL();
+buffer = tsk_buffer_create_null();
 if(!(ret = tsms_rpdu_data_serialize(rp_error, buffer))){
 	// send(socket, buffer->data, buffer->size);
 }

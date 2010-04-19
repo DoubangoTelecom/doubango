@@ -40,15 +40,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined(_MSC_VER) || TSK_UNDER_WINDOWS
+#if defined(_MSC_VER)
 #	define snprintf		_snprintf
 #	define vsnprintf	_vsnprintf
 #	define strdup		_strdup
 #	define stricmp		_stricmp
 #	define strnicmp		_strnicmp
-#elif defined(__GNUC__)
+#else
+#	if !HAVE_STRNICMP && !HAVE_STRICMP
 #	define stricmp		strcasecmp
 #	define strnicmp		strncasecmp
+#	endif
 #endif
 
 /**@defgroup tsk_string_group String utillity functions.
@@ -56,6 +58,13 @@
 
 
 static char HEX[] = "0123456789abcdef";
+
+/**@ingroup tsk_string_group
+*/
+tsk_string_t* tsk_string_create(const char* str)
+{
+	return tsk_object_new(tsk_string_def_t, str);
+}
 
 /**@ingroup tsk_string_group
 * From base 10 to base 16
@@ -511,7 +520,7 @@ void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex)
 //=================================================================================================
 //	String object definition
 //
-static tsk_object_t* tsk_string_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsk_string_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_string_t *string = self;
 	const char *value = va_arg(*app, const char *);
@@ -521,7 +530,7 @@ static tsk_object_t* tsk_string_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsk_string_destroy(tsk_object_t * self)
+static tsk_object_t* tsk_string_dtor(tsk_object_t * self)
 { 
 	tsk_string_t *string = self;
 	if(string){
@@ -546,8 +555,8 @@ static int tsk_string_cmp(const tsk_object_t *_s1, const tsk_object_t *_s2)
 static const tsk_object_def_t tsk_string_def_s = 
 {
 	sizeof(tsk_string_t),
-	tsk_string_create, 
-	tsk_string_destroy,
+	tsk_string_ctor, 
+	tsk_string_dtor,
 	tsk_string_cmp, 
 };
 const tsk_object_def_t *tsk_string_def_t = &tsk_string_def_s;

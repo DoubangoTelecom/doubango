@@ -34,7 +34,7 @@ options_t;
 
 void test_options()
 {
-	tsk_options_L_t *options = TSK_LIST_CREATE();
+	tsk_options_L_t *options = tsk_list_create();
 	tsk_bool_t b;
 	int i;
 	const char* string;

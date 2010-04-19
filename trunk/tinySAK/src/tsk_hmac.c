@@ -93,7 +93,7 @@ int tsk_hmac_xxxcompute(const uint8_t* input, size_t input_size, const char* key
 		tsk_buffer_t *passx; // pass1 or pass2
 		int pass1_done = 0;
 		
-		passx = TSK_BUFFER_CREATE(ipad, block_size); // pass1
+		passx = tsk_buffer_create(ipad, block_size); // pass1
 		tsk_buffer_append(passx, input, input_size);
 
 digest_compute:

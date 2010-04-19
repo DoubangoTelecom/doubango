@@ -70,10 +70,20 @@
 
 }%%
 
+thttp_header_ETag_t* thttp_header_etag_create(const char* value)
+{
+	return tsk_object_new(THTTP_HEADER_ETAG_VA_ARGS(value));
+}
+
+thttp_header_ETag_t* thttp_header_etag_create_null()
+{ 
+	return thttp_header_etag_create(tsk_null);
+}
+
+
 int thttp_header_ETag_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const thttp_header_ETag_t *ETag = header;
 		if(ETag->value){
 			return tsk_buffer_append(output, ETag->value, strlen(ETag->value));
@@ -92,7 +102,7 @@ thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	thttp_header_ETag_t *hdr_ETag = THTTP_HEADER_ETAG_CREATE_NULL();
+	thttp_header_ETag_t *hdr_ETag = thttp_header_etag_create_null();
 	
 	const char *tag_start;
 
@@ -118,7 +128,7 @@ thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, size_t size)
 //	ETag header object definition
 //
 
-static tsk_object_t* thttp_header_ETag_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* thttp_header_ETag_ctor(tsk_object_t *self, va_list * app)
 {
 	thttp_header_ETag_t *ETag = self;
 	if(ETag){
@@ -133,7 +143,7 @@ static tsk_object_t* thttp_header_ETag_create(tsk_object_t *self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* thttp_header_ETag_destroy(tsk_object_t *self)
+static tsk_object_t* thttp_header_ETag_dtor(tsk_object_t *self)
 {
 	thttp_header_ETag_t *ETag = self;
 	if(ETag)
@@ -152,8 +162,8 @@ static tsk_object_t* thttp_header_ETag_destroy(tsk_object_t *self)
 static const tsk_object_def_t thttp_header_ETag_def_s = 
 {
 	sizeof(thttp_header_ETag_t),
-	thttp_header_ETag_create,
-	thttp_header_ETag_destroy,
+	thttp_header_ETag_ctor,
+	thttp_header_ETag_dtor,
 	tsk_null
 };
 const tsk_object_def_t *thttp_header_ETag_def_t = &thttp_header_ETag_def_s;

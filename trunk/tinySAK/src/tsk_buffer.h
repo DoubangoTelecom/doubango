@@ -34,26 +34,6 @@
 #include "tsk_list.h"
 
 /**@ingroup tsk_buffer_group
-* @def TSK_BUFFER_CREATE
-* Creates new buffer.
-* @param data A pointer to the data to copy into the newly created buffer.
-* @param size The size of the data to copy.
-* @retval A new buffer object.
-* @sa TSK_BUFFER_CREATE_NULL.
-*/
-/**@ingroup tsk_buffer_group
-* @def TSK_BUFFER_CREATE_NULL
-* Creates a new empty buffer.
-* @retval A new empty buffer object.
-* @sa TSK_BUFFER_CREATE.
-*/
-
-TSK_BEGIN_DECLS
-
-#define TSK_BUFFER_CREATE(data, size)		tsk_object_new(tsk_buffer_def_t, (const void*)data, (size_t)size)
-#define TSK_BUFFER_CREATE_NULL()			TSK_BUFFER_CREATE(tsk_null, tsk_null)
-
-/**@ingroup tsk_buffer_group
 * @def TSK_BUFFER
 * Converts to @ref tsk_buffer_t object.
 * @param self @ref tsk_buffer_t object.
@@ -68,6 +48,10 @@ TSK_BEGIN_DECLS
 * Gets the size of the internal buffer.
 * @param self @ref tsk_buffer_t object.
 */
+
+TSK_BEGIN_DECLS
+
+
 #define TSK_BUFFER(self)					((tsk_buffer_t*)self)
 #define TSK_BUFFER_DATA(self)				(self ? TSK_BUFFER(self)->data : tsk_null)
 #define TSK_BUFFER_SIZE(self)				(self ? TSK_BUFFER(self)->size : 0)
@@ -99,6 +83,9 @@ tsk_buffer_t;
 
 typedef tsk_list_t tsk_buffers_L_t; /**<@ingroup tsk_buffer_group List of @ref tsk_buffer_t elements. */
 
+TINYSAK_API tsk_buffer_t* tsk_buffer_create(const void* data, size_t size);
+TINYSAK_API tsk_buffer_t* tsk_buffer_create_null();
+
 TINYSAK_API int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...);
 TINYSAK_API int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size);
 TINYSAK_API int tsk_buffer_realloc(tsk_buffer_t* self, size_t size);
@@ -110,5 +97,5 @@ TINYSAK_GEXTERN const tsk_object_def_t *tsk_buffer_def_t;
 
 TSK_END_DECLS
 
-#endif
+#endif /* _TINYSAK_BUFFER_H_ */
 

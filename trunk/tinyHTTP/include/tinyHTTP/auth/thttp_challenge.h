@@ -43,8 +43,6 @@
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_CHALLENGE_CREATE(isproxy, scheme, realm, nonce, opaque, algorithm, qop)		tsk_object_new(thttp_challenge_def_t, (tsk_bool_t)isproxy,(const char*)scheme, (const char*)realm, (const char*)nonce, (const char*)opaque, (const char*)algorithm, (const char*)qop)
-
 typedef struct thttp_challenge_s
 {
 	TSK_DECLARE_OBJECT;
@@ -68,7 +66,9 @@ typedef tsk_list_t thttp_challenges_L_t;
 int thttp_challenge_update(thttp_challenge_t *self, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
 thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *self, const char* username, const char* password, const thttp_request_t *request);
 
-TINYHTTP_GEXTERN const void *thttp_challenge_def_t;
+thttp_challenge_t* thttp_challenge_create(tsk_bool_t isproxy,const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
+
+TINYHTTP_GEXTERN const tsk_object_def_t *thttp_challenge_def_t;
 
 THTTP_END_DECLS
 

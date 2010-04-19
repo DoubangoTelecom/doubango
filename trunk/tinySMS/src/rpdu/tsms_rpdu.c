@@ -43,7 +43,7 @@
 tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
-	tsms_rpdu_data_t* self = tsms_rpdu_data_create(0, tsk_null, tsk_null, tsk_false);
+	tsms_rpdu_data_t* self = tsms_rpdu_data_create(0x00, tsk_null, tsk_null, tsk_false);
 	tsk_bool_t failed = tsk_false;
 	const uint8_t* pdata = data;
 	const uint8_t* pend = pdata + size;
@@ -85,7 +85,7 @@ tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, size_t size
 			TSK_DEBUG_WARN("Invalid length-indicator.");
 		}
 		else{
-			self->udata = TSK_BUFFER_CREATE(pdata, length);
+			self->udata = tsk_buffer_create(pdata, length);
 		}
 	}
 	else{
@@ -162,16 +162,16 @@ tsms_rpdu_data_t* tsms_rpdu_data_create(uint8_t mr, const tsms_address_string_t 
 	if(smsc){
 		if(TSMS_RPDU_MESSAGE(ret)->mti == tsms_rpdu_type_data_mt){
 			/* 7.3.1.1	RP DATA (Network to Mobile Station) */
-			ret->oa = TSMS_ADDRESS_SMSC_CREATE(smsc);
+			ret->oa = tsms_address_smsc_create(smsc);
 		}
 		else{
 			/* 7.3.1.2	RP DATA (Mobile Station to Network) */
-			ret->da = TSMS_ADDRESS_SMSC_CREATE(smsc);
+			ret->da = tsms_address_smsc_create(smsc);
 		}
 	}
 
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
-	if(tpdu && (ret->udata = TSK_BUFFER_CREATE_NULL())){
+	if(tpdu && (ret->udata = tsk_buffer_create_null())){
 		tsms_tpdu_message_serialize(tpdu, ret->udata, MobOrig);
 	}
 
@@ -182,7 +182,7 @@ bail:
 //
 //	RP-DATA object definition
 //
-static tsk_object_t* _tsms_rpdu_data_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_rpdu_data_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_rpdu_data_t *rpdata = self;
 	if(rpdata){
@@ -194,7 +194,7 @@ static tsk_object_t* _tsms_rpdu_data_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsms_rpdu_data_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_rpdu_data_dtor(tsk_object_t * self)
 { 
 	tsms_rpdu_data_t *rpdata = self;
 	if(rpdata){
@@ -212,8 +212,8 @@ static tsk_object_t* tsms_rpdu_data_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_rpdu_data_def_s = 
 {
 	sizeof(tsms_rpdu_data_t),
-	_tsms_rpdu_data_create, 
-	tsms_rpdu_data_destroy,
+	tsms_rpdu_data_ctor, 
+	tsms_rpdu_data_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_rpdu_data_def_t = &tsms_rpdu_data_def_s;
@@ -273,7 +273,7 @@ tsms_rpdu_smma_t* tsms_rpdu_smma_create(uint8_t mr)
 //
 //	RP-SMMA object definition
 //
-static tsk_object_t* _tsms_rpdu_smma_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_rpdu_smma_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_rpdu_smma_t *smma = self;
 	if(smma){
@@ -285,7 +285,7 @@ static tsk_object_t* _tsms_rpdu_smma_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsms_rpdu_smma_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_rpdu_smma_dtor(tsk_object_t * self)
 { 
 	tsms_rpdu_smma_t *smma = self;
 	if(smma){
@@ -300,8 +300,8 @@ static tsk_object_t* tsms_rpdu_smma_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_rpdu_smma_def_s = 
 {
 	sizeof(tsms_rpdu_smma_t),
-	_tsms_rpdu_smma_create, 
-	tsms_rpdu_smma_destroy,
+	tsms_rpdu_smma_ctor, 
+	tsms_rpdu_smma_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_rpdu_smma_def_t = &tsms_rpdu_smma_def_s;
@@ -330,7 +330,7 @@ tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, size_t size)
 			TSK_DEBUG_WARN("Invalid length-indicator.");
 		}
 		else{
-			self->udata = TSK_BUFFER_CREATE(pdata, length);
+			self->udata = tsk_buffer_create(pdata, length);
 		}
 	}
 
@@ -392,7 +392,7 @@ tsms_rpdu_ack_t* tsms_rpdu_ack_create(uint8_t mr, const tsms_tpdu_message_t* tpd
 	TSMS_RPDU_MESSAGE(ret)->mr = mr;	
 
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
-	if(tpdu && (ret->udata = TSK_BUFFER_CREATE_NULL())){
+	if(tpdu && (ret->udata = tsk_buffer_create_null())){
 		tsms_tpdu_message_serialize(tpdu, ret->udata, MobOrig);
 	}
 
@@ -403,7 +403,7 @@ bail:
 //
 //	RP-ACK object definition
 //
-static tsk_object_t* _tsms_rpdu_ack_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_rpdu_ack_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_rpdu_ack_t *ack = self;
 	if(ack){
@@ -415,7 +415,7 @@ static tsk_object_t* _tsms_rpdu_ack_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsms_rpdu_ack_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_rpdu_ack_dtor(tsk_object_t * self)
 { 
 	tsms_rpdu_ack_t *ack = self;
 	if(ack){
@@ -431,8 +431,8 @@ static tsk_object_t* tsms_rpdu_ack_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_rpdu_ack_def_s = 
 {
 	sizeof(tsms_rpdu_ack_t),
-	_tsms_rpdu_ack_create, 
-	tsms_rpdu_ack_destroy,
+	tsms_rpdu_ack_ctor, 
+	tsms_rpdu_ack_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_rpdu_ack_def_t = &tsms_rpdu_ack_def_s;
@@ -472,7 +472,7 @@ tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, size_t siz
 			TSK_DEBUG_WARN("Invalid length-indicator.");
 		}
 		else{
-			self->udata = TSK_BUFFER_CREATE(pdata, length);
+			self->udata = tsk_buffer_create(pdata, length);
 		}
 	}
 	
@@ -548,7 +548,7 @@ tsms_rpdu_error_t* tsms_rpdu_error_create(uint8_t mr, const tsms_tpdu_message_t*
 	ret->cause[1] = cause;
 	
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
-	if(tpdu && (ret->udata = TSK_BUFFER_CREATE_NULL())){
+	if(tpdu && (ret->udata = tsk_buffer_create_null())){
 		tsms_tpdu_message_serialize(tpdu, ret->udata, MobOrig);
 	}
 
@@ -559,7 +559,7 @@ bail:
 //
 //	RP-ERROR object definition
 //
-static tsk_object_t* _tsms_rpdu_error_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_rpdu_error_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_rpdu_error_t *error = self;
 	if(error){
@@ -571,7 +571,7 @@ static tsk_object_t* _tsms_rpdu_error_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsms_rpdu_error_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_rpdu_error_dtor(tsk_object_t * self)
 { 
 	tsms_rpdu_error_t *error = self;
 	if(error){
@@ -587,8 +587,8 @@ static tsk_object_t* tsms_rpdu_error_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_rpdu_error_def_s = 
 {
 	sizeof(tsms_rpdu_error_t),
-	_tsms_rpdu_error_create, 
-	tsms_rpdu_error_destroy,
+	tsms_rpdu_error_ctor, 
+	tsms_rpdu_error_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_rpdu_error_def_t = &tsms_rpdu_error_def_s;

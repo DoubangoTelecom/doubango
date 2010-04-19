@@ -123,7 +123,7 @@ tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, size_t siz
 
 	/* 3GPP TS 23.040 ==> 9.2.3.21	TP Command Data (TP CD) */
 	if((pend-pdata) > 0){
-		TSMS_TPDU_MESSAGE(self)->ud = TSK_BUFFER_CREATE(pdata, (pend-pdata));
+		TSMS_TPDU_MESSAGE(self)->ud = tsk_buffer_create(pdata, (pend-pdata));
 	}
 
 	bail:
@@ -202,15 +202,8 @@ int _tsms_tpdu_command_serialize(const tsms_tpdu_command_t* self, tsk_buffer_t* 
 * See For more information, see @ref tsms_tpdu_group_COMMAND  "SMS-COMMAND".
 */
 tsms_tpdu_command_t* tsms_tpdu_command_create(uint8_t mr, const tsms_address_string_t smsc, const tsms_address_string_t dest, uint8_t msg_num, tsms_tpdu_cmd_t cmd)
-{
-	tsms_tpdu_command_t* ret = tsk_null;
-	
-	if(!(ret = tsk_object_new(tsms_tpdu_command_def_t, mr, smsc, dest, msg_num, cmd))){
-		goto bail;
-	}
-	
-bail:
-	return ret;
+{	
+	return tsk_object_new(tsms_tpdu_command_def_t, mr, smsc, dest, msg_num, cmd);
 }
 
 
@@ -218,7 +211,7 @@ bail:
 //=================================================================================================
 //	SMS TPDU SMS-COMMAND object definition
 //
-static tsk_object_t* _tsms_tpdu_command_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsms_tpdu_command_ctor(tsk_object_t * self, va_list * app)
 {
 	tsms_tpdu_command_t *command = self;
 	if(command){
@@ -247,10 +240,10 @@ static tsk_object_t* _tsms_tpdu_command_create(tsk_object_t * self, va_list * ap
 		/* init self */
 		command->mr = mr;
 		if(smsc){
-			command->smsc = TSMS_ADDRESS_SMSC_CREATE(smsc);
+			command->smsc = tsms_address_smsc_create(smsc);
 		}
 		if(dest){
-			command->da = TSMS_ADDRESS_DA_CREATE(dest);
+			command->da = tsms_address_da_create(dest);
 		}
 		command->mn = msg_num;
 		command->ct = cmd;
@@ -258,7 +251,7 @@ static tsk_object_t* _tsms_tpdu_command_create(tsk_object_t * self, va_list * ap
 	return self;
 }
 
-static tsk_object_t* tsms_tpdu_command_destroy(tsk_object_t * self)
+static tsk_object_t* tsms_tpdu_command_dtor(tsk_object_t * self)
 { 
 	tsms_tpdu_command_t *command = self;
 	if(command){
@@ -275,8 +268,8 @@ static tsk_object_t* tsms_tpdu_command_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsms_tpdu_command_def_s = 
 {
 	sizeof(tsms_tpdu_command_t),
-	_tsms_tpdu_command_create, 
-	tsms_tpdu_command_destroy,
+	tsms_tpdu_command_ctor, 
+	tsms_tpdu_command_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsms_tpdu_command_def_t = &tsms_tpdu_command_def_s;

@@ -202,7 +202,7 @@ int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, tsk_
 	}
 
 	if(!*result){
-		*result = THTTP_MESSAGE_CREATE();
+		*result = thttp_message_create();
 	}
 
 	/* Ragel init */
@@ -468,7 +468,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 	{
 		uint32_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message);
 		if((p+clen) <pe && !message->Content){
-			message->Content = TSK_BUFFER_CREATE((p+1), clen);
+			message->Content = tsk_buffer_create((p+1), clen);
 			p = (p+clen);
 		}
 		else{

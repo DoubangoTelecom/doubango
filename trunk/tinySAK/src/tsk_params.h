@@ -35,19 +35,10 @@
 #include "tsk_list.h"
 #include "tsk_buffer.h"
 
-/**@ingroup tsk_params_group
-* @def TSK_PARAM_CREATE
-* Creates new @ref tsk_param_t object.
-*/
-/**@ingroup tsk_params_group
-* @def TSK_PARAM_CREATE
-* Creates new @ref tsk_param_t object.
-*/
+
 TSK_BEGIN_DECLS
 
 #define TSK_PARAM_VA_ARGS(name, value)		tsk_param_def_t, (const char*)name, (const char*)value
-#define TSK_PARAM_CREATE(name, value)		tsk_object_new(TSK_PARAM_VA_ARGS(name, value))
-#define TSK_PARAM_CREATE_NULL()				TSK_PARAM_CREATE(tsk_null, tsk_null)
 
 #define TSK_PARAM(self)				((tsk_param_t*)(self))
 
@@ -66,6 +57,9 @@ typedef struct tsk_param_s
 tsk_param_t;
 
 typedef tsk_list_t tsk_params_L_t; /**< List of @ref tsk_param_t elements. */
+
+TINYSAK_API tsk_param_t* tsk_param_create(const char* name, const char* value);
+TINYSAK_API tsk_param_t* tsk_param_create_null();
 
 TINYSAK_API tsk_param_t *tsk_params_parse_param(const char* line, size_t size);
 
