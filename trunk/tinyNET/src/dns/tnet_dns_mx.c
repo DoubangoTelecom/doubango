@@ -34,14 +34,20 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
+/** Creates new DNS MX Resource Record.
+*/
+tnet_dns_mx_t* tnet_dns_mx_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset)
+{
+	return tsk_object_new(tnet_dns_mx_def_t, name, qclass, ttl, rdlength, data, offset);
+}
+
 //=================================================================================================
 //	[[DNS MX]] object definition
 //
-static void* tnet_dns_mx_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_mx_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_mx_t *mx = self;
-	if(mx)
-	{
+	if(mx){
 		const char* name = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		uint32_t ttl = va_arg(*app, uint32_t);
@@ -59,8 +65,8 @@ static void* tnet_dns_mx_create(void * self, va_list * app)
 		TNET_DNS_RR(mx)->rdlength = rdlength;
 		TNET_DNS_RR(mx)->ttl = ttl;
 
-		if(rdlength)
-		{	// ==> DESERIALIZATION
+		if(rdlength){
+			// ==> DESERIALIZATION
 			/* PREFERENCE */
 			mx->preference = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset)));
 			offset += 2;
@@ -71,11 +77,10 @@ static void* tnet_dns_mx_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_mx_destroy(void * self) 
+static tsk_object_t* tnet_dns_mx_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_mx_t *mx = self;
-	if(mx)
-	{
+	if(mx){
 		/* deinit base */
 		tnet_dns_rr_deinit(TNET_DNS_RR(mx));
 
@@ -87,8 +92,8 @@ static void* tnet_dns_mx_destroy(void * self)
 static const tsk_object_def_t tnet_dns_mx_def_s =
 {
 	sizeof(tnet_dns_mx_t),
-	tnet_dns_mx_create,
-	tnet_dns_mx_destroy,
-	0,
+	tnet_dns_mx_ctor,
+	tnet_dns_mx_dtor,
+	tsk_null,
 };
-const void *tnet_dns_mx_def_t = &tnet_dns_mx_def_s;
+const tsk_object_def_t *tnet_dns_mx_def_t = &tnet_dns_mx_def_s;

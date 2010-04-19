@@ -156,7 +156,7 @@ static const int tdns_machine_resolvconf_en_main = 0;
 		
 		buf[len] = '\n'; // hack to have perfect lines
 
-		servers = TSK_LIST_CREATE();
+		servers = tsk_list_create();
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to open %s.", fullpath);
@@ -258,7 +258,7 @@ _match:
 			memset(ip, '\0', sizeof(ip));
 			memcpy(ip, tag_start, len);
 			
-			address = TNET_ADDRESS_CREATE(ip);
+			address = tnet_address_create(ip);
 			address->family = tnet_get_family(ip);
 			address->dnsserver = 1;
 			tsk_list_push_ascending_data(servers, &address);

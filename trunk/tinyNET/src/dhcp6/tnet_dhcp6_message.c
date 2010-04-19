@@ -35,6 +35,16 @@
 
 #include <string.h>
 
+tnet_dhcp6_message_t* tnet_dhcp6_message_create(tnet_dhcp6_message_type_t type)
+{
+	return tsk_object_new(tnet_dhcp6_message_def_t, type);
+}
+
+tnet_dhcp6_request_t* tnet_dhcp6_request_create(tnet_dhcp6_message_type_t type)
+{
+	return tnet_dhcp6_message_create(type);
+}
+
 tsk_buffer_t* tnet_dhcp6_message_serialize(const tnet_dhcp6_ctx_t *ctx, const tnet_dhcp6_message_t *self)
 {
 	tsk_buffer_t* output = 0;
@@ -47,7 +57,7 @@ tsk_buffer_t* tnet_dhcp6_message_serialize(const tnet_dhcp6_ctx_t *ctx, const tn
 		goto bail;
 	}
 
-	output = TSK_BUFFER_CREATE_NULL();
+	output = tsk_buffer_create_null();
 
 	/*== msg-type + transaction-id */
 	_4bytes = (((uint32_t)(self->type)) << 24) | (self->transaction_id & 0xFFFFFF);
@@ -93,25 +103,23 @@ tnet_dhcp6_message_t* tnet_dhcp6_message_deserialize(const tnet_dhcp6_ctx_t *ctx
 //=================================================================================================
 //	[[DHCPv6 MESSAGE]] object definition
 //
-static void* tnet_dhcp6_message_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_message_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_message_t *message = self;
-	if(message)
-	{
+	if(message){
 		static uint16_t __dhcp6message_unique_tid = 0;//(uint32_t)tsk_time_epoch();
 
 		message->type = va_arg(*app, tnet_dhcp6_message_type_t);
 		message->transaction_id = ++__dhcp6message_unique_tid;
-		message->options = TSK_LIST_CREATE();
+		message->options = tsk_list_create();
 	}
 	return self;
 }
 
-static void* tnet_dhcp6_message_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_message_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_message_t *message = self;
-	if(message)
-	{
+	if(message){
 		TSK_OBJECT_SAFE_FREE(message->options);
 	}
 	return self;
@@ -120,9 +128,9 @@ static void* tnet_dhcp6_message_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_message_def_s =
 {
 	sizeof(tnet_dhcp6_message_t),
-	tnet_dhcp6_message_create,
-	tnet_dhcp6_message_destroy,
-	0,
+	tnet_dhcp6_message_ctor,
+	tnet_dhcp6_message_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_message_def_t = &tnet_dhcp6_message_def_s;
+const tsk_object_def_t *tnet_dhcp6_message_def_t = &tnet_dhcp6_message_def_s;
 

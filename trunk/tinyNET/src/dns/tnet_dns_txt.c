@@ -33,14 +33,21 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
+/** Creates new DNS TXT Resource Record.
+*/
+
+tnet_dns_txt_t* tnet_dns_txt_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset)
+{
+	return tsk_object_new(tnet_dns_txt_def_t, name, qclass, ttl, rdlength, data, offset);
+}
+
 //=================================================================================================
 //	[[DNS TXT]] object definition
 //
-static void* tnet_dns_txt_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_txt_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_txt_t *txt = self;
-	if(txt)
-	{
+	if(txt){
 		const char* name = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		uint32_t ttl = va_arg(*app, uint32_t);
@@ -58,8 +65,8 @@ static void* tnet_dns_txt_create(void * self, va_list * app)
 		TNET_DNS_RR(txt)->rdlength = rdlength;
 		TNET_DNS_RR(txt)->ttl = ttl;
 
-		if(rdlength)
-		{	// ==> DESERIALIZATION
+		if(rdlength){
+			// ==> DESERIALIZATION
 			/* TXT-DATA  */
 			tnet_dns_rr_charstring_deserialize(data, &(txt->txt_data), &offset);
 		}
@@ -67,11 +74,10 @@ static void* tnet_dns_txt_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_txt_destroy(void * self) 
+static tsk_object_t* tnet_dns_txt_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_txt_t *txt = self;
-	if(txt)
-	{
+	if(txt){
 		/* deinit base */
 		tnet_dns_rr_deinit(TNET_DNS_RR(txt));
 
@@ -83,8 +89,8 @@ static void* tnet_dns_txt_destroy(void * self)
 static const tsk_object_def_t tnet_dns_txt_def_s =
 {
 	sizeof(tnet_dns_txt_t),
-	tnet_dns_txt_create,
-	tnet_dns_txt_destroy,
-	0,
+	tnet_dns_txt_ctor,
+	tnet_dns_txt_dtor,
+	tsk_null,
 };
-const void *tnet_dns_txt_def_t = &tnet_dns_txt_def_s;
+const tsk_object_def_t *tnet_dns_txt_def_t = &tnet_dns_txt_def_s;

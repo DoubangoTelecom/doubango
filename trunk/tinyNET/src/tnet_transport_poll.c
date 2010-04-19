@@ -510,7 +510,7 @@ void *tnet_transport_mainthread(void *param)
 				}
 				
 					
-				e = TNET_TRANSPORT_EVENT_CREATE(event_data, transport->callback_data, active_socket->fd);
+				e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
 				e->data = buffer;
 				e->size = len;
 				
@@ -572,13 +572,16 @@ bail:
 
 
 
-
+void* tnet_transport_context_create()
+{
+	return tsk_object_new(tnet_transport_context_def_t);
+}
 
 
 //=================================================================================================
 //	Transport context object definition
 //
-static void* transport_context_create(void * self, va_list * app)
+static tsk_object_t* transport_context_ctor(tsk_object_t * self, va_list * app)
 {
 	transport_context_t *context = self;
 	if(context){
@@ -587,7 +590,7 @@ static void* transport_context_create(void * self, va_list * app)
 	return self;
 }
 
-static void* transport_context_destroy(void * self)
+static tsk_object_t* transport_context_dtor(tsk_object_t * self)
 { 
 	transport_context_t *context = self;
 	if(context){
@@ -602,11 +605,11 @@ static void* transport_context_destroy(void * self)
 static const tsk_object_def_t tnet_transport_context_def_s = 
 {
 sizeof(transport_context_t),
-transport_context_create, 
-transport_context_destroy,
+transport_context_ctor, 
+transport_context_dtor,
 tsk_null, 
 };
-const void *tnet_transport_context_def_t = &tnet_transport_context_def_s;
+const tsk_object_def_t *tnet_transport_context_def_t = &tnet_transport_context_def_s;
 
 #endif /* HAVE_POLL_H */
 

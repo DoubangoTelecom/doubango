@@ -35,23 +35,15 @@
 #include "tsk_list.h"
 #include "tsk_buffer.h"
 
-/**@ingroup tnet_dns_group
-* @def TNET_DNS_RR_CREATE
-* Creates a new DNS RR.
-* @retval @ref tnet_dns_rr_t object.
-*/
-/**@ingroup tnet_dns_group
-* @def TNET_DNS_RR
+/** @def TNET_DNS_RR
 * Converts any DNS RR to a pointer to @ref tnet_dns_rr_t.
 * @retval A pointer to @ref tnet_dns_rr_t object.
 */
 TNET_BEGIN_DECLS
 
-#define TNET_DNS_RR_CREATE()						tsk_object_new(tnet_dns_rr_def_t)
 #define TNET_DNS_RR(self)							((tnet_dns_rr_t*)(self))
 
-/**@ingroup tnet_dns_group
-*	RFC 1035 - 3.2.2. TYPE values
+/**	RFC 1035 - 3.2.2. TYPE values
 *	@sa http://en.wikipedia.org/wiki/List_of_DNS_record_types
 */
 typedef enum tnet_dns_qtype_e
@@ -89,8 +81,7 @@ typedef enum tnet_dns_qtype_e
 }
 tnet_dns_qtype_t;
 
-/**@ingroup tnet_dns_group
-*	RFC 1035 - 3.2.4. CLASS values
+/**	RFC 1035 - 3.2.4. CLASS values
 */
 typedef enum tnet_dns_qclass_e
 {
@@ -103,8 +94,7 @@ typedef enum tnet_dns_qclass_e
 }
 tnet_dns_qclass_t;
 
-/**@ingroup tnet_dns_group
-*	RFC 1034 (3.6. Resource Records) and 1035 (3.2.1. Format) 
+/**	RFC 1034 (3.6. Resource Records) and 1035 (3.2.1. Format) 
 */
 typedef struct tnet_dns_rr_s
 {
@@ -174,7 +164,7 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output);
 tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* offset);
 int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output);
 
-TINYNET_GEXTERN const void *tnet_dns_rr_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_rr_def_t;
 
 TNET_END_DECLS
 

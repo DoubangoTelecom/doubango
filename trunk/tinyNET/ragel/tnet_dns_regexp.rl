@@ -266,7 +266,7 @@ bail:
 //char* tnet_dns_regex_parse(const char* e164num, const char* regexp)
 //{
 //	char* ret = tsk_null;
-//	groups_L_t* groups = TSK_LIST_CREATE();
+//	groups_L_t* groups = tsk_list_create();
 //	group_t* curr_group = tsk_null;
 //	size_t index = 0;
 //	int group_id = 0;

@@ -36,9 +36,6 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_TURN_CHANNEL_DATA_CREATE(number, length, data)		tsk_object_new(tnet_turn_channel_data_def_t, (uint16_t)number, (uint16_t)length, (const void*)data)
-#define TNET_TURN_CHANNEL_DATA_CREATE_NULL()					TNET_TURN_CHANNEL_DATA_CREATE(0,0,0)
-
 /**@ingroup tnet_turn_group
  * TURN channel data message as per draft-ietf-behave-turn-16 subclause 11.4.
 */
@@ -68,7 +65,10 @@ tnet_turn_channel_data_t;
 
 tsk_buffer_t* tnet_turn_channel_data_serialize(const tnet_turn_channel_data_t *message);
 
-TINYNET_GEXTERN const void *tnet_turn_channel_data_def_t;
+tnet_turn_channel_data_t* tnet_turn_channel_data_create(uint16_t number, uint16_t length, const void* data);
+tnet_turn_channel_data_t* tnet_turn_channel_data_create_null();
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_turn_channel_data_def_t;
 
 TNET_END_DECLS
 

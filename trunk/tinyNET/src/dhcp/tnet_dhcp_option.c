@@ -36,10 +36,22 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-/**
- * @fn	int tnet_dhcp_option_init(tnet_dhcp_option_t *self, tnet_dhcp_option_code_t code)
- *
- * @brief	Initializes DHCPv4 option. 
+tnet_dhcp_option_t* tnet_dhcp_option_create(tnet_dhcp_option_code_t code)
+{
+	return tsk_object_new(tnet_dhcp_option_def_t, code);
+}
+
+tnet_dhcp_option_paramslist_t* tnet_dhcp_option_paramslist_create()
+{
+	return tsk_object_new(tnet_dhcp_option_paramslist_def_t);
+}
+
+tnet_dhcp_option_dns_t* tnet_dhcp_option_dns_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp_option_dns_def_t, payload, payload_size);
+}
+
+/** Initializes DHCPv4 option. 
  *
  * @param [in,out]	self	The option to initialize. 
  * @param	code			The code of the option to initialize. 
@@ -53,7 +65,7 @@ int tnet_dhcp_option_init(tnet_dhcp_option_t *self, tnet_dhcp_option_code_t code
 		if(!self->initialized)
 		{
 			self->code = code;
-			//option->value = TSK_BUFFER_CREATE_NULL();
+			//option->value = tsk_buffer_create_null();
 			
 			self->initialized = tsk_true;
 			return 0;
@@ -100,25 +112,25 @@ tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, size_t size)
 	{
 	case dhcp_code_SIP_Servers_DHCP_Option:
 		{
-			option = TNET_DHCP_OPTION_SIP_CREATE(dataPtr, len);
+			option = (tnet_dhcp_option_t *)tnet_dhcp_option_sip_create(dataPtr, len);
 			break;
 		}
 
 	case dhcp_code_Domain_Server:
 		{
-			option = TNET_DHCP_OPTION_DNS_CREATE(dataPtr, len);
+			option = (tnet_dhcp_option_t *)tnet_dhcp_option_dns_create(dataPtr, len);
 			break;
 		}
 
 	default:
 		{
-			option = TNET_DHCP_OPTION_CREATE(code);
+			option = tnet_dhcp_option_create(code);
 		}
 	}
 
 	/* In all case */
 	if(option && !option->value && len){
-		option->value = TSK_BUFFER_CREATE((((uint8_t*)data) + 2/*Code Len*/), len);
+		option->value = tsk_buffer_create((((uint8_t*)data) + 2/*Code Len*/), len);
 	}
 
 bail:
@@ -127,8 +139,7 @@ bail:
 
 int tnet_dhcp_option_serialize(const tnet_dhcp_option_t* self, tsk_buffer_t *output)
 {
-	if(!self || !output)
-	{
+	if(!self || !output){
 		return -1;
 	}
 	
@@ -153,8 +164,7 @@ int tnet_dhcp_option_serialize(const tnet_dhcp_option_t* self, tsk_buffer_t *out
 
 int tnet_dhcp_option_serializeex(tnet_dhcp_option_code_t code, uint8_t length, const void* value, tsk_buffer_t *output)
 {
-	if(value && length && output)
-	{
+	if(value && length && output){
 		tsk_buffer_append(output, &(code), 1);
 		tsk_buffer_append(output, &(length), 1);
 		tsk_buffer_append(output, value, length);
@@ -167,21 +177,19 @@ int tnet_dhcp_option_serializeex(tnet_dhcp_option_code_t code, uint8_t length, c
 //
 //	[[DHCP OPTION]] object definition
 //
-static void* tnet_dhcp_option_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp_option_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp_option_t *option = self;
-	if(option)
-	{
+	if(option){
 		tnet_dhcp_option_init(option, va_arg(*app, tnet_dhcp_option_code_t));
 	}
 	return self;
 }
 
-static void* tnet_dhcp_option_destroy(void * self) 
+static tsk_object_t* tnet_dhcp_option_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp_option_t *option = self;
-	if(option)
-	{
+	if(option){
 		tnet_dhcp_option_deinit(option);
 	}
 	return self;
@@ -190,11 +198,11 @@ static void* tnet_dhcp_option_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp_option_def_s =
 {
 	sizeof(tnet_dhcp_option_t),
-	tnet_dhcp_option_create,
-	tnet_dhcp_option_destroy,
-	0,
+	tnet_dhcp_option_ctor,
+	tnet_dhcp_option_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp_option_def_t = &tnet_dhcp_option_def_s;
+const tsk_object_def_t *tnet_dhcp_option_def_t = &tnet_dhcp_option_def_s;
 
 
 
@@ -205,7 +213,7 @@ int tnet_dhcp_option_paramslist_add_code(tnet_dhcp_option_paramslist_t* self, tn
 {
 	if(self){
 		if(!TNET_DHCP_OPTION(self)->value){
-			TNET_DHCP_OPTION(self)->value = TSK_BUFFER_CREATE_NULL();
+			TNET_DHCP_OPTION(self)->value = tsk_buffer_create_null();
 		}
 		return tsk_buffer_append(TNET_DHCP_OPTION(self)->value, &code, 1);
 	}
@@ -215,22 +223,20 @@ int tnet_dhcp_option_paramslist_add_code(tnet_dhcp_option_paramslist_t* self, tn
 //
 //	[[DHCP OPTION - RFC 2132 9.8. Parameter Request List]] object definition
 //
-static void* tnet_dhcp_option_paramslist_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp_option_paramslist_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp_option_paramslist_t *option = self;
-	if(option)
-	{
+	if(option){
 		/* init base */
 		tnet_dhcp_option_init(TNET_DHCP_OPTION(option), dhcp_code_Parameter_List);
 	}
 	return self;
 }
 
-static void* tnet_dhcp_option_paramslist_destroy(void * self) 
+static tsk_object_t* tnet_dhcp_option_paramslist_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp_option_paramslist_t *option = self;
-	if(option)
-	{
+	if(option){
 		/* deinit base */
 		tnet_dhcp_option_deinit(TNET_DHCP_OPTION(option));
 	}
@@ -240,11 +246,11 @@ static void* tnet_dhcp_option_paramslist_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp_option_paramslist_def_s =
 {
 	sizeof(tnet_dhcp_option_paramslist_t),
-	tnet_dhcp_option_paramslist_create,
-	tnet_dhcp_option_paramslist_destroy,
-	0,
+	tnet_dhcp_option_paramslist_ctor,
+	tnet_dhcp_option_paramslist_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp_option_paramslist_def_t = &tnet_dhcp_option_paramslist_def_s;
+const tsk_object_def_t *tnet_dhcp_option_paramslist_def_t = &tnet_dhcp_option_paramslist_def_s;
 
 
 /*=======================================================================================
@@ -253,11 +259,10 @@ const void *tnet_dhcp_option_paramslist_def_t = &tnet_dhcp_option_paramslist_def
 //
 //	[[DHCP OPTION - RFC 2132 3.8. Domain Name Server Option]] object definition
 //
-static void* tnet_dhcp_option_dns_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp_option_dns_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp_option_dns_t *option = self;
-	if(option)
-	{
+	if(option){
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
@@ -267,21 +272,18 @@ static void* tnet_dhcp_option_dns_create(void * self, va_list * app)
 		/* init base */
 		tnet_dhcp_option_init(TNET_DHCP_OPTION(option), dhcp_code_Domain_Server);
 
-		option->servers = TSK_LIST_CREATE();
+		option->servers = tsk_list_create();
 
-		if(payload_size<4 || payload_size%4)
-		{
+		if(payload_size<4 || payload_size%4){
 			TSK_DEBUG_ERROR("DHCP - The minimum length for this option is 4 octets, and the length MUST always be a multiple of 4.");
 		}
-		else
-		{
+		else{
 			size_t i;
 			char* ip4 = 0;
 			uint32_t address;
 			tsk_string_t* addrstring;
 
-			for(i=0; i<payload_size && (payloadPtr< payloadEnd); i+=4)
-			{
+			for(i=0; i<payload_size && (payloadPtr< payloadEnd); i+=4){
 				/*
 				Code   Len         Address 1               Address 2
 				+-----+-----+-----+-----+-----+-----+-----+-----+--
@@ -291,7 +293,7 @@ static void* tnet_dhcp_option_dns_create(void * self, va_list * app)
 				address = tnet_ntohl(*((uint32_t*)payloadPtr));
 				tsk_sprintf(&ip4, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 				
-				addrstring = TSK_STRING_CREATE(ip4);
+				addrstring = tsk_string_create(ip4);
 				tsk_list_push_back_data(option->servers, (void*)&addrstring);
 
 				TSK_FREE(ip4);
@@ -302,11 +304,10 @@ static void* tnet_dhcp_option_dns_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dhcp_option_dns_destroy(void * self) 
+static tsk_object_t* tnet_dhcp_option_dns_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp_option_dns_t *option = self;
-	if(option)
-	{
+	if(option){
 		/* deinit base */
 		tnet_dhcp_option_deinit(TNET_DHCP_OPTION(option));
 
@@ -318,8 +319,8 @@ static void* tnet_dhcp_option_dns_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp_option_dns_def_s =
 {
 	sizeof(tnet_dhcp_option_dns_t),
-	tnet_dhcp_option_dns_create,
-	tnet_dhcp_option_dns_destroy,
-	0,
+	tnet_dhcp_option_dns_ctor,
+	tnet_dhcp_option_dns_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp_option_dns_def_t = &tnet_dhcp_option_dns_def_s;
+const tsk_object_def_t *tnet_dhcp_option_dns_def_t = &tnet_dhcp_option_dns_def_s;

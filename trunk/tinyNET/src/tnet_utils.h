@@ -35,19 +35,7 @@
 #include "tnet_socket.h"
 #include "tnet_types.h"
 
-/**@ingroup tnet_utils_group
-* @def TNET_INTERFACE_CREATE
-* Creates new @ref tnet_interface_t object.
-*/
-/**@ingroup tnet_utils_group
-* @def TNET_ADDRESS_CREATE
-* Creates new @ref tnet_address_t object.
-*/
 TNET_BEGIN_DECLS
-
-#define TNET_INTERFACE_CREATE(description, mac_address, mac_address_length)	tsk_object_new(tnet_interface_def_t, (const char*)description, (const uint8_t*)mac_address, (size_t)mac_address_length)
-#define TNET_ADDRESS_CREATE(ip)												tsk_object_new(tnet_address_def_t, (const char*)ip)
-
 
 /**@ingroup tnet_utils_group
 */
@@ -170,6 +158,9 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 #	define tnet_ioctlt ioctl
 #endif
 
+
+tnet_interface_t* tnet_interface_create(const char* description, const char* mac_address, size_t mac_address_length);
+tnet_address_t* tnet_address_create(const char* ip);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_interface_def_t;
 TINYNET_GEXTERN const tsk_object_def_t *tnet_address_def_t;

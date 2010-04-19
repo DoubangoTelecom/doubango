@@ -23,14 +23,7 @@
 
 #include "tsk.h"
 
-#include "tnet.h"
-#include "tnet_nat.h"
-#include "tnet_socket.h"
-#include "tnet_transport.h"
-#include "stun/tnet_stun.h"
-#include "dns/tnet_dns.h"
-#include "dhcp/tnet_dhcp.h"
-#include "dhcp6/tnet_dhcp6.h"
+#include "tinynet.h"
 
 #include "test_sockets.h"
 #include "test_transport.h"
@@ -45,8 +38,8 @@
 
 #define RUN_TEST_LOOP		1
 
-#define RUN_TEST_ALL		0
-#define RUN_TEST_SOCKETS	1 /* FIXME: Android */
+#define RUN_TEST_ALL		1
+#define RUN_TEST_SOCKETS	0 /* FIXME: Android */
 #define RUN_TEST_TRANSPORT	0
 #define RUN_TEST_AUTH		0
 #define RUN_TEST_STUN		0

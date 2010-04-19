@@ -37,11 +37,81 @@
 
 #include <string.h>
 
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
+tnet_turn_attribute_channelnum_t* tnet_turn_attribute_channelnum_create(uint16_t number)
+{
+	return tsk_object_new(tnet_turn_attribute_channelnum_def_t, number);
+}
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.2.  LIFETIME */
+tnet_turn_attribute_lifetime_t* tnet_turn_attribute_lifetime_create(uint32_t lifetime)
+{
+	return tsk_object_new(tnet_turn_attribute_lifetime_def_t, lifetime);
+}
+
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS */
+tnet_turn_attribute_xpeer_addr_t* tnet_turn_attribute_xpeer_addr_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_turn_attribute_xpeer_addr_def_t, payload, payload_size);
+}
+
+tnet_turn_attribute_xpeer_addr_t* tnet_turn_attribute_xpeer_addr_create_null()
+{
+	return tnet_turn_attribute_xpeer_addr_create(tsk_null, 0);
+}
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.4.  DATA */
+tnet_turn_attribute_data_t* tnet_turn_attribute_data_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_turn_attribute_data_def_t, payload, payload_size);
+}
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS */
+tnet_turn_attribute_xrelayed_addr_t* tnet_turn_attribute_xrelayed_addr_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_turn_attribute_xrelayed_addr_def_t, payload, payload_size);
+}
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT */
+tnet_turn_attribute_even_port_t* tnet_turn_attribute_even_port_create(unsigned R)
+{
+	return tsk_object_new(tnet_turn_attribute_even_port_def_t, R);
+}
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT */
+tnet_turn_attribute_reqtrans_t* tnet_turn_attribute_reqtrans_create(tnet_proto_t protocol)
+{
+	return tsk_object_new(tnet_turn_attribute_reqtrans_def_t, protocol);
+}
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT */
+tnet_turn_attribute_dontfrag_t* tnet_turn_attribute_dontfrag_create()
+{
+	return tsk_object_new(tnet_turn_attribute_dontfrag_def_t);
+}
+
+/**@ingroup tnet_turn_group
+* draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN */
+tnet_turn_attribute_restoken_t* tnet_turn_attribute_restoken_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_turn_attribute_restoken_def_t, payload, payload_size);
+}
+
 /**@ingroup tnet_turn_group
 */
 tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_t type, uint16_t length, const void* payload, size_t payload_size)
 {
-	tnet_stun_attribute_t *attribute = 0;
+	tnet_stun_attribute_t *attribute = tsk_null;
 	const uint8_t* dataPtr = payload;
 
 	/* Attribute Value
@@ -53,7 +123,7 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	case stun_channel_number:
 		{
 			uint32_t number = tnet_ntohl(*((uint32_t*)dataPtr));
-			attribute = TNET_TURN_ATTRIBUTE_CHANNELNUM_CREATE(number);
+			attribute = (tnet_stun_attribute_t *)tnet_turn_attribute_channelnum_create(number);
 			break;
 		}
 
@@ -61,7 +131,7 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	case stun_lifetime:
 		{
 			uint32_t lifetime = tnet_ntohl(*((uint32_t*)dataPtr));
-			attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(lifetime);
+			attribute = (tnet_stun_attribute_t *)tnet_turn_attribute_lifetime_create(lifetime);
 			break;
 		}
 
@@ -82,7 +152,7 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 	/*	draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS */
 	case stun_xor_relayed_address:
 		{
-			attribute = TNET_TURN_ATTRIBUTE_XRELAYED_ADDR_CREATE(dataPtr, length);
+			attribute = (tnet_stun_attribute_t *)tnet_turn_attribute_xrelayed_addr_create(dataPtr, length);
 			break;
 		}
 
@@ -121,10 +191,9 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 		}
 	}
 
-	if(!attribute)
-	{
+	if(!attribute){
 		/* Create default */
-		attribute = TNET_STUN_ATTRIBUTE_CREATE();
+		attribute = tnet_stun_attribute_create();
 	}
 
 	return attribute;
@@ -134,16 +203,14 @@ tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_
 */
 int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output)
 {
-	if(!attribute || !output)
-	{
+	if(!attribute || !output){
 		return -1;
 	}
 
 	/* Attribute Value
 	*/
 
-	switch(attribute->type)
-	{
+	switch(attribute->type){
 	/*	draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER */
 	case stun_channel_number:
 		{
@@ -164,10 +231,8 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	case stun_xor_peer_address:
 		{
 			tnet_turn_attribute_xpeer_addr_t* xpeer = (tnet_turn_attribute_xpeer_addr_t*)attribute;
-			if(xpeer)
-			{
-				if(xpeer->family == stun_ipv4)
-				{
+			if(xpeer){
+				if(xpeer->family == stun_ipv4){
 					uint8_t pad = 0x00;
 					tsk_buffer_append(output, &pad, 1);
 					tsk_buffer_append(output, &xpeer->family, 1);
@@ -187,8 +252,7 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	case stun_data:
 		{
 			tnet_turn_attribute_data_t *data = (tnet_turn_attribute_data_t*)attribute;
-			if(data->value)
-			{
+			if(data->value){
 				tsk_buffer_append(output, data->value->data, data->value->size);
 			}
 			return 0;
@@ -247,11 +311,10 @@ int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.1.  CHANNEL-NUMBER]] object definition
 //
-static void* tnet_turn_attribute_channelnum_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_channelnum_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_channelnum_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 #if defined (__GNUC__)
 		attribute->number = (uint16_t)(va_arg(*app, unsigned));
 #else
@@ -264,12 +327,10 @@ static void* tnet_turn_attribute_channelnum_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_attribute_channelnum_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_channelnum_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_channelnum_t *attribute = self;
-	if(attribute)
-	{
-		
+	if(attribute){
 	}
 	return self;
 }
@@ -277,22 +338,21 @@ static void* tnet_turn_attribute_channelnum_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_channelnum_def_s =
 {
 	sizeof(tnet_turn_attribute_channelnum_t),
-	tnet_turn_attribute_channelnum_create,
-	tnet_turn_attribute_channelnum_destroy,
-	0,
+	tnet_turn_attribute_channelnum_ctor,
+	tnet_turn_attribute_channelnum_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_channelnum_def_t = &tnet_turn_attribute_channelnum_def_s;
+const tsk_object_def_t *tnet_turn_attribute_channelnum_def_t = &tnet_turn_attribute_channelnum_def_s;
 
 
 
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.2.  LIFETIME]] object definition
 //
-static void* tnet_turn_attribute_lifetime_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_lifetime_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_lifetime_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		attribute->value = /*tnet_htonl*/(va_arg(*app, uint32_t));
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_lifetime;
 		TNET_STUN_ATTRIBUTE(attribute)->length = 4;
@@ -300,12 +360,10 @@ static void* tnet_turn_attribute_lifetime_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_attribute_lifetime_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_lifetime_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_lifetime_t *attribute = self;
-	if(attribute)
-	{
-		
+	if(attribute){
 	}
 	return self;
 }
@@ -313,11 +371,11 @@ static void* tnet_turn_attribute_lifetime_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_lifetime_def_s =
 {
 	sizeof(tnet_turn_attribute_lifetime_t),
-	tnet_turn_attribute_lifetime_create,
-	tnet_turn_attribute_lifetime_destroy,
-	0,
+	tnet_turn_attribute_lifetime_ctor,
+	tnet_turn_attribute_lifetime_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_lifetime_def_t = &tnet_turn_attribute_lifetime_def_s;
+const tsk_object_def_t *tnet_turn_attribute_lifetime_def_t = &tnet_turn_attribute_lifetime_def_s;
 
 
 
@@ -325,17 +383,14 @@ const void *tnet_turn_attribute_lifetime_def_t = &tnet_turn_attribute_lifetime_d
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS]] object definition
 //
-static void* tnet_turn_attribute_xpeer_addr_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_xpeer_addr_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_xpeer_addr_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 		
-		if(payload && payload_size)
-		{
-
+		if(payload && payload_size){
 		}
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_xor_peer_address;
 		TNET_STUN_ATTRIBUTE(attribute)->length = 8;
@@ -343,12 +398,10 @@ static void* tnet_turn_attribute_xpeer_addr_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_attribute_xpeer_addr_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_xpeer_addr_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_xpeer_addr_t *attribute = self;
-	if(attribute)
-	{
-		
+	if(attribute){
 	}
 	return self;
 }
@@ -356,27 +409,25 @@ static void* tnet_turn_attribute_xpeer_addr_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_xpeer_addr_def_s =
 {
 	sizeof(tnet_turn_attribute_xpeer_addr_t),
-	tnet_turn_attribute_xpeer_addr_create,
-	tnet_turn_attribute_xpeer_addr_destroy,
-	0,
+	tnet_turn_attribute_xpeer_addr_ctor,
+	tnet_turn_attribute_xpeer_addr_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_xpeer_addr_def_t = &tnet_turn_attribute_xpeer_addr_def_s;
+const tsk_object_def_t *tnet_turn_attribute_xpeer_addr_def_t = &tnet_turn_attribute_xpeer_addr_def_s;
 
 
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.4.  DATA]] object definition
 //
-static void* tnet_turn_attribute_data_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_data_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_data_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
-		if(payload && payload_size)
-		{
-			attribute->value = TSK_BUFFER_CREATE(payload, payload_size);
+		if(payload && payload_size){
+			attribute->value = tsk_buffer_create(payload, payload_size);
 		}
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_data;
 		TNET_STUN_ATTRIBUTE(attribute)->length = (uint16_t)payload_size;
@@ -384,11 +435,10 @@ static void* tnet_turn_attribute_data_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_attribute_data_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_data_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_data_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		TSK_OBJECT_SAFE_FREE(attribute->value);
 	}
 	return self;
@@ -397,25 +447,23 @@ static void* tnet_turn_attribute_data_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_data_def_s =
 {
 	sizeof(tnet_turn_attribute_data_t),
-	tnet_turn_attribute_data_create,
-	tnet_turn_attribute_data_destroy,
-	0,
+	tnet_turn_attribute_data_ctor,
+	tnet_turn_attribute_data_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_data_def_t = &tnet_turn_attribute_data_def_s;
+const tsk_object_def_t *tnet_turn_attribute_data_def_t = &tnet_turn_attribute_data_def_s;
 
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS]] object definition
 //
-static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_xrelayed_addr_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_xrelayed_addr_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		const void *payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
-		if(payload && payload_size)
-		{
+		if(payload && payload_size){
 			const uint8_t *payloadPtr = (const uint8_t*)payload;
 			payloadPtr += 1; /* Ignore first 8bits */
 
@@ -430,21 +478,18 @@ static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app
 
 			{	/*=== Compute IP address */
 				size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
-				if(addr_size)
-				{	
+				if(addr_size){	
 					size_t i;
 					uint32_t addr;
 
-					for(i=0; i<addr_size; i+=4)
-					{
+					for(i=0; i<addr_size; i+=4){
 						addr = tnet_ntohl(*((uint32_t*)payloadPtr));
 						addr ^= TNET_STUN_MAGIC_COOKIE;
 						memcpy(&attribute->xaddress[i], &addr, 4);
 						payloadPtr+=4;
 					}
 				}
-				else
-				{
+				else{
 					TSK_DEBUG_ERROR("UNKNOWN FAMILY [%u].", attribute->family);
 				}
 			}			
@@ -453,12 +498,10 @@ static void* tnet_turn_attribute_xrelayed_addr_create(void * self, va_list * app
 	return self;
 }
 
-static void* tnet_turn_attribute_xrelayed_addr_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_xrelayed_addr_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_xrelayed_addr_t *attribute = self;
-	if(attribute)
-	{
-		
+	if(attribute){
 	}
 	return self;
 }
@@ -466,21 +509,20 @@ static void* tnet_turn_attribute_xrelayed_addr_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_xrelayed_addr_def_s =
 {
 	sizeof(tnet_turn_attribute_xrelayed_addr_t),
-	tnet_turn_attribute_xrelayed_addr_create,
-	tnet_turn_attribute_xrelayed_addr_destroy,
-	0,
+	tnet_turn_attribute_xrelayed_addr_ctor,
+	tnet_turn_attribute_xrelayed_addr_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_xrelayed_addr_def_t = &tnet_turn_attribute_xrelayed_addr_def_s;
+const tsk_object_def_t *tnet_turn_attribute_xrelayed_addr_def_t = &tnet_turn_attribute_xrelayed_addr_def_s;
 
 
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.6.  EVEN-PORT]] object definition
 //
-static void* tnet_turn_attribute_even_port_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_even_port_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_even_port_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		attribute->R = va_arg(*app, unsigned);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_even_port;
@@ -489,12 +531,10 @@ static void* tnet_turn_attribute_even_port_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_attribute_even_port_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_even_port_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_even_port_t *attribute = self;
-	if(attribute)
-	{
-		
+	if(attribute){
 	}
 	return self;
 }
@@ -502,21 +542,20 @@ static void* tnet_turn_attribute_even_port_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_even_port_def_s =
 {
 	sizeof(tnet_turn_attribute_even_port_t),
-	tnet_turn_attribute_even_port_create,
-	tnet_turn_attribute_even_port_destroy,
-	0,
+	tnet_turn_attribute_even_port_ctor,
+	tnet_turn_attribute_even_port_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_even_port_def_t = &tnet_turn_attribute_even_port_def_s;
+const tsk_object_def_t *tnet_turn_attribute_even_port_def_t = &tnet_turn_attribute_even_port_def_s;
 
 
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.7.  REQUESTED-TRANSPORT]] object definition
 //
-static void* tnet_turn_attribute_reqtrans_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_reqtrans_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_reqtrans_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		attribute->protocol = va_arg(*app, tnet_proto_t);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_requested_transport;
@@ -525,12 +564,10 @@ static void* tnet_turn_attribute_reqtrans_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_attribute_reqtrans_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_reqtrans_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_reqtrans_t *attribute = self;
-	if(attribute)
-	{
-		
+	if(attribute){
 	}
 	return self;
 }
@@ -538,21 +575,20 @@ static void* tnet_turn_attribute_reqtrans_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_reqtrans_def_s =
 {
 	sizeof(tnet_turn_attribute_reqtrans_t),
-	tnet_turn_attribute_reqtrans_create,
-	tnet_turn_attribute_reqtrans_destroy,
-	0,
+	tnet_turn_attribute_reqtrans_ctor,
+	tnet_turn_attribute_reqtrans_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_reqtrans_def_t = &tnet_turn_attribute_reqtrans_def_s;
+const tsk_object_def_t *tnet_turn_attribute_reqtrans_def_t = &tnet_turn_attribute_reqtrans_def_s;
 
 
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.8.  DONT-FRAGMENT]] object definition
 //
-static void* tnet_turn_attribute_dontfrag_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_dontfrag_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_dontfrag_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		//const void *payload = va_arg(*app, const void*);
 		//size_t payload_size = va_arg(*app, size_t);
 
@@ -561,12 +597,10 @@ static void* tnet_turn_attribute_dontfrag_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_attribute_dontfrag_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_dontfrag_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_dontfrag_t *attribute = self;
-	if(attribute)
-	{
-		
+	if(attribute){
 	}
 	return self;
 }
@@ -574,22 +608,21 @@ static void* tnet_turn_attribute_dontfrag_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_dontfrag_def_s =
 {
 	sizeof(tnet_turn_attribute_dontfrag_t),
-	tnet_turn_attribute_dontfrag_create,
-	tnet_turn_attribute_dontfrag_destroy,
-	0,
+	tnet_turn_attribute_dontfrag_ctor,
+	tnet_turn_attribute_dontfrag_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_dontfrag_def_t = &tnet_turn_attribute_dontfrag_def_s;
+const tsk_object_def_t *tnet_turn_attribute_dontfrag_def_t = &tnet_turn_attribute_dontfrag_def_s;
 
 
 
 //=================================================================================================
 //	[[draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN]] object definition
 //
-static void* tnet_turn_attribute_restoken_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_attribute_restoken_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_attribute_restoken_t *attribute = self;
-	if(attribute)
-	{
+	if(attribute){
 		//--const void *payload = va_arg(*app, const void*);
 		//--size_t payload_size = va_arg(*app, size_t);
 
@@ -598,12 +631,10 @@ static void* tnet_turn_attribute_restoken_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_attribute_restoken_destroy(void * self) 
+static tsk_object_t* tnet_turn_attribute_restoken_dtor(tsk_object_t * self) 
 { 
 	tnet_turn_attribute_restoken_t *attribute = self;
-	if(attribute)
-	{
-		
+	if(attribute){
 	}
 	return self;
 }
@@ -611,8 +642,8 @@ static void* tnet_turn_attribute_restoken_destroy(void * self)
 static const tsk_object_def_t tnet_turn_attribute_restoken_def_s =
 {
 	sizeof(tnet_turn_attribute_restoken_t),
-	tnet_turn_attribute_restoken_create,
-	tnet_turn_attribute_restoken_destroy,
-	0,
+	tnet_turn_attribute_restoken_ctor,
+	tnet_turn_attribute_restoken_dtor,
+	tsk_null,
 };
-const void *tnet_turn_attribute_restoken_def_t = &tnet_turn_attribute_restoken_def_s;
+const tsk_object_def_t *tnet_turn_attribute_restoken_def_t = &tnet_turn_attribute_restoken_def_s;

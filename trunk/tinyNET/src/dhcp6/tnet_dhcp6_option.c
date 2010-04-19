@@ -35,6 +35,46 @@
 
 #include <string.h>
 
+tnet_dhcp6_option_t* tnet_dhcp6_option_create(tnet_dhcp6_option_code_t code, const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp6_option_def_t, code, payload, payload_size);
+}
+
+tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_indentifer_create(tnet_dhcp6_option_code_t code, const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp6_option_identifier_def_t, code, payload, payload_size);
+}
+
+tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_clientid_create(const void* payload, size_t payload_size)
+{
+	return tnet_dhcp6_option_indentifer_create(dhcp6_code_clientid, payload, payload_size);
+}
+
+tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_serverid_create(const void* payload, size_t payload_size)
+{
+	return tnet_dhcp6_option_indentifer_create(dhcp6_code_serverid, payload, payload_size);
+}
+
+tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp6_option_orequest_def_t, payload, payload_size);
+}
+
+tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create_null()
+{
+	return tnet_dhcp6_option_orequest_create(tsk_null, 0);
+}
+
+tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp6_option_vendorclass_def_t, payload, payload_size);
+}
+
+tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create_null()
+{
+	return tnet_dhcp6_option_vendorclass_create(tsk_null, 0);
+}
+
 tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, size_t size)
 {
 	tnet_dhcp6_option_t *option = 0;
@@ -55,8 +95,7 @@ tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, size_t size
 	len = tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2;
 
-	switch(code)
-	{
+	switch(code){
 	case dhcp6_code_clientid:
 	case dhcp6_code_serverid:
 		{
@@ -85,8 +124,7 @@ int tnet_dhcp6_option_serialize(const tnet_dhcp6_option_t* self, tsk_buffer_t *o
 	_2bytes = tnet_htons(self->code);
 	tsk_buffer_append(output, &(_2bytes), 2);
 
-	switch(self->code)
-	{
+	switch(self->code){
 	case dhcp6_code_clientid:
 	case dhcp6_code_serverid:
 		{
@@ -123,11 +161,10 @@ int tnet_dhcp6_option_serializeex(tnet_dhcp6_option_code_t code, uint8_t length,
 //
 //	[[DHCPv6 OPTION]] object definition
 //
-static void* tnet_dhcp6_option_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_option_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_option_t *option = self;
-	if(option)
-	{
+	if(option){
 		tnet_dhcp6_option_code_t code = va_arg(*app, tnet_dhcp6_option_code_t);
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
@@ -143,11 +180,10 @@ static void* tnet_dhcp6_option_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dhcp6_option_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_option_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_option_t *option = self;
-	if(option)
-	{
+	if(option){
 		TSK_OBJECT_SAFE_FREE(option->data);
 	}
 	return self;
@@ -156,11 +192,11 @@ static void* tnet_dhcp6_option_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_option_def_s =
 {
 	sizeof(tnet_dhcp6_option_t),
-	tnet_dhcp6_option_create,
-	tnet_dhcp6_option_destroy,
-	0,
+	tnet_dhcp6_option_ctor,
+	tnet_dhcp6_option_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_option_def_t = &tnet_dhcp6_option_def_s;
+const tsk_object_def_t *tnet_dhcp6_option_def_t = &tnet_dhcp6_option_def_s;
 
 /*======================================================================================
 *	RFC 3315 - 
@@ -170,27 +206,25 @@ const void *tnet_dhcp6_option_def_t = &tnet_dhcp6_option_def_s;
 //
 //	[[DHCPv6 Option Request Option]] object definition
 //
-static void* tnet_dhcp6_option_identifier_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_option_identifier_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_option_identifier_t *option = self;
-	if(option)
-	{
+	if(option){
 		//tnet_dhcp6_option_code_t code = va_arg(*app, tnet_dhcp6_option_code_t);
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
-		if(payload && payload_size)
-		{	/* DESERIALIZATION */
+		if(payload && payload_size){
+			/* DESERIALIZATION */
 		}
 	}
 	return self;
 }
 
-static void* tnet_dhcp6_option_identifier_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_option_identifier_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_option_identifier_t *option = self;
-	if(option)
-	{
+	if(option){
 		TSK_OBJECT_SAFE_FREE(option->duid);
 	}
 	return self;
@@ -199,11 +233,11 @@ static void* tnet_dhcp6_option_identifier_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_option_identifier_def_s =
 {
 	sizeof(tnet_dhcp6_option_identifier_t),
-	tnet_dhcp6_option_identifier_create,
-	tnet_dhcp6_option_identifier_destroy,
-	0,
+	tnet_dhcp6_option_identifier_ctor,
+	tnet_dhcp6_option_identifier_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_option_identifier_def_t = &tnet_dhcp6_option_identifier_def_s;
+const tsk_object_def_t *tnet_dhcp6_option_identifier_def_t = &tnet_dhcp6_option_identifier_def_s;
 
 /*======================================================================================
 *	RFC 3315 - 22.7. Option Request Option
@@ -213,10 +247,9 @@ int tnet_dhcp6_option_orequest_add_code(tnet_dhcp6_option_orequest_t* self, uint
 {
 	uint16_t _2bytes;
 	int ret = -1;
-	if(self)
-	{
+	if(self){
 		if(!self->codes){
-			if(!(self->codes = TSK_BUFFER_CREATE_NULL())){
+			if(!(self->codes = tsk_buffer_create_null())){
 				return -3;
 			}
 		}
@@ -231,11 +264,10 @@ int tnet_dhcp6_option_orequest_add_code(tnet_dhcp6_option_orequest_t* self, uint
 //
 //	[[DHCPv6 Option Request Option]] object definition
 //
-static void* tnet_dhcp6_option_orequest_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_option_orequest_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_option_orequest_t *option = self;
-	if(option)
-	{
+	if(option){
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
@@ -246,11 +278,10 @@ static void* tnet_dhcp6_option_orequest_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dhcp6_option_orequest_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_option_orequest_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_option_orequest_t *option = self;
-	if(option)
-	{
+	if(option){
 		TSK_OBJECT_SAFE_FREE(option->codes);
 	}
 	return self;
@@ -259,11 +290,11 @@ static void* tnet_dhcp6_option_orequest_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_option_orequest_def_s =
 {
 	sizeof(tnet_dhcp6_option_orequest_t),
-	tnet_dhcp6_option_orequest_create,
-	tnet_dhcp6_option_orequest_destroy,
-	0,
+	tnet_dhcp6_option_orequest_ctor,
+	tnet_dhcp6_option_orequest_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_option_orequest_def_t = &tnet_dhcp6_option_orequest_def_s;
+const tsk_object_def_t *tnet_dhcp6_option_orequest_def_t = &tnet_dhcp6_option_orequest_def_s;
 
 /*======================================================================================
 *	RFC 3315 - 22.16. Vendor Class Option
@@ -272,26 +303,24 @@ const void *tnet_dhcp6_option_orequest_def_t = &tnet_dhcp6_option_orequest_def_s
 //
 //	[[DHCPv6 Option Request Option]] object definition
 //
-static void* tnet_dhcp6_option_vendorclass_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_option_vendorclass_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_option_vendorclass_t *option = self;
-	if(option)
-	{
+	if(option){
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
-		if(payload && payload_size)
-		{	/* DESERIALIZATION */
+		if(payload && payload_size){
+			/* DESERIALIZATION */
 		}
 	}
 	return self;
 }
 
-static void* tnet_dhcp6_option_vendorclass_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_option_vendorclass_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_option_vendorclass_t *option = self;
-	if(option)
-	{
+	if(option){
 		TSK_OBJECT_SAFE_FREE(option->vendor_class_data);
 	}
 	return self;
@@ -300,8 +329,8 @@ static void* tnet_dhcp6_option_vendorclass_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_option_vendorclass_def_s =
 {
 	sizeof(tnet_dhcp6_option_vendorclass_t),
-	tnet_dhcp6_option_vendorclass_create,
-	tnet_dhcp6_option_vendorclass_destroy,
-	0,
+	tnet_dhcp6_option_vendorclass_ctor,
+	tnet_dhcp6_option_vendorclass_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_option_vendorclass_def_t = &tnet_dhcp6_option_vendorclass_def_s;
+const tsk_object_def_t *tnet_dhcp6_option_vendorclass_def_t = &tnet_dhcp6_option_vendorclass_def_s;

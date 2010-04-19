@@ -48,6 +48,22 @@
 /**@defgroup tnet_dhcp_group DHCPv4/BOOTP (RFC 2131) implementation.
 */
 
+/**@ingroup tnet_dhcp_group
+* Creates new DHCPv4 context.
+*/
+tnet_dhcp_ctx_t* tnet_dhcp_ctx_create()
+{
+	return tsk_object_new(tnet_dhcp_ctx_def_t);
+}
+
+/**@ingroup tnet_dhcp_group
+* Creates new DHCPv4 parameters.
+*/
+tnet_dhcp_params_t* tnet_dhcp_params_create()
+{
+	return tsk_object_new(tnet_dhcp_params_def_t);
+}
+
 /* FIXME: USE retransmission mech (*2*2...)
 */
 /**@ingroup tnet_dhcp_group
@@ -71,7 +87,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 		goto bail;
 	}
 	
-	localsocket4 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv4);
+	localsocket4 = tnet_socket_create(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv4);
 	if(!TNET_SOCKET_IS_VALID(localsocket4))
 	{
 		TSK_DEBUG_ERROR("Failed to create/bind DHCP client socket.");
@@ -214,7 +230,7 @@ bail:
 tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_message_type_t type, tnet_dhcp_params_t* params)
 {
 	tnet_dhcp_reply_t* reply = 0;
-	tnet_dhcp_request_t* request = TNET_DHCP_REQUEST_CREATE();
+	tnet_dhcp_request_t* request = tnet_dhcp_request_create();
 
 	if(!ctx || !params || !request)
 	{
@@ -256,11 +272,10 @@ int tnet_dhcp_params_add_code(tnet_dhcp_params_t* params, tnet_dhcp_option_code_
 //=================================================================================================
 //	[[DHCP CONTEXT]] object definition
 //
-static void* tnet_dhcp_ctx_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp_ctx_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp_ctx_t *ctx = self;
-	if(ctx)
-	{
+	if(ctx){
 		tnet_host_t host;
 
 		ctx->vendor_id = tsk_strdup(TNET_DHCP_VENDOR_ID_DEFAULT);
@@ -273,8 +288,7 @@ static void* tnet_dhcp_ctx_create(void * self, va_list * app)
 		ctx->server_port = TNET_DHCP_SERVER_PORT;
 		ctx->interfaces = tnet_get_interfaces();
 		
-		if(!ctx->interfaces || TSK_LIST_IS_EMPTY(ctx->interfaces))
-		{
+		if(!ctx->interfaces || TSK_LIST_IS_EMPTY(ctx->interfaces)){
 			TSK_DEBUG_ERROR("Failed to retrieve network interfaces.");
 		}
 
@@ -283,11 +297,10 @@ static void* tnet_dhcp_ctx_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dhcp_ctx_destroy(void * self) 
+static tsk_object_t* tnet_dhcp_ctx_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp_ctx_t *ctx = self;
-	if(ctx)
-	{
+	if(ctx){
 		tsk_safeobj_deinit(ctx);
 		
 		TSK_FREE(ctx->vendor_id);
@@ -301,29 +314,27 @@ static void* tnet_dhcp_ctx_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp_ctx_def_s =
 {
 	sizeof(tnet_dhcp_ctx_t),
-	tnet_dhcp_ctx_create,
-	tnet_dhcp_ctx_destroy,
-	0,
+	tnet_dhcp_ctx_ctor,
+	tnet_dhcp_ctx_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp_ctx_def_t = &tnet_dhcp_ctx_def_s;
+const tsk_object_def_t *tnet_dhcp_ctx_def_t = &tnet_dhcp_ctx_def_s;
 
 //=================================================================================================
 //	[[DHCP PARAMS]] object definition
 //
-static void* tnet_dhcp_params_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp_params_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp_params_t *params = self;
-	if(params)
-	{
+	if(params){
 	}
 	return self;
 }
 
-static void* tnet_dhcp_params_destroy(void * self) 
+static tsk_object_t* tnet_dhcp_params_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp_params_t *params = self;
-	if(params)
-	{
+	if(params){
 	}
 	return self;
 }
@@ -331,8 +342,8 @@ static void* tnet_dhcp_params_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp_params_def_s =
 {
 	sizeof(tnet_dhcp_params_t),
-	tnet_dhcp_params_create,
-	tnet_dhcp_params_destroy,
-	0,
+	tnet_dhcp_params_ctor,
+	tnet_dhcp_params_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp_params_def_t = &tnet_dhcp_params_def_s;
+const tsk_object_def_t *tnet_dhcp_params_def_t = &tnet_dhcp_params_def_s;

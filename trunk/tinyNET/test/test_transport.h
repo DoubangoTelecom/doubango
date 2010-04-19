@@ -192,12 +192,12 @@ void test_transport()
 
 
 #if TEST_UDP
-	tnet_transport_handle_t *udp = TNET_TRANSPORT_CREATE(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
+	tnet_transport_handle_t *udp = tnet_transport_create(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_udp_ipv4, "UDP/IPV4 TRANSPORT");
 	test_transport_udp_ipv4(udp);
 #endif
 
 #if TEST_TCP
-	tnet_transport_handle_t *tcp = TNET_TRANSPORT_CREATE(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_tcp_ipv4, "TCP/IPV4 TRANSPORT");
+	tnet_transport_handle_t *tcp = tnet_transport_create(LOCAL_IP4, LOCAL_PORT, tnet_socket_type_tcp_ipv4, "TCP/IPV4 TRANSPORT");
 	test_transport_tcp_ipv4(tcp);
 #endif	
 

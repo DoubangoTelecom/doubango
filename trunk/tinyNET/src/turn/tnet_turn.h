@@ -55,20 +55,6 @@ TNET_BEGIN_DECLS
 #define TNET_TURN_PERMISSION_TIMEOUT_DEFAULT	300 /* draft-ietf-behave-turn-16 subclause 8 */
 #define TNET_TURN_CHANBIND_TIMEOUT_DEFAULT		600 /* draft-ietf-behave-turn-16 subclause 11 */
 
-/**@ingroup tnet_turn_group
-*/
-#define TNET_TURN_CHANNEL_BINDING_CREATE(allocation)	\
-	tsk_object_new(tnet_turn_channel_binding_def_t, (const tnet_turn_allocation_t *)allocation)
-
-/**@ingroup tnet_turn_group
-*/
-#define TNET_TURN_PERMISSION_CREATE(timeout) \
-	tsk_object_new(tnet_turn_permission_def_t, (uint32_t)timeout)
-
-/**@ingroup tnet_turn_group
-*/
-#define TNET_TURN_ALLOCATION_CREATE(fd, socket_type, server_address, server_port, username, password) \
-	tsk_object_new(tnet_turn_allocation_def_t, (tnet_fd_t)fd, (tnet_socket_type_t)socket_type, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
 
 /**@ingroup tnet_turn_group
 * @def tnet_turn_allocation_id_t.
@@ -166,9 +152,9 @@ typedef struct tnet_turn_allocation_s
 tnet_turn_allocation_t;
 typedef tsk_list_t tnet_turn_allocations_L_t; /**< List of @ref tnet_turn_allocation_t elements. */
 
-TINYNET_GEXTERN const void *tnet_turn_permission_def_t;
-TINYNET_GEXTERN const void *tnet_turn_channel_binding_def_t;
-TINYNET_GEXTERN const void *tnet_turn_allocation_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_turn_permission_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_turn_channel_binding_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_turn_allocation_def_t;
 
 //#if defined(__SYMBIAN32__) || ANDROID /* Forward declaration */
 struct tnet_nat_context_s;

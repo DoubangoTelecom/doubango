@@ -22,7 +22,7 @@
 #ifndef TNET_TEST_DHCP_H
 #define TNET_TEST_DHCP_H
 
-#include "dhcp/tnet_dhcp_option_sip.h"
+
 
 void test_dhcp_discover(tnet_dhcp_ctx_t *ctx)
 {
@@ -41,7 +41,7 @@ void test_dhcp_inform(tnet_dhcp_ctx_t *ctx)
 	tnet_dhcp_params_t *params = 0;
 	tnet_dhcp_reply_t *reply = 0;
 
-	params = TNET_DHCP_PARAMS_CREATE();
+	params = tnet_dhcp_params_create();
 	tnet_dhcp_params_add_code(params, dhcp_code_SIP_Servers_DHCP_Option); /* SIP Servers */
 	tnet_dhcp_params_add_code(params, dhcp_code_Domain_Server); /* DNS Server */
 	
@@ -114,7 +114,7 @@ bail:
 
 void test_dhcp()
 {
-	tnet_dhcp_ctx_t *ctx = TNET_DHCP_CTX_CREATE();
+	tnet_dhcp_ctx_t *ctx = tnet_dhcp_ctx_create();
 	test_dhcp_inform(ctx);
 
 	TSK_OBJECT_SAFE_FREE(ctx);

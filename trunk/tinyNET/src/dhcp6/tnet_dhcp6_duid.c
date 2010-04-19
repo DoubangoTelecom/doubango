@@ -35,12 +35,26 @@ int tnet_dhcp6_duid_llt_serialize(const tnet_dhcp6_duid_llt_t* self, tsk_buffer_
 int tnet_dhcp6_duid_en_serialize(const tnet_dhcp6_duid_en_t* self, tsk_buffer_t *output);
 int tnet_dhcp6_duid_ll_serialize(const tnet_dhcp6_duid_ll_t* self, tsk_buffer_t *output);
 
+
+tnet_dhcp6_duid_llt_t* tnet_dhcp6_duid_llt_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp6_duid_llt_def_t, payload, payload_size);
+}
+
+tnet_dhcp6_duid_en_t* tnet_dhcp6_duid_en_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp6_duid_en_def_t, payload, payload_size);
+}
+
+tnet_dhcp6_duid_ll_t* tnet_dhcp6_duid_ll_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp6_duid_ll_def_t, payload, payload_size);
+}
+
 int tnet_dhcp6_duid_init(tnet_dhcp6_duid_t *self, tnet_dhcp6_duid_type_t type)
 {
-	if(self)
-	{
-		if(!self->initialized)
-		{
+	if(self){
+		if(!self->initialized){
 			self->type = type;			
 			self->initialized = tsk_true;
 			return 0;
@@ -52,10 +66,8 @@ int tnet_dhcp6_duid_init(tnet_dhcp6_duid_t *self, tnet_dhcp6_duid_type_t type)
 
 int tnet_dhcp6_duid_deinit(tnet_dhcp6_duid_t *self)
 {
-	if(self)
-	{
-		if(self->initialized)
-		{			
+	if(self){
+		if(self->initialized){			
 			self->initialized = tsk_true;
 			return 0;
 		}
@@ -74,8 +86,7 @@ tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, size_t size)
 	//uint8_t len = 0;
 
 	/* Check validity */
-	if(!dataPtr || size<2/*Type*/)
-	{
+	if(!dataPtr || size<2/*Type*/){
 		goto bail;
 	}
 
@@ -90,13 +101,11 @@ int tnet_dhcp6_duid_serialize(const tnet_dhcp6_duid_t* self, tsk_buffer_t *outpu
 {
 	int ret = -1;
 
-	if(!self || !output)
-	{
+	if(!self || !output){
 		return ret;
 	}
 
-	switch(self->type)
-	{
+	switch(self->type){
 	case dhcp6_duid_linklayer_plus_time:
 		{
 			ret = tnet_dhcp6_duid_llt_serialize(TNET_DHCP6_DUID_LLT(self), output);
@@ -138,29 +147,27 @@ int tnet_dhcp6_duid_llt_serialize(const tnet_dhcp6_duid_llt_t* self, tsk_buffer_
 //
 //	[[DHCPv6 DUID-LLT]] object definition
 //
-static void* tnet_dhcp6_duid_llt_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_duid_llt_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_duid_llt_t *duid = self;
-	if(duid)
-	{
+	if(duid){
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
 		/* init base */
 		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_linklayer_plus_time);
 
-		if(payload && payload_size)
-		{ /* DESERIALIZATION */
+		if(payload && payload_size){
+			/* DESERIALIZATION */
 		}
 	}
 	return self;
 }
 
-static void* tnet_dhcp6_duid_llt_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_duid_llt_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_duid_llt_t *duid = self;
-	if(duid)
-	{
+	if(duid){
 		/* deinit base */
 		tnet_dhcp6_duid_deinit(TNET_DHCP6_DUID(duid));
 
@@ -172,11 +179,11 @@ static void* tnet_dhcp6_duid_llt_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_duid_llt_def_s =
 {
 	sizeof(tnet_dhcp6_duid_llt_t),
-	tnet_dhcp6_duid_llt_create,
-	tnet_dhcp6_duid_llt_destroy,
-	0,
+	tnet_dhcp6_duid_llt_ctor,
+	tnet_dhcp6_duid_llt_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_duid_llt_def_t = &tnet_dhcp6_duid_llt_def_s;
+const tsk_object_def_t *tnet_dhcp6_duid_llt_def_t = &tnet_dhcp6_duid_llt_def_s;
 
 
 /*=======================================================================================
@@ -191,29 +198,27 @@ int tnet_dhcp6_duid_en_serialize(const tnet_dhcp6_duid_en_t* self, tsk_buffer_t 
 //
 //	[[DHCPv6 DUID-EN]] object definition
 //
-static void* tnet_dhcp6_duid_en_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_duid_en_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_duid_en_t *duid = self;
-	if(duid)
-	{
+	if(duid){
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
 		/* init base */
 		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_Vendor_assigned_id);
 
-		if(payload && payload_size)
-		{ /* DESERIALIZATION */
+		if(payload && payload_size){
+			/* DESERIALIZATION */
 		}
 	}
 	return self;
 }
 
-static void* tnet_dhcp6_duid_en_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_duid_en_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_duid_en_t *duid = self;
-	if(duid)
-	{
+	if(duid){
 		/* deinit base */
 		tnet_dhcp6_duid_deinit(TNET_DHCP6_DUID(duid));
 
@@ -225,11 +230,11 @@ static void* tnet_dhcp6_duid_en_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_duid_en_def_s =
 {
 	sizeof(tnet_dhcp6_duid_en_t),
-	tnet_dhcp6_duid_en_create,
-	tnet_dhcp6_duid_en_destroy,
-	0,
+	tnet_dhcp6_duid_en_ctor,
+	tnet_dhcp6_duid_en_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_duid_en_def_t = &tnet_dhcp6_duid_en_def_s;
+const tsk_object_def_t *tnet_dhcp6_duid_en_def_t = &tnet_dhcp6_duid_en_def_s;
 
 
 /*=======================================================================================
@@ -244,29 +249,27 @@ int tnet_dhcp6_duid_ll_serialize(const tnet_dhcp6_duid_ll_t* self, tsk_buffer_t 
 //
 //	[[DHCPv6 DUID-LL]] object definition
 //
-static void* tnet_dhcp6_duid_ll_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_duid_ll_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_duid_ll_t *duid = self;
-	if(duid)
-	{
+	if(duid){
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
 		/* init base */
 		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_linklayer);
 
-		if(payload && payload_size)
-		{ /* DESERIALIZATION */
+		if(payload && payload_size){
+			/* DESERIALIZATION */
 		}
 	}
 	return self;
 }
 
-static void* tnet_dhcp6_duid_ll_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_duid_ll_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_duid_ll_t *duid = self;
-	if(duid)
-	{
+	if(duid){
 		/* deinit base */
 		tnet_dhcp6_duid_deinit(TNET_DHCP6_DUID(duid));
 
@@ -278,8 +281,8 @@ static void* tnet_dhcp6_duid_ll_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_duid_ll_def_s =
 {
 	sizeof(tnet_dhcp6_duid_ll_t),
-	tnet_dhcp6_duid_ll_create,
-	tnet_dhcp6_duid_ll_destroy,
-	0,
+	tnet_dhcp6_duid_ll_ctor,
+	tnet_dhcp6_duid_ll_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_duid_ll_def_t = &tnet_dhcp6_duid_ll_def_s;
+const tsk_object_def_t *tnet_dhcp6_duid_ll_def_t = &tnet_dhcp6_duid_ll_def_s;

@@ -37,9 +37,83 @@
 
 #include <string.h>
 
-/**@defgroup tnet_socket_group Protocol agnostic socket.
-* Protocol agnostic BSD/Windows sockets.
+/**@defgroup tnet_socket_group Protocol agnostic socket
+*
+* 
+* <h2>10.1	Sockets</h2>
+* For performance reason, all sockets created using tinyNET are non-blocking by default. 
+* The newly created socket will be automatically bound to associate it with an IP address and port number. @ref tnet_socket_create() macro is used to create and bind a 
+* non-blocking socket. Use @ref tnet_socket_create_2() macro to control whether the socket should be bound or not. The same macro is used to force the stack to create a blocking socket.
+* A socket object is defined like this:<br>
+*
+* @code
+typedef struct tnet_socket_s
+{
+	TSK_DECLARE_OBJECT;
+	
+	tnet_socket_type_t type;
+	tnet_fd_t fd;
+	tnet_ip_t ip;
+	uint16_t port;
+
+	tnet_tls_socket_handle_t* tlshandle;
+}
+tnet_socket_t;
+* @endcode
+* To create a socket:
+* @code
+// (create udp ipv4 or ipv6 socket)
+tnet_socket_t* socket = tnet_socket_create(
+		TNET_SOCKET_HOST_ANY, // local ip address/hostname to bind to
+		TNET_SOCKET_PORT_ANY, // local port number to bind to
+		tnet_socket_type_udp_ipv46 // the socket type (IPv4 or IPv6)
+		);
+// TNET_SOCKET_HOST_ANY --> bind to "0.0.0.0" or "::"
+// TNET_SOCKET_PORT_ANY --> bind to any available port
+* @endcode
+
+* <b>TNET_SOCKET_TYPE_IS_*()</b> macros are used to determine:
+* -	The socket type (stream, dgram),
+* -	The socket protocol (udp, tcp, tls, sctp, ipsec),
+* -	The IP version (ipv6, ipv4),
+* -	…
+* <br>
+* A socket is a well-defined object and should be destroyed using @a TSK_DECLARE_SAFE_FREE() macro.
+* A socket will be automatically closed when destroyed.
+* 
 */
+
+/**@ingroup tnet_socket_group
+* Creates a new socket.
+* To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
+* @param host FQDN (e.g. www.doubango.org) or IPv4/IPv6 IP string.
+* @param port The local/remote port used to receive/send data. Set the port value to @ref TNET_SOCKET_PORT_ANY to bind to a random port.
+* @param type The type of the socket. See @ref tnet_socket_type_t.
+* @param nonblocking Indicates whether to create non-blocking socket.
+* @param bindsocket Indicates whether to bind the newly created socket or not.
+* @retval @ref tnet_socket_t object.
+* @sa @ref tnet_socket_create.
+*/
+tnet_socket_t* tnet_socket_create_2(const char*host, tnet_port_t port, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket)
+{
+	return tsk_object_new(tnet_socket_def_t, host, port, type, nonblocking, bindsocket);
+}
+
+/**@ingroup tnet_socket_group
+* Creates a non-blocking socket and bind it.
+* To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
+* @param host FQDN (e.g. www.doubango.org) or IPv4/IPv6 IP string.
+* @param port The local/remote port used to receive/send data. Set the port value to @ref TNET_SOCKET_PORT_ANY to bind to a random port.
+* @param type The type of the socket. See @ref tnet_socket_type_t.
+* @retval @ref tnet_socket_t object.
+*/
+tnet_socket_t* tnet_socket_create(const char* host, tnet_port_t port, tnet_socket_type_t type)
+{
+	return tnet_socket_create_2(host, port, type, tsk_true, tsk_true);
+}
+
+
+
 
 /**@ingroup tnet_socket_group
  * 	Closes a socket.
@@ -78,14 +152,13 @@ int tnet_socket_set_tlsfiles(tnet_socket_tls_t* socket, int isClient, const char
 //=================================================================================================
 //	SOCKET object definition
 //
-static void* tnet_socket_create(void * self, va_list * app)
+static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_socket_t *sock = self;
-	if(sock)
-	{
+	if(sock){
 		int status;
-		int nonblocking;
-		int bindsocket;
+		tsk_bool_t nonblocking;
+		tsk_bool_t bindsocket;
 		tsk_istr_t port;
 		struct addrinfo *result = 0;
 		struct addrinfo *ptr = 0;
@@ -100,8 +173,8 @@ static void* tnet_socket_create(void * self, va_list * app)
 #endif
 		tsk_itoa(sock->port, &port);
 		sock->type = va_arg(*app, tnet_socket_type_t);
-		nonblocking = va_arg(*app, int);
-		bindsocket = va_arg(*app, int);
+		nonblocking = va_arg(*app, tsk_bool_t);
+		bindsocket = va_arg(*app, tsk_bool_t);
 
 		memset(local_hostname, 0, sizeof(local_hostname));
 
@@ -109,8 +182,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		if(host != TNET_SOCKET_HOST_ANY && !tsk_strempty(host)){
 			memcpy(local_hostname, host, strlen(host)>sizeof(local_hostname)-1 ? sizeof(local_hostname)-1 : strlen(host));
 		}
-		else
-		{
+		else{
 			if(TNET_SOCKET_TYPE_IS_IPV6(sock->type)){
 				memcpy(local_hostname, "::", 2);
 			}
@@ -142,8 +214,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		}
 		
 		/* Find our address. */
-		for(ptr = result; ptr; ptr = ptr->ai_next)
-		{
+		for(ptr = result; ptr; ptr = ptr->ai_next){
 			sock->fd = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
 			if(ptr->ai_family != AF_INET6 && ptr->ai_family != AF_INET){
 				continue;
@@ -186,8 +257,7 @@ static void* tnet_socket_create(void * self, va_list * app)
 		}
 		
 		/* Check socket validity. */
-		if(!TNET_SOCKET_IS_VALID(sock)) 
-		{
+		if(!TNET_SOCKET_IS_VALID(sock)) {
 			TNET_PRINT_LAST_ERROR("Invalid socket.");
 			goto bail;
 		}		
@@ -224,7 +294,7 @@ bail:
 	return self;
 }
 
-static void* tnet_socket_destroy(void * self)
+static tsk_object_t* tnet_socket_dtor(tsk_object_t * self)
 { 
 	tnet_socket_t *sock = self;
 	
@@ -246,10 +316,10 @@ static void* tnet_socket_destroy(void * self)
 static const tsk_object_def_t tnet_socket_def_s = 
 {
 	sizeof(tnet_socket_t),
-	tnet_socket_create, 
-	tnet_socket_destroy,
-	0, 
+	tnet_socket_ctor, 
+	tnet_socket_dtor,
+	tsk_null, 
 };
-const void *tnet_socket_def_t = &tnet_socket_def_s;
+const tsk_object_def_t *tnet_socket_def_t = &tnet_socket_def_s;
 
 

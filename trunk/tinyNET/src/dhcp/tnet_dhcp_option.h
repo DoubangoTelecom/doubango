@@ -37,10 +37,6 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP_OPTION_CREATE(code)						tsk_object_new(tnet_dhcp_option_def_t, code)
-#define TNET_DHCP_OPTION_PARAMSLIST_CREATE()				tsk_object_new(tnet_dhcp_option_paramslist_def_t)
-#define TNET_DHCP_OPTION_DNS_CREATE(payload, payload_size)	tsk_object_new(tnet_dhcp_option_dns_def_t, (const void*)payload, (size_t)payload_size)
-
 #define TNET_DHCP_OPTION(self)							((tnet_dhcp_option_t*)(self))
 
 typedef enum tnet_dhcp_option_code_e
@@ -280,11 +276,14 @@ typedef struct tnet_dhcp_option_dns_s
 }
 tnet_dhcp_option_dns_t;
 
+TINYNET_API tnet_dhcp_option_t* tnet_dhcp_option_create(tnet_dhcp_option_code_t code);
+TINYNET_API tnet_dhcp_option_paramslist_t* tnet_dhcp_option_paramslist_create();
+TINYNET_API tnet_dhcp_option_dns_t* tnet_dhcp_option_dns_create(const void* payload, size_t payload_size);
 
-TINYNET_GEXTERN const void *tnet_dhcp_option_def_t;
-TINYNET_GEXTERN const void *tnet_dns_ns_def_t;
-TINYNET_GEXTERN const void *tnet_dhcp_option_paramslist_def_t;
-TINYNET_GEXTERN const void *tnet_dhcp_option_dns_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_option_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_ns_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_option_paramslist_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_option_dns_def_t;
 
 
 TNET_END_DECLS

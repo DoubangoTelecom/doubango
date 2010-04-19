@@ -43,6 +43,23 @@
 /**@defgroup tnet_utils_group Network utility functions.
 */
 
+
+/**@ingroup tnet_utils_group
+* Creates new @ref tnet_interface_t object.
+*/
+tnet_interface_t* tnet_interface_create(const char* description, const char* mac_address, size_t mac_address_length)
+{
+	return tsk_object_new(tnet_interface_def_t, description, mac_address, mac_address_length);
+}
+
+/**@ingroup tnet_utils_group
+* Creates new @ref tnet_address_t object.
+*/
+tnet_address_t* tnet_address_create(const char* ip)
+{
+	return tsk_object_new(tnet_address_def_t, ip);
+}
+
 /**@ingroup tnet_utils_group
  *
  * Gets last network error description.
@@ -98,7 +115,7 @@ int tnet_geterrno()
 **/
 tnet_interfaces_L_t* tnet_get_interfaces()
 {
-	tnet_interfaces_L_t * ifaces = TSK_LIST_CREATE();
+	tnet_interfaces_L_t * ifaces = tsk_list_create();
 
 #if TSK_UNDER_WINDOWS /*=== WINDOWS XP/VISTA/7/CE===*/
 
@@ -139,7 +156,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 				continue;
 			}
 
-			iface = TNET_INTERFACE_CREATE(pAdapter->Description, pAdapter->Address, pAdapter->AddressLength);
+			iface = tnet_interface_create(pAdapter->Description, pAdapter->Address, pAdapter->AddressLength);
 			iface->index = pAdapter->Index;
 			tsk_list_push_back_data(ifaces, &(iface));
 			
@@ -193,7 +210,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 			}
 			else{
 				//sockaddr_dl* sdl = (struct sockaddr_dl *)ifa->ifa_addr;
-				tnet_interface_t *iface = TNET_INTERFACE_CREATE(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
+				tnet_interface_t *iface = tnet_interface_create(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
 				tsk_list_push_back_data(ifaces, (void**)&(iface));
 			}
 		next:
@@ -202,7 +219,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 #else
 		{
 			//struct sockaddr_dl* sdl = (struct sockaddr_dl*)ifa->ifa_addr;
-			tnet_interface_t *iface = TNET_INTERFACE_CREATE(ifa->ifa_name, ifa->ifa_addr, 6);
+			tnet_interface_t *iface = tnet_interface_create(ifa->ifa_name, ifa->ifa_addr, 6);
 			iface->index = if_nametoindex(ifa->ifa_name);
 			tsk_list_push_back_data(ifaces, (void**)&(iface));
 		}
@@ -246,7 +263,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 			{
 				if(/*ioctl(fd, SIOCGIFHWADDR, &ifr) == 0*/1)
 				{
-					tnet_interface_t *iface = TNET_INTERFACE_CREATE(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
+					tnet_interface_t *iface = tnet_interface_create(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
 					tsk_list_push_back_data(ifaces, (void**)&(iface));
 					//iface->index = if_nametoindex(ifr->ifr_name);
 				}
@@ -281,7 +298,7 @@ bail:
 */
 tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, unsigned anycast, unsigned multicast, unsigned dnsserver, long if_index)
 {
-	tnet_addresses_L_t *addresses = TSK_LIST_CREATE();
+	tnet_addresses_L_t *addresses = tsk_list_create();
 
 #if TSK_UNDER_WINDOWS
 	
@@ -345,7 +362,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pUnicast->Address.lpSockaddr, &ip);
 				{
-					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
+					tnet_address_t *address = tnet_address_create(ip);
 					address->family = pUnicast->Address.lpSockaddr->sa_family;
 					address->unicast = 1;
 					tsk_list_push_ascending_data(addresses, &address);
@@ -361,7 +378,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pAnycast->Address.lpSockaddr, &ip);
 				{
-					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
+					tnet_address_t *address = tnet_address_create(ip);
 					address->family = pAnycast->Address.lpSockaddr->sa_family;
 					address->anycast = 1;
 					tsk_list_push_ascending_data(addresses, &address);
@@ -377,7 +394,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pMulticast->Address.lpSockaddr, &ip);
 				{
-					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
+					tnet_address_t *address = tnet_address_create(ip);
 					address->family = pMulticast->Address.lpSockaddr->sa_family;
 					address->multicast = 1;
 					tsk_list_push_ascending_data(addresses, &address);
@@ -393,7 +410,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pDnServer->Address.lpSockaddr, &ip);
 				{
-					tnet_address_t *address = TNET_ADDRESS_CREATE(ip);
+					tnet_address_t *address = tnet_address_create(ip);
 					address->family = pDnServer->Address.lpSockaddr->sa_family;
 					address->dnsserver = 1;
 					tsk_list_push_ascending_data(addresses, &address);
@@ -416,7 +433,7 @@ next:
 bail:
 
 
-#else	/* !TSK_UNDER_WINDOWS (MAC OX, UNIX, ANDROID ...) */
+#else	/* !TSK_UNDER_WINDOWS (MAC OS X, UNIX, ANDROID ...) */
 
 	tnet_addresses_L_t * dns_servers;	
 
@@ -991,10 +1008,10 @@ tnet_tls_socket_handle_t* tnet_sockfd_set_tlsfiles(tnet_fd_t fd, int isClient, c
 	}
 
 	if(isClient){
-		tlshandle = TNET_TLS_SOCKET_CLIENT_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk);
+		tlshandle = tnet_tls_socket_client_create(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk);
 	}
 	else{
-		tlshandle = TNET_TLS_SOCKET_SERVER_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk);
+		tlshandle = tnet_tls_socket_server_create(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk);
 	}
 
 	if(tnet_tls_socket_isok(tlshandle)){
@@ -1285,11 +1302,10 @@ int tnet_sockfd_close(tnet_fd_t *fd)
 //=================================================================================================
 //	INTERFACE object definition
 //
-static tsk_object_t* tnet_interface_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tnet_interface_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_interface_t *iface = self;
-	if(iface)
-	{
+	if(iface){
 		const char* description = va_arg(*app, const char*);
 		const uint8_t* mac_address = va_arg(*app, const uint8_t*);
 		size_t mac_address_length = va_arg(*app, size_t);
@@ -1303,7 +1319,7 @@ static tsk_object_t* tnet_interface_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tnet_interface_destroy(tsk_object_t * self)
+static tsk_object_t* tnet_interface_dtor(tsk_object_t * self)
 { 
 	tnet_interface_t *iface = self;
 	if(iface){
@@ -1329,8 +1345,8 @@ static int tnet_interface_cmp(const tsk_object_t *if1, const tsk_object_t *if2)
 static const tsk_object_def_t tnet_interface_def_s = 
 {
 	sizeof(tnet_interface_t),
-	tnet_interface_create, 
-	tnet_interface_destroy,
+	tnet_interface_ctor, 
+	tnet_interface_dtor,
 	tnet_interface_cmp, 
 };
 const tsk_object_def_t *tnet_interface_def_t = &tnet_interface_def_s;
@@ -1341,7 +1357,7 @@ const tsk_object_def_t *tnet_interface_def_t = &tnet_interface_def_s;
 //=================================================================================================
 //	ADDRESS object definition
 //
-static tsk_object_t* tnet_address_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tnet_address_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_address_t *address = self;
 	if(address){
@@ -1350,7 +1366,7 @@ static tsk_object_t* tnet_address_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tnet_address_destroy(tsk_object_t * self)
+static tsk_object_t* tnet_address_dtor(tsk_object_t * self)
 { 
 	tnet_address_t *address = self;
 	if(address){
@@ -1376,8 +1392,8 @@ static int tnet_address_cmp(const tsk_object_t *_a1, const tsk_object_t *_a2)
 static const tsk_object_def_t tnet_address_def_s = 
 {
 	sizeof(tnet_address_t),
-	tnet_address_create, 
-	tnet_address_destroy,
+	tnet_address_ctor, 
+	tnet_address_dtor,
 	tnet_address_cmp, 
 };
 const tsk_object_def_t *tnet_address_def_t = &tnet_address_def_s;

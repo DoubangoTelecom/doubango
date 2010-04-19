@@ -41,10 +41,6 @@ TNET_BEGIN_DECLS
 #define DGRAM_MAX_SIZE	8192
 #define STREAM_MAX_SIZE	8192
 
-#define TNET_TRANSPORT_CREATE(host, port, type, description)		tsk_object_new(tnet_transport_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
-#define TNET_TRANSPORT_EVENT_CREATE(type, callback_data, fd)		tsk_object_new(tnet_transport_event_def_t, (tnet_transport_event_type_t)type, (const void*)callback_data, (tnet_fd_t)fd)
-#define TNET_TRANSPORT_CONTEXT_CREATE()								tsk_object_new(tnet_transport_context_def_t)
-
 #define TNET_TRANSPORT_CB_F(callback)							((tnet_transport_cb_f)callback)
 
 typedef void tnet_transport_handle_t;
@@ -123,9 +119,13 @@ typedef struct tnet_transport_s
 }
 tnet_transport_t;
 
-TINYNET_GEXTERN const void *tnet_transport_def_t;
-TINYNET_GEXTERN const void *tnet_transport_event_def_t;
-TINYNET_GEXTERN const void *tnet_transport_context_def_t;
+void* tnet_transport_context_create();
+TINYNET_API tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
+tnet_transport_event_t* tnet_transport_event_create(tnet_transport_event_type_t type, const void* callback_data, tnet_fd_t fd);
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_transport_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_transport_event_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_transport_context_def_t;
 
 TNET_END_DECLS
 

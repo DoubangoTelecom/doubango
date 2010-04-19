@@ -33,19 +33,11 @@
 
 #include "tnet_dns_rr.h"
 
-/**@ingroup tnet_dns_group
-* @def TNET_DNS_NS_CREATE
-* Creates new DNS NS Resource Record.
-* @retval @ref tnet_dns_ns_t object.
-*/
 
 TNET_BEGIN_DECLS
 
-#define TNET_DNS_NS_CREATE(name, qclass, ttl, rdlength, data, offset)			tsk_object_new(tnet_dns_ns_def_t, (const char*)name, (tnet_dns_qclass_t)qclass, (uint32_t)ttl, (uint16_t)rdlength, (const void*)data, (size_t)offset)
 
-
-/**@ingroup tnet_dns_group
-* DNS NS Resource Record.
+/** DNS NS Resource Record.
 */
 typedef struct tnet_dns_ns_s
 {
@@ -61,7 +53,9 @@ typedef struct tnet_dns_ns_s
 }
 tnet_dns_ns_t;
 
-TINYNET_GEXTERN const void *tnet_dns_ns_def_t;
+TINYNET_API tnet_dns_ns_t* tnet_dns_ns_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset);
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_ns_def_t;
 
 TNET_END_DECLS
 

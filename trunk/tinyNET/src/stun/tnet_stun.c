@@ -43,6 +43,15 @@
 /**@defgroup tnet_stun_group STUN2 (RFC 5389) implementation.
 */
 
+
+/**@ingroup tnet_stun_group
+* Creates new @ref tnet_stun_binding_t object.
+*/
+tnet_stun_binding_t* tnet_stun_binding_create(tnet_fd_t fd, tnet_socket_type_t socket_type, const char* server_address, tnet_port_t server_port, const char* username, const char* password)
+{
+	return tsk_object_new(tnet_stun_binding_def_t, fd, socket_type, server_address, server_port, username, password);
+}
+
 /**@ingroup tnet_stun_group
  *
  * Create generic STUN2 request with all mandatory headers and attributes. 
@@ -53,12 +62,11 @@
 **/
 tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_binding_t* binding)
 {
-	tnet_stun_message_t *message = TNET_STUN_MESSAGE_CREATE(binding->username, binding->password);
+	tnet_stun_message_t *message = tnet_stun_message_create(binding->username, binding->password);
 	message->realm = tsk_strdup(binding->realm);
 	message->nonce = tsk_strdup(binding->nonce);
 
-	if(message)
-	{
+	if(message){
 		/* Set the request type (RFC 5389 defines only one type) */
 		message->type = stun_binding_request;
 
@@ -73,9 +81,8 @@ tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_binding_t* binding
 		}
 
 		/* Add software attribute */
-		if(binding->software)
-		{
-			tnet_stun_attribute_t* attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(binding->software, strlen(binding->software));
+		if(binding->software){
+			tnet_stun_attribute_t* attribute = (tnet_stun_attribute_t*)tnet_stun_attribute_software_create(binding->software, strlen(binding->software));
 			tnet_stun_message_add_attribute(message, &attribute);
 		}
 	}
@@ -153,8 +160,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 
 		e.g. 0 ms, 500 ms, 1500 ms, 3500 ms, 7500ms, 15500 ms, and 31500 ms
 	*/
-	for(i=0; i<Rc; i++)
-	{
+	for(i=0; i<Rc; i++){
 		tv.tv_sec += rto/1000;
 		tv.tv_usec += (rto% 1000) * 1000;
 		
@@ -163,32 +169,29 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 		FD_ZERO(&set);
 		FD_SET(localFD, &set);
 
-		if((ret = select(localFD+1, &set, NULL, NULL, &tv))<0)
-		{
+		if((ret = select(localFD+1, &set, NULL, NULL, &tv))<0){
 			goto bail;
 		}
-		else if(ret == 0)
-		{	/* timeout */
+		else if(ret == 0){
+		/* timeout */
 
 			rto *= 2;
 			continue;
 		}
-		else if(FD_ISSET(localFD, &set))
-		{	/* there is data to read */
+		else if(FD_ISSET(localFD, &set)){
+		/* there is data to read */
 
 			size_t len = 0;
 			void* data = 0;
 
 			/* Check how how many bytes are pending */
-			if((ret = tnet_ioctlt(localFD, FIONREAD, &len))<0)
-			{
+			if((ret = tnet_ioctlt(localFD, FIONREAD, &len))<0){
 				goto bail;
 			}
 			
 			/* Receive pending data */
 			data = tsk_calloc(len, sizeof(uint8_t));
-			if((ret = tnet_sockfd_recvfrom(localFD, data, len, 0, server))<0)
-			{
+			if((ret = tnet_sockfd_recvfrom(localFD, data, len, 0, server))<0){
 				TSK_FREE(data);
 								
 				TSK_DEBUG_ERROR("Recving STUN dgrams failed with error code:%d", tnet_geterrno());
@@ -199,10 +202,9 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			response = tnet_stun_message_deserialize(data, len);
 			TSK_FREE(data);
 
-			if(response)
-			{
-				if(tnet_stun_transacid_cmp(message->transaction_id, response->transaction_id))
-				{ /* Not same transaction id */
+			if(response){
+				if(tnet_stun_transacid_cmp(message->transaction_id, response->transaction_id)){
+				/* Not same transaction id */
 					TSK_OBJECT_SAFE_FREE(response);
 					continue;
 				}
@@ -210,7 +212,9 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			
 			goto bail;
 		}
-		else continue;
+		else{
+			continue;
+		}
 	}
 	
 bail:
@@ -246,28 +250,23 @@ int tnet_stun_send_bind(const tnet_nat_context_t* context, tnet_stun_binding_t *
 	*/
 stun_phase0:
 	{
-		if(!(request = tnet_stun_create_request(binding)))
-		{
+		if(!(request = tnet_stun_create_request(binding))){
 			goto bail;
 		}		
 
-		if(TNET_SOCKET_TYPE_IS_DGRAM(context->socket_type))
-		{
+		if(TNET_SOCKET_TYPE_IS_DGRAM(context->socket_type)){
 			response = tnet_stun_send_unreliably(binding->localFD, context->RTO, context->Rc, request, (struct sockaddr*)&binding->server);
 		}
 
-		if(response)
-		{
-			if(TNET_STUN_RESPONSE_IS_ERROR(response))
-			{
+		if(response){
+			if(TNET_STUN_RESPONSE_IS_ERROR(response)){
 				short code = tnet_stun_message_get_errorcode(response);
 				const char* realm = tnet_stun_message_get_realm(response);
 				const char* nonce = tnet_stun_message_get_nonce(response);
 
-				if(code == 401 && realm && nonce)
-				{
-					if(!binding->nonce)
-					{	/* First time we get a nonce */
+				if(code == 401 && realm && nonce){
+					if(!binding->nonce){
+						/* First time we get a nonce */
 						tsk_strupdate(&binding->nonce, nonce);
 						tsk_strupdate(&binding->realm, realm);
 
@@ -278,26 +277,21 @@ stun_phase0:
 						// Send again using new transaction identifier
 						return tnet_stun_send_bind(context, binding);
 					}
-					else
-					{
+					else{
 						ret = -3;
 					}
 				}
-				else
-				{
+				else{
 					ret = -2;
 				}
 			}
-			else
-			{
+			else{
 				const tnet_stun_attribute_t *attribute;
-				if((attribute= tnet_stun_message_get_attribute(response, stun_xor_mapped_address)))
-				{
+				if((attribute= tnet_stun_message_get_attribute(response, stun_xor_mapped_address))){
 					ret = 0;
 					binding->xmaddr = tsk_object_ref((void*)attribute);
 				}
-				else if((attribute= tnet_stun_message_get_attribute(response, stun_mapped_address)))
-				{
+				else if((attribute= tnet_stun_message_get_attribute(response, stun_mapped_address))){
 					ret = 0;
 					binding->maddr = tsk_object_ref((void*)attribute);
 				}
@@ -329,15 +323,12 @@ tnet_stun_binding_id_t tnet_stun_bind(const tnet_nat_context_t* nat_context, tne
 
 	tnet_stun_binding_t *binding = 0;
 
-	if(nat_context && localFD != TNET_INVALID_FD)
-	{
-		if(!(binding = TNET_STUN_BINDING_CREATE(localFD, nat_context->socket_type, nat_context->server_address, nat_context->server_port, nat_context->username, nat_context->password)))
-		{
+	if(nat_context && localFD != TNET_INVALID_FD){
+		if(!(binding = tnet_stun_binding_create(localFD, nat_context->socket_type, nat_context->server_address, nat_context->server_port, nat_context->username, nat_context->password))){
 			goto bail;
 		}
 
-		if(tnet_stun_send_bind(nat_context, binding))
-		{
+		if(tnet_stun_send_bind(nat_context, binding)){
 			TSK_OBJECT_SAFE_FREE(binding);
 			goto bail;
 		}
@@ -353,9 +344,6 @@ bail:
 /**@ingroup tnet_stun_group
  * Compares two transaction ids.
  *
- * @author	Mamadou
- * @date	1/23/2010
- *
  * @param	id1	The first transaction identifier. 
  * @param	id2	The second transaction  identifier. 
  *
@@ -364,10 +352,8 @@ bail:
 int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)
 {
 	size_t i;
-	for(i=0; i<sizeof(tnet_stun_transacid_t); i++)
-	{
-		if(id1[i] != id2[i])
-		{
+	for(i=0; i<sizeof(tnet_stun_transacid_t); i++){
+		if(id1[i] != id2[i]){
 			return (id1[i] - id2[i]);
 		}
 	}
@@ -386,11 +372,10 @@ int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_tra
 //=================================================================================================
 //	STUN2 BINDING object definition
 //
-static void* tnet_stun_binding_create(void * self, va_list * app)
+static tsk_object_t* tnet_stun_binding_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_stun_binding_t *binding = self;
-	if(binding)
-	{
+	if(binding){
 		static tnet_stun_binding_id_t __binding_unique_id = 0;
 
 		const char* server_address;
@@ -418,11 +403,10 @@ static void* tnet_stun_binding_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_stun_binding_destroy(void * self)
+static tsk_object_t* tnet_stun_binding_dtor(tsk_object_t * self)
 { 
 	tnet_stun_binding_t *binding = self;
-	if(binding)
-	{
+	if(binding){
 		TSK_FREE(binding->username);
 		TSK_FREE(binding->password);
 		TSK_FREE(binding->realm);
@@ -440,10 +424,10 @@ static void* tnet_stun_binding_destroy(void * self)
 static const tsk_object_def_t tnet_stun_binding_def_s = 
 {
 	sizeof(tnet_stun_binding_t),
-	tnet_stun_binding_create, 
-	tnet_stun_binding_destroy,
-	0, 
+	tnet_stun_binding_ctor, 
+	tnet_stun_binding_dtor,
+	tsk_null, 
 };
-const void *tnet_stun_binding_def_t = &tnet_stun_binding_def_s;
+const tsk_object_def_t *tnet_stun_binding_def_t = &tnet_stun_binding_def_s;
 
 

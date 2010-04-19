@@ -39,6 +39,21 @@
 
 #include <string.h>
 
+tnet_dhcp_message_t* tnet_dhcp_message_create(tnet_dhcp_message_op_t opcode)
+{
+	return tsk_object_new(tnet_dhcp_message_def_t, opcode);
+}
+
+tnet_dhcp_request_t* tnet_dhcp_request_create()
+{
+	return tnet_dhcp_message_create(dhcp_op_bootrequest);
+}
+
+tnet_dhcp_message_t* tnet_dhcp_reply_create()
+{
+	return tnet_dhcp_message_create(dhcp_op_bootreply);
+}
+
 tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet_dhcp_message_t *message)
 {
 	tsk_buffer_t* output = 0;
@@ -51,7 +66,7 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 		goto bail;
 	}
 
-	output = TSK_BUFFER_CREATE_NULL();
+	output = tsk_buffer_create_null();
 
 	/*== OP HTYPE HLEN HOPS */
 	_4bytes = (((uint32_t)(message->op)) << 24) |
@@ -178,7 +193,7 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 		goto bail;
 	}
 
-	if(!(message = TNET_DHCP_REPLY_CREATE())){ /* If REQUEST OP will be overridedden */
+	if(!(message = tnet_dhcp_reply_create())){ /* If REQUEST OP will be overridedden */
 		TSK_DEBUG_ERROR("Failed to create new DHCP message.");
 		goto bail;
 	}
@@ -284,7 +299,7 @@ int tnet_dhcp_message_add_codes(tnet_dhcp_message_t *self, tnet_dhcp_option_code
 		
 		tnet_dhcp_option_paramslist_t* option = (tnet_dhcp_option_paramslist_t*)tnet_dhcp_message_find_option(self, dhcp_code_Parameter_List);
 		if(!option){
-			tnet_dhcp_option_paramslist_t *option_paramslist = TNET_DHCP_OPTION_PARAMSLIST_CREATE();
+			tnet_dhcp_option_paramslist_t *option_paramslist = tnet_dhcp_option_paramslist_create();
 			option = option_paramslist;
 			tsk_list_push_back_data(self->options, (void**)&option_paramslist);
 		}
@@ -304,11 +319,10 @@ bail:
 //=================================================================================================
 //	[[DHCP MESSAGE]] object definition
 //
-static void* tnet_dhcp_message_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp_message_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp_message_t *message = self;
-	if(message)
-	{
+	if(message){
 		static uint32_t __dhcpmessage_unique_xid = 0;//(uint32_t)tsk_time_epoch();
 
 		message->op = va_arg(*app, tnet_dhcp_message_op_t);
@@ -316,16 +330,15 @@ static void* tnet_dhcp_message_create(void * self, va_list * app)
 		message->hlen = 0x06;
 
 		message->xid = ++(__dhcpmessage_unique_xid);
-		message->options = TSK_LIST_CREATE();
+		message->options = tsk_list_create();
 	}
 	return self;
 }
 
-static void* tnet_dhcp_message_destroy(void * self) 
+static tsk_object_t* tnet_dhcp_message_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp_message_t *message = self;
-	if(message)
-	{
+	if(message){
 		TSK_OBJECT_SAFE_FREE(message->options);
 	}
 	return self;
@@ -334,9 +347,9 @@ static void* tnet_dhcp_message_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp_message_def_s =
 {
 	sizeof(tnet_dhcp_message_t),
-	tnet_dhcp_message_create,
-	tnet_dhcp_message_destroy,
-	0,
+	tnet_dhcp_message_ctor,
+	tnet_dhcp_message_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp_message_def_t = &tnet_dhcp_message_def_s;
+const tsk_object_def_t *tnet_dhcp_message_def_t = &tnet_dhcp_message_def_s;
 

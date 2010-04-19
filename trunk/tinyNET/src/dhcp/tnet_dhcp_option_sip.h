@@ -39,8 +39,6 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP_OPTION_SIP_CREATE(payload, payload_size)			tsk_object_new(tnet_dhcp_option_sip_def_t, (const void*)payload, (size_t)payload_size)
-
 typedef struct tnet_dhcp_option_sip_s
 {
 	TNET_DECLARE_DHCP_OPTION;
@@ -55,7 +53,9 @@ typedef struct tnet_dhcp_option_sip_s
 }
 tnet_dhcp_option_sip_t;
 
-TINYNET_GEXTERN const void *tnet_dhcp_option_sip_def_t;
+TINYNET_API tnet_dhcp_option_sip_t* tnet_dhcp_option_sip_create(const void* payload, size_t payload_size);
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_option_sip_def_t;
 
 TNET_END_DECLS
 

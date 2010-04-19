@@ -33,14 +33,22 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
+/** Creates new DNS CNAME Resource Record.
+*/
+
+tnet_dns_cname_t* tnet_dns_cname_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset)
+{
+	return tsk_object_new(tnet_dns_cname_def_t, name, qclass, ttl, rdlength, data, offset);
+}
+
+
 //=================================================================================================
 //	[[DNS CNAME]] object definition
 //
-static void* tnet_dns_cname_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_cname_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_cname_t *cname = self;
-	if(cname)
-	{
+	if(cname){
 		const char* name = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		uint32_t ttl = va_arg(*app, uint32_t);
@@ -58,8 +66,8 @@ static void* tnet_dns_cname_create(void * self, va_list * app)
 		TNET_DNS_RR(cname)->rdlength = rdlength;
 		TNET_DNS_RR(cname)->ttl = ttl;
 
-		if(rdlength)
-		{	// ==> DESERIALIZATION
+		if(rdlength){
+			// ==> DESERIALIZATION
 			/* CNAME */
 			tnet_dns_rr_qname_deserialize(data, &(cname->cname), &offset);
 		}
@@ -67,11 +75,10 @@ static void* tnet_dns_cname_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_cname_destroy(void * self) 
+static tsk_object_t* tnet_dns_cname_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_cname_t *cname = self;
-	if(cname)
-	{
+	if(cname){
 		/* deinit base */
 		tnet_dns_rr_deinit(TNET_DNS_RR(cname));
 
@@ -83,8 +90,8 @@ static void* tnet_dns_cname_destroy(void * self)
 static const tsk_object_def_t tnet_dns_cname_def_s =
 {
 	sizeof(tnet_dns_cname_t),
-	tnet_dns_cname_create,
-	tnet_dns_cname_destroy,
-	0,
+	tnet_dns_cname_ctor,
+	tnet_dns_cname_dtor,
+	tsk_null,
 };
-const void *tnet_dns_cname_def_t = &tnet_dns_cname_def_s;
+const tsk_object_def_t *tnet_dns_cname_def_t = &tnet_dns_cname_def_s;

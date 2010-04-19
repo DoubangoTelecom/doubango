@@ -38,6 +38,42 @@
 #include <string.h>
 
 /**@ingroup tnet_dns_group
+* Creates new DNS message.
+* @sa tnet_dns_message_create_null.
+*/
+tnet_dns_message_t* tnet_dns_message_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tsk_bool_t isquery)
+{
+	return tsk_object_new(tnet_dns_message_def_t, qname, qclass, qtype, isquery);
+}
+
+/**@ingroup tnet_dns_group
+* Creates new DNS message.
+* @sa tnet_dns_message_create.
+*/
+tnet_dns_message_t* tnet_dns_message_create_null()
+{
+	return tnet_dns_message_create(tsk_null, qclass_any, qtype_any, tsk_null);
+}
+
+/**@ingroup tnet_dns_group
+* Creates new DNS response message.
+* @sa tnet_dns_query_create.
+*/
+tnet_dns_response_t* tnet_dns_response_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
+{
+	return tnet_dns_message_create(qname, qclass, qtype, tsk_false);
+}
+
+/**@ingroup tnet_dns_group
+* Creates new DNS query message.
+* @sa tnet_dns_response_create.
+*/
+tnet_dns_query_t* tnet_dns_query_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
+{
+	return tnet_dns_message_create(qname, qclass, qtype, tsk_true);
+}
+
+/**@ingroup tnet_dns_group
 * Serializes a DNS message in binary data.
 * @param message The DNS message to seriablize.
 * @retval The binary buffer containong the message if succeed. Otherwise, @a tsk_null is returned.
@@ -55,7 +91,7 @@ tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message)
 	}
 	
 	/* Creates empty buffer */
-	output = TSK_BUFFER_CREATE_NULL();
+	output = tsk_buffer_create_null();
 
 	/* ==============================
 	*	HEADER
@@ -176,7 +212,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 	dataStart = dataPtr;
 	dataEnd = (dataStart + size);
 
-	message = TNET_DNS_MESSAGE_CREATE_NULL();
+	message = tnet_dns_message_create_null();
 
 	/* === HEADER ===*/
 	/* ID */
@@ -230,7 +266,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 		tnet_dns_rr_t* rr = tnet_dns_rr_deserialize(dataStart, (dataEnd-dataPtr), &offset);
 		if(rr){
 			if(!message->Answers){
-				message->Answers = TSK_LIST_CREATE();
+				message->Answers = tsk_list_create();
 			}
 			/* Push in descending order (useful for NAPTR and SRV records). */
 			tsk_list_push_descending_data(message->Answers, (void**)&rr);
@@ -245,7 +281,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 		tnet_dns_rr_t* rr = tnet_dns_rr_deserialize(dataStart, (dataEnd-dataPtr), &offset);
 		if(rr){
 			if(!message->Authorities){
-				message->Authorities = TSK_LIST_CREATE();
+				message->Authorities = tsk_list_create();
 			}
 			tsk_list_push_back_data(message->Authorities, (void**)&rr);
 		}
@@ -259,7 +295,7 @@ tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t siz
 		tnet_dns_rr_t* rr = tnet_dns_rr_deserialize(dataStart, (dataEnd-dataPtr), &offset);
 		if(rr){
 			if(!message->Additionals){
-				message->Additionals = TSK_LIST_CREATE();
+				message->Additionals = tsk_list_create();
 			}
 			tsk_list_push_back_data(message->Additionals, (void**)&rr);
 		}
@@ -274,17 +310,16 @@ bail:
 //=================================================================================================
 //	[[DNS MESSAGE]] object definition
 //
-static void* tnet_dns_message_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_message_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_message_t *message = self;
-	if(message)
-	{
+	if(message){
 		static uint16_t __dnsmessage_unique_id = 0;
 
 		const char* qname = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		tnet_dns_qtype_t qtype = va_arg(*app, tnet_dns_qtype_t);
-		unsigned isquery = va_arg(*app, unsigned);
+		tsk_bool_t isquery = va_arg(*app, tsk_bool_t);
 
 		/* Create random ID. */
 		message->Header.ID = ++__dnsmessage_unique_id;
@@ -306,11 +341,10 @@ static void* tnet_dns_message_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_message_destroy(void * self) 
+static tsk_object_t* tnet_dns_message_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_message_t *message = self;
-	if(message)
-	{
+	if(message){
 		TSK_FREE(message->Question.QNAME);
 		
 		TSK_OBJECT_SAFE_FREE(message->Answers);
@@ -323,8 +357,8 @@ static void* tnet_dns_message_destroy(void * self)
 static const tsk_object_def_t tnet_dns_message_def_s =
 {
 	sizeof(tnet_dns_message_t),
-	tnet_dns_message_create,
-	tnet_dns_message_destroy,
+	tnet_dns_message_ctor,
+	tnet_dns_message_dtor,
 	tsk_null,
 };
-const void *tnet_dns_message_def_t = &tnet_dns_message_def_s;
+const tsk_object_def_t *tnet_dns_message_def_t = &tnet_dns_message_def_s;

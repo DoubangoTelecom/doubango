@@ -39,19 +39,6 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP6_OPTION_CREATE(code, payload, payload_size)		tsk_object_new(tnet_dhcp6_option_def_t, (tnet_dhcp6_option_code_t)code, (const void*)payload, (size_t)payload_size)
-
-
-#define TNET_DHCP6_OPTION_INDENTIFER_CREATE(code, payload, payload_size)		tsk_object_new(tnet_dhcp6_option_identifier_def_t, (tnet_dhcp6_option_code_t)code, (const void*)payload, (size_t)payload_size)
-#define TNET_DHCP6_OPTION_CLIENTID_CREATE(payload, payload_size)				TNET_DHCP6_OPTION_INDENTIFER_CREATE(dhcp6_code_clientid, payload, payload_size)
-#define TNET_DHCP6_OPTION_SERVERID_CREATE(payload, payload_size)				TNET_DHCP6_OPTION_INDENTIFER_CREATE(dhcp6_code_serverid, payload, payload_size)
-
-#define TNET_DHCP6_OPTION_OREQUEST_CREATE(payload, payload_size)				tsk_object_new(tnet_dhcp6_option_orequest_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_DHCP6_OPTION_OREQUEST_CREATE_NULL()								TNET_DHCP6_OPTION_OREQUEST_CREATE(0, 0)
-
-#define TNET_DHCP6_OPTION_VENDORCLASS_CREATE(payload, payload_size)				tsk_object_new(tnet_dhcp6_option_vendorclass_def_t, (const void*)payload, (size_t)payload_size)
-#define TNET_DHCP6_OPTION_VENDORCLASS_CREATE_NULL()								TNET_DHCP6_OPTION_OREQUEST_CREATE(0, 0)
-
 #define TNET_DHCP6_OPTION(self)							((tnet_dhcp6_option_t*)(self))
 
 /** List of DHCPv6 option as registered by IANA (RFC 3315 subcaluse 24.3)*/
@@ -239,10 +226,20 @@ typedef struct tnet_dhcp6_option_vendorclass_s
 }
 tnet_dhcp6_option_vendorclass_t;
 
-TINYNET_GEXTERN const void *tnet_dhcp6_option_def_t;
-TINYNET_GEXTERN const void *tnet_dhcp6_option_identifier_def_t;
-TINYNET_GEXTERN const void *tnet_dhcp6_option_orequest_def_t;
-TINYNET_GEXTERN const void *tnet_dhcp6_option_vendorclass_def_t;
+
+TINYNET_API tnet_dhcp6_option_t* tnet_dhcp6_option_create(tnet_dhcp6_option_code_t code, const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_indentifer_create(tnet_dhcp6_option_code_t code, const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_clientid_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_serverid_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create_null();
+TINYNET_API tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create_null();
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp6_option_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp6_option_identifier_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp6_option_orequest_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp6_option_vendorclass_def_t;
 
 TNET_END_DECLS
 

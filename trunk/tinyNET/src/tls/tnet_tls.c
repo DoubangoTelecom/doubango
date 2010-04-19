@@ -67,12 +67,29 @@ typedef struct tnet_tls_socket_s
 #endif
 
 	unsigned initialized;
-	unsigned isClient:1;
-	unsigned mutual_auth:1;
+	tsk_bool_t isClient;
+	tsk_bool_t mutual_auth;
 
 	TSK_DECLARE_SAFEOBJ;
 }
 tnet_tls_socket_t;
+
+
+tnet_tls_socket_handle_t* tnet_tls_socket_create(tnet_fd_t fd, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk, tsk_bool_t isClient)
+{
+	return tsk_object_new(tnet_tls_socket_def_t, fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk, isClient);
+}
+
+tnet_tls_socket_handle_t* tnet_tls_socket_client_create(tnet_fd_t fd, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk)
+{
+	return tnet_tls_socket_create(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk, tsk_true);
+}
+
+tnet_tls_socket_handle_t* tnet_tls_socket_server_create(tnet_fd_t fd, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk)
+{
+	return tnet_tls_socket_create(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk, tsk_false);
+}
+
 
 int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self)
 {
@@ -379,7 +396,7 @@ int tnet_tls_socket_init(tnet_tls_socket_t* socket)
 //=================================================================================================
 //	TLS socket object definition
 //
-static void* tnet_tls_socket_create(void * self, va_list * app)
+static tsk_object_t* tnet_tls_socket_ctor(tsk_object_t * self, va_list * app)
 {
 #if TNET_HAVE_OPENSSL_H
 	static tsk_bool_t __ssl_initialized = tsk_false;
@@ -398,14 +415,14 @@ static void* tnet_tls_socket_create(void * self, va_list * app)
 		socket->tlsfile_ca = tsk_strdup(va_arg(*app, const char *));
 		socket->tlsfile_pvk = tsk_strdup(va_arg(*app, const char *));
 		socket->tlsfile_pbk = tsk_strdup(va_arg(*app, const char *));
-		socket->isClient = va_arg(*app, int);
+		socket->isClient = va_arg(*app, tsk_bool_t);
 
 		/* Mutual authentication requires that the TLS client-side also hold a certificate. */
 		if(socket->tlsfile_pvk && socket->tlsfile_pbk && socket->tlsfile_ca){
-			socket->mutual_auth = 1;
+			socket->mutual_auth = tsk_true;
 		}
 		else{
-			socket->mutual_auth = 0;
+			socket->mutual_auth = tsk_false;
 		}
 
 		/* Initialize SSL: http://www.openssl.org/docs/ssl/SSL_library_init.html */
@@ -427,7 +444,7 @@ static void* tnet_tls_socket_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_tls_socket_destroy(void * self)
+static tsk_object_t* tnet_tls_socket_dtor(tsk_object_t * self)
 { 
 	tnet_tls_socket_t *socket = self;
 	if(socket){
@@ -453,18 +470,13 @@ static void* tnet_tls_socket_destroy(void * self)
 	return self;
 }
 
-static int tnet_tls_socket_cmp(const void *obj1, const void *obj2)
-{
-	return -1;
-}
-
 static const tsk_object_def_t tnet_tls_socket_def_s = 
 {
 	sizeof(tnet_tls_socket_t),
-	tnet_tls_socket_create, 
-	tnet_tls_socket_destroy,
-	tnet_tls_socket_cmp, 
+	tnet_tls_socket_ctor, 
+	tnet_tls_socket_dtor,
+	tsk_null, 
 };
-const void *tnet_tls_socket_def_t = &tnet_tls_socket_def_s;
+const tsk_object_def_t *tnet_tls_socket_def_t = &tnet_tls_socket_def_s;
 
 

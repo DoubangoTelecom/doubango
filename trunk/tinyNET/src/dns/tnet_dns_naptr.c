@@ -35,16 +35,22 @@
 #include "tsk_memory.h"
 #include "tsk_string.h"
 
+/** Creates new DNS NAPTR Resource Record.
+*/
+tnet_dns_naptr_t* tnet_dns_naptr_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset)
+{
+	return tsk_object_new(tnet_dns_naptr_def_t, name, qclass, ttl, rdlength, data, offset);
+}
+
 
 
 //=================================================================================================
 //	[[DNS NAPTR]] object definition
 //
-static void* tnet_dns_naptr_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_naptr_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_naptr_t *naptr = self;
-	if(naptr)
-	{
+	if(naptr){
 		const char* name = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		uint32_t ttl = va_arg(*app, uint32_t);
@@ -62,8 +68,8 @@ static void* tnet_dns_naptr_create(void * self, va_list * app)
 		TNET_DNS_RR(naptr)->rdlength = rdlength;
 		TNET_DNS_RR(naptr)->ttl = ttl;
 
-		if(rdlength)
-		{	// ==> DESERIALIZATION
+		if(rdlength){
+			// ==> DESERIALIZATION
 			/* ORDER */
 			naptr->order = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset)));
 			offset += 2;
@@ -83,11 +89,10 @@ static void* tnet_dns_naptr_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_naptr_destroy(void * self) 
+static tsk_object_t* tnet_dns_naptr_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_naptr_t *naptr = self;
-	if(naptr)
-	{
+	if(naptr){
 		/* deinit base */
 		tnet_dns_rr_deinit(TNET_DNS_RR(naptr));
 		
@@ -99,13 +104,12 @@ static void* tnet_dns_naptr_destroy(void * self)
 	return self;
 }
 
-static int tnet_dns_naptr_cmp(const void *obj1, const void *obj2)
+static int tnet_dns_naptr_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 { 
 	const tnet_dns_rr_t* rr1 = obj1;
 	const tnet_dns_rr_t* rr2 = obj2;
 
-	if(rr1 && rr2 && (rr1->qtype==qtype_naptr) && (rr2->qtype==qtype_naptr))
-	{
+	if(rr1 && rr2 && (rr1->qtype==qtype_naptr) && (rr2->qtype==qtype_naptr)){
 		const tnet_dns_naptr_t* naptr1 = (tnet_dns_naptr_t*)rr1;
 		const tnet_dns_naptr_t* naptr2 = (tnet_dns_naptr_t*)rr2;
 
@@ -127,14 +131,16 @@ static int tnet_dns_naptr_cmp(const void *obj1, const void *obj2)
 		
 		return 0;
 	}
-	else return -1;
+	else{
+		return -1;
+	}
 }
 
 static const tsk_object_def_t tnet_dns_naptr_def_s =
 {
 	sizeof(tnet_dns_naptr_t),
-	tnet_dns_naptr_create,
-	tnet_dns_naptr_destroy,
+	tnet_dns_naptr_ctor,
+	tnet_dns_naptr_dtor,
 	tnet_dns_naptr_cmp,
 };
-const void *tnet_dns_naptr_def_t = &tnet_dns_naptr_def_s;
+const tsk_object_def_t *tnet_dns_naptr_def_t = &tnet_dns_naptr_def_s;

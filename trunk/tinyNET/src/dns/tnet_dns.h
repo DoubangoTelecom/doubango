@@ -38,20 +38,7 @@
 
 #include "tsk_safeobj.h"
 
-/**@ingroup tnet_dns_group
-* @def TNET_DNS_CTX_CREATE
-* Creates new DNS context.
-* @retval @ref tnet_dns_ctx_t object.
-*/
-/**@ingroup tnet_dns_group
-* @def TNET_DNS_CACHE_ENTRY_CREATE
-* Creates new DNS cache entry.
-* @retval @ref tnet_dns_cache_entry_t object.
-*/
 TNET_BEGIN_DECLS
-
-#define TNET_DNS_CTX_CREATE()											tsk_object_new(tnet_dns_ctx_def_t)
-#define TNET_DNS_CACHE_ENTRY_CREATE(qname, qclass, qtype, answer)		tsk_object_new(tnet_dns_cache_entry_def_t, (const char*)qname, (tnet_dns_qclass_t)qclass, (tnet_dns_qtype_t)qtype, (tnet_dns_response_t*)answer)
 
 /**@ingroup tnet_dns_group
 */
@@ -71,8 +58,7 @@ TNET_BEGIN_DECLS
 */
 #define TNET_DNS_SERVER_PORT_DEFAULT			53
 
-/**@ingroup tnet_dns_group
-* DNS cache entry.
+/**DNS cache entry.
 */
 typedef struct tnet_dns_cache_entry_s
 {
@@ -90,8 +76,7 @@ tnet_dns_cache_entry_t;
 typedef tsk_list_t  tnet_dns_cache_entries_L_t;
 typedef tnet_dns_cache_entries_L_t tnet_dns_cache_t;
 
-/**@ingroup tnet_dns_group
-* DNS context.
+/**DNS context.
 */
 typedef struct tnet_dns_ctx_s
 {
@@ -122,8 +107,10 @@ TINYNET_API int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain
 
 TINYNET_API int tnet_dns_add_server(tnet_dns_ctx_t *ctx, const char* host);
 
-TINYNET_GEXTERN const void *tnet_dns_ctx_def_t;
-TINYNET_GEXTERN const void *tnet_dns_cache_entry_def_t;
+TINYNET_API tnet_dns_ctx_t* tnet_dns_ctx_create();
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_ctx_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_cache_entry_def_t;
 
 TNET_END_DECLS
 
