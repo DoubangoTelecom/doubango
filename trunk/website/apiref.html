@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+  "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>doubango - API Reference</title>
+    <meta name="Keywords" content="doubango, 3GPP NGN/IMS framework, open source, SIP, RFC 3261, 3GPP TS 24.229, VoIP, MMTel, IPTV, 4G, LTE, XCAP, MSRP, IPSec, SigComp, One Voice " />
+    <meta name="Description" content="cross-platform and open source 3GPP IMS/LTE framework for embedded devices such as Android, Symbian, iPhone, Windows Mobile or uLinux." />
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <link rel="stylesheet" type="text/css" href="css.css" />
+    <style type="text/css">
+        /*<![CDATA[*/p.c1{
+            text-align: center;
+        }
+        /*]]>*/
+        a.c2{
+            font:16px/1.3em arial,sans-serif;font-weight:bold;color:blue;text-indent:15px;
+        }
+    </style>
+        
+</head>
+<body>
+    <div id="center">
+        <div id="border">
+            <div id="logo">
+                <p class="companyname">
+                    doubango</p>
+            </div>
+            <div id="menu">
+                <a href="index.html" title="Homepage">Home</a> <a href="gettingstarted.html"
+                    title="Getting Started">Getting Started</a> <a href="http://code.google.com/p/doubango/source/checkout"
+                        title="Source Code" target="_blank">Source Code</a> <a href="/apiref.html" title="API Reference">API Reference</a> <a href="contact.html" title="Contact">Contact</a>
+            </div>
+            <div id="main">
+
+                    <h2><a href="/API/tinySAK/" class="caps c2">tinySAK(a.k.a tiny Swiss Army Knife)</a></h2>
+                    <ul>
+                        <li>ANSI-C Object Programing</li>
+                        <li>Linked lists</li>
+                        <li>String utility functions</li>
+                        <li>Memory management</li>
+                        <li>Dynamic buffers</li>
+                        <li>Threading</li>
+                        <li>Runnable</li>
+                        <li>Mutexes</li>
+                        <li>Semaphores</li>
+                        <li>Conditional Variables</li>
+                        <li>Timers</li>
+                        <li>Time</li>
+                        <li>Final State Machine (FSM) manager</li>
+                        <li>Base64 encoder/decoder</li>
+                        <li>UUID generator</li>
+                        <li>CRC32 and CRC16</li>
+                        <li>URL encoder/decoder</li>
+                        <li>SHA-1, MD5, HMAC-MD5, HMAC-SHA-1</li>
+                    </ul>
+                    <p>No dependencies.</p>
+                
+                
+                    <h2><a href="/API/tinyNET/" class="caps c2">tinyNET (Networking)</a></h2>
+                    <ul>
+                        <li>IPv4/IPv6 Sockets (UDP, TCP, TLS and SCTP)</li>
+                        <li>DHCPv4/v6</li>
+                        <li>DNS (NAPTR, PTR, SRV, MX, A, AAAA, OPT, CNAME ...)</li>
+                        <li>ENUM</li>
+                        <li>NAT Traversal (STUN, TURN and ICE)</li>
+                    </ul>
+                    <p>Depends on <a href="/API/tinySAK/">tinySAK</a></p>
+               
+                
+                
+                
+                
+                <h2><a href="/API/tinyHTTP/" class="caps c2">tinyHTTP (HTTP/HTTPS stack)</a></h2>
+                <ul>
+                    <li>Digest/Basic Authentication</li>
+                    <li>Pipelining</li>
+                    <li>CONNECT, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT and TRACE</li>
+                </ul>
+                <p>Depends on <a href="/API/tinySAK/">tinySAK</a> and <a href="/API/tinyNET/">tinyNET</a></p>
+                
+                <h2><a href="/API/tinyXCAP/" class="caps c2">tinyXCAP (XCAP implementation)</a></h2>
+                <ul>
+                    <li>AUID manager</li>
+                    <li>URL generator</li>
+                </ul>
+                <p>Depends on <a href="/API/tinySAK/">tinySAK</a>, <a href="/API/tinyNET/">tinyNET</a> and <a href="/API/tinyHTTP/">tinyHTTP</a></p>
+                             
+                <h2><a href="/API/tinySMS/" class="caps c2">tinySMS (SMS over IP)</a></h2>
+                <ul>
+                    <li>SM-TL (3GPP TS 23.040)</li>
+                    <li>SM-RL (3GPP TS 24.011)</li>
+                    <li>SMS over 3GPP IMS/LTE networks (3GPP TS 24.341)</li>
+                </ul>
+                <p>Depends on <a href="/API/tinySAK/">tinySAK</a></p>
+                
+                <h2>tinySigComp (SigComp)</h2>
+                <ul>
+                    <li>Stream and Dgram compression/decompression</li>
+                    <li>SIP/SDP and Presence dictionaries</li>
+                    <li>Deflate Compressor</li>
+                    <li>UDVM</li>
+                </ul>
+               
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                <br />
+            </div>
+        </div>
+</body>
+</html>
