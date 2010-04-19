@@ -261,7 +261,7 @@ _match:
 			address = tnet_address_create(ip);
 			address->family = tnet_get_family(ip);
 			address->dnsserver = 1;
-			tsk_list_push_ascending_data(servers, &address);
+			tsk_list_push_ascending_data(servers, (void**)&address);
 		}
 	}
 	break;

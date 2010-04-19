@@ -57,8 +57,7 @@ int main()
 #endif
 {
 	/* Startup the network stack. */
-	if(tnet_startup())
-	{
+	if(tnet_startup()){
 		return -1;
 	}
 

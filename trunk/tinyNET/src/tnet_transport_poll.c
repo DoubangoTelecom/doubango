@@ -45,8 +45,8 @@
 typedef struct transport_socket_s
 {
 	tnet_fd_t fd;
-	unsigned owner:1;
-	unsigned connected:1;
+	tsk_bool_t owner;
+	tsk_bool_t connected;
 
 	tnet_socket_type_t type;
 	tnet_tls_socket_handle_t* tlshandle;
@@ -69,12 +69,13 @@ typedef struct transport_context_s
 }
 transport_context_t;
 
-static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
-static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client);
-static void setConnected(tnet_fd_t fd, transport_context_t *context, int connected);
-static void removeSocket(int index, transport_context_t *context);
+static const transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
+static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client);
+//static void setConnected(tnet_fd_t fd, transport_context_t *context, tsk_bool_t connected);
+static int removeSocket(int index, transport_context_t *context);
 
 /* Checks if socket is connected */
+/*
 int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
@@ -87,8 +88,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 	}
 	
 	context = (transport_context_t*)transport->context;
-	for(i=0; i<context->count; i++)
-	{
+	for(i=0; i<context->count; i++){
 		const transport_socket_t* socket = context->sockets[i];
 		if(socket->fd == fd){
 			return socket->connected;
@@ -97,6 +97,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 	
 	return 0;
 }
+*/
 
 int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)
 {
@@ -119,14 +120,24 @@ int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t f
 		transport->tls.have_tls = 1;
 	}
 	
-	addSocket(fd, type, transport, take_ownership, isClient);
+	if((ret = addSocket(fd, type, transport, take_ownership, isClient))){
+		TSK_DEBUG_ERROR("Failed to add new Socket.");
+		return ret;
+	}
 
 	// signal
-	if((ret = write(context->pipeW, &c, 1)) > 0){
-		return 0;
-	}
-	else{
-		return ret;
+	if(context->pipeW){
+		if((ret = write(context->pipeW, &c, 1)) > 0){
+			TSK_DEBUG_INFO("Socket added.");
+			return 0;
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to add new Socket.");
+			return ret;
+		}
+	}else{
+		TSK_DEBUG_WARN("pipeW (write site) not initialized yet.");
+		return 0; //Will be taken when mainthead start
 	}
 }
 
@@ -183,7 +194,7 @@ size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from
 	}
 
 	if(transport->tls.have_tls){
-		transport_socket_t* socket = getSocket(transport->context, from);
+		const transport_socket_t* socket = getSocket(transport->context, from);
 		if(socket && socket->tlshandle){
 			if(!tnet_tls_socket_send(socket->tlshandle, buf, size)){
 				numberOfBytesSent = size;
@@ -243,7 +254,7 @@ int tnet_transport_have_socket(const tnet_transport_handle_t *handle, tnet_fd_t 
 const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transport_handle_t *handle, tnet_fd_t fd)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	transport_socket_t *socket;
+	const transport_socket_t *socket;
 	
 	if(!transport){
 		TSK_DEBUG_ERROR("Invalid server handle.");
@@ -258,7 +269,7 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 
 
 /*== Get socket ==*/
-static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
+static const transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 {
 	size_t i;
 	transport_socket_t* ret = 0;
@@ -278,14 +289,14 @@ static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 }
 
 /*== Add new socket ==*/
-void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client)
+int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client)
 {
 	transport_context_t *context = transport?transport->context:0;
 	if(context){
 		transport_socket_t *sock = tsk_calloc(1, sizeof(transport_socket_t));
 		sock->fd = fd;
 		sock->type = type;
-		sock->owner = take_ownership ? 1 : 0;
+		sock->owner = take_ownership;
 
 		if(TNET_SOCKET_TYPE_IS_TLS(sock->type)){
 			sock->tlshandle = tnet_sockfd_set_tlsfiles(sock->fd, is_client, transport->tls.ca, transport->tls.pvk, transport->tls.pbk);
@@ -300,13 +311,17 @@ void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transpor
 		context->count++;
 
 		tsk_safeobj_unlock(context);
+		
+		return 0;
 	}
 	else{
 		TSK_DEBUG_ERROR("Context is Null.");
+		return -1;
 	}
 }
 
 /*== change connection state ==*/
+/*
 static void setConnected(tnet_fd_t fd, transport_context_t *context, int connected)
 {
 	size_t i;
@@ -318,14 +333,14 @@ static void setConnected(tnet_fd_t fd, transport_context_t *context, int connect
 		}
 	}
 }
+*/
 
 /*== Remove socket ==*/
-void removeSocket(int index, transport_context_t *context)
+int removeSocket(int index, transport_context_t *context)
 {
 	int i;
 	
-	if(index < (int)context->count)
-	{
+	if(index < (int)context->count){
 		tsk_safeobj_lock(context);
 
 		/* Close the socket if we are the owner. */
@@ -334,9 +349,8 @@ void removeSocket(int index, transport_context_t *context)
 		}
 		
 		/* Free tls context */
-		if(context->sockets[index]->tlshandle){
-			TSK_OBJECT_SAFE_FREE(context->sockets[index]->tlshandle);
-		}
+		TSK_OBJECT_SAFE_FREE(context->sockets[index]->tlshandle);
+		
 		// Free socket
 		TSK_FREE(context->sockets[index]);
 		
@@ -350,6 +364,8 @@ void removeSocket(int index, transport_context_t *context)
 
 		tsk_safeobj_unlock(context);
 	}
+	
+	return 0;
 }
 
 int tnet_transport_stop(tnet_transport_t *transport)
@@ -377,6 +393,61 @@ int tnet_transport_stop(tnet_transport_t *transport)
 	return tsk_thread_join(transport->mainThreadId);
 }
 
+int tnet_transport_prepare(tnet_transport_t *transport)
+{
+	int ret = -1;
+	transport_context_t *context;
+	tnet_fd_t pipes[2];
+	
+	if(!transport || !transport->context){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return -1;
+	}
+	else{
+		context = transport->context;
+	}
+	
+	if(transport->prepared){
+		TSK_DEBUG_ERROR("Transport already prepared.");
+		return -2;
+	}
+	
+	/* set events */
+	context->events = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? TNET_POLLIN : TNET_POLLIN | TNET_POLLHUP | TNET_POLLPRI;
+	
+	/* Start listening */
+	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
+		if(tnet_sockfd_listen(transport->master->fd, TNET_MAX_FDS)){
+			TNET_PRINT_LAST_ERROR("listen have failed.");
+			goto bail;
+		}
+	}
+	
+	/* Create and add pipes to the fd_set */
+	if((ret = pipe(pipes))){
+		TNET_PRINT_LAST_ERROR("Failed to create new pipes.");
+		goto bail;
+	}
+	
+	/* set both R and W sides */
+	context->pipeR = pipes[0];
+	context->pipeW = pipes[1];
+	
+	/* add R side */
+	if((ret = addSocket(context->pipeR, transport->master->type, transport, tsk_true, tsk_false))){
+		goto bail;
+	}
+	
+	/* Add the master socket to the context. */
+	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_true, tsk_false))){
+		goto bail;
+	}
+	
+	transport->prepared = tsk_true;
+	
+bail:
+	return ret;
+}
 
 
 /*=== Main thread */
@@ -384,45 +455,21 @@ void *tnet_transport_mainthread(void *param)
 {
 	tnet_transport_t *transport = param;
 	transport_context_t *context = transport->context;
-	tnet_fd_t pipes[2];
 	int ret;
 	size_t i;
 
 	transport_socket_t* active_socket;
-	
-	context->events = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? TNET_POLLIN : TNET_POLLIN | TNET_POLLHUP | TNET_POLLPRI;
-	transport->context = context;
 
-	/* Start listening */
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type))
-	{
-		if(tnet_sockfd_listen(transport->master->fd, TNET_MAX_FDS))
-		{
-			TNET_PRINT_LAST_ERROR("listen have failed.");
-			goto bail;
-		}
-	}
-	
-	/* Create and add pipes to the fd_set */
-	if((ret = pipe(pipes)))
-	{
-		TNET_PRINT_LAST_ERROR("Failed to create new pipes.");
+	/* check whether the transport is already prepared */
+	if(!transport->prepared){
+		TSK_DEBUG_ERROR("Transport must be prepared before strating.");
 		goto bail;
 	}
-
-	context->pipeR = pipes[0];
-	context->pipeW = pipes[1];
-
-	addSocket(context->pipeR, transport->master->type, transport, 1, 0);
-
-	/* Add the master socket to the context. */
-	addSocket(transport->master->fd, transport->master->type, transport, 1, 0);
-
+	
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 
 	while(TSK_RUNNABLE(transport)->running)
 	{
-
 		if((ret = tnet_poll(context->ufds, context->count, -1)) < 0){
 			TNET_PRINT_LAST_ERROR("poll have failed.");
 			goto bail;

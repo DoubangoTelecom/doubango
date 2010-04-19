@@ -39,7 +39,7 @@ TNET_BEGIN_DECLS
 
 /**@ingroup tnet_utils_group
 */
-#define TNET_CONNECT_TIMEOUT		1500
+#define TNET_CONNECT_TIMEOUT		2500
 
 /**@ingroup tnet_utils_group
 * Interface.
@@ -159,7 +159,7 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 #endif
 
 
-tnet_interface_t* tnet_interface_create(const char* description, const char* mac_address, size_t mac_address_length);
+tnet_interface_t* tnet_interface_create(const char* description, const void* mac_address, size_t mac_address_length);
 tnet_address_t* tnet_address_create(const char* ip);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_interface_def_t;

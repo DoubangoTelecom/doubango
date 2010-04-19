@@ -276,7 +276,7 @@ const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thtt
 */
 const thttp_header_t *thttp_message_get_headerByName(const thttp_message_t *self, const char* name)
 {
-	size_t pos = 0;
+	//size_t pos = 0;
 	tsk_list_item_t *item;
 	const thttp_header_t* hdr = tsk_null;
 
@@ -446,7 +446,7 @@ static tsk_object_t* thttp_message_ctor(tsk_object_t *self, va_list * app)
 
 		case thttp_response:
 			{
-				const thttp_request_t* request = va_arg(*app, const thttp_request_t*);
+				/*const thttp_request_t* request =*/ va_arg(*app, const thttp_request_t*);
 #if defined(__GNUC__)
 				message->status_code = (short)va_arg(*app, int);
 #else

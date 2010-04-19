@@ -100,8 +100,9 @@ typedef struct tnet_transport_s
 	tnet_socket_t *master;
 
 	void *context;
+	tsk_bool_t prepared;
 
-	unsigned connected:1;
+	//unsigned connected:1;
 	void* mainThreadId[1];
 
 	char *description;
@@ -114,7 +115,7 @@ typedef struct tnet_transport_s
 		char* ca;
 		char* pvk;
 		char* pbk;
-		unsigned have_tls:1;
+		tsk_bool_t have_tls;
 	}tls;
 }
 tnet_transport_t;

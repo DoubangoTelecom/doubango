@@ -23,14 +23,14 @@
 #define TNET_TEST_TRANSPORT_H
 
 //#define REMOTE_IP4	"proxy.sipthor.net"//"192.168.0.15"
-#define REMOTE_IP4	"192.168.16.104"
+#define REMOTE_IP4	"192.168.0.13"
 #define REMOTE_IP6	"2a01:e35:8632:7050:6122:2706:2124:32cb"
 #define REMOTE_IP REMOTE_IP4
-#define REMOTE_PORT 5060
+#define REMOTE_PORT 5083
 
 #if defined(ANDROID) /* FIXME */
-//#	define LOCAL_IP4	"10.0.2.15"
-//#else
+#	define LOCAL_IP4	"10.0.2.15"
+#else
 #	define LOCAL_IP4	TNET_SOCKET_HOST_ANY
 #endif
 #define LOCAL_IP6	TNET_SOCKET_HOST_ANY
@@ -104,18 +104,19 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 		TSK_DEBUG_ERROR("Failed to create %s.", tnet_transport_get_description(transport));
 		return;
 	}
-
+	
 	/* Connect to the SIP Registrar */
 	if((fd = tnet_transport_connectto_2(transport, REMOTE_IP, REMOTE_PORT)) == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Failed to connect %s.", tnet_transport_get_description(transport));
 		return;
 	}
-
+	
 	if(tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT)){
 		TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
 		tnet_transport_remove_socket(transport, &fd);
 		return;
 	}
+	
 
 	/* Send our SIP message */
 	{
@@ -131,6 +132,7 @@ void test_transport_tcp_ipv4(tnet_transport_handle_t *transport)
 		}
 		TSK_FREE(message);
 	}
+	
 }
 
 
