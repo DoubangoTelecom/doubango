@@ -50,13 +50,135 @@ int tnet_dns_cache_entry_add(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qc
 const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
 
 /**@defgroup tnet_dns_group DNS utility functions (RFCS [1034 1035] [3401 3402 3403 3404]).
+*
+* <h1>11 DNS</h1>
+* <p>
+* The DNS Stack (RFC 1034 and RFC 1035) contains all network functions to send queries (both IPv4 and IPv6) and parse responses. <br>
+* The core framework implements RFC 3401, 3402, 3403 and 3404, also known as Dynamic Delegation Discovery System (DDDS).
+* </p>
+* <p>
+* The DNS servers are automatically loaded by the stack when you create a context (@ref tnet_dns_ctx_create()). <br>
+* On Windows systems (XP, VISTA, 7 and CE) the servers are retrieved using WIN32 APIs. On Unix-like systems (both desktop and embedded) such as Debian, Ubuntu, Nokia’s N900… the list of DNS servers comes from “/etc/resolv.conf” file. <br>
+* On Google Android operating system, this file is missing and the DNS settings are stored in the shared memory. You can access this shared memory by using @a property_get() and @a property_set() function which are part of Bionic. <br>
+* In all cases, you can retrieve the DNS servers yourself (e.g. using java/C# Frameworks) and add them to the context using @ref tnet_dns_add_server().
+* </p>
+* <p>
+* DNS resolution is always performed in a synchronous manner and is thread-safe. For all DNS requests the default timeout value is 5 seconds (@ref TNET_DNS_TIMEOUT_DEFAULT).
+* The stack also implements the ENUM protocol (RFC 3761).
+* </p>
+* 
+* <h2>11.1	Resource Records</h2>
+* The table below lists all DNS Resource Records (RR) for which we provide a parser.
+* 
+* <table>
+* <tr><td>Code</td>	<td>RFC</td>	<td>Description</td>	<td>Well-defined type</td></tr>
+* <tr><td>A</td>	<td>RFC 1035</td>	<td>IPv4 address</td> 	<td>tnet_dns_a_t</td></tr>
+* <tr><td>AAAA</td>	<td>RFC 3596</td>	<td>IPv6 address</td>	<td>tnet_dns_aaaa_t</td></tr>
+* <tr><td>CNAME</td>	<td>RFC 1035</td>	<td>Canonical name</td>	<td>tnet_dns_cname_t</td></tr>
+* <tr><td>MX</td>	<td>RFC 2035</td>	<td>Mail exchange</td>	<td>tnet_dns_mx_t</td></tr>
+* <tr><td>NAPTR</td>	<td>RFC 3403</td>	<td>Naming Authority Pointer</td>	<td>tnet_dns_naptr_t</td></tr>
+* <tr><td>NS</td>	<td>RFC 1035</td>	<td>Name Server</td>	<td>tnet_dns_ns_t</td></tr>
+* <tr><td>OPT</td>	<td>RFC 2671</td>	<td>Option</td>	<td>tnet_dns_opt_t</td></tr>
+* <tr><td>PTR</td>	<td>RFC 1035</td>	<td>Pointer record</td>	<td>tnet_dns_ptr_t</td></tr>
+* <tr><td>SOA</td>	<td>RFC1035</td>	<td>Start Of Authority record</td>	<td>tnet_dns_soa_t</td></tr>
+* <tr><td>SRV</td>	<td>RFC 2782</td>	<td>Service locator</td>	<td>tnet_dns_srv_t</td></tr>
+* </table>
+*
+* Here is an example of how to use the DNS stack to perform DNS NAPTR resolution and print the result to the console.
+*
+* @code
+tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
+tnet_dns_response_t *response = tsk_null;
+const tsk_list_item_t* item;
+const tnet_dns_rr_t* rr;
+
+if((response = tnet_dns_resolve(ctx, "sip2sip.info", qclass_in, qtype_naptr)))
+{
+	if(TNET_DNS_RESPONSE_IS_SUCCESS(response)){
+		TSK_DEBUG_INFO("We got a success response from the DNS server.");
+		// loop through the answers
+		tsk_list_foreach(item, response->Answers){
+			rr = item->data;
+			if(rr->qtype == qtype_naptr){
+				const tnet_dns_naptr_t *naptr = (const tnet_dns_naptr_t*)rr;
+				
+				TSK_DEBUG_INFO("order=%u pref=%u flags=%s services=%s regexp=%s replacement=%s", 
+					naptr->order,
+					naptr->preference,
+					naptr->flags,
+					naptr->services,
+					naptr->regexp,
+					naptr->replacement);
+			}
+		}
+	}
+	else{
+		TSK_DEBUG_ERROR("We got an error response from the DNS server. Error code: %u", response->Header.RCODE);
+	}
+}
+
+TSK_OBJECT_SAFE_FREE(response);
+TSK_OBJECT_SAFE_FREE(ctx);
+
+* @endcode
+* The @a ctx could be used several times and is a well-defined object.<br>
+* The console will output:
+* <i>INFO: We got a success response from the DNS server.</i><br>
+* <i>INFO: order=10 pref=0 flags=S services=SIP+d2u regexp=(null) replacement=_sip._udp.sip2sip.info</i><br>
+*
+* <h2>11.2	ENUM</h2>
+* ENUM (E.164 Number Mapping) protocol has been defined in RFC 3761.
+* ENUM protocol is used to transform telephone numbers of the PSTN network (e.g. +33600000) into internet resource addresses (e.g. sip:diopmamadou@example.com) by using DNS lookup (NAPTR). The internet resource address could be an email, ICQ, IAX2, H.323 …
+* In our case (3GPP IMS) it is typically used to convert TEL URIs (e.g. tel:+33600000) into SIP URIs (sip:+33600000;user=phone). The telephone number to convert should be a valid E.164 number.
+*
+* <h3>11.2.1	Usage</h3>
+* The code below shows how to gets the SIP address (with the higher order) associated to an E.164 telephone number.
+* 
+* @code 
+tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
+tnet_dns_response_t* response = tsk_null;
+char* uri = tsk_null;
+
+if((uri = tnet_dns_enum_2(ctx, "E2U+SIP", "+1-800-555-5555","e164.org"))){
+	TSK_DEBUG_INFO("URI=%s", uri);
+	TSK_FREE(uri);
+}
+else{
+	TSK_DEBUG_ERROR("ENUM(%s) failed", "+1-800-555-5555");
+}
+
+TSK_OBJECT_SAFE_FREE(response);
+TSK_OBJECT_SAFE_FREE(ctx);
+* @endcode
+*
+* Console Output:<br>
+* <i>INFO: URI=sip:16416418000-555-5555@sip.tollfreegateway.com</i><br>
+*
+* E2U+SIP is the name of SIP ENUM service assigned by the IANA. Any assigned service () could be used even if the associated addresse type isn’t a well-knonw internet address.
+* To get all internet addresses (email, IAX2, ICQ, H.323 …) associated to the telephone, use @ref tnet_dns_enum() instead of @ref tnet_dns_enum_2().
 */
+
+/**@ingroup tnet_dns_group
+* Creates new DNS context.
+*/
+tnet_dns_ctx_t* tnet_dns_ctx_create()
+{ 
+	return tsk_object_new(tnet_dns_ctx_def_t);
+}
+
+/**@ingroup tnet_dns_group
+* Creates new DNS cache entry.
+*/
+tnet_dns_cache_entry_t* tnet_dns_cache_entry_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tnet_dns_response_t* answer)
+{
+	return tsk_object_new(tnet_dns_cache_entry_def_t, qname, qclass, qtype, answer);
+}
 
 
 /**@ingroup tnet_dns_group
 * Cleanup the internal DNS cache.
 * @param ctx The DNS context containing the cache to cleanup. 
-* The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
+* The context contains the user's preference and should be created using @ref tnet_dns_ctx_create().
 * @retval Zero if succeeed and non-zero error code otherwise.
 */
 int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
@@ -73,16 +195,16 @@ int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 
 /**@ingroup tnet_dns_group
 * Sends DNS request over the network. The request will be sent each 500 milliseconds until @ref TNET_DNS_TIMEOUT_DEFAULT milliseconds is reached.
-* @param ctx The DNS context to use. The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
+* @param ctx The DNS context to use. The context contains the user's preference and should be created using @ref tnet_dns_ctx_create().
 * @param qname The domain name (e.g. google.com).
 * @param qclass The CLASS of the query.
 * @param qtype The type of the query.
 * @retval The DNS response. The @a answers in the @a response are already filtered.
-* MUST be destroyed using @ref TSK_OBJECT_SAFE_FREE macro.
+* MUST be destroyed using @a TSK_OBJECT_SAFE_FREE() macro.
 * @sa @ref tnet_dns_query_srv, @ref tnet_dns_query_naptr_srv, @ref tnet_dns_enum.
 *
 * @code
-* tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+* tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
 * tnet_dns_response_t *response = tnet_dns_resolve(ctx, "sip2sip.info", qclass_in, qtype_srv);
 * TSK_OBJECT_SAFE_FREE(response);
 * TSK_OBJECT_SAFE_FREE(ctx);
@@ -91,7 +213,7 @@ int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
 	tsk_buffer_t *output = tsk_null;
-	tnet_dns_query_t* query = TNET_DNS_QUERY_CREATE(qname, qclass, qtype);
+	tnet_dns_query_t* query = tnet_dns_query_create(qname, qclass, qtype);
 	tnet_dns_response_t *response = tsk_null;
 	tsk_bool_t from_cache = tsk_false;
 	
@@ -129,9 +251,9 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 	/* EDNS0 */
 	if(ctx->edns0)
 	{
-		tnet_dns_opt_t *rr_opt = TNET_DNS_OPT_CREATE(TNET_DNS_DGRAM_SIZE_DEFAULT);
+		tnet_dns_opt_t *rr_opt = tnet_dns_opt_create(TNET_DNS_DGRAM_SIZE_DEFAULT);
 		if(!query->Additionals){
-			query->Additionals = TSK_LIST_CREATE();
+			query->Additionals = tsk_list_create();
 		}
 		tsk_list_push_back_data(query->Additionals, (void**)&rr_opt);
 		query->Header.ARCOUNT++;
@@ -155,8 +277,8 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 		tsk_list_item_t *item;
 		const tnet_address_t *address;
 		struct sockaddr_storage server;
-		tnet_socket_t *localsocket4 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
-		tnet_socket_t *localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
+		tnet_socket_t *localsocket4 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
+		tnet_socket_t *localsocket6 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
 		tsk_bool_t useIPv6 = TNET_SOCKET_IS_VALID(localsocket6);
 		
 		tsk_safeobj_lock(ctx);
@@ -309,11 +431,11 @@ bail:
 /**@ingroup tnet_dns_group
 * Gets list of URIs associated to this telephone number by using ENUM protocol (RFC 3761).
 * @param ctx The DNS context. 
-* The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
+* The context contains the user's preference and should be created using @ref tnet_dns_ctx_create().
 * @param e164num A valid E.164 number (e.g. +1-800-555-5555).
 * @param domain The domain name (e.g e164.arpa, e164.org, ...). If Null, default value is "e164.arpa" (IANA).
 * @retval The DNS response with NAPTR RRs. The @a answers in the @a response are already filtered.
-* MUST be destroyed using @ref TSK_OBJECT_SAFE_FREE macro.
+* MUST be destroyed using @a TSK_OBJECT_SAFE_FREE macro.
 * @sa @ref tnet_dns_resolve, @ref tnet_dns_enum_2.
 */
 tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num, const char* domain)
@@ -385,12 +507,12 @@ bail:
 * substitution. <br>
 * <b> Parsing complex regexp will probably fail (99.99% chance). Please use @ref tnet_dns_enum if you want to use your own regexp parser. </b>
 * @param ctx The DNS context. 
-* The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
+* The context contains the user's preference and should be created using @ref tnet_dns_ctx_create().
 * @param service The ENUM service (e.g. E2U+SIP).
 * @param e164num A valid E.164 number (e.g. +1-800-555-5555).
 * @param domain The domain name (e.g e164.arpa, e164.org, ...). If Null, default value is "e164.arpa" (IANA).
 * @retval The Internet address (SIP, email, ICQ, fax, ...) associated to this service.
-* MUST be freed using @ref TSK_FREE macro.
+* MUST be freed using @a TSK_FREE macro.
 * @sa @ref tnet_dns_resolve, @ref tnet_dns_enum.
 */
 char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164num, const char* domain)
@@ -442,7 +564,7 @@ char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164
 /**@ingroup tnet_dns_group
 * Performs DNS SRV resolution.
 * @param ctx The DNS context. 
-* The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
+* The context contains the user's preference and should be created using @ref tnet_dns_ctx_create.
 * @param service The name of the service (e.g. SIP+D2U).
 * @param hostname The result containing an IP address or FQDN.
 * @param port The port associated to the result.
@@ -450,7 +572,7 @@ char* tnet_dns_enum_2(tnet_dns_ctx_t* ctx, const char* service, const char* e164
 * @sa @ref tnet_dns_resolve.
 *
 * @code
-* tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+* tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
 * char* hostname = 0;
 * tnet_port_t port = 0;
 * 
@@ -496,7 +618,7 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 /**@ingroup tnet_dns_group
 * Performs DNS NAPTR followed by DNS SRV resolution.
 * @param ctx The DNS context.
-* The context contains the user's preference and should be created using @ref TNET_DNS_CTX_CREATE.
+* The context contains the user's preference and should be created using @ref tnet_dns_ctx_create.
 * @param domain The Name of the domain (e.g. google.com).
 * @param service The name of the service (e.g. SIP+D2U).
 * @param hostname The result containing an IP address or FQDN.
@@ -505,7 +627,7 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 * @sa @ref tnet_dns_resolve.
 *
 * @code
-* tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+* tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
 * char* hostname = 0;
 * tnet_port_t port = 0;
 * 
@@ -627,7 +749,7 @@ int tnet_dns_cache_entry_add(tnet_dns_ctx_t *ctx, const char* qname, tnet_dns_qc
 		}
 		else{ 
 			/* CREATE */
-			entry = TNET_DNS_CACHE_ENTRY_CREATE(qname, qclass, qtype, response);
+			entry = tnet_dns_cache_entry_create(qname, qclass, qtype, response);
 			if(entry){
 				tsk_list_push_back_data(ctx->cache, (void**)&entry);
 				ret = 0;
@@ -669,7 +791,7 @@ const tnet_dns_cache_entry_t* tnet_dns_cache_entry_get(tnet_dns_ctx_t *ctx, cons
 }
 
 
-/**
+/**@ingroup tnet_dns_group
 * Adds new DNS server to the list of the list of servers to query.
 * @param ctx DNS context containing the user parameters. The new DNS server will be added to this context.
 * @param host The IP address (or FQDN) of the dns server to add to the server.
@@ -684,10 +806,10 @@ int tnet_dns_add_server(tnet_dns_ctx_t *ctx, const char* host)
 	}
 	
 	if(!ctx->servers){
-		ctx->servers = TSK_LIST_CREATE();
+		ctx->servers = tsk_list_create();
 	}
 	
-	if((address = TNET_ADDRESS_CREATE(host))){
+	if((address = tnet_address_create(host))){
 		address->family = tnet_get_family(host);
 		address->dnsserver = 1;
 		tsk_list_push_ascending_data(ctx->servers, (void**)&address);
@@ -701,11 +823,10 @@ int tnet_dns_add_server(tnet_dns_ctx_t *ctx, const char* host)
 //=================================================================================================
 //	[[DNS CACHE ENTRY]] object definition
 //
-static tsk_object_t* tnet_dns_cache_entry_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tnet_dns_cache_entry_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_cache_entry_t *entry = self;
-	if(entry)
-	{
+	if(entry){
 		entry->qname = tsk_strdup(va_arg(*app, const char*));
 		entry->qclass = va_arg(*app, tnet_dns_qtype_t);
 		entry->qtype = va_arg(*app, tnet_dns_qtype_t);
@@ -716,7 +837,7 @@ static tsk_object_t* tnet_dns_cache_entry_create(tsk_object_t * self, va_list * 
 	return self;
 }
 
-static tsk_object_t* tnet_dns_cache_entry_destroy(tsk_object_t * self) 
+static tsk_object_t* tnet_dns_cache_entry_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_cache_entry_t *entry = self;
 	if(entry){
@@ -728,21 +849,20 @@ static tsk_object_t* tnet_dns_cache_entry_destroy(tsk_object_t * self)
 static const tsk_object_def_t tnet_dns_cache_entry_def_s =
 {
 	sizeof(tnet_dns_cache_entry_t),
-	tnet_dns_cache_entry_create,
-	tnet_dns_cache_entry_destroy,
+	tnet_dns_cache_entry_ctor,
+	tnet_dns_cache_entry_dtor,
 	tsk_null,
 };
-const void *tnet_dns_cache_entry_def_t = &tnet_dns_cache_entry_def_s;
+const tsk_object_def_t *tnet_dns_cache_entry_def_t = &tnet_dns_cache_entry_def_s;
 
 
 //=================================================================================================
 //	[[DNS CONTEXT]] object definition
 //
-static tsk_object_t* tnet_dns_ctx_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tnet_dns_ctx_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_ctx_t *ctx = self;
-	if(ctx)
-	{
+	if(ctx){
 		ctx->timeout = TNET_DNS_TIMEOUT_DEFAULT;
 		ctx->recursion = tsk_true;
 		ctx->edns0 = tsk_true;
@@ -755,18 +875,17 @@ static tsk_object_t* tnet_dns_ctx_create(tsk_object_t * self, va_list * app)
 		/* Gets all dns servers. */
 		ctx->servers = tnet_get_addresses_all_dnsservers();
 		/* Creates empty cache. */
-		ctx->cache = TSK_LIST_CREATE();
+		ctx->cache = tsk_list_create();
 
 		tsk_safeobj_init(ctx);
 	}
 	return self;
 }
 
-static tsk_object_t* tnet_dns_ctx_destroy(tsk_object_t * self) 
+static tsk_object_t* tnet_dns_ctx_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_ctx_t *ctx = self;
-	if(ctx)
-	{
+	if(ctx){
 		tsk_safeobj_deinit(ctx);
 
 		TSK_OBJECT_SAFE_FREE(ctx->servers);
@@ -778,8 +897,8 @@ static tsk_object_t* tnet_dns_ctx_destroy(tsk_object_t * self)
 static const tsk_object_def_t tnet_dns_ctx_def_s =
 {
 	sizeof(tnet_dns_ctx_t),
-	tnet_dns_ctx_create,
-	tnet_dns_ctx_destroy,
+	tnet_dns_ctx_ctor,
+	tnet_dns_ctx_dtor,
 	tsk_null,
 };
-const void *tnet_dns_ctx_def_t = &tnet_dns_ctx_def_s;
+const tsk_object_def_t *tnet_dns_ctx_def_t = &tnet_dns_ctx_def_s;

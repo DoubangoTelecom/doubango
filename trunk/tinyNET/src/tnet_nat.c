@@ -39,6 +39,15 @@
 /**@defgroup tnet_nat_group NAT Traversal API (STUN, TURN and ICE).
 */
 
+
+/**@ingroup tnet_nat_group
+* Creates new NAT context.
+*/
+tnet_nat_context_handle_t* tnet_nat_context_create(tnet_socket_type_t socket_type, const char* username, const char* password)
+{
+	return tsk_object_new(tnet_nat_context_def_t, socket_type, username, password);
+}
+
 /**
  * Predicate function to find turn allocation by id.
  *
@@ -61,13 +70,7 @@ int __pred_find_turn_allocation(const tsk_list_item_t* item, const void* id)
 	return -1;
 }
 
-/**
- * @fn	int __pred_find_stun_binding(const tsk_list_item_t* item, const void* id)
- *
- * @brief	Predicate function to find stun binding by id. 
- *
- * @author	Mamadou
- * @date	1/23/2010
+/** Predicate function to find stun binding by id. 
  *
  * @param [in,out]	item	The current list item. 
  * @param [in,out]	id		A pointer to the binding identifier. 
@@ -88,13 +91,7 @@ int __pred_find_stun_binding(const tsk_list_item_t* item, const void* id)
 	return -1;
 }
 
-/**
- * @fn	int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id)
- *
- * @brief	Predicate function to find TURN channel binding by id. 
- *
- * @author	Mamadou
- * @date	1/24/2010
+/** Predicate function to find TURN channel binding by id. 
  *
  * @param [in,out]	item	The current list item. 
  * @param [in,out]	id		A pointer to the TURN channel binding identifier. 
@@ -126,22 +123,19 @@ int __pred_find_turn_channel_binding(const tsk_list_item_t* item, const void* id
 **/
 int tnet_stun_address_tostring(const uint8_t in_ip[16], tnet_stun_addr_family_t family, char** out_ip)
 {
-	if(family == stun_ipv6)
-	{
+	if(family == stun_ipv6){
 		tsk_sprintf(out_ip, "%x:%x:%x:%x:%x:%x:%x:%x",
 				tnet_ntohs(*((uint16_t*)&in_ip[0])), tnet_ntohs(*((uint16_t*)&in_ip[2])), tnet_ntohs(*((uint16_t*)&in_ip[4])), tnet_ntohs(*((uint16_t*)&in_ip[6])),
 				tnet_ntohs(*((uint16_t*)&in_ip[8])), tnet_ntohs(*((uint16_t*)&in_ip[10])), tnet_ntohs(*((uint16_t*)&in_ip[12])), tnet_ntohs(*((uint16_t*)&in_ip[14])));
 	}
-	else if(family == stun_ipv4)
-	{
+	else if(family == stun_ipv4){
 		uint32_t address = *((uint32_t*)in_ip);
 		address = /*tnet_ntohl*/(address);
 		tsk_sprintf(out_ip, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 		
 		return 0;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Unsupported address family: %u.", family);
 	}
 
@@ -162,8 +156,7 @@ int tnet_nat_set_server_address(tnet_nat_context_handle_t* self, const char* ser
 {
 	tnet_nat_context_t* context = self;
 
-	if(context)
-	{
+	if(context){
 		tsk_strupdate(&(context->server_address), server_address);
 		return 0;
 	}
@@ -184,8 +177,7 @@ int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_addr
 {
 	tnet_nat_context_t* context = self;
 
-	if(context)
-	{
+	if(context){
 		tsk_strupdate(&(context->server_address), server_address);
 		context->server_port = server_port;
 
@@ -210,8 +202,7 @@ int tnet_nat_set_server(tnet_nat_context_handle_t* self, const char* server_addr
 tnet_stun_binding_id_t tnet_nat_stun_bind(const tnet_nat_context_handle_t* self, const tnet_fd_t localFD)
 {
 	const tnet_nat_context_t* context = self;
-	if(context)
-	{
+	if(context){
 		return tnet_stun_bind(context, localFD);
 	}
 	return TNET_STUN_INVALID_BINDING_ID;
@@ -231,23 +222,19 @@ tnet_stun_binding_id_t tnet_nat_stun_bind(const tnet_nat_context_handle_t* self,
 int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, tnet_stun_binding_id_t id, char** ipaddress, tnet_port_t *port)
 {
 	const tnet_nat_context_t* context = self;
-	if(context)
-	{
+	if(context){
 		const tsk_list_item_t* item = tsk_list_find_item_by_pred(context->stun_bindings, __pred_find_stun_binding, &id);
-		if(item && item->data)
-		{
+		if(item && item->data){
 			tnet_stun_binding_t *binding = item->data;
 			/*STUN2: XOR-MAPPED-ADDRESS */
-			if(binding->xmaddr)
-			{
+			if(binding->xmaddr){
 				int ret = tnet_stun_address_tostring(binding->xmaddr->xaddress, binding->xmaddr->family, ipaddress);
 				*port = /*tnet_ntohs*/(binding->xmaddr->xport);
 				return ret;
 			}
 
 			/*STUN1: MAPPED-ADDRESS*/
-			if(binding->maddr)
-			{
+			if(binding->maddr){
 				int ret = tnet_stun_address_tostring(binding->maddr->address, binding->maddr->family, ipaddress);
 				*port = /*tnet_ntohs*/(binding->maddr->port);
 				return ret;
@@ -260,7 +247,6 @@ int tnet_nat_stun_get_reflexive_address(const tnet_nat_context_handle_t* self, t
 /**@ingroup tnet_nat_group
  *
  * Removes a STUN2 binding from the NAT context.
- *
  *
  * @param [in,out]	self	The NAT context from which to remove the STUN2 binding. 
  * @param	id				The id of the STUN2 binding to remove. 
@@ -504,11 +490,10 @@ int tnet_nat_turn_add_permission(const tnet_nat_context_handle_t* self, tnet_tur
 //=================================================================================================
 //	NAT CONTEXT object definition
 //
-static void* tnet_nat_context_create(void * self, va_list * app)
+static tsk_object_t* tnet_nat_context_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_nat_context_t *context = self;
-	if(context)
-	{
+	if(context){
 		context->socket_type = va_arg(*app, tnet_socket_type_t);
 		
 		context->username = tsk_strdup(va_arg(*app, const char*));
@@ -532,17 +517,16 @@ static void* tnet_nat_context_create(void * self, va_list * app)
 		context->enable_integrity = 0;
 		context->enable_dontfrag = 0;//TNET_SOCKET_TYPE_IS_DGRAM(context->socket_type) ? 1 : 0;
 
-		context->allocations = TSK_LIST_CREATE();
-		context->stun_bindings = TSK_LIST_CREATE();
+		context->allocations = tsk_list_create();
+		context->stun_bindings = tsk_list_create();
 	}
 	return self;
 }
 
-static void* tnet_nat_context_destroy(void * self)
+static tsk_object_t* tnet_nat_context_dtor(tsk_object_t * self)
 { 
 	tnet_nat_context_t *context = self;
-	if(context)
-	{
+	if(context){
 		TSK_FREE(context->username);
 		TSK_FREE(context->password);
 		TSK_FREE(context->software);
@@ -558,8 +542,8 @@ static void* tnet_nat_context_destroy(void * self)
 static const tsk_object_def_t tnet_nat_context_def_s = 
 {
 	sizeof(tnet_nat_context_t),
-	tnet_nat_context_create, 
-	tnet_nat_context_destroy,
-	0, 
+	tnet_nat_context_ctor, 
+	tnet_nat_context_dtor,
+	tsk_null, 
 };
-const void *tnet_nat_context_def_t = &tnet_nat_context_def_s;
+const tsk_object_def_t *tnet_nat_context_def_t = &tnet_nat_context_def_s;

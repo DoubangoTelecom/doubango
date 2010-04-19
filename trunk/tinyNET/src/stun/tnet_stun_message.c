@@ -42,8 +42,30 @@
 
 #include <string.h>
 
-#define SERIALIZE_N_ADD_ATTRIBUTE(ATT_NAME, payload, payload_size) \
-		attribute = TNET_STUN_ATTRIBUTE_##ATT_NAME##_CREATE(payload, payload_size); \
+
+/**@ingroup tnet_stun_group
+* Creates new STUN message.
+* @retval @ref tnet_stun_message_t object.
+* @sa tnet_stun_message_create_null.
+*/
+
+tnet_stun_message_t* tnet_stun_message_create(const char* username, const char* password)
+{
+	return tsk_object_new(tnet_stun_message_def_t, username, password);
+}
+
+/**@ingroup tnet_stun_group
+* Creates new STUN message.
+* @retval @ref tnet_stun_message_t object.
+* @sa tnet_stun_message_create.
+*/
+tnet_stun_message_t* tnet_stun_message_create_null()
+{
+	return tnet_stun_message_create(tsk_null, tsk_null);
+}
+
+#define SERIALIZE_N_ADD_ATTRIBUTE(att_name, payload, payload_size) \
+		attribute = (tnet_stun_attribute_t *)tnet_stun_attribute_##att_name##_create(payload, payload_size); \
 		tnet_stun_attribute_serialize(attribute, output); \
 		tnet_stun_attribute_pad(attribute, output); \
 		TSK_OBJECT_SAFE_FREE(attribute);
@@ -59,9 +81,11 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 	tnet_stun_attribute_t *attribute;
 	unsigned compute_integrity = self->integrity;
 	
-	if(!self) goto bail;
+	if(!self){
+		goto bail;
+	}
 		
-	output = TSK_BUFFER_CREATE_NULL();
+	output = tsk_buffer_create_null();
 
 	/*	RFC 5389 - 6.  STUN Message Structure
 	   0                   1                   2                   3
@@ -104,9 +128,8 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 
 	/* DONT-FRAGMENT
 	*/
-	if(self->dontfrag)
-	{
-		attribute = TNET_TURN_ATTRIBUTE_DONTFRAG_CREATE();
+	if(self->dontfrag){
+		attribute = (tnet_stun_attribute_t *)tnet_turn_attribute_dontfrag_create();
 		tnet_stun_attribute_serialize(attribute, output);
 		TSK_OBJECT_SAFE_FREE(attribute);
 	}
@@ -124,11 +147,10 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 	}
 
 	/* AUTHENTICATION */
-	if(self->realm && self->nonce)
-	{
-		SERIALIZE_N_ADD_ATTRIBUTE(USERNAME, self->username, strlen(self->username));
-		SERIALIZE_N_ADD_ATTRIBUTE(REALM, self->realm, strlen(self->realm));
-		SERIALIZE_N_ADD_ATTRIBUTE(NONCE, self->nonce, strlen(self->nonce));
+	if(self->realm && self->nonce){
+		SERIALIZE_N_ADD_ATTRIBUTE(username, self->username, strlen(self->username));
+		SERIALIZE_N_ADD_ATTRIBUTE(realm, self->realm, strlen(self->realm));
+		SERIALIZE_N_ADD_ATTRIBUTE(nonce, self->nonce, strlen(self->nonce));
 		
 		compute_integrity = 1;
 	}
@@ -148,8 +170,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 	}
 
 	/* MESSAGE-INTEGRITY */
-	if(compute_integrity)
-	{
+	if(compute_integrity){
 		/* RFC 5389 - 15.4.  MESSAGE-INTEGRITY
 		   The MESSAGE-INTEGRITY attribute contains an HMAC-SHA1 [RFC2104] of the STUN message.
 
@@ -166,14 +187,13 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		TSK_MD5_DIGEST_CALC(keystr, strlen(keystr), md5);
 		hmac_sha1digest_compute(output->data, output->size, (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
 		
-		SERIALIZE_N_ADD_ATTRIBUTE(INTEGRITY, hmac, TSK_SHA1_DIGEST_SIZE);
+		SERIALIZE_N_ADD_ATTRIBUTE(integrity, hmac, TSK_SHA1_DIGEST_SIZE);
 		
 		TSK_FREE(keystr);
 	}
 
 	/* FINGERPRINT */
-	if(self->fingerprint)
-	{
+	if(self->fingerprint){
 		/*	RFC 5389 - 15.5.  FINGERPRINT
 			The FINGERPRINT attribute MAY be present in all STUN messages.  The
 			value of the attribute is computed as the CRC-32 of the STUN message
@@ -184,7 +204,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		fingerprint ^= 0x5354554e;
 		fingerprint = tnet_htonl(fingerprint);
 		
-		attribute = TNET_STUN_ATTRIBUTE_FINGERPRINT_CREATE(fingerprint);
+		attribute = (tnet_stun_attribute_t *)tnet_stun_attribute_fingerprint_create(fingerprint);
 		tnet_stun_attribute_serialize(attribute, output);
 		TSK_OBJECT_SAFE_FREE(attribute);
 	}
@@ -217,7 +237,7 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t s
 	dataPtr = (uint8_t*)data;
 	dataEnd = (dataPtr + size);
 
-	message = TNET_STUN_MESSAGE_CREATE_NULL();
+	message = tnet_stun_message_create_null();
 
 	/* Message Type 
 	*/
@@ -249,11 +269,9 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t s
 
 	/*	== Parse attributes
 	*/
-	while(dataPtr < dataEnd)
-	{
+	while(dataPtr < dataEnd){
 		tnet_stun_attribute_t *attribute = tnet_stun_attribute_deserialize(dataPtr, (dataEnd - dataPtr));
-		if(attribute)
-		{
+		if(attribute){
 			size_t att_size = (attribute->length + 2 /* Type*/ + 2/* Length */);
 			att_size += (att_size%4) ? 4-(att_size%4) : 0; // Skip zero bytes used to pad the attribute.
 
@@ -262,7 +280,9 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t s
 			
 			continue;
 		}
-		else continue;
+		else{
+			continue;
+		}
 
 		
 
@@ -300,13 +320,10 @@ const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_mes
 {
 	tnet_stun_attribute_t* attribute;
 
-	if(self && !TSK_LIST_IS_EMPTY(self->attributes))
-	{
+	if(self && !TSK_LIST_IS_EMPTY(self->attributes)){
 		tsk_list_item_t *item;
-		tsk_list_foreach(item, self->attributes)
-		{
-			if((attribute = item->data) && attribute->type == type)
-			{
+		tsk_list_foreach(item, self->attributes){
+			if((attribute = item->data) && attribute->type == type){
 				return attribute;
 			}
 		}
@@ -381,16 +398,15 @@ int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self)
 //=================================================================================================
 //	STUN2 MESSAGE object definition
 //
-static void* tnet_stun_message_create(void * self, va_list * app)
+static tsk_object_t* tnet_stun_message_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_stun_message_t *message = self;
-	if(message)
-	{
+	if(message){
 		message->username = tsk_strdup(va_arg(*app, const char*));
 		message->password = tsk_strdup(va_arg(*app, const char*));
 
 		message->cookie = TNET_STUN_MAGIC_COOKIE;
-		message->attributes = TSK_LIST_CREATE();
+		message->attributes = tsk_list_create();
 
 		message->fingerprint = 1;
 		message->integrity = 0;
@@ -398,11 +414,10 @@ static void* tnet_stun_message_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_stun_message_destroy(void * self)
+static tsk_object_t* tnet_stun_message_dtor(tsk_object_t * self)
 { 
 	tnet_stun_message_t *message = self;
-	if(message)
-	{
+	if(message){
 		TSK_FREE(message->username);
 		TSK_FREE(message->password);
 		TSK_FREE(message->realm);
@@ -417,9 +432,9 @@ static void* tnet_stun_message_destroy(void * self)
 static const tsk_object_def_t tnet_stun_message_def_s = 
 {
 	sizeof(tnet_stun_message_t),
-	tnet_stun_message_create, 
-	tnet_stun_message_destroy,
-	0, 
+	tnet_stun_message_ctor, 
+	tnet_stun_message_dtor,
+	tsk_null, 
 };
-const void *tnet_stun_message_def_t = &tnet_stun_message_def_s;
+const tsk_object_def_t *tnet_stun_message_def_t = &tnet_stun_message_def_s;
 

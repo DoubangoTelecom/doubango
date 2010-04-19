@@ -22,11 +22,11 @@
 #ifndef TNET_TEST_DHCP6_H
 #define TNET_TEST_DHCP6_H
 
-#include "dhcp6/tnet_dhcp6_option.h"
+
 
 void test_dhcp6_requestinfo(tnet_dhcp6_ctx_t *ctx)
 {
-	tnet_dhcp6_option_orequest_t *orequest = TNET_DHCP6_OPTION_OREQUEST_CREATE_NULL();
+	tnet_dhcp6_option_orequest_t *orequest = tnet_dhcp6_option_orequest_create_null();
 	tnet_dhcp6_reply_t* reply = 0;
 
 	tnet_dhcp6_option_orequest_add_code(orequest, 24);
@@ -42,7 +42,7 @@ void test_dhcp6_requestinfo(tnet_dhcp6_ctx_t *ctx)
 
 void test_dhcp6()
 {
-	tnet_dhcp6_ctx_t *ctx = TNET_DHCP6_CTX_CREATE();
+	tnet_dhcp6_ctx_t *ctx = tnet_dhcp6_ctx_create();
 	test_dhcp6_requestinfo(ctx);
 
 	TSK_OBJECT_SAFE_FREE(ctx);

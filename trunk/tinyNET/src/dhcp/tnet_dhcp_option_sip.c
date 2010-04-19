@@ -37,14 +37,18 @@
 #include "tsk_memory.h"
 #include "tsk_string.h"
 
+tnet_dhcp_option_sip_t* tnet_dhcp_option_sip_create(const void* payload, size_t payload_size)
+{
+	return tsk_object_new(tnet_dhcp_option_sip_def_t, payload, payload_size);
+}
+
 //
 //	[[DHCP SIP4]] object definition
 //
-static void* tnet_dhcp_option_sip_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp_option_sip_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp_option_sip_t *option = self;
-	if(option)
-	{
+	if(option){
 		const void* payload = va_arg(*app, const void*);
 		size_t payload_size = va_arg(*app, size_t);
 
@@ -54,7 +58,7 @@ static void* tnet_dhcp_option_sip_create(void * self, va_list * app)
 		/* init base */
 		tnet_dhcp_option_init(TNET_DHCP_OPTION(option), dhcp_code_SIP_Servers_DHCP_Option);
 
-		option->servers = TSK_LIST_CREATE();
+		option->servers = tsk_list_create();
 
 		/* Set values as per RFC 3361. */
 		if(*payloadPtr == 0){ /* enc=0 */
@@ -69,9 +73,8 @@ static void* tnet_dhcp_option_sip_create(void * self, va_list * app)
 			size_t offset = 1;
 			char* server = 0;
 			payloadPtr++;
-			while((payloadPtr < payloadEnd) && !tnet_dns_rr_qname_deserialize(payload, &server, &offset))
-			{
-				tsk_string_t* string = TSK_STRING_CREATE(server);
+			while((payloadPtr < payloadEnd) && !tnet_dns_rr_qname_deserialize(payload, &server, &offset)){
+				tsk_string_t* string = tsk_string_create(server);
 				tsk_list_push_back_data(option->servers, (void*)&string);
 				TSK_FREE(server);
 				payloadPtr += offset;
@@ -93,7 +96,7 @@ static void* tnet_dhcp_option_sip_create(void * self, va_list * app)
 				
 				tsk_sprintf(&ip4, "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
 				
-				addrstring = TSK_STRING_CREATE(ip4);
+				addrstring = tsk_string_create(ip4);
 				tsk_list_push_back_data(option->servers, (void*)&addrstring);
 
 				TSK_FREE(ip4);
@@ -105,11 +108,10 @@ static void* tnet_dhcp_option_sip_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dhcp_option_sip_destroy(void * self) 
+static tsk_object_t* tnet_dhcp_option_sip_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp_option_sip_t *option = self;
-	if(option)
-	{
+	if(option){
 		/* deinit base */
 		tnet_dhcp_option_deinit(TNET_DHCP_OPTION(option));
 
@@ -121,8 +123,8 @@ static void* tnet_dhcp_option_sip_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp_option_sip_def_s =
 {
 	sizeof(tnet_dhcp_option_sip_t),
-	tnet_dhcp_option_sip_create,
-	tnet_dhcp_option_sip_destroy,
-	0,
+	tnet_dhcp_option_sip_ctor,
+	tnet_dhcp_option_sip_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp_option_sip_def_t = &tnet_dhcp_option_sip_def_s;
+const tsk_object_def_t *tnet_dhcp_option_sip_def_t = &tnet_dhcp_option_sip_def_s;

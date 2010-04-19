@@ -23,6 +23,10 @@
 /**@file tnet_transport.c
  * @brief Network transport layer.
  *
+ * <h2>10.2	Tansport</h2>
+ * A transport layer always has a master socket which determine what kind of network traffic we expect (stream or dgram). 
+ * Stream transport can manage TCP, TLS and SCTP sockets. Datagram socket can only manage UDP sockets. <br>
+ * A transport can hold both IPv4 and IPv6 sockets.
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
@@ -42,11 +46,21 @@ extern int tnet_transport_stop(tnet_transport_t *transport);
 
 void *run(void* self);
 
+
+tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
+{
+	return tsk_object_new(tnet_transport_def_t, host, port, type, description);
+}
+
+tnet_transport_event_t* tnet_transport_event_create(tnet_transport_event_type_t type, const void* callback_data, tnet_fd_t fd)
+{
+	return tsk_object_new(tnet_transport_event_def_t, type, callback_data, fd);
+}
+
 int tnet_transport_start(tnet_transport_handle_t* handle)
 {
 	int ret = -1;
-	if(handle)
-	{
+	if(handle){
 		tnet_transport_t *transport = handle;
 		
 		TSK_RUNNABLE(transport)->run = run;
@@ -283,11 +297,10 @@ void *run(void* self)
 //=================================================================================================
 //	Transport object definition
 //
-static void* tnet_transport_create(void * self, va_list * app)
+static tsk_object_t* tnet_transport_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_transport_t *transport = self;
-	if(transport)
-	{
+	if(transport){
 		const char *host = va_arg(*app, const char*);
 		
 #if defined(__GNUC__)
@@ -305,8 +318,8 @@ static void* tnet_transport_create(void * self, va_list * app)
 		
 		transport->type = type;
 
-		transport->master = TNET_SOCKET_CREATE(host, port, type);
-		transport->context = TNET_TRANSPORT_CONTEXT_CREATE();
+		transport->master = tnet_socket_create(host, port, type);
+		transport->context = tnet_transport_context_create();
 
 		if(TNET_SOCKET_TYPE_IS_IPV46(transport->type)){
 			transport->local_ip = tsk_strdup(host); /* FQDN */
@@ -318,11 +331,10 @@ static void* tnet_transport_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_transport_destroy(void * self)
+static tsk_object_t* tnet_transport_dtor(tsk_object_t * self)
 { 
 	tnet_transport_t *transport = self;
-	if(transport)
-	{
+	if(transport){
 		tnet_transport_shutdown(transport);
 		TSK_OBJECT_SAFE_FREE(transport->master);
 		TSK_OBJECT_SAFE_FREE(transport->context);
@@ -341,18 +353,18 @@ static void* tnet_transport_destroy(void * self)
 static const tsk_object_def_t tnet_transport_def_s = 
 {
 	sizeof(tnet_transport_t),
-	tnet_transport_create, 
-	tnet_transport_destroy,
+	tnet_transport_ctor, 
+	tnet_transport_dtor,
 	tsk_null, 
 };
-const void *tnet_transport_def_t = &tnet_transport_def_s;
+const tsk_object_def_t *tnet_transport_def_t = &tnet_transport_def_s;
 
 
 
 //=================================================================================================
 //	Transport event object definition
 //
-static void* tnet_transport_event_create(void * self, va_list * app)
+static tsk_object_t* tnet_transport_event_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_transport_event_t *e = self;
 	if(e){
@@ -363,7 +375,7 @@ static void* tnet_transport_event_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_transport_event_destroy(void * self)
+static tsk_object_t* tnet_transport_event_dtor(tsk_object_t * self)
 { 
 	tnet_transport_event_t *e = self;
 	if(e){
@@ -376,9 +388,9 @@ static void* tnet_transport_event_destroy(void * self)
 static const tsk_object_def_t tnet_transport_event_def_s = 
 {
 	sizeof(tnet_transport_event_t),
-	tnet_transport_event_create, 
-	tnet_transport_event_destroy,
+	tnet_transport_event_ctor, 
+	tnet_transport_event_dtor,
 	0, 
 };
-const void *tnet_transport_event_def_t = &tnet_transport_event_def_s;
+const tsk_object_def_t *tnet_transport_event_def_t = &tnet_transport_event_def_s;
 

@@ -42,7 +42,6 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DHCP6_CTX_CREATE()						tsk_object_new(tnet_dhcp6_ctx_def_t)
 #define TNET_DHCP6_VENDOR_CLASS_DATA_DEFAULT		"doubango/v0.0.0"
 
 /** RFC 3315 - 5.1. Multicast Addresses
@@ -120,7 +119,9 @@ tnet_dhcp6_ctx_t;
 
 TINYNET_API tnet_dhcp6_reply_t* tnet_dhcp6_requestinfo(const tnet_dhcp6_ctx_t* ctx, const tnet_dhcp6_option_orequest_t *orequest);
 
-TINYNET_GEXTERN const void *tnet_dhcp6_ctx_def_t;
+TINYNET_API tnet_dhcp6_ctx_t* tnet_dhcp6_ctx_create();
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp6_ctx_def_t;
 
 TNET_END_DECLS
 

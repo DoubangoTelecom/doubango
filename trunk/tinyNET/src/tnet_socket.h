@@ -36,37 +36,12 @@
 
 #include "tsk_list.h"
 
-/**@ingroup tnet_socket_group
-* @def TNET_SOCKET_CREATE_EX
-* Creates a new socket.
-* To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
-* @param host FQDN (e.g. www.doubango.org) or IPv4/IPv6 IP string.
-* @param port The local/remote port used to receive/send data. Set the port value to @ref TNET_SOCKET_PORT_ANY to bind to a random port.
-* @param type The type of the socket. See @ref tnet_socket_type_t.
-* @param nonblocking Indicates whether to create non-blocking socket. 1 =yes and 0=no.
-* @param bindsocket Indicates whether to bind the newly created socket or not.
-* @retval @ref tnet_socket_t object.
-* @sa @ref TNET_SOCKET_CREATE.
-*/
-/**@ingroup tnet_socket_group
-* @def TNET_SOCKET_CREATE
-* Creates a non-blocking socket and bind it.
-* To check that the returned socket is valid use @ref TNET_SOCKET_IS_VALID function.
-* @param host FQDN (e.g. www.doubango.org) or IPv4/IPv6 IP string.
-* @param port The local/remote port used to receive/send data. Set the port value to @ref TNET_SOCKET_PORT_ANY to bind to a random port.
-* @param type The type of the socket. See @ref tnet_socket_type_t.
-* @retval @ref tnet_socket_t object.
-* @sa @ref TNET_SOCKET_CREATE_EX.
-*/
-
+/** List of all supported socket types.
+* @def tnet_socket_type_e
+**/
 TNET_BEGIN_DECLS
 
-#define TNET_SOCKET_CREATE_EX(host, port, type, nonblocking, bindsocket)	tsk_object_new(tnet_socket_def_t, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (int)nonblocking, (int)bindsocket)
-#define TNET_SOCKET_CREATE(host, port, type)					TNET_SOCKET_CREATE_EX(host, port, type, 1, 1)
 
-/**@ingroup tnet_socket_group
- * List of all supported socket types.
-**/
 typedef enum tnet_socket_type_e
 {
 	tnet_socket_type_invalid				= 0x0000, /**< Invalid socket.*/
@@ -145,18 +120,18 @@ tnet_socket_type_t;
 #define TNET_SOCKET_TYPE_SET_TLS(type)	(TNET_SOCKET_TYPE_UNSET(type,TCP), TNET_SOCKET_TYPE_UNSET(type,UDP), TNET_SOCKET_TYPE_UNSET(type,SCTP), type |=TNET_SOCKET_TYPE_TLS)
 #define TNET_SOCKET_TYPE_SET_SCTP(type)	(TNET_SOCKET_TYPE_UNSET(type,TCP), TNET_SOCKET_TYPE_UNSET(type,TLS), TNET_SOCKET_TYPE_UNSET(type,UDP), type |=TNET_SOCKET_TYPE_SCTP)
 
-/**@ingroup tnet_socket_group
+/**
 * @def TNET_SOCKET_HOST_ANY
 * Any IPv4/IPv6 host.
 */
-/**@ingroup tnet_socket_group
+/**
 * @def TNET_SOCKET_PORT_ANY
 * Any port.
 */
 #define TNET_SOCKET_HOST_ANY 0
 #define TNET_SOCKET_PORT_ANY 0
 
-/**@ingroup tnet_socket_group
+/**
 * Socket.
 */
 typedef struct tnet_socket_s
@@ -180,7 +155,10 @@ typedef tsk_list_t tnet_sockets_L_t; /**< List of @ref tnet_socket_t elements. *
 
 int tnet_socket_set_tlsfiles(tnet_socket_tls_t* socket, int isClient, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk);
 
-TINYNET_GEXTERN const void *tnet_socket_def_t;
+TINYNET_API tnet_socket_t* tnet_socket_create_2(const char*host, tnet_port_t port, tnet_socket_type_t type, tsk_bool_t nonblocking, tsk_bool_t bindsocket);
+TINYNET_API tnet_socket_t* tnet_socket_create(const char* host, tnet_port_t port, tnet_socket_type_t type);
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_socket_def_t;
 
 
 TNET_END_DECLS

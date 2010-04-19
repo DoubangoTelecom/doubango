@@ -35,15 +35,22 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+/** Creates new DNS AAAA Resource Record.
+*/
+
+tnet_dns_aaaa_t* tnet_dns_aaaa_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset)
+{
+	return tsk_object_new(tnet_dns_aaaa_def_t, name, qclass, ttl, rdlength, data, offset);
+}
+
 
 //=================================================================================================
 //	[[DNS AAAA]] object definition
 //
-static void* tnet_dns_aaaa_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_aaaa_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_aaaa_t *aaaa = self;
-	if(aaaa)
-	{
+	if(aaaa){
 		const char* name = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		uint32_t ttl = va_arg(*app, uint32_t);
@@ -64,8 +71,8 @@ static void* tnet_dns_aaaa_create(void * self, va_list * app)
 		TNET_DNS_RR(aaaa)->rdlength = rdlength;
 		TNET_DNS_RR(aaaa)->ttl = ttl;
 
-		if(rddata && rdlength && (rdlength == 16/* 128bits */))
-		{	// ==> DESERIALIZATION
+		if(rddata && rdlength && (rdlength == 16/* 128bits */)){
+			// ==> DESERIALIZATION
 			/* ADDRESS */
 			tsk_sprintf(&(aaaa->address), "%x:%x:%x:%x:%x:%x:%x:%x",
 				tnet_ntohs(*((uint16_t*)&rddata[0])), tnet_ntohs(*((uint16_t*)&rddata[2])), tnet_ntohs(*((uint16_t*)&rddata[4])), tnet_ntohs(*((uint16_t*)&rddata[6])),
@@ -79,11 +86,10 @@ static void* tnet_dns_aaaa_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_aaaa_destroy(void * self) 
+static tsk_object_t* tnet_dns_aaaa_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_aaaa_t *aaaa = self;
-	if(aaaa)
-	{
+	if(aaaa){
 		/* deinit base */
 		tnet_dns_rr_deinit(TNET_DNS_RR(aaaa));
 
@@ -95,8 +101,8 @@ static void* tnet_dns_aaaa_destroy(void * self)
 static const tsk_object_def_t tnet_dns_aaaa_def_s =
 {
 	sizeof(tnet_dns_aaaa_t),
-	tnet_dns_aaaa_create,
-	tnet_dns_aaaa_destroy,
-	0,
+	tnet_dns_aaaa_ctor,
+	tnet_dns_aaaa_dtor,
+	tsk_null,
 };
-const void *tnet_dns_aaaa_def_t = &tnet_dns_aaaa_def_s;
+const tsk_object_def_t *tnet_dns_aaaa_def_t = &tnet_dns_aaaa_def_s;

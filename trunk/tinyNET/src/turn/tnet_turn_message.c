@@ -36,6 +36,15 @@
 
 #include <string.h>
 
+tnet_turn_channel_data_t* tnet_turn_channel_data_create(uint16_t number, uint16_t length, const void* data)
+{
+	return tsk_object_new(tnet_turn_channel_data_def_t, number, length, data);
+}
+
+tnet_turn_channel_data_t* tnet_turn_channel_data_create_null()
+{
+	return tnet_turn_channel_data_create(0, 0, tsk_null);
+}
 
 /**@ingroup tnet_turn_group
 */
@@ -45,7 +54,7 @@ tsk_buffer_t* tnet_turn_channel_data_serialize(const tnet_turn_channel_data_t *m
 
 	if(!message) goto bail;
 
-	output = TSK_BUFFER_CREATE_NULL();
+	output = tsk_buffer_create_null();
 
 	/*	draft-ietf-behave-turn-16 11.4.  The ChannelData Message
 		0                   1                   2                   3
@@ -117,11 +126,10 @@ bail:
 //=================================================================================================
 //	TURN CHANNEL-DATA message object definition
 //
-static void* tnet_turn_channel_data_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_channel_data_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_channel_data_t *message = self;
-	if(message)
-	{
+	if(message){
 		const void* data;
 
 #if defined(__GNUC__)
@@ -133,10 +141,8 @@ static void* tnet_turn_channel_data_create(void * self, va_list * app)
 #endif
 		data = va_arg(*app, const void*);
 
-		if(data && message->length)
-		{
-			if((message->data = tsk_calloc(message->length, sizeof(uint8_t))))
-			{
+		if(data && message->length){
+			if((message->data = tsk_calloc(message->length, sizeof(uint8_t)))){
 				memcpy(message->data, data, message->length);
 			}
 		}
@@ -144,11 +150,10 @@ static void* tnet_turn_channel_data_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_turn_channel_data_destroy(void * self)
+static tsk_object_t* tnet_turn_channel_data_dtor(tsk_object_t * self)
 { 
 	tnet_turn_channel_data_t *message = self;
-	if(message)
-	{
+	if(message){
 		TSK_FREE(message->data);
 	}
 	
@@ -158,8 +163,8 @@ static void* tnet_turn_channel_data_destroy(void * self)
 static const tsk_object_def_t tnet_turn_channel_data_def_s = 
 {
 	sizeof(tnet_turn_channel_data_t),
-	tnet_turn_channel_data_create, 
-	tnet_turn_channel_data_destroy,
-	0, 
+	tnet_turn_channel_data_ctor, 
+	tnet_turn_channel_data_dtor,
+	tsk_null, 
 };
-const void *tnet_turn_channel_data_def_t = &tnet_turn_channel_data_def_s;
+const tsk_object_def_t *tnet_turn_channel_data_def_t = &tnet_turn_channel_data_def_s;

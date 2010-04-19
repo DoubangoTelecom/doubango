@@ -58,7 +58,7 @@ static int tnet_tls_cb(const tnet_transport_event_t* e)
 
 void test_tls()
 {
-	tnet_transport_handle_t *transport = TNET_TRANSPORT_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_tls_ipv4, "TLS/IPV4 TRANSPORT");
+	tnet_transport_handle_t *transport = tnet_transport_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_tls_ipv4, "TLS/IPV4 TRANSPORT");
 	
 	tnet_ip_t ip;
 	tnet_port_t port;

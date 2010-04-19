@@ -41,10 +41,6 @@ TNET_BEGIN_DECLS
 
 struct tnet_dhcp_ctx_s;
 
-#define TNET_DHCP_MESSAGE_CREATE(opcode)	tsk_object_new(tnet_dhcp_message_def_t, (tnet_dhcp_message_op_t)opcode)
-#define TNET_DHCP_REQUEST_CREATE()			TNET_DHCP_MESSAGE_CREATE(dhcp_op_bootrequest)
-#define TNET_DHCP_REPLY_CREATE()			TNET_DHCP_MESSAGE_CREATE(dhcp_op_bootreply)
-
 #define TNET_DHCP_MESSAGE_IS_REQUEST(self)	((self) && ((self)->op==dhcp_op_bootrequest))
 #define TNET_DHCP_MESSAGE_IS_REPLY(self)	((self) && ((self)->op==dhcp_op_bootreply))
 
@@ -219,7 +215,11 @@ tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s 
 const tnet_dhcp_option_t* tnet_dhcp_message_find_option(const tnet_dhcp_message_t *self, tnet_dhcp_option_code_t code);
 int tnet_dhcp_message_add_codes(tnet_dhcp_message_t *self, tnet_dhcp_option_code_t codes[], unsigned codes_count);
 
-TINYNET_GEXTERN const void *tnet_dhcp_message_def_t;
+TINYNET_API tnet_dhcp_message_t* tnet_dhcp_message_create(tnet_dhcp_message_op_t opcode);
+TINYNET_API tnet_dhcp_request_t* tnet_dhcp_request_create();
+TINYNET_API tnet_dhcp_message_t* tnet_dhcp_reply_create();
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_message_def_t;
 
 TNET_END_DECLS
 

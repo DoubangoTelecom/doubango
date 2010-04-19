@@ -30,6 +30,12 @@
 
 
 
+/** Creates new DNS OPT Resource Record.
+*/
+tnet_dns_opt_t* tnet_dns_opt_create(size_t payload_size)
+{
+	return tsk_object_new(tnet_dns_opt_def_t, payload_size);
+}
 
 
 
@@ -42,12 +48,11 @@
 //=================================================================================================
 //	[[DNS OPT]] object definition
 //
-static void* tnet_dns_opt_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_opt_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_opt_t *rr_opt = self;
-	if(rr_opt)
-	{
-		uint16_t payload_size = (uint16_t)va_arg(*app, unsigned);
+	if(rr_opt){
+		uint16_t payload_size = (uint16_t)va_arg(*app, size_t);
 
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(rr_opt), qtype_opt, qclass_any);
@@ -66,11 +71,10 @@ static void* tnet_dns_opt_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_opt_destroy(void * self) 
+static tsk_object_t* tnet_dns_opt_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_opt_t *rr_opt = self;
-	if(rr_opt)
-	{
+	if(rr_opt){
 		/* deinit base */
 		tnet_dns_rr_deinit(TNET_DNS_RR(rr_opt));
 	}
@@ -80,8 +84,8 @@ static void* tnet_dns_opt_destroy(void * self)
 static const tsk_object_def_t tnet_dns_opt_def_s =
 {
 	sizeof(tnet_dns_opt_t),
-	tnet_dns_opt_create,
-	tnet_dns_opt_destroy,
-	0,
+	tnet_dns_opt_ctor,
+	tnet_dns_opt_dtor,
+	tsk_null,
 };
-const void *tnet_dns_opt_def_t = &tnet_dns_opt_def_s;
+const tsk_object_def_t *tnet_dns_opt_def_t = &tnet_dns_opt_def_s;

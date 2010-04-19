@@ -40,21 +40,7 @@
 #include "tsk_object.h"
 #include "tsk_safeobj.h"
 
-/**@ingroup tnet_dhcp_group
-* @def TNET_DHCP_CTX_CREATE
-* Creates new DHCPv4 context.
-* @retval @ref tnet_dhcp_ctx_t object.
-*/
-/**@ingroup tnet_dhcp_group
-* @def TNET_DHCP_PARAMS_CREATE
-* Creates new DHCPv4 parameters.
-* @retval @ref tnet_dhcp_params_t object.
-*/
-
 TNET_BEGIN_DECLS
-
-#define TNET_DHCP_CTX_CREATE()			tsk_object_new(tnet_dhcp_ctx_def_t)
-#define TNET_DHCP_PARAMS_CREATE()		tsk_object_new(tnet_dhcp_params_def_t)
 
 /**@ingroup tnet_dhcp_group 
 * Default timeout (in milliseconds) value for DHCP requests. 
@@ -123,8 +109,12 @@ TINYNET_API tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_m
 
 TINYNET_API int tnet_dhcp_params_add_code(tnet_dhcp_params_t* params, tnet_dhcp_option_code_t code);
 
-TINYNET_GEXTERN const void *tnet_dhcp_ctx_def_t;
-TINYNET_GEXTERN const void *tnet_dhcp_params_def_t;
+
+TINYNET_API tnet_dhcp_ctx_t* tnet_dhcp_ctx_create();
+TINYNET_API tnet_dhcp_params_t* tnet_dhcp_params_create();
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_ctx_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_params_def_t;
 
 TNET_END_DECLS
 

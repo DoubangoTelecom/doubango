@@ -22,15 +22,11 @@
 #ifndef TNET_TEST_DNS_H
 #define TNET_TEST_DNS_H
 
-#include "dns/tnet_dns_naptr.h"
-#include "dns/tnet_dns_regexp.h"
-#include "dns/tnet_dns_resolvconf.h"
-
 //#include "tnet_utils.h" /* tnet_address_t */
 
 void test_dns_query()
 {
-	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+	tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
 	tnet_dns_response_t *response = tsk_null;
 	const tsk_list_item_t* item;
 	const tnet_dns_rr_t* rr;
@@ -72,7 +68,7 @@ void test_dns_query()
 
 void test_dns_srv()
 {
-	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+	tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
 	char* hostname = 0;
 	tnet_port_t port = 0;
 
@@ -88,7 +84,7 @@ void test_dns_srv()
 
 void test_dns_naptr_srv()
 {
-	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+	tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
 	char* hostname = tsk_null;
 	tnet_port_t port = 0;
 
@@ -104,7 +100,7 @@ void test_dns_naptr_srv()
 
 void test_enum()
 {
-	tnet_dns_ctx_t *ctx = TNET_DNS_CTX_CREATE();
+	tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
 	tnet_dns_response_t* response = tsk_null;
 //	const tsk_list_item_t* item;
 //	const tnet_dns_naptr_t* record;

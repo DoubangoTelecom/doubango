@@ -49,8 +49,16 @@
 
 #include <string.h> /* strtok, strlen ... */
 
-/**@ingroup tnet_dns_group
-* Initializes any DNS RR (either NAPTR or SRV ...).
+
+/** Creates a new DNS RR.
+*/
+
+tnet_dns_rr_t* tnet_dns_rr_create()
+{
+	return tsk_object_new(tnet_dns_rr_def_t);
+}
+
+/** Initializes any DNS RR (either NAPTR or SRV ...).
 * @param rr The DNS RR to initialize.
 * @param qtype The type of the RR.
 * @param qclass The class of the RR.
@@ -58,10 +66,8 @@
 */
 int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_t qclass)
 {
-	if(rr)
-	{
-		if(!rr->initialized)
-		{
+	if(rr){
+		if(!rr->initialized){
 			rr->qtype = qtype;
 			rr->qclass = qclass;
 			
@@ -73,17 +79,14 @@ int tnet_dns_rr_init(tnet_dns_rr_t *rr, tnet_dns_qtype_t qtype, tnet_dns_qclass_
 	return -1;
 }
 
-/**@ingroup tnet_dns_group
-* Deinitializes any DNS RR (either NAPTR or SRV ...).
+/** Deinitializes any DNS RR (either NAPTR or SRV ...).
 * @param rr The DNS RR to deinitialize.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
 int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 {
-	if(rr)
-	{
-		if(rr->initialized)
-		{
+	if(rr){
+		if(rr->initialized){
 			TSK_FREE(rr->name);
 			TSK_FREE(rr->rpdata);
 			
@@ -95,8 +98,7 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 	return -1;
 }
 
-/**@ingroup tnet_dns_group
-* Deserialize <character-string>.
+/** Deserialize <character-string>.
 */
 int tnet_dns_rr_charstring_deserialize(const void* data, char** charstring, size_t *offset)
 {
@@ -114,8 +116,7 @@ int tnet_dns_rr_charstring_deserialize(const void* data, char** charstring, size
 	return 0;	
 }
 
-/**@ingroup tnet_dns_group
-* Deserializes a QName.
+/** Deserializes a QName.
 */
 int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset)
 {
@@ -129,8 +130,7 @@ int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset)
 	uint8_t* dataPtr = (((uint8_t*)data) + *offset);
 	unsigned usingPtr = 0; /* Do not change. */
 
-	while(*dataPtr)
-	{
+	while(*dataPtr){
 		usingPtr = ((*dataPtr & 0xC0) == 0xC0);
 
 		if(usingPtr){
@@ -200,8 +200,7 @@ int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset)
 //	return 0;
 //}
 
-/**@ingroup tnet_dns_group
-* Serializes a QName.
+/** Serializes a QName.
 */
 int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 {
@@ -217,13 +216,11 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 	*/
 	static uint8_t null = 0;
 
-	if(qname)
-	{
+	if(qname){
 		char* _qname = tsk_strdup(qname);
 		char* label = strtok(_qname, ".");
 
-		while(label)
-		{
+		while(label){
 			uint8_t length = strlen(label);
 			tsk_buffer_append(output, &length, 1);
 			tsk_buffer_append(output, label, strlen(label));
@@ -240,8 +237,7 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 	return 0;
 }
 
-/**@ingroup tnet_dns_group
-* Deserializes a DNS RR.
+/** Deserializes a DNS RR.
 */
 tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* offset)
 {
@@ -276,72 +272,71 @@ tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* of
 	rdlength = tnet_ntohs(*((uint16_t*)dataPtr));
 	dataPtr += 2, *offset += 2;
 
-	switch(qtype)
-	{
+	switch(qtype){
 		case qtype_a:
 			{
-				rr = TNET_DNS_A_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_a_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_aaaa:
 			{
-				rr = TNET_DNS_AAAA_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_aaaa_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_cname:
 			{
-				rr = TNET_DNS_CNAME_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_cname_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_mx:
 			{
-				rr = TNET_DNS_MX_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_mx_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_naptr:
 			{
-				rr = TNET_DNS_NAPTR_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_naptr_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_ns:
 			{
-				rr = TNET_DNS_NS_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_ns_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_opt:
 			{
 				unsigned payload_size = qclass;
-				rr = TNET_DNS_OPT_CREATE(payload_size);
+				rr = (tnet_dns_rr_t *)tnet_dns_opt_create(payload_size);
 				break;
 			}
 
 		case qtype_ptr:
 			{
-				rr = TNET_DNS_PTR_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_ptr_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_soa:
 			{
-				rr = TNET_DNS_SOA_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_soa_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_srv:
 			{
-				rr = TNET_DNS_SRV_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_srv_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
 		case qtype_txt:
 			{
-				rr = TNET_DNS_TXT_CREATE(qname, qclass, ttl, rdlength, dataStart, *offset);
+				rr = (tnet_dns_rr_t *)tnet_dns_txt_create(qname, qclass, ttl, rdlength, dataStart, *offset);
 				break;
 			}
 
@@ -359,8 +354,7 @@ bail:
 	return rr;
 }
 
-/**@ingroup tnet_dns_group
-* Serializes a DNS RR.
+/** Serializes a DNS RR.
 */
 int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 {
@@ -403,8 +397,7 @@ int tnet_dns_rr_serialize(const tnet_dns_rr_t* rr, tsk_buffer_t *output)
 		goto done;
 	}
 
-	switch(rr->qtype)
-	{
+	switch(rr->qtype){
 		case qtype_a:
 		case qtype_aaaa:
 		case qtype_cname:
@@ -431,7 +424,7 @@ done:
 //=================================================================================================
 //	[[DNS RR]] object definition
 //
-static void* tnet_dns_rr_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tnet_dns_rr_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_rr_t *rr = self;
 	if(rr){
@@ -440,7 +433,7 @@ static void* tnet_dns_rr_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_rr_destroy(tsk_object_t * self) 
+static tsk_object_t* tnet_dns_rr_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_rr_t *rr = self;
 	if(rr){
@@ -452,8 +445,8 @@ static void* tnet_dns_rr_destroy(tsk_object_t * self)
 static const tsk_object_def_t tnet_dns_rr_def_s =
 {
 	sizeof(tnet_dns_rr_t),
-	tnet_dns_rr_create,
-	tnet_dns_rr_destroy,
+	tnet_dns_rr_ctor,
+	tnet_dns_rr_dtor,
 	tsk_null,
 };
-const void *tnet_dns_rr_def_t = &tnet_dns_rr_def_s;
+const tsk_object_def_t *tnet_dns_rr_def_t = &tnet_dns_rr_def_s;

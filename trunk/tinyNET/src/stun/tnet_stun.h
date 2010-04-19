@@ -37,15 +37,7 @@
 
 #include "tsk_object.h"
 
-/**@ingroup tnet_stun_group
-* Create new @ref tnet_stun_binding_t object.
-*/
-
 TNET_BEGIN_DECLS
-
-
-#define TNET_STUN_BINDING_CREATE(fd, socket_type, server_address, server_port, username, password)	\
-	tsk_object_new(tnet_stun_binding_def_t, (tnet_fd_t)fd, (tnet_socket_type_t)socket_type, (const char*)server_address, (tnet_port_t)server_port, (const char*)username, (const char*)password)
 
 /**@ingroup tnet_stun_group
 */
@@ -114,7 +106,7 @@ typedef struct tnet_stun_binding_s
 	tnet_stun_attribute_xmapped_addr_t *xmaddr;
 }tnet_stun_binding_t;
 
-TINYNET_GEXTERN const void *tnet_stun_binding_def_t;
+TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_binding_def_t;
 /**@ingroup tnet_stun_group
  * List of @ref tnet_stun_binding_t elements.
 **/

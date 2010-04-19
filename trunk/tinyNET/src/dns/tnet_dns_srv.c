@@ -34,14 +34,20 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
+/** Creates new DNS SRV Resource Record.
+*/
+tnet_dns_srv_t* tnet_dns_srv_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset)
+{
+	return tsk_object_new(tnet_dns_srv_def_t, name, qclass, ttl, rdlength, data, offset);
+}
+
 //=================================================================================================
 //	[[DNS SRV]] object definition
 //
-static void* tnet_dns_srv_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_srv_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_srv_t *srv = self;
-	if(srv)
-	{
+	if(srv){
 		const char* name = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		uint32_t ttl = va_arg(*app, uint32_t);
@@ -59,8 +65,8 @@ static void* tnet_dns_srv_create(void * self, va_list * app)
 		TNET_DNS_RR(srv)->rdlength = rdlength;
 		TNET_DNS_RR(srv)->ttl = ttl;
 
-		if(rdlength)
-		{	// ==> DESERIALIZATION
+		if(rdlength){
+			// ==> DESERIALIZATION
 			/* Priority */
 			srv->priority = tnet_ntohs(*((uint16_t*)(((uint8_t*)data) + offset))),
 			offset += 2;
@@ -77,11 +83,10 @@ static void* tnet_dns_srv_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_srv_destroy(void * self) 
+static tsk_object_t* tnet_dns_srv_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_srv_t *srv = self;
-	if(srv)
-	{
+	if(srv){
 		/* deinit base */
 		tnet_dns_rr_deinit(TNET_DNS_RR(srv));
 
@@ -90,13 +95,12 @@ static void* tnet_dns_srv_destroy(void * self)
 	return self;
 }
 
-static int tnet_dns_srv_cmp(const void *obj1, const void *obj2)
+static int tnet_dns_srv_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 { 
 	const tnet_dns_rr_t* rr1 = obj1;
 	const tnet_dns_rr_t* rr2 = obj2;
 
-	if(rr1 && rr2 && (rr1->qtype==qtype_srv) && (rr2->qtype==qtype_srv))
-	{
+	if(rr1 && rr2 && (rr1->qtype==qtype_srv) && (rr2->qtype==qtype_srv)){
 		const tnet_dns_srv_t* srv1 = (tnet_dns_srv_t*)rr1;
 		const tnet_dns_srv_t* srv2 = (tnet_dns_srv_t*)rr2;
 
@@ -118,14 +122,16 @@ static int tnet_dns_srv_cmp(const void *obj1, const void *obj2)
 		
 		return 0;
 	}
-	else return -1;
+	else{
+		return -1;
+	}
 }
 
 static const tsk_object_def_t tnet_dns_srv_def_s =
 {
 	sizeof(tnet_dns_srv_t),
-	tnet_dns_srv_create,
-	tnet_dns_srv_destroy,
+	tnet_dns_srv_ctor,
+	tnet_dns_srv_dtor,
 	tnet_dns_srv_cmp,
 };
-const void *tnet_dns_srv_def_t = &tnet_dns_srv_def_s;
+const tsk_object_def_t *tnet_dns_srv_def_t = &tnet_dns_srv_def_s;

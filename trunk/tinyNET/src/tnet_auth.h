@@ -33,6 +33,7 @@
 #include "tinyNET_config.h"
 
 TNET_BEGIN_DECLS
+
 TNET_END_DECLS
 
 #endif /* TNET_AUTH_H */

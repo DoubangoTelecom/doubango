@@ -50,6 +50,27 @@
 /**@defgroup tnet_turn_group TURN(draft-ietf-behave-turn-16) implementation.
 */
 
+/**@ingroup tnet_turn_group
+*/
+tnet_turn_channel_binding_t* tnet_turn_channel_binding_create(const tnet_turn_allocation_t *allocation)
+{
+	return tsk_object_new(tnet_turn_channel_binding_def_t, allocation);
+}
+
+/**@ingroup tnet_turn_group
+*/
+tnet_turn_permission_t* tnet_turn_permission_create(uint32_t timeout)
+{
+	return tsk_object_new(tnet_turn_permission_def_t, timeout);
+}
+
+/**@ingroup tnet_turn_group
+*/
+tnet_turn_allocation_t* tnet_turn_allocation_create(tnet_fd_t fd, tnet_socket_type_t socket_type, const char* server_address, tnet_port_t server_port, const char* username, const char* password)
+{
+	return tsk_object_new(tnet_turn_allocation_def_t, fd, socket_type, server_address, server_port, username, password);
+}
+
 /*
 - IMPORTANT: 16.  Detailed Example
 - It is suggested that the client refresh the allocation roughly 1 minute before it expires.
@@ -63,10 +84,9 @@ typedef tnet_stun_request_t* (*tnet_turn_create_request_func)(const tnet_nat_con
 tnet_stun_request_t* tnet_turn_create_request(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, tnet_stun_message_type_t type)
 {
 	tnet_stun_attribute_t* attribute;
-	tnet_stun_request_t *request = TNET_STUN_MESSAGE_CREATE(context->username, context->password);
+	tnet_stun_request_t *request = tnet_stun_message_create(context->username, context->password);
 
-	if(request)
-	{
+	if(request){
 		request->type = type;
 
 		request->fingerprint = context->enable_fingerprint;
@@ -87,9 +107,8 @@ tnet_stun_request_t* tnet_turn_create_request(const tnet_nat_context_t* context,
 		}
 
 		/* Add software attribute */
-		if(allocation->software)
-		{
-			attribute = TNET_STUN_ATTRIBUTE_SOFTWARE_CREATE(allocation->software, strlen(allocation->software));
+		if(allocation->software){
+			attribute = (tnet_stun_attribute_t*)tnet_stun_attribute_software_create(allocation->software, strlen(allocation->software));
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 	}
@@ -102,25 +121,21 @@ tnet_stun_request_t* tnet_turn_create_request(const tnet_nat_context_t* context,
 tnet_stun_request_t* tnet_turn_create_request_allocate(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_allocate_request);
-	if(request)
-	{
+	if(request){
 		tnet_stun_attribute_t* attribute;
 
 		/* Add Requested transport. */
-		if((attribute = TNET_TURN_ATTRIBUTE_REQTRANS_CREATE(TNET_SOCKET_TYPE_IS_DGRAM(allocation->socket_type) ? TNET_PROTO_UDP: TNET_PROTO_TCP)))
-		{
+		if((attribute = (tnet_stun_attribute_t*)tnet_turn_attribute_reqtrans_create(TNET_SOCKET_TYPE_IS_DGRAM(allocation->socket_type) ? TNET_PROTO_UDP: TNET_PROTO_TCP))){
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 
 		/* Add lifetime */
-		if((attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(tnet_ntohl(allocation->timeout))))
-		{
+		if((attribute = (tnet_stun_attribute_t*)tnet_turn_attribute_lifetime_create(tnet_ntohl(allocation->timeout)))){
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 
 		/* Add Event Port */
-		if((attribute = TNET_TURN_ATTRIBUTE_EVEN_PORT_CREATE(context->enable_evenport)))
-		{
+		if((attribute = (tnet_stun_attribute_t*)tnet_turn_attribute_even_port_create(context->enable_evenport))){
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 	}
@@ -133,8 +148,7 @@ tnet_stun_request_t* tnet_turn_create_request_allocate(const tnet_nat_context_t*
 tnet_stun_request_t* tnet_turn_create_request_refresh(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t *request = tnet_turn_create_request_allocate(context, allocation, app);
-	if(request)
-	{
+	if(request){
 		request->type = stun_refresh_request;
 	}
 	return request;
@@ -145,8 +159,7 @@ tnet_stun_request_t* tnet_turn_create_request_refresh(const tnet_nat_context_t* 
 tnet_stun_request_t* tnet_turn_create_request_unallocate(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t *request = tnet_turn_create_request_refresh(context, allocation, app);
-	if(request)
-	{
+	if(request){
 		((tnet_turn_attribute_lifetime_t*)tnet_stun_message_get_attribute(request, stun_lifetime))->value = 0;
 	}
 	return request;
@@ -157,8 +170,7 @@ tnet_stun_request_t* tnet_turn_create_request_unallocate(const tnet_nat_context_
 tnet_stun_request_t* tnet_turn_create_request_channel_bind(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_channelbind_request);
-	if(request)
-	{
+	if(request){
 		const tnet_turn_channel_binding_t* channel_binding;
 		tnet_turn_attribute_t *attribute;
 		tnet_turn_channel_binding_id_t number;
@@ -174,14 +186,12 @@ tnet_stun_request_t* tnet_turn_create_request_channel_bind(const tnet_nat_contex
 		tnet_stun_message_add_attribute(request, &attribute);
 
 		/* CHANNEL-NUMBER */
-		if((attribute = TNET_TURN_ATTRIBUTE_CHANNELNUM_CREATE(number)))
-		{
+		if((attribute = (tnet_stun_attribute_t*)tnet_turn_attribute_channelnum_create(number))){
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 
 		/* LIFETIME */
-		if((attribute = TNET_TURN_ATTRIBUTE_LIFETIME_CREATE(lifetime)))
-		{
+		if((attribute = (tnet_stun_attribute_t*)tnet_turn_attribute_lifetime_create(lifetime))){
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 	}
@@ -200,8 +210,7 @@ tnet_stun_request_t* tnet_turn_create_request_channel_refresh(const tnet_nat_con
 tnet_stun_request_t* tnet_turn_create_request_sendindication(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_send_indication);
-	if(request)
-	{
+	if(request){
 		tnet_turn_attribute_t *attribute;
 		tnet_turn_attribute_xpeer_addr_t* xpeer  = tsk_object_ref(va_arg(*app, tnet_turn_attribute_xpeer_addr_t *));
 		const void* data = va_arg(*app, const void *);
@@ -221,8 +230,7 @@ tnet_stun_request_t* tnet_turn_create_request_sendindication(const tnet_nat_cont
 		tnet_stun_message_add_attribute(request, (tnet_turn_attribute_t**)&xpeer);
 
 		/* DATA */
-		if((attribute = TNET_TURN_ATTRIBUTE_DATA_CREATE(data, size)))
-		{
+		if((attribute = (tnet_stun_attribute_t*)tnet_turn_attribute_data_create(data, size))){
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 	}
@@ -234,12 +242,11 @@ tnet_stun_request_t* tnet_turn_create_request_sendindication(const tnet_nat_cont
 tnet_stun_request_t* tnet_turn_create_request_permission(const tnet_nat_context_t* context, tnet_turn_allocation_t* allocation, va_list *app)
 {
 	tnet_stun_request_t* request =  tnet_turn_create_request(context, allocation, stun_createpermission_request);
-	if(request)
-	{
+	if(request){
 		//--const char* ipaddress = va_arg(*app, const char *);
 
 		/* XOR-PEER-ADDRESS */
-		tnet_turn_attribute_xpeer_addr_t* attribute = TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE_NULL();
+		tnet_turn_attribute_xpeer_addr_t* attribute = tnet_turn_attribute_xpeer_addr_create_null();
 		attribute->family = stun_ipv4;
 		TNET_STUN_ATTRIBUTE(attribute)->length = 8;
 
@@ -250,7 +257,7 @@ tnet_stun_request_t* tnet_turn_create_request_permission(const tnet_nat_context_
 		
 		tnet_stun_message_add_attribute(request, (tnet_stun_attribute_t**)&attribute);
 
-		/*if((attribute = TNET_TURN_ATTRIBUTE_EVEN_PORT_CREATE(context->enable_evenport)))
+		/*if((attribute = tnet_turn_attribute_even_port_create(context->enable_evenport)))
 		{
 			tnet_stun_message_add_attribute(request, &attribute);
 		}*/
@@ -270,21 +277,17 @@ int tnet_turn_send_request(const tnet_nat_context_t* context, tnet_turn_allocati
 	request =  funcptr(context, allocation, &ap);
 	va_end(ap);
 
-	if(request)
-	{
-		if(TNET_SOCKET_TYPE_IS_DGRAM(allocation->socket_type))
-		{
+	if(request){
+		if(TNET_SOCKET_TYPE_IS_DGRAM(allocation->socket_type)){
 			tnet_stun_response_t *response = tnet_stun_send_unreliably(allocation->localFD, 500, 7, request, (struct sockaddr*)&allocation->server);
 			if(response)
 			{
-				if(TNET_STUN_RESPONSE_IS_ERROR(response))
-				{
+				if(TNET_STUN_RESPONSE_IS_ERROR(response)){
 					short code = tnet_stun_message_get_errorcode(response);
 					const char* realm = tnet_stun_message_get_realm(response);
 					const char* nonce = tnet_stun_message_get_nonce(response);
 
-					if(code == 401 && realm && nonce)
-					{
+					if(code == 401 && realm && nonce){
 						if(!allocation->nonce)
 						{	/* First time we get a nonce */
 							tsk_strupdate(&allocation->nonce, nonce);
@@ -297,8 +300,7 @@ int tnet_turn_send_request(const tnet_nat_context_t* context, tnet_turn_allocati
 							// Send again using new transaction identifier
 							return tnet_turn_send_request(context, allocation, funcptr);
 						}
-						else
-						{
+						else{
 							ret = -3;
 						}
 					}
@@ -338,8 +340,7 @@ int tnet_turn_send_request(const tnet_nat_context_t* context, tnet_turn_allocati
 					ret = 0;
 				}
 			}
-			else
-			{
+			else{
 				ret = -4;
 			}
 			TSK_OBJECT_SAFE_FREE(response);
@@ -356,19 +357,16 @@ tnet_turn_allocation_id_t tnet_turn_allocate(const tnet_nat_context_t* nat_conte
 {
 	tnet_turn_allocation_id_t id = TNET_TURN_INVALID_ALLOCATION_ID;
 	
-	if(nat_context)
-	{
+	if(nat_context){
 		int ret;
-		tnet_turn_allocation_t* allocation = TNET_TURN_ALLOCATION_CREATE(localFD, nat_context->socket_type, nat_context->server_address, nat_context->server_port, nat_context->username, nat_context->password);
+		tnet_turn_allocation_t* allocation = tnet_turn_allocation_create(localFD, nat_context->socket_type, nat_context->server_address, nat_context->server_port, nat_context->username, nat_context->password);
 		allocation->software = tsk_strdup(nat_context->software);
 		
-		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_allocate)))
-		{
+		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_allocate))){
 			TSK_DEBUG_ERROR("TURN allocation failed with error code:%d.", ret);
 			TSK_OBJECT_SAFE_FREE(allocation);
 		}
-		else
-		{
+		else{
 			id = allocation->id;
 			tsk_list_push_back_data(nat_context->allocations, (void**)&allocation);
 		}
@@ -381,16 +379,16 @@ tnet_turn_allocation_id_t tnet_turn_allocate(const tnet_nat_context_t* nat_conte
 */
 int tnet_turn_allocation_refresh(const struct tnet_nat_context_s* nat_context, tnet_turn_allocation_t *allocation)
 {
-	if(nat_context && allocation)
-	{
+	if(nat_context && allocation){
 		int ret;
 
-		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_refresh)))
-		{
+		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_refresh))){
 			TSK_DEBUG_ERROR("TURN allocation refresh failed with error code:%d.", ret);
 			return -1;
 		}
-		else return 0;
+		else{
+			return 0;
+		}
 	}
 	return -1;
 }
@@ -399,17 +397,14 @@ int tnet_turn_allocation_refresh(const struct tnet_nat_context_s* nat_context, t
 */
 int tnet_turn_unallocate(const tnet_nat_context_t* nat_context, tnet_turn_allocation_t *allocation)
 {
-	if(nat_context && allocation)
-	{
+	if(nat_context && allocation){
 		int ret;
 
-		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_unallocate)))
-		{
+		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_unallocate))){
 			TSK_DEBUG_ERROR("TURN unallocation failed with error code:%d.", ret);
 			return -1;
 		}
-		else
-		{
+		else{
 			tsk_list_remove_item_by_data(nat_context->allocations, allocation);
 			return 0;
 		}
@@ -424,49 +419,41 @@ tnet_turn_channel_binding_id_t tnet_turn_channel_bind(const tnet_nat_context_t* 
 	tnet_turn_channel_binding_id_t id = TNET_TURN_INVALID_CHANNEL_BINDING_ID;
 	tnet_turn_channel_binding_t *channel_binding = 0;
 
-	if(nat_context && allocation)
-	{
+	if(nat_context && allocation){
 		int ret;
 		
-		channel_binding = TNET_TURN_CHANNEL_BINDING_CREATE(allocation);
+		channel_binding = tnet_turn_channel_binding_create(allocation);
 		
-		if(channel_binding)
-		{
-			if(((struct sockaddr*)peer)->sa_family == AF_INET)
-			{
+		if(channel_binding){
+			if(((struct sockaddr*)peer)->sa_family == AF_INET){
 				struct sockaddr_in *sin = ((struct sockaddr_in*)peer);
 
-				channel_binding->xpeer = TNET_TURN_ATTRIBUTE_XPEER_ADDR_CREATE_NULL();
+				channel_binding->xpeer = tnet_turn_attribute_xpeer_addr_create_null();
 				channel_binding->xpeer->family = stun_ipv4;
 				channel_binding->xpeer->xport = ((sin->sin_port) ^ tnet_htons(0x2112));
 				
 				*((uint32_t*)channel_binding->xpeer->xaddress) = ((*((uint32_t*)&sin->sin_addr)) ^tnet_htonl(TNET_STUN_MAGIC_COOKIE));
 			}
-			else if(((struct sockaddr*)peer)->sa_family == AF_INET6)
-			{
+			else if(((struct sockaddr*)peer)->sa_family == AF_INET6){
 				TSK_DEBUG_ERROR("IPv6 not supported.");
 				goto  bail;
 			}
-			else
-			{
+			else{
 				TSK_DEBUG_ERROR("Invalid address family.");
 				goto  bail;
 			}
 		}
-		else
-		{
+		else{
 			goto bail;
 		}
 
-		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_channel_bind, channel_binding)))
-		{
+		if((ret = tnet_turn_send_request(nat_context, allocation, tnet_turn_create_request_channel_bind, channel_binding))){
 			TSK_DEBUG_ERROR("TURN (CHANNEL-BIND) failed with error code:%d.", ret);
 			TSK_OBJECT_SAFE_FREE(channel_binding);
 			
 			goto bail;
 		}
-		else
-		{
+		else{
 			id = channel_binding->id;
 			tsk_list_push_back_data(allocation->channel_bindings, (void**)&channel_binding);
 		}
@@ -481,12 +468,10 @@ bail:
 */
 int tnet_turn_channel_refresh(const struct tnet_nat_context_s* nat_context, const tnet_turn_channel_binding_t * channel_bind)
 {
-	if(nat_context && channel_bind)
-	{
+	if(nat_context && channel_bind){
 		int ret;
 
-		if((ret = tnet_turn_send_request(nat_context, (tnet_turn_allocation_t*)channel_bind->allocation, tnet_turn_create_request_channel_refresh, channel_bind)))
-		{
+		if((ret = tnet_turn_send_request(nat_context, (tnet_turn_allocation_t*)channel_bind->allocation, tnet_turn_create_request_channel_refresh, channel_bind))){
 			TSK_DEBUG_ERROR("TURN channel-binding refresh failed with error code:%d.", ret);
 			return -1;
 		}
@@ -517,7 +502,7 @@ int tnet_turn_channel_senddata(const struct tnet_nat_context_s* nat_context, con
 		}
 		else
 		{	/* CHANNEL DATA */
-			if(!(channel_data = TNET_TURN_CHANNEL_DATA_CREATE(channel_bind->id, size, data)))
+			if(!(channel_data = tnet_turn_channel_data_create(channel_bind->id, size, data)))
 			{
 				TSK_DEBUG_ERROR("Failed to create TURN CHANNEL-DATA message.");
 				goto bail;
@@ -563,7 +548,7 @@ int tnet_turn_add_permission(const tnet_nat_context_t* nat_context, tnet_turn_al
 		}
 		else
 		{
-			//tnet_turn_permission_t *permission = TNET_TURN_PERMISSION_CREATE(timeout);
+			//tnet_turn_permission_t *permission = tnet_turn_permission_create(timeout);
 			//tsk_list_remove_item_by_data(context->allocations, allocation);
 			return 0;
 		}
@@ -574,30 +559,27 @@ int tnet_turn_add_permission(const tnet_nat_context_t* nat_context, tnet_turn_al
 //=================================================================================================
 //	TURN CHANNEL-BINDING object definition
 //
-static void* tnet_turn_channel_binding_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_channel_binding_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_channel_binding_t *channel_binding = self;
-	if(channel_binding)
-	{
+	if(channel_binding){
 		static tnet_turn_channel_binding_id_t __allocation_unique_id = 0x4000; /* 0x4000 through 0x7FFF */		
 		
 		channel_binding->id = __allocation_unique_id++;
 		channel_binding->allocation = va_arg(*app, const tnet_turn_allocation_t *);
 		channel_binding->timeout = TNET_TURN_CHANBIND_TIMEOUT_DEFAULT; /* 10 minutes as per draft-ietf-behave-turn-16 subclause 11 */
 
-		if(__allocation_unique_id >= 0x7FFF)
-		{
+		if(__allocation_unique_id >= 0x7FFF){
 			__allocation_unique_id = 0x4000;
 		}
 	}
 	return self;
 }
 
-static void* tnet_turn_channel_binding_destroy(void * self)
+static tsk_object_t* tnet_turn_channel_binding_dtor(tsk_object_t * self)
 { 
 	tnet_turn_channel_binding_t *channel_binding = self;
-	if(channel_binding)
-	{
+	if(channel_binding){
 		TSK_OBJECT_SAFE_FREE(channel_binding->xpeer);
 	}
 	
@@ -607,30 +589,28 @@ static void* tnet_turn_channel_binding_destroy(void * self)
 static const tsk_object_def_t tnet_turn_channel_binding_def_s = 
 {
 	sizeof(tnet_turn_channel_binding_t),
-	tnet_turn_channel_binding_create, 
-	tnet_turn_channel_binding_destroy,
-	0, 
+	tnet_turn_channel_binding_ctor, 
+	tnet_turn_channel_binding_dtor,
+	tsk_null, 
 };
-const void *tnet_turn_channel_binding_def_t = &tnet_turn_channel_binding_def_s;
+const tsk_object_def_t *tnet_turn_channel_binding_def_t = &tnet_turn_channel_binding_def_s;
 
 //=================================================================================================
 //	TURN PERMISSION object definition
 //
-static void* tnet_turn_permission_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_permission_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_permission_t *permission = self;
-	if(permission)
-	{
+	if(permission){
 		permission->timeout = va_arg(*app, uint32_t);
 	}
 	return self;
 }
 
-static void* tnet_turn_permission_destroy(void * self)
+static tsk_object_t* tnet_turn_permission_dtor(tsk_object_t * self)
 { 
 	tnet_turn_permission_t *permission = self;
-	if(permission)
-	{
+	if(permission){
 		TSK_OBJECT_SAFE_FREE(permission->xpeer);
 	}
 	
@@ -640,22 +620,21 @@ static void* tnet_turn_permission_destroy(void * self)
 static const tsk_object_def_t tnet_turn_permission_def_s = 
 {
 	sizeof(tnet_turn_permission_t),
-	tnet_turn_permission_create, 
-	tnet_turn_permission_destroy,
-	0, 
+	tnet_turn_permission_ctor, 
+	tnet_turn_permission_dtor,
+	tsk_null, 
 };
-const void *tnet_turn_permission_def_t = &tnet_turn_permission_def_s;
+const tsk_object_def_t *tnet_turn_permission_def_t = &tnet_turn_permission_def_s;
 
 
 
 //=================================================================================================
 //	TURN ALLOCATION object definition
 //
-static void* tnet_turn_allocation_create(void * self, va_list * app)
+static tsk_object_t* tnet_turn_allocation_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_turn_allocation_t *allocation = self;
-	if(allocation)
-	{
+	if(allocation){
 		static tnet_turn_allocation_id_t __allocation_unique_id = 0;
 		
 		const char* server_address;
@@ -679,17 +658,16 @@ static void* tnet_turn_allocation_create(void * self, va_list * app)
 		tnet_sockaddr_init(server_address, server_port, allocation->socket_type, &allocation->server);
 		allocation->timeout = 600;
 
-		allocation->channel_bindings = TSK_LIST_CREATE();
-		allocation->permissions = TSK_LIST_CREATE();
+		allocation->channel_bindings = tsk_list_create();
+		allocation->permissions = tsk_list_create();
 	}
 	return self;
 }
 
-static void* tnet_turn_allocation_destroy(void * self)
+static tsk_object_t* tnet_turn_allocation_dtor(tsk_object_t * self)
 { 
 	tnet_turn_allocation_t *allocation = self;
-	if(allocation)
-	{
+	if(allocation){
 		TSK_FREE(allocation->relay_address);
 
 		TSK_FREE(allocation->username);
@@ -712,9 +690,9 @@ static void* tnet_turn_allocation_destroy(void * self)
 static const tsk_object_def_t tnet_turn_allocation_def_s = 
 {
 	sizeof(tnet_turn_allocation_t),
-	tnet_turn_allocation_create, 
-	tnet_turn_allocation_destroy,
-	0, 
+	tnet_turn_allocation_ctor, 
+	tnet_turn_allocation_dtor,
+	tsk_null, 
 };
-const void *tnet_turn_allocation_def_t = &tnet_turn_allocation_def_s;
+const tsk_object_def_t *tnet_turn_allocation_def_t = &tnet_turn_allocation_def_s;
 

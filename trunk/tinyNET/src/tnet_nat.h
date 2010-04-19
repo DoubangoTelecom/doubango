@@ -40,14 +40,8 @@
 
 #include "tsk_object.h"
 
-/**@ingroup tnet_nat_group
-* @def TNET_NAT_CONTEXT_CREATE
-* Creates new NAT context.
-* @retval tnet_nat_context_t context.
-*/
-TNET_BEGIN_DECLS
 
-#define TNET_NAT_CONTEXT_CREATE(socket_type, username, password)	tsk_object_new(tnet_nat_context_def_t, (tnet_socket_type_t) socket_type, (const char*)username, (const char*)password)
+TNET_BEGIN_DECLS
 
 /**@ingroup tnet_nat_group
 * Estimate of the round-trip time (RTT) in millisecond.
@@ -115,7 +109,9 @@ TINYNET_API int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self
 #define tnet_nat_turn_channel_senddata(context, channel_id, data, size)			tnet_nat_turn_channel_send(context, channel_id, data, size, 0)
 TINYNET_API int tnet_nat_turn_add_permission(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, const char* ipaddress, uint32_t timeout);
 
-TINYNET_GEXTERN const void *tnet_nat_context_def_t;
+TINYNET_API tnet_nat_context_handle_t* tnet_nat_context_create(tnet_socket_type_t socket_type, const char* username, const char* password);
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_nat_context_def_t;
 
 TNET_END_DECLS
 

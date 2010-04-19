@@ -38,10 +38,6 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_TLS_SOCKET_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk, isClient)				tsk_object_new(tnet_tls_socket_def_t, (tnet_fd_t)fd, (const char*)tlsfile_ca, (const char*)tlsfile_pvk,(const char*) tlsfile_pbk, (int)isClient)
-#define TNET_TLS_SOCKET_CLIENT_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk)	TNET_TLS_SOCKET_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk, 1)
-#define TNET_TLS_SOCKET_SERVER_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk)	TNET_TLS_SOCKET_CREATE(fd, tlsfile_ca, tlsfile_pvk, tlsfile_pbk, 0)
-
 typedef void tnet_tls_socket_handle_t;
 
 int tnet_tls_socket_isok(const tnet_tls_socket_handle_t* self);
@@ -50,7 +46,11 @@ int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, size
 #define tnet_tls_socket_send(self, data, size) tnet_tls_socket_write(self, data, size)
 int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, size_t *size, int *isEncrypted);
 
-TINYNET_GEXTERN const void *tnet_tls_socket_def_t;
+TINYNET_API tnet_tls_socket_handle_t* tnet_tls_socket_create(tnet_fd_t fd, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk, tsk_bool_t isClient);
+TINYNET_API tnet_tls_socket_handle_t* tnet_tls_socket_client_create(tnet_fd_t fd, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk);
+TINYNET_API tnet_tls_socket_handle_t* tnet_tls_socket_server_create(tnet_fd_t fd, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk);
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_tls_socket_def_t;
 
 TNET_END_DECLS
 

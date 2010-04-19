@@ -19,43 +19,35 @@
 * along with DOUBANGO.
 *
 */
-/**@file tnet_dns_ptr.h
- * @brief DNS Pointer record - RR - (RFC 1035).
+
+/**@file tinynet.h
+ * @brief API functions.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TNET_DNS_RR_PTR_H
-#define TNET_DNS_RR_PTR_H
+#ifndef TNET_TINYNET_H
+#define TNET_TINYNET_H
 
-#include "tinyNET_config.h"
+#include "tnet.h"
+#include "tnet_nat.h"
+#include "tnet_socket.h"
+#include "tnet_transport.h"
 
-#include "tnet_dns_rr.h"
+#include "stun/tnet_stun.h"
 
-TNET_BEGIN_DECLS
+#include "dns/tnet_dns.h"
+#include "dns/tnet_dns_naptr.h"
+#include "dns/tnet_dns_regexp.h"
+#include "dns/tnet_dns_resolvconf.h"
+
+#include "dhcp/tnet_dhcp.h"
+#include "dhcp/tnet_dhcp_option_sip.h"
+
+#include "dhcp6/tnet_dhcp6.h"
+#include "dhcp6/tnet_dhcp6_option.h"
 
 
-/** DNS PTR Resource Record
-*/
-typedef struct tnet_dns_ptr_s
-{
-	TNET_DECLARE_DNS_RR;
-
-	/* RFC 1035 - 3.3.12. PTR RDATA format
-	+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-    /                   PTRDNAME                    /
-    +--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+
-	*/
-	char* ptrdname;
-}
-tnet_dns_ptr_t;
-
-tnet_dns_ptr_t* tnet_dns_ptr_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void*data, size_t offset);
-
-TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_ptr_def_t;
-
-TNET_END_DECLS
-
-#endif /* TNET_DNS_RR_PTR_H */
+#endif /* TNET_TINYNET_H */
 

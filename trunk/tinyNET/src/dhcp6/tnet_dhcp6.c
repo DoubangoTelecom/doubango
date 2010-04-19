@@ -41,6 +41,11 @@
 * Also implement: RFC 3319, 3633, 3646, 3736, 4242, 5007 ...
 */
 
+tnet_dhcp6_ctx_t* tnet_dhcp6_ctx_create()
+{
+	return tsk_object_new(tnet_dhcp6_ctx_def_t);
+}
+
 /**@ingroup tnet_dhcp6_group
 */
 tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dhcp6_request_t* request)
@@ -65,10 +70,10 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 	if((ret = tnet_getbestsource(TNET_DHCP6_All_DHCP_Relay_Agents_and_Servers, ctx->server_port, tnet_socket_type_udp_ipv6, &bestsource))){
 		TSK_DEBUG_WARN("Failed to get best source for [%s]:%u.", TNET_DHCP6_All_DHCP_Relay_Agents_and_Servers, ctx->server_port);
 		//fe80::21b:63ff:fea9:c14e%4
-		localsocket6 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv6);
+		localsocket6 = tnet_socket_create(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv6);
 	}
 	else{
-		localsocket6 = TNET_SOCKET_CREATE(bestsource, ctx->port_client, tnet_socket_type_udp_ipv6);
+		localsocket6 = tnet_socket_create(bestsource, ctx->port_client, tnet_socket_type_udp_ipv6);
 	}
 	
 	/* Check local socket. */
@@ -91,8 +96,7 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 
 	do
 	{
-		tsk_list_foreach(item, ctx->interfaces)
-		{
+		tsk_list_foreach(item, ctx->interfaces){
 			iface = item->data;
 
 			/* Set FD */
@@ -114,31 +118,26 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 			//memcpy(request->chaddr, iface->mac_address, request->hlen);
 
 			/* Serialize and send to the server. */
-			if(!(output = tnet_dhcp6_message_serialize(ctx, request)))
-			{
+			if(!(output = tnet_dhcp6_message_serialize(ctx, request))){
 				TSK_DEBUG_ERROR("Failed to serialize the DHCPv6 message.");
 				goto next_iface;
 			}
 			/* Send the request to the DHCP server */
-			if((ret =tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size))<0)
-			{
+			if((ret =tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size))<0){
 				TNET_PRINT_LAST_ERROR("Failed to send DHCPv6 request.");
 
 				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
 				goto next_iface;
 			}
 			/* wait for response */
-			if((ret = select(localsocket6->fd+1, &set, NULL, NULL, &tv))<0)
-			{	/* Error */
+			if((ret = select(localsocket6->fd+1, &set, NULL, NULL, &tv))<0){	/* Error */
 				TNET_PRINT_LAST_ERROR("select have failed.");
 				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
 				goto next_iface;
 			}
-			else if(ret == 0)
-			{	/* timeout ==> do nothing */
+			else if(ret == 0){	/* timeout ==> do nothing */
 			}
-			else
-			{	/* there is data to read. */
+			else{	/* there is data to read. */
 				size_t len = 0;
 				void* data = 0;
 
@@ -197,14 +196,14 @@ bail:
 tnet_dhcp6_reply_t* tnet_dhcp6_requestinfo(const tnet_dhcp6_ctx_t* ctx, const tnet_dhcp6_option_orequest_t *orequest)
 {
 	tnet_dhcp6_reply_t* reply = 0;
-	tnet_dhcp6_request_t* request = TNET_DHCP6_REQUEST_CREATE(dhcp6_type_information_request);
+	tnet_dhcp6_request_t* request = tnet_dhcp6_request_create(dhcp6_type_information_request);
 	tnet_dhcp6_option_t* option = 0;
 
 	if(!ctx || !orequest || !request){
 		goto bail;
 	}
 
-	if((option = TNET_DHCP6_OPTION_CREATE(dhcp6_code_oro, orequest, sizeof(*orequest)))){
+	if((option = tnet_dhcp6_option_create(dhcp6_code_oro, orequest, sizeof(*orequest)))){
 		tsk_list_push_back_data(request->options, (void**)&option);
 	}
 
@@ -227,11 +226,10 @@ bail:
 //=================================================================================================
 //	[[DHCPv6 CONTEXT]] object definition
 //
-static void* tnet_dhcp6_ctx_create(void * self, va_list * app)
+static tsk_object_t* tnet_dhcp6_ctx_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dhcp6_ctx_t *ctx = self;
-	if(ctx)
-	{
+	if(ctx){
 		ctx->pen = TNET_IANA_PEN;
 		ctx->vendor_class_data = tsk_strdup(TNET_DHCP6_VENDOR_CLASS_DATA_DEFAULT);
 		
@@ -241,8 +239,7 @@ static void* tnet_dhcp6_ctx_create(void * self, va_list * app)
 
 		ctx->timeout = 0xffff; /* FIXME */
 		
-		if(!ctx->interfaces || TSK_LIST_IS_EMPTY(ctx->interfaces))
-		{
+		if(!ctx->interfaces || TSK_LIST_IS_EMPTY(ctx->interfaces)){
 			TSK_DEBUG_ERROR("Failed to retrieve network interfaces.");
 		}
 
@@ -251,11 +248,10 @@ static void* tnet_dhcp6_ctx_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dhcp6_ctx_destroy(void * self) 
+static tsk_object_t* tnet_dhcp6_ctx_dtor(tsk_object_t * self) 
 { 
 	tnet_dhcp6_ctx_t *ctx = self;
-	if(ctx)
-	{
+	if(ctx){
 		tsk_safeobj_deinit(ctx);
 		
 		TSK_FREE(ctx->vendor_class_data);
@@ -268,8 +264,8 @@ static void* tnet_dhcp6_ctx_destroy(void * self)
 static const tsk_object_def_t tnet_dhcp6_ctx_def_s =
 {
 	sizeof(tnet_dhcp6_ctx_t),
-	tnet_dhcp6_ctx_create,
-	tnet_dhcp6_ctx_destroy,
-	0,
+	tnet_dhcp6_ctx_ctor,
+	tnet_dhcp6_ctx_dtor,
+	tsk_null,
 };
-const void *tnet_dhcp6_ctx_def_t = &tnet_dhcp6_ctx_def_s;
+const tsk_object_def_t *tnet_dhcp6_ctx_def_t = &tnet_dhcp6_ctx_def_s;

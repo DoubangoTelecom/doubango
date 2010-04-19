@@ -40,13 +40,13 @@ void test_nat_stun()
 	char* public_ip1 = 0, *public_ip2 = 0;
 	tnet_port_t public_port1 = 0, public_port2 = 0;
 	
-	if(!(socket1 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))
-		|| !(socket2 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO)))
+	if(!(socket1 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))
+		|| !(socket2 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO)))
 	{
 		goto bail;
 	}
 
-	context = TNET_NAT_CONTEXT_CREATE(STUN_SERVER_PROTO, STUN_USERNAME, STUN_PASSWORD);
+	context = tnet_nat_context_create(STUN_SERVER_PROTO, STUN_USERNAME, STUN_PASSWORD);
 
 	if(tnet_nat_set_server_address(context, STUN_SERVER_IP))
 	{
@@ -103,13 +103,13 @@ void test_nat_turn()
 
 	int ret;
 	
-	if(!(socket1 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))
-		|| !(socket2 = TNET_SOCKET_CREATE(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO)))
+	if(!(socket1 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO))
+		|| !(socket2 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO)))
 	{
 		goto bail;
 	}
 
-	context = TNET_NAT_CONTEXT_CREATE(STUN_SERVER_PROTO, STUN_USERNAME, STUN_PASSWORD);
+	context = tnet_nat_context_create(STUN_SERVER_PROTO, STUN_USERNAME, STUN_PASSWORD);
 
 	if(tnet_nat_set_server_address(context, STUN_SERVER_IP))
 	{

@@ -35,15 +35,21 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+/** Creates new DNS A Resource Record.
+*/
+tnet_dns_a_t* tnet_dns_a_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset)
+{
+	return tsk_object_new(tnet_dns_a_def_t, name, qclass, ttl, rdlength, data, offset);
+}
+
 
 //=================================================================================================
 //	[[DNS A]] object definition
 //
-static void* tnet_dns_a_create(void * self, va_list * app)
+static tsk_object_t* tnet_dns_a_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_a_t *a = self;
-	if(a)
-	{
+	if(a){
 		const char* name = va_arg(*app, const char*);
 		tnet_dns_qclass_t qclass = va_arg(*app, tnet_dns_qclass_t);
 		uint32_t ttl = va_arg(*app, uint32_t);
@@ -64,8 +70,8 @@ static void* tnet_dns_a_create(void * self, va_list * app)
 		TNET_DNS_RR(a)->rdlength = rdlength;
 		TNET_DNS_RR(a)->ttl = ttl;
 
-		if(rddata && rdlength && (rdlength == 4/* 32bits */))
-		{	// ==> DESERIALIZATION
+		if(rddata && rdlength && (rdlength == 4/* 32bits */)){
+			// ==> DESERIALIZATION
 			/* ADDRESS */
 			uint32_t address = tnet_ntohl(*((uint32_t*)rddata));
 			tsk_sprintf(&(a->address), "%u.%u.%u.%u", (address>>24)&0xFF, (address>>16)&0xFF, (address>>8)&0xFF, (address>>0)&0xFF);
@@ -78,11 +84,10 @@ static void* tnet_dns_a_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tnet_dns_a_destroy(void * self) 
+static tsk_object_t* tnet_dns_a_dtor(tsk_object_t * self) 
 { 
 	tnet_dns_a_t *a = self;
-	if(a)
-	{
+	if(a){
 		/* deinit base */
 		tnet_dns_rr_deinit(TNET_DNS_RR(a));
 
@@ -94,8 +99,8 @@ static void* tnet_dns_a_destroy(void * self)
 static const tsk_object_def_t tnet_dns_a_def_s =
 {
 	sizeof(tnet_dns_a_t),
-	tnet_dns_a_create,
-	tnet_dns_a_destroy,
-	0,
+	tnet_dns_a_ctor,
+	tnet_dns_a_dtor,
+	tsk_null,
 };
-const void *tnet_dns_a_def_t = &tnet_dns_a_def_s;
+const tsk_object_def_t *tnet_dns_a_def_t = &tnet_dns_a_def_s;

@@ -56,7 +56,7 @@ void test_sun_sendMessage()
 	}
 
 	// Create blocking socket and bind it 
-	socket = TNET_SOCKET_CREATE_EX(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO, 0);
+	socket = tnet_socket_create_EX(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO, 0);
 	if(!TNET_SOCKET_IS_VALID(socket))
 	{
 		goto bail;
@@ -83,7 +83,7 @@ void test_stun_context()
 //
 //	/* Somewhere in Your application ==> Create and bind your local socket
 //	*/
-//	if(!(localSocket = TNET_SOCKET_CREATE_EX(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO, 0)))
+//	if(!(localSocket = tnet_socket_create_EX(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, STUN_SERVER_PROTO, 0)))
 //	{
 //		goto bail;
 //	}

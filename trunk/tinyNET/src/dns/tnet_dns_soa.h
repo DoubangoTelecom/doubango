@@ -35,9 +35,6 @@
 
 TNET_BEGIN_DECLS
 
-#define TNET_DNS_SOA_CREATE(name, qclass, ttl, rdlength, data, offset)			tsk_object_new(tnet_dns_soa_def_t, (const char*)name, (tnet_dns_qclass_t)qclass, (uint32_t)ttl, (uint16_t)rdlength, (const void*)data, (size_t)offset)
-
-
 typedef struct tnet_dns_soa_s
 {
 	TNET_DECLARE_DNS_RR;
@@ -75,7 +72,9 @@ typedef struct tnet_dns_soa_s
 }
 tnet_dns_soa_t;
 
-TINYNET_GEXTERN const void *tnet_dns_soa_def_t;
+tnet_dns_soa_t* tnet_dns_soa_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset);
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_soa_def_t;
 
 TNET_END_DECLS
 

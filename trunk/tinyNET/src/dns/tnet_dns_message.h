@@ -37,38 +37,6 @@
 #include "tsk_buffer.h"
 
 /**@ingroup tnet_dns_group
-* @def TNET_DNS_MESSAGE_CREATE
-* Creates new DNS message.
-* @retval @ref tnet_dns_message_t object.
-* @sa TNET_DNS_MESSAGE_CREATE_NULL.
-*/
-/**@ingroup tnet_dns_group
-* @def TNET_DNS_MESSAGE_CREATE_NULL
-* Creates new DNS message.
-* @retval @ref tnet_dns_message_t object.
-* @sa TNET_DNS_MESSAGE_CREATE.
-*/
-TNET_BEGIN_DECLS
-
-#define TNET_DNS_MESSAGE_CREATE(qname, qclass, qtype, isquery)	tsk_object_new(tnet_dns_message_def_t, (const char*)qname, (tnet_dns_qclass_t)qclass, (tnet_dns_qtype_t)qtype, (unsigned)isquery)
-#define TNET_DNS_MESSAGE_CREATE_NULL()							TNET_DNS_MESSAGE_CREATE(0, qclass_any, qtype_any, 0)
-
-/**@ingroup tnet_dns_group
-* @def TNET_DNS_RESPONSE_CREATE
-* Creates new DNS response message.
-* @retval @ref tnet_dns_message_t object.
-* @sa TNET_DNS_QUERY_CREATE.
-*/
-/**@ingroup tnet_dns_group
-* @def TNET_DNS_QUERY_CREATE
-* Creates new DNS query message.
-* @retval @ref tnet_dns_message_t object.
-* @sa TNET_DNS_RESPONSE_CREATE.
-*/
-#define TNET_DNS_RESPONSE_CREATE(qname, qclass, qtype)			TNET_DNS_MESSAGE_CREATE(qname, qclass, qtype, 0)
-#define TNET_DNS_QUERY_CREATE(qname, qclass, qtype)				TNET_DNS_MESSAGE_CREATE(qname, qclass, qtype, 1)
-
-/**@ingroup tnet_dns_group
 * @def TNET_DNS_MESSAGE_IS_RESPONSE
 * Checks whether the STUN message is a response or not(query).
 * @sa TNET_DNS_MESSAGE_IS_QUERY.
@@ -78,6 +46,10 @@ TNET_BEGIN_DECLS
 * Checks whether the STUN message is a query or not(response).
 * @sa TNET_DNS_MESSAGE_IS_RESPONSE.
 */
+
+TNET_BEGIN_DECLS
+
+
 #define TNET_DNS_MESSAGE_IS_RESPONSE(message)		((message) && (message)->Header.QR == 1)
 #define TNET_DNS_MESSAGE_IS_QUERY(message)			((message) && (message)->Header.QR == 0)
 
@@ -94,8 +66,7 @@ TNET_BEGIN_DECLS
 #define TNET_DNS_RESPONSE_IS_SUCCESS(response)		((response) && (response)->Header.RCODE == rcode_noerror)
 #define TNET_DNS_RESPONSE_IS_ERROR(response)		!TNET_DNS_RESPONSE_IS_SUCCESS(response)
 
-/**@ingroup tnet_dns_group
-* Response codes as per RFC 1035 subclause 4.1.1.
+/**Response codes as per RFC 1035 subclause 4.1.1.
 */
 typedef enum tnet_dns_rcode_e
 {
@@ -108,8 +79,7 @@ typedef enum tnet_dns_rcode_e
 }
 tnet_dns_rcode_t;
 
-/**@ingroup tnet_dns_group
-* OPCODE defining the kind of query as per RFC 1035 subclause 4.1.1.
+/**OPCODE defining the kind of query as per RFC 1035 subclause 4.1.1.
 */
 typedef enum tnet_dns_opcode_e
 {
@@ -119,8 +89,7 @@ typedef enum tnet_dns_opcode_e
 }
 tnet_dns_opcode_t;
 
-/**@ingroup tnet_dns_group
-* DNS message as per RFC 1035 subclause 4.
+/** DNS message as per RFC 1035 subclause 4.
 */
 typedef struct tnet_dns_message_s
 {
@@ -225,7 +194,13 @@ typedef tnet_dns_message_t tnet_dns_response_t; /**< DNS response message. */
 tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message);
 tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t size);
 
-TINYNET_GEXTERN const void *tnet_dns_message_def_t;
+
+tnet_dns_message_t* tnet_dns_message_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tsk_bool_t isquery);
+tnet_dns_message_t* tnet_dns_message_create_null();
+tnet_dns_response_t* tnet_dns_response_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
+tnet_dns_query_t* tnet_dns_query_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype);
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_message_def_t;
 
 TNET_END_DECLS
 

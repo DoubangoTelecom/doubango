@@ -35,22 +35,7 @@
 
 #include "tsk_buffer.h"
 
-/**@ingroup tnet_stun_group
-* @def TNET_STUN_MESSAGE_CREATE
-* Creates new STUN message.
-* @retval @ref tnet_stun_message_t object.
-* @sa TNET_STUN_MESSAGE_CREATE_NULL.
-*/
-/**@ingroup tnet_stun_group
-* @def TNET_STUN_MESSAGE_CREATE_NULL
-* Creates new STUN message.
-* @retval @ref tnet_stun_message_t object.
-* @sa TNET_STUN_MESSAGE_CREATE.
-*/
 TNET_BEGIN_DECLS
-
-#define TNET_STUN_MESSAGE_CREATE(username, password)			tsk_object_new(tnet_stun_message_def_t, (const char*)username, (const char*)password)
-#define TNET_STUN_MESSAGE_CREATE_NULL()							TNET_STUN_MESSAGE_CREATE(0,0)
 
 #define TNET_STUN_CLASS_REQUEST_MASK		(0x0000)
 #define TNET_STUN_CLASS_INDICATION_MASK		(0x0010)
@@ -241,7 +226,11 @@ const char* tnet_stun_message_get_realm(const tnet_stun_message_t *self);
 const char* tnet_stun_message_get_nonce(const tnet_stun_message_t *self);
 int32_t tnet_stun_message_get_lifetime(const tnet_stun_message_t *self);
 
-TINYNET_GEXTERN const void *tnet_stun_message_def_t;
+
+tnet_stun_message_t* tnet_stun_message_create(const char* username, const char* password);
+tnet_stun_message_t* tnet_stun_message_create_null();
+
+TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_message_def_t;
 
 
 TNET_END_DECLS
