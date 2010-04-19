@@ -1,14 +1,14 @@
 APP := test
 
-CFLAGS := $(CFLAGS) -I$(DOUBANGO_HOME)/$(PROJECT)/src
-LDFLAGS := $(LDFLAGS) -Bsymbolic -l$(PROJECT)
+CFLAGS := $(CFLAGS) -I../src -I../../tinySAK/src
+LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -l$(PROJECT)
 
 all: $(APP)
 
 OBJS += $(APP).o
 
 $(APP): $(OBJS)
-	$(CPP) $(LDFLAGS) -o $@ $^ 
+	$(CC) $(LDFLAGS) -o $@ $^ 
 
 %.o: %.c
 	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@

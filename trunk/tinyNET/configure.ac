@@ -68,10 +68,6 @@ AC_ARG_WITH(debug-level,
 ])
 
 
-## checks string functions
-AC_CHECK_FUNCS([stricmp strnicmp])
-
-
 AC_OUTPUT(
 Makefile
 src/Makefile

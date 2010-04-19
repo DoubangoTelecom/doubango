@@ -31,9 +31,9 @@ int safe_func(tsk_mutex_handle_t *mutex, const char* caller)
 	int ret = 0;
 
 	ret = tsk_mutex_lock(mutex);
-	printf("threadfunc_mutex/// Start doing job [%s]... %d\n", caller, ret);
+	TSK_DEBUG_INFO("threadfunc_mutex/// Start doing job [%s]... %d\n", caller, ret);
 	tsk_thread_sleep(5000);
-	printf("threadfunc_mutex/// Stop doing job [%s]... %d\n", caller, ret);
+	TSK_DEBUG_INFO("threadfunc_mutex/// Stop doing job [%s]... %d\n", caller, ret);
 	ret = tsk_mutex_unlock(mutex);
 
 	return ret;
@@ -54,7 +54,7 @@ void test_mutex()
 	tsk_mutex_handle_t *mutex = tsk_mutex_create();
 	void*       tid[1] = {0};
 
-	printf("test_mutex//\n");
+	TSK_DEBUG_INFO("test_mutex//\n");
 	
 	//tsk_mutex_lock(mutex);
 	

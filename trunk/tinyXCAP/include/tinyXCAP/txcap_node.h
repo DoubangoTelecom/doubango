@@ -33,6 +33,8 @@
 
 #include "tsk_common.h"
 
+#include <stdarg.h> /* va_list* */
+
 TXCAP_BEGIN_DECLS
 
 typedef enum txcap_selector_param_type_e

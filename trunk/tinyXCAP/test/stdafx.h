@@ -22,15 +22,16 @@
 #ifndef TEST_TINYXCAP_STDAFX_H
 #define TEST_TINYXCAP_STDAFX_H
 
+#ifdef WIN32
 #include "targetver.h"
+#endif
 
 #include <stdio.h>
 //#if (defined(_WIN32) || defined(WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)
-#include <tchar.h>
+//#include <tchar.h>
 //#endif
 
-#define TINYSAK_IMPORTS
-#define TINYXCAP_IMPORTS
+
 
 // TODO: reference additional headers your program requires here
 

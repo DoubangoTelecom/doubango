@@ -151,7 +151,7 @@ done:
 						TSK_OBJECT_SAFE_FREE(auid);
 					}
 					else{
-						TSK_DEBUG_WARN("Failed to find auid with id=%s", auid_id);
+						TSK_DEBUG_WARN("Failed to find auid with id=%s", AUID_STR);
 					}
 				}
 				break;

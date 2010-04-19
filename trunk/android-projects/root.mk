@@ -1,23 +1,20 @@
-#########
-DOUBANGO_HOME:=$(DOUBANGO_HOME)
-#########
+######
+##	Root configuration file shared by all android projects.
+######
 
-export ROOT:=/cygdrive/c
-export INSTALL_DIR:= /data/tmp
-#export OUTPUT_DIR = $(shell pwd)/output
-export OUTPUT_DIR:=$(DOUBANGO_HOME)/android-projects/output
-export NDK_PLATFORM_VER:=1.5
+export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk
+export ANDROID_SDK_ROOT=/cygdrive/c/android-sdk
+export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-4
 
-export ANDROID_NDK_ROOT:=$(ROOT)/android-ndk
-export ANDROID_NDK_HOST:=windows
-export ANDROID_SDK_ROOT:=$(ROOT)/android-sdk
-export PREBUILD:=$(ANDROID_NDK_ROOT)/build/prebuilt/$(ANDROID_NDK_HOST)/arm-eabi-4.2.1
-export BIN:=$(PREBUILD)/bin
+# Output directory
+export OUTPUT_DIR=$(shell pwd)/output
+$(shell mkdir $(OUTPUT_DIR))
 
-#export CPP = $(BIN)/arm-eabi-g++
-export CPP:=$(BIN)/arm-eabi-gcc
-export CC:=$(BIN)/arm-eabi-gcc
-export CFLAGS:=$(OPTIONS) -I$(ANDROID_NDK_ROOT)/build/platforms/android-$(NDK_PLATFORM_VER)/arch-arm/usr/include \
+# Path where to copy executables (on the device or emulator)
+export INSTALL_DIR=/data/tmp
+
+export CC=arm-eabi-gcc
+export CFLAGS=$(DEBUG_FLAGS) -I$(ANDROID_PLATFORM)/arch-arm/usr/include \
 -march=armv5te \
 -mtune=xscale \
 -msoft-float \
@@ -34,8 +31,8 @@ export CFLAGS:=$(OPTIONS) -I$(ANDROID_NDK_ROOT)/build/platforms/android-$(NDK_PL
 -DANDROID \
 -MMD \
 -MP
-export LDFLAGS:=-Wl,--no-gc-sections,--entry=main,-rpath=/system/lib,-rpath-link=$(ANDROID_NDK_ROOT)/build/platforms/android-$(NDK_PLATFORM_VER)/arch-arm/usr/lib,-dynamic-linker=/system/bin/linker -L$(ANDROID_NDK_ROOT)/build/platforms/android-$(NDK_PLATFORM_VER)/arch-arm/usr/lib
-export LDFLAGS += -Wl,-T,$(PREBUILD)/arm-eabi/lib/ldscripts/armelf.xsc,-z,nocopyreloc,--gc-sections,--no-undefined
+export LDFLAGS=-Wl,--entry=main,-rpath=/system/lib,-rpath-link=$(ANDROID_PLATFORM)/arch-arm/usr/lib,-dynamic-linker=/system/bin/linker -L$(ANDROID_PLATFORM)/arch-arm/usr/lib
+export LDFLAGS += -Wl,--no-undefined
 export LDFLAGS += -nostdlib -lc -Wl,--no-whole-archive -L$(OUTPUT_DIR)
 
 gdbserver:

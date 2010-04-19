@@ -50,6 +50,10 @@ typedef enum txcap_stack_option_e
 	TXCAP_STACK_OPTION_PASSWORD,
 	//! xcap user indentifier (e.g. sip:bob@example.com)
 	TXCAP_STACK_OPTION_XUI,
+	//! local ip address
+	TXCAP_STACK_OPTION_LOCAL_IP,
+	//! local port
+	TXCAP_STACK_OPTION_LOCAL_PORT,
 }
 txcap_stack_option_t;
 

@@ -536,8 +536,8 @@ void *tnet_transport_mainthread(void *param)
 			{
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP", transport->description);
 				
-				TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
-				removeSocket(i, context);
+				//--TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
+				//--removeSocket(i, context);
 			}
 
 			/*================== TNET_POLLERR ==================*/
