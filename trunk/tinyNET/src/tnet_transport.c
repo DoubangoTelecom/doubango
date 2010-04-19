@@ -41,6 +41,7 @@
 
 #include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#size_t #>) */
 
+extern int tnet_transport_prepare(tnet_transport_t *transport);
 extern void *tnet_transport_mainthread(void *param);
 extern int tnet_transport_stop(tnet_transport_t *transport);
 
@@ -63,15 +64,26 @@ int tnet_transport_start(tnet_transport_handle_t* handle)
 	if(handle){
 		tnet_transport_t *transport = handle;
 		
+		TSK_DEBUG_INFO("tnet_transport_start()");
+		
+		/* prepare transport */
+		if((ret = tnet_transport_prepare(transport))){
+			TSK_DEBUG_ERROR("Failed to prepare transport.");
+			goto bail;
+		}
+		
+		/* start transport */
 		TSK_RUNNABLE(transport)->run = run;
 		if((ret = tsk_runnable_start(TSK_RUNNABLE(transport), tnet_transport_event_def_t))){
-			return ret;
+			TSK_DEBUG_ERROR("Failed to start transport.");
+			goto bail;
 		}
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL transport object.");
 	}
 
+bail:
 	return ret;
 }
 
@@ -213,11 +225,11 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	}
 	else{
 		if(TNET_SOCKET_TYPE_IS_TLS(type)){
-			transport->tls.have_tls = 1;
-			transport->connected = !tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd)); // FIXME: the transport itself not connected
+			transport->tls.have_tls = tsk_true;
+			//transport->connected = !tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd)); // FIXME: the transport itself not connected
 		}
 		else{
-			transport->connected = 1;
+			//transport->connected = tsk_true;
 		}
 	}
 	
@@ -263,7 +275,7 @@ void *run(void* self)
 	int ret = 0;
 	tsk_list_item_t *curr;
 	tnet_transport_t *transport = self;
-
+	
 	TSK_RUNNABLE(transport)->running = tsk_true; // VERY IMPORTANT --> needed by the main thread
 
 	/* create main thread */
@@ -273,6 +285,7 @@ void *run(void* self)
 		return tsk_null;
 	}
 
+	TSK_DEBUG_INFO("tnet_transport_run()");
 	
 	TSK_RUNNABLE_RUN_BEGIN(transport);
 	

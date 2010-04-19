@@ -31,7 +31,5 @@
 #include <tchar.h>
 #endif
 
-#define TINYHTTP_IMPORTS
-
 // TODO: reference additional headers your program requires here
 #endif /* TEST_TINYHTTP_STDAFX_H */

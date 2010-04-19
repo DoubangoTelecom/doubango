@@ -47,7 +47,7 @@
 /**@ingroup tnet_utils_group
 * Creates new @ref tnet_interface_t object.
 */
-tnet_interface_t* tnet_interface_create(const char* description, const char* mac_address, size_t mac_address_length)
+tnet_interface_t* tnet_interface_create(const char* description, const void* mac_address, size_t mac_address_length)
 {
 	return tsk_object_new(tnet_interface_def_t, description, mac_address, mac_address_length);
 }
@@ -1307,7 +1307,7 @@ static tsk_object_t* tnet_interface_ctor(tsk_object_t * self, va_list * app)
 	tnet_interface_t *iface = self;
 	if(iface){
 		const char* description = va_arg(*app, const char*);
-		const uint8_t* mac_address = va_arg(*app, const uint8_t*);
+		const void* mac_address = va_arg(*app, const void*);
 		size_t mac_address_length = va_arg(*app, size_t);
 
 		iface->description = tsk_strdup(description);

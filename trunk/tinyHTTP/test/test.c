@@ -53,7 +53,7 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
-		tnet_startup();
+	tnet_startup();
 
 #if LOOP
 	for(;;)

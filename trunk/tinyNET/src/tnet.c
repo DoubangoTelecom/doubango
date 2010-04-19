@@ -41,7 +41,7 @@
 *
 * All network functions are part of tinyNET projects.<br>
 * You MUST call @ref tnet_startup() before using any network function (tnet_*). tnet_cleanup() is used to terminate use of network functions. <br>
-* The startup function will determine whether the host is a ìlittle-endianî machine or not (at runtime).
+* The startup function will determine whether the host is a √¨little-endian√Æ machine or not (at runtime).
 *
 * ======
 *
@@ -55,7 +55,7 @@
 * ======
 *
 */
-static int __tnet_started = 0;
+static tsk_bool_t __tnet_started = tsk_false;
 tsk_bool_t tnet_isBigEndian = tsk_false;
 
 /**
@@ -93,27 +93,24 @@ int tnet_startup()
 		wVersionRequested = MAKEWORD(2, 2);
 
 		err = WSAStartup(wVersionRequested, &wsaData);
-		if (err != 0) 
-		{
+		if (err != 0) {
 			TSK_DEBUG_FATAL("WSAStartup failed with error: %d\n", err);
-			return 1;
+			return -1;
 		}
 
-		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2)
-		{
+		if (LOBYTE(wsaData.wVersion) != 2 || HIBYTE(wsaData.wVersion) != 2){
 			TSK_DEBUG_FATAL("Could not find a usable version of Winsock.dll\n");
 			tnet_cleanup();
-			return 1;
+			return -2;
 		}
-		else
-		{
-			__tnet_started = 1;
+		else{
+			__tnet_started = tsk_true;
 			TSK_DEBUG_INFO("The Winsock 2.2 dll was found okay\n");
 		}
 	}
 #else
-	__tnet_started = 1;
-#endif /* TSIP_UNDER_WINDOWS */
+	__tnet_started = tsk_true;
+#endif /* TNET_UNDER_WINDOWS */
 	
 bail:
 	return err;
@@ -128,13 +125,15 @@ bail:
 **/
 int tnet_cleanup()
 {
-	if(!__tnet_started) goto bail;
+	if(!__tnet_started){
+		goto bail;
+	}
 
 #if TNET_UNDER_WINDOWS
-	__tnet_started = 0;
+	__tnet_started = tsk_false;
 	return WSACleanup();
 #else
-	__tnet_started = 0;
+	__tnet_started = tsk_false;
 #endif
 
 bail:

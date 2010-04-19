@@ -7,9 +7,59 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		ECED61AA10F9885E006B4DC9 /* thttp_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61A910F9885E006B4DC9 /* thttp_auth.h */; };
-		ECED61AD10F98876006B4DC9 /* thttp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61AB10F98876006B4DC9 /* thttp.h */; };
-		ECED61AE10F98876006B4DC9 /* tinyhttp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61AC10F98876006B4DC9 /* tinyhttp_config.h */; };
+		ECE40753117CE04B00A43CEB /* tnet_endianness.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40751117CE04B00A43CEB /* tnet_endianness.c */; };
+		ECE40754117CE04B00A43CEB /* tnet_endianness.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40752117CE04B00A43CEB /* tnet_endianness.h */; };
+		ECE40759117CE09C00A43CEB /* tnet_dns_regexp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40755117CE09C00A43CEB /* tnet_dns_regexp.c */; };
+		ECE4075A117CE09C00A43CEB /* tnet_dns_regexp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40756117CE09C00A43CEB /* tnet_dns_regexp.h */; };
+		ECE4075B117CE09C00A43CEB /* tnet_dns_resolvconf.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40757117CE09C00A43CEB /* tnet_dns_resolvconf.c */; };
+		ECE4075C117CE09C00A43CEB /* tnet_dns_resolvconf.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40758117CE09C00A43CEB /* tnet_dns_resolvconf.h */; };
+		ECE407AE117CE1FD00A43CEB /* thttp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40762117CE1FC00A43CEB /* thttp.h */; };
+		ECE407AF117CE1FD00A43CEB /* thttp_auth.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40765117CE1FC00A43CEB /* thttp_auth.h */; };
+		ECE407B0117CE1FD00A43CEB /* thttp_challenge.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40766117CE1FC00A43CEB /* thttp_challenge.h */; };
+		ECE407B1117CE1FD00A43CEB /* thttp_header.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40768117CE1FC00A43CEB /* thttp_header.h */; };
+		ECE407B2117CE1FD00A43CEB /* thttp_header_Authorization.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40769117CE1FC00A43CEB /* thttp_header_Authorization.h */; };
+		ECE407B3117CE1FD00A43CEB /* thttp_header_Content_Length.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE4076A117CE1FD00A43CEB /* thttp_header_Content_Length.h */; };
+		ECE407B4117CE1FD00A43CEB /* thttp_header_Content_Type.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE4076B117CE1FD00A43CEB /* thttp_header_Content_Type.h */; };
+		ECE407B5117CE1FD00A43CEB /* thttp_header_Dummy.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE4076C117CE1FD00A43CEB /* thttp_header_Dummy.h */; };
+		ECE407B6117CE1FD00A43CEB /* thttp_header_ETag.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE4076D117CE1FD00A43CEB /* thttp_header_ETag.h */; };
+		ECE407B7117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE4076E117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.h */; };
+		ECE407B8117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE4076F117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.h */; };
+		ECE407B9117CE1FD00A43CEB /* thttp_parser_header.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40771117CE1FD00A43CEB /* thttp_parser_header.h */; };
+		ECE407BA117CE1FD00A43CEB /* thttp_parser_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40772117CE1FD00A43CEB /* thttp_parser_message.h */; };
+		ECE407BB117CE1FD00A43CEB /* thttp_parser_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40773117CE1FD00A43CEB /* thttp_parser_url.h */; };
+		ECE407BC117CE1FD00A43CEB /* thttp_action.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40774117CE1FD00A43CEB /* thttp_action.h */; };
+		ECE407BD117CE1FD00A43CEB /* thttp_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40775117CE1FD00A43CEB /* thttp_dialog.h */; };
+		ECE407BE117CE1FD00A43CEB /* thttp_event.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40776117CE1FD00A43CEB /* thttp_event.h */; };
+		ECE407BF117CE1FD00A43CEB /* thttp_message.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40777117CE1FD00A43CEB /* thttp_message.h */; };
+		ECE407C0117CE1FD00A43CEB /* thttp_session.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40778117CE1FD00A43CEB /* thttp_session.h */; };
+		ECE407C1117CE1FD00A43CEB /* thttp_url.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE40779117CE1FD00A43CEB /* thttp_url.h */; };
+		ECE407C2117CE1FD00A43CEB /* tinyhttp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE4077A117CE1FD00A43CEB /* tinyhttp.h */; };
+		ECE407C3117CE1FD00A43CEB /* tinyhttp_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE4077B117CE1FD00A43CEB /* tinyhttp_config.h */; };
+		ECE407C4117CE1FD00A43CEB /* thttp_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4078C117CE1FD00A43CEB /* thttp_auth.c */; };
+		ECE407C5117CE1FD00A43CEB /* thttp_challenge.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4078D117CE1FD00A43CEB /* thttp_challenge.c */; };
+		ECE407C6117CE1FD00A43CEB /* thttp_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4078F117CE1FD00A43CEB /* thttp_header.c */; };
+		ECE407C7117CE1FD00A43CEB /* thttp_header_Authorization.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40790117CE1FD00A43CEB /* thttp_header_Authorization.c */; };
+		ECE407C8117CE1FD00A43CEB /* thttp_header_Content_Length.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40791117CE1FD00A43CEB /* thttp_header_Content_Length.c */; };
+		ECE407C9117CE1FD00A43CEB /* thttp_header_Content_Type.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40792117CE1FD00A43CEB /* thttp_header_Content_Type.c */; };
+		ECE407CA117CE1FD00A43CEB /* thttp_header_Dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40793117CE1FD00A43CEB /* thttp_header_Dummy.c */; };
+		ECE407CB117CE1FD00A43CEB /* thttp_header_ETag.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40794117CE1FD00A43CEB /* thttp_header_ETag.c */; };
+		ECE407CC117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40795117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.c */; };
+		ECE407CD117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40796117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.c */; };
+		ECE407CF117CE1FD00A43CEB /* thttp_parser_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40799117CE1FD00A43CEB /* thttp_parser_header.c */; };
+		ECE407D0117CE1FD00A43CEB /* thttp_parser_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4079A117CE1FD00A43CEB /* thttp_parser_message.c */; };
+		ECE407D1117CE1FD00A43CEB /* thttp_parser_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4079B117CE1FD00A43CEB /* thttp_parser_url.c */; };
+		ECE407D2117CE1FD00A43CEB /* thttp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4079C117CE1FD00A43CEB /* thttp.c */; };
+		ECE407D3117CE1FD00A43CEB /* thttp_action.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4079D117CE1FD00A43CEB /* thttp_action.c */; };
+		ECE407D4117CE1FD00A43CEB /* thttp_dialog.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4079E117CE1FD00A43CEB /* thttp_dialog.c */; };
+		ECE407D5117CE1FD00A43CEB /* thttp_event.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE4079F117CE1FD00A43CEB /* thttp_event.c */; };
+		ECE407D6117CE1FD00A43CEB /* thttp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE407A0117CE1FD00A43CEB /* thttp_message.c */; };
+		ECE407D7117CE1FD00A43CEB /* thttp_session.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE407A1117CE1FD00A43CEB /* thttp_session.c */; };
+		ECE407D8117CE1FD00A43CEB /* thttp_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE407A2117CE1FD00A43CEB /* thttp_url.c */; };
+		ECE407E8117CE27700A43CEB /* tsk_common.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE407E5117CE27700A43CEB /* tsk_common.h */; };
+		ECE407E9117CE27700A43CEB /* tsk_options.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE407E6117CE27700A43CEB /* tsk_options.c */; };
+		ECE407EA117CE27700A43CEB /* tsk_options.h in Headers */ = {isa = PBXBuildFile; fileRef = ECE407E7117CE27700A43CEB /* tsk_options.h */; };
+		ECE4083A117CE48D00A43CEB /* stdafx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40832117CE48D00A43CEB /* stdafx.c */; };
+		ECE4083B117CE48D00A43CEB /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = ECE40835117CE48D00A43CEB /* test.c */; };
 		ECED61F610F98926006B4DC9 /* tinySAK_config.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C110F98926006B4DC9 /* tinySAK_config.h */; };
 		ECED61F710F98926006B4DC9 /* tsk.c in Sources */ = {isa = PBXBuildFile; fileRef = ECED61C210F98926006B4DC9 /* tsk.c */; };
 		ECED61F810F98926006B4DC9 /* tsk.h in Headers */ = {isa = PBXBuildFile; fileRef = ECED61C310F98926006B4DC9 /* tsk.h */; };
@@ -63,25 +113,6 @@
 		ECED622F10F989A3006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */; };
 		ECED624F10F98B8B006B4DC9 /* libtinyHTTP.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D2AAC0630554660B00DB518D /* libtinyHTTP.dylib */; };
 		ECED625010F98B8B006B4DC9 /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */; };
-		ECF4BC8C11434AEB00B7C09B /* thttp_auth.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7811434AEB00B7C09B /* thttp_auth.c */; };
-		ECF4BC8D11434AEB00B7C09B /* thttp_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7A11434AEB00B7C09B /* thttp_header.c */; };
-		ECF4BC8E11434AEB00B7C09B /* thttp_header_Authorization.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7B11434AEB00B7C09B /* thttp_header_Authorization.c */; };
-		ECF4BC8F11434AEB00B7C09B /* thttp_header_Content_Length.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7C11434AEB00B7C09B /* thttp_header_Content_Length.c */; };
-		ECF4BC9011434AEB00B7C09B /* thttp_header_Content_Type.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7D11434AEB00B7C09B /* thttp_header_Content_Type.c */; };
-		ECF4BC9111434AEB00B7C09B /* thttp_header_Dummy.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7E11434AEB00B7C09B /* thttp_header_Dummy.c */; };
-		ECF4BC9211434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC7F11434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c */; };
-		ECF4BC9311434AEB00B7C09B /* thttp_header_WWW_Authenticate.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8011434AEB00B7C09B /* thttp_header_WWW_Authenticate.c */; };
-		ECF4BC9511434AEB00B7C09B /* thttp_parser_header.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8311434AEB00B7C09B /* thttp_parser_header.c */; };
-		ECF4BC9611434AEB00B7C09B /* thttp_parser_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8411434AEB00B7C09B /* thttp_parser_message.c */; };
-		ECF4BC9711434AEB00B7C09B /* thttp_parser_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8511434AEB00B7C09B /* thttp_parser_url.c */; };
-		ECF4BC9811434AEB00B7C09B /* thttp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8611434AEB00B7C09B /* thttp.c */; };
-		ECF4BC9911434AEB00B7C09B /* thttp_event.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8711434AEB00B7C09B /* thttp_event.c */; };
-		ECF4BC9A11434AEB00B7C09B /* thttp_message.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8811434AEB00B7C09B /* thttp_message.c */; };
-		ECF4BC9B11434AEB00B7C09B /* thttp_operation.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8911434AEB00B7C09B /* thttp_operation.c */; };
-		ECF4BC9C11434AEB00B7C09B /* thttp_transport.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8A11434AEB00B7C09B /* thttp_transport.c */; };
-		ECF4BC9D11434AEB00B7C09B /* thttp_url.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BC8B11434AEB00B7C09B /* thttp_url.c */; };
-		ECF4BCAA11434B0E00B7C09B /* stdafx.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCA111434B0E00B7C09B /* stdafx.c */; };
-		ECF4BCAB11434B0E00B7C09B /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCA411434B0E00B7C09B /* test.c */; };
 		ECF4BCBA11434BF900B7C09B /* libtinySAK.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */; };
 		ECF4BD3311434C1100B7C09B /* tnet_dhcp.c in Sources */ = {isa = PBXBuildFile; fileRef = ECF4BCC811434C1000B7C09B /* tnet_dhcp.c */; };
 		ECF4BD3411434C1100B7C09B /* tnet_dhcp.h in Headers */ = {isa = PBXBuildFile; fileRef = ECF4BCC911434C1000B7C09B /* tnet_dhcp.h */; };
@@ -175,6 +206,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		ECE4083D117CE52000A43CEB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECF4BCB311434BA800B7C09B;
+			remoteInfo = tinyNET;
+		};
 		ECED622D10F9899F006B4DC9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
@@ -214,12 +252,80 @@
 
 /* Begin PBXFileReference section */
 		D2AAC0630554660B00DB518D /* libtinyHTTP.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyHTTP.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		ECED61A610F98820006B4DC9 /* http.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = http.abnf; path = ../../tinyHTTP/abnf/http.abnf; sourceTree = SOURCE_ROOT; };
-		ECED61A710F98820006B4DC9 /* httpauth.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = httpauth.abnf; path = ../../tinyHTTP/abnf/httpauth.abnf; sourceTree = SOURCE_ROOT; };
-		ECED61A810F98820006B4DC9 /* uri.abnf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = uri.abnf; path = ../../tinyHTTP/abnf/uri.abnf; sourceTree = SOURCE_ROOT; };
-		ECED61A910F9885E006B4DC9 /* thttp_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp_auth.h; path = ../../tinyHTTP/include/tinyHTTP/auth/thttp_auth.h; sourceTree = SOURCE_ROOT; };
-		ECED61AB10F98876006B4DC9 /* thttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = thttp.h; path = ../../tinyHTTP/include/thttp.h; sourceTree = SOURCE_ROOT; };
-		ECED61AC10F98876006B4DC9 /* tinyhttp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinyhttp_config.h; path = ../../tinyHTTP/include/tinyhttp_config.h; sourceTree = SOURCE_ROOT; };
+		ECE40751117CE04B00A43CEB /* tnet_endianness.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_endianness.c; sourceTree = "<group>"; };
+		ECE40752117CE04B00A43CEB /* tnet_endianness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_endianness.h; sourceTree = "<group>"; };
+		ECE40755117CE09C00A43CEB /* tnet_dns_regexp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_regexp.c; sourceTree = "<group>"; };
+		ECE40756117CE09C00A43CEB /* tnet_dns_regexp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_regexp.h; sourceTree = "<group>"; };
+		ECE40757117CE09C00A43CEB /* tnet_dns_resolvconf.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dns_resolvconf.c; sourceTree = "<group>"; };
+		ECE40758117CE09C00A43CEB /* tnet_dns_resolvconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dns_resolvconf.h; sourceTree = "<group>"; };
+		ECE4075F117CE19100A43CEB /* tnet_dns_regexp.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tnet_dns_regexp.rl; sourceTree = "<group>"; };
+		ECE40760117CE19100A43CEB /* tnet_dns_resolvconf.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = tnet_dns_resolvconf.rl; sourceTree = "<group>"; };
+		ECE40762117CE1FC00A43CEB /* thttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp.h; sourceTree = "<group>"; };
+		ECE40765117CE1FC00A43CEB /* thttp_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_auth.h; sourceTree = "<group>"; };
+		ECE40766117CE1FC00A43CEB /* thttp_challenge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_challenge.h; sourceTree = "<group>"; };
+		ECE40768117CE1FC00A43CEB /* thttp_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header.h; sourceTree = "<group>"; };
+		ECE40769117CE1FC00A43CEB /* thttp_header_Authorization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Authorization.h; sourceTree = "<group>"; };
+		ECE4076A117CE1FD00A43CEB /* thttp_header_Content_Length.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Content_Length.h; sourceTree = "<group>"; };
+		ECE4076B117CE1FD00A43CEB /* thttp_header_Content_Type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Content_Type.h; sourceTree = "<group>"; };
+		ECE4076C117CE1FD00A43CEB /* thttp_header_Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Dummy.h; sourceTree = "<group>"; };
+		ECE4076D117CE1FD00A43CEB /* thttp_header_ETag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_ETag.h; sourceTree = "<group>"; };
+		ECE4076E117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_Transfer_Encoding.h; sourceTree = "<group>"; };
+		ECE4076F117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_header_WWW_Authenticate.h; sourceTree = "<group>"; };
+		ECE40771117CE1FD00A43CEB /* thttp_parser_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_parser_header.h; sourceTree = "<group>"; };
+		ECE40772117CE1FD00A43CEB /* thttp_parser_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_parser_message.h; sourceTree = "<group>"; };
+		ECE40773117CE1FD00A43CEB /* thttp_parser_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_parser_url.h; sourceTree = "<group>"; };
+		ECE40774117CE1FD00A43CEB /* thttp_action.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_action.h; sourceTree = "<group>"; };
+		ECE40775117CE1FD00A43CEB /* thttp_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_dialog.h; sourceTree = "<group>"; };
+		ECE40776117CE1FD00A43CEB /* thttp_event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_event.h; sourceTree = "<group>"; };
+		ECE40777117CE1FD00A43CEB /* thttp_message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_message.h; sourceTree = "<group>"; };
+		ECE40778117CE1FD00A43CEB /* thttp_session.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_session.h; sourceTree = "<group>"; };
+		ECE40779117CE1FD00A43CEB /* thttp_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thttp_url.h; sourceTree = "<group>"; };
+		ECE4077A117CE1FD00A43CEB /* tinyhttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyhttp.h; sourceTree = "<group>"; };
+		ECE4077B117CE1FD00A43CEB /* tinyhttp_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tinyhttp_config.h; sourceTree = "<group>"; };
+		ECE4077D117CE1FD00A43CEB /* thttp_machine_header.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_machine_header.rl; sourceTree = "<group>"; };
+		ECE4077E117CE1FD00A43CEB /* thttp_machine_message.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_machine_message.rl; sourceTree = "<group>"; };
+		ECE4077F117CE1FD00A43CEB /* thttp_machine_utils.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_machine_utils.rl; sourceTree = "<group>"; };
+		ECE40780117CE1FD00A43CEB /* thttp_parser_header.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header.rl; sourceTree = "<group>"; };
+		ECE40781117CE1FD00A43CEB /* thttp_parser_header_Authorization.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Authorization.rl; sourceTree = "<group>"; };
+		ECE40782117CE1FD00A43CEB /* thttp_parser_header_Content_Length.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Content_Length.rl; sourceTree = "<group>"; };
+		ECE40783117CE1FD00A43CEB /* thttp_parser_header_Content_Type.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Content_Type.rl; sourceTree = "<group>"; };
+		ECE40784117CE1FD00A43CEB /* thttp_parser_header_Dummy.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Dummy.rl; sourceTree = "<group>"; };
+		ECE40785117CE1FD00A43CEB /* thttp_parser_header_ETag.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_ETag.rl; sourceTree = "<group>"; };
+		ECE40786117CE1FD00A43CEB /* thttp_parser_header_Transfer_Encoding.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_Transfer_Encoding.rl; sourceTree = "<group>"; };
+		ECE40787117CE1FD00A43CEB /* thttp_parser_header_WWW_Authenticate.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_header_WWW_Authenticate.rl; sourceTree = "<group>"; };
+		ECE40788117CE1FD00A43CEB /* thttp_parser_message.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_message.rl; sourceTree = "<group>"; };
+		ECE40789117CE1FD00A43CEB /* thttp_parser_url.rl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = thttp_parser_url.rl; sourceTree = "<group>"; };
+		ECE4078C117CE1FD00A43CEB /* thttp_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_auth.c; sourceTree = "<group>"; };
+		ECE4078D117CE1FD00A43CEB /* thttp_challenge.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_challenge.c; sourceTree = "<group>"; };
+		ECE4078F117CE1FD00A43CEB /* thttp_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header.c; sourceTree = "<group>"; };
+		ECE40790117CE1FD00A43CEB /* thttp_header_Authorization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Authorization.c; sourceTree = "<group>"; };
+		ECE40791117CE1FD00A43CEB /* thttp_header_Content_Length.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Content_Length.c; sourceTree = "<group>"; };
+		ECE40792117CE1FD00A43CEB /* thttp_header_Content_Type.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Content_Type.c; sourceTree = "<group>"; };
+		ECE40793117CE1FD00A43CEB /* thttp_header_Dummy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Dummy.c; sourceTree = "<group>"; };
+		ECE40794117CE1FD00A43CEB /* thttp_header_ETag.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_ETag.c; sourceTree = "<group>"; };
+		ECE40795117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Transfer_Encoding.c; sourceTree = "<group>"; };
+		ECE40796117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_WWW_Authenticate.c; sourceTree = "<group>"; };
+		ECE40799117CE1FD00A43CEB /* thttp_parser_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_header.c; sourceTree = "<group>"; };
+		ECE4079A117CE1FD00A43CEB /* thttp_parser_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_message.c; sourceTree = "<group>"; };
+		ECE4079B117CE1FD00A43CEB /* thttp_parser_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_url.c; sourceTree = "<group>"; };
+		ECE4079C117CE1FD00A43CEB /* thttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp.c; sourceTree = "<group>"; };
+		ECE4079D117CE1FD00A43CEB /* thttp_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_action.c; sourceTree = "<group>"; };
+		ECE4079E117CE1FD00A43CEB /* thttp_dialog.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_dialog.c; sourceTree = "<group>"; };
+		ECE4079F117CE1FD00A43CEB /* thttp_event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_event.c; sourceTree = "<group>"; };
+		ECE407A0117CE1FD00A43CEB /* thttp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_message.c; sourceTree = "<group>"; };
+		ECE407A1117CE1FD00A43CEB /* thttp_session.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_session.c; sourceTree = "<group>"; };
+		ECE407A2117CE1FD00A43CEB /* thttp_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_url.c; sourceTree = "<group>"; };
+		ECE407E5117CE27700A43CEB /* tsk_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_common.h; path = ../../tinySAK/src/tsk_common.h; sourceTree = SOURCE_ROOT; };
+		ECE407E6117CE27700A43CEB /* tsk_options.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_options.c; path = ../../tinySAK/src/tsk_options.c; sourceTree = SOURCE_ROOT; };
+		ECE407E7117CE27700A43CEB /* tsk_options.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_options.h; path = ../../tinySAK/src/tsk_options.h; sourceTree = SOURCE_ROOT; };
+		ECE40832117CE48D00A43CEB /* stdafx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stdafx.c; sourceTree = "<group>"; };
+		ECE40833117CE48D00A43CEB /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
+		ECE40834117CE48D00A43CEB /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
+		ECE40835117CE48D00A43CEB /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
+		ECE40836117CE48D00A43CEB /* test_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_auth.h; sourceTree = "<group>"; };
+		ECE40837117CE48D00A43CEB /* test_messages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_messages.h; sourceTree = "<group>"; };
+		ECE40838117CE48D00A43CEB /* test_stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_stack.h; sourceTree = "<group>"; };
+		ECE40839117CE48D00A43CEB /* test_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_url.h; sourceTree = "<group>"; };
 		ECED61BC10F988E7006B4DC9 /* libtinySAK.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinySAK.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECED61C110F98926006B4DC9 /* tinySAK_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tinySAK_config.h; path = ../../tinySAK/src/tinySAK_config.h; sourceTree = SOURCE_ROOT; };
 		ECED61C210F98926006B4DC9 /* tsk.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk.c; path = ../../tinySAK/src/tsk.c; sourceTree = SOURCE_ROOT; };
@@ -272,31 +378,6 @@
 		ECED61F410F98926006B4DC9 /* tsk_xml.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tsk_xml.c; path = ../../tinySAK/src/tsk_xml.c; sourceTree = SOURCE_ROOT; };
 		ECED61F510F98926006B4DC9 /* tsk_xml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tsk_xml.h; path = ../../tinySAK/src/tsk_xml.h; sourceTree = SOURCE_ROOT; };
 		ECED623D10F98B46006B4DC9 /* test */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = test; sourceTree = BUILT_PRODUCTS_DIR; };
-		ECF4BC7811434AEB00B7C09B /* thttp_auth.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_auth.c; sourceTree = "<group>"; };
-		ECF4BC7A11434AEB00B7C09B /* thttp_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header.c; sourceTree = "<group>"; };
-		ECF4BC7B11434AEB00B7C09B /* thttp_header_Authorization.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Authorization.c; sourceTree = "<group>"; };
-		ECF4BC7C11434AEB00B7C09B /* thttp_header_Content_Length.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Content_Length.c; sourceTree = "<group>"; };
-		ECF4BC7D11434AEB00B7C09B /* thttp_header_Content_Type.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Content_Type.c; sourceTree = "<group>"; };
-		ECF4BC7E11434AEB00B7C09B /* thttp_header_Dummy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Dummy.c; sourceTree = "<group>"; };
-		ECF4BC7F11434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_Proxy_Authenticate.c; sourceTree = "<group>"; };
-		ECF4BC8011434AEB00B7C09B /* thttp_header_WWW_Authenticate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_header_WWW_Authenticate.c; sourceTree = "<group>"; };
-		ECF4BC8311434AEB00B7C09B /* thttp_parser_header.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_header.c; sourceTree = "<group>"; };
-		ECF4BC8411434AEB00B7C09B /* thttp_parser_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_message.c; sourceTree = "<group>"; };
-		ECF4BC8511434AEB00B7C09B /* thttp_parser_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_parser_url.c; sourceTree = "<group>"; };
-		ECF4BC8611434AEB00B7C09B /* thttp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp.c; sourceTree = "<group>"; };
-		ECF4BC8711434AEB00B7C09B /* thttp_event.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_event.c; sourceTree = "<group>"; };
-		ECF4BC8811434AEB00B7C09B /* thttp_message.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_message.c; sourceTree = "<group>"; };
-		ECF4BC8911434AEB00B7C09B /* thttp_operation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_operation.c; sourceTree = "<group>"; };
-		ECF4BC8A11434AEB00B7C09B /* thttp_transport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_transport.c; sourceTree = "<group>"; };
-		ECF4BC8B11434AEB00B7C09B /* thttp_url.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = thttp_url.c; sourceTree = "<group>"; };
-		ECF4BCA111434B0E00B7C09B /* stdafx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = stdafx.c; sourceTree = "<group>"; };
-		ECF4BCA211434B0E00B7C09B /* stdafx.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdafx.h; sourceTree = "<group>"; };
-		ECF4BCA311434B0E00B7C09B /* targetver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = targetver.h; sourceTree = "<group>"; };
-		ECF4BCA411434B0E00B7C09B /* test.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = test.c; sourceTree = "<group>"; };
-		ECF4BCA511434B0E00B7C09B /* test.vcproj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.vcproj; sourceTree = "<group>"; };
-		ECF4BCA611434B0E00B7C09B /* test_auth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_auth.h; sourceTree = "<group>"; };
-		ECF4BCA711434B0E00B7C09B /* test_stack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_stack.h; sourceTree = "<group>"; };
-		ECF4BCA811434B0E00B7C09B /* test_url.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = test_url.h; sourceTree = "<group>"; };
 		ECF4BCB411434BA800B7C09B /* libtinyNET.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libtinyNET.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		ECF4BCC811434C1000B7C09B /* tnet_dhcp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tnet_dhcp.c; sourceTree = "<group>"; };
 		ECF4BCC911434C1000B7C09B /* tnet_dhcp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tnet_dhcp.h; sourceTree = "<group>"; };
@@ -428,13 +509,12 @@
 		08FB7794FE84155DC02AAC07 /* tinyHTTP */ = {
 			isa = PBXGroup;
 			children = (
+				ECE40761117CE1FC00A43CEB /* include */,
+				ECE4077C117CE1FD00A43CEB /* ragel */,
+				ECE4078A117CE1FD00A43CEB /* src */,
+				ECE407A3117CE1FD00A43CEB /* test */,
 				ECF4BCBB11434C1000B7C09B /* tinyNET */,
-				ECF4BC9F11434B0E00B7C09B /* test */,
-				ECF4BC7611434AEB00B7C09B /* src */,
 				ECED61BF10F988F6006B4DC9 /* tinySAK */,
-				ECED619F10F987B4006B4DC9 /* ragel */,
-				ECED619E10F987A5006B4DC9 /* abnf */,
-				ECED619D10F9878B006B4DC9 /* include */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
 			name = tinyHTTP;
@@ -451,60 +531,172 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		ECED619D10F9878B006B4DC9 /* include */ = {
+		ECE4075E117CE19100A43CEB /* ragel */ = {
 			isa = PBXGroup;
 			children = (
-				ECED61AB10F98876006B4DC9 /* thttp.h */,
-				ECED61AC10F98876006B4DC9 /* tinyhttp_config.h */,
-				ECED61A510F987F3006B4DC9 /* headers */,
-				ECED61A410F987EA006B4DC9 /* parsers */,
-				ECED61A310F987E3006B4DC9 /* auth */,
+				ECE4075F117CE19100A43CEB /* tnet_dns_regexp.rl */,
+				ECE40760117CE19100A43CEB /* tnet_dns_resolvconf.rl */,
+			);
+			path = ragel;
+			sourceTree = "<group>";
+		};
+		ECE40761117CE1FC00A43CEB /* include */ = {
+			isa = PBXGroup;
+			children = (
+				ECE40763117CE1FC00A43CEB /* tinyHTTP */,
+				ECE40762117CE1FC00A43CEB /* thttp.h */,
+				ECE4077A117CE1FD00A43CEB /* tinyhttp.h */,
+				ECE4077B117CE1FD00A43CEB /* tinyhttp_config.h */,
 			);
 			name = include;
-			sourceTree = "<group>";
+			path = ../../tinyHTTP/include;
+			sourceTree = SOURCE_ROOT;
 		};
-		ECED619E10F987A5006B4DC9 /* abnf */ = {
+		ECE40763117CE1FC00A43CEB /* tinyHTTP */ = {
 			isa = PBXGroup;
 			children = (
-				ECED61A610F98820006B4DC9 /* http.abnf */,
-				ECED61A710F98820006B4DC9 /* httpauth.abnf */,
-				ECED61A810F98820006B4DC9 /* uri.abnf */,
+				ECE40764117CE1FC00A43CEB /* auth */,
+				ECE40767117CE1FC00A43CEB /* headers */,
+				ECE40770117CE1FD00A43CEB /* parsers */,
+				ECE40774117CE1FD00A43CEB /* thttp_action.h */,
+				ECE40775117CE1FD00A43CEB /* thttp_dialog.h */,
+				ECE40776117CE1FD00A43CEB /* thttp_event.h */,
+				ECE40777117CE1FD00A43CEB /* thttp_message.h */,
+				ECE40778117CE1FD00A43CEB /* thttp_session.h */,
+				ECE40779117CE1FD00A43CEB /* thttp_url.h */,
 			);
-			name = abnf;
+			path = tinyHTTP;
 			sourceTree = "<group>";
 		};
-		ECED619F10F987B4006B4DC9 /* ragel */ = {
+		ECE40764117CE1FC00A43CEB /* auth */ = {
 			isa = PBXGroup;
 			children = (
+				ECE40765117CE1FC00A43CEB /* thttp_auth.h */,
+				ECE40766117CE1FC00A43CEB /* thttp_challenge.h */,
+			);
+			path = auth;
+			sourceTree = "<group>";
+		};
+		ECE40767117CE1FC00A43CEB /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				ECE40768117CE1FC00A43CEB /* thttp_header.h */,
+				ECE40769117CE1FC00A43CEB /* thttp_header_Authorization.h */,
+				ECE4076A117CE1FD00A43CEB /* thttp_header_Content_Length.h */,
+				ECE4076B117CE1FD00A43CEB /* thttp_header_Content_Type.h */,
+				ECE4076C117CE1FD00A43CEB /* thttp_header_Dummy.h */,
+				ECE4076D117CE1FD00A43CEB /* thttp_header_ETag.h */,
+				ECE4076E117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.h */,
+				ECE4076F117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.h */,
+			);
+			path = headers;
+			sourceTree = "<group>";
+		};
+		ECE40770117CE1FD00A43CEB /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+				ECE40771117CE1FD00A43CEB /* thttp_parser_header.h */,
+				ECE40772117CE1FD00A43CEB /* thttp_parser_message.h */,
+				ECE40773117CE1FD00A43CEB /* thttp_parser_url.h */,
+			);
+			path = parsers;
+			sourceTree = "<group>";
+		};
+		ECE4077C117CE1FD00A43CEB /* ragel */ = {
+			isa = PBXGroup;
+			children = (
+				ECE4077D117CE1FD00A43CEB /* thttp_machine_header.rl */,
+				ECE4077E117CE1FD00A43CEB /* thttp_machine_message.rl */,
+				ECE4077F117CE1FD00A43CEB /* thttp_machine_utils.rl */,
+				ECE40780117CE1FD00A43CEB /* thttp_parser_header.rl */,
+				ECE40781117CE1FD00A43CEB /* thttp_parser_header_Authorization.rl */,
+				ECE40782117CE1FD00A43CEB /* thttp_parser_header_Content_Length.rl */,
+				ECE40783117CE1FD00A43CEB /* thttp_parser_header_Content_Type.rl */,
+				ECE40784117CE1FD00A43CEB /* thttp_parser_header_Dummy.rl */,
+				ECE40785117CE1FD00A43CEB /* thttp_parser_header_ETag.rl */,
+				ECE40786117CE1FD00A43CEB /* thttp_parser_header_Transfer_Encoding.rl */,
+				ECE40787117CE1FD00A43CEB /* thttp_parser_header_WWW_Authenticate.rl */,
+				ECE40788117CE1FD00A43CEB /* thttp_parser_message.rl */,
+				ECE40789117CE1FD00A43CEB /* thttp_parser_url.rl */,
 			);
 			name = ragel;
-			sourceTree = "<group>";
+			path = ../../tinyHTTP/ragel;
+			sourceTree = SOURCE_ROOT;
 		};
-		ECED61A310F987E3006B4DC9 /* auth */ = {
+		ECE4078A117CE1FD00A43CEB /* src */ = {
 			isa = PBXGroup;
 			children = (
-				ECED61A910F9885E006B4DC9 /* thttp_auth.h */,
+				ECE4078B117CE1FD00A43CEB /* auth */,
+				ECE4078E117CE1FD00A43CEB /* headers */,
+				ECE40798117CE1FD00A43CEB /* parsers */,
+				ECE4079C117CE1FD00A43CEB /* thttp.c */,
+				ECE4079D117CE1FD00A43CEB /* thttp_action.c */,
+				ECE4079E117CE1FD00A43CEB /* thttp_dialog.c */,
+				ECE4079F117CE1FD00A43CEB /* thttp_event.c */,
+				ECE407A0117CE1FD00A43CEB /* thttp_message.c */,
+				ECE407A1117CE1FD00A43CEB /* thttp_session.c */,
+				ECE407A2117CE1FD00A43CEB /* thttp_url.c */,
 			);
-			name = auth;
-			sourceTree = "<group>";
+			name = src;
+			path = ../../tinyHTTP/src;
+			sourceTree = SOURCE_ROOT;
 		};
-		ECED61A410F987EA006B4DC9 /* parsers */ = {
+		ECE4078B117CE1FD00A43CEB /* auth */ = {
 			isa = PBXGroup;
 			children = (
+				ECE4078C117CE1FD00A43CEB /* thttp_auth.c */,
+				ECE4078D117CE1FD00A43CEB /* thttp_challenge.c */,
 			);
-			name = parsers;
+			path = auth;
 			sourceTree = "<group>";
 		};
-		ECED61A510F987F3006B4DC9 /* headers */ = {
+		ECE4078E117CE1FD00A43CEB /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				ECE4078F117CE1FD00A43CEB /* thttp_header.c */,
+				ECE40790117CE1FD00A43CEB /* thttp_header_Authorization.c */,
+				ECE40791117CE1FD00A43CEB /* thttp_header_Content_Length.c */,
+				ECE40792117CE1FD00A43CEB /* thttp_header_Content_Type.c */,
+				ECE40793117CE1FD00A43CEB /* thttp_header_Dummy.c */,
+				ECE40794117CE1FD00A43CEB /* thttp_header_ETag.c */,
+				ECE40795117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.c */,
+				ECE40796117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.c */,
 			);
-			name = headers;
+			path = headers;
 			sourceTree = "<group>";
+		};
+		ECE40798117CE1FD00A43CEB /* parsers */ = {
+			isa = PBXGroup;
+			children = (
+				ECE40799117CE1FD00A43CEB /* thttp_parser_header.c */,
+				ECE4079A117CE1FD00A43CEB /* thttp_parser_message.c */,
+				ECE4079B117CE1FD00A43CEB /* thttp_parser_url.c */,
+			);
+			path = parsers;
+			sourceTree = "<group>";
+		};
+		ECE407A3117CE1FD00A43CEB /* test */ = {
+			isa = PBXGroup;
+			children = (
+				ECE40832117CE48D00A43CEB /* stdafx.c */,
+				ECE40833117CE48D00A43CEB /* stdafx.h */,
+				ECE40834117CE48D00A43CEB /* targetver.h */,
+				ECE40835117CE48D00A43CEB /* test.c */,
+				ECE40836117CE48D00A43CEB /* test_auth.h */,
+				ECE40837117CE48D00A43CEB /* test_messages.h */,
+				ECE40838117CE48D00A43CEB /* test_stack.h */,
+				ECE40839117CE48D00A43CEB /* test_url.h */,
+			);
+			name = test;
+			path = ../../tinyHTTP/test;
+			sourceTree = SOURCE_ROOT;
 		};
 		ECED61BF10F988F6006B4DC9 /* tinySAK */ = {
 			isa = PBXGroup;
 			children = (
+				ECE407E5117CE27700A43CEB /* tsk_common.h */,
+				ECE407E6117CE27700A43CEB /* tsk_options.c */,
+				ECE407E7117CE27700A43CEB /* tsk_options.h */,
 				ECF4BD9511434CA000B7C09B /* tsk_fsm.c */,
 				ECF4BD9611434CA000B7C09B /* tsk_fsm.h */,
 				ECF4BD9711434CA000B7C09B /* tsk_ppfcs32.c */,
@@ -567,74 +759,10 @@
 			name = tinySAK;
 			sourceTree = "<group>";
 		};
-		ECF4BC7611434AEB00B7C09B /* src */ = {
-			isa = PBXGroup;
-			children = (
-				ECF4BC7711434AEB00B7C09B /* auth */,
-				ECF4BC7911434AEB00B7C09B /* headers */,
-				ECF4BC8211434AEB00B7C09B /* parsers */,
-				ECF4BC8611434AEB00B7C09B /* thttp.c */,
-				ECF4BC8711434AEB00B7C09B /* thttp_event.c */,
-				ECF4BC8811434AEB00B7C09B /* thttp_message.c */,
-				ECF4BC8911434AEB00B7C09B /* thttp_operation.c */,
-				ECF4BC8A11434AEB00B7C09B /* thttp_transport.c */,
-				ECF4BC8B11434AEB00B7C09B /* thttp_url.c */,
-			);
-			name = src;
-			path = ../../tinyHTTP/src;
-			sourceTree = SOURCE_ROOT;
-		};
-		ECF4BC7711434AEB00B7C09B /* auth */ = {
-			isa = PBXGroup;
-			children = (
-				ECF4BC7811434AEB00B7C09B /* thttp_auth.c */,
-			);
-			path = auth;
-			sourceTree = "<group>";
-		};
-		ECF4BC7911434AEB00B7C09B /* headers */ = {
-			isa = PBXGroup;
-			children = (
-				ECF4BC7A11434AEB00B7C09B /* thttp_header.c */,
-				ECF4BC7B11434AEB00B7C09B /* thttp_header_Authorization.c */,
-				ECF4BC7C11434AEB00B7C09B /* thttp_header_Content_Length.c */,
-				ECF4BC7D11434AEB00B7C09B /* thttp_header_Content_Type.c */,
-				ECF4BC7E11434AEB00B7C09B /* thttp_header_Dummy.c */,
-				ECF4BC7F11434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c */,
-				ECF4BC8011434AEB00B7C09B /* thttp_header_WWW_Authenticate.c */,
-			);
-			path = headers;
-			sourceTree = "<group>";
-		};
-		ECF4BC8211434AEB00B7C09B /* parsers */ = {
-			isa = PBXGroup;
-			children = (
-				ECF4BC8311434AEB00B7C09B /* thttp_parser_header.c */,
-				ECF4BC8411434AEB00B7C09B /* thttp_parser_message.c */,
-				ECF4BC8511434AEB00B7C09B /* thttp_parser_url.c */,
-			);
-			path = parsers;
-			sourceTree = "<group>";
-		};
-		ECF4BC9F11434B0E00B7C09B /* test */ = {
-			isa = PBXGroup;
-			children = (
-				ECF4BCA111434B0E00B7C09B /* stdafx.c */,
-				ECF4BCA211434B0E00B7C09B /* stdafx.h */,
-				ECF4BCA311434B0E00B7C09B /* targetver.h */,
-				ECF4BCA411434B0E00B7C09B /* test.c */,
-				ECF4BCA511434B0E00B7C09B /* test.vcproj */,
-				ECF4BCA611434B0E00B7C09B /* test_auth.h */,
-				ECF4BCA711434B0E00B7C09B /* test_stack.h */,
-				ECF4BCA811434B0E00B7C09B /* test_url.h */,
-			);
-			name = test;
-			path = ../../tinyHTTP/test;
-			sourceTree = SOURCE_ROOT;
-		};
 		ECF4BCBB11434C1000B7C09B /* tinyNET */ = {
 			isa = PBXGroup;
 			children = (
+				ECE4075E117CE19100A43CEB /* ragel */,
 				ECF4BCC611434C1000B7C09B /* src */,
 			);
 			name = tinyNET;
@@ -648,15 +776,17 @@
 				ECF4BCD011434C1000B7C09B /* dhcp6 */,
 				ECF4BCD911434C1100B7C09B /* dns */,
 				ECF4BCF611434C1100B7C09B /* ice */,
-				ECF4BCFA11434C1100B7C09B /* parsers */,
 				ECF4BCFB11434C1100B7C09B /* stun */,
-				ECF4BD0211434C1100B7C09B /* tinyNET_config.h */,
 				ECF4BD0311434C1100B7C09B /* tls */,
-				ECF4BD0611434C1100B7C09B /* tnet.c */,
+				ECF4BD1911434C1100B7C09B /* turn */,
+				ECE40751117CE04B00A43CEB /* tnet_endianness.c */,
+				ECE40752117CE04B00A43CEB /* tnet_endianness.h */,
 				ECF4BD0711434C1100B7C09B /* tnet.h */,
 				ECF4BD0811434C1100B7C09B /* tnet_auth.c */,
 				ECF4BD0911434C1100B7C09B /* tnet_auth.h */,
 				ECF4BD0A11434C1100B7C09B /* tnet_hardwares.h */,
+				ECF4BD0611434C1100B7C09B /* tnet.c */,
+				ECF4BD0211434C1100B7C09B /* tinyNET_config.h */,
 				ECF4BD0B11434C1100B7C09B /* tnet_nat.c */,
 				ECF4BD0C11434C1100B7C09B /* tnet_nat.h */,
 				ECF4BD0D11434C1100B7C09B /* tnet_poll.c */,
@@ -671,7 +801,6 @@
 				ECF4BD1611434C1100B7C09B /* tnet_types.h */,
 				ECF4BD1711434C1100B7C09B /* tnet_utils.c */,
 				ECF4BD1811434C1100B7C09B /* tnet_utils.h */,
-				ECF4BD1911434C1100B7C09B /* turn */,
 			);
 			path = src;
 			sourceTree = "<group>";
@@ -709,6 +838,10 @@
 		ECF4BCD911434C1100B7C09B /* dns */ = {
 			isa = PBXGroup;
 			children = (
+				ECE40755117CE09C00A43CEB /* tnet_dns_regexp.c */,
+				ECE40756117CE09C00A43CEB /* tnet_dns_regexp.h */,
+				ECE40757117CE09C00A43CEB /* tnet_dns_resolvconf.c */,
+				ECE40758117CE09C00A43CEB /* tnet_dns_resolvconf.h */,
 				ECF4BCDA11434C1100B7C09B /* tnet_dns.c */,
 				ECF4BCDB11434C1100B7C09B /* tnet_dns.h */,
 				ECF4BCDC11434C1100B7C09B /* tnet_dns_a.c */,
@@ -748,13 +881,6 @@
 				ECF4BCF811434C1100B7C09B /* tnet_ice.h */,
 			);
 			path = ice;
-			sourceTree = "<group>";
-		};
-		ECF4BCFA11434C1100B7C09B /* parsers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = parsers;
 			sourceTree = "<group>";
 		};
 		ECF4BCFB11434C1100B7C09B /* stun */ = {
@@ -799,9 +925,28 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECED61AA10F9885E006B4DC9 /* thttp_auth.h in Headers */,
-				ECED61AD10F98876006B4DC9 /* thttp.h in Headers */,
-				ECED61AE10F98876006B4DC9 /* tinyhttp_config.h in Headers */,
+				ECE407AE117CE1FD00A43CEB /* thttp.h in Headers */,
+				ECE407AF117CE1FD00A43CEB /* thttp_auth.h in Headers */,
+				ECE407B0117CE1FD00A43CEB /* thttp_challenge.h in Headers */,
+				ECE407B1117CE1FD00A43CEB /* thttp_header.h in Headers */,
+				ECE407B2117CE1FD00A43CEB /* thttp_header_Authorization.h in Headers */,
+				ECE407B3117CE1FD00A43CEB /* thttp_header_Content_Length.h in Headers */,
+				ECE407B4117CE1FD00A43CEB /* thttp_header_Content_Type.h in Headers */,
+				ECE407B5117CE1FD00A43CEB /* thttp_header_Dummy.h in Headers */,
+				ECE407B6117CE1FD00A43CEB /* thttp_header_ETag.h in Headers */,
+				ECE407B7117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.h in Headers */,
+				ECE407B8117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.h in Headers */,
+				ECE407B9117CE1FD00A43CEB /* thttp_parser_header.h in Headers */,
+				ECE407BA117CE1FD00A43CEB /* thttp_parser_message.h in Headers */,
+				ECE407BB117CE1FD00A43CEB /* thttp_parser_url.h in Headers */,
+				ECE407BC117CE1FD00A43CEB /* thttp_action.h in Headers */,
+				ECE407BD117CE1FD00A43CEB /* thttp_dialog.h in Headers */,
+				ECE407BE117CE1FD00A43CEB /* thttp_event.h in Headers */,
+				ECE407BF117CE1FD00A43CEB /* thttp_message.h in Headers */,
+				ECE407C0117CE1FD00A43CEB /* thttp_session.h in Headers */,
+				ECE407C1117CE1FD00A43CEB /* thttp_url.h in Headers */,
+				ECE407C2117CE1FD00A43CEB /* tinyhttp.h in Headers */,
+				ECE407C3117CE1FD00A43CEB /* tinyhttp_config.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -839,6 +984,8 @@
 				ECF4BDA011434CA000B7C09B /* tsk_ppfcs32.h in Headers */,
 				ECF4BDA211434CA000B7C09B /* tsk_ragel_state.h in Headers */,
 				ECF4BDA411434CA000B7C09B /* tsk_uuid.h in Headers */,
+				ECE407E8117CE27700A43CEB /* tsk_common.h in Headers */,
+				ECE407EA117CE27700A43CEB /* tsk_options.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,6 +1034,9 @@
 				ECF4BD7F11434C1100B7C09B /* tnet_turn.h in Headers */,
 				ECF4BD8111434C1100B7C09B /* tnet_turn_attribute.h in Headers */,
 				ECF4BD8311434C1100B7C09B /* tnet_turn_message.h in Headers */,
+				ECE40754117CE04B00A43CEB /* tnet_endianness.h in Headers */,
+				ECE4075A117CE09C00A43CEB /* tnet_dns_regexp.h in Headers */,
+				ECE4075C117CE09C00A43CEB /* tnet_dns_resolvconf.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -941,6 +1091,7 @@
 			dependencies = (
 				ECED624C10F98B85006B4DC9 /* PBXTargetDependency */,
 				ECED624E10F98B85006B4DC9 /* PBXTargetDependency */,
+				ECE4083E117CE52000A43CEB /* PBXTargetDependency */,
 			);
 			name = test;
 			productName = test;
@@ -990,23 +1141,26 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECF4BC8C11434AEB00B7C09B /* thttp_auth.c in Sources */,
-				ECF4BC8D11434AEB00B7C09B /* thttp_header.c in Sources */,
-				ECF4BC8E11434AEB00B7C09B /* thttp_header_Authorization.c in Sources */,
-				ECF4BC8F11434AEB00B7C09B /* thttp_header_Content_Length.c in Sources */,
-				ECF4BC9011434AEB00B7C09B /* thttp_header_Content_Type.c in Sources */,
-				ECF4BC9111434AEB00B7C09B /* thttp_header_Dummy.c in Sources */,
-				ECF4BC9211434AEB00B7C09B /* thttp_header_Proxy_Authenticate.c in Sources */,
-				ECF4BC9311434AEB00B7C09B /* thttp_header_WWW_Authenticate.c in Sources */,
-				ECF4BC9511434AEB00B7C09B /* thttp_parser_header.c in Sources */,
-				ECF4BC9611434AEB00B7C09B /* thttp_parser_message.c in Sources */,
-				ECF4BC9711434AEB00B7C09B /* thttp_parser_url.c in Sources */,
-				ECF4BC9811434AEB00B7C09B /* thttp.c in Sources */,
-				ECF4BC9911434AEB00B7C09B /* thttp_event.c in Sources */,
-				ECF4BC9A11434AEB00B7C09B /* thttp_message.c in Sources */,
-				ECF4BC9B11434AEB00B7C09B /* thttp_operation.c in Sources */,
-				ECF4BC9C11434AEB00B7C09B /* thttp_transport.c in Sources */,
-				ECF4BC9D11434AEB00B7C09B /* thttp_url.c in Sources */,
+				ECE407C4117CE1FD00A43CEB /* thttp_auth.c in Sources */,
+				ECE407C5117CE1FD00A43CEB /* thttp_challenge.c in Sources */,
+				ECE407C6117CE1FD00A43CEB /* thttp_header.c in Sources */,
+				ECE407C7117CE1FD00A43CEB /* thttp_header_Authorization.c in Sources */,
+				ECE407C8117CE1FD00A43CEB /* thttp_header_Content_Length.c in Sources */,
+				ECE407C9117CE1FD00A43CEB /* thttp_header_Content_Type.c in Sources */,
+				ECE407CA117CE1FD00A43CEB /* thttp_header_Dummy.c in Sources */,
+				ECE407CB117CE1FD00A43CEB /* thttp_header_ETag.c in Sources */,
+				ECE407CC117CE1FD00A43CEB /* thttp_header_Transfer_Encoding.c in Sources */,
+				ECE407CD117CE1FD00A43CEB /* thttp_header_WWW_Authenticate.c in Sources */,
+				ECE407CF117CE1FD00A43CEB /* thttp_parser_header.c in Sources */,
+				ECE407D0117CE1FD00A43CEB /* thttp_parser_message.c in Sources */,
+				ECE407D1117CE1FD00A43CEB /* thttp_parser_url.c in Sources */,
+				ECE407D2117CE1FD00A43CEB /* thttp.c in Sources */,
+				ECE407D3117CE1FD00A43CEB /* thttp_action.c in Sources */,
+				ECE407D4117CE1FD00A43CEB /* thttp_dialog.c in Sources */,
+				ECE407D5117CE1FD00A43CEB /* thttp_event.c in Sources */,
+				ECE407D6117CE1FD00A43CEB /* thttp_message.c in Sources */,
+				ECE407D7117CE1FD00A43CEB /* thttp_session.c in Sources */,
+				ECE407D8117CE1FD00A43CEB /* thttp_url.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1042,6 +1196,7 @@
 				ECF4BD9F11434CA000B7C09B /* tsk_ppfcs32.c in Sources */,
 				ECF4BDA111434CA000B7C09B /* tsk_ragel_state.c in Sources */,
 				ECF4BDA311434CA000B7C09B /* tsk_uuid.c in Sources */,
+				ECE407E9117CE27700A43CEB /* tsk_options.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1049,8 +1204,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECF4BCAA11434B0E00B7C09B /* stdafx.c in Sources */,
-				ECF4BCAB11434B0E00B7C09B /* test.c in Sources */,
+				ECE4083A117CE48D00A43CEB /* stdafx.c in Sources */,
+				ECE4083B117CE48D00A43CEB /* test.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1097,12 +1252,20 @@
 				ECF4BD7E11434C1100B7C09B /* tnet_turn.c in Sources */,
 				ECF4BD8011434C1100B7C09B /* tnet_turn_attribute.c in Sources */,
 				ECF4BD8211434C1100B7C09B /* tnet_turn_message.c in Sources */,
+				ECE40753117CE04B00A43CEB /* tnet_endianness.c in Sources */,
+				ECE40759117CE09C00A43CEB /* tnet_dns_regexp.c in Sources */,
+				ECE4075B117CE09C00A43CEB /* tnet_dns_resolvconf.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		ECE4083E117CE52000A43CEB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECF4BCB311434BA800B7C09B /* tinyNET */;
+			targetProxy = ECE4083D117CE52000A43CEB /* PBXContainerItemProxy */;
+		};
 		ECED622E10F9899F006B4DC9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = ECED61BB10F988E7006B4DC9 /* tinySAK */;
@@ -1147,6 +1310,7 @@
 				);
 				INSTALL_PATH = /usr/local/lib;
 				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
 				PRODUCT_NAME = tinyHTTP;
 			};
 			name = Debug;
@@ -1200,6 +1364,8 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INSTALL_PATH = /usr/local/lib;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
+				OTHER_CPLUSPLUSFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
 				PREBINDING = NO;
 				PRODUCT_NAME = tinySAK;
 			};
@@ -1230,8 +1396,13 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = ../../../doubango/tinyHTTP/include;
+				HEADER_SEARCH_PATHS = (
+					../../../doubango/tinyHTTP/include,
+					../../../doubango/tinyNET/src,
+					../../../doubango/tinySAK/src,
+				);
 				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
 				PREBINDING = NO;
 				PRODUCT_NAME = test;
 			};
@@ -1267,6 +1438,7 @@
 					../../../doubango/tinyNET/src,
 				);
 				INSTALL_PATH = /usr/local/lib;
+				OTHER_CFLAGS = "-DDEBUG_LEVEL=DEBUG_LEVEL_INFO";
 				PREBINDING = NO;
 				PRODUCT_NAME = tinyNET;
 			};
