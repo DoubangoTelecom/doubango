@@ -127,7 +127,7 @@ int tsdp_header_serialize(const tsdp_header_t *self, tsk_buffer_t *output)
 
 char* tsdp_header_tostring(const tsdp_header_t *self)
 {
-	tsk_buffer_t* output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t* output = tsk_buffer_create_null();
 	char* str = tsk_null;
 
 	if(!(tsdp_header_serialize(self, output))){

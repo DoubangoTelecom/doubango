@@ -35,13 +35,7 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_HEADER_SUCCESS_REPORT_CREATE
-* Creates new msrp Success-Report header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(isSuccess)		tmsrp_header_Success_Report_def_t, (tsk_bool_t)isSuccess
-#define TMSRP_HEADER_SUCCESS_REPORT_CREATE(isSuccess)		tsk_object_new(TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(isSuccess))
-#define TMSRP_HEADER_SUCCESS_REPORT_CREATE_NULL()				TMSRP_HEADER_SUCCESS_REPORT_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -60,9 +54,13 @@ tmsrp_header_Success_Report_t;
 
 typedef tsk_list_t tmsrp_headers_Success_Report_L_t;
 
-tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *data, size_t size);
 
-TINYMSRP_GEXTERN const void *tmsrp_header_Success_Report_def_t;
+TINYMSRP_API tmsrp_header_Success_Report_t* tmsrp_header_Success_Report_create(tsk_bool_t isSuccess);
+TINYMSRP_API tmsrp_header_Success_Report_t* tmsrp_header_Success_Report_create_null();
+
+TINYMSRP_API tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *data, size_t size);
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Success_Report_def_t;
 
 TMSRP_END_DECLS
 

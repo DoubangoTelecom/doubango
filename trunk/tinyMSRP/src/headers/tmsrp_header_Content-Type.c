@@ -1,5 +1,5 @@
 
-/* #line 1 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 1 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -44,13 +44,23 @@
 *	Ragel state machine.
 */
 
-/* #line 74 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 74 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 
+
+
+tmsrp_header_Content_Type_t* tmsrp_header_Content_Type_create(const char* type)
+{
+	return tsk_object_new(TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(type));
+}
+
+tmsrp_header_Content_Type_t* tmsrp_header_Content_Type_create_null()
+{
+	return tmsrp_header_Content_Type_create(tsk_null);
+}
 
 int tmsrp_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Content_Type_t *Content_Type = header;
 		const tsk_list_item_t *item;
 
@@ -73,12 +83,12 @@ tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, s
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Content_Type_t *hdr_ctype = TMSRP_HEADER_CONTENT_TYPE_CREATE_NULL();
+	tmsrp_header_Content_Type_t *hdr_ctype = tmsrp_header_Content_Type_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 82 "../src/headers/tmsrp_header_Content-Type.c" */
+/* #line 92 "./src/headers/tmsrp_header_Content-Type.c" */
 static const char _tmsrp_machine_parser_header_Content_Type_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -240,16 +250,16 @@ static const int tmsrp_machine_parser_header_Content_Type_error = 0;
 static const int tmsrp_machine_parser_header_Content_Type_en_main = 1;
 
 
-/* #line 107 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 117 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	
-/* #line 246 "../src/headers/tmsrp_header_Content-Type.c" */
+/* #line 256 "./src/headers/tmsrp_header_Content-Type.c" */
 	{
 	cs = tmsrp_machine_parser_header_Content_Type_start;
 	}
 
-/* #line 108 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 118 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	
-/* #line 253 "../src/headers/tmsrp_header_Content-Type.c" */
+/* #line 263 "./src/headers/tmsrp_header_Content-Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -324,24 +334,24 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 50 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 54 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 54 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ctype->value);
 	}
 	break;
 	case 2:
-/* #line 58 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 58 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{		
 		TSK_PARSER_ADD_PARAM(hdr_ctype->params);
 	}
 	break;
-/* #line 345 "../src/headers/tmsrp_header_Content-Type.c" */
+/* #line 355 "./src/headers/tmsrp_header_Content-Type.c" */
 		}
 	}
 
@@ -358,18 +368,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 1:
-/* #line 54 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 54 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ctype->value);
 	}
 	break;
 	case 2:
-/* #line 58 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 58 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	{		
 		TSK_PARSER_ADD_PARAM(hdr_ctype->params);
 	}
 	break;
-/* #line 373 "../src/headers/tmsrp_header_Content-Type.c" */
+/* #line 383 "./src/headers/tmsrp_header_Content-Type.c" */
 		}
 	}
 	}
@@ -377,14 +387,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 109 "tmsrp_parser_header_Content-Type.rl" */
+/* #line 119 "./ragel/tmsrp_parser_header_Content-Type.rl" */
 	
 	if( cs < 
-/* #line 384 "../src/headers/tmsrp_header_Content-Type.c" */
+/* #line 394 "./src/headers/tmsrp_header_Content-Type.c" */
 48
-/* #line 110 "tmsrp_parser_header_Content-Type.rl" */
- )
-	{
+/* #line 120 "./ragel/tmsrp_parser_header_Content-Type.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'Content-Type' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);
 	}
 	
@@ -403,7 +413,7 @@ _again:
 
 /**@ingroup tmsrp_header_Content_Type_group
 */
-static void* tmsrp_header_Content_Type_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Content_Type_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Content_Type_t *Content_Type = self;
 	if(Content_Type){
@@ -420,15 +430,16 @@ static void* tmsrp_header_Content_Type_create(void *self, va_list * app)
 
 /**@ingroup tmsrp_header_Content_Type_group
 */
-static void* tmsrp_header_Content_Type_destroy(void *self)
+static tsk_object_t* tmsrp_header_Content_Type_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Content_Type_t *Content_Type = self;
-	if(Content_Type)
-	{
+	if(Content_Type){
 		TSK_FREE(Content_Type->value);
 		TSK_OBJECT_SAFE_FREE(Content_Type->params);
 	}
-	else TSK_DEBUG_ERROR("Null Content_Type header.");
+	else{
+		TSK_DEBUG_ERROR("Null Content-Type header.");
+	}
 
 	return self;
 }
@@ -436,8 +447,8 @@ static void* tmsrp_header_Content_Type_destroy(void *self)
 static const tsk_object_def_t tmsrp_header_Content_Type_def_s = 
 {
 	sizeof(tmsrp_header_Content_Type_t),
-	tmsrp_header_Content_Type_create,
-	tmsrp_header_Content_Type_destroy,
-	0
+	tmsrp_header_Content_Type_ctor,
+	tmsrp_header_Content_Type_dtor,
+	tsk_null
 };
-const void *tmsrp_header_Content_Type_def_t = &tmsrp_header_Content_Type_def_s;
+const tsk_object_def_t *tmsrp_header_Content_Type_def_t = &tmsrp_header_Content_Type_def_s;

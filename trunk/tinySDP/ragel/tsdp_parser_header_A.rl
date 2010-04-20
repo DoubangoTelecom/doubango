@@ -43,7 +43,7 @@
 	machine tsdp_machine_parser_header_A;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -67,10 +67,22 @@
 
 }%%
 
+
+
+tsdp_header_A_t* tsdp_header_A_create(const char* field, const char* value)
+{
+	return tsk_object_new(TSDP_HEADER_A_VA_ARGS(field, value));
+}
+
+tsdp_header_A_t* tsdp_header_A_create_null()
+{
+	return tsdp_header_A_create(tsk_null, tsk_null);
+}
+
+
 int tsdp_header_A_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_A_t *A = (const tsdp_header_A_t *)header;
 		
 		return tsk_buffer_append_2(output, "%s%s%s",
@@ -88,7 +100,7 @@ tsdp_header_t* tsdp_header_A_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_A_t *A = (const tsdp_header_A_t *)header;
-		return TSDP_HEADER_A_CREATE(A->field, A->value);
+		return (tsdp_header_t*)tsdp_header_A_create(A->field, A->value);
 	}
 	return tsk_null;
 }
@@ -99,7 +111,7 @@ tsdp_header_A_t *tsdp_header_A_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_A_t *hdr_A = TSDP_HEADER_A_CREATE_NULL();
+	tsdp_header_A_t *hdr_A = tsdp_header_A_create_null();
 	
 	const char *tag_start;
 
@@ -125,7 +137,7 @@ tsdp_header_A_t *tsdp_header_A_parse(const char *data, size_t size)
 //	A header object definition
 //
 
-static void* tsdp_header_A_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_A_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_A_t *A = self;
 	if(A)
@@ -144,7 +156,7 @@ static void* tsdp_header_A_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_A_destroy(void *self)
+static tsk_object_t* tsdp_header_A_dtor(tsk_object_t *self)
 {
 	tsdp_header_A_t *A = self;
 	if(A){
@@ -170,8 +182,8 @@ static int tsdp_header_A_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_A_def_s = 
 {
 	sizeof(tsdp_header_A_t),
-	tsdp_header_A_create,
-	tsdp_header_A_destroy,
+	tsdp_header_A_ctor,
+	tsdp_header_A_dtor,
 	tsdp_header_A_cmp
 };
 

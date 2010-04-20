@@ -42,7 +42,7 @@
 	machine tmsrp_machine_parser_uri;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -64,7 +64,7 @@
 	action parse_host{
 		TSK_PARSER_SET_STRING(uri->authority.host);
 		if(uri->authority.host_type == host_ipv6){
-			tsk_strunquoteex(&uri->authority.host, '[', ']');
+			tsk_strunquote_2(&uri->authority.host, '[', ']');
 		}
 	}
 
@@ -117,7 +117,7 @@ tmsrp_uri_t *tmsrp_uri_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_uri_t *uri = TMSRP_URI_CREATE_NULL();
+	tmsrp_uri_t *uri = tmsrp_uri_create_null();
 	
 	const char *tag_start;
 

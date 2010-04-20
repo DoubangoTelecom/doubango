@@ -39,6 +39,11 @@
 
 #include <string.h>
 
+tmsrp_header_WWW_Authenticate_t* thttp_header_WWW_Authenticate_create()
+{
+	return tsk_object_new(tmsrp_header_WWW_Authenticate_def_t);
+}
+
 int tmsrp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -46,7 +51,7 @@ int tmsrp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* out
 		const tmsrp_header_WWW_Authenticate_t *WWW_Authenticate = header;
 		if(WWW_Authenticate && WWW_Authenticate->scheme)
 		{
-			return tsk_buffer_appendEx(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
+			return tsk_buffer_append_2(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
 				WWW_Authenticate->scheme,
 				WWW_Authenticate->realm ? WWW_Authenticate->realm : "",
 				
@@ -85,7 +90,7 @@ tmsrp_header_WWW_Authenticate_t *tmsrp_header_WWW_Authenticate_parse(const char 
 
 	if((http_hdr = thttp_header_WWW_Authenticate_parse(data, size)))
 	{
-		msrp_hdr = TMSRP_HEADER_WWW_AUTHENTICATE_CREATE();
+		msrp_hdr = thttp_header_WWW_Authenticate_create();
 
 		msrp_hdr->scheme = tsk_strdup(http_hdr->scheme);
 		msrp_hdr->realm = tsk_strdup(http_hdr->realm);
@@ -114,7 +119,7 @@ tmsrp_header_WWW_Authenticate_t *tmsrp_header_WWW_Authenticate_parse(const char 
 //	WWW_Authenticate header object definition
 //
 
-static void* tmsrp_header_WWW_Authenticate_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_WWW_Authenticate_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_WWW_Authenticate_t *WWW_Authenticate = self;
 	if(WWW_Authenticate){
@@ -127,11 +132,10 @@ static void* tmsrp_header_WWW_Authenticate_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_WWW_Authenticate_destroy(void *self)
+static tsk_object_t* tmsrp_header_WWW_Authenticate_dtor(tsk_object_t *self)
 {
 	tmsrp_header_WWW_Authenticate_t *WWW_Authenticate = self;
-	if(WWW_Authenticate)
-	{
+	if(WWW_Authenticate){
 		TSK_FREE(WWW_Authenticate->scheme);
 		TSK_FREE(WWW_Authenticate->realm);
 		TSK_FREE(WWW_Authenticate->domain);
@@ -142,7 +146,9 @@ static void* tmsrp_header_WWW_Authenticate_destroy(void *self)
 
 		TSK_OBJECT_SAFE_FREE(WWW_Authenticate->params);
 	}
-	else TSK_DEBUG_ERROR("Null WWW_Authenticate header.");
+	else{
+		TSK_DEBUG_ERROR("Null WWW-Authenticate header.");
+	}
 
 	return self;
 }
@@ -150,8 +156,8 @@ static void* tmsrp_header_WWW_Authenticate_destroy(void *self)
 static const tsk_object_def_t tmsrp_header_WWW_Authenticate_def_s = 
 {
 	sizeof(tmsrp_header_WWW_Authenticate_t),
-	tmsrp_header_WWW_Authenticate_create,
-	tmsrp_header_WWW_Authenticate_destroy,
-	0
+	tmsrp_header_WWW_Authenticate_ctor,
+	tmsrp_header_WWW_Authenticate_dtor,
+	tsk_null
 };
-const void *tmsrp_header_WWW_Authenticate_def_t = &tmsrp_header_WWW_Authenticate_def_s;
+const tsk_object_def_t *tmsrp_header_WWW_Authenticate_def_t = &tmsrp_header_WWW_Authenticate_def_s;

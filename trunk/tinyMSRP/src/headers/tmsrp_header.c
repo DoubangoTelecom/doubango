@@ -82,7 +82,7 @@ int tmsrp_header_tostring(const tmsrp_header_t *self, tsk_buffer_t *output)
 	}
 
 	/* Name */
-	tsk_buffer_appendEx(output, "%s: ", tmsrp_header_get_nameex(self));
+	tsk_buffer_append_2(output, "%s: ", tmsrp_header_get_nameex(self));
 
 	/* Value */
 	if((ret = self->tostring(self, output))){

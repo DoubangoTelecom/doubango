@@ -43,7 +43,7 @@
 	machine tsdp_machine_parser_header_E;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -60,10 +60,21 @@
 
 }%%
 
+
+
+tsdp_header_E_t* tsdp_header_E_create(const char* value)
+{
+	return tsk_object_new(TSDP_HEADER_E_VA_ARGS(value));
+}
+
+tsdp_header_E_t* tsdp_header_E_create_null()
+{
+	return tsdp_header_E_create(tsk_null);
+}
+
 int tsdp_header_E_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_E_t *E = (const tsdp_header_E_t *)header;
 		if(E->value){
 			tsk_buffer_append(output, E->value, strlen(E->value));
@@ -78,7 +89,7 @@ tsdp_header_t* tsdp_header_E_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_E_t *E = (const tsdp_header_E_t *)header;
-		return TSDP_HEADER_E_CREATE(E->value);
+		return (tsdp_header_t*)tsdp_header_E_create(E->value);
 	}
 	return tsk_null;
 }
@@ -89,7 +100,7 @@ tsdp_header_E_t *tsdp_header_E_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_E_t *hdr_E = TSDP_HEADER_E_CREATE_NULL();
+	tsdp_header_E_t *hdr_E = tsdp_header_E_create_null();
 	
 	const char *tag_start;
 
@@ -115,11 +126,10 @@ tsdp_header_E_t *tsdp_header_E_parse(const char *data, size_t size)
 //	E header object definition
 //
 
-static void* tsdp_header_E_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_E_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_E_t *E = self;
-	if(E)
-	{
+	if(E){
 		TSDP_HEADER(E)->type = tsdp_htype_E;
 		TSDP_HEADER(E)->tostring = tsdp_header_E_tostring;
 		TSDP_HEADER(E)->clone = tsdp_header_E_clone;
@@ -133,7 +143,7 @@ static void* tsdp_header_E_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_E_destroy(void *self)
+static tsk_object_t* tsdp_header_E_dtor(tsk_object_t *self)
 {
 	tsdp_header_E_t *E = self;
 	if(E){
@@ -158,8 +168,8 @@ static int tsdp_header_E_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_E_def_s = 
 {
 	sizeof(tsdp_header_E_t),
-	tsdp_header_E_create,
-	tsdp_header_E_destroy,
+	tsdp_header_E_ctor,
+	tsdp_header_E_dtor,
 	tsdp_header_E_cmp
 };
 

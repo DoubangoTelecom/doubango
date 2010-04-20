@@ -42,7 +42,7 @@
 	machine tmsrp_machine_parser_header_Message_Id;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -59,6 +59,18 @@
 	main := Message_Id :>CRLF?;
 
 }%%
+
+
+tmsrp_header_Message_ID_t* tmsrp_header_Message_ID_create(const char* value)
+{
+	return tsk_object_new(TMSRP_HEADER_MESSAGE_ID_VA_ARGS(value));
+}
+
+tmsrp_header_Message_ID_t* tmsrp_header_Message_ID_create_null()
+{
+	return tmsrp_header_Message_ID_create(tsk_null);
+}
+
 
 int tmsrp_header_Message_ID_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
@@ -80,7 +92,7 @@ tmsrp_header_Message_ID_t *tmsrp_header_Message_ID_parse(const char *data, size_
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Message_ID_t *hdr_Message_Id = TMSRP_HEADER_MESSAGE_ID_CREATE_NULL();
+	tmsrp_header_Message_ID_t *hdr_Message_Id = tmsrp_header_Message_ID_create_null();
 	
 	const char *tag_start;
 
@@ -106,11 +118,10 @@ tmsrp_header_Message_ID_t *tmsrp_header_Message_ID_parse(const char *data, size_
 //	Message_Id header object definition
 //
 
-static void* tmsrp_header_Message_ID_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Message_ID_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Message_ID_t *Message_Id = self;
-	if(Message_Id)
-	{
+	if(Message_Id){
 		TMSRP_HEADER(Message_Id)->type = tmsrp_htype_Message_ID;
 		TMSRP_HEADER(Message_Id)->tostring = tmsrp_header_Message_ID_tostring;
 		
@@ -122,7 +133,7 @@ static void* tmsrp_header_Message_ID_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Message_ID_destroy(void *self)
+static tsk_object_t* tmsrp_header_Message_ID_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Message_ID_t *Message_Id = self;
 	if(Message_Id){
@@ -134,17 +145,13 @@ static void* tmsrp_header_Message_ID_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Message_ID_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Message_ID_def_s = 
 {
 	sizeof(tmsrp_header_Message_ID_t),
-	tmsrp_header_Message_ID_create,
-	tmsrp_header_Message_ID_destroy,
-	tmsrp_header_Message_ID_cmp
+	tmsrp_header_Message_ID_ctor,
+	tmsrp_header_Message_ID_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Message_ID_def_t = &tmsrp_header_Message_ID_def_s;
+const tsk_object_def_t *tmsrp_header_Message_ID_def_t = &tmsrp_header_Message_ID_def_s;

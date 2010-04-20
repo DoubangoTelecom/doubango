@@ -1,5 +1,5 @@
 
-/* #line 1 "tmsrp_parser_header_Dummy.rl" */
+/* #line 1 "./ragel/tmsrp_parser_header_Dummy.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -41,13 +41,23 @@
 *	Ragel state machine.
 */
 
-/* #line 65 "tmsrp_parser_header_Dummy.rl" */
+/* #line 65 "./ragel/tmsrp_parser_header_Dummy.rl" */
 
+
+
+tmsrp_header_Dummy_t* tmsrp_header_Dummy_create(const char* name, const char* value)
+{
+	return tsk_object_new(TMSRP_HEADER_DUMMY_VA_ARGS(name, value));
+}
+
+tmsrp_header_Dummy_t* tmsrp_header_Dummy_create_null()
+{
+	return tmsrp_header_Dummy_create(tsk_null, tsk_null);
+}
 
 int tmsrp_header_Dummy_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Dummy_t *Dummy = (const tmsrp_header_Dummy_t *)header;
 		if(Dummy->value){
 			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
@@ -64,20 +74,19 @@ tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Dummy_t *hdr_Dummy = TMSRP_HEADER_DUMMY_CREATE_NULL();
+	tmsrp_header_Dummy_t *hdr_Dummy = tmsrp_header_Dummy_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 73 "../src/headers/tmsrp_header_Dummy.c" */
+/* #line 83 "./src/headers/tmsrp_header_Dummy.c" */
 static const char _tmsrp_machine_parser_header_Dummy_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 2
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_key_offsets[] = {
-	0, 0, 14, 30, 32, 34, 36, 38, 
-	40, 42, 43, 58, 72
+	0, 0, 14, 30, 32, 33, 40, 46
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_trans_keys[] = {
@@ -85,74 +94,61 @@ static const char _tmsrp_machine_parser_header_Dummy_trans_keys[] = {
 	48, 57, 65, 90, 95, 122, 32, 33, 
 	37, 39, 58, 126, 42, 43, 45, 46, 
 	48, 57, 65, 90, 95, 122, 32, 58, 
-	-128, -65, -128, -65, -128, -65, -128, -65, 
-	-128, -65, 10, 9, 13, 32, -64, -33, 
-	-32, -17, -16, -9, -8, -5, -4, -3, 
-	33, 126, 9, 13, -64, -33, -32, -17, 
-	-16, -9, -8, -5, -4, -3, 32, 126, 
-	0
+	10, 13, 32, 127, 0, 8, 10, 31, 
+	13, 127, 0, 8, 10, 31, 0
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_single_lengths[] = {
-	0, 4, 6, 2, 0, 0, 0, 0, 
-	0, 1, 3, 2, 0
+	0, 4, 6, 2, 1, 3, 2, 0
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_range_lengths[] = {
-	0, 5, 5, 0, 1, 1, 1, 1, 
-	1, 0, 6, 6, 0
+	0, 5, 5, 0, 0, 2, 2, 0
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_index_offsets[] = {
-	0, 0, 10, 22, 25, 27, 29, 31, 
-	33, 35, 37, 47, 56
+	0, 0, 10, 22, 25, 27, 33, 38
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_indicies[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 1, 2, 3, 3, 3, 4, 3, 
 	3, 3, 3, 3, 3, 1, 5, 6, 
-	1, 7, 1, 8, 1, 9, 1, 10, 
-	1, 11, 1, 12, 1, 18, 19, 6, 
-	13, 14, 15, 16, 17, 18, 1, 7, 
-	21, 8, 9, 10, 11, 20, 7, 1, 
-	1, 0
+	1, 7, 1, 9, 6, 1, 1, 1, 
+	8, 11, 1, 1, 1, 10, 1, 0
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_trans_targs[] = {
-	2, 0, 3, 2, 10, 3, 10, 11, 
-	4, 5, 6, 7, 12, 4, 5, 6, 
-	7, 8, 11, 9, 8, 9
+	2, 0, 3, 2, 5, 3, 5, 7, 
+	6, 4, 6, 4
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_trans_actions[] = {
 	1, 0, 3, 0, 3, 0, 0, 0, 
-	0, 0, 0, 0, 0, 1, 1, 1, 
-	1, 1, 1, 7, 0, 5
+	1, 7, 0, 5
 };
 
 static const char _tmsrp_machine_parser_header_Dummy_eof_actions[] = {
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 7, 5, 0
+	0, 0, 0, 0, 0, 7, 5, 0
 };
 
 static const int tmsrp_machine_parser_header_Dummy_start = 1;
-static const int tmsrp_machine_parser_header_Dummy_first_final = 10;
+static const int tmsrp_machine_parser_header_Dummy_first_final = 5;
 static const int tmsrp_machine_parser_header_Dummy_error = 0;
 
 static const int tmsrp_machine_parser_header_Dummy_en_main = 1;
 
 
-/* #line 92 "tmsrp_parser_header_Dummy.rl" */
+/* #line 102 "./ragel/tmsrp_parser_header_Dummy.rl" */
 	
-/* #line 149 "../src/headers/tmsrp_header_Dummy.c" */
+/* #line 145 "./src/headers/tmsrp_header_Dummy.c" */
 	{
 	cs = tmsrp_machine_parser_header_Dummy_start;
 	}
 
-/* #line 93 "tmsrp_parser_header_Dummy.rl" */
+/* #line 103 "./ragel/tmsrp_parser_header_Dummy.rl" */
 	
-/* #line 156 "../src/headers/tmsrp_header_Dummy.c" */
+/* #line 152 "./src/headers/tmsrp_header_Dummy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -227,24 +223,24 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "tmsrp_parser_header_Dummy.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_Dummy.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "tmsrp_parser_header_Dummy.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_Dummy.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Dummy->name);
 	}
 	break;
 	case 2:
-/* #line 55 "tmsrp_parser_header_Dummy.rl" */
+/* #line 55 "./ragel/tmsrp_parser_header_Dummy.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 	break;
-/* #line 248 "../src/headers/tmsrp_header_Dummy.c" */
+/* #line 244 "./src/headers/tmsrp_header_Dummy.c" */
 		}
 	}
 
@@ -261,18 +257,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "tmsrp_parser_header_Dummy.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_Dummy.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 2:
-/* #line 55 "tmsrp_parser_header_Dummy.rl" */
+/* #line 55 "./ragel/tmsrp_parser_header_Dummy.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 	break;
-/* #line 276 "../src/headers/tmsrp_header_Dummy.c" */
+/* #line 272 "./src/headers/tmsrp_header_Dummy.c" */
 		}
 	}
 	}
@@ -280,14 +276,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 94 "tmsrp_parser_header_Dummy.rl" */
+/* #line 104 "./ragel/tmsrp_parser_header_Dummy.rl" */
 	
 	if( cs < 
-/* #line 287 "../src/headers/tmsrp_header_Dummy.c" */
-10
-/* #line 95 "tmsrp_parser_header_Dummy.rl" */
+/* #line 283 "./src/headers/tmsrp_header_Dummy.c" */
+5
+/* #line 105 "./ragel/tmsrp_parser_header_Dummy.rl" */
  ){
-		TSK_DEBUG_ERROR("Failed to parse dummy header.");
+		TSK_DEBUG_ERROR("Failed to parse Dummy header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}
 	
@@ -304,11 +300,10 @@ _again:
 //	Dummy header object definition
 //
 
-static void* tmsrp_header_Dummy_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		TMSRP_HEADER(Dummy)->type = tmsrp_htype_Dummy;
 		TMSRP_HEADER(Dummy)->tostring = tmsrp_header_Dummy_tostring;
 		
@@ -321,7 +316,7 @@ static void* tmsrp_header_Dummy_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Dummy_destroy(void *self)
+static tsk_object_t* tmsrp_header_Dummy_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Dummy_t *Dummy = self;
 	if(Dummy){
@@ -334,17 +329,13 @@ static void* tmsrp_header_Dummy_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Dummy_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Dummy_def_s = 
 {
 	sizeof(tmsrp_header_Dummy_t),
-	tmsrp_header_Dummy_create,
-	tmsrp_header_Dummy_destroy,
-	tmsrp_header_Dummy_cmp
+	tmsrp_header_Dummy_ctor,
+	tmsrp_header_Dummy_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Dummy_def_t = &tmsrp_header_Dummy_def_s;
+const tsk_object_def_t *tmsrp_header_Dummy_def_t = &tmsrp_header_Dummy_def_s;

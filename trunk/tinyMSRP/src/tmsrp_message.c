@@ -230,7 +230,7 @@ int tmsrp_message_add_content(tmsrp_message_t *self, const char* content_type, c
 		if(content_type){
 			TMSRP_MESSAGE_ADD_HEADER(self, TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(content_type));
 		}
-		self->Content = TSK_BUFFER_CREATE(content, size);
+		self->Content = tsk_buffer_create(content, size);
 
 		return 0;
 	}
@@ -245,11 +245,11 @@ int tmsrp_message_serialize(const tmsrp_message_t *self, tsk_buffer_t *output)
 
 	if(TMSRP_MESSAGE_IS_REQUEST(self)){
 		/* 	pMSRP    SP    transact-id    SP    method    CRLF */
-		tsk_buffer_appendEx(output, "MSRP %s %s\r\n", self->tid, self->line.request.method);
+		tsk_buffer_append_2(output, "MSRP %s %s\r\n", self->tid, self->line.request.method);
 	}
 	else{
 		/* 	pMSRP    SP    transact-id    SP    status-code    [SP comment]   CRLF */
-		tsk_buffer_appendEx(output, "MSRP %s %3hi%s%s\r\n",
+		tsk_buffer_append_2(output, "MSRP %s %3hi%s%s\r\n",
 				self->tid,
 				self->line.response.status,
 				self->line.response.comment ? " " : "",
@@ -315,7 +315,7 @@ int tmsrp_message_serialize(const tmsrp_message_t *self, tsk_buffer_t *output)
 	}
 
 	/* END LINE */
-	tsk_buffer_appendEx(output, "-------%s%c\r\n", self->end_line.tid, self->end_line.cflag);
+	tsk_buffer_append_2(output, "-------%s%c\r\n", self->end_line.tid, self->end_line.cflag);
 	
 	return 0;
 }
@@ -326,7 +326,7 @@ char* tmsrp_message_tostring(const tmsrp_message_t *self)
 	tsk_buffer_t* output;
 	char* ret = tsk_null;
 
-	if((output = TSK_BUFFER_CREATE_NULL())){
+	if((output = tsk_buffer_create_null())){
 		if(!tmsrp_message_serialize(self, output)){
 			ret = tsk_strndup(output->data, output->size);
 		}
@@ -380,7 +380,7 @@ static void* tmsrp_message_create(tsk_object_t * self, va_list * app)
 #endif
 		message->line.response.comment = tsk_strdup( va_arg(*app, const char*) );
 		
-		message->headers = TSK_LIST_CREATE();
+		message->headers = tsk_list_create();
 
 		message->end_line.tid = tsk_strdup(message->tid);
 		message->end_line.cflag = '$';

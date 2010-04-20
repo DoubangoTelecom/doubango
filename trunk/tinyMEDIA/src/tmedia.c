@@ -203,7 +203,7 @@ int tmedia_perform(tmedia_t* self, tmedia_action_t action, ... )
 		va_list ap;	
 		
 		va_start(ap, action);
-		params = TSK_LIST_CREATE();
+		params = tsk_list_create();
 		while((objdef = va_arg(ap, const tsk_object_def_t*))){
 			if(objdef != tsk_param_def_t){ // sanity check
 				break;

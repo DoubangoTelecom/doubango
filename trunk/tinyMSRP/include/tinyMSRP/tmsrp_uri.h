@@ -38,22 +38,6 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_URI_CREATE
-* Creates new msrp/msrps/tel uri.  You must call @ref TSK_OBJECT_SAFE_FREE to free the uri.
-* @param scheme "msrp" or "msrps".
-* @param host Either domain anme or IPv4/IPv6 address.
-* @param host_type @ref tmsrp_host_type_t.
-* @param port The port.
-* @param session_id The session identifier.
-* @param transport The associated transport (e.g. @a "tcp").
-* @retval @ref tmsrp_uri_t object.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TMSRP_URI_CREATE(scheme, host, host_type, port, session_id, transport)\
-	tsk_object_new(tmsrp_uri_def_t, (const char*)scheme, (const char*)host, (tmsrp_host_type_t)host_type, (int32_t)port, (const char*)session_id, (const char*)transport)
-
-#define TMSRP_URI_CREATE_NULL()	TMSRP_URI_CREATE(tsk_null, tsk_null, host_unknown, -1, tsk_null, tsk_null)
-
 #define TMSRP_URI_IS_SECURE(uri)		((uri) && (tsk_striequals(uri->scheme, "msrps") ? 1 : 0))
 #define TMSRP_URI(self)					((tmsrp_uri_t*)(self))
 
@@ -93,11 +77,15 @@ tmsrp_uri_t;
 
 typedef tsk_list_t tmsrp_uris_L_t;
 
+
+TINYMSRP_API tmsrp_uri_t* tmsrp_uri_create(const char*scheme, const char* host, tmsrp_host_type_t host_type, int32_t port, const char* session_id, const char*transport);
+TINYMSRP_API tmsrp_uri_t* tmsrp_uri_create_null();
+
 TINYMSRP_API int tmsrp_uri_serialize(const tmsrp_uri_t *uri,  tsk_buffer_t *output);
 TINYMSRP_API char* tmsrp_uri_tostring(const tmsrp_uri_t *uri);
 TINYMSRP_API tmsrp_uri_t *tmsrp_uri_clone(const tmsrp_uri_t *uri);
 
-TINYMSRP_GEXTERN const void *tmsrp_uri_def_t;
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_uri_def_t;
 
 TMSRP_END_DECLS
 

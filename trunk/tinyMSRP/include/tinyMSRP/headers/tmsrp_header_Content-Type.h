@@ -35,13 +35,7 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_HEADER_CONTENT_TYPE_CREATE
-* Creates new msrp 'Content-Type' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(type)			tmsrp_header_Content_Type_def_t, (const char*)type
-#define TMSRP_HEADER_CONTENT_TYPE_CREATE(type)			tsk_object_new(TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(type))
-#define TMSRP_HEADER_CONTENT_TYPE_CREATE_NULL()			TMSRP_HEADER_CONTENT_TYPE_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -69,9 +63,12 @@ typedef struct tmsrp_header_Content_Type_s
 tmsrp_header_Content_Type_t;
 
 
-tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Content_Type_t* tmsrp_header_Content_Type_create(const char* type);
+TINYMSRP_API tmsrp_header_Content_Type_t* tmsrp_header_Content_Type_create_null();
 
-TINYMSRP_GEXTERN const void *tmsrp_header_Content_Type_def_t;
+TINYMSRP_API tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, size_t size);
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Content_Type_def_t;
 
 
 TMSRP_END_DECLS

@@ -43,7 +43,7 @@
 	machine tsdp_machine_parser_header_I;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -59,6 +59,17 @@
 	main := I :>CRLF?;
 
 }%%
+
+
+tsdp_header_I_t* tsdp_header_I_create(const char* value)
+{
+	return tsk_object_new(TSDP_HEADER_I_VA_ARGS(value));
+}
+
+tsdp_header_I_t* tsdp_header_I_create_null()
+{
+	return tsdp_header_I_create(tsk_null);
+}
 
 int tsdp_header_I_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
@@ -78,7 +89,7 @@ tsdp_header_t* tsdp_header_I_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_I_t *I = (const tsdp_header_I_t *)header;
-		return TSDP_HEADER_I_CREATE(I->value);
+		return (tsdp_header_t*)tsdp_header_I_create(I->value);
 	}
 	return tsk_null;
 }
@@ -89,7 +100,7 @@ tsdp_header_I_t *tsdp_header_I_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_I_t *hdr_I = TSDP_HEADER_I_CREATE_NULL();
+	tsdp_header_I_t *hdr_I = tsdp_header_I_create_null();
 	
 	const char *tag_start;
 
@@ -115,7 +126,7 @@ tsdp_header_I_t *tsdp_header_I_parse(const char *data, size_t size)
 //	I header object definition
 //
 
-static void* tsdp_header_I_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_I_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_I_t *I = self;
 	if(I)
@@ -133,7 +144,7 @@ static void* tsdp_header_I_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_I_destroy(void *self)
+static tsk_object_t* tsdp_header_I_dtor(tsk_object_t *self)
 {
 	tsdp_header_I_t *I = self;
 	if(I){
@@ -158,8 +169,8 @@ static int tsdp_header_I_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_I_def_s = 
 {
 	sizeof(tsdp_header_I_t),
-	tsdp_header_I_create,
-	tsdp_header_I_destroy,
+	tsdp_header_I_ctor,
+	tsdp_header_I_dtor,
 	tsdp_header_I_cmp
 };
 

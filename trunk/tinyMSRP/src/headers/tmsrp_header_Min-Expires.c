@@ -1,5 +1,5 @@
 
-/* #line 1 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 1 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -41,16 +41,26 @@
 *	Ragel state machine.
 */
 
-/* #line 61 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 61 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
 
+
+
+tmsrp_header_Min_Expires_t* tmsrp_header_Min_Expires_create(int64_t value)
+{
+	return tsk_object_new(TMSRP_HEADER_MIN_EXPIRES_VA_ARGS(value));
+}
+
+tmsrp_header_Min_Expires_t* tmsrp_header_Min_Expires_create_null()
+{
+	return tmsrp_header_Min_Expires_create(-1);
+}
 
 int tmsrp_header_Min_Expires_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Min_Expires_t *Min_Expires = (const tmsrp_header_Min_Expires_t *)header;
 		if(Min_Expires->value>=0){
-			return tsk_buffer_appendEx(output, "%lld", Min_Expires->value);
+			return tsk_buffer_append_2(output, "%lld", Min_Expires->value);
 		}
 		return 0;
 	}
@@ -64,12 +74,12 @@ tmsrp_header_Min_Expires_t *tmsrp_header_Min_Expires_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Min_Expires_t *hdr_Min_Expires = TMSRP_HEADER_MIN_EXPIRES_CREATE_NULL();
+	tmsrp_header_Min_Expires_t *hdr_Min_Expires = tmsrp_header_Min_Expires_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 73 "../src/headers/tmsrp_header_Min-Expires.c" */
+/* #line 83 "./src/headers/tmsrp_header_Min-Expires.c" */
 static const char _tmsrp_machine_parser_header_Min_Expires_actions[] = {
 	0, 1, 0, 1, 1
 };
@@ -139,16 +149,16 @@ static const int tmsrp_machine_parser_header_Min_Expires_error = 0;
 static const int tmsrp_machine_parser_header_Min_Expires_en_main = 1;
 
 
-/* #line 88 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 98 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
 	
-/* #line 145 "../src/headers/tmsrp_header_Min-Expires.c" */
+/* #line 155 "./src/headers/tmsrp_header_Min-Expires.c" */
 	{
 	cs = tmsrp_machine_parser_header_Min_Expires_start;
 	}
 
-/* #line 89 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 99 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
 	
-/* #line 152 "../src/headers/tmsrp_header_Min-Expires.c" */
+/* #line 162 "./src/headers/tmsrp_header_Min-Expires.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -223,18 +233,18 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_Min_Expires->value, int64_t, atoi64)
 	}
 	break;
-/* #line 238 "../src/headers/tmsrp_header_Min-Expires.c" */
+/* #line 248 "./src/headers/tmsrp_header_Min-Expires.c" */
 		}
 	}
 
@@ -251,12 +261,12 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 1:
-/* #line 51 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_Min_Expires->value, int64_t, atoi64)
 	}
 	break;
-/* #line 260 "../src/headers/tmsrp_header_Min-Expires.c" */
+/* #line 270 "./src/headers/tmsrp_header_Min-Expires.c" */
 		}
 	}
 	}
@@ -264,12 +274,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 90 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 100 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
 	
 	if( cs < 
-/* #line 271 "../src/headers/tmsrp_header_Min-Expires.c" */
+/* #line 281 "./src/headers/tmsrp_header_Min-Expires.c" */
 16
-/* #line 91 "tmsrp_parser_header_Min-Expires.rl" */
+/* #line 101 "./ragel/tmsrp_parser_header_Min-Expires.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Min-Expires' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Min_Expires);
@@ -288,12 +298,11 @@ _again:
 //	Min-Expires header object definition
 //
 
-static void* tmsrp_header_Min_Expires_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Min_Expires_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Min_Expires_t *Min_Expires = self;
-	if(Min_Expires)
-	{
-		TMSRP_HEADER(Min_Expires)->type = tmsrp_htype_Message_ID;
+	if(Min_Expires){
+		TMSRP_HEADER(Min_Expires)->type = tmsrp_htype_Min_Expires;
 		TMSRP_HEADER(Min_Expires)->tostring = tmsrp_header_Min_Expires_tostring;
 		
 		Min_Expires->value = va_arg(*app, int64_t);
@@ -304,7 +313,7 @@ static void* tmsrp_header_Min_Expires_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Min_Expires_destroy(void *self)
+static tsk_object_t* tmsrp_header_Min_Expires_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Min_Expires_t *Min_Expires = self;
 	if(Min_Expires){
@@ -315,17 +324,13 @@ static void* tmsrp_header_Min_Expires_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Min_Expires_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Min_Expires_def_s = 
 {
 	sizeof(tmsrp_header_Min_Expires_t),
-	tmsrp_header_Min_Expires_create,
-	tmsrp_header_Min_Expires_destroy,
-	tmsrp_header_Min_Expires_cmp
+	tmsrp_header_Min_Expires_ctor,
+	tmsrp_header_Min_Expires_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Min_Expires_def_t = &tmsrp_header_Min_Expires_def_s;
+const tsk_object_def_t *tmsrp_header_Min_Expires_def_t = &tmsrp_header_Min_Expires_def_s;

@@ -1,5 +1,5 @@
 
-/* #line 1 "tsdp_parser_header_Z.rl" */
+/* #line 1 "./ragel/tsdp_parser_header_Z.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -42,19 +42,39 @@
 *	Ragel state machine.
 */
 
-/* #line 93 "tsdp_parser_header_Z.rl" */
+/* #line 93 "./ragel/tsdp_parser_header_Z.rl" */
 
+
+
+tsdp_header_Z_t* tsdp_header_Z_create(uint64_t time, tsk_bool_t shifted_back, const char* typed_time)
+{
+	return tsk_object_new(TSDP_HEADER_Z_VA_ARGS(time, shifted_back, typed_time));
+}
+
+tsdp_header_Z_t* tsdp_header_Z_create_null()
+{
+	return tsdp_header_Z_create(0L, tsk_false, tsk_null);
+}
+
+
+tsdp_zone_t* tsdp_zone_create(uint64_t time, tsk_bool_t shifted_back, const char* typed_time) 
+{
+	return tsk_object_new(tsdp_zone_def_t, time, shifted_back, typed_time);
+}
+
+tsdp_zone_t* tsdp_zone_create_null()
+{
+	return tsdp_zone_create(0L, tsk_false, tsk_null);
+}
 
 int tsdp_header_Z_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_Z_t *Z = (const tsdp_header_Z_t *)header;
 		const tsk_list_item_t *item;
 		const tsdp_zone_t* zone;
 		
-		tsk_list_foreach(item, Z->zones)
-		{
+		tsk_list_foreach(item, Z->zones){
 			zone = item->data;
 			// time  SP ["-"] typed-time
 			tsk_buffer_append_2(output, "%s%llu %s%s",
@@ -75,13 +95,13 @@ tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_Z_t *hdr_Z = TSDP_HEADER_Z_CREATE_NULL();
+	tsdp_header_Z_t *hdr_Z = tsdp_header_Z_create_null();
 	tsdp_zone_t* zone = tsk_null;
 	
 	const char *tag_start;
 
 	
-/* #line 85 "../src/headers/tsdp_header_Z.c" */
+/* #line 105 "./src/headers/tsdp_header_Z.c" */
 static const char _tsdp_machine_parser_header_Z_actions[] = {
 	0, 1, 0, 1, 3, 1, 4, 2, 
 	1, 0, 2, 4, 2, 2, 5, 0, 
@@ -156,16 +176,16 @@ static const int tsdp_machine_parser_header_Z_error = 0;
 static const int tsdp_machine_parser_header_Z_en_main = 1;
 
 
-/* #line 131 "tsdp_parser_header_Z.rl" */
+/* #line 151 "./ragel/tsdp_parser_header_Z.rl" */
 	
-/* #line 162 "../src/headers/tsdp_header_Z.c" */
+/* #line 182 "./src/headers/tsdp_header_Z.c" */
 	{
 	cs = tsdp_machine_parser_header_Z_start;
 	}
 
-/* #line 132 "tsdp_parser_header_Z.rl" */
+/* #line 152 "./ragel/tsdp_parser_header_Z.rl" */
 	
-/* #line 169 "../src/headers/tsdp_header_Z.c" */
+/* #line 189 "./src/headers/tsdp_header_Z.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -240,21 +260,21 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "tsdp_parser_header_Z.rl" */
+/* #line 48 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "tsdp_parser_header_Z.rl" */
+/* #line 52 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(!zone){
-			zone = TSDP_ZONE_CREATE_NULL();
+			zone = tsdp_zone_create_null();
 		}
 	}
 	break;
 	case 2:
-/* #line 58 "tsdp_parser_header_Z.rl" */
+/* #line 58 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			tsk_list_push_back_data(hdr_Z->zones,(void**)&zone);
@@ -262,7 +282,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 64 "tsdp_parser_header_Z.rl" */
+/* #line 64 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			TSK_PARSER_SET_INTEGER_EX(zone->time, uint64_t, atoi64);
@@ -270,7 +290,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 70 "tsdp_parser_header_Z.rl" */
+/* #line 70 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			TSK_PARSER_SET_STRING(zone->typed_time);
@@ -278,14 +298,14 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 76 "tsdp_parser_header_Z.rl" */
+/* #line 76 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
-			zone->shifted_back = 1;
+			zone->shifted_back = tsk_true;
 		}
 	}
 	break;
-/* #line 289 "../src/headers/tsdp_header_Z.c" */
+/* #line 309 "./src/headers/tsdp_header_Z.c" */
 		}
 	}
 
@@ -302,15 +322,15 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 1:
-/* #line 52 "tsdp_parser_header_Z.rl" */
+/* #line 52 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(!zone){
-			zone = TSDP_ZONE_CREATE_NULL();
+			zone = tsdp_zone_create_null();
 		}
 	}
 	break;
 	case 2:
-/* #line 58 "tsdp_parser_header_Z.rl" */
+/* #line 58 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			tsk_list_push_back_data(hdr_Z->zones,(void**)&zone);
@@ -318,14 +338,14 @@ _again:
 	}
 	break;
 	case 4:
-/* #line 70 "tsdp_parser_header_Z.rl" */
+/* #line 70 "./ragel/tsdp_parser_header_Z.rl" */
 	{
 		if(zone){
 			TSK_PARSER_SET_STRING(zone->typed_time);
 		}
 	}
 	break;
-/* #line 329 "../src/headers/tsdp_header_Z.c" */
+/* #line 349 "./src/headers/tsdp_header_Z.c" */
 		}
 	}
 	}
@@ -333,18 +353,18 @@ _again:
 	_out: {}
 	}
 
-/* #line 133 "tsdp_parser_header_Z.rl" */
+/* #line 153 "./ragel/tsdp_parser_header_Z.rl" */
 	
 	if(zone){
 		TSK_OBJECT_SAFE_FREE(zone);
 	}
 
 	if( cs < 
-/* #line 344 "../src/headers/tsdp_header_Z.c" */
+/* #line 364 "./src/headers/tsdp_header_Z.c" */
 12
-/* #line 138 "tsdp_parser_header_Z.rl" */
+/* #line 158 "./ragel/tsdp_parser_header_Z.rl" */
  ){
-		TSK_DEBUG_ERROR("Failed to parse \"b=\" header.");
+		TSK_DEBUG_ERROR("Failed to parse \"z=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Z);
 	}
 	
@@ -361,23 +381,22 @@ _again:
 //	Z header object definition
 //
 
-static void* tsdp_header_Z_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_Z_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_Z_t *Z = self;
-	if(Z)
-	{
+	if(Z){
 		TSDP_HEADER(Z)->type = tsdp_htype_Z;
 		TSDP_HEADER(Z)->tostring = tsdp_header_Z_tostring;
 		TSDP_HEADER(Z)->rank = TSDP_HTYPE_Z_RANK;
 		
-		if((Z->zones = TSK_LIST_CREATE())){
+		if((Z->zones = tsk_list_create())){
 			uint64_t time = va_arg(*app, uint64_t);
 			unsigned shifted_back = va_arg(*app, unsigned);
 			const char* typed_time = va_arg(*app, const char*);
 
 			if(typed_time){
 				tsdp_zone_t *zone;
-				if((zone = TSDP_ZONE_CREATE(time, shifted_back, typed_time))){
+				if((zone = tsdp_zone_create(time, shifted_back, typed_time))){
 					tsk_list_push_back_data(Z->zones,(void**)&zone);
 				}
 			}
@@ -389,7 +408,7 @@ static void* tsdp_header_Z_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_Z_destroy(void *self)
+static tsk_object_t* tsdp_header_Z_dtor(tsk_object_t *self)
 {
 	tsdp_header_Z_t *Z = self;
 	if(Z){
@@ -414,8 +433,8 @@ static int tsdp_header_Z_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_Z_def_s = 
 {
 	sizeof(tsdp_header_Z_t),
-	tsdp_header_Z_create,
-	tsdp_header_Z_destroy,
+	tsdp_header_Z_ctor,
+	tsdp_header_Z_dtor,
 	tsdp_header_Z_cmp
 };
 
@@ -428,13 +447,12 @@ const tsk_object_def_t *tsdp_header_Z_def_t = &tsdp_header_Z_def_s;
 //	Zone object definition
 //
 
-static void* tsdp_zone_create(void *self, va_list * app)
+static tsk_object_t* tsdp_zone_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_zone_t *zone = self;
-	if(zone)
-	{
+	if(zone){
 		zone->time = va_arg(*app, uint64_t);
-		zone->shifted_back = va_arg(*app, unsigned);
+		zone->shifted_back = va_arg(*app, tsk_bool_t);
 		zone->typed_time = tsk_strdup( va_arg(*app, const char*) );
 	}
 	else{
@@ -443,7 +461,7 @@ static void* tsdp_zone_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_zone_destroy(void *self)
+static tsk_object_t* tsdp_zone_dtor(tsk_object_t *self)
 {
 	tsdp_zone_t *zone = self;
 	if(zone){
@@ -459,9 +477,9 @@ static void* tsdp_zone_destroy(void *self)
 static const tsk_object_def_t tsdp_zone_def_s = 
 {
 	sizeof(tsdp_zone_t),
-	tsdp_zone_create,
-	tsdp_zone_destroy,
-	0
+	tsdp_zone_ctor,
+	tsdp_zone_dtor,
+	tsk_null
 };
 
 const tsk_object_def_t *tsdp_zone_def_t = &tsdp_zone_def_s;

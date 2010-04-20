@@ -213,6 +213,10 @@
 				RelativePath="..\..\tinySDP\test\test_parser.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\tinySDP\test\test_soa.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

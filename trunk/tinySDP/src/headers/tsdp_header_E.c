@@ -1,5 +1,5 @@
 
-/* #line 1 "tsdp_parser_header_E.rl" */
+/* #line 1 "./ragel/tsdp_parser_header_E.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -42,13 +42,24 @@
 *	Ragel state machine.
 */
 
-/* #line 61 "tsdp_parser_header_E.rl" */
+/* #line 61 "./ragel/tsdp_parser_header_E.rl" */
 
+
+
+
+tsdp_header_E_t* tsdp_header_E_create(const char* value)
+{
+	return tsk_object_new(TSDP_HEADER_E_VA_ARGS(value));
+}
+
+tsdp_header_E_t* tsdp_header_E_create_null()
+{
+	return tsdp_header_E_create(tsk_null);
+}
 
 int tsdp_header_E_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_E_t *E = (const tsdp_header_E_t *)header;
 		if(E->value){
 			tsk_buffer_append(output, E->value, strlen(E->value));
@@ -63,7 +74,7 @@ tsdp_header_t* tsdp_header_E_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_E_t *E = (const tsdp_header_E_t *)header;
-		return TSDP_HEADER_E_CREATE(E->value);
+		return (tsdp_header_t*)tsdp_header_E_create(E->value);
 	}
 	return tsk_null;
 }
@@ -74,12 +85,12 @@ tsdp_header_E_t *tsdp_header_E_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_E_t *hdr_E = TSDP_HEADER_E_CREATE_NULL();
+	tsdp_header_E_t *hdr_E = tsdp_header_E_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 83 "../src/headers/tsdp_header_E.c" */
+/* #line 94 "./src/headers/tsdp_header_E.c" */
 static const char _tsdp_machine_parser_header_E_actions[] = {
 	0, 1, 0, 1, 1, 2, 0, 1
 	
@@ -126,16 +137,16 @@ static const int tsdp_machine_parser_header_E_error = 0;
 static const int tsdp_machine_parser_header_E_en_main = 1;
 
 
-/* #line 97 "tsdp_parser_header_E.rl" */
+/* #line 108 "./ragel/tsdp_parser_header_E.rl" */
 	
-/* #line 132 "../src/headers/tsdp_header_E.c" */
+/* #line 143 "./src/headers/tsdp_header_E.c" */
 	{
 	cs = tsdp_machine_parser_header_E_start;
 	}
 
-/* #line 98 "tsdp_parser_header_E.rl" */
+/* #line 109 "./ragel/tsdp_parser_header_E.rl" */
 	
-/* #line 139 "../src/headers/tsdp_header_E.c" */
+/* #line 150 "./src/headers/tsdp_header_E.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -209,18 +220,18 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "tsdp_parser_header_E.rl" */
+/* #line 48 "./ragel/tsdp_parser_header_E.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "tsdp_parser_header_E.rl" */
+/* #line 52 "./ragel/tsdp_parser_header_E.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_E->value);
 	}
 	break;
-/* #line 224 "../src/headers/tsdp_header_E.c" */
+/* #line 235 "./src/headers/tsdp_header_E.c" */
 		}
 	}
 
@@ -237,18 +248,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 48 "tsdp_parser_header_E.rl" */
+/* #line 48 "./ragel/tsdp_parser_header_E.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "tsdp_parser_header_E.rl" */
+/* #line 52 "./ragel/tsdp_parser_header_E.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_E->value);
 	}
 	break;
-/* #line 252 "../src/headers/tsdp_header_E.c" */
+/* #line 263 "./src/headers/tsdp_header_E.c" */
 		}
 	}
 	}
@@ -256,12 +267,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 99 "tsdp_parser_header_E.rl" */
+/* #line 110 "./ragel/tsdp_parser_header_E.rl" */
 	
 	if( cs < 
-/* #line 263 "../src/headers/tsdp_header_E.c" */
+/* #line 274 "./src/headers/tsdp_header_E.c" */
 4
-/* #line 100 "tsdp_parser_header_E.rl" */
+/* #line 111 "./ragel/tsdp_parser_header_E.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"e=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_E);
@@ -280,11 +291,10 @@ _again:
 //	E header object definition
 //
 
-static void* tsdp_header_E_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_E_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_E_t *E = self;
-	if(E)
-	{
+	if(E){
 		TSDP_HEADER(E)->type = tsdp_htype_E;
 		TSDP_HEADER(E)->tostring = tsdp_header_E_tostring;
 		TSDP_HEADER(E)->clone = tsdp_header_E_clone;
@@ -298,7 +308,7 @@ static void* tsdp_header_E_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_E_destroy(void *self)
+static tsk_object_t* tsdp_header_E_dtor(tsk_object_t *self)
 {
 	tsdp_header_E_t *E = self;
 	if(E){
@@ -323,8 +333,8 @@ static int tsdp_header_E_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_E_def_s = 
 {
 	sizeof(tsdp_header_E_t),
-	tsdp_header_E_create,
-	tsdp_header_E_destroy,
+	tsdp_header_E_ctor,
+	tsdp_header_E_dtor,
 	tsdp_header_E_cmp
 };
 

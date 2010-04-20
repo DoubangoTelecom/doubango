@@ -77,6 +77,11 @@ int __pred_find_media_by_name(const tsk_list_item_t *item, const void *name)
 	return -1;
 }
 
+tsdp_message_t* tsdp_message_create()
+{
+	return tsk_object_new(tsdp_message_def_t);
+}
+
 /*== Add headers/fmt to the media line */
 int __add_headers(tsdp_header_M_t* m, va_list *ap)
 {
@@ -197,7 +202,7 @@ int tsdp_message_serialize(const tsdp_message_t *self, tsk_buffer_t *output)
 
 char* tsdp_message_tostring(const tsdp_message_t *self)
 {
-	tsk_buffer_t* output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t* output = tsk_buffer_create_null();
 	char* ret = tsk_null;
 
 	if(!tsdp_message_serialize(self, output)){
@@ -212,7 +217,7 @@ tsdp_message_t* tsdp_message_create_empty(const char* addr, tsk_bool_t ipv6)
 {
 	tsdp_message_t* ret = 0;
 
-	if(!(ret = TSDP_MESSAGE_CREATE())){
+	if(!(ret = tsdp_message_create())){
 		return tsk_null;
 	}
 
@@ -261,7 +266,7 @@ tsdp_message_t* tsdp_message_clone(const tsdp_message_t *self)
 		goto bail;
 	}
 
-	if((clone =  TSDP_MESSAGE_CREATE())){
+	if((clone =  tsdp_message_create())){
 		tsk_list_foreach(item, self->headers){
 			if((header = tsdp_header_clone(TSDP_HEADER(item->data)))){
 				tsk_list_push_back_data(clone->headers, (void**)&header);
@@ -295,7 +300,7 @@ int tsdp_message_add_media_2(tsdp_message_t *self, const char* media, uint32_t p
 		return -1;
 	}
 
-	if((m = TSDP_HEADER_M_CREATE(media, port, proto))){
+	if((m = tsdp_header_M_create(media, port, proto))){
 		__add_headers(m, ap);
 		
 		ret = tsdp_message_add_header(self, TSDP_HEADER(m));
@@ -346,7 +351,7 @@ int tsdp_message_hold(tsdp_message_t* self, const char* media)
 			// default value is sendrecv. hold on default --> sendonly
 			if(!(a = tsdp_header_M_findA(m, "sendonly")) && !(a = tsdp_header_M_findA(m, "inactive"))){
 				tsdp_header_A_t* newA;
-				if((newA = TSDP_HEADER_A_CREATE("sendonly", tsk_null))){
+				if((newA = tsdp_header_A_create("sendonly", tsk_null))){
 					tsdp_header_M_add(m, TSDP_HEADER(newA));
 					TSK_OBJECT_SAFE_FREE(newA);
 				}
@@ -404,16 +409,16 @@ int tsdp_message_resume(tsdp_message_t* self, const char* media)
 //=================================================================================================
 //	SDP object definition
 //
-static void* tsdp_message_create(void * self, va_list * app)
+static void* tsdp_message_ctor(void * self, va_list * app)
 {
 	tsdp_message_t *message = self;
 	if(message){
-		message->headers = TSK_LIST_CREATE();
+		message->headers = tsk_list_create();
 	}
 	return self;
 }
 
-static void* tsdp_message_destroy(void * self)
+static void* tsdp_message_dtor(void * self)
 { 
 	tsdp_message_t *message = self;
 	if(message){
@@ -422,16 +427,11 @@ static void* tsdp_message_destroy(void * self)
 	return self;
 }
 
-static int tsdp_message_cmp(const void *obj1, const void *obj2)
-{
-	return -1;
-}
-
 static const tsk_object_def_t tsdp_message_def_s = 
 {
 	sizeof(tsdp_message_t),
-	tsdp_message_create, 
-	tsdp_message_destroy,
-	tsdp_message_cmp, 
+	tsdp_message_ctor, 
+	tsdp_message_dtor,
+	tsk_null, 
 };
 const tsk_object_def_t *tsdp_message_def_t = &tsdp_message_def_s;

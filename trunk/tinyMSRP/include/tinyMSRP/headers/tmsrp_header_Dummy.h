@@ -35,13 +35,7 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_HEADER_DUMMY_CREATE
-* Creates new msrp Dummy header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TMSRP_HEADER_DUMMY_VA_ARGS(name, value)		tmsrp_header_Dummy_def_t, (const char*)name, (const char*)value
-#define TMSRP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(TMSRP_HEADER_DUMMY_VA_ARGS(name, value))
-#define TMSRP_HEADER_DUMMY_CREATE_NULL()				TMSRP_HEADER_DUMMY_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -62,9 +56,13 @@ tmsrp_header_Dummy_t;
 
 typedef tsk_list_t tmsrp_headers_Dummy_L_t;
 
-tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, size_t size);
 
-TINYMSRP_GEXTERN const void *tmsrp_header_Dummy_def_t;
+TINYMSRP_API tmsrp_header_Dummy_t* tmsrp_header_Dummy_create(const char* name, const char* value);
+TINYMSRP_API tmsrp_header_Dummy_t* tmsrp_header_Dummy_create_null();
+
+TINYMSRP_API tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, size_t size);
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Dummy_def_t;
 
 TMSRP_END_DECLS
 

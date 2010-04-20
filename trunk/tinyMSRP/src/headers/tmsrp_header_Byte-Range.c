@@ -1,5 +1,5 @@
 
-/* #line 1 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 1 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -41,13 +41,22 @@
 *	Ragel state machine.
 */
 
-/* #line 82 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 82 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 
+
+tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create(int64_t start, int64_t end, int64_t total)
+{
+	return tsk_object_new(TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, total));
+}
+
+tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create_null()
+{
+	return tmsrp_header_Byte_Range_create(1, -1, -1);
+}
 
 int tmsrp_header_Byte_Range_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Byte_Range_t *Byte_Range = (const tmsrp_header_Byte_Range_t *)header;
 		tsk_istr_t start, end, total;
 
@@ -61,7 +70,7 @@ int tmsrp_header_Byte_Range_tostring(const tmsrp_header_t* header, tsk_buffer_t*
 			tsk_itoa(Byte_Range->total, &total);
 		}
 		
-		return tsk_buffer_appendEx(output, "%s-%s/%s", 
+		return tsk_buffer_append_2(output, "%s-%s/%s", 
 			Byte_Range->start>=0 ? start : "*",
 			Byte_Range->end>=0 ? end : "*",
 			Byte_Range->total>=0 ? total : "*"
@@ -77,12 +86,12 @@ tmsrp_header_Byte_Range_t *tmsrp_header_Byte_Range_parse(const char *data, size_
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Byte_Range_t *hdr_Byte_Range = TMSRP_HEADER_BYTE_RANGE_CREATE_NULL();
+	tmsrp_header_Byte_Range_t *hdr_Byte_Range = tmsrp_header_Byte_Range_create_null();
 
 	const char *tag_start;
 
 	
-/* #line 86 "../src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 95 "./src/headers/tmsrp_header_Byte-Range.c" */
 static const char _tmsrp_machine_parser_header_Byte_Range_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -159,16 +168,16 @@ static const int tmsrp_machine_parser_header_Byte_Range_error = 0;
 static const int tmsrp_machine_parser_header_Byte_Range_en_main = 1;
 
 
-/* #line 122 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 131 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	
-/* #line 165 "../src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 174 "./src/headers/tmsrp_header_Byte-Range.c" */
 	{
 	cs = tmsrp_machine_parser_header_Byte_Range_start;
 	}
 
-/* #line 123 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 132 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	
-/* #line 172 "../src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 181 "./src/headers/tmsrp_header_Byte-Range.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -243,19 +252,19 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_Byte_Range->start, int64_t, atoi64);
 	}
 	break;
 	case 2:
-/* #line 55 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 55 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		if(tag_start && *tag_start == '*'){
 			hdr_Byte_Range->end = -1;
@@ -266,7 +275,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 64 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 64 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		if(tag_start && *tag_start == '*'){
 			hdr_Byte_Range->total = -1;
@@ -276,7 +285,7 @@ _match:
 		}
 	}
 	break;
-/* #line 280 "../src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 289 "./src/headers/tmsrp_header_Byte-Range.c" */
 		}
 	}
 
@@ -293,7 +302,7 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 3:
-/* #line 64 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 64 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	{
 		if(tag_start && *tag_start == '*'){
 			hdr_Byte_Range->total = -1;
@@ -303,7 +312,7 @@ _again:
 		}
 	}
 	break;
-/* #line 307 "../src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 316 "./src/headers/tmsrp_header_Byte-Range.c" */
 		}
 	}
 	}
@@ -311,12 +320,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 124 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 133 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
 	
 	if( cs < 
-/* #line 318 "../src/headers/tmsrp_header_Byte-Range.c" */
+/* #line 327 "./src/headers/tmsrp_header_Byte-Range.c" */
 20
-/* #line 125 "tmsrp_parser_header_Byte-Range.rl" */
+/* #line 134 "./ragel/tmsrp_parser_header_Byte-Range.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Byte-Range' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Byte_Range);
@@ -335,11 +344,10 @@ _again:
 //	Byte_Range header object definition
 //
 
-static void* tmsrp_header_Byte_Range_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Byte_Range_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Byte_Range_t *Byte_Range = self;
-	if(Byte_Range)
-	{
+	if(Byte_Range){
 		TMSRP_HEADER(Byte_Range)->type = tmsrp_htype_Byte_Range;
 		TMSRP_HEADER(Byte_Range)->tostring = tmsrp_header_Byte_Range_tostring;
 		
@@ -353,7 +361,7 @@ static void* tmsrp_header_Byte_Range_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Byte_Range_destroy(void *self)
+static tsk_object_t* tmsrp_header_Byte_Range_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Byte_Range_t *Byte_Range = self;
 	if(Byte_Range){
@@ -364,17 +372,13 @@ static void* tmsrp_header_Byte_Range_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Byte_Range_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Byte_Range_def_s = 
 {
 	sizeof(tmsrp_header_Byte_Range_t),
-	tmsrp_header_Byte_Range_create,
-	tmsrp_header_Byte_Range_destroy,
-	tmsrp_header_Byte_Range_cmp
+	tmsrp_header_Byte_Range_ctor,
+	tmsrp_header_Byte_Range_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Byte_Range_def_t = &tmsrp_header_Byte_Range_def_s;
+const tsk_object_def_t *tmsrp_header_Byte_Range_def_t = &tmsrp_header_Byte_Range_def_s;

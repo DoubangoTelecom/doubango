@@ -196,7 +196,7 @@ static void* tmsrp_sender_create(void * self, va_list *app)
 		sender->config = tsk_object_ref(va_arg(*app, tmsrp_config_t*));
 		sender->fd = va_arg(*app, tnet_fd_t);	
 
-		sender->outgoingList = TSK_LIST_CREATE();
+		sender->outgoingList = tsk_list_create();
 	}
 	return self;
 }

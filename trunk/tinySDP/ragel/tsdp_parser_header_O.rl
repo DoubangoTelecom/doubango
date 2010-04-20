@@ -42,7 +42,7 @@
 	machine tsdp_machine_parser_header_U;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -85,10 +85,28 @@
 
 }%%
 
+
+
+
+tsdp_header_O_t* tsdp_header_O_create(const char* username, uint32_t sess_version, uint32_t sess_id, const char* nettype, const char* addrtype, const char* addr)
+{
+	return tsk_object_new(TSDP_HEADER_O_VA_ARGS(username, sess_id, sess_version, nettype, addrtype, addr));
+}
+
+tsdp_header_O_t* tsdp_header_O_create_null()
+{
+	return tsdp_header_O_create(tsk_null, 0, 0, tsk_null, tsk_null, tsk_null);
+}
+
+tsdp_header_O_t* tsdp_header_O_create_default(const char* username, const char* nettype, const char* addrtype, const char* addr)
+{
+	return tsdp_header_O_create(username, TSDP_HEADER_O_SESS_ID_DEFAULT, TSDP_HEADER_O_SESS_VERSION_DEFAULT, nettype, addrtype, addr);
+}
+
+
 int tsdp_header_O_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_O_t *O = (const tsdp_header_O_t *)header;
 		
 		// o=alice 2890844526 2890844526 IN IP4 host.atlanta.example.com
@@ -111,7 +129,7 @@ tsdp_header_t* tsdp_header_O_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_O_t *O = (const tsdp_header_O_t *)header;
-		return TSDP_HEADER_O_CREATE(O->username, O->sess_id, O->sess_version, O->nettype, O->addrtype, O->addr);
+		return (tsdp_header_t*)tsdp_header_O_create(O->username, O->sess_id, O->sess_version, O->nettype, O->addrtype, O->addr);
 	}
 	return tsk_null;
 }
@@ -122,7 +140,7 @@ tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_O_t *hdr_O = TSDP_HEADER_O_CREATE_NULL();
+	tsdp_header_O_t *hdr_O = tsdp_header_O_create_null();
 	
 	const char *tag_start;
 
@@ -148,11 +166,10 @@ tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size)
 //	O header object definition
 //
 
-static void* tsdp_header_O_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_O_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_O_t *O = self;
-	if(O)
-	{
+	if(O){
 		TSDP_HEADER(O)->type = tsdp_htype_O;
 		TSDP_HEADER(O)->tostring = tsdp_header_O_tostring;
 		TSDP_HEADER(O)->clone = tsdp_header_O_clone;
@@ -171,7 +188,7 @@ static void* tsdp_header_O_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_O_destroy(void *self)
+static tsk_object_t* tsdp_header_O_dtor(tsk_object_t *self)
 {
 	tsdp_header_O_t *O = self;
 	if(O){
@@ -181,7 +198,7 @@ static void* tsdp_header_O_destroy(void *self)
 		TSK_FREE(O->addr);
 	}
 	else{
-		TSK_DEBUG_ERROR("Null U header.");
+		TSK_DEBUG_ERROR("Null O header.");
 	}
 
 	return self;
@@ -199,8 +216,8 @@ static int tsdp_header_O_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_O_def_s = 
 {
 	sizeof(tsdp_header_O_t),
-	tsdp_header_O_create,
-	tsdp_header_O_destroy,
+	tsdp_header_O_ctor,
+	tsdp_header_O_dtor,
 	tsdp_header_O_cmp
 };
 

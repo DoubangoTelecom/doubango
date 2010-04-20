@@ -42,7 +42,7 @@
 	machine tmsrp_machine_parser_header_Failure_Report;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action is_yes{
 		hdr_Failure_Report->type = freport_yes;
@@ -64,10 +64,20 @@
 
 }%%
 
+
+tmsrp_header_Failure_Report_t* tmsrp_header_Failure_Report_create(tmsrp_freport_type_t freport_type)
+{
+	return tsk_object_new(TMSRP_HEADER_FAILURE_REPORT_VA_ARGS(freport_type));
+}
+
+tmsrp_header_Failure_Report_t* tmsrp_header_Failure_Report_create_null()
+{
+	return tmsrp_header_Failure_Report_create(freport_yes);
+}
+
 int tmsrp_header_Failure_Report_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Failure_Report_t *Failure_Report = (const tmsrp_header_Failure_Report_t *)header;
 		const char* value = (Failure_Report->type == freport_yes) ? "yes" : (Failure_Report->type == freport_no ? "no" : "partial");
 		return tsk_buffer_append(output, value, strlen(value));
@@ -82,7 +92,7 @@ tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *dat
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Failure_Report_t *hdr_Failure_Report = TMSRP_HEADER_FAILURE_REPORT_CREATE_NULL();
+	tmsrp_header_Failure_Report_t *hdr_Failure_Report = tmsrp_header_Failure_Report_create_null();
 
 	%%write data;
 	%%write init;
@@ -106,11 +116,10 @@ tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *dat
 //	Failure_Report header object definition
 //
 
-static void* tmsrp_header_Failure_Report_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Failure_Report_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Failure_Report_t *Failure_Report = self;
-	if(Failure_Report)
-	{
+	if(Failure_Report){
 		TMSRP_HEADER(Failure_Report)->type = tmsrp_htype_Failure_Report;
 		TMSRP_HEADER(Failure_Report)->tostring = tmsrp_header_Failure_Report_tostring;
 		
@@ -122,7 +131,7 @@ static void* tmsrp_header_Failure_Report_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Failure_Report_destroy(void *self)
+static tsk_object_t* tmsrp_header_Failure_Report_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Failure_Report_t *Failure_Report = self;
 	if(Failure_Report){
@@ -133,17 +142,13 @@ static void* tmsrp_header_Failure_Report_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Failure_Report_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Failure_Report_def_s = 
 {
 	sizeof(tmsrp_header_Failure_Report_t),
-	tmsrp_header_Failure_Report_create,
-	tmsrp_header_Failure_Report_destroy,
-	tmsrp_header_Failure_Report_cmp
+	tmsrp_header_Failure_Report_ctor,
+	tmsrp_header_Failure_Report_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Failure_Report_def_t = &tmsrp_header_Failure_Report_def_s;
+const tsk_object_def_t *tmsrp_header_Failure_Report_def_t = &tmsrp_header_Failure_Report_def_s;

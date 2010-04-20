@@ -53,7 +53,7 @@
 	###########################################
 	#	Includes
 	###########################################
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -65,7 +65,7 @@
 	action parse_header_A{
 		if(hdr_M){
 			if(!hdr_M->Attributes){
-				hdr_M->Attributes = TSK_LIST_CREATE();
+				hdr_M->Attributes = tsk_list_create();
 			}
 			if((header = (tsdp_header_t*)tsdp_header_A_parse(tag_start, (p - tag_start)))){
 				tsk_list_push_back_data(hdr_M->Attributes, (void**)&header);
@@ -80,7 +80,7 @@
 	action parse_header_B{
 		if(hdr_M){
 			if(!hdr_M->Bandwidths){
-				hdr_M->Bandwidths = TSK_LIST_CREATE();
+				hdr_M->Bandwidths = tsk_list_create();
 			}
 			if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
 				tsk_list_push_back_data(hdr_M->Bandwidths, (void**)&header);
@@ -161,7 +161,7 @@
 		if((header = (tsdp_header_t*)tsdp_header_R_parse(tag_start, (p - tag_start)))){
 			if(hdr_T){
 				if(!hdr_T->repeat_fields){
-					hdr_T->repeat_fields = TSK_LIST_CREATE();
+					hdr_T->repeat_fields = tsk_list_create();
 				}
 				tsk_list_push_back_data(hdr_T->repeat_fields, (void**)&header);
 			}
@@ -265,7 +265,7 @@ tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
 		goto bail;
 	}
 
-	if(!(sdp_msg = TSDP_MESSAGE_CREATE())){
+	if(!(sdp_msg = tsdp_message_create())){
 		goto bail;
 	}
 

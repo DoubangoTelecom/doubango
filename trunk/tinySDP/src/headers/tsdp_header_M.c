@@ -1,5 +1,5 @@
 
-/* #line 1 "tsdp_parser_header_M.rl" */
+/* #line 1 "./ragel/tsdp_parser_header_M.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -42,7 +42,25 @@
 *	Ragel state machine.
 */
 
-/* #line 83 "tsdp_parser_header_M.rl" */
+/* #line 83 "./ragel/tsdp_parser_header_M.rl" */
+
+
+
+
+tsdp_header_M_t* tsdp_header_M_create(const char* media, uint32_t port, const char* proto)
+{
+	return tsk_object_new(TSDP_HEADER_M_VA_ARGS(media, port, proto));
+}
+
+tsdp_header_M_t* tsdp_header_M_create_null()
+{
+	return tsdp_header_M_create(tsk_null, 0, tsk_null);
+}
+
+tsdp_fmt_t* tsdp_fmt_create(const char* fmt)
+{
+	return tsk_object_new(TSDP_FMT_VA_ARGS(fmt));
+}
 
 
 int tsdp_header_M_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
@@ -116,12 +134,12 @@ tsdp_header_t* tsdp_header_M_clone(const tsdp_header_t* header)
 		tsdp_header_M_t* clone;
 		const tsk_list_item_t* item;
 
-		if((clone = TSDP_HEADER_M_CREATE(M->media, M->port, M->proto))){
+		if((clone = tsdp_header_M_create(M->media, M->port, M->proto))){
 			clone->nports = M->nports;
 			
 			// Formats
 			tsk_list_foreach(item, M->FMTs){
-				tsk_string_t* string = TSK_STRING_CREATE(TSK_STRING_STR(item->data));
+				tsk_string_t* string = tsk_string_create(TSK_STRING_STR(item->data));
 				tsk_list_push_back_data(clone->FMTs, (void**)&string);
 			}
 			
@@ -133,7 +151,7 @@ tsdp_header_t* tsdp_header_M_clone(const tsdp_header_t* header)
 			tsk_list_foreach(item, M->Bandwidths){
 				tsdp_header_t* B;
 				if(!clone->Bandwidths){
-					clone->Bandwidths = TSK_LIST_CREATE();
+					clone->Bandwidths = tsk_list_create();
 				}
 				B = ((tsdp_header_t*)item->data)->clone((tsdp_header_t*)item->data);
 				tsk_list_push_back_data(clone->Bandwidths, (void**)&B);
@@ -144,7 +162,7 @@ tsdp_header_t* tsdp_header_M_clone(const tsdp_header_t* header)
 			tsk_list_foreach(item, M->Attributes){
 				tsdp_header_t* A;
 				if(!clone->Attributes){
-					clone->Attributes = TSK_LIST_CREATE();
+					clone->Attributes = tsk_list_create();
 				}
 				A = ((tsdp_header_t*)item->data)->clone((tsdp_header_t*)item->data);
 				tsk_list_push_back_data(clone->Attributes, (void**)&A);
@@ -162,12 +180,12 @@ tsdp_header_M_t *tsdp_header_M_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_M_t *hdr_M = TSDP_HEADER_M_CREATE_NULL();
+	tsdp_header_M_t *hdr_M = tsdp_header_M_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 170 "../src/headers/tsdp_header_M.c" */
+/* #line 189 "./src/headers/tsdp_header_M.c" */
 static const char _tsdp_machine_parser_header_M_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4
@@ -250,16 +268,16 @@ static const int tsdp_machine_parser_header_M_error = 0;
 static const int tsdp_machine_parser_header_M_en_main = 1;
 
 
-/* #line 206 "tsdp_parser_header_M.rl" */
+/* #line 225 "./ragel/tsdp_parser_header_M.rl" */
 	
-/* #line 255 "../src/headers/tsdp_header_M.c" */
+/* #line 274 "./src/headers/tsdp_header_M.c" */
 	{
 	cs = tsdp_machine_parser_header_M_start;
 	}
 
-/* #line 207 "tsdp_parser_header_M.rl" */
+/* #line 226 "./ragel/tsdp_parser_header_M.rl" */
 	
-/* #line 262 "../src/headers/tsdp_header_M.c" */
+/* #line 281 "./src/headers/tsdp_header_M.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -334,36 +352,36 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "tsdp_parser_header_M.rl" */
+/* #line 48 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "tsdp_parser_header_M.rl" */
+/* #line 52 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_M->media);
 	}
 	break;
 	case 2:
-/* #line 56 "tsdp_parser_header_M.rl" */
+/* #line 56 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_SET_UINT(hdr_M->port);
 	}
 	break;
 	case 3:
-/* #line 64 "tsdp_parser_header_M.rl" */
+/* #line 64 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_M->proto);
 	}
 	break;
 	case 4:
-/* #line 68 "tsdp_parser_header_M.rl" */
+/* #line 68 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 366 "../src/headers/tsdp_header_M.c" */
+/* #line 385 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 
@@ -380,12 +398,12 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 4:
-/* #line 68 "tsdp_parser_header_M.rl" */
+/* #line 68 "./ragel/tsdp_parser_header_M.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 388 "../src/headers/tsdp_header_M.c" */
+/* #line 407 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 	}
@@ -393,12 +411,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 208 "tsdp_parser_header_M.rl" */
+/* #line 227 "./ragel/tsdp_parser_header_M.rl" */
 	
 	if( cs < 
-/* #line 399 "../src/headers/tsdp_header_M.c" */
+/* #line 418 "./src/headers/tsdp_header_M.c" */
 14
-/* #line 209 "tsdp_parser_header_M.rl" */
+/* #line 228 "./ragel/tsdp_parser_header_M.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"m=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_M);
@@ -432,7 +450,7 @@ int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header)
 			{
 				tsdp_header_t* B = tsk_object_ref((void*)header);
 				if(!self->Bandwidths){
-					self->Bandwidths = TSK_LIST_CREATE();
+					self->Bandwidths = tsk_list_create();
 				}
 				tsk_list_push_back_data(self->Bandwidths, (void**)&B);
 				break;
@@ -447,7 +465,7 @@ int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header)
 			{
 				tsdp_header_t* A = tsk_object_ref((void*)header);
 				if(!self->Attributes){
-					self->Attributes = TSK_LIST_CREATE();
+					self->Attributes = tsk_list_create();
 				}
 				tsk_list_push_back_data(self->Attributes, (void**)&A);
 				break;
@@ -522,7 +540,7 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 //		switch(type){
 //			case 0x01: /* FMT */
 //			{
-//				tsk_string_t* fmt = TSK_STRING_CREATE(va_arg(values, const char *));
+//				tsk_string_t* fmt = tsk_string_create(va_arg(values, const char *));
 //				if(fmt){
 //					tsk_list_push_back_data(sefl->FMTs, (void**)&fmt);
 //				}
@@ -530,10 +548,10 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 //			}
 //			case 0x02: /* A */
 //			{
-//				tsdp_header_A_t* A = TSDP_HEADER_A_CREATE(va_arg(values, const char *), va_arg(values, const char *));
+//				tsdp_header_A_t* A = tsdp_header_A_create(va_arg(values, const char *), va_arg(values, const char *));
 //				if(A){
 //					if(!M->Attributes){
-//						M->Attributes = TSK_LIST_CREATE();
+//						M->Attributes = tsk_list_create();
 //					}
 //					tsk_list_push_back_data(M->Attributes, (void**)&A);
 //				}
@@ -553,7 +571,7 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 //	M header object definition
 //
 
-static void* tsdp_header_M_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_M_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_M_t *M = self;
 	if(M)
@@ -563,7 +581,7 @@ static void* tsdp_header_M_create(void *self, va_list * app)
 		TSDP_HEADER(M)->clone = tsdp_header_M_clone;
 		TSDP_HEADER(M)->rank = TSDP_HTYPE_M_RANK;
 		
-		M->FMTs = TSK_LIST_CREATE(); // Becuase there is at least one fmt.
+		M->FMTs = tsk_list_create(); // Becuase there is at least one fmt.
 
 		M->media = tsk_strdup(va_arg(*app, const char*));
 		M->port = va_arg(*app, uint32_t);
@@ -575,7 +593,7 @@ static void* tsdp_header_M_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_M_destroy(void *self)
+static tsk_object_t* tsdp_header_M_dtor(tsk_object_t *self)
 {
 	tsdp_header_M_t *M = self;
 	if(M){
@@ -608,8 +626,8 @@ static int tsdp_header_M_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_M_def_s = 
 {
 	sizeof(tsdp_header_M_t),
-	tsdp_header_M_create,
-	tsdp_header_M_destroy,
+	tsdp_header_M_ctor,
+	tsdp_header_M_dtor,
 	tsdp_header_M_cmp
 };
 
