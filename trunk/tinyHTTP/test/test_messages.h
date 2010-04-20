@@ -44,7 +44,7 @@
 	"WWW-Authenticate: Basic realm=\"WallyWorld\"\r\n" \
 	"Transfer-Encoding: chunked;test=21;tes7\r\n" \
 	"Date: Wed, 10 Mar 2010 14:20:47 GMT\r\n" \
-	"ETag: \"686897696a7c876b7e\"\r\n" \
+	"ETag: \"686897696a7c876b7eази-(з(-\"\r\n" \
 	"\r\n"
 
 #define TEST_MSG TEST_MSG_401
@@ -55,6 +55,7 @@ void test_messages()
 	thttp_message_t *message = 0;
 	tsk_ragel_state_t state;
 	int ret;
+	uint8_t c = 'а';
 	
 	/* deserialize the message */
 	tsk_ragel_state_init(&state, TEST_MSG, strlen(TEST_MSG));
@@ -72,6 +73,8 @@ void test_messages()
 	}
 
 	TSK_OBJECT_SAFE_FREE(message);
+
+	getchar();
 }
 
 #endif /* _TEST_MESSAGES_H_ */

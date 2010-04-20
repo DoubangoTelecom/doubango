@@ -63,8 +63,7 @@ static const unsigned char _thttp_machine_parser_message_key_offsets[] = {
 	51, 53, 55, 57, 59, 60, 62, 65, 
 	67, 70, 71, 72, 73, 74, 75, 76, 
 	93, 110, 127, 141, 143, 146, 148, 151, 
-	153, 155, 157, 158, 184, 210, 212, 214, 
-	216, 218, 220, 226, 232
+	153, 155, 157, 158, 174, 190, 196, 202
 };
 
 static const char _thttp_machine_parser_message_trans_keys[] = {
@@ -88,16 +87,12 @@ static const char _thttp_machine_parser_message_trans_keys[] = {
 	57, 65, 90, 95, 122, 48, 57, 46, 
 	48, 57, 48, 57, 32, 48, 57, 48, 
 	57, 48, 57, 48, 57, 32, 13, 37, 
-	60, 62, 96, 127, -64, -33, -32, -17, 
-	-16, -9, -8, -5, -4, -3, -2, 8, 
-	10, 31, 34, 35, 91, 94, 123, 125, 
-	13, 37, 60, 62, 96, 127, -64, -33, 
-	-32, -17, -16, -9, -8, -5, -4, -3, 
-	-2, 8, 10, 31, 34, 35, 91, 94, 
-	123, 125, -128, -65, -128, -65, -128, -65, 
-	-128, -65, -128, -65, 48, 57, 65, 70, 
-	97, 102, 48, 57, 65, 70, 97, 102, 
-	0
+	60, 62, 96, 127, 0, 8, 10, 31, 
+	34, 35, 91, 94, 123, 125, 13, 37, 
+	60, 62, 96, 127, 0, 8, 10, 31, 
+	34, 35, 91, 94, 123, 125, 48, 57, 
+	65, 70, 97, 102, 48, 57, 65, 70, 
+	97, 102, 0
 };
 
 static const char _thttp_machine_parser_message_single_lengths[] = {
@@ -105,8 +100,7 @@ static const char _thttp_machine_parser_message_single_lengths[] = {
 	2, 2, 2, 2, 1, 0, 1, 0, 
 	1, 1, 1, 1, 1, 1, 1, 7, 
 	7, 7, 6, 0, 1, 0, 1, 0, 
-	0, 0, 1, 6, 6, 0, 0, 0, 
-	0, 0, 0, 0, 0
+	0, 0, 1, 6, 6, 0, 0, 0
 };
 
 static const char _thttp_machine_parser_message_range_lengths[] = {
@@ -114,8 +108,7 @@ static const char _thttp_machine_parser_message_range_lengths[] = {
 	0, 0, 0, 0, 0, 1, 1, 1, 
 	1, 0, 0, 0, 0, 0, 0, 5, 
 	5, 5, 4, 1, 1, 1, 1, 1, 
-	1, 1, 0, 10, 10, 1, 1, 1, 
-	1, 1, 3, 3, 0
+	1, 1, 0, 5, 5, 3, 3, 0
 };
 
 static const unsigned char _thttp_machine_parser_message_index_offsets[] = {
@@ -123,8 +116,7 @@ static const unsigned char _thttp_machine_parser_message_index_offsets[] = {
 	42, 45, 48, 51, 54, 56, 58, 61, 
 	63, 66, 68, 70, 72, 74, 76, 78, 
 	91, 104, 117, 128, 130, 133, 135, 138, 
-	140, 142, 144, 146, 163, 180, 182, 184, 
-	186, 188, 190, 194, 198
+	140, 142, 144, 146, 158, 170, 174, 178
 };
 
 static const char _thttp_machine_parser_message_indicies[] = {
@@ -146,24 +138,21 @@ static const char _thttp_machine_parser_message_indicies[] = {
 	4, 32, 4, 4, 4, 4, 4, 1, 
 	33, 1, 34, 33, 1, 35, 1, 36, 
 	35, 1, 37, 1, 38, 1, 39, 1, 
-	40, 1, 47, 48, 1, 1, 1, 1, 
-	42, 43, 44, 45, 46, 1, 1, 1, 
-	1, 1, 41, 55, 56, 1, 1, 1, 
-	1, 50, 51, 52, 53, 54, 1, 1, 
-	1, 1, 1, 49, 49, 1, 50, 1, 
-	51, 1, 52, 1, 53, 1, 57, 57, 
-	57, 1, 49, 49, 49, 1, 58, 0
+	40, 1, 42, 43, 1, 1, 1, 1, 
+	1, 1, 1, 1, 1, 41, 45, 46, 
+	1, 1, 1, 1, 1, 1, 1, 1, 
+	1, 44, 47, 47, 47, 1, 44, 44, 
+	44, 1, 48, 0
 };
 
 static const char _thttp_machine_parser_message_trans_targs[] = {
 	2, 0, 23, 3, 2, 4, 5, 4, 
 	6, 7, 8, 9, 10, 11, 12, 13, 
 	14, 15, 16, 17, 18, 19, 22, 19, 
-	20, 21, 19, 22, 44, 24, 25, 26, 
+	20, 21, 19, 22, 39, 24, 25, 26, 
 	27, 28, 29, 30, 31, 32, 33, 34, 
-	35, 36, 37, 38, 39, 40, 41, 17, 
-	42, 36, 37, 38, 39, 40, 41, 17, 
-	42, 43, 44
+	35, 36, 17, 37, 36, 17, 37, 38, 
+	39
 };
 
 static const char _thttp_machine_parser_message_trans_actions[] = {
@@ -172,13 +161,12 @@ static const char _thttp_machine_parser_message_trans_actions[] = {
 	0, 0, 0, 7, 0, 1, 0, 0, 
 	0, 0, 20, 13, 15, 0, 0, 0, 
 	0, 0, 0, 0, 7, 1, 0, 0, 
-	9, 1, 1, 1, 1, 1, 1, 17, 
-	1, 0, 0, 0, 0, 0, 0, 11, 
-	0, 0, 0
+	9, 1, 17, 1, 0, 11, 0, 0, 
+	0
 };
 
 static const int thttp_machine_parser_message_start = 1;
-static const int thttp_machine_parser_message_first_final = 44;
+static const int thttp_machine_parser_message_first_final = 39;
 static const int thttp_machine_parser_message_error = 0;
 
 static const int thttp_machine_parser_message_en_main = 1;
@@ -216,8 +204,8 @@ int thttp_message_parse(tsk_ragel_state_t *state, thttp_message_t **result, tsk_
 	/* Check result */
 
 	if( state->cs < 
-/* #line 220 "./src/parsers/thttp_parser_message.c" */
-44
+/* #line 208 "./src/parsers/thttp_parser_message.c" */
+39
 /* #line 200 "./ragel/thttp_parser_message.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse HTTP message.");
@@ -234,7 +222,7 @@ static void thttp_message_parser_init(tsk_ragel_state_t *state)
 
 	/* Regel machine initialization. */
 	
-/* #line 238 "./src/parsers/thttp_parser_message.c" */
+/* #line 226 "./src/parsers/thttp_parser_message.c" */
 	{
 	cs = thttp_machine_parser_message_start;
 	}
@@ -252,7 +240,7 @@ static void thttp_message_parser_execute(tsk_ragel_state_t *state, thttp_message
 	const char *eof = state->eof;
 
 	
-/* #line 256 "./src/parsers/thttp_parser_message.c" */
+/* #line 244 "./src/parsers/thttp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -436,7 +424,7 @@ _match:
 		eof = state->eof;
 	}
 	break;
-/* #line 440 "./src/parsers/thttp_parser_message.c" */
+/* #line 428 "./src/parsers/thttp_parser_message.c" */
 		}
 	}
 

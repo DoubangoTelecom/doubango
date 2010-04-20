@@ -6,7 +6,6 @@
 	ProjectGUID="{B2EFD4EE-16A4-41DF-A25F-90DBF74D226C}"
 	RootNamespace="tinyXCAP"
 	Keyword="Win32Proj"
-	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -90,6 +89,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -154,9 +156,6 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -244,6 +243,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
@@ -310,9 +312,6 @@
 			/>
 			<Tool
 				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
 			/>
 			<Tool
 				Name="VCCodeSignTool"
@@ -396,10 +395,6 @@
 		<Filter
 			Name="include"
 			>
-			<File
-				RelativePath=".\src\tinyxcap_config.h"
-				>
-			</File>
 			<File
 				RelativePath=".\src\txc.h"
 				>

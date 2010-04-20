@@ -42,7 +42,7 @@
 *	Ragel state machine.
 */
 
-/* #line 71 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 72 "./ragel/thttp_parser_header_ETag.rl" */
 
 
 thttp_header_ETag_t* thttp_header_etag_create(const char* value)
@@ -84,105 +84,88 @@ thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, size_t size)
 	
 /* #line 86 "./src/headers/thttp_header_ETag.c" */
 static const char _thttp_machine_parser_header_ETag_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 1, 
-	3
+	0, 1, 0, 1, 1, 1, 2
 };
 
 static const char _thttp_machine_parser_header_ETag_key_offsets[] = {
-	0, 0, 2, 4, 6, 8, 11, 17, 
-	18, 20, 26, 27, 29, 32, 48, 50, 
-	52, 54, 56, 58, 59, 61, 62, 63, 
-	69, 70, 74, 78
+	0, 0, 2, 4, 6, 8, 11, 15, 
+	16, 18, 22, 23, 25, 28, 36, 37, 
+	39, 40, 41, 47
 };
 
-static const char _thttp_machine_parser_header_ETag_trans_keys[] = {
-	69, 101, 84, 116, 65, 97, 71, 103, 
-	9, 32, 58, 9, 13, 32, 34, 87, 
-	119, 10, 9, 32, 9, 13, 32, 34, 
-	87, 119, 10, 9, 32, 9, 32, 34, 
-	9, 13, 34, 92, -64, -33, -32, -17, 
-	-16, -9, -8, -5, -4, -3, 32, 126, 
-	-128, -65, -128, -65, -128, -65, -128, -65, 
-	-128, -65, 10, 9, 32, 13, 10, 0, 
-	9, 11, 12, 14, 127, 47, 9, 13, 
-	32, 34, 9, 13, 32, 34, 0
+static const unsigned char _thttp_machine_parser_header_ETag_trans_keys[] = {
+	69u, 101u, 84u, 116u, 65u, 97u, 71u, 103u, 
+	9u, 32u, 58u, 9u, 13u, 32u, 34u, 10u, 
+	9u, 32u, 9u, 13u, 32u, 34u, 10u, 9u, 
+	32u, 9u, 32u, 34u, 13u, 34u, 92u, 127u, 
+	0u, 8u, 10u, 31u, 10u, 9u, 32u, 13u, 
+	10u, 0u, 9u, 11u, 12u, 14u, 127u, 0
 };
 
 static const char _thttp_machine_parser_header_ETag_single_lengths[] = {
-	0, 2, 2, 2, 2, 3, 6, 1, 
-	2, 6, 1, 2, 3, 4, 0, 0, 
-	0, 0, 0, 1, 2, 1, 1, 0, 
-	1, 4, 4, 0
+	0, 2, 2, 2, 2, 3, 4, 1, 
+	2, 4, 1, 2, 3, 4, 1, 2, 
+	1, 1, 0, 0
 };
 
 static const char _thttp_machine_parser_header_ETag_range_lengths[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 6, 1, 1, 
-	1, 1, 1, 0, 0, 0, 0, 3, 
-	0, 0, 0, 0
+	0, 0, 0, 0, 0, 2, 0, 0, 
+	0, 0, 3, 0
 };
 
 static const char _thttp_machine_parser_header_ETag_index_offsets[] = {
-	0, 0, 3, 6, 9, 12, 16, 23, 
-	25, 28, 35, 37, 40, 44, 55, 57, 
-	59, 61, 63, 65, 67, 70, 72, 74, 
-	78, 80, 85, 90
+	0, 0, 3, 6, 9, 12, 16, 21, 
+	23, 26, 31, 33, 36, 40, 47, 49, 
+	52, 54, 56, 60
 };
 
 static const char _thttp_machine_parser_header_ETag_indicies[] = {
 	0, 0, 1, 2, 2, 1, 3, 3, 
 	1, 4, 4, 1, 4, 4, 5, 1, 
-	6, 7, 6, 8, 9, 9, 1, 10, 
-	1, 11, 11, 1, 12, 13, 12, 8, 
-	9, 9, 1, 14, 1, 15, 15, 1, 
-	15, 15, 16, 1, 16, 22, 23, 24, 
-	17, 18, 19, 20, 21, 16, 1, 16, 
-	1, 17, 1, 18, 1, 19, 1, 20, 
-	1, 25, 1, 16, 16, 1, 26, 1, 
-	27, 1, 16, 16, 16, 1, 28, 1, 
-	29, 30, 29, 31, 1, 32, 33, 32, 
-	16, 1, 1, 0
+	6, 7, 6, 8, 1, 9, 1, 10, 
+	10, 1, 11, 12, 11, 8, 1, 13, 
+	1, 14, 14, 1, 14, 14, 15, 1, 
+	16, 17, 18, 1, 1, 1, 15, 19, 
+	1, 15, 15, 1, 20, 1, 21, 1, 
+	15, 15, 15, 1, 1, 0
 };
 
 static const char _thttp_machine_parser_header_ETag_trans_targs[] = {
 	2, 0, 3, 4, 5, 6, 6, 7, 
-	13, 24, 8, 9, 9, 10, 11, 12, 
-	13, 14, 15, 16, 17, 18, 19, 21, 
-	23, 20, 22, 27, 25, 26, 10, 13, 
-	26, 10
+	13, 8, 9, 9, 10, 11, 12, 13, 
+	14, 16, 18, 15, 17, 19
 };
 
 static const char _thttp_machine_parser_header_ETag_trans_actions[] = {
 	0, 0, 0, 0, 0, 0, 1, 1, 
-	1, 1, 0, 0, 1, 1, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 5, 7, 0, 3, 3, 3, 
-	0, 0
+	1, 0, 0, 1, 1, 0, 0, 0, 
+	0, 0, 0, 0, 3, 5
 };
 
 static const int thttp_machine_parser_header_ETag_start = 1;
-static const int thttp_machine_parser_header_ETag_first_final = 27;
+static const int thttp_machine_parser_header_ETag_first_final = 19;
 static const int thttp_machine_parser_header_ETag_error = 0;
 
 static const int thttp_machine_parser_header_ETag_en_main = 1;
 
 
-/* #line 110 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 111 "./ragel/thttp_parser_header_ETag.rl" */
 	
-/* #line 173 "./src/headers/thttp_header_ETag.c" */
+/* #line 156 "./src/headers/thttp_header_ETag.c" */
 	{
 	cs = thttp_machine_parser_header_ETag_start;
 	}
 
-/* #line 111 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 112 "./ragel/thttp_parser_header_ETag.rl" */
 	
-/* #line 180 "./src/headers/thttp_header_ETag.c" */
+/* #line 163 "./src/headers/thttp_header_ETag.c" */
 	{
 	int _klen;
 	unsigned int _trans;
 	const char *_acts;
 	unsigned int _nacts;
-	const char *_keys;
+	const unsigned char *_keys;
 
 	if ( p == pe )
 		goto _test_eof;
@@ -194,9 +177,9 @@ _resume:
 
 	_klen = _thttp_machine_parser_header_ETag_single_lengths[cs];
 	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + _klen - 1;
+		const unsigned char *_lower = _keys;
+		const unsigned char *_mid;
+		const unsigned char *_upper = _keys + _klen - 1;
 		while (1) {
 			if ( _upper < _lower )
 				break;
@@ -217,9 +200,9 @@ _resume:
 
 	_klen = _thttp_machine_parser_header_ETag_range_lengths[cs];
 	if ( _klen > 0 ) {
-		const char *_lower = _keys;
-		const char *_mid;
-		const char *_upper = _keys + (_klen<<1) - 2;
+		const unsigned char *_lower = _keys;
+		const unsigned char *_mid;
+		const unsigned char *_upper = _keys + (_klen<<1) - 2;
 		while (1) {
 			if ( _upper < _lower )
 				break;
@@ -251,29 +234,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 48 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 49 "./ragel/thttp_parser_header_ETag.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 52 "./ragel/thttp_parser_header_ETag.rl" */
-	{
-		hdr_ETag->isWeak = tsk_true;
-	}
-	break;
-	case 2:
-/* #line 56 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 57 "./ragel/thttp_parser_header_ETag.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ETag->value);
 	}
 	break;
-	case 3:
-/* #line 60 "./ragel/thttp_parser_header_ETag.rl" */
+	case 2:
+/* #line 61 "./ragel/thttp_parser_header_ETag.rl" */
 	{
 	}
 	break;
-/* #line 277 "./src/headers/thttp_header_ETag.c" */
+/* #line 254 "./src/headers/thttp_header_ETag.c" */
 		}
 	}
 
@@ -286,12 +263,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 112 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 113 "./ragel/thttp_parser_header_ETag.rl" */
 	
 	if( cs < 
-/* #line 293 "./src/headers/thttp_header_ETag.c" */
-27
-/* #line 113 "./ragel/thttp_parser_header_ETag.rl" */
+/* #line 270 "./src/headers/thttp_header_ETag.c" */
+19
+/* #line 114 "./ragel/thttp_parser_header_ETag.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse ETag header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ETag);

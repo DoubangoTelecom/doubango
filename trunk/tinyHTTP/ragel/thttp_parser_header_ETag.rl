@@ -41,6 +41,7 @@
 */
 %%{
 	machine thttp_machine_parser_header_ETag;
+	alphtype unsigned char;
 
 	# Includes
 	include thttp_machine_utils "./ragel/thttp_machine_utils.rl";
@@ -62,7 +63,7 @@
 	
 	weak = "W/"i;
 	opaque_tag = quoted_string;
-	entity_tag = (weak%is_weak)? opaque_tag;
+	entity_tag = opaque_tag;
 	ETag = "ETag"i HCOLON entity_tag>tag %parse_entity_tag;
 
 	# Entry point
