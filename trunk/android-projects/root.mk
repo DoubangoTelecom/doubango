@@ -8,7 +8,7 @@ export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-4
 
 # Output directory
 export OUTPUT_DIR=$(shell pwd)/output
-$(shell mkdir $(OUTPUT_DIR))
+$(shell mkdir -p $(OUTPUT_DIR))
 
 # Path where to copy executables (on the device or emulator)
 export INSTALL_DIR=/data/tmp

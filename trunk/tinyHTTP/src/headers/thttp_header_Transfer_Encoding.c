@@ -54,10 +54,10 @@ thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create_null()
 }
 
 
-int thttp_header_Transfer_Encoding_tostring(const void* header, tsk_buffer_t* output)
+int thttp_header_Transfer_Encoding_tostring(const thttp_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const thttp_header_Transfer_Encoding_t *Transfer_Encoding = header;
+		const thttp_header_Transfer_Encoding_t *Transfer_Encoding = (const thttp_header_Transfer_Encoding_t*)header;
 		if(Transfer_Encoding->encoding){
 			return tsk_buffer_append(output, Transfer_Encoding->encoding, strlen(Transfer_Encoding->encoding));
 		}

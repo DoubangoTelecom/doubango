@@ -52,10 +52,10 @@ thttp_header_WWW_Authenticate_t* thttp_header_www_authenticate_create()
 	return tsk_object_new(thttp_header_WWW_Authenticate_def_t);
 }
 
-int thttp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
+int thttp_header_WWW_Authenticate_tostring(const thttp_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const thttp_header_WWW_Authenticate_t *WWW_Authenticate = header;
+		const thttp_header_WWW_Authenticate_t *WWW_Authenticate = (const thttp_header_WWW_Authenticate_t*)header;
 		if(WWW_Authenticate && WWW_Authenticate->scheme){
 			return tsk_buffer_append_2(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
 				WWW_Authenticate->scheme,

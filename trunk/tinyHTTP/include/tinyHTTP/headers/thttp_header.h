@@ -50,7 +50,8 @@ THTTP_BEGIN_DECLS
 // FD
 struct thttp_header_s;
 
-typedef int (*thttp_header_value_tostring)(const struct thttp_header_s* header, tsk_buffer_t* output);
+typedef int (*thttp_header_value_tostring_f)(const struct thttp_header_s* header, tsk_buffer_t* output);
+#define THTTP_HEADER_VALUE_TOSTRING_F(self) ((thttp_header_value_tostring_f)(self))
 
 /**
  * @enum	thttp_header_type_e
@@ -77,7 +78,7 @@ typedef struct thttp_header_s
 {
 	TSK_DECLARE_OBJECT;
 	thttp_header_type_t type;
-	thttp_header_value_tostring tostring;
+	thttp_header_value_tostring_f tostring;
 	tsk_params_L_t *params;
 }
 thttp_header_t;

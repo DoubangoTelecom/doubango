@@ -63,8 +63,8 @@ typedef struct transport_context_s
 transport_context_t;
 
 static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
-static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client);
-static void removeSocket(int index, transport_context_t *context);
+static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client);
+static int removeSocket(int index, transport_context_t *context);
 
 /* Checks if socket is connected */
 int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd)
@@ -326,7 +326,7 @@ static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 }
 
 /*== Add new socket ==*/
-static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client)
+static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, int take_ownership, int is_client)
 {
 	transport_context_t *context = transport?transport->context:0;
 
@@ -346,14 +346,17 @@ static void addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *t
 		
 		context->count++;
 		tsk_safeobj_unlock(context);
+
+		return 0;
 	}
 	else{
 		TSK_DEBUG_ERROR("Context is Null.");
+		return -1;
 	}
 }
 
 /*== Remove socket ==*/
-static void removeSocket(int index, transport_context_t *context)
+static int removeSocket(int index, transport_context_t *context)
 {
 	size_t i;
 
@@ -388,6 +391,7 @@ static void removeSocket(int index, transport_context_t *context)
 
 		tsk_safeobj_unlock(context);
 	}
+	return 0;
 }
 
 /*=== stop all threads */
@@ -403,6 +407,51 @@ int tnet_transport_stop(tnet_transport_t *transport)
 	return tsk_thread_join(transport->mainThreadId);
 }
 
+
+int tnet_transport_prepare(tnet_transport_t *transport)
+{
+	int ret = -1;
+	transport_context_t *context;
+	
+	if(!transport || !transport->context){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return -1;
+	}
+	else{
+		context = transport->context;
+	}
+	
+	if(transport->prepared){
+		TSK_DEBUG_ERROR("Transport already prepared.");
+		return -2;
+	}
+	
+	/* Start listening */
+	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
+		if((ret = tnet_sockfd_listen(transport->master->fd, WSA_MAXIMUM_WAIT_EVENTS))){
+			TNET_PRINT_LAST_ERROR("listen have failed.");
+			goto bail;
+		}
+	}
+	
+	/* Add the master socket to the context. */
+	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_true, tsk_false))){
+		TSK_DEBUG_ERROR("Failed to add master socket");
+		goto bail;
+	}
+	
+	/* set events on master socket */
+	if((ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR)){
+		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
+		goto bail;
+	}
+	
+	transport->prepared = tsk_true;
+	
+bail:
+	return ret;
+}
+
 /*=== Main thread */
 void *tnet_transport_mainthread(void *param)
 {
@@ -416,21 +465,6 @@ void *tnet_transport_mainthread(void *param)
 	WSAEVENT active_event;
 	transport_socket_t* active_socket;
 	int index;
-	
-	/* Start listening */
-	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
-		if(tnet_sockfd_listen(transport->master->fd, WSA_MAXIMUM_WAIT_EVENTS)){
-			TNET_PRINT_LAST_ERROR("listen have failed.");
-			goto bail;
-		}
-	}
-
-	/* Add the current transport socket to the context. */
-	addSocket(transport->master->fd, transport->master->type, transport, 1, 0);
-	if(ret = WSAEventSelect(transport->master->fd, context->events[context->count - 1], TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? FD_READ : FD_ALL_EVENTS/*FD_ACCEPT | FD_READ | FD_CONNECT | FD_CLOSE*/) == SOCKET_ERROR){
-		TNET_PRINT_LAST_ERROR("WSAEventSelect have failed.");
-		goto bail;
-	}
 
 	TSK_DEBUG_INFO("Starting [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	

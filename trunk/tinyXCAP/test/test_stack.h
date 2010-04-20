@@ -76,8 +76,9 @@ void test_stack()
 	int ret;
 
 	stack = txcap_stack_create(test_stack_callback, XUI, PASSWORD, XCAP_ROOT,
-
-		//TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_LOCAL_IP, "10.0.2.15"),
+#if defined(ANDROID)
+		TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_LOCAL_IP, "10.0.2.15"),
+#endif
 		
 		// stack-level options
 		TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),
@@ -314,10 +315,10 @@ void test_stack()
 		TXCAP_ACTION_SET_NULL()
 		);
 	
-
+bail:
 	getchar();
 	
-bail:
+
 	TSK_OBJECT_SAFE_FREE(stack);
 }
 
