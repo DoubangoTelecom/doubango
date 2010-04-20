@@ -101,7 +101,7 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 
 	%%write data;
 
-	if(!fullpath || tsk_strempty(fullpath)){
+	if(tsk_strnullORempty(fullpath)){
 		fullpath = TNET_RESOLV_CONF_PATH;
 	}
 

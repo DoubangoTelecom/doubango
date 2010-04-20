@@ -123,7 +123,7 @@ if((ret = thttp_stack_start(stack))){
 * You should not pipeline requests using non-idempotent methods or non-idempotent sequences of methods. This means that you can safely pipeline GET or HEAD methods but should not with PUT or POST requests. Only HTTP version 1.1(or later) requests should be pipelined.<br>
 * </p>
 * <p>
-* To avoid pipelining, you must use a session object (thttp_session_handle_t*) only once to send a single request.
+* To avoid pipelining, you must use a session object (@ref thttp_session_handle_t*) only once to send a single request.
 * </p>
 * <p>
 * The example below shows how to create and configure a session.

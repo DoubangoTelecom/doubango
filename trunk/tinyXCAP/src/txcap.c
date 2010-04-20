@@ -46,7 +46,7 @@
 * 
 * <h2>16.1 Initialization</h2>
 * 
-* As the XCAP stack depends on the HTTP/HTTPS stack (tinyHTTP) which uses the network library (tinyNET), you MUST call <a href="http://doubango.org/API/tinyNET/tnet_8c.html#affba6c2710347476f615b0135777c640"> tnet_startup()</a> before using any XCAP function (txcap_*). <br>
+* As the XCAP stack depends on the HTTP/HTTPS stack (<a href="http://www.doubango.org/API/tinyHTTP/">tinyHTTP</a>) which uses the network library (<a href="http://www.doubango.org/API/tinyNET/"tinyNET</a>), you MUST call <a href="http://doubango.org/API/tinyNET/tnet_8c.html#affba6c2710347476f615b0135777c640"> tnet_startup()</a> before using any XCAP function (txcap_*). <br>
 * <a href="http://doubango.org/API/tinyNET/tnet_8c.html#ac42b22a7ac5831f04326aee9de033c84"> tnet_cleanup()</a> is used to terminate use of network functions. <br>
 * The example below demonstrates how to create and start a XCAP stack. In this example, the xcap-root URI is http://doubango.org:8080/services and the SIP AOR (used as XUI) is sip:bob@doubango.org.
 * 
@@ -64,7 +64,7 @@ stack = txcap_stack_create(test_stack_callback, "sip:bob@doubango.org", "mysecre
 	// stack-level headers (not mandatory)
 	TXCAP_STACK_SET_HEADER("Pragma", "No-Cache"),
 	TXCAP_STACK_SET_HEADER("Connection", "Keep-Alive"),
-TXCAP_STACK_SET_HEADER("X-3GPP-Intended-Identity", "sip:bob@doubango.org"),
+	TXCAP_STACK_SET_HEADER("X-3GPP-Intended-Identity", "sip:bob@doubango.org"),
 	TXCAP_STACK_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
 	TXCAP_STACK_SET_NULL());
 
@@ -413,7 +413,7 @@ txcap_stack_set(stack,
 
 * <h2>16.3	Selector</h2>
 * 
-* The selector is a helper function which could be used to construct XCAP URIs. XCAP URI is constructed as per RFC 4825 section 6. TXCAP_SELECTOR_NODE_SET*() macros are used to build a complete and well-formed URI (already percent encoded).
+* The selector is a helper function which could be used to construct XCAP URIs. XCAP URI is constructed as per RFC 4825 section 6. @a TXCAP_SELECTOR_NODE_SET*() macros are used to build a complete and well-formed URI (already percent encoded).
 * All examples below assume that our AOR (used as XUI) is sip:bob@doubango.com, we are using the ‘rcs’list and the xcap-root URI is http://doubango.org:8080/services. All these parameters should be set when the stack is created. You will also notice that TXCAP_SELECTOR_NODE_SET_NULL() macro is used to ends the node selection parameters passed to txcap_selector_get_url(), it’s mandatory and should always be the last one.
 * 
 * -	Select XDMS capabilities:
@@ -546,18 +546,18 @@ TSK_FREE(urlstring);
 * 
 * It is assumed that the address of the XDMS (or aggregation Proxy) is “doubango.org:8080/services” and thus the XCAP Root URI is “doubango.org:8080/services”. “sip:bob@doubango.org” will be used as the XUI. 
 * An XDMC can perform twelve actions:
-* -	txcap_action_create_element: Creates new element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_create_document: Creates new document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_create_attribute: Creates new attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_replace_element: Replaces an element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_replace_document: Replaces a document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_replace_attribute: Replaces an attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_fetch_element: Retrieves an element from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_fetch_document: Retrieves a document from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_fetch_attribute: Retrieves an attribute from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	txcap_action_delete_element: Deletes an element from the XDMS by sending a HTTP/HTTPS DELETE request. 
-* -	txcap_action_delete_document: Deletes a document from the XDMS by sending a HTTP/HTTPS DELETE request.
-* -	 txcap_action_delete_attribute: Deletes an attribute from the XDMS by sending a HTTP/HTTPS DELETE request. 
+* -	@ref txcap_action_create_element: Creates new element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_create_document: Creates new document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_create_attribute: Creates new attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_replace_element: Replaces an element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_replace_document: Replaces a document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_replace_attribute: Replaces an attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_fetch_element: Retrieves an element from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_fetch_document: Retrieves a document from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_fetch_attribute: Retrieves an attribute from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_delete_element: Deletes an element from the XDMS by sending a HTTP/HTTPS DELETE request. 
+* -	@ref txcap_action_delete_document: Deletes a document from the XDMS by sending a HTTP/HTTPS DELETE request.
+* -	@ref txcap_action_delete_attribute: Deletes an attribute from the XDMS by sending a HTTP/HTTPS DELETE request. 
 * 
 * To understand how the stack is created, please refer to section 16.1.
 * 

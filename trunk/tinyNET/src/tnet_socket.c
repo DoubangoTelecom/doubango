@@ -42,8 +42,8 @@
 * 
 * <h2>10.1	Sockets</h2>
 * For performance reason, all sockets created using tinyNET are non-blocking by default. 
-* The newly created socket will be automatically bound to associate it with an IP address and port number. @ref tnet_socket_create() macro is used to create and bind a 
-* non-blocking socket. Use @ref tnet_socket_create_2() macro to control whether the socket should be bound or not. The same macro is used to force the stack to create a blocking socket.
+* The newly created socket will be automatically bound to associate it with an IP address and port number. @ref tnet_socket_create() function is used to create and bind a 
+* non-blocking socket. You should use @ref tnet_socket_create_2() function to control whether the socket should be bound or not. The same function is used to force the stack to create a blocking socket.<br>
 * A socket object is defined like this:<br>
 *
 * @code

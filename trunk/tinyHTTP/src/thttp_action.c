@@ -123,7 +123,7 @@ static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 			switch(curr){
 				case aptype_option:
 					{
-						thhtp_action_option_t id = va_arg(*app_2, thhtp_action_option_t);
+						thttp_action_option_t id = va_arg(*app_2, thttp_action_option_t);
 						const char* value = va_arg(*app_2, const char *);
 						tsk_options_add_option(&action->options, id, value);
 						break;

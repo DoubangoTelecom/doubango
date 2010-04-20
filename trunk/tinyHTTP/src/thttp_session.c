@@ -54,7 +54,7 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 		switch(curr){
 			case httpp_option:
 				{
-					thhtp_session_option_t id = va_arg(*app, thhtp_session_option_t);
+					thttp_session_option_t id = va_arg(*app, thttp_session_option_t);
 					const char* value = va_arg(*app, const char *);
 					tsk_options_add_option(&self->options, id, value);
 					break;

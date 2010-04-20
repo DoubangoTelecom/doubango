@@ -56,12 +56,12 @@ typedef uint64_t thttp_session_id_t;
 /** List of all supported options.
 * To pass an option to the sesion, use @ref THTTP_SESSION_SET_OPTION() macro.
 */
-typedef enum thhtp_session_option_e
+typedef enum thttp_session_option_e
 {
 	THTTP_SESSION_OPTION_TIMEOUT,
 
 }
-thhtp_session_option_t;
+thttp_session_option_t;
 
 typedef enum thttp_session_param_type_e
 {
@@ -78,7 +78,7 @@ thttp_session_param_type_t;
 * @def THTTP_SESSION_SET_OPTION
 * Adds or updates an option. 
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
-* @param ID_INT The id of the option to add/update (@ref thhtp_session_option_t).
+* @param ID_INT The id of the option to add/update (@ref thttp_session_option_t).
 * @param VALUE_STR The new value of the option (<i>const char*</i>).
 *
 * @code
@@ -134,7 +134,7 @@ thttp_session_set(session,
 * @def THTTP_SESSION_SET_NULL
 * Ends session parameters. Must always be the last one.
 */
-#define THTTP_SESSION_SET_OPTION(ID_INT, VALUE_STR)			httpp_option, (thhtp_session_option_t)ID_INT, (const char*)VALUE_STR
+#define THTTP_SESSION_SET_OPTION(ID_INT, VALUE_STR)			httpp_option, (thttp_session_option_t)ID_INT, (const char*)VALUE_STR
 #define THTTP_SESSION_SET_CRED(USERNAME_STR, PASSWORD_STR)		httpp_cred, (const char*)USERNAME_STR, (const char*)PASSWORD_STR
 #define THTTP_SESSION_SET_HEADER(NAME_STR, VALUE_STR)			httpp_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define THTTP_SESSION_SET_CONTEXT(CTX_PTR)						httpp_context, (const void*)CTX_PTR
