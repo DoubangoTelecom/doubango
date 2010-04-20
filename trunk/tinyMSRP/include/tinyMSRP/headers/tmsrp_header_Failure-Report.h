@@ -35,13 +35,7 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_HEADER_FAILURE_REPORT_CREATE
-* Creates new msrp Failure-Report header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TMSRP_HEADER_FAILURE_REPORT_VA_ARGS(freport_type)		tmsrp_header_Failure_Report_def_t, (tmsrp_freport_type_t)freport_type
-#define TMSRP_HEADER_FAILURE_REPORT_CREATE(freport_type)		tsk_object_new(TMSRP_HEADER_FAILURE_REPORT_VA_ARGS(freport_type))
-#define TMSRP_HEADER_FAILURE_REPORT_CREATE_NULL()				TMSRP_HEADER_FAILURE_REPORT_CREATE(freport_yes)
 
 /** Failure report type;
 */
@@ -70,9 +64,13 @@ tmsrp_header_Failure_Report_t;
 
 typedef tsk_list_t tmsrp_headers_Failure_Report_L_t;
 
-tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *data, size_t size);
 
-TINYMSRP_GEXTERN const void *tmsrp_header_Failure_Report_def_t;
+TINYMSRP_API tmsrp_header_Failure_Report_t* tmsrp_header_Failure_Report_create(tmsrp_freport_type_t freport_type);
+TINYMSRP_API tmsrp_header_Failure_Report_t* tmsrp_header_Failure_Report_create_null();
+
+TINYMSRP_API tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *data, size_t size);
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Failure_Report_def_t;
 
 TMSRP_END_DECLS
 

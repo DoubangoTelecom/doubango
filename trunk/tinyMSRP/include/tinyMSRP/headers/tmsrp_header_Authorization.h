@@ -35,12 +35,6 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_HEADER_AUTHORIZATION_CREATE
-* Creates new msrp 'AUTHORIZATION' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TMSRP_HEADER_AUTHORIZATION_CREATE()				tsk_object_new(tmsrp_header_Authorization_def_t)
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -95,7 +89,7 @@ tmsrp_header_Authorization_t;
 
 tmsrp_header_Authorization_t *tmsrp_header_Authorization_parse(const char *data, size_t size);
 
-TINYMSRP_GEXTERN const void *tmsrp_header_Authorization_def_t;
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Authorization_def_t;
 
 TMSRP_END_DECLS
 

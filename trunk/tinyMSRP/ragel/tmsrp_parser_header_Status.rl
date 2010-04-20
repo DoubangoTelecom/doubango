@@ -42,7 +42,7 @@
 	machine tmsrp_machine_parser_header_Status;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -70,14 +70,26 @@
 
 }%%
 
+
+
+tmsrp_header_Status_t* tmsrp_header_Status_create(short namespace, short code, const char* reason)
+{
+	return tsk_object_new(TMSRP_HEADER_STATUS_VA_ARGS(namespace, code, reason));
+}
+
+tmsrp_header_Status_t* tmsrp_header_Status_create_null()
+{
+	return tmsrp_header_Status_create(0, 200, tsk_null);
+}
+
+
 int tmsrp_header_Status_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Status_t *Status = (const tmsrp_header_Status_t *)header;
 				
 		// Status: 000 200 OK
-		return tsk_buffer_appendEx(output, "%.3hi %.3hi%s%s", 
+		return tsk_buffer_append_2(output, "%.3hi %.3hi%s%s", 
 			Status->namespace, 
 			Status->code,
 			Status->reason ? " " : "",
@@ -94,7 +106,7 @@ tmsrp_header_Status_t *tmsrp_header_Status_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Status_t *hdr_Status = TMSRP_HEADER_STATUS_CREATE_NULL();
+	tmsrp_header_Status_t *hdr_Status = tmsrp_header_Status_create_null();
 
 	const char *tag_start;
 
@@ -120,11 +132,10 @@ tmsrp_header_Status_t *tmsrp_header_Status_parse(const char *data, size_t size)
 //	Status header object definition
 //
 
-static void* tmsrp_header_Status_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Status_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Status_t *Status = self;
-	if(Status)
-	{
+	if(Status){
 		TMSRP_HEADER(Status)->type = tmsrp_htype_Status;
 		TMSRP_HEADER(Status)->tostring = tmsrp_header_Status_tostring;
 #if defined(__GNUC__)
@@ -142,7 +153,7 @@ static void* tmsrp_header_Status_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Status_destroy(void *self)
+static tsk_object_t* tmsrp_header_Status_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Status_t *Status = self;
 	if(Status){
@@ -154,17 +165,13 @@ static void* tmsrp_header_Status_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Status_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Status_def_s = 
 {
 	sizeof(tmsrp_header_Status_t),
-	tmsrp_header_Status_create,
-	tmsrp_header_Status_destroy,
-	tmsrp_header_Status_cmp
+	tmsrp_header_Status_ctor,
+	tmsrp_header_Status_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Status_def_t = &tmsrp_header_Status_def_s;
+const tsk_object_def_t *tmsrp_header_Status_def_t = &tmsrp_header_Status_def_s;

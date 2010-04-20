@@ -42,7 +42,7 @@
 	machine tsdp_machine_parser_header_V;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -58,6 +58,17 @@
 	main := V :>CRLF?;
 
 }%%
+
+
+tsdp_header_V_t* tsdp_header_V_create(int32_t version)
+{
+	return tsk_object_new(TSDP_HEADER_V_VA_ARGS(version));
+}
+
+tsdp_header_V_t* tsdp_header_V_create_null()
+{
+	return tsdp_header_V_create(TSDP_HEADER_V_DEFAULT);
+}
 
 int tsdp_header_V_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
@@ -77,7 +88,7 @@ tsdp_header_t* tsdp_header_V_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_V_t *V = (const tsdp_header_V_t *)header;
-		return TSDP_HEADER_V_CREATE(V->version);
+		return (tsdp_header_t*)tsdp_header_V_create(V->version);
 	}
 	return tsk_null;
 }
@@ -88,7 +99,7 @@ tsdp_header_V_t *tsdp_header_V_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_V_t *hdr_V = TSDP_HEADER_V_CREATE_NULL();
+	tsdp_header_V_t *hdr_V = tsdp_header_V_create_null();
 	
 	const char *tag_start;
 
@@ -114,11 +125,10 @@ tsdp_header_V_t *tsdp_header_V_parse(const char *data, size_t size)
 //	V header object definition
 //
 
-static void* tsdp_header_V_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_V_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_V_t *V = self;
-	if(V)
-	{
+	if(V){
 		TSDP_HEADER(V)->type = tsdp_htype_V;
 		TSDP_HEADER(V)->tostring = tsdp_header_V_tostring;
 		TSDP_HEADER(V)->clone = tsdp_header_V_clone;
@@ -132,7 +142,7 @@ static void* tsdp_header_V_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_V_destroy(void *self)
+static tsk_object_t* tsdp_header_V_dtor(tsk_object_t *self)
 {
 	tsdp_header_V_t *V = self;
 	if(V){
@@ -156,8 +166,8 @@ static int tsdp_header_V_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_V_def_s = 
 {
 	sizeof(tsdp_header_V_t),
-	tsdp_header_V_create,
-	tsdp_header_V_destroy,
+	tsdp_header_V_ctor,
+	tsdp_header_V_dtor,
 	tsdp_header_V_cmp
 };
 

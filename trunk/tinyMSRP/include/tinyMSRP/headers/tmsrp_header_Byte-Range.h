@@ -35,13 +35,7 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_HEADER_BYTE_RANGE_CREATE
-* Creates new msrp Byte-Range header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, total)		tmsrp_header_Byte_Range_def_t, (int64_t)start, (int64_t)end, (int64_t)total
-#define TMSRP_HEADER_BYTE_RANGE_CREATE(start, end, total)		tsk_object_new(TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, total))
-#define TMSRP_HEADER_BYTE_RANGE_CREATE_NULL()				TMSRP_HEADER_BYTE_RANGE_CREATE(1, -1, -1)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -66,9 +60,12 @@ tmsrp_header_Byte_Range_t;
 
 typedef tsk_list_t tmsrp_headers_Byte_Range_L_t;
 
-tmsrp_header_Byte_Range_t *tmsrp_header_Byte_Range_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create(int64_t start, int64_t end, int64_t total);
+TINYMSRP_API tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create_null();
 
-TINYMSRP_GEXTERN const void *tmsrp_header_Byte_Range_def_t;
+TINYMSRP_API tmsrp_header_Byte_Range_t *tmsrp_header_Byte_Range_parse(const char *data, size_t size);
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Byte_Range_def_t;
 
 TMSRP_END_DECLS
 

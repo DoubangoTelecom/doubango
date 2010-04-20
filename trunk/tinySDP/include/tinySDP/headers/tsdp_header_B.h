@@ -35,13 +35,8 @@
 
 TSDP_BEGIN_DECLS
 
-/**@def TSDP_HEADER_B_CREATE
-* Creates new sdp B header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
+
 #define TSDP_HEADER_B_VA_ARGS(bwtype, bandwidth)		tsdp_header_B_def_t, (const char*)bwtype, (uint32_t)bandwidth
-#define TSDP_HEADER_B_CREATE(bwtype, bandwidth)			tsk_object_new(TSDP_HEADER_B_VA_ARGS(bwtype, bandwidth))
-#define TSDP_HEADER_B_CREATE_NULL()			TSDP_HEADER_B_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -64,7 +59,10 @@ tsdp_header_B_t;
 
 typedef tsk_list_t tsdp_headers_B_L_t;
 
-tsdp_header_B_t *tsdp_header_B_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_B_t* tsdp_header_B_create(const char* bwtype, uint32_t bandwidth);
+TINYSDP_API tsdp_header_B_t* tsdp_header_b_create_null();
+
+TINYSDP_API tsdp_header_B_t *tsdp_header_B_parse(const char *data, size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_B_def_t;
 

@@ -1,5 +1,5 @@
 
-/* #line 1 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 1 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -41,13 +41,22 @@
 *	Ragel state machine.
 */
 
-/* #line 61 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 61 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 
+
+tmsrp_header_Success_Report_t* tmsrp_header_Success_Report_create(tsk_bool_t isSuccess)
+{
+	return tsk_object_new(TMSRP_HEADER_SUCCESS_REPORT_VA_ARGS(isSuccess));
+}
+
+tmsrp_header_Success_Report_t* tmsrp_header_Success_Report_create_null()
+{
+	return tmsrp_header_Success_Report_create(tsk_false);
+}
 
 int tmsrp_header_Success_Report_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Success_Report_t *Success_Report = (const tmsrp_header_Success_Report_t *)header;
 		const char* value = Success_Report->yes ? "yes" : "no";
 		return tsk_buffer_append(output, value, strlen(value));
@@ -62,10 +71,10 @@ tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *dat
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Success_Report_t *hdr_Success_Report = TMSRP_HEADER_SUCCESS_REPORT_CREATE_NULL();
+	tmsrp_header_Success_Report_t *hdr_Success_Report = tmsrp_header_Success_Report_create_null();
 
 	
-/* #line 69 "../src/headers/tmsrp_header_Success-Report.c" */
+/* #line 78 "./src/headers/tmsrp_header_Success-Report.c" */
 static const char _tmsrp_machine_parser_header_Success_Report_actions[] = {
 	0, 1, 0, 1, 1
 };
@@ -147,16 +156,16 @@ static const int tmsrp_machine_parser_header_Success_Report_error = 0;
 static const int tmsrp_machine_parser_header_Success_Report_en_main = 1;
 
 
-/* #line 84 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 93 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	
-/* #line 153 "../src/headers/tmsrp_header_Success-Report.c" */
+/* #line 162 "./src/headers/tmsrp_header_Success-Report.c" */
 	{
 	cs = tmsrp_machine_parser_header_Success_Report_start;
 	}
 
-/* #line 85 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 94 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	
-/* #line 160 "../src/headers/tmsrp_header_Success-Report.c" */
+/* #line 169 "./src/headers/tmsrp_header_Success-Report.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -231,18 +240,18 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	{
 		hdr_Success_Report->yes = 1;
 	}
 	break;
 	case 1:
-/* #line 51 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	{
 		hdr_Success_Report->yes = 0;
 	}
 	break;
-/* #line 246 "../src/headers/tmsrp_header_Success-Report.c" */
+/* #line 255 "./src/headers/tmsrp_header_Success-Report.c" */
 		}
 	}
 
@@ -259,18 +268,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	{
 		hdr_Success_Report->yes = 1;
 	}
 	break;
 	case 1:
-/* #line 51 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	{
 		hdr_Success_Report->yes = 0;
 	}
 	break;
-/* #line 274 "../src/headers/tmsrp_header_Success-Report.c" */
+/* #line 283 "./src/headers/tmsrp_header_Success-Report.c" */
 		}
 	}
 	}
@@ -278,12 +287,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 86 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 95 "./ragel/tmsrp_parser_header_Success-Report.rl" */
 	
 	if( cs < 
-/* #line 285 "../src/headers/tmsrp_header_Success-Report.c" */
+/* #line 294 "./src/headers/tmsrp_header_Success-Report.c" */
 22
-/* #line 87 "tmsrp_parser_header_Success-Report.rl" */
+/* #line 96 "./ragel/tmsrp_parser_header_Success-Report.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Success-Report' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Success_Report);
@@ -302,11 +311,10 @@ _again:
 //	Success_Report header object definition
 //
 
-static void* tmsrp_header_Success_Report_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Success_Report_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Success_Report_t *Success_Report = self;
-	if(Success_Report)
-	{
+	if(Success_Report){
 		TMSRP_HEADER(Success_Report)->type = tmsrp_htype_Success_Report;
 		TMSRP_HEADER(Success_Report)->tostring = tmsrp_header_Success_Report_tostring;
 		
@@ -318,7 +326,7 @@ static void* tmsrp_header_Success_Report_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Success_Report_destroy(void *self)
+static tsk_object_t* tmsrp_header_Success_Report_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Success_Report_t *Success_Report = self;
 	if(Success_Report){
@@ -329,17 +337,13 @@ static void* tmsrp_header_Success_Report_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Success_Report_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Success_Report_def_s = 
 {
 	sizeof(tmsrp_header_Success_Report_t),
-	tmsrp_header_Success_Report_create,
-	tmsrp_header_Success_Report_destroy,
-	tmsrp_header_Success_Report_cmp
+	tmsrp_header_Success_Report_ctor,
+	tmsrp_header_Success_Report_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Success_Report_def_t = &tmsrp_header_Success_Report_def_s;
+const tsk_object_def_t *tmsrp_header_Success_Report_def_t = &tmsrp_header_Success_Report_def_s;

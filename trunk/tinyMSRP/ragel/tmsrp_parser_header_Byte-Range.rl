@@ -42,7 +42,7 @@
 	machine tmsrp_machine_parser_header_Byte_Range;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -81,10 +81,19 @@
 
 }%%
 
+tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create(int64_t start, int64_t end, int64_t total)
+{
+	return tsk_object_new(TMSRP_HEADER_BYTE_RANGE_VA_ARGS(start, end, total));
+}
+
+tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create_null()
+{
+	return tmsrp_header_Byte_Range_create(1, -1, -1);
+}
+
 int tmsrp_header_Byte_Range_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Byte_Range_t *Byte_Range = (const tmsrp_header_Byte_Range_t *)header;
 		tsk_istr_t start, end, total;
 
@@ -98,7 +107,7 @@ int tmsrp_header_Byte_Range_tostring(const tmsrp_header_t* header, tsk_buffer_t*
 			tsk_itoa(Byte_Range->total, &total);
 		}
 		
-		return tsk_buffer_appendEx(output, "%s-%s/%s", 
+		return tsk_buffer_append_2(output, "%s-%s/%s", 
 			Byte_Range->start>=0 ? start : "*",
 			Byte_Range->end>=0 ? end : "*",
 			Byte_Range->total>=0 ? total : "*"
@@ -114,7 +123,7 @@ tmsrp_header_Byte_Range_t *tmsrp_header_Byte_Range_parse(const char *data, size_
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Byte_Range_t *hdr_Byte_Range = TMSRP_HEADER_BYTE_RANGE_CREATE_NULL();
+	tmsrp_header_Byte_Range_t *hdr_Byte_Range = tmsrp_header_Byte_Range_create_null();
 
 	const char *tag_start;
 
@@ -140,11 +149,10 @@ tmsrp_header_Byte_Range_t *tmsrp_header_Byte_Range_parse(const char *data, size_
 //	Byte_Range header object definition
 //
 
-static void* tmsrp_header_Byte_Range_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Byte_Range_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Byte_Range_t *Byte_Range = self;
-	if(Byte_Range)
-	{
+	if(Byte_Range){
 		TMSRP_HEADER(Byte_Range)->type = tmsrp_htype_Byte_Range;
 		TMSRP_HEADER(Byte_Range)->tostring = tmsrp_header_Byte_Range_tostring;
 		
@@ -158,7 +166,7 @@ static void* tmsrp_header_Byte_Range_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Byte_Range_destroy(void *self)
+static tsk_object_t* tmsrp_header_Byte_Range_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Byte_Range_t *Byte_Range = self;
 	if(Byte_Range){
@@ -169,17 +177,13 @@ static void* tmsrp_header_Byte_Range_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Byte_Range_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Byte_Range_def_s = 
 {
 	sizeof(tmsrp_header_Byte_Range_t),
-	tmsrp_header_Byte_Range_create,
-	tmsrp_header_Byte_Range_destroy,
-	tmsrp_header_Byte_Range_cmp
+	tmsrp_header_Byte_Range_ctor,
+	tmsrp_header_Byte_Range_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Byte_Range_def_t = &tmsrp_header_Byte_Range_def_s;
+const tsk_object_def_t *tmsrp_header_Byte_Range_def_t = &tmsrp_header_Byte_Range_def_s;

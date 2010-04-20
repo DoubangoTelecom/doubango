@@ -42,7 +42,7 @@
 	machine tmsrp_machine_parser_header_Dummy;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -64,10 +64,20 @@
 
 }%%
 
+
+tmsrp_header_Dummy_t* tmsrp_header_Dummy_create(const char* name, const char* value)
+{
+	return tsk_object_new(TMSRP_HEADER_DUMMY_VA_ARGS(name, value));
+}
+
+tmsrp_header_Dummy_t* tmsrp_header_Dummy_create_null()
+{
+	return tmsrp_header_Dummy_create(tsk_null, tsk_null);
+}
+
 int tmsrp_header_Dummy_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Dummy_t *Dummy = (const tmsrp_header_Dummy_t *)header;
 		if(Dummy->value){
 			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
@@ -84,7 +94,7 @@ tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Dummy_t *hdr_Dummy = TMSRP_HEADER_DUMMY_CREATE_NULL();
+	tmsrp_header_Dummy_t *hdr_Dummy = tmsrp_header_Dummy_create_null();
 	
 	const char *tag_start;
 
@@ -93,7 +103,7 @@ tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, size_t size)
 	%%write exec;
 	
 	if( cs < %%{ write first_final; }%% ){
-		TSK_DEBUG_ERROR("Failed to parse dummy header.");
+		TSK_DEBUG_ERROR("Failed to parse Dummy header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}
 	
@@ -110,11 +120,10 @@ tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, size_t size)
 //	Dummy header object definition
 //
 
-static void* tmsrp_header_Dummy_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		TMSRP_HEADER(Dummy)->type = tmsrp_htype_Dummy;
 		TMSRP_HEADER(Dummy)->tostring = tmsrp_header_Dummy_tostring;
 		
@@ -127,7 +136,7 @@ static void* tmsrp_header_Dummy_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Dummy_destroy(void *self)
+static tsk_object_t* tmsrp_header_Dummy_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Dummy_t *Dummy = self;
 	if(Dummy){
@@ -140,17 +149,13 @@ static void* tmsrp_header_Dummy_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Dummy_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Dummy_def_s = 
 {
 	sizeof(tmsrp_header_Dummy_t),
-	tmsrp_header_Dummy_create,
-	tmsrp_header_Dummy_destroy,
-	tmsrp_header_Dummy_cmp
+	tmsrp_header_Dummy_ctor,
+	tmsrp_header_Dummy_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Dummy_def_t = &tmsrp_header_Dummy_def_s;
+const tsk_object_def_t *tmsrp_header_Dummy_def_t = &tmsrp_header_Dummy_def_s;

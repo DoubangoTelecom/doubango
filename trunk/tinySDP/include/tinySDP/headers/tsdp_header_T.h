@@ -37,13 +37,7 @@
 
 TSDP_BEGIN_DECLS
 
-/**@def TSDP_HEADER_T_CREATE
-* Creates new sdp "t=" header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSDP_HEADER_T_VA_ARGS(start, stop)		tsdp_header_T_def_t, (uint64_t)start, (uint64_t)stop
-#define TSDP_HEADER_T_CREATE(start, stop)			tsk_object_new(TSDP_HEADER_T_VA_ARGS(start, stop))
-#define TSDP_HEADER_T_CREATE_NULL()			TSDP_HEADER_T_CREATE(0, 0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -74,7 +68,10 @@ tsdp_header_T_t;
 
 typedef tsk_list_t tsdp_headers_T_L_t;
 
-tsdp_header_T_t *tsdp_header_T_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_T_t* tsdp_header_T_create(uint64_t start, uint64_t stop);
+TINYSDP_API tsdp_header_T_t* tsdp_header_T_create_null();
+
+TINYSDP_API tsdp_header_T_t *tsdp_header_T_parse(const char *data, size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_T_def_t;
 

@@ -45,7 +45,7 @@
 	machine tmsrp_machine_parser_header_Content_Type;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -73,10 +73,20 @@
 
 }%%
 
+
+tmsrp_header_Content_Type_t* tmsrp_header_Content_Type_create(const char* type)
+{
+	return tsk_object_new(TMSRP_HEADER_CONTENT_TYPE_VA_ARGS(type));
+}
+
+tmsrp_header_Content_Type_t* tmsrp_header_Content_Type_create_null()
+{
+	return tmsrp_header_Content_Type_create(tsk_null);
+}
+
 int tmsrp_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Content_Type_t *Content_Type = header;
 		const tsk_list_item_t *item;
 
@@ -99,7 +109,7 @@ tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, s
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Content_Type_t *hdr_ctype = TMSRP_HEADER_CONTENT_TYPE_CREATE_NULL();
+	tmsrp_header_Content_Type_t *hdr_ctype = tmsrp_header_Content_Type_create_null();
 	
 	const char *tag_start;
 
@@ -107,8 +117,8 @@ tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, s
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Content-Type' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);
 	}
 	
@@ -127,7 +137,7 @@ tmsrp_header_Content_Type_t *tmsrp_header_Content_Type_parse(const char *data, s
 
 /**@ingroup tmsrp_header_Content_Type_group
 */
-static void* tmsrp_header_Content_Type_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Content_Type_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Content_Type_t *Content_Type = self;
 	if(Content_Type){
@@ -144,15 +154,16 @@ static void* tmsrp_header_Content_Type_create(void *self, va_list * app)
 
 /**@ingroup tmsrp_header_Content_Type_group
 */
-static void* tmsrp_header_Content_Type_destroy(void *self)
+static tsk_object_t* tmsrp_header_Content_Type_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Content_Type_t *Content_Type = self;
-	if(Content_Type)
-	{
+	if(Content_Type){
 		TSK_FREE(Content_Type->value);
 		TSK_OBJECT_SAFE_FREE(Content_Type->params);
 	}
-	else TSK_DEBUG_ERROR("Null Content_Type header.");
+	else{
+		TSK_DEBUG_ERROR("Null Content-Type header.");
+	}
 
 	return self;
 }
@@ -160,8 +171,8 @@ static void* tmsrp_header_Content_Type_destroy(void *self)
 static const tsk_object_def_t tmsrp_header_Content_Type_def_s = 
 {
 	sizeof(tmsrp_header_Content_Type_t),
-	tmsrp_header_Content_Type_create,
-	tmsrp_header_Content_Type_destroy,
-	0
+	tmsrp_header_Content_Type_ctor,
+	tmsrp_header_Content_Type_dtor,
+	tsk_null
 };
-const void *tmsrp_header_Content_Type_def_t = &tmsrp_header_Content_Type_def_s;
+const tsk_object_def_t *tmsrp_header_Content_Type_def_t = &tmsrp_header_Content_Type_def_s;

@@ -1,5 +1,5 @@
 
-/* #line 1 "tsdp_parser_message.rl" */
+/* #line 1 "./ragel/tsdp_parser_message.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -50,12 +50,12 @@
 #include "tsk_debug.h"
 
 
-/* #line 244 "tsdp_parser_message.rl" */
+/* #line 244 "./ragel/tsdp_parser_message.rl" */
 
 
 /* Ragel data */
 
-/* #line 59 "../src/parsers/tsdp_parser_message.c" */
+/* #line 59 "./src/parsers/tsdp_parser_message.c" */
 static const char _tsdp_machine_message_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -153,7 +153,7 @@ static const int tsdp_machine_message_error = 0;
 static const int tsdp_machine_message_en_main = 34;
 
 
-/* #line 248 "tsdp_parser_message.rl" */
+/* #line 248 "./ragel/tsdp_parser_message.rl" */
 
 tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
 {
@@ -174,22 +174,22 @@ tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
 		goto bail;
 	}
 
-	if(!(sdp_msg = TSDP_MESSAGE_CREATE())){
+	if(!(sdp_msg = tsdp_message_create())){
 		goto bail;
 	}
 
 	/* Ragel init */
 	
-/* #line 184 "../src/parsers/tsdp_parser_message.c" */
+/* #line 184 "./src/parsers/tsdp_parser_message.c" */
 	{
 	cs = tsdp_machine_message_start;
 	}
 
-/* #line 274 "tsdp_parser_message.rl" */
+/* #line 274 "./ragel/tsdp_parser_message.rl" */
 
 	/* Ragel execute */
 	
-/* #line 193 "../src/parsers/tsdp_parser_message.c" */
+/* #line 193 "./src/parsers/tsdp_parser_message.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -263,17 +263,17 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 58 "tsdp_parser_message.rl" */
+/* #line 58 "./ragel/tsdp_parser_message.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 65 "tsdp_parser_message.rl" */
+/* #line 65 "./ragel/tsdp_parser_message.rl" */
 	{
 		if(hdr_M){
 			if(!hdr_M->Attributes){
-				hdr_M->Attributes = TSK_LIST_CREATE();
+				hdr_M->Attributes = tsk_list_create();
 			}
 			if((header = (tsdp_header_t*)tsdp_header_A_parse(tag_start, (p - tag_start)))){
 				tsk_list_push_back_data(hdr_M->Attributes, (void**)&header);
@@ -286,11 +286,11 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 80 "tsdp_parser_message.rl" */
+/* #line 80 "./ragel/tsdp_parser_message.rl" */
 	{
 		if(hdr_M){
 			if(!hdr_M->Bandwidths){
-				hdr_M->Bandwidths = TSK_LIST_CREATE();
+				hdr_M->Bandwidths = tsk_list_create();
 			}
 			if((header = (tsdp_header_t*)tsdp_header_B_parse(tag_start, (p - tag_start)))){
 				tsk_list_push_back_data(hdr_M->Bandwidths, (void**)&header);
@@ -303,7 +303,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 95 "tsdp_parser_message.rl" */
+/* #line 95 "./ragel/tsdp_parser_message.rl" */
 	{
 		if(hdr_M && !hdr_M->C){
 			hdr_M->C = tsdp_header_C_parse(tag_start, (p - tag_start));
@@ -315,7 +315,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 105 "tsdp_parser_message.rl" */
+/* #line 105 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_Dummy_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
@@ -324,7 +324,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 112 "tsdp_parser_message.rl" */
+/* #line 112 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_E_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
@@ -333,7 +333,7 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 119 "tsdp_parser_message.rl" */
+/* #line 119 "./ragel/tsdp_parser_message.rl" */
 	{
 		if(hdr_M && !hdr_M->I){
 			hdr_M->I = tsdp_header_I_parse(tag_start, (p - tag_start));
@@ -345,7 +345,7 @@ _match:
 	}
 	break;
 	case 7:
-/* #line 129 "tsdp_parser_message.rl" */
+/* #line 129 "./ragel/tsdp_parser_message.rl" */
 	{
 		if(hdr_M && !hdr_M->K){
 			hdr_M->K = tsdp_header_K_parse(tag_start, (p - tag_start));
@@ -357,7 +357,7 @@ _match:
 	}
 	break;
 	case 8:
-/* #line 139 "tsdp_parser_message.rl" */
+/* #line 139 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((hdr_M = tsdp_header_M_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, TSDP_HEADER(hdr_M));
@@ -366,7 +366,7 @@ _match:
 	}
 	break;
 	case 9:
-/* #line 146 "tsdp_parser_message.rl" */
+/* #line 146 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_O_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
@@ -375,7 +375,7 @@ _match:
 	}
 	break;
 	case 10:
-/* #line 153 "tsdp_parser_message.rl" */
+/* #line 153 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_P_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
@@ -384,12 +384,12 @@ _match:
 	}
 	break;
 	case 11:
-/* #line 160 "tsdp_parser_message.rl" */
+/* #line 160 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_R_parse(tag_start, (p - tag_start)))){
 			if(hdr_T){
 				if(!hdr_T->repeat_fields){
-					hdr_T->repeat_fields = TSK_LIST_CREATE();
+					hdr_T->repeat_fields = tsk_list_create();
 				}
 				tsk_list_push_back_data(hdr_T->repeat_fields, (void**)&header);
 			}
@@ -401,7 +401,7 @@ _match:
 	}
 	break;
 	case 12:
-/* #line 175 "tsdp_parser_message.rl" */
+/* #line 175 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_S_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
@@ -410,7 +410,7 @@ _match:
 	}
 	break;
 	case 13:
-/* #line 182 "tsdp_parser_message.rl" */
+/* #line 182 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((hdr_T = tsdp_header_T_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, TSDP_HEADER(hdr_T));
@@ -419,7 +419,7 @@ _match:
 	}
 	break;
 	case 14:
-/* #line 189 "tsdp_parser_message.rl" */
+/* #line 189 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_U_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
@@ -428,7 +428,7 @@ _match:
 	}
 	break;
 	case 15:
-/* #line 196 "tsdp_parser_message.rl" */
+/* #line 196 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_V_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
@@ -437,7 +437,7 @@ _match:
 	}
 	break;
 	case 16:
-/* #line 203 "tsdp_parser_message.rl" */
+/* #line 203 "./ragel/tsdp_parser_message.rl" */
 	{
 		if((header = (tsdp_header_t*)tsdp_header_Z_parse(tag_start, (p - tag_start)))){
 			tsdp_message_add_header(sdp_msg, header);
@@ -445,7 +445,7 @@ _match:
 		}
 	}
 	break;
-/* #line 449 "../src/parsers/tsdp_parser_message.c" */
+/* #line 449 "./src/parsers/tsdp_parser_message.c" */
 		}
 	}
 
@@ -458,13 +458,13 @@ _again:
 	_out: {}
 	}
 
-/* #line 277 "tsdp_parser_message.rl" */
+/* #line 277 "./ragel/tsdp_parser_message.rl" */
 
 	/* Check result */
 	if( cs < 
-/* #line 466 "../src/parsers/tsdp_parser_message.c" */
+/* #line 466 "./src/parsers/tsdp_parser_message.c" */
 34
-/* #line 279 "tsdp_parser_message.rl" */
+/* #line 279 "./ragel/tsdp_parser_message.rl" */
  )
 	{
 		TSK_DEBUG_ERROR("Failed to parse SDP message.");

@@ -43,7 +43,7 @@
 	machine tsdp_machine_parser_header_K;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -60,10 +60,21 @@
 
 }%%
 
+
+
+tsdp_header_K_t* tsdp_header_K_create(const char* value)
+{
+	return tsk_object_new(TSDP_HEADER_K_VA_ARGS(value));
+}
+
+tsdp_header_K_t* tsdp_header_K_create_null()
+{
+	return tsdp_header_K_create(tsk_null);
+}
+
 int tsdp_header_K_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_K_t *K = (const tsdp_header_K_t *)header;
 		if(K->value){
 			tsk_buffer_append(output, K->value, strlen(K->value));
@@ -78,7 +89,7 @@ tsdp_header_t* tsdp_header_K_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_K_t *K = (const tsdp_header_K_t *)header;
-		return TSDP_HEADER_K_CREATE(K->value);
+		return (tsdp_header_t*)tsdp_header_K_create(K->value);
 	}
 	return tsk_null;
 }
@@ -89,7 +100,7 @@ tsdp_header_K_t *tsdp_header_K_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_K_t *hdr_K = TSDP_HEADER_K_CREATE_NULL();
+	tsdp_header_K_t *hdr_K = tsdp_header_K_create_null();
 	
 	const char *tag_start;
 
@@ -115,11 +126,10 @@ tsdp_header_K_t *tsdp_header_K_parse(const char *data, size_t size)
 //	K header object definition
 //
 
-static void* tsdp_header_K_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_K_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_K_t *K = self;
-	if(K)
-	{
+	if(K){
 		TSDP_HEADER(K)->type = tsdp_htype_K;
 		TSDP_HEADER(K)->tostring = tsdp_header_K_tostring;
 		TSDP_HEADER(K)->clone = tsdp_header_K_clone;
@@ -128,12 +138,12 @@ static void* tsdp_header_K_create(void *self, va_list * app)
 		K->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else{
-		TSK_DEBUG_ERROR("Failed to create new E header.");
+		TSK_DEBUG_ERROR("Failed to create new K header.");
 	}
 	return self;
 }
 
-static void* tsdp_header_K_destroy(void *self)
+static tsk_object_t* tsdp_header_K_dtor(tsk_object_t *self)
 {
 	tsdp_header_K_t *K = self;
 	if(K){
@@ -158,8 +168,8 @@ static int tsdp_header_K_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_K_def_s = 
 {
 	sizeof(tsdp_header_K_t),
-	tsdp_header_K_create,
-	tsdp_header_K_destroy,
+	tsdp_header_K_ctor,
+	tsdp_header_K_dtor,
 	tsdp_header_K_cmp
 };
 

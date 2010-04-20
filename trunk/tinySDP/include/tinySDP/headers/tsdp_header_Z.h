@@ -35,28 +35,21 @@
 
 TSDP_BEGIN_DECLS
 
-/**@def TSDP_HEADER_B_CREATE
-* Creates new sdp Z header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSDP_HEADER_Z_VA_ARGS(time, shifted_back, typed_time)		tsdp_header_Z_def_t, (uint64_t)time, (unsigned)shifted_back, (const char*)typed_time
-#define TSDP_HEADER_Z_CREATE(time, shifted_back, typed_time)			tsk_object_new(TSDP_HEADER_Z_VA_ARGS(time, shifted_back, typed_time))
-#define TSDP_HEADER_Z_CREATE_NULL()			TSDP_HEADER_Z_CREATE(0, 0, tsk_null)
-
-
-#define TSDP_ZONE_CREATE(time, shifted_back, typed_time) tsk_object_new(tsdp_zone_def_t, (uint64_t)time, (unsigned)shifted_back, (const char*)typed_time)
-#define TSDP_ZONE_CREATE_NULL() TSDP_ZONE_CREATE(0, 0, tsk_null)
+#define TSDP_HEADER_Z_VA_ARGS(time, shifted_back, typed_time)		tsdp_header_Z_def_t, (uint64_t)time, (tsk_bool_t)shifted_back, (const char*)typed_time
 
 typedef struct tsdp_zone_s
 {
 	TSK_DECLARE_OBJECT;
 
 	uint64_t time;
-	unsigned shifted_back:1;
+	tsk_bool_t shifted_back;
 	char* typed_time;
 }
 tsdp_zone_t;
 typedef tsk_list_t tsdp_zones_L_t;
+
+TINYSDP_API tsdp_zone_t* tsdp_zone_create(uint64_t time, tsk_bool_t shifted_back, const char* typed_time) ;
+TINYSDP_API tsdp_zone_t* tsdp_zone_create_null();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -80,7 +73,10 @@ tsdp_header_Z_t;
 
 typedef tsk_list_t tsdp_headers_Z_L_t;
 
-tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_Z_t* tsdp_header_Z_create(uint64_t time, tsk_bool_t shifted_back, const char* typed_time);
+TINYSDP_API tsdp_header_Z_t* tsdp_header_Z_create_null();
+
+TINYSDP_API tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_Z_def_t;
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_zone_def_t;

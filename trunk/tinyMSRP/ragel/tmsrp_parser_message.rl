@@ -51,7 +51,7 @@
 	###########################################
 	#	Includes
 	###########################################
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -169,7 +169,7 @@
 				tsk_buffer_append(msrp_msg->Content, tag_start, (size_t)len);
 			}
 			else{
-				msrp_msg->Content = TSK_BUFFER_CREATE(tag_start, (size_t)len);
+				msrp_msg->Content = tsk_buffer_create(tag_start, (size_t)len);
 			}
 		}
 	}

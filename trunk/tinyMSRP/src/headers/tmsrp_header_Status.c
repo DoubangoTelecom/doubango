@@ -1,5 +1,5 @@
 
-/* #line 1 "tmsrp_parser_header_Status.rl" */
+/* #line 1 "./ragel/tmsrp_parser_header_Status.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -41,17 +41,29 @@
 *	Ragel state machine.
 */
 
-/* #line 71 "tmsrp_parser_header_Status.rl" */
+/* #line 71 "./ragel/tmsrp_parser_header_Status.rl" */
+
+
+
+
+tmsrp_header_Status_t* tmsrp_header_Status_create(short namespace, short code, const char* reason)
+{
+	return tsk_object_new(TMSRP_HEADER_STATUS_VA_ARGS(namespace, code, reason));
+}
+
+tmsrp_header_Status_t* tmsrp_header_Status_create_null()
+{
+	return tmsrp_header_Status_create(0, 200, tsk_null);
+}
 
 
 int tmsrp_header_Status_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Status_t *Status = (const tmsrp_header_Status_t *)header;
 				
 		// Status: 000 200 OK
-		return tsk_buffer_appendEx(output, "%.3hi %.3hi%s%s", 
+		return tsk_buffer_append_2(output, "%.3hi %.3hi%s%s", 
 			Status->namespace, 
 			Status->code,
 			Status->reason ? " " : "",
@@ -68,12 +80,12 @@ tmsrp_header_Status_t *tmsrp_header_Status_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Status_t *hdr_Status = TMSRP_HEADER_STATUS_CREATE_NULL();
+	tmsrp_header_Status_t *hdr_Status = tmsrp_header_Status_create_null();
 
 	const char *tag_start;
 
 	
-/* #line 77 "../src/headers/tmsrp_header_Status.c" */
+/* #line 89 "./src/headers/tmsrp_header_Status.c" */
 static const char _tmsrp_machine_parser_header_Status_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 2, 0, 3
@@ -82,41 +94,34 @@ static const char _tmsrp_machine_parser_header_Status_actions[] = {
 static const char _tmsrp_machine_parser_header_Status_key_offsets[] = {
 	0, 0, 2, 4, 6, 8, 10, 12, 
 	13, 14, 16, 18, 20, 21, 23, 25, 
-	27, 28, 30, 32, 34, 36, 38, 40, 
-	40, 54
+	27, 28, 30, 30, 36
 };
 
 static const char _tmsrp_machine_parser_header_Status_trans_keys[] = {
 	83, 115, 84, 116, 65, 97, 84, 116, 
 	85, 117, 83, 115, 58, 32, 48, 57, 
 	48, 57, 48, 57, 32, 48, 57, 48, 
-	57, 48, 57, 10, -128, -65, -128, -65, 
-	-128, -65, -128, -65, -128, -65, 13, 32, 
-	9, 13, -64, -33, -32, -17, -16, -9, 
-	-8, -5, -4, -3, 32, 126, 9, 13, 
-	-64, -33, -32, -17, -16, -9, -8, -5, 
-	-4, -3, 32, 126, 0
+	57, 48, 57, 10, 13, 32, 13, 127, 
+	0, 8, 10, 31, 13, 127, 0, 8, 
+	10, 31, 0
 };
 
 static const char _tmsrp_machine_parser_header_Status_single_lengths[] = {
 	0, 2, 2, 2, 2, 2, 2, 1, 
 	1, 0, 0, 0, 1, 0, 0, 0, 
-	1, 0, 0, 0, 0, 0, 2, 0, 
-	2, 2
+	1, 2, 0, 2, 2
 };
 
 static const char _tmsrp_machine_parser_header_Status_range_lengths[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 1, 1, 1, 0, 1, 1, 1, 
-	0, 1, 1, 1, 1, 1, 0, 0, 
-	6, 6
+	0, 0, 0, 2, 2
 };
 
 static const char _tmsrp_machine_parser_header_Status_index_offsets[] = {
 	0, 0, 3, 6, 9, 12, 15, 18, 
 	20, 22, 24, 26, 28, 30, 32, 34, 
-	36, 38, 40, 42, 44, 46, 48, 51, 
-	52, 61
+	36, 38, 41, 42, 47
 };
 
 static const char _tmsrp_machine_parser_header_Status_indicies[] = {
@@ -124,53 +129,46 @@ static const char _tmsrp_machine_parser_header_Status_indicies[] = {
 	1, 4, 4, 1, 5, 5, 1, 6, 
 	6, 1, 7, 1, 8, 1, 9, 1, 
 	10, 1, 11, 1, 12, 1, 13, 1, 
-	14, 1, 15, 1, 16, 1, 17, 1, 
-	18, 1, 19, 1, 20, 1, 21, 1, 
-	22, 23, 1, 1, 29, 30, 24, 25, 
-	26, 27, 28, 29, 1, 17, 32, 18, 
-	19, 20, 21, 31, 17, 1, 0
+	14, 1, 15, 1, 16, 1, 17, 18, 
+	1, 1, 20, 1, 1, 1, 19, 22, 
+	1, 1, 1, 21, 0
 };
 
 static const char _tmsrp_machine_parser_header_Status_trans_targs[] = {
 	2, 0, 3, 4, 5, 6, 7, 8, 
-	9, 10, 11, 12, 13, 14, 15, 22, 
-	23, 25, 17, 18, 19, 20, 16, 24, 
-	17, 18, 19, 20, 21, 25, 16, 21, 
-	16
+	9, 10, 11, 12, 13, 14, 15, 17, 
+	18, 16, 19, 20, 16, 20, 16
 };
 
 static const char _tmsrp_machine_parser_header_Status_trans_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 1, 0, 0, 3, 1, 0, 0, 
-	0, 0, 0, 0, 0, 0, 5, 5, 
-	1, 1, 1, 1, 1, 1, 9, 0, 
-	7
+	0, 5, 5, 1, 9, 0, 7
 };
 
 static const char _tmsrp_machine_parser_header_Status_eof_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 5, 0, 
-	9, 7
+	0, 5, 0, 9, 7
 };
 
 static const int tmsrp_machine_parser_header_Status_start = 1;
-static const int tmsrp_machine_parser_header_Status_first_final = 22;
+static const int tmsrp_machine_parser_header_Status_first_final = 17;
 static const int tmsrp_machine_parser_header_Status_error = 0;
 
 static const int tmsrp_machine_parser_header_Status_en_main = 1;
 
 
-/* #line 102 "tmsrp_parser_header_Status.rl" */
+/* #line 114 "./ragel/tmsrp_parser_header_Status.rl" */
 	
-/* #line 167 "../src/headers/tmsrp_header_Status.c" */
+/* #line 165 "./src/headers/tmsrp_header_Status.c" */
 	{
 	cs = tmsrp_machine_parser_header_Status_start;
 	}
 
-/* #line 103 "tmsrp_parser_header_Status.rl" */
+/* #line 115 "./ragel/tmsrp_parser_header_Status.rl" */
 	
-/* #line 174 "../src/headers/tmsrp_header_Status.c" */
+/* #line 172 "./src/headers/tmsrp_header_Status.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -245,30 +243,30 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "tmsrp_parser_header_Status.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_Status.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "tmsrp_parser_header_Status.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_Status.rl" */
 	{
 		TSK_PARSER_SET_INT(hdr_Status->namespace);
 	}
 	break;
 	case 2:
-/* #line 55 "tmsrp_parser_header_Status.rl" */
+/* #line 55 "./ragel/tmsrp_parser_header_Status.rl" */
 	{
 		TSK_PARSER_SET_INT(hdr_Status->code);
 	}
 	break;
 	case 3:
-/* #line 59 "tmsrp_parser_header_Status.rl" */
+/* #line 59 "./ragel/tmsrp_parser_header_Status.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Status->reason);
 	}
 	break;
-/* #line 272 "../src/headers/tmsrp_header_Status.c" */
+/* #line 270 "./src/headers/tmsrp_header_Status.c" */
 		}
 	}
 
@@ -285,24 +283,24 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "tmsrp_parser_header_Status.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_Status.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 2:
-/* #line 55 "tmsrp_parser_header_Status.rl" */
+/* #line 55 "./ragel/tmsrp_parser_header_Status.rl" */
 	{
 		TSK_PARSER_SET_INT(hdr_Status->code);
 	}
 	break;
 	case 3:
-/* #line 59 "tmsrp_parser_header_Status.rl" */
+/* #line 59 "./ragel/tmsrp_parser_header_Status.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Status->reason);
 	}
 	break;
-/* #line 306 "../src/headers/tmsrp_header_Status.c" */
+/* #line 304 "./src/headers/tmsrp_header_Status.c" */
 		}
 	}
 	}
@@ -310,12 +308,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 104 "tmsrp_parser_header_Status.rl" */
+/* #line 116 "./ragel/tmsrp_parser_header_Status.rl" */
 	
 	if( cs < 
-/* #line 317 "../src/headers/tmsrp_header_Status.c" */
-22
-/* #line 105 "tmsrp_parser_header_Status.rl" */
+/* #line 315 "./src/headers/tmsrp_header_Status.c" */
+17
+/* #line 117 "./ragel/tmsrp_parser_header_Status.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Status' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Status);
@@ -334,11 +332,10 @@ _again:
 //	Status header object definition
 //
 
-static void* tmsrp_header_Status_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Status_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Status_t *Status = self;
-	if(Status)
-	{
+	if(Status){
 		TMSRP_HEADER(Status)->type = tmsrp_htype_Status;
 		TMSRP_HEADER(Status)->tostring = tmsrp_header_Status_tostring;
 #if defined(__GNUC__)
@@ -356,7 +353,7 @@ static void* tmsrp_header_Status_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Status_destroy(void *self)
+static tsk_object_t* tmsrp_header_Status_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Status_t *Status = self;
 	if(Status){
@@ -368,17 +365,13 @@ static void* tmsrp_header_Status_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Status_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Status_def_s = 
 {
 	sizeof(tmsrp_header_Status_t),
-	tmsrp_header_Status_create,
-	tmsrp_header_Status_destroy,
-	tmsrp_header_Status_cmp
+	tmsrp_header_Status_ctor,
+	tmsrp_header_Status_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Status_def_t = &tmsrp_header_Status_def_s;
+const tsk_object_def_t *tmsrp_header_Status_def_t = &tmsrp_header_Status_def_s;

@@ -42,6 +42,26 @@
 /**@defgroup tmsrp_uri_group MSRP/MSRPS/TEL URI
 */
 
+
+/** Creates new msrp/msrps/tel uri.
+* @param scheme "msrp" or "msrps".
+* @param host Either domain name or IPv4/IPv6 address.
+* @param host_type @ref tmsrp_host_type_t.
+* @param port The port.
+* @param session_id The session identifier.
+* @param transport The associated transport (e.g. @a "tcp").
+* @retval @ref tmsrp_uri_t object.
+*/
+tmsrp_uri_t* tmsrp_uri_create(const char*scheme, const char* host, tmsrp_host_type_t host_type, int32_t port, const char* session_id, const char*transport)
+{
+	return tsk_object_new(tmsrp_uri_def_t, scheme, host, host_type, port, session_id, transport);
+}
+
+tmsrp_uri_t* tmsrp_uri_create_null()
+{
+	return tmsrp_uri_create(tsk_null, tsk_null, host_unknown, -1, tsk_null, tsk_null);
+}
+
 int tmsrp_uri_serialize(const tmsrp_uri_t *uri, tsk_buffer_t *output)
 {
 	tsk_istr_t port;
@@ -57,7 +77,7 @@ int tmsrp_uri_serialize(const tmsrp_uri_t *uri, tsk_buffer_t *output)
 	* msrp-scheme  "://" authority  ["/" session-id] ";" transport  *( ";" URI-parameter)
 	* authority	=  	[ userinfo  "@" ]   host    [ ":"   port ]
 	*/
-	tsk_buffer_appendEx(output, "%s://%s%s%s%s%s%s%s%s%s;%s",
+	tsk_buffer_append_2(output, "%s://%s%s%s%s%s%s%s%s%s;%s",
 
 		// scheme
 		uri->scheme,
@@ -90,7 +110,7 @@ int tmsrp_uri_serialize(const tmsrp_uri_t *uri, tsk_buffer_t *output)
 
 char* tmsrp_uri_tostring(const tmsrp_uri_t *uri)
 {
-	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *output = tsk_buffer_create_null();
 	char* ret = 0;
 
 	if(!tmsrp_uri_serialize(uri, output)){
@@ -107,7 +127,7 @@ char* tmsrp_uri_tostring(const tmsrp_uri_t *uri)
 tmsrp_uri_t *tmsrp_uri_clone(const tmsrp_uri_t *uri)
 {
 	tmsrp_uri_t *newuri = 0;
-	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *output = tsk_buffer_create_null();
 	tmsrp_uri_serialize(uri, output);
 	newuri = tmsrp_uri_parse(output->data, output->size);
 	TSK_OBJECT_SAFE_FREE(output);
@@ -128,7 +148,7 @@ tmsrp_uri_t *tmsrp_uri_clone(const tmsrp_uri_t *uri)
 
 /**@ingroup tmsrp_uri_group
 */
-static void* tmsrp_uri_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_uri_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_uri_t *uri = self;
 	if(uri){
@@ -142,7 +162,7 @@ static void* tmsrp_uri_create(void *self, va_list * app)
 		uri->session_id = tsk_strdup( va_arg(*app, const char*) );
 		uri->transport = tsk_strdup( va_arg(*app, const char*) );
 
-		uri->params = TSK_LIST_CREATE(); /* Empty list. */
+		uri->params = tsk_list_create(); /* Empty list. */
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new MSRP/MSRPS.");
@@ -152,11 +172,10 @@ static void* tmsrp_uri_create(void *self, va_list * app)
 
 /**@ingroup tmsrp_uri_group
 */
-static void* tmsrp_uri_destroy(void *self)
+static tsk_object_t* tmsrp_uri_dtor(tsk_object_t *self)
 {
 	tmsrp_uri_t *uri = self;
-	if(uri)
-	{
+	if(uri){
 		TSK_FREE(uri->scheme);
 		// authority
 		TSK_FREE(uri->authority.userinfo);
@@ -167,7 +186,9 @@ static void* tmsrp_uri_destroy(void *self)
 		
 		TSK_OBJECT_SAFE_FREE(uri->params);
 	}
-	else TSK_DEBUG_ERROR("Null MSRP/MSRPS URI.");
+	else{
+		TSK_DEBUG_ERROR("Null MSRP/MSRPS URI.");
+	}
 
 	return self;
 }
@@ -180,8 +201,8 @@ static int tmsrp_uri_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tmsrp_uri_def_s = 
 {
 	sizeof(tmsrp_uri_t),
-	tmsrp_uri_create,
-	tmsrp_uri_destroy,
+	tmsrp_uri_ctor,
+	tmsrp_uri_dtor,
 	tmsrp_uri_cmp
 };
-const void *tmsrp_uri_def_t = &tmsrp_uri_def_s;
+const tsk_object_def_t *tmsrp_uri_def_t = &tmsrp_uri_def_s;

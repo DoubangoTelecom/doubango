@@ -43,23 +43,18 @@
 
 TSDP_BEGIN_DECLS
 
-/**@def TSDP_HEADER_M_CREATE
-* Creates new sdp M header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSDP_HEADER_M_VA_ARGS(media, port, proto)		tsdp_header_M_def_t, (const char*)media, (uint32_t)port, (const char*)proto
-#define TSDP_HEADER_M_CREATE(media, port, proto)			tsk_object_new(TSDP_HEADER_M_VA_ARGS(media, port, proto))
-#define TSDP_HEADER_M_CREATE_NULL()			TSDP_HEADER_M_CREATE(tsk_null, 0, tsk_null)
 
 #define TSDP_HEADER_M(self)					((tsdp_header_M_t*)(self))
 
 #define TSDP_FMT_VA_ARGS(fmt)				tsdp_fmt_def_t, (const char*)fmt
-#define TSDP_FMT_CREATE(fmt)				tsk_object_new(TSDP_FMT_VA_ARGS(fmt))
 
 typedef tsk_string_t tsdp_fmt_t;
 typedef tsk_strings_L_t tsk_fmts_L_t;
 #define tsdp_fmt_def_t tsk_string_def_t
 #define TSDP_FMT_STR(self) TSK_STRING_STR(self)
+
+TINYSDP_API tsdp_fmt_t* tsdp_fmt_create(const char* fmt);
 
 //#define TSDP_HEADER_M_SET_FMT(fmt)			(int)0x01, (const char*)fmt
 //#define TSDP_HEADER_M_SET_A(field, value)	(int)0x02, (const char*)field, (const char*)value
@@ -104,6 +99,9 @@ typedef struct tsdp_header_M_s
 tsdp_header_M_t;
 
 typedef tsk_list_t tsdp_headers_M_L_t;
+
+TINYSDP_API tsdp_header_M_t* tsdp_header_M_create(const char* media, uint32_t port, const char* proto);
+TINYSDP_API tsdp_header_M_t* tsdp_header_M_create_null();
 
 TINYSDP_API tsdp_header_M_t *tsdp_header_M_parse(const char *data, size_t size);
 TINYSDP_API int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header);

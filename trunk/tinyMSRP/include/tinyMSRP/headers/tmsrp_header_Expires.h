@@ -35,13 +35,7 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_HEADER_EXPIRES_CREATE
-* Creates new MSRP 'Expires' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TMSRP_HEADER_EXPIRES_VA_ARGS(value)		tmsrp_header_Expires_def_t, (int64_t)value
-#define TMSRP_HEADER_EXPIRES_CREATE(value)		tsk_object_new(TMSRP_HEADER_EXPIRES_VA_ARGS(value))
-#define TMSRP_HEADER_EXPIRES_CREATE_NULL()		TMSRP_HEADER_EXPIRES_CREATE(-1)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -61,9 +55,12 @@ tmsrp_header_Expires_t;
 
 typedef tsk_list_t tmsrp_headers_Expires_L_t;
 
-tmsrp_header_Expires_t *tmsrp_header_Expires_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Expires_t* tmsrp_header_Expires_create(int64_t value);
+TINYMSRP_API tmsrp_header_Expires_t* tmsrp_header_Expires_create_null();
 
-TINYMSRP_GEXTERN const void *tmsrp_header_Expires_def_t;
+TINYMSRP_API tmsrp_header_Expires_t *tmsrp_header_Expires_parse(const char *data, size_t size);
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Expires_def_t;
 
 TMSRP_END_DECLS
 

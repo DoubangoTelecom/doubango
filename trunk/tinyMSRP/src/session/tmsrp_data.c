@@ -66,7 +66,7 @@
 //		}
 //	}
 //	else{
-//		self->buffer = TSK_BUFFER_CREATE(pdata, size);
+//		self->buffer = tsk_buffer_create(pdata, size);
 //	}
 //	// ctype
 //	tsk_strupdate(&self->ctype, ctype);
@@ -155,14 +155,14 @@ tsk_buffer_t* tmsrp_data_out_get(tmsrp_data_out_t* self)
 	}
 
 	if(self->message){
-		ret = TSK_BUFFER_CREATE(TSK_BUFFER_DATA(self->message), toread);
+		ret = tsk_buffer_create(TSK_BUFFER_DATA(self->message), toread);
 		tsk_buffer_remove(self->message, 0, toread);
 		self->size = self->message->size;
 	}
 	else if(self->file){
 		// Buffer hack
 		size_t read;
-		ret = TSK_BUFFER_CREATE_NULL();
+		ret = tsk_buffer_create_null();
 		ret->data = tsk_calloc(toread, sizeof(uint8_t));
 		ret->size = toread;
 		if((read = fread(ret->data, sizeof(uint8_t), toread, self->file)) == toread){
@@ -191,7 +191,7 @@ static void* tmsrp_data_in_create(void * self, va_list * app)
 {
 	tmsrp_data_in_t *data_in = self;
 	if(data_in){
-		data_in->buffer = TSK_BUFFER_CREATE_NULL();
+		data_in->buffer = tsk_buffer_create_null();
 	}
 	return self;
 }
@@ -254,7 +254,7 @@ static void* tmsrp_data_out_create(void * self, va_list * app)
 			}
 		}
 		else{
-			if((data_out->message = TSK_BUFFER_CREATE(pdata, size))){
+			if((data_out->message = tsk_buffer_create(pdata, size))){
 				TMSRP_DATA(data_out)->isOK = (data_out->message->size == size);
 				data_out->size = data_out->message->size;
 			}

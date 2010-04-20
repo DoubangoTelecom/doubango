@@ -37,13 +37,7 @@
 
 TMSRP_BEGIN_DECLS
 
-/**@def TMSRP_HEADER_TO_PATH_CREATE
-* Creates new msrp To-Path header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TMSRP_HEADER_TO_PATH_VA_ARGS(uri)		tmsrp_header_To_Path_def_t, (const tmsrp_uri_t*)uri
-#define TMSRP_HEADER_TO_PATH_CREATE(uri)		tsk_object_new(TMSRP_HEADER_TO_PATH_VA_ARGS(uri))
-#define TMSRP_HEADER_TO_PATH_CREATE_NULL()				TMSRP_HEADER_TO_PATH_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -64,10 +58,13 @@ tmsrp_header_To_Path_t;
 
 typedef tsk_list_t tmsrp_headers_To_Path_L_t;
 
-tmsrp_header_To_Path_t *tmsrp_header_To_Path_parse(const char *data, size_t size);
-tmsrp_header_To_Path_t *tmsrp_header_To_Path_clone(const tmsrp_header_To_Path_t* );
+TINYMSRP_API tmsrp_header_To_Path_t* tmsrp_header_To_Path_create(const tmsrp_uri_t* uri);
+TINYMSRP_API tmsrp_header_To_Path_t* tmsrp_header_To_Path_create_null();
 
-TINYMSRP_GEXTERN const void *tmsrp_header_To_Path_def_t;
+TINYMSRP_API tmsrp_header_To_Path_t *tmsrp_header_To_Path_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_To_Path_t *tmsrp_header_To_Path_clone(const tmsrp_header_To_Path_t* );
+
+TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_To_Path_def_t;
 
 TMSRP_END_DECLS
 

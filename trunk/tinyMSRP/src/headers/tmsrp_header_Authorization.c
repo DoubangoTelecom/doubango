@@ -39,6 +39,10 @@
 
 #include <string.h>
 
+tmsrp_header_Authorization_t* tmsrp_header_Authorization_create()
+{
+	return tsk_object_new(tmsrp_header_Authorization_def_t);
+}
 
 int tmsrp_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
 {
@@ -47,7 +51,7 @@ int tmsrp_header_Authorization_tostring(const void* header, tsk_buffer_t* output
 		const tmsrp_header_Authorization_t *Authorization = header;
 		if(Authorization && Authorization->scheme)
 		{
-			return tsk_buffer_appendEx(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
+			return tsk_buffer_append_2(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 				Authorization->scheme,
 
 				Authorization->username ? "username=\"" : "",
@@ -99,7 +103,7 @@ tmsrp_header_Authorization_t *tmsrp_header_Authorization_parse(const char *data,
 
 	if((hdr_http = thttp_header_Authorization_parse(data, size)))
 	{
-		hdr_msrp = TMSRP_HEADER_AUTHORIZATION_CREATE();
+		hdr_msrp = tmsrp_header_Authorization_create();
 		
 		hdr_msrp->scheme = tsk_strdup(hdr_http->scheme);
 		hdr_msrp->username = tsk_strdup(hdr_http->username);
@@ -129,26 +133,23 @@ tmsrp_header_Authorization_t *tmsrp_header_Authorization_parse(const char *data,
 //	Authorization header object definition
 //
 
-static void* tmsrp_header_Authorization_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Authorization_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Authorization_t *Authorization = self;
-	if(Authorization)
-	{
+	if(Authorization){
 		TMSRP_HEADER(Authorization)->type = tmsrp_htype_Authorization;
 		TMSRP_HEADER(Authorization)->tostring = tmsrp_header_Authorization_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Authorization header.");
 	}
 	return self;
 }
 
-static void* tmsrp_header_Authorization_destroy(void *self)
+static tsk_object_t* tmsrp_header_Authorization_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Authorization_t *Authorization = self;
-	if(Authorization)
-	{
+	if(Authorization){
 		TSK_FREE(Authorization->scheme);
 		TSK_FREE(Authorization->username);
 		TSK_FREE(Authorization->realm);
@@ -163,7 +164,9 @@ static void* tmsrp_header_Authorization_destroy(void *self)
 		
 		TSK_OBJECT_SAFE_FREE(Authorization->params);
 	}
-	else TSK_DEBUG_ERROR("Null Authorization header.");
+	else{
+		TSK_DEBUG_ERROR("Null Authorization header.");
+	}
 
 	return self;
 }
@@ -171,8 +174,8 @@ static void* tmsrp_header_Authorization_destroy(void *self)
 static const tsk_object_def_t tmsrp_header_Authorization_def_s = 
 {
 	sizeof(tmsrp_header_Authorization_t),
-	tmsrp_header_Authorization_create,
-	tmsrp_header_Authorization_destroy,
-	0
+	tmsrp_header_Authorization_ctor,
+	tmsrp_header_Authorization_dtor,
+	tsk_null
 };
-const void *tmsrp_header_Authorization_def_t = &tmsrp_header_Authorization_def_s;
+const tsk_object_def_t *tmsrp_header_Authorization_def_t = &tmsrp_header_Authorization_def_s;

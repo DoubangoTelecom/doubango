@@ -1,5 +1,5 @@
 
-/* #line 1 "tsdp_parser_header_O.rl" */
+/* #line 1 "./ragel/tsdp_parser_header_O.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -41,13 +41,31 @@
 *	Ragel state machine.
 */
 
-/* #line 86 "tsdp_parser_header_O.rl" */
+/* #line 86 "./ragel/tsdp_parser_header_O.rl" */
+
+
+
+
+
+tsdp_header_O_t* tsdp_header_O_create(const char* username, uint32_t sess_version, uint32_t sess_id, const char* nettype, const char* addrtype, const char* addr)
+{
+	return tsk_object_new(TSDP_HEADER_O_VA_ARGS(username, sess_id, sess_version, nettype, addrtype, addr));
+}
+
+tsdp_header_O_t* tsdp_header_O_create_null()
+{
+	return tsdp_header_O_create(tsk_null, 0, 0, tsk_null, tsk_null, tsk_null);
+}
+
+tsdp_header_O_t* tsdp_header_O_create_default(const char* username, const char* nettype, const char* addrtype, const char* addr)
+{
+	return tsdp_header_O_create(username, TSDP_HEADER_O_SESS_ID_DEFAULT, TSDP_HEADER_O_SESS_VERSION_DEFAULT, nettype, addrtype, addr);
+}
 
 
 int tsdp_header_O_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_O_t *O = (const tsdp_header_O_t *)header;
 		
 		// o=alice 2890844526 2890844526 IN IP4 host.atlanta.example.com
@@ -70,7 +88,7 @@ tsdp_header_t* tsdp_header_O_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_O_t *O = (const tsdp_header_O_t *)header;
-		return TSDP_HEADER_O_CREATE(O->username, O->sess_id, O->sess_version, O->nettype, O->addrtype, O->addr);
+		return (tsdp_header_t*)tsdp_header_O_create(O->username, O->sess_id, O->sess_version, O->nettype, O->addrtype, O->addr);
 	}
 	return tsk_null;
 }
@@ -81,12 +99,12 @@ tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_O_t *hdr_O = TSDP_HEADER_O_CREATE_NULL();
+	tsdp_header_O_t *hdr_O = tsdp_header_O_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 90 "../src/headers/tsdp_header_O.c" */
+/* #line 108 "./src/headers/tsdp_header_O.c" */
 static const char _tsdp_machine_parser_header_U_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -153,16 +171,16 @@ static const int tsdp_machine_parser_header_U_error = 0;
 static const int tsdp_machine_parser_header_U_en_main = 1;
 
 
-/* #line 130 "tsdp_parser_header_O.rl" */
+/* #line 148 "./ragel/tsdp_parser_header_O.rl" */
 	
-/* #line 159 "../src/headers/tsdp_header_O.c" */
+/* #line 177 "./src/headers/tsdp_header_O.c" */
 	{
 	cs = tsdp_machine_parser_header_U_start;
 	}
 
-/* #line 131 "tsdp_parser_header_O.rl" */
+/* #line 149 "./ragel/tsdp_parser_header_O.rl" */
 	
-/* #line 166 "../src/headers/tsdp_header_O.c" */
+/* #line 184 "./src/headers/tsdp_header_O.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -236,48 +254,48 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "tsdp_parser_header_O.rl" */
+/* #line 47 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "tsdp_parser_header_O.rl" */
+/* #line 51 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->username);
 	}
 	break;
 	case 2:
-/* #line 55 "tsdp_parser_header_O.rl" */
+/* #line 55 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_UINT(hdr_O->sess_id);
 	}
 	break;
 	case 3:
-/* #line 59 "tsdp_parser_header_O.rl" */
+/* #line 59 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_UINT(hdr_O->sess_version);
 	}
 	break;
 	case 4:
-/* #line 63 "tsdp_parser_header_O.rl" */
+/* #line 63 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->nettype);
 	}
 	break;
 	case 5:
-/* #line 67 "tsdp_parser_header_O.rl" */
+/* #line 67 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->addrtype);
 	}
 	break;
 	case 6:
-/* #line 71 "tsdp_parser_header_O.rl" */
+/* #line 71 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->addr);
 	}
 	break;
-/* #line 281 "../src/headers/tsdp_header_O.c" */
+/* #line 299 "./src/headers/tsdp_header_O.c" */
 		}
 	}
 
@@ -294,18 +312,18 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "tsdp_parser_header_O.rl" */
+/* #line 47 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 6:
-/* #line 71 "tsdp_parser_header_O.rl" */
+/* #line 71 "./ragel/tsdp_parser_header_O.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_O->addr);
 	}
 	break;
-/* #line 309 "../src/headers/tsdp_header_O.c" */
+/* #line 327 "./src/headers/tsdp_header_O.c" */
 		}
 	}
 	}
@@ -313,12 +331,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 132 "tsdp_parser_header_O.rl" */
+/* #line 150 "./ragel/tsdp_parser_header_O.rl" */
 	
 	if( cs < 
-/* #line 320 "../src/headers/tsdp_header_O.c" */
+/* #line 338 "./src/headers/tsdp_header_O.c" */
 14
-/* #line 133 "tsdp_parser_header_O.rl" */
+/* #line 151 "./ragel/tsdp_parser_header_O.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"o=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_O);
@@ -337,11 +355,10 @@ _again:
 //	O header object definition
 //
 
-static void* tsdp_header_O_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_O_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_O_t *O = self;
-	if(O)
-	{
+	if(O){
 		TSDP_HEADER(O)->type = tsdp_htype_O;
 		TSDP_HEADER(O)->tostring = tsdp_header_O_tostring;
 		TSDP_HEADER(O)->clone = tsdp_header_O_clone;
@@ -360,7 +377,7 @@ static void* tsdp_header_O_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_O_destroy(void *self)
+static tsk_object_t* tsdp_header_O_dtor(tsk_object_t *self)
 {
 	tsdp_header_O_t *O = self;
 	if(O){
@@ -370,7 +387,7 @@ static void* tsdp_header_O_destroy(void *self)
 		TSK_FREE(O->addr);
 	}
 	else{
-		TSK_DEBUG_ERROR("Null U header.");
+		TSK_DEBUG_ERROR("Null O header.");
 	}
 
 	return self;
@@ -388,8 +405,8 @@ static int tsdp_header_O_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_O_def_s = 
 {
 	sizeof(tsdp_header_O_t),
-	tsdp_header_O_create,
-	tsdp_header_O_destroy,
+	tsdp_header_O_ctor,
+	tsdp_header_O_dtor,
 	tsdp_header_O_cmp
 };
 

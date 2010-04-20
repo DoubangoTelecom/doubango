@@ -35,13 +35,7 @@
 
 TSDP_BEGIN_DECLS
 
-/**@def TSDP_HEADER_DUMMY_CREATE
-* Creates new sdp Dummy header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSDP_HEADER_DUMMY_VA_ARGS(name, value)		tsdp_header_Dummy_def_t, (char)name, (const char*)value
-#define TSDP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(TSDP_HEADER_DUMMY_VA_ARGS(name, value))
-#define TSDP_HEADER_DUMMY_CREATE_NULL()				TSDP_HEADER_DUMMY_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -61,7 +55,10 @@ tsdp_header_Dummy_t;
 
 typedef tsk_list_t tsdp_headers_Dummy_L_t;
 
-tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_Dummy_t* tsdp_header_dummy_create(char name, const char* value);
+TINYSDP_API tsdp_header_Dummy_t* tsdp_header_dummy_create_null();
+
+TINYSDP_API tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_Dummy_def_t;
 

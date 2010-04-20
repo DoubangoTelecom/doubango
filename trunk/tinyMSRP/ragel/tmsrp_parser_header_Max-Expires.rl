@@ -42,7 +42,7 @@
 	machine tmsrp_machine_parser_header_Max_Expires;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -60,13 +60,23 @@
 
 }%%
 
+
+tmsrp_header_Max_Expires_t* tmsrp_header_Max_Expires_create(int64_t value)
+{
+	return tsk_object_new(TMSRP_HEADER_MAX_EXPIRES_VA_ARGS(value));
+}
+
+tmsrp_header_Max_Expires_t* tmsrp_header_Max_Expires_create_null()
+{
+	return tmsrp_header_Max_Expires_create(-1);
+}
+
 int tmsrp_header_Max_Expires_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Max_Expires_t *Max_Expires = (const tmsrp_header_Max_Expires_t *)header;
 		if(Max_Expires->value>=0){
-			return tsk_buffer_appendEx(output, "%lld", Max_Expires->value);
+			return tsk_buffer_append_2(output, "%lld", Max_Expires->value);
 		}
 		return 0;
 	}
@@ -80,7 +90,7 @@ tmsrp_header_Max_Expires_t *tmsrp_header_Max_Expires_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Max_Expires_t *hdr_Max_Expires = TMSRP_HEADER_MAX_EXPIRES_CREATE_NULL();
+	tmsrp_header_Max_Expires_t *hdr_Max_Expires = tmsrp_header_Max_Expires_create_null();
 	
 	const char *tag_start;
 
@@ -106,12 +116,11 @@ tmsrp_header_Max_Expires_t *tmsrp_header_Max_Expires_parse(const char *data, siz
 //	Max-Expires header object definition
 //
 
-static void* tmsrp_header_Max_Expires_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Max_Expires_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Max_Expires_t *Max_Expires = self;
-	if(Max_Expires)
-	{
-		TMSRP_HEADER(Max_Expires)->type = tmsrp_htype_Message_ID;
+	if(Max_Expires){
+		TMSRP_HEADER(Max_Expires)->type = tmsrp_htype_Max_Expires;
 		TMSRP_HEADER(Max_Expires)->tostring = tmsrp_header_Max_Expires_tostring;
 		
 		Max_Expires->value = va_arg(*app, int64_t);
@@ -122,7 +131,7 @@ static void* tmsrp_header_Max_Expires_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Max_Expires_destroy(void *self)
+static tsk_object_t* tmsrp_header_Max_Expires_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Max_Expires_t *Max_Expires = self;
 	if(Max_Expires){
@@ -133,17 +142,13 @@ static void* tmsrp_header_Max_Expires_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Max_Expires_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Max_Expires_def_s = 
 {
 	sizeof(tmsrp_header_Max_Expires_t),
-	tmsrp_header_Max_Expires_create,
-	tmsrp_header_Max_Expires_destroy,
-	tmsrp_header_Max_Expires_cmp
+	tmsrp_header_Max_Expires_ctor,
+	tmsrp_header_Max_Expires_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Max_Expires_def_t = &tmsrp_header_Max_Expires_def_s;
+const tsk_object_def_t *tmsrp_header_Max_Expires_def_t = &tmsrp_header_Max_Expires_def_s;

@@ -1,5 +1,5 @@
 
-/* #line 1 "tmsrp_parser_header_From-Path.rl" */
+/* #line 1 "./ragel/tmsrp_parser_header_From-Path.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -41,13 +41,23 @@
 *	Ragel state machine.
 */
 
-/* #line 75 "tmsrp_parser_header_From-Path.rl" */
+/* #line 75 "./ragel/tmsrp_parser_header_From-Path.rl" */
 
+
+
+tmsrp_header_From_Path_t* tmsrp_header_From_Path_create(const tmsrp_uri_t* uri)
+{
+	return tsk_object_new(TMSRP_HEADER_FROM_PATH_VA_ARGS(uri));
+}
+
+tmsrp_header_From_Path_t* tmsrp_header_From_Path_create_null()
+{
+	return tmsrp_header_From_Path_create(tsk_null);
+}
 
 int tmsrp_header_From_Path_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_From_Path_t *From_Path = (const tmsrp_header_From_Path_t *)header;
 		const tsk_list_item_t *item;
 
@@ -69,12 +79,12 @@ tmsrp_header_From_Path_t *tmsrp_header_From_Path_parse(const char *data, size_t 
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_From_Path_t *header = TMSRP_HEADER_FROM_PATH_CREATE_NULL();
+	tmsrp_header_From_Path_t *header = tmsrp_header_From_Path_create_null();
 
 	const char *tag_start;
 
 	
-/* #line 78 "../src/headers/tmsrp_header_From-Path.c" */
+/* #line 88 "./src/headers/tmsrp_header_From-Path.c" */
 static const char _tmsrp_machine_parser_header_From_Path_actions[] = {
 	0, 1, 0, 1, 1, 2, 0, 1
 	
@@ -139,16 +149,16 @@ static const int tmsrp_machine_parser_header_From_Path_error = 0;
 static const int tmsrp_machine_parser_header_From_Path_en_main = 1;
 
 
-/* #line 107 "tmsrp_parser_header_From-Path.rl" */
+/* #line 117 "./ragel/tmsrp_parser_header_From-Path.rl" */
 	
-/* #line 145 "../src/headers/tmsrp_header_From-Path.c" */
+/* #line 155 "./src/headers/tmsrp_header_From-Path.c" */
 	{
 	cs = tmsrp_machine_parser_header_From_Path_start;
 	}
 
-/* #line 108 "tmsrp_parser_header_From-Path.rl" */
+/* #line 118 "./ragel/tmsrp_parser_header_From-Path.rl" */
 	
-/* #line 152 "../src/headers/tmsrp_header_From-Path.c" */
+/* #line 162 "./src/headers/tmsrp_header_From-Path.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -223,13 +233,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "tmsrp_parser_header_From-Path.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_From-Path.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "tmsrp_parser_header_From-Path.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_From-Path.rl" */
 	{
 		int len = (int)(p  - tag_start);
 		tmsrp_uri_t* uri;
@@ -239,14 +249,14 @@ _match:
 			}
 			else{
 				if(!header->otherURIs){
-					header->otherURIs = TSK_LIST_CREATE();
+					header->otherURIs = tsk_list_create();
 				}
 				tsk_list_push_back_data(header->otherURIs, ((void**) &uri));
 			}
 		}
 	}
 	break;
-/* #line 250 "../src/headers/tmsrp_header_From-Path.c" */
+/* #line 260 "./src/headers/tmsrp_header_From-Path.c" */
 		}
 	}
 
@@ -263,13 +273,13 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 0:
-/* #line 47 "tmsrp_parser_header_From-Path.rl" */
+/* #line 47 "./ragel/tmsrp_parser_header_From-Path.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "tmsrp_parser_header_From-Path.rl" */
+/* #line 51 "./ragel/tmsrp_parser_header_From-Path.rl" */
 	{
 		int len = (int)(p  - tag_start);
 		tmsrp_uri_t* uri;
@@ -279,14 +289,14 @@ _again:
 			}
 			else{
 				if(!header->otherURIs){
-					header->otherURIs = TSK_LIST_CREATE();
+					header->otherURIs = tsk_list_create();
 				}
 				tsk_list_push_back_data(header->otherURIs, ((void**) &uri));
 			}
 		}
 	}
 	break;
-/* #line 290 "../src/headers/tmsrp_header_From-Path.c" */
+/* #line 300 "./src/headers/tmsrp_header_From-Path.c" */
 		}
 	}
 	}
@@ -294,12 +304,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 109 "tmsrp_parser_header_From-Path.rl" */
+/* #line 119 "./ragel/tmsrp_parser_header_From-Path.rl" */
 	
 	if( cs < 
-/* #line 301 "../src/headers/tmsrp_header_From-Path.c" */
+/* #line 311 "./src/headers/tmsrp_header_From-Path.c" */
 13
-/* #line 110 "tmsrp_parser_header_From-Path.rl" */
+/* #line 120 "./ragel/tmsrp_parser_header_From-Path.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'From-Path' header.");
 		TSK_OBJECT_SAFE_FREE(header);
@@ -317,11 +327,11 @@ tmsrp_header_From_Path_t *tmsrp_header_From_Path_clone(const tmsrp_header_From_P
 		goto bail;
 	}
 
-	clone = TMSRP_HEADER_FROM_PATH_CREATE_NULL();
+	clone = tmsrp_header_From_Path_create_null();
 	clone->uri = tmsrp_uri_clone(From_Path->uri);
 	if(From_Path->otherURIs){
 		tsk_list_item_t *item;
-		clone->otherURIs = TSK_LIST_CREATE();
+		clone->otherURIs = tsk_list_create();
 
 		tsk_list_foreach(item, From_Path->otherURIs){
 			tmsrp_uri_t *uri = tmsrp_uri_clone(TMSRP_URI(item->data));
@@ -340,11 +350,10 @@ bail:
 //	From_Path header object definition
 //
 
-static void* tmsrp_header_From_Path_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_From_Path_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_From_Path_t *From_Path = self;
-	if(From_Path)
-	{
+	if(From_Path){
 		TMSRP_HEADER(From_Path)->type = tmsrp_htype_From_Path;
 		TMSRP_HEADER(From_Path)->tostring = tmsrp_header_From_Path_tostring;
 		
@@ -356,7 +365,7 @@ static void* tmsrp_header_From_Path_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_From_Path_destroy(void *self)
+static tsk_object_t* tmsrp_header_From_Path_dtor(tsk_object_t *self)
 {
 	tmsrp_header_From_Path_t *From_Path = self;
 	if(From_Path){
@@ -369,17 +378,13 @@ static void* tmsrp_header_From_Path_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_From_Path_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_From_Path_def_s = 
 {
 	sizeof(tmsrp_header_From_Path_t),
-	tmsrp_header_From_Path_create,
-	tmsrp_header_From_Path_destroy,
-	tmsrp_header_From_Path_cmp
+	tmsrp_header_From_Path_ctor,
+	tmsrp_header_From_Path_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_From_Path_def_t = &tmsrp_header_From_Path_def_s;
+const tsk_object_def_t *tmsrp_header_From_Path_def_t = &tmsrp_header_From_Path_def_s;

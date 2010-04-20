@@ -35,13 +35,7 @@
 
 TSDP_BEGIN_DECLS
 
-/**@def TSDP_HEADER_V_CREATE
-* Creates new sdp V header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSDP_HEADER_V_VA_ARGS(version)		tsdp_header_V_def_t, (int32_t)version
-#define TSDP_HEADER_V_CREATE(version)		tsk_object_new(TSDP_HEADER_V_VA_ARGS(version))
-#define TSDP_HEADER_V_CREATE_NULL()			TSDP_HEADER_V_CREATE(TSDP_HEADER_V_DEFAULT)
 
 #define TSDP_HEADER_V_DEFAULT				0
 
@@ -64,7 +58,10 @@ tsdp_header_V_t;
 
 typedef tsk_list_t tsdp_headers_V_L_t;
 
-tsdp_header_V_t *tsdp_header_V_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_V_t* tsdp_header_V_create(int32_t version);
+TINYSDP_API tsdp_header_V_t* tsdp_header_V_create_null();
+
+TINYSDP_API tsdp_header_V_t *tsdp_header_V_parse(const char *data, size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_V_def_t;
 

@@ -250,7 +250,7 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self, va_list *app)
 		tsk_strrandom(&sessionid);
 		tsk_sprintf(&path, "%s://%s:%u/%s;tcp", sheme, ip, port, sessionid); //tcp is ok even if tls is used.
 
-		if((msrp->local.M = TSDP_HEADER_M_CREATE(self->plugin->media, port, proto))){
+		if((msrp->local.M = tsdp_header_M_create(self->plugin->media, port, proto))){
 			tsdp_header_M_add_headers(msrp->local.M,
 				TSDP_FMT_VA_ARGS("*"),
 				TSDP_HEADER_C_VA_ARGS("IN", ipv6?"IP6":"IP4", ip),
@@ -264,7 +264,7 @@ const tsdp_header_M_t* tmsrp_media_get_local_offer(tmedia_t* self, va_list *app)
 				if(msrp->config->From_Path){
 					TSK_OBJECT_SAFE_FREE(msrp->config->From_Path);
 				}
-				msrp->config->From_Path = TMSRP_HEADER_FROM_PATH_CREATE(uri);
+				msrp->config->From_Path = tmsrp_header_From_Path_create(uri);
 				TSK_OBJECT_SAFE_FREE(uri);
 			}
 			TSK_FREE(path);
@@ -389,7 +389,7 @@ int tmsrp_media_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 			if(msrp->config->To_Path){
 				TSK_OBJECT_SAFE_FREE(msrp->config->To_Path);
 			}
-			msrp->config->To_Path = TMSRP_HEADER_TO_PATH_CREATE(uri);
+			msrp->config->To_Path = tmsrp_header_To_Path_create(uri);
 			TSK_OBJECT_SAFE_FREE(uri);
 		}
 	}
@@ -513,10 +513,10 @@ static void* tmsrp_media_create(tsk_object_t *self, va_list * app)
 			// if this is not used then the host address will be equal to "0.0.0.0" or "::"
 			// when used with SIP, the stack will provide a routable IP (e.g. 192.168.16.104)
 			tnet_gethostname(&local);
-			msrp->transport = TNET_TRANSPORT_CREATE(local, TNET_SOCKET_PORT_ANY, socket_type, "MSRP/MSRPS transport");
+			msrp->transport = tnet_transport_create(local, TNET_SOCKET_PORT_ANY, socket_type, "MSRP/MSRPS transport");
 		}
 		else{
-			msrp->transport = TNET_TRANSPORT_CREATE(host, TNET_SOCKET_PORT_ANY, socket_type, "MSRP/MSRPS transport");
+			msrp->transport = tnet_transport_create(host, TNET_SOCKET_PORT_ANY, socket_type, "MSRP/MSRPS transport");
 		}
 	}
 	else{

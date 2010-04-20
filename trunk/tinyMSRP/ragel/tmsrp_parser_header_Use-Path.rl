@@ -42,7 +42,7 @@
 	machine tmsrp_machine_parser_header_Use_Path;
 
 	# Includes
-	include tmsrp_machine_utils "./tmsrp_machine_utils.rl";
+	include tmsrp_machine_utils "./ragel/tmsrp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -57,7 +57,7 @@
 			}
 			else{
 				if(!header->otherURIs){
-					header->otherURIs = TSK_LIST_CREATE();
+					header->otherURIs = tsk_list_create();
 				}
 				tsk_list_push_back_data(header->otherURIs, ((void**) &uri));
 			}
@@ -74,10 +74,21 @@
 
 }%%
 
+
+
+tmsrp_header_Use_Path_t* tmsrp_header_Use_Path_create(const tmsrp_uri_t* uri)
+{
+	return tsk_object_new(TMSRP_HEADER_USE_PATH_VA_ARGS(uri));
+}
+
+tmsrp_header_Use_Path_t* tmsrp_header_Use_Path_create_null()
+{
+	return tmsrp_header_Use_Path_create(tsk_null);
+}
+
 int tmsrp_header_Use_Path_tostring(const tmsrp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tmsrp_header_Use_Path_t *Use_Path = (const tmsrp_header_Use_Path_t *)header;
 		const tsk_list_item_t *item;
 
@@ -99,7 +110,7 @@ tmsrp_header_Use_Path_t *tmsrp_header_Use_Path_parse(const char *data, size_t si
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tmsrp_header_Use_Path_t *header = TMSRP_HEADER_USE_PATH_CREATE_NULL();
+	tmsrp_header_Use_Path_t *header = tmsrp_header_Use_Path_create_null();
 
 	const char *tag_start;
 
@@ -125,15 +136,18 @@ tmsrp_header_Use_Path_t *tmsrp_header_Use_Path_parse(const char *data, size_t si
 //	Use_Path header object definition
 //
 
-static void* tmsrp_header_Use_Path_create(void *self, va_list * app)
+static tsk_object_t* tmsrp_header_Use_Path_ctor(tsk_object_t *self, va_list * app)
 {
 	tmsrp_header_Use_Path_t *Use_Path = self;
-	if(Use_Path)
-	{
+	if(Use_Path){
+		const tmsrp_uri_t* uri = va_arg(*app, const tmsrp_uri_t*);
+
 		TMSRP_HEADER(Use_Path)->type = tmsrp_htype_Use_Path;
 		TMSRP_HEADER(Use_Path)->tostring = tmsrp_header_Use_Path_tostring;
 		
-		Use_Path->uri = tsk_object_ref((void*)va_arg(*app, const tmsrp_uri_t*));
+		if(uri){
+			Use_Path->uri = tsk_object_ref((void*)uri);
+		}
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Use-Path header.");
@@ -141,7 +155,7 @@ static void* tmsrp_header_Use_Path_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tmsrp_header_Use_Path_destroy(void *self)
+static tsk_object_t* tmsrp_header_Use_Path_dtor(tsk_object_t *self)
 {
 	tmsrp_header_Use_Path_t *Use_Path = self;
 	if(Use_Path){
@@ -154,17 +168,13 @@ static void* tmsrp_header_Use_Path_destroy(void *self)
 
 	return self;
 }
-static int tmsrp_header_Use_Path_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
-{
-	return -1;
-}
 
 static const tsk_object_def_t tmsrp_header_Use_Path_def_s = 
 {
 	sizeof(tmsrp_header_Use_Path_t),
-	tmsrp_header_Use_Path_create,
-	tmsrp_header_Use_Path_destroy,
-	tmsrp_header_Use_Path_cmp
+	tmsrp_header_Use_Path_ctor,
+	tmsrp_header_Use_Path_dtor,
+	tsk_null
 };
 
-const void *tmsrp_header_Use_Path_def_t = &tmsrp_header_Use_Path_def_s;
+const tsk_object_def_t *tmsrp_header_Use_Path_def_t = &tmsrp_header_Use_Path_def_s;

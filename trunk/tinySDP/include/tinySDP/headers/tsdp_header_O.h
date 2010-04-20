@@ -35,15 +35,9 @@
 
 TSDP_BEGIN_DECLS
 
-/**@def TSDP_HEADER_O_CREATE
-* Creates new sdp O header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
+
 #define TSDP_HEADER_O_VA_ARGS(username, sess_id, sess_version, nettype, addrtype, addr)			tsdp_header_O_def_t, (const char*)username, (uint32_t)sess_version, (uint32_t)sess_id, (const char*)nettype, (const char*)addrtype, (const char*)addr
 #define TSDP_HEADER_O_VA_ARGS_DEFAULT(username, nettype, addrtype, addr)						TSDP_HEADER_O_VA_ARGS(username, TSDP_HEADER_O_SESS_ID_DEFAULT, TSDP_HEADER_O_SESS_VERSION_DEFAULT, nettype, addrtype, addr)
-#define TSDP_HEADER_O_CREATE(username, sess_id, sess_version, nettype, addrtype, addr)			tsk_object_new(TSDP_HEADER_O_VA_ARGS(username, sess_id, sess_version, nettype, addrtype, addr))
-#define TSDP_HEADER_O_CREATE_NULL()																TSDP_HEADER_O_CREATE(tsk_null, 0, 0, tsk_null, tsk_null, tsk_null)
-#define TSDP_HEADER_O_CREATE_DEFAULT(username, nettype, addrtype, addr)							TSDP_HEADER_O_CREATE(username, TSDP_HEADER_O_SESS_ID_DEFAULT, TSDP_HEADER_O_SESS_VERSION_DEFAULT, nettype, addrtype, addr)
 
 #define TSDP_HEADER_O_SESS_ID_DEFAULT		123456
 #define TSDP_HEADER_O_SESS_VERSION_DEFAULT	678901
@@ -111,7 +105,11 @@ typedef struct tsdp_header_O_s
 }
 tsdp_header_O_t;
 
-tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_O_t* tsdp_header_O_create(const char* username, uint32_t sess_version, uint32_t sess_id, const char* nettype, const char* addrtype, const char* addr);
+TINYSDP_API tsdp_header_O_t* tsdp_header_O_create_null();
+TINYSDP_API tsdp_header_O_t* tsdp_header_O_create_default(const char* username, const char* nettype, const char* addrtype, const char* addr);
+
+TINYSDP_API tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_O_def_t;
 

@@ -35,13 +35,7 @@
 
 TSDP_BEGIN_DECLS
 
-/**@def TSDP_HEADER_C_CREATE
-* Creates new sdp "p=" header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSDP_HEADER_C_VA_ARGS(nettype, addrtype, addr)		tsdp_header_C_def_t, (const char*)nettype, (const char*)addrtype, (const char*)addr
-#define TSDP_HEADER_C_CREATE(nettype, addrtype, addr)			tsk_object_new(TSDP_HEADER_C_VA_ARGS(nettype, addrtype, addr))
-#define TSDP_HEADER_C_CREATE_NULL()			TSDP_HEADER_C_CREATE(tsk_null, tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -69,7 +63,10 @@ tsdp_header_C_t;
 
 typedef tsk_list_t tsdp_headers_C_L_t;
 
-tsdp_header_C_t *tsdp_header_C_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_C_t* tsdp_header_c_create(const char* nettype, const char* addrtype, const char* addr);
+TINYSDP_API tsdp_header_C_t* tsdp_header_c_create_null();
+
+TINYSDP_API tsdp_header_C_t *tsdp_header_C_parse(const char *data, size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_C_def_t;
 

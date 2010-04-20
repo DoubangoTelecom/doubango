@@ -43,7 +43,7 @@
 	machine tsdp_machine_parser_header_Z;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -51,7 +51,7 @@
 
 	action create_zone{
 		if(!zone){
-			zone = TSDP_ZONE_CREATE_NULL();
+			zone = tsdp_zone_create_null();
 		}
 	}
 
@@ -75,7 +75,7 @@
 
 	action shifted{
 		if(zone){
-			zone->shifted_back = 1;
+			zone->shifted_back = tsk_true;
 		}
 	}	
 
@@ -92,16 +92,36 @@
 
 }%%
 
+
+tsdp_header_Z_t* tsdp_header_Z_create(uint64_t time, tsk_bool_t shifted_back, const char* typed_time)
+{
+	return tsk_object_new(TSDP_HEADER_Z_VA_ARGS(time, shifted_back, typed_time));
+}
+
+tsdp_header_Z_t* tsdp_header_Z_create_null()
+{
+	return tsdp_header_Z_create(0L, tsk_false, tsk_null);
+}
+
+
+tsdp_zone_t* tsdp_zone_create(uint64_t time, tsk_bool_t shifted_back, const char* typed_time) 
+{
+	return tsk_object_new(tsdp_zone_def_t, time, shifted_back, typed_time);
+}
+
+tsdp_zone_t* tsdp_zone_create_null()
+{
+	return tsdp_zone_create(0L, tsk_false, tsk_null);
+}
+
 int tsdp_header_Z_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_Z_t *Z = (const tsdp_header_Z_t *)header;
 		const tsk_list_item_t *item;
 		const tsdp_zone_t* zone;
 		
-		tsk_list_foreach(item, Z->zones)
-		{
+		tsk_list_foreach(item, Z->zones){
 			zone = item->data;
 			// time  SP ["-"] typed-time
 			tsk_buffer_append_2(output, "%s%llu %s%s",
@@ -122,7 +142,7 @@ tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_Z_t *hdr_Z = TSDP_HEADER_Z_CREATE_NULL();
+	tsdp_header_Z_t *hdr_Z = tsdp_header_Z_create_null();
 	tsdp_zone_t* zone = tsk_null;
 	
 	const char *tag_start;
@@ -136,7 +156,7 @@ tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size)
 	}
 
 	if( cs < %%{ write first_final; }%% ){
-		TSK_DEBUG_ERROR("Failed to parse \"b=\" header.");
+		TSK_DEBUG_ERROR("Failed to parse \"z=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Z);
 	}
 	
@@ -153,23 +173,22 @@ tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size)
 //	Z header object definition
 //
 
-static void* tsdp_header_Z_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_Z_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_Z_t *Z = self;
-	if(Z)
-	{
+	if(Z){
 		TSDP_HEADER(Z)->type = tsdp_htype_Z;
 		TSDP_HEADER(Z)->tostring = tsdp_header_Z_tostring;
 		TSDP_HEADER(Z)->rank = TSDP_HTYPE_Z_RANK;
 		
-		if((Z->zones = TSK_LIST_CREATE())){
+		if((Z->zones = tsk_list_create())){
 			uint64_t time = va_arg(*app, uint64_t);
 			unsigned shifted_back = va_arg(*app, unsigned);
 			const char* typed_time = va_arg(*app, const char*);
 
 			if(typed_time){
 				tsdp_zone_t *zone;
-				if((zone = TSDP_ZONE_CREATE(time, shifted_back, typed_time))){
+				if((zone = tsdp_zone_create(time, shifted_back, typed_time))){
 					tsk_list_push_back_data(Z->zones,(void**)&zone);
 				}
 			}
@@ -181,7 +200,7 @@ static void* tsdp_header_Z_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_Z_destroy(void *self)
+static tsk_object_t* tsdp_header_Z_dtor(tsk_object_t *self)
 {
 	tsdp_header_Z_t *Z = self;
 	if(Z){
@@ -206,8 +225,8 @@ static int tsdp_header_Z_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_Z_def_s = 
 {
 	sizeof(tsdp_header_Z_t),
-	tsdp_header_Z_create,
-	tsdp_header_Z_destroy,
+	tsdp_header_Z_ctor,
+	tsdp_header_Z_dtor,
 	tsdp_header_Z_cmp
 };
 
@@ -220,13 +239,12 @@ const tsk_object_def_t *tsdp_header_Z_def_t = &tsdp_header_Z_def_s;
 //	Zone object definition
 //
 
-static void* tsdp_zone_create(void *self, va_list * app)
+static tsk_object_t* tsdp_zone_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_zone_t *zone = self;
-	if(zone)
-	{
+	if(zone){
 		zone->time = va_arg(*app, uint64_t);
-		zone->shifted_back = va_arg(*app, unsigned);
+		zone->shifted_back = va_arg(*app, tsk_bool_t);
 		zone->typed_time = tsk_strdup( va_arg(*app, const char*) );
 	}
 	else{
@@ -235,7 +253,7 @@ static void* tsdp_zone_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_zone_destroy(void *self)
+static tsk_object_t* tsdp_zone_dtor(tsk_object_t *self)
 {
 	tsdp_zone_t *zone = self;
 	if(zone){
@@ -251,9 +269,9 @@ static void* tsdp_zone_destroy(void *self)
 static const tsk_object_def_t tsdp_zone_def_s = 
 {
 	sizeof(tsdp_zone_t),
-	tsdp_zone_create,
-	tsdp_zone_destroy,
-	0
+	tsdp_zone_ctor,
+	tsdp_zone_dtor,
+	tsk_null
 };
 
 const tsk_object_def_t *tsdp_zone_def_t = &tsdp_zone_def_s;

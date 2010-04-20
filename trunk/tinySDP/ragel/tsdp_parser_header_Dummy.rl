@@ -42,7 +42,7 @@
 	machine tsdp_machine_parser_header_Dummy;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -63,6 +63,18 @@
 
 }%%
 
+
+
+tsdp_header_Dummy_t* tsdp_header_dummy_create(char name, const char* value)
+{
+	return tsk_object_new(TSDP_HEADER_DUMMY_VA_ARGS(name, value));
+}
+
+tsdp_header_Dummy_t* tsdp_header_dummy_create_null()
+{
+	return tsdp_header_dummy_create(tsk_null, tsk_null);
+}
+
 int tsdp_header_Dummy_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -81,7 +93,7 @@ tsdp_header_t* tsdp_header_Dummy_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_Dummy_t *Dummy = (const tsdp_header_Dummy_t *)header;
-		return TSDP_HEADER_DUMMY_CREATE(Dummy->name, Dummy->value);
+		return (tsdp_header_t*)tsdp_header_dummy_create(Dummy->name, Dummy->value);
 	}
 	return tsk_null;
 }
@@ -92,7 +104,7 @@ tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_Dummy_t *hdr_Dummy = TSDP_HEADER_DUMMY_CREATE_NULL();
+	tsdp_header_Dummy_t *hdr_Dummy = tsdp_header_dummy_create_null();
 	
 	const char *tag_start;
 
@@ -118,7 +130,7 @@ tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size)
 //	Dummy header object definition
 //
 
-static void* tsdp_header_Dummy_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_Dummy_t *Dummy = self;
 	if(Dummy)
@@ -137,7 +149,7 @@ static void* tsdp_header_Dummy_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_Dummy_destroy(void *self)
+static tsk_object_t* tsdp_header_Dummy_dtor(tsk_object_t *self)
 {
 	tsdp_header_Dummy_t *Dummy = self;
 	if(Dummy){
@@ -162,8 +174,8 @@ static int tsdp_header_Dummy_cmp(const tsk_object_t *obj1, const tsk_object_t *o
 static const tsk_object_def_t tsdp_header_Dummy_def_s = 
 {
 	sizeof(tsdp_header_Dummy_t),
-	tsdp_header_Dummy_create,
-	tsdp_header_Dummy_destroy,
+	tsdp_header_Dummy_ctor,
+	tsdp_header_Dummy_dtor,
 	tsdp_header_Dummy_cmp
 };
 

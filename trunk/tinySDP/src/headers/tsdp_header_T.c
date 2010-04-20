@@ -1,5 +1,5 @@
 
-/* #line 1 "tsdp_parser_header_T.rl" */
+/* #line 1 "./ragel/tsdp_parser_header_T.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -41,8 +41,19 @@
 *	Ragel state machine.
 */
 
-/* #line 82 "tsdp_parser_header_T.rl" */
+/* #line 82 "./ragel/tsdp_parser_header_T.rl" */
 
+
+
+tsdp_header_T_t* tsdp_header_T_create(uint64_t start, uint64_t stop)
+{
+	return tsk_object_new(TSDP_HEADER_T_VA_ARGS(start, stop));
+}
+
+tsdp_header_T_t* tsdp_header_T_create_null()
+{
+	return tsdp_header_T_create(0, 0);
+}
 
 int tsdp_header_T_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
@@ -86,10 +97,10 @@ tsdp_header_t* tsdp_header_T_clone(const tsdp_header_t* header)
 		tsdp_header_T_t* clone;
 		const tsk_list_item_t *item;
 
-		if((clone = TSDP_HEADER_T_CREATE(T->start, T->stop))){
+		if((clone = tsdp_header_T_create(T->start, T->stop))){
 
 			if(T->repeat_fields){
-				clone->repeat_fields = TSK_LIST_CREATE();
+				clone->repeat_fields = tsk_list_create();
 			}
 
 			tsk_list_foreach(item, T->repeat_fields){
@@ -109,12 +120,12 @@ tsdp_header_T_t *tsdp_header_T_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_T_t *hdr_T = TSDP_HEADER_T_CREATE_NULL();
+	tsdp_header_T_t *hdr_T = tsdp_header_T_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 118 "../src/headers/tsdp_header_T.c" */
+/* #line 129 "./src/headers/tsdp_header_T.c" */
 static const char _tsdp_machine_parser_header_T_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -168,16 +179,16 @@ static const int tsdp_machine_parser_header_T_error = 0;
 static const int tsdp_machine_parser_header_T_en_main = 1;
 
 
-/* #line 154 "tsdp_parser_header_T.rl" */
+/* #line 165 "./ragel/tsdp_parser_header_T.rl" */
 	
-/* #line 174 "../src/headers/tsdp_header_T.c" */
+/* #line 185 "./src/headers/tsdp_header_T.c" */
 	{
 	cs = tsdp_machine_parser_header_T_start;
 	}
 
-/* #line 155 "tsdp_parser_header_T.rl" */
+/* #line 166 "./ragel/tsdp_parser_header_T.rl" */
 	
-/* #line 181 "../src/headers/tsdp_header_T.c" */
+/* #line 192 "./src/headers/tsdp_header_T.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -251,24 +262,24 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "tsdp_parser_header_T.rl" */
+/* #line 47 "./ragel/tsdp_parser_header_T.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "tsdp_parser_header_T.rl" */
+/* #line 55 "./ragel/tsdp_parser_header_T.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_T->start, uint64_t, atoi64);
 	}
 	break;
 	case 2:
-/* #line 59 "tsdp_parser_header_T.rl" */
+/* #line 59 "./ragel/tsdp_parser_header_T.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_T->stop, uint64_t, atoi64);
 	}
 	break;
-/* #line 272 "../src/headers/tsdp_header_T.c" */
+/* #line 283 "./src/headers/tsdp_header_T.c" */
 		}
 	}
 
@@ -285,12 +296,12 @@ _again:
 	while ( __nacts-- > 0 ) {
 		switch ( *__acts++ ) {
 	case 2:
-/* #line 59 "tsdp_parser_header_T.rl" */
+/* #line 59 "./ragel/tsdp_parser_header_T.rl" */
 	{
 		TSK_PARSER_SET_INTEGER_EX(hdr_T->stop, uint64_t, atoi64);
 	}
 	break;
-/* #line 294 "../src/headers/tsdp_header_T.c" */
+/* #line 305 "./src/headers/tsdp_header_T.c" */
 		}
 	}
 	}
@@ -298,12 +309,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 156 "tsdp_parser_header_T.rl" */
+/* #line 167 "./ragel/tsdp_parser_header_T.rl" */
 	
 	if( cs < 
-/* #line 305 "../src/headers/tsdp_header_T.c" */
+/* #line 316 "./src/headers/tsdp_header_T.c" */
 7
-/* #line 157 "tsdp_parser_header_T.rl" */
+/* #line 168 "./ragel/tsdp_parser_header_T.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"t=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_T);
@@ -322,11 +333,10 @@ _again:
 //	T header object definition
 //
 
-static void* tsdp_header_T_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_T_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_T_t *T = self;
-	if(T)
-	{
+	if(T){
 		TSDP_HEADER(T)->type = tsdp_htype_T;
 		TSDP_HEADER(T)->tostring = tsdp_header_T_tostring;
 		TSDP_HEADER(T)->clone = tsdp_header_T_clone;
@@ -338,7 +348,7 @@ static void* tsdp_header_T_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_T_destroy(void *self)
+static tsk_object_t* tsdp_header_T_dtor(tsk_object_t *self)
 {
 	tsdp_header_T_t *T = self;
 	if(T){
@@ -363,8 +373,8 @@ static int tsdp_header_T_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_T_def_s = 
 {
 	sizeof(tsdp_header_T_t),
-	tsdp_header_T_create,
-	tsdp_header_T_destroy,
+	tsdp_header_T_ctor,
+	tsdp_header_T_dtor,
 	tsdp_header_T_cmp
 };
 

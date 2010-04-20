@@ -38,8 +38,6 @@
 
 TSDP_BEGIN_DECLS
 
-#define TSDP_MESSAGE_CREATE()	tsk_object_new(tsdp_message_def_t)
-
 typedef struct tsdp_message_s
 {
 	TSK_DECLARE_OBJECT;
@@ -98,6 +96,7 @@ TINYSDP_API int tsdp_message_remove_media(tsdp_message_t *self, const char* medi
 TINYSDP_API int tsdp_message_hold(tsdp_message_t* self, const char* media);
 TINYSDP_API int tsdp_message_resume(tsdp_message_t* self, const char* media);
 
+TINYSDP_API tsdp_message_t* tsdp_message_create();
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_message_def_t;
 

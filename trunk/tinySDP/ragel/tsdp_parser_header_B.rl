@@ -43,7 +43,7 @@
 	machine tsdp_machine_parser_header_B;
 
 	# Includes
-	include tsdp_machine_utils "./tsdp_machine_utils.rl";
+	include tsdp_machine_utils "./ragel/tsdp_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -67,10 +67,22 @@
 
 }%%
 
+
+
+
+tsdp_header_B_t* tsdp_header_B_create(const char* bwtype, uint32_t bandwidth)
+{
+	return tsk_object_new(TSDP_HEADER_B_VA_ARGS(bwtype, bandwidth));
+}
+
+tsdp_header_B_t* tsdp_header_B_create_null()
+{
+	return tsdp_header_B_create(tsk_null, 0);
+}
+
 int tsdp_header_B_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_B_t *B = (const tsdp_header_B_t *)header;
 		
 		return tsk_buffer_append_2(output, "%s:%u",
@@ -86,7 +98,7 @@ tsdp_header_t* tsdp_header_B_clone(const tsdp_header_t* header)
 {
 	if(header){
 		const tsdp_header_B_t *B = (const tsdp_header_B_t *)header;
-		return TSDP_HEADER_B_CREATE(B->bwtype, B->bandwidth);
+		return (tsdp_header_t*)tsdp_header_B_create(B->bwtype, B->bandwidth);
 	}
 	return tsk_null;
 }
@@ -97,7 +109,7 @@ tsdp_header_B_t *tsdp_header_B_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsdp_header_B_t *hdr_B = TSDP_HEADER_B_CREATE_NULL();
+	tsdp_header_B_t *hdr_B = tsdp_header_B_create_null();
 	
 	const char *tag_start;
 
@@ -123,11 +135,10 @@ tsdp_header_B_t *tsdp_header_B_parse(const char *data, size_t size)
 //	B header object definition
 //
 
-static void* tsdp_header_B_create(void *self, va_list * app)
+static tsk_object_t* tsdp_header_B_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_B_t *B = self;
-	if(B)
-	{
+	if(B){
 		TSDP_HEADER(B)->type = tsdp_htype_B;
 		TSDP_HEADER(B)->tostring = tsdp_header_B_tostring;
 		TSDP_HEADER(B)->clone = tsdp_header_B_clone;
@@ -142,7 +153,7 @@ static void* tsdp_header_B_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsdp_header_B_destroy(void *self)
+static tsk_object_t* tsdp_header_B_dtor(tsk_object_t *self)
 {
 	tsdp_header_B_t *B = self;
 	if(B){
@@ -167,8 +178,8 @@ static int tsdp_header_B_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsdp_header_B_def_s = 
 {
 	sizeof(tsdp_header_B_t),
-	tsdp_header_B_create,
-	tsdp_header_B_destroy,
+	tsdp_header_B_ctor,
+	tsdp_header_B_dtor,
 	tsdp_header_B_cmp
 };
 
