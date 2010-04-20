@@ -53,10 +53,10 @@ thttp_header_Content_Type_t* thttp_header_content_type_create_null()
 	return thttp_header_content_type_create(tsk_null);
 }
 
-int thttp_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
+int thttp_header_Content_Type_tostring(const thttp_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const thttp_header_Content_Type_t *Content_Type = header;	
+		const thttp_header_Content_Type_t *Content_Type = (const thttp_header_Content_Type_t*)header;	
 		return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
 	}
 

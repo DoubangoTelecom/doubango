@@ -64,10 +64,10 @@ thttp_header_Content_Length_t* thttp_header_content_length_create(uint32_t lengt
 	return tsk_object_new(THTTP_HEADER_CONTENT_LENGTH_VA_ARGS(length));
 }
 
-int thttp_header_Content_Length_tostring(const void* header, tsk_buffer_t* output)
+int thttp_header_Content_Length_tostring(const thttp_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const thttp_header_Content_Length_t *Content_Length = header;		
+		const thttp_header_Content_Length_t *Content_Length = (const thttp_header_Content_Length_t*)header;		
 		return tsk_buffer_append_2(output, "%d", Content_Length->length);
 	}
 

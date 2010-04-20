@@ -71,35 +71,10 @@ transport_context_t;
 
 static const transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd);
 static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport, tsk_bool_t take_ownership, tsk_bool_t is_client);
-//static void setConnected(tnet_fd_t fd, transport_context_t *context, tsk_bool_t connected);
 static int removeSocket(int index, transport_context_t *context);
 
-/* Checks if socket is connected */
-/*
-int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t fd)
-{
-	tnet_transport_t *transport = (tnet_transport_t*)handle;
-	transport_context_t *context;
-	size_t i;
 
-	if(!transport){
-		TSK_DEBUG_ERROR("Invalid server handle.");
-		return 0;
-	}
-	
-	context = (transport_context_t*)transport->context;
-	for(i=0; i<context->count; i++){
-		const transport_socket_t* socket = context->sockets[i];
-		if(socket->fd == fd){
-			return socket->connected;
-		}
-	}
-	
-	return 0;
-}
-*/
-
-int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)
+int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t* context;
@@ -413,12 +388,18 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	}
 	
 	/* set events */
-	context->events = TNET_SOCKET_TYPE_IS_DGRAM(transport->master->type) ? TNET_POLLIN : TNET_POLLIN | TNET_POLLHUP | TNET_POLLPRI;
-	context->events |= TNET_POLLNVAL | TNET_POLLERR;
+	context->events = TNET_POLLIN | TNET_POLLNVAL | TNET_POLLERR;
+	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
+		context->events |= TNET_POLLPRI 
+#if !defined(ANDROID)
+			| TNET_POLLHUP
+#endif
+			;
+	}
 	
 	/* Start listening */
 	if(TNET_SOCKET_TYPE_IS_STREAM(transport->master->type)){
-		if(tnet_sockfd_listen(transport->master->fd, TNET_MAX_FDS)){
+		if((ret = tnet_sockfd_listen(transport->master->fd, TNET_MAX_FDS))){
 			TNET_PRINT_LAST_ERROR("listen have failed.");
 			goto bail;
 		}
@@ -441,6 +422,7 @@ int tnet_transport_prepare(tnet_transport_t *transport)
 	
 	/* Add the master socket to the context. */
 	if((ret = addSocket(transport->master->fd, transport->master->type, transport, tsk_true, tsk_false))){
+		TSK_DEBUG_ERROR("Failed to add master socket");
 		goto bail;
 	}
 	
@@ -583,9 +565,12 @@ void *tnet_transport_mainthread(void *param)
 			if(context->ufds[i].revents & (TNET_POLLHUP))
 			{
 				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLHUP", transport->description);
-				
-				//--TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
-				//--removeSocket(i, context);
+#if defined(ANDROID)
+				/* FIXME */
+#else
+				TSK_RUNNABLE_ENQUEUE(transport, event_closed, transport->callback_data, active_socket->fd);
+				removeSocket(i, context);
+#endif
 			}
 
 			/*================== TNET_POLLERR ==================*/

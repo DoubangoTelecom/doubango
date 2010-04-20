@@ -152,11 +152,11 @@ thttp_header_Authorization_t* thttp_header_authorization_create()
 	return tsk_object_new(thttp_header_Authorization_def_t);
 }
 
-int thttp_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
+int thttp_header_Authorization_tostring(const thttp_header_t* header, tsk_buffer_t* output)
 {
 	if(header)
 	{
-		const thttp_header_Authorization_t *Authorization = header;
+		const thttp_header_Authorization_t *Authorization = (const thttp_header_Authorization_t*)header;
 		if(Authorization && Authorization->scheme)
 		{
 			if(tsk_striequals(Authorization->scheme, "Basic")){
