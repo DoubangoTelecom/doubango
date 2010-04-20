@@ -260,7 +260,7 @@ int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_
 					return ret;
 				}
 				else{
-					isnew = 0;
+					isnew = tsk_false;
 					continue;
 				}
 			}

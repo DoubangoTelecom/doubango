@@ -89,8 +89,7 @@ static const short _thttp_machine_parser_header_Content_Type_key_offsets[] = {
 	105, 106, 108, 124, 142, 146, 147, 149, 
 	152, 169, 170, 172, 188, 206, 210, 211, 
 	213, 216, 234, 235, 237, 255, 256, 258, 
-	261, 277, 279, 281, 283, 285, 287, 288, 
-	290, 294, 295, 301, 319
+	261, 269, 270, 272, 276, 277, 283, 301
 };
 
 static const char _thttp_machine_parser_header_Content_Type_trans_keys[] = {
@@ -126,14 +125,12 @@ static const char _thttp_machine_parser_header_Content_Type_trans_keys[] = {
 	95, 122, 10, 9, 32, 9, 13, 32, 
 	33, 34, 37, 39, 126, 42, 43, 45, 
 	46, 48, 57, 65, 90, 95, 122, 10, 
-	9, 32, 9, 32, 34, 9, 13, 34, 
-	92, -64, -33, -32, -17, -16, -9, -8, 
-	-5, -4, -3, 32, 126, -128, -65, -128, 
-	-65, -128, -65, -128, -65, -128, -65, 10, 
-	9, 32, 9, 13, 32, 59, 10, 0, 
-	9, 11, 12, 14, 127, 9, 13, 32, 
-	33, 37, 39, 59, 126, 42, 43, 45, 
-	46, 48, 57, 65, 90, 95, 122, 0
+	9, 32, 9, 32, 34, 13, 34, 92, 
+	127, 0, 8, 10, 31, 10, 9, 32, 
+	9, 13, 32, 59, 10, 0, 9, 11, 
+	12, 14, 127, 9, 13, 32, 33, 37, 
+	39, 59, 126, 42, 43, 45, 46, 48, 
+	57, 65, 90, 95, 122, 0
 };
 
 static const char _thttp_machine_parser_header_Content_Type_single_lengths[] = {
@@ -143,8 +140,7 @@ static const char _thttp_machine_parser_header_Content_Type_single_lengths[] = {
 	1, 2, 6, 8, 4, 1, 2, 3, 
 	7, 1, 2, 6, 8, 4, 1, 2, 
 	3, 8, 1, 2, 8, 1, 2, 3, 
-	4, 0, 0, 0, 0, 0, 1, 2, 
-	4, 1, 0, 8, 0
+	4, 1, 2, 4, 1, 0, 8, 0
 };
 
 static const char _thttp_machine_parser_header_Content_Type_range_lengths[] = {
@@ -154,8 +150,7 @@ static const char _thttp_machine_parser_header_Content_Type_range_lengths[] = {
 	0, 0, 5, 5, 0, 0, 0, 0, 
 	5, 0, 0, 5, 5, 0, 0, 0, 
 	0, 5, 0, 0, 5, 0, 0, 0, 
-	6, 1, 1, 1, 1, 1, 0, 0, 
-	0, 0, 3, 5, 0
+	2, 0, 0, 0, 0, 3, 5, 0
 };
 
 static const short _thttp_machine_parser_header_Content_Type_index_offsets[] = {
@@ -165,8 +160,7 @@ static const short _thttp_machine_parser_header_Content_Type_index_offsets[] = {
 	109, 111, 114, 126, 140, 145, 147, 150, 
 	154, 167, 169, 172, 184, 198, 203, 205, 
 	208, 212, 226, 228, 231, 245, 247, 250, 
-	254, 265, 267, 269, 271, 273, 275, 277, 
-	280, 285, 287, 291, 305
+	254, 261, 263, 266, 271, 273, 277, 291
 };
 
 static const char _thttp_machine_parser_header_Content_Type_indicies[] = {
@@ -201,26 +195,23 @@ static const char _thttp_machine_parser_header_Content_Type_indicies[] = {
 	47, 1, 49, 1, 50, 50, 1, 50, 
 	51, 50, 47, 48, 47, 47, 47, 47, 
 	47, 47, 47, 47, 1, 52, 1, 53, 
-	53, 1, 53, 53, 48, 1, 48, 59, 
-	60, 61, 54, 55, 56, 57, 58, 48, 
-	1, 48, 1, 54, 1, 55, 1, 56, 
-	1, 57, 1, 62, 1, 48, 48, 1, 
-	63, 64, 63, 65, 1, 66, 1, 48, 
-	48, 48, 1, 63, 64, 63, 47, 47, 
-	47, 65, 47, 47, 47, 47, 47, 47, 
-	1, 1, 0
+	53, 1, 53, 53, 48, 1, 54, 55, 
+	56, 1, 1, 1, 48, 57, 1, 48, 
+	48, 1, 58, 59, 58, 60, 1, 61, 
+	1, 48, 48, 48, 1, 58, 59, 58, 
+	47, 47, 47, 60, 47, 47, 47, 47, 
+	47, 47, 1, 1, 0
 };
 
 static const char _thttp_machine_parser_header_Content_Type_trans_targs[] = {
 	2, 0, 3, 4, 5, 6, 7, 8, 
 	9, 10, 11, 12, 13, 14, 15, 18, 
 	16, 17, 19, 20, 18, 23, 21, 22, 
-	24, 27, 25, 26, 28, 57, 32, 28, 
+	24, 27, 25, 26, 28, 52, 32, 28, 
 	29, 32, 30, 31, 33, 36, 34, 35, 
-	37, 38, 36, 41, 39, 40, 42, 59, 
-	48, 43, 44, 45, 46, 47, 49, 50, 
-	51, 52, 53, 54, 56, 58, 55, 28, 
-	57, 32, 60
+	37, 38, 36, 41, 39, 40, 42, 54, 
+	48, 43, 44, 45, 46, 47, 49, 51, 
+	53, 50, 28, 52, 32, 55
 };
 
 static const char _thttp_machine_parser_header_Content_Type_trans_actions[] = {
@@ -231,12 +222,11 @@ static const char _thttp_machine_parser_header_Content_Type_trans_actions[] = {
 	0, 0, 0, 0, 0, 1, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 5, 
-	5, 5, 7
+	0, 0, 5, 5, 5, 7
 };
 
 static const int thttp_machine_parser_header_Content_Type_start = 1;
-static const int thttp_machine_parser_header_Content_Type_first_final = 60;
+static const int thttp_machine_parser_header_Content_Type_first_final = 55;
 static const int thttp_machine_parser_header_Content_Type_error = 0;
 
 static const int thttp_machine_parser_header_Content_Type_en_main = 1;
@@ -244,14 +234,14 @@ static const int thttp_machine_parser_header_Content_Type_en_main = 1;
 
 /* #line 114 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
-/* #line 248 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 238 "./src/headers/thttp_header_Content_Type.c" */
 	{
 	cs = thttp_machine_parser_header_Content_Type_start;
 	}
 
 /* #line 115 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
-/* #line 255 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 245 "./src/headers/thttp_header_Content_Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -348,7 +338,7 @@ _match:
 	{
 	}
 	break;
-/* #line 352 "./src/headers/thttp_header_Content_Type.c" */
+/* #line 342 "./src/headers/thttp_header_Content_Type.c" */
 		}
 	}
 
@@ -364,8 +354,8 @@ _again:
 /* #line 116 "./ragel/thttp_parser_header_Content_Type.rl" */
 	
 	if( cs < 
-/* #line 368 "./src/headers/thttp_header_Content_Type.c" */
-60
+/* #line 358 "./src/headers/thttp_header_Content_Type.c" */
+55
 /* #line 117 "./ragel/thttp_parser_header_Content_Type.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse Content-Type header.");

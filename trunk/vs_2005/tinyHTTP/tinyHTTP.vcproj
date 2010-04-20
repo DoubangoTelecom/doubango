@@ -589,6 +589,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyHTTP\ragel\thttp_parser_header_ETag.rl"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyHTTP\ragel\thttp_parser_header_Transfer_Encoding.rl"
 				>
 			</File>

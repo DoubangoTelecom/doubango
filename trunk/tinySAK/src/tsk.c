@@ -35,7 +35,7 @@
 * <h1>6	ANSI-C Object Programming</h1>
 * As you probably know, C is not an object oriented language.<br>
 * Today, OOP (Object-Oriented Programing) is the best way to program well designed softwares.<br>
-* In this charpter a “well-defined object” is a special C structure. All functions shown in this chapter are part of tinySAK project.<br>
+* In this chapter a “well-defined object” is a special C structure. All functions shown in this chapter are part of tinySAK project.<br>
 * To explain how well-defined objects are implemented and used, I will give an example based on “Person” object.<br>
 * The person object is declared like this:<br>
 * @code

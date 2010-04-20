@@ -72,7 +72,7 @@ void test_stack()
 
 	thttp_stack_handle_t* stack = thttp_stack_create(test_stack_callback,
 #if defined(ANDROID)
-		THTTP_STACK_SET_LOCAL_IP(TNET_SOCKET_HOST_ANY),
+		THTTP_STACK_SET_LOCAL_IP("10.0.2.15"),
 #endif
 		THTTP_STACK_SET_NULL());
 
