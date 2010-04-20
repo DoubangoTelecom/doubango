@@ -142,7 +142,7 @@ static const int tdns_machine_resolvconf_en_main = 0;
 
 /* #line 103 "./ragel/tnet_dns_resolvconf.rl" */
 
-	if(!fullpath || tsk_strempty(fullpath)){
+	if(tsk_strnullORempty(fullpath)){
 		fullpath = TNET_RESOLV_CONF_PATH;
 	}
 

@@ -48,12 +48,12 @@ typedef uint64_t thttp_action_id_t;
 /** List of all supported options.
 * To pass an option to the sesion, use @ref THTTP_ACTION_SET_OPTION() macro.
 */
-typedef enum thhtp_action_option_e
+typedef enum thttp_action_option_e
 {
 	THTTP_ACTION_OPTION_TIMEOUT,
 
 }
-thhtp_action_option_t;
+thttp_action_option_t;
 
 /** List of actions.
 */
@@ -86,7 +86,7 @@ thttp_action_param_type_t;
 * @def THTTP_ACTION_SET_OPTION
 * Adds or updates an option. 
 * This is a helper macro for @a thttp_action_*() functions.
-* @param ID_INT The id of the option to add/update (@ref thhtp_action_option_t).
+* @param ID_INT The id of the option to add/update (@ref thttp_action_option_t).
 * @param VALUE_STR The new value of the parameter (<i>const char*</i>).
 *
 * @code
@@ -132,7 +132,7 @@ thttp_action_PUT(session, "http://www.doubango.org"
 * @def THTTP_ACTION_SET_NULL
 * Ends action parameters. Must always be the last one.
 */
-#define THTTP_ACTION_SET_OPTION(ID_INT, VALUE_STR)			aptype_option, (thhtp_action_option_t)ID_INT, (const char*)VALUE_STR
+#define THTTP_ACTION_SET_OPTION(ID_INT, VALUE_STR)			aptype_option, (thttp_action_option_t)ID_INT, (const char*)VALUE_STR
 #define THTTP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)		aptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define THTTP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (size_t)PAY_SIZE
 #define THTTP_ACTION_SET_NULL()								aptype_null

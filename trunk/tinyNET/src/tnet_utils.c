@@ -117,7 +117,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 {
 	tnet_interfaces_L_t * ifaces = tsk_list_create();
 
-#if TSK_UNDER_WINDOWS /*=== WINDOWS XP/VISTA/7/CE===*/
+#if TNET_UNDER_WINDOWS /*=== WINDOWS XP/VISTA/7/CE===*/
 
 #define MALLOC(x) HeapAlloc(GetProcessHeap(), 0, (x))
 #define FREE(x) HeapFree(GetProcessHeap(), 0, (x))
@@ -435,12 +435,13 @@ bail:
 
 #else	/* !TSK_UNDER_WINDOWS (MAC OS X, UNIX, ANDROID ...) */
 
-	tnet_addresses_L_t * dns_servers;	
-
 	/* == DNS servers == */
-	if((dns_servers = tnet_dns_resolvconf_parse("/etc/resolv.conf"))){
-		tsk_list_pushback_list(addresses, dns_servers);
-		TSK_OBJECT_SAFE_FREE(dns_servers);
+	if(dnsserver){
+		tnet_addresses_L_t * dns_servers;
+		if((dns_servers = tnet_dns_resolvconf_parse("/etc/resolv.conf"))){
+			tsk_list_pushback_list(addresses, dns_servers);
+			TSK_OBJECT_SAFE_FREE(dns_servers);
+		}
 	}
 
 

@@ -41,8 +41,7 @@ TNET_BEGIN_DECLS
 */
 #define TNET_CONNECT_TIMEOUT		2500
 
-/**@ingroup tnet_utils_group
-* Interface.
+/**Interface.
 */
 typedef struct tnet_interface_s
 {
@@ -57,8 +56,7 @@ typedef struct tnet_interface_s
 tnet_interface_t;
 
 
-/**@ingroup tnet_utils_group
-* Address.
+/**Address.
 */
 typedef struct tnet_address_s
 {
@@ -141,8 +139,7 @@ TINYNET_API tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, so
 
 TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
-/**@ingroup tnet_utils_group
-* Prints last network error to @b stderr.
+/**Prints last network error to @b stderr.
 */
 #define TNET_PRINT_LAST_ERROR(msg) \
 	{ \
