@@ -618,17 +618,17 @@ int tnet_dns_query_srv(tnet_dns_ctx_t *ctx, const char* service, char** hostname
 /**@ingroup tnet_dns_group
 * Performs DNS NAPTR followed by DNS SRV resolution.
 * @param ctx The DNS context.
-* The context contains the user's preference and should be created using @ref tnet_dns_ctx_create.
+* The context contains the user's preference and should be created using @ref tnet_dns_ctx_create().
 * @param domain The Name of the domain (e.g. google.com).
 * @param service The name of the service (e.g. SIP+D2U).
-* @param hostname The result containing an IP address or FQDN.
+* @param hostname The result containing an IP address or FQDN. Should be Null.
 * @param port The port associated to the result.
 * @retval Zero if succeed and non-zero error code otherwise.
 * @sa @ref tnet_dns_resolve.
 *
 * @code
 * tnet_dns_ctx_t *ctx = tnet_dns_ctx_create();
-* char* hostname = 0;
+* char* hostname = tsk_null;
 * tnet_port_t port = 0;
 * 
 * if(!tnet_dns_query_naptr_srv(ctx, "sip2sip.info", "SIP+D2U", &hostname, &port)){
@@ -643,17 +643,21 @@ int tnet_dns_query_naptr_srv(tnet_dns_ctx_t *ctx, const char* domain, const char
 {
 	tnet_dns_response_t *response;
 
-	if(!ctx){
+	if(!ctx || !hostname){
+		TSK_DEBUG_ERROR("Invalid parameters.");
 		return -1;
 	}
+	
+	/* reset (do not free the user supplied value). trying to free dummy value will cause access violation error ==> zero. */
+	*hostname = tsk_null;
+
 	// tnet_dns_resolve is thread-safe
-	if((response = tnet_dns_resolve(ctx, domain, qclass_in, qtype_naptr)))
-	{
+	if((response = tnet_dns_resolve(ctx, domain, qclass_in, qtype_naptr))){
 		const tsk_list_item_t *item;
 		const tnet_dns_rr_t* rr;
 
-		char* replacement = 0; /* e.g. _sip._udp.example.com */
-		char* flags = 0;/* e.g. S, A, AAAA, A6, U, P ... */
+		char* replacement = tsk_null; /* e.g. _sip._udp.example.com */
+		char* flags = tsk_null;/* e.g. S, A, AAAA, A6, U, P ... */
 
 		tsk_list_foreach(item, response->Answers) /* Already Filtered ==> Peek the first One */
 		{

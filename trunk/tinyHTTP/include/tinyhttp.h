@@ -26,6 +26,13 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
+/* === tinyNET (tinyNET/src) === */
+#include "tnet.h"
+
+/* === tinySAK (tinySAK/src)=== */
+#include "tsk.h"
+
+/* === tinyHTTP(tinyHTTP/include) === */
 #include "thttp.h"
 
 #include "tinyHTTP/thttp_action.h"
@@ -36,9 +43,3 @@
 
 #include "tinyhttp/headers/thttp_header_Dummy.h"
 #include "tinyhttp/headers/thttp_header_ETag.h"
-
-/* TINYNET */
-#include "tnet.h"
-
-/* TINYSACK */
-#include "tsk.h"
