@@ -63,16 +63,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_AS_REQUEST(self)	((tsip_request_t*)(self))
 
 
-/**@def TSIP_MESSAGE_CREATE
-* Creates new sip messgae. Could be either a request or a response.
-* You must call @ref TSK_OBJECT_SAFE_FREE to free the message.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_MESSAGE_CREATE()											tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_unknown)
-#define TSIP_REQUEST_CREATE(method, uri)								tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_request, (const char*)method, (const tsip_uri_t*)uri)
-#define TSIP_RESPONSE_CREATE(request, status_code, reason_phrase)		tsk_object_new(tsip_message_def_t, (tsip_message_type_t)tsip_response, (const tsip_request_t*)request, (short)status_code, (const char*)reason_phrase)
-
-
 #define TSIP_RESPONSE_CODE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
 #define TSIP_RESPONSE_PHRASE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->reason_phrase : tsk_null)
 
@@ -188,7 +178,7 @@ tsip_request_type_t;
  *
  * @brief	Represents a SIP message. A SIP message is either a request from a client to a server,
  * 			or a response from a server to a client. See RFC 3261 suc-bclause 7. 
- *			You must call @ref TSIP_MESSAGE_CREATE to create a sip message and TSK_OBJECT_SAFE_FREE to free the message.
+ *			You must call @ref tsip_message_create to create a sip message and TSK_OBJECT_SAFE_FREE to free the message.
  *
  * @author	Mamadou
  * @date	12/2/2009
@@ -295,7 +285,11 @@ TINYSIP_API tsip_request_type_t tsip_request_get_type(const char* method);
 TINYSIP_API tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_uri, const tsip_uri_t *from, const tsip_uri_t *to, const char *call_id, int32_t cseq);
 TINYSIP_API tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase, const tsip_request_t *request);
 
-TINYSIP_GEXTERN const void *tsip_message_def_t;
+TINYSIP_API tsip_message_t* tsip_message_create();
+TINYSIP_API tsip_request_t* tsip_request_create(const char* method, const tsip_uri_t* uri);
+TINYSIP_API tsip_response_t* tsip_response_create(const tsip_request_t* request, short status_code, const char* reason_phrase);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_message_def_t;
 
 TSIP_END_DECLS
 

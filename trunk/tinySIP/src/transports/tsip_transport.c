@@ -37,13 +37,17 @@
 #include "tsk_buffer.h"
 #include "tsk_debug.h"
 
+tsip_transport_t* tsip_transport_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
+{
+	return tsk_object_new(tsip_transport_def_t, stack, host, port, type, description);
+}
+
 int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip_message_t *msg)
 {
 	tnet_ip_t ip;
 	tnet_port_t port;
 
-	if(tsip_transport_get_ip_n_port(self, &ip, &port))
-	{
+	if(tsip_transport_get_ip_n_port(self, &ip, &port)){
 		return -1;
 	}
 	
@@ -58,15 +62,14 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 			value depends on the transport.  It is 5060 for UDP, TCP and SCTP,
 			5061 for TLS.
 		*/
-		msg->firstVia = TSIP_HEADER_VIA_CREATE(TSIP_HEADER_VIA_PROTO_NAME_DEFAULT, TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT,
+		msg->firstVia = tsip_header_Via_create(TSIP_HEADER_VIA_PROTO_NAME_DEFAULT, TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT,
 			self->via_protocol, ip, port);
 		TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "rport", 0);
 	}
 	
 	tsk_strupdate(&msg->firstVia->branch, branch);
 
-	if(0)
-	{
+	if(tsk_false){
 		/*	RFC 3261 - 18.1.1 Sending Requests (FIXME)
 			A client that sends a request to a multicast address MUST add the
 			"maddr" parameter to its Via header field value containing the
@@ -163,7 +166,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 			}
 		}
 
-		buffer = TSK_BUFFER_CREATE_NULL();
+		buffer = tsk_buffer_create_null();
 		if(buffer)
 		{
 			tsip_message_tostring(msg, buffer);
@@ -222,17 +225,15 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 }
 
 
-tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr)
+tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 {
-	if(self)
-	{
+	if(self){
 		tnet_ip_t ip;
 		tnet_port_t port;
-		tsip_uri_t* uri = 0;
+		tsip_uri_t* uri = tsk_null;
 		
-		if(!tnet_get_ip_n_port(self->connectedFD, &ip, &port))
-		{
-			char* uristring = 0;
+		if(!tnet_get_ip_n_port(self->connectedFD, &ip, &port)){
+			char* uristring = tsk_null;
 			int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(self->type);
 
 			tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
@@ -252,7 +253,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr)
 		}
 		return uri;
 	}
-	return 0;
+	return tsk_null;
 }
 
 
@@ -264,7 +265,7 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const t
 
 	self->stack = stack;
 	self->type = type;
-	self->net_transport = TNET_TRANSPORT_CREATE(host, port, type, description);
+	self->net_transport = tnet_transport_create(host, port, type, description);
 		
 	self->scheme = TNET_SOCKET_TYPE_IS_TLS(type) ? "sips" : "sip";
 
@@ -279,7 +280,7 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const t
 		}
 
 		/* Stream buffer */
-		self->buff_stream = TSK_BUFFER_CREATE_NULL();
+		self->buff_stream = tsk_buffer_create_null();
 	}
 	else{
 		self->protocol = "udp";
@@ -311,11 +312,10 @@ int tsip_transport_deinit(tsip_transport_t* self)
 //========================================================
 //	SIP transport object definition
 //
-static void* tsip_transport_create(void * self, va_list * app)
+static tsk_object_t* tsip_transport_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_transport_t *transport = self;
-	if(transport)
-	{
+	if(transport){
 		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t*);
 		const char *host = va_arg(*app, const char*);
 #if defined(__GNUC__)
@@ -333,22 +333,20 @@ static void* tsip_transport_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_transport_destroy(void * self)
+static tsk_object_t* tsip_transport_dtor(tsk_object_t * self)
 { 
 	tsip_transport_t *transport = self;
-	if(transport)
-	{
+	if(transport){
 		tsip_transport_deinit(transport);
 	}
 	return self;
 }
 
-static int tsip_transport_cmp(const void *obj1, const void *obj2)
+static int tsip_transport_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	const tsip_transport_t *transport1 = obj1;
 	const tsip_transport_t *transport2 = obj2;
-	if(transport1 && transport2)
-	{
+	if(transport1 && transport2){
 		const char* desc1 = tsip_transport_get_description(transport1);
 		const char* desc2 = tsip_transport_get_description(transport2);
 		return tsk_stricmp(desc1, desc2);
@@ -359,9 +357,9 @@ static int tsip_transport_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_transport_def_s = 
 {
 	sizeof(tsip_transport_t),
-	tsip_transport_create, 
-	tsip_transport_destroy,
+	tsip_transport_ctor, 
+	tsip_transport_dtor,
 	tsip_transport_cmp, 
 };
-const void *tsip_transport_def_t = &tsip_transport_def_s;
+const tsk_object_def_t *tsip_transport_def_t = &tsip_transport_def_s;
 

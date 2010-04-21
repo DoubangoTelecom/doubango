@@ -68,8 +68,12 @@ typedef struct tsk_object_def_s
 tsk_object_def_t;
 * @endcode
 *
-* An object is created in two phases. The first phase consists of dynamically allocating the object on the heap; this is why its size is mandatory in the object definition structure. When a new object is allocated on the heap, all its members (char*, void*, int, long …) will be zeroed. In the second phase, the newly created object will be initialized by calling the supplied constructor. To perform these two phases, you should call @ref tsk_object_new() or @ref tsk_object_new_2().<br>
-* The object is destroyed in two phases. The first phase consists of freeing its members (void*, char* …). It’s the destructor which is responsible of this task. In the second phase, the object itself is destroyed. As the object cannot destroy itself, you should use @ref tsk_object_unref() or @ref tsk_object_delete() to perform these two phases. The difference between these two functions is explained in the coming sections.<br>
+* <p>
+* An object is created in two phases. The first phase consists of dynamically allocating the object on the heap; this is why its size is mandatory in the object definition structure. When a new object is allocated on the heap, all its members (char*, void*, int, long …) will be zeroed. In the second phase, the newly created object will be initialized by calling the supplied constructor. To perform these two phases, you should call @ref tsk_object_new() or @ref tsk_object_new_2().
+* </p>
+* <p>
+* An object is destroyed in two phases. The first phase consists of freeing its members (void*, char* …). It’s the destructor which is responsible of this task. In the second phase, the object itself is destroyed. As the object cannot destroy itself, you should use @ref tsk_object_unref() or @ref tsk_object_delete() to perform these two phases. The difference between these two functions is explained in the coming sections.
+* </p>
 * A well-defined object must never be freed using free() standard C function.<br>
 * Below, an example of how to declare an object definition:<br>
 * @code
@@ -148,8 +152,8 @@ static int person_cmp(const tsk_object_t *_p1, const tsk_object_t *_p2)
 // (a student is a person)
 typedef struct student_s
 {
-struct person_s* person; // Must be the first element
-char* school;
+	person_t* person; // Must be the first element
+	char* school;
 }
 student_t;
 
@@ -159,7 +163,7 @@ student_t* s = tsk_null;
 ((person_t*)s)->name = tsk_strdup("bob");
 * @endcode
 * 
-* As person_t is a well-defined object, then student_t is also well-defined.<br>
+* As @code person_t is a well-defined object, then @code student_t is also well-defined.<br>
 * <h2>6.7	Usage</h2>
 * Once the object’s definition is declared and all its mandatory functions implemented, it is used like this:<br>
 * @code

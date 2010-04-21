@@ -40,8 +40,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_TRANSAC_LAYER_CREATE(stack)			tsk_object_new(tsip_transac_layer_def_t, stack)
-
 typedef struct tsip_transac_layer_s
 {
 	TSK_DECLARE_OBJECT;
@@ -57,8 +55,9 @@ typedef struct tsip_transac_layer_s
 tsip_transac_layer_t;
 
 typedef tsk_list_t tsip_transac_layers_L_t;
-TINYSIP_GEXTERN const void *tsip_transac_layer_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_transac_layer_def_t;
 
+tsip_transac_layer_t* tsip_transac_layer_create(tsip_stack_t* stack);
 
 tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_bool_t isCT, const tsip_message_t* msg, struct tsip_dialog_s* dialog);
 int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *transac);

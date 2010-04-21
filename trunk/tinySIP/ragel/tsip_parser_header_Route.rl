@@ -47,56 +47,44 @@
 	machine tsip_machine_parser_header_Route;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action create_route
-	{
-		if(!curr_route)
-		{
-			curr_route = TSIP_HEADER_ROUTE_CREATE_NULL();
+	action create_route{
+		if(!curr_route){
+			curr_route = tsip_header_Route_create_null();
 		}
 	}
 
-	action parse_display_name
-	{
-		if(curr_route)
-		{
+	action parse_display_name{
+		if(curr_route){
 			TSK_PARSER_SET_STRING(curr_route->display_name);
 		}
 	}
 
-	action parse_uri
-	{
-		if(curr_route && !curr_route->uri)
-		{
+	action parse_uri{
+		if(curr_route && !curr_route->uri){
 			int len = (int)(p  - tag_start);
 			curr_route->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 
-	action parse_param
-	{
-		if(curr_route)
-		{
+	action parse_param{
+		if(curr_route){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_route));
 		}
 	}
 
-	action add_route
-	{
-		if(curr_route)
-		{
+	action add_route{
+		if(curr_route){
 			tsk_list_push_back_data(hdr_routes, ((void**) &curr_route));
 		}
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	
@@ -117,18 +105,28 @@
 
 }%%
 
+tsip_header_Route_t* tsip_header_Route_create(const tsip_uri_t* uri)
+{
+	return tsk_object_new(TSIP_HEADER_ROUTE_VA_ARGS(uri));
+}
+
+tsip_header_Route_t* tsip_header_Route_create_null()
+{
+	return tsip_header_Route_create(tsk_null);
+}
+
+
 int tsip_header_Route_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Route_t *Route = header;
 		int ret = 0;
 		
 		if(Route->display_name){ /* Display Name */
-			tsk_buffer_append_2(output, "\"%s\"", Route->display_name);
+			ret = tsk_buffer_append_2(output, "\"%s\"", Route->display_name);
 		}
 
-		if(ret=tsip_uri_serialize(Route->uri, 1, 1, output)){ /* Route */
+		if((ret=tsip_uri_serialize(Route->uri, 1, 1, output))){ /* Route */
 			return ret;
 		}
 		
@@ -144,17 +142,17 @@ tsip_header_Routes_L_t *tsip_header_Route_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Routes_L_t *hdr_routes = TSK_LIST_CREATE();
+	tsip_header_Routes_L_t *hdr_routes = tsk_list_create();
 	
 	const char *tag_start;
-	tsip_header_Route_t *curr_route = 0;
+	tsip_header_Route_t *curr_route = tsk_null;
 
 	%%write data;
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Route' header.");
 		TSK_OBJECT_SAFE_FREE(curr_route);
 		TSK_OBJECT_SAFE_FREE(hdr_routes);
 	}
@@ -170,11 +168,10 @@ tsip_header_Routes_L_t *tsip_header_Route_parse(const char *data, size_t size)
 //	Route header object definition
 //
 
-static void* tsip_header_Route_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Route_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Route_t *Route = self;
-	if(Route)
-	{
+	if(Route){
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(Route)->type = tsip_htype_Route;
@@ -184,24 +181,24 @@ static void* tsip_header_Route_create(void *self, va_list * app)
 			Route->uri = tsk_object_ref((void*)uri);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Route header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Route_destroy(void *self)
+static tsk_object_t* tsip_header_Route_dtor(tsk_object_t *self)
 {
 	tsip_header_Route_t *Route = self;
-	if(Route)
-	{
+	if(Route){
 		TSK_FREE(Route->display_name);
 		TSK_OBJECT_SAFE_FREE(Route->uri);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Route));
 	}
-	else TSK_DEBUG_ERROR("Null Route header.");
+	else{
+		TSK_DEBUG_ERROR("Null Route header.");
+	}
 
 	return self;
 }
@@ -209,8 +206,8 @@ static void* tsip_header_Route_destroy(void *self)
 static const tsk_object_def_t tsip_header_Route_def_s = 
 {
 	sizeof(tsip_header_Route_t),
-	tsip_header_Route_create,
-	tsip_header_Route_destroy,
-	0
+	tsip_header_Route_ctor,
+	tsip_header_Route_dtor,
+	tsk_null
 };
-const void *tsip_header_Route_def_t = &tsip_header_Route_def_s;
+const tsk_object_def_t *tsip_header_Route_def_t = &tsip_header_Route_def_s;

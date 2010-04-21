@@ -37,20 +37,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_P_ASSOCIATED_URI_CREATE
-* Creates new sip 'P-Associated-URI' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_P_ASSOCIATED_URI_VA_ARGS(uri)		tsip_header_P_Associated_URI_def_t, (const tsip_uri_t*)uri
-#define TSIP_HEADER_P_ASSOCIATED_URI_CREATE(uri)		tsk_object_new(TSIP_HEADER_P_ASSOCIATED_URI_VA_ARGS(uri))
-#define TSIP_HEADER_P_ASSOCIATED_URI_CREATE_NULL()		TSIP_HEADER_P_ASSOCIATED_URI_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'P-Associated-URI' as per RFC 3455.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: P-Associated-URI	= 	"P-Associated-URI" HCOLON p-aso-uri-spec *(COMMA p-aso-uri-spec)
 /// p-aso-uri-spec	= 	name-addr *( SEMI ai-param )
@@ -68,9 +60,12 @@ tsip_header_P_Associated_URI_t;
 
 typedef tsk_list_t tsip_header_P_Associated_URIs_L_t;
 
-tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_P_Associated_URI_t* tsip_header_P_Associated_URI_create(const tsip_uri_t* uri);
+TINYSIP_API tsip_header_P_Associated_URI_t* tsip_header_P_Associated_URI_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_P_Associated_URI_def_t;
+TINYSIP_API tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_P_Associated_URI_def_t;
 
 TSIP_END_DECLS
 

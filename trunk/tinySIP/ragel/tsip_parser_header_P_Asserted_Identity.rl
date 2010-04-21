@@ -47,48 +47,38 @@
 	machine tsip_machine_parser_header_P_Asserted_Identity;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action create_p_asserted_identity
-	{
-		if(!curr_p_asserted_identity)
-		{
-			curr_p_asserted_identity = TSIP_HEADER_P_ASSERTED_IDENTITY_CREATE();
+	action create_p_asserted_identity{
+		if(!curr_p_asserted_identity){
+			curr_p_asserted_identity = tsip_header_P_Asserted_Identity_create();
 		}
 	}
 
-	action parse_display_name
-	{
-		if(curr_p_asserted_identity)
-		{
+	action parse_display_name{
+		if(curr_p_asserted_identity){
 			TSK_PARSER_SET_STRING(curr_p_asserted_identity->display_name);
 		}
 	}
 
-	action parse_uri
-	{
-		if(curr_p_asserted_identity && !curr_p_asserted_identity->uri)
-		{
+	action parse_uri{
+		if(curr_p_asserted_identity && !curr_p_asserted_identity->uri){
 			int len = (int)(p  - tag_start);
 			curr_p_asserted_identity->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 
-	action add_p_asserted_identity
-	{
-		if(curr_p_asserted_identity)
-		{
+	action add_p_asserted_identity{
+		if(curr_p_asserted_identity){
 			tsk_list_push_back_data(hdr_p_asserted_identities, ((void**) &curr_p_asserted_identity));
 		}
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	
@@ -105,10 +95,14 @@
 
 }%%
 
+tsip_header_P_Asserted_Identity_t* tsip_header_P_Asserted_Identity_create()
+{
+	return tsk_object_new(tsip_header_P_Asserted_Identity_def_t);
+}
+
 int tsip_header_P_Asserted_Identity_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_P_Asserted_Identity_t *P_Asserted_Identity = header;
 		int ret = 0;
 		
@@ -116,7 +110,7 @@ int tsip_header_P_Asserted_Identity_tostring(const void* header, tsk_buffer_t* o
 			tsk_buffer_append_2(output, "\"%s\"", P_Asserted_Identity->display_name);
 		}
 
-		if(ret=tsip_uri_serialize(P_Asserted_Identity->uri, 1, 1, output)){ /* P_Asserted_Identity */
+		if((ret = tsip_uri_serialize(P_Asserted_Identity->uri, 1, 1, output))){ /* P_Asserted_Identity */
 			return ret;
 		}
 		
@@ -132,7 +126,7 @@ tsip_header_P_Asserted_Identities_L_t *tsip_header_P_Asserted_Identity_parse(con
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Asserted_Identities_L_t *hdr_p_asserted_identities = TSK_LIST_CREATE();
+	tsip_header_P_Asserted_Identities_L_t *hdr_p_asserted_identities = tsk_list_create();
 	
 	const char *tag_start;
 	tsip_header_P_Asserted_Identity_t *curr_p_asserted_identity = 0;
@@ -141,8 +135,8 @@ tsip_header_P_Asserted_Identities_L_t *tsip_header_P_Asserted_Identity_parse(con
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'P-Asserted-Identity' header.");
 		TSK_OBJECT_SAFE_FREE(curr_p_asserted_identity);
 		TSK_OBJECT_SAFE_FREE(hdr_p_asserted_identities);
 	}
@@ -160,16 +154,14 @@ tsip_header_P_Asserted_Identities_L_t *tsip_header_P_Asserted_Identity_parse(con
 
 /**@ingroup tsip_header_P_Asserted_Identity_group
 */
-static void* tsip_header_P_Asserted_Identity_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_P_Asserted_Identity_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_P_Asserted_Identity_t *P_Asserted_Identity = self;
-	if(P_Asserted_Identity)
-	{
+	if(P_Asserted_Identity){
 		TSIP_HEADER(P_Asserted_Identity)->type = tsip_htype_P_Asserted_Identity;
 		TSIP_HEADER(P_Asserted_Identity)->tostring = tsip_header_P_Asserted_Identity_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Asserted_Identity header.");
 	}
 	return self;
@@ -177,17 +169,18 @@ static void* tsip_header_P_Asserted_Identity_create(void *self, va_list * app)
 
 /**@ingroup tsip_header_P_Asserted_Identity_group
 */
-static void* tsip_header_P_Asserted_Identity_destroy(void *self)
+static tsk_object_t* tsip_header_P_Asserted_Identity_dtor(tsk_object_t *self)
 {
 	tsip_header_P_Asserted_Identity_t *P_Asserted_Identity = self;
-	if(P_Asserted_Identity)
-	{
+	if(P_Asserted_Identity){
 		TSK_FREE(P_Asserted_Identity->display_name);
 		TSK_OBJECT_SAFE_FREE(P_Asserted_Identity->uri);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(P_Asserted_Identity));
 	}
-	else TSK_DEBUG_ERROR("Null P_Asserted_Identity header.");
+	else{
+		TSK_DEBUG_ERROR("Null P_Asserted_Identity header.");
+	}
 
 	return self;
 }
@@ -195,8 +188,8 @@ static void* tsip_header_P_Asserted_Identity_destroy(void *self)
 static const tsk_object_def_t tsip_header_P_Asserted_Identity_def_s = 
 {
 	sizeof(tsip_header_P_Asserted_Identity_t),
-	tsip_header_P_Asserted_Identity_create,
-	tsip_header_P_Asserted_Identity_destroy,
-	0
+	tsip_header_P_Asserted_Identity_ctor,
+	tsip_header_P_Asserted_Identity_dtor,
+	tsk_null
 };
-const void *tsip_header_P_Asserted_Identity_def_t = &tsip_header_P_Asserted_Identity_def_s;
+const tsk_object_def_t *tsip_header_P_Asserted_Identity_def_t = &tsip_header_P_Asserted_Identity_def_s;

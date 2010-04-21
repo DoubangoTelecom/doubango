@@ -35,21 +35,13 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_USER_AGENT_CREATE
-* Creates new sip 'User-Agent' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_USER_AGENT_VA_ARGS(ua)		tsip_header_User_Agent_def_t, (const char*)ua
-#define TSIP_HEADER_USER_AGENT_CREATE(ua)		tsk_object_new(TSIP_HEADER_USER_AGENT_VA_ARGS(ua))
-
 
 #define TSIP_HEADER_USER_AGENT_DEFAULT			"IM-client/OMA1.0 doubango/v0.0.0"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'User-Agent'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF : User-Agent	= 	"User-Agent" HCOLON server-val *(LWS server-val)
 /// 	
@@ -61,9 +53,12 @@ typedef struct tsip_header_User_Agent_s
 }
 tsip_header_User_Agent_t;
 
-tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_User_Agent_t* tsip_header_User_Agent_create(const char* ua);
+TINYSIP_API tsip_header_User_Agent_t* tsip_header_User_Agent_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_User_Agent_def_t;
+TINYSIP_API tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_User_Agent_def_t;
 
 TSIP_END_DECLS
 

@@ -294,7 +294,7 @@ int tsip_transac_ist_init(tsip_transac_ist_t *self)
 	/* Set callback function to call when new messages arrive or errors happen at
 	the transport layer.
 	*/
-	TSIP_TRANSAC(self)->callback = TSIP_TRANSAC_EVENT_CALLBACK(tsip_transac_ist_event_callback);
+	TSIP_TRANSAC(self)->callback = TSIP_TRANSAC_EVENT_CALLBACK_F(tsip_transac_ist_event_callback);
 
 	/* Set Timers 
 		* RFC 3261 17.2.1: For unreliable transports, timer G is set to fire in T1 seconds, and is not set to fire for
@@ -308,6 +308,10 @@ int tsip_transac_ist_init(tsip_transac_ist_t *self)
 	return 0;
 }
 
+tsip_transac_ist_t* tsip_transac_ist_create(tsk_bool_t reliable, int32_t cseq_value, const char* callid, tsip_dialog_t* dialog)
+{
+	return tsk_object_new(tsip_transac_ist_def_t, reliable, cseq_value, callid, dialog);
+}
 
 int tsip_transac_ist_start(tsip_transac_ist_t *self, const tsip_request_t* request)
 {
@@ -664,11 +668,10 @@ int tsip_transac_ist_OnTerminated(tsip_transac_ist_t *self)
 //========================================================
 //	IST object definition
 //
-static void* tsip_transac_ist_create(void * self, va_list * app)
+static tsk_object_t* tsip_transac_ist_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_transac_ist_t *transac = self;
-	if(transac)
-	{
+	if(transac){
 		tsk_bool_t reliable = va_arg(*app, tsk_bool_t);
 		int32_t cseq_value = va_arg(*app, int32_t);
 		const char *cseq_method = "INVITE";
@@ -676,7 +679,7 @@ static void* tsip_transac_ist_create(void * self, va_list * app)
 		tsip_dialog_t* dialog = va_arg(*app, tsip_dialog_t*);
 
 		/* create FSM */
-		transac->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
+		transac->fsm = tsk_fsm_create(_fsm_state_Started, _fsm_state_Terminated);
 		transac->fsm->debug = DEBUG_STATE_MACHINE;
 		tsk_fsm_set_callback_terminated(transac->fsm, TSK_FSM_ONTERMINATED_F(tsip_transac_ist_OnTerminated), (const void*)transac);
 
@@ -689,7 +692,7 @@ static void* tsip_transac_ist_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_transac_ist_destroy(void * _self)
+static tsk_object_t* tsip_transac_ist_dtor(tsk_object_t * _self)
 { 
 	tsip_transac_ist_t *self = _self;
 	if(self)
@@ -722,8 +725,8 @@ static int tsip_transac_ist_cmp(const tsk_object_t *t1, const tsk_object_t *t2)
 static const tsk_object_def_t tsip_transac_ist_def_s = 
 {
 	sizeof(tsip_transac_ist_t),
-	tsip_transac_ist_create, 
-	tsip_transac_ist_destroy,
+	tsip_transac_ist_ctor, 
+	tsip_transac_ist_dtor,
 	tsip_transac_ist_cmp, 
 };
-const void *tsip_transac_ist_def_t = &tsip_transac_ist_def_s;
+const tsk_object_def_t *tsip_transac_ist_def_t = &tsip_transac_ist_def_s;

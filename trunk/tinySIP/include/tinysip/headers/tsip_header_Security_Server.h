@@ -35,20 +35,13 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_ROUTE_CREATE
-* Creates new sip 'Security_Server' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
+
 #define TSIP_HEADER_SECURITY_SERVER_VA_ARGS()		tsip_header_Security_Server_def_t
-#define TSIP_HEADER_SECURITY_SERVER_CREATE()		tsk_object_new(TSIP_HEADER_SECURITY_SERVER_VA_ARGS())
-#define TSIP_HEADER_SECURITY_SERVER_CREATE_NULL()		TSIP_HEADER_SECURITY_SERVER_CREATE()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Security-Server' as per RFC 3329.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF : Security-Server	= 	"Security-Server" HCOLON sec-mechanism *(COMMA sec-mechanism)
 /// sec-mechanism	= 	mechanism-name *( SEMI mech-parameters )
@@ -106,9 +99,12 @@ tsip_header_Security_Server_t;
 
 typedef tsk_list_t tsip_header_Security_Servers_L_t;
 
-tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Security_Server_t* tsip_header_Security_Server_create();
+TINYSIP_API tsip_header_Security_Server_t* tsip_header_Security_Server_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_Security_Server_def_t;
+TINYSIP_API tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Security_Server_def_t;
 
 TSIP_END_DECLS
 

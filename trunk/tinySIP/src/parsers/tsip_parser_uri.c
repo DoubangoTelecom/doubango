@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_uri.rl" */
+/* #line 1 "./ragel/tsip_parser_uri.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -42,7 +42,7 @@
 *	Ragel state machine.
 */
 
-/* #line 137 "tsip_parser_uri.rl" */
+/* #line 128 "./ragel/tsip_parser_uri.rl" */
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,12 +68,12 @@ tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
 	const char *ts = 0, *te = 0;
 	int act =0;
 
-	tsip_uri_t *uri = TSIP_URI_CREATE(uri_unknown);
+	tsip_uri_t *uri = tsip_uri_create(uri_unknown);
 	
 	const char *tag_start = 0;
 	
 	
-/* #line 77 "../src/parsers/tsip_parser_uri.c" */
+/* #line 77 "./src/parsers/tsip_parser_uri.c" */
 static const char _tsip_machine_parser_uri_actions[] = {
 	0, 1, 0, 1, 4, 1, 5, 1, 
 	7, 1, 9, 1, 11, 1, 12, 1, 
@@ -386,9 +386,9 @@ static const int tsip_machine_parser_uri_en_sip_usrinfo = 65;
 static const int tsip_machine_parser_uri_en_main = 73;
 
 
-/* #line 167 "tsip_parser_uri.rl" */
+/* #line 158 "./ragel/tsip_parser_uri.rl" */
 	
-/* #line 392 "../src/parsers/tsip_parser_uri.c" */
+/* #line 392 "./src/parsers/tsip_parser_uri.c" */
 	{
 	cs = tsip_machine_parser_uri_start;
 	ts = 0;
@@ -396,9 +396,9 @@ static const int tsip_machine_parser_uri_en_main = 73;
 	act = 0;
 	}
 
-/* #line 168 "tsip_parser_uri.rl" */
+/* #line 159 "./ragel/tsip_parser_uri.rl" */
 	
-/* #line 402 "../src/parsers/tsip_parser_uri.c" */
+/* #line 402 "./src/parsers/tsip_parser_uri.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -416,10 +416,10 @@ _resume:
 	while ( _nacts-- > 0 ) {
 		switch ( *_acts++ ) {
 	case 12:
-/* #line 1 "tsip_parser_uri.rl" */
+/* #line 1 "./ragel/tsip_parser_uri.rl" */
 	{ts = p;}
 	break;
-/* #line 423 "../src/parsers/tsip_parser_uri.c" */
+/* #line 423 "./src/parsers/tsip_parser_uri.c" */
 		}
 	}
 
@@ -486,63 +486,63 @@ _eof_trans:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tsip_parser_uri.rl" */
+/* #line 49 "./ragel/tsip_parser_uri.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "tsip_parser_uri.rl" */
+/* #line 54 "./ragel/tsip_parser_uri.rl" */
 	{ uri->scheme = tsk_strdup("sip"), uri->type = uri_sip; }
 	break;
 	case 2:
-/* #line 56 "tsip_parser_uri.rl" */
+/* #line 55 "./ragel/tsip_parser_uri.rl" */
 	{ uri->scheme = tsk_strdup("sips"), uri->type = uri_sips; }
 	break;
 	case 3:
-/* #line 57 "tsip_parser_uri.rl" */
+/* #line 56 "./ragel/tsip_parser_uri.rl" */
 	{ uri->scheme = tsk_strdup("tel"), uri->type = uri_tel; }
 	break;
 	case 4:
-/* #line 60 "tsip_parser_uri.rl" */
+/* #line 59 "./ragel/tsip_parser_uri.rl" */
 	{ uri->host_type = host_ipv4; }
 	break;
 	case 5:
-/* #line 61 "tsip_parser_uri.rl" */
+/* #line 60 "./ragel/tsip_parser_uri.rl" */
 	{ uri->host_type = host_ipv6; }
 	break;
 	case 6:
-/* #line 62 "tsip_parser_uri.rl" */
+/* #line 61 "./ragel/tsip_parser_uri.rl" */
 	{ uri->host_type = host_hostname; }
 	break;
 	case 7:
-/* #line 70 "tsip_parser_uri.rl" */
+/* #line 67 "./ragel/tsip_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->user_name);
 	}
 	break;
 	case 8:
-/* #line 75 "tsip_parser_uri.rl" */
+/* #line 71 "./ragel/tsip_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->password);
 	}
 	break;
 	case 9:
-/* #line 90 "tsip_parser_uri.rl" */
+/* #line 83 "./ragel/tsip_parser_uri.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(uri->params);
 	}
 	break;
 	case 10:
-/* #line 101 "tsip_parser_uri.rl" */
+/* #line 93 "./ragel/tsip_parser_uri.rl" */
 	{ {cs = 73; goto _again;} }
 	break;
 	case 13:
-/* #line 1 "tsip_parser_uri.rl" */
+/* #line 1 "./ragel/tsip_parser_uri.rl" */
 	{te = p+1;}
 	break;
 	case 14:
-/* #line 115 "tsip_parser_uri.rl" */
+/* #line 106 "./ragel/tsip_parser_uri.rl" */
 	{te = p+1;{
 								TSK_SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6){
@@ -551,20 +551,19 @@ _eof_trans:
 							}}
 	break;
 	case 15:
-/* #line 105 "tsip_parser_uri.rl" */
+/* #line 97 "./ragel/tsip_parser_uri.rl" */
 	{te = p;p--;{
-								if(tsk_strcontains(te, (pe - te), "@"))
-								{
+								if(tsk_strcontains(te, (pe - te), "@")){
 									{cs = 65; goto _again;}
 								}
 							}}
 	break;
 	case 16:
-/* #line 112 "tsip_parser_uri.rl" */
+/* #line 103 "./ragel/tsip_parser_uri.rl" */
 	{te = p;p--;{ }}
 	break;
 	case 17:
-/* #line 115 "tsip_parser_uri.rl" */
+/* #line 106 "./ragel/tsip_parser_uri.rl" */
 	{te = p;p--;{
 								TSK_SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6){
@@ -573,26 +572,26 @@ _eof_trans:
 							}}
 	break;
 	case 18:
-/* #line 123 "tsip_parser_uri.rl" */
+/* #line 114 "./ragel/tsip_parser_uri.rl" */
 	{te = p;p--;{
 								ts++;
 								TSK_SCANNER_SET_INTEGER(uri->port);
 							}}
 	break;
 	case 19:
-/* #line 128 "tsip_parser_uri.rl" */
+/* #line 119 "./ragel/tsip_parser_uri.rl" */
 	{te = p;p--;{  }}
 	break;
 	case 20:
-/* #line 129 "tsip_parser_uri.rl" */
+/* #line 120 "./ragel/tsip_parser_uri.rl" */
 	{te = p;p--;{  }}
 	break;
 	case 21:
-/* #line 112 "tsip_parser_uri.rl" */
+/* #line 103 "./ragel/tsip_parser_uri.rl" */
 	{{p = ((te))-1;}{ }}
 	break;
 	case 22:
-/* #line 115 "tsip_parser_uri.rl" */
+/* #line 106 "./ragel/tsip_parser_uri.rl" */
 	{{p = ((te))-1;}{
 								TSK_SCANNER_SET_STRING(uri->host);
 								if(uri->host_type == host_ipv6){
@@ -601,10 +600,10 @@ _eof_trans:
 							}}
 	break;
 	case 23:
-/* #line 128 "tsip_parser_uri.rl" */
+/* #line 119 "./ragel/tsip_parser_uri.rl" */
 	{{p = ((te))-1;}{  }}
 	break;
-/* #line 608 "../src/parsers/tsip_parser_uri.c" */
+/* #line 607 "./src/parsers/tsip_parser_uri.c" */
 		}
 	}
 
@@ -614,10 +613,10 @@ _again:
 	while ( _nacts-- > 0 ) {
 		switch ( *_acts++ ) {
 	case 11:
-/* #line 1 "tsip_parser_uri.rl" */
+/* #line 1 "./ragel/tsip_parser_uri.rl" */
 	{ts = 0;}
 	break;
-/* #line 621 "../src/parsers/tsip_parser_uri.c" */
+/* #line 620 "./src/parsers/tsip_parser_uri.c" */
 		}
 	}
 
@@ -637,12 +636,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 169 "tsip_parser_uri.rl" */
+/* #line 160 "./ragel/tsip_parser_uri.rl" */
 	
 	if( cs < 
-/* #line 644 "../src/parsers/tsip_parser_uri.c" */
+/* #line 643 "./src/parsers/tsip_parser_uri.c" */
 73
-/* #line 170 "tsip_parser_uri.rl" */
+/* #line 161 "./ragel/tsip_parser_uri.rl" */
  )
 	{
 		TSK_DEBUG_ERROR("Failed to parse SIP/SIPS/TEL URI.");

@@ -35,20 +35,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_ROUTE_CREATE
-* Creates new sip 'Security_Verify' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_SECURITY_VERIFY_VA_ARGS()		tsip_header_Security_Verify_def_t
-#define TSIP_HEADER_SECURITY_VERIFY_CREATE()		tsk_object_new(TSIP_HEADER_SECURITY_VERIFY_VA_ARGS())
-#define TSIP_HEADER_SECURITY_VERIFY_CREATE_NULL()		TSIP_HEADER_SECURITY_VERIFY_CREATE()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Security-Client' as per RFC 3329.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF : Security-Client	= 	"Security-Client" HCOLON sec-mechanism *(COMMA sec-mechanism)
 /// sec-mechanism	= 	mechanism-name *( SEMI mech-parameters )
@@ -106,9 +98,12 @@ tsip_header_Security_Verify_t;
 
 typedef tsk_list_t tsip_header_Security_Verifies_L_t;
 
-tsip_header_Security_Verifies_L_t *tsip_header_Security_Verify_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Security_Verify_t* tsip_header_Security_Verify_create();
+TINYSIP_API tsip_header_Security_Verify_t* tsip_header_Security_Verify_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_Security_Verify_def_t;
+TINYSIP_API tsip_header_Security_Verifies_L_t *tsip_header_Security_Verify_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Security_Verify_def_t;
 
 TSIP_END_DECLS
 

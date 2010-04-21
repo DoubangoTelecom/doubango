@@ -54,20 +54,17 @@
 	machine tsip_machine_parser_header_P_Access_Network_Info;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_value
-	{
+	action parse_value{
 		TSK_PARSER_SET_STRING(hdr_ani->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 		
 	P_Access_Network_Info = "P-Access-Network-Info"i HCOLON (any*)>tag %parse_value;
@@ -77,13 +74,22 @@
 
 }%%
 
+
+tsip_header_P_Access_Network_Info_t* tsip_header_P_Access_Network_Info_create(const char* value)
+{
+	return tsk_object_new(TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(value));
+}
+
+tsip_header_P_Access_Network_Info_t* tsip_header_P_Access_Network_Info_create_null()
+{
+	return tsip_header_P_Access_Network_Info_create(tsk_null);
+}
+
 int tsip_header_P_Access_Network_Info_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = header;
-		if(P_Access_Network_Info->value)
-		{
+		if(P_Access_Network_Info->value){
 			tsk_buffer_append(output, P_Access_Network_Info->value, strlen(P_Access_Network_Info->value));
 		}
 		return 0;
@@ -98,7 +104,7 @@ tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(con
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Access_Network_Info_t *hdr_ani = TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE_NULL();
+	tsip_header_P_Access_Network_Info_t *hdr_ani = tsip_header_P_Access_Network_Info_create_null();
 	
 	const char *tag_start;
 
@@ -106,8 +112,8 @@ tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(con
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'P-Access-Network-Info' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ani);
 	}
 	
@@ -124,30 +130,29 @@ tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(con
 //	P_Access_Network_Info header object definition
 //
 
-static void* tsip_header_P_Access_Network_Info_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_P_Access_Network_Info_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = self;
-	if(P_Access_Network_Info)
-	{
+	if(P_Access_Network_Info){
 		P_Access_Network_Info->value = tsk_strdup(va_arg(*app, const char *));
 		TSIP_HEADER(P_Access_Network_Info)->type = tsip_htype_P_Access_Network_Info;
 		TSIP_HEADER(P_Access_Network_Info)->tostring = tsip_header_P_Access_Network_Info_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Access_Network_Info header.");
 	}
 	return self;
 }
 
-static void* tsip_header_P_Access_Network_Info_destroy(void *self)
+static tsk_object_t* tsip_header_P_Access_Network_Info_dtor(tsk_object_t *self)
 {
 	tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = self;
-	if(P_Access_Network_Info)
-	{
+	if(P_Access_Network_Info){
 		TSK_FREE(P_Access_Network_Info->value);
 	}
-	else TSK_DEBUG_ERROR("Null P_Access_Network_Info header.");
+	else{
+		TSK_DEBUG_ERROR("Null P_Access_Network_Info header.");
+	}
 
 	return self;
 }
@@ -155,8 +160,8 @@ static void* tsip_header_P_Access_Network_Info_destroy(void *self)
 static const tsk_object_def_t tsip_header_P_Access_Network_Info_def_s = 
 {
 	sizeof(tsip_header_P_Access_Network_Info_t),
-	tsip_header_P_Access_Network_Info_create,
-	tsip_header_P_Access_Network_Info_destroy,
-	0
+	tsip_header_P_Access_Network_Info_ctor,
+	tsip_header_P_Access_Network_Info_dtor,
+	tsk_null
 };
-const void *tsip_header_P_Access_Network_Info_def_t = &tsip_header_P_Access_Network_Info_def_s;
+const tsk_object_def_t *tsip_header_P_Access_Network_Info_def_t = &tsip_header_P_Access_Network_Info_def_s;

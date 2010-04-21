@@ -36,19 +36,13 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_TO_CREATE
-* Creates new sip 'To' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
+
 #define TSIP_HEADER_TO_VA_ARGS(display_name, uri, tag)			tsip_header_To_def_t, (const char*)display_name, (const tsip_uri_t*)uri, (const char*)tag
-#define TSIP_HEADER_TO_CREATE(display_name, uri, tag)			tsk_object_new(TSIP_HEADER_TO_VA_ARGS(display_name, uri, tag))
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'To' .
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: To	= 	To	= 	( "To" / "t" ) HCOLON ( name-addr / addr-spec ) *( SEMI to-param )
 /// to-param	= 	tag-param / generic-param
@@ -64,9 +58,12 @@ typedef struct tsip_header_To_s
 }
 tsip_header_To_t;
 
-tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_To_t* tsip_header_To_create(const char* display_name, const tsip_uri_t* uri, const char* tag);
+TINYSIP_API tsip_header_To_t* tsip_header_To_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_To_def_t;
+TINYSIP_API tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_To_def_t;
 
 TSIP_END_DECLS
 

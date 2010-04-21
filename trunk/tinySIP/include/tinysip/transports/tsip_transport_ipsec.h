@@ -40,8 +40,6 @@
 
 TSIP_BEGIN_DECLS
 
-
-#define TSIP_TRANSPORT_IPSEC_CREATE(stack, host, port, type, description)		tsk_object_new(tsip_transport_ipsec_def_t, stack, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
 #define TSIP_TRANSPORT_IPSEC(self)										((tsip_transport_ipsec_t*)(self))
 
 typedef struct tsip_ipsec_association_s
@@ -68,6 +66,8 @@ typedef struct tsip_transport_ipsec_s
 }
 tsip_transport_ipsec_t;
 
+tsip_transport_ipsec_t* tsip_transport_ipsec_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
+
 int tsip_transport_ipsec_createTempSAs(tsip_transport_ipsec_t* self);
 int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_response_t *r401_407, int64_t expires);
 int tsip_transport_ipsec_startSAs(tsip_transport_ipsec_t* self, const tipsec_key_t* ik, const tipsec_key_t* ck);
@@ -75,7 +75,7 @@ int tsip_transport_ipsec_cleanupSAs(tsip_transport_ipsec_t* self);
 tnet_fd_t tsip_transport_ipsec_getFD(tsip_transport_ipsec_t* self, int isRequest);
 int tsip_transport_ipsec_updateMSG(tsip_transport_ipsec_t* self, tsip_message_t *msg);
 
-TINYSIP_GEXTERN const void *tsip_transport_ipsec_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_transport_ipsec_def_t;
 
 TSIP_END_DECLS
 

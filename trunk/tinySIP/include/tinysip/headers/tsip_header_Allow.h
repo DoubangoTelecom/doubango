@@ -38,19 +38,10 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_ALLOW_DEFAULT	"ACK, BYE, CANCEL, INVITE, MESSAGE, NOTIFY, OPTIONS, PRACK, REFER, UPDATE"
 #define TSIP_HEADER_STR				"Allow:"TSIP_HEADER_ALLOW_DEFAULT"\r\n"
 
-/**@def TSIP_HEADER_ALLOW_CREATE
-* Creates new sip 'Allow' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-
-#define TSIP_HEADER_ALLOW_CREATE(/*methods*/)		tsk_object_new(tsip_header_Allow_def_t/*, (const char*)methods*/)
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Allow'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF
 /// 	
@@ -63,9 +54,11 @@ typedef struct tsip_header_Allow_s
 }
 tsip_header_Allow_t;
 
-tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Allow_t* tsip_header_Allow_create();
 
-TINYSIP_GEXTERN const void *tsip_header_Allow_def_t;
+TINYSIP_API tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Allow_def_t;
 
 TSIP_END_DECLS
 

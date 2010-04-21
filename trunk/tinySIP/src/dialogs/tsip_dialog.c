@@ -53,6 +53,9 @@
 int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, tsk_bool_t acceptNewVector);
 int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request);
 
+extern tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *self, tsk_bool_t lr);
+extern tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *self, const char* protocol);
+
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
 {
 	tsip_request_t *request = 0;
@@ -287,7 +290,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		{	/* No routes associated to this dialog. */
 			if(self->state == tsip_initial || self->state == tsip_early)
 			{
-				tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), 1);
+				tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), tsk_true);
 				// Proxy-CSCF as first route
 				if(uri){
 					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
@@ -340,7 +343,7 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 
 	if(self && TSIP_DIALOG_GET_STACK(self))
 	{	
-		const tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(TSIP_DIALOG_GET_STACK(self));
+		const tsip_transac_layer_t *layer = TSIP_DIALOG_GET_STACK(self)->layer_transac;
 		if(layer)
 		{
 			/*	Create new transaction. The new transaction will be added to the dialog layer. 
@@ -386,7 +389,7 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 
 	if(self && TSIP_DIALOG_GET_STACK(self))
 	{
-		const tsip_transac_layer_t *layer = tsip_stack_get_transac_layer(TSIP_DIALOG_GET_STACK(self));
+		const tsip_transac_layer_t *layer = TSIP_DIALOG_GET_STACK(self)->layer_transac;
 		if(layer)
 		{
 			/* As this is a response ...then use the associate server transaction.
@@ -553,7 +556,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 
 				for(index = 0; (hdr = tsip_message_get_headerAt(response, tsip_htype_Record_Route, index)); index++){
 					if(!self->routes){
-						self->routes = TSK_LIST_CREATE();
+						self->routes = tsk_list_create();
 					}
 					hdr = tsk_object_ref((void*)hdr);
 					tsk_list_push_front_data(self->routes, (void**)&hdr); /* Copy reversed. */
@@ -666,7 +669,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 
 		if(isnew)
 		{
-			if((challenge = TSIP_CHALLENGE_CREATE(TSIP_DIALOG_GET_STACK(self),
+			if((challenge = tsip_challenge_create(TSIP_DIALOG_GET_STACK(self),
 					tsk_false, 
 					WWW_Authenticate->scheme, 
 					WWW_Authenticate->realm, 
@@ -714,7 +717,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 
 		if(isnew)
 		{
-			if((challenge = TSIP_CHALLENGE_CREATE(TSIP_DIALOG_GET_STACK(self),
+			if((challenge = tsip_challenge_create(TSIP_DIALOG_GET_STACK(self),
 					tsk_true, 
 					Proxy_Authenticate->scheme, 
 					Proxy_Authenticate->realm, 
@@ -813,10 +816,10 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 		self->state = tsip_initial;
 		self->type = type;
 		if(!self->routes){
-			self->routes = TSK_LIST_CREATE();
+			self->routes = tsk_list_create();
 		}
 		if(!self->challenges){
-			self->challenges = TSK_LIST_CREATE();
+			self->challenges = tsk_list_create();
 		}
 		/* Sets default expires value. */
 		self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
@@ -842,7 +845,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 		self->cseq_value = (rand() + 1);
 
 		/* FSM */
-		self->fsm = TSK_FSM_CREATE(curr, term);
+		self->fsm = tsk_fsm_create(curr, term);
 
 		/*== SSESSION */
 		if(self->ss != TSIP_SSESSION_INVALID_HANDLE)

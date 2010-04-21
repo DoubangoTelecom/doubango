@@ -47,56 +47,44 @@
 	machine tsip_machine_parser_header_P_Associated_URI;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action create_p_associated_uri
-	{
-		if(!curr_p_associated_uri)
-		{
-			curr_p_associated_uri = TSIP_HEADER_P_ASSOCIATED_URI_CREATE_NULL();
+	action create_p_associated_uri{
+		if(!curr_p_associated_uri){
+			curr_p_associated_uri = tsip_header_P_Associated_URI_create_null();
 		}
 	}
 
-	action parse_display_name
-	{
-		if(curr_p_associated_uri)
-		{
+	action parse_display_name{
+		if(curr_p_associated_uri){
 			TSK_PARSER_SET_STRING(curr_p_associated_uri->display_name);
 		}
 	}
 
-	action parse_uri
-	{
-		if(curr_p_associated_uri && !curr_p_associated_uri->uri)
-		{
+	action parse_uri{
+		if(curr_p_associated_uri && !curr_p_associated_uri->uri){
 			int len = (int)(p  - tag_start);
 			curr_p_associated_uri->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 
-	action parse_param
-	{
-		if(curr_p_associated_uri)
-		{
+	action parse_param{
+		if(curr_p_associated_uri){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_p_associated_uri));
 		}
 	}
 
-	action add_p_associated_uri
-	{
-		if(curr_p_associated_uri)
-		{
+	action add_p_associated_uri{
+		if(curr_p_associated_uri){
 			tsk_list_push_back_data(hdr_p_associated_uris, ((void**) &curr_p_associated_uri));
 		}
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	
@@ -113,10 +101,19 @@
 
 }%%
 
+tsip_header_P_Associated_URI_t* tsip_header_P_Associated_URI_create(const tsip_uri_t* uri)
+{
+	return tsk_object_new(TSIP_HEADER_P_ASSOCIATED_URI_VA_ARGS(uri));
+}
+
+tsip_header_P_Associated_URI_t* tsip_header_P_Associated_URI_create_null()
+{
+	return tsip_header_P_Associated_URI_create(tsk_null);
+}
+
 int tsip_header_P_Associated_URI_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_P_Associated_URI_t *P_Associated_URI = header;
 		int ret = 0;
 		
@@ -140,7 +137,7 @@ tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Associated_URIs_L_t *hdr_p_associated_uris = TSK_LIST_CREATE();
+	tsip_header_P_Associated_URIs_L_t *hdr_p_associated_uris = tsk_list_create();
 	
 	const char *tag_start;
 	tsip_header_P_Associated_URI_t *curr_p_associated_uri = 0;
@@ -149,8 +146,8 @@ tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'P-Associated-URI' header.");
 		TSK_OBJECT_SAFE_FREE(curr_p_associated_uri);
 		TSK_OBJECT_SAFE_FREE(hdr_p_associated_uris);
 	}
@@ -166,11 +163,10 @@ tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char
 //	P_Associated_URI header object definition
 //
 
-static void* tsip_header_P_Associated_URI_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_P_Associated_URI_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_P_Associated_URI_t *P_Associated_URI = self;
-	if(P_Associated_URI)
-	{
+	if(P_Associated_URI){
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(P_Associated_URI)->type = tsip_htype_P_Associated_URI;
@@ -179,24 +175,24 @@ static void* tsip_header_P_Associated_URI_create(void *self, va_list * app)
 			P_Associated_URI->uri = tsk_object_ref((void*)uri);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Associated_URI header.");
 	}
 	return self;
 }
 
-static void* tsip_header_P_Associated_URI_destroy(void *self)
+static tsk_object_t* tsip_header_P_Associated_URI_dtor(tsk_object_t *self)
 {
 	tsip_header_P_Associated_URI_t *P_Associated_URI = self;
-	if(P_Associated_URI)
-	{
+	if(P_Associated_URI){
 		TSK_FREE(P_Associated_URI->display_name);
 		TSK_OBJECT_SAFE_FREE(P_Associated_URI->uri);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(P_Associated_URI));
 	}
-	else TSK_DEBUG_ERROR("Null P_Associated_URI header.");
+	else{
+		TSK_DEBUG_ERROR("Null P_Associated_URI header.");
+	}
 
 	return self;
 }
@@ -204,8 +200,8 @@ static void* tsip_header_P_Associated_URI_destroy(void *self)
 static const tsk_object_def_t tsip_header_P_Associated_URI_def_s = 
 {
 	sizeof(tsip_header_P_Associated_URI_t),
-	tsip_header_P_Associated_URI_create,
-	tsip_header_P_Associated_URI_destroy,
-	0
+	tsip_header_P_Associated_URI_ctor,
+	tsip_header_P_Associated_URI_dtor,
+	tsk_null
 };
-const void *tsip_header_P_Associated_URI_def_t = &tsip_header_P_Associated_URI_def_s;
+const tsk_object_def_t *tsip_header_P_Associated_URI_def_t = &tsip_header_P_Associated_URI_def_s;

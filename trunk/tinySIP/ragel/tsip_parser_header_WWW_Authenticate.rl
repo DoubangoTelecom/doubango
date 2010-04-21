@@ -45,7 +45,7 @@
 //	machine tsip_machine_parser_header_WWW_Authenticate;
 //
 //	# Includes
-//	include tsip_machine_utils "./tsip_machine_utils.rl";
+//	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 //	
 //	action tag
 //	{
@@ -199,7 +199,7 @@
 ////	WWW_Authenticate header object definition
 ////
 //
-//static void* tsip_header_WWW_Authenticate_create(void *self, va_list * app)
+//static tsk_object_t* tsip_header_WWW_Authenticate_ctor(tsk_object_t *self, va_list * app)
 //{
 //	tsip_header_WWW_Authenticate_t *WWW_Authenticate = self;
 //	if(WWW_Authenticate)
@@ -214,7 +214,7 @@
 //	return self;
 //}
 //
-//static void* tsip_header_WWW_Authenticate_destroy(void *self)
+//static tsk_object_t* tsip_header_WWW_Authenticate_dtor(tsk_object_t *self)
 //{
 //	tsip_header_WWW_Authenticate_t *WWW_Authenticate = self;
 //	if(WWW_Authenticate)
@@ -237,8 +237,8 @@
 //static const tsk_object_def_t tsip_header_WWW_Authenticate_def_s = 
 //{
 //	sizeof(tsip_header_WWW_Authenticate_t),
-//	tsip_header_WWW_Authenticate_create,
-//	tsip_header_WWW_Authenticate_destroy,
+//	tsip_header_WWW_Authenticate_ctor,
+//	tsip_header_WWW_Authenticate_dtor,
 //	0
 //};
 //const void *tsip_header_WWW_Authenticate_def_t = &tsip_header_WWW_Authenticate_def_s;

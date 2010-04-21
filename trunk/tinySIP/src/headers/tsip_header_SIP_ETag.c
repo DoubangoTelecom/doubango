@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_SIP_ETag.rl" */
+/* #line 1 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 
 /*
 * Copyright (C) 2009 Mamadou Diop.
@@ -46,16 +46,25 @@
 *	Ragel state machine.
 */
 
-/* #line 71 "tsip_parser_header_SIP_ETag.rl" */
+/* #line 68 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 
+
+tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create(const char* etag)
+{
+	return tsk_object_new(TSIP_HEADER_SIP_ETAG_VA_ARGS(etag));
+}
+
+tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create_null()
+{
+	return tsip_header_SIP_ETag_create(tsk_null);
+}
 
 int tsip_header_SIP_ETag_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_SIP_ETag_t *SIP_ETag = header;
 		if(SIP_ETag->value){
-			tsk_buffer_append(output, SIP_ETag->value, strlen(SIP_ETag->value));
+			return tsk_buffer_append(output, SIP_ETag->value, strlen(SIP_ETag->value));
 		}
 		return 0;
 	}
@@ -69,12 +78,12 @@ tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, size_t size
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_SIP_ETag_t *hdr_etag = TSIP_HEADER_SIP_ETAG_CREATE_NULL();
+	tsip_header_SIP_ETag_t *hdr_etag = tsip_header_SIP_ETag_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 78 "../src/headers/tsip_header_SIP_ETag.c" */
+/* #line 87 "./src/headers/tsip_header_SIP_ETag.c" */
 static const char _tsip_machine_parser_header_SIP_ETag_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -146,16 +155,16 @@ static const int tsip_machine_parser_header_SIP_ETag_error = 0;
 static const int tsip_machine_parser_header_SIP_ETag_en_main = 1;
 
 
-/* #line 98 "tsip_parser_header_SIP_ETag.rl" */
+/* #line 104 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	
-/* #line 152 "../src/headers/tsip_header_SIP_ETag.c" */
+/* #line 161 "./src/headers/tsip_header_SIP_ETag.c" */
 	{
 	cs = tsip_machine_parser_header_SIP_ETag_start;
 	}
 
-/* #line 99 "tsip_parser_header_SIP_ETag.rl" */
+/* #line 105 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	
-/* #line 159 "../src/headers/tsip_header_SIP_ETag.c" */
+/* #line 168 "./src/headers/tsip_header_SIP_ETag.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -230,23 +239,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 53 "tsip_parser_header_SIP_ETag.rl" */
+/* #line 52 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 58 "tsip_parser_header_SIP_ETag.rl" */
+/* #line 56 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_etag->value);
 	}
 	break;
 	case 2:
-/* #line 63 "tsip_parser_header_SIP_ETag.rl" */
+/* #line 60 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	{
 	}
 	break;
-/* #line 250 "../src/headers/tsip_header_SIP_ETag.c" */
+/* #line 259 "./src/headers/tsip_header_SIP_ETag.c" */
 		}
 	}
 
@@ -259,14 +268,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 100 "tsip_parser_header_SIP_ETag.rl" */
+/* #line 106 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	
 	if( cs < 
-/* #line 266 "../src/headers/tsip_header_SIP_ETag.c" */
+/* #line 275 "./src/headers/tsip_header_SIP_ETag.c" */
 16
-/* #line 101 "tsip_parser_header_SIP_ETag.rl" */
- )
-	{
+/* #line 107 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'SIP-ETag' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_etag);
 	}
 	
@@ -283,31 +292,30 @@ _again:
 //	SIP_ETag header object definition
 //
 
-static void* tsip_header_SIP_ETag_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_SIP_ETag_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_SIP_ETag_t *SIP_ETag = self;
-	if(SIP_ETag)
-	{
+	if(SIP_ETag){
 		TSIP_HEADER(SIP_ETag)->type = tsip_htype_SIP_ETag;
 		TSIP_HEADER(SIP_ETag)->tostring = tsip_header_SIP_ETag_tostring;
 		SIP_ETag->value = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new SIP_ETag header.");
 	}
 	return self;
 }
 
-static void* tsip_header_SIP_ETag_destroy(void *self)
+static tsk_object_t* tsip_header_SIP_ETag_dtor(tsk_object_t *self)
 {
 	tsip_header_SIP_ETag_t *SIP_ETag = self;
-	if(SIP_ETag)
-	{
+	if(SIP_ETag){
 		TSK_FREE(SIP_ETag->value);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(SIP_ETag));
 	}
-	else TSK_DEBUG_ERROR("Null SIP_ETag header.");
+	else{
+		TSK_DEBUG_ERROR("Null SIP_ETag header.");
+	}
 
 	return self;
 }
@@ -315,8 +323,8 @@ static void* tsip_header_SIP_ETag_destroy(void *self)
 static const tsk_object_def_t tsip_header_SIP_ETag_def_s = 
 {
 	sizeof(tsip_header_SIP_ETag_t),
-	tsip_header_SIP_ETag_create,
-	tsip_header_SIP_ETag_destroy,
-	0
+	tsip_header_SIP_ETag_ctor,
+	tsip_header_SIP_ETag_dtor,
+	tsk_null
 };
-const void *tsip_header_SIP_ETag_def_t = &tsip_header_SIP_ETag_def_s;
+const tsk_object_def_t *tsip_header_SIP_ETag_def_t = &tsip_header_SIP_ETag_def_s;

@@ -297,7 +297,7 @@ int tsip_transac_ict_init(tsip_transac_ict_t *self)
 	/* Set callback function to call when new messages arrive or errors happen in
 	the transport layer.
 	*/
-	TSIP_TRANSAC(self)->callback = TSIP_TRANSAC_EVENT_CALLBACK(tsip_transac_ict_event_callback);
+	TSIP_TRANSAC(self)->callback = TSIP_TRANSAC_EVENT_CALLBACK_F(tsip_transac_ict_event_callback);
 
 	/* Timers */
 	self->timerA.id = TSK_INVALID_TIMER_ID;
@@ -313,6 +313,11 @@ int tsip_transac_ict_init(tsip_transac_ict_t *self)
 	return 0;
 }
 
+tsip_transac_ict_t* tsip_transac_ict_create(tsk_bool_t reliable, int32_t cseq_value, const char* callid, tsip_dialog_t* dialog)
+{
+	return tsk_object_new(tsip_transac_ict_def_t, reliable, cseq_value, callid, dialog);
+}
+
 /**
  * Starts the client transaction.
  *
@@ -324,11 +329,9 @@ int tsip_transac_ict_init(tsip_transac_ict_t *self)
 int tsip_transac_ict_start(tsip_transac_ict_t *self, const tsip_request_t* request)
 {
 	int ret = -1;
-	if(self && request && !TSIP_TRANSAC(self)->running)
-	{
+	if(self && request && !TSIP_TRANSAC(self)->running){
 		/* Add branch to the new client transaction. */
-		if((TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE)))
-		{
+		if((TSIP_TRANSAC(self)->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE))){
 			tsk_istr_t branch;
 			tsk_strrandom(&branch);
 			tsk_strcat(&(TSIP_TRANSAC(self)->branch), branch);
@@ -821,11 +824,10 @@ int tsip_transac_ict_OnTerminated(tsip_transac_ict_t *self)
 //========================================================
 //	ICT object definition
 //
-static void* tsip_transac_ict_create(void * self, va_list * app)
+static tsk_object_t* tsip_transac_ict_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_transac_ict_t *transac = self;
-	if(transac)
-	{
+	if(transac){
 		tsk_bool_t reliable = va_arg(*app, tsk_bool_t);
 		int32_t cseq_value = va_arg(*app, int32_t);
 		const char *cseq_method = "INVITE";
@@ -833,7 +835,7 @@ static void* tsip_transac_ict_create(void * self, va_list * app)
 		tsip_dialog_t* dialog = va_arg(*app, tsip_dialog_t*);
 
 		/* create FSM */
-		transac->fsm = TSK_FSM_CREATE(_fsm_state_Started, _fsm_state_Terminated);
+		transac->fsm = tsk_fsm_create(_fsm_state_Started, _fsm_state_Terminated);
 		transac->fsm->debug = DEBUG_STATE_MACHINE;
 		tsk_fsm_set_callback_terminated(transac->fsm, TSK_FSM_ONTERMINATED_F(tsip_transac_ict_OnTerminated), (const void*)transac);
 
@@ -846,11 +848,10 @@ static void* tsip_transac_ict_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_transac_ict_destroy(void * _self)
+static tsk_object_t* tsip_transac_ict_dtor(tsk_object_t * _self)
 { 
 	tsip_transac_ict_t *self = _self;
-	if(self)
-	{
+	if(self){
 		/* Cancel timers */
 		if(!TSIP_TRANSAC(self)->reliable){
 			TRANSAC_TIMER_CANCEL(A);
@@ -879,8 +880,8 @@ static int tsip_transac_ict_cmp(const tsk_object_t *t1, const tsk_object_t *t2)
 static const tsk_object_def_t tsip_transac_ict_def_s = 
 {
 	sizeof(tsip_transac_ict_t),
-	tsip_transac_ict_create, 
-	tsip_transac_ict_destroy,
+	tsip_transac_ict_ctor, 
+	tsip_transac_ict_dtor,
 	tsip_transac_ict_cmp, 
 };
-const void *tsip_transac_ict_def_t = &tsip_transac_ict_def_s;
+const tsk_object_def_t *tsip_transac_ict_def_t = &tsip_transac_ict_def_s;

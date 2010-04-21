@@ -35,12 +35,6 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_AUTHORIZATION_CREATE
-* Creates new sip 'AUTHORIZATION' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_AUTHORIZATION_CREATE()				tsk_object_new(tsip_header_Authorization_def_t)
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -93,9 +87,11 @@ typedef struct tsip_header_Authorization_s
 }
 tsip_header_Authorization_t;
 
-tsip_header_Authorization_t *tsip_header_Authorization_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Authorization_t* tsip_header_Authorization_create();
 
-TINYSIP_GEXTERN const void *tsip_header_Authorization_def_t;
+TINYSIP_API tsip_header_Authorization_t *tsip_header_Authorization_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Authorization_def_t;
 
 TSIP_END_DECLS
 

@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Event.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Event.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -45,17 +45,21 @@
 *	Ragel state machine.
 */
 
-/* #line 80 "tsip_parser_header_Event.rl" */
+/* #line 76 "./ragel/tsip_parser_header_Event.rl" */
 
+
+
+tsip_header_Event_t* tsip_header_Event_create(const char* package)
+{
+	return tsk_object_new(TSIP_HEADER_EVENT_VA_ARGS(package));
+}
 
 int tsip_header_Event_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Event_t *Event = header;
-		if(Event->package)
-		{
-			tsk_buffer_append(output, Event->package, strlen(Event->package));
+		if(Event->package){
+			return tsk_buffer_append(output, Event->package, strlen(Event->package));
 		}
 		return 0;
 	}
@@ -69,12 +73,12 @@ tsip_header_Event_t *tsip_header_Event_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Event_t *hdr_event = TSIP_HEADER_EVENT_CREATE(0);
+	tsip_header_Event_t *hdr_event = tsip_header_Event_create(tsk_null);
 	
 	const char *tag_start;
 
 	
-/* #line 78 "../src/headers/tsip_header_Event.c" */
+/* #line 82 "./src/headers/tsip_header_Event.c" */
 static const char _tsip_machine_parser_header_Event_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -85,13 +89,12 @@ static const short _tsip_machine_parser_header_Event_key_offsets[] = {
 	31, 32, 34, 49, 67, 71, 72, 74, 
 	77, 94, 95, 97, 113, 132, 137, 138, 
 	140, 144, 163, 164, 166, 185, 186, 188, 
-	191, 207, 209, 211, 213, 215, 217, 218, 
-	220, 224, 225, 231, 249, 256, 264, 272, 
-	280, 282, 289, 298, 300, 303, 305, 308, 
-	310, 313, 316, 317, 320, 321, 324, 325, 
-	334, 343, 351, 359, 367, 375, 377, 383, 
-	392, 401, 410, 412, 415, 418, 419, 420, 
-	433
+	191, 199, 200, 202, 206, 207, 213, 231, 
+	238, 246, 254, 262, 264, 271, 280, 282, 
+	285, 287, 290, 292, 295, 298, 299, 302, 
+	303, 306, 307, 316, 325, 333, 341, 349, 
+	357, 359, 365, 374, 383, 392, 394, 397, 
+	400, 401, 402, 415
 };
 
 static const char _tsip_machine_parser_header_Event_trans_keys[] = {
@@ -118,38 +121,35 @@ static const char _tsip_machine_parser_header_Event_trans_keys[] = {
 	90, 95, 122, 10, 9, 32, 9, 13, 
 	32, 33, 34, 37, 39, 91, 126, 42, 
 	43, 45, 46, 48, 57, 65, 90, 95, 
-	122, 10, 9, 32, 9, 32, 34, 9, 
-	13, 34, 92, -64, -33, -32, -17, -16, 
-	-9, -8, -5, -4, -3, 32, 126, -128, 
-	-65, -128, -65, -128, -65, -128, -65, -128, 
-	-65, 10, 9, 32, 9, 13, 32, 59, 
-	10, 0, 9, 11, 12, 14, 127, 9, 
-	13, 32, 33, 37, 39, 59, 126, 42, 
-	43, 45, 46, 48, 57, 65, 90, 95, 
-	122, 58, 48, 57, 65, 70, 97, 102, 
+	122, 10, 9, 32, 9, 32, 34, 13, 
+	34, 92, 127, 0, 8, 10, 31, 10, 
+	9, 32, 9, 13, 32, 59, 10, 0, 
+	9, 11, 12, 14, 127, 9, 13, 32, 
+	33, 37, 39, 59, 126, 42, 43, 45, 
+	46, 48, 57, 65, 90, 95, 122, 58, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	58, 48, 57, 65, 70, 97, 102, 46, 
 	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 58, 48, 57, 65, 70, 97, 
-	102, 46, 58, 93, 48, 57, 65, 70, 
-	97, 102, 48, 57, 46, 48, 57, 48, 
-	57, 46, 48, 57, 48, 57, 93, 48, 
-	57, 93, 48, 57, 93, 46, 48, 57, 
-	46, 46, 48, 57, 46, 46, 58, 93, 
+	48, 57, 46, 48, 57, 48, 57, 46, 
+	48, 57, 48, 57, 93, 48, 57, 93, 
+	48, 57, 93, 46, 48, 57, 46, 46, 
+	48, 57, 46, 46, 58, 93, 48, 57, 
+	65, 70, 97, 102, 46, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 46, 58, 93, 
 	48, 57, 65, 70, 97, 102, 46, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
 	93, 48, 57, 65, 70, 97, 102, 46, 
 	58, 93, 48, 57, 65, 70, 97, 102, 
-	46, 58, 93, 48, 57, 65, 70, 97, 
-	102, 46, 58, 93, 48, 57, 65, 70, 
-	97, 102, 48, 57, 46, 48, 57, 46, 
-	48, 57, 46, 58, 33, 37, 39, 45, 
-	126, 42, 43, 48, 57, 65, 90, 95, 
-	122, 0
+	48, 57, 46, 48, 57, 46, 48, 57, 
+	46, 58, 33, 37, 39, 45, 126, 42, 
+	43, 48, 57, 65, 90, 95, 122, 0
 };
 
 static const char _tsip_machine_parser_header_Event_single_lengths[] = {
@@ -157,13 +157,12 @@ static const char _tsip_machine_parser_header_Event_single_lengths[] = {
 	1, 2, 7, 10, 4, 1, 2, 3, 
 	7, 1, 2, 6, 9, 5, 1, 2, 
 	4, 9, 1, 2, 9, 1, 2, 3, 
-	4, 0, 0, 0, 0, 0, 1, 2, 
-	4, 1, 0, 8, 1, 2, 2, 2, 
-	2, 1, 3, 0, 1, 0, 1, 0, 
-	1, 1, 1, 1, 1, 1, 1, 3, 
-	3, 2, 2, 2, 2, 2, 0, 3, 
-	3, 3, 0, 1, 1, 1, 1, 5, 
-	0
+	4, 1, 2, 4, 1, 0, 8, 1, 
+	2, 2, 2, 2, 1, 3, 0, 1, 
+	0, 1, 0, 1, 1, 1, 1, 1, 
+	1, 1, 3, 3, 2, 2, 2, 2, 
+	2, 0, 3, 3, 3, 0, 1, 1, 
+	1, 1, 5, 0
 };
 
 static const char _tsip_machine_parser_header_Event_range_lengths[] = {
@@ -171,13 +170,12 @@ static const char _tsip_machine_parser_header_Event_range_lengths[] = {
 	0, 0, 4, 4, 0, 0, 0, 0, 
 	5, 0, 0, 5, 5, 0, 0, 0, 
 	0, 5, 0, 0, 5, 0, 0, 0, 
-	6, 1, 1, 1, 1, 1, 0, 0, 
-	0, 0, 3, 5, 3, 3, 3, 3, 
-	0, 3, 3, 1, 1, 1, 1, 1, 
-	1, 1, 0, 1, 0, 1, 0, 3, 
-	3, 3, 3, 3, 3, 0, 3, 3, 
-	3, 3, 1, 1, 1, 0, 0, 4, 
-	0
+	2, 0, 0, 0, 0, 3, 5, 3, 
+	3, 3, 3, 0, 3, 3, 1, 1, 
+	1, 1, 1, 1, 1, 0, 1, 0, 
+	1, 0, 3, 3, 3, 3, 3, 3, 
+	0, 3, 3, 3, 3, 1, 1, 1, 
+	0, 0, 4, 0
 };
 
 static const short _tsip_machine_parser_header_Event_index_offsets[] = {
@@ -185,13 +183,12 @@ static const short _tsip_machine_parser_header_Event_index_offsets[] = {
 	34, 36, 39, 51, 66, 71, 73, 76, 
 	80, 93, 95, 98, 110, 125, 131, 133, 
 	136, 141, 156, 158, 161, 176, 178, 181, 
-	185, 196, 198, 200, 202, 204, 206, 208, 
-	211, 216, 218, 222, 236, 241, 247, 253, 
-	259, 262, 267, 274, 276, 279, 281, 284, 
-	286, 289, 292, 294, 297, 299, 302, 304, 
-	311, 318, 324, 330, 336, 342, 345, 349, 
-	356, 363, 370, 372, 375, 378, 380, 382, 
-	392
+	185, 192, 194, 197, 202, 204, 208, 222, 
+	227, 233, 239, 245, 248, 253, 260, 262, 
+	265, 267, 270, 272, 275, 278, 280, 283, 
+	285, 288, 290, 297, 304, 310, 316, 322, 
+	328, 331, 335, 342, 349, 356, 358, 361, 
+	364, 366, 368, 378
 };
 
 static const char _tsip_machine_parser_header_Event_indicies[] = {
@@ -218,47 +215,45 @@ static const char _tsip_machine_parser_header_Event_indicies[] = {
 	1, 39, 40, 39, 35, 36, 35, 35, 
 	37, 35, 35, 35, 35, 35, 35, 1, 
 	41, 1, 42, 42, 1, 42, 42, 36, 
-	1, 36, 48, 49, 50, 43, 44, 45, 
-	46, 47, 36, 1, 36, 1, 43, 1, 
-	44, 1, 45, 1, 46, 1, 51, 1, 
-	36, 36, 1, 52, 26, 52, 28, 1, 
-	53, 1, 36, 36, 36, 1, 52, 26, 
-	52, 35, 35, 35, 28, 35, 35, 35, 
-	35, 35, 35, 1, 55, 54, 54, 54, 
-	1, 57, 49, 56, 56, 56, 1, 57, 
-	49, 58, 58, 58, 1, 57, 49, 59, 
-	59, 59, 1, 57, 49, 1, 61, 60, 
-	54, 54, 1, 62, 57, 49, 63, 56, 
-	56, 1, 64, 1, 65, 66, 1, 67, 
-	1, 68, 69, 1, 70, 1, 49, 71, 
-	1, 49, 72, 1, 49, 1, 68, 73, 
-	1, 68, 1, 65, 74, 1, 65, 1, 
-	62, 57, 49, 75, 58, 58, 1, 62, 
-	57, 49, 59, 59, 59, 1, 77, 49, 
-	76, 76, 76, 1, 79, 49, 78, 78, 
-	78, 1, 79, 49, 80, 80, 80, 1, 
-	79, 49, 81, 81, 81, 1, 79, 49, 
-	1, 82, 76, 76, 1, 62, 79, 49, 
-	83, 78, 78, 1, 62, 79, 49, 84, 
-	80, 80, 1, 62, 79, 49, 81, 81, 
-	81, 1, 85, 1, 62, 86, 1, 62, 
-	87, 1, 62, 1, 61, 1, 13, 13, 
-	13, 13, 13, 13, 13, 13, 13, 1, 
-	1, 0
+	1, 43, 44, 45, 1, 1, 1, 36, 
+	46, 1, 36, 36, 1, 47, 26, 47, 
+	28, 1, 48, 1, 36, 36, 36, 1, 
+	47, 26, 47, 35, 35, 35, 28, 35, 
+	35, 35, 35, 35, 35, 1, 50, 49, 
+	49, 49, 1, 52, 44, 51, 51, 51, 
+	1, 52, 44, 53, 53, 53, 1, 52, 
+	44, 54, 54, 54, 1, 52, 44, 1, 
+	56, 55, 49, 49, 1, 57, 52, 44, 
+	58, 51, 51, 1, 59, 1, 60, 61, 
+	1, 62, 1, 63, 64, 1, 65, 1, 
+	44, 66, 1, 44, 67, 1, 44, 1, 
+	63, 68, 1, 63, 1, 60, 69, 1, 
+	60, 1, 57, 52, 44, 70, 53, 53, 
+	1, 57, 52, 44, 54, 54, 54, 1, 
+	72, 44, 71, 71, 71, 1, 74, 44, 
+	73, 73, 73, 1, 74, 44, 75, 75, 
+	75, 1, 74, 44, 76, 76, 76, 1, 
+	74, 44, 1, 77, 71, 71, 1, 57, 
+	74, 44, 78, 73, 73, 1, 57, 74, 
+	44, 79, 75, 75, 1, 57, 74, 44, 
+	76, 76, 76, 1, 80, 1, 57, 81, 
+	1, 57, 82, 1, 57, 1, 56, 1, 
+	13, 13, 13, 13, 13, 13, 13, 13, 
+	13, 1, 1, 0
 };
 
 static const char _tsip_machine_parser_header_Event_trans_targs[] = {
 	2, 0, 6, 3, 4, 5, 7, 8, 
-	11, 9, 10, 12, 41, 11, 79, 16, 
+	11, 9, 10, 12, 36, 11, 74, 16, 
 	12, 13, 16, 14, 15, 17, 20, 18, 
-	19, 21, 41, 20, 16, 25, 21, 22, 
-	23, 24, 26, 43, 32, 44, 27, 28, 
-	29, 30, 31, 33, 34, 35, 36, 37, 
-	38, 40, 42, 39, 12, 80, 45, 78, 
-	46, 49, 47, 48, 50, 65, 51, 63, 
-	52, 53, 61, 54, 55, 59, 56, 57, 
-	58, 60, 62, 64, 66, 74, 67, 70, 
-	68, 69, 71, 72, 73, 75, 76, 77
+	19, 21, 36, 20, 16, 25, 21, 22, 
+	23, 24, 26, 38, 32, 39, 27, 28, 
+	29, 30, 31, 33, 35, 37, 34, 12, 
+	75, 40, 73, 41, 44, 42, 43, 45, 
+	60, 46, 58, 47, 48, 56, 49, 50, 
+	54, 51, 52, 53, 55, 57, 59, 61, 
+	69, 62, 65, 63, 64, 66, 67, 68, 
+	70, 71, 72
 };
 
 static const char _tsip_machine_parser_header_Event_trans_actions[] = {
@@ -267,31 +262,31 @@ static const char _tsip_machine_parser_header_Event_trans_actions[] = {
 	0, 0, 0, 0, 0, 0, 1, 0, 
 	0, 5, 5, 0, 5, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 5, 
+	7, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 5, 7, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0
+	0, 0, 0
 };
 
 static const int tsip_machine_parser_header_Event_start = 1;
-static const int tsip_machine_parser_header_Event_first_final = 80;
+static const int tsip_machine_parser_header_Event_first_final = 75;
 static const int tsip_machine_parser_header_Event_error = 0;
 
 static const int tsip_machine_parser_header_Event_en_main = 1;
 
 
-/* #line 108 "tsip_parser_header_Event.rl" */
+/* #line 108 "./ragel/tsip_parser_header_Event.rl" */
 	
-/* #line 288 "../src/headers/tsip_header_Event.c" */
+/* #line 283 "./src/headers/tsip_header_Event.c" */
 	{
 	cs = tsip_machine_parser_header_Event_start;
 	}
 
-/* #line 109 "tsip_parser_header_Event.rl" */
+/* #line 109 "./ragel/tsip_parser_header_Event.rl" */
 	
-/* #line 295 "../src/headers/tsip_header_Event.c" */
+/* #line 290 "./src/headers/tsip_header_Event.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -366,29 +361,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "tsip_parser_header_Event.rl" */
+/* #line 51 "./ragel/tsip_parser_header_Event.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 57 "tsip_parser_header_Event.rl" */
+/* #line 55 "./ragel/tsip_parser_header_Event.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_event->package);
 	}
 	break;
 	case 2:
-/* #line 62 "tsip_parser_header_Event.rl" */
+/* #line 59 "./ragel/tsip_parser_header_Event.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_event));
 	}
 	break;
 	case 3:
-/* #line 67 "tsip_parser_header_Event.rl" */
+/* #line 63 "./ragel/tsip_parser_header_Event.rl" */
 	{
 	}
 	break;
-/* #line 392 "../src/headers/tsip_header_Event.c" */
+/* #line 387 "./src/headers/tsip_header_Event.c" */
 		}
 	}
 
@@ -401,14 +396,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 110 "tsip_parser_header_Event.rl" */
+/* #line 110 "./ragel/tsip_parser_header_Event.rl" */
 	
 	if( cs < 
-/* #line 408 "../src/headers/tsip_header_Event.c" */
-80
-/* #line 111 "tsip_parser_header_Event.rl" */
- )
-	{
+/* #line 403 "./src/headers/tsip_header_Event.c" */
+75
+/* #line 111 "./ragel/tsip_parser_header_Event.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'Event' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_event);
 	}
 	
@@ -425,31 +420,30 @@ _again:
 //	Event header object definition
 //
 
-static void* tsip_header_Event_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Event_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Event_t *Event = self;
-	if(Event)
-	{
+	if(Event){
 		TSIP_HEADER(Event)->type = tsip_htype_Event;
 		TSIP_HEADER(Event)->tostring = tsip_header_Event_tostring;
 		Event->package = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Event header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Event_destroy(void *self)
+static tsk_object_t* tsip_header_Event_dtor(tsk_object_t *self)
 {
 	tsip_header_Event_t *Event = self;
-	if(Event)
-	{
+	if(Event){
 		TSK_FREE(Event->package);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Event));
 	}
-	else TSK_DEBUG_ERROR("Null Event header.");
+	else{
+		TSK_DEBUG_ERROR("Null Event header.");
+	}
 
 	return self;
 }
@@ -457,9 +451,9 @@ static void* tsip_header_Event_destroy(void *self)
 static const tsk_object_def_t tsip_header_Event_def_s = 
 {
 	sizeof(tsip_header_Event_t),
-	tsip_header_Event_create,
-	tsip_header_Event_destroy,
-	0
+	tsip_header_Event_ctor,
+	tsip_header_Event_dtor,
+	tsk_null
 };
-const void *tsip_header_Event_def_t = &tsip_header_Event_def_s;
+const tsk_object_def_t *tsip_header_Event_def_t = &tsip_header_Event_def_s;
 

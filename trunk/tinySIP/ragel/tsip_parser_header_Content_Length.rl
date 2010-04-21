@@ -42,20 +42,17 @@
 	machine tsip_machine_parser_header_Content_Length;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_content_length
-	{
+	action parse_content_length{
 		TSK_PARSER_SET_INTEGER(hdr_clength->length);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	Content_Length = ( "Content-Length"i | "l"i ) HCOLON (DIGIT+)>tag %parse_content_length;
@@ -65,12 +62,22 @@
 
 }%%
 
+
+tsip_header_Content_Length_t* tsip_header_Content_Length_create(uint32_t length)
+{
+	return tsk_object_new(TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(length));
+}
+
+tsip_header_Content_Length_t* tsip_header_Content_Length_create_null()
+{
+	return tsip_header_Content_Length_create(0);
+}
+
 int tsip_header_Content_Length_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Content_Length_t *Content_Length = header;		
-		return tsk_buffer_append_2(output, "%d", Content_Length->length);
+		return tsk_buffer_append_2(output, "%u", Content_Length->length);
 	}
 
 	return -1;
@@ -82,7 +89,7 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Content_Length_t *hdr_clength = TSIP_HEADER_CONTENT_LENGTH_CREATE(0);
+	tsip_header_Content_Length_t *hdr_clength = tsip_header_Content_Length_create(0);
 	
 	const char *tag_start;
 
@@ -90,8 +97,8 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse SIP 'Content-Length' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_clength);
 	}
 	
@@ -108,31 +115,30 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 //	Content_Length header object definition
 //
 
-static void* tsip_header_Content_Length_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Content_Length_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Content_Length_t *Content_Length = self;
-	if(Content_Length)
-	{
+	if(Content_Length){
 		Content_Length->length = va_arg(*app, uint32_t);
 
 		TSIP_HEADER(Content_Length)->type = tsip_htype_Content_Length;
 		TSIP_HEADER(Content_Length)->tostring = tsip_header_Content_Length_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Content_Length header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Content_Length_destroy(void *self)
+static tsk_object_t* tsip_header_Content_Length_dtor(tsk_object_t *self)
 {
 	tsip_header_Content_Length_t *Content_Length = self;
-	if(Content_Length)
-	{
+	if(Content_Length){
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Length));
 	}
-	else TSK_DEBUG_ERROR("Null Content_Length header.");
+	else{
+		TSK_DEBUG_ERROR("Null Content_Length header.");
+	}
 
 	return self;
 }
@@ -140,9 +146,9 @@ static void* tsip_header_Content_Length_destroy(void *self)
 static const tsk_object_def_t tsip_header_Content_Length_def_s = 
 {
 	sizeof(tsip_header_Content_Length_t),
-	tsip_header_Content_Length_create,
-	tsip_header_Content_Length_destroy,
-	0
+	tsip_header_Content_Length_ctor,
+	tsip_header_Content_Length_dtor,
+	tsk_null
 };
-const void *tsip_header_Content_Length_def_t = &tsip_header_Content_Length_def_s;
+const tsk_object_def_t *tsip_header_Content_Length_def_t = &tsip_header_Content_Length_def_s;
 

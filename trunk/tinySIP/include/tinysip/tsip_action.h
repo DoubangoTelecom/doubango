@@ -38,8 +38,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_ACTION_CREATE(type, app)		tsk_object_new(tsip_action_def_t, (tsip_action_type_t)type, (va_list*)app)
-
 typedef uint64_t tsip_action_id_t;			
 #define TSIP_ACTION_INVALID_ID				0
 #define TSIP_ACTION_INVALID_HANDLE			tsk_null
@@ -97,6 +95,8 @@ typedef struct tsip_action_s
 tsip_action_t;
 
 typedef void tsip_action_handle_t;
+
+tsip_action_t* tsip_action_create(tsip_action_type_t type, va_list* app);
 
 typedef tsk_list_t tsip_actions_L_t; /**< List of @ref tsip_action_handle_t elements. */
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_action_def_t;

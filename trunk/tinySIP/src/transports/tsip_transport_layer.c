@@ -39,14 +39,18 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
+tsip_transport_layer_t* tsip_transport_layer_create(tsip_stack_t *stack)
+{
+	return tsk_object_new(tsip_transport_layer_def_t, stack);
+}
+
 int tsip_transport_layer_handle_incoming_msg(const tsip_transport_t *transport, tsip_message_t *message)
 {
 	int ret = -1;
 
-	if(message)
-	{
-		const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(transport->stack);
-		const tsip_dialog_layer_t *layer_dialog = tsip_stack_get_dialog_layer(transport->stack);
+	if(message){
+		const tsip_transac_layer_t *layer_transac = transport->stack->layer_transac;
+		const tsip_dialog_layer_t *layer_dialog = transport->stack->layer_dialog;
 
 		if((ret=tsip_transac_layer_handle_incoming_msg(layer_transac, message)))
 		{	/* NO MATCHING TRANSACTION FOUND ==> LOOK INTO DIALOG LAYER */
@@ -327,8 +331,8 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 	{
 		tsip_transport_t *transport = 
 			TNET_SOCKET_TYPE_IS_IPSEC(type) ? 
-			TSIP_TRANSPORT_IPSEC_CREATE(self->stack, local_host, local_port, type, description) /* IPSec is a special case. All other are ok. */
-			: TSIP_TRANSPORT_CREATE(self->stack, local_host, local_port, type, description); /* UDP, SCTP, TCP, TLS */
+			(tsip_transport_t *)tsip_transport_ipsec_create((tsip_stack_t*)self->stack, local_host, local_port, type, description) /* IPSec is a special case. All other are ok. */
+			: tsip_transport_create((tsip_stack_t*)self->stack, local_host, local_port, type, description); /* UDP, SCTP, TCP, TLS */
 			
 		if(transport && transport->net_transport && self->stack){
 			/* Set TLS certs */
@@ -498,7 +502,7 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 				}
 				if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
 					TSK_DEBUG_ERROR("%d milliseconds elapsed and the socket is still not connected.", TNET_CONNECT_TIMEOUT);
-					tnet_transport_remove_socket(transport->net_transport, fd);
+					tnet_transport_remove_socket(transport->net_transport, &fd);
 					return ret;
 				}
 			}
@@ -544,23 +548,22 @@ int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self)
 //========================================================
 //	SIP transport layer object definition
 //
-static void* tsip_transport_layer_create(void * self, va_list * app)
+static tsk_object_t* tsip_transport_layer_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_transport_layer_t *layer = self;
 	if(layer)
 	{
 		layer->stack = va_arg(*app, const tsip_stack_handle_t *);
 
-		layer->transports = TSK_LIST_CREATE();
+		layer->transports = tsk_list_create();
 	}
 	return self;
 }
 
-static void* tsip_transport_layer_destroy(void * self)
+static tsk_object_t* tsip_transport_layer_dtor(tsk_object_t * self)
 { 
 	tsip_transport_layer_t *layer = self;
-	if(layer)
-	{
+	if(layer){
 		tsip_transport_layer_shutdown(self);
 
 		TSK_OBJECT_SAFE_FREE(layer->transports);
@@ -568,7 +571,7 @@ static void* tsip_transport_layer_destroy(void * self)
 	return self;
 }
 
-static int tsip_transport_layer_cmp(const void *obj1, const void *obj2)
+static int tsip_transport_layer_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
@@ -576,8 +579,8 @@ static int tsip_transport_layer_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_transport_layer_def_s = 
 {
 	sizeof(tsip_transport_layer_t),
-	tsip_transport_layer_create, 
-	tsip_transport_layer_destroy,
+	tsip_transport_layer_ctor, 
+	tsip_transport_layer_dtor,
 	tsip_transport_layer_cmp, 
 };
-const void *tsip_transport_layer_def_t = &tsip_transport_layer_def_s;
+const tsk_object_def_t *tsip_transport_layer_def_t = &tsip_transport_layer_def_s;

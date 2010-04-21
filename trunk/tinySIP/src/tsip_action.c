@@ -33,6 +33,10 @@
 
 
 
+tsip_action_t* tsip_action_create(tsip_action_type_t type, va_list* app)
+{
+	return tsk_object_new(tsip_action_def_t, type, app);
+}
 
 
 
@@ -41,7 +45,7 @@
 //=================================================================================================
 //	SIP action object definition
 //
-static tsk_object_t* tsip_action_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsip_action_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_action_t *action = self;
 	if(action){
@@ -51,8 +55,8 @@ static tsk_object_t* tsip_action_create(tsk_object_t * self, va_list * app)
 		action->type = va_arg(*app, tsip_action_type_t);
 		app_2 = va_arg(*app, va_list*);	
 
-		action->params = TSK_LIST_CREATE();
-		action->headers = TSK_LIST_CREATE();
+		action->params = tsk_list_create();
+		action->headers = tsk_list_create();
 
 		while((curr=va_arg(*app_2, tsip_action_param_type_t)) != aptype_null)
 		{
@@ -78,7 +82,7 @@ static tsk_object_t* tsip_action_create(tsk_object_t * self, va_list * app)
 						size_t size = va_arg(*app_2, size_t);
 						if(payload && size){
 							TSK_OBJECT_SAFE_FREE(action->payload);
-							action->payload = TSK_BUFFER_CREATE(payload, size);
+							action->payload = tsk_buffer_create(payload, size);
 						}
 						break;
 					}
@@ -95,7 +99,7 @@ bail:
 	return self;
 }
 
-static tsk_object_t* tsip_action_destroy(tsk_object_t * self)
+static tsk_object_t* tsip_action_dtor(tsk_object_t * self)
 { 
 	tsip_action_t *action = self;
 	if(action){
@@ -110,8 +114,8 @@ static tsk_object_t* tsip_action_destroy(tsk_object_t * self)
 static const tsk_object_def_t tsip_action_def_s = 
 {
 	sizeof(tsip_action_t),
-	tsip_action_create, 
-	tsip_action_destroy,
+	tsip_action_ctor, 
+	tsip_action_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *tsip_action_def_t = &tsip_action_def_s;

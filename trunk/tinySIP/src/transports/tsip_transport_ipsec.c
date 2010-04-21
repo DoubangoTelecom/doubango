@@ -40,10 +40,17 @@
 
 #include "tsk_debug.h"
 
-TINYSIP_GEXTERN const void *tsip_ipsec_association_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_ipsec_association_def_t;
 
-#define TSIP_IPSEC_ASSOCIATION_CREATE(transport)\
-	tsk_object_new(tsip_ipsec_association_def_t, (const tsip_transport_t*)transport)
+tsip_ipsec_association_t* tsip_ipsec_association_create(const tsip_transport_t* transport)
+{
+	return tsk_object_new(tsip_ipsec_association_def_t, transport);
+}
+
+tsip_transport_ipsec_t* tsip_transport_ipsec_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
+{
+	return tsk_object_new(tsip_transport_ipsec_def_t, stack, host, port, type, description);
+}
 
 
 int tsip_transport_ipsec_createTempSAs(tsip_transport_ipsec_t* self)
@@ -65,7 +72,7 @@ int tsip_transport_ipsec_createTempSAs(tsip_transport_ipsec_t* self)
 	/* Create temporary association.
 	*/
 	
-	if((self->asso_temporary = TSIP_IPSEC_ASSOCIATION_CREATE(TSIP_TRANSPORT(self)))){
+	if((self->asso_temporary = tsip_ipsec_association_create(TSIP_TRANSPORT(self)))){
 		if(self->asso_temporary->ctx && self->asso_temporary->ctx->state == state_inbound){
 			ret = 0;
 		}
@@ -148,7 +155,7 @@ int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_
 		}
 
 copy:
-		svHdr = TSIP_HEADER_SECURITY_VERIFY_CREATE_NULL();
+		svHdr = tsip_header_Security_Verify_create_null();
 		svHdr->mech = tsk_strdup(ssHdr->mech);
 		svHdr->alg = tsk_strdup(ssHdr->alg);
 		svHdr->prot = tsk_strdup(ssHdr->prot);
@@ -161,7 +168,7 @@ copy:
 		svHdr->q = ssHdr->q;
 		TSIP_HEADER_PARAMS(svHdr) = tsk_object_ref(TSIP_HEADER_PARAMS(ssHdr));
 		if(!self->secVerifies){
-			self->secVerifies = TSK_LIST_CREATE();
+			self->secVerifies = tsk_list_create();
 		}
 		tsk_list_push_back_data(self->secVerifies, (void**)&svHdr);
 	}
@@ -359,11 +366,10 @@ tnet_fd_t tsip_transport_ipsec_getFD(tsip_transport_ipsec_t* self, int isRequest
 //========================================================
 //	SIP/IPSec transport object definition
 //
-static void* tsip_transport_ipsec_create(void * self, va_list * app)
+static tsk_object_t* tsip_transport_ipsec_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_transport_ipsec_t *transport = self;
-	if(transport)
-	{
+	if(transport){
 		const tsip_stack_handle_t *stack = va_arg(*app, const tsip_stack_handle_t*);
 		const char *host = va_arg(*app, const char*);
 #if defined(__GNUC__)
@@ -380,11 +386,10 @@ static void* tsip_transport_ipsec_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_transport_ipsec_destroy(void * self)
+static tsk_object_t* tsip_transport_ipsec_dtor(tsk_object_t * self)
 { 
 	tsip_transport_ipsec_t *transport = self;
-	if(transport)
-	{
+	if(transport){
 		/* deinit base */
 		tsip_transport_deinit(TSIP_TRANSPORT(transport));
 
@@ -396,12 +401,11 @@ static void* tsip_transport_ipsec_destroy(void * self)
 	return self;
 }
 
-static int tsip_transport_ipsec_cmp(const void *obj1, const void *obj2)
+static int tsip_transport_ipsec_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	const tsip_transport_ipsec_t *transport1 = obj1;
 	const tsip_transport_ipsec_t *transport2 = obj2;
-	if(transport1 && transport2)
-	{
+	if(transport1 && transport2){
 		const char* desc1 = tsip_transport_get_description(TSIP_TRANSPORT(transport1));
 		const char* desc2 = tsip_transport_get_description(TSIP_TRANSPORT(transport2));
 		return tsk_stricmp(desc1, desc2);
@@ -412,11 +416,11 @@ static int tsip_transport_ipsec_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_transport_ipsec_def_s = 
 {
 	sizeof(tsip_transport_ipsec_t),
-	tsip_transport_ipsec_create, 
-	tsip_transport_ipsec_destroy,
+	tsip_transport_ipsec_ctor, 
+	tsip_transport_ipsec_dtor,
 	tsip_transport_ipsec_cmp, 
 };
-const void *tsip_transport_ipsec_def_t = &tsip_transport_ipsec_def_s;
+const tsk_object_def_t *tsip_transport_ipsec_def_t = &tsip_transport_ipsec_def_s;
 
 
 
@@ -431,7 +435,7 @@ const void *tsip_transport_ipsec_def_t = &tsip_transport_ipsec_def_s;
 //=================================================================================================
 //	IPSec association object definition
 //
-static void* tsip_ipsec_association_create(void * self, va_list * app)
+static tsk_object_t* tsip_ipsec_association_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_ipsec_association_t *association = self;
 	if(association){
@@ -449,7 +453,7 @@ static void* tsip_ipsec_association_create(void * self, va_list * app)
 		tsip_transport_get_ip_n_port(transport, &ip_local, &port);
 		
 		/* Create IPSec context */
-		association->ctx = TIPSEC_CONTEXT_CREATE(
+		association->ctx = tipsec_context_create(
 			TIPSEC_IPPROTO_FROM_STR(transport->protocol),
 			TNET_SOCKET_TYPE_IS_IPV6(transport->type),
 			TIPSEC_MODE_FROM_STR(transport->stack->secagree_ipsec.mode),
@@ -458,8 +462,8 @@ static void* tsip_ipsec_association_create(void * self, va_list * app)
 			TIPSEC_PROTOCOL_FROM_STR(transport->stack->secagree_ipsec.protocol));
 		
 		/* Create Both client and Server legs */
-		association->socket_us = TNET_SOCKET_CREATE(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
-		association->socket_uc = TNET_SOCKET_CREATE(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
+		association->socket_us = tnet_socket_create(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
+		association->socket_uc = tnet_socket_create(ip_local, TNET_SOCKET_PORT_ANY, transport->type);
 
 		/* Add Both sockets to the network transport */
 		tsip_transport_add_socket(transport, association->socket_us->fd, transport->type, 0, 0);
@@ -476,7 +480,7 @@ static void* tsip_ipsec_association_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_ipsec_association_destroy(void * self)
+static tsk_object_t* tsip_ipsec_association_dtor(tsk_object_t * self)
 { 
 	tsip_ipsec_association_t *association = self;
 	if(association){
@@ -484,18 +488,18 @@ static void* tsip_ipsec_association_destroy(void * self)
 
 		/* Remove Both sockets from the network transport and delete them. */
 		if(association->socket_uc){
-			tsip_transport_remove_socket(association->transport, association->socket_uc->fd);
+			tsip_transport_remove_socket(association->transport, &association->socket_uc->fd);
 			TSK_OBJECT_SAFE_FREE(association->socket_uc);
 		}
 		if(association->socket_us){
-			tsip_transport_remove_socket(association->transport, association->socket_us->fd);
+			tsip_transport_remove_socket(association->transport, &association->socket_us->fd);
 			TSK_OBJECT_SAFE_FREE(association->socket_us);
 		}		
 	}
 	return self;
 }
 
-static int tsip_ipsec_association_cmp(const void *obj1, const void *obj2)
+static int tsip_ipsec_association_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
@@ -503,8 +507,8 @@ static int tsip_ipsec_association_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_ipsec_association_def_s = 
 {
 	sizeof(tsip_ipsec_association_t),
-	tsip_ipsec_association_create, 
-	tsip_ipsec_association_destroy,
+	tsip_ipsec_association_ctor, 
+	tsip_ipsec_association_dtor,
 	tsip_ipsec_association_cmp, 
 };
-const void *tsip_ipsec_association_def_t = &tsip_ipsec_association_def_s;
+const tsk_object_def_t *tsip_ipsec_association_def_t = &tsip_ipsec_association_def_s;

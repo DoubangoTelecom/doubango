@@ -35,18 +35,11 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_SUBSCRIPTION_STATE_CREATE
-* Creates new sip 'Subscription_State' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_SUBSCRIPTION_STATE_CREATE()		tsk_object_new(tsip_header_Subscription_State_def_t)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Subscription-State'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Subscription-State	= 	( "Subscription-State" / "o" ) HCOLON substate-value *( SEMI subexp-params )
 /// substate-value	= 	"active" / "pending" / "terminated" / extension-substate
@@ -67,9 +60,11 @@ typedef struct tsip_header_Subscription_State_s
 }
 tsip_header_Subscription_State_t;
 
+tsip_header_Subscription_State_t* tsip_header_Subscription_State_create();
+
 tsip_header_Subscription_State_t *tsip_header_Subscription_State_parse(const char *data, size_t size);
 
-TINYSIP_GEXTERN const void *tsip_header_Subscription_State_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Subscription_State_def_t;
 
 TSIP_END_DECLS
 

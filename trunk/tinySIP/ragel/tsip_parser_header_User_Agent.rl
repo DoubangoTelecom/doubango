@@ -46,20 +46,17 @@
 	machine tsip_machine_parser_header_User_Agent;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_user_agent
-	{
+	action parse_user_agent{
 		TSK_PARSER_SET_STRING(hdr_user_agent->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 		
 	User_Agent = "User-Agent"i HCOLON (any*)>tag %parse_user_agent;
@@ -69,14 +66,22 @@
 
 }%%
 
+tsip_header_User_Agent_t* tsip_header_User_Agent_create(const char* ua)
+{
+	return tsk_object_new(TSIP_HEADER_USER_AGENT_VA_ARGS(ua));
+}
+
+tsip_header_User_Agent_t* tsip_header_User_Agent_create_null()
+{
+	return tsip_header_User_Agent_create(tsk_null);
+}
+
 int tsip_header_User_Agent_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_User_Agent_t *User_Agent = header;
-		if(User_Agent->value)
-		{
-			tsk_buffer_append(output, User_Agent->value, strlen(User_Agent->value));
+		if(User_Agent->value){
+			return tsk_buffer_append(output, User_Agent->value, strlen(User_Agent->value));
 		}
 		return 0;
 	}
@@ -90,7 +95,7 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_User_Agent_t *hdr_user_agent = TSIP_HEADER_USER_AGENT_CREATE(tsk_null);
+	tsip_header_User_Agent_t *hdr_user_agent = tsip_header_User_Agent_create_null();
 	
 	const char *tag_start;
 
@@ -98,8 +103,8 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'User-Agent' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_user_agent);
 	}
 	
@@ -116,31 +121,30 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 //	User_Agent header object definition
 //
 
-static void* tsip_header_User_Agent_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_User_Agent_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_User_Agent_t *User_Agent = self;
-	if(User_Agent)
-	{
+	if(User_Agent){
 		TSIP_HEADER(User_Agent)->type = tsip_htype_User_Agent;
 		TSIP_HEADER(User_Agent)->tostring = tsip_header_User_Agent_tostring;
 		User_Agent->value = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new User_Agent header.");
 	}
 	return self;
 }
 
-static void* tsip_header_User_Agent_destroy(void *self)
+static tsk_object_t* tsip_header_User_Agent_dtor(tsk_object_t *self)
 {
 	tsip_header_User_Agent_t *User_Agent = self;
-	if(User_Agent)
-	{
+	if(User_Agent){
 		TSK_FREE(User_Agent->value);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(User_Agent));
 	}
-	else TSK_DEBUG_ERROR("Null User_Agent header.");
+	else{
+		TSK_DEBUG_ERROR("Null User_Agent header.");
+	}
 
 	return self;
 }
@@ -148,8 +152,8 @@ static void* tsip_header_User_Agent_destroy(void *self)
 static const tsk_object_def_t tsip_header_User_Agent_def_s = 
 {
 	sizeof(tsip_header_User_Agent_t),
-	tsip_header_User_Agent_create,
-	tsip_header_User_Agent_destroy,
-	0
+	tsip_header_User_Agent_ctor,
+	tsip_header_User_Agent_dtor,
+	tsk_null
 };
-const void *tsip_header_User_Agent_def_t = &tsip_header_User_Agent_def_s;
+const tsk_object_def_t *tsip_header_User_Agent_def_t = &tsip_header_User_Agent_def_s;

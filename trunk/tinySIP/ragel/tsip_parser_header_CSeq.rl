@@ -44,7 +44,7 @@
 	machine tsip_machine_parser_header_CSeq;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -68,10 +68,15 @@
 
 }%%
 
+
+tsip_header_CSeq_t* tsip_header_CSeq_create(int32_t seq, const char*method)
+{
+	return tsk_object_new(TSIP_HEADER_CSEQ_VA_ARGS(seq, method));
+}
+
 int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_CSeq_t *CSeq = header;
 		return tsk_buffer_append_2(output, "%u %s", CSeq->seq, CSeq->method);
 	}
@@ -84,7 +89,7 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_CSeq_t *hdr_cseq = TSIP_HEADER_CSEQ_CREATE(TSIP_HEADER_CSEQ_NONE, 0);
+	tsip_header_CSeq_t *hdr_cseq = tsip_header_CSeq_create(TSIP_HEADER_CSEQ_NONE, 0);
 	
 	const char *tag_start;
 
@@ -110,32 +115,31 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 //	CSeq header object definition
 //
 
-static void* tsip_header_CSeq_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_CSeq_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_CSeq_t *CSeq = self;
-	if(CSeq)
-	{
+	if(CSeq){
 		TSIP_HEADER(CSeq)->type = tsip_htype_CSeq;
 		TSIP_HEADER(CSeq)->tostring = tsip_header_CSeq_tostring;
 		CSeq->seq = va_arg(*app, uint32_t);
 		CSeq->method = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new CSeq header.");
 	}
 	return self;
 }
 
-static void* tsip_header_CSeq_destroy(void *self)
+static tsk_object_t* tsip_header_CSeq_dtor(tsk_object_t *self)
 {
 	tsip_header_CSeq_t *CSeq = self;
-	if(CSeq)
-	{
+	if(CSeq){
 		TSK_FREE(CSeq->method);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(CSeq));
 	}
-	else TSK_DEBUG_ERROR("Null CSeq header.");
+	else{
+		TSK_DEBUG_ERROR("Null CSeq header.");
+	}
 
 	return self;
 }
@@ -143,9 +147,9 @@ static void* tsip_header_CSeq_destroy(void *self)
 static const tsk_object_def_t tsip_header_CSeq_def_s = 
 {
 	sizeof(tsip_header_CSeq_t),
-	tsip_header_CSeq_create,
-	tsip_header_CSeq_destroy,
+	tsip_header_CSeq_ctor,
+	tsip_header_CSeq_dtor,
 	tsk_null
 };
-const void *tsip_header_CSeq_def_t = &tsip_header_CSeq_def_s;
+const tsk_object_def_t *tsip_header_CSeq_def_t = &tsip_header_CSeq_def_s;
 

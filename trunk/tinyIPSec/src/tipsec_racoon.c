@@ -78,27 +78,25 @@ int tipsec_stop(tipsec_context_t* ctx)
 //=================================================================================================
 //	IPSec context object definition
 //
-static void* tipsec_context_create(void * self, va_list * app)
+static tsk_object_t* tipsec_context_ctor(tsk_object_t * self, va_list * app)
 {
 	tipsec_context_t *context = self;
-	if(context)
-	{
+	if(context){
 	}
 bail:
 	return self;
 }
 
-static void* tipsec_context_destroy(void * self)
+static tsk_object_t* tipsec_context_dtor(tsk_object_t * self)
 { 
 	tipsec_context_t *context = self;
-	if(context)
-	{
+	if(context){
 	}
 	
 	return self;
 }
 
-static int tipsec_context_cmp(const void *obj1, const void *obj2)
+static int tipsec_context_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return-1;
 }
@@ -106,8 +104,8 @@ static int tipsec_context_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tipsec_context_def_s = 
 {
 sizeof(tipsec_context_t),
-tipsec_context_create, 
-tipsec_context_destroy,
+tipsec_context_ctor, 
+tipsec_context_dtor,
 tipsec_context_cmp, 
 };
 

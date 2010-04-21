@@ -54,7 +54,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_TRANSAC_SYNC_END(self)				tsk_safeobj_unlock(TSIP_TRANSAC(self))
 
 #define TRANSAC_TIMER_SCHEDULE(name, TX) \
-	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_TRANSAC_GET_TIMER_MGR(self), self->timer##TX.timeout, TSK_TIMER_CALLBACK(tsip_transac_##name##_timer_callback), self)
+	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_TRANSAC_GET_TIMER_MGR(self), self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_transac_##name##_timer_callback), self)
 
 #define TRANSAC_TIMER_CANCEL(TX) \
 	tsk_timer_manager_cancel(TSIP_TRANSAC_GET_TIMER_MGR(self), self->timer##TX.id)
@@ -82,8 +82,8 @@ tsip_transac_event_t;
 	transac_event.type = type;								\
 	transac_event.msg = msg;*/
 
-typedef int (*tsip_transac_event_callback)(const void *arg, tsip_transac_event_type_t type, const tsip_message_t *msg);
-#define TSIP_TRANSAC_EVENT_CALLBACK(callback)	 ((tsip_transac_event_callback)(callback))
+typedef int (*tsip_transac_event_callback_f)(const void *arg, tsip_transac_event_type_t type, const tsip_message_t *msg);
+#define TSIP_TRANSAC_EVENT_CALLBACK_F(callback)	 ((tsip_transac_event_callback_f)(callback))
 
 typedef enum tsip_transac_type_e
 {
@@ -115,7 +115,7 @@ typedef struct tsip_transac_s
 	
 	char* callid;
 	
-	tsip_transac_event_callback callback;
+	tsip_transac_event_callback_f callback;
 }
 tsip_transac_t;
 

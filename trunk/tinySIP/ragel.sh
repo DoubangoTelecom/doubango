@@ -5,140 +5,140 @@ export OPTIONS="-C -L -T0"
 #export OPTIONS="-C -L -G2"
 
 # SIP/SIPS/TEL URI parser
-ragel.exe $OPTIONS -o ../src/parsers/tsip_parser_uri.c tsip_parser_uri.rl
+ragel.exe $OPTIONS -o ./src/parsers/tsip_parser_uri.c ./ragel/tsip_parser_uri.rl
 
 # SIP message (both requests an responses) parser.
-ragel.exe $OPTIONS -o ../src/parsers/tsip_parser_message.c tsip_parser_message.rl
+ragel.exe $OPTIONS -o ./src/parsers/tsip_parser_message.c ./ragel/tsip_parser_message.rl
 
 # SIP headers parser
-ragel.exe $OPTIONS -o ../src/parsers/tsip_parser_header.c tsip_parser_header.rl
+ragel.exe $OPTIONS -o ./src/parsers/tsip_parser_header.c ./ragel/tsip_parser_header.rl
 
 
 # ==Allow
-#ragel.exe $OPTIONS -o ../src/headers/tsip_header_Allow.c tsip_parser_header_Allow.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Allow.c ./ragel/tsip_parser_header_Allow.rl
 
 # ==Allow-Events
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Allow_Events.c tsip_parser_header_Allow_Events.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Allow_Events.c ./ragel/tsip_parser_header_Allow_Events.rl
 
 # ==Authorization
-######ragel.exe $OPTIONS -o ../src/headers/tsip_header_Authorization.c tsip_parser_header_Authorization.rl
+######ragel.exe $OPTIONS -o ./src/headers/tsip_header_Authorization.c ./ragel/tsip_parser_header_Authorization.rl
 
 # ==Call-ID
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Call_ID.c tsip_parser_header_Call_ID.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Call_ID.c ./ragel/tsip_parser_header_Call_ID.rl
 
 # ==Content-Length
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Content_Length.c tsip_parser_header_Content_Length.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Content_Length.c ./ragel/tsip_parser_header_Content_Length.rl
 
 # ==Content-Type
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Content_Type.c tsip_parser_header_Content_Type.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Content_Type.c ./ragel/tsip_parser_header_Content_Type.rl
 
 # ==Contact
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Contact.c tsip_parser_header_Contact.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Contact.c ./ragel/tsip_parser_header_Contact.rl
 
 # ==CSeq
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_CSeq.c tsip_parser_header_CSeq.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_CSeq.c ./ragel/tsip_parser_header_CSeq.rl
 
 # ==Dummy
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Dummy.c tsip_parser_header_Dummy.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Dummy.c ./ragel/tsip_parser_header_Dummy.rl
 
 # ==Event
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Event.c tsip_parser_header_Event.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Event.c ./ragel/tsip_parser_header_Event.rl
 
 # ==Expires
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Expires.c tsip_parser_header_Expires.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Expires.c ./ragel/tsip_parser_header_Expires.rl
 
 # ==From
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_From.c tsip_parser_header_From.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_From.c ./ragel/tsip_parser_header_From.rl
 
 # ==Max-Forwards
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Max_Forwards.c tsip_parser_header_Max_Forwards.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Max_Forwards.c ./ragel/tsip_parser_header_Max_Forwards.rl
 
 # ==Min-Expires
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Min_Expires.c tsip_parser_header_Min_Expires.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Min_Expires.c ./ragel/tsip_parser_header_Min_Expires.rl
 
 # ==Path
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Path.c tsip_parser_header_Path.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Path.c ./ragel/tsip_parser_header_Path.rl
 
 # ==P-Access-Network-Info
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Access_Network_Info.c tsip_parser_header_P_Access_Network_Info.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_P_Access_Network_Info.c ./ragel/tsip_parser_header_P_Access_Network_Info.rl
 
 # ==P-Asserted-Identity
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Asserted_Identity.c tsip_parser_header_P_Asserted_Identity.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_P_Asserted_Identity.c ./ragel/tsip_parser_header_P_Asserted_Identity.rl
 
 # ==P-Associated-URI
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Associated_URI.c tsip_parser_header_P_Associated_URI.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_P_Associated_URI.c ./ragel/tsip_parser_header_P_Associated_URI.rl
 
 # ==P-Charging-Function-Addresses
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Charging_Function_Addresses.c tsip_parser_header_P_Charging_Function_Addresses.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_P_Charging_Function_Addresses.c ./ragel/tsip_parser_header_P_Charging_Function_Addresses.rl
 
 # ==P-Preferred-Identity
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_P_Preferred_Identity.c tsip_parser_header_P_Preferred_Identity.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_P_Preferred_Identity.c ./ragel/tsip_parser_header_P_Preferred_Identity.rl
 
 # ==Privacy
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Privacy.c tsip_parser_header_Privacy.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Privacy.c ./ragel/tsip_parser_header_Privacy.rl
 
 # ==Proxy-Authenticate
-########ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Authenticate.c tsip_parser_header_Proxy_Authenticate.rl
+########ragel.exe $OPTIONS -o ./src/headers/tsip_header_Proxy_Authenticate.c ./ragel/tsip_parser_header_Proxy_Authenticate.rl
 
 # ==Proxy-Authorization
-#########ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Authorization.c tsip_parser_header_Proxy_Authorization.rl
+#########ragel.exe $OPTIONS -o ./src/headers/tsip_header_Proxy_Authorization.c ./ragel/tsip_parser_header_Proxy_Authorization.rl
 
 # ==Proxy-Require
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Proxy_Require.c tsip_parser_header_Proxy_Require.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Proxy_Require.c ./ragel/tsip_parser_header_Proxy_Require.rl
 
 # ==RAck
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_RAck.c tsip_parser_header_RAck.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_RAck.c ./ragel/tsip_parser_header_RAck.rl
 
 # ==Record-Route
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Record_Route.c tsip_parser_header_Record_Route.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Record_Route.c ./ragel/tsip_parser_header_Record_Route.rl
 
 # ==Require
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Require.c tsip_parser_header_Require.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Require.c ./ragel/tsip_parser_header_Require.rl
 
 # == Route
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Route.c tsip_parser_header_Route.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Route.c ./ragel/tsip_parser_header_Route.rl
 
 # ==RSeq
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_RSeq.c tsip_parser_header_RSeq.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_RSeq.c ./ragel/tsip_parser_header_RSeq.rl
 
 # == Server
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Server.c tsip_parser_header_Server.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Server.c ./ragel/tsip_parser_header_Server.rl
 
 # == SIP-ETag
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_SIP_ETag.c tsip_parser_header_SIP_ETag.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_SIP_ETag.c ./ragel/tsip_parser_header_SIP_ETag.rl
 
 # == SIP-If-Match
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_SIP_If_Match.c tsip_parser_header_SIP_If_Match.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_SIP_If_Match.c ./ragel/tsip_parser_header_SIP_If_Match.rl
 
 # == Security-Client
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Security_Client.c tsip_parser_header_Security_Client.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Security_Client.c ./ragel/tsip_parser_header_Security_Client.rl
 
 # == Security-Server
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Security_Server.c tsip_parser_header_Security_Server.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Security_Server.c ./ragel/tsip_parser_header_Security_Server.rl
 
 # == Security-Verify
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Security_Verify.c tsip_parser_header_Security_Verify.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Security_Verify.c ./ragel/tsip_parser_header_Security_Verify.rl
 
 # == Service-Route
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Service_Route.c tsip_parser_header_Service_Route.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Service_Route.c ./ragel/tsip_parser_header_Service_Route.rl
 
 # ==Subscription-State
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Subscription_State.c tsip_parser_header_Subscription_State.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Subscription_State.c ./ragel/tsip_parser_header_Subscription_State.rl
 
 # ==Supported
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Supported.c tsip_parser_header_Supported.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Supported.c ./ragel/tsip_parser_header_Supported.rl
 
 # ==To
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_To.c tsip_parser_header_To.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_To.c ./ragel/tsip_parser_header_To.rl
 
 # ==User-Agent
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_User_Agent.c tsip_parser_header_User_Agent.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_User_Agent.c ./ragel/tsip_parser_header_User_Agent.rl
 
 # ==Via
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Via.c tsip_parser_header_Via.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Via.c ./ragel/tsip_parser_header_Via.rl
 
 # ==Warning
-ragel.exe $OPTIONS -o ../src/headers/tsip_header_Warning.c tsip_parser_header_Warning.rl
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Warning.c ./ragel/tsip_parser_header_Warning.rl
 
 # ==WWW-Authenticate
-#########ragel.exe $OPTIONS -o ../src/headers/tsip_header_WWW_Authenticate.c tsip_parser_header_WWW_Authenticate.rl
+#########ragel.exe $OPTIONS -o ./src/headers/tsip_header_WWW_Authenticate.c ./ragel/tsip_parser_header_WWW_Authenticate.rl

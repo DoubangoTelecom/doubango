@@ -44,25 +44,21 @@
 	machine tsip_machine_parser_header_Content_Type;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_content_type
-	{
+	action parse_content_type{
 		TSK_PARSER_SET_STRING(hdr_ctype->type);
 	}
 
-	action parse_param
-	{		
+	action parse_param{		
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_ctype));
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	extension_token = ietf_token | x_token;
@@ -85,10 +81,19 @@
 
 }%%
 
+tsip_header_Content_Type_t* tsip_header_Content_Type_create(const char* type)
+{
+	return tsk_object_new(TSIP_HEADER_CONTENT_TYPE_VA_ARGS(type));
+}
+
+tsip_header_Content_Type_t* tsip_header_Content_Type_create_null()
+{
+	return tsip_header_Content_Type_create(tsk_null);
+}
+
 int tsip_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Content_Type_t *Content_Type = header;
 		if(Content_Type->type){
 			return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
@@ -107,7 +112,7 @@ tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Content_Type_t *hdr_ctype = TSIP_HEADER_CONTENT_TYPE_CREATE_NULL();
+	tsip_header_Content_Type_t *hdr_ctype = tsip_header_Content_Type_create_null();
 	
 	const char *tag_start;
 
@@ -115,8 +120,8 @@ tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, siz
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse SIP 'Content-Type' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);
 	}
 	
@@ -133,32 +138,31 @@ tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, siz
 //	Content_Type header object definition
 //
 
-static void* tsip_header_Content_Type_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Content_Type_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Content_Type_t *Content_Type = self;
-	if(Content_Type)
-	{
+	if(Content_Type){
 		TSIP_HEADER(Content_Type)->type = tsip_htype_Content_Type;
 		TSIP_HEADER(Content_Type)->tostring = tsip_header_Content_Type_tostring;
 
 		Content_Type->type = tsk_strdup( va_arg(*app, const char*) );
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Content_Type header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Content_Type_destroy(void *self)
+static tsk_object_t* tsip_header_Content_Type_dtor(tsk_object_t *self)
 {
 	tsip_header_Content_Type_t *Content_Type = self;
-	if(Content_Type)
-	{
+	if(Content_Type){
 		TSK_FREE(Content_Type->type);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Type));
 	}
-	else TSK_DEBUG_ERROR("Null Content_Type header.");
+	else{
+		TSK_DEBUG_ERROR("Null Content_Type header.");
+	}
 
 	return self;
 }
@@ -166,9 +170,9 @@ static void* tsip_header_Content_Type_destroy(void *self)
 static const tsk_object_def_t tsip_header_Content_Type_def_s = 
 {
 	sizeof(tsip_header_Content_Type_t),
-	tsip_header_Content_Type_create,
-	tsip_header_Content_Type_destroy,
-	0
+	tsip_header_Content_Type_ctor,
+	tsip_header_Content_Type_dtor,
+	tsk_null
 };
-const void *tsip_header_Content_Type_def_t = &tsip_header_Content_Type_def_s;
+const tsk_object_def_t *tsip_header_Content_Type_def_t = &tsip_header_Content_Type_def_s;
 

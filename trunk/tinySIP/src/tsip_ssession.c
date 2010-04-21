@@ -41,8 +41,7 @@ tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const 
 {
 	tsip_ssession_t* ss = tsk_null;
 
-	if(message)
-	{
+	if(message){
 		char* from = tsk_null, *to = tsk_null;
 
 		if(message->From && message->From->uri){ /* MUST be not null */
@@ -274,16 +273,15 @@ int tsip_ssession_hangup(const tsip_ssession_t *self, const tsip_action_t* actio
 //========================================================
 //	SIP SSESSION object definition
 //
-static void* tsip_ssession_create(void * self, va_list * app)
+static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_ssession_t *ss = self;
 	static tsip_ssession_id_t unique_id = 0;
-	if(ss)
-	{
+	if(ss){
 		ss->stack = va_arg(*app, const tsip_stack_handle_t*);
-		ss->params = TSK_LIST_CREATE();
-		ss->caps = TSK_LIST_CREATE();
-		ss->headers = TSK_LIST_CREATE();
+		ss->params = tsk_list_create();
+		ss->caps = tsk_list_create();
+		ss->headers = tsk_list_create();
 
 		if(__tsip_ssession_set(self, *app)){
 			ss->id = TSIP_SSESSION_INVALID_ID;
@@ -298,11 +296,10 @@ static void* tsip_ssession_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_ssession_destroy(void * self)
+static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 { 
 	tsip_ssession_t *ss = self;
-	if(ss)
-	{
+	if(ss){
 		TSK_OBJECT_SAFE_FREE(ss->params);
 		TSK_OBJECT_SAFE_FREE(ss->caps);
 		TSK_OBJECT_SAFE_FREE(ss->headers);
@@ -324,8 +321,8 @@ static int tsip_ssession_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsip_ssession_def_s = 
 {
 	sizeof(tsip_ssession_t),
-	tsip_ssession_create, 
-	tsip_ssession_destroy,
+	tsip_ssession_ctor, 
+	tsip_ssession_dtor,
 	tsip_ssession_cmp, 
 };
 const tsk_object_def_t *tsip_ssession_def_t = &tsip_ssession_def_s;

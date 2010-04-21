@@ -29,47 +29,7 @@
  */
 #include "tinySIP/parsers/tsip_parser_header.h"
 
-#include "tinySIP/headers/tsip_header_Allow.h"
-#include "tinySIP/headers/tsip_header_Allow_Events.h"
-#include "tinySIP/headers/tsip_header_Authorization.h"
-#include "tinySIP/headers/tsip_header_Call_ID.h"
-#include "tinySIP/headers/tsip_header_Contact.h"
-#include "tinySIP/headers/tsip_header_CSeq.h"
-#include "tinySIP/headers/tsip_header_Dummy.h"
-#include "tinySIP/headers/tsip_header_Event.h"
-#include "tinySIP/headers/tsip_header_Expires.h"
-#include "tinySIP/headers/tsip_header_From.h"
-#include "tinySIP/headers/tsip_header_Max_Forwards.h"
-#include "tinySIP/headers/tsip_header_Min_Expires.h"
-#include "tinySIP/headers/tsip_header_Path.h"
-#include "tinySIP/headers/tsip_header_P_Access_Network_Info.h" 
-#include "tinySIP/headers/tsip_header_P_Asserted_Identity.h"
-#include "tinySIP/headers/tsip_header_P_Associated_URI.h"
-#include "tinySIP/headers/tsip_header_P_Charging_Function_Addresses.h"
-#include "tinySIP/headers/tsip_header_P_Preferred_Identity.h"
-#include "tinySIP/headers/tsip_header_Privacy.h"
-#include "tinySIP/headers/tsip_header_Proxy_Authenticate.h"
-#include "tinySIP/headers/tsip_header_Proxy_Authorization.h"
-#include "tinySIP/headers/tsip_header_Proxy_Require.h"
-#include "tinySIP/headers/tsip_header_RAck.h"
-#include "tinySIP/headers/tsip_header_Record_Route.h"
-#include "tinySIP/headers/tsip_header_Require.h"
-#include "tinySIP/headers/tsip_header_Route.h"
-#include "tinySIP/headers/tsip_header_RSeq.h"
-#include "tinySIP/headers/tsip_header_Security_Client.h"
-#include "tinySIP/headers/tsip_header_Security_Server.h"
-#include "tinySIP/headers/tsip_header_Security_Verify.h"
-#include "tinySIP/headers/tsip_header_Server.h"
-#include "tinySIP/headers/tsip_header_Service_Route.h"
-#include "tinySIP/headers/tsip_header_SIP_ETag.h"
-#include "tinySIP/headers/tsip_header_SIP_If_Match.h"
-#include "tinySIP/headers/tsip_header_Subscription_State.h"
-#include "tinySIP/headers/tsip_header_Supported.h"
-#include "tinySIP/headers/tsip_header_To.h"
-#include "tinySIP/headers/tsip_header_User_Agent.h"
-#include "tinySIP/headers/tsip_header_Via.h"
-#include "tinySIP/headers/tsip_header_Warning.h"
-#include "tinySIP/headers/tsip_header_WWW_Authenticate.h"
+#include "tinySIP/headers/tsip_headers.h"
 
 #include "tsk_debug.h"
 
@@ -867,8 +827,8 @@
 
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
-	include tsip_machine_header "./tsip_machine_header.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
+	include tsip_machine_header "./ragel/tsip_machine_header.rl";
 
 	# Entry point
 	main := HEADER;

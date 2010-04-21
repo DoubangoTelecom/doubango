@@ -37,20 +37,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_CALL_ID_CREATE
-* Creates new sip 'Call-ID' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-
 #define TSIP_HEADER_CALL_ID_VA_ARGS(call_id)	tsip_header_Call_ID_def_t, (const char*)call_id
-#define TSIP_HEADER_CALL_ID_CREATE(call_id)		tsk_object_new(TSIP_HEADER_CALL_ID_VA_ARGS(call_id))
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Call-ID'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Call-ID / i
 /// callid	=  	word  [ "@" word ] 
@@ -64,10 +56,12 @@ typedef struct tsip_header_Call_ID_s
 }
 tsip_header_Call_ID_t;
 
-int tsip_header_Call_ID_random(tsk_uuidstring_t *result);
-tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Call_ID_t* tsip_header_Call_ID_create(const char* call_id);
 
-TINYSIP_GEXTERN const void *tsip_header_Call_ID_def_t;
+int tsip_header_Call_ID_random(tsk_uuidstring_t *result);
+TINYSIP_API tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Call_ID_def_t;
 
 TSIP_END_DECLS
 

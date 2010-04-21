@@ -37,18 +37,11 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_P_ASSERTED_IDENTITY_CREATE
-* Creates new sip 'P_Asserted_Identity' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_P_ASSERTED_IDENTITY_CREATE()	tsk_object_new(tsip_header_P_Asserted_Identity_def_t)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'P-Asserted-Identity' as per RFC 3325.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: P-Asserted-Identity = PAssertedID
 /// PAssertedID	=  	"P-Asserted-Identity" HCOLON PAssertedID-value *(COMMA PAssertedID-value)
@@ -66,9 +59,11 @@ tsip_header_P_Asserted_Identity_t;
 
 typedef tsk_list_t tsip_header_P_Asserted_Identities_L_t;
 
-tsip_header_P_Asserted_Identities_L_t *tsip_header_P_Asserted_Identity_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_P_Asserted_Identity_t* tsip_header_P_Asserted_Identity_create();
 
-TINYSIP_GEXTERN const void *tsip_header_P_Asserted_Identity_def_t;
+TINYSIP_API tsip_header_P_Asserted_Identities_L_t *tsip_header_P_Asserted_Identity_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_P_Asserted_Identity_def_t;
 
 TSIP_END_DECLS
 

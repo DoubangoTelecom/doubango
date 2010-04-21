@@ -38,13 +38,7 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_URI_CREATE
-* Creates new sip/sips/tel uri.  You must call @ref TSK_OBJECT_SAFE_FREE to free the uri.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_URI_CREATE(type)				tsk_object_new(tsip_uri_def_t, (tsip_uri_type_t) type)
-
-#define TSIP_URI_IS_SECURE(uri)		((uri && uri->type==uri_sips) ? 1 : 0)
+#define TSIP_URI_IS_SECURE(uri)		((uri && uri->type==uri_sips) ? tsk_true : tsk_false)
 
 typedef enum tsip_uri_type_e
 {
@@ -89,11 +83,12 @@ tsip_uri_t;
 
 typedef tsk_list_t tsip_uris_L_t;
 
+TINYSIP_API tsip_uri_t* tsip_uri_create(tsip_uri_type_t type);
 TINYSIP_API int tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote, tsk_buffer_t *output);
 TINYSIP_API char* tsip_uri_tostring(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote);
 TINYSIP_API tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote);
 
-TINYSIP_GEXTERN const void *tsip_uri_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_uri_def_t;
 
 TSIP_END_DECLS
 

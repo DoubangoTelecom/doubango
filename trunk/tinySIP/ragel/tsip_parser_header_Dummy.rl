@@ -46,25 +46,21 @@
 	machine tsip_machine_parser_header_Dummy;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_name
-	{
+	action parse_name{
 		TSK_PARSER_SET_STRING(hdr_Dummy->name);
 	}
 
-	action parse_value
-	{
+	action parse_value{
 		TSK_PARSER_SET_STRING(hdr_Dummy->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 		
 	Dummy = token>tag %parse_name SP* HCOLON SP*<: any*>tag %parse_value;
@@ -74,13 +70,21 @@
 
 }%%
 
+tsip_header_Dummy_t* tsip_header_Dummy_create(const char* name, const char* value)
+{
+	return tsk_object_new(TSIP_HEADER_DUMMY_VA_ARGS(name, value));
+}
+
+tsip_header_Dummy_t* tsip_header_Dummy_create_null()
+{
+	return tsip_header_Dummy_create(tsk_null, tsk_null);
+}
+
 int tsip_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Dummy_t *Dummy = header;
-		if(Dummy->value)
-		{
+		if(Dummy->value){
 			tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
 		}
 		return 0;
@@ -95,7 +99,7 @@ tsip_header_Dummy_t *tsip_header_Dummy_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Dummy_t *hdr_Dummy = TSIP_HEADER_DUMMY_CREATE_NULL();
+	tsip_header_Dummy_t *hdr_Dummy = tsip_header_Dummy_create_null();
 	
 	const char *tag_start;
 
@@ -103,8 +107,8 @@ tsip_header_Dummy_t *tsip_header_Dummy_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Dummy' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Dummy);
 	}
 	
@@ -121,35 +125,34 @@ tsip_header_Dummy_t *tsip_header_Dummy_parse(const char *data, size_t size)
 //	Dummy header object definition
 //
 
-static void* tsip_header_Dummy_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		TSIP_HEADER(Dummy)->type = tsip_htype_Dummy;
 		TSIP_HEADER(Dummy)->tostring = tsip_header_Dummy_tostring;
 
 		Dummy->name = tsk_strdup(va_arg(*app, const char*));
 		Dummy->value = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Dummy header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Dummy_destroy(void *self)
+static tsk_object_t* tsip_header_Dummy_dtor(tsk_object_t *self)
 {
 	tsip_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		TSK_FREE(Dummy->name);
 		TSK_FREE(Dummy->value);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Dummy));
 	}
-	else TSK_DEBUG_ERROR("Null Dummy header.");
+	else{
+		TSK_DEBUG_ERROR("Null Dummy header.");
+	}
 
 	return self;
 }
@@ -157,8 +160,8 @@ static void* tsip_header_Dummy_destroy(void *self)
 static const tsk_object_def_t tsip_header_Dummy_def_s = 
 {
 	sizeof(tsip_header_Dummy_t),
-	tsip_header_Dummy_create,
-	tsip_header_Dummy_destroy,
-	0
+	tsip_header_Dummy_ctor,
+	tsip_header_Dummy_dtor,
+	tsk_null
 };
-const void *tsip_header_Dummy_def_t = &tsip_header_Dummy_def_s;
+const tsk_object_def_t *tsip_header_Dummy_def_t = &tsip_header_Dummy_def_s;

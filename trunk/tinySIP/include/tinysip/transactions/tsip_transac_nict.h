@@ -39,8 +39,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_TRANSAC_NICT_CREATE(reliable, cseq_value, cseq_method, callid, dialog)		tsk_object_new(tsip_transac_nict_def_t, (tsk_bool_t)reliable, (int32_t)cseq_value, (const char*)cseq_method, (const char*)callid, (tsip_dialog_t*)dialog)
-
 #define TSIP_TRANSAC_NICT(self)															((tsip_transac_nict_t*)(self))
 
 typedef struct tsip_transac_nict
@@ -56,9 +54,10 @@ typedef struct tsip_transac_nict
 }
 tsip_transac_nict_t;
 
+tsip_transac_nict_t* tsip_transac_nict_create(tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog);
 int tsip_transac_nict_start(tsip_transac_nict_t *self, const tsip_request_t* request);
 
-TINYSIP_GEXTERN const void *tsip_transac_nict_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_transac_nict_def_t;
 
 TSIP_END_DECLS
 

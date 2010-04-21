@@ -35,20 +35,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE
-* Creates new sip 'P-Access-Network-Info' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSIP_HEADER_P-ACCESS_NETWORK_INFO_SAFE_FREE.
-*/
 #define TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(value)	tsip_header_P_Access_Network_Info_def_t, (const char*)value
-#define TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE(value)		tsk_object_new(TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(value))
-#define TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE_NULL()		TSIP_HEADER_P_ACCESS_NETWORK_INFO_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'P-Access-Network-Info' as per RFC 3455.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: P-Access-Network-Info  	= 	"P-Access-Network-Info" HCOLON access-net-spec
 /// access-net-spec	= 	access-type *( SEMI access-info )
@@ -67,9 +59,12 @@ typedef struct tsip_header_P_Access_Network_Info_s
 }
 tsip_header_P_Access_Network_Info_t;
 
-tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_P_Access_Network_Info_t* tsip_header_P_Access_Network_Info_create(const char* value);
+TINYSIP_API tsip_header_P_Access_Network_Info_t* tsip_header_P_Access_Network_Info_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_P_Access_Network_Info_def_t;
+TINYSIP_API tsip_header_P_Access_Network_Info_t *tsip_header_P_Access_Network_Info_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_P_Access_Network_Info_def_t;
 
 TSIP_END_DECLS
 

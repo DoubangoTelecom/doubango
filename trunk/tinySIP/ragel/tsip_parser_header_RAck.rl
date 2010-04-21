@@ -46,7 +46,7 @@
 	machine tsip_machine_parser_header_RAck;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
 	action tag{
 		tag_start = p;
@@ -74,10 +74,20 @@
 
 }%%
 
+
+tsip_header_RAck_t* tsip_header_RAck_create(int32_t seq, int32_t cseq, const char* method)
+{
+	return tsk_object_new(TSIP_HEADER_RACK_VA_ARGS(seq, cseq, method));
+}
+
+tsip_header_RAck_t* tsip_header_RAck_create_null()
+{
+	return tsip_header_RAck_create(0, 0, tsk_null);
+}
+
 int tsip_header_RAck_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_RAck_t *RAck = header;
 		return tsk_buffer_append_2(output, "%u %u %s", RAck->seq, RAck->cseq, RAck->method);
 	}
@@ -90,7 +100,7 @@ tsip_header_RAck_t *tsip_header_RAck_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_RAck_t *hdr_rack = TSIP_HEADER_RACK_CREATE_NULL();
+	tsip_header_RAck_t *hdr_rack = tsip_header_RAck_create_null();
 	
 	const char *tag_start;
 
@@ -116,34 +126,33 @@ tsip_header_RAck_t *tsip_header_RAck_parse(const char *data, size_t size)
 //	RAck header object definition
 //
 
-static void* tsip_header_RAck_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_RAck_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_RAck_t *RAck = self;
-	if(RAck)
-	{
+	if(RAck){
 		TSIP_HEADER(RAck)->type = tsip_htype_RAck;
 		TSIP_HEADER(RAck)->tostring = tsip_header_RAck_tostring;
 		RAck->seq = va_arg(*app, uint32_t);
 		RAck->cseq = va_arg(*app, uint32_t);
 		RAck->method = tsk_strdup( va_arg(*app, const char*) );
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new RAck header.");
 	}
 	return self;
 }
 
-static void* tsip_header_RAck_destroy(void *self)
+static tsk_object_t* tsip_header_RAck_dtor(tsk_object_t *self)
 {
 	tsip_header_RAck_t *RAck = self;
-	if(RAck)
-	{
+	if(RAck){
 		TSK_FREE(RAck->method);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(RAck));
 	}
-	else TSK_DEBUG_ERROR("Null RAck header.");
+	else{
+		TSK_DEBUG_ERROR("Null RAck header.");
+	}
 
 	return self;
 }
@@ -151,9 +160,9 @@ static void* tsip_header_RAck_destroy(void *self)
 static const tsk_object_def_t tsip_header_RAck_def_s = 
 {
 	sizeof(tsip_header_RAck_t),
-	tsip_header_RAck_create,
-	tsip_header_RAck_destroy,
+	tsip_header_RAck_ctor,
+	tsip_header_RAck_dtor,
 	tsk_null
 };
-const void *tsip_header_RAck_def_t = &tsip_header_RAck_def_s;
+const tsk_object_def_t *tsip_header_RAck_def_t = &tsip_header_RAck_def_s;
 

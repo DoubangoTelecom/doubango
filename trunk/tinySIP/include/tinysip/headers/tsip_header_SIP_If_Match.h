@@ -35,13 +35,8 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_SIP_IF_MATCH_CREATE
-* Creates new sip 'SIP-If-Match' header as per RFC 3903.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
+
 #define TSIP_HEADER_SIP_IF_MATCH_VA_ARGS(etag)		tsip_header_SIP_If_Match_def_t, (const char*)etag
-#define TSIP_HEADER_SIP_IF_MATCH_CREATE(etag)		tsk_object_new(TSIP_HEADER_SIP_IF_MATCH_VA_ARGS(etag))
-#define TSIP_HEADER_SIP_IF_MATCH_CREATE_NULL()		TSIP_HEADER_SIP_IF_MATCH_CREATE(tsk_null)
 
 
 /**
@@ -59,9 +54,12 @@ typedef struct tsip_header_SIP_If_Match_s
 }
 tsip_header_SIP_If_Match_t;
 
-tsip_header_SIP_If_Match_t *tsip_header_SIP_If_Match_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_SIP_If_Match_t* tsip_header_SIP_If_Match_create(const char* etag);
+TINYSIP_API tsip_header_SIP_If_Match_t* tsip_header_SIP_If_Match_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_SIP_If_Match_def_t;
+TINYSIP_API tsip_header_SIP_If_Match_t *tsip_header_SIP_If_Match_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_SIP_If_Match_def_t;
 
 TSIP_END_DECLS
 

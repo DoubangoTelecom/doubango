@@ -46,20 +46,17 @@
 	machine tsip_machine_parser_header_Require;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action parse_option
-	{
+	action parse_option{
 		TSK_PARSER_ADD_STRING(hdr_require->options);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	Require = "Require"i HCOLON option_tag>tag %parse_option ( COMMA option_tag>tag %parse_option )*;
@@ -69,25 +66,31 @@
 
 }%%
 
+tsip_header_Require_t* tsip_header_Require_create(const char* option)
+{
+	return tsk_object_new(TSIP_HEADER_REQUIRE_VA_ARGS(option));
+}
+
+tsip_header_Require_t* tsip_header_Require_create_null()
+{
+	return tsip_header_Require_create(tsk_null);
+}
+
 int tsip_header_Require_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Require_t *Require = header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;
 
-		tsk_list_foreach(item, Require->options)
-		{
+		tsk_list_foreach(item, Require->options){
 			str = item->data;
-			if(item == Require->options->head)
-			{
-				tsk_buffer_append(output, str->value, strlen(str->value));
+			if(item == Require->options->head){
+				ret = tsk_buffer_append(output, str->value, strlen(str->value));
 			}
-			else
-			{
-				tsk_buffer_append_2(output, ",%s", str->value);
+			else{
+				ret = tsk_buffer_append_2(output, ",%s", str->value);
 			}
 		}
 
@@ -103,7 +106,7 @@ tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Require_t *hdr_require = TSIP_HEADER_REQUIRE_CREATE_NULL();
+	tsip_header_Require_t *hdr_require = tsip_header_Require_create_null();
 	
 	const char *tag_start;
 
@@ -111,8 +114,8 @@ tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Require' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_require);
 	}
 	
@@ -129,38 +132,37 @@ tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size)
 //	Require header object definition
 //
 
-static void* tsip_header_Require_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Require_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Require_t *Require = self;
-	if(Require)
-	{
+	if(Require){
 		const char* option;
 
 		TSIP_HEADER(Require)->type = tsip_htype_Require;
 		TSIP_HEADER(Require)->tostring = tsip_header_Require_tostring;
 
 		if((option = va_arg(*app, const char*))){
-			tsk_string_t* string = TSK_STRING_CREATE(option);
-			Require->options = TSK_LIST_CREATE();
+			tsk_string_t* string = tsk_string_create(option);
+			Require->options = tsk_list_create();
 
 			tsk_list_push_back_data(Require->options, ((void**) &string));
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Require header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Require_destroy(void *self)
+static tsk_object_t* tsip_header_Require_dtor(tsk_object_t *self)
 {
 	tsip_header_Require_t *Require = self;
-	if(Require)
-	{
+	if(Require){
 		TSK_OBJECT_SAFE_FREE(Require->options);
 	}
-	else TSK_DEBUG_ERROR("Null Require header.");
+	else{
+		TSK_DEBUG_ERROR("Null Require header.");
+	}
 
 	return self;
 }
@@ -168,8 +170,8 @@ static void* tsip_header_Require_destroy(void *self)
 static const tsk_object_def_t tsip_header_Require_def_s = 
 {
 	sizeof(tsip_header_Require_t),
-	tsip_header_Require_create,
-	tsip_header_Require_destroy,
-	0
+	tsip_header_Require_ctor,
+	tsip_header_Require_dtor,
+	tsk_null
 };
-const void *tsip_header_Require_def_t = &tsip_header_Require_def_s;
+const tsk_object_def_t *tsip_header_Require_def_t = &tsip_header_Require_def_s;

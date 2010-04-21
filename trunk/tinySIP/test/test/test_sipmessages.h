@@ -22,8 +22,6 @@
 #ifndef _TEST_SIPMESSAGES_H
 #define _TEST_SIPMESSAGES_H
 
-#include "tinysip/headers/tsip_header_Dummy.h"
-
 #define SIP_REQUEST \
 	"REGISTER sip:open-ims.test SIP/2.0\r\n" \
 	"Test-Header: 0\r\n" \
@@ -123,7 +121,7 @@ void test_parser()
 {
 	tsk_ragel_state_t state;
 	tsip_message_t *message = 0;
-	tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *buffer = tsk_buffer_create_null();
 	tsk_bool_t enabled;
 	int32_t expires;
 	uint32_t clength;
@@ -160,7 +158,7 @@ void test_parser()
 
 void test_requests()
 {
-	tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *buffer = tsk_buffer_create_null();
 	tsip_uri_t *from = tsip_uri_parse("sip:mamadou@open-ims.test", strlen("sip:mamadou@open-ims.test"));
 	tsip_uri_t *request_uri = tsip_uri_parse("sip:open-ims.test", strlen("sip:open-ims.test"));
 	
@@ -192,7 +190,7 @@ void test_responses()
 
 	{
 		/* DUMP the response */
-		tsk_buffer_t *buffer = TSK_BUFFER_CREATE_NULL();
+		tsk_buffer_t *buffer = tsk_buffer_create_null();
 
 		tsip_message_tostring(response, buffer);
 		TSK_DEBUG_INFO("Response=\n%s", TSK_BUFFER_TO_STRING(buffer));

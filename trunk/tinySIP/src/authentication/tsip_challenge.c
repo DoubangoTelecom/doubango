@@ -49,6 +49,17 @@
 #define TSIP_CHALLENGE_PASSWORD(self)	TSIP_CHALLENGE_STACK(self)->password
 
 
+tsip_challenge_t* tsip_challenge_create(tsip_stack_t* stack, tsk_bool_t isproxy, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop)
+{
+	return tsk_object_new(tsip_challenge_def_t, stack, isproxy,scheme, realm, nonce, opaque, algorithm, qop);
+}
+
+tsip_challenge_t* tsip_challenge_create_null(tsip_stack_t* stack)
+{
+	return tsip_challenge_create(stack, tsk_false, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null);
+}
+
+
 int tsip_challenge_reset_cnonce(tsip_challenge_t *self)
 {
 	if(self)
@@ -360,15 +371,13 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 		hdr->nc = self->nc? tsk_strdup(nc) : 0;												\
 		hdr->response = tsk_strdup(response);												\
 
-	if(self->isproxy)
-	{
+	if(self->isproxy){
 		tsip_header_Proxy_Authorization_t *proxy_auth = TSIP_HEADER_PROXY_AUTHORIZATION_CREATE();
 		TSIP_AUTH_COPY_VALUES(proxy_auth);
 		header = TSIP_HEADER(proxy_auth);
 	}
-	else
-	{
-		tsip_header_Authorization_t *auth = TSIP_HEADER_AUTHORIZATION_CREATE();
+	else{
+		tsip_header_Authorization_t *auth = tsip_header_Authorization_create();
 		TSIP_AUTH_COPY_VALUES(auth);
 		header = TSIP_HEADER(auth);
 	}
@@ -383,7 +392,7 @@ bail:
 
 tsip_header_t *tsip_challenge_create_empty_header_authorization(const char* username, const char* realm, const char* uristring)
 {
-	tsip_header_Authorization_t *header = TSIP_HEADER_AUTHORIZATION_CREATE();
+	tsip_header_Authorization_t *header = tsip_header_Authorization_create();
 
 	if(header)
 	{
@@ -428,11 +437,10 @@ tsip_header_t *tsip_challenge_create_empty_header_authorization(const char* user
 
 /**@ingroup tsip_challenge_group
 */
-static void* tsip_challenge_create(void *self, va_list * app)
+static tsk_object_t* tsip_challenge_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_challenge_t *challenge = self;
-	if(challenge)
-	{
+	if(challenge){
 		const char* qop;
 
 		challenge->stack = va_arg(*app, const tsip_stack_handle_t *);
@@ -459,11 +467,10 @@ static void* tsip_challenge_create(void *self, va_list * app)
 
 /**@ingroup tsip_challenge_group
 */
-static void* tsip_challenge_destroy(void *self)
+static tsk_object_t* tsip_challenge_dtor(tsk_object_t *self)
 {
 	tsip_challenge_t *challenge = self;
-	if(challenge)
-	{
+	if(challenge){
 		TSK_FREE(challenge->scheme);
 		TSK_FREE(challenge->realm);
 		TSK_FREE(challenge->nonce);
@@ -472,7 +479,9 @@ static void* tsip_challenge_destroy(void *self)
 		
 		//TSK_FREE(challenge->qop);
 	}
-	else TSK_DEBUG_ERROR("Null SIP challenge object.");
+	else{
+		TSK_DEBUG_ERROR("Null SIP challenge object.");
+	}
 
 	return self;
 }
@@ -480,8 +489,8 @@ static void* tsip_challenge_destroy(void *self)
 static const tsk_object_def_t tsip_challenge_def_s = 
 {
 	sizeof(tsip_challenge_t),
-	tsip_challenge_create,
-	tsip_challenge_destroy,
-	0
+	tsip_challenge_ctor,
+	tsip_challenge_dtor,
+	tsk_null
 };
-const void *tsip_challenge_def_t = &tsip_challenge_def_s;
+const tsk_object_def_t *tsip_challenge_def_t = &tsip_challenge_def_s;

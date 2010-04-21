@@ -199,6 +199,12 @@ int tsip_dialog_publish_timer_callback(const tsip_dialog_publish_t* self, tsk_ti
 	return ret;
 }
 
+
+tsip_dialog_publish_t* tsip_dialog_publish_create(const tsip_ssession_handle_t* ss)
+{
+	return tsk_object_new(tsip_dialog_publish_def_t, ss);
+}
+
 /**
  * Initializes the dialog.
  *
@@ -258,7 +264,7 @@ int tsip_dialog_publish_init(tsip_dialog_publish_t *self)
 			TSK_FSM_ADD_NULL());
 
 	/* Sets callback function */
-	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_publish_event_callback);
+	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK_F(tsip_dialog_publish_event_callback);
 
 	/* Timers */
 	self->timerrefresh.id = TSK_INVALID_TIMER_ID;
@@ -586,11 +592,10 @@ int tsip_dialog_publish_OnTerminated(tsip_dialog_publish_t *self)
 //========================================================
 //	SIP dialog PUBLISH object definition
 //
-static void* tsip_dialog_publish_create(void * self, va_list * app)
+static tsk_object_t* tsip_dialog_publish_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_dialog_publish_t *dialog = self;
-	if(dialog)
-	{
+	if(dialog){
 		tsip_ssession_handle_t *ss = va_arg(*app, tsip_ssession_handle_t *);
 
 		/* init base class */
@@ -606,11 +611,10 @@ static void* tsip_dialog_publish_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_dialog_publish_destroy(void * _self)
+static tsk_object_t* tsip_dialog_publish_dtor(tsk_object_t * _self)
 { 
 	tsip_dialog_publish_t *self = _self;
-	if(self)
-	{
+	if(self){
 		TSK_DEBUG_INFO("*** PUBLISH Dialog destroyed ***");
 
 		/* Cancel all timers */
@@ -634,8 +638,8 @@ static int tsip_dialog_publish_cmp(const tsk_object_t *obj1, const tsk_object_t 
 static const tsk_object_def_t tsip_dialog_publish_def_s = 
 {
 	sizeof(tsip_dialog_publish_t),
-	tsip_dialog_publish_create, 
-	tsip_dialog_publish_destroy,
+	tsip_dialog_publish_ctor, 
+	tsip_dialog_publish_dtor,
 	tsip_dialog_publish_cmp, 
 };
-const void *tsip_dialog_publish_def_t = &tsip_dialog_publish_def_s;
+const tsk_object_def_t *tsip_dialog_publish_def_t = &tsip_dialog_publish_def_s;

@@ -44,20 +44,17 @@
 	machine tsip_machine_parser_header_Expires;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_delta_seconds
-	{
+	action parse_delta_seconds{
 		TSK_PARSER_SET_INTEGER(hdr_expires->delta_seconds);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 		
 	Expires = "Expires"i HCOLON delta_seconds>tag %parse_delta_seconds;
@@ -67,15 +64,19 @@
 
 }%%
 
+tsip_header_Expires_t* tsip_header_Expires_create(int32_t delta_seconds)
+{
+	return tsk_object_new(TSIP_HEADER_EXPIRES_VA_ARGS(delta_seconds));
+}
+
 int tsip_header_Expires_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Expires_t *Expires = header;
-		if(Expires->delta_seconds >=0)
-		{
+		if(Expires->delta_seconds >=0){
 			return tsk_buffer_append_2(output, "%d", Expires->delta_seconds);
 		}
+		return 0;
 	}
 
 	return -1;
@@ -87,7 +88,7 @@ tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Expires_t *hdr_expires = TSIP_HEADER_EXPIRES_CREATE(TSIP_HEADER_EXPIRES_NONE);
+	tsip_header_Expires_t *hdr_expires = tsip_header_Expires_create(TSIP_HEADER_EXPIRES_NONE);
 	
 	const char *tag_start;
 
@@ -95,8 +96,8 @@ tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Expires' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_expires);
 	}
 	
@@ -113,29 +114,29 @@ tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size)
 //	Expires header object definition
 //
 
-static void* tsip_header_Expires_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Expires_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Expires_t *Expires = self;
-	if(Expires)
-	{
+	if(Expires){
 		TSIP_HEADER(Expires)->type = tsip_htype_Expires;
 		TSIP_HEADER(Expires)->tostring = tsip_header_Expires_tostring;
 		Expires->delta_seconds = va_arg(*app, int32_t);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Expires header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Expires_destroy(void *self)
+static tsk_object_t* tsip_header_Expires_dtor(tsk_object_t *self)
 {
 	tsip_header_Expires_t *Expires = self;
-	if(Expires)
-	{
+	if(Expires){
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Expires));
 	}
-	else TSK_DEBUG_ERROR("Null Expires header.");
+	else{
+		TSK_DEBUG_ERROR("Null Expires header.");
+	}
 
 	return self;
 }
@@ -143,9 +144,9 @@ static void* tsip_header_Expires_destroy(void *self)
 static const tsk_object_def_t tsip_header_Expires_def_s = 
 {
 	sizeof(tsip_header_Expires_t),
-	tsip_header_Expires_create,
-	tsip_header_Expires_destroy,
-	0
+	tsip_header_Expires_ctor,
+	tsip_header_Expires_dtor,
+	tsk_null
 };
-const void *tsip_header_Expires_def_t = &tsip_header_Expires_def_s;
+const tsk_object_def_t *tsip_header_Expires_def_t = &tsip_header_Expires_def_s;
 

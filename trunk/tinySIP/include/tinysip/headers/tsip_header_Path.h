@@ -37,20 +37,13 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_PATH_CREATE
-* Creates new sip 'Path' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
+
 #define TSIP_HEADER_PATH_VA_ARGS(uri)		tsip_header_Path_def_t, (const tsip_uri_t*)uri
-#define TSIP_HEADER_PATH_CREATE(uri)		tsk_object_new(TSIP_HEADER_PATH_VA_ARGS(uri))
-#define TSIP_HEADER_PATH_CREATE_NULL()		TSIP_HEADER_PATH_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Path' as per RFC 3327.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF : Path	= 	"Path" HCOLON path-value *(COMMA path-value)
 ///							path-value	= 	name-addr *( SEMI rr-param )
@@ -67,9 +60,12 @@ tsip_header_Path_t;
 
 typedef tsk_list_t tsip_header_Paths_L_t;
 
-tsip_header_Paths_L_t *tsip_header_Path_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Path_t* tsip_header_Path_create(const tsip_uri_t* uri);
+TINYSIP_API tsip_header_Path_t* tsip_header_Path_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_Path_def_t;
+TINYSIP_API tsip_header_Paths_L_t *tsip_header_Path_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Path_def_t;
 
 TSIP_END_DECLS
 

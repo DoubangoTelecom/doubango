@@ -47,20 +47,17 @@
 	machine tsip_machine_parser_header_Call_ID;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action parse_value
-	{
+	action parse_value{
 		TSK_PARSER_SET_STRING(hdr_call_id->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	callid = word ( "@" word )?;
@@ -71,13 +68,17 @@
 
 }%%
 
+
+tsip_header_Call_ID_t* tsip_header_Call_ID_create(const char* call_id)
+{
+	return tsk_object_new(TSIP_HEADER_CALL_ID_VA_ARGS(call_id));
+}
+
 int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Call_ID_t *Call_ID = header;
-		if(Call_ID->value)
-		{
+		if(Call_ID->value){
 			return tsk_buffer_append(output, Call_ID->value, strlen(Call_ID->value));
 		}
 	}
@@ -95,7 +96,7 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Call_ID_t *hdr_call_id = TSIP_HEADER_CALL_ID_CREATE(0);
+	tsip_header_Call_ID_t *hdr_call_id = tsip_header_Call_ID_create(0);
 	
 	const char *tag_start;
 
@@ -103,8 +104,8 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse SIP 'Call-ID' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_call_id);
 	}
 	
@@ -121,31 +122,30 @@ tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
 //	Call_ID header object definition
 //
 
-static void* tsip_header_Call_ID_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Call_ID_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Call_ID_t *Call_ID = self;
-	if(Call_ID)
-	{
+	if(Call_ID){
 		Call_ID->value = tsk_strdup(va_arg(*app, const char *));
 		TSIP_HEADER(Call_ID)->type = tsip_htype_Call_ID;
 		TSIP_HEADER(Call_ID)->tostring = tsip_header_Call_ID_tostring;
 	}
-	else
-	{
-		TSK_DEBUG_ERROR("Failed to create new Call_ID header.");
+	else{
+		TSK_DEBUG_ERROR("Failed to create new Call-ID header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Call_ID_destroy(void *self)
+static tsk_object_t* tsip_header_Call_ID_dtor(tsk_object_t *self)
 {
 	tsip_header_Call_ID_t *Call_ID = self;
-	if(Call_ID)
-	{
+	if(Call_ID){
 		TSK_FREE(Call_ID->value);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Call_ID));
 	}
-	else TSK_DEBUG_ERROR("Null Call_ID header.");
+	else{
+		TSK_DEBUG_ERROR("Null Call-ID header.");
+	}
 
 	return self;
 }
@@ -153,8 +153,8 @@ static void* tsip_header_Call_ID_destroy(void *self)
 static const tsk_object_def_t tsip_header_Call_ID_def_s = 
 {
 	sizeof(tsip_header_Call_ID_t),
-	tsip_header_Call_ID_create,
-	tsip_header_Call_ID_destroy,
-	0
+	tsip_header_Call_ID_ctor,
+	tsip_header_Call_ID_dtor,
+	tsk_null
 };
-const void *tsip_header_Call_ID_def_t = &tsip_header_Call_ID_def_s;
+const tsk_object_def_t *tsip_header_Call_ID_def_t = &tsip_header_Call_ID_def_s;

@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Content_Type.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Content_Type.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -43,13 +43,22 @@
 *	Ragel state machine.
 */
 
-/* #line 86 "tsip_parser_header_Content_Type.rl" */
+/* #line 82 "./ragel/tsip_parser_header_Content_Type.rl" */
 
+
+tsip_header_Content_Type_t* tsip_header_Content_Type_create(const char* type)
+{
+	return tsk_object_new(TSIP_HEADER_CONTENT_TYPE_VA_ARGS(type));
+}
+
+tsip_header_Content_Type_t* tsip_header_Content_Type_create_null()
+{
+	return tsip_header_Content_Type_create(tsk_null);
+}
 
 int tsip_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Content_Type_t *Content_Type = header;
 		if(Content_Type->type){
 			return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
@@ -68,12 +77,12 @@ tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Content_Type_t *hdr_ctype = TSIP_HEADER_CONTENT_TYPE_CREATE_NULL();
+	tsip_header_Content_Type_t *hdr_ctype = tsip_header_Content_Type_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 77 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 86 "./src/headers/tsip_header_Content_Type.c" */
 static const char _tsip_machine_parser_header_Content_Type_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -84,10 +93,9 @@ static const short _tsip_machine_parser_header_Content_Type_key_offsets[] = {
 	46, 62, 66, 67, 69, 72, 89, 90, 
 	92, 108, 126, 130, 131, 133, 136, 153, 
 	154, 156, 172, 190, 194, 195, 197, 200, 
-	218, 219, 221, 239, 240, 242, 245, 261, 
-	263, 265, 267, 269, 271, 272, 274, 278, 
-	279, 285, 303, 305, 307, 309, 311, 313, 
-	314, 316, 318, 320, 322
+	218, 219, 221, 239, 240, 242, 245, 253, 
+	254, 256, 260, 261, 267, 285, 287, 289, 
+	291, 293, 295, 296, 298, 300, 302, 304
 };
 
 static const char _tsip_machine_parser_header_Content_Type_trans_keys[] = {
@@ -121,17 +129,15 @@ static const char _tsip_machine_parser_header_Content_Type_trans_keys[] = {
 	95, 122, 10, 9, 32, 9, 13, 32, 
 	33, 34, 37, 39, 126, 42, 43, 45, 
 	46, 48, 57, 65, 90, 95, 122, 10, 
-	9, 32, 9, 32, 34, 9, 13, 34, 
-	92, -64, -33, -32, -17, -16, -9, -8, 
-	-5, -4, -3, 32, 126, -128, -65, -128, 
-	-65, -128, -65, -128, -65, -128, -65, 10, 
-	9, 32, 9, 13, 32, 59, 10, 0, 
-	9, 11, 12, 14, 127, 9, 13, 32, 
-	33, 37, 39, 59, 126, 42, 43, 45, 
-	46, 48, 57, 65, 90, 95, 122, 78, 
-	110, 84, 116, 69, 101, 78, 110, 84, 
-	116, 45, 84, 116, 89, 121, 80, 112, 
-	69, 101, 0
+	9, 32, 9, 32, 34, 13, 34, 92, 
+	127, 0, 8, 10, 31, 10, 9, 32, 
+	9, 13, 32, 59, 10, 0, 9, 11, 
+	12, 14, 127, 9, 13, 32, 33, 37, 
+	39, 59, 126, 42, 43, 45, 46, 48, 
+	57, 65, 90, 95, 122, 78, 110, 84, 
+	116, 69, 101, 78, 110, 84, 116, 45, 
+	84, 116, 89, 121, 80, 112, 69, 101, 
+	0
 };
 
 static const char _tsip_machine_parser_header_Content_Type_single_lengths[] = {
@@ -139,10 +145,9 @@ static const char _tsip_machine_parser_header_Content_Type_single_lengths[] = {
 	8, 4, 1, 2, 3, 7, 1, 2, 
 	6, 8, 4, 1, 2, 3, 7, 1, 
 	2, 6, 8, 4, 1, 2, 3, 8, 
-	1, 2, 8, 1, 2, 3, 4, 0, 
-	0, 0, 0, 0, 1, 2, 4, 1, 
-	0, 8, 2, 2, 2, 2, 2, 1, 
-	2, 2, 2, 2, 0
+	1, 2, 8, 1, 2, 3, 4, 1, 
+	2, 4, 1, 0, 8, 2, 2, 2, 
+	2, 2, 1, 2, 2, 2, 2, 0
 };
 
 static const char _tsip_machine_parser_header_Content_Type_range_lengths[] = {
@@ -150,10 +155,9 @@ static const char _tsip_machine_parser_header_Content_Type_range_lengths[] = {
 	4, 0, 0, 0, 0, 5, 0, 0, 
 	5, 5, 0, 0, 0, 0, 5, 0, 
 	0, 5, 5, 0, 0, 0, 0, 5, 
-	0, 0, 5, 0, 0, 0, 6, 1, 
-	1, 1, 1, 1, 0, 0, 0, 0, 
-	3, 5, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0
+	0, 0, 5, 0, 0, 0, 2, 0, 
+	0, 0, 0, 3, 5, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0
 };
 
 static const short _tsip_machine_parser_header_Content_Type_index_offsets[] = {
@@ -161,10 +165,9 @@ static const short _tsip_machine_parser_header_Content_Type_index_offsets[] = {
 	43, 56, 61, 63, 66, 70, 83, 85, 
 	88, 100, 114, 119, 121, 124, 128, 141, 
 	143, 146, 158, 172, 177, 179, 182, 186, 
-	200, 202, 205, 219, 221, 224, 228, 239, 
-	241, 243, 245, 247, 249, 251, 254, 259, 
-	261, 265, 279, 282, 285, 288, 291, 294, 
-	296, 299, 302, 305, 308
+	200, 202, 205, 219, 221, 224, 228, 235, 
+	237, 240, 245, 247, 251, 265, 268, 271, 
+	274, 277, 280, 282, 285, 288, 291, 294
 };
 
 static const char _tsip_machine_parser_header_Content_Type_indicies[] = {
@@ -196,29 +199,26 @@ static const char _tsip_machine_parser_header_Content_Type_indicies[] = {
 	40, 1, 41, 41, 1, 41, 42, 41, 
 	38, 39, 38, 38, 38, 38, 38, 38, 
 	38, 38, 1, 43, 1, 44, 44, 1, 
-	44, 44, 39, 1, 39, 50, 51, 52, 
-	45, 46, 47, 48, 49, 39, 1, 39, 
-	1, 45, 1, 46, 1, 47, 1, 48, 
-	1, 53, 1, 39, 39, 1, 54, 55, 
-	54, 56, 1, 57, 1, 39, 39, 39, 
-	1, 54, 55, 54, 38, 38, 38, 56, 
-	38, 38, 38, 38, 38, 38, 1, 58, 
+	44, 44, 39, 1, 45, 46, 47, 1, 
+	1, 1, 39, 48, 1, 39, 39, 1, 
+	49, 50, 49, 51, 1, 52, 1, 39, 
+	39, 39, 1, 49, 50, 49, 38, 38, 
+	38, 51, 38, 38, 38, 38, 38, 38, 
+	1, 53, 53, 1, 54, 54, 1, 55, 
+	55, 1, 56, 56, 1, 57, 57, 1, 
 	58, 1, 59, 59, 1, 60, 60, 1, 
-	61, 61, 1, 62, 62, 1, 63, 1, 
-	64, 64, 1, 65, 65, 1, 66, 66, 
-	1, 2, 2, 1, 1, 0
+	61, 61, 1, 2, 2, 1, 1, 0
 };
 
 static const char _tsip_machine_parser_header_Content_Type_trans_targs[] = {
-	2, 0, 3, 4, 50, 5, 8, 6, 
+	2, 0, 3, 4, 45, 5, 8, 6, 
 	7, 9, 10, 8, 13, 11, 12, 14, 
-	17, 15, 16, 18, 47, 22, 18, 19, 
+	17, 15, 16, 18, 42, 22, 18, 19, 
 	22, 20, 21, 23, 26, 24, 25, 27, 
-	28, 26, 31, 29, 30, 32, 49, 38, 
-	33, 34, 35, 36, 37, 39, 40, 41, 
-	42, 43, 44, 46, 48, 45, 18, 47, 
-	22, 60, 51, 52, 53, 54, 55, 56, 
-	57, 58, 59
+	28, 26, 31, 29, 30, 32, 44, 38, 
+	33, 34, 35, 36, 37, 39, 41, 43, 
+	40, 18, 42, 22, 55, 46, 47, 48, 
+	49, 50, 51, 52, 53, 54
 };
 
 static const char _tsip_machine_parser_header_Content_Type_trans_actions[] = {
@@ -228,28 +228,27 @@ static const char _tsip_machine_parser_header_Content_Type_trans_actions[] = {
 	0, 0, 0, 0, 1, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 5, 5, 
-	5, 7, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0
+	0, 5, 5, 5, 7, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0
 };
 
 static const int tsip_machine_parser_header_Content_Type_start = 1;
-static const int tsip_machine_parser_header_Content_Type_first_final = 60;
+static const int tsip_machine_parser_header_Content_Type_first_final = 55;
 static const int tsip_machine_parser_header_Content_Type_error = 0;
 
 static const int tsip_machine_parser_header_Content_Type_en_main = 1;
 
 
-/* #line 115 "tsip_parser_header_Content_Type.rl" */
+/* #line 120 "./ragel/tsip_parser_header_Content_Type.rl" */
 	
-/* #line 246 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 245 "./src/headers/tsip_header_Content_Type.c" */
 	{
 	cs = tsip_machine_parser_header_Content_Type_start;
 	}
 
-/* #line 116 "tsip_parser_header_Content_Type.rl" */
+/* #line 121 "./ragel/tsip_parser_header_Content_Type.rl" */
 	
-/* #line 253 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 252 "./src/headers/tsip_header_Content_Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -324,29 +323,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tsip_parser_header_Content_Type.rl" */
+/* #line 49 "./ragel/tsip_parser_header_Content_Type.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "tsip_parser_header_Content_Type.rl" */
+/* #line 53 "./ragel/tsip_parser_header_Content_Type.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ctype->type);
 	}
 	break;
 	case 2:
-/* #line 60 "tsip_parser_header_Content_Type.rl" */
+/* #line 57 "./ragel/tsip_parser_header_Content_Type.rl" */
 	{		
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_ctype));
 	}
 	break;
 	case 3:
-/* #line 65 "tsip_parser_header_Content_Type.rl" */
+/* #line 61 "./ragel/tsip_parser_header_Content_Type.rl" */
 	{
 	}
 	break;
-/* #line 350 "../src/headers/tsip_header_Content_Type.c" */
+/* #line 349 "./src/headers/tsip_header_Content_Type.c" */
 		}
 	}
 
@@ -359,14 +358,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 117 "tsip_parser_header_Content_Type.rl" */
+/* #line 122 "./ragel/tsip_parser_header_Content_Type.rl" */
 	
 	if( cs < 
-/* #line 366 "../src/headers/tsip_header_Content_Type.c" */
-60
-/* #line 118 "tsip_parser_header_Content_Type.rl" */
- )
-	{
+/* #line 365 "./src/headers/tsip_header_Content_Type.c" */
+55
+/* #line 123 "./ragel/tsip_parser_header_Content_Type.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse SIP 'Content-Type' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);
 	}
 	
@@ -383,32 +382,31 @@ _again:
 //	Content_Type header object definition
 //
 
-static void* tsip_header_Content_Type_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Content_Type_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Content_Type_t *Content_Type = self;
-	if(Content_Type)
-	{
+	if(Content_Type){
 		TSIP_HEADER(Content_Type)->type = tsip_htype_Content_Type;
 		TSIP_HEADER(Content_Type)->tostring = tsip_header_Content_Type_tostring;
 
 		Content_Type->type = tsk_strdup( va_arg(*app, const char*) );
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Content_Type header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Content_Type_destroy(void *self)
+static tsk_object_t* tsip_header_Content_Type_dtor(tsk_object_t *self)
 {
 	tsip_header_Content_Type_t *Content_Type = self;
-	if(Content_Type)
-	{
+	if(Content_Type){
 		TSK_FREE(Content_Type->type);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Content_Type));
 	}
-	else TSK_DEBUG_ERROR("Null Content_Type header.");
+	else{
+		TSK_DEBUG_ERROR("Null Content_Type header.");
+	}
 
 	return self;
 }
@@ -416,9 +414,9 @@ static void* tsip_header_Content_Type_destroy(void *self)
 static const tsk_object_def_t tsip_header_Content_Type_def_s = 
 {
 	sizeof(tsip_header_Content_Type_t),
-	tsip_header_Content_Type_create,
-	tsip_header_Content_Type_destroy,
-	0
+	tsip_header_Content_Type_ctor,
+	tsip_header_Content_Type_dtor,
+	tsk_null
 };
-const void *tsip_header_Content_Type_def_t = &tsip_header_Content_Type_def_s;
+const tsk_object_def_t *tsip_header_Content_Type_def_t = &tsip_header_Content_Type_def_s;
 

@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Allow.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Allow.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -44,27 +44,29 @@
 *	Ragel state machine.
 */
 
-/* #line 69 "tsip_parser_header_Allow.rl" */
+/* #line 69 "./ragel/tsip_parser_header_Allow.rl" */
 
+
+
+tsip_header_Allow_t* tsip_header_Allow_create()
+{
+	return tsk_object_new(tsip_header_Allow_def_t);
+}
 
 int tsip_header_Allow_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Allow_t *Allow = header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;
 
-		tsk_list_foreach(item, Allow->methods)
-		{
+		tsk_list_foreach(item, Allow->methods){
 			str = item->data;
-			if(item == Allow->methods->head)
-			{
+			if(item == Allow->methods->head){
 				tsk_buffer_append(output, str->value, strlen(str->value));
 			}
-			else
-			{
+			else{
 				tsk_buffer_append_2(output, ",%s", str->value);
 			}
 		}
@@ -81,12 +83,12 @@ tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Allow_t *hdr_allow = TSIP_HEADER_ALLOW_CREATE();
+	tsip_header_Allow_t *hdr_allow = tsip_header_Allow_create();
 	
 	const char *tag_start;
 
 	
-/* #line 90 "../src/headers/tsip_header_Allow.c" */
+/* #line 92 "./src/headers/tsip_header_Allow.c" */
 static const char _tsip_machine_parser_header_Allow_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -164,16 +166,16 @@ static const int tsip_machine_parser_header_Allow_error = 0;
 static const int tsip_machine_parser_header_Allow_en_main = 1;
 
 
-/* #line 110 "tsip_parser_header_Allow.rl" */
+/* #line 112 "./ragel/tsip_parser_header_Allow.rl" */
 	
-/* #line 170 "../src/headers/tsip_header_Allow.c" */
+/* #line 172 "./src/headers/tsip_header_Allow.c" */
 	{
 	cs = tsip_machine_parser_header_Allow_start;
 	}
 
-/* #line 111 "tsip_parser_header_Allow.rl" */
+/* #line 113 "./ragel/tsip_parser_header_Allow.rl" */
 	
-/* #line 177 "../src/headers/tsip_header_Allow.c" */
+/* #line 179 "./src/headers/tsip_header_Allow.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -248,23 +250,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 51 "tsip_parser_header_Allow.rl" */
+/* #line 51 "./ragel/tsip_parser_header_Allow.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "tsip_parser_header_Allow.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Allow.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_allow->methods);
 	}
 	break;
 	case 2:
-/* #line 61 "tsip_parser_header_Allow.rl" */
+/* #line 61 "./ragel/tsip_parser_header_Allow.rl" */
 	{
 	}
 	break;
-/* #line 268 "../src/headers/tsip_header_Allow.c" */
+/* #line 270 "./src/headers/tsip_header_Allow.c" */
 		}
 	}
 
@@ -277,14 +279,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 112 "tsip_parser_header_Allow.rl" */
+/* #line 114 "./ragel/tsip_parser_header_Allow.rl" */
 	
 	if( cs < 
-/* #line 284 "../src/headers/tsip_header_Allow.c" */
+/* #line 286 "./src/headers/tsip_header_Allow.c" */
 18
-/* #line 113 "tsip_parser_header_Allow.rl" */
- )
-	{
+/* #line 115 "./ragel/tsip_parser_header_Allow.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse SIP 'Allow' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_allow);
 	}
 	
@@ -301,13 +303,10 @@ _again:
 //	Allow header object definition
 //
 
-/**@ingroup tsip_header_Allow_group
-*/
-static void* tsip_header_Allow_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Allow_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Allow_t *Allow = self;
-	if(Allow)
-	{
+	if(Allow){
 		/*const char* methods = va_arg(*app, const char *);
 		if(methods && !tsk_strempty(methods))
 		{
@@ -316,21 +315,18 @@ static void* tsip_header_Allow_create(void *self, va_list * app)
 		TSIP_HEADER(Allow)->type = tsip_htype_Allow;
 		TSIP_HEADER(Allow)->tostring = tsip_header_Allow_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Allow header.");
 	}
 	return self;
 }
 
-/**@ingroup tsip_header_Allow_group
-*/
-static void* tsip_header_Allow_destroy(void *self)
+static tsk_object_t* tsip_header_Allow_dtor(tsk_object_t *self)
 {
 	tsip_header_Allow_t *Allow = self;
-	if(Allow)
-	{
+	if(Allow){
 		TSK_OBJECT_SAFE_FREE(Allow->methods);
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Allow));
 	}
 	else TSK_DEBUG_ERROR("Null Allow header.");
 
@@ -340,8 +336,8 @@ static void* tsip_header_Allow_destroy(void *self)
 static const tsk_object_def_t tsip_header_Allow_def_s = 
 {
 	sizeof(tsip_header_Allow_t),
-	tsip_header_Allow_create,
-	tsip_header_Allow_destroy,
-	0
+	tsip_header_Allow_ctor,
+	tsip_header_Allow_dtor,
+	tsk_null
 };
-const void *tsip_header_Allow_def_t = &tsip_header_Allow_def_s;
+const tsk_object_def_t *tsip_header_Allow_def_t = &tsip_header_Allow_def_s;

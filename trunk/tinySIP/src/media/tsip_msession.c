@@ -30,6 +30,10 @@
 #include "tinySIP/media/tsip_msession.h"
 
 
+tsip_msession_t* tsip_msession_create()
+{
+	return tsk_object_new(tsip_msession_def_t);
+}
 
 int tsip_msession_start(tsip_msession_t* self)
 {
@@ -84,7 +88,7 @@ bail:
 //========================================================
 //	SIP media session object definition
 //
-static tsk_object_t* tsip_msession_create(void * self, va_list * app)
+static tsk_object_t* tsip_msession_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_msession_t *ms = self;
 	if(ms){
@@ -92,7 +96,7 @@ static tsk_object_t* tsip_msession_create(void * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsip_msession_destroy(void * self)
+static tsk_object_t* tsip_msession_dtor(tsk_object_t * self)
 { 
 	tsip_msession_t *ms = self;
 	if(ms){
@@ -103,9 +107,9 @@ static tsk_object_t* tsip_msession_destroy(void * self)
 static const tsk_object_def_t tsip_msession_def_s = 
 {
 	sizeof(tsip_msession_t),
-	tsip_msession_create, 
-	tsip_msession_destroy,
+	tsip_msession_ctor, 
+	tsip_msession_dtor,
 	tsk_null, 
 };
-const void *tsip_msession_def_t = &tsip_msession_def_s;
+const tsk_object_def_t *tsip_msession_def_t = &tsip_msession_def_s;
 

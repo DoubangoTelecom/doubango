@@ -44,20 +44,17 @@
 	machine tsip_machine_parser_header_Min_Expires;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action parse_value
-	{
+	action parse_value{
 		TSK_PARSER_SET_INTEGER(hdr_minE->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	Min_Expires = "Min-Expires"i HCOLON (delta_seconds)>tag %parse_value;
@@ -67,15 +64,24 @@
 
 }%%
 
+tsip_header_Min_Expires_t* tsip_header_Min_Expires_create(int32_t value)
+{
+	return tsk_object_new(TSIP_HEADER_MIN_EXPIRES_VA_ARGS(value));
+}
+
+tsip_header_Min_Expires_t* tsip_header_Min_Expires_create_null()
+{
+	return tsip_header_Min_Expires_create(TSIP_HEADER_MIN_EXPIRES_NONE);
+}
+
 int tsip_header_Min_Expires_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Min_Expires_t *Min_Expires = header;
-		if(Min_Expires->value >=0)
-		{
+		if(Min_Expires->value >=0){
 			return tsk_buffer_append_2(output, "%d", Min_Expires->value);
 		}
+		return 0;
 	}
 
 	return -1;
@@ -87,7 +93,7 @@ tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Min_Expires_t *hdr_minE = TSIP_HEADER_MIN_EXPIRES_CREATE_NULL();
+	tsip_header_Min_Expires_t *hdr_minE = tsip_header_Min_Expires_create_null();
 	
 	const char *tag_start;
 
@@ -95,8 +101,8 @@ tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Min-Expires' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_minE);
 	}
 	
@@ -113,30 +119,30 @@ tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_
 //	Min-Expires header object definition
 //
 
-static void* tsip_header_Min_Expires_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Min_Expires_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Min_Expires_t *Min_Expires = self;
-	if(Min_Expires)
-	{
+	if(Min_Expires){
 		TSIP_HEADER(Min_Expires)->type = tsip_htype_Min_Expires;
 		TSIP_HEADER(Min_Expires)->tostring = tsip_header_Min_Expires_tostring;
 		Min_Expires->value = va_arg(*app, int32_t);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Min_Expires header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Min_Expires_destroy(void *self)
+static tsk_object_t* tsip_header_Min_Expires_dtor(tsk_object_t *self)
 {
 	tsip_header_Min_Expires_t *Min_Expires = self;
 	if(Min_Expires)
 	{
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Min_Expires));
 	}
-	else TSK_DEBUG_ERROR("Null Min_Expires header.");
+	else{
+		TSK_DEBUG_ERROR("Null Min_Expires header.");
+	}
 
 	return self;
 }
@@ -144,8 +150,8 @@ static void* tsip_header_Min_Expires_destroy(void *self)
 static const tsk_object_def_t tsip_header_Min_Expires_def_s = 
 {
 	sizeof(tsip_header_Min_Expires_t),
-	tsip_header_Min_Expires_create,
-	tsip_header_Min_Expires_destroy,
-	0
+	tsip_header_Min_Expires_ctor,
+	tsip_header_Min_Expires_dtor,
+	tsk_null
 };
-const void *tsip_header_Min_Expires_def_t = &tsip_header_Min_Expires_def_s;
+const tsk_object_def_t *tsip_header_Min_Expires_def_t = &tsip_header_Min_Expires_def_s;

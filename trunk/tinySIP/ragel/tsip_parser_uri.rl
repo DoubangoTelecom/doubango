@@ -43,7 +43,7 @@
 	machine tsip_machine_parser_uri;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	#include tsip_machine_userinfo;
 		
 	action tag{
@@ -150,7 +150,7 @@ tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
 	const char *ts = 0, *te = 0;
 	int act =0;
 
-	tsip_uri_t *uri = TSIP_URI_CREATE(uri_unknown);
+	tsip_uri_t *uri = tsip_uri_create(uri_unknown);
 	
 	const char *tag_start = 0;
 	

@@ -40,13 +40,11 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_LAYER_CREATE(stack)				tsk_object_new(tsip_dialog_layer_def_t, stack)
-
 typedef struct tsip_dialog_layer_s
 {
 	TSK_DECLARE_OBJECT;
 
-	const tsip_stack_handle_t *stack;
+	const tsip_stack_t *stack;
 
 	tsip_dialogs_L_t *dialogs;
 
@@ -56,7 +54,7 @@ tsip_dialog_layer_t;
 
 typedef tsk_list_t tsip_dialog_layers_L_t;
 
-//int tsip_dialog_layer_register(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *SSESSION);
+tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack);
 
 tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss);
 
@@ -67,7 +65,7 @@ int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dia
 
 int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const tsip_message_t* message);
 
-TINYSIP_GEXTERN const void *tsip_dialog_layer_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_layer_def_t;
 
 TSIP_END_DECLS
 

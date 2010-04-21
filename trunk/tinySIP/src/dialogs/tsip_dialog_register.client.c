@@ -205,10 +205,12 @@ int tsip_dialog_register_timer_callback(const tsip_dialog_register_t* self, tsk_
 	return ret;
 }
 
-/**
- * @fn	int tsip_dialog_register_init(tsip_dialog_register_t *self)
- *
- * @brief	Initializes the dialog.
+tsip_dialog_register_t* tsip_dialog_register_create(tsip_ssession_handle_t* ss)
+{
+	return tsk_object_new(tsip_dialog_register_def_t, ss);
+}
+
+/** Initializes the dialog.
  *
  * @param [in,out]	self	The dialog to initialize. 
 **/
@@ -266,7 +268,7 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 			TSK_FSM_ADD_NULL());
 
 	/* Sets callback function */
-	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_register_event_callback);
+	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK_F(tsip_dialog_register_event_callback);
 	
 	/* Timers */
 	self->timerrefresh.id = TSK_INVALID_TIMER_ID;
@@ -337,7 +339,7 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 		/* Associated URIs */
 		for(index = 0; (hdr_P_Associated_URI_t = (const tsip_header_P_Associated_URI_t*)tsip_message_get_headerAt(response, tsip_htype_P_Associated_URI, index)); index++){
 			if(!TSIP_DIALOG_GET_STACK(self)->associated_uris){
-				TSIP_DIALOG_GET_STACK(self)->associated_uris = TSK_LIST_CREATE();
+				TSIP_DIALOG_GET_STACK(self)->associated_uris = tsk_list_create();
 			}
 			uri = tsk_object_ref(hdr_P_Associated_URI_t->uri);
 			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->associated_uris, (void**)&uri);
@@ -350,7 +352,7 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 		*/
 		for(index = 0; (hdr_Service_Route = (const tsip_header_Service_Route_t*)tsip_message_get_headerAt(response, tsip_htype_Service_Route, index)); index++){
 			if(!TSIP_DIALOG_GET_STACK(self)->service_routes){
-				TSIP_DIALOG_GET_STACK(self)->service_routes = TSK_LIST_CREATE();
+				TSIP_DIALOG_GET_STACK(self)->service_routes = tsk_list_create();
 			}
 			uri = tsk_object_ref(hdr_Service_Route->uri);
 			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->service_routes, (void**)&uri);
@@ -359,7 +361,7 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 		/* Paths */
 		for(index = 0; (hdr_Path = (const tsip_header_Path_t*)tsip_message_get_headerAt(response, tsip_htype_Path, index)); index++){
 			if(TSIP_DIALOG_GET_STACK(self)->paths == 0){
-				TSIP_DIALOG_GET_STACK(self)->paths = TSK_LIST_CREATE();
+				TSIP_DIALOG_GET_STACK(self)->paths = tsk_list_create();
 			}
 			uri = tsk_object_ref(hdr_Path->uri);
 			tsk_list_push_back_data(TSIP_DIALOG_GET_STACK(self)->paths, (void**)&uri);
@@ -731,11 +733,10 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 //========================================================
 //	SIP dialog REGISTER object definition
 //
-static void* tsip_dialog_register_create(void * self, va_list * app)
+static tsk_object_t* tsip_dialog_register_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_dialog_register_t *dialog = self;
-	if(dialog)
-	{
+	if(dialog){
 		tsip_ssession_t *ss = va_arg(*app, tsip_ssession_t *);
 
 		/* Initialize base class */
@@ -751,11 +752,10 @@ static void* tsip_dialog_register_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_dialog_register_destroy(void * _self)
+static tsk_object_t* tsip_dialog_register_dtor(tsk_object_t * _self)
 { 
 	tsip_dialog_register_t *self = _self;
-	if(self)
-	{
+	if(self){
 		TSK_DEBUG_INFO("*** REGISTER Dialog destroyed ***");
 
 		/* Cancel all timers */
@@ -776,8 +776,8 @@ static int tsip_dialog_register_cmp(const tsk_object_t *obj1, const tsk_object_t
 static const tsk_object_def_t tsip_dialog_register_def_s = 
 {
 	sizeof(tsip_dialog_register_t),
-	tsip_dialog_register_create, 
-	tsip_dialog_register_destroy,
+	tsip_dialog_register_ctor, 
+	tsip_dialog_register_dtor,
 	tsip_dialog_register_cmp, 
 };
-const void *tsip_dialog_register_def_t = &tsip_dialog_register_def_s;
+const tsk_object_def_t *tsip_dialog_register_def_t = &tsip_dialog_register_def_s;

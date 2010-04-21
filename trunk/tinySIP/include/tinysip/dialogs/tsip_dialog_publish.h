@@ -35,8 +35,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_PUBLISH_CREATE(ss)		tsk_object_new(tsip_dialog_publish_def_t, (tsip_ssession_handle_t*) ss)
-
 #define TSIP_DIALOG_PUBLISH(self)							((tsip_dialog_publish_t*)(self))
 
 typedef struct tsip_dialog_publish
@@ -51,7 +49,9 @@ typedef struct tsip_dialog_publish
 }
 tsip_dialog_publish_t;
 
-TINYSIP_GEXTERN const void *tsip_dialog_publish_def_t;
+tsip_dialog_publish_t* tsip_dialog_publish_create(const tsip_ssession_handle_t* ss);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_publish_def_t;
 
 
 TSIP_END_DECLS

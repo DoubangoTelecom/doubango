@@ -44,64 +44,50 @@
 	machine tsip_machine_parser_header_Contact;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action create_contact
-	{
-		if(!curr_contact)
-		{
-			curr_contact = TSIP_HEADER_CONTACT_CREATE();
+	action create_contact{
+		if(!curr_contact){
+			curr_contact = tsip_header_Contact_create();
 		}
 	}
 
-	action parse_display_name
-	{
-		if(curr_contact)
-		{
+	action parse_display_name{
+		if(curr_contact){
 			TSK_PARSER_SET_STRING(curr_contact->display_name);
 		}
 	}
 
-	action parse_uri
-	{
-		if(curr_contact && !curr_contact->uri)
-		{
+	action parse_uri{
+		if(curr_contact && !curr_contact->uri){
 			int len = (int)(p  - tag_start);
 			curr_contact->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 
-	action parse_expires
-	{
-		if(curr_contact)
-		{
+	action parse_expires{
+		if(curr_contact){
 			TSK_PARSER_SET_INTEGER(curr_contact->expires);
 		}
 	}
 
-	action parse_param
-	{
-		if(curr_contact)
-		{
+	action parse_param{
+		if(curr_contact){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_contact));
 		}
 	}
 
-	action add_contact
-	{
-		if(curr_contact)
-		{
+	action add_contact{
+		if(curr_contact){
 			tsk_list_push_back_data(hdr_contacts, ((void**) &curr_contact));
 		}
 	}
 	
-	action eob
-	{
+	action eob{
 	}
 	
 	URI = (scheme HCOLON any+)>tag %parse_uri;
@@ -120,29 +106,30 @@
 }%%
 
 
+tsip_header_Contact_t* tsip_header_Contact_create()
+{
+	return tsk_object_new(tsip_header_Contact_def_t);
+}
+
 int tsip_header_Contact_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Contact_t *Contact = header;
 		int ret = 0;
 
 		{
 			/* Display name */
-			if(Contact->display_name)
-			{
+			if(Contact->display_name){
 				tsk_buffer_append_2(output, "\"%s\"", Contact->display_name);
 			}
 
 			/* Uri */
-			if(ret=tsip_uri_serialize(Contact->uri, 1, 1, output))
-			{
+			if(ret=tsip_uri_serialize(Contact->uri, 1, 1, output)){
 				return ret;
 			}
 
 			/* Expires */
-			if(Contact->expires >=0)
-			{
+			if(Contact->expires >=0){
 				tsk_buffer_append_2(output, ";expires=%d", Contact->expires);
 			}
 		}
@@ -160,7 +147,7 @@ tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, size_t siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Contacts_L_t *hdr_contacts = TSK_LIST_CREATE();
+	tsip_header_Contacts_L_t *hdr_contacts = tsk_list_create();
 	
 	const char *tag_start;
 	tsip_header_Contact_t *curr_contact = 0;
@@ -169,8 +156,8 @@ tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, size_t siz
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse SIP 'Contact' header.");
 		TSK_OBJECT_SAFE_FREE(curr_contact);
 		TSK_OBJECT_SAFE_FREE(hdr_contacts);
 	}
@@ -185,7 +172,7 @@ tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, size_t siz
 //	Contact header object definition
 //
 
-static void* tsip_header_Contact_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Contact_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Contact_t *Contact = self;
 	if(Contact)
@@ -201,17 +188,18 @@ static void* tsip_header_Contact_create(void *self, va_list * app)
 	return self;
 }
 
-static void* tsip_header_Contact_destroy(void *self)
+static tsk_object_t* tsip_header_Contact_dtor(tsk_object_t *self)
 {
 	tsip_header_Contact_t *Contact = self;
-	if(Contact)
-	{
+	if(Contact){
 		TSK_FREE(Contact->display_name);
 		TSK_OBJECT_SAFE_FREE(Contact->uri);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Contact));
 	}
-	else TSK_DEBUG_ERROR("Null Contact header.");
+	else{
+		TSK_DEBUG_ERROR("Null Contact header.");
+	}
 
 	return self;
 }
@@ -219,11 +207,11 @@ static void* tsip_header_Contact_destroy(void *self)
 static const tsk_object_def_t tsip_header_Contact_def_s = 
 {
 	sizeof(tsip_header_Contact_t),
-	tsip_header_Contact_create,
-	tsip_header_Contact_destroy,
-	0
+	tsip_header_Contact_ctor,
+	tsip_header_Contact_dtor,
+	tsk_null
 };
-const void *tsip_header_Contact_def_t = &tsip_header_Contact_def_s;
+const tsk_object_def_t *tsip_header_Contact_def_t = &tsip_header_Contact_def_s;
 
 
 ////========================================================
@@ -232,7 +220,7 @@ const void *tsip_header_Contact_def_t = &tsip_header_Contact_def_s;
 //
 ///**@ingroup tsip_header_Contact_group
 //*/
-//static void* tsip_contact_create(void *self, va_list * app)
+//static tsk_object_t* tsip_contact_ctor(tsk_object_t *self, va_list * app)
 //{
 //	tsip_contact_t *contact = self;
 //	if(contact)
@@ -246,7 +234,7 @@ const void *tsip_header_Contact_def_t = &tsip_header_Contact_def_s;
 //	return self;
 //}
 //
-//static void* tsip_contact_destroy(void *self)
+//static tsk_object_t* tsip_contact_dtor(tsk_object_t *self)
 //{
 //	tsip_contact_t *contact = self;
 //	if(contact)
@@ -264,8 +252,8 @@ const void *tsip_header_Contact_def_t = &tsip_header_Contact_def_s;
 //static const tsk_object_def_t tsip_contact_def_s = 
 //{
 //	sizeof(tsip_contact_t),
-//	tsip_contact_create,
-//	tsip_contact_destroy,
+//	tsip_contact_ctor,
+//	tsip_contact_dtor,
 //	0
 //};
 //const void *tsip_contact_def_t = &tsip_contact_def_s;

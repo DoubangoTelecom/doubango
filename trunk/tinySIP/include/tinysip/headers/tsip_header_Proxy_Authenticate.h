@@ -35,12 +35,6 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_PROXY_AUTHENTICATE_CREATE
-* Creates new sip 'PROXY-AUTHENTICATE' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_PROXY_AUTHENTICATE_CREATE()				tsk_object_new(tsip_header_Proxy_Authenticate_def_t)
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
@@ -79,7 +73,7 @@ tsip_header_Proxy_Authenticate_t;
 
 tsip_header_Proxy_Authenticate_t *tsip_header_Proxy_Authenticate_parse(const char *data, size_t size);
 
-TINYSIP_GEXTERN const void *tsip_header_Proxy_Authenticate_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Proxy_Authenticate_def_t;
 
 TSIP_END_DECLS
 

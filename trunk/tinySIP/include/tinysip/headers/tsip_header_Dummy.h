@@ -35,13 +35,7 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_DUMMY_CREATE
-* Creates new sip Dummy header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_DUMMY_VA_ARGS(name, value)		tsip_header_Dummy_def_t, (const char*)name, (const char*)value
-#define TSIP_HEADER_DUMMY_CREATE(name, value)		tsk_object_new(TSIP_HEADER_DUMMY_VA_ARGS(name, value))
-#define TSIP_HEADER_DUMMY_CREATE_NULL()				TSIP_HEADER_DUMMY_CREATE(tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -60,9 +54,12 @@ typedef struct tsip_header_Dummy_s
 }
 tsip_header_Dummy_t;
 
-tsip_header_Dummy_t *tsip_header_Dummy_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Dummy_t* tsip_header_Dummy_create(const char* name, const char* value);
+TINYSIP_API tsip_header_Dummy_t* tsip_header_Dummy_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_Dummy_def_t;
+TINYSIP_API tsip_header_Dummy_t *tsip_header_Dummy_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Dummy_def_t;
 
 TSIP_END_DECLS
 

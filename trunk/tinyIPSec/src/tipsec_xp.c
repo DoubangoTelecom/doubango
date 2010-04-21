@@ -217,8 +217,8 @@ int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* 
 	TIPSEC_CONTEXT(ctx_xp)->port_us = port_us;
 
 	/* Set SPIs */
-	TIPSEC_CONTEXT(ctx_xp)->spi_uc = (tsk_urand() ^ tsk_urand());
-	TIPSEC_CONTEXT(ctx_xp)->spi_us = (tsk_urand() ^ tsk_urand());
+	TIPSEC_CONTEXT(ctx_xp)->spi_uc = (rand() ^ rand());
+	TIPSEC_CONTEXT(ctx_xp)->spi_us = (rand() ^ rand());
 
 	TIPSEC_CONTEXT(ctx_xp)->state = state_inbound;
 
@@ -587,11 +587,10 @@ DWORD WINAPI tipsec_waitForExit(void *arg)
 //=================================================================================================
 //	IPSec context object definition
 //
-static void* tipsec_context_create(void * self, va_list * app)
+static tsk_object_t* tipsec_context_ctor(tsk_object_t * self, va_list * app)
 {
 	tipsec_context_xp_t *context = self;
-	if(context)
-	{
+	if(context){
 		TIPSEC_CONTEXT(context)->ipproto = va_arg(*app, tipsec_ipproto_t);
 		TIPSEC_CONTEXT(context)->use_ipv6 = va_arg(*app, int);
 		TIPSEC_CONTEXT(context)->mode = va_arg(*app, tipsec_mode_t);
@@ -616,7 +615,7 @@ bail:
 	return self;
 }
 
-static void* tipsec_context_destroy(void * self)
+static tsk_object_t* tipsec_context_dtor(tsk_object_t * self)
 { 
 	tipsec_context_xp_t *context = self;
 	if(context)
@@ -635,7 +634,7 @@ static void* tipsec_context_destroy(void * self)
 	return self;
 }
 
-static int tipsec_context_cmp(const void *obj1, const void *obj2)
+static int tipsec_context_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return-1;
 }
@@ -643,8 +642,8 @@ static int tipsec_context_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tipsec_context_def_s = 
 {
 	sizeof(tipsec_context_xp_t),
-	tipsec_context_create, 
-	tipsec_context_destroy,
+	tipsec_context_ctor, 
+	tipsec_context_dtor,
 	tipsec_context_cmp, 
 };
 const void *tipsec_context_def_t = &tipsec_context_def_s;

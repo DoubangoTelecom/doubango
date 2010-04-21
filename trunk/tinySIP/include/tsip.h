@@ -21,7 +21,7 @@
 */
 
 /**@file tsip.h
- * @brief SIP (RFC 3261) and 3GPP IMS (TS 24.229) implementation.
+ * @brief SIP (RFC 3261) and 3GPP IMS/LTE (TS 24.229) implementation.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
@@ -131,7 +131,7 @@ typedef struct tsip_stack_s
 {
 	TSK_DECLARE_RUNNABLE;
 
-	tsip_stack_callback callback;
+	tsip_stack_callback_f callback;
 
 	/* Identity */
 	char* display_name;
@@ -210,24 +210,10 @@ tsip_stack_t;
 
 
 
-
-
-
-TINYSIP_API int tsip_global_init();
-TINYSIP_API int tsip_global_deinit();
-
-TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback callback, ...);
+TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback_f callback, ...);
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
-//int tsip_stack_alert(const tsip_stack_handle_t *self, tsip_ssession_id_t opid, short status_code, char *reason_phrase, int incoming, tsip_event_type_t type);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
-
-tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const char* protocol);
-tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr);
-const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self);
-const struct tsip_dialog_layer_s* tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self);
-const struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self);
-const struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self);
 
 TINYSIP_API int tsip_register(const tsip_ssession_handle_t *ss, ...);
 TINYSIP_API int tsip_unregister(const tsip_ssession_handle_t *ss, ...);
@@ -246,7 +232,7 @@ TINYSIP_API int tsip_invite(tsip_stack_handle_t *stack, const tsip_ssession_hand
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);
 
 
-TINYSIP_GEXTERN const void *tsip_stack_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_stack_def_t;
 
 TSIP_END_DECLS
 

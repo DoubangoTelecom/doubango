@@ -40,8 +40,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_TRANSPORT_LAYER_CREATE(stack)				tsk_object_new(tsip_transport_layer_def_t, stack)
-
 typedef struct tsip_transport_layer_s
 {
 	TSK_DECLARE_OBJECT;
@@ -52,6 +50,8 @@ typedef struct tsip_transport_layer_s
 	tsip_transports_L_t *transports;
 }
 tsip_transport_layer_t;
+
+tsip_transport_layer_t* tsip_transport_layer_create(tsip_stack_t *stack);
 
 int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_host, tnet_port_t local_port, tnet_socket_type_t type, const char* description);
 int tsip_transport_layer_remove(tsip_transport_layer_t* self, const char* description);
@@ -66,7 +66,7 @@ int tsip_transport_cleanupSAs(const tsip_transport_layer_t *self);
 int tsip_transport_layer_start(const tsip_transport_layer_t* self);
 int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self);
 
-TINYSIP_GEXTERN const void *tsip_transport_layer_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_transport_layer_def_t;
 
 TSIP_END_DECLS
 

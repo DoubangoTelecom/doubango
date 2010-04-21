@@ -20,45 +20,40 @@
 *
 */
 
-/**@file tsip_api_invite.h
- * @brief Public messaging (INVITE) functions.
+/**@file tinysip.h
+ * @brief SIP (RFC 3261) and 3GPP IMS/LTE (TS 24.229) API.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYSIP_TSIP_INVITE_H
-#define TINYSIP_TSIP_INVITE_H
+#ifndef TINYSIP_TINYSIP_H
+#define TINYSIP_TINYSIP_H
 
-#include "tinySIP_config.h"
+/* === tinySAK === */
+#include "tsk.h"
 
-#include "tinySIP/tsip_event.h"
+/* === tinyNET === */
+#include "tinynet.h"
 
-TSIP_BEGIN_DECLS
+/* === tinySIP === */
+#include "tsip.h"
 
-#define TSIP_INVITE_EVENT(self)		((tsip_invite_event_t*)(self))
+#include "tinySIP/parsers/tsip_parser_uri.h"
+#include "tinySIP/parsers/tsip_parser_header.h"
+#include "tinySIP/parsers/tsip_parser_message.h"
 
-typedef enum tsip_invite_event_type_e
-{
-	tsip_i_invite,
-	tsip_ai_invite,
-	tsip_o_invite,
-	tsip_ao_invite,
-}
-tsip_invite_event_type_t;
+#include "tinySIP/tsip_ssession.h"
+#include "tinySIP/tsip_action.h"
 
-typedef struct tsip_invite_event_e
-{
-	TSIP_DECLARE_EVENT;
+#include "tinySIP/tsip_message.h"
 
-	tsip_invite_event_type_t type;
-}
-tsip_invite_event_t;
+#include "tinySIP/headers/tsip_headers.h"
 
-int tsip_invite_event_signal(tsip_invite_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
+#include "tinySIP/api/tsip_api_invite.h"
+#include "tinySIP/api/tsip_api_message.h"
+#include "tinySIP/api/tsip_api_publish.h"
+#include "tinySIP/api/tsip_api_register.h"
+#include "tinySIP/api/tsip_api_subscribe.h"
 
-TINYSIP_GEXTERN const tsk_object_def_t *tsip_invite_event_def_t;
-
-TSIP_END_DECLS
-
-#endif /* TINYSIP_TSIP_INVITE_H */
+#endif /* TINYSIP_TINYSIP_H */

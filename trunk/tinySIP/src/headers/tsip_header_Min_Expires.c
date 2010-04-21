@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Min_Expires.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Min_Expires.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -43,18 +43,27 @@
 *	Ragel state machine.
 */
 
-/* #line 68 "tsip_parser_header_Min_Expires.rl" */
+/* #line 65 "./ragel/tsip_parser_header_Min_Expires.rl" */
 
+
+tsip_header_Min_Expires_t* tsip_header_Min_Expires_create(int32_t value)
+{
+	return tsk_object_new(TSIP_HEADER_MIN_EXPIRES_VA_ARGS(value));
+}
+
+tsip_header_Min_Expires_t* tsip_header_Min_Expires_create_null()
+{
+	return tsip_header_Min_Expires_create(TSIP_HEADER_MIN_EXPIRES_NONE);
+}
 
 int tsip_header_Min_Expires_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Min_Expires_t *Min_Expires = header;
-		if(Min_Expires->value >=0)
-		{
+		if(Min_Expires->value >=0){
 			return tsk_buffer_append_2(output, "%d", Min_Expires->value);
 		}
+		return 0;
 	}
 
 	return -1;
@@ -66,12 +75,12 @@ tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Min_Expires_t *hdr_minE = TSIP_HEADER_MIN_EXPIRES_CREATE_NULL();
+	tsip_header_Min_Expires_t *hdr_minE = tsip_header_Min_Expires_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 75 "../src/headers/tsip_header_Min_Expires.c" */
+/* #line 84 "./src/headers/tsip_header_Min_Expires.c" */
 static const char _tsip_machine_parser_header_Min_Expires_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -139,16 +148,16 @@ static const int tsip_machine_parser_header_Min_Expires_error = 0;
 static const int tsip_machine_parser_header_Min_Expires_en_main = 1;
 
 
-/* #line 95 "tsip_parser_header_Min_Expires.rl" */
+/* #line 101 "./ragel/tsip_parser_header_Min_Expires.rl" */
 	
-/* #line 145 "../src/headers/tsip_header_Min_Expires.c" */
+/* #line 154 "./src/headers/tsip_header_Min_Expires.c" */
 	{
 	cs = tsip_machine_parser_header_Min_Expires_start;
 	}
 
-/* #line 96 "tsip_parser_header_Min_Expires.rl" */
+/* #line 102 "./ragel/tsip_parser_header_Min_Expires.rl" */
 	
-/* #line 152 "../src/headers/tsip_header_Min_Expires.c" */
+/* #line 161 "./src/headers/tsip_header_Min_Expires.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -223,23 +232,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "tsip_parser_header_Min_Expires.rl" */
+/* #line 49 "./ragel/tsip_parser_header_Min_Expires.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "tsip_parser_header_Min_Expires.rl" */
+/* #line 53 "./ragel/tsip_parser_header_Min_Expires.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_minE->value);
 	}
 	break;
 	case 2:
-/* #line 60 "tsip_parser_header_Min_Expires.rl" */
+/* #line 57 "./ragel/tsip_parser_header_Min_Expires.rl" */
 	{
 	}
 	break;
-/* #line 243 "../src/headers/tsip_header_Min_Expires.c" */
+/* #line 252 "./src/headers/tsip_header_Min_Expires.c" */
 		}
 	}
 
@@ -252,14 +261,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 97 "tsip_parser_header_Min_Expires.rl" */
+/* #line 103 "./ragel/tsip_parser_header_Min_Expires.rl" */
 	
 	if( cs < 
-/* #line 259 "../src/headers/tsip_header_Min_Expires.c" */
+/* #line 268 "./src/headers/tsip_header_Min_Expires.c" */
 19
-/* #line 98 "tsip_parser_header_Min_Expires.rl" */
- )
-	{
+/* #line 104 "./ragel/tsip_parser_header_Min_Expires.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'Min-Expires' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_minE);
 	}
 	
@@ -276,30 +285,30 @@ _again:
 //	Min-Expires header object definition
 //
 
-static void* tsip_header_Min_Expires_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Min_Expires_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Min_Expires_t *Min_Expires = self;
-	if(Min_Expires)
-	{
+	if(Min_Expires){
 		TSIP_HEADER(Min_Expires)->type = tsip_htype_Min_Expires;
 		TSIP_HEADER(Min_Expires)->tostring = tsip_header_Min_Expires_tostring;
 		Min_Expires->value = va_arg(*app, int32_t);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Min_Expires header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Min_Expires_destroy(void *self)
+static tsk_object_t* tsip_header_Min_Expires_dtor(tsk_object_t *self)
 {
 	tsip_header_Min_Expires_t *Min_Expires = self;
 	if(Min_Expires)
 	{
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Min_Expires));
 	}
-	else TSK_DEBUG_ERROR("Null Min_Expires header.");
+	else{
+		TSK_DEBUG_ERROR("Null Min_Expires header.");
+	}
 
 	return self;
 }
@@ -307,8 +316,8 @@ static void* tsip_header_Min_Expires_destroy(void *self)
 static const tsk_object_def_t tsip_header_Min_Expires_def_s = 
 {
 	sizeof(tsip_header_Min_Expires_t),
-	tsip_header_Min_Expires_create,
-	tsip_header_Min_Expires_destroy,
-	0
+	tsip_header_Min_Expires_ctor,
+	tsip_header_Min_Expires_dtor,
+	tsk_null
 };
-const void *tsip_header_Min_Expires_def_t = &tsip_header_Min_Expires_def_s;
+const tsk_object_def_t *tsip_header_Min_Expires_def_t = &tsip_header_Min_Expires_def_s;

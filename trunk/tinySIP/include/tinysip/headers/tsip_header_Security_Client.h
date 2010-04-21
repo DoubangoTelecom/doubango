@@ -35,20 +35,13 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_ROUTE_CREATE
-* Creates new sip 'Security-Client' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
+
 #define TSIP_HEADER_SECURITY_CLIENT_VA_ARGS(mech, alg, prot, mod, ealg, port_c, port_s, spi_c, spi_s)		tsip_header_Security_Client_def_t, (const char*)mech, (const char*)alg, (const char*)prot, (const char*)mod, (const char*)ealg, (tnet_port_t)port_c, (tnet_port_t)port_s, (uint32_t)spi_c, (uint32_t)spi_s
-#define TSIP_HEADER_SECURITY_CLIENT_CREATE(mech, alg, prot, mod, ealg, port_c, port_s, spi_c, spi_s)		tsk_object_new(TSIP_HEADER_SECURITY_CLIENT_VA_ARGS(mech, alg, prot, mod, ealg, port_c, port_s, spi_c, spi_s))
-#define TSIP_HEADER_SECURITY_CLIENT_CREATE_NULL()		TSIP_HEADER_SECURITY_CLIENT_CREATE(tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Security-Client' as per RFC 3329.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF : Security-Client	= 	"Security-Client" HCOLON sec-mechanism *(COMMA sec-mechanism)
 /// sec-mechanism	= 	mechanism-name *( SEMI mech-parameters )
@@ -106,9 +99,12 @@ tsip_header_Security_Client_t;
 
 typedef tsk_list_t tsip_header_Security_Clients_L_t;
 
-tsip_header_Security_Clients_L_t *tsip_header_Security_Client_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Security_Client_t* tsip_header_Security_Client_create(const char* mech, const char* alg, const char* prot, const char* mod, const char* ealg, tnet_port_t port_c, tnet_port_t port_s, uint32_t spi_c, uint32_t spi_s);
+TINYSIP_API tsip_header_Security_Client_t* tsip_header_Security_Client_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_Security_Client_def_t;
+TINYSIP_API tsip_header_Security_Clients_L_t *tsip_header_Security_Client_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Security_Client_def_t;
 
 TSIP_END_DECLS
 

@@ -35,18 +35,11 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_WARNING_CREATE
-* Creates new sip 'Warning' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_WARNING_CREATE()		tsk_object_new(tsip_header_Warning_def_t)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Warning'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Warning	= 	"Warning" HCOLON warning-value *(COMMA warning-value)
 /// warning-value	= 	warn-code SP warn-agent SP warn-text
@@ -68,9 +61,11 @@ tsip_header_Warning_t;
 
 typedef tsk_list_t tsip_header_Warnings_L_t;
 
+tsip_header_Warning_t* tsip_header_Warning_create();
+
 tsip_header_Warnings_L_t *tsip_header_Warning_parse(const char *data, size_t size);
 
-TINYSIP_GEXTERN const void *tsip_header_Warning_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Warning_def_t;
 
 TSIP_END_DECLS
 

@@ -36,6 +36,10 @@
 #include "tsk_string.h"
 #include "tsk_memory.h"
 
+tsip_event_t* tsip_event_create(tsip_stack_t* stack, tsip_ssession_t* ss, short code, const char* phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
+{
+	return tsk_object_new(tsip_event_def_t, stack, ss, code, phrase, sipmessage, type);
+}
 
 
 
@@ -87,11 +91,10 @@ int tsip_event_deinit(tsip_event_t* self)
 //========================================================
 //	SIP event object definition
 //
-static void* tsip_event_create(void * self, va_list * app)
+static tsk_object_t* tsip_event_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_event_t *sipevent = self;
-	if(sipevent)
-	{
+	if(sipevent){
 		const tsip_message_t* sipmessage;
 		tsip_stack_t *stack;
 		tsip_ssession_handle_t *SSESSION;
@@ -117,7 +120,7 @@ static void* tsip_event_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_event_destroy(void * self)
+static tsk_object_t* tsip_event_dtor(tsk_object_t * self)
 { 
 	tsip_event_t *sipevent = self;
 	if(sipevent){
@@ -126,7 +129,7 @@ static void* tsip_event_destroy(void * self)
 	return self;
 }
 
-static int tsip_event_cmp(const void *obj1, const void *obj2)
+static int tsip_event_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
@@ -134,8 +137,8 @@ static int tsip_event_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_event_def_s = 
 {
 	sizeof(tsip_event_t),
-	tsip_event_create, 
-	tsip_event_destroy,
+	tsip_event_ctor, 
+	tsip_event_dtor,
 	tsip_event_cmp, 
 };
-const void *tsip_event_def_t = &tsip_event_def_s;
+const tsk_object_def_t *tsip_event_def_t = &tsip_event_def_s;

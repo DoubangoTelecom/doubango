@@ -22,8 +22,6 @@
 #ifndef _TEST_STACK_H
 #define _TEST_STACK_H
 
-#include "tinysip/api/tsip_api.h"
-
 #ifndef LOCAL_IP
 #	ifdef ANDROID
 #		define LOCAL_IP	"10.0.2.15"

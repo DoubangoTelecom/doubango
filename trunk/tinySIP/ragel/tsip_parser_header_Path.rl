@@ -47,56 +47,44 @@
 	machine tsip_machine_parser_header_Path;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action create_path
-	{
-		if(!curr_path)
-		{
-			curr_path = TSIP_HEADER_PATH_CREATE_NULL();
+	action create_path{
+		if(!curr_path){
+			curr_path = tsip_header_Path_create_null();
 		}
 	}
 
-	action parse_display_name
-	{
-		if(curr_path)
-		{
+	action parse_display_name{
+		if(curr_path){
 			TSK_PARSER_SET_STRING(curr_path->display_name);
 		}
 	}
 
-	action parse_uri
-	{
-		if(curr_path && !curr_path->uri)
-		{
+	action parse_uri{
+		if(curr_path && !curr_path->uri){
 			int len = (int)(p  - tag_start);
 			curr_path->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 
-	action parse_param
-	{
-		if(curr_path)
-		{
+	action parse_param{
+		if(curr_path){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_path));
 		}
 	}
 
-	action add_path
-	{
-		if(curr_path)
-		{
+	action add_path{
+		if(curr_path){
 			tsk_list_push_back_data(hdr_paths, ((void**) &curr_path));
 		}
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	
@@ -114,10 +102,20 @@
 
 }%%
 
+
+tsip_header_Path_t* tsip_header_Path_create(const tsip_uri_t* uri)
+{
+	return tsk_object_new(TSIP_HEADER_PATH_VA_ARGS(uri));
+}
+
+tsip_header_Path_t* tsip_header_Path_create_null()
+{
+	return tsip_header_Path_create(tsk_null);
+}
+
 int tsip_header_Path_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Path_t *Path = header;
 		int ret = 0;
 		
@@ -141,17 +139,17 @@ tsip_header_Paths_L_t *tsip_header_Path_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Paths_L_t *hdr_paths = TSK_LIST_CREATE();
+	tsip_header_Paths_L_t *hdr_paths = tsk_list_create();
 	
 	const char *tag_start;
-	tsip_header_Path_t *curr_path = 0;
+	tsip_header_Path_t *curr_path = tsk_null;
 
 	%%write data;
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Path' header.");
 		TSK_OBJECT_SAFE_FREE(curr_path);
 		TSK_OBJECT_SAFE_FREE(hdr_paths);
 	}
@@ -167,11 +165,10 @@ tsip_header_Paths_L_t *tsip_header_Path_parse(const char *data, size_t size)
 //	Path header object definition
 //
 
-static void* tsip_header_Path_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Path_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Path_t *Path = self;
-	if(Path)
-	{
+	if(Path){
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(Path)->type = tsip_htype_Path;
@@ -180,24 +177,24 @@ static void* tsip_header_Path_create(void *self, va_list * app)
 			Path->uri = tsk_object_ref((void*)uri);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Path header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Path_destroy(void *self)
+static tsk_object_t* tsip_header_Path_dtor(tsk_object_t *self)
 {
 	tsip_header_Path_t *Path = self;
-	if(Path)
-	{
+	if(Path){
 		TSK_FREE(Path->display_name);
 		TSK_OBJECT_SAFE_FREE(Path->uri);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Path));
 	}
-	else TSK_DEBUG_ERROR("Null Path header.");
+	else{
+		TSK_DEBUG_ERROR("Null Path header.");
+	}
 
 	return self;
 }
@@ -205,8 +202,8 @@ static void* tsip_header_Path_destroy(void *self)
 static const tsk_object_def_t tsip_header_Path_def_s = 
 {
 	sizeof(tsip_header_Path_t),
-	tsip_header_Path_create,
-	tsip_header_Path_destroy,
-	0
+	tsip_header_Path_ctor,
+	tsip_header_Path_dtor,
+	tsk_null
 };
-const void *tsip_header_Path_def_t = &tsip_header_Path_def_s;
+const tsk_object_def_t *tsip_header_Path_def_t = &tsip_header_Path_def_s;

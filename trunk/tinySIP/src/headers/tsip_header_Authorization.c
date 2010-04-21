@@ -39,14 +39,16 @@
 
 #include <string.h>
 
+tsip_header_Authorization_t* tsip_header_Authorization_create()
+{
+	return tsk_object_new(tsip_header_Authorization_def_t);
+}
 
 int tsip_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Authorization_t *Authorization = header;
-		if(Authorization && Authorization->scheme)
-		{
+		if(Authorization && Authorization->scheme){
 			return tsk_buffer_append_2(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 				Authorization->scheme,
 
@@ -97,9 +99,8 @@ tsip_header_Authorization_t *tsip_header_Authorization_parse(const char *data, s
 	tsip_header_Authorization_t *hdr_sip = 0;
 	thttp_header_Authorization_t* hdr_http;
 
-	if((hdr_http = thttp_header_Authorization_parse(data, size)))
-	{
-		hdr_sip = TSIP_HEADER_AUTHORIZATION_CREATE();
+	if((hdr_http = thttp_header_Authorization_parse(data, size))){
+		hdr_sip = tsip_header_Authorization_create();
 		
 		hdr_sip->scheme = tsk_strdup(hdr_http->scheme);
 		hdr_sip->username = tsk_strdup(hdr_http->username);
@@ -131,16 +132,14 @@ tsip_header_Authorization_t *tsip_header_Authorization_parse(const char *data, s
 
 /**@ingroup tsip_header_Authorization_group
 */
-static void* tsip_header_Authorization_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Authorization_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Authorization_t *Authorization = self;
-	if(Authorization)
-	{
+	if(Authorization){
 		TSIP_HEADER(Authorization)->type = tsip_htype_Authorization;
 		TSIP_HEADER(Authorization)->tostring = tsip_header_Authorization_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Authorization header.");
 	}
 	return self;
@@ -148,11 +147,10 @@ static void* tsip_header_Authorization_create(void *self, va_list * app)
 
 /**@ingroup tsip_header_Authorization_group
 */
-static void* tsip_header_Authorization_destroy(void *self)
+static tsk_object_t* tsip_header_Authorization_dtor(tsk_object_t *self)
 {
 	tsip_header_Authorization_t *Authorization = self;
-	if(Authorization)
-	{
+	if(Authorization){
 		TSK_FREE(Authorization->scheme);
 		TSK_FREE(Authorization->username);
 		TSK_FREE(Authorization->realm);
@@ -175,8 +173,8 @@ static void* tsip_header_Authorization_destroy(void *self)
 static const tsk_object_def_t tsip_header_Authorization_def_s = 
 {
 	sizeof(tsip_header_Authorization_t),
-	tsip_header_Authorization_create,
-	tsip_header_Authorization_destroy,
-	0
+	tsip_header_Authorization_ctor,
+	tsip_header_Authorization_dtor,
+	tsk_null
 };
-const void *tsip_header_Authorization_def_t = &tsip_header_Authorization_def_s;
+const tsk_object_def_t *tsip_header_Authorization_def_t = &tsip_header_Authorization_def_s;

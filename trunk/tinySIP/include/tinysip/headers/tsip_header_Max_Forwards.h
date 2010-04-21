@@ -37,13 +37,7 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_HEADER_MAX_FORWARDS_DEFAULT 70
 
-/**@def TSIP_HEADER_MAX_FORWARDS_CREATE
-* Creates new sip 'Max-Forwards' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max)		tsip_header_Max_Forwards_def_t, (int32_t) max
-#define TSIP_HEADER_MAX_FORWARDS_CREATE(max)		tsk_object_new(TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max))
-
 
 #define TSIP_HEADER_MAX_FORWARDS_NONE				-1
 #define TSIP_HEADER_MAX_FORWARDS_DEFAULT			70
@@ -52,8 +46,6 @@ TSIP_BEGIN_DECLS
 /// @struct	
 ///
 /// @brief	SIP header 'Max-Forwards'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Max-Forwards = "Max-Forwards" HCOLON 1*DIGIT
 /// 	
@@ -66,9 +58,11 @@ typedef struct tsip_header_Max_Forwards_s
 }
 tsip_header_Max_Forwards_t;
 
-tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Max_Forwards_t* tsip_header_Max_Forwards_create(int32_t max);
 
-TINYSIP_GEXTERN const void *tsip_header_Max_Forwards_def_t;
+TINYSIP_API tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Max_Forwards_def_t;
 
 TSIP_END_DECLS
 

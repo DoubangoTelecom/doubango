@@ -47,20 +47,17 @@
 	machine tsip_machine_parser_header_Record_Route;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action parse_route
-	{
+	action parse_route{
 		TSK_PARSER_SET_STRING(hdr_record_route->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	Record_Route = ( "Record-Route"i ) HCOLON any*>tag %parse_route;
@@ -70,13 +67,22 @@
 
 }%%
 
+
+tsip_header_Record_Route_t* tsip_header_Record_Route_create(const char* record_route)
+{
+	return tsk_object_new(TSIP_HEADER_RECORD_ROUTE_VA_ARGS(record_route));
+}
+
+tsip_header_Record_Route_t* tsip_header_Record_Route_create_null()
+{
+	return tsip_header_Record_Route_create(tsk_null);
+}
+
 int tsip_header_Record_Route_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Record_Route_t *Record_Route = header;
-		if(Record_Route->value)
-		{
+		if(Record_Route->value){
 			return tsk_buffer_append(output, Record_Route->value, strlen(Record_Route->value));
 		}
 	}
@@ -89,7 +95,7 @@ tsip_header_Record_Route_t *tsip_header_Record_Route_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Record_Route_t *hdr_record_route = TSIP_HEADER_RECORD_ROUTE_CREATE(0);
+	tsip_header_Record_Route_t *hdr_record_route = tsip_header_Record_Route_create_null(0);
 	
 	const char *tag_start;
 
@@ -97,8 +103,8 @@ tsip_header_Record_Route_t *tsip_header_Record_Route_parse(const char *data, siz
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Record-Route' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_record_route);
 	}
 	
@@ -115,31 +121,30 @@ tsip_header_Record_Route_t *tsip_header_Record_Route_parse(const char *data, siz
 //	Record_Route header object definition
 //
 
-static void* tsip_header_Record_Route_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Record_Route_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Record_Route_t *Record_Route = self;
-	if(Record_Route)
-	{
+	if(Record_Route){
 		Record_Route->value = tsk_strdup(va_arg(*app, const char *));
 		TSIP_HEADER(Record_Route)->type = tsip_htype_Record_Route;
 		TSIP_HEADER(Record_Route)->tostring = tsip_header_Record_Route_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Record_Route header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Record_Route_destroy(void *self)
+static tsk_object_t* tsip_header_Record_Route_dtor(tsk_object_t *self)
 {
 	tsip_header_Record_Route_t *Record_Route = self;
-	if(Record_Route)
-	{
+	if(Record_Route){
 		TSK_FREE(Record_Route->value);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Record_Route));
 	}
-	else TSK_DEBUG_ERROR("Null Record_Route header.");
+	else{
+		TSK_DEBUG_ERROR("Null Record_Route header.");
+	}
 
 	return self;
 }
@@ -147,8 +152,8 @@ static void* tsip_header_Record_Route_destroy(void *self)
 static const tsk_object_def_t tsip_header_Record_Route_def_s = 
 {
 	sizeof(tsip_header_Record_Route_t),
-	tsip_header_Record_Route_create,
-	tsip_header_Record_Route_destroy,
-	0
+	tsip_header_Record_Route_ctor,
+	tsip_header_Record_Route_dtor,
+	tsk_null
 };
-const void *tsip_header_Record_Route_def_t = &tsip_header_Record_Route_def_s;
+const tsk_object_def_t *tsip_header_Record_Route_def_t = &tsip_header_Record_Route_def_s;

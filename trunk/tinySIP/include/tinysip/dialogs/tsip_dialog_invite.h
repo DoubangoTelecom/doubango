@@ -38,8 +38,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_INVITE_CREATE(ss)		tsk_object_new(tsip_dialog_invite_def_t, (const tsip_ssession_handle_t*) ss)
-
 #define TSIP_DIALOG_INVITE(self)							((tsip_dialog_invite_t*)(self))
 
 typedef struct tsip_dialog_invite
@@ -52,9 +50,11 @@ typedef struct tsip_dialog_invite
 }
 tsip_dialog_invite_t;
 
+tsip_dialog_invite_t* tsip_dialog_invite_create(const tsip_ssession_handle_t* ss);
+
 int tsip_dialog_invite_start(tsip_dialog_invite_t *self);
 
-TINYSIP_GEXTERN const void *tsip_dialog_invite_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_invite_def_t;
 
 TSIP_END_DECLS
 

@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Service_Route.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Service_Route.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -46,21 +46,30 @@
 *	Ragel state machine.
 */
 
-/* #line 115 "tsip_parser_header_Service_Route.rl" */
+/* #line 103 "./ragel/tsip_parser_header_Service_Route.rl" */
 
+
+tsip_header_Service_Route_t* tsip_header_Service_Route_create(const tsip_uri_t* uri)
+{
+	return tsk_object_new(TSIP_HEADER_SERVICE_ROUTE_VA_ARGS(uri));
+}
+
+tsip_header_Service_Route_t* tsip_header_Service_Route_create_null()
+{
+	return tsip_header_Service_Route_create(tsk_null);
+}
 
 int tsip_header_Service_Route_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Service_Route_t *Service_Route = header;
 		int ret = 0;
 		
 		if(Service_Route->display_name){ /* Display Name */
-			tsk_buffer_append_2(output, "\"%s\"", Service_Route->display_name);
+			ret = tsk_buffer_append_2(output, "\"%s\"", Service_Route->display_name);
 		}
 
-		if(ret=tsip_uri_serialize(Service_Route->uri, 1, 1, output)){ /* Route */
+		if((ret = tsip_uri_serialize(Service_Route->uri, 1, 1, output))){ /* Route */
 			return ret;
 		}
 		
@@ -76,13 +85,13 @@ tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Service_Routes_L_t *hdr_services = TSK_LIST_CREATE();
+	tsip_header_Service_Routes_L_t *hdr_services = tsk_list_create();
 	
 	const char *tag_start;
-	tsip_header_Service_Route_t *curr_service = 0;
+	tsip_header_Service_Route_t *curr_service = tsk_null;
 
 	
-/* #line 86 "../src/headers/tsip_header_Service_Route.c" */
+/* #line 95 "./src/headers/tsip_header_Service_Route.c" */
 static const char _tsip_machine_parser_header_Service_Route_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -95,15 +104,14 @@ static const short _tsip_machine_parser_header_Service_Route_key_offsets[] = {
 	35, 36, 38, 57, 58, 60, 63, 67, 
 	79, 82, 82, 83, 88, 89, 106, 107, 
 	109, 125, 143, 149, 150, 152, 157, 176, 
-	177, 179, 198, 199, 201, 204, 220, 222, 
-	224, 226, 228, 230, 231, 233, 238, 243, 
-	244, 246, 250, 256, 273, 280, 288, 296, 
-	304, 306, 313, 322, 324, 327, 329, 332, 
-	334, 337, 340, 341, 344, 345, 348, 349, 
-	358, 367, 375, 383, 391, 399, 401, 407, 
-	416, 425, 434, 436, 439, 442, 443, 444, 
-	461, 479, 483, 484, 486, 502, 504, 506, 
-	508, 510, 512, 513, 515, 519, 525
+	177, 179, 198, 199, 201, 204, 212, 213, 
+	215, 220, 225, 226, 228, 232, 238, 255, 
+	262, 270, 278, 286, 288, 295, 304, 306, 
+	309, 311, 314, 316, 319, 322, 323, 326, 
+	327, 330, 331, 340, 349, 357, 365, 373, 
+	381, 383, 389, 398, 407, 416, 418, 421, 
+	424, 425, 426, 443, 461, 465, 466, 468, 
+	476, 477, 479, 483, 489
 };
 
 static const char _tsip_machine_parser_header_Service_Route_trans_keys[] = {
@@ -132,47 +140,43 @@ static const char _tsip_machine_parser_header_Service_Route_trans_keys[] = {
 	10, 9, 32, 9, 13, 32, 33, 34, 
 	37, 39, 91, 126, 42, 43, 45, 46, 
 	48, 57, 65, 90, 95, 122, 10, 9, 
-	32, 9, 32, 34, 9, 13, 34, 92, 
-	-64, -33, -32, -17, -16, -9, -8, -5, 
-	-4, -3, 32, 126, -128, -65, -128, -65, 
-	-128, -65, -128, -65, -128, -65, 10, 9, 
-	32, 9, 13, 32, 44, 59, 9, 13, 
-	32, 44, 59, 10, 9, 32, 9, 32, 
-	44, 59, 0, 9, 11, 12, 14, 127, 
-	9, 13, 32, 33, 37, 39, 44, 59, 
-	126, 42, 46, 48, 57, 65, 90, 95, 
-	122, 58, 48, 57, 65, 70, 97, 102, 
+	32, 9, 32, 34, 13, 34, 92, 127, 
+	0, 8, 10, 31, 10, 9, 32, 9, 
+	13, 32, 44, 59, 9, 13, 32, 44, 
+	59, 10, 9, 32, 9, 32, 44, 59, 
+	0, 9, 11, 12, 14, 127, 9, 13, 
+	32, 33, 37, 39, 44, 59, 126, 42, 
+	46, 48, 57, 65, 90, 95, 122, 58, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	58, 48, 57, 65, 70, 97, 102, 46, 
 	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 58, 48, 57, 65, 70, 97, 
-	102, 46, 58, 93, 48, 57, 65, 70, 
-	97, 102, 48, 57, 46, 48, 57, 48, 
-	57, 46, 48, 57, 48, 57, 93, 48, 
-	57, 93, 48, 57, 93, 46, 48, 57, 
-	46, 46, 48, 57, 46, 46, 58, 93, 
+	48, 57, 46, 48, 57, 48, 57, 46, 
+	48, 57, 48, 57, 93, 48, 57, 93, 
+	48, 57, 93, 46, 48, 57, 46, 46, 
+	48, 57, 46, 46, 58, 93, 48, 57, 
+	65, 70, 97, 102, 46, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 46, 58, 93, 
 	48, 57, 65, 70, 97, 102, 46, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
 	93, 48, 57, 65, 70, 97, 102, 46, 
 	58, 93, 48, 57, 65, 70, 97, 102, 
-	46, 58, 93, 48, 57, 65, 70, 97, 
-	102, 46, 58, 93, 48, 57, 65, 70, 
-	97, 102, 48, 57, 46, 48, 57, 46, 
-	48, 57, 46, 58, 9, 13, 32, 33, 
-	37, 39, 126, 42, 43, 45, 46, 48, 
+	48, 57, 46, 48, 57, 46, 48, 57, 
+	46, 58, 9, 13, 32, 33, 37, 39, 
+	126, 42, 43, 45, 46, 48, 57, 65, 
+	90, 95, 122, 9, 13, 32, 33, 37, 
+	39, 60, 126, 42, 43, 45, 46, 48, 
 	57, 65, 90, 95, 122, 9, 13, 32, 
-	33, 37, 39, 60, 126, 42, 43, 45, 
-	46, 48, 57, 65, 90, 95, 122, 9, 
-	13, 32, 60, 10, 9, 32, 9, 13, 
-	34, 92, -64, -33, -32, -17, -16, -9, 
-	-8, -5, -4, -3, 32, 126, -128, -65, 
-	-128, -65, -128, -65, -128, -65, -128, -65, 
-	10, 9, 32, 9, 13, 32, 60, 0, 
-	9, 11, 12, 14, 127, 0
+	60, 10, 9, 32, 13, 34, 92, 127, 
+	0, 8, 10, 31, 10, 9, 32, 9, 
+	13, 32, 60, 0, 9, 11, 12, 14, 
+	127, 0
 };
 
 static const char _tsip_machine_parser_header_Service_Route_single_lengths[] = {
@@ -181,15 +185,14 @@ static const char _tsip_machine_parser_header_Service_Route_single_lengths[] = {
 	1, 2, 9, 1, 2, 3, 0, 4, 
 	3, 0, 1, 5, 1, 7, 1, 2, 
 	6, 10, 6, 1, 2, 5, 9, 1, 
-	2, 9, 1, 2, 3, 4, 0, 0, 
-	0, 0, 0, 1, 2, 5, 5, 1, 
-	2, 4, 0, 9, 1, 2, 2, 2, 
-	2, 1, 3, 0, 1, 0, 1, 0, 
-	1, 1, 1, 1, 1, 1, 1, 3, 
-	3, 2, 2, 2, 2, 2, 0, 3, 
-	3, 3, 0, 1, 1, 1, 1, 7, 
-	8, 4, 1, 2, 4, 0, 0, 0, 
-	0, 0, 1, 2, 4, 0, 0
+	2, 9, 1, 2, 3, 4, 1, 2, 
+	5, 5, 1, 2, 4, 0, 9, 1, 
+	2, 2, 2, 2, 1, 3, 0, 1, 
+	0, 1, 0, 1, 1, 1, 1, 1, 
+	1, 1, 3, 3, 2, 2, 2, 2, 
+	2, 0, 3, 3, 3, 0, 1, 1, 
+	1, 1, 7, 8, 4, 1, 2, 4, 
+	1, 2, 4, 0, 0
 };
 
 static const char _tsip_machine_parser_header_Service_Route_range_lengths[] = {
@@ -198,15 +201,14 @@ static const char _tsip_machine_parser_header_Service_Route_range_lengths[] = {
 	0, 0, 5, 0, 0, 0, 2, 4, 
 	0, 0, 0, 0, 0, 5, 0, 0, 
 	5, 4, 0, 0, 0, 0, 5, 0, 
-	0, 5, 0, 0, 0, 6, 1, 1, 
-	1, 1, 1, 0, 0, 0, 0, 0, 
-	0, 0, 3, 4, 3, 3, 3, 3, 
-	0, 3, 3, 1, 1, 1, 1, 1, 
-	1, 1, 0, 1, 0, 1, 0, 3, 
-	3, 3, 3, 3, 3, 0, 3, 3, 
-	3, 3, 1, 1, 1, 0, 0, 5, 
-	5, 0, 0, 0, 6, 1, 1, 1, 
-	1, 1, 0, 0, 0, 3, 0
+	0, 5, 0, 0, 0, 2, 0, 0, 
+	0, 0, 0, 0, 0, 3, 4, 3, 
+	3, 3, 3, 0, 3, 3, 1, 1, 
+	1, 1, 1, 1, 1, 0, 1, 0, 
+	1, 0, 3, 3, 3, 3, 3, 3, 
+	0, 3, 3, 3, 3, 1, 1, 1, 
+	0, 0, 5, 5, 0, 0, 0, 2, 
+	0, 0, 0, 3, 0
 };
 
 static const short _tsip_machine_parser_header_Service_Route_index_offsets[] = {
@@ -215,18 +217,17 @@ static const short _tsip_machine_parser_header_Service_Route_index_offsets[] = {
 	45, 47, 50, 65, 67, 70, 74, 77, 
 	86, 90, 91, 93, 99, 101, 114, 116, 
 	119, 131, 146, 153, 155, 158, 164, 179, 
-	181, 184, 199, 201, 204, 208, 219, 221, 
-	223, 225, 227, 229, 231, 234, 240, 246, 
-	248, 251, 256, 260, 274, 279, 285, 291, 
-	297, 300, 305, 312, 314, 317, 319, 322, 
-	324, 327, 330, 332, 335, 337, 340, 342, 
-	349, 356, 362, 368, 374, 380, 383, 387, 
-	394, 401, 408, 410, 413, 416, 418, 420, 
-	433, 447, 452, 454, 457, 468, 470, 472, 
-	474, 476, 478, 480, 483, 488, 492
+	181, 184, 199, 201, 204, 208, 215, 217, 
+	220, 226, 232, 234, 237, 242, 246, 260, 
+	265, 271, 277, 283, 286, 291, 298, 300, 
+	303, 305, 308, 310, 313, 316, 318, 321, 
+	323, 326, 328, 335, 342, 348, 354, 360, 
+	366, 369, 373, 380, 387, 394, 396, 399, 
+	402, 404, 406, 419, 433, 438, 440, 443, 
+	450, 452, 455, 460, 464
 };
 
-static const unsigned char _tsip_machine_parser_header_Service_Route_indicies[] = {
+static const char _tsip_machine_parser_header_Service_Route_indicies[] = {
 	0, 1, 2, 1, 3, 1, 4, 1, 
 	5, 1, 6, 1, 7, 1, 8, 1, 
 	9, 1, 10, 1, 11, 1, 12, 1, 
@@ -253,61 +254,57 @@ static const unsigned char _tsip_machine_parser_header_Service_Route_indicies[] 
 	57, 58, 57, 53, 54, 53, 53, 55, 
 	53, 53, 53, 53, 53, 53, 1, 59, 
 	1, 60, 60, 1, 60, 60, 54, 1, 
-	54, 66, 67, 68, 61, 62, 63, 64, 
-	65, 54, 1, 54, 1, 61, 1, 62, 
-	1, 63, 1, 64, 1, 69, 1, 54, 
-	54, 1, 70, 43, 70, 45, 46, 1, 
-	71, 72, 71, 14, 36, 1, 73, 1, 
-	74, 74, 1, 74, 74, 14, 36, 1, 
-	54, 54, 54, 1, 70, 43, 70, 53, 
-	53, 53, 45, 46, 53, 53, 53, 53, 
-	53, 1, 76, 75, 75, 75, 1, 78, 
-	67, 77, 77, 77, 1, 78, 67, 79, 
-	79, 79, 1, 78, 67, 80, 80, 80, 
-	1, 78, 67, 1, 82, 81, 75, 75, 
-	1, 83, 78, 67, 84, 77, 77, 1, 
-	85, 1, 86, 87, 1, 88, 1, 89, 
-	90, 1, 91, 1, 67, 92, 1, 67, 
-	93, 1, 67, 1, 89, 94, 1, 89, 
-	1, 86, 95, 1, 86, 1, 83, 78, 
-	67, 96, 79, 79, 1, 83, 78, 67, 
-	80, 80, 80, 1, 98, 67, 97, 97, 
-	97, 1, 100, 67, 99, 99, 99, 1, 
-	100, 67, 101, 101, 101, 1, 100, 67, 
-	102, 102, 102, 1, 100, 67, 1, 103, 
-	97, 97, 1, 83, 100, 67, 104, 99, 
-	99, 1, 83, 100, 67, 105, 101, 101, 
-	1, 83, 100, 67, 102, 102, 102, 1, 
-	106, 1, 83, 107, 1, 83, 108, 1, 
-	83, 1, 82, 1, 109, 110, 109, 111, 
-	111, 111, 111, 111, 111, 111, 111, 111, 
-	1, 112, 113, 112, 111, 111, 111, 114, 
-	111, 111, 111, 111, 111, 111, 1, 115, 
-	116, 115, 26, 1, 117, 1, 109, 109, 
-	1, 123, 124, 125, 126, 118, 119, 120, 
-	121, 122, 123, 1, 123, 1, 118, 1, 
-	119, 1, 120, 1, 121, 1, 127, 1, 
-	123, 123, 1, 112, 113, 112, 114, 1, 
-	123, 123, 123, 1, 1, 0
+	61, 62, 63, 1, 1, 1, 54, 64, 
+	1, 54, 54, 1, 65, 43, 65, 45, 
+	46, 1, 66, 67, 66, 14, 36, 1, 
+	68, 1, 69, 69, 1, 69, 69, 14, 
+	36, 1, 54, 54, 54, 1, 65, 43, 
+	65, 53, 53, 53, 45, 46, 53, 53, 
+	53, 53, 53, 1, 71, 70, 70, 70, 
+	1, 73, 62, 72, 72, 72, 1, 73, 
+	62, 74, 74, 74, 1, 73, 62, 75, 
+	75, 75, 1, 73, 62, 1, 77, 76, 
+	70, 70, 1, 78, 73, 62, 79, 72, 
+	72, 1, 80, 1, 81, 82, 1, 83, 
+	1, 84, 85, 1, 86, 1, 62, 87, 
+	1, 62, 88, 1, 62, 1, 84, 89, 
+	1, 84, 1, 81, 90, 1, 81, 1, 
+	78, 73, 62, 91, 74, 74, 1, 78, 
+	73, 62, 75, 75, 75, 1, 93, 62, 
+	92, 92, 92, 1, 95, 62, 94, 94, 
+	94, 1, 95, 62, 96, 96, 96, 1, 
+	95, 62, 97, 97, 97, 1, 95, 62, 
+	1, 98, 92, 92, 1, 78, 95, 62, 
+	99, 94, 94, 1, 78, 95, 62, 100, 
+	96, 96, 1, 78, 95, 62, 97, 97, 
+	97, 1, 101, 1, 78, 102, 1, 78, 
+	103, 1, 78, 1, 77, 1, 104, 105, 
+	104, 106, 106, 106, 106, 106, 106, 106, 
+	106, 106, 1, 107, 108, 107, 106, 106, 
+	106, 109, 106, 106, 106, 106, 106, 106, 
+	1, 110, 111, 110, 26, 1, 112, 1, 
+	104, 104, 1, 114, 115, 116, 1, 1, 
+	1, 113, 117, 1, 113, 113, 1, 107, 
+	108, 107, 109, 1, 113, 113, 113, 1, 
+	1, 0
 };
 
 static const char _tsip_machine_parser_header_Service_Route_trans_targs[] = {
 	2, 0, 3, 4, 5, 6, 7, 8, 
 	9, 10, 11, 12, 13, 14, 15, 15, 
-	16, 95, 100, 22, 17, 18, 18, 19, 
+	16, 90, 95, 22, 17, 18, 18, 19, 
 	20, 21, 22, 23, 24, 23, 25, 26, 
-	27, 27, 28, 15, 29, 110, 30, 33, 
+	27, 27, 28, 15, 29, 100, 30, 33, 
 	31, 32, 34, 28, 33, 15, 29, 38, 
-	34, 35, 36, 37, 39, 59, 45, 60, 
-	40, 41, 42, 43, 44, 46, 47, 48, 
-	49, 50, 51, 53, 58, 52, 54, 54, 
-	55, 56, 57, 61, 94, 62, 65, 63, 
-	64, 66, 81, 67, 79, 68, 69, 77, 
-	70, 71, 75, 72, 73, 74, 76, 78, 
-	80, 82, 90, 83, 86, 84, 85, 87, 
-	88, 89, 91, 92, 93, 96, 98, 95, 
-	97, 19, 22, 97, 19, 99, 101, 102, 
-	103, 104, 105, 100, 106, 108, 109, 107
+	34, 35, 36, 37, 39, 54, 45, 55, 
+	40, 41, 42, 43, 44, 46, 48, 53, 
+	47, 49, 49, 50, 51, 52, 56, 89, 
+	57, 60, 58, 59, 61, 76, 62, 74, 
+	63, 64, 72, 65, 66, 70, 67, 68, 
+	69, 71, 73, 75, 77, 85, 78, 81, 
+	79, 80, 82, 83, 84, 86, 87, 88, 
+	91, 93, 90, 92, 19, 22, 92, 19, 
+	94, 95, 96, 98, 99, 97
 };
 
 static const char _tsip_machine_parser_header_Service_Route_trans_actions[] = {
@@ -319,33 +316,32 @@ static const char _tsip_machine_parser_header_Service_Route_trans_actions[] = {
 	0, 0, 18, 18, 0, 18, 9, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 18, 0, 
+	0, 18, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	5, 5, 5, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0
+	0, 0, 0, 5, 5, 5, 0, 0, 
+	0, 0, 0, 0, 0, 0
 };
 
 static const int tsip_machine_parser_header_Service_Route_start = 1;
-static const int tsip_machine_parser_header_Service_Route_first_final = 110;
+static const int tsip_machine_parser_header_Service_Route_first_final = 100;
 static const int tsip_machine_parser_header_Service_Route_error = 0;
 
 static const int tsip_machine_parser_header_Service_Route_en_main = 1;
 
 
-/* #line 150 "tsip_parser_header_Service_Route.rl" */
+/* #line 147 "./ragel/tsip_parser_header_Service_Route.rl" */
 	
-/* #line 342 "../src/headers/tsip_header_Service_Route.c" */
+/* #line 338 "./src/headers/tsip_header_Service_Route.c" */
 	{
 	cs = tsip_machine_parser_header_Service_Route_start;
 	}
 
-/* #line 151 "tsip_parser_header_Service_Route.rl" */
+/* #line 148 "./ragel/tsip_parser_header_Service_Route.rl" */
 	
-/* #line 349 "../src/headers/tsip_header_Service_Route.c" */
+/* #line 345 "./src/headers/tsip_header_Service_Route.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -420,63 +416,58 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 53 "tsip_parser_header_Service_Route.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 58 "tsip_parser_header_Service_Route.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
-		if(!curr_service)
-		{
-			curr_service = TSIP_HEADER_SERVICE_ROUTE_CREATE_NULL();
+		if(!curr_service){
+			curr_service = tsip_header_Service_Route_create_null();
 		}
 	}
 	break;
 	case 2:
-/* #line 66 "tsip_parser_header_Service_Route.rl" */
+/* #line 62 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
-		if(curr_service)
-		{
+		if(curr_service){
 			TSK_PARSER_SET_STRING(curr_service->display_name);
 		}
 	}
 	break;
 	case 3:
-/* #line 74 "tsip_parser_header_Service_Route.rl" */
+/* #line 68 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
-		if(curr_service && !curr_service->uri)
-		{
+		if(curr_service && !curr_service->uri){
 			int len = (int)(p  - tag_start);
 			curr_service->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 	break;
 	case 4:
-/* #line 83 "tsip_parser_header_Service_Route.rl" */
+/* #line 75 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
-		if(curr_service)
-		{
+		if(curr_service){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_service));
 		}
 	}
 	break;
 	case 5:
-/* #line 91 "tsip_parser_header_Service_Route.rl" */
+/* #line 81 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
-		if(curr_service)
-		{
+		if(curr_service){
 			tsk_list_push_back_data(hdr_services, ((void**) &curr_service));
 		}
 	}
 	break;
 	case 6:
-/* #line 99 "tsip_parser_header_Service_Route.rl" */
+/* #line 87 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
 	}
 	break;
-/* #line 480 "../src/headers/tsip_header_Service_Route.c" */
+/* #line 471 "./src/headers/tsip_header_Service_Route.c" */
 		}
 	}
 
@@ -489,14 +480,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 152 "tsip_parser_header_Service_Route.rl" */
+/* #line 149 "./ragel/tsip_parser_header_Service_Route.rl" */
 	
 	if( cs < 
-/* #line 496 "../src/headers/tsip_header_Service_Route.c" */
-110
-/* #line 153 "tsip_parser_header_Service_Route.rl" */
- )
-	{
+/* #line 487 "./src/headers/tsip_header_Service_Route.c" */
+100
+/* #line 150 "./ragel/tsip_parser_header_Service_Route.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'Service-Route' header.");
 		TSK_OBJECT_SAFE_FREE(curr_service);
 		TSK_OBJECT_SAFE_FREE(hdr_services);
 	}
@@ -512,11 +503,10 @@ _again:
 //	Service_Route header object definition
 //
 
-static void* tsip_header_Service_Route_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Service_Route_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Service_Route_t *Service_Route = self;
-	if(Service_Route)
-	{
+	if(Service_Route){
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(Service_Route)->type = tsip_htype_Service_Route;
@@ -525,24 +515,24 @@ static void* tsip_header_Service_Route_create(void *self, va_list * app)
 			Service_Route->uri = tsk_object_ref((void*)uri);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Service_Route header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Service_Route_destroy(void *self)
+static tsk_object_t* tsip_header_Service_Route_dtor(tsk_object_t *self)
 {
 	tsip_header_Service_Route_t *Service_Route = self;
-	if(Service_Route)
-	{
+	if(Service_Route){
 		TSK_FREE(Service_Route->display_name);
 		TSK_OBJECT_SAFE_FREE(Service_Route->uri);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Service_Route));
 	}
-	else TSK_DEBUG_ERROR("Null Service_Route header.");
+	else{
+		TSK_DEBUG_ERROR("Null Service_Route header.");
+	}
 
 	return self;
 }
@@ -550,8 +540,8 @@ static void* tsip_header_Service_Route_destroy(void *self)
 static const tsk_object_def_t tsip_header_Service_Route_def_s = 
 {
 	sizeof(tsip_header_Service_Route_t),
-	tsip_header_Service_Route_create,
-	tsip_header_Service_Route_destroy,
-	0
+	tsip_header_Service_Route_ctor,
+	tsip_header_Service_Route_dtor,
+	tsk_null
 };
-const void *tsip_header_Service_Route_def_t = &tsip_header_Service_Route_def_s;
+const tsk_object_def_t *tsip_header_Service_Route_def_t = &tsip_header_Service_Route_def_s;
