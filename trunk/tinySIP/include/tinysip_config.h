@@ -23,10 +23,6 @@
 #ifndef TINYSIP_CONFIG_H
 #define TINYSIP_CONFIG_H
 
-#if HAVE_CONFIG_H
-	#include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
@@ -74,6 +70,11 @@
 #include <stdint.h>
 #ifdef __SYMBIAN32__
 #include <stdlib.h>
+#endif
+
+
+#if HAVE_CONFIG_H
+	#include "../config.h"
 #endif
 
 #endif // TINYSIP_CONFIG_H

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySIP", "tinySIP.vcproj", "{4CE20732-9978-4A88-B586-CFEFCB63E82D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test\test.vcproj", "{353640F9-25C2-4850-BCF8-07A07D8E46AE}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySAK", "..\tinySAK\tinySAK.vcproj", "{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyNET", "..\tinyNET\tinyNET.vcproj", "{7522A458-92F4-4259-B906-E84C2A65D9F1}"
@@ -16,6 +14,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySDP", "..\tinySDP\tinySDP.vcproj", "{E45DB518-6562-4033-80E8-60030F0B169F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyMEDIA", "..\tinyMEDIA\tinyMEDIA.vcproj", "{52814B0D-7DCA-45B8-9A16-8B147040D619}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcproj", "{353640F9-25C2-4850-BCF8-07A07D8E46AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,13 +31,6 @@ Global
 		{4CE20732-9978-4A88-B586-CFEFCB63E82D}.Release|Win32.ActiveCfg = Release|Win32
 		{4CE20732-9978-4A88-B586-CFEFCB63E82D}.Release|Win32.Build.0 = Release|Win32
 		{4CE20732-9978-4A88-B586-CFEFCB63E82D}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Win32
-		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Win32.ActiveCfg = Debug|Win32
-		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Win32.Build.0 = Debug|Win32
-		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
-		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
-		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Release|Win32.ActiveCfg = Release|Win32
-		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Release|Win32.Build.0 = Release|Win32
-		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Win32
 		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Win32.ActiveCfg = Debug|Win32
 		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Win32.Build.0 = Debug|Win32
 		{6BC9B796-10C6-4CF7-A6E4-E2DACCDA84DA}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
@@ -78,6 +71,16 @@ Global
 		{52814B0D-7DCA-45B8-9A16-8B147040D619}.Release|Win32.ActiveCfg = Release|Win32
 		{52814B0D-7DCA-45B8-9A16-8B147040D619}.Release|Win32.Build.0 = Release|Win32
 		{52814B0D-7DCA-45B8-9A16-8B147040D619}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Win32
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Win32.Build.0 = Debug|Win32
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Release|Win32.ActiveCfg = Release|Win32
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Release|Win32.Build.0 = Release|Win32
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{353640F9-25C2-4850-BCF8-07A07D8E46AE}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
