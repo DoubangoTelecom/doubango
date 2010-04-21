@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include"
+				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS;_WIN32_WINNT=0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -204,7 +204,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\pthread&quot;"
+				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYSAK_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

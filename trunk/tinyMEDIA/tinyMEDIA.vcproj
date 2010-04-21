@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;include;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinySDP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;"
+				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;include;&quot;..\tinySAK\src&quot;;&quot;..\tinySDP\include&quot;;&quot;..\tinyNET\src&quot;"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -118,6 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;include;&quot;..\tinySAK\src&quot;;&quot;..\tinySDP\include&quot;;&quot;..\tinyNET\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

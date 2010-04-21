@@ -201,6 +201,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="&quot;..\thirdparties\win32\include&quot;;&quot;..\tinyHTTP\include&quot;;&quot;..\tinySAK\src&quot;;&quot;..\tinyNET\src&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYHTTP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
