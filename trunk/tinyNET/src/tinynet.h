@@ -30,6 +30,11 @@
 #ifndef TNET_TINYNET_H
 #define TNET_TINYNET_H
 
+/* === tinySAK === */
+#include "tsk.h"
+
+/* === tinyNET === */
+
 #include "tnet.h"
 #include "tnet_nat.h"
 #include "tnet_socket.h"

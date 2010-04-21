@@ -42,6 +42,12 @@
 /**@defgroup tsip_uri_group SIP/SIPS/TEL URI
 */
 
+
+tsip_uri_t* tsip_uri_create(tsip_uri_type_t type)
+{
+	return tsk_object_new(tsip_uri_def_t, type);
+}
+
 int __tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_buffer_t *output)
 {
 	tsk_istr_t port;
@@ -112,7 +118,7 @@ int tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t
 
 char* tsip_uri_tostring(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote)
 {
-	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *output = tsk_buffer_create_null();
 	char* ret = 0;
 
 	if(!tsip_uri_serialize(uri, with_params, quote, output)){
@@ -129,7 +135,7 @@ char* tsip_uri_tostring(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_
 tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote)
 {
 	tsip_uri_t *newuri = 0;
-	tsk_buffer_t *output = TSK_BUFFER_CREATE_NULL();
+	tsk_buffer_t *output = tsk_buffer_create_null();
 	tsip_uri_serialize(uri, with_params, quote, output);
 	newuri = tsip_uri_parse(output->data, output->size);
 	TSK_OBJECT_SAFE_FREE(output);
@@ -150,13 +156,13 @@ tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bo
 
 /**@ingroup tsip_uri_group
 */
-static void* tsip_uri_create(void *self, va_list * app)
+static tsk_object_t* tsip_uri_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_uri_t *uri = self;
 	if(uri)
 	{
 		uri->type = va_arg(*app, tsip_uri_type_t);
-		uri->params = TSK_LIST_CREATE(); /* Empty list. */
+		uri->params = tsk_list_create(); /* Empty list. */
 	}
 	else
 	{
@@ -167,7 +173,7 @@ static void* tsip_uri_create(void *self, va_list * app)
 
 /**@ingroup tsip_uri_group
 */
-static void* tsip_uri_destroy(void *self)
+static tsk_object_t* tsip_uri_dtor(tsk_object_t *self)
 {
 	tsip_uri_t *uri = self;
 	if(uri)
@@ -184,12 +190,11 @@ static void* tsip_uri_destroy(void *self)
 	return self;
 }
 
-int tsip_uri_strcmp(const char* s1, const char* s2, int case_sensitive)
+int tsip_uri_strcmp(const char* s1, const char* s2, tsk_bool_t case_sensitive)
 {
-	if(s1 && s2)
-	{
-		unsigned s1_is_encoded = 0;
-		unsigned s2_is_encoded = 0;
+	if(s1 && s2){
+		tsk_bool_t s1_is_encoded = tsk_false;
+		tsk_bool_t s2_is_encoded = tsk_false;
 		char* s1_decoded = (char*)s1;
 		char* s2_decoded = (char*)s2;
 		int ret;
@@ -214,13 +219,12 @@ int tsip_uri_strcmp(const char* s1, const char* s2, int case_sensitive)
 	}
 	return case_sensitive ? tsk_strcmp(s1, s2) : tsk_stricmp(s1, s2);
 }
-#define tsip_uri_strequals(s1, s2) !tsip_uri_strcmp(s1, s2, 1)
-#define tsip_uri_striequals(s1, s2) !tsip_uri_strcmp(s1, s2, 0)
+#define tsip_uri_strequals(s1, s2) !tsip_uri_strcmp(s1, s2, tsk_true)
+#define tsip_uri_striequals(s1, s2) !tsip_uri_strcmp(s1, s2, tsk_false)
 
 static int tsip_uri_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
-	if(obj1 && obj2)
-	{
+	if(obj1 && obj2){
 		const tsip_uri_t* uri1 = obj1;
 		const tsip_uri_t* uri2 = obj2;
 		const tsk_param_t* param1;
@@ -306,8 +310,7 @@ static int tsip_uri_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 
 		return 0;
 	}
-	else
-	{
+	else{
 		return (!obj1 && !obj2) ? 0 : -1;
 	}
 }
@@ -315,8 +318,8 @@ static int tsip_uri_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tsip_uri_def_s = 
 {
 	sizeof(tsip_uri_t),
-	tsip_uri_create,
-	tsip_uri_destroy,
+	tsip_uri_ctor,
+	tsip_uri_dtor,
 	tsip_uri_cmp
 };
-const void *tsip_uri_def_t = &tsip_uri_def_s;
+const tsk_object_def_t *tsip_uri_def_t = &tsip_uri_def_s;

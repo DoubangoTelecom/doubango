@@ -40,6 +40,11 @@
 
 #include "tsk_debug.h"
 
+tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack)
+{
+	return tsk_object_new(tsip_dialog_layer_def_t, stack);
+}
+
 // MUST tsk_object_unref(ret)
 tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss)
 {
@@ -144,7 +149,7 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 			}
 		case tsip_dialog_MESSAGE:
 			{
-				if((dialog = TSIP_DIALOG_MESSAGE_CREATE(ss))){
+				if((dialog = (tsip_dialog_t*)tsip_dialog_message_create(ss))){
 					ret = tsk_object_ref(dialog);
 					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 				}
@@ -156,7 +161,7 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 			}
 		case tsip_dialog_PUBLISH:
 			{
-				if((dialog = TSIP_DIALOG_PUBLISH_CREATE(ss))){
+				if((dialog = (tsip_dialog_t*)tsip_dialog_publish_create(ss))){
 					ret = tsk_object_ref(dialog);
 					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 				}
@@ -164,7 +169,7 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 			}
 		case tsip_dialog_REGISTER:
 			{
-				if((dialog = TSIP_DIALOG_REGISTER_CREATE(ss))){
+				if((dialog = (tsip_dialog_t*)tsip_dialog_register_create(ss))){
 					ret = tsk_object_ref(dialog);
 					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 				}
@@ -172,7 +177,7 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 			}
 		case tsip_dialog_SUBSCRIBE:
 			{
-				if((dialog = TSIP_DIALOG_SUBSCRIBE_CREATE(ss))){
+				if((dialog = (tsip_dialog_t*)tsip_dialog_subscribe_create(ss))){
 					ret = tsk_object_ref(dialog);
 					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
 				}
@@ -210,7 +215,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	tsk_bool_t cid_matched;
 	const tsip_dialog_t* dialog;
 	tsip_transac_t* transac = tsk_null;
-	const tsip_transac_layer_t *layer_transac = tsip_stack_get_transac_layer(self->stack);
+	const tsip_transac_layer_t *layer_transac = self->stack->layer_transac;
 
 	if(!layer_transac){
 		goto bail;
@@ -240,13 +245,13 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 			switch(message->request_type){
 				case tsip_MESSAGE:
 					{
-						newdialog = TSIP_DIALOG_MESSAGE_CREATE(ss);
+						newdialog = (tsip_dialog_t*)tsip_dialog_message_create(ss);
 						break;
 					}
 
 				case tsip_INVITE:
 					{
-						newdialog = TSIP_DIALOG_INVITE_CREATE(ss);
+						newdialog = (tsip_dialog_t*)tsip_dialog_invite_create(ss);
 						break;
 					}
 
@@ -273,7 +278,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 		const tsip_transport_layer_t *layer;
 		tsip_response_t* response;
 
-		if((layer = tsip_stack_get_transport_layer(self->stack)))
+		if((layer = self->stack->layer_transport))
 		{	
 			if(cid_matched){ /* We are receiving our own message. */
 				response = tsip_response_new(482, "Loop Detected (Check your iFCs)", message);
@@ -302,24 +307,22 @@ bail:
 //========================================================
 //	Dialog layer object definition
 //
-static void* tsip_dialog_layer_create(void * self, va_list * app)
+static tsk_object_t* tsip_dialog_layer_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_dialog_layer_t *layer = self;
-	if(layer)
-	{
-		layer->stack = va_arg(*app, const tsip_stack_handle_t *);
-		layer->dialogs = TSK_LIST_CREATE();
+	if(layer){
+		layer->stack = va_arg(*app, const tsip_stack_t *);
+		layer->dialogs = tsk_list_create();
 
 		tsk_safeobj_init(layer);
 	}
 	return self;
 }
 
-static void* tsip_dialog_layer_destroy(void * self)
+static tsk_object_t* tsip_dialog_layer_dtor(tsk_object_t * self)
 { 
 	tsip_dialog_layer_t *layer = self;
-	if(layer)
-	{
+	if(layer){
 		TSK_OBJECT_SAFE_FREE(layer->dialogs);
 
 		tsk_safeobj_deinit(layer);
@@ -327,7 +330,7 @@ static void* tsip_dialog_layer_destroy(void * self)
 	return self;
 }
 
-static int tsip_dialog_layer_cmp(const void *obj1, const void *obj2)
+static int tsip_dialog_layer_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
@@ -335,8 +338,8 @@ static int tsip_dialog_layer_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_dialog_layer_def_s = 
 {
 	sizeof(tsip_dialog_layer_t),
-	tsip_dialog_layer_create, 
-	tsip_dialog_layer_destroy,
+	tsip_dialog_layer_ctor, 
+	tsip_dialog_layer_dtor,
 	tsip_dialog_layer_cmp, 
 };
-const void *tsip_dialog_layer_def_t = &tsip_dialog_layer_def_s;
+const tsk_object_def_t *tsip_dialog_layer_def_t = &tsip_dialog_layer_def_s;

@@ -36,20 +36,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_FROM_CREATE
-* Creates new sip 'From' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-
 #define TSIP_HEADER_FROM_VA_ARGS(display_name, uri, tag)	tsip_header_From_def_t, (const char*)display_name, (const tsip_uri_t*)uri, (const char*)tag
-#define TSIP_HEADER_FROM_CREATE(display_name, uri, tag)		tsk_object_new(TSIP_HEADER_FROM_VA_ARGS(display_name, uri, tag))
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'From' .
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: From	= 	( "From" / "f" ) HCOLON from-spec
 /// from-spec	= 	( name-addr / addr-spec ) *( SEMI from-param )
@@ -67,9 +59,11 @@ typedef struct tsip_header_From_s
 }
 tsip_header_From_t;
 
-tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_From_t* tsip_header_From_create(const char* display_name, const tsip_uri_t* uri, const char* tag);
 
-TINYSIP_GEXTERN const void *tsip_header_From_def_t;
+TINYSIP_API tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_From_def_t;
 
 TSIP_END_DECLS
 

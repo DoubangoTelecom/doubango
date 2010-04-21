@@ -69,6 +69,22 @@ static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tsi
 	return -1;
 }
 
+tsip_message_t* tsip_message_create()
+{
+	return tsk_object_new(tsip_message_def_t, tsip_unknown);
+}
+
+tsip_request_t* tsip_request_create(const char* method, const tsip_uri_t* uri)
+{
+	return tsk_object_new(tsip_message_def_t, tsip_request, method, uri);
+}
+
+tsip_response_t* tsip_response_create(const tsip_request_t* request, short status_code, const char* reason_phrase)
+{
+	return tsk_object_new(tsip_message_def_t, tsip_response, request, status_code, reason_phrase);
+}
+
+
 int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr)
 {
 	#define ADD_HEADER(type, field) \
@@ -144,7 +160,7 @@ int tsip_message_add_content(tsip_message_t *self, const char* content_type, con
 			TSIP_MESSAGE_ADD_HEADER(self, TSIP_HEADER_CONTENT_TYPE_VA_ARGS(content_type));
 		}
 		TSIP_MESSAGE_ADD_HEADER(self, TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(size));
-		self->Content = TSK_BUFFER_CREATE(content, size);
+		self->Content = tsk_buffer_create(content, size);
 
 		return 0;
 	}
@@ -437,7 +453,7 @@ tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_u
 {
 	tsip_request_t* request;
 
-	if((request = TSIP_REQUEST_CREATE(method, request_uri))){
+	if((request = tsip_request_create(method, request_uri))){
 		tsip_message_add_headers(request,
 			TSIP_HEADER_FROM_VA_ARGS(tsk_null, from, tsk_null),
 			TSIP_HEADER_TO_VA_ARGS(tsk_null, to, tsk_null),
@@ -458,7 +474,7 @@ tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase,
 	tsip_response_t *response = tsk_null;
 
 	if(request){
-		if((response = TSIP_RESPONSE_CREATE(request, status_code, reason_phrase))){
+		if((response = tsip_response_create(request, status_code, reason_phrase))){
 			tsip_message_add_headers(response,
 				TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT), /* To be compliant with OMA SIMPLE IM v1.0*/
 				TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0),
@@ -484,13 +500,13 @@ tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase,
 
 /**@ingroup tsip_message_group
 */
-static void* tsip_message_create(void *self, va_list * app)
+static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_message_t *message = self;
 	if(message)
 	{
 		message->type = va_arg(*app, tsip_message_type_t); 
-		message->headers = TSK_LIST_CREATE();
+		message->headers = tsk_list_create();
 		message->sockfd = TNET_INVALID_FD;
 		message->request_type = tsip_NONE;
 
@@ -584,7 +600,7 @@ static void* tsip_message_create(void *self, va_list * app)
 
 /**@ingroup tsip_message_group
 */
-static void* tsip_message_destroy(void *self)
+static tsk_object_t* tsip_message_dtor(tsk_object_t *self)
 {
 	tsip_message_t *message = self;
 	if(message)
@@ -623,9 +639,9 @@ static void* tsip_message_destroy(void *self)
 static const tsk_object_def_t tsip_message_def_s = 
 {
 	sizeof(tsip_message_t),
-	tsip_message_create,
-	tsip_message_destroy,
-	0
+	tsip_message_ctor,
+	tsip_message_dtor,
+	tsk_null
 };
-const void *tsip_message_def_t = &tsip_message_def_s;
+const tsk_object_def_t *tsip_message_def_t = &tsip_message_def_s;
 

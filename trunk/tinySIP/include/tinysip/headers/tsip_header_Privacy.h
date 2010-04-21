@@ -35,18 +35,11 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_PRIVACY_CREATE
-* Creates new sip 'Privacy' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_PRIVACY_CREATE()		tsk_object_new(tsip_header_Privacy_def_t)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Privacy' as per RFC 3323.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Privacy = Privacy-hdr
 /// Privacy-hdr	= 	"Privacy" HCOLON priv-value *(";" priv-value)
@@ -61,9 +54,11 @@ typedef struct tsip_header_Privacy_s
 }
 tsip_header_Privacy_t;
 
-tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Privacy_t* tsip_header_Privacy_create();
 
-TINYSIP_GEXTERN const void *tsip_header_Privacy_def_t;
+TINYSIP_API tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Privacy_def_t;
 
 TSIP_END_DECLS
 

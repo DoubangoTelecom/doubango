@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinySDP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"

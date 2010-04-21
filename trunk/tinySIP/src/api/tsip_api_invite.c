@@ -90,7 +90,7 @@ int tsip_invite(tsip_stack_handle_t *_stack, const tsip_ssession_handle_t *SSESS
 //========================================================
 //	SIP INVITE event object definition
 //
-static void* tsip_invite_event_create(void * self, va_list * app)
+static tsk_object_t* tsip_invite_event_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_invite_event_t *sipevent = self;
 	if(sipevent)
@@ -100,7 +100,7 @@ static void* tsip_invite_event_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_invite_event_destroy(void * self)
+static tsk_object_t* tsip_invite_event_dtor(tsk_object_t * self)
 { 
 	tsip_invite_event_t *sipevent = self;
 	if(sipevent)
@@ -110,7 +110,7 @@ static void* tsip_invite_event_destroy(void * self)
 	return self;
 }
 
-static int tsip_invite_event_cmp(const void *obj1, const void *obj2)
+static int tsip_invite_event_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
@@ -118,8 +118,8 @@ static int tsip_invite_event_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_invite_event_def_s = 
 {
 	sizeof(tsip_invite_event_t),
-	tsip_invite_event_create, 
-	tsip_invite_event_destroy,
+	tsip_invite_event_ctor, 
+	tsip_invite_event_dtor,
 	tsip_invite_event_cmp, 
 };
-const void *tsip_invite_event_def_t = &tsip_invite_event_def_s;
+const tsk_object_def_t *tsip_invite_event_def_t = &tsip_invite_event_def_s;

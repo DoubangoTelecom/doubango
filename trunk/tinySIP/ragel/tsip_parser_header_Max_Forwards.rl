@@ -44,20 +44,17 @@
 	machine tsip_machine_parser_header_Max_Forwards;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action parse_value
-	{
+	action parse_value{
 		TSK_PARSER_SET_INTEGER(hdr_maxf->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	Max_Forwards = "Max-Forwards"i HCOLON (DIGIT+)>tag %parse_value;
@@ -67,15 +64,20 @@
 
 }%%
 
+
+tsip_header_Max_Forwards_t* tsip_header_Max_Forwards_create(int32_t max)
+{
+	return tsk_object_new(TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max));
+}
+
 int tsip_header_Max_Forwards_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Max_Forwards_t *Max_Forwards = header;
-		if(Max_Forwards->value >=0)
-		{
+		if(Max_Forwards->value >= 0){
 			return tsk_buffer_append_2(output, "%d", Max_Forwards->value);
 		}
+		return 0;
 	}
 
 	return -1;
@@ -87,7 +89,7 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Max_Forwards_t *hdr_maxf = TSIP_HEADER_MAX_FORWARDS_CREATE(TSIP_HEADER_MAX_FORWARDS_NONE);
+	tsip_header_Max_Forwards_t *hdr_maxf = tsip_header_Max_Forwards_create(TSIP_HEADER_MAX_FORWARDS_NONE);
 	
 	const char *tag_start;
 
@@ -95,8 +97,8 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, siz
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Max-Forward' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_maxf);
 	}
 	
@@ -113,29 +115,29 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, siz
 //	Max_Forwards header object definition
 //
 
-static void* tsip_header_Max_Forwards_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Max_Forwards_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Max_Forwards_t *Max_Forwards = self;
-	if(Max_Forwards)
-	{
+	if(Max_Forwards){
 		TSIP_HEADER(Max_Forwards)->type = tsip_htype_Max_Forwards;
 		TSIP_HEADER(Max_Forwards)->tostring = tsip_header_Max_Forwards_tostring;
 		Max_Forwards->value = va_arg(*app, int32_t);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Max_Forwards header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Max_Forwards_destroy(void *self)
+static tsk_object_t* tsip_header_Max_Forwards_dtor(tsk_object_t *self)
 {
 	tsip_header_Max_Forwards_t *Max_Forwards = self;
-	if(Max_Forwards)
-	{
+	if(Max_Forwards){
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Max_Forwards));
 	}
-	else TSK_DEBUG_ERROR("Null Max_Forwards header.");
+	else{
+		TSK_DEBUG_ERROR("Null Max_Forwards header.");
+	}
 
 	return self;
 }
@@ -143,8 +145,8 @@ static void* tsip_header_Max_Forwards_destroy(void *self)
 static const tsk_object_def_t tsip_header_Max_Forwards_def_s = 
 {
 	sizeof(tsip_header_Max_Forwards_t),
-	tsip_header_Max_Forwards_create,
-	tsip_header_Max_Forwards_destroy,
-	0
+	tsip_header_Max_Forwards_ctor,
+	tsip_header_Max_Forwards_dtor,
+	tsk_null
 };
-const void *tsip_header_Max_Forwards_def_t = &tsip_header_Max_Forwards_def_s;
+const tsk_object_def_t *tsip_header_Max_Forwards_def_t = &tsip_header_Max_Forwards_def_s;

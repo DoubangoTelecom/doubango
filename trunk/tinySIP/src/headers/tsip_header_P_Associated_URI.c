@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 1 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -46,13 +46,22 @@
 *	Ragel state machine.
 */
 
-/* #line 114 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 102 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 
+
+tsip_header_P_Associated_URI_t* tsip_header_P_Associated_URI_create(const tsip_uri_t* uri)
+{
+	return tsk_object_new(TSIP_HEADER_P_ASSOCIATED_URI_VA_ARGS(uri));
+}
+
+tsip_header_P_Associated_URI_t* tsip_header_P_Associated_URI_create_null()
+{
+	return tsip_header_P_Associated_URI_create(tsk_null);
+}
 
 int tsip_header_P_Associated_URI_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_P_Associated_URI_t *P_Associated_URI = header;
 		int ret = 0;
 		
@@ -76,13 +85,13 @@ tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Associated_URIs_L_t *hdr_p_associated_uris = TSK_LIST_CREATE();
+	tsip_header_P_Associated_URIs_L_t *hdr_p_associated_uris = tsk_list_create();
 	
 	const char *tag_start;
 	tsip_header_P_Associated_URI_t *curr_p_associated_uri = 0;
 
 	
-/* #line 86 "../src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 95 "./src/headers/tsip_header_P_Associated_URI.c" */
 static const char _tsip_machine_parser_header_P_Associated_URI_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -96,15 +105,13 @@ static const short _tsip_machine_parser_header_P_Associated_URI_key_offsets[] = 
 	77, 80, 84, 96, 99, 99, 100, 105, 
 	106, 123, 124, 126, 142, 160, 166, 167, 
 	169, 174, 193, 194, 196, 215, 216, 218, 
-	221, 237, 239, 241, 243, 245, 247, 248, 
-	250, 255, 260, 261, 263, 267, 273, 290, 
-	297, 305, 313, 321, 323, 330, 339, 341, 
-	344, 346, 349, 351, 354, 357, 358, 361, 
-	362, 365, 366, 375, 384, 392, 400, 408, 
-	416, 418, 424, 433, 442, 451, 453, 456, 
-	459, 460, 461, 478, 496, 500, 501, 503, 
-	519, 521, 523, 525, 527, 529, 530, 532, 
-	536, 542
+	221, 229, 230, 232, 237, 242, 243, 245, 
+	249, 255, 272, 279, 287, 295, 303, 305, 
+	312, 321, 323, 326, 328, 331, 333, 336, 
+	339, 340, 343, 344, 347, 348, 357, 366, 
+	374, 382, 390, 398, 400, 406, 415, 424, 
+	433, 435, 438, 441, 442, 443, 460, 478, 
+	482, 483, 485, 493, 494, 496, 500, 506
 };
 
 static const char _tsip_machine_parser_header_P_Associated_URI_trans_keys[] = {
@@ -135,47 +142,43 @@ static const char _tsip_machine_parser_header_P_Associated_URI_trans_keys[] = {
 	122, 10, 9, 32, 9, 13, 32, 33, 
 	34, 37, 39, 91, 126, 42, 43, 45, 
 	46, 48, 57, 65, 90, 95, 122, 10, 
-	9, 32, 9, 32, 34, 9, 13, 34, 
-	92, -64, -33, -32, -17, -16, -9, -8, 
-	-5, -4, -3, 32, 126, -128, -65, -128, 
-	-65, -128, -65, -128, -65, -128, -65, 10, 
-	9, 32, 9, 13, 32, 44, 59, 9, 
-	13, 32, 44, 59, 10, 9, 32, 9, 
-	32, 44, 59, 0, 9, 11, 12, 14, 
-	127, 9, 13, 32, 33, 37, 39, 44, 
-	59, 126, 42, 46, 48, 57, 65, 90, 
-	95, 122, 58, 48, 57, 65, 70, 97, 
-	102, 58, 93, 48, 57, 65, 70, 97, 
-	102, 58, 93, 48, 57, 65, 70, 97, 
-	102, 58, 93, 48, 57, 65, 70, 97, 
-	102, 58, 93, 58, 48, 57, 65, 70, 
-	97, 102, 46, 58, 93, 48, 57, 65, 
-	70, 97, 102, 48, 57, 46, 48, 57, 
-	48, 57, 46, 48, 57, 48, 57, 93, 
-	48, 57, 93, 48, 57, 93, 46, 48, 
-	57, 46, 46, 48, 57, 46, 46, 58, 
+	9, 32, 9, 32, 34, 13, 34, 92, 
+	127, 0, 8, 10, 31, 10, 9, 32, 
+	9, 13, 32, 44, 59, 9, 13, 32, 
+	44, 59, 10, 9, 32, 9, 32, 44, 
+	59, 0, 9, 11, 12, 14, 127, 9, 
+	13, 32, 33, 37, 39, 44, 59, 126, 
+	42, 46, 48, 57, 65, 90, 95, 122, 
+	58, 48, 57, 65, 70, 97, 102, 58, 
+	93, 48, 57, 65, 70, 97, 102, 58, 
+	93, 48, 57, 65, 70, 97, 102, 58, 
+	93, 48, 57, 65, 70, 97, 102, 58, 
+	93, 58, 48, 57, 65, 70, 97, 102, 
+	46, 58, 93, 48, 57, 65, 70, 97, 
+	102, 48, 57, 46, 48, 57, 48, 57, 
+	46, 48, 57, 48, 57, 93, 48, 57, 
+	93, 48, 57, 93, 46, 48, 57, 46, 
+	46, 48, 57, 46, 46, 58, 93, 48, 
+	57, 65, 70, 97, 102, 46, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 58, 93, 
+	48, 57, 65, 70, 97, 102, 46, 58, 
 	93, 48, 57, 65, 70, 97, 102, 46, 
 	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
 	46, 58, 93, 48, 57, 65, 70, 97, 
-	102, 46, 58, 93, 48, 57, 65, 70, 
-	97, 102, 46, 58, 93, 48, 57, 65, 
-	70, 97, 102, 48, 57, 46, 48, 57, 
-	46, 48, 57, 46, 58, 9, 13, 32, 
-	33, 37, 39, 126, 42, 43, 45, 46, 
+	102, 48, 57, 46, 48, 57, 46, 48, 
+	57, 46, 58, 9, 13, 32, 33, 37, 
+	39, 126, 42, 43, 45, 46, 48, 57, 
+	65, 90, 95, 122, 9, 13, 32, 33, 
+	37, 39, 60, 126, 42, 43, 45, 46, 
 	48, 57, 65, 90, 95, 122, 9, 13, 
-	32, 33, 37, 39, 60, 126, 42, 43, 
-	45, 46, 48, 57, 65, 90, 95, 122, 
-	9, 13, 32, 60, 10, 9, 32, 9, 
-	13, 34, 92, -64, -33, -32, -17, -16, 
-	-9, -8, -5, -4, -3, 32, 126, -128, 
-	-65, -128, -65, -128, -65, -128, -65, -128, 
-	-65, 10, 9, 32, 9, 13, 32, 60, 
-	0, 9, 11, 12, 14, 127, 0
+	32, 60, 10, 9, 32, 13, 34, 92, 
+	127, 0, 8, 10, 31, 10, 9, 32, 
+	9, 13, 32, 60, 0, 9, 11, 12, 
+	14, 127, 0
 };
 
 static const char _tsip_machine_parser_header_P_Associated_URI_single_lengths[] = {
@@ -185,15 +188,13 @@ static const char _tsip_machine_parser_header_P_Associated_URI_single_lengths[] 
 	3, 0, 4, 3, 0, 1, 5, 1, 
 	7, 1, 2, 6, 10, 6, 1, 2, 
 	5, 9, 1, 2, 9, 1, 2, 3, 
-	4, 0, 0, 0, 0, 0, 1, 2, 
-	5, 5, 1, 2, 4, 0, 9, 1, 
-	2, 2, 2, 2, 1, 3, 0, 1, 
-	0, 1, 0, 1, 1, 1, 1, 1, 
-	1, 1, 3, 3, 2, 2, 2, 2, 
-	2, 0, 3, 3, 3, 0, 1, 1, 
-	1, 1, 7, 8, 4, 1, 2, 4, 
-	0, 0, 0, 0, 0, 1, 2, 4, 
-	0, 0
+	4, 1, 2, 5, 5, 1, 2, 4, 
+	0, 9, 1, 2, 2, 2, 2, 1, 
+	3, 0, 1, 0, 1, 0, 1, 1, 
+	1, 1, 1, 1, 1, 3, 3, 2, 
+	2, 2, 2, 2, 0, 3, 3, 3, 
+	0, 1, 1, 1, 1, 7, 8, 4, 
+	1, 2, 4, 1, 2, 4, 0, 0
 };
 
 static const char _tsip_machine_parser_header_P_Associated_URI_range_lengths[] = {
@@ -203,15 +204,13 @@ static const char _tsip_machine_parser_header_P_Associated_URI_range_lengths[] =
 	0, 2, 4, 0, 0, 0, 0, 0, 
 	5, 0, 0, 5, 4, 0, 0, 0, 
 	0, 5, 0, 0, 5, 0, 0, 0, 
-	6, 1, 1, 1, 1, 1, 0, 0, 
-	0, 0, 0, 0, 0, 3, 4, 3, 
-	3, 3, 3, 0, 3, 3, 1, 1, 
-	1, 1, 1, 1, 1, 0, 1, 0, 
-	1, 0, 3, 3, 3, 3, 3, 3, 
-	0, 3, 3, 3, 3, 1, 1, 1, 
-	0, 0, 5, 5, 0, 0, 0, 6, 
-	1, 1, 1, 1, 1, 0, 0, 0, 
-	3, 0
+	2, 0, 0, 0, 0, 0, 0, 0, 
+	3, 4, 3, 3, 3, 3, 0, 3, 
+	3, 1, 1, 1, 1, 1, 1, 1, 
+	0, 1, 0, 1, 0, 3, 3, 3, 
+	3, 3, 3, 0, 3, 3, 3, 3, 
+	1, 1, 1, 0, 0, 5, 5, 0, 
+	0, 0, 2, 0, 0, 0, 3, 0
 };
 
 static const short _tsip_machine_parser_header_P_Associated_URI_index_offsets[] = {
@@ -221,18 +220,16 @@ static const short _tsip_machine_parser_header_P_Associated_URI_index_offsets[] 
 	90, 94, 97, 106, 110, 111, 113, 119, 
 	121, 134, 136, 139, 151, 166, 173, 175, 
 	178, 184, 199, 201, 204, 219, 221, 224, 
-	228, 239, 241, 243, 245, 247, 249, 251, 
-	254, 260, 266, 268, 271, 276, 280, 294, 
-	299, 305, 311, 317, 320, 325, 332, 334, 
-	337, 339, 342, 344, 347, 350, 352, 355, 
-	357, 360, 362, 369, 376, 382, 388, 394, 
-	400, 403, 407, 414, 421, 428, 430, 433, 
-	436, 438, 440, 453, 467, 472, 474, 477, 
-	488, 490, 492, 494, 496, 498, 500, 503, 
-	508, 512
+	228, 235, 237, 240, 246, 252, 254, 257, 
+	262, 266, 280, 285, 291, 297, 303, 306, 
+	311, 318, 320, 323, 325, 328, 330, 333, 
+	336, 338, 341, 343, 346, 348, 355, 362, 
+	368, 374, 380, 386, 389, 393, 400, 407, 
+	414, 416, 419, 422, 424, 426, 439, 453, 
+	458, 460, 463, 470, 472, 475, 480, 484
 };
 
-static const unsigned char _tsip_machine_parser_header_P_Associated_URI_indicies[] = {
+static const char _tsip_machine_parser_header_P_Associated_URI_indicies[] = {
 	0, 0, 1, 2, 1, 3, 3, 1, 
 	4, 4, 1, 5, 5, 1, 6, 6, 
 	1, 7, 7, 1, 8, 8, 1, 9, 
@@ -261,63 +258,58 @@ static const unsigned char _tsip_machine_parser_header_P_Associated_URI_indicies
 	1, 60, 60, 1, 60, 61, 60, 56, 
 	57, 56, 56, 58, 56, 56, 56, 56, 
 	56, 56, 1, 62, 1, 63, 63, 1, 
-	63, 63, 57, 1, 57, 69, 70, 71, 
-	64, 65, 66, 67, 68, 57, 1, 57, 
-	1, 64, 1, 65, 1, 66, 1, 67, 
-	1, 72, 1, 57, 57, 1, 73, 46, 
-	73, 48, 49, 1, 74, 75, 74, 17, 
-	39, 1, 76, 1, 77, 77, 1, 77, 
-	77, 17, 39, 1, 57, 57, 57, 1, 
-	73, 46, 73, 56, 56, 56, 48, 49, 
-	56, 56, 56, 56, 56, 1, 79, 78, 
-	78, 78, 1, 81, 70, 80, 80, 80, 
-	1, 81, 70, 82, 82, 82, 1, 81, 
-	70, 83, 83, 83, 1, 81, 70, 1, 
-	85, 84, 78, 78, 1, 86, 81, 70, 
-	87, 80, 80, 1, 88, 1, 89, 90, 
-	1, 91, 1, 92, 93, 1, 94, 1, 
-	70, 95, 1, 70, 96, 1, 70, 1, 
-	92, 97, 1, 92, 1, 89, 98, 1, 
-	89, 1, 86, 81, 70, 99, 82, 82, 
-	1, 86, 81, 70, 83, 83, 83, 1, 
-	101, 70, 100, 100, 100, 1, 103, 70, 
-	102, 102, 102, 1, 103, 70, 104, 104, 
-	104, 1, 103, 70, 105, 105, 105, 1, 
-	103, 70, 1, 106, 100, 100, 1, 86, 
-	103, 70, 107, 102, 102, 1, 86, 103, 
-	70, 108, 104, 104, 1, 86, 103, 70, 
-	105, 105, 105, 1, 109, 1, 86, 110, 
-	1, 86, 111, 1, 86, 1, 85, 1, 
-	112, 113, 112, 114, 114, 114, 114, 114, 
-	114, 114, 114, 114, 1, 115, 116, 115, 
-	114, 114, 114, 117, 114, 114, 114, 114, 
-	114, 114, 1, 118, 119, 118, 29, 1, 
-	120, 1, 112, 112, 1, 126, 127, 128, 
-	129, 121, 122, 123, 124, 125, 126, 1, 
-	126, 1, 121, 1, 122, 1, 123, 1, 
-	124, 1, 130, 1, 126, 126, 1, 115, 
-	116, 115, 117, 1, 126, 126, 126, 1, 
-	1, 0
+	63, 63, 57, 1, 64, 65, 66, 1, 
+	1, 1, 57, 67, 1, 57, 57, 1, 
+	68, 46, 68, 48, 49, 1, 69, 70, 
+	69, 17, 39, 1, 71, 1, 72, 72, 
+	1, 72, 72, 17, 39, 1, 57, 57, 
+	57, 1, 68, 46, 68, 56, 56, 56, 
+	48, 49, 56, 56, 56, 56, 56, 1, 
+	74, 73, 73, 73, 1, 76, 65, 75, 
+	75, 75, 1, 76, 65, 77, 77, 77, 
+	1, 76, 65, 78, 78, 78, 1, 76, 
+	65, 1, 80, 79, 73, 73, 1, 81, 
+	76, 65, 82, 75, 75, 1, 83, 1, 
+	84, 85, 1, 86, 1, 87, 88, 1, 
+	89, 1, 65, 90, 1, 65, 91, 1, 
+	65, 1, 87, 92, 1, 87, 1, 84, 
+	93, 1, 84, 1, 81, 76, 65, 94, 
+	77, 77, 1, 81, 76, 65, 78, 78, 
+	78, 1, 96, 65, 95, 95, 95, 1, 
+	98, 65, 97, 97, 97, 1, 98, 65, 
+	99, 99, 99, 1, 98, 65, 100, 100, 
+	100, 1, 98, 65, 1, 101, 95, 95, 
+	1, 81, 98, 65, 102, 97, 97, 1, 
+	81, 98, 65, 103, 99, 99, 1, 81, 
+	98, 65, 100, 100, 100, 1, 104, 1, 
+	81, 105, 1, 81, 106, 1, 81, 1, 
+	80, 1, 107, 108, 107, 109, 109, 109, 
+	109, 109, 109, 109, 109, 109, 1, 110, 
+	111, 110, 109, 109, 109, 112, 109, 109, 
+	109, 109, 109, 109, 1, 113, 114, 113, 
+	29, 1, 115, 1, 107, 107, 1, 117, 
+	118, 119, 1, 1, 1, 116, 120, 1, 
+	116, 116, 1, 110, 111, 110, 112, 1, 
+	116, 116, 116, 1, 1, 0
 };
 
 static const char _tsip_machine_parser_header_P_Associated_URI_trans_targs[] = {
 	2, 0, 3, 4, 5, 6, 7, 8, 
 	9, 10, 11, 12, 13, 14, 15, 16, 
-	17, 18, 18, 19, 98, 103, 25, 20, 
+	17, 18, 18, 19, 93, 98, 25, 20, 
 	21, 21, 22, 23, 24, 25, 26, 27, 
 	26, 28, 29, 30, 30, 31, 18, 32, 
-	113, 33, 36, 34, 35, 37, 31, 36, 
+	103, 33, 36, 34, 35, 37, 31, 36, 
 	18, 32, 41, 37, 38, 39, 40, 42, 
-	62, 48, 63, 43, 44, 45, 46, 47, 
-	49, 50, 51, 52, 53, 54, 56, 61, 
-	55, 57, 57, 58, 59, 60, 64, 97, 
-	65, 68, 66, 67, 69, 84, 70, 82, 
-	71, 72, 80, 73, 74, 78, 75, 76, 
-	77, 79, 81, 83, 85, 93, 86, 89, 
-	87, 88, 90, 91, 92, 94, 95, 96, 
-	99, 101, 98, 100, 22, 25, 100, 22, 
-	102, 104, 105, 106, 107, 108, 103, 109, 
-	111, 112, 110
+	57, 48, 58, 43, 44, 45, 46, 47, 
+	49, 51, 56, 50, 52, 52, 53, 54, 
+	55, 59, 92, 60, 63, 61, 62, 64, 
+	79, 65, 77, 66, 67, 75, 68, 69, 
+	73, 70, 71, 72, 74, 76, 78, 80, 
+	88, 81, 84, 82, 83, 85, 86, 87, 
+	89, 90, 91, 94, 96, 93, 95, 22, 
+	25, 95, 22, 97, 98, 99, 101, 102, 
+	100
 };
 
 static const char _tsip_machine_parser_header_P_Associated_URI_trans_actions[] = {
@@ -329,34 +321,33 @@ static const char _tsip_machine_parser_header_P_Associated_URI_trans_actions[] =
 	13, 0, 1, 0, 0, 18, 18, 0, 
 	18, 9, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 18, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 18, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 5, 5, 5, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0
+	0, 0, 0, 0, 0, 0, 5, 5, 
+	5, 0, 0, 0, 0, 0, 0, 0, 
+	0
 };
 
 static const int tsip_machine_parser_header_P_Associated_URI_start = 1;
-static const int tsip_machine_parser_header_P_Associated_URI_first_final = 113;
+static const int tsip_machine_parser_header_P_Associated_URI_first_final = 103;
 static const int tsip_machine_parser_header_P_Associated_URI_error = 0;
 
 static const int tsip_machine_parser_header_P_Associated_URI_en_main = 1;
 
 
-/* #line 149 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 146 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	
-/* #line 353 "../src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 344 "./src/headers/tsip_header_P_Associated_URI.c" */
 	{
 	cs = tsip_machine_parser_header_P_Associated_URI_start;
 	}
 
-/* #line 150 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 147 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	
-/* #line 360 "../src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 351 "./src/headers/tsip_header_P_Associated_URI.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -431,63 +422,58 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 53 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 52 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 58 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 56 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
-		if(!curr_p_associated_uri)
-		{
-			curr_p_associated_uri = TSIP_HEADER_P_ASSOCIATED_URI_CREATE_NULL();
+		if(!curr_p_associated_uri){
+			curr_p_associated_uri = tsip_header_P_Associated_URI_create_null();
 		}
 	}
 	break;
 	case 2:
-/* #line 66 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 62 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
-		if(curr_p_associated_uri)
-		{
+		if(curr_p_associated_uri){
 			TSK_PARSER_SET_STRING(curr_p_associated_uri->display_name);
 		}
 	}
 	break;
 	case 3:
-/* #line 74 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 68 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
-		if(curr_p_associated_uri && !curr_p_associated_uri->uri)
-		{
+		if(curr_p_associated_uri && !curr_p_associated_uri->uri){
 			int len = (int)(p  - tag_start);
 			curr_p_associated_uri->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 	break;
 	case 4:
-/* #line 83 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 75 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
-		if(curr_p_associated_uri)
-		{
+		if(curr_p_associated_uri){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_p_associated_uri));
 		}
 	}
 	break;
 	case 5:
-/* #line 91 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 81 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
-		if(curr_p_associated_uri)
-		{
+		if(curr_p_associated_uri){
 			tsk_list_push_back_data(hdr_p_associated_uris, ((void**) &curr_p_associated_uri));
 		}
 	}
 	break;
 	case 6:
-/* #line 99 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 87 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
 	}
 	break;
-/* #line 491 "../src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 477 "./src/headers/tsip_header_P_Associated_URI.c" */
 		}
 	}
 
@@ -500,14 +486,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 151 "tsip_parser_header_P_Associated_URI.rl" */
+/* #line 148 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	
 	if( cs < 
-/* #line 507 "../src/headers/tsip_header_P_Associated_URI.c" */
-113
-/* #line 152 "tsip_parser_header_P_Associated_URI.rl" */
- )
-	{
+/* #line 493 "./src/headers/tsip_header_P_Associated_URI.c" */
+103
+/* #line 149 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'P-Associated-URI' header.");
 		TSK_OBJECT_SAFE_FREE(curr_p_associated_uri);
 		TSK_OBJECT_SAFE_FREE(hdr_p_associated_uris);
 	}
@@ -523,11 +509,10 @@ _again:
 //	P_Associated_URI header object definition
 //
 
-static void* tsip_header_P_Associated_URI_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_P_Associated_URI_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_P_Associated_URI_t *P_Associated_URI = self;
-	if(P_Associated_URI)
-	{
+	if(P_Associated_URI){
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(P_Associated_URI)->type = tsip_htype_P_Associated_URI;
@@ -536,24 +521,24 @@ static void* tsip_header_P_Associated_URI_create(void *self, va_list * app)
 			P_Associated_URI->uri = tsk_object_ref((void*)uri);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Associated_URI header.");
 	}
 	return self;
 }
 
-static void* tsip_header_P_Associated_URI_destroy(void *self)
+static tsk_object_t* tsip_header_P_Associated_URI_dtor(tsk_object_t *self)
 {
 	tsip_header_P_Associated_URI_t *P_Associated_URI = self;
-	if(P_Associated_URI)
-	{
+	if(P_Associated_URI){
 		TSK_FREE(P_Associated_URI->display_name);
 		TSK_OBJECT_SAFE_FREE(P_Associated_URI->uri);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(P_Associated_URI));
 	}
-	else TSK_DEBUG_ERROR("Null P_Associated_URI header.");
+	else{
+		TSK_DEBUG_ERROR("Null P_Associated_URI header.");
+	}
 
 	return self;
 }
@@ -561,8 +546,8 @@ static void* tsip_header_P_Associated_URI_destroy(void *self)
 static const tsk_object_def_t tsip_header_P_Associated_URI_def_s = 
 {
 	sizeof(tsip_header_P_Associated_URI_t),
-	tsip_header_P_Associated_URI_create,
-	tsip_header_P_Associated_URI_destroy,
-	0
+	tsip_header_P_Associated_URI_ctor,
+	tsip_header_P_Associated_URI_dtor,
+	tsk_null
 };
-const void *tsip_header_P_Associated_URI_def_t = &tsip_header_P_Associated_URI_def_s;
+const tsk_object_def_t *tsip_header_P_Associated_URI_def_t = &tsip_header_P_Associated_URI_def_s;

@@ -35,13 +35,7 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_CONTENT_LENGTH_CREATE
-* Creates new sip 'Content-Length' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(length)	tsip_header_Content_Length_def_t, (uint32_t)length
-#define TSIP_HEADER_CONTENT_LENGTH_CREATE(length)	tsk_object_new(TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(length))
-#define TSIP_HEADER_CONTENT_LENGTH_CREATE_NULL()	TSIP_HEADER_CONTENT_LENGTH_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -62,9 +56,12 @@ typedef struct tsip_header_Content_Length_s
 }
 tsip_header_Content_Length_t;
 
-tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Content_Length_t* tsip_header_Content_Length_create(uint32_t length);
+TINYSIP_API tsip_header_Content_Length_t* tsip_header_Content_Length_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_Content_Length_def_t;
+TINYSIP_API tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Content_Length_def_t;
 
 TSIP_END_DECLS
 

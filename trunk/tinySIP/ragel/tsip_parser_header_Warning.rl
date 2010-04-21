@@ -47,55 +47,43 @@
 	machine tsip_machine_parser_header_Warning;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action create_warning
-	{
-		if(!curr_warning)
-		{
-			curr_warning = TSIP_HEADER_WARNING_CREATE();
+	action create_warning{
+		if(!curr_warning){
+			curr_warning = tsip_header_Warning_create();
 		}
 	}
 
-	action parse_agent
-	{
-		if(curr_warning)
-		{
+	action parse_agent{
+		if(curr_warning){
 			TSK_PARSER_SET_STRING(curr_warning->agent);
 		}
 	}
 
-	action parse_text
-	{
-		if(curr_warning)
-		{
+	action parse_text{
+		if(curr_warning){
 			TSK_PARSER_SET_STRING(curr_warning->text);
 		}
 	}
 
-	action parse_code
-	{
-		if(curr_warning)
-		{
+	action parse_code{
+		if(curr_warning){
 			TSK_PARSER_SET_INTEGER(curr_warning->code);
 		}
 	}
 
-	action add_warning
-	{
-		if(curr_warning)
-		{
+	action add_warning{
+		if(curr_warning){
 			tsk_list_push_back_data(hdr_warnings, ((void**) &curr_warning));
 		}
 	}
 
-	action eob
-	{
+	action eob{
 	}
 
 	warn_code = DIGIT{3};
@@ -110,10 +98,14 @@
 
 }%%
 
+tsip_header_Warning_t* tsip_header_Warning_create()
+{
+	return tsk_object_new(tsip_header_Warning_def_t);
+}
+
 int tsip_header_Warning_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Warning_t *Warning = header;
 		return tsk_buffer_append_2(output, "%d %s %s", 
 			Warning->code, Warning->agent, Warning->text); /* warn-code  SP warn-agent  SP warn-text */
@@ -128,7 +120,7 @@ tsip_header_Warnings_L_t *tsip_header_Warning_parse(const char *data, size_t siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Warnings_L_t *hdr_warnings = TSK_LIST_CREATE();
+	tsip_header_Warnings_L_t *hdr_warnings = tsk_list_create();
 	
 	const char *tag_start;
 	tsip_header_Warning_t *curr_warning = 0;
@@ -137,8 +129,8 @@ tsip_header_Warnings_L_t *tsip_header_Warning_parse(const char *data, size_t siz
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Warning' header.");
 		TSK_OBJECT_SAFE_FREE(curr_warning);
 		TSK_OBJECT_SAFE_FREE(hdr_warnings);
 	}
@@ -154,34 +146,33 @@ tsip_header_Warnings_L_t *tsip_header_Warning_parse(const char *data, size_t siz
 //	Warning header object definition
 //
 
-static void* tsip_header_Warning_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Warning_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Warning_t *Warning = self;
-	if(Warning)
-	{
+	if(Warning){
 		TSIP_HEADER(Warning)->type = tsip_htype_Warning;
 		TSIP_HEADER(Warning)->tostring = tsip_header_Warning_tostring;
 
 		Warning->code = -1;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Warning header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Warning_destroy(void *self)
+static tsk_object_t* tsip_header_Warning_dtor(tsk_object_t *self)
 {
 	tsip_header_Warning_t *Warning = self;
-	if(Warning)
-	{
+	if(Warning){
 		TSK_FREE(Warning->agent);
 		TSK_FREE(Warning->text);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Warning));
 	}
-	else TSK_DEBUG_ERROR("Null Warning header.");
+	else{
+		TSK_DEBUG_ERROR("Null Warning header.");
+	}
 
 	return self;
 }
@@ -189,8 +180,8 @@ static void* tsip_header_Warning_destroy(void *self)
 static const tsk_object_def_t tsip_header_Warning_def_s = 
 {
 	sizeof(tsip_header_Warning_t),
-	tsip_header_Warning_create,
-	tsip_header_Warning_destroy,
-	0
+	tsip_header_Warning_ctor,
+	tsip_header_Warning_dtor,
+	tsk_null
 };
-const void *tsip_header_Warning_def_t = &tsip_header_Warning_def_s;
+const tsk_object_def_t *tsip_header_Warning_def_t = &tsip_header_Warning_def_s;

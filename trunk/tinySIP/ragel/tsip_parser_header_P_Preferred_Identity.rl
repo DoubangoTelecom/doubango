@@ -52,33 +52,27 @@
 	machine tsip_machine_parser_header_P_Preferred_Identity;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action parse_uri
-	{	
-		if(!hdr_pi->uri) /* Only one URI */
-		{
+	action parse_uri{	
+		if(!hdr_pi->uri) /* Only one URI */{
 			int len = (int)(p  - tag_start);
 			hdr_pi->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 
-	action parse_display_name
-	{
-		if(!hdr_pi->display_name)
-		{
+	action parse_display_name{
+		if(!hdr_pi->display_name){
 			TSK_PARSER_SET_STRING(hdr_pi->display_name);
 		}
 
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	#/* FIXME: Only one URI is added --> According to the ABNF the header could have more than one URI. */
@@ -95,17 +89,27 @@
 
 }%%
 
+
+tsip_header_P_Preferred_Identity_t* tsip_header_P_Preferred_Identity_create(const tsip_uri_t* uri)
+{
+	return tsk_object_new(TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(uri));
+}
+
+tsip_header_P_Preferred_Identity_t* tsip_header_P_Preferred_Identity_create_null()
+{
+	return tsip_header_P_Preferred_Identity_create(tsk_null);
+}
+
 int tsip_header_Preferred_Identity_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		int ret;
 		const tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = header;
 
-		if(ret=tsip_uri_serialize(P_Preferred_Identity->uri, 1, 1, output))
-		{
+		if((ret = tsip_uri_serialize(P_Preferred_Identity->uri, 1, 1, output))){
 			return ret;
 		}
+		return ret;
 	}
 	return -1;
 }
@@ -116,7 +120,7 @@ tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Preferred_Identity_t *hdr_pi = TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE_NULL();
+	tsip_header_P_Preferred_Identity_t *hdr_pi = tsip_header_P_Preferred_Identity_create_null();
 	
 	const char *tag_start;
 
@@ -124,8 +128,8 @@ tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'P-Preferred-Identity' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_pi);
 	}
 	
@@ -142,11 +146,10 @@ tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const
 //	P_Preferred_Identity header object definition
 //
 
-static void* tsip_header_P_Preferred_Identity_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_P_Preferred_Identity_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = self;
-	if(P_Preferred_Identity)
-	{
+	if(P_Preferred_Identity){
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(P_Preferred_Identity)->type = tsip_htype_P_Preferred_Identity;
@@ -156,22 +159,22 @@ static void* tsip_header_P_Preferred_Identity_create(void *self, va_list * app)
 			P_Preferred_Identity->uri = tsk_object_ref((void*)uri);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Preferred_Identity header.");
 	}
 	return self;
 }
 
-static void* tsip_header_P_Preferred_Identity_destroy(void *self)
+static tsk_object_t* tsip_header_P_Preferred_Identity_dtor(tsk_object_t *self)
 {
 	tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = self;
-	if(P_Preferred_Identity)
-	{
+	if(P_Preferred_Identity){
 		TSK_FREE(P_Preferred_Identity->display_name);
 		TSK_OBJECT_SAFE_FREE(P_Preferred_Identity->uri);
 	}
-	else TSK_DEBUG_ERROR("Null P_Preferred_Identity header.");
+	else{
+		TSK_DEBUG_ERROR("Null P_Preferred_Identity header.");
+	}
 
 	return self;
 }
@@ -179,8 +182,8 @@ static void* tsip_header_P_Preferred_Identity_destroy(void *self)
 static const tsk_object_def_t tsip_header_P_Preferred_Identity_def_s = 
 {
 	sizeof(tsip_header_P_Preferred_Identity_t),
-	tsip_header_P_Preferred_Identity_create,
-	tsip_header_P_Preferred_Identity_destroy,
-	0
+	tsip_header_P_Preferred_Identity_ctor,
+	tsip_header_P_Preferred_Identity_dtor,
+	tsk_null
 };
-const void *tsip_header_P_Preferred_Identity_def_t = &tsip_header_P_Preferred_Identity_def_s;
+const tsk_object_def_t *tsip_header_P_Preferred_Identity_def_t = &tsip_header_P_Preferred_Identity_def_s;

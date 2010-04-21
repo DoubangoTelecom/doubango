@@ -923,6 +923,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\..\tinySIP\include\tinysip.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySIP\include\tinysip_config.h"
 				>
 			</File>
@@ -1453,10 +1457,6 @@
 			<Filter
 				Name="api"
 				>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_invite.h"
 					>

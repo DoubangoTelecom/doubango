@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_User_Agent.rl" */
+/* #line 1 "./ragel/tsip_parser_header_User_Agent.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -45,17 +45,25 @@
 *	Ragel state machine.
 */
 
-/* #line 70 "tsip_parser_header_User_Agent.rl" */
+/* #line 67 "./ragel/tsip_parser_header_User_Agent.rl" */
 
+
+tsip_header_User_Agent_t* tsip_header_User_Agent_create(const char* ua)
+{
+	return tsk_object_new(TSIP_HEADER_USER_AGENT_VA_ARGS(ua));
+}
+
+tsip_header_User_Agent_t* tsip_header_User_Agent_create_null()
+{
+	return tsip_header_User_Agent_create(tsk_null);
+}
 
 int tsip_header_User_Agent_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_User_Agent_t *User_Agent = header;
-		if(User_Agent->value)
-		{
-			tsk_buffer_append(output, User_Agent->value, strlen(User_Agent->value));
+		if(User_Agent->value){
+			return tsk_buffer_append(output, User_Agent->value, strlen(User_Agent->value));
 		}
 		return 0;
 	}
@@ -69,12 +77,12 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_User_Agent_t *hdr_user_agent = TSIP_HEADER_USER_AGENT_CREATE(tsk_null);
+	tsip_header_User_Agent_t *hdr_user_agent = tsip_header_User_Agent_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 78 "../src/headers/tsip_header_User_Agent.c" */
+/* #line 86 "./src/headers/tsip_header_User_Agent.c" */
 static const char _tsip_machine_parser_header_User_Agent_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 1
@@ -135,16 +143,16 @@ static const int tsip_machine_parser_header_User_Agent_error = 0;
 static const int tsip_machine_parser_header_User_Agent_en_main = 1;
 
 
-/* #line 98 "tsip_parser_header_User_Agent.rl" */
+/* #line 103 "./ragel/tsip_parser_header_User_Agent.rl" */
 	
-/* #line 141 "../src/headers/tsip_header_User_Agent.c" */
+/* #line 149 "./src/headers/tsip_header_User_Agent.c" */
 	{
 	cs = tsip_machine_parser_header_User_Agent_start;
 	}
 
-/* #line 99 "tsip_parser_header_User_Agent.rl" */
+/* #line 104 "./ragel/tsip_parser_header_User_Agent.rl" */
 	
-/* #line 148 "../src/headers/tsip_header_User_Agent.c" */
+/* #line 156 "./src/headers/tsip_header_User_Agent.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -219,23 +227,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "tsip_parser_header_User_Agent.rl" */
+/* #line 51 "./ragel/tsip_parser_header_User_Agent.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 57 "tsip_parser_header_User_Agent.rl" */
+/* #line 55 "./ragel/tsip_parser_header_User_Agent.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_user_agent->value);
 	}
 	break;
 	case 2:
-/* #line 62 "tsip_parser_header_User_Agent.rl" */
+/* #line 59 "./ragel/tsip_parser_header_User_Agent.rl" */
 	{
 	}
 	break;
-/* #line 239 "../src/headers/tsip_header_User_Agent.c" */
+/* #line 247 "./src/headers/tsip_header_User_Agent.c" */
 		}
 	}
 
@@ -248,14 +256,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 100 "tsip_parser_header_User_Agent.rl" */
+/* #line 105 "./ragel/tsip_parser_header_User_Agent.rl" */
 	
 	if( cs < 
-/* #line 255 "../src/headers/tsip_header_User_Agent.c" */
+/* #line 263 "./src/headers/tsip_header_User_Agent.c" */
 15
-/* #line 101 "tsip_parser_header_User_Agent.rl" */
- )
-	{
+/* #line 106 "./ragel/tsip_parser_header_User_Agent.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'User-Agent' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_user_agent);
 	}
 	
@@ -272,31 +280,30 @@ _again:
 //	User_Agent header object definition
 //
 
-static void* tsip_header_User_Agent_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_User_Agent_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_User_Agent_t *User_Agent = self;
-	if(User_Agent)
-	{
+	if(User_Agent){
 		TSIP_HEADER(User_Agent)->type = tsip_htype_User_Agent;
 		TSIP_HEADER(User_Agent)->tostring = tsip_header_User_Agent_tostring;
 		User_Agent->value = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new User_Agent header.");
 	}
 	return self;
 }
 
-static void* tsip_header_User_Agent_destroy(void *self)
+static tsk_object_t* tsip_header_User_Agent_dtor(tsk_object_t *self)
 {
 	tsip_header_User_Agent_t *User_Agent = self;
-	if(User_Agent)
-	{
+	if(User_Agent){
 		TSK_FREE(User_Agent->value);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(User_Agent));
 	}
-	else TSK_DEBUG_ERROR("Null User_Agent header.");
+	else{
+		TSK_DEBUG_ERROR("Null User_Agent header.");
+	}
 
 	return self;
 }
@@ -304,8 +311,8 @@ static void* tsip_header_User_Agent_destroy(void *self)
 static const tsk_object_def_t tsip_header_User_Agent_def_s = 
 {
 	sizeof(tsip_header_User_Agent_t),
-	tsip_header_User_Agent_create,
-	tsip_header_User_Agent_destroy,
-	0
+	tsip_header_User_Agent_ctor,
+	tsip_header_User_Agent_dtor,
+	tsk_null
 };
-const void *tsip_header_User_Agent_def_t = &tsip_header_User_Agent_def_s;
+const tsk_object_def_t *tsip_header_User_Agent_def_t = &tsip_header_User_Agent_def_s;

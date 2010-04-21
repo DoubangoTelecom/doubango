@@ -47,113 +47,85 @@
 	machine tsip_machine_parser_header_Security_Client;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action create_securityclient
-	{
-		if(!curr_securityclient)
-		{
-			curr_securityclient = TSIP_HEADER_SECURITY_CLIENT_CREATE_NULL();
+	action create_securityclient{
+		if(!curr_securityclient){
+			curr_securityclient = tsip_header_Security_Client_create_null();
 		}
 	}
 
-	action add_securityclient
-	{
-		if(curr_securityclient)
-		{
+	action add_securityclient{
+		if(curr_securityclient){
 			tsk_list_push_back_data(hdr_securityclients, ((void**) &curr_securityclient));
 		}
 	}
 	
-	action parse_mech
-	{
-		if(curr_securityclient)
-		{
+	action parse_mech{
+		if(curr_securityclient){
 			TSK_PARSER_SET_STRING(curr_securityclient->mech);
 		}
 	}
 
-	action parse_port_s
-	{
-		if(curr_securityclient)
-		{
+	action parse_port_s{
+		if(curr_securityclient){
 			TSK_PARSER_SET_INT(curr_securityclient->port_s);
 		}
 	}
 
-	action parse_port_c
-	{
-		if(curr_securityclient)
-		{
+	action parse_port_c{
+		if(curr_securityclient){
 			TSK_PARSER_SET_INT(curr_securityclient->port_c);
 		}
 	}
 
-	action parse_spi_s
-	{
-		if(curr_securityclient)
-		{
+	action parse_spi_s{
+		if(curr_securityclient){
 			TSK_PARSER_SET_UINT(curr_securityclient->spi_s);
 		}
 	}
 
-	action parse_spi_c
-	{
-		if(curr_securityclient)
-		{
+	action parse_spi_c{
+		if(curr_securityclient){
 			TSK_PARSER_SET_UINT(curr_securityclient->spi_c);
 		}
 	}
 
-	action parse_ealg
-	{
-		if(curr_securityclient)
-		{
+	action parse_ealg{
+		if(curr_securityclient){
 			TSK_PARSER_SET_STRING(curr_securityclient->ealg);
 		}
 	}
 
-	action parse_alg
-	{
-		if(curr_securityclient)
-		{
+	action parse_alg{
+		if(curr_securityclient){
 			TSK_PARSER_SET_STRING(curr_securityclient->alg);
 		}
 	}
 
-	action parse_prot
-	{
-		if(curr_securityclient)
-		{
+	action parse_prot{
+		if(curr_securityclient){
 			TSK_PARSER_SET_STRING(curr_securityclient->prot);
 		}
 	}
 
-	action parse_preference
-	{
-		if(curr_securityclient)
-		{
+	action parse_preference{
+		if(curr_securityclient){
 			TSK_PARSER_SET_DOUBLE(curr_securityclient->q);
 		}
 	}
 
-	action parse_param
-	{
-		if(curr_securityclient)
-		{
+	action parse_param{
+		if(curr_securityclient){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_securityclient));
 		}
 	}
 
-
-
-	action eob
-	{
+	action eob{
 	}
 
 	mech_extension = generic_param>tag %parse_param;
@@ -175,17 +147,26 @@
 
 }%%
 
+tsip_header_Security_Client_t* tsip_header_Security_Client_create(const char* mech, const char* alg, const char* prot, const char* mod, const char* ealg, tnet_port_t port_c, tnet_port_t port_s, uint32_t spi_c, uint32_t spi_s)
+{
+	return tsk_object_new(TSIP_HEADER_SECURITY_CLIENT_VA_ARGS(mech, alg, prot, mod, ealg, port_c, port_s, spi_c, spi_s));
+}
+
+tsip_header_Security_Client_t* tsip_header_Security_Client_create_null()
+{
+	return tsip_header_Security_Client_create(tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, 0, 0, 0, 0);
+}
+
+
 int tsip_header_Security_Client_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Security_Client_t *Security_Client = header;
 		int ret = 0;
 		
 		// ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
-		if(tsk_striequals(Security_Client->mech, "ipsec-3gpp"))
-		{
-			tsk_buffer_append_2(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
+		if(tsk_striequals(Security_Client->mech, "ipsec-3gpp")){
+			ret = tsk_buffer_append_2(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
 				Security_Client->mech,
 				
 				Security_Client->alg ? ";alg=" : "",
@@ -204,12 +185,12 @@ int tsip_header_Security_Client_tostring(const void* header, tsk_buffer_t* outpu
 				);
 		}
 		else if(Security_Client->mech){
-			tsk_buffer_append(output, Security_Client->mech, strlen(Security_Client->mech));
+			ret = tsk_buffer_append(output, Security_Client->mech, strlen(Security_Client->mech));
 		}
 
 		if(Security_Client->q >= 0){
 			/* qvalue	=  	("0" [ "." 0*3DIGIT ] ) / ( "1" [ "." 0*3("0") ] ) */
-			tsk_buffer_append_2(output, ";q=%1.3f", Security_Client->q);
+			ret = tsk_buffer_append_2(output, ";q=%1.3f", Security_Client->q);
 		}
 		
 		return ret;
@@ -224,17 +205,17 @@ tsip_header_Security_Clients_L_t *tsip_header_Security_Client_parse(const char *
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Security_Clients_L_t *hdr_securityclients = TSK_LIST_CREATE();
+	tsip_header_Security_Clients_L_t *hdr_securityclients = tsk_list_create();
 	
 	const char *tag_start;
-	tsip_header_Security_Client_t *curr_securityclient = 0;
+	tsip_header_Security_Client_t *curr_securityclient = tsk_null;
 
 	%%write data;
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Security-Client' header.");
 		TSK_OBJECT_SAFE_FREE(curr_securityclient);
 		TSK_OBJECT_SAFE_FREE(hdr_securityclients);
 	}
@@ -250,11 +231,10 @@ tsip_header_Security_Clients_L_t *tsip_header_Security_Client_parse(const char *
 //	Security_Client header object definition
 //
 
-static void* tsip_header_Security_Client_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Security_Client_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Security_Client_t *Security_Client = self;
-	if(Security_Client)
-	{
+	if(Security_Client){
 		const char* mech = va_arg(*app, const char*);
 
 		TSIP_HEADER(Security_Client)->type = tsip_htype_Security_Client;
@@ -279,18 +259,16 @@ static void* tsip_header_Security_Client_create(void *self, va_list * app)
 			Security_Client->spi_s = va_arg(*app, uint32_t);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Security_Client header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Security_Client_destroy(void *self)
+static tsk_object_t* tsip_header_Security_Client_dtor(tsk_object_t *self)
 {
 	tsip_header_Security_Client_t *Security_Client = self;
-	if(Security_Client)
-	{
+	if(Security_Client){
 		TSK_FREE(Security_Client->mech);
 		TSK_FREE(Security_Client->alg);
 		TSK_FREE(Security_Client->prot);
@@ -299,7 +277,9 @@ static void* tsip_header_Security_Client_destroy(void *self)
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Security_Client));
 	}
-	else TSK_DEBUG_ERROR("Null Security_Client header.");
+	else{
+		TSK_DEBUG_ERROR("Null Security_Client header.");
+	}
 
 	return self;
 }
@@ -307,8 +287,8 @@ static void* tsip_header_Security_Client_destroy(void *self)
 static const tsk_object_def_t tsip_header_Security_Client_def_s = 
 {
 	sizeof(tsip_header_Security_Client_t),
-	tsip_header_Security_Client_create,
-	tsip_header_Security_Client_destroy,
-	0
+	tsip_header_Security_Client_ctor,
+	tsip_header_Security_Client_dtor,
+	tsk_null
 };
-const void *tsip_header_Security_Client_def_t = &tsip_header_Security_Client_def_s;
+const tsk_object_def_t *tsip_header_Security_Client_def_t = &tsip_header_Security_Client_def_s;

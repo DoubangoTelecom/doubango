@@ -37,6 +37,11 @@
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
+tsip_transac_layer_t* tsip_transac_layer_create(tsip_stack_t* stack)
+{
+	return tsk_object_new(tsip_transac_layer_def_t, stack);
+}
+
 tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_bool_t isCT, const tsip_message_t* msg, tsip_dialog_t* dialog)
 {
 	tsip_transac_t *ret = tsk_null;
@@ -52,22 +57,22 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_boo
 			{
 				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Client transaction (ICT)
-					transac = TSIP_TRANSAC_ICT_CREATE(self->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_ict_create(self->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
 				}
 				else{
 					// NON-INVITE Client transaction (NICT)
-					transac = TSIP_TRANSAC_NICT_CREATE(self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_nict_create(self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
 				}
 			}
 			else	/* Server transaction */
 			{
 				if(TSIP_REQUEST_IS_INVITE(msg)){
 					// INVITE Server transaction (IST)
-					transac = TSIP_TRANSAC_IST_CREATE(self->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_ist_create(self->reliable, msg->CSeq->seq, msg->Call_ID->value, dialog);
 				}
 				else{
 					// NON-INVITE Server transaction (NIST)
-					transac = TSIP_TRANSAC_NIST_CREATE(self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
+					transac = (tsip_transac_t *)tsip_transac_nist_create(self->reliable, msg->CSeq->seq, msg->CSeq->method, msg->Call_ID->value, dialog);
 				}
 				
 				if(transac){ /* Copy branch from the message */
@@ -90,8 +95,7 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_boo
 
 int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *transac)
 {
-	if(transac && self)
-	{
+	if(transac && self){
 		tsk_safeobj_lock(self);
 		tsk_list_remove_item_by_data(self->transactions, transac);
 		tsk_safeobj_unlock(self);
@@ -130,15 +134,13 @@ const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t 
 
 	/*	Check first Via/CSeq validity.
 	*/
-	if(!message->firstVia || !message->CSeq)
-	{
+	if(!message->firstVia || !message->CSeq){
 		return 0;
 	}
 
 	tsk_safeobj_lock(self);
 
-	tsk_list_foreach(item, self->transactions)
-	{
+	tsk_list_foreach(item, self->transactions){
 		transac = item->data;
 		if( tsk_strequals(transac->branch, message->firstVia->branch) 
 			&& tsk_strequals(transac->cseq_method, message->CSeq->method)
@@ -273,24 +275,22 @@ int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, con
 //========================================================
 //	Transaction layer object definition
 //
-static void* tsip_transac_layer_create(void * self, va_list * app)
+static tsk_object_t* tsip_transac_layer_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_transac_layer_t *layer = self;
-	if(layer)
-	{
+	if(layer){
 		layer->stack = va_arg(*app, const tsip_stack_handle_t *);
-		layer->transactions = TSK_LIST_CREATE();
+		layer->transactions = tsk_list_create();
 
 		tsk_safeobj_init(layer);
 	}
 	return self;
 }
 
-static void* tsip_transac_layer_destroy(void * self)
+static tsk_object_t* tsip_transac_layer_dtor(tsk_object_t * self)
 { 
 	tsip_transac_layer_t *layer = self;
-	if(layer)
-	{
+	if(layer){
 		TSK_OBJECT_SAFE_FREE(layer->transactions);
 
 		tsk_safeobj_deinit(layer);
@@ -298,7 +298,7 @@ static void* tsip_transac_layer_destroy(void * self)
 	return self;
 }
 
-static int tsip_transac_layer_cmp(const void *obj1, const void *obj2)
+static int tsip_transac_layer_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
@@ -306,8 +306,8 @@ static int tsip_transac_layer_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_transac_layer_def_s = 
 {
 	sizeof(tsip_transac_layer_t),
-	tsip_transac_layer_create, 
-	tsip_transac_layer_destroy,
+	tsip_transac_layer_ctor, 
+	tsip_transac_layer_dtor,
 	tsip_transac_layer_cmp, 
 };
-const void *tsip_transac_layer_def_t = &tsip_transac_layer_def_s;
+const tsk_object_def_t *tsip_transac_layer_def_t = &tsip_transac_layer_def_s;

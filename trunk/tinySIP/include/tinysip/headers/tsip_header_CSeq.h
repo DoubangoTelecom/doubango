@@ -35,13 +35,7 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_CSEQ_CREATE
-* Creates new sip 'CSeq' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-
 #define TSIP_HEADER_CSEQ_VA_ARGS(seq, method)		tsip_header_CSeq_def_t, (int32_t) seq, (const char*)method
-#define TSIP_HEADER_CSEQ_CREATE(seq, method)		tsk_object_new(TSIP_HEADER_CSEQ_VA_ARGS(seq, method))
 
 #define TSIP_HEADER_CSEQ_NONE						0
 #define TSIP_HEADER_CSEQ_DEFAULT					1
@@ -51,8 +45,6 @@ TSIP_BEGIN_DECLS
 /// @struct	
 ///
 /// @brief	SIP header 'CSeq'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: CSeq	= 	"CSeq" HCOLON 1*DIGIT LWS Method
 /// 	
@@ -66,9 +58,11 @@ typedef struct tsip_header_CSeq_s
 }
 tsip_header_CSeq_t;
 
-tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_CSeq_t* tsip_header_CSeq_create(int32_t seq, const char*method);
 
-TINYSIP_GEXTERN const void *tsip_header_CSeq_def_t;
+TINYSIP_API tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_CSeq_def_t;
 
 TSIP_END_DECLS
 

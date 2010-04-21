@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header.rl" */
+/* #line 1 "./ragel/tsip_parser_header.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -31,47 +31,7 @@
  */
 #include "tinySIP/parsers/tsip_parser_header.h"
 
-#include "tinySIP/headers/tsip_header_Allow.h"
-#include "tinySIP/headers/tsip_header_Allow_Events.h"
-#include "tinySIP/headers/tsip_header_Authorization.h"
-#include "tinySIP/headers/tsip_header_Call_ID.h"
-#include "tinySIP/headers/tsip_header_Contact.h"
-#include "tinySIP/headers/tsip_header_CSeq.h"
-#include "tinySIP/headers/tsip_header_Dummy.h"
-#include "tinySIP/headers/tsip_header_Event.h"
-#include "tinySIP/headers/tsip_header_Expires.h"
-#include "tinySIP/headers/tsip_header_From.h"
-#include "tinySIP/headers/tsip_header_Max_Forwards.h"
-#include "tinySIP/headers/tsip_header_Min_Expires.h"
-#include "tinySIP/headers/tsip_header_Path.h"
-#include "tinySIP/headers/tsip_header_P_Access_Network_Info.h" 
-#include "tinySIP/headers/tsip_header_P_Asserted_Identity.h"
-#include "tinySIP/headers/tsip_header_P_Associated_URI.h"
-#include "tinySIP/headers/tsip_header_P_Charging_Function_Addresses.h"
-#include "tinySIP/headers/tsip_header_P_Preferred_Identity.h"
-#include "tinySIP/headers/tsip_header_Privacy.h"
-#include "tinySIP/headers/tsip_header_Proxy_Authenticate.h"
-#include "tinySIP/headers/tsip_header_Proxy_Authorization.h"
-#include "tinySIP/headers/tsip_header_Proxy_Require.h"
-#include "tinySIP/headers/tsip_header_RAck.h"
-#include "tinySIP/headers/tsip_header_Record_Route.h"
-#include "tinySIP/headers/tsip_header_Require.h"
-#include "tinySIP/headers/tsip_header_Route.h"
-#include "tinySIP/headers/tsip_header_RSeq.h"
-#include "tinySIP/headers/tsip_header_Security_Client.h"
-#include "tinySIP/headers/tsip_header_Security_Server.h"
-#include "tinySIP/headers/tsip_header_Security_Verify.h"
-#include "tinySIP/headers/tsip_header_Server.h"
-#include "tinySIP/headers/tsip_header_Service_Route.h"
-#include "tinySIP/headers/tsip_header_SIP_ETag.h"
-#include "tinySIP/headers/tsip_header_SIP_If_Match.h"
-#include "tinySIP/headers/tsip_header_Subscription_State.h"
-#include "tinySIP/headers/tsip_header_Supported.h"
-#include "tinySIP/headers/tsip_header_To.h"
-#include "tinySIP/headers/tsip_header_User_Agent.h"
-#include "tinySIP/headers/tsip_header_Via.h"
-#include "tinySIP/headers/tsip_header_Warning.h"
-#include "tinySIP/headers/tsip_header_WWW_Authenticate.h"
+#include "tinySIP/headers/tsip_headers.h"
 
 #include "tsk_debug.h"
 
@@ -101,7 +61,7 @@
 *	Ragel state machine.
 */
 
-/* #line 875 "tsip_parser_header.rl" */
+/* #line 835 "./ragel/tsip_parser_header.rl" */
 
 
 tsk_bool_t tsip_header_parse(tsk_ragel_state_t *state, tsip_message_t *message)
@@ -112,7 +72,7 @@ tsk_bool_t tsip_header_parse(tsk_ragel_state_t *state, tsip_message_t *message)
 	const char *eof = pe;
 
 	
-/* #line 116 "../src/parsers/tsip_parser_header.c" */
+/* #line 76 "./src/parsers/tsip_parser_header.c" */
 static const char _tsip_machine_parser_headers_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -5113,16 +5073,16 @@ static const int tsip_machine_parser_headers_error = 0;
 static const int tsip_machine_parser_headers_en_main = 1;
 
 
-/* #line 885 "tsip_parser_header.rl" */
+/* #line 845 "./ragel/tsip_parser_header.rl" */
 	
-/* #line 5119 "../src/parsers/tsip_parser_header.c" */
+/* #line 5079 "./src/parsers/tsip_parser_header.c" */
 	{
 	cs = tsip_machine_parser_headers_start;
 	}
 
-/* #line 886 "tsip_parser_header.rl" */
+/* #line 846 "./ragel/tsip_parser_header.rl" */
 	
-/* #line 5126 "../src/parsers/tsip_parser_header.c" */
+/* #line 5086 "./src/parsers/tsip_parser_header.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -5197,7 +5157,7 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 107 "tsip_parser_header.rl" */
+/* #line 67 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5205,7 +5165,7 @@ _match:
 	}
 	break;
 	case 1:
-/* #line 115 "tsip_parser_header.rl" */
+/* #line 75 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5213,7 +5173,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 123 "tsip_parser_header.rl" */
+/* #line 83 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5221,7 +5181,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 131 "tsip_parser_header.rl" */
+/* #line 91 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5229,7 +5189,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 139 "tsip_parser_header.rl" */
+/* #line 99 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5237,7 +5197,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 147 "tsip_parser_header.rl" */
+/* #line 107 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5245,21 +5205,21 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 155 "tsip_parser_header.rl" */
+/* #line 115 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Allow_t *header = tsip_header_Allow_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 7:
-/* #line 162 "tsip_parser_header.rl" */
+/* #line 122 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Allow_Events_t *header = tsip_header_Allow_Events_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 8:
-/* #line 169 "tsip_parser_header.rl" */
+/* #line 129 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5267,14 +5227,14 @@ _match:
 	}
 	break;
 	case 9:
-/* #line 177 "tsip_parser_header.rl" */
+/* #line 137 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Authorization_t *header = tsip_header_Authorization_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 10:
-/* #line 184 "tsip_parser_header.rl" */
+/* #line 144 "./ragel/tsip_parser_header.rl" */
 	{
 		if(!message->Call_ID){
 			message->Call_ID = tsip_header_Call_ID_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -5287,7 +5247,7 @@ _match:
 	}
 	break;
 	case 11:
-/* #line 197 "tsip_parser_header.rl" */
+/* #line 157 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5295,7 +5255,7 @@ _match:
 	}
 	break;
 	case 12:
-/* #line 205 "tsip_parser_header.rl" */
+/* #line 165 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Contacts_L_t* headers =  tsip_header_Contact_parse(state->tag_start, (state->tag_end-state->tag_start));
 		if(headers)
@@ -5317,7 +5277,7 @@ _match:
 	}
 	break;
 	case 13:
-/* #line 227 "tsip_parser_header.rl" */
+/* #line 187 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5325,7 +5285,7 @@ _match:
 	}
 	break;
 	case 14:
-/* #line 235 "tsip_parser_header.rl" */
+/* #line 195 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5333,7 +5293,7 @@ _match:
 	}
 	break;
 	case 15:
-/* #line 243 "tsip_parser_header.rl" */
+/* #line 203 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5341,7 +5301,7 @@ _match:
 	}
 	break;
 	case 16:
-/* #line 251 "tsip_parser_header.rl" */
+/* #line 211 "./ragel/tsip_parser_header.rl" */
 	{
 		if(!message->Content_Length){
 			message->Content_Length = tsip_header_Content_Length_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -5354,7 +5314,7 @@ _match:
 	}
 	break;
 	case 17:
-/* #line 264 "tsip_parser_header.rl" */
+/* #line 224 "./ragel/tsip_parser_header.rl" */
 	{
 		if(!message->Content_Type){
 			message->Content_Type = tsip_header_Content_Type_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -5367,7 +5327,7 @@ _match:
 	}
 	break;
 	case 18:
-/* #line 277 "tsip_parser_header.rl" */
+/* #line 237 "./ragel/tsip_parser_header.rl" */
 	{
 		if(!message->CSeq){
 			message->CSeq = tsip_header_CSeq_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -5380,7 +5340,7 @@ _match:
 	}
 	break;
 	case 19:
-/* #line 290 "tsip_parser_header.rl" */
+/* #line 250 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5388,7 +5348,7 @@ _match:
 	}
 	break;
 	case 20:
-/* #line 298 "tsip_parser_header.rl" */
+/* #line 258 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5396,14 +5356,14 @@ _match:
 	}
 	break;
 	case 21:
-/* #line 306 "tsip_parser_header.rl" */
+/* #line 266 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Event_t *header = tsip_header_Event_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 22:
-/* #line 313 "tsip_parser_header.rl" */
+/* #line 273 "./ragel/tsip_parser_header.rl" */
 	{
 		if(!message->Expires){
 			message->Expires = tsip_header_Expires_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -5416,7 +5376,7 @@ _match:
 	}
 	break;
 	case 23:
-/* #line 326 "tsip_parser_header.rl" */
+/* #line 286 "./ragel/tsip_parser_header.rl" */
 	{
 		if(!message->From){
 			message->From = tsip_header_From_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -5429,7 +5389,7 @@ _match:
 	}
 	break;
 	case 24:
-/* #line 339 "tsip_parser_header.rl" */
+/* #line 299 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5437,7 +5397,7 @@ _match:
 	}
 	break;
 	case 25:
-/* #line 347 "tsip_parser_header.rl" */
+/* #line 307 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5445,7 +5405,7 @@ _match:
 	}
 	break;
 	case 26:
-/* #line 355 "tsip_parser_header.rl" */
+/* #line 315 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5453,7 +5413,7 @@ _match:
 	}
 	break;
 	case 27:
-/* #line 363 "tsip_parser_header.rl" */
+/* #line 323 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5461,7 +5421,7 @@ _match:
 	}
 	break;
 	case 28:
-/* #line 371 "tsip_parser_header.rl" */
+/* #line 331 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5469,14 +5429,14 @@ _match:
 	}
 	break;
 	case 29:
-/* #line 379 "tsip_parser_header.rl" */
+/* #line 339 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Max_Forwards_t *header = tsip_header_Max_Forwards_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 30:
-/* #line 386 "tsip_parser_header.rl" */
+/* #line 346 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5484,14 +5444,14 @@ _match:
 	}
 	break;
 	case 31:
-/* #line 394 "tsip_parser_header.rl" */
+/* #line 354 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Min_Expires_t *header = tsip_header_Min_Expires_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 32:
-/* #line 401 "tsip_parser_header.rl" */
+/* #line 361 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5499,7 +5459,7 @@ _match:
 	}
 	break;
 	case 33:
-/* #line 409 "tsip_parser_header.rl" */
+/* #line 369 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5507,14 +5467,14 @@ _match:
 	}
 	break;
 	case 34:
-/* #line 417 "tsip_parser_header.rl" */
+/* #line 377 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_P_Access_Network_Info_t *header = tsip_header_P_Access_Network_Info_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 35:
-/* #line 424 "tsip_parser_header.rl" */
+/* #line 384 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5522,21 +5482,21 @@ _match:
 	}
 	break;
 	case 36:
-/* #line 432 "tsip_parser_header.rl" */
+/* #line 392 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_P_Asserted_Identities_L_t* headers =  tsip_header_P_Asserted_Identity_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 37:
-/* #line 439 "tsip_parser_header.rl" */
+/* #line 399 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_P_Associated_URIs_L_t* headers =  tsip_header_P_Associated_URI_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 38:
-/* #line 446 "tsip_parser_header.rl" */
+/* #line 406 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5544,14 +5504,14 @@ _match:
 	}
 	break;
 	case 39:
-/* #line 454 "tsip_parser_header.rl" */
+/* #line 414 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_P_Charging_Function_Addressess_L_t* headers =  tsip_header_P_Charging_Function_Addresses_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 40:
-/* #line 461 "tsip_parser_header.rl" */
+/* #line 421 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5559,7 +5519,7 @@ _match:
 	}
 	break;
 	case 41:
-/* #line 469 "tsip_parser_header.rl" */
+/* #line 429 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5567,7 +5527,7 @@ _match:
 	}
 	break;
 	case 42:
-/* #line 477 "tsip_parser_header.rl" */
+/* #line 437 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5575,7 +5535,7 @@ _match:
 	}
 	break;
 	case 43:
-/* #line 485 "tsip_parser_header.rl" */
+/* #line 445 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5583,7 +5543,7 @@ _match:
 	}
 	break;
 	case 44:
-/* #line 493 "tsip_parser_header.rl" */
+/* #line 453 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5591,7 +5551,7 @@ _match:
 	}
 	break;
 	case 45:
-/* #line 501 "tsip_parser_header.rl" */
+/* #line 461 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5599,7 +5559,7 @@ _match:
 	}
 	break;
 	case 46:
-/* #line 509 "tsip_parser_header.rl" */
+/* #line 469 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5607,7 +5567,7 @@ _match:
 	}
 	break;
 	case 47:
-/* #line 517 "tsip_parser_header.rl" */
+/* #line 477 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5615,14 +5575,14 @@ _match:
 	}
 	break;
 	case 48:
-/* #line 525 "tsip_parser_header.rl" */
+/* #line 485 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_P_Preferred_Identity_t *header = tsip_header_P_Preferred_Identity_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 49:
-/* #line 532 "tsip_parser_header.rl" */
+/* #line 492 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5630,7 +5590,7 @@ _match:
 	}
 	break;
 	case 50:
-/* #line 540 "tsip_parser_header.rl" */
+/* #line 500 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5638,7 +5598,7 @@ _match:
 	}
 	break;
 	case 51:
-/* #line 548 "tsip_parser_header.rl" */
+/* #line 508 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5646,14 +5606,14 @@ _match:
 	}
 	break;
 	case 52:
-/* #line 556 "tsip_parser_header.rl" */
+/* #line 516 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Paths_L_t* headers =  tsip_header_Path_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 53:
-/* #line 563 "tsip_parser_header.rl" */
+/* #line 523 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5661,42 +5621,42 @@ _match:
 	}
 	break;
 	case 54:
-/* #line 571 "tsip_parser_header.rl" */
+/* #line 531 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Privacy_t *header = tsip_header_Privacy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 55:
-/* #line 578 "tsip_parser_header.rl" */
+/* #line 538 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Proxy_Authenticate_t *header = tsip_header_Proxy_Authenticate_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 56:
-/* #line 585 "tsip_parser_header.rl" */
+/* #line 545 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Proxy_Authorization_t *header = tsip_header_Proxy_Authorization_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 57:
-/* #line 592 "tsip_parser_header.rl" */
+/* #line 552 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Proxy_Require_t *header = tsip_header_Proxy_Require_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 58:
-/* #line 599 "tsip_parser_header.rl" */
+/* #line 559 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_RAck_t *header = tsip_header_RAck_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 59:
-/* #line 606 "tsip_parser_header.rl" */
+/* #line 566 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5704,14 +5664,14 @@ _match:
 	}
 	break;
 	case 60:
-/* #line 614 "tsip_parser_header.rl" */
+/* #line 574 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Record_Route_t *header = tsip_header_Record_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 61:
-/* #line 621 "tsip_parser_header.rl" */
+/* #line 581 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5719,7 +5679,7 @@ _match:
 	}
 	break;
 	case 62:
-/* #line 629 "tsip_parser_header.rl" */
+/* #line 589 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5727,7 +5687,7 @@ _match:
 	}
 	break;
 	case 63:
-/* #line 637 "tsip_parser_header.rl" */
+/* #line 597 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5735,7 +5695,7 @@ _match:
 	}
 	break;
 	case 64:
-/* #line 645 "tsip_parser_header.rl" */
+/* #line 605 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5743,7 +5703,7 @@ _match:
 	}
 	break;
 	case 65:
-/* #line 653 "tsip_parser_header.rl" */
+/* #line 613 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5751,7 +5711,7 @@ _match:
 	}
 	break;
 	case 66:
-/* #line 661 "tsip_parser_header.rl" */
+/* #line 621 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5759,7 +5719,7 @@ _match:
 	}
 	break;
 	case 67:
-/* #line 669 "tsip_parser_header.rl" */
+/* #line 629 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5767,14 +5727,14 @@ _match:
 	}
 	break;
 	case 68:
-/* #line 677 "tsip_parser_header.rl" */
+/* #line 637 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Require_t *header = tsip_header_Require_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 69:
-/* #line 684 "tsip_parser_header.rl" */
+/* #line 644 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5782,7 +5742,7 @@ _match:
 	}
 	break;
 	case 70:
-/* #line 692 "tsip_parser_header.rl" */
+/* #line 652 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5790,56 +5750,56 @@ _match:
 	}
 	break;
 	case 71:
-/* #line 700 "tsip_parser_header.rl" */
+/* #line 660 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Routes_L_t* headers =  tsip_header_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 72:
-/* #line 707 "tsip_parser_header.rl" */
+/* #line 667 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_RSeq_t *header = tsip_header_RSeq_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 73:
-/* #line 714 "tsip_parser_header.rl" */
+/* #line 674 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Security_Clients_L_t* headers =  tsip_header_Security_Client_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 74:
-/* #line 721 "tsip_parser_header.rl" */
+/* #line 681 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Security_Servers_L_t* headers =  tsip_header_Security_Server_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 75:
-/* #line 728 "tsip_parser_header.rl" */
+/* #line 688 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Security_Verifies_L_t* headers =  tsip_header_Security_Verify_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 76:
-/* #line 735 "tsip_parser_header.rl" */
+/* #line 695 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Server_t *header = tsip_header_Server_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 77:
-/* #line 742 "tsip_parser_header.rl" */
+/* #line 702 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Service_Routes_L_t* headers =  tsip_header_Service_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 78:
-/* #line 749 "tsip_parser_header.rl" */
+/* #line 709 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5847,21 +5807,21 @@ _match:
 	}
 	break;
 	case 79:
-/* #line 757 "tsip_parser_header.rl" */
+/* #line 717 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_SIP_ETag_t *header = tsip_header_SIP_ETag_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 80:
-/* #line 764 "tsip_parser_header.rl" */
+/* #line 724 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_SIP_If_Match_t *header = tsip_header_SIP_If_Match_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 81:
-/* #line 771 "tsip_parser_header.rl" */
+/* #line 731 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5869,21 +5829,21 @@ _match:
 	}
 	break;
 	case 82:
-/* #line 779 "tsip_parser_header.rl" */
+/* #line 739 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Subscription_State_t* header =  tsip_header_Subscription_State_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 83:
-/* #line 786 "tsip_parser_header.rl" */
+/* #line 746 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Supported_t *header = tsip_header_Supported_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 84:
-/* #line 793 "tsip_parser_header.rl" */
+/* #line 753 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5891,7 +5851,7 @@ _match:
 	}
 	break;
 	case 85:
-/* #line 801 "tsip_parser_header.rl" */
+/* #line 761 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5899,7 +5859,7 @@ _match:
 	}
 	break;
 	case 86:
-/* #line 809 "tsip_parser_header.rl" */
+/* #line 769 "./ragel/tsip_parser_header.rl" */
 	{
 		if(!message->To){
 			message->To = tsip_header_To_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -5912,7 +5872,7 @@ _match:
 	}
 	break;
 	case 87:
-/* #line 822 "tsip_parser_header.rl" */
+/* #line 782 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
@@ -5920,14 +5880,14 @@ _match:
 	}
 	break;
 	case 88:
-/* #line 830 "tsip_parser_header.rl" */
+/* #line 790 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_User_Agent_t *header = tsip_header_User_Agent_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 89:
-/* #line 837 "tsip_parser_header.rl" */
+/* #line 797 "./ragel/tsip_parser_header.rl" */
 	{		
 		if(!message->firstVia){
 			message->firstVia = tsip_header_Via_parse(state->tag_start, (state->tag_end-state->tag_start));
@@ -5939,27 +5899,27 @@ _match:
 	}
 	break;
 	case 90:
-/* #line 849 "tsip_parser_header.rl" */
+/* #line 809 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Warnings_L_t* headers =  tsip_header_Warning_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADERS(headers);
 	}
 	break;
 	case 91:
-/* #line 856 "tsip_parser_header.rl" */
+/* #line 816 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_WWW_Authenticate_t *header = tsip_header_WWW_Authenticate_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
 	case 92:
-/* #line 863 "tsip_parser_header.rl" */
+/* #line 823 "./ragel/tsip_parser_header.rl" */
 	{
 		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
 	}
 	break;
-/* #line 5963 "../src/parsers/tsip_parser_header.c" */
+/* #line 5923 "./src/parsers/tsip_parser_header.c" */
 		}
 	}
 
@@ -5972,12 +5932,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 887 "tsip_parser_header.rl" */
+/* #line 847 "./ragel/tsip_parser_header.rl" */
 	
 	return ( cs >= 
-/* #line 5979 "../src/parsers/tsip_parser_header.c" */
+/* #line 5939 "./src/parsers/tsip_parser_header.c" */
 1396
-/* #line 888 "tsip_parser_header.rl" */
+/* #line 848 "./ragel/tsip_parser_header.rl" */
  );
 	//return (cs == tsip_machine_parser_headers_first_final);
 }

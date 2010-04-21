@@ -35,8 +35,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_DIALOG_MESSAGE_CREATE(ss)		tsk_object_new(tsip_dialog_message_def_t, (const tsip_ssession_handle_t*) ss)
-
 #define TSIP_DIALOG_MESSAGE(self)							((tsip_dialog_message_t*)(self))
 
 typedef struct tsip_dialog_message
@@ -45,7 +43,9 @@ typedef struct tsip_dialog_message
 }
 tsip_dialog_message_t;
 
-TINYSIP_GEXTERN const void *tsip_dialog_message_def_t;
+tsip_dialog_message_t* tsip_dialog_message_create(const tsip_ssession_handle_t* ss);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_message_def_t;
 
 TSIP_END_DECLS
 

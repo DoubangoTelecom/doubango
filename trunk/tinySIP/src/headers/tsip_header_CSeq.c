@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_CSeq.rl" */
+/* #line 1 "./ragel/tsip_parser_header_CSeq.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -43,13 +43,18 @@
 *	Ragel state machine.
 */
 
-/* #line 69 "tsip_parser_header_CSeq.rl" */
+/* #line 69 "./ragel/tsip_parser_header_CSeq.rl" */
 
+
+
+tsip_header_CSeq_t* tsip_header_CSeq_create(int32_t seq, const char*method)
+{
+	return tsk_object_new(TSIP_HEADER_CSEQ_VA_ARGS(seq, method));
+}
 
 int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_CSeq_t *CSeq = header;
 		return tsk_buffer_append_2(output, "%u %s", CSeq->seq, CSeq->method);
 	}
@@ -62,12 +67,12 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_CSeq_t *hdr_cseq = TSIP_HEADER_CSEQ_CREATE(TSIP_HEADER_CSEQ_NONE, 0);
+	tsip_header_CSeq_t *hdr_cseq = tsip_header_CSeq_create(TSIP_HEADER_CSEQ_NONE, 0);
 	
 	const char *tag_start;
 
 	
-/* #line 71 "../src/headers/tsip_header_CSeq.c" */
+/* #line 76 "./src/headers/tsip_header_CSeq.c" */
 static const char _tsip_machine_parser_header_CSeq_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -143,16 +148,16 @@ static const int tsip_machine_parser_header_CSeq_error = 0;
 static const int tsip_machine_parser_header_CSeq_en_main = 1;
 
 
-/* #line 92 "tsip_parser_header_CSeq.rl" */
+/* #line 97 "./ragel/tsip_parser_header_CSeq.rl" */
 	
-/* #line 149 "../src/headers/tsip_header_CSeq.c" */
+/* #line 154 "./src/headers/tsip_header_CSeq.c" */
 	{
 	cs = tsip_machine_parser_header_CSeq_start;
 	}
 
-/* #line 93 "tsip_parser_header_CSeq.rl" */
+/* #line 98 "./ragel/tsip_parser_header_CSeq.rl" */
 	
-/* #line 156 "../src/headers/tsip_header_CSeq.c" */
+/* #line 161 "./src/headers/tsip_header_CSeq.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -227,29 +232,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 49 "tsip_parser_header_CSeq.rl" */
+/* #line 49 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 53 "tsip_parser_header_CSeq.rl" */
+/* #line 53 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_cseq->method);
 	}
 	break;
 	case 2:
-/* #line 57 "tsip_parser_header_CSeq.rl" */
+/* #line 57 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_cseq->seq);
 	}
 	break;
 	case 3:
-/* #line 61 "tsip_parser_header_CSeq.rl" */
+/* #line 61 "./ragel/tsip_parser_header_CSeq.rl" */
 	{
 	}
 	break;
-/* #line 253 "../src/headers/tsip_header_CSeq.c" */
+/* #line 258 "./src/headers/tsip_header_CSeq.c" */
 		}
 	}
 
@@ -262,12 +267,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 94 "tsip_parser_header_CSeq.rl" */
+/* #line 99 "./ragel/tsip_parser_header_CSeq.rl" */
 	
 	if( cs < 
-/* #line 269 "../src/headers/tsip_header_CSeq.c" */
+/* #line 274 "./src/headers/tsip_header_CSeq.c" */
 17
-/* #line 95 "tsip_parser_header_CSeq.rl" */
+/* #line 100 "./ragel/tsip_parser_header_CSeq.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'CSeq' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_cseq);
@@ -286,32 +291,31 @@ _again:
 //	CSeq header object definition
 //
 
-static void* tsip_header_CSeq_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_CSeq_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_CSeq_t *CSeq = self;
-	if(CSeq)
-	{
+	if(CSeq){
 		TSIP_HEADER(CSeq)->type = tsip_htype_CSeq;
 		TSIP_HEADER(CSeq)->tostring = tsip_header_CSeq_tostring;
 		CSeq->seq = va_arg(*app, uint32_t);
 		CSeq->method = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new CSeq header.");
 	}
 	return self;
 }
 
-static void* tsip_header_CSeq_destroy(void *self)
+static tsk_object_t* tsip_header_CSeq_dtor(tsk_object_t *self)
 {
 	tsip_header_CSeq_t *CSeq = self;
-	if(CSeq)
-	{
+	if(CSeq){
 		TSK_FREE(CSeq->method);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(CSeq));
 	}
-	else TSK_DEBUG_ERROR("Null CSeq header.");
+	else{
+		TSK_DEBUG_ERROR("Null CSeq header.");
+	}
 
 	return self;
 }
@@ -319,9 +323,9 @@ static void* tsip_header_CSeq_destroy(void *self)
 static const tsk_object_def_t tsip_header_CSeq_def_s = 
 {
 	sizeof(tsip_header_CSeq_t),
-	tsip_header_CSeq_create,
-	tsip_header_CSeq_destroy,
+	tsip_header_CSeq_ctor,
+	tsip_header_CSeq_dtor,
 	tsk_null
 };
-const void *tsip_header_CSeq_def_t = &tsip_header_CSeq_def_s;
+const tsk_object_def_t *tsip_header_CSeq_def_t = &tsip_header_CSeq_def_s;
 

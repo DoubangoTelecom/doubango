@@ -35,19 +35,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_EVENT_CREATE
-* Creates new sip 'Event' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_EVENT_VA_ARGS(package)		tsip_header_Event_def_t, (const char*)package
-#define TSIP_HEADER_EVENT_CREATE(package)		tsk_object_new(TSIP_HEADER_EVENT_VA_ARGS(package))
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Event/o' .
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Event / o
 ///	Event	= 	( "Event" / "o" ) HCOLON event-type *( SEMI event-param )
@@ -68,9 +61,11 @@ typedef struct tsip_header_Event_s
 }
 tsip_header_Event_t;
 
-tsip_header_Event_t *tsip_header_Event_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Event_t* tsip_header_Event_create(package);
 
-TINYSIP_GEXTERN const void *tsip_header_Event_def_t;
+TINYSIP_API tsip_header_Event_t *tsip_header_Event_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Event_def_t;
 
 TSIP_END_DECLS
 

@@ -48,113 +48,85 @@
 	machine tsip_machine_parser_header_Security_Server;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action create_securityserver
-	{
-		if(!curr_securityserver)
-		{
-			curr_securityserver = TSIP_HEADER_SECURITY_SERVER_CREATE_NULL();
+	action create_securityserver{
+		if(!curr_securityserver){
+			curr_securityserver = tsip_header_Security_Server_create_null();
 		}
 	}
 
-	action add_securityserver
-	{
-		if(curr_securityserver)
-		{
+	action add_securityserver{
+		if(curr_securityserver){
 			tsk_list_push_back_data(hdr_securityservers, ((void**) &curr_securityserver));
 		}
 	}
 	
-	action parse_mech
-	{
-		if(curr_securityserver)
-		{
+	action parse_mech{
+		if(curr_securityserver){
 			TSK_PARSER_SET_STRING(curr_securityserver->mech);
 		}
 	}
 
-	action parse_port_s
-	{
-		if(curr_securityserver)
-		{
+	action parse_port_s{
+		if(curr_securityserver){
 			TSK_PARSER_SET_INT(curr_securityserver->port_s);
 		}
 	}
 
-	action parse_port_c
-	{
-		if(curr_securityserver)
-		{
+	action parse_port_c{
+		if(curr_securityserver){
 			TSK_PARSER_SET_INT(curr_securityserver->port_c);
 		}
 	}
 
-	action parse_spi_s
-	{
-		if(curr_securityserver)
-		{
+	action parse_spi_s{
+		if(curr_securityserver){
 			TSK_PARSER_SET_UINT(curr_securityserver->spi_s);
 		}
 	}
 
-	action parse_spi_c
-	{
-		if(curr_securityserver)
-		{
+	action parse_spi_c{
+		if(curr_securityserver){
 			TSK_PARSER_SET_UINT(curr_securityserver->spi_c);
 		}
 	}
 
-	action parse_ealg
-	{
-		if(curr_securityserver)
-		{
+	action parse_ealg{
+		if(curr_securityserver){
 			TSK_PARSER_SET_STRING(curr_securityserver->ealg);
 		}
 	}
 
-	action parse_alg
-	{
-		if(curr_securityserver)
-		{
+	action parse_alg{
+		if(curr_securityserver){
 			TSK_PARSER_SET_STRING(curr_securityserver->alg);
 		}
 	}
 
-	action parse_prot
-	{
-		if(curr_securityserver)
-		{
+	action parse_prot{
+		if(curr_securityserver){
 			TSK_PARSER_SET_STRING(curr_securityserver->prot);
 		}
 	}
 
-	action parse_preference
-	{
-		if(curr_securityserver)
-		{
+	action parse_preference{
+		if(curr_securityserver){
 			TSK_PARSER_SET_DOUBLE(curr_securityserver->q);
 		}
 	}
 
-	action parse_param
-	{
-		if(curr_securityserver)
-		{
+	action parse_param{
+		if(curr_securityserver){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_securityserver));
 		}
 	}
 
-
-
-	action eob
-	{
+	action eob{
 	}
 
 	mech_extension = generic_param>tag %parse_param;
@@ -176,17 +148,25 @@
 
 }%%
 
+tsip_header_Security_Server_t* tsip_header_Security_Server_create()
+{
+	return tsk_object_new(TSIP_HEADER_SECURITY_SERVER_VA_ARGS());
+}
+
+tsip_header_Security_Server_t* tsip_header_Security_Server_create_null()
+{
+	return tsip_header_Security_Server_create();
+}
+
 int tsip_header_Security_Server_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Security_Server_t *Security_Server = header;
 		int ret = 0;
 		
 		// ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064
-		if(tsk_striequals(Security_Server->mech, "ipsec-3gpp"))
-		{
-			tsk_buffer_append_2(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
+		if(tsk_striequals(Security_Server->mech, "ipsec-3gpp")){
+			ret = tsk_buffer_append_2(output, "%s%s%s%s%s%s%s;spi-c=%u;spi-s=%u;port-c=%u;port-s=%u", 
 				Security_Server->mech,
 				
 				Security_Server->alg ? ";alg=" : "",
@@ -205,12 +185,12 @@ int tsip_header_Security_Server_tostring(const void* header, tsk_buffer_t* outpu
 				);
 		}
 		else if(Security_Server->mech){
-			tsk_buffer_append(output, Security_Server->mech, strlen(Security_Server->mech));
+			ret = tsk_buffer_append(output, Security_Server->mech, strlen(Security_Server->mech));
 		}
 
 		if(Security_Server->q >= 0){
 			/* qvalue	=  	("0" [ "." 0*3DIGIT ] ) / ( "1" [ "." 0*3("0") ] ) */
-			tsk_buffer_append_2(output, ";q=%1.3f", Security_Server->q);
+			ret = tsk_buffer_append_2(output, ";q=%1.3f", Security_Server->q);
 		}
 		
 		return ret;
@@ -219,23 +199,24 @@ int tsip_header_Security_Server_tostring(const void* header, tsk_buffer_t* outpu
 	return -1;
 }
 
+
 tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *data, size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Security_Servers_L_t *hdr_securityservers = TSK_LIST_CREATE();
+	tsip_header_Security_Servers_L_t *hdr_securityservers = tsk_list_create();
 	
 	const char *tag_start;
-	tsip_header_Security_Server_t *curr_securityserver = 0;
+	tsip_header_Security_Server_t *curr_securityserver = tsk_null;
 
 	%%write data;
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Security-Server' header.");
 		TSK_OBJECT_SAFE_FREE(curr_securityserver);
 		TSK_OBJECT_SAFE_FREE(hdr_securityservers);
 	}
@@ -251,29 +232,26 @@ tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *
 //	Security_Server header object definition
 //
 
-static void* tsip_header_Security_Server_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Security_Server_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Security_Server_t *Security_Server = self;
-	if(Security_Server)
-	{
+	if(Security_Server){
 
 		TSIP_HEADER(Security_Server)->type = tsip_htype_Security_Server;
 		TSIP_HEADER(Security_Server)->tostring = tsip_header_Security_Server_tostring;
 
 		Security_Server->q = -1;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Security_Server header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Security_Server_destroy(void *self)
+static tsk_object_t* tsip_header_Security_Server_dtor(tsk_object_t *self)
 {
 	tsip_header_Security_Server_t *Security_Server = self;
-	if(Security_Server)
-	{
+	if(Security_Server){
 		TSK_FREE(Security_Server->mech);
 		TSK_FREE(Security_Server->alg);
 		TSK_FREE(Security_Server->prot);
@@ -282,7 +260,9 @@ static void* tsip_header_Security_Server_destroy(void *self)
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Security_Server));
 	}
-	else TSK_DEBUG_ERROR("Null Security_Server header.");
+	else{
+		TSK_DEBUG_ERROR("Null Security_Server header.");
+	}
 
 	return self;
 }
@@ -290,8 +270,8 @@ static void* tsip_header_Security_Server_destroy(void *self)
 static const tsk_object_def_t tsip_header_Security_Server_def_s = 
 {
 	sizeof(tsip_header_Security_Server_t),
-	tsip_header_Security_Server_create,
-	tsip_header_Security_Server_destroy,
-	0
+	tsip_header_Security_Server_ctor,
+	tsip_header_Security_Server_dtor,
+	tsk_null
 };
-const void *tsip_header_Security_Server_def_t = &tsip_header_Security_Server_def_s;
+const tsk_object_def_t *tsip_header_Security_Server_def_t = &tsip_header_Security_Server_def_s;

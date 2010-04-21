@@ -35,14 +35,8 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_SIP_ETAG_CREATE
-* Creates new sip 'SIP-ETag' header as per RFC 3903.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_SIP_ETAG_VA_ARGS(etag)		tsip_header_SIP_ETag_def_t, (const char*)etag
-#define TSIP_HEADER_SIP_ETAG_CREATE(etag)		tsk_object_new(TSIP_HEADER_SIP_ETAG_VA_ARGS(etag))
-#define TSIP_HEADER_SIP_ETAG_CREATE_NULL()		TSIP_HEADER_SIP_ETAG_CREATE(tsk_null)
 
+#define TSIP_HEADER_SIP_ETAG_VA_ARGS(etag)		tsip_header_SIP_ETag_def_t, (const char*)etag
 
 /**
  * @struct	tsip_header_SIP_ETag_s
@@ -59,9 +53,12 @@ typedef struct tsip_header_SIP_ETag_s
 }
 tsip_header_SIP_ETag_t;
 
-tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create(const char* etag);
+TINYSIP_API tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_SIP_ETag_def_t;
+TINYSIP_API tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_SIP_ETag_def_t;
 
 TSIP_END_DECLS
 

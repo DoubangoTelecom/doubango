@@ -36,8 +36,6 @@
 TSIP_BEGIN_DECLS
 
 #define TSIP_HEADER_RSEQ_VA_ARGS(seq)		tsip_header_RSeq_def_t, (int32_t) seq
-#define TSIP_HEADER_RSEQ_CREATE(seq)		tsk_object_new(TSIP_HEADER_RSEQ_VA_ARGS(seq))
-#define TSIP_HEADER_RSEQ_CREATE_NULL()		TSIP_HEADER_RSEQ_CREATE(0)
 
 #define TSIP_HEADER_RSEQ_NONE						0
 #define TSIP_HEADER_RSEQ_DEFAULT					1
@@ -57,9 +55,13 @@ typedef struct tsip_header_RSeq_s
 }
 tsip_header_RSeq_t;
 
-tsip_header_RSeq_t *tsip_header_RSeq_parse(const char *data, size_t size);
 
-TINYSIP_GEXTERN const void *tsip_header_RSeq_def_t;
+TINYSIP_API tsip_header_RSeq_t* tsip_header_RSeq_create(uint32_t seq);
+TINYSIP_API tsip_header_RSeq_t* tsip_header_RSeq_create_null();
+
+TINYSIP_API tsip_header_RSeq_t *tsip_header_RSeq_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_RSeq_def_t;
 
 TSIP_END_DECLS
 

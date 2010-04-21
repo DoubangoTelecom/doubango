@@ -46,25 +46,21 @@
 	machine tsip_machine_parser_header_Event;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_package
-	{
+	action parse_package{
 		TSK_PARSER_SET_STRING(hdr_event->package);
 	}
 
-	action parse_param
-	{
+	action parse_param{
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_event));
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	event_param = generic_param>tag %parse_param;
@@ -79,14 +75,18 @@
 
 }%%
 
+
+tsip_header_Event_t* tsip_header_Event_create(const char* package)
+{
+	return tsk_object_new(TSIP_HEADER_EVENT_VA_ARGS(package));
+}
+
 int tsip_header_Event_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Event_t *Event = header;
-		if(Event->package)
-		{
-			tsk_buffer_append(output, Event->package, strlen(Event->package));
+		if(Event->package){
+			return tsk_buffer_append(output, Event->package, strlen(Event->package));
 		}
 		return 0;
 	}
@@ -100,7 +100,7 @@ tsip_header_Event_t *tsip_header_Event_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Event_t *hdr_event = TSIP_HEADER_EVENT_CREATE(0);
+	tsip_header_Event_t *hdr_event = tsip_header_Event_create(tsk_null);
 	
 	const char *tag_start;
 
@@ -108,8 +108,8 @@ tsip_header_Event_t *tsip_header_Event_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Event' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_event);
 	}
 	
@@ -126,31 +126,30 @@ tsip_header_Event_t *tsip_header_Event_parse(const char *data, size_t size)
 //	Event header object definition
 //
 
-static void* tsip_header_Event_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Event_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Event_t *Event = self;
-	if(Event)
-	{
+	if(Event){
 		TSIP_HEADER(Event)->type = tsip_htype_Event;
 		TSIP_HEADER(Event)->tostring = tsip_header_Event_tostring;
 		Event->package = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Event header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Event_destroy(void *self)
+static tsk_object_t* tsip_header_Event_dtor(tsk_object_t *self)
 {
 	tsip_header_Event_t *Event = self;
-	if(Event)
-	{
+	if(Event){
 		TSK_FREE(Event->package);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Event));
 	}
-	else TSK_DEBUG_ERROR("Null Event header.");
+	else{
+		TSK_DEBUG_ERROR("Null Event header.");
+	}
 
 	return self;
 }
@@ -158,9 +157,9 @@ static void* tsip_header_Event_destroy(void *self)
 static const tsk_object_def_t tsip_header_Event_def_s = 
 {
 	sizeof(tsip_header_Event_t),
-	tsip_header_Event_create,
-	tsip_header_Event_destroy,
-	0
+	tsip_header_Event_ctor,
+	tsip_header_Event_dtor,
+	tsk_null
 };
-const void *tsip_header_Event_def_t = &tsip_header_Event_def_s;
+const tsk_object_def_t *tsip_header_Event_def_t = &tsip_header_Event_def_s;
 

@@ -47,9 +47,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_CHALLENGE_CREATE(stack, isproxy, scheme, realm, nonce, opaque, algorithm, qop)		tsk_object_new(tsip_challenge_def_t, stack, (tsk_bool_t)isproxy,(const char*)scheme, (const char*)realm, (const char*)nonce, (const char*)opaque, (const char*)algorithm, (const char*)qop)
-
-#define TSIP_CHALLENGE_CREATE_NULL(stack)														TSIP_CHALLENGE_CREATE(stack, 0,0,0,0,0,0,0)
 
 typedef struct tsip_challenge_s
 {
@@ -76,11 +73,14 @@ tsip_challenge_t;
 
 typedef tsk_list_t tsip_challenges_L_t;
 
+tsip_challenge_t* tsip_challenge_create(tsip_stack_t* stack, tsk_bool_t isproxy, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
+tsip_challenge_t* tsip_challenge_create_null(tsip_stack_t* stack);
+
 int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
 tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self, const tsip_request_t *request);
 tsip_header_t *tsip_challenge_create_empty_header_authorization(const char* username, const char* realm, const char* uristring);
 
-TINYSIP_GEXTERN const void *tsip_challenge_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_challenge_def_t;
 
 TSIP_END_DECLS
 

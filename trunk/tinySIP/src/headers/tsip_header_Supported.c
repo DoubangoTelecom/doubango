@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Supported.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Supported.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -45,28 +45,34 @@
 *	Ragel state machine.
 */
 
-/* #line 70 "tsip_parser_header_Supported.rl" */
+/* #line 67 "./ragel/tsip_parser_header_Supported.rl" */
 
+
+tsip_header_Supported_t* tsip_header_Supported_create(const char* option)
+{
+	return tsk_object_new(TSIP_HEADER_SUPPORTED_VA_ARGS(option));
+}
+
+tsip_header_Supported_t* tsip_header_Supported_create_null()
+{
+	return tsip_header_Supported_create(tsk_null);
+}
 
 int tsip_header_Supported_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Supported_t *Supported = header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;
 
-		tsk_list_foreach(item, Supported->options)
-		{
+		tsk_list_foreach(item, Supported->options){
 			str = item->data;
-			if(item == Supported->options->head)
-			{
-				tsk_buffer_append(output, str->value, strlen(str->value));
+			if(item == Supported->options->head){
+				ret = tsk_buffer_append(output, str->value, strlen(str->value));
 			}
-			else
-			{
-				tsk_buffer_append_2(output, ",%s", str->value);
+			else{
+				ret = tsk_buffer_append_2(output, ",%s", str->value);
 			}
 		}
 
@@ -82,12 +88,12 @@ tsip_header_Supported_t *tsip_header_Supported_parse(const char *data, size_t si
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Supported_t *hdr_supported = TSIP_HEADER_SUPPORTED_CREATE_NULL();
+	tsip_header_Supported_t *hdr_supported = tsip_header_Supported_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 91 "../src/headers/tsip_header_Supported.c" */
+/* #line 97 "./src/headers/tsip_header_Supported.c" */
 static const char _tsip_machine_parser_header_Supported_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -170,16 +176,16 @@ static const int tsip_machine_parser_header_Supported_error = 0;
 static const int tsip_machine_parser_header_Supported_en_main = 1;
 
 
-/* #line 111 "tsip_parser_header_Supported.rl" */
+/* #line 114 "./ragel/tsip_parser_header_Supported.rl" */
 	
-/* #line 176 "../src/headers/tsip_header_Supported.c" */
+/* #line 182 "./src/headers/tsip_header_Supported.c" */
 	{
 	cs = tsip_machine_parser_header_Supported_start;
 	}
 
-/* #line 112 "tsip_parser_header_Supported.rl" */
+/* #line 115 "./ragel/tsip_parser_header_Supported.rl" */
 	
-/* #line 183 "../src/headers/tsip_header_Supported.c" */
+/* #line 189 "./src/headers/tsip_header_Supported.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -254,23 +260,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "tsip_parser_header_Supported.rl" */
+/* #line 51 "./ragel/tsip_parser_header_Supported.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 57 "tsip_parser_header_Supported.rl" */
+/* #line 55 "./ragel/tsip_parser_header_Supported.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_supported->options);
 	}
 	break;
 	case 2:
-/* #line 62 "tsip_parser_header_Supported.rl" */
+/* #line 59 "./ragel/tsip_parser_header_Supported.rl" */
 	{
 	}
 	break;
-/* #line 274 "../src/headers/tsip_header_Supported.c" */
+/* #line 280 "./src/headers/tsip_header_Supported.c" */
 		}
 	}
 
@@ -283,14 +289,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 113 "tsip_parser_header_Supported.rl" */
+/* #line 116 "./ragel/tsip_parser_header_Supported.rl" */
 	
 	if( cs < 
-/* #line 290 "../src/headers/tsip_header_Supported.c" */
+/* #line 296 "./src/headers/tsip_header_Supported.c" */
 22
-/* #line 114 "tsip_parser_header_Supported.rl" */
- )
-	{
+/* #line 117 "./ragel/tsip_parser_header_Supported.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'Supported' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_supported);
 	}
 	
@@ -307,38 +313,37 @@ _again:
 //	Supported header object definition
 //
 
-static void* tsip_header_Supported_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Supported_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Supported_t *Supported = self;
-	if(Supported)
-	{
+	if(Supported){
 		const char* option;
 
 		TSIP_HEADER(Supported)->type = tsip_htype_Supported;
 		TSIP_HEADER(Supported)->tostring = tsip_header_Supported_tostring;
 
 		if((option = va_arg(*app, const char*))){
-			tsk_string_t* string = TSK_STRING_CREATE(option);
-			Supported->options = TSK_LIST_CREATE();
+			tsk_string_t* string = tsk_string_create(option);
+			Supported->options = tsk_list_create();
 
 			tsk_list_push_back_data(Supported->options, ((void**) &string));
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Supported header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Supported_destroy(void *self)
+static tsk_object_t* tsip_header_Supported_dtor(tsk_object_t *self)
 {
 	tsip_header_Supported_t *Supported = self;
-	if(Supported)
-	{
+	if(Supported){
 		TSK_OBJECT_SAFE_FREE(Supported->options);
 	}
-	else TSK_DEBUG_ERROR("Null Supported header.");
+	else{
+		TSK_DEBUG_ERROR("Null Supported header.");
+	}
 
 	return self;
 }
@@ -346,8 +351,8 @@ static void* tsip_header_Supported_destroy(void *self)
 static const tsk_object_def_t tsip_header_Supported_def_s = 
 {
 	sizeof(tsip_header_Supported_t),
-	tsip_header_Supported_create,
-	tsip_header_Supported_destroy,
-	0
+	tsip_header_Supported_ctor,
+	tsip_header_Supported_dtor,
+	tsk_null
 };
-const void *tsip_header_Supported_def_t = &tsip_header_Supported_def_s;
+const tsk_object_def_t *tsip_header_Supported_def_t = &tsip_header_Supported_def_s;

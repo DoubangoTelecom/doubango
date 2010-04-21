@@ -35,18 +35,10 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_P_ASSOCIATED_URI_CREATE
-* Creates new sip 'P-Associated-URI' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_P_CHARGING_FUNCTION_ADDRESSES_CREATE()	tsk_object_new(tsip_header_P_Charging_Function_Addresses_def_t)
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'P-Charging-Function-Addresses' as per RFC 3455.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: P-Charging-Function-Addresses = P-Charging-Addr
 /// P-Charging-Addr	= 	"P-Charging-Function-Addresses" HCOLON charge-addr-params *( SEMI charge-addr-params )
@@ -65,9 +57,11 @@ tsip_header_P_Charging_Function_Addresses_t;
 
 typedef tsk_list_t tsip_header_P_Charging_Function_Addressess_L_t;
 
-tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_Addresses_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_P_Charging_Function_Addresses_t* tsip_header_P_Charging_Function_Addresses_create();
 
-TINYSIP_GEXTERN const void *tsip_header_P_Charging_Function_Addresses_def_t;
+TINYSIP_API tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_Addresses_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_P_Charging_Function_Addresses_def_t;
 
 TSIP_END_DECLS
 

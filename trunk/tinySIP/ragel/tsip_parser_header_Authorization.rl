@@ -47,7 +47,7 @@
 //	machine tsip_machine_parser_header_Authorization;
 //
 //	# Includes
-//	include tsip_machine_utils "./tsip_machine_utils.rl";
+//	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 //	
 //	action tag
 //	{
@@ -211,7 +211,7 @@
 //	const char *p = data;
 //	const char *pe = p + size;
 //	const char *eof = pe;
-//	tsip_header_Authorization_t *hdr_Authorization = TSIP_HEADER_AUTHORIZATION_CREATE();
+//	tsip_header_Authorization_t *hdr_Authorization = tsip_header_Authorization_create();
 //	
 //	const char *tag_start;
 //
@@ -237,7 +237,7 @@
 ////	Authorization header object definition
 ////
 //
-//static void* tsip_header_Authorization_create(void *self, va_list * app)
+//static tsk_object_t* tsip_header_Authorization_ctor(tsk_object_t *self, va_list * app)
 //{
 //	tsip_header_Authorization_t *Authorization = self;
 //	if(Authorization)
@@ -252,7 +252,7 @@
 //	return self;
 //}
 //
-//static void* tsip_header_Authorization_destroy(void *self)
+//static tsk_object_t* tsip_header_Authorization_dtor(tsk_object_t *self)
 //{
 //	tsip_header_Authorization_t *Authorization = self;
 //	if(Authorization)
@@ -279,8 +279,8 @@
 //static const tsk_object_def_t tsip_header_Authorization_def_s = 
 //{
 //	sizeof(tsip_header_Authorization_t),
-//	tsip_header_Authorization_create,
-//	tsip_header_Authorization_destroy,
+//	tsip_header_Authorization_ctor,
+//	tsip_header_Authorization_dtor,
 //	0
 //};
 //const void *tsip_header_Authorization_def_t = &tsip_header_Authorization_def_s;

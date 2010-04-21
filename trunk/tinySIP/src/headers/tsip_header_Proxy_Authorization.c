@@ -39,6 +39,11 @@
 
 #include <string.h>
 
+tsip_header_Proxy_Authorization_t* tsip_header_Proxy_Authorization_create()
+{
+	return tsk_object_new(tsip_header_Proxy_Authorization_def_t);
+}
+
 int tsip_header_Proxy_Authorization_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header)
@@ -132,16 +137,14 @@ tsip_header_Proxy_Authorization_t *tsip_header_Proxy_Authorization_parse(const c
 
 /**@ingroup tsip_header_Proxy_Authorization_group
 */
-static void* tsip_header_Proxy_Authorization_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Proxy_Authorization_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Proxy_Authorization_t *Proxy_Authorization = self;
-	if(Proxy_Authorization)
-	{
+	if(Proxy_Authorization){
 		TSIP_HEADER(Proxy_Authorization)->type = tsip_htype_Proxy_Authorization;
 		TSIP_HEADER(Proxy_Authorization)->tostring = tsip_header_Proxy_Authorization_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Proxy_Authorization header.");
 	}
 	return self;
@@ -149,11 +152,10 @@ static void* tsip_header_Proxy_Authorization_create(void *self, va_list * app)
 
 /**@ingroup tsip_header_Proxy_Authorization_group
 */
-static void* tsip_header_Proxy_Authorization_destroy(void *self)
+static tsk_object_t* tsip_header_Proxy_Authorization_dtor(tsk_object_t *self)
 {
 	tsip_header_Proxy_Authorization_t *Proxy_Authorization = self;
-	if(Proxy_Authorization)
-	{
+	if(Proxy_Authorization){
 		TSK_FREE(Proxy_Authorization->scheme);
 		TSK_FREE(Proxy_Authorization->username);
 		TSK_FREE(Proxy_Authorization->realm);
@@ -176,8 +178,8 @@ static void* tsip_header_Proxy_Authorization_destroy(void *self)
 static const tsk_object_def_t tsip_header_Proxy_Authorization_def_s = 
 {
 	sizeof(tsip_header_Proxy_Authorization_t),
-	tsip_header_Proxy_Authorization_create,
-	tsip_header_Proxy_Authorization_destroy,
-	0
+	tsip_header_Proxy_Authorization_ctor,
+	tsip_header_Proxy_Authorization_dtor,
+	tsk_null
 };
-const void *tsip_header_Proxy_Authorization_def_t = &tsip_header_Proxy_Authorization_def_s;
+const tsk_object_def_t *tsip_header_Proxy_Authorization_def_t = &tsip_header_Proxy_Authorization_def_s;

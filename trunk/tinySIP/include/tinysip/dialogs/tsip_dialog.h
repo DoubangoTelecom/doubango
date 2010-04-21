@@ -58,7 +58,7 @@ TSIP_BEGIN_DECLS
 
 // TX MUST be in seconds
 #define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)								\
-	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK(tsip_dialog_##name##_timer_callback), self)	
+	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_##name##_timer_callback), self)	
 
 #define TSIP_DIALOG_EXPIRES_DEFAULT		3600000 /* miliseconds. */
 #define TSIP_DIALOG_SHUTDOWN_TIMEOUT	4000 /* miliseconds. */
@@ -97,8 +97,8 @@ typedef enum tsip_dialog_event_type_e
 }
 tsip_dialog_event_type_t;
 
-typedef int (*tsip_dialog_event_callback)(const void *arg, tsip_dialog_event_type_t type, const tsip_message_t *msg);
-#define TSIP_DIALOG_EVENT_CALLBACK(callback) ((tsip_dialog_event_callback)(callback))
+typedef int (*tsip_dialog_event_callback_f)(const void *arg, tsip_dialog_event_type_t type, const tsip_message_t *msg);
+#define TSIP_DIALOG_EVENT_CALLBACK_F(callback) ((tsip_dialog_event_callback_f)(callback))
 
 /*================================
 */
@@ -136,7 +136,7 @@ typedef struct tsip_dialog_s
 	
 	tsip_challenges_L_t *challenges;
 
-	tsip_dialog_event_callback callback;
+	tsip_dialog_event_callback_f callback;
 }
 tsip_dialog_t;
 

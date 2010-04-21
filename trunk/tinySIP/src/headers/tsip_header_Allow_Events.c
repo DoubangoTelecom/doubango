@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Allow_Events.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Allow_Events.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -46,27 +46,28 @@
 *	Ragel state machine.
 */
 
-/* #line 75 "tsip_parser_header_Allow_Events.rl" */
+/* #line 72 "./ragel/tsip_parser_header_Allow_Events.rl" */
 
 
-int tsip_header_Allow_Event_tostring(const void* header, tsk_buffer_t* output)
+tsip_header_Allow_Events_t* tsip_header_Allow_Events_create()
 {
-	if(header)
-	{
+	return tsk_object_new(tsip_header_Allow_Events_def_t);
+}
+
+int tsip_header_Allow_Events_tostring(const void* header, tsk_buffer_t* output)
+{
+	if(header){
 		const tsip_header_Allow_Events_t *Allow_Events = header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;
 
-		tsk_list_foreach(item, Allow_Events->events)
-		{
+		tsk_list_foreach(item, Allow_Events->events){
 			str = item->data;
-			if(item == Allow_Events->events->head)
-			{
+			if(item == Allow_Events->events->head){
 				tsk_buffer_append(output, str->value, strlen(str->value));
 			}
-			else
-			{
+			else{
 				tsk_buffer_append_2(output, ",%s", str->value);
 			}
 		}
@@ -83,12 +84,12 @@ tsip_header_Allow_Events_t *tsip_header_Allow_Events_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Allow_Events_t *hdr_allow_events = TSIP_HEADER_ALLOW_EVENTS_CREATE();
+	tsip_header_Allow_Events_t *hdr_allow_events = tsip_header_Allow_Events_create();
 	
 	const char *tag_start;
 
 	
-/* #line 92 "../src/headers/tsip_header_Allow_Events.c" */
+/* #line 93 "./src/headers/tsip_header_Allow_Events.c" */
 static const char _tsip_machine_parser_header_Allow_events_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -176,16 +177,16 @@ static const int tsip_machine_parser_header_Allow_events_error = 0;
 static const int tsip_machine_parser_header_Allow_events_en_main = 1;
 
 
-/* #line 116 "tsip_parser_header_Allow_Events.rl" */
+/* #line 114 "./ragel/tsip_parser_header_Allow_Events.rl" */
 	
-/* #line 182 "../src/headers/tsip_header_Allow_Events.c" */
+/* #line 183 "./src/headers/tsip_header_Allow_Events.c" */
 	{
 	cs = tsip_machine_parser_header_Allow_events_start;
 	}
 
-/* #line 117 "tsip_parser_header_Allow_Events.rl" */
+/* #line 115 "./ragel/tsip_parser_header_Allow_Events.rl" */
 	
-/* #line 189 "../src/headers/tsip_header_Allow_Events.c" */
+/* #line 190 "./src/headers/tsip_header_Allow_Events.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -260,23 +261,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 53 "tsip_parser_header_Allow_Events.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Allow_Events.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 58 "tsip_parser_header_Allow_Events.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Allow_Events.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_allow_events->events);
 	}
 	break;
 	case 2:
-/* #line 63 "tsip_parser_header_Allow_Events.rl" */
+/* #line 60 "./ragel/tsip_parser_header_Allow_Events.rl" */
 	{
 	}
 	break;
-/* #line 280 "../src/headers/tsip_header_Allow_Events.c" */
+/* #line 281 "./src/headers/tsip_header_Allow_Events.c" */
 		}
 	}
 
@@ -289,14 +290,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 118 "tsip_parser_header_Allow_Events.rl" */
+/* #line 116 "./ragel/tsip_parser_header_Allow_Events.rl" */
 	
 	if( cs < 
-/* #line 296 "../src/headers/tsip_header_Allow_Events.c" */
+/* #line 297 "./src/headers/tsip_header_Allow_Events.c" */
 25
-/* #line 119 "tsip_parser_header_Allow_Events.rl" */
- )
-	{
+/* #line 117 "./ragel/tsip_parser_header_Allow_Events.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse SIP 'Allow-Events' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_allow_events);
 	}
 	
@@ -313,29 +314,29 @@ _again:
 //	Allow_events header object definition
 //
 
-static void* tsip_header_Allow_Events_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Allow_Events_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Allow_Events_t *Allow_events = self;
-	if(Allow_events)
-	{
+	if(Allow_events){
 		TSIP_HEADER(Allow_events)->type = tsip_htype_Allow_Events;
-		TSIP_HEADER(Allow_events)->tostring = tsip_header_Allow_Event_tostring;
+		TSIP_HEADER(Allow_events)->tostring = tsip_header_Allow_Events_tostring;
 	}
-	else
-	{
-		TSK_DEBUG_ERROR("Failed to create new Allow_events header.");
+	else{
+		TSK_DEBUG_ERROR("Failed to create new Allow-Events header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Allow_Events_destroy(void *self)
+static tsk_object_t* tsip_header_Allow_Events_dtor(tsk_object_t *self)
 {
 	tsip_header_Allow_Events_t *Allow_events = self;
-	if(Allow_events)
-	{
+	if(Allow_events){
 		TSK_OBJECT_SAFE_FREE(Allow_events->events);
+		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Allow_events));
 	}
-	else TSK_DEBUG_ERROR("Null Allow_events header.");
+	else{
+		TSK_DEBUG_ERROR("Null Allow-Events header.");
+	}
 
 	return self;
 }
@@ -343,8 +344,8 @@ static void* tsip_header_Allow_Events_destroy(void *self)
 static const tsk_object_def_t tsip_header_Allow_Events_def_s = 
 {
 	sizeof(tsip_header_Allow_Events_t),
-	tsip_header_Allow_Events_create,
-	tsip_header_Allow_Events_destroy,
-	0
+	tsip_header_Allow_Events_ctor,
+	tsip_header_Allow_Events_dtor,
+	tsk_null
 };
-const void *tsip_header_Allow_Events_def_t = &tsip_header_Allow_Events_def_s;
+const tsk_object_def_t *tsip_header_Allow_Events_def_t = &tsip_header_Allow_Events_def_s;

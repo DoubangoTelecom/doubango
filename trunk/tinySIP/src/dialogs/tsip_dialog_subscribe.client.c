@@ -196,9 +196,7 @@ int tsip_dialog_subscribe_event_callback(const tsip_dialog_subscribe_t *self, ts
 	return ret;
 }
 
-/**
- *
- * @brief	Timer manager callback.
+/** Timer manager callback.
  *
  * @param [in,out]	self	The owner of the signaled timer. 
  * @param	timer_id		The identifier of the signaled timer.
@@ -222,10 +220,12 @@ int tsip_dialog_subscribe_timer_callback(const tsip_dialog_subscribe_t* self, ts
 	return ret;
 }
 
-/**
- * @fn	int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
- *
- * @brief	Initializes the dialog.
+tsip_dialog_subscribe_t* tsip_dialog_subscribe_create(tsip_ssession_handle_t* ss)
+{
+	return tsk_object_new(tsip_dialog_subscribe_def_t, ss);
+}
+
+/**	Initializes the dialog.
  *
  * @param [in,out]	self	The dialog to initialize. 
 **/
@@ -289,7 +289,7 @@ int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 			TSK_FSM_ADD_NULL());
 
 	/* Sets callback function */
-	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_subscribe_event_callback);
+	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK_F(tsip_dialog_subscribe_event_callback);
 	
 	/* Timers */
 	self->timerrefresh.id = TSK_INVALID_TIMER_ID;
@@ -637,11 +637,10 @@ int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 //========================================================
 //	SIP dialog SUBSCRIBE object definition
 //
-static void* tsip_dialog_subscribe_create(void * self, va_list * app)
+static tsk_object_t* tsip_dialog_subscribe_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_dialog_subscribe_t *dialog = self;
-	if(dialog)
-	{
+	if(dialog){
 		tsip_ssession_handle_t *ss = va_arg(*app, tsip_ssession_handle_t *);
 
 		/* Initialize base class */
@@ -657,11 +656,10 @@ static void* tsip_dialog_subscribe_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_dialog_subscribe_destroy(void * _self)
+static tsk_object_t* tsip_dialog_subscribe_dtor(tsk_object_t * _self)
 { 
 	tsip_dialog_subscribe_t *self = _self;
-	if(self)
-	{
+	if(self){
 		TSK_DEBUG_INFO("*** SUBSCRIBE Dialog destroyed ***");
 
 		/* Cancel all timers */
@@ -682,8 +680,8 @@ static int tsip_dialog_subscribe_cmp(const tsk_object_t *obj1, const tsk_object_
 static const tsk_object_def_t tsip_dialog_subscribe_def_s = 
 {
 	sizeof(tsip_dialog_subscribe_t),
-	tsip_dialog_subscribe_create, 
-	tsip_dialog_subscribe_destroy,
+	tsip_dialog_subscribe_ctor, 
+	tsip_dialog_subscribe_dtor,
 	tsip_dialog_subscribe_cmp, 
 };
-const void *tsip_dialog_subscribe_def_t = &tsip_dialog_subscribe_def_s;
+const tsk_object_def_t *tsip_dialog_subscribe_def_t = &tsip_dialog_subscribe_def_s;

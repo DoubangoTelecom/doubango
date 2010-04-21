@@ -37,20 +37,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_SERVICE_ROUTE_CREATE
-* Creates new sip 'Service-Route' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_SERVICE_ROUTE_VA_ARGS(uri)		tsip_header_Service_Route_def_t, (const tsip_uri_t*)uri
-#define TSIP_HEADER_SERVICE_ROUTE_CREATE(uri)		tsk_object_new(TSIP_HEADER_SERVICE_ROUTE_VA_ARGS(uri))
-#define TSIP_HEADER_SERVICE_ROUTE_CREATE_NULL()		TSIP_HEADER_SERVICE_ROUTE_CREATE(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Service-Route' as per RFC 3608.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Service-Route	= 	"Service-Route" HCOLON sr-value *(COMMA sr-value)
 ///									sr-value	= 	name-addr *( SEMI rr-param )
@@ -67,9 +59,12 @@ tsip_header_Service_Route_t;
 
 typedef tsk_list_t tsip_header_Service_Routes_L_t;
 
-tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Service_Route_t* tsip_header_Service_Route_create(const tsip_uri_t* uri);
+TINYSIP_API tsip_header_Service_Route_t* tsip_header_Service_Route_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_Service_Route_def_t;
+TINYSIP_API tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Service_Route_def_t;
 
 TSIP_END_DECLS
 

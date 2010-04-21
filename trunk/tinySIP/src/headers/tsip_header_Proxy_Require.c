@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Proxy_Require.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 
 /*
 * Copyright (C) 2009 Mamadou Diop.
@@ -46,28 +46,35 @@
 *	Ragel state machine.
 */
 
-/* #line 71 "tsip_parser_header_Proxy_Require.rl" */
+/* #line 68 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 
+
+
+tsip_header_Proxy_Require_t* tsip_header_Proxy_Require_create(const char* option)
+{
+	return tsk_object_new(TSIP_HEADER_PROXY_REQUIRE_VA_ARGS(option));
+}
+
+tsip_header_Proxy_Require_t* tsip_header_Proxy_Require_create_null()
+{
+	return tsip_header_Proxy_Require_create(tsk_null);
+}
 
 int tsip_header_Proxy_Require_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Proxy_Require_t *Proxy_Require = header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;
 
-		tsk_list_foreach(item, Proxy_Require->options)
-		{
+		tsk_list_foreach(item, Proxy_Require->options){
 			str = item->data;
-			if(item == Proxy_Require->options->head)
-			{
-				tsk_buffer_append(output, str->value, strlen(str->value));
+			if(item == Proxy_Require->options->head){
+				ret = tsk_buffer_append(output, str->value, strlen(str->value));
 			}
-			else
-			{
-				tsk_buffer_append_2(output, ",%s", str->value);
+			else{
+				ret = tsk_buffer_append_2(output, ",%s", str->value);
 			}
 		}
 
@@ -83,12 +90,12 @@ tsip_header_Proxy_Require_t *tsip_header_Proxy_Require_parse(const char *data, s
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Proxy_Require_t *hdr_proxyrequire = TSIP_HEADER_PROXY_REQUIRE_CREATE_NULL();
+	tsip_header_Proxy_Require_t *hdr_proxyrequire = tsip_header_Proxy_Require_create_null();
 	
 	const char *tag_start;
 
 	
-/* #line 92 "../src/headers/tsip_header_Proxy_Require.c" */
+/* #line 99 "./src/headers/tsip_header_Proxy_Require.c" */
 static const char _tsip_machine_parser_header_Proxy_Require_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -173,16 +180,16 @@ static const int tsip_machine_parser_header_Proxy_Require_error = 0;
 static const int tsip_machine_parser_header_Proxy_Require_en_main = 1;
 
 
-/* #line 112 "tsip_parser_header_Proxy_Require.rl" */
+/* #line 116 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	
-/* #line 179 "../src/headers/tsip_header_Proxy_Require.c" */
+/* #line 186 "./src/headers/tsip_header_Proxy_Require.c" */
 	{
 	cs = tsip_machine_parser_header_Proxy_Require_start;
 	}
 
-/* #line 113 "tsip_parser_header_Proxy_Require.rl" */
+/* #line 117 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	
-/* #line 186 "../src/headers/tsip_header_Proxy_Require.c" */
+/* #line 193 "./src/headers/tsip_header_Proxy_Require.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -257,23 +264,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 53 "tsip_parser_header_Proxy_Require.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 58 "tsip_parser_header_Proxy_Require.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_proxyrequire->options);
 	}
 	break;
 	case 2:
-/* #line 63 "tsip_parser_header_Proxy_Require.rl" */
+/* #line 60 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	{
 	}
 	break;
-/* #line 277 "../src/headers/tsip_header_Proxy_Require.c" */
+/* #line 284 "./src/headers/tsip_header_Proxy_Require.c" */
 		}
 	}
 
@@ -286,14 +293,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 114 "tsip_parser_header_Proxy_Require.rl" */
+/* #line 118 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	
 	if( cs < 
-/* #line 293 "../src/headers/tsip_header_Proxy_Require.c" */
+/* #line 300 "./src/headers/tsip_header_Proxy_Require.c" */
 25
-/* #line 115 "tsip_parser_header_Proxy_Require.rl" */
- )
-	{
+/* #line 119 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'Privacy' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_proxyrequire);
 	}
 	
@@ -310,38 +317,37 @@ _again:
 //	Proxy_Require header object definition
 //
 
-static void* tsip_header_Proxy_Require_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Proxy_Require_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Proxy_Require_t *Proxy_Require = self;
-	if(Proxy_Require)
-	{
+	if(Proxy_Require){
 		const char* option;
 
 		TSIP_HEADER(Proxy_Require)->type = tsip_htype_Proxy_Require;
 		TSIP_HEADER(Proxy_Require)->tostring = tsip_header_Proxy_Require_tostring;
 
 		if((option = va_arg(*app, const char*))){
-			tsk_string_t* string = TSK_STRING_CREATE(option);
-			Proxy_Require->options = TSK_LIST_CREATE();
+			tsk_string_t* string = tsk_string_create(option);
+			Proxy_Require->options = tsk_list_create();
 
 			tsk_list_push_back_data(Proxy_Require->options, ((void**) &string));
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Proxy_Require header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Proxy_Require_destroy(void *self)
+static tsk_object_t* tsip_header_Proxy_Require_dtor(tsk_object_t *self)
 {
 	tsip_header_Proxy_Require_t *Proxy_Require = self;
-	if(Proxy_Require)
-	{
+	if(Proxy_Require){
 		TSK_OBJECT_SAFE_FREE(Proxy_Require->options);
 	}
-	else TSK_DEBUG_ERROR("Null Proxy_Require header.");
+	else{
+		TSK_DEBUG_ERROR("Null Proxy_Require header.");
+	}
 
 	return self;
 }
@@ -349,8 +355,8 @@ static void* tsip_header_Proxy_Require_destroy(void *self)
 static const tsk_object_def_t tsip_header_Proxy_Require_def_s = 
 {
 	sizeof(tsip_header_Proxy_Require_t),
-	tsip_header_Proxy_Require_create,
-	tsip_header_Proxy_Require_destroy,
-	0
+	tsip_header_Proxy_Require_ctor,
+	tsip_header_Proxy_Require_dtor,
+	tsk_null
 };
-const void *tsip_header_Proxy_Require_def_t = &tsip_header_Proxy_Require_def_s;
+const tsk_object_def_t *tsip_header_Proxy_Require_def_t = &tsip_header_Proxy_Require_def_s;

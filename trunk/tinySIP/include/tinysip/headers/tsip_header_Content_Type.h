@@ -35,20 +35,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_CONTENT_TYPE_CREATE
-* Creates new sip 'Content-Type' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_CONTENT_TYPE_VA_ARGS(type)	tsip_header_Content_Type_def_t, (const char*)type
-#define TSIP_HEADER_CONTENT_TYPE_CREATE(type)			tsk_object_new(TSIP_HEADER_CONTENT_TYPE_VA_ARGS(type))
-#define TSIP_HEADER_CONTENT_TYPE_CREATE_NULL()			TSIP_HEADER_CONTENT_TYPE_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'Content-Type'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF= Content-Type / c
 ///					Content-Type	= 	( "Content-Type" / "c" ) HCOLON media-type
@@ -74,10 +66,12 @@ typedef struct tsip_header_Content_Type_s
 }
 tsip_header_Content_Type_t;
 
+TINYSIP_API tsip_header_Content_Type_t* tsip_header_Content_Type_create(const char* type);
+TINYSIP_API tsip_header_Content_Type_t* tsip_header_Content_Type_create_null();
 
-tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, size_t size);
 
-TINYSIP_GEXTERN const void *tsip_header_Content_Type_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Content_Type_def_t;
 
 
 TSIP_END_DECLS

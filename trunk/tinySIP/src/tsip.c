@@ -21,7 +21,7 @@
 */
 
 /**@file tsip.c
- * @brief SIP (RFC 3261) and 3GPP IMS (TS 24.229) implementation.
+ * @brief SIP (RFC 3261) and 3GPP IMS/LTE (TS 24.229) implementation.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
@@ -302,36 +302,7 @@ bail:
 	return 0;
 }
 
-static unsigned __tsip_initialized = 0;
-
-int tsip_global_init()
-{
-	if(!__tsip_initialized)
-	{
-		srand((unsigned int) tsk_time_epoch());
-		if(!tnet_startup())
-		{
-			__tsip_initialized = 1;
-			return 0;
-		}
-	}
-	return -1;
-}
-
-int tsip_global_deinit()
-{
-	if(__tsip_initialized)
-	{
-		if(!tnet_cleanup())
-		{
-			__tsip_initialized = 0;
-			return 0;
-		}
-	}
-	return -1;
-}
-
-tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
+tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, ...)
 {
 	tsip_stack_t* stack = tsk_object_new(tsip_stack_def_t);
 	va_list params;
@@ -359,20 +330,20 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback callback, ...)
 	* Internals 
 	*/
 	stack->callback = callback;
-	stack->timer_mgr = TSK_TIMER_MANAGER_CREATE();
-	stack->ssessions = TSK_LIST_CREATE();
+	stack->timer_mgr = tsk_timer_manager_create();
+	stack->ssessions = tsk_list_create();
 
 	/* 
 	*	Layers 
 	*/
-	stack->layer_dialog = TSIP_DIALOG_LAYER_CREATE(stack);
-	stack->layer_transac = TSIP_TRANSAC_LAYER_CREATE(stack);
-	stack->layer_transport = TSIP_TRANSPORT_LAYER_CREATE(stack);
+	stack->layer_dialog = tsip_dialog_layer_create(stack);
+	stack->layer_transac = tsip_transac_layer_create(stack);
+	stack->layer_transport = tsip_transport_layer_create(stack);
 
 	/*
 	*	DNS context
 	*/
-	stack->dns_ctx = TNET_DNS_CTX_CREATE();
+	stack->dns_ctx = tnet_dns_ctx_create();
 
 	/*
 	*	DHCP context
@@ -504,23 +475,17 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 	return -1;
 }
 
-tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const char* protocol)
+tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *stack, const char* protocol)
 {
-	if(self)
-	{
-		const tsip_stack_t *stack = self;
+	if(stack){
 		tsk_list_item_t *item;
-		tsk_list_foreach(item, stack->layer_transport->transports)
-		{
+		tsk_list_foreach(item, stack->layer_transport->transports){
 			tsip_transport_t *transport = item->data;
 
-			if(transport)
-			{
-				if(tsk_strequals(transport->protocol, protocol))
-				{
-					tsip_uri_t* uri = 0;
-					if((uri = tsip_transport_get_uri(transport, 0)))
-					{
+			if(transport){
+				if(tsk_strequals(transport->protocol, protocol)){
+					tsip_uri_t* uri = tsk_null;
+					if((uri = tsip_transport_get_uri(transport, 0))){
 						tsk_strupdate(&uri->user_name, stack->public_identity->user_name);
 						return uri;
 					}
@@ -528,24 +493,20 @@ tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_handle_t *self, const cha
 			}
 		}
 	}
-	return 0;
+	return tsk_null;
 }
 
-tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr)
+tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tsk_bool_t lr)
 {
-	if(self)
-	{
-		const tsip_stack_t *stack = self;
-		if(stack->layer_transport->transports && !TSK_LIST_IS_EMPTY(stack->layer_transport->transports))
-		{
+	if(stack){
+		if(stack->layer_transport->transports && !TSK_LIST_IS_EMPTY(stack->layer_transport->transports)){
 			tsip_transport_t *transport = stack->layer_transport->transports->head->data;
-			if(transport)
-			{
-				tsip_uri_t* uri = 0;
+			if(transport){
+				tsip_uri_t* uri = tsk_null;
 				int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(transport->type);
 				int quote_ip = (ipv6 && tsk_strcontains(stack->proxy_cscf, strlen(stack->proxy_cscf), ":")) /* IPv6 IP string?*/;
 			
-				char* uristring = 0;
+				char* uristring = tsk_null;
 				tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
 					transport->scheme,
 					quote_ip ? "[" : "",
@@ -565,43 +526,7 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_handle_t *self, int lr)
 			}
 		}
 	}
-	return 0;
-}
-
-const tsk_timer_manager_handle_t* tsip_stack_get_timer_mgr(const tsip_stack_handle_t *self)
-{
-	if(self){
-		const tsip_stack_t *stack = self;
-		return stack->timer_mgr;
-	}
-	return 0;
-}
-
-const struct tsip_dialog_layer_s * tsip_stack_get_dialog_layer(const tsip_stack_handle_t *self)
-{
-	if(self){
-		const tsip_stack_t *stack = self;
-		return stack->layer_dialog;
-	}
-	return 0;
-}
-
-const struct tsip_transac_layer_s* tsip_stack_get_transac_layer(const tsip_stack_handle_t *self)
-{
-	if(self){
-		const tsip_stack_t *stack = self;
-		return stack->layer_transac;
-	}
-	return 0;
-}
-
-const struct tsip_transport_layer_s* tsip_stack_get_transport_layer(const tsip_stack_handle_t *self)
-{
-	if(self){
-		const tsip_stack_t *stack = self;
-		return stack->layer_transport;
-	}
-	return 0;
+	return tsk_null;
 }
 
 
@@ -622,8 +547,7 @@ void *run(void* self)
 
 	TSK_DEBUG_INFO("SIP STACK::run -- START");
 	
-	if((curr = TSK_RUNNABLE_POP_FIRST(stack)))
-	{
+	if((curr = TSK_RUNNABLE_POP_FIRST(stack))){
 		tsip_event_t *sipevent = (tsip_event_t*)curr->data;
 		if(stack->callback){
 			stack->callback(sipevent);
@@ -649,7 +573,7 @@ void *run(void* self)
 //========================================================
 //	SIP stack object definition
 //
-static tsk_object_t* _tsip_stack_create(void * self, va_list * app)
+static tsk_object_t* tsip_stack_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_stack_t *stack = self;
 	if(stack){
@@ -657,7 +581,7 @@ static tsk_object_t* _tsip_stack_create(void * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsip_stack_destroy(void * self)
+static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 { 
 	tsip_stack_t *stack = self;
 	if(stack){
@@ -722,8 +646,8 @@ static tsk_object_t* tsip_stack_destroy(void * self)
 static const tsk_object_def_t tsip_stack_def_s = 
 {
 	sizeof(tsip_stack_t),
-	_tsip_stack_create, 
-	tsip_stack_destroy,
+	tsip_stack_ctor, 
+	tsip_stack_dtor,
 	tsk_null, 
 };
-const void *tsip_stack_def_t = &tsip_stack_def_s;
+const tsk_object_def_t *tsip_stack_def_t = &tsip_stack_def_s;

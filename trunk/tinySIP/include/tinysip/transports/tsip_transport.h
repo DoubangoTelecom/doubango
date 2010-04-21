@@ -44,8 +44,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_TRANSPORT_CREATE(stack, host, port, type, description)		tsk_object_new(tsip_transport_def_t, stack, (const char*)host, (tnet_port_t)port, (tnet_socket_type_t)type, (const char*) description)
-
 //#define TSIP_TRANSPORT_IS_SECURE(self)								(self && )
 #define TSIP_TRANSPORT(self)											((tsip_transport_t*)(self))
 
@@ -101,7 +99,9 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 #define tsip_transport_shutdown(transport)												(transport ? tnet_transport_shutdown(transport->net_transport) : -1)
 
-TINYSIP_GEXTERN const void *tsip_transport_def_t;
+tsip_transport_t* tsip_transport_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_transport_def_t;
 
 TSIP_END_DECLS
 

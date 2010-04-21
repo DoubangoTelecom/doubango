@@ -61,7 +61,7 @@ typedef struct thttp_event_s
 }
 thttp_event_t;
 
-typedef int (*thttp_stack_callback)(const thttp_event_t *httpevent);
+typedef int (*thttp_stack_callback_f)(const thttp_event_t *httpevent);
 
 thttp_event_t* thttp_event_create(thttp_event_type_t type, const thttp_session_handle_t* session, const char* description, const thttp_message_t* message);
 

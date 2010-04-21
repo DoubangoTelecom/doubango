@@ -36,6 +36,17 @@
 #define TMED_MAX_PLUGINS			10
 const tmedia_plugin_def_t* __tmedia_plugins[TMED_MAX_PLUGINS] = {{0}};
 
+
+tmedia_t* tmedia_create(const char* name, const char* host, tnet_socket_type_t socket_type)
+{
+	return tsk_object_new(TMEDIA_VA_ARGS(name, host, socket_type));
+}
+
+tmedia_t* tmedia_create_null()
+{
+	return tmedia_create(tsk_null, TNET_SOCKET_HOST_ANY, tnet_socket_type_invalid);
+}
+
 int tmedia_init(tmedia_t* self, const char* name)
 {
 	if(!self){
@@ -228,11 +239,10 @@ int tmedia_perform(tmedia_t* self, tmedia_action_t action, ... )
 //	Media object definition
 //
 
-static void* tmedia_create(tsk_object_t *self, va_list * app)
+static void* tmedia_ctor(tsk_object_t *self, va_list * app)
 {
 	tmedia_t *media = self;
-	if(media)
-	{
+	if(media){
 		const char* name = va_arg(*app, const char*);
 		const char* host = va_arg(*app, const char*);
 		tnet_socket_type_t socket_type = va_arg(*app, tnet_socket_type_t);
@@ -245,7 +255,7 @@ static void* tmedia_create(tsk_object_t *self, va_list * app)
 	return self;
 }
 
-static void* tmedia_destroy(tsk_object_t *self)
+static void* tmedia_dtor(tsk_object_t *self)
 {
 	tmedia_t *media = self;
 	if(media){
@@ -257,6 +267,7 @@ static void* tmedia_destroy(tsk_object_t *self)
 
 	return self;
 }
+
 static int tmedia_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
@@ -265,8 +276,8 @@ static int tmedia_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 static const tsk_object_def_t tmedia_def_s = 
 {
 	sizeof(tmedia_t),
-	tmedia_create,
-	tmedia_destroy,
+	tmedia_ctor,
+	tmedia_dtor,
 	tmedia_cmp
 };
 

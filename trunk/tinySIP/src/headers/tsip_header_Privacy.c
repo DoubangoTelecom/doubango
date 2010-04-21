@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Privacy.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Privacy.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -53,29 +53,29 @@
 *	Ragel state machine.
 */
 
-/* #line 79 "tsip_parser_header_Privacy.rl" */
+/* #line 76 "./ragel/tsip_parser_header_Privacy.rl" */
 
 
+tsip_header_Privacy_t* tsip_header_Privacy_create()
+{
+	return tsk_object_new(tsip_header_Privacy_def_t);
+}
 
 int tsip_header_Privacy_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Privacy_t *Privacy = header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;
 
-		tsk_list_foreach(item, Privacy->values)
-		{
+		tsk_list_foreach(item, Privacy->values){
 			str = item->data;
-			if(item == Privacy->values->head)
-			{
-				tsk_buffer_append(output, str->value, strlen(str->value));
+			if(item == Privacy->values->head){
+				ret = tsk_buffer_append(output, str->value, strlen(str->value));
 			}
-			else
-			{
-				tsk_buffer_append_2(output, ";%s", str->value);
+			else{
+				ret = tsk_buffer_append_2(output, ";%s", str->value);
 			}
 		}
 
@@ -92,12 +92,12 @@ tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Privacy_t *hdr_privacy = TSIP_HEADER_PRIVACY_CREATE();
+	tsip_header_Privacy_t *hdr_privacy = tsip_header_Privacy_create();
 	
 	const char *tag_start;
 
 	
-/* #line 101 "../src/headers/tsip_header_Privacy.c" */
+/* #line 101 "./src/headers/tsip_header_Privacy.c" */
 static const char _tsip_machine_parser_header_Privacy_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -313,16 +313,16 @@ static const int tsip_machine_parser_header_Privacy_error = 0;
 static const int tsip_machine_parser_header_Privacy_en_main = 1;
 
 
-/* #line 122 "tsip_parser_header_Privacy.rl" */
+/* #line 119 "./ragel/tsip_parser_header_Privacy.rl" */
 	
-/* #line 319 "../src/headers/tsip_header_Privacy.c" */
+/* #line 319 "./src/headers/tsip_header_Privacy.c" */
 	{
 	cs = tsip_machine_parser_header_Privacy_start;
 	}
 
-/* #line 123 "tsip_parser_header_Privacy.rl" */
+/* #line 120 "./ragel/tsip_parser_header_Privacy.rl" */
 	
-/* #line 326 "../src/headers/tsip_header_Privacy.c" */
+/* #line 326 "./src/headers/tsip_header_Privacy.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -397,23 +397,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 60 "tsip_parser_header_Privacy.rl" */
+/* #line 59 "./ragel/tsip_parser_header_Privacy.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 65 "tsip_parser_header_Privacy.rl" */
+/* #line 63 "./ragel/tsip_parser_header_Privacy.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_privacy->values);
 	}
 	break;
 	case 2:
-/* #line 70 "tsip_parser_header_Privacy.rl" */
+/* #line 67 "./ragel/tsip_parser_header_Privacy.rl" */
 	{
 	}
 	break;
-/* #line 417 "../src/headers/tsip_header_Privacy.c" */
+/* #line 417 "./src/headers/tsip_header_Privacy.c" */
 		}
 	}
 
@@ -426,14 +426,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 124 "tsip_parser_header_Privacy.rl" */
+/* #line 121 "./ragel/tsip_parser_header_Privacy.rl" */
 	
 	if( cs < 
-/* #line 433 "../src/headers/tsip_header_Privacy.c" */
+/* #line 433 "./src/headers/tsip_header_Privacy.c" */
 45
-/* #line 125 "tsip_parser_header_Privacy.rl" */
- )
-	{
+/* #line 122 "./ragel/tsip_parser_header_Privacy.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'Privacy' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_privacy);
 	}
 	
@@ -450,29 +450,28 @@ _again:
 //	Privacy header object definition
 //
 
-static void* tsip_header_Privacy_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Privacy_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Privacy_t *Privacy = self;
-	if(Privacy)
-	{
+	if(Privacy){
 		TSIP_HEADER(Privacy)->type = tsip_htype_Privacy;
 		TSIP_HEADER(Privacy)->tostring = tsip_header_Privacy_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Privacy header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Privacy_destroy(void *self)
+static tsk_object_t* tsip_header_Privacy_dtor(tsk_object_t *self)
 {
 	tsip_header_Privacy_t *Privacy = self;
-	if(Privacy)
-	{
+	if(Privacy){
 		TSK_OBJECT_SAFE_FREE(Privacy->values);
 	}
-	else TSK_DEBUG_ERROR("Null Privacy header.");
+	else{
+		TSK_DEBUG_ERROR("Null Privacy header.");
+	}
 
 	return self;
 }
@@ -480,8 +479,8 @@ static void* tsip_header_Privacy_destroy(void *self)
 static const tsk_object_def_t tsip_header_Privacy_def_s = 
 {
 	sizeof(tsip_header_Privacy_t),
-	tsip_header_Privacy_create,
-	tsip_header_Privacy_destroy,
-	0
+	tsip_header_Privacy_ctor,
+	tsip_header_Privacy_dtor,
+	tsk_null
 };
-const void *tsip_header_Privacy_def_t = &tsip_header_Privacy_def_s;
+const tsk_object_def_t *tsip_header_Privacy_def_t = &tsip_header_Privacy_def_s;

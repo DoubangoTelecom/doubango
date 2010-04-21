@@ -1,5 +1,5 @@
 
-/* #line 1 "tsip_parser_header_Path.rl" */
+/* #line 1 "./ragel/tsip_parser_header_Path.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -46,13 +46,23 @@
 *	Ragel state machine.
 */
 
-/* #line 115 "tsip_parser_header_Path.rl" */
+/* #line 103 "./ragel/tsip_parser_header_Path.rl" */
 
+
+
+tsip_header_Path_t* tsip_header_Path_create(const tsip_uri_t* uri)
+{
+	return tsk_object_new(TSIP_HEADER_PATH_VA_ARGS(uri));
+}
+
+tsip_header_Path_t* tsip_header_Path_create_null()
+{
+	return tsip_header_Path_create(tsk_null);
+}
 
 int tsip_header_Path_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Path_t *Path = header;
 		int ret = 0;
 		
@@ -76,13 +86,13 @@ tsip_header_Paths_L_t *tsip_header_Path_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Paths_L_t *hdr_paths = TSK_LIST_CREATE();
+	tsip_header_Paths_L_t *hdr_paths = tsk_list_create();
 	
 	const char *tag_start;
-	tsip_header_Path_t *curr_path = 0;
+	tsip_header_Path_t *curr_path = tsk_null;
 
 	
-/* #line 86 "../src/headers/tsip_header_Path.c" */
+/* #line 96 "./src/headers/tsip_header_Path.c" */
 static const char _tsip_machine_parser_header_Path_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -94,15 +104,14 @@ static const short _tsip_machine_parser_header_Path_key_offsets[] = {
 	27, 29, 48, 49, 51, 54, 58, 70, 
 	73, 73, 74, 79, 80, 97, 98, 100, 
 	116, 134, 140, 141, 143, 148, 167, 168, 
-	170, 189, 190, 192, 195, 211, 213, 215, 
-	217, 219, 221, 222, 224, 229, 234, 235, 
-	237, 241, 247, 264, 271, 279, 287, 295, 
-	297, 304, 313, 315, 318, 320, 323, 325, 
-	328, 331, 332, 335, 336, 339, 340, 349, 
-	358, 366, 374, 382, 390, 392, 398, 407, 
-	416, 425, 427, 430, 433, 434, 435, 452, 
-	470, 474, 475, 477, 493, 495, 497, 499, 
-	501, 503, 504, 506, 510, 516
+	170, 189, 190, 192, 195, 203, 204, 206, 
+	211, 216, 217, 219, 223, 229, 246, 253, 
+	261, 269, 277, 279, 286, 295, 297, 300, 
+	302, 305, 307, 310, 313, 314, 317, 318, 
+	321, 322, 331, 340, 348, 356, 364, 372, 
+	374, 380, 389, 398, 407, 409, 412, 415, 
+	416, 417, 434, 452, 456, 457, 459, 467, 
+	468, 470, 474, 480
 };
 
 static const char _tsip_machine_parser_header_Path_trans_keys[] = {
@@ -130,47 +139,43 @@ static const char _tsip_machine_parser_header_Path_trans_keys[] = {
 	9, 32, 9, 13, 32, 33, 34, 37, 
 	39, 91, 126, 42, 43, 45, 46, 48, 
 	57, 65, 90, 95, 122, 10, 9, 32, 
-	9, 32, 34, 9, 13, 34, 92, -64, 
-	-33, -32, -17, -16, -9, -8, -5, -4, 
-	-3, 32, 126, -128, -65, -128, -65, -128, 
-	-65, -128, -65, -128, -65, 10, 9, 32, 
-	9, 13, 32, 44, 59, 9, 13, 32, 
-	44, 59, 10, 9, 32, 9, 32, 44, 
-	59, 0, 9, 11, 12, 14, 127, 9, 
-	13, 32, 33, 37, 39, 44, 59, 126, 
-	42, 46, 48, 57, 65, 90, 95, 122, 
-	58, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 48, 57, 65, 70, 97, 102, 58, 
-	93, 58, 48, 57, 65, 70, 97, 102, 
-	46, 58, 93, 48, 57, 65, 70, 97, 
-	102, 48, 57, 46, 48, 57, 48, 57, 
-	46, 48, 57, 48, 57, 93, 48, 57, 
-	93, 48, 57, 93, 46, 48, 57, 46, 
-	46, 48, 57, 46, 46, 58, 93, 48, 
-	57, 65, 70, 97, 102, 46, 58, 93, 
-	48, 57, 65, 70, 97, 102, 58, 93, 
-	48, 57, 65, 70, 97, 102, 58, 93, 
-	48, 57, 65, 70, 97, 102, 58, 93, 
-	48, 57, 65, 70, 97, 102, 58, 93, 
-	48, 57, 65, 70, 97, 102, 58, 93, 
+	9, 32, 34, 13, 34, 92, 127, 0, 
+	8, 10, 31, 10, 9, 32, 9, 13, 
+	32, 44, 59, 9, 13, 32, 44, 59, 
+	10, 9, 32, 9, 32, 44, 59, 0, 
+	9, 11, 12, 14, 127, 9, 13, 32, 
+	33, 37, 39, 44, 59, 126, 42, 46, 
+	48, 57, 65, 90, 95, 122, 58, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 48, 
+	57, 65, 70, 97, 102, 58, 93, 58, 
 	48, 57, 65, 70, 97, 102, 46, 58, 
-	93, 48, 57, 65, 70, 97, 102, 46, 
-	58, 93, 48, 57, 65, 70, 97, 102, 
-	46, 58, 93, 48, 57, 65, 70, 97, 
-	102, 48, 57, 46, 48, 57, 46, 48, 
-	57, 46, 58, 9, 13, 32, 33, 37, 
-	39, 126, 42, 43, 45, 46, 48, 57, 
-	65, 90, 95, 122, 9, 13, 32, 33, 
-	37, 39, 60, 126, 42, 43, 45, 46, 
-	48, 57, 65, 90, 95, 122, 9, 13, 
-	32, 60, 10, 9, 32, 9, 13, 34, 
-	92, -64, -33, -32, -17, -16, -9, -8, 
-	-5, -4, -3, 32, 126, -128, -65, -128, 
-	-65, -128, -65, -128, -65, -128, -65, 10, 
-	9, 32, 9, 13, 32, 60, 0, 9, 
-	11, 12, 14, 127, 0
+	93, 48, 57, 65, 70, 97, 102, 48, 
+	57, 46, 48, 57, 48, 57, 46, 48, 
+	57, 48, 57, 93, 48, 57, 93, 48, 
+	57, 93, 46, 48, 57, 46, 46, 48, 
+	57, 46, 46, 58, 93, 48, 57, 65, 
+	70, 97, 102, 46, 58, 93, 48, 57, 
+	65, 70, 97, 102, 58, 93, 48, 57, 
+	65, 70, 97, 102, 58, 93, 48, 57, 
+	65, 70, 97, 102, 58, 93, 48, 57, 
+	65, 70, 97, 102, 58, 93, 48, 57, 
+	65, 70, 97, 102, 58, 93, 48, 57, 
+	65, 70, 97, 102, 46, 58, 93, 48, 
+	57, 65, 70, 97, 102, 46, 58, 93, 
+	48, 57, 65, 70, 97, 102, 46, 58, 
+	93, 48, 57, 65, 70, 97, 102, 48, 
+	57, 46, 48, 57, 46, 48, 57, 46, 
+	58, 9, 13, 32, 33, 37, 39, 126, 
+	42, 43, 45, 46, 48, 57, 65, 90, 
+	95, 122, 9, 13, 32, 33, 37, 39, 
+	60, 126, 42, 43, 45, 46, 48, 57, 
+	65, 90, 95, 122, 9, 13, 32, 60, 
+	10, 9, 32, 13, 34, 92, 127, 0, 
+	8, 10, 31, 10, 9, 32, 9, 13, 
+	32, 60, 0, 9, 11, 12, 14, 127, 
+	0
 };
 
 static const char _tsip_machine_parser_header_Path_single_lengths[] = {
@@ -178,15 +183,14 @@ static const char _tsip_machine_parser_header_Path_single_lengths[] = {
 	2, 9, 1, 2, 3, 0, 4, 3, 
 	0, 1, 5, 1, 7, 1, 2, 6, 
 	10, 6, 1, 2, 5, 9, 1, 2, 
-	9, 1, 2, 3, 4, 0, 0, 0, 
-	0, 0, 1, 2, 5, 5, 1, 2, 
-	4, 0, 9, 1, 2, 2, 2, 2, 
-	1, 3, 0, 1, 0, 1, 0, 1, 
-	1, 1, 1, 1, 1, 1, 3, 3, 
-	2, 2, 2, 2, 2, 0, 3, 3, 
-	3, 0, 1, 1, 1, 1, 7, 8, 
-	4, 1, 2, 4, 0, 0, 0, 0, 
-	0, 1, 2, 4, 0, 0
+	9, 1, 2, 3, 4, 1, 2, 5, 
+	5, 1, 2, 4, 0, 9, 1, 2, 
+	2, 2, 2, 1, 3, 0, 1, 0, 
+	1, 0, 1, 1, 1, 1, 1, 1, 
+	1, 3, 3, 2, 2, 2, 2, 2, 
+	0, 3, 3, 3, 0, 1, 1, 1, 
+	1, 7, 8, 4, 1, 2, 4, 1, 
+	2, 4, 0, 0
 };
 
 static const char _tsip_machine_parser_header_Path_range_lengths[] = {
@@ -194,15 +198,14 @@ static const char _tsip_machine_parser_header_Path_range_lengths[] = {
 	0, 5, 0, 0, 0, 2, 4, 0, 
 	0, 0, 0, 0, 5, 0, 0, 5, 
 	4, 0, 0, 0, 0, 5, 0, 0, 
-	5, 0, 0, 0, 6, 1, 1, 1, 
-	1, 1, 0, 0, 0, 0, 0, 0, 
-	0, 3, 4, 3, 3, 3, 3, 0, 
-	3, 3, 1, 1, 1, 1, 1, 1, 
-	1, 0, 1, 0, 1, 0, 3, 3, 
-	3, 3, 3, 3, 0, 3, 3, 3, 
-	3, 1, 1, 1, 0, 0, 5, 5, 
-	0, 0, 0, 6, 1, 1, 1, 1, 
-	1, 0, 0, 0, 3, 0
+	5, 0, 0, 0, 2, 0, 0, 0, 
+	0, 0, 0, 0, 3, 4, 3, 3, 
+	3, 3, 0, 3, 3, 1, 1, 1, 
+	1, 1, 1, 1, 0, 1, 0, 1, 
+	0, 3, 3, 3, 3, 3, 3, 0, 
+	3, 3, 3, 3, 1, 1, 1, 0, 
+	0, 5, 5, 0, 0, 0, 2, 0, 
+	0, 0, 3, 0
 };
 
 static const short _tsip_machine_parser_header_Path_index_offsets[] = {
@@ -210,15 +213,14 @@ static const short _tsip_machine_parser_header_Path_index_offsets[] = {
 	29, 32, 47, 49, 52, 56, 59, 68, 
 	72, 73, 75, 81, 83, 96, 98, 101, 
 	113, 128, 135, 137, 140, 146, 161, 163, 
-	166, 181, 183, 186, 190, 201, 203, 205, 
-	207, 209, 211, 213, 216, 222, 228, 230, 
-	233, 238, 242, 256, 261, 267, 273, 279, 
-	282, 287, 294, 296, 299, 301, 304, 306, 
-	309, 312, 314, 317, 319, 322, 324, 331, 
-	338, 344, 350, 356, 362, 365, 369, 376, 
-	383, 390, 392, 395, 398, 400, 402, 415, 
-	429, 434, 436, 439, 450, 452, 454, 456, 
-	458, 460, 462, 465, 470, 474
+	166, 181, 183, 186, 190, 197, 199, 202, 
+	208, 214, 216, 219, 224, 228, 242, 247, 
+	253, 259, 265, 268, 273, 280, 282, 285, 
+	287, 290, 292, 295, 298, 300, 303, 305, 
+	308, 310, 317, 324, 330, 336, 342, 348, 
+	351, 355, 362, 369, 376, 378, 381, 384, 
+	386, 388, 401, 415, 420, 422, 425, 432, 
+	434, 437, 442, 446
 };
 
 static const char _tsip_machine_parser_header_Path_indicies[] = {
@@ -245,61 +247,56 @@ static const char _tsip_machine_parser_header_Path_indicies[] = {
 	1, 47, 1, 48, 48, 1, 48, 49, 
 	48, 44, 45, 44, 44, 46, 44, 44, 
 	44, 44, 44, 44, 1, 50, 1, 51, 
-	51, 1, 51, 51, 45, 1, 45, 57, 
-	58, 59, 52, 53, 54, 55, 56, 45, 
-	1, 45, 1, 52, 1, 53, 1, 54, 
-	1, 55, 1, 60, 1, 45, 45, 1, 
-	61, 34, 61, 36, 37, 1, 62, 63, 
-	62, 5, 27, 1, 64, 1, 65, 65, 
-	1, 65, 65, 5, 27, 1, 45, 45, 
-	45, 1, 61, 34, 61, 44, 44, 44, 
-	36, 37, 44, 44, 44, 44, 44, 1, 
-	67, 66, 66, 66, 1, 69, 58, 68, 
-	68, 68, 1, 69, 58, 70, 70, 70, 
-	1, 69, 58, 71, 71, 71, 1, 69, 
-	58, 1, 73, 72, 66, 66, 1, 74, 
-	69, 58, 75, 68, 68, 1, 76, 1, 
-	77, 78, 1, 79, 1, 80, 81, 1, 
-	82, 1, 58, 83, 1, 58, 84, 1, 
-	58, 1, 80, 85, 1, 80, 1, 77, 
-	86, 1, 77, 1, 74, 69, 58, 87, 
-	70, 70, 1, 74, 69, 58, 71, 71, 
-	71, 1, 89, 58, 88, 88, 88, 1, 
-	91, 58, 90, 90, 90, 1, 91, 58, 
-	92, 92, 92, 1, 91, 58, 93, 93, 
-	93, 1, 91, 58, 1, 94, 88, 88, 
-	1, 74, 91, 58, 95, 90, 90, 1, 
-	74, 91, 58, 96, 92, 92, 1, 74, 
-	91, 58, 93, 93, 93, 1, 97, 1, 
-	74, 98, 1, 74, 99, 1, 74, 1, 
-	73, 1, 100, 101, 100, 102, 102, 102, 
-	102, 102, 102, 102, 102, 102, 1, 103, 
-	104, 103, 102, 102, 102, 105, 102, 102, 
-	102, 102, 102, 102, 1, 106, 107, 106, 
-	17, 1, 108, 1, 100, 100, 1, 114, 
-	115, 116, 117, 109, 110, 111, 112, 113, 
-	114, 1, 114, 1, 109, 1, 110, 1, 
-	111, 1, 112, 1, 118, 1, 114, 114, 
-	1, 103, 104, 103, 105, 1, 114, 114, 
-	114, 1, 1, 0
+	51, 1, 51, 51, 45, 1, 52, 53, 
+	54, 1, 1, 1, 45, 55, 1, 45, 
+	45, 1, 56, 34, 56, 36, 37, 1, 
+	57, 58, 57, 5, 27, 1, 59, 1, 
+	60, 60, 1, 60, 60, 5, 27, 1, 
+	45, 45, 45, 1, 56, 34, 56, 44, 
+	44, 44, 36, 37, 44, 44, 44, 44, 
+	44, 1, 62, 61, 61, 61, 1, 64, 
+	53, 63, 63, 63, 1, 64, 53, 65, 
+	65, 65, 1, 64, 53, 66, 66, 66, 
+	1, 64, 53, 1, 68, 67, 61, 61, 
+	1, 69, 64, 53, 70, 63, 63, 1, 
+	71, 1, 72, 73, 1, 74, 1, 75, 
+	76, 1, 77, 1, 53, 78, 1, 53, 
+	79, 1, 53, 1, 75, 80, 1, 75, 
+	1, 72, 81, 1, 72, 1, 69, 64, 
+	53, 82, 65, 65, 1, 69, 64, 53, 
+	66, 66, 66, 1, 84, 53, 83, 83, 
+	83, 1, 86, 53, 85, 85, 85, 1, 
+	86, 53, 87, 87, 87, 1, 86, 53, 
+	88, 88, 88, 1, 86, 53, 1, 89, 
+	83, 83, 1, 69, 86, 53, 90, 85, 
+	85, 1, 69, 86, 53, 91, 87, 87, 
+	1, 69, 86, 53, 88, 88, 88, 1, 
+	92, 1, 69, 93, 1, 69, 94, 1, 
+	69, 1, 68, 1, 95, 96, 95, 97, 
+	97, 97, 97, 97, 97, 97, 97, 97, 
+	1, 98, 99, 98, 97, 97, 97, 100, 
+	97, 97, 97, 97, 97, 97, 1, 101, 
+	102, 101, 17, 1, 103, 1, 95, 95, 
+	1, 105, 106, 107, 1, 1, 1, 104, 
+	108, 1, 104, 104, 1, 98, 99, 98, 
+	100, 1, 104, 104, 104, 1, 1, 0
 };
 
 static const char _tsip_machine_parser_header_Path_trans_targs[] = {
 	2, 0, 3, 4, 5, 6, 6, 7, 
-	86, 91, 13, 8, 9, 9, 10, 11, 
+	81, 86, 13, 8, 9, 9, 10, 11, 
 	12, 13, 14, 15, 14, 16, 17, 18, 
-	18, 19, 6, 20, 101, 21, 24, 22, 
+	18, 19, 6, 20, 91, 21, 24, 22, 
 	23, 25, 19, 24, 6, 20, 29, 25, 
-	26, 27, 28, 30, 50, 36, 51, 31, 
-	32, 33, 34, 35, 37, 38, 39, 40, 
-	41, 42, 44, 49, 43, 45, 45, 46, 
-	47, 48, 52, 85, 53, 56, 54, 55, 
-	57, 72, 58, 70, 59, 60, 68, 61, 
-	62, 66, 63, 64, 65, 67, 69, 71, 
-	73, 81, 74, 77, 75, 76, 78, 79, 
-	80, 82, 83, 84, 87, 89, 86, 88, 
-	10, 13, 88, 10, 90, 92, 93, 94, 
-	95, 96, 91, 97, 99, 100, 98
+	26, 27, 28, 30, 45, 36, 46, 31, 
+	32, 33, 34, 35, 37, 39, 44, 38, 
+	40, 40, 41, 42, 43, 47, 80, 48, 
+	51, 49, 50, 52, 67, 53, 65, 54, 
+	55, 63, 56, 57, 61, 58, 59, 60, 
+	62, 64, 66, 68, 76, 69, 72, 70, 
+	71, 73, 74, 75, 77, 78, 79, 82, 
+	84, 81, 83, 10, 13, 83, 10, 85, 
+	86, 87, 89, 90, 88
 };
 
 static const char _tsip_machine_parser_header_Path_trans_actions[] = {
@@ -310,33 +307,32 @@ static const char _tsip_machine_parser_header_Path_trans_actions[] = {
 	0, 18, 18, 0, 18, 9, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 18, 0, 0, 
+	18, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 5, 
-	5, 5, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0
+	0, 0, 5, 5, 5, 0, 0, 0, 
+	0, 0, 0, 0, 0
 };
 
 static const int tsip_machine_parser_header_Path_start = 1;
-static const int tsip_machine_parser_header_Path_first_final = 101;
+static const int tsip_machine_parser_header_Path_first_final = 91;
 static const int tsip_machine_parser_header_Path_error = 0;
 
 static const int tsip_machine_parser_header_Path_en_main = 1;
 
 
-/* #line 150 "tsip_parser_header_Path.rl" */
+/* #line 148 "./ragel/tsip_parser_header_Path.rl" */
 	
-/* #line 333 "../src/headers/tsip_header_Path.c" */
+/* #line 329 "./src/headers/tsip_header_Path.c" */
 	{
 	cs = tsip_machine_parser_header_Path_start;
 	}
 
-/* #line 151 "tsip_parser_header_Path.rl" */
+/* #line 149 "./ragel/tsip_parser_header_Path.rl" */
 	
-/* #line 340 "../src/headers/tsip_header_Path.c" */
+/* #line 336 "./src/headers/tsip_header_Path.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -411,63 +407,58 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 53 "tsip_parser_header_Path.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Path.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 58 "tsip_parser_header_Path.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Path.rl" */
 	{
-		if(!curr_path)
-		{
-			curr_path = TSIP_HEADER_PATH_CREATE_NULL();
+		if(!curr_path){
+			curr_path = tsip_header_Path_create_null();
 		}
 	}
 	break;
 	case 2:
-/* #line 66 "tsip_parser_header_Path.rl" */
+/* #line 62 "./ragel/tsip_parser_header_Path.rl" */
 	{
-		if(curr_path)
-		{
+		if(curr_path){
 			TSK_PARSER_SET_STRING(curr_path->display_name);
 		}
 	}
 	break;
 	case 3:
-/* #line 74 "tsip_parser_header_Path.rl" */
+/* #line 68 "./ragel/tsip_parser_header_Path.rl" */
 	{
-		if(curr_path && !curr_path->uri)
-		{
+		if(curr_path && !curr_path->uri){
 			int len = (int)(p  - tag_start);
 			curr_path->uri = tsip_uri_parse(tag_start, (size_t)len);
 		}
 	}
 	break;
 	case 4:
-/* #line 83 "tsip_parser_header_Path.rl" */
+/* #line 75 "./ragel/tsip_parser_header_Path.rl" */
 	{
-		if(curr_path)
-		{
+		if(curr_path){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_path));
 		}
 	}
 	break;
 	case 5:
-/* #line 91 "tsip_parser_header_Path.rl" */
+/* #line 81 "./ragel/tsip_parser_header_Path.rl" */
 	{
-		if(curr_path)
-		{
+		if(curr_path){
 			tsk_list_push_back_data(hdr_paths, ((void**) &curr_path));
 		}
 	}
 	break;
 	case 6:
-/* #line 99 "tsip_parser_header_Path.rl" */
+/* #line 87 "./ragel/tsip_parser_header_Path.rl" */
 	{
 	}
 	break;
-/* #line 471 "../src/headers/tsip_header_Path.c" */
+/* #line 462 "./src/headers/tsip_header_Path.c" */
 		}
 	}
 
@@ -480,14 +471,14 @@ _again:
 	_out: {}
 	}
 
-/* #line 152 "tsip_parser_header_Path.rl" */
+/* #line 150 "./ragel/tsip_parser_header_Path.rl" */
 	
 	if( cs < 
-/* #line 487 "../src/headers/tsip_header_Path.c" */
-101
-/* #line 153 "tsip_parser_header_Path.rl" */
- )
-	{
+/* #line 478 "./src/headers/tsip_header_Path.c" */
+91
+/* #line 151 "./ragel/tsip_parser_header_Path.rl" */
+ ){
+		TSK_DEBUG_ERROR("Failed to parse 'Path' header.");
 		TSK_OBJECT_SAFE_FREE(curr_path);
 		TSK_OBJECT_SAFE_FREE(hdr_paths);
 	}
@@ -503,11 +494,10 @@ _again:
 //	Path header object definition
 //
 
-static void* tsip_header_Path_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Path_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Path_t *Path = self;
-	if(Path)
-	{
+	if(Path){
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(Path)->type = tsip_htype_Path;
@@ -516,24 +506,24 @@ static void* tsip_header_Path_create(void *self, va_list * app)
 			Path->uri = tsk_object_ref((void*)uri);
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Path header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Path_destroy(void *self)
+static tsk_object_t* tsip_header_Path_dtor(tsk_object_t *self)
 {
 	tsip_header_Path_t *Path = self;
-	if(Path)
-	{
+	if(Path){
 		TSK_FREE(Path->display_name);
 		TSK_OBJECT_SAFE_FREE(Path->uri);
 
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Path));
 	}
-	else TSK_DEBUG_ERROR("Null Path header.");
+	else{
+		TSK_DEBUG_ERROR("Null Path header.");
+	}
 
 	return self;
 }
@@ -541,8 +531,8 @@ static void* tsip_header_Path_destroy(void *self)
 static const tsk_object_def_t tsip_header_Path_def_s = 
 {
 	sizeof(tsip_header_Path_t),
-	tsip_header_Path_create,
-	tsip_header_Path_destroy,
-	0
+	tsip_header_Path_ctor,
+	tsip_header_Path_dtor,
+	tsk_null
 };
-const void *tsip_header_Path_def_t = &tsip_header_Path_def_s;
+const tsk_object_def_t *tsip_header_Path_def_t = &tsip_header_Path_def_s;

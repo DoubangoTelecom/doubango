@@ -36,20 +36,12 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE
-* Creates new sip 'P-Preferred-Identity' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
 #define TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(uri)	tsip_header_P_Preferred_Identity_def_t, (const tsip_uri_t*)uri
-#define TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE(uri)	tsk_object_new(TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(uri))
-#define TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE_NULL()	TSIP_HEADER_P_PREFERRED_IDENTITY_CREATE(tsk_null)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
 ///
 /// @brief	SIP header 'P-Preferred-Identity' as per RFC 3325.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF:  PPreferredID = "P-Preferred-Identity" HCOLON PPreferredID-value *(COMMA PPreferredID-value)
 ///       PPreferredID-value = name-addr / addr-spec
@@ -64,9 +56,12 @@ typedef struct tsip_header_P_Preferred_Identity_s
 }
 tsip_header_P_Preferred_Identity_t;
 
-tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_P_Preferred_Identity_t* tsip_header_P_Preferred_Identity_create(const tsip_uri_t* uri);
+TINYSIP_API tsip_header_P_Preferred_Identity_t* tsip_header_P_Preferred_Identity_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_P_Preferred_Identity_def_t;
+TINYSIP_API tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_P_Preferred_Identity_def_t;
 
 TSIP_END_DECLS
 

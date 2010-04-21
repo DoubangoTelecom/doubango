@@ -34,16 +34,7 @@
 
 #include "tsk_string.h"
 
-/**@ingroup tipsec_common_group
-* @def TIPSEC_CONTEXT_CREATE
-* Creates new IPSec context.
-* @retval @ref tipsec_context_t object.
-*/
-
 TIPSEC_BEGIN_DECLS
-
-#define TIPSEC_CONTEXT_CREATE(ipproto, use_ipv6, mode, ealg, alg, protocol)\
-	tsk_object_new(tipsec_context_def_t, (tipsec_ipproto_t)ipproto, (int)use_ipv6, (tipsec_mode_t)mode, (tipsec_ealgorithm_t)ealg, (tipsec_algorithm_t)alg, (tipsec_protocol_t)protocol)
 
 /**@ingroup tipsec_common_group
 * Converts any IPSec context (XP, Vista, racoon ...) to the common IPSec context.
@@ -277,6 +268,7 @@ tipsec_context_t;
 
 TINYIPSEC_GEXTERN const void *tipsec_context_def_t;
 
+TINYIPSEC_API tipsec_context_t* tipsec_context_create(tipsec_ipproto_t ipproto, tsk_bool_t use_ipv6, tipsec_mode_t mode, tipsec_ealgorithm_t ealg, tipsec_algorithm_t alg, tipsec_protocol_t protocol);
 TINYIPSEC_API int tipsec_start(tipsec_context_t* ctx);
 TINYIPSEC_API int tipsec_set_local(tipsec_context_t* ctx, const char* addr_local, const char* addr_remote, tipsec_port_t port_uc, tipsec_port_t port_us);
 TINYIPSEC_API int tipsec_set_keys(tipsec_context_t* ctx, const tipsec_key_t* ik, const tipsec_key_t* ck);

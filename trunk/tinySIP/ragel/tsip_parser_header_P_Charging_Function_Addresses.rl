@@ -47,55 +47,43 @@
 	machine tsip_machine_parser_header_P_Charging_Function_Addresses;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action create_p_charging_function_addresses
-	{
-		if(!curr_p_charging_function_addresses)
-		{
-			curr_p_charging_function_addresses = TSIP_HEADER_P_CHARGING_FUNCTION_ADDRESSES_CREATE();
+	action create_p_charging_function_addresses{
+		if(!curr_p_charging_function_addresses){
+			curr_p_charging_function_addresses = tsip_header_P_Charging_Function_Addresses_create();
 		}
 	}
 
-	action parse_ccf
-	{
-		if(!curr_p_charging_function_addresses->ccf)
-		{
+	action parse_ccf{
+		if(!curr_p_charging_function_addresses->ccf){
 			TSK_PARSER_SET_STRING(curr_p_charging_function_addresses->ccf);
 		}
 	}
 
-	action parse_ecf
-	{
-		if(!curr_p_charging_function_addresses->ecf)
-		{
+	action parse_ecf{
+		if(!curr_p_charging_function_addresses->ecf){
 			TSK_PARSER_SET_STRING(curr_p_charging_function_addresses->ecf);
 		}
 	}
 
-	action parse_param
-	{
-		if(curr_p_charging_function_addresses)
-		{
+	action parse_param{
+		if(curr_p_charging_function_addresses){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_p_charging_function_addresses));
 		}
 	}
 
-	action add_p_charging_function_addresses
-	{
-		if(curr_p_charging_function_addresses)
-		{
+	action add_p_charging_function_addresses{
+		if(curr_p_charging_function_addresses){
 			tsk_list_push_back_data(hdr_p_charging_function_addressess, ((void**) &curr_p_charging_function_addresses));
 		}
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	ccf = "ccf"i EQUAL gen_value;
@@ -109,10 +97,15 @@
 
 }%%
 
+
+tsip_header_P_Charging_Function_Addresses_t* tsip_header_P_Charging_Function_Addresses_create()
+{
+	return tsk_object_new(tsip_header_P_Charging_Function_Addresses_def_t);
+}
+
 int tsip_header_P_Charging_Function_Addresses_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = header;		
 		return tsk_buffer_append_2(output, "%s%s%s%s%s", 
 			P_Charging_Function_Addresses->ecf ? "ecf=" : "",
@@ -134,7 +127,7 @@ tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_P_Charging_Function_Addressess_L_t *hdr_p_charging_function_addressess = TSK_LIST_CREATE();
+	tsip_header_P_Charging_Function_Addressess_L_t *hdr_p_charging_function_addressess = tsk_list_create();
 	
 	const char *tag_start;
 	tsip_header_P_Charging_Function_Addresses_t *curr_p_charging_function_addresses = 0;
@@ -143,8 +136,8 @@ tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'P-Charging-Function-Addresses' header.");
 		TSK_OBJECT_SAFE_FREE(curr_p_charging_function_addresses);
 		TSK_OBJECT_SAFE_FREE(hdr_p_charging_function_addressess);
 	}
@@ -160,32 +153,31 @@ tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_
 //	P_Charging_Function_Addresses header object definition
 //
 
-static void* tsip_header_P_Charging_Function_Addresses_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_P_Charging_Function_Addresses_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = self;
-	if(P_Charging_Function_Addresses)
-	{
+	if(P_Charging_Function_Addresses){
 		TSIP_HEADER(P_Charging_Function_Addresses)->type = tsip_htype_P_Charging_Function_Addresses;
 		TSIP_HEADER(P_Charging_Function_Addresses)->tostring = tsip_header_P_Charging_Function_Addresses_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Charging_Function_Addresses header.");
 	}
 	return self;
 }
 
-static void* tsip_header_P_Charging_Function_Addresses_destroy(void *self)
+static tsk_object_t* tsip_header_P_Charging_Function_Addresses_dtor(tsk_object_t *self)
 {
 	tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = self;
-	if(P_Charging_Function_Addresses)
-	{
+	if(P_Charging_Function_Addresses){
 		TSK_FREE(P_Charging_Function_Addresses->ecf);
 		TSK_FREE(P_Charging_Function_Addresses->ccf);
-
+		
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(P_Charging_Function_Addresses));
 	}
-	else TSK_DEBUG_ERROR("Null P_Charging_Function_Addresses header.");
+	else{
+		TSK_DEBUG_ERROR("Null P_Charging_Function_Addresses header.");
+	}
 
 	return self;
 }
@@ -193,8 +185,8 @@ static void* tsip_header_P_Charging_Function_Addresses_destroy(void *self)
 static const tsk_object_def_t tsip_header_P_Charging_Function_Addresses_def_s = 
 {
 	sizeof(tsip_header_P_Charging_Function_Addresses_t),
-	tsip_header_P_Charging_Function_Addresses_create,
-	tsip_header_P_Charging_Function_Addresses_destroy,
-	0
+	tsip_header_P_Charging_Function_Addresses_ctor,
+	tsip_header_P_Charging_Function_Addresses_dtor,
+	tsk_null
 };
-const void *tsip_header_P_Charging_Function_Addresses_def_t = &tsip_header_P_Charging_Function_Addresses_def_s;
+const tsk_object_def_t *tsip_header_P_Charging_Function_Addresses_def_t = &tsip_header_P_Charging_Function_Addresses_def_s;

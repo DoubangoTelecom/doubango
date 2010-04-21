@@ -202,6 +202,10 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 	return ret;
 }
 
+tsip_dialog_invite_t* tsip_dialog_invite_create(const tsip_ssession_handle_t* ss)
+{
+	return tsk_object_new(tsip_dialog_invite_def_t,  ss);
+}
 
 int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 {
@@ -244,7 +248,7 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD_NULL());
 
 	/* Sets callback function */
-	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK(tsip_dialog_invite_event_callback);
+	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK_F(tsip_dialog_invite_event_callback);
 
 	/* Timers */
 
@@ -458,11 +462,10 @@ int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 //========================================================
 //	SIP dialog INVITE object definition
 //
-static void* tsip_dialog_invite_create(void * self, va_list * app)
+static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_dialog_invite_t *dialog = self;
-	if(dialog)
-	{
+	if(dialog){
 		tsip_ssession_handle_t *ss = va_arg(*app, tsip_ssession_handle_t *);
 
 		/* Initialize base class */
@@ -478,11 +481,10 @@ static void* tsip_dialog_invite_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_dialog_invite_destroy(void * self)
+static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * self)
 { 
 	tsip_dialog_invite_t *dialog = self;
-	if(dialog)
-	{
+	if(dialog){
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 
@@ -499,8 +501,8 @@ static int tsip_dialog_invite_cmp(const tsk_object_t *obj1, const tsk_object_t *
 static const tsk_object_def_t tsip_dialog_invite_def_s = 
 {
 	sizeof(tsip_dialog_invite_t),
-	tsip_dialog_invite_create, 
-	tsip_dialog_invite_destroy,
+	tsip_dialog_invite_ctor, 
+	tsip_dialog_invite_dtor,
 	tsip_dialog_invite_cmp, 
 };
-const void *tsip_dialog_invite_def_t = &tsip_dialog_invite_def_s;
+const tsk_object_def_t *tsip_dialog_invite_def_t = &tsip_dialog_invite_def_s;

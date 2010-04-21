@@ -41,8 +41,6 @@
 TMEDIA_BEGIN_DECLS
 
 #define TMEDIA_VA_ARGS(name, host, socket_type)		tmedia_def_t, (const char*) name, (const char*) host, (tnet_socket_type_t) socket_type
-#define TMEDIA_CREATE(name, host, socket_type)			tsk_object_new(name, host, socket_type))
-#define TMEDIA_CREATE_NULL()		TSDP_HEADER_M_CREATE(tsk_null, TNET_SOCKET_HOST_ANY, tnet_socket_type_invalid)
 
 #define TMEDIA(self)		((tmedia_t*)(self))
 

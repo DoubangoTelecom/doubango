@@ -37,13 +37,8 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_VIA_CREATE
-* Creates new sip via header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
+
 #define TSIP_HEADER_VIA_VA_ARGS(proto_name, proto_version, transport, host, port)		tsip_header_Via_def_t, (const char*)proto_name, (const char*)proto_version, (const char*)transport, (const char*)host, (uint16_t)port
-#define TSIP_HEADER_VIA_CREATE(proto_name, proto_version, transport, host, port)		tsk_object_new(TSIP_HEADER_VIA_VA_ARGS(proto_name, proto_version, transport, host, port))
-#define TSIP_HEADER_VIA_CREATE_NULL()													TSIP_HEADER_VIA_CREATE(0, 0, 0, 0, 0)
 
 
 #define TSIP_HEADER_VIA_HAS_RPORT(self)			((self)->rport!=0)
@@ -98,9 +93,12 @@ typedef struct tsip_header_Via_s
 }
 tsip_header_Via_t;
 
-tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Via_t* tsip_header_Via_create(const char* proto_name, const char* proto_version, const char* transport, const char* host, uint16_t port);
+TINYSIP_API tsip_header_Via_t* tsip_header_Via_create_null();
 
-TINYSIP_GEXTERN const void *tsip_header_Via_def_t;
+TINYSIP_API tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Via_def_t;
 
 TSIP_END_DECLS
 

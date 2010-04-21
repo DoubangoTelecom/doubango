@@ -63,7 +63,7 @@ int tsip_subscribe(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = TSIP_ACTION_CREATE(atype_subscribe, &ap))){
+	if((action = tsip_action_create(atype_subscribe, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_op(session->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(session->stack->layer_dialog, tsip_dialog_SUBSCRIBE, ss);
 		}
@@ -89,7 +89,7 @@ int tsip_unsubscribe(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = TSIP_ACTION_CREATE(atype_unsubscribe, &ap))){
+	if((action = tsip_action_create(atype_unsubscribe, &ap))){
 		ret = tsip_ssession_hangup(ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}
@@ -111,7 +111,7 @@ int tsip_unsubscribe(const tsip_ssession_handle_t *ss, ...)
 //========================================================
 //	SIP SUBSCRIBE event object definition
 //
-static void* tsip_subscribe_event_create(void * self, va_list * app)
+static tsk_object_t* tsip_subscribe_event_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_subscribe_event_t *sipevent = self;
 	if(sipevent){
@@ -120,7 +120,7 @@ static void* tsip_subscribe_event_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tsip_subscribe_event_destroy(void * self)
+static tsk_object_t* tsip_subscribe_event_dtor(tsk_object_t * self)
 { 
 	tsip_subscribe_event_t *sipevent = self;
 	if(sipevent){
@@ -129,7 +129,7 @@ static void* tsip_subscribe_event_destroy(void * self)
 	return self;
 }
 
-static int tsip_subscribe_event_cmp(const void *obj1, const void *obj2)
+static int tsip_subscribe_event_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
@@ -137,8 +137,8 @@ static int tsip_subscribe_event_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tsip_subscribe_event_def_s = 
 {
 	sizeof(tsip_subscribe_event_t),
-	tsip_subscribe_event_create, 
-	tsip_subscribe_event_destroy,
+	tsip_subscribe_event_ctor, 
+	tsip_subscribe_event_dtor,
 	tsip_subscribe_event_cmp, 
 };
-const void *tsip_subscribe_event_def_t = &tsip_subscribe_event_def_s;
+const tsk_object_def_t *tsip_subscribe_event_def_t = &tsip_subscribe_event_def_s;

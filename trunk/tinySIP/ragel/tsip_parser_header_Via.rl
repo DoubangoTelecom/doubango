@@ -42,86 +42,71 @@
 	machine tsip_machine_parser_header_Via;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 
 
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_protocol_name
-	{
+	action parse_protocol_name{
 		TSK_PARSER_SET_STRING(hdr_via->proto_name);
 	}
 
-	action parse_protocol_version
-	{
+	action parse_protocol_version{
 		TSK_PARSER_SET_STRING(hdr_via->proto_version);
 	}
 
-	action parse_host
-	{
+	action parse_host{
 		TSK_PARSER_SET_STRING(hdr_via->host);
 		if(hdr_via->host && *hdr_via->host == '['){
 			tsk_strunquote_2(&hdr_via->host, '[', ']');
 		}
 	}
 
-	action parse_port
-	{
+	action parse_port{
 		TSK_PARSER_SET_INTEGER(hdr_via->port);
 	}
 
-	action parse_transport
-	{
+	action parse_transport{
 		TSK_PARSER_SET_STRING(hdr_via->transport);
 	}
 
-	action parse_ttl
-	{
+	action parse_ttl{
 		TSK_PARSER_SET_INTEGER(hdr_via->ttl);
 	}
 
-	action parse_maddr
-	{
+	action parse_maddr{
 		TSK_PARSER_SET_STRING(hdr_via->maddr);
 	}
 	
-	action parse_received
-	{
+	action parse_received{
 		TSK_PARSER_SET_STRING(hdr_via->received);
 	}
 
-	action parse_branch
-	{
+	action parse_branch{
 		TSK_PARSER_SET_STRING(hdr_via->branch);
 	}
 
-	action parse_comp
-	{
+	action parse_comp{
 		TSK_PARSER_SET_STRING(hdr_via->comp);
 	}
 
-	action parse_rport
-	{
+	action parse_rport{
 		TSK_PARSER_SET_INTEGER(hdr_via->rport);
 	}
 
-	action has_rport
-	{
+	action has_rport{
 		if(hdr_via->rport <0){
 			hdr_via->rport = 0;
 		}
 	}
 
-	action parse_param
-	{
+	action parse_param{
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_via));
 	}
 	
-	action eob
-	{
+	action eob{
 		
 	}
 
@@ -145,17 +130,32 @@
 	main := Via :>CRLF @eob;
 }%%
 
+
+tsip_header_Via_t* tsip_header_Via_create(const char* proto_name, const char* proto_version, const char* transport, const char* host, uint16_t port)
+{
+	return tsk_object_new(TSIP_HEADER_VIA_VA_ARGS(proto_name, proto_version, transport, host, port));
+}
+tsip_header_Via_t* tsip_header_Via_create_null()
+{
+	return tsip_header_Via_create(tsk_null, tsk_null, tsk_null, tsk_null, 0);
+}
+
 int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_Via_t *Via = header;
 		tsk_istr_t port, rport, ttl;
 		int ipv6 = (Via->host && tsk_strcontains(Via->host, strlen(Via->host), ":"));
 
-		if(Via->port) tsk_itoa(Via->port, &port);
-		if(Via->rport) tsk_itoa(Via->rport, &rport);
-		if(Via->ttl) tsk_itoa(Via->ttl, &ttl);
+		if(Via->port){
+			tsk_itoa(Via->port, &port);
+		}
+		if(Via->rport){
+			tsk_itoa(Via->rport, &rport);
+		}
+		if(Via->ttl){
+			tsk_itoa(Via->ttl, &ttl);
+		}
 
 		/* SIP/2.0/UDP [::]:1988;test=1234;comp=sigcomp;rport=254;ttl=457;received=192.0.2.101;branch=z9hG4bK1245420841406\r\n" */
 		return tsk_buffer_append_2(output, "%s/%s/%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s",
@@ -204,7 +204,7 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Via_t *hdr_via = TSIP_HEADER_VIA_CREATE_NULL();
+	tsip_header_Via_t *hdr_via = tsip_header_Via_create_null();
 	
 	const char *tag_start;
 
@@ -212,9 +212,8 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
-		TSK_DEBUG_ERROR("Failed to parse Via header.");
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'Via' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_via);
 	}
 	
@@ -235,11 +234,10 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, size_t size)
 //	Via header object definition
 //
 
-static void* tsip_header_Via_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_Via_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Via_t *via = self;
-	if(via)
-	{
+	if(via){
 		const char* proto_name = va_arg(*app, const char *);
 		const char* proto_version = va_arg(*app, const char *);
 		const char* transport = va_arg(*app, const char *);
@@ -262,18 +260,16 @@ static void* tsip_header_Via_create(void *self, va_list * app)
 		TSIP_HEADER(via)->type = tsip_htype_Via;
 		TSIP_HEADER(via)->tostring = tsip_header_Via_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Via header.");
 	}
 	return self;
 }
 
-static void* tsip_header_Via_destroy(void *self)
+static tsk_object_t* tsip_header_Via_dtor(tsk_object_t *self)
 {
 	tsip_header_Via_t *via = self;
-	if(via)
-	{
+	if(via){
 		TSK_FREE(via->branch);
 		TSK_FREE(via->comp);
 		TSK_FREE(via->host);
@@ -285,7 +281,9 @@ static void* tsip_header_Via_destroy(void *self)
 		TSK_FREE(via->transport);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(via));
 	}
-	else TSK_DEBUG_ERROR("Null Via header.");
+	else{
+		TSK_DEBUG_ERROR("Null Via header.");
+	}
 
 	return self;
 }
@@ -293,8 +291,8 @@ static void* tsip_header_Via_destroy(void *self)
 static const tsk_object_def_t tsip_header_Via_def_s = 
 {
 	sizeof(tsip_header_Via_t),
-	tsip_header_Via_create,
-	tsip_header_Via_destroy,
-	0
+	tsip_header_Via_ctor,
+	tsip_header_Via_dtor,
+	tsk_null
 };
-const void *tsip_header_Via_def_t = &tsip_header_Via_def_s;
+const tsk_object_def_t *tsip_header_Via_def_t = &tsip_header_Via_def_s;

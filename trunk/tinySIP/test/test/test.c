@@ -22,16 +22,7 @@
 
 #include "stdafx.h"
 
-#include "tsk.h"
-
-#include "tsip.h"
-#include "tinysip/parsers/tsip_parser_uri.h"
-#include "tinysip/tsip_SSESSION.h"
-#include "tinysip/tsip_message.h"
-#include "tinysip/headers/tsip_headers.h"
-#include "tinysip/parsers/tsip_parser_message.h"
-
-#include "tinysip/transactions/tsip_transac_nict.h"
+#include "tinysip.h"
 
 #include "test_sipmessages.h"
 #include "test_uri.h" /*SIP/SIPS/TEL*/
@@ -53,7 +44,7 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
-	tsip_global_init();
+	tnet_startup();
 
 #if RUN_TEST_LOOP
 	for(;;)
@@ -79,7 +70,7 @@ int main()
 #endif
 	}
 
-	tsip_global_deinit();
+	tnet_cleanup();
 
 	return 0;
 }

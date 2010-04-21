@@ -44,36 +44,30 @@
 	machine tsip_machine_parser_header_To;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 	
-	action parse_uri
-	{
+	action parse_uri{
 		int len = (int)(p  - tag_start);
 		hdr_to->uri = tsip_uri_parse(tag_start, (size_t)len);
 	}
 
-	action parse_display_name
-	{
+	action parse_display_name{
 		TSK_PARSER_SET_STRING(hdr_to->display_name);
 	}
 
-	action parse_tag
-	{
+	action parse_tag{
 		TSK_PARSER_SET_STRING(hdr_to->tag);
 	}
 
-	action parse_param
-	{
+	action parse_param{
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_to));
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	my_tag_param = "tag"i EQUAL token>tag %parse_tag;
@@ -90,19 +84,26 @@
 
 }%%
 
+tsip_header_To_t* tsip_header_To_create(const char* display_name, const tsip_uri_t* uri, const char* tag)
+{
+	return tsk_object_new(TSIP_HEADER_TO_VA_ARGS(display_name, uri, tag));
+}
+
+tsip_header_To_t* tsip_header_To_create_null()
+{
+	return tsip_header_To_create(tsk_null, tsk_null, tsk_null);
+}
+
 int tsip_header_To_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		int ret;
 		const tsip_header_To_t *To = header;
-		if(ret=tsip_uri_serialize(To->uri, 1, 1, output))
-		{
+		if((ret = tsip_uri_serialize(To->uri, 1, 1, output))){
 			return ret;
 		}
-		if(To->tag)
-		{
-			tsk_buffer_append_2(output, ";tag=%s", To->tag);
+		if(To->tag){
+			return tsk_buffer_append_2(output, ";tag=%s", To->tag);
 		}
 	}
 	return -1;
@@ -114,7 +115,7 @@ tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_To_t *hdr_to = TSIP_HEADER_TO_CREATE(0,0,0);
+	tsip_header_To_t *hdr_to = tsip_header_To_create_null();
 	
 	const char *tag_start;
 
@@ -122,8 +123,8 @@ tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'To' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_to);
 	}
 	
@@ -140,11 +141,10 @@ tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size)
 //	To header object definition
 //
 
-static void* tsip_header_To_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_To_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_To_t *To = self;
-	if(To)
-	{
+	if(To){
 		const char* display_name = va_arg(*app, const char *);
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t *);
 		const char* tag = va_arg(*app, const char *);
@@ -156,25 +156,25 @@ static void* tsip_header_To_create(void *self, va_list * app)
 		TSIP_HEADER(To)->type = tsip_htype_To;
 		TSIP_HEADER(To)->tostring = tsip_header_To_tostring;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new To header.");
 	}
 	return self;
 }
 
-static void* tsip_header_To_destroy(void *self)
+static tsk_object_t* tsip_header_To_dtor(tsk_object_t *self)
 {
 	tsip_header_To_t *To = self;
-	if(To)
-	{
+	if(To){
 		TSK_FREE(To->display_name);
 		TSK_FREE(To->tag);
 
 		TSK_OBJECT_SAFE_FREE(To->uri);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(To));
 	}
-	else TSK_DEBUG_ERROR("Null To header.");
+	else{
+		TSK_DEBUG_ERROR("Null To header.");
+	}
 
 	return self;
 }
@@ -182,8 +182,8 @@ static void* tsip_header_To_destroy(void *self)
 static const tsk_object_def_t tsip_header_To_def_s = 
 {
 	sizeof(tsip_header_To_t),
-	tsip_header_To_create,
-	tsip_header_To_destroy,
-	0
+	tsip_header_To_ctor,
+	tsip_header_To_dtor,
+	tsk_null
 };
-const void *tsip_header_To_def_t = &tsip_header_To_def_s;
+const tsk_object_def_t *tsip_header_To_def_t = &tsip_header_To_def_s;

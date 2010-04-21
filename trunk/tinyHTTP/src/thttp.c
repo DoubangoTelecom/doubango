@@ -446,7 +446,7 @@ bail:
 *
 * @sa @ref thttp_stack_set
 */
-thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback callback, ...)
+thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback_f callback, ...)
 {
 	thttp_stack_t* stack = tsk_object_new(thttp_stack_def_t);
 	va_list params;

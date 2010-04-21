@@ -36,8 +36,6 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_MSESSION_CREATE()		tsk_object_new(tsip_msession_def_t)
-
 typedef enum tsip_msession_state_e
 {
 	ms_none,
@@ -59,7 +57,7 @@ int tsip_msession_start(tsip_msession_t* self);
 int tsip_msession_pause(tsip_msession_t* self);
 int tsip_msession_stop(tsip_msession_t* self);
 
-TINYSIP_GEXTERN const void *tsip_msession_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_msession_def_t;
 
 TSIP_END_DECLS
 

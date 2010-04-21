@@ -174,8 +174,8 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 	}
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
-	include tsip_machine_message "./tsip_machine_message.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
+	include tsip_machine_message "./ragel/tsip_machine_message.rl";
 	
 	# Entry point
 	main := SIP_message;
@@ -193,7 +193,7 @@ tsk_bool_t tsip_message_parse(tsk_ragel_state_t *state, tsip_message_t **result,
 	}
 
 	if(!*result){
-		*result = TSIP_MESSAGE_CREATE();
+		*result = tsip_message_create();
 	}
 
 	/* Ragel init */
@@ -251,7 +251,7 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 	{
 		uint32_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message);
 		if((p+clen) <pe && !message->Content){
-			message->Content = TSK_BUFFER_CREATE((p+1), clen);
+			message->Content = tsk_buffer_create((p+1), clen);
 			p = (p+clen);
 		}
 		else{

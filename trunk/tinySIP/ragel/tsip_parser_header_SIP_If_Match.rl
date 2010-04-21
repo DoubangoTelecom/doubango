@@ -47,20 +47,17 @@
 	machine tsip_machine_parser_header_SIP_If_Match;
 
 	# Includes
-	include tsip_machine_utils "./tsip_machine_utils.rl";
+	include tsip_machine_utils "./ragel/tsip_machine_utils.rl";
 	
-	action tag
-	{
+	action tag{
 		tag_start = p;
 	}
 
-	action parse_ifmatch
-	{
+	action parse_ifmatch{
 		TSK_PARSER_SET_STRING(hdr_ifmatch->value);
 	}
 
-	action eob
-	{
+	action eob{
 	}
 	
 	SIP_If_Match = "SIP-If-Match"i HCOLON token>tag %parse_ifmatch;
@@ -70,13 +67,23 @@
 
 }%%
 
+
+tsip_header_SIP_If_Match_t* tsip_header_SIP_If_Match_create(const char* etag)
+{
+	return tsk_object_new(TSIP_HEADER_SIP_IF_MATCH_VA_ARGS(etag));
+}
+
+tsip_header_SIP_If_Match_t* tsip_header_SIP_If_Match_create_null()
+{
+	return tsip_header_SIP_If_Match_create(tsk_null);
+}
+
 int tsip_header_SIP_If_Match_tostring(const void* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsip_header_SIP_If_Match_t *SIP_If_Match = header;
 		if(SIP_If_Match->value){
-			tsk_buffer_append(output, SIP_If_Match->value, strlen(SIP_If_Match->value));
+			return tsk_buffer_append(output, SIP_If_Match->value, strlen(SIP_If_Match->value));
 		}
 		return 0;
 	}
@@ -90,7 +97,7 @@ tsip_header_SIP_If_Match_t *tsip_header_SIP_If_Match_parse(const char *data, siz
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_SIP_If_Match_t *hdr_ifmatch = TSIP_HEADER_SIP_IF_MATCH_CREATE_NULL();
+	tsip_header_SIP_If_Match_t *hdr_ifmatch = tsip_header_SIP_If_Match_create_null();
 	
 	const char *tag_start;
 
@@ -98,8 +105,8 @@ tsip_header_SIP_If_Match_t *tsip_header_SIP_If_Match_parse(const char *data, siz
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
+		TSK_DEBUG_ERROR("Failed to parse 'SIP-If-Match' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ifmatch);
 	}
 	
@@ -116,31 +123,30 @@ tsip_header_SIP_If_Match_t *tsip_header_SIP_If_Match_parse(const char *data, siz
 //	SIP_If_Match header object definition
 //
 
-static void* tsip_header_SIP_If_Match_create(void *self, va_list * app)
+static tsk_object_t* tsip_header_SIP_If_Match_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_SIP_If_Match_t *SIP_If_Match = self;
-	if(SIP_If_Match)
-	{
+	if(SIP_If_Match){
 		TSIP_HEADER(SIP_If_Match)->type = tsip_htype_SIP_If_Match;
 		TSIP_HEADER(SIP_If_Match)->tostring = tsip_header_SIP_If_Match_tostring;
 		SIP_If_Match->value = tsk_strdup(va_arg(*app, const char*));
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new SIP_If_Match header.");
 	}
 	return self;
 }
 
-static void* tsip_header_SIP_If_Match_destroy(void *self)
+static tsk_object_t* tsip_header_SIP_If_Match_dtor(tsk_object_t *self)
 {
 	tsip_header_SIP_If_Match_t *SIP_If_Match = self;
-	if(SIP_If_Match)
-	{
+	if(SIP_If_Match){
 		TSK_FREE(SIP_If_Match->value);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(SIP_If_Match));
 	}
-	else TSK_DEBUG_ERROR("Null SIP_If_Match header.");
+	else{
+		TSK_DEBUG_ERROR("Null SIP_If_Match header.");
+	}
 
 	return self;
 }
@@ -148,9 +154,9 @@ static void* tsip_header_SIP_If_Match_destroy(void *self)
 static const tsk_object_def_t tsip_header_SIP_If_Match_def_s = 
 {
 	sizeof(tsip_header_SIP_If_Match_t),
-	tsip_header_SIP_If_Match_create,
-	tsip_header_SIP_If_Match_destroy,
-	0
+	tsip_header_SIP_If_Match_ctor,
+	tsip_header_SIP_If_Match_dtor,
+	tsk_null
 };
-const void *tsip_header_SIP_If_Match_def_t = &tsip_header_SIP_If_Match_def_s;
+const tsk_object_def_t *tsip_header_SIP_If_Match_def_t = &tsip_header_SIP_If_Match_def_s;
 
