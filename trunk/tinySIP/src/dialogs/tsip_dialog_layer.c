@@ -40,6 +40,8 @@
 
 #include "tsk_debug.h"
 
+extern tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const struct tsip_message_s* message);
+
 tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack)
 {
 	return tsk_object_new(tsip_dialog_layer_def_t, stack);

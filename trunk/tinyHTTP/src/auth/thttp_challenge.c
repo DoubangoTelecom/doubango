@@ -63,7 +63,7 @@ int thttp_challenge_reset_cnonce(thttp_challenge_t *self)
 			tsk_istr_t istr;
 			
 			tsk_strrandom(&istr);
-			tsk_md5compute(istr, strlen(istr), &self->cnonce);
+			tsk_md5compute(istr, tsk_strlen(istr), &self->cnonce);
 #endif
 			self->nc = 1;
 		}
@@ -127,8 +127,8 @@ int thttp_challenge_update(thttp_challenge_t *self, const char* scheme, const ch
 		tsk_strupdate(&self->opaque, opaque);
 		tsk_strupdate(&self->algorithm, algorithm);
 		if(qop){
-			self->qop = tsk_strcontains(qop, strlen(qop), "auth-int") ? "auth-int" : 
-					(tsk_strcontains(qop, strlen(qop), "auth") ? "auth" : 0);
+			self->qop = tsk_strcontains(qop, tsk_strlen(qop), "auth-int") ? "auth-int" : 
+					(tsk_strcontains(qop, tsk_strlen(qop), "auth") ? "auth" : tsk_null);
 		}
 
 		if(noncechanged && self->qop){
@@ -253,8 +253,8 @@ static tsk_object_t* thttp_challenge_ctor(tsk_object_t *self, va_list * app)
 		challenge->algorithm = tsk_strdup(va_arg(*app, const char*));
 		qop = va_arg(*app, const char*);
 		if(qop){
-			challenge->qop = tsk_strcontains(qop, strlen(qop), "auth-int") ? "auth-int" : 
-					(tsk_strcontains(qop, strlen(qop), "auth") ? "auth" : 0);
+			challenge->qop = tsk_strcontains(qop, tsk_strlen(qop), "auth-int") ? "auth-int" : 
+					(tsk_strcontains(qop, tsk_strlen(qop), "auth") ? "auth" : tsk_null);
 		}
 		
 		if(challenge->qop){

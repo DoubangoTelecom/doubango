@@ -87,7 +87,7 @@ int tsip_header_Supported_tostring(const void* header, tsk_buffer_t* output)
 		tsk_list_foreach(item, Supported->options){
 			str = item->data;
 			if(item == Supported->options->head){
-				ret = tsk_buffer_append(output, str->value, strlen(str->value));
+				ret = tsk_buffer_append(output, str->value, tsk_strlen(str->value));
 			}
 			else{
 				ret = tsk_buffer_append_2(output, ",%s", str->value);

@@ -87,7 +87,7 @@ int tsip_header_Allow_Events_tostring(const void* header, tsk_buffer_t* output)
 		tsk_list_foreach(item, Allow_Events->events){
 			str = item->data;
 			if(item == Allow_Events->events->head){
-				tsk_buffer_append(output, str->value, strlen(str->value));
+				tsk_buffer_append(output, str->value, tsk_strlen(str->value));
 			}
 			else{
 				tsk_buffer_append_2(output, ",%s", str->value);

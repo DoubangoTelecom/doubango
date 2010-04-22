@@ -82,7 +82,7 @@ int tsip_header_SIP_ETag_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_SIP_ETag_t *SIP_ETag = header;
 		if(SIP_ETag->value){
-			return tsk_buffer_append(output, SIP_ETag->value, strlen(SIP_ETag->value));
+			return tsk_buffer_append(output, SIP_ETag->value, tsk_strlen(SIP_ETag->value));
 		}
 		return 0;
 	}

@@ -180,7 +180,7 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 
 		/* Get the local host name */
 		if(host != TNET_SOCKET_HOST_ANY && !tsk_strempty(host)){
-			memcpy(local_hostname, host, strlen(host)>sizeof(local_hostname)-1 ? sizeof(local_hostname)-1 : strlen(host));
+			memcpy(local_hostname, host, tsk_strlen(host)>sizeof(local_hostname)-1 ? sizeof(local_hostname)-1 : tsk_strlen(host));
 		}
 		else{
 			if(TNET_SOCKET_TYPE_IS_IPV6(sock->type)){
@@ -240,7 +240,7 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 //				else{
 //#if TNET_UNDER_WINDOWS
 //					int index;
-//					if((index = tsk_strindexOf(sock->ip, strlen(sock->ip), "%")) > 0){
+//					if((index = tsk_strindexOf(sock->ip, tsk_strlen(sock->ip), "%")) > 0){
 //						*(sock->ip + index) = '\0';
 //					}
 //#endif

@@ -82,7 +82,7 @@ void test_uri_parser()
 
 	for(i=0; i<sizeof(uris)/sizeof(const char*); i++)
 	{
-		tsip_uri_t *uri = tsip_uri_parse(uris[i], strlen(uris[i]));
+		tsip_uri_t *uri = tsip_uri_parse(uris[i], tsk_strlen(uris[i]));
 				
 		printf("\n== Parsing {{ %s }} ==\n\n", uris[i]);
 		
@@ -154,8 +154,8 @@ void test_uri_cmp()
 
 	for(i=0; i< sizeof(test_uri_bundles)/sizeof(struct test_uri_bundle); i++)
 	{
-		tsip_uri_t *uri1 = tsip_uri_parse(test_uri_bundles[i].uri1, strlen(test_uri_bundles[i].uri1));
-		tsip_uri_t *uri2 = tsip_uri_parse(test_uri_bundles[i].uri2, strlen(test_uri_bundles[i].uri2));
+		tsip_uri_t *uri1 = tsip_uri_parse(test_uri_bundles[i].uri1, tsk_strlen(test_uri_bundles[i].uri1));
+		tsip_uri_t *uri2 = tsip_uri_parse(test_uri_bundles[i].uri2, tsk_strlen(test_uri_bundles[i].uri2));
 
 		if(tsk_object_cmp(uri1, uri2) && test_uri_bundles[i].match){
 			TSK_DEBUG_ERROR("URI Comparison failed.");

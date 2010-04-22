@@ -61,7 +61,7 @@ int thttp_header_Dummy_tostring(const thttp_header_t* header, tsk_buffer_t* outp
 	if(header){
 		const thttp_header_Dummy_t *Dummy = (const thttp_header_Dummy_t*)header;
 		if(Dummy->value){
-			return tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
+			return tsk_buffer_append(output, Dummy->value, tsk_strlen(Dummy->value));
 		}
 		return 0;
 	}

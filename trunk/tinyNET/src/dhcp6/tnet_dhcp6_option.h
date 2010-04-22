@@ -117,7 +117,7 @@ typedef struct tnet_dhcp6_option_s
 	
 	/* An unsigned integer identifying the specific option type carried in this option.*/
 	tnet_dhcp6_option_code_t code;
-	/* Option length. Same as strlen(data buffer)*/
+	/* Option length. Same as tsk_strlen(data buffer)*/
 	uint16_t len;
 	/* opton-data */
 	tnet_dhcp6_option_data_t *data;

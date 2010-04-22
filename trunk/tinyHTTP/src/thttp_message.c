@@ -89,7 +89,7 @@ thttp_message_t* thttp_message_create()
 // example
 thttp_url_t* url;
 thttp_request_t* request;
-if((url = thttp_url_parse("http://www.google.com", strlen("http://www.google.com")))){
+if((url = thttp_url_parse("http://www.google.com", tsk_strlen("http://www.google.com")))){
 	request = thttp_request_create("GET", url);
 	// ... 
 	TSK_OBJECT_SAFE_FREE(url);

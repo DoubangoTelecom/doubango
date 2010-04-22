@@ -131,7 +131,7 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 	   +-----+-----+-----+-----+-----+-----+-----+-----+--
 	*/
 	if(TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->hostname){
-		tnet_dhcp_option_serializeex(dhcp_code_Hostname, strlen(ctx->hostname), ctx->hostname, output);
+		tnet_dhcp_option_serializeex(dhcp_code_Hostname, tsk_strlen(ctx->hostname), ctx->hostname, output);
 	}
 	/*== Vendor classId(60) ==> RFC 2132 - 9.13. Vendor class identifier
 		Code   Len   Vendor class Identifier
@@ -140,7 +140,7 @@ tsk_buffer_t* tnet_dhcp_message_serialize(const tnet_dhcp_ctx_t *ctx, const tnet
 		+-----+-----+-----+-----+---
 	*/
 	if(TNET_DHCP_MESSAGE_IS_REQUEST(message) && ctx->vendor_id){
-		tnet_dhcp_option_serializeex(dhcp_code_Class_Id, strlen(ctx->vendor_id), ctx->vendor_id, output);
+		tnet_dhcp_option_serializeex(dhcp_code_Class_Id, tsk_strlen(ctx->vendor_id), ctx->vendor_id, output);
 	}
 
 	/*== RFC 2132 - 9.10. Maximum DHCP Message Size (57)

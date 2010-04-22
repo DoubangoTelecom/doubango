@@ -61,7 +61,7 @@ int thttp_header_ETag_tostring(const thttp_header_t* header, tsk_buffer_t* outpu
 	if(header){
 		const thttp_header_ETag_t *ETag = (const thttp_header_ETag_t*)header;
 		if(ETag->value){
-			return tsk_buffer_append(output, ETag->value, strlen(ETag->value));
+			return tsk_buffer_append(output, ETag->value, tsk_strlen(ETag->value));
 		}
 		return 0;
 	}

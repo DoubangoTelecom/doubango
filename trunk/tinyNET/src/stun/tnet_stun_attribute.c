@@ -342,7 +342,7 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	case stun_username:
 		{
 			tnet_stun_attribute_username_t *username = (tnet_stun_attribute_username_t*)attribute;
-			tsk_buffer_append(output, username->value, strlen(username->value));
+			tsk_buffer_append(output, username->value, tsk_strlen(username->value));
 			return 0;
 		}
 
@@ -374,7 +374,7 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	case stun_realm:
 		{
 			tnet_stun_attribute_realm_t *realm = (tnet_stun_attribute_realm_t*)attribute;
-			tsk_buffer_append(output, realm->value, strlen(realm->value));
+			tsk_buffer_append(output, realm->value, tsk_strlen(realm->value));
 			return 0;
 		}
 
@@ -382,7 +382,7 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	case stun_nonce:
 		{
 			tnet_stun_attribute_nonce_t *nonce = (tnet_stun_attribute_nonce_t*)attribute;
-			tsk_buffer_append(output, nonce->value, strlen(nonce->value));
+			tsk_buffer_append(output, nonce->value, tsk_strlen(nonce->value));
 			return 0;
 		}
 
@@ -397,7 +397,7 @@ int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_bu
 	case stun_software:
 		{
 			tnet_stun_attribute_software_t *software = (tnet_stun_attribute_software_t*)attribute;
-			tsk_buffer_append(output, software->value, strlen(software->value));
+			tsk_buffer_append(output, software->value, tsk_strlen(software->value));
 			return 0;
 		}
 
@@ -888,7 +888,7 @@ static tsk_object_t* tnet_stun_attribute_software_ctor(tsk_object_t * self, va_l
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_software;
 
 		attribute->value = tsk_strndup(payload, payload_size);
-		TNET_STUN_ATTRIBUTE(attribute)->length = strlen(attribute->value);
+		TNET_STUN_ATTRIBUTE(attribute)->length = tsk_strlen(attribute->value);
 	}
 	return self;
 }

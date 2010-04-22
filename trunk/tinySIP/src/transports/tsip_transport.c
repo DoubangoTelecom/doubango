@@ -245,7 +245,7 @@ tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, tsk_bool_t lr)
 				lr ? "lr" : "",
 				self->protocol);
 			if(uristring){
-				if((uri = tsip_uri_parse(uristring, strlen(uristring)))){
+				if((uri = tsip_uri_parse(uristring, tsk_strlen(uristring)))){
 					uri->host_type = ipv6 ? host_ipv6 : host_ipv4;
 				}
 				TSK_FREE(uristring);

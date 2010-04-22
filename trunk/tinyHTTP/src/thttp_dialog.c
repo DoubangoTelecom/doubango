@@ -268,7 +268,7 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 		return -2;
 	}
 
-	if((url = thttp_url_parse(self->action->url, strlen(self->action->url)))){
+	if((url = thttp_url_parse(self->action->url, tsk_strlen(self->action->url)))){
 		request = thttp_request_create(self->action->method, url);
 		TSK_OBJECT_SAFE_FREE(url);
 	}

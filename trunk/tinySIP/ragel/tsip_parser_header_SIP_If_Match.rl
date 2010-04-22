@@ -83,7 +83,7 @@ int tsip_header_SIP_If_Match_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_SIP_If_Match_t *SIP_If_Match = header;
 		if(SIP_If_Match->value){
-			return tsk_buffer_append(output, SIP_If_Match->value, strlen(SIP_If_Match->value));
+			return tsk_buffer_append(output, SIP_If_Match->value, tsk_strlen(SIP_If_Match->value));
 		}
 		return 0;
 	}

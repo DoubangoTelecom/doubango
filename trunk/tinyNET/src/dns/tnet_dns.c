@@ -41,7 +41,7 @@
 #include "tsk_debug.h"
 #include "tsk_string.h"
 
-#include <string.h> /* strlen, memser, .... */
+#include <string.h> /* tsk_strlen, memser, .... */
 #include <ctype.h> /* isdigist */
 
 /* DNS cache functions */
@@ -445,7 +445,7 @@ tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num, con
 	size_t e164size;
 	int i, j; // must be signed
 	
-	e164size = strlen(e164num);
+	e164size = tsk_strlen(e164num);
 	
 	if(!ctx || !e164num || !e164size){
 		goto bail;
@@ -487,7 +487,7 @@ tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num, con
 
 	// append domain name
 	if(domain){
-		memcpy( &e164domain[j], domain, ((strlen(domain) + j) >= sizeof(e164domain)-1) ? (sizeof(e164domain)-j-1) : strlen(domain) );
+		memcpy( &e164domain[j], domain, ((tsk_strlen(domain) + j) >= sizeof(e164domain)-1) ? (sizeof(e164domain)-j-1) : tsk_strlen(domain) );
 	}
 	else{
 		memcpy(&e164domain[j], "e164.arpa", 9);

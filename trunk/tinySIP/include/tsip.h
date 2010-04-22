@@ -54,7 +54,6 @@ TSIP_BEGIN_DECLS
 
 typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
-typedef void tsip_stack_handle_t;
 
 
 typedef enum tsip_stack_param_type_e
@@ -83,19 +82,21 @@ typedef enum tsip_stack_param_type_e
 #define TSIP_STACK_SET_SECAGREE_TLS(USE_TLS_SECAGREE_INT)							pname_secagree_tls, (int)USE_TLS_SECAGREE_INT
 #define TSIP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
 
-	/* Features */
-	pname_enable_100rel,
-	pname_enable_gsmais,
-	pname_enable_precond,
-	pname_enable_3gppsms,
-	pname_enable_gsmarcs,
-	pname_enable_earlyIMS,
-	pname_enable_ofdr,
-	pname_enable_aa,
-	pname_enable_dnd,
-	pname_enable_option,
+	///* Features */
+	//pname_enable_100rel,
+	//pname_enable_gsmais,
+	//pname_enable_precond,
+	//pname_enable_3gppsms,
+	//pname_enable_gsmarcs,
+	//pname_enable_earlyIMS,
+	//pname_enable_ofdr,
+	//pname_enable_aa,
+	//pname_enable_dnd,
+	//pname_enable_option,
 
 	/* QoS */
+
+	pname_header,
 
 }
 tsip_stack_param_type_t;
@@ -150,6 +151,9 @@ tsip_stack_option_t;
 
 /* === Security === */
 #define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_EARLY_IMS, #ENABLED_BOOL)
+
+/* === Headers === */
+#define TSIP_STACK_SET_HEADER(NAME_STR, VALUE_STR)		pname_header, (const char*)NAME_STR, (const char*)VALUE_STR
 
 /* IMS/LTE stack (for internal use). only tsip_stack_handle_t should be visible. */
 typedef struct tsip_stack_s
@@ -228,6 +232,7 @@ typedef struct tsip_stack_s
 	tsk_timer_manager_handle_t* timer_mgr;
 	tsip_timers_t timers;
 	tsip_ssessions_L_t *ssessions;
+	tsk_params_L_t *headers;
 
 	/* Layers */
 	struct tsip_dialog_layer_s *layer_dialog;

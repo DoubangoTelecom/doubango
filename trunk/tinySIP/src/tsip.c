@@ -70,7 +70,7 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 		case TSIP_STACK_OPTION_PREFERRED_IDENTITY:
 			{	/* IMS Public User Identity or P-Preferred-Identity - valid SIP/TEL URI*/
 				if(option_value){
-					tsip_uri_t *uri = tsip_uri_parse(option_value, strlen(option_value));
+					tsip_uri_t *uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
 					if(uri){
 						if(option_id == TSIP_STACK_OPTION_IMPU){
 							TSK_OBJECT_SAFE_FREE(self->identity.impu);
@@ -109,7 +109,7 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 		case TSIP_STACK_OPTION_REALM:
 			{	/* realm (a.k.a domain name) - valid SIP/TEL URI */
 				if(option_value){
-					tsip_uri_t *uri = tsip_uri_parse(option_value, strlen(option_value));
+					tsip_uri_t *uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
 					if(uri){
 						TSK_OBJECT_SAFE_FREE(self->network.realm);
 						self->network.realm = uri;
@@ -139,12 +139,12 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 			}
 		case TSIP_STACK_OPTION_DISCOVERY_NAPTR:
 			{	/* Whether to use DNS NAPTR for Proxy-CSCF discovery */
-				self->network.discovery_naptr = tsk_strcontains(option_value, strlen(option_value), "true");
+				self->network.discovery_naptr = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
 				break;
 			}
 		case TSIP_STACK_OPTION_DISCOVERY_DHCP:
 			{	/* Whether to use DHCPv4/v6 for Proxy-CSCF discovery */
-				self->network.discovery_dhcp = tsk_strcontains(option_value, strlen(option_value), "true");
+				self->network.discovery_dhcp = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
 				break;
 			}
 		case TSIP_STACK_OPTION_AMF:
@@ -160,7 +160,7 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 	/* ===  Security ===  */
 		case TSIP_STACK_OPTION_EARLY_IMS:
 			{	/* Whether to enable Early IMS Security as per 3GPP TS 33.978 */
-				self->security.earlyIMS = tsk_strcontains(option_value, strlen(option_value), "true");
+				self->security.earlyIMS = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
 				break;
 			}
 		case TSIP_STACK_OPTION_SECAGREE_IPSEC:
@@ -260,10 +260,10 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				}
 				/* whether to use ipv6 or not */
 				if(IP_VERSION_STR){
-					if(tsk_strcontains(IP_VERSION_STR, strlen(IP_VERSION_STR), "6")){
+					if(tsk_strcontains(IP_VERSION_STR, tsk_strlen(IP_VERSION_STR), "6")){
 						TNET_SOCKET_TYPE_SET_IPV6Only(self->network.proxy_cscf_type);
 					}
-					if(tsk_strcontains(IP_VERSION_STR, strlen(IP_VERSION_STR), "4")){
+					if(tsk_strcontains(IP_VERSION_STR, tsk_strlen(IP_VERSION_STR), "4")){
 						TNET_SOCKET_TYPE_SET_IPV4(self->network.proxy_cscf_type); /* Not IPV4only ==> '46'/'64' */
 					}
 				}
@@ -276,9 +276,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 
 			
 
-			/*
-			*	Security
-			*/
+			/* === Security === */
 			case pname_secagree_ipsec:
 				{	/* ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR */
 					tsk_strupdate(&self->secagree_mech, "ipsec-3gpp");
@@ -303,14 +301,17 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				}
 			
 
-			/* 
-			* Features 
-			*/
+			/* === Headers === */
+			case pname_header:
+				{ /* (const char*)NAME_STR, (const char*)VALUE_STR */
+					const char* NAME_STR = va_arg(*app, const char*);
+					const char* VALUE_STR = va_arg(*app, const char*);
+					tsk_params_add_param(&self->headers, NAME_STR, VALUE_STR);
+					break;
+				}
 			
 
-			/* 
-			* QoS 
-			*/
+			
 
 			default:
 			{	/* va_list will be unsafe ==> must exit */
@@ -549,7 +550,7 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tsk_bool_t lr)
 			if(transport){
 				tsip_uri_t* uri = tsk_null;
 				int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(transport->type);
-				int quote_ip = (ipv6 && tsk_strcontains(stack->network.proxy_cscf, strlen(stack->network.proxy_cscf), ":")) /* IPv6 IP string?*/;
+				int quote_ip = (ipv6 && tsk_strcontains(stack->network.proxy_cscf, tsk_strlen(stack->network.proxy_cscf), ":")) /* IPv6 IP string?*/;
 			
 				char* uristring = tsk_null;
 				tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
@@ -561,7 +562,7 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tsk_bool_t lr)
 					lr ? "lr" : "",
 					transport->protocol);
 				if(uristring){
-					if((uri = tsip_uri_parse(uristring, strlen(uristring)))){
+					if((uri = tsip_uri_parse(uristring, tsk_strlen(uristring)))){
 						//uri->host_type = ipv6 ? host_ipv6 : host_ipv4;
 					}
 					TSK_FREE(uristring);
@@ -622,6 +623,7 @@ static tsk_object_t* tsip_stack_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_stack_t *stack = self;
 	if(stack){
+		stack->headers = tsk_list_create();
 	}
 	return self;
 }
@@ -673,6 +675,7 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		/* Internals. */
 		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
 		TSK_OBJECT_SAFE_FREE(stack->ssessions);
+		TSK_OBJECT_SAFE_FREE(stack->headers);
 
 		/* Layers */
 		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);

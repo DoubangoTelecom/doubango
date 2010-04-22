@@ -59,7 +59,7 @@ int tsip_header_Event_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_Event_t *Event = header;
 		if(Event->package){
-			return tsk_buffer_append(output, Event->package, strlen(Event->package));
+			return tsk_buffer_append(output, Event->package, tsk_strlen(Event->package));
 		}
 		return 0;
 	}

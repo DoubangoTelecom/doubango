@@ -169,7 +169,7 @@ char* tsk_strndup(const char *s1, size_t n)
 	char *ret = tsk_null;
 
 	if(s1 && n){
-		size_t len = strlen(s1);
+		size_t len = tsk_strlen(s1);
 		size_t nret = (n > len) ? (len) : (n);
 
 		ret = tsk_calloc((nret+1), sizeof(uint8_t));
@@ -219,7 +219,7 @@ int tsk_strindexOf(const char * str, size_t size, const char * substring)
 */
 void tsk_strcat(char** destination, const char* source)
 {
-	tsk_strncat(destination, source, strlen(source));
+	tsk_strncat(destination, source, tsk_strlen(source));
 }
 
 /**@ingroup tsk_string_group
@@ -246,7 +246,7 @@ void tsk_strcat_2(char** destination, const char* format, ...)
 void tsk_strncat(char** destination, const char* source, size_t n)
 {
 	size_t index = 0;
-	size_t size_to_cat = (n > strlen(source)) ? strlen(source) : n;
+	size_t size_to_cat = (n > tsk_strlen(source)) ? tsk_strlen(source) : n;
 
 	if(!source) return;
 
@@ -254,7 +254,7 @@ void tsk_strncat(char** destination, const char* source, size_t n)
 		*destination = (char*)tsk_malloc(size_to_cat+1);
 		strncpy(*destination, source, size_to_cat+1);
 	}else{
-		index = strlen(*destination);
+		index = tsk_strlen(*destination);
 		*destination = tsk_realloc(*destination, index + size_to_cat+1);
 		strncpy(((*destination)+index), source, size_to_cat+1);
 	}
@@ -304,7 +304,7 @@ int tsk_sprintf_2(char** str, const char* format, va_list* ap)
 #if defined(_WIN32_WCE)
 	{
 		int n;
-		len = (strlen(format)*2);
+		len = (tsk_strlen(format)*2);
 		*str = (char*)tsk_calloc(1, len+1);
 		for(;;){
 			if( (n = vsnprintf(*str, len, format, *ap)) >= 0 && (n<len) ){
@@ -367,7 +367,7 @@ void tsk_strtrim_right(char **str)
 {
 	if(str && *str)
 	{
-		size_t size = strlen(*str);
+		size_t size = tsk_strlen(*str);
 		if(size){
 			while(isspace(*((*str)+size-1))) size--;
 			*(*str + size) = '\0';
@@ -433,7 +433,7 @@ void tsk_strunquote_2(char **str, char lquote, char rquote)
 {
 	if(str && *str)
 	{
-		size_t size = strlen(*str);
+		size_t size = tsk_strlen(*str);
 		if(size>=2 && **str == lquote && *((*str)+size-1) == rquote)
 		{
 			strcpy((*str), (*str)+1);

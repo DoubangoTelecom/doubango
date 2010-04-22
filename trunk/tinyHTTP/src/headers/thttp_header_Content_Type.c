@@ -57,7 +57,7 @@ int thttp_header_Content_Type_tostring(const thttp_header_t* header, tsk_buffer_
 {
 	if(header){
 		const thttp_header_Content_Type_t *Content_Type = (const thttp_header_Content_Type_t*)header;	
-		return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
+		return tsk_buffer_append(output, Content_Type->type, tsk_strlen(Content_Type->type));
 	}
 
 	return -1;

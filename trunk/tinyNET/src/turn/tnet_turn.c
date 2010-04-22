@@ -108,7 +108,7 @@ tnet_stun_request_t* tnet_turn_create_request(const tnet_nat_context_t* context,
 
 		/* Add software attribute */
 		if(allocation->software){
-			attribute = (tnet_stun_attribute_t*)tnet_stun_attribute_software_create(allocation->software, strlen(allocation->software));
+			attribute = (tnet_stun_attribute_t*)tnet_stun_attribute_software_create(allocation->software, tsk_strlen(allocation->software));
 			tnet_stun_message_add_attribute(request, &attribute);
 		}
 	}

@@ -128,6 +128,9 @@ thttp_session_handle_t* thttp_session_create(const thttp_stack_handle_t* stack, 
 		}
 		va_end(ap);
 	}
+	else{
+		TSK_DEBUG_ERROR("failed to create new HTTP/HTTPS session.");
+	}
 	return ret;
 }
 

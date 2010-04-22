@@ -166,9 +166,10 @@ thttp_session_t;
 
 typedef tsk_list_t thttp_sessions_L_t; /**< List of @ref thttp_session_handle_t elements. */
 
-/** Pointer to a HTTP/HTTPS session.
-*/
+/** Pointer to a HTTP/HTTPS session. */
 typedef void thttp_session_handle_t;
+/** Pointer to a HTTP/HTTPS stack object. */
+typedef void thttp_stack_handle_t;
 
 TINYHTTP_API thttp_session_handle_t* thttp_session_create(const thttp_stack_handle_t* stack, ...);
 TINYHTTP_API int thttp_session_set(thttp_session_handle_t *self, ...);

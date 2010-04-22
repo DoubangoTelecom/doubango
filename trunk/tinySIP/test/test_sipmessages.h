@@ -126,7 +126,7 @@ void test_parser()
 	int32_t expires;
 	uint32_t clength;
 
-	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, strlen(SIP_MSG_2_TEST));
+	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, tsk_strlen(SIP_MSG_2_TEST));
 	tsip_message_parse(&state, &message, tsk_true);
 
 	enabled = tsip_message_allowed(message, "REFER");
@@ -159,8 +159,8 @@ void test_parser()
 void test_requests()
 {
 	tsk_buffer_t *buffer = tsk_buffer_create_null();
-	tsip_uri_t *from = tsip_uri_parse("sip:mamadou@open-ims.test", strlen("sip:mamadou@open-ims.test"));
-	tsip_uri_t *request_uri = tsip_uri_parse("sip:open-ims.test", strlen("sip:open-ims.test"));
+	tsip_uri_t *from = tsip_uri_parse("sip:mamadou@open-ims.test", tsk_strlen("sip:mamadou@open-ims.test"));
+	tsip_uri_t *request_uri = tsip_uri_parse("sip:open-ims.test", tsk_strlen("sip:open-ims.test"));
 	
 
 	tsip_request_t *request = tsip_request_new("REGISTER", request_uri, from, from, "ABCDEFGHIJKLMOPQRSTUVWXYZ", 4521);
@@ -181,7 +181,7 @@ void test_responses()
 	tsip_request_t *request = 0;
 	tsip_request_t *response = 0;
 
-	tsk_ragel_state_init(&state, SIP_MESSAGE, strlen(SIP_MESSAGE));
+	tsk_ragel_state_init(&state, SIP_MESSAGE, tsk_strlen(SIP_MESSAGE));
 	tsip_message_parse(&state, &request, tsk_true);
 
 	/* Create the response and destroy the request */

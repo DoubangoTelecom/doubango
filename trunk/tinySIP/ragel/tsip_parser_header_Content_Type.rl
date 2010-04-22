@@ -96,7 +96,7 @@ int tsip_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_Content_Type_t *Content_Type = header;
 		if(Content_Type->type){
-			return tsk_buffer_append(output, Content_Type->type, strlen(Content_Type->type));
+			return tsk_buffer_append(output, Content_Type->type, tsk_strlen(Content_Type->type));
 		}
 		else{
 			return -2;

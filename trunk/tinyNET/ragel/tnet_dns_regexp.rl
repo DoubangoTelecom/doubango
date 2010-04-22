@@ -56,7 +56,7 @@
 
 	action cat_group{
 		if(prefix){
-			int prefixlen = strlen(prefix);
+			int prefixlen = tsk_strlen(prefix);
 			tsk_strncat(&ret, e164num + prefixlen, (e164len - prefixlen));
 		}
 	}
@@ -108,8 +108,8 @@ char* tnet_dns_regex_parse(const char* e164num, const char* regexp)
 		goto bail;
 	}
 	
-	e164len = strlen(e164num);
-	pe = p + strlen(regexp);
+	e164len = tsk_strlen(e164num);
+	pe = p + tsk_strlen(regexp);
 	eof = pe;
 	
 	%%write init;
@@ -288,7 +288,7 @@ bail:
 //		goto bail;
 //	}
 //	
-//	pe = p + strlen(regexp);
+//	pe = p + tsk_strlen(regexp);
 //	eof = pe;
 //	
 //	%%write init;
