@@ -45,8 +45,8 @@
 #define TSIP_CHALLENGE_IS_AKAv2(self)	((self) ? tsk_striequals((self)->algorithm, "AKAv2-MD5") : 0)
 
 #define TSIP_CHALLENGE_STACK(self)		(TSIP_STACK((self)->stack))
-#define TSIP_CHALLENGE_USERNAME(self)	TSIP_CHALLENGE_STACK(self)->private_identity
-#define TSIP_CHALLENGE_PASSWORD(self)	TSIP_CHALLENGE_STACK(self)->password
+#define TSIP_CHALLENGE_USERNAME(self)	TSIP_CHALLENGE_STACK(self)->identity.impi
+#define TSIP_CHALLENGE_PASSWORD(self)	TSIP_CHALLENGE_STACK(self)->identity.password
 
 
 tsip_challenge_t* tsip_challenge_create(tsip_stack_t* stack, tsk_bool_t isproxy, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop)
@@ -247,14 +247,14 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 		*/
 		if(TSIP_CHALLENGE_IS_AKAv1(self) || TSIP_CHALLENGE_IS_AKAv2(self)){
 			char* akaresult = 0;
-			tsip_challenge_get_akares(self, TSIP_CHALLENGE_STACK(self)->password, &akaresult);
+			tsip_challenge_get_akares(self, TSIP_CHALLENGE_STACK(self)->identity.password, &akaresult);
 			if(thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, akaresult, &ha1)){
 				// return -1;
 			}
 			TSK_FREE(akaresult);
 		}
 		else{
-			thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, TSIP_CHALLENGE_STACK(self)->password, &ha1);
+			thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, TSIP_CHALLENGE_STACK(self)->identity.password, &ha1);
 		}
 
 		/* ===

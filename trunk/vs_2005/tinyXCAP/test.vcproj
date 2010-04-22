@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinyXCAP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyXCAP\include;..\..\tinyHTTP\include;..\..\tinyNET\src;..\..\tinySAK\src;..\..\thirdparties\win32\include\smc"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -199,6 +199,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyXCAP\include;..\..\tinyHTTP\include;..\..\tinyNET\src;..\..\tinySAK\src;..\..\thirdparties\win32\include\smc"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"

@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include\smc&quot;;&quot;$(DOUBANGO_HOME)\tinySIP\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\thirdparties\win32\include\smc;..\..\tinySIP\include;..\..\tinySAK\src;..\..\tinyHTTP\include;..\..\tinyNET\src"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -202,6 +202,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\thirdparties\win32\include\smc;..\..\tinySIP\include;..\..\tinySAK\src;..\..\tinyHTTP\include;..\..\tinyNET\src"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -344,11 +345,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tinySIP\test\test\stdafx.c"
+				RelativePath="..\..\tinySIP\test\stdafx.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinySIP\test\test\test.c"
+				RelativePath="..\..\tinySIP\test\test.c"
 				>
 			</File>
 		</Filter>
@@ -358,11 +359,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\tinySIP\test\test\stdafx.h"
+				RelativePath="..\..\tinySIP\test\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinySIP\test\test\targetver.h"
+				RelativePath="..\..\tinySIP\test\targetver.h"
 				>
 			</File>
 		</Filter>
@@ -372,19 +373,23 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath="..\..\tinySIP\test\test\test_sipmessages.h"
+				RelativePath="..\..\tinySIP\test\test_ip6_torture.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinySIP\test\test\test_stack.h"
+				RelativePath="..\..\tinySIP\test\test_sipmessages.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinySIP\test\test\test_transac.h"
+				RelativePath="..\..\tinySIP\test\test_stack.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinySIP\test\test\test_uri.h"
+				RelativePath="..\..\tinySIP\test\test_transac.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinySIP\test\test_uri.h"
 				>
 			</File>
 		</Filter>

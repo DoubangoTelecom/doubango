@@ -206,14 +206,12 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 	
 	/* Update authorizations */
-	if(self->state == tsip_initial && TSK_LIST_IS_EMPTY(self->challenges))
-	{
+	if(self->state == tsip_initial && TSK_LIST_IS_EMPTY(self->challenges)){
 		/* 3GPP TS 33.978 6.2.3.1 Procedures at the UE
 			On sending a REGISTER request in order to indicate support for early IMS security procedures, the UE shall not
 			include an Authorization header field and not include header fields or header field values as required by RFC3329.
 		*/
-		if(TSIP_REQUEST_IS_REGISTER(request) && !TSIP_DIALOG_GET_STACK(self)->enable_earlyIMS)
-		{
+		if(TSIP_REQUEST_IS_REGISTER(request) && !TSIP_DIALOG_GET_STACK(self)->security.earlyIMS){
 			/*	3GPP TS 24.229 - 5.1.1.2.2 Initial registration using IMS AKA
 				On sending a REGISTER request, the UE shall populate the header fields as follows:
 					a) an Authorization header field, with:
@@ -223,20 +221,18 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 					- the "nonce" header field parameter, set to an empty value; and
 					- the "response" header field parameter, set to an empty value;
 			*/
-			const char* realm = TSIP_DIALOG_GET_STACK(self)->realm ? TSIP_DIALOG_GET_STACK(self)->realm->host : "(null)";
+			const char* realm = TSIP_DIALOG_GET_STACK(self)->network.realm ? TSIP_DIALOG_GET_STACK(self)->network.realm->host : "(null)";
 			char* request_uri = tsip_uri_tostring(request->uri, tsk_false, tsk_false);
-			tsip_header_t* auth_hdr = tsip_challenge_create_empty_header_authorization(TSIP_DIALOG_GET_STACK(self)->private_identity, realm, request_uri);
+			tsip_header_t* auth_hdr = tsip_challenge_create_empty_header_authorization(TSIP_DIALOG_GET_STACK(self)->identity.impi, realm, request_uri);
 			tsip_message_add_header(request, auth_hdr);
 			tsk_object_unref(auth_hdr), auth_hdr = tsk_null;
 			TSK_FREE(request_uri);
 		}
 	}
-	else if(!TSK_LIST_IS_EMPTY(self->challenges))
-	{
+	else if(!TSK_LIST_IS_EMPTY(self->challenges)){
 		tsip_challenge_t *challenge;
 		tsip_header_t* auth_hdr;
-		tsk_list_foreach(item, self->challenges)
-		{
+		tsk_list_foreach(item, self->challenges){
 			challenge = item->data;
 			auth_hdr = tsip_challenge_create_header_authorization(challenge, request);
 			if(auth_hdr){
@@ -745,14 +741,13 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 		return -1;
 	}
 
-	earlyIMS = TSIP_DIALOG_GET_STACK(self)->enable_earlyIMS;
-	preferred_identity = TSIP_DIALOG_GET_STACK(self)->preferred_identity;
-	netinfo = TSIP_DIALOG_GET_STACK(self)->netinfo;
+	earlyIMS = TSIP_DIALOG_GET_STACK(self)->security.earlyIMS;
+	preferred_identity = TSIP_DIALOG_GET_STACK(self)->identity.preferred;
+	
 	//
 	//	P-Preferred-Identity
 	//
-	if(preferred_identity)
-	{
+	if(preferred_identity){
 		/*	3GPP TS 33.978 6.2.3.1 Procedures at the UE
 			The UE shall use the temporary public user identity (IMSI-derived IMPU, cf. section 6.1.2) only in registration
 			messages (i.e. initial registration, re-registration or de-registration), but not in any other type of SIP requests.
@@ -847,9 +842,8 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 		/* FSM */
 		self->fsm = tsk_fsm_create(curr, term);
 
-		/*== SSESSION */
-		if(self->ss != TSIP_SSESSION_INVALID_HANDLE)
-		{
+		/*== SIP Session */
+		if(self->ss != TSIP_SSESSION_INVALID_HANDLE){
 			const tsk_param_t* param;
 			tsip_uri_t* uri;
 
@@ -865,7 +859,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 				((tsk_param_t*)param)->tag = tsk_true;
 			}
 			else{
-				self->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
+				self->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->identity.impu);
 			}
 			
 			/* To */
@@ -876,8 +870,8 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 				((tsk_param_t*)param)->tag = tsk_true;
 			}
 			else{
-				self->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->public_identity);
-				self->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->realm);
+				self->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->identity.impu);
+				self->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->network.realm);
 			}
 		}
 		else{

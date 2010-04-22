@@ -735,10 +735,10 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 	while((curr = va_arg(*app, txcap_stack_param_type_t)) != xcapp_null){
 		switch(curr){
 			case xcapp_option:
-				{	/* (txcap_stack_option_t)ID_INT, (const char*)VALUE_STR */
-					txcap_stack_option_t ID_IN = va_arg(*app, txcap_stack_option_t);
+				{	/* (txcap_stack_option_t)ID_ENUM, (const char*)VALUE_STR */
+					txcap_stack_option_t ID_ENUM = va_arg(*app, txcap_stack_option_t);
 					const char* VALUE_STR = va_arg(*app, const char*);
-					switch(ID_IN){
+					switch(ID_ENUM){
 						/* PASSWORD and XUI are not used as options in the HTTP/HTTPS stack */
 						case TXCAP_STACK_OPTION_PASSWORD:
 							{
@@ -857,7 +857,7 @@ txcap_stack_handle_t* stack = txcap_stack_create(test_stack_callback, "sip:bob@e
 *
 * @sa @ref txcap_stack_set
 */
-txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback callback, const char* xui, const char* password, const char* xcap_root, ...)
+txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback_f callback, const char* xui, const char* password, const char* xcap_root, ...)
 {
 	txcap_stack_t* ret = tsk_null;
 
@@ -994,10 +994,10 @@ static tsk_object_t* _txcap_stack_create(tsk_object_t * self, va_list * app)
 {
 	txcap_stack_t *stack = self;
 	if(stack){
-		thttp_stack_callback callback;
+		thttp_stack_callback_f callback;
 		tsk_safeobj_init(stack);
 
-		callback = va_arg(*app, thttp_stack_callback);
+		callback = va_arg(*app, thttp_stack_callback_f);
 		stack->xui = tsk_strdup( va_arg(*app, const char*) );
 		stack->password = tsk_strdup( va_arg(*app, const char*) );
 		stack->xcap_root = tsk_strdup( va_arg(*app, const char*) );

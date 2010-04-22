@@ -197,7 +197,7 @@ int ret = txcap_action_create_element(stack,
 * @def TXCAP_ACTION_SET_NULL
 * Ends action parameters. Must always be the last one.
 */
-#define TXCAP_ACTION_SET_OPTION(ID_INT, VALUE_STR)			txcap_apt_option, (thhtp_action_option_t)ID_INT, (const char*)VALUE_STR
+#define TXCAP_ACTION_SET_OPTION(ID_INT, VALUE_STR)			txcap_apt_option, (thttp_action_option_t)ID_INT, (const char*)VALUE_STR
 #define TXCAP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)		txcap_apt_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TXCAP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			txcap_apt_payload, (const void*)PAY_PTR, (size_t)PAY_SIZE
 #define TXCAP_ACTION_SET_SELECTOR(AUID_STR, ...)			txcap_apt_selector, (const char*)AUID_STR, __VA_ARGS__

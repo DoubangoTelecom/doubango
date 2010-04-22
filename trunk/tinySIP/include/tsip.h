@@ -56,50 +56,24 @@ typedef uint8_t amf_t[2];
 typedef uint8_t operator_id_t[16];
 typedef void tsip_stack_handle_t;
 
+
 typedef enum tsip_stack_param_type_e
 {
 	pname_null = tsk_null,
 #define TSIP_STACK_SET_NULL()							pname_null
 
+	pname_option,
+
 	/* Identity */
-	pname_display_name,
-	pname_public_identity,
-	pname_preferred_identity,
-	pname_private_identity,
-	pname_password,
-#define TSIP_STACK_SET_DISPLAY_NAME(NAME_STR)			pname_display_name, (const char*)NAME_STR
-#define TSIP_STACK_SET_PUBLIC_IDENTITY(URI_STR)			pname_public_identity, (const char*)URI_STR
-#define TSIP_STACK_SET_PREFERRED_IDENTITY(URI_STR)		pname_preferred_identity, (const char*)URI_STR
-#define TSIP_STACK_SET_PRIVATE_IDENTITY(STR)			pname_private_identity, (const char*)STR
-#define TSIP_STACK_SET_PASSWORD(STR)					pname_password, (const char*)STR
 
 	/* Network */
-	pname_local_ip,
-	pname_local_port,
-	pname_privacy,
 	pname_operator_id,
 	pname_amf,
-	pname_netinfo,
-	pname_realm,
-	pname_discovery_naptr,
-	pname_discovery_dhcp,
 	pname_proxy_cscf,
-	pname_proxy_cscf_port,
-	pname_device_id,
-	pname_mobility,
-#define TSIP_STACK_SET_LOCAL_IP(STR)												pname_local_ip, (const char*)STR
-#define TSIP_STACK_SET_LOCAL_PORT(INT)												pname_local_port, (int)INT
 #define TSIP_STACK_SET_PRIVACY(STR)													pname_privacy, (const char*)STR
 #define TSIP_STACK_SET_POPERATOR_ID(OPERATOR_ID)									pname_privacy, (operator_id_t)OPERATOR_ID
 #define TSIP_STACK_SET_AMF(AMF)														pname_amf, (amf_t)AMF
-#define TSIP_STACK_SET_NETINFO(STR)													pname_netinfo, (const char*)STR
-#define TSIP_STACK_SET_REALM(FQDN_STR)												pname_realm, (const char*)FQDN_STR
-#define TSIP_STACK_SET_DISCOVERY_NAPTR(USE_NAPTR_UINT)								pname_discovery_naptr, (unsigned)USE_NAPTR_UINT
-#define TSIP_STACK_SET_DISCOVERY_DHCP(USE_DHCP_UINT)								pname_discovery_dhcp, (unsigned)USE_DHCP_UINT
-#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, TRANSPORT_STR, USE_IPV6_INT)			pname_proxy_cscf, (const char*)FQDN_STR, (const char*)TRANSPORT_STR, (int)USE_IPV6_INT
-#define TSIP_STACK_SET_PROXY_CSCF_PORT(UINT16)										pname_proxy_cscf_port, (uint16_t)UINT16
-#define TSIP_STACK_SET_DEVICE_ID(UUID_STR)											pname_device_id, (const char*)UUID_STR
-#define TSIP_STACK_SET_MOBILITY(MOB_STR)											pname_mobility, (const char*)MOB_STR
+
 	
 	/* Security */
 	pname_secagree_ipsec,
@@ -126,7 +100,58 @@ typedef enum tsip_stack_param_type_e
 }
 tsip_stack_param_type_t;
 
+typedef enum tsip_stack_option_e
+{
+	/* Identity */
+	TSIP_STACK_OPTION_DISPLAY_NAME,
+	TSIP_STACK_OPTION_IMPU,
+	TSIP_STACK_OPTION_PREFERRED_IDENTITY,
+	TSIP_STACK_OPTION_IMPI,
+	TSIP_STACK_OPTION_PASSWORD,
 
+	/* Network */
+	TSIP_STACK_OPTION_REALM,
+	TSIP_STACK_OPTION_LOCAL_IP,
+	TSIP_STACK_OPTION_LOCAL_PORT,
+	TSIP_STACK_OPTION_DISCOVERY_NAPTR,
+	TSIP_STACK_OPTION_DISCOVERY_DHCP,
+	TSIP_STACK_OPTION_AMF,
+	TSIP_STACK_OPTION_OPERATOR_ID,
+
+	/* Security */
+	TSIP_STACK_OPTION_EARLY_IMS,
+	TSIP_STACK_OPTION_SECAGREE_IPSEC,
+	TSIP_STACK_OPTION_SECAGREE_TLS,
+
+	/* Features */
+
+
+}
+tsip_stack_option_t;
+
+/* === Options === */
+#define TSIP_STACK_SET_OPTION(ID_ENUM, VALUE_STR)		pname_option, (tsip_stack_option_t)ID_ENUM, (const char*)VALUE_STR
+
+/* === Identity === */
+#define TSIP_STACK_SET_DISPLAY_NAME(NAME_STR)			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_DISPLAY_NAME, NAME_STR)
+#define TSIP_STACK_SET_IMPU(URI_STR)					TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_IMPU, URI_STR)
+#define TSIP_STACK_SET_PREFERRED_IDENTITY(URI_STR)		TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_PREFERRED_IDENTITY, URI_STR)
+#define TSIP_STACK_SET_IMPI(IMPI_STR)					TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_IMPI, IMPI_STR)
+#define TSIP_STACK_SET_PASSWORD(PASSORD_STR)			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_PASSWORD, PASSORD_STR)
+
+/* === Network === */
+#define TSIP_STACK_SET_REALM(URI_STR)					TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_REALM, URI_STR)
+#define TSIP_STACK_SET_LOCAL_IP(IP_STR)					TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_LOCAL_IP, IP_STR)
+#define TSIP_STACK_SET_LOCAL_PORT(PORT_UINT)			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_LOCAL_PORT, #PORT_UINT)
+#define TSIP_STACK_SET_DISCOVERY_NAPTR(ENABLED_BOOL)	TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_DISCOVERY_NAPTR, #ENABLED_BOOL)
+#define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)		TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_DISCOVERY_DHCP, #ENABLED_BOOL)
+
+#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
+
+/* === Security === */
+#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_EARLY_IMS, #ENABLED_BOOL)
+
+/* IMS/LTE stack (for internal use). only tsip_stack_handle_t should be visible. */
 typedef struct tsip_stack_s
 {
 	TSK_DECLARE_RUNNABLE;
@@ -134,28 +159,42 @@ typedef struct tsip_stack_s
 	tsip_stack_callback_f callback;
 
 	/* Identity */
-	char* display_name;
-	tsip_uri_t *public_identity;
-	tsip_uri_t *preferred_identity;
-	//struct tsip_uri_s *associated_identity;
-	char *private_identity;
-	char *password;
+	struct{
+		char* display_name;
+		tsip_uri_t *impu;
+		tsip_uri_t *preferred;
+		char *impi;
+		char *password;
+	} identity;
 
 	/* Network */
-	char *local_ip;
-	uint16_t local_port;
-	char *privacy;
+	struct{
+		char *local_ip;
+		tnet_port_t local_port;
+
+		char *proxy_cscf;
+		tnet_port_t proxy_cscf_port;
+		tnet_socket_type_t proxy_cscf_type;
+		
+		tsip_uri_t *realm;
+
+		tsk_bool_t discovery_naptr;
+		tsk_bool_t discovery_dhcp;
+	} network;
+
+	/* Security */
+	struct{
+		tsk_bool_t earlyIMS;
+	} security;
+	
+	
 	operator_id_t operator_id;
 	amf_t amf;
-	char *netinfo;
-	struct tsip_uri_s *realm;
-	char *proxy_cscf;
-	int proxy_cscf_port;
-	tnet_socket_type_t proxy_cscf_type;
-	unsigned use_dns_naptr:1;
-	unsigned use_dhcp:1;
-	char* device_id;
-	char* mobility;
+	
+	
+	
+	
+	
 	tsip_uris_L_t* paths;
 	tsip_uris_L_t* service_routes;
 	tsip_uris_L_t* associated_uris;
@@ -176,22 +215,12 @@ typedef struct tsip_stack_s
 		char* pvk;
 	}tls;
 
-	/* DNS */
+	/* DNS context */
 	tnet_dns_ctx_t *dns_ctx;
 
-	/* DHCP */
+	/* DHCP context */
 
-	/* features */
-	unsigned enable_100rel:1;
-	unsigned enable_gsmais:1;
-	unsigned enable_precond:1;
-	unsigned enable_3gppsms:1;
-	unsigned enable_gsmarcs:1;
-	unsigned enable_earlyIMS:1;
-	unsigned enable_ofdr:1;
-	unsigned enable_aa:1;
-	unsigned enable_dnd:1;
-	unsigned enable_option:1;
+	
 
 	/* QoS */
 
@@ -210,7 +239,7 @@ tsip_stack_t;
 
 
 
-TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback_f callback, ...);
+TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback_f callback, const char* realm_uri, const char* impi_uri, const char* impu_uri, ...);
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);

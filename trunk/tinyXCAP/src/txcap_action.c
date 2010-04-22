@@ -75,8 +75,8 @@ int txcap_action_perform(txcap_stack_handle_t* stack, txcap_action_type_t type, 
 	while((curr = va_arg(ap, txcap_action_param_type_t)) != txcap_apt_null){
 		switch(curr){
 			case txcap_apt_option:
-				{	/*(thhtp_action_option_t)ID_INT, (const char*)VALUE_STR*/
-					thhtp_action_option_t ID_INT = va_arg(ap, thhtp_action_option_t);
+				{	/*(thttp_action_option_t)ID_INT, (const char*)VALUE_STR*/
+					thttp_action_option_t ID_INT = va_arg(ap, thttp_action_option_t);
 					const char* VALUE_STR = va_arg(ap, const char *);
 					tsk_options_add_option(&options, ID_INT, VALUE_STR);
 					break;

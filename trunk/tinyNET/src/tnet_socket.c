@@ -209,7 +209,8 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 
 		/* Performs getaddrinfo */
 		if((status = tnet_getaddrinfo(local_hostname, port, &hints, &result))){
-			TNET_PRINT_LAST_ERROR("getaddrinfo have failed.");
+			TSK_DEBUG_ERROR("tnet_getaddrinfo(family=%d, hostname=%s and port=%s) failed: [%s]", 
+				hints.ai_family, local_hostname, port, tnet_gai_strerror(status));
 			goto bail;
 		}
 		

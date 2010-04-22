@@ -521,9 +521,9 @@ bail:
 **/
 int tnet_getaddrinfo(const char *node, const char *service, const struct addrinfo *hints,  struct addrinfo **res)
 {
-	int ret;
-	if((ret = getaddrinfo(node, service, hints, res))){
-		TSK_DEBUG_ERROR("getaddrinfo failed: [%s]", tnet_gai_strerror(ret));
+	int ret = -1;
+	if(hints && (ret = getaddrinfo(node, service, hints, res))){
+		TSK_DEBUG_ERROR("getaddrinfo(family=%d, node=%s and service=%s) failed: [%s]", hints->ai_family, node, service, tnet_gai_strerror(ret));
 	}
 	return ret;
 }
