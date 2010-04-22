@@ -85,7 +85,7 @@ int tsip_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_Dummy_t *Dummy = header;
 		if(Dummy->value){
-			tsk_buffer_append(output, Dummy->value, strlen(Dummy->value));
+			tsk_buffer_append(output, Dummy->value, tsk_strlen(Dummy->value));
 		}
 		return 0;
 	}

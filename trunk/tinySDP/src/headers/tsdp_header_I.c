@@ -62,7 +62,7 @@ int tsdp_header_I_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	{
 		const tsdp_header_I_t *I = (const tsdp_header_I_t *)header;
 		if(I->value){
-			tsk_buffer_append(output, I->value, strlen(I->value));
+			tsk_buffer_append(output, I->value, tsk_strlen(I->value));
 		}
 		return 0;
 	}

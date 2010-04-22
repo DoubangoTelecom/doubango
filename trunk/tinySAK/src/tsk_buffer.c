@@ -102,7 +102,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 #if defined(_WIN32_WCE)
 	{
 		int n;
-		len = (strlen(format)*2);
+		len = (tsk_strlen(format)*2);
 		buffer = tsk_realloc(buffer, (oldsize+len));
 		for(;;){
 			if( (n = vsnprintf((char*)(buffer + oldsize), len, format, list)) >= 0 && (n<=len) ){
@@ -144,7 +144,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 *
 * @code
 * tsk_buffer_t* buffer = tsk_buffer_create_null();
-* tsk_buffer_append(buffer, "doubango", strlen("doubango"));
+* tsk_buffer_append(buffer, "doubango", tsk_strlen("doubango"));
 * printf(TSK_BUFFER_TO_STRING(buffer));
 * TSK_OBJECT_SAFE_FREE(buffer);
 * @endcode

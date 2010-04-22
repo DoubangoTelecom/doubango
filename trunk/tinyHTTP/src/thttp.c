@@ -193,7 +193,7 @@ int ret = thttp_action_PUT(session, "http://www.doubango.org",
 		THTTP_ACTION_SET_OPTION(THTTP_ACTION_OPTION_TIMEOUT, "2500"),
 		
 		// payload
-		THTTP_ACTION_SET_PAYLOAD("Comment allez-vous?", strlen("Comment allez-vous?")),
+		THTTP_ACTION_SET_PAYLOAD("Comment allez-vous?", tsk_strlen("Comment allez-vous?")),
 
 		// action-level headers
 		THTTP_ACTION_SET_HEADER("Content-Type", "text/plain"),
@@ -381,11 +381,11 @@ bail:
 
 /** Internal function used to set values.
 */
-int __thttp_stack_set(thttp_stack_t *self, va_list values)
+int __thttp_stack_set(thttp_stack_t *self, va_list* app)
 {
 	thttp_stack_param_type_t curr;
 
-	while((curr=va_arg(values, thttp_stack_param_type_t)) != pname_null)
+	while((curr = va_arg(*app, thttp_stack_param_type_t)) != pname_null)
 	{
 		switch(curr)
 		{
@@ -394,12 +394,12 @@ int __thttp_stack_set(thttp_stack_t *self, va_list values)
 			//
 		case pname_local_ip:
 			{ /* STR */
-				tsk_strupdate(&self->local_ip, va_arg(values, const char*));
+				tsk_strupdate(&self->local_ip, va_arg(*app, const char*));
 				break;
 			}
 		case pname_local_port:
 			{	/* INT */
-				self->local_port = va_arg(values, int);
+				self->local_port = va_arg(*app, int);
 				break;
 			}
 		
@@ -408,9 +408,9 @@ int __thttp_stack_set(thttp_stack_t *self, va_list values)
 			//
 		case pname_tls_certs:
 			{	/* A_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR */
-				tsk_strupdate(&self->tls.ca, va_arg(values, const char*));
-				tsk_strupdate(&self->tls.pbk, va_arg(values, const char*));
-				tsk_strupdate(&self->tls.pvk, va_arg(values, const char*));
+				tsk_strupdate(&self->tls.ca, va_arg(*app, const char*));
+				tsk_strupdate(&self->tls.pbk, va_arg(*app, const char*));
+				tsk_strupdate(&self->tls.pvk, va_arg(*app, const char*));
 				break;
 			}
 
@@ -448,21 +448,23 @@ bail:
 */
 thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback_f callback, ...)
 {
-	thttp_stack_t* stack = tsk_object_new(thttp_stack_def_t);
-	va_list params;
+	thttp_stack_t* stack = tsk_null;
+	va_list ap;
 
-	if(!stack){
-		return 0;
+	if(!(stack = tsk_object_new(thttp_stack_def_t))){ /* should never happen */
+		TSK_DEBUG_ERROR("Failed to create new HTTP/HTTPS stack.");
+		return tsk_null;
 	}
 	stack->local_ip = TNET_SOCKET_HOST_ANY;
 	stack->local_port = TNET_SOCKET_PORT_ANY;
 
 	stack->callback = callback;
-	va_start(params, callback);
-	if(__thttp_stack_set(stack, params)){
-		// Delete the stack?
+	va_start(ap, callback);
+	if(__thttp_stack_set(stack, &ap)){
+		TSK_DEBUG_ERROR("Failed to set user's parameters.");
+		TSK_OBJECT_SAFE_FREE(stack);
 	}
-	va_end(params);
+	va_end(ap);
 
 	return stack;
 }
@@ -515,10 +517,10 @@ int thttp_stack_set(thttp_stack_handle_t *self, ...)
 		int ret;
 		thttp_stack_t *stack = self;
 		
-		va_list params;
-		va_start(params, self);
-		ret = __thttp_stack_set(stack, params);
-		va_end(params);
+		va_list ap;
+		va_start(ap, self);
+		ret = __thttp_stack_set(stack, &ap);
+		va_end(ap);
 		return ret;
 	}
 

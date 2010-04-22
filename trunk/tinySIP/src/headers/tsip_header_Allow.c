@@ -64,7 +64,7 @@ int tsip_header_Allow_tostring(const void* header, tsk_buffer_t* output)
 		tsk_list_foreach(item, Allow->methods){
 			str = item->data;
 			if(item == Allow->methods->head){
-				tsk_buffer_append(output, str->value, strlen(str->value));
+				tsk_buffer_append(output, str->value, tsk_strlen(str->value));
 			}
 			else{
 				tsk_buffer_append_2(output, ",%s", str->value);
@@ -310,7 +310,7 @@ static tsk_object_t* tsip_header_Allow_ctor(tsk_object_t *self, va_list * app)
 		/*const char* methods = va_arg(*app, const char *);
 		if(methods && !tsk_strempty(methods))
 		{
-			Allow->methods = tsip_header_Allow_parse(methods, strlen(methods));
+			Allow->methods = tsip_header_Allow_parse(methods, tsk_strlen(methods));
 		}*/
 		TSIP_HEADER(Allow)->type = tsip_htype_Allow;
 		TSIP_HEADER(Allow)->tostring = tsip_header_Allow_tostring;

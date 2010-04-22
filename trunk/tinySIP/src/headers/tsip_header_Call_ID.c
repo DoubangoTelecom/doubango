@@ -60,7 +60,7 @@ int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_Call_ID_t *Call_ID = header;
 		if(Call_ID->value){
-			return tsk_buffer_append(output, Call_ID->value, strlen(Call_ID->value));
+			return tsk_buffer_append(output, Call_ID->value, tsk_strlen(Call_ID->value));
 		}
 	}
 	return -1;

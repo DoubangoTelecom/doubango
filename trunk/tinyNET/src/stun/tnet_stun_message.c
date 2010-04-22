@@ -148,9 +148,9 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 
 	/* AUTHENTICATION */
 	if(self->realm && self->nonce){
-		SERIALIZE_N_ADD_ATTRIBUTE(username, self->username, strlen(self->username));
-		SERIALIZE_N_ADD_ATTRIBUTE(realm, self->realm, strlen(self->realm));
-		SERIALIZE_N_ADD_ATTRIBUTE(nonce, self->nonce, strlen(self->nonce));
+		SERIALIZE_N_ADD_ATTRIBUTE(username, self->username, tsk_strlen(self->username));
+		SERIALIZE_N_ADD_ATTRIBUTE(realm, self->realm, tsk_strlen(self->realm));
+		SERIALIZE_N_ADD_ATTRIBUTE(nonce, self->nonce, tsk_strlen(self->nonce));
 		
 		compute_integrity = 1;
 	}
@@ -184,7 +184,7 @@ tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *self)
 		tsk_md5digest_t md5;		
 
 		tsk_sprintf(&keystr, "%s:%s:%s", self->username, self->realm, self->password);
-		TSK_MD5_DIGEST_CALC(keystr, strlen(keystr), md5);
+		TSK_MD5_DIGEST_CALC(keystr, tsk_strlen(keystr), md5);
 		hmac_sha1digest_compute(output->data, output->size, (const char*)md5, TSK_MD5_DIGEST_SIZE, hmac);
 		
 		SERIALIZE_N_ADD_ATTRIBUTE(integrity, hmac, TSK_SHA1_DIGEST_SIZE);

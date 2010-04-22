@@ -495,7 +495,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 		const tnet_address_t* address = item->data;
 		if(address && address->ip){
 			memset(*source, '\0', sizeof(*source));
-			memcpy(*source, address->ip, strlen(address->ip) > sizeof(*source) ? sizeof(*source) : strlen(address->ip));
+			memcpy(*source, address->ip, tsk_strlen(address->ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(address->ip));
 			ret = 0;
 			goto bail; // First is good for us.
 		}
@@ -657,7 +657,7 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 			}
 
 #if TNET_UNDER_WINDOWS
-			if((index = tsk_strindexOf(*ip, strlen(*ip), "%")) > 0){
+			if((index = tsk_strindexOf(*ip, tsk_strlen(*ip), "%")) > 0){
 				*(*ip + index) = '\0';
 			}
 #endif

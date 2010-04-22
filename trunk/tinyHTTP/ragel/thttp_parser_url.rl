@@ -95,7 +95,7 @@
 * @retval A well-defined object representing the url string.
 *
 * @code
-* thttp_url_t* url = thttp_url_parse("http://www.google.com", strlen("http://www.google.com"));
+* thttp_url_t* url = thttp_url_parse("http://www.google.com", tsk_strlen("http://www.google.com"));
 * @endcode
 *
 * @sa @ref thttp_url_tostring<br>@ref thttp_url_serialize

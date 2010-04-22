@@ -63,7 +63,7 @@ int tsip_header_User_Agent_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_User_Agent_t *User_Agent = header;
 		if(User_Agent->value){
-			return tsk_buffer_append(output, User_Agent->value, strlen(User_Agent->value));
+			return tsk_buffer_append(output, User_Agent->value, tsk_strlen(User_Agent->value));
 		}
 		return 0;
 	}

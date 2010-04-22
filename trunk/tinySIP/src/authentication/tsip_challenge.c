@@ -72,7 +72,7 @@ int tsip_challenge_reset_cnonce(tsip_challenge_t *self)
 			tsk_istr_t istr;
 			
 			tsk_strrandom(&istr);
-			tsk_md5compute(istr, strlen(istr), &self->cnonce);
+			tsk_md5compute(istr, tsk_strlen(istr), &self->cnonce);
 #endif
 			self->nc = 1;
 		}
@@ -117,7 +117,7 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 
 	/* RFC 3310 subclause 3.2: nonce = base64(RAND || AUTN || SERV_DATA) 
 	*/
-	n = tsk_base64_decode((const uint8_t*)self->nonce, strlen(self->nonce), &nonce);	
+	n = tsk_base64_decode((const uint8_t*)self->nonce, tsk_strlen(self->nonce), &nonce);	
 	if(n > TSK_MD5_STRING_SIZE)
 	{
 		TSK_DEBUG_ERROR("The IMS CORE returned an invalid nonce.");
@@ -138,7 +138,7 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 
 	/* Secret key 
 	*/
-	memcpy(K, password, (strlen(password) > AKA_K_SIZE ? AKA_K_SIZE : strlen(password)));
+	memcpy(K, password, (tsk_strlen(password) > AKA_K_SIZE ? AKA_K_SIZE : tsk_strlen(password)));
 
 	/* 3GPP TS 35.205: AUTN = SQN[§AK] || AMF || MAC-A 
 	*/
@@ -299,8 +299,8 @@ int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char
 		tsk_strupdate(&self->opaque, opaque);
 		tsk_strupdate(&self->algorithm, algorithm);
 		if(qop){
-			self->qop = tsk_strcontains(qop, strlen(qop), "auth-int") ? "auth-int" : 
-					(tsk_strcontains(qop, strlen(qop), "auth") ? "auth" : 0);
+			self->qop = tsk_strcontains(qop, tsk_strlen(qop), "auth-int") ? "auth-int" : 
+					(tsk_strcontains(qop, tsk_strlen(qop), "auth") ? "auth" : tsk_null);
 		}
 
 		if(noncechanged && self->qop){
@@ -452,8 +452,8 @@ static tsk_object_t* tsip_challenge_ctor(tsk_object_t *self, va_list * app)
 		challenge->algorithm = tsk_strdup(va_arg(*app, const char*));
 		qop = va_arg(*app, const char*);
 		if(qop){
-			challenge->qop = tsk_strcontains(qop, strlen(qop), "auth-int") ? "auth-int" : 
-					(tsk_strcontains(qop, strlen(qop), "auth") ? "auth" : 0);
+			challenge->qop = tsk_strcontains(qop, tsk_strlen(qop), "auth-int") ? "auth-int" : 
+					(tsk_strcontains(qop, tsk_strlen(qop), "auth") ? "auth" : tsk_null);
 		}
 		
 		if(challenge->qop){

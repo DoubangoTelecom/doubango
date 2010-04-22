@@ -199,11 +199,11 @@ int tsip_uri_strcmp(const char* s1, const char* s2, tsk_bool_t case_sensitive)
 		char* s2_decoded = (char*)s2;
 		int ret;
 
-		if(tsk_strcontains(s1, strlen(s1), "%")){
+		if(tsk_strcontains(s1, tsk_strlen(s1), "%")){
 			s1_is_encoded = 1;
 			s1_decoded = tsk_url_decode(s1);
 		}
-		if(tsk_strcontains(s2, strlen(s2), "%")){
+		if(tsk_strcontains(s2, tsk_strlen(s2), "%")){
 			s2_is_encoded = 1;
 			s2_decoded = tsk_url_decode(s2);
 		}

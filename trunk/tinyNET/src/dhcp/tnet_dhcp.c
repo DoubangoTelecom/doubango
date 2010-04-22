@@ -280,7 +280,7 @@ static tsk_object_t* tnet_dhcp_ctx_ctor(tsk_object_t * self, va_list * app)
 
 		ctx->vendor_id = tsk_strdup(TNET_DHCP_VENDOR_ID_DEFAULT);
 		if(!tnet_gethostname(&host)){
-			ctx->hostname = tsk_strndup(host, strlen(host));
+			ctx->hostname = tsk_strndup(host, tsk_strlen(host));
 		}
 		ctx->timeout = TNET_DHCP_TIMEOUT_DEFAULT;
 		ctx->max_msg_size = TNET_DHCP_MAX_MSG_SIZE;

@@ -767,7 +767,7 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 							}
 						default:
 							{
-								tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, ID_IN, VALUE_STR);
+								tsk_options_add_option(&((thttp_session_t*)self->http_session)->options, ID_ENUM, VALUE_STR);
 								break;
 							}
 					}

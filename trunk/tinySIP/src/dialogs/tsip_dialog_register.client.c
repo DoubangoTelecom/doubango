@@ -316,10 +316,6 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	/* Alert the user. */
-	TSIP_DIALOG_REGISTER_SIGNAL(self, tsip_ao_register, 
-		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
-
 	/*	- Set P-associated-uriS
 	*	- Update service-routes
 	*	- Update Pats
@@ -369,8 +365,7 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	}
 
 	/* 3GPP TS 24.229 - 5.1.1.2 Initial registration */
-	if((TSIP_DIALOG(self)->state ==tsip_initial))
-	{
+	if((TSIP_DIALOG(self)->state ==tsip_initial)){
 		tsk_bool_t barred = tsk_true;
 		const tsk_list_item_t *item;
 		const tsip_uri_t *uri;
@@ -415,6 +410,10 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	/* Request timeout for dialog refresh (re-registration). */
 	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), response);
 	TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(refresh);
+
+	/* Alert the user. */
+	TSIP_DIALOG_REGISTER_SIGNAL(self, tsip_ao_register, 
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 	
 	return ret;
 }

@@ -138,8 +138,8 @@ static const int tdns_machine_regexp_en_main = 1;
 		goto bail;
 	}
 	
-	e164len = strlen(e164num);
-	pe = p + strlen(regexp);
+	e164len = tsk_strlen(e164num);
+	pe = p + tsk_strlen(regexp);
 	eof = pe;
 	
 	
@@ -248,7 +248,7 @@ _match:
 /* #line 57 "./ragel/tnet_dns_regexp.rl" */
 	{
 		if(prefix){
-			int prefixlen = strlen(prefix);
+			int prefixlen = tsk_strlen(prefix);
 			tsk_strncat(&ret, e164num + prefixlen, (e164len - prefixlen));
 		}
 	}
@@ -445,7 +445,7 @@ bail:
 //		goto bail;
 //	}
 //	
-//	pe = p + strlen(regexp);
+//	pe = p + tsk_strlen(regexp);
 //	eof = pe;
 //	
 //	%%write init;

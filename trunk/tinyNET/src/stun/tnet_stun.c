@@ -82,7 +82,7 @@ tnet_stun_message_t *tnet_stun_create_request(const tnet_stun_binding_t* binding
 
 		/* Add software attribute */
 		if(binding->software){
-			tnet_stun_attribute_t* attribute = (tnet_stun_attribute_t*)tnet_stun_attribute_software_create(binding->software, strlen(binding->software));
+			tnet_stun_attribute_t* attribute = (tnet_stun_attribute_t*)tnet_stun_attribute_software_create(binding->software, tsk_strlen(binding->software));
 			tnet_stun_message_add_attribute(message, &attribute);
 		}
 	}

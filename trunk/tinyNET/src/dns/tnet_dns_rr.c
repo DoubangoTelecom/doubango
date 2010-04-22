@@ -47,7 +47,7 @@
 #include "tsk_debug.h"
 #include "tsk_string.h"
 
-#include <string.h> /* strtok, strlen ... */
+#include <string.h> /* strtok, tsk_strlen ... */
 
 
 /** Creates a new DNS RR.
@@ -221,9 +221,9 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 		char* label = strtok(_qname, ".");
 
 		while(label){
-			uint8_t length = strlen(label);
+			uint8_t length = tsk_strlen(label);
 			tsk_buffer_append(output, &length, 1);
-			tsk_buffer_append(output, label, strlen(label));
+			tsk_buffer_append(output, label, tsk_strlen(label));
 
 			label = strtok (0, ".");
 		}

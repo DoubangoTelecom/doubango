@@ -61,7 +61,7 @@ size_t thttp_auth_basic_response(const char* userid, const char* password, char*
 	
 	char *res = 0;
 	tsk_sprintf(&res, "%s:%s", userid, password);
-	ret = tsk_base64_encode((const uint8_t*)res, strlen(res), response);
+	ret = tsk_base64_encode((const uint8_t*)res, tsk_strlen(res), response);
 	TSK_FREE(res);
 
 	return ret;
@@ -88,7 +88,7 @@ int thttp_auth_digest_HA1(const char* username, const char* realm, const char* p
 	*/
 	char *a1 = 0;
 	tsk_sprintf(&a1, "%s:%s:%s", username, realm, password);	
-	ret = tsk_md5compute(a1, strlen(a1), ha1);
+	ret = tsk_md5compute(a1, tsk_strlen(a1), ha1);
 	TSK_FREE(a1);
 	
 	return ret;
@@ -120,7 +120,7 @@ int thttp_auth_digest_HA1sess(const char* username, const char* realm, const cha
 
 	char *a1sess = 0;
 	tsk_sprintf(&a1sess, "%s:%s:%s:%s:%s", username, realm, password, nonce, cnonce);	
-	ret = tsk_md5compute(a1sess, strlen(a1sess), ha1sess);
+	ret = tsk_md5compute(a1sess, tsk_strlen(a1sess), ha1sess);
 	TSK_FREE(a1sess);
 
 	return ret;
@@ -170,7 +170,7 @@ int thttp_auth_digest_HA2(const char* method, const char* url, const tsk_buffer_
 		}
 	}
 
-	ret = tsk_md5compute(a2, strlen(a2), ha2);
+	ret = tsk_md5compute(a2, tsk_strlen(a2), ha2);
 
 bail:
 	 TSK_FREE(a2);
@@ -227,7 +227,7 @@ int thttp_auth_digest_response(const tsk_md5string_t *ha1, const char* nonce, co
 		tsk_sprintf(&res, "%s:%s:%s", *ha1, nonce, *ha2);
 	}
 
-	ret = tsk_md5compute(res, strlen(res), response);
+	ret = tsk_md5compute(res, tsk_strlen(res), response);
 	TSK_FREE(res);
 
 	 return ret;

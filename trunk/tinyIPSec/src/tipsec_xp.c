@@ -395,7 +395,7 @@ int tipsec_set_SPDs(tipsec_context_xp_t* ctx_xp)
 		"0" /* InterfaceIndex */
 		);
 
-	fwrite(str, strlen(str), sizeof(uint8_t), file);
+	fwrite(str, tsk_strlen(str), sizeof(uint8_t), file);
 	ret = 0;
 
 bail:
@@ -489,7 +489,7 @@ int tipsec_set_SAs(tipsec_context_xp_t* ctx_xp)
 		"0" /* SecPolicyIndex */
 		);
 		
-	fwrite(str, strlen(str), sizeof(uint8_t), file);
+	fwrite(str, tsk_strlen(str), sizeof(uint8_t), file);
 	ret = 0;
 
 bail:

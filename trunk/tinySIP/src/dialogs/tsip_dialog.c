@@ -187,7 +187,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 				char* contact = 0;
 				tsip_header_Contacts_L_t *hdr_contacts;
 				tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/0?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
-				hdr_contacts = tsip_header_Contact_parse(contact, strlen(contact));
+				hdr_contacts = tsip_header_Contact_parse(contact, tsk_strlen(contact));
 				if(!TSK_LIST_IS_EMPTY(hdr_contacts)){
 					request->Contact = tsk_object_ref(hdr_contacts->head->data);
 				}
@@ -301,8 +301,15 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		}
 	}
 
-	/* Add headers associated to the dialog's session. */
+	/* Add headers associated to the dialog's session */
 	tsk_list_foreach(item, self->ss->headers){
+		if(!TSK_PARAM(item->data)->tag){
+			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
+		}
+	}
+
+	/* Add headers associated to the dialog's stack */
+	tsk_list_foreach(item, self->ss->stack->headers){
 		if(!TSK_PARAM(item->data)->tag){
 			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
 		}
@@ -816,8 +823,9 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 		if(!self->challenges){
 			self->challenges = tsk_list_create();
 		}
+
 		/* Sets default expires value. */
-		self->expires = TSIP_DIALOG_EXPIRES_DEFAULT;
+		self->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
 		
 		if(call_id){
 			tsk_strupdate(&self->callid, call_id);
@@ -827,7 +835,8 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 			tsip_header_Call_ID_random(&uuid);
 			tsk_strupdate(&self->callid, uuid);
 		}
-
+		
+		/* ref SIP session */
 		self->ss = tsk_object_ref(ss);
 
 		/* Local tag */{
@@ -842,40 +851,27 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 		/* FSM */
 		self->fsm = tsk_fsm_create(curr, term);
 
-		/*== SIP Session */
+		/*=== SIP Session ===*/
 		if(self->ss != TSIP_SSESSION_INVALID_HANDLE){
-			const tsk_param_t* param;
-			tsip_uri_t* uri;
 
 			/* Expires */
-			if((param = tsk_params_get_param_by_name(self->ss->headers, "Expires"))){
-				self->expires = TSK_TIME_S_2_MS(atoi(param->value));
-				((tsk_param_t*)param)->tag = tsk_true;
-			}
-			
+			self->expires = ss->expires;
+
 			/* From */
-			if((param = tsk_params_get_param_by_name(self->ss->headers, "From")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
-				self->uri_local = uri;
-				((tsk_param_t*)param)->tag = tsk_true;
-			}
-			else{
-				self->uri_local = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->identity.impu);
-			}
+			self->uri_local = tsk_object_ref(ss->from);
 			
 			/* To */
-			if((param = tsk_params_get_param_by_name(self->ss->headers, "To")) && (uri = tsip_uri_parse(param->value, strlen(param->value)))){
-				self->uri_remote_target = tsk_object_ref(uri); /* the to uri will be used as request uri. */
-				self->uri_remote = tsk_object_ref(uri);
-				tsk_object_unref(uri);
-				((tsk_param_t*)param)->tag = tsk_true;
+			if(ss->to){
+				self->uri_remote = tsk_object_ref(ss->to);
+				self->uri_remote_target = tsk_object_ref(ss->to); /* Request-URI. */
 			}
 			else{
-				self->uri_remote = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->identity.impu);
+				self->uri_remote = tsk_object_ref(ss->from);
 				self->uri_remote_target = tsk_object_ref((void*)TSIP_DIALOG_GET_STACK(self)->network.realm);
 			}
 		}
 		else{
-			TSK_DEBUG_ERROR("Invalid SSESSION id.");
+			TSK_DEBUG_ERROR("Invalid SIP Session id.");
 		}
 
 		self->initialized = tsk_true;
@@ -949,7 +945,7 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 			TSK_DEBUG_WARN("Dialog not initialized.");
 			return -2;
 		}
-
+		
 		TSK_OBJECT_SAFE_FREE(self->ss);
 		TSK_OBJECT_SAFE_FREE(self->curr_action);
 

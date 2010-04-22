@@ -59,7 +59,7 @@ int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_Via_t *Via = header;
 		tsk_istr_t port, rport, ttl;
-		int ipv6 = (Via->host && tsk_strcontains(Via->host, strlen(Via->host), ":"));
+		int ipv6 = (Via->host && tsk_strcontains(Via->host, tsk_strlen(Via->host), ":"));
 
 		if(Via->port){
 			tsk_itoa(Via->port, &port);

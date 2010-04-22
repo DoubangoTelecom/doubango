@@ -87,7 +87,7 @@ int tsip_header_Security_Client_tostring(const void* header, tsk_buffer_t* outpu
 				);
 		}
 		else if(Security_Client->mech){
-			ret = tsk_buffer_append(output, Security_Client->mech, strlen(Security_Client->mech));
+			ret = tsk_buffer_append(output, Security_Client->mech, tsk_strlen(Security_Client->mech));
 		}
 
 		if(Security_Client->q >= 0){

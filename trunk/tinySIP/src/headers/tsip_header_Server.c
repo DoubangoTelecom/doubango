@@ -63,7 +63,7 @@ int tsip_header_Server_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_Server_t *Server = header;
 		if(Server->value){
-			return tsk_buffer_append(output, Server->value, strlen(Server->value));
+			return tsk_buffer_append(output, Server->value, tsk_strlen(Server->value));
 		}
 		return 0;
 	}

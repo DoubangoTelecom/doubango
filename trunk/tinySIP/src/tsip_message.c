@@ -460,7 +460,7 @@ tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_u
 			TSIP_HEADER_CALL_ID_VA_ARGS(call_id),
 			TSIP_HEADER_CSEQ_VA_ARGS(cseq, method),
 			TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT),
-			TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT),
+			/* TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT), */
 			TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0),
 
 			tsk_null);
@@ -476,7 +476,7 @@ tsip_response_t *tsip_response_new(short status_code, const char* reason_phrase,
 	if(request){
 		if((response = tsip_response_create(request, status_code, reason_phrase))){
 			tsip_message_add_headers(response,
-				TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT), /* To be compliant with OMA SIMPLE IM v1.0*/
+				/* TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT), */ /* To be compliant with OMA SIMPLE IM v1.0*/
 				TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0),
 
 				tsk_null);

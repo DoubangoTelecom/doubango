@@ -159,7 +159,7 @@ typedef struct tnet_dhcp_message_s
 		For more information see RFC 1340.
 	*/
     tnet_hardware_type_t htype;
-	/**< Hardware address length (e.g.  '6' for 10mb ethernet). strlen(chaddr).
+	/**< Hardware address length (e.g.  '6' for 10mb ethernet). tsk_strlen(chaddr).
 	*/
     uint8_t hlen;
 	/**< Client sets to zero, optionally used by relay agents when booting via a relay agent.

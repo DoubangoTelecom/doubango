@@ -235,8 +235,8 @@ void test_stack()
 {
 //#define DOMAIN "ericsson.com"
 //#define DOMAIN "micromethod.com"
-#define DOMAIN "ims.inexbee.com"
-//#define DOMAIN "sip2sip.info"
+//#define DOMAIN "ims.inexbee.com"
+#define DOMAIN "sip2sip.info"
 
 	const void* usr_context = tsk_null;
 	int ret;
@@ -281,7 +281,7 @@ void test_stack()
 	
 	
 	
-
+/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, "sip:"DOMAIN, "mamadou@"DOMAIN, "sip:mamadou@"DOMAIN,
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
@@ -289,6 +289,17 @@ void test_stack()
 		TSIP_STACK_SET_PROXY_CSCF("192.168.16.225", 4060, "udp", "ipv4"),
 		
 		TSIP_STACK_SET_EARLY_IMS(tsk_true),
+*/
+
+
+
+	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, "sip:"DOMAIN, "2233392625", "sip:2233392625@"DOMAIN,
+		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
+		TSIP_STACK_SET_PASSWORD("d3sb7j4fb8"),
+		
+		TSIP_STACK_SET_EARLY_IMS(tsk_true),
+
+		TSIP_STACK_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
 
 /*
 		tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
@@ -311,18 +322,23 @@ void test_stack()
 
 		TSIP_STACK_SET_NULL());
 
-	tsip_ssession_handle_t *op = TSIP_SSESSION_CREATE(stack,
-		TSIP_SSESSION_SET_CONTEXT(usr_context),
-		TSIP_SSESSION_SET_HEADER("expires", "30"),
-		TSIP_SSESSION_SET_HEADER("Persistence", "session"),
-		
-		TSIP_SSESSION_SET_CAPS("language", "\"en,fr\""),
-		TSIP_SSESSION_SET_CAPS("+audio", ""),
-		TSIP_SSESSION_SET_CAPS("+g.oma.sip-im", ""),
+	//tsip_ssession_handle_t *op = tsip_ssession_create(stack,
+	//	TSIP_SSESSION_SET_CONTEXT(usr_context),
+	//	TSIP_SSESSION_SET_HEADER("expires", "30"),
+	//	TSIP_SSESSION_SET_HEADER("Persistence", "session"),
+	//	
+	//	TSIP_SSESSION_SET_CAPS("language", "\"en,fr\""),
+	//	TSIP_SSESSION_SET_CAPS("+audio", ""),
+	//	TSIP_SSESSION_SET_CAPS("+g.oma.sip-im", ""),
+	//	
+	//	tsk_null);
+
+	tsip_ssession_handle_t *op = tsip_ssession_create(stack,
+		TRIP_SSESSION_SET_EXPIRES(30),
 		
 		tsk_null);
 
-	tsip_ssession_id_t opid = tsip_ssession_get_id(op);
+	//tsip_ssession_id_t opid = tsip_ssession_get_id(op);
 
 	if((ret = tsip_stack_start(stack))){
 		goto bail;
@@ -331,7 +347,7 @@ void test_stack()
 	tsip_register(op, 
 		TSIP_ACTION_SET_HEADER("Persistence", "action"),
 	
-		tsk_null);
+		TSIP_SSESSION_SET_NULL());
 
 	getchar();
 	tsk_thread_sleep(2000);
@@ -372,7 +388,7 @@ void test_stack()
 
 	/* SUBSCRIBE */
 	{
-		tsip_ssession_handle_t *ss2 = TSIP_SSESSION_CREATE(stack,
+		tsip_ssession_handle_t *ss2 = tsip_ssession_create(stack,
 			TSIP_SSESSION_SET_CONTEXT(usr_context),
 			TSIP_SSESSION_SET_HEADER("expires", "35"),
 			TSIP_SSESSION_SET_HEADER("Event", "reg"),
@@ -404,7 +420,7 @@ void test_stack()
 	//	tsk_null);
 	//	tsip_message(ss3,
 	//		TSIP_ACTION_SET_HEADER("Content-Type", "text/plain"),
-	//		TSIP_ACTION_SET_PAYLOAD("Hello world!", strlen("Hello world!")),
+	//		TSIP_ACTION_SET_PAYLOAD("Hello world!", tsk_strlen("Hello world!")),
 
 	//		tsk_null
 	//		);
@@ -424,7 +440,7 @@ void test_stack()
 		tsip_publish(ss4,
 			TSIP_ACTION_SET_HEADER("Description", "publish"),
 			TSIP_ACTION_SET_HEADER("Content-Type", "application/pidf+xml"),
-			TSIP_ACTION_SET_PAYLOAD(TEST_STACK_PIDF, strlen(TEST_STACK_PIDF)),
+			TSIP_ACTION_SET_PAYLOAD(TEST_STACK_PIDF, tsk_strlen(TEST_STACK_PIDF)),
 			
 			tsk_null);
 

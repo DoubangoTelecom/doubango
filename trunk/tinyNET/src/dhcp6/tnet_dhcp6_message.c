@@ -31,6 +31,7 @@
 
 #include "../tnet_endianness.h"
 
+#include "tsk_string.h"
 #include "tsk_debug.h"
 
 #include <string.h>
@@ -69,11 +70,11 @@ tsk_buffer_t* tnet_dhcp6_message_serialize(const tnet_dhcp6_ctx_t *ctx, const tn
 	{
 		_2bytes = tnet_htons(dhcp6_code_vendor_class);
 		tsk_buffer_append(output, &(_2bytes), 2);
-		_2bytes = tnet_htons(4 + strlen(ctx->vendor_class_data));
+		_2bytes = tnet_htons(4 + tsk_strlen(ctx->vendor_class_data));
 		tsk_buffer_append(output, &(_2bytes), 2);
 		_4bytes = tnet_ntohl(ctx->pen);
 		tsk_buffer_append(output, &(_4bytes), 4);
-		tsk_buffer_append(output, ctx->vendor_class_data, strlen(ctx->vendor_class_data));
+		tsk_buffer_append(output, ctx->vendor_class_data, tsk_strlen(ctx->vendor_class_data));
 	}
 
 	/*== DHCP Options

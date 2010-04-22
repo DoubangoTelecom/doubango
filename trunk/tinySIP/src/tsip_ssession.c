@@ -32,34 +32,59 @@
 #include "tinySIP/tsip_action.h"
 #include "tsip.h"
 
+#include "tinySIP/parsers/tsip_parser_uri.h"
+
 #include "tinySIP/dialogs/tsip_dialog_layer.h"
 #include "tinySIP/tsip_message.h"
 
 #include "tsk_debug.h"
 
+
 tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const struct tsip_message_s* message)
 {
 	tsip_ssession_t* ss = tsk_null;
 
-	if(message){
-		char* from = tsk_null, *to = tsk_null;
+	//if(message){
+	//	char* from = tsk_null, *to = tsk_null;
 
-		if(message->From && message->From->uri){ /* MUST be not null */
-			from = tsip_uri_tostring(message->From->uri, tsk_false, tsk_false);
-		}
-		if(message->To && message->To->uri){ /* MUST be not null */
-			to = tsip_uri_tostring(message->To->uri, tsk_false, tsk_false);
-		}
+	//	if(message->From && message->From->uri){ /* MUST be not null */
+	//		from = tsip_uri_tostring(message->From->uri, tsk_false, tsk_false);
+	//	}
+	//	if(message->To && message->To->uri){ /* MUST be not null */
+	//		to = tsip_uri_tostring(message->To->uri, tsk_false, tsk_false);
+	//	}
 
-		ss = TSIP_SSESSION_CREATE(stack,
-			TSIP_SSESSION_SET_PARAM("to", to),
-			TSIP_SSESSION_SET_PARAM("from", from),
-			TSIP_SSESSION_SET_NULL());
+	//	ss = TSIP_SSESSION_CREATE(stack,
+	//		TSIP_SSESSION_SET_PARAM("to", to),
+	//		TSIP_SSESSION_SET_PARAM("from", from),
+	//		TSIP_SSESSION_SET_NULL());
 
-		TSK_FREE(from);
-		TSK_FREE(to);
-	}
+	//	TSK_FREE(from);
+	//	TSK_FREE(to);
+	//}
 	return ss;
+}
+
+int __tsip_ssession_set_option(tsip_ssession_t *self, tsip_ssession_option_t option_id, const char* option_value)
+{
+	switch(option_id){
+
+		case TSIP_SSESSION_OPTION_EXPIRES:
+			{ /* Expires value */
+				self->expires = (atoi(option_value) * 1000) /* milliseconds */;
+				break;
+			}
+
+		case TSIP_SSESSION_OPTION_NO_CONTACT:
+			{ /* No SIP 'Contact' in all requests */
+				self->no_contact = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
+				break;
+			}
+
+
+
+	}
+	return 0;
 }
 
 int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
@@ -70,7 +95,7 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 		return -1;
 	}
 
-	while((curr = va_arg(values, tsip_ssession_param_type_t)) != sstype_null){
+	while((curr = va_arg(*app, tsip_ssession_param_type_t)) != sstype_null){
 		switch(curr){
 			case sstype_header:
 			case sstype_caps:
@@ -78,8 +103,39 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					const char* name = va_arg(*app, const char *);
 					const char* value = va_arg(*app, const char *);
 					
-					else if(curr == sstype_header){
-						tsk_params_add_param(&self->headers, name, value);
+					if(curr == sstype_header){
+						/* From */
+						if(value && tsk_striequals(name, "From")){
+							tsip_uri_t* uri = tsip_uri_parse(value, tsk_strlen(value));
+							if(uri){
+								TSK_OBJECT_SAFE_FREE(self->from);
+								self->from = uri;
+							}
+							else{
+								TSK_DEBUG_ERROR("The value of the 'From' header is invalid.");
+								return -1;
+							}
+						}
+						/* To */
+						else if(value && tsk_striequals(name, "To")){
+							tsip_uri_t* uri = tsip_uri_parse(value, tsk_strlen(value));
+							if(uri){
+								TSK_OBJECT_SAFE_FREE(self->to);
+								self->to = uri;
+							}
+							else{
+								TSK_DEBUG_ERROR("The value of the 'To' header is invalid.");
+								return -1;
+							}
+						}
+						/* Expires */
+						else if(value && tsk_striequals(name, "Expires")){
+							/* should never happen ==> ...but who know? */
+						}
+						/* Any other */
+						else{
+							tsk_params_add_param(&self->headers, name, value);
+						}
 					}else if(curr == sstype_caps){
 						tsk_params_add_param(&self->caps, name, value);
 					}
@@ -93,7 +149,10 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 				}
 
 			case sstype_option:
-				{
+				{	/* (tsip_ssession_option_t)ID_ENUM, (const char*)VALUE_STR */
+					tsip_ssession_option_t ID_ENUM = va_arg(*app, tsip_ssession_option_t);
+					const char* VALUE_STR = va_arg(*app, const char*);
+					__tsip_ssession_set_option(self, ID_ENUM, VALUE_STR); /* even if this function fail, va_list will remain valid */
 					break;
 				}
 
@@ -111,32 +170,57 @@ bail:
 }
 
 
-if(__tsip_ssession_set(self, app)){
-			ss->id = TSIP_SSESSION_INVALID_ID;
-		}
-		else{
-			ss->id = ++unique_id;
-		}
-		// default: you are the owner
-		ss->owner = tsk_true;
-		// default expires value
-		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
+tsip_ssession_handle_t* tsip_ssession_create(tsip_stack_handle_t *stack, ...)
+{
+	tsip_ssession_t* ss = tsk_null;
+	va_list ap;
+	tsip_stack_t* _stack = stack;
+
+	if(!_stack){
+		TSK_DEBUG_ERROR("Invalid Parameter.");
+		goto bail;
+	}
+
+	if(!(ss = tsk_object_new(tsip_ssession_def_t, stack))){
+		TSK_DEBUG_ERROR("Failed to create new SIP Session.");
+		return tsk_null;
+	}
+
+	va_start(ap, stack);
+	if(__tsip_ssession_set(ss, &ap)){
+		TSK_DEBUG_ERROR("Failed to set user's parameters.");
+		TSK_OBJECT_SAFE_FREE(ss);
+		va_end(ap);
+		goto bail;
+	}
+	va_end(ap);
+
+	/* from */
+	if(!ss->from && _stack->identity.impu){
+		ss->from = tsip_uri_clone(_stack->identity.impu, tsk_false, tsk_false);
+	}
+	/* to */
+	/* To value will be set by the dialog (whether to use as Request-URI). */
+
+bail:
+	return ss;
+}
 
 int tsip_ssession_set(tsip_ssession_handle_t *self, ...)
 {
 	if(self){
 		int ret;
-		va_list params;
+		va_list ap;
 
-		tsip_ssession_t *session = self;
+		tsip_ssession_t *ss = self;
 
-		if(session->id == TSIP_SSESSION_INVALID_ID){
+		if(ss->id == TSIP_SSESSION_INVALID_ID){
 			return -2;
 		}
 		
-		va_start(params, self);
-		ret = __tsip_ssession_set(session, params);
-		va_end(params);
+		va_start(ap, self);
+		ret = __tsip_ssession_set(ss, &ap);
+		va_end(ap);
 		return ret;
 	}
 
@@ -249,12 +333,16 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 	static tsip_ssession_id_t unique_id = 0;
 	if(ss){
 		ss->stack = va_arg(*app, const tsip_stack_t*);
-		ss->params = tsk_list_create();
+		ss->options = tsk_list_create();
 		ss->caps = tsk_list_create();
 		ss->headers = tsk_list_create();
 
 		/* unique identifier */
 		ss->id = ++unique_id;
+		// default: you are the owner
+		ss->owner = tsk_true;
+		// default expires value
+		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
 	}
 
 	return self;

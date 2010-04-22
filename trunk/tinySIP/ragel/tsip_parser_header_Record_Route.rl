@@ -83,7 +83,7 @@ int tsip_header_Record_Route_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_Record_Route_t *Record_Route = header;
 		if(Record_Route->value){
-			return tsk_buffer_append(output, Record_Route->value, strlen(Record_Route->value));
+			return tsk_buffer_append(output, Record_Route->value, tsk_strlen(Record_Route->value));
 		}
 	}
 	return -1;

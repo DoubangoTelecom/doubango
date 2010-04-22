@@ -184,7 +184,7 @@ int tsip_header_Security_Verify_tostring(const void* header, tsk_buffer_t* outpu
 				);
 		}
 		else if(Security_Verify->mech){
-			tsk_buffer_append(output, Security_Verify->mech, strlen(Security_Verify->mech));
+			tsk_buffer_append(output, Security_Verify->mech, tsk_strlen(Security_Verify->mech));
 		}
 
 		if(Security_Verify->q >= 0){
