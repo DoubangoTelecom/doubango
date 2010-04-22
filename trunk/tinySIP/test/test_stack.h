@@ -235,11 +235,12 @@ void test_stack()
 {
 //#define DOMAIN "ericsson.com"
 //#define DOMAIN "micromethod.com"
-//#define DOMAIN "ims.inexbee.com"
-#define DOMAIN "sip2sip.info"
+#define DOMAIN "ims.inexbee.com"
+//#define DOMAIN "sip2sip.info"
 
 	const void* usr_context = tsk_null;
-
+	int ret;
+/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("2233392625"),
 		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:2233392625@"DOMAIN),
@@ -255,7 +256,7 @@ void test_stack()
 		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
-
+*/
 
 	/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
@@ -275,25 +276,20 @@ void test_stack()
 		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
 		TSIP_STACK_SET_PRIVACY("header;id"),
 */
-/*
-	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
+
+	
+	
+	
+	
+
+	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, "sip:"DOMAIN, "mamadou@"DOMAIN, "sip:mamadou@"DOMAIN,
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
-		TSIP_STACK_SET_PUBLIC_IDENTITY("sip:mamadou@"DOMAIN),
-		TSIP_STACK_SET_PRIVATE_IDENTITY("mamadou@"DOMAIN),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
-		TSIP_STACK_SET_REALM("sip:"DOMAIN), // FIXME: without sip:
-		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
-		//TSIP_STACK_SET_DISCOVERY_NAPTR(1),
-		TSIP_STACK_SET_PROXY_CSCF("pcscf.ims.inexbee.com", "tcp", 0),
-		TSIP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\mamadou-crt.pem", "C:\\tls\\mamadou-key.pem"),
-		//TSIP_STACK_SET_PROXY_CSCF("192.168.0.15", "udp", 0),
-		TSIP_STACK_SET_PROXY_CSCF_PORT(4060),
-		//TSIP_STACK_SET_SECAGREE_IPSEC("hmac-md5-96", "null", "trans", "esp"),
-		TSIP_STACK_SET_MOBILITY("fixed"),
-		TSIP_STACK_SET_DEVICE_ID("dd1289fa-c3d7-47bd-a40d-f1f1b2cc5ffc"),
-		TSIP_STACK_SET_NETINFO("ADSL;utran-cell-id-3gpp=00000000"),
-		TSIP_STACK_SET_PRIVACY("header;id"),
-*/
+		
+		TSIP_STACK_SET_PROXY_CSCF("192.168.16.225", 4060, "udp", "ipv4"),
+		
+		TSIP_STACK_SET_EARLY_IMS(tsk_true),
+
 /*
 		tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
@@ -328,7 +324,7 @@ void test_stack()
 
 	tsip_ssession_id_t opid = tsip_ssession_get_id(op);
 
-	if(tsip_stack_start(stack)){
+	if((ret = tsip_stack_start(stack))){
 		goto bail;
 	}
 
@@ -337,6 +333,7 @@ void test_stack()
 	
 		tsk_null);
 
+	getchar();
 	tsk_thread_sleep(2000);
 
 	//tsip_unregister(op, 

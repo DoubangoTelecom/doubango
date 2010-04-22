@@ -41,23 +41,35 @@ TSIP_BEGIN_DECLS
 //FD
 struct tsip_message_s;
 
-#define TSIP_SSESSION_CREATE(stack, ...)		tsk_object_new(tsip_ssession_def_t, stack, __VA_ARGS__)
-
 typedef uint64_t tsip_ssession_id_t;			
 #define TSIP_SSESSION_INVALID_ID				0
 #define TSIP_SSESSION_INVALID_HANDLE			tsk_null
 
+#define TSIP_SSESSION_EXPIRES_DEFAULT		3600000 /* miliseconds. */
+
+typedef enum tsip_ssession_option_e
+{
+	TSIP_SSESSION_OPTION_TIMEOUT,
+
+	//! Destination URI. Will be used to set "To" header.
+	TSIP_SSESSION_OPTION_DESTINATION,
+	//! Source URI. Will be used to set "From" header.
+	TSIP_SSESSION_OPTION_SOURCE,
+}
+tsip_ssession_option_t;
+
 typedef enum tsip_ssession_param_type_e
 {
-	sstype_param,
+	sstype_null = tsk_null,
+
+	sstype_option,
 	sstype_header,
 	sstype_caps,
 	sstype_context,
-	sstype_null = 0
 }
 tsip_ssession_param_type_t;
 
-#define TSIP_SSESSION_SET_PARAM(NAME_STR, VALUE_STR)			sstype_param, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_SSESSION_SET_OPTION(ID_ENUM, VALUE_STR)			sstype_option, (tsip_ssession_option_t)ID_ENUM, (const char*)VALUE_STR
 #define TSIP_SSESSION_SET_HEADER(NAME_STR, VALUE_STR)			sstype_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_SSESSION_SET_CAPS(NAME_STR, VALUE_STR)				sstype_caps, (const char*)NAME_STR, (const char*)VALUE_STR /* RFC 3840 */
 #define TSIP_SSESSION_SET_CONTEXT(CTX_PTR)						sstype_context, (const void*)CTX_PTR
@@ -68,19 +80,24 @@ typedef struct tsip_ssession_s
 	TSK_DECLARE_OBJECT;
 
 	tsip_ssession_id_t id;
+	tsk_bool_t owner;
+
 	const struct tsip_stack_s* stack;
 	const void* context; // usr context
-	tsk_params_L_t *params;
+	tsk_options_L_t *options;
 	tsk_params_L_t *caps;
 	tsk_params_L_t *headers;
 
-	tsk_bool_t owner;
+	struct tsip_uri_s* from;
+	struct tsip_uri_s* to;
+	int32_t expires;
 }
 tsip_ssession_t;
 
 typedef void tsip_ssession_handle_t;
 
 
+TINYSIP_API tsip_ssession_handle_t* tsip_ssession_create(tsip_stack_handle_t *stack, ...);
 TINYSIP_API int tsip_ssession_set(tsip_ssession_handle_t *self, ...);
 TINYSIP_API tsip_ssession_id_t tsip_ssession_get_id(const tsip_ssession_handle_t *self);
 TINYSIP_API int tsip_ssession_take_ownership(tsip_ssession_handle_t *self);
@@ -88,12 +105,8 @@ TINYSIP_API tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t
 TINYSIP_API int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, size_t size, const struct tsip_message_s* request, ...);
 TINYSIP_API const void* tsip_ssession_get_context(const tsip_ssession_handle_t *self);
 
-tsip_ssession_handle_t *tsip_ssession_create_2(const struct tsip_stack_s* stack, const struct tsip_message_s* message);
-//const tsk_param_t* tsip_ssession_get_param(const tsip_ssession_handle_t *self, const char* pname);
-//const tsk_param_t* tsip_ssession_get_header(const tsip_ssession_handle_t *self, const char* pname);
-//const tsk_params_L_t* tsip_ssession_get_headers(const tsip_ssession_handle_t *self);
-//const tsk_params_L_t* tsip_ssession_get_params(const tsip_ssession_handle_t *self);
-//const tsk_params_L_t* tsip_ssession_get_caps(const tsip_ssession_handle_t *self);
+//tsip_ssession_handle_t *tsip_ssession_create_2(const struct tsip_stack_s* stack, const struct tsip_message_s* message);
+
 int tsip_ssession_hangup(const tsip_ssession_t *self, const struct tsip_action_s* action);
 
 typedef tsk_list_t tsip_ssessions_L_t; /**< List of @ref tsip_ssession_handle_t elements. */

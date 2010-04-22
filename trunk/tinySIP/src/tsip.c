@@ -56,78 +56,157 @@ void *run(void* self);
 * http://portal.etsi.org/docbox/EC_Files/EC_Files/ts_10202702v030101p.pdf
 */
 
-int __tsip_stack_set(tsip_stack_t *self, va_list values)
+int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, const char* option_value)
 {
-	tsip_stack_param_type_t curr;
+	switch(option_id){
 
-	while((curr=va_arg(values, tsip_stack_param_type_t)) != pname_null)
-	{
-		switch(curr)
-		{
-			/* 
-			* Identity 
-			*/
-			case pname_display_name:
-			{
-				tsk_strupdate(&self->display_name, va_arg(values, const char*));
+		/* === Identity === */
+		case TSIP_STACK_OPTION_DISPLAY_NAME:
+			{	/* Display name */
+				tsk_strupdate(&self->identity.display_name, option_value);
 				break;
 			}
-			case pname_public_identity:
-			case pname_preferred_identity:
-			{
-				const char *uristring = va_arg(values, const char*);
-				if(uristring)
-				{
-					tsip_uri_t *uri = tsip_uri_parse(uristring, strlen(uristring));
-					if(uri)
-					{
-						if(curr == pname_public_identity)
-						{
-							TSK_OBJECT_SAFE_FREE(self->public_identity);
-							self->public_identity = uri;
+		case TSIP_STACK_OPTION_IMPU:
+		case TSIP_STACK_OPTION_PREFERRED_IDENTITY:
+			{	/* IMS Public User Identity or P-Preferred-Identity - valid SIP/TEL URI*/
+				if(option_value){
+					tsip_uri_t *uri = tsip_uri_parse(option_value, strlen(option_value));
+					if(uri){
+						if(option_id == TSIP_STACK_OPTION_IMPU){
+							TSK_OBJECT_SAFE_FREE(self->identity.impu);
+							self->identity.impu = uri;
 						}
-						else
-						{
-							TSK_OBJECT_SAFE_FREE(self->preferred_identity);
-							self->preferred_identity = uri;
+						else{
+							TSK_OBJECT_SAFE_FREE(self->identity.preferred);
+							self->identity.preferred = uri;
+						}
+					}
+					else{
+						TSK_DEBUG_ERROR("'%s' is an invalid SIP/TEL URI", option_value);
+						if(option_id == TSIP_STACK_OPTION_IMPU){
+							return -1; /* IMPU is mandatory but P-Preferred-Identity isn't. */
 						}
 					}
 				}
 				break;
 			}
-			case pname_private_identity:
-			{
-				tsk_strupdate(&self->private_identity, va_arg(values, const char*));
+		case TSIP_STACK_OPTION_IMPI:
+			{	/* IMS Private User Identity */
+				if(!option_value){
+					TSK_DEBUG_ERROR("IMPI is mandatory.");
+					return -1; /* mandatory */
+				}
+				tsk_strupdate(&self->identity.impi, option_value);
 				break;
 			}
-			case pname_password:
+		case TSIP_STACK_OPTION_PASSWORD:
+			{	/* User's password */
+				tsk_strupdate(&self->identity.password, option_value);
+				break;
+			}
+
+	/* ===  Network ===  */
+		case TSIP_STACK_OPTION_REALM:
+			{	/* realm (a.k.a domain name) - valid SIP/TEL URI */
+				if(option_value){
+					tsip_uri_t *uri = tsip_uri_parse(option_value, strlen(option_value));
+					if(uri){
+						TSK_OBJECT_SAFE_FREE(self->network.realm);
+						self->network.realm = uri;
+					}
+					else{
+						TSK_DEBUG_ERROR("'%s' is an invalid SIP/TEL URI", option_value);
+						return -1; /* mandatory */
+					}
+				}
+				break;
+			}
+		case TSIP_STACK_OPTION_LOCAL_IP:
+			{	/* IP address to bind to */
+				tsk_strupdate(&self->network.local_ip, option_value);
+				break;
+			}
+		case TSIP_STACK_OPTION_LOCAL_PORT:
+			{	/* IP port to bind to */
+				tnet_port_t port = atoi(option_value);
+				if(port){
+					self->network.local_port = port;
+				}
+				else{
+					TSK_DEBUG_ERROR("%s is invalid as port number.", option_value);
+				}
+				break;
+			}
+		case TSIP_STACK_OPTION_DISCOVERY_NAPTR:
+			{	/* Whether to use DNS NAPTR for Proxy-CSCF discovery */
+				self->network.discovery_naptr = tsk_strcontains(option_value, strlen(option_value), "true");
+				break;
+			}
+		case TSIP_STACK_OPTION_DISCOVERY_DHCP:
+			{	/* Whether to use DHCPv4/v6 for Proxy-CSCF discovery */
+				self->network.discovery_dhcp = tsk_strcontains(option_value, strlen(option_value), "true");
+				break;
+			}
+		case TSIP_STACK_OPTION_AMF:
+			{	/* Authentication management field (AMF) as 16 bits field */
+				/* think about uint16_t */
+				break;
+			}
+		case TSIP_STACK_OPTION_OPERATOR_ID:
 			{
-				tsk_strupdate(&self->password, va_arg(values, const char*));
+				break;
+			}
+
+	/* ===  Security ===  */
+		case TSIP_STACK_OPTION_EARLY_IMS:
+			{	/* Whether to enable Early IMS Security as per 3GPP TS 33.978 */
+				self->security.earlyIMS = tsk_strcontains(option_value, strlen(option_value), "true");
+				break;
+			}
+		case TSIP_STACK_OPTION_SECAGREE_IPSEC:
+			{	/* Whether to enable IPSec security agreement as per IETF RFC 3329 */
+				break;
+			}
+		case TSIP_STACK_OPTION_SECAGREE_TLS:
+			{	/* Whether to enable IPSec security agreement as per IETF RFC 3329 */
+				break;
+			}
+
+	/* === Features === */
+		
+
+		default:
+			{
+				TSK_DEBUG_WARN("Unknown Option id %d", option_id);
+				break;
+			}
+	}
+	return 0;
+}
+
+int __tsip_stack_set(tsip_stack_t *self, va_list* app)
+{
+	tsip_stack_param_type_t curr;
+
+	while((curr = va_arg(*app, tsip_stack_param_type_t)) != pname_null){
+		switch(curr){
+			/* === Option === */
+			case pname_option:
+			{	/* (tsip_stack_option_t)ID_ENUM, (const char*)VALUE_STR */
+				tsip_stack_option_t ID_ENUM = va_arg(*app, tsip_stack_option_t);
+				const char* VALUE_STR = va_arg(*app, const char*);
+				if(__tsip_stack_set_option(self, ID_ENUM, VALUE_STR)){
+					/* Nothing to do --> va_list still safe */
+				}				
 				break;
 			}
 
 			/* 
 			* Network 
 			*/
-			case pname_local_ip:
-			{
-				tsk_strupdate(&self->local_ip, va_arg(values, const char*));
-				break;
-			}
-			case pname_local_port:
-			{
-#if defined (__GNUC__)
-				self->local_port = (uint16_t)va_arg(values, unsigned);
-#else
-				self->local_port = va_arg(values, uint16_t);
-#endif
-				break;
-			}
-			case pname_privacy:
-			{
-				tsk_strupdate(&self->privacy, va_arg(values, const char*));
-				break;
-			}
+			
+			
+			
 			case pname_operator_id:
 			{
 				break;
@@ -136,74 +215,66 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			{
 				break;
 			}
-			case pname_netinfo:
+			
+			
+			/*case pname_discovery_naptr:
 			{
-				tsk_strupdate(&self->netinfo, va_arg(values, const char*));
-				break;
-			}
-			case pname_realm:
-			{
-				const char *uristring = va_arg(values, const char*);
-				if(uristring)
-				{
-					tsip_uri_t *uri = tsip_uri_parse(uristring, strlen(uristring));
-					if(uri)
-					{
-						TSK_OBJECT_SAFE_FREE(self->realm);
-						self->realm = uri;
-					}
-				}
-				break;
-			}
-			case pname_discovery_naptr:
-			{
-				self->use_dns_naptr = va_arg(values, unsigned);
+				self->network.discovery_naptr = va_arg(*app, tsk_bool_t);
 				break;
 			}
 			case pname_discovery_dhcp:
 			{
-				self->use_dhcp = va_arg(values, unsigned);
+				self->network.discovery_dhcp = va_arg(*app, unsigned);
 				break;
-			}
+			}*/
 			case pname_proxy_cscf:
-			{
-				const char* pcscf = va_arg(values, const char*);
-				const char* transport = va_arg(values, const char*);
-				int use_ipv6 = va_arg(values, int);
+			{	/* (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR */
+				const char* FQDN_STR = va_arg(*app, const char*);
+				tnet_port_t PORT_UINT = va_arg(*app, unsigned);
+				const char* TRANSPORT_STR = va_arg(*app, const char*);
+				const char* IP_VERSION_STR = va_arg(*app, const char*);
 
-				tsk_strupdate(&self->proxy_cscf, pcscf);
+				/* IP Address */
+				tsk_strupdate(&self->network.proxy_cscf, FQDN_STR);
+				TSK_DEBUG_INFO("Proxy-CSCF ==>%s", self->network.proxy_cscf);
+				
+				/* Port */
+				self->network.proxy_cscf_port = PORT_UINT;
 
-				TSK_DEBUG_INFO("P-CSCF ==>%s", self->proxy_cscf);
-
-				if(tsk_striequals(transport, "UDP")) TNET_SOCKET_TYPE_SET_UDP(self->proxy_cscf_type);
-				else if(tsk_striequals(transport, "TCP")) TNET_SOCKET_TYPE_SET_TCP(self->proxy_cscf_type);
-				else if(tsk_striequals(transport, "TLS")) TNET_SOCKET_TYPE_SET_TLS(self->proxy_cscf_type);
-				else if(tsk_striequals(transport, "SCTP")) TNET_SOCKET_TYPE_SET_SCTP(self->proxy_cscf_type);
-
-				if(use_ipv6) TNET_SOCKET_TYPE_SET_IPV6(self->proxy_cscf_type);
-				else TNET_SOCKET_TYPE_SET_IPV4(self->proxy_cscf_type);
+				/* Transport */
+				if(tsk_striequals(TRANSPORT_STR, "UDP")){
+					TNET_SOCKET_TYPE_SET_UDP(self->network.proxy_cscf_type);
+				}
+				else if(tsk_striequals(TRANSPORT_STR, "TCP")){
+					TNET_SOCKET_TYPE_SET_TCP(self->network.proxy_cscf_type);
+				}
+				else if(tsk_striequals(TRANSPORT_STR, "TLS")){
+					TNET_SOCKET_TYPE_SET_TLS(self->network.proxy_cscf_type);
+				}
+				else if(tsk_striequals(TRANSPORT_STR, "SCTP")){
+					TNET_SOCKET_TYPE_SET_SCTP(self->network.proxy_cscf_type);
+				}
+				else{
+					TSK_DEBUG_ERROR("%s not a valid transport", TRANSPORT_STR);
+					/* not mandatoy */
+				}
+				/* whether to use ipv6 or not */
+				if(IP_VERSION_STR){
+					if(tsk_strcontains(IP_VERSION_STR, strlen(IP_VERSION_STR), "6")){
+						TNET_SOCKET_TYPE_SET_IPV6Only(self->network.proxy_cscf_type);
+					}
+					if(tsk_strcontains(IP_VERSION_STR, strlen(IP_VERSION_STR), "4")){
+						TNET_SOCKET_TYPE_SET_IPV4(self->network.proxy_cscf_type); /* Not IPV4only ==> '46'/'64' */
+					}
+				}
 				break;
 			}
 
-			case pname_proxy_cscf_port:
-			{
-				self->proxy_cscf_port = va_arg(values, int);
-				break;
-			}
+			
 
-			case pname_device_id:
-			{
-				if(self->device_id)
-					TSK_FREE(self->device_id);
-				tsk_sprintf(&self->device_id, "\"%s\"", va_arg(values, const char*));
-				break;
-			}
+			
 
-			case pname_mobility:
-			{
-				tsk_strupdate(&self->mobility, va_arg(values, const char*));
-				break;
-			}
+			
 
 			/*
 			*	Security
@@ -211,23 +282,23 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			case pname_secagree_ipsec:
 				{	/* ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR */
 					tsk_strupdate(&self->secagree_mech, "ipsec-3gpp");
-					tsk_strupdate(&self->secagree_ipsec.alg, va_arg(values, const char*));
-					tsk_strupdate(&self->secagree_ipsec.ealg, va_arg(values, const char*));
-					tsk_strupdate(&self->secagree_ipsec.mode, va_arg(values, const char*));
-					tsk_strupdate(&self->secagree_ipsec.protocol, va_arg(values, const char*));
+					tsk_strupdate(&self->secagree_ipsec.alg, va_arg(*app, const char*));
+					tsk_strupdate(&self->secagree_ipsec.ealg, va_arg(*app, const char*));
+					tsk_strupdate(&self->secagree_ipsec.mode, va_arg(*app, const char*));
+					tsk_strupdate(&self->secagree_ipsec.protocol, va_arg(*app, const char*));
 					self->enable_secagree_ipsec = 1;
 					break;
 				}
 			case pname_secagree_tls:
 				{	/* USE_TLS_SECAGREE_INT */
-					self->enable_secagree_tls = va_arg(values, int) ? 1 : 0;
+					self->enable_secagree_tls = va_arg(*app, int) ? 1 : 0;
 					break;
 				}
 			case pname_tls_certs:
 				{	/*CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR*/
-					tsk_strupdate(&self->tls.ca, va_arg(values, const char*));
-					tsk_strupdate(&self->tls.pbk, va_arg(values, const char*));
-					tsk_strupdate(&self->tls.pvk, va_arg(values, const char*));
+					tsk_strupdate(&self->tls.ca, va_arg(*app, const char*));
+					tsk_strupdate(&self->tls.pbk, va_arg(*app, const char*));
+					tsk_strupdate(&self->tls.pvk, va_arg(*app, const char*));
 					break;
 				}
 			
@@ -235,63 +306,14 @@ int __tsip_stack_set(tsip_stack_t *self, va_list values)
 			/* 
 			* Features 
 			*/
-			case pname_enable_100rel:
-			{
-				self->enable_100rel = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_gsmais:
-			{
-				self->enable_gsmais = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_precond:
-			{
-				self->enable_precond = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_3gppsms:
-			{
-				self->enable_3gppsms = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_gsmarcs:
-			{
-				self->enable_gsmarcs = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_earlyIMS:
-			{
-				self->enable_earlyIMS = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_ofdr:
-			{
-				self->enable_ofdr = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_aa:
-			{
-				self->enable_aa = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_dnd:
-			{
-				self->enable_dnd = va_arg(values, unsigned);
-				break;
-			}
-			case pname_enable_option:
-			{
-				self->enable_option = va_arg(values, unsigned);
-				break;
-			}
+			
 
 			/* 
 			* QoS 
 			*/
 
 			default:
-			{
+			{	/* va_list will be unsafe ==> must exit */
 				TSK_DEBUG_WARN("Found unknown pname.");
 				goto bail;
 			}
@@ -302,60 +324,74 @@ bail:
 	return 0;
 }
 
-tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, ...)
+tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const char* realm_uri, const char* impi_uri, const char* impu_uri, ...)
 {
-	tsip_stack_t* stack = tsk_object_new(tsip_stack_def_t);
-	va_list params;
+	tsip_stack_t* stack = tsk_null;
+	va_list ap;	
 
-	if(!stack){
-		return 0;
+	/* === check values === */
+	if(!realm_uri || !impi_uri || !impu_uri){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		goto bail;
 	}
-
-	/*
-	* Default values
-	*/
-	stack->local_ip = TNET_SOCKET_HOST_ANY;
-	stack->local_port = TNET_SOCKET_PORT_ANY;
-
-	stack->proxy_cscf_port = 5060;
-	stack->proxy_cscf_type = tnet_socket_type_udp_ipv4;
 	
-	va_start(params, callback);
-	if(__tsip_stack_set(stack, params)){
-		// Delete the stack?
+	/* === create the stack === */
+	if(!(stack = tsk_object_new(tsip_stack_def_t))){ /* should never happen */
+		TSK_DEBUG_ERROR("Failed to create the stack.");
+		goto bail;
 	}
-	va_end(params);
+	
+	/* === Set mandatory values (realm, IMPI and IMPU) === */
+	if(tsip_stack_set(stack,
+			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_REALM, realm_uri),
+			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_IMPI, impi_uri),
+			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_IMPU, impu_uri),
 
-	/* 
-	* Internals 
-	*/
+			TSIP_STACK_SET_NULL())){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		TSK_OBJECT_SAFE_FREE(stack);
+		goto bail;
+	}
+	
+	/* === Default values === */
+	stack->network.local_ip = TNET_SOCKET_HOST_ANY;
+	stack->network.local_port = TNET_SOCKET_PORT_ANY;
+	
+	stack->network.proxy_cscf_port = 5060;
+	stack->network.proxy_cscf_type = tnet_socket_type_udp_ipv4;
+	
+	/* === Set user supplied parameters === */
+	va_start(ap, impu_uri);
+	if(__tsip_stack_set(stack, &ap)){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		TSK_OBJECT_SAFE_FREE(stack);
+		va_end(ap);
+		goto bail;
+	}
+	va_end(ap);
+
+	/* === Internals === */
 	stack->callback = callback;
 	stack->timer_mgr = tsk_timer_manager_create();
 	stack->ssessions = tsk_list_create();
 
-	/* 
-	*	Layers 
-	*/
+	/* ===	Layers === */
 	stack->layer_dialog = tsip_dialog_layer_create(stack);
 	stack->layer_transac = tsip_transac_layer_create(stack);
 	stack->layer_transport = tsip_transport_layer_create(stack);
 
-	/*
-	*	DNS context
-	*/
+	/* === DNS context === */
 	stack->dns_ctx = tnet_dns_ctx_create();
 
-	/*
-	*	DHCP context
-	*/
+	/* === DHCP context === */
 
+bail:
 	return stack;
 }
 
 int tsip_stack_start(tsip_stack_handle_t *self)
 {
-	if(self)
-	{
+	if(self){
 		int ret;
 		tsip_stack_t *stack = self;
 		
@@ -364,64 +400,74 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			return ret;
 		}
 
-		/*  Timer manager */
+		/* === Timer manager === */
 		if((ret = tsk_timer_manager_start(stack->timer_mgr))){
-			// What to do ?
+			return ret;
 		}
 
-		/* Set P-Preferred-Identity */
-		if(!stack->preferred_identity && stack->public_identity){
-			stack->preferred_identity = tsk_object_ref((void*)stack->public_identity);
+		/* === Set P-Preferred-Identity === */
+		if(!stack->identity.preferred && stack->identity.impu){
+			stack->identity.preferred = tsk_object_ref((void*)stack->identity.impu);
 		}
-		/* Transport type */
+		/* === Transport type === */
 		if(stack->secagree_mech){
 			if(tsk_striequals(stack->secagree_mech, "ipsec-3gpp")){
-				TNET_SOCKET_TYPE_SET_IPSEC(stack->proxy_cscf_type);
+				TNET_SOCKET_TYPE_SET_IPSEC(stack->network.proxy_cscf_type);
 			}
 			//else if if(tsk_striquals(stack->secagree_mech, "ipsec-ike"))
 		}
 
-		/* Use DNS NAPTR+SRV for the P-CSCF discovery? */
-		if(stack->use_dns_naptr || !stack->proxy_cscf)
-		{
-			char* hostname = 0;
-			tnet_port_t port = 0;
+		/* === Use DNS NAPTR+SRV for the P-CSCF discovery? === */
+		if(!stack->network.proxy_cscf){
+			if(stack->network.discovery_dhcp){ /* DHCP v4/v6 */
+				/* FIXME: */
+			} /* DHCP */
+			else{ /* DNS NAPTR + SRV*/
+				char* hostname = tsk_null;
+				tnet_port_t port = 0;
 
-			if(!tnet_dns_query_naptr_srv(stack->dns_ctx, stack->realm->host, "SIP+D2U"/*FIXME*/, &hostname, &port)){
-				tsk_strupdate(&stack->proxy_cscf, hostname);
-				stack->proxy_cscf_port = port;
-			}
-			else{
-				TSK_DEBUG_ERROR("P-CSCF discovery using DNS NAPTR failed. The stack will use the user supplied address and port.");
-			}
-
-			TSK_FREE(hostname);
+				if(!tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, 
+					TNET_SOCKET_TYPE_IS_DGRAM(stack->network.proxy_cscf_type) ? "SIP+D2U" :
+					(TNET_SOCKET_TYPE_IS_TLS(stack->network.proxy_cscf_type) ? "SIPS+D2T" : "SIP+D2T"),
+					&hostname, &port)){
+					tsk_strupdate(&stack->network.proxy_cscf, hostname);
+					if(!stack->network.proxy_cscf_port || stack->network.proxy_cscf_port==5060){ /* Only if the Proxy-CSCF port is missing or default */
+						stack->network.proxy_cscf_port = port;
+					}
+				}
+				else{
+					TSK_DEBUG_ERROR("P-CSCF discovery using DNS NAPTR failed. The stack will use the user supplied address and port.");
+				}
+				
+				TSK_FREE(hostname);
+			} /* NAPTR */
 		}
-
-		/* Get Best source address */
-		if(stack->local_ip == TNET_SOCKET_HOST_ANY){
+		
+		/* === Get Best source address ===  */
+		if(!stack->network.local_ip){ /* loacal-ip is missing? */
 			tnet_ip_t bestsource;
-			if((ret = tnet_getbestsource(stack->proxy_cscf, stack->proxy_cscf_port, stack->proxy_cscf_type, &bestsource))){
+			if((ret = tnet_getbestsource(stack->network.proxy_cscf, stack->network.proxy_cscf_port, stack->network.proxy_cscf_type, &bestsource))){ /* FIXME: what about linux version? */
 				TSK_DEBUG_ERROR("Failed to get best source [%d].", ret);
+				/* do not exit ==> will use default IP address */
 			}
 			else{
-				tsk_strupdate(&stack->local_ip, bestsource);
+				tsk_strupdate(&stack->network.local_ip, bestsource);
 			}
 		}
-
-		/*  Transport Layer */
-		if((ret = tsip_transport_layer_add(stack->layer_transport, stack->local_ip, stack->local_port, stack->proxy_cscf_type, "SIP transport"))){
+		
+		/* === Transport Layer === */
+		/* Adds the default transport to the transport Layer */
+		if((ret = tsip_transport_layer_add(stack->layer_transport, stack->network.local_ip, stack->network.local_port, stack->network.proxy_cscf_type, "SIP transport"))){
 			return ret;
-		}		
+		}
+		/* Starts the transport Layer */
 		if((ret = tsip_transport_layer_start(stack->layer_transport))){
 			return ret;
 		}
-
-		/*	ALL IS OK
-		*	
-		*/
-		if(stack->layer_transac){
-			stack->layer_transac->reliable = TNET_SOCKET_TYPE_IS_STREAM(stack->proxy_cscf_type);
+		
+		/* ===	ALL IS OK === */
+		if(stack->layer_transac){ /* For transaction layer */
+			stack->layer_transac->reliable = TNET_SOCKET_TYPE_IS_STREAM(stack->network.proxy_cscf_type);
 		}
 		
 		TSK_DEBUG_INFO("SIP STACK -- START");
@@ -433,15 +479,14 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 
 int tsip_stack_set(tsip_stack_handle_t *self, ...)
 {
-	if(self)
-	{
+	if(self){
 		int ret;
 		tsip_stack_t *stack = self;
 
-		va_list params;
-		va_start(params, self);
-		ret = __tsip_stack_set(stack, params);
-		va_end(params);
+		va_list ap;
+		va_start(ap, self);
+		ret = __tsip_stack_set(stack, &ap);
+		va_end(ap);
 		return ret;
 	}
 
@@ -486,7 +531,7 @@ tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *stack, const char* pro
 				if(tsk_strequals(transport->protocol, protocol)){
 					tsip_uri_t* uri = tsk_null;
 					if((uri = tsip_transport_get_uri(transport, 0))){
-						tsk_strupdate(&uri->user_name, stack->public_identity->user_name);
+						tsk_strupdate(&uri->user_name, stack->identity.impu->user_name);
 						return uri;
 					}
 				}
@@ -504,15 +549,15 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tsk_bool_t lr)
 			if(transport){
 				tsip_uri_t* uri = tsk_null;
 				int ipv6 = TNET_SOCKET_TYPE_IS_IPV6(transport->type);
-				int quote_ip = (ipv6 && tsk_strcontains(stack->proxy_cscf, strlen(stack->proxy_cscf), ":")) /* IPv6 IP string?*/;
+				int quote_ip = (ipv6 && tsk_strcontains(stack->network.proxy_cscf, strlen(stack->network.proxy_cscf), ":")) /* IPv6 IP string?*/;
 			
 				char* uristring = tsk_null;
 				tsk_sprintf(&uristring, "%s:%s%s%s:%d;%s;transport=%s",
 					transport->scheme,
 					quote_ip ? "[" : "",
-					stack->proxy_cscf,
+					stack->network.proxy_cscf,
 					quote_ip ? "]" : "",
-					stack->proxy_cscf_port,
+					stack->network.proxy_cscf_port,
 					lr ? "lr" : "",
 					transport->protocol);
 				if(uristring){
@@ -589,21 +634,17 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		tsip_stack_stop(stack);
 
 		/* Identity */
-		TSK_FREE(stack->display_name);
-		TSK_OBJECT_SAFE_FREE(stack->public_identity);
-		TSK_OBJECT_SAFE_FREE(stack->preferred_identity);
+		TSK_FREE(stack->identity.display_name);
+		TSK_OBJECT_SAFE_FREE(stack->identity.impu);
+		TSK_OBJECT_SAFE_FREE(stack->identity.preferred);
 		//TSK_OBJECT_SAFE_FREE(stack->associated_identity);
-		TSK_FREE(stack->private_identity);
-		TSK_FREE(stack->password);
+		TSK_FREE(stack->identity.impi);
+		TSK_FREE(stack->identity.password);
 
 		/* Network */
-		TSK_FREE(stack->local_ip);
-		TSK_FREE(stack->privacy);
-		TSK_FREE(stack->netinfo);
-		TSK_OBJECT_SAFE_FREE(stack->realm);
-		TSK_FREE(stack->proxy_cscf);
-		TSK_FREE(stack->device_id);
-		TSK_FREE(stack->mobility);
+		TSK_FREE(stack->network.local_ip);
+		TSK_OBJECT_SAFE_FREE(stack->network.realm);
+		TSK_FREE(stack->network.proxy_cscf);
 		TSK_OBJECT_SAFE_FREE(stack->paths);
 		TSK_OBJECT_SAFE_FREE(stack->service_routes);
 		TSK_OBJECT_SAFE_FREE(stack->associated_uris);

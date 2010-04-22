@@ -189,8 +189,8 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 {
 	tsip_transport_t* transport = 0;
 
-	destIP = self->stack->proxy_cscf;
-	*destPort = self->stack->proxy_cscf_port;
+	destIP = self->stack->network.proxy_cscf;
+	*destPort = self->stack->network.proxy_cscf_port;
 
 	if(!self){
 		return 0;
@@ -208,7 +208,7 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 		tsk_list_foreach(item, self->transports)
 		{
 			curr = item->data;
-			if(curr->type == self->stack->proxy_cscf_type)
+			if(curr->type == self->stack->network.proxy_cscf_type)
 			{
 				transport = curr;
 				break;
@@ -473,17 +473,14 @@ bail:
 
 int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 {
-	if(self)
-	{
-		if(!self->running)
-		{
+	if(self){
+		if(!self->running){
 			int ret = 0;
 			tsk_list_item_t *item;
 			tsip_transport_t* transport;
 
 			/* start() */
-			tsk_list_foreach(item, self->transports)
-			{
+			tsk_list_foreach(item, self->transports){
 				transport = item->data;
 				if(ret = tsip_transport_start(transport)){
 					return ret;
@@ -491,13 +488,12 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 			}
 			
 			/* connect() */
-			tsk_list_foreach(item, self->transports)
-			{
+			tsk_list_foreach(item, self->transports){
 				tnet_fd_t fd;
 				transport = item->data;
 
 				tsip_transport_set_callback(transport, TNET_SOCKET_TYPE_IS_DGRAM(transport->type) ? TNET_TRANSPORT_CB_F(tsip_transport_layer_dgram_cb) : TNET_TRANSPORT_CB_F(tsip_transport_layer_stream_cb), transport);
-				if((fd = tsip_transport_connectto_2(transport, self->stack->proxy_cscf, self->stack->proxy_cscf_port)) == TNET_INVALID_FD){
+				if((fd = tsip_transport_connectto_2(transport, self->stack->network.proxy_cscf, self->stack->network.proxy_cscf_port)) == TNET_INVALID_FD){
 					return -3;
 				}
 				if((ret = tnet_sockfd_waitUntilWritable(fd, TNET_CONNECT_TIMEOUT))){
@@ -519,15 +515,12 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 
 int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self)
 {
-	if(self)
-	{
-		if(self->running)
-		{
+	if(self){
+		if(self->running){
 			int ret = 0;
 			tsk_list_item_t *item;
 			tsip_transport_t* transport;
-			tsk_list_foreach(item, self->transports)
-			{
+			tsk_list_foreach(item, self->transports){
 				transport = item->data;
 				if(ret = tsip_transport_shutdown(transport)){
 					return ret;
@@ -551,9 +544,8 @@ int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self)
 static tsk_object_t* tsip_transport_layer_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_transport_layer_t *layer = self;
-	if(layer)
-	{
-		layer->stack = va_arg(*app, const tsip_stack_handle_t *);
+	if(layer){
+		layer->stack = va_arg(*app, const tsip_stack_t *);
 
 		layer->transports = tsk_list_create();
 	}

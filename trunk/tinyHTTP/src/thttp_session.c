@@ -53,7 +53,7 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 	while((curr=va_arg(*app, thttp_session_param_type_t)) != httpp_null){
 		switch(curr){
 			case httpp_option:
-				{
+				{	/* (thttp_session_option_t)ID_ENUM, (const char*)VALUE_STR */
 					thttp_session_option_t id = va_arg(*app, thttp_session_option_t);
 					const char* value = va_arg(*app, const char *);
 					tsk_options_add_option(&self->options, id, value);
@@ -61,7 +61,7 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 				}
 
 			case httpp_header:
-				{
+				{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* name = va_arg(*app, const char *);
 					const char* value = va_arg(*app, const char *);
 					tsk_params_add_param(&self->headers, name, value);
@@ -69,20 +69,20 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 				}
 			
 			case httpp_cred:
-				{
+				{	/* (const char*)USERNAME_STR, (const char*)PASSWORD_STR */
 					tsk_strupdate(&self->cred.usename, va_arg(*app, const char *));
 					tsk_strupdate(&self->cred.password, va_arg(*app, const char *));
 					break;
 				}
 
 			case httpp_context:
-				{
+				{	/* (const void*)CTX_PTR */
 					self->context = va_arg(*app, const void *);
 					break;
 				}
 
 			default:
-				{
+				{	/* va_list will be unsafe => exit */
 					TSK_DEBUG_ERROR("NOT SUPPORTED.");
 					goto bail;
 				}
@@ -116,7 +116,7 @@ thttp_session_handle_t * session = thttp_session_create(stack,
 *
 * @sa @ref thttp_session_set
 */
-thttp_session_handle_t* thttp_session_create(const struct thttp_stack_s* stack, ...)
+thttp_session_handle_t* thttp_session_create(const thttp_stack_handle_t* stack, ...)
 {
 	thttp_session_handle_t* ret = tsk_null;
 

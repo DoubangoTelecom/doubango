@@ -387,21 +387,20 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 		c) treat the identity under registration as a barred public user identity, if it is not included in the P-Associated-URI
 		header field;
 	*/
-		tsk_list_foreach(item, TSIP_DIALOG_GET_STACK(self)->associated_uris)
-		{
+		tsk_list_foreach(item, TSIP_DIALOG_GET_STACK(self)->associated_uris){
 			uri = item->data;
 			if(item == TSIP_DIALOG_GET_STACK(self)->associated_uris->head){
 				uri_first = item->data;
 			}
-			if(!tsk_object_cmp(TSIP_DIALOG_GET_STACK(self)->preferred_identity, uri)){
+			if(!tsk_object_cmp(TSIP_DIALOG_GET_STACK(self)->identity.preferred, uri)){
 				barred = 0;
 				break;
 			}
 		}
 
 		if(barred && uri_first){
-			TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->preferred_identity);
-			TSIP_DIALOG_GET_STACK(self)->preferred_identity = tsk_object_ref((void*)uri_first);
+			TSK_OBJECT_SAFE_FREE(TSIP_DIALOG_GET_STACK(self)->identity.preferred);
+			TSIP_DIALOG_GET_STACK(self)->identity.preferred = tsk_object_ref((void*)uri_first);
 		}
 	}
 	
@@ -616,41 +615,39 @@ int send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial)
 	
 	request = tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER");
 
-	if(request)
-	{
+	if(request){
 		/* == RCS phase 2
 		*/
-		if(TSIP_DIALOG_GET_STACK(self)->enable_gsmarcs){
+		/*if(TSIP_DIALOG_GET_STACK(self)->enable_gsmarcs){
 			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.oma.sip-im.large-message", 0);
 			TSIP_HEADER_ADD_PARAM(request->Contact, "audio", 0);
 			TSIP_HEADER_ADD_PARAM(request->Contact, "video", 0);
 			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.cs-voice", 0);
 			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.icsi-ref", TSIP_ICSI_QUOTED_MMTEL_PSVOICE);
-		}
+		}*/
 
-		/* mobility */
-		if(TSIP_DIALOG_GET_STACK(self)->mobility){
-			TSIP_HEADER_ADD_PARAM(request->Contact, "mobility", TSIP_DIALOG_GET_STACK(self)->mobility);
-		}
+		///* mobility */
+		//if(TSIP_DIALOG_GET_STACK(self)->mobility){
+		//	TSIP_HEADER_ADD_PARAM(request->Contact, "mobility", TSIP_DIALOG_GET_STACK(self)->mobility);
+		//}
 
-		/* deviceID - FIXME: find reference. */
-		if(TSIP_DIALOG_GET_STACK(self)->device_id){
-			TSIP_HEADER_ADD_PARAM(request->Contact, "+deviceID", TSIP_DIALOG_GET_STACK(self)->device_id);
-		}
+		///* deviceID - FIXME: find reference. */
+		//if(TSIP_DIALOG_GET_STACK(self)->device_id){
+		//	TSIP_HEADER_ADD_PARAM(request->Contact, "+deviceID", TSIP_DIALOG_GET_STACK(self)->device_id);
+		//}
 
-		/* GSMA Image Sharing */
-		if(TSIP_DIALOG_GET_STACK(self)->enable_gsmais){
-			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.app_ref", TSIP_IARI_QUOTED_GSMAIS);
-		}
+		///* GSMA Image Sharing */
+		//if(TSIP_DIALOG_GET_STACK(self)->enable_gsmais){
+		//	TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.app_ref", TSIP_IARI_QUOTED_GSMAIS);
+		//}
 
-		/* 3GPP TS 24.341 subclause 5.3.2.2 */
-		if(TSIP_DIALOG_GET_STACK(self)->enable_3gppsms){
-			TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.smsip", 0);
-		}
+		///* 3GPP TS 24.341 subclause 5.3.2.2 */
+		//if(TSIP_DIALOG_GET_STACK(self)->enable_3gppsms){
+		//	TSIP_HEADER_ADD_PARAM(request->Contact, "+g.3gpp.smsip", 0);
+		//}
 
 		/* 3GPP TS 24.229 - 5.1.1.2 Initial registration */
-		if(TSIP_DIALOG(self)->state ==tsip_initial)
-		{
+		if(TSIP_DIALOG(self)->state ==tsip_initial){
 			/*
 				g) the Supported header field containing the option-tag "path", and
 				1) if GRUU is supported, the option-tag "gruu"; and

@@ -112,7 +112,7 @@ if((ret = thttp_stack_start(stack))){
 *
 *<h2>15.2	Sessions</h2>
 * <p>
-* A session can be seen as a peer2peer persistent connection and will be maintained by the stack as long as you wish to keep the network connection opened (not explicitly destroyed). <br>
+* A session could be seen as a peer2peer persistent connection and will be maintained by the stack as long as you wish to keep the network connection opened (not explicitly destroyed). <br>
 * If the connection is closed by the remote peer, then the stack will automatically reopen it when you try to send a new HTTP/HTTP request. <br>
 * The network connection will be definitely closed when the session is destroyed.
 * </p>

@@ -62,7 +62,7 @@ tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const 
 	return ss;
 }
 
-int __tsip_ssession_set(tsip_ssession_t *self, va_list values)
+int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 {
 	tsip_ssession_param_type_t curr;
 
@@ -70,20 +70,15 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list values)
 		return -1;
 	}
 
-	while((curr=va_arg(values, tsip_ssession_param_type_t)) != sstype_null)
-	{
-		switch(curr)
-		{
-			case sstype_param:
+	while((curr = va_arg(values, tsip_ssession_param_type_t)) != sstype_null){
+		switch(curr){
 			case sstype_header:
 			case sstype_caps:
-				{
-					const char* name = va_arg(values, const char *);
-					const char* value = va_arg(values, const char *);
+				{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
+					const char* name = va_arg(*app, const char *);
+					const char* value = va_arg(*app, const char *);
 					
-					if(curr == sstype_param){
-						tsk_params_add_param(&self->params, name, value); // Add or Update a param
-					} else if(curr == sstype_header){
+					else if(curr == sstype_header){
 						tsk_params_add_param(&self->headers, name, value);
 					}else if(curr == sstype_caps){
 						tsk_params_add_param(&self->caps, name, value);
@@ -92,23 +87,40 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list values)
 				}
 			
 			case sstype_context:
+				{	/* (const void*)CTX_PTR */
+					self->context = va_arg(*app, const void *);
+					break;
+				}
+
+			case sstype_option:
 				{
-					self->context = va_arg(values, const void *);
 					break;
 				}
 
 			default:
-				{
-					TSK_DEBUG_ERROR("NOT SUPPORTED.");
+				{	/* va_list will be unsafe => exit */
+					TSK_DEBUG_ERROR("NOT SUPPORTED as valid pname %d.", curr);
 					goto bail;
 				}
-		}
-	}
+		} /* switch */
+	} /* while */
 	return 0;
 
 bail:
 	return -2;
 }
+
+
+if(__tsip_ssession_set(self, app)){
+			ss->id = TSIP_SSESSION_INVALID_ID;
+		}
+		else{
+			ss->id = ++unique_id;
+		}
+		// default: you are the owner
+		ss->owner = tsk_true;
+		// default expires value
+		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
 
 int tsip_ssession_set(tsip_ssession_handle_t *self, ...)
 {
@@ -204,48 +216,6 @@ const void* tsip_ssession_get_context(const tsip_ssession_handle_t *self)
 	return tsk_null;
 }
 
-//const tsk_param_t* tsip_ssession_get_param(const tsip_ssession_handle_t *self, const char* pname)
-//{
-//	if(self){
-//		const tsip_ssession_t *ss = self;
-//		return tsk_params_get_param_by_name(ss->params, pname);
-//	}
-//	return tsk_null;
-//}
-//
-//const tsk_param_t* tsip_ssession_get_header(const tsip_ssession_handle_t *self, const char* hname)
-//{
-//	if(self){
-//		const tsip_ssession_t *ss = self;
-//		return tsk_params_get_param_by_name(ss->headers, hname);
-//	}
-//	return tsk_null;
-//}
-//
-//const tsk_params_L_t* tsip_ssession_get_headers(const tsip_ssession_handle_t *self)
-//{
-//	if(self){
-//		return ((const tsip_ssession_t *)self)->headers;
-//	}
-//	return tsk_null;
-//}
-//
-//const tsk_params_L_t* tsip_ssession_get_params(const tsip_ssession_handle_t *self)
-//{
-//	if(self){
-//		return ((const tsip_ssession_t *)self)->params;
-//	}
-//	return tsk_null;
-//}
-//
-//const tsk_params_L_t* tsip_ssession_get_caps(const tsip_ssession_handle_t *self)
-//{
-//	if(self){
-//		return ((const tsip_ssession_t *)self)->caps;
-//	}
-//	return tsk_null;
-//}
-
 int tsip_ssession_hangup(const tsip_ssession_t *self, const tsip_action_t* action)
 {
 	int ret = -1;
@@ -271,26 +241,20 @@ int tsip_ssession_hangup(const tsip_ssession_t *self, const tsip_action_t* actio
 
 
 //========================================================
-//	SIP SSESSION object definition
+//	SIP Session object definition
 //
 static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_ssession_t *ss = self;
 	static tsip_ssession_id_t unique_id = 0;
 	if(ss){
-		ss->stack = va_arg(*app, const tsip_stack_handle_t*);
+		ss->stack = va_arg(*app, const tsip_stack_t*);
 		ss->params = tsk_list_create();
 		ss->caps = tsk_list_create();
 		ss->headers = tsk_list_create();
 
-		if(__tsip_ssession_set(self, *app)){
-			ss->id = TSIP_SSESSION_INVALID_ID;
-		}
-		else{
-			ss->id = ++unique_id;
-		}
-		// default: you are the owner
-		ss->owner = tsk_true;
+		/* unique identifier */
+		ss->id = ++unique_id;
 	}
 
 	return self;
@@ -300,9 +264,11 @@ static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 { 
 	tsip_ssession_t *ss = self;
 	if(ss){
-		TSK_OBJECT_SAFE_FREE(ss->params);
 		TSK_OBJECT_SAFE_FREE(ss->caps);
 		TSK_OBJECT_SAFE_FREE(ss->headers);
+
+		TSK_OBJECT_SAFE_FREE(ss->from);
+		TSK_OBJECT_SAFE_FREE(ss->to);
 	}
 	return self;
 }

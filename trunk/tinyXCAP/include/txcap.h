@@ -165,7 +165,7 @@ txcap_stack_set(stack,
 * Ends the stack parameters. Mandatory and should be the last one.
 */
 
-#define TXCAP_STACK_SET_OPTION(ID_INT, VALUE_STR)											xcapp_option,  (txcap_stack_option_t)ID_INT, (const char*)VALUE_STR
+#define TXCAP_STACK_SET_OPTION(ID_ENUM, VALUE_STR)											xcapp_option,  (txcap_stack_option_t)ID_ENUM, (const char*)VALUE_STR
 #define TXCAP_STACK_SET_PASSWORD(PASSWORD_STR)												TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_PASSWORD, PASSWORD_STR)
 #define TXCAP_STACK_SET_XUI(XUI_STR)														TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_XUI, XUI_STR)
 #define TXCAP_STACK_SET_HEADER(NAME_STR, VALUE_STR)											xcapp_header, (const char*)NAME_STR, (const char*)VALUE_STR
@@ -194,7 +194,7 @@ typedef struct txcap_stack_s
 txcap_stack_t;
 typedef void txcap_stack_handle_t;/**< Pointer to a XCAP stack. Should be created using @ref txcap_stack_create().*/
 
-TINYXCAP_API txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback callback, const char* xui, const char* password, const char* xcap_root, ...);
+TINYXCAP_API txcap_stack_handle_t* txcap_stack_create(thttp_stack_callback_f callback, const char* xui, const char* password, const char* xcap_root, ...);
 TINYXCAP_API int txcap_stack_start(txcap_stack_handle_t* self);
 TINYXCAP_API int txcap_stack_set(txcap_stack_handle_t* self, ...);
 TINYXCAP_API int txcap_stack_stop(txcap_stack_handle_t* self);

@@ -134,7 +134,7 @@ thttp_session_set(session,
 * @def THTTP_SESSION_SET_NULL
 * Ends session parameters. Must always be the last one.
 */
-#define THTTP_SESSION_SET_OPTION(ID_INT, VALUE_STR)			httpp_option, (thttp_session_option_t)ID_INT, (const char*)VALUE_STR
+#define THTTP_SESSION_SET_OPTION(ID_ENUM, VALUE_STR)			httpp_option, (thttp_session_option_t)ID_ENUM, (const char*)VALUE_STR
 #define THTTP_SESSION_SET_CRED(USERNAME_STR, PASSWORD_STR)		httpp_cred, (const char*)USERNAME_STR, (const char*)PASSWORD_STR
 #define THTTP_SESSION_SET_HEADER(NAME_STR, VALUE_STR)			httpp_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define THTTP_SESSION_SET_CONTEXT(CTX_PTR)						httpp_context, (const void*)CTX_PTR
@@ -170,7 +170,7 @@ typedef tsk_list_t thttp_sessions_L_t; /**< List of @ref thttp_session_handle_t 
 */
 typedef void thttp_session_handle_t;
 
-TINYHTTP_API thttp_session_handle_t* thttp_session_create(const struct thttp_stack_s* stack, ...);
+TINYHTTP_API thttp_session_handle_t* thttp_session_create(const thttp_stack_handle_t* stack, ...);
 TINYHTTP_API int thttp_session_set(thttp_session_handle_t *self, ...);
 TINYHTTP_API thttp_session_id_t thttp_session_get_id(const thttp_session_handle_t *self);
 TINYHTTP_API const void* thttp_session_get_context(const thttp_session_handle_t *self);
