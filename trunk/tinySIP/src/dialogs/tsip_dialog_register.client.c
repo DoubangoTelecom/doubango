@@ -45,7 +45,7 @@
 #include "tsk_debug.h"
 #include "tsk_time.h"
 
-#define DEBUG_STATE_MACHINE											0
+#define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(register, TX)
 #define TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, message)	\
 	tsip_register_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->ss, code, phrase, message)
@@ -123,12 +123,11 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 {
 	int ret = -1;
 
-	switch(type)
-	{
+	switch(type){
+
 	case tsip_dialog_i_msg:
 		{
-			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
-			{
+			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg)){
 				//
 				//	RESPONSE
 				//
@@ -147,11 +146,10 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 				else{
 					// Alert User
 					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, tsk_null);
-					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
+					/* TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg)); */
 				}
 			}
-			else
-			{
+			else{
 				//
 				//	REQUEST
 				//
@@ -193,18 +191,18 @@ int tsip_dialog_register_timer_callback(const tsip_dialog_register_t* self, tsk_
 {
 	int ret = -1;
 
-	if(self)
-	{
+	if(self){
 		if(timer_id == self->timerrefresh.id){
 			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_register, tsk_null, tsk_null);
 		}
 		else if(timer_id == self->timershutdown.id){
-			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, tsk_null, tsk_null);
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error/*FIXME*/, tsk_null, tsk_null);
 		}
 	}
 	return ret;
 }
 
+/** Create SIP REGISTER dialog. */
 tsip_dialog_register_t* tsip_dialog_register_create(tsip_ssession_handle_t* ss)
 {
 	return tsk_object_new(tsip_dialog_register_def_t, ss);
@@ -246,7 +244,7 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 			// Trying -> (cancel) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_cancel, _fsm_state_Terminated, tsip_dialog_register_Trying_2_Terminated_X_cancel, "tsip_dialog_register_Trying_2_Terminated_X_cancel"),
 			// Trying -> (Any) -> Trying
-			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Trying, "tsip_dialog_register_Trying_2_Trying_X_any"),
+			//TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Trying, "tsip_dialog_register_Trying_2_Trying_X_any"),
 
 
 			/*=======================
@@ -752,14 +750,15 @@ static tsk_object_t* tsip_dialog_register_dtor(tsk_object_t * _self)
 { 
 	tsip_dialog_register_t *self = _self;
 	if(self){
-		TSK_DEBUG_INFO("*** REGISTER Dialog destroyed ***");
 
 		/* Cancel all timers */
 		DIALOG_TIMER_CANCEL(refresh);
 		DIALOG_TIMER_CANCEL(shutdown);
 
 		/* DeInitialize base class */
-		tsip_dialog_deinit(TSIP_DIALOG(self));		
+		tsip_dialog_deinit(TSIP_DIALOG(self));
+
+		TSK_DEBUG_INFO("*** REGISTER Dialog destroyed ***");
 	}
 	return self;
 }

@@ -69,7 +69,7 @@ int tsip_header_P_Associated_URI_tostring(const void* header, tsk_buffer_t* outp
 			tsk_buffer_append_2(output, "\"%s\"", P_Associated_URI->display_name);
 		}
 
-		if(ret=tsip_uri_serialize(P_Associated_URI->uri, 1, 1, output)){ /* P_Associated_URI */
+		if(ret=tsip_uri_serialize(P_Associated_URI->uri, tsk_true, tsk_true, output)){ /* P_Associated_URI */
 			return ret;
 		}
 		
@@ -88,7 +88,7 @@ tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char
 	tsip_header_P_Associated_URIs_L_t *hdr_p_associated_uris = tsk_list_create();
 	
 	const char *tag_start;
-	tsip_header_P_Associated_URI_t *curr_p_associated_uri = 0;
+	tsip_header_P_Associated_URI_t *curr_p_associated_uri = tsk_null;
 
 	
 /* #line 95 "./src/headers/tsip_header_P_Associated_URI.c" */

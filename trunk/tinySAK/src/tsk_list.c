@@ -83,15 +83,12 @@ void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 */
 tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj)
 {
-	if(list)
-	{
+	if(list){
 		tsk_list_item_t *prev = tsk_null;
 		tsk_list_item_t *curr = prev = list->head;
 
-		while(curr)
-		{
-			if(!tsk_object_cmp(curr->data, tskobj))
-			{
+		while(curr){
+			if(!tsk_object_cmp(curr->data, tskobj)){
 				if(prev == curr){
 					/* Found at first position. */
 					if(list->head == list->tail){
@@ -102,8 +99,7 @@ tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t 
 						list->head = curr->next;
 					}
 				}
-				else 
-				{
+				else {
 					if(curr == list->tail){
 						/* Found at last position */
 						list->tail = prev;
@@ -147,15 +143,12 @@ void tsk_list_remove_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj)
 */
 tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predicate predicate, const void * data)
 {
-	if(list)
-	{
+	if(list){
 		tsk_list_item_t *prev = tsk_null;
 		tsk_list_item_t *curr = prev = list->head;
 
-		while(curr)
-		{
-			if(!predicate(curr, data))
-			{
+		while(curr){
+			if(!predicate(curr, data)){
 				if(prev == curr){
 					/* Found at first position. */
 					if(list->head == list->tail){
@@ -166,8 +159,7 @@ tsk_list_item_t* tsk_list_pop_item_by_pred(tsk_list_t* list, tsk_list_func_predi
 						list->head = curr->next;
 					}
 				}
-				else 
-				{
+				else {
 					if(curr == list->tail){
 						/* Found at last position */
 						list->tail = prev;
@@ -209,8 +201,7 @@ void tsk_list_remove_item_by_pred(tsk_list_t* list, tsk_list_func_predicate pred
 */
 void tsk_list_clear_items(tsk_list_t* list)
 {
-	if(list)
-	{
+	if(list){
 		tsk_list_item_t* next = tsk_null;
 		tsk_list_item_t* curr = list->head;
 
@@ -232,8 +223,7 @@ void tsk_list_clear_items(tsk_list_t* list)
 tsk_list_item_t* tsk_list_pop_first_item(tsk_list_t* list)
 {
 	tsk_list_item_t* item = tsk_null;
-	if(list)
-	{
+	if(list){
 		item = list->head;
 		if(list->head){
 			if(list->head->next){
@@ -375,11 +365,9 @@ void tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_bool_t ascen
 */
 const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj)
 {
-	if(list && tskobj)
-	{
+	if(list && tskobj){
 		tsk_list_item_t *item;
-		tsk_list_foreach(item, list)
-		{
+		tsk_list_foreach(item, list){
 			if(!tsk_object_cmp(item->data, tskobj)){
 				return item;
 			}

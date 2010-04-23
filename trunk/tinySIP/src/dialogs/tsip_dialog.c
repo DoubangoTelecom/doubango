@@ -139,8 +139,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 
 	<sip:proxy1>,<sip:proxy2>,<sip:proxy3;lr>,<sip:proxy4>
 	*/
-	else
-	{
+	else{
 		tsip_uri_t *first_route = self->routes->head->data;
 		if(tsk_params_have_param(first_route->params, "lr")){
 			request_uri = tsk_object_ref(self->uri_remote_target);
@@ -172,10 +171,11 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	provide a new contact address, should its address change during the
 	duration of the dialog.
 	*/
-	switch(request->request_type)
-	{
+	switch(request->request_type){
 		case tsip_MESSAGE:
+			{
 				break;
+			}
 		case tsip_PUBLISH:
 			{
 				TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
@@ -639,17 +639,14 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 	/* FIXME: As we perform the same task ==> Use only one loop.
 	*/
 
-	for(i =0; (WWW_Authenticate = (const tsip_header_WWW_Authenticate_t*)tsip_message_get_headerAt(response, tsip_htype_WWW_Authenticate, i)); i++)
-	{
+	for(i =0; (WWW_Authenticate = (const tsip_header_WWW_Authenticate_t*)tsip_message_get_headerAt(response, tsip_htype_WWW_Authenticate, i)); i++){
 		tsk_bool_t isnew = tsk_true;
 
-		tsk_list_foreach(item, self->challenges)
-		{
+		tsk_list_foreach(item, self->challenges){
 			challenge = item->data;
 			if(challenge->isproxy) continue;
 			
-			if(tsk_striequals(challenge->realm, WWW_Authenticate->realm) && (WWW_Authenticate->stale || acceptNewVector))
-			{
+			if(tsk_striequals(challenge->realm, WWW_Authenticate->realm) && (WWW_Authenticate->stale || acceptNewVector)){
 				/*== (B) ==*/
 				if((ret = tsip_challenge_update(challenge, 
 					WWW_Authenticate->scheme, 
@@ -661,8 +658,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 				{
 					return ret;
 				}
-				else
-				{
+				else{
 					isnew = tsk_false;
 					continue;
 				}
@@ -670,8 +666,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 			else return -1;
 		}
 
-		if(isnew)
-		{
+		if(isnew){
 			if((challenge = tsip_challenge_create(TSIP_DIALOG_GET_STACK(self),
 					tsk_false, 
 					WWW_Authenticate->scheme, 
@@ -687,17 +682,16 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 		}
 	}
 	
-	for(i=0; (Proxy_Authenticate = (const tsip_header_Proxy_Authenticate_t*)tsip_message_get_headerAt(response, tsip_htype_Proxy_Authenticate, i)); i++)
-	{
+	for(i=0; (Proxy_Authenticate = (const tsip_header_Proxy_Authenticate_t*)tsip_message_get_headerAt(response, tsip_htype_Proxy_Authenticate, i)); i++){
 		tsk_bool_t isnew = tsk_true;
 
-		tsk_list_foreach(item, self->challenges)
-		{
+		tsk_list_foreach(item, self->challenges){
 			challenge = item->data;
-			if(!challenge->isproxy) continue;
+			if(!challenge->isproxy){
+				continue;
+			}
 			
-			if(tsk_striequals(challenge->realm, Proxy_Authenticate->realm) && (Proxy_Authenticate->stale || acceptNewVector))
-			{
+			if(tsk_striequals(challenge->realm, Proxy_Authenticate->realm) && (Proxy_Authenticate->stale || acceptNewVector)){
 				/*== (B) ==*/
 				if((ret = tsip_challenge_update(challenge, 
 					Proxy_Authenticate->scheme, 
@@ -709,8 +703,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 				{
 					return ret;
 				}
-				else
-				{
+				else{
 					isnew = tsk_false;
 					continue;
 				}
@@ -718,8 +711,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 			else return -1;
 		}
 
-		if(isnew)
-		{
+		if(isnew){
 			if((challenge = tsip_challenge_create(TSIP_DIALOG_GET_STACK(self),
 					tsk_true, 
 					Proxy_Authenticate->scheme, 
@@ -731,7 +723,9 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 			{
 				tsk_list_push_back_data(self->challenges, (void**)&challenge);
 			}
-			else return -1;
+			else{
+				return -1;
+			}
 		}
 	}	
 	return 0;
@@ -740,9 +734,9 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 
 int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* request)
 {
-	int earlyIMS = 0;
-	const tsip_uri_t* preferred_identity = 0;
-	const char* netinfo = 0;
+	tsk_bool_t earlyIMS = tsk_false;
+	const tsip_uri_t* preferred_identity = tsk_null;
+	const char* netinfo = tsk_null;
 
 	if(!self || !request){
 		return -1;
@@ -808,8 +802,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 
 int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* call_id, tsip_ssession_t* ss, tsk_fsm_state_id curr, tsk_fsm_state_id term)
 {
-	if(self)
-	{
+	if(self){
 		if(self->initialized){
 			TSK_DEBUG_WARN("Dialog already initialized.");
 			return -2;

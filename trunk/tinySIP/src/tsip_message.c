@@ -311,18 +311,15 @@ tsk_bool_t tsip_message_required(const tsip_message_t *self, const char* option)
 	return tsk_false;
 }
 
-int32_t tsip_message_getExpires(const tsip_message_t *self)
+int64_t tsip_message_getExpires(const tsip_message_t *self)
 {	
-	if(self)
-	{
-		if(self->Expires)
-		{
+	if(self){
+		if(self->Expires){
 			return self->Expires->delta_seconds;
 		}
 
 		// FIXME: You MUST choose the right contact
-		if(self->Contact)
-		{
+		if(self->Contact){
 			return self->Contact->expires;
 		}
 	}

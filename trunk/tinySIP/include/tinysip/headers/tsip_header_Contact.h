@@ -76,7 +76,7 @@ typedef struct tsip_header_Contact_s
 	
 	char *display_name;
 	tsip_uri_t *uri;
-	int32_t expires;
+	int64_t expires;
 }
 tsip_header_Contact_t;
 typedef tsk_list_t tsip_header_Contacts_L_t;

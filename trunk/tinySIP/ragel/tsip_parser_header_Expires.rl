@@ -64,7 +64,7 @@
 
 }%%
 
-tsip_header_Expires_t* tsip_header_Expires_create(int32_t delta_seconds)
+tsip_header_Expires_t* tsip_header_Expires_create(int64_t delta_seconds)
 {
 	return tsk_object_new(TSIP_HEADER_EXPIRES_VA_ARGS(delta_seconds));
 }
@@ -74,7 +74,7 @@ int tsip_header_Expires_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		const tsip_header_Expires_t *Expires = header;
 		if(Expires->delta_seconds >=0){
-			return tsk_buffer_append_2(output, "%d", Expires->delta_seconds);
+			return tsk_buffer_append_2(output, "%lld", Expires->delta_seconds);
 		}
 		return 0;
 	}
@@ -120,7 +120,7 @@ static tsk_object_t* tsip_header_Expires_ctor(tsk_object_t *self, va_list * app)
 	if(Expires){
 		TSIP_HEADER(Expires)->type = tsip_htype_Expires;
 		TSIP_HEADER(Expires)->tostring = tsip_header_Expires_tostring;
-		Expires->delta_seconds = va_arg(*app, int32_t);
+		Expires->delta_seconds = va_arg(*app, int64_t);
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Expires header.");

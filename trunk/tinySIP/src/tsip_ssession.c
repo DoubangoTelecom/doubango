@@ -71,7 +71,7 @@ int __tsip_ssession_set_option(tsip_ssession_t *self, tsip_ssession_option_t opt
 
 		case TSIP_SSESSION_OPTION_EXPIRES:
 			{ /* Expires value */
-				self->expires = (atoi(option_value) * 1000) /* milliseconds */;
+				self->expires = (((int64_t)atoi(option_value)) * 1000) /* milliseconds */;
 				break;
 			}
 
@@ -104,6 +104,12 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					const char* value = va_arg(*app, const char *);
 					
 					if(curr == sstype_header){
+						/* whether to SET or UNSET the header */
+						if(value == ((const char*)-1)){
+							tsk_params_remove_param(self->headers, name);
+							break;
+						}
+
 						/* From */
 						if(value && tsk_striequals(name, "From")){
 							tsip_uri_t* uri = tsip_uri_parse(value, tsk_strlen(value));
@@ -137,7 +143,12 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 							tsk_params_add_param(&self->headers, name, value);
 						}
 					}else if(curr == sstype_caps){
-						tsk_params_add_param(&self->caps, name, value);
+						if(value == ((const char*)-1)){ /* UNSET */
+							tsk_params_remove_param(self->caps, name);
+						}
+						else{ /* SET */
+							tsk_params_add_param(&self->caps, name, value);
+						}
 					}
 					break;
 				}
@@ -270,7 +281,7 @@ int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, cons
 		goto bail;
 	}
 	
-	if(!(dialog = tsip_dialog_layer_find_by_op(ss->stack->layer_dialog, ss))){
+	if(!(dialog = tsip_dialog_layer_find_by_ss(ss->stack->layer_dialog, ss))){
 		goto bail;
 	}
 
@@ -308,7 +319,7 @@ int tsip_ssession_hangup(const tsip_ssession_t *self, const tsip_action_t* actio
 	{
 		tsip_dialog_t *dialog;
 				
-		if((dialog = tsip_dialog_layer_find_by_op(self->stack->layer_dialog, self))){
+		if((dialog = tsip_dialog_layer_find_by_ss(self->stack->layer_dialog, self))){
 			ret = tsip_dialog_hangup(dialog, action);
 			tsk_object_unref(dialog);
 		}
@@ -343,6 +354,11 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->owner = tsk_true;
 		// default expires value
 		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
+
+		/* add the session to the stack */
+		if(ss->stack){
+			tsk_list_push_back_data(ss->stack->ssessions, (void**)&ss);
+		}
 	}
 
 	return self;
@@ -352,11 +368,19 @@ static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 { 
 	tsip_ssession_t *ss = self;
 	if(ss){
+		/* remove from the stack */
+		if(ss->stack){
+			tsk_list_remove_item_by_data(ss->stack->ssessions, ss);
+		}
+		
+		TSK_OBJECT_SAFE_FREE(ss->options);
 		TSK_OBJECT_SAFE_FREE(ss->caps);
 		TSK_OBJECT_SAFE_FREE(ss->headers);
 
 		TSK_OBJECT_SAFE_FREE(ss->from);
 		TSK_OBJECT_SAFE_FREE(ss->to);
+
+		TSK_DEBUG_INFO("*** SIP Session destroyed ***");
 	}
 	return self;
 }

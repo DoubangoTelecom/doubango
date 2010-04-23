@@ -63,8 +63,7 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 {
 	// Do not check "objdef", let the application die if it's null
 	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
-	if(newobj)
-	{
+	if(newobj){
 		(*(const tsk_object_def_t **) newobj) = objdef;
 		TSK_OBJECT_HEADER(newobj)->refCount = 1;
 		if(objdef->constructor){ 
@@ -98,8 +97,7 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap)
 {
 	tsk_object_t *newobj = tsk_calloc(1, objdef->size);
-	if(newobj)
-	{
+	if(newobj){
 		(*(const tsk_object_def_t **) newobj) = objdef;
 		TSK_OBJECT_HEADER(newobj)->refCount = 1;
 		if(objdef->constructor){ 
@@ -204,8 +202,7 @@ tsk_object_t* tsk_object_unref(tsk_object_t *self)
 void tsk_object_delete(tsk_object_t *self)
 {
 	const tsk_object_def_t ** objdef = self;
-	if(self && *objdef)
-	{
+	if(self && *objdef){
 		if((*objdef)->destructor){
 			self = (*objdef)->destructor(self);
 #if TSK_DEBUG_OBJECTS

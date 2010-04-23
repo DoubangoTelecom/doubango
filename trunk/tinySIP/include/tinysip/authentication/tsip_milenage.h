@@ -28,7 +28,7 @@
  * @sa 3G Security
  * <a href="http://www.3gpp.org/ftp/Specs/html-info/35205.htm"> 3GPP TS 35.205 </a>
  * <a href="http://www.3gpp.org/ftp/Specs/html-info/35206.htm"> 3GPP TS 35.206 </a>
- * <a href="http://www.3gpp.org/ftp/Specs/html-info/35207.htm"> 3GPP TS 35.208 </a>
+ * <a href="http://www.3gpp.org/ftp/Specs/html-info/35207.htm"> 3GPP TS 35.207 </a>
  * <a href="http://www.3gpp.org/ftp/Specs/html-info/35208.htm"> 3GPP TS 35.208 </a>
  * <a href="http://www.3gpp.org/ftp/Specs/html-info/35909.htm"> 3GPP TS 35.909 </a>
  *-------------------------------------------------------------------

@@ -33,7 +33,7 @@
 #include "tinySIP_config.h"
 
 #include "tsk_buffer.h"
-#include "tsk_list.h"
+#include "tsk_options.h"
 #include "tsk_params.h"
 
 TSIP_BEGIN_DECLS
@@ -41,6 +41,12 @@ TSIP_BEGIN_DECLS
 typedef uint64_t tsip_action_id_t;			
 #define TSIP_ACTION_INVALID_ID				0
 #define TSIP_ACTION_INVALID_HANDLE			tsk_null
+
+typedef enum tsip_action_option_e
+{
+	/* TSIP_ACTION_OPTION_DUMMY, */
+}
+tsip_action_option_t;
 
 typedef enum tsip_action_type_e
 {
@@ -72,13 +78,13 @@ typedef enum tsip_action_param_type_e
 {
 	aptype_null = tsk_null,
 
-	aptype_param,
+	aptype_option,
 	aptype_header,
 	aptype_payload,
 }
 tsip_action_param_type_t;
 
-#define TSIP_ACTION_SET_PARAM(NAME_STR, VALUE_STR)			aptype_param, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_ACTION_SET_OPTION(ID_ENUM, VALUE_STR)			aptype_option, (tsip_action_option_t)ID_ENUM, (const char*)VALUE_STR
 #define TSIP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)			aptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (size_t)PAY_SIZE
 #define TSIP_ACTION_SET_NULL()								aptype_null
@@ -88,7 +94,7 @@ typedef struct tsip_action_s
 	TSK_DECLARE_OBJECT;
 	
 	tsip_action_type_t type;
-	tsk_params_L_t *params;
+	tsk_options_L_t *options;
 	tsk_params_L_t *headers;
 	tsk_buffer_t* payload;
 }

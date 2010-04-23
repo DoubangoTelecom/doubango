@@ -81,7 +81,7 @@ typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* 
 * @param list Pointer to the list for which we want to get items.
 *
 */
-#define tsk_list_foreach(item, list) for(item = list?list->head:0; item; item= item->next)
+#define tsk_list_foreach(item, list) for(item = list ? list->head : tsk_null; item; item = item->next)
 
 TINYSAK_API tsk_list_t* tsk_list_create();
 TINYSAK_API tsk_list_item_t* tsk_list_item_create();

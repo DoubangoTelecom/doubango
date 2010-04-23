@@ -65,13 +65,13 @@ int tsip_header_Contact_tostring(const void* header, tsk_buffer_t* output)
 			}
 
 			/* Uri */
-			if(ret=tsip_uri_serialize(Contact->uri, 1, 1, output)){
+			if(ret=tsip_uri_serialize(Contact->uri, tsk_true, tsk_true, output)){
 				return ret;
 			}
 
 			/* Expires */
 			if(Contact->expires >=0){
-				tsk_buffer_append_2(output, ";expires=%d", Contact->expires);
+				tsk_buffer_append_2(output, ";expires=%lld", Contact->expires);
 			}
 		}
 
@@ -626,14 +626,12 @@ _again:
 static tsk_object_t* tsip_header_Contact_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_header_Contact_t *Contact = self;
-	if(Contact)
-	{
+	if(Contact){
 		TSIP_HEADER(Contact)->type = tsip_htype_Contact;
 		TSIP_HEADER(Contact)->tostring = tsip_header_Contact_tostring;
 		Contact->expires = -1;
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Failed to create new Contact header.");
 	}
 	return self;

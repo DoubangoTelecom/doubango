@@ -143,7 +143,7 @@ int tsip_dialog_publish_event_callback(const tsip_dialog_publish_t *self, tsip_d
 				else{
 					// Alert User
 					ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_error, msg, tsk_null);
-					TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg));
+					/* TSK_DEBUG_WARN("Not supported status code: %d", TSIP_RESPONSE_CODE(msg)); */
 				}
 			}
 			else
@@ -242,7 +242,7 @@ int tsip_dialog_publish_init(tsip_dialog_publish_t *self)
 			// Trying -> (cancel) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_cancel, _fsm_state_Terminated, tsip_dialog_publish_Trying_2_Terminated_X_cancel, "tsip_dialog_publish_Trying_2_Terminated_X_cancel"),
 			// Trying -> (Any) -> Trying
-			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Trying, "tsip_dialog_publish_Trying_2_Trying_X_any"),
+			// TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Trying, "tsip_dialog_publish_Trying_2_Trying_X_any"),
 
 
 			/*=======================

@@ -70,15 +70,13 @@ tsk_param_t* tsk_param_create_null()
 */
 tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 {
-	if(line && size)
-	{
+	if(line && size){
 		const char* start = line;
 		const char* end = (line + size);
 		const char* equal = strstr(line, "=");
 		tsk_param_t *param = tsk_param_create_null();
 
-		if(param && equal && equal<end)
-		{
+		if(param && equal && equal<end){
 			if((param->name = tsk_calloc((equal-start)+1, sizeof(const char)))){
 			memcpy(param->name, start, (equal-start));
 			}
@@ -87,8 +85,7 @@ tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
 				memcpy(param->value, equal+1, (end-equal-1));
 			}
 		}
-		else if(param)
-		{
+		else if(param){
 			if((param->name = tsk_calloc((end-start)+1, sizeof(const char)))){
 				memcpy(param->name, start, (end-start));
 			}
