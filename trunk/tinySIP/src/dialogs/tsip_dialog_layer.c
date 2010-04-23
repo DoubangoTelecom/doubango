@@ -48,7 +48,7 @@ tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack)
 }
 
 // MUST tsk_object_unref(ret)
-tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss)
+tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss)
 {
 	tsip_dialog_t *ret = 0;
 	tsip_dialog_t *dialog;

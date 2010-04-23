@@ -132,7 +132,7 @@ thttp_action_PUT(session, "http://www.doubango.org"
 * @def THTTP_ACTION_SET_NULL
 * Ends action parameters. Must always be the last one.
 */
-#define THTTP_ACTION_SET_OPTION(ID_INT, VALUE_STR)			aptype_option, (thttp_action_option_t)ID_INT, (const char*)VALUE_STR
+#define THTTP_ACTION_SET_OPTION(ID_ENUM, VALUE_STR)			aptype_option, (thttp_action_option_t)ID_ENUM, (const char*)VALUE_STR
 #define THTTP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)		aptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define THTTP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (size_t)PAY_SIZE
 #define THTTP_ACTION_SET_NULL()								aptype_null

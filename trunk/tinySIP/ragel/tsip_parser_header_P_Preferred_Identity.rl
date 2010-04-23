@@ -106,7 +106,7 @@ int tsip_header_Preferred_Identity_tostring(const void* header, tsk_buffer_t* ou
 		int ret;
 		const tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = header;
 
-		if((ret = tsip_uri_serialize(P_Preferred_Identity->uri, 1, 1, output))){
+		if((ret = tsip_uri_serialize(P_Preferred_Identity->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
 		return ret;

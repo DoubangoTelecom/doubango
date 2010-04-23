@@ -66,15 +66,14 @@ typedef enum tsip_stack_param_type_e
 	/* Identity */
 
 	/* Network */
-	pname_operator_id,
-	pname_amf,
 	pname_proxy_cscf,
 #define TSIP_STACK_SET_PRIVACY(STR)													pname_privacy, (const char*)STR
 #define TSIP_STACK_SET_POPERATOR_ID(OPERATOR_ID)									pname_privacy, (operator_id_t)OPERATOR_ID
-#define TSIP_STACK_SET_AMF(AMF)														pname_amf, (amf_t)AMF
 
 	
 	/* Security */
+	pname_amf,
+	pname_operator_id,
 	pname_secagree_ipsec,
 	pname_secagree_tls,
 	pname_tls_certs,
@@ -116,13 +115,14 @@ typedef enum tsip_stack_option_e
 	TSIP_STACK_OPTION_LOCAL_PORT,
 	TSIP_STACK_OPTION_DISCOVERY_NAPTR,
 	TSIP_STACK_OPTION_DISCOVERY_DHCP,
-	TSIP_STACK_OPTION_AMF,
-	TSIP_STACK_OPTION_OPERATOR_ID,
 
 	/* Security */
 	TSIP_STACK_OPTION_EARLY_IMS,
+	//TSIP_STACK_OPTION_IMS_AKA_AMF,
+	//TSIP_STACK_OPTION_IMS_AKA_OPERATOR_ID,
 	TSIP_STACK_OPTION_SECAGREE_IPSEC,
 	TSIP_STACK_OPTION_SECAGREE_TLS,
+	
 
 	/* Features */
 
@@ -149,8 +149,13 @@ tsip_stack_option_t;
 
 #define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
 
+#define QUOTEME_(x) #x
+#define QUOTEME(x) QUOTEME_(x)
+
 /* === Security === */
-#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_EARLY_IMS, #ENABLED_BOOL)
+#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)				TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_EARLY_IMS, #ENABLED_BOOL)
+#define TSIP_STACK_SET_IMS_AKA_AMF(AMF_UINT16)				pname_amf, (uint16_t)AMF_UINT16
+#define TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(OPID_HEX_STR)	pname_operator_id, (const char*)OPID_HEX_STR
 
 /* === Headers === */
 #define TSIP_STACK_SET_HEADER(NAME_STR, VALUE_STR)		pname_header, (const char*)NAME_STR, (const char*)VALUE_STR
@@ -189,11 +194,12 @@ typedef struct tsip_stack_s
 	/* Security */
 	struct{
 		tsk_bool_t earlyIMS;
+		operator_id_t operator_id;
+		amf_t amf;
 	} security;
 	
 	
-	operator_id_t operator_id;
-	amf_t amf;
+	
 	
 	
 	
@@ -248,19 +254,6 @@ TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback_f callbac
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
-
-TINYSIP_API int tsip_register(const tsip_ssession_handle_t *ss, ...);
-TINYSIP_API int tsip_unregister(const tsip_ssession_handle_t *ss, ...);
-
-TINYSIP_API int tsip_subscribe(const tsip_ssession_handle_t *ss, ...);
-TINYSIP_API int tsip_unsubscribe(const tsip_ssession_handle_t *ss, ...);
-
-TINYSIP_API int tsip_publish(const tsip_ssession_handle_t *ss, ...);
-TINYSIP_API int tsip_unpublish(const tsip_ssession_handle_t *ss, ...);
-
-TINYSIP_API int tsip_message(const tsip_ssession_handle_t *ss, ...);
-
-TINYSIP_API int tsip_invite(tsip_stack_handle_t *stack, const tsip_ssession_handle_t *ss);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \
 	TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(stack), (const tsip_stack_handle_t*)stack, (short)status_code, (const char*)reason_phrase, (unsigned)incoming, (tsip_event_type_t)type);

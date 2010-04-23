@@ -147,15 +147,6 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 				self->network.discovery_dhcp = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
 				break;
 			}
-		case TSIP_STACK_OPTION_AMF:
-			{	/* Authentication management field (AMF) as 16 bits field */
-				/* think about uint16_t */
-				break;
-			}
-		case TSIP_STACK_OPTION_OPERATOR_ID:
-			{
-				break;
-			}
 
 	/* ===  Security ===  */
 		case TSIP_STACK_OPTION_EARLY_IMS:
@@ -163,6 +154,20 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 				self->security.earlyIMS = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
 				break;
 			}
+		//case TSIP_STACK_OPTION_IMS_AKA_AMF:
+		//	{	/* Authentication management field (AMF) as 16-bit field */
+		//		/* think about uint16_t */
+		//		if(option_value){
+		//			uint16_t amf = atoi(option_value);
+		//			self->security.amf[0] = (amf >> 8);
+		//			self->security.amf[1] = (amf & 0xFF);
+		//		}
+		//		break;
+		//	}
+		//case TSIP_STACK_OPTION_IMS_AKA_OPID:
+		//	{	/* IMS-AKA, Operator Id - 16-bytes */
+		//		break;
+		//	}
 		case TSIP_STACK_OPTION_SECAGREE_IPSEC:
 			{	/* Whether to enable IPSec security agreement as per IETF RFC 3329 */
 				break;
@@ -207,14 +212,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 			
 			
 			
-			case pname_operator_id:
-			{
-				break;
-			}
-			case pname_amf:
-			{
-				break;
-			}
+			
 			
 			
 			/*case pname_discovery_naptr:
@@ -277,6 +275,39 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 			
 
 			/* === Security === */
+			case pname_amf:
+			{ /* (uint16_t)AMF_UINT16 */
+				unsigned amf = va_arg(*app, unsigned);
+				self->security.amf[0] = (amf >> 8);
+				self->security.amf[1] = (amf & 0xFF);
+				break;
+			}
+			case pname_operator_id:
+				{ /* (const char*)OPID_HEX_STR */
+					const char* hexstr = va_arg(*app, const char*);
+					size_t len = tsk_strlen(hexstr);
+					if(len && !(len & 0x01)){
+						size_t i, j;
+						if(tsk_strindexOf(hexstr, tsk_strlen(hexstr), "0x") == 0){
+							hexstr += 2;
+							len -= 2;
+						}
+						/* reset old value */
+						for(i=0; i<sizeof(operator_id_t); i++){
+							self->security.operator_id[i] = 0x00;
+						}
+						/* set new value */
+						if(len){ /* perhaps there were only 2 chars*/
+							for(i = 0, j = 0; (i<sizeof(operator_id_t) && i<len); i+=2, j++){
+								sscanf(&hexstr[i], "%2x", &self->security.operator_id[j]); /*do not use tsk_atox(str), because str should end with '\0'.*/
+							}
+						}
+					}
+					else{
+						TSK_DEBUG_ERROR("%s is invlaid for an Operator Id value.", hexstr);
+					}
+					break;
+				}
 			case pname_secagree_ipsec:
 				{	/* ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR */
 					tsk_strupdate(&self->secagree_mech, "ipsec-3gpp");
@@ -375,6 +406,9 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	stack->callback = callback;
 	stack->timer_mgr = tsk_timer_manager_create();
 	stack->ssessions = tsk_list_create();
+	if(!stack->headers){ /* could be created by tsk_params_add_param() */
+		stack->headers = tsk_list_create();
+	}
 
 	/* ===	Layers === */
 	stack->layer_dialog = tsip_dialog_layer_create(stack);
@@ -382,7 +416,7 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	stack->layer_transport = tsip_transport_layer_create(stack);
 
 	/* === DNS context === */
-	stack->dns_ctx = tnet_dns_ctx_create();
+	//stack->dns_ctx = tnet_dns_ctx_create();
 
 	/* === DHCP context === */
 
@@ -623,7 +657,6 @@ static tsk_object_t* tsip_stack_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_stack_t *stack = self;
 	if(stack){
-		stack->headers = tsk_list_create();
 	}
 	return self;
 }
@@ -632,6 +665,7 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 { 
 	tsip_stack_t *stack = self;
 	if(stack){
+		
 		/* Stop */
 		tsip_stack_stop(stack);
 
@@ -648,6 +682,7 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(stack->network.realm);
 		TSK_FREE(stack->network.proxy_cscf);
 		TSK_OBJECT_SAFE_FREE(stack->paths);
+
 		TSK_OBJECT_SAFE_FREE(stack->service_routes);
 		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
 		
@@ -682,7 +717,7 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
 
-		TSK_DEBUG_INFO("STACK - DESTROYED");
+		TSK_DEBUG_INFO("*** SIP Stack destroyed ***");
 	}
 	return self;
 }

@@ -61,7 +61,7 @@ int tsip_header_To_tostring(const void* header, tsk_buffer_t* output)
 	if(header){
 		int ret;
 		const tsip_header_To_t *To = header;
-		if((ret = tsip_uri_serialize(To->uri, 1, 1, output))){
+		if((ret = tsip_uri_serialize(To->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
 		if(To->tag){

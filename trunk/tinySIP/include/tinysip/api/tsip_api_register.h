@@ -62,6 +62,9 @@ tsip_register_event_t;
 
 int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
+TINYSIP_API int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...);
+
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_register_event_def_t;
 
 TSIP_END_DECLS

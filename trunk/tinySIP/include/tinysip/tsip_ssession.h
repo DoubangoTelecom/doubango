@@ -46,7 +46,11 @@ typedef uint64_t tsip_ssession_id_t;
 #define TSIP_SSESSION_INVALID_ID				0
 #define TSIP_SSESSION_INVALID_HANDLE			tsk_null
 
-#define TSIP_SSESSION_EXPIRES_DEFAULT		3600000 /* miliseconds. */
+#if defined(DEBUG) || defined(_DEBUG)
+#	define TSIP_SSESSION_EXPIRES_DEFAULT		3600000 /* miliseconds. */
+#else
+#	define TSIP_SSESSION_EXPIRES_DEFAULT		600000000
+#endif
 
 typedef enum tsip_ssession_option_e
 {
@@ -72,10 +76,12 @@ typedef enum tsip_ssession_param_type_e
 tsip_ssession_param_type_t;
 
 #define TSIP_SSESSION_SET_OPTION(ID_ENUM, VALUE_STR)			sstype_option, (tsip_ssession_option_t)ID_ENUM, (const char*)VALUE_STR
-#define TRIP_SSESSION_SET_EXPIRES(EXPIRES_UINT)					TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, #EXPIRES_UINT)
+#define TSIP_SSESSION_SET_EXPIRES(EXPIRES_UINT)					TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, #EXPIRES_UINT)
 
 #define TSIP_SSESSION_SET_HEADER(NAME_STR, VALUE_STR)			sstype_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_SSESSION_UNSET_HEADER(NAME_STR)					TSIP_SSESSION_SET_HEADER(NAME_STR, (const char*)-1)
 #define TSIP_SSESSION_SET_CAPS(NAME_STR, VALUE_STR)				sstype_caps, (const char*)NAME_STR, (const char*)VALUE_STR /* RFC 3840 */
+#define TSIP_SSESSION_UNSET_CAPS(NAME_STR)						TSIP_SSESSION_SET_CAPS(NAME_STR, (const char*)-1)
 #define TSIP_SSESSION_SET_CONTEXT(CTX_PTR)						sstype_context, (const void*)CTX_PTR
 #define TSIP_SSESSION_SET_NULL()								sstype_null
 
@@ -95,7 +101,7 @@ typedef struct tsip_ssession_s
 	unsigned no_contact:1;
 	struct tsip_uri_s* from;
 	struct tsip_uri_s* to;
-	int32_t expires;
+	int64_t expires;
 }
 tsip_ssession_t;
 

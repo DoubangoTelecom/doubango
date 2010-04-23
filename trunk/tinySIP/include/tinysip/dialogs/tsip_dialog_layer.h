@@ -56,7 +56,7 @@ typedef tsk_list_t tsip_dialog_layers_L_t;
 
 tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack);
 
-tsip_dialog_t* tsip_dialog_layer_find_by_op(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss);
+tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss);
 
 int tsip_dialog_layer_shutdownAllExceptRegister(tsip_dialog_layer_t *self);
 int tsip_dialog_layer_hangupAll(tsip_dialog_layer_t *self);

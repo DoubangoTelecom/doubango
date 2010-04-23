@@ -123,7 +123,7 @@ int tsip_header_Path_tostring(const void* header, tsk_buffer_t* output)
 			tsk_buffer_append_2(output, "\"%s\"", Path->display_name);
 		}
 
-		if(ret=tsip_uri_serialize(Path->uri, 1, 1, output)){ /* Path */
+		if(ret=tsip_uri_serialize(Path->uri, tsk_true, tsk_true, output)){ /* Path */
 			return ret;
 		}
 		

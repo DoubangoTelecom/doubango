@@ -64,7 +64,7 @@ int tsip_header_P_Asserted_Identity_tostring(const void* header, tsk_buffer_t* o
 			tsk_buffer_append_2(output, "\"%s\"", P_Asserted_Identity->display_name);
 		}
 
-		if((ret = tsip_uri_serialize(P_Asserted_Identity->uri, 1, 1, output))){ /* P_Asserted_Identity */
+		if((ret = tsip_uri_serialize(P_Asserted_Identity->uri, tsk_true, tsk_true, output))){ /* P_Asserted_Identity */
 			return ret;
 		}
 		
@@ -729,7 +729,7 @@ static const unsigned char _tsip_machine_parser_header_P_Asserted_Identity_trans
 	34, 116, 107, 201, 131, 190, 100, 100, 
 	116, 116, 34, 116, 107, 117, 33, 190, 
 	100, 100, 116, 101, 34, 101, 118, 112, 
-	118, 118, 117, 105, 33, 190, 118, 100, 
+	118, 118, 117, 105, 131, 190, 118, 100, 
 	100, 118, 118, 191, 118, 191, 116, 119, 
 	34, 119, 118, 107, 118, 118, 117, 131, 
 	190, 118, 100, 100, 118, 118, 118, 118, 
@@ -846,7 +846,7 @@ static const unsigned char _tsip_machine_parser_header_P_Asserted_Identity_trans
 	193, 121, 131, 190, 118, 100, 100, 118, 
 	118, 118, 118, 116, 116, 34, 116, 107, 
 	194, 131, 190, 100, 100, 116, 195, 34, 
-	195, 118, 200, 118, 118, 117, 105, 33, 
+	195, 118, 200, 118, 118, 117, 105, 131, 
 	190, 118, 100, 100, 118, 118, 191, 118, 
 	191, 116, 195, 34, 195, 102, 116, 102, 
 	102, 101, 105, 91, 102, 102, 102, 196, 

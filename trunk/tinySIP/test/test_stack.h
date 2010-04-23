@@ -235,11 +235,12 @@ void test_stack()
 {
 //#define DOMAIN "ericsson.com"
 //#define DOMAIN "micromethod.com"
-//#define DOMAIN "ims.inexbee.com"
-#define DOMAIN "sip2sip.info"
+#define DOMAIN "ims.inexbee.com"
+//#define DOMAIN "sip2sip.info"
 
 	const void* usr_context = tsk_null;
 	int ret;
+	uint16_t AMF = 0x0001;
 /*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("2233392625"),
@@ -279,20 +280,22 @@ void test_stack()
 
 	
 	
-	
-	
-/*
+	int32_t port = 4060;
+
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, "sip:"DOMAIN, "mamadou@"DOMAIN, "sip:mamadou@"DOMAIN,
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
+		TSIP_STACK_SET_IMS_AKA_AMF(/*AMF*/ 0001),
+		TSIP_STACK_SET_IMS_AKA_OPERATOR_ID("0xff08"),
+		TSIP_STACK_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
 		
-		TSIP_STACK_SET_PROXY_CSCF("192.168.16.225", 4060, "udp", "ipv4"),
+		TSIP_STACK_SET_PROXY_CSCF("192.168.16.225", port, "udp", "ipv4"),
 		
 		TSIP_STACK_SET_EARLY_IMS(tsk_true),
-*/
 
 
 
+/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, "sip:"DOMAIN, "2233392625", "sip:2233392625@"DOMAIN,
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PASSWORD("d3sb7j4fb8"),
@@ -300,7 +303,7 @@ void test_stack()
 		TSIP_STACK_SET_EARLY_IMS(tsk_true),
 
 		TSIP_STACK_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
-
+*/
 /*
 		tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, 
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
@@ -322,6 +325,9 @@ void test_stack()
 
 		TSIP_STACK_SET_NULL());
 
+
+
+
 	//tsip_ssession_handle_t *op = tsip_ssession_create(stack,
 	//	TSIP_SSESSION_SET_CONTEXT(usr_context),
 	//	TSIP_SSESSION_SET_HEADER("expires", "30"),
@@ -333,10 +339,21 @@ void test_stack()
 	//	
 	//	tsk_null);
 
-	tsip_ssession_handle_t *op = tsip_ssession_create(stack,
-		TRIP_SSESSION_SET_EXPIRES(30),
-		
-		tsk_null);
+	
+tsip_ssession_handle_t *op = tsip_ssession_create(stack,
+	TSIP_SSESSION_SET_EXPIRES(30),
+	
+	TSIP_SSESSION_SET_CAPS("+g.oma.sip-im", ""),
+	TSIP_SSESSION_SET_CAPS("+audio", ""),
+	TSIP_SSESSION_SET_CAPS("automata", ""),
+	TSIP_SSESSION_SET_CAPS("language", "\"en,fr\""),
+	
+	TSIP_SSESSION_SET_HEADER("Supported", "ssl"),
+	TSIP_SSESSION_SET_HEADER("P-Access-Network-Info", "3GPP-UTRAN-TDD;utran-cell-id-3gpp=AAAAA0000BBBB"),
+
+	TSIP_SSESSION_UNSET_HEADER("P-Access-Network-Info"),
+	
+	TSIP_SSESSION_SET_NULL());
 
 	//tsip_ssession_id_t opid = tsip_ssession_get_id(op);
 
@@ -344,10 +361,17 @@ void test_stack()
 		goto bail;
 	}
 
-	tsip_register(op, 
-		TSIP_ACTION_SET_HEADER("Persistence", "action"),
+	tsip_action_REGISTER(op, 
+		TSIP_ACTION_SET_HEADER("My-Header-1", "My-Value-1"),
+		TSIP_ACTION_SET_HEADER("My-Header-2", "My-Value-1"),
 	
-		TSIP_SSESSION_SET_NULL());
+		TSIP_ACTION_SET_NULL());
+
+	getchar();
+
+	tsip_action_UNREGISTER(op,
+		TSIP_ACTION_SET_NULL()
+		);
 
 	getchar();
 	tsk_thread_sleep(2000);
@@ -387,29 +411,29 @@ void test_stack()
 	*/
 
 	/* SUBSCRIBE */
-	{
-		tsip_ssession_handle_t *ss2 = tsip_ssession_create(stack,
-			TSIP_SSESSION_SET_CONTEXT(usr_context),
-			TSIP_SSESSION_SET_HEADER("expires", "35"),
-			TSIP_SSESSION_SET_HEADER("Event", "reg"),
-			TSIP_SSESSION_SET_HEADER("Accept", "application/reginfo+xml"),
-			TSIP_SSESSION_SET_HEADER("Allow-Events", "refer, presence, presence.winfo, xcap-diff"),
-			TSIP_SSESSION_SET_HEADER("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER"),
-		
-			tsk_null);
+	//{
+	//	tsip_ssession_handle_t *ss2 = tsip_ssession_create(stack,
+	//		TSIP_SSESSION_SET_CONTEXT(usr_context),
+	//		TSIP_SSESSION_SET_HEADER("expires", "35"),
+	//		TSIP_SSESSION_SET_HEADER("Event", "reg"),
+	//		TSIP_SSESSION_SET_HEADER("Accept", "application/reginfo+xml"),
+	//		TSIP_SSESSION_SET_HEADER("Allow-Events", "refer, presence, presence.winfo, xcap-diff"),
+	//		TSIP_SSESSION_SET_HEADER("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER"),
+	//	
+	//		tsk_null);
 
-		tsip_subscribe(ss2, 
-			TSIP_ACTION_SET_HEADER("Description", "subscribing"),
+	//	tsip_subscribe(ss2, 
+	//		TSIP_ACTION_SET_HEADER("Description", "subscribing"),
 
-			tsk_null);
+	//		tsk_null);
 
-		getchar();
+	//	getchar();
 
-		tsip_unsubscribe(ss2,
-			TSIP_ACTION_SET_HEADER("Test", "unsubscribing"),
-			
-			tsk_null);
-	}
+	//	tsip_unsubscribe(ss2,
+	//		TSIP_ACTION_SET_HEADER("Test", "unsubscribing"),
+	//		
+	//		tsk_null);
+	//}
 	
 	/* MESSAGE */
 	//{

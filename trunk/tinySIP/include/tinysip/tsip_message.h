@@ -275,7 +275,7 @@ TINYSIP_API tsk_bool_t tsip_message_required(const tsip_message_t *self, const c
 
 
 
-TINYSIP_API int32_t		tsip_message_getExpires(const tsip_message_t *message);
+TINYSIP_API int64_t		tsip_message_getExpires(const tsip_message_t *message);
 TINYSIP_API uint32_t	tsip_message_getContent_length(const tsip_message_t *message);
 TINYSIP_API int32_t		tsip_message_getCSeq(const tsip_message_t *message);
 

@@ -122,7 +122,7 @@ static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 		while((curr = va_arg(*app_2, thttp_action_param_type_t)) != aptype_null){
 			switch(curr){
 				case aptype_option:
-					{
+					{	/* (thttp_action_option_t)ID_ENUM, (const char*)VALUE_STR */
 						thttp_action_option_t id = va_arg(*app_2, thttp_action_option_t);
 						const char* value = va_arg(*app_2, const char *);
 						tsk_options_add_option(&action->options, id, value);
@@ -130,7 +130,7 @@ static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 					}
 
 				case aptype_header:
-					{
+					{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 						const char* name = va_arg(*app_2, const char *);
 						const char* value = va_arg(*app_2, const char *);
 						tsk_params_add_param(&action->headers, name, value);
@@ -138,7 +138,7 @@ static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 					}
 
 				case aptype_payload:
-					{
+					{	/* (const void*)PAY_PTR, (size_t)PAY_SIZE */
 						const void* payload = va_arg(*app_2, const void *);
 						size_t size = va_arg(*app_2, size_t);
 						if(payload && size){
@@ -149,7 +149,7 @@ static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 					}
 
 				default:
-					{
+					{	/* va_list will be unsafe ==> exit */
 						TSK_DEBUG_ERROR("NOT SUPPORTED.");
 						goto bail;
 					}

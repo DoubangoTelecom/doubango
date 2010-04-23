@@ -35,7 +35,7 @@
 
 TSIP_BEGIN_DECLS
 
-#define TSIP_HEADER_EXPIRES_VA_ARGS(delta_seconds)		tsip_header_Expires_def_t, (int32_t)delta_seconds
+#define TSIP_HEADER_EXPIRES_VA_ARGS(delta_seconds)		tsip_header_Expires_def_t, (int64_t)delta_seconds
 
 #define TSIP_HEADER_EXPIRES_NONE						-1
 #define TSIP_HEADER_EXPIRES_DEFAULT						600000
@@ -52,11 +52,11 @@ typedef struct tsip_header_Expires_s
 {	
 	TSIP_DECLARE_HEADER;
 
-	int32_t delta_seconds;
+	int64_t delta_seconds;
 }
 tsip_header_Expires_t;
 
-TINYSIP_API tsip_header_Expires_t* tsip_header_Expires_create(int32_t delta_seconds);
+TINYSIP_API tsip_header_Expires_t* tsip_header_Expires_create(int64_t delta_seconds);
 
 TINYSIP_API tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size);
 

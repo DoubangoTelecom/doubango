@@ -126,7 +126,7 @@ int tsip_header_Route_tostring(const void* header, tsk_buffer_t* output)
 			ret = tsk_buffer_append_2(output, "\"%s\"", Route->display_name);
 		}
 
-		if((ret=tsip_uri_serialize(Route->uri, 1, 1, output))){ /* Route */
+		if((ret=tsip_uri_serialize(Route->uri, tsk_true, tsk_true, output))){ /* Route */
 			return ret;
 		}
 		

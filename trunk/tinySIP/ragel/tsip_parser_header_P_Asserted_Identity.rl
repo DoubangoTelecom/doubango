@@ -110,7 +110,7 @@ int tsip_header_P_Asserted_Identity_tostring(const void* header, tsk_buffer_t* o
 			tsk_buffer_append_2(output, "\"%s\"", P_Asserted_Identity->display_name);
 		}
 
-		if((ret = tsip_uri_serialize(P_Asserted_Identity->uri, 1, 1, output))){ /* P_Asserted_Identity */
+		if((ret = tsip_uri_serialize(P_Asserted_Identity->uri, tsk_true, tsk_true, output))){ /* P_Asserted_Identity */
 			return ret;
 		}
 		

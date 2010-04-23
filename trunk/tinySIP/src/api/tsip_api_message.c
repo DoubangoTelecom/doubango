@@ -63,7 +63,7 @@ int tsip_message(const tsip_ssession_handle_t *ss, ...)
 	
 	va_start(ap, ss);
 	if((action = tsip_action_create(atype_message_send, &ap))){
-		if(!(dialog = tsip_dialog_layer_find_by_op(session->stack->layer_dialog, ss))){
+		if(!(dialog = tsip_dialog_layer_find_by_ss(session->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(session->stack->layer_dialog, tsip_dialog_MESSAGE, ss);
 		}
 		ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);

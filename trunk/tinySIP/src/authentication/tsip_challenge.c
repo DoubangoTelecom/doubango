@@ -49,11 +49,13 @@
 #define TSIP_CHALLENGE_PASSWORD(self)	TSIP_CHALLENGE_STACK(self)->identity.password
 
 
+/** Creates new challenge object. */
 tsip_challenge_t* tsip_challenge_create(tsip_stack_t* stack, tsk_bool_t isproxy, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop)
 {
 	return tsk_object_new(tsip_challenge_def_t, stack, isproxy,scheme, realm, nonce, opaque, algorithm, qop);
 }
 
+/** Creates new challenge object (with default values). */
 tsip_challenge_t* tsip_challenge_create_null(tsip_stack_t* stack)
 {
 	return tsip_challenge_create(stack, tsk_false, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null, tsk_null);
@@ -62,8 +64,7 @@ tsip_challenge_t* tsip_challenge_create_null(tsip_stack_t* stack)
 
 int tsip_challenge_reset_cnonce(tsip_challenge_t *self)
 {
-	if(self)
-	{
+	if(self){
 		if(self->qop) /* client nonce is only used if qop=auth, auth-int or both */
 		{
 #if 0
@@ -115,70 +116,54 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 	AKA_XXX_BZERO(MAC_A);
 	AKA_XXX_BZERO(AUTN);
 
-	/* RFC 3310 subclause 3.2: nonce = base64(RAND || AUTN || SERV_DATA) 
-	*/
+	/* RFC 3310 subclause 3.2: nonce = base64(RAND || AUTN || SERV_DATA) */
 	n = tsk_base64_decode((const uint8_t*)self->nonce, tsk_strlen(self->nonce), &nonce);	
-	if(n > TSK_MD5_STRING_SIZE)
-	{
+	if(n > TSK_MD5_STRING_SIZE){
 		TSK_DEBUG_ERROR("The IMS CORE returned an invalid nonce.");
 		goto bail;
 	}
-	if(n < AKA_RAND_SIZE + AKA_AUTN_SIZE)
-	{
+	if(n < AKA_RAND_SIZE + AKA_AUTN_SIZE){
 		TSK_DEBUG_ERROR("The nonce returned by the IMS CORE is too short to contain both [RAND] and [AUTHN]");
 		goto bail;
 	}
-	else
-	{
-		/* Get RAND and AUTN 
-		*/
+	else{
+		/* Get RAND and AUTN */
 		memcpy(RAND, nonce, AKA_RAND_SIZE);
 		memcpy(AUTN, (nonce + AKA_RAND_SIZE), AKA_AUTN_SIZE);
 	}
 
-	/* Secret key 
-	*/
+	/* Secret key */
 	memcpy(K, password, (tsk_strlen(password) > AKA_K_SIZE ? AKA_K_SIZE : tsk_strlen(password)));
 
-	/* 3GPP TS 35.205: AUTN = SQN[§AK] || AMF || MAC-A 
-	*/
+	/* 3GPP TS 35.205: AUTN = SQN[§AK] || AMF || MAC-A */
 	memcpy(AMF, (AUTN + AKA_SQN_SIZE), AKA_AMF_SIZE);
 	memcpy(MAC_A, (AUTN + AKA_SQN_SIZE + AKA_AMF_SIZE), AKA_MAC_A_SIZE);
 
-	/* compute OP 
-	*/
-	ComputeOP(TSIP_CHALLENGE_STACK(self)->operator_id);
+	/* compute OP */
+	ComputeOP(TSIP_CHALLENGE_STACK(self)->security.operator_id);
 
-	/* Checks that we hold the same AMF
-	*/
-	for(n=0; n<AKA_AMF_SIZE; n++)
-	{
-		if(AMF[n] != TSIP_CHALLENGE_STACK(self)->amf[n])
-		{
-			TSK_DEBUG_ERROR("AMF <> XAMF");
+	/* Checks that we hold the same AMF */
+	for(n=0; n<AKA_AMF_SIZE; n++){
+		if(AMF[n] != TSIP_CHALLENGE_STACK(self)->security.amf[n]){
+			TSK_DEBUG_ERROR("IMS-AKA error: AMF <> XAMF");
 			goto bail;
 		}
 	}
 	
-	/* Calculate CK, IK and AK 
-	*/
+	/* Calculate CK, IK and AK */
 	f2345(K, RAND, akares, CK, IK, AK);
 
-	/* Calculate SQN from SQN_XOR_AK 
-	*/
-	for(n=0; n<AKA_SQN_SIZE; n++)
-	{
+	/* Calculate SQN from SQN_XOR_AK */
+	for(n=0; n<AKA_SQN_SIZE; n++){
 		SQN[n] = (uint8_t) (SQN_XOR_AK()[n] ^ AK[n]);
 	}
 
-	/* Calculate XMAC_A 
-	*/
+	/* Calculate XMAC_A */
 	{
 		AKA_MAC_A_T XMAC_A;
 		f1(K, RAND, SQN, AMF, XMAC_A);
-		if(!tsk_strnequals(MAC_A, XMAC_A, AKA_MAC_A_SIZE))
-		{
-			TSK_DEBUG_ERROR("XMAC_A <> MAC_A");
+		if(!tsk_strnequals(MAC_A, XMAC_A, AKA_MAC_A_SIZE)){
+			TSK_DEBUG_ERROR("IMS-AKA error: XMAC_A <> MAC_A");
 			goto bail;
 		}
 	}
@@ -189,8 +174,7 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 		PRF(XRES||IK||CK, "http-digest-akav2-password") instead of (RES) or (XRES) respectively.
 		Where PRF ==> HMAC_MD5 function.
 	*/
-	if(TSIP_CHALLENGE_IS_AKAv2(self))
-	{
+	if(TSIP_CHALLENGE_IS_AKAv2(self)){
 		uint8_t res_ik_ck[AKA_RES_SIZE + AKA_IK_SIZE + AKA_CK_SIZE];
 		tsk_md5digest_t md5_digest;
 
@@ -199,22 +183,21 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 		memcpy((res_ik_ck + AKA_RES_SIZE + AKA_IK_SIZE), CK, AKA_CK_SIZE);
 
 		if((ret = hmac_md5digest_compute("http-digest-akav2-password", 26, res_ik_ck, sizeof(res_ik_ck), md5_digest))){/* PRF(RES||IK||CK, ...) */
-			TSK_DEBUG_ERROR("HMAC_MD5DIGEST_COMPUTE failed. AKAv2 response will be invalid.");
+			TSK_DEBUG_ERROR("hmac_md5digest_compute() failed. AKAv2 response will be invalid.");
 
 			ret = -3;
 			goto bail;
 		}
 		else{/* b64(PRF(...)) */
 			if(!tsk_base64_encode(md5_digest, sizeof(md5_digest), result)){
-				TSK_DEBUG_ERROR("TSK_BASE64_ENCODE failed. AKAv2 response will be invalid.");
+				TSK_DEBUG_ERROR("tsk_base64_encode() failed. AKAv2 response will be invalid.");
 
 				ret = -4;
 				goto bail;
 			}
 		}
 	}
-	else
-	{
+	else{
 		*result = tsk_calloc(1, AKA_RES_SIZE + 1);
 		memcpy(*result, akares, AKA_RES_SIZE);
 

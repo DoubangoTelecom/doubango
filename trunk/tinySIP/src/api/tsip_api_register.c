@@ -50,22 +50,23 @@ int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stac
 	return 0;
 }
 
-int tsip_register(const tsip_ssession_handle_t *ss, ...)
+/** Sends SIP REGISTER or reREGISTER request. */
+int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 {
-	const tsip_ssession_t* session = ss;
+	const tsip_ssession_t* _ss = ss;
 	va_list ap;
 	tsip_action_t* action;
 	tsip_dialog_t* dialog;
 	int ret = -1;
 
-	if(!session || !session->stack){
+	if(!_ss || !_ss->stack){
 		return ret;
 	}
 	
 	va_start(ap, ss);
 	if((action = tsip_action_create(atype_register, &ap))){
-		if(!(dialog = tsip_dialog_layer_find_by_op(session->stack->layer_dialog, ss))){
-			dialog = tsip_dialog_layer_new(session->stack->layer_dialog, tsip_dialog_REGISTER, ss);
+		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, _ss))){
+			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_REGISTER, _ss);
 		}
 		ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
 		
@@ -77,20 +78,20 @@ int tsip_register(const tsip_ssession_handle_t *ss, ...)
 	return ret;
 }
 
-int tsip_unregister(const tsip_ssession_handle_t *ss, ...)
+int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...)
 {
-	const tsip_ssession_t* session = ss;
+	const tsip_ssession_t* _ss = ss;
 	va_list ap;
 	tsip_action_t* action;
 	int ret = -1;
 
-	if(!session || !session->stack){
+	if(!_ss || !_ss->stack){
 		return ret;
 	}
 	
 	va_start(ap, ss);
 	if((action = tsip_action_create(atype_unregister, &ap))){
-		ret = tsip_ssession_hangup(ss, action);
+		ret = tsip_ssession_hangup(_ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}
 	va_end(ap);

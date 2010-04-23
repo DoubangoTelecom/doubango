@@ -123,7 +123,7 @@ void test_parser()
 	tsip_message_t *message = 0;
 	tsk_buffer_t *buffer = tsk_buffer_create_null();
 	tsk_bool_t enabled;
-	int32_t expires;
+	int64_t expires;
 	uint32_t clength;
 
 	tsk_ragel_state_init(&state, SIP_MSG_2_TEST, tsk_strlen(SIP_MSG_2_TEST));
