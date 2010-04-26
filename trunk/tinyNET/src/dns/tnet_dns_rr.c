@@ -47,7 +47,7 @@
 #include "tsk_debug.h"
 #include "tsk_string.h"
 
-#include <string.h> /* strtok, tsk_strlen ... */
+#include <string.h> /* strtok, strlen ... */
 
 
 /** Creates a new DNS RR.

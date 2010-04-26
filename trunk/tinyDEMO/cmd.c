@@ -21,62 +21,49 @@
 */
 #include "cmd.h"
 
+#include "cmd_parser.h"
+
 #include "tsk_string.h"
 #include "tsk_debug.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h> /* isspace() */
+#define PAD "  "
 
-int cmp_parse_kvp(const char* kvp, char** key, char** value)
+/* parse a command line */
+tsk_options_L_t* cmd_parse(char* buffer, cmd_type_t* cmd)
 {
-	return 0;
+	tsk_options_L_t* options;
+	
+	options = cmd_parser_parse(buffer, cmd);
+
+	return options;
 }
 
-tsk_options_L_t* cmd_parse(char* buffer)
+/* print usage */
+void cmd_print_help()
 {
-	tsk_options_L_t* options  = tsk_list_create();
-	//char* cmd_name = strtok(buffer, "--");
-	int32_t index = 0;
-	size_t len = tsk_strlen(buffer);
-	const char* space;
+	printf("\n\n========================= Usage =========================\n\n");
 
-	if(len <= 2){
-		TSK_DEBUG_ERROR("Command line too short.");
-		goto bail;
-	}
+	printf("Usage:\n");
+	printf(PAD"++[command] --[options]\n\n");
 
-	if(buffer[0] != '-' || buffer[1] != '-'){
-		TSK_DEBUG_ERROR("Command should start with \"--\".");
-		goto bail;
-	}
+	/* Commands */
+	printf("Commands:\n--\n");
+	printf(PAD"[++audio] or [++a"PAD"%s", "Make audio call\n--\n");
+	printf(PAD"[++audiovideo] or [++av]"PAD"%s", "Make audio/video call\n--\n");
+	printf(PAD"[++config-file] or [++cf]"PAD"%s", "Load options from config file\n--\n");
+	printf(PAD"[++config-session] | [++css]"PAD"%s", "Configure an 3GPP IMS/LTE session\n--\n");
+	printf(PAD"[++config-stack] | [++cst]"PAD"%s", "Configure an 3GPP IMS/LTE stack\n--\n");
+	printf(PAD"[++exit] | [++e]"PAD"%s", "Exit the application\n--\n");
+	printf(PAD"[++file] | [++f]"PAD"%s", "Send a file. The stack must be running (see ++run command). To abort the File transfer, use ++hangup.\n--\n");
+	printf(PAD"[++hangup] | [++hp]"PAD"%s", "Hangup any SIP session (unREGISTER, unSUBSCRIBE, unPUBLISH, HangUp Call, Abort ...).\n--\n");
+	printf(PAD"[++help] | [++h]"PAD"%s", "Print this help screen\n--\n");
+	printf(PAD"[++message] | [++m]"PAD"%s", "Send Pager Mode IM. The stack must be running (see ++run command).\n\n");
+	printf(PAD"[++publish] | [++pub]"PAD"%s", "Send PUBLISH message. The stack must be running (see ++run command). To unPUBLISH, use ++hanggup.\n--\n");
+	printf(PAD"[++quit] | [++q]"PAD"%s", "Quit the application\n--\n");
+	printf(PAD"[++run]"PAD"%s", "Start/Run the 3GPP IMS/LTE stack. Mandatory before starting to do anything.\n--\n");
+	printf(PAD"[++sms]"PAD"%s", "Send Binary SMS (RP-DATA). The stack must be running (see ++run command).\n--\n");
+	printf(PAD"[++subscribe] | [++sub]"PAD"%s", "Send SUBSCRIBE message. The stack must be running (see ++run command). To unSUBSCRIBE, use ++hangup.\n--\n");
+	printf(PAD"[++video] or [++v]"PAD"%s", "Make video call\n--\n");
 
-	do{
-		while(space && isspace(*space)){ /* remove all spaces */
-			space++;
-		}
-		if(space && ((space - buffer)>2) && (*space++ == '-' && *space++ == '-')){
-			
-		}
-	} while((space = strstr(&buffer[index], " ")))
-	
-	
-
-	//while(cmd_name){
-	//	printf("cmd_name=%s\n", cmd_name);
-	//	if((index = tsk_strindexOf(cmd_name, strlen(cmd_name), " ")) == -1){
-	//		index = strlen(cmd_name);
-	//	}
-	//	
-	//	/* add command as option */
-	//	if(tsk_strniequals(cmd_name, "realm", index)){
-	//		tsk_options_add_option(&options, cmd_type_realm, &cmd_name[index+1]);
-	//	}
-	//	
-	//	/* next command */
-	//	cmd_name = strtok(&buffer[tsk_strlen(cmd_name)], " --");
-	//}
-
-bail:
-	return options;
+	printf("\n\n========================= =========================\n\n");
 }

@@ -19,3 +19,10 @@
 * along with DOUBANGO.
 *
 */
+#include "subscribe.h"
+
+
+int subscribe_handle_event(struct context_s* context, const struct tsip_event_s *sipevent)
+{
+	return 0;
+}

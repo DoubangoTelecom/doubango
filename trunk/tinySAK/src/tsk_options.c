@@ -214,7 +214,7 @@ static tsk_object_t* tsk_option_ctor(tsk_object_t * self, va_list * app)
 		const char* value = va_arg(*app, const char *);
 		
 		option->id = id;
-		if(value && !tsk_strempty(value)) {
+		if(!tsk_strnullORempty(value)) {
 			option->value = tsk_strdup(value);
 		}
 	}

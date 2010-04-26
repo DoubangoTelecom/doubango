@@ -689,7 +689,15 @@ int send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial)
 			}
 		}
 		
-		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
+		if(!(ret = tsip_dialog_request_send(TSIP_DIALOG(self), request))){
+			TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_o_unregister : tsip_o_register, 
+				706, "(un)REGISTER request successfully sent.", request);
+		}
+		else{
+			TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
+				702, "Transport error.", tsk_null);
+		}
+		
 		TSK_OBJECT_SAFE_FREE(request);
 	}
 

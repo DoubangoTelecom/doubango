@@ -298,9 +298,9 @@ static tsk_object_t* tsk_param_ctor(tsk_object_t* self, va_list * app)
 		const char* name = va_arg(*app, const char *);
 		const char* value = va_arg(*app, const char *);
 
-		if(name) {
+		if(!tsk_strnullORempty(name)) {
 			param->name = tsk_strdup(name);
-			if(value && !tsk_strempty(value)) {
+			if(!tsk_strnullORempty(value)) {
 				param->value = tsk_strdup(value);
 			}
 		}
