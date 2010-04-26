@@ -111,7 +111,10 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 				if(option_value){
 					tsip_uri_t *uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
 					if(uri){
-						TSK_OBJECT_SAFE_FREE(self->network.realm);
+						if(uri->type == uri_unknown){ /* scheme is missing or unsupported? */
+							uri->type = uri_sip;
+						}
+						TSK_OBJECT_SAFE_FREE(self->network.realm); /* delete old */
 						self->network.realm = uri;
 					}
 					else{
@@ -421,7 +424,7 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	stack->layer_transport = tsip_transport_layer_create(stack);
 
 	/* === DNS context === */
-	//stack->dns_ctx = tnet_dns_ctx_create();
+	stack->dns_ctx = tnet_dns_ctx_create();
 
 	/* === DHCP context === */
 
@@ -466,10 +469,10 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 				char* hostname = tsk_null;
 				tnet_port_t port = 0;
 
-				if(!tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, 
+				if(tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, 
 					TNET_SOCKET_TYPE_IS_DGRAM(stack->network.proxy_cscf_type) ? "SIP+D2U" :
 					(TNET_SOCKET_TYPE_IS_TLS(stack->network.proxy_cscf_type) ? "SIPS+D2T" : "SIP+D2T"),
-					&hostname, &port)){
+					&hostname, &port) == 0){
 					tsk_strupdate(&stack->network.proxy_cscf, hostname);
 					if(!stack->network.proxy_cscf_port || stack->network.proxy_cscf_port==5060){ /* Only if the Proxy-CSCF port is missing or default */
 						stack->network.proxy_cscf_port = port;

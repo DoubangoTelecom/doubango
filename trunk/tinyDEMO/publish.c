@@ -19,3 +19,9 @@
 * along with DOUBANGO.
 *
 */
+#include "publish.h"
+
+int publish_handle_event(struct context_s* context, const struct tsip_event_s *sipevent)
+{
+	return 0;
+}

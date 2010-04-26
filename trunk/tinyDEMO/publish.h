@@ -19,3 +19,19 @@
 * along with DOUBANGO.
 *
 */
+#if !defined(TINYDEMO_PUBLISH_H)
+#define TINYDEMO_PUBLISH_H
+
+#include "demo_config.h"
+
+_BEGIN_DECLS
+
+/* Forward declarations */
+struct context_s;
+enum tsip_event_e;
+
+int publish_handle_event(struct context_s* context, const struct tsip_event_s *sipevent);
+
+_END_DECLS
+
+#endif /* TINYDEMO_PUBLISH_H */

@@ -19,19 +19,17 @@
 * along with DOUBANGO.
 *
 */
-#if !defined(TINYDEMO_SUBSCRIBE_H)
-#define TINYDEMO_SUBSCRIBE_H
+#if !defined(TINYDEMO_CMD_PARSER_H)
+#define TINYDEMO_CMD_PARSER_H
 
 #include "demo_config.h"
 
+#include "cmd.h"
+
 _BEGIN_DECLS
 
-/* Forward declarations */
-struct context_s;
-enum tsip_event_e;
-
-int subscribe_handle_event(struct context_s* context, const struct tsip_event_s *sipevent);
+tsk_options_L_t *cmd_parser_parse(const char *line, cmd_type_t* cmd);
 
 _END_DECLS
 
-#endif /* TINYDEMO_SUBSCRIBE_H */
+#endif /* TINYDEMO_CMD_PARSER_H */

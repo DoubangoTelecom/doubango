@@ -19,10 +19,12 @@
 * along with DOUBANGO.
 *
 */
-#if !defined(TINYDEMO_SUBSCRIBE_H)
-#define TINYDEMO_SUBSCRIBE_H
+#if !defined(TINYDEMO_REGISTER_H)
+#define TINYDEMO_REGISTER_H
 
 #include "demo_config.h"
+
+#include "cmd.h"
 
 _BEGIN_DECLS
 
@@ -30,8 +32,9 @@ _BEGIN_DECLS
 struct context_s;
 enum tsip_event_e;
 
-int subscribe_handle_event(struct context_s* context, const struct tsip_event_s *sipevent);
+int register_handle_event(struct context_s* context, const struct tsip_event_s *sipevent);
+int register_handle_cmd(struct context_s* context, cmd_type_t cmd, const tsk_options_L_t* options);
 
 _END_DECLS
 
-#endif /* TINYDEMO_SUBSCRIBE_H */
+#endif /* TINYDEMO_REGISTER_H */

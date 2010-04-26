@@ -58,6 +58,9 @@ tsk_option_t;
 
 typedef tsk_list_t tsk_options_L_t; /**< List of @ref tsk_option_t elements. */
 
+TINYSAK_API tsk_option_t* tsk_option_create(int id, const char* value);
+TINYSAK_API tsk_option_t* tsk_option_create_null();
+
 TINYSAK_API int tsk_options_have_option(const tsk_options_L_t *self, int id);
 TINYSAK_API int tsk_options_add_option(tsk_options_L_t **self, int id, const char* value);
 TINYSAK_API int tsk_options_add_option_2(tsk_options_L_t **self, const tsk_option_t* option);

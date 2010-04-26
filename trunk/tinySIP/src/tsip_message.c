@@ -49,8 +49,7 @@
 /*== Predicate function to find tsk_string_t object by val*/
 static int pred_find_string_by_value(const tsk_list_item_t *item, const void *stringVal)
 {
-	if(item && item->data)
-	{
+	if(item && item->data){
 		tsk_string_t *string = item->data;
 		return tsk_stricmp(string->value, stringVal);
 	}
@@ -60,8 +59,7 @@ static int pred_find_string_by_value(const tsk_list_item_t *item, const void *st
 /*== Predicate function to find tsip_header_t object by type. */
 static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tsip_htype)
 {
-	if(item && item->data)
-	{
+	if(item && item->data){
 		tsip_header_t *header = item->data;
 		tsip_header_type_t htype = *((tsip_header_type_t*)tsip_htype);
 		return (header->type - htype);
