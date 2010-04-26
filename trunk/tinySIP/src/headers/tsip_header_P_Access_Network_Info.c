@@ -67,10 +67,10 @@ tsip_header_P_Access_Network_Info_t* tsip_header_P_Access_Network_Info_create_nu
 	return tsip_header_P_Access_Network_Info_create(tsk_null);
 }
 
-int tsip_header_P_Access_Network_Info_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_P_Access_Network_Info_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = header;
+		const tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = (const tsip_header_P_Access_Network_Info_t *)header;
 		if(P_Access_Network_Info->value){
 			tsk_buffer_append(output, P_Access_Network_Info->value, tsk_strlen(P_Access_Network_Info->value));
 		}

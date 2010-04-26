@@ -50,7 +50,7 @@ int main()
 	int ret;
 	tipsec_lifetime_t lifetime = 600000; /* Always set it to the maximum value. (Not possible to update the value after REGISTER 200OK. ) */
 
-	tipsec_context_t * ctx = TIPSEC_CONTEXT_CREATE(ipproto_icmp, USE_IPV6, mode_trans, ealg_aes, algo_hmac_md5_96, proto_both);
+	tipsec_context_t * ctx = tipsec_context_create(ipproto_icmp, USE_IPV6, mode_trans, ealg_aes, algo_hmac_md5_96, proto_both);
 
 	if((ret = tipsec_set_local(ctx, ADDR_LOCAL, ADDR_REMOTE, PORT_UC, PORT_US))){
 		goto bail;

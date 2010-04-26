@@ -64,7 +64,12 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 				{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* name = va_arg(*app, const char *);
 					const char* value = va_arg(*app, const char *);
-					tsk_params_add_param(&self->headers, name, value);
+					if(value == ((const char*)-1)){ /* UNSET */
+						tsk_params_remove_param(self->headers, name);
+					}
+					else{ /* SET */
+						tsk_params_add_param(&self->headers, name, value);
+					}
 					break;
 				}
 			

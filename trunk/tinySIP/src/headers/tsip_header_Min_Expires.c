@@ -56,10 +56,10 @@ tsip_header_Min_Expires_t* tsip_header_Min_Expires_create_null()
 	return tsip_header_Min_Expires_create(TSIP_HEADER_MIN_EXPIRES_NONE);
 }
 
-int tsip_header_Min_Expires_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Min_Expires_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Min_Expires_t *Min_Expires = header;
+		const tsip_header_Min_Expires_t *Min_Expires = (const tsip_header_Min_Expires_t *)header;
 		if(Min_Expires->value >=0){
 			return tsk_buffer_append_2(output, "%d", Min_Expires->value);
 		}

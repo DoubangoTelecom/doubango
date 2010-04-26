@@ -100,10 +100,10 @@ tsip_header_P_Asserted_Identity_t* tsip_header_P_Asserted_Identity_create()
 	return tsk_object_new(tsip_header_P_Asserted_Identity_def_t);
 }
 
-int tsip_header_P_Asserted_Identity_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_P_Asserted_Identity_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_P_Asserted_Identity_t *P_Asserted_Identity = header;
+		const tsip_header_P_Asserted_Identity_t *P_Asserted_Identity = (const tsip_header_P_Asserted_Identity_t *)header;
 		int ret = 0;
 		
 		if(P_Asserted_Identity->display_name){ /* Display Name */

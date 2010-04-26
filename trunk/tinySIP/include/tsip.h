@@ -159,6 +159,7 @@ tsip_stack_option_t;
 
 /* === Headers === */
 #define TSIP_STACK_SET_HEADER(NAME_STR, VALUE_STR)		pname_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_STACK_UNSET_HEADER(NAME_STR)				TSIP_STACK_SET_HEADER(NAME_STR, ((const char*)-1))
 
 /* IMS/LTE stack (for internal use). only tsip_stack_handle_t should be visible. */
 typedef struct tsip_stack_s

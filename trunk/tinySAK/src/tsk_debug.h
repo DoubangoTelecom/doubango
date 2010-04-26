@@ -60,63 +60,39 @@ TSK_BEGIN_DECLS
 #define DEBUG_LEVEL_ERROR		2
 #define DEBUG_LEVEL_FATAL		1
 
-#if (DEBUG_LEVEL >= DEBUG_LEVEL_INFO)
-#	if USE_GNUC_VA_ARGS
-#		define TSK_DEBUG_INFO(...)			fprintf(stderr, __VA_ARGS__);
-#	else
-#		define TSK_DEBUG_INFO(FMT, ...)		fprintf(stderr, "*INFO: " FMT "\n", ##__VA_ARGS__);
-#	endif
+#if TSK_HAVE_DEBUG_H
+#	include <my_debug.h>
 #else
-#	if USE_GNUC_VA_ARGS
-#		define TSK_DEBUG_INFO( ...)			((void)0)
+	/* INFO */
+#	if (DEBUG_LEVEL >= DEBUG_LEVEL_INFO)
+#		define TSK_DEBUG_INFO(FMT, ...)		\
+		fprintf(stderr, "*INFO: " FMT "\n", ##__VA_ARGS__);
 #	else
 #		define TSK_DEBUG_INFO(FMT, ...)		((void)0)
 #	endif
-#endif
-
-
-#if (DEBUG_LEVEL >= DEBUG_LEVEL_WARN)
-#	if USE_GNUC_VA_ARGS
-#		define TSK_DEBUG_WARN(...)			fprintf(stderr, __VA_ARGS__);
-#	else
-#		define TSK_DEBUG_WARN(FMT, ...)		fprintf(stderr, "**WARN: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__);
-#	endif
-#else
-#	if USE_GNUC_VA_ARGS
-#		define TSK_DEBUG_WARN(...)			((void)0)
+	/* WARN */
+#	if (DEBUG_LEVEL >= DEBUG_LEVEL_WARN)
+#		define TSK_DEBUG_WARN(FMT, ...)		\
+		fprintf(stderr, "**WARN: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__);
 #	else
 #		define TSK_DEBUG_WARN(FMT, ...)		((void)0)
 #	endif
-#endif
-
-#if (DEBUG_LEVEL >= DEBUG_LEVEL_ERROR)
-#	if USE_GNUC_VA_ARGS
-#		define TSK_DEBUG_ERROR(...)				fprintf(stderr, __VA_ARGS__);
-#	else
-#		define TSK_DEBUG_ERROR(FMT, ...)		fprintf(stderr, "***ERROR: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__);
-#	endif
-#else
-#	if USE_GNUC_VA_ARGS
-#		define TSK_DEBUG_ERROR(...)				((void)0)
+	/* ERROR */
+#	if (DEBUG_LEVEL >= DEBUG_LEVEL_ERROR)
+#		define TSK_DEBUG_ERROR(FMT, ...)		\
+		fprintf(stderr, "***ERROR: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__);
 #	else
 #		define TSK_DEBUG_ERROR(FMT, ...)		((void)0)
 #	endif
-#endif
-
-
-#if (DEBUG_LEVEL >= DEBUG_LEVEL_FATAL)
-#	if USE_GNUC_VA_ARGS
-#		define TSK_DEBUG_FATAL(...)				fprintf(stderr, __VA_ARGS__);
-#	else
-#		define TSK_DEBUG_FATAL(FMT, ...)		fprintf(stderr, "****FATAL ERROR***: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__);
-#	endif
-#else
-#	if USE_GNUC_VA_ARGS
-#		define TSK_DEBUG_FATAL(...)				((void)0)
+	/* FATAL */
+#	if (DEBUG_LEVEL >= DEBUG_LEVEL_FATAL)
+#		define TSK_DEBUG_FATAL(FMT, ...)		\
+		fprintf(stderr, "****FATAL: function: \"%s()\" \nfile: \"%s\" \nline: \"%u\" \nMSG: " FMT "\n", __FUNCTION__,  __FILE__, __LINE__, ##__VA_ARGS__);
 #	else
 #		define TSK_DEBUG_FATAL(FMT, ...)		((void)0)
 #	endif
-#endif
+
+#endif /* TSK_HAVE_DEBUG_H */
 
 
 TSK_END_DECLS

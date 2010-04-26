@@ -100,11 +100,11 @@ tsip_header_P_Preferred_Identity_t* tsip_header_P_Preferred_Identity_create_null
 	return tsip_header_P_Preferred_Identity_create(tsk_null);
 }
 
-int tsip_header_Preferred_Identity_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Preferred_Identity_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		int ret;
-		const tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = header;
+		const tsip_header_P_Preferred_Identity_t *P_Preferred_Identity = (const tsip_header_P_Preferred_Identity_t *)header;
 
 		if((ret = tsip_uri_serialize(P_Preferred_Identity->uri, tsk_true, tsk_true, output))){
 			return ret;

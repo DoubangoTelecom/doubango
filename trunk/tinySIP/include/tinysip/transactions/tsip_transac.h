@@ -40,11 +40,13 @@
 
 #include "tsk_safeobj.h"
 #include "tsk_list.h"
+#include "tsk_fsm.h"
 
 TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSAC(self)						((tsip_transac_t*)(self))
 #define TSIP_TRANSAC_GET_TYPE(self)				TSIP_TRANSAC(self)->type
+#define TSIP_TRANSAC_GET_FSM(self)				TSIP_TRANSAC(self)->fsm
 #define TSIP_TRANSAC_GET_STACK(self)			TSIP_TRANSAC(self)->dialog->ss->stack
 #define TSIP_TRANSAC_GET_TIMER_MGR(self)		TSIP_TRANSAC(self)->dialog->ss->stack->timer_mgr
 
@@ -102,6 +104,8 @@ typedef struct tsip_transac_s
 	
 	tsip_dialog_t *dialog;
 	
+	tsk_fsm_t *fsm;
+
 	tsip_transac_type_t type;
 	
 	tsk_bool_t reliable;
@@ -125,12 +129,13 @@ typedef tsk_list_t tsip_transacs_L_t; /**< List of @ref tsip_transac_t elements.
 /*
 ================================*/
 
-int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog);
+int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog, tsk_fsm_state_id curr, tsk_fsm_state_id term);
 int tsip_transac_deinit(tsip_transac_t *self);
 int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request);
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg);
 int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2);
 int tsip_transac_remove(const tsip_transac_t* self);
+int tsip_transac_fsm_act(tsip_transac_t* self, tsk_fsm_action_id , const tsip_message_t*);
 
 TSIP_END_DECLS
 

@@ -1,7 +1,5 @@
 APP := lib$(PROJECT).so
 
-INSTALL_DIR = /system/lib
-
 CFLAGS := $(CFLAGS) -I../tinySAK/src -I../tinyNET/src -I./include
 LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK -ltinyNET
 
@@ -46,8 +44,8 @@ $(APP): $(OBJS)
 	
 install: $(APP)
 	$(ANDROID_SDK_ROOT)/tools/adb remount
-	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(INSTALL_DIR)/$(APP)
-	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(INSTALL_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
 	
 clean:
 	@rm -f $(OBJS) $(APP)

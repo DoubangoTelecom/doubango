@@ -23,8 +23,6 @@
 #ifndef TEST_TINYIPSEC_STDAFX_H
 #define TEST_TINYIPSEC_STDAFX_H
 
-#include "targetver.h"
-
 #include <stdio.h>
 
 #if (defined(_WIN32) || defined(WIN32) || defined(_WIN32_WCE)) && !defined(__SYMBIAN32__)

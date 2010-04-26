@@ -1,0 +1,28 @@
+APP := lib$(PROJECT).so
+
+CFLAGS := $(CFLAGS) -I../tinySAK/src -I./src
+LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK
+
+all: $(APP)
+
+OBJS = \
+	src/tipsec.o\
+	src/tipsec_common.o\
+	src/tipsec_racoon.o\
+	src/tipsec_vista.o\
+	src/tipsec_xp.o
+	
+
+$(APP): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ 
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

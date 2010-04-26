@@ -47,7 +47,7 @@ tsip_header_Authorization_t* tsip_header_Authorization_create()
 int tsip_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Authorization_t *Authorization = header;
+		const tsip_header_Authorization_t *Authorization = (const tsip_header_Authorization_t *)header;
 		if(Authorization && Authorization->scheme){
 			return tsk_buffer_append_2(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 				Authorization->scheme,

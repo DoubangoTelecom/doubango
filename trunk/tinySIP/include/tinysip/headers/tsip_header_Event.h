@@ -61,7 +61,7 @@ typedef struct tsip_header_Event_s
 }
 tsip_header_Event_t;
 
-TINYSIP_API tsip_header_Event_t* tsip_header_Event_create(package);
+TINYSIP_API tsip_header_Event_t* tsip_header_Event_create(const char* package);
 
 TINYSIP_API tsip_header_Event_t *tsip_header_Event_parse(const char *data, size_t size);
 

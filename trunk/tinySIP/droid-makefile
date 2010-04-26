@@ -1,0 +1,173 @@
+APP := lib$(PROJECT).so
+
+CFLAGS := $(CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinyHTTP/include -I../tinyIPSec/src -I../tinySDP/include -I../tinyMEDIA/include -I./include
+LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK -ltinyNET -ltinyHTTP -ltinyIPSec -ltinySDP -ltinyMEDIA
+
+all: $(APP)
+
+OBJS = \
+	src/tsip.o\
+	src/tsip_action.o\
+	src/tsip_event.o\
+	src/tsip_message.o\
+	src/tsip_ssession.o\
+	src/tsip_timers.o\
+	src/tsip_uri.o\
+	
+	### api
+OBJS += src/api/tsip_api_invite.o\
+	src/api/tsip_api_message.o\
+	src/api/tsip_api_publish.o\
+	src/api/tsip_api_register.o\
+	src/api/tsip_api_subscribe.o
+
+	### authentication
+OBJS += src/authentication/tsip_challenge.o\
+	src/authentication/tsip_milenage.o\
+	src/authentication/tsip_rijndael.o
+	
+	### dialogs
+OBJS += src/dialogs/tsip_dialog.o\
+	src/dialogs/tsip_dialog_invite.o\
+	src/dialogs/tsip_dialog_invite.client.o\
+	src/dialogs/tsip_dialog_invite.server.o\
+	src/dialogs/tsip_dialog_layer.o\
+	src/dialogs/tsip_dialog_message.o\
+	src/dialogs/tsip_dialog_publish.client.o\
+	src/dialogs/tsip_dialog_register.client.o\
+	src/dialogs/tsip_dialog_register.server.o\
+	src/dialogs/tsip_dialog_subscribe.client.o\
+	src/dialogs/tsip_dialog_subscribe.server.o
+	
+	### headers
+OBJS += src/headers/tsip_header.o\
+	src/headers/tsip_header_accept.o\
+	src/headers/tsip_header_Accept_Contact.o\
+	src/headers/tsip_header_Accept_Encoding.o\
+	src/headers/tsip_header_Accept_Language.o\
+	src/headers/tsip_header_Accept_Resource_Priority.o\
+	src/headers/tsip_header_Alert_Info.o\
+	src/headers/tsip_header_Allow.o\
+	src/headers/tsip_header_Allow_Events.o\
+	src/headers/tsip_header_Authentication_Info.o\
+	src/headers/tsip_header_Authorization.o\
+	src/headers/tsip_header_Call_ID.o\
+	src/headers/tsip_header_Call_Info.o\
+	src/headers/tsip_header_Contact.o\
+	src/headers/tsip_header_Content_Disposition.o\
+	src/headers/tsip_header_Content_Encoding.o\
+	src/headers/tsip_header_Content_Language.o\
+	src/headers/tsip_header_Content_Length.o\
+	src/headers/tsip_header_Content_Type.o\
+	src/headers/tsip_header_CSeq.o\
+	src/headers/tsip_header_Date.o\
+	src/headers/tsip_header_Dummy.o\
+	src/headers/tsip_header_Error_Info.o\
+	src/headers/tsip_header_Event.o\
+	src/headers/tsip_header_Expires.o\
+	src/headers/tsip_header_From.o\
+	src/headers/tsip_header_History_Info.o\
+	src/headers/tsip_header_Identity.o\
+	src/headers/tsip_header_Identity_Info.o\
+	src/headers/tsip_header_In_Reply_To.o\
+	src/headers/tsip_header_Join.o\
+	src/headers/tsip_header_Max_Forwards.o\
+	src/headers/tsip_header_MIME_Version.o\
+	src/headers/tsip_header_Min_Expires.o\
+	src/headers/tsip_header_Min_SE.o\
+	src/headers/tsip_header_Organization.o\
+	src/headers/tsip_header_Path.o\
+	src/headers/tsip_header_Priority.o\
+	src/headers/tsip_header_Privacy.o\
+	src/headers/tsip_header_Proxy_Authenticate.o\
+	src/headers/tsip_header_Proxy_Authorization.o\
+	src/headers/tsip_header_Proxy_Require.o\
+	src/headers/tsip_header_P_Access_Network_Info.o\
+	src/headers/tsip_header_P_Answer_State.o\
+	src/headers/tsip_header_P_Asserted_Identity.o\
+	src/headers/tsip_header_P_Associated_URI.o\
+	src/headers/tsip_header_P_Called_Party_ID.o\
+	src/headers/tsip_header_P_Charging_Function_Addresses.o\
+	src/headers/tsip_header_P_Charging_Vector.o\
+	src/headers/tsip_header_P_DCS_Billing_Info.o\
+	src/headers/tsip_header_P_DCS_LAES.o\
+	src/headers/tsip_header_P_DCS_OSPS.o\
+	src/headers/tsip_header_P_DCS_Redirect.o\
+	src/headers/tsip_header_P_DCS_Trace_Party_ID.o\
+	src/headers/tsip_header_P_Early_Media.o\
+	src/headers/tsip_header_P_Media_Authorization.o\
+	src/headers/tsip_header_P_Preferred_Identity.o\
+	src/headers/tsip_header_P_Profile_Key.o\
+	src/headers/tsip_header_P_User_Database.o\
+	src/headers/tsip_header_P_Visited_Network_ID.o\
+	src/headers/tsip_header_RAck.o\
+	src/headers/tsip_header_Reason.o\
+	src/headers/tsip_header_Record_Route.o\
+	src/headers/tsip_header_Referred_By.o\
+	src/headers/tsip_header_Refer_Sub.o\
+	src/headers/tsip_header_Refer_To.o\
+	src/headers/tsip_header_Reject_Contact.o\
+	src/headers/tsip_header_Replaces.o\
+	src/headers/tsip_header_Reply_To.o\
+	src/headers/tsip_header_Request_Disposition.o\
+	src/headers/tsip_header_Require.o\
+	src/headers/tsip_header_Resource_Priority.o\
+	src/headers/tsip_header_Retry_After.o\
+	src/headers/tsip_header_Route.o\
+	src/headers/tsip_header_RSeq.o\
+	src/headers/tsip_header_Security_Client.o\
+	src/headers/tsip_header_Security_Server.o\
+	src/headers/tsip_header_Security_Verify.o\
+	src/headers/tsip_header_Server.o\
+	src/headers/tsip_header_Service_Route.o\
+	src/headers/tsip_header_Session_Expires.o\
+	src/headers/tsip_header_SIP_ETag.o\
+	src/headers/tsip_header_SIP_If_Match.o\
+	src/headers/tsip_header_Subject.o\
+	src/headers/tsip_header_Subscription_State.o\
+	src/headers/tsip_header_Supported.o\
+	src/headers/tsip_header_Target_Dialog.o\
+	src/headers/tsip_header_Timestamp.o\
+	src/headers/tsip_header_To.o\
+	src/headers/tsip_header_Unsupported.o\
+	src/headers/tsip_header_User_Agent.o\
+	src/headers/tsip_header_Via.o\
+	src/headers/tsip_header_Warning.o\
+	src/headers/tsip_header_WWW_Authenticate.o
+	
+	### media
+OBJS += src/media/tsip_msession.o
+	
+	### parsers
+OBJS += src/parsers/tsip_parser_header.o\
+	src/parsers/tsip_parser_message.o\
+	src/parsers/tsip_parser_uri.o
+	
+	### transactions
+OBJS += src/transactions/tsip_transac.o\
+	src/transactions/tsip_transac_ict.o\
+	src/transactions/tsip_transac_ist.o\
+	src/transactions/tsip_transac_layer.o\
+	src/transactions/tsip_transac_nict.o\
+	src/transactions/tsip_transac_nist.o
+	
+	### transports
+OBJS += src/transports/tsip_transport.o\
+	src/transports/tsip_transport_ipsec.o\
+	src/transports/tsip_transport_layer.o\
+	src/transports/tsip_transport_tls.o
+	
+
+$(APP): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ 
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

@@ -87,11 +87,11 @@ tsip_header_Subscription_State_t* tsip_header_Subscription_State_create()
 }
 
 
-int tsip_header_Subscription_State_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Subscription_State_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Subscription_State_t *Subscription_State = header;
-		int ret = -1;
+		const tsip_header_Subscription_State_t *Subscription_State = (const tsip_header_Subscription_State_t *)header;
+		int ret;
 		
 		ret = tsk_buffer_append_2(output, "%s%s%s", 
 			Subscription_State->state,

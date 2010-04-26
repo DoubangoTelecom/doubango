@@ -54,10 +54,10 @@ tsip_header_Via_t* tsip_header_Via_create_null()
 	return tsip_header_Via_create(tsk_null, tsk_null, tsk_null, tsk_null, 0);
 }
 
-int tsip_header_Via_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Via_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Via_t *Via = header;
+		const tsip_header_Via_t *Via = (const tsip_header_Via_t *)header;
 		tsk_istr_t port, rport, ttl;
 		int ipv6 = (Via->host && tsk_strcontains(Via->host, tsk_strlen(Via->host), ":"));
 

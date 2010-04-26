@@ -78,10 +78,10 @@ tsip_header_SIP_If_Match_t* tsip_header_SIP_If_Match_create_null()
 	return tsip_header_SIP_If_Match_create(tsk_null);
 }
 
-int tsip_header_SIP_If_Match_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_SIP_If_Match_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_SIP_If_Match_t *SIP_If_Match = header;
+		const tsip_header_SIP_If_Match_t *SIP_If_Match = (const tsip_header_SIP_If_Match_t *)header;
 		if(SIP_If_Match->value){
 			return tsk_buffer_append(output, SIP_If_Match->value, tsk_strlen(SIP_If_Match->value));
 		}

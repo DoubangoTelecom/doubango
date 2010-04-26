@@ -44,6 +44,8 @@
 
 TSIP_BEGIN_DECLS
 
+struct tsip_header_s;
+
 #define TSIP_HEADER(self)					((tsip_header_t*)(self))
 #define TSIP_HEADER_PARAMS(self)			(TSIP_HEADER(self)->params)
 #define TSIP_HEADER_VALUE_TOSTRING_F(self)	((tsip_header_value_tostring_f)(self))

@@ -44,7 +44,7 @@ typedef uint64_t tsip_action_id_t;
 
 typedef enum tsip_action_option_e
 {
-	/* TSIP_ACTION_OPTION_DUMMY, */
+	TSIP_ACTION_OPTION_DUMMY, /* at least one */
 }
 tsip_action_option_t;
 

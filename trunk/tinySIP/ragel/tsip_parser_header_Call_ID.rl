@@ -74,10 +74,10 @@ tsip_header_Call_ID_t* tsip_header_Call_ID_create(const char* call_id)
 	return tsk_object_new(TSIP_HEADER_CALL_ID_VA_ARGS(call_id));
 }
 
-int tsip_header_Call_ID_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Call_ID_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Call_ID_t *Call_ID = header;
+		const tsip_header_Call_ID_t *Call_ID = (const tsip_header_Call_ID_t *)header;
 		if(Call_ID->value){
 			return tsk_buffer_append(output, Call_ID->value, tsk_strlen(Call_ID->value));
 		}

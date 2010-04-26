@@ -37,6 +37,8 @@
 
 TSDP_BEGIN_DECLS
 
+struct tsdp_header_s;
+
 #define TSDP_HEADER(self)					((tsdp_header_t*)(self))
 #define TSDP_HEADER_VALUE_TOSTRING_F(self)	((tsdp_header_value_tostring_f)(self))
 

@@ -103,10 +103,10 @@ tsip_header_Warning_t* tsip_header_Warning_create()
 	return tsk_object_new(tsip_header_Warning_def_t);
 }
 
-int tsip_header_Warning_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Warning_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Warning_t *Warning = header;
+		const tsip_header_Warning_t *Warning = (const tsip_header_Warning_t *)header;
 		return tsk_buffer_append_2(output, "%d %s %s", 
 			Warning->code, Warning->agent, Warning->text); /* warn-code  SP warn-agent  SP warn-text */
 	}

@@ -58,10 +58,10 @@ tsip_header_Server_t* tsip_header_server_create_null()
 	return tsip_header_server_create(tsk_null);
 }
 
-int tsip_header_Server_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Server_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Server_t *Server = header;
+		const tsip_header_Server_t *Server = (const tsip_header_Server_t *)header;
 		if(Server->value){
 			return tsk_buffer_append(output, Server->value, tsk_strlen(Server->value));
 		}

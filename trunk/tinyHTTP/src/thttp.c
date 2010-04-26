@@ -174,8 +174,9 @@ THTTP_SESSION_SET_CRED("ali baba", "open sesame"),
 * All headers shall be set by using @ref THTTP_SESSION_SET_HEADER(name, value) macro. Session-level headers will be added to all underlying requests even if a request redefines this header. This means that if both the request and the session have the same header, then it will be duplicated.<br>
 * <i>Host</i> and <i>Content-Length</i> headers are automatically added by the stack.
 * </p>
-* 
-* 
+* <p>
+* @ref THTTP_SESSION_UNSET_HEADER() and @ref THTTP_SESSION_SET_HEADER() macros are used to remove or update a previously added session-level header, respectively.
+* </p>
 * 
 * <h2>15.3 Requests</h2>
 * <p>

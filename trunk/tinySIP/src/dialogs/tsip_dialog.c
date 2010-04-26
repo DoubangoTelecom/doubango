@@ -876,6 +876,7 @@ int tsip_dialog_init(tsip_dialog_t *self, tsip_dialog_type_t type, const char* c
 int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id action_id, const tsip_message_t* message, const tsip_action_handle_t* action)
 {
 	if(!self || !self->fsm){
+		TSK_DEBUG_WARN("Invalid parameter.");
 		return -1;
 	}
 	return tsk_fsm_act(self->fsm, action_id, self, message, self, message, action);
@@ -884,6 +885,7 @@ int tsip_dialog_fsm_act(tsip_dialog_t* self, tsk_fsm_action_id action_id, const 
 int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action)
 {
 	if(!self){
+		TSK_DEBUG_WARN("Invalid parameter.");
 		return -1;
 	}
 	TSK_OBJECT_SAFE_FREE(self->curr_action);
@@ -896,7 +898,12 @@ int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action
 int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action)
 {
 	if(self){
-		return tsip_dialog_fsm_act(self, atype_hangup, tsk_null, action); 
+		if(self->state == tsip_initial){
+			return tsip_dialog_fsm_act(self, atype_cancel, tsk_null, action);
+		}
+		else{
+			return tsip_dialog_fsm_act(self, atype_hangup, tsk_null, action);
+		}
 	}
 	return -1;
 }
@@ -916,8 +923,7 @@ int tsip_dialog_remove(const tsip_dialog_t* self)
 
 int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2)
 {
-	if(d1 && d2)
-	{
+	if(d1 && d2){
 		if(
 			tsk_strequals(d1->callid, d2->callid) 
 			&& (tsk_strequals(d1->tag_local, d2->tag_local))
@@ -932,13 +938,15 @@ int tsip_dialog_cmp(const tsip_dialog_t *d1, const tsip_dialog_t *d2)
 
 int tsip_dialog_deinit(tsip_dialog_t *self)
 {
-	if(self)
-	{
+	if(self){
 		if(!self->initialized){
 			TSK_DEBUG_WARN("Dialog not initialized.");
 			return -2;
 		}
 		
+		/* Cancel all transactions associated to this dialog (do it here before the dialog becomes unsafe) */
+		tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, self);
+
 		TSK_OBJECT_SAFE_FREE(self->ss);
 		TSK_OBJECT_SAFE_FREE(self->curr_action);
 
@@ -954,7 +962,7 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 
 		TSK_OBJECT_SAFE_FREE(self->routes);
 		TSK_OBJECT_SAFE_FREE(self->challenges);
-
+		
 		TSK_OBJECT_SAFE_FREE(self->fsm);
 		
 		self->initialized = 0;

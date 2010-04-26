@@ -81,10 +81,10 @@ tsip_header_Event_t* tsip_header_Event_create(const char* package)
 	return tsk_object_new(TSIP_HEADER_EVENT_VA_ARGS(package));
 }
 
-int tsip_header_Event_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Event_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Event_t *Event = header;
+		const tsip_header_Event_t *Event = (const tsip_header_Event_t *)header;
 		if(Event->package){
 			return tsk_buffer_append(output, Event->package, tsk_strlen(Event->package));
 		}

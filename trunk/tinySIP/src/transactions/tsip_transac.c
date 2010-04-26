@@ -39,17 +39,20 @@
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
-int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog)
+int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t reliable, int32_t cseq_value, const char* cseq_method, const char* callid, tsip_dialog_t* dialog, tsk_fsm_state_id curr, tsk_fsm_state_id term)
 {
-	if(self && !self->initialized)
-	{
+	if(self && !self->initialized){
 		self->type = type;
 		self->reliable = reliable;
 		self->cseq_value = cseq_value;
 		self->cseq_method = tsk_strdup(cseq_method);
 		self->callid = tsk_strdup(callid);
 		self->dialog = tsk_object_ref(dialog);
+
+		/* FSM */
+		self->fsm = tsk_fsm_create(curr, term);
 
 		self->initialized = tsk_true;
 				
@@ -60,12 +63,14 @@ int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t
 
 int tsip_transac_deinit(tsip_transac_t *self)
 {
-	if(self && self->initialized)
-	{	
+	if(self && self->initialized){	
 		TSK_FREE(self->branch);
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
 		TSK_OBJECT_SAFE_FREE(self->dialog);
+
+		/* FSM */
+		TSK_OBJECT_SAFE_FREE(self->fsm);
 
 		self->initialized = tsk_false;
 
@@ -77,8 +82,7 @@ int tsip_transac_deinit(tsip_transac_t *self)
 int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request)
 {
 	int ret = -1;
-	if(self)
-	{
+	if(self){
 		switch(self->type){
 			case tsip_nist:{
 					ret = tsip_transac_nist_start(TSIP_TRANSAC_NIST(self), request);
@@ -104,8 +108,7 @@ int tsip_transac_start(tsip_transac_t *self, const tsip_request_t* request)
 
 int tsip_transac_send(tsip_transac_t *self, const char *branch, const tsip_message_t *msg)
 {
-	if(self && TSIP_TRANSAC_GET_STACK(self))
-	{
+	if(self && TSIP_TRANSAC_GET_STACK(self)){
 		const tsip_transport_layer_t *layer = TSIP_TRANSAC_GET_STACK(self)->layer_transport;
 		if(layer){
 			return tsip_transport_layer_send(layer, branch, msg);
@@ -127,4 +130,13 @@ int tsip_transac_cmp(const tsip_transac_t *t1, const tsip_transac_t *t2)
 int tsip_transac_remove(const tsip_transac_t* self)
 {
 	return tsip_transac_layer_remove(TSIP_TRANSAC_GET_STACK(self)->layer_transac, TSIP_TRANSAC(self));
+}
+
+int tsip_transac_fsm_act(tsip_transac_t* self, tsk_fsm_action_id action_id, const tsip_message_t* message)
+{
+	if(!self || !self->fsm){
+		TSK_DEBUG_WARN("Invalid parameter.");
+		return -1;
+	}
+	return tsk_fsm_act(self->fsm, action_id, self, message, self, message);
 }
