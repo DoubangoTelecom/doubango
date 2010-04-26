@@ -47,7 +47,7 @@ tsip_header_WWW_Authenticate_t* tsip_header_WWW_Authenticate_create()
 int tsip_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_WWW_Authenticate_t *WWW_Authenticate = header;
+		const tsip_header_WWW_Authenticate_t *WWW_Authenticate = (const tsip_header_WWW_Authenticate_t *)header;
 		if(WWW_Authenticate && WWW_Authenticate->scheme){
 			return tsk_buffer_append_2(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
 				WWW_Authenticate->scheme,

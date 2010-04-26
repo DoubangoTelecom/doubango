@@ -158,10 +158,10 @@ tsip_header_Security_Server_t* tsip_header_Security_Server_create_null()
 	return tsip_header_Security_Server_create();
 }
 
-int tsip_header_Security_Server_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Security_Server_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Security_Server_t *Security_Server = header;
+		const tsip_header_Security_Server_t *Security_Server = (const tsip_header_Security_Server_t *)header;
 		int ret = 0;
 		
 		// ipsec-3gpp; alg=hmac-md5-96; ealg=des-ede3-cbc; spi-c=1111; spi-s=2222; port-c=5062; port-s=5064

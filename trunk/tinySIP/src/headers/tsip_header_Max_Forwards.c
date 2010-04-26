@@ -52,10 +52,10 @@ tsip_header_Max_Forwards_t* tsip_header_Max_Forwards_create(int32_t max)
 	return tsk_object_new(TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max));
 }
 
-int tsip_header_Max_Forwards_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Max_Forwards_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Max_Forwards_t *Max_Forwards = header;
+		const tsip_header_Max_Forwards_t *Max_Forwards = (const tsip_header_Max_Forwards_t *)header;
 		if(Max_Forwards->value >= 0){
 			return tsk_buffer_append_2(output, "%d", Max_Forwards->value);
 		}

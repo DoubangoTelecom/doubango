@@ -99,13 +99,16 @@ int tsip_transac_nist_Completed_2_Completed_X_request(va_list *app);
 int tsip_transac_nist_Completed_2_Terminated_X_tirmerJ(va_list *app);
 int tsip_transac_nist_Any_2_Terminated_X_transportError(va_list *app);
 int tsip_transac_nist_Any_2_Terminated_X_Error(va_list *app);
+int tsip_transac_nist_Any_2_Terminated_X_cancel(va_list *app); /* doubango-specific */
 
 /* ======================== conds ======================== */
 
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
-	_fsm_action_request,
+	_fsm_action_cancel = atype_cancel,
+
+	_fsm_action_request = 0xFF,
 	_fsm_action_send_1xx,
 	_fsm_action_send_200_to_699,
 	_fsm_action_timerJ,
@@ -134,7 +137,7 @@ int tsip_transac_nist_event_callback(const tsip_transac_nist_t *self, tsip_trans
 	case tsip_transac_incoming_msg: /* From Transport Layer to Transaction Layer */
 		{
 			if(msg && TSIP_MESSAGE_IS_REQUEST(msg)){
-				ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, msg, self, msg);
+				ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_request, msg);
 			}
 			break;
 		}
@@ -144,10 +147,10 @@ int tsip_transac_nist_event_callback(const tsip_transac_nist_t *self, tsip_trans
 			if(msg && TSIP_MESSAGE_IS_RESPONSE(msg))
 			{
 				if(TSIP_RESPONSE_IS_1XX(msg)){
-					ret = tsk_fsm_act(self->fsm, _fsm_action_send_1xx, self, msg, self, msg);
+					ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_send_1xx, msg);
 				}
 				else if(TSIP_RESPONSE_IS_23456(msg)){
-					ret = tsk_fsm_act(self->fsm, _fsm_action_send_200_to_699, self, msg, self, msg);
+					ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_send_200_to_699, msg);
 				}
 			}
 			break;
@@ -160,13 +163,13 @@ int tsip_transac_nist_event_callback(const tsip_transac_nist_t *self, tsip_trans
 
 	case tsip_transac_error:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_error, self, msg, self, msg);
+			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_error, msg);
 			break;
 		}
 
 	case tsip_transac_transport_error:
 		{
-			ret = tsk_fsm_act(self->fsm, _fsm_action_transporterror, self, msg, self, msg);
+			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_transporterror, msg);
 			break;
 		}
 	}
@@ -180,7 +183,7 @@ int tsip_transac_nist_timer_callback(const tsip_transac_nist_t* self, tsk_timer_
 
 	if(self){
 		if(timer_id == self->timerJ.id){
-			ret = tsk_fsm_act(self->fsm, _fsm_action_timerJ, self, tsk_null, self, tsk_null);
+			ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_timerJ, tsk_null);
 		}
 	}
 
@@ -191,7 +194,7 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 {
 	/* Initialize the state machine.
 	*/
-	tsk_fsm_set(self->fsm,
+	tsk_fsm_set(TSIP_TRANSAC_GET_FSM(self),
 			
 			/*=======================
 			* === Started === 
@@ -234,7 +237,8 @@ int tsip_transac_nist_init(tsip_transac_nist_t *self)
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_transac_nist_Any_2_Terminated_X_transportError, "tsip_transac_nist_Any_2_Terminated_X_transportError"),
 			// Any -> (transport error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_transac_nist_Any_2_Terminated_X_Error, "tsip_transac_nist_Any_2_Terminated_X_Error"),
-
+			// Any -> (cancel) -> Terminated
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_cancel, _fsm_state_Terminated, tsip_transac_nist_Any_2_Terminated_X_cancel, "tsip_transac_nist_Any_2_Terminated_X_cancel"),
 			
 			TSK_FSM_ADD_NULL());
 
@@ -260,7 +264,7 @@ int tsip_transac_nist_start(tsip_transac_nist_t *self, const tsip_request_t* req
 
 	if(self && !TSIP_TRANSAC(self)->running && request){
 		TSIP_TRANSAC(self)->running = 1;
-		if((ret = tsk_fsm_act(self->fsm, _fsm_action_request, self, request, self, request))){
+		if((ret = tsip_transac_fsm_act(TSIP_TRANSAC(self), _fsm_action_request, request))){
 			//
 		}
 	}
@@ -470,6 +474,14 @@ int tsip_transac_nist_Any_2_Terminated_X_Error(va_list *app)
 	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_error, tsk_null);
 }
 
+/* Any -> (cancel) -> Terminated
+*/
+tsip_transac_nist_Any_2_Terminated_X_cancel(va_list *app)
+{
+	/* doubango-specific */
+	return 0;
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //				== STATE MACHINE END ==
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -521,13 +533,12 @@ static tsk_object_t* tsip_transac_nist_ctor(tsk_object_t * self, va_list * app)
 		const char *callid = va_arg(*app, const char *);
 		tsip_dialog_t* dialog = va_arg(*app, tsip_dialog_t*);
 
-		/* create FSM */
-		transac->fsm = tsk_fsm_create(_fsm_state_Started, _fsm_state_Terminated);
-		transac->fsm->debug = DEBUG_STATE_MACHINE;
-		tsk_fsm_set_callback_terminated(transac->fsm, TSK_FSM_ONTERMINATED_F(tsip_transac_nist_OnTerminated), (const void*)transac);
-
 		/* Initialize base class */
-		tsip_transac_init(TSIP_TRANSAC(transac), tsip_nist, reliable, cseq_value, cseq_method, callid, dialog);
+		tsip_transac_init(TSIP_TRANSAC(transac), tsip_nist, reliable, cseq_value, cseq_method, callid, dialog, _fsm_state_Started, _fsm_state_Terminated);
+
+		/* init FSM */
+		TSIP_TRANSAC_GET_FSM(transac)->debug = DEBUG_STATE_MACHINE;
+		tsk_fsm_set_callback_terminated(TSIP_TRANSAC_GET_FSM(transac), TSK_FSM_ONTERMINATED_F(tsip_transac_nist_OnTerminated), (const void*)transac);
 
 		/* Initialize NICT object */
 		tsip_transac_nist_init(transac);
@@ -542,14 +553,13 @@ static tsk_object_t* tsip_transac_nist_dtor(tsk_object_t * _self)
 		/* Cancel timers */
 		TRANSAC_TIMER_CANCEL(J);
 
-		TSIP_TRANSAC(self)->running = 0;
+		TSIP_TRANSAC(self)->running = tsk_false;
 		TSK_OBJECT_SAFE_FREE(self->lastResponse);
 
 		/* DeInitialize base class */
 		tsip_transac_deinit(TSIP_TRANSAC(self));
 
-		/* FSM */
-		TSK_OBJECT_SAFE_FREE(self->fsm);
+		TSK_DEBUG_INFO("*** NIST destroyed ***");
 	}
 	return _self;
 }

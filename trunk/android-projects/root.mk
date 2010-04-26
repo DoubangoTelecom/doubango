@@ -10,11 +10,13 @@ export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-4
 export OUTPUT_DIR=$(shell pwd)/output
 $(shell mkdir -p $(OUTPUT_DIR))
 
-# Path where to copy executables (on the device or emulator)
-export INSTALL_DIR=/data/tmp
+# Path where to copy executables -on the device or emulator-
+export EXEC_DIR=/data/tmp
+# Path where to copy libraries (*.so) -on the device or emulator-
+export LIB_DIR=/system/lib
 
 export CC=arm-eabi-gcc
-export CFLAGS=$(DEBUG_FLAGS) -I$(ANDROID_PLATFORM)/arch-arm/usr/include \
+export CFLAGS+=$(DEBUG_FLAGS) -I$(ANDROID_PLATFORM)/arch-arm/usr/include \
 -march=armv5te \
 -mtune=xscale \
 -msoft-float \
@@ -31,10 +33,10 @@ export CFLAGS=$(DEBUG_FLAGS) -I$(ANDROID_PLATFORM)/arch-arm/usr/include \
 -DANDROID \
 -MMD \
 -MP
-export LDFLAGS=-Wl,--entry=main,-rpath=/system/lib,-rpath-link=$(ANDROID_PLATFORM)/arch-arm/usr/lib,-dynamic-linker=/system/bin/linker -L$(ANDROID_PLATFORM)/arch-arm/usr/lib
+export LDFLAGS=-Wl,--entry=main,-rpath=/system/lib,-rpath-link=$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker -L$(ANDROID_PLATFORM)/arch-arm/usr/lib
 export LDFLAGS += -Wl,--no-undefined
 export LDFLAGS += -nostdlib -lc -Wl,--no-whole-archive -L$(OUTPUT_DIR)
 
 gdbserver:
 	$(ANDROID_SDK_ROOT)/tools/adb forward tcp:1234: tcp:1234
-	$(ANDROID_SDK_ROOT)/tools/adb shell $(INSTALL_DIR)/gdbserver :1234 $(INSTALL_DIR)/test
+	$(ANDROID_SDK_ROOT)/tools/adb shell $(EXEC_DIR)/gdbserver :1234 $(EXEC_DIR)/test

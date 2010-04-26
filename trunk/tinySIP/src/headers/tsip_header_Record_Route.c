@@ -60,10 +60,10 @@ tsip_header_Record_Route_t* tsip_header_Record_Route_create_null()
 	return tsip_header_Record_Route_create(tsk_null);
 }
 
-int tsip_header_Record_Route_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Record_Route_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Record_Route_t *Record_Route = header;
+		const tsip_header_Record_Route_t *Record_Route = (const tsip_header_Record_Route_t *)header;
 		if(Record_Route->value){
 			return tsk_buffer_append(output, Record_Route->value, tsk_strlen(Record_Route->value));
 		}

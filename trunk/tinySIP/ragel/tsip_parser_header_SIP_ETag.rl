@@ -77,10 +77,10 @@ tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create_null()
 	return tsip_header_SIP_ETag_create(tsk_null);
 }
 
-int tsip_header_SIP_ETag_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_SIP_ETag_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_SIP_ETag_t *SIP_ETag = header;
+		const tsip_header_SIP_ETag_t *SIP_ETag = (const tsip_header_SIP_ETag_t *)header;
 		if(SIP_ETag->value){
 			return tsk_buffer_append(output, SIP_ETag->value, tsk_strlen(SIP_ETag->value));
 		}

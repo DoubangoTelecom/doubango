@@ -337,7 +337,12 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				{ /* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* NAME_STR = va_arg(*app, const char*);
 					const char* VALUE_STR = va_arg(*app, const char*);
-					tsk_params_add_param(&self->headers, NAME_STR, VALUE_STR);
+					if(VALUE_STR == ((const char*)-1)){ /* UNSET */
+						tsk_params_remove_param(self->headers, NAME_STR);
+					}
+					else{ /* SET */
+						tsk_params_add_param(&self->headers, NAME_STR, VALUE_STR);
+					}
 					break;
 				}
 			

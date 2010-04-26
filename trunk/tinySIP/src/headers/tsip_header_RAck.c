@@ -59,10 +59,10 @@ tsip_header_RAck_t* tsip_header_RAck_create_null()
 	return tsip_header_RAck_create(0, 0, tsk_null);
 }
 
-int tsip_header_RAck_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_RAck_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_RAck_t *RAck = header;
+		const tsip_header_RAck_t *RAck = (const tsip_header_RAck_t *)header;
 		return tsk_buffer_append_2(output, "%u %u %s", RAck->seq, RAck->cseq, RAck->method);
 	}
 	return -1;

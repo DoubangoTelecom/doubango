@@ -59,10 +59,10 @@ tsip_header_P_Associated_URI_t* tsip_header_P_Associated_URI_create_null()
 	return tsip_header_P_Associated_URI_create(tsk_null);
 }
 
-int tsip_header_P_Associated_URI_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_P_Associated_URI_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_P_Associated_URI_t *P_Associated_URI = header;
+		const tsip_header_P_Associated_URI_t *P_Associated_URI = (const tsip_header_P_Associated_URI_t *)header;
 		int ret = 0;
 		
 		if(P_Associated_URI->display_name){ /* Display Name */

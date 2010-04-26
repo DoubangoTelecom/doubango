@@ -60,10 +60,10 @@ tsip_header_Path_t* tsip_header_Path_create_null()
 	return tsip_header_Path_create(tsk_null);
 }
 
-int tsip_header_Path_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Path_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Path_t *Path = header;
+		const tsip_header_Path_t *Path = (const tsip_header_Path_t *)header;
 		int ret = 0;
 		
 		if(Path->display_name){ /* Display Name */

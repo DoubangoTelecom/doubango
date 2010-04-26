@@ -55,10 +55,10 @@ tsip_header_P_Charging_Function_Addresses_t* tsip_header_P_Charging_Function_Add
 	return tsk_object_new(tsip_header_P_Charging_Function_Addresses_def_t);
 }
 
-int tsip_header_P_Charging_Function_Addresses_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_P_Charging_Function_Addresses_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = header;		
+		const tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = (const tsip_header_P_Charging_Function_Addresses_t *)header;		
 		return tsk_buffer_append_2(output, "%s%s%s%s%s", 
 			P_Charging_Function_Addresses->ecf ? "ecf=" : "",
 			P_Charging_Function_Addresses->ecf ? P_Charging_Function_Addresses->ecf : "",

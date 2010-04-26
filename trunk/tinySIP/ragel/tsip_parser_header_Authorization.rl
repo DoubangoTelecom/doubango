@@ -153,7 +153,7 @@
 //
 //}%%
 //
-//int tsip_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
+//int tsip_header_Authorization_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 //{
 //	if(header)
 //	{

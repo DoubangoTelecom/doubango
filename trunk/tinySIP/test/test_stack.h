@@ -233,9 +233,9 @@ int test_stack_callback(const tsip_event_t *sipevent)
 
 void test_stack()
 {
-//#define DOMAIN "ericsson.com"
+#define DOMAIN "ericsson.com"
 //#define DOMAIN "micromethod.com"
-#define DOMAIN "ims.inexbee.com"
+//#define DOMAIN "ims.inexbee.com"
 //#define DOMAIN "sip2sip.info"
 
 	const void* usr_context = tsk_null;
@@ -281,18 +281,30 @@ void test_stack()
 	
 	
 	int32_t port = 4060;
-
+/*
 	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, "sip:"DOMAIN, "mamadou@"DOMAIN, "sip:mamadou@"DOMAIN,
 		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
 		TSIP_STACK_SET_PASSWORD("mamadou"),
-		TSIP_STACK_SET_IMS_AKA_AMF(/*AMF*/ 0001),
+		TSIP_STACK_SET_IMS_AKA_AMF(AMF),
 		TSIP_STACK_SET_IMS_AKA_OPERATOR_ID("0xff08"),
 		TSIP_STACK_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
 		
 		TSIP_STACK_SET_PROXY_CSCF("192.168.16.225", port, "udp", "ipv4"),
 		
 		TSIP_STACK_SET_EARLY_IMS(tsk_true),
+*/
 
+	tsip_stack_handle_t *stack = tsip_stack_create(test_stack_callback, "sip:"DOMAIN, "mamadou@"DOMAIN, "sip:mamadou@"DOMAIN,
+		TSIP_STACK_SET_DISPLAY_NAME("Mamadou"),
+		TSIP_STACK_SET_PASSWORD("mamadou"),
+		TSIP_STACK_SET_IMS_AKA_AMF(AMF),
+		TSIP_STACK_SET_IMS_AKA_OPERATOR_ID("0xff08"),
+		TSIP_STACK_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
+		
+		TSIP_STACK_SET_PROXY_CSCF("192.168.0.13", 5081, "tcp", "ipv4"),
+		TSIP_STACK_SET_LOCAL_IP(LOCAL_IP),
+		
+		TSIP_STACK_SET_EARLY_IMS(tsk_true),
 
 
 /*
@@ -368,6 +380,7 @@ tsip_ssession_handle_t *op = tsip_ssession_create(stack,
 		TSIP_ACTION_SET_NULL());
 
 	getchar();
+	//tsk_thread_sleep(2000);
 
 	tsip_action_UNREGISTER(op,
 		TSIP_ACTION_SET_NULL()

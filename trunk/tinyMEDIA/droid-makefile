@@ -1,0 +1,24 @@
+APP := lib$(PROJECT).so
+
+CFLAGS := $(CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I./include
+LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK -ltinyNET -ltinySDP
+
+all: $(APP)
+
+OBJS = \
+	src/tmedia.o
+	
+
+$(APP): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ 
+
+%.o: %.c
+	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
+	
+install: $(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb remount
+	$(ANDROID_SDK_ROOT)/tools/adb push $(APP) $(LIB_DIR)/$(APP)
+	$(ANDROID_SDK_ROOT)/tools/adb shell chmod 777 $(LIB_DIR)/$(APP)
+	
+clean:
+	@rm -f $(OBJS) $(APP)

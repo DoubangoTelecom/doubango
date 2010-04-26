@@ -104,16 +104,32 @@ thttp_session_set(session,
 */
 /**@ingroup thttp_session_group
 * @def THTTP_SESSION_SET_HEADER
-* Adds new HTTP headers to the session.
+* Adds new HTTP headers to the session. The value of the header will be updated if it already exist.
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
-* @param NAME_STR The name of the header (<i>const char*</i>).
+* @param NAME_STR The name of the header (<i>const char*</i>) to add or update.
 * @param VALUE_STR The value of the header (<i>const char*</i>). Should not contains the trailing CRLF.
+* @sa @ref THTTP_SESSION_UNSET_HEADER
 *
 * @code
 // session = thttp_session_create(stack,
 thttp_session_set(session,
 	THTTP_SESSION_SET_HEADER("Pragma", "No-Cache"),
 	THTTP_SESSION_SET_HEADER("Connection", "Keep-Alive"),
+	THTTP_SESSION_SET_NULL());
+* @endcode
+*/
+/**@ingroup thttp_session_group
+* @def THTTP_SESSION_UNSET_HEADER
+* Removes a header. This header should be previously added by using @ref THTTP_SESSION_SET_HEADER().
+* This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
+* @param NAME_STR The name of the header (<i>const char*</i>) to remove.
+* @sa @ref THTTP_SESSION_SET_HEADER
+*
+* @code
+// session = thttp_session_create(stack,
+thttp_session_set(session,
+	THTTP_SESSION_UNSET_HEADER("Pragma"),
+	THTTP_SESSION_UNSET_HEADER("Connection"),
 	THTTP_SESSION_SET_NULL());
 * @endcode
 */
@@ -137,6 +153,7 @@ thttp_session_set(session,
 #define THTTP_SESSION_SET_OPTION(ID_ENUM, VALUE_STR)			httpp_option, (thttp_session_option_t)ID_ENUM, (const char*)VALUE_STR
 #define THTTP_SESSION_SET_CRED(USERNAME_STR, PASSWORD_STR)		httpp_cred, (const char*)USERNAME_STR, (const char*)PASSWORD_STR
 #define THTTP_SESSION_SET_HEADER(NAME_STR, VALUE_STR)			httpp_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define THTTP_SESSION_UNSET_HEADER(NAME_STR)					THTTP_SESSION_SET_HEADER(NAME_STR, (const char*)-1)
 #define THTTP_SESSION_SET_CONTEXT(CTX_PTR)						httpp_context, (const void*)CTX_PTR
 #define THTTP_SESSION_SET_NULL()								httpp_null
 

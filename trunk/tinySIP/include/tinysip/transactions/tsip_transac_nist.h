@@ -35,8 +35,6 @@
 #include "tinySIP/transactions/tsip_transac.h"
 #include "tinySIP/tsip_message.h"
 
-#include "tsk_fsm.h"
-
 TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSAC_NIST(self)															((tsip_transac_nist_t*)(self))
@@ -44,8 +42,6 @@ TSIP_BEGIN_DECLS
 typedef struct tsip_transac_nist
 {
 	TSIP_DECLARE_TRANSAC;
-
-	tsk_fsm_t *fsm;
 
 	tsip_response_t* lastResponse;
 	tsip_timer_t timerJ;

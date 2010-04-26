@@ -106,6 +106,35 @@ int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *
 	return -1;
 }
 
+/* cancel all transactions related to this dialog */
+int tsip_transac_layer_cancel_by_dialog(tsip_transac_layer_t *self, const struct tsip_dialog_s* dialog)
+{
+	tsk_list_item_t *item;
+	int ret = 0; /* Perhaps there is zero transaction */
+
+	if(!self || !dialog){
+		TSK_DEBUG_WARN("Invalid parameter.");
+		return -1;
+	}
+	
+	tsk_safeobj_lock(self);
+again:
+	tsk_list_foreach(item, self->transactions){
+		if(tsk_object_cmp(dialog, TSIP_TRANSAC(item->data)->dialog) == 0){
+			if((ret = tsip_transac_fsm_act(TSIP_TRANSAC(item->data), atype_cancel, tsk_null))){ /* will call tsip_transac_layer_remove() if succeed */
+				/* break; */
+			}
+			else{
+				/* we cannot continue because an item has been removed from the list while we are looping through  */
+				goto again;
+			}
+		}
+	}
+	tsk_safeobj_unlock(self);
+	
+	return 0;
+}
+
 const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_message_t* message)
 {
    /*

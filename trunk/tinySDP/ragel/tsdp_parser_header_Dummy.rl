@@ -133,14 +133,16 @@ tsdp_header_Dummy_t *tsdp_header_Dummy_parse(const char *data, size_t size)
 static tsk_object_t* tsdp_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		TSDP_HEADER(Dummy)->type = tsdp_htype_Dummy;
 		TSDP_HEADER(Dummy)->tostring = tsdp_header_Dummy_tostring;
 		TSDP_HEADER(Dummy)->clone = tsdp_header_Dummy_clone;
 		TSDP_HEADER(Dummy)->rank = TSDP_HTYPE_DUMMY_RANK;
-
+#if defined(__GNUC__)
+		Dummy->name = va_arg(*app, const int);
+#else
 		Dummy->name = va_arg(*app, const char);
+#endif
 		Dummy->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else{

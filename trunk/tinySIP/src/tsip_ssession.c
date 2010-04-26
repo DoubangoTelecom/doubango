@@ -261,7 +261,7 @@ int tsip_ssession_take_ownership(tsip_ssession_handle_t *self)
 	return -1;
 }
 
-tsk_bool_t tsip_ssession_have_ownership(tsip_ssession_handle_t *self)
+tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t *self)
 {
 	if(self){
 		const tsip_ssession_t *ss = self;
@@ -315,8 +315,7 @@ int tsip_ssession_hangup(const tsip_ssession_t *self, const tsip_action_t* actio
 {
 	int ret = -1;
 
-	if(self && self->stack)
-	{
+	if(self && self->stack){
 		tsip_dialog_t *dialog;
 				
 		if((dialog = tsip_dialog_layer_find_by_ss(self->stack->layer_dialog, self))){

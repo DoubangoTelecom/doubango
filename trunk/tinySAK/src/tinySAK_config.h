@@ -82,12 +82,6 @@
 #	define HAVE_GETTIMEOFDAY				1
 #endif
 
-#if defined(__SYMBIAN32__)
-#	define USE_GNUC_VA_ARGS		1
-#else
-#	define USE_GNUC_VA_ARGS		0
-#endif
-
 #include <stdint.h>
 #include <stddef.h>
 #include "tsk_common.h"

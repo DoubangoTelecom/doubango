@@ -55,10 +55,10 @@ tsip_header_Content_Length_t* tsip_header_Content_Length_create_null()
 	return tsip_header_Content_Length_create(0);
 }
 
-int tsip_header_Content_Length_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Content_Length_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Content_Length_t *Content_Length = header;		
+		const tsip_header_Content_Length_t *Content_Length = (const tsip_header_Content_Length_t *)header;		
 		return tsk_buffer_append_2(output, "%u", Content_Length->length);
 	}
 

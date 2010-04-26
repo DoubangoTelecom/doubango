@@ -35,6 +35,8 @@
 #include "tinySIP/headers/tsip_header_Dummy.h"
 #include "tinySIP/headers/tsip_header_Min_Expires.h"
 
+#include "tinySIP/transactions/tsip_transac_layer.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 #include "tsk_time.h"
@@ -299,9 +301,10 @@ int tsip_dialog_message_Sending_2_Terminated_X_300_to_699(va_list *app)
 int tsip_dialog_message_Sending_2_Terminated_X_cancel(va_list *app)
 {
 	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/* const tsip_message_t *message = va_arg(*app, const tsip_message_t *); */
 
-	return 0;
+	/* Cancel all transactions associated to this dialog (will also be one when the dialog is destroyed (worth nothing)) */
+	return tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 }
 
 /*	Receiving -> (accept) -> Terminated
@@ -456,7 +459,7 @@ static tsk_object_t* tsip_dialog_message_dtor(tsk_object_t * self)
 	if(dialog){
 		TSK_DEBUG_INFO("*** MESSAGE Dialog destroyed ***");
 
-		/* DeInitialize base class */
+		/* DeInitialize base class (will cancel all transactions) */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 	}
 	return self;

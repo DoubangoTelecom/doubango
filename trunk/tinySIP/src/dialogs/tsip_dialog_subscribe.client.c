@@ -34,6 +34,8 @@
 #include "tinySIP/headers/tsip_header_Min_Expires.h"
 #include "tinySIP/headers/tsip_header_Subscription_State.h"
 
+#include "tinySIP/transactions/tsip_transac_layer.h"
+
 #include "tinySIP/api/tsip_api_subscribe.h"
 
 #include "tsk_debug.h"
@@ -220,7 +222,7 @@ int tsip_dialog_subscribe_timer_callback(const tsip_dialog_subscribe_t* self, ts
 	return ret;
 }
 
-tsip_dialog_subscribe_t* tsip_dialog_subscribe_create(tsip_ssession_handle_t* ss)
+tsip_dialog_subscribe_t* tsip_dialog_subscribe_create(const tsip_ssession_handle_t* ss)
 {
 	return tsk_object_new(tsip_dialog_subscribe_def_t, ss);
 }
@@ -443,14 +445,18 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_300_to_699(va_list *app)
 */
 int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 {
+	int ret;
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	/* const tsip_response_t *response = va_arg(*app, const tsip_response_t *); */
+
+	/* Cancel all transactions associated to this dialog (will also be one when the dialog is destroyed (worth nothing)) */
+	ret = tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 
 	/* Alert the user. */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
 		701, "Subscription cancelled", tsk_null);
 
-	return 0;
+	return ret;
 }
 
 /* Trying -> (NOTIFY) -> Trying
@@ -666,7 +672,7 @@ static tsk_object_t* tsip_dialog_subscribe_dtor(tsk_object_t * _self)
 		DIALOG_TIMER_CANCEL(refresh);
 		DIALOG_TIMER_CANCEL(shutdown);
 
-		/* DeInitialize base class */
+		/* DeInitialize base class (will cancel all transactions) */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
 	}
 	return self;

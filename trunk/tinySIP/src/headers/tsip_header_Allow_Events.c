@@ -54,10 +54,10 @@ tsip_header_Allow_Events_t* tsip_header_Allow_Events_create()
 	return tsk_object_new(tsip_header_Allow_Events_def_t);
 }
 
-int tsip_header_Allow_Events_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Allow_Events_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Allow_Events_t *Allow_Events = header;
+		const tsip_header_Allow_Events_t *Allow_Events = (const tsip_header_Allow_Events_t *)header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;

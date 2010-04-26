@@ -225,7 +225,7 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 			tsk_buffer_append(output, &length, 1);
 			tsk_buffer_append(output, label, tsk_strlen(label));
 
-			label = strtok (0, ".");
+			label = strtok (tsk_null, ".");
 		}
 
 		TSK_FREE(_qname);

@@ -58,10 +58,10 @@ tsip_header_Dummy_t* tsip_header_Dummy_create_null()
 	return tsip_header_Dummy_create(tsk_null, tsk_null);
 }
 
-int tsip_header_Dummy_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Dummy_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Dummy_t *Dummy = header;
+		const tsip_header_Dummy_t *Dummy = (const tsip_header_Dummy_t *)header;
 		if(Dummy->value){
 			tsk_buffer_append(output, Dummy->value, tsk_strlen(Dummy->value));
 		}

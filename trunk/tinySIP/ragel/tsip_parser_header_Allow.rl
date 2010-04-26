@@ -74,10 +74,10 @@ tsip_header_Allow_t* tsip_header_Allow_create()
 	return tsk_object_new(tsip_header_Allow_def_t);
 }
 
-int tsip_header_Allow_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Allow_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Allow_t *Allow = header;
+		const tsip_header_Allow_t *Allow = (const tsip_header_Allow_t *)header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;

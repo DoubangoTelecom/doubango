@@ -56,10 +56,10 @@ tsip_header_Content_Type_t* tsip_header_Content_Type_create_null()
 	return tsip_header_Content_Type_create(tsk_null);
 }
 
-int tsip_header_Content_Type_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Content_Type_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Content_Type_t *Content_Type = header;
+		const tsip_header_Content_Type_t *Content_Type = (const tsip_header_Content_Type_t *)header;
 		if(Content_Type->type){
 			return tsk_buffer_append(output, Content_Type->type, tsk_strlen(Content_Type->type));
 		}

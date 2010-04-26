@@ -52,10 +52,10 @@ tsip_header_CSeq_t* tsip_header_CSeq_create(int32_t seq, const char*method)
 	return tsk_object_new(TSIP_HEADER_CSEQ_VA_ARGS(seq, method));
 }
 
-int tsip_header_CSeq_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_CSeq_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_CSeq_t *CSeq = header;
+		const tsip_header_CSeq_t *CSeq = (const tsip_header_CSeq_t *)header;
 		return tsk_buffer_append_2(output, "%u %s", CSeq->seq, CSeq->method);
 	}
 	return -1;

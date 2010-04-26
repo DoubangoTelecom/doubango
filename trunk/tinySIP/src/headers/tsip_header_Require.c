@@ -58,10 +58,10 @@ tsip_header_Require_t* tsip_header_Require_create_null()
 	return tsip_header_Require_create(tsk_null);
 }
 
-int tsip_header_Require_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Require_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Require_t *Require = header;
+		const tsip_header_Require_t *Require = (const tsip_header_Require_t *)header;
 		tsk_list_item_t *item;
 		tsk_string_t *str;
 		int ret = 0;

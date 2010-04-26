@@ -41,6 +41,7 @@ TSIP_BEGIN_DECLS
 
 //FD
 struct tsip_message_s;
+struct tsip_action_s;
 
 typedef uint64_t tsip_ssession_id_t;			
 #define TSIP_SSESSION_INVALID_ID				0

@@ -23,10 +23,6 @@
 #ifndef TINYIPSEC_CONFIG_H
 #define TINYIPSEC_CONFIG_H
 
-#if HAVE_CONFIG_H
-	#include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
@@ -83,6 +79,11 @@
 #	define HAVE_IPSEC_XP		1
 #elif HAVE_IPSEC_TOOLS
 #	define HAVE_IPSEC_RACOON	1
+#endif
+
+
+#if HAVE_CONFIG_H
+	#include "config.h"
 #endif
 
 #endif /* TINYIPSEC_CONFIG_H */

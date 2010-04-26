@@ -58,10 +58,10 @@ tsip_header_RSeq_t* tsip_header_RSeq_create_null()
 	return tsip_header_RSeq_create(0);
 }
 
-int tsip_header_RSeq_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_RSeq_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_RSeq_t *RSeq = header;
+		const tsip_header_RSeq_t *RSeq = (const tsip_header_RSeq_t *)header;
 		return tsk_buffer_append_2(output, "%u", RSeq->seq);
 	}
 	return -1;

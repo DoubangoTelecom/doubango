@@ -35,8 +35,6 @@
 #include "tinySIP/transactions/tsip_transac.h"
 #include "tinySIP/tsip_message.h"
 
-#include "tsk_fsm.h"
-
 TSIP_BEGIN_DECLS
 
 #define TSIP_TRANSAC_ICT(self)															((tsip_transac_ict_t*)(self))
@@ -44,8 +42,6 @@ TSIP_BEGIN_DECLS
 typedef struct tsip_transac_ict
 {
 	TSIP_DECLARE_TRANSAC;
-	
-	tsk_fsm_t *fsm;
 	
 	tsip_request_t* request;
 

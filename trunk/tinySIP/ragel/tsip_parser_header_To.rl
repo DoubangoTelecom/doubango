@@ -94,11 +94,11 @@ tsip_header_To_t* tsip_header_To_create_null()
 	return tsip_header_To_create(tsk_null, tsk_null, tsk_null);
 }
 
-int tsip_header_To_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_To_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		int ret;
-		const tsip_header_To_t *To = header;
+		const tsip_header_To_t *To = (const tsip_header_To_t *)header;
 		if((ret = tsip_uri_serialize(To->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}

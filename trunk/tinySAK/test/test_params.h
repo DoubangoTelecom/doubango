@@ -36,7 +36,7 @@ void test_params()
 	tsk_list_push_back_data(params, (void**)&param3);
 
 	tsk_params_tostring(params, ',', buffer);
-	printf("Buffer=[%s]", TSK_BUFFER_TO_STRING(buffer));
+	TSK_DEBUG_INFO("Buffer=[%s]", TSK_BUFFER_TO_STRING(buffer));
 
 	TSK_OBJECT_SAFE_FREE(buffer);
 	TSK_OBJECT_SAFE_FREE(params);

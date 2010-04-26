@@ -310,7 +310,11 @@ static tsk_object_t* tsdp_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 		TSDP_HEADER(Dummy)->clone = tsdp_header_Dummy_clone;
 		TSDP_HEADER(Dummy)->rank = TSDP_HTYPE_DUMMY_RANK;
 
+#if defined(__GNUC__)
+		Dummy->name = va_arg(*app, const int);
+#else
 		Dummy->name = va_arg(*app, const char);
+#endif
 		Dummy->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else{

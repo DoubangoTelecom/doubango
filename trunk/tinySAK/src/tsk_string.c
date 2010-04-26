@@ -431,11 +431,9 @@ void tsk_strunquote(char **str)
 */
 void tsk_strunquote_2(char **str, char lquote, char rquote)
 {
-	if(str && *str)
-	{
+	if(str && *str){
 		size_t size = tsk_strlen(*str);
-		if(size>=2 && **str == lquote && *((*str)+size-1) == rquote)
-		{
+		if(size>=2 && **str == lquote && *((*str)+size-1) == rquote){
 			strcpy((*str), (*str)+1);
 			*((*str)+size-2) = '\0';
 		}
