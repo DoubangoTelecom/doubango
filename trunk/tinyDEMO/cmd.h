@@ -47,6 +47,7 @@ typedef enum cmd_type_e
 	cmd_register, /* ++register | ++reg */
 	cmd_run, /* ++run | ++r*/
 	cmd_sms,	/* ++sms */
+	cmd_sleep, /* ++sleep */
 	cmd_subscribe, /* ++subscribe | ++sub */
 	cmd_video, /* ++video | ++v */
 }
@@ -71,10 +72,12 @@ typedef enum option_e
 	opt_local_port,		/* --local-port 4000 */
 	opt_opid,			/* --opid 0xA712F5D04B */
 	opt_password,		/* --password mysecret */
+	opt_path,			/* --path /cygdrive/c/Projects/sample.cfg */
 	opt_pcscf_ip,		/* --pcscf-ip 192.168.0.13 */
 	opt_pcscf_port,		/* --pcscf-port 5060 */
 	opt_pcscf_trans,	/* --pcscf-trans udp */
 	opt_realm,			/* --realm open-ims.test */
+	opt_sec,			/* --sec 1800 */
 	opt_sid,			/* --sid 1234 */
 	opt_sigcomp,		/* --sigcomp */
 	opt_to,				/* --to sip:alice@open-ims.test */
@@ -82,7 +85,7 @@ typedef enum option_e
 option_t;
 
 
-tsk_options_L_t* cmd_parse(char* buffer, cmd_type_t* cmd);
+tsk_options_L_t* cmd_parse(const char* buffer, cmd_type_t* cmd, tsk_bool_t *comment);
 void cmd_print_help();
 
 _END_DECLS

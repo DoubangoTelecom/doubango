@@ -158,7 +158,7 @@ const tsk_object_def_t *context_def_t = &context_def_s;
 	========================== Stack ================================= 
 */
 
-int stack_config(tsk_options_L_t* options)
+int stack_config(const tsk_options_L_t* options)
 {
 	const tsk_list_item_t* item;
 	const tsk_option_t* option;
@@ -258,6 +258,9 @@ int stack_config(tsk_options_L_t* options)
 				}
 			case opt_realm:
 				{
+					tsip_stack_set(context->stack->ims_stack,
+						TSIP_STACK_SET_REALM(option->value),
+						TSIP_STACK_SET_NULL());
 					break;
 				}
 
@@ -267,7 +270,7 @@ int stack_config(tsk_options_L_t* options)
 	return 0;
 }
 
-int stack_run(tsk_options_L_t* options)
+int stack_run(const tsk_options_L_t* options)
 {
 	if(!context->stack->ims_stack){
 		TSK_DEBUG_ERROR("Stack is Null.");
