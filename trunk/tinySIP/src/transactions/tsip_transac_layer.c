@@ -282,8 +282,7 @@ int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, con
 
 	//tsk_safeobj_unlock(self);
 	
-	if(transac)
-	{
+	if(transac){
 		transac->callback(transac, tsip_transac_incoming_msg, message);
 		ret = 0;
 	}

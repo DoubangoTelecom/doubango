@@ -86,6 +86,7 @@
 	"Route: <sip:192.168.0.15:5060;lr=true;transport=udp\r\n" \
 	"From: <sip:bob@open-ims.test>;tag=mercuro\r\n" \
 	"To: <sip:mamadou@open-ims.test>\r\n" \
+	"Contact: <sip:mamadou@ims.inexbee.com>\r\n" \
 	"Call-ID: 1262767804423\r\n" \
 	"CSeq: 8 MESSAGE\r\n" \
 	"RSeq: 17422\r\n" \

@@ -365,8 +365,7 @@ void tsk_strtrim_left(char **str)
 */
 void tsk_strtrim_right(char **str)
 {
-	if(str && *str)
-	{
+	if(str && *str){
 		size_t size = tsk_strlen(*str);
 		if(size){
 			while(isspace(*((*str)+size-1))) size--;

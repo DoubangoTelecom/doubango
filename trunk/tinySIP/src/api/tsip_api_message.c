@@ -49,7 +49,7 @@ int tsip_message_event_signal(tsip_message_event_type_t type, struct tsip_stack_
 	return 0;
 }
 
-int tsip_message(const tsip_ssession_handle_t *ss, ...)
+int tsip_action_MESSAGE(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* session = ss;
 	va_list ap;

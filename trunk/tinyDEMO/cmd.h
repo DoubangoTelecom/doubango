@@ -34,9 +34,9 @@ typedef enum cmd_type_e
 
 	cmd_audio, /* ++audio | ++a*/
 	cmd_audiovideo, /* ++audiovideo | ++av*/
-	cmd_config_file, /* ++config-file | ++cf*/
 	cmd_config_session, /* ++config-session | ++css */
 	cmd_config_stack, /* ++config-stack | ++cst*/
+	cmd_dump, /*++dump | ++d*/
 	cmd_exit,	/*++exit | ++e*/
 	cmd_file, /* ++file | ++f*/
 	cmd_hangup, /* ++hangup | ++hp */
@@ -46,6 +46,7 @@ typedef enum cmd_type_e
 	cmd_quit, /* ++quit | ++q */
 	cmd_register, /* ++register | ++reg */
 	cmd_run, /* ++run | ++r*/
+	cmd_scenario, /* ++scenario | ++sn*/
 	cmd_sms,	/* ++sms */
 	cmd_sleep, /* ++sleep */
 	cmd_subscribe, /* ++subscribe | ++sub */
@@ -64,6 +65,7 @@ typedef enum option_e
 	opt_dname,			/* --dname bob */
 	opt_dns_naptr,		/* --dns-naptr */
 	opt_from,			/* --from sip:alice@open-ims.test */
+	opt_expires,		/* --expires|--xp 30 */
 	opt_header,			/* --header Supported=norefersub */
 	opt_impi,			/* --impi bob@open-ims.test */
 	opt_impu,			/* --impu sip:bob@open-ims.test */
@@ -71,8 +73,9 @@ typedef enum option_e
 	opt_local_ip,		/* --local-ip 192.168.0.10 */
 	opt_local_port,		/* --local-port 4000 */
 	opt_opid,			/* --opid 0xA712F5D04B */
-	opt_password,		/* --password mysecret */
+	opt_password,		/* --password|--pwd mysecret */
 	opt_path,			/* --path /cygdrive/c/Projects/sample.cfg */
+	opt_payload,		/* --payload|--pay hello world! */
 	opt_pcscf_ip,		/* --pcscf-ip 192.168.0.13 */
 	opt_pcscf_port,		/* --pcscf-port 5060 */
 	opt_pcscf_trans,	/* --pcscf-trans udp */

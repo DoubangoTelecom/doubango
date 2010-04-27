@@ -21,7 +21,11 @@
 */
 #include "publish.h"
 
-int publish_handle_event(struct context_s* context, const struct tsip_event_s *sipevent)
+#include "common.h"
+
+extern context_t* context;
+
+int publish_handle_event(const struct tsip_event_s *sipevent)
 {
 	return 0;
 }

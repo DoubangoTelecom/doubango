@@ -273,6 +273,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="scenarios(*.scn)"
+			>
+			<File
+				RelativePath="..\..\tinyDEMO\publish.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\sample.sn"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

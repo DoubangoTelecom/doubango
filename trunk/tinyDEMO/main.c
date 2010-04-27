@@ -36,12 +36,13 @@
 /* === global variables === */
 context_t* context = tsk_null;
 
+const char* trim(const char*);
 int execute(cmd_type_t cmd, const tsk_options_L_t* options);
 
 /* === entry point === */
 int main(int argc, char* argv[])
 {
-	char buffer[1024];
+	char buffer[2048];
 	tsk_options_L_t* options = tsk_null;
 	cmd_type_t cmd;
 	tsk_bool_t comment;
@@ -67,6 +68,9 @@ int main(int argc, char* argv[])
 	memset(buffer, '\0', sizeof(buffer));
 	/* initial args */
 	for(i=1 /* index zero contains the exe path */, index=0; i<argc; i++){
+		if(index){
+			buffer[index++] = ' ';
+		}
 		memcpy(&buffer[index], argv[i], tsk_strlen(argv[i]));
 		index += tsk_strlen(argv[i]);
 	}
@@ -80,17 +84,26 @@ int main(int argc, char* argv[])
 	while(gets(buffer)){
 init_buffer:
 		start = buffer;
+		start = trim(start);
 		end = start + tsk_strlen(start);
-parse_buffer:
-		if(!(options = cmd_parse(start, &cmd, &comment)) && cmd == cmd_none){
-			if(comment){
-				goto nex_line;
-			}
+		if(start >= end){
+			TSK_DEBUG_INFO("Empty buffer");
 			continue;
 		}
+parse_buffer:
+		options = cmd_parse(start, &cmd, &comment);
+		if(options){
+			if(comment || cmd == cmd_none){
+				TSK_OBJECT_SAFE_FREE(options);
+				goto nex_line;
+			}
+		}
+		else if(cmd == cmd_none){ /* Empty line? */
+			goto nex_line;
+		}
 
-		/* Load from configuration file? */
-		if(cmd == cmd_config_file){
+		/* Load from scenario file? */
+		if(cmd == cmd_scenario){
 			FILE* file;
 			const tsk_option_t* option;
 			size_t read = 0;
@@ -112,12 +125,12 @@ parse_buffer:
 					goto init_buffer;
 				}
 				else{
-					TSK_DEBUG_ERROR("Failed to open config-file [%s].", option->value);
+					TSK_DEBUG_ERROR("Failed to open scenario-file [%s].", option->value);
 				}
 				continue;
 			}
 			else{
-				TSK_DEBUG_ERROR("--config-file command must have --path option.");
+				TSK_DEBUG_ERROR("++scenario command must have --path option.");
 				continue;
 			}
 		}
@@ -168,6 +181,13 @@ bail:
 	return 0;
 }
 
+const char* trim(const char* str)
+{
+	while(isspace(*str)){
+		str++;
+	}
+	return str;
+}
 
 int execute(cmd_type_t cmd, const tsk_options_L_t* options)
 {
@@ -179,11 +199,6 @@ int execute(cmd_type_t cmd, const tsk_options_L_t* options)
 				TSK_DEBUG_INFO("command=audio");
 				break;
 			}
-		case cmd_config_file:
-			{
-				TSK_DEBUG_INFO("command=config-file");
-				break;
-			}
 		case cmd_config_session:
 			{
 				TSK_DEBUG_INFO("command=config-session");
@@ -193,6 +208,12 @@ int execute(cmd_type_t cmd, const tsk_options_L_t* options)
 			{
 				TSK_DEBUG_INFO("command=config-satck");
 				ret = stack_config(options);
+				break;
+			}
+		case cmd_dump:
+			{
+				TSK_DEBUG_INFO("command=dump");
+				ret = stack_dump();
 				break;
 			}
 		case cmd_exit:
@@ -215,6 +236,7 @@ int execute(cmd_type_t cmd, const tsk_options_L_t* options)
 		case cmd_message:
 			{
 				TSK_DEBUG_INFO("command=message");
+				ret = message_handle_cmd(cmd, options);
 				break;
 			}
 		case cmd_publish:
@@ -231,7 +253,7 @@ int execute(cmd_type_t cmd, const tsk_options_L_t* options)
 		case cmd_register:
 			{
 				TSK_DEBUG_INFO("command=register");
-				ret = register_handle_cmd(context, cmd, options);
+				ret = register_handle_cmd(cmd, options);
 				break;
 			}
 		case cmd_run:
@@ -240,14 +262,19 @@ int execute(cmd_type_t cmd, const tsk_options_L_t* options)
 				ret = stack_run(options);
 				break;
 			}
+		case cmd_scenario:
+			{
+				TSK_DEBUG_INFO("command=scenario");
+				break;
+			}
 		case cmd_sleep:
 			{
 				const tsk_option_t* option;
-				int seconds;
+				double seconds;
 				if((option = tsk_options_get_option_by_id(options, opt_sec)) && !tsk_strnullORempty(option->value)){ /* --sec option */
-					seconds = atoi(option->value);
-					TSK_DEBUG_ERROR("Sleeping %d seconds");
-					tsk_thread_sleep(seconds*1000);
+					seconds = atof(option->value);
+					TSK_DEBUG_INFO("Sleeping %f seconds", seconds);
+					tsk_thread_sleep((uint64_t)(seconds*1000));
 				}
 				else{
 					TSK_DEBUG_WARN("++sleep need --sec option.");
@@ -262,6 +289,7 @@ int execute(cmd_type_t cmd, const tsk_options_L_t* options)
 		case cmd_subscribe:
 			{
 				TSK_DEBUG_INFO("command=subscribe");
+				ret = subscribe_handle_cmd(cmd, options);
 				break;
 			}
 		case cmd_video:

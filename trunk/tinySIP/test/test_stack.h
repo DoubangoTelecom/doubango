@@ -186,7 +186,7 @@ int test_stack_callback(const tsip_event_t *sipevent)
 				{
 				case tsip_i_notify: /* Incoming NOTIFY */
 					{
-						if(TSIP_MESSAGE_HAS_CONTENT(sipevent->sipmessage)){
+						if(TSIP_MESSAGE_CONTENT_DATA(sipevent->sipmessage)){
 							TSK_DEBUG_INFO("NOTIFY Content: %s", TSIP_MESSAGE_CONTENT(sipevent->sipmessage));
 						}
 						break;
@@ -353,7 +353,7 @@ void test_stack()
 
 	
 tsip_ssession_handle_t *op = tsip_ssession_create(stack,
-	TSIP_SSESSION_SET_EXPIRES(30),
+	TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, "30"),
 	
 	TSIP_SSESSION_SET_CAPS("+g.oma.sip-im", ""),
 	TSIP_SSESSION_SET_CAPS("+audio", ""),

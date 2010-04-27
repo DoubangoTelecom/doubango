@@ -390,11 +390,9 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 {
 	int ret = -1;
 
-	if(self && TSIP_DIALOG_GET_STACK(self))
-	{
+	if(self && TSIP_DIALOG_GET_STACK(self)){
 		const tsip_transac_layer_t *layer = TSIP_DIALOG_GET_STACK(self)->layer_transac;
-		if(layer)
-		{
+		if(layer){
 			/* As this is a response ...then use the associate server transaction.
 			*/
 			const tsip_transac_t *transac = tsip_transac_layer_find_server(layer, response);

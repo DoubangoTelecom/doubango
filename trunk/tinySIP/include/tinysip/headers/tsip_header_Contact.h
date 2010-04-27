@@ -41,8 +41,6 @@ TSIP_BEGIN_DECLS
 /// @struct	
 ///
 /// @brief	SIP header 'Contact'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Contact	= 	( "Contact" / "m" ) HCOLON ( STAR / (contact-param *(COMMA contact-param)))
 /// contact-param	= 	(name-addr / addr-spec) *( SEMI contact-params)

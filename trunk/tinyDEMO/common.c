@@ -31,7 +31,7 @@
 #include <string.h>
 
 /* === default values === */
-#define DEFAULT_REALM	"ims.inexbee.com"
+#define DEFAULT_REALM	"open-ims.test"
 #define DEFAULT_IMPI "bob@"DEFAULT_REALM
 #define DEFAULT_IMPU "sip:bob@"DEFAULT_REALM
 
@@ -46,19 +46,8 @@
 
 extern context_t* context;
 
-/* === callback function for the stack === */
 int stack_callback(const tsip_event_t *sipevent);
-
-
-/* Find SIP session by id */
-int pred_find_session_by_id(const tsk_list_item_t *item, const void* id)
-{
-	if(item && item->data){
-		return (int)(tsip_ssession_get_id((tsip_ssession_handle_t*)item->data) 
-			- *((tsip_ssession_id_t*)id));
-	}
-	return -1;
-}
+int session_tostring(const session_t* session);
 
 /* our SIP callback function */
 int stack_callback(const tsip_event_t *sipevent)
@@ -69,7 +58,7 @@ int stack_callback(const tsip_event_t *sipevent)
 	}
 
 	/* check if it's for our stack */
-	if(sipevent->stack != context->stack->ims_stack){
+	if(sipevent->stack != context->stack){
 		TSK_DEBUG_ERROR("We have received an event for another stack");
 		return -2;
 	}
@@ -77,23 +66,23 @@ int stack_callback(const tsip_event_t *sipevent)
 	switch(sipevent->type){
 		case tsip_event_register:
 			{	/* REGISTER */
-				return register_handle_event(context, sipevent);
+				return register_handle_event(sipevent);
 			}
 		case tsip_event_invite:
 			{	/* INVITE */
-				return invite_handle_event(context, sipevent);
+				return invite_handle_event(sipevent);
 			}
 		case tsip_event_message:
 			{	/* MESSAGE */
-				return message_handle_event(context, sipevent);
+				return message_handle_event(sipevent);
 			}
 		case tsip_event_publish:
 			{ /* PUBLISH */
-				return publish_handle_event(context, sipevent);
+				return publish_handle_event(sipevent);
 			}
 		case tsip_event_subscribe:
 			{	/* SUBSCRIBE */
-				return subscribe_handle_event(context, sipevent);
+				return subscribe_handle_event(sipevent);
 			}
 
 		default:
@@ -114,8 +103,7 @@ static tsk_object_t* context_ctor(tsk_object_t * self, va_list * app)
 	context_t *context = self;
 	if(context){
 		/* stack */
-		context->stack = tsk_object_new(stack_def_t);
-		context->stack->ims_stack = tsip_stack_create(stack_callback, DEFAULT_REALM, DEFAULT_IMPI, DEFAULT_IMPU, /* Mandatory parameters */
+		context->stack = tsip_stack_create(stack_callback, DEFAULT_REALM, DEFAULT_IMPI, DEFAULT_IMPU, /* Mandatory parameters */
 			
 			TSIP_STACK_SET_HEADER("User-Agent", DEFAULT_USER_AGENT), /* SIP 'User-Agent' stack-level header. */
 			TSIP_STACK_SET_LOCAL_IP(DEFAULT_LOCAL_IP), /* local IP */
@@ -158,10 +146,22 @@ const tsk_object_def_t *context_def_t = &context_def_s;
 	========================== Stack ================================= 
 */
 
+int stack_dump()
+{
+	const tsk_list_item_t* item;
+
+	tsk_list_foreach(item, context->sessions){
+		session_tostring(item->data);
+	}
+	return 0;
+}
+
 int stack_config(const tsk_options_L_t* options)
 {
 	const tsk_list_item_t* item;
 	const tsk_option_t* option;
+	int ret = 0;
+	tsk_param_t* param;
 
 	if(!options){
 		return -1;
@@ -169,27 +169,6 @@ int stack_config(const tsk_options_L_t* options)
 
 	tsk_list_foreach(item, options){
 		option = item->data;
-		
-
-	//,			/* --dhcpv4 */
-	//,			/* --dhcpv6 */
-	//,			/* --dname bob */
-	//opt_dns_naptr,		/* --dns-naptr */
-	//opt_from,			/* --from sip:alice@open-ims.test */
-	//opt_header,			/* --header Supported: norefersub */
-	//opt_impi,			/* --impi bob@open-ims.test */
-	//opt_impu,			/* --impu sip:bob@open-ims.test */
-	//opt_ipv6,			/* --ipv6 */
-	//opt_local_ip,		/* --local-ip 192.168.0.10 */
-	//opt_local_port,		/* --local-port 4000 */
-	//opt_opid,			/* --opid 0xA712F5D04B */
-	//opt_password,		/* --password mysecret */
-	//opt_pcscf_ip,		/* --pcscf-ip 192.168.0.13 */
-	//opt_pcscf_port,		/* --pcscf-port 5060 */
-	//opt_pcscf_trans,	/* --pcscf-trans udp */
-	//opt_quit,			/* --quit */
-	//opt_realm,			/* --realm open-ims.test */
-	//opt_to,				/* --to sip:alice@open-ims.test */	
 
 		switch(option->id){
 			case opt_amf:
@@ -214,14 +193,25 @@ int stack_config(const tsk_options_L_t* options)
 				}
 			case opt_header:
 				{
+					if((param = tsk_params_parse_param(option->value, tsk_strlen(option->value)))){
+						ret = tsip_stack_set(context->stack, TSIP_STACK_SET_HEADER(param->name, param->value),
+							TSIP_STACK_SET_NULL());
+						TSK_OBJECT_SAFE_FREE(param);
+					}
 					break;
 				}
 			case opt_impi:
 				{
+					tsk_strupdate(&context->identity.impi, option->value);
+					ret = tsip_stack_set(context->stack, TSIP_STACK_SET_IMPI(context->identity.impi),
+							TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_impu:
 				{
+					tsk_strupdate(&context->identity.impu, option->value);
+					ret = tsip_stack_set(context->stack, TSIP_STACK_SET_IMPU(context->identity.impu),
+							TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_ipv6:
@@ -242,6 +232,8 @@ int stack_config(const tsk_options_L_t* options)
 				}
 			case opt_password:
 				{
+					ret = tsip_stack_set(context->stack, TSIP_STACK_SET_PASSWORD(option->value),
+							TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_pcscf_ip:
@@ -258,7 +250,7 @@ int stack_config(const tsk_options_L_t* options)
 				}
 			case opt_realm:
 				{
-					tsip_stack_set(context->stack->ims_stack,
+					ret = tsip_stack_set(context->stack,
 						TSIP_STACK_SET_REALM(option->value),
 						TSIP_STACK_SET_NULL());
 					break;
@@ -267,44 +259,210 @@ int stack_config(const tsk_options_L_t* options)
 		}/* switch */
 	} /* foreach */
 	
-	return 0;
+	return ret;
 }
 
 int stack_run(const tsk_options_L_t* options)
 {
-	if(!context->stack->ims_stack){
+	if(!context->stack){
 		TSK_DEBUG_ERROR("Stack is Null.");
 		return -1;
 	}
 	else{
-		return tsip_stack_start(context->stack->ims_stack);
+		return tsip_stack_start(context->stack);
 	}
 }
 
-static tsk_object_t* stack_ctor(tsk_object_t * self, va_list * app)
+/*	==================================================================
+	========================== Session ================================= 
+*/
+
+/* Find SIP session by id */
+int pred_find_session_by_id(const tsk_list_item_t *item, const void* id)
 {
-	stack_t *stack = self;
-	if(stack){
+	const session_t* session;
+	if(item && item->data){
+		session = item->data;
+		return (int)(tsip_ssession_get_id(session->handle) 
+			- *((tsip_ssession_id_t*)id));
+	}
+	return -1;
+}
+
+session_t* session_create(session_type_t type)
+{
+	return tsk_object_new(session_def_t, type);
+}
+
+int session_tostring(const session_t* session)
+{
+	char* temp = tsk_null;
+	printf("== Session: ");
+	if(session){
+		/* Session Id */
+		printf("sid=%llu", tsip_ssession_get_id(session->handle));
+		/* Type */
+		printf(" type=");
+		switch(session->type){
+			case st_invite:
+				printf("INVITE");
+				break;
+			case st_message:
+				printf("MESSAGE");
+				break;
+			case st_publish:
+				printf("PUBLISH");
+				break;
+			case st_register:
+				printf("REGISTER");
+				break;
+			case st_subscribe:
+				printf("SUBSCRIBE");
+				break;
+			default:
+				printf("(null)");
+				break;
+		}
+		/* From */
+		printf(" from=%s", session->from ? session->from : context->identity.impu);
+		/* From */
+		printf(" to=%s", session->to ? session->to : context->identity.impu);
+	}
+	else{
+		printf("(invalid)");
+	}
+	printf("\n");
+	return -1;
+}
+
+session_t*  session_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options)
+{
+	session_t* session = tsk_null;
+	const tsk_option_t* option;
+	const tsk_list_item_t* item;
+	tsk_param_t* param;
+	int ret = 0;
+
+	/* Check if there is a session with is Id */
+	if((option = tsk_options_get_option_by_id(options, opt_sid))){
+		tsip_ssession_id_t id = atoi(option->value);
+		if((item = tsk_list_find_item_by_pred(context->sessions, pred_find_session_by_id, &id))){
+			session = tsk_object_ref(item->data);
+		}
+	}
+
+#define TYPE_FROM_CMD(_CMD) \
+	/*(_CMD==cmd_invite ? st_invite :*/  \
+	(_CMD==cmd_message ? st_message : \
+	(_CMD==cmd_publish ? st_publish : \
+	(_CMD==cmd_register ? st_register : \
+	(_CMD==cmd_subscribe ? st_subscribe : st_none))))
+	
+	/* === Command === */
+	switch(cmd){
+		//case cmd_invite:
+		case cmd_message:
+		case cmd_publish:
+		case cmd_register:
+		case cmd_subscribe:
+			{
+				if(!session){ /* Create subscription */
+					session_t* _session = session_create(TYPE_FROM_CMD(cmd));
+					session = tsk_object_ref(_session);
+					tsk_list_push_back_data(context->sessions, (void**)&_session);
+				}
+				break;
+			}
+		default:
+			{
+				TSK_DEBUG_WARN("Registration: Cannot handle this command [%d]", cmd);
+				goto bail;
+			}
+	} /* switch */
+
+	if(!session){
+		TSK_DEBUG_ERROR("SIP Session is Null");
+		goto bail;
+	}
+
+	/* === Options === */
+	tsk_list_foreach(item, options){
+		option = item->data;
 		
+		switch(option->id){
+			case opt_expires:
+				{	
+					if(!tsk_strnullORempty(option->value)){
+						ret = tsip_ssession_set(session->handle, 
+							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, option->value),
+							TSIP_SSESSION_SET_NULL());
+					}
+					break;
+				}
+			case opt_from:
+				{	/* You should use  TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_FROM, value)
+						instead of TSIP_SSESSION_SET_HEADER() to set the destination URI. */
+					break;
+				}
+			case opt_header:
+				{
+					if((param = tsk_params_parse_param(option->value, tsk_strlen(option->value)))){
+						ret = tsip_ssession_set(session->handle, 
+							TSIP_SSESSION_SET_HEADER(param->name, param->value),
+							TSIP_SSESSION_SET_NULL());
+						TSK_OBJECT_SAFE_FREE(param);
+					}
+					break;
+				}
+			case opt_to:
+				{	/* You should use  TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, value)
+						instead of TSIP_SSESSION_SET_HEADER() to set the destination URI. */
+					if(!tsk_strnullORempty(option->value)){
+						ret = tsip_ssession_set(session->handle, 
+							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, option->value),
+							TSIP_SSESSION_SET_NULL());
+					}
+					break;
+				}
+			default:
+				{
+					TSK_DEBUG_WARN("Subscription: %d not valid option.");
+					break;
+				}
+		}
+
+	} /* foreach */
+
+bail:
+	return session;
+}
+
+static tsk_object_t* session_ctor(tsk_object_t * self, va_list * app)
+{
+	session_t *session = self;
+	if(session){
+		session->type = va_arg(*app, session_type_t);
+		session->handle = tsip_ssession_create(context->stack,
+			TSIP_SSESSION_SET_NULL());
 	}
 	return self;
 }
 
-static tsk_object_t* stack_dtor(tsk_object_t * self)
+static tsk_object_t* session_dtor(tsk_object_t * self)
 { 
-	stack_t *stack = self;
-	if(stack){
+	session_t *session = self;
+	if(session){
 		
 	}
 
 	return self;
 }
 
-static const tsk_object_def_t stack_def_s = 
+static const tsk_object_def_t session_def_s = 
 {
-	sizeof(stack_t),
-	stack_ctor, 
-	stack_dtor,
+	sizeof(session_t),
+	session_ctor, 
+	session_dtor,
 	tsk_null, 
 };
-const tsk_object_def_t *stack_def_t = &stack_def_s;
+const tsk_object_def_t *session_def_t = &session_def_s;
