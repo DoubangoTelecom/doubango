@@ -311,7 +311,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 					continue;
 				}
 
-				TSK_DEBUG_INFO("Send DNS query to \"%s\"", address->ip);
+				TSK_DEBUG_INFO("Sending DNS query to \"%s\"", address->ip);
 
 				if(address->family == AF_INET6){
 					if((ret = tnet_sockfd_sendto(localsocket6->fd, (const struct sockaddr*)&server, output->data, output->size))){

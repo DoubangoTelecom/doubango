@@ -112,6 +112,7 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 					tsip_uri_t *uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
 					if(uri){
 						if(uri->type == uri_unknown){ /* scheme is missing or unsupported? */
+							tsk_strupdate(&uri->scheme, "sip");
 							uri->type = uri_sip;
 						}
 						TSK_OBJECT_SAFE_FREE(self->network.realm); /* delete old */
@@ -237,7 +238,6 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 
 				/* IP Address */
 				tsk_strupdate(&self->network.proxy_cscf, FQDN_STR);
-				TSK_DEBUG_INFO("Proxy-CSCF ==>%s", self->network.proxy_cscf);
 				
 				/* Port */
 				self->network.proxy_cscf_port = PORT_UINT;
@@ -434,18 +434,19 @@ bail:
 
 int tsip_stack_start(tsip_stack_handle_t *self)
 {
+	int ret = -1;
+
 	if(self){
-		int ret;
 		tsip_stack_t *stack = self;
 		
 		TSK_RUNNABLE(stack)->run = run;
 		if((ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))){
-			return ret;
+			goto bail;
 		}
 
 		/* === Timer manager === */
 		if((ret = tsk_timer_manager_start(stack->timer_mgr))){
-			return ret;
+			goto bail;
 		}
 
 		/* === Set P-Preferred-Identity === */
@@ -461,18 +462,19 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		}
 
 		/* === Use DNS NAPTR+SRV for the P-CSCF discovery? === */
-		if(!stack->network.proxy_cscf){
+		if(!stack->network.proxy_cscf || (stack->network.discovery_dhcp || stack->network.discovery_naptr)){
 			if(stack->network.discovery_dhcp){ /* DHCP v4/v6 */
 				/* FIXME: */
+				ret = -2;
 			} /* DHCP */
 			else{ /* DNS NAPTR + SRV*/
 				char* hostname = tsk_null;
 				tnet_port_t port = 0;
 
-				if(tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, 
+				if(!(ret = tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, 
 					TNET_SOCKET_TYPE_IS_DGRAM(stack->network.proxy_cscf_type) ? "SIP+D2U" :
 					(TNET_SOCKET_TYPE_IS_TLS(stack->network.proxy_cscf_type) ? "SIPS+D2T" : "SIP+D2T"),
-					&hostname, &port) == 0){
+					&hostname, &port))){
 					tsk_strupdate(&stack->network.proxy_cscf, hostname);
 					if(!stack->network.proxy_cscf_port || stack->network.proxy_cscf_port==5060){ /* Only if the Proxy-CSCF port is missing or default */
 						stack->network.proxy_cscf_port = port;
@@ -484,6 +486,15 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 				
 				TSK_FREE(hostname);
 			} /* NAPTR */
+		}
+
+		/* Check Proxy-CSCF IP address */
+		if(stack->network.proxy_cscf){
+			TSK_DEBUG_INFO("Proxy-CSCF=[%s]:%d", stack->network.proxy_cscf, stack->network.proxy_cscf_port);
+		}
+		else{
+			TSK_DEBUG_ERROR("Proxy-CSCF IP address is Null.");
+			goto bail;
 		}
 		
 		/* === Get Best source address ===  */
@@ -517,7 +528,9 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 
 		return ret;
 	}
-	return -1;
+
+bail:
+	return ret;
 }
 
 int tsip_stack_set(tsip_stack_handle_t *self, ...)

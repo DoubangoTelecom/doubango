@@ -36,14 +36,17 @@
 
 	action tag{
 		tag_start = p;
+		TSK_DEBUG_INFO("tag=%s", tag_start);
 	}
 	
 	action create_option{
+		TSK_DEBUG_INFO("create_option");
 		TSK_OBJECT_SAFE_FREE(curr_opt);
 		curr_opt = tsk_option_create_null();
 	}
 
 	action add_option{
+		TSK_DEBUG_INFO("add_option");
 		tsk_options_add_option_2(&options, curr_opt);
 		TSK_OBJECT_SAFE_FREE(curr_opt);
 	}
@@ -51,7 +54,13 @@
 	action set_value{
 		if(curr_opt){
 			TSK_PARSER_SET_STRING(curr_opt->value);
+			TSK_DEBUG_INFO("set_value %d %s", curr_opt->id, curr_opt->value);
 		}
+	}
+
+	action is_comment{
+		TSK_DEBUG_INFO("is_comment");
+		*comment = tsk_true;
 	}
 
 	action option_error{
@@ -64,73 +73,85 @@
 		TSK_DEBUG_ERROR("%s not a valid command.", temp);
 	}
 
+	DQUOTE = "\"";
+	quoted_string = DQUOTE ( any--DQUOTE )* DQUOTE;
+	SP = " ";
+	LF = "\n";
+	CR = "\r";
+	comment = SP*<: "#" any*; #%is_comment only if start with comment
+	endline = ("\n" | "\r");
 	equal = "=";
-	hyphens = "--";
+	hyphens = "-" {2,};
 	plusplus = "++";
 
-	command = (("audio" | "a") %{ *cmd = cmd_audio; } |
-	("audiovideo" | "av") %{ *cmd = cmd_audiovideo; } |
-	("config-file" | "cf") %{ *cmd = cmd_config_file; } |
-	("config-session" | "css") %{ *cmd = cmd_config_session; } |
-	("config-stack" | "cst") %{ *cmd = cmd_config_stack; } |
-	("exit" | "e") %{ *cmd = cmd_exit; } |
-	("quit" | "q") %{ *cmd = cmd_quit; } |
-	("file" | "f") %{ *cmd = cmd_file; } |
-	("hangup" | "hp") %{ *cmd = cmd_hangup; } |
-	("help" | "h") %{ *cmd = cmd_help; } |
-	("message" | "m") %{ *cmd = cmd_message; } |
-	("publish" | "pub") %{ *cmd = cmd_publish; } |
-	("register" | "reg") %{ *cmd = cmd_register; } |
-	("run" | "r") %{ *cmd = cmd_run; } |
-	"sms" %{ *cmd = cmd_sms; } |
-	("subscribe" | "sub") %{ *cmd = cmd_subscribe; } |
-	("video" | "v") %{ *cmd = cmd_video; }
+	command = (("audio"i | "a"i) %{ *cmd = cmd_audio; } |
+	("audiovideo"i | "av"i) %{ *cmd = cmd_audiovideo; } |
+	("config-file"i | "cf"i) %{ *cmd = cmd_config_file; } |
+	("config-session"i | "css"i) %{ *cmd = cmd_config_session; } |
+	("config-stack"i | "cst"i) %{ *cmd = cmd_config_stack; } |
+	("exit"i | "e"i) %{ *cmd = cmd_exit; } |
+	("quit"i | "q"i) %{ *cmd = cmd_quit; } |
+	("file"i | "f"i) %{ *cmd = cmd_file; } |
+	("hangup"i | "hp"i) %{ *cmd = cmd_hangup; } |
+	("help"i | "h"i) %{ *cmd = cmd_help; } |
+	("message"i | "m"i) %{ *cmd = cmd_message; } |
+	("publish"i | "pub"i) %{ *cmd = cmd_publish; } |
+	("register"i | "reg"i) %{ *cmd = cmd_register; } |
+	("run"i | "r"i) %{ *cmd = cmd_run; } |
+	"sleep"i %{ *cmd = cmd_sleep; } |
+	"sms"i %{ *cmd = cmd_sms; } |
+	("subscribe"i | "sub"i) %{ *cmd = cmd_subscribe; } |
+	("video"i | "v"i) %{ *cmd = cmd_video; }
 	)** > 10 |
 	(any*) > 0 %command_error;
 
-	key = ("amf" % { curr_opt->id = opt_amf; } |
-	"caps" % { curr_opt->id = opt_caps; } |
-	"dhcpv4" % { curr_opt->id = opt_dhcpv4; } |
-	"dhcpv6" % { curr_opt->id = opt_dhcpv6; } |
-	"dname" % { curr_opt->id = opt_amf; } |
-	"dns-naptr" % { curr_opt->id = opt_dname; } |
-	"from" % { curr_opt->id = opt_from; } |
-	"header" % { curr_opt->id = opt_header; } |
-	"impi" % { curr_opt->id = opt_impi; } |
-	"impu" % { curr_opt->id = opt_impu; } |
-	"ipv6" % { curr_opt->id = opt_ipv6; } |
-	"local-ip" % { curr_opt->id = opt_local_ip; } |
-	"local-port" % { curr_opt->id = opt_local_port; } |	
-	"opid" % { curr_opt->id = opt_opid; } |
-	"password" % { curr_opt->id = opt_password; } |
-	"pcscf-ip" % { curr_opt->id = opt_pcscf_ip; } |
-	"pcscf-port" % { curr_opt->id = opt_pcscf_port; } |	
-	"pcscf-trans" % { curr_opt->id = opt_pcscf_trans; } |
-	"realm" % { curr_opt->id = opt_realm; } |
-	"sid" % { curr_opt->id = opt_sid; } |
-	"sigcomp" % { curr_opt->id = opt_sigcomp; } |
-	"to" % { curr_opt->id = opt_to; }
+	key = ("amf"i % { curr_opt->id = opt_amf; } |
+	"caps"i % { curr_opt->id = opt_caps; } |
+	"dhcpv4"i % { curr_opt->id = opt_dhcpv4; } |
+	"dhcpv6"i % { curr_opt->id = opt_dhcpv6; } |
+	"dname"i % { curr_opt->id = opt_amf; } |
+	"dns-naptr"i % { curr_opt->id = opt_dname; } |
+	"from"i % { curr_opt->id = opt_from; } |
+	"header"i % { curr_opt->id = opt_header; } |
+	"impi"i % { curr_opt->id = opt_impi; } |
+	"impu"i % { curr_opt->id = opt_impu; } |
+	"ipv6"i % { curr_opt->id = opt_ipv6; } |
+	"local-ip"i % { curr_opt->id = opt_local_ip; } |
+	"local-port"i % { curr_opt->id = opt_local_port; } |	
+	"opid"i % { curr_opt->id = opt_opid; } |
+	"password"i % { curr_opt->id = opt_password; } |
+	"path"i % { curr_opt->id = opt_path; } |
+	"pcscf-ip"i % { curr_opt->id = opt_pcscf_ip; } |
+	"pcscf-port"i % { curr_opt->id = opt_pcscf_port; } |	
+	"pcscf-trans"i % { curr_opt->id = opt_pcscf_trans; } |
+	"realm"i % { curr_opt->id = opt_realm; } |
+	"sec"i % { curr_opt->id = opt_sec; } |
+	"sid"i % { curr_opt->id = opt_sid; } |
+	"sigcomp"i % { curr_opt->id = opt_sigcomp; } |
+	"to"i % { curr_opt->id = opt_to; }
 	)** > 10 |
 	(any*) > 0 %option_error;
 
-	value = any*>tag %set_value;
-	option = hyphens <: key>tag :>space* :>(equal | space)* <:value;
+	value = (quoted_string@10 | (any*)@0)>tag %set_value;
+	option = key>tag :>SP* <:value;
 
 
-	Command_Line = plusplus command>tag :> space* (option>create_option %add_option :>space*)*;
+	Command_Line = ( (comment>tag %is_comment | (plusplus command>tag :> SP*)) (hyphens <: (option>1 >create_option %add_option | comment>2))* );
 
-	main := Command_Line;
+	main := Command_Line :>> (CR | LF)?;
 }%%
 
-tsk_options_L_t *cmd_parser_parse(const char *line, cmd_type_t* cmd)
+tsk_options_L_t *cmd_parser_parse(const char *buffer, cmd_type_t* cmd, tsk_bool_t *comment)
 {
 	int cs = 0;
-	const char *p = line;
-	const char *pe = p + tsk_strlen(p);
-	const char *eof = pe;
+	const char *p = buffer;
+	const char *pe;
+	const char *eof;
 	tsk_option_t* curr_opt = tsk_null;
 	tsk_options_L_t *options = tsk_null;
 	char* temp = tsk_null;
+	int index;
+	size_t size = tsk_strlen(buffer);
 	
 	const char *tag_start;
 	
@@ -140,13 +161,23 @@ tsk_options_L_t *cmd_parser_parse(const char *line, cmd_type_t* cmd)
 	
 	/* default values */
 	*cmd = cmd_none;
+	*comment = tsk_false;
+
+	/* only parse one line */
+	if((index = tsk_strindexOf(p, size, "\n")) != -1){
+		pe =  eof = (p + index);
+	}
+	else{
+		pe = eof = p + size;
+	}
 	
 	/* exec */
 	%%write exec;
 	
 	if( cs < %%{ write first_final; }%% ){
-		TSK_DEBUG_ERROR("Failed to parse [%s] command-Line.", line);
+		TSK_DEBUG_ERROR("Failed to parse [%s] command-Line.", buffer);
 		TSK_OBJECT_SAFE_FREE(options);
+		*cmd = cmd_none;
 	}
 	TSK_OBJECT_SAFE_FREE(curr_opt);
 	TSK_FREE(temp);

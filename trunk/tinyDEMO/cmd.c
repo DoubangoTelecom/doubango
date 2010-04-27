@@ -29,11 +29,11 @@
 #define PAD "  "
 
 /* parse a command line */
-tsk_options_L_t* cmd_parse(char* buffer, cmd_type_t* cmd)
+tsk_options_L_t* cmd_parse(const char* buffer, cmd_type_t* cmd, tsk_bool_t *comment)
 {
 	tsk_options_L_t* options;
 	
-	options = cmd_parser_parse(buffer, cmd);
+	options = cmd_parser_parse(buffer, cmd, comment);
 
 	return options;
 }

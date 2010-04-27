@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySAK\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySAK\src;..\tinyNET\src;..\tinyHTTP\include;..\tinySIP\include"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -181,6 +181,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\cmd_parser.c"
+				>
+			</File>
+			<File
+				RelativePath=".\common.c"
+				>
+			</File>
+			<File
 				RelativePath=".\invite.c"
 				>
 			</File>
@@ -197,6 +205,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\register.c"
+				>
+			</File>
+			<File
 				RelativePath=".\subscribe.c"
 				>
 			</File>
@@ -208,6 +220,14 @@
 			>
 			<File
 				RelativePath=".\cmd.h"
+				>
+			</File>
+			<File
+				RelativePath=".\cmd_parser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\common.h"
 				>
 			</File>
 			<File
@@ -231,6 +251,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\register.h"
+				>
+			</File>
+			<File
 				RelativePath=".\subscribe.h"
 				>
 			</File>
@@ -240,6 +264,18 @@
 			>
 			<File
 				RelativePath=".\cmd_parser.rl"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="configs(*.cfg)"
+			>
+			<File
+				RelativePath=".\publish.cfg"
+				>
+			</File>
+			<File
+				RelativePath=".\sample.cfg"
 				>
 			</File>
 		</Filter>

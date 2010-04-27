@@ -62,8 +62,8 @@ typedef struct context_s
 }
 context_t;
 
-int stack_config(tsk_options_L_t* options);
-int stack_run(tsk_options_L_t* options);
+int stack_config(const tsk_options_L_t* options);
+int stack_run(const tsk_options_L_t* options);
 
 int pred_find_session_by_id(const tsk_list_item_t *item, const void* id);
 
