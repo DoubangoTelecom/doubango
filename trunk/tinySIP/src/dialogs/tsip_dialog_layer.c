@@ -230,7 +230,6 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	//tsk_safeobj_unlock(self);
 	
 	if(dialog){
-		dialog->callback(dialog, tsip_dialog_i_msg, message);
 		transac = tsip_transac_layer_new(layer_transac, tsk_false, message, TSIP_DIALOG(dialog));
 	}
 	else{		
@@ -265,7 +264,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 
 			if(newdialog){
 				transac = tsip_transac_layer_new(layer_transac, tsk_false, message, newdialog);
-				tsk_list_push_back_data(self->dialogs, (void**)&newdialog);
+				tsk_list_push_back_data(self->dialogs, (void**)&newdialog); /* add new dialog to the layer */
 			}
 
 			TSK_OBJECT_SAFE_FREE(ss);

@@ -72,7 +72,9 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_CSEQ_METHOD(self)		((self)->CSeq ? (self)->CSeq->method : tsk_null)
 #define TSIP_MESSAGE_HAS_CONTENT(self)		((self) && (self)->Content && (self)->Content->data)
 #define TSIP_MESSAGE_CONTENT_LENGTH(self)	(uint32_t)(((self) && (self)->Content_Length) ? (self)->Content_Length->length : 0)
-#define TSIP_MESSAGE_CONTENT(self)			(TSIP_MESSAGE_HAS_CONTENT(self) ? (self)->Content->data : tsk_null)
+#define TSIP_MESSAGE_CONTENT_DATA(self)		(TSIP_MESSAGE_HAS_CONTENT(self) ? (self)->Content->data : tsk_null)
+#define TSIP_MESSAGE_CONTENT(self)			(TSIP_MESSAGE_HAS_CONTENT(self) ? (self)->Content : tsk_null)
+#define TSIP_MESSAGE_CONTENT_TYPE(self)		(((self) && (self)->Content_Type) ? (self)->Content_Type->type : tsk_null)
 
 #define TSIP_REQUEST_IS_ACK(self)			((self) &&((self)->request_type==tsip_ACK))
 #define TSIP_REQUEST_IS_BYE(self)			((self) &&((self)->request_type==tsip_BYE))

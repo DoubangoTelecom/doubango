@@ -67,6 +67,9 @@ tsip_subscribe_event_t;
 
 int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
+TINYSIP_API int tsip_action_SUBSCRIBE(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_action_UNSUBSCRIBE(const tsip_ssession_handle_t *ss, ...);
+
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_subscribe_event_def_t;
 
 TSIP_END_DECLS

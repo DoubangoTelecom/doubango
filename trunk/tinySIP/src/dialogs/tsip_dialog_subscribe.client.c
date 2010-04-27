@@ -44,7 +44,7 @@
 /**@defgroup tsip_dialog_subscribe_group SIP dialog SUBSCRIBE (Client side) as per RFC 3265.
 */
 
-#define DEBUG_STATE_MACHINE											1
+#define DEBUG_STATE_MACHINE											0
 #define TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(subscribe, TX)
 #define TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, message)	\
 	tsip_subscribe_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->ss, code, phrase, message)
@@ -492,18 +492,19 @@ int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app)
 {
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_request_t *request = va_arg(*app, const tsip_request_t *);
+	int ret;
 
-	send_200NOTIFY(self, request);
-
-	/* Alert the user */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
-		299, "Incoming Request.", request);
+	ret = send_200NOTIFY(self, request);
 	
 	/* Request timeout for dialog refresh (re-registration). */
 	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), request);
 	TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(refresh);
 
-	return 0;
+	/* Alert the user */
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
+		299, "Incoming Request.", request);
+
+	return ret;
 }
 
 /* Connected -> (NOTIFY) -> Terminated
@@ -585,7 +586,7 @@ int send_SUBSCRIBE(tsip_dialog_subscribe_t *self)
 	}
 
 	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "SUBSCRIBE"))){
-		/* action parameters */
+		/* action parameters and payload */
 		if(TSIP_DIALOG(self)->curr_action){
 			const tsk_list_item_t* item;
 			tsk_list_foreach(item, TSIP_DIALOG(self)->curr_action->headers){

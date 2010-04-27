@@ -50,7 +50,7 @@ int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, struct tsip_st
 	return 0;
 }
 
-int tsip_subscribe(const tsip_ssession_handle_t *ss, ...)
+int tsip_action_SUBSCRIBE(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* session = ss;
 	va_list ap;
@@ -77,7 +77,7 @@ int tsip_subscribe(const tsip_ssession_handle_t *ss, ...)
 	return ret;
 }
 
-int tsip_unsubscribe(const tsip_ssession_handle_t *ss, ...)
+int tsip_action_UNSUBSCRIBE(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* session = ss;
 	va_list ap;

@@ -191,8 +191,7 @@ int tsk_timer_manager_cancel(tsk_timer_manager_handle_t *self, tsk_timer_id_t id
 		return 0;
 	}
 
-	if(!TSK_LIST_IS_EMPTY(manager->timers) && TSK_RUNNABLE(manager)->running)
-	{
+	if(!TSK_LIST_IS_EMPTY(manager->timers) && TSK_RUNNABLE(manager)->running){
 		const tsk_list_item_t *item;
 		tsk_mutex_lock(manager->mutex);
 		item = tsk_list_find_item_by_pred(manager->timers, __tsk_pred_find_timer_by_id, &id);

@@ -80,6 +80,32 @@ int __tsip_ssession_set_option(tsip_ssession_t *self, tsip_ssession_option_t opt
 				self->no_contact = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
 				break;
 			}
+		case TSIP_SSESSION_OPTION_TO:
+			{ /* No SIP 'Contact' in all requests */
+				tsip_uri_t* uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
+				if(uri){
+					TSK_OBJECT_SAFE_FREE(self->to);
+					self->to = uri;
+				}
+				else{
+					TSK_DEBUG_ERROR("The value of the 'To' header is invalid.");
+					return -1;
+				}
+				break;
+			}
+		case TSIP_SSESSION_OPTION_FROM:
+			{ /* No SIP 'Contact' in all requests */
+				tsip_uri_t* uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
+				if(uri){
+					TSK_OBJECT_SAFE_FREE(self->from);
+					self->from = uri;
+				}
+				else{
+					TSK_DEBUG_ERROR("The value of the 'From' header is invalid.");
+					return -1;
+				}
+				break;
+			}
 
 
 

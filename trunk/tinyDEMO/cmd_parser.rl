@@ -28,6 +28,20 @@
 
 #include <string.h>
 
+#define DEBUG_PARSER 0
+
+/* this function will dup if exist, which isn't the case of  tsk_options_add_option_2*/
+int add_option(tsk_options_L_t **options, tsk_option_t** option)
+{
+	if(!*options){
+		*options = tsk_list_create();
+	}
+	if(*option){
+		tsk_list_push_back_data(*options, (void**)option);
+	}
+	return 0;
+}
+
 /***********************************
 *	Ragel state machine.
 */
@@ -36,32 +50,47 @@
 
 	action tag{
 		tag_start = p;
+#if DEBUG_PARSER
 		TSK_DEBUG_INFO("tag=%s", tag_start);
+#endif
 	}
 	
 	action create_option{
+#if DEBUG_PARSER
 		TSK_DEBUG_INFO("create_option");
+#endif
 		TSK_OBJECT_SAFE_FREE(curr_opt);
 		curr_opt = tsk_option_create_null();
 	}
 
 	action add_option{
+#if DEBUG_PARSER
 		TSK_DEBUG_INFO("add_option");
-		tsk_options_add_option_2(&options, curr_opt);
-		TSK_OBJECT_SAFE_FREE(curr_opt);
+#endif
+		add_option(&options, &curr_opt);
 	}
 
 	action set_value{
 		if(curr_opt){
 			TSK_PARSER_SET_STRING(curr_opt->value);
+			tsk_strtrim_both(&curr_opt->value);
+#if DEBUG_PARSER
 			TSK_DEBUG_INFO("set_value %d %s", curr_opt->id, curr_opt->value);
+#endif
 		}
 	}
 
 	action is_comment{
+#if DEBUG_PARSER
 		TSK_DEBUG_INFO("is_comment");
+#endif
 		*comment = tsk_true;
+		TSK_OBJECT_SAFE_FREE(options);
 	}
+
+	#action contains_hyphen{
+	#	toto(tag_start)
+	#}
 
 	action option_error{
 		TSK_PARSER_SET_STRING(temp);
@@ -73,8 +102,6 @@
 		TSK_DEBUG_ERROR("%s not a valid command.", temp);
 	}
 
-	DQUOTE = "\"";
-	quoted_string = DQUOTE ( any--DQUOTE )* DQUOTE;
 	SP = " ";
 	LF = "\n";
 	CR = "\r";
@@ -86,9 +113,9 @@
 
 	command = (("audio"i | "a"i) %{ *cmd = cmd_audio; } |
 	("audiovideo"i | "av"i) %{ *cmd = cmd_audiovideo; } |
-	("config-file"i | "cf"i) %{ *cmd = cmd_config_file; } |
 	("config-session"i | "css"i) %{ *cmd = cmd_config_session; } |
 	("config-stack"i | "cst"i) %{ *cmd = cmd_config_stack; } |
+	("dump"i | "d"i) %{ *cmd = cmd_dump; } |
 	("exit"i | "e"i) %{ *cmd = cmd_exit; } |
 	("quit"i | "q"i) %{ *cmd = cmd_quit; } |
 	("file"i | "f"i) %{ *cmd = cmd_file; } |
@@ -98,6 +125,7 @@
 	("publish"i | "pub"i) %{ *cmd = cmd_publish; } |
 	("register"i | "reg"i) %{ *cmd = cmd_register; } |
 	("run"i | "r"i) %{ *cmd = cmd_run; } |
+	("scenario"i | "sn"i) %{ *cmd = cmd_scenario; } |
 	"sleep"i %{ *cmd = cmd_sleep; } |
 	"sms"i %{ *cmd = cmd_sms; } |
 	("subscribe"i | "sub"i) %{ *cmd = cmd_subscribe; } |
@@ -111,6 +139,7 @@
 	"dhcpv6"i % { curr_opt->id = opt_dhcpv6; } |
 	"dname"i % { curr_opt->id = opt_amf; } |
 	"dns-naptr"i % { curr_opt->id = opt_dname; } |
+	("expires"i | "xp"i) % { curr_opt->id = opt_expires; } |
 	"from"i % { curr_opt->id = opt_from; } |
 	"header"i % { curr_opt->id = opt_header; } |
 	"impi"i % { curr_opt->id = opt_impi; } |
@@ -119,8 +148,9 @@
 	"local-ip"i % { curr_opt->id = opt_local_ip; } |
 	"local-port"i % { curr_opt->id = opt_local_port; } |	
 	"opid"i % { curr_opt->id = opt_opid; } |
-	"password"i % { curr_opt->id = opt_password; } |
+	("password"i | "pwd"i) % { curr_opt->id = opt_password; } |
 	"path"i % { curr_opt->id = opt_path; } |
+	("payload"i | "pay"i) % { curr_opt->id = opt_payload; } |
 	"pcscf-ip"i % { curr_opt->id = opt_pcscf_ip; } |
 	"pcscf-port"i % { curr_opt->id = opt_pcscf_port; } |	
 	"pcscf-trans"i % { curr_opt->id = opt_pcscf_trans; } |
@@ -132,9 +162,8 @@
 	)** > 10 |
 	(any*) > 0 %option_error;
 
-	value = (quoted_string@10 | (any*)@0)>tag %set_value;
-	option = key>tag :>SP* <:value;
-
+	value = any*>tag %set_value;
+	option = key>tag:>SP* <:value;
 
 	Command_Line = ( (comment>tag %is_comment | (plusplus command>tag :> SP*)) (hyphens <: (option>1 >create_option %add_option | comment>2))* );
 

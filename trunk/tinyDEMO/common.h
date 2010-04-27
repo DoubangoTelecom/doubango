@@ -30,44 +30,85 @@
 
 _BEGIN_DECLS
 
-typedef tsk_list_t ssessions_L_t;
+typedef enum session_type_e
+{
+	st_none,
 
-typedef struct stack_s
+	st_invite,
+	st_message,
+	st_publish,
+	st_register,
+	st_subscribe,
+}
+session_type_t;
+
+typedef struct session_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	/* IMS/LTE stack */
-	tsip_stack_handle_t * ims_stack;
-
-	/* user's preference */
-	char* impi;
-	char* impu;
-	char* password;
-	char* realm;
-	char* display_name;
-	char* amf;
-	char* operator_id;
+	tsip_ssession_handle_t* handle;
+	
+	session_type_t type;
+	char* from;
+	char* to;
+	tsk_bool_t connected;
 }
-stack_t;
+session_t;
+typedef tsk_list_t sessions_L_t;
 
 typedef struct context_s
 {
 	TSK_DECLARE_OBJECT;
 
-	stack_t* stack;
+	tsip_stack_handle_t *stack;
 
-	ssessions_L_t* sessions;
+	/* Identity */
+	struct{
+		char* display_name;
+		char *impu;
+		char *preferred;
+		char *impi;
+		char *password;
+	} identity;
+
+	/* Network */
+	struct{
+		char *local_ip;
+		tnet_port_t local_port;
+
+		char *proxy_cscf;
+		tnet_port_t proxy_cscf_port;
+		char* proxy_cscf_trans;
+		
+		char *realm;
+
+		tsk_bool_t naptr;
+		tsk_bool_t dhcp;
+	} network;
+
+	/* Security */
+	struct{
+		tsk_bool_t earlyIMS;
+		char* operator_id;
+		uint16_t amf;
+	} security;
+
+	sessions_L_t* sessions;
 
 	TSK_DECLARE_SAFEOBJ; /* For thread-safeness */
 }
 context_t;
 
+int stack_dump();
 int stack_config(const tsk_options_L_t* options);
 int stack_run(const tsk_options_L_t* options);
 
 int pred_find_session_by_id(const tsk_list_item_t *item, const void* id);
+session_t* session_create(session_type_t type);
+int session_tostring(const session_t* session);
+session_t* session_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options);
 
-const tsk_object_def_t *stack_def_t;
+const tsk_object_def_t *session_def_t;
 const tsk_object_def_t *context_def_t;
 
 _END_DECLS

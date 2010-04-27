@@ -97,7 +97,7 @@
 	c_p_expires = "expires"i EQUAL delta_seconds>tag %parse_expires;
 	contact_extension = (generic_param)>tag %parse_param;
 	contact_params = c_p_expires@1 | contact_extension@0;
-	contact_param = (( my_name_addr | URI ) <: ( SEMI contact_params )*) >create_contact %add_contact;
+	contact_param = ( (my_name_addr | URI) :> (SEMI contact_params)* ) >create_contact %add_contact;
 	Contact = ( "Contact"i | "m"i ) HCOLON ( STAR | ( contact_param ( COMMA contact_param )* ) );
 	
 	# Entry point

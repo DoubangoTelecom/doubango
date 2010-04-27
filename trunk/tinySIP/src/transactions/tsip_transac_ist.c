@@ -84,7 +84,7 @@
 
 #include "tsk_debug.h"
 
-#define DEBUG_STATE_MACHINE						1
+#define DEBUG_STATE_MACHINE						0
 
 #define TRANSAC_IST_TIMER_SCHEDULE(TX)			TRANSAC_TIMER_SCHEDULE(ist, TX)
 #define TRANSAC_IST_SET_LAST_RESPONSE(self, response) \
