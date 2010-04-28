@@ -661,7 +661,10 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 					continue;
 				}
 			}
-			else return -1;
+			else{
+				TSK_DEBUG_ERROR("Failed to handle new challenge");
+				return -1;
+			}
 		}
 
 		if(isnew){
@@ -676,7 +679,10 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 			{
 				tsk_list_push_back_data(self->challenges, (void**)&challenge);
 			}
-			else return -1;
+			else{
+				TSK_DEBUG_ERROR("Failed to handle new challenge");
+				return -1;
+			}
 		}
 	}
 	
@@ -706,7 +712,10 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 					continue;
 				}
 			}
-			else return -1;
+			else{
+				TSK_DEBUG_ERROR("Failed to handle new challenge");
+				return -1;
+			}
 		}
 
 		if(isnew){
@@ -722,6 +731,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 				tsk_list_push_back_data(self->challenges, (void**)&challenge);
 			}
 			else{
+				TSK_DEBUG_ERROR("Failed to handle new challenge");
 				return -1;
 			}
 		}

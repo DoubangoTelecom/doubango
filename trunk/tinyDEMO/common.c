@@ -42,9 +42,8 @@
 #		define DEFAULT_LOCAL_IP	TNET_SOCKET_HOST_ANY
 #	endif
 #endif
-#define DEFAULT_USER_AGENT	"IM-client/OMA1.0 doubango/v1.0.0"
 
-extern context_t* context;
+extern ctx_t* ctx;
 
 int stack_callback(const tsip_event_t *sipevent);
 int session_tostring(const session_t* session);
@@ -58,7 +57,7 @@ int stack_callback(const tsip_event_t *sipevent)
 	}
 
 	/* check if it's for our stack */
-	if(sipevent->stack != context->stack){
+	if(sipevent->stack != ctx->stack){
 		TSK_DEBUG_ERROR("We have received an event for another stack");
 		return -2;
 	}
@@ -98,48 +97,66 @@ int stack_callback(const tsip_event_t *sipevent)
 	========================== Context ================================= 
 */
 
-static tsk_object_t* context_ctor(tsk_object_t * self, va_list * app)
+static tsk_object_t* ctx_ctor(tsk_object_t * self, va_list * app)
 {
-	context_t *context = self;
-	if(context){
+	ctx_t *ctx = self;
+	if(ctx){
 		/* stack */
-		context->stack = tsip_stack_create(stack_callback, DEFAULT_REALM, DEFAULT_IMPI, DEFAULT_IMPU, /* Mandatory parameters */
+		ctx->stack = tsip_stack_create(stack_callback, DEFAULT_REALM, DEFAULT_IMPI, DEFAULT_IMPU, /* Mandatory parameters */
 			
-			TSIP_STACK_SET_HEADER("User-Agent", DEFAULT_USER_AGENT), /* SIP 'User-Agent' stack-level header. */
 			TSIP_STACK_SET_LOCAL_IP(DEFAULT_LOCAL_IP), /* local IP */
 			TSIP_STACK_SET_NULL() /* Mandatory */);
 
 		/* SIP Sessions */
-		context->sessions = tsk_list_create();
+		ctx->sessions = tsk_list_create();
 
 		/* init internal mutex */
-		tsk_safeobj_init(context);
+		tsk_safeobj_init(ctx);
 	}
 	return self;
 }
 
-static tsk_object_t* context_dtor(tsk_object_t * self)
+static tsk_object_t* ctx_dtor(tsk_object_t * self)
 { 
-	context_t *context = self;
-	if(context){
+	ctx_t *ctx = self;
+	if(ctx){
 		/* stack */
-		TSK_OBJECT_SAFE_FREE(context->stack);
+		TSK_OBJECT_SAFE_FREE(ctx->stack);
+
+		/* Identity */
+		TSK_FREE(ctx->identity.display_name);
+		TSK_FREE(ctx->identity.impu);
+		TSK_FREE(ctx->identity.preferred);
+		TSK_FREE(ctx->identity.impi);
+		TSK_FREE(ctx->identity.password);
+
+		/* Network */
+		TSK_FREE(ctx->network.local_ip);
+		TSK_FREE(ctx->network.proxy_cscf);
+		TSK_FREE(ctx->network.proxy_cscf_trans);
+		TSK_FREE(ctx->network.realm);
+
+		/* Security */
+		TSK_FREE(ctx->security.operator_id);
+
+		/* sessions */
+		TSK_OBJECT_SAFE_FREE(ctx->sessions);
 
 		/* deinit internal mutex */
-		tsk_safeobj_deinit(context);
+		tsk_safeobj_deinit(ctx);
 	}
 
 	return self;
 }
 
-static const tsk_object_def_t context_def_s = 
+static const tsk_object_def_t ctx_def_s = 
 {
-	sizeof(context_t),
-	context_ctor, 
-	context_dtor,
+	sizeof(ctx_t),
+	ctx_ctor, 
+	ctx_dtor,
 	tsk_null, 
 };
-const tsk_object_def_t *context_def_t = &context_def_s;
+const tsk_object_def_t *ctx_def_t = &ctx_def_s;
 
 
 /*	==================================================================
@@ -150,27 +167,32 @@ int stack_dump()
 {
 	const tsk_list_item_t* item;
 
-	tsk_list_foreach(item, context->sessions){
+	tsk_list_foreach(item, ctx->sessions){
 		session_tostring(item->data);
 	}
 	return 0;
 }
 
-int stack_config(const tsk_options_L_t* options)
+int stack_config(const opts_L_t* opts)
 {
 	const tsk_list_item_t* item;
-	const tsk_option_t* option;
+	const opt_t* opt;
 	int ret = 0;
 	tsk_param_t* param;
 
-	if(!options){
+	if(!opts){
 		return -1;
 	}
 
-	tsk_list_foreach(item, options){
-		option = item->data;
+	tsk_list_foreach(item, opts){
+		opt = item->data;
+		
+		/* Stack-level option */
+		if(opt->lv != lv_none && opt->lv != lv_stack){
+			continue;
+		}
 
-		switch(option->id){
+		switch(opt->type){
 			case opt_amf:
 				{
 					break;
@@ -193,8 +215,8 @@ int stack_config(const tsk_options_L_t* options)
 				}
 			case opt_header:
 				{
-					if((param = tsk_params_parse_param(option->value, tsk_strlen(option->value)))){
-						ret = tsip_stack_set(context->stack, TSIP_STACK_SET_HEADER(param->name, param->value),
+					if((param = tsk_params_parse_param(opt->value, tsk_strlen(opt->value)))){
+						ret = tsip_stack_set(ctx->stack, TSIP_STACK_SET_HEADER(param->name, param->value),
 							TSIP_STACK_SET_NULL());
 						TSK_OBJECT_SAFE_FREE(param);
 					}
@@ -202,15 +224,15 @@ int stack_config(const tsk_options_L_t* options)
 				}
 			case opt_impi:
 				{
-					tsk_strupdate(&context->identity.impi, option->value);
-					ret = tsip_stack_set(context->stack, TSIP_STACK_SET_IMPI(context->identity.impi),
+					tsk_strupdate(&ctx->identity.impi, opt->value);
+					ret = tsip_stack_set(ctx->stack, TSIP_STACK_SET_IMPI(ctx->identity.impi),
 							TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_impu:
 				{
-					tsk_strupdate(&context->identity.impu, option->value);
-					ret = tsip_stack_set(context->stack, TSIP_STACK_SET_IMPU(context->identity.impu),
+					tsk_strupdate(&ctx->identity.impu, opt->value);
+					ret = tsip_stack_set(ctx->stack, TSIP_STACK_SET_IMPU(ctx->identity.impu),
 							TSIP_STACK_SET_NULL());
 					break;
 				}
@@ -232,7 +254,7 @@ int stack_config(const tsk_options_L_t* options)
 				}
 			case opt_password:
 				{
-					ret = tsip_stack_set(context->stack, TSIP_STACK_SET_PASSWORD(option->value),
+					ret = tsip_stack_set(ctx->stack, TSIP_STACK_SET_PASSWORD(opt->value),
 							TSIP_STACK_SET_NULL());
 					break;
 				}
@@ -250,8 +272,8 @@ int stack_config(const tsk_options_L_t* options)
 				}
 			case opt_realm:
 				{
-					ret = tsip_stack_set(context->stack,
-						TSIP_STACK_SET_REALM(option->value),
+					ret = tsip_stack_set(ctx->stack,
+						TSIP_STACK_SET_REALM(opt->value),
 						TSIP_STACK_SET_NULL());
 					break;
 				}
@@ -262,14 +284,14 @@ int stack_config(const tsk_options_L_t* options)
 	return ret;
 }
 
-int stack_run(const tsk_options_L_t* options)
+int stack_run(const opts_L_t* opts)
 {
-	if(!context->stack){
+	if(!ctx->stack){
 		TSK_DEBUG_ERROR("Stack is Null.");
 		return -1;
 	}
 	else{
-		return tsip_stack_start(context->stack);
+		return tsip_stack_start(ctx->stack);
 	}
 }
 
@@ -324,9 +346,9 @@ int session_tostring(const session_t* session)
 				break;
 		}
 		/* From */
-		printf(" from=%s", session->from ? session->from : context->identity.impu);
+		printf(" from=%s", session->from ? session->from : ctx->identity.impu);
 		/* From */
-		printf(" to=%s", session->to ? session->to : context->identity.impu);
+		printf(" to=%s", session->to ? session->to : ctx->identity.impu);
 	}
 	else{
 		printf("(invalid)");
@@ -335,18 +357,18 @@ int session_tostring(const session_t* session)
 	return -1;
 }
 
-session_t*  session_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options)
+session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 {
 	session_t* session = tsk_null;
-	const tsk_option_t* option;
+	const opt_t* opt;
 	const tsk_list_item_t* item;
 	tsk_param_t* param;
 	int ret = 0;
 
 	/* Check if there is a session with is Id */
-	if((option = tsk_options_get_option_by_id(options, opt_sid))){
-		tsip_ssession_id_t id = atoi(option->value);
-		if((item = tsk_list_find_item_by_pred(context->sessions, pred_find_session_by_id, &id))){
+	if((opt = opt_get_by_type(opts, opt_sid))){
+		tsip_ssession_id_t id = atoi(opt->value);
+		if((item = tsk_list_find_item_by_pred(ctx->sessions, pred_find_session_by_id, &id))){
 			session = tsk_object_ref(item->data);
 		}
 	}
@@ -369,7 +391,7 @@ session_t*  session_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options)
 				if(!session){ /* Create subscription */
 					session_t* _session = session_create(TYPE_FROM_CMD(cmd));
 					session = tsk_object_ref(_session);
-					tsk_list_push_back_data(context->sessions, (void**)&_session);
+					tsk_list_push_back_data(ctx->sessions, (void**)&_session);
 				}
 				break;
 			}
@@ -386,15 +408,20 @@ session_t*  session_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options)
 	}
 
 	/* === Options === */
-	tsk_list_foreach(item, options){
-		option = item->data;
+	tsk_list_foreach(item, opts){
+		opt = item->data;
+
+		/* Session-level option? */
+		if(opt->lv != lv_none && opt->lv != lv_session){
+			continue;
+		}
 		
-		switch(option->id){
+		switch(opt->type){
 			case opt_expires:
 				{	
-					if(!tsk_strnullORempty(option->value)){
+					if(!tsk_strnullORempty(opt->value)){
 						ret = tsip_ssession_set(session->handle, 
-							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, option->value),
+							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, opt->value),
 							TSIP_SSESSION_SET_NULL());
 					}
 					break;
@@ -406,7 +433,7 @@ session_t*  session_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options)
 				}
 			case opt_header:
 				{
-					if((param = tsk_params_parse_param(option->value, tsk_strlen(option->value)))){
+					if((param = tsk_params_parse_param(opt->value, tsk_strlen(opt->value)))){
 						ret = tsip_ssession_set(session->handle, 
 							TSIP_SSESSION_SET_HEADER(param->name, param->value),
 							TSIP_SSESSION_SET_NULL());
@@ -417,9 +444,9 @@ session_t*  session_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options)
 			case opt_to:
 				{	/* You should use  TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, value)
 						instead of TSIP_SSESSION_SET_HEADER() to set the destination URI. */
-					if(!tsk_strnullORempty(option->value)){
+					if(!tsk_strnullORempty(opt->value)){
 						ret = tsip_ssession_set(session->handle, 
-							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, option->value),
+							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, opt->value),
 							TSIP_SSESSION_SET_NULL());
 					}
 					break;
@@ -442,7 +469,7 @@ static tsk_object_t* session_ctor(tsk_object_t * self, va_list * app)
 	session_t *session = self;
 	if(session){
 		session->type = va_arg(*app, session_type_t);
-		session->handle = tsip_ssession_create(context->stack,
+		session->handle = tsip_ssession_create(ctx->stack,
 			TSIP_SSESSION_SET_NULL());
 	}
 	return self;
@@ -452,7 +479,10 @@ static tsk_object_t* session_dtor(tsk_object_t * self)
 { 
 	session_t *session = self;
 	if(session){
-		
+		TSK_OBJECT_SAFE_FREE(session->handle);
+
+		TSK_FREE(session->to);
+		TSK_FREE(session->from);
 	}
 
 	return self;

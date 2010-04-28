@@ -21,11 +21,9 @@
 */
 #include "invite.h"
 
-#include "common.h"
+extern ctx_t* ctx;
 
-extern context_t* context;
-
-int invite_handle_event(const struct tsip_event_s *sipevent)
+int invite_handle_event(const tsip_event_t *sipevent)
 {
 	return 0;
 }

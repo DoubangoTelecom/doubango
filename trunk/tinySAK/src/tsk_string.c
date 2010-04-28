@@ -248,7 +248,9 @@ void tsk_strncat(char** destination, const char* source, size_t n)
 	size_t index = 0;
 	size_t size_to_cat = (n > tsk_strlen(source)) ? tsk_strlen(source) : n;
 
-	if(!source) return;
+	if(!source || !n){
+		return;
+	}
 
 	if(!*destination){
 		*destination = (char*)tsk_malloc(size_to_cat+1);

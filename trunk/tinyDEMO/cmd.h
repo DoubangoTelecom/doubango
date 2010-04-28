@@ -24,7 +24,7 @@
 
 #include "demo_config.h"
 
-#include "tsk_options.h"
+#include "tsk_params.h"
 
 _BEGIN_DECLS
 
@@ -37,13 +37,12 @@ typedef enum cmd_type_e
 	cmd_config_session, /* ++config-session | ++css */
 	cmd_config_stack, /* ++config-stack | ++cst*/
 	cmd_dump, /*++dump | ++d*/
-	cmd_exit,	/*++exit | ++e*/
+	cmd_exit,	/*++exit | ++e | ++quit | ++q*/
 	cmd_file, /* ++file | ++f*/
-	cmd_hangup, /* ++hangup | ++hp */
+	cmd_hangup, /* ++hangup | ++hu */
 	cmd_help, /* ++help | ++h  */
 	cmd_message, /* ++message | ++m*/
 	cmd_publish, /* ++publish | ++pub*/
-	cmd_quit, /* ++quit | ++q */
 	cmd_register, /* ++register | ++reg */
 	cmd_run, /* ++run | ++r*/
 	cmd_scenario, /* ++scenario | ++sn*/
@@ -54,7 +53,7 @@ typedef enum cmd_type_e
 }
 cmd_type_t;
 
-typedef enum option_e
+typedef enum opt_type_e
 {
 	opt_none,
 
@@ -71,7 +70,7 @@ typedef enum option_e
 	opt_impu,			/* --impu sip:bob@open-ims.test */
 	opt_ipv6,			/* --ipv6 */
 	opt_local_ip,		/* --local-ip 192.168.0.10 */
-	opt_local_port,		/* --local-port 4000 */
+	opt_local_port,		/* --local-port 5060 */
 	opt_opid,			/* --opid 0xA712F5D04B */
 	opt_password,		/* --password|--pwd mysecret */
 	opt_path,			/* --path /cygdrive/c/Projects/sample.cfg */
@@ -85,9 +84,9 @@ typedef enum option_e
 	opt_sigcomp,		/* --sigcomp */
 	opt_to,				/* --to sip:alice@open-ims.test */
 }
-option_t;
+opt_type_t;
 
-typedef enum level_e
+typedef enum lv_e
 {
 	lv_none,
 
@@ -95,11 +94,40 @@ typedef enum level_e
 	lv_session,	/* @@session | @@ss */
 	lv_action	/* @@action | @@request | @@a | @@r*/
 }
-level_t;
+lv_t;
 
+typedef struct opt_s
+{
+	TSK_DECLARE_OBJECT;
 
-tsk_options_L_t* cmd_parse(const char* buffer, cmd_type_t* cmd, tsk_bool_t *comment);
+	opt_type_t type;
+	lv_t lv;
+	char* value;
+}
+opt_t;
+typedef tsk_list_t opts_L_t;
+
+typedef struct cmd_s
+{
+	TSK_DECLARE_OBJECT;
+
+	cmd_type_t type;
+	opts_L_t *opts;
+}
+cmd_t;
+
+cmd_t* cmd_create(cmd_type_t );
+#define cmd_create_null() cmd_create(cmd_none)
+
+cmd_t* cmd_parse(const char* buffer, tsk_bool_t *comment, tsk_params_L_t* params);
 void cmd_print_help();
+
+opt_t* opt_create(opt_type_t, lv_t, const char*);
+const opt_t* opt_get_by_type(const opts_L_t* , opt_type_t);
+#define opt_create_null() opt_create(opt_none, lv_none, tsk_null)
+
+const tsk_object_def_t *opt_def_t;
+const tsk_object_def_t *cmd_def_t;
 
 _END_DECLS
 

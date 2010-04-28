@@ -28,7 +28,7 @@
 
 _BEGIN_DECLS
 
-tsk_options_L_t *cmd_parser_parse(const char *buffer, cmd_type_t* cmd, tsk_bool_t *comment);
+cmd_t* cmd_parser_parse(const char *buffer, tsk_bool_t *comment, tsk_params_L_t* params);
 
 _END_DECLS
 
