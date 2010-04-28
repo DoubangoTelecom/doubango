@@ -439,11 +439,6 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	if(self){
 		tsip_stack_t *stack = self;
 		
-		TSK_RUNNABLE(stack)->run = run;
-		if((ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))){
-			goto bail;
-		}
-
 		/* === Timer manager === */
 		if((ret = tsk_timer_manager_start(stack->timer_mgr))){
 			goto bail;
@@ -508,15 +503,21 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 				tsk_strupdate(&stack->network.local_ip, bestsource);
 			}
 		}
+
+		/* === Runnable === */
+		TSK_RUNNABLE(stack)->run = run;
+		if((ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))){
+			goto bail;
+		}
 		
 		/* === Transport Layer === */
 		/* Adds the default transport to the transport Layer */
 		if((ret = tsip_transport_layer_add(stack->layer_transport, stack->network.local_ip, stack->network.local_port, stack->network.proxy_cscf_type, "SIP transport"))){
-			return ret;
+			goto bail;
 		}
 		/* Starts the transport Layer */
 		if((ret = tsip_transport_layer_start(stack->layer_transport))){
-			return ret;
+			goto bail;
 		}
 		
 		/* ===	ALL IS OK === */

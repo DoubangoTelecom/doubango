@@ -51,20 +51,27 @@ int tsip_message_event_signal(tsip_message_event_type_t type, struct tsip_stack_
 
 int tsip_action_MESSAGE(const tsip_ssession_handle_t *ss, ...)
 {
-	const tsip_ssession_t* session = ss;
+	const tsip_ssession_t* _ss = ss;
 	va_list ap;
 	tsip_action_t* action;
 	tsip_dialog_t* dialog;
 	int ret = -1;
 
-	if(!session || !session->stack){
+	if(!_ss || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalide parameter.");
 		return ret;
 	}
 	
+	/* Checks if the stack is running */
+	if(!TSK_RUNNABLE(_ss->stack)->running){
+		TSK_DEBUG_ERROR("Stack not running.");
+		return -2;
+	}
+
 	va_start(ap, ss);
 	if((action = tsip_action_create(atype_message_send, &ap))){
-		if(!(dialog = tsip_dialog_layer_find_by_ss(session->stack->layer_dialog, ss))){
-			dialog = tsip_dialog_layer_new(session->stack->layer_dialog, tsip_dialog_MESSAGE, ss);
+		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
+			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_MESSAGE, ss);
 		}
 		ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
 		

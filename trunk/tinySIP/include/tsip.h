@@ -165,7 +165,7 @@ tsip_stack_option_t;
 typedef struct tsip_stack_s
 {
 	TSK_DECLARE_RUNNABLE;
-
+	
 	tsip_stack_callback_f callback;
 
 	/* Identity */

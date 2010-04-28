@@ -268,14 +268,14 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="configs(*.cfg)"
+			Name="scenarios(*.scn)"
 			>
 			<File
-				RelativePath=".\publish.cfg"
+				RelativePath=".\publish.sn"
 				>
 			</File>
 			<File
-				RelativePath=".\sample.cfg"
+				RelativePath=".\sample.sn"
 				>
 			</File>
 		</Filter>

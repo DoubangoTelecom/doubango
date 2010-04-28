@@ -37,12 +37,13 @@
 context_t* context = tsk_null;
 
 const char* trim(const char*);
+int insert(char* dest, size_t index, size_t dest_size, char* src, size_t src_size);
 int execute(cmd_type_t cmd, const tsk_options_L_t* options);
 
 /* === entry point === */
 int main(int argc, char* argv[])
 {
-	char buffer[2048];
+	char buffer[4096];
 	tsk_options_L_t* options = tsk_null;
 	cmd_type_t cmd;
 	tsk_bool_t comment;
@@ -107,22 +108,43 @@ parse_buffer:
 			FILE* file;
 			const tsk_option_t* option;
 			size_t read = 0;
+			tsk_bool_t rm_lf = tsk_false;
+			static char temp[2048];
 			if((option = tsk_options_get_option_by_id(options, opt_path)) && !tsk_strnullORempty(option->value)){ /* --path option */
 				if((file = fopen(option->value, "r"))){
-					memset(buffer, '\0', sizeof(buffer));
-					if(!(read = fread(buffer, sizeof(uint8_t), sizeof(buffer), file))){
+					memset(temp, '\0', sizeof(temp)), temp[0] = '\n';
+					read = fread(temp+1, sizeof(uint8_t), sizeof(temp)-1, file);
+					fclose(file), file = tsk_null;
+
+					if(read == 0){
 						TSK_DEBUG_ERROR("[%s] is empty.", option->value);
-						fclose(file), file = tsk_null;
 						continue;
 					}
-					fclose(file), file = tsk_null;
+					else if(read == sizeof(temp)-1){
+						TSK_DEBUG_ERROR("Buffer too short.");
+						
+						continue;
+					}
+					read++; /* \n */
 					/* repplace all '\' with spaces (easier than handling that in the ragel file) */
 					for(i=0; ((size_t)i)<read; i++){
-						if(buffer[i] == '\\'){
-							buffer[i] = ' ';
+						if(temp[i] == '\\'){
+							temp[i] = ' ';
+							rm_lf = tsk_true;
+						}
+						else if(rm_lf && temp[i] == '\n'){
+							temp[i] = ' ';
+							rm_lf = tsk_false;
 						}
 					}
-					goto init_buffer;
+					/* insert scenario */
+					if(insert(buffer, (end - start), sizeof(buffer), temp, read)){
+						continue;
+					}
+					else{
+						end += read;
+						goto nex_line;
+					}
 				}
 				else{
 					TSK_DEBUG_ERROR("Failed to open scenario-file [%s].", option->value);
@@ -187,6 +209,26 @@ const char* trim(const char* str)
 		str++;
 	}
 	return str;
+}
+
+int insert(char* dest, size_t index, size_t dest_size, char* src, size_t src_size)
+{
+	if(!dest || !dest_size || !src || !src_size){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((tsk_strlen(dest) + src_size + 1) >= dest_size){
+		TSK_DEBUG_ERROR("Destination too short");
+		return -3;
+	}
+
+	/* move old data */
+	memmove((dest + index + src_size), (dest + index), src_size);
+	/* copy new data */
+	memcpy((dest + index), src, src_size);
+
+	return 0;
 }
 
 int execute(cmd_type_t cmd, const tsk_options_L_t* options)

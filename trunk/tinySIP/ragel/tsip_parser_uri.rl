@@ -147,12 +147,12 @@ tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
 	const char *pe = p + size;
 	const char *eof = pe;
 
-	const char *ts = 0, *te = 0;
-	int act =0;
+	const char *ts = tsk_null, *te = tsk_null;
+	int act = 0;
 
 	tsip_uri_t *uri = tsip_uri_create(uri_unknown);
 	
-	const char *tag_start = 0;
+	const char *tag_start = tsk_null;
 	
 	%%write data;
 	%%write init;

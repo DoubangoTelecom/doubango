@@ -87,6 +87,16 @@ typedef enum option_e
 }
 option_t;
 
+typedef enum level_e
+{
+	lv_none,
+
+	lv_stack,	/* @@stack | @@st */
+	lv_session,	/* @@session | @@ss */
+	lv_action	/* @@action | @@request | @@a | @@r*/
+}
+level_t;
+
 
 tsk_options_L_t* cmd_parse(const char* buffer, cmd_type_t* cmd, tsk_bool_t *comment);
 void cmd_print_help();
