@@ -1,6 +1,6 @@
 # File used to test external scenarios
 ++pub --header Content-Type=application/pidf+xml @@a --pay 	<?xml version=1.0 encoding=utf-8?> \
-	<presence xmlns:cp=urn:ietf:params:xml:ns:pidf:cipid xmlns:caps=urn:ietf:params:xml:ns:pidf:caps xmlns:rpid=urn:ietf:params:xml:ns:pidf:rpid xmlns:pdm=urn:ietf:params:xml:ns:pidf:data-model xmlns:p=urn:ietf:params:xml:ns:pidf-diff xmlns:op=urn:oma:xml:prs:pidf:oma-pres entity=sip:mamadou@"DOMAIN" xmlns=urn:ietf:params:xml:ns:pidf>\
+	<presence xmlns:cp=urn:ietf:params:xml:ns:pidf:cipid xmlns:caps=urn:ietf:params:xml:ns:pidf:caps xmlns:rpid=urn:ietf:params:xml:ns:pidf:rpid xmlns:pdm=urn:ietf:params:xml:ns:pidf:data-model xmlns:p=urn:ietf:params:xml:ns:pidf-diff xmlns:op=urn:oma:xml:prs:pidf:oma-pres entity=sip:$$(user)@$$(domain) xmlns=urn:ietf:params:xml:ns:pidf>\
 	  <pdm:person id=CRUVREZS>\
 		<op:overriding-willingness>\
 		  <op:basic>open</op:basic>\

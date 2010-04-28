@@ -477,7 +477,7 @@ int tsip_dialog_register_Trying_2_Trying_X_423(va_list *app)
 	*/
 	hdr = (tsip_header_Min_Expires_t*)tsip_message_get_header(message, tsip_htype_Min_Expires);
 	if(hdr){
-		TSIP_DIALOG(self)->expires = hdr->value;
+		TSIP_DIALOG(self)->expires = TSK_TIME_S_2_MS(hdr->value);
 
 		if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
 			tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);

@@ -143,8 +143,7 @@ int tsk_options_remove_option(tsk_options_L_t *self, int id)
 */
 const tsk_option_t *tsk_options_get_option_by_id(const tsk_options_L_t *self, int id)
 {
-	if(self)
-	{
+	if(self){
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_option_by_id, &id);
 		if(item_const){
 			return item_const->data;

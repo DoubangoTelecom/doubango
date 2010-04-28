@@ -1,44 +1,28 @@
+# cross-scenario parameters (like ANSI-C #define)
+%%domain ims.inexbee.com
+%%user mamadou
+%%pwd mamadou
+
 # For more information about scenarios and how commands work, 
 # please refer to the Programmer's Guide
 
 
 # Configure the stack
 # Realm, IMPI and IMPU are mandatory
-++cst --realm ims.inexbee.com --impi mamadou@ims.inexbee.com --impu sip:mamadou@ims.inexbee.com --pwd mamadou \
+++cst --realm $$(domain) --impi $$(user)@$$(domain) --impu sip:$$(user)@$$(domain) --pwd $$(pwd) \
 	--header Privacy=header;id --header Allow=INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER \
-	--header P-Access-Network-Info=ADSL;utran-cell-id-3gpp=00000000 # last shall not have backslash
-
-# Run the stack
+	--header P-Access-Network-Info=ADSL;utran-cell-id-3gpp=00000000 \
+	--header User-Agent=IM-client/OMA1.0 doubango/v1.0.0 # last should not have backslash
+	
+# Run the engine
 ++r
 
-# REGISTER (expires=30s)
-++reg --xp 30
-
-# Sleep 1.5 second
-++sleep --sec 1.5
+# REGISTER
+++reg --xp 200
+	--header name=value
+	
+#++sleep --sec 2.5
 
 # Subscribe to reg event package (expires=30s)
-++sub --to sip:mamadou@ims.inexbee.com --xp 30 --header Event=reg --header Accept=application/reginfo+xml
-# --header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference
-
-# Subscribe to presense package
-++sub --to sip:alice@ims.inexbee.com --xp 30 --header Event=presence --header Supported=eventlist --header Accept=multipart/related, application/rlmi+xml, application/pidf+xml, application/rpid+xml, application/xcap-diff+xml, message/external-body \
-	--header Allow-Events: refer, presence, presence.winfo, xcap-diff, conference
-
-# Publish using external scenario
-++sn --path ../publish.sn
-
-# Sleep 1.5 second
-++sleep --sec 1.5
-
-# Dump all sessions with their sid (session id)
-++d
-# ++d # alias for ++dump
-
-# Sleep 1.5 second
-++sleep --sec 1.5
-
-# Send IM
-++m --to sip:alice@ims.inexbee.com  --header Content-Type=text/plain --pay Hello world!
-
-# 2001:5c0:1502:1800::225
+#++sub --to sip:mamadou@ims.inexbee.com --xp 30 --header Event=reg --header Accept=application/reginfo+xml \
+#	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference

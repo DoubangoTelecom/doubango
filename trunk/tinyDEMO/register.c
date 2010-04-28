@@ -21,11 +21,9 @@
 */
 #include "register.h"
 
-#include "common.h"
+extern ctx_t* ctx;
 
-extern context_t* context;
-
-int register_handle_event(const struct tsip_event_s *sipevent)
+int register_handle_event(const tsip_event_t *sipevent)
 {
 	const tsip_register_event_t* reg_event = TSIP_REGISTER_EVENT(sipevent);
 	session_t* session;
@@ -33,7 +31,7 @@ int register_handle_event(const struct tsip_event_s *sipevent)
 
 	/* Find associated session */
 	id = tsip_ssession_get_id(sipevent->ss);
-	if(!(session = (session_t*)tsk_list_find_item_by_pred(context->sessions, pred_find_session_by_id, &id))){
+	if(!(session = (session_t*)tsk_list_find_item_by_pred(ctx->sessions, pred_find_session_by_id, &id))){
 		TSK_DEBUG_WARN("Failed to match session event.");
 		return -1;
 	}
@@ -88,10 +86,10 @@ int register_handle_event(const struct tsip_event_s *sipevent)
 }
 
 
-int register_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options)
+int register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 {
 	session_t* session = tsk_null;
-	if(!(session = session_handle_cmd(cmd, options))){
+	if(!(session = session_handle_cmd(cmd, opts))){
 		goto bail;
 	}
 

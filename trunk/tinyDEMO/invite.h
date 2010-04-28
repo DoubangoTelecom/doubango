@@ -24,16 +24,12 @@
 
 #include "demo_config.h"
 
-#include "tsk_options.h"
+#include "common.h"
 
 _BEGIN_DECLS
 
-/* Forward declarations */
-struct tsip_event_s;
-enum cmd_type_e;
-
-int invite_handle_event(const struct tsip_event_s *sipevent);
-int invite_handle_cmd(enum cmd_type_e cmd, const tsk_options_L_t* options);
+int invite_handle_event(const tsip_event_t *sipevent);
+int invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts);
 
 _END_DECLS
 

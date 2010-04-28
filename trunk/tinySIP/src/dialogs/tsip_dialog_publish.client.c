@@ -399,7 +399,7 @@ int tsip_dialog_publish_Trying_2_Trying_X_423(va_list *app)
 	*/
 	hdr = (tsip_header_Min_Expires_t*)tsip_message_get_header(response, tsip_htype_Min_Expires);
 	if(hdr){
-		TSIP_DIALOG(self)->expires = hdr->value;
+		TSIP_DIALOG(self)->expires = TSK_TIME_S_2_MS(hdr->value);
 		send_PUBLISH(self);
 	}
 	else{

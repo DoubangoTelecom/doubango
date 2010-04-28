@@ -56,7 +56,7 @@ typedef struct session_s
 session_t;
 typedef tsk_list_t sessions_L_t;
 
-typedef struct context_s
+typedef struct ctx_s
 {
 	TSK_DECLARE_OBJECT;
 
@@ -92,24 +92,24 @@ typedef struct context_s
 		char* operator_id;
 		uint16_t amf;
 	} security;
-
+	
 	sessions_L_t* sessions;
-
+	
 	TSK_DECLARE_SAFEOBJ; /* For thread-safeness */
 }
-context_t;
+ctx_t;
 
 int stack_dump();
-int stack_config(const tsk_options_L_t* options);
-int stack_run(const tsk_options_L_t* options);
+int stack_config(const opts_L_t* opts);
+int stack_run(const opts_L_t* opts);
 
 int pred_find_session_by_id(const tsk_list_item_t *item, const void* id);
 session_t* session_create(session_type_t type);
 int session_tostring(const session_t* session);
-session_t* session_handle_cmd(cmd_type_t cmd, const tsk_options_L_t* options);
+session_t* session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts);
 
 const tsk_object_def_t *session_def_t;
-const tsk_object_def_t *context_def_t;
+const tsk_object_def_t *ctx_def_t;
 
 _END_DECLS
 

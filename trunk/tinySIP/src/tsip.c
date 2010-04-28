@@ -729,15 +729,15 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 
 		/* QoS */
 
-		/* Internals. */
-		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
-		TSK_OBJECT_SAFE_FREE(stack->ssessions);
-		TSK_OBJECT_SAFE_FREE(stack->headers);
-
 		/* Layers */
 		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
 		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
+
+		/* Internals. */
+		TSK_OBJECT_SAFE_FREE(stack->ssessions);
+		TSK_OBJECT_SAFE_FREE(stack->headers);
+		TSK_OBJECT_SAFE_FREE(stack->timer_mgr); /* Should be the last ==> used by layers and al. */
 
 		TSK_DEBUG_INFO("*** SIP Stack destroyed ***");
 	}

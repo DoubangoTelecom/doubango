@@ -28,18 +28,41 @@
 
 #include <string.h>
 
-#define DEBUG_PARSER 1
+#define DEBUG_PARSER 0
 
-/* this function will dup if exist, which isn't the case of  tsk_options_add_option_2*/
-int add_option(tsk_options_L_t **options, tsk_option_t** option)
+#define set_level(_lv) if(opt) opt->lv = _lv;
+
+char* replace_param(char* pivot, int index_1, int index_2, tsk_params_L_t* params)
 {
-	if(!*options){
-		*options = tsk_list_create();
+	char* pname = tsk_null;
+	char* ret = tsk_null;
+	const tsk_param_t* p;
+	size_t len = tsk_strlen(pivot);
+	tsk_bool_t parenthesis = tsk_false;
+	int i1, i2;
+	
+	/* whether there are parenthesis around the param */
+	if((i1 = tsk_strindexOf((pivot + index_1), tsk_strlen((pivot + index_1)), "(")) == 2
+		&& (i2 = tsk_strindexOf((pivot + index_1 + i1), tsk_strlen((pivot + index_1 + i1)), ")")) != -1)
+	{
+		pname = tsk_strndup((pivot + index_1 + i1 + 1), (i2 - i1 + 1));
+		index_2 = index_1 + i1 + i2 + 1;
 	}
-	if(*option){
-		tsk_list_push_back_data(*options, (void**)option);
+	else{
+		pname = tsk_strndup((pivot + index_1 + 2/*$$*/), (index_2 - index_1 - 2));
 	}
-	return 0;
+
+	if((p = tsk_params_get_param_by_name(params, pname))){
+		tsk_strncat(&ret, pivot, index_1);
+		tsk_strncat(&ret, p->value, tsk_strlen(p->value));
+		tsk_strncat(&ret, (pivot + index_2), (tsk_strlen(pivot) - index_2));
+	}
+	else{
+		TSK_DEBUG_WARN("Failed to find param [%s]", pname);
+	}
+
+	TSK_FREE(pname);
+	return ret;
 }
 
 tsk_bool_t next_not_(const char* p, const char* pe, char c)
@@ -51,6 +74,7 @@ tsk_bool_t next_not_(const char* p, const char* pe, char c)
 }
 #define next_not_hyphens(p, pe) next_not_(p, pe, '-')
 #define next_not_arobases(p, pe) next_not_(p, pe, '@')
+#define next_not_percents(p, pe) next_not_(p, pe, '%')
 
 /***********************************
 *	Ragel state machine.
@@ -61,7 +85,7 @@ tsk_bool_t next_not_(const char* p, const char* pe, char c)
 	action tag{
 		tag_start = p;
 #if DEBUG_PARSER
-		TSK_DEBUG_INFO("tag=%s", tag_start);
+		// - TSK_DEBUG_INFO("tag=%s", tag_start);
 #endif
 	}
 	
@@ -69,24 +93,75 @@ tsk_bool_t next_not_(const char* p, const char* pe, char c)
 #if DEBUG_PARSER
 		TSK_DEBUG_INFO("create_option");
 #endif
-		TSK_OBJECT_SAFE_FREE(curr_opt);
-		curr_opt = tsk_option_create_null();
+		TSK_OBJECT_SAFE_FREE(opt);
+		opt = opt_create_null();
 	}
 
 	action add_option{
 #if DEBUG_PARSER
 		TSK_DEBUG_INFO("add_option");
 #endif
-		add_option(&options, &curr_opt);
+		tsk_list_push_back_data(cmd->opts, (void**)&opt);
 	}
 
-	action set_value{
-		if(curr_opt){
-			TSK_PARSER_SET_STRING(curr_opt->value);
-			tsk_strtrim_both(&curr_opt->value);
+	action set_opt_value{
+		if(opt){
+			int index_1, index_2;
+			char* newval = tsk_null;
+			TSK_PARSER_SET_STRING(opt->value);
+			/* trim both: left and right */
+			tsk_strtrim_both(&opt->value);
+			/* replace params */
+replace:
+			if((index_1 = tsk_strindexOf(opt->value, tsk_strlen(opt->value), "$$")) != -1){
+				if((index_2 = tsk_strindexOf((opt->value + index_1), tsk_strlen((opt->value + index_1)), " ")) != -1){
+					newval = replace_param(opt->value, index_1, (index_1 + index_2), params);
+				}
+				else{
+					newval = replace_param(opt->value, index_1, tsk_strlen(opt->value), params);
+				}
+				if(newval){
+					TSK_FREE(opt->value);
+					opt->value = newval;
+
+					/* again */
+					goto replace;
+				}
+			}
 #if DEBUG_PARSER
-			TSK_DEBUG_INFO("set_value [%d] '%s'", curr_opt->id, curr_opt->value);
+			TSK_DEBUG_INFO("set_opt_value [%d] '%s'", opt->type, opt->value);
 #endif
+		}
+	}
+
+	action create_param{
+#if DEBUG_PARSER
+		TSK_DEBUG_INFO("create_param");
+#endif
+		TSK_OBJECT_SAFE_FREE(param);
+		param = tsk_param_create_null();
+	}
+
+	action add_param{
+#if DEBUG_PARSER
+		TSK_DEBUG_INFO("add_param");
+#endif
+		tsk_params_add_param_2(&params, param);
+		TSK_OBJECT_SAFE_FREE(param);
+	}
+
+	action set_param_value{
+		if(param){
+			TSK_PARSER_SET_STRING(param->value);
+#if DEBUG_PARSER
+			TSK_DEBUG_INFO("set_param_value [%s] '%s'", param->name, param->value);
+#endif
+		}
+	}
+
+	action set_param_name{
+		if(param){
+			TSK_PARSER_SET_STRING(param->name);
 		}
 	}
 
@@ -95,19 +170,20 @@ tsk_bool_t next_not_(const char* p, const char* pe, char c)
 		TSK_PARSER_SET_STRING(temp);
 		TSK_DEBUG_INFO("is_comment '%s'", temp);
 #endif
-		*comment = tsk_true;
-		TSK_OBJECT_SAFE_FREE(options);
+		// *comment = tsk_true;
+		// TSK_OBJECT_SAFE_FREE(opts);
 	}
 
-	action next_not_hyphens_not_arobase_not_comment{
+	action next_not_hyphens_not_arobase_not_percents_not_comment{
 		next_not_hyphens(p, pe) 
 			&& next_not_arobases(p, pe)
+			&& next_not_percents(p, pe)
 			&& (p && *p != '#')
 	}
 
 	action next_not_newline{
 		(p && *p != '\n')
-	}
+	}	
 
 	action option_error{
 		TSK_PARSER_SET_STRING(temp);
@@ -131,88 +207,90 @@ tsk_bool_t next_not_(const char* p, const char* pe, char c)
 	equal = "=";
 	hyphens = "-" {2,};
 	plusplus = "+" {2,};
+	percents = "%" {2,};
 	sharp = "#";
 	arobases = "@" {2,};
 
-	command = (("audio"i | "a"i) %{ *cmd = cmd_audio; } |
-	("audiovideo"i | "av"i) %{ *cmd = cmd_audiovideo; } |
-	("config-session"i | "css"i) %{ *cmd = cmd_config_session; } |
-	("config-stack"i | "cst"i) %{ *cmd = cmd_config_stack; } |
-	("dump"i | "d"i) %{ *cmd = cmd_dump; } |
-	("exit"i | "e"i) %{ *cmd = cmd_exit; } |
-	("quit"i | "q"i) %{ *cmd = cmd_quit; } |
-	("file"i | "f"i) %{ *cmd = cmd_file; } |
-	("hangup"i | "hp"i) %{ *cmd = cmd_hangup; } |
-	("help"i | "h"i) %{ *cmd = cmd_help; } |
-	("message"i | "m"i) %{ *cmd = cmd_message; } |
-	("publish"i | "pub"i) %{ *cmd = cmd_publish; } |
-	("register"i | "reg"i) %{ *cmd = cmd_register; } |
-	("run"i | "r"i) %{ *cmd = cmd_run; } |
-	("scenario"i | "sn"i) %{ *cmd = cmd_scenario; } |
-	"sleep"i %{ *cmd = cmd_sleep; } |
-	"sms"i %{ *cmd = cmd_sms; } |
-	("subscribe"i | "sub"i) %{ *cmd = cmd_subscribe; } |
-	("video"i | "v"i) %{ *cmd = cmd_video; }
+	command = (("audio"i | "a"i) %{ cmd->type = cmd_audio; } |
+	("audiovideo"i | "av"i) %{ cmd->type = cmd_audiovideo; } |
+	("config-session"i | "css"i) %{ cmd->type = cmd_config_session; } |
+	("config-stack"i | "cst"i) %{ cmd->type = cmd_config_stack; } |
+	("dump"i | "d"i) %{ cmd->type = cmd_dump; } |
+	("exit"i | "e"i | "quit"i | "q"i) %{ cmd->type = cmd_exit; } |
+	("file"i | "f"i) %{ cmd->type = cmd_file; } |
+	("hangup"i | "hu"i) %{ cmd->type = cmd_hangup; } |
+	("help"i | "h"i) %{ cmd->type = cmd_help; } |
+	("message"i | "m"i) %{ cmd->type = cmd_message; } |
+	("publish"i | "pub"i) %{ cmd->type = cmd_publish; } |
+	("register"i | "reg"i) %{ cmd->type = cmd_register; } |
+	("run"i | "r"i) %{ cmd->type = cmd_run; } |
+	("scenario"i | "sn"i) %{ cmd->type = cmd_scenario; } |
+	"sleep"i %{ cmd->type = cmd_sleep; } |
+	"sms"i %{ cmd->type = cmd_sms; } |
+	("subscribe"i | "sub"i) %{ cmd->type = cmd_subscribe; } |
+	("video"i | "v"i) %{ cmd->type = cmd_video; }
 	)** >10 |
 	(any*) >tag >0 %command_error;
 
-	key = ("amf"i % { curr_opt->id = opt_amf; } |
-	"caps"i % { curr_opt->id = opt_caps; } |
-	"dhcpv4"i % { curr_opt->id = opt_dhcpv4; } |
-	"dhcpv6"i % { curr_opt->id = opt_dhcpv6; } |
-	"dname"i % { curr_opt->id = opt_amf; } |
-	"dns-naptr"i % { curr_opt->id = opt_dname; } |
-	("expires"i | "xp"i) % { curr_opt->id = opt_expires; } |
-	"from"i % { curr_opt->id = opt_from; } |
-	"header"i % { curr_opt->id = opt_header; } |
-	"impi"i % { curr_opt->id = opt_impi; } |
-	"impu"i % { curr_opt->id = opt_impu; } |
-	"ipv6"i % { curr_opt->id = opt_ipv6; } |
-	"local-ip"i % { curr_opt->id = opt_local_ip; } |
-	"local-port"i % { curr_opt->id = opt_local_port; } |	
-	"opid"i % { curr_opt->id = opt_opid; } |
-	("password"i | "pwd"i) % { curr_opt->id = opt_password; } |
-	"path"i % { curr_opt->id = opt_path; } |
-	("payload"i | "pay"i) % { curr_opt->id = opt_payload; } |
-	"pcscf-ip"i % { curr_opt->id = opt_pcscf_ip; } |
-	"pcscf-port"i % { curr_opt->id = opt_pcscf_port; } |	
-	"pcscf-trans"i % { curr_opt->id = opt_pcscf_trans; } |
-	"realm"i % { curr_opt->id = opt_realm; } |
-	"sec"i % { curr_opt->id = opt_sec; } |
-	"sid"i % { curr_opt->id = opt_sid; } |
-	"sigcomp"i % { curr_opt->id = opt_sigcomp; } |
-	"to"i % { curr_opt->id = opt_to; }
+	key = ("amf"i % { opt->type = opt_amf; } |
+	"caps"i % { opt->type = opt_caps; } |
+	"dhcpv4"i % { opt->type = opt_dhcpv4; } |
+	"dhcpv6"i % { opt->type = opt_dhcpv6; } |
+	"dname"i % { opt->type = opt_amf; } |
+	"dns-naptr"i % { opt->type = opt_dname; } |
+	("expires"i | "xp"i) % { opt->type = opt_expires; } |
+	"from"i % { opt->type = opt_from; } |
+	"header"i % { opt->type = opt_header; } |
+	"impi"i % { opt->type = opt_impi; } |
+	"impu"i % { opt->type = opt_impu; } |
+	"ipv6"i % { opt->type = opt_ipv6; } |
+	"local-ip"i % { opt->type = opt_local_ip; } |
+	"local-port"i % { opt->type = opt_local_port; } |	
+	"opid"i % { opt->type = opt_opid; } |
+	("password"i | "pwd"i) % { opt->type = opt_password; } |
+	"path"i % { opt->type = opt_path; } |
+	("payload"i | "pay"i) % { opt->type = opt_payload; } |
+	"pcscf-ip"i % { opt->type = opt_pcscf_ip; } |
+	"pcscf-port"i % { opt->type = opt_pcscf_port; } |	
+	"pcscf-trans"i % { opt->type = opt_pcscf_trans; } |
+	"realm"i % { opt->type = opt_realm; } |
+	"sec"i % { opt->type = opt_sec; } |
+	"sid"i % { opt->type = opt_sid; } |
+	"sigcomp"i % { opt->type = opt_sigcomp; } |
+	"to"i % { opt->type = opt_to; }
 	)** >10 |
 	(any*) >tag >0 %option_error;
 
 	level_stack = ("stack"i | "st"i);
 	level_session = ("session"i | "ss"i);
 	level_action= ("action"i | "request"i | "a"i | "r"i);
-	level = ( (level_stack %{ TSK_DEBUG_INFO("Level=stack"); } | level_session %{ TSK_DEBUG_INFO("Level=session"); } | level_action %{ TSK_DEBUG_INFO("Level=action"); })** > 10 
+	level = ( (level_stack %{ set_level(lv_stack); } | level_session %{ set_level(lv_session); } | level_action %{ set_level(lv_action); })** > 10 
 		| (any*)>tag >0 %level_error ) :> space*;
-	value = (any when next_not_hyphens_not_arobase_not_comment)*>tag %set_value;
-	option = key>tag:>SP* <:value (arobases level)?;	
-
-	#Command_Line = ( (comment>tag %is_comment | (plusplus command>tag :> SP*)) (hyphens <: (option>1 >create_option %add_option | comment>2))* );
-
-	#main := Command_Line :>> (CR | LF)?;
+	value = (any when next_not_hyphens_not_arobase_not_percents_not_comment)*>tag;
+	option = key>tag:>SP* <:value %set_opt_value (arobases level)?;
+	
+	pname = (any)+>tag %set_param_name;
+	pvalue = value;
+	param = pname :>SP+ <:pvalue %set_param_value;
 
 	main := |*
 				(plusplus command) >100 { };
 				(hyphens option>create_option %add_option) >99 { };
-				(sharp (any when next_not_newline)* >tag %is_comment) >98 { };
+				(percents param>create_param %add_param) >98 { };
+				(sharp (any when next_not_newline)* >tag %is_comment) >97 { };
 				any >0 { };
 			*|;
 }%%
 
-tsk_options_L_t *cmd_parser_parse(const char *buffer, cmd_type_t* cmd, tsk_bool_t *comment)
+cmd_t* cmd_parser_parse(const char *buffer, tsk_bool_t *comment, tsk_params_L_t* params)
 {
 	int cs = 0;
 	const char *p = buffer;
 	const char *pe;
 	const char *eof;
-	tsk_option_t* curr_opt = tsk_null;
-	tsk_options_L_t *options = tsk_null;
+	opt_t* opt = tsk_null;
+	tsk_param_t* param = tsk_null;
+	cmd_t *cmd = cmd_create_null();
 	char* temp = tsk_null;
 	int index;
 	size_t size = tsk_strlen(buffer);
@@ -227,7 +305,6 @@ tsk_options_L_t *cmd_parser_parse(const char *buffer, cmd_type_t* cmd, tsk_bool_
 	%%write init;
 	
 	/* default values */
-	*cmd = cmd_none;
 	*comment = tsk_false;
 
 	/* only parse one line */
@@ -242,13 +319,13 @@ tsk_options_L_t *cmd_parser_parse(const char *buffer, cmd_type_t* cmd, tsk_bool_
 	%%write exec;
 	
 	if( cs < %%{ write first_final; }%% ){
-		TSK_DEBUG_ERROR("Failed to parse [%s] command-Line.", buffer);
-		TSK_OBJECT_SAFE_FREE(options);
-		*cmd = cmd_none;
+		TSK_DEBUG_ERROR("Failed to parse [%s] command-Line.", p);
+		TSK_OBJECT_SAFE_FREE(cmd);
 	}
-	TSK_OBJECT_SAFE_FREE(curr_opt);
+	TSK_OBJECT_SAFE_FREE(opt);
+	TSK_OBJECT_SAFE_FREE(param);
 	TSK_FREE(temp);
 	
-	return options;
+	return cmd;
 }
 
