@@ -82,8 +82,7 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 
 #define TSK_RUNNABLE_ENQUEUE_OBJECT(self, object)									\
 {																					\
-	if(TSK_RUNNABLE(self) && TSK_RUNNABLE(self)->initialized)						\
-	{																				\
+	if(TSK_RUNNABLE(self) && TSK_RUNNABLE(self)->initialized){						\
 		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, (void**)&object);		\
 		tsk_semaphore_increment(TSK_RUNNABLE(self)->semaphore);						\
 	}																				\

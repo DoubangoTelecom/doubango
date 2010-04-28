@@ -28,7 +28,7 @@
 
 #include <string.h>
 
-#define DEBUG_PARSER 0
+#define DEBUG_PARSER 1
 
 /* this function will dup if exist, which isn't the case of  tsk_options_add_option_2*/
 int add_option(tsk_options_L_t **options, tsk_option_t** option)
@@ -41,6 +41,16 @@ int add_option(tsk_options_L_t **options, tsk_option_t** option)
 	}
 	return 0;
 }
+
+tsk_bool_t next_not_(const char* p, const char* pe, char c)
+{
+	if((p && pe) && (pe-p) >=2){
+		return (*p == c && *(p + 1) == c) ? tsk_false : tsk_true;
+	}
+	return tsk_true;
+}
+#define next_not_hyphens(p, pe) next_not_(p, pe, '-')
+#define next_not_arobases(p, pe) next_not_(p, pe, '@')
 
 /***********************************
 *	Ragel state machine.
@@ -75,41 +85,54 @@ int add_option(tsk_options_L_t **options, tsk_option_t** option)
 			TSK_PARSER_SET_STRING(curr_opt->value);
 			tsk_strtrim_both(&curr_opt->value);
 #if DEBUG_PARSER
-			TSK_DEBUG_INFO("set_value %d %s", curr_opt->id, curr_opt->value);
+			TSK_DEBUG_INFO("set_value [%d] '%s'", curr_opt->id, curr_opt->value);
 #endif
 		}
 	}
 
 	action is_comment{
 #if DEBUG_PARSER
-		TSK_DEBUG_INFO("is_comment");
+		TSK_PARSER_SET_STRING(temp);
+		TSK_DEBUG_INFO("is_comment '%s'", temp);
 #endif
 		*comment = tsk_true;
 		TSK_OBJECT_SAFE_FREE(options);
 	}
 
-	#action contains_hyphen{
-	#	toto(tag_start)
-	#}
+	action next_not_hyphens_not_arobase_not_comment{
+		next_not_hyphens(p, pe) 
+			&& next_not_arobases(p, pe)
+			&& (p && *p != '#')
+	}
+
+	action next_not_newline{
+		(p && *p != '\n')
+	}
 
 	action option_error{
 		TSK_PARSER_SET_STRING(temp);
-		TSK_DEBUG_ERROR("%s not a valid option.", temp);
+		TSK_DEBUG_ERROR("'%s' is not a valid option.", temp);
 	}
 
 	action command_error{
 		TSK_PARSER_SET_STRING(temp);
-		TSK_DEBUG_ERROR("%s not a valid command.", temp);
+		TSK_DEBUG_ERROR("'%s' is not a valid command.", temp);
+	}
+
+	action level_error{
+		TSK_PARSER_SET_STRING(temp);
+		TSK_DEBUG_ERROR("'%s' is not a valid level.", temp);
 	}
 
 	SP = " ";
 	LF = "\n";
 	CR = "\r";
-	comment = SP*<: "#" any*; #%is_comment only if start with comment
 	endline = ("\n" | "\r");
 	equal = "=";
 	hyphens = "-" {2,};
-	plusplus = "++";
+	plusplus = "+" {2,};
+	sharp = "#";
+	arobases = "@" {2,};
 
 	command = (("audio"i | "a"i) %{ *cmd = cmd_audio; } |
 	("audiovideo"i | "av"i) %{ *cmd = cmd_audiovideo; } |
@@ -130,8 +153,8 @@ int add_option(tsk_options_L_t **options, tsk_option_t** option)
 	"sms"i %{ *cmd = cmd_sms; } |
 	("subscribe"i | "sub"i) %{ *cmd = cmd_subscribe; } |
 	("video"i | "v"i) %{ *cmd = cmd_video; }
-	)** > 10 |
-	(any*) > 0 %command_error;
+	)** >10 |
+	(any*) >tag >0 %command_error;
 
 	key = ("amf"i % { curr_opt->id = opt_amf; } |
 	"caps"i % { curr_opt->id = opt_caps; } |
@@ -159,15 +182,27 @@ int add_option(tsk_options_L_t **options, tsk_option_t** option)
 	"sid"i % { curr_opt->id = opt_sid; } |
 	"sigcomp"i % { curr_opt->id = opt_sigcomp; } |
 	"to"i % { curr_opt->id = opt_to; }
-	)** > 10 |
-	(any*) > 0 %option_error;
+	)** >10 |
+	(any*) >tag >0 %option_error;
 
-	value = any*>tag %set_value;
-	option = key>tag:>SP* <:value;
+	level_stack = ("stack"i | "st"i);
+	level_session = ("session"i | "ss"i);
+	level_action= ("action"i | "request"i | "a"i | "r"i);
+	level = ( (level_stack %{ TSK_DEBUG_INFO("Level=stack"); } | level_session %{ TSK_DEBUG_INFO("Level=session"); } | level_action %{ TSK_DEBUG_INFO("Level=action"); })** > 10 
+		| (any*)>tag >0 %level_error ) :> space*;
+	value = (any when next_not_hyphens_not_arobase_not_comment)*>tag %set_value;
+	option = key>tag:>SP* <:value (arobases level)?;	
 
-	Command_Line = ( (comment>tag %is_comment | (plusplus command>tag :> SP*)) (hyphens <: (option>1 >create_option %add_option | comment>2))* );
+	#Command_Line = ( (comment>tag %is_comment | (plusplus command>tag :> SP*)) (hyphens <: (option>1 >create_option %add_option | comment>2))* );
 
-	main := Command_Line :>> (CR | LF)?;
+	#main := Command_Line :>> (CR | LF)?;
+
+	main := |*
+				(plusplus command) >100 { };
+				(hyphens option>create_option %add_option) >99 { };
+				(sharp (any when next_not_newline)* >tag %is_comment) >98 { };
+				any >0 { };
+			*|;
 }%%
 
 tsk_options_L_t *cmd_parser_parse(const char *buffer, cmd_type_t* cmd, tsk_bool_t *comment)
@@ -181,8 +216,11 @@ tsk_options_L_t *cmd_parser_parse(const char *buffer, cmd_type_t* cmd, tsk_bool_
 	char* temp = tsk_null;
 	int index;
 	size_t size = tsk_strlen(buffer);
+
+	const char *ts = tsk_null, *te = tsk_null;
+	int act = 0;
 	
-	const char *tag_start;
+	const char *tag_start = tsk_null;
 	
 	/* global vars and initilization (Ragel) */
 	%%write data;

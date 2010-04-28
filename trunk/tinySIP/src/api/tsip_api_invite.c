@@ -53,25 +53,6 @@ int tsip_invite(tsip_stack_handle_t *_stack, const tsip_ssession_handle_t *SSESS
 {
 	int ret = -1;
 
-	//if(_stack && SSESSION)
-	//{
-	//	tsip_stack_t *stack = _stack;
-	//	tsip_dialog_invite_t *dialog;
-	//	
-	//	dialog = (tsip_dialog_invite_t*)tsip_dialog_layer_find_by_op(stack->layer_dialog, SSESSION);
-	//	if(dialog){
-	//		TSK_DEBUG_WARN("Dialog with same opid already exist.");
-	//		ret = -2;
-	//		goto bail;
-	//	}
-	//	else{
-	//		dialog = TSIP_DIALOG_INVITE_CREATE(stack, SSESSION);
-	//		ret = tsip_dialog_invite_start(dialog);
-	//		tsk_list_push_back_data(stack->layer_dialog->dialogs, (void**)&dialog);
-	//	}
-	//}
-
-//bail:
 	return ret;
 }
 
@@ -93,8 +74,7 @@ int tsip_invite(tsip_stack_handle_t *_stack, const tsip_ssession_handle_t *SSESS
 static tsk_object_t* tsip_invite_event_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_invite_event_t *sipevent = self;
-	if(sipevent)
-	{
+	if(sipevent){
 		sipevent->type = va_arg(*app, tsip_invite_event_type_t);
 	}
 	return self;
@@ -103,8 +83,7 @@ static tsk_object_t* tsip_invite_event_ctor(tsk_object_t * self, va_list * app)
 static tsk_object_t* tsip_invite_event_dtor(tsk_object_t * self)
 { 
 	tsip_invite_event_t *sipevent = self;
-	if(sipevent)
-	{
+	if(sipevent){
 		tsip_event_deinit(TSIP_EVENT(sipevent));
 	}
 	return self;

@@ -60,7 +60,14 @@ int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 	int ret = -1;
 
 	if(!_ss || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalide parameter.");
 		return ret;
+	}
+
+	/* Checks if the stack is running */
+	if(!TSK_RUNNABLE(_ss->stack)->running){
+		TSK_DEBUG_ERROR("Stack not running.");
+		return -2;
 	}
 	
 	va_start(ap, ss);
@@ -86,7 +93,14 @@ int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...)
 	int ret = -1;
 
 	if(!_ss || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalide parameter.");
 		return ret;
+	}
+
+	/* Checks if the stack is running */
+	if(!TSK_RUNNABLE(_ss->stack)->running){
+		TSK_DEBUG_ERROR("Stack not running.");
+		return -2;
 	}
 	
 	va_start(ap, ss);
