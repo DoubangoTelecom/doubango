@@ -75,6 +75,7 @@ tsk_bool_t next_not_(const char* p, const char* pe, char c)
 #define next_not_hyphens(p, pe) next_not_(p, pe, '-')
 #define next_not_arobases(p, pe) next_not_(p, pe, '@')
 #define next_not_percents(p, pe) next_not_(p, pe, '%')
+#define next_not_redirs(p, pe) next_not_(p, pe, '>')
 
 /***********************************
 *	Ragel state machine.
@@ -134,6 +135,13 @@ replace:
 		}
 	}
 
+	action set_sidparam_value{
+		TSK_PARSER_SET_STRING(cmd->sidparam);
+#if DEBUG_PARSER
+			TSK_DEBUG_INFO("set_sidparam_value '%s'", cmd->sidparam);
+#endif
+	}
+
 	action create_param{
 #if DEBUG_PARSER
 		TSK_DEBUG_INFO("create_param");
@@ -153,6 +161,8 @@ replace:
 	action set_param_value{
 		if(param){
 			TSK_PARSER_SET_STRING(param->value);
+			/* trim both: left and right */
+			tsk_strtrim_both(&param->value);
 #if DEBUG_PARSER
 			TSK_DEBUG_INFO("set_param_value [%s] '%s'", param->name, param->value);
 #endif
@@ -174,10 +184,12 @@ replace:
 		// TSK_OBJECT_SAFE_FREE(opts);
 	}
 
-	action next_not_hyphens_not_arobase_not_percents_not_comment{
+	action next_not_reserved{
 		next_not_hyphens(p, pe) 
 			&& next_not_arobases(p, pe)
 			&& next_not_percents(p, pe)
+			&& next_not_redirs(p, pe)
+			&& (p && *p != '\n')
 			&& (p && *p != '#')
 	}
 
@@ -208,6 +220,7 @@ replace:
 	hyphens = "-" {2,};
 	plusplus = "+" {2,};
 	percents = "%" {2,};
+	redirs = ">" {2,};
 	sharp = "#";
 	arobases = "@" {2,};
 
@@ -220,6 +233,7 @@ replace:
 	("file"i | "f"i) %{ cmd->type = cmd_file; } |
 	("hangup"i | "hu"i) %{ cmd->type = cmd_hangup; } |
 	("help"i | "h"i) %{ cmd->type = cmd_help; } |
+	("large-message"i | "lm"i) %{ cmd->type = cmd_large_message; } |
 	("message"i | "m"i) %{ cmd->type = cmd_message; } |
 	("publish"i | "pub"i) %{ cmd->type = cmd_publish; } |
 	("register"i | "reg"i) %{ cmd->type = cmd_register; } |
@@ -227,6 +241,7 @@ replace:
 	("scenario"i | "sn"i) %{ cmd->type = cmd_scenario; } |
 	"sleep"i %{ cmd->type = cmd_sleep; } |
 	"sms"i %{ cmd->type = cmd_sms; } |
+	"stop"i %{ cmd->type = cmd_stop; } |
 	("subscribe"i | "sub"i) %{ cmd->type = cmd_subscribe; } |
 	("video"i | "v"i) %{ cmd->type = cmd_video; }
 	)** >10 |
@@ -266,18 +281,19 @@ replace:
 	level_action= ("action"i | "request"i | "a"i | "r"i);
 	level = ( (level_stack %{ set_level(lv_stack); } | level_session %{ set_level(lv_session); } | level_action %{ set_level(lv_action); })** > 10 
 		| (any*)>tag >0 %level_error ) :> space*;
-	value = (any when next_not_hyphens_not_arobase_not_percents_not_comment)*>tag;
+	value = (any when next_not_reserved)*>tag;
 	option = key>tag:>SP* <:value %set_opt_value (arobases level)?;
 	
-	pname = (any)+>tag %set_param_name;
+	pname = (any when next_not_newline)*>tag %set_param_name;
 	pvalue = value;
-	param = pname :>SP+ <:pvalue %set_param_value;
+	param = pname :>(space | '\n')+ <:pvalue %set_param_value;
 
 	main := |*
 				(plusplus command) >100 { };
 				(hyphens option>create_option %add_option) >99 { };
 				(percents param>create_param %add_param) >98 { };
-				(sharp (any when next_not_newline)* >tag %is_comment) >97 { };
+				(redirs "("?<: value %set_sidparam_value :>")"?) >97 { TSK_DEBUG_INFO("REDIRS"); };
+				(sharp (any when next_not_newline)* >tag %is_comment) >96 { };
 				any >0 { };
 			*|;
 }%%
@@ -309,7 +325,7 @@ cmd_t* cmd_parser_parse(const char *buffer, tsk_bool_t *comment, tsk_params_L_t*
 
 	/* only parse one line */
 	if((index = tsk_strindexOf(p, size, "\n")) != -1){
-		pe =  eof = (p + index);
+		pe =  eof = (p + index + 1/*\n*/);
 	}
 	else{
 		pe = eof = p + size;

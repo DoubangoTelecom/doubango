@@ -26,16 +26,15 @@ extern ctx_t* ctx;
 int register_handle_event(const tsip_event_t *sipevent)
 {
 	const tsip_register_event_t* reg_event = TSIP_REGISTER_EVENT(sipevent);
-	session_t* session;
-	tsip_ssession_id_t id;
+	const session_t* session;
+	tsip_ssession_id_t sid;
 
 	/* Find associated session */
-	id = tsip_ssession_get_id(sipevent->ss);
-	if(!(session = (session_t*)tsk_list_find_item_by_pred(ctx->sessions, pred_find_session_by_id, &id))){
+	sid = tsip_ssession_get_id(sipevent->ss);
+	if(!(session = session_get_by_sid(ctx->sessions, sid))){
 		TSK_DEBUG_WARN("Failed to match session event.");
 		return -1;
 	}
-	
 
 	switch(reg_event->type){
 		
@@ -51,7 +50,7 @@ int register_handle_event(const tsip_event_t *sipevent)
 			{
 				TSK_DEBUG_INFO("Event: Answer to outgoing REGISTER. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
 				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
-					session->connected = tsk_true;
+					SESSION(session)->connected = tsk_true;
 				}
 				break;
 			}
@@ -60,7 +59,7 @@ int register_handle_event(const tsip_event_t *sipevent)
 			{
 				TSK_DEBUG_INFO("Event: Answer to outgoing unREGISTER. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
 				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
-					session->connected = tsk_false;
+					SESSION(session)->connected = tsk_false;
 				}
 				break;
 			}
@@ -86,11 +85,16 @@ int register_handle_event(const tsip_event_t *sipevent)
 }
 
 
-int register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
+tsip_ssession_id_t register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 {
-	session_t* session = tsk_null;
+	const session_t* session = tsk_null;
+	tsip_ssession_id_t id = TSIP_SSESSION_INVALID_ID;
+
 	if(!(session = session_handle_cmd(cmd, opts))){
-		goto bail;
+		return -1;
+	}
+	else{
+		id = tsip_ssession_get_id(session->handle);
 	}
 
 	switch(cmd){
@@ -105,8 +109,5 @@ int register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			break;
 	}
 
-bail:
-	TSK_OBJECT_SAFE_FREE(session);
-
-	return 0;
+	return id;
 }

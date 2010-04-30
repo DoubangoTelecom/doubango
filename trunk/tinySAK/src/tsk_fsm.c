@@ -69,11 +69,9 @@ int tsk_fsm_set(tsk_fsm_t* self, ...)
 	}
 	
 	va_start(args, self);
-	while((guard=va_arg(args, int)))
-	{		
+	while((guard=va_arg(args, int))){		
 		tsk_fsm_entry_t* entry;
-		if((entry = tsk_fsm_entry_create()))
-		{
+		if((entry = tsk_fsm_entry_create())){
 			entry->from = va_arg(args, tsk_fsm_state_id);
 			entry->action = va_arg(args, tsk_fsm_action_id);
 			entry->cond = va_arg(args, tsk_fsm_cond);
@@ -163,6 +161,9 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 					self->current = self->term;
 				}
 			}
+			else{ /* Nothing to execute */
+				ret_exec = 0;
+			}
 
 			found = tsk_true;
 			break;
@@ -183,7 +184,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 		TSK_DEBUG_WARN("State machine: No matching state found.");
 	}
 	
-	return 0;
+	return ret_exec;
 }
 
 tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self)
@@ -201,8 +202,7 @@ tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self)
 static tsk_object_t* tsk_fsm_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_fsm_t *fsm = self;
-	if(fsm)
-	{
+	if(fsm){
 		fsm->current = va_arg(*app, tsk_fsm_state_id);
 		fsm->term = va_arg(*app, tsk_fsm_state_id);
 
@@ -222,13 +222,13 @@ static tsk_object_t* tsk_fsm_dtor(tsk_object_t * self)
 	tsk_fsm_t *fsm = self;
 	if(fsm){
 		/* If not in the terminal state ==>do it */
-		if(fsm->current != fsm->term){
+		/*if(fsm->current != fsm->term){
 			tsk_safeobj_lock(fsm);
 			if(fsm->callback_term){
 				fsm->callback_term(fsm->callback_data);
 			}
 			tsk_safeobj_unlock(fsm);
-		}
+		}*/
 		tsk_safeobj_deinit(fsm);
 
 		TSK_OBJECT_SAFE_FREE(fsm->entries);

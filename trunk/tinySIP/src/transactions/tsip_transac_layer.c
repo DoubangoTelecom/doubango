@@ -322,6 +322,8 @@ static tsk_object_t* tsip_transac_layer_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(layer->transactions);
 
 		tsk_safeobj_deinit(layer);
+
+		TSK_DEBUG_INFO("*** Transaction Layer destroyed ***");
 	}
 	return self;
 }

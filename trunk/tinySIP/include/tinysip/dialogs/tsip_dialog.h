@@ -60,7 +60,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)								\
 	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_##name##_timer_callback), self)	
 
-#define TSIP_DIALOG_SHUTDOWN_TIMEOUT	4000 /* miliseconds. */
+#define TSIP_DIALOG_SHUTDOWN_TIMEOUT	2000 /* miliseconds. */
 
 typedef enum tsip_dialog_state_e
 {

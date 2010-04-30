@@ -363,7 +363,7 @@ void tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_bool_t ascen
 * @param tskobj The @a object to find.
 * @retval A @ref tsk_list_item_t item if found and NULL otherwize.
 */
-const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj)
+const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t* tskobj)
 {
 	if(list && tskobj){
 		tsk_list_item_t *item;
@@ -381,16 +381,14 @@ const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const 
 * Find first item matching criteria defined by the @a predicate.
 * @param list the list to query
 * @param predicate the predicate against which to test each item
-* @param data data passed to the predicate function for comparaison
+* @param Data data passed to the predicate function for comparaison
 * @retval the item which match the criteria and NULL otherwise
 */
-const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const tsk_object_t * data)
+const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
-	if(predicate)
-	{
-		tsk_list_item_t *item;
-		tsk_list_foreach(item, list)
-		{
+	if(predicate){
+		const tsk_list_item_t *item;
+		tsk_list_foreach(item, list){
 			if(!predicate(item, data)){
 				return item;
 			}
@@ -399,9 +397,33 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 	else{
 		TSK_DEBUG_WARN("Cannot use an uninitialized predicate function");
 	}
-	return 0;
+	return tsk_null;
 }
 
+/**@ingroup tsk_list_group
+* Counts the number of item matching the predicate.
+* @param list The list containing the items to count
+* @predicate The predicate to use to match the items
+* @param data Data passed to the predicate function for comparaison
+* @retval The number of item matching the predicate
+*/
+size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
+{
+	size_t count = 0;
+	if(predicate && list){
+		const tsk_list_item_t *item;
+		tsk_list_foreach(item, list){
+			if(!predicate(item, data)){
+				++count;
+			}
+		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+	}
+
+	return count;
+}
 
 
 

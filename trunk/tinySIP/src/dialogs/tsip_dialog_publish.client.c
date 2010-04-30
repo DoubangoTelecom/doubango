@@ -86,6 +86,7 @@ typedef enum _fsm_action_e
 	_fsm_action_publish = atype_publish,
 	_fsm_action_cancel = atype_cancel,
 	_fsm_action_hangup = atype_unpublish,
+	_fsm_action_shutdown = atype_shutdown,
 
 	_fsm_action_1xx = 0xFF,
 	_fsm_action_2xx,
@@ -494,6 +495,10 @@ int tsip_dialog_publish_Any_2_Terminated_X_transportError(va_list *app)
 	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
+	/* Alert the user. */
+	TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
+		702, "Transport error.", tsk_null);
+
 	return 0;
 }
 
@@ -502,7 +507,17 @@ int tsip_dialog_publish_Any_2_Terminated_X_transportError(va_list *app)
 int tsip_dialog_publish_Any_2_Terminated_X_Error(va_list *app)
 {
 	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	/* Alert the user. */
+	if(response){
+		TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
+				TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	}
+	else{
+		TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
+			703, "Global error.", tsk_null);
+	}
 
 	return 0;
 }

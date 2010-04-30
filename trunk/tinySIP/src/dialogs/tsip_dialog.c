@@ -919,7 +919,7 @@ int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action)
 int tsip_dialog_shutdown(tsip_dialog_t *self, const tsip_action_t* action)
 {
 	if(self){
-		//return tsip_dialog_fsm_act(self, atype_hangup, tsk_null, action); 
+		return tsip_dialog_fsm_act(self, atype_shutdown, tsk_null, action);
 	}
 	return -1;
 }

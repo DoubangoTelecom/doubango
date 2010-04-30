@@ -55,6 +55,7 @@ typedef struct session_s
 }
 session_t;
 typedef tsk_list_t sessions_L_t;
+#define SESSION(self) ((session_t*)(self))
 
 typedef struct ctx_s
 {
@@ -82,6 +83,7 @@ typedef struct ctx_s
 		
 		char *realm;
 
+		tsk_bool_t ipv6;
 		tsk_bool_t naptr;
 		tsk_bool_t dhcp;
 	} network;
@@ -94,19 +96,23 @@ typedef struct ctx_s
 	} security;
 	
 	sessions_L_t* sessions;
+	tsk_params_L_t* params;
 	
 	TSK_DECLARE_SAFEOBJ; /* For thread-safeness */
 }
 ctx_t;
 
+ctx_t* ctx_create();
+
 int stack_dump();
 int stack_config(const opts_L_t* opts);
 int stack_run(const opts_L_t* opts);
 
-int pred_find_session_by_id(const tsk_list_item_t *item, const void* id);
-session_t* session_create(session_type_t type);
-int session_tostring(const session_t* session);
-session_t* session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts);
+session_t* session_create(session_type_t );
+const session_t* session_get_by_sid(const sessions_L_t* , tsip_ssession_id_t );
+int session_tostring(const session_t* );
+const session_t* session_handle_cmd(cmd_type_t , const opts_L_t* );
+int session_hangup(tsip_ssession_id_t sid);
 
 const tsk_object_def_t *session_def_t;
 const tsk_object_def_t *ctx_def_t;

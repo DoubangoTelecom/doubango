@@ -35,6 +35,7 @@
 #include "tsip.h"
 #include "tinySIP/dialogs/tsip_dialog.h"
 
+#include "tsk_condwait.h"
 #include "tsk_safeobj.h"
 #include "tsk_list.h"
 
@@ -48,6 +49,12 @@ typedef struct tsip_dialog_layer_s
 
 	tsip_dialogs_L_t *dialogs;
 
+	struct{
+		tsk_bool_t inprogress;
+		tsk_bool_t phase2; /* whether unregistering? */
+		tsk_condwait_handle_t* condwait;
+	} shutdown;
+
 	TSK_DECLARE_SAFEOBJ;
 }
 tsip_dialog_layer_t;
@@ -58,8 +65,7 @@ tsip_dialog_layer_t* tsip_dialog_layer_create(tsip_stack_t* stack);
 
 tsip_dialog_t* tsip_dialog_layer_find_by_ss(tsip_dialog_layer_t *self, const tsip_ssession_handle_t *ss);
 
-int tsip_dialog_layer_shutdownAllExceptRegister(tsip_dialog_layer_t *self);
-int tsip_dialog_layer_hangupAll(tsip_dialog_layer_t *self);
+int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self);
 tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_ssession_t *ss);
 int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dialog);
 
