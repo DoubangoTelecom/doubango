@@ -63,8 +63,8 @@ tsip_transac_t* tsip_transac_layer_new(const tsip_transac_layer_t *self, tsk_boo
 int tsip_transac_layer_remove(tsip_transac_layer_t *self, const tsip_transac_t *transac);
 int tsip_transac_layer_cancel_by_dialog(tsip_transac_layer_t *self, const struct tsip_dialog_s* dialog);
 
-const tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_message_t* message);
-const tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_message_t* message);
+tsip_transac_t* tsip_transac_layer_find_client(const tsip_transac_layer_t *self, const tsip_message_t* message);
+tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self, const tsip_message_t* message);
 
 int tsip_transac_layer_handle_incoming_msg(const tsip_transac_layer_t *self, const tsip_message_t* message);
 

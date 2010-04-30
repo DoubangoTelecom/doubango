@@ -213,11 +213,11 @@ int stack_config(const opts_L_t* opts)
 					break;
 				}
 			case opt_dhcpv4:
-				{
-					break;
-				}
 			case opt_dhcpv6:
 				{
+					tsip_stack_set(ctx->stack,
+						TSIP_STACK_SET_DISCOVERY_DHCP(tsk_true),
+						TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_dname:
@@ -226,6 +226,9 @@ int stack_config(const opts_L_t* opts)
 				}
 			case opt_dns_naptr:
 				{
+					tsip_stack_set(ctx->stack,
+						TSIP_STACK_SET_DISCOVERY_NAPTR(tsk_true),
+						TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_header:
@@ -308,7 +311,7 @@ int stack_config(const opts_L_t* opts)
 	/* whether Proxy-CSCF config has changed */
 	if(pcscf_changed){
 		ret = tsip_stack_set(ctx->stack,
-			TSIP_STACK_SET_PROXY_CSCF(ctx->network.proxy_cscf, 5081/*ctx->network.proxy_cscf_port*/, ctx->network.proxy_cscf_trans, ctx->network.ipv6 ? "ipv6" : "ipv4"),
+			TSIP_STACK_SET_PROXY_CSCF(ctx->network.proxy_cscf, ctx->network.proxy_cscf_port, ctx->network.proxy_cscf_trans, ctx->network.ipv6 ? "ipv6" : "ipv4"),
 			TSIP_STACK_SET_NULL());
 	}
 	

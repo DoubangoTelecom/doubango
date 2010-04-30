@@ -437,9 +437,14 @@ bail:
 int tsip_stack_start(tsip_stack_handle_t *self)
 {
 	int ret = -1;
+	tsip_stack_t *stack = self;
 
-	if(self){
-		tsip_stack_t *stack = self;
+	if(stack){
+
+		if(stack->started){
+			TSK_DEBUG_WARN("Stack Already started");
+			return 0;
+		}
 		
 		/* === Timer manager === */
 		if((ret = tsk_timer_manager_start(stack->timer_mgr))){
@@ -527,6 +532,8 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			stack->layer_transac->reliable = TNET_SOCKET_TYPE_IS_STREAM(stack->network.proxy_cscf_type);
 		}
 		
+		stack->started = tsk_true;
+
 		TSK_DEBUG_INFO("SIP STACK -- START");
 
 		return ret;
@@ -559,13 +566,21 @@ int tsip_stack_set(tsip_stack_handle_t *self, ...)
 */
 int tsip_stack_stop(tsip_stack_handle_t *self)
 {
-	if(self){
+	tsip_stack_t *stack = self;
+
+	if(stack){
 		int ret;
-		tsip_stack_t *stack = self;
+		tsk_bool_t one_failed = tsk_false;
+
+		if(!stack->started){
+			TSK_DEBUG_WARN("Stack already stopped");
+			return 0;
+		}
 
 		/* Hangup all dialogs staring by REGISTER */	
 		if((ret = tsip_dialog_layer_shutdownAll(stack->layer_dialog))){
 			TSK_DEBUG_WARN("Failed to hang-up all dialogs");
+			one_failed = tsk_true;
 		}
 
 		/* do not try to clean up transactions ==> each dialog will cancel its transactions.
@@ -574,15 +589,22 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 		/* Stop the timer manager */
 		if((ret = tsk_timer_manager_stop(stack->timer_mgr))){
 			TSK_DEBUG_WARN("Failed to stop the timer manager");
+			one_failed = tsk_true;
 		}
 		
 		/* Stop the transport layer */
 		if((ret = tsip_transport_layer_shutdown(stack->layer_transport))){
 			TSK_DEBUG_WARN("Failed to stop the transport layer");
+			one_failed = tsk_true;
 		}
 
 		if((ret = tsk_runnable_stop(TSK_RUNNABLE(stack)))){
 			TSK_DEBUG_WARN("Failed to stop the stack");
+			one_failed = tsk_true;
+		}
+
+		if(!one_failed){
+			stack->started = tsk_false;
 		}
 
 		TSK_DEBUG_INFO("SIP STACK -- STOP");

@@ -143,7 +143,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 	size_t ret = 0;
 	if(self)
 	{
-		tsk_buffer_t *buffer = 0;
+		tsk_buffer_t *buffer = tsk_null;
 
 		/* Add Via */
 		if(TSIP_MESSAGE_IS_REQUEST(msg) && !TSIP_REQUEST_IS_CANCEL(msg) && !TSIP_REQUEST_IS_ACK(msg)){
@@ -166,9 +166,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 			}
 		}
 
-		buffer = tsk_buffer_create_null();
-		if(buffer)
-		{
+		if((buffer = tsk_buffer_create_null())){
 			tsip_message_tostring(msg, buffer);
 
 			if(buffer->size >1300){

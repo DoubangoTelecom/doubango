@@ -59,13 +59,16 @@
 	action parse_display_name{
 		if(curr_contact){
 			TSK_PARSER_SET_STRING(curr_contact->display_name);
+			tsk_strunquote(&curr_contact->display_name);
 		}
 	}
 
 	action parse_uri{
 		if(curr_contact && !curr_contact->uri){
 			int len = (int)(p  - tag_start);
-			curr_contact->uri = tsip_uri_parse(tag_start, (size_t)len);
+			if((curr_contact->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_contact->display_name){
+				curr_contact->uri->display_name = tsk_strdup(curr_contact->display_name);
+			}
 		}
 	}
 
@@ -116,24 +119,17 @@ int tsip_header_Contact_tostring(const tsip_header_t* header, tsk_buffer_t* outp
 	if(header){
 		const tsip_header_Contact_t *Contact = (const tsip_header_Contact_t *)header;
 		int ret = 0;
-
-		{
-			/* Display name */
-			if(Contact->display_name){
-				tsk_buffer_append_2(output, "\"%s\"", Contact->display_name);
-			}
-
-			/* Uri */
-			if(ret=tsip_uri_serialize(Contact->uri, tsk_true, tsk_true, output)){
-				return ret;
-			}
-
-			/* Expires */
-			if(Contact->expires >=0){
-				tsk_buffer_append_2(output, ";expires=%lld", Contact->expires);
-			}
+		
+		/* Uri with hacked display-name*/
+		if((ret = tsip_uri_serialize(Contact->uri, tsk_true, tsk_true, output))){
+			return ret;
 		}
 
+		/* Expires */
+		if(Contact->expires >=0){
+			tsk_buffer_append_2(output, ";expires=%lld", Contact->expires);
+		}
+		
 		return ret;
 	}
 

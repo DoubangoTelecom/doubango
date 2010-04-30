@@ -177,7 +177,7 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 	if((ret = WaitForSingleObject(condwait->pcond, (DWORD)ms)) != WAIT_OBJECT_0)
 	{
 		if(ret == TIMED_OUT){
-			//TSK_DEBUG_INFO("WaitForSingleObject function timedout: %d", ret);
+			TSK_DEBUG_INFO("WaitForSingleObject function timedout: %d", ret);
 		}
 		else{
 			TSK_DEBUG_ERROR("WaitForSingleObject function failed: %d", ret);
@@ -196,14 +196,11 @@ int tsk_condwait_timedwait(tsk_condwait_handle_t* handle, uint64_t ms)
 		if(ts.tv_nsec > 999999999) ts.tv_sec+=1, ts.tv_nsec = ts.tv_nsec % 1000000000;
 		
 		tsk_mutex_lock(condwait->mutex);
-		if(ret = pthread_cond_timedwait(condwait->pcond, (pthread_mutex_t*)condwait->mutex, &ts))
-		{
-			if(ret == TIMED_OUT)
-			{
+		if(ret = pthread_cond_timedwait(condwait->pcond, (pthread_mutex_t*)condwait->mutex, &ts)){
+			if(ret == TIMED_OUT){
 				TSK_DEBUG_INFO("pthread_cond_timedwait function timedout: %d", ret);
 			}
-			else
-			{
+			else{
 				TSK_DEBUG_ERROR("pthread_cond_timedwait function failed: %d", ret);
 			}
 		}

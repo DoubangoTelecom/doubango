@@ -166,6 +166,7 @@ typedef struct tsip_stack_s
 {
 	TSK_DECLARE_RUNNABLE;
 	
+	tsk_bool_t started;
 	tsip_stack_callback_f callback;
 
 	/* Identity */

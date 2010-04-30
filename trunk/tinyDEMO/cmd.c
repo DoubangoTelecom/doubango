@@ -32,9 +32,9 @@
 static int pred_find_opt_by_type(const tsk_list_item_t *item, const void *type);
 
 /* parse a command line */
-cmd_t* cmd_parse(const char* buffer, tsk_bool_t *comment, tsk_params_L_t* params)
+cmd_t* cmd_parse(const char* buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
 {	
-	return cmd_parser_parse(buffer, comment, params);
+	return cmd_parser_parse(buffer, size, comment, params);
 }
 
 ///* print usage */

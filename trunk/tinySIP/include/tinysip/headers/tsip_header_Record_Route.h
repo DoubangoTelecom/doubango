@@ -33,10 +33,12 @@
 #include "tinySIP_config.h"
 #include "tinySIP/headers/tsip_header.h"
 
+#include "tinySIP/tsip_uri.h"
+
 TSIP_BEGIN_DECLS
 
 
-#define TSIP_HEADER_RECORD_ROUTE_VA_ARGS(record_route)	tsip_header_Record_Route_def_t, (const char*)record_route
+#define TSIP_HEADER_RECORD_ROUTE_VA_ARGS(uri)	tsip_header_Record_Route_def_t, (const tsip_uri_t*)uri
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @struct	
@@ -51,15 +53,18 @@ TSIP_BEGIN_DECLS
 typedef struct tsip_header_Record_Route_s
 {	
 	TSIP_DECLARE_HEADER;
-	char *value;
+	
+	char* display_name;
+	tsip_uri_t *uri;
 }
 tsip_header_Record_Route_t;
 
+typedef tsk_list_t tsip_header_Record_Routes_L_t;
 
-TINYSIP_API tsip_header_Record_Route_t* tsip_header_Record_Route_create(const char* record_route);
+TINYSIP_API tsip_header_Record_Route_t* tsip_header_Record_Route_create(const tsip_uri_t* uri);
 TINYSIP_API tsip_header_Record_Route_t* tsip_header_Record_Route_create_null();
 
-TINYSIP_API tsip_header_Record_Route_t *tsip_header_Record_Route_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Record_Routes_L_t *tsip_header_Record_Route_parse(const char *data, size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Record_Route_def_t;
 

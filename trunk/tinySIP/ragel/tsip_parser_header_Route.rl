@@ -62,13 +62,18 @@
 	action parse_display_name{
 		if(curr_route){
 			TSK_PARSER_SET_STRING(curr_route->display_name);
+			tsk_strunquote(&curr_route->display_name);
 		}
 	}
 
 	action parse_uri{
 		if(curr_route && !curr_route->uri){
 			int len = (int)(p  - tag_start);
-			curr_route->uri = tsip_uri_parse(tag_start, (size_t)len);
+			if(curr_route && !curr_route->uri){
+				if((curr_route->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_route->display_name){
+					curr_route->uri->display_name = tsk_strdup(curr_route->display_name);
+				}
+			}
 		}
 	}
 
@@ -95,10 +100,10 @@
 	rr_param = (generic_param)>tag %parse_param;
 	
 	#route_param	= 	(my_name_addr ( SEMI rr_param )*)>create_route %add_route;
-	#Route	= 	"Route" HCOLON route_param (COMMA route_param)*;
+	#Route	= 	"Route"i HCOLON route_param (COMMA route_param)*;
 
 	route_value	= 	(my_name_addr ( SEMI rr_param )*) >create_route %add_route;
-	Route	= 		"Route" HCOLON route_value (COMMA route_value)*;
+	Route	= 		"Route"i HCOLON route_value (COMMA route_value)*;
 
 	# Entry point
 	main := Route :>CRLF @eob;
@@ -122,11 +127,8 @@ int tsip_header_Route_tostring(const tsip_header_t* header, tsk_buffer_t* output
 		const tsip_header_Route_t *Route = (const tsip_header_Route_t *)header;
 		int ret = 0;
 		
-		if(Route->display_name){ /* Display Name */
-			ret = tsk_buffer_append_2(output, "\"%s\"", Route->display_name);
-		}
-
-		if((ret=tsip_uri_serialize(Route->uri, tsk_true, tsk_true, output))){ /* Route */
+		/* Uri with hacked display-name*/
+		if((ret = tsip_uri_serialize(Route->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
 		

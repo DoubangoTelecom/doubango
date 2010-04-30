@@ -272,6 +272,7 @@ replace:
 	"sec"i % { opt->type = opt_sec; } |
 	"sid"i % { opt->type = opt_sid; } |
 	"sigcomp"i % { opt->type = opt_sigcomp; } |
+	"smsc"i % { opt->type = opt_smsc; } |
 	"to"i % { opt->type = opt_to; }
 	)** >10 |
 	(any*) >tag >0 %option_error;
@@ -292,13 +293,13 @@ replace:
 				(plusplus command) >100 { };
 				(hyphens option>create_option %add_option) >99 { };
 				(percents param>create_param %add_param) >98 { };
-				(redirs "("?<: value %set_sidparam_value :>")"?) >97 { TSK_DEBUG_INFO("REDIRS"); };
+				(redirs "("?<: value %set_sidparam_value :>")"?) >97 { };
 				(sharp (any when next_not_newline)* >tag %is_comment) >96 { };
 				any >0 { };
 			*|;
 }%%
 
-cmd_t* cmd_parser_parse(const char *buffer, tsk_bool_t *comment, tsk_params_L_t* params)
+cmd_t* cmd_parser_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
 {
 	int cs = 0;
 	const char *p = buffer;
@@ -309,7 +310,6 @@ cmd_t* cmd_parser_parse(const char *buffer, tsk_bool_t *comment, tsk_params_L_t*
 	cmd_t *cmd = cmd_create_null();
 	char* temp = tsk_null;
 	int index;
-	size_t size = tsk_strlen(buffer);
 
 	const char *ts = tsk_null, *te = tsk_null;
 	int act = 0;

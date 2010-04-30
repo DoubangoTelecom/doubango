@@ -340,7 +340,7 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 		/* Method */
 		tsk_buffer_append_2(output, "%s ", self->method);
 		/* Request URI */
-		tsip_uri_serialize(self->uri, 0, 0, output);
+		tsip_uri_serialize(self->uri, tsk_false, tsk_false, output);
 		/* SIP VERSION */
 		tsk_buffer_append_2(output, " %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT);
 	}

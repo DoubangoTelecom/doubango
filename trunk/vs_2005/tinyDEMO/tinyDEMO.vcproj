@@ -91,6 +91,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="xcopy /D /Y &quot;$(Outdir)\..\..\..\tinyDEMO\*.sn&quot; &quot;$(Outdir)&quot;"
+				ExcludedFromBuild="false"
 			/>
 		</Configuration>
 		<Configuration
@@ -276,6 +278,34 @@
 		<Filter
 			Name="scenarios(*.scn)"
 			>
+			<File
+				RelativePath="..\..\tinyDEMO\alcatel.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\colibria.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\ericsson.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\inexbee.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\main.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\micromethod.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\nsn.sn"
+				>
+			</File>
 			<File
 				RelativePath="..\..\tinyDEMO\publish.sn"
 				>

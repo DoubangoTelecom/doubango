@@ -46,7 +46,7 @@
 *	Ragel state machine.
 */
 
-/* #line 103 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 108 "./ragel/tsip_parser_header_Service_Route.rl" */
 
 
 tsip_header_Service_Route_t* tsip_header_Service_Route_create(const tsip_uri_t* uri)
@@ -65,11 +65,8 @@ int tsip_header_Service_Route_tostring(const tsip_header_t* header, tsk_buffer_t
 		const tsip_header_Service_Route_t *Service_Route = (const tsip_header_Service_Route_t *)header;
 		int ret = 0;
 		
-		if(Service_Route->display_name){ /* Display Name */
-			ret = tsk_buffer_append_2(output, "\"%s\"", Service_Route->display_name);
-		}
-
-		if((ret = tsip_uri_serialize(Service_Route->uri, tsk_true, tsk_true, output))){ /* Route */
+		/* Uri with hacked display-name*/
+		if((ret = tsip_uri_serialize(Service_Route->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
 		
@@ -91,7 +88,7 @@ tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data
 	tsip_header_Service_Route_t *curr_service = tsk_null;
 
 	
-/* #line 95 "./src/headers/tsip_header_Service_Route.c" */
+/* #line 92 "./src/headers/tsip_header_Service_Route.c" */
 static const char _tsip_machine_parser_header_Service_Route_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -332,16 +329,16 @@ static const int tsip_machine_parser_header_Service_Route_error = 0;
 static const int tsip_machine_parser_header_Service_Route_en_main = 1;
 
 
-/* #line 147 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 149 "./ragel/tsip_parser_header_Service_Route.rl" */
 	
-/* #line 338 "./src/headers/tsip_header_Service_Route.c" */
+/* #line 335 "./src/headers/tsip_header_Service_Route.c" */
 	{
 	cs = tsip_machine_parser_header_Service_Route_start;
 	}
 
-/* #line 148 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 150 "./ragel/tsip_parser_header_Service_Route.rl" */
 	
-/* #line 345 "./src/headers/tsip_header_Service_Route.c" */
+/* #line 342 "./src/headers/tsip_header_Service_Route.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -434,20 +431,25 @@ _match:
 	{
 		if(curr_service){
 			TSK_PARSER_SET_STRING(curr_service->display_name);
+			tsk_strunquote(&curr_service->display_name);
 		}
 	}
 	break;
 	case 3:
-/* #line 68 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 69 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
 		if(curr_service && !curr_service->uri){
 			int len = (int)(p  - tag_start);
-			curr_service->uri = tsip_uri_parse(tag_start, (size_t)len);
+			if(curr_service && !curr_service->uri){
+				if((curr_service->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_service->display_name){
+					curr_service->uri->display_name = tsk_strdup(curr_service->display_name);
+				}
+			}
 		}
 	}
 	break;
 	case 4:
-/* #line 75 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 80 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
 		if(curr_service){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_service));
@@ -455,7 +457,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 81 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 86 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
 		if(curr_service){
 			tsk_list_push_back_data(hdr_services, ((void**) &curr_service));
@@ -463,11 +465,11 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 87 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 92 "./ragel/tsip_parser_header_Service_Route.rl" */
 	{
 	}
 	break;
-/* #line 471 "./src/headers/tsip_header_Service_Route.c" */
+/* #line 473 "./src/headers/tsip_header_Service_Route.c" */
 		}
 	}
 
@@ -480,12 +482,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 149 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 151 "./ragel/tsip_parser_header_Service_Route.rl" */
 	
 	if( cs < 
-/* #line 487 "./src/headers/tsip_header_Service_Route.c" */
+/* #line 489 "./src/headers/tsip_header_Service_Route.c" */
 100
-/* #line 150 "./ragel/tsip_parser_header_Service_Route.rl" */
+/* #line 152 "./ragel/tsip_parser_header_Service_Route.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Service-Route' header.");
 		TSK_OBJECT_SAFE_FREE(curr_service);

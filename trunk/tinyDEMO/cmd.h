@@ -84,6 +84,7 @@ typedef enum opt_type_e
 	opt_sec,			/* --sec 1800 */
 	opt_sid,			/* --sid 1234 */
 	opt_sigcomp,		/* --sigcomp */
+	opt_smsc,			/* --smsc +3315245856 */
 	opt_to,				/* --to sip:alice@open-ims.test */
 }
 opt_type_t;
@@ -122,7 +123,7 @@ cmd_t;
 cmd_t* cmd_create(cmd_type_t );
 #define cmd_create_null() cmd_create(cmd_none)
 
-cmd_t* cmd_parse(const char* buffer, tsk_bool_t *comment, tsk_params_L_t* params);
+cmd_t* cmd_parse(const char* buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params);
 void cmd_print_help();
 
 opt_t* opt_create(opt_type_t, lv_t, const char*);

@@ -39,10 +39,9 @@
 #define ADD_HEADERS(headers)\
 	if(headers)\
 	{\
-		tsk_list_item_t *item;\
-		tsk_list_foreach(item, headers)\
-		{\
-			tsip_header_t *hdr = tsk_object_ref(item->data);\
+		const tsk_list_item_t *item;\
+		tsk_list_foreach(item, headers){\
+			tsip_header_t *hdr = tsk_object_ref((void*)item->data);\
 			tsk_list_push_back_data(message->headers, ((void**) &hdr));\
 		}\
 		\
@@ -571,8 +570,8 @@
 	# /*== Record-Route: ==*/
 	action parse_header_Record_Route 
 	{
-		tsip_header_Record_Route_t *header = tsip_header_Record_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
-		ADD_HEADER(header);
+		tsip_header_Record_Routes_L_t* headers =  tsip_header_Record_Route_parse(state->tag_start, (state->tag_end-state->tag_start));
+		ADD_HEADERS(headers);
 	}
 
 	# /*== Refer-Sub: ==*/
