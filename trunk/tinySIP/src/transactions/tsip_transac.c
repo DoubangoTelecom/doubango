@@ -63,14 +63,14 @@ int tsip_transac_init(tsip_transac_t *self, tsip_transac_type_t type, tsk_bool_t
 
 int tsip_transac_deinit(tsip_transac_t *self)
 {
-	if(self && self->initialized){	
+	if(self && self->initialized){
+		/* FSM */
+		TSK_OBJECT_SAFE_FREE(self->fsm);
+
 		TSK_FREE(self->branch);
 		TSK_FREE(self->cseq_method);
 		TSK_FREE(self->callid);
 		TSK_OBJECT_SAFE_FREE(self->dialog);
-
-		/* FSM */
-		TSK_OBJECT_SAFE_FREE(self->fsm);
 
 		self->initialized = tsk_false;
 

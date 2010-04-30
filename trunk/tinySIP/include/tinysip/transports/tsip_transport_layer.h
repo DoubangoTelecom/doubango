@@ -63,8 +63,8 @@ int tsip_transport_ensureTempSAs(const tsip_transport_layer_t *self, const tsip_
 int tsip_transport_startSAs(const tsip_transport_layer_t* self, const void* ik, const void* ck);
 int tsip_transport_cleanupSAs(const tsip_transport_layer_t *self);
 
-int tsip_transport_layer_start(const tsip_transport_layer_t* self);
-int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self);
+int tsip_transport_layer_start(tsip_transport_layer_t* self);
+int tsip_transport_layer_shutdown(tsip_transport_layer_t* self);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_transport_layer_def_t;
 

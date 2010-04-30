@@ -89,6 +89,7 @@ static tsk_object_t* cmd_dtor(tsk_object_t * self)
 	cmd_t *cmd = self;
 	if(cmd){
 		TSK_OBJECT_SAFE_FREE(cmd->opts);
+		TSK_FREE(cmd->sidparam);
 	}
 
 	return self;

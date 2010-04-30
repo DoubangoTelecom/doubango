@@ -31,6 +31,74 @@
 
 #include "tinySIP/headers/tsip_header_Dummy.h"
 
+
+/* Compact headers: http://www.cs.columbia.edu/sip/compact.html 
+Abbreviation 	Header 					defined by 					origin (mnemonic)
+a 				Accept-Contact 			draft-ietf-sip-callerprefs 	--
+b 				Referred-By 			-refer- 					"by"
+c 				Content-Type 			RFC 3261
+d				Request-Disposition
+e 				Content-Encoding 		RFC 3261
+f 				From 					RFC 3261
+i 				Call-ID 				RFC 3261
+j				Reject-Contact
+k 				Supported 				RFC 3261 					"know"
+l 				Content-Length 			RFC 3261
+m 				Contact 				RFC 3261 					"moved"
+n				Identity-Info
+o 				Event 					-event- 					"occurance"
+r 				Refer-To 				-refer-
+s 				Subject 				RFC 3261 	
+t 				To 						RFC 3261
+u 				Allow-Events 			-events- 					"understand"
+v 				Via 					RFC 3261 
+y				Identity
+*/
+
+#if TSIP_COMPACT_HEADERS
+#	define _Accept_Contact "a"
+#	define _Referred_By  "b"
+#	define _Content_Type  "c"
+#	define _Request_Disposition "d"
+#	define _Content_Encoding  "e"
+#	define _From  "f"
+#	define _Call_ID  "i"
+#	define _Reject_Contact "j";
+#	define _Supported  "k"
+#	define _Content_Length  "l"
+#	define _Contact  "m"
+#	define _Identity_Info  "n"
+#	define _Event  "o"
+#	define _Refer_To  "r"
+#	define _Subject  "s"
+#	define _To  "t";
+#	define _Allow_Events  "u"
+#	define _Via  "v"
+#	define _Session_Expires "x"
+#	define _Identity  "y"
+#else
+#	define _Accept_Contact "Accept-Contact"
+#	define _Referred_By  "Referred-By"
+#	define _Content_Type  "Content-Type"
+#	define _Request_Disposition "Request-Disposition"
+#	define _Content_Encoding  "Content-Encoding"
+#	define _From  "From"
+#	define _Call_ID  "Call-ID"
+#	define _Reject_Contact "Reject-Contact"
+#	define _Supported  "Supported"
+#	define _Content_Length  "Content-Length"
+#	define _Contact  "Contact"
+#	define _Identity_Info  "Identity-Info"
+#	define _Event  "Event"
+#	define _Refer_To  "Refer-To"
+#	define _Subject  "Subject"
+#	define _To  "To"
+#	define _Allow_Events  "Allow-Events"
+#	define _Via  "Via"
+#	define _Session_Expires "Session-Expires"
+#	define _Identity  "Identity"
+#endif
+
 /** Gets the name of the SIP header with a type equal to @a type. 
  * @param	type	The @a type of the header for which to retrieve the name. 
  *
@@ -41,32 +109,32 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 	switch(type)
 	{
 		case tsip_htype_Accept: return "Accept";
-		case tsip_htype_Accept_Contact: return "Accept-Contact";
+		case tsip_htype_Accept_Contact: return _Accept_Contact;
 		case tsip_htype_Accept_Encoding: return "Accept-Encoding";
 		case tsip_htype_Accept_Language: return "Accept-Language";
 		case tsip_htype_Accept_Resource_Priority: return "Accept-Resource-Priority";
 		case tsip_htype_Alert_Info: return "Alert-Info";
 		case tsip_htype_Allow: return "Allow";
-		case tsip_htype_Allow_Events: return "Allow-Events";
+		case tsip_htype_Allow_Events: return _Allow_Events;
 		case tsip_htype_Authentication_Info: return "Authentication-Info";
 		case tsip_htype_Authorization: return "Authorization";
-		case tsip_htype_Call_ID: return "Call-ID";
+		case tsip_htype_Call_ID: return _Call_ID;
 		case tsip_htype_Call_Info: return "Call-Info";
-		case tsip_htype_Contact: return "Contact";
+		case tsip_htype_Contact: return _Contact;
 		case tsip_htype_Content_Disposition: return "Content-Disposition";
-		case tsip_htype_Content_Encoding: return "Content-Encoding";
+		case tsip_htype_Content_Encoding: return _Content_Encoding;
 		case tsip_htype_Content_Language: return "Content-Language";
-		case tsip_htype_Content_Length: return "Content-Length";
-		case tsip_htype_Content_Type: return "Content-Type";
+		case tsip_htype_Content_Length: return _Content_Length;
+		case tsip_htype_Content_Type: return _Content_Type;
 		case tsip_htype_CSeq: return "CSeq";
 		case tsip_htype_Date: return "Date";
 		case tsip_htype_Error_Info: return "Error-Info";
-		case tsip_htype_Event: return "Event";
+		case tsip_htype_Event: return _Event;
 		case tsip_htype_Expires: return "Expires";
-		case tsip_htype_From: return "From";
+		case tsip_htype_From: return _From;
 		case tsip_htype_History_Info: return "History-Info";
-		case tsip_htype_Identity: return "Identity";
-		case tsip_htype_Identity_Info: return "Identity-Info";
+		case tsip_htype_Identity: return _Identity;
+		case tsip_htype_Identity_Info: return _Identity_Info;
 		case tsip_htype_In_Reply_To: return "In-Reply-To";
 		case tsip_htype_Join: return "Join";
 		case tsip_htype_Max_Forwards: return "Max-Forwards";
@@ -84,12 +152,12 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 		case tsip_htype_Reason: return "Reason";
 		case tsip_htype_Record_Route: return "Record-Route";
 		case tsip_htype_Refer_Sub: return "Refer-Sub";
-		case tsip_htype_Refer_To: return "Refer-To";
-		case tsip_htype_Referred_By: return "Referred-By";
-		case tsip_htype_Reject_Contact: return "Reject-Contact";
+		case tsip_htype_Refer_To: return _Refer_To;
+		case tsip_htype_Referred_By: return _Referred_By;
+		case tsip_htype_Reject_Contact: return _Reject_Contact;
 		case tsip_htype_Replaces: return "Replaces";
 		case tsip_htype_Reply_To: return "Reply-To";
-		case tsip_htype_Request_Disposition: return "Request-Disposition";
+		case tsip_htype_Request_Disposition: return _Request_Disposition;
 		case tsip_htype_Require: return "Require";
 		case tsip_htype_Resource_Priority: return "Resource-Priority";
 		case tsip_htype_Retry_After: return "Retry-After";
@@ -100,18 +168,18 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 		case tsip_htype_Security_Verify: return "Security-Verify";
 		case tsip_htype_Server: return "Server";
 		case tsip_htype_Service_Route: return "Service-Route";
-		case tsip_htype_Session_Expires: return "Session-Expires";
+		case tsip_htype_Session_Expires: return _Session_Expires;
 		case tsip_htype_SIP_ETag: return "SIP-ETag";
 		case tsip_htype_SIP_If_Match: return "SIP-If-Match";
-		case tsip_htype_Subject: return "Subject";
+		case tsip_htype_Subject: return _Subject;
 		case tsip_htype_Subscription_State: return "Subscription-State";
-		case tsip_htype_Supported: return "Supported";
+		case tsip_htype_Supported: return _Supported;
 		case tsip_htype_Target_Dialog: return "Target-Dialog";
 		case tsip_htype_Timestamp: return "Timestamp";
-		case tsip_htype_To: return "To";
+		case tsip_htype_To: return _To;
 		case tsip_htype_Unsupported: return "Unsupported";
 		case tsip_htype_User_Agent: return "User-Agent";
-		case tsip_htype_Via: return "Via";
+		case tsip_htype_Via: return _Via;
 		case tsip_htype_Warning: return "Warning";
 		case tsip_htype_WWW_Authenticate: return "WWW-Authenticate";
 		case tsip_htype_P_Access_Network_Info: return "P-Access-Network-Info";

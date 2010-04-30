@@ -26,12 +26,12 @@ extern ctx_t* ctx;
 int message_handle_event(const tsip_event_t *sipevent)
 {
 	const tsip_message_event_t* msg_event = TSIP_MESSAGE_EVENT(sipevent);
-	session_t* session;
-	tsip_ssession_id_t id;
+	const session_t* session;
+	tsip_ssession_id_t sid;
 
 	/* Find associated session */
-	id = tsip_ssession_get_id(sipevent->ss);
-	if(!(session = (session_t*)tsk_list_find_item_by_pred(ctx->sessions, pred_find_session_by_id, &id))){
+	sid = tsip_ssession_get_id(sipevent->ss);
+	if(!(session = session_get_by_sid(ctx->sessions, sid))){
 		TSK_DEBUG_WARN("Failed to match session event.");
 		return -1;
 	}
@@ -83,12 +83,17 @@ int message_handle_event(const tsip_event_t *sipevent)
 	return 0;
 }
 
-int message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
+tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 {
-	session_t* session = tsk_null;
+	const session_t* session = tsk_null;
 	const opt_t* opt;
+	tsip_ssession_id_t id = TSIP_SSESSION_INVALID_ID;
+
 	if(!(session = session_handle_cmd(cmd, opts))){
-		goto bail;
+		return -1;
+	}
+	else{
+		id = tsip_ssession_get_id(session->handle);
 	}
 	
 	switch(cmd){
@@ -110,9 +115,6 @@ int message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			/* already handled by session_handle_cmd() */
 			break;
 	}
-
-bail:
-	TSK_OBJECT_SAFE_FREE(session);
-
-	return 0;
+	
+	return id;
 }

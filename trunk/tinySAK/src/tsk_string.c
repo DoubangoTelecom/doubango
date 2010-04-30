@@ -454,6 +454,23 @@ void tsk_itoa(int64_t i, tsk_istr_t *result)
 
 /**@ingroup tsk_string_group
 */
+int64_t tsk_atoll(const char* str)
+{
+	// FIXME: use HAVE_ATOLL and use macro instead of function
+	if(str){
+#if defined(_MSC_VER)
+		return _atoi64(str);
+#elif defined(__GUNC__)
+		return atoll(str);
+#else
+		return atol(str); 
+#endif
+	}
+	return 0;
+}
+
+/**@ingroup tsk_string_group
+*/
 long tsk_atox(const char* str)
 {
 	long ret = 0;

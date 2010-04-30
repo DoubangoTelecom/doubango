@@ -70,6 +70,7 @@ TINYSAK_API void tsk_strquote_2(char **str, char lquote, char rquote);
 TINYSAK_API void tsk_strunquote(char **str);
 TINYSAK_API void tsk_strunquote_2(char **str, char lquote, char rquote);
 TINYSAK_API void tsk_itoa(int64_t i, tsk_istr_t *result);
+TINYSAK_API int64_t tsk_atoll(const char*);
 TINYSAK_API long tsk_atox(const char*);
 TINYSAK_API void tsk_strrandom(tsk_istr_t *result);
 TINYSAK_API void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str);

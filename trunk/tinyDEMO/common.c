@@ -97,6 +97,11 @@ int stack_callback(const tsip_event_t *sipevent)
 	========================== Context ================================= 
 */
 
+ctx_t* ctx_create()
+{
+	return tsk_object_new(ctx_def_t);
+}
+
 static tsk_object_t* ctx_ctor(tsk_object_t * self, va_list * app)
 {
 	ctx_t *ctx = self;
@@ -110,6 +115,9 @@ static tsk_object_t* ctx_ctor(tsk_object_t * self, va_list * app)
 		/* SIP Sessions */
 		ctx->sessions = tsk_list_create();
 
+		/* user's parameters */
+		ctx->params = tsk_list_create();
+
 		/* init internal mutex */
 		tsk_safeobj_init(ctx);
 	}
@@ -120,7 +128,13 @@ static tsk_object_t* ctx_dtor(tsk_object_t * self)
 { 
 	ctx_t *ctx = self;
 	if(ctx){
-		/* stack */
+		/* Stop the stack (as sessions are alive, you will continue to receive callbacks)*/
+		tsip_stack_stop(ctx->stack);
+
+		/* sessions : must be free before the stack as explained on the Programmer's Guide */
+		TSK_OBJECT_SAFE_FREE(ctx->sessions);
+
+		/* Destroy the stack */
 		TSK_OBJECT_SAFE_FREE(ctx->stack);
 
 		/* Identity */
@@ -139,8 +153,8 @@ static tsk_object_t* ctx_dtor(tsk_object_t * self)
 		/* Security */
 		TSK_FREE(ctx->security.operator_id);
 
-		/* sessions */
-		TSK_OBJECT_SAFE_FREE(ctx->sessions);
+		/* Params */
+		TSK_OBJECT_SAFE_FREE(ctx->params);
 
 		/* deinit internal mutex */
 		tsk_safeobj_deinit(ctx);
@@ -179,6 +193,7 @@ int stack_config(const opts_L_t* opts)
 	const opt_t* opt;
 	int ret = 0;
 	tsk_param_t* param;
+	tsk_bool_t pcscf_changed = tsk_false;
 
 	if(!opts){
 		return -1;
@@ -238,6 +253,8 @@ int stack_config(const opts_L_t* opts)
 				}
 			case opt_ipv6:
 				{
+					pcscf_changed = tsk_true;
+					ctx->network.ipv6 = tsk_true;
 					break;
 				}
 			case opt_local_ip:
@@ -260,14 +277,20 @@ int stack_config(const opts_L_t* opts)
 				}
 			case opt_pcscf_ip:
 				{
+					pcscf_changed = tsk_true;
+					tsk_strupdate(&ctx->network.proxy_cscf, opt->value);
 					break;
 				}
 			case opt_pcscf_port:
 				{
+					pcscf_changed = tsk_true;
+					ctx->network.proxy_cscf_port = atoi(opt->value);
 					break;
 				}
 			case opt_pcscf_trans:
 				{
+					pcscf_changed = tsk_true;
+					tsk_strupdate(&ctx->network.proxy_cscf_trans, opt->value);
 					break;
 				}
 			case opt_realm:
@@ -279,7 +302,15 @@ int stack_config(const opts_L_t* opts)
 				}
 
 		}/* switch */
+
 	} /* foreach */
+
+	/* whether Proxy-CSCF config has changed */
+	if(pcscf_changed){
+		ret = tsip_stack_set(ctx->stack,
+			TSIP_STACK_SET_PROXY_CSCF(ctx->network.proxy_cscf, 5081/*ctx->network.proxy_cscf_port*/, ctx->network.proxy_cscf_trans, ctx->network.ipv6 ? "ipv6" : "ipv4"),
+			TSIP_STACK_SET_NULL());
+	}
 	
 	return ret;
 }
@@ -315,6 +346,18 @@ session_t* session_create(session_type_t type)
 {
 	return tsk_object_new(session_def_t, type);
 }
+
+const session_t* session_get_by_sid(const sessions_L_t* sessions, tsip_ssession_id_t sid)
+{
+	const tsk_list_item_t* item;
+	if((item = tsk_list_find_item_by_pred(sessions, pred_find_session_by_id, &sid))){
+		return item->data;
+	}
+	else{
+		return tsk_null;
+	}
+}
+
 
 int session_tostring(const session_t* session)
 {
@@ -357,9 +400,9 @@ int session_tostring(const session_t* session)
 	return -1;
 }
 
-session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
+const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 {
-	session_t* session = tsk_null;
+	const session_t* session = tsk_null;
 	const opt_t* opt;
 	const tsk_list_item_t* item;
 	tsk_param_t* param;
@@ -367,18 +410,16 @@ session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 
 	/* Check if there is a session with is Id */
 	if((opt = opt_get_by_type(opts, opt_sid))){
-		tsip_ssession_id_t id = atoi(opt->value);
-		if((item = tsk_list_find_item_by_pred(ctx->sessions, pred_find_session_by_id, &id))){
-			session = tsk_object_ref(item->data);
-		}
+		tsip_ssession_id_t sid = atoi(opt->value);
+			session = session_get_by_sid(ctx->sessions, sid);
 	}
 
 #define TYPE_FROM_CMD(_CMD) \
-	/*(_CMD==cmd_invite ? st_invite :*/  \
+	((_CMD==cmd_audio || _CMD==cmd_video || _CMD==cmd_audiovideo || _CMD==cmd_file || _CMD==cmd_large_message) ? st_invite :  \
 	(_CMD==cmd_message ? st_message : \
 	(_CMD==cmd_publish ? st_publish : \
 	(_CMD==cmd_register ? st_register : \
-	(_CMD==cmd_subscribe ? st_subscribe : st_none))))
+	(_CMD==cmd_subscribe ? st_subscribe : st_none)))))
 	
 	/* === Command === */
 	switch(cmd){
@@ -390,7 +431,7 @@ session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			{
 				if(!session){ /* Create subscription */
 					session_t* _session = session_create(TYPE_FROM_CMD(cmd));
-					session = tsk_object_ref(_session);
+					session = _session;
 					tsk_list_push_back_data(ctx->sessions, (void**)&_session);
 				}
 				break;
@@ -462,6 +503,39 @@ session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 
 bail:
 	return session;
+}
+
+int session_hangup(tsip_ssession_id_t sid)
+{
+	const session_t* session;
+	if((session = session_get_by_sid(ctx->sessions, sid))){
+		switch(session->type){
+			case st_invite:
+				break;
+			case st_message:
+				break;
+			case st_publish:
+				break;
+			case st_register:
+				tsip_action_UNREGISTER(session->handle,
+					/* You can add your parameters */
+					TSIP_ACTION_SET_NULL());
+				break;
+			case st_subscribe:
+				tsip_action_UNSUBSCRIBE(session->handle,
+					/* You can add your parameters */
+					TSIP_ACTION_SET_NULL());
+				break;
+			default:
+				TSK_DEBUG_WARN("Cannot hangup session with this type [%d]", session->type);
+				return -2;
+		}
+		return 0;
+	}
+	else{
+		TSK_DEBUG_WARN("Failed to find session with sid=%llu", sid);
+		return -1;
+	}
 }
 
 static tsk_object_t* session_ctor(tsk_object_t * self, va_list * app)

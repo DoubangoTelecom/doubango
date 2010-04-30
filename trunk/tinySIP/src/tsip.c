@@ -240,10 +240,12 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				tsk_strupdate(&self->network.proxy_cscf, FQDN_STR);
 				
 				/* Port */
-				self->network.proxy_cscf_port = PORT_UINT;
+				if(PORT_UINT){
+					self->network.proxy_cscf_port = PORT_UINT;
+				}
 
 				/* Transport */
-				if(tsk_striequals(TRANSPORT_STR, "UDP")){
+				if(!TRANSPORT_STR || tsk_striequals(TRANSPORT_STR, "UDP")){
 					TNET_SOCKET_TYPE_SET_UDP(self->network.proxy_cscf_type);
 				}
 				else if(tsk_striequals(TRANSPORT_STR, "TCP")){
@@ -550,23 +552,37 @@ int tsip_stack_set(tsip_stack_handle_t *self, ...)
 	return -1;
 }
 
+/**
+* Stops the stack. 
+* Before stopping the engine will hangup all dialogs (wtring with non-register dialogs).
+* To continue to receive callbacks, you should call this function before destroying the stack.
+*/
 int tsip_stack_stop(tsip_stack_handle_t *self)
 {
-	if(self)
-	{
+	if(self){
 		int ret;
 		tsip_stack_t *stack = self;
 
+		/* Hangup all dialogs staring by REGISTER */	
+		if((ret = tsip_dialog_layer_shutdownAll(stack->layer_dialog))){
+			TSK_DEBUG_WARN("Failed to hang-up all dialogs");
+		}
 
-		/* Hangup all dialogs */
-		tsip_dialog_layer_hangupAll(stack->layer_dialog);
-		//tsk_thread_sleep(50000000);
+		/* do not try to clean up transactions ==> each dialog will cancel its transactions.
+		* see tsip_dialog_deinit() which call tsip_transac_layer_cancel_by_dialog() */
 
-		/* Do not Stop timer manager ==> Dialogs have ref to the stack and rely on the timer manager(to gracefully shutdown).*/
-		//ret = tsk_timer_manager_stop(stack->timer_mgr);
+		/* Stop the timer manager */
+		if((ret = tsk_timer_manager_stop(stack->timer_mgr))){
+			TSK_DEBUG_WARN("Failed to stop the timer manager");
+		}
 		
+		/* Stop the transport layer */
+		if((ret = tsip_transport_layer_shutdown(stack->layer_transport))){
+			TSK_DEBUG_WARN("Failed to stop the transport layer");
+		}
+
 		if((ret = tsk_runnable_stop(TSK_RUNNABLE(stack)))){
-			//return ret;
+			TSK_DEBUG_WARN("Failed to stop the stack");
 		}
 
 		TSK_DEBUG_INFO("SIP STACK -- STOP");
@@ -645,9 +661,9 @@ void *run(void* self)
 	tsk_list_item_t *curr;
 	tsip_stack_t *stack = self;
 
-	TSK_RUNNABLE_RUN_BEGIN(stack);
-
 	TSK_DEBUG_INFO("SIP STACK::run -- START");
+
+	TSK_RUNNABLE_RUN_BEGIN(stack);
 	
 	if((curr = TSK_RUNNABLE_POP_FIRST(stack))){
 		tsip_event_t *sipevent = (tsip_event_t*)curr->data;
@@ -687,9 +703,21 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 { 
 	tsip_stack_t *stack = self;
 	if(stack){
-		
-		/* Stop */
+
+		/* /!\ Order in which objects are destroyed is very important */
+
+		/* Stop 
+		* Will try to hangup all dialogs */
 		tsip_stack_stop(stack);
+
+		/* Layers(1/1): Transacs and dialogs use timer_mgr when destroyed 
+		* Dialogs =>(use)=> transacs =>(use)=> transport. */
+		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
+		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
+		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
+
+		/* Internals(1/2) */
+		TSK_OBJECT_SAFE_FREE(stack->timer_mgr);
 
 		/* Identity */
 		TSK_FREE(stack->identity.display_name);
@@ -699,7 +727,7 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_FREE(stack->identity.impi);
 		TSK_FREE(stack->identity.password);
 
-		/* Network */
+		/* Network(1/1) */
 		TSK_FREE(stack->network.local_ip);
 		TSK_OBJECT_SAFE_FREE(stack->network.realm);
 		TSK_FREE(stack->network.proxy_cscf);
@@ -708,7 +736,7 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(stack->service_routes);
 		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
 		
-		/* Security */
+		/* Security(1/1) */
 		TSK_FREE(stack->secagree_mech);
 		TSK_FREE(stack->secagree_ipsec.alg);
 		TSK_FREE(stack->secagree_ipsec.ealg);
@@ -729,15 +757,9 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 
 		/* QoS */
 
-		/* Layers */
-		TSK_OBJECT_SAFE_FREE(stack->layer_dialog);
-		TSK_OBJECT_SAFE_FREE(stack->layer_transac);
-		TSK_OBJECT_SAFE_FREE(stack->layer_transport);
-
-		/* Internals. */
+		/* Internals (2/2) */
 		TSK_OBJECT_SAFE_FREE(stack->ssessions);
 		TSK_OBJECT_SAFE_FREE(stack->headers);
-		TSK_OBJECT_SAFE_FREE(stack->timer_mgr); /* Should be the last ==> used by layers and al. */
 
 		TSK_DEBUG_INFO("*** SIP Stack destroyed ***");
 	}

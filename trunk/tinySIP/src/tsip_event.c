@@ -45,8 +45,7 @@ tsip_event_t* tsip_event_create(tsip_stack_t* stack, tsip_ssession_t* ss, short 
 
 int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_ssession_t *ss, short code, const char *phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
 {
-	if(self && stack)
-	{
+	if(self && stack){
 		self->stack = tsk_object_ref(stack);
 		self->ss = tsk_object_ref(ss);
 		self->code = code;
@@ -62,8 +61,7 @@ int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_ssessio
 
 int tsip_event_deinit(tsip_event_t* self)
 {
-	if(self)
-	{
+	if(self){
 		TSK_OBJECT_SAFE_FREE(self->stack);
 		TSK_OBJECT_SAFE_FREE(self->ss);
 

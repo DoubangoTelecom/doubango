@@ -38,6 +38,7 @@ ctx_t* ctx = tsk_null;
 
 const char* trim(const char*);
 int insert(char* dest, size_t index, size_t dest_size, char* src, size_t src_size);
+int update_param(const char* , const char* );
 int execute(const cmd_t* );
 
 /* === entry point === */
@@ -46,7 +47,6 @@ int main(int argc, char* argv[])
 	char buffer[4096];
 	cmd_t* cmd = tsk_null;
 	tsk_bool_t comment = tsk_false;
-	tsk_params_L_t* params;
 	int ret;
 	int i, index;
 	const char* start = tsk_null, *end = tsk_null;
@@ -59,14 +59,8 @@ int main(int argc, char* argv[])
 	//cmd_print_help();
 
 	/* create user's ctx */
-	if(!(ctx = tsk_object_new(ctx_def_t))){
+	if(!(ctx = ctx_create())){
 		TSK_DEBUG_ERROR("Failed to create user's ctx.");
-		goto bail;
-	}
-
-	/* create params (user's #defines) */
-	if(!(params = tsk_list_create())){
-		TSK_DEBUG_ERROR("Failed to create user's params.");
 		goto bail;
 	}
 
@@ -98,7 +92,7 @@ init_buffer:
 		}
 parse_buffer:
 		TSK_OBJECT_SAFE_FREE(cmd); /* Free old value */
-		cmd = cmd_parse(start, &comment, params);
+		cmd = cmd_parse(start, &comment, ctx->params);
 		if(cmd){
 			if(comment || cmd->type == cmd_none){
 				goto nex_line;
@@ -142,6 +136,7 @@ parse_buffer:
 							rm_lf = tsk_false;
 						}
 					}
+					
 					/* insert scenario */
 					if(insert(buffer, (end - start), sizeof(buffer), temp, read)){
 						continue;
@@ -195,8 +190,6 @@ bail:
 	
 	/* Free current command */
 	TSK_OBJECT_SAFE_FREE(cmd);
-	/* Free params */
-	TSK_OBJECT_SAFE_FREE(params);
 	/* Destroy the user's ctx */
 	TSK_OBJECT_SAFE_FREE(ctx);
 	/* Uninitilize Network Layer */
@@ -235,9 +228,29 @@ int insert(char* dest, size_t index, size_t dest_size, char* src, size_t src_siz
 	return 0;
 }
 
+int update_param(const char* pname, const char* pvalue)
+{
+	if(ctx->params && pname){
+		const tsk_param_t* param;
+		if((param = tsk_params_get_param_by_name(ctx->params, pname))){
+			tsk_strupdate(&TSK_PARAM(param)->value, pvalue);
+			return 0;
+		}
+		else{
+			TSK_DEBUG_INFO("[%s] parameter does not exist", pname);
+		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+	}
+	return -1;
+}
+
 int execute(const cmd_t* cmd)
 {
 	int ret = 0;
+	tsip_ssession_id_t sid;
+	tsk_istr_t istr;
 
 	if(!cmd){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -278,6 +291,19 @@ int execute(const cmd_t* cmd)
 				TSK_DEBUG_INFO("command=file");
 				break;
 			}
+		case cmd_hangup:
+			{
+				const opt_t* opt;
+				TSK_DEBUG_INFO("command=hangup");
+				if((opt = opt_get_by_type(cmd->opts, opt_sid)) && !tsk_strnullORempty(opt->value)){ /* --sid option */
+					ret = session_hangup(tsk_atoll(opt->value));
+				}
+				else{
+					TSK_DEBUG_ERROR("++hangup command need --sid option");
+					ret = -1;
+				}
+				break;
+			}
 		case cmd_help:
 			{
 				TSK_DEBUG_INFO("command=help");
@@ -287,7 +313,12 @@ int execute(const cmd_t* cmd)
 		case cmd_message:
 			{
 				TSK_DEBUG_INFO("command=message");
-				ret = message_handle_cmd(cmd->type, cmd->opts);
+				if((sid = message_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
+					if(cmd->sidparam){
+						tsk_itoa(sid, &istr);
+						update_param(cmd->sidparam, istr);
+					}
+				}
 				break;
 			}
 		case cmd_publish:
@@ -298,7 +329,12 @@ int execute(const cmd_t* cmd)
 		case cmd_register:
 			{
 				TSK_DEBUG_INFO("command=register");
-				ret = register_handle_cmd(cmd->type, cmd->opts);
+				if((sid = register_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
+					if(cmd->sidparam){
+						tsk_itoa(sid, &istr);
+						update_param(cmd->sidparam, istr);
+					}
+				}
 				break;
 			}
 		case cmd_run:
@@ -331,10 +367,21 @@ int execute(const cmd_t* cmd)
 				TSK_DEBUG_INFO("command=sms");
 				break;
 			}
+		case cmd_stop:
+			{
+				TSK_DEBUG_INFO("command=stop");
+				tsip_stack_stop(ctx->stack);
+				break;
+			}
 		case cmd_subscribe:
 			{
 				TSK_DEBUG_INFO("command=subscribe");
-				ret = subscribe_handle_cmd(cmd->type, cmd->opts);
+				if((sid = subscribe_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
+					if(cmd->sidparam){
+						tsk_itoa(sid, &istr);
+						update_param(cmd->sidparam, istr);
+					}
+				}
 				break;
 			}
 		case cmd_video:

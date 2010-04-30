@@ -38,6 +38,7 @@
 #include "tinySIP/headers/tsip_header_Call_ID.h"
 #include "tinySIP/headers/tsip_header_Contact.h"
 #include "tinySIP/headers/tsip_header_CSeq.h"
+#include "tinySIP/headers/tsip_header_Date.h"
 #include "tinySIP/headers/tsip_header_Dummy.h"
 #include "tinySIP/headers/tsip_header_Event.h"
 #include "tinySIP/headers/tsip_header_Expires.h"

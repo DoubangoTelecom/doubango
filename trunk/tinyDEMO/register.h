@@ -29,7 +29,7 @@
 _BEGIN_DECLS
 
 int register_handle_event(const tsip_event_t *sipevent);
-int register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts);
+tsip_ssession_id_t register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts);
 
 _END_DECLS
 

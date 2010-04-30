@@ -43,8 +43,7 @@
 */
 static int tsk_runnable_init(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 {
-	if(self)
-	{
+	if(self){
 		if(self->initialized) return -2;
 		if(!objdef) return -3;
 		
@@ -66,8 +65,7 @@ static int tsk_runnable_init(tsk_runnable_t *self, const tsk_object_def_t *objde
 */
 static int tsk_runnable_deinit(tsk_runnable_t *self)
 {
-	if(self)
-	{
+	if(self){
 		if(!self->initialized) return -2;
 		else if(self->running) return -3;
 
@@ -91,8 +89,7 @@ static int tsk_runnable_deinit(tsk_runnable_t *self)
 int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 {
 	int ret = -1;
-	if(self)
-	{
+	if(self){
 		if(self->running) return -2;
 		else if(!self->run) return -3;
 		else if(tsk_runnable_init(self, objdef)) return -4;
@@ -121,9 +118,9 @@ int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 int tsk_runnable_stop(tsk_runnable_t *self)
 {
 	int ret = -1;
-	if(self)
-	{
+	if(self){
 		if(!self->initialized) {
+			TSK_DEBUG_ERROR("Not initialized.");
 			return -2;
 		}
 		else if(!self->running) {
@@ -138,6 +135,9 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 					}
 				}
 			}
+			else{
+				return 0; /* already stopped */
+			} 
 			return -3;
 		}
 
@@ -147,7 +147,7 @@ stop:
 
 		if((ret = tsk_thread_join(&(self->tid[0])))){
 			self->running = tsk_true;
-			TSK_DEBUG_ERROR("Failed to join a thread.");
+			TSK_DEBUG_ERROR("Failed to join the thread.");
 			return ret;
 		}
 		tsk_runnable_deinit(self);

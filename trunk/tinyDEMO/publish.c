@@ -27,3 +27,8 @@ int publish_handle_event(const tsip_event_t *sipevent)
 {
 	return 0;
 }
+
+tsip_ssession_id_t publish_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
+{
+	return 0;
+}

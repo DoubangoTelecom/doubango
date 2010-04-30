@@ -70,6 +70,7 @@ typedef enum tsip_action_type_e
 	atype_reject,
 	atype_cancel,
 	atype_hangup,
+	atype_shutdown,
 
 }
 tsip_action_type_t;

@@ -471,7 +471,7 @@ bail:
 
 
 
-int tsip_transport_layer_start(const tsip_transport_layer_t* self)
+int tsip_transport_layer_start(tsip_transport_layer_t* self)
 {
 	if(self){
 		if(!self->running){
@@ -503,7 +503,7 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 				}
 			}
 
-			((tsip_transport_layer_t*)self)->running = 1;
+			self->running = tsk_true;
 
 			return 0;
 		}
@@ -513,22 +513,21 @@ int tsip_transport_layer_start(const tsip_transport_layer_t* self)
 }
 
 
-int tsip_transport_layer_shutdown(const tsip_transport_layer_t* self)
+int tsip_transport_layer_shutdown(tsip_transport_layer_t* self)
 {
 	if(self){
 		if(self->running){
 			int ret = 0;
 			tsk_list_item_t *item;
-			tsip_transport_t* transport;
-			tsk_list_foreach(item, self->transports){
-				transport = item->data;
-				if(ret = tsip_transport_shutdown(transport)){
-					return ret;
-				}
+			while((item = tsk_list_pop_first_item(self->transports))){
+				TSK_OBJECT_SAFE_FREE(item); // Network transports are not reusable ==> (shutdow+remove)
 			}
+			self->running = tsk_false;
 			return 0;
 		}
-		else return -2;
+		else{
+			return 0; /* Already running */
+		}
 	}
 	return -1;
 }
@@ -559,6 +558,8 @@ static tsk_object_t* tsip_transport_layer_dtor(tsk_object_t * self)
 		tsip_transport_layer_shutdown(self);
 
 		TSK_OBJECT_SAFE_FREE(layer->transports);
+
+		TSK_DEBUG_INFO("*** Transport Layer destroyed ***");
 	}
 	return self;
 }

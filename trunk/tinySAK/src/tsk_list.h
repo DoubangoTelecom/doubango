@@ -39,10 +39,10 @@ TSK_BEGIN_DECLS
 * Check if the the linked list is empty or not.
 *	This function will fail if the list is NULL.
 */
-#define TSK_LIST_IS_EMPTY(self)				(self ? (!self->head) : 1)
+#define TSK_LIST_IS_EMPTY(self)				(self ? (!self->head) : tsk_true)
 
-#define TSK_LIST_IS_FIRST(self, item)		(self ? (self->head == item) : 0)
-#define TSK_LIST_IS_LAST(self, item)		(self ? (self->tail == item) : 0)
+#define TSK_LIST_IS_FIRST(self, item)		(self ? (self->head == item) : tsk_null)
+#define TSK_LIST_IS_LAST(self, item)		(self ? (self->tail == item) : tsk_null)
 
 /**@ingroup tsk_list_group
 * Item for linked list. 
@@ -113,7 +113,8 @@ TINYSAK_API void tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_
 #define tsk_list_push_descending_data(list, data) tsk_list_push_filtered_data(list, data, tsk_false)
 
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj);
-TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void * data);
+TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
+TINYSAK_API size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_list_def_t;
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_list_item_def_t;

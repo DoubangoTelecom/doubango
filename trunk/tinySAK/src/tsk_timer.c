@@ -101,12 +101,20 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 {
 	int err = -1;
 	tsk_timer_manager_t *manager = self;
-	if(manager && !TSK_RUNNABLE(manager)->running){				
+	
+	if(!manager){
+		return -1;
+	}
+
+	if(!TSK_RUNNABLE(manager)->running){				
 		TSK_RUNNABLE(manager)->run = run;
 		if(err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t)){
 			//TSK_OBJECT_SAFE_FREE(manager);
 			return err;
 		}
+	}
+	else{
+		TSK_DEBUG_WARN("Timer manager already running");
 	}
 	
 	return err;
@@ -140,8 +148,13 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 {
 	int ret = -1;
 	tsk_timer_manager_t *manager = self;
-	if(manager && TSK_RUNNABLE(manager)->running)
-	{
+
+	if(!manager){
+		TSK_DEBUG_ERROR("Invalid paramater");
+		return -1;
+	}
+
+	if(TSK_RUNNABLE(manager)->running){
 		if(ret = tsk_runnable_stop(TSK_RUNNABLE(manager))){
 			return ret;
 		}
@@ -151,6 +164,10 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 		
 		return tsk_thread_join(manager->mainThreadId);
 	}
+	else{
+		return 0; /* already running. */
+	}
+
 	return ret;
 }
 

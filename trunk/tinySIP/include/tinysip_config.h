@@ -27,8 +27,7 @@
 #undef _WIN32 /* Because of WINSCW */
 #endif
 
-/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition.
-*/
+/* Windows (XP/Vista/7/CE and Windows Mobile) macro definition */
 #if defined(WIN32)|| defined(_WIN32) || defined(_WIN32_WCE)
 #	define TSIP_UNDER_WINDOWS	1
 #endif
@@ -45,8 +44,7 @@
 #endif
 
 
-/* Guards against C++ name mangling 
-*/
+/* Guards against C++ name mangling  */
 #ifdef __cplusplus
 #	define TSIP_BEGIN_DECLS extern "C" {
 #	define TSIP_END_DECLS }
@@ -55,23 +53,23 @@
 #	define TSIP_END_DECLS
 #endif
 
-/* Disable some well-known warnings
-*/
+/* Disable some well-known warnings */
 #ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
 #endif
 
-/* Detecting C99 compilers
- */
+/* Detecting C99 compilers */
 #if (__STDC_VERSION__ == 199901L) && !defined(__C99__)
 #	define __C99__
 #endif
+
+/* Whether to use SIP Compact headers */
+#define TSIP_COMPACT_HEADERS 1
 
 #include <stdint.h>
 #ifdef __SYMBIAN32__
 #include <stdlib.h>
 #endif
-
 
 #if HAVE_CONFIG_H
 	#include "../config.h"
