@@ -23,7 +23,7 @@
 */
 
 /**@file tsip_header_Supported.c
- * @brief SIP Supported header.
+ * @brief SIP Supported/k header.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *

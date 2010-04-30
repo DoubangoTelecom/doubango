@@ -43,7 +43,7 @@
 *	Ragel state machine.
 */
 
-/* #line 106 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 109 "./ragel/tsip_parser_header_Contact.rl" */
 
 
 
@@ -57,24 +57,17 @@ int tsip_header_Contact_tostring(const tsip_header_t* header, tsk_buffer_t* outp
 	if(header){
 		const tsip_header_Contact_t *Contact = (const tsip_header_Contact_t *)header;
 		int ret = 0;
-
-		{
-			/* Display name */
-			if(Contact->display_name){
-				tsk_buffer_append_2(output, "\"%s\"", Contact->display_name);
-			}
-
-			/* Uri */
-			if(ret=tsip_uri_serialize(Contact->uri, tsk_true, tsk_true, output)){
-				return ret;
-			}
-
-			/* Expires */
-			if(Contact->expires >=0){
-				tsk_buffer_append_2(output, ";expires=%lld", Contact->expires);
-			}
+		
+		/* Uri with hacked display-name*/
+		if((ret = tsip_uri_serialize(Contact->uri, tsk_true, tsk_true, output))){
+			return ret;
 		}
 
+		/* Expires */
+		if(Contact->expires >=0){
+			tsk_buffer_append_2(output, ";expires=%lld", Contact->expires);
+		}
+		
 		return ret;
 	}
 
@@ -94,7 +87,7 @@ tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, size_t siz
 	tsip_header_Contact_t *curr_contact = 0;
 
 	
-/* #line 98 "./src/headers/tsip_header_Contact.c" */
+/* #line 91 "./src/headers/tsip_header_Contact.c" */
 static const char _tsip_machine_parser_header_Contact_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -440,16 +433,16 @@ static const int tsip_machine_parser_header_Contact_error = 0;
 static const int tsip_machine_parser_header_Contact_en_main = 1;
 
 
-/* #line 156 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 152 "./ragel/tsip_parser_header_Contact.rl" */
 	
-/* #line 446 "./src/headers/tsip_header_Contact.c" */
+/* #line 439 "./src/headers/tsip_header_Contact.c" */
 	{
 	cs = tsip_machine_parser_header_Contact_start;
 	}
 
-/* #line 157 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 153 "./ragel/tsip_parser_header_Contact.rl" */
 	
-/* #line 453 "./src/headers/tsip_header_Contact.c" */
+/* #line 446 "./src/headers/tsip_header_Contact.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -542,20 +535,23 @@ _match:
 	{
 		if(curr_contact){
 			TSK_PARSER_SET_STRING(curr_contact->display_name);
+			tsk_strunquote(&curr_contact->display_name);
 		}
 	}
 	break;
 	case 3:
-/* #line 65 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 66 "./ragel/tsip_parser_header_Contact.rl" */
 	{
 		if(curr_contact && !curr_contact->uri){
 			int len = (int)(p  - tag_start);
-			curr_contact->uri = tsip_uri_parse(tag_start, (size_t)len);
+			if((curr_contact->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_contact->display_name){
+				curr_contact->uri->display_name = tsk_strdup(curr_contact->display_name);
+			}
 		}
 	}
 	break;
 	case 4:
-/* #line 72 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 75 "./ragel/tsip_parser_header_Contact.rl" */
 	{
 		if(curr_contact){
 			TSK_PARSER_SET_INTEGER(curr_contact->expires);
@@ -563,7 +559,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 78 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 81 "./ragel/tsip_parser_header_Contact.rl" */
 	{
 		if(curr_contact){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_contact));
@@ -571,7 +567,7 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 84 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 87 "./ragel/tsip_parser_header_Contact.rl" */
 	{
 		if(curr_contact){
 			tsk_list_push_back_data(hdr_contacts, ((void**) &curr_contact));
@@ -579,11 +575,11 @@ _match:
 	}
 	break;
 	case 7:
-/* #line 90 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 93 "./ragel/tsip_parser_header_Contact.rl" */
 	{
 	}
 	break;
-/* #line 587 "./src/headers/tsip_header_Contact.c" */
+/* #line 583 "./src/headers/tsip_header_Contact.c" */
 		}
 	}
 
@@ -596,12 +592,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 158 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 154 "./ragel/tsip_parser_header_Contact.rl" */
 	
 	if( cs < 
-/* #line 603 "./src/headers/tsip_header_Contact.c" */
+/* #line 599 "./src/headers/tsip_header_Contact.c" */
 126
-/* #line 159 "./ragel/tsip_parser_header_Contact.rl" */
+/* #line 155 "./ragel/tsip_parser_header_Contact.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse SIP 'Contact' header.");
 		TSK_OBJECT_SAFE_FREE(curr_contact);

@@ -44,7 +44,8 @@ int execute(const cmd_t* );
 /* === entry point === */
 int main(int argc, char* argv[])
 {
-	char buffer[4096];
+	char cmdbuf[4096];
+	tsk_buffer_t* buffer = tsk_null;
 	cmd_t* cmd = tsk_null;
 	tsk_bool_t comment = tsk_false;
 	int ret;
@@ -53,6 +54,7 @@ int main(int argc, char* argv[])
 	
 	/* Copyright */
 	printf("Doubango Project\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
+
 	/* Initialize Network Layer ==> Mandatory */
 	tnet_startup();
 	/* Print Usage */
@@ -64,35 +66,41 @@ int main(int argc, char* argv[])
 		goto bail;
 	}
 
-	/* reset the buffer */
-	memset(buffer, '\0', sizeof(buffer));
+	/* create new buffer */
+	if(!(buffer = tsk_buffer_create_null())){
+		TSK_DEBUG_ERROR("Failed to create new buffer.");
+		goto bail;
+	}
+
 	/* initial args */
 	for(i=1 /* index zero contains the exe path */, index=0; i<argc; i++){
 		if(index){
-			buffer[index++] = ' ';
+			char c = ' ';
+			tsk_buffer_append(buffer, &c, sizeof(c));
 		}
-		memcpy(&buffer[index], argv[i], tsk_strlen(argv[i]));
-		index += tsk_strlen(argv[i]);
+		tsk_buffer_append(buffer, argv[i], tsk_strlen(argv[i]));
 	}
 	
 	/* If initial args ==> parse it now */
-	if(index){
-		TSK_DEBUG_INFO("Initial command-line: %s", buffer);
+	if(buffer->size){
+		TSK_DEBUG_INFO("Initial command-line: %s", buffer->data);
 		goto init_buffer;
 	}
 
-	while(gets(buffer)){
+	while(gets(cmdbuf)){
+		tsk_buffer_cleanup(buffer); /* cannot read from console while executing scenario */
+		tsk_buffer_append(buffer, cmdbuf, tsk_strlen(cmdbuf));
 init_buffer:
-		start = buffer;
-		start = trim(start);
-		end = start + tsk_strlen(start);
+		start = buffer->data;
+		//start = trim(start);
+		end = start + buffer->size;
 		if(start >= end){
 			TSK_DEBUG_INFO("Empty buffer");
 			continue;
 		}
 parse_buffer:
 		TSK_OBJECT_SAFE_FREE(cmd); /* Free old value */
-		cmd = cmd_parse(start, &comment, ctx->params);
+		cmd = cmd_parse(start, (end-start), &comment, ctx->params);
 		if(cmd){
 			if(comment || cmd->type == cmd_none){
 				goto nex_line;
@@ -108,18 +116,17 @@ parse_buffer:
 			const opt_t* opt;
 			size_t read = 0;
 			tsk_bool_t rm_lf = tsk_false;
-			static char temp[2048];
 			if((opt = opt_get_by_type(cmd->opts, opt_path)) && !tsk_strnullORempty(opt->value)){ /* --path option */
 				if((file = fopen(opt->value, "r"))){
-					memset(temp, '\0', sizeof(temp)), temp[0] = '\n';
-					read = fread(temp+1, sizeof(uint8_t), sizeof(temp)-1, file);
+					memset(cmdbuf, '\0', sizeof(cmdbuf)), cmdbuf[0] = '\n';
+					read = fread(cmdbuf+1, sizeof(uint8_t), sizeof(cmdbuf)-1, file);
 					fclose(file), file = tsk_null;
 
 					if(read == 0){
 						TSK_DEBUG_ERROR("[%s] is empty.", opt->value);
 						continue;
 					}
-					else if(read == sizeof(temp)-1){
+					else if(read == sizeof(cmdbuf)-1){
 						TSK_DEBUG_ERROR("Buffer too short.");
 						
 						continue;
@@ -127,22 +134,31 @@ parse_buffer:
 					read++; /* \n */
 					/* repplace all '\' with spaces (easier than handling that in the ragel file) */
 					for(i=0; ((size_t)i)<read; i++){
-						if(temp[i] == '\\'){
-							temp[i] = ' ';
+						if(cmdbuf[i] == '\\'){
+							cmdbuf[i] = ' ';
 							rm_lf = tsk_true;
 						}
-						else if(rm_lf && temp[i] == '\n'){
-							temp[i] = ' ';
+						else if(rm_lf && cmdbuf[i] == '\n'){
+							cmdbuf[i] = ' ';
 							rm_lf = tsk_false;
 						}
 					}
+					cmdbuf[read] = '\n';
 					
-					/* insert scenario */
-					if(insert(buffer, (end - start), sizeof(buffer), temp, read)){
+					/* insert embedded scenario */
+					if((index = tsk_strindexOf(start, (end-start), "\n")) == -1){ /* ++sn line */
+						index = buffer->size;
+					}
+					else{
+						index += (start - ((const char*)buffer->data));
+					}
+				
+					if(tsk_buffer_insert(buffer, index, cmdbuf, read)){
 						continue;
 					}
 					else{
-						end += read;
+						start = ((const char*)buffer->data) + index; // because insert use realloc()
+						end = (((const char*)buffer->data) + buffer->size);
 						goto nex_line;
 					}
 				}
@@ -190,6 +206,8 @@ bail:
 	
 	/* Free current command */
 	TSK_OBJECT_SAFE_FREE(cmd);
+	/* Free buffer */
+	TSK_OBJECT_SAFE_FREE(buffer);
 	/* Destroy the user's ctx */
 	TSK_OBJECT_SAFE_FREE(ctx);
 	/* Uninitilize Network Layer */
@@ -206,26 +224,6 @@ const char* trim(const char* str)
 		str++;
 	}
 	return str;
-}
-
-int insert(char* dest, size_t index, size_t dest_size, char* src, size_t src_size)
-{
-	if(!dest || !dest_size || !src || !src_size){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	if((tsk_strlen(dest) + src_size + 1) >= dest_size){
-		TSK_DEBUG_ERROR("Destination too short");
-		return -3;
-	}
-
-	/* move old data */
-	memmove((dest + index + src_size), (dest + index), src_size);
-	/* copy new data */
-	memcpy((dest + index), src, src_size);
-
-	return 0;
 }
 
 int update_param(const char* pname, const char* pvalue)
@@ -324,6 +322,12 @@ int execute(const cmd_t* cmd)
 		case cmd_publish:
 			{
 				TSK_DEBUG_INFO("command=publish");
+				if((sid = publish_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
+					if(cmd->sidparam){
+						tsk_itoa(sid, &istr);
+						update_param(cmd->sidparam, istr);
+					}
+				}
 				break;
 			}
 		case cmd_register:

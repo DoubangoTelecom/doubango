@@ -62,13 +62,18 @@
 	action parse_display_name{
 		if(curr_service){
 			TSK_PARSER_SET_STRING(curr_service->display_name);
+			tsk_strunquote(&curr_service->display_name);
 		}
 	}
 
 	action parse_uri{
 		if(curr_service && !curr_service->uri){
 			int len = (int)(p  - tag_start);
-			curr_service->uri = tsip_uri_parse(tag_start, (size_t)len);
+			if(curr_service && !curr_service->uri){
+				if((curr_service->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_service->display_name){
+					curr_service->uri->display_name = tsk_strdup(curr_service->display_name);
+				}
+			}
 		}
 	}
 
@@ -118,11 +123,8 @@ int tsip_header_Service_Route_tostring(const tsip_header_t* header, tsk_buffer_t
 		const tsip_header_Service_Route_t *Service_Route = (const tsip_header_Service_Route_t *)header;
 		int ret = 0;
 		
-		if(Service_Route->display_name){ /* Display Name */
-			ret = tsk_buffer_append_2(output, "\"%s\"", Service_Route->display_name);
-		}
-
-		if((ret = tsip_uri_serialize(Service_Route->uri, tsk_true, tsk_true, output))){ /* Route */
+		/* Uri with hacked display-name*/
+		if((ret = tsip_uri_serialize(Service_Route->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
 		

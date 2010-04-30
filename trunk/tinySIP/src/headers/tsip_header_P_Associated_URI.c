@@ -46,7 +46,7 @@
 *	Ragel state machine.
 */
 
-/* #line 102 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 107 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 
 
 tsip_header_P_Associated_URI_t* tsip_header_P_Associated_URI_create(const tsip_uri_t* uri)
@@ -65,11 +65,8 @@ int tsip_header_P_Associated_URI_tostring(const tsip_header_t* header, tsk_buffe
 		const tsip_header_P_Associated_URI_t *P_Associated_URI = (const tsip_header_P_Associated_URI_t *)header;
 		int ret = 0;
 		
-		if(P_Associated_URI->display_name){ /* Display Name */
-			tsk_buffer_append_2(output, "\"%s\"", P_Associated_URI->display_name);
-		}
-
-		if(ret=tsip_uri_serialize(P_Associated_URI->uri, tsk_true, tsk_true, output)){ /* P_Associated_URI */
+		/* Uri with hacked display-name*/
+		if((ret = tsip_uri_serialize(P_Associated_URI->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
 		
@@ -91,7 +88,7 @@ tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char
 	tsip_header_P_Associated_URI_t *curr_p_associated_uri = tsk_null;
 
 	
-/* #line 95 "./src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 92 "./src/headers/tsip_header_P_Associated_URI.c" */
 static const char _tsip_machine_parser_header_P_Associated_URI_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -338,16 +335,16 @@ static const int tsip_machine_parser_header_P_Associated_URI_error = 0;
 static const int tsip_machine_parser_header_P_Associated_URI_en_main = 1;
 
 
-/* #line 146 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 148 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	
-/* #line 344 "./src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 341 "./src/headers/tsip_header_P_Associated_URI.c" */
 	{
 	cs = tsip_machine_parser_header_P_Associated_URI_start;
 	}
 
-/* #line 147 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 149 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	
-/* #line 351 "./src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 348 "./src/headers/tsip_header_P_Associated_URI.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -440,20 +437,25 @@ _match:
 	{
 		if(curr_p_associated_uri){
 			TSK_PARSER_SET_STRING(curr_p_associated_uri->display_name);
+			tsk_strunquote(&curr_p_associated_uri->display_name);
 		}
 	}
 	break;
 	case 3:
-/* #line 68 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 69 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
 		if(curr_p_associated_uri && !curr_p_associated_uri->uri){
 			int len = (int)(p  - tag_start);
-			curr_p_associated_uri->uri = tsip_uri_parse(tag_start, (size_t)len);
+			if(curr_p_associated_uri && !curr_p_associated_uri->uri){
+				if((curr_p_associated_uri->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_p_associated_uri->display_name){
+					curr_p_associated_uri->uri->display_name = tsk_strdup(curr_p_associated_uri->display_name);
+				}
+			}
 		}
 	}
 	break;
 	case 4:
-/* #line 75 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 80 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
 		if(curr_p_associated_uri){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_p_associated_uri));
@@ -461,7 +463,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 81 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 86 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
 		if(curr_p_associated_uri){
 			tsk_list_push_back_data(hdr_p_associated_uris, ((void**) &curr_p_associated_uri));
@@ -469,11 +471,11 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 87 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 92 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	{
 	}
 	break;
-/* #line 477 "./src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 479 "./src/headers/tsip_header_P_Associated_URI.c" */
 		}
 	}
 
@@ -486,12 +488,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 148 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 150 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
 	
 	if( cs < 
-/* #line 493 "./src/headers/tsip_header_P_Associated_URI.c" */
+/* #line 495 "./src/headers/tsip_header_P_Associated_URI.c" */
 103
-/* #line 149 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
+/* #line 151 "./ragel/tsip_parser_header_P_Associated_URI.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'P-Associated-URI' header.");
 		TSK_OBJECT_SAFE_FREE(curr_p_associated_uri);

@@ -303,25 +303,23 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 	}
 	else{		
 		if(TSIP_MESSAGE_IS_REQUEST(message)){
-			tsip_ssession_t* ss = tsip_ssession_create_2(self->stack, message);
+			tsip_ssession_t* ss = tsk_null;
 			tsip_dialog_t* newdialog = tsk_null;
-			
-			// The incoming request will be passed to the dialog by the server transaction (tsip_dialog_i_msg)
-			// As the request will be recived from the callback function, the dialog MUST not be started
-			
-			/* user do not own the session */
-			ss->owner = tsk_false;
 			
 			switch(message->request_type){
 				case tsip_MESSAGE:
-					{
-						newdialog = (tsip_dialog_t*)tsip_dialog_message_create(ss);
+					{	/* Server incoming MESSAGE */
+						if((ss = tsip_ssession_create_2(self->stack, message))){
+							newdialog = (tsip_dialog_t*)tsip_dialog_message_create(ss);
+						}
 						break;
 					}
 
 				case tsip_INVITE:
-					{
-						newdialog = (tsip_dialog_t*)tsip_dialog_invite_create(ss);
+					{	/* incoming INVITE */
+						if((ss = tsip_ssession_create_2(self->stack, message))){
+							newdialog = (tsip_dialog_t*)tsip_dialog_invite_create(ss);
+						}
 						break;
 					}
 

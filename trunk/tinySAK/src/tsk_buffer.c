@@ -28,7 +28,9 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tsk_buffer.h"
+
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -83,7 +85,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 	 * I suppose that sizeof(char) = 1-byte
 	 */
 	int len = 0;
-	va_list list;
+	va_list ap;
 	char *buffer;
 	size_t oldsize;
 
@@ -95,7 +97,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 	buffer = (char*)TSK_BUFFER_DATA(self);
 	
 	/* initialize variable arguments */
-	va_start(list, format);
+	va_start(ap, format);
 	
 	/* compute destination len for windows mobile
 	*/
@@ -105,7 +107,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 		len = (tsk_strlen(format)*2);
 		buffer = tsk_realloc(buffer, (oldsize+len));
 		for(;;){
-			if( (n = vsnprintf((char*)(buffer + oldsize), len, format, list)) >= 0 && (n<=len) ){
+			if( (n = vsnprintf((char*)(buffer + oldsize), len, format, ap)) >= 0 && (n<=len) ){
 				len = n;
 				break;
 			}
@@ -116,17 +118,17 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 		}
 	}
 #else
-    len = vsnprintf(0, 0, format, list);
+    len = vsnprintf(tsk_null, 0, format, ap);
     buffer = tsk_realloc(buffer, oldsize+len+1);
     vsnprintf((buffer + oldsize), len
 #if !defined(_MSC_VER) || defined(__GNUC__)
 		+1
 #endif
-		, format, list);
+		, format, ap);
 #endif
 	
 	/* reset variable arguments */
-	va_end( list );
+	va_end( ap );
 
 	self->data = buffer;
 	self->size = (oldsize+len);
@@ -228,22 +230,27 @@ int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void* data, siz
 	if(self && size)
 	{
 		int ret;
+		size_t tomove;
+
 		if(position > self->size){
+			TSK_DEBUG_ERROR("Invalid parameter");
 			return -2;
 		}
+
+		tomove = (self->size - position);
 
 		if((ret = tsk_buffer_realloc(self, (self->size + size)))){
 			return ret;
 		}
 		memmove(((uint8_t*)self->data) + position + size, ((uint8_t*)self->data) + position,
-			self->size - (position + size));
+			tomove/*self->size - (position + size)*/);
 		
 
 		if(data){
 			memcpy(((uint8_t*)self->data) + position, data, size);
 		}
 		else{
-			memset(((uint8_t*)self->data) + position, 0, size);
+			memset(((uint8_t*)self->data) + position, tsk_null, size);
 		}
 
 		return 0;

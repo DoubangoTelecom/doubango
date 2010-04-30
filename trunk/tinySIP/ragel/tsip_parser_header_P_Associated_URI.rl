@@ -62,13 +62,18 @@
 	action parse_display_name{
 		if(curr_p_associated_uri){
 			TSK_PARSER_SET_STRING(curr_p_associated_uri->display_name);
+			tsk_strunquote(&curr_p_associated_uri->display_name);
 		}
 	}
 
 	action parse_uri{
 		if(curr_p_associated_uri && !curr_p_associated_uri->uri){
 			int len = (int)(p  - tag_start);
-			curr_p_associated_uri->uri = tsip_uri_parse(tag_start, (size_t)len);
+			if(curr_p_associated_uri && !curr_p_associated_uri->uri){
+				if((curr_p_associated_uri->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_p_associated_uri->display_name){
+					curr_p_associated_uri->uri->display_name = tsk_strdup(curr_p_associated_uri->display_name);
+				}
+			}
 		}
 	}
 
@@ -117,11 +122,8 @@ int tsip_header_P_Associated_URI_tostring(const tsip_header_t* header, tsk_buffe
 		const tsip_header_P_Associated_URI_t *P_Associated_URI = (const tsip_header_P_Associated_URI_t *)header;
 		int ret = 0;
 		
-		if(P_Associated_URI->display_name){ /* Display Name */
-			tsk_buffer_append_2(output, "\"%s\"", P_Associated_URI->display_name);
-		}
-
-		if(ret=tsip_uri_serialize(P_Associated_URI->uri, tsk_true, tsk_true, output)){ /* P_Associated_URI */
+		/* Uri with hacked display-name*/
+		if((ret = tsip_uri_serialize(P_Associated_URI->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
 		

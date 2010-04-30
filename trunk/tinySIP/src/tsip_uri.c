@@ -52,7 +52,9 @@ int __tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_buff
 {
 	tsk_istr_t port;
 
-	if(uri->port) tsk_itoa(uri->port, &port);
+	if(uri->port){
+		tsk_itoa(uri->port, &port);
+	}
 
 	/* sip:alice:secretword@atlanta.com:65535 */
 	tsk_buffer_append_2(output, "%s%s%s%s%s%s%s%s%s%s%s", 
@@ -75,8 +77,7 @@ int __tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_buff
 		);
 	
 	/* Params */
-	if(with_params && !TSK_LIST_IS_EMPTY(uri->params))
-	{
+	if(with_params && !TSK_LIST_IS_EMPTY(uri->params)){
 		tsk_buffer_append(output, ";", 1);
 		tsk_params_tostring(uri->params, ';', output);
 	}
@@ -86,12 +87,9 @@ int __tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_buff
 
 int tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote, tsk_buffer_t *output)
 {
-	if(uri)
-	{
-		if(quote)
-		{
-			if(uri->display_name)
-			{
+	if(uri){
+		if(quote){
+			if(uri->display_name){
 				tsk_buffer_append_2(output, "\"%s\"", uri->display_name);
 			}
 
@@ -101,15 +99,13 @@ int tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t
 
 			return 0;
 		}
-		else
-		{
+		else{
 			__tsip_uri_serialize(uri, with_params, output);
 
 			return 0;
 		}
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_ERROR("Cannot serialize NULL URI.");
 	}
 

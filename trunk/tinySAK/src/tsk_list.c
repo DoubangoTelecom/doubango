@@ -304,10 +304,15 @@ void tsk_list_push_filtered_item(tsk_list_t* list, tsk_list_item_t** item, tsk_b
 * @param src The source list.
 * @param back Indicates whether to put the list back or not.
 **/
-void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
+int tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back)
 {
 	const tsk_list_item_t* curr = (src)->head;
 	tsk_object_t* copy;
+	
+	if(!dest || !src){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 
 	while(curr){
 		copy = tsk_object_ref(curr->data);
@@ -315,6 +320,7 @@ void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back
 				
 		curr = curr->next;
 	}
+	return 0;
 }
 
 /**@ingroup tsk_list_group
@@ -323,17 +329,20 @@ void tsk_list_push_list(tsk_list_t* dest, const tsk_list_t* src, tsk_bool_t back
 * @param data The @a data to add.
 * @param back Indicates whether to put the item back or not.
 */
-void tsk_list_push_data(tsk_list_t* list, void** data, tsk_bool_t back)
+int tsk_list_push_data(tsk_list_t* list, void** data, tsk_bool_t back)
 {
-	if(data){
+	if(list && data && *data){
 		tsk_list_item_t *item = tsk_list_item_create();
 		item->data = *data;
 		
 		tsk_list_push_item(list, &item, back);
 		(*data) = tsk_null;
+
+		return 0;
 	}
 	else{
-		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
 	}
 }
 
@@ -343,17 +352,20 @@ void tsk_list_push_data(tsk_list_t* list, void** data, tsk_bool_t back)
 * @param data The @a data to add.
 * @param ascending Indicates whether to put the @a data in ascending order or not.
 */
-void tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_bool_t ascending)
+int tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_bool_t ascending)
 {
-	if(data){
+	if(list && data && *data){
 		tsk_list_item_t *item = tsk_list_item_create();
 		item->data = *data;
 		
 		tsk_list_push_filtered_item(list, &item, ascending);
 		(*data) = tsk_null;
+
+		return 0;
 	}
 	else{
-		TSK_DEBUG_WARN("Cannot add an uninitialized data to the list");
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
 	}
 }
 

@@ -43,7 +43,7 @@
 *	Ragel state machine.
 */
 
-/* #line 85 "./ragel/tsip_parser_header_From.rl" */
+/* #line 90 "./ragel/tsip_parser_header_From.rl" */
 
 
 
@@ -57,6 +57,8 @@ int tsip_header_From_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 	int ret = -1;
 	if(header){
 		const tsip_header_From_t *From = (const tsip_header_From_t *)header;
+
+		/* Uri with hacked display-name*/
 		if((ret = tsip_uri_serialize(From->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
@@ -78,7 +80,7 @@ tsip_header_From_t *tsip_header_From_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 82 "./src/headers/tsip_header_From.c" */
+/* #line 84 "./src/headers/tsip_header_From.c" */
 static const char _tsip_machine_parser_header_From_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5
@@ -366,16 +368,16 @@ static const int tsip_machine_parser_header_From_error = 0;
 static const int tsip_machine_parser_header_From_en_main = 1;
 
 
-/* #line 119 "./ragel/tsip_parser_header_From.rl" */
+/* #line 126 "./ragel/tsip_parser_header_From.rl" */
 	
-/* #line 372 "./src/headers/tsip_header_From.c" */
+/* #line 374 "./src/headers/tsip_header_From.c" */
 	{
 	cs = tsip_machine_parser_header_From_start;
 	}
 
-/* #line 120 "./ragel/tsip_parser_header_From.rl" */
+/* #line 127 "./ragel/tsip_parser_header_From.rl" */
 	
-/* #line 379 "./src/headers/tsip_header_From.c" */
+/* #line 381 "./src/headers/tsip_header_From.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -459,33 +461,38 @@ _match:
 /* #line 53 "./ragel/tsip_parser_header_From.rl" */
 	{
 		int len = (int)(p  - tag_start);
-		hdr_from->uri = tsip_uri_parse(tag_start, (size_t)len);
+		if(hdr_from && !hdr_from->uri){
+			if((hdr_from->uri = tsip_uri_parse(tag_start, (size_t)len)) && hdr_from->display_name){
+				hdr_from->uri->display_name = tsk_strdup(hdr_from->display_name);
+			}
+		}
 	}
 	break;
 	case 2:
-/* #line 58 "./ragel/tsip_parser_header_From.rl" */
+/* #line 62 "./ragel/tsip_parser_header_From.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_from->display_name);
+		tsk_strunquote(&hdr_from->display_name);
 	}
 	break;
 	case 3:
-/* #line 62 "./ragel/tsip_parser_header_From.rl" */
+/* #line 67 "./ragel/tsip_parser_header_From.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_from->tag);
 	}
 	break;
 	case 4:
-/* #line 66 "./ragel/tsip_parser_header_From.rl" */
+/* #line 71 "./ragel/tsip_parser_header_From.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_from));
 	}
 	break;
 	case 5:
-/* #line 70 "./ragel/tsip_parser_header_From.rl" */
+/* #line 75 "./ragel/tsip_parser_header_From.rl" */
 	{
 	}
 	break;
-/* #line 489 "./src/headers/tsip_header_From.c" */
+/* #line 496 "./src/headers/tsip_header_From.c" */
 		}
 	}
 
@@ -498,12 +505,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 121 "./ragel/tsip_parser_header_From.rl" */
+/* #line 128 "./ragel/tsip_parser_header_From.rl" */
 	
 	if( cs < 
-/* #line 505 "./src/headers/tsip_header_From.c" */
+/* #line 512 "./src/headers/tsip_header_From.c" */
 108
-/* #line 122 "./ragel/tsip_parser_header_From.rl" */
+/* #line 129 "./ragel/tsip_parser_header_From.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'From' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_from);

@@ -43,6 +43,7 @@
 #include "tinySIP/headers/tsip_header_P_Preferred_Identity.h"
 #include "tinySIP/headers/tsip_header_Proxy_Authenticate.h"
 #include "tinySIP/headers/tsip_header_Proxy_Authorization.h"
+#include "tinySIP/headers/tsip_header_Record_Route.h"
 #include "tinySIP/headers/tsip_header_Route.h"
 #include "tinySIP/headers/tsip_header_Subscription_State.h"
 #include "tinySIP/headers/tsip_header_WWW_Authenticate.h"
@@ -395,9 +396,10 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 		if(layer){
 			/* As this is a response ...then use the associate server transaction.
 			*/
-			const tsip_transac_t *transac = tsip_transac_layer_find_server(layer, response);
+			tsip_transac_t *transac = tsip_transac_layer_find_server(layer, response);
 			if(transac){
 				ret = transac->callback(transac, tsip_transac_outgoing_msg, response);
+				tsk_object_unref(transac);
 			}
 			else{
 				TSK_DEBUG_ERROR("Failed to find associated server transaction.");
@@ -526,41 +528,38 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			tsip_dialog_state_t state = self->state;
 
 			/* 1xx */
-			if(TSIP_RESPONSE_CODE(response) <= 199)
-			{
+			if(TSIP_RESPONSE_CODE(response) <= 199){
 				if(tsk_strempty(response->To->tag)) return -1;
 				state = tsip_early;
 			}
 			/* 2xx */
-			else
-			{
+			else{
 				state = tsip_established;
 			}
 
 			/* Remote target */
-			if(!isRegister && response->Contact)
-			{
+			if(!isRegister && response->Contact){
 				TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
-				if(response->Contact->uri)
-				{
+				if(response->Contact->uri){
 					self->uri_remote_target = tsip_uri_clone(response->Contact->uri, 0, 0);
 				}
 			}
 
-			/* Route sets 
-			*/
+			/* Route sets */
 			{
 				size_t index;
-				const tsip_header_t *hdr;
+				const tsip_header_Record_Route_t *recordRoute;
+				tsip_uri_t* uri;
 
 				TSK_OBJECT_SAFE_FREE(self->routes);
 
-				for(index = 0; (hdr = tsip_message_get_headerAt(response, tsip_htype_Record_Route, index)); index++){
+				for(index = 0; (recordRoute = (const tsip_header_Record_Route_t *)tsip_message_get_headerAt(response, tsip_htype_Record_Route, index)); index++){
 					if(!self->routes){
 						self->routes = tsk_list_create();
 					}
-					hdr = tsk_object_ref((void*)hdr);
-					tsk_list_push_front_data(self->routes, (void**)&hdr); /* Copy reversed. */
+					if((uri = tsk_object_ref((void*)recordRoute->uri))){
+						tsk_list_push_front_data(self->routes, (void**)&uri); /* Copy reversed. */
+					}
 				}
 			}
 			

@@ -39,7 +39,7 @@
 
 #include "tsk_debug.h"
 
-
+/* internal function used to create session for server dialogs */
 tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const struct tsip_message_s* message)
 {
 	tsip_ssession_t* ss = tsk_null;
@@ -62,6 +62,11 @@ tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const 
 	//	TSK_FREE(from);
 	//	TSK_FREE(to);
 	//}
+
+	if(ss){
+		ss->owner = tsk_false;
+	}
+
 	return ss;
 }
 

@@ -164,8 +164,9 @@ int tsk_object_cmp(const tsk_object_t *object1, const tsk_object_t *object2)
 */
 tsk_object_t* tsk_object_ref(tsk_object_t *self)
 {
-	if(self){
-		TSK_OBJECT_HEADER(self)->refCount++;
+	tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
+	if(objhdr && objhdr->refCount){
+		objhdr->refCount++;
 		return self;
 	}
 	return tsk_null;

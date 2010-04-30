@@ -53,14 +53,52 @@
 		tag_start = p;
 	}
 	
-	action parse_route{
-		TSK_PARSER_SET_STRING(hdr_record_route->value);
+	action create_route{
+		if(!curr_route){
+			curr_route = tsip_header_Record_Route_create_null();
+		}
+	}
+
+	action parse_display_name{
+		if(curr_route){
+			TSK_PARSER_SET_STRING(curr_route->display_name);
+			tsk_strunquote(&curr_route->display_name);
+		}
+	}
+
+	action parse_uri{
+		if(curr_route && !curr_route->uri){
+			int len = (int)(p  - tag_start);
+			if(curr_route && !curr_route->uri){
+				if((curr_route->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_route->display_name){
+					curr_route->uri->display_name = tsk_strdup(curr_route->display_name);
+				}
+			}
+		}
+	}
+
+	action parse_param{
+		if(curr_route){
+			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_route));
+		}
+	}
+
+	action add_route{
+		if(curr_route){
+			tsk_list_push_back_data(hdr_record_routes, ((void**) &curr_route));
+		}
 	}
 
 	action eob{
 	}
 
-	Record_Route = ( "Record-Route"i ) HCOLON any*>tag %parse_route;
+	URI = (scheme HCOLON any+)>tag %parse_uri;
+	display_name = (( token LWS )+ | quoted_string)>tag %parse_display_name;
+	my_name_addr = display_name? :>LAQUOT<: URI :>RAQUOT;
+
+	rr_param = (generic_param)>tag %parse_param;
+	rec_route = ( my_name_addr (SEMI rr_param)* ) >create_route %add_route;
+	Record_Route = "Record-Route"i HCOLON rec_route (COMMA rec_route)*;
 	
 	# Entry point
 	main := Record_Route :>CRLF @eob;
@@ -68,9 +106,9 @@
 }%%
 
 
-tsip_header_Record_Route_t* tsip_header_Record_Route_create(const char* record_route)
+tsip_header_Record_Route_t* tsip_header_Record_Route_create(const tsip_uri_t* uri)
 {
-	return tsk_object_new(TSIP_HEADER_RECORD_ROUTE_VA_ARGS(record_route));
+	return tsk_object_new(TSIP_HEADER_RECORD_ROUTE_VA_ARGS(uri));
 }
 
 tsip_header_Record_Route_t* tsip_header_Record_Route_create_null()
@@ -81,21 +119,26 @@ tsip_header_Record_Route_t* tsip_header_Record_Route_create_null()
 int tsip_header_Record_Route_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
+		int ret;
 		const tsip_header_Record_Route_t *Record_Route = (const tsip_header_Record_Route_t *)header;
-		if(Record_Route->value){
-			return tsk_buffer_append(output, Record_Route->value, tsk_strlen(Record_Route->value));
+
+		/* Uri with hacked display-name*/
+		if((ret = tsip_uri_serialize(Record_Route->uri, tsk_true, tsk_true, output))){
+			return ret;
 		}
+		return ret;
 	}
 	return -1;
 }
 
-tsip_header_Record_Route_t *tsip_header_Record_Route_parse(const char *data, size_t size)
+ tsip_header_Record_Routes_L_t* tsip_header_Record_Route_parse(const char *data, size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Record_Route_t *hdr_record_route = tsip_header_Record_Route_create_null(0);
+	tsip_header_Record_Routes_L_t *hdr_record_routes = tsk_list_create();
+	tsip_header_Record_Route_t *curr_route = tsk_null;
 	
 	const char *tag_start;
 
@@ -105,10 +148,11 @@ tsip_header_Record_Route_t *tsip_header_Record_Route_parse(const char *data, siz
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse 'Record-Route' header.");
-		TSK_OBJECT_SAFE_FREE(hdr_record_route);
+		TSK_OBJECT_SAFE_FREE(curr_route);
+		TSK_OBJECT_SAFE_FREE(hdr_record_routes);
 	}
 	
-	return hdr_record_route;
+	return hdr_record_routes;
 }
 
 
@@ -125,7 +169,11 @@ static tsk_object_t* tsip_header_Record_Route_ctor(tsk_object_t *self, va_list *
 {
 	tsip_header_Record_Route_t *Record_Route = self;
 	if(Record_Route){
-		Record_Route->value = tsk_strdup(va_arg(*app, const char *));
+		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t *);
+
+		if(uri){
+			Record_Route->uri = tsk_object_ref((void*)uri);
+		}
 		TSIP_HEADER(Record_Route)->type = tsip_htype_Record_Route;
 		TSIP_HEADER(Record_Route)->tostring = tsip_header_Record_Route_tostring;
 	}
@@ -139,7 +187,8 @@ static tsk_object_t* tsip_header_Record_Route_dtor(tsk_object_t *self)
 {
 	tsip_header_Record_Route_t *Record_Route = self;
 	if(Record_Route){
-		TSK_FREE(Record_Route->value);
+		TSK_FREE(Record_Route->display_name);
+		TSK_OBJECT_SAFE_FREE(Record_Route->uri);
 		TSK_OBJECT_SAFE_FREE(TSIP_HEADER_PARAMS(Record_Route));
 	}
 	else{

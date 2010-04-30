@@ -52,11 +52,16 @@
 	
 	action parse_uri{
 		int len = (int)(p  - tag_start);
-		hdr_from->uri = tsip_uri_parse(tag_start, (size_t)len);
+		if(hdr_from && !hdr_from->uri){
+			if((hdr_from->uri = tsip_uri_parse(tag_start, (size_t)len)) && hdr_from->display_name){
+				hdr_from->uri->display_name = tsk_strdup(hdr_from->display_name);
+			}
+		}
 	}
 
 	action parse_display_name{
 		TSK_PARSER_SET_STRING(hdr_from->display_name);
+		tsk_strunquote(&hdr_from->display_name);
 	}
 
 	action parse_tag{
@@ -95,6 +100,8 @@ int tsip_header_From_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 	int ret = -1;
 	if(header){
 		const tsip_header_From_t *From = (const tsip_header_From_t *)header;
+
+		/* Uri with hacked display-name*/
 		if((ret = tsip_uri_serialize(From->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}

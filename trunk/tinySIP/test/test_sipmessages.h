@@ -83,10 +83,9 @@
 #define SIP_MESSAGE \
 	"MESSAGE sip:mamadou@open-ims.test SIP/2.0\r\n" \
 	"Via: SIP/2.0/UDP 192.168.0.12:49205;rport=49205;branch=z9hG4bK1266089653138;received_port_ext=5081;received=192.168.0.12\r\n" \
-	"Route: <sip:192.168.0.15:5060;lr=true;transport=udp\r\n" \
-	"From: <sip:bob@open-ims.test>;tag=mercuro\r\n" \
-	"To: <sip:mamadou@open-ims.test>\r\n" \
-	"Contact: <sip:mamadou@ims.inexbee.com>\r\n" \
+	"From: \"Bob\"<sip:bob@open-ims.test>;tag=mercuro\r\n" \
+	"To: \"Alice\"<sip:alice@open-ims.test>\r\n" \
+	"Contact: \"\" <sip:mamadou@ims.inexbee.com>\r\n" \
 	"Call-ID: 1262767804423\r\n" \
 	"CSeq: 8 MESSAGE\r\n" \
 	"RSeq: 17422\r\n" \
@@ -100,9 +99,10 @@
 	"Security-Client: ipsec-ike;q=0.1,tls;q=0.2;test=123\r\n" \
 	"Security-Server: ipsec-ike;q=0.1,ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=78952;port-s=77854\r\n" \
 	"Security-Verify: ipsec-3gpp;alg=hmac-md5-96;prot=esp;mod=trans;ealg=aes-cbc;spi-c=5000;spi-s=5001;port-c=9999;port-s=20000,ipsec-ike;q=0.1;test=458;toto\r\n" \
-	"Service-Route: <sip:orig@open-ims.test:6060;lr;transport=udp>,<sip:atlanta.com>,<sip:orig2@open-ims.test:6060;lr>\r\n" \
+	"Service-Route: <sip:orig@open-ims.test:6060;lr;transport=udp>,<sip:atlanta.com>,\"Originating\" <sip:orig2@open-ims.test:6060;lr>\r\n" \
 	"Path: <sip:term@open-ims.test:4060;lr>\r\n" \
-	"Route: <sip:pcscf.open-ims.test:4060;lr;transport=udp>,<sip:orig@scscf.open-ims.test:6060;lr>\r\n" \
+	"Route: \"Prox-CSCF\" <sip:pcscf.open-ims.test:4060;lr;transport=udp>;test=1,\"Originating\" <sip:orig@scscf.open-ims.test:6060;lr>\r\n" \
+	"Record-Route: <sip:mo@pcscf.ims.inexbee.com:4060;lr>,\"Originating\"<sip:pcscf.open-ims.test:4060;lr;transport=udp>;test=2\r\n" \
 	"P-Preferred-Identity: <sip:bob@open-ims.test\r\n" \
 	"Allow-Events: presence, presence.winfo\r\n" \
 	"Event: reg\r\n" \
