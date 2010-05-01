@@ -19,8 +19,8 @@
 * along with DOUBANGO.
 *
 */
-#if !defined(TINYDEMO_CMD_PARSER_H)
-#define TINYDEMO_CMD_PARSER_H
+#if !defined(TINYDEMO_DSSL_H)
+#define TINYDEMO_DSSL_H
 
 #include "demo_config.h"
 
@@ -28,8 +28,8 @@
 
 _BEGIN_DECLS
 
-cmd_t* cmd_parser_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params);
+cmd_t* dssl_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params);
 
 _END_DECLS
 
-#endif /* TINYDEMO_CMD_PARSER_H */
+#endif /* TINYDEMO_DSSL_H */

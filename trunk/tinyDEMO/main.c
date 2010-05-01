@@ -42,7 +42,7 @@ int update_param(const char* , const char* );
 int execute(const cmd_t* );
 
 /* === entry point === */
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
 	char cmdbuf[4096];
 	tsk_buffer_t* buffer = tsk_null;
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
 	const char* start = tsk_null, *end = tsk_null;
 	
 	/* Copyright */
-	printf("Doubango Project\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
+	printf("Doubango Project (tinyDEMO)\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
 
 	/* Initialize Network Layer ==> Mandatory */
 	tnet_startup();
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 	}
 
 	/* initial args */
-	for(i=1 /* index zero contains the exe path */, index=0; i<argc; i++){
+	for(i=1 /* index zero contains the exe path */, index=0; i<argc && argv[i]; i++){
 		if(index){
 			char c = ' ';
 			tsk_buffer_append(buffer, &c, sizeof(c));
@@ -87,7 +87,9 @@ int main(int argc, char* argv[])
 		goto init_buffer;
 	}
 
-	while(gets(cmdbuf)){
+	/* always use fgets() instead of gets. gets() is considered to be unsafe.(Android and Mac OS X will warn) */
+	while(fgets(cmdbuf, sizeof(cmdbuf), stdin)){
+		TSK_DEBUG_INFO("Command-Line: %s", cmdbuf);
 		tsk_buffer_cleanup(buffer); /* cannot read from console while executing scenario */
 		tsk_buffer_append(buffer, cmdbuf, tsk_strlen(cmdbuf));
 init_buffer:
@@ -124,12 +126,12 @@ parse_buffer:
 
 					if(read == 0){
 						TSK_DEBUG_ERROR("[%s] is empty.", opt->value);
-						continue;
+						goto nex_line;
 					}
 					else if(read == sizeof(cmdbuf)-1){
 						TSK_DEBUG_ERROR("Buffer too short.");
 						
-						continue;
+						goto nex_line;
 					}
 					read++; /* \n */
 					/* repplace all '\' with spaces (easier than handling that in the ragel file) */
@@ -164,6 +166,7 @@ parse_buffer:
 				}
 				else{
 					TSK_DEBUG_ERROR("Failed to open scenario-file [%s].", opt->value);
+					goto nex_line;
 				}
 				continue;
 			}
@@ -357,9 +360,15 @@ int execute(const cmd_t* cmd)
 				const opt_t* opt;
 				double seconds;
 				if((opt = opt_get_by_type(cmd->opts, opt_sec)) && !tsk_strnullORempty(opt->value)){ /* --sec option */
-					seconds = atof(opt->value);
-					TSK_DEBUG_INFO("Sleeping %f seconds", seconds);
-					tsk_thread_sleep((uint64_t)(seconds*1000));
+					seconds = strtod(opt->value, tsk_null); /* strtod() is better than atof() */
+					if(seconds<=0){
+						printf("\n==== Press ENTER to continue...\n");
+						getchar();
+					}
+					else{
+						TSK_DEBUG_INFO("Sleeping %f seconds", seconds);
+						tsk_thread_sleep((uint64_t)(seconds * 1000));
+					}
 				}
 				else{
 					TSK_DEBUG_WARN("++sleep need --sec option.");
@@ -369,6 +378,12 @@ int execute(const cmd_t* cmd)
 		case cmd_sms:
 			{
 				TSK_DEBUG_INFO("command=sms");
+				if((sid = message_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
+					if(cmd->sidparam){
+						tsk_itoa(sid, &istr);
+						update_param(cmd->sidparam, istr);
+					}
+				}
 				break;
 			}
 		case cmd_stop:

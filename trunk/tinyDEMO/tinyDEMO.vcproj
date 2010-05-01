@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySAK\src;..\tinyNET\src;..\tinyHTTP\include;..\tinySIP\include"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySAK\src;..\tinyNET\src;..\tinySMS\include;..\tinyHTTP\include;..\tinySIP\include"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinySMS.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -181,11 +181,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\cmd_parser.c"
+				RelativePath=".\common.c"
 				>
 			</File>
 			<File
-				RelativePath=".\common.c"
+				RelativePath=".\dssl.c"
 				>
 			</File>
 			<File
@@ -223,15 +223,15 @@
 				>
 			</File>
 			<File
-				RelativePath=".\cmd_parser.h"
-				>
-			</File>
-			<File
 				RelativePath=".\common.h"
 				>
 			</File>
 			<File
 				RelativePath=".\demo_config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\dssl.h"
 				>
 			</File>
 			<File
@@ -263,13 +263,41 @@
 			Name="ragel(*.rl)"
 			>
 			<File
-				RelativePath=".\cmd_parser.rl"
+				RelativePath=".\dssl.rl"
 				>
 			</File>
 		</Filter>
 		<Filter
 			Name="scenarios(*.scn)"
 			>
+			<File
+				RelativePath=".\core-alcatel.sn"
+				>
+			</File>
+			<File
+				RelativePath=".\core-colibria.sn"
+				>
+			</File>
+			<File
+				RelativePath=".\core-ericsson.sn"
+				>
+			</File>
+			<File
+				RelativePath=".\core-inexbee.sn"
+				>
+			</File>
+			<File
+				RelativePath=".\core-micromethod.sn"
+				>
+			</File>
+			<File
+				RelativePath=".\core-nsn.sn"
+				>
+			</File>
+			<File
+				RelativePath=".\main.sn"
+				>
+			</File>
 			<File
 				RelativePath=".\publish.sn"
 				>

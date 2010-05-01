@@ -154,7 +154,7 @@ phase1:
 			}
 		}
 		tsk_safeobj_unlock(self);
-
+		
 		/* wait until phase-1 is completed */
 		tsk_condwait_timedwait(self->shutdown.condwait, TSIP_DIALOG_SHUTDOWN_TIMEOUT);
 		

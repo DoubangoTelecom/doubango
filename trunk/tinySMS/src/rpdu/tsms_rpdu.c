@@ -158,6 +158,14 @@ tsms_rpdu_data_t* tsms_rpdu_data_create(uint8_t mr, const tsms_address_string_t 
 	/* 3GPP TS 24.011 ==> 8.2.3 Message reference */
 	TSMS_RPDU_MESSAGE(ret)->mr = mr;
 
+	/* 3GPP TS 24.341 section B5 (Moblie Originated RP-DATA message)
+		The payload includes an RP-DATA message (see 3GPP TS 24.011 [8]). It includes:
+		-	Address of the originating UE: this field includes the length indicator only;
+		-	Address of the destination SC, which is configured in the UE; and
+		-	RP-User-Data (see 3GPP TS 23.040 [3]), which includes SMS-SUBMIT as type indicator.
+	*/
+
+
 	/* 3GPP TS 24.011 ==> 8.2.5.1 Originator address element */
 	if(smsc){
 		if(TSMS_RPDU_MESSAGE(ret)->mti == tsms_rpdu_type_data_mt){

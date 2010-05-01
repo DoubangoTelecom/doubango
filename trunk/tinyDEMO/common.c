@@ -85,7 +85,7 @@ int stack_callback(const tsip_event_t *sipevent)
 			}
 
 		default:
-			{	/* UNsupported */
+			{	/* Unsupported */
 				TSK_DEBUG_WARN("%d not supported as SIP event.", sipevent->type);
 				return -3;
 			}
@@ -419,7 +419,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 
 #define TYPE_FROM_CMD(_CMD) \
 	((_CMD==cmd_audio || _CMD==cmd_video || _CMD==cmd_audiovideo || _CMD==cmd_file || _CMD==cmd_large_message) ? st_invite :  \
-	(_CMD==cmd_message ? st_message : \
+	((_CMD==cmd_message || _CMD==cmd_sms) ? st_message : \
 	(_CMD==cmd_publish ? st_publish : \
 	(_CMD==cmd_register ? st_register : \
 	(_CMD==cmd_subscribe ? st_subscribe : st_none)))))
@@ -428,6 +428,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 	switch(cmd){
 		//case cmd_invite:
 		case cmd_message:
+		case cmd_sms:
 		case cmd_publish:
 		case cmd_register:
 		case cmd_subscribe:
@@ -461,6 +462,18 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		}
 		
 		switch(opt->type){
+			case opt_caps:
+				{
+					if(!tsk_strnullORempty(opt->value)){
+						if((param = tsk_params_parse_param(opt->value, tsk_strlen(opt->value)))){
+							ret = tsip_ssession_set(session->handle, 
+								TSIP_SSESSION_SET_CAPS(param->name, param->value),
+								TSIP_SSESSION_SET_NULL());
+							TSK_OBJECT_SAFE_FREE(param);
+						}
+					}
+					break;
+				}
 			case opt_expires:
 				{	
 					if(!tsk_strnullORempty(opt->value)){
@@ -488,7 +501,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			case opt_to:
 				{	/* You should use  TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, value)
 						instead of TSIP_SSESSION_SET_HEADER() to set the destination URI. */
-					if(!tsk_strnullORempty(opt->value)){
+					if((cmd != cmd_sms) && !tsk_strnullORempty(opt->value)){ /* SMS will use SMSC Address as Request URI */
 						ret = tsip_ssession_set(session->handle, 
 							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, opt->value),
 							TSIP_SSESSION_SET_NULL());
@@ -497,7 +510,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 				}
 			default:
 				{
-					TSK_DEBUG_WARN("Subscription: %d not valid option.");
+					/* will be handled by the caller */
 					break;
 				}
 		}

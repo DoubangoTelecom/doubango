@@ -1,20 +1,20 @@
 # Alcatel-Lucent
-#++sn --path ./alcatel.sn
+#++sn --path ./core-alcatel.sn
 
 # Colibria
-#++sn --path ./colibria.sn
+#++sn --path ./core-colibria.sn
 
 # Ericsson
-#++sn --path ./ericsson.sn
+++sn --path ./core-ericsson.sn
 
 # Inexbee
-#++sn --path ./inexbee.sn
+#++sn --path ./core-inexbee.sn
 
 # Micromethod
-++sn --path ./micromethod.sn
+#++sn --path ./core-micromethod.sn
 
 # Nokia Siemens Networks
-#++sn --path ./nsn.sn
+#++sn --path ./core-nsn.sn
 
 # Starents Networks
-#++sn --path ./starent.sn
+#++sn --path ./core-starent.sn
