@@ -27,8 +27,9 @@
 ++r
 
 # REGISTER
-++reg --xp $$(expires) >>(reg-sid) \
+++reg --xp $$(expires) --caps +g.oma.sip-im --caps +g.3gpp.smsip --caps language="en,fr" \
 	--header Action-Header=Myheader-value \
+	>>(reg-sid)
 
 # sleep
 ++sleep --sec $$(sleep-sec)
@@ -46,7 +47,7 @@
 ++sn --path ./publish.sn
 
 # sleep
-++sleep --sec $$(sleep-sec)
+++sleep --sec -1 # Press ENTER
 
 # unsunscribe (reg and pres)
 #++hu --sid $$(sub-reg-sid)

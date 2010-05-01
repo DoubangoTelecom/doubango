@@ -1,5 +1,5 @@
 
-/* #line 1 "./cmd_parser.rl" */
+/* #line 1 "./dssl.rl" */
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
@@ -21,7 +21,7 @@
 * along with DOUBANGO.
 *
 */
-#include "cmd_parser.h"
+#include "dssl.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
@@ -83,10 +83,10 @@ tsk_bool_t next_not_(const char* p, const char* pe, char c)
 *	Ragel state machine.
 */
 
-/* #line 300 "./cmd_parser.rl" */
+/* #line 300 "./dssl.rl" */
 
 
-cmd_t* cmd_parser_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
+cmd_t* dssl_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
 {
 	int cs = 0;
 	const char *p = buffer;
@@ -105,7 +105,7 @@ cmd_t* cmd_parser_parse(const char *buffer, size_t size, tsk_bool_t *comment, ts
 	
 	/* global vars and initilization (Ragel) */
 	
-/* #line 109 "./cmd_parser.c" */
+/* #line 109 "./dssl.c" */
 static const char _demo_machine_parser_cmd_actions[] = {
 	0, 1, 0, 1, 3, 1, 8, 1, 
 	12, 1, 13, 1, 14, 1, 15, 1, 
@@ -3739,9 +3739,9 @@ static const int demo_machine_parser_cmd_error = 0;
 static const int demo_machine_parser_cmd_en_main = 201;
 
 
-/* #line 321 "./cmd_parser.rl" */
+/* #line 321 "./dssl.rl" */
 	
-/* #line 3745 "./cmd_parser.c" */
+/* #line 3745 "./dssl.c" */
 	{
 	cs = demo_machine_parser_cmd_start;
 	ts = 0;
@@ -3749,7 +3749,7 @@ static const int demo_machine_parser_cmd_en_main = 201;
 	act = 0;
 	}
 
-/* #line 322 "./cmd_parser.rl" */
+/* #line 322 "./dssl.rl" */
 	
 	/* default values */
 	*comment = tsk_false;
@@ -3764,7 +3764,7 @@ static const int demo_machine_parser_cmd_en_main = 201;
 	
 	/* exec */
 	
-/* #line 3768 "./cmd_parser.c" */
+/* #line 3768 "./dssl.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -3783,10 +3783,10 @@ _resume:
 	while ( _nacts-- > 0 ) {
 		switch ( *_acts++ ) {
 	case 64:
-/* #line 1 "./cmd_parser.rl" */
+/* #line 1 "./dssl.rl" */
 	{ts = p;}
 	break;
-/* #line 3790 "./cmd_parser.c" */
+/* #line 3790 "./dssl.c" */
 		}
 	}
 
@@ -3811,7 +3811,7 @@ _resume:
 	case 0: {
 		_widec = (short)(128 + ((*p) - -128));
 		if ( 
-/* #line 187 "./cmd_parser.rl" */
+/* #line 187 "./dssl.rl" */
 
 		next_not_hyphens(p, pe) 
 			&& next_not_arobases(p, pe)
@@ -3825,7 +3825,7 @@ _resume:
 	case 1: {
 		_widec = (short)(640 + ((*p) - -128));
 		if ( 
-/* #line 196 "./cmd_parser.rl" */
+/* #line 196 "./dssl.rl" */
 
 		(p && *p != '\n')
 	 ) _widec += 256;
@@ -3900,7 +3900,7 @@ _eof_trans:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 86 "./cmd_parser.rl" */
+/* #line 86 "./dssl.rl" */
 	{
 		tag_start = p;
 #if DEBUG_PARSER
@@ -3909,7 +3909,7 @@ _eof_trans:
 	}
 	break;
 	case 1:
-/* #line 93 "./cmd_parser.rl" */
+/* #line 93 "./dssl.rl" */
 	{
 #if DEBUG_PARSER
 		TSK_DEBUG_INFO("create_option");
@@ -3919,7 +3919,7 @@ _eof_trans:
 	}
 	break;
 	case 2:
-/* #line 101 "./cmd_parser.rl" */
+/* #line 101 "./dssl.rl" */
 	{
 #if DEBUG_PARSER
 		TSK_DEBUG_INFO("add_option");
@@ -3928,7 +3928,7 @@ _eof_trans:
 	}
 	break;
 	case 3:
-/* #line 108 "./cmd_parser.rl" */
+/* #line 108 "./dssl.rl" */
 	{
 		if(opt){
 			int index_1, index_2;
@@ -3960,7 +3960,7 @@ replace:
 	}
 	break;
 	case 4:
-/* #line 138 "./cmd_parser.rl" */
+/* #line 138 "./dssl.rl" */
 	{
 		TSK_PARSER_SET_STRING(cmd->sidparam);
 #if DEBUG_PARSER
@@ -3969,7 +3969,7 @@ replace:
 	}
 	break;
 	case 5:
-/* #line 145 "./cmd_parser.rl" */
+/* #line 145 "./dssl.rl" */
 	{
 #if DEBUG_PARSER
 		TSK_DEBUG_INFO("create_param");
@@ -3979,7 +3979,7 @@ replace:
 	}
 	break;
 	case 6:
-/* #line 153 "./cmd_parser.rl" */
+/* #line 153 "./dssl.rl" */
 	{
 #if DEBUG_PARSER
 		TSK_DEBUG_INFO("add_param");
@@ -3989,7 +3989,7 @@ replace:
 	}
 	break;
 	case 7:
-/* #line 161 "./cmd_parser.rl" */
+/* #line 161 "./dssl.rl" */
 	{
 		if(param){
 			TSK_PARSER_SET_STRING(param->value);
@@ -4002,7 +4002,7 @@ replace:
 	}
 	break;
 	case 8:
-/* #line 172 "./cmd_parser.rl" */
+/* #line 172 "./dssl.rl" */
 	{
 		if(param){
 			TSK_PARSER_SET_STRING(param->name);
@@ -4010,7 +4010,7 @@ replace:
 	}
 	break;
 	case 9:
-/* #line 178 "./cmd_parser.rl" */
+/* #line 178 "./dssl.rl" */
 	{
 #if DEBUG_PARSER
 		TSK_PARSER_SET_STRING(temp);
@@ -4021,267 +4021,267 @@ replace:
 	}
 	break;
 	case 10:
-/* #line 200 "./cmd_parser.rl" */
+/* #line 200 "./dssl.rl" */
 	{
 		TSK_PARSER_SET_STRING(temp);
 		TSK_DEBUG_ERROR("'%s' is not a valid option.", temp);
 	}
 	break;
 	case 11:
-/* #line 205 "./cmd_parser.rl" */
+/* #line 205 "./dssl.rl" */
 	{
 		TSK_PARSER_SET_STRING(temp);
 		TSK_DEBUG_ERROR("'%s' is not a valid command.", temp);
 	}
 	break;
 	case 12:
-/* #line 210 "./cmd_parser.rl" */
+/* #line 210 "./dssl.rl" */
 	{
 		TSK_PARSER_SET_STRING(temp);
 		TSK_DEBUG_ERROR("'%s' is not a valid level.", temp);
 	}
 	break;
 	case 13:
-/* #line 227 "./cmd_parser.rl" */
+/* #line 227 "./dssl.rl" */
 	{ cmd->type = cmd_audio; }
 	break;
 	case 14:
-/* #line 228 "./cmd_parser.rl" */
+/* #line 228 "./dssl.rl" */
 	{ cmd->type = cmd_audiovideo; }
 	break;
 	case 15:
-/* #line 229 "./cmd_parser.rl" */
+/* #line 229 "./dssl.rl" */
 	{ cmd->type = cmd_config_session; }
 	break;
 	case 16:
-/* #line 230 "./cmd_parser.rl" */
+/* #line 230 "./dssl.rl" */
 	{ cmd->type = cmd_config_stack; }
 	break;
 	case 17:
-/* #line 231 "./cmd_parser.rl" */
+/* #line 231 "./dssl.rl" */
 	{ cmd->type = cmd_dump; }
 	break;
 	case 18:
-/* #line 232 "./cmd_parser.rl" */
+/* #line 232 "./dssl.rl" */
 	{ cmd->type = cmd_exit; }
 	break;
 	case 19:
-/* #line 233 "./cmd_parser.rl" */
+/* #line 233 "./dssl.rl" */
 	{ cmd->type = cmd_file; }
 	break;
 	case 20:
-/* #line 234 "./cmd_parser.rl" */
+/* #line 234 "./dssl.rl" */
 	{ cmd->type = cmd_hangup; }
 	break;
 	case 21:
-/* #line 235 "./cmd_parser.rl" */
+/* #line 235 "./dssl.rl" */
 	{ cmd->type = cmd_help; }
 	break;
 	case 22:
-/* #line 236 "./cmd_parser.rl" */
+/* #line 236 "./dssl.rl" */
 	{ cmd->type = cmd_large_message; }
 	break;
 	case 23:
-/* #line 237 "./cmd_parser.rl" */
+/* #line 237 "./dssl.rl" */
 	{ cmd->type = cmd_message; }
 	break;
 	case 24:
-/* #line 238 "./cmd_parser.rl" */
+/* #line 238 "./dssl.rl" */
 	{ cmd->type = cmd_publish; }
 	break;
 	case 25:
-/* #line 239 "./cmd_parser.rl" */
+/* #line 239 "./dssl.rl" */
 	{ cmd->type = cmd_register; }
 	break;
 	case 26:
-/* #line 240 "./cmd_parser.rl" */
+/* #line 240 "./dssl.rl" */
 	{ cmd->type = cmd_run; }
 	break;
 	case 27:
-/* #line 241 "./cmd_parser.rl" */
+/* #line 241 "./dssl.rl" */
 	{ cmd->type = cmd_scenario; }
 	break;
 	case 28:
-/* #line 242 "./cmd_parser.rl" */
+/* #line 242 "./dssl.rl" */
 	{ cmd->type = cmd_sleep; }
 	break;
 	case 29:
-/* #line 243 "./cmd_parser.rl" */
+/* #line 243 "./dssl.rl" */
 	{ cmd->type = cmd_sms; }
 	break;
 	case 30:
-/* #line 244 "./cmd_parser.rl" */
+/* #line 244 "./dssl.rl" */
 	{ cmd->type = cmd_stop; }
 	break;
 	case 31:
-/* #line 245 "./cmd_parser.rl" */
+/* #line 245 "./dssl.rl" */
 	{ cmd->type = cmd_subscribe; }
 	break;
 	case 32:
-/* #line 246 "./cmd_parser.rl" */
+/* #line 246 "./dssl.rl" */
 	{ cmd->type = cmd_video; }
 	break;
 	case 33:
-/* #line 250 "./cmd_parser.rl" */
+/* #line 250 "./dssl.rl" */
 	{ opt->type = opt_amf; }
 	break;
 	case 34:
-/* #line 251 "./cmd_parser.rl" */
+/* #line 251 "./dssl.rl" */
 	{ opt->type = opt_caps; }
 	break;
 	case 35:
-/* #line 252 "./cmd_parser.rl" */
+/* #line 252 "./dssl.rl" */
 	{ opt->type = opt_dhcpv4; }
 	break;
 	case 36:
-/* #line 253 "./cmd_parser.rl" */
+/* #line 253 "./dssl.rl" */
 	{ opt->type = opt_dhcpv6; }
 	break;
 	case 37:
-/* #line 254 "./cmd_parser.rl" */
+/* #line 254 "./dssl.rl" */
 	{ opt->type = opt_amf; }
 	break;
 	case 38:
-/* #line 255 "./cmd_parser.rl" */
+/* #line 255 "./dssl.rl" */
 	{ opt->type = opt_dname; }
 	break;
 	case 39:
-/* #line 256 "./cmd_parser.rl" */
+/* #line 256 "./dssl.rl" */
 	{ opt->type = opt_expires; }
 	break;
 	case 40:
-/* #line 257 "./cmd_parser.rl" */
+/* #line 257 "./dssl.rl" */
 	{ opt->type = opt_from; }
 	break;
 	case 41:
-/* #line 258 "./cmd_parser.rl" */
+/* #line 258 "./dssl.rl" */
 	{ opt->type = opt_header; }
 	break;
 	case 42:
-/* #line 259 "./cmd_parser.rl" */
+/* #line 259 "./dssl.rl" */
 	{ opt->type = opt_impi; }
 	break;
 	case 43:
-/* #line 260 "./cmd_parser.rl" */
+/* #line 260 "./dssl.rl" */
 	{ opt->type = opt_impu; }
 	break;
 	case 44:
-/* #line 261 "./cmd_parser.rl" */
+/* #line 261 "./dssl.rl" */
 	{ opt->type = opt_ipv6; }
 	break;
 	case 45:
-/* #line 262 "./cmd_parser.rl" */
+/* #line 262 "./dssl.rl" */
 	{ opt->type = opt_local_ip; }
 	break;
 	case 46:
-/* #line 263 "./cmd_parser.rl" */
+/* #line 263 "./dssl.rl" */
 	{ opt->type = opt_local_port; }
 	break;
 	case 47:
-/* #line 264 "./cmd_parser.rl" */
+/* #line 264 "./dssl.rl" */
 	{ opt->type = opt_opid; }
 	break;
 	case 48:
-/* #line 265 "./cmd_parser.rl" */
+/* #line 265 "./dssl.rl" */
 	{ opt->type = opt_password; }
 	break;
 	case 49:
-/* #line 266 "./cmd_parser.rl" */
+/* #line 266 "./dssl.rl" */
 	{ opt->type = opt_path; }
 	break;
 	case 50:
-/* #line 267 "./cmd_parser.rl" */
+/* #line 267 "./dssl.rl" */
 	{ opt->type = opt_payload; }
 	break;
 	case 51:
-/* #line 268 "./cmd_parser.rl" */
+/* #line 268 "./dssl.rl" */
 	{ opt->type = opt_pcscf_ip; }
 	break;
 	case 52:
-/* #line 269 "./cmd_parser.rl" */
+/* #line 269 "./dssl.rl" */
 	{ opt->type = opt_pcscf_port; }
 	break;
 	case 53:
-/* #line 270 "./cmd_parser.rl" */
+/* #line 270 "./dssl.rl" */
 	{ opt->type = opt_pcscf_trans; }
 	break;
 	case 54:
-/* #line 271 "./cmd_parser.rl" */
+/* #line 271 "./dssl.rl" */
 	{ opt->type = opt_realm; }
 	break;
 	case 55:
-/* #line 272 "./cmd_parser.rl" */
+/* #line 272 "./dssl.rl" */
 	{ opt->type = opt_sec; }
 	break;
 	case 56:
-/* #line 273 "./cmd_parser.rl" */
+/* #line 273 "./dssl.rl" */
 	{ opt->type = opt_sid; }
 	break;
 	case 57:
-/* #line 274 "./cmd_parser.rl" */
+/* #line 274 "./dssl.rl" */
 	{ opt->type = opt_sigcomp; }
 	break;
 	case 58:
-/* #line 275 "./cmd_parser.rl" */
+/* #line 275 "./dssl.rl" */
 	{ opt->type = opt_smsc; }
 	break;
 	case 59:
-/* #line 276 "./cmd_parser.rl" */
+/* #line 276 "./dssl.rl" */
 	{ opt->type = opt_to; }
 	break;
 	case 60:
-/* #line 283 "./cmd_parser.rl" */
+/* #line 283 "./dssl.rl" */
 	{ set_level(lv_stack); }
 	break;
 	case 61:
-/* #line 283 "./cmd_parser.rl" */
+/* #line 283 "./dssl.rl" */
 	{ set_level(lv_session); }
 	break;
 	case 62:
-/* #line 283 "./cmd_parser.rl" */
+/* #line 283 "./dssl.rl" */
 	{ set_level(lv_action); }
 	break;
 	case 65:
-/* #line 1 "./cmd_parser.rl" */
+/* #line 1 "./dssl.rl" */
 	{te = p+1;}
 	break;
 	case 66:
-/* #line 296 "./cmd_parser.rl" */
+/* #line 296 "./dssl.rl" */
 	{te = p+1;{ }}
 	break;
 	case 67:
-/* #line 298 "./cmd_parser.rl" */
+/* #line 298 "./dssl.rl" */
 	{te = p+1;{ }}
 	break;
 	case 68:
-/* #line 293 "./cmd_parser.rl" */
+/* #line 293 "./dssl.rl" */
 	{te = p;p--;{ }}
 	break;
 	case 69:
-/* #line 294 "./cmd_parser.rl" */
+/* #line 294 "./dssl.rl" */
 	{te = p;p--;{ }}
 	break;
 	case 70:
-/* #line 295 "./cmd_parser.rl" */
+/* #line 295 "./dssl.rl" */
 	{te = p;p--;{ }}
 	break;
 	case 71:
-/* #line 296 "./cmd_parser.rl" */
+/* #line 296 "./dssl.rl" */
 	{te = p;p--;{ }}
 	break;
 	case 72:
-/* #line 297 "./cmd_parser.rl" */
+/* #line 297 "./dssl.rl" */
 	{te = p;p--;{ }}
 	break;
 	case 73:
-/* #line 293 "./cmd_parser.rl" */
+/* #line 293 "./dssl.rl" */
 	{{p = ((te))-1;}{ }}
 	break;
 	case 74:
-/* #line 294 "./cmd_parser.rl" */
+/* #line 294 "./dssl.rl" */
 	{{p = ((te))-1;}{ }}
 	break;
-/* #line 4285 "./cmd_parser.c" */
+/* #line 4285 "./dssl.c" */
 		}
 	}
 
@@ -4291,10 +4291,10 @@ _again:
 	while ( _nacts-- > 0 ) {
 		switch ( *_acts++ ) {
 	case 63:
-/* #line 1 "./cmd_parser.rl" */
+/* #line 1 "./dssl.rl" */
 	{ts = 0;}
 	break;
-/* #line 4298 "./cmd_parser.c" */
+/* #line 4298 "./dssl.c" */
 		}
 	}
 
@@ -4314,12 +4314,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 336 "./cmd_parser.rl" */
+/* #line 336 "./dssl.rl" */
 	
 	if( cs < 
-/* #line 4321 "./cmd_parser.c" */
+/* #line 4321 "./dssl.c" */
 201
-/* #line 337 "./cmd_parser.rl" */
+/* #line 337 "./dssl.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse [%s] command-Line.", p);
 		TSK_OBJECT_SAFE_FREE(cmd);

@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-#include "cmd_parser.h"
+#include "dssl.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
@@ -299,7 +299,7 @@ replace:
 			*|;
 }%%
 
-cmd_t* cmd_parser_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
+cmd_t* dssl_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
 {
 	int cs = 0;
 	const char *p = buffer;

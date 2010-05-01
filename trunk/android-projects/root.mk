@@ -4,7 +4,7 @@
 
 export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk
 export ANDROID_SDK_ROOT=/cygdrive/c/android-sdk
-export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-4
+export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-1.5
 
 # Output directory
 export OUTPUT_DIR=$(shell pwd)/output
@@ -36,7 +36,3 @@ export CFLAGS+=$(DEBUG_FLAGS) -I$(ANDROID_PLATFORM)/arch-arm/usr/include \
 export LDFLAGS=-Wl,--entry=main,-rpath=/system/lib,-rpath-link=$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker -L$(ANDROID_PLATFORM)/arch-arm/usr/lib
 export LDFLAGS += -Wl,--no-undefined
 export LDFLAGS += -nostdlib -lc -Wl,--no-whole-archive -L$(OUTPUT_DIR)
-
-gdbserver:
-	$(ANDROID_SDK_ROOT)/tools/adb forward tcp:1234: tcp:1234
-	$(ANDROID_SDK_ROOT)/tools/adb shell $(EXEC_DIR)/gdbserver :1234 $(EXEC_DIR)/test

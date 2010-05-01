@@ -730,7 +730,9 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 
 		/* Stop 
 		* Will try to hangup all dialogs */
-		tsip_stack_stop(stack);
+		if(stack->started){
+			tsip_stack_stop(stack);
+		}
 
 		/* Layers(1/1): Transacs and dialogs use timer_mgr when destroyed 
 		* Dialogs =>(use)=> transacs =>(use)=> transport. */

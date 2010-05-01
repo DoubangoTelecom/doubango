@@ -21,7 +21,7 @@
 */
 #include "cmd.h"
 
-#include "cmd_parser.h"
+#include "dssl.h"
 
 #include "tsk_memory.h"
 #include "tsk_string.h"
@@ -34,7 +34,7 @@ static int pred_find_opt_by_type(const tsk_list_item_t *item, const void *type);
 /* parse a command line */
 cmd_t* cmd_parse(const char* buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
 {	
-	return cmd_parser_parse(buffer, size, comment, params);
+	return dssl_parse(buffer, size, comment, params);
 }
 
 ///* print usage */

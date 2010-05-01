@@ -17,6 +17,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySIP", "..\tinySIP\tinyS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyNET", "..\tinyNET\tinyNET.vcproj", "{7522A458-92F4-4259-B906-E84C2A65D9F1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySMS", "..\tinySMS\tinySMS.vcproj", "{9A3A5AF3-2333-4477-B880-7F901F9D8972}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -89,6 +91,12 @@ Global
 		{7522A458-92F4-4259-B906-E84C2A65D9F1}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{7522A458-92F4-4259-B906-E84C2A65D9F1}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Build.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
 		{7522A458-92F4-4259-B906-E84C2A65D9F1}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).Deploy.0 = Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I)
+		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Debug|Win32.Build.0 = Debug|Win32
+		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Win32
+		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Release|Win32.ActiveCfg = Release|Win32
+		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Release|Win32.Build.0 = Release|Win32
+		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -21,7 +21,12 @@
 */
 #include "message.h"
 
+#include "tinysms.h" /* Binary SMS API*/
+
 extern ctx_t* ctx;
+
+tsk_bool_t is_valid_telnum(const tsip_uri_t* uri);
+tsk_buffer_t* sms_submit(const tsip_uri_t* smsc, const tsip_uri_t* dest, const char* ascii_pay);
 
 int message_handle_event(const tsip_event_t *sipevent)
 {
@@ -111,10 +116,137 @@ tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 				}
 				break;
 			}
+		case cmd_sms:
+			{	/* Binary SMS (RP-DATA) */
+				const char* ascii_pay = tsk_null;
+				tsk_buffer_t* binary_pay = tsk_null;
+				if((opt = opt_get_by_type(opts, opt_smsc)) && !tsk_strnullORempty(opt->value)){
+					tsip_uri_t* smsc = tsip_uri_parse(opt->value, tsk_strlen(opt->value));
+					tsip_uri_t* dest = tsk_null;
+					if(smsc){
+						/* Valid phone number for the SMSC address? */
+						if(!is_valid_telnum(smsc)){
+							TSK_DEBUG_ERROR("[%s] contains invalid telephone number", opt->value);
+							goto done;
+						}
+						tsip_ssession_set(session->handle, 
+							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, opt->value),
+							TSIP_SSESSION_SET_NULL());
+
+						/* Destination URI */
+						if((opt = opt_get_by_type(opts, opt_to)) && !tsk_strnullORempty(opt->value)){
+							if((dest = tsip_uri_parse(opt->value, tsk_strlen(opt->value)))){
+								if(!is_valid_telnum(dest)){
+									TSK_DEBUG_ERROR("[%s] contains invalid telephone number", opt->value);
+									goto done;
+								}
+							}
+							else{
+								TSK_DEBUG_ERROR("[%s] is an invalid SIP/tel uri", opt->value);
+								goto done;
+							}
+						}
+						else{
+							TSK_DEBUG_ERROR("++sms command need --to");
+							goto done;
+						}
+
+						/* Payload? */
+						if((opt = opt_get_by_type(opts, opt_payload)) && !tsk_strnullORempty(opt->value)){
+							ascii_pay = opt->value;
+						}
+						else{
+							TSK_DEBUG_ERROR("++sms command need --to");
+							goto done;
+						}
+
+						/* Create the binary content */
+						if(!(binary_pay = sms_submit(smsc, dest, ascii_pay))){
+							TSK_DEBUG_ERROR("Failed to encode RP-DATA(SMS-SUBMIT) message.");
+							goto done;
+						}
+
+						/* Send the message */
+						tsip_action_MESSAGE(session->handle,
+							/* TSIP_ACTION_SET_HEADER("Content-Type", "application/vnd.3gpp.sms"), */
+							/* TSIP_ACTION_SET_HEADER("Transfer-Encoding", "binary"),*/
+							TSIP_ACTION_SET_PAYLOAD(binary_pay->data, binary_pay->size),
+							TSIP_ACTION_SET_NULL());
+						
+done:
+						TSK_OBJECT_SAFE_FREE(binary_pay);
+						TSK_OBJECT_SAFE_FREE(dest);
+						TSK_OBJECT_SAFE_FREE(smsc);
+					}
+					else{
+						TSK_DEBUG_ERROR("[%s] is an invalid SIP/tel uri", opt->value);
+						break;
+					}
+				}
+				else{
+					TSK_DEBUG_ERROR("++sms command need --smsc");
+					break;
+				}
+				break;
+			}
 		default:
 			/* already handled by session_handle_cmd() */
 			break;
 	}
 	
 	return id;
+}
+
+
+tsk_bool_t is_valid_telnum(const tsip_uri_t* uri)
+{
+	size_t i;
+	size_t len;
+
+	if(!uri || tsk_strnullORempty(uri->user_name)){
+		return tsk_false;
+	}
+
+	for(i = 0, len = tsk_strlen(uri->user_name); i<len; i++){
+		if(uri->user_name[i] != '+' && !isdigit(uri->user_name[i])){
+			return tsk_false;
+		}
+	}
+	return tsk_true;
+}
+
+tsk_buffer_t* sms_submit(const tsip_uri_t* smsc, const tsip_uri_t* dest, const char* ascii_pay)
+{
+	static uint8_t mr = 0x00;
+
+	int ret;
+	tsk_buffer_t* buffer = tsk_null;
+	tsms_tpdu_submit_t* sms_submit = tsk_null;
+	tsms_rpdu_data_t* rp_data = tsk_null;
+
+	// create SMS-SUBMIT message
+	sms_submit = tsms_tpdu_submit_create(++mr, smsc->user_name, dest->user_name);
+	// Set content for SMS-SUBMIT
+	if((buffer = tsms_pack_to_7bit(ascii_pay))){
+		if((ret = tsms_tpdu_submit_set_userdata(sms_submit, buffer, tsms_alpha_7bit))){
+			goto bail;
+		}
+		TSK_OBJECT_SAFE_FREE(buffer);
+	}
+	// create Mobile Originated (MO) RP-DATA message
+	if((rp_data = tsms_rpdu_data_create_mo(mr, smsc->user_name, TSMS_TPDU_MESSAGE(sms_submit)))){
+		// serialize into a buffer
+		if((buffer = tsk_buffer_create_null())){
+			ret = tsms_rpdu_data_serialize(rp_data, buffer);
+		}
+	}
+
+bail:
+	if(ret){ /* Failed? */
+		TSK_OBJECT_SAFE_FREE(buffer);
+	}
+	TSK_OBJECT_SAFE_FREE(sms_submit);
+	TSK_OBJECT_SAFE_FREE(rp_data);
+
+	return buffer;
 }

@@ -458,10 +458,11 @@ static tsk_object_t* tsip_dialog_message_dtor(tsk_object_t * self)
 { 
 	tsip_dialog_message_t *dialog = self;
 	if(dialog){
-		TSK_DEBUG_INFO("*** MESSAGE Dialog destroyed ***");
 
 		/* DeInitialize base class (will cancel all transactions) */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
+
+		TSK_DEBUG_INFO("*** MESSAGE Dialog destroyed ***");
 	}
 	return self;
 }
