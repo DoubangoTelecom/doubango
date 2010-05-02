@@ -33,6 +33,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <string.h> /* memcpy */
+
 #define TSMS_ERROR_TOO_SHORT()\
 	TSK_DEBUG_ERROR("SMS-SUBMIT == Data too short.");\
 	failed = tsk_true;\
@@ -274,10 +276,10 @@ static tsk_object_t* tsms_tpdu_submit_ctor(tsk_object_t * self, va_list * app)
 		/* init self */
 		submit->mr = mr;
 		if(smsc){
-			submit->smsc = tsms_address_smsc_create(smsc);
+			submit->smsc = tsms_address_smsc_create((const uint8_t*)smsc);
 		}
 		if(dest){
-			submit->da = tsms_address_da_create(dest);
+			submit->da = tsms_address_da_create((const uint8_t*)dest);
 		}
 
 		submit->vp[0] = TSMS_TPDU_DEFAULT_VP;

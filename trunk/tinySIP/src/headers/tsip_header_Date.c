@@ -415,7 +415,7 @@ static tsk_object_t* tsip_header_Date_ctor(tsk_object_t *self, va_list * app)
 			Date->wkday = tsk_strdup(wkday);
 			Date->month = tsk_strdup(month);
 
-#if defined __GUNC__
+#if defined (__GNUC__)
 			Date->day = (int8_t)va_arg(*app, int);
 			Date->year = (int16_t)va_arg(*app, int);
 			Date->time.h = (int8_t)va_arg(*app, int);

@@ -73,7 +73,7 @@ tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...)
 			va_end(ap);
 
 #if TSK_DEBUG_OBJECTS
-		TSK_DEBUG_INFO("N° objects:%d", ++tsk_objects_count);
+		TSK_DEBUG_INFO("Nâˆž objects:%d", ++tsk_objects_count);
 #endif
 		}
 		else{
@@ -104,7 +104,7 @@ tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap)
 			newobj = objdef->constructor(newobj, ap);
 
 #if TSK_DEBUG_OBJECTS
-		TSK_DEBUG_INFO("N° objects:%d", ++tsk_objects_count);
+		TSK_DEBUG_INFO("Nâˆž objects:%d", ++tsk_objects_count);
 #endif
 		}
 		else{
@@ -207,7 +207,7 @@ void tsk_object_delete(tsk_object_t *self)
 		if((*objdef)->destructor){
 			self = (*objdef)->destructor(self);
 #if TSK_DEBUG_OBJECTS
-		TSK_DEBUG_INFO("N° objects:%d", --tsk_objects_count);
+		TSK_DEBUG_INFO("Nâˆž objects:%d", --tsk_objects_count);
 #endif
 		}
 		else{

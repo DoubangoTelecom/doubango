@@ -696,7 +696,7 @@ int tsip_transac_ict_Any_2_Terminated_X_Error(va_list *app)
 
 /* Any -> (cancel) -> Terminated
 */
-tsip_transac_ict_Any_2_Terminated_X_cancel(va_list *app)
+int tsip_transac_ict_Any_2_Terminated_X_cancel(va_list *app)
 {
 	/* doubango-specific */
 	return 0;

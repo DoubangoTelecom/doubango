@@ -37,8 +37,8 @@ char* replace_param(char* pivot, int index_1, int index_2, tsk_params_L_t* param
 	char* pname = tsk_null;
 	char* ret = tsk_null;
 	const tsk_param_t* p;
-	size_t len = tsk_strlen(pivot);
-	tsk_bool_t parenthesis = tsk_false;
+	//size_t len = tsk_strlen(pivot);
+	//tsk_bool_t parenthesis = tsk_false;
 	int i1, i2;
 	
 	/* whether there are parenthesis around the param */

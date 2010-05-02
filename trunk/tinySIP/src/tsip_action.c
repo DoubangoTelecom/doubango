@@ -61,7 +61,7 @@ tsip_action_t* tsip_action_create(tsip_action_type_t type, va_list* app)
 				case aptype_option:
 					{	/* (tsip_action_option_t)ID_ENUM, (const char*)VALUE_STR */
 						tsip_action_option_t ID_ENUM = va_arg(*app, tsip_action_option_t);
-						const char* VALUE_STR = va_arg(*app, const char *);
+						/*const char* VALUE_STR =*/ va_arg(*app, const char *);
 						switch(ID_ENUM){
 							/* case */
 				default:
