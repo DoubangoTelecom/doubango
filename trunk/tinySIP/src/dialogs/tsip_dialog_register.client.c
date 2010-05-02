@@ -295,7 +295,7 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 int tsip_dialog_register_Started_2_Trying_X_register(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*const tsip_message_t *message =*/ va_arg(*app, const tsip_message_t *);
 	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
 
 	TSIP_DIALOG(self)->running = tsk_true;
@@ -538,7 +538,7 @@ int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app)
 int tsip_dialog_register_Connected_2_Trying_X_register(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*const tsip_message_t *message =*/ va_arg(*app, const tsip_message_t *);
 	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
 	
 	/* Set  current action */
@@ -583,7 +583,7 @@ int tsip_dialog_register_Any_2_Trying_X_shutdown(va_list *app)
 int tsip_dialog_register_Any_2_Terminated_X_transportError(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	/* Alert the user. */
 	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 

@@ -112,6 +112,7 @@ int tsip_transac_layer_cancel_by_dialog(tsip_transac_layer_t *self, const struct
 	tsk_list_item_t *item;
 	int ret = 0; /* Perhaps there is zero transaction */
 
+
 	if(!self || !dialog){
 		TSK_DEBUG_WARN("Invalid parameter.");
 		return -1;

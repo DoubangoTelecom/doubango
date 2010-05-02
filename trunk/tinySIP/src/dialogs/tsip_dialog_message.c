@@ -223,7 +223,7 @@ int tsip_dialog_message_init(tsip_dialog_message_t *self)
 int tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(va_list *app)
 {
 	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	tsip_request_t *request = va_arg(*app, tsip_request_t *);
+	/*tsip_request_t *request =*/ va_arg(*app, tsip_request_t *);
 	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
 
 	TSIP_DIALOG(self)->running = tsk_true;
@@ -250,8 +250,8 @@ int tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(va_list *app)
 */
 int tsip_dialog_message_Sending_2_Sending_X_1xx(va_list *app)
 {
-	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	/*tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);*/
+	/*const tsip_response_t *response = va_arg(*app, const tsip_response_t *);*/
 
 	return 0;
 }
@@ -277,8 +277,8 @@ int tsip_dialog_message_Sending_2_Terminated_X_2xx(va_list *app)
 */
 int tsip_dialog_message_Sending_2_Sending_X_401_407_421_494(va_list *app)
 {
-	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	/*tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);*/
+	/*const tsip_response_t *response = va_arg(*app, const tsip_response_t *);*/
 
 	return 0;
 }
@@ -312,8 +312,8 @@ int tsip_dialog_message_Sending_2_Terminated_X_cancel(va_list *app)
 */
 int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app)
 {
-	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);*/
+	/**const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	return 0;
 }
@@ -322,8 +322,8 @@ int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app)
 */
 int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app)
 {
-	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);*/
+	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	return 0;
 }
@@ -332,8 +332,8 @@ int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app)
 */
 int tsip_dialog_message_Any_2_Terminated_X_transportError(va_list *app)
 {
-	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);*/
+	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	return 0;
 }
@@ -342,8 +342,8 @@ int tsip_dialog_message_Any_2_Terminated_X_transportError(va_list *app)
 */
 int tsip_dialog_message_Any_2_Terminated_X_Error(va_list *app)
 {
-	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);*/
+	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	return 0;
 }

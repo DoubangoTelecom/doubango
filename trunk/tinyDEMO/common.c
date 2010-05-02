@@ -364,7 +364,7 @@ const session_t* session_get_by_sid(const sessions_L_t* sessions, tsip_ssession_
 
 int session_tostring(const session_t* session)
 {
-	char* temp = tsk_null;
+	//char* temp = tsk_null;
 	printf("== Session: ");
 	if(session){
 		/* Session Id */

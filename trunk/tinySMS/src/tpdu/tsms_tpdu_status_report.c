@@ -33,6 +33,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#include <string.h> /* memcpy */
+
 #define TSMS_ERROR_TOO_SHORT()\
 	TSK_DEBUG_ERROR("SMS-STATUS-REPORT == Data too short.");\
 	failed = tsk_true;\
@@ -279,10 +281,10 @@ static tsk_object_t* tsms_tpdu_status_report_ctor(tsk_object_t * self, va_list *
 		/* init self */
 		status_report->mr = mr;
 		if(smsc){
-			status_report->smsc = tsms_address_smsc_create(smsc);
+			status_report->smsc = tsms_address_smsc_create((const uint8_t*)smsc);
 		}
 		if(recipient){
-			status_report->ra = tsms_address_da_create(recipient);
+			status_report->ra = tsms_address_da_create((const uint8_t*)recipient);
 		}
 		status_report->st = status;
 		status_report->mms = TSMS_TPDU_DEFAULT_MMS;

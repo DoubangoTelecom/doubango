@@ -362,7 +362,7 @@ int tsip_transac_nict_Started_2_Trying_X_send(va_list *app)
 int tsip_transac_nict_Trying_2_Trying_X_timerE(va_list *app)
 {
 	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	//== Send the request
 	tsip_transac_send(TSIP_TRANSAC(self), TSIP_TRANSAC(self)->branch, self->request);
@@ -385,7 +385,7 @@ int tsip_transac_nict_Trying_2_Trying_X_timerE(va_list *app)
 int tsip_transac_nict_Trying_2_Terminated_X_timerF(va_list *app)
 {
 	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	/*	RFC 3261 - 17.1.2.2
 		If Timer F fires while the client transaction is still in the
@@ -405,7 +405,7 @@ int tsip_transac_nict_Trying_2_Terminated_X_timerF(va_list *app)
 int tsip_transac_nict_Trying_2_Terminated_X_transportError(va_list *app)
 {
 	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	/* Timers will be canceled by "tsip_transac_nict_OnTerminated" */
 
@@ -512,7 +512,7 @@ int tsip_transac_nict_Proceeding_2_Terminated_X_timerF(va_list *app)
 int tsip_transac_nict_Proceeding_2_Terminated_X_transportError(va_list *app)
 {
 	tsip_transac_nict_t *self = va_arg(*app, tsip_transac_nict_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	/* Timers will be canceles by On */
 	TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_transport_error, 0);
@@ -621,7 +621,7 @@ int tsip_transac_nict_Any_2_Terminated_X_Error(va_list *app)
 
 /* Any -> (cancel) -> Terminated
 */
-tsip_transac_nict_Any_2_Terminated_X_cancel(va_list *app)
+int tsip_transac_nict_Any_2_Terminated_X_cancel(va_list *app)
 {
 	/* doubango-specific */
 	return 0;

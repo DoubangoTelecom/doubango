@@ -371,7 +371,7 @@ int tsip_transac_nist_Proceeding_2_Proceeding_X_send_1xx(va_list *app)
 int tsip_transac_nist_Proceeding_2_Proceeding_X_request(va_list *app)
 {
 	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	/*const tsip_response_t *response = va_arg(*app, const tsip_response_t *);*/
 
 	/*	RFC 3261 - 17.2.2
 		If a retransmission of the request is received while in the "Proceeding" state, the most
@@ -419,7 +419,7 @@ int tsip_transac_nist_Proceeding_2_Completed_X_send_200_to_699(va_list *app)
 int tsip_transac_nist_Completed_2_Completed_X_request(va_list *app)
 {
 	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	/*const tsip_response_t *response = va_arg(*app, const tsip_response_t *);*/
 
 	/*	RFC 3261 - 17.2.2
 		While in the "Completed" state, the server transaction MUST pass the final response to the transport
@@ -436,8 +436,8 @@ int tsip_transac_nist_Completed_2_Completed_X_request(va_list *app)
 */
 int tsip_transac_nist_Completed_2_Terminated_X_tirmerJ(va_list *app)
 {
-	tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	/*tsip_transac_nist_t *self = va_arg(*app, tsip_transac_nist_t *);*/
+	/*const tsip_response_t *response = va_arg(*app, const tsip_response_t *);*/
 
 	/*	RFC 3261 - 17.2.2
 		The server transaction remains in this state (Completed) until Timer J fires, at
@@ -476,7 +476,7 @@ int tsip_transac_nist_Any_2_Terminated_X_Error(va_list *app)
 
 /* Any -> (cancel) -> Terminated
 */
-tsip_transac_nist_Any_2_Terminated_X_cancel(va_list *app)
+int tsip_transac_nist_Any_2_Terminated_X_cancel(va_list *app)
 {
 	/* doubango-specific */
 	return 0;

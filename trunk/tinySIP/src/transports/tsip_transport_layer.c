@@ -517,7 +517,7 @@ int tsip_transport_layer_shutdown(tsip_transport_layer_t* self)
 {
 	if(self){
 		if(self->running){
-			int ret = 0;
+			/*int ret = 0;*/
 			tsk_list_item_t *item;
 			while((item = tsk_list_pop_first_item(self->transports))){
 				TSK_OBJECT_SAFE_FREE(item); // Network transports are not reusable ==> (shutdow+remove)

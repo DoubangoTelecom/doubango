@@ -54,21 +54,36 @@
 */
 
 /**@ingroup tsk_mutex_group
-* Creates new mutex handle.
+* Creates new recursive mutex handle.
 * @retval New mutex handle. It is up to you free the returned handle using  @ref tsk_mutex_destroy.
 * @sa @ref tsk_mutex_destroy.
 */
 tsk_mutex_handle_t* tsk_mutex_create()
 {	
-	MUTEX_T handle = 0;
+	MUTEX_T handle = tsk_null;
 	
 #if TSK_UNDER_WINDOWS
 	handle = CreateMutex(NULL, FALSE, NULL);
 #else
+	int ret;
+	pthread_mutexattr_t   mta;
+	
+	if((ret = pthread_mutexattr_init(&mta))){
+		TSK_DEBUG_ERROR("pthread_mutexattr_init failed with error code %d", ret);
+		return tsk_null;
+	}
+	if((ret = pthread_mutexattr_settype(&mta, PTHREAD_MUTEX_RECURSIVE))){
+		TSK_DEBUG_ERROR("pthread_mutexattr_settype failed with error code %d", ret);
+		pthread_mutexattr_destroy(&mta);
+		return tsk_null;
+	}
+	
+	/* if we are here: all is ok */
 	handle = tsk_calloc(1, sizeof(MUTEX_S));
-	if(pthread_mutex_init((MUTEX_T)handle, 0)){
+	if(pthread_mutex_init((MUTEX_T)handle, &mta)){
 		TSK_FREE(handle);
 	}
+	pthread_mutexattr_destroy(&mta);
 #endif
 	
 	if(!handle){

@@ -23,6 +23,8 @@
 
 #include "tinysms.h" /* Binary SMS API*/
 
+#include <ctype.h>
+
 extern ctx_t* ctx;
 
 tsk_bool_t is_valid_telnum(const tsip_uri_t* uri);
@@ -225,7 +227,7 @@ tsk_buffer_t* sms_submit(const tsip_uri_t* smsc, const tsip_uri_t* dest, const c
 	tsms_rpdu_data_t* rp_data = tsk_null;
 
 	// create SMS-SUBMIT message
-	sms_submit = tsms_tpdu_submit_create(++mr, smsc->user_name, dest->user_name);
+	sms_submit = tsms_tpdu_submit_create(++mr, (const uint8_t*)smsc->user_name, (const uint8_t*)dest->user_name);
 	// Set content for SMS-SUBMIT
 	if((buffer = tsms_pack_to_7bit(ascii_pay))){
 		if((ret = tsms_tpdu_submit_set_userdata(sms_submit, buffer, tsms_alpha_7bit))){
@@ -234,7 +236,7 @@ tsk_buffer_t* sms_submit(const tsip_uri_t* smsc, const tsip_uri_t* dest, const c
 		TSK_OBJECT_SAFE_FREE(buffer);
 	}
 	// create Mobile Originated (MO) RP-DATA message
-	if((rp_data = tsms_rpdu_data_create_mo(mr, smsc->user_name, TSMS_TPDU_MESSAGE(sms_submit)))){
+	if((rp_data = tsms_rpdu_data_create_mo(mr, (const uint8_t*)smsc->user_name, TSMS_TPDU_MESSAGE(sms_submit)))){
 		// serialize into a buffer
 		if((buffer = tsk_buffer_create_null())){
 			ret = tsms_rpdu_data_serialize(rp_data, buffer);

@@ -240,10 +240,10 @@ static tsk_object_t* tsms_tpdu_command_ctor(tsk_object_t * self, va_list * app)
 		/* init self */
 		command->mr = mr;
 		if(smsc){
-			command->smsc = tsms_address_smsc_create(smsc);
+			command->smsc = tsms_address_smsc_create((const uint8_t*)smsc);
 		}
 		if(dest){
-			command->da = tsms_address_da_create(dest);
+			command->da = tsms_address_da_create((const uint8_t*)dest);
 		}
 		command->mn = msg_num;
 		command->ct = cmd;

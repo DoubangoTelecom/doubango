@@ -100,7 +100,7 @@ tsk_buffer_t* tsms_pack_to_7bit(const char* ascii)
 	tsk_buffer_t* ret = tsk_null;
 	uint8_t* _ret = tsk_null;
 	register size_t len, bcount = 1/*1-7*/, index = 0, retindex = 0, retlen = 0;
-	const uint8_t* pascii = ascii;
+	const uint8_t* pascii = (const uint8_t*)ascii;
 	
 	if(!ascii || !(len = strlen(ascii))){
 		TSK_DEBUG_WARN("Null or Empty ascci string.");

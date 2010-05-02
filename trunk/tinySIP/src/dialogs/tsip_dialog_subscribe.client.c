@@ -335,8 +335,8 @@ int tsip_dialog_subscribe_Started_2_Trying_X_subscribe(va_list *app)
 */
 int tsip_dialog_subscribe_Trying_2_Trying_X_1xx(va_list *app)
 {
-	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	/*tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);*/
+	/*const tsip_response_t *response = va_arg(*app, const tsip_response_t *);*/
 
 	return 0;
 }
@@ -533,7 +533,7 @@ int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app)
 int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app)
 {
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
-	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	/*const tsip_response_t *response =*/ va_arg(*app, const tsip_response_t *);
 	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
 	
 	/* Set  current action */
