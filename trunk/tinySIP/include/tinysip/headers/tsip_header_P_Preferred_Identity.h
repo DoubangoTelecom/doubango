@@ -39,7 +39,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_P_PREFERRED_IDENTITY_VA_ARGS(uri)	tsip_header_P_Preferred_Identity_def_t, (const tsip_uri_t*)uri
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'P-Preferred-Identity' as per RFC 3325.
 ///

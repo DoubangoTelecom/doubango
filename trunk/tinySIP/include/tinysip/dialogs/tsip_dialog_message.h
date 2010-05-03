@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_dialog_messager.h
+/**@file tsip_dialog_message.h
  * @brief SIP dialog MESSAGE.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>

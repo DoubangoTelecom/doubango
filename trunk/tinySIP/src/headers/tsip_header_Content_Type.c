@@ -36,14 +36,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Content_Type_group SIP Content_Type header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 82 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 81 "./ragel/tsip_parser_header_Content_Type.rl" */
 
 
 tsip_header_Content_Type_t* tsip_header_Content_Type_create(const char* type)
@@ -82,7 +81,7 @@ tsip_header_Content_Type_t *tsip_header_Content_Type_parse(const char *data, siz
 	const char *tag_start;
 
 	
-/* #line 86 "./src/headers/tsip_header_Content_Type.c" */
+/* #line 85 "./src/headers/tsip_header_Content_Type.c" */
 static const char _tsip_machine_parser_header_Content_Type_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3
@@ -239,16 +238,16 @@ static const int tsip_machine_parser_header_Content_Type_error = 0;
 static const int tsip_machine_parser_header_Content_Type_en_main = 1;
 
 
-/* #line 120 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 119 "./ragel/tsip_parser_header_Content_Type.rl" */
 	
-/* #line 245 "./src/headers/tsip_header_Content_Type.c" */
+/* #line 244 "./src/headers/tsip_header_Content_Type.c" */
 	{
 	cs = tsip_machine_parser_header_Content_Type_start;
 	}
 
-/* #line 121 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 120 "./ragel/tsip_parser_header_Content_Type.rl" */
 	
-/* #line 252 "./src/headers/tsip_header_Content_Type.c" */
+/* #line 251 "./src/headers/tsip_header_Content_Type.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -323,29 +322,29 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 49 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 48 "./ragel/tsip_parser_header_Content_Type.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 53 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Content_Type.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_ctype->type);
 	}
 	break;
 	case 2:
-/* #line 57 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Content_Type.rl" */
 	{		
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_ctype));
 	}
 	break;
 	case 3:
-/* #line 61 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 60 "./ragel/tsip_parser_header_Content_Type.rl" */
 	{
 	}
 	break;
-/* #line 349 "./src/headers/tsip_header_Content_Type.c" */
+/* #line 348 "./src/headers/tsip_header_Content_Type.c" */
 		}
 	}
 
@@ -358,12 +357,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 122 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 121 "./ragel/tsip_parser_header_Content_Type.rl" */
 	
 	if( cs < 
-/* #line 365 "./src/headers/tsip_header_Content_Type.c" */
+/* #line 364 "./src/headers/tsip_header_Content_Type.c" */
 55
-/* #line 123 "./ragel/tsip_parser_header_Content_Type.rl" */
+/* #line 122 "./ragel/tsip_parser_header_Content_Type.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse SIP 'Content-Type' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_ctype);

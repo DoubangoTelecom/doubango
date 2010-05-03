@@ -38,14 +38,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Date_group SIP Date header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 97 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 96 "./ragel/tsip_parser_header_Date.rl" */
 
 
 tsip_header_Date_t* tsip_header_Date_create(const char* wkday, const char* month, int8_t day, int16_t year, int8_t h, int8_t m, int8_t s)
@@ -84,7 +83,7 @@ tsip_header_Date_t *tsip_header_Date_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 88 "./src/headers/tsip_header_Date.c" */
+/* #line 87 "./src/headers/tsip_header_Date.c" */
 static const char _tsip_machine_parser_header_Date_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 1, 
@@ -225,16 +224,16 @@ static const int tsip_machine_parser_header_Date_error = 0;
 static const int tsip_machine_parser_header_Date_en_main = 1;
 
 
-/* #line 135 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 134 "./ragel/tsip_parser_header_Date.rl" */
 	
-/* #line 231 "./src/headers/tsip_header_Date.c" */
+/* #line 230 "./src/headers/tsip_header_Date.c" */
 	{
 	cs = tsip_machine_parser_header_Date_start;
 	}
 
-/* #line 136 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 135 "./ragel/tsip_parser_header_Date.rl" */
 	
-/* #line 238 "./src/headers/tsip_header_Date.c" */
+/* #line 237 "./src/headers/tsip_header_Date.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -309,59 +308,59 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 51 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 50 "./ragel/tsip_parser_header_Date.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 54 "./ragel/tsip_parser_header_Date.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Date->wkday);
 	}
 	break;
 	case 2:
-/* #line 59 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 58 "./ragel/tsip_parser_header_Date.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_Date->day);
 	}
 	break;
 	case 3:
-/* #line 63 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 62 "./ragel/tsip_parser_header_Date.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Date->month);
 	}
 	break;
 	case 4:
-/* #line 67 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 66 "./ragel/tsip_parser_header_Date.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_Date->year);
 	}
 	break;
 	case 5:
-/* #line 71 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 70 "./ragel/tsip_parser_header_Date.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_Date->time.h);
 	}
 	break;
 	case 6:
-/* #line 75 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 74 "./ragel/tsip_parser_header_Date.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_Date->time.m);
 	}
 	break;
 	case 7:
-/* #line 79 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 78 "./ragel/tsip_parser_header_Date.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_Date->time.s);
 	}
 	break;
 	case 8:
-/* #line 83 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 82 "./ragel/tsip_parser_header_Date.rl" */
 	{
 	}
 	break;
-/* #line 365 "./src/headers/tsip_header_Date.c" */
+/* #line 364 "./src/headers/tsip_header_Date.c" */
 		}
 	}
 
@@ -374,12 +373,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 137 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 136 "./ragel/tsip_parser_header_Date.rl" */
 	
 	if( cs < 
-/* #line 381 "./src/headers/tsip_header_Date.c" */
+/* #line 380 "./src/headers/tsip_header_Date.c" */
 65
-/* #line 138 "./ragel/tsip_parser_header_Date.rl" */
+/* #line 137 "./ragel/tsip_parser_header_Date.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Date' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Date);
@@ -415,7 +414,7 @@ static tsk_object_t* tsip_header_Date_ctor(tsk_object_t *self, va_list * app)
 			Date->wkday = tsk_strdup(wkday);
 			Date->month = tsk_strdup(month);
 
-#if defined (__GNUC__)
+#if defined __GUNC__
 			Date->day = (int8_t)va_arg(*app, int);
 			Date->year = (int16_t)va_arg(*app, int);
 			Date->time.h = (int8_t)va_arg(*app, int);

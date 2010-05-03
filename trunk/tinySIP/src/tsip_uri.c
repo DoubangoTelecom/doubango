@@ -43,11 +43,18 @@
 */
 
 
+/**@ingroup tsip_uri_group
+* Creates new empty SIP/SIPS/TEL URI. You should use @ref tsip_uri_parse() to create an URI from a buffer.
+* @param type The type of the URI to create.
+* @retval @ref tsip_uri_t* object if succeed and Null otherwise.
+* @sa @ref tsip_uri_parse()
+*/
 tsip_uri_t* tsip_uri_create(tsip_uri_type_t type)
 {
 	return tsk_object_new(tsip_uri_def_t, type);
 }
 
+/* internal function used to serialize a SIP/SIPS/TEL URI */
 int __tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_buffer_t *output)
 {
 	tsk_istr_t port;
@@ -84,33 +91,45 @@ int __tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_buff
 	return 0;
 }
 
+/**@ingroup tsip_uri_group
+* Serializes a SIP/SIPS/TEL URI to a string buffer.
+* @param uri The URI to serialize.
+* @param with_params Whether to serialize the parameters.
+* @param quote Whether to add quotes("<" and ">").
+* @param output Destination string buffer. Should be a valid buffer created using @a tsk_buffer_create() function.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tsip_uri_serialize(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote, tsk_buffer_t *output)
 {
-	if(uri){
+	if(uri && output){
+		int ret = 0;
 		if(quote){
 			if(uri->display_name){
 				tsk_buffer_append_2(output, "\"%s\"", uri->display_name);
 			}
 
 			tsk_buffer_append(output, "<", 1);
-			__tsip_uri_serialize(uri, with_params, output);
+			ret = __tsip_uri_serialize(uri, with_params, output);
 			tsk_buffer_append(output, ">", 1);
-
-			return 0;
 		}
 		else{
-			__tsip_uri_serialize(uri, with_params, output);
-
-			return 0;
+			ret = __tsip_uri_serialize(uri, with_params, output);
 		}
+		return ret;
 	}
 	else{
-		TSK_DEBUG_ERROR("Cannot serialize NULL URI.");
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
 	}
-
-	return -1;
 }
 
+/**@ingroup tsip_uri_group
+* Converts a SIP/SIPS/TEL URI object to a string.
+* @param uri The URI to convert.
+* @param with_params Whether to include the parameters.
+* @param quote Whether to add quotes("<" and ">").
+* @retval Pointer to a string if succeed and Null otherwise. It's up to the caller to free the returned string.
+*/
 char* tsip_uri_tostring(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote)
 {
 	tsk_buffer_t *output = tsk_buffer_create_null();
@@ -127,12 +146,20 @@ char* tsip_uri_tostring(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_
 	return ret;
 }
 
+/**@ingroup tsip_uri_group
+* Clones a SIP/SIPS/TEL URI object.
+* @param uri The URI to clone.
+* @param with_params Whether to include the parameters.
+* @param quote Whether to add quotes("<" and ">") and display name.
+* @retval New URI object if succeed and Null otherwise.
+*/
 tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bool_t quote)
 {
-	tsip_uri_t *newuri = 0;
+	tsip_uri_t *newuri = tsk_null;
 	tsk_buffer_t *output = tsk_buffer_create_null();
-	tsip_uri_serialize(uri, with_params, quote, output);
-	newuri = tsip_uri_parse(output->data, output->size);
+	if((tsip_uri_serialize(uri, with_params, quote, output)) == 0){
+		newuri = tsip_uri_parse(output->data, output->size);
+	}
 	TSK_OBJECT_SAFE_FREE(output);
 
 	return newuri;
@@ -149,8 +176,6 @@ tsip_uri_t *tsip_uri_clone(const tsip_uri_t *uri, tsk_bool_t with_params, tsk_bo
 //	SIP/SIPS/TEL URI object definition
 //
 
-/**@ingroup tsip_uri_group
-*/
 static tsk_object_t* tsip_uri_ctor(tsk_object_t *self, va_list * app)
 {
 	tsip_uri_t *uri = self;
@@ -166,8 +191,6 @@ static tsk_object_t* tsip_uri_ctor(tsk_object_t *self, va_list * app)
 	return self;
 }
 
-/**@ingroup tsip_uri_group
-*/
 static tsk_object_t* tsip_uri_dtor(tsk_object_t *self)
 {
 	tsip_uri_t *uri = self;

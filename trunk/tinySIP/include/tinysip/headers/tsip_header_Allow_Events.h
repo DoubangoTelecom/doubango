@@ -37,11 +37,8 @@ TSIP_BEGIN_DECLS
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Allow-Events'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF : Allow-Events	=  	 ( "Allow-Events" / "u" ) HCOLON event-type *(COMMA event-type)
 /// 	

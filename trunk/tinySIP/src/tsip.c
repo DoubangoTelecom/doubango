@@ -56,61 +56,80 @@ void *run(void* self);
 * http://portal.etsi.org/docbox/EC_Files/EC_Files/ts_10202702v030101p.pdf
 */
 
-int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, const char* option_value)
-{
-	switch(option_id){
 
-		/* === Identity === */
-		case TSIP_STACK_OPTION_DISPLAY_NAME:
-			{	/* Display name */
-				tsk_strupdate(&self->identity.display_name, option_value);
-				break;
-			}
-		case TSIP_STACK_OPTION_IMPU:
-		case TSIP_STACK_OPTION_PREFERRED_IDENTITY:
-			{	/* IMS Public User Identity or P-Preferred-Identity - valid SIP/TEL URI*/
-				if(option_value){
-					tsip_uri_t *uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
-					if(uri){
-						if(option_id == TSIP_STACK_OPTION_IMPU){
-							TSK_OBJECT_SAFE_FREE(self->identity.impu);
-							self->identity.impu = uri;
+/**@defgroup tsip_stack_group 3GPP IMS/LTE Stack
+*/
+
+
+/* Internal function used to set all user's parameters */
+int __tsip_stack_set(tsip_stack_t *self, va_list* app)
+{
+	tsip_stack_param_type_t curr;
+
+	while((curr = va_arg(*app, tsip_stack_param_type_t)) != pname_null){
+		switch(curr){
+			
+			/* === Identity === */
+			case pname_display_name:
+				{	/* (const char*)NAME_STR */
+					const char* NAME_STR = va_arg(*app, const char*);
+					tsk_strupdate(&self->identity.display_name, NAME_STR);
+					break;
+				}
+			case pname_impu:
+			case pname_preferred_id:
+				{	/* (const char*)URI_STR */
+					const char* URI_STR = va_arg(*app, const char*);
+					if(!tsk_strnullORempty(URI_STR)){
+						tsip_uri_t *uri = tsip_uri_parse(URI_STR, tsk_strlen(URI_STR));
+						if(uri){
+							if(curr == pname_impu){
+								TSK_OBJECT_SAFE_FREE(self->identity.impu);
+								self->identity.impu = uri;
+							}
+							else{
+								TSK_OBJECT_SAFE_FREE(self->identity.preferred);
+								self->identity.preferred = uri;
+							}
 						}
 						else{
-							TSK_OBJECT_SAFE_FREE(self->identity.preferred);
-							self->identity.preferred = uri;
+							TSK_DEBUG_ERROR("'%s' is an invalid SIP/TEL URI", URI_STR);
+							if(curr == pname_impu){
+								return -1; /* IMPU is mandatory but P-Preferred-Identity isn't. */
+							}
 						}
 					}
-					else{
-						TSK_DEBUG_ERROR("'%s' is an invalid SIP/TEL URI", option_value);
-						if(option_id == TSIP_STACK_OPTION_IMPU){
-							return -1; /* IMPU is mandatory but P-Preferred-Identity isn't. */
-						}
+					else if(curr == pname_impu){
+						TSK_DEBUG_ERROR("IMPU (IMS Public Identity) is mandatory.");
+						return -1;
 					}
+					break;
 				}
-				break;
-			}
-		case TSIP_STACK_OPTION_IMPI:
-			{	/* IMS Private User Identity */
-				if(!option_value){
-					TSK_DEBUG_ERROR("IMPI is mandatory.");
-					return -1; /* mandatory */
+			case pname_impi:
+				{	/* (const char*)IMPI_STR */
+					const char* IMPI_STR = va_arg(*app, const char*);
+					if(tsk_strnullORempty(IMPI_STR)){
+						TSK_DEBUG_ERROR("IMPI (IMS Private Identity) is mandatory.");
+						return -1; /* mandatory */
+					}
+					tsk_strupdate(&self->identity.impi, IMPI_STR);
+					break;
 				}
-				tsk_strupdate(&self->identity.impi, option_value);
-				break;
-			}
-		case TSIP_STACK_OPTION_PASSWORD:
-			{	/* User's password */
-				tsk_strupdate(&self->identity.password, option_value);
-				break;
-			}
+			case pname_password:
+				{	/* (const char*)PASSORD_STR */
+					const char* PASSORD_STR = va_arg(*app, const char*);
+					tsk_strupdate(&self->identity.password, PASSORD_STR);
+					break;
+				}
 
-	/* ===  Network ===  */
-		case TSIP_STACK_OPTION_REALM:
-			{	/* realm (a.k.a domain name) - valid SIP/TEL URI */
-				if(option_value){
-					tsip_uri_t *uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
-					if(uri){
+
+
+			/* === Network === */
+			case pname_realm:
+				{	/* (const char*)URI_STR */
+					const char* URI_STR = va_arg(*app, const char*);
+					tsip_uri_t *uri;
+					if(!tsk_strnullORempty(URI_STR) && (uri = tsip_uri_parse(URI_STR, tsk_strlen(URI_STR)))){
 						if(uri->type == uri_unknown){ /* scheme is missing or unsupported? */
 							tsk_strupdate(&uri->scheme, "sip");
 							uri->type = uri_sip;
@@ -119,116 +138,38 @@ int __tsip_stack_set_option(tsip_stack_t *self, tsip_stack_option_t option_id, c
 						self->network.realm = uri;
 					}
 					else{
-						TSK_DEBUG_ERROR("'%s' is an invalid SIP/TEL URI", option_value);
+						TSK_DEBUG_ERROR("'%s' is an invalid SIP/TEL URI", URI_STR);
 						return -1; /* mandatory */
 					}
+					break;
 				}
-				break;
-			}
-		case TSIP_STACK_OPTION_LOCAL_IP:
-			{	/* IP address to bind to */
-				tsk_strupdate(&self->network.local_ip, option_value);
-				break;
-			}
-		case TSIP_STACK_OPTION_LOCAL_PORT:
-			{	/* IP port to bind to */
-				tnet_port_t port = atoi(option_value);
-				if(port){
-					self->network.local_port = port;
+			case pname_local_ip:
+				{	/* (const char*)IP_STR */
+					const char* IP_STR = va_arg(*app, const char*);
+					tsk_strupdate(&self->network.local_ip, IP_STR);
+					break;
 				}
-				else{
-					TSK_DEBUG_ERROR("%s is invalid as port number.", option_value);
+			case pname_local_port:
+				{	/* (unsigned)PORT_UINT */
+					unsigned PORT_UINT = (tnet_port_t)va_arg(*app, unsigned);
+					if(PORT_UINT>0x00 && PORT_UINT <=0xFF){
+						self->network.local_port = (tnet_port_t)PORT_UINT;
+					}
+					else{
+						TSK_DEBUG_WARN("%u is invalid for a port number", PORT_UINT);
+					}
+					break;
 				}
-				break;
-			}
-		case TSIP_STACK_OPTION_DISCOVERY_NAPTR:
-			{	/* Whether to use DNS NAPTR for Proxy-CSCF discovery */
-				self->network.discovery_naptr = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
-				break;
-			}
-		case TSIP_STACK_OPTION_DISCOVERY_DHCP:
-			{	/* Whether to use DHCPv4/v6 for Proxy-CSCF discovery */
-				self->network.discovery_dhcp = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
-				break;
-			}
-
-	/* ===  Security ===  */
-		case TSIP_STACK_OPTION_EARLY_IMS:
-			{	/* Whether to enable Early IMS Security as per 3GPP TS 33.978 */
-				self->security.earlyIMS = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
-				break;
-			}
-		//case TSIP_STACK_OPTION_IMS_AKA_AMF:
-		//	{	/* Authentication management field (AMF) as 16-bit field */
-		//		/* think about uint16_t */
-		//		if(option_value){
-		//			uint16_t amf = atoi(option_value);
-		//			self->security.amf[0] = (amf >> 8);
-		//			self->security.amf[1] = (amf & 0xFF);
-		//		}
-		//		break;
-		//	}
-		//case TSIP_STACK_OPTION_IMS_AKA_OPID:
-		//	{	/* IMS-AKA, Operator Id - 16-bytes */
-		//		break;
-		//	}
-		case TSIP_STACK_OPTION_SECAGREE_IPSEC:
-			{	/* Whether to enable IPSec security agreement as per IETF RFC 3329 */
-				break;
-			}
-		case TSIP_STACK_OPTION_SECAGREE_TLS:
-			{	/* Whether to enable IPSec security agreement as per IETF RFC 3329 */
-				break;
-			}
-
-	/* === Features === */
-		
-
-		default:
-			{
-				TSK_DEBUG_WARN("Unknown Option id %d", option_id);
-				break;
-			}
-	}
-	return 0;
-}
-
-int __tsip_stack_set(tsip_stack_t *self, va_list* app)
-{
-	tsip_stack_param_type_t curr;
-
-	while((curr = va_arg(*app, tsip_stack_param_type_t)) != pname_null){
-		switch(curr){
-			/* === Option === */
-			case pname_option:
-			{	/* (tsip_stack_option_t)ID_ENUM, (const char*)VALUE_STR */
-				tsip_stack_option_t ID_ENUM = va_arg(*app, tsip_stack_option_t);
-				const char* VALUE_STR = va_arg(*app, const char*);
-				if(__tsip_stack_set_option(self, ID_ENUM, VALUE_STR)){
-					/* Nothing to do --> va_list still safe */
-				}				
-				break;
-			}
-
-			/* 
-			* Network 
-			*/
-			
-			
-			
-			
-			
-			
-			/*case pname_discovery_naptr:
-			{
-				self->network.discovery_naptr = va_arg(*app, tsk_bool_t);
-				break;
-			}
+			case pname_discovery_naptr:
+				{	/* (tsk_bool_t)ENABLED_BOOL */
+					self->network.discovery_naptr = va_arg(*app, tsk_bool_t);
+					break;
+				}
 			case pname_discovery_dhcp:
-			{
-				self->network.discovery_dhcp = va_arg(*app, unsigned);
-				break;
-			}*/
+				{	/* (tsk_bool_t)ENABLED_BOOL */
+					self->network.discovery_dhcp = va_arg(*app, tsk_bool_t);
+					break;
+				}
 			case pname_proxy_cscf:
 			{	/* (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR */
 				const char* FQDN_STR = va_arg(*app, const char*);
@@ -245,7 +186,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				}
 
 				/* Transport */
-				if(!TRANSPORT_STR || tsk_striequals(TRANSPORT_STR, "UDP")){
+				if(tsk_strnullORempty(TRANSPORT_STR) || tsk_striequals(TRANSPORT_STR, "UDP")){
 					TNET_SOCKET_TYPE_SET_UDP(self->network.proxy_cscf_type);
 				}
 				else if(tsk_striequals(TRANSPORT_STR, "TCP")){
@@ -262,7 +203,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					/* not mandatoy */
 				}
 				/* whether to use ipv6 or not */
-				if(IP_VERSION_STR){
+				if(!tsk_strnullORempty(IP_VERSION_STR)){
 					if(tsk_strcontains(IP_VERSION_STR, tsk_strlen(IP_VERSION_STR), "6")){
 						TNET_SOCKET_TYPE_SET_IPV6Only(self->network.proxy_cscf_type);
 					}
@@ -272,14 +213,29 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				}
 				break;
 			}
-
 			
 
-			
-
-			
 
 			/* === Security === */
+			case pname_early_ims:
+				{	/* (tsk_bool_t)ENABLED_BOOL */
+					self->security.earlyIMS = va_arg(*app, tsk_bool_t);
+					break;
+				}
+			case pname_secagree_ipsec:
+				{	/* (tsk_bool_t)ENABLED_BOOL */
+					if((self->security.enable_secagree_ipsec = va_arg(*app, tsk_bool_t))){
+						tsk_strupdate(&self->security.secagree_mech, "ipsec-3gpp");
+					}
+					break;
+				}
+			case pname_secagree_tls:
+				{	/* (tsk_bool_t)ENABLED_BOOL */
+					if((self->security.enable_secagree_tls = va_arg(*app, tsk_bool_t))){
+						tsk_strupdate(&self->security.secagree_mech, "tls");
+					}
+					break;
+				}
 			case pname_amf:
 			{ /* (uint16_t)AMF_UINT16 */
 				unsigned amf = va_arg(*app, unsigned);
@@ -313,31 +269,24 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					}
 					break;
 				}
-			case pname_secagree_ipsec:
-				{	/* ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR */
-					tsk_strupdate(&self->secagree_mech, "ipsec-3gpp");
-					tsk_strupdate(&self->secagree_ipsec.alg, va_arg(*app, const char*));
-					tsk_strupdate(&self->secagree_ipsec.ealg, va_arg(*app, const char*));
-					tsk_strupdate(&self->secagree_ipsec.mode, va_arg(*app, const char*));
-					tsk_strupdate(&self->secagree_ipsec.protocol, va_arg(*app, const char*));
-					self->enable_secagree_ipsec = 1;
-					break;
-				}
-			case pname_secagree_tls:
-				{	/* USE_TLS_SECAGREE_INT */
-					self->enable_secagree_tls = va_arg(*app, int) ? 1 : 0;
+			case pname_ipsec_params:
+				{	/* (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR*/
+					tsk_strupdate(&self->security.ipsec.alg, va_arg(*app, const char*));
+					tsk_strupdate(&self->security.ipsec.ealg, va_arg(*app, const char*));
+					tsk_strupdate(&self->security.ipsec.mode, va_arg(*app, const char*));
+					tsk_strupdate(&self->security.ipsec.protocol, va_arg(*app, const char*));
 					break;
 				}
 			case pname_tls_certs:
-				{	/*CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR*/
-					tsk_strupdate(&self->tls.ca, va_arg(*app, const char*));
-					tsk_strupdate(&self->tls.pbk, va_arg(*app, const char*));
-					tsk_strupdate(&self->tls.pvk, va_arg(*app, const char*));
+				{	/* (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR */
+					tsk_strupdate(&self->security.tls.ca, va_arg(*app, const char*));
+					tsk_strupdate(&self->security.tls.pbk, va_arg(*app, const char*));
+					tsk_strupdate(&self->security.tls.pvk, va_arg(*app, const char*));
 					break;
 				}
 			
 
-			/* === Headers === */
+			/* === Dummy Headers === */
 			case pname_header:
 				{ /* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* NAME_STR = va_arg(*app, const char*);
@@ -366,6 +315,38 @@ bail:
 	return 0;
 }
 
+/**@ingroup tsip_stack_group
+* Creates new 3GPP IMS/LTE stack handle. 
+* As the 3GPP IMS/LTE stack depends on the network library (tinyNET), you MUST call <a href="http://doubango.org/API/tinyNET/tnet_8c.html#affba6c2710347476f615b0135777c640"> tnet_startup()</a> before using any SIP function (tsip_*). 
+* <a href="http://doubango.org/API/tinyNET/tnet_8c.html#ac42b22a7ac5831f04326aee9de033c84"> tnet_cleanup()</a> is used to terminate use of network functions.
+* @param callback Callback function to call to alert the application for new SIP or media events.
+* @param realm_uri The realm is the name of the domain name to authenticate to. It should be a valid SIP URI (e.g. sip:open-ims.test).
+* @param impi_uri The IMPI is a unique identifier assigned to a user (or UE) by the home network. 
+* It could be either a SIP URI (e.g. sip:bob@open-ims.test), a tel URI (e.g. tel:+33100000) or any alphanumeric string (e.g. bob@open-ims.test or bob). 
+* It is used to authenticate the UE (username field in SIP Authorization/Proxy-Authorization header).
+* @param impu_uri As its name says, it’s you public visible identifier where you are willing to receive calls or any demands. 
+* An IMPU could be either a SIP or tel URI (e.g. tel:+33100000 or sip:bob@open-ims.test). In IMS world, a user can have multiple IMPUs associated to its unique IMPI.
+* @param ... Any TSIP_STACK_SET_*() macros.
+* @retval A valid handle if succeed and Null-handle otherwise. As a stack is a well-defined object, you should use @a TSK_OBJECT_SAFE_FREE() to safely destroy the handle.
+* 
+* @code
+int app_callback(const tsip_event_t *sipevent);
+
+const char* realm_uri = "sip:open-ims.test";
+const char* impi_uri = "bob@open-ims.test";
+const char* impu_uri = "sip:bob@open-ims.test";
+
+tsip_stack_handle_t* stack = tsip_stack_create(app_callback, realm_uri, impi_uri, impu_uri,
+                                 TSIP_STACK_SET_PASSWORD("mysecret"),
+                                 // ...other macros...
+                                 TSIP_STACK_SET_NULL());
+	
+	// ...whatever
+
+	TSK_OBJECT_SAFE_FREE(stack);
+* @endcode
+* @sa @ref tsip_stack_set()<br>@ref tsip_stack_start()
+*/
 tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const char* realm_uri, const char* impi_uri, const char* impu_uri, ...)
 {
 	tsip_stack_t* stack = tsk_null;
@@ -385,9 +366,9 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	
 	/* === Set mandatory values (realm, IMPI and IMPU) === */
 	if(tsip_stack_set(stack,
-			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_REALM, realm_uri),
-			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_IMPI, impi_uri),
-			TSIP_STACK_SET_OPTION(TSIP_STACK_OPTION_IMPU, impu_uri),
+			TSIP_STACK_SET_REALM(realm_uri),
+			TSIP_STACK_SET_IMPI(impi_uri),
+			TSIP_STACK_SET_IMPU(impu_uri),
 
 			TSIP_STACK_SET_NULL())){
 		TSK_DEBUG_ERROR("Invalid parameter.");
@@ -434,6 +415,11 @@ bail:
 	return stack;
 }
 
+/**@ingroup tsip_stack_group
+* Starts a 3GPP IMS/LTE stack. This function MUST be called before you start calling any SIP function (@a tsip_*).
+* @param self The 3GPP IMS/LTE stack to start. This handle should be created using @ref tsip_stack_create().
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
 int tsip_stack_start(tsip_stack_handle_t *self)
 {
 	int ret = -1;
@@ -456,11 +442,11 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 			stack->identity.preferred = tsk_object_ref((void*)stack->identity.impu);
 		}
 		/* === Transport type === */
-		if(stack->secagree_mech){
-			if(tsk_striequals(stack->secagree_mech, "ipsec-3gpp")){
+		if(!tsk_strnullORempty(stack->security.secagree_mech)){
+			if(tsk_striequals(stack->security.secagree_mech, "ipsec-3gpp")){
 				TNET_SOCKET_TYPE_SET_IPSEC(stack->network.proxy_cscf_type);
 			}
-			//else if if(tsk_striquals(stack->secagree_mech, "ipsec-ike"))
+			//else if if(tsk_striquals(stack->security.secagree_mech, "ipsec-ike"))
 		}
 
 		/* === Use DNS NAPTR+SRV for the P-CSCF discovery? === */
@@ -543,6 +529,20 @@ bail:
 	return ret;
 }
 
+/**@ingroup tsip_stack_group
+* Configures the stack.
+* @param self The 3GPP IMS/LTE stack to configure. This handle should be created using @ref tsip_stack_create().
+* @param ... Any TSIP_STACK_SET_*() or TSIP_STACK_UNSET_*() macros.
+* @retval Zero if succeed and non-zero error code otherwise.
+*
+* @code
+int ret = tsip_stack_set(stack, 
+            TSIP_STACK_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
+            TSIP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref tsip_stack_create()
+*/
 int tsip_stack_set(tsip_stack_handle_t *self, ...)
 {
 	if(self){
@@ -559,10 +559,13 @@ int tsip_stack_set(tsip_stack_handle_t *self, ...)
 	return -1;
 }
 
-/**
-* Stops the stack. 
-* Before stopping the engine will hangup all dialogs (wtring with non-register dialogs).
-* To continue to receive callbacks, you should call this function before destroying the stack.
+/**@ingroup tsip_stack_group
+* Stops the stack.
+* @param self The 3GPP IMS/LTE stack to stop. This handle should be created using @ref tsip_stack_create() and started using tsip_stack_start().
+* This function is also called by the garbage collector when the stack is destroyed but you should call it yourself before destroying the stack.<br>
+* Before stopping, the stack will hangup all SIP dialogs (starting with non-register dialogs) and destroy all sessions. This is called shutdown phase.
+* At the end of this phase, all the SIP sessions will be destroyed.
+* @sa @ref tsip_stack_create()<br>@ref tsip_stack_start()
 */
 int tsip_stack_stop(tsip_stack_handle_t *self)
 {
@@ -615,6 +618,7 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 	return -1;
 }
 
+/* internal function used to construct a valid contact URI */
 tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *stack, const char* protocol)
 {
 	if(stack){
@@ -636,6 +640,7 @@ tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *stack, const char* pro
 	return tsk_null;
 }
 
+/* internal function used to construct a valid Proxy-CSCF URI used as the default first route */
 tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tsk_bool_t lr)
 {
 	if(stack){
@@ -761,15 +766,15 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
 		
 		/* Security(1/1) */
-		TSK_FREE(stack->secagree_mech);
-		TSK_FREE(stack->secagree_ipsec.alg);
-		TSK_FREE(stack->secagree_ipsec.ealg);
-		TSK_FREE(stack->secagree_ipsec.mode);
-		TSK_FREE(stack->secagree_ipsec.protocol);
+		TSK_FREE(stack->security.secagree_mech);
+		TSK_FREE(stack->security.ipsec.alg);
+		TSK_FREE(stack->security.ipsec.ealg);
+		TSK_FREE(stack->security.ipsec.mode);
+		TSK_FREE(stack->security.ipsec.protocol);
 
-		TSK_FREE(stack->tls.ca);
-		TSK_FREE(stack->tls.pbk);
-		TSK_FREE(stack->tls.pvk);
+		TSK_FREE(stack->security.tls.ca);
+		TSK_FREE(stack->security.tls.pbk);
+		TSK_FREE(stack->security.tls.pvk);
 
 
 		/* DNS */

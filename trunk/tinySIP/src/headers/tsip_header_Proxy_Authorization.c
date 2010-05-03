@@ -103,7 +103,7 @@ tsip_header_Proxy_Authorization_t *tsip_header_Proxy_Authorization_parse(const c
 	
 	if((hdr_http = thttp_header_Proxy_Authorization_parse(data, size)))
 	{
-		hdr_sip = TSIP_HEADER_PROXY_AUTHORIZATION_CREATE();
+		hdr_sip = tsip_header_Proxy_Authorization_create();
 		
 		hdr_sip->scheme = tsk_strdup(hdr_http->scheme);
 		hdr_sip->username = tsk_strdup(hdr_http->username);

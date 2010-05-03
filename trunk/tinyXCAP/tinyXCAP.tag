@@ -615,8 +615,8 @@
       <type>#define</type>
       <name>TXCAP_STACK_SET_OPTION</name>
       <anchorfile>group__txcap__stack__group.html</anchorfile>
-      <anchor>ga7be3dc2e5f66e8a98e80eeb9b62caa3d</anchor>
-      <arglist>(ID_INT, VALUE_STR)</arglist>
+      <anchor>ga9fa6d7713160de9afe77d210c5a7f605</anchor>
+      <arglist>(ID_ENUM, VALUE_STR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -718,6 +718,18 @@
       <anchor>a2ccc19e57676e593f4174cc2250d5e65a6b42f00f3d0e5b1a0d0a408b0ea18b3b</anchor>
       <arglist></arglist>
     </member>
+    <member kind="enumvalue">
+      <name>TXCAP_STACK_OPTION_LOCAL_IP</name>
+      <anchorfile>txcap_8h.html</anchorfile>
+      <anchor>a2ccc19e57676e593f4174cc2250d5e65ae9cc2a54dac5e62c6207cf14a57750f1</anchor>
+      <arglist></arglist>
+    </member>
+    <member kind="enumvalue">
+      <name>TXCAP_STACK_OPTION_LOCAL_PORT</name>
+      <anchorfile>txcap_8h.html</anchorfile>
+      <anchor>a2ccc19e57676e593f4174cc2250d5e65abbece683a7c8f113bbc3b912e415fec3</anchor>
+      <arglist></arglist>
+    </member>
     <member kind="enumeration">
       <name>txcap_stack_param_type_e</name>
       <anchorfile>txcap_8h.html</anchorfile>
@@ -758,8 +770,8 @@
       <type>TINYXCAP_API txcap_stack_handle_t *</type>
       <name>txcap_stack_create</name>
       <anchorfile>group__txcap__stack__group.html</anchorfile>
-      <anchor>gac79f4263c6c047a40f27d11f49d3628f</anchor>
-      <arglist>(thttp_stack_callback callback, const char *xui, const char *password, const char *xcap_root,...)</arglist>
+      <anchor>gae20920e45078b18fc76c52c63931b2e9</anchor>
+      <arglist>(thttp_stack_callback_f callback, const char *xui, const char *password, const char *xcap_root,...)</arglist>
     </member>
     <member kind="function">
       <type>TINYXCAP_API int</type>
@@ -806,8 +818,8 @@
       <type>txcap_stack_handle_t *</type>
       <name>txcap_stack_create</name>
       <anchorfile>group__txcap__stack__group.html</anchorfile>
-      <anchor>gac79f4263c6c047a40f27d11f49d3628f</anchor>
-      <arglist>(thttp_stack_callback callback, const char *xui, const char *password, const char *xcap_root,...)</arglist>
+      <anchor>gae20920e45078b18fc76c52c63931b2e9</anchor>
+      <arglist>(thttp_stack_callback_f callback, const char *xui, const char *password, const char *xcap_root,...)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -1007,8 +1019,8 @@
       <type>#define</type>
       <name>TXCAP_STACK_SET_OPTION</name>
       <anchorfile>group__txcap__stack__group.html</anchorfile>
-      <anchor>ga7be3dc2e5f66e8a98e80eeb9b62caa3d</anchor>
-      <arglist>(ID_INT, VALUE_STR)</arglist>
+      <anchor>ga9fa6d7713160de9afe77d210c5a7f605</anchor>
+      <arglist>(ID_ENUM, VALUE_STR)</arglist>
     </member>
     <member kind="define">
       <type>#define</type>
@@ -1056,8 +1068,8 @@
       <type>txcap_stack_handle_t *</type>
       <name>txcap_stack_create</name>
       <anchorfile>group__txcap__stack__group.html</anchorfile>
-      <anchor>gac79f4263c6c047a40f27d11f49d3628f</anchor>
-      <arglist>(thttp_stack_callback callback, const char *xui, const char *password, const char *xcap_root,...)</arglist>
+      <anchor>gae20920e45078b18fc76c52c63931b2e9</anchor>
+      <arglist>(thttp_stack_callback_f callback, const char *xui, const char *password, const char *xcap_root,...)</arglist>
     </member>
     <member kind="function">
       <type>int</type>

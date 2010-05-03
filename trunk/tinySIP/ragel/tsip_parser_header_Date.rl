@@ -36,8 +36,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Date_group SIP Date header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

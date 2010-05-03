@@ -38,7 +38,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_EVENT_VA_ARGS(package)		tsip_header_Event_def_t, (const char*)package
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Event/o' .
 ///

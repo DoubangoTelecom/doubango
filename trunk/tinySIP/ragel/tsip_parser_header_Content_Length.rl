@@ -32,8 +32,7 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Content_Length_group SIP Content_Length header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

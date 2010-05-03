@@ -38,7 +38,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_SECURITY_VERIFY_VA_ARGS()		tsip_header_Security_Verify_def_t
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Security-Client' as per RFC 3329.
 ///

@@ -41,7 +41,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_RECORD_ROUTE_VA_ARGS(uri)	tsip_header_Record_Route_def_t, (const tsip_uri_t*)uri
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Record-Route'.
 ///

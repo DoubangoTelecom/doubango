@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tsip_dialog_invlite.h
+/**@file tsip_dialog_invite.h
  * @brief SIP dialog INVITE.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>

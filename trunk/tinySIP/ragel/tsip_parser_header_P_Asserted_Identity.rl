@@ -37,8 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_P_Asserted_Identity_group SIP P_Asserted_Identity header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

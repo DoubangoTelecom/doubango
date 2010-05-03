@@ -38,11 +38,8 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(length)	tsip_header_Content_Length_def_t, (uint32_t)length
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Content-Length'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF: Content-Length / l
 /// Content-Length	= 	( "Content-Length" / "l" ) HCOLON 1*DIGIT

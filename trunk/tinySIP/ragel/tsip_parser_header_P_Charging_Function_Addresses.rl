@@ -37,8 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_P_Charging_Function_Addresses_group SIP P_Charging_Function_Addresses header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

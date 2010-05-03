@@ -36,11 +36,8 @@
 TSIP_BEGIN_DECLS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Authorization' as per RFC 3261 subclause .
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF = Authorization	= 	"Authorization" HCOLON credentials
 /// 								credentials	= 	("Digest" LWS digest-response) / other-response
@@ -66,7 +63,7 @@ TSIP_BEGIN_DECLS
 /// 								auth-scheme	= 	token
 /// 								auts	= 	"auts" EQUAL auts-param
 /// 								auts-param	= 	LDQUOT auts-value RDQUOT
-/// 								auts-value	= 	<base64 encoding of AUTS>
+/// 								auts-value	= 	[base64 encoding of AUTS]
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Authorization_s

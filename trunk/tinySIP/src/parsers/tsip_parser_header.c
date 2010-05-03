@@ -22,7 +22,7 @@
 *
 */
 
-/**@file tsip_parser_headers.c
+/**@file tsip_parser_header.c
  * @brief SIP headers parser.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>

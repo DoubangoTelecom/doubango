@@ -34,8 +34,7 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Subscription_State_group SIP Subscription_State header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

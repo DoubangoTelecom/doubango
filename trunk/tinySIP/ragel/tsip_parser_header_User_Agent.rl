@@ -36,9 +36,6 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_User_Agent_group SIP User_Agent header.
-*/
-
 /***********************************
 *	Ragel state machine.
 */

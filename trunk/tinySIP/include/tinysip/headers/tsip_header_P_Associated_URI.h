@@ -40,7 +40,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_P_ASSOCIATED_URI_VA_ARGS(uri)		tsip_header_P_Associated_URI_def_t, (const tsip_uri_t*)uri
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'P-Associated-URI' as per RFC 3455.
 ///

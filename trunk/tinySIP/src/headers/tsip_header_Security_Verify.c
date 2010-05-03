@@ -39,14 +39,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Security_Verify_group SIP Security_Verify header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 148 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 147 "./ragel/tsip_parser_header_Security_Verify.rl" */
 
 
 tsip_header_Security_Verify_t* tsip_header_Security_Verify_create()
@@ -112,7 +111,7 @@ tsip_header_Security_Verifies_L_t *tsip_header_Security_Verify_parse(const char 
 	tsip_header_Security_Verify_t *curr_securityverify = tsk_null;
 
 	
-/* #line 116 "./src/headers/tsip_header_Security_Verify.c" */
+/* #line 115 "./src/headers/tsip_header_Security_Verify.c" */
 static const char _tsip_machine_parser_header_Security_Verify_actions[] = {
 	0, 1, 0, 1, 3, 1, 4, 1, 
 	5, 1, 6, 1, 7, 1, 8, 1, 
@@ -673,16 +672,16 @@ static const int tsip_machine_parser_header_Security_Verify_error = 0;
 static const int tsip_machine_parser_header_Security_Verify_en_main = 1;
 
 
-/* #line 213 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 212 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	
-/* #line 679 "./src/headers/tsip_header_Security_Verify.c" */
+/* #line 678 "./src/headers/tsip_header_Security_Verify.c" */
 	{
 	cs = tsip_machine_parser_header_Security_Verify_start;
 	}
 
-/* #line 214 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 213 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	
-/* #line 686 "./src/headers/tsip_header_Security_Verify.c" */
+/* #line 685 "./src/headers/tsip_header_Security_Verify.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -757,13 +756,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 51 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 55 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(!curr_securityverify){
 			curr_securityverify = tsip_header_Security_Verify_create_null();
@@ -771,7 +770,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 62 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 61 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			tsk_list_push_back_data(hdr_securityverifies, ((void**) &curr_securityverify));
@@ -779,7 +778,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 68 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 67 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_STRING(curr_securityverify->mech);
@@ -787,7 +786,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 74 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 73 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_INT(curr_securityverify->port_s);
@@ -795,7 +794,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 80 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 79 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_INT(curr_securityverify->port_c);
@@ -803,7 +802,7 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 86 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 85 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_UINT(curr_securityverify->spi_s);
@@ -811,7 +810,7 @@ _match:
 	}
 	break;
 	case 7:
-/* #line 92 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 91 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_UINT(curr_securityverify->spi_c);
@@ -819,7 +818,7 @@ _match:
 	}
 	break;
 	case 8:
-/* #line 98 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 97 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_STRING(curr_securityverify->ealg);
@@ -827,7 +826,7 @@ _match:
 	}
 	break;
 	case 9:
-/* #line 104 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 103 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_STRING(curr_securityverify->alg);
@@ -835,7 +834,7 @@ _match:
 	}
 	break;
 	case 10:
-/* #line 110 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 109 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_STRING(curr_securityverify->prot);
@@ -843,7 +842,7 @@ _match:
 	}
 	break;
 	case 11:
-/* #line 116 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 115 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_SET_DOUBLE(curr_securityverify->q);
@@ -851,7 +850,7 @@ _match:
 	}
 	break;
 	case 12:
-/* #line 122 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 121 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 		if(curr_securityverify){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_securityverify));
@@ -859,11 +858,11 @@ _match:
 	}
 	break;
 	case 13:
-/* #line 128 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 127 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	{
 	}
 	break;
-/* #line 867 "./src/headers/tsip_header_Security_Verify.c" */
+/* #line 866 "./src/headers/tsip_header_Security_Verify.c" */
 		}
 	}
 
@@ -876,12 +875,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 215 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 214 "./ragel/tsip_parser_header_Security_Verify.rl" */
 	
 	if( cs < 
-/* #line 883 "./src/headers/tsip_header_Security_Verify.c" */
+/* #line 882 "./src/headers/tsip_header_Security_Verify.c" */
 188
-/* #line 216 "./ragel/tsip_parser_header_Security_Verify.rl" */
+/* #line 215 "./ragel/tsip_parser_header_Security_Verify.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Security-Verify' header.");
 		TSK_OBJECT_SAFE_FREE(curr_securityverify);

@@ -39,7 +39,6 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_HEADER_USER_AGENT_DEFAULT			"IM-client/OMA1.0 doubango/v1.0.0"
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'User-Agent'.
 ///

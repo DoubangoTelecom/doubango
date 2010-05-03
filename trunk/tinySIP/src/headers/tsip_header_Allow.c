@@ -37,14 +37,11 @@
 #include "tsk_memory.h"
 #include <string.h>
 
-/**@defgroup tsip_header_Allow_group SIP Allow header.
-*/
-
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 69 "./ragel/tsip_parser_header_Allow.rl" */
+/* #line 66 "./ragel/tsip_parser_header_Allow.rl" */
 
 
 
@@ -88,7 +85,7 @@ tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 92 "./src/headers/tsip_header_Allow.c" */
+/* #line 89 "./src/headers/tsip_header_Allow.c" */
 static const char _tsip_machine_parser_header_Allow_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -166,16 +163,16 @@ static const int tsip_machine_parser_header_Allow_error = 0;
 static const int tsip_machine_parser_header_Allow_en_main = 1;
 
 
-/* #line 112 "./ragel/tsip_parser_header_Allow.rl" */
+/* #line 109 "./ragel/tsip_parser_header_Allow.rl" */
 	
-/* #line 172 "./src/headers/tsip_header_Allow.c" */
+/* #line 169 "./src/headers/tsip_header_Allow.c" */
 	{
 	cs = tsip_machine_parser_header_Allow_start;
 	}
 
-/* #line 113 "./ragel/tsip_parser_header_Allow.rl" */
+/* #line 110 "./ragel/tsip_parser_header_Allow.rl" */
 	
-/* #line 179 "./src/headers/tsip_header_Allow.c" */
+/* #line 176 "./src/headers/tsip_header_Allow.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -250,23 +247,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 51 "./ragel/tsip_parser_header_Allow.rl" */
+/* #line 48 "./ragel/tsip_parser_header_Allow.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "./ragel/tsip_parser_header_Allow.rl" */
+/* #line 53 "./ragel/tsip_parser_header_Allow.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_allow->methods);
 	}
 	break;
 	case 2:
-/* #line 61 "./ragel/tsip_parser_header_Allow.rl" */
+/* #line 58 "./ragel/tsip_parser_header_Allow.rl" */
 	{
 	}
 	break;
-/* #line 270 "./src/headers/tsip_header_Allow.c" */
+/* #line 267 "./src/headers/tsip_header_Allow.c" */
 		}
 	}
 
@@ -279,12 +276,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 114 "./ragel/tsip_parser_header_Allow.rl" */
+/* #line 111 "./ragel/tsip_parser_header_Allow.rl" */
 	
 	if( cs < 
-/* #line 286 "./src/headers/tsip_header_Allow.c" */
+/* #line 283 "./src/headers/tsip_header_Allow.c" */
 18
-/* #line 115 "./ragel/tsip_parser_header_Allow.rl" */
+/* #line 112 "./ragel/tsip_parser_header_Allow.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse SIP 'Allow' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_allow);

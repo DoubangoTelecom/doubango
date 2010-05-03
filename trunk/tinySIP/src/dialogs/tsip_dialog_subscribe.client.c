@@ -41,8 +41,7 @@
 #include "tsk_debug.h"
 #include "tsk_time.h"
 
-/**@defgroup tsip_dialog_subscribe_group SIP dialog SUBSCRIBE (Client side) as per RFC 3265.
-*/
+
 
 #define DEBUG_STATE_MACHINE											0
 #define TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(subscribe, TX)
@@ -532,9 +531,12 @@ int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app)
 */
 int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app)
 {
-	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
+	tsip_dialog_subscribe_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_subscribe_t *);
 	/*const tsip_response_t *response =*/ va_arg(*app, const tsip_response_t *);
-	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
+	action = va_arg(*app, const tsip_action_t *);
 	
 	/* Set  current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);

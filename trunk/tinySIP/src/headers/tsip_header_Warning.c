@@ -39,14 +39,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Warning_group SIP Warning header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 99 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 98 "./ragel/tsip_parser_header_Warning.rl" */
 
 
 tsip_header_Warning_t* tsip_header_Warning_create()
@@ -77,7 +76,7 @@ tsip_header_Warnings_L_t *tsip_header_Warning_parse(const char *data, size_t siz
 	tsip_header_Warning_t *curr_warning = 0;
 
 	
-/* #line 81 "./src/headers/tsip_header_Warning.c" */
+/* #line 80 "./src/headers/tsip_header_Warning.c" */
 static const char _tsip_machine_parser_header_Warning_actions[] = {
 	0, 1, 0, 1, 2, 1, 4, 1, 
 	6, 2, 1, 0, 2, 3, 5
@@ -340,16 +339,16 @@ static const int tsip_machine_parser_header_Warning_error = 0;
 static const int tsip_machine_parser_header_Warning_en_main = 1;
 
 
-/* #line 129 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 128 "./ragel/tsip_parser_header_Warning.rl" */
 	
-/* #line 346 "./src/headers/tsip_header_Warning.c" */
+/* #line 345 "./src/headers/tsip_header_Warning.c" */
 	{
 	cs = tsip_machine_parser_header_Warning_start;
 	}
 
-/* #line 130 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 129 "./ragel/tsip_parser_header_Warning.rl" */
 	
-/* #line 353 "./src/headers/tsip_header_Warning.c" */
+/* #line 352 "./src/headers/tsip_header_Warning.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -424,13 +423,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 51 "./ragel/tsip_parser_header_Warning.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 55 "./ragel/tsip_parser_header_Warning.rl" */
 	{
 		if(!curr_warning){
 			curr_warning = tsip_header_Warning_create();
@@ -438,7 +437,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 62 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 61 "./ragel/tsip_parser_header_Warning.rl" */
 	{
 		if(curr_warning){
 			TSK_PARSER_SET_STRING(curr_warning->agent);
@@ -446,7 +445,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 68 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 67 "./ragel/tsip_parser_header_Warning.rl" */
 	{
 		if(curr_warning){
 			TSK_PARSER_SET_STRING(curr_warning->text);
@@ -454,7 +453,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 74 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 73 "./ragel/tsip_parser_header_Warning.rl" */
 	{
 		if(curr_warning){
 			TSK_PARSER_SET_INTEGER(curr_warning->code);
@@ -462,7 +461,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 80 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 79 "./ragel/tsip_parser_header_Warning.rl" */
 	{
 		if(curr_warning){
 			tsk_list_push_back_data(hdr_warnings, ((void**) &curr_warning));
@@ -470,11 +469,11 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 86 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 85 "./ragel/tsip_parser_header_Warning.rl" */
 	{
 	}
 	break;
-/* #line 478 "./src/headers/tsip_header_Warning.c" */
+/* #line 477 "./src/headers/tsip_header_Warning.c" */
 		}
 	}
 
@@ -487,12 +486,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 131 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 130 "./ragel/tsip_parser_header_Warning.rl" */
 	
 	if( cs < 
-/* #line 494 "./src/headers/tsip_header_Warning.c" */
+/* #line 493 "./src/headers/tsip_header_Warning.c" */
 92
-/* #line 132 "./ragel/tsip_parser_header_Warning.rl" */
+/* #line 131 "./ragel/tsip_parser_header_Warning.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Warning' header.");
 		TSK_OBJECT_SAFE_FREE(curr_warning);

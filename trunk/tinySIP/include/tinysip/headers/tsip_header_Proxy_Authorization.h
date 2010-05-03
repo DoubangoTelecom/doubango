@@ -35,18 +35,9 @@
 
 TSIP_BEGIN_DECLS
 
-/**@def TSIP_HEADER_PROXY_AUTHORIZATION_CREATE
-* Creates new sip 'PROXY-AUTHORIZATION' header.  You must call @ref TSK_OBJECT_SAFE_FREE to free the header.
-* @sa TSK_OBJECT_SAFE_FREE.
-*/
-#define TSIP_HEADER_PROXY_AUTHORIZATION_CREATE()			tsk_object_new(tsip_header_Proxy_Authorization_def_t)
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Proxy-Authorization'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF =					 	"Proxy-Authorization" HCOLON credentials
 /// 								credentials	= 	("Digest" LWS digest-response) / other-response
@@ -72,7 +63,7 @@ TSIP_BEGIN_DECLS
 /// 								auth-scheme	= 	token
 /// 								auts	= 	"auts" EQUAL auts-param
 /// 								auts-param	= 	LDQUOT auts-value RDQUOT
-/// 								auts-value	= 	<base64 encoding of AUTS>
+/// 								auts-value	= [base64 encoding of AUTS]
 /// 	
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Proxy_Authorization_s

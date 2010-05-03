@@ -37,14 +37,13 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_RSeq_group SIP 'RSeq' header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 66 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 65 "./ragel/tsip_parser_header_RSeq.rl" */
 
 
 
@@ -78,7 +77,7 @@ tsip_header_RSeq_t *tsip_header_RSeq_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 82 "./src/headers/tsip_header_RSeq.c" */
+/* #line 81 "./src/headers/tsip_header_RSeq.c" */
 static const char _tsip_machine_parser_header_RSeq_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -135,16 +134,16 @@ static const int tsip_machine_parser_header_RSeq_error = 0;
 static const int tsip_machine_parser_header_RSeq_en_main = 1;
 
 
-/* #line 99 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 98 "./ragel/tsip_parser_header_RSeq.rl" */
 	
-/* #line 141 "./src/headers/tsip_header_RSeq.c" */
+/* #line 140 "./src/headers/tsip_header_RSeq.c" */
 	{
 	cs = tsip_machine_parser_header_RSeq_start;
 	}
 
-/* #line 100 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 99 "./ragel/tsip_parser_header_RSeq.rl" */
 	
-/* #line 148 "./src/headers/tsip_header_RSeq.c" */
+/* #line 147 "./src/headers/tsip_header_RSeq.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -219,23 +218,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 50 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 49 "./ragel/tsip_parser_header_RSeq.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 54 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 53 "./ragel/tsip_parser_header_RSeq.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_rseq->seq);
 	}
 	break;
 	case 2:
-/* #line 58 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 57 "./ragel/tsip_parser_header_RSeq.rl" */
 	{
 	}
 	break;
-/* #line 239 "./src/headers/tsip_header_RSeq.c" */
+/* #line 238 "./src/headers/tsip_header_RSeq.c" */
 		}
 	}
 
@@ -248,12 +247,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 101 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 100 "./ragel/tsip_parser_header_RSeq.rl" */
 	
 	if( cs < 
-/* #line 255 "./src/headers/tsip_header_RSeq.c" */
+/* #line 254 "./src/headers/tsip_header_RSeq.c" */
 12
-/* #line 102 "./ragel/tsip_parser_header_RSeq.rl" */
+/* #line 101 "./ragel/tsip_parser_header_RSeq.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'RSeq' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_rseq);

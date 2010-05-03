@@ -222,9 +222,12 @@ int tsip_dialog_message_init(tsip_dialog_message_t *self)
 */
 int tsip_dialog_message_Started_2_Sending_X_sendMESSAGE(va_list *app)
 {
-	tsip_dialog_message_t *self = va_arg(*app, tsip_dialog_message_t *);
+	tsip_dialog_message_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_message_t *);
 	/*tsip_request_t *request =*/ va_arg(*app, tsip_request_t *);
-	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
+	action = va_arg(*app, const tsip_action_t *);
 
 	TSIP_DIALOG(self)->running = tsk_true;
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);

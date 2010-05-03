@@ -456,10 +456,10 @@ static tsk_object_t* tsip_ipsec_association_ctor(tsk_object_t * self, va_list * 
 		association->ctx = tipsec_context_create(
 			TIPSEC_IPPROTO_FROM_STR(transport->protocol),
 			TNET_SOCKET_TYPE_IS_IPV6(transport->type),
-			TIPSEC_MODE_FROM_STR(transport->stack->secagree_ipsec.mode),
-			TIPSEC_EALG_FROM_STR(transport->stack->secagree_ipsec.ealg),
-			TIPSEC_ALG_FROM_STR(transport->stack->secagree_ipsec.alg),
-			TIPSEC_PROTOCOL_FROM_STR(transport->stack->secagree_ipsec.protocol));
+			TIPSEC_MODE_FROM_STR(transport->stack->security.ipsec.mode),
+			TIPSEC_EALG_FROM_STR(transport->stack->security.ipsec.ealg),
+			TIPSEC_ALG_FROM_STR(transport->stack->security.ipsec.alg),
+			TIPSEC_PROTOCOL_FROM_STR(transport->stack->security.ipsec.protocol));
 		
 		/* Create Both client and Server legs */
 		association->socket_us = tnet_socket_create(ip_local, TNET_SOCKET_PORT_ANY, transport->type);

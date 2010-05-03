@@ -36,8 +36,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Event_group SIP Event header as per RFC 3265.
-*/
+
 
 /***********************************
 *	Ragel state machine.

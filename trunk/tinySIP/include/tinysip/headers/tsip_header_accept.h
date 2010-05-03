@@ -35,18 +35,15 @@
 
 TSIP_BEGIN_DECLS
 
+// The ' in the media-range field is used for doxygen (escape) and is not part of the abnf.
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	tsip_header_accept_s
 ///
 /// @brief	SIP header 'Accept' as per RFC 3261 subclause 20.1.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
-/// @par ABNF
-/// 	Accept = "Accept" HCOLON [ accept-range *(COMMA accept-range) ] ; example: ;
+/// @par ABNF = Accept = "Accept" HCOLON [ accept-range *(COMMA accept-range) ] ; example: ;
 /// 	Accept: application/dialog-info+xml 
 ///		accept-range = media-range *(SEMI accept-param)
-/// 	media-range = ( "*/*" / ( m-type SLASH "*" ) / ( m-type SLASH m-subtype ) )  *( SEMI m-parameter ) 
+/// 	media-range = ( "*'/*" / ( m-type SLASH "*" ) / ( m-type SLASH m-subtype ) )  *( SEMI m-parameter ) 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 typedef struct tsip_header_Accept_s
 {	

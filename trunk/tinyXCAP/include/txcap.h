@@ -76,14 +76,14 @@ txcap_stack_param_type_t;
 * @def TXCAP_STACK_SET_OPTION
 * Adds or updates an option. 
 * This is a helper macro for @ref txcap_stack_create() and @ref txcap_stack_set().
-* @param ID_INT The id of the option to add/update (@ref txcap_stack_option_t).
+* @param ID_ENUM The id of the option to add/update (@ref txcap_stack_option_t).
 * @param VALUE_STR The new value of the option (<i>const char*</i>).
 *
 * @code
-stack = txcap_stack_set(stack,
+int ret = txcap_stack_set(stack,
 		// stack-level options
-		TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),	
-		TXCAP_STACK_SET_NULL());
+        TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_TIMEOUT, "6000"),	
+        TXCAP_STACK_SET_NULL());
 * @endcode
 */
 /**@ingroup txcap_stack_group
@@ -92,9 +92,9 @@ stack = txcap_stack_set(stack,
 * @param PASSWORD_STR The new password (<i>const char*</i>).
 *
 * @code
-stack = txcap_stack_set(stack,
-		TXCAP_STACK_SET_PASSWORD("mysecret"),	
-		TXCAP_STACK_SET_NULL());
+int ret = txcap_stack_set(stack,
+        TXCAP_STACK_SET_PASSWORD("mysecret"),	
+        TXCAP_STACK_SET_NULL());
 * @endcode
 *
 * @sa @ref TXCAP_STACK_OPTION_PASSWORD
@@ -106,9 +106,9 @@ stack = txcap_stack_set(stack,
 * RECOMMENDED that the XUI be equal to the Address-of-Record (AOR) for the user (i.e., sip:bob@example.com).
 *
 * @code
-stack = txcap_stack_set(stack,
-		TXCAP_STACK_SET_XUI("sip:bob@example.com"),
-		TXCAP_STACK_SET_NULL());
+int ret = txcap_stack_set(stack,
+        TXCAP_STACK_SET_XUI("sip:bob@example.com"),
+        TXCAP_STACK_SET_NULL());
 * @endcode
 *
 * @sa @ref TXCAP_STACK_OPTION_PASSWORD
@@ -122,9 +122,9 @@ stack = txcap_stack_set(stack,
 * @param VALUE_STR The value of the header. Will be added "as is".
 *
 * @code
-stack = txcap_stack_set(stack,
-		TXCAP_STACK_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
-		TXCAP_STACK_SET_NULL());
+int ret = txcap_stack_set(stack,
+        TXCAP_STACK_SET_HEADER("User-Agent", "XDM-client/OMA1.1"),
+        TXCAP_STACK_SET_NULL());
 * @endcode
 *
 * @sa @ref TXCAP_ACTION_SET_HEADER()
@@ -137,9 +137,9 @@ stack = txcap_stack_set(stack,
 * 
 * @code
 const struct application_s context;
-stack = txcap_stack_set(stack,
-		TXCAP_STACK_SET_CONTEXT(&context),
-		TXCAP_STACK_SET_NULL());
+int ret = txcap_stack_set(stack,
+        TXCAP_STACK_SET_CONTEXT(&context),
+        TXCAP_STACK_SET_NULL());
 * @endcode
 */
 /**@ingroup txcap_stack_group
@@ -153,11 +153,10 @@ stack = txcap_stack_set(stack,
 *
 * @code
 // the code below shows how to register two new AUIDs
-txcap_stack_set(stack,
-	TXCAP_STACK_SET_AUID("my-xcap-caps", "application/my-xcap-caps+xml", "urn:ietf:params:xml:ns:my-xcap-caps", "my-document", tsk_true),
-	TXCAP_STACK_SET_AUID("my-resource-lists", "application/my-resource-lists+xml", "urn:ietf:params:xml:ns:my-resource-lists", "my-document", tsk_false),
-	
-	TXCAP_STACK_SET_NULL());
+int ret = txcap_stack_set(stack,
+        TXCAP_STACK_SET_AUID("my-xcap-caps", "application/my-xcap-caps+xml", "urn:ietf:params:xml:ns:my-xcap-caps", "my-document", tsk_true),
+        TXCAP_STACK_SET_AUID("my-resource-lists", "application/my-resource-lists+xml", "urn:ietf:params:xml:ns:my-resource-lists", "my-document", tsk_false),
+        TXCAP_STACK_SET_NULL());
 * @endcode
 */
 /**@ingroup txcap_stack_group

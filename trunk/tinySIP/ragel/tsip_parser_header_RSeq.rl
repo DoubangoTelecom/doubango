@@ -35,8 +35,7 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_RSeq_group SIP 'RSeq' header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

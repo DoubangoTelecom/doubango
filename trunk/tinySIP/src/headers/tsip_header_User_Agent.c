@@ -38,14 +38,11 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_User_Agent_group SIP User_Agent header.
-*/
-
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 67 "./ragel/tsip_parser_header_User_Agent.rl" */
+/* #line 64 "./ragel/tsip_parser_header_User_Agent.rl" */
 
 
 tsip_header_User_Agent_t* tsip_header_User_Agent_create(const char* ua)
@@ -82,7 +79,7 @@ tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t 
 	const char *tag_start;
 
 	
-/* #line 86 "./src/headers/tsip_header_User_Agent.c" */
+/* #line 83 "./src/headers/tsip_header_User_Agent.c" */
 static const char _tsip_machine_parser_header_User_Agent_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 1
@@ -143,16 +140,16 @@ static const int tsip_machine_parser_header_User_Agent_error = 0;
 static const int tsip_machine_parser_header_User_Agent_en_main = 1;
 
 
-/* #line 103 "./ragel/tsip_parser_header_User_Agent.rl" */
+/* #line 100 "./ragel/tsip_parser_header_User_Agent.rl" */
 	
-/* #line 149 "./src/headers/tsip_header_User_Agent.c" */
+/* #line 146 "./src/headers/tsip_header_User_Agent.c" */
 	{
 	cs = tsip_machine_parser_header_User_Agent_start;
 	}
 
-/* #line 104 "./ragel/tsip_parser_header_User_Agent.rl" */
+/* #line 101 "./ragel/tsip_parser_header_User_Agent.rl" */
 	
-/* #line 156 "./src/headers/tsip_header_User_Agent.c" */
+/* #line 153 "./src/headers/tsip_header_User_Agent.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -227,23 +224,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 51 "./ragel/tsip_parser_header_User_Agent.rl" */
+/* #line 48 "./ragel/tsip_parser_header_User_Agent.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "./ragel/tsip_parser_header_User_Agent.rl" */
+/* #line 52 "./ragel/tsip_parser_header_User_Agent.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_user_agent->value);
 	}
 	break;
 	case 2:
-/* #line 59 "./ragel/tsip_parser_header_User_Agent.rl" */
+/* #line 56 "./ragel/tsip_parser_header_User_Agent.rl" */
 	{
 	}
 	break;
-/* #line 247 "./src/headers/tsip_header_User_Agent.c" */
+/* #line 244 "./src/headers/tsip_header_User_Agent.c" */
 		}
 	}
 
@@ -256,12 +253,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 105 "./ragel/tsip_parser_header_User_Agent.rl" */
+/* #line 102 "./ragel/tsip_parser_header_User_Agent.rl" */
 	
 	if( cs < 
-/* #line 263 "./src/headers/tsip_header_User_Agent.c" */
+/* #line 260 "./src/headers/tsip_header_User_Agent.c" */
 15
-/* #line 106 "./ragel/tsip_parser_header_User_Agent.rl" */
+/* #line 103 "./ragel/tsip_parser_header_User_Agent.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'User-Agent' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_user_agent);
