@@ -37,8 +37,7 @@
 //
 //#include <string.h>
 //
-///**@defgroup tsip_header_Proxy_Authorization_group SIP Proxy-Authenticate header.
-//*/
+
 //
 ///***********************************
 //*	Ragel state machine.

@@ -40,7 +40,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_SERVICE_ROUTE_VA_ARGS(uri)		tsip_header_Service_Route_def_t, (const tsip_uri_t*)uri
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Service-Route' as per RFC 3608.
 ///

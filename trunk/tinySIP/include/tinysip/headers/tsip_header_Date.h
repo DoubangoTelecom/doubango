@@ -38,7 +38,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_DATE_VA_ARGS(wkday, month, day, year, h, m, s)		tsip_header_Date_def_t, (const char*)wkday, (const char*)month, (int8_t)day, (int16_t)year, (int8_t)h, (int8_t)m, (int8_t)s
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP Date header.
 ///

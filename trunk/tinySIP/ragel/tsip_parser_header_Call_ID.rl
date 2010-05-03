@@ -37,8 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Call_ID_group SIP Call-ID header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

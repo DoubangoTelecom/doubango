@@ -39,14 +39,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Route_group SIP Route header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 111 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 110 "./ragel/tsip_parser_header_Route.rl" */
 
 
 tsip_header_Route_t* tsip_header_Route_create(const tsip_uri_t* uri)
@@ -89,7 +88,7 @@ tsip_header_Routes_L_t *tsip_header_Route_parse(const char *data, size_t size)
 	tsip_header_Route_t *curr_route = tsk_null;
 
 	
-/* #line 93 "./src/headers/tsip_header_Route.c" */
+/* #line 92 "./src/headers/tsip_header_Route.c" */
 static const char _tsip_machine_parser_header_Route_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6, 2, 
@@ -321,16 +320,16 @@ static const int tsip_machine_parser_header_Route_error = 0;
 static const int tsip_machine_parser_header_Route_en_main = 1;
 
 
-/* #line 153 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 152 "./ragel/tsip_parser_header_Route.rl" */
 	
-/* #line 327 "./src/headers/tsip_header_Route.c" */
+/* #line 326 "./src/headers/tsip_header_Route.c" */
 	{
 	cs = tsip_machine_parser_header_Route_start;
 	}
 
-/* #line 154 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 153 "./ragel/tsip_parser_header_Route.rl" */
 	
-/* #line 334 "./src/headers/tsip_header_Route.c" */
+/* #line 333 "./src/headers/tsip_header_Route.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -405,13 +404,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 51 "./ragel/tsip_parser_header_Route.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 55 "./ragel/tsip_parser_header_Route.rl" */
 	{
 		if(!curr_route){
 			curr_route = tsip_header_Route_create_null();
@@ -419,7 +418,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 62 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 61 "./ragel/tsip_parser_header_Route.rl" */
 	{
 		if(curr_route){
 			TSK_PARSER_SET_STRING(curr_route->display_name);
@@ -428,7 +427,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 69 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 68 "./ragel/tsip_parser_header_Route.rl" */
 	{
 		if(curr_route && !curr_route->uri){
 			int len = (int)(p  - tag_start);
@@ -441,7 +440,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 80 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 79 "./ragel/tsip_parser_header_Route.rl" */
 	{
 		if(curr_route){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_route));
@@ -449,7 +448,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 86 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 85 "./ragel/tsip_parser_header_Route.rl" */
 	{
 		if(curr_route){
 			tsk_list_push_back_data(hdr_routes, ((void**) &curr_route));
@@ -457,11 +456,11 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 92 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 91 "./ragel/tsip_parser_header_Route.rl" */
 	{
 	}
 	break;
-/* #line 465 "./src/headers/tsip_header_Route.c" */
+/* #line 464 "./src/headers/tsip_header_Route.c" */
 		}
 	}
 
@@ -474,12 +473,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 155 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 154 "./ragel/tsip_parser_header_Route.rl" */
 	
 	if( cs < 
-/* #line 481 "./src/headers/tsip_header_Route.c" */
+/* #line 480 "./src/headers/tsip_header_Route.c" */
 92
-/* #line 156 "./ragel/tsip_parser_header_Route.rl" */
+/* #line 155 "./ragel/tsip_parser_header_Route.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Route' header.");
 		TSK_OBJECT_SAFE_FREE(curr_route);

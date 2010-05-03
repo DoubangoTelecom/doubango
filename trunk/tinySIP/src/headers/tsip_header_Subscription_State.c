@@ -36,14 +36,13 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Subscription_State_group SIP Subscription_State header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 82 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 81 "./ragel/tsip_parser_header_Subscription_State.rl" */
 
 
 tsip_header_Subscription_State_t* tsip_header_Subscription_State_create()
@@ -88,7 +87,7 @@ tsip_header_Subscription_State_t *tsip_header_Subscription_State_parse(const cha
 	const char *tag_start;
 
 	
-/* #line 92 "./src/headers/tsip_header_Subscription_State.c" */
+/* #line 91 "./src/headers/tsip_header_Subscription_State.c" */
 static const char _tsip_machine_parser_header_Subscription_State_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 1, 6
@@ -494,16 +493,16 @@ static const int tsip_machine_parser_header_Subscription_State_error = 0;
 static const int tsip_machine_parser_header_Subscription_State_en_main = 1;
 
 
-/* #line 126 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 125 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	
-/* #line 500 "./src/headers/tsip_header_Subscription_State.c" */
+/* #line 499 "./src/headers/tsip_header_Subscription_State.c" */
 	{
 	cs = tsip_machine_parser_header_Subscription_State_start;
 	}
 
-/* #line 127 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 126 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	
-/* #line 507 "./src/headers/tsip_header_Subscription_State.c" */
+/* #line 506 "./src/headers/tsip_header_Subscription_State.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -578,47 +577,47 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 49 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 48 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 53 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Subscription_State->state);
 	}
 	break;
 	case 2:
-/* #line 57 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_Subscription_State->reason);
 	}
 	break;
 	case 3:
-/* #line 61 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 60 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_Subscription_State->expires);
 	}
 	break;
 	case 4:
-/* #line 65 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 64 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_Subscription_State->retry_after);
 	}
 	break;
 	case 5:
-/* #line 69 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 68 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_Subscription_State));
 	}
 	break;
 	case 6:
-/* #line 73 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 72 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	{
 	}
 	break;
-/* #line 622 "./src/headers/tsip_header_Subscription_State.c" */
+/* #line 621 "./src/headers/tsip_header_Subscription_State.c" */
 		}
 	}
 
@@ -631,12 +630,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 128 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 127 "./ragel/tsip_parser_header_Subscription_State.rl" */
 	
 	if( cs < 
-/* #line 638 "./src/headers/tsip_header_Subscription_State.c" */
+/* #line 637 "./src/headers/tsip_header_Subscription_State.c" */
 136
-/* #line 129 "./ragel/tsip_parser_header_Subscription_State.rl" */
+/* #line 128 "./ragel/tsip_parser_header_Subscription_State.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Subscription-State' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_Subscription_State);

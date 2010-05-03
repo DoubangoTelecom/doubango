@@ -39,7 +39,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_SECURITY_SERVER_VA_ARGS()		tsip_header_Security_Server_def_t
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Security-Server' as per RFC 3329.
 ///

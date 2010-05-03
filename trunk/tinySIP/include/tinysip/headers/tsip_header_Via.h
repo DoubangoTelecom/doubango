@@ -49,7 +49,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT	"2.0"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	tsip_header_Via_s
 ///
 /// @brief	SIP Via/v header as per RFC 3261 subclause 20.42.
 /// ABNF:	Via	= 	( "Via" / "v" ) HCOLON via-parm *(COMMA via-parm)

@@ -34,14 +34,13 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Content_Length_group SIP Content_Length header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 63 "./ragel/tsip_parser_header_Content_Length.rl" */
+/* #line 62 "./ragel/tsip_parser_header_Content_Length.rl" */
 
 
 
@@ -76,7 +75,7 @@ tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data,
 	const char *tag_start;
 
 	
-/* #line 80 "./src/headers/tsip_header_Content_Length.c" */
+/* #line 79 "./src/headers/tsip_header_Content_Length.c" */
 static const char _tsip_machine_parser_header_Content_Length_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -146,16 +145,16 @@ static const int tsip_machine_parser_header_Content_Length_error = 0;
 static const int tsip_machine_parser_header_Content_Length_en_main = 1;
 
 
-/* #line 97 "./ragel/tsip_parser_header_Content_Length.rl" */
+/* #line 96 "./ragel/tsip_parser_header_Content_Length.rl" */
 	
-/* #line 152 "./src/headers/tsip_header_Content_Length.c" */
+/* #line 151 "./src/headers/tsip_header_Content_Length.c" */
 	{
 	cs = tsip_machine_parser_header_Content_Length_start;
 	}
 
-/* #line 98 "./ragel/tsip_parser_header_Content_Length.rl" */
+/* #line 97 "./ragel/tsip_parser_header_Content_Length.rl" */
 	
-/* #line 159 "./src/headers/tsip_header_Content_Length.c" */
+/* #line 158 "./src/headers/tsip_header_Content_Length.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -230,23 +229,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 47 "./ragel/tsip_parser_header_Content_Length.rl" */
+/* #line 46 "./ragel/tsip_parser_header_Content_Length.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 51 "./ragel/tsip_parser_header_Content_Length.rl" */
+/* #line 50 "./ragel/tsip_parser_header_Content_Length.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_clength->length);
 	}
 	break;
 	case 2:
-/* #line 55 "./ragel/tsip_parser_header_Content_Length.rl" */
+/* #line 54 "./ragel/tsip_parser_header_Content_Length.rl" */
 	{
 	}
 	break;
-/* #line 250 "./src/headers/tsip_header_Content_Length.c" */
+/* #line 249 "./src/headers/tsip_header_Content_Length.c" */
 		}
 	}
 
@@ -259,12 +258,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 99 "./ragel/tsip_parser_header_Content_Length.rl" */
+/* #line 98 "./ragel/tsip_parser_header_Content_Length.rl" */
 	
 	if( cs < 
-/* #line 266 "./src/headers/tsip_header_Content_Length.c" */
+/* #line 265 "./src/headers/tsip_header_Content_Length.c" */
 22
-/* #line 100 "./ragel/tsip_parser_header_Content_Length.rl" */
+/* #line 99 "./ragel/tsip_parser_header_Content_Length.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse SIP 'Content-Length' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_clength);

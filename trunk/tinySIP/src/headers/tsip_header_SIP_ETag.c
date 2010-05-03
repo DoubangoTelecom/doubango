@@ -39,14 +39,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_SIP_ETag_group SIP SIP_ETag header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 68 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+/* #line 67 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 
 
 tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create(const char* etag)
@@ -83,7 +82,7 @@ tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, size_t size
 	const char *tag_start;
 
 	
-/* #line 87 "./src/headers/tsip_header_SIP_ETag.c" */
+/* #line 86 "./src/headers/tsip_header_SIP_ETag.c" */
 static const char _tsip_machine_parser_header_SIP_ETag_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -155,16 +154,16 @@ static const int tsip_machine_parser_header_SIP_ETag_error = 0;
 static const int tsip_machine_parser_header_SIP_ETag_en_main = 1;
 
 
-/* #line 104 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+/* #line 103 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	
-/* #line 161 "./src/headers/tsip_header_SIP_ETag.c" */
+/* #line 160 "./src/headers/tsip_header_SIP_ETag.c" */
 	{
 	cs = tsip_machine_parser_header_SIP_ETag_start;
 	}
 
-/* #line 105 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+/* #line 104 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	
-/* #line 168 "./src/headers/tsip_header_SIP_ETag.c" */
+/* #line 167 "./src/headers/tsip_header_SIP_ETag.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -239,23 +238,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+/* #line 51 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+/* #line 55 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_etag->value);
 	}
 	break;
 	case 2:
-/* #line 60 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+/* #line 59 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	{
 	}
 	break;
-/* #line 259 "./src/headers/tsip_header_SIP_ETag.c" */
+/* #line 258 "./src/headers/tsip_header_SIP_ETag.c" */
 		}
 	}
 
@@ -268,12 +267,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 106 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+/* #line 105 "./ragel/tsip_parser_header_SIP_ETag.rl" */
 	
 	if( cs < 
-/* #line 275 "./src/headers/tsip_header_SIP_ETag.c" */
+/* #line 274 "./src/headers/tsip_header_SIP_ETag.c" */
 16
-/* #line 107 "./ragel/tsip_parser_header_SIP_ETag.rl" */
+/* #line 106 "./ragel/tsip_parser_header_SIP_ETag.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'SIP-ETag' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_etag);

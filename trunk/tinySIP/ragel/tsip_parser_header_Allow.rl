@@ -35,9 +35,6 @@
 #include "tsk_memory.h"
 #include <string.h>
 
-/**@defgroup tsip_header_Allow_group SIP Allow header.
-*/
-
 /***********************************
 *	Ragel state machine.
 */

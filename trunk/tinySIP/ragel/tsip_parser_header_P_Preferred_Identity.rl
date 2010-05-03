@@ -42,8 +42,7 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_P_Preferred_Identity_group SIP P_Preferred_Identity header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

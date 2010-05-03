@@ -36,14 +36,13 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Expires_group SIP Expires header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 65 "./ragel/tsip_parser_header_Expires.rl" */
+/* #line 64 "./ragel/tsip_parser_header_Expires.rl" */
 
 
 tsip_header_Expires_t* tsip_header_Expires_create(int64_t delta_seconds)
@@ -75,7 +74,7 @@ tsip_header_Expires_t *tsip_header_Expires_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 79 "./src/headers/tsip_header_Expires.c" */
+/* #line 78 "./src/headers/tsip_header_Expires.c" */
 static const char _tsip_machine_parser_header_Expires_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -134,16 +133,16 @@ static const int tsip_machine_parser_header_Expires_error = 0;
 static const int tsip_machine_parser_header_Expires_en_main = 1;
 
 
-/* #line 96 "./ragel/tsip_parser_header_Expires.rl" */
+/* #line 95 "./ragel/tsip_parser_header_Expires.rl" */
 	
-/* #line 140 "./src/headers/tsip_header_Expires.c" */
+/* #line 139 "./src/headers/tsip_header_Expires.c" */
 	{
 	cs = tsip_machine_parser_header_Expires_start;
 	}
 
-/* #line 97 "./ragel/tsip_parser_header_Expires.rl" */
+/* #line 96 "./ragel/tsip_parser_header_Expires.rl" */
 	
-/* #line 147 "./src/headers/tsip_header_Expires.c" */
+/* #line 146 "./src/headers/tsip_header_Expires.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -218,23 +217,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 49 "./ragel/tsip_parser_header_Expires.rl" */
+/* #line 48 "./ragel/tsip_parser_header_Expires.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 53 "./ragel/tsip_parser_header_Expires.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Expires.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_expires->delta_seconds);
 	}
 	break;
 	case 2:
-/* #line 57 "./ragel/tsip_parser_header_Expires.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Expires.rl" */
 	{
 	}
 	break;
-/* #line 238 "./src/headers/tsip_header_Expires.c" */
+/* #line 237 "./src/headers/tsip_header_Expires.c" */
 		}
 	}
 
@@ -247,12 +246,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 98 "./ragel/tsip_parser_header_Expires.rl" */
+/* #line 97 "./ragel/tsip_parser_header_Expires.rl" */
 	
 	if( cs < 
-/* #line 254 "./src/headers/tsip_header_Expires.c" */
+/* #line 253 "./src/headers/tsip_header_Expires.c" */
 15
-/* #line 99 "./ragel/tsip_parser_header_Expires.rl" */
+/* #line 98 "./ragel/tsip_parser_header_Expires.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Expires' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_expires);

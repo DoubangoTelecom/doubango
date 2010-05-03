@@ -36,14 +36,13 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_To_group SIP To header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 90 "./ragel/tsip_parser_header_To.rl" */
+/* #line 89 "./ragel/tsip_parser_header_To.rl" */
 
 
 tsip_header_To_t* tsip_header_To_create(const char* display_name, const tsip_uri_t* uri, const char* tag)
@@ -84,7 +83,7 @@ tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 88 "./src/headers/tsip_header_To.c" */
+/* #line 87 "./src/headers/tsip_header_To.c" */
 static const char _tsip_machine_parser_header_To_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4, 1, 5, 2, 1, 3, 
@@ -740,16 +739,16 @@ static const int tsip_machine_parser_header_To_error = 0;
 static const int tsip_machine_parser_header_To_en_main = 1;
 
 
-/* #line 130 "./ragel/tsip_parser_header_To.rl" */
+/* #line 129 "./ragel/tsip_parser_header_To.rl" */
 	
-/* #line 746 "./src/headers/tsip_header_To.c" */
+/* #line 745 "./src/headers/tsip_header_To.c" */
 	{
 	cs = tsip_machine_parser_header_To_start;
 	}
 
-/* #line 131 "./ragel/tsip_parser_header_To.rl" */
+/* #line 130 "./ragel/tsip_parser_header_To.rl" */
 	
-/* #line 753 "./src/headers/tsip_header_To.c" */
+/* #line 752 "./src/headers/tsip_header_To.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -824,13 +823,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 49 "./ragel/tsip_parser_header_To.rl" */
+/* #line 48 "./ragel/tsip_parser_header_To.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 53 "./ragel/tsip_parser_header_To.rl" */
+/* #line 52 "./ragel/tsip_parser_header_To.rl" */
 	{
 		int len = (int)(p  - tag_start);
 		if(hdr_to && !hdr_to->uri){
@@ -841,30 +840,30 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 62 "./ragel/tsip_parser_header_To.rl" */
+/* #line 61 "./ragel/tsip_parser_header_To.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_to->display_name);
 		tsk_strunquote(&hdr_to->display_name);
 	}
 	break;
 	case 3:
-/* #line 67 "./ragel/tsip_parser_header_To.rl" */
+/* #line 66 "./ragel/tsip_parser_header_To.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_to->tag);
 	}
 	break;
 	case 4:
-/* #line 71 "./ragel/tsip_parser_header_To.rl" */
+/* #line 70 "./ragel/tsip_parser_header_To.rl" */
 	{
 		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_to));
 	}
 	break;
 	case 5:
-/* #line 75 "./ragel/tsip_parser_header_To.rl" */
+/* #line 74 "./ragel/tsip_parser_header_To.rl" */
 	{
 	}
 	break;
-/* #line 868 "./src/headers/tsip_header_To.c" */
+/* #line 867 "./src/headers/tsip_header_To.c" */
 		}
 	}
 
@@ -877,12 +876,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 132 "./ragel/tsip_parser_header_To.rl" */
+/* #line 131 "./ragel/tsip_parser_header_To.rl" */
 	
 	if( cs < 
-/* #line 884 "./src/headers/tsip_header_To.c" */
+/* #line 883 "./src/headers/tsip_header_To.c" */
 202
-/* #line 133 "./ragel/tsip_parser_header_To.rl" */
+/* #line 132 "./ragel/tsip_parser_header_To.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'To' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_to);

@@ -37,8 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_SIP_ETag_group SIP SIP_ETag header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

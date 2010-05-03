@@ -37,8 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Warning_group SIP Warning header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

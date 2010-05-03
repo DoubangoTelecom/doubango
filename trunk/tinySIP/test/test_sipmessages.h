@@ -92,6 +92,7 @@
 	"RAck: 776656 1 INVITE\r\n" \
 	"Max-Forwards: 70\r\n" \
 	"Date: Wed, 28 Apr 2010 23:42:50 GMT\r\n" \
+	"Date: Sun, 2 May 2010 20:27:49 GMT\n-r\n" \
 	"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n" \
 	"User-Agent: IM-client/OMA1.0 Mercuro-Bronze/v4.0.1508.0\r\n" \
 	"c: text/plain; charset=utf-8\r\n" \

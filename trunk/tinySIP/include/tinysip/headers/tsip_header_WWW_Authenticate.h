@@ -27,8 +27,8 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef _TSIP_HEADER_WWW_Authenticate_H_
-#define _TSIP_HEADER_WWW_Authenticate_H_
+#ifndef _TSIP_HEADER_WWW_AUTHENTICATE_H_
+#define _TSIP_HEADER_WWW_AUTHENTICATE_H_
 
 #include "tinySIP_config.h"
 #include "tinySIP/headers/tsip_header.h"
@@ -37,11 +37,8 @@ TSIP_BEGIN_DECLS
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'WWW-Authenticate'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF = WWW-Authenticate	= 	"WWW-Authenticate" HCOLON challenge
 ///				challenge	= 	("Digest" LWS digest-cln *(COMMA digest-cln)) / other-challenge
@@ -78,5 +75,5 @@ TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_WWW_Authenticate_def_t;
 
 TSIP_END_DECLS
 
-#endif /* _TSIP_HEADER_WWW_Authenticate_H_ */
+#endif /* _TSIP_HEADER_WWW_AUTHENTICATE_H_ */
 

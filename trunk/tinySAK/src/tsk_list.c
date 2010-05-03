@@ -393,7 +393,7 @@ const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const 
 * Find first item matching criteria defined by the @a predicate.
 * @param list the list to query
 * @param predicate the predicate against which to test each item
-* @param Data data passed to the predicate function for comparaison
+* @param data data passed to the predicate function for comparaison
 * @retval the item which match the criteria and NULL otherwise
 */
 const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
@@ -415,7 +415,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 /**@ingroup tsk_list_group
 * Counts the number of item matching the predicate.
 * @param list The list containing the items to count
-* @predicate The predicate to use to match the items
+* @param predicate The predicate to use to match the items
 * @param data Data passed to the predicate function for comparaison
 * @retval The number of item matching the predicate
 */

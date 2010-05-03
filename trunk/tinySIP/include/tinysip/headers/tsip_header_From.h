@@ -39,7 +39,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_FROM_VA_ARGS(display_name, uri, tag)	tsip_header_From_def_t, (const char*)display_name, (const tsip_uri_t*)uri, (const char*)tag
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'From' .
 ///

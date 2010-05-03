@@ -41,7 +41,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_PATH_VA_ARGS(uri)		tsip_header_Path_def_t, (const tsip_uri_t*)uri
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Path' as per RFC 3327.
 ///

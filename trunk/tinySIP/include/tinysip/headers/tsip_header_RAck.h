@@ -38,7 +38,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_RACK_VA_ARGS(seq, cseq, method)		tsip_header_RAck_def_t, (int32_t)seq, (int32_t)cseq, (const char*)method
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'RAck' as per RFC 3262.
 ///

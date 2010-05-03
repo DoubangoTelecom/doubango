@@ -86,7 +86,7 @@ thttp_action_param_type_t;
 * @def THTTP_ACTION_SET_OPTION
 * Adds or updates an option. 
 * This is a helper macro for @a thttp_action_*() functions.
-* @param ID_INT The id of the option to add/update (@ref thttp_action_option_t).
+* @param ID_ENUM The id of the option to add/update (@ref thttp_action_option_t).
 * @param VALUE_STR The new value of the parameter (<i>const char*</i>).
 *
 * @code

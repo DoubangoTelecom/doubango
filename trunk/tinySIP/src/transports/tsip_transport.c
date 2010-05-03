@@ -128,6 +128,7 @@ int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const ch
 	tnet_transport_t *transport = self->net_transport;
 
 	if(!self || !transport){
+		TSK_DEBUG_ERROR("invalid parameter");
 		return -1;
 	}
 	

@@ -34,8 +34,7 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Max_Forwards_group SIP Max-Forwards header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

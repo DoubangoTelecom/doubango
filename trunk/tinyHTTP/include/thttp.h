@@ -76,7 +76,7 @@
 *
 * @code
 * thttp_stack_create(callback, 
-*	THTTP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\pub-crt.pem", "C:\\tls\\pub-key.pem"),
+*	THTTP_STACK_SET_TLS_CERTS("C:\\tls\\ca.pki-crt.pem", "C:\\tls\\pub-crt.pem", "C:\\tls\\priv-key.pem"),
 *	THTTP_STACK_SET_NULL());
 * @endcode
 */

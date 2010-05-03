@@ -7928,6 +7928,13 @@
     <filename>tnet__transport_8c</filename>
     <includes id="tnet__transport_8h" name="tnet_transport.h" local="yes" imported="no">tnet_transport.h</includes>
     <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_prepare</name>
+      <anchorfile>tnet__transport_8c.html</anchorfile>
+      <anchor>aafdc2431c02385e300c520ca985ed55b</anchor>
+      <arglist>(tnet_transport_t *transport)</arglist>
+    </member>
+    <member kind="function">
       <type>void *</type>
       <name>tnet_transport_mainthread</name>
       <anchorfile>tnet__transport_8c.html</anchorfile>
@@ -8328,17 +8335,10 @@
     </member>
     <member kind="function">
       <type>int</type>
-      <name>tnet_transport_isconnected</name>
-      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>aad362b23dc1bc7d75b20a0c286e700d5</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd)</arglist>
-    </member>
-    <member kind="function">
-      <type>int</type>
       <name>tnet_transport_add_socket</name>
       <anchorfile>tnet__transport__poll_8c.html</anchorfile>
-      <anchor>af81a3dc5338d1c75afbc0b32af136648</anchor>
-      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)</arglist>
+      <anchor>a0847dd024cdee818f9d37a379109173e</anchor>
+      <arglist>(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient)</arglist>
     </member>
     <member kind="function">
       <type>int</type>
@@ -8380,6 +8380,13 @@
       <name>tnet_transport_stop</name>
       <anchorfile>tnet__transport__poll_8c.html</anchorfile>
       <anchor>a4dc920abb12866b5154692fa31885d99</anchor>
+      <arglist>(tnet_transport_t *transport)</arglist>
+    </member>
+    <member kind="function">
+      <type>int</type>
+      <name>tnet_transport_prepare</name>
+      <anchorfile>tnet__transport__poll_8c.html</anchorfile>
+      <anchor>aafdc2431c02385e300c520ca985ed55b</anchor>
       <arglist>(tnet_transport_t *transport)</arglist>
     </member>
     <member kind="function">
@@ -8547,8 +8554,8 @@
       <type>tnet_interface_t *</type>
       <name>tnet_interface_create</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gae0c8612317cb17b62a56547e1b09a69a</anchor>
-      <arglist>(const char *description, const char *mac_address, size_t mac_address_length)</arglist>
+      <anchor>gaa0b751358825856ccd9e53d6b4c8c90a</anchor>
+      <arglist>(const char *description, const void *mac_address, size_t mac_address_length)</arglist>
     </member>
     <member kind="function">
       <type>tnet_address_t *</type>
@@ -8969,8 +8976,8 @@
     <member kind="define">
       <type>#define</type>
       <name>TNET_PRINT_LAST_ERROR</name>
-      <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gac969a5cbccf51505d3db014fec6300fc</anchor>
+      <anchorfile>tnet__utils_8h.html</anchorfile>
+      <anchor>ac969a5cbccf51505d3db014fec6300fc</anchor>
       <arglist>(msg)</arglist>
     </member>
     <member kind="define">
@@ -8983,15 +8990,15 @@
     <member kind="typedef">
       <type>struct tnet_interface_s</type>
       <name>tnet_interface_t</name>
-      <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga7c49ac3e5325961dd8c430edec84d106</anchor>
+      <anchorfile>tnet__utils_8h.html</anchorfile>
+      <anchor>a7c49ac3e5325961dd8c430edec84d106</anchor>
       <arglist></arglist>
     </member>
     <member kind="typedef">
       <type>struct tnet_address_s</type>
       <name>tnet_address_t</name>
-      <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gabec2d2434c892e0b38503fba6e04d981</anchor>
+      <anchorfile>tnet__utils_8h.html</anchorfile>
+      <anchor>abec2d2434c892e0b38503fba6e04d981</anchor>
       <arglist></arglist>
     </member>
     <member kind="function">
@@ -9215,8 +9222,8 @@
       <type>tnet_interface_t *</type>
       <name>tnet_interface_create</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gae0c8612317cb17b62a56547e1b09a69a</anchor>
-      <arglist>(const char *description, const char *mac_address, size_t mac_address_length)</arglist>
+      <anchor>gaa0b751358825856ccd9e53d6b4c8c90a</anchor>
+      <arglist>(const char *description, const void *mac_address, size_t mac_address_length)</arglist>
     </member>
     <member kind="function">
       <type>tnet_address_t *</type>
@@ -11398,8 +11405,6 @@
     <name>tnet_utils_group</name>
     <title>Network utility functions.</title>
     <filename>group__tnet__utils__group.html</filename>
-    <class kind="struct">tnet_interface_s</class>
-    <class kind="struct">tnet_address_s</class>
     <member kind="define">
       <type>#define</type>
       <name>TNET_CONNECT_TIMEOUT</name>
@@ -11407,33 +11412,12 @@
       <anchor>ga2d7e6e8cff043b7f3c0bda66a7a728bd</anchor>
       <arglist></arglist>
     </member>
-    <member kind="define">
-      <type>#define</type>
-      <name>TNET_PRINT_LAST_ERROR</name>
-      <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gac969a5cbccf51505d3db014fec6300fc</anchor>
-      <arglist>(msg)</arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tnet_interface_s</type>
-      <name>tnet_interface_t</name>
-      <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>ga7c49ac3e5325961dd8c430edec84d106</anchor>
-      <arglist></arglist>
-    </member>
-    <member kind="typedef">
-      <type>struct tnet_address_s</type>
-      <name>tnet_address_t</name>
-      <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gabec2d2434c892e0b38503fba6e04d981</anchor>
-      <arglist></arglist>
-    </member>
     <member kind="function">
       <type>tnet_interface_t *</type>
       <name>tnet_interface_create</name>
       <anchorfile>group__tnet__utils__group.html</anchorfile>
-      <anchor>gae0c8612317cb17b62a56547e1b09a69a</anchor>
-      <arglist>(const char *description, const char *mac_address, size_t mac_address_length)</arglist>
+      <anchor>gaa0b751358825856ccd9e53d6b4c8c90a</anchor>
+      <arglist>(const char *description, const void *mac_address, size_t mac_address_length)</arglist>
     </member>
     <member kind="function">
       <type>tnet_address_t *</type>
@@ -14131,10 +14115,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>unsigned</type>
-      <name>connected</name>
+      <type>tsk_bool_t</type>
+      <name>prepared</name>
       <anchorfile>structtnet__transport__s.html</anchorfile>
-      <anchor>aaadc460af532fc7bbe05eac1277c4c6c</anchor>
+      <anchor>ae5b63fb7d1ac17bfe0f40c1358e2ced2</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
@@ -14194,10 +14178,10 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>unsigned</type>
+      <type>tsk_bool_t</type>
       <name>have_tls</name>
       <anchorfile>structtnet__transport__s_1_1@2.html</anchorfile>
-      <anchor>a37f5e5a44edef64665a213367088df9f</anchor>
+      <anchor>a7ca0d9a85aad8a836d212fcf9e87bb91</anchor>
       <arglist></arglist>
     </member>
   </compound>
@@ -14688,17 +14672,17 @@
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>unsigned</type>
+      <type>tsk_bool_t</type>
       <name>owner</name>
       <anchorfile>structtransport__socket__s.html</anchorfile>
-      <anchor>a63128a957ecaae32439e46f59e55043b</anchor>
+      <anchor>a505b73b867902aa65af2b62016d88a13</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">
-      <type>unsigned</type>
+      <type>tsk_bool_t</type>
       <name>connected</name>
       <anchorfile>structtransport__socket__s.html</anchorfile>
-      <anchor>aaadc460af532fc7bbe05eac1277c4c6c</anchor>
+      <anchor>a3fe755c96cb04252e2da49e1c6355dc4</anchor>
       <arglist></arglist>
     </member>
     <member kind="variable">

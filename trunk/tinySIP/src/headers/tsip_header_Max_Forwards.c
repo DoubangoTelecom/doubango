@@ -36,14 +36,13 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Max_Forwards_group SIP Max-Forwards header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 65 "./ragel/tsip_parser_header_Max_Forwards.rl" */
+/* #line 64 "./ragel/tsip_parser_header_Max_Forwards.rl" */
 
 
 
@@ -76,7 +75,7 @@ tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, siz
 	const char *tag_start;
 
 	
-/* #line 80 "./src/headers/tsip_header_Max_Forwards.c" */
+/* #line 79 "./src/headers/tsip_header_Max_Forwards.c" */
 static const char _tsip_machine_parser_header_Max_Forwards_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -144,16 +143,16 @@ static const int tsip_machine_parser_header_Max_Forwards_error = 0;
 static const int tsip_machine_parser_header_Max_Forwards_en_main = 1;
 
 
-/* #line 97 "./ragel/tsip_parser_header_Max_Forwards.rl" */
+/* #line 96 "./ragel/tsip_parser_header_Max_Forwards.rl" */
 	
-/* #line 150 "./src/headers/tsip_header_Max_Forwards.c" */
+/* #line 149 "./src/headers/tsip_header_Max_Forwards.c" */
 	{
 	cs = tsip_machine_parser_header_Max_Forwards_start;
 	}
 
-/* #line 98 "./ragel/tsip_parser_header_Max_Forwards.rl" */
+/* #line 97 "./ragel/tsip_parser_header_Max_Forwards.rl" */
 	
-/* #line 157 "./src/headers/tsip_header_Max_Forwards.c" */
+/* #line 156 "./src/headers/tsip_header_Max_Forwards.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -228,23 +227,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 49 "./ragel/tsip_parser_header_Max_Forwards.rl" */
+/* #line 48 "./ragel/tsip_parser_header_Max_Forwards.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 53 "./ragel/tsip_parser_header_Max_Forwards.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Max_Forwards.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_maxf->value);
 	}
 	break;
 	case 2:
-/* #line 57 "./ragel/tsip_parser_header_Max_Forwards.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Max_Forwards.rl" */
 	{
 	}
 	break;
-/* #line 248 "./src/headers/tsip_header_Max_Forwards.c" */
+/* #line 247 "./src/headers/tsip_header_Max_Forwards.c" */
 		}
 	}
 
@@ -257,12 +256,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 99 "./ragel/tsip_parser_header_Max_Forwards.rl" */
+/* #line 98 "./ragel/tsip_parser_header_Max_Forwards.rl" */
 	
 	if( cs < 
-/* #line 264 "./src/headers/tsip_header_Max_Forwards.c" */
+/* #line 263 "./src/headers/tsip_header_Max_Forwards.c" */
 20
-/* #line 100 "./ragel/tsip_parser_header_Max_Forwards.rl" */
+/* #line 99 "./ragel/tsip_parser_header_Max_Forwards.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Max-Forward' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_maxf);

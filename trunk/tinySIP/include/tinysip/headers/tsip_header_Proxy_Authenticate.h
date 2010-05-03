@@ -36,11 +36,8 @@
 TSIP_BEGIN_DECLS
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Proxy-Authenticate'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF = Proxy-Authenticate	= 	"Proxy-Authenticate" HCOLON challenge
 ///				challenge	= 	("Digest" LWS digest-cln *(COMMA digest-cln)) / other-challenge

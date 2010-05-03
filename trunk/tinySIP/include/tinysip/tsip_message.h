@@ -102,10 +102,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_RESPONSE_IS_23456(self)		(TSIP_MESSAGE_IS_RESPONSE((self)) && 200<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
 #define TSIP_RESPONSE_IS_3456(self)			(TSIP_MESSAGE_IS_RESPONSE((self)) && 300<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= 699)
 
-/**
- * @enum	tsip_message_type_t
- *
- * @brief	Defines the message type (Request or Response). 
+/** Defines the message type (Request or Response). 
 **/
 typedef enum tsip_message_type_e
 {

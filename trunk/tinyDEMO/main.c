@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 	//cmd_print_help();
 
 	/* create user's ctx */
-	if(!(ctx = ctx_create())){
+	if(!(ctx = ctx_create()) || !ctx->stack){
 		TSK_DEBUG_ERROR("Failed to create user's ctx.");
 		goto bail;
 	}
@@ -76,8 +76,7 @@ int main(int argc, char** argv)
 	/* initial args */
 	for(i=1 /* index zero contains the exe path */, index=0; i<argc && argv[i]; i++){
 		if(index){
-			char c = ' ';
-			tsk_buffer_append(buffer, &c, sizeof(c));
+			tsk_buffer_append(buffer, " ", 1);
 		}
 		tsk_buffer_append(buffer, argv[i], tsk_strlen(argv[i]));
 	}

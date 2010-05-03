@@ -32,8 +32,7 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Via_group SIP Via header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

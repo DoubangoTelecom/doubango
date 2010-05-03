@@ -37,8 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_SIP_If_Match_group SIP SIP_If_Match header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

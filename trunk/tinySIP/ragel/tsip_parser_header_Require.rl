@@ -36,8 +36,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Require_group SIP Require header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

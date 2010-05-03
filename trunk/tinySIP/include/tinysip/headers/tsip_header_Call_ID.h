@@ -40,7 +40,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_CALL_ID_VA_ARGS(call_id)	tsip_header_Call_ID_def_t, (const char*)call_id
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Call-ID'.
 ///

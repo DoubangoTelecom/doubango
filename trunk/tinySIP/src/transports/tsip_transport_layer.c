@@ -336,8 +336,8 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 			
 		if(transport && transport->net_transport && self->stack){
 			/* Set TLS certs */
-			if(TNET_SOCKET_TYPE_IS_TLS(type) || self->stack->enable_secagree_tls){
-				tsip_transport_set_tlscerts(transport, self->stack->tls.ca, self->stack->tls.pbk, self->stack->tls.pvk);
+			if(TNET_SOCKET_TYPE_IS_TLS(type) || self->stack->security.enable_secagree_tls){
+				tsip_transport_set_tlscerts(transport, self->stack->security.tls.ca, self->stack->security.tls.pbk, self->stack->security.tls.pvk);
 			}
 			tsk_list_push_back_data(self->transports, (void**)&transport);
 			return 0;
@@ -351,21 +351,26 @@ int tsip_transport_layer_add(tsip_transport_layer_t* self, const char* local_hos
 
 int tsip_transport_layer_send(const tsip_transport_layer_t* self, const char *branch, const tsip_message_t *msg)
 {
-	if(msg && self && self->stack)
-	{
+	if(msg && self && self->stack){
 		const char* destIP = 0;
 		int32_t destPort = 5060;
 		tsip_transport_t *transport = tsip_transport_layer_find(self, msg, destIP, &destPort);
-		if(transport)
-		{
+		if(transport){
 			if(tsip_transport_send(transport, branch, TSIP_MESSAGE(msg), destIP, destPort)){
 				return 0;
 			}
-			else return -3;
+			else{
+				return -3;
+			}
 		}
-		else return -2;
+		else{
+			return -2;
+		}
 	}
-	return -1;
+	else{
+		TSK_DEBUG_ERROR("Invalid Parameter");
+		return -1;
+	}
 }
 
 

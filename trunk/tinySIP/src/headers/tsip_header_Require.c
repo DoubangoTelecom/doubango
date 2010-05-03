@@ -38,14 +38,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Require_group SIP Require header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 67 "./ragel/tsip_parser_header_Require.rl" */
+/* #line 66 "./ragel/tsip_parser_header_Require.rl" */
 
 
 tsip_header_Require_t* tsip_header_Require_create(const char* option)
@@ -93,7 +92,7 @@ tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 97 "./src/headers/tsip_header_Require.c" */
+/* #line 96 "./src/headers/tsip_header_Require.c" */
 static const char _tsip_machine_parser_header_Require_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -169,16 +168,16 @@ static const int tsip_machine_parser_header_Require_error = 0;
 static const int tsip_machine_parser_header_Require_en_main = 1;
 
 
-/* #line 114 "./ragel/tsip_parser_header_Require.rl" */
+/* #line 113 "./ragel/tsip_parser_header_Require.rl" */
 	
-/* #line 175 "./src/headers/tsip_header_Require.c" */
+/* #line 174 "./src/headers/tsip_header_Require.c" */
 	{
 	cs = tsip_machine_parser_header_Require_start;
 	}
 
-/* #line 115 "./ragel/tsip_parser_header_Require.rl" */
+/* #line 114 "./ragel/tsip_parser_header_Require.rl" */
 	
-/* #line 182 "./src/headers/tsip_header_Require.c" */
+/* #line 181 "./src/headers/tsip_header_Require.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -253,23 +252,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 51 "./ragel/tsip_parser_header_Require.rl" */
+/* #line 50 "./ragel/tsip_parser_header_Require.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "./ragel/tsip_parser_header_Require.rl" */
+/* #line 54 "./ragel/tsip_parser_header_Require.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_require->options);
 	}
 	break;
 	case 2:
-/* #line 59 "./ragel/tsip_parser_header_Require.rl" */
+/* #line 58 "./ragel/tsip_parser_header_Require.rl" */
 	{
 	}
 	break;
-/* #line 273 "./src/headers/tsip_header_Require.c" */
+/* #line 272 "./src/headers/tsip_header_Require.c" */
 		}
 	}
 
@@ -282,12 +281,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 116 "./ragel/tsip_parser_header_Require.rl" */
+/* #line 115 "./ragel/tsip_parser_header_Require.rl" */
 	
 	if( cs < 
-/* #line 289 "./src/headers/tsip_header_Require.c" */
+/* #line 288 "./src/headers/tsip_header_Require.c" */
 19
-/* #line 117 "./ragel/tsip_parser_header_Require.rl" */
+/* #line 116 "./ragel/tsip_parser_header_Require.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Require' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_require);

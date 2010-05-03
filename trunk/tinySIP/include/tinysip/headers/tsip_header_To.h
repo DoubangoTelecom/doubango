@@ -40,7 +40,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_TO_VA_ARGS(display_name, uri, tag)			tsip_header_To_def_t, (const char*)display_name, (const tsip_uri_t*)uri, (const char*)tag
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'To' .
 ///

@@ -44,8 +44,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Privacy_group SIP Privacy header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

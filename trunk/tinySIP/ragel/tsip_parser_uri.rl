@@ -33,9 +33,6 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-/**@defgroup tsip_parser_uri_group SIP/SIPS/TEL URI parser.
-*/
-
 /***********************************
 *	Ragel state machine.
 */
@@ -128,17 +125,28 @@
 }%%
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @fn	tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
+/// @ingroup tsip_uri_group
 ///
-/// @brief	Parses SIP/SIPS/TEL URI. 
+/// Creates SIP/SIPS/TEL URI from string buffer. 
 ///
-/// @author	Mamadou
-/// @date	12/6/2009
 ///
-/// @param [in,out]	data	Data from which to parse the uri. 
-/// @param	size			The data size. 
+/// @param data	Pointer to a string buffer from which to create the URI object.
+/// @param	size The size of the string buffer. 
 ///
-/// @return	null if it fails, else the sip/sips/tel uri. 
+/// @retval	@ref tsip_uri_t* object if succeed and Null otherwise.
+/// 
+/// @code
+/// tsip_uri_t* uri;
+/// if((uri = tsip_uri_parse("sip:bob@open-ims.test", strlen("sip:bob@open-ims.test")))){
+///      printf("success");
+/// }
+/// else{
+///      printf("error");
+/// }
+/// TSK_OBJECT_SAFE_FREE(uri);
+/// @endcode
+///
+/// @sa @ref tsip_uri_create()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
 {
@@ -158,8 +166,7 @@ tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
 	%%write init;
 	%%write exec;
 	
-	if( cs < %%{ write first_final; }%% )
-	{
+	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse SIP/SIPS/TEL URI.");
 		TSK_OBJECT_SAFE_FREE(uri);
 	}

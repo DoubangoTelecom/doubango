@@ -20,7 +20,7 @@
 *
 */
 
-/**@file ttsip_header_Expires.h
+/**@file tsip_header_Expires.h
  * @brief SIP header 'Expires'.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
@@ -41,7 +41,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_EXPIRES_DEFAULT						600000
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Expires'.
 ///

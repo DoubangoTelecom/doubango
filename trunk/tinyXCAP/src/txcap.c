@@ -546,18 +546,18 @@ TSK_FREE(urlstring);
 * 
 * It is assumed that the address of the XDMS (or aggregation Proxy) is “doubango.org:8080/services” and thus the XCAP Root URI is “doubango.org:8080/services”. “sip:bob@doubango.org” will be used as the XUI. 
 * An XDMC can perform twelve actions:
-* -	@ref txcap_action_create_element: Creates new element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_create_document: Creates new document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_create_attribute: Creates new attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_replace_element: Replaces an element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_replace_document: Replaces a document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_replace_attribute: Replaces an attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_fetch_element: Retrieves an element from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_fetch_document: Retrieves a document from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_fetch_attribute: Retrieves an attribute from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
-* -	@ref txcap_action_delete_element: Deletes an element from the XDMS by sending a HTTP/HTTPS DELETE request. 
-* -	@ref txcap_action_delete_document: Deletes a document from the XDMS by sending a HTTP/HTTPS DELETE request.
-* -	@ref txcap_action_delete_attribute: Deletes an attribute from the XDMS by sending a HTTP/HTTPS DELETE request. 
+* -	@ref txcap_action_create_element(): Creates new element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_create_document(): Creates new document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_create_attribute(): Creates new attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_replace_element(): Replaces an element by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_replace_document(): Replaces a document by sending a HTTP/HTTPS PUT request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_replace_attribute(): Replaces an attribute by sending a HTTP/HTTPS PUT request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_fetch_element(): Retrieves an element from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-el+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_fetch_document(): Retrieves a document from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be the one associated with the AUID of the document, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_fetch_attribute(): Retrieves an attribute from the XDMS by sending a HTTP/HTTPS GET request. The default Content-Type will be “application/xcap-att+xml”, unless you provide your own Content-Type by using TXCAP_ACTION_SET_HEADER().
+* -	@ref txcap_action_delete_element(): Deletes an element from the XDMS by sending a HTTP/HTTPS DELETE request. 
+* -	@ref txcap_action_delete_document(): Deletes a document from the XDMS by sending a HTTP/HTTPS DELETE request.
+* -	@ref txcap_action_delete_attribute(): Deletes an attribute from the XDMS by sending a HTTP/HTTPS DELETE request. 
 * 
 * To understand how the stack is created, please refer to section 16.1.
 * 
@@ -835,7 +835,7 @@ bail:
 * @param xcap_root xcap-root URI as per RFC 4825 subclause 6.1, used to build all request-uris. 
 * This parameter is not mandatory and must be a valid HTPP/HTTPS URL.
 * @param ... User configuration. You must use @a TXCAP_STACK_SET_*() macros to set these options.
-* The list of options must always and with @ref TXCAP_STACK_SET_NULL() even if these is no option to pass to the stack.
+* The list of options must always end with @ref TXCAP_STACK_SET_NULL() even if these is no option to pass to the stack.
 * @retval A Pointer to the newly created stack if succeed and @a Null otherwise.
 * A stack is a well-defined object.
 *

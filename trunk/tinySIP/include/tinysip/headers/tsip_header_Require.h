@@ -39,7 +39,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_REQUIRE_VA_ARGS(option)	tsip_header_Require_def_t, (const char*)option
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Require'.
 ///

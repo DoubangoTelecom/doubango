@@ -355,7 +355,7 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 		hdr->response = tsk_strdup(response);												\
 
 	if(self->isproxy){
-		tsip_header_Proxy_Authorization_t *proxy_auth = TSIP_HEADER_PROXY_AUTHORIZATION_CREATE();
+		tsip_header_Proxy_Authorization_t *proxy_auth = tsip_header_Proxy_Authorization_create();
 		TSIP_AUTH_COPY_VALUES(proxy_auth);
 		header = TSIP_HEADER(proxy_auth);
 	}

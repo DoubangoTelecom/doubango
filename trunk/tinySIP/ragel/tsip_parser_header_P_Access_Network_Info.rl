@@ -44,8 +44,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_P_Access_Network_Info_group SIP P_Access_Network_Info header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

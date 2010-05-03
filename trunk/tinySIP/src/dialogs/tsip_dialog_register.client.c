@@ -294,9 +294,12 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 */
 int tsip_dialog_register_Started_2_Trying_X_register(va_list *app)
 {
-	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
+	tsip_dialog_register_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_register_t *);
 	/*const tsip_message_t *message =*/ va_arg(*app, const tsip_message_t *);
-	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
+	action = va_arg(*app, const tsip_action_t *);
 
 	TSIP_DIALOG(self)->running = tsk_true;
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
@@ -456,7 +459,7 @@ int tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(va_list *app)
 	}
 
 	/* Ensure IPSec SAs */
-	if(TSIP_DIALOG_GET_STACK(self)->secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+	if(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech, "ipsec-3gpp")){
 		tsip_transport_ensureTempSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport, message, TSIP_DIALOG(self)->expires);
 	}
 	
@@ -486,7 +489,7 @@ int tsip_dialog_register_Trying_2_Trying_X_423(va_list *app)
 	if(hdr){
 		TSIP_DIALOG(self)->expires = TSK_TIME_S_2_MS(hdr->value);
 
-		if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+		if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech, "ipsec-3gpp")){
 			tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
 			ret = send_REGISTER(self, tsk_true);
 		}
@@ -537,9 +540,12 @@ int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app)
 */
 int tsip_dialog_register_Connected_2_Trying_X_register(va_list *app)
 {
-	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
+	tsip_dialog_register_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_register_t *);
 	/*const tsip_message_t *message =*/ va_arg(*app, const tsip_message_t *);
-	const tsip_action_t* action = va_arg(*app, const tsip_action_t *);
+	action = va_arg(*app, const tsip_action_t *);
 	
 	/* Set  current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
@@ -695,8 +701,8 @@ int send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial)
 		}
 		
 		/* Create temorary SAs if initial register. */
-		if(TSIP_DIALOG_GET_STACK(self)->secagree_mech){
-			if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+		if(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech){
+			if(tsk_striequals(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech, "ipsec-3gpp")){
 				if(initial){
 					tsip_transport_createTempSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
 				}
@@ -737,7 +743,7 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 	TSK_DEBUG_INFO("=== REGISTER Dialog terminated ===");
 	
 	/* Cleanup IPSec SAs */
-	if(TSIP_DIALOG_GET_STACK(self)->secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->secagree_mech, "ipsec-3gpp")){
+	if(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech, "ipsec-3gpp")){
 		tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
 	}
 

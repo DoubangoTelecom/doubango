@@ -34,11 +34,8 @@
 #include "tinySIP/headers/tsip_header.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'Content-Language'.
-/// @author	Mamadou
-/// @date	12/3/2009
 ///
 /// @par ABNF
 /// 	

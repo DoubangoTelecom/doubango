@@ -38,14 +38,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Server_group SIP Server header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 72 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 71 "./ragel/tsip_parser_header_Server.rl" */
 
 
 tsip_header_Server_t* tsip_header_server_create(const char* server)
@@ -82,7 +81,7 @@ tsip_header_Server_t *tsip_header_Server_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 86 "./src/headers/tsip_header_Server.c" */
+/* #line 85 "./src/headers/tsip_header_Server.c" */
 static const char _tsip_machine_parser_header_Server_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 2, 
 	0, 1
@@ -138,16 +137,16 @@ static const int tsip_machine_parser_header_Server_error = 0;
 static const int tsip_machine_parser_header_Server_en_main = 1;
 
 
-/* #line 108 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 107 "./ragel/tsip_parser_header_Server.rl" */
 	
-/* #line 144 "./src/headers/tsip_header_Server.c" */
+/* #line 143 "./src/headers/tsip_header_Server.c" */
 	{
 	cs = tsip_machine_parser_header_Server_start;
 	}
 
-/* #line 109 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 108 "./ragel/tsip_parser_header_Server.rl" */
 	
-/* #line 151 "./src/headers/tsip_header_Server.c" */
+/* #line 150 "./src/headers/tsip_header_Server.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -222,23 +221,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 51 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 50 "./ragel/tsip_parser_header_Server.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 54 "./ragel/tsip_parser_header_Server.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_server->value);
 	}
 	break;
 	case 2:
-/* #line 59 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 58 "./ragel/tsip_parser_header_Server.rl" */
 	{
 	}
 	break;
-/* #line 242 "./src/headers/tsip_header_Server.c" */
+/* #line 241 "./src/headers/tsip_header_Server.c" */
 		}
 	}
 
@@ -251,12 +250,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 110 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 109 "./ragel/tsip_parser_header_Server.rl" */
 	
 	if( cs < 
-/* #line 258 "./src/headers/tsip_header_Server.c" */
+/* #line 257 "./src/headers/tsip_header_Server.c" */
 11
-/* #line 111 "./ragel/tsip_parser_header_Server.rl" */
+/* #line 110 "./ragel/tsip_parser_header_Server.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Server' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_server);

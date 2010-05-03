@@ -34,8 +34,7 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_Min_Expires_group SIP Min-Expires header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

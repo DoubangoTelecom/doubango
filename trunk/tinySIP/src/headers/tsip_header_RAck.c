@@ -38,14 +38,12 @@
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-/**@defgroup tsip_header_RAck_group SIP 'RAck' header.
-*/
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 75 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 73 "./ragel/tsip_parser_header_RAck.rl" */
 
 
 
@@ -79,7 +77,7 @@ tsip_header_RAck_t *tsip_header_RAck_parse(const char *data, size_t size)
 	const char *tag_start;
 
 	
-/* #line 83 "./src/headers/tsip_header_RAck.c" */
+/* #line 81 "./src/headers/tsip_header_RAck.c" */
 static const char _tsip_machine_parser_header_RAck_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4
@@ -162,16 +160,16 @@ static const int tsip_machine_parser_header_RAck_error = 0;
 static const int tsip_machine_parser_header_RAck_en_main = 1;
 
 
-/* #line 108 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 106 "./ragel/tsip_parser_header_RAck.rl" */
 	
-/* #line 168 "./src/headers/tsip_header_RAck.c" */
+/* #line 166 "./src/headers/tsip_header_RAck.c" */
 	{
 	cs = tsip_machine_parser_header_RAck_start;
 	}
 
-/* #line 109 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 107 "./ragel/tsip_parser_header_RAck.rl" */
 	
-/* #line 175 "./src/headers/tsip_header_RAck.c" */
+/* #line 173 "./src/headers/tsip_header_RAck.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -246,35 +244,35 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 51 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 49 "./ragel/tsip_parser_header_RAck.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 55 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 53 "./ragel/tsip_parser_header_RAck.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_rack->seq);
 	}
 	break;
 	case 2:
-/* #line 59 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 57 "./ragel/tsip_parser_header_RAck.rl" */
 	{
 		TSK_PARSER_SET_INTEGER(hdr_rack->cseq);
 	}
 	break;
 	case 3:
-/* #line 63 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 61 "./ragel/tsip_parser_header_RAck.rl" */
 	{
 		TSK_PARSER_SET_STRING(hdr_rack->method);
 	}
 	break;
 	case 4:
-/* #line 67 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 65 "./ragel/tsip_parser_header_RAck.rl" */
 	{
 	}
 	break;
-/* #line 278 "./src/headers/tsip_header_RAck.c" */
+/* #line 276 "./src/headers/tsip_header_RAck.c" */
 		}
 	}
 
@@ -287,12 +285,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 110 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 108 "./ragel/tsip_parser_header_RAck.rl" */
 	
 	if( cs < 
-/* #line 294 "./src/headers/tsip_header_RAck.c" */
+/* #line 292 "./src/headers/tsip_header_RAck.c" */
 22
-/* #line 111 "./ragel/tsip_parser_header_RAck.rl" */
+/* #line 109 "./ragel/tsip_parser_header_RAck.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'RAck' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_rack);

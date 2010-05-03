@@ -43,8 +43,9 @@
 * These questions will especially concern using SIP (or all other text-based protocols) in wireless handsets as part of 2.5G, 3G and 4G cellular networks. 
 *
 * SigComp stands for Signaling Compression and has been defined in <a href="http://www.ietf.org/rfc/rfc3320.txt">RFC 3320</a> by the Internet Engineering Task Force (IETF) ROHC working group.
+* <br> <br>
 *
-* @image html SigComp_Architecture.png "SigComp Architecture (From wikimedia)"
+* @image html SigComp_Architecture.png "SigComp Architecture"
 *
 * Many application protocols used for multimedia communications are text-based and engineered for bandwidth rich links. As a result the messages have not been optimized in 
 * terms of size. For example, typical IMS/SIP messages range from a few hundred bytes up to two thousand bytes or more. For this reason, SigComp is mandatory for 
@@ -55,11 +56,12 @@
 *
 * @par Supported OS
 *
-* Windows Xp/Vista (Visual Studio 2005 or Mingw32) 
-* Windows Mobile 5 and later (Visual Studio 2005 or Mingw32ce/cegcc toolchain) 
-* Symbian S60 (Carbide.c++ v2.0 with S60_3rd_FP2_SDK_v1.1)
-* Google Android
-* All Linux, FreeBSD, ... (GCC 4.x) 
+* - Windows XX/Vista (Visual Studio 2005/2008 or Mingw32) 
+* - Windows Mobile 5 and later (Visual Studio 2005/2008 or Mingw32ce/cegcc toolchain) 
+* - Symbian S60 (Carbide.c++ v2.0 with S60_3rd_FP2_SDK_v1.1)
+* - Google Android
+* - Mac OS X, iPhone (Xcode)
+* - All Linux, FreeBSD, ... (GCC 4.x) 
 *
 *
 * @par FEATURES
@@ -67,7 +69,7 @@
 * The goal of this project is to provide a SigComp framework which: 
 *
 * - Could be used as an external API or Framework
-* - Highly portable (Coded in C/C++ without any external dependencies)
+* - Highly portable (Coded in ANSI-C without any external dependencies)
 * - Easily configurable (memory usage, priorities in static dictionaries, stateful/stateless modes, dynamic/static/shared compression types …)
 * - Easy to integrate with any existing SIP/IMS stack, Proxy-CSCF, PoC client …
 * - Allow to easily plug your own compressor (DEFLATE – RFC 1951- will be the default)

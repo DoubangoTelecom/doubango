@@ -58,12 +58,13 @@
 
 #include "tinySIP_config.h"
 
-TSIP_BEGIN_DECLS
-
 /**@def AKA_AK_SIZE
  * a 48-bit anonymity key that is the output of either of the functions f5 and f5*. 
  * Defined in 3GPP TS 35.206 subclause 2.3.
  */
+
+TSIP_BEGIN_DECLS
+
 #define AKA_AK_SIZE 6
 typedef uint8_t AKA_AK_T[AKA_AK_SIZE + 1];
 

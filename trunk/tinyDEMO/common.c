@@ -51,6 +51,8 @@ int session_tostring(const session_t* session);
 /* our SIP callback function */
 int stack_callback(const tsip_event_t *sipevent)
 {
+	int ret;
+
 	if(!sipevent){ /* should never happen ...but who know? */
 		TSK_DEBUG_WARN("Null SIP event.");
 		return -1;
@@ -59,38 +61,49 @@ int stack_callback(const tsip_event_t *sipevent)
 	/* check if it's for our stack */
 	if(sipevent->stack != ctx->stack){
 		TSK_DEBUG_ERROR("We have received an event for another stack");
-		return -2;
+		return  -2;
 	}
+
+	tsk_safeobj_lock(ctx);
 
 	switch(sipevent->type){
 		case tsip_event_register:
 			{	/* REGISTER */
-				return register_handle_event(sipevent);
+				ret = register_handle_event(sipevent);
+				break;
 			}
 		case tsip_event_invite:
 			{	/* INVITE */
-				return invite_handle_event(sipevent);
+				ret = invite_handle_event(sipevent);
+				break;
 			}
 		case tsip_event_message:
 			{	/* MESSAGE */
-				return message_handle_event(sipevent);
+				ret = message_handle_event(sipevent);
+				break;
 			}
 		case tsip_event_publish:
 			{ /* PUBLISH */
-				return publish_handle_event(sipevent);
+				ret = publish_handle_event(sipevent);
+				break;
 			}
 		case tsip_event_subscribe:
 			{	/* SUBSCRIBE */
-				return subscribe_handle_event(sipevent);
+				ret = subscribe_handle_event(sipevent);
+				break;
 			}
 
 		default:
 			{	/* Unsupported */
 				TSK_DEBUG_WARN("%d not supported as SIP event.", sipevent->type);
-				return -3;
+				ret = -3;
+				break;
 			}
 	}
-	return 0;
+
+	tsk_safeobj_unlock(ctx);
+
+	return ret;
 }
 
 /*	==================================================================

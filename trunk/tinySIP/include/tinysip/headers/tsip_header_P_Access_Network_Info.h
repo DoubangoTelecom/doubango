@@ -38,7 +38,6 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_P_ACCESS_NETWORK_INFO_VA_ARGS(value)	tsip_header_P_Access_Network_Info_def_t, (const char*)value
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// @struct	
 ///
 /// @brief	SIP header 'P-Access-Network-Info' as per RFC 3455.
 ///

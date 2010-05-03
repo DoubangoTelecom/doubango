@@ -39,14 +39,12 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Proxy_Require_group SIP Proxy_Require header.
-*/
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 68 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 66 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 
 
 
@@ -95,7 +93,7 @@ tsip_header_Proxy_Require_t *tsip_header_Proxy_Require_parse(const char *data, s
 	const char *tag_start;
 
 	
-/* #line 99 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 97 "./src/headers/tsip_header_Proxy_Require.c" */
 static const char _tsip_machine_parser_header_Proxy_Require_actions[] = {
 	0, 1, 0, 1, 1, 1, 2
 };
@@ -180,16 +178,16 @@ static const int tsip_machine_parser_header_Proxy_Require_error = 0;
 static const int tsip_machine_parser_header_Proxy_Require_en_main = 1;
 
 
-/* #line 116 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 114 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	
-/* #line 186 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 184 "./src/headers/tsip_header_Proxy_Require.c" */
 	{
 	cs = tsip_machine_parser_header_Proxy_Require_start;
 	}
 
-/* #line 117 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 115 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	
-/* #line 193 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 191 "./src/headers/tsip_header_Proxy_Require.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -264,23 +262,23 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 52 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 50 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 56 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 54 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	{
 		TSK_PARSER_ADD_STRING(hdr_proxyrequire->options);
 	}
 	break;
 	case 2:
-/* #line 60 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 58 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	{
 	}
 	break;
-/* #line 284 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 282 "./src/headers/tsip_header_Proxy_Require.c" */
 		}
 	}
 
@@ -293,12 +291,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 118 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 116 "./ragel/tsip_parser_header_Proxy_Require.rl" */
 	
 	if( cs < 
-/* #line 300 "./src/headers/tsip_header_Proxy_Require.c" */
+/* #line 298 "./src/headers/tsip_header_Proxy_Require.c" */
 25
-/* #line 119 "./ragel/tsip_parser_header_Proxy_Require.rl" */
+/* #line 117 "./ragel/tsip_parser_header_Proxy_Require.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Privacy' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_proxyrequire);

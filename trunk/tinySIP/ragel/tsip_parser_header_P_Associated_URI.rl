@@ -37,8 +37,7 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_P_Associated_URI_group SIP P_Associated_URI header.
-*/
+
 
 /***********************************
 *	Ragel state machine.

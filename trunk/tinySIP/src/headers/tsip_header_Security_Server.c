@@ -40,14 +40,13 @@
 
 #include <string.h>
 
-/**@defgroup tsip_header_Security_Server_group SIP Security_Server header.
-*/
+
 
 /***********************************
 *	Ragel state machine.
 */
 
-/* #line 149 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 148 "./ragel/tsip_parser_header_Security_Server.rl" */
 
 
 tsip_header_Security_Server_t* tsip_header_Security_Server_create()
@@ -114,7 +113,7 @@ tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *
 	tsip_header_Security_Server_t *curr_securityserver = tsk_null;
 
 	
-/* #line 118 "./src/headers/tsip_header_Security_Server.c" */
+/* #line 117 "./src/headers/tsip_header_Security_Server.c" */
 static const char _tsip_machine_parser_header_Security_Server_actions[] = {
 	0, 1, 0, 1, 3, 1, 4, 1, 
 	5, 1, 6, 1, 7, 1, 8, 1, 
@@ -675,16 +674,16 @@ static const int tsip_machine_parser_header_Security_Server_error = 0;
 static const int tsip_machine_parser_header_Security_Server_en_main = 1;
 
 
-/* #line 215 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 214 "./ragel/tsip_parser_header_Security_Server.rl" */
 	
-/* #line 681 "./src/headers/tsip_header_Security_Server.c" */
+/* #line 680 "./src/headers/tsip_header_Security_Server.c" */
 	{
 	cs = tsip_machine_parser_header_Security_Server_start;
 	}
 
-/* #line 216 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 215 "./ragel/tsip_parser_header_Security_Server.rl" */
 	
-/* #line 688 "./src/headers/tsip_header_Security_Server.c" */
+/* #line 687 "./src/headers/tsip_header_Security_Server.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -759,13 +758,13 @@ _match:
 		switch ( *_acts++ )
 		{
 	case 0:
-/* #line 53 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 52 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		tag_start = p;
 	}
 	break;
 	case 1:
-/* #line 57 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 56 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(!curr_securityserver){
 			curr_securityserver = tsip_header_Security_Server_create_null();
@@ -773,7 +772,7 @@ _match:
 	}
 	break;
 	case 2:
-/* #line 63 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 62 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			tsk_list_push_back_data(hdr_securityservers, ((void**) &curr_securityserver));
@@ -781,7 +780,7 @@ _match:
 	}
 	break;
 	case 3:
-/* #line 69 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 68 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_STRING(curr_securityserver->mech);
@@ -789,7 +788,7 @@ _match:
 	}
 	break;
 	case 4:
-/* #line 75 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 74 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_INT(curr_securityserver->port_s);
@@ -797,7 +796,7 @@ _match:
 	}
 	break;
 	case 5:
-/* #line 81 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 80 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_INT(curr_securityserver->port_c);
@@ -805,7 +804,7 @@ _match:
 	}
 	break;
 	case 6:
-/* #line 87 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 86 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_UINT(curr_securityserver->spi_s);
@@ -813,7 +812,7 @@ _match:
 	}
 	break;
 	case 7:
-/* #line 93 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 92 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_UINT(curr_securityserver->spi_c);
@@ -821,7 +820,7 @@ _match:
 	}
 	break;
 	case 8:
-/* #line 99 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 98 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_STRING(curr_securityserver->ealg);
@@ -829,7 +828,7 @@ _match:
 	}
 	break;
 	case 9:
-/* #line 105 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 104 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_STRING(curr_securityserver->alg);
@@ -837,7 +836,7 @@ _match:
 	}
 	break;
 	case 10:
-/* #line 111 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 110 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_STRING(curr_securityserver->prot);
@@ -845,7 +844,7 @@ _match:
 	}
 	break;
 	case 11:
-/* #line 117 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 116 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_SET_DOUBLE(curr_securityserver->q);
@@ -853,7 +852,7 @@ _match:
 	}
 	break;
 	case 12:
-/* #line 123 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 122 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 		if(curr_securityserver){
 			TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_securityserver));
@@ -861,11 +860,11 @@ _match:
 	}
 	break;
 	case 13:
-/* #line 129 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 128 "./ragel/tsip_parser_header_Security_Server.rl" */
 	{
 	}
 	break;
-/* #line 869 "./src/headers/tsip_header_Security_Server.c" */
+/* #line 868 "./src/headers/tsip_header_Security_Server.c" */
 		}
 	}
 
@@ -878,12 +877,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 217 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 216 "./ragel/tsip_parser_header_Security_Server.rl" */
 	
 	if( cs < 
-/* #line 885 "./src/headers/tsip_header_Security_Server.c" */
+/* #line 884 "./src/headers/tsip_header_Security_Server.c" */
 188
-/* #line 218 "./ragel/tsip_parser_header_Security_Server.rl" */
+/* #line 217 "./ragel/tsip_parser_header_Security_Server.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Security-Server' header.");
 		TSK_OBJECT_SAFE_FREE(curr_securityserver);

@@ -214,7 +214,7 @@ int tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb)
 /**@ingroup tcomp_manager_group
 * Sets the SigComp version (RFC 3320 section 3.3).
 * @param handle The SigComp manager.
-* @param cpb The new cycle per bit value.
+* @param version The SigComp version. Only 2.0 is supported.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
 int tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t version)
