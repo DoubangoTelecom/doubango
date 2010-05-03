@@ -265,7 +265,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 						}
 					}
 					else{
-						TSK_DEBUG_ERROR("%s is invlaid for an Operator Id value.", hexstr);
+						TSK_DEBUG_ERROR("%s is invalid for an Operator Id value.", hexstr);
 					}
 					break;
 				}
@@ -580,7 +580,7 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 			return 0;
 		}
 
-		/* Hangup all dialogs staring by REGISTER */	
+		/* Hangup all dialogs starting by REGISTER */	
 		if((ret = tsip_dialog_layer_shutdownAll(stack->layer_dialog))){
 			TSK_DEBUG_WARN("Failed to hang-up all dialogs");
 			one_failed = tsk_true;

@@ -39,7 +39,7 @@
 
 TSIP_BEGIN_DECLS
 
-//FD
+// Forward declarations
 struct tsip_message_s;
 struct tsip_action_s;
 

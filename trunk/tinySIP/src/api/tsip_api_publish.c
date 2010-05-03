@@ -39,6 +39,8 @@
 
 #define TSIP_PUBLISH_EVENT_CREATE( type)		tsk_object_new(tsip_publish_event_def_t, type)
 
+extern tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
+
 int tsip_publish_event_signal(tsip_publish_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_publish_event_t* sipevent = TSIP_PUBLISH_EVENT_CREATE(type);
@@ -69,7 +71,7 @@ int tsip_action_PUBLISH(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = tsip_action_create(atype_publish, &ap))){
+	if((action = tsip_action_create_2(atype_publish, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_PUBLISH, ss);
 		}
@@ -102,7 +104,7 @@ int tsip_action_UNPUBLISH(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = tsip_action_create(atype_unpublish, &ap))){
+	if((action = tsip_action_create_2(atype_unpublish, &ap))){
 		ret = tsip_ssession_hangup(ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}

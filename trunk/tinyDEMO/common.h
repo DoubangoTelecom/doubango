@@ -111,8 +111,10 @@ int stack_run(const opts_L_t* opts);
 session_t* session_create(session_type_t );
 const session_t* session_get_by_sid(const sessions_L_t* , tsip_ssession_id_t );
 int session_tostring(const session_t* );
-const session_t* session_handle_cmd(cmd_type_t , const opts_L_t* );
+const session_t* session_handle_cmd(cmd_type_t , const opts_L_t*);
 int session_hangup(tsip_ssession_id_t sid);
+
+tsip_action_handle_t* action_get_config(const opts_L_t* opts);
 
 const tsk_object_def_t *session_def_t;
 const tsk_object_def_t *ctx_def_t;
