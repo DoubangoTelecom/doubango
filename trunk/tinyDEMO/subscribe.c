@@ -100,6 +100,7 @@ tsip_ssession_id_t subscribe_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 {
 	const session_t* session = tsk_null;
 	tsip_ssession_id_t id = TSIP_SSESSION_INVALID_ID;
+	const opt_t* opt;
 
 	if(!(session = session_handle_cmd(cmd, opts))){
 		return -1;
@@ -111,8 +112,19 @@ tsip_ssession_id_t subscribe_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 	switch(cmd){
 		case cmd_subscribe:
 			{	/* Send SIP SUBSCRIBE */
-				tsip_action_SUBSCRIBE(session->handle,
-					TSIP_ACTION_SET_NULL());
+				tsip_action_handle_t* action_config = action_get_config(opts);
+				if((opt = opt_get_by_type(opts, opt_payload))){
+					tsip_action_SUBSCRIBE(session->handle,
+						TSIP_ACTION_SET_PAYLOAD(opt->value, tsk_strlen(opt->value)),
+						TSIP_ACTION_SET_CONFIG(action_config),
+						TSIP_ACTION_SET_NULL());
+				}
+				else{
+					tsip_action_SUBSCRIBE(session->handle,
+						TSIP_ACTION_SET_CONFIG(action_config),
+						TSIP_ACTION_SET_NULL());
+				}
+				TSK_OBJECT_SAFE_FREE(action_config);
 				break;
 			}
 		default:

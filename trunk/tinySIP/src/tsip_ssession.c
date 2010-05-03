@@ -39,6 +39,9 @@
 
 #include "tsk_debug.h"
 
+/**@defgroup tsip_session_group SIP sessions
+*/
+
 /* internal function used to create session for server dialogs */
 tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const struct tsip_message_s* message)
 {

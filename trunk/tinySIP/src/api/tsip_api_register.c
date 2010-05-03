@@ -40,6 +40,8 @@
 
 #define TSIP_REGISTER_EVENT_CREATE( type)		tsk_object_new(tsip_register_event_def_t, type)
 
+extern tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
+
 int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_register_event_t* sipevent = TSIP_REGISTER_EVENT_CREATE(type);
@@ -71,7 +73,7 @@ int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = tsip_action_create(atype_register, &ap))){
+	if((action = tsip_action_create_2(atype_register, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, _ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_REGISTER, _ss);
 		}
@@ -104,7 +106,7 @@ int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = tsip_action_create(atype_unregister, &ap))){
+	if((action = tsip_action_create_2(atype_unregister, &ap))){
 		ret = tsip_ssession_hangup(_ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}

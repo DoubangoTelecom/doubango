@@ -40,6 +40,8 @@
 
 #define TSIP_SUBSCRIBE_EVENT_CREATE( type)		tsk_object_new(tsip_subscribe_event_def_t, type)
 
+extern tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
+
 int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_subscribe_event_t* sipevent = TSIP_SUBSCRIBE_EVENT_CREATE(type);
@@ -70,7 +72,7 @@ int tsip_action_SUBSCRIBE(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = tsip_action_create(atype_subscribe, &ap))){
+	if((action = tsip_action_create_2(atype_subscribe, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_SUBSCRIBE, ss);
 		}
@@ -103,7 +105,7 @@ int tsip_action_UNSUBSCRIBE(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = tsip_action_create(atype_unsubscribe, &ap))){
+	if((action = tsip_action_create_2(atype_unsubscribe, &ap))){
 		ret = tsip_ssession_hangup(ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}

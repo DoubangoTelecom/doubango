@@ -511,6 +511,10 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 					}
 					break;
 				}
+			case opt_payload:
+				{	/* Will be handled by the caller */
+					break;
+				}
 			case opt_to:
 				{	/* You should use  TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, value)
 						instead of TSIP_SSESSION_SET_HEADER() to set the destination URI. */
@@ -599,3 +603,56 @@ static const tsk_object_def_t session_def_s =
 	tsk_null, 
 };
 const tsk_object_def_t *session_def_t = &session_def_s;
+
+
+
+tsip_action_handle_t* action_get_config(const opts_L_t* opts)
+{
+	const opt_t* opt;
+	const tsk_list_item_t* item;
+	tsip_action_handle_t* action_config = tsk_null;
+	tsk_param_t* param;
+
+	if(TSK_LIST_IS_EMPTY(opts)){
+		return tsk_null;
+	}
+
+	tsk_list_foreach(item, opts){
+		opt = item->data;
+		
+		/* action level? */
+		if(opt->lv != lv_action){
+			continue;
+		}
+
+		/* create new action */
+		if(!action_config && !(action_config = tsip_action_create(atype_config,
+			TSIP_ACTION_SET_NULL()))) break;
+
+		switch(opt->type){
+			case opt_header:
+				{
+					if((param = tsk_params_parse_param(opt->value, tsk_strlen(opt->value)))){
+						tsip_action_set(action_config, 
+							TSIP_ACTION_SET_HEADER(param->name, param->value),
+							TSIP_ACTION_SET_NULL());
+						TSK_OBJECT_SAFE_FREE(param);
+					}
+					break;
+				}
+			case opt_payload:
+				{
+					tsip_action_set(action_config,
+						TSIP_ACTION_SET_PAYLOAD(opt->value, tsk_strlen(opt->value)),
+						TSIP_ACTION_SET_NULL());
+					break;
+				}
+			default:
+				{
+					break;
+				}
+		}
+	}
+
+	return action_config;
+}

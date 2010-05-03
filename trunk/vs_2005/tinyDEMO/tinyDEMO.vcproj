@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\thirdparties\win32\include\smc;..\..\tinySIP\include;..\..\tinySAK\src;..\..\tinyHTTP\include;..\..\tinyNET\src"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\thirdparties\win32\include\smc;..\..\tinySIP\include;..\..\tinySAK\src;..\..\tinySMS\include;..\..\tinyHTTP\include;..\..\tinyNET\src"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinySMS.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"
@@ -91,7 +91,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy /D /Y &quot;$(Outdir)\..\..\..\tinyDEMO\*.sn&quot; &quot;$(Outdir)&quot;"
+				CommandLine=""
 				ExcludedFromBuild="false"
 			/>
 		</Configuration>
@@ -189,11 +189,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyDEMO\cmd_parser.c"
+				RelativePath="..\..\tinyDEMO\common.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyDEMO\common.c"
+				RelativePath="..\..\tinyDEMO\dssl.c"
 				>
 			</File>
 			<File
@@ -231,15 +231,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyDEMO\cmd_parser.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tinyDEMO\common.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\tinyDEMO\demo_config.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\dssl.h"
 				>
 			</File>
 			<File
@@ -271,7 +271,7 @@
 			Name="ragel(*.rl)"
 			>
 			<File
-				RelativePath="..\..\tinyDEMO\cmd_parser.rl"
+				RelativePath="..\..\tinyDEMO\dssl.rl"
 				>
 			</File>
 		</Filter>
@@ -279,19 +279,27 @@
 			Name="scenarios(*.scn)"
 			>
 			<File
-				RelativePath="..\..\tinyDEMO\alcatel.sn"
+				RelativePath="..\..\tinyDEMO\core-alcatel.sn"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyDEMO\colibria.sn"
+				RelativePath="..\..\tinyDEMO\core-colibria.sn"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyDEMO\ericsson.sn"
+				RelativePath="..\..\tinyDEMO\core-ericsson.sn"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyDEMO\inexbee.sn"
+				RelativePath="..\..\tinyDEMO\core-inexbee.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\core-micromethod.sn"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\core-nsn.sn"
 				>
 			</File>
 			<File
@@ -299,19 +307,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyDEMO\micromethod.sn"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyDEMO\nsn.sn"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tinyDEMO\publish.sn"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyDEMO\sample.sn"
+				RelativePath="..\..\tinyDEMO\ragel.sh"
 				>
 			</File>
 		</Filter>

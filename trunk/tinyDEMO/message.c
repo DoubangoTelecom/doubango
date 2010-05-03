@@ -107,15 +107,19 @@ tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_message:
 			{	/* Send SIP MESSAGE */
 				/* Payload */
+				tsip_action_handle_t* action_config = action_get_config(opts);
 				if((opt = opt_get_by_type(opts, opt_payload))){
 					tsip_action_MESSAGE(session->handle,
 						TSIP_ACTION_SET_PAYLOAD(opt->value, tsk_strlen(opt->value)),
+						TSIP_ACTION_SET_CONFIG(action_config),
 						TSIP_ACTION_SET_NULL());
 				}
 				else{
 					tsip_action_MESSAGE(session->handle,
+						TSIP_ACTION_SET_CONFIG(action_config),
 						TSIP_ACTION_SET_NULL());
 				}
+				TSK_OBJECT_SAFE_FREE(action_config);
 				break;
 			}
 		case cmd_sms:
