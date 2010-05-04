@@ -30,7 +30,7 @@
 #ifndef TINYSAK_RAGEL_STATE_H
 #define TINYSAK_RAGEL_STATE_H
 
-#include "tinysak_config.h"
+#include "tinySAK_config.h"
 #include "tsk_params.h"
 
 #include <string.h>
