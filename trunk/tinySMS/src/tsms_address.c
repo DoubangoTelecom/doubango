@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySMS/tsms_address.h"
+#include "tinysms/tsms_address.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"

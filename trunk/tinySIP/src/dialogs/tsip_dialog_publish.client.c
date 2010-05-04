@@ -27,18 +27,18 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/dialogs/tsip_dialog_publish.h"
+#include "tinysip/dialogs/tsip_dialog_publish.h"
 
-#include "tinySIP/headers/tsip_header_Dummy.h"
-#include "tinySIP/headers/tsip_header_Min_Expires.h"
-#include "tinySIP/headers/tsip_header_SIP_ETag.h"
-#include "tinySIP/headers/tsip_header_SIP_If_Match.h"
+#include "tinysip/headers/tsip_header_Dummy.h"
+#include "tinysip/headers/tsip_header_Min_Expires.h"
+#include "tinysip/headers/tsip_header_SIP_ETag.h"
+#include "tinysip/headers/tsip_header_SIP_If_Match.h"
 
-#include "tinySIP/transactions/tsip_transac_layer.h"
+#include "tinysip/transactions/tsip_transac_layer.h"
 
-#include "tinySIP/tsip_message.h"
+#include "tinysip/tsip_message.h"
 
-#include "tinySIP/api/tsip_api_publish.h"
+#include "tinysip/api/tsip_api_publish.h"
 
 #include "tsk_debug.h"
 #include "tsk_time.h"
@@ -402,7 +402,7 @@ int tsip_dialog_publish_Trying_2_Trying_X_423(va_list *app)
 	}
 	else{
 		TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-			715, "Invalid SIP response.", response);
+			tsip_event_code_message_error, "Invalid SIP response.", response);
 
 		return -1;
 	}
@@ -437,7 +437,7 @@ int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-		701, "Subscription cancelled", tsk_null);
+		tsip_event_code_request_cancelled, "Subscription cancelled", tsk_null);
 
 	return ret;
 }
@@ -494,7 +494,7 @@ int tsip_dialog_publish_Any_2_Terminated_X_transportError(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-		702, "Transport error.", tsk_null);
+		tsip_event_code_transport_error, "Transport error.", tsk_null);
 
 	return 0;
 }
@@ -513,7 +513,7 @@ int tsip_dialog_publish_Any_2_Terminated_X_Error(va_list *app)
 	}
 	else{
 		TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-			703, "Global error.", tsk_null);
+			tsip_event_code_global_error, "Global error.", tsk_null);
 	}
 
 	return 0;

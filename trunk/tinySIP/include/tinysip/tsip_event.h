@@ -32,7 +32,7 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/tsip_ssession.h"
+#include "tinysip/tsip_ssession.h"
 
 TSIP_BEGIN_DECLS
 
@@ -47,9 +47,26 @@ typedef enum tsip_event_type_e
 	tsip_event_subscribe,
 	
 	tsip_event_transporterr,
-
+	tsip_event_terminated,
 }
 tsip_event_type_t;
+
+/** SIP codes associated to an internal event */
+typedef enum tsip_event_code_e
+{
+	/* 100-699 are reserved codes */
+
+	/* 7xx ==> errors */
+	tsip_event_code_transport_error = 702,
+	tsip_event_code_global_error = 703,
+	tsip_event_code_message_error = 703,
+
+	/* 8xx ==> success */
+	tsip_event_code_request_incoming = 800,
+	tsip_event_code_request_cancelled = 801,
+	tsip_event_code_request_sent = 802,
+}
+tsip_event_code_t;
 
 typedef struct tsip_event_s
 {

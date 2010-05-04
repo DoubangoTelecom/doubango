@@ -27,14 +27,14 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/transports/tsip_transport_ipsec.h"
+#include "tinysip/transports/tsip_transport_ipsec.h"
 
-#include "tinySIP/transports/tsip_transport.h"
+#include "tinysip/transports/tsip_transport.h"
 
-#include "tinySIP/headers/tsip_header_Proxy_Require.h"
-#include "tinySIP/headers/tsip_header_Require.h"
-#include "tinySIP/headers/tsip_header_Security_Client.h"
-#include "tinySIP/headers/tsip_header_Security_Server.h"
+#include "tinysip/headers/tsip_header_Proxy_Require.h"
+#include "tinysip/headers/tsip_header_Require.h"
+#include "tinysip/headers/tsip_header_Security_Client.h"
+#include "tinysip/headers/tsip_header_Security_Server.h"
 
 #include "tnet_socket.h"
 

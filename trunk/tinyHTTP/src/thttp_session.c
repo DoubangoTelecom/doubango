@@ -27,13 +27,13 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyHTTP/thttp_session.h"
+#include "tinyhttp/thttp_session.h"
 
 #include "thttp.h"
-#include "tinyHTTP/thttp_action.h"
+#include "tinyhttp/thttp_action.h"
 
-#include "tinyHTTP/headers/thttp_header_Dummy.h"
-#include "tinyHTTP/headers/thttp_header_WWW_Authenticate.h"
+#include "tinyhttp/headers/thttp_header_Dummy.h"
+#include "tinyhttp/headers/thttp_header_WWW_Authenticate.h"
 
 #include "tsk_debug.h"
 

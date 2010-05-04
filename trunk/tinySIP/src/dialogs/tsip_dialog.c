@@ -27,26 +27,26 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/dialogs/tsip_dialog.h"
+#include "tinysip/dialogs/tsip_dialog.h"
 
-#include "tinySIP/dialogs/tsip_dialog_layer.h"
-#include "tinySIP/transactions/tsip_transac_layer.h"
+#include "tinysip/dialogs/tsip_dialog_layer.h"
+#include "tinysip/transactions/tsip_transac_layer.h"
 
-#include "tinySIP/transactions/tsip_transac_nict.h"
+#include "tinysip/transactions/tsip_transac_nict.h"
 
-#include "tinySIP/parsers/tsip_parser_uri.h"
+#include "tinysip/parsers/tsip_parser_uri.h"
 
-#include "tinySIP/headers/tsip_header_Authorization.h"
-#include "tinySIP/headers/tsip_header_Contact.h"
-#include "tinySIP/headers/tsip_header_Dummy.h"
-#include "tinySIP/headers/tsip_header_Expires.h"
-#include "tinySIP/headers/tsip_header_P_Preferred_Identity.h"
-#include "tinySIP/headers/tsip_header_Proxy_Authenticate.h"
-#include "tinySIP/headers/tsip_header_Proxy_Authorization.h"
-#include "tinySIP/headers/tsip_header_Record_Route.h"
-#include "tinySIP/headers/tsip_header_Route.h"
-#include "tinySIP/headers/tsip_header_Subscription_State.h"
-#include "tinySIP/headers/tsip_header_WWW_Authenticate.h"
+#include "tinysip/headers/tsip_header_Authorization.h"
+#include "tinysip/headers/tsip_header_Contact.h"
+#include "tinysip/headers/tsip_header_Dummy.h"
+#include "tinysip/headers/tsip_header_Expires.h"
+#include "tinysip/headers/tsip_header_P_Preferred_Identity.h"
+#include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
+#include "tinysip/headers/tsip_header_Proxy_Authorization.h"
+#include "tinysip/headers/tsip_header_Record_Route.h"
+#include "tinysip/headers/tsip_header_Route.h"
+#include "tinysip/headers/tsip_header_Subscription_State.h"
+#include "tinysip/headers/tsip_header_WWW_Authenticate.h"
 
 #include "tsk_debug.h"
 #include "tsk_time.h"

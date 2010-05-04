@@ -31,7 +31,7 @@
 #define _TSIP_HEADER_P_ANSWER_STATE_H_
 
 #include "tinySIP_config.h"
-#include "tinySIP/headers/tsip_header.h"
+#include "tinysip/headers/tsip_header.h"
 
 TSIP_BEGIN_DECLS
 

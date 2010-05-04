@@ -32,7 +32,7 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/transports/tsip_transport.h"
+#include "tinysip/transports/tsip_transport.h"
 
 TSIP_BEGIN_DECLS
 

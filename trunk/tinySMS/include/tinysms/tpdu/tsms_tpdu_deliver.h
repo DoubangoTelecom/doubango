@@ -32,7 +32,7 @@
 
 #include "tinysms_config.h"
 
-#include "tinySMS/tsms_common.h"
+#include "tinysms/tsms_common.h"
 
 
 TSMS_BEGIN_DECLS

@@ -34,10 +34,10 @@
 
 #include "tsip.h"
 
-#include "tinySIP/tsip_message.h"
-#include "tinySIP/headers/tsip_header.h"
+#include "tinysip/tsip_message.h"
+#include "tinysip/headers/tsip_header.h"
 
-#include "tinySIP/authentication/tsip_milenage.h"
+#include "tinysip/authentication/tsip_milenage.h"
 
 #include "tinyhttp/auth/thttp_auth.h"
 

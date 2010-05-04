@@ -29,10 +29,10 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/dialogs/tsip_dialog_invite.h"
+#include "tinysip/dialogs/tsip_dialog_invite.h"
 
-#include "tinySIP/headers/tsip_header_RAck.h"
-#include "tinySIP/headers/tsip_header_RSeq.h"
+#include "tinysip/headers/tsip_header_RAck.h"
+#include "tinysip/headers/tsip_header_RSeq.h"
 
 #include "tsk_debug.h"
 

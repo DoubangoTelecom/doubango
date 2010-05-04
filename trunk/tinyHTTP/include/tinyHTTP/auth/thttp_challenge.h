@@ -32,10 +32,10 @@
 
 #include "tinyhttp_config.h"
 
-#include "tinyHTTP/thttp_message.h"
-#include "tinyHTTP/headers/thttp_header.h"
+#include "tinyhttp/thttp_message.h"
+#include "tinyhttp/headers/thttp_header.h"
 
-#include "tinyHTTP/auth/thttp_auth.h"
+#include "tinyhttp/auth/thttp_auth.h"
 
 #include "tsk_object.h"
 #include "tsk_list.h"

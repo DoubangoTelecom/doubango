@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySMS/tpdu/tsms_tpdu_submit.h"
+#include "tinysms/tpdu/tsms_tpdu_submit.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"

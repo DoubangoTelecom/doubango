@@ -28,14 +28,14 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/tsip_message.h"
+#include "tinysip/tsip_message.h"
 
-#include "tinySIP/headers/tsip_header_Allow.h"
-#include "tinySIP/headers/tsip_header_Contact.h"
-#include "tinySIP/headers/tsip_header_Max_Forwards.h"
-#include "tinySIP/headers/tsip_header_Require.h"
-#include "tinySIP/headers/tsip_header_Supported.h"
-#include "tinySIP/headers/tsip_header_User_Agent.h"
+#include "tinysip/headers/tsip_header_Allow.h"
+#include "tinysip/headers/tsip_header_Contact.h"
+#include "tinysip/headers/tsip_header_Max_Forwards.h"
+#include "tinysip/headers/tsip_header_Require.h"
+#include "tinysip/headers/tsip_header_Supported.h"
+#include "tinysip/headers/tsip_header_User_Agent.h"
 
 
 #include "tsk_debug.h"

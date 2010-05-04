@@ -32,8 +32,8 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/transports/tsip_transport.h"
-#include "tinySIP/tsip_message.h"
+#include "tinysip/transports/tsip_transport.h"
+#include "tinysip/tsip_message.h"
 #include "tsip.h"
 
 #include "tipsec.h"

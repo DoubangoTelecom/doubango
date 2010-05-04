@@ -27,11 +27,11 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/tsip_event.h"
+#include "tinysip/tsip_event.h"
 
 #include "tsip.h"
 
-#include "tinySIP/tsip_message.h"
+#include "tinysip/tsip_message.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"

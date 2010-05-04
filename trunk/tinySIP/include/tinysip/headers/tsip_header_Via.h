@@ -31,7 +31,7 @@
 #define TINYSIP_HEADER_VIA_H
 
 #include "tinySIP_config.h"
-#include "tinySIP/headers/tsip_header.h"
+#include "tinysip/headers/tsip_header.h"
 
 #include "tsk_object.h"
 

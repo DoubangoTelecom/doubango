@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/headers/tsip_header_Via.h"
+#include "tinysip/headers/tsip_header_Via.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"

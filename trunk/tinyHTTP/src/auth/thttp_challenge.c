@@ -27,11 +27,11 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyHTTP/auth/thttp_challenge.h"
+#include "tinyhttp/auth/thttp_challenge.h"
 
 #include "thttp.h"
 
-#include "tinyHTTP/headers/thttp_header_Authorization.h"
+#include "tinyhttp/headers/thttp_header_Authorization.h"
 
 #include "tsk_string.h"
 #include "tsk_debug.h"

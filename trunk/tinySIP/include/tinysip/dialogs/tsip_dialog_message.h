@@ -31,7 +31,7 @@
 #define TINYSIP_DIALOG_MESSAGE_H
 
 #include "tinySIP_config.h"
-#include "tinySIP/dialogs/tsip_dialog.h"
+#include "tinysip/dialogs/tsip_dialog.h"
 
 TSIP_BEGIN_DECLS
 

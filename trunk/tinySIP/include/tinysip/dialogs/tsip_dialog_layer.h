@@ -33,7 +33,7 @@
 #include "tinySIP_config.h"
 
 #include "tsip.h"
-#include "tinySIP/dialogs/tsip_dialog.h"
+#include "tinysip/dialogs/tsip_dialog.h"
 
 #include "tsk_condwait.h"
 #include "tsk_safeobj.h"

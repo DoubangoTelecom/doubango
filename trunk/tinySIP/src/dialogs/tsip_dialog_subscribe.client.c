@@ -27,16 +27,16 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/dialogs/tsip_dialog_subscribe.h"
+#include "tinysip/dialogs/tsip_dialog_subscribe.h"
 
-#include "tinySIP/headers/tsip_header_Dummy.h"
-#include "tinySIP/headers/tsip_header_Event.h"
-#include "tinySIP/headers/tsip_header_Min_Expires.h"
-#include "tinySIP/headers/tsip_header_Subscription_State.h"
+#include "tinysip/headers/tsip_header_Dummy.h"
+#include "tinysip/headers/tsip_header_Event.h"
+#include "tinysip/headers/tsip_header_Min_Expires.h"
+#include "tinysip/headers/tsip_header_Subscription_State.h"
 
-#include "tinySIP/transactions/tsip_transac_layer.h"
+#include "tinysip/transactions/tsip_transac_layer.h"
 
-#include "tinySIP/api/tsip_api_subscribe.h"
+#include "tinysip/api/tsip_api_subscribe.h"
 
 #include "tsk_debug.h"
 #include "tsk_time.h"
@@ -425,7 +425,7 @@ int tsip_dialog_subscribe_Trying_2_Trying_X_423(va_list *app)
 	}
 	else{
 		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-			715, "Invalid SIP response.", response);
+			tsip_event_code_message_error, "Invalid SIP response.", response);
 
 		return -1;
 	}
@@ -460,7 +460,7 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-		701, "Subscription cancelled", tsk_null);
+		tsip_event_code_request_cancelled, "Subscription cancelled", tsk_null);
 
 	return ret;
 }
@@ -508,7 +508,7 @@ int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app)
 
 	/* Alert the user */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
-		299, "Incoming Request.", request);
+		tsip_event_code_request_incoming, "Incoming NOTIFY.", request);
 
 	return ret;
 }
@@ -522,7 +522,7 @@ int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app)
 
 	/* Alert the user */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
-		720, "Dialog terminated", request);
+		tsip_event_code_request_incoming, "Incoming NOTIFY.", request);
 
 	return send_200NOTIFY(self, request);
 }
@@ -567,7 +567,7 @@ int tsip_dialog_subscribe_Any_2_Terminated_X_transportError(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-		702, "Transport error.", tsk_null);
+		tsip_event_code_transport_error, "Transport error.", tsk_null);
 
 	return 0;
 }
@@ -586,7 +586,7 @@ int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app)
 	}
 	else{
 		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-			703, "Global error.", tsk_null);
+			tsip_event_code_global_error, "Global error.", tsk_null);
 	}
 
 	return 0;

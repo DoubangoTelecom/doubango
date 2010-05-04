@@ -4,7 +4,7 @@
 
 export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk
 export ANDROID_SDK_ROOT=/cygdrive/c/android-sdk
-export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-1.5
+export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-4
 
 # Output directory
 export OUTPUT_DIR=$(shell pwd)/output

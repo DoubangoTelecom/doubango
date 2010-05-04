@@ -33,7 +33,7 @@
 #include "tinySIP_config.h"
 
 #include "tsip.h"
-#include "tinySIP/transactions/tsip_transac.h"
+#include "tinysip/transactions/tsip_transac.h"
 
 #include "tsk_safeobj.h"
 #include "tsk_list.h"

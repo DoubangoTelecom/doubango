@@ -19,15 +19,15 @@
 * along with DOUBANGO.
 *
 */
-#include "tinySMS/tsms_packing.h"
+#include "tinysms/tsms_packing.h"
 
 // SM-RL
-#include "tinySMS/rpdu/tsms_rpdu.h"
+#include "tinysms/rpdu/tsms_rpdu.h"
 
 // SM-TL
-#include "tinySMS/tpdu/tsms_tpdu_submit.h"
-#include "tinySMS/tpdu/tsms_tpdu_deliver.h"
-#include "tinySMS/tpdu/tsms_tpdu_report.h"
-#include "tinySMS/tpdu/tsms_tpdu_command.h"
-#include "tinySMS/tpdu/tsms_tpdu_status_report.h"
+#include "tinysms/tpdu/tsms_tpdu_submit.h"
+#include "tinysms/tpdu/tsms_tpdu_deliver.h"
+#include "tinysms/tpdu/tsms_tpdu_report.h"
+#include "tinysms/tpdu/tsms_tpdu_command.h"
+#include "tinysms/tpdu/tsms_tpdu_status_report.h"
 

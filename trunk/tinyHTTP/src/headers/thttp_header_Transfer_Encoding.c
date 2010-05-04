@@ -29,7 +29,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyHTTP/headers/thttp_header_Transfer_Encoding.h"
+#include "tinyhttp/headers/thttp_header_Transfer_Encoding.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"

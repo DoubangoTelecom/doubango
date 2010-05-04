@@ -32,8 +32,8 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/transactions/tsip_transac.h"
-#include "tinySIP/tsip_message.h"
+#include "tinysip/transactions/tsip_transac.h"
+#include "tinysip/tsip_message.h"
 
 TSIP_BEGIN_DECLS
 

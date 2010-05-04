@@ -27,14 +27,14 @@
 *
 * @date Created: Sat Nov 8 16:54:58 2009 mdiop
 */
-#include "tinySIP/tsip_action.h"
+#include "tinysip/tsip_action.h"
 
 #include "tsk_debug.h"
 
 tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
 int tsip_action_set_2(tsip_action_handle_t* self, va_list* app);
 
-/**@defgroup tsip_action_group SIP action
+/**@defgroup tsip_action_group SIP action (Requests)
 */
 
 /**@ingroup tsip_action_group
@@ -44,16 +44,26 @@ int tsip_action_set_2(tsip_action_handle_t* self, va_list* app);
 * @retval A valid SIP handle if succeed and Null otherwise.
 *
 * @code
-tsip_action_handle_t* handle = tsip_action_create(atype_config,
-                                  TSIP_ACTION_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
-								  TSIP_ACTION_SET_HEADER("Supported", "precondition"),
-								  TSIP_ACTION_SET_PAYLOAD("my payload", strlen("my payload")),
-								  TSIP_ACTION_SET_NULL());
-//... whatever
+tsip_action_handle_t* handle;
+handle = tsip_action_create(atype_config,
+           TSIP_ACTION_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
+           TSIP_ACTION_SET_HEADER("Supported", "precondition"),
+           TSIP_ACTION_SET_PAYLOAD("my payload", strlen("my payload")),
+           TSIP_ACTION_SET_NULL());
 
+// This action handle could be used to configure an outgoing request
+// by using @ref TSIP_ACTION_SET_CONFIG() like this:
+// tsip_action_PUBLISH(session,
+//       TSIP_ACTION_SET_CONFIG(handle),
+//       TSIP_ACTION_SET_NULL());
+//
+// in this case only the initial outgoing PUBLISH will have these headers and this
+// payload
+//
+//
 // To destroy the handle
 TSK_OBJECT_SAFE_FREE(handle);
-* @endode
+* @endcode
 */
 tsip_action_handle_t* tsip_action_create(tsip_action_type_t type, ...)
 {
@@ -83,7 +93,7 @@ int ret = tsip_action_set(handle,
 
 // To destroy the handle
 TSK_OBJECT_SAFE_FREE(handle);
-* @endode
+* @endcode
 */
 int tsip_action_set(tsip_action_handle_t* self, ...)
 {
@@ -216,4 +226,3 @@ static const tsk_object_def_t tsip_action_def_s =
 	tsk_null, 
 };
 const tsk_object_def_t *tsip_action_def_t = &tsip_action_def_s;
-

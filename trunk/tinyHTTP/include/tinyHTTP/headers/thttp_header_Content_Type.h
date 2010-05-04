@@ -31,7 +31,7 @@
 #define _THTTP_HEADER_CONTENT_TYPE_H_
 
 #include "tinyhttp_config.h"
-#include "tinyHTTP/headers/thttp_header.h"
+#include "tinyhttp/headers/thttp_header.h"
 
 THTTP_BEGIN_DECLS
 

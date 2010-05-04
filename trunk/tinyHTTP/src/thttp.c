@@ -28,15 +28,15 @@
  */
 #include "thttp.h"
 
-#include "tinyHTTP/thttp_action.h"
-#include "tinyHTTP/thttp_event.h"
+#include "tinyhttp/thttp_action.h"
+#include "tinyhttp/thttp_event.h"
 
-#include "tinyHTTP/thttp_message.h"
-#include "tinyHTTP/parsers/thttp_parser_message.h"
+#include "tinyhttp/thttp_message.h"
+#include "tinyhttp/parsers/thttp_parser_message.h"
 
-#include "tinyHTTP/headers/thttp_header_Transfer_Encoding.h"
+#include "tinyhttp/headers/thttp_header_Transfer_Encoding.h"
 
-#include "tinyHTTP/thttp_dialog.h"
+#include "tinyhttp/thttp_dialog.h"
 
 #include "tnet.h"
 
