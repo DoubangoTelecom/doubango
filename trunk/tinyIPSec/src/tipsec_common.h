@@ -30,7 +30,7 @@
 #ifndef TINYIPSEC_IPSEC_COMMON_H
 #define TINYIPSEC_IPSEC_COMMON_H
 
-#include "tinyIPSEC_config.h"
+#include "tinyipsec_config.h"
 
 #include "tsk_string.h"
 
