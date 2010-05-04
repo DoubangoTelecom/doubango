@@ -573,6 +573,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyNET\src\tnet_proto.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyNET\src\tnet_socket.h"
 				>
 			</File>
