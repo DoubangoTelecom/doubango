@@ -30,7 +30,7 @@
 #ifndef TINYHTTP_HEADER_H
 #define TINYHTTP_HEADER_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tsk_ragel_state.h"
 

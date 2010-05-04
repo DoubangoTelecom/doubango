@@ -30,7 +30,7 @@
 #ifndef _THTTP_HEADER_WWW_Authenticate_H_
 #define _THTTP_HEADER_WWW_Authenticate_H_
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 #include "tinyHTTP/headers/thttp_header.h"
 
 THTTP_BEGIN_DECLS

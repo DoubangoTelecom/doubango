@@ -30,7 +30,7 @@
 #ifndef TINYHTTP_EVENT_H
 #define TINYHTTP_EVENT_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tinyHTTP/thttp_session.h"
 

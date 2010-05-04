@@ -29,7 +29,7 @@
 #ifndef TINYHTTP_THTTP_H
 #define TINYHTTP_THTTP_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tinyHTTP/thttp_event.h"
 #include "tinyHTTP/thttp_session.h"

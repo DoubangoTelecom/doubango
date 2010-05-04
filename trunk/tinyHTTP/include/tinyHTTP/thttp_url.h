@@ -30,7 +30,7 @@
 #ifndef TINYHTTP_URL_H
 #define TINYHTTP_URL_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tsk_object.h"
 #include "tsk_params.h"
