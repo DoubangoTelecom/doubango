@@ -37,9 +37,9 @@ extern tsk_bool_t tnet_isBigEndian;
 * @param x The 16-bit (in host byte order) value to convert.
 * @retval @a x in TCP/IP network byte order.
 */
-unsigned short tnet_htons(unsigned short x)
+__inline unsigned short tnet_htons(unsigned short x)
 {
-	if(tnet_isBigEndian){
+	if(tnet_is_BE()){
 		return x;
 	}
 	else{
@@ -52,9 +52,9 @@ unsigned short tnet_htons(unsigned short x)
 * @param x The 32-bit (in host byte order) value to convert.
 * @retval @a x in TCP/IP network byte order.
 */
-unsigned long tnet_htonl(unsigned long x)
+__inline unsigned long tnet_htonl(unsigned long x)
 {
-	if(tnet_isBigEndian){
+	if(tnet_is_BE()){
 		return x;
 	}
 	else{
@@ -63,4 +63,22 @@ unsigned long tnet_htonl(unsigned long x)
 						(((uint32_t)(x) & 0x0000ff00) << 8)		| \
 						(((uint32_t)(x) & 0x000000ff) << 24));
 	}
+}
+
+/** Indicates whether we are on a Big Endian host or not.<br>
+* <b>IMPORTANT</b>: Before calling this function, you should initialize the network stack by using
+* @ref tnet_startup().
+* @retval @a tsk_true if the program is runnin on a Big Endian host and @a tsk_false otherwise.
+*/
+__inline tsk_bool_t tnet_is_BE(){
+	/* If LITTLE_ENDIAN or BIG_ENDIAN macros have been defined in config.h ==> use them
+	* otherwise ==> dyn retrieve the endianness
+	*/
+#if LITTLE_ENDIAN
+	return tsk_false;
+#elif BIG_ENDIAN
+	return tsk_true;
+#else
+	return tnet_isBigEndian;
+#endif
 }

@@ -124,7 +124,7 @@
 void test_parser()
 {
 	tsk_ragel_state_t state;
-	tsip_message_t *message = 0;
+	tsip_message_t *message = tsk_null;
 	tsk_buffer_t *buffer = tsk_buffer_create_null();
 	tsk_bool_t enabled;
 	int64_t expires;

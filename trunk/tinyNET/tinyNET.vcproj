@@ -546,7 +546,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\src\tinyNET_config.h"
+				RelativePath=".\src\tinynet_config.h"
 				>
 			</File>
 			<File

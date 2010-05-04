@@ -190,7 +190,7 @@ copy:
 		TSK_DEBUG_ERROR("Invalid HOST/PORT [%s/%u].", self->asso_temporary->ctx->addr_remote, self->asso_temporary->ctx->port_ps);
 		goto bail;
 	}
-	if((ret = tnet_sockfd_connetto(self->asso_temporary->socket_uc->fd, &to))){
+	if((ret = tnet_sockfd_connectto(self->asso_temporary->socket_uc->fd, &to))){
 		TSK_DEBUG_ERROR("Failed to connect port_uc to port_ps.");
 		goto bail;
 	}

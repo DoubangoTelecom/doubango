@@ -34,7 +34,7 @@
 #include "tsk_debug.h"
 
 #define TMED_MAX_PLUGINS			10
-const tmedia_plugin_def_t* __tmedia_plugins[TMED_MAX_PLUGINS] = {{0}};
+const tmedia_plugin_def_t* __tmedia_plugins[TMED_MAX_PLUGINS] = {0};
 
 
 tmedia_t* tmedia_create(const char* name, const char* host, tnet_socket_type_t socket_type)

@@ -32,10 +32,13 @@
 
 #include "tinynet_config.h"
 
+#include "tsk_common.h" /* tsk_bool_t */
+
 TNET_BEGIN_DECLS
 
-unsigned short tnet_htons(unsigned short x);
-unsigned long tnet_htonl(unsigned long x);
+TINYNET_API __inline unsigned short tnet_htons(unsigned short x);
+TINYNET_API __inline unsigned long tnet_htonl(unsigned long x);
+TINYNET_API __inline tsk_bool_t tnet_is_BE();
 
 #define tnet_ntohs(x) tnet_htons(x)
 #define tnet_ntohl(x) tnet_htonl(x)

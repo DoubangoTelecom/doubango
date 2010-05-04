@@ -34,10 +34,6 @@
 #ifndef _TINYNET_H_
 #define _TINYNET_H_
 
-#ifdef HAVE_CONFIG_H
-#	include "config.h"
-#endif
-
 #ifdef __SYMBIAN32__
 #undef _WIN32 /* Because of WINSCW */
 #endif
@@ -118,6 +114,11 @@
 #define TNET_RESOLV_CONF_PATH "/etc/resolv.conf" /**< Path to "/resolv.conf". */
 
 #include <stdint.h>
+
+
+#ifdef HAVE_CONFIG_H
+#	include "../config.h"
+#endif
 
 #endif /* _TINYNET_H_ */
 
