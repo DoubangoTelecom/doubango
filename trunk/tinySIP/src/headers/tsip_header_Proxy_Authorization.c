@@ -44,13 +44,11 @@ tsip_header_Proxy_Authorization_t* tsip_header_Proxy_Authorization_create()
 	return tsk_object_new(tsip_header_Proxy_Authorization_def_t);
 }
 
-int tsip_header_Proxy_Authorization_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Proxy_Authorization_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
-		const tsip_header_Proxy_Authorization_t *Proxy_Authorization = header;
-		if(Proxy_Authorization && Proxy_Authorization->scheme)
-		{
+	if(header){
+		const tsip_header_Proxy_Authorization_t *Proxy_Authorization = (const tsip_header_Proxy_Authorization_t *)header;
+		if(Proxy_Authorization && Proxy_Authorization->scheme){
 			return tsk_buffer_append_2(output, "%s %s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s", 
 				Proxy_Authorization->scheme,
 
@@ -101,8 +99,7 @@ tsip_header_Proxy_Authorization_t *tsip_header_Proxy_Authorization_parse(const c
 	tsip_header_Proxy_Authorization_t *hdr_sip = 0;
 	thttp_header_Proxy_Authorization_t* hdr_http;
 	
-	if((hdr_http = thttp_header_Proxy_Authorization_parse(data, size)))
-	{
+	if((hdr_http = thttp_header_Proxy_Authorization_parse(data, size))){
 		hdr_sip = tsip_header_Proxy_Authorization_create();
 		
 		hdr_sip->scheme = tsk_strdup(hdr_http->scheme);

@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2009 Mamadou Diop.
+* Partial Copyright (C) 2009 Mamadou Diop.
 *
 * Contact: Mamadou Diop <diopmamadou(at)doubango.org>
 *	
@@ -52,15 +52,10 @@
  *
  *-----------------------------------------------------------------
  *
- * @author Mamadou Diop <diopmamadou(at)doubango.org>
- *
- * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tinysip/authentication/tsip_rijndael.h"
 
-#if TSIP_UNDER_WINDOWS || defined(__SYMBIAN32__) || defined(__LITTLE_ENDIAN__)
-#	define LITTLE_ENDIAN	/* For INTEL architecture */
-#endif
+#include "tnet_endianness.h"
 
 /* Circular byte rotates of 32 bit values */
 
@@ -79,29 +74,27 @@
 /* Put or get a 32 bit uint32_t (v) in machine order from a byte	*
  * address in (x)                                           */
 
-#ifdef  LITTLE_ENDIAN
-
-#define u32_in(x)     (*(uint32_t*)(x))
-#define u32_out(x,y)  (*(uint32_t*)(x) = y)
-
-#else
-
-/* Invert byte order in a 32 bit variable */
-
-__inline uint32_t byte_swap(const uint32_t x)
-{
+__inline uint32_t byte_swap(uint32_t x){
     return rot1(x) & 0x00ff00ff | rot3(x) & 0xff00ff00;
 }
-__inline uint32_t u32_in(const uint8_t x[])
-{
-  return byte_swap(*(uint32_t*)x);
-};
-__inline void u32_out(uint8_t x[], const uint32_t v) 
-{
-  *(uint32_t*)x = byte_swap(v);
-};
 
-#endif
+__inline uint32_t u32_in(const uint8_t x[]){
+	if(tnet_is_BE()){
+		return byte_swap(*(uint32_t*)x);
+	}
+	else{
+		return (*(uint32_t*)(x));
+	}
+}
+
+__inline void u32_out(uint8_t x[], const uint32_t v){
+	if(tnet_is_BE()){
+		*(uint32_t*)x = byte_swap(v);
+	}
+	else{
+		(*(uint32_t*)(x) = v);
+	}
+}
 
 /*--------------- The lookup tables ----------------------------*/
 

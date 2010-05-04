@@ -24,7 +24,7 @@
 
 #include "tinysip/authentication/tsip_challenge.h" /* Not part of the API */
 
-#define REQUEST "REGISTER sip:ims.inexbee.com SIP/2.0\r\n" \
+#define TEST_IMS_AKA_REQUEST "REGISTER sip:ims.inexbee.com SIP/2.0\r\n" \
 "v: SIP/2.0/TCP 192.168.16.82:2851;branch=z9hG4bK1272986926192;rport\r\n" \
 "f: <sip:bob@ims.inexbee.com>;tag=1272986909384\r\n" \
 "t: <sip:bob@ims.inexbee.com>\r\n" \
@@ -49,6 +49,9 @@ void test_imsaka()
 {
 	tsip_challenge_t* challenge;
 	tsip_stack_handle_t *stack;
+	tsip_request_t *request = tsk_null;
+	tsk_ragel_state_t state;
+	tsip_header_Authorization_t* hdr_Auth;
 
 	/*  create the SIP stack */
 	stack = tsip_stack_create(tsk_null, "sip:ims.inexbee.com", "bob@ims.inexbee.com", "sip:bob@ims.inexbee.com",
@@ -66,8 +69,24 @@ void test_imsaka()
 		"auth" /* qop */
 		);
 
+	/* Parse SIP request */
+	tsk_ragel_state_init(&state, TEST_IMS_AKA_REQUEST, tsk_strlen(TEST_IMS_AKA_REQUEST));
+	if(!tsip_message_parse(&state, &request, tsk_true)){
+		goto bail;
+	}
+
+	/* Gets auth header */
+	if((hdr_Auth = (tsip_header_Authorization_t*)tsip_challenge_create_header_authorization(challenge, request))){
+		TSK_DEBUG_INFO("Response=[%s]", hdr_Auth->response);
+	}
+
+
+bail:
+	TSK_OBJECT_SAFE_FREE(request);
 	TSK_OBJECT_SAFE_FREE(challenge);
 	TSK_OBJECT_SAFE_FREE(stack);
+
+	getchar();
 }
 
 #endif /* _TEST_IMS_AKA_H */

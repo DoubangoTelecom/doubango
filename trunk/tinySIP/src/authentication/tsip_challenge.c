@@ -67,8 +67,8 @@ int tsip_challenge_reset_cnonce(tsip_challenge_t *self)
 	if(self){
 		if(self->qop) /* client nonce is only used if qop=auth, auth-int or both */
 		{
-#if 0
-			memcpy(self->cnonce, "f221681c1e42fb5f8f9957bf7e72eb2b", 32);
+#if 1
+			memcpy(self->cnonce, "ecb1d3f6931803ce7ae68099cb946594", 32);
 #else
 			tsk_istr_t istr;
 			
@@ -94,7 +94,7 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 
 	int ret = -1;
 	size_t n;
-	char *nonce = 0;
+	char *nonce = tsk_null;
 
 	AKA_XXX_DECLARE(RAND);
 	AKA_XXX_DECLARE(AK);
@@ -118,7 +118,6 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 
 	/* RFC 3310 subclause 3.2: nonce = base64(RAND || AUTN || SERV_DATA) */
 	n = tsk_base64_decode((const uint8_t*)self->nonce, tsk_strlen(self->nonce), &nonce);
-	printf("nonce=%s\n", self->nonce);
 	if(n > TSK_MD5_STRING_SIZE){
 		TSK_DEBUG_ERROR("The IMS CORE returned an invalid nonce.");
 		goto bail;
@@ -221,8 +220,7 @@ bail:
 
 int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, const char* uristring, const tsk_buffer_t* entity_body, tsk_md5string_t* response)
 {
-	if(TSIP_CHALLENGE_IS_DIGEST(self) && self->stack)
-	{
+	if(TSIP_CHALLENGE_IS_DIGEST(self) && self->stack){
 		tsk_md5string_t ha1, ha2;
 		nonce_count_t nc;
 
@@ -232,7 +230,7 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 			The resulting AKA RES parameter is treated as a "password"/"secret" when calculating the response directive of RFC 2617.
 		*/
 		if(TSIP_CHALLENGE_IS_AKAv1(self) || TSIP_CHALLENGE_IS_AKAv2(self)){
-			char* akaresult = 0;
+			char* akaresult = tsk_null;
 			tsip_challenge_get_akares(self, TSIP_CHALLENGE_STACK(self)->identity.password, &akaresult);
 			if(thttp_auth_digest_HA1(TSIP_CHALLENGE_USERNAME(self), self->realm, akaresult, &ha1)){
 				// return -1;
@@ -275,8 +273,7 @@ int tsip_challenge_get_response(tsip_challenge_t *self, const char* method, cons
 
 int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop)
 {
-	if(self)
-	{
+	if(self){
 		int noncechanged = !tsk_striequals(self->nonce, nonce);
 
 		tsk_strupdate(&self->scheme, scheme);
@@ -301,8 +298,8 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 {
 	tsk_md5string_t response;
 	nonce_count_t nc;
-	char *uristring = 0;
-	tsip_header_t *header = 0;
+	char *uristring = tsk_null;
+	tsip_header_t *header = tsk_null;
 
 	if(!self || !self->stack || !request){
 		goto bail;

@@ -1189,14 +1189,13 @@ bail:
 * @param to A pointer to the @b sockaddr_storage structure to which the connection should be established.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tnet_sockfd_connetto(tnet_fd_t fd, const struct sockaddr_storage *to)
+int tnet_sockfd_connectto(tnet_fd_t fd, const struct sockaddr_storage *to)
 {
 	int status = -1;
 
 #if TNET_UNDER_WINDOWS
 
-	if((status = WSAConnect(fd, (LPSOCKADDR)to, sizeof(*to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR)
-	{
+	if((status = WSAConnect(fd, (LPSOCKADDR)to, sizeof(*to), NULL, NULL, NULL, NULL)) == SOCKET_ERROR){
 		status = WSAGetLastError();
 		if(status == TNET_ERROR_WOULDBLOCK || status == TNET_ERROR_ISCONN || status == TNET_ERROR_INTR || status == TNET_ERROR_INPROGRESS){
 			TSK_DEBUG_WARN("TNET_ERROR_WOULDBLOCK/TNET_ERROR_ISCONN/TNET_ERROR_INTR/TNET_ERROR_INPROGRESS  ==> use tnet_sockfd_waitUntilWritable.");
