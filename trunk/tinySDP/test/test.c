@@ -25,7 +25,7 @@
 #include "tsk.h"
 
 #include "tsdp.h"
-#include "tinySDP/parsers/tsdp_parser_message.h"
+#include "tinysdp/parsers/tsdp_parser_message.h"
 
 #include "test_parser.h"
 #include "test_soa.h"

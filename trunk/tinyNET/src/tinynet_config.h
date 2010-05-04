@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tinyNET_config.h
+/**@file tinynet_config.h
  * @brief Global configuration file.
  *
  * This file incude all your preferences or configuration. All specific configuration

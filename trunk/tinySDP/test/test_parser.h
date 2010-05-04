@@ -22,12 +22,12 @@
 #ifndef _TEST_SDPPARSER_H
 #define _TEST_SDPPARSER_H
 
-#include "tinySDP/headers/tsdp_header_Dummy.h"
-#include "tinySDP/headers/tsdp_header_A.h"
-#include "tinySDP/headers/tsdp_header_C.h"
-#include "tinySDP/headers/tsdp_header_E.h"
-#include "tinySDP/headers/tsdp_header_I.h"
-#include "tinySDP/headers/tsdp_header_P.h"
+#include "tinysdp/headers/tsdp_header_Dummy.h"
+#include "tinysdp/headers/tsdp_header_A.h"
+#include "tinysdp/headers/tsdp_header_C.h"
+#include "tinysdp/headers/tsdp_header_E.h"
+#include "tinysdp/headers/tsdp_header_I.h"
+#include "tinysdp/headers/tsdp_header_P.h"
 
 #define SDP_MSG1 \
 	"v=0\r\n" \
