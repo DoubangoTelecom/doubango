@@ -35,14 +35,19 @@
 
 #include "tsk_string.h"
 #include "tsk_memory.h"
+#include "tsk_debug.h"
 
+/* internal function used to create base SIP event */
 tsip_event_t* tsip_event_create(tsip_stack_t* stack, tsip_ssession_t* ss, short code, const char* phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
 {
-	return tsk_object_new(tsip_event_def_t, stack, ss, code, phrase, sipmessage, type);
+	tsip_event_t* e;
+	if((e = tsk_object_new(tsip_event_def_t, stack, ss, code, phrase, sipmessage, type))){
+		tsip_event_init(e, stack, ss, code, phrase, sipmessage, type);
+	}
+	return e;
 }
 
-
-
+/* initialize a sip sevent */
 int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_ssession_t *ss, short code, const char *phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
 {
 	if(self && stack){
@@ -54,6 +59,17 @@ int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_ssessio
 		if(sipmessage){
 			self->sipmessage = tsk_object_ref((void*)sipmessage);
 		}
+		return 0;
+	}
+	return -1;
+}
+
+/* signal new event (enque) */
+int tsip_event_signal(tsip_event_type_t type, tsip_stack_t *stack, tsip_ssession_t* ss, short code, const char *phrase)
+{
+	tsip_event_t* e;
+	if((e = tsip_event_create(stack, ss, code, phrase, tsk_null, type))){
+		TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), e);
 		return 0;
 	}
 	return -1;
@@ -93,27 +109,27 @@ static tsk_object_t* tsip_event_ctor(tsk_object_t * self, va_list * app)
 {
 	tsip_event_t *sipevent = self;
 	if(sipevent){
-		const tsip_message_t* sipmessage;
-		tsip_stack_t *stack;
-		tsip_ssession_handle_t *SSESSION;
-		short code;
-		const char *phrase;
-		tsip_event_type_t type;
-		
-		stack = va_arg(*app, tsip_stack_handle_t *);
-		SSESSION = va_arg(*app, tsip_ssession_handle_t*);
-
-#if defined(__GNUC__)
-		code = (short)va_arg(*app, int);
-#else
-		code = va_arg(*app, short);
-#endif
-		phrase = va_arg(*app, const char *);
-		
-		sipmessage = va_arg(*app, const tsip_message_t*);
-		type = va_arg(*app, tsip_event_type_t);
-		
-		tsip_event_init(self, stack, SSESSION, code, phrase, sipmessage, type);
+//		const tsip_message_t* sipmessage;
+//		tsip_stack_t *stack;
+//		tsip_ssession_handle_t *SSESSION;
+//		short code;
+//		const char *phrase;
+//		tsip_event_type_t type;
+//		
+//		stack = va_arg(*app, tsip_stack_handle_t *);
+//		SSESSION = va_arg(*app, tsip_ssession_handle_t*);
+//
+//#if defined(__GNUC__)
+//		code = (short)va_arg(*app, int);
+//#else
+//		code = va_arg(*app, short);
+//#endif
+//		phrase = va_arg(*app, const char *);
+//		
+//		sipmessage = va_arg(*app, const tsip_message_t*);
+//		type = va_arg(*app, tsip_event_type_t);
+//		
+//		tsip_event_init(self, stack, SSESSION, code, phrase, sipmessage, type);
 	}
 	return self;
 }

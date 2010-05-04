@@ -28,15 +28,17 @@
 #include "test_uri.h" /*SIP/SIPS/TEL*/
 #include "test_transac.h"
 #include "test_stack.h"
+#include "test_imsaka.h"
 
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
-#define RUN_TEST_MESSAGES	1
+#define RUN_TEST_MESSAGES	0
 #define RUN_TEST_URI		0
 #define RUN_TEST_TRANSAC	0
 #define RUN_TEST_STACK		0
+#define RUN_TEST_IMS_AKA	1
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -67,6 +69,10 @@ int main()
 
 #if RUN_TEST_ALL || RUN_TEST_STACK
 		test_stack();
+#endif
+
+#if RUN_TEST_ALL || RUN_TEST_IMS_AKA
+		test_imsaka();
 #endif
 	}
 

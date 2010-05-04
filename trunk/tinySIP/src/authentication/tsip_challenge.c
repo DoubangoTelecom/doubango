@@ -117,7 +117,8 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 	AKA_XXX_BZERO(AUTN);
 
 	/* RFC 3310 subclause 3.2: nonce = base64(RAND || AUTN || SERV_DATA) */
-	n = tsk_base64_decode((const uint8_t*)self->nonce, tsk_strlen(self->nonce), &nonce);	
+	n = tsk_base64_decode((const uint8_t*)self->nonce, tsk_strlen(self->nonce), &nonce);
+	printf("nonce=%s\n", self->nonce);
 	if(n > TSK_MD5_STRING_SIZE){
 		TSK_DEBUG_ERROR("The IMS CORE returned an invalid nonce.");
 		goto bail;
@@ -161,9 +162,11 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 	/* Calculate XMAC_A */
 	{
 		AKA_MAC_A_T XMAC_A;
+		memset(XMAC_A, '\0', sizeof(XMAC_A));
+		
 		f1(K, RAND, SQN, AMF, XMAC_A);
 		if(!tsk_strnequals(MAC_A, XMAC_A, AKA_MAC_A_SIZE)){
-			TSK_DEBUG_ERROR("IMS-AKA error: XMAC_A <> MAC_A");
+			TSK_DEBUG_ERROR("IMS-AKA error: XMAC_A [%s] <> MAC_A[%s]", XMAC_A, MAC_A);
 			goto bail;
 		}
 	}
@@ -301,8 +304,7 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 	char *uristring = 0;
 	tsip_header_t *header = 0;
 
-	if(!self || !self->stack || !request)
-	{
+	if(!self || !self->stack || !request){
 		goto bail;
 	}
 
@@ -377,8 +379,7 @@ tsip_header_t *tsip_challenge_create_empty_header_authorization(const char* user
 {
 	tsip_header_Authorization_t *header = tsip_header_Authorization_create();
 
-	if(header)
-	{
+	if(header){
 		header->scheme = tsk_strdup("Digest");
 		header->username = tsk_strdup(username);
 		header->realm = tsk_strdup(realm);

@@ -46,8 +46,9 @@ typedef enum tsip_event_type_e
 	tsip_event_register,
 	tsip_event_subscribe,
 	
-	tsip_event_transporterr,
-	tsip_event_terminated,
+	tsip_event_error,
+	tsip_event_success,
+	tsip_event_info
 }
 tsip_event_type_t;
 
@@ -65,6 +66,9 @@ typedef enum tsip_event_code_e
 	tsip_event_code_request_incoming = 800,
 	tsip_event_code_request_cancelled = 801,
 	tsip_event_code_request_sent = 802,
+
+	/* 9xx ==> Informational */
+	tsip_event_code_dialog_terminated = 900,
 }
 tsip_event_code_t;
 
@@ -87,6 +91,7 @@ tsip_event_t;
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_event_def_t;
 
 int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_ssession_t* ss, short code, const char *phrase, const struct tsip_message_s* sipmessage, tsip_event_type_t type);
+int tsip_event_signal(tsip_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short code, const char *phrase);
 int tsip_event_deinit(tsip_event_t* self);
 
 typedef int (*tsip_stack_callback_f)(const tsip_event_t *sipevent);

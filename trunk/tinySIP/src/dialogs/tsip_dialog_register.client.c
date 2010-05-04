@@ -747,6 +747,10 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 		tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
 	}
 
+	/* Alter the user */
+	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
+				tsip_event_code_transport_error, "Transport error.", tsk_null);
+	
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));
 }

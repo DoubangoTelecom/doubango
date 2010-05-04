@@ -22,8 +22,6 @@
 #ifndef _TEST_SIPURI_H
 #define _TEST_SIPURI_H
 
-#include "tinysip/parsers/tsip_parser_uri.h"
-
 const char* uris[] = 
 {
 	
