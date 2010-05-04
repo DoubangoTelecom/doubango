@@ -31,7 +31,7 @@
 #ifndef _TINYSAK_FSM_H_
 #define _TINYSAK_FSM_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 #include "tsk_list.h"
 #include "tsk_safeobj.h"
 

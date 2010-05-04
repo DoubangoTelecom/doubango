@@ -30,7 +30,7 @@
 #ifndef _TINYSAK_DEBUG_H_
 #define _TINYSAK_DEBUG_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 #include <stdio.h>
 
 TSK_BEGIN_DECLS

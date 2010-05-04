@@ -28,7 +28,7 @@
  *
  * @date Created: Iat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySDP/headers/tsdp_header_M.h"
+#include "tinysdp/headers/tsdp_header_M.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"

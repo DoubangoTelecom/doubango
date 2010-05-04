@@ -30,7 +30,7 @@
 #ifndef _TINYSAK_PARAMS_H_
 #define _TINYSAK_PARAMS_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 #include "tsk_object.h"
 #include "tsk_list.h"
 #include "tsk_buffer.h"

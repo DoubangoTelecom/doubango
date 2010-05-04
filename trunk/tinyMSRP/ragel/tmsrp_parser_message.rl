@@ -26,14 +26,14 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyMSRP/parsers/tmsrp_parser_message.h"
+#include "tinymsrp/parsers/tmsrp_parser_message.h"
 
-#include "tinyMSRP/headers/tmsrp_header_Dummy.h"
-#include "tinyMSRP/headers/tmsrp_header_Expires.h"
-#include "tinyMSRP/headers/tmsrp_header_Max-Expires.h"
-#include "tinyMSRP/headers/tmsrp_header_Min-Expires.h"
-#include "tinyMSRP/headers/tmsrp_header_Use-Path.h"
-#include "tinyMSRP/headers/tmsrp_header_WWW-Authenticate.h"
+#include "tinymsrp/headers/tmsrp_header_Dummy.h"
+#include "tinymsrp/headers/tmsrp_header_Expires.h"
+#include "tinymsrp/headers/tmsrp_header_Max-Expires.h"
+#include "tinymsrp/headers/tmsrp_header_Min-Expires.h"
+#include "tinymsrp/headers/tmsrp_header_Use-Path.h"
+#include "tinymsrp/headers/tmsrp_header_WWW-Authenticate.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"

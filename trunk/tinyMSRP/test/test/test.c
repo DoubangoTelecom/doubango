@@ -28,8 +28,8 @@
 
 #include "tmsrp.h"
 
-#include "tinyMSRP/session/tmsrp_media.h"
-#include "tinyMSRP/parsers/tmsrp_parser_message.h"
+#include "tinymsrp/session/tmsrp_media.h"
+#include "tinymsrp/parsers/tmsrp_parser_message.h"
 
 #include "test_parser.h"
 #include "test_uri.h"

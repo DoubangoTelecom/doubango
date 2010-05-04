@@ -29,7 +29,7 @@
 #ifndef TNET_DNS_RESOLVCONF_H
 #define TNET_DNS_RESOLVCONF_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_types.h"
 

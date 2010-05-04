@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyMSRP/session/tmsrp_session.h"
+#include "tinymsrp/session/tmsrp_session.h"
 
 #include "tnet_utils.h"
 

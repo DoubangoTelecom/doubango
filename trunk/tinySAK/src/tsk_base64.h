@@ -30,7 +30,7 @@
 #ifndef TINYSAK_BASE64_H
 #define TINYSAK_BASE64_H
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 
 TSK_BEGIN_DECLS
 

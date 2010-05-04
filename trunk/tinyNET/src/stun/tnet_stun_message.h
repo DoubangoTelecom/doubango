@@ -30,7 +30,7 @@
 #ifndef TNET_STUN_MESSAGE_H
 #define TNET_STUN_MESSAGE_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 #include "stun/tnet_stun_attribute.h"
 
 #include "tsk_buffer.h"

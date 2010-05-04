@@ -30,7 +30,7 @@
 #ifndef TNET_DHCP_MESSAGE_H
 #define TNET_DHCP_MESSAGE_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_dhcp_option.h"
 #include "tnet_hardwares.h"

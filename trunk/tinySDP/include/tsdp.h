@@ -31,7 +31,7 @@
 
 #include "tinysdp_config.h"
 
-#include "tinySDP/tsdp_message.h"
+#include "tinysdp/tsdp_message.h"
 
 TSDP_BEGIN_DECLS
 

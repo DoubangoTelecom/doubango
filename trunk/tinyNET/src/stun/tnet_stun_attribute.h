@@ -30,7 +30,7 @@
 #ifndef TNET_STUN_ATTRIBUTE_H
 #define TNET_STUN_ATTRIBUTE_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_types.h"
 

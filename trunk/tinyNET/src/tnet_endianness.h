@@ -30,7 +30,7 @@
 #ifndef TNET_ENDIANNESS_H
 #define TNET_ENDIANNESS_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 TNET_BEGIN_DECLS
 

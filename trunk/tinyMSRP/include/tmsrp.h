@@ -30,9 +30,9 @@
 #ifndef TINYMSRP_TMSRP_H
 #define TINYMSRP_TMSRP_H
 
-#include "tinyMSRP_config.h"
+#include "tinymsrp_config.h"
 
-#include "tinyMSRP/tmsrp_message.h"
+#include "tinymsrp/tmsrp_message.h"
 
 TMSRP_BEGIN_DECLS
 

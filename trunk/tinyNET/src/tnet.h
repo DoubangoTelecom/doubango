@@ -30,7 +30,7 @@
 #ifndef TNET_TNET_H
 #define TNET_TNET_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tsk_common.h"
 

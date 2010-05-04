@@ -30,7 +30,7 @@
 #ifndef TNET_DHCP_OPTION_H
 #define TNET_DHCP_OPTION_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tsk_buffer.h"
 #include "tsk_string.h"

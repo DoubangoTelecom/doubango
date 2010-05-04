@@ -30,14 +30,14 @@
 #ifndef _TSDP_HEADER_M_H_
 #define _TSDP_HEADER_M_H_
 
-#include "tinySDP_config.h"
-#include "tinySDP/headers/tsdp_header.h"
+#include "tinysdp_config.h"
+#include "tinysdp/headers/tsdp_header.h"
 
-#include "tinySDP/headers/tsdp_header_A.h"
-#include "tinySDP/headers/tsdp_header_B.h"
-#include "tinySDP/headers/tsdp_header_C.h"
-#include "tinySDP/headers/tsdp_header_I.h"
-#include "tinySDP/headers/tsdp_header_K.h"
+#include "tinysdp/headers/tsdp_header_A.h"
+#include "tinysdp/headers/tsdp_header_B.h"
+#include "tinysdp/headers/tsdp_header_C.h"
+#include "tinysdp/headers/tsdp_header_I.h"
+#include "tinysdp/headers/tsdp_header_K.h"
 
 #include "tsk_string.h"
 

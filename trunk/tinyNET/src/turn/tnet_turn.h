@@ -34,7 +34,7 @@
 #ifndef TNET_TURN_H
 #define TNET_TURN_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "turn/tnet_turn_attribute.h"
 

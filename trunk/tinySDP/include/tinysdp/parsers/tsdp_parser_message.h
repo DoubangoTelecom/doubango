@@ -30,8 +30,8 @@
 #ifndef TINYSDP_PARSER_MESSAGE_H
 #define TINYSDP_PARSER_MESSAGE_H
 
-#include "tinySDP_config.h"
-#include "tinySDP/tsdp_message.h"
+#include "tinysdp_config.h"
+#include "tinysdp/tsdp_message.h"
 #include "tsk_ragel_state.h"
 
 TSDP_BEGIN_DECLS

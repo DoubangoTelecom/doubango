@@ -30,7 +30,7 @@
 #ifndef TNET_TYPES_H
 #define TNET_TYPES_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #if TNET_UNDER_WINDOWS
 #	include	<winsock2.h>

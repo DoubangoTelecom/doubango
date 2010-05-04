@@ -30,7 +30,7 @@
 #ifndef _TINYSAK_BINARYUTILS_H_
 #define _TINYSAK_BINARYUTILS_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 
 #include <stdio.h>
 

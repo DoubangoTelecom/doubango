@@ -29,7 +29,7 @@
 #ifndef TNET_DHCP6_duid_H
 #define TNET_DHCP6_duid_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_hardwares.h"
 #include "tsk_list.h"

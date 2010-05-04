@@ -29,7 +29,7 @@
 #ifndef TNET_DNS_REGEX_H
 #define TNET_DNS_REGEX_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 TNET_BEGIN_DECLS
 
