@@ -27,21 +27,21 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/dialogs/tsip_dialog_register.h"
-#include "tinySIP/parsers/tsip_parser_uri.h"
+#include "tinysip/dialogs/tsip_dialog_register.h"
+#include "tinysip/parsers/tsip_parser_uri.h"
 
-#include "tinySIP/transports/tsip_transport_layer.h"
+#include "tinysip/transports/tsip_transport_layer.h"
 
-#include "tinySIP/headers/tsip_header_Dummy.h"
-#include "tinySIP/headers/tsip_header_Path.h"
-#include "tinySIP/headers/tsip_header_P_Associated_URI.h"
-#include "tinySIP/headers/tsip_header_Min_Expires.h"
-#include "tinySIP/headers/tsip_header_Service_Route.h"
-#include "tinySIP/headers/tsip_header_Supported.h"
+#include "tinysip/headers/tsip_header_Dummy.h"
+#include "tinysip/headers/tsip_header_Path.h"
+#include "tinysip/headers/tsip_header_P_Associated_URI.h"
+#include "tinysip/headers/tsip_header_Min_Expires.h"
+#include "tinysip/headers/tsip_header_Service_Route.h"
+#include "tinysip/headers/tsip_header_Supported.h"
 
-#include "tinySIP/transactions/tsip_transac_layer.h"
+#include "tinysip/transactions/tsip_transac_layer.h"
 
-#include "tinySIP/api/tsip_api_register.h"
+#include "tinysip/api/tsip_api_register.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -531,7 +531,7 @@ int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-		701, "Registration cancelled", tsk_null);
+		tsip_event_code_request_cancelled, "Registration cancelled", tsk_null);
 
 	return ret;
 }
@@ -593,7 +593,7 @@ int tsip_dialog_register_Any_2_Terminated_X_transportError(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-		702, "Transport error.", tsk_null);
+		tsip_event_code_transport_error, "Transport error.", tsk_null);
 
 	return 0;
 }
@@ -612,7 +612,7 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app)
 	}
 	else{
 		TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-			703, "Global error.", tsk_null);
+			tsip_event_code_global_error, "Global error.", tsk_null);
 	}
 
 	return 0;
@@ -717,11 +717,11 @@ int send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial)
 		
 		if(!(ret = tsip_dialog_request_send(TSIP_DIALOG(self), request))){
 			TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_o_unregister : tsip_o_register, 
-				706, "(un)REGISTER request successfully sent.", request);
+				tsip_event_code_request_sent, "(un)REGISTER request successfully sent.", request);
 		}
 		else{
 			TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-				702, "Transport error.", tsk_null);
+				tsip_event_code_transport_error, "Transport error.", tsk_null);
 		}
 		
 		TSK_OBJECT_SAFE_FREE(request);

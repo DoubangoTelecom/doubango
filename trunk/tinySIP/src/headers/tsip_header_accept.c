@@ -27,4 +27,4 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/headers/tsip_header_accept.h"
+#include "tinysip/headers/tsip_header_accept.h"

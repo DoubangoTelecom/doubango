@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/headers/tsip_header_Content_Length.h"
+#include "tinysip/headers/tsip_header_Content_Length.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"

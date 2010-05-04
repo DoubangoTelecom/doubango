@@ -29,7 +29,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/headers/tsip_header_Proxy_Authenticate.h"
+#include "tinysip/headers/tsip_header_Proxy_Authenticate.h"
 
 #include "tinyhttp/headers/thttp_header_WWW_Authenticate.h"
 
@@ -44,12 +44,11 @@ tsip_header_Proxy_Authenticate_t* tsip_header_Proxy_Authenticate_create()
 	return tsk_object_new(tsip_header_Proxy_Authenticate_def_t);
 }
 
-int tsip_header_Proxy_Authenticate_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Proxy_Authenticate_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		const tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = header;
-		if(Proxy_Authenticate && Proxy_Authenticate->scheme)
-		{
+		const tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = (const tsip_header_Proxy_Authenticate_t*)header;
+		if(Proxy_Authenticate && Proxy_Authenticate->scheme){
 			return tsk_buffer_append_2(output, "%s realm=\"%s\"%s%s%s%s%s%s%s%s%s%s%s%s,stale=%s%s%s", 
 				Proxy_Authenticate->scheme,
 				Proxy_Authenticate->realm ? Proxy_Authenticate->realm : "",

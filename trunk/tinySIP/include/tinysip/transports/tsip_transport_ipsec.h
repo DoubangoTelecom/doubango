@@ -32,9 +32,9 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/transports/tsip_transport.h"
+#include "tinysip/transports/tsip_transport.h"
 
-#include "tinySIP/headers/tsip_header_Security_Verify.h"
+#include "tinysip/headers/tsip_header_Security_Verify.h"
 
 #include "tipsec.h"
 

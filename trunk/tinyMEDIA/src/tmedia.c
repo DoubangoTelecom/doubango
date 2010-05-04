@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyMEDIA/tmedia.h"
+#include "tinymedia/tmedia.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"

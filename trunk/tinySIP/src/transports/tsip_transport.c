@@ -27,11 +27,11 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/transports/tsip_transport.h"
+#include "tinysip/transports/tsip_transport.h"
 
-#include "tinySIP/transports/tsip_transport_ipsec.h"
+#include "tinysip/transports/tsip_transport_ipsec.h"
 
-#include "tinySIP/parsers/tsip_parser_uri.h"
+#include "tinysip/parsers/tsip_parser_uri.h"
 
 #include "tsk_string.h"
 #include "tsk_buffer.h"

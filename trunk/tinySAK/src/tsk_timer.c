@@ -134,7 +134,7 @@ void tsk_timer_manager_debug(tsk_timer_manager_handle_t *self)
 		
 		tsk_list_foreach(item, manager->timers){
 			tsk_timer_t* timer = item->data;
-			TSK_DEBUG_INFO("timer [%d]- %llu, %llu", timer->id, timer->timeout, tsk_time_epoch());
+			TSK_DEBUG_INFO("timer [%llu]- %llu, %llu", timer->id, timer->timeout, tsk_time_epoch());
 		}
 
 		tsk_mutex_unlock(manager->mutex);

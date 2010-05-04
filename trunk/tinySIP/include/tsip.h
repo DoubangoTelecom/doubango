@@ -32,11 +32,11 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/tsip_ssession.h"
-#include "tinySIP/tsip_timers.h"
-#include "tinySIP/tsip_event.h"
+#include "tinysip/tsip_ssession.h"
+#include "tinysip/tsip_timers.h"
+#include "tinysip/tsip_event.h"
 
-#include "tinySIP/tsip_uri.h"
+#include "tinysip/tsip_uri.h"
 
 #include "tnet_socket.h"
 #include "dns/tnet_dns.h"

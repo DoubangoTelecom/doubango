@@ -27,15 +27,15 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/tsip_ssession.h"
+#include "tinysip/tsip_ssession.h"
 
-#include "tinySIP/tsip_action.h"
+#include "tinysip/tsip_action.h"
 #include "tsip.h"
 
-#include "tinySIP/parsers/tsip_parser_uri.h"
+#include "tinysip/parsers/tsip_parser_uri.h"
 
-#include "tinySIP/dialogs/tsip_dialog_layer.h"
-#include "tinySIP/tsip_message.h"
+#include "tinysip/dialogs/tsip_dialog_layer.h"
+#include "tinysip/tsip_message.h"
 
 #include "tsk_debug.h"
 

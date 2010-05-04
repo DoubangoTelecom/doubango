@@ -33,10 +33,10 @@
 #include "tinySIP_config.h"
 
 #include "tsip.h"
-#include "tinySIP/tsip_timers.h"
-#include "tinySIP/tsip_message.h"
+#include "tinysip/tsip_timers.h"
+#include "tinysip/tsip_message.h"
 
-#include "tinySIP/dialogs/tsip_dialog.h"
+#include "tinysip/dialogs/tsip_dialog.h"
 
 #include "tsk_safeobj.h"
 #include "tsk_list.h"

@@ -27,16 +27,16 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/dialogs/tsip_dialog_layer.h"
+#include "tinysip/dialogs/tsip_dialog_layer.h"
 
-#include "tinySIP/dialogs/tsip_dialog_invite.h"
-#include "tinySIP/dialogs/tsip_dialog_message.h"
-#include "tinySIP/dialogs/tsip_dialog_publish.h"
-#include "tinySIP/dialogs/tsip_dialog_register.h"
-#include "tinySIP/dialogs/tsip_dialog_subscribe.h"
+#include "tinysip/dialogs/tsip_dialog_invite.h"
+#include "tinysip/dialogs/tsip_dialog_message.h"
+#include "tinysip/dialogs/tsip_dialog_publish.h"
+#include "tinysip/dialogs/tsip_dialog_register.h"
+#include "tinysip/dialogs/tsip_dialog_subscribe.h"
 
-#include "tinySIP/transactions/tsip_transac_layer.h"
-#include "tinySIP/transports/tsip_transport_layer.h"
+#include "tinysip/transactions/tsip_transac_layer.h"
+#include "tinysip/transports/tsip_transport_layer.h"
 
 #include "tsk_debug.h"
 

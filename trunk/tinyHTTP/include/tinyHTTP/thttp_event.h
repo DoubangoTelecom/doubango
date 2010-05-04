@@ -32,7 +32,7 @@
 
 #include "tinyhttp_config.h"
 
-#include "tinyHTTP/thttp_session.h"
+#include "tinyhttp/thttp_session.h"
 
 #include "tsk_object.h"
 

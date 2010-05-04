@@ -39,21 +39,21 @@
 /* === tinySIP === */
 #include "tsip.h"
 
-#include "tinySIP/parsers/tsip_parser_uri.h"
-#include "tinySIP/parsers/tsip_parser_header.h"
-#include "tinySIP/parsers/tsip_parser_message.h"
+#include "tinysip/parsers/tsip_parser_uri.h"
+#include "tinysip/parsers/tsip_parser_header.h"
+#include "tinysip/parsers/tsip_parser_message.h"
 
-#include "tinySIP/tsip_ssession.h"
-#include "tinySIP/tsip_action.h"
+#include "tinysip/tsip_ssession.h"
+#include "tinysip/tsip_action.h"
 
-#include "tinySIP/tsip_message.h"
+#include "tinysip/tsip_message.h"
 
-#include "tinySIP/headers/tsip_headers.h"
+#include "tinysip/headers/tsip_headers.h"
 
-#include "tinySIP/api/tsip_api_invite.h"
-#include "tinySIP/api/tsip_api_message.h"
-#include "tinySIP/api/tsip_api_publish.h"
-#include "tinySIP/api/tsip_api_register.h"
-#include "tinySIP/api/tsip_api_subscribe.h"
+#include "tinysip/api/tsip_api_invite.h"
+#include "tinysip/api/tsip_api_message.h"
+#include "tinysip/api/tsip_api_publish.h"
+#include "tinysip/api/tsip_api_register.h"
+#include "tinysip/api/tsip_api_subscribe.h"
 
 #endif /* TINYSIP_TINYSIP_H */

@@ -29,7 +29,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/headers/tsip_header_Authorization.h"
+#include "tinysip/headers/tsip_header_Authorization.h"
 
 #include "tinyhttp/headers/thttp_header_Authorization.h"
 
@@ -44,7 +44,7 @@ tsip_header_Authorization_t* tsip_header_Authorization_create()
 	return tsk_object_new(tsip_header_Authorization_def_t);
 }
 
-int tsip_header_Authorization_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_Authorization_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Authorization_t *Authorization = (const tsip_header_Authorization_t *)header;

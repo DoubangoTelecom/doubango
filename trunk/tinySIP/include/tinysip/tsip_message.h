@@ -33,16 +33,16 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/headers/tsip_header_Call_ID.h"
-#include "tinySIP/headers/tsip_header_Contact.h"
-#include "tinySIP/headers/tsip_header_Content_Length.h"
-#include "tinySIP/headers/tsip_header_Content_Type.h"
-#include "tinySIP/headers/tsip_header_CSeq.h"
-#include "tinySIP/headers/tsip_header_Expires.h"
-#include "tinySIP/headers/tsip_header_From.h"
-#include "tinySIP/headers/tsip_header_P_Access_Network_Info.h"
-#include "tinySIP/headers/tsip_header_To.h"
-#include "tinySIP/headers/tsip_header_Via.h"
+#include "tinysip/headers/tsip_header_Call_ID.h"
+#include "tinysip/headers/tsip_header_Contact.h"
+#include "tinysip/headers/tsip_header_Content_Length.h"
+#include "tinysip/headers/tsip_header_Content_Type.h"
+#include "tinysip/headers/tsip_header_CSeq.h"
+#include "tinysip/headers/tsip_header_Expires.h"
+#include "tinysip/headers/tsip_header_From.h"
+#include "tinysip/headers/tsip_header_P_Access_Network_Info.h"
+#include "tinysip/headers/tsip_header_To.h"
+#include "tinysip/headers/tsip_header_Via.h"
 
 #include "tnet_types.h"
 

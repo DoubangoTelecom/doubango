@@ -31,8 +31,8 @@
 
 #include "tinyhttp_config.h"
 
-#include "tinyHTTP/thttp_event.h"
-#include "tinyHTTP/thttp_session.h"
+#include "tinyhttp/thttp_event.h"
+#include "tinyhttp/thttp_session.h"
 
 #include "tnet_transport.h"
 

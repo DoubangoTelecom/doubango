@@ -31,7 +31,7 @@
 #define TINYSIP_PARSER_URI_H
 
 #include "tinySIP_config.h"
-#include "tinySIP/tsip_uri.h"
+#include "tinysip/tsip_uri.h"
 
 #include "tsk_ragel_state.h"
 

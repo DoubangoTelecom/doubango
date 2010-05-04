@@ -27,9 +27,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySMS/tsms_common.h"
+#include "tinysms/tsms_common.h"
 
-#include "tinySMS/tsms_packing.h"
+#include "tinysms/tsms_packing.h"
 
 #include "tsk_object.h"
 #include "tsk_string.h"

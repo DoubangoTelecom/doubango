@@ -32,7 +32,7 @@
 
 #include "tinySIP_config.h"
 
-#include "tinySIP/tsip_event.h"
+#include "tinysip/tsip_event.h"
 
 TSIP_BEGIN_DECLS
 

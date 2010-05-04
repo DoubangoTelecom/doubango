@@ -27,9 +27,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyHTTP/headers/thttp_header.h"
+#include "tinyhttp/headers/thttp_header.h"
 
-#include "tinyHTTP/headers/thttp_header_Dummy.h"
+#include "tinyhttp/headers/thttp_header_Dummy.h"
 
 /**@defgroup thttp_header_group HTTP Headers
 */

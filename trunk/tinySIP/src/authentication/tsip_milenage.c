@@ -53,8 +53,8 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 
-#include "tinySIP/authentication/tsip_milenage.h"
-#include "tinySIP/authentication/tsip_rijndael.h"
+#include "tinysip/authentication/tsip_milenage.h"
+#include "tinysip/authentication/tsip_rijndael.h"
 
 /*--------- Operator Variant Algorithm Configuration Field --------*/
 

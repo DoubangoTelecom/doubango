@@ -37,7 +37,7 @@
 
 #include "tnet_transport.h"
 
-#include "tinyMEDIA/tmedia.h"
+#include "tinymedia/tmedia.h"
 #include "tsdp.h"
 
 TMSRP_BEGIN_DECLS

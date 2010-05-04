@@ -32,7 +32,7 @@
 
 #include "tinysms_config.h"
 
-#include "tinySMS/tsms_address.h"
+#include "tinysms/tsms_address.h"
 
 #include "tsk_buffer.h"
 

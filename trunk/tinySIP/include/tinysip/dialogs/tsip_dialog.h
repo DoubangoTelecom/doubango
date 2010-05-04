@@ -33,13 +33,13 @@
 #include "tinySIP_config.h"
 
 #include "tsip.h"
-#include "tinySIP/tsip_uri.h"
-#include "tinySIP/tsip_timers.h"
-#include "tinySIP/tsip_message.h"
-#include "tinySIP/tsip_ssession.h"
+#include "tinysip/tsip_uri.h"
+#include "tinysip/tsip_timers.h"
+#include "tinysip/tsip_message.h"
+#include "tinysip/tsip_ssession.h"
 
-#include "tinySIP/authentication/tsip_challenge.h"
-#include "tinySIP/tsip_action.h"
+#include "tinysip/authentication/tsip_challenge.h"
+#include "tinysip/tsip_action.h"
 
 #include "tsk_safeobj.h"
 #include "tsk_list.h"

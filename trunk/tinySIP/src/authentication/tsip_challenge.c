@@ -27,10 +27,10 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/authentication/tsip_challenge.h"
+#include "tinysip/authentication/tsip_challenge.h"
 
-#include "tinySIP/headers/tsip_header_Authorization.h"
-#include "tinySIP/headers/tsip_header_Proxy_Authorization.h"
+#include "tinysip/headers/tsip_header_Authorization.h"
+#include "tinysip/headers/tsip_header_Proxy_Authorization.h"
 
 #include "tsk_string.h"
 #include "tsk_debug.h"

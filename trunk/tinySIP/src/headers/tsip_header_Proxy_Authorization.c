@@ -29,7 +29,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/headers/tsip_header_Proxy_Authorization.h"
+#include "tinysip/headers/tsip_header_Proxy_Authorization.h"
 
 #include "tinyhttp/headers/thttp_header_Authorization.h"
 

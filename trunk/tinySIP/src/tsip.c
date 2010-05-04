@@ -29,15 +29,15 @@
  */
 #include "tsip.h"
 
-#include "tinySIP/parsers/tsip_parser_uri.h"
+#include "tinysip/parsers/tsip_parser_uri.h"
 
-#include "tinySIP/transactions/tsip_transac_layer.h"
-#include "tinySIP/dialogs/tsip_dialog_layer.h"
-#include "tinySIP/transports/tsip_transport_layer.h"
+#include "tinysip/transactions/tsip_transac_layer.h"
+#include "tinysip/dialogs/tsip_dialog_layer.h"
+#include "tinysip/transports/tsip_transport_layer.h"
 
-#include "tinySIP/api/tsip_api_register.h"
-#include "tinySIP/api/tsip_api_subscribe.h"
-#include "tinySIP/api/tsip_api_message.h"
+#include "tinysip/api/tsip_api_register.h"
+#include "tinysip/api/tsip_api_subscribe.h"
+#include "tinysip/api/tsip_api_message.h"
 
 #include "tnet.h"
 

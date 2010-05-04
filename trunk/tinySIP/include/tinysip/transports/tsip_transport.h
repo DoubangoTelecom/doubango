@@ -34,7 +34,7 @@
 
 #include "tsip.h"
 
-#include "tinySIP/tsip_message.h"
+#include "tinysip/tsip_message.h"
 
 #include "tnet_transport.h"
 

@@ -33,17 +33,17 @@
 
 #include "tinyhttp_config.h"
 
-#include "tinyHTTP/thttp_url.h"
+#include "tinyhttp/thttp_url.h"
 
-//#include "tinyHTTP/headers/thttp_header_Call_ID.h"
-//#include "tinyHTTP/headers/thttp_header_Contact.h"
-#include "tinyHTTP/headers/thttp_header_Content_Length.h"
-#include "tinyHTTP/headers/thttp_header_Content_Type.h"
-//#include "tinyHTTP/headers/thttp_header_CSeq.h"
-//#include "tinyHTTP/headers/thttp_header_Expires.h"
-//#include "tinyHTTP/headers/thttp_header_From.h"
-//#include "tinyHTTP/headers/thttp_header_P_Access_Network_Info.h"
-//#include "tinyHTTP/headers/thttp_header_Via.h"
+//#include "tinyhttp/headers/thttp_header_Call_ID.h"
+//#include "tinyhttp/headers/thttp_header_Contact.h"
+#include "tinyhttp/headers/thttp_header_Content_Length.h"
+#include "tinyhttp/headers/thttp_header_Content_Type.h"
+//#include "tinyhttp/headers/thttp_header_CSeq.h"
+//#include "tinyhttp/headers/thttp_header_Expires.h"
+//#include "tinyhttp/headers/thttp_header_From.h"
+//#include "tinyhttp/headers/thttp_header_P_Access_Network_Info.h"
+//#include "tinyhttp/headers/thttp_header_Via.h"
 
 #include "tsk_object.h"
 #include "tsk_buffer.h"

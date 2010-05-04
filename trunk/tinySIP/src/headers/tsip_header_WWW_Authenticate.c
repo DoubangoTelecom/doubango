@@ -29,7 +29,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/headers/tsip_header_WWW_Authenticate.h"
+#include "tinysip/headers/tsip_header_WWW_Authenticate.h"
 
 #include "tinyhttp/headers/thttp_header_WWW_Authenticate.h"
 
@@ -44,7 +44,7 @@ tsip_header_WWW_Authenticate_t* tsip_header_WWW_Authenticate_create()
 	return tsk_object_new(tsip_header_WWW_Authenticate_def_t);
 }
 
-int tsip_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* output)
+int tsip_header_WWW_Authenticate_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_WWW_Authenticate_t *WWW_Authenticate = (const tsip_header_WWW_Authenticate_t *)header;

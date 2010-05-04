@@ -31,7 +31,7 @@
 #define _TSIP_HEADER_P_CALLED_PARTY_ID_H_
 
 #include "tinySIP_config.h"
-#include "tinySIP/headers/tsip_header.h"
+#include "tinysip/headers/tsip_header.h"
 
 TSIP_BEGIN_DECLS
 

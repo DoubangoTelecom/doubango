@@ -31,7 +31,7 @@
 #define TINYHTTP_PARSER_MESSAGE_H
 
 #include "tinyhttp_config.h"
-#include "tinyHTTP/thttp_message.h"
+#include "tinyhttp/thttp_message.h"
 #include "tsk_ragel_state.h"
 
 THTTP_BEGIN_DECLS

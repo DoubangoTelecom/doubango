@@ -27,9 +27,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyHTTP/headers/thttp_header_Authorization.h"
+#include "tinyhttp/headers/thttp_header_Authorization.h"
 
-#include "tinyHTTP/parsers/thttp_parser_url.h"
+#include "tinyhttp/parsers/thttp_parser_url.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"

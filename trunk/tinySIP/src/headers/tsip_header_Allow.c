@@ -29,9 +29,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/headers/tsip_header_Allow.h"
+#include "tinysip/headers/tsip_header_Allow.h"
 
-#include "tinySIP/parsers/tsip_parser_uri.h"
+#include "tinysip/parsers/tsip_parser_uri.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"

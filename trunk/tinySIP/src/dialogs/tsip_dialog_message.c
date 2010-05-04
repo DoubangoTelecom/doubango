@@ -27,15 +27,15 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/dialogs/tsip_dialog_message.h"
-#include "tinySIP/parsers/tsip_parser_uri.h"
+#include "tinysip/dialogs/tsip_dialog_message.h"
+#include "tinysip/parsers/tsip_parser_uri.h"
 
-#include "tinySIP/api/tsip_api_message.h"
+#include "tinysip/api/tsip_api_message.h"
 
-#include "tinySIP/headers/tsip_header_Dummy.h"
-#include "tinySIP/headers/tsip_header_Min_Expires.h"
+#include "tinysip/headers/tsip_header_Dummy.h"
+#include "tinysip/headers/tsip_header_Min_Expires.h"
 
-#include "tinySIP/transactions/tsip_transac_layer.h"
+#include "tinysip/transactions/tsip_transac_layer.h"
 
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -244,7 +244,7 @@ int tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_MESSAGE_SIGNAL(self, tsip_i_message, 
-			299, "Incoming Request.", request);
+			tsip_event_code_request_incoming, "Incoming Request.", request);
 
 	return send_response(self, 200, "OK", request); // Wait for accept
 }

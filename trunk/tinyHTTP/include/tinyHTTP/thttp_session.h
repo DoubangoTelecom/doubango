@@ -32,10 +32,10 @@
 
 #include "tinyhttp_config.h"
 
-#include "tinyHTTP/auth/thttp_challenge.h"
-#include "tinyHTTP/thttp_message.h"
+#include "tinyhttp/auth/thttp_challenge.h"
+#include "tinyhttp/thttp_message.h"
 
-#include "tinyHTTP/thttp_dialog.h"
+#include "tinyhttp/thttp_dialog.h"
 
 #include "tnet_types.h"
 

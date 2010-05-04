@@ -27,12 +27,12 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySIP/api/tsip_api_subscribe.h"
+#include "tinysip/api/tsip_api_subscribe.h"
 
-#include "tinySIP/dialogs/tsip_dialog_layer.h"
-#include "tinySIP/dialogs/tsip_dialog_subscribe.h"
+#include "tinysip/dialogs/tsip_dialog_layer.h"
+#include "tinysip/dialogs/tsip_dialog_subscribe.h"
 
-#include "tinySIP/tsip_action.h"
+#include "tinysip/tsip_action.h"
 #include "tsip.h"
 
 #include "tsk_runnable.h"
