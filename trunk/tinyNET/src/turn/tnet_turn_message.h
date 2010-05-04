@@ -30,7 +30,7 @@
 #ifndef TNET_TURN_MESSAGE_H
 #define TNET_TURN_MESSAGE_H
 
-#include "../tinyNET_config.h"
+#include "../tinynet_config.h"
 
 #include "tsk_buffer.h"
 
