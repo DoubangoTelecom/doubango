@@ -585,22 +585,33 @@ tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd)
 /**@ingroup tnet_utils_group
 * Gets the IP family of the @a host (e.g. "google.com" or "192.168.16.104" or "::1").
 * If the @a host is FQDN associated with both IPv4 and IPv6 then the result is unpredictable.
+* @param host The IP address or hostname for which to get the IP family.
+* @param port The port associated to the @a host. Will be used as the default service.
 * @retval @a AF_* if succeed and @a AF_UNSPEC otherwise.
 */
-tnet_family_t tnet_get_family(const char* host)
+tnet_family_t tnet_get_family(const char* host, tnet_port_t port)
 {
 	tnet_family_t ret = AF_UNSPEC;
 	if(host){
 		int status;
+		tsk_istr_t srv;
 		struct addrinfo *result = tsk_null;
 		struct addrinfo hints;
+
+		/* set the port: used as the default service */
+		if(port){
+			tsk_itoa(port, &srv);
+		}
+		else{
+			memset(srv, '\0', sizeof(srv));
+		}
 		
 		memset(&hints, 0, sizeof(hints));
 		hints.ai_family = AF_UNSPEC;
 		hints.ai_socktype = SOCK_DGRAM;
 		hints.ai_protocol = IPPROTO_UDP;
 
-		if((status = tnet_getaddrinfo(host, "", &hints, &result))){
+		if((status = tnet_getaddrinfo(host, srv, &hints, &result))){
 			TNET_PRINT_LAST_ERROR("getaddrinfo failed:");
 			goto done;
 		}

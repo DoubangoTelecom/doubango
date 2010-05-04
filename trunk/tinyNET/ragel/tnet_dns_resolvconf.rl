@@ -30,6 +30,8 @@
 
 #include "tnet_utils.h"
 
+#include "dns/tnet_dns.h"
+
 #include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_ragel_state.h"
@@ -54,7 +56,7 @@
 			memcpy(ip, tag_start, len);
 			
 			address = tnet_address_create(ip);
-			address->family = tnet_get_family(ip);
+			address->family = tnet_get_family(ip, TNET_DNS_SERVER_PORT_DEFAULT);
 			address->dnsserver = 1;
 			tsk_list_push_ascending_data(servers, (void**)&address);
 		}

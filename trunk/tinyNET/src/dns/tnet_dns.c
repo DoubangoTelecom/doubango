@@ -814,7 +814,7 @@ int tnet_dns_add_server(tnet_dns_ctx_t *ctx, const char* host)
 	}
 	
 	if((address = tnet_address_create(host))){
-		address->family = tnet_get_family(host);
+		address->family = tnet_get_family(host, TNET_DNS_SERVER_PORT_DEFAULT);
 		address->dnsserver = 1;
 		tsk_list_push_ascending_data(ctx->servers, (void**)&address);
 

@@ -97,7 +97,7 @@ TINYNET_API int tnet_getaddrinfo(const char *node, const char *service, const st
 TINYNET_API void tnet_freeaddrinfo(struct addrinfo *ai);
 TINYNET_API int tnet_get_sockaddr(tnet_fd_t fd, struct sockaddr_storage *result);
 TINYNET_API tnet_socket_type_t tnet_get_socket_type(tnet_fd_t fd);
-TINYNET_API tnet_family_t tnet_get_family(const char* host);
+TINYNET_API tnet_family_t tnet_get_family(const char* host, tnet_port_t port);
 TINYNET_API int tnet_get_ip_n_port(tnet_fd_t fd, tnet_ip_t *ip, tnet_port_t *port);
 TINYNET_API int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *port);
 TINYNET_API int tnet_get_peerip_n_port(tnet_fd_t localFD, tnet_ip_t *ip, tnet_port_t *port);
