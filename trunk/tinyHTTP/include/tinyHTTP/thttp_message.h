@@ -31,7 +31,7 @@
 #ifndef THTTP_MESSAGE_H
 #define THTTP_MESSAGE_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tinyHTTP/thttp_url.h"
 

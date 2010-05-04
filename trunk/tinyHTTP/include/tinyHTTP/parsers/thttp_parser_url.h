@@ -30,7 +30,7 @@
 #ifndef TINYHTTP_PARSER_URL_H
 #define TINYHTTP_PARSER_URL_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 #include "tinyHTTP/thttp_url.h"
 
 #include "tsk_ragel_state.h"

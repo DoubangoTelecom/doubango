@@ -30,7 +30,7 @@
 #ifndef TINYHTTP_PARSER_MESSAGE_H
 #define TINYHTTP_PARSER_MESSAGE_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 #include "tinyHTTP/thttp_message.h"
 #include "tsk_ragel_state.h"
 

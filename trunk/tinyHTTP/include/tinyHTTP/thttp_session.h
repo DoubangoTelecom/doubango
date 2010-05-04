@@ -30,7 +30,7 @@
 #ifndef THTTP_SESSION_H
 #define THTTP_SESSION_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tinyHTTP/auth/thttp_challenge.h"
 #include "tinyHTTP/thttp_message.h"

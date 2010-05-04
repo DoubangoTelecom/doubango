@@ -30,7 +30,7 @@
 #ifndef THTTP_DIALOG_H
 #define THTTP_DIALOG_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tsk_fsm.h"
 #include "tsk_list.h"

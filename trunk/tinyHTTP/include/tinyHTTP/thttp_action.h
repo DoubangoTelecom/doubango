@@ -30,7 +30,7 @@
 #ifndef THTTP_ACTION_H
 #define THTTP_ACTION_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tinyHTTP/thttp_session.h"
 

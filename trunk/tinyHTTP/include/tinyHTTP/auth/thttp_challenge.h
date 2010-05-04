@@ -30,7 +30,7 @@
 #ifndef TINYHTTP_AUTHENTICATION_CHALLENGE_H
 #define TINYHTTP_AUTHENTICATION_CHALLENGE_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tinyHTTP/thttp_message.h"
 #include "tinyHTTP/headers/thttp_header.h"

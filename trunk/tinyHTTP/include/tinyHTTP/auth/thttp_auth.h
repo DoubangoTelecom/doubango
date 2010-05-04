@@ -29,7 +29,7 @@
 #ifndef TINYHTTP_THTTP_AUTH_H
 #define TINYHTTP_THTTP_AUTH_H
 
-#include "tinyHTTP_config.h"
+#include "tinyhttp_config.h"
 
 #include "tsk_md5.h"
 #include "tsk_buffer.h"
