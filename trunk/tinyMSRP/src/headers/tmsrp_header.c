@@ -27,9 +27,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyMSRP/headers/tmsrp_header.h"
+#include "tinymsrp/headers/tmsrp_header.h"
 
-#include "tinyMSRP/headers/tmsrp_header_Dummy.h"
+#include "tinymsrp/headers/tmsrp_header_Dummy.h"
 
 /** Gets the name of the MSRP header with a type equal to @a type. 
  * @param	type	The @a type of the header for which to retrieve the name. 

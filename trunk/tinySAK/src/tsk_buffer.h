@@ -30,7 +30,7 @@
 #ifndef _TINYSAK_BUFFER_H_
 #define _TINYSAK_BUFFER_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 #include "tsk_list.h"
 
 /**@ingroup tsk_buffer_group

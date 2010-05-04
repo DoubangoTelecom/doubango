@@ -29,7 +29,7 @@
 #ifndef TNET_DHCP6_MESSAGE_H
 #define TNET_DHCP6_MESSAGE_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_dhcp6_option.h"
 

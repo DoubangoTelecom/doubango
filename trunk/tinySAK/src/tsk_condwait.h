@@ -30,7 +30,7 @@
 #ifndef _TINYSAK_CONDWAIT_H_
 #define _TINYSAK_CONDWAIT_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 #include "tsk_mutex.h"
 
 TSK_BEGIN_DECLS

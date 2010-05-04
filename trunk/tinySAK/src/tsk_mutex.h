@@ -30,7 +30,7 @@
 #ifndef _TINYSAK_MUTEX_H_
 #define _TINYSAK_MUTEX_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 
 TSK_BEGIN_DECLS
 

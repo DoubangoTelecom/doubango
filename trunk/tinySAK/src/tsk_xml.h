@@ -30,7 +30,7 @@
 #ifndef _TINYSAK_XML_H_
 #define _TINYSAK_XML_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 #include "tsk_heap.h"
 #include "tsk_list.h"
 

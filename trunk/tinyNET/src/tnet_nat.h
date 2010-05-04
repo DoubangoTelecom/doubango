@@ -30,7 +30,7 @@
 #ifndef TNET_NAT_H
 #define TNET_NAT_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "stun/tnet_stun.h"
 #include "turn/tnet_turn.h"

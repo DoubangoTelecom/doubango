@@ -20,7 +20,7 @@
 *
 */
 
-/**@file tinySAK_config.h
+/**@file tinysak_config.h
  * @brief Global configuration file.
  *
  * This file incude all your preferences or configuration. All specific configuration

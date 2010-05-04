@@ -30,7 +30,7 @@
 #ifndef TSK_OBJECT_H
 #define TSK_OBJECT_H
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 
 #include <stdarg.h>
 #include <stdio.h>

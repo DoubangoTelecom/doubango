@@ -30,7 +30,7 @@
 #ifndef TNET_TLS_H
 #define TNET_TLS_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_types.h"
 

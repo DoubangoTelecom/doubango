@@ -28,12 +28,12 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 
-#include "tinySDP/tsdp_message.h"
+#include "tinysdp/tsdp_message.h"
 
-#include "tinySDP/headers/tsdp_header_O.h"
-#include "tinySDP/headers/tsdp_header_S.h"
-#include "tinySDP/headers/tsdp_header_T.h"
-#include "tinySDP/headers/tsdp_header_V.h"
+#include "tinysdp/headers/tsdp_header_O.h"
+#include "tinysdp/headers/tsdp_header_S.h"
+#include "tinysdp/headers/tsdp_header_T.h"
+#include "tinysdp/headers/tsdp_header_V.h"
 
 #define TSDP_LINE_S_VALUE_DEFAULT "-"	/* as per RFC 3264 subclause 5 */
 

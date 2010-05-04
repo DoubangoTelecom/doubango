@@ -29,7 +29,7 @@
 #ifndef TNET_DNS_RR_TXT_H
 #define TNET_DNS_RR_TXT_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_dns_rr.h"
 

@@ -30,11 +30,11 @@
 #ifndef TINYSDP_MESSAGE_H
 #define TINYSDP_MESSAGE_H
 
-#include "tinySDP_config.h"
+#include "tinysdp_config.h"
 
-#include "tinySDP/headers/tsdp_header.h"
+#include "tinysdp/headers/tsdp_header.h"
 
-#include "tinySDP/headers/tsdp_header_M.h"
+#include "tinysdp/headers/tsdp_header_M.h"
 
 TSDP_BEGIN_DECLS
 

@@ -28,7 +28,7 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 
-#include "tinyMSRP/tmsrp_message.h"
+#include "tinymsrp/tmsrp_message.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"

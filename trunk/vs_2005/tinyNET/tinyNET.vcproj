@@ -545,7 +545,7 @@
 			Name="include(*.h)"
 			>
 			<File
-				RelativePath="..\..\tinyNET\src\tinyNET_config.h"
+				RelativePath="..\..\tinyNET\src\tinynet_config.h"
 				>
 			</File>
 			<File

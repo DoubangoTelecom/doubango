@@ -31,7 +31,7 @@
 #ifndef _TINYSAK_HMAC_H_
 #define _TINYSAK_HMAC_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 
 #include "tsk_sha1.h"
 #include "tsk_md5.h"

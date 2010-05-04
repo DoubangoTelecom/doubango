@@ -30,10 +30,10 @@
 #ifndef _TSDP_HEADER_T_H_
 #define _TSDP_HEADER_T_H_
 
-#include "tinySDP_config.h"
-#include "tinySDP/headers/tsdp_header.h"
+#include "tinysdp_config.h"
+#include "tinysdp/headers/tsdp_header.h"
 
-#include "tinySDP/headers/tsdp_header_R.h"
+#include "tinysdp/headers/tsdp_header_R.h"
 
 TSDP_BEGIN_DECLS
 

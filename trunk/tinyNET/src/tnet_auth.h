@@ -30,7 +30,7 @@
 #ifndef TNET_AUTH_H
 #define TNET_AUTH_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 TNET_BEGIN_DECLS
 

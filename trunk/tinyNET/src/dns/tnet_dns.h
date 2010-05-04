@@ -30,7 +30,7 @@
 #ifndef TNET_DNS_H
 #define TNET_DNS_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_dns_message.h"
 

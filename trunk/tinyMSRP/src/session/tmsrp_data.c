@@ -27,11 +27,11 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyMSRP/session/tmsrp_data.h"
+#include "tinymsrp/session/tmsrp_data.h"
 
-#include "tinyMSRP/session/tmsrp_config.h"
+#include "tinymsrp/session/tmsrp_config.h"
 
-#include "tinyMSRP/parsers/tmsrp_parser_message.h"
+#include "tinymsrp/parsers/tmsrp_parser_message.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"

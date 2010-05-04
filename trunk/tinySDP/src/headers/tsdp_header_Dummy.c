@@ -29,7 +29,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySDP/headers/tsdp_header_Dummy.h"
+#include "tinysdp/headers/tsdp_header_Dummy.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"
@@ -303,13 +303,11 @@ _again:
 static tsk_object_t* tsdp_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_Dummy_t *Dummy = self;
-	if(Dummy)
-	{
+	if(Dummy){
 		TSDP_HEADER(Dummy)->type = tsdp_htype_Dummy;
 		TSDP_HEADER(Dummy)->tostring = tsdp_header_Dummy_tostring;
 		TSDP_HEADER(Dummy)->clone = tsdp_header_Dummy_clone;
 		TSDP_HEADER(Dummy)->rank = TSDP_HTYPE_DUMMY_RANK;
-
 #if defined(__GNUC__)
 		Dummy->name = va_arg(*app, const int);
 #else

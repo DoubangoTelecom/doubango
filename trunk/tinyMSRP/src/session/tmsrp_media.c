@@ -27,11 +27,11 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyMSRP/session/tmsrp_media.h"
+#include "tinymsrp/session/tmsrp_media.h"
 
-#include "tinySDP/headers/tsdp_header_A.h"
-#include "tinySDP/headers/tsdp_header_C.h"
-#include "tinySDP/headers/tsdp_header_M.h"
+#include "tinysdp/headers/tsdp_header_A.h"
+#include "tinysdp/headers/tsdp_header_C.h"
+#include "tinysdp/headers/tsdp_header_M.h"
 
 #include "tmsrp.h"
 

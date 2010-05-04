@@ -27,7 +27,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyMSRP/headers/tmsrp_header_Success-Report.h"
+#include "tinymsrp/headers/tmsrp_header_Success-Report.h"
 
 #include "tsk_debug.h"
 #include "tsk_memory.h"

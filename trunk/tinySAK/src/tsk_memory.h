@@ -30,7 +30,7 @@
 #ifndef _TINYSAK_MEMORY_H_
 #define _TINYSAK_MEMORY_H_
 
-#include "tinySAK_config.h"
+#include "tinysak_config.h"
 
 #include <stdlib.h> /* size_t */
 

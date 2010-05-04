@@ -30,7 +30,7 @@
 #ifndef TNET_TURN_ATTRIBUTE_H
 #define TNET_TURN_ATTRIBUTE_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 #include "tnet_proto.h"
 #include "stun/tnet_stun_attribute.h"
 

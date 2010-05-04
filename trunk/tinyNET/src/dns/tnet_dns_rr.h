@@ -30,7 +30,7 @@
 #ifndef TNET_DNS_RR_H
 #define TNET_DNS_RR_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tsk_list.h"
 #include "tsk_buffer.h"

@@ -32,7 +32,7 @@
 
 #include "tinymedia_config.h"
 
-#include "tinySDP/tsdp_message.h"
+#include "tinysdp/tsdp_message.h"
 
 #include "tnet_socket.h"
 

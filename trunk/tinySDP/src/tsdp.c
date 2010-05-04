@@ -28,7 +28,7 @@
  */
 #include "tsdp.h"
 
-#include "tinySDP/parsers/tsdp_parser_message.h"
+#include "tinysdp/parsers/tsdp_parser_message.h"
 
 // Defined in tsdp_message.c
 extern int __pred_find_media_by_name(const tsk_list_item_t *item, const void *name);

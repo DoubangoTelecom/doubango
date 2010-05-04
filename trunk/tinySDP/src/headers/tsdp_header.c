@@ -27,9 +27,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinySDP/headers/tsdp_header.h"
+#include "tinysdp/headers/tsdp_header.h"
 
-#include "tinySDP/headers/tsdp_header_Dummy.h"
+#include "tinysdp/headers/tsdp_header_Dummy.h"
 
 #include "tsk_string.h"
 

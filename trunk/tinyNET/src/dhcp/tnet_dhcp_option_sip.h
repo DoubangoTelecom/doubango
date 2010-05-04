@@ -31,7 +31,7 @@
 #ifndef tnet_dhcp_option_sip_H
 #define tnet_dhcp_option_sip_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 #include "tnet_dhcp_option.h"
 

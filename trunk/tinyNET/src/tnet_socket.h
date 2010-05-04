@@ -30,7 +30,7 @@
 #ifndef TNET_SOCKET_H
 #define TNET_SOCKET_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 #include "tnet_types.h"
 #include "tls/tnet_tls.h"
 

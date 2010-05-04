@@ -22,7 +22,7 @@
 #ifndef _TEST_MSRPPARSER_H
 #define _TEST_MSRPPARSER_H
 
-#include "tinyMSRP/headers/tmsrp_header_Dummy.h"
+#include "tinymsrp/headers/tmsrp_header_Dummy.h"
 
 #define MSRP_MSG_REQUEST \
 	"MSRP a786hjs2 SEND\r\n" \
