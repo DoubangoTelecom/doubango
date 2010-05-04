@@ -30,7 +30,7 @@
 #ifndef _TSIP_HEADER_P_CHARGING_VECTOR_H_
 #define _TSIP_HEADER_P_CHARGING_VECTOR_H_
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
 TSIP_BEGIN_DECLS

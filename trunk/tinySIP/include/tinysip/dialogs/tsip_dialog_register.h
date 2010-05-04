@@ -30,7 +30,7 @@
 #ifndef TINYSIP_DIALOG_REGISTER_H
 #define TINYSIP_DIALOG_REGISTER_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 #include "tinysip/dialogs/tsip_dialog.h"
 
 TSIP_BEGIN_DECLS

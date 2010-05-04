@@ -30,7 +30,7 @@
 #ifndef TINYSIP_PARSER_MESSAGE_H
 #define TINYSIP_PARSER_MESSAGE_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 #include "tinysip/tsip_message.h"
 #include "tsk_ragel_state.h"
 

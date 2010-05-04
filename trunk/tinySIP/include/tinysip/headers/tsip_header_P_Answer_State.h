@@ -30,7 +30,7 @@
 #ifndef _TSIP_HEADER_P_ANSWER_STATE_H_
 #define _TSIP_HEADER_P_ANSWER_STATE_H_
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
 TSIP_BEGIN_DECLS

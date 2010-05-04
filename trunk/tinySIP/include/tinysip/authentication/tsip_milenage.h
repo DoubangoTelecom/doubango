@@ -56,7 +56,7 @@
 #ifndef TINYSIP_AUTHENTICATION_MILENAGE_H
 #define TINYSIP_AUTHENTICATION_MILENAGE_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 /**@def AKA_AK_SIZE
  * a 48-bit anonymity key that is the output of either of the functions f5 and f5*. 

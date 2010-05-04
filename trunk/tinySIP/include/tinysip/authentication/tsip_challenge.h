@@ -30,7 +30,7 @@
 #ifndef TINYSIP_AUTHENTICATION_CHALLENGE_H
 #define TINYSIP_AUTHENTICATION_CHALLENGE_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tsip.h"
 

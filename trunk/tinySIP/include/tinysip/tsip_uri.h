@@ -30,7 +30,7 @@
 #ifndef TINYSIP_URI_H
 #define TINYSIP_URI_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tsk_object.h"
 #include "tsk_params.h"

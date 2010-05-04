@@ -30,7 +30,7 @@
 #ifndef TINYSIP_TSIP_H
 #define TINYSIP_TSIP_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tinysip/tsip_ssession.h"
 #include "tinysip/tsip_timers.h"

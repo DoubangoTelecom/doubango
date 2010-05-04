@@ -31,7 +31,7 @@
 #ifndef TSIP_MESSAGE_H
 #define TSIP_MESSAGE_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tinysip/headers/tsip_header_Call_ID.h"
 #include "tinysip/headers/tsip_header_Contact.h"

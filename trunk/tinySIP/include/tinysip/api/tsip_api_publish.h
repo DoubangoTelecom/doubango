@@ -30,7 +30,7 @@
 #ifndef TINYSIP_TSIP_PUBLISH_H
 #define TINYSIP_TSIP_PUBLISH_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tinysip/tsip_event.h"
 

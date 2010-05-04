@@ -30,7 +30,7 @@
 #ifndef TINYSIP_TRANSPORT_IPSEC_H
 #define TINYSIP_TRANSPORT_IPSEC_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tinysip/transports/tsip_transport.h"
 

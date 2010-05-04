@@ -30,7 +30,7 @@
 #ifndef TINYSIP_HEADERS_H
 #define TINYSIP_HEADERS_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tinysip/headers/tsip_header_Allow.h"
 #include "tinysip/headers/tsip_header_Allow_Events.h"

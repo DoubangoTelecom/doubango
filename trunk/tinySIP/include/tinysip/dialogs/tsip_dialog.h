@@ -30,7 +30,7 @@
 #ifndef TINYSIP_DIALOG_H
 #define TINYSIP_DIALOG_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tsip.h"
 #include "tinysip/tsip_uri.h"
