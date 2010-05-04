@@ -19,7 +19,7 @@
 * along with DOUBANGO.
 *
 */
-#include "tinyMEDIA/tmedia.h"
+#include "tinymedia/tmedia.h"
 #include "dummy.h"
 
 #include "tsk.h"

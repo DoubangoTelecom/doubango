@@ -22,7 +22,7 @@
 #ifndef TEST_MEDIA_DUMMY_H
 #define TEST_MEDIA_DUMMY_H
 
-#include "tinyMEDIA/tmedia.h"
+#include "tinymedia/tmedia.h"
 
 #define DUMMY(self)	((dummy_t*)(self))
 
