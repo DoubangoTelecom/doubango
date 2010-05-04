@@ -30,7 +30,7 @@
 #ifndef TNET_PROTO_H
 #define TNET_PROTO_H
 
-#include "tinyNET_config.h"
+#include "tinynet_config.h"
 
 TNET_BEGIN_DECLS
 
