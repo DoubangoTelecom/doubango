@@ -30,7 +30,7 @@
 #ifndef TSIP_SSESSION_H
 #define TSIP_SSESSION_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tsk_object.h"
 #include "tsk_list.h"

@@ -30,7 +30,7 @@
 #ifndef TINYSIP_TSIP_INVITE_H
 #define TINYSIP_TSIP_INVITE_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tinysip/tsip_event.h"
 

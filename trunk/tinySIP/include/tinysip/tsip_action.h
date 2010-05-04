@@ -30,7 +30,7 @@
 #ifndef TSIP_ACTION_H
 #define TSIP_ACTION_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tsk_buffer.h"
 #include "tsk_options.h"

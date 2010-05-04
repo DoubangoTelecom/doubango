@@ -30,7 +30,7 @@
 #ifndef TINYSIP_DIALOG_INVITE_H
 #define TINYSIP_DIALOG_INVITE_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 #include "tinysip/dialogs/tsip_dialog.h"
 
 #include "tinysip/media/tsip_msession.h"

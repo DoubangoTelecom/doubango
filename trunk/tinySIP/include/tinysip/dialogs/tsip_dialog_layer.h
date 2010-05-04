@@ -30,7 +30,7 @@
 #ifndef TINYSIP_DIALOG_LAYER_H
 #define TINYSIP_DIALOG_LAYER_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tsip.h"
 #include "tinysip/dialogs/tsip_dialog.h"

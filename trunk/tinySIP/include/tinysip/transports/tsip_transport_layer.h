@@ -30,7 +30,7 @@
 #ifndef TINYSIP_TRANSPORT_LAYER_H
 #define TINYSIP_TRANSPORT_LAYER_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tinysip/transports/tsip_transport.h"
 #include "tinysip/tsip_message.h"

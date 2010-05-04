@@ -30,7 +30,7 @@
 #ifndef TINYSIP_TRANSPORT_H
 #define TINYSIP_TRANSPORT_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tsip.h"
 

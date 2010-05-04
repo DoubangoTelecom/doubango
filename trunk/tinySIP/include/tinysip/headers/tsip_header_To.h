@@ -30,7 +30,7 @@
 #ifndef _TSIP_HEADER_TO_H_
 #define _TSIP_HEADER_TO_H_
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 #include "tinysip/tsip_uri.h"
 #include "tinysip/headers/tsip_header.h"
 

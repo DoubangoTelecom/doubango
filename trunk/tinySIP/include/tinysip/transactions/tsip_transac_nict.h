@@ -30,7 +30,7 @@
 #ifndef TINYSIP_TRANSAC_NICT_H
 #define TINYSIP_TRANSAC_NICT_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tinysip/transactions/tsip_transac.h"
 #include "tinysip/tsip_message.h"

@@ -30,7 +30,7 @@
 #ifndef TINYSIP_MEDIA_SESSION_H
 #define TINYSIP_MEDIA_SESSION_H
 
-#include "tinySIP_config.h"
+#include "tinysip_config.h"
 
 #include "tsk_object.h"
 
