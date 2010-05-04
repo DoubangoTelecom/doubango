@@ -30,7 +30,7 @@
 #ifndef TINYIPSEC_IPSEC_H
 #define TINYIPSEC_IPSEC_H
 
-#include "tinyIPSEC_config.h"
+#include "tinyipsec_config.h"
 
 #include "tipsec_common.h"
 
