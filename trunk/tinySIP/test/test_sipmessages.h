@@ -113,6 +113,7 @@
 	"Warning: 392 192.168.0.15:6060 \"Noisy feedback tells:  pid=4521 req_src_ip=192.168.0.15 req_src_port=5060 in_uri=sip:scscf.open-ims.test:6060 out_uri=sip:scscf.open-ims.test:6060 via_cnt==3\"\r\n" \
 	"P-Asserted-Identity: \"Cullen Jennings\" <sip:fluffy@cisco.com>\r\n" \
 	"P-Asserted-Identity: tel:+14085264000\r\n" \
+	"WWW-Authenticate: Digest realm=\"ims.inexbee.com\", nonce=\"iTaxDEv2uO8sKxzVVaRy6IkU9Lra6wAA2xv4BrmCzvY=\", algorithm=AKAv1-MD5, qop=\"auth\"\r\n" \
 	"Content-Length: 11\r\n" \
 	"\r\n" \
 	"How are you"
@@ -156,6 +157,8 @@ void test_parser()
 
 	TSK_OBJECT_SAFE_FREE(message);
 	TSK_OBJECT_SAFE_FREE(buffer);
+
+	getchar();
 }
 
 

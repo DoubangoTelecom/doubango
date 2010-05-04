@@ -53,10 +53,6 @@ int main(int argc, char** argv)
 	int i, index;
 	const char* start = tsk_null, *end = tsk_null;
 
-	int test = 3;
-
-	printf("%lu", test);
-	
 	/* Copyright */
 	printf("Doubango Project (tinyDEMO)\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
 
@@ -220,8 +216,9 @@ bail:
 	/* Uninitilize Network Layer */
 	tnet_cleanup();
 
-	getchar();
-
+#if ANDROID
+	exit(0);
+#endif
 	return 0;
 }
 

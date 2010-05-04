@@ -373,6 +373,10 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath="..\..\tinySIP\test\test_imsaka.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinySIP\test\test_ip6_torture.h"
 				>
 			</File>

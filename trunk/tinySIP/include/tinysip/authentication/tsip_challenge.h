@@ -73,7 +73,7 @@ tsip_challenge_t;
 
 typedef tsk_list_t tsip_challenges_L_t;
 
-tsip_challenge_t* tsip_challenge_create(tsip_stack_t* stack, tsk_bool_t isproxy, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
+TINYSIP_API tsip_challenge_t* tsip_challenge_create(tsip_stack_t* stack, tsk_bool_t isproxy, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);
 tsip_challenge_t* tsip_challenge_create_null(tsip_stack_t* stack);
 
 int tsip_challenge_update(tsip_challenge_t *self, const char* scheme, const char* realm, const char* nonce, const char* opaque, const char* algorithm, const char* qop);

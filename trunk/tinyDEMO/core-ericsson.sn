@@ -2,8 +2,8 @@
 
 # user's parameters (like ANSI-C #define)
 %%domain ericsson.com
-%%user mamadou
-%%pwd mamadou
+%%user bob
+%%pwd bob
 %%proxy_ip 192.168.0.10 # IP address or FQDN
 %%proxy_port 5081
 %%proxy_trans tcp # udp, tcp, tls or sctp
