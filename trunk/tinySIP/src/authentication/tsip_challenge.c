@@ -67,7 +67,7 @@ int tsip_challenge_reset_cnonce(tsip_challenge_t *self)
 	if(self){
 		if(self->qop) /* client nonce is only used if qop=auth, auth-int or both */
 		{
-#if 1
+#if 0
 			memcpy(self->cnonce, "ecb1d3f6931803ce7ae68099cb946594", 32);
 #else
 			tsk_istr_t istr;

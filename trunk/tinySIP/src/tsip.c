@@ -152,7 +152,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 			case pname_local_port:
 				{	/* (unsigned)PORT_UINT */
 					unsigned PORT_UINT = (tnet_port_t)va_arg(*app, unsigned);
-					if(PORT_UINT>0x00 && PORT_UINT <=0xFF){
+					if(PORT_UINT>0x00 && PORT_UINT <=0xFFFF){
 						self->network.local_port = (tnet_port_t)PORT_UINT;
 					}
 					else{

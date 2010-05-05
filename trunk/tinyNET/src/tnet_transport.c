@@ -206,7 +206,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 		}
 		
 		/* Add the socket */
-		if(status = tnet_transport_add_socket(handle, fd, type, 1, 1)){
+		if(status = tnet_transport_add_socket(handle, fd, type, tsk_true, tsk_true)){
 			TNET_PRINT_LAST_ERROR("Failed to add new socket.");
 
 			tnet_sockfd_close(&fd);
@@ -226,7 +226,7 @@ tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const 
 	else{
 		if(TNET_SOCKET_TYPE_IS_TLS(type)){
 			transport->tls.have_tls = tsk_true;
-			//transport->connected = !tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd)); // FIXME: the transport itself not connected
+			/*transport->connected = !*/tnet_tls_socket_connect((tnet_tls_socket_handle_t*)tnet_transport_get_tlshandle(handle, fd));
 		}
 		else{
 			//transport->connected = tsk_true;

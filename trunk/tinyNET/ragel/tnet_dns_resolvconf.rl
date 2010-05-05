@@ -120,7 +120,13 @@ tnet_addresses_L_t * tnet_dns_resolvconf_parse(const char* path)
 		servers = tsk_list_create();
 	}
 	else{
+#if ANDROID
+		TSK_DEBUG_INFO("Failed to open [%s]. But don't panic, we have detected that you are using Google Android System.\n"
+			"You should look at the Progammer's Guide for more information.\n If you are not using DNS functions, don't worry about this warning.", 
+			fullpath);
+#else
 		TSK_DEBUG_ERROR("Failed to open %s.", fullpath);
+#endif
 		goto bail;
 	}
 

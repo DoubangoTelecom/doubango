@@ -161,19 +161,25 @@ static const int tdns_machine_resolvconf_en_main = 0;
 		servers = tsk_list_create();
 	}
 	else{
+#if ANDROID
+		TSK_DEBUG_INFO("Failed to open [%s]. But don't panic, we have detected that you are using Google Android System.\n"
+			"You should look at the Progammer's Guide for more information.\n If you are not using DNS functions, don't worry about this warning.", 
+			fullpath);
+#else
 		TSK_DEBUG_ERROR("Failed to open %s.", fullpath);
+#endif
 		goto bail;
 	}
 
 	
-/* #line 170 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 176 "./src/dns/tnet_dns_resolvconf.c" */
 	{
 	cs = tdns_machine_resolvconf_start;
 	}
 
-/* #line 128 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 134 "./ragel/tnet_dns_resolvconf.rl" */
 	
-/* #line 177 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 183 "./src/dns/tnet_dns_resolvconf.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -267,7 +273,7 @@ _match:
 		}
 	}
 	break;
-/* #line 271 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 277 "./src/dns/tnet_dns_resolvconf.c" */
 		}
 	}
 
@@ -277,12 +283,12 @@ _again:
 	_test_eof: {}
 	}
 
-/* #line 129 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 135 "./ragel/tnet_dns_resolvconf.rl" */
 	
 	if( cs < 
-/* #line 284 "./src/dns/tnet_dns_resolvconf.c" */
+/* #line 290 "./src/dns/tnet_dns_resolvconf.c" */
 0
-/* #line 130 "./ragel/tnet_dns_resolvconf.rl" */
+/* #line 136 "./ragel/tnet_dns_resolvconf.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse %s.", fullpath);
 		TSK_OBJECT_SAFE_FREE(servers);
