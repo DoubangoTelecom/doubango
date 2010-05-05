@@ -1128,8 +1128,7 @@ size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags)
 		goto bail;
 	}
 
-	while(sent < size)
-	{
+	while(sent < size){
 		if((ret = send(fd, (((const uint8_t*)buf)+sent), (size-sent), flags)) <= 0){
 			if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK){
 				// FIXME: HORRIBLE HACK

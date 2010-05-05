@@ -36,11 +36,11 @@
 #define DEFAULT_IMPU "sip:bob@"DEFAULT_REALM
 
 #ifndef DEFAULT_LOCAL_IP
-#	ifdef ANDROID /* On the emulator */
-#		define DEFAULT_LOCAL_IP	"10.0.2.15"
-#	else
+//#	ifdef ANDROID /* On the emulator */
+//#		define DEFAULT_LOCAL_IP	"10.0.2.15"
+//#	else
 #		define DEFAULT_LOCAL_IP	TNET_SOCKET_HOST_ANY
-#	endif
+//#	endif
 #endif
 
 extern ctx_t* ctx;
@@ -247,7 +247,8 @@ int stack_config(const opts_L_t* opts)
 			case opt_header:
 				{
 					if((param = tsk_params_parse_param(opt->value, tsk_strlen(opt->value)))){
-						ret = tsip_stack_set(ctx->stack, TSIP_STACK_SET_HEADER(param->name, param->value),
+						ret = tsip_stack_set(ctx->stack, 
+							TSIP_STACK_SET_HEADER(param->name, param->value),
 							TSIP_STACK_SET_NULL());
 						TSK_OBJECT_SAFE_FREE(param);
 					}
@@ -256,14 +257,16 @@ int stack_config(const opts_L_t* opts)
 			case opt_impi:
 				{
 					tsk_strupdate(&ctx->identity.impi, opt->value);
-					ret = tsip_stack_set(ctx->stack, TSIP_STACK_SET_IMPI(ctx->identity.impi),
+					ret = tsip_stack_set(ctx->stack, 
+							TSIP_STACK_SET_IMPI(ctx->identity.impi),
 							TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_impu:
 				{
 					tsk_strupdate(&ctx->identity.impu, opt->value);
-					ret = tsip_stack_set(ctx->stack, TSIP_STACK_SET_IMPU(ctx->identity.impu),
+					ret = tsip_stack_set(ctx->stack, 
+							TSIP_STACK_SET_IMPU(ctx->identity.impu),
 							TSIP_STACK_SET_NULL());
 					break;
 				}
@@ -275,10 +278,17 @@ int stack_config(const opts_L_t* opts)
 				}
 			case opt_local_ip:
 				{
+					ret = tsip_stack_set(ctx->stack, 
+							TSIP_STACK_SET_LOCAL_IP(opt->value),
+							TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_local_port:
 				{
+					unsigned port = (unsigned)atoi(opt->value);
+					ret = tsip_stack_set(ctx->stack, 
+							TSIP_STACK_SET_LOCAL_PORT(port),
+							TSIP_STACK_SET_NULL());
 					break;
 				}
 			case opt_opid:
@@ -287,7 +297,8 @@ int stack_config(const opts_L_t* opts)
 				}
 			case opt_password:
 				{
-					ret = tsip_stack_set(ctx->stack, TSIP_STACK_SET_PASSWORD(opt->value),
+					ret = tsip_stack_set(ctx->stack, 
+							TSIP_STACK_SET_PASSWORD(opt->value),
 							TSIP_STACK_SET_NULL());
 					break;
 				}

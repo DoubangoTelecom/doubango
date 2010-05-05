@@ -122,7 +122,7 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 /* 
 * Add new socket to the watcher.
 */
-int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, int take_ownership, int isClient)
+int tnet_transport_add_socket(const tnet_transport_handle_t *handle, tnet_fd_t fd, tnet_socket_type_t type, tsk_bool_t take_ownership, tsk_bool_t isClient)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t* context;
