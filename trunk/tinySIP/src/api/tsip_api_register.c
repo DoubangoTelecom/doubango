@@ -40,8 +40,11 @@
 
 #define TSIP_REGISTER_EVENT_CREATE( type)		tsk_object_new(tsip_register_event_def_t, type)
 
-extern tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
+/* Internal functions */
+extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
+extern int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
 
+/* internal function used to signal evant from REGISTER dialog to user app */
 int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_register_event_t* sipevent = TSIP_REGISTER_EVENT_CREATE(type);
@@ -52,7 +55,15 @@ int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stac
 	return 0;
 }
 
-/** Sends SIP REGISTER or reREGISTER request. */
+/**@ingroup tsip_action_group
+* Sends SIP REGISTER request. If the session is already established, the same dialog will
+* be used (refresh).
+* @param ss The SIP Session managing the REGISTER dialog.
+* @param ... Any TSIP_ACTION_SET_*() macros. e.g. @ref TSIP_ACTION_SET_HEADER(). 
+* MUST always ends with @ref TSIP_ACTION_SET_NULL().
+* @retval Zero if succeed and non-zero error code otherwise.
+* @sa @ref tsip_action_UNREGISTER
+*/
 int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* _ss;
@@ -72,14 +83,15 @@ int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 		return -2;
 	}
 	
+	/* performs action */
 	va_start(ap, ss);
-	if((action = tsip_action_create_2(atype_register, &ap))){
+	if((action = _tsip_action_create(atype_register, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, _ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_REGISTER, _ss);
 		}
 		ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
 		
-		tsk_object_unref(dialog);
+		TSK_OBJECT_SAFE_FREE(dialog);
 		TSK_OBJECT_SAFE_FREE(action);
 	}
 	va_end(ap);
@@ -87,32 +99,26 @@ int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 	return ret;
 }
 
+/**@ingroup tsip_action_group
+* Sends SIP unREGISTER request (expires=0). The session should be already established.
+* @param ss The SIP Session managing the REGISTER dialog.
+* @param ... Any TSIP_ACTION_SET_*() macros. e.g. @ref TSIP_ACTION_SET_HEADER(). 
+* MUST always ends with @ref TSIP_ACTION_SET_NULL().
+* @retval Zero if succeed and non-zero error code otherwise.
+* @sa @ref tsip_action_REGISTER
+*/
 int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...)
 {
-	const tsip_ssession_t* _ss;
-	va_list ap;
-	tsip_action_t* action;
 	int ret = -1;
+	va_list ap;
 
-	if(!(_ss = ss) || !_ss->stack){
-		TSK_DEBUG_ERROR("Invalid parameter.");
-		return ret;
-	}
-
-	/* Checks if the stack is running */
-	if(!TSK_RUNNABLE(_ss->stack)->running){
-		TSK_DEBUG_ERROR("Stack not running.");
-		return -2;
-	}
-	
 	va_start(ap, ss);
-	if((action = tsip_action_create_2(atype_unregister, &ap))){
-		ret = tsip_ssession_handle(_ss, action);
-		TSK_OBJECT_SAFE_FREE(action);
+	if((ret = _tsip_action_ANY(ss, atype_unregister, &ap))){
+		TSK_DEBUG_ERROR("unREGISTER() failed.");
 	}
 	va_end(ap);
 
-	return 0;
+	return ret;
 }
 
 

@@ -387,7 +387,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 				}
 
 				/* Parse the incoming response. */
-				response = tnet_dns_message_deserialize(data, len);
+				response = tnet_dns_message_deserialize(data, (size_t)ret);
 				TSK_FREE(data);
 				
 				if(response)

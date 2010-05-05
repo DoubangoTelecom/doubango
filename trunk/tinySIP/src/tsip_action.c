@@ -32,10 +32,10 @@
 #include "tsk_debug.h"
 
 /* Local functions */
-tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
-int tsip_action_set_2(tsip_action_handle_t* self, va_list* app);
+tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
+int _tsip_action_set(tsip_action_handle_t* self, va_list* app);
 
-/**@defgroup tsip_action_group SIP action (Requests)
+/**@defgroup tsip_action_group SIP action (Sending/Receiving Requests)
 */
 
 /**@ingroup tsip_action_group
@@ -72,7 +72,7 @@ tsip_action_handle_t* tsip_action_create(tsip_action_type_t type, ...)
 	tsip_action_t* handle;
 	
 	va_start(ap, type);
-	handle = tsip_action_create_2(type, &ap);
+	handle = _tsip_action_create(type, &ap);
 	va_end(ap);
 	
 	return handle;
@@ -102,7 +102,7 @@ int tsip_action_set(tsip_action_handle_t* self, ...)
 	va_list ap;
 
 	va_start(ap, self);
-	ret = tsip_action_set_2(self, &ap);
+	ret = _tsip_action_set(self, &ap);
 	va_end(ap);
 	
 	return ret;
@@ -110,7 +110,7 @@ int tsip_action_set(tsip_action_handle_t* self, ...)
 
 
 /** internal fuction used to config a SIP action */
-int tsip_action_set_2(tsip_action_handle_t* self, va_list* app)
+int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 {
 	tsip_action_param_type_t curr;
 	tsip_action_t* action = self;
@@ -171,7 +171,7 @@ int tsip_action_set_2(tsip_action_handle_t* self, va_list* app)
 }
 
 /** internal function used to create new SIP action */
-tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app)
+tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app)
 {
 	tsip_action_t* action = tsk_null;
 
@@ -185,7 +185,7 @@ tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app)
 	}
 
 	/* configure the action */
-	if(tsip_action_set_2(action, app)){
+	if(_tsip_action_set(action, app)){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		TSK_OBJECT_SAFE_FREE(action);
 	}	

@@ -19,29 +19,18 @@
 * along with DOUBANGO.
 *
 */
-#if !defined(TINYDEMO_CONFIG_H)
-#define TINYDEMO_CONFIG_H
+#if !defined(TINYDEMO_OPTIONS_H)
+#define TINYDEMO_OPTIONS_H
 
-#ifdef __SYMBIAN32__
-#undef _WIN32 /* Because of WINSCW */
-#endif
+#include "demo_config.h"
 
-/* Guards against C++ name mangling  */
-#ifdef __cplusplus
-#	define _BEGIN_DECLS extern "C" {
-#	define _END_DECLS }
-#else
-#	define _BEGIN_DECLS 
-#	define _END_DECLS
-#endif
+#include "common.h"
 
-#ifdef _MSC_VER
-#	define _CRT_SECURE_NO_WARNINGS
-#	pragma warning( disable : 4996 )
-#endif
+_BEGIN_DECLS
 
-/* use SIP OPTIONS and "rport" to hack  the AOR
-* usefult on some emulator (such as Android) with non-routable IP addresses */
-#define HACK_AOR 0
+int options_handle_event(const tsip_event_t *sipevent);
+tsip_ssession_id_t options_handle_cmd(cmd_type_t cmd, const opts_L_t* opts);
 
-#endif /* TINYDEMO_CONFIG_H */
+_END_DECLS
+
+#endif /* TINYDEMO_OPTIONS_H */

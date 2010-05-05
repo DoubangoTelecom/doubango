@@ -47,10 +47,12 @@ typedef enum tsip_options_event_type_e
 }
 tsip_options_event_type_t;
 
+/**< Event from SIP OPTIONS dialog */
 typedef struct tsip_options_event_e
 {
 	TSIP_DECLARE_EVENT;
-
+	
+	//! the type of the event
 	tsip_options_event_type_t type;
 }
 tsip_options_event_t;

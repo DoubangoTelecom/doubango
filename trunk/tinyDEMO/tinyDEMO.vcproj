@@ -201,6 +201,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\options.c"
+				>
+			</File>
+			<File
 				RelativePath=".\publish.c"
 				>
 			</File>
@@ -244,6 +248,10 @@
 			</File>
 			<File
 				RelativePath=".\message.h"
+				>
+			</File>
+			<File
+				RelativePath=".\options.h"
 				>
 			</File>
 			<File

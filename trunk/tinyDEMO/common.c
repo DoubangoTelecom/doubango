@@ -23,6 +23,7 @@
 
 #include "invite.h"
 #include "message.h"
+#include "options.h"
 #include "publish.h"
 #include "register.h"
 #include "subscribe.h"
@@ -80,6 +81,11 @@ int stack_callback(const tsip_event_t *sipevent)
 		case tsip_event_message:
 			{	/* MESSAGE */
 				ret = message_handle_event(sipevent);
+				break;
+			}
+		case tsip_event_options:
+			{ /* OPTIONS */
+				ret = options_handle_event(sipevent);
 				break;
 			}
 		case tsip_event_publish:
@@ -444,15 +450,17 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 #define TYPE_FROM_CMD(_CMD) \
 	((_CMD==cmd_audio || _CMD==cmd_video || _CMD==cmd_audiovideo || _CMD==cmd_file || _CMD==cmd_large_message) ? st_invite :  \
 	((_CMD==cmd_message || _CMD==cmd_sms) ? st_message : \
+	(_CMD==cmd_options ? st_options : \
 	(_CMD==cmd_publish ? st_publish : \
 	(_CMD==cmd_register ? st_register : \
-	(_CMD==cmd_subscribe ? st_subscribe : st_none)))))
+	(_CMD==cmd_subscribe ? st_subscribe : st_none))))))
 	
 	/* === Command === */
 	switch(cmd){
 		//case cmd_invite:
 		case cmd_message:
 		case cmd_sms:
+		case cmd_options:
 		case cmd_publish:
 		case cmd_register:
 		case cmd_subscribe:
@@ -466,7 +474,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			}
 		default:
 			{
-				TSK_DEBUG_WARN("Registration: Cannot handle this command [%d]", cmd);
+				TSK_DEBUG_WARN("Session handling: Cannot handle this command [%d]", cmd);
 				goto bail;
 			}
 	} /* switch */

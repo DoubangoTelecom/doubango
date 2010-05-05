@@ -235,6 +235,7 @@ replace:
 	("help"i | "h"i) %{ cmd->type = cmd_help; } |
 	("large-message"i | "lm"i) %{ cmd->type = cmd_large_message; } |
 	("message"i | "m"i) %{ cmd->type = cmd_message; } |
+	("options"i | "opt"i) %{ cmd->type = cmd_options; } |
 	("publish"i | "pub"i) %{ cmd->type = cmd_publish; } |
 	("register"i | "reg"i) %{ cmd->type = cmd_register; } |
 	("run"i | "r"i) %{ cmd->type = cmd_run; } |

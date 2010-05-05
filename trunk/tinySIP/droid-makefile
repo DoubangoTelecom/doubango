@@ -15,8 +15,10 @@ OBJS = \
 	src/tsip_uri.o\
 	
 	### api
-OBJS += src/api/tsip_api_invite.o\
+OBJS += src/api/tsip_api_common.o\
+	src/api/tsip_api_invite.o\
 	src/api/tsip_api_message.o\
+	src/api/tsip_api_options.o\
 	src/api/tsip_api_publish.o\
 	src/api/tsip_api_register.o\
 	src/api/tsip_api_subscribe.o
@@ -33,6 +35,7 @@ OBJS += src/dialogs/tsip_dialog.o\
 	src/dialogs/tsip_dialog_invite.server.o\
 	src/dialogs/tsip_dialog_layer.o\
 	src/dialogs/tsip_dialog_message.o\
+	src/dialogs/tsip_dialog_options.o\
 	src/dialogs/tsip_dialog_publish.client.o\
 	src/dialogs/tsip_dialog_register.client.o\
 	src/dialogs/tsip_dialog_register.server.o\

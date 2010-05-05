@@ -55,7 +55,7 @@ void test_sockets()
 	//}
 
 	if(!(test = tnet_sockaddr_init("ipv6.google.com", 80, type, &to))){
-		test = tnet_sockfd_connetto(tcp_socket->fd, (const struct sockaddr_storage *)&to);
+		test = tnet_sockfd_connectto(tcp_socket->fd, (const struct sockaddr_storage *)&to);
 	}
 
 	TSK_OBJECT_SAFE_FREE(tcp_socket);

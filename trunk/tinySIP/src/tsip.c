@@ -151,13 +151,20 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				}
 			case pname_local_port:
 				{	/* (unsigned)PORT_UINT */
-					unsigned PORT_UINT = (tnet_port_t)va_arg(*app, unsigned);
-					if(PORT_UINT>0x00 && PORT_UINT <=0xFFFF){
-						self->network.local_port = (tnet_port_t)PORT_UINT;
+					self->network.local_port = (tnet_port_t)va_arg(*app, unsigned);
+					break;
+				}
+			case pname_aor:
+				{	/* (const char*)IP_STR, (unsigned)PORT_UINT */
+					const char* IP_STR = va_arg(*app, const char*);
+					tnet_port_t PORT_UINT = (tnet_port_t)va_arg(*app, unsigned);
+					if(!tsk_strnullORempty(IP_STR)){
+						tsk_strupdate(&self->network.aor.ip, IP_STR);
 					}
-					else{
-						TSK_DEBUG_WARN("%u is invalid for a port number", PORT_UINT);
+					if(PORT_UINT){
+						self->network.aor.port = PORT_UINT;
 					}
+					
 					break;
 				}
 			case pname_discovery_naptr:
@@ -761,6 +768,8 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(stack->network.realm);
 		TSK_FREE(stack->network.proxy_cscf);
 		TSK_OBJECT_SAFE_FREE(stack->paths);
+
+		TSK_FREE(stack->network.aor.ip);
 
 		TSK_OBJECT_SAFE_FREE(stack->service_routes);
 		TSK_OBJECT_SAFE_FREE(stack->associated_uris);

@@ -92,7 +92,7 @@ tsip_ssession_id_t register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 	const opt_t* opt;
 
 	if(!(session = session_handle_cmd(cmd, opts))){
-		return -1;
+		goto bail;
 	}
 	else{
 		id = tsip_ssession_get_id(session->handle);
@@ -124,5 +124,6 @@ tsip_ssession_id_t register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			break;
 	}
 
+bail:
 	return id;
 }

@@ -43,6 +43,7 @@ typedef enum cmd_type_e
 	cmd_help, /* ++help | ++h  */
 	cmd_large_message, /* ++large-message | ++lm */
 	cmd_message, /* ++message | ++m*/
+	cmd_options, /* ++options | ++opt*/
 	cmd_publish, /* ++publish | ++pub*/
 	cmd_register, /* ++register | ++reg */
 	cmd_run, /* ++run | ++r*/

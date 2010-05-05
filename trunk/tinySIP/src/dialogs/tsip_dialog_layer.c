@@ -31,6 +31,7 @@
 
 #include "tinysip/dialogs/tsip_dialog_invite.h"
 #include "tinysip/dialogs/tsip_dialog_message.h"
+#include "tinysip/dialogs/tsip_dialog_options.h"
 #include "tinysip/dialogs/tsip_dialog_publish.h"
 #include "tinysip/dialogs/tsip_dialog_register.h"
 #include "tinysip/dialogs/tsip_dialog_subscribe.h"
@@ -206,6 +207,10 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 			}
 		case tsip_dialog_OPTIONS:
 			{
+				if((dialog = (tsip_dialog_t*)tsip_dialog_options_create(ss))){
+					ret = tsk_object_ref(dialog);
+					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
+				}
 				break;
 			}
 		case tsip_dialog_PUBLISH:

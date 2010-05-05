@@ -71,6 +71,7 @@ typedef enum tsip_stack_param_type_e
 	pname_realm,
 	pname_local_ip,
 	pname_local_port,
+	pname_aor,
 	pname_discovery_naptr,
 	pname_discovery_dhcp,
 	pname_proxy_cscf,
@@ -175,7 +176,7 @@ tsip_stack_param_type_t;
 *              TSIP_STACK_SET_NULL());
 * @endcode
 *
-* @sa @ref  TSIP_STACK_SET_LOCAL_PORT()
+* @sa @ref  TSIP_STACK_SET_LOCAL_PORT()<br>@ref TSIP_STACK_SET_AOR()
 */
 /**@ingroup tsip_stack_group
 * @def TSIP_STACK_SET_LOCAL_PORT
@@ -187,8 +188,24 @@ tsip_stack_param_type_t;
 *              TSIP_STACK_SET_NULL());
 * @endcode
 *
-* @sa @ref TSIP_STACK_SET_LOCAL_IP()
+* @sa @ref TSIP_STACK_SET_LOCAL_IP()<br>@ref TSIP_STACK_SET_AOR()
 */
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_SET_AOR
+* Sets the SIP AOR to use for all outgoing requests.
+* @param IP_STR The IP address. Should be numeric IP string. e.g. 192.168.0.16.
+* Will be ignored if null or empty.
+* @param PORT_UINT Port number. Should be between 0x0400 and 0xFFFF.
+* Will be ignored if equals to zero.
+* @code
+* int ret = tsip_stack_set(stack, 
+*              TSIP_STACK_SET_AOR("fe80::", 1234),
+*              TSIP_STACK_SET_NULL());
+* @endcode
+*
+* @sa @ref TSIP_STACK_SET_LOCAL_IP()<br>@ref TSIP_STACK_SET_LOCAL_PORT()
+*/
+
 /**@ingroup tsip_stack_group
 * @def TSIP_STACK_SET_DISCOVERY_NAPTR
 * Whether to use DNS NAPTR for Proxy-CSCF discovery. Default is false. However, if the Proxy-CSCF IP address
@@ -234,6 +251,7 @@ tsip_stack_param_type_t;
 #define TSIP_STACK_SET_REALM(URI_STR)					pname_realm, (const char*)URI_STR
 #define TSIP_STACK_SET_LOCAL_IP(IP_STR)					pname_local_ip, (const char*)IP_STR
 #define TSIP_STACK_SET_LOCAL_PORT(PORT_UINT)			pname_local_port, (unsigned)PORT_UINT
+#define TSIP_STACK_SET_AOR(IP_STR, PORT_UINT)			pname_aor, (const char*)IP_STR, (unsigned)PORT_UINT
 #define TSIP_STACK_SET_DISCOVERY_NAPTR(ENABLED_BOOL)	pname_discovery_naptr, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)		pname_discovery_dhcp, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
@@ -396,6 +414,12 @@ typedef struct tsip_stack_s
 		tnet_socket_type_t proxy_cscf_type;
 		
 		tsip_uri_t *realm;
+		
+		//! IP adddress and port to use as AOR (user-defined)
+		struct{
+			char* ip;
+			tnet_port_t port;
+		} aor;
 
 		tsk_bool_t discovery_naptr;
 		tsk_bool_t discovery_dhcp;

@@ -59,7 +59,7 @@ extern tsip_uri_t* tsip_stack_get_contacturi(const tsip_stack_t *self, const cha
 
 tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* method)
 {
-	tsip_request_t *request = 0;
+	tsip_request_t *request = tsk_null;
 	tsip_uri_t *to_uri, *from_uri, *request_uri;
 	const char *call_id;
 	int copy_routes_start = -1; /* NONE */
@@ -157,7 +157,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	request = tsip_request_new(method, request_uri, from_uri, to_uri, call_id, self->cseq_value);
 	request->To->tag = tsk_strdup(self->tag_remote);
 	request->From->tag = tsk_strdup(self->tag_local);
-	request->update = 1; /* No signal that the message should be updated by the transport layer (Contact, SigComp, IPSec, ...) */
+	request->update = tsk_true; /* No signal that the message should be updated by the transport layer (Contact, SigComp, IPSec, ...) */
 
 
 	/*
@@ -185,9 +185,9 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 
 		default:
 			{
-				char* contact = 0;
+				char* contact = tsk_false;
 				tsip_header_Contacts_L_t *hdr_contacts;
-				tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/0?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
+				tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/tsk_false?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
 				hdr_contacts = tsip_header_Contact_parse(contact, tsk_strlen(contact));
 				if(!TSK_LIST_IS_EMPTY(hdr_contacts)){
 					request->Contact = tsk_object_ref(hdr_contacts->head->data);
