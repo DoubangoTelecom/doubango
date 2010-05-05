@@ -638,13 +638,13 @@ int send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial)
 	tsip_request_t *request;
 	int ret = -1;
 	
+	/* whether we are unregistering */
 	if(self->unregistering){
 		TSIP_DIALOG(self)->expires = 0;
 	}
 	
-	request = tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER");
-
-	if(request){
+	/* creates REGISTER request */
+	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "REGISTER"))){
 		/* == RCS phase 2
 		*/
 		/*if(TSIP_DIALOG_GET_STACK(self)->enable_gsmarcs){

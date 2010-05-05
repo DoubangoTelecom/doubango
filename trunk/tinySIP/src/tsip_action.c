@@ -31,6 +31,7 @@
 
 #include "tsk_debug.h"
 
+/* Local functions */
 tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
 int tsip_action_set_2(tsip_action_handle_t* self, va_list* app);
 
@@ -106,6 +107,7 @@ int tsip_action_set(tsip_action_handle_t* self, ...)
 	
 	return ret;
 }
+
 
 /** internal fuction used to config a SIP action */
 int tsip_action_set_2(tsip_action_handle_t* self, va_list* app)

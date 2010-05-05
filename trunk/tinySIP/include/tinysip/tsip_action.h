@@ -65,6 +65,10 @@ typedef enum tsip_action_type_e
 	atype_publish, /**< Sends SIP PUBLISH request */
 	//! Unpublish by sending SIP PUBLISH request with expires value equals to zero
 #define atype_unpublish atype_hangup
+	
+	/* === OPTIONS === */
+	atype_options_send, /**< Sends SIP OPTIONS request */
+
 
 	/* === common === */
 	//! Accept incoming call (INVITE) or message (SIP MESSAGE)

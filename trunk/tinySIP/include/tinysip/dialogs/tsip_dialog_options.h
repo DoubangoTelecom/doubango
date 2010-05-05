@@ -20,38 +20,33 @@
 *
 */
 
-/**@file tsip_dialog_message.h
- * @brief SIP dialog MESSAGE.
+/**@file tsip_dialog_options.h
+ * @brief SIP dialog OPTIONS as per RFC 3261 section 11.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYSIP_DIALOG_MESSAGE_H
-#define TINYSIP_DIALOG_MESSAGE_H
+#ifndef TINYSIP_DIALOG_OPTIONS_H
+#define TINYSIP_DIALOG_OPTIONS_H
 
 #include "tinysip_config.h"
 #include "tinysip/dialogs/tsip_dialog.h"
 
 TSIP_BEGIN_DECLS
 
-/* Forward declaration */
-struct tsip_message_s;
+#define TSIP_DIALOG_OPTIONS(self)							((tsip_dialog_options_t*)(self))
 
-#define TSIP_DIALOG_MESSAGE(self)							((tsip_dialog_message_t*)(self))
-
-typedef struct tsip_dialog_message
+typedef struct tsip_dialog_options
 {
 	TSIP_DECLARE_DIALOG;
-	/**< Last incoming message. */
-	struct tsip_message_s* last_iMessage;
 }
-tsip_dialog_message_t;
+tsip_dialog_options_t;
 
-tsip_dialog_message_t* tsip_dialog_message_create(const tsip_ssession_handle_t* ss);
+tsip_dialog_options_t* tsip_dialog_options_create(const tsip_ssession_handle_t* ss);
 
-TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_message_def_t;
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_options_def_t;
 
 TSIP_END_DECLS
 
-#endif /* TINYSIP_DIALOG_MESSAGE_H */
+#endif /* TINYSIP_DIALOG_OPTIONS_H */

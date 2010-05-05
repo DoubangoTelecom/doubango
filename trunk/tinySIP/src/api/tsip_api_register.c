@@ -55,20 +55,20 @@ int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stac
 /** Sends SIP REGISTER or reREGISTER request. */
 int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 {
-	const tsip_ssession_t* _ss = ss;
+	const tsip_ssession_t* _ss;
 	va_list ap;
 	tsip_action_t* action;
 	tsip_dialog_t* dialog;
 	int ret = -1;
 
-	if(!_ss || !_ss->stack){
-		TSK_DEBUG_ERROR("Invalide parameter.");
+	if(!(_ss = ss) || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return ret;
 	}
 
-	/* Checks if the stack is running */
-	if(!TSK_RUNNABLE(_ss->stack)->running){
-		TSK_DEBUG_ERROR("Stack not running.");
+	/* Checks if the stack has been started */
+	if(!TSK_RUNNABLE(_ss->stack)->started){
+		TSK_DEBUG_ERROR("Stack not started.");
 		return -2;
 	}
 	
@@ -89,13 +89,13 @@ int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 
 int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...)
 {
-	const tsip_ssession_t* _ss = ss;
+	const tsip_ssession_t* _ss;
 	va_list ap;
 	tsip_action_t* action;
 	int ret = -1;
 
-	if(!_ss || !_ss->stack){
-		TSK_DEBUG_ERROR("Invalide parameter.");
+	if(!(_ss = ss) || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return ret;
 	}
 
@@ -107,7 +107,7 @@ int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...)
 	
 	va_start(ap, ss);
 	if((action = tsip_action_create_2(atype_unregister, &ap))){
-		ret = tsip_ssession_hangup(_ss, action);
+		ret = tsip_ssession_handle(_ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}
 	va_end(ap);

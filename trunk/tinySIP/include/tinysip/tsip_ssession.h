@@ -119,9 +119,7 @@ TINYSIP_API tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t
 TINYSIP_API int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, size_t size, const struct tsip_message_s* request, ...);
 TINYSIP_API const void* tsip_ssession_get_context(const tsip_ssession_handle_t *self);
 
-//tsip_ssession_handle_t *tsip_ssession_create_2(const struct tsip_stack_s* stack, const struct tsip_message_s* message);
-
-int tsip_ssession_hangup(const tsip_ssession_t *self, const struct tsip_action_s* action);
+int tsip_ssession_handle(const tsip_ssession_t *self, const struct tsip_action_s* action);
 
 typedef tsk_list_t tsip_ssessions_L_t; /**< List of @ref tsip_ssession_handle_t elements. */
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_ssession_def_t;

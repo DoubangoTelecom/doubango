@@ -5,7 +5,7 @@
 %%domain ims.inexbee.com
 %%user bob
 %%pwd bob
-%%proxy_trans tcp # udp, tcp, tls or sctp
+%%proxy_trans udp # udp, tcp, tls or sctp
 %%expires 30 # expires used by all dialogs
 %%sleep-sec 2.0 # number of seconds to wait before sending next sip message
 

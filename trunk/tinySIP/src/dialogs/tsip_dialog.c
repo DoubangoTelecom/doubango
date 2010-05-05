@@ -383,7 +383,15 @@ tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short statu
 	/* Reponse is created as per RFC 3261 subclause 8.2.6 and (headers+tags) are copied
 	* as per subclause 8.2.6.2.
 	*/
-	tsip_response_t* response = tsip_response_new(status, phrase, request);
+	tsip_response_t* response;
+	if((response = tsip_response_new(status, phrase, request))){
+		/* Is there a To tag?  */
+		if(response->To && !response->To->tag){
+			tsk_istr_t tag;
+			tsk_strrandom(&tag);
+			response->To->tag = tsk_strdup(tag);
+		}
+	}
 	return response;
 }
 
