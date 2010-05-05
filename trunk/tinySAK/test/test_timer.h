@@ -54,25 +54,19 @@ void test_timer()
 	size_t i;
 	tsk_timer_manager_handle_t *handle = tsk_timer_manager_create();
 	printf("test_timer//\n");
-
-	tsk_timer_manager_start(handle);
-	//while(!tsk_timer_manager_isready(handle)) tsk_thread_sleep(1000);
 	
-	//tsk_thread_sleep(1000);
+	tsk_timer_manager_start(handle);
 	
 	for(i=0; i<sizeof(timers)/sizeof(test_timer_t); ++i){
 		timers[i].id = tsk_timer_manager_schedule(handle, timers[i].timeout, test_timer_callback, timers[i].arg);
 	}
 	
-	//tsk_timer_manager_cancel(timers[5].id);
 	tsk_timer_manager_cancel(handle, timers[6].id);
 	tsk_timer_manager_cancel(handle, timers[2].id);
 
-	//tsk_timer_manager_debug();	
-
 	tsk_thread_sleep(4000);
 
-	//tsk_timer_manager_stop(handle);
+	/* Stops and frees the timer manager */
 	TSK_OBJECT_SAFE_FREE(handle);
 }
 

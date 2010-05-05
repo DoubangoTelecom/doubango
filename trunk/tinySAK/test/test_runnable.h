@@ -45,28 +45,33 @@ test_runnable_timer_t runnable_timers[] =
 
 typedef struct tsk_obj_s
 {
+	TSK_DECLARE_OBJECT;
+
 	tsk_timer_id_t timer_id;
 }
 tsk_obj_t;
 
-static void* tsk_obj_create(void * self, va_list * app)
-{
+static void* tsk_obj_ctor(void * self, va_list * app){
 	tsk_obj_t *obj = self;
 	if(obj){
 		obj->timer_id = va_arg(*app, tsk_timer_id_t);
 	}
 	return self;
 }
-static void* tsk_obj_destroy(void * self) { return self; }
-static int tsk_obj_cmp(const void *obj1, const void *obj2){ return 0; }
+static void* tsk_obj_dtor(void * self) { 
+	return self; 
+}
+static int tsk_obj_cmp(const void *obj1, const void *obj2){ 
+	return 0;
+}
 static const tsk_object_def_t tsk_obj_def_s = 
 {
 	sizeof(tsk_obj_t),
-	tsk_obj_create, 
-	tsk_obj_destroy,
+	tsk_obj_ctor, 
+	tsk_obj_dtor,
 	tsk_obj_cmp, 
 };
-const void *tsk_obj_def_t = &tsk_obj_def_s;
+const tsk_object_def_t *tsk_obj_def_t = &tsk_obj_def_s;
 
 void *run(void* self)
 {
@@ -75,10 +80,9 @@ void *run(void* self)
 
 	TSK_RUNNABLE_RUN_BEGIN(self);
 	
-	if(curr = TSK_RUNNABLE_POP_FIRST(self))
-	{
+	if(curr = TSK_RUNNABLE_POP_FIRST(self)){
 		const tsk_obj_t *obj = (const tsk_obj_t*)curr->data;
-		printf("\n\nTimer===>[%d]\n\n", obj->timer_id);
+		printf("\n\nRunnable event-id===>[%llu]\n\n", obj->timer_id);
 		tsk_object_unref(curr);
 	}
 	
@@ -89,10 +93,9 @@ void *run(void* self)
 
 static int test_runnable_timer_callback(const void* arg, tsk_timer_id_t timer_id)
 {
-	// Do quick job
-	if(arg)
-	{
-		TSK_RUNNABLE_ENQUEUE(TSK_RUNNABLE(arg), timer_id);
+	const tsk_runnable_t* runnable = arg;
+	if(runnable){
+		TSK_RUNNABLE_ENQUEUE(runnable, timer_id);
 		return 0;
 	}
 	return -1;
@@ -102,23 +105,22 @@ void test_runnable()
 {
 	size_t i;
 	tsk_timer_manager_handle_t *timer_mgr = tsk_timer_manager_create();
-	tsk_runnable_t* runnable = tsk_calloc(1, sizeof(tsk_runnable_t));
+	tsk_runnable_t* runnable = tsk_runnable_create();
 	runnable->run = run;
 	printf("test_runnable//\n");
 
 	tsk_timer_manager_start(timer_mgr);
 	tsk_runnable_start(runnable, tsk_obj_def_t);
 
-	for(i=0; i<sizeof(runnable_timers)/sizeof(test_runnable_timer_t); ++i)
-	{
+	for(i=0; i<sizeof(runnable_timers)/sizeof(test_runnable_timer_t); ++i){
 		runnable_timers[i].id = tsk_timer_manager_schedule(timer_mgr, runnable_timers[i].timeout, test_runnable_timer_callback, runnable);
 	}
 	
-	tsk_thread_sleep(3000);
+	tsk_thread_sleep(4000);
 
+	/* Stops and frees both timer manager and runnable object */
+	TSK_OBJECT_SAFE_FREE(runnable);
 	TSK_OBJECT_SAFE_FREE(timer_mgr);
-	tsk_runnable_stop(runnable);
-	tsk_free((void**)&runnable);
 }
 
 #endif /* _TEST_RUNNABLE_H_ */

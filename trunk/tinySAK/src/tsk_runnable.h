@@ -70,14 +70,14 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 */
 #define TSK_RUNNABLE_ENQUEUE(self, ...)												\
 {																					\
-	if(TSK_RUNNABLE(self) && TSK_RUNNABLE(self)->initialized)						\
-	{																				\
-		void *object = tsk_object_new(TSK_RUNNABLE(self)->objdef, __VA_ARGS__);		\
+	if(TSK_RUNNABLE(self) && TSK_RUNNABLE(self)->initialized){						\
+		tsk_object_t *object = tsk_object_new(TSK_RUNNABLE(self)->objdef, __VA_ARGS__);		\
 		tsk_list_push_back_data(TSK_RUNNABLE(self)->objects, &object);				\
 		tsk_semaphore_increment(TSK_RUNNABLE(self)->semaphore);						\
 	}																				\
-	else																			\
+	else{																			\
 		TSK_DEBUG_WARN("Invalid/uninitialized runnable object.");					\
+	}																				\
 }
 
 #define TSK_RUNNABLE_ENQUEUE_OBJECT(self, object)									\
@@ -122,9 +122,13 @@ tsk_runnable_t;
 */
 #define TSK_DECLARE_RUNNABLE tsk_runnable_t runnable
 
+TINYSAK_API tsk_runnable_t* tsk_runnable_create();
+
 TINYSAK_API int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef);
 TINYSAK_API int tsk_runnable_enqueue(tsk_runnable_t *self, ...);
 TINYSAK_API int tsk_runnable_stop(tsk_runnable_t *self);
+
+TINYSAK_GEXTERN const tsk_object_def_t *tsk_runnable_def_t;
 
 TSK_END_DECLS
 

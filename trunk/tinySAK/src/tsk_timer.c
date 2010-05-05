@@ -102,21 +102,28 @@ int tsk_timer_manager_start(tsk_timer_manager_handle_t *self)
 	int err = -1;
 	tsk_timer_manager_t *manager = self;
 	
+	TSK_DEBUG_INFO("tsk_timer_manager_start");
+
 	if(!manager){
 		return -1;
 	}
+
+	tsk_mutex_lock(manager->mutex);
 
 	if(!TSK_RUNNABLE(manager)->running){				
 		TSK_RUNNABLE(manager)->run = run;
 		if(err = tsk_runnable_start(TSK_RUNNABLE(manager), tsk_timer_def_t)){
 			//TSK_OBJECT_SAFE_FREE(manager);
-			return err;
+			goto bail;
 		}
 	}
 	else{
 		TSK_DEBUG_WARN("Timer manager already running");
 	}
-	
+
+bail:
+	tsk_mutex_unlock(manager->mutex);
+
 	return err;
 }
 
@@ -149,24 +156,32 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 	int ret = -1;
 	tsk_timer_manager_t *manager = self;
 
+	TSK_DEBUG_INFO("tsk_timer_manager_stop");
+
 	if(!manager){
 		TSK_DEBUG_ERROR("Invalid paramater");
 		return -1;
 	}
 
+	tsk_mutex_lock(manager->mutex);
+
 	if(TSK_RUNNABLE(manager)->running){
 		if(ret = tsk_runnable_stop(TSK_RUNNABLE(manager))){
-			return ret;
+			goto bail;
 		}
 		
 		tsk_semaphore_increment(manager->sem);
 		tsk_condwait_signal(manager->condwait);
 		
-		return tsk_thread_join(manager->mainThreadId);
+		ret = tsk_thread_join(manager->mainThreadId);
+		goto bail;
 	}
 	else{
 		return 0; /* already running. */
 	}
+
+bail:
+	tsk_mutex_unlock(manager->mutex);
 
 	return ret;
 }
@@ -178,7 +193,7 @@ tsk_timer_id_t tsk_timer_manager_schedule(tsk_timer_manager_handle_t *self, uint
 	tsk_timer_id_t timer_id = TSK_INVALID_TIMER_ID;
 	tsk_timer_manager_t *manager = self;
 
-	if(manager && TSK_RUNNABLE(manager)->running){
+	if(manager && (TSK_RUNNABLE(manager)->running || TSK_RUNNABLE(manager)->started)){
 		tsk_timer_t *timer;
 
 		timer = TSK_TIMER_CREATE(timeout, callback, arg);

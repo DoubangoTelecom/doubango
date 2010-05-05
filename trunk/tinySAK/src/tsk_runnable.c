@@ -35,6 +35,15 @@
 */
 
 /**@ingroup tsk_runnable_group
+* Creates new Runnable object.
+* @retval @ref tsk_runnable_t.
+*/
+tsk_runnable_t* tsk_runnable_create()
+{
+	return tsk_object_new(tsk_runnable_def_t);
+}
+
+/**@ingroup tsk_runnable_group
 * Initializes a runnable object and allocate it's internal fields.
 * @param self The runnable object to initialize.
 * @param objdef Internal objects definition class.
@@ -43,9 +52,11 @@
 */
 static int tsk_runnable_init(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 {
-	if(self){
-		if(self->initialized) return -2;
-		if(!objdef) return -3;
+	if(self && objdef){
+		if(self->initialized){
+			TSK_DEBUG_ERROR("Already initialized");
+			return -2;
+		}
 		
 		self->semaphore = tsk_semaphore_create();
 		self->objdef = objdef;
@@ -54,6 +65,7 @@ static int tsk_runnable_init(tsk_runnable_t *self, const tsk_object_def_t *objde
 		self->initialized = tsk_true;
 		return 0;
 	}
+	TSK_DEBUG_ERROR("Invalid Parameter");
 	return -1;
 }
 
@@ -66,8 +78,13 @@ static int tsk_runnable_init(tsk_runnable_t *self, const tsk_object_def_t *objde
 static int tsk_runnable_deinit(tsk_runnable_t *self)
 {
 	if(self){
-		if(!self->initialized) return -2;
-		else if(self->running) return -3;
+		if(!self->initialized){
+			return 0; /* Already deinitialized */
+		}
+		else if(self->running){
+			TSK_DEBUG_ERROR("Cannot deinit a runnable object while running.");
+			return -3;
+		}
 
 		tsk_semaphore_destroy(&self->semaphore);
 		TSK_OBJECT_SAFE_FREE(self->objects);
@@ -76,6 +93,7 @@ static int tsk_runnable_deinit(tsk_runnable_t *self)
 
 		return 0;
 	}
+	TSK_DEBUG_ERROR("Invalid parameter");
 	return -1;
 }
 
@@ -156,4 +174,34 @@ stop:
 	}
 	return ret;
 }
+
+//=================================================================================================
+//	Runnable object definition
+//
+static tsk_object_t* tsk_runnable_ctor(tsk_object_t * self, va_list * app)
+{
+	tsk_runnable_t* runnable = self;
+	if(runnable){
+	}
+	return self;
+}
+
+static tsk_object_t* tsk_runnable_dtor(tsk_object_t * self)
+{ 
+	tsk_runnable_t* runnable = self;
+	if(runnable){
+		/* stops runnable object (if running or started) */
+		tsk_runnable_stop(runnable);
+	}
+	return self;
+}
+
+static const tsk_object_def_t tsk_runnable_def_s = 
+{
+	sizeof(tsk_runnable_t),
+	tsk_runnable_ctor, 
+	tsk_runnable_dtor,
+	tsk_null, 
+};
+const tsk_object_def_t *tsk_runnable_def_t = &tsk_runnable_def_s;
 
