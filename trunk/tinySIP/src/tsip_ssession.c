@@ -345,24 +345,39 @@ const void* tsip_ssession_get_context(const tsip_ssession_handle_t *self)
 	return tsk_null;
 }
 
-int tsip_ssession_hangup(const tsip_ssession_t *self, const tsip_action_t* action)
+int tsip_ssession_handle(const tsip_ssession_t *self, const struct tsip_action_s* action)
 {
 	int ret = -1;
 
-	if(self && self->stack){
+	if(self && self->stack && action){
 		tsip_dialog_t *dialog;
 				
 		if((dialog = tsip_dialog_layer_find_by_ss(self->stack->layer_dialog, self))){
-			ret = tsip_dialog_hangup(dialog, action);
-			tsk_object_unref(dialog);
+			switch(action->type){
+				case atype_hangup:
+					{	/* hang-up is an special case (==> hangup/cancel/nothing) */
+						ret = tsip_dialog_hangup(dialog, action);
+						break;
+					}
+				default:
+					{	/* All other cases */
+						tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
+						break;
+					}
+				/* unref */
+				tsk_object_unref(dialog);
+			}
 		}
 		else{
-			TSK_DEBUG_ERROR("Failed to find dialog with this opid [%lld]", tsip_ssession_get_id(self));
+			TSK_DEBUG_ERROR("Failed to find dialog with this opid [%lld]", self->id);
 		}
 	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+	}
+
 	return ret;
 }
-
 
 
 

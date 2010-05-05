@@ -20,38 +20,38 @@
 *
 */
 
-/**@file tsip_api_message.c
- * @brief Public short messaging (MESSAGE) functions.
+/**@file tsip_api_options.c
+ * @brief Public functions to handle OPTIONS.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinysip/api/tsip_api_message.h"
+#include "tinysip/api/tsip_api_options.h"
 
 #include "tinysip/dialogs/tsip_dialog_layer.h"
-#include "tinysip/dialogs/tsip_dialog_message.h"
+#include "tinysip/dialogs/tsip_dialog_options.h"
 
 #include "tsip.h"
 
 #include "tsk_runnable.h"
 #include "tsk_debug.h"
 
-#define TSIP_MESSAGE_EVENT_CREATE( type)		tsk_object_new(tsip_message_event_def_t, type)
+#define TSIP_OPTIONS_EVENT_CREATE( type)		tsk_object_new(tsip_options_event_def_t, type)
 
 extern tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
 
-int tsip_message_event_signal(tsip_message_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const tsip_message_t* sipmessage)
+int tsip_options_event_signal(tsip_options_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
-	tsip_message_event_t* sipevent = TSIP_MESSAGE_EVENT_CREATE(type);
-	tsip_event_init(TSIP_EVENT(sipevent), stack, SSESSION, status_code, phrase, sipmessage, tsip_event_message);
+	tsip_options_event_t* sipevent = TSIP_OPTIONS_EVENT_CREATE(type);
+	tsip_event_init(TSIP_EVENT(sipevent), stack, SSESSION, status_code, phrase, sipmessage, tsip_event_options);
 
 	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), sipevent);
 
 	return 0;
 }
 
-int tsip_action_MESSAGE(const tsip_ssession_handle_t *ss, ...)
+int tsip_action_OPTIONS(const tsip_ssession_handle_t *ss, ...)
 {
 	const tsip_ssession_t* _ss;
 	va_list ap;
@@ -70,11 +70,10 @@ int tsip_action_MESSAGE(const tsip_ssession_handle_t *ss, ...)
 		return -2;
 	}
 
-	/* action */
 	va_start(ap, ss);
-	if((action = tsip_action_create_2(atype_message_send, &ap))){
+	if((action = tsip_action_create_2(atype_options_send, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
-			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_MESSAGE, ss);
+			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_OPTIONS, ss);
 		}
 		ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
 		
@@ -99,36 +98,36 @@ int tsip_action_MESSAGE(const tsip_ssession_handle_t *ss, ...)
 
 
 //========================================================
-//	SIP MESSAGE event object definition
+//	SIP OPTIONS event object definition
 //
-static tsk_object_t* tsip_message_event_ctor(tsk_object_t * self, va_list * app)
+static tsk_object_t* tsip_options_event_ctor(tsk_object_t * self, va_list * app)
 {
-	tsip_message_event_t *sipevent = self;
+	tsip_options_event_t *sipevent = self;
 	if(sipevent){
-		sipevent->type = va_arg(*app, tsip_message_event_type_t);
+		sipevent->type = va_arg(*app, tsip_options_event_type_t);
 	}
 	return self;
 }
 
-static tsk_object_t* tsip_message_event_dtor(tsk_object_t * self)
+static tsk_object_t* tsip_options_event_dtor(tsk_object_t * self)
 { 
-	tsip_message_event_t *sipevent = self;
+	tsip_options_event_t *sipevent = self;
 	if(sipevent){
 		tsip_event_deinit(TSIP_EVENT(sipevent));
 	}
 	return self;
 }
 
-static int tsip_message_event_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
+static int tsip_options_event_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
 {
 	return -1;
 }
 
-static const tsk_object_def_t tsip_message_event_def_s = 
+static const tsk_object_def_t tsip_options_event_def_s = 
 {
-	sizeof(tsip_message_event_t),
-	tsip_message_event_ctor, 
-	tsip_message_event_dtor,
-	tsip_message_event_cmp, 
+	sizeof(tsip_options_event_t),
+	tsip_options_event_ctor, 
+	tsip_options_event_dtor,
+	tsip_options_event_cmp, 
 };
-const tsk_object_def_t *tsip_message_event_def_t = &tsip_message_event_def_s;
+const tsk_object_def_t *tsip_options_event_def_t = &tsip_options_event_def_s;

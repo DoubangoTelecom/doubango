@@ -20,38 +20,47 @@
 *
 */
 
-/**@file tsip_dialog_message.h
- * @brief SIP dialog MESSAGE.
+/**@file tsip_api_options.h
+ * @brief Public functions to handle OPTIONS.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYSIP_DIALOG_MESSAGE_H
-#define TINYSIP_DIALOG_MESSAGE_H
+#ifndef TINYSIP_TSIP_OPTIONS_H
+#define TINYSIP_TSIP_OPTIONS_H
 
 #include "tinysip_config.h"
-#include "tinysip/dialogs/tsip_dialog.h"
+
+#include "tinysip/tsip_event.h"
 
 TSIP_BEGIN_DECLS
 
-/* Forward declaration */
-struct tsip_message_s;
+#define TSIP_OPTIONS_EVENT(self)		((tsip_options_event_t*)(self))
 
-#define TSIP_DIALOG_MESSAGE(self)							((tsip_dialog_message_t*)(self))
-
-typedef struct tsip_dialog_message
+typedef enum tsip_options_event_type_e
 {
-	TSIP_DECLARE_DIALOG;
-	/**< Last incoming message. */
-	struct tsip_message_s* last_iMessage;
+	tsip_i_options,
+	tsip_ai_options,
+	tsip_o_options,
+	tsip_ao_options,
 }
-tsip_dialog_message_t;
+tsip_options_event_type_t;
 
-tsip_dialog_message_t* tsip_dialog_message_create(const tsip_ssession_handle_t* ss);
+typedef struct tsip_options_event_e
+{
+	TSIP_DECLARE_EVENT;
 
-TINYSIP_GEXTERN const tsk_object_def_t *tsip_dialog_message_def_t;
+	tsip_options_event_type_t type;
+}
+tsip_options_event_t;
+
+int tsip_options_event_signal(tsip_options_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
+
+TINYSIP_API int tsip_action_OPTIONS(const tsip_ssession_handle_t *ss, ...);
+
+TINYSIP_GEXTERN const tsk_object_def_t *tsip_options_event_def_t;
 
 TSIP_END_DECLS
 
-#endif /* TINYSIP_DIALOG_MESSAGE_H */
+#endif /* TINYSIP_TSIP_OPTIONS_H */
