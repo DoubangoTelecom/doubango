@@ -35,11 +35,12 @@
 #include "tsk_debug.h"
 
 /* Internal functions */
-extern tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
+extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
 /* Local functions */
 int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
 
-/* internal function used to execute any user action */
+/* internal function used to execute any user action 
+* can only handle session with dialogs */
 int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app)
 {
 	int ret = -1;
@@ -59,7 +60,7 @@ int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, 
 	}
 
 	/* execute action */
-	if((action = tsip_action_create_2(type, app))){
+	if((action = _tsip_action_create(type, app))){
 		ret = tsip_ssession_handle(_ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}

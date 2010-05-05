@@ -36,6 +36,7 @@ typedef enum session_type_e
 
 	st_invite,
 	st_message,
+	st_options,
 	st_publish,
 	st_register,
 	st_subscribe,

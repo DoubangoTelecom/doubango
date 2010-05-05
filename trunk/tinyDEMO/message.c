@@ -97,7 +97,7 @@ tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 	tsip_ssession_id_t id = TSIP_SSESSION_INVALID_ID;
 
 	if(!(session = session_handle_cmd(cmd, opts))){
-		return -1;
+		goto bail;
 	}
 	else{
 		id = tsip_ssession_get_id(session->handle);
@@ -200,6 +200,7 @@ done:
 			break;
 	}
 	
+bail:
 	return id;
 }
 

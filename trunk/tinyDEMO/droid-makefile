@@ -12,6 +12,7 @@ OBJS = \
 	invite.o \
 	main.o \
 	message.o \
+	options.o \
 	publish.o \
 	register.o \
 	subscribe.o

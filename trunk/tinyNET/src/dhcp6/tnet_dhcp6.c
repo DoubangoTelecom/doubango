@@ -142,15 +142,13 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 				void* data = 0;
 
 				/* Check how how many bytes are pending */
-				if((ret = tnet_ioctlt(localsocket6->fd, FIONREAD, &len))<0)
-				{
+				if((ret = tnet_ioctlt(localsocket6->fd, FIONREAD, &len))<0){
 					goto next_iface;
 				}
 				
 				/* Receive pending data */
 				data = tsk_calloc(len, sizeof(uint8_t));
-				if((ret = tnet_sockfd_recv(localsocket6->fd, data, len, 0))<0)
-				{
+				if((ret = tnet_sockfd_recv(localsocket6->fd, data, len, 0))<0){
 					TSK_FREE(data);
 									
 					TNET_PRINT_LAST_ERROR("Failed to receive DHCP dgrams.");
@@ -158,7 +156,7 @@ tnet_dhcp6_reply_t* tnet_dhcp6_send_request(const tnet_dhcp6_ctx_t* ctx, tnet_dh
 				}
 
 				/* Parse the incoming response. */
-				reply = tnet_dhcp6_message_deserialize(ctx, data, len);
+				reply = tnet_dhcp6_message_deserialize(ctx, data, (size_t)ret);
 				TSK_FREE(data);
 				
 				if(reply)

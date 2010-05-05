@@ -199,7 +199,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			}
 
 			/* Parse the incoming response. */
-			response = tnet_stun_message_deserialize(data, len);
+			response = tnet_stun_message_deserialize(data, (size_t)ret);
 			TSK_FREE(data);
 
 			if(response){

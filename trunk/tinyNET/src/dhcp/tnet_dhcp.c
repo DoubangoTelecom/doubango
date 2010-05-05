@@ -188,8 +188,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				
 				/* Receive pending data */
 				data = tsk_calloc(len, sizeof(uint8_t));
-				if((ret = tnet_sockfd_recv(localsocket4->fd, data, len, 0))<0)
-				{
+				if((ret = tnet_sockfd_recv(localsocket4->fd, data, len, 0))<0){
 					TSK_FREE(data);
 									
 					TNET_PRINT_LAST_ERROR("Failed to receive DHCP dgrams.");
@@ -197,7 +196,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				}
 
 				/* Parse the incoming response. */
-				reply = tnet_dhcp_message_deserialize(ctx, data, len);
+				reply = tnet_dhcp_message_deserialize(ctx, data, (size_t)ret);
 				TSK_FREE(data);
 				
 				if(reply)

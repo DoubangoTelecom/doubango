@@ -24,6 +24,7 @@
 
 #include "invite.h"
 #include "message.h"
+#include "options.h"
 #include "publish.h"
 #include "register.h"
 #include "subscribe.h"
@@ -182,9 +183,7 @@ parse_buffer:
 					TSK_DEBUG_INFO("Exit/Quit");
 					goto bail;
 			default:
-				tsk_safeobj_lock(ctx);
 				ret = execute(cmd);
-				tsk_safeobj_unlock(ctx);
 				break;
 		}
 
@@ -259,6 +258,8 @@ int execute(const cmd_t* cmd)
 		return -1;
 	}
 
+	tsk_safeobj_lock(ctx);
+
 	switch(cmd->type){
 		case cmd_audio:
 			{
@@ -323,6 +324,18 @@ int execute(const cmd_t* cmd)
 				}
 				break;
 			}
+
+		case cmd_options:
+			{
+				TSK_DEBUG_INFO("command=options");
+				if((sid = options_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
+					if(cmd->sidparam){
+						tsk_itoa(sid, &istr);
+						update_param(cmd->sidparam, istr);
+					}
+				}
+				break;
+			}
 		case cmd_publish:
 			{
 				TSK_DEBUG_INFO("command=publish");
@@ -360,6 +373,9 @@ int execute(const cmd_t* cmd)
 			{
 				const opt_t* opt;
 				double seconds;
+
+				tsk_safeobj_unlock(ctx); /* beacuse of callback function */
+
 				if((opt = opt_get_by_type(cmd->opts, opt_sec)) && !tsk_strnullORempty(opt->value)){ /* --sec option */
 					seconds = strtod(opt->value, tsk_null); /* strtod() is better than atof() */
 					if(seconds<=0){
@@ -374,7 +390,7 @@ int execute(const cmd_t* cmd)
 				else{
 					TSK_DEBUG_WARN("++sleep need --sec option.");
 				}
-				break;
+				return 0; /* bail: will unlock again */
 			}
 		case cmd_sms:
 			{
@@ -417,5 +433,7 @@ int execute(const cmd_t* cmd)
 	}
 
 bail:
+	tsk_safeobj_unlock(ctx);
+
 	return ret;
 }

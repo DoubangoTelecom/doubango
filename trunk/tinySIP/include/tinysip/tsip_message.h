@@ -230,7 +230,7 @@ typedef struct tsip_message_s
 
 	/*== */
 	tnet_fd_t sockfd;
-	unsigned update:1;
+	tsk_bool_t update;
 }
 tsip_message_t;
 

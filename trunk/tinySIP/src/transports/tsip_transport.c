@@ -37,22 +37,25 @@
 #include "tsk_buffer.h"
 #include "tsk_debug.h"
 
+/* creates new SIP transport */
 tsip_transport_t* tsip_transport_create(tsip_stack_t* stack, const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
 {
 	return tsk_object_new(tsip_transport_def_t, stack, host, port, type, description);
 }
 
+/* add Via header using the transport config */
 int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip_message_t *msg)
 {
 	tnet_ip_t ip;
 	tnet_port_t port;
+	int ret;
 
-	if(tsip_transport_get_ip_n_port(self, &ip, &port)){
-		return -1;
+	if((ret = tsip_transport_get_ip_n_port(self, &ip, &port))){
+		return ret;
 	}
 	
-	if(!msg->firstVia)
-	{
+	/* is there a Via header? */
+	if(!msg->firstVia){
 		/*	RFC 3261 - 18.1.1 Sending Requests
 			Before a request is sent, the client transport MUST insert a value of
 			the "sent-by" field into the Via header field.  This field contains
@@ -64,11 +67,13 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 		*/
 		msg->firstVia = tsip_header_Via_create(TSIP_HEADER_VIA_PROTO_NAME_DEFAULT, TSIP_HEADER_VIA_PROTO_VERSION_DEFAULT,
 			self->via_protocol, ip, port);
-		TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "rport", 0);
+		TSIP_HEADER_ADD_PARAM(TSIP_HEADER(msg->firstVia), "rport", tsk_null);
 	}
 	
+	/* updates the branch */
 	tsk_strupdate(&msg->firstVia->branch, branch);
 
+	/* multicast case */
 	if(tsk_false){
 		/*	RFC 3261 - 18.1.1 Sending Requests (FIXME)
 			A client that sends a request to a multicast address MUST add the
@@ -87,16 +92,19 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 	return 0;
 }
 
+/* update the entire message (AOR, IPSec headers, SigComp, ....) */
 int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 {
 	tnet_ip_t ip;
 	tnet_port_t port;
 	int ret = 0;
 
+	/* already updtated (e.g. retrans)? */
 	if(!msg->update){
 		return 0;
 	}
-
+	
+	/* retrieves the transport ip address and port */
 	if(tsip_transport_get_ip_n_port(self, &ip, &port)){
 		return -1;
 	}
@@ -104,13 +112,23 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	/* Host and port */
 	if(msg->Contact && msg->Contact->uri){
 		tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
-		tsk_strupdate(&(msg->Contact->uri->host), ip);
-		msg->Contact->uri->port = port;
-		msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4;
+		if(!tsk_strnullORempty(self->stack->network.aor.ip)){ /* user supplied his own IP address? */
+			tsk_strupdate(&(msg->Contact->uri->host), self->stack->network.aor.ip);
+		}
+		else{ /* the ip address from the transport */
+			tsk_strupdate(&(msg->Contact->uri->host), ip);
+		}
+		if(self->stack->network.aor.port){ /* user supplied his own port? */
+			msg->Contact->uri->port = self->stack->network.aor.port;
+		}
+		else{ /* use port from the transport */
+			msg->Contact->uri->port = port;
+		}
+		msg->Contact->uri->host_type = TNET_SOCKET_TYPE_IS_IPV6(self->type) ? host_ipv6 : host_ipv4; /* for serializer ...who know? */
 		tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
 	}
 
-	/* IPSec headers */
+	/* IPSec headers (Security-Client, Security-Verify, Sec-Agree ...) */
 	if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
 		ret = tsip_transport_ipsec_updateMSG(TSIP_TRANSPORT_IPSEC(self), msg);
 	}
@@ -118,11 +136,12 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 	/* SigComp */
 	
 
-	msg->update = 0; /* To avoid update of retrans. msg */
+	msg->update = tsk_false; /* To avoid to update retrans. */
 	
 	return ret;
 }
 
+/* sets TLS certificates */
 int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk)
 {
 	tnet_transport_t *transport = self->net_transport;
@@ -139,6 +158,7 @@ int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const ch
 	return 0;
 }
 
+/* sends a request */
 size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort)
 {
 	size_t ret = 0;
@@ -146,7 +166,7 @@ size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsi
 	{
 		tsk_buffer_t *buffer = tsk_null;
 
-		/* Add Via */
+		/* Add Via and update AOR, IPSec headers, SigComp ...*/
 		if(TSIP_MESSAGE_IS_REQUEST(msg) && !TSIP_REQUEST_IS_CANCEL(msg) && !TSIP_REQUEST_IS_ACK(msg)){
 			tsip_transport_addvia(self, branch, msg);
 			tsip_transport_msg_update(self, msg);

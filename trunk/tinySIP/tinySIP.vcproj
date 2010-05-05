@@ -847,6 +847,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dialogs\tsip_dialog_options.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dialogs\tsip_dialog_publish.client.c"
 					>
 				</File>
@@ -887,11 +891,19 @@
 				Name="api"
 				>
 				<File
+					RelativePath=".\src\api\tsip_api_common.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\api\tsip_api_invite.c"
 					>
 				</File>
 				<File
 					RelativePath=".\src\api\tsip_api_message.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\api\tsip_api_options.c"
 					>
 				</File>
 				<File
@@ -1425,6 +1437,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_options.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinysip\dialogs\tsip_dialog_publish.h"
 					>
 				</File>
@@ -1457,11 +1473,19 @@
 				Name="api"
 				>
 				<File
+					RelativePath=".\include\tinysip\api\tsip_api_common.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinysip\api\tsip_api_invite.h"
 					>
 				</File>
 				<File
 					RelativePath=".\include\tinysip\api\tsip_api_message.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinysip\api\tsip_api_options.h"
 					>
 				</File>
 				<File

@@ -516,7 +516,7 @@ void *tnet_transport_mainthread(void *param)
 				if(active_socket->tlshandle){
 					int isEncrypted;
 					size_t tlslen = len;
-					if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, &buffer, &tlslen, &isEncrypted))){
+					if((ret = tnet_tls_socket_recv(active_socket->tlshandle, &buffer, &tlslen, &isEncrypted)) == 0){
 						if(isEncrypted){
 							TSK_FREE(buffer);
 							continue;
@@ -524,19 +524,15 @@ void *tnet_transport_mainthread(void *param)
 						len = tlslen;
 					}
 				}
-				else if((ret = recv(active_socket->fd, buffer, len, 0)) < 0)
-				{
+				else if((ret = tnet_sockfd_recv(active_socket->fd, buffer, len, 0)) < 0){
 					TSK_FREE(buffer);
-					//if(tnet_geterrno() == TNET_ERROR_WOULDBLOCK)
-					{
-						//TSK_DEBUG_INFO("WSAEWOULDBLOCK error for READ SSESSION");
-					}
-					//else
-					{
-						removeSocket(i, context);
-						TNET_PRINT_LAST_ERROR("recv have failed.");
-						continue;
-					}
+					
+					removeSocket(i, context);
+					TNET_PRINT_LAST_ERROR("recv have failed.");
+					continue;
+				}
+				else if(len != (size_t)ret){ /* useless test */
+					len = (size_t)ret;
 				}
 				
 					

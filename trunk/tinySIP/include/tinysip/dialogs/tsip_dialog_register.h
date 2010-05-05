@@ -37,6 +37,7 @@ TSIP_BEGIN_DECLS
 
 #define TSIP_DIALOG_REGISTER(self)							((tsip_dialog_register_t*)(self))
 
+/**< SIP REGISTER dialog */
 typedef struct tsip_dialog_register
 {
 	TSIP_DECLARE_DIALOG;

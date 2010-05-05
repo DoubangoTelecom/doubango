@@ -39,7 +39,7 @@
 
 #define TSIP_OPTIONS_EVENT_CREATE( type)		tsk_object_new(tsip_options_event_def_t, type)
 
-extern tsip_action_t* tsip_action_create_2(tsip_action_type_t type, va_list* app);
+extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
 
 int tsip_options_event_signal(tsip_options_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
@@ -71,7 +71,7 @@ int tsip_action_OPTIONS(const tsip_ssession_handle_t *ss, ...)
 	}
 
 	va_start(ap, ss);
-	if((action = tsip_action_create_2(atype_options_send, &ap))){
+	if((action = _tsip_action_create(atype_options_send, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_OPTIONS, ss);
 		}
