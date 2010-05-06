@@ -60,7 +60,7 @@ typedef tsk_list_t tmsrp_headers_Message_Id_L_t;
 TINYMSRP_API tmsrp_header_Message_ID_t* tmsrp_header_Message_ID_create(const char* value);
 TINYMSRP_API tmsrp_header_Message_ID_t* tmsrp_header_Message_ID_create_null();
 
-TINYMSRP_API tmsrp_header_Message_ID_t *tmsrp_header_Message_ID_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Message_ID_t *tmsrp_header_Message_ID_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Message_ID_def_t;
 

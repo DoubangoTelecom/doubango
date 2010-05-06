@@ -61,7 +61,7 @@ tsip_header_Subscription_State_t;
 
 tsip_header_Subscription_State_t* tsip_header_Subscription_State_create();
 
-tsip_header_Subscription_State_t *tsip_header_Subscription_State_parse(const char *data, size_t size);
+tsip_header_Subscription_State_t *tsip_header_Subscription_State_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Subscription_State_def_t;
 

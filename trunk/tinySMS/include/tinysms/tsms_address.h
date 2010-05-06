@@ -112,7 +112,7 @@ typedef struct tsms_address_s
 tsms_address_t;
 
 int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output);
-tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_address_type_t xtype, size_t *length);
+tsms_address_t* tsms_address_deserialize(const void* data, tsk_size_t size, tsms_address_type_t xtype, tsk_size_t *length);
 
 
 tsms_address_t* tsms_address_create(const tsms_address_string_t digits, tsms_address_type_t type);

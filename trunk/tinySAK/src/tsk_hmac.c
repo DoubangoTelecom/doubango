@@ -41,14 +41,14 @@
 */
 typedef enum tsk_hash_type_e { md5, sha1 } tsk_hash_type_t;
 
-int tsk_hmac_xxxcompute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_hash_type_t type, uint8_t* digest)
+int tsk_hmac_xxxcompute(const uint8_t* input, tsk_size_t input_size, const char* key, tsk_size_t key_size, tsk_hash_type_t type, uint8_t* digest)
 {
 #define TSK_MAX_BLOCK_SIZE	TSK_SHA1_BLOCK_SIZE
 
-	size_t i, newkey_size;
+	tsk_size_t i, newkey_size;
 
-	size_t block_size = type == md5 ? TSK_MD5_BLOCK_SIZE : TSK_SHA1_BLOCK_SIZE; // Only SHA-1 and MD5 are supported for now
-	size_t digest_size = type == md5 ? TSK_MD5_DIGEST_SIZE : TSK_SHA1_DIGEST_SIZE;
+	tsk_size_t block_size = type == md5 ? TSK_MD5_BLOCK_SIZE : TSK_SHA1_BLOCK_SIZE; // Only SHA-1 and MD5 are supported for now
+	tsk_size_t digest_size = type == md5 ? TSK_MD5_DIGEST_SIZE : TSK_SHA1_DIGEST_SIZE;
 	char hkey [TSK_MAX_BLOCK_SIZE];
 	
 	uint8_t ipad [TSK_MAX_BLOCK_SIZE];
@@ -140,7 +140,7 @@ pass1_and_pass2_done:
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int hmac_md5_compute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_md5string_t *result)
+int hmac_md5_compute(const uint8_t* input, tsk_size_t input_size, const char* key, tsk_size_t key_size, tsk_md5string_t *result)
 {
 	tsk_md5digest_t digest;
 	int ret;
@@ -170,7 +170,7 @@ int hmac_md5_compute(const uint8_t* input, size_t input_size, const char* key, s
  *
  * @return	Zero if succeed and non-zero error code otherwise.
 **/
-int hmac_md5digest_compute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_md5digest_t result)
+int hmac_md5digest_compute(const uint8_t* input, tsk_size_t input_size, const char* key, tsk_size_t key_size, tsk_md5digest_t result)
 {
 	return tsk_hmac_xxxcompute(input, input_size, key, key_size, md5, result);
 }
@@ -190,7 +190,7 @@ int hmac_md5digest_compute(const uint8_t* input, size_t input_size, const char* 
  *
  * @return	Zero if succeed and non-zero error code otherwise.
 **/
-int hmac_sha1_compute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_sha1string_t *result)
+int hmac_sha1_compute(const uint8_t* input, tsk_size_t input_size, const char* key, tsk_size_t key_size, tsk_sha1string_t *result)
 {
 	tsk_sha1digest_t digest;
 	int ret;
@@ -219,7 +219,7 @@ int hmac_sha1_compute(const uint8_t* input, size_t input_size, const char* key, 
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int hmac_sha1digest_compute(const uint8_t* input, size_t input_size, const char* key, size_t key_size, tsk_sha1digest_t result)
+int hmac_sha1digest_compute(const uint8_t* input, tsk_size_t input_size, const char* key, tsk_size_t key_size, tsk_sha1digest_t result)
 {
 	return tsk_hmac_xxxcompute(input, input_size, key, key_size, sha1, (uint8_t*)result);
 }

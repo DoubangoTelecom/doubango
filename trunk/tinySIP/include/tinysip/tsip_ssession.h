@@ -116,7 +116,7 @@ TINYSIP_API int tsip_ssession_set(tsip_ssession_handle_t *self, ...);
 TINYSIP_API tsip_ssession_id_t tsip_ssession_get_id(const tsip_ssession_handle_t *self);
 TINYSIP_API int tsip_ssession_take_ownership(tsip_ssession_handle_t *self);
 TINYSIP_API tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t *self);
-TINYSIP_API int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, size_t size, const struct tsip_message_s* request, ...);
+TINYSIP_API int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, tsk_size_t size, const struct tsip_message_s* request, ...);
 TINYSIP_API const void* tsip_ssession_get_context(const tsip_ssession_handle_t *self);
 
 int tsip_ssession_handle(const tsip_ssession_t *self, const struct tsip_action_s* action);

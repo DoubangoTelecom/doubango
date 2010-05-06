@@ -52,7 +52,7 @@ typedef struct thttp_header_Dummy_s
 }
 thttp_header_Dummy_t;
 
-thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size);
+thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, tsk_size_t size);
 
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_header_Dummy_def_t;
 

@@ -35,27 +35,27 @@
 
 #include <string.h>
 
-tnet_dhcp6_option_t* tnet_dhcp6_option_create(tnet_dhcp6_option_code_t code, const void* payload, size_t payload_size)
+tnet_dhcp6_option_t* tnet_dhcp6_option_create(tnet_dhcp6_option_code_t code, const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp6_option_def_t, code, payload, payload_size);
 }
 
-tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_indentifer_create(tnet_dhcp6_option_code_t code, const void* payload, size_t payload_size)
+tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_indentifer_create(tnet_dhcp6_option_code_t code, const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp6_option_identifier_def_t, code, payload, payload_size);
 }
 
-tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_clientid_create(const void* payload, size_t payload_size)
+tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_clientid_create(const void* payload, tsk_size_t payload_size)
 {
 	return tnet_dhcp6_option_indentifer_create(dhcp6_code_clientid, payload, payload_size);
 }
 
-tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_serverid_create(const void* payload, size_t payload_size)
+tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_serverid_create(const void* payload, tsk_size_t payload_size)
 {
 	return tnet_dhcp6_option_indentifer_create(dhcp6_code_serverid, payload, payload_size);
 }
 
-tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create(const void* payload, size_t payload_size)
+tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp6_option_orequest_def_t, payload, payload_size);
 }
@@ -65,7 +65,7 @@ tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create_null()
 	return tnet_dhcp6_option_orequest_create(tsk_null, 0);
 }
 
-tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create(const void* payload, size_t payload_size)
+tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp6_option_vendorclass_def_t, payload, payload_size);
 }
@@ -75,7 +75,7 @@ tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create_null()
 	return tnet_dhcp6_option_vendorclass_create(tsk_null, 0);
 }
 
-tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, size_t size)
+tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, tsk_size_t size)
 {
 	tnet_dhcp6_option_t *option = 0;
 	uint8_t* dataPtr = ((uint8_t*)data);
@@ -167,7 +167,7 @@ static tsk_object_t* tnet_dhcp6_option_ctor(tsk_object_t * self, va_list * app)
 	if(option){
 		tnet_dhcp6_option_code_t code = va_arg(*app, tnet_dhcp6_option_code_t);
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		option->code = code;
 		if(payload && payload_size){
@@ -212,7 +212,7 @@ static tsk_object_t* tnet_dhcp6_option_identifier_ctor(tsk_object_t * self, va_l
 	if(option){
 		//tnet_dhcp6_option_code_t code = va_arg(*app, tnet_dhcp6_option_code_t);
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		if(payload && payload_size){
 			/* DESERIALIZATION */
@@ -269,7 +269,7 @@ static tsk_object_t* tnet_dhcp6_option_orequest_ctor(tsk_object_t * self, va_lis
 	tnet_dhcp6_option_orequest_t *option = self;
 	if(option){
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		if(payload && payload_size)
 		{	/* DESERIALIZATION */
@@ -308,7 +308,7 @@ static tsk_object_t* tnet_dhcp6_option_vendorclass_ctor(tsk_object_t * self, va_
 	tnet_dhcp6_option_vendorclass_t *option = self;
 	if(option){
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		if(payload && payload_size){
 			/* DESERIALIZATION */

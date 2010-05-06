@@ -149,7 +149,7 @@ int tnet_tls_socket_connect(tnet_tls_socket_handle_t* self)
 #endif
 }
 
-int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, size_t size)
+int tnet_tls_socket_write(tnet_tls_socket_handle_t* self, const void* data, tsk_size_t size)
 {
 #if !TNET_HAVE_OPENSSL_H
 	return -200;
@@ -190,7 +190,7 @@ ssl_write:
 
 			//if(ret == SSL_ERROR_WANT_READ){
 			//	if(!SSL_is_init_finished(socket->ssl)){
-			//		size_t size = 1024;
+			//		tsk_size_t size = 1024;
 			//		char* buffer = tsk_calloc(size, sizeof(uint8_t));
 			//		int isEncrypted = 1;
 			//		
@@ -225,14 +225,14 @@ ssl_write:
 #endif
 }
 
-int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, size_t *size, int *isEncrypted)
+int tnet_tls_socket_recv(tnet_tls_socket_handle_t* self, void** data, tsk_size_t *size, int *isEncrypted)
 {
 #if !TNET_HAVE_OPENSSL_H
 	return -200;
 #else
 	int ret = -1;
-	size_t read = 0;
-	size_t to_read = *size;
+	tsk_size_t read = 0;
+	tsk_size_t to_read = *size;
 	int rcount = TNET_TLS_RETRY_COUNT;
 	tnet_tls_socket_t* socket;
 
@@ -289,7 +289,7 @@ ssl_read:
 		}
 	}
 	else if(ret >=0){
-		read += (size_t)ret;
+		read += (tsk_size_t)ret;
 
 		if((ret = SSL_pending(socket->ssl)) > 0){
 			void *ptr;

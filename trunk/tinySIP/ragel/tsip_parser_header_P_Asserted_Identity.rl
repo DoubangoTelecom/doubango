@@ -69,7 +69,7 @@
 		if(curr_p_asserted_identity && !curr_p_asserted_identity->uri){
 			int len = (int)(p  - tag_start);
 			if(curr_p_asserted_identity && !curr_p_asserted_identity->uri){
-				if((curr_p_asserted_identity->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_p_asserted_identity->display_name){
+				if((curr_p_asserted_identity->uri = tsip_uri_parse(tag_start, (tsk_size_t)len)) && curr_p_asserted_identity->display_name){
 					curr_p_asserted_identity->uri->display_name = tsk_strdup(curr_p_asserted_identity->display_name);
 				}
 			}
@@ -121,7 +121,7 @@ int tsip_header_P_Asserted_Identity_tostring(const tsip_header_t* header, tsk_bu
 	return -1;
 }
 
-tsip_header_P_Asserted_Identities_L_t *tsip_header_P_Asserted_Identity_parse(const char *data, size_t size)
+tsip_header_P_Asserted_Identities_L_t *tsip_header_P_Asserted_Identity_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

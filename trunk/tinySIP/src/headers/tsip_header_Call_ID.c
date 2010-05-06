@@ -70,7 +70,7 @@ int tsip_header_Call_ID_random(tsk_uuidstring_t *result)
 	return tsk_uuidgenerate(result);
 }
 
-tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size)
+tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

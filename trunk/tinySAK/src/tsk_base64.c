@@ -77,7 +77,7 @@
 *
 * @retval The size of the encoded data (sizeof(@a output))
 */
-size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output)
+tsk_size_t tsk_base64_encode(const uint8_t* input, tsk_size_t input_size, char **output)
 {
 	static const char* TSK_BASE64_ENCODE_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -92,8 +92,8 @@ size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output)
 		Base64 encoded			V				F				N				L			<=== HERE IS THE RESULT OF tsk_base64_encode("TSK")
 	*/
 
-	size_t i = 0;
-	size_t output_size = 0;
+	tsk_size_t i = 0;
+	tsk_size_t output_size = 0;
 
 	/* Caller provided his own buffer? */
 	if(!*output){
@@ -151,7 +151,7 @@ quantum:
 *
 * @retval The size of the decoded data (sizeof(@a output))
 */
-size_t tsk_base64_decode(const uint8_t* input, size_t input_size, char **output)
+tsk_size_t tsk_base64_decode(const uint8_t* input, tsk_size_t input_size, char **output)
 {
 	static const uint8_t TSK_BASE64_DECODE_ALPHABET[256] = 
 	{
@@ -182,8 +182,8 @@ size_t tsk_base64_decode(const uint8_t* input, size_t input_size, char **output)
 		-1,
 	};
 
-	size_t i, pay_size;
-	size_t output_size = 0;
+	tsk_size_t i, pay_size;
+	tsk_size_t output_size = 0;
 
 	/* Caller provided his own buffer? */
 	if(!*output){

@@ -197,12 +197,12 @@ bail:
 * @retval @ref tnet_dns_message_t object if succeed or NULL otherwise.
 * @sa @ref tnet_dns_message_serialize.
 */
-tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t size)
+tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, tsk_size_t size)
 {
 	tnet_dns_message_t *message = 0;
 	uint8_t *dataPtr, *dataEnd, *dataStart;
 	uint16_t i;
-	size_t offset = 0;
+	tsk_size_t offset = 0;
 
 	if(!data || !size){
 		goto bail;

@@ -109,7 +109,7 @@ TINYSDP_API tsdp_header_O_t* tsdp_header_O_create(const char* username, uint32_t
 TINYSDP_API tsdp_header_O_t* tsdp_header_O_create_null();
 TINYSDP_API tsdp_header_O_t* tsdp_header_O_create_default(const char* username, const char* nettype, const char* addrtype, const char* addr);
 
-TINYSDP_API tsdp_header_O_t *tsdp_header_O_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_O_t *tsdp_header_O_parse(const char *data, tsk_size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_O_def_t;
 

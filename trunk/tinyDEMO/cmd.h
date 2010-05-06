@@ -124,7 +124,7 @@ cmd_t;
 cmd_t* cmd_create(cmd_type_t );
 #define cmd_create_null() cmd_create(cmd_none)
 
-cmd_t* cmd_parse(const char* buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params);
+cmd_t* cmd_parse(const char* buffer, tsk_size_t size, tsk_bool_t *comment, tsk_params_L_t* params);
 void cmd_print_help();
 
 opt_t* opt_create(opt_type_t, lv_t, const char*);

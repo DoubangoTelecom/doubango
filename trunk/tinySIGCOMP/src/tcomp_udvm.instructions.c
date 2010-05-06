@@ -1905,7 +1905,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t reques
 			tcomp_buffer_allocBuff(partial_id, length);
 			tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(partial_id), index, length);
 			if(!udvm->lpResult->remote_parameters->returnedStates){
-				udvm->lpResult->remote_parameters->returnedStates = TSK_LIST_CREATE();
+				udvm->lpResult->remote_parameters->returnedStates = tsk_list_create();
 			}
 			tsk_list_push_back_data(udvm->lpResult->remote_parameters->returnedStates, (void**)&partial_id);
 			index += length;

@@ -214,7 +214,7 @@ tnet_stun_request_t* tnet_turn_create_request_sendindication(const tnet_nat_cont
 		tnet_turn_attribute_t *attribute;
 		tnet_turn_attribute_xpeer_addr_t* xpeer  = tsk_object_ref(va_arg(*app, tnet_turn_attribute_xpeer_addr_t *));
 		const void* data = va_arg(*app, const void *);
-		size_t size = va_arg(*app, size_t);
+		tsk_size_t size = va_arg(*app, tsk_size_t);
 		
 		/*
 			draft-ietf-behave-turn-16 - 10.1.  Forming a Send Indication
@@ -482,7 +482,7 @@ int tnet_turn_channel_refresh(const struct tnet_nat_context_s* nat_context, cons
 
 /**@ingroup tnet_turn_group
 */
-int tnet_turn_channel_senddata(const struct tnet_nat_context_s* nat_context, const tnet_turn_channel_binding_t * channel_bind, const void* data, size_t size, int indication)
+int tnet_turn_channel_senddata(const struct tnet_nat_context_s* nat_context, const tnet_turn_channel_binding_t * channel_bind, const void* data, tsk_size_t size, int indication)
 {
 	tnet_turn_channel_data_t *channel_data = 0;
 	tsk_buffer_t *output = 0;

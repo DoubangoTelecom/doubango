@@ -355,7 +355,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 				
 			}
 			else{ /* there is data to read */
-				size_t len = 0;
+				tsk_size_t len = 0;
 				void* data = 0;
 				tnet_fd_t active_fd;
 				
@@ -387,7 +387,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 				}
 
 				/* Parse the incoming response. */
-				response = tnet_dns_message_deserialize(data, (size_t)ret);
+				response = tnet_dns_message_deserialize(data, (tsk_size_t)ret);
 				TSK_FREE(data);
 				
 				if(response)
@@ -442,7 +442,7 @@ tnet_dns_response_t* tnet_dns_enum(tnet_dns_ctx_t* ctx, const char* e164num, con
 {
 	char e164domain[255];
 	tnet_dns_response_t* ret = tsk_null;
-	size_t e164size;
+	tsk_size_t e164size;
 	int i, j; // must be signed
 	
 	e164size = tsk_strlen(e164num);

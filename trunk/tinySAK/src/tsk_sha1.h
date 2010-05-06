@@ -114,7 +114,7 @@ TINYSAK_API tsk_sha1_errcode_t tsk_sha1reset(tsk_sha1context_t *);
 TINYSAK_API tsk_sha1_errcode_t tsk_sha1input(tsk_sha1context_t *, const uint8_t *, unsigned length);
 TINYSAK_API tsk_sha1_errcode_t tsk_sha1result(tsk_sha1context_t *, tsk_sha1digest_t Message_Digest);
 TINYSAK_API void tsk_sha1final(uint8_t *Message_Digest, tsk_sha1context_t *context);
-TINYSAK_API tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1string_t *result);
+TINYSAK_API tsk_sha1_errcode_t tsk_sha1compute(const char* input, tsk_size_t size, tsk_sha1string_t *result);
 
 TSK_END_DECLS
 

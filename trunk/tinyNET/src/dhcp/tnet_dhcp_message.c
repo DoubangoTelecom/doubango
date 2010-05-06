@@ -178,7 +178,7 @@ bail:
 	return output;
 }
 
-tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, size_t size)
+tnet_dhcp_message_t* tnet_dhcp_message_deserialize(const struct tnet_dhcp_ctx_s *ctx, const uint8_t *data, tsk_size_t size)
 {
 	tnet_dhcp_message_t *message = 0;
 	uint8_t *dataPtr, *dataEnd, *dataStart;

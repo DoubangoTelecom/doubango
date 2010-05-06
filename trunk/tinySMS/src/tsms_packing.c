@@ -99,7 +99,7 @@ tsk_buffer_t* tsms_pack_to_7bit(const char* ascii)
 	*/
 	tsk_buffer_t* ret = tsk_null;
 	uint8_t* _ret = tsk_null;
-	register size_t len, bcount = 1/*1-7*/, index = 0, retindex = 0, retlen = 0;
+	register tsk_size_t len, bcount = 1/*1-7*/, index = 0, retindex = 0, retlen = 0;
 	const uint8_t* pascii = (const uint8_t*)ascii;
 	
 	if(!ascii || !(len = strlen(ascii))){
@@ -147,8 +147,8 @@ bail:
 */
 tsk_buffer_t* tsms_pack_to_ucs2(const char* ascii)
 {
-	register size_t i, j;
-	size_t len, retlen = 0;
+	register tsk_size_t i, j;
+	tsk_size_t len, retlen = 0;
 	uint8_t* str = tsk_null;
 	tsk_buffer_t* ret = tsk_null;
 
@@ -187,8 +187,8 @@ bail:
 */
 tsk_buffer_t* tsms_pack_to_8bit(const char* ascii)
 {
-	register size_t i, j;
-	size_t len, retlen = 0;
+	register tsk_size_t i, j;
+	tsk_size_t len, retlen = 0;
 	uint8_t* str = tsk_null;
 	tsk_buffer_t* ret = tsk_null;
 
@@ -226,10 +226,10 @@ bail:
 * @retval Null-terminated ASCII string, ready to be shown to the screen.
 * @sa @ref tsms_pack_to_7bit
 */
-char* tsms_pack_from_7bit(const void* gsm7bit, size_t size)
+char* tsms_pack_from_7bit(const void* gsm7bit, tsk_size_t size)
 {
 	char* ret = tsk_null;
-	register size_t bcount = 1/*1-7*/, index = 0, retindex = 0, retsize = 0;
+	register tsk_size_t bcount = 1/*1-7*/, index = 0, retindex = 0, retsize = 0;
 	const uint8_t* pgsm7bit = gsm7bit;
 	
 	if(!gsm7bit || !size){
@@ -276,9 +276,9 @@ bail:
 * @retval Null-terminated ASCII string, ready to be shown to the screen.
 * @sa @ref tsms_pack_to_ucs2
 */
-char* tsms_pack_from_ucs2(const void* ucs2, size_t size)
+char* tsms_pack_from_ucs2(const void* ucs2, tsk_size_t size)
 {
-	register size_t i, j;
+	register tsk_size_t i, j;
 	char* ret = tsk_null;
 	
 	const uint16_t* pucs2 = ucs2;
@@ -312,9 +312,9 @@ bail:
 * @retval Null-terminated ASCII string, ready to be shown to the screen.
 * @sa @ref tsms_pack_to_8bit
 */
-char* tsms_pack_from_8bit(const void* gsm8bit, size_t size)
+char* tsms_pack_from_8bit(const void* gsm8bit, tsk_size_t size)
 {
-	register size_t i, j;
+	register tsk_size_t i, j;
 	char* ret = tsk_null;
 	
 	const uint8_t* pgsm8bit = gsm8bit;

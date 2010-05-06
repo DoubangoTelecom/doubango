@@ -302,7 +302,7 @@ tnet_stun_attribute_altserver_t;
 TINYNET_GEXTERN const tsk_object_def_t *tnet_stun_attribute_altserver_def_t;
 
 
-tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t size);
+tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, tsk_size_t size);
 int tnet_stun_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output);
 void tnet_stun_attribute_pad(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output);
 
@@ -310,17 +310,17 @@ void tnet_stun_attribute_pad(const tnet_stun_attribute_t* attribute, tsk_buffer_
 
 
 tnet_stun_attribute_t* tnet_stun_attribute_create();
-tnet_stun_attribute_mapped_addr_t* tnet_stun_attribute_mapped_address_create(const void* payload, size_t payload_size);
-tnet_stun_attribute_xmapped_addr_t* tnet_stun_attribute_xmapped_address_create(const void* payload, size_t payload_size);
-tnet_stun_attribute_username_t* tnet_stun_attribute_username_create(const void* payload, size_t payload_size);
-tnet_stun_attribute_integrity_t* tnet_stun_attribute_integrity_create(const void* payload, size_t payload_size);
+tnet_stun_attribute_mapped_addr_t* tnet_stun_attribute_mapped_address_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_xmapped_addr_t* tnet_stun_attribute_xmapped_address_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_username_t* tnet_stun_attribute_username_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_integrity_t* tnet_stun_attribute_integrity_create(const void* payload, tsk_size_t payload_size);
 tnet_stun_attribute_fingerprint_t* tnet_stun_attribute_fingerprint_create(uint32_t fingerprint);
-tnet_stun_attribute_errorcode_t* tnet_stun_attribute_errorcode_create(const void* payload, size_t payload_size);
-tnet_stun_attribute_realm_t* tnet_stun_attribute_realm_create(const void* payload, size_t payload_size);
-tnet_stun_attribute_nonce_t* tnet_stun_attribute_nonce_create(const void* payload, size_t payload_size);
-tnet_stun_attribute_unknowns_t* tnet_stun_attribute_unknowns_create(const void* payload, size_t payload_size);
-tnet_stun_attribute_software_t* tnet_stun_attribute_software_create(const void* payload, size_t payload_size);
-tnet_stun_attribute_altserver_t* tnet_stun_attribute_altserver_create(const void* payload, size_t payload_size);
+tnet_stun_attribute_errorcode_t* tnet_stun_attribute_errorcode_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_realm_t* tnet_stun_attribute_realm_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_nonce_t* tnet_stun_attribute_nonce_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_unknowns_t* tnet_stun_attribute_unknowns_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_software_t* tnet_stun_attribute_software_create(const void* payload, tsk_size_t payload_size);
+tnet_stun_attribute_altserver_t* tnet_stun_attribute_altserver_create(const void* payload, tsk_size_t payload_size);
 
 
 TNET_END_DECLS

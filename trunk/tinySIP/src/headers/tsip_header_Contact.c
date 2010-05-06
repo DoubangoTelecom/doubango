@@ -74,7 +74,7 @@ int tsip_header_Contact_tostring(const tsip_header_t* header, tsk_buffer_t* outp
 }
 
 
-tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, size_t size)
+tsip_header_Contacts_L_t *tsip_header_Contact_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
@@ -543,7 +543,7 @@ _match:
 	{
 		if(curr_contact && !curr_contact->uri){
 			int len = (int)(p  - tag_start);
-			if((curr_contact->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_contact->display_name){
+			if((curr_contact->uri = tsip_uri_parse(tag_start, (tsk_size_t)len)) && curr_contact->display_name){
 				curr_contact->uri->display_name = tsk_strdup(curr_contact->display_name);
 			}
 		}

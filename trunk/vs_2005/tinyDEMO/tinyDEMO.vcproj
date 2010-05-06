@@ -209,6 +209,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyDEMO\options.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyDEMO\publish.c"
 				>
 			</File>
@@ -252,6 +256,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyDEMO\message.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDEMO\options.h"
 				>
 			</File>
 			<File

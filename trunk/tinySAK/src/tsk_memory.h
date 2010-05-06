@@ -32,7 +32,7 @@
 
 #include "tinysak_config.h"
 
-#include <stdlib.h> /* size_t */
+#include <stdlib.h> /* tsk_size_t */
 
 /**@ingroup tsk_memory_group
 * @def TSK_SAFE_FREE
@@ -48,10 +48,10 @@ TSK_BEGIN_DECLS
 #define TSK_SAFE_FREE(ptr) (void)tsk_free((void**)(&ptr));
 #define TSK_FREE(ptr) TSK_SAFE_FREE(ptr)
 
-TINYSAK_API void* tsk_malloc(size_t size);
-TINYSAK_API void* tsk_realloc (void * ptr, size_t size);
+TINYSAK_API void* tsk_malloc(tsk_size_t size);
+TINYSAK_API void* tsk_realloc (void * ptr, tsk_size_t size);
 TINYSAK_API void tsk_free(void** ptr);
-TINYSAK_API void* tsk_calloc(size_t num, size_t size);
+TINYSAK_API void* tsk_calloc(tsk_size_t num, tsk_size_t size);
 
 TSK_END_DECLS
 

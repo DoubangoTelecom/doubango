@@ -100,7 +100,7 @@ int tnet_dns_rr_deinit(tnet_dns_rr_t *rr)
 
 /** Deserialize <character-string>.
 */
-int tnet_dns_rr_charstring_deserialize(const void* data, char** charstring, size_t *offset)
+int tnet_dns_rr_charstring_deserialize(const void* data, char** charstring, tsk_size_t *offset)
 {
 	/* RFC 1035 - 3.3. Standard RRs
 		<character-string> is a single length octet followed by that number of characters. 
@@ -118,7 +118,7 @@ int tnet_dns_rr_charstring_deserialize(const void* data, char** charstring, size
 
 /** Deserializes a QName.
 */
-int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset)
+int tnet_dns_rr_qname_deserialize(const void* data, char** name, tsk_size_t *offset)
 {
 	/* RFC 1035 - 4.1.4. Message compression
 
@@ -134,7 +134,7 @@ int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset)
 		usingPtr = ((*dataPtr & 0xC0) == 0xC0);
 
 		if(usingPtr){
-			size_t ptr_offset = (*dataPtr & 0x3F);
+			tsk_size_t ptr_offset = (*dataPtr & 0x3F);
 			ptr_offset = ptr_offset << 8 | *(dataPtr+1);
 			
 			*offset += 2;
@@ -160,7 +160,7 @@ int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset)
 	return 0;
 }
 
-//int tnet_dns_rr_qname_deserialize(const void* data, size_t size, char** name, size_t *offset)
+//int tnet_dns_rr_qname_deserialize(const void* data, tsk_size_t size, char** name, tsk_size_t *offset)
 //{
 //	/* RFC 1035 - 4.1.4. Message compression
 //
@@ -190,7 +190,7 @@ int tnet_dns_rr_qname_deserialize(const void* data, char** name, size_t *offset)
 //		}
 //		else
 //		{
-//			size_t length = tnet_qname_label_parse(dataPtr, size, name, &islast);
+//			tsk_size_t length = tnet_qname_label_parse(dataPtr, size, name, &islast);
 //			*offset += length, dataPtr += length;
 //		}
 //	}
@@ -239,7 +239,7 @@ int tnet_dns_rr_qname_serialize(const char* qname, tsk_buffer_t* output)
 
 /** Deserializes a DNS RR.
 */
-tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, size_t size, size_t* offset)
+tnet_dns_rr_t* tnet_dns_rr_deserialize(const void* data, tsk_size_t size, tsk_size_t* offset)
 {
 	tnet_dns_rr_t *rr = tsk_null;
 	uint8_t* dataStart = (uint8_t*)data;

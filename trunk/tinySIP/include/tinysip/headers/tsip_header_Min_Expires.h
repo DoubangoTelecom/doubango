@@ -58,7 +58,7 @@ tsip_header_Min_Expires_t;
 TINYSIP_API tsip_header_Min_Expires_t* tsip_header_Min_Expires_create(int32_t value);
 TINYSIP_API tsip_header_Min_Expires_t* tsip_header_Min_Expires_create_null();
 
-TINYSIP_API tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Min_Expires_t *tsip_header_Min_Expires_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Min_Expires_def_t;
 

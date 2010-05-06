@@ -55,7 +55,7 @@ tnet_turn_attribute_lifetime_t* tnet_turn_attribute_lifetime_create(uint32_t lif
 
 /**@ingroup tnet_turn_group
 * draft-ietf-behave-turn-16 - 14.3.  XOR-PEER-ADDRESS */
-tnet_turn_attribute_xpeer_addr_t* tnet_turn_attribute_xpeer_addr_create(const void* payload, size_t payload_size)
+tnet_turn_attribute_xpeer_addr_t* tnet_turn_attribute_xpeer_addr_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_turn_attribute_xpeer_addr_def_t, payload, payload_size);
 }
@@ -67,14 +67,14 @@ tnet_turn_attribute_xpeer_addr_t* tnet_turn_attribute_xpeer_addr_create_null()
 
 /**@ingroup tnet_turn_group
 * draft-ietf-behave-turn-16 - 14.4.  DATA */
-tnet_turn_attribute_data_t* tnet_turn_attribute_data_create(const void* payload, size_t payload_size)
+tnet_turn_attribute_data_t* tnet_turn_attribute_data_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_turn_attribute_data_def_t, payload, payload_size);
 }
 
 /**@ingroup tnet_turn_group
 * draft-ietf-behave-turn-16 - 14.5.  XOR-RELAYED-ADDRESS */
-tnet_turn_attribute_xrelayed_addr_t* tnet_turn_attribute_xrelayed_addr_create(const void* payload, size_t payload_size)
+tnet_turn_attribute_xrelayed_addr_t* tnet_turn_attribute_xrelayed_addr_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_turn_attribute_xrelayed_addr_def_t, payload, payload_size);
 }
@@ -102,14 +102,14 @@ tnet_turn_attribute_dontfrag_t* tnet_turn_attribute_dontfrag_create()
 
 /**@ingroup tnet_turn_group
 * draft-ietf-behave-turn-16 - 14.9.  RESERVATION-TOKEN */
-tnet_turn_attribute_restoken_t* tnet_turn_attribute_restoken_create(const void* payload, size_t payload_size)
+tnet_turn_attribute_restoken_t* tnet_turn_attribute_restoken_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_turn_attribute_restoken_def_t, payload, payload_size);
 }
 
 /**@ingroup tnet_turn_group
 */
-tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_t type, uint16_t length, const void* payload, size_t payload_size)
+tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_t type, uint16_t length, const void* payload, tsk_size_t payload_size)
 {
 	tnet_stun_attribute_t *attribute = tsk_null;
 	const uint8_t* dataPtr = payload;
@@ -388,7 +388,7 @@ static tsk_object_t* tnet_turn_attribute_xpeer_addr_ctor(tsk_object_t * self, va
 	tnet_turn_attribute_xpeer_addr_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 		
 		if(payload && payload_size){
 		}
@@ -424,7 +424,7 @@ static tsk_object_t* tnet_turn_attribute_data_ctor(tsk_object_t * self, va_list 
 	tnet_turn_attribute_data_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		if(payload && payload_size){
 			attribute->value = tsk_buffer_create(payload, payload_size);
@@ -461,7 +461,7 @@ static tsk_object_t* tnet_turn_attribute_xrelayed_addr_ctor(tsk_object_t * self,
 	tnet_turn_attribute_xrelayed_addr_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		if(payload && payload_size){
 			const uint8_t *payloadPtr = (const uint8_t*)payload;
@@ -477,9 +477,9 @@ static tsk_object_t* tnet_turn_attribute_xrelayed_addr_ctor(tsk_object_t * self,
 			payloadPtr+=2;
 
 			{	/*=== Compute IP address */
-				size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
+				tsk_size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
 				if(addr_size){	
-					size_t i;
+					tsk_size_t i;
 					uint32_t addr;
 
 					for(i=0; i<addr_size; i+=4){
@@ -590,7 +590,7 @@ static tsk_object_t* tnet_turn_attribute_dontfrag_ctor(tsk_object_t * self, va_l
 	tnet_turn_attribute_dontfrag_t *attribute = self;
 	if(attribute){
 		//const void *payload = va_arg(*app, const void*);
-		//size_t payload_size = va_arg(*app, size_t);
+		//tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_dont_fragment;
 	}
@@ -624,7 +624,7 @@ static tsk_object_t* tnet_turn_attribute_restoken_ctor(tsk_object_t * self, va_l
 	tnet_turn_attribute_restoken_t *attribute = self;
 	if(attribute){
 		//--const void *payload = va_arg(*app, const void*);
-		//--size_t payload_size = va_arg(*app, size_t);
+		//--tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_reservation_token;
 	}

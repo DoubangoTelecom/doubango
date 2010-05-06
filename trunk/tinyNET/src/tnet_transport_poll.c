@@ -58,7 +58,7 @@ typedef struct transport_context_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	size_t count;
+	tsk_size_t count;
 	short events;
 	tnet_fd_t pipeW;
 	tnet_fd_t pipeR;
@@ -123,7 +123,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
 	int ret = -1;
-	size_t i;
+	tsk_size_t i;
 	tsk_bool_t found = tsk_false;
 	
 	if(!transport){
@@ -158,7 +158,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 }
 
 
-size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size)
+tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, tsk_size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	int numberOfBytesSent = 0;
@@ -191,7 +191,7 @@ bail:
 	return numberOfBytesSent;
 }
 
-size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, size_t size)
+tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, tsk_size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	int numberOfBytesSent = 0;
@@ -246,7 +246,7 @@ const tnet_tls_socket_handle_t* tnet_transport_get_tlshandle(const tnet_transpor
 /*== Get socket ==*/
 static const transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 {
-	size_t i;
+	tsk_size_t i;
 	transport_socket_t* ret = 0;
 
 	if(context){
@@ -299,7 +299,7 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 /*
 static void setConnected(tnet_fd_t fd, transport_context_t *context, int connected)
 {
-	size_t i;
+	tsk_size_t i;
 
 	for(i=0; i<context->count; i++)
 	{
@@ -439,7 +439,7 @@ void *tnet_transport_mainthread(void *param)
 	tnet_transport_t *transport = param;
 	transport_context_t *context = transport->context;
 	int ret;
-	size_t i;
+	tsk_size_t i;
 
 	transport_socket_t* active_socket;
 
@@ -478,7 +478,7 @@ void *tnet_transport_mainthread(void *param)
 			/*================== POLLIN ==================*/
 			if(context->ufds[i].revents & TNET_POLLIN)
 			{
-				size_t len = 0;
+				tsk_size_t len = 0;
 				void* buffer = 0;
 				tnet_transport_event_t* e;
 				
@@ -515,7 +515,7 @@ void *tnet_transport_mainthread(void *param)
 				/* Receive the waiting data. */
 				if(active_socket->tlshandle){
 					int isEncrypted;
-					size_t tlslen = len;
+					tsk_size_t tlslen = len;
 					if((ret = tnet_tls_socket_recv(active_socket->tlshandle, &buffer, &tlslen, &isEncrypted)) == 0){
 						if(isEncrypted){
 							TSK_FREE(buffer);
@@ -531,8 +531,8 @@ void *tnet_transport_mainthread(void *param)
 					TNET_PRINT_LAST_ERROR("recv have failed.");
 					continue;
 				}
-				else if(len != (size_t)ret){ /* useless test */
-					len = (size_t)ret;
+				else if(len != (tsk_size_t)ret){ /* useless test */
+					len = (tsk_size_t)ret;
 				}
 				
 					

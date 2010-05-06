@@ -71,7 +71,7 @@ int thttp_header_Dummy_tostring(const thttp_header_t* header, tsk_buffer_t* outp
 
 /**@ingroup thttp_header_group
 */
-thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, size_t size)
+thttp_header_Dummy_t *thttp_header_Dummy_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

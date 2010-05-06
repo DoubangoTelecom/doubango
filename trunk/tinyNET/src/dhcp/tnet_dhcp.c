@@ -177,7 +177,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 			}
 			else
 			{	/* there is data to read */
-				size_t len = 0;
+				tsk_size_t len = 0;
 				void* data = 0;
 
 				/* Check how how many bytes are pending */
@@ -196,7 +196,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				}
 
 				/* Parse the incoming response. */
-				reply = tnet_dhcp_message_deserialize(ctx, data, (size_t)ret);
+				reply = tnet_dhcp_message_deserialize(ctx, data, (tsk_size_t)ret);
 				TSK_FREE(data);
 				
 				if(reply)

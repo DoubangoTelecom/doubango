@@ -111,7 +111,7 @@
 	main := URI;
 }%%
 
-tmsrp_uri_t *tmsrp_uri_parse(const char *data, size_t size)
+tmsrp_uri_t *tmsrp_uri_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

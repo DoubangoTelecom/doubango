@@ -40,14 +40,14 @@
 /*=== RP-DATA as per 3GPP TS 24.011 section 7.3.1. ===*/
 
 /** internal function used to deserialize a RP-DATA message from binary content. */
-tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, size_t size)
+tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, tsk_size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
 	tsms_rpdu_data_t* self = tsms_rpdu_data_create(0x00, tsk_null, tsk_null, tsk_false);
 	tsk_bool_t failed = tsk_false;
 	const uint8_t* pdata = data;
 	const uint8_t* pend = pdata + size;
-	size_t smsc_len;
+	tsk_size_t smsc_len;
 	
 	/* 3GPP TS 24.011 ==> 8.2.2 Message type indicator (MTI) */
 	TSMS_RPDU_MESSAGE(self)->mti = *pdata++;
@@ -80,7 +80,7 @@ tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, size_t size
 
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
 	if((pend-pdata) > 1){
-		size_t length = *pdata++; // length-indicator
+		tsk_size_t length = *pdata++; // length-indicator
 		if((length != (pend-pdata))){
 			TSK_DEBUG_WARN("Invalid length-indicator.");
 		}
@@ -229,7 +229,7 @@ const tsk_object_def_t *tsms_rpdu_data_def_t = &tsms_rpdu_data_def_s;
 /*=== RP-SMMA as per 3GPP TS 24.011 section 7.3.2. ===*/
 
 /** internal function used to deserialize a RP-SMMA message from binary content. */
-tsms_rpdu_message_t* _tsms_rpdu_rpsmma_deserialize(const void* data, size_t size)
+tsms_rpdu_message_t* _tsms_rpdu_rpsmma_deserialize(const void* data, tsk_size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
 	tsms_rpdu_smma_t* self = tsms_rpdu_smma_create(0);
@@ -318,7 +318,7 @@ const tsk_object_def_t *tsms_rpdu_smma_def_t = &tsms_rpdu_smma_def_s;
 /*=== RP-ACK as per 3GPP TS 24.011 section 7.3.3. ===*/
 
 /** internal function used to deserialize an RP-ACK message from binary content. */
-tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, size_t size)
+tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, tsk_size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
 	tsms_rpdu_ack_t* self = tsms_rpdu_ack_create(0, tsk_null, tsk_false);
@@ -333,7 +333,7 @@ tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, size_t size)
 
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
 	if((pend-pdata) > 1){
-		size_t length = *pdata++; // length-indicator
+		tsk_size_t length = *pdata++; // length-indicator
 		if((length != (pend-pdata))){
 			TSK_DEBUG_WARN("Invalid length-indicator.");
 		}
@@ -448,7 +448,7 @@ const tsk_object_def_t *tsms_rpdu_ack_def_t = &tsms_rpdu_ack_def_s;
 /*=== RP-ERROR as per 3GPP TS 24.011 section 7.3.4. ===*/
 
 /** internal function used to deserialize a RP-ERROR message from binary content. */
-tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, size_t size)
+tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, tsk_size_t size)
 {
 	/* don't need to test data and size --> already done by tsms_rpdu_message_deserialize() */
 	tsms_rpdu_error_t* self = tsms_rpdu_error_create(0, tsk_null, 0, tsk_false);
@@ -475,7 +475,7 @@ tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, size_t siz
 	
 	/* 3GPP TS 24.011 ==> 8.2.5.3 RP-User data element */
 	if((pend-pdata) > 1){
-		size_t length = *pdata++; // length-indicator
+		tsk_size_t length = *pdata++; // length-indicator
 		if((length != (pend-pdata))){
 			TSK_DEBUG_WARN("Invalid length-indicator.");
 		}

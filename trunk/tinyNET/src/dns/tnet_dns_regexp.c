@@ -55,7 +55,7 @@ char* tnet_dns_regex_parse(const char* e164num, const char* regexp)
 	char* ret = tsk_null;
 	char* prefix = tsk_null;
 	const char* tag_start;
-	size_t e164len;
+	tsk_size_t e164len;
 		
 	// Ragel
 	int cs = 0;
@@ -341,8 +341,8 @@ bail:
 //	TSK_DECLARE_OBJECT;
 //
 //	int id;
-//	size_t start;
-//	size_t end;
+//	tsk_size_t start;
+//	tsk_size_t end;
 //}
 //group_t;
 //
@@ -425,7 +425,7 @@ bail:
 //	char* ret = tsk_null;
 //	groups_L_t* groups = tsk_list_create();
 //	group_t* curr_group = tsk_null;
-//	size_t index = 0;
+//	tsk_size_t index = 0;
 //	int group_id = 0;
 //	
 //	// Ragel

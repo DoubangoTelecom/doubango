@@ -59,7 +59,7 @@ tsip_header_Max_Forwards_t;
 
 TINYSIP_API tsip_header_Max_Forwards_t* tsip_header_Max_Forwards_create(int32_t max);
 
-TINYSIP_API tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Max_Forwards_def_t;
 

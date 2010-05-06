@@ -59,7 +59,7 @@ tsip_header_Server_t;
 TINYSIP_API tsip_header_Server_t* tsip_header_server_create(const char* server);
 TINYSIP_API tsip_header_Server_t* tsip_header_server_create_null();
 
-TINYSIP_API tsip_header_Server_t *tsip_header_Server_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Server_t *tsip_header_Server_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Server_def_t;
 

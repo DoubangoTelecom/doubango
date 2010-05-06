@@ -75,8 +75,8 @@ typedef void tsk_object_t;
 * @endcode
 */
 #define TSK_DECLARE_OBJECT \
-	const void* base; \
-	size_t	refCount
+	const void* __base__; \
+	tsk_size_t	refCount
 
 /**@ingroup tsk_object_group
 * Internal macro to get the definition of the object.
@@ -149,7 +149,7 @@ typedef void tsk_object_t;
 typedef struct tsk_object_def_s
 {
 	//! The size of the object.
-	size_t size;
+	tsk_size_t size;
 	//! Pointer to the constructor.
 	tsk_object_t*	(* constructor) (tsk_object_t *, va_list *);
 	//! Pointer to the destructor.
@@ -161,7 +161,7 @@ tsk_object_def_t;
 
 TINYSAK_API tsk_object_t* tsk_object_new(const tsk_object_def_t *objdef, ...);
 TINYSAK_API tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap);
-TINYSAK_API size_t tsk_object_sizeof(const tsk_object_t *);
+TINYSAK_API tsk_size_t tsk_object_sizeof(const tsk_object_t *);
 TINYSAK_API int tsk_object_cmp(const void *self, const tsk_object_t *object);
 TINYSAK_API tsk_object_t* tsk_object_ref(tsk_object_t *self);
 TINYSAK_API tsk_object_t* tsk_object_unref(tsk_object_t *self);

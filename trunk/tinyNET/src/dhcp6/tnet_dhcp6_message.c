@@ -94,7 +94,7 @@ bail:
 	return output;
 }
 
-tnet_dhcp6_message_t* tnet_dhcp6_message_deserialize(const tnet_dhcp6_ctx_t *ctx, const uint8_t *data, size_t size)
+tnet_dhcp6_message_t* tnet_dhcp6_message_deserialize(const tnet_dhcp6_ctx_t *ctx, const uint8_t *data, tsk_size_t size)
 {
 	return 0;
 }

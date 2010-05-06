@@ -56,7 +56,7 @@ tsip_header_Content_Length_t;
 TINYSIP_API tsip_header_Content_Length_t* tsip_header_Content_Length_create(uint32_t length);
 TINYSIP_API tsip_header_Content_Length_t* tsip_header_Content_Length_create_null();
 
-TINYSIP_API tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Content_Length_t *tsip_header_Content_Length_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Content_Length_def_t;
 

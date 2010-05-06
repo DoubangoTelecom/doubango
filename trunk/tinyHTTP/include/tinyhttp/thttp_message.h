@@ -226,8 +226,8 @@ typedef thttp_message_t thttp_response_t; /**< HTTP response message. */
 //
 TINYHTTP_API int thttp_message_add_header(thttp_message_t *self, const thttp_header_t *hdr);
 TINYHTTP_API int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *headers);
-TINYHTTP_API int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, size_t size);
-TINYHTTP_API int thttp_message_append_content(thttp_message_t *self, const void* content, size_t size);
+TINYHTTP_API int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, tsk_size_t size);
+TINYHTTP_API int thttp_message_append_content(thttp_message_t *self, const void* content, tsk_size_t size);
 
 #if !defined(_MSC_VER) || defined(__GNUC__)
 static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)
@@ -253,7 +253,7 @@ static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)
 	}
 #endif
 
-TINYHTTP_API const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, thttp_header_type_t type, size_t index);
+TINYHTTP_API const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, thttp_header_type_t type, tsk_size_t index);
 TINYHTTP_API const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thttp_header_type_t type);
 TINYHTTP_API const thttp_header_t *thttp_message_get_headerByName(const thttp_message_t *self, const char* name);
 

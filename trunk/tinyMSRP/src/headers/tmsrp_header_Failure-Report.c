@@ -66,7 +66,7 @@ int tmsrp_header_Failure_Report_tostring(const tmsrp_header_t* header, tsk_buffe
 	return -1;
 }
 
-tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *data, size_t size)
+tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

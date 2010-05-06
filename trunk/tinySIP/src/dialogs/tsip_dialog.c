@@ -433,7 +433,7 @@ int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* res
 	int64_t expires = self->expires;
 	int64_t newdelay = expires;	/* default value */
 	const tsip_header_t* hdr;
-	size_t i;
+	tsk_size_t i;
 
 	/*== NOTIFY with subscription-state header with expires parameter. 
 	*/
@@ -555,7 +555,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 
 			/* Route sets */
 			{
-				size_t index;
+				tsk_size_t index;
 				const tsip_header_Record_Route_t *recordRoute;
 				tsip_uri_t* uri;
 
@@ -616,7 +616,7 @@ int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik)
 int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* response, int acceptNewVector)
 {
 	int ret = -1;
-	size_t i;
+	tsk_size_t i;
 
 	tsk_list_item_t *item;
 

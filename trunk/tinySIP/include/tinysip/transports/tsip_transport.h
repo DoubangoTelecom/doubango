@@ -75,7 +75,7 @@ int tsip_transport_init(tsip_transport_t* self, tnet_socket_type_t type, const t
 int tsip_transport_deinit(tsip_transport_t* self);
 
 int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const char* pbk, const char* pvk);
-size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
+tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort);
 tsip_uri_t* tsip_transport_get_uri(const tsip_transport_t *self, int lr);
 
 #define tsip_transport_start(transport)													(transport ? tnet_transport_start(transport->net_transport) : -1)

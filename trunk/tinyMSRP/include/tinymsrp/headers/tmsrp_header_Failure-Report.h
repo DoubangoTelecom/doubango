@@ -68,7 +68,7 @@ typedef tsk_list_t tmsrp_headers_Failure_Report_L_t;
 TINYMSRP_API tmsrp_header_Failure_Report_t* tmsrp_header_Failure_Report_create(tmsrp_freport_type_t freport_type);
 TINYMSRP_API tmsrp_header_Failure_Report_t* tmsrp_header_Failure_Report_create_null();
 
-TINYMSRP_API tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Failure_Report_t *tmsrp_header_Failure_Report_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Failure_Report_def_t;
 

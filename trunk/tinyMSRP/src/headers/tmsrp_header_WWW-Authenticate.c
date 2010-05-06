@@ -83,7 +83,7 @@ int tmsrp_header_WWW_Authenticate_tostring(const void* header, tsk_buffer_t* out
 	return -1;
 }
 
-tmsrp_header_WWW_Authenticate_t *tmsrp_header_WWW_Authenticate_parse(const char *data, size_t size)
+tmsrp_header_WWW_Authenticate_t *tmsrp_header_WWW_Authenticate_parse(const char *data, tsk_size_t size)
 {
 	tmsrp_header_WWW_Authenticate_t *msrp_hdr = 0;
 	thttp_header_WWW_Authenticate_t* http_hdr;

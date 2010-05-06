@@ -155,7 +155,7 @@ static const int tsdp_machine_message_en_main = 34;
 
 /* #line 248 "./ragel/tsdp_parser_message.rl" */
 
-tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
+tsdp_message_t* tsdp_message_parse(const void *input, tsk_size_t size)
 {
 	tsdp_message_t* sdp_msg = tsk_null;
 	const char* tag_start = tsk_null;

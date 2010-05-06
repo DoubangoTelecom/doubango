@@ -53,7 +53,7 @@ typedef struct tnet_dhcp_option_sip_s
 }
 tnet_dhcp_option_sip_t;
 
-TINYNET_API tnet_dhcp_option_sip_t* tnet_dhcp_option_sip_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp_option_sip_t* tnet_dhcp_option_sip_create(const void* payload, tsk_size_t payload_size);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_option_sip_def_t;
 

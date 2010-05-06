@@ -88,7 +88,7 @@ int tmsrp_header_Dummy_tostring(const tmsrp_header_t* header, tsk_buffer_t* outp
 	return -1;
 }
 
-tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, size_t size)
+tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

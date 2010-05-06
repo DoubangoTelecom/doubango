@@ -39,7 +39,7 @@
 ctx_t* ctx = tsk_null;
 
 const char* trim(const char*);
-int insert(char* dest, size_t index, size_t dest_size, char* src, size_t src_size);
+int insert(char* dest, tsk_size_t index, tsk_size_t dest_size, char* src, tsk_size_t src_size);
 int update_param(const char* , const char* );
 int execute(const cmd_t* );
 
@@ -117,7 +117,7 @@ parse_buffer:
 		if(cmd->type == cmd_scenario){
 			FILE* file;
 			const opt_t* opt;
-			size_t read = 0;
+			tsk_size_t read = 0;
 			tsk_bool_t rm_lf = tsk_false;
 			if((opt = opt_get_by_type(cmd->opts, opt_path)) && !tsk_strnullORempty(opt->value)){ /* --path option */
 				if((file = fopen(opt->value, "r"))){
@@ -136,7 +136,7 @@ parse_buffer:
 					}
 					read++; /* \n */
 					/* repplace all '\' with spaces (easier than handling that in the ragel file) */
-					for(i=0; ((size_t)i)<read; i++){
+					for(i=0; ((tsk_size_t)i)<read; i++){
 						if(cmdbuf[i] == '\\'){
 							cmdbuf[i] = ' ';
 							rm_lf = tsk_true;

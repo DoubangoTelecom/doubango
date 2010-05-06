@@ -36,8 +36,8 @@
 
 TMSRP_BEGIN_DECLS
 
-TINYMSRP_API tmsrp_message_t* tmsrp_message_parse_2(const void *input, size_t size, size_t* msg_size);
-TINYMSRP_API tmsrp_message_t* tmsrp_message_parse(const void *input, size_t size);
+TINYMSRP_API tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_size_t* msg_size);
+TINYMSRP_API tmsrp_message_t* tmsrp_message_parse(const void *input, tsk_size_t size);
 
 TMSRP_END_DECLS
 

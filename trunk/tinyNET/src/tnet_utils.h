@@ -51,7 +51,7 @@ typedef struct tnet_interface_s
 
 	char* description;
 	uint8_t* mac_address;
-	size_t mac_address_length;
+	tsk_size_t mac_address_length;
 }
 tnet_interface_t;
 
@@ -127,10 +127,10 @@ TINYNET_API int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking);
 
 TINYNET_API tnet_tls_socket_handle_t* tnet_sockfd_set_tlsfiles(tnet_fd_t fd, int isClient, const char* tlsfile_ca, const char* tlsfile_pvk, const char* tlsfile_pbk);
 
-TINYNET_API int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size);
-TINYNET_API int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct sockaddr *from);
-TINYNET_API size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags);
-TINYNET_API int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags);
+TINYNET_API int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, tsk_size_t size);
+TINYNET_API int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, tsk_size_t size, int flags, struct sockaddr *from);
+TINYNET_API tsk_size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, tsk_size_t size, int flags);
+TINYNET_API int tnet_sockfd_recv(tnet_fd_t fd, void* buf, tsk_size_t size, int flags);
 TINYNET_API int tnet_sockfd_connectto(tnet_fd_t fd, const struct sockaddr_storage *to);
 TINYNET_API int tnet_sockfd_listen(tnet_fd_t fd, int backlog);
 TINYNET_API tnet_fd_t tnet_sockfd_accept(tnet_fd_t fd, struct sockaddr *addr, socklen_t *addrlen);
@@ -156,7 +156,7 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 #endif
 
 
-tnet_interface_t* tnet_interface_create(const char* description, const void* mac_address, size_t mac_address_length);
+tnet_interface_t* tnet_interface_create(const char* description, const void* mac_address, tsk_size_t mac_address_length);
 tnet_address_t* tnet_address_create(const char* ip);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_interface_def_t;

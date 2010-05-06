@@ -54,7 +54,7 @@ typedef struct thttp_header_ETag_s
 }
 thttp_header_ETag_t;
 
-thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, size_t size);
+thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, tsk_size_t size);
 
 thttp_header_ETag_t* thttp_header_etag_create(const char* value);
 thttp_header_ETag_t* thttp_header_etag_create_null();

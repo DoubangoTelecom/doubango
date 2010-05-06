@@ -269,7 +269,7 @@ static tsk_object_t* tcomp_params_create(tsk_object_t *self, va_list * app)
 	tcomp_params_t *params = self;
 	if(params){
 		//tcomp_params_reset(params);
-		params->returnedStates = TSK_LIST_CREATE();
+		params->returnedStates = tsk_list_create();
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new sigcomp params.");

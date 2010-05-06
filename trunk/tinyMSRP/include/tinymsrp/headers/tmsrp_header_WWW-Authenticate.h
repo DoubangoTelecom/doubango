@@ -72,7 +72,7 @@ typedef struct tmsrp_header_WWW_Authenticate_s
 }
 tmsrp_header_WWW_Authenticate_t;
 
-tmsrp_header_WWW_Authenticate_t *tmsrp_header_WWW_Authenticate_parse(const char *data, size_t size);
+tmsrp_header_WWW_Authenticate_t *tmsrp_header_WWW_Authenticate_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_WWW_Authenticate_def_t;
 

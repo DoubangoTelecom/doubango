@@ -104,7 +104,7 @@ TINYNET_API int tnet_nat_turn_allocation_refresh(const tnet_nat_context_handle_t
 TINYNET_API int tnet_nat_turn_unallocate(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id);
 TINYNET_API tnet_turn_channel_binding_id_t tnet_nat_turn_channel_bind(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, struct sockaddr_storage *peer);
 TINYNET_API int tnet_nat_turn_channel_refresh(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id);
-TINYNET_API int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id, const void* data, size_t size, int indication);
+TINYNET_API int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id, const void* data, tsk_size_t size, int indication);
 #define tnet_nat_turn_channel_sendindication(context, channel_id, data, size)	tnet_nat_turn_channel_send(context, channel_id, data, size, 1)
 #define tnet_nat_turn_channel_senddata(context, channel_id, data, size)			tnet_nat_turn_channel_send(context, channel_id, data, size, 0)
 TINYNET_API int tnet_nat_turn_add_permission(const tnet_nat_context_handle_t* self, tnet_turn_allocation_id_t id, const char* ipaddress, uint32_t timeout);

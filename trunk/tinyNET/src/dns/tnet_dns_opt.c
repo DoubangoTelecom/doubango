@@ -32,7 +32,7 @@
 
 /** Creates new DNS OPT Resource Record.
 */
-tnet_dns_opt_t* tnet_dns_opt_create(size_t payload_size)
+tnet_dns_opt_t* tnet_dns_opt_create(tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dns_opt_def_t, payload_size);
 }
@@ -52,7 +52,7 @@ static tsk_object_t* tnet_dns_opt_ctor(tsk_object_t * self, va_list * app)
 {
 	tnet_dns_opt_t *rr_opt = self;
 	if(rr_opt){
-		uint16_t payload_size = (uint16_t)va_arg(*app, size_t);
+		uint16_t payload_size = (uint16_t)va_arg(*app, tsk_size_t);
 
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(rr_opt), qtype_opt, qclass_any);

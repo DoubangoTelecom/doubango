@@ -55,7 +55,7 @@ tsip_header_User_Agent_t;
 TINYSIP_API tsip_header_User_Agent_t* tsip_header_User_Agent_create(const char* ua);
 TINYSIP_API tsip_header_User_Agent_t* tsip_header_User_Agent_create_null();
 
-TINYSIP_API tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_User_Agent_t *tsip_header_User_Agent_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_User_Agent_def_t;
 

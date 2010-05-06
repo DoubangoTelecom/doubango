@@ -71,7 +71,7 @@ typedef struct tnet_dns_naptr_s
 }
 tnet_dns_naptr_t;
 
-TINYNET_API tnet_dns_naptr_t* tnet_dns_naptr_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset);
+TINYNET_API tnet_dns_naptr_t* tnet_dns_naptr_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, tsk_size_t offset);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_naptr_def_t;
 

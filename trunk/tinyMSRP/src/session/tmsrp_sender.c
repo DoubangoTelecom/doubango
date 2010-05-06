@@ -55,7 +55,7 @@ bail:
 	return ret;
 }
 
-int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* pdata, size_t size, const char* ctype)
+int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* pdata, tsk_size_t size, const char* ctype)
 {
 	tmsrp_data_out_t* data_out;
 
@@ -117,9 +117,9 @@ void *run(void* self)
 	tmsrp_data_out_t *data_out;
 	tsk_buffer_t* chunck;
 	char* str;
-	size_t start = 1;
-	size_t end;
-	size_t total;
+	tsk_size_t start = 1;
+	tsk_size_t end;
+	tsk_size_t total;
 	tsk_istr_t tid;
 	tsk_bool_t error = tsk_false;
 

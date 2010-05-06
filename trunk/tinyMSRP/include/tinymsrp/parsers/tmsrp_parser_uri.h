@@ -37,7 +37,7 @@
 
 TMSRP_BEGIN_DECLS
 
-TINYMSRP_API tmsrp_uri_t *tmsrp_uri_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_uri_t *tmsrp_uri_parse(const char *data, tsk_size_t size);
 
 TMSRP_END_DECLS
 

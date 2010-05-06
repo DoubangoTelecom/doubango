@@ -111,7 +111,7 @@ int thttp_header_Authorization_tostring(const thttp_header_t* header, tsk_buffer
 
 /**@ingroup thttp_header_group
 */
-thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data, size_t size)
+thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
@@ -6920,7 +6920,7 @@ _again:
 
 /**@ingroup thttp_header_group
 */
-thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const char *data, size_t size)
+thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const char *data, tsk_size_t size)
 {
 	return thttp_header_Authorization_parse(data, size);
 }

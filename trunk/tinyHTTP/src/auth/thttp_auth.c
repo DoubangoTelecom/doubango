@@ -48,9 +48,9 @@
  *
  * @return	The size of the response. 
 **/
-size_t thttp_auth_basic_response(const char* userid, const char* password, char** response)
+tsk_size_t thttp_auth_basic_response(const char* userid, const char* password, char** response)
 {
-	size_t ret;
+	tsk_size_t ret;
 
 	/* RFC 2617 - 2 Basic Authentication Scheme
 	

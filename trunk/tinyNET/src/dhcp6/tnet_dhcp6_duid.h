@@ -71,7 +71,7 @@ typedef tsk_list_t tnet_dhcp6_duids_L_t;
 int tnet_dhcp6_duid_init(tnet_dhcp6_duid_t *self, tnet_dhcp6_duid_type_t type);
 int tnet_dhcp6_duid_deinit(tnet_dhcp6_duid_t *self);
 
-tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, size_t size);
+tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, tsk_size_t size);
 int tnet_dhcp6_duid_serialize(const tnet_dhcp6_duid_t* self, tsk_buffer_t *output);
 
 /*=======================================================================================
@@ -169,9 +169,9 @@ tnet_dhcp6_duid_ll_t;
 
 
 
-TINYNET_API tnet_dhcp6_duid_llt_t* tnet_dhcp6_duid_llt_create(const void* payload, size_t payload_size);
-TINYNET_API tnet_dhcp6_duid_en_t* tnet_dhcp6_duid_en_create(const void* payload, size_t payload_size);
-TINYNET_API tnet_dhcp6_duid_ll_t* tnet_dhcp6_duid_ll_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_duid_llt_t* tnet_dhcp6_duid_llt_create(const void* payload, tsk_size_t payload_size);
+TINYNET_API tnet_dhcp6_duid_en_t* tnet_dhcp6_duid_en_create(const void* payload, tsk_size_t payload_size);
+TINYNET_API tnet_dhcp6_duid_ll_t* tnet_dhcp6_duid_ll_create(const void* payload, tsk_size_t payload_size);
 
 
 

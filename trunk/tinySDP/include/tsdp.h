@@ -41,7 +41,7 @@ typedef void tsdp_ctx_handle_t;
 
 TINYSDP_API const tsdp_message_t* tsdp_ctx_local_get_sdp(const tsdp_ctx_handle_t* self);
 TINYSDP_API int tsdp_ctx_local_create_sdp(tsdp_ctx_handle_t* self, const tsdp_message_t* local);
-TINYSDP_API int tsdp_ctx_local_create_sdp_2(tsdp_ctx_handle_t* self, const char* sdp, size_t size);
+TINYSDP_API int tsdp_ctx_local_create_sdp_2(tsdp_ctx_handle_t* self, const char* sdp, tsk_size_t size);
 TINYSDP_API int tsdp_ctx_local_add_headers(tsdp_ctx_handle_t* self, ...);
 TINYSDP_API int tsdp_ctx_local_add_media(tsdp_ctx_handle_t* self, const tsdp_header_M_t* media);
 TINYSDP_API int tsdp_ctx_local_add_media_2(tsdp_ctx_handle_t* self, const char* media, uint32_t port, const char* proto, ...);

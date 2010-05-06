@@ -57,7 +57,7 @@ tsip_header_Supported_t;
 TINYSIP_API tsip_header_Supported_t* tsip_header_Supported_create(const char* option);
 TINYSIP_API tsip_header_Supported_t* tsip_header_Supported_create_null();
 
-TINYSIP_API tsip_header_Supported_t *tsip_header_Supported_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Supported_t *tsip_header_Supported_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Supported_def_t;
 

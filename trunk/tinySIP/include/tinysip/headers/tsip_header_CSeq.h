@@ -59,7 +59,7 @@ tsip_header_CSeq_t;
 
 TINYSIP_API tsip_header_CSeq_t* tsip_header_CSeq_create(int32_t seq, const char*method);
 
-TINYSIP_API tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_CSeq_def_t;
 

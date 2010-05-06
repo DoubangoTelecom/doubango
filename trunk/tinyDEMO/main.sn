@@ -5,10 +5,10 @@
 #++sn --path ./core-colibria.sn
 
 # Ericsson
-++sn --path ./core-ericsson.sn
+#++sn --path ./core-ericsson.sn
 
 # Inexbee
-#++sn --path ./core-inexbee.sn
+++sn --path ./core-inexbee.sn
 
 # Micromethod
 #++sn --path ./core-micromethod.sn

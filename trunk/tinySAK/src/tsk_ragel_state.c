@@ -38,7 +38,7 @@
 * @param data The @a data to parse.
 * @param size The @a size of the data.
 */
-void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, size_t size)
+void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, tsk_size_t size)
 {
 	state->cs = 0;
 	state->p = data;

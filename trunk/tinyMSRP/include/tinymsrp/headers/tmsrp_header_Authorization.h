@@ -87,7 +87,7 @@ typedef struct tmsrp_header_Authorization_s
 }
 tmsrp_header_Authorization_t;
 
-tmsrp_header_Authorization_t *tmsrp_header_Authorization_parse(const char *data, size_t size);
+tmsrp_header_Authorization_t *tmsrp_header_Authorization_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Authorization_def_t;
 

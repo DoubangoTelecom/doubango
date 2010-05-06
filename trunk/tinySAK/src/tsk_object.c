@@ -124,7 +124,7 @@ tsk_object_t* tsk_object_new_2(const tsk_object_def_t *objdef, va_list* ap)
 * The object MUST be declared using @ref TSK_DECLARE_OBJECT macro and created using @ref tsk_object_new or @ref tsk_object_new_2.
 * @retval The size of the object.
 */
-size_t tsk_object_sizeof(const tsk_object_t *self)
+tsk_size_t tsk_object_sizeof(const tsk_object_t *self)
 {
 	const tsk_object_def_t **objdef = (const tsk_object_def_t **)self;
 	if(objdef && *objdef){

@@ -64,7 +64,7 @@ typedef tsk_list_t tsip_header_Routes_L_t;
 TINYSIP_API tsip_header_Route_t* tsip_header_Route_create(const tsip_uri_t* uri);
 TINYSIP_API tsip_header_Route_t* tsip_header_Route_create_null();
 
-TINYSIP_API tsip_header_Routes_L_t *tsip_header_Route_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Routes_L_t *tsip_header_Route_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Route_def_t;
 

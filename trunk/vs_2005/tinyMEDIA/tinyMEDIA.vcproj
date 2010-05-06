@@ -190,6 +190,22 @@
 				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_codec.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_codec_dummy.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_common.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="source(*.c)"
@@ -198,6 +214,18 @@
 			>
 			<File
 				RelativePath="..\..\tinyMEDIA\src\tmedia.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\src\tmedia_codec.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\src\tmedia_codec_dummy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\src\tmedia_session.c"
 				>
 			</File>
 		</Filter>

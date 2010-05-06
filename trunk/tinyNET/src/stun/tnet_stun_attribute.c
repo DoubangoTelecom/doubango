@@ -56,7 +56,7 @@ tnet_stun_attribute_t* tnet_stun_attribute_create()
 * RFC 5389 - 15.1.  MAPPED-ADDRESS.
 * Creates new @ref tnet_stun_attribute_mapped_addr_t object.
 */
-tnet_stun_attribute_mapped_addr_t* tnet_stun_attribute_mapped_address_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_mapped_addr_t* tnet_stun_attribute_mapped_address_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_mapped_addr_def_t, payload, payload_size);
 }
@@ -65,7 +65,7 @@ tnet_stun_attribute_mapped_addr_t* tnet_stun_attribute_mapped_address_create(con
 * RFC 5389 - 15.2.  XOR-MAPPED-ADDRESS. 
 * Creates new @ref tnet_stun_attribute_xmapped_addr_t object.
 */
-tnet_stun_attribute_xmapped_addr_t* tnet_stun_attribute_xmapped_address_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_xmapped_addr_t* tnet_stun_attribute_xmapped_address_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_xmapped_addr_def_t, payload, payload_size);
 }
@@ -74,7 +74,7 @@ tnet_stun_attribute_xmapped_addr_t* tnet_stun_attribute_xmapped_address_create(c
 * RFC 5389 - 15.3.  USERNAME.
 * Creates new @ref tnet_stun_attribute_username_t object.
 */
-tnet_stun_attribute_username_t* tnet_stun_attribute_username_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_username_t* tnet_stun_attribute_username_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_username_def_t, payload, payload_size);
 }
@@ -83,7 +83,7 @@ tnet_stun_attribute_username_t* tnet_stun_attribute_username_create(const void* 
 * RFC 5389 - 15.4.  MESSAGE-INTEGRITY.
 * Creates new @ref tnet_stun_attribute_integrity_t object.
 */
-tnet_stun_attribute_integrity_t* tnet_stun_attribute_integrity_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_integrity_t* tnet_stun_attribute_integrity_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_integrity_def_t, payload, payload_size);
 }
@@ -101,7 +101,7 @@ tnet_stun_attribute_fingerprint_t* tnet_stun_attribute_fingerprint_create(uint32
 * RFC 5389 - 15.6.  ERROR-CODE
 * Creates new @ref tnet_stun_attribute_errorcode_t object.
 */
-tnet_stun_attribute_errorcode_t* tnet_stun_attribute_errorcode_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_errorcode_t* tnet_stun_attribute_errorcode_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_errorcode_def_t, payload, payload_size);
 }
@@ -110,7 +110,7 @@ tnet_stun_attribute_errorcode_t* tnet_stun_attribute_errorcode_create(const void
 * RFC 5389 - 15.7.  REALM.
 * Creates new @ref tnet_stun_attribute_realm_t object.
 */
-tnet_stun_attribute_realm_t* tnet_stun_attribute_realm_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_realm_t* tnet_stun_attribute_realm_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_realm_def_t, payload, payload_size);
 }
@@ -119,7 +119,7 @@ tnet_stun_attribute_realm_t* tnet_stun_attribute_realm_create(const void* payloa
 * RFC 5389 - 15.8.  NONCE.
 * Creates new @ref tnet_stun_attribute_nonce_t object.
 */
-tnet_stun_attribute_nonce_t* tnet_stun_attribute_nonce_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_nonce_t* tnet_stun_attribute_nonce_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_nonce_def_t, payload, payload_size);
 }
@@ -128,7 +128,7 @@ tnet_stun_attribute_nonce_t* tnet_stun_attribute_nonce_create(const void* payloa
 * RFC 5389 - 15.9.  UNKNOWN-ATTRIBUTES.
 * Creates new @ref tnet_stun_attribute_unknowns_t object.
 */
-tnet_stun_attribute_unknowns_t* tnet_stun_attribute_unknowns_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_unknowns_t* tnet_stun_attribute_unknowns_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_unknowns_def_t, payload, payload_size);
 }
@@ -137,7 +137,7 @@ tnet_stun_attribute_unknowns_t* tnet_stun_attribute_unknowns_create(const void* 
 * RFC 5389 - 15.10.  SOFTWARE.
 * Creates new @ref tnet_stun_attribute_software_t object.
 */
-tnet_stun_attribute_software_t* tnet_stun_attribute_software_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_software_t* tnet_stun_attribute_software_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_software_def_t, payload, payload_size);
 }
@@ -146,7 +146,7 @@ tnet_stun_attribute_software_t* tnet_stun_attribute_software_create(const void* 
 * RFC 5389 - 15.11.  ALTERNATE-SERVER.
 * Creates new @ref tnet_stun_attribute_altserver_t object.
 */
-tnet_stun_attribute_altserver_t* tnet_stun_attribute_altserver_create(const void* payload, size_t payload_size)
+tnet_stun_attribute_altserver_t* tnet_stun_attribute_altserver_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_stun_attribute_altserver_def_t, payload, payload_size);
 }
@@ -157,7 +157,7 @@ tnet_stun_attribute_altserver_t* tnet_stun_attribute_altserver_create(const void
 * @param size The size of the eaw buffer.
 * @retval @ref tnet_stun_attribute_t object if succeed and NULL other wise.
 */
-tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, size_t size)
+tnet_stun_attribute_t* tnet_stun_attribute_deserialize(const void* data, tsk_size_t size)
 {
 	tnet_stun_attribute_t *attribute = 0;
 	const uint8_t* dataPtr = data;
@@ -481,7 +481,7 @@ static tsk_object_t* tnet_stun_attribute_mapped_addr_ctor(tsk_object_t * self, v
 	tnet_stun_attribute_mapped_addr_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		if(payload && payload_size){
 			const uint8_t *payloadPtr = (const uint8_t*)payload;
@@ -501,9 +501,9 @@ static tsk_object_t* tnet_stun_attribute_mapped_addr_ctor(tsk_object_t * self, v
 			}
 
 			{	/*=== Compute IP address */
-				size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
+				tsk_size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
 				if(addr_size){	
-					size_t i;
+					tsk_size_t i;
 					uint32_t addr;
 
 					for(i=0; i<addr_size; i+=4){
@@ -546,7 +546,7 @@ static tsk_object_t* tnet_stun_attribute_xmapped_addr_ctor(tsk_object_t * self, 
 	tnet_stun_attribute_xmapped_addr_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		if(payload && payload_size){
 			const uint8_t *payloadPtr = (const uint8_t*)payload;
@@ -574,9 +574,9 @@ static tsk_object_t* tnet_stun_attribute_xmapped_addr_ctor(tsk_object_t * self, 
 					address in host byte order, XOR'ing it with the magic cookie, and
 					converting the result to network byte order.
 				*/
-				size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
+				tsk_size_t addr_size = (attribute->family == stun_ipv6) ? 16 : (attribute->family == stun_ipv4 ? 4 : 0);
 				if(addr_size){	
-					size_t i;
+					tsk_size_t i;
 					uint32_t addr;
 
 					for(i=0; i<addr_size; i+=4){
@@ -622,7 +622,7 @@ static tsk_object_t* tnet_stun_attribute_username_ctor(tsk_object_t * self, va_l
 	tnet_stun_attribute_username_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		attribute->value = tsk_strndup(payload, payload_size);
 
@@ -659,7 +659,7 @@ static tsk_object_t* tnet_stun_attribute_integrity_ctor(tsk_object_t * self, va_
 	tnet_stun_attribute_integrity_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 		
 		if(payload_size == TSK_SHA1_DIGEST_SIZE){
 			memcpy(attribute->sha1digest, payload, TSK_SHA1_DIGEST_SIZE);
@@ -731,7 +731,7 @@ static tsk_object_t* tnet_stun_attribute_errorcode_ctor(tsk_object_t * self, va_
 	tnet_stun_attribute_errorcode_t *attribute = self;
 	if(attribute){
 		const uint8_t *payload = (const uint8_t*)va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		if(payload_size >4){
 			uint32_t code = tnet_ntohl(*((uint32_t*)payload));
@@ -775,7 +775,7 @@ static tsk_object_t* tnet_stun_attribute_realm_ctor(tsk_object_t * self, va_list
 	tnet_stun_attribute_realm_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		attribute->value = tsk_strndup(payload, payload_size);
 
@@ -812,7 +812,7 @@ static tsk_object_t* tnet_stun_attribute_nonce_ctor(tsk_object_t * self, va_list
 	tnet_stun_attribute_nonce_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		attribute->value = tsk_strndup(payload, payload_size);
 
@@ -849,7 +849,7 @@ static tsk_object_t* tnet_stun_attribute_unknowns_ctor(tsk_object_t * self, va_l
 	tnet_stun_attribute_unknowns_t *attribute = self;
 	if(attribute){
 		//--const void *payload = va_arg(*app, const void*);
-		//--size_t payload_size = va_arg(*app, size_t);
+		//--tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_unknown_attributes;
 		attribute->value = tsk_buffer_create_null();
@@ -883,7 +883,7 @@ static tsk_object_t* tnet_stun_attribute_software_ctor(tsk_object_t * self, va_l
 	tnet_stun_attribute_software_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		TNET_STUN_ATTRIBUTE(attribute)->type = stun_software;
 
@@ -919,7 +919,7 @@ static tsk_object_t* tnet_stun_attribute_altserver_ctor(tsk_object_t * self, va_
 	tnet_stun_attribute_altserver_t *attribute = self;
 	if(attribute){
 		const void *payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		const uint8_t *payloadPtr = (const uint8_t*)payload;
 		payloadPtr += 1; /* Ignore first 8bits */

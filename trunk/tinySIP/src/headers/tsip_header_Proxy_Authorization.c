@@ -94,7 +94,7 @@ int tsip_header_Proxy_Authorization_tostring(const tsip_header_t* header, tsk_bu
 	return -1;
 }
 
-tsip_header_Proxy_Authorization_t *tsip_header_Proxy_Authorization_parse(const char *data, size_t size)
+tsip_header_Proxy_Authorization_t *tsip_header_Proxy_Authorization_parse(const char *data, tsk_size_t size)
 {
 	tsip_header_Proxy_Authorization_t *hdr_sip = 0;
 	thttp_header_Proxy_Authorization_t* hdr_http;

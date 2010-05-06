@@ -115,7 +115,7 @@ thttp_action_GET(session, "http://www.doubango.org"
 * @ref THTTP_ACTION_SET_HEADER() macro. You should not add the content-length header.
 * This is a helper macro for @a thttp_action_*() functions.
 * @param PAY_PTR A pointer to the payload (<i>const void*</i>).
-* @param PAY_SIZE The size of the payload (<i>size_t</i>).
+* @param PAY_SIZE The size of the payload (<i>tsk_size_t</i>).
 *
 * @code
 thttp_action_PUT(session, "http://www.doubango.org"
@@ -134,7 +134,7 @@ thttp_action_PUT(session, "http://www.doubango.org"
 */
 #define THTTP_ACTION_SET_OPTION(ID_ENUM, VALUE_STR)			aptype_option, (thttp_action_option_t)ID_ENUM, (const char*)VALUE_STR
 #define THTTP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)		aptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
-#define THTTP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (size_t)PAY_SIZE
+#define THTTP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (tsk_size_t)PAY_SIZE
 #define THTTP_ACTION_SET_NULL()								aptype_null
 
 typedef struct thttp_action_s

@@ -113,7 +113,7 @@ int tsip_header_Warning_tostring(const tsip_header_t* header, tsk_buffer_t* outp
 	return -1;
 }
 
-tsip_header_Warnings_L_t *tsip_header_Warning_parse(const char *data, size_t size)
+tsip_header_Warnings_L_t *tsip_header_Warning_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

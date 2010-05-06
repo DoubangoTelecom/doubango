@@ -49,7 +49,7 @@
 * @retval A new buffer object.
 * @sa @ref tsk_buffer_create_null
 */
-tsk_buffer_t* tsk_buffer_create(const void* data, size_t size)
+tsk_buffer_t* tsk_buffer_create(const void* data, tsk_size_t size)
 {
 	return tsk_object_new(tsk_buffer_def_t, data, size);
 }
@@ -87,7 +87,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 	int len = 0;
 	va_list ap;
 	char *buffer;
-	size_t oldsize;
+	tsk_size_t oldsize;
 
 	if(!self){
 		return -1;
@@ -151,11 +151,11 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 * TSK_OBJECT_SAFE_FREE(buffer);
 * @endcode
 */
-int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size)
+int tsk_buffer_append(tsk_buffer_t* self, const void* data, tsk_size_t size)
 {
 	if(self && size){
-		size_t oldsize = self->size;
-		size_t newsize = oldsize + size;
+		tsk_size_t oldsize = self->size;
+		tsk_size_t newsize = oldsize + size;
 		
 		self->data = tsk_realloc(self->data, newsize);
 		if(self->data){
@@ -173,7 +173,7 @@ int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size)
 * @param size The new size.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tsk_buffer_realloc(tsk_buffer_t* self, size_t size)
+int tsk_buffer_realloc(tsk_buffer_t* self, tsk_size_t size)
 {
 	if(self)
 	{
@@ -201,7 +201,7 @@ int tsk_buffer_realloc(tsk_buffer_t* self, size_t size)
 * @param size The size of the chunck.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size)
+int tsk_buffer_remove(tsk_buffer_t* self, tsk_size_t position, tsk_size_t size)
 {
 	if(self && self->data)
 	{
@@ -225,12 +225,12 @@ int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size)
 * @param size The size of the chunck.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void* data, size_t size)
+int tsk_buffer_insert(tsk_buffer_t* self, tsk_size_t position, const void* data, tsk_size_t size)
 {
 	if(self && size)
 	{
 		int ret;
-		size_t tomove;
+		tsk_size_t tomove;
 
 		if(position > self->size){
 			TSK_DEBUG_ERROR("Invalid parameter");
@@ -291,7 +291,7 @@ static tsk_object_t* tsk_buffer_ctor(tsk_object_t * self, va_list * app)
 {
 	tsk_buffer_t *buffer = self;
 	const void *data = va_arg(*app, const void *);
-	size_t size = va_arg(*app, size_t);
+	tsk_size_t size = va_arg(*app, tsk_size_t);
 	
 	if(data && size){
 		buffer->data = tsk_calloc((size+1), sizeof(uint8_t));

@@ -62,7 +62,7 @@ typedef tsk_list_t tmsrp_headers_Status_L_t;
 TINYMSRP_API tmsrp_header_Status_t* tmsrp_header_Status_create(short namespace, short code, const char* reason);
 TINYMSRP_API tmsrp_header_Status_t* tmsrp_header_Status_create_null();
 
-TINYMSRP_API tmsrp_header_Status_t *tmsrp_header_Status_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Status_t *tmsrp_header_Status_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Status_def_t;
 

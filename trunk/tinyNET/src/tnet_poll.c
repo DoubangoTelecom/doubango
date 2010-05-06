@@ -37,7 +37,7 @@
 
 int tnet_poll(tnet_pollfd_t fds[ ], tnet_nfds_t nfds, int timeout)
 {
-	size_t i;
+	tsk_size_t i;
 	int ret;
 	int highest_fd = -1;
 

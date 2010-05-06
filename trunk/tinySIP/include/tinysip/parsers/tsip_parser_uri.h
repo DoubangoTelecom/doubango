@@ -37,7 +37,7 @@
 
 TSIP_BEGIN_DECLS
 
-TINYSIP_API tsip_uri_t *tsip_uri_parse(const char *data, size_t size);
+TINYSIP_API tsip_uri_t *tsip_uri_parse(const char *data, tsk_size_t size);
 
 TSIP_END_DECLS
 

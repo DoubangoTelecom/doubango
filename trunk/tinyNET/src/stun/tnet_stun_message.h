@@ -218,7 +218,7 @@ typedef tnet_stun_message_t tnet_stun_response_t;
 typedef tnet_stun_message_t tnet_stun_request_t;
 
 tsk_buffer_t* tnet_stun_message_serialize(const tnet_stun_message_t *message);
-tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t size);
+tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size_t size);
 int tnet_stun_message_add_attribute(tnet_stun_message_t *self, tnet_stun_attribute_t** attribute);
 const tnet_stun_attribute_t* tnet_stun_message_get_attribute(const tnet_stun_message_t *self, tnet_stun_attribute_type_t type);
 short tnet_stun_message_get_errorcode(const tnet_stun_message_t *self);

@@ -55,7 +55,7 @@
 *
 * @sa @ref thttp_url_tostring<br>@ref thttp_url_serialize
 **/
-thttp_url_t *thttp_url_parse(const char *urlstring, size_t length)
+thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 {
 	tsk_bool_t have_port = tsk_false;
 	int cs = 0;

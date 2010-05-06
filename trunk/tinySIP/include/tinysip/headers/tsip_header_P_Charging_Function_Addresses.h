@@ -58,7 +58,7 @@ typedef tsk_list_t tsip_header_P_Charging_Function_Addressess_L_t;
 
 TINYSIP_API tsip_header_P_Charging_Function_Addresses_t* tsip_header_P_Charging_Function_Addresses_create();
 
-TINYSIP_API tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_Addresses_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_Addresses_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_P_Charging_Function_Addresses_def_t;
 

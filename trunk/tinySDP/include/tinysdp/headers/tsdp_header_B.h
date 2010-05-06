@@ -62,7 +62,7 @@ typedef tsk_list_t tsdp_headers_B_L_t;
 TINYSDP_API tsdp_header_B_t* tsdp_header_B_create(const char* bwtype, uint32_t bandwidth);
 TINYSDP_API tsdp_header_B_t* tsdp_header_b_create_null();
 
-TINYSDP_API tsdp_header_B_t *tsdp_header_B_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_B_t *tsdp_header_B_parse(const char *data, tsk_size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_B_def_t;
 

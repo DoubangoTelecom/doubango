@@ -68,7 +68,7 @@ tsk_param_t* tsk_param_create_null()
 * @param size The size (length) of the kvp string.
 * @retval @ref tsk_param_t object.
 */
-tsk_param_t *tsk_params_parse_param(const char* line, size_t size)
+tsk_param_t *tsk_params_parse_param(const char* line, tsk_size_t size)
 {
 	if(line && size){
 		const char* start = line;

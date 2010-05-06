@@ -368,8 +368,8 @@ static tsk_object_t* tcomp_statehandler_create(tsk_object_t * self, va_list * ap
 		tcomp_params_setSmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_STATE_MEMORY_SIZE);
 		tcomp_params_setCpbValue(statehandler->sigcomp_parameters, SIP_RFC5049_CYCLES_PER_BIT);
 	
-		statehandler->dictionaries = TSK_LIST_CREATE();
-		statehandler->compartments = TSK_LIST_CREATE();
+		statehandler->dictionaries = tsk_list_create();
+		statehandler->compartments = tsk_list_create();
 
 		statehandler->sigcomp_parameters->SigComp_version = SIP_RFC5049_SIGCOMP_VERSION;
 	}

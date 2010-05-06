@@ -331,7 +331,7 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	*	- Update Pats
 	*/
 	{
-		size_t index;
+		tsk_size_t index;
 		const tsip_header_Path_t *hdr_Path;
 		const tsip_header_Service_Route_t *hdr_Service_Route;
 		const tsip_header_P_Associated_URI_t *hdr_P_Associated_URI_t;
@@ -747,9 +747,9 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 		tsip_transport_cleanupSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport);
 	}
 
-	/* Alter the user */
-	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-				tsip_event_code_transport_error, "Transport error.", tsk_null);
+	/* Alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_dialog, 
+			tsip_event_code_dialog_terminated, "Dialog terminated");
 	
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

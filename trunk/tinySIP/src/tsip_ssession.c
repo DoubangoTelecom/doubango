@@ -304,7 +304,7 @@ tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t *self)
 	return tsk_false;
 }
 
-int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, size_t size, const struct tsip_message_s* request, ...)
+int tsip_ssession_respond(const tsip_ssession_handle_t *self, short status, const char* phrase, const void* payload, tsk_size_t size, const struct tsip_message_s* request, ...)
 {
 	tsip_response_t *response = tsk_null;
 	tsip_dialog_t* dialog = tsk_null;

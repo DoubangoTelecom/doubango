@@ -71,8 +71,8 @@ thttp_header_WWW_Authenticate_t;
 
 typedef thttp_header_WWW_Authenticate_t thttp_header_Proxy_Authenticate_t;
 
-TINYHTTP_API thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char *data, size_t size);
-TINYHTTP_API thttp_header_Proxy_Authenticate_t *thttp_header_Proxy_Authenticate_parse(const char *data, size_t size);
+TINYHTTP_API thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char *data, tsk_size_t size);
+TINYHTTP_API thttp_header_Proxy_Authenticate_t *thttp_header_Proxy_Authenticate_parse(const char *data, tsk_size_t size);
 
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_header_WWW_Authenticate_def_t;
 

@@ -204,7 +204,7 @@
 //	return -1;
 //}
 //
-//tsip_header_Authorization_t *tsip_header_Authorization_parse(const char *data, size_t size)
+//tsip_header_Authorization_t *tsip_header_Authorization_parse(const char *data, tsk_size_t size)
 //{
 //	int cs = 0;
 //	const char *p = data;

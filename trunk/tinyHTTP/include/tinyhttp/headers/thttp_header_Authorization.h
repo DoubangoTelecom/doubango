@@ -64,8 +64,8 @@ typedef struct thttp_header_Authorization_s
 thttp_header_Authorization_t;
 typedef thttp_header_Authorization_t thttp_header_Proxy_Authorization_t;
 
-TINYHTTP_API  thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data, size_t size);
-TINYHTTP_API thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const char *data, size_t size);
+TINYHTTP_API  thttp_header_Authorization_t *thttp_header_Authorization_parse(const char *data, tsk_size_t size);
+TINYHTTP_API thttp_header_Proxy_Authorization_t *thttp_header_Proxy_Authorization_parse(const char *data, tsk_size_t size);
 
 thttp_header_Authorization_t* thttp_header_authorization_create();
 

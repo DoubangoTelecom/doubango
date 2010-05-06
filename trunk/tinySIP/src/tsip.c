@@ -253,9 +253,9 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 			case pname_operator_id:
 				{ /* (const char*)OPID_HEX_STR */
 					const char* hexstr = va_arg(*app, const char*);
-					size_t len = tsk_strlen(hexstr);
+					tsk_size_t len = tsk_strlen(hexstr);
 					if(len && !(len & 0x01)){
-						size_t i, j;
+						tsk_size_t i, j;
 						if(tsk_strindexOf(hexstr, tsk_strlen(hexstr), "0x") == 0){
 							hexstr += 2;
 							len -= 2;

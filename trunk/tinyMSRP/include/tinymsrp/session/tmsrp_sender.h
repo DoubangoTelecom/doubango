@@ -54,7 +54,7 @@ typedef struct tmsrp_sender_s
 tmsrp_sender_t;
 
 int tmsrp_sender_start(tmsrp_sender_t* self);
-int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* data, size_t size, const char* ctype);
+int tsmrp_sender_send_data(tmsrp_sender_t* self, const void* data, tsk_size_t size, const char* ctype);
 int tsmrp_sender_send_file(tmsrp_sender_t* self, const char* filepath);
 int tmsrp_sender_stop(tmsrp_sender_t* self);
 

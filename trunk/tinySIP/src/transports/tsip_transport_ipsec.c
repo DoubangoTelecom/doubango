@@ -101,7 +101,7 @@ int tsip_transport_ipsec_ensureTempSAs(tsip_transport_ipsec_t* self, const tsip_
 {
 	int ret = -1;
 	struct sockaddr_storage to;
-	size_t index;
+	tsk_size_t index;
 	const tsip_header_Security_Server_t *ssHdr;
 	double maxQ = -2.0; /* The Q value in the SIP header will be equal to -1 by default. */
 	int match = 0;

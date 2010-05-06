@@ -419,9 +419,9 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 * @param data Data passed to the predicate function for comparaison
 * @retval The number of item matching the predicate
 */
-size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
+tsk_size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
-	size_t count = 0;
+	tsk_size_t count = 0;
 	if(predicate && list){
 		const tsk_list_item_t *item;
 		tsk_list_foreach(item, list){

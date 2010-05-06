@@ -62,7 +62,7 @@ tsip_header_Event_t;
 
 TINYSIP_API tsip_header_Event_t* tsip_header_Event_create(const char* package);
 
-TINYSIP_API tsip_header_Event_t *tsip_header_Event_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Event_t *tsip_header_Event_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Event_def_t;
 

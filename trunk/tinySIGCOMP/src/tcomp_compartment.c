@@ -492,10 +492,10 @@ static tsk_object_t* tcomp_compartment_create(tsk_object_t* self, va_list * app)
 		compartment->total_memory_size = compartment->total_memory_left = compartment->local_parameters->smsValue;
 
 		/* Empty list. */
-		compartment->nacks = TSK_LIST_CREATE();
+		compartment->nacks = tsk_list_create();
 		
 		/* Empty list. */
-		compartment->local_states = TSK_LIST_CREATE();
+		compartment->local_states = tsk_list_create();
 	}
 
 	return self;

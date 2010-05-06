@@ -58,7 +58,7 @@ tsip_header_Call_ID_t;
 TINYSIP_API tsip_header_Call_ID_t* tsip_header_Call_ID_create(const char* call_id);
 
 int tsip_header_Call_ID_random(tsk_uuidstring_t *result);
-TINYSIP_API tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Call_ID_t *tsip_header_Call_ID_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Call_ID_def_t;
 

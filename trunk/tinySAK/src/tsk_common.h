@@ -47,19 +47,10 @@ typedef int tsk_boolean_t;
 #define TSK_MAX(a,b)            (((a) > (b)) ? (a) : (b))
 #define TSK_ABS(a)				(((a)< 0) ? -(a) : (a))
 
-typedef int tsk_ssize_t;
-typedef unsigned int tsk_size_t;
+typedef int tsk_ssize_t; /**< Signed size */
+typedef unsigned int tsk_size_t; /**< Unsigned size */
 
-typedef enum tsk_error_e
-{
-	tsk_e_success = 0,
-	tsk_e_unitialized = -1,
-	
-	tsk_e_globalfailure = -2,
-}
-tsk_error_t;;
-
-#define tsk_null	0
+#define tsk_null	0 /**< Null pointer */
 
 #endif /* _TINYSAK_COMMON_H_ */
 
