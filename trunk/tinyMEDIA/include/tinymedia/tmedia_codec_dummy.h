@@ -66,10 +66,9 @@ typedef struct tmedia_codec_dh264_s
 }
 tmedia_codec_dh264_t;
 
-TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_codec_dpcmu_def_t;
-TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_codec_dpcma_def_t;
-TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_codec_dh263_def_t;
-TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_codec_dh264_def_t;
+
+TINYMEDIA_GEXTERN const tmedia_codec_plugin_def_t *tmedia_codec_dpcma_plugin_def_t;
+TINYMEDIA_GEXTERN const tmedia_codec_plugin_def_t *tmedia_codec_dpcmu_plugin_def_t;
 
 TMEDIA_END_DECLS
 

@@ -490,7 +490,7 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="dhcp"
+				Name="dhcp4"
 				>
 				<File
 					RelativePath=".\src\dhcp\tnet_dhcp.c"

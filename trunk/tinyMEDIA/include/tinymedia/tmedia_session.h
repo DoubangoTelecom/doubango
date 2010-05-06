@@ -32,13 +32,15 @@
 
 #include "tinymedia_config.h"
 
+#include "tsk_object.h"
+
 TMEDIA_BEGIN_DECLS
 
-typedef enum tmedia_session_type_e
-{
-	
-}
-tmedia_session_type_t;
+//typedef enum tmedia_session_type_e
+//{
+//	
+//}
+//tmedia_session_type_t;
 
 /** Base objct used for all media sessions */
 typedef struct tmedia_session_s
