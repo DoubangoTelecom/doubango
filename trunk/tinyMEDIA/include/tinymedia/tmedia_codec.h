@@ -36,11 +36,77 @@
 
 TMEDIA_BEGIN_DECLS
 
-/* === http://www.iana.org/assignments/rtp-parameters ===*/
-#define TMEDIA_CODEC_FORMAT_G711u	"0"
-#define TMEDIA_CODEC_FORMAT_GSM		"3"
-#define TMEDIA_CODEC_FORMAT_G711a	"8"
+/* =====
+* http://www.iana.org/assignments/rtp-parameters 
+* http://www.networksorcery.com/enp/protocol/rtp.htm
+=====*/
+/******* Fixed Payload Type *************/
+#define TMEDIA_CODEC_FORMAT_G711u						"0"
+#define TMEDIA_CODEC_FORMAT_1016						"1"
+#define TMEDIA_CODEC_FORMAT_G721						"2"
+#define TMEDIA_CODEC_FORMAT_GSM							"3"
+#define TMEDIA_CODEC_FORMAT_G723						"4"
+#define TMEDIA_CODEC_FORMAT_DVI4_8000					"5"
+#define TMEDIA_CODEC_FORMAT_DVI4_16000					"6"
+#define TMEDIA_CODEC_FORMAT_LPC							"7"
+#define TMEDIA_CODEC_FORMAT_G711a						"8"
+#define TMEDIA_CODEC_FORMAT_G722						"9"
+#define TMEDIA_CODEC_FORMAT_L16_STEREO					"10"
+#define TMEDIA_CODEC_FORMAT_L16							"11"
+#define TMEDIA_CODEC_FORMAT_QCELP						"12"
+#define TMEDIA_CODEC_FORMAT_CN							"13"
+#define TMEDIA_CODEC_FORMAT_MPA							"14"
+#define TMEDIA_CODEC_FORMAT_G728						"15"
+#define TMEDIA_CODEC_FORMAT_DVI4_11025					"16"
+#define TMEDIA_CODEC_FORMAT_DVI4_22050					"17"
+#define TMEDIA_CODEC_FORMAT_G729						"18"
 
+#define TMEDIA_CODEC_FORMAT_CELLB						"25"
+#define TMEDIA_CODEC_FORMAT_JPEG						"26"
+#define TMEDIA_CODEC_FORMAT_NV							"28"
+
+#define TMEDIA_CODEC_FORMAT_H261						"31"
+#define TMEDIA_CODEC_FORMAT_MPV							"32"
+#define TMEDIA_CODEC_FORMAT_MP2T						"33"
+#define TMEDIA_CODEC_FORMAT_H263						"34"
+
+/******* Dynamic Payload Type **********/
+
+#define TMEDIA_CODEC_FORMAT_ILBC						" 96"
+
+#define TMEDIA_CODEC_FORMAT_SPEEX						" 97"
+#define TMEDIA_CODEC_FORMAT_SPEEX_WIDEBAND				" 98"
+#define TMEDIA_CODEC_FORMAT_SPEEX_ULTRAWIDEBAND			" 99"
+
+#define TMEDIA_CODEC_FORMAT_DTMF						"101" // Reserved for DTMF over RTP
+
+#define TMEDIA_CODEC_FORMAT_AMR_NARROWBAND_BE			"102"
+#define TMEDIA_CODEC_FORMAT_AMR_NARROWBAND_OA			"103"
+#define TMEDIA_CODEC_FORMAT_AMR_WIDEBAND_BE				"104"
+#define TMEDIA_CODEC_FORMAT_AMR_WIDEBAND_OA				"105"
+
+#define TMEDIA_CODEC_FORMAT_AMR_WIDEBANDPLUS_BE			"106" // Reserved for future use
+#define TMEDIA_CODEC_FORMAT_AMR_WIDEBANDPLUS_OA			"107" // Reserved for future use
+#define TMEDIA_CODEC_FORMAT_AAC							"108" // Reserved for future use
+#define TMEDIA_CODEC_FORMAT_AACPLUS						"109" // Reserved for future use
+
+#define TMEDIA_CODEC_FORMAT_H263_1998					"111"
+#define TMEDIA_CODEC_FORMAT_H263_2000					"112"
+#define TMEDIA_CODEC_FORMAT_H264_BP10					"113"
+#define TMEDIA_CODEC_FORMAT_H264_BP20					"114"
+#define TMEDIA_CODEC_FORMAT_H264_BP30					"115"
+
+#define TMEDIA_CODEC_FORMAT_RAW							"121"
+#define TMEDIA_CODEC_FORMAT_THEORA						"122"
+#define TMEDIA_CODEC_FORMAT_FFV1						"123"
+#define TMEDIA_CODEC_FORMAT_FFVHUFF						"124"
+#define TMEDIA_CODEC_FORMAT_HUFFYUV						"125"
+
+
+#define TMEDIA_CODEC_FORMAT_MSRP						"*"
+
+/**Max number of plugins we can create */
+#define TMED_CODEC_MAX_PLUGINS			0xFF
 
 /** cast any pointer to @ref tmedia_codec_t* object */
 #define TMEDIA_CODEC(self)		((tmedia_codec_t*)(self))
@@ -61,15 +127,44 @@ typedef struct tmedia_codec_s
 
 	//! the type of the codec
 	tmedia_codec_type_t type;
-
-	//! the name of the codec. e.g. "G.711U" or "G.711A" etc using in the sdp.
+	//! whether the pay. type is dyn. or not
+	tsk_bool_t dyn;
+	//! the name of the codec. e.g. "G.711U" or "G.711A" etc used in the sdp
 	char* name;
 	//! full description
 	char* desc;
 	//! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
 	char* format;
+	//! plugin used to create the code
+	const struct tmedia_codec_plugin_def_s* plugin;
 }
 tmedia_codec_t;
+
+/** Virtual table used to define a codec plugin */
+typedef struct tmedia_codec_plugin_def_s
+{
+	//! object definition used to create an instance of the codec
+	const tsk_object_def_t* objdef;
+
+	//! the type of the codec
+	tmedia_codec_type_t type;
+	//! the name of the codec. e.g. "G.711U" or "G.711A" etc using in the sdp.
+	const char* name;
+	//! full description
+	const char* desc;
+	//! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
+	const char* format;
+	//! whether the pay. type is dyn. or not
+	tsk_bool_t dyn;
+	
+	//! whether the codec can handle the fmtp
+	tsk_bool_t (* fmtp_match) (const tmedia_codec_t*, const char* );
+	//! gets fmtp value. e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"
+	char* (* fmtp_get) (const tmedia_codec_t* );
+	//! sets fmtp received from the remote party
+	int (* fmtp_set) (tmedia_codec_t*, const char* );
+}
+tmedia_codec_plugin_def_t;
 
 /** List of @ref tmedia_codec_t elements */
 typedef tsk_list_t tmedia_codecs_L_t;
@@ -78,13 +173,32 @@ typedef tsk_list_t tmedia_codecs_L_t;
 #define TMEDIA_DECLARE_CODEC tmedia_codec_t __codec__
 
 int tmedia_codec_init(tmedia_codec_t* codec, tmedia_codec_type_t type, const char* name, const char* desc, const char* format);
-int tmedia_codec_cmp(const tmedia_codec_t* codec1, const tmedia_codec_t* codec2);
+int tmedia_codec_cmp(const tsk_object_t* codec1, const tsk_object_t* codec2);
+int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin);
+tmedia_codec_t* tmedia_codec_create(const char* format);
+char* tmedia_codec_get_rtpmap(const tmedia_codec_t* codec);
+char* tmedia_codec_get_fmtp(const tmedia_codec_t* codec);
+tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* codec, const char* fmtp);
+int tmedia_codec_set_remote_fmtp(tmedia_codec_t* codec, const char* fmtp);
 int tmedia_codec_deinit(tmedia_codec_t* codec);
+
+
+
+
+
+
+
+
 
 /** Audio codec */
 typedef struct tmedia_codec_audio_s
 {
 	TMEDIA_DECLARE_CODEC;
+
+	//! clock rate (Hz)
+	int32_t rate;
+	//! audio channels
+	int8_t channels;
 }
 tmedia_codec_audio_t;
 
@@ -109,6 +223,9 @@ tmedia_codec_audio_t;
 typedef struct tmedia_codec_video_s
 {
 	TMEDIA_DECLARE_CODEC;
+
+	//! clock rate (Hz)
+	int32_t rate;
 }
 tmedia_codec_video_t;
 

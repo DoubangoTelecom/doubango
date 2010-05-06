@@ -75,6 +75,7 @@ int tmedia_plugin_register(const tmedia_plugin_def_t* plugin)
 {
 	tsk_size_t i;
 	if(!plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -85,7 +86,7 @@ int tmedia_plugin_register(const tmedia_plugin_def_t* plugin)
 		}
 	}
 	
-	TSK_DEBUG_ERROR("There are already %d objects.", TMED_MAX_PLUGINS);
+	TSK_DEBUG_ERROR("There are already %d plugins.", TMED_MAX_PLUGINS);
 	return -2;
 }
 

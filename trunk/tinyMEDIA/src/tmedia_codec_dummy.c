@@ -31,64 +31,120 @@
 
 #include "tsk_debug.h"
 
-/**@ingroup tmedia_codec_group
-* Creates dummy G.711u codec 
-*/
-tmedia_codec_dpcmu_t* tmedia_codec_dpcmu_create()
-{
-	tmedia_codec_dpcmu_t* dpcmu;
+#define tmedia_codec_dpcmu_fmtp_get tsk_null
+#define tmedia_codec_dpcmu_fmtp_set tsk_null
+#define tmedia_codec_dpcma_fmtp_get tsk_null
+#define tmedia_codec_dpcma_fmtp_set tsk_null
 
-	/* creates the codec */
-	if(!(dpcmu = tsk_object_new(tmedia_codec_dpcmu_def_t, "G.711u", "Dummy G.711u codec", TMEDIA_CODEC_FORMAT_G711u))){
-		TSK_DEBUG_ERROR("Failed to create G.711u codec");
-		return tsk_null;
-	}
-
-	return dpcmu;
+tsk_bool_t tmedia_codec_dpcmu_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+{	/* always match */
+	return tsk_true;
 }
 
+tsk_bool_t tmedia_codec_dpcma_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
+{	/* always match */
+	return tsk_true;
+}
 
 //=================================================================================================
 //	Dummy G.711u object definition
 //
+/* constructor */
 static tsk_object_t* tmedia_codec_dpcmu_ctor(tsk_object_t * self, va_list * app)
 {
-	tmedia_codec_dpcmu_t *dpcum = self;
-	if(dpcum){
-		const char* name = va_arg(*app, const char *);
-		const char* desc = va_arg(*app, const char *);
-		const char* format = va_arg(*app, const char *);
-
+	tmedia_codec_dpcmu_t *dpcmu = self;
+	if(dpcmu){
 		/* init base */
-		tmedia_codec_audio_init(dpcum, name, desc, format); 
-		/* init self */
+		TMEDIA_CODEC_AUDIO(dpcmu)->channels = 1;
+		TMEDIA_CODEC_AUDIO(dpcmu)->rate = 8000;
 	}
 	return self;
 }
-
+/* destructor */
 static tsk_object_t* tmedia_codec_dpcmu_dtor(tsk_object_t * self)
 { 
-	tmedia_codec_dpcmu_t *dpcum = self;
-	if(dpcum){
+	tmedia_codec_dpcmu_t *dpcmu = self;
+	if(dpcmu){
 		/* deinit base */
-		tmedia_codec_audio_deinit(dpcum);
+		tmedia_codec_audio_deinit(dpcmu);
 		/* deinit self */
 	}
 
 	return self;
 }
-
-static int tmedia_codec_dpcmu_cmp(const tsk_object_t *_c1, const tsk_object_t *_c2)
-{
-	return tmedia_codec_cmp(TMEDIA_CODEC(_c1), TMEDIA_CODEC(_c2));
-}
-
+/* object definition */
 static const tsk_object_def_t tmedia_codec_dpcmu_def_s = 
 {
 	sizeof(tmedia_codec_dpcmu_t),
 	tmedia_codec_dpcmu_ctor, 
 	tmedia_codec_dpcmu_dtor,
-	tmedia_codec_dpcmu_cmp, 
+	tmedia_codec_cmp, 
 };
-const tsk_object_def_t *tmedia_codec_dpcmu_def_t = &tmedia_codec_dpcmu_def_s;
+/* plugin definition*/
+static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s = 
+{
+	&tmedia_codec_dpcmu_def_s,
+
+	tmed_codec_type_audio,
+	"G.711u",
+	"Dummy G.711u codec",
+	TMEDIA_CODEC_FORMAT_G711u,
+	tsk_false,
+
+	tmedia_codec_dpcmu_fmtp_match,
+	tmedia_codec_dpcmu_fmtp_get,
+	tmedia_codec_dpcmu_fmtp_set
+};
+const tmedia_codec_plugin_def_t *tmedia_codec_dpcmu_plugin_def_t = &tmedia_codec_dpcmu_plugin_def_s;
+
+//=================================================================================================
+//	Dummy G.711a object definition
+//
+/* constructor */
+static tsk_object_t* tmedia_codec_dpcma_ctor(tsk_object_t * self, va_list * app)
+{
+	tmedia_codec_dpcma_t *dpcma = self;
+	if(dpcma){
+		/* init base */
+		TMEDIA_CODEC_AUDIO(dpcma)->channels = 1;
+		TMEDIA_CODEC_AUDIO(dpcma)->rate = 8000;
+	}
+	return self;
+}
+/* destructor */
+static tsk_object_t* tmedia_codec_dpcma_dtor(tsk_object_t * self)
+{ 
+	tmedia_codec_dpcma_t *dpcma = self;
+	if(dpcma){
+		/* deinit base */
+		tmedia_codec_audio_deinit(dpcma);
+		/* deinit self */
+	}
+
+	return self;
+}
+/* object definition */
+static const tsk_object_def_t tmedia_codec_dpcma_def_s = 
+{
+	sizeof(tmedia_codec_dpcma_t),
+	tmedia_codec_dpcma_ctor, 
+	tmedia_codec_dpcma_dtor,
+	tmedia_codec_cmp, 
+};
+/* plugin definition*/
+static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s = 
+{
+	&tmedia_codec_dpcma_def_s,
+
+	tmed_codec_type_audio,
+	"G.711a",
+	"Dummy G.711a codec",
+	TMEDIA_CODEC_FORMAT_G711a,
+	tsk_false,
+
+	tmedia_codec_dpcma_fmtp_match,
+	tmedia_codec_dpcma_fmtp_get,
+	tmedia_codec_dpcma_fmtp_set
+};
+const tmedia_codec_plugin_def_t *tmedia_codec_dpcma_plugin_def_t = &tmedia_codec_dpcma_plugin_def_s;
 

@@ -36,11 +36,14 @@
 /**@defgroup tmedia_codec_group Codecs
 */
 
+/* pointer to all registered codecs */
+const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS] = {0};
+
 /**@ingroup tmedia_codec_group
 * Initialize a Codec 
 * @param codec The codec to initialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
 * @param type
-* @param name the name of the codec. e.g. "G.711u" or "G.711a" etc using in the sdp.
+* @param name the name of the codec. e.g. "G.711u" or "G.711a" etc used in the sdp.
 * @param desc full description.
 * @param format the format. e.g. "0" for G.711.u or "8" for G.711a or "*" for MSRP.
 * @retval Zero if succeed and non-zero error code otherwise.
@@ -52,6 +55,7 @@ int tmedia_codec_init(tmedia_codec_t* codec, tmedia_codec_type_t type, const cha
 		return -1;
 	}
 	codec->type = type;
+	codec->dyn = tsk_true; /* this is the default value. up to the caller to update it */
 	tsk_strupdate(&codec->name, name);
 	tsk_strupdate(&codec->desc,desc);
 	tsk_strupdate(&codec->format, format);
@@ -68,12 +72,15 @@ int tmedia_codec_init(tmedia_codec_t* codec, tmedia_codec_type_t type, const cha
 * 0  : @a codec1 identical to @a codec2.<br>
 * >0 : @a codec1 greater than @a codec2.<br>
 */
-int tmedia_codec_cmp(const tmedia_codec_t* codec1, const tmedia_codec_t* codec2)
+int tmedia_codec_cmp(const tsk_object_t* codec1, const tsk_object_t* codec2)
 {
-	if((codec1 && codec2) && (codec1->type == codec2->type)){
+	const tmedia_codec_t* _c1 = codec1;
+	const tmedia_codec_t* _c2 = codec2;
+
+	if((_c1 && _c2) && (_c1->type == _c2->type)){
 		/* Do not compare names. For example, H264 base profile 1.0 will have the 
 		* same name than H264 base profile 3.0. */
-		return tsk_stricmp(codec1->format, codec2->format);
+		return tsk_stricmp(_c1->format, _c2->format);
 	}
 	else{
 		return -1;
@@ -81,7 +88,178 @@ int tmedia_codec_cmp(const tmedia_codec_t* codec1, const tmedia_codec_t* codec2)
 }
 
 /**@ingroup tmedia_codec_group
-* DeInitialize a Codec 
+* Registers a codec plugin.
+* @param plugin the definition of the plugin.
+* @retval Zero if succeed and non-zero error code otherwise.
+* @sa @ref tmedia_codec_create()
+*/
+int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
+{
+	tsk_size_t i;
+	if(!plugin || tsk_strnullORempty(plugin->name) || tsk_strnullORempty(plugin->format)){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* add or replace the plugin */
+	for(i = 0; i<TMED_CODEC_MAX_PLUGINS; i++){
+		if(!__tmedia_codec_plugins[i] || __tmedia_codec_plugins[i] == plugin){
+			__tmedia_codec_plugins[i] = plugin;
+			return 0;
+		}
+	}
+	
+	TSK_DEBUG_ERROR("There are already %d plugins.", TMED_CODEC_MAX_PLUGINS);
+	return -2;
+}
+
+/**@ingroup tmedia_codec_group
+* Creates a new codec using an already registered plugin.
+* @param format The format of the codec to create (e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP)
+* @sa @ref tmedia_codec_plugin_register()
+*/
+tmedia_codec_t* tmedia_codec_create(const char* format)
+{
+	tmedia_codec_t* codec = tsk_null;
+	const tmedia_codec_plugin_def_t* plugin;
+	tsk_size_t i = 0;
+
+	while((i < TMED_CODEC_MAX_PLUGINS) && (plugin = __tmedia_codec_plugins[i++])){
+		if(plugin->objdef && tsk_striequals(plugin->format, format)){
+			if((codec = tsk_object_new(plugin->objdef))){
+				/* initialize the newly created codec */
+				codec->dyn = plugin->dyn;
+				switch(codec->type){
+					case tmed_codec_type_audio:
+						tmedia_codec_audio_init(codec, plugin->name, plugin->desc, plugin->format); 
+						break;
+					case tmed_codec_type_video:
+						tmedia_codec_video_init(codec, plugin->name, plugin->desc, plugin->format);
+						break;
+					case tmed_codec_type_msrp:
+						tmedia_codec_msrp_init(codec, plugin->name, plugin->desc);
+						break;
+					default:
+						tmedia_codec_init(codec, plugin->type, plugin->name, plugin->desc, plugin->format);
+						break;
+				}
+				codec->plugin = plugin;
+				break;
+			}
+		}
+	}
+
+	return codec;
+}
+
+/**@ingroup tmedia_codec_group
+* Gets the rtpmap attribute associated to this code.
+* @param codec the codec for which to get the rtpmap attribute. Should be created using @ref tmedia_codec_create().
+* @retval rtpmap string (e.g. "AMR-WB/16000/2" or "H261/90000") if succeed and Null otherwise. It's up to the caller to free the
+* returned string.
+*/
+char* tmedia_codec_get_rtpmap(const tmedia_codec_t* codec)
+{
+	char* rtpmap = tsk_null;
+
+	if(!codec){
+		TSK_DEBUG_ERROR("invalid parameter");
+		return tsk_null;
+	}
+	switch(codec->type){
+		case tmed_codec_type_audio:
+			{	/* audio codecs */
+				const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)codec;
+				if(audioCodec->channels > 0){
+					tsk_sprintf(&rtpmap, "%s/%d/%d", codec->name, audioCodec->rate, audioCodec->channels);
+				}
+				else{
+					tsk_sprintf(&rtpmap, "%s/%d", codec->name, audioCodec->rate);
+				}
+			}
+			break;
+		case tmed_codec_type_video:
+			{	/* video codecs */
+				const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)codec;
+				tsk_sprintf(&rtpmap, "%s/%d", codec->name, videoCodec->rate);
+				break;
+			}
+		/* all others */
+		default:
+			break;
+	}
+
+	return rtpmap;
+}
+
+/**@ingroup tmedia_codec_group
+* Gets the codec's fmtp attribute value.
+* @param codec the codec for which to get the fmtp attribute. Should be created using @ref tmedia_codec_create().
+* @retval fmtp attribute string (e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"). It's up to the caller to free the
+* returned string.
+*/
+char* tmedia_codec_get_fmtp(const tmedia_codec_t* codec)
+{
+	char* fmtp = tsk_null;
+
+	if(!codec || !codec->plugin){
+		TSK_DEBUG_ERROR("invalid parameter");
+		return tsk_null;
+	}
+
+	if(codec->plugin->fmtp_get){ /* some codecs, like G711, won't produce fmtp */
+		fmtp = codec->plugin->fmtp_get(codec);
+	}
+
+	return fmtp;
+}
+
+/**@ingroup tmedia_codec_group
+* Indicates whether the codec can handle this fmtp.
+* @param codec the codec to match aginst to.
+* @param fmtp the fmtp to match
+* @retval @a tsk_true if the codec can handle this fmtp and @a tsk_false otherwise
+*/
+tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* codec, const char* fmtp)
+{
+	/* checks */
+	if(!codec || !codec->plugin || codec->plugin->fmtp_match){
+		TSK_DEBUG_ERROR("invalid parameter");
+		return tsk_false;
+	}
+
+	/* if fmtp is null or empty -> always match */
+	if(tsk_strnullORempty(fmtp)){
+		return tsk_true;
+	}
+	else{
+		return codec->plugin->fmtp_match(codec, fmtp);
+	}
+}
+
+/**@ingroup tmedia_codec_group
+* Sets remote fmtp.
+* @param codec codec for which to set the remote fmtp.
+* @param fmtp fmtp received from remote party (e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1").
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tmedia_codec_set_remote_fmtp(tmedia_codec_t* codec, const char* fmtp)
+{
+	if(!codec || !codec->plugin){
+		TSK_DEBUG_ERROR("invalid parameter");
+		return -1;
+	}
+
+	if(codec->plugin->fmtp_set){
+		return codec->plugin->fmtp_set(codec, fmtp);
+	}
+	else{ /* some codecs, like G711, could ignore remote fmtp attribute */
+		return 0;
+	}
+}
+
+/**@ingroup tmedia_codec_group
+* DeInitialize a Codec.
 * @param codec The codec to deinitialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
 * @retval Zero if succeed and non-zero error code otherwise.
 */
