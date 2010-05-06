@@ -95,7 +95,7 @@ char tsk_b16tob10(char c)
 * @param str2 Second C string to be compared. 
 * @retval Returns an integral value indicating the relationship between the strings:
 * <0 : str1 less than str2.<br>
-* 0  : str1 identical to str1.<br>
+* 0  : str1 identical to str2.<br>
 * >0 : str1 greater than str2.<br>
 */
 int tsk_stricmp(const char * str1, const char * str2)
@@ -113,10 +113,10 @@ int tsk_stricmp(const char * str1, const char * str2)
 * @param n The maximum number of characters to compare.
 * @retval Returns an integral value indicating the relationship between the strings:
 * <0 : str1 less than str2.<br>
-* 0  : str1 identical to str1.<br>
+* 0  : str1 identical to str2.<br>
 * >0 : str1 greater than str2.<br>
 */
-int tsk_strnicmp(const char * str1, const char * str2, size_t n)
+int tsk_strnicmp(const char * str1, const char * str2, tsk_size_t n)
 {
 	return (str1 && str2) ? strnicmp(str1, str2, n) : ((!str1 && !str2) ? 0 : -1);
 }
@@ -138,10 +138,10 @@ int tsk_strcmp(const char * str1, const char * str2)
 * @param n The maximum number of characters to compare.
 * @retval Returns an integral value indicating the relationship between the strings:
 * <0 : str1 less than str2.<br>
-* 0  : str1 identical to str1.<br>
+* 0  : str1 identical to str2.<br>
 * >0 : str1 greater than str2.<br>
 */
-int tsk_strncmp(const char * str1, const char * str2, size_t n)
+int tsk_strncmp(const char * str1, const char * str2, tsk_size_t n)
 {
 	return (str1 && str2) ? ((*str1 != *str2) ? -1 : strncmp(str1, str2, n)) : ((!str1 && !str2) ? 0 : -1);
 }
@@ -164,13 +164,13 @@ char* tsk_strdup(const char *s1)
  * @param n The number of characters to copy to the new string. 
  * @retval	null A copy of @a s1. 
 **/
-char* tsk_strndup(const char *s1, size_t n)
+char* tsk_strndup(const char *s1, tsk_size_t n)
 {
 	char *ret = tsk_null;
 
 	if(s1 && n){
-		size_t len = tsk_strlen(s1);
-		size_t nret = (n > len) ? (len) : (n);
+		tsk_size_t len = tsk_strlen(s1);
+		tsk_size_t nret = (n > len) ? (len) : (n);
 
 		ret = tsk_calloc((nret+1), sizeof(uint8_t));
 		memcpy(ret, s1, nret);
@@ -186,7 +186,7 @@ char* tsk_strndup(const char *s1, size_t n)
 * @param substring the substring.
 * @retval @a tsk_true if @a str contains at least one occurence of @a substring and @a tsk_false othewise.
 */
-tsk_bool_t tsk_strcontains(const char * str, size_t size, const char * substring)
+tsk_bool_t tsk_strcontains(const char * str, tsk_size_t size, const char * substring)
 {
 	return (tsk_strindexOf(str, size, substring) >= 0);
 }
@@ -199,7 +199,7 @@ tsk_bool_t tsk_strcontains(const char * str, size_t size, const char * substring
 * @retval The index of the first ocurrence of @a substring in @a str.
 * If no occurrence of @a substring is found, then -1 is returned.
 */
-int tsk_strindexOf(const char * str, size_t size, const char * substring)
+int tsk_strindexOf(const char * str, tsk_size_t size, const char * substring)
 {
 	if(str && substring){
 		const char* sub_start = strstr(str, substring);
@@ -243,24 +243,24 @@ void tsk_strcat_2(char** destination, const char* format, ...)
 
 /**@ingroup tsk_string_group
 */
-void tsk_strncat(char** destination, const char* source, size_t n)
+void tsk_strncat(char** destination, const char* source, tsk_size_t n)
 {
-	size_t index = 0;
-	size_t size_to_cat = (n > tsk_strlen(source)) ? tsk_strlen(source) : n;
+	tsk_size_t index = 0;
+	tsk_size_t tsk_size_to_cat = (n > tsk_strlen(source)) ? tsk_strlen(source) : n;
 
 	if(!source || !n){
 		return;
 	}
 
 	if(!*destination){
-		*destination = (char*)tsk_malloc(size_to_cat+1);
-		strncpy(*destination, source, size_to_cat+1);
+		*destination = (char*)tsk_malloc(tsk_size_to_cat+1);
+		strncpy(*destination, source, tsk_size_to_cat+1);
 	}else{
 		index = tsk_strlen(*destination);
-		*destination = tsk_realloc(*destination, index + size_to_cat+1);
-		strncpy(((*destination)+index), source, size_to_cat+1);
+		*destination = tsk_realloc(*destination, index + tsk_size_to_cat+1);
+		strncpy(((*destination)+index), source, tsk_size_to_cat+1);
 	}
-	(*destination)[index + size_to_cat] = '\0';
+	(*destination)[index + tsk_size_to_cat] = '\0';
 }
 
 /**@ingroup tsk_string_group
@@ -353,7 +353,7 @@ void tsk_strupdate(char** str, const char* newval)
 void tsk_strtrim_left(char **str)
 {
 	if(str && *str){
-		size_t count = 0;
+		tsk_size_t count = 0;
 		while(isspace(*((*str)+count))) count++;
 		if(count){
 			strcpy((*str), (*str)+count);
@@ -368,7 +368,7 @@ void tsk_strtrim_left(char **str)
 void tsk_strtrim_right(char **str)
 {
 	if(str && *str){
-		size_t size = tsk_strlen(*str);
+		tsk_size_t size = tsk_strlen(*str);
 		if(size){
 			while(isspace(*((*str)+size-1))) size--;
 			*(*str + size) = '\0';
@@ -433,7 +433,7 @@ void tsk_strunquote(char **str)
 void tsk_strunquote_2(char **str, char lquote, char rquote)
 {
 	if(str && *str){
-		size_t size = tsk_strlen(*str);
+		tsk_size_t size = tsk_strlen(*str);
 		if(size>=2 && **str == lquote && *((*str)+size-1) == rquote){
 			strcpy((*str), (*str)+1);
 			*((*str)+size-2) = '\0';
@@ -475,7 +475,7 @@ long tsk_atox(const char* str)
 {
 	long ret = 0;
 	if(str){
-		sscanf(str, "%x", &ret);
+		sscanf(str, "%lx", &ret);
 	}
 	return ret;
 }
@@ -501,10 +501,10 @@ void tsk_strrandom(tsk_istr_t *result)
  *						It is up to you to add the final '\\0'.
  * @sa @ref tsk_str_to_hex
 **/
-void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str)
+void tsk_str_from_hex(const uint8_t *hex, tsk_size_t size, char* str)
 {
 	static const char *TSK_HEXA_VALUES = {"0123456789abcdef"};
-	size_t i;
+	tsk_size_t i;
 
 	for (i = 0 ; i<size; i++){
 		str[2*i] = TSK_HEXA_VALUES [ (*(hex+i) & 0xf0) >> 4 ];
@@ -519,7 +519,7 @@ void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str)
  * @param	size		The size. 
  * @param hex	If non-null, the hexadecimal. 
 **/
-void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex)
+void tsk_str_to_hex(const char *str, tsk_size_t size, uint8_t* hex)
 {
 	TSK_DEBUG_FATAL("Not implemented.");
 }

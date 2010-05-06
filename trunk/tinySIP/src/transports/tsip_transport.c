@@ -159,9 +159,9 @@ int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const ch
 }
 
 /* sends a request */
-size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort)
+tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort)
 {
-	size_t ret = 0;
+	tsk_size_t ret = 0;
 	if(self)
 	{
 		tsk_buffer_t *buffer = tsk_null;

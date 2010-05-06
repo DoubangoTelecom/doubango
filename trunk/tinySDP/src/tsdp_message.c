@@ -143,9 +143,9 @@ int tsdp_message_add_headers(tsdp_message_t *self, ...)
 	return 0;
 }
 
-const tsdp_header_t *tsdp_message_get_headerAt(const tsdp_message_t *self, tsdp_header_type_t type, size_t index)
+const tsdp_header_t *tsdp_message_get_headerAt(const tsdp_message_t *self, tsdp_header_type_t type, tsk_size_t index)
 {
-	size_t pos = 0;
+	tsk_size_t pos = 0;
 	const tsk_list_item_t *item;
 	const tsdp_header_t *hdr;
 

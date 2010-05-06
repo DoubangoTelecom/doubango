@@ -37,9 +37,9 @@
 
 /** swaps the address from 'abcd' to 'badc'
 */
-char* tsms_address_swap(const char* in, size_t in_len)
+char* tsms_address_swap(const char* in, tsk_size_t in_len)
 {
-	size_t i;
+	tsk_size_t i;
 	char* ret = tsk_null;
 	if(tsk_strnullORempty(in)){
 		goto bail;
@@ -86,7 +86,7 @@ tsms_address_t* tsms_address_smsc_create(const tsms_address_string_t digits)
 int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 {
 	char* number = tsk_null;
-	size_t i, num_len/*real len*/;
+	tsk_size_t i, num_len/*real len*/;
 	uint8_t type_of_address;
 	if(!output){
 		return -1;
@@ -104,7 +104,7 @@ int tsms_address_serialize(const tsms_address_t* address, tsk_buffer_t* output)
 	number = tsms_address_swap(address ? address->digits : tsk_null, address ? strlen(address->digits) : 0);
 
 	if(number){
-		size_t len =  (address->type == tsms_addr_smsc) ? 
+		tsk_size_t len =  (address->type == tsms_addr_smsc) ? 
 			((strlen(number)/2) + 1) /* Number of octets plus 1. */
 			: strlen(address->digits); /* Number of BCD digits */
 		/* 1 - Address-Length */
@@ -137,7 +137,7 @@ bail:
 }
 
 
-tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_address_type_t xtype, size_t *length)
+tsms_address_t* tsms_address_deserialize(const void* data, tsk_size_t size, tsms_address_type_t xtype, tsk_size_t *length)
 {
 	tsms_address_t* address = tsk_null;
 	uint8_t addr_len, _1byte, i;
@@ -163,7 +163,7 @@ tsms_address_t* tsms_address_deserialize(const void* data, size_t size, tsms_add
 	addr_len = (xtype == tsms_addr_smsc) ? 
 			(addr_len - 1) /* Number of octets plus 1. */
 			: ((addr_len/2) + (addr_len%2)); /* Number of BCD digits */
-	if((size_t)(1 /*Address-Length*/ + 1 /*Type-of-Address*/ + addr_len /* digits */) >= size){
+	if((tsk_size_t)(1 /*Address-Length*/ + 1 /*Type-of-Address*/ + addr_len /* digits */) >= size){
 		TSK_DEBUG_ERROR("Too short to contain an address.");
 		goto bail;
 	}

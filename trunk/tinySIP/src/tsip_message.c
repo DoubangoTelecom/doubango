@@ -144,7 +144,7 @@ int tsip_message_add_headers(tsip_message_t *self, ...)
 	return 0;
 }
 
-int tsip_message_add_content(tsip_message_t *self, const char* content_type, const void* content, size_t size)
+int tsip_message_add_content(tsip_message_t *self, const char* content_type, const void* content, tsk_size_t size)
 {
 	if(self)
 	{
@@ -165,9 +165,9 @@ int tsip_message_add_content(tsip_message_t *self, const char* content_type, con
 	return -1;
 }
 
-const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, size_t index)
+const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, tsk_size_t index)
 {
-	size_t pos = 0;
+	tsk_size_t pos = 0;
 	tsk_list_item_t *item;
 	const tsip_header_t* hdr = 0;
 
@@ -564,7 +564,7 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 				/* All other VIAs */
 				if(message->firstVia)
 				{
-					size_t index = 1;
+					tsk_size_t index = 1;
 					const tsip_header_t * via;
 					while((via = tsip_message_get_headerAt(request, tsip_htype_Via, index++)))
 					{
@@ -573,7 +573,7 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 				}
 				/* Record routes */
 				{
-					size_t index = 0;
+					tsk_size_t index = 0;
 					const tsip_header_t *record_route;
 					while((record_route = tsip_message_get_headerAt(request, tsip_htype_Record_Route, index++)))
 					{

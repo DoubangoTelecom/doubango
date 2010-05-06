@@ -93,7 +93,7 @@ int tsip_challenge_get_akares(tsip_challenge_t *self, char const *password, char
 	AKA_RES_T akares;
 
 	int ret = -1;
-	size_t n;
+	tsk_size_t n;
 	char *nonce = tsk_null;
 
 	AKA_XXX_DECLARE(RAND);

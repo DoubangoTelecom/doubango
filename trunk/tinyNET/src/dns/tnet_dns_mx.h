@@ -56,7 +56,7 @@ typedef struct tnet_dns_mx_s
 }
 tnet_dns_mx_t;
 
-tnet_dns_mx_t* tnet_dns_mx_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset);
+tnet_dns_mx_t* tnet_dns_mx_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, tsk_size_t offset);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_mx_def_t;
 

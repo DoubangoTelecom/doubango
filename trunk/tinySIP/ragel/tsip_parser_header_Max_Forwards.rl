@@ -82,7 +82,7 @@ int tsip_header_Max_Forwards_tostring(const tsip_header_t* header, tsk_buffer_t*
 	return -1;
 }
 
-tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, size_t size)
+tsip_header_Max_Forwards_t *tsip_header_Max_Forwards_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

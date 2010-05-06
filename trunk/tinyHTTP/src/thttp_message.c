@@ -177,7 +177,7 @@ int thttp_message_add_headers(thttp_message_t *self, const thttp_headers_L_t *he
 
 /**@ingroup thttp_message_group
 */
-int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, size_t size)
+int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, tsk_size_t size)
 {
 	if(self && content && size)
 	{
@@ -200,7 +200,7 @@ int thttp_message_add_content(thttp_message_t *self, const char* content_type, c
 
 /**@ingroup thttp_message_group
 */
-int thttp_message_append_content(thttp_message_t *self, const void* content, size_t size)
+int thttp_message_append_content(thttp_message_t *self, const void* content, tsk_size_t size)
 {
 	if(self && content && size){
 		if(!self->Content){
@@ -224,9 +224,9 @@ int thttp_message_append_content(thttp_message_t *self, const void* content, siz
 
 /**@ingroup thttp_message_group
 */
-const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, thttp_header_type_t type, size_t index)
+const thttp_header_t *thttp_message_get_headerAt(const thttp_message_t *self, thttp_header_type_t type, tsk_size_t index)
 {
-	size_t pos = 0;
+	tsk_size_t pos = 0;
 	tsk_list_item_t *item;
 	const thttp_header_t* hdr = tsk_null;
 
@@ -276,7 +276,7 @@ const thttp_header_t *thttp_message_get_header(const thttp_message_t *self, thtt
 */
 const thttp_header_t *thttp_message_get_headerByName(const thttp_message_t *self, const char* name)
 {
-	//size_t pos = 0;
+	//tsk_size_t pos = 0;
 	tsk_list_item_t *item;
 	const thttp_header_t* hdr = tsk_null;
 

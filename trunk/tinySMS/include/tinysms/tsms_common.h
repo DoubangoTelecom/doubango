@@ -145,7 +145,7 @@ int tsms_tpdu_message_init(tsms_tpdu_message_t* self, tsms_tpdu_mti_t mti);
 TINYSMS_API int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* output, tsk_bool_t MobOrig);
 #define tsms_tpdu_message_serialize_mo(self, output) tsms_tpdu_message_serialize(self, output, tsk_true)
 #define tsms_tpdu_message_serialize_mt(self, output) tsms_tpdu_message_serialize(self, output, tsk_false)
-TINYSMS_API tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size, tsk_bool_t MobOrig);
+TINYSMS_API tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, tsk_size_t size, tsk_bool_t MobOrig);
 #define tsms_tpdu_message_deserialize_mo(data, size) tsms_tpdu_message_deserialize(data, size, tsk_true)
 #define tsms_tpdu_message_deserialize_mt(data, size) tsms_tpdu_message_deserialize(data, size, tsk_false)
 TINYSMS_API char* tsms_tpdu_message_tostring(const tsms_tpdu_message_t* self, tsk_bool_t MobOrig);
@@ -201,7 +201,7 @@ tsms_rpdu_message_t;
 #define TSMS_RPDU_MESSAGE(self) ((tsms_rpdu_message_t*)(self))
 
 TINYSMS_API int tsms_rpdu_message_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output);
-TINYSMS_API tsms_rpdu_message_t* tsms_rpdu_message_deserialize(const void* data, size_t size);
+TINYSMS_API tsms_rpdu_message_t* tsms_rpdu_message_deserialize(const void* data, tsk_size_t size);
 TINYSMS_API char* tsms_rpdu_message_tohexastring(const tsms_rpdu_message_t* self);
 
 TSMS_END_DECLS

@@ -75,7 +75,7 @@ int tsip_header_Service_Route_tostring(const tsip_header_t* header, tsk_buffer_t
 	return -1;
 }
 
-tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data, size_t size)
+tsip_header_Service_Routes_L_t *tsip_header_Service_Route_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
@@ -440,7 +440,7 @@ _match:
 		if(curr_service && !curr_service->uri){
 			int len = (int)(p  - tag_start);
 			if(curr_service && !curr_service->uri){
-				if((curr_service->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_service->display_name){
+				if((curr_service->uri = tsip_uri_parse(tag_start, (tsk_size_t)len)) && curr_service->display_name){
 					curr_service->uri->display_name = tsk_strdup(curr_service->display_name);
 				}
 			}

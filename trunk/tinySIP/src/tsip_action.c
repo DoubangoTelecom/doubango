@@ -149,9 +149,9 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 						break;
 					}
 				case aptype_payload:
-					{	/* (const void*)PAY_PTR, (size_t)PAY_SIZE */
+					{	/* (const void*)PAY_PTR, (tsk_size_t)PAY_SIZE */
 						const void* payload = va_arg(*app, const void *);
-						size_t size = va_arg(*app, size_t);
+						tsk_size_t size = va_arg(*app, tsk_size_t);
 						if(payload && size){
 							TSK_OBJECT_SAFE_FREE(action->payload);
 							action->payload = tsk_buffer_create(payload, size);

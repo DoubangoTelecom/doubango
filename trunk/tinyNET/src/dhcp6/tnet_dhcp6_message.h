@@ -130,7 +130,7 @@ typedef tnet_dhcp6_message_t tnet_dhcp6_request_t;
 typedef tnet_dhcp6_message_t tnet_dhcp6_reply_t;
 
 tsk_buffer_t* tnet_dhcp6_message_serialize(const struct tnet_dhcp6_ctx_s *ctx, const tnet_dhcp6_message_t *self);
-tnet_dhcp6_message_t* tnet_dhcp6_message_deserialize(const struct tnet_dhcp6_ctx_s *ctx, const uint8_t *data, size_t size);
+tnet_dhcp6_message_t* tnet_dhcp6_message_deserialize(const struct tnet_dhcp6_ctx_s *ctx, const uint8_t *data, tsk_size_t size);
 
 TINYNET_API tnet_dhcp6_message_t* tnet_dhcp6_message_create(tnet_dhcp6_message_type_t type);
 TINYNET_API tnet_dhcp6_request_t* tnet_dhcp6_request_create(tnet_dhcp6_message_type_t type);

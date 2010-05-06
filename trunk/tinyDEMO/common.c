@@ -47,6 +47,7 @@
 extern ctx_t* ctx;
 
 int stack_callback(const tsip_event_t *sipevent);
+int session_handle_event(const tsip_event_t *sipevent);
 int session_tostring(const session_t* session);
 
 /* our SIP callback function */
@@ -96,6 +97,12 @@ int stack_callback(const tsip_event_t *sipevent)
 		case tsip_event_subscribe:
 			{	/* SUBSCRIBE */
 				ret = subscribe_handle_event(sipevent);
+				break;
+			}
+
+		case tsip_event_dialog:
+			{	/* Common to all dialogs */
+				ret = session_handle_event(sipevent);
 				break;
 			}
 
@@ -150,7 +157,8 @@ static tsk_object_t* ctx_dtor(tsk_object_t * self)
 		/* Stop the stack (as sessions are alive, you will continue to receive callbacks)*/
 		tsip_stack_stop(ctx->stack);
 
-		/* sessions : must be free before the stack as explained on the Programmer's Guide */
+		/* sessions : should be freed before the stack as explained on the Programmer's Guide 
+		* As all dialogs have been hanged up, the list should be empty ...but who know?*/
 		TSK_OBJECT_SAFE_FREE(ctx->sessions);
 
 		/* Destroy the stack */
@@ -433,6 +441,43 @@ int session_tostring(const session_t* session)
 	return -1;
 }
 
+
+/* handle events -common to all sessions */
+int session_handle_event(const tsip_event_t *sipevent)
+{
+	const session_t* session;
+
+	/* Find associated session */
+	if(!(session = session_get_by_sid(ctx->sessions, tsip_ssession_get_id(sipevent->ss)))){
+		TSK_DEBUG_WARN("Failed to match session event.");
+		return -1;
+	}
+	switch(sipevent->code)
+	{
+		/* === 7xx ==> errors ===  */
+	case tsip_event_code_transport_error:
+	case tsip_event_code_global_error:
+	case tsip_event_code_message_error:
+		break;
+
+		/* === 8xx ==> success ===  */
+	case tsip_event_code_request_incoming:
+	case tsip_event_code_request_cancelled:
+	case tsip_event_code_request_sent:
+		break;
+
+		/* === 9xx ==> Informational ===  */
+	case tsip_event_code_dialog_terminated:
+		{	/* we no longer need the session 
+			* -> remove and destroy the session */
+			tsk_list_remove_item_by_data(ctx->sessions, session);
+			break;
+		}
+	}
+	return 0;
+}
+
+/* handle commands -common to all sessions */
 const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 {
 	const session_t* session = tsk_null;
@@ -614,12 +659,29 @@ static tsk_object_t* session_dtor(tsk_object_t * self)
 	return self;
 }
 
+static int session_cmp(const tsk_object_t *_ss1, const tsk_object_t *_ss2)
+{
+	const session_t *ss1 = _ss1;
+	const session_t *ss2 = _ss2;
+
+	if(ss1 && ss1){
+		if(ss1->handle && ss2->handle){
+			return tsk_object_cmp(ss1->handle, ss2->handle);
+		}
+		else{
+			return (ss2 - ss1);
+		}
+	}
+	else if(!ss1 && !ss2) return 0;
+	else return -1;
+}
+
 static const tsk_object_def_t session_def_s = 
 {
 	sizeof(session_t),
 	session_ctor, 
 	session_dtor,
-	tsk_null, 
+	session_cmp, 
 };
 const tsk_object_def_t *session_def_t = &session_def_s;
 

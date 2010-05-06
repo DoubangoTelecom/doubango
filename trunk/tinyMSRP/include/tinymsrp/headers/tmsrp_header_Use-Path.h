@@ -61,7 +61,7 @@ typedef tsk_list_t tmsrp_headers_Use_Path_L_t;
 TINYMSRP_API tmsrp_header_Use_Path_t* tmsrp_header_Use_Path_create(const tmsrp_uri_t* uri);
 TINYMSRP_API tmsrp_header_Use_Path_t* tmsrp_header_Use_Path_create_null();
 
-TINYMSRP_API tmsrp_header_Use_Path_t *tmsrp_header_Use_Path_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Use_Path_t *tmsrp_header_Use_Path_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Use_Path_def_t;
 

@@ -37,7 +37,7 @@
 */
 
 
-tnet_dns_ptr_t* tnet_dns_ptr_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void*data, size_t offset)
+tnet_dns_ptr_t* tnet_dns_ptr_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void*data, tsk_size_t offset)
 {
 	return tsk_object_new(tnet_dns_ptr_def_t, name, qclass, ttl, rdlength, data, offset);
 }
@@ -58,7 +58,7 @@ static tsk_object_t* tnet_dns_ptr_ctor(tsk_object_t * self, va_list * app)
 		uint16_t rdlength = va_arg(*app, uint16_t);
 #endif
 		const void* data = va_arg(*app, const void*);
-		size_t offset = va_arg(*app, size_t);
+		tsk_size_t offset = va_arg(*app, tsk_size_t);
 
 		/* init base */
 		tnet_dns_rr_init(TNET_DNS_RR(ptr), qtype_ptr, qclass);

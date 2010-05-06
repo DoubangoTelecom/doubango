@@ -43,7 +43,7 @@ TMSRP_BEGIN_DECLS
 
 #define TMSRP_DATA_IN_CREATE() tsk_object_new(tmsrp_data_in_def_t)
 
-#define _TMSRP_DATA_OUT_CREATE(pdata, size, isfilepath)	tsk_object_new(tmsrp_data_out_def_t, (const void*)pdata, (size_t)size, (tsk_bool_t)isfilepath)
+#define _TMSRP_DATA_OUT_CREATE(pdata, size, isfilepath)	tsk_object_new(tmsrp_data_out_def_t, (const void*)pdata, (tsk_size_t)size, (tsk_bool_t)isfilepath)
 #define TMSRP_DATA_OUT_CREATE(pdata, size) _TMSRP_DATA_OUT_CREATE(pdata, size, tsk_false)
 #define TMSRP_DATA_OUT_FILE_CREATE(filepath) _TMSRP_DATA_OUT_CREATE(filepath, strlen(filepath), tsk_true)
 
@@ -71,7 +71,7 @@ typedef struct tmsrp_data_in_s
 }
 tmsrp_data_in_t;
 
-int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, size_t size);
+int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, tsk_size_t size);
 tmsrp_message_t* tmsrp_data_in_get(tmsrp_data_in_t* self);
 
 typedef struct tmsrp_data_out_s
@@ -80,7 +80,7 @@ typedef struct tmsrp_data_out_s
 	
 	FILE* file;
 	tsk_buffer_t* message;
-	size_t size; // File/message size
+	tsk_size_t size; // File/message size
 }
 tmsrp_data_out_t;
 

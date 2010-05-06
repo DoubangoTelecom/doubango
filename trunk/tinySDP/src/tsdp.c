@@ -72,7 +72,7 @@ int tsdp_ctx_local_create_sdp(tsdp_ctx_handle_t* self, const tsdp_message_t* loc
 	else return -2;
 }
 
-int tsdp_ctx_local_create_sdp_2(tsdp_ctx_handle_t* self, const char* sdp, size_t size)
+int tsdp_ctx_local_create_sdp_2(tsdp_ctx_handle_t* self, const char* sdp, tsk_size_t size)
 {
 	tsdp_ctx_t* ctx = self;
 	tsdp_message_t* newsdp;

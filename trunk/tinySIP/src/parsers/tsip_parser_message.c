@@ -337,7 +337,7 @@ _match:
 		
 		if(!message->uri)
 		{
-			message->uri = tsip_uri_parse(state->tag_start, (size_t)len);
+			message->uri = tsip_uri_parse(state->tag_start, (tsk_size_t)len);
 		}
 	}
 	break;

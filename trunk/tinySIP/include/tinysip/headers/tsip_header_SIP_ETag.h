@@ -56,7 +56,7 @@ tsip_header_SIP_ETag_t;
 TINYSIP_API tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create(const char* etag);
 TINYSIP_API tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create_null();
 
-TINYSIP_API tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_SIP_ETag_t *tsip_header_SIP_ETag_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_SIP_ETag_def_t;
 

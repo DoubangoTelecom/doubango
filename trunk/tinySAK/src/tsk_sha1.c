@@ -431,7 +431,7 @@ void tsk_sha1final(uint8_t *Message_Digest, tsk_sha1context_t *context)
  * @retval @ref tsk_sha1_errcode_t code.
  * @sa @ref TSK_SHA1_DIGEST_CALC
 **/
-tsk_sha1_errcode_t tsk_sha1compute(const char* input, size_t size, tsk_sha1string_t *result)
+tsk_sha1_errcode_t tsk_sha1compute(const char* input, tsk_size_t size, tsk_sha1string_t *result)
 {
 	tsk_sha1_errcode_t ret;
 	tsk_sha1context_t sha;

@@ -38,7 +38,7 @@
 /** Creates new DNS AAAA Resource Record.
 */
 
-tnet_dns_aaaa_t* tnet_dns_aaaa_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, size_t offset)
+tnet_dns_aaaa_t* tnet_dns_aaaa_create(const char* name, tnet_dns_qclass_t qclass, uint32_t ttl, uint16_t rdlength, const void* data, tsk_size_t offset)
 {
 	return tsk_object_new(tnet_dns_aaaa_def_t, name, qclass, ttl, rdlength, data, offset);
 }
@@ -60,7 +60,7 @@ static tsk_object_t* tnet_dns_aaaa_ctor(tsk_object_t * self, va_list * app)
 		uint16_t rdlength = va_arg(*app, uint16_t);
 #endif
 		const void* data = va_arg(*app, const void*);
-		size_t offset = va_arg(*app, size_t);
+		tsk_size_t offset = va_arg(*app, tsk_size_t);
 
 		const uint8_t* rddata = (((uint8_t*)data) + offset);
 		//const uint8_t* dataEnd = (rddata + rdlength);

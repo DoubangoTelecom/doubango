@@ -40,11 +40,11 @@
 /* ======================== TPDU ======================== 
 =========================================================*/
 
-extern tsms_tpdu_message_t* _tsms_tpdu_submit_deserialize(const void* data, size_t size);
-extern tsms_tpdu_message_t* _tsms_tpdu_deliver_deserialize(const void* data, size_t size);
-extern tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, size_t size);
-extern tsms_tpdu_message_t* _tsms_tpdu_report_deserialize(const void* data, size_t size);
-extern tsms_tpdu_message_t* _tsms_tpdu_status_report_deserialize(const void* data, size_t size);
+extern tsms_tpdu_message_t* _tsms_tpdu_submit_deserialize(const void* data, tsk_size_t size);
+extern tsms_tpdu_message_t* _tsms_tpdu_deliver_deserialize(const void* data, tsk_size_t size);
+extern tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, tsk_size_t size);
+extern tsms_tpdu_message_t* _tsms_tpdu_report_deserialize(const void* data, tsk_size_t size);
+extern tsms_tpdu_message_t* _tsms_tpdu_status_report_deserialize(const void* data, tsk_size_t size);
 
 extern int _tsms_tpdu_submit_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* output);
 extern int _tsms_tpdu_deliver_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* output);
@@ -114,7 +114,7 @@ int tsms_tpdu_message_serialize(const tsms_tpdu_message_t* self, tsk_buffer_t* o
 * @param MobOrig Indicates whether the binaray content is Mobile Originated (Sent by the MS) or not.
 * @retval @ref tsms_tpdu_message_t if succeed and @a Null otherwise.
 */
-tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, size_t size,  tsk_bool_t MobOrig)
+tsms_tpdu_message_t* tsms_tpdu_message_deserialize(const void* data, tsk_size_t size,  tsk_bool_t MobOrig)
 {
 	tsms_tpdu_mti_t mti;
 	uint8_t smsc_len = 0;
@@ -208,7 +208,7 @@ char* tsms_tpdu_message_tohexastring(const tsms_tpdu_message_t* self, tsk_bool_t
 
 	if((output = tsk_buffer_create_null())){
 		if(!tsms_tpdu_message_serialize(self, output, MobOrig)){
-			size_t i;
+			tsk_size_t i;
 			for(i=0;i<output->size;i++){
 				tsk_strcat_2(&ret, "%.2X", *(TSK_BUFFER_TO_U8(output)+i));
 			}
@@ -317,10 +317,10 @@ extern int _tsms_rpdu_rpack_serialize(const tsms_rpdu_message_t* self, tsk_buffe
 extern int _tsms_rpdu_rperror_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* output);
 
 
-extern tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, size_t size);
-extern tsms_rpdu_message_t* _tsms_rpdu_rpsmma_deserialize(const void* data, size_t size);
-extern tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, size_t size);
-extern tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, size_t size);
+extern tsms_rpdu_message_t* _tsms_rpdu_rpdata_deserialize(const void* data, tsk_size_t size);
+extern tsms_rpdu_message_t* _tsms_rpdu_rpsmma_deserialize(const void* data, tsk_size_t size);
+extern tsms_rpdu_message_t* _tsms_rpdu_rpack_deserialize(const void* data, tsk_size_t size);
+extern tsms_rpdu_message_t* _tsms_rpdu_rperror_deserialize(const void* data, tsk_size_t size);
 
 
 /**@ingroup tsms_rpdu_group
@@ -361,7 +361,7 @@ int tsms_rpdu_message_serialize(const tsms_rpdu_message_t* self, tsk_buffer_t* o
 * @param size The size of the buffer holding the binary data.
 * @retval @ref tsms_rpdu_message_t if succeed and @a Null otherwise.
 */
-tsms_rpdu_message_t* tsms_rpdu_message_deserialize(const void* data, size_t size)
+tsms_rpdu_message_t* tsms_rpdu_message_deserialize(const void* data, tsk_size_t size)
 {
 	tsms_rpdu_type_t mti;
 	
@@ -404,7 +404,7 @@ char* tsms_rpdu_message_tohexastring(const tsms_rpdu_message_t* self)
 
 	if((output = tsk_buffer_create_null())){
 		if(!tsms_rpdu_message_serialize(self, output)){
-			size_t i;
+			tsk_size_t i;
 			for(i=0;i<output->size;i++){
 				tsk_strcat_2(&ret, "%.2X", *(TSK_BUFFER_TO_U8(output)+i));
 			}

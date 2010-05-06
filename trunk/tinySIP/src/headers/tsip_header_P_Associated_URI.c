@@ -75,7 +75,7 @@ int tsip_header_P_Associated_URI_tostring(const tsip_header_t* header, tsk_buffe
 	return -1;
 }
 
-tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char *data, size_t size)
+tsip_header_P_Associated_URIs_L_t *tsip_header_P_Associated_URI_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
@@ -446,7 +446,7 @@ _match:
 		if(curr_p_associated_uri && !curr_p_associated_uri->uri){
 			int len = (int)(p  - tag_start);
 			if(curr_p_associated_uri && !curr_p_associated_uri->uri){
-				if((curr_p_associated_uri->uri = tsip_uri_parse(tag_start, (size_t)len)) && curr_p_associated_uri->display_name){
+				if((curr_p_associated_uri->uri = tsip_uri_parse(tag_start, (tsk_size_t)len)) && curr_p_associated_uri->display_name){
 					curr_p_associated_uri->uri->display_name = tsk_strdup(curr_p_associated_uri->display_name);
 				}
 			}

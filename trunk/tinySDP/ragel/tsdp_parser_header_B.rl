@@ -103,7 +103,7 @@ tsdp_header_t* tsdp_header_B_clone(const tsdp_header_t* header)
 	return tsk_null;
 }
 
-tsdp_header_B_t *tsdp_header_B_parse(const char *data, size_t size)
+tsdp_header_B_t *tsdp_header_B_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

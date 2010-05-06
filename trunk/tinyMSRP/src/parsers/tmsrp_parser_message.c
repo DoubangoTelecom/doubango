@@ -3397,13 +3397,13 @@ static const int tmsrp_machine_message_en_main = 1;
 
 /* #line 269 "./ragel/tmsrp_parser_message.rl" */
 
-tmsrp_message_t* tmsrp_message_parse(const void *input, size_t size)
+tmsrp_message_t* tmsrp_message_parse(const void *input, tsk_size_t size)
 {
-	size_t msg_size;
+	tsk_size_t msg_size;
 	return tmsrp_message_parse_2(input, size, &msg_size);
 }
 
-tmsrp_message_t* tmsrp_message_parse_2(const void *input, size_t size, size_t* msg_size)
+tmsrp_message_t* tmsrp_message_parse_2(const void *input, tsk_size_t size, tsk_size_t* msg_size)
 {
 	tmsrp_message_t* msrp_msg = tsk_null;
 	const char* tag_start = tsk_null;
@@ -3698,10 +3698,10 @@ _match:
 		if(len>0){
 			if(msrp_msg->Content){
 				tsk_buffer_cleanup(msrp_msg->Content);
-				tsk_buffer_append(msrp_msg->Content, tag_start, (size_t)len);
+				tsk_buffer_append(msrp_msg->Content, tag_start, (tsk_size_t)len);
 			}
 			else{
-				msrp_msg->Content = tsk_buffer_create(tag_start, (size_t)len);
+				msrp_msg->Content = tsk_buffer_create(tag_start, (tsk_size_t)len);
 			}
 		}
 	}

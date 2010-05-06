@@ -63,7 +63,7 @@ typedef tsk_list_t tmsrp_headers_Byte_Range_L_t;
 TINYMSRP_API tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create(int64_t start, int64_t end, int64_t total);
 TINYMSRP_API tmsrp_header_Byte_Range_t* tmsrp_header_Byte_Range_create_null();
 
-TINYMSRP_API tmsrp_header_Byte_Range_t *tmsrp_header_Byte_Range_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Byte_Range_t *tmsrp_header_Byte_Range_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Byte_Range_def_t;
 

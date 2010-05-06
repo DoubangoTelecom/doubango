@@ -83,7 +83,7 @@ static void tsip_message_parser_eoh(tsk_ragel_state_t *state, tsip_message_t *me
 		
 		if(!message->uri)
 		{
-			message->uri = tsip_uri_parse(state->tag_start, (size_t)len);
+			message->uri = tsip_uri_parse(state->tag_start, (tsk_size_t)len);
 		}
 	}
 

@@ -39,7 +39,7 @@
 #include "tsk_thread.h"
 #include "tsk_buffer.h"
 
-#include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#size_t #>) */
+#include <string.h> /* memcpy, ...(<#void * #>, <#const void * #>, <#tsk_size_t #>) */
 
 extern int tnet_transport_prepare(tnet_transport_t *transport);
 extern void *tnet_transport_mainthread(void *param);

@@ -37,7 +37,7 @@
 #include "tsk_memory.h"
 #include "tsk_string.h"
 
-tnet_dhcp_option_sip_t* tnet_dhcp_option_sip_create(const void* payload, size_t payload_size)
+tnet_dhcp_option_sip_t* tnet_dhcp_option_sip_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp_option_sip_def_t, payload, payload_size);
 }
@@ -50,7 +50,7 @@ static tsk_object_t* tnet_dhcp_option_sip_ctor(tsk_object_t * self, va_list * ap
 	tnet_dhcp_option_sip_t *option = self;
 	if(option){
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		const uint8_t* payloadPtr = (const uint8_t*)payload;
 		const uint8_t* payloadEnd = (payloadPtr + payload_size);
@@ -70,7 +70,7 @@ static tsk_object_t* tnet_dhcp_option_sip_ctor(tsk_object_t * self, va_list * ap
 			|'e'|'x'|'a'|'m'|'p'|'l'|'e'| 3 |'n'|'e'|'t'| 0 | +---+---+---
 			+---+---+---+---+---+---+---+---+---+---+
 			*/
-			size_t offset = 1;
+			tsk_size_t offset = 1;
 			char* server = 0;
 			payloadPtr++;
 			while((payloadPtr < payloadEnd) && !tnet_dns_rr_qname_deserialize(payload, &server, &offset)){

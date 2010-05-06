@@ -69,7 +69,7 @@ tsip_header_Date_t;
 TINYSIP_API tsip_header_Date_t* tsip_header_Date_create(const char* wkday, const char* month, int8_t day, int16_t year, int8_t h, int8_t m, int8_t s);
 TINYSIP_API tsip_header_Date_t* tsip_header_Date_create_null();
 
-TINYSIP_API tsip_header_Date_t *tsip_header_Date_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Date_t *tsip_header_Date_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Date_def_t;
 

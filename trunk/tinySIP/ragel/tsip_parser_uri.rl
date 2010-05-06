@@ -148,7 +148,7 @@
 ///
 /// @sa @ref tsip_uri_create()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsip_uri_t *tsip_uri_parse(const char *data, size_t size)
+tsip_uri_t *tsip_uri_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

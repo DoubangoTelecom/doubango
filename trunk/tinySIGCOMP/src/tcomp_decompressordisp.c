@@ -72,7 +72,7 @@ tsk_bool_t tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatche
 	*/
 	if(lpResult->isStreamBased){
 		if(!dispatcher->streamBuffers){
-			dispatcher->streamBuffers = TSK_LIST_CREATE();
+			dispatcher->streamBuffers = tsk_list_create();
 		}
 
 		streamId = lpResult->streamId;

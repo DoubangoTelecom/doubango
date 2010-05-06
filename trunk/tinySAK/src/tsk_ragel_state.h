@@ -121,7 +121,7 @@ TSK_BEGIN_DECLS
 */
 #define TSK_PARSER_ADD_PARAM(dest) \
 	{ \
-		size_t len = (size_t)(p  - tag_start); \
+		tsk_size_t len = (tsk_size_t)(p  - tag_start); \
 		tsk_param_t *param = tsk_params_parse_param(tag_start, len); \
 		if(param) \
 		{ \
@@ -150,7 +150,7 @@ TSK_BEGIN_DECLS
 */
 #define TSK_PARSER_ADD_STRING(dest) \
 	{ \
-		size_t len = (size_t)(p  - tag_start); \
+		tsk_size_t len = (tsk_size_t)(p  - tag_start); \
 		tsk_string_t *string = tsk_string_create(tsk_null); \
 		string->value = tsk_calloc(len+1, sizeof(char)), memcpy(string->value, tag_start, len); \
 		if(!dest)  \
@@ -176,7 +176,7 @@ typedef struct tsk_ragel_state_s
 tsk_ragel_state_t;
 
 
-TINYSAK_API void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, size_t size);
+TINYSAK_API void tsk_ragel_state_init(tsk_ragel_state_t *state, const char *data, tsk_size_t size);
 
 TSK_END_DECLS
 

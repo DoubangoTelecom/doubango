@@ -55,7 +55,7 @@ tsip_header_Privacy_t;
 
 TINYSIP_API tsip_header_Privacy_t* tsip_header_Privacy_create();
 
-TINYSIP_API tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Privacy_t *tsip_header_Privacy_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Privacy_def_t;
 

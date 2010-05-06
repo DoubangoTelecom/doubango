@@ -101,7 +101,7 @@ typedef tsk_list_t tsip_header_Security_Clients_L_t;
 TINYSIP_API tsip_header_Security_Client_t* tsip_header_Security_Client_create(const char* mech, const char* alg, const char* prot, const char* mod, const char* ealg, tnet_port_t port_c, tnet_port_t port_s, uint32_t spi_c, uint32_t spi_s);
 TINYSIP_API tsip_header_Security_Client_t* tsip_header_Security_Client_create_null();
 
-TINYSIP_API tsip_header_Security_Clients_L_t *tsip_header_Security_Client_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Security_Clients_L_t *tsip_header_Security_Client_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Security_Client_def_t;
 

@@ -234,7 +234,7 @@ typedef tsk_list_t tnet_dhcp_options_L_t;
 int tnet_dhcp_option_init(tnet_dhcp_option_t *self, tnet_dhcp_option_code_t code);
 int tnet_dhcp_option_deinit(tnet_dhcp_option_t *self);
 
-tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, size_t size);
+tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, tsk_size_t size);
 int tnet_dhcp_option_serialize(const tnet_dhcp_option_t* self, tsk_buffer_t *output);
 int tnet_dhcp_option_serializeex(tnet_dhcp_option_code_t code, uint8_t length, const void* value, tsk_buffer_t *output);
 
@@ -278,7 +278,7 @@ tnet_dhcp_option_dns_t;
 
 TINYNET_API tnet_dhcp_option_t* tnet_dhcp_option_create(tnet_dhcp_option_code_t code);
 TINYNET_API tnet_dhcp_option_paramslist_t* tnet_dhcp_option_paramslist_create();
-TINYNET_API tnet_dhcp_option_dns_t* tnet_dhcp_option_dns_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp_option_dns_t* tnet_dhcp_option_dns_create(const void* payload, tsk_size_t payload_size);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp_option_def_t;
 TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_ns_def_t;

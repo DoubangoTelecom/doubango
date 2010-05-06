@@ -47,7 +47,7 @@
 /**@ingroup tnet_utils_group
 * Creates new @ref tnet_interface_t object.
 */
-tnet_interface_t* tnet_interface_create(const char* description, const void* mac_address, size_t mac_address_length)
+tnet_interface_t* tnet_interface_create(const char* description, const void* mac_address, tsk_size_t mac_address_length)
 {
 	return tsk_object_new(tnet_interface_def_t, description, mac_address, mac_address_length);
 }
@@ -1044,9 +1044,9 @@ tnet_tls_socket_handle_t* tnet_sockfd_set_tlsfiles(tnet_fd_t fd, int isClient, c
 * @retval If no error occurs, sendto returns the total number of bytes sent, which can be less than the number indicated by @b size.
 * Otherwise, non-zero (negative) error code is returned.
 */
-int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, size_t size)
+int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf, tsk_size_t size)
 {
-	size_t sent = 0;
+	tsk_size_t sent = 0;
 	int ret = -1;
 
 	if(fd == TNET_INVALID_FD){
@@ -1091,7 +1091,7 @@ bail:
 * If no error occurs, recvfrom returns the number of bytes received. If the connection has been gracefully closed, the return value is zero. 
 * Otherwise, non-zero (negative) error code is returned.
 */
-int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct sockaddr *from)
+int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, tsk_size_t size, int flags, struct sockaddr *from)
 {
 	socklen_t fromlen;
 
@@ -1118,10 +1118,10 @@ int tnet_sockfd_recvfrom(tnet_fd_t fd, void* buf, size_t size, int flags, struct
 * All flags which can be passed to @b recv.
 * @retval If no error occurs, send returns the total number of bytes sent, which can be less than the number requested to be sent in the @b size parameter.
 */
-size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, size_t size, int flags)
+tsk_size_t tnet_sockfd_send(tnet_fd_t fd, const void* buf, tsk_size_t size, int flags)
 {
 	int ret = -1;
-	size_t sent = 0;
+	tsk_size_t sent = 0;
 
 	if(fd == TNET_INVALID_FD){
 		TSK_DEBUG_ERROR("Using invalid FD to send data.");
@@ -1164,7 +1164,7 @@ bail:
 * @retval If no error occurs, recv returns the number of bytes received and the buffer pointed to by the buf parameter will contain this data received. If the connection has been gracefully closed, the return value is zero.
 * Otherwise, non-zero (negative) error code is returned.
 */
-int tnet_sockfd_recv(tnet_fd_t fd, void* buf, size_t size, int flags)
+int tnet_sockfd_recv(tnet_fd_t fd, void* buf, tsk_size_t size, int flags)
 {
 	int ret = -1;
 
@@ -1318,7 +1318,7 @@ static tsk_object_t* tnet_interface_ctor(tsk_object_t * self, va_list * app)
 	if(iface){
 		const char* description = va_arg(*app, const char*);
 		const void* mac_address = va_arg(*app, const void*);
-		size_t mac_address_length = va_arg(*app, size_t);
+		tsk_size_t mac_address_length = va_arg(*app, tsk_size_t);
 
 		iface->description = tsk_strdup(description);
 		if((iface->mac_address = tsk_calloc(mac_address_length, sizeof(uint8_t)))){

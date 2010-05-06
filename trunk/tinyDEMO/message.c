@@ -207,8 +207,8 @@ bail:
 
 tsk_bool_t is_valid_telnum(const tsip_uri_t* uri)
 {
-	size_t i;
-	size_t len;
+	tsk_size_t i;
+	tsk_size_t len;
 
 	if(!uri || tsk_strnullORempty(uri->user_name)){
 		return tsk_false;

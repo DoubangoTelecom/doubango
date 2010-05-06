@@ -75,7 +75,7 @@ static void thttp_message_parser_eoh(tsk_ragel_state_t *state, thttp_message_t *
 		len = (int)(state->tag_end  - state->tag_start);
 		
 		if(!message->url){
-			message->url = thttp_url_parse(state->tag_start, (size_t)len);
+			message->url = thttp_url_parse(state->tag_start, (tsk_size_t)len);
 		}
 	}
 

@@ -579,7 +579,7 @@ int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app)
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	/* Alter user */
+	/* Alert user */
 	if(response){
 		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
 				TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
@@ -651,6 +651,10 @@ int send_200NOTIFY(tsip_dialog_subscribe_t *self, const tsip_request_t* request)
 int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 {
 	TSK_DEBUG_INFO("=== SUBSCRIBE Dialog terminated ===");
+
+	/* Alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_dialog, 
+			tsip_event_code_dialog_terminated, "Dialog terminated");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

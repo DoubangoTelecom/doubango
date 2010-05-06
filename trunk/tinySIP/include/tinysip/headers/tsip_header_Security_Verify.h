@@ -100,7 +100,7 @@ typedef tsk_list_t tsip_header_Security_Verifies_L_t;
 TINYSIP_API tsip_header_Security_Verify_t* tsip_header_Security_Verify_create();
 TINYSIP_API tsip_header_Security_Verify_t* tsip_header_Security_Verify_create_null();
 
-TINYSIP_API tsip_header_Security_Verifies_L_t *tsip_header_Security_Verify_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Security_Verifies_L_t *tsip_header_Security_Verify_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Security_Verify_def_t;
 

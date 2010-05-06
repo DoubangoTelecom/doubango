@@ -58,7 +58,7 @@ typedef struct thttp_header_Transfer_Encoding_s
 thttp_header_Transfer_Encoding_t;
 
 
-thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const char *data, size_t size);
+thttp_header_Transfer_Encoding_t *thttp_header_Transfer_Encoding_parse(const char *data, tsk_size_t size);
 
 thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create(const char* encoding);
 thttp_header_Transfer_Encoding_t* thttp_header_transfer_encoding_create_null();

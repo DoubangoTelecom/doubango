@@ -246,7 +246,7 @@
 /* Ragel data */
 %% write data;
 
-tsdp_message_t* tsdp_message_parse(const void *input, size_t size)
+tsdp_message_t* tsdp_message_parse(const void *input, tsk_size_t size)
 {
 	tsdp_message_t* sdp_msg = tsk_null;
 	const char* tag_start = tsk_null;

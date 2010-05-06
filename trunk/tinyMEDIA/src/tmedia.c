@@ -73,7 +73,7 @@ int tmedia_deinit(tmedia_t* self)
 
 int tmedia_plugin_register(const tmedia_plugin_def_t* plugin)
 {
-	size_t i;
+	tsk_size_t i;
 	if(!plugin){
 		return -1;
 	}
@@ -93,7 +93,7 @@ tmedia_t* tmedia_factory_create(const char* name, const char* host, tnet_socket_
 {
 	tmedia_t* ret =  tsk_null;
 	const tmedia_plugin_def_t* plugin;
-	size_t i = 0;
+	tsk_size_t i = 0;
 
 	while((i < TMED_MAX_PLUGINS) && (plugin = __tmedia_plugins[i++])){
 		if(plugin->objdef && tsk_strequals(plugin->name, name)){

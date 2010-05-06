@@ -57,7 +57,7 @@ person_t;
 typedef struct tsk_object_def_s
 {
 	//! The size of the object.
-	size_t size;
+	tsk_size_t size;
 	//! Pointer to the constructor.
 	tsk_object_t*	(* constructor) (tsk_object_t *, va_list *);
 	//! Pointer to the destructor.

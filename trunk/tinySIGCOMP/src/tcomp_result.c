@@ -38,11 +38,11 @@ void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOu
 	if(result){
 		uint8_t i;
 		for(i = 0; i < result->statesToCreateIndex; i++){
-			result->statesToCreate[i] = TSK_OBJECT_SAFE_FREE(result->statesToCreate[i]);
+			TSK_OBJECT_SAFE_FREE(result->statesToCreate[i]);
 		}
 
 		for(i = 0; i < result->statesToFreeIndex; i++){
-			result->statesToFree[i] = TSK_OBJECT_SAFE_FREE(result->statesToFree[i]);
+			TSK_OBJECT_SAFE_FREE(result->statesToFree[i]);
 		}
 
 		if(!isDestructor){

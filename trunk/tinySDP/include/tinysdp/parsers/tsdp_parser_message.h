@@ -36,7 +36,7 @@
 
 TSDP_BEGIN_DECLS
 
-TINYSDP_API tsdp_message_t* tsdp_message_parse(const void *input, size_t size);
+TINYSDP_API tsdp_message_t* tsdp_message_parse(const void *input, tsk_size_t size);
 
 TSDP_END_DECLS
 

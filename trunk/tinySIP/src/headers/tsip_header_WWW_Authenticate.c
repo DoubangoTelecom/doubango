@@ -81,7 +81,7 @@ int tsip_header_WWW_Authenticate_tostring(const tsip_header_t* header, tsk_buffe
 	return -1;
 }
 
-tsip_header_WWW_Authenticate_t *tsip_header_WWW_Authenticate_parse(const char *data, size_t size)
+tsip_header_WWW_Authenticate_t *tsip_header_WWW_Authenticate_parse(const char *data, tsk_size_t size)
 {
 	tsip_header_WWW_Authenticate_t *sip_hdr = 0;
 	thttp_header_WWW_Authenticate_t* http_hdr;

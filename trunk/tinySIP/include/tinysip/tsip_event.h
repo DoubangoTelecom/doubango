@@ -47,9 +47,7 @@ typedef enum tsip_event_type_e
 	tsip_event_register,
 	tsip_event_subscribe,
 	
-	tsip_event_error,
-	tsip_event_success,
-	tsip_event_info
+	tsip_event_dialog
 }
 tsip_event_type_t;
 
@@ -61,7 +59,7 @@ typedef enum tsip_event_code_e
 	/* 7xx ==> errors */
 	tsip_event_code_transport_error = 702,
 	tsip_event_code_global_error = 703,
-	tsip_event_code_message_error = 703,
+	tsip_event_code_message_error = 704,
 
 	/* 8xx ==> success */
 	tsip_event_code_request_incoming = 800,

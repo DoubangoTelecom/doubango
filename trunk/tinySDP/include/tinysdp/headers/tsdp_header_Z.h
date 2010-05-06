@@ -76,7 +76,7 @@ typedef tsk_list_t tsdp_headers_Z_L_t;
 TINYSDP_API tsdp_header_Z_t* tsdp_header_Z_create(uint64_t time, tsk_bool_t shifted_back, const char* typed_time);
 TINYSDP_API tsdp_header_Z_t* tsdp_header_Z_create_null();
 
-TINYSDP_API tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, tsk_size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_Z_def_t;
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_zone_def_t;

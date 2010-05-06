@@ -72,7 +72,7 @@ int tsip_header_To_tostring(const tsip_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
-tsip_header_To_t *tsip_header_To_parse(const char *data, size_t size)
+tsip_header_To_t *tsip_header_To_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
@@ -833,7 +833,7 @@ _match:
 	{
 		int len = (int)(p  - tag_start);
 		if(hdr_to && !hdr_to->uri){
-			if((hdr_to->uri = tsip_uri_parse(tag_start, (size_t)len)) && hdr_to->display_name){
+			if((hdr_to->uri = tsip_uri_parse(tag_start, (tsk_size_t)len)) && hdr_to->display_name){
 				hdr_to->uri->display_name = tsk_strdup(hdr_to->display_name);
 			}
 		}

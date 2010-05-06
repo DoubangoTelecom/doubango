@@ -128,7 +128,7 @@ typedef tsk_list_t tnet_dhcp6_options_L_t;
 
 #define TNET_DECLARE_DHCP6_OPTION tnet_dhcp6_option_t dhcp6_option
 
-tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, size_t size);
+tnet_dhcp6_option_t* tnet_dhcp6_option_deserialize(const void* data, tsk_size_t size);
 int tnet_dhcp6_option_serialize(const tnet_dhcp6_option_t* self, tsk_buffer_t *output);
 int tnet_dhcp6_option_serializeex(tnet_dhcp6_option_code_t code, uint8_t length, const void* value, tsk_buffer_t *output);
 
@@ -227,13 +227,13 @@ typedef struct tnet_dhcp6_option_vendorclass_s
 tnet_dhcp6_option_vendorclass_t;
 
 
-TINYNET_API tnet_dhcp6_option_t* tnet_dhcp6_option_create(tnet_dhcp6_option_code_t code, const void* payload, size_t payload_size);
-TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_indentifer_create(tnet_dhcp6_option_code_t code, const void* payload, size_t payload_size);
-TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_clientid_create(const void* payload, size_t payload_size);
-TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_serverid_create(const void* payload, size_t payload_size);
-TINYNET_API tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_option_t* tnet_dhcp6_option_create(tnet_dhcp6_option_code_t code, const void* payload, tsk_size_t payload_size);
+TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_indentifer_create(tnet_dhcp6_option_code_t code, const void* payload, tsk_size_t payload_size);
+TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_clientid_create(const void* payload, tsk_size_t payload_size);
+TINYNET_API tnet_dhcp6_option_identifier_t* tnet_dhcp6_option_serverid_create(const void* payload, tsk_size_t payload_size);
+TINYNET_API tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create(const void* payload, tsk_size_t payload_size);
 TINYNET_API tnet_dhcp6_option_orequest_t* tnet_dhcp6_option_orequest_create_null();
-TINYNET_API tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create(const void* payload, size_t payload_size);
+TINYNET_API tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create(const void* payload, tsk_size_t payload_size);
 TINYNET_API tnet_dhcp6_option_vendorclass_t* tnet_dhcp6_option_vendorclass_create_null();
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_dhcp6_option_def_t;

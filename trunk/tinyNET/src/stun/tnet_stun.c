@@ -181,7 +181,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 		else if(FD_ISSET(localFD, &set)){
 		/* there is data to read */
 
-			size_t len = 0;
+			tsk_size_t len = 0;
 			void* data = 0;
 
 			/* Check how how many bytes are pending */
@@ -199,7 +199,7 @@ tnet_stun_response_t* tnet_stun_send_unreliably(tnet_fd_t localFD, uint16_t RTO,
 			}
 
 			/* Parse the incoming response. */
-			response = tnet_stun_message_deserialize(data, (size_t)ret);
+			response = tnet_stun_message_deserialize(data, (tsk_size_t)ret);
 			TSK_FREE(data);
 
 			if(response){
@@ -351,7 +351,7 @@ bail:
 **/
 int tnet_stun_transacid_cmp(const tnet_stun_transacid_t id1, const tnet_stun_transacid_t id2)
 {
-	size_t i;
+	tsk_size_t i;
 	for(i=0; i<sizeof(tnet_stun_transacid_t); i++){
 		if(id1[i] != id2[i]){
 			return (id1[i] - id2[i]);

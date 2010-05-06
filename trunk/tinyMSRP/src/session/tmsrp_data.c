@@ -42,7 +42,7 @@
 #define TMSRP_DATA_IN_MAX_BUFFER 0xFFFF
 /* =========================== Common ============================= */
 
-//int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, size_t size, tsk_bool_t isfilepath, const char* ctype)
+//int tmsrp_data_init(tmsrp_data_t* self, tsk_bool_t outgoing, const void* pdata, tsk_size_t size, tsk_bool_t isfilepath, const char* ctype)
 //{	
 //	if(!self || !pdata || !size){
 //		return -1;
@@ -99,7 +99,7 @@
 
 /* =========================== Incoming ============================= */
 
-int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, size_t size)
+int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, tsk_size_t size)
 {
 	int ret = -1;
 	if(!self || !self->buffer || !pdata || !size){
@@ -123,7 +123,7 @@ int tmsrp_data_in_put(tmsrp_data_in_t* self, const void* pdata, size_t size)
 tmsrp_message_t* tmsrp_data_in_get(tmsrp_data_in_t* self)
 {
 	tmsrp_message_t* ret;
-	size_t msg_size;
+	tsk_size_t msg_size;
 
 	if(!self || !self->buffer || !TSK_BUFFER_DATA(self->buffer) || !TSK_BUFFER_SIZE(self->buffer)){
 		//...this is not an error
@@ -144,7 +144,7 @@ tmsrp_message_t* tmsrp_data_in_get(tmsrp_data_in_t* self)
 tsk_buffer_t* tmsrp_data_out_get(tmsrp_data_out_t* self)
 {
 	tsk_buffer_t* ret = tsk_null;
-	size_t toread;
+	tsk_size_t toread;
 
 	if(!self){
 		return tsk_null;
@@ -161,7 +161,7 @@ tsk_buffer_t* tmsrp_data_out_get(tmsrp_data_out_t* self)
 	}
 	else if(self->file){
 		// Buffer hack
-		size_t read;
+		tsk_size_t read;
 		ret = tsk_buffer_create_null();
 		ret->data = tsk_calloc(toread, sizeof(uint8_t));
 		ret->size = toread;
@@ -227,7 +227,7 @@ static void* tmsrp_data_out_create(void * self, va_list * app)
 	if(data_out){
 		tsk_istr_t id;
 		const void* pdata = va_arg(*app, const void*);
-		size_t size = va_arg(*app, size_t);
+		tsk_size_t size = va_arg(*app, tsk_size_t);
 		tsk_bool_t isfilepath = va_arg(*app, tsk_bool_t);
 		
 		if(isfilepath){

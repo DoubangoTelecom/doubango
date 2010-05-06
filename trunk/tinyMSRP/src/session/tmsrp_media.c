@@ -346,7 +346,7 @@ int tmsrp_media_set_remote_offer(tmedia_t* self, const tsdp_message_t* offer)
 	const tsdp_header_A_t* A;
 	const tsdp_header_M_t* M;
 	int ret = -1;
-	size_t index;
+	tsk_size_t index;
 	tsk_bool_t found = tsk_false;
 	tsk_bool_t answer;
 
@@ -472,7 +472,7 @@ int tmsrp_send_file(tmsrp_media_t* self, const char* path)
 	return 0;
 }
 
-tmsrp_send_data(tmsrp_media_t* self, const void* data, size_t size, const char* ctype)
+tmsrp_send_data(tmsrp_media_t* self, const void* data, tsk_size_t size, const char* ctype)
 {
 	if(!self || !data || !size || !self->sender){
 		return -1;

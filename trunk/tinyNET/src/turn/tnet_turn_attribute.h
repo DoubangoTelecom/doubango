@@ -176,19 +176,19 @@ tnet_turn_attribute_restoken_t;
 TINYNET_GEXTERN const tsk_object_def_t *tnet_turn_attribute_restoken_def_t;
 
 
-tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_t type, uint16_t length, const void* payload, size_t payload_size);
+tnet_stun_attribute_t* tnet_turn_attribute_deserialize(tnet_stun_attribute_type_t type, uint16_t length, const void* payload, tsk_size_t payload_size);
 int tnet_turn_attribute_serialize(const tnet_stun_attribute_t* attribute, tsk_buffer_t *output);
 
 tnet_turn_attribute_channelnum_t* tnet_turn_attribute_channelnum_create(uint16_t number);
 tnet_turn_attribute_lifetime_t* tnet_turn_attribute_lifetime_create(uint32_t lifetime);
-tnet_turn_attribute_xpeer_addr_t* tnet_turn_attribute_xpeer_addr_create(const void* payload, size_t payload_size);
+tnet_turn_attribute_xpeer_addr_t* tnet_turn_attribute_xpeer_addr_create(const void* payload, tsk_size_t payload_size);
 tnet_turn_attribute_xpeer_addr_t* tnet_turn_attribute_xpeer_addr_create_null();
-tnet_turn_attribute_data_t* tnet_turn_attribute_data_create(const void* payload, size_t payload_size);
-tnet_turn_attribute_xrelayed_addr_t* tnet_turn_attribute_xrelayed_addr_create(const void* payload, size_t payload_size);
+tnet_turn_attribute_data_t* tnet_turn_attribute_data_create(const void* payload, tsk_size_t payload_size);
+tnet_turn_attribute_xrelayed_addr_t* tnet_turn_attribute_xrelayed_addr_create(const void* payload, tsk_size_t payload_size);
 tnet_turn_attribute_even_port_t* tnet_turn_attribute_even_port_create(unsigned R);
 tnet_turn_attribute_reqtrans_t* tnet_turn_attribute_reqtrans_create(tnet_proto_t protocol);
 tnet_turn_attribute_dontfrag_t* tnet_turn_attribute_dontfrag_create();
-tnet_turn_attribute_restoken_t* tnet_turn_attribute_restoken_create(const void* payload, size_t payload_size);
+tnet_turn_attribute_restoken_t* tnet_turn_attribute_restoken_create(const void* payload, tsk_size_t payload_size);
 
 TNET_END_DECLS
 

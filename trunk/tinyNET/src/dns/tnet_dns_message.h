@@ -192,7 +192,7 @@ typedef tnet_dns_message_t tnet_dns_query_t; /**< DNS Query messsage. */
 typedef tnet_dns_message_t tnet_dns_response_t; /**< DNS response message. */
 
 tsk_buffer_t* tnet_dns_message_serialize(const tnet_dns_message_t *message);
-tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, size_t size);
+tnet_dns_message_t* tnet_dns_message_deserialize(const uint8_t *data, tsk_size_t size);
 
 
 tnet_dns_message_t* tnet_dns_message_create(const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype, tsk_bool_t isquery);

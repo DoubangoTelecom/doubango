@@ -80,7 +80,7 @@ typedef struct tmsrp_media_s
 tmsrp_media_t;
 
 int tmsrp_send_file(tmsrp_media_t* self, const char* path);
-int tmsrp_send_data(tmsrp_media_t* self, const void* data, size_t size, const char* ctype);
+int tmsrp_send_data(tmsrp_media_t* self, const void* data, tsk_size_t size, const char* ctype);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_media_def_t;
 TINYMSRP_GEXTERN const tmedia_plugin_def_t *tmsrp_media_plugin_def_t;

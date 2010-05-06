@@ -61,7 +61,7 @@ typedef struct tnet_transport_event_s
 	tnet_transport_event_type_t type;
 
 	void* data;
-	size_t size;
+	tsk_size_t size;
 
 	const void* callback_data;
 	tnet_fd_t fd;
@@ -83,8 +83,8 @@ TINYNET_API int tnet_transport_add_socket(const tnet_transport_handle_t *handle,
 TINYNET_API int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_t* fd);
 TINYNET_API tnet_fd_t tnet_transport_connectto(const tnet_transport_handle_t *handle, const char* host, tnet_port_t port, tnet_socket_type_t type);
 #define tnet_transport_connectto_2(handle, host, port) tnet_transport_connectto(handle, host, port, tnet_transport_get_type(handle))
-TINYNET_API size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size);
-TINYNET_API size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, size_t size);
+TINYNET_API tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, tsk_size_t size);
+TINYNET_API tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, tsk_size_t size);
 
 TINYNET_API int tnet_transport_set_callback(const tnet_transport_handle_t *handle, tnet_transport_cb_f callback, const void* callback_data);
 

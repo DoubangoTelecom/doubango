@@ -36,17 +36,17 @@ int tnet_dhcp6_duid_en_serialize(const tnet_dhcp6_duid_en_t* self, tsk_buffer_t 
 int tnet_dhcp6_duid_ll_serialize(const tnet_dhcp6_duid_ll_t* self, tsk_buffer_t *output);
 
 
-tnet_dhcp6_duid_llt_t* tnet_dhcp6_duid_llt_create(const void* payload, size_t payload_size)
+tnet_dhcp6_duid_llt_t* tnet_dhcp6_duid_llt_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp6_duid_llt_def_t, payload, payload_size);
 }
 
-tnet_dhcp6_duid_en_t* tnet_dhcp6_duid_en_create(const void* payload, size_t payload_size)
+tnet_dhcp6_duid_en_t* tnet_dhcp6_duid_en_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp6_duid_en_def_t, payload, payload_size);
 }
 
-tnet_dhcp6_duid_ll_t* tnet_dhcp6_duid_ll_create(const void* payload, size_t payload_size)
+tnet_dhcp6_duid_ll_t* tnet_dhcp6_duid_ll_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp6_duid_ll_def_t, payload, payload_size);
 }
@@ -76,7 +76,7 @@ int tnet_dhcp6_duid_deinit(tnet_dhcp6_duid_t *self)
 	return -1;
 }
 
-tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, size_t size)
+tnet_dhcp6_duid_t* tnet_dhcp6_duid_deserialize(const void* data, tsk_size_t size)
 {
 	tnet_dhcp6_duid_t *duid = 0;
 	uint8_t* dataPtr = ((uint8_t*)data);
@@ -152,7 +152,7 @@ static tsk_object_t* tnet_dhcp6_duid_llt_ctor(tsk_object_t * self, va_list * app
 	tnet_dhcp6_duid_llt_t *duid = self;
 	if(duid){
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		/* init base */
 		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_linklayer_plus_time);
@@ -203,7 +203,7 @@ static tsk_object_t* tnet_dhcp6_duid_en_ctor(tsk_object_t * self, va_list * app)
 	tnet_dhcp6_duid_en_t *duid = self;
 	if(duid){
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		/* init base */
 		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_Vendor_assigned_id);
@@ -254,7 +254,7 @@ static tsk_object_t* tnet_dhcp6_duid_ll_ctor(tsk_object_t * self, va_list * app)
 	tnet_dhcp6_duid_ll_t *duid = self;
 	if(duid){
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		/* init base */
 		tnet_dhcp6_duid_init(TNET_DHCP6_DUID(duid), dhcp6_duid_linklayer);

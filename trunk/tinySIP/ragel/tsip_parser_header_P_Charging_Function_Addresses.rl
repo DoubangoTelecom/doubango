@@ -120,7 +120,7 @@ int tsip_header_P_Charging_Function_Addresses_tostring(const tsip_header_t* head
 	return -1;
 }
 
-tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_Addresses_parse(const char *data, size_t size)
+tsip_header_P_Charging_Function_Addressess_L_t *tsip_header_P_Charging_Function_Addresses_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

@@ -165,7 +165,7 @@ int tnet_turn_allocation_refresh(const struct tnet_nat_context_s* nat_context, t
 int tnet_turn_unallocate(const struct tnet_nat_context_s* nat_context, tnet_turn_allocation_t *allocation);
 tnet_turn_channel_binding_id_t tnet_turn_channel_bind(const struct tnet_nat_context_s* nat_context, tnet_turn_allocation_t *allocation, struct sockaddr_storage *peer);
 int tnet_turn_channel_refresh(const struct tnet_nat_context_s* nat_context, const tnet_turn_channel_binding_t * channel_bind);
-int tnet_turn_channel_senddata(const struct tnet_nat_context_s* nat_context, const tnet_turn_channel_binding_t * channel_bind, const void* data, size_t size, int indication);
+int tnet_turn_channel_senddata(const struct tnet_nat_context_s* nat_context, const tnet_turn_channel_binding_t * channel_bind, const void* data, tsk_size_t size, int indication);
 int tnet_turn_add_permission(const struct tnet_nat_context_s* nat_context, tnet_turn_allocation_t *allocation, const char* ipaddress, uint32_t timeout);
 
 

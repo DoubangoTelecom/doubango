@@ -223,7 +223,7 @@ bail:
  *
  * @retval	A STUN message if deserialization succeed or NULL otherwise.
 **/
-tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t size)
+tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, tsk_size_t size)
 {
 	tnet_stun_message_t *message = 0;
 	uint8_t* dataPtr, *dataEnd;
@@ -272,7 +272,7 @@ tnet_stun_message_t* tnet_stun_message_deserialize(const uint8_t *data, size_t s
 	while(dataPtr < dataEnd){
 		tnet_stun_attribute_t *attribute = tnet_stun_attribute_deserialize(dataPtr, (dataEnd - dataPtr));
 		if(attribute){
-			size_t att_size = (attribute->length + 2 /* Type*/ + 2/* Length */);
+			tsk_size_t att_size = (attribute->length + 2 /* Type*/ + 2/* Length */);
 			att_size += (att_size%4) ? 4-(att_size%4) : 0; // Skip zero bytes used to pad the attribute.
 
 			dataPtr += att_size;

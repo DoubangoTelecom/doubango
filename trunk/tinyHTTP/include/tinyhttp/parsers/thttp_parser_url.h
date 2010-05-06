@@ -37,7 +37,7 @@
 
 THTTP_BEGIN_DECLS
 
-TINYHTTP_API thttp_url_t *thttp_url_parse(const char *data, size_t size);
+TINYHTTP_API thttp_url_t *thttp_url_parse(const char *data, tsk_size_t size);
 
 THTTP_END_DECLS
 

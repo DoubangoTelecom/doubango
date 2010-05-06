@@ -45,8 +45,8 @@ TSK_BEGIN_DECLS
 */
 #define TSK_BASE64_DECODE_LEN(IN_LEN)		(((IN_LEN * 3)/4) + 2)
 
-TINYSAK_API size_t tsk_base64_encode(const uint8_t* input, size_t input_size, char **output);
-TINYSAK_API size_t tsk_base64_decode(const uint8_t* input, size_t input_size, char **output);
+TINYSAK_API tsk_size_t tsk_base64_encode(const uint8_t* input, tsk_size_t input_size, char **output);
+TINYSAK_API tsk_size_t tsk_base64_decode(const uint8_t* input, tsk_size_t input_size, char **output);
 
 TSK_END_DECLS
 

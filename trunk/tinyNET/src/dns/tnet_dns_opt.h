@@ -44,7 +44,7 @@ typedef struct tnet_dns_opt_s
 }
 tnet_dns_opt_t;
 
-tnet_dns_opt_t* tnet_dns_opt_create(size_t payload_size);
+tnet_dns_opt_t* tnet_dns_opt_create(tsk_size_t payload_size);
 
 TINYNET_GEXTERN const tsk_object_def_t *tnet_dns_opt_def_t;
 

@@ -37,12 +37,12 @@
 	goto bail;
 
 /** internal function used to deserialse a SMS-COMMAND message from binary content. */
-tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, size_t size)
+tsms_tpdu_message_t* _tsms_tpdu_command_deserialize(const void* data, tsk_size_t size)
 {
 	/* You don't need to test data and test, this is an internal function called by tsms_tpdu_message_deserialize() */
 	tsms_tpdu_command_t* self = tsms_tpdu_command_create(0, tsk_null, tsk_null, 0, tsms_tpdu_cmd_rel);
 	tsk_bool_t failed = tsk_false;
-	size_t any_len;
+	tsk_size_t any_len;
 	const uint8_t* pdata = data;
 	const uint8_t* pend = pdata + size;
 

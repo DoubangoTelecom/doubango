@@ -60,7 +60,7 @@ typedef tsk_list_t tmsrp_headers_Dummy_L_t;
 TINYMSRP_API tmsrp_header_Dummy_t* tmsrp_header_Dummy_create(const char* name, const char* value);
 TINYMSRP_API tmsrp_header_Dummy_t* tmsrp_header_Dummy_create_null();
 
-TINYMSRP_API tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Dummy_t *tmsrp_header_Dummy_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Dummy_def_t;
 

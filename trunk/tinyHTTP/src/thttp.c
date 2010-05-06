@@ -323,7 +323,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			while(start < end){
 				/* RFC 2616 - 19.4.6 Introduction of Transfer-Encoding */
 				// read chunk-size, chunk-extension (if any) and CRLF
-				size_t chunk_size = (size_t)tsk_atox(start);
+				tsk_size_t chunk_size = (tsk_size_t)tsk_atox(start);
 				if((index = tsk_strindexOf(start, (end-start), "\r\n")) >=0){
 					start += index + 2/*CRLF*/;
 				}
@@ -342,7 +342,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 		}
 		else{
-			size_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header. */
+			tsk_size_t clen = THTTP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header. */
 			if(clen == 0){ /* No content */
 				tsk_buffer_remove(dialog->buf, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove HTTP headers and CRLF ==> must never happen */
 				have_all_content = tsk_true;

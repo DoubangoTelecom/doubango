@@ -91,7 +91,7 @@ int thttp_header_WWW_Authenticate_tostring(const thttp_header_t* header, tsk_buf
 
 /**@ingroup thttp_header_group
 */
-thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char *data, size_t size)
+thttp_header_WWW_Authenticate_t *thttp_header_WWW_Authenticate_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
@@ -4633,7 +4633,7 @@ _again:
 	return hdr_WWW_Authenticate;
 }
 
-thttp_header_Proxy_Authenticate_t *thttp_header_Proxy_Authenticate_parse(const char *data, size_t size)
+thttp_header_Proxy_Authenticate_t *thttp_header_Proxy_Authenticate_parse(const char *data, tsk_size_t size)
 {
 	return thttp_header_WWW_Authenticate_parse(data, size);
 }

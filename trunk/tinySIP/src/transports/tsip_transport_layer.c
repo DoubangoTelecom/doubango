@@ -119,7 +119,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{
-		size_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
+		tsk_size_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
 		if(clen == 0){ /* No content */
 			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove SIP headers and CRLF */
 		}

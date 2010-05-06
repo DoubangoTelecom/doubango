@@ -45,11 +45,10 @@
 * @retval On success, a pointer to the memory block allocated by the function.
 * It is up to you to free the returned pointer.
 */
-void* tsk_malloc(size_t size)
+void* tsk_malloc(tsk_size_t size)
 {
 	void *ret = malloc(size);
-	if(!ret)
-	{
+	if(!ret){
 		TSK_DEBUG_ERROR("Memory allocation failed");
 	}
 
@@ -71,12 +70,11 @@ void* tsk_malloc(size_t size)
 * If the function failed to allocate the requested block of memory, a NULL pointer is returned.
 * It is up to you to free the returned pointer.
 */
-void* tsk_realloc (void* ptr, size_t size)
+void* tsk_realloc (void* ptr, tsk_size_t size)
 {
-	void *ret = 0;
-	
-	ret = realloc(ptr, size);
-	if(!ret){
+	void *ret = tsk_null;
+		
+	if(!(ret = realloc(ptr, size))){
 		TSK_DEBUG_ERROR("Memory reallocation failed");
 	}
 
@@ -105,7 +103,7 @@ void tsk_free(void** ptr)
 * If the function failed to allocate the requested block of memory, a NULL pointer is returned.
 * It is up to you to free the returned pointer.
 */
-void* tsk_calloc(size_t num, size_t size)
+void* tsk_calloc(tsk_size_t num, tsk_size_t size)
 {
 	void* ret = 0;
 	if(num && size){

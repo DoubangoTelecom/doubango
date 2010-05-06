@@ -49,16 +49,16 @@ TINYSAK_API char tsk_b10tob16(char c);
 TINYSAK_API char tsk_b16tob10(char c);
 
 TINYSAK_API int tsk_stricmp(const char * str1, const char * str2);
-TINYSAK_API int tsk_strnicmp(const char * str1, const char * str2, size_t n);
+TINYSAK_API int tsk_strnicmp(const char * str1, const char * str2, tsk_size_t n);
 TINYSAK_API int tsk_strcmp(const char * str1, const char * str2);
-TINYSAK_API int tsk_strncmp(const char * str1, const char * str2, size_t n);
+TINYSAK_API int tsk_strncmp(const char * str1, const char * str2, tsk_size_t n);
 TINYSAK_API char* tsk_strdup(const char *s1);
-TINYSAK_API char* tsk_strndup(const char *s1, size_t n);
-TINYSAK_API tsk_bool_t tsk_strcontains(const char * str, size_t size, const char * substring);
-TINYSAK_API int tsk_strindexOf(const char * str, size_t size, const char * substring);
+TINYSAK_API char* tsk_strndup(const char *s1, tsk_size_t n);
+TINYSAK_API tsk_bool_t tsk_strcontains(const char * str, tsk_size_t size, const char * substring);
+TINYSAK_API int tsk_strindexOf(const char * str, tsk_size_t size, const char * substring);
 TINYSAK_API void tsk_strcat(char** destination, const char* source);
 TINYSAK_API void tsk_strcat_2(char** destination, const char* format, ...);
-TINYSAK_API void tsk_strncat(char** destination, const char* source, size_t n);
+TINYSAK_API void tsk_strncat(char** destination, const char* source, tsk_size_t n);
 TINYSAK_API int tsk_sprintf(char** str, const char* format, ...);
 TINYSAK_API int tsk_sprintf_2(char** str, const char* format, va_list* ap);
 TINYSAK_API void tsk_strupdate(char** str, const char* newval);
@@ -73,8 +73,8 @@ TINYSAK_API void tsk_itoa(int64_t i, tsk_istr_t *result);
 TINYSAK_API int64_t tsk_atoll(const char*);
 TINYSAK_API long tsk_atox(const char*);
 TINYSAK_API void tsk_strrandom(tsk_istr_t *result);
-TINYSAK_API void tsk_str_from_hex(const uint8_t *hex, size_t size, char* str);
-TINYSAK_API void tsk_str_to_hex(const char *str, size_t size, uint8_t* hex);
+TINYSAK_API void tsk_str_from_hex(const uint8_t *hex, tsk_size_t size, char* str);
+TINYSAK_API void tsk_str_to_hex(const char *str, tsk_size_t size, uint8_t* hex);
 
 /**@ingroup tsk_string_group
 * @def tsk_strtrim_both

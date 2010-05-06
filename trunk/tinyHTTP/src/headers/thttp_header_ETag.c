@@ -71,7 +71,7 @@ int thttp_header_ETag_tostring(const thttp_header_t* header, tsk_buffer_t* outpu
 
 /**@ingroup thttp_header_group
 */
-thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, size_t size)
+thttp_header_ETag_t *thttp_header_ETag_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

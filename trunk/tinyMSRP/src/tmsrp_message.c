@@ -133,9 +133,9 @@ tmsrp_request_type_t tmsrp_request_get_type(const char* method)
 	return tmsrp_NONE;
 }
 
-const tmsrp_header_t *tmsrp_message_get_headerAt(const tmsrp_message_t *self, tmsrp_header_type_t type, size_t index)
+const tmsrp_header_t *tmsrp_message_get_headerAt(const tmsrp_message_t *self, tmsrp_header_type_t type, tsk_size_t index)
 {
-	size_t pos = 0;
+	tsk_size_t pos = 0;
 	tsk_list_item_t *item;
 	const tmsrp_header_t* hdr = 0;
 
@@ -218,7 +218,7 @@ const tmsrp_header_t *tmsrp_message_get_headerByName(const tmsrp_message_t *self
 	return tsk_null;
 }
 
-int tmsrp_message_add_content(tmsrp_message_t *self, const char* content_type, const void* content, size_t size)
+int tmsrp_message_add_content(tmsrp_message_t *self, const char* content_type, const void* content, tsk_size_t size)
 {
 	if(self)
 	{

@@ -56,7 +56,7 @@ tsip_header_Require_t;
 TINYSIP_API tsip_header_Require_t* tsip_header_Require_create(const char* option);
 TINYSIP_API tsip_header_Require_t* tsip_header_Require_create_null();
 
-TINYSIP_API tsip_header_Require_t *tsip_header_Require_parse(const char *data, size_t size);
+TINYSIP_API tsip_header_Require_t *tsip_header_Require_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Require_def_t;
 

@@ -215,7 +215,7 @@ const void* thttp_session_get_context(const thttp_session_handle_t *self)
 int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_t* response, tsk_bool_t answered)
 {
 	int ret = 0;
-	size_t i;
+	tsk_size_t i;
 
 	tsk_list_item_t *item;
 

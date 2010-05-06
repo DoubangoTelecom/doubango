@@ -21,7 +21,7 @@
 */
 
 /**@file tmedia.h
- * @brief Media.
+ * @brief Base media object.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *

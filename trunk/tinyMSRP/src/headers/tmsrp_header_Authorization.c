@@ -96,7 +96,7 @@ int tmsrp_header_Authorization_tostring(const void* header, tsk_buffer_t* output
 	return -1;
 }
 
-tmsrp_header_Authorization_t *tmsrp_header_Authorization_parse(const char *data, size_t size)
+tmsrp_header_Authorization_t *tmsrp_header_Authorization_parse(const char *data, tsk_size_t size)
 {
 	tmsrp_header_Authorization_t *hdr_msrp = 0;
 	thttp_header_Authorization_t* hdr_http;

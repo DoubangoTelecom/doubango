@@ -28,7 +28,7 @@
 
 _BEGIN_DECLS
 
-cmd_t* dssl_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params);
+cmd_t* dssl_parse(const char *buffer, tsk_size_t size, tsk_bool_t *comment, tsk_params_L_t* params);
 
 _END_DECLS
 

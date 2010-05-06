@@ -101,7 +101,7 @@ int tsip_header_Security_Server_tostring(const tsip_header_t* header, tsk_buffer
 }
 
 
-tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *data, size_t size)
+tsip_header_Security_Servers_L_t *tsip_header_Security_Server_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

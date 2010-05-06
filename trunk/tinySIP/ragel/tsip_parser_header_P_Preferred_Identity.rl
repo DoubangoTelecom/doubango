@@ -61,7 +61,7 @@
 		if(!hdr_pi->uri) /* Only one URI */{
 			int len = (int)(p  - tag_start);
 			if(hdr_pi && !hdr_pi->uri){
-				if((hdr_pi->uri = tsip_uri_parse(tag_start, (size_t)len)) && hdr_pi->display_name){
+				if((hdr_pi->uri = tsip_uri_parse(tag_start, (tsk_size_t)len)) && hdr_pi->display_name){
 					hdr_pi->uri->display_name = tsk_strdup(hdr_pi->display_name);
 				}
 			}
@@ -119,7 +119,7 @@ int tsip_header_Preferred_Identity_tostring(const tsip_header_t* header, tsk_buf
 	return -1;
 }
 
-tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const char *data, size_t size)
+tsip_header_P_Preferred_Identity_t *tsip_header_P_Preferred_Identity_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

@@ -54,7 +54,7 @@ typedef struct transport_context_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	size_t count;
+	tsk_size_t count;
 	WSAEVENT events[WSA_MAXIMUM_WAIT_EVENTS];
 	transport_socket_t* sockets[WSA_MAXIMUM_WAIT_EVENTS];
 
@@ -71,7 +71,7 @@ int tnet_transport_isconnected(const tnet_transport_handle_t *handle, tnet_fd_t 
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
-	size_t i;
+	tsk_size_t i;
 
 	if(!transport)
 	{
@@ -167,7 +167,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	transport_context_t *context;
 	int ret = -1;
-	size_t i;
+	tsk_size_t i;
 	tsk_bool_t found = tsk_false;
 
 	if(!transport){
@@ -205,7 +205,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 /*
 * Sends stream/dgram data to the remote peer (previously connected to using @tnet_transport_connectto).
 */
-size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, size_t size)
+tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, tsk_size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	int ret = -1;
@@ -256,7 +256,7 @@ bail:
 /*
 * Sends dgarm to the specified destionation.
 */
-size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, size_t size)
+tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_t from, const struct sockaddr *to, const void* buf, tsk_size_t size)
 {
 	tnet_transport_t *transport = (tnet_transport_t*)handle;
 	WSABUF wsaBuffer;
@@ -308,7 +308,7 @@ int CALLBACK AcceptCondFunc(LPWSABUF lpCallerId, LPWSABUF lpCallerData, LPQOS lp
 /*== Get socket ==*/
 static transport_socket_t* getSocket(transport_context_t *context, tnet_fd_t fd)
 {
-	size_t i;
+	tsk_size_t i;
 	transport_socket_t* ret = 0;
 
 	if(context){
@@ -358,7 +358,7 @@ static int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *tr
 /*== Remove socket ==*/
 static int removeSocket(int index, transport_context_t *context)
 {
-	size_t i;
+	tsk_size_t i;
 
 	if(index < (int)context->count)
 	{
@@ -579,7 +579,7 @@ void *tnet_transport_mainthread(void *param)
 			/* Receive the waiting data. */
 			if(active_socket->tlshandle){
 				int isEncrypted;
-				size_t len = wsaBuffer.len;
+				tsk_size_t len = wsaBuffer.len;
 				if(!(ret = tnet_tls_socket_recv(active_socket->tlshandle, &wsaBuffer.buf, &len, &isEncrypted))){
 					if(isEncrypted){
 						TSK_FREE(wsaBuffer.buf);

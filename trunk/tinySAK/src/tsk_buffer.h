@@ -77,20 +77,20 @@ typedef struct tsk_buffer_s
 	TSK_DECLARE_OBJECT;
 
 	void *data; /**< Interanl data. */
-	size_t size; /**< The size of the internal data. */
+	tsk_size_t size; /**< The size of the internal data. */
 }
 tsk_buffer_t;
 
 typedef tsk_list_t tsk_buffers_L_t; /**<@ingroup tsk_buffer_group List of @ref tsk_buffer_t elements. */
 
-TINYSAK_API tsk_buffer_t* tsk_buffer_create(const void* data, size_t size);
+TINYSAK_API tsk_buffer_t* tsk_buffer_create(const void* data, tsk_size_t size);
 TINYSAK_API tsk_buffer_t* tsk_buffer_create_null();
 
 TINYSAK_API int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...);
-TINYSAK_API int tsk_buffer_append(tsk_buffer_t* self, const void* data, size_t size);
-TINYSAK_API int tsk_buffer_realloc(tsk_buffer_t* self, size_t size);
-TINYSAK_API int tsk_buffer_remove(tsk_buffer_t* self, size_t position, size_t size);
-TINYSAK_API int tsk_buffer_insert(tsk_buffer_t* self, size_t position, const void*data, size_t size);
+TINYSAK_API int tsk_buffer_append(tsk_buffer_t* self, const void* data, tsk_size_t size);
+TINYSAK_API int tsk_buffer_realloc(tsk_buffer_t* self, tsk_size_t size);
+TINYSAK_API int tsk_buffer_remove(tsk_buffer_t* self, tsk_size_t position, tsk_size_t size);
+TINYSAK_API int tsk_buffer_insert(tsk_buffer_t* self, tsk_size_t position, const void*data, tsk_size_t size);
 TINYSAK_API int tsk_buffer_cleanup(tsk_buffer_t* self);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_buffer_def_t;

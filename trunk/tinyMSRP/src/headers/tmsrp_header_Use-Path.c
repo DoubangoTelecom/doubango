@@ -74,7 +74,7 @@ int tmsrp_header_Use_Path_tostring(const tmsrp_header_t* header, tsk_buffer_t* o
 	return -1;
 }
 
-tmsrp_header_Use_Path_t *tmsrp_header_Use_Path_parse(const char *data, size_t size)
+tmsrp_header_Use_Path_t *tmsrp_header_Use_Path_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
@@ -238,7 +238,7 @@ _match:
 	{
 		int len = (int)(p  - tag_start);
 		tmsrp_uri_t* uri;
-		if((uri = tmsrp_uri_parse(tag_start, (size_t)len))){
+		if((uri = tmsrp_uri_parse(tag_start, (tsk_size_t)len))){
 			if(!header->uri){
 				header->uri = uri;
 			}
@@ -278,7 +278,7 @@ _again:
 	{
 		int len = (int)(p  - tag_start);
 		tmsrp_uri_t* uri;
-		if((uri = tmsrp_uri_parse(tag_start, (size_t)len))){
+		if((uri = tmsrp_uri_parse(tag_start, (tsk_size_t)len))){
 			if(!header->uri){
 				header->uri = uri;
 			}

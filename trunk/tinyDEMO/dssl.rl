@@ -37,7 +37,7 @@ char* replace_param(char* pivot, int index_1, int index_2, tsk_params_L_t* param
 	char* pname = tsk_null;
 	char* ret = tsk_null;
 	const tsk_param_t* p;
-	//size_t len = tsk_strlen(pivot);
+	//tsk_size_t len = tsk_strlen(pivot);
 	//tsk_bool_t parenthesis = tsk_false;
 	int i1, i2;
 	
@@ -300,7 +300,7 @@ replace:
 			*|;
 }%%
 
-cmd_t* dssl_parse(const char *buffer, size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
+cmd_t* dssl_parse(const char *buffer, tsk_size_t size, tsk_bool_t *comment, tsk_params_L_t* params)
 {
 	int cs = 0;
 	const char *p = buffer;

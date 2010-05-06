@@ -46,7 +46,7 @@ tnet_dhcp_option_paramslist_t* tnet_dhcp_option_paramslist_create()
 	return tsk_object_new(tnet_dhcp_option_paramslist_def_t);
 }
 
-tnet_dhcp_option_dns_t* tnet_dhcp_option_dns_create(const void* payload, size_t payload_size)
+tnet_dhcp_option_dns_t* tnet_dhcp_option_dns_create(const void* payload, tsk_size_t payload_size)
 {
 	return tsk_object_new(tnet_dhcp_option_dns_def_t, payload, payload_size);
 }
@@ -91,7 +91,7 @@ int tnet_dhcp_option_deinit(tnet_dhcp_option_t *self)
 	return -1;
 }
 
-tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, size_t size)
+tnet_dhcp_option_t* tnet_dhcp_option_deserialize(const void* data, tsk_size_t size)
 {
 	tnet_dhcp_option_t *option = 0;
 	uint8_t* dataPtr = ((uint8_t*)data);
@@ -264,7 +264,7 @@ static tsk_object_t* tnet_dhcp_option_dns_ctor(tsk_object_t * self, va_list * ap
 	tnet_dhcp_option_dns_t *option = self;
 	if(option){
 		const void* payload = va_arg(*app, const void*);
-		size_t payload_size = va_arg(*app, size_t);
+		tsk_size_t payload_size = va_arg(*app, tsk_size_t);
 
 		const uint8_t* payloadPtr = (const uint8_t*)payload;
 		const uint8_t* payloadEnd = (payloadPtr + payload_size);
@@ -278,7 +278,7 @@ static tsk_object_t* tnet_dhcp_option_dns_ctor(tsk_object_t * self, va_list * ap
 			TSK_DEBUG_ERROR("DHCP - The minimum length for this option is 4 octets, and the length MUST always be a multiple of 4.");
 		}
 		else{
-			size_t i;
+			tsk_size_t i;
 			char* ip4 = 0;
 			uint32_t address;
 			tsk_string_t* addrstring;

@@ -64,7 +64,7 @@ typedef tsk_list_t tsdp_headers_A_L_t;
 TINYSDP_API tsdp_header_A_t* tsdp_header_A_create(const char* field, const char* value);
 TINYSDP_API tsdp_header_A_t* tsdp_header_A_create_null();
 
-TINYSDP_API tsdp_header_A_t *tsdp_header_A_parse(const char *data, size_t size);
+TINYSDP_API tsdp_header_A_t *tsdp_header_A_parse(const char *data, tsk_size_t size);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_A_def_t;
 

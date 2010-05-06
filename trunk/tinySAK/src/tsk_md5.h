@@ -83,10 +83,10 @@ typedef struct tsk_md5context_s
 tsk_md5context_t;
 
 TINYSAK_API void tsk_md5init(tsk_md5context_t *context);
-TINYSAK_API void tsk_md5update(tsk_md5context_t *context, uint8_t const *buf, size_t len);
+TINYSAK_API void tsk_md5update(tsk_md5context_t *context, uint8_t const *buf, tsk_size_t len);
 TINYSAK_API void tsk_md5final(tsk_md5digest_t digest, tsk_md5context_t *context);
 TINYSAK_API void tsk_md5transform(uint32_t buf[4], uint32_t const in[TSK_MD5_DIGEST_SIZE]);
-TINYSAK_API int tsk_md5compute(const char* input, size_t size, tsk_md5string_t *result);
+TINYSAK_API int tsk_md5compute(const char* input, tsk_size_t size, tsk_md5string_t *result);
 
 TSK_END_DECLS
 

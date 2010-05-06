@@ -58,7 +58,7 @@ typedef tsk_list_t tmsrp_headers_Expires_L_t;
 TINYMSRP_API tmsrp_header_Expires_t* tmsrp_header_Expires_create(int64_t value);
 TINYMSRP_API tmsrp_header_Expires_t* tmsrp_header_Expires_create_null();
 
-TINYMSRP_API tmsrp_header_Expires_t *tmsrp_header_Expires_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Expires_t *tmsrp_header_Expires_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Expires_def_t;
 

@@ -57,8 +57,7 @@
 #	define TINYSAK_GEXTERN	extern
 #endif
 
-/* Guards against C++ name mangling 
-*/
+/* Guards against C++ name mangling */
 #ifdef __cplusplus
 #	define TSK_BEGIN_DECLS extern "C" {
 #	define TSK_END_DECLS }
@@ -67,18 +66,16 @@
 #	define TSK_END_DECLS
 #endif
 
-/* Disable some well-known warnings
-*/
+/* Disable some well-known warnings for M$ Visual Studio*/
 #ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
 #	pragma warning( disable : 4996 )
 #endif
 
-/*	Features
-*/
+/*	Features */
 #if TSK_UNDER_WINDOWS
 #	define HAVE_GETTIMEOFDAY				0
-#elif !HAVE_CONFIG_H
+#else
 #	define HAVE_GETTIMEOFDAY				1
 #endif
 

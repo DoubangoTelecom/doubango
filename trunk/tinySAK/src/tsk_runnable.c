@@ -144,7 +144,7 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 		else if(!self->running) {
 
 			if(self->started){
-				size_t count = 0;
+				tsk_size_t count = 0;
 				/* Thread is started but not running ==> Give it time.*/
 				while(++count <= 5){
 					tsk_thread_sleep(count * 200);

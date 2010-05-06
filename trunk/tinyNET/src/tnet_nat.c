@@ -449,7 +449,7 @@ int tnet_nat_turn_channel_refresh(const tnet_nat_context_handle_t* self, tnet_tu
 
 /**@ingroup tnet_nat_group
 */
-int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id, const void* data, size_t size, int indication)
+int tnet_nat_turn_channel_send(const tnet_nat_context_handle_t* self, tnet_turn_channel_binding_id_t id, const void* data, tsk_size_t size, int indication)
 {
 	const tnet_nat_context_t* context = self;
 	

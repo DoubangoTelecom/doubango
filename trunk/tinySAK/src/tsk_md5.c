@@ -77,7 +77,7 @@ void tsk_md5init(tsk_md5context_t *ctx)
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void tsk_md5update(tsk_md5context_t *ctx, uint8_t const *buf, size_t len)
+void tsk_md5update(tsk_md5context_t *ctx, uint8_t const *buf, tsk_size_t len)
 {
     uint32_t t;
 
@@ -261,7 +261,7 @@ void tsk_md5transform(uint32_t buf[4], uint32_t const in[TSK_MD5_DIGEST_SIZE])
  *
  * @return	Zero if succeed and non-zero error code otherwise. 
 **/
-int tsk_md5compute(const char* input, size_t size, tsk_md5string_t *result)
+int tsk_md5compute(const char* input, tsk_size_t size, tsk_md5string_t *result)
 {
 	tsk_md5digest_t digest;
 

@@ -100,7 +100,7 @@ int tmsrp_header_Status_tostring(const tmsrp_header_t* header, tsk_buffer_t* out
 	return -1;
 }
 
-tmsrp_header_Status_t *tmsrp_header_Status_parse(const char *data, size_t size)
+tmsrp_header_Status_t *tmsrp_header_Status_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;

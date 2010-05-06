@@ -58,7 +58,7 @@ typedef tsk_list_t tmsrp_headers_Success_Report_L_t;
 TINYMSRP_API tmsrp_header_Success_Report_t* tmsrp_header_Success_Report_create(tsk_bool_t isSuccess);
 TINYMSRP_API tmsrp_header_Success_Report_t* tmsrp_header_Success_Report_create_null();
 
-TINYMSRP_API tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *data, size_t size);
+TINYMSRP_API tmsrp_header_Success_Report_t *tmsrp_header_Success_Report_parse(const char *data, tsk_size_t size);
 
 TINYMSRP_GEXTERN const tsk_object_def_t *tmsrp_header_Success_Report_def_t;
 

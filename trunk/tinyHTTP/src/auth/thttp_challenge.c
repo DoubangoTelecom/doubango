@@ -142,7 +142,7 @@ int thttp_challenge_update(thttp_challenge_t *self, const char* scheme, const ch
 thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *self, const char* username, const char* password, const thttp_request_t *request)
 {
 	char* response = tsk_null;
-	size_t response_size = 0;
+	tsk_size_t response_size = 0;
 	nonce_count_t nc;
 	char *uristring = tsk_null;
 	thttp_header_t *header = 0;

@@ -89,7 +89,7 @@ int tsdp_header_Z_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
-tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, size_t size)
+tsdp_header_Z_t *tsdp_header_Z_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
