@@ -38,8 +38,8 @@ void test_dhcp_request(tnet_dhcp_ctx_t *ctx)
 
 void test_dhcp_inform(tnet_dhcp_ctx_t *ctx)
 {
-	tnet_dhcp_params_t *params = 0;
-	tnet_dhcp_reply_t *reply = 0;
+	tnet_dhcp_params_t *params = tsk_null;
+	tnet_dhcp_reply_t *reply = tsk_null;
 
 	params = tnet_dhcp_params_create();
 	tnet_dhcp_params_add_code(params, dhcp_code_SIP_Servers_DHCP_Option); /* SIP Servers */
@@ -47,14 +47,12 @@ void test_dhcp_inform(tnet_dhcp_ctx_t *ctx)
 	
 	reply = tnet_dhcp_query_inform(ctx, params);
 
-	if(!TNET_DHCP_MESSAGE_IS_REPLY(reply))
-	{
+	if(reply && !TNET_DHCP_MESSAGE_IS_REPLY(reply)){
 		TSK_DEBUG_ERROR("DHCP request is not expected in response to a request.");
 		goto bail;
 	}
 
-	if(reply)
-	{
+	if(reply){
 		switch(reply->type)
 		{
 		case dhcp_type_ack:
