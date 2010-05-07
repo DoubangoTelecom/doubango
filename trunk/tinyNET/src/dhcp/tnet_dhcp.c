@@ -71,7 +71,7 @@ tnet_dhcp_params_t* tnet_dhcp_params_create()
 tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_request_t* request)
 {
 	tsk_buffer_t *output;
-	tnet_dhcp_reply_t* reply = 0;
+	tnet_dhcp_reply_t* reply = tsk_null;
 	int ret;
 	struct timeval tv;
 	fd_set set;
@@ -79,17 +79,15 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 	tsk_list_item_t *item;
 	const tnet_interface_t *iface;
 	
-	tnet_socket_t *localsocket4 = 0;
+	tnet_socket_t *localsocket4 = tsk_null;
 	struct sockaddr_storage server;
 	
-	if(!ctx || !request)
-	{
+	if(!ctx || !request){
 		goto bail;
 	}
 	
 	localsocket4 = tnet_socket_create(TNET_SOCKET_HOST_ANY, ctx->port_client, tnet_socket_type_udp_ipv4);
-	if(!TNET_SOCKET_IS_VALID(localsocket4))
-	{
+	if(!TNET_SOCKET_IS_VALID(localsocket4)){
 		TSK_DEBUG_ERROR("Failed to create/bind DHCP client socket.");
 		goto bail;
 	}
@@ -98,8 +96,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 	tv.tv_sec = 0;
 	tv.tv_usec = (200 * 1000);
 
-	if(tnet_sockaddr_init("255.255.255.255", ctx->server_port, tnet_socket_type_udp_ipv4, &server))
-	{
+	if(tnet_sockaddr_init("255.255.255.255", ctx->server_port, tnet_socket_type_udp_ipv4, &server)){
 		TNET_PRINT_LAST_ERROR("Failed to initialize the DHCP server address.");
 		goto bail;
 	}
@@ -111,8 +108,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 #else
 		int yes = 1;
 #endif
-		if(setsockopt(localsocket4->fd, SOL_SOCKET, SO_BROADCAST, (char*)&yes, sizeof(int)))
-		{
+		if(setsockopt(localsocket4->fd, SOL_SOCKET, SO_BROADCAST, (char*)&yes, sizeof(int))){
 			TSK_DEBUG_ERROR("Failed to enable broadcast option [errno=%d].", tnet_geterrno());
 			goto bail;
 		}
@@ -129,8 +125,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 			parameters for those separate interfaces.
 		*/
 
-		tsk_list_foreach(item, ctx->interfaces)
-		{
+		tsk_list_foreach(item, ctx->interfaces){
 			iface = item->data;
 
 			/* Set FD */
@@ -152,22 +147,19 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 			memcpy(request->chaddr, iface->mac_address, request->hlen);
 
 			/* Serialize and send to the server. */
-			if(!(output = tnet_dhcp_message_serialize(ctx, request)))
-			{
+			if(!(output = tnet_dhcp_message_serialize(ctx, request))){
 				TSK_DEBUG_ERROR("Failed to serialize the DHCP message.");
 				goto next_iface;
 			}
 			/* Send the request to the DHCP server */
-			if((ret =tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size))<0)
-			{
+			if((ret =tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size))<0){
 				TNET_PRINT_LAST_ERROR("Failed to send DHCP request.");
 
 				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
 				goto next_iface;
 			}
 			/* wait for response */
-			if((ret = select(localsocket4->fd+1, &set, NULL, NULL, &tv))<0)
-			{	/* Error */
+			if((ret = select(localsocket4->fd+1, &set, NULL, NULL, &tv))<0){	/* Error */
 				TNET_PRINT_LAST_ERROR("select have failed.");
 				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
 				goto next_iface;
@@ -178,11 +170,10 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 			else
 			{	/* there is data to read */
 				tsk_size_t len = 0;
-				void* data = 0;
+				void* data = tsk_null;
 
 				/* Check how how many bytes are pending */
-				if((ret = tnet_ioctlt(localsocket4->fd, FIONREAD, &len))<0)
-				{
+				if((ret = tnet_ioctlt(localsocket4->fd, FIONREAD, &len))<0){
 					goto next_iface;
 				}
 				
@@ -214,7 +205,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 				goto bail;
 			}
 		}
-		break;//FIXME
+		//break;//FIXME
 	}
 	while(timeout > tsk_time_epoch());
 
@@ -228,11 +219,10 @@ bail:
 */
 tnet_dhcp_reply_t* tnet_dhcp_query(tnet_dhcp_ctx_t* ctx, tnet_dhcp_message_type_t type, tnet_dhcp_params_t* params)
 {
-	tnet_dhcp_reply_t* reply = 0;
+	tnet_dhcp_reply_t* reply = tsk_null;
 	tnet_dhcp_request_t* request = tnet_dhcp_request_create();
 
-	if(!ctx || !params || !request)
-	{
+	if(!ctx || !params || !request){
 		goto bail;
 	}
 

@@ -238,8 +238,7 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 	struct sockaddr_in *sin;
 	struct ifreq *ifr;
 
-	if((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
-	{
+	if((fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0){
 		TSK_DEBUG_ERROR("Failed to create new DGRAM socket and errno= [%d]", tnet_geterrno());
 		goto done;
 	}
@@ -247,22 +246,17 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 	ifc.ifc_len = sizeof(buffer);
 	ifc.ifc_buf = buffer;
 
-	if(ioctl(fd, SIOCGIFCONF, &ifc) < 0)
-	{
+	if(ioctl(fd, SIOCGIFCONF, &ifc) < 0){
 		TSK_DEBUG_ERROR("ioctl(SIOCGIFCONF) failed and errno= [%d]", tnet_geterrno());
 		goto done;
 	}
 
-	for(ifr = ifc.ifc_req; ifr && !tsk_strempty(ifr->ifr_name); ifr++)
-	{
+	for(ifr = ifc.ifc_req; ifr && !tsk_strempty(ifr->ifr_name); ifr++){
 		sin = (struct sockaddr_in *)&(ifr->ifr_addr);
 		// TODO: IPAddress if needed
-		if(/*ioctl(fd, SIOCGIFFLAGS, &ifr) == 0*/1)
-		{
-			if (!(ifr->ifr_flags & IFF_LOOPBACK))
-			{
-				if(/*ioctl(fd, SIOCGIFHWADDR, &ifr) == 0*/1)
-				{
+		if(/*ioctl(fd, SIOCGIFFLAGS, &ifr) == 0*/1){
+			if (!(ifr->ifr_flags & IFF_LOOPBACK)){
+				if(/*ioctl(fd, SIOCGIFHWADDR, &ifr) == 0*/1){
 					tnet_interface_t *iface = tnet_interface_create(ifr->ifr_name, ifr->ifr_hwaddr.sa_data, 6);
 					tsk_list_push_back_data(ifaces, (void**)&(iface));
 					//iface->index = if_nametoindex(ifr->ifr_name);
@@ -993,13 +987,11 @@ int tnet_sockfd_set_mode(tnet_fd_t fd, int nonBlocking)
 	}
 #else
 	int flags;
-    if((flags = fcntl(fd, F_GETFL, 0)) < 0) 
-	{ 
+    if((flags = fcntl(fd, F_GETFL, 0)) < 0) { 
 		TNET_PRINT_LAST_ERROR("fcntl(F_GETFL) have failed.");
 		return -1;
 	} 
-	if(fcntl(fd, F_SETFL, flags | (nonBlocking ? O_NONBLOCK : ~O_NONBLOCK)) < 0)
-	{ 
+	if(fcntl(fd, F_SETFL, flags | (nonBlocking ? O_NONBLOCK : ~O_NONBLOCK)) < 0){ 
 		TNET_PRINT_LAST_ERROR("fcntl(O_NONBLOCK/O_NONBLOCK) have failed.");
 		return -1;
 	} 
