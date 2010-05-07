@@ -41,24 +41,24 @@ const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS] 
 
 /**@ingroup tmedia_codec_group
 * Initialize a Codec 
-* @param codec The codec to initialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
+* @param self The codec to initialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
 * @param type
 * @param name the name of the codec. e.g. "G.711u" or "G.711a" etc used in the sdp.
 * @param desc full description.
 * @param format the format. e.g. "0" for G.711.u or "8" for G.711a or "*" for MSRP.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tmedia_codec_init(tmedia_codec_t* codec, tmedia_codec_type_t type, const char* name, const char* desc, const char* format)
+int tmedia_codec_init(tmedia_codec_t* self, tmedia_codec_type_t type, const char* name, const char* desc, const char* format)
 {
-	if(!codec || tsk_strnullORempty(name)){
+	if(!self || tsk_strnullORempty(name)){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	codec->type = type;
-	codec->dyn = tsk_true; /* this is the default value. up to the caller to update it */
-	tsk_strupdate(&codec->name, name);
-	tsk_strupdate(&codec->desc,desc);
-	tsk_strupdate(&codec->format, format);
+	self->type = type;
+	self->dyn = tsk_true; /* this is the default value. up to the caller to update it */
+	tsk_strupdate(&self->name, name);
+	tsk_strupdate(&self->desc,desc);
+	tsk_strupdate(&self->format, format);
 
 	return 0;
 }
@@ -103,7 +103,7 @@ int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
 
 	/* add or replace the plugin */
 	for(i = 0; i<TMED_CODEC_MAX_PLUGINS; i++){
-		if(!__tmedia_codec_plugins[i] || __tmedia_codec_plugins[i] == plugin){
+		if(!__tmedia_codec_plugins[i] || (__tmedia_codec_plugins[i] == plugin)){
 			__tmedia_codec_plugins[i] = plugin;
 			return 0;
 		}
@@ -111,6 +111,43 @@ int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin)
 	
 	TSK_DEBUG_ERROR("There are already %d plugins.", TMED_CODEC_MAX_PLUGINS);
 	return -2;
+}
+
+/**@ingroup tmedia_codec_group
+* UnRegisters a codec plugin.
+* @param plugin the definition of the plugin.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin)
+{
+	tsk_size_t i;
+	tsk_bool_t found = tsk_false;
+	if(!plugin){
+		TSK_DEBUG_ERROR("Invalid Parameter");
+		return -1;
+	}
+
+	/* find the plugin to unregister */
+	for(i = 0; i<TMED_CODEC_MAX_PLUGINS; i++){
+		if(__tmedia_codec_plugins[i] == plugin){
+			__tmedia_codec_plugins[i] = tsk_null;
+			found = tsk_true;
+			break;
+		}
+	}
+
+	/* compact */
+	if(found){
+		for(; i<(TMED_CODEC_MAX_PLUGINS - 1); i++){
+			if(__tmedia_codec_plugins[i+1]){
+				__tmedia_codec_plugins[i] = __tmedia_codec_plugins[i+1];
+			}
+			else{
+				break;
+			}
+		}
+	}
+	return (found ? 0 : -2);
 }
 
 /**@ingroup tmedia_codec_group
@@ -129,21 +166,34 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 			if((codec = tsk_object_new(plugin->objdef))){
 				/* initialize the newly created codec */
 				codec->dyn = plugin->dyn;
+				codec->plugin = plugin;
 				switch(codec->type){
 					case tmed_codec_type_audio:
-						tmedia_codec_audio_init(codec, plugin->name, plugin->desc, plugin->format); 
-						break;
+						{	/* Audio codec */
+							tmedia_codec_audio_t* audio = TMEDIA_CODEC_AUDIO(codec);
+							tmedia_codec_audio_init(TMEDIA_CODEC(audio), plugin->name, plugin->desc, plugin->format);
+							audio->channels = plugin->audio.channels;
+							audio->rate = plugin->audio.rate;
+							break;
+						}
 					case tmed_codec_type_video:
-						tmedia_codec_video_init(codec, plugin->name, plugin->desc, plugin->format);
-						break;
+						{ /* Video codec */
+							tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(codec);
+							tmedia_codec_video_init(TMEDIA_CODEC(video), plugin->name, plugin->desc, plugin->format);
+							video->rate = plugin->video.rate;
+							break;
+						}
 					case tmed_codec_type_msrp:
-						tmedia_codec_msrp_init(codec, plugin->name, plugin->desc);
-						break;
+						{	/* Msrp codec */
+							tmedia_codec_msrp_init(codec, plugin->name, plugin->desc);
+							break;
+						}
 					default:
-						tmedia_codec_init(codec, plugin->type, plugin->name, plugin->desc, plugin->format);
-						break;
+						{	/* Any other codec */
+							tmedia_codec_init(codec, plugin->type, plugin->name, plugin->desc, plugin->format);
+							break;
+						}
 				}
-				codec->plugin = plugin;
 				break;
 			}
 		}
@@ -154,34 +204,34 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 
 /**@ingroup tmedia_codec_group
 * Gets the rtpmap attribute associated to this code.
-* @param codec the codec for which to get the rtpmap attribute. Should be created using @ref tmedia_codec_create().
+* @param self the codec for which to get the rtpmap attribute. Should be created using @ref tmedia_codec_create().
 * @retval rtpmap string (e.g. "AMR-WB/16000/2" or "H261/90000") if succeed and Null otherwise. It's up to the caller to free the
 * returned string.
 */
-char* tmedia_codec_get_rtpmap(const tmedia_codec_t* codec)
+char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self)
 {
 	char* rtpmap = tsk_null;
 
-	if(!codec){
+	if(!self){
 		TSK_DEBUG_ERROR("invalid parameter");
 		return tsk_null;
 	}
-	switch(codec->type){
+	switch(self->type){
 		case tmed_codec_type_audio:
 			{	/* audio codecs */
-				const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)codec;
+				const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)self;
 				if(audioCodec->channels > 0){
-					tsk_sprintf(&rtpmap, "%s/%d/%d", codec->name, audioCodec->rate, audioCodec->channels);
+					tsk_sprintf(&rtpmap, "%s/%d/%d", self->name, audioCodec->rate, audioCodec->channels);
 				}
 				else{
-					tsk_sprintf(&rtpmap, "%s/%d", codec->name, audioCodec->rate);
+					tsk_sprintf(&rtpmap, "%s/%d", self->name, audioCodec->rate);
 				}
 			}
 			break;
 		case tmed_codec_type_video:
 			{	/* video codecs */
-				const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)codec;
-				tsk_sprintf(&rtpmap, "%s/%d", codec->name, videoCodec->rate);
+				const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)self;
+				tsk_sprintf(&rtpmap, "%s/%d", self->name, videoCodec->rate);
 				break;
 			}
 		/* all others */
@@ -194,21 +244,21 @@ char* tmedia_codec_get_rtpmap(const tmedia_codec_t* codec)
 
 /**@ingroup tmedia_codec_group
 * Gets the codec's fmtp attribute value.
-* @param codec the codec for which to get the fmtp attribute. Should be created using @ref tmedia_codec_create().
+* @param self the codec for which to get the fmtp attribute. Should be created using @ref tmedia_codec_create().
 * @retval fmtp attribute string (e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"). It's up to the caller to free the
 * returned string.
 */
-char* tmedia_codec_get_fmtp(const tmedia_codec_t* codec)
+char* tmedia_codec_get_fmtp(const tmedia_codec_t* self)
 {
 	char* fmtp = tsk_null;
 
-	if(!codec || !codec->plugin){
+	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("invalid parameter");
 		return tsk_null;
 	}
 
-	if(codec->plugin->fmtp_get){ /* some codecs, like G711, won't produce fmtp */
-		fmtp = codec->plugin->fmtp_get(codec);
+	if(self->plugin->fmtp_get){ /* some codecs, like G711, won't produce fmtp */
+		fmtp = self->plugin->fmtp_get(self);
 	}
 
 	return fmtp;
@@ -216,14 +266,14 @@ char* tmedia_codec_get_fmtp(const tmedia_codec_t* codec)
 
 /**@ingroup tmedia_codec_group
 * Indicates whether the codec can handle this fmtp.
-* @param codec the codec to match aginst to.
+* @param self the codec to match aginst to.
 * @param fmtp the fmtp to match
 * @retval @a tsk_true if the codec can handle this fmtp and @a tsk_false otherwise
 */
-tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* codec, const char* fmtp)
+tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* self, const char* fmtp)
 {
 	/* checks */
-	if(!codec || !codec->plugin || codec->plugin->fmtp_match){
+	if(!self || !self->plugin || self->plugin->fmtp_match){
 		TSK_DEBUG_ERROR("invalid parameter");
 		return tsk_false;
 	}
@@ -233,25 +283,25 @@ tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* codec, const char* fmtp
 		return tsk_true;
 	}
 	else{
-		return codec->plugin->fmtp_match(codec, fmtp);
+		return self->plugin->fmtp_match(self, fmtp);
 	}
 }
 
 /**@ingroup tmedia_codec_group
 * Sets remote fmtp.
-* @param codec codec for which to set the remote fmtp.
+* @param self codec for which to set the remote fmtp.
 * @param fmtp fmtp received from remote party (e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1").
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tmedia_codec_set_remote_fmtp(tmedia_codec_t* codec, const char* fmtp)
+int tmedia_codec_set_remote_fmtp(tmedia_codec_t* self, const char* fmtp)
 {
-	if(!codec || !codec->plugin){
+	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("invalid parameter");
 		return -1;
 	}
 
-	if(codec->plugin->fmtp_set){
-		return codec->plugin->fmtp_set(codec, fmtp);
+	if(self->plugin->fmtp_set){
+		return self->plugin->fmtp_set(self, fmtp);
 	}
 	else{ /* some codecs, like G711, could ignore remote fmtp attribute */
 		return 0;
@@ -260,19 +310,19 @@ int tmedia_codec_set_remote_fmtp(tmedia_codec_t* codec, const char* fmtp)
 
 /**@ingroup tmedia_codec_group
 * DeInitialize a Codec.
-* @param codec The codec to deinitialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
+* @param self The codec to deinitialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tmedia_codec_deinit(tmedia_codec_t* codec)
+int tmedia_codec_deinit(tmedia_codec_t* self)
 {
-	if(!codec){
+	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
-	TSK_FREE(codec->name);
-	TSK_FREE(codec->desc);
-	TSK_FREE(codec->format);
+	TSK_FREE(self->name);
+	TSK_FREE(self->desc);
+	TSK_FREE(self->format);
 
 	return 0;
 }

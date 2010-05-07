@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,43 +19,22 @@
 * along with DOUBANGO.
 *
 */
+#ifndef _TEST_SESSIONS_H_
+#define _TEST_SESSIONS_H_
 
-#include "stdafx.h"
-
-#include "tsk.h"
-
-#include "tsdp.h"
-#include "tinysdp/parsers/tsdp_parser_message.h"
-
-#include "test_parser.h"
-#include "test_soa.h"
-
-
-#define RUN_TEST_LOOP		1
-
-#define RUN_TEST_ALL		0
-#define RUN_TEST_PARSER		0
-#define RUN_TEST_SOA		1
-
-
-#ifdef _WIN32_WCE
-int _tmain(int argc, _TCHAR* argv[])
-#else
-int main()
-#endif
+void test_sessions()
 {
-	do
-	{
-		/* Print copyright information */
-		printf("Doubango Project\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
+	tmedia_session_mgr_t* mgr;
+	tsdp_message_t* sdp_lo;
 	
-#if RUN_TEST_ALL  || RUN_TEST_PARSER
-		test_parser();
-#endif
+	/* create manager */
+	mgr = tmedia_session_mgr_create((tmed_sess_type_audio | tmed_sess_type_video | tmed_sess_type_msrp | tmed_sess_type_t38));
 
-#if RUN_TEST_ALL  || RUN_TEST_SOA
-		test_soa();
-#endif
-
-	} while(RUN_TEST_LOOP);
+	/* get local sdp */
+	sdp_lo = tmedia_session_mgr_get_lo(mgr);
+	
+	TSK_OBJECT_SAFE_FREE(sdp_lo);
+	TSK_OBJECT_SAFE_FREE(mgr);
 }
+
+#endif /* _TEST_SESSIONS_H_ */

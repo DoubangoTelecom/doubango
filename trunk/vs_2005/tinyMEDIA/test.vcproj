@@ -196,6 +196,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="tests"
+			>
+			<File
+				RelativePath="..\..\tinyMEDIA\test\test_codecs.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\test\test_sessions.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

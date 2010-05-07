@@ -54,9 +54,7 @@ static tsk_object_t* tmedia_codec_dpcmu_ctor(tsk_object_t * self, va_list * app)
 {
 	tmedia_codec_dpcmu_t *dpcmu = self;
 	if(dpcmu){
-		/* init base */
-		TMEDIA_CODEC_AUDIO(dpcmu)->channels = 1;
-		TMEDIA_CODEC_AUDIO(dpcmu)->rate = 8000;
+		/* init self */
 	}
 	return self;
 }
@@ -90,6 +88,14 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s =
 	"Dummy G.711u codec",
 	TMEDIA_CODEC_FORMAT_G711u,
 	tsk_false,
+	
+	{ /* audio */
+		8000, // rate
+		1 // channels
+	},
+
+	/* video */
+	{ tsk_null },
 
 	tmedia_codec_dpcmu_fmtp_match,
 	tmedia_codec_dpcmu_fmtp_get,
@@ -105,9 +111,7 @@ static tsk_object_t* tmedia_codec_dpcma_ctor(tsk_object_t * self, va_list * app)
 {
 	tmedia_codec_dpcma_t *dpcma = self;
 	if(dpcma){
-		/* init base */
-		TMEDIA_CODEC_AUDIO(dpcma)->channels = 1;
-		TMEDIA_CODEC_AUDIO(dpcma)->rate = 8000;
+		/* init self */
 	}
 	return self;
 }
@@ -141,6 +145,14 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s =
 	"Dummy G.711a codec",
 	TMEDIA_CODEC_FORMAT_G711a,
 	tsk_false,
+	
+	{ /* audio */
+		8000, // rate
+		1 // channels
+	},
+
+	/* video */
+	{ tsk_null },
 
 	tmedia_codec_dpcma_fmtp_match,
 	tmedia_codec_dpcma_fmtp_get,

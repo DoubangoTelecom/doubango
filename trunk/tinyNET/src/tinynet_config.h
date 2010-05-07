@@ -109,7 +109,7 @@
 
 /* Used in TURN/STUN2 attributes. */
 #define TNET_SOFTWARE	"IM-client/OMA1.0 doubango/v0.0.0"
-#define TNET_IANA_PEN		35368 /**< PEN number assigned by the IANA. 
+#define TNET_IANA_PEN		35368 /**< PEN number assigned by the IANA.
 	The list of assigned numbers could be found here http://www.iana.org/assignments/enterprise-numbers. */
 #define TNET_RESOLV_CONF_PATH "/etc/resolv.conf" /**< Path to "/resolv.conf". */
 

@@ -105,7 +105,7 @@ TMEDIA_BEGIN_DECLS
 
 #define TMEDIA_CODEC_FORMAT_MSRP						"*"
 
-/**Max number of plugins we can create */
+/**Max number of plugins (codec types) we can create */
 #define TMED_CODEC_MAX_PLUGINS			0xFF
 
 /** cast any pointer to @ref tmedia_codec_t* object */
@@ -114,6 +114,8 @@ TMEDIA_BEGIN_DECLS
 /** list of all supported code types */
 typedef enum tmedia_codec_type_e
 {
+	tmed_codec_type_none = 0,
+
 	tmed_codec_type_audio,
 	tmed_codec_type_video,
 	tmed_codec_type_msrp
@@ -135,7 +137,7 @@ typedef struct tmedia_codec_s
 	char* desc;
 	//! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
 	char* format;
-	//! plugin used to create the code
+	//! plugin used to create the codec
 	const struct tmedia_codec_plugin_def_s* plugin;
 }
 tmedia_codec_t;
@@ -156,6 +158,17 @@ typedef struct tmedia_codec_plugin_def_s
 	const char* format;
 	//! whether the pay. type is dyn. or not
 	tsk_bool_t dyn;
+
+	struct{
+		int32_t rate;
+		int8_t channels;
+		/* ...to be continued */
+	} audio;
+
+	struct{
+		int32_t rate;
+		/* ...to be continued */
+	} video;
 	
 	//! whether the codec can handle the fmtp
 	tsk_bool_t (* fmtp_match) (const tmedia_codec_t*, const char* );
@@ -172,23 +185,16 @@ typedef tsk_list_t tmedia_codecs_L_t;
 /**< Declare base class as codec */
 #define TMEDIA_DECLARE_CODEC tmedia_codec_t __codec__
 
-int tmedia_codec_init(tmedia_codec_t* codec, tmedia_codec_type_t type, const char* name, const char* desc, const char* format);
-int tmedia_codec_cmp(const tsk_object_t* codec1, const tsk_object_t* codec2);
-int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin);
-tmedia_codec_t* tmedia_codec_create(const char* format);
-char* tmedia_codec_get_rtpmap(const tmedia_codec_t* codec);
-char* tmedia_codec_get_fmtp(const tmedia_codec_t* codec);
-tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* codec, const char* fmtp);
-int tmedia_codec_set_remote_fmtp(tmedia_codec_t* codec, const char* fmtp);
-int tmedia_codec_deinit(tmedia_codec_t* codec);
-
-
-
-
-
-
-
-
+TINYMEDIA_API int tmedia_codec_init(tmedia_codec_t* self, tmedia_codec_type_t type, const char* name, const char* desc, const char* format);
+TINYMEDIA_API int tmedia_codec_cmp(const tsk_object_t* codec1, const tsk_object_t* codec2);
+TINYMEDIA_API int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin);
+TINYMEDIA_API int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin);
+TINYMEDIA_API tmedia_codec_t* tmedia_codec_create(const char* format);
+TINYMEDIA_API char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self);
+TINYMEDIA_API char* tmedia_codec_get_fmtp(const tmedia_codec_t* self);
+TINYMEDIA_API tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* self, const char* fmtp);
+TINYMEDIA_API int tmedia_codec_set_remote_fmtp(tmedia_codec_t* self, const char* fmtp);
+TINYMEDIA_API int tmedia_codec_deinit(tmedia_codec_t* self);
 
 /** Audio codec */
 typedef struct tmedia_codec_audio_s

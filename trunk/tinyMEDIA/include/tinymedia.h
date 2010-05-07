@@ -20,42 +20,24 @@
 *
 */
 
-#include "stdafx.h"
+/**@file tinymedia.h
+ * @brief tinyMEDIA API.
+ *
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
+ *
+ * @date Created: Sat Nov 8 16:54:58 2009 mdiop
+ */
+#ifndef TINYMEDIA_TINYMEDIA_H
+#define TINYMEDIA_TINYMEDIA_H
 
+/* == tinyMEDIA == */
+#include "tinymedia/tmedia_codec_dummy.h"
+#include "tinymedia/tmedia_session_dummy.h"
+
+/* == tinySAK == */
 #include "tsk.h"
 
-#include "tsdp.h"
-#include "tinysdp/parsers/tsdp_parser_message.h"
+/* == tinySDP == */
+#include "tinysdp.h"
 
-#include "test_parser.h"
-#include "test_soa.h"
-
-
-#define RUN_TEST_LOOP		1
-
-#define RUN_TEST_ALL		0
-#define RUN_TEST_PARSER		0
-#define RUN_TEST_SOA		1
-
-
-#ifdef _WIN32_WCE
-int _tmain(int argc, _TCHAR* argv[])
-#else
-int main()
-#endif
-{
-	do
-	{
-		/* Print copyright information */
-		printf("Doubango Project\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
-	
-#if RUN_TEST_ALL  || RUN_TEST_PARSER
-		test_parser();
-#endif
-
-#if RUN_TEST_ALL  || RUN_TEST_SOA
-		test_soa();
-#endif
-
-	} while(RUN_TEST_LOOP);
-}
+#endif /* TINYMEDIA_TINYMEDIA_H */
