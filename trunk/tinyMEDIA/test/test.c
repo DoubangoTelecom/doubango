@@ -22,7 +22,18 @@
 #include "tinymedia/tmedia.h"
 #include "dummy.h"
 
-#include "tsk.h"
+#include "tinymedia.h"
+
+#include "test_codecs.h"
+#include "test_sessions.h"
+
+#define RUN_TEST_LOOP		1
+
+#define RUN_TEST_ALL		0
+#define RUN_TEST_CODECS		1
+#define RUN_TEST_SESSIONS	1
+
+void test_register_dummy_plugins();
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -30,41 +41,91 @@ int _tmain(int argc, _TCHAR* argv[])
 int main()
 #endif
 {
-	while(1)
-	{
-		tmedia_t* dummy = tsk_null;
+	/* Register dummy plugins */
+	test_register_dummy_plugins();
+
+	do{
+
+#if RUN_TEST_ALL  || RUN_TEST_CODECS
+		test_codecs();
+#endif
+
+#if RUN_TEST_ALL  || RUN_TEST_SESSIONS
+		test_sessions();
+#endif
 		
-		// Register dummy media
-		tmedia_plugin_register(dummy_plugin_def_t);
-		// ...if you have another one to register
-		// ...and another
-		// ...again and again
-		
-		// Create dummy media
-		if((dummy = tmedia_factory_create("dummy plugin", "127.0.0.1", tnet_socket_type_udp_ipv4))){
-
-			tmedia_get_local_offer(dummy,
-				TSDP_HEADER_A_VA_ARGS("file-disposition", "attachment"),
-				
-				tsk_null
-				);
-			tmedia_get_negotiated_offer(dummy);
-			tmedia_set_remote_offer(dummy, tsk_null);		
-
-			tmedia_start(dummy);
-			tmedia_pause(dummy);
-
-			tmedia_perform(dummy, tma_dummy_say_hello,
-				TSK_PARAM_VA_ARGS("to", "doubango"),
-
-				tsk_null);
-
-			tmedia_stop(dummy);
-			
-			TSK_OBJECT_SAFE_FREE(dummy);
-		}
 	}
+	while(RUN_TEST_LOOP);
 	
 	return 0;
 }
+
+
+void test_register_dummy_plugins()
+{
+	int ret;
+
+	/* === Sessions === */
+	if((ret = tmedia_session_plugin_register(tmedia_session_daudio_plugin_def_t))){
+		TSK_DEBUG_ERROR("Failed to register audio plugin");
+	}
+	if((ret = tmedia_session_plugin_register(tmedia_session_dvideo_plugin_def_t))){
+		TSK_DEBUG_ERROR("Failed to register video plugin");
+	}
+	if((ret = tmedia_session_plugin_register(tmedia_session_dmsrp_plugin_def_t))){
+		TSK_DEBUG_ERROR("Failed to register msrp plugin");
+	}
+
+	/* === Codecs === */
+	if((ret = tmedia_codec_plugin_register(tmedia_codec_dpcma_plugin_def_t))){
+		TSK_DEBUG_ERROR("Failed to register G.711a plugin");
+	}
+	if((ret = tmedia_codec_plugin_register(tmedia_codec_dpcmu_plugin_def_t))){
+		TSK_DEBUG_ERROR("Failed to register G.711u plugin");
+	}
+}
+
+//#ifdef _WIN32_WCE
+//int _tmain(int argc, _TCHAR* argv[])
+//#else
+//int main()
+//#endif
+//{
+//	while(1)
+//	{
+//		tmedia_t* dummy = tsk_null;
+//		
+//		// Register dummy media
+//		tmedia_plugin_register(dummy_plugin_def_t);
+//		// ...if you have another one to register
+//		// ...and another
+//		// ...again and again
+//		
+//		// Create dummy media
+//		if((dummy = tmedia_factory_create("dummy plugin", "127.0.0.1", tnet_socket_type_udp_ipv4))){
+//
+//			tmedia_get_local_offer(dummy,
+//				TSDP_HEADER_A_VA_ARGS("file-disposition", "attachment"),
+//				
+//				tsk_null
+//				);
+//			tmedia_get_negotiated_offer(dummy);
+//			tmedia_set_remote_offer(dummy, tsk_null);		
+//
+//			tmedia_start(dummy);
+//			tmedia_pause(dummy);
+//
+//			tmedia_perform(dummy, tma_dummy_say_hello,
+//				TSK_PARAM_VA_ARGS("to", "doubango"),
+//
+//				tsk_null);
+//
+//			tmedia_stop(dummy);
+//			
+//			TSK_OBJECT_SAFE_FREE(dummy);
+//		}
+//	}
+//	
+//	return 0;
+//}
 

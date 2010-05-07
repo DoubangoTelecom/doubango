@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou(at)doubango.org>
+* Contact: Mamadou Diop <diopmamadou(at)yahoo.fr>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -19,43 +19,19 @@
 * along with DOUBANGO.
 *
 */
+#ifndef _TEST_CODECS_H_
+#define _TEST_CODECS_H_
 
-#include "stdafx.h"
-
-#include "tsk.h"
-
-#include "tsdp.h"
-#include "tinysdp/parsers/tsdp_parser_message.h"
-
-#include "test_parser.h"
-#include "test_soa.h"
-
-
-#define RUN_TEST_LOOP		1
-
-#define RUN_TEST_ALL		0
-#define RUN_TEST_PARSER		0
-#define RUN_TEST_SOA		1
-
-
-#ifdef _WIN32_WCE
-int _tmain(int argc, _TCHAR* argv[])
-#else
-int main()
-#endif
+void test_codecs()
 {
-	do
-	{
-		/* Print copyright information */
-		printf("Doubango Project\nCopyright (C) 2009 - 2010 Mamadou Diop \n\n");
-	
-#if RUN_TEST_ALL  || RUN_TEST_PARSER
-		test_parser();
-#endif
+	tmedia_codec_t* pcmu, *pcma;
 
-#if RUN_TEST_ALL  || RUN_TEST_SOA
-		test_soa();
-#endif
+	/* creates codecs  */
+	pcmu = tmedia_codec_create(TMEDIA_CODEC_FORMAT_G711u);
+	pcma = tmedia_codec_create(TMEDIA_CODEC_FORMAT_G711a);
 
-	} while(RUN_TEST_LOOP);
+	TSK_OBJECT_SAFE_FREE(pcmu);
+	TSK_OBJECT_SAFE_FREE(pcma);
 }
+
+#endif /* _TEST_CODECS_H_ */

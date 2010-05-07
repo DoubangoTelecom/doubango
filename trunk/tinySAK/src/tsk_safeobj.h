@@ -70,7 +70,7 @@ TSK_BEGIN_DECLS
 * @param safeobj The thread-safe object to deinitialize.
 * @sa @ref tsk_safeobj_init.
 */
-#define tsk_safeobj_init(safeobj)	TSK_SAFEOBJ_MUTEX(safeobj) = tsk_mutex_create()
+#define tsk_safeobj_init(safeobj)	TSK_SAFEOBJ_MUTEX(safeobj) = (TSK_SAFEOBJ_MUTEX(safeobj) ? TSK_SAFEOBJ_MUTEX(safeobj) : tsk_mutex_create())
 #define tsk_safeobj_lock(safeobj)	tsk_mutex_lock(TSK_SAFEOBJ_MUTEX(safeobj))
 #define tsk_safeobj_unlock(safeobj) tsk_mutex_unlock(TSK_SAFEOBJ_MUTEX(safeobj))
 #define tsk_safeobj_deinit(safeobj)	tsk_mutex_destroy(&TSK_SAFEOBJ_MUTEX(safeobj))
