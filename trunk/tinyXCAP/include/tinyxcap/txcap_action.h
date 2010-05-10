@@ -33,7 +33,7 @@
 
 #include "txcap.h"
 
-#include "tinyHTTP/thttp_action.h"
+#include "tinyhttp/thttp_action.h"
 
 TXCAP_BEGIN_DECLS
 

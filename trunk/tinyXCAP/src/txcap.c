@@ -28,7 +28,7 @@
  */
 #include "txcap.h"
 
-#include "tinyHTTP/thttp_url.h"
+#include "tinyhttp/thttp_url.h"
 
 /**@defgroup txcap_stack_group XCAP stack
 */

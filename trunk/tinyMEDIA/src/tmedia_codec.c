@@ -48,7 +48,7 @@ const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS] 
 * @param format the format. e.g. "0" for G.711.u or "8" for G.711a or "*" for MSRP.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tmedia_codec_init(tmedia_codec_t* self, tmedia_codec_type_t type, const char* name, const char* desc, const char* format)
+int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name, const char* desc, const char* format)
 {
 	if(!self || tsk_strnullORempty(name)){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -168,22 +168,19 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 				codec->dyn = plugin->dyn;
 				codec->plugin = plugin;
 				switch(codec->type){
-					case tmed_codec_type_audio:
+					case tmedia_audio:
 						{	/* Audio codec */
 							tmedia_codec_audio_t* audio = TMEDIA_CODEC_AUDIO(codec);
 							tmedia_codec_audio_init(TMEDIA_CODEC(audio), plugin->name, plugin->desc, plugin->format);
-							audio->channels = plugin->audio.channels;
-							audio->rate = plugin->audio.rate;
 							break;
 						}
-					case tmed_codec_type_video:
+					case tmedia_video:
 						{ /* Video codec */
 							tmedia_codec_video_t* video = TMEDIA_CODEC_VIDEO(codec);
 							tmedia_codec_video_init(TMEDIA_CODEC(video), plugin->name, plugin->desc, plugin->format);
-							video->rate = plugin->video.rate;
 							break;
 						}
-					case tmed_codec_type_msrp:
+					case tmedia_msrp:
 						{	/* Msrp codec */
 							tmedia_codec_msrp_init(codec, plugin->name, plugin->desc);
 							break;
@@ -212,26 +209,26 @@ char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self)
 {
 	char* rtpmap = tsk_null;
 
-	if(!self){
+	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("invalid parameter");
 		return tsk_null;
 	}
 	switch(self->type){
-		case tmed_codec_type_audio:
+		case tmedia_audio:
 			{	/* audio codecs */
-				const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)self;
-				if(audioCodec->channels > 0){
-					tsk_sprintf(&rtpmap, "%s/%d/%d", self->name, audioCodec->rate, audioCodec->channels);
+				/* const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)self; */
+				if(self->plugin->audio.channels > 0){
+					tsk_sprintf(&rtpmap, "%s %s/%d/%d", self->format, self->name, self->plugin->audio.rate, self->plugin->audio.channels);
 				}
 				else{
-					tsk_sprintf(&rtpmap, "%s/%d", self->name, audioCodec->rate);
+					tsk_sprintf(&rtpmap, "%s %s/%d", self->format, self->name, self->plugin->audio);
 				}
 			}
 			break;
-		case tmed_codec_type_video:
+		case tmedia_video:
 			{	/* video codecs */
-				const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)self;
-				tsk_sprintf(&rtpmap, "%s/%d", self->name, videoCodec->rate);
+				/* const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)self; */
+				tsk_sprintf(&rtpmap, "%s %s/%d", self->format, self->name, self->plugin->video.rate);
 				break;
 			}
 		/* all others */

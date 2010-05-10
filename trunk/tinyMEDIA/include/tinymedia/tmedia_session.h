@@ -45,30 +45,22 @@ TMEDIA_BEGIN_DECLS
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
 
-/** List of all supported sessions */
-typedef enum tmedia_sess_type_e
-{
-	tmed_sess_type_none = 0,
-	
-	//! audio session
-	tmed_sess_type_audio = (0x01 << 0),
-	//! video session
-	tmed_sess_type_video = (0x01 << 1),
-	//! msrp session
-	tmed_sess_type_msrp = (0x01 << 2),
-	// t.38 session
-	tmed_sess_type_t38 = (0x01 << 3),
-}
-tmedia_sess_type_t;
-
 /** Base objct used for all media sessions */
 typedef struct tmedia_session_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	tmedia_sess_type_t type;
-	//! codec managed by this session
-	tmedia_codec_t* codec;
+	tmedia_type_t type;
+	//! list of codecs managed by this session
+	tmedia_codecs_L_t* codecs;
+	//! whether the session has been prepared
+	tsk_bool_t prepared;
+
+	struct{
+		tsdp_header_M_t* lo;
+		tsdp_header_M_t* ro;
+		tsdp_header_M_t* no;
+	} M;
 
 	//! plugin used to create the session
 	const struct tmedia_session_plugin_def_s* plugin;
@@ -82,7 +74,7 @@ typedef struct tmedia_session_plugin_def_s
 	const tsk_object_def_t* objdef;
 
 	//! the type of the session
-	tmedia_sess_type_t type;
+	tmedia_type_t type;
 	//! the media name. e.g. "audio", "video", "message", "image" etc.
 	const char* media;
 	
@@ -91,17 +83,17 @@ typedef struct tmedia_session_plugin_def_s
 	int (* pause) (tmedia_session_t* );
 	int (* stop) (tmedia_session_t* );
 
-	tsdp_header_M_t* (* get_local_offer) (tmedia_session_t* );
-	tsdp_header_M_t* (* get_negotiated_offer) (tmedia_session_t* );
+	const tsdp_header_M_t* (* get_local_offer) (tmedia_session_t* );
+	const tsdp_header_M_t* (* get_negotiated_offer) (tmedia_session_t* );
 	int (* set_remote_offer) (tmedia_session_t* , const tsdp_header_M_t* );
 }
 tmedia_session_plugin_def_t;
 
-TINYMEDIA_API int tmedia_session_init(tmedia_session_t* self, tmedia_sess_type_t type);
+TINYMEDIA_API int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_cmp(const tsk_object_t* sess1, const tsk_object_t* sess2);
 TINYMEDIA_API int tmedia_session_plugin_register(const tmedia_session_plugin_def_t* plugin);
 TINYMEDIA_API int tmedia_session_plugin_unregister(const tmedia_session_plugin_def_t* plugin);
-TINYMEDIA_API tmedia_session_t* tmedia_session_create(tmedia_sess_type_t type);
+TINYMEDIA_API tmedia_session_t* tmedia_session_create(tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_deinit(tmedia_session_t* self);
 typedef tsk_list_t tmedia_sessions_L_t; /**< List of @ref tmedia_session_t objects */
 #define TMEDIA_DECLARE_SESSION tmedia_session_t __session__
@@ -144,18 +136,29 @@ typedef struct tmedia_session_mgr_s
 {
 	TSK_DECLARE_OBJECT;
 	
+	//! local IP address or FQDN
+	char* addr;
+	//! whether the @a addr is IPv6 or not (useful when @addr is a FQDN)
+	tsk_bool_t ipv6;
+
+	struct{
+		tsdp_message_t* lo;
+		tsdp_message_t* ro;
+		tsdp_message_t* no;
+	} sdp;
+
 	tsk_bool_t prepared;
 
 	//! session type
-	tmedia_sess_type_t type;
+	tmedia_type_t type;
 
 	//! List of all sessions
 	tmedia_sessions_L_t* sessions;
 }
 tmedia_session_mgr_t;
 
-TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_sess_type_t type);
-TINYMEDIA_API tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self);
+TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6);
+TINYMEDIA_API const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self);
 TINYMEDIA_API tsdp_message_t* tmedia_session_mgr_get_no(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp);
 

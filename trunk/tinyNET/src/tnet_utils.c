@@ -340,19 +340,16 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 
 	dwRetVal = GetAdaptersAddresses(family, flags, NULL, pAddresses, &outBufLen);
 
-	if(dwRetVal == NO_ERROR) 
-	{
+	if(dwRetVal == NO_ERROR) {
         pCurrAddresses = pAddresses;
-		while (pCurrAddresses)
-		{
+		while (pCurrAddresses){
 			if((if_index != -1) && (pCurrAddresses->IfIndex != if_index && pCurrAddresses->Ipv6IfIndex != if_index)){
 				goto next;
 			}
 
 			/* == UNICAST addresses == */
 			pUnicast = pCurrAddresses->FirstUnicastAddress;
-            while(unicast && pUnicast)
-			{
+            while(unicast && pUnicast){
 				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pUnicast->Address.lpSockaddr, &ip);
 				{
@@ -367,8 +364,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 
 			/* == ANYCAST addresses == */
 			pAnycast = pCurrAddresses->FirstAnycastAddress;
-            while(anycast && pAnycast)
-			{
+            while(anycast && pAnycast){
 				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pAnycast->Address.lpSockaddr, &ip);
 				{
@@ -383,8 +379,7 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 
 			/* == MULTYCAST addresses == */
 			pMulticast = pCurrAddresses->FirstMulticastAddress;
-            while(multicast && pMulticast)
-			{
+            while(multicast && pMulticast){
 				//memset(ip, '\0', sizeof(ip));
 				tnet_get_sockip(pMulticast->Address.lpSockaddr, &ip);
 				{
@@ -399,11 +394,9 @@ tnet_addresses_L_t* tnet_get_addresses(tnet_family_t family, unsigned unicast, u
 
 			/* == DNS servers == */
 			pDnServer = pCurrAddresses->FirstDnsServerAddress;
-            while(dnsserver && pDnServer)
-			{
+            while(dnsserver && pDnServer){
 				//memset(ip, '\0', sizeof(ip));
-				tnet_get_sockip(pDnServer->Address.lpSockaddr, &ip);
-				{
+				if(!tnet_get_sockip(pDnServer->Address.lpSockaddr, &ip)){
 					tnet_address_t *address = tnet_address_create(ip);
 					address->family = pDnServer->Address.lpSockaddr->sa_family;
 					address->dnsserver = 1;
@@ -633,8 +626,7 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 {
 	int status = -1;
 
-	if(addr->sa_family == AF_INET)
-	{
+	if(addr->sa_family == AF_INET){
 		struct sockaddr_in *sin = (struct sockaddr_in *)addr;
 		if(port){
 			*port = tnet_ntohs(sin->sin_port);

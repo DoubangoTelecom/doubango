@@ -37,10 +37,12 @@ TMEDIA_BEGIN_DECLS
 /** List of all supported media types */
 typedef enum tmedia_type_e
 {
-	tmed_audio,
-	tmed_video,
-	tmed_msrp,
-	tmed_t38
+	tmedia_none = 0,
+
+	tmedia_audio = (0x01 << 0),
+	tmedia_video = (0x01 << 1),
+	tmedia_msrp = (0x01 << 2),
+	tmedia_t38 = (0x01 << 3)
 }
 tmedia_type_t;
 

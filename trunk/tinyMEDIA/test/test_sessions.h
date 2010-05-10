@@ -25,15 +25,20 @@
 void test_sessions()
 {
 	tmedia_session_mgr_t* mgr;
-	tsdp_message_t* sdp_lo;
+	const tsdp_message_t* sdp_lo;
+	char* temp;
 	
 	/* create manager */
-	mgr = tmedia_session_mgr_create((tmed_sess_type_audio | tmed_sess_type_video | tmed_sess_type_msrp | tmed_sess_type_t38));
+	mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38),
+		"192.168.16.82", tsk_false);
 
 	/* get local sdp */
 	sdp_lo = tmedia_session_mgr_get_lo(mgr);
+	if((temp = tsdp_message_tostring(sdp_lo))){
+		TSK_DEBUG_INFO("sdp_lo=%s", temp);
+		TSK_FREE(temp);
+	}
 	
-	TSK_OBJECT_SAFE_FREE(sdp_lo);
 	TSK_OBJECT_SAFE_FREE(mgr);
 }
 

@@ -29,10 +29,13 @@
  */
 #include "tinymedia/tmedia_session.h"
 
+#include "tsk_memory.h"
 #include "tsk_debug.h"
 
 /**@defgroup tmedia_session_group Media Session
 */
+
+extern const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS];
 
 /* pointer to all registered sessions */
 const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLUGINS] = {0};
@@ -40,13 +43,17 @@ const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLU
 /* === local functions === */
 int tmedia_session_mgr_prepare(tmedia_session_mgr_t* self);
 
+const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self);
+const tsdp_header_M_t* tmedia_session_get_no(tmedia_session_t* self);
+int tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
+
 /**@ingroup tmedia_session_group
 * Initializes a newly created media session.
 * @param self the media session to initialize.
 * @param type the type of the session to initialize.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
-int tmedia_session_init(tmedia_session_t* self, tmedia_sess_type_t type)
+int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 {
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -141,7 +148,7 @@ int tmedia_session_plugin_unregister(const tmedia_session_plugin_def_t* plugin)
 * @param format The type of the codec to create.
 * @sa @ref tmedia_codec_plugin_register()
 */
-tmedia_session_t* tmedia_session_create(tmedia_sess_type_t type)
+tmedia_session_t* tmedia_session_create(tmedia_type_t type)
 {
 	tmedia_session_t* session = tsk_null;
 	const tmedia_session_plugin_def_t* plugin;
@@ -159,6 +166,50 @@ tmedia_session_t* tmedia_session_create(tmedia_sess_type_t type)
 	return session;
 }
 
+/* internal funtion: prepare lo */
+int tmedia_session_prepare_lo(tmedia_session_t* self)
+{
+	if(!self || !self->plugin || !self->plugin->prepare){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	if(self->prepared){
+		TSK_DEBUG_WARN("Session already prepared");
+		return 0;
+	}
+	return self->plugin->prepare(self);
+}
+
+/* internal function: get local offer */
+const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self)
+{
+	if(!self || !self->plugin || !self->plugin->get_local_offer){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	return self->plugin->get_local_offer(self);
+}
+
+/* internal function: get negociated offer */
+const tsdp_header_M_t* tmedia_session_get_no(tmedia_session_t* self)
+{
+	if(!self || !self->plugin || !self->plugin->get_negotiated_offer){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	return self->plugin->get_negotiated_offer(self);
+}
+
+/* internal function: get remote offer */
+int tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
+{
+	if(!self || !self->plugin || !self->plugin->set_remote_offer){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	return self->plugin->set_remote_offer(self, m);
+}
+
 /**@ingroup tmedia_session_group
 * DeInitializes a media session.
 * @param self the media session to deinitialize.
@@ -171,18 +222,55 @@ int tmedia_session_deinit(tmedia_session_t* self)
 		return -1;
 	}
 	
-	/* free objects */
-	TSK_OBJECT_SAFE_FREE(self->codec);
+	/* free codecs */
+	TSK_OBJECT_SAFE_FREE(self->codecs);
+	
+	/* free lo, no and ro */
+	TSK_OBJECT_SAFE_FREE(self->M.lo);
+	TSK_OBJECT_SAFE_FREE(self->M.ro);
+	TSK_OBJECT_SAFE_FREE(self->M.no);
+
+	return 0;
+}
+
+/* internal function used to prepare a session */
+int _tmedia_session_load_codecs(tmedia_session_t* self)
+{
+	tsk_size_t i = 0;
+	tmedia_codec_t* codec;
+	const tmedia_codec_plugin_def_t* plugin;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* remove old codecs */
+	TSK_OBJECT_SAFE_FREE(self->codecs);
+
+	/* for each registered plugin create a session instance */
+	while((i < TMED_CODEC_MAX_PLUGINS) && (plugin = __tmedia_codec_plugins[i++])){
+		if((plugin->type & self->type) == plugin->type){
+			if((codec = tmedia_codec_create(plugin->format))){
+				if(!self->codecs){
+					self->codecs = tsk_list_create();
+				}
+				tsk_list_push_back_data(self->codecs, (void**)(&codec));
+			}
+		}
+	}
 	return 0;
 }
 
 /**@ingroup tmedia_session_group
 * Creates new session manager.
-* @param type the type of the session to create. For example, (@ref tmed_sess_type_audio | @ref tmed_sess_type_video)
+* @param type the type of the session to create. For example, (@ref tmed_sess_type_audio | @ref tmed_sess_type_video).
+* @param addr the local ip address or FQDN to use in the sdp message.
+* @param ipv6 indicates whether @a addr is IPv6 address or not. Useful when @a addr is a FQDN.
 * will create an audio/video session.
 * @retval new @ref tmedia_session_mgr_t object
 */
-tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_sess_type_t type)
+tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6)
 {
 	tmedia_session_mgr_t* mgr;
 
@@ -190,8 +278,11 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_sess_type_t type)
 		TSK_DEBUG_ERROR("Failed to create Media Session manager");
 		return tsk_null;
 	}
-
+	
+	/* init */
 	mgr->type = type;
+	mgr->addr = tsk_strdup(addr);
+	mgr->ipv6 = ipv6;
 
 	return mgr;
 }
@@ -199,22 +290,51 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_sess_type_t type)
 /**@ingroup tmedia_session_group
 * Gets local offer.
 */
-tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
+const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 {
+	const tsk_list_item_t* item;
+	const tmedia_session_t* ms;
+	const tsdp_header_M_t* m;
+	
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 	
-	/* prepare the session if not already done */
+	/* prepare the session manager if not already done (create all sessions) */
 	if(!self->prepared){
 		if(tmedia_session_mgr_prepare(self)){
 			TSK_DEBUG_ERROR("Failed to prepare the session manager");
 			return tsk_null;
 		}
 	}
+	
+	/* creates local sdp if not already done */
+	if(self->sdp.lo){
+		return self->sdp.lo;
+	}
+	else if(!(self->sdp.lo = tsdp_message_create_empty(self->addr, self->ipv6))){
+		TSK_DEBUG_ERROR("Failed to create empty SDP message");
+		return tsk_null;
+	}
 
-	return tsk_null;
+	/* gets each "m=" line from the sessions and add them to the local sdp */
+	tsk_list_foreach(item, self->sessions){
+		if(!(ms = item->data)){
+			continue;
+		}
+		/* prepare the media session */
+		if((tmedia_session_prepare_lo(TMEDIA_SESSION(ms)))){
+			continue;
+		}
+		
+		/* add "m=" line from the session to the local sdp */
+		if((m = tmedia_session_get_lo(TMEDIA_SESSION(ms)))){
+			tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(m));
+		}
+	}
+	
+	return self->sdp.lo;
 }
 
 /**@ingroup tmedia_session_group
@@ -278,6 +398,12 @@ static tsk_object_t* tmedia_session_mgr_dtor(tsk_object_t * self)
 	tmedia_session_mgr_t *mgr = self;
 	if(mgr){
 		TSK_OBJECT_SAFE_FREE(mgr->sessions);
+
+		TSK_OBJECT_SAFE_FREE(mgr->sdp.lo);
+		TSK_OBJECT_SAFE_FREE(mgr->sdp.ro);
+		TSK_OBJECT_SAFE_FREE(mgr->sdp.no);
+
+		TSK_FREE(mgr->addr);
 	}
 
 	return self;

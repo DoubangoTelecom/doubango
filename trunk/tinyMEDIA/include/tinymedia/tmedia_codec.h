@@ -32,6 +32,8 @@
 
 #include "tinymedia_config.h"
 
+#include "tmedia_common.h"
+
 #include "tsk_list.h"
 
 TMEDIA_BEGIN_DECLS
@@ -111,24 +113,13 @@ TMEDIA_BEGIN_DECLS
 /** cast any pointer to @ref tmedia_codec_t* object */
 #define TMEDIA_CODEC(self)		((tmedia_codec_t*)(self))
 
-/** list of all supported code types */
-typedef enum tmedia_codec_type_e
-{
-	tmed_codec_type_none = 0,
-
-	tmed_codec_type_audio,
-	tmed_codec_type_video,
-	tmed_codec_type_msrp
-}
-tmedia_codec_type_t;
-
 /** Base object for all Codecs */
 typedef struct tmedia_codec_s
 {
 	TSK_DECLARE_OBJECT;
 
 	//! the type of the codec
-	tmedia_codec_type_t type;
+	tmedia_type_t type;
 	//! whether the pay. type is dyn. or not
 	tsk_bool_t dyn;
 	//! the name of the codec. e.g. "G.711U" or "G.711A" etc used in the sdp
@@ -149,7 +140,7 @@ typedef struct tmedia_codec_plugin_def_s
 	const tsk_object_def_t* objdef;
 
 	//! the type of the codec
-	tmedia_codec_type_t type;
+	tmedia_type_t type;
 	//! the name of the codec. e.g. "G.711U" or "G.711A" etc using in the sdp.
 	const char* name;
 	//! full description
@@ -185,7 +176,7 @@ typedef tsk_list_t tmedia_codecs_L_t;
 /**< Declare base class as codec */
 #define TMEDIA_DECLARE_CODEC tmedia_codec_t __codec__
 
-TINYMEDIA_API int tmedia_codec_init(tmedia_codec_t* self, tmedia_codec_type_t type, const char* name, const char* desc, const char* format);
+TINYMEDIA_API int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name, const char* desc, const char* format);
 TINYMEDIA_API int tmedia_codec_cmp(const tsk_object_t* codec1, const tsk_object_t* codec2);
 TINYMEDIA_API int tmedia_codec_plugin_register(const tmedia_codec_plugin_def_t* plugin);
 TINYMEDIA_API int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin);
@@ -200,11 +191,6 @@ TINYMEDIA_API int tmedia_codec_deinit(tmedia_codec_t* self);
 typedef struct tmedia_codec_audio_s
 {
 	TMEDIA_DECLARE_CODEC;
-
-	//! clock rate (Hz)
-	int32_t rate;
-	//! audio channels
-	int8_t channels;
 }
 tmedia_codec_audio_t;
 
@@ -222,16 +208,13 @@ tmedia_codec_audio_t;
 */
 #define TMEDIA_DECLARE_CODEC_AUDIO tmedia_codec_audio_t __audio__
 #define TMEDIA_CODEC_AUDIO(self)		((tmedia_codec_audio_t*)(self))
-#define tmedia_codec_audio_init(self, name, desc, format) tmedia_codec_init(TMEDIA_CODEC(self), tmed_codec_type_audio, name, desc, format)
+#define tmedia_codec_audio_init(self, name, desc, format) tmedia_codec_init(TMEDIA_CODEC(self), tmedia_audio, name, desc, format)
 #define tmedia_codec_audio_deinit(self) tmedia_codec_deinit(TMEDIA_CODEC(self))
 
 /** Video codec */
 typedef struct tmedia_codec_video_s
 {
 	TMEDIA_DECLARE_CODEC;
-
-	//! clock rate (Hz)
-	int32_t rate;
 }
 tmedia_codec_video_t;
 
@@ -249,7 +232,7 @@ tmedia_codec_video_t;
 */
 #define TMEDIA_DECLARE_CODEC_VIDEO tmedia_codec_video_t __video__
 #define TMEDIA_CODEC_VIDEO(self)		((tmedia_codec_video_t*)(self))
-#define tmedia_codec_video_init(self, name, desc, format) tmedia_codec_init(TMEDIA_CODEC(self), tmed_codec_type_video, name, desc, format)
+#define tmedia_codec_video_init(self, name, desc, format) tmedia_codec_init(TMEDIA_CODEC(self), tmedia_video, name, desc, format)
 #define tmedia_codec_video_deinit(self) tmedia_codec_deinit(TMEDIA_CODEC(self))
 
 /** MSRP codec */
@@ -273,7 +256,7 @@ tmedia_codec_msrp_t;
 */
 #define TMEDIA_DECLARE_CODEC_MSRP tmedia_codec_msrp_t __msrp__
 #define TMEDIA_CODEC_MSRP(self)		((tmedia_codec_msrp_t*)(self))
-#define tmedia_codec_msrp_init(self, name, desc) tmedia_codec_init(TMEDIA_CODEC(self), tmed_codec_type_msrp, name, desc, "*")
+#define tmedia_codec_msrp_init(self, name, desc) tmedia_codec_init(TMEDIA_CODEC(self), tmedia_msrp, name, desc, "*")
 #define tmedia_codec_msrp_deinit(self) tmedia_codec_deinit(TMEDIA_CODEC(self))
 
 TMEDIA_END_DECLS

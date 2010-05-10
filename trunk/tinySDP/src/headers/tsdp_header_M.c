@@ -65,8 +65,7 @@ tsdp_fmt_t* tsdp_fmt_create(const char* fmt)
 
 int tsdp_header_M_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_M_t *M = (const tsdp_header_M_t *)header;
 		const tsk_list_item_t* item;
 		tsk_istr_t nports;
@@ -185,7 +184,7 @@ tsdp_header_M_t *tsdp_header_M_parse(const char *data, tsk_size_t size)
 	const char *tag_start;
 
 	
-/* #line 189 "./src/headers/tsdp_header_M.c" */
+/* #line 188 "./src/headers/tsdp_header_M.c" */
 static const char _tsdp_machine_parser_header_M_actions[] = {
 	0, 1, 0, 1, 1, 1, 2, 1, 
 	3, 1, 4
@@ -268,16 +267,16 @@ static const int tsdp_machine_parser_header_M_error = 0;
 static const int tsdp_machine_parser_header_M_en_main = 1;
 
 
-/* #line 225 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 224 "./ragel/tsdp_parser_header_M.rl" */
 	
-/* #line 274 "./src/headers/tsdp_header_M.c" */
+/* #line 273 "./src/headers/tsdp_header_M.c" */
 	{
 	cs = tsdp_machine_parser_header_M_start;
 	}
 
-/* #line 226 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 225 "./ragel/tsdp_parser_header_M.rl" */
 	
-/* #line 281 "./src/headers/tsdp_header_M.c" */
+/* #line 280 "./src/headers/tsdp_header_M.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -381,7 +380,7 @@ _match:
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 385 "./src/headers/tsdp_header_M.c" */
+/* #line 384 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 
@@ -403,7 +402,7 @@ _again:
 		TSK_PARSER_ADD_STRING(hdr_M->FMTs);
 	}
 	break;
-/* #line 407 "./src/headers/tsdp_header_M.c" */
+/* #line 406 "./src/headers/tsdp_header_M.c" */
 		}
 	}
 	}
@@ -411,12 +410,12 @@ _again:
 	_out: {}
 	}
 
-/* #line 227 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 226 "./ragel/tsdp_parser_header_M.rl" */
 	
 	if( cs < 
-/* #line 418 "./src/headers/tsdp_header_M.c" */
+/* #line 417 "./src/headers/tsdp_header_M.c" */
 14
-/* #line 228 "./ragel/tsdp_parser_header_M.rl" */
+/* #line 227 "./ragel/tsdp_parser_header_M.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse \"m=\" header.");
 		TSK_OBJECT_SAFE_FREE(hdr_M);
@@ -483,6 +482,7 @@ int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...)
 	va_list ap;
 	
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
@@ -505,16 +505,34 @@ int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...)
 	return 0;
 }
 
+int tsdp_header_M_add_fmt(tsdp_header_M_t* self, const char* fmt)
+{
+	tsdp_fmt_t* _fmt;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((_fmt = tsdp_fmt_create(fmt))){
+		tsk_list_push_back_data(self->FMTs, (void**)&_fmt);
+		return 0;
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create fmt object");
+		return -2;
+	}
+}
+
 const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field)
 {
 	const tsk_list_item_t *item;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 
-	tsk_list_foreach(item, self->Attributes)
-	{
+	tsk_list_foreach(item, self->Attributes){
 		if(tsk_strequals(TSDP_HEADER_A(item->data)->field, field)){
 			return TSDP_HEADER_A(item->data);
 		}
@@ -522,6 +540,7 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 
 	return tsk_null;
 }
+
 
 //
 //int tsdp_header_M_set(tsdp_header_M_t* self, ...)
@@ -574,8 +593,7 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 static tsk_object_t* tsdp_header_M_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_M_t *M = self;
-	if(M)
-	{
+	if(M){
 		TSDP_HEADER(M)->type = tsdp_htype_M;
 		TSDP_HEADER(M)->tostring = tsdp_header_M_tostring;
 		TSDP_HEADER(M)->clone = tsdp_header_M_clone;

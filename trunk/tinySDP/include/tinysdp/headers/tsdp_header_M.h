@@ -106,6 +106,7 @@ TINYSDP_API tsdp_header_M_t* tsdp_header_M_create_null();
 TINYSDP_API tsdp_header_M_t *tsdp_header_M_parse(const char *data, tsk_size_t size);
 TINYSDP_API int tsdp_header_M_add(tsdp_header_M_t* self, const tsdp_header_t* header);
 TINYSDP_API int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...);
+TINYSDP_API int tsdp_header_M_add_fmt(tsdp_header_M_t* self, const char* fmt);
 TINYSDP_API const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field);
 
 TINYSDP_GEXTERN const tsk_object_def_t *tsdp_header_M_def_t;
