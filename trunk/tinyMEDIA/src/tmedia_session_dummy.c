@@ -29,14 +29,31 @@
  */
 #include "tinymedia/tmedia_session_dummy.h"
 
+#include "tsk_memory.h"
 #include "tsk_debug.h"
+
+extern int _tmedia_session_load_codecs(tmedia_session_t* self);
 
 /* ============ Audio Session ================= */
 
 int tmedia_session_daudio_prepare(tmedia_session_t* self)
 {
+	int ret;
+	tmedia_session_daudio_t* daudio;
+
 	TSK_DEBUG_INFO("tmedia_session_daudio_prepare");
-	return 0;
+
+	daudio = (tmedia_session_daudio_t*)self;
+
+	if((ret = _tmedia_session_load_codecs(self))){
+		TSK_DEBUG_ERROR("Failed to prepare audio session");
+		return ret;
+	}
+
+	/* set local port */
+	daudio->local_port = rand();
+
+	return ret;
 }
 
 int tmedia_session_daudio_start(tmedia_session_t* self)
@@ -57,13 +74,57 @@ int tmedia_session_daudio_pause(tmedia_session_t* self)
 	return 0;
 }
 
-tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
+const tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
 {
+	const tsk_list_item_t* item;
+	const tmedia_codec_t* codec;
+	char *fmtp, *rtpmap;
+	tmedia_session_daudio_t* daudio;
+
 	TSK_DEBUG_INFO("tmedia_session_daudio_get_lo");
-	return tsk_null;
+
+	if(!self || !self->plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return self->M.lo;
+	}
+
+	daudio = (tmedia_session_daudio_t*)self;
+
+	if(self->M.lo){
+		return self->M.lo;
+	}
+	else if(!(self->M.lo = tsdp_header_M_create(self->plugin->media, daudio->local_port, "RTP/AVP"))){
+		TSK_DEBUG_ERROR("Failed to create lo");
+		return tsk_null;
+	}
+
+	tsk_list_foreach(item, self->codecs){
+		codec = item->data;
+		
+		/* add fmt */
+		if(tsdp_header_M_add_fmt(self->M.lo, codec->format)){
+			continue;
+		}
+		/* add rtpmap attribute */
+		if((rtpmap = tmedia_codec_get_rtpmap(codec))){
+			tsdp_header_M_add_headers(self->M.lo,
+			TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
+			tsk_null);
+			TSK_FREE(rtpmap);
+		}
+		/* add fmtp attribute */
+		if((fmtp = tmedia_codec_get_fmtp(codec))){
+			tsdp_header_M_add_headers(self->M.lo,
+			TSDP_HEADER_A_VA_ARGS("fmtp", fmtp),
+			tsk_null);
+			TSK_FREE(fmtp);
+		}
+	}
+
+	return self->M.lo;
 }
 
-tsdp_header_M_t* tmedia_session_daudio_get_no(tmedia_session_t* self)
+const tsdp_header_M_t* tmedia_session_daudio_get_no(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_daudio_get_no");
 	return tsk_null;
@@ -101,13 +162,13 @@ int tmedia_session_dvideo_pause(tmedia_session_t* self)
 	return 0;
 }
 
-tsdp_header_M_t* tmedia_session_dvideo_get_lo(tmedia_session_t* self)
+const tsdp_header_M_t* tmedia_session_dvideo_get_lo(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dvideo_get_lo");
 	return tsk_null;
 }
 
-tsdp_header_M_t* tmedia_session_dvideo_get_no(tmedia_session_t* self)
+const tsdp_header_M_t* tmedia_session_dvideo_get_no(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dvideo_get_no");
 	return tsk_null;
@@ -145,13 +206,13 @@ int tmedia_session_dmsrp_pause(tmedia_session_t* self)
 	return 0;
 }
 
-tsdp_header_M_t* tmedia_session_dmsrp_get_lo(tmedia_session_t* self)
+const tsdp_header_M_t* tmedia_session_dmsrp_get_lo(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_get_lo");
 	return tsk_null;
 }
 
-tsdp_header_M_t* tmedia_session_dmsrp_get_no(tmedia_session_t* self)
+const tsdp_header_M_t* tmedia_session_dmsrp_get_no(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_get_no");
 	return tsk_null;
@@ -200,7 +261,7 @@ static const tmedia_session_plugin_def_t tmedia_session_daudio_plugin_def_s =
 {
 	&tmedia_session_daudio_def_s,
 	
-	tmed_sess_type_audio,
+	tmedia_audio,
 	"audio",
 	
 	tmedia_session_daudio_prepare,
@@ -252,7 +313,7 @@ static const tmedia_session_plugin_def_t tmedia_session_dvideo_plugin_def_s =
 {
 	&tmedia_session_dvideo_def_s,
 	
-	tmed_sess_type_video,
+	tmedia_video,
 	"video",
 	
 	tmedia_session_dvideo_prepare,
@@ -304,7 +365,7 @@ static const tmedia_session_plugin_def_t tmedia_session_dmsrp_plugin_def_s =
 {
 	&tmedia_session_dmsrp_def_s,
 	
-	tmed_sess_type_msrp,
+	tmedia_msrp,
 	"message",
 	
 	tmedia_session_dmsrp_prepare,

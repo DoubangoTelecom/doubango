@@ -102,8 +102,7 @@ tsdp_fmt_t* tsdp_fmt_create(const char* fmt)
 
 int tsdp_header_M_tostring(const tsdp_header_t* header, tsk_buffer_t* output)
 {
-	if(header)
-	{
+	if(header){
 		const tsdp_header_M_t *M = (const tsdp_header_M_t *)header;
 		const tsk_list_item_t* item;
 		tsk_istr_t nports;
@@ -291,6 +290,7 @@ int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...)
 	va_list ap;
 	
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
@@ -313,16 +313,34 @@ int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...)
 	return 0;
 }
 
+int tsdp_header_M_add_fmt(tsdp_header_M_t* self, const char* fmt)
+{
+	tsdp_fmt_t* _fmt;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((_fmt = tsdp_fmt_create(fmt))){
+		tsk_list_push_back_data(self->FMTs, (void**)&_fmt);
+		return 0;
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to create fmt object");
+		return -2;
+	}
+}
+
 const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field)
 {
 	const tsk_list_item_t *item;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 
-	tsk_list_foreach(item, self->Attributes)
-	{
+	tsk_list_foreach(item, self->Attributes){
 		if(tsk_strequals(TSDP_HEADER_A(item->data)->field, field)){
 			return TSDP_HEADER_A(item->data);
 		}
@@ -330,6 +348,7 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 
 	return tsk_null;
 }
+
 
 //
 //int tsdp_header_M_set(tsdp_header_M_t* self, ...)
@@ -382,8 +401,7 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 static tsk_object_t* tsdp_header_M_ctor(tsk_object_t *self, va_list * app)
 {
 	tsdp_header_M_t *M = self;
-	if(M)
-	{
+	if(M){
 		TSDP_HEADER(M)->type = tsdp_htype_M;
 		TSDP_HEADER(M)->tostring = tsdp_header_M_tostring;
 		TSDP_HEADER(M)->clone = tsdp_header_M_clone;

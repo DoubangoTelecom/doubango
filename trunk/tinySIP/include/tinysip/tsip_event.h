@@ -75,7 +75,7 @@ typedef struct tsip_event_s
 {
 	TSK_DECLARE_OBJECT;
 
-	struct tsip_stack_handle_t * stack;
+	struct tsip_stack_s * stack;
 	tsip_ssession_handle_t* ss;
 
 	short code;

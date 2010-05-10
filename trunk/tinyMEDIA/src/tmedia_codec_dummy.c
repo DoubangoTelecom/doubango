@@ -83,7 +83,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s =
 {
 	&tmedia_codec_dpcmu_def_s,
 
-	tmed_codec_type_audio,
+	tmedia_audio,
 	"G.711u",
 	"Dummy G.711u codec",
 	TMEDIA_CODEC_FORMAT_G711u,
@@ -140,7 +140,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s =
 {
 	&tmedia_codec_dpcma_def_s,
 
-	tmed_codec_type_audio,
+	tmedia_audio,
 	"G.711a",
 	"Dummy G.711a codec",
 	TMEDIA_CODEC_FORMAT_G711a,

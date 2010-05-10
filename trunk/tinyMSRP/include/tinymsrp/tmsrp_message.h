@@ -38,7 +38,7 @@
 #include "tinymsrp/headers/tmsrp_header_Content-Type.h"
 #include "tinymsrp/headers/tmsrp_header_Failure-Report.h"
 #include "tinymsrp/headers/tmsrp_header_From-Path.h"
-#include "tinymsrp/headers/tmsrp_header_Message-Id.h"
+#include "tinymsrp/headers/tmsrp_header_Message-ID.h"
 #include "tinymsrp/headers/tmsrp_header_Status.h"
 #include "tinymsrp/headers/tmsrp_header_Success-Report.h"
 #include "tinymsrp/headers/tmsrp_header_To-Path.h"
