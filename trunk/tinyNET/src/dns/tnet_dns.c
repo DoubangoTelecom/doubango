@@ -229,7 +229,7 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
     // First, try with IPv4
     if(TNET_SOCKET_IS_VALID(localsocket4)){
 		if((ret = tnet_get_sockaddr(localsocket4->fd, &result))){
-			TNET_PRINT_LAST_ERROR("tnet_get_sockaddr failed.");
+			TNET_PRINT_LAST_ERROR("tnet_get_sockaddr() failed.");
 			goto ipv6;
 		}
 		from = (struct sockaddr *) &result;
@@ -240,14 +240,14 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
 			goto done;
 		}
 		else{
-			TNET_PRINT_LAST_ERROR("dns_search_v4()", localsocket4->fd);
+			TNET_PRINT_LAST_ERROR("dns_search_v4()");
 		}
     }
 ipv6:
     // Then, try with IPv6
     if(TNET_SOCKET_IS_VALID(localsocket6)){
 		if((ret = tnet_get_sockaddr(localsocket6->fd, &result))){
-			TNET_PRINT_LAST_ERROR("tnet_get_sockaddr failed.");
+			TNET_PRINT_LAST_ERROR("tnet_get_sockaddr() failed.");
 			goto done;
 		}
         from = (struct sockaddr *) &result;
@@ -258,7 +258,7 @@ ipv6:
             goto done;
 		}
 		else{
-			TNET_PRINT_LAST_ERROR("dns_search_v6()", localsocket4->fd);
+			TNET_PRINT_LAST_ERROR("dns_search_v6()");
 		}
     }
     
