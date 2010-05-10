@@ -313,7 +313,12 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	if(self->sdp.lo){
 		return self->sdp.lo;
 	}
-	else if(!(self->sdp.lo = tsdp_message_create_empty(self->addr, self->ipv6))){
+	else if((self->sdp.lo = tsdp_message_create_empty(self->addr, self->ipv6))){
+		/* Set connection "c=" */
+		tsdp_message_add_headers(self->sdp.lo,
+			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->addr),
+			tsk_null);
+	}else{
 		TSK_DEBUG_ERROR("Failed to create empty SDP message");
 		return tsk_null;
 	}
@@ -355,9 +360,57 @@ tsdp_message_t* tmedia_session_mgr_get_no(tmedia_session_mgr_t* self)
 */
 int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp)
 {
+	const tsk_list_item_t* it1, *it2;
+	const tmedia_session_t* ms;
+	const tmedia_codec_t* codec;
+	const tsdp_header_M_t* M;
+
 	if(!self || !sdp){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
+	}
+
+	/* update remote offer */
+	TSK_OBJECT_SAFE_FREE(self->sdp.ro);
+	self->sdp.ro = tsk_object_ref((void*)sdp);
+
+	/* prepare the session manager if not already done (create all sessions) */
+	if(!self->prepared){
+		if(tmedia_session_mgr_prepare(self)){
+			TSK_DEBUG_ERROR("Failed to prepare the session manager");
+			return tsk_null;
+		}
+	}
+	
+	tsk_list_foreach(it1, sdp->headers){
+		if(!(it1->data) || (TSDP_HEADER(it1->data)->type != tsdp_htype_M)){
+			continue;
+		}
+		M = (const tsdp_header_M_t*)(it1->data);
+	}
+
+	/* foreach session */
+	tsk_list_foreach(it1, self->sessions){
+		if(!(ms = it1->data)){
+			continue;
+		}
+		
+		/* for each codec in the curr. session */
+		tsk_list_foreach(it2, ms->codecs){
+			if(!(codec = it2->data)){
+				continue;
+			}
+
+			/* Codec with fixed payload type */
+			if(!codec->dyn){
+				
+			}
+			/* codec with dyn. payload type */
+			else{
+
+			}
+		}
+		
 	}
 
 	return 0;

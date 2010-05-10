@@ -34,8 +34,8 @@
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
-#define RUN_TEST_PARSER		0
-#define RUN_TEST_SOA		1
+#define RUN_TEST_PARSER		1
+#define RUN_TEST_SOA		0
 
 
 #ifdef _WIN32_WCE

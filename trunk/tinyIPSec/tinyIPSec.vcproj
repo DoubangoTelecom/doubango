@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="Fwpuclnt.lib Ws2_32.lib $(OutDir)\tinySAK.lib"
+				AdditionalDependencies="Ws2_32.lib $(OutDir)\tinySAK.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -139,6 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="Ws2_32.lib $(OutDir)\tinySAK.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"

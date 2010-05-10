@@ -331,9 +331,11 @@ int tsdp_header_M_add_fmt(tsdp_header_M_t* self, const char* fmt)
 	}
 }
 
-const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field)
+const tsdp_header_A_t* tsdp_header_M_findA_at(const tsdp_header_M_t* self, const char* field, tsk_size_t index)
 {
 	const tsk_list_item_t *item;
+	tsk_size_t pos = 0;
+	const tsdp_header_A_t* A;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -341,12 +343,77 @@ const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const ch
 	}
 
 	tsk_list_foreach(item, self->Attributes){
+		if(!(A = item->data)){
+			continue;
+		}
+
 		if(tsk_strequals(TSDP_HEADER_A(item->data)->field, field)){
-			return TSDP_HEADER_A(item->data);
+			if(pos++ >= index){
+				return A;
+			}
 		}
 	}
 
 	return tsk_null;
+}
+
+const tsdp_header_A_t* tsdp_header_M_findA(const tsdp_header_M_t* self, const char* field)
+{
+	return tsdp_header_M_findA_at(self, field, 0);
+}
+
+char* tsdp_header_M_get_rtpmap(const tsdp_header_M_t* self, const char* fmt)
+{	
+	char *rtpmap = tsk_null; /* e.g. AMR-WB/16000 */
+	tsk_size_t i = 0, fmt_len, A_len;
+	int indexof;
+	const tsdp_header_A_t* A;
+
+	fmt_len = tsk_strlen(fmt);
+	if(!self || !fmt_len || fmt_len > 3/*'0-255' or '*'*/){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	
+	/* find "a=rtpmap" */
+	while((A = tsdp_header_M_findA_at(self, "rtpmap", i++))){
+		/* A->value would be: "98 AMR-WB/16000" */
+		if((A_len = tsk_strlen(A->value)) < (fmt_len + 1/*space*/)){
+			continue;
+		}
+		if((indexof = tsk_strindexOf(A->value, A_len, fmt)) == 0 && (A->value[fmt_len] == ' ')){
+			rtpmap = tsk_strndup(&A->value[fmt_len+1], (A_len-(fmt_len+1)));
+			break;
+		}
+	}
+	return rtpmap;
+}
+
+char* tsdp_header_M_get_fmtp(const tsdp_header_M_t* self, const char* fmt)
+{
+	char *fmtp = tsk_null; /* e.g. octet-align=1 */
+	tsk_size_t i = 0, fmt_len, A_len;
+	int indexof;
+	const tsdp_header_A_t* A;
+
+	fmt_len = tsk_strlen(fmt);
+	if(!self || !fmt_len || fmt_len > 3/*'0-255' or '*'*/){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	/* find "a=fmtp" */
+	while((A = tsdp_header_M_findA_at(self, "fmtp", i++))){
+		/* A->value would be: "98 octet-align=1" */
+		if((A_len = tsk_strlen(A->value)) < (fmt_len + 1/*space*/)){
+			continue;
+		}
+		if((indexof = tsk_strindexOf(A->value, A_len, fmt)) == 0 && (A->value[fmt_len] == ' ')){
+			fmtp = tsk_strndup(&A->value[fmt_len+1], (A_len-(fmt_len+1)));
+			break;
+		}
+	}
+	return fmtp;
 }
 
 

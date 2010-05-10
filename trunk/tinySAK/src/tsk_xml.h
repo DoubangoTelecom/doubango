@@ -31,7 +31,6 @@
 #define _TINYSAK_XML_H_
 
 #include "tinysak_config.h"
-#include "tsk_heap.h"
 #include "tsk_list.h"
 
 #if HAVE_LIBXML2_H

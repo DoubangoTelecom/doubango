@@ -27,10 +27,10 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
+#include "tsk_xml.h"
 
 #if HAVE_LIBXML2_H
 
-#include "tsk_xml.h"
 #include "tsk_string.h"
 #include "tsk_memory.h"
 #include "tsk_macros.h"

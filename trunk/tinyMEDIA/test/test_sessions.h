@@ -26,6 +26,7 @@ void test_sessions()
 {
 	tmedia_session_mgr_t* mgr;
 	const tsdp_message_t* sdp_lo;
+	tsdp_message_t* sdp_ro;
 	char* temp;
 	
 	/* create manager */

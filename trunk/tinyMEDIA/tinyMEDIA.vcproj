@@ -139,6 +139,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -201,6 +202,10 @@
 				RelativePath=".\include\tinymedia\tmedia_session.h"
 				>
 			</File>
+			<File
+				RelativePath=".\include\tinymedia\tmedia_session_dummy.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="source(*.c)"
@@ -221,6 +226,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tmedia_session.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tmedia_session_dummy.c"
 				>
 			</File>
 		</Filter>
