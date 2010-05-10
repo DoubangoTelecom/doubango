@@ -212,7 +212,7 @@ int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 */
 tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
-#if HAVE_DNS_H    
+#if HAVE_DNS_H
     struct sockaddr_storage result;
     struct sockaddr *from;
     uint32_t fromlen;
@@ -227,31 +227,39 @@ tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tn
     tsk_safeobj_lock(ctx);
     
     // First, try with IPv4
-    {
-        tnet_get_sockaddr(localsocket4->fd, &result);
-        from = (struct sockaddr *) &result;
-        fromlen = from->sa_len;
+    if(TNET_SOCKET_IS_VALID(localsocket4)){
+		if((ret = tnet_get_sockaddr(localsocket4->fd, &result))){
+			TNET_PRINT_LAST_ERROR("tnet_get_sockaddr failed.");
+			goto ipv6;
+		}
+		from = (struct sockaddr *) &result;
+		fromlen = from->sa_len;
         
-        ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen);
-        
-        if (ret > 0) {
-            response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
-            goto done;
-        }
+		if ((ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen)) > 0) {
+			response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
+			goto done;
+		}
+		else{
+			TNET_PRINT_LAST_ERROR("dns_search_v4()", localsocket4->fd);
+		}
     }
-    
+ipv6:
     // Then, try with IPv6
-    {
-        tnet_get_sockaddr(localsocket6->fd, &result);
+    if(TNET_SOCKET_IS_VALID(localsocket6)){
+		if((ret = tnet_get_sockaddr(localsocket6->fd, &result))){
+			TNET_PRINT_LAST_ERROR("tnet_get_sockaddr failed.");
+			goto done;
+		}
         from = (struct sockaddr *) &result;
         fromlen = from->sa_len;
         
-        ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen);
-        
-        if (ret > 0) {
-            response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
+		if((ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen)) > 0){
+			 response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
             goto done;
-        }
+		}
+		else{
+			TNET_PRINT_LAST_ERROR("dns_search_v6()", localsocket4->fd);
+		}
     }
     
 done:
@@ -285,8 +293,7 @@ done:
 	}
 
 	/* Retrieve data from cache. */
-	if(ctx->caching)
-	{
+	if(ctx->caching){
 		const tnet_dns_cache_entry_t *entry = tnet_dns_cache_entry_get(ctx, qname, qclass, qtype);
 		if(entry){
 			response = tsk_object_ref(((tnet_dns_cache_entry_t*)entry)->response);
@@ -299,8 +306,7 @@ done:
 	query->Header.RD = ctx->recursion;
 
 	/* EDNS0 */
-	if(ctx->edns0)
-	{
+	if(ctx->edns0){
 		tnet_dns_opt_t *rr_opt = tnet_dns_opt_create(TNET_DNS_DGRAM_SIZE_DEFAULT);
 		if(!query->Additionals){
 			query->Additionals = tsk_list_create();
