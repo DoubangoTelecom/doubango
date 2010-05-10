@@ -45,13 +45,15 @@
     "r=7d 1h 0 25h\r\n" \
 	"r=604800 3600 0 90000\r\n" \
 	"w=my dummy header\r\n" \
-	"m=audio 49170 RTP/AVP 0 8 97\r\n" \
+	"m=audio 49170 RTP/AVP 0 8 97 98\r\n" \
 	"i=Audio line\r\n" \
 	"c=IN IP4 otherhost.biloxi.example.com\r\n" \
 	"k=base64:ZWFzdXJlLgdddddddddddddddddddddd==\r\n" \
 	"a=rtpmap:0 PCMU/8000\r\n" \
 	"a=rtpmap:8 PCMA/8000\r\n" \
 	"a=rtpmap:97 iLBC/8000\r\n" \
+	"a=rtpmap:98 AMR-WB/16000\r\n" \
+    "a=fmtp:98 octet-align=1\r\n" \
 	"m=video 51372 RTP/AVP 31 32\r\n" \
 	"i=Video line\r\n" \
 	"b=A-YZ:92\r\n" \
@@ -68,6 +70,7 @@
 
 void test_caps();
 void test_holdresume();
+void test_M();
 
 void test_parser()
 {
@@ -76,6 +79,7 @@ void test_parser()
 	
 	test_caps();
 	test_holdresume();
+	test_M();
 
 	//
 	// deserialize/serialize the message
@@ -218,6 +222,43 @@ void test_holdresume()
 	else{
 		TSK_DEBUG_ERROR("Failed to parse SDP message.");
 	}	
+}
+
+void test_M()
+{
+	char* rtpmap, *fmtp;
+	const tsk_list_item_t* item;
+	const tsdp_header_M_t* M;
+
+	tsdp_message_t *message = tsk_null;
+
+	if((message = tsdp_message_parse(SDP_MSG_TO_TEST, strlen(SDP_MSG_TO_TEST)))){
+				
+		tsk_list_foreach(item, message->headers){
+			if(!(item->data) || (TSDP_HEADER(item->data)->type != tsdp_htype_M)){
+				continue;
+			}
+			M = (const tsdp_header_M_t*)(item->data);
+
+			/* get rtpmap */
+			if((rtpmap = tsdp_header_M_get_rtpmap(M, "98"))){
+				TSK_DEBUG_INFO("RTPMAP=%s", rtpmap);
+				TSK_FREE(rtpmap);
+			}
+
+			/* get fmtp */
+			if((fmtp = tsdp_header_M_get_fmtp(M, "98"))){
+				TSK_DEBUG_INFO("FMTP=%s", fmtp);
+				TSK_FREE(fmtp);
+			}
+		}
+
+		TSK_OBJECT_SAFE_FREE(message);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to parse SDP message.");
+	}
+	
 }
 
 #endif /* _TEST_SDPPARSER_H */

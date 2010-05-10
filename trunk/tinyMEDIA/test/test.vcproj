@@ -191,6 +191,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="tests"
+			>
+			<File
+				RelativePath=".\test_codecs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\test_sessions.h"
+				>
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 	</Globals>

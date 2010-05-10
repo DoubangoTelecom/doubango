@@ -51,7 +51,7 @@ int tmedia_session_daudio_prepare(tmedia_session_t* self)
 	}
 
 	/* set local port */
-	daudio->local_port = rand();
+	daudio->local_port = rand() ^ rand();
 
 	return ret;
 }

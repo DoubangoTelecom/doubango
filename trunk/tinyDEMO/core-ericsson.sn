@@ -1,12 +1,12 @@
 ## For more information about scenarios, please refer to the Programmer's Guide
 
 # user's parameters (like ANSI-C #define)
-%%domain ericsson.com
+%%domain sip2sip.info
 %%user bob
 %%pwd bob
 %%proxy_ip 192.168.0.10 # IP address or FQDN
 %%proxy_port 5081
-%%proxy_trans udp # udp, tcp, tls or sctp
+%%proxy_trans tcp # udp, tcp, tls or sctp
 %%expires 100 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
 
@@ -15,11 +15,12 @@
 %%sub-pres-sid
 %%pub-sid
 
+#--local-ip 10.0.2.15\
+	
 # Configure the stack
 # Realm, IMPI and IMPU are mandatory
 ++cst --realm $$(domain) --impi $$(user)@$$(domain) --impu sip:$$(user)@$$(domain) --pwd $$(pwd) \
 	--pcscf-trans $$(proxy_trans)\
-	--local-ip 10.0.2.15\
 	--pcscf-ip $$(proxy_ip) --pcscf-port $$(proxy_port) --pcscf-trans $$(proxy_trans)\
 	--header Privacy=header;id --header Allow=INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER \
 	--header P-Access-Network-Info=ADSL;utran-cell-id-3gpp=00000000 \

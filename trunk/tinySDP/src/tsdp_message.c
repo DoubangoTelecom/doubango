@@ -112,7 +112,7 @@ int __add_headers(tsdp_header_M_t* m, va_list *ap)
 int tsdp_message_add_header(tsdp_message_t *self, const tsdp_header_t *hdr)
 {
 	if(self && hdr){
-		tsdp_header_t *header = tsdp_header_clone(hdr);
+		tsdp_header_t *header = tsk_object_ref((void*)hdr);
 		tsk_list_push_ascending_data(self->headers, (void**)&header); // Very important: Headers MUST appear in a fixed order (see ranks def).
 
 		return 0;
@@ -152,8 +152,7 @@ const tsdp_header_t *tsdp_message_get_headerAt(const tsdp_message_t *self, tsdp_
 		return tsk_null;
 	}
 
-	tsk_list_foreach(item, self->headers)
-	{
+	tsk_list_foreach(item, self->headers){
 		hdr = item->data;
 		if(hdr->type == type){
 			if(pos++ >= index){
