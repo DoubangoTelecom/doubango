@@ -38,6 +38,10 @@
 
 #include "tsk_safeobj.h"
 
+#if HAVE_DNS_H
+#include <dns.h>
+#endif
+
 TNET_BEGIN_DECLS
 
 /**@ingroup tnet_dns_group
@@ -94,6 +98,10 @@ typedef struct tnet_dns_ctx_s
 	tnet_dns_cache_t *cache;
 	tnet_addresses_L_t *servers;
 
+#if HAVE_DNS_H
+    dns_handle_t resolv_handle;
+#endif
+    
 	TSK_DECLARE_SAFEOBJ;
 }
 tnet_dns_ctx_t;

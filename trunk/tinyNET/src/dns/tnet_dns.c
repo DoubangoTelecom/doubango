@@ -212,6 +212,56 @@ int tnet_dns_cache_clear(tnet_dns_ctx_t* ctx)
 */
 tnet_dns_response_t *tnet_dns_resolve(tnet_dns_ctx_t* ctx, const char* qname, tnet_dns_qclass_t qclass, tnet_dns_qtype_t qtype)
 {
+#if HAVE_DNS_H    
+    struct sockaddr_storage result;
+    struct sockaddr *from;
+    uint32_t fromlen;
+    char buf[TNET_DNS_DGRAM_SIZE_DEFAULT];
+    int32_t ret;
+    
+	tnet_dns_response_t *response = tsk_null;
+    
+    tnet_socket_t *localsocket4 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv4);
+    tnet_socket_t *localsocket6 = tnet_socket_create(TNET_SOCKET_HOST_ANY, TNET_SOCKET_PORT_ANY, tnet_socket_type_udp_ipv6);
+    
+    tsk_safeobj_lock(ctx);
+    
+    // First, try with IPv4
+    {
+        tnet_get_sockaddr(localsocket4->fd, &result);
+        from = (struct sockaddr *) &result;
+        fromlen = from->sa_len;
+        
+        ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen);
+        
+        if (ret > 0) {
+            response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
+            goto done;
+        }
+    }
+    
+    // Then, try with IPv6
+    {
+        tnet_get_sockaddr(localsocket6->fd, &result);
+        from = (struct sockaddr *) &result;
+        fromlen = from->sa_len;
+        
+        ret = dns_search(ctx->resolv_handle, qname, qclass, qtype, buf, TNET_DNS_DGRAM_SIZE_DEFAULT, from, &fromlen);
+        
+        if (ret > 0) {
+            response = tnet_dns_message_deserialize((uint8_t *) buf, ret);
+            goto done;
+        }
+    }
+    
+done:
+    tsk_safeobj_unlock(ctx);
+    
+    TSK_OBJECT_SAFE_FREE(localsocket4);
+    TSK_OBJECT_SAFE_FREE(localsocket6);
+    
+    return response;
+#else
 	tsk_buffer_t *output = tsk_null;
 	tnet_dns_query_t* query = tnet_dns_query_create(qname, qclass, qtype);
 	tnet_dns_response_t *response = tsk_null;
@@ -426,6 +476,7 @@ bail:
 	}
 
 	return response;
+#endif
 }
 
 /**@ingroup tnet_dns_group
@@ -881,6 +932,10 @@ static tsk_object_t* tnet_dns_ctx_ctor(tsk_object_t * self, va_list * app)
 		/* Creates empty cache. */
 		ctx->cache = tsk_list_create();
 
+#if HAVE_DNS_H
+        ctx->resolv_handle = dns_open(NULL);
+#endif
+        
 		tsk_safeobj_init(ctx);
 	}
 	return self;
@@ -894,6 +949,10 @@ static tsk_object_t* tnet_dns_ctx_dtor(tsk_object_t * self)
 
 		TSK_OBJECT_SAFE_FREE(ctx->servers);
 		TSK_OBJECT_SAFE_FREE(ctx->cache);
+        
+#if HAVE_DNS_H
+        dns_free(ctx->resolv_handle);
+#endif
 	}
 	return self;
 }

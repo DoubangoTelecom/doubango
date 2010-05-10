@@ -68,24 +68,29 @@
 #	define TNET_END_DECLS
 #endif
 
-/* Disable some well-known warnings
-*/
-#ifdef _MSC_VER
+/* Compilers config */
+#if defined(_MSC_VER)
 #	define _CRT_SECURE_NO_WARNINGS
 #	pragma warning( disable : 4996 )
+#	define TNET_INLINE			__forceinline
+#else
+#	define TNET_INLINE	
 #endif
 
+/* have poll()? */
 #if (_WIN32_WINNT>=0x0600) || (ANDROID) || defined(__APPLE__)
 #	define TNET_HAVE_POLL		1
 #else
 #	define TNET_HAVE_POLL		0
 #endif
 
+/* whether to use poll() */
 #if TNET_UNDER_WINDOWS
 #	define TNET_USE_POLL		0 /* Do not use WSAPoll event if under Vista. */
 #else
 #	define TNET_USE_POLL		1
 #endif
+
 
 #if TNET_UNDER_WINDOWS && !defined(_WIN32_WCE)
 #	define TNET_HAVE_OPENSSL_H	0
@@ -93,18 +98,16 @@
 #	define TNET_HAVE_OPENSSL_H	0
 #endif
 
-#if defined(__APPLE__) /*|| defined(__SYMBIAN32__)*/
+#if defined(__APPLE__)
+#	define HAVE_IFADDRS			1
+#   define HAVE_DNS_H			1
 #	define TNET_HAVE_SS_LEN		1
 #	define TNET_HAVE_SA_LEN		1
 #else
+#	define HAVE_IFADDRS			0
+#   define HAVE_DNS_H			0
 #	define TNET_HAVE_SS_LEN		0
 #	define TNET_HAVE_SA_LEN		0
-#endif
-
-#if defined(__APPLE__)
-#	define HAVE_IFADDRS	1
-#else
-#	define HAVE_IFADDRS	0 /* Windows, ANDROID */
 #endif
 
 /* Used in TURN/STUN2 attributes. */
