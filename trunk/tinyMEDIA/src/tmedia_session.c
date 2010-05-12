@@ -29,6 +29,8 @@
  */
 #include "tinymedia/tmedia_session.h"
 
+#include "tinymedia/tmedia_session_ghost.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -43,9 +45,20 @@ const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLU
 /* === local functions === */
 int tmedia_session_mgr_prepare(tmedia_session_mgr_t* self);
 
+const char* tmedia_session_get_media(const tmedia_session_t* self);
 const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self);
 const tsdp_header_M_t* tmedia_session_get_no(tmedia_session_t* self);
 int tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
+
+
+/*== Predicate function to find session object by media. */
+int __pred_find_session_by_media(const tsk_list_item_t *item, const void *media)
+{
+	if(item && item->data){
+		return tsk_stricmp(tmedia_session_get_media((tmedia_session_t *)item->data), (const char*)media);
+	}
+	return -1;
+}
 
 /**@ingroup tmedia_session_group
 * Initializes a newly created media session.
@@ -60,8 +73,11 @@ int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type)
 		return -1;
 	}
 	
-	/* set values */
-	self->type = type;
+	if(!self->initialized){
+		/* set values */
+		self->type = type;
+		self->initialized = tsk_true;
+	}
 
 	return 0;
 }
@@ -104,6 +120,27 @@ int tmedia_session_plugin_register(const tmedia_session_plugin_def_t* plugin)
 	
 	TSK_DEBUG_ERROR("There are already %d plugins.", TMED_SESSION_MAX_PLUGINS);
 	return -2;
+}
+
+/**@ingroup tmedia_session_group
+* Finds a plugin by media.
+*/
+const tmedia_session_plugin_def_t* tmedia_session_plugin_find_by_media(const char* media)
+{
+	tsk_size_t i = 0;
+	if(!tsk_strnullORempty(media)){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	/* add or replace the plugin */
+	while((i<TMED_SESSION_MAX_PLUGINS) && (__tmedia_session_plugins[i])){
+		if(tsk_striequals(__tmedia_session_plugins[i]->media, media)){
+			return __tmedia_session_plugins[i];
+		}
+		i++;
+	}
+	return tsk_null;
 }
 
 /**@ingroup tmedia_session_group
@@ -157,7 +194,9 @@ tmedia_session_t* tmedia_session_create(tmedia_type_t type)
 	while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
 		if(plugin->objdef && (plugin->type == type)){
 			if((session = tsk_object_new(plugin->objdef))){
-				tmedia_session_init(session, type);
+				if(!session->initialized){
+					tmedia_session_init(session, type);
+				}
 				session->plugin = plugin;
 			}
 			break;
@@ -180,6 +219,22 @@ int tmedia_session_prepare_lo(tmedia_session_t* self)
 	return self->plugin->prepare(self);
 }
 
+/* internal function: get media */
+const char* tmedia_session_get_media(const tmedia_session_t* self)
+{
+	if(!self || !self->plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	/* ghost? */
+	if(self->plugin == tmedia_session_ghost_plugin_def_t){
+		return ((const tmedia_session_ghost_t*)self)->media;
+	}
+	else{
+		return self->plugin->media;
+	}
+}
 /* internal function: get local offer */
 const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self)
 {
@@ -260,6 +315,77 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 		}
 	}
 	return 0;
+}
+
+/* internal function used to match a codec */
+const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M)
+{
+	const tmedia_codec_t *codec;
+	char *rtpmap = tsk_null, *fmtp = tsk_null;
+	const tsdp_fmt_t* fmt;
+	const tsk_list_item_t *it1, *it2;
+	tsk_bool_t found = tsk_false;
+	
+	if(!self || !M){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+	
+	/* foreach format */
+	tsk_list_foreach(it1, M->FMTs){
+		fmt = it1->data;
+		
+		/* foreach codec */
+		tsk_list_foreach(it2, self->codecs){
+			if(!(codec = it2->data) || !codec->plugin){
+				continue;
+			}
+			
+			// Dyn. payload type
+			if(codec->dyn && (rtpmap = tsdp_header_M_get_rtpmap(M, fmt->value))){
+				char* name = tsk_null;
+				int32_t rate, channels;
+				/* parse rtpmap */
+				if(tmedia_parse_rtpmap(rtpmap, &name, &rate, &channels)){
+					TSK_FREE(name);
+					TSK_DEBUG_ERROR("Failed to parse rtpmap(%s)", rtpmap);
+					goto next;
+				}
+				/* compare name and rate. what about channels? */
+				if(tsk_striequals(name, codec->name) && (!rate || (codec->plugin->rate == rate))){
+					goto compare_fmtp;
+				}
+			}
+			// Fixed payload type
+			else{
+				if(tsk_striequals(fmt->value, codec->format)){
+					goto compare_fmtp;
+				}
+			}
+			
+			/* free strings and try next */
+			goto next;
+
+compare_fmtp:
+			if((fmtp = tsdp_header_M_get_fmtp(M, fmt->value))){ /* have fmtp? */
+				if(tmedia_codec_match_fmtp(codec, fmtp)){ /* fmtp matches? */
+					found = tsk_true;
+				}
+			}
+			else{ /* no fmtp -> always match */
+				found = tsk_true;
+			}
+next:
+			TSK_FREE(fmtp);
+			TSK_FREE(rtpmap);
+			if(found){
+				return codec;
+			}
+		}
+	}
+	
+
+	return tsk_null;
 }
 
 /**@ingroup tmedia_session_group
@@ -360,10 +486,10 @@ tsdp_message_t* tmedia_session_mgr_get_no(tmedia_session_mgr_t* self)
 */
 int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp)
 {
-	const tsk_list_item_t* it1, *it2;
 	const tmedia_session_t* ms;
-	const tmedia_codec_t* codec;
 	const tsdp_header_M_t* M;
+	tsk_size_t index = 0;
+	tsk_bool_t found;
 
 	if(!self || !sdp){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -374,7 +500,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	TSK_OBJECT_SAFE_FREE(self->sdp.ro);
 	self->sdp.ro = tsk_object_ref((void*)sdp);
 
-	/* prepare the session manager if not already done (create all sessions) */
+	/* prepare the session manager if not already done (create all sessions with their codecs) 
+	* if net-initiated: think about tmedia_type_from_sdp() before creating the manager */
 	if(!self->prepared){
 		if(tmedia_session_mgr_prepare(self)){
 			TSK_DEBUG_ERROR("Failed to prepare the session manager");
@@ -382,36 +509,62 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		}
 	}
 	
-	tsk_list_foreach(it1, sdp->headers){
-		if(!(it1->data) || (TSDP_HEADER(it1->data)->type != tsdp_htype_M)){
-			continue;
-		}
-		M = (const tsdp_header_M_t*)(it1->data);
-	}
-
-	/* foreach session */
-	tsk_list_foreach(it1, self->sessions){
-		if(!(ms = it1->data)){
-			continue;
+	/* foreach "m=" line in the remote offer create a session*/
+	while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))){
+		found = tsk_false;
+		/* Find session by media */
+		if((ms = tsk_list_find_data_by_pred(self->sessions, __pred_find_session_by_media, M->media))){
+			/* set remote ro at session-level */
+			if(tmedia_session_set_ro(TMEDIA_SESSION(ms), M) == 0){
+				found = tsk_true;
+			}
 		}
 		
-		/* for each codec in the curr. session */
-		tsk_list_foreach(it2, ms->codecs){
-			if(!(codec = it2->data)){
+		if(!found){
+			/* Session not supported ==> add ghost session */
+			tmedia_session_ghost_t* ghost;
+			if((ghost = (tmedia_session_ghost_t*)tmedia_session_create(tmedia_ghost))){
+				tsk_strupdate(&ghost->media, M->media); /* copy media */
+				tsk_list_push_back_data(self->sessions, (void**)&ghost);
+			}
+			else{
+				TSK_DEBUG_ERROR("Failed to create ghost session");
 				continue;
 			}
-
-			/* Codec with fixed payload type */
-			if(!codec->dyn){
-				
-			}
-			/* codec with dyn. payload type */
-			else{
-
-			}
 		}
-		
 	}
+
+	/* update negociated offer */
+	if(self->sdp.lo && self->sdp.ro){
+		TSK_OBJECT_SAFE_FREE(self->sdp.no);
+		//...
+	}
+
+	///* foreach session */
+	//tsk_list_foreach(it1, self->sessions){
+	//	if(!(ms = it1->data)){
+	//		continue;
+	//	}
+	//	
+	//	
+
+	//	/* foreach codec in the curr. session */
+	//	tsk_list_foreach(it2, ms->codecs){
+	//		if(!(codec = it2->data)){
+	//			continue;
+	//		}
+
+	//		/* Codec with fixed payload type */
+	//		if(!codec->dyn){
+	//			
+	//		}
+	//		/* codec with dyn. payload type */
+	//		else{
+
+	//		}
+	//	}
+	//	
+	//}
 
 	return 0;
 }
@@ -423,13 +576,16 @@ int tmedia_session_mgr_prepare(tmedia_session_mgr_t* self)
 	tmedia_session_t* session;
 	const tmedia_session_plugin_def_t* plugin;
 
-	/* for each registered plugin create a session instance */
-	while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
-		if((plugin->type & self->type) == plugin->type){
-			if((session = tmedia_session_create(plugin->type))){
-				tsk_list_push_back_data(self->sessions, (void**)(&session));
+	if(!self->prepared){
+		/* for each registered plugin create a session instance */
+		while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
+			if((plugin->type & self->type) == plugin->type){
+				if((session = tmedia_session_create(plugin->type))){
+					tsk_list_push_back_data(self->sessions, (void**)(&session));
+				}
 			}
 		}
+		self->prepared = tsk_true;
 	}
 	return 0;
 }

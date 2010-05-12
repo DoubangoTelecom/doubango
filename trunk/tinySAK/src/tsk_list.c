@@ -395,6 +395,7 @@ const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const 
 * @param predicate the predicate against which to test each item
 * @param data data passed to the predicate function for comparaison
 * @retval the item which match the criteria and NULL otherwise
+* @sa @ref tsk_list_find_data_by_pred
 */
 const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
@@ -410,6 +411,25 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 		TSK_DEBUG_WARN("Cannot use an uninitialized predicate function");
 	}
 	return tsk_null;
+}
+
+/**@ingroup tsk_list_group
+* Find first item matching criteria defined by the @a predicate.
+* @param list the list to query
+* @param predicate the predicate against which to test each item
+* @param data data passed to the predicate function for comparaison
+* @retval the data holded by the item which match the criteria and NULL otherwise
+* @sa @ref tsk_list_find_item_by_pred
+*/
+const tsk_object_t* tsk_list_find_data_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
+{
+	const tsk_list_item_t *item;
+	if((item = tsk_list_find_item_by_pred(list, predicate, data))){
+		return item->data;
+	}
+	else{
+		return tsk_null;
+	}
 }
 
 /**@ingroup tsk_list_group

@@ -33,6 +33,7 @@
 /* == tinyMEDIA == */
 #include "tinymedia/tmedia_codec_dummy.h"
 #include "tinymedia/tmedia_session_dummy.h"
+#include "tinymedia/tmedia_session_ghost.h"
 
 /* == tinySAK == */
 #include "tsk.h"

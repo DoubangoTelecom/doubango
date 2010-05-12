@@ -88,14 +88,14 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s =
 	"Dummy G.711u codec",
 	TMEDIA_CODEC_FORMAT_G711u,
 	tsk_false,
+	8000, // rate
 	
 	{ /* audio */
-		8000, // rate
 		1 // channels
 	},
 
 	/* video */
-	{ tsk_null },
+	{{0}},
 
 	tmedia_codec_dpcmu_fmtp_match,
 	tmedia_codec_dpcmu_fmtp_get,
@@ -145,14 +145,14 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s =
 	"Dummy G.711a codec",
 	TMEDIA_CODEC_FORMAT_G711a,
 	tsk_false,
+	8000, // rate
 	
 	{ /* audio */
-		8000, // rate
 		1 // channels
 	},
 
 	/* video */
-	{ tsk_null },
+	{{0}},
 
 	tmedia_codec_dpcma_fmtp_match,
 	tmedia_codec_dpcma_fmtp_get,
