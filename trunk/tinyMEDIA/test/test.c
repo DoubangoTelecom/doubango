@@ -30,7 +30,7 @@
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
-#define RUN_TEST_CODECS		1
+#define RUN_TEST_CODECS		0
 #define RUN_TEST_SESSIONS	1
 
 void test_register_dummy_plugins();
@@ -74,6 +74,9 @@ void test_register_dummy_plugins()
 	}
 	if((ret = tmedia_session_plugin_register(tmedia_session_dmsrp_plugin_def_t))){
 		TSK_DEBUG_ERROR("Failed to register msrp plugin");
+	}
+	if((ret = tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t))){
+		TSK_DEBUG_ERROR("Failed to register ghost plugin");
 	}
 
 	/* === Codecs === */

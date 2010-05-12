@@ -35,6 +35,8 @@
 #include "tinysdp/headers/tsdp_header_T.h"
 #include "tinysdp/headers/tsdp_header_V.h"
 
+#include "tsk_debug.h"
+
 #define TSDP_LINE_S_VALUE_DEFAULT "-"	/* as per RFC 3264 subclause 5 */
 
 #define TSDP_LINE_O_USERNAME_DEFAULT	"doubango"
@@ -44,8 +46,7 @@
 /*== Predicate function to find tsdp_header_t object by type. */
 int __pred_find_header_by_type(const tsk_list_item_t *item, const void *tsdp_htype)
 {
-	if(item && item->data)
-	{
+	if(item && item->data){
 		tsdp_header_t *header = item->data;
 		tsdp_header_type_t htype = *((tsdp_header_type_t*)tsdp_htype);
 		return (header->type - htype);
@@ -56,8 +57,7 @@ int __pred_find_header_by_type(const tsk_list_item_t *item, const void *tsdp_hty
 /*== Predicate function to find tsdp_header_t object by name. */
 int __pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
 {
-	if(item && item->data && name)
-	{
+	if(item && item->data && name){
 		tsdp_header_t *header = item->data;
 		return tsdp_header_get_nameex(header) - *((const char*)name);
 	}
@@ -67,8 +67,7 @@ int __pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
 /*== Predicate function to find media object by name. */
 int __pred_find_media_by_name(const tsk_list_item_t *item, const void *name)
 {
-	if(item && item->data && name)
-	{
+	if(item && item->data && name){
 		tsdp_header_t *header = item->data;
 		if(header->type == tsdp_htype_M){
 			return tsk_stricmp(((tsdp_header_M_t*)header)->media, (const char*)name);
@@ -171,13 +170,13 @@ const tsdp_header_t *tsdp_message_get_header(const tsdp_message_t *self, tsdp_he
 
 const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_message_t *self, char name)
 {
-	if(self && self->headers){
-		const tsk_list_item_t* item;
-		if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_header_by_name, &name))){
-			return item->data;
-		}
+	if(self){
+		return tsk_list_find_data_by_pred(self->headers, __pred_find_header_by_name, &name);
 	}
-	return tsk_null;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
 }
 
 int tsdp_message_serialize(const tsdp_message_t *self, tsk_buffer_t *output)

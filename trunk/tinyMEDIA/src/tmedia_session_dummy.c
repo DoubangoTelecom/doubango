@@ -33,6 +33,7 @@
 #include "tsk_debug.h"
 
 extern int _tmedia_session_load_codecs(tmedia_session_t* self);
+extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M);
 
 /* ============ Audio Session ================= */
 
@@ -132,8 +133,18 @@ const tsdp_header_M_t* tmedia_session_daudio_get_no(tmedia_session_t* self)
 
 int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
+	const tmedia_codec_t* codec;
+
 	TSK_DEBUG_INFO("tmedia_session_daudio_set_ro");
-	return tsk_null;
+
+	if((codec = _tmedia_session_match_codec(self, m))){
+		/* update remote offer */
+		TSK_OBJECT_SAFE_FREE(self->M.ro);
+		self->M.ro = tsk_object_ref((void*)m);
+		
+		return 0;
+	}
+	return -1;
 }
 
 /* ============ Video Session ================= */
@@ -147,19 +158,19 @@ int tmedia_session_dvideo_prepare(tmedia_session_t* self)
 int tmedia_session_dvideo_start(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dvideo_start");
-	return 0;
+	return -1;
 }
 
 int tmedia_session_dvideo_stop(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dvideo_stop");
-	return 0;
+	return -1;
 }
 
 int tmedia_session_dvideo_pause(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dvideo_pause");
-	return 0;
+	return -1;
 }
 
 const tsdp_header_M_t* tmedia_session_dvideo_get_lo(tmedia_session_t* self)
@@ -177,7 +188,7 @@ const tsdp_header_M_t* tmedia_session_dvideo_get_no(tmedia_session_t* self)
 int tmedia_session_dvideo_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
 	TSK_DEBUG_INFO("tmedia_session_dvideo_set_ro");
-	return tsk_null;
+	return -1;
 }
 
 /* ============ Msrp Session ================= */
@@ -185,25 +196,25 @@ int tmedia_session_dvideo_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 int tmedia_session_dmsrp_prepare(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_prepare");
-	return 0;
+	return -1;
 }
 
 int tmedia_session_dmsrp_start(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_start");
-	return 0;
+	return -1;
 }
 
 int tmedia_session_dmsrp_stop(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_stop");
-	return 0;
+	return -1;
 }
 
 int tmedia_session_dmsrp_pause(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_pause");
-	return 0;
+	return -1;
 }
 
 const tsdp_header_M_t* tmedia_session_dmsrp_get_lo(tmedia_session_t* self)
@@ -221,7 +232,7 @@ const tsdp_header_M_t* tmedia_session_dmsrp_get_no(tmedia_session_t* self)
 int tmedia_session_dmsrp_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_set_ro");
-	return tsk_null;
+	return -1;
 }
 
 //=================================================================================================
@@ -243,6 +254,7 @@ static tsk_object_t* tmedia_session_daudio_dtor(tsk_object_t * self)
 	tmedia_session_daudio_t *session = self;
 	if(session){
 		/* deinit base */
+		tmedia_session_deinit(self);
 		/* deinit self */
 	}
 
@@ -295,6 +307,7 @@ static tsk_object_t* tmedia_session_dvideo_dtor(tsk_object_t * self)
 	tmedia_session_dvideo_t *session = self;
 	if(session){
 		/* deinit base */
+		tmedia_session_deinit(self);
 		/* deinit self */
 	}
 
@@ -347,6 +360,7 @@ static tsk_object_t* tmedia_session_dmsrp_dtor(tsk_object_t * self)
 	tmedia_session_dmsrp_t *session = self;
 	if(session){
 		/* deinit base */
+		tmedia_session_deinit(self);
 		/* deinit self */
 	}
 

@@ -149,15 +149,16 @@ typedef struct tmedia_codec_plugin_def_s
 	const char* format;
 	//! whether the pay. type is dyn. or not
 	tsk_bool_t dyn;
+	int32_t rate;
 
 	struct{
-		int32_t rate;
 		int8_t channels;
 		/* ...to be continued */
 	} audio;
 
 	struct{
-		int32_t rate;
+		unsigned width;
+		unsigned height;
 		/* ...to be continued */
 	} video;
 	

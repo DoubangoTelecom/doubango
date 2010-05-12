@@ -55,6 +55,7 @@ typedef struct tmedia_session_s
 	tmedia_codecs_L_t* codecs;
 	//! whether the session has been prepared
 	tsk_bool_t prepared;
+	unsigned initialized:1;
 
 	struct{
 		tsdp_header_M_t* lo;
@@ -92,6 +93,7 @@ tmedia_session_plugin_def_t;
 TINYMEDIA_API int tmedia_session_init(tmedia_session_t* self, tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_cmp(const tsk_object_t* sess1, const tsk_object_t* sess2);
 TINYMEDIA_API int tmedia_session_plugin_register(const tmedia_session_plugin_def_t* plugin);
+TINYMEDIA_API const tmedia_session_plugin_def_t* tmedia_session_plugin_find_by_media(const char* media);
 TINYMEDIA_API int tmedia_session_plugin_unregister(const tmedia_session_plugin_def_t* plugin);
 TINYMEDIA_API tmedia_session_t* tmedia_session_create(tmedia_type_t type);
 TINYMEDIA_API int tmedia_session_deinit(tmedia_session_t* self);

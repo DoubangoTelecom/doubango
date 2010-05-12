@@ -179,6 +179,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\include\tinymedia.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinymedia_config.h"
 				>
 			</File>
@@ -206,6 +210,10 @@
 				RelativePath=".\include\tinymedia\tmedia_session_dummy.h"
 				>
 			</File>
+			<File
+				RelativePath=".\include\tinymedia\tmedia_session_ghost.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="source(*.c)"
@@ -225,11 +233,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\src\tmedia_common.c"
+				>
+			</File>
+			<File
 				RelativePath=".\src\tmedia_session.c"
 				>
 			</File>
 			<File
 				RelativePath=".\src\tmedia_session_dummy.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tmedia_session_ghost.c"
 				>
 			</File>
 		</Filter>

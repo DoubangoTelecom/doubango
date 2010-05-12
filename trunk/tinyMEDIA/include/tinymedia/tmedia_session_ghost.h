@@ -20,38 +20,34 @@
 *
 */
 
-/**@file tmedia_common.h
- * @brief Common functions and definitions.
+/**@file tmedia_session_ghost.h
+ * @brief Ghost session.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_COMMON_H
-#define TINYMEDIA_COMMON_H
+#ifndef TINYMEDIA_SESSION_GHOST_H
+#define TINYMEDIA_SESSION_GHOST_H
 
 #include "tinymedia_config.h"
 
-#include "tinysdp/tsdp_message.h"
+#include "tmedia_session.h"
+
+#include "tsk_object.h"
 
 TMEDIA_BEGIN_DECLS
 
-/** List of all supported media types */
-typedef enum tmedia_type_e
+/** Ghost session */
+typedef struct tmedia_session_ghost_s
 {
-	tmedia_none = 0x00,
-	tmedia_ghost = (0x01 << 0),
-
-	tmedia_audio = (0x01 << 1),
-	tmedia_video = (0x01 << 2),
-	tmedia_msrp = (0x01 << 3),
-	tmedia_t38 = (0x01 << 4)
+	TMEDIA_DECLARE_SESSION;
+	char* media;
 }
-tmedia_type_t;
+tmedia_session_ghost_t;
 
-tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp);
-int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
+TINYMEDIA_GEXTERN const tmedia_session_plugin_def_t *tmedia_session_ghost_plugin_def_t;
 
 TMEDIA_END_DECLS
 
-#endif /* TINYMEDIA_COMMON_H */
+#endif /* TINYMEDIA_SESSION_GHOST_H */

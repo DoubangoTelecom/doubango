@@ -55,7 +55,6 @@ int tmedia_codec_init(tmedia_codec_t* self, tmedia_type_t type, const char* name
 		return -1;
 	}
 	self->type = type;
-	self->dyn = tsk_true; /* this is the default value. up to the caller to update it */
 	tsk_strupdate(&self->name, name);
 	tsk_strupdate(&self->desc,desc);
 	tsk_strupdate(&self->format, format);
@@ -167,7 +166,7 @@ tmedia_codec_t* tmedia_codec_create(const char* format)
 				/* initialize the newly created codec */
 				codec->dyn = plugin->dyn;
 				codec->plugin = plugin;
-				switch(codec->type){
+				switch(plugin->type){
 					case tmedia_audio:
 						{	/* Audio codec */
 							tmedia_codec_audio_t* audio = TMEDIA_CODEC_AUDIO(codec);
@@ -218,7 +217,7 @@ char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self)
 			{	/* audio codecs */
 				/* const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)self; */
 				if(self->plugin->audio.channels > 0){
-					tsk_sprintf(&rtpmap, "%s %s/%d/%d", self->format, self->name, self->plugin->audio.rate, self->plugin->audio.channels);
+					tsk_sprintf(&rtpmap, "%s %s/%d/%d", self->format, self->name, self->plugin->rate, self->plugin->audio.channels);
 				}
 				else{
 					tsk_sprintf(&rtpmap, "%s %s/%d", self->format, self->name, self->plugin->audio);
@@ -228,7 +227,7 @@ char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self)
 		case tmedia_video:
 			{	/* video codecs */
 				/* const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)self; */
-				tsk_sprintf(&rtpmap, "%s %s/%d", self->format, self->name, self->plugin->video.rate);
+				tsk_sprintf(&rtpmap, "%s %s/%d", self->format, self->name, self->plugin->rate);
 				break;
 			}
 		/* all others */

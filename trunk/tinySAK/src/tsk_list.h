@@ -114,6 +114,7 @@ TINYSAK_API int tsk_list_push_filtered_data(tsk_list_t* list, void** data, tsk_b
 
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_data(const tsk_list_t* list, const tsk_object_t * tskobj);
 TINYSAK_API const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
+TINYSAK_API const tsk_object_t* tsk_list_find_data_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
 TINYSAK_API tsk_size_t tsk_list_count(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_list_def_t;
