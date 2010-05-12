@@ -188,6 +188,10 @@ tnet_interfaces_L_t* tnet_get_interfaces()
 	
 	for(ifa = ifaddr; ifa; ifa = ifa->ifa_next)
 	{
+        if(ifa->ifa_flags & IFF_LOOPBACK) {
+            continue;
+        }
+        
 		if(ifa->ifa_addr->sa_family != AF_LINK){
 			continue;
 		}
@@ -418,10 +422,59 @@ next:
 #undef FREE
 
 bail:
-
-
+    
 #else	/* !TSK_UNDER_WINDOWS (MAC OS X, UNIX, ANDROID ...) */
 
+#if HAVE_IFADDRS /*=== Using getifaddrs ===*/
+    
+	// see http://www.kernel.org/doc/man-pages/online/pages/man3/getifaddrs.3.html
+	struct ifaddrs *ifaddr = 0, *ifa = 0;
+    struct sockaddr *addr;
+    tnet_ip_t ip;
+    
+	/* Get interfaces */
+	if(getifaddrs(&ifaddr) == -1){
+		TSK_DEBUG_ERROR("getifaddrs failed and errno= [%d]", tnet_geterrno());
+		goto bail;
+	}
+	
+	/* == Unicast addresses == */
+	for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
+        // Skip loopback
+        if (ifa->ifa_flags & IFF_LOOPBACK) {
+            continue;
+        }
+        
+        // Skip unwanted interface
+        if (if_index != -1 && if_nametoindex(ifa->ifa_name) != if_index) {
+            continue;
+        }
+
+        // Only deal with Unicast address
+        if (unicast) {
+            if (family == AF_INET && ifa->ifa_addr->sa_family != AF_INET) {
+                continue;
+            }
+            if (family == AF_INET6 && ifa->ifa_addr->sa_family != AF_INET6) {
+                continue;
+            }
+            if (ifa->ifa_addr->sa_family != AF_INET && ifa->ifa_addr->sa_family != AF_INET6) {
+                continue;
+            }
+            
+            // Get the IP string
+            addr = (struct sockaddr *) ifa->ifa_addr;
+            tnet_get_sockip(addr, &ip);
+            
+            // Push a new address
+            tnet_address_t *address = tnet_address_create(ip);
+            address->family = ifa->ifa_addr->sa_family;
+            address->unicast = 1;
+            tsk_list_push_ascending_data(addresses, (void **) &address);
+		}
+    }
+    
+#endif /* HAVE_IFADDRS */
 	/* == DNS servers == */
 	if(dnsserver){
 		tnet_addresses_L_t * dns_servers;
@@ -431,12 +484,22 @@ bail:
 		}
 	}
 
-
 #endif
-
 
 	return addresses;
 }
+
+#if defined(__APPLE__)
+
+#include <net/if_dl.h>
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_3_2
+#include "net/route.h"
+#else
+#include <net/route.h>
+#endif
+
+#endif
 
 /**@ingroup tnet_utils_group
 * Retrieves the @a source IP address that has the best route to the specified IPv4 or IPv6 @a destination.
@@ -450,12 +513,11 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 {
 	int ret = -1;
 	struct sockaddr_storage destAddr;
-	tnet_addresses_L_t* addresses = 0;
-	const tsk_list_item_t* item;
 
-	long dwBestIfIndex;
+	long dwBestIfIndex = -1;
 
 	if(!destination || !source){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 
@@ -463,33 +525,158 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 		goto bail;
 	}
 
-#if TNET_UNDER_WINDOWS
+#if TNET_UNDER_WINDOWS /* Windows XP/Vista/7 and Windows Mobile */
 	if(GetBestInterfaceEx((struct sockaddr*)&destAddr, &dwBestIfIndex) != NO_ERROR){
-		ret = WSAGetLastError();
-		TNET_PRINT_LAST_ERROR("GetBestInterfaceEx failed.");
+		ret = tnet_geterrno();
+		TNET_PRINT_LAST_ERROR("GetBestInterfaceEx() failed.");
 		goto bail;
 	}
-#endif
+#elif defined(__APPLE__) /* Mac OS X, iPhone, iPod Touch and iPad */
+	/* Thanks to Laurent Etiemble */
+    
+    static int seq = 1234;
+    char buf[1024];
+	char *cp;
+    int s, i, l, rlen;
+    int pid = getpid();
+    u_long rtm_inits;
+    struct rt_metrics rt_metrics;
+    struct sockaddr_storage so_dst = destAddr;
+    struct sockaddr_dl so_ifp;
+    struct sockaddr *sa = NULL;
+    struct sockaddr_dl *ifp = NULL;
+    struct rt_msghdr *rtm = (struct	rt_msghdr *)buf;
+    struct ifaddrs *ifaddr = 0, *ifa = 0;
+    tnet_ip_t ip;
+    
+    bzero(rtm, 1024);
+    cp = (char *)(rtm + 1);
 
-	if(!(addresses = tnet_get_addresses(TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET, 1, 0, 0, 0, dwBestIfIndex))){
+    so_ifp.sdl_index = 0;
+    so_ifp.sdl_family = AF_LINK;
+    so_ifp.sdl_len = sizeof(struct sockaddr_dl);    
+    
+    rtm->rtm_type = RTM_GET;
+    rtm->rtm_flags = RTF_STATIC | RTF_UP | RTF_GATEWAY;
+    rtm->rtm_version = RTM_VERSION;
+    rtm->rtm_seq = ++seq;
+    rtm->rtm_addrs = RTA_DST | RTA_IFP;
+	rtm->rtm_rmx = rt_metrics;
+	rtm->rtm_inits = rtm_inits;
+	rtm->rtm_index = 0;
+    
+    /** Roundup value to a 4 bytes boundary. */
+#define ROUNDUP(a) \
+((a) > 0 ? (1 + (((a) - 1) | (sizeof(uint32_t) - 1))) : sizeof(uint32_t))
+    
+    l = ROUNDUP(so_dst.ss_len);
+    memcpy(&so_dst, cp, l);
+    cp += l;
+    
+    l = ROUNDUP(so_ifp.sdl_len);
+    memcpy(&so_ifp, cp, l);
+    cp += l;
+ 
+    l = cp - buf;
+	rtm->rtm_msglen = l;
+    
+    s = socket(PF_ROUTE, SOCK_RAW, 0);
+	if (s < 0) {
+        // TODO
+    }
+    
+	if ((rlen = write(s, rtm, l)) < 0) {
+		printf("writing to routing socket");
+        // TODO
+	}
+    do {
+        l = read(s, rtm, 1024);
+    } while (l > 0 && (rtm->rtm_seq != seq || rtm->rtm_pid != pid));
+    
+    /** Advance an address to the closest 4 bytes boundary. */
+#define ADVANCE(x, n) (x += ROUNDUP((n)->sa_len))
+    
+    if (rtm->rtm_errno == 0 && rtm->rtm_addrs) {
+        cp = (char *)(rtm + 1);
+        for (i = 1; i; i <<= 1) {
+            if (i & rtm->rtm_addrs) {
+                sa = (struct sockaddr *)cp;
+                switch (i) {
+                    case RTA_IFP:
+                        ifp = (struct sockaddr_dl *) sa;
+                        break;
+                }
+                ADVANCE(cp, sa);
+            }
+        }
+    }
+    
+    if (ifp) {
+        printf(" interface: %.*s\n", ifp->sdl_nlen, ifp->sdl_data);
+        
+        /* Get interfaces */
+        if(getifaddrs(&ifaddr) == -1){
+			TNET_PRINT_LAST_ERROR("getifaddrs() failed.");
+            goto bail;
+        }
+        
+        for(ifa = ifaddr; ifa; ifa = ifa->ifa_next){
+            if (ifa->ifa_flags & IFF_LOOPBACK) {
+                continue;
+            }
+            
+            if (if_nametoindex(ifa->ifa_name) != ifp->sdl_index) {
+                continue;
+            }
+            
+            if (ifa->ifa_addr->sa_family != destAddr.ss_family) {
+                continue;
+            }
+            
+            if (destAddr.ss_family == AF_INET6) {
+                if (IN6_IS_ADDR_LINKLOCAL(&((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr) ^ 
+                    IN6_IS_ADDR_LINKLOCAL(&((struct sockaddr_in6 *) &destAddr)->sin6_addr)) {
+                    continue;
+                }
+                if (IN6_IS_ADDR_SITELOCAL(&((struct sockaddr_in6 *) ifa->ifa_addr)->sin6_addr) ^ 
+                    IN6_IS_ADDR_SITELOCAL(&((struct sockaddr_in6 *) &destAddr)->sin6_addr)) {
+                    continue;
+                }
+            }
+            
+            tnet_get_sockip((struct sockaddr *) ifa->ifa_addr, &ip);
+            
+            memset(*source, '\0', sizeof(*source));
+            memcpy(*source, ip, tsk_strlen(ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(ip));
+            ret = 0;
+            goto bail; // First is good for us.
+        }
+    }
+        
+#else /* All other systems (Google Android, Unix-Like systems, uLinux, ....) */    
+    tnet_addresses_L_t* addresses = tsk_null;
+	const tsk_list_item_t* item;
+
+	if(!(addresses = tnet_get_addresses(TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET, tsk_true, tsk_false, tsk_false, tsk_false, dwBestIfIndex))){
 		ret = -2;
 		TSK_DEBUG_ERROR("Failed to retrieve addresses.");
 		goto bail;
 	}
 
-	tsk_list_foreach(item, addresses)
-	{
+	tsk_list_foreach(item, addresses){
 		const tnet_address_t* address = item->data;
 		if(address && address->ip){
 			memset(*source, '\0', sizeof(*source));
 			memcpy(*source, address->ip, tsk_strlen(address->ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(address->ip));
 			ret = 0;
-			goto bail; // First is good for us.
+			break; // First is good for us.
 		}
 	}
+	TSK_OBJECT_SAFE_FREE(addresses);
+    
+#endif
 
 bail:
-	TSK_OBJECT_SAFE_FREE(addresses);
 	return ret;
 }
 
@@ -663,7 +850,7 @@ int tnet_get_sockip_n_port(struct sockaddr *addr, tnet_ip_t *ip, tnet_port_t *po
 	else
 	{
 		TSK_DEBUG_ERROR("Unsupported address family.");
-		return -1;
+		return status;
 	}
 
 	return status;

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ######################################
-# Copyright (C) 2010 Larent Etiemble
+# Copyright (C) 2010 Laurent Etiemble
 ######################################
 
 VERSION="4.0"
