@@ -214,6 +214,10 @@
 				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session_dummy.h"
 				>
 			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session_ghost.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="source(*.c)"
@@ -233,11 +237,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyMEDIA\src\tmedia_common.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyMEDIA\src\tmedia_session.c"
 				>
 			</File>
 			<File
 				RelativePath="..\..\tinyMEDIA\src\tmedia_session_dummy.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\src\tmedia_session_ghost.c"
 				>
 			</File>
 		</Filter>

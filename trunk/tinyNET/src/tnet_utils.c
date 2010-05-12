@@ -474,7 +474,14 @@ bail:
 		}
     }
     
+    if (ifaddr) {
+        free(ifaddr);
+    }
+    
 #endif /* HAVE_IFADDRS */
+    
+bail:
+    
 	/* == DNS servers == */
 	if(dnsserver){
 		tnet_addresses_L_t * dns_servers;
