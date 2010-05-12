@@ -287,7 +287,7 @@ bail:
 		tnet_freeaddrinfo(result);
 
 		/* Close socket if failed. */
-		if(status){
+		if(status && TNET_SOCKET_IS_VALID(sock)){
 			tnet_socket_close(sock);
 		}
 
