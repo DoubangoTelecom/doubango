@@ -25,7 +25,15 @@
 void test_faces_bestsource()
 {
 	tnet_ip_t source;
-	// IPv6
+
+    // IPv6
+	if(!tnet_getbestsource("fe80::fe4c:3ea1", 5060, tnet_socket_type_udp_ipv6, &source)){
+		TSK_DEBUG_INFO("Best IPv6 source is [%s]", source);
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to get best IPv6 source.");
+	}
+    // IPv6
 	if(!tnet_getbestsource("2a01:e35:8b32:7050:212:f0ff:fe4c:3ea1", 5060, tnet_socket_type_udp_ipv6, &source)){
 		TSK_DEBUG_INFO("Best IPv6 source is [%s]", source);
 	}
