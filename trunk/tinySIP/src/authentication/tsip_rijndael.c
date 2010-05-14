@@ -76,7 +76,7 @@
 
 #if defined(_MSC_VER)
 #	define __INLINE	__forceinline
-#if defined(__GNUC__) && !defined(__APPLE__)
+#elif defined(__GNUC__) && !defined(__APPLE__)
 #	define __INLINE	__inline
 #else
 #	define __INLINE	
