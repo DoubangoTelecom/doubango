@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou@doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -35,8 +35,18 @@ public:
 #endif
 	virtual ~RegistrationEvent();
 
-public:
-	const RegistrationSession* getSession2();
+public: /* Public Internal functions */
+#if !defined(SWIG)
+	void setType(tsip_register_event_type_t type);
+#endif
+
+public: /* Public API functions */
+	tsip_register_event_type_t getType() const;
+	const RegistrationSession* getSession() const;
+
+private:
+	tsip_register_event_type_t type;
+	
 };
 
 #endif /* TINYWRAP_REGISTRATIONEVENT_H */

@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou@doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -36,6 +36,7 @@ public: /* ctor() and dtor() */
 public: /* API functions */
 	bool Start();
 	
+	bool setPassword(const char* password);
 	bool setProxyCSCF(const char* fqdn, unsigned port, const char* transport, const char* ipversion);
 	bool setLocalIP(const char* ip);
 	bool setLocalPort(unsigned port);

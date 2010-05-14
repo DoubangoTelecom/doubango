@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou@doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -77,6 +77,14 @@ SipStack::~SipStack()
 bool SipStack::Start()
 {
 	int ret = tsip_stack_start(this->handle);
+	return (ret == 0);
+}
+
+bool SipStack::setPassword(const char* password)
+{
+	int ret = tsip_stack_set(this->handle,
+		TSIP_STACK_SET_PASSWORD(password),
+		TSIP_STACK_SET_NULL());
 	return (ret == 0);
 }
 
@@ -165,7 +173,9 @@ int stack_callback(const tsip_event_t *sipevent)
 		case tsip_event_register:
 			{	/* REGISTER */
 				if(Stack->getCallback()){
+					const tsip_register_event_t* reg_event = TSIP_REGISTER_EVENT(sipevent);
 					e = new RegistrationEvent(sipevent->code, sipevent->phrase, dyn_cast<RegistrationSession*>(Session));
+					((RegistrationEvent*)e)->setType(reg_event->type);
 					Stack->getCallback()->OnRegistrationChanged((const RegistrationEvent*)e);
 				}
 				//ret = register_handle_event(sipevent);

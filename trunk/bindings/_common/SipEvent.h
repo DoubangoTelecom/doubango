@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou@doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -30,20 +30,20 @@ class SipEvent
 {
 public:
 	SipEvent();
-	SipEvent(short code, const char* phrase);
+	SipEvent(tsip_event_type_t type, short code, const char* phrase);
 	virtual ~SipEvent();
 
 public:
-	short getCode();
-	const char* getPhrase();
-	tsip_event_type_t getType();
-	const SipSession* getSession();
-	
+	short getCode() const;
+	const char* getPhrase() const;
+	const SipSession* getBaseSession() const;
+
+private:
+	tsip_event_type_t type;
 
 protected:
 	short code;
 	char* phrase;
-	tsip_event_type_t type;
 	const SipSession* session;
 };
 

@@ -23,7 +23,7 @@
 /**@file thttp_header_Dummy.c
  * @brief HTTP 'Dummy' header.
  *
- * @author Mamadou Diop <diopmamadou(at)yahoo.fr>
+ * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */

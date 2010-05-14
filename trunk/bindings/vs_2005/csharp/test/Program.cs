@@ -19,21 +19,24 @@
 * along with DOUBANGO.
 *
 */
-#ifndef TINYWRAP_REGISTRATIONSESSION_H
-#define TINYWRAP_REGISTRATIONSESSION_H
 
-#include "SipSession.h"
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
-class RegistrationSession : public SipSession
+namespace test
 {
-public: /* ctor() and dtor() */
-	RegistrationSession(SipStack* Stack);
-	virtual ~RegistrationSession();
-
-public: /* Public functions */
-	bool Register(unsigned expires);
-	bool UnRegister();
-};
-
-#endif /* TINYWRAP_REGISTRATIONSESSION_H */
-
+    static class Program
+    {
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
+        }
+    }
+}
