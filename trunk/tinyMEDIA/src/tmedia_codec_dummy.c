@@ -95,7 +95,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s =
 	},
 
 	/* video */
-	{{0}},
+	{0},
 
 	tmedia_codec_dpcmu_fmtp_match,
 	tmedia_codec_dpcmu_fmtp_get,
@@ -152,7 +152,7 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s =
 	},
 
 	/* video */
-	{{0}},
+	{0},
 
 	tmedia_codec_dpcma_fmtp_match,
 	tmedia_codec_dpcma_fmtp_get,

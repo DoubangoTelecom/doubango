@@ -1,10 +1,20 @@
 include ./root.mk
 
-ifeq ($(PROJECT), tinyDEMO) ##### tinyDEMO
+ifeq ($(PROJECT), tinyWRAP) ##### tinyWRAP
+all:
+	(cd ../bindings/java; $(MAKE) -f droid-makefile all; $(MAKE) -f droid-makefile install; cp --force lib$(PROJECT).so $(OUTPUT_DIR))
+clean:
+	(cd ../bindings/java; $(MAKE) -f droid-makefile clean)
+
+
+
+else ifeq ($(PROJECT), tinyDEMO) ##### tinyDEMO
 all:
 	(cd ../tinyDEMO $(MAKE) -f droid-makefile all; $(MAKE) -f droid-makefile install; cp --force demo $(OUTPUT_DIR))
 clean:
 	(cd ../tinyDEMO; $(MAKE) -f droid-makefile clean)
+
+
 
 else ##### All other libraries (tiny*)
 all:

@@ -81,6 +81,8 @@ typedef struct tsip_event_s
 	short code;
 	char *phrase;
 
+	const void* user_data;
+
 	tsip_event_type_t type;
 	struct tsip_message_s *sipmessage;
 }

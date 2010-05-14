@@ -83,7 +83,7 @@ tsip_ssession_param_type_t;
 #define TSIP_SSESSION_UNSET_HEADER(NAME_STR)					TSIP_SSESSION_SET_HEADER(NAME_STR, (const char*)-1)
 #define TSIP_SSESSION_SET_CAPS(NAME_STR, VALUE_STR)				sstype_caps, (const char*)NAME_STR, (const char*)VALUE_STR /* RFC 3840 */
 #define TSIP_SSESSION_UNSET_CAPS(NAME_STR)						TSIP_SSESSION_SET_CAPS(NAME_STR, (const char*)-1)
-#define TSIP_SSESSION_SET_CONTEXT(CTX_PTR)						sstype_context, (const void*)CTX_PTR
+#define TSIP_SSESSION_SET_CONTEXT(CTX_PTR)						sstype_context, (const void*)CTX_PTR /* Rename to SET_USERDATA() */
 #define TSIP_SSESSION_SET_NULL()								sstype_null
 
 typedef struct tsip_ssession_s

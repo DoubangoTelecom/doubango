@@ -538,6 +538,27 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
 		TNET_PRINT_LAST_ERROR("GetBestInterfaceEx() failed.");
 		goto bail;
 	}
+	else{
+		tnet_addresses_L_t* addresses = tsk_null;
+		const tsk_list_item_t* item;
+
+		if(!(addresses = tnet_get_addresses(TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET, tsk_true, tsk_false, tsk_false, tsk_false, dwBestIfIndex))){
+			ret = -2;
+			TSK_DEBUG_ERROR("Failed to retrieve addresses.");
+			goto bail;
+		}
+
+		tsk_list_foreach(item, addresses){
+			const tnet_address_t* address = item->data;
+			if(address && address->ip){
+				memset(*source, '\0', sizeof(*source));
+				memcpy(*source, address->ip, tsk_strlen(address->ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(address->ip));
+				ret = 0;
+				break; // First is good for us.
+			}
+		}
+		TSK_OBJECT_SAFE_FREE(addresses);
+	}
 #elif defined(__APPLE__) /* Mac OS X, iPhone, iPod Touch and iPad */
 	/* Thanks to Laurent Etiemble */
     
@@ -661,25 +682,7 @@ int tnet_getbestsource(const char* destination, tnet_port_t port, tnet_socket_ty
     }
         
 #else /* All other systems (Google Android, Unix-Like systems, uLinux, ....) */    
-    tnet_addresses_L_t* addresses = tsk_null;
-	const tsk_list_item_t* item;
-
-	if(!(addresses = tnet_get_addresses(TNET_SOCKET_TYPE_IS_IPV6(type) ? AF_INET6 : AF_INET, tsk_true, tsk_false, tsk_false, tsk_false, dwBestIfIndex))){
-		ret = -2;
-		TSK_DEBUG_ERROR("Failed to retrieve addresses.");
-		goto bail;
-	}
-
-	tsk_list_foreach(item, addresses){
-		const tnet_address_t* address = item->data;
-		if(address && address->ip){
-			memset(*source, '\0', sizeof(*source));
-			memcpy(*source, address->ip, tsk_strlen(address->ip) > sizeof(*source) ? sizeof(*source) : tsk_strlen(address->ip));
-			ret = 0;
-			break; // First is good for us.
-		}
-	}
-	TSK_OBJECT_SAFE_FREE(addresses);
+    
     
 #endif
 
