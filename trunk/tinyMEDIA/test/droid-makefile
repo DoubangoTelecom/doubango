@@ -5,7 +5,8 @@ LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -ltinyNET -ltinySDP -l$(PROJECT)
 
 all: $(APP)
 
-OBJS += $(APP).o
+OBJS += $(APP).o \
+	dummy.o
 
 $(APP): $(OBJS)
 	$(CC) $(LDFLAGS) -o $@ $^ 

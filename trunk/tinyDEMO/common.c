@@ -53,7 +53,7 @@ int session_tostring(const session_t* session);
 /* our SIP callback function */
 int stack_callback(const tsip_event_t *sipevent)
 {
-	int ret;
+	int ret = 0;
 
 	if(!sipevent){ /* should never happen ...but who know? */
 		TSK_DEBUG_WARN("Null SIP event.");

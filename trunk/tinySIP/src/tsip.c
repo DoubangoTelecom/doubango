@@ -307,6 +307,12 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					break;
 				}
 			
+			/* === User Data === */
+			case pname_userdata:
+				{	/* (const void*)DATA_PTR */
+					self->user_data = va_arg(*app, const void*);
+					break;
+				}
 
 			
 
@@ -702,6 +708,7 @@ void *run(void* self)
 	if((curr = TSK_RUNNABLE_POP_FIRST(stack))){
 		tsip_event_t *sipevent = (tsip_event_t*)curr->data;
 		if(stack->callback){
+			sipevent->user_data = stack->user_data;
 			stack->callback(sipevent);
 		}				
 		tsk_object_unref(curr);

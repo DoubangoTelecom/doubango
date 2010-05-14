@@ -32,6 +32,11 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+#if defined(_WIN32_WCE)
+#	include "tsk_string.h" /* tsk_strlen() */
+#endif
+
+
 #include <stdio.h>
 #include <string.h>
 

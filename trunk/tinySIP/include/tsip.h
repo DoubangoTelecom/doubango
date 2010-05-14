@@ -89,6 +89,9 @@ typedef enum tsip_stack_param_type_e
 	/* === Dummy Headers === */
 	pname_header,
 
+	/* === User Data === */
+	pname_userdata
+
 }
 tsip_stack_param_type_t;
 
@@ -387,6 +390,22 @@ tsip_stack_param_type_t;
 #define TSIP_STACK_SET_HEADER(NAME_STR, VALUE_STR)		pname_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_STACK_UNSET_HEADER(NAME_STR)				TSIP_STACK_SET_HEADER(NAME_STR, ((const char*)-1))
 
+/* === User Data === */
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_SET_USERDATA
+* Sets opaque user's data returned in each callback. Could be used to store the context.
+* @param DATA_PTR Pointer to the user data.
+* @code
+* const void* context;
+* int ret = tsip_stack_set(stack, 
+*              TSIP_STACK_SET_USERDATA(context),
+*              TSIP_STACK_SET_NULL());
+* @endcode
+*/
+#define TSIP_STACK_SET_USERDATA(DATA_PTR)		pname_userdata, (const void*)DATA_PTR
+
+
+
 /* 3GPP IMS/LTE stack (for internal use). only tsip_stack_handle_t should be visible. */
 typedef struct tsip_stack_s
 {
@@ -475,6 +494,7 @@ typedef struct tsip_stack_s
 	tsip_timers_t timers;
 	tsip_ssessions_L_t *ssessions;
 	tsk_params_L_t *headers;
+	const void* user_data;
 
 	/* Layers */
 	struct tsip_dialog_layer_s *layer_dialog;

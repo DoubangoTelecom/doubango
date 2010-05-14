@@ -1,5 +1,3 @@
 c
-set solib-search-path C:\doubango\android-projects\output
-dir C:\doubango\tinySAK\src
-dir C:\doubango\tinySAK\test
-set sysroot C:\doubango\android-projects\output
+set solib-search-path /cygdrive/c/Projects/Doubango/android-projects/output
+set solib-absolute-prefix /cygdrive/c/Projects/Doubango/android-projects/output
