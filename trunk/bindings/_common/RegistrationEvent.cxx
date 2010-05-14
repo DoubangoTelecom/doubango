@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou@doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -30,9 +30,8 @@ RegistrationEvent::RegistrationEvent()
 }
 
 RegistrationEvent::RegistrationEvent(short code, const char* phrase, RegistrationSession* session)
-:SipEvent(code, phrase)
+:SipEvent(tsip_event_register, code, phrase)
 {
-	this->type = tsip_event_register;
 	this->session = (session);
 }
 
@@ -40,7 +39,18 @@ RegistrationEvent::~RegistrationEvent()
 {
 }
 
-const RegistrationSession* RegistrationEvent::getSession2()
+void RegistrationEvent::setType(tsip_register_event_type_t type)
+{
+	this->type = type;
+}
+
+tsip_register_event_type_t RegistrationEvent::getType() const
+{
+	return this->type;
+}
+
+
+const RegistrationSession* RegistrationEvent::getSession() const
 {
 	return dyn_cast<const RegistrationSession*>(this->session);
 }

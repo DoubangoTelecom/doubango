@@ -1,7 +1,7 @@
 /*
 * Copyright (C) 2009 Mamadou Diop.
 *
-* Contact: Mamadou Diop <diopmamadou@yahoo.fr>
+* Contact: Mamadou Diop <diopmamadou@doubango.org>
 *	
 * This file is part of Open Source Doubango Framework.
 *
@@ -24,33 +24,29 @@
 
 SipEvent::SipEvent()
 {
-	::SipEvent(0, tsk_null);
+	::SipEvent(tsip_event_dialog, 0, tsk_null);
 }
 
-SipEvent::SipEvent(short code, const char* phrase)
+SipEvent::SipEvent(tsip_event_type_t type, short code, const char* phrase)
 {
+	this->type = type;
 	this->code = code;
 	this->phrase = tsk_strdup(phrase);
 	this->session = tsk_null;
 }
 
 
-short SipEvent::getCode()
+short SipEvent::getCode() const
 {
 	return this->code;
 }
 
-const char* SipEvent::getPhrase()
+const char* SipEvent::getPhrase() const
 {
 	return this->phrase;
 }
 
-tsip_event_type_t SipEvent::getType()
-{
-	return this->type;
-}
-
-const SipSession* SipEvent::getSession()
+const SipSession* SipEvent::getBaseSession() const
 {
 	return this->session;
 }
