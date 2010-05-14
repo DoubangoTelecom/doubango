@@ -48,7 +48,7 @@
 #include <stdarg.h>
 #include <string.h>
 
-void *run(void* self);
+static void *run(void* self);
 
 /* For tests:
 * http://www.voip-info.org/wiki/view/PROTOS+Test-Suite
@@ -696,7 +696,7 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tsk_bool_t lr)
 
 
 
-void *run(void* self)
+static void *run(void* self)
 {
 	tsk_list_item_t *curr;
 	tsip_stack_t *stack = self;

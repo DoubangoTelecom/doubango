@@ -45,7 +45,7 @@ extern int tnet_transport_prepare(tnet_transport_t *transport);
 extern void *tnet_transport_mainthread(void *param);
 extern int tnet_transport_stop(tnet_transport_t *transport);
 
-void *run(void* self);
+static void *run(void* self);
 
 
 tnet_transport_t* tnet_transport_create(const char* host, tnet_port_t port, tnet_socket_type_t type, const char* description)
@@ -270,7 +270,7 @@ int tnet_transport_shutdown(tnet_transport_handle_t* handle)
 /*
 * Runnable interface implementation.
 */
-void *run(void* self)
+static void *run(void* self)
 {
 	int ret = 0;
 	tsk_list_item_t *curr;
