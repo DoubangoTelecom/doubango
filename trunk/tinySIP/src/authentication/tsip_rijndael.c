@@ -72,13 +72,21 @@
 
 
 /* Put or get a 32 bit uint32_t (v) in machine order from a byte	*
- * address in (x)                                           */
+ * address in (x)                                                   */
 
-__inline uint32_t byte_swap(uint32_t x){
+#if defined(_MSC_VER)
+#	define __INLINE	__forceinline
+#if defined(__GNUC__) && !defined(__APPLE__)
+#	define __INLINE	__inline
+#else
+#	define __INLINE	
+#endif
+
+__INLINE uint32_t byte_swap(uint32_t x){
     return rot1(x) & 0x00ff00ff | rot3(x) & 0xff00ff00;
 }
 
-__inline uint32_t u32_in(const uint8_t x[]){
+__INLINE uint32_t u32_in(const uint8_t x[]){
 	if(tnet_is_BE()){
 		return byte_swap(*(uint32_t*)x);
 	}
@@ -87,7 +95,7 @@ __inline uint32_t u32_in(const uint8_t x[]){
 	}
 }
 
-__inline void u32_out(uint8_t x[], const uint32_t v){
+__INLINE void u32_out(uint8_t x[], const uint32_t v){
 	if(tnet_is_BE()){
 		*(uint32_t*)x = byte_swap(v);
 	}

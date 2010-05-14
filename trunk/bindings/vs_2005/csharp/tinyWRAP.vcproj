@@ -211,11 +211,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\_common\SubsciptionSession.cxx"
+				RelativePath="..\..\_common\SubscriptionEvent.cxx"
 				>
 			</File>
 			<File
-				RelativePath="..\..\_common\SubscriptionEvent.cxx"
+				RelativePath="..\..\_common\SubscriptionSession.cxx"
 				>
 			</File>
 			<File
