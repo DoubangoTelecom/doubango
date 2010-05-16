@@ -494,7 +494,7 @@ typedef struct tsip_stack_s
 	tsip_timers_t timers;
 	tsip_ssessions_L_t *ssessions;
 	tsk_params_L_t *headers;
-	const void* user_data;
+	const void* userdata;
 
 	/* Layers */
 	struct tsip_dialog_layer_s *layer_dialog;
@@ -509,6 +509,7 @@ tsip_stack_t;
 TINYSIP_API tsip_stack_handle_t *tsip_stack_create(tsip_stack_callback_f callback, const char* realm_uri, const char* impi_uri, const char* impu_uri, ...);
 TINYSIP_API int tsip_stack_start(tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_set(tsip_stack_handle_t *self, ...);
+TINYSIP_API const void* tsip_stack_get_userdata(const tsip_stack_handle_t *self);
 TINYSIP_API int tsip_stack_stop(tsip_stack_handle_t *self);
 
 #define TSIP_STACK_EVENT_RAISE(stack, status_code, reason_phrase, incoming, type) \

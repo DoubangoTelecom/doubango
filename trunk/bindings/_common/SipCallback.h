@@ -23,6 +23,7 @@
 #define TINYWRAP_SIPCALLBACK_H
 
 class RegistrationEvent;
+class SubscriptionEvent;
 
 class SipCallback
 {
@@ -30,6 +31,7 @@ public:
 	SipCallback() {  }
 	virtual ~SipCallback() {}
 	virtual int OnRegistrationChanged(const RegistrationEvent* e) { return -1; }
+	virtual int OnSubscriptionChanged(const SubscriptionEvent* e) { return -1; }
 
 private:
 	

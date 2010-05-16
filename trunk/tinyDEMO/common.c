@@ -554,8 +554,9 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			case opt_expires:
 				{	
 					if(!tsk_strnullORempty(opt->value)){
+						unsigned expires = atoi(opt->value);
 						ret = tsip_ssession_set(session->handle, 
-							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, opt->value),
+							TSIP_SSESSION_SET_EXPIRES(expires),
 							TSIP_SSESSION_SET_NULL());
 					}
 					break;
@@ -584,7 +585,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 						instead of TSIP_SSESSION_SET_HEADER() to set the destination URI. */
 					if((cmd != cmd_sms) && !tsk_strnullORempty(opt->value)){ /* SMS will use SMSC Address as Request URI */
 						ret = tsip_ssession_set(session->handle, 
-							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, opt->value),
+							TSIP_SSESSION_SET_TO(opt->value),
 							TSIP_SSESSION_SET_NULL());
 					}
 					break;

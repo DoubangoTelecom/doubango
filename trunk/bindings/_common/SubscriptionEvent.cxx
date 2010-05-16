@@ -19,4 +19,32 @@
 * along with DOUBANGO.
 *
 */
+#include "SubscriptionEvent.h"
+
+#include "SubscriptionSession.h"
+#include "Common.h"
+
+SubscriptionEvent::SubscriptionEvent()
+{
+	::SubscriptionEvent(tsk_null);
+}
+
+SubscriptionEvent::SubscriptionEvent(const tsip_event_t *sipevent)
+:SipEvent(sipevent)
+{
+}
+
+SubscriptionEvent::~SubscriptionEvent()
+{
+}
+
+tsip_subscribe_event_type_t SubscriptionEvent::getType() const
+{
+	return TSIP_SUBSCRIBE_EVENT(this->sipevent)->type;
+}
+
+const SubscriptionSession* SubscriptionEvent::getSession() const
+{
+	return dyn_cast<const SubscriptionSession*>(this->getBaseSession());
+}
 

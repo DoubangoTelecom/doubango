@@ -26,7 +26,11 @@ RegistrationSession::RegistrationSession(SipStack* Stack)
 {
 }
 
-bool RegistrationSession::Register(unsigned expires)
+RegistrationSession::~RegistrationSession()
+{
+}
+
+bool RegistrationSession::Register()
 {
 	int ret = tsip_action_REGISTER(this->handle,
 		TSIP_ACTION_SET_NULL());
@@ -40,6 +44,3 @@ bool RegistrationSession::UnRegister()
 	return (ret == 0);
 }
 
-RegistrationSession::~RegistrationSession()
-{
-}

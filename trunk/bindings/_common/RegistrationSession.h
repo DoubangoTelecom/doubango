@@ -31,7 +31,7 @@ public: /* ctor() and dtor() */
 	virtual ~RegistrationSession();
 
 public: /* Public functions */
-	bool Register(unsigned expires);
+	bool Register();
 	bool UnRegister();
 };
 

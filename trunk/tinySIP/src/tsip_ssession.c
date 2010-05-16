@@ -65,65 +65,46 @@ tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const 
 	//	TSK_FREE(from);
 	//	TSK_FREE(to);
 	//}
-
+	
 	if(ss){
 		ss->owner = tsk_false;
 	}
-
+	
 	return ss;
 }
 
-int __tsip_ssession_set_option(tsip_ssession_t *self, tsip_ssession_option_t option_id, const char* option_value)
+int __tsip_ssession_set_To(tsip_ssession_t *self, const char* value)
 {
-	switch(option_id){
-
-		case TSIP_SSESSION_OPTION_EXPIRES:
-			{ /* Expires value */
-				self->expires = (((int64_t)atoi(option_value)) * 1000) /* milliseconds */;
-				break;
-			}
-
-		case TSIP_SSESSION_OPTION_NO_CONTACT:
-			{ /* No SIP 'Contact' in all requests */
-				self->no_contact = tsk_strcontains(option_value, tsk_strlen(option_value), "true");
-				break;
-			}
-		case TSIP_SSESSION_OPTION_TO:
-			{ /* No SIP 'Contact' in all requests */
-				tsip_uri_t* uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
-				if(uri){
-					TSK_OBJECT_SAFE_FREE(self->to);
-					self->to = uri;
-				}
-				else{
-					TSK_DEBUG_ERROR("The value of the 'To' header is invalid.");
-					return -1;
-				}
-				break;
-			}
-		case TSIP_SSESSION_OPTION_FROM:
-			{ /* No SIP 'Contact' in all requests */
-				tsip_uri_t* uri = tsip_uri_parse(option_value, tsk_strlen(option_value));
-				if(uri){
-					TSK_OBJECT_SAFE_FREE(self->from);
-					self->from = uri;
-				}
-				else{
-					TSK_DEBUG_ERROR("The value of the 'From' header is invalid.");
-					return -1;
-				}
-				break;
-			}
-
-
-
+	tsip_uri_t* uri;
+	if(value && (uri = tsip_uri_parse(value, tsk_strlen(value)))){
+		TSK_OBJECT_SAFE_FREE(self->to);
+		self->to = uri;
+		return 0;
 	}
-	return 0;
+	else{
+		TSK_DEBUG_ERROR("%s is invalid as 'To' header value", value);
+		return -1;
+	}
+}
+
+int __tsip_ssession_set_From(tsip_ssession_t *self, const char* value)
+{
+	tsip_uri_t* uri;
+	if(value && (uri = tsip_uri_parse(value, tsk_strlen(value)))){
+		TSK_OBJECT_SAFE_FREE(self->from);
+		self->from = uri;
+		return 0;
+	}
+	else{
+		TSK_DEBUG_ERROR("%s is invalid as 'From' header value", value);
+		return -1;
+	}
 }
 
 int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 {
 	tsip_ssession_param_type_t curr;
+	int ret;
 
 	if(!self){
 		return -1;
@@ -146,26 +127,14 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 
 						/* From */
 						if(value && tsk_striequals(name, "From")){
-							tsip_uri_t* uri = tsip_uri_parse(value, tsk_strlen(value));
-							if(uri){
-								TSK_OBJECT_SAFE_FREE(self->from);
-								self->from = uri;
-							}
-							else{
-								TSK_DEBUG_ERROR("The value of the 'From' header is invalid.");
-								return -1;
+							if((ret = __tsip_ssession_set_From(self, value))){
+								return ret;
 							}
 						}
 						/* To */
 						else if(value && tsk_striequals(name, "To")){
-							tsip_uri_t* uri = tsip_uri_parse(value, tsk_strlen(value));
-							if(uri){
-								TSK_OBJECT_SAFE_FREE(self->to);
-								self->to = uri;
-							}
-							else{
-								TSK_DEBUG_ERROR("The value of the 'To' header is invalid.");
-								return -1;
+							if((ret = __tsip_ssession_set_To(self, value))){
+								return ret;
 							}
 						}
 						/* Expires */
@@ -187,17 +156,33 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					break;
 				}
 			
-			case sstype_context:
-				{	/* (const void*)CTX_PTR */
-					self->context = va_arg(*app, const void *);
+			case sstype_userdata:
+				{	/* (const void*)DATA_PTR */
+					self->userdata = va_arg(*app, const void *);
 					break;
 				}
-
-			case sstype_option:
-				{	/* (tsip_ssession_option_t)ID_ENUM, (const char*)VALUE_STR */
-					tsip_ssession_option_t ID_ENUM = va_arg(*app, tsip_ssession_option_t);
-					const char* VALUE_STR = va_arg(*app, const char*);
-					__tsip_ssession_set_option(self, ID_ENUM, VALUE_STR); /* even if this function fail, va_list will remain valid */
+			case sstype_to:
+				{	/* (const char*)TO_URI_STR */
+					if((ret = __tsip_ssession_set_To(self, va_arg(*app, const char *)))){
+						return ret;
+					}
+					break;
+				}
+			case sstype_from:
+				{	/* (const char*)FROM_URI_STR */
+					if((ret = __tsip_ssession_set_From(self, va_arg(*app, const char *)))){
+						return ret;
+					}
+					break;
+				}
+			case sstype_nocontact:
+				{	/* (tsk_bool_t)ENABLED_BOOL */
+					self->no_contact = va_arg(*app, tsk_bool_t);
+					break;
+				}
+			case sstype_expires:
+				{	/* (unsigned)VALUE_UINT */
+					self->expires = (((int64_t)va_arg(*app, unsigned)) * 1000) /* milliseconds */;
 					break;
 				}
 
@@ -268,8 +253,10 @@ int tsip_ssession_set(tsip_ssession_handle_t *self, ...)
 		va_end(ap);
 		return ret;
 	}
-
-	return -1;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 }
 
 tsip_ssession_id_t tsip_ssession_get_id(const tsip_ssession_handle_t *self)
@@ -337,10 +324,10 @@ bail:
 	return ret;
 }
 
-const void* tsip_ssession_get_context(const tsip_ssession_handle_t *self)
+const void* tsip_ssession_get_userdata(const tsip_ssession_handle_t *self)
 {
 	if(self){
-		return ((const tsip_ssession_t*)self)->context;
+		return ((const tsip_ssession_t*)self)->userdata;
 	}
 	return tsk_null;
 }
@@ -392,7 +379,6 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 	static tsip_ssession_id_t unique_id = 0;
 	if(ss){
 		ss->stack = va_arg(*app, const tsip_stack_t*);
-		ss->options = tsk_list_create();
 		ss->caps = tsk_list_create();
 		ss->headers = tsk_list_create();
 
@@ -421,7 +407,6 @@ static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 			tsk_list_remove_item_by_data(ss->stack->ssessions, ss);
 		}
 		
-		TSK_OBJECT_SAFE_FREE(ss->options);
 		TSK_OBJECT_SAFE_FREE(ss->caps);
 		TSK_OBJECT_SAFE_FREE(ss->headers);
 

@@ -24,6 +24,8 @@
 #include "SipSession.h"
 #include "RegistrationEvent.h"
 #include "RegistrationSession.h"
+#include "SubscriptionEvent.h"
+#include "SubscriptionSession.h"
 
 #include "Common.h"
 
@@ -63,7 +65,7 @@ SipStack::SipStack(SipCallback* callback_, const char* realm_uri, const char* im
 
 SipStack::~SipStack()
 {
-	this->Stop();
+	this->stop();
 
 	/* Destroy stack handle */
 	TSK_OBJECT_SAFE_FREE(this->handle);
@@ -74,7 +76,7 @@ SipStack::~SipStack()
 	}
 }
 
-bool SipStack::Start()
+bool SipStack::start()
 {
 	int ret = tsip_stack_start(this->handle);
 	return (ret == 0);
@@ -128,7 +130,7 @@ bool SipStack::removeHeader(const char* name)
 	return (ret == 0);
 }
 
-bool SipStack::Stop()
+bool SipStack::stop()
 {
 	int ret = tsip_stack_stop(this->handle);
 	return (ret == 0);
@@ -148,7 +150,6 @@ int stack_callback(const tsip_event_t *sipevent)
 {
 	int ret = 0;
 	SipStack* Stack = tsk_null;
-	SipSession* Session = tsk_null;
 	SipEvent* e = tsk_null;
 
 	if(!sipevent){ /* should never happen ...but who know? */
@@ -157,12 +158,10 @@ int stack_callback(const tsip_event_t *sipevent)
 	}
 	else{
 		/* retrive the stack from the context */
-		if((Stack = (SipStack*)sipevent->user_data)){
-			Session = dyn_cast<SipSession*>((SipSession*)tsip_ssession_get_context(sipevent->ss));
-		}
+		Stack = dyn_cast<SipStack*> ((SipStack*)tsip_stack_get_userdata(sipevent->stack));
 	}
 
-	if(!Stack || !Session){
+	if(!Stack){
 		TSK_DEBUG_WARN("Invalid SIP event.");
 		return -2;
 	}
@@ -173,9 +172,7 @@ int stack_callback(const tsip_event_t *sipevent)
 		case tsip_event_register:
 			{	/* REGISTER */
 				if(Stack->getCallback()){
-					const tsip_register_event_t* reg_event = TSIP_REGISTER_EVENT(sipevent);
-					e = new RegistrationEvent(sipevent->code, sipevent->phrase, dyn_cast<RegistrationSession*>(Session));
-					((RegistrationEvent*)e)->setType(reg_event->type);
+					e = new RegistrationEvent(sipevent);
 					Stack->getCallback()->OnRegistrationChanged((const RegistrationEvent*)e);
 				}
 				//ret = register_handle_event(sipevent);
@@ -203,7 +200,10 @@ int stack_callback(const tsip_event_t *sipevent)
 			}
 		case tsip_event_subscribe:
 			{	/* SUBSCRIBE */
-				//ret = subscribe_handle_event(sipevent);
+				if(Stack->getCallback()){
+					e = new SubscriptionEvent(sipevent);
+					Stack->getCallback()->OnSubscriptionChanged((const SubscriptionEvent*)e);
+				}
 				break;
 			}
 

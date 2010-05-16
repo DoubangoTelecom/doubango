@@ -25,14 +25,14 @@
 SipSession::SipSession(SipStack* Stack)
 {
 	this->handle = tsip_ssession_create(Stack->getHandle(),
-		TSIP_SSESSION_SET_CONTEXT(this),
+		TSIP_SSESSION_SET_USERDATA(this),
 		TSIP_SSESSION_SET_NULL());
 }
 
 SipSession::~SipSession()
 {
 	tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_CONTEXT(tsk_null),
+		TSIP_SSESSION_SET_USERDATA(tsk_null),
 		TSIP_SSESSION_SET_NULL());
 
 	TSK_OBJECT_SAFE_FREE(this->handle);
@@ -80,11 +80,8 @@ bool SipSession::removeCaps(const char* name)
 
 bool SipSession::setExpires(unsigned expires)
 {
-	/* FIXME: */
-	tsk_istr_t str;
-	tsk_itoa(expires, &str);
 	int ret = tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, str),
+		TSIP_SSESSION_SET_EXPIRES(expires),
 		TSIP_SSESSION_SET_NULL());
 	return (ret == 0);
 }
@@ -92,7 +89,7 @@ bool SipSession::setExpires(unsigned expires)
 bool SipSession::setFromUri(const char* fromUri)
 {
 	int ret = tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_FROM, fromUri),
+		TSIP_SSESSION_SET_FROM(fromUri),
 		TSIP_SSESSION_SET_NULL());
 	return (ret == 0);
 }
@@ -100,8 +97,13 @@ bool SipSession::setFromUri(const char* fromUri)
 bool SipSession::setToUri(const char* toUri)
 {
 	int ret = tsip_ssession_set(this->handle,
-		TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, toUri),
+		TSIP_SSESSION_SET_TO(toUri),
 		TSIP_SSESSION_SET_NULL());
 	return (ret == 0);
+}
+
+bool SipSession::setPayload(const char* payload, unsigned size)
+{
+	return false;
 }
 

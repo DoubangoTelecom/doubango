@@ -41,8 +41,16 @@ public:
 	bool setExpires(unsigned expires);
 	bool setFromUri(const char* fromUri);
 	bool setToUri(const char* toUri);
-	/* bool setPayload(const void* payload, unsigned size); */
 
+#if defined(SWIG)
+	/* http://www.swig.org/Doc1.3/Library.html#Library_carrays
+	* 8.3.2 Passing binary data
+	*/
+	
+	%apply (const char *str, unsigned len) { (const char *str, unsigned len) };
+#endif
+	bool setPayload(const char *str, unsigned len);
+	
 protected:
 	tsip_ssession_handle_t* handle;
 };

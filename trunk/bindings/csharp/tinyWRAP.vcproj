@@ -206,15 +206,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\_common\SubsciptionSession.cxx"
-				>
-			</File>
-			<File
 				RelativePath="..\_common\SubscriptionEvent.cxx"
 				>
 			</File>
 			<File
+				RelativePath="..\_common\SubscriptionSession.cxx"
+				>
+			</File>
+			<File
 				RelativePath=".\tinyWRAP_wrap.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\XcapStack.cxx"
 				>
 			</File>
 		</Filter>
@@ -271,6 +275,10 @@
 				RelativePath=".\tinyWRAP_wrap.h"
 				>
 			</File>
+			<File
+				RelativePath="..\_common\XcapStack.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="interfaces"
@@ -278,7 +286,15 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath="..\_common\SipStack.i"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\tinyWRAP.i"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\XcapStack.i"
 				>
 			</File>
 		</Filter>

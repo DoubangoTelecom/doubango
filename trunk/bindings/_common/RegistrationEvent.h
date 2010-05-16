@@ -31,21 +31,13 @@ class RegistrationEvent: public SipEvent
 public:
 	RegistrationEvent();
 #if !defined(SWIG)
-	RegistrationEvent(short code, const char* phrase, RegistrationSession* session);
+	RegistrationEvent(const tsip_event_t *sipevent);
 #endif
 	virtual ~RegistrationEvent();
-
-public: /* Public Internal functions */
-#if !defined(SWIG)
-	void setType(tsip_register_event_type_t type);
-#endif
 
 public: /* Public API functions */
 	tsip_register_event_type_t getType() const;
 	const RegistrationSession* getSession() const;
-
-private:
-	tsip_register_event_type_t type;
 	
 };
 

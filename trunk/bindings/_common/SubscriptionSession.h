@@ -22,6 +22,18 @@
 #ifndef TINYWRAP_SUBSCRIPTIONSESSION_H
 #define TINYWRAP_SUBSCRIPTIONSESSION_H
 
+#include "SipSession.h"
+
+class SubscriptionSession : public SipSession
+{
+public: /* ctor() and dtor() */
+	SubscriptionSession(SipStack* Stack);
+	virtual ~SubscriptionSession();
+
+public: /* Public functions */
+	bool Subscribe();
+	bool UnSubscribe();
+};
 
 
 #endif /* TINYWRAP_SUBSCRIPTIONSESSION_H */

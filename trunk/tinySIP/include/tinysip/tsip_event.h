@@ -75,13 +75,11 @@ typedef struct tsip_event_s
 {
 	TSK_DECLARE_OBJECT;
 
-	struct tsip_stack_s * stack;
+	tsip_stack_handle_t * stack;
 	tsip_ssession_handle_t* ss;
 
 	short code;
 	char *phrase;
-
-	const void* user_data;
 
 	tsip_event_type_t type;
 	struct tsip_message_s *sipmessage;
