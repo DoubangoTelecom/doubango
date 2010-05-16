@@ -22,6 +22,22 @@
 #ifndef TINYWRAP_SUBSCRIPTIONEVENT_H
 #define TINYWRAP_SUBSCRIPTIONEVENT_H
 
+#include "SipEvent.h"
 
+class SubscriptionSession;
+
+class SubscriptionEvent: public SipEvent
+{
+public:
+	SubscriptionEvent();
+#if !defined(SWIG)
+	SubscriptionEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~SubscriptionEvent();
+
+public: /* Public API functions */
+	tsip_subscribe_event_type_t getType() const;
+	const SubscriptionSession* getSession() const;
+};
 
 #endif /* TINYWRAP_SUBSCRIPTIONEVENT_H */

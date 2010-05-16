@@ -35,7 +35,8 @@ namespace test
             callback = new MyCallback(this);
             /* Create and configure the IMS/LTE stack */
             stack = new SipStack(callback, String.Format("sip:{0}", REALM), String.Format("{0}@{1}", USER, REALM), String.Format("sip:{0}@{1}", USER, REALM));
-            stack.addHeader("Privacy", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER");
+            stack.addHeader("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER");
+            stack.addHeader("Privacy", "header; id");
             stack.addHeader("P-Access-Network-Info", "ADSL;utran-cell-id-3gpp=00000000");
             stack.addHeader("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0");
 

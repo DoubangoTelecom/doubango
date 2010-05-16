@@ -66,6 +66,12 @@
     <Compile Include="..\SipStack.cs">
       <Link>SipStack.cs</Link>
     </Compile>
+    <Compile Include="..\SubscriptionEvent.cs">
+      <Link>SubscriptionEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\SubscriptionSession.cs">
+      <Link>SubscriptionSession.cs</Link>
+    </Compile>
     <Compile Include="..\tinyWRAP.cs">
       <Link>tinyWRAP.cs</Link>
     </Compile>
@@ -74,6 +80,12 @@
     </Compile>
     <Compile Include="..\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tsip_register_event_type_t.cs">
+      <Link>tsip_register_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tsip_subscribe_event_type_t.cs">
+      <Link>tsip_subscribe_event_type_t.cs</Link>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

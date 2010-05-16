@@ -22,38 +22,34 @@
 #include "SipEvent.h"
 #include "SipSession.h"
 
+#include "Common.h"
+
 SipEvent::SipEvent()
 {
-	::SipEvent(tsip_event_dialog, 0, tsk_null);
+	::SipEvent(tsk_null);
 }
 
-SipEvent::SipEvent(tsip_event_type_t type, short code, const char* phrase)
+SipEvent::SipEvent(const tsip_event_t *_sipevent)
 {
-	this->type = type;
-	this->code = code;
-	this->phrase = tsk_strdup(phrase);
-	this->session = tsk_null;
-}
-
-
-short SipEvent::getCode() const
-{
-	return this->code;
-}
-
-const char* SipEvent::getPhrase() const
-{
-	return this->phrase;
-}
-
-const SipSession* SipEvent::getBaseSession() const
-{
-	return this->session;
+	this->sipevent = _sipevent;
 }
 
 SipEvent::~SipEvent()
 {
-	TSK_FREE(this->phrase);
-	/* Do not delete the session => you are not the owner (from stack callback) */
+}
+
+short SipEvent::getCode() const
+{
+	return this->sipevent->code;
+}
+
+const char* SipEvent::getPhrase() const
+{
+	return this->sipevent->phrase;
+}
+
+const SipSession* SipEvent::getBaseSession() const
+{
+	return dyn_cast<SipSession*>((SipSession*)tsip_ssession_get_userdata(this->sipevent->ss));
 }
 

@@ -136,7 +136,7 @@ tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 							goto done;
 						}
 						tsip_ssession_set(session->handle, 
-							TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, opt->value),
+							TSIP_SSESSION_SET_TO(opt->value),
 							TSIP_SSESSION_SET_NULL());
 
 						/* Destination URI */

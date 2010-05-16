@@ -19,5 +19,30 @@
 * along with DOUBANGO.
 *
 */
+#include "SubscriptionSession.h"
+
+SubscriptionSession::SubscriptionSession(SipStack* Stack)
+: SipSession(Stack)
+{
+}
+
+SubscriptionSession::~SubscriptionSession()
+{
+	
+}
+
+bool SubscriptionSession::Subscribe()
+{
+	int ret = tsip_action_SUBSCRIBE(this->handle,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
+
+bool SubscriptionSession::UnSubscribe()
+{
+	int ret = tsip_action_UNSUBSCRIBE(this->handle,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
 
 

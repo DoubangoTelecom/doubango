@@ -310,7 +310,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 			/* === User Data === */
 			case pname_userdata:
 				{	/* (const void*)DATA_PTR */
-					self->user_data = va_arg(*app, const void*);
+					self->userdata = va_arg(*app, const void*);
 					break;
 				}
 
@@ -568,8 +568,25 @@ int tsip_stack_set(tsip_stack_handle_t *self, ...)
 		va_end(ap);
 		return ret;
 	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+}
 
-	return -1;
+/**@ingroup tsip_stack_group
+* Gets user's data, previously set using @ref TSIP_STACK_SET_USERDATA() macro.
+* @param self Stack from which to get the user's data.
+*/
+const void* tsip_stack_get_userdata(const tsip_stack_handle_t *self)
+{
+	if(self){
+		return ((const tsip_stack_t *)self)->userdata;
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
 }
 
 /**@ingroup tsip_stack_group
@@ -708,7 +725,6 @@ static void *run(void* self)
 	if((curr = TSK_RUNNABLE_POP_FIRST(stack))){
 		tsip_event_t *sipevent = (tsip_event_t*)curr->data;
 		if(stack->callback){
-			sipevent->user_data = stack->user_data;
 			stack->callback(sipevent);
 		}				
 		tsk_object_unref(curr);

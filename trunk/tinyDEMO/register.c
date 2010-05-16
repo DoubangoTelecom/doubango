@@ -45,7 +45,7 @@ int register_handle_event(const tsip_event_t *sipevent)
 				TSK_DEBUG_INFO("Transport layer successfully sent (un)REGISTER request");
 				break;
 			}
-
+		
 		case tsip_ao_register: /* Answer to outgoing REGISTER */
 			{
 				TSK_DEBUG_INFO("Event: Answer to outgoing REGISTER. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
@@ -63,7 +63,7 @@ int register_handle_event(const tsip_event_t *sipevent)
 				}
 				break;
 			}
-
+		
 		/* Server events (For whose dev. Server Side IMS Services) */
 		case tsip_i_register: /* Incoming REGISTER */
 		case tsip_i_unregister: /* Incoming unREGISTER */
@@ -73,7 +73,7 @@ int register_handle_event(const tsip_event_t *sipevent)
 				TSK_DEBUG_WARN("Event not support by Client Framework.");
 				break;
 			}
-
+		
 		default:
 			{	/* Any other event */
 				TSK_DEBUG_WARN("%d not a valid SIP Registration event.", reg_event->type);
@@ -90,16 +90,16 @@ tsip_ssession_id_t register_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 	const session_t* session = tsk_null;
 	tsip_ssession_id_t id = TSIP_SSESSION_INVALID_ID;
 	const opt_t* opt;
-
+	
 	if(!(session = session_handle_cmd(cmd, opts))){
 		goto bail;
 	}
 	else{
 		id = tsip_ssession_get_id(session->handle);
 	}
-
+	
 	/* action config */
-
+	
 	/* Execute command */
 	switch(cmd){
 		case cmd_register:

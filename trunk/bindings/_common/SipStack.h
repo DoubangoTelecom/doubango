@@ -34,7 +34,7 @@ public: /* ctor() and dtor() */
     ~SipStack();
 
 public: /* API functions */
-	bool Start();
+	bool start();
 	
 	bool setPassword(const char* password);
 	bool setProxyCSCF(const char* fqdn, unsigned port, const char* transport, const char* ipversion);
@@ -43,7 +43,7 @@ public: /* API functions */
 	bool addHeader(const char* name, const char* value);
 	bool removeHeader(const char* name);
 
-	bool Stop();
+	bool stop();
 
 public: /* Public helper function */
 #if !defined(SWIG)

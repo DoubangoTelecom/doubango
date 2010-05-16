@@ -26,31 +26,24 @@
 
 RegistrationEvent::RegistrationEvent()
 {
-	::RegistrationEvent(0, tsk_null, tsk_null);
+	::RegistrationEvent(tsk_null);
 }
 
-RegistrationEvent::RegistrationEvent(short code, const char* phrase, RegistrationSession* session)
-:SipEvent(tsip_event_register, code, phrase)
+RegistrationEvent::RegistrationEvent(const tsip_event_t *sipevent)
+:SipEvent(sipevent)
 {
-	this->session = (session);
 }
 
 RegistrationEvent::~RegistrationEvent()
 {
 }
 
-void RegistrationEvent::setType(tsip_register_event_type_t type)
-{
-	this->type = type;
-}
-
 tsip_register_event_type_t RegistrationEvent::getType() const
 {
-	return this->type;
+	return TSIP_REGISTER_EVENT(this->sipevent)->type;
 }
-
 
 const RegistrationSession* RegistrationEvent::getSession() const
 {
-	return dyn_cast<const RegistrationSession*>(this->session);
+	return dyn_cast<const RegistrationSession*>(this->getBaseSession());
 }

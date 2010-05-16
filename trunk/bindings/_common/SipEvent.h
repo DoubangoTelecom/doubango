@@ -30,7 +30,9 @@ class SipEvent
 {
 public:
 	SipEvent();
-	SipEvent(tsip_event_type_t type, short code, const char* phrase);
+#if !defined(SWIG)
+	SipEvent(const tsip_event_t *sipevent);
+#endif
 	virtual ~SipEvent();
 
 public:
@@ -38,13 +40,8 @@ public:
 	const char* getPhrase() const;
 	const SipSession* getBaseSession() const;
 
-private:
-	tsip_event_type_t type;
-
 protected:
-	short code;
-	char* phrase;
-	const SipSession* session;
+	const tsip_event_t *sipevent;
 };
 
 

@@ -100,7 +100,10 @@ char tsk_b16tob10(char c)
 */
 int tsk_stricmp(const char * str1, const char * str2)
 {
-	return (str1 && str2) ? stricmp(str1, str2) : ((!str1 && !str2) ? 0 : -1);
+	return (str1 && str2) ? 
+		( (tolower(*str1) == tolower(*str2)) ? stricmp(str1, str2) : (*str1-*str2) )  /* Compare first charaters before doing complete comparison */
+		: 
+		( (!str1 && !str2) ? 0 : -1 );
 }
 
 /**@ingroup tsk_string_group
@@ -125,7 +128,10 @@ int tsk_strnicmp(const char * str1, const char * str2, tsk_size_t n)
 */
 int tsk_strcmp(const char * str1, const char * str2)
 {
-	return (str1 && str2) ? ((*str1 != *str2) ? -1 : strcmp(str1, str2)) : ((!str1 && !str2) ? 0 : -1);
+	return (str1 && str2) ?
+		( (*str1 == *str2) ? stricmp(str1, str2) : (*str1-*str2) )  /* Compare first charaters before doing complete comparison */
+		: 
+		( (!str1 && !str2) ? 0 : -1 );
 }
 
 /**@ingroup tsk_string_group
