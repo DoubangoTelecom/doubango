@@ -30,4 +30,46 @@
 		<nature>com.android.ide.eclipse.adt.AndroidNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>libs/armeabi/libtinyHTTP.so</name>
+			<type>1</type>
+			<location>C:/doubango/android-projects/output/libtinyHTTP.so</location>
+		</link>
+		<link>
+			<name>libs/armeabi/libtinyIPSec.so</name>
+			<type>1</type>
+			<location>C:/doubango/android-projects/output/libtinyIPSec.so</location>
+		</link>
+		<link>
+			<name>libs/armeabi/libtinyMEDIA.so</name>
+			<type>1</type>
+			<location>C:/doubango/android-projects/output/libtinyMEDIA.so</location>
+		</link>
+		<link>
+			<name>libs/armeabi/libtinyNET.so</name>
+			<type>1</type>
+			<location>C:/doubango/android-projects/output/libtinyNET.so</location>
+		</link>
+		<link>
+			<name>libs/armeabi/libtinySAK.so</name>
+			<type>1</type>
+			<location>C:/doubango/android-projects/output/libtinySAK.so</location>
+		</link>
+		<link>
+			<name>libs/armeabi/libtinySDP.so</name>
+			<type>1</type>
+			<location>C:/doubango/android-projects/output/libtinySDP.so</location>
+		</link>
+		<link>
+			<name>libs/armeabi/libtinySIP.so</name>
+			<type>1</type>
+			<location>C:/doubango/android-projects/output/libtinySIP.so</location>
+		</link>
+		<link>
+			<name>libs/armeabi/libtinyWRAP.so</name>
+			<type>1</type>
+			<location>C:/doubango/android-projects/output/libtinyWRAP.so</location>
+		</link>
+	</linkedResources>
 </projectDescription>

@@ -1,7 +1,7 @@
-APP := lib$(PROJECT).so
+APP := lib$(PROJECT).$(EXT)
 
 CFLAGS := $(CFLAGS)
-LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive
+LDFLAGS := $(LDFLAGS)
 
 all: $(APP)
 
@@ -34,9 +34,9 @@ OBJS = src/tsk.o\
 	src/tsk_url.o\
 	src/tsk_uuid.o\
 	src/tsk_xml.o
-
+	
 $(APP): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^ 
+	$(LINK_LIB) $(LDFLAGS) $(LD_O) $@ $^
 
 %.o: %.c
 	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@
