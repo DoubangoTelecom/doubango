@@ -335,7 +335,7 @@ namespace Swig {
         // the thread to exit upon shutdown. Only for jdk-1.4 and later.
         director_->swig_jvm_->AttachCurrentThreadAsDaemon((void **) &jenv_, NULL);
 #else
-        director_->swig_jvm_->AttachCurrentThread((void **) &jenv_, NULL);
+        director_->swig_jvm_->AttachCurrentThread(/*(void **)*/ &jenv_, NULL);
 #endif
       }
       ~JNIEnvWrapper() {
@@ -1137,7 +1137,7 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnSu
 SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1director_1connect(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jswig_mem_own, jboolean jweak_global) {
   SipCallback *obj = *((SipCallback **)&objarg);
   (void)jcls;
-  SwigDirector_SipCallback *director = dynamic_cast<SwigDirector_SipCallback *>(obj);
+  SwigDirector_SipCallback *director = static_cast<SwigDirector_SipCallback *>(obj);
   if (director) {
     director->swig_connect_director(jenv, jself, jenv->GetObjectClass(jself), (jswig_mem_own == JNI_TRUE), (jweak_global == JNI_TRUE));
   }
@@ -1146,7 +1146,7 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1dire
 
 SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1change_1ownership(JNIEnv *jenv, jclass jcls, jobject jself, jlong objarg, jboolean jtake_or_release) {
   SipCallback *obj = *((SipCallback **)&objarg);
-  SwigDirector_SipCallback *director = dynamic_cast<SwigDirector_SipCallback *>(obj);
+  SwigDirector_SipCallback *director = static_cast<SwigDirector_SipCallback *>(obj);
   (void)jcls;
   if (director) {
     director->swig_java_change_ownership(jenv, jself, jtake_or_release ? true : false);

@@ -1,7 +1,7 @@
 APP := test
 
 CFLAGS := $(CFLAGS) -I../src
-LDFLAGS := $(LDFLAGS) -Bsymbolic -l$(PROJECT)
+LDFLAGS := $(LDFLAGS_COMMON) -l$(PROJECT) -Wl,--entry=main
 
 all: $(APP)
 

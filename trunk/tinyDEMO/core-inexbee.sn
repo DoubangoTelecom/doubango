@@ -54,13 +54,13 @@
 #++hu --sid $$(pub-sid)
 
 # sleep
-++sleep --sec $$(sleep-sec)
+#++sleep --sec $$(sleep-sec)
 
 # unregister
 #++hu --sid $$(reg-sid)
 
 # sleep
-++sleep --sec $$(sleep-sec)
+#++sleep --sec $$(sleep-sec)
 
 # Exit the application
 ++e
