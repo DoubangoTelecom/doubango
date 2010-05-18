@@ -339,6 +339,8 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 				tsk_list_push_back_data(self->dialogs, (void**)&newdialog); /* add new dialog to the layer */
 			}
 
+			/* The dialog will become the owner of the SIP session
+			* => when destoyed => SIP session will be destroyed, unless the user-end takes ownership() */
 			TSK_OBJECT_SAFE_FREE(ss);
 		}
 	}

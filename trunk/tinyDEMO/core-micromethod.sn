@@ -6,7 +6,7 @@
 %%pwd mamadou
 %%proxy_ip 192.168.16.104 # IP address or FQDN
 %%proxy_port 5060
-%%proxy_trans tcp # udp, tcp, tls or sctp
+%%proxy_trans udp # udp, tcp, tls or sctp
 %%expires 100 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
 
@@ -32,19 +32,25 @@
 	>>(reg-sid)
 
 # sleep
-++sleep --sec $$(sleep-sec)
+#++sleep --sec $$(sleep-sec)
 
 # subscribe to reg event package
-++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --header Event=reg --header Accept=application/reginfo+xml \
-	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
+#++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --header Event=reg --header Accept=application/reginfo+xml \
+#	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
 
 #subscribe to presence event package (alice)
-++sub --to sip:alice@$$(domain) --xp $$(expires) --header Event=presence --header Supported=eventlist\
-	--header Accept=multipart/related, application/rlmi+xml, application/pidf+xml, application/rpid+xml, application/xcap-diff+xml, message/external-body \
-	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-pres-sid)
+#++sub --to sip:alice@$$(domain) --xp $$(expires) --header Event=presence --header Supported=eventlist\
+#	--header Accept=multipart/related, application/rlmi+xml, application/pidf+xml, application/rpid+xml, application/xcap-diff+xml, message/external-body \
+#	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-pres-sid)
 
 #publish
-++sn --path ./publish.sn
+#++sn --path ./publish.sn
+
+++sleep --sec -1 # Press ENTER
+
+# MESSAGE
+++m --to sip:mercuro2@$$(domain) --pay Test SMS-RPDATA --header Content-Type=application/vnd.3gpp.sms --header Transfer-Encoding=binary
+
 
 # sleep
 ++sleep --sec -1 # Press ENTER
@@ -55,13 +61,13 @@
 #++hu --sid $$(pub-sid)
 
 # sleep
-++sleep --sec $$(sleep-sec)
+#++sleep --sec $$(sleep-sec)
 
 # unregister
 #++hu --sid $$(reg-sid)
 
 # sleep
-++sleep --sec $$(sleep-sec)
+#++sleep --sec $$(sleep-sec)
 
 # Exit the application
 ++e

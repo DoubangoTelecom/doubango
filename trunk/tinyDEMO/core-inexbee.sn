@@ -34,8 +34,8 @@
 ++sleep --sec $$(sleep-sec)
 
 # subscribe to reg event package
-++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --header Event=reg --header Accept=application/reginfo+xml \
-	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
+#++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --header Event=reg --header Accept=application/reginfo+xml \
+#	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
 
 #subscribe to presence event package (alice)
 #++sub --to sip:alice@$$(domain) --xp $$(expires) --header Event=presence --header Supported=eventlist\

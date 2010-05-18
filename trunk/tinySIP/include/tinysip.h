@@ -50,6 +50,7 @@
 
 #include "tinysip/headers/tsip_headers.h"
 
+#include "tinysip/api/tsip_api_common.h"
 #include "tinysip/api/tsip_api_invite.h"
 #include "tinysip/api/tsip_api_message.h"
 #include "tinysip/api/tsip_api_options.h"

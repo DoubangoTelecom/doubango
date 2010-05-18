@@ -109,7 +109,10 @@ int stack_dump();
 int stack_config(const opts_L_t* opts);
 int stack_run(const opts_L_t* opts);
 
-session_t* session_create(session_type_t );
+session_t* session_create(session_type_t, tsip_ssession_handle_t* );
+#define session_client_create(type) session_create(type, tsk_null)
+#define session_server_create(type, handle) session_create(type, handle)
+
 const session_t* session_get_by_sid(const sessions_L_t* , tsip_ssession_id_t );
 int session_tostring(const session_t* );
 const session_t* session_handle_cmd(cmd_type_t , const opts_L_t*);

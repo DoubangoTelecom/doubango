@@ -33,14 +33,31 @@ tsk_buffer_t* sms_submit(const tsip_uri_t* smsc, const tsip_uri_t* dest, const c
 int message_handle_event(const tsip_event_t *sipevent)
 {
 	const tsip_message_event_t* msg_event = TSIP_MESSAGE_EVENT(sipevent);
-	const session_t* session;
+	const session_t* session = tsk_null;
 	tsip_ssession_id_t sid;
+	int ret = 0;
 
 	/* Find associated session */
 	sid = tsip_ssession_get_id(sipevent->ss);
 	if(!(session = session_get_by_sid(ctx->sessions, sid))){
-		TSK_DEBUG_WARN("Failed to match session event.");
-		return -1;
+		if(tsip_ssession_have_ownership(sipevent->ss)){
+			/* it's or own session and we fail to match it ==> should never happen */
+			TSK_DEBUG_ERROR("Failed to match session event.");
+			ret = -2;
+			goto bail;
+		}
+		else{
+			/* it's a "server-side-session" */
+			session_t* _session;
+			if((_session = session_server_create(st_message, sipevent->ss)) && (session = _session)){
+				tsk_list_push_back_data(ctx->sessions, (void**)&_session);
+			}
+			else{
+				TSK_DEBUG_ERROR("Failed to create \"sever-side-session\".");
+				ret = -3;
+				goto bail;
+			}
+		}
 	}
 	
 
@@ -70,7 +87,16 @@ int message_handle_event(const tsip_event_t *sipevent)
 					TSK_DEBUG_INFO("MESSAGE Content-Type: %s", TSIP_MESSAGE_CONTENT_TYPE(sipevent->sipmessage));
 					TSK_DEBUG_INFO("MESSAGE Content: %s", content->data);
 				}
-				break;
+				/* accept() the MESSAGE to terminate the dialog */
+				tsip_action_ACCEPT(session->handle,
+					TSIP_ACTION_SET_HEADER("Info", "I've accept()ed your message"),
+					TSIP_ACTION_SET_NULL());
+				/* reject() the MESSAGE to terminate the dialog */
+				/*tsip_action_REJECT(session->handle,
+					TSIP_ACTION_SET_HEADER("Info", "I've reject()ed your message"),
+					TSIP_ACTION_SET_HEADER("In-Reply-To", "apb03a0s09dkjdfglkj49112"),
+					TSIP_ACTION_SET_NULL());
+				break;*/
 			}
 
 		/* Server events (For whose dev. Server Side IMS Services) */
@@ -82,12 +108,13 @@ int message_handle_event(const tsip_event_t *sipevent)
 
 		default:
 			{	/* Any other event */
-				TSK_DEBUG_WARN("%d not a valid SIP Registration event.", msg_event->type);
+				TSK_DEBUG_WARN("%d not a valid SIP Messaging event.", msg_event->type);
 				break;
 			}
 	}
 
-	return 0;
+bail:
+	return ret;
 }
 
 tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
@@ -106,19 +133,11 @@ tsip_ssession_id_t message_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 	switch(cmd){
 		case cmd_message:
 			{	/* Send SIP MESSAGE */
-				/* Payload */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				if((opt = opt_get_by_type(opts, opt_payload))){
-					tsip_action_MESSAGE(session->handle,
-						TSIP_ACTION_SET_PAYLOAD(opt->value, tsk_strlen(opt->value)),
-						TSIP_ACTION_SET_CONFIG(action_config),
-						TSIP_ACTION_SET_NULL());
-				}
-				else{
-					tsip_action_MESSAGE(session->handle,
-						TSIP_ACTION_SET_CONFIG(action_config),
-						TSIP_ACTION_SET_NULL());
-				}
+				tsip_action_MESSAGE(session->handle,
+					TSIP_ACTION_SET_CONFIG(action_config),
+					/* Any other TSIP_ACTION_SET_*() macros */
+					TSIP_ACTION_SET_NULL());
 				TSK_OBJECT_SAFE_FREE(action_config);
 				break;
 			}
