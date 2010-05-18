@@ -40,7 +40,7 @@ namespace test
             success = stack.start();
 
             /* Set Password */
-            stack.setPassword(PASSWORD);
+            //stack.setPassword(PASSWORD);
 
             /* Send REGISTER */
             regSession = new RegistrationSession(stack);
@@ -48,10 +48,10 @@ namespace test
             regSession.addCaps("+g.3gpp.smsip");
             regSession.addCaps("language", "\"en,fr\"");
             regSession.setExpires(35);
-            //regSession.Register();
+            regSession.Register();
 
             /* Send SUBSCRIBE(reg) */
-            subSession = new SubscriptionSession(stack);
+            /*subSession = new SubscriptionSession(stack);
             subSession.addHeader("Event", "reg");
             subSession.addHeader("Accept", "application/reginfo+xml");
             subSession.addHeader("Allow-Events", "refer, presence, presence.winfo, xcap-diff, conference");
@@ -59,7 +59,7 @@ namespace test
 
             //String s = "H\x00\x15eg\x09\x20mamadou";
             //subSession.setPayload(s, (uint)s.Length);
-            subSession.Subscribe();
+            subSession.Subscribe();*/
 
             Console.Read();
 

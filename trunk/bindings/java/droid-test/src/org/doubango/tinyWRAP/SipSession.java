@@ -71,4 +71,8 @@ public class SipSession {
     return tinyWRAPJNI.SipSession_setToUri(swigCPtr, this, toUri);
   }
 
+  public boolean setPayload(String str, long len) {
+    return tinyWRAPJNI.SipSession_setPayload(swigCPtr, this, str, len);
+  }
+
 }

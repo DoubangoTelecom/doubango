@@ -69,7 +69,7 @@
 		<link>
 			<name>libs/armeabi/libtinyWRAP.so</name>
 			<type>1</type>
-			<location>C:/doubango/android-projects/output/libtinyWRAP.so</location>
+			<location>C:/Projects/Doubango/android-projects/output/libtinyWRAP.so</location>
 		</link>
 	</linkedResources>
 </projectDescription>

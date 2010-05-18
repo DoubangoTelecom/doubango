@@ -1,7 +1,7 @@
-APP := lib$(PROJECT).so
+APP := lib$(PROJECT).$(EXT)
 
 CFLAGS := $(CFLAGS) -I../tinySAK/src -I./include
-LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK
+LDFLAGS := $(LDFLAGS) -ltinySAK
 
 all: $(APP)
 
@@ -31,7 +31,11 @@ OBJS += src/parsers/tsdp_parser_message.o
 	
 
 $(APP): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^ 
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
 
 %.o: %.c
 	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@

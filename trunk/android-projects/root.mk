@@ -2,9 +2,9 @@
 ##	Root configuration file shared by all android projects.
 ######
 
-export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk
+export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk-r3
 export ANDROID_SDK_ROOT=/cygdrive/c/android-sdk
-export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-4
+export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-5
 
 # Output directory
 export OUTPUT_DIR=$(shell pwd)/output
@@ -18,6 +18,7 @@ export LIB_DIR=/system/lib
 export AR=arm-eabi-ar
 export CC=arm-eabi-gcc
 export CPP=arm-eabi-g++
+
 export CFLAGS+=$(DEBUG_FLAGS) -I$(ANDROID_PLATFORM)/arch-arm/usr/include \
 -march=armv5te \
 -mtune=xscale \
@@ -47,9 +48,8 @@ export LDFLAGS_COMMON+=-nostdlib -lc -L$(OUTPUT_DIR)
 ifeq ($(BT), static)
 	export EXT=a
 	export LDFLAGS=
-	export LD_O=
 	
-	export LINK_LIB=$(AR) crs
+	export CFLAGS+=-static
 else
 	export EXT=so
 	
@@ -57,7 +57,4 @@ else
 	export LDFLAGS+=-Wl,--no-undefined
 	export LDFLAGS+=-Wl,--no-whole-archive
 	export LDFLAGS+=-Wl,-soname,lib$(PROJECT).$(EXT),-Bsymbolic,-shared,--whole-archive
-	
-	export LD_O=-o
-	export LINK_LIB = $(CC)
 endif

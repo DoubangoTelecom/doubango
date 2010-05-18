@@ -1,7 +1,7 @@
-APP := lib$(PROJECT).so
+APP := lib$(PROJECT).$(EXT)
 
 CFLAGS := $(CFLAGS) -I../tinySAK/src -I../tinyNET/src -I./include
-LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -ltinySAK -ltinyNET
+LDFLAGS := $(LDFLAGS) -ltinySAK -ltinyNET
 
 all: $(APP)
 
@@ -37,7 +37,11 @@ OBJS +=	src/parsers/thttp_parser_header.o\
 	src/parsers/thttp_parser_url.o
 
 $(APP): $(OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^ 
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
 
 %.o: %.c
 	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@

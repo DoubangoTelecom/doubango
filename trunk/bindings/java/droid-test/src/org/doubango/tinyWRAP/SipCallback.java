@@ -59,4 +59,8 @@ public class SipCallback {
     return (getClass() == SipCallback.class) ? tinyWRAPJNI.SipCallback_OnRegistrationChanged(swigCPtr, this, RegistrationEvent.getCPtr(e), e) : tinyWRAPJNI.SipCallback_OnRegistrationChangedSwigExplicitSipCallback(swigCPtr, this, RegistrationEvent.getCPtr(e), e);
   }
 
+  public int OnSubscriptionChanged(SubscriptionEvent e) {
+    return (getClass() == SipCallback.class) ? tinyWRAPJNI.SipCallback_OnSubscriptionChanged(swigCPtr, this, SubscriptionEvent.getCPtr(e), e) : tinyWRAPJNI.SipCallback_OnSubscriptionChangedSwigExplicitSipCallback(swigCPtr, this, SubscriptionEvent.getCPtr(e), e);
+  }
+
 }

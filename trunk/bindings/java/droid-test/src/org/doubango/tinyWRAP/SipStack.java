@@ -39,8 +39,12 @@ public class SipStack extends SafeObject {
     this(tinyWRAPJNI.new_SipStack(SipCallback.getCPtr(callback), callback, realm_uri, impi_uri, impu_uri), true);
   }
 
-  public boolean Start() {
-    return tinyWRAPJNI.SipStack_Start(swigCPtr, this);
+  public boolean start() {
+    return tinyWRAPJNI.SipStack_start(swigCPtr, this);
+  }
+
+  public boolean setPassword(String password) {
+    return tinyWRAPJNI.SipStack_setPassword(swigCPtr, this, password);
   }
 
   public boolean setProxyCSCF(String fqdn, long port, String transport, String ipversion) {
@@ -63,8 +67,8 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_removeHeader(swigCPtr, this, name);
   }
 
-  public boolean Stop() {
-    return tinyWRAPJNI.SipStack_Stop(swigCPtr, this);
+  public boolean stop() {
+    return tinyWRAPJNI.SipStack_stop(swigCPtr, this);
   }
 
 }

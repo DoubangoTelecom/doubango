@@ -1,7 +1,7 @@
 APP := test
 
 CFLAGS := $(CFLAGS) -I../src -I../../tinySAK/src
-LDFLAGS := $(LDFLAGS) -Bsymbolic -ltinySAK -l$(PROJECT)
+LDFLAGS := $(LDFLAGS_COMMON) -Wl,-Bsymbolic,--whole-archive -l$(PROJECT) -ltinySAK -Wl,--entry=main
 
 all: $(APP)
 

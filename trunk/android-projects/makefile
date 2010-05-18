@@ -24,6 +24,7 @@ clean:
 else ##### All other libraries (tiny*)
 all:
 	(cd ../$(PROJECT) ; $(MAKE) -f droid-makefile all; $(MAKE) -f droid-makefile install; cp --force lib$(PROJECT).$(EXT) $(OUTPUT_DIR))
+test:
 	(cd ../$(PROJECT)/test; $(MAKE) -f droid-makefile all; $(MAKE) -f droid-makefile install; cp --force test $(OUTPUT_DIR))
 
 clean:
