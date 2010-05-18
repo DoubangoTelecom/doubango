@@ -1,7 +1,7 @@
-APP := lib$(PROJECT).so
+APP := lib$(PROJECT).$(EXT)
 
 CFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions  -I../_common -I../. -I../../tinySAK/src -I../../tinyNET/src -I../../tinyHTTP/include -I../../tinySIP/include
-LDFLAGS := $(LDFLAGS) -Wl,-soname,lib$(PROJECT).so,-Bsymbolic,-shared,--whole-archive -lstdc++ -ltinySAK -ltinyNET  -ltinySIP
+LDFLAGS := $(LDFLAGS) -lstdc++ -ltinySAK -ltinyHTTP -ltinyIPSec -ltinyNET -ltinySIP
 
 
 
@@ -19,8 +19,13 @@ OBJS = tinyWRAP_wrap.o\
 	../_common/SubscriptionEvent.o \
 	../_common/SubscriptionSession.o
 
+
 $(APP): $(OBJS)
-	$(CPP) $(LDFLAGS) -o $@ $^ 
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
 
 %.o: %.cxx
 	$(CPP) -c $(INCLUDE) $(CFLAGS) $< -o $@

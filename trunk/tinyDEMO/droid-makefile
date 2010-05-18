@@ -1,7 +1,7 @@
 APP := demo
 
 CFLAGS := $(CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinySMS/include -I../tinyHTTP/include -I../tinySIP/include
-LDFLAGS := $(LDFLAGS) -Bsymbolic -lm -ltinySAK -ltinySMS -ltinySIP
+LDFLAGS := $(LDFLAGS_COMMON) -Wl,-Bsymbolic,--whole-archive  -Wl,--entry=main -lm -ltinySAK -ltinyNET -ltinyHTTP -ltinyIPSec -ltinySMS -ltinySIP
 
 all: $(APP)
 

@@ -39,8 +39,12 @@ public class RegistrationEvent extends SipEvent {
     this(tinyWRAPJNI.new_RegistrationEvent(), true);
   }
 
-  public RegistrationSession getSession2() {
-    long cPtr = tinyWRAPJNI.RegistrationEvent_getSession2(swigCPtr, this);
+  public tsip_register_event_type_t getType() {
+    return tsip_register_event_type_t.swigToEnum(tinyWRAPJNI.RegistrationEvent_getType(swigCPtr, this));
+  }
+
+  public RegistrationSession getSession() {
+    long cPtr = tinyWRAPJNI.RegistrationEvent_getSession(swigCPtr, this);
     return (cPtr == 0) ? null : new RegistrationSession(cPtr, false);
   }
 

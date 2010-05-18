@@ -36,7 +36,11 @@ OBJS = src/tsk.o\
 	src/tsk_xml.o
 	
 $(APP): $(OBJS)
-	$(LINK_LIB) $(LDFLAGS) $(LD_O) $@ $^
+ifeq ($(EXT), a)
+	$(AR) rcs $@ $^
+else
+	$(CC) $(LDFLAGS) -o $@ $^
+endif
 
 %.o: %.c
 	$(CC) -c $(INCLUDE) $(CFLAGS) $< -o $@

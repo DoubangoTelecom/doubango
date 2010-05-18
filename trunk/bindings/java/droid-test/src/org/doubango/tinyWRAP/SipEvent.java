@@ -36,11 +36,7 @@ public class SipEvent {
   }
 
   public SipEvent() {
-    this(tinyWRAPJNI.new_SipEvent__SWIG_0(), true);
-  }
-
-  public SipEvent(short code, String phrase) {
-    this(tinyWRAPJNI.new_SipEvent__SWIG_1(code, phrase), true);
+    this(tinyWRAPJNI.new_SipEvent(), true);
   }
 
   public short getCode() {
@@ -51,12 +47,8 @@ public class SipEvent {
     return tinyWRAPJNI.SipEvent_getPhrase(swigCPtr, this);
   }
 
-  public tsip_event_type_t getType() {
-    return tsip_event_type_t.swigToEnum(tinyWRAPJNI.SipEvent_getType(swigCPtr, this));
-  }
-
-  public SipSession getSession() {
-    long cPtr = tinyWRAPJNI.SipEvent_getSession(swigCPtr, this);
+  public SipSession getBaseSession() {
+    long cPtr = tinyWRAPJNI.SipEvent_getBaseSession(swigCPtr, this);
     return (cPtr == 0) ? null : new SipSession(cPtr, false);
   }
 

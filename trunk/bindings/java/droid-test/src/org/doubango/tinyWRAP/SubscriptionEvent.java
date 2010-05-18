@@ -8,15 +8,15 @@
 
 package org.doubango.tinyWRAP;
 
-public class RegistrationSession extends SipSession {
+public class SubscriptionEvent extends SipEvent {
   private long swigCPtr;
 
-  protected RegistrationSession(long cPtr, boolean cMemoryOwn) {
-    super(tinyWRAPJNI.SWIGRegistrationSessionUpcast(cPtr), cMemoryOwn);
+  protected SubscriptionEvent(long cPtr, boolean cMemoryOwn) {
+    super(tinyWRAPJNI.SWIGSubscriptionEventUpcast(cPtr), cMemoryOwn);
     swigCPtr = cPtr;
   }
 
-  protected static long getCPtr(RegistrationSession obj) {
+  protected static long getCPtr(SubscriptionEvent obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
@@ -28,23 +28,24 @@ public class RegistrationSession extends SipSession {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        tinyWRAPJNI.delete_RegistrationSession(swigCPtr);
+        tinyWRAPJNI.delete_SubscriptionEvent(swigCPtr);
       }
       swigCPtr = 0;
     }
     super.delete();
   }
 
-  public RegistrationSession(SipStack Stack) {
-    this(tinyWRAPJNI.new_RegistrationSession(SipStack.getCPtr(Stack), Stack), true);
+  public SubscriptionEvent() {
+    this(tinyWRAPJNI.new_SubscriptionEvent(), true);
   }
 
-  public boolean Register() {
-    return tinyWRAPJNI.RegistrationSession_Register(swigCPtr, this);
+  public tsip_subscribe_event_type_t getType() {
+    return tsip_subscribe_event_type_t.swigToEnum(tinyWRAPJNI.SubscriptionEvent_getType(swigCPtr, this));
   }
 
-  public boolean UnRegister() {
-    return tinyWRAPJNI.RegistrationSession_UnRegister(swigCPtr, this);
+  public SubscriptionSession getSession() {
+    long cPtr = tinyWRAPJNI.SubscriptionEvent_getSession(swigCPtr, this);
+    return (cPtr == 0) ? null : new SubscriptionSession(cPtr, false);
   }
 
 }
