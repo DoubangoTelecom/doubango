@@ -8,10 +8,10 @@
 #++sn --path ./core-ericsson.sn
 
 # Inexbee
-++sn --path ./core-inexbee.sn
+#++sn --path ./core-inexbee.sn
 
 # Micromethod
-#++sn --path ./core-micromethod.sn
+++sn --path ./core-micromethod.sn
 
 # Nokia Siemens Networks
 #++sn --path ./core-nsn.sn

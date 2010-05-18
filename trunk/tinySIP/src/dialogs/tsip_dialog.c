@@ -418,6 +418,27 @@ int tsip_dialog_response_send(const tsip_dialog_t *self, tsip_response_t* respon
 	return ret;
 }
 
+int tsip_dialog_apply_action(tsip_message_t* message, const tsip_action_t* action)
+{
+	const tsk_list_item_t* item;
+
+	if(!message || !action){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	/* SIP headers */
+	tsk_list_foreach(item, action->headers){
+		TSIP_MESSAGE_ADD_HEADER(message, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
+	}
+	/* Payload */
+	if(action->payload){
+		tsip_message_add_content(message, tsk_null, TSK_BUFFER_DATA(action->payload), TSK_BUFFER_SIZE(action->payload));
+	}
+
+	return 0;
+}
+
 /**
  * Gets the number of milliseconds to wait before retransmission.
  *			e.g. ==> delay before refreshing registrations (REGISTER), subscribtions (SUBSCRIBE), publication (PUBLISH) ...
@@ -962,6 +983,15 @@ int tsip_dialog_deinit(tsip_dialog_t *self)
 		/* Cancel all transactions associated to this dialog (do it here before the dialog becomes unsafe) */
 		tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, self);
 
+		/* "server-side-session"? */
+		if(!self->ss->owner){
+			/* not owned by the end-user */
+			self->ss = tsk_object_unref(self->ss);
+		}
+		/* if "server-side-session" session, then it's normal to call tsk_object_unref() followed by TSK_OBJECT_SAFE_FREE()
+		* tsk_object_unref(): tsk_object_new() called by tsip_ssession_create_2()
+		* TSK_OBJECT_SAFE_FREE(): tsk_object_ref() called by tsip_dialog_init()
+		*/
 		TSK_OBJECT_SAFE_FREE(self->ss);
 		TSK_OBJECT_SAFE_FREE(self->curr_action);
 

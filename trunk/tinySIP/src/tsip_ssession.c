@@ -43,29 +43,39 @@
 */
 
 /* internal function used to create session for server dialogs */
-tsip_ssession_handle_t *tsip_ssession_create_2(const tsip_stack_t* stack, const struct tsip_message_s* message)
+tsip_ssession_handle_t* tsip_ssession_create_2(const tsip_stack_t* stack, const struct tsip_message_s* message)
 {
 	tsip_ssession_t* ss = tsk_null;
 
-	//if(message){
-	//	char* from = tsk_null, *to = tsk_null;
+	if(message){
+		char *from = tsk_null, *to = tsk_null;
+		
+		/* From: */
+		if(message->From && message->From->uri){ /* MUST be not null */
+			from = tsip_uri_tostring(message->From->uri, tsk_false, tsk_false);
+		}
+		/* To: */
+		if(message->To && message->To->uri){ /* MUST be not null */
+			to = tsip_uri_tostring(message->To->uri, tsk_false, tsk_false);
+		}
+		/* create the "server-side-session" */
+		if((ss = tsip_ssession_create((tsip_stack_handle_t*)stack, TSIP_SSESSION_SET_NULL()))){
+			tsip_ssession_set(ss, 
+				/* default values should be in conformance with the swig wrapper */
+				TSIP_SSESSION_SET_FROM(from),
+				TSIP_SSESSION_SET_TO(to),
+				TSIP_SSESSION_SET_NULL());
+		}
 
-	//	if(message->From && message->From->uri){ /* MUST be not null */
-	//		from = tsip_uri_tostring(message->From->uri, tsk_false, tsk_false);
-	//	}
-	//	if(message->To && message->To->uri){ /* MUST be not null */
-	//		to = tsip_uri_tostring(message->To->uri, tsk_false, tsk_false);
-	//	}
-
-	//	ss = TSIP_SSESSION_CREATE(stack,
-	//		TSIP_SSESSION_SET_PARAM("to", to),
-	//		TSIP_SSESSION_SET_PARAM("from", from),
-	//		TSIP_SSESSION_SET_NULL());
-
-	//	TSK_FREE(from);
-	//	TSK_FREE(to);
-	//}
+		/* in all cases */
+		TSK_FREE(from);
+		TSK_FREE(to);
+	}
 	
+	/* as the it's a "server-side-session", you are not the owner
+	* The end-user should call tsip_ssession_have_ownership() to check whether he has the ownership.
+	* The end-user should also call tsip_ssession_take_ownership() to take the ownership. This will avoid the session to be deleted by the stack
+	* when the associated dialog ends. */
 	if(ss){
 		ss->owner = tsk_false;
 	}
@@ -274,12 +284,17 @@ int tsip_ssession_take_ownership(tsip_ssession_handle_t *self)
 		tsip_ssession_t *ss = self;
 		if(!ss->owner){
 			ss->owner = tsk_true;
+			/* before: only the dialog had a reference to the SIP session */
 			ss = tsk_object_ref(ss);
+			/* after: both the end-user and the dialog have their references */
 			return 0;
 		}
 		return -2;
 	}
-	return -1;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 }
 
 tsk_bool_t tsip_ssession_have_ownership(const tsip_ssession_handle_t *self)
@@ -348,7 +363,7 @@ int tsip_ssession_handle(const tsip_ssession_t *self, const struct tsip_action_s
 					}
 				default:
 					{	/* All other cases */
-						tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
+						ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
 						break;
 					}
 				/* unref */

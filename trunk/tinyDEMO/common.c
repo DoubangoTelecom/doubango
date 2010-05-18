@@ -383,9 +383,9 @@ int pred_find_session_by_id(const tsk_list_item_t *item, const void* id)
 	return -1;
 }
 
-session_t* session_create(session_type_t type)
+session_t* session_create(session_type_t type, tsip_ssession_handle_t* handle)
 {
-	return tsk_object_new(session_def_t, type);
+	return tsk_object_new(session_def_t, type, handle);
 }
 
 const session_t* session_get_by_sid(const sessions_L_t* sessions, tsip_ssession_id_t sid)
@@ -510,10 +510,11 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_register:
 		case cmd_subscribe:
 			{
-				if(!session){ /* Create subscription */
-					session_t* _session = session_create(TYPE_FROM_CMD(cmd));
-					session = _session;
-					tsk_list_push_back_data(ctx->sessions, (void**)&_session);
+				if(!session){ /* Create "client-side-session" */
+					session_t* _session;
+					if((_session = session_client_create(TYPE_FROM_CMD(cmd))) && (session = _session)){
+						tsk_list_push_back_data(ctx->sessions, (void**)&_session);
+					}
 				}
 				break;
 			}
@@ -641,8 +642,18 @@ static tsk_object_t* session_ctor(tsk_object_t * self, va_list * app)
 	session_t *session = self;
 	if(session){
 		session->type = va_arg(*app, session_type_t);
-		session->handle = tsip_ssession_create(ctx->stack,
+		if((session->handle = va_arg(*app, tsip_ssession_handle_t*))){
+			int ret;
+			/* "server-side-session" */
+			if((ret = tsip_ssession_take_ownership(session->handle))){
+				TSK_DEBUG_ERROR("Failed to take ownership [%d]", ret);
+			}
+		}
+		else{
+			/* "client-side-session" */
+			session->handle = tsip_ssession_create(ctx->stack,
 			TSIP_SSESSION_SET_NULL());
+		}
 	}
 	return self;
 }

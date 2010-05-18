@@ -41,7 +41,7 @@
 #include "tsk_debug.h"
 #include "tsk_time.h"
 
-#define DEBUG_STATE_MACHINE											0
+#define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_MESSAGE_SIGNAL(self, type, code, phrase, message)	\
 	tsip_message_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->ss, code, phrase, message)
 
@@ -327,7 +327,7 @@ int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app)
 	va_arg(*app, tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 	
-	if(self->last_iMessage){
+	if(!self->last_iMessage){
 		TSK_DEBUG_ERROR("There is non MESSAGE to accept()");
 		/* Not an error ...but do not update current action */
 	}
@@ -335,10 +335,12 @@ int tsip_dialog_message_Receiving_2_Terminated_X_accept(va_list *app)
 		tsip_response_t *response;
 		int ret;
 
-		/* update current action */
-		tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+		/* curr_action is only used for outgoing requests */
+		/* tsip_dialog_set_curr_action(TSIP_DIALOG(self), action); */
+
 		/* send 200 OK */
 		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 200, "MESSAGE OK", self->last_iMessage))){
+			tsip_dialog_apply_action(response, action); /* apply action params to "this" response */
 			if((ret = tsip_dialog_response_send(TSIP_DIALOG(self), response))){
 				TSK_DEBUG_ERROR("Failed to send SIP response.");
 				TSK_OBJECT_SAFE_FREE(response);
@@ -366,7 +368,7 @@ int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app)
 	va_arg(*app, tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 	
-	if(self->last_iMessage){
+	if(!self->last_iMessage){
 		TSK_DEBUG_ERROR("There is non MESSAGE to reject()");
 		/* Not an error ...but do not update current action */
 	}
@@ -374,10 +376,12 @@ int tsip_dialog_message_Receiving_2_Terminated_X_reject(va_list *app)
 		tsip_response_t *response;
 		int ret;
 
-		/* update current action */
-		tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+		/* curr_action is only used for outgoing requests */
+		/* tsip_dialog_set_curr_action(TSIP_DIALOG(self), action); */
+
 		/* send 486 Rejected */
 		if((response = tsip_dialog_response_new(TSIP_DIALOG(self), 486, "MESSAGE Rejected", self->last_iMessage))){
+			tsip_dialog_apply_action(response, action); /* apply action params to "this" response */
 			if((ret = tsip_dialog_response_send(TSIP_DIALOG(self), response))){
 				TSK_DEBUG_ERROR("Failed to send SIP response.");
 				TSK_OBJECT_SAFE_FREE(response);
@@ -431,15 +435,9 @@ int send_MESSAGE(tsip_dialog_message_t *self)
 		return -2;
 	}
 
-	/* action parameters and payload*/
+	/* apply action params to the request */
 	if(TSIP_DIALOG(self)->curr_action){
-		const tsk_list_item_t* item;
-		tsk_list_foreach(item, TSIP_DIALOG(self)->curr_action->headers){
-			TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
-		}
-		if(TSIP_DIALOG(self)->curr_action->payload){
-			tsip_message_add_content(request, tsk_null, TSK_BUFFER_DATA(TSIP_DIALOG(self)->curr_action->payload), TSK_BUFFER_SIZE(TSIP_DIALOG(self)->curr_action->payload));
-		}
+		tsip_dialog_apply_action(request, TSIP_DIALOG(self)->curr_action);
 	}
 
 	ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
