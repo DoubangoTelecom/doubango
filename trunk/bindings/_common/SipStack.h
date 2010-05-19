@@ -35,7 +35,9 @@ public: /* ctor() and dtor() */
 
 public: /* API functions */
 	bool start();
-	
+	bool setRealm(const char* realm_uri);
+	bool setIMPI(const char* impi);
+	bool setIMPU(const char* impu_uri);
 	bool setPassword(const char* password);
 	bool setProxyCSCF(const char* fqdn, unsigned port, const char* transport, const char* ipversion);
 	bool setLocalIP(const char* ip);
@@ -43,6 +45,7 @@ public: /* API functions */
 	bool addHeader(const char* name, const char* value);
 	bool removeHeader(const char* name);
 
+	bool isValid();
 	bool stop();
 
 public: /* Public helper function */

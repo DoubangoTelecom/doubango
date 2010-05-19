@@ -211,6 +211,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\_common\SipUri.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\..\_common\SubscriptionEvent.cxx"
 				>
 			</File>
@@ -265,6 +269,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\_common\SipUri.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\_common\SubscriptionEvent.h"
 				>
 			</File>
@@ -283,7 +291,15 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
+				RelativePath="..\..\_common\SipStack.i"
+				>
+			</File>
+			<File
 				RelativePath="..\..\_common\tinyWRAP.i"
+				>
+			</File>
+			<File
+				RelativePath="..\..\_common\XcapStack.i"
 				>
 			</File>
 		</Filter>

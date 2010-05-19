@@ -82,6 +82,30 @@ bool SipStack::start()
 	return (ret == 0);
 }
 
+bool SipStack::setRealm(const char* realm_uri)
+{
+	int ret = tsip_stack_set(this->handle,
+		TSIP_STACK_SET_REALM(realm_uri),
+		TSIP_STACK_SET_NULL());
+	return (ret == 0);
+}
+
+bool SipStack::setIMPI(const char* impi)
+{
+	int ret = tsip_stack_set(this->handle,
+		TSIP_STACK_SET_IMPI(impi),
+		TSIP_STACK_SET_NULL());
+	return (ret == 0);
+}
+
+bool SipStack::setIMPU(const char* impu_uri)
+{
+	int ret = tsip_stack_set(this->handle,
+		TSIP_STACK_SET_IMPU(impu_uri),
+		TSIP_STACK_SET_NULL());
+	return (ret == 0);
+}
+
 bool SipStack::setPassword(const char* password)
 {
 	int ret = tsip_stack_set(this->handle,
@@ -128,6 +152,11 @@ bool SipStack::removeHeader(const char* name)
 		TSIP_STACK_UNSET_HEADER(name),
 		TSIP_STACK_SET_NULL());
 	return (ret == 0);
+}
+
+bool SipStack::isValid()
+{
+	return (this->handle != tsk_null);
 }
 
 bool SipStack::stop()

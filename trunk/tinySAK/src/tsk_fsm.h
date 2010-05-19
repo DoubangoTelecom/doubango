@@ -95,7 +95,7 @@ typedef int (*tsk_fsm_onterminated_f)(const void*);
 * @def TSK_FSM_ADD_ALWAYS
 */
 /**@ingroup tsk_fsm_group
-* @def TSK_FSM_ADD_NOTING
+* @def TSK_FSM_ADD_NOTHING
 */
 /**@ingroup tsk_fsm_group
 * @def TSK_FSM_ADD_ALWAYS_NOTHING
@@ -115,7 +115,7 @@ typedef int (*tsk_fsm_onterminated_f)(const void*);
 	(tsk_fsm_exec)exec, \
 	(const char*)desc
 #define TSK_FSM_ADD_ALWAYS(from, action, to, exec, desc) TSK_FSM_ADD(from, action, tsk_fsm_cond_always, to, exec, desc)
-#define TSK_FSM_ADD_NOTING(from, action, cond, desc) TSK_FSM_ADD(from, action, cond, from, tsk_fsm_exec_nothing, desc)
+#define TSK_FSM_ADD_NOTHING(from, action, cond, desc) TSK_FSM_ADD(from, action, cond, from, tsk_fsm_exec_nothing, desc)
 #define TSK_FSM_ADD_ALWAYS_NOTHING(from, desc)	TSK_FSM_ADD(from, tsk_fsm_action_any, tsk_fsm_cond_always, from, tsk_fsm_exec_nothing, desc)
 #define TSK_FSM_ADD_DEFAULT()
 #define TSK_FSM_ADD_NULL()\

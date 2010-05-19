@@ -10,44 +10,44 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class RegistrationEvent : SipEvent {
+public class SipUri : IDisposable {
   private HandleRef swigCPtr;
+  protected bool swigCMemOwn;
 
-  internal RegistrationEvent(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.RegistrationEventUpcast(cPtr), cMemoryOwn) {
+  internal SipUri(IntPtr cPtr, bool cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
     swigCPtr = new HandleRef(this, cPtr);
   }
 
-  internal static HandleRef getCPtr(RegistrationEvent obj) {
+  internal static HandleRef getCPtr(SipUri obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~RegistrationEvent() {
+  ~SipUri() {
     Dispose();
   }
 
-  public override void Dispose() {
+  public virtual void Dispose() {
     lock(this) {
       if(swigCPtr.Handle != IntPtr.Zero && swigCMemOwn) {
         swigCMemOwn = false;
-        tinyWRAPPINVOKE.delete_RegistrationEvent(swigCPtr);
+        tinyWRAPPINVOKE.delete_SipUri(swigCPtr);
       }
       swigCPtr = new HandleRef(null, IntPtr.Zero);
       GC.SuppressFinalize(this);
-      base.Dispose();
     }
   }
 
-  public RegistrationEvent() : this(tinyWRAPPINVOKE.new_RegistrationEvent(), true) {
+  public SipUri(string arg0) : this(tinyWRAPPINVOKE.new_SipUri(arg0), true) {
   }
 
-  public tsip_register_event_type_t getType() {
-    tsip_register_event_type_t ret = (tsip_register_event_type_t)tinyWRAPPINVOKE.RegistrationEvent_getType(swigCPtr);
+  public static bool isValid(string arg0) {
+    bool ret = tinyWRAPPINVOKE.SipUri_isValid__SWIG_0(arg0);
     return ret;
   }
 
-  public RegistrationSession getSession() {
-    IntPtr cPtr = tinyWRAPPINVOKE.RegistrationEvent_getSession(swigCPtr);
-    RegistrationSession ret = (cPtr == IntPtr.Zero) ? null : new RegistrationSession(cPtr, false);
+  public bool isValid() {
+    bool ret = tinyWRAPPINVOKE.SipUri_isValid__SWIG_1(swigCPtr);
     return ret;
   }
 

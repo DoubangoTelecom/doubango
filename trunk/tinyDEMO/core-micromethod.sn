@@ -49,7 +49,7 @@
 ++sleep --sec -1 # Press ENTER
 
 # MESSAGE
-++m --to sip:mercuro2@$$(domain) --pay Test SMS-RPDATA --header Content-Type=application/vnd.3gpp.sms --header Transfer-Encoding=binary
+#++m --to sip:mercuro2@$$(domain) --pay Test SMS-RPDATA --header Content-Type=application/vnd.3gpp.sms --header Transfer-Encoding=binary
 
 
 # sleep

@@ -81,28 +81,34 @@ int message_handle_event(const tsip_event_t *sipevent)
 
 		case tsip_i_message: /* Incoming MESSAGE */
 			{
+				const char* content_type = TSIP_MESSAGE_CONTENT_TYPE(sipevent->sipmessage);
+
 				TSK_DEBUG_INFO("Event: Incoming MESSAGE.");
 				if(TSIP_MESSAGE_HAS_CONTENT(sipevent->sipmessage)){
 					const tsk_buffer_t* content = TSIP_MESSAGE_CONTENT(sipevent->sipmessage);
-					TSK_DEBUG_INFO("MESSAGE Content-Type: %s", TSIP_MESSAGE_CONTENT_TYPE(sipevent->sipmessage));
+					TSK_DEBUG_INFO("MESSAGE Content-Type: %s", content_type);
 					TSK_DEBUG_INFO("MESSAGE Content: %s", content->data);
 				}
 				/* accept() the MESSAGE to terminate the dialog */
-				tsip_action_ACCEPT(session->handle,
-					TSIP_ACTION_SET_HEADER("Info", "I've accept()ed your message"),
-					TSIP_ACTION_SET_NULL());
+				if(tsk_striequals("plain/text", content_type) || tsk_striequals("text/html", content_type)){
+					tsip_action_ACCEPT(session->handle,
+						TSIP_ACTION_SET_HEADER("Info", "I've accept()ed your message"),// just for test
+						TSIP_ACTION_SET_NULL());
+				}
 				/* reject() the MESSAGE to terminate the dialog */
-				/*tsip_action_REJECT(session->handle,
-					TSIP_ACTION_SET_HEADER("Info", "I've reject()ed your message"),
-					TSIP_ACTION_SET_HEADER("In-Reply-To", "apb03a0s09dkjdfglkj49112"),
-					TSIP_ACTION_SET_NULL());
-				break;*/
+				else{
+					tsip_action_REJECT(session->handle,
+						TSIP_ACTION_SET_HEADER("Info", "I've reject()ed your message"),// just for test
+						TSIP_ACTION_SET_HEADER("In-Reply-To", "apb03a0s09dkjdfglkj49112"),// just for test
+						TSIP_ACTION_SET_NULL());
+					}
+				break;
 			}
 
 		/* Server events (For whose dev. Server Side IMS Services) */
 		case tsip_ai_message: /* Answer to Incoming MESSAGE */
 			{	
-				TSK_DEBUG_WARN("Event not support by Client Framework.");
+				TSK_DEBUG_WARN("Event not supported by Client Framework.");
 				break;
 			}
 
