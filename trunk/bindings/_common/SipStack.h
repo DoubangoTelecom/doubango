@@ -44,6 +44,7 @@ public: /* API functions */
 	bool setLocalPort(unsigned port);
 	bool addHeader(const char* name, const char* value);
 	bool removeHeader(const char* name);
+	bool addDnsServer(const char* ip);
 
 	bool isValid();
 	bool stop();

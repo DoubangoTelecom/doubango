@@ -75,6 +75,7 @@ typedef enum tsip_stack_param_type_e
 	pname_discovery_naptr,
 	pname_discovery_dhcp,
 	pname_proxy_cscf,
+	pnale_dnsserver,
 
 	
 	/* === Security === */
@@ -251,6 +252,18 @@ tsip_stack_param_type_t;
 *
 * @sa @ref TSIP_STACK_SET_DISCOVERY_DHCP()<br>@ref TSIP_STACK_SET_DISCOVERY_NAPTR()
 */
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_SET_DNS_SERVER
+* Adds a DNS server.
+* @param IP_STR The IP address or FQDN of the DNS server to add.
+* @code
+ // Add two new DNS servers (IPv6 and IPv4)
+int ret = tsip_stack_set(stack, 
+              TSIP_STACK_SET_DNS_SERVER("192.16.16.9"),
+			  TSIP_STACK_SET_DNS_SERVER("fe::"),
+              TSIP_STACK_SET_NULL());
+* @endcode
+*/
 #define TSIP_STACK_SET_REALM(URI_STR)					pname_realm, (const char*)URI_STR
 #define TSIP_STACK_SET_LOCAL_IP(IP_STR)					pname_local_ip, (const char*)IP_STR
 #define TSIP_STACK_SET_LOCAL_PORT(PORT_UINT)			pname_local_port, (unsigned)PORT_UINT
@@ -258,6 +271,7 @@ tsip_stack_param_type_t;
 #define TSIP_STACK_SET_DISCOVERY_NAPTR(ENABLED_BOOL)	pname_discovery_naptr, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)		pname_discovery_dhcp, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
+#define TSIP_STACK_SET_DNS_SERVER(IP_STR)				pnale_dnsserver, (const char*)IP_STR
 
 /* === Security === */
 /**@ingroup tsip_stack_group

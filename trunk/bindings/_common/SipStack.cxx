@@ -154,6 +154,14 @@ bool SipStack::removeHeader(const char* name)
 	return (ret == 0);
 }
 
+bool SipStack::addDnsServer(const char* ip)
+{
+	int ret = tsip_stack_set(this->handle,
+		TSIP_STACK_SET_DNS_SERVER(ip),
+		TSIP_STACK_SET_NULL());
+	return (ret == 0);
+}
+
 bool SipStack::isValid()
 {
 	return (this->handle != tsk_null);

@@ -69,6 +69,7 @@ class tinyWRAPJNI {
   public final static native boolean SipStack_setLocalPort(long jarg1, SipStack jarg1_, long jarg2);
   public final static native boolean SipStack_addHeader(long jarg1, SipStack jarg1_, String jarg2, String jarg3);
   public final static native boolean SipStack_removeHeader(long jarg1, SipStack jarg1_, String jarg2);
+  public final static native boolean SipStack_addDnsServer(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_isValid(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_stop(long jarg1, SipStack jarg1_);
   public final static native long SWIGRegistrationEventUpcast(long jarg1);

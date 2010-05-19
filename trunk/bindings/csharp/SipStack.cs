@@ -90,6 +90,11 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool addDnsServer(string ip) {
+    bool ret = tinyWRAPPINVOKE.SipStack_addDnsServer(swigCPtr, ip);
+    return ret;
+  }
+
   public bool isValid() {
     bool ret = tinyWRAPPINVOKE.SipStack_isValid(swigCPtr);
     return ret;
