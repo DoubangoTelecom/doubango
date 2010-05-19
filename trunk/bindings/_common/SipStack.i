@@ -1,5 +1,6 @@
 
 %{
+#include "SipUri.h"
 #include "SipEvent.h"
 #include "SipSession.h"
 #include "RegistrationEvent.h"
@@ -15,6 +16,7 @@
 %feature("director") SipCallback;
 
 %nodefaultctor;
+%include "SipUri.h"
 %include "SipEvent.h"
 %include "SipSession.h"
 %include "RegistrationEvent.h"

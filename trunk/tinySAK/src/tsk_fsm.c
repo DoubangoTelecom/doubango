@@ -65,11 +65,12 @@ int tsk_fsm_set(tsk_fsm_t* self, ...)
 	int guard;
 	
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
 	va_start(args, self);
-	while((guard=va_arg(args, int))){		
+	while((guard = va_arg(args, int))){
 		tsk_fsm_entry_t* entry;
 		if((entry = tsk_fsm_entry_create())){
 			entry->from = va_arg(args, tsk_fsm_state_id);
@@ -101,7 +102,10 @@ int tsk_fsm_set_callback_terminated(tsk_fsm_t* self, tsk_fsm_onterminated_f call
 		self->callback_data = callbackdata;
 		return 0;
 	}
-	return -1;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 }
 
 /**@ingroup tsk_fsm_group
@@ -118,10 +122,10 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 	tsk_list_item_t *item;
 	va_list ap;
 	tsk_bool_t found = tsk_false;
-	int ret_exec = 0;
+	int ret_exec = 0; /* success */
 	
 	if(!self){
-		TSK_DEBUG_ERROR("Null FSM.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	if(tsk_fsm_terminated(self)){
@@ -192,7 +196,10 @@ tsk_bool_t tsk_fsm_terminated(tsk_fsm_t* self)
 	if(self){
 		return (self->current == self->term);
 	}
-	return tsk_false;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_true;
+	}
 }
 
 
@@ -209,7 +216,7 @@ static tsk_object_t* tsk_fsm_ctor(tsk_object_t * self, va_list * app)
 		fsm->entries = tsk_list_create();
 
 #if defined(DEBUG) || defined(_DEBUG)
-		fsm->debug = 1;
+		fsm->debug = 1; /* default value, could be changed at any time */
 #endif
 		tsk_safeobj_init(fsm);
 	}
@@ -262,17 +269,17 @@ static tsk_object_t* tsk_fsm_entry_dtor(tsk_object_t * self)
 { 
 	tsk_fsm_entry_t *fsm_entry = self;
 	if(fsm_entry){
-		//TSK_FREE(fsm_entry->desc);
+		/* desc is "const char*" => should not be deleted */
+		/* TSK_FREE(fsm_entry->desc); */
 	}
 
 	return self;
 }
-static int tsk_fsm_entry_cmp(const tsk_object_t *obj1, const tsk_object_t *obj2)
+static int tsk_fsm_entry_cmp(const tsk_object_t *_entry1, const tsk_object_t *_entry2)
 {
-	const tsk_fsm_entry_t* entry1 = obj1;
-	const tsk_fsm_entry_t* entry2 = obj2;
-	if(entry1 && entry2)
-	{
+	const tsk_fsm_entry_t* entry1 = _entry1;
+	const tsk_fsm_entry_t* entry2 = _entry2;
+	if(entry1 && entry2){
 		/* Put "Any" states at the bottom. (Strong)*/
 		if(entry1->from == tsk_fsm_state_any){
 			return -20;

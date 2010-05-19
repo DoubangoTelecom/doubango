@@ -34,7 +34,24 @@ namespace test
             /* Create call back */
             callback = new MyCallback(this);
             /* Create and configure the IMS/LTE stack */
-            stack = new SipStack(callback, String.Format("sip:{0}", REALM), String.Format("{0}@{1}", USER, REALM), String.Format("sip:{0}@{1}", USER, REALM));
+            // stack = new SipStack(callback, String.Format("sip:{0}", REALM), String.Format("{0}@{1}", USER, REALM), String.Format("sip:{0}@{1}", USER, REALM));
+            stack = new SipStack(callback, "sip:dd", "aaaa", "sip:444@example.com");
+
+            success = stack.setRealm(String.Format("sip:{0}", REALM));
+            success = stack.setIMPI(String.Format("{0}@{1}", USER, REALM));
+            success = stack.setIMPU(String.Format("sip:{0}@{1}", USER, REALM));
+
+            success = SipUri.isValid("sip:");
+            success = SipUri.isValid("sip:sss");
+            success = SipUri.isValid(":");
+            success = SipUri.isValid("sip:aapp@ddd");
+
+            if (!stack.isValid())
+            {
+                this.textBoxDebug.Text = "Invalid stack";
+                return;
+            }
+
             stack.addHeader("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER");
             stack.addHeader("Privacy", "header; id");
             stack.addHeader("P-Access-Network-Info", "ADSL;utran-cell-id-3gpp=00000000");
@@ -45,7 +62,7 @@ namespace test
             /* Sets Proxy-CSCF */
             success = stack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "tcp", "ipv4");
             /* Starts the stack */
-            success = stack.Start();
+            success = stack.start();
         }
 
         private void buttonRegister_Click(object sender, EventArgs e)
@@ -56,8 +73,9 @@ namespace test
                 this.regSession.addCaps("+g.oma.sip-im");
                 this.regSession.addCaps("+g.3gpp.smsip");
                 this.regSession.addCaps("language", "\"en,fr\"");
+                this.regSession.setExpires(30);
             }
-            this.regSession.Register(35);
+            this.regSession.Register();
         }
 
         private void buttonUnRegister_Click(object sender, EventArgs e)

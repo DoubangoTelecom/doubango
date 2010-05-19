@@ -16,6 +16,7 @@ OBJS = tinyWRAP_wrap.o\
 	../_common/SipEvent.o \
 	../_common/SipSession.o \
 	../_common/SipStack.o \
+	../_common/SipUri.o \
 	../_common/SubscriptionEvent.o \
 	../_common/SubscriptionSession.o
 

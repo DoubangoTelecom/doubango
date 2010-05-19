@@ -57,6 +57,15 @@
     <Compile Include="..\..\..\csharp\SipStack.cs">
       <Link>SipStack.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\csharp\SipUri.cs">
+      <Link>SipUri.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\SubscriptionEvent.cs">
+      <Link>SubscriptionEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\SubscriptionSession.cs">
+      <Link>SubscriptionSession.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csharp\tinyWRAP.cs">
       <Link>tinyWRAP.cs</Link>
     </Compile>
@@ -68,6 +77,9 @@
     </Compile>
     <Compile Include="..\..\..\csharp\tsip_register_event_type_t.cs">
       <Link>tsip_register_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\tsip_subscribe_event_type_t.cs">
+      <Link>tsip_subscribe_event_type_t.cs</Link>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

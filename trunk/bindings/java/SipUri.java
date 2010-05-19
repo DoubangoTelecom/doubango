@@ -8,15 +8,16 @@
 
 package org.doubango.tinyWRAP;
 
-public class RegistrationSession extends SipSession {
+public class SipUri {
   private long swigCPtr;
+  protected boolean swigCMemOwn;
 
-  protected RegistrationSession(long cPtr, boolean cMemoryOwn) {
-    super(tinyWRAPJNI.SWIGRegistrationSessionUpcast(cPtr), cMemoryOwn);
+  protected SipUri(long cPtr, boolean cMemoryOwn) {
+    swigCMemOwn = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
-  protected static long getCPtr(RegistrationSession obj) {
+  protected static long getCPtr(SipUri obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
@@ -27,22 +28,21 @@ public class RegistrationSession extends SipSession {
   public synchronized void delete() {
     if(swigCPtr != 0 && swigCMemOwn) {
       swigCMemOwn = false;
-      tinyWRAPJNI.delete_RegistrationSession(swigCPtr);
+      tinyWRAPJNI.delete_SipUri(swigCPtr);
     }
     swigCPtr = 0;
-    super.delete();
   }
 
-  public RegistrationSession(SipStack Stack) {
-    this(tinyWRAPJNI.new_RegistrationSession(SipStack.getCPtr(Stack), Stack), true);
+  public SipUri(String arg0) {
+    this(tinyWRAPJNI.new_SipUri(arg0), true);
   }
 
-  public boolean Register() {
-    return tinyWRAPJNI.RegistrationSession_Register(swigCPtr, this);
+  public static boolean isValid(String arg0) {
+    return tinyWRAPJNI.SipUri_isValid__SWIG_0(arg0);
   }
 
-  public boolean UnRegister() {
-    return tinyWRAPJNI.RegistrationSession_UnRegister(swigCPtr, this);
+  public boolean isValid() {
+    return tinyWRAPJNI.SipUri_isValid__SWIG_1(swigCPtr, this);
   }
 
 }
