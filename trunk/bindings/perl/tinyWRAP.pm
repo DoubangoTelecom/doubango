@@ -441,6 +441,7 @@ sub DESTROY {
 *setLocalPort = *tinyWRAPc::SipStack_setLocalPort;
 *addHeader = *tinyWRAPc::SipStack_addHeader;
 *removeHeader = *tinyWRAPc::SipStack_removeHeader;
+*addDnsServer = *tinyWRAPc::SipStack_addDnsServer;
 *isValid = *tinyWRAPc::SipStack_isValid;
 *stop = *tinyWRAPc::SipStack_stop;
 sub DISOWN {

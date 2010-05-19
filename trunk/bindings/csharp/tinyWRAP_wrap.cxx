@@ -1123,6 +1123,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_removeHeader(void * jarg1, c
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_addDnsServer(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->addDnsServer((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_isValid(void * jarg1) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;

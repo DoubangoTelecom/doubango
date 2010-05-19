@@ -220,6 +220,14 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				}
 				break;
 			}
+			case pnale_dnsserver:
+				{	/* (const char*)IP_STR */
+					const char* IP_STR = va_arg(*app, const char*);
+					if(tnet_dns_add_server(self->dns_ctx, IP_STR)){
+						TSK_DEBUG_ERROR("Failed to add [%s] as DNS server", IP_STR);
+					}
+					break;
+				}
 			
 
 
@@ -396,6 +404,13 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	stack->network.proxy_cscf_port = 5060;
 	stack->network.proxy_cscf_type = tnet_socket_type_udp_ipv4;
 	
+	/* === DNS context === 
+	* Because of TSIP_STACK_SET_DNS_SERVER(), ctx should be created before calling __tsip_stack_set()
+	*/
+	stack->dns_ctx = tnet_dns_ctx_create();
+
+	/* === DHCP context === */
+
 	/* === Set user supplied parameters === */
 	va_start(ap, impu_uri);
 	if(__tsip_stack_set(stack, &ap)){
@@ -418,11 +433,6 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	stack->layer_dialog = tsip_dialog_layer_create(stack);
 	stack->layer_transac = tsip_transac_layer_create(stack);
 	stack->layer_transport = tsip_transport_layer_create(stack);
-
-	/* === DNS context === */
-	stack->dns_ctx = tnet_dns_ctx_create();
-
-	/* === DHCP context === */
 
 bail:
 	return stack;

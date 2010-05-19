@@ -134,7 +134,6 @@ static tsk_object_t* ctx_ctor(tsk_object_t * self, va_list * app)
 	if(ctx){
 		/* stack */
 		ctx->stack = tsip_stack_create(stack_callback, DEFAULT_REALM, DEFAULT_IMPI, DEFAULT_IMPU, /* Mandatory parameters */
-			
 			TSIP_STACK_SET_LOCAL_IP(DEFAULT_LOCAL_IP), /* local IP */
 			TSIP_STACK_SET_NULL() /* Mandatory */);
 

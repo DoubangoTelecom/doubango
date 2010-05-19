@@ -41,11 +41,6 @@ namespace test
             success = stack.setIMPI(String.Format("{0}@{1}", USER, REALM));
             success = stack.setIMPU(String.Format("sip:{0}@{1}", USER, REALM));
 
-            success = SipUri.isValid("sip:");
-            success = SipUri.isValid("sip:sss");
-            success = SipUri.isValid(":");
-            success = SipUri.isValid("sip:aapp@ddd");
-
             if (!stack.isValid())
             {
                 this.textBoxDebug.Text = "Invalid stack";
