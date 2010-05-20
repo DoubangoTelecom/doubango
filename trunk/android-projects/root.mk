@@ -23,21 +23,21 @@ export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_PLATFORM)/arch-arm/usr
 -march=armv5te \
 -mtune=xscale \
 -msoft-float \
+-fpic \
+-mthumb-interwork \
+-ffunction-sections \
+-funwind-tables \
+-fstack-protector \
 -D__ARM_ARCH_5__ \
 -D__ARM_ARCH_5T__ \
 -D__ARM_ARCH_5E__ \
 -D__ARM_ARCH_5TE__ \
 -MMD \
 -MP \
+-fno-short-enums \
 -DANDROID
 
 export CFLAGS_LIB= $(CFLAGS_COMMON) \
--fpic \
--mthumb-interwork \
--ffunction-sections \
--funwind-tables \
--fstack-protector \
--fno-short-enums \
 -mthumb \
 -Os \
 -fomit-frame-pointer \
