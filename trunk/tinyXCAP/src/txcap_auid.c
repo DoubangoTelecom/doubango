@@ -26,7 +26,7 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyXCAP/txcap_auid.h"
+#include "tinyxcap/txcap_auid.h"
 
 #include "tsk_string.h"
 #include "tsk_memory.h"

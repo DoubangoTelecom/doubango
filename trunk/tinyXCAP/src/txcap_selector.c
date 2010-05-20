@@ -26,10 +26,10 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyXCAP/txcap_selector.h"
+#include "tinyxcap/txcap_selector.h"
 
-#include "tinyXCAP/txcap_document.h"
-#include "tinyXCAP/txcap_node.h"
+#include "tinyxcap/txcap_document.h"
+#include "tinyxcap/txcap_node.h"
 
 /**@defgroup txcap_selector_group XCAP URL selector
 */

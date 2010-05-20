@@ -26,11 +26,11 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyXCAP/txcap_action.h"
+#include "tinyxcap/txcap_action.h"
 
 #include "tsk_options.h"
 #include "tsk_params.h"
-#include "tinyXCAP/txcap_selector.h"
+#include "tinyxcap/txcap_selector.h"
 
 /**@defgroup txcap_action_group XDMC (Sending Requests)
 */

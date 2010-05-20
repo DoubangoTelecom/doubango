@@ -29,7 +29,7 @@
 #ifndef TINYXCAP_TXCAP_NODE_H
 #define TINYXCAP_TXCAP_NODE_H
 
-#include "tinyXCAP_config.h"
+#include "tinyxcap_config.h"
 
 #include "tsk_common.h"
 
