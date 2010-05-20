@@ -1,7 +1,7 @@
 APP := lib$(PROJECT).$(EXT)
 
-CFLAGS := $(CFLAGS) -fno-rtti -fno-exceptions  -I../_common -I../. -I../../tinySAK/src -I../../tinyNET/src -I../../tinyHTTP/include -I../../tinySIP/include
-LDFLAGS := $(LDFLAGS) -lstdc++ -ltinySAK -ltinyHTTP -ltinyIPSec -ltinyNET -ltinySIP
+CFLAGS := $(CFLAGS_LIB) -fno-rtti -fno-exceptions  -I../_common -I../. -I../../tinySAK/src -I../../tinyNET/src -I../../tinyHTTP/include -I../../tinySIP/include
+LDFLAGS := $(LDFLAGS_LIB) -lstdc++ -ltinySAK -ltinyHTTP -ltinyIPSec -ltinyNET -ltinySIP
 
 
 

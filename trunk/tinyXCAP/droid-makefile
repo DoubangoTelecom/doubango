@@ -1,7 +1,7 @@
 APP := lib$(PROJECT).$(EXT)
 
-CFLAGS := $(CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinyHTTP/include -I./include
-LDFLAGS := $(LDFLAGS) -ltinySAK -ltinyNET -ltinyHTTP
+CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I../tinyNET/src -I../tinyHTTP/include -I./include
+LDFLAGS := $(LDFLAGS_LIB) -ltinySAK -ltinyNET -ltinyHTTP
 
 all: $(APP)
 
