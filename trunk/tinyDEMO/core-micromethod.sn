@@ -7,7 +7,7 @@
 %%proxy_ip 192.168.16.104 # IP address or FQDN
 %%proxy_port 5060
 %%proxy_trans udp # udp, tcp, tls or sctp
-%%expires 100 # expires used by all dialogs
+%%expires 30 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
 
 %%reg-sid

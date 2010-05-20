@@ -1,6 +1,6 @@
 APP := test
 
-CFLAGS := $(CFLAGS) -I../include -I../../tinySAK/src -I../../tinyNET/src -I../../tinyHTTP/include
+CFLAGS := $(CFLAGS_COMMON) -I../include -I../../tinySAK/src -I../../tinyNET/src -I../../tinyHTTP/include
 LDFLAGS := $(LDFLAGS_COMMON) -Wl,-Bsymbolic,--whole-archive -l$(PROJECT) -ltinySAK -ltinyNET -ltinyHTTP -Wl,--entry=main
 
 all: $(APP)

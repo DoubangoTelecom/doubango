@@ -1,7 +1,7 @@
 APP := lib$(PROJECT).$(EXT)
 
-CFLAGS := $(CFLAGS)
-LDFLAGS := $(LDFLAGS)
+CFLAGS := $(CFLAGS_LIB)
+LDFLAGS := $(LDFLAGS_LIB)
 
 all: $(APP)
 
