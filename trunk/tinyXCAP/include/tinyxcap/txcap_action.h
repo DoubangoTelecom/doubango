@@ -29,7 +29,7 @@
 #ifndef TINYXCAP_TXCAP_ACTION_H
 #define TINYXCAP_TXCAP_ACTION_H
 
-#include "tinyXCAP_config.h"
+#include "tinyxcap_config.h"
 
 #include "txcap.h"
 

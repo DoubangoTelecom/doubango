@@ -26,9 +26,9 @@
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#include "tinyXCAP/txcap_document.h"
+#include "tinyxcap/txcap_document.h"
 
-#include "tinyXCAP/txcap_auid.h"
+#include "tinyxcap/txcap_auid.h"
 
 /**@ingroup txcap_selector_group
 * Create a custom XCAP document selector URI as per <a href="http://tools.ietf.org/html/rfc4825#section-6.2">RFC 4825 subclause 6.2</a>.

@@ -29,9 +29,9 @@
 #ifndef TINYXCAP_TXCAP_H
 #define TINYXCAP_TXCAP_H
 
-#include "tinyXCAP_config.h"
+#include "tinyxcap_config.h"
 
-#include "tinyXCAP/txcap_auid.h"
+#include "tinyxcap/txcap_auid.h"
 
 #include "tsk_options.h"
 
