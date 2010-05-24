@@ -32,6 +32,7 @@ RegistrationSession::~RegistrationSession()
 
 bool RegistrationSession::Register()
 {
+	TSK_DEBUG_INFO("Android---RegistrationSession::Register()");
 	int ret = tsip_action_REGISTER(this->handle,
 		TSIP_ACTION_SET_NULL());
 	return (ret == 0);
