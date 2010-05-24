@@ -2,9 +2,12 @@
 ##	Root configuration file shared by all android projects.
 ######
 
-export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk
+export ANDROID_NDK_ROOT=/cygdrive/c/android-ndk-r3
 export ANDROID_SDK_ROOT=/cygdrive/c/android-sdk
-export ANDROID_PLATFORM=$(ANDROID_NDK_ROOT)/build/platforms/android-4
+export ANDROID_PLATFORM=android-3
+export ANDROID_HOST=windows
+export ANDROID_GCC_VER=4.4.0
+
 
 # Output directory
 export OUTPUT_DIR=$(shell pwd)/output
@@ -15,11 +18,13 @@ export EXEC_DIR=/data/tmp
 # Path where to copy libraries (*.so) -on the device or emulator-
 export LIB_DIR=/system/lib
 
+##################################################################################
+
 export AR=arm-eabi-ar
-export CC=arm-eabi-gcc
+export CC=arm-eabi-gcc-$(ANDROID_GCC_VER)
 export CPP=arm-eabi-g++
 
-export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_PLATFORM)/arch-arm/usr/include \
+export CFLAGS_COMMON=$(CFLAGS) $(DEBUG_FLAGS) -I$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/include \
 -march=armv5te \
 -mtune=xscale \
 -msoft-float \
@@ -45,7 +50,7 @@ export CFLAGS_LIB= $(CFLAGS_COMMON) \
 -finline-limit=64
 
 
-export LDFLAGS_COMMON=$(LDFLAGS) -Wl,-rpath=/system/lib,-rpath-link=$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker -L$(ANDROID_PLATFORM)/arch-arm/usr/lib
+export LDFLAGS_COMMON=$(LDFLAGS) -Wl,-rpath=/system/lib,-rpath-link=$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib,-rpath-link=$(OUTPUT_DIR),-dynamic-linker=/system/bin/linker,-T,$(ANDROID_NDK_ROOT)/build/prebuilt/$(ANDROID_HOST)/arm-eabi-$(ANDROID_GCC_VER)/arm-eabi/lib/ldscripts/armelf.xsc -L$(ANDROID_NDK_ROOT)/build/platforms/$(ANDROID_PLATFORM)/arch-arm/usr/lib
 export LDFLAGS_COMMON+=-nostdlib -lc -L$(OUTPUT_DIR)
 
 ifeq ($(BT), static)

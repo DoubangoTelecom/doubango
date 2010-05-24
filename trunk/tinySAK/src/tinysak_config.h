@@ -66,6 +66,15 @@
 #	define TSK_END_DECLS
 #endif
 
+#if defined(_MSC_VER)
+#	define TSK_INLINE	__forceinline
+#elif defined(__GNUC__) && !defined(__APPLE__)
+#	define TSK_INLINE	__inline
+#else
+#	define TSK_INLINE	
+#endif
+
+
 /* Disable some well-known warnings for M$ Visual Studio*/
 #ifdef _MSC_VER
 #	define _CRT_SECURE_NO_WARNINGS
