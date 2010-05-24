@@ -368,6 +368,47 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::SipDebugCallback ##############
+
+package tinyWRAP::SipDebugCallback;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_SipDebugCallback(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_SipDebugCallback($self);
+        delete $OWNER{$self};
+    }
+}
+
+*OnDebugInfo = *tinyWRAPc::SipDebugCallback_OnDebugInfo;
+*OnDebugWarn = *tinyWRAPc::SipDebugCallback_OnDebugWarn;
+*OnDebugError = *tinyWRAPc::SipDebugCallback_OnDebugError;
+*OnDebugFatal = *tinyWRAPc::SipDebugCallback_OnDebugFatal;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::SafeObject ##############
 
 package tinyWRAP::SafeObject;
@@ -432,6 +473,7 @@ sub DESTROY {
 }
 
 *start = *tinyWRAPc::SipStack_start;
+*setDebugCallback = *tinyWRAPc::SipStack_setDebugCallback;
 *setRealm = *tinyWRAPc::SipStack_setRealm;
 *setIMPI = *tinyWRAPc::SipStack_setIMPI;
 *setIMPU = *tinyWRAPc::SipStack_setIMPU;
@@ -439,6 +481,7 @@ sub DESTROY {
 *setProxyCSCF = *tinyWRAPc::SipStack_setProxyCSCF;
 *setLocalIP = *tinyWRAPc::SipStack_setLocalIP;
 *setLocalPort = *tinyWRAPc::SipStack_setLocalPort;
+*setEarlyIMS = *tinyWRAPc::SipStack_setEarlyIMS;
 *addHeader = *tinyWRAPc::SipStack_addHeader;
 *removeHeader = *tinyWRAPc::SipStack_removeHeader;
 *addDnsServer = *tinyWRAPc::SipStack_addDnsServer;

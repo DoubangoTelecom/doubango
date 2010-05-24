@@ -1499,18 +1499,19 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_RegistrationSession swig_types[1]
 #define SWIGTYPE_p_SafeObject swig_types[2]
 #define SWIGTYPE_p_SipCallback swig_types[3]
-#define SWIGTYPE_p_SipEvent swig_types[4]
-#define SWIGTYPE_p_SipSession swig_types[5]
-#define SWIGTYPE_p_SipStack swig_types[6]
-#define SWIGTYPE_p_SipUri swig_types[7]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[8]
-#define SWIGTYPE_p_SubscriptionSession swig_types[9]
-#define SWIGTYPE_p_char swig_types[10]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[11]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[12]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[13]
-static swig_type_info *swig_types[15];
-static swig_module_info swig_module = {swig_types, 14, 0, 0, 0, 0};
+#define SWIGTYPE_p_SipDebugCallback swig_types[4]
+#define SWIGTYPE_p_SipEvent swig_types[5]
+#define SWIGTYPE_p_SipSession swig_types[6]
+#define SWIGTYPE_p_SipStack swig_types[7]
+#define SWIGTYPE_p_SipUri swig_types[8]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[9]
+#define SWIGTYPE_p_SubscriptionSession swig_types[10]
+#define SWIGTYPE_p_char swig_types[11]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[12]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[13]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[14]
+static swig_type_info *swig_types[16];
+static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1554,6 +1555,7 @@ SWIGEXPORT void SWIG_init (CV *cv, CPerlObj *);
 #include "SubscriptionEvent.h"
 #include "SubscriptionSession.h"
 #include "SipCallback.h"
+#include "SipDebug.h"
 #include "SafeObject.h"
 #include "SipStack.h"
 
@@ -1803,6 +1805,23 @@ SWIGINTERNINLINE SV *
 SWIG_From_int  SWIG_PERL_DECL_ARGS_1(int value)
 {    
   return SWIG_From_long  SWIG_PERL_CALL_ARGS_1(value);
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_bool SWIG_PERL_DECL_ARGS_2(SV *obj, bool* val)
+{
+  if (obj == &PL_sv_yes) {
+    if (val) *val = true;
+    return SWIG_OK;
+  } else if (obj == &PL_sv_no) { 
+    if (val) *val = false;
+    return SWIG_OK;
+  } else {
+    if (val) *val = SvTRUE(obj) ? true: false;
+    return SWIG_AddCast(SWIG_OK);    
+  }
+  return SWIG_TypeError;
 }
 
 #ifdef __cplusplus
@@ -3205,6 +3224,207 @@ XS(_wrap_SipCallback_OnSubscriptionChanged) {
 }
 
 
+XS(_wrap_new_SipDebugCallback) {
+  {
+    int argvi = 0;
+    SipDebugCallback *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: new_SipDebugCallback();");
+    }
+    result = (SipDebugCallback *)new SipDebugCallback();
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SipDebugCallback, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_SipDebugCallback) {
+  {
+    SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_SipDebugCallback(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipDebugCallback, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SipDebugCallback" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+    delete arg1;
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipDebugCallback_OnDebugInfo) {
+  {
+    SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipDebugCallback_OnDebugInfo(self,message);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipDebugCallback_OnDebugInfo" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipDebugCallback_OnDebugInfo" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (int)(arg1)->OnDebugInfo((char const *)arg2);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipDebugCallback_OnDebugWarn) {
+  {
+    SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipDebugCallback_OnDebugWarn(self,message);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipDebugCallback_OnDebugWarn" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipDebugCallback_OnDebugWarn" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (int)(arg1)->OnDebugWarn((char const *)arg2);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipDebugCallback_OnDebugError) {
+  {
+    SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipDebugCallback_OnDebugError(self,message);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipDebugCallback_OnDebugError" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipDebugCallback_OnDebugError" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (int)(arg1)->OnDebugError((char const *)arg2);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipDebugCallback_OnDebugFatal) {
+  {
+    SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipDebugCallback_OnDebugFatal(self,message);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipDebugCallback_OnDebugFatal" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+    }
+    arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipDebugCallback_OnDebugFatal" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (int)(arg1)->OnDebugFatal((char const *)arg2);
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_new_SafeObject) {
   {
     int argvi = 0;
@@ -3416,6 +3636,44 @@ XS(_wrap_SipStack_start) {
     
     XSRETURN(argvi);
   fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_SipStack_setDebugCallback) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    SipDebugCallback *arg2 = (SipDebugCallback *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    void *argp2 = 0 ;
+    int res2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipStack_setDebugCallback(self,callback);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setDebugCallback" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_ConvertPtr(ST(1), &argp2,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setDebugCallback" "', argument " "2"" of type '" "SipDebugCallback *""'"); 
+    }
+    arg2 = reinterpret_cast< SipDebugCallback * >(argp2);
+    result = (bool)(arg1)->setDebugCallback(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
     
     SWIG_croak_null();
   }
@@ -3726,6 +3984,44 @@ XS(_wrap_SipStack_setLocalPort) {
 }
 
 
+XS(_wrap_SipStack_setEarlyIMS) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    bool arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    bool val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: SipStack_setEarlyIMS(self,enabled);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setEarlyIMS" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    ecode2 = SWIG_AsVal_bool SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setEarlyIMS" "', argument " "2"" of type '" "bool""'");
+    } 
+    arg2 = static_cast< bool >(val2);
+    result = (bool)(arg1)->setEarlyIMS(arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_addHeader) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
@@ -3932,6 +4228,7 @@ static swig_type_info _swigt__p_RegistrationEvent = {"_p_RegistrationEvent", "Re
 static swig_type_info _swigt__p_RegistrationSession = {"_p_RegistrationSession", "RegistrationSession *", 0, 0, (void*)"tinyWRAP::RegistrationSession", 0};
 static swig_type_info _swigt__p_SafeObject = {"_p_SafeObject", "SafeObject *", 0, 0, (void*)"tinyWRAP::SafeObject", 0};
 static swig_type_info _swigt__p_SipCallback = {"_p_SipCallback", "SipCallback *", 0, 0, (void*)"tinyWRAP::SipCallback", 0};
+static swig_type_info _swigt__p_SipDebugCallback = {"_p_SipDebugCallback", "SipDebugCallback *", 0, 0, (void*)"tinyWRAP::SipDebugCallback", 0};
 static swig_type_info _swigt__p_SipEvent = {"_p_SipEvent", "SipEvent *", 0, 0, (void*)"tinyWRAP::SipEvent", 0};
 static swig_type_info _swigt__p_SipSession = {"_p_SipSession", "SipSession *", 0, 0, (void*)"tinyWRAP::SipSession", 0};
 static swig_type_info _swigt__p_SipStack = {"_p_SipStack", "SipStack *", 0, 0, (void*)"tinyWRAP::SipStack", 0};
@@ -3948,6 +4245,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_RegistrationSession,
   &_swigt__p_SafeObject,
   &_swigt__p_SipCallback,
+  &_swigt__p_SipDebugCallback,
   &_swigt__p_SipEvent,
   &_swigt__p_SipSession,
   &_swigt__p_SipStack,
@@ -3964,6 +4262,7 @@ static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_Registratio
 static swig_cast_info _swigc__p_RegistrationSession[] = {  {&_swigt__p_RegistrationSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SafeObject[] = {  {&_swigt__p_SipStack, _p_SipStackTo_p_SafeObject, 0, 0},  {&_swigt__p_SafeObject, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipCallback[] = {  {&_swigt__p_SipCallback, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SipDebugCallback[] = {  {&_swigt__p_SipDebugCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipEvent[] = {  {&_swigt__p_SipEvent, 0, 0, 0},  {&_swigt__p_RegistrationEvent, _p_RegistrationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_SubscriptionEvent, _p_SubscriptionEventTo_p_SipEvent, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipSession[] = {  {&_swigt__p_SipSession, 0, 0, 0},  {&_swigt__p_RegistrationSession, _p_RegistrationSessionTo_p_SipSession, 0, 0},  {&_swigt__p_SubscriptionSession, _p_SubscriptionSessionTo_p_SipSession, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipStack[] = {  {&_swigt__p_SipStack, 0, 0, 0},{0, 0, 0, 0}};
@@ -3980,6 +4279,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_RegistrationSession,
   _swigc__p_SafeObject,
   _swigc__p_SipCallback,
+  _swigc__p_SipDebugCallback,
   _swigc__p_SipEvent,
   _swigc__p_SipSession,
   _swigc__p_SipStack,
@@ -4043,6 +4343,12 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::delete_SipCallback", _wrap_delete_SipCallback},
 {"tinyWRAPc::SipCallback_OnRegistrationChanged", _wrap_SipCallback_OnRegistrationChanged},
 {"tinyWRAPc::SipCallback_OnSubscriptionChanged", _wrap_SipCallback_OnSubscriptionChanged},
+{"tinyWRAPc::new_SipDebugCallback", _wrap_new_SipDebugCallback},
+{"tinyWRAPc::delete_SipDebugCallback", _wrap_delete_SipDebugCallback},
+{"tinyWRAPc::SipDebugCallback_OnDebugInfo", _wrap_SipDebugCallback_OnDebugInfo},
+{"tinyWRAPc::SipDebugCallback_OnDebugWarn", _wrap_SipDebugCallback_OnDebugWarn},
+{"tinyWRAPc::SipDebugCallback_OnDebugError", _wrap_SipDebugCallback_OnDebugError},
+{"tinyWRAPc::SipDebugCallback_OnDebugFatal", _wrap_SipDebugCallback_OnDebugFatal},
 {"tinyWRAPc::new_SafeObject", _wrap_new_SafeObject},
 {"tinyWRAPc::delete_SafeObject", _wrap_delete_SafeObject},
 {"tinyWRAPc::SafeObject_Lock", _wrap_SafeObject_Lock},
@@ -4050,6 +4356,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::new_SipStack", _wrap_new_SipStack},
 {"tinyWRAPc::delete_SipStack", _wrap_delete_SipStack},
 {"tinyWRAPc::SipStack_start", _wrap_SipStack_start},
+{"tinyWRAPc::SipStack_setDebugCallback", _wrap_SipStack_setDebugCallback},
 {"tinyWRAPc::SipStack_setRealm", _wrap_SipStack_setRealm},
 {"tinyWRAPc::SipStack_setIMPI", _wrap_SipStack_setIMPI},
 {"tinyWRAPc::SipStack_setIMPU", _wrap_SipStack_setIMPU},
@@ -4057,6 +4364,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_setProxyCSCF", _wrap_SipStack_setProxyCSCF},
 {"tinyWRAPc::SipStack_setLocalIP", _wrap_SipStack_setLocalIP},
 {"tinyWRAPc::SipStack_setLocalPort", _wrap_SipStack_setLocalPort},
+{"tinyWRAPc::SipStack_setEarlyIMS", _wrap_SipStack_setEarlyIMS},
 {"tinyWRAPc::SipStack_addHeader", _wrap_SipStack_addHeader},
 {"tinyWRAPc::SipStack_removeHeader", _wrap_SipStack_removeHeader},
 {"tinyWRAPc::SipStack_addDnsServer", _wrap_SipStack_addDnsServer},
@@ -4364,139 +4672,140 @@ XS(SWIG_init) {
   SWIG_TypeClientData(SWIGTYPE_p_SubscriptionEvent, (void*) "tinyWRAP::SubscriptionEvent");
   SWIG_TypeClientData(SWIGTYPE_p_SubscriptionSession, (void*) "tinyWRAP::SubscriptionSession");
   SWIG_TypeClientData(SWIGTYPE_p_SipCallback, (void*) "tinyWRAP::SipCallback");
+  SWIG_TypeClientData(SWIGTYPE_p_SipDebugCallback, (void*) "tinyWRAP::SipDebugCallback");
   SWIG_TypeClientData(SWIGTYPE_p_SafeObject, (void*) "tinyWRAP::SafeObject");
   SWIG_TypeClientData(SWIGTYPE_p_SipStack, (void*) "tinyWRAP::SipStack");
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_invite", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_event_invite)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_message", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_event_message)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_options", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_event_options)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_publish", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_event_publish)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_register", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_event_register)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_subscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_event_subscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_event_dialog", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_event_dialog)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_i_register", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_i_register)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ai_register", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ai_register)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_o_register", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_o_register)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ao_register", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ao_register)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_i_unregister", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_i_unregister)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ai_unregister", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ai_unregister)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_o_unregister", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_o_unregister)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ao_unregister", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ao_unregister)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_i_subscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_i_subscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ai_subscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ai_subscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_o_subscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_o_subscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ao_subscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ao_subscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_i_unsubscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_i_unsubscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ai_unsubscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ai_unsubscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_o_unsubscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_o_unsubscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ao_unsubscribe", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ao_unsubscribe)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_i_notify", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_i_notify)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ai_notify", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ai_notify)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_o_notify", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_o_notify)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:C:/msys/local/share/swig/1.3.39\\perl5\\perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/local/share/swig/1.3.39/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "tsip_ao_notify", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1(static_cast< int >(tsip_ao_notify)));
     SvREADONLY_on(sv);

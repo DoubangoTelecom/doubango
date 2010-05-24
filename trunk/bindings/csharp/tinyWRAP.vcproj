@@ -194,6 +194,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\_common\SipDebug.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\SipEvent.cxx"
 				>
 			</File>
@@ -203,6 +207,10 @@
 			</File>
 			<File
 				RelativePath="..\_common\SipStack.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\SipUri.cxx"
 				>
 			</File>
 			<File
@@ -252,6 +260,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\_common\SipDebug.h"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\SipEvent.h"
 				>
 			</File>
@@ -261,6 +273,10 @@
 			</File>
 			<File
 				RelativePath="..\_common\SipStack.h"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\SipUri.h"
 				>
 			</File>
 			<File
@@ -285,18 +301,46 @@
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath="..\_common\SipStack.i"
+			<Filter
+				Name="common"
 				>
-			</File>
-			<File
-				RelativePath="..\_common\tinyWRAP.i"
+				<File
+					RelativePath="..\_common\SipStack.i"
+					>
+				</File>
+				<File
+					RelativePath="..\_common\tinyWRAP.i"
+					>
+				</File>
+				<File
+					RelativePath="..\_common\XcapStack.i"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="languages"
 				>
-			</File>
-			<File
-				RelativePath="..\_common\XcapStack.i"
-				>
-			</File>
+				<File
+					RelativePath=".\csharp.i"
+					>
+				</File>
+				<File
+					RelativePath="..\java\java.i"
+					>
+				</File>
+				<File
+					RelativePath="..\perl\perl.i"
+					>
+				</File>
+				<File
+					RelativePath="..\python\python.i"
+					>
+				</File>
+				<File
+					RelativePath="..\ruby\ruby.i"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>
