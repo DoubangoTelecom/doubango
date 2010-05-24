@@ -27,6 +27,8 @@
 
 #include "tinysip.h"
 
+class SipDebugCallback;
+
 class SipStack: public SafeObject
 {
 public: /* ctor() and dtor() */
@@ -35,6 +37,7 @@ public: /* ctor() and dtor() */
 
 public: /* API functions */
 	bool start();
+	bool setDebugCallback(SipDebugCallback* callback);
 	bool setRealm(const char* realm_uri);
 	bool setIMPI(const char* impi);
 	bool setIMPU(const char* impu_uri);
@@ -42,6 +45,7 @@ public: /* API functions */
 	bool setProxyCSCF(const char* fqdn, unsigned port, const char* transport, const char* ipversion);
 	bool setLocalIP(const char* ip);
 	bool setLocalPort(unsigned port);
+	bool setEarlyIMS(bool enabled);
 	bool addHeader(const char* name, const char* value);
 	bool removeHeader(const char* name);
 	bool addDnsServer(const char* ip);
@@ -53,10 +57,12 @@ public: /* Public helper function */
 #if !defined(SWIG)
 	tsip_stack_handle_t* getHandle();
 	SipCallback* getCallback();
+	SipDebugCallback* getDebugCallback() const;
 #endif
 
 private:
 	SipCallback* callback;
+	SipDebugCallback* debugCallback;
 	tsip_stack_handle_t *handle;
 
 	static unsigned count;

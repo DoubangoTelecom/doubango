@@ -19,16 +19,31 @@
 * along with DOUBANGO.
 *
 */
-#ifndef TINYWRAP_COMMON_H
-#define TINYWRAP_COMMON_H
+#ifndef TINYWRAP_SIP_DEBUG_H
+#define TINYWRAP_SIP_DEBUG_H
 
-#if ANDROID
-#	define dyn_cast	static_cast
-#	define __JNIENV JNIEnv
-#else
-#	define dyn_cast	dynamic_cast
-#	define __JNIENV void
+class SipDebugCallback
+{
+public:
+	SipDebugCallback() {  }
+	virtual ~SipDebugCallback() {}
+
+
+	virtual int OnDebugInfo(const char* message) { return -1; }
+	virtual int OnDebugWarn(const char* message) { return -1; }
+	virtual int OnDebugError(const char* message) { return -1; }
+	virtual int OnDebugFatal(const char* message) { return -1; }
+
+#if !defined(SWIG)
+public:
+	static int debug_info_cb(const void* arg, const char* fmt, ...);
+	static int debug_warn_cb(const void* arg, const char* fmt, ...);
+	static int debug_error_cb(const void* arg, const char* fmt, ...);
+	static int debug_fatal_cb(const void* arg, const char* fmt, ...);
 #endif
 
-#endif /* TINYWRAP_COMMON_H */
+private:
+	
+};
 
+#endif /* TINYWRAP_SIP_DEBUG_H */

@@ -8,12 +8,15 @@
 #include "SubscriptionEvent.h"
 #include "SubscriptionSession.h"
 #include "SipCallback.h"
+#include "SipDebug.h"
 #include "SafeObject.h"
 #include "SipStack.h"
 %}
 
 /* turn on director wrapping Callback */
+%feature("director") SipDebugCallback;
 %feature("director") SipCallback;
+
 
 %nodefaultctor;
 %include "SipUri.h"
@@ -24,6 +27,7 @@
 %include "SubscriptionEvent.h"
 %include "SubscriptionSession.h"
 %include "SipCallback.h"
+%include "SipDebug.h"
 %include "SafeObject.h"
 %include "SipStack.h"
 %clearnodefaultctor;

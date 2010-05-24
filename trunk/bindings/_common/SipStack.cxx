@@ -27,9 +27,12 @@
 #include "SubscriptionEvent.h"
 #include "SubscriptionSession.h"
 
+#include "SipDebug.h"
+
 #include "Common.h"
 
 unsigned SipStack::count = 0;
+
 
 /* === ANSI-C functions (local use) === */
 int stack_callback(const tsip_event_t *sipevent);
@@ -47,6 +50,7 @@ int session_handle_event(const tsip_event_t *sipevent);
 SipStack::SipStack(SipCallback* callback_, const char* realm_uri, const char* impi_uri, const char* impu_uri)
 :SafeObject()
 {
+	this->debugCallback = tsk_null;
 	this->callback = callback_;
 
 	/* Initialize network layer */
@@ -80,6 +84,20 @@ bool SipStack::start()
 {
 	int ret = tsip_stack_start(this->handle);
 	return (ret == 0);
+}
+
+bool SipStack::setDebugCallback(SipDebugCallback* callback)
+{
+	if((this->debugCallback = callback)){
+		tsk_debug_set_arg_data(this);
+		tsk_debug_set_info_cb(SipDebugCallback::debug_info_cb);
+		tsk_debug_set_warn_cb(SipDebugCallback::debug_warn_cb);
+		tsk_debug_set_error_cb(SipDebugCallback::debug_error_cb);
+		tsk_debug_set_fatal_cb(SipDebugCallback::debug_fatal_cb);
+		return true;
+	}
+
+	return false;
 }
 
 bool SipStack::setRealm(const char* realm_uri)
@@ -138,6 +156,13 @@ bool SipStack::setLocalPort(unsigned port)
 	return (ret == 0);
 }
 
+bool SipStack::setEarlyIMS(bool enabled){
+	int ret = tsip_stack_set(this->handle,
+		TSIP_STACK_SET_EARLY_IMS(enabled? tsk_true : tsk_false),
+		TSIP_STACK_SET_NULL());
+	return (ret == 0);
+}
+
 bool SipStack::addHeader(const char* name, const char* value)
 {
 	int ret = tsip_stack_set(this->handle,
@@ -181,6 +206,11 @@ tsip_stack_handle_t* SipStack::getHandle()
 SipCallback* SipStack::getCallback()
 {
 	return this->callback;
+}
+
+SipDebugCallback* SipStack::getDebugCallback() const
+{
+	return this->debugCallback;
 }
 
 int stack_callback(const tsip_event_t *sipevent)
