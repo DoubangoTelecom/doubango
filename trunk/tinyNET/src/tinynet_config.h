@@ -68,11 +68,10 @@
 #	define TNET_END_DECLS
 #endif
 
-/* Compilers config */
 #if defined(_MSC_VER)
-#	define _CRT_SECURE_NO_WARNINGS
-#	pragma warning( disable : 4996 )
-#	define TNET_INLINE			__forceinline
+#	define TNET_INLINE	__forceinline
+#elif defined(__GNUC__) && !defined(__APPLE__)
+#	define TNET_INLINE	__inline
 #else
 #	define TNET_INLINE	
 #endif

@@ -39,10 +39,12 @@
 #ifndef DEFAULT_LOCAL_IP
 //#	ifdef ANDROID /* On the emulator */
 //#		define DEFAULT_LOCAL_IP	"10.0.2.15"
+//#		define DEFAULT_LOCAL_IP	"192.168.0.14"
 //#	else
 #		define DEFAULT_LOCAL_IP	TNET_SOCKET_HOST_ANY
 //#	endif
 #endif
+
 
 extern ctx_t* ctx;
 

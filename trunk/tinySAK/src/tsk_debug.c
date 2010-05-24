@@ -31,3 +31,46 @@
 
 /**@defgroup tsk_debug_group Utility functions for debugging purpose.
 */
+
+#if TSK_HAVE_DEBUG_H
+// Nothing to do --> all is up to the end-user application
+#else
+
+const void* tsk_debug_arg_data = tsk_null;
+tsk_debug_f tsk_debug_info_cb = tsk_null;
+tsk_debug_f tsk_debug_warn_cb = tsk_null;
+tsk_debug_f tsk_debug_error_cb = tsk_null;
+tsk_debug_f tsk_debug_fatal_cb = tsk_null;
+
+void tsk_debug_set_arg_data(const void* arg_data){
+	tsk_debug_arg_data = arg_data;
+}
+const void* tsk_debug_get_arg_data(){
+	return tsk_debug_arg_data;
+}
+void tsk_debug_set_info_cb(tsk_debug_f cb){
+	tsk_debug_info_cb = cb;
+}
+tsk_debug_f tsk_debug_get_info_cb(){
+	return tsk_debug_info_cb;
+}
+void tsk_debug_set_warn_cb(tsk_debug_f cb){
+	tsk_debug_warn_cb = cb;
+}
+tsk_debug_f tsk_debug_get_warn_cb(){
+	return tsk_debug_warn_cb;
+}
+void tsk_debug_set_error_cb(tsk_debug_f cb){
+	tsk_debug_error_cb = cb;
+}
+tsk_debug_f tsk_debug_get_error_cb(){
+	return tsk_debug_error_cb;
+}
+void tsk_debug_set_fatal_cb(tsk_debug_f cb){
+	tsk_debug_fatal_cb = cb;
+}
+tsk_debug_f tsk_debug_get_fatal_cb(){
+	return tsk_debug_fatal_cb;
+}
+
+#endif /* TSK_HAVE_DEBUG_H */
