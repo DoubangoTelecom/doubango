@@ -3125,18 +3125,19 @@ namespace Swig {
 #define SWIGTYPE_p_RegistrationSession swig_types[1]
 #define SWIGTYPE_p_SafeObject swig_types[2]
 #define SWIGTYPE_p_SipCallback swig_types[3]
-#define SWIGTYPE_p_SipEvent swig_types[4]
-#define SWIGTYPE_p_SipSession swig_types[5]
-#define SWIGTYPE_p_SipStack swig_types[6]
-#define SWIGTYPE_p_SipUri swig_types[7]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[8]
-#define SWIGTYPE_p_SubscriptionSession swig_types[9]
-#define SWIGTYPE_p_char swig_types[10]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[11]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[12]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[13]
-static swig_type_info *swig_types[15];
-static swig_module_info swig_module = {swig_types, 14, 0, 0, 0, 0};
+#define SWIGTYPE_p_SipDebugCallback swig_types[4]
+#define SWIGTYPE_p_SipEvent swig_types[5]
+#define SWIGTYPE_p_SipSession swig_types[6]
+#define SWIGTYPE_p_SipStack swig_types[7]
+#define SWIGTYPE_p_SipUri swig_types[8]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[9]
+#define SWIGTYPE_p_SubscriptionSession swig_types[10]
+#define SWIGTYPE_p_char swig_types[11]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[12]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[13]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[14]
+static swig_type_info *swig_types[16];
+static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3241,6 +3242,7 @@ namespace swig {
 #include "SubscriptionEvent.h"
 #include "SubscriptionSession.h"
 #include "SipCallback.h"
+#include "SipDebug.h"
 #include "SafeObject.h"
 #include "SipStack.h"
 
@@ -3580,12 +3582,23 @@ SWIG_AsVal_int (PyObject * obj, int *val)
 }
 
 
+SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
+}
+
+
 
 /* ---------------------------------------------------
  * C++ director class methods
  * --------------------------------------------------- */
 
-#include "python/tinyWRAP_wrap.h"
+#include "tinyWRAP_wrap.h"
 
 SwigDirector_SipCallback::SwigDirector_SipCallback(PyObject *self): SipCallback(), Swig::Director(self) {
   SWIG_DIRECTOR_RGTR((SipCallback *)this, this); 
@@ -3647,6 +3660,140 @@ int SwigDirector_SipCallback::OnSubscriptionChanged(SubscriptionEvent const *e) 
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
       Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnSubscriptionChanged'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+SwigDirector_SipDebugCallback::SwigDirector_SipDebugCallback(PyObject *self): SipDebugCallback(), Swig::Director(self) {
+  SWIG_DIRECTOR_RGTR((SipDebugCallback *)this, this); 
+}
+
+
+
+
+SwigDirector_SipDebugCallback::~SwigDirector_SipDebugCallback() {
+}
+
+int SwigDirector_SipDebugCallback::OnDebugInfo(char const *message) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_FromCharPtr((const char *)message);
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipDebugCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 0;
+  const char * const swig_method_name = "OnDebugInfo";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnDebugInfo", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipDebugCallback.OnDebugInfo'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+int SwigDirector_SipDebugCallback::OnDebugWarn(char const *message) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_FromCharPtr((const char *)message);
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipDebugCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 1;
+  const char * const swig_method_name = "OnDebugWarn";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnDebugWarn", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipDebugCallback.OnDebugWarn'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+int SwigDirector_SipDebugCallback::OnDebugError(char const *message) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_FromCharPtr((const char *)message);
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipDebugCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 2;
+  const char * const swig_method_name = "OnDebugError";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnDebugError", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipDebugCallback.OnDebugError'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+int SwigDirector_SipDebugCallback::OnDebugFatal(char const *message) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_FromCharPtr((const char *)message);
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipDebugCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 3;
+  const char * const swig_method_name = "OnDebugFatal";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnDebugFatal", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipDebugCallback.OnDebugFatal'");
     }
   }
   int swig_val;
@@ -4861,6 +5008,265 @@ SWIGINTERN PyObject *SipCallback_swigregister(PyObject *SWIGUNUSEDPARM(self), Py
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_new_SipDebugCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PyObject *arg1 = (PyObject *) 0 ;
+  PyObject * obj0 = 0 ;
+  SipDebugCallback *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_SipDebugCallback",&obj0)) SWIG_fail;
+  arg1 = obj0;
+  if ( arg1 != Py_None ) {
+    /* subclassed */
+    result = (SipDebugCallback *)new SwigDirector_SipDebugCallback(arg1); 
+  } else {
+    result = (SipDebugCallback *)new SipDebugCallback(); 
+  }
+  
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SipDebugCallback, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_SipDebugCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_SipDebugCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipDebugCallback, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SipDebugCallback" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipDebugCallback_OnDebugInfo(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipDebugCallback_OnDebugInfo",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipDebugCallback_OnDebugInfo" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipDebugCallback_OnDebugInfo" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->SipDebugCallback::OnDebugInfo((char const *)arg2);
+    } else {
+      result = (int)(arg1)->OnDebugInfo((char const *)arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipDebugCallback_OnDebugWarn(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipDebugCallback_OnDebugWarn",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipDebugCallback_OnDebugWarn" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipDebugCallback_OnDebugWarn" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->SipDebugCallback::OnDebugWarn((char const *)arg2);
+    } else {
+      result = (int)(arg1)->OnDebugWarn((char const *)arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipDebugCallback_OnDebugError(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipDebugCallback_OnDebugError",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipDebugCallback_OnDebugError" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipDebugCallback_OnDebugError" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->SipDebugCallback::OnDebugError((char const *)arg2);
+    } else {
+      result = (int)(arg1)->OnDebugError((char const *)arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipDebugCallback_OnDebugFatal(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipDebugCallback_OnDebugFatal",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipDebugCallback_OnDebugFatal" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipDebugCallback_OnDebugFatal" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->SipDebugCallback::OnDebugFatal((char const *)arg2);
+    } else {
+      result = (int)(arg1)->OnDebugFatal((char const *)arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_disown_SipDebugCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipDebugCallback *arg1 = (SipDebugCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:disown_SipDebugCallback",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "disown_SipDebugCallback" "', argument " "1"" of type '" "SipDebugCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipDebugCallback * >(argp1);
+  {
+    Swig::Director *director = SWIG_DIRECTOR_CAST(arg1);
+    if (director) director->swig_disown();
+  }
+  
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *SipDebugCallback_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_SipDebugCallback, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_new_SafeObject(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SafeObject *result = 0 ;
@@ -5040,6 +5446,37 @@ SWIGINTERN PyObject *_wrap_SipStack_start(PyObject *SWIGUNUSEDPARM(self), PyObje
   }
   arg1 = reinterpret_cast< SipStack * >(argp1);
   result = (bool)(arg1)->start();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipStack_setDebugCallback(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  SipDebugCallback *arg2 = (SipDebugCallback *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setDebugCallback",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setDebugCallback" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_SipDebugCallback, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setDebugCallback" "', argument " "2"" of type '" "SipDebugCallback *""'"); 
+  }
+  arg2 = reinterpret_cast< SipDebugCallback * >(argp2);
+  result = (bool)(arg1)->setDebugCallback(arg2);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
@@ -5315,6 +5752,37 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipStack_setEarlyIMS(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipStack_setEarlyIMS",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setEarlyIMS" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipStack_setEarlyIMS" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = static_cast< bool >(val2);
+  result = (bool)(arg1)->setEarlyIMS(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_SipStack_addHeader(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -5529,6 +5997,14 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipCallback_OnSubscriptionChanged", _wrap_SipCallback_OnSubscriptionChanged, METH_VARARGS, NULL},
 	 { (char *)"disown_SipCallback", _wrap_disown_SipCallback, METH_VARARGS, NULL},
 	 { (char *)"SipCallback_swigregister", SipCallback_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_SipDebugCallback", _wrap_new_SipDebugCallback, METH_VARARGS, NULL},
+	 { (char *)"delete_SipDebugCallback", _wrap_delete_SipDebugCallback, METH_VARARGS, NULL},
+	 { (char *)"SipDebugCallback_OnDebugInfo", _wrap_SipDebugCallback_OnDebugInfo, METH_VARARGS, NULL},
+	 { (char *)"SipDebugCallback_OnDebugWarn", _wrap_SipDebugCallback_OnDebugWarn, METH_VARARGS, NULL},
+	 { (char *)"SipDebugCallback_OnDebugError", _wrap_SipDebugCallback_OnDebugError, METH_VARARGS, NULL},
+	 { (char *)"SipDebugCallback_OnDebugFatal", _wrap_SipDebugCallback_OnDebugFatal, METH_VARARGS, NULL},
+	 { (char *)"disown_SipDebugCallback", _wrap_disown_SipDebugCallback, METH_VARARGS, NULL},
+	 { (char *)"SipDebugCallback_swigregister", SipDebugCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SafeObject", _wrap_new_SafeObject, METH_VARARGS, NULL},
 	 { (char *)"delete_SafeObject", _wrap_delete_SafeObject, METH_VARARGS, NULL},
 	 { (char *)"SafeObject_Lock", _wrap_SafeObject_Lock, METH_VARARGS, NULL},
@@ -5537,6 +6013,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"new_SipStack", _wrap_new_SipStack, METH_VARARGS, NULL},
 	 { (char *)"delete_SipStack", _wrap_delete_SipStack, METH_VARARGS, NULL},
 	 { (char *)"SipStack_start", _wrap_SipStack_start, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setDebugCallback", _wrap_SipStack_setDebugCallback, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setRealm", _wrap_SipStack_setRealm, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setIMPI", _wrap_SipStack_setIMPI, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setIMPU", _wrap_SipStack_setIMPU, METH_VARARGS, NULL},
@@ -5544,6 +6021,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipStack_setProxyCSCF", _wrap_SipStack_setProxyCSCF, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setLocalIP", _wrap_SipStack_setLocalIP, METH_VARARGS, NULL},
 	 { (char *)"SipStack_setLocalPort", _wrap_SipStack_setLocalPort, METH_VARARGS, NULL},
+	 { (char *)"SipStack_setEarlyIMS", _wrap_SipStack_setEarlyIMS, METH_VARARGS, NULL},
 	 { (char *)"SipStack_addHeader", _wrap_SipStack_addHeader, METH_VARARGS, NULL},
 	 { (char *)"SipStack_removeHeader", _wrap_SipStack_removeHeader, METH_VARARGS, NULL},
 	 { (char *)"SipStack_addDnsServer", _wrap_SipStack_addDnsServer, METH_VARARGS, NULL},
@@ -5575,6 +6053,7 @@ static swig_type_info _swigt__p_RegistrationEvent = {"_p_RegistrationEvent", "Re
 static swig_type_info _swigt__p_RegistrationSession = {"_p_RegistrationSession", "RegistrationSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SafeObject = {"_p_SafeObject", "SafeObject *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipCallback = {"_p_SipCallback", "SipCallback *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_SipDebugCallback = {"_p_SipDebugCallback", "SipDebugCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipEvent = {"_p_SipEvent", "SipEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipSession = {"_p_SipSession", "SipSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipStack = {"_p_SipStack", "SipStack *", 0, 0, (void*)0, 0};
@@ -5591,6 +6070,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_RegistrationSession,
   &_swigt__p_SafeObject,
   &_swigt__p_SipCallback,
+  &_swigt__p_SipDebugCallback,
   &_swigt__p_SipEvent,
   &_swigt__p_SipSession,
   &_swigt__p_SipStack,
@@ -5607,6 +6087,7 @@ static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_Registratio
 static swig_cast_info _swigc__p_RegistrationSession[] = {  {&_swigt__p_RegistrationSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SafeObject[] = {  {&_swigt__p_SipStack, _p_SipStackTo_p_SafeObject, 0, 0},  {&_swigt__p_SafeObject, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipCallback[] = {  {&_swigt__p_SipCallback, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SipDebugCallback[] = {  {&_swigt__p_SipDebugCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipEvent[] = {  {&_swigt__p_SipEvent, 0, 0, 0},  {&_swigt__p_RegistrationEvent, _p_RegistrationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_SubscriptionEvent, _p_SubscriptionEventTo_p_SipEvent, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipSession[] = {  {&_swigt__p_SipSession, 0, 0, 0},  {&_swigt__p_RegistrationSession, _p_RegistrationSessionTo_p_SipSession, 0, 0},  {&_swigt__p_SubscriptionSession, _p_SubscriptionSessionTo_p_SipSession, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipStack[] = {  {&_swigt__p_SipStack, 0, 0, 0},{0, 0, 0, 0}};
@@ -5623,6 +6104,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_RegistrationSession,
   _swigc__p_SafeObject,
   _swigc__p_SipCallback,
+  _swigc__p_SipDebugCallback,
   _swigc__p_SipEvent,
   _swigc__p_SipSession,
   _swigc__p_SipStack,

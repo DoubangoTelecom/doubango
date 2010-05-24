@@ -25,25 +25,28 @@ namespace test
         {
             Boolean success;
 
-            /* Create call back */
-            callback = new MyCallback();
+            /* Create callbacks */
+            sipCallback = new MySipCallback();
+            sipDebugCallback = new MySipDebugCallback();
+
             /* Create and configure the IMS/LTE stack */
-            stack = new SipStack(callback, String.Format("sip:{0}", REALM), String.Format("{0}@{1}", USER, REALM), String.Format("sip:{0}@{1}", USER, REALM));
-            stack.addHeader("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER");
-            stack.addHeader("Privacy", "header; id");
-            stack.addHeader("P-Access-Network-Info", "ADSL;utran-cell-id-3gpp=00000000");
-            stack.addHeader("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0");
+            sipStack = new SipStack(sipCallback, String.Format("sip:{0}", REALM), String.Format("{0}@{1}", USER, REALM), String.Format("sip:{0}@{1}", USER, REALM));
+            sipStack.setDebugCallback(sipDebugCallback);
+            sipStack.addHeader("Allow", "INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER");
+            sipStack.addHeader("Privacy", "header; id");
+            sipStack.addHeader("P-Access-Network-Info", "ADSL;utran-cell-id-3gpp=00000000");
+            sipStack.addHeader("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0");
             
             /* Sets Proxy-CSCF */
-            success = stack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "tcp", "ipv4");
+            success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "tcp", "ipv4");
             /* Starts the stack */
-            success = stack.start();
+            success = sipStack.start();
 
             /* Set Password */
             //stack.setPassword(PASSWORD);
 
             /* Send REGISTER */
-            regSession = new RegistrationSession(stack);
+            regSession = new RegistrationSession(sipStack);
             regSession.addCaps("+g.oma.sip-im");
             regSession.addCaps("+g.3gpp.smsip");
             regSession.addCaps("language", "\"en,fr\"");
@@ -63,19 +66,46 @@ namespace test
 
             Console.Read();
 
-            stack.stop();
+            sipStack.stop();
         }
 
         static RegistrationSession regSession;
         static SubscriptionSession subSession;
-        static MyCallback callback;
-        static SipStack stack;
+        static MySipCallback sipCallback;
+        static SipStack sipStack;
+        static MySipDebugCallback sipDebugCallback;
     }
 
-
-    public class MyCallback : SipCallback
+    public class MySipDebugCallback : SipDebugCallback
     {
-        public MyCallback()
+        public override int OnDebugInfo(string message)
+        {
+            Console.WriteLine(".NET____" + message);
+            return 0;
+        }
+
+        public override int OnDebugWarn(string message)
+        {
+            Console.WriteLine(".NET____" + message);
+            return 0;
+        }
+
+        public override int OnDebugError(string message)
+        {
+            Console.WriteLine(".NET____" + message);
+            return 0;
+        }
+
+        public override int OnDebugFatal(string message)
+        {
+            Console.WriteLine(".NET____" + message);
+            return 0;
+        }
+    }
+
+    public class MySipCallback : SipCallback
+    {
+        public MySipCallback()
             : base()
         {
         }

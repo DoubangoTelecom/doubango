@@ -57,6 +57,9 @@
     <Compile Include="..\SipCallback.cs">
       <Link>SipCallback.cs</Link>
     </Compile>
+    <Compile Include="..\SipDebugCallback.cs">
+      <Link>SipDebugCallback.cs</Link>
+    </Compile>
     <Compile Include="..\SipEvent.cs">
       <Link>SipEvent.cs</Link>
     </Compile>

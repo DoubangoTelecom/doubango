@@ -225,6 +225,33 @@ class SipCallback(_object):
 SipCallback_swigregister = _tinyWRAP.SipCallback_swigregister
 SipCallback_swigregister(SipCallback)
 
+class SipDebugCallback(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, SipDebugCallback, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, SipDebugCallback, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        if self.__class__ == SipDebugCallback:
+            _self = None
+        else:
+            _self = self
+        this = _tinyWRAP.new_SipDebugCallback(_self, )
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_SipDebugCallback
+    __del__ = lambda self : None;
+    def OnDebugInfo(self, *args): return _tinyWRAP.SipDebugCallback_OnDebugInfo(self, *args)
+    def OnDebugWarn(self, *args): return _tinyWRAP.SipDebugCallback_OnDebugWarn(self, *args)
+    def OnDebugError(self, *args): return _tinyWRAP.SipDebugCallback_OnDebugError(self, *args)
+    def OnDebugFatal(self, *args): return _tinyWRAP.SipDebugCallback_OnDebugFatal(self, *args)
+    def __disown__(self):
+        self.this.disown()
+        _tinyWRAP.disown_SipDebugCallback(self)
+        return weakref_proxy(self)
+SipDebugCallback_swigregister = _tinyWRAP.SipDebugCallback_swigregister
+SipDebugCallback_swigregister(SipDebugCallback)
+
 class SafeObject(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SafeObject, name, value)
@@ -257,6 +284,7 @@ class SipStack(SafeObject):
     __swig_destroy__ = _tinyWRAP.delete_SipStack
     __del__ = lambda self : None;
     def start(self): return _tinyWRAP.SipStack_start(self)
+    def setDebugCallback(self, *args): return _tinyWRAP.SipStack_setDebugCallback(self, *args)
     def setRealm(self, *args): return _tinyWRAP.SipStack_setRealm(self, *args)
     def setIMPI(self, *args): return _tinyWRAP.SipStack_setIMPI(self, *args)
     def setIMPU(self, *args): return _tinyWRAP.SipStack_setIMPU(self, *args)
@@ -264,6 +292,7 @@ class SipStack(SafeObject):
     def setProxyCSCF(self, *args): return _tinyWRAP.SipStack_setProxyCSCF(self, *args)
     def setLocalIP(self, *args): return _tinyWRAP.SipStack_setLocalIP(self, *args)
     def setLocalPort(self, *args): return _tinyWRAP.SipStack_setLocalPort(self, *args)
+    def setEarlyIMS(self, *args): return _tinyWRAP.SipStack_setEarlyIMS(self, *args)
     def addHeader(self, *args): return _tinyWRAP.SipStack_addHeader(self, *args)
     def removeHeader(self, *args): return _tinyWRAP.SipStack_removeHeader(self, *args)
     def addDnsServer(self, *args): return _tinyWRAP.SipStack_addDnsServer(self, *args)

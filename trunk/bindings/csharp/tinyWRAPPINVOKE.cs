@@ -313,6 +313,39 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipCallback_director_connect")]
   public static extern void SipCallback_director_connect(HandleRef jarg1, SipCallback.SwigDelegateSipCallback_0 delegate0, SipCallback.SwigDelegateSipCallback_1 delegate1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_SipDebugCallback")]
+  public static extern IntPtr new_SipDebugCallback();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_SipDebugCallback")]
+  public static extern void delete_SipDebugCallback(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_OnDebugInfo")]
+  public static extern int SipDebugCallback_OnDebugInfo(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_OnDebugInfoSwigExplicitSipDebugCallback")]
+  public static extern int SipDebugCallback_OnDebugInfoSwigExplicitSipDebugCallback(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_OnDebugWarn")]
+  public static extern int SipDebugCallback_OnDebugWarn(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_OnDebugWarnSwigExplicitSipDebugCallback")]
+  public static extern int SipDebugCallback_OnDebugWarnSwigExplicitSipDebugCallback(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_OnDebugError")]
+  public static extern int SipDebugCallback_OnDebugError(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_OnDebugErrorSwigExplicitSipDebugCallback")]
+  public static extern int SipDebugCallback_OnDebugErrorSwigExplicitSipDebugCallback(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_OnDebugFatal")]
+  public static extern int SipDebugCallback_OnDebugFatal(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_OnDebugFatalSwigExplicitSipDebugCallback")]
+  public static extern int SipDebugCallback_OnDebugFatalSwigExplicitSipDebugCallback(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipDebugCallback_director_connect")]
+  public static extern void SipDebugCallback_director_connect(HandleRef jarg1, SipDebugCallback.SwigDelegateSipDebugCallback_0 delegate0, SipDebugCallback.SwigDelegateSipDebugCallback_1 delegate1, SipDebugCallback.SwigDelegateSipDebugCallback_2 delegate2, SipDebugCallback.SwigDelegateSipDebugCallback_3 delegate3);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SafeObject")]
   public static extern IntPtr new_SafeObject();
 
@@ -334,6 +367,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_start")]
   public static extern bool SipStack_start(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setDebugCallback")]
+  public static extern bool SipStack_setDebugCallback(HandleRef jarg1, HandleRef jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setRealm")]
   public static extern bool SipStack_setRealm(HandleRef jarg1, string jarg2);
 
@@ -354,6 +390,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setLocalPort")]
   public static extern bool SipStack_setLocalPort(HandleRef jarg1, uint jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setEarlyIMS")]
+  public static extern bool SipStack_setEarlyIMS(HandleRef jarg1, bool jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_addHeader")]
   public static extern bool SipStack_addHeader(HandleRef jarg1, string jarg2, string jarg3);

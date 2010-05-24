@@ -1,19 +1,27 @@
-# CSharp
-echo "CSharp..."
-swig -c++ -csharp -outdir csharp -o csharp/tinyWRAP_wrap.cxx _common/tinyWRAP.i
+##### CSharp
+echo "--->CSharp...<---"
+swig -c++ -csharp -outdir csharp -o csharp/tinyWRAP_wrap.cxx csharp/csharp.i
 
-# Java
-echo "Java..."
-swig -c++ -java -package org.doubango.tinyWRAP -outdir java -o java/tinyWRAP_wrap.cxx _common/tinyWRAP.i
+##### Java
+echo "--->Java...<---"
+swig -c++ -java -package org.doubango.tinyWRAP -outdir java -o java/tinyWRAP_wrap.cxx java/java.i
+echo "Java(Google Dalvik)..."
+echo "Google Android special tasks"
+swig -c++ -java -package org.doubango.tinyWRAP -outdir java/android -o java/android/tinyWRAP_wrap.cxx java/java.i
+sed -i 's/dynamic_cast/static_cast/g' java/android/tinyWRAP_wrap.cxx
+sed -i 's/AttachCurrentThread((void \*\*)/AttachCurrentThread((JNIEnv \*\*)/g' java/android/tinyWRAP_wrap.cxx
+sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/SipCallback.java
+sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/SipDebugCallback.java
 
-# Python
-echo "Python..."
-swig -c++ -python -outdir python -o python/tinyWRAP_wrap.cxx _common/tinyWRAP.i
 
-# Perl
-echo "Perl..."
-swig -c++ -perl -outdir perl -o Perl/tinyWRAP_wrap.cxx _common/tinyWRAP.i
+##### Python
+echo "--->Python...<---"
+swig -c++ -python -outdir python -o python/tinyWRAP_wrap.cxx python/python.i
 
-# Ruby
-echo "Ruby..."
-#swig -c++ -ruby -outdir Ruby -o Ruby/tinyWRAP_wrap.cxx _common/tinyWRAP.i
+##### Perl
+echo "--->Perl...<---"
+swig -c++ -perl -outdir perl -o Perl/tinyWRAP_wrap.cxx perl/perl.i
+
+##### Ruby
+echo "--->Ruby...<---"
+#swig -c++ -ruby -outdir Ruby -o Ruby/tinyWRAP_wrap.cxx ruby/ruby.i

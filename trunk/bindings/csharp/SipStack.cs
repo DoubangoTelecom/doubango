@@ -45,6 +45,11 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setDebugCallback(SipDebugCallback callback) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setDebugCallback(swigCPtr, SipDebugCallback.getCPtr(callback));
+    return ret;
+  }
+
   public bool setRealm(string realm_uri) {
     bool ret = tinyWRAPPINVOKE.SipStack_setRealm(swigCPtr, realm_uri);
     return ret;
@@ -77,6 +82,11 @@ public class SipStack : SafeObject {
 
   public bool setLocalPort(uint port) {
     bool ret = tinyWRAPPINVOKE.SipStack_setLocalPort(swigCPtr, port);
+    return ret;
+  }
+
+  public bool setEarlyIMS(bool enabled) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setEarlyIMS(swigCPtr, enabled);
     return ret;
   }
 
