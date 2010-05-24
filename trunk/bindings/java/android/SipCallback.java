@@ -50,7 +50,7 @@ public class SipCallback {
 
   public SipCallback() {
     this(tinyWRAPJNI.new_SipCallback(), true);
-    tinyWRAPJNI.SipCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+    tinyWRAPJNI.SipCallback_director_connect(this, swigCPtr, swigCMemOwn, false);
   }
 
   public int OnRegistrationChanged(RegistrationEvent e) {
