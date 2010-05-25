@@ -33,8 +33,8 @@ public class SipSession {
     swigCPtr = 0;
   }
 
-  public SipSession(SipStack Stack) {
-    this(tinyWRAPJNI.new_SipSession(SipStack.getCPtr(Stack), Stack), true);
+  public SipSession(SipStack stack) {
+    this(tinyWRAPJNI.new_SipSession(SipStack.getCPtr(stack), stack), true);
   }
 
   public boolean addHeader(String name, String value) {

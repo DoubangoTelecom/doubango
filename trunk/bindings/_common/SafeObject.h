@@ -31,8 +31,8 @@ public:
 	virtual ~SafeObject();
 
 /* protected: */
-	int Lock();
-	int UnLock();
+	int Lock()const;
+	int UnLock()const;
 
 private:
 	tsk_mutex_handle_t *mutex;

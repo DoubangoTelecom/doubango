@@ -61,7 +61,7 @@ SipStack::SipStack(SipCallback* callback_, const char* realm_uri, const char* im
 	/* Creates stack handle */
 	this->handle = tsip_stack_create(stack_callback, realm_uri, impi_uri, impu_uri,
 			TSIP_STACK_SET_LOCAL_IP(DEFAULT_LOCAL_IP),
-			TSIP_STACK_SET_USERDATA(this), /* used as context */
+			/* TSIP_STACK_SET_USERDATA(this), */ /* used as context */
 			TSIP_STACK_SET_NULL());
 
 	SipStack::count++;
@@ -198,12 +198,12 @@ bool SipStack::stop()
 	return (ret == 0);
 }
 
-tsip_stack_handle_t* SipStack::getHandle()
+tsip_stack_handle_t* SipStack::getHandle()const
 {
 	return this->handle;
 }
 
-SipCallback* SipStack::getCallback()
+SipCallback* SipStack::getCallback()const
 {
 	return this->callback;
 }
@@ -216,7 +216,7 @@ SipDebugCallback* SipStack::getDebugCallback() const
 int stack_callback(const tsip_event_t *sipevent)
 {
 	int ret = 0;
-	SipStack* Stack = tsk_null;
+	const SipStack* Stack = tsk_null;
 	SipEvent* e = tsk_null;
 
 	if(!sipevent){ /* should never happen ...but who know? */
@@ -225,7 +225,10 @@ int stack_callback(const tsip_event_t *sipevent)
 	}
 	else{
 		/* retrive the stack from the context */
-		Stack = dyn_cast<SipStack*> ((SipStack*)tsip_stack_get_userdata(sipevent->stack));
+		const SipSession* session = dyn_cast<const SipSession*>((const SipSession*)tsip_ssession_get_userdata(sipevent->ss));
+		if(session){
+			Stack = session->getStack();
+		}
 	}
 
 	if(!Stack){

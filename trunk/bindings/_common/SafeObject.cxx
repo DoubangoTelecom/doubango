@@ -26,12 +26,12 @@ SafeObject::SafeObject()
 	this->mutex = tsk_mutex_create();
 }
 
-int SafeObject::Lock()
+int SafeObject::Lock()const
 {
 	return tsk_mutex_lock(this->mutex);
 }
 
-int SafeObject::UnLock()
+int SafeObject::UnLock()const
 {
 	return tsk_mutex_unlock(this->mutex);
 }

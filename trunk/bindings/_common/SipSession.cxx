@@ -22,11 +22,12 @@
 #include "SipSession.h"
 #include "SipStack.h"
 
-SipSession::SipSession(SipStack* Stack)
+SipSession::SipSession(SipStack* _stack)
 {
-	this->handle = tsip_ssession_create(Stack->getHandle(),
+	this->handle = tsip_ssession_create(_stack->getHandle(),
 		TSIP_SSESSION_SET_USERDATA(this),
 		TSIP_SSESSION_SET_NULL());
+	this->stack = _stack;
 }
 
 SipSession::~SipSession()
@@ -105,5 +106,11 @@ bool SipSession::setToUri(const char* toUri)
 bool SipSession::setPayload(const char* payload, unsigned size)
 {
 	return false;
+}
+
+
+const SipStack* SipSession::getStack()const
+{
+	return this->stack;
 }
 

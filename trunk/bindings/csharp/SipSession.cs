@@ -38,7 +38,7 @@ public class SipSession : IDisposable {
     }
   }
 
-  public SipSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_SipSession(SipStack.getCPtr(Stack)), true) {
+  public SipSession(SipStack stack) : this(tinyWRAPPINVOKE.new_SipSession(SipStack.getCPtr(stack)), true) {
   }
 
   public bool addHeader(string name, string value) {

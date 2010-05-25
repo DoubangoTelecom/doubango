@@ -55,8 +55,8 @@ public: /* API functions */
 
 public: /* Public helper function */
 #if !defined(SWIG)
-	tsip_stack_handle_t* getHandle();
-	SipCallback* getCallback();
+	tsip_stack_handle_t* getHandle()const;
+	SipCallback* getCallback()const;
 	SipDebugCallback* getDebugCallback() const;
 #endif
 
