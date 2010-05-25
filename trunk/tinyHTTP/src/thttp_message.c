@@ -317,17 +317,17 @@ int thttp_message_serialize(const thttp_message_t *self, tsk_buffer_t *output)
 	if(THTTP_MESSAGE_IS_REQUEST(self)){
 		/*Method SP Request-URI SP HTTP-Version CRLF*/
 		/* Method */
-		tsk_buffer_append_2(output, "%s ", self->method);
+		tsk_buffer_append_2(output, "%s ", self->line.request.method);
 		/* Request URI: hpath?search */
 		tsk_buffer_append_2(output, "/%s%s%s ", 
-			self->url->hpath ? self->url->hpath : "",
-			self->url->search ? "?" : "",
-			self->url->search ? self->url->search : ""
+			self->line.request.url->hpath ? self->line.request.url->hpath : "",
+			self->line.request.url->search ? "?" : "",
+			self->line.request.url->search ? self->line.request.url->search : ""
 			);
 		/* HTTP VERSION */
 		tsk_buffer_append_2(output, "%s\r\n", THTTP_MESSAGE_VERSION_DEFAULT);
 		/* HOST */
-		tsk_buffer_append_2(output, "Host: %s:%u\r\n", self->url->host, self->url->port);
+		tsk_buffer_append_2(output, "Host: %s:%u\r\n", self->line.request.url->host, self->line.request.url->port);
 	}
 	else{
 		/*HTTP-Version SP Status-Code SP Reason-Phrase CRLF*/
@@ -439,8 +439,8 @@ static tsk_object_t* thttp_message_ctor(tsk_object_t *self, va_list * app)
 
 		case thttp_request:
 			{
-				message->method = tsk_strdup(va_arg(*app, const char*));
-				message->url = tsk_object_ref((void*)va_arg(*app, const thttp_url_t*));
+				message->line.request.method = tsk_strdup(va_arg(*app, const char*));
+				message->line.request.url = tsk_object_ref((void*)va_arg(*app, const thttp_url_t*));
 				break;
 			}
 
@@ -448,11 +448,11 @@ static tsk_object_t* thttp_message_ctor(tsk_object_t *self, va_list * app)
 			{
 				/*const thttp_request_t* request =*/ va_arg(*app, const thttp_request_t*);
 #if defined(__GNUC__)
-				message->status_code = (short)va_arg(*app, int);
+				message->line.response.status_code = (short)va_arg(*app, int);
 #else
-				message->status_code = va_arg(*app, short);
+				message->line.response.status_code = va_arg(*app, short);
 #endif
-				message->reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
+				message->line.response.reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
 				break;
 			}
 		}
@@ -470,11 +470,11 @@ static tsk_object_t* thttp_message_dtor(tsk_object_t *self)
 	thttp_message_t *message = self;
 	if(message){
 		if(THTTP_MESSAGE_IS_REQUEST(message)){
-			TSK_FREE(message->method);
-			TSK_OBJECT_SAFE_FREE(message->url);
+			TSK_FREE(message->line.request.method);
+			TSK_OBJECT_SAFE_FREE(message->line.request.url);
 		}
 		else if(THTTP_MESSAGE_IS_RESPONSE(message)){
-			TSK_FREE(message->reason_phrase);
+			TSK_FREE(message->line.response.reason_phrase);
 		}
 
 		TSK_FREE(message->http_version);

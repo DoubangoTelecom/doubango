@@ -415,6 +415,14 @@ int __thttp_stack_set(thttp_stack_t *self, va_list* app)
 				break;
 			}
 
+			//
+			// Userdata
+			//
+		case pname_userdata:
+			{ /* (const void*)USERDATA_PTR */
+				self->userdata = va_arg(*app, const void*);
+				break;
+			}
 
 		default:
 			{
@@ -524,8 +532,24 @@ int thttp_stack_set(thttp_stack_handle_t *self, ...)
 		va_end(ap);
 		return ret;
 	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+}
 
-	return -1;
+/**@ingroup thttp_stack_group
+*/
+const void* thttp_stack_get_userdata(thttp_stack_handle_t *self)
+{
+	thttp_stack_t *stack = self;
+	if(stack){
+		return stack->userdata;
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
 }
 
 /**@ingroup thttp_stack_group
@@ -539,6 +563,7 @@ int thttp_stack_stop(thttp_stack_handle_t *self)
 	thttp_stack_t *stack = self;
 
 	if(!stack){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	return tnet_transport_shutdown(stack->transport);

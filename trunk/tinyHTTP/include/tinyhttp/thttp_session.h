@@ -70,7 +70,7 @@ typedef enum thttp_session_param_type_e
 	httpp_option,
 	httpp_cred,
 	httpp_header,
-	httpp_context,
+	httpp_userdata,
 }
 thttp_session_param_type_t;
 
@@ -134,7 +134,7 @@ thttp_session_set(session,
 * @endcode
 */
 /**@ingroup thttp_session_group
-* @def THTTP_SESSION_SET_CONTEXT
+* @def THTTP_SESSION_SET_USERDATA
 * Sets user data (context). Will be return to the application layer each time the callback function is called.
 * This is a helper macro for @ref thttp_session_create and @ref thttp_session_set.
 * @param CTX_PTR A pointer to the data(const void*).
@@ -142,7 +142,7 @@ thttp_session_set(session,
 * @code
 // session = thttp_session_create(stack,
 thttp_session_set(session,
-	THTTP_SESSION_SET_CONTEXT(ctx),
+	THTTP_SESSION_SET_USERDATA(ctx),
 	THTTP_SESSION_SET_NULL());
 * @endcode
 */
@@ -154,7 +154,7 @@ thttp_session_set(session,
 #define THTTP_SESSION_SET_CRED(USERNAME_STR, PASSWORD_STR)		httpp_cred, (const char*)USERNAME_STR, (const char*)PASSWORD_STR
 #define THTTP_SESSION_SET_HEADER(NAME_STR, VALUE_STR)			httpp_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define THTTP_SESSION_UNSET_HEADER(NAME_STR)					THTTP_SESSION_SET_HEADER(NAME_STR, (const char*)-1)
-#define THTTP_SESSION_SET_CONTEXT(CTX_PTR)						httpp_context, (const void*)CTX_PTR
+#define THTTP_SESSION_SET_USERDATA(USERDATA_PTR)				httpp_userdata, (const void*)USERDATA_PTR
 #define THTTP_SESSION_SET_NULL()								httpp_null
 
 typedef struct thttp_session_s
@@ -163,7 +163,7 @@ typedef struct thttp_session_s
 
 	thttp_session_id_t id;
 	const struct thttp_stack_s* stack;
-	const void* context; // user's context
+	const void* userdata; // user's context
 	tsk_options_L_t *options;
 	tsk_params_L_t *headers;
 
@@ -191,7 +191,7 @@ typedef void thttp_stack_handle_t;
 TINYHTTP_API thttp_session_handle_t* thttp_session_create(const thttp_stack_handle_t* stack, ...);
 TINYHTTP_API int thttp_session_set(thttp_session_handle_t *self, ...);
 TINYHTTP_API thttp_session_id_t thttp_session_get_id(const thttp_session_handle_t *self);
-TINYHTTP_API const void* thttp_session_get_context(const thttp_session_handle_t *self);
+TINYHTTP_API const void* thttp_session_get_userdata(const thttp_session_handle_t *self);
 
 int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_t* response, tsk_bool_t answered);
 int thttp_session_signal_closed(thttp_session_t *self);

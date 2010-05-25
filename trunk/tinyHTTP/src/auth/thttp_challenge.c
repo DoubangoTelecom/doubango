@@ -147,12 +147,12 @@ thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *s
 	char *uristring = tsk_null;
 	thttp_header_t *header = 0;
 
-	if(!self || !request || !request->url){
+	if(!self || !request || !request->line.request.url){
 		goto bail;
 	}
 
 	/* Sets URI: hpath do not start with / ==> append a '/'*/
-	tsk_sprintf(&uristring, "/%s", request->url->hpath ? request->url->hpath : "");
+	tsk_sprintf(&uristring, "/%s", request->line.request.url->hpath ? request->line.request.url->hpath : "");
 
 	/* We compute the nc here because @ref thttp_challenge_get_response function will increment it's value. */
 	if(self->nc){
@@ -161,7 +161,7 @@ thttp_header_t *thttp_challenge_create_header_authorization(thttp_challenge_t *s
 
 	/* Computes the response (Basic and Digest)*/
 	if(THTTP_CHALLENGE_IS_DIGEST(self)){
-		if(thttp_challenge_get_digest_response(self, username, password, request->method, uristring, request->Content, &response)){
+		if(thttp_challenge_get_digest_response(self, username, password, request->line.request.method, uristring, request->Content, &response)){
 			goto bail;
 		}
 		response_size = (TSK_MD5_DIGEST_SIZE*2);

@@ -329,9 +329,9 @@ _match:
 
 		if(message->type == thttp_unknown){
 			message->type = thttp_request;
-			if(!message->method){
-				message->method = tsk_calloc(1, len+1);
-				memcpy(message->method, state->tag_start, len);
+			if(!message->line.request.method){
+				message->line.request.method = tsk_calloc(1, len+1);
+				memcpy(message->line.request.method, state->tag_start, len);
 			}
 		}
 		else{
@@ -346,8 +346,8 @@ _match:
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 		
-		if(!message->url){
-			message->url = thttp_url_parse(state->tag_start, (tsk_size_t)len);
+		if(!message->line.request.url){
+			message->line.request.url = thttp_url_parse(state->tag_start, (tsk_size_t)len);
 		}
 	}
 	break;
@@ -373,7 +373,7 @@ _match:
 		
 		if(message->type == thttp_unknown){
 			message->type = thttp_response;
-			message->status_code = atoi(state->tag_start);
+			message->line.response.status_code = atoi(state->tag_start);
 		}
 		else{
 			state->cs = thttp_machine_parser_message_error;
@@ -387,9 +387,9 @@ _match:
 		state->tag_end = p;
 		len = (int)(state->tag_end  - state->tag_start);
 
-		if(!message->reason_phrase){
-			message->reason_phrase = tsk_calloc(1, len+1);
-			memcpy(message->reason_phrase, state->tag_start, len);
+		if(!message->line.response.reason_phrase){
+			message->line.response.reason_phrase = tsk_calloc(1, len+1);
+			memcpy(message->line.response.reason_phrase, state->tag_start, len);
 		}
 	}
 	break;
