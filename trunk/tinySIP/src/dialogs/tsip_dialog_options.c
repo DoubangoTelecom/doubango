@@ -43,7 +43,7 @@
 
 #define DEBUG_STATE_MACHINE											0
 #define TSIP_DIALOG_OPTIONS_SIGNAL(self, type, code, phrase, options)	\
-	tsip_options_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->ss, code, phrase, options)
+	tsip_options_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, options)
 
 /* ======================== internal functions ======================== */
 int send_OPTIONS(tsip_dialog_options_t *self);

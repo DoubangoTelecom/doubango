@@ -63,11 +63,11 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_AS_REQUEST(self)	((tsip_request_t*)(self))
 
 
-#define TSIP_RESPONSE_CODE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
-#define TSIP_RESPONSE_PHRASE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->reason_phrase : tsk_null)
+#define TSIP_RESPONSE_CODE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->line.response.status_code : 0)
+#define TSIP_RESPONSE_PHRASE(self)			 (TSIP_MESSAGE_IS_RESPONSE((self)) ? (self)->line.response.reason_phrase : tsk_null)
 
-#define TSIP_REQUEST_METHOD(self)			 ((self)->method)
-#define TSIP_REQUEST_URI(self)				 ((self)->uri)
+#define TSIP_REQUEST_METHOD(self)			 ((self)->line.request.method)
+#define TSIP_REQUEST_URI(self)				 ((self)->line.request.uri)
 
 #define TSIP_MESSAGE_CSEQ_METHOD(self)		((self)->CSeq ? (self)->CSeq->method : tsk_null)
 #define TSIP_MESSAGE_HAS_CONTENT(self)		((self) && (self)->Content && (self)->Content->data)
@@ -76,20 +76,20 @@ TSIP_BEGIN_DECLS
 #define TSIP_MESSAGE_CONTENT(self)			(TSIP_MESSAGE_HAS_CONTENT(self) ? (self)->Content : tsk_null)
 #define TSIP_MESSAGE_CONTENT_TYPE(self)		(((self) && (self)->Content_Type) ? (self)->Content_Type->type : tsk_null)
 
-#define TSIP_REQUEST_IS_ACK(self)			((self) &&((self)->request_type==tsip_ACK))
-#define TSIP_REQUEST_IS_BYE(self)			((self) &&((self)->request_type==tsip_BYE))
-#define TSIP_REQUEST_IS_CANCEL(self)		((self) &&((self)->request_type==tsip_CANCEL))
-#define TSIP_REQUEST_IS_INVITE(self)		((self) &&((self)->request_type==tsip_INVITE))
-#define TSIP_REQUEST_IS_OPTIONS(self)		((self) &&((self)->request_type==tsip_OPTIONS))
-#define TSIP_REQUEST_IS_REGISTER(self)		((self) &&((self)->request_type==tsip_REGISTER))
-#define TSIP_REQUEST_IS_SUBSCRIBE(self)		((self) &&((self)->request_type==tsip_SUBSCRIBE))
-#define TSIP_REQUEST_IS_NOTIFY(self)		((self) &&((self)->request_type==tsip_NOTIFY))
-#define TSIP_REQUEST_IS_REFER(self)			((self) &&((self)->request_type==tsip_REFER))
-#define TSIP_REQUEST_IS_INFO(self)			((self) &&((self)->request_type==tsip_INFO))
-#define TSIP_REQUEST_IS_UPDATE(self)		((self) &&((self)->request_type==tsip_UPDATE))
-#define TSIP_REQUEST_IS_MESSAGE(self)		((self) &&((self)->request_type==tsip_MESSAGE))
-#define TSIP_REQUEST_IS_PUBLISH(self)		((self) &&((self)->request_type==tsip_PUBLISH))
-#define TSIP_REQUEST_IS_PRACK(self)			((self) &&((self)->request_type==tsip_PRACK))
+#define TSIP_REQUEST_IS_ACK(self)			((self) &&((self)->line.request.request_type==tsip_ACK))
+#define TSIP_REQUEST_IS_BYE(self)			((self) &&((self)->line.request.request_type==tsip_BYE))
+#define TSIP_REQUEST_IS_CANCEL(self)		((self) &&((self)->line.request.request_type==tsip_CANCEL))
+#define TSIP_REQUEST_IS_INVITE(self)		((self) &&((self)->line.request.request_type==tsip_INVITE))
+#define TSIP_REQUEST_IS_OPTIONS(self)		((self) &&((self)->line.request.request_type==tsip_OPTIONS))
+#define TSIP_REQUEST_IS_REGISTER(self)		((self) &&((self)->line.request.request_type==tsip_REGISTER))
+#define TSIP_REQUEST_IS_SUBSCRIBE(self)		((self) &&((self)->line.request.request_type==tsip_SUBSCRIBE))
+#define TSIP_REQUEST_IS_NOTIFY(self)		((self) &&((self)->line.request.request_type==tsip_NOTIFY))
+#define TSIP_REQUEST_IS_REFER(self)			((self) &&((self)->line.request.request_type==tsip_REFER))
+#define TSIP_REQUEST_IS_INFO(self)			((self) &&((self)->line.request.request_type==tsip_INFO))
+#define TSIP_REQUEST_IS_UPDATE(self)		((self) &&((self)->line.request.request_type==tsip_UPDATE))
+#define TSIP_REQUEST_IS_MESSAGE(self)		((self) &&((self)->line.request.request_type==tsip_MESSAGE))
+#define TSIP_REQUEST_IS_PUBLISH(self)		((self) &&((self)->line.request.request_type==tsip_PUBLISH))
+#define TSIP_REQUEST_IS_PRACK(self)			((self) &&((self)->line.request.request_type==tsip_PRACK))
 
 #define TSIP_RESPONSE_IS(self, code)		(TSIP_RESPONSE_CODE((self)) == code)
 #define TSIP_RESPONSE_IS_NXX(self, N)		(TSIP_MESSAGE_IS_RESPONSE((self)) && N##00<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= N##99)
@@ -189,29 +189,22 @@ typedef struct tsip_message_s
 	char *sip_version; /**< The SIP version. Only 'SIP/2.0' is supported. */
 	tsip_message_type_t type; /**< The type of this SIP message. */
 
-#if !defined(__C99__) /* C99 does not allow unnamed structs/unions */
-	union
-	{
-		struct
-		{
-#endif
+	/* Request Line */
+	union{
+		struct{
 			char *method; /**< SIP method name. e.g REGISTER, ACK or INVITE.*/
 			tsip_uri_t *uri;	/**< The Request-URI is a SIP or SIPS URI as described in Section 19.1 or a general URI (RFC 2396 [5]).  It indicates
 				   the user or service to which this request is being addressed. The Request-URI MUST NOT contain unescaped spaces or control
 				   characters and MUST NOT be enclosed in "<>". */
 			tsip_request_type_t request_type;
-#if !defined(__C99__)
-		};
-		struct
-		{
-#endif
+		} request;
+		struct{
 			short status_code; /**< 3-digit integer result code that indicates the outcome of an attempt to understand and satisfy a request. */
 			char *reason_phrase; /**< Textual description related to the status code. */
-#if !defined(__C99__)
-		};
-	};
+		} response;
+	} line;
 	
-#endif
+	
 	/*== MOST COMMON HEADERS. */
 	tsip_header_Via_t *firstVia; /**< First Via header. */
 	tsip_header_From_t *From;

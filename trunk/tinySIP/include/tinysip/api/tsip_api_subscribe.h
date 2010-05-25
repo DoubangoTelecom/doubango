@@ -65,7 +65,7 @@ typedef struct tsip_subscribe_event_e
 }
 tsip_subscribe_event_t;
 
-int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
+int tsip_subscribe_event_signal(tsip_subscribe_event_type_t type, tsip_ssession_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
 TINYSIP_API int tsip_action_SUBSCRIBE(const tsip_ssession_handle_t *ss, ...);
 TINYSIP_API int tsip_action_UNSUBSCRIBE(const tsip_ssession_handle_t *ss, ...);

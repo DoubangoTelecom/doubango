@@ -305,28 +305,9 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 		goto bail;
 	}
 
-	/* Create the request uri string from uri object
-	*/
-	{
-		tsk_istr_t port;
-
-		if(request->uri->port) tsk_itoa(request->uri->port, &port);
-		tsk_sprintf(&uristring, "%s%s%s%s%s%s%s%s%s", 
-
-		request->uri->scheme ? request->uri->scheme : "",
-		request->uri->scheme ? ":" : "",
-
-		request->uri->user_name ? request->uri->user_name : "",
-
-		request->uri->password ? ":" : "",
-		request->uri->password ? request->uri->password : "",
-
-		request->uri->host ? (request->uri->user_name ? "@" : "") : "",
-		request->uri->host ? request->uri->host : "",
-
-		request->uri->port ? ":" : "",
-		request->uri->port ? port : ""
-		);
+	if(!(uristring = tsip_uri_tostring(request->line.request.uri, tsk_true, tsk_true))){
+		TSK_DEBUG_ERROR("Failed to parse URI: %s", uristring);
+		goto bail;
 	}
 
 	/* We compute the nc here because @ref tsip_challenge_get_response function will increment it's value. */
@@ -335,7 +316,7 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 	}
 
 	/* entity_body ==> request-content */
-	if(tsip_challenge_get_response(self, request->method, uristring, request->Content, &response)){
+	if(tsip_challenge_get_response(self, request->line.request.method, uristring, request->Content, &response)){
 		goto bail;
 	}
 	

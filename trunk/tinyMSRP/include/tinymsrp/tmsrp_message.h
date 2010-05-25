@@ -116,7 +116,7 @@ typedef struct tmsrp_message_s
 	
 	tmsrp_message_type_t type;
 	char* tid;
-	/*union*/struct{
+	union{
 		struct{
 			char* method;
 			tmsrp_request_type_t type;

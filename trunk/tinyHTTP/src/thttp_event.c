@@ -52,8 +52,7 @@ thttp_event_t* thttp_event_create(thttp_event_type_t type, const thttp_session_h
 static void* thttp_event_ctor(void * self, va_list * app)
 {
 	thttp_event_t *httpevent = self;
-	if(httpevent)
-	{		
+	if(httpevent){		
 		httpevent->type = va_arg(*app, thttp_event_type_t);
 		httpevent->session = va_arg(*app, const thttp_session_handle_t*);
 		httpevent->description = tsk_strdup( va_arg(*app, const char *) );
@@ -65,8 +64,7 @@ static void* thttp_event_ctor(void * self, va_list * app)
 static void* thttp_event_dtor(void * self)
 { 
 	thttp_event_t *httpevent = self;
-	if(httpevent)
-	{
+	if(httpevent){
 		TSK_FREE(httpevent->description);
 		TSK_OBJECT_SAFE_FREE(httpevent->message);
 	}

@@ -43,7 +43,7 @@
 
 #define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_MESSAGE_SIGNAL(self, type, code, phrase, message)	\
-	tsip_message_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->ss, code, phrase, message)
+	tsip_message_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)
 
 /* ======================== internal functions ======================== */
 int send_MESSAGE(tsip_dialog_message_t *self);

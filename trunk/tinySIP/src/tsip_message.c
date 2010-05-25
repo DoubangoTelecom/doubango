@@ -259,12 +259,9 @@ tsk_bool_t tsip_message_allowed(const tsip_message_t *self, const char* method)
 	int index = 0;
 	tsip_header_Allow_t *hdr_allow;
 
-	if(self)
-	{
-		while( hdr_allow = (tsip_header_Allow_t*)tsip_message_get_headerAt(self, tsip_htype_Allow, index++) )
-		{
-			if(tsk_list_find_item_by_pred(hdr_allow->methods, pred_find_string_by_value, method))
-			{
+	if(self){
+		while( hdr_allow = (tsip_header_Allow_t*)tsip_message_get_headerAt(self, tsip_htype_Allow, index++) ){
+			if(tsk_list_find_item_by_pred(hdr_allow->methods, pred_find_string_by_value, method)){
 				return tsk_true;
 			}
 		}
@@ -338,9 +335,9 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 	if(TSIP_MESSAGE_IS_REQUEST(self)){
 		/*Method SP Request_URI SP SIP_Version CRLF*/
 		/* Method */
-		tsk_buffer_append_2(output, "%s ", self->method);
+		tsk_buffer_append_2(output, "%s ", self->line.request.method);
 		/* Request URI */
-		tsip_uri_serialize(self->uri, tsk_false, tsk_false, output);
+		tsip_uri_serialize(self->line.request.uri, tsk_false, tsk_false, output);
 		/* SIP VERSION */
 		tsk_buffer_append_2(output, " %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT);
 	}
@@ -503,7 +500,7 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 		message->type = va_arg(*app, tsip_message_type_t); 
 		message->headers = tsk_list_create();
 		message->sockfd = TNET_INVALID_FD;
-		message->request_type = tsip_NONE;
+		message->line.request.request_type = tsip_NONE;
 
 
 		switch(message->type)
@@ -515,10 +512,10 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 
 		case tsip_request:
 			{
-				message->method = tsk_strdup(va_arg(*app, const char*));
-				message->uri = tsk_object_ref((void*)va_arg(*app, const tsip_uri_t*));
+				message->line.request.method = tsk_strdup(va_arg(*app, const char*));
+				message->line.request.uri = tsk_object_ref((void*)va_arg(*app, const tsip_uri_t*));
 
-				message->request_type = tsip_request_get_type(message->method);
+				message->line.request.request_type = tsip_request_get_type(message->line.request.method);
 				break;
 			}
 
@@ -526,11 +523,11 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 			{
 				const tsip_request_t* request = va_arg(*app, const tsip_request_t*);
 #if defined(__GNUC__)
-				message->status_code = (short)va_arg(*app, int);
+				message->line.response.status_code = (short)va_arg(*app, int);
 #else
-				message->status_code = va_arg(*app, short);
+				message->line.response.status_code = va_arg(*app, short);
 #endif
-				message->reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
+				message->line.response.reason_phrase = tsk_strdup(va_arg(*app, const char*)); 
 				
 				/* Copy sockfd */
 				message->sockfd = request->sockfd;
@@ -602,12 +599,12 @@ static tsk_object_t* tsip_message_dtor(tsk_object_t *self)
 	{
 		if(TSIP_MESSAGE_IS_REQUEST(message))
 		{
-			TSK_FREE(message->method);
-			TSK_OBJECT_SAFE_FREE(message->uri);
+			TSK_FREE(message->line.request.method);
+			TSK_OBJECT_SAFE_FREE(message->line.request.uri);
 		}
 		else if(TSIP_MESSAGE_IS_RESPONSE(message))
 		{
-			TSK_FREE(message->reason_phrase);
+			TSK_FREE(message->line.response.reason_phrase);
 		}
 
 		TSK_FREE(message->sip_version);

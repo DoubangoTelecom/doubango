@@ -311,7 +311,7 @@ int tsip_dialog_layer_handle_incoming_msg(const tsip_dialog_layer_t *self, const
 			tsip_ssession_t* ss = tsk_null;
 			tsip_dialog_t* newdialog = tsk_null;
 			
-			switch(message->request_type){
+			switch(message->line.request.request_type){
 				case tsip_MESSAGE:
 					{	/* Server incoming MESSAGE */
 						if((ss = tsip_ssession_create_2(self->stack, message))){

@@ -172,7 +172,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	provide a new contact address, should its address change during the
 	duration of the dialog.
 	*/
-	switch(request->request_type){
+	switch(request->line.request.request_type){
 		case tsip_MESSAGE:
 			{
 				break;
@@ -223,7 +223,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 					- the "response" header field parameter, set to an empty value;
 			*/
 			const char* realm = TSIP_DIALOG_GET_STACK(self)->network.realm ? TSIP_DIALOG_GET_STACK(self)->network.realm->host : "(null)";
-			char* request_uri = tsip_uri_tostring(request->uri, tsk_false, tsk_false);
+			char* request_uri = tsip_uri_tostring(request->line.request.uri, tsk_false, tsk_false);
 			tsip_header_t* auth_hdr = tsip_challenge_create_empty_header_authorization(TSIP_DIALOG_GET_STACK(self)->identity.impi, realm, request_uri);
 			tsip_message_add_header(request, auth_hdr);
 			tsk_object_unref(auth_hdr), auth_hdr = tsk_null;
@@ -532,7 +532,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 {
 	if(self && TSIP_MESSAGE_IS_RESPONSE(response) && response->To)
 	{
-		short code = response->status_code;
+		short code = response->line.response.status_code;
 		const char *tag = response->To->tag;
 		tsk_bool_t isRegister = response->CSeq ? tsk_striequals(response->CSeq->method, "REGISTER") : tsk_false;
 
@@ -789,7 +789,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 			The UE shall use the temporary public user identity (IMSI-derived IMPU, cf. section 6.1.2) only in registration
 			messages (i.e. initial registration, re-registration or de-registration), but not in any other type of SIP requests.
 		*/
-		switch(request->request_type){
+		switch(request->line.request.request_type){
 			case tsip_BYE:
 			case tsip_INVITE:
 			case tsip_OPTIONS:
@@ -813,7 +813,7 @@ int tsip_dialog_add_common_headers(const tsip_dialog_t *self, tsip_request_t* re
 	//
 	if(netinfo)
 	{
-		switch(request->request_type){
+		switch(request->line.request.request_type){
 			case tsip_BYE:
 			case tsip_INVITE:
 			case tsip_OPTIONS:

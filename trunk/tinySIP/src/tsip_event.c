@@ -38,20 +38,19 @@
 #include "tsk_debug.h"
 
 /* internal function used to create base SIP event */
-tsip_event_t* tsip_event_create(tsip_stack_t* stack, tsip_ssession_t* ss, short code, const char* phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
+tsip_event_t* tsip_event_create(tsip_ssession_t* ss, short code, const char* phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
 {
 	tsip_event_t* e;
-	if((e = tsk_object_new(tsip_event_def_t, stack, ss, code, phrase, sipmessage, type))){
-		tsip_event_init(e, stack, ss, code, phrase, sipmessage, type);
+	if((e = tsk_object_new(tsip_event_def_t, ss, code, phrase, sipmessage, type))){
+		tsip_event_init(e, ss, code, phrase, sipmessage, type);
 	}
 	return e;
 }
 
 /* initialize a sip sevent */
-int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_ssession_t *ss, short code, const char *phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
+int tsip_event_init(tsip_event_t* self, tsip_ssession_t *ss, short code, const char *phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
 {
-	if(self && stack){
-		self->stack = tsk_object_ref(stack);
+	if(self && ss && ss->stack){
 		self->ss = tsk_object_ref(ss);
 		self->code = code;
 		tsk_strupdate(&(self->phrase), phrase);
@@ -61,15 +60,18 @@ int tsip_event_init(tsip_event_t* self, struct tsip_stack_s *stack, tsip_ssessio
 		}
 		return 0;
 	}
-	return -1;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 }
 
 /* signal new event (enque) */
-int tsip_event_signal(tsip_event_type_t type, tsip_stack_t *stack, tsip_ssession_t* ss, short code, const char *phrase)
+int tsip_event_signal(tsip_event_type_t type, tsip_ssession_t* ss, short code, const char *phrase)
 {
 	tsip_event_t* e;
-	if((e = tsip_event_create(stack, ss, code, phrase, tsk_null, type))){
-		TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), e);
+	if((e = tsip_event_create(ss, code, phrase, tsk_null, type))){
+		TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(ss->stack), e);
 		return 0;
 	}
 	return -1;
@@ -78,7 +80,6 @@ int tsip_event_signal(tsip_event_type_t type, tsip_stack_t *stack, tsip_ssession
 int tsip_event_deinit(tsip_event_t* self)
 {
 	if(self){
-		TSK_OBJECT_SAFE_FREE(self->stack);
 		TSK_OBJECT_SAFE_FREE(self->ss);
 
 		TSK_FREE(self->phrase);

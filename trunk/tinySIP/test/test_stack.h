@@ -353,7 +353,7 @@ void test_stack()
 
 	
 tsip_ssession_handle_t *op = tsip_ssession_create(stack,
-	TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_EXPIRES, "30"),
+	TSIP_SSESSION_SET_EXPIRES(30),
 	
 	TSIP_SSESSION_SET_CAPS("+g.oma.sip-im", ""),
 	TSIP_SSESSION_SET_CAPS("+audio", ""),

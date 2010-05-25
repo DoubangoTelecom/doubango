@@ -262,7 +262,7 @@ int tsip_transport_ipsec_updateMSG(tsip_transport_ipsec_t* self, tsip_message_t 
 	}
 
 	/* Security-Client, Require, Proxy-Require and Security Verify */
-	switch(msg->request_type)
+	switch(msg->line.request.request_type)
 	{
 		case tsip_BYE:
 		case tsip_INVITE:

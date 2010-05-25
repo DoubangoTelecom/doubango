@@ -62,12 +62,6 @@ int stack_callback(const tsip_event_t *sipevent)
 		return -1;
 	}
 
-	/* check if it's for our stack */
-	if(sipevent->stack != ctx->stack){
-		TSK_DEBUG_ERROR("We have received an event for another stack");
-		return  -2;
-	}
-
 	tsk_safeobj_lock(ctx);
 
 	switch(sipevent->type){
