@@ -317,7 +317,7 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 		goto bail;
 	}
 	else{
-		if(request->url->type == url_https){
+		if(request->line.request.url->type == url_https){
 			TNET_SOCKET_TYPE_SET_TLS(type);
 		}
 		else{
@@ -327,8 +327,8 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 	
 	/* connect to the server not already done */
 	if(self->session->fd == TNET_INVALID_FD){
-		if((self->session->fd = tnet_transport_connectto(self->session->stack->transport, request->url->host, request->url->port, type)) == TNET_INVALID_FD){
-			TSK_DEBUG_ERROR("Failed to connect to %s:%d.", request->url->host, request->url->port);
+		if((self->session->fd = tnet_transport_connectto(self->session->stack->transport, request->line.request.url->host, request->line.request.url->port, type)) == TNET_INVALID_FD){
+			TSK_DEBUG_ERROR("Failed to connect to %s:%d.", request->line.request.url->host, request->line.request.url->port);
 			goto bail;
 		}
 		/* Wait for the socket for writability */

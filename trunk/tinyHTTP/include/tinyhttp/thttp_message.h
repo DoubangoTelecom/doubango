@@ -120,8 +120,8 @@ THTTP_BEGIN_DECLS
 * @retval The phrase (const char*).
 */
 
-#define THTTP_RESPONSE_CODE(self)			 (THTTP_MESSAGE_IS_RESPONSE((self)) ? (self)->status_code : 0)
-#define THTTP_RESPONSE_PHRASE(self)			 ((self)->reason_phrase)
+#define THTTP_RESPONSE_CODE(self)			 (THTTP_MESSAGE_IS_RESPONSE((self)) ? (self)->line.response.status_code : 0)
+#define THTTP_RESPONSE_PHRASE(self)			 ((self)->line.response.reason_phrase)
 
 /**@ingroup thttp_message_group
 *@def THTTP_REQUEST_METHOD
@@ -135,8 +135,8 @@ THTTP_BEGIN_DECLS
 * @param self A pointer to a @ref thttp_request_t object.
 * @retval The Url (@ref thttp_url_t).
 */
-#define THTTP_REQUEST_METHOD(self)			 ((self) ? (self)->method : tsk_null)
-#define THTTP_REQUEST_URL(self)				 ((self) ? (self)->url : tsk_null)
+#define THTTP_REQUEST_METHOD(self)			 ((self) ? (self)->line.request.method : tsk_null)
+#define THTTP_REQUEST_URL(self)				 ((self) ? (self)->line.request.url : tsk_null)
 
 /**@ingroup thttp_message_group
 *@def THTTP_MESSAGE_CONTENT_LENGTH
@@ -190,26 +190,18 @@ typedef struct thttp_message_s
 	char *http_version; /**< The HTTP version. Only 'HTTP/1.1' is supported. */
 	thttp_message_type_t type; /**< The type of this HTTP message. */
 
-#if !defined(__C99__) /* C99 does not allow unnamed structs/unions */
-	union
-	{
-		struct
-		{
-#endif
+	/* Request-Line */
+	union{
+		struct{
 			char *method;
 			thttp_url_t *url;
-#if !defined(__C99__)
-		};
-		struct
-		{
-#endif
+		} request;
+		struct{
 			short status_code;
 			char *reason_phrase;
-#if !defined(__C99__)
-		};
-	};
+		} response;
+	} line;
 	
-#endif
 	/*== MOST COMMON HEADERS. */
 	thttp_header_Content_Type_t *Content_Type;
 	thttp_header_Content_Length_t *Content_Length;

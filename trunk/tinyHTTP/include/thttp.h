@@ -98,6 +98,10 @@ typedef enum thttp_stack_param_type_e
 	pname_tls_certs,
 #define THTTP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
 
+	/* User Data */
+	pname_userdata,
+#define THHTP_STACK_SET_USERDATA(USERDATA_PTR)	pname_userdata, (const void*)USERDATA_PTR
+
 }
 thttp_stack_param_type_t;
 
@@ -123,6 +127,8 @@ typedef struct thttp_stack_s
 
 	thttp_sessions_L_t* sessions;
 	
+	const void* userdata;
+
 	TSK_DECLARE_SAFEOBJ;
 }
 thttp_stack_t;
@@ -130,6 +136,7 @@ thttp_stack_t;
 TINYHTTP_API thttp_stack_handle_t *thttp_stack_create(thttp_stack_callback_f callback, ...);
 TINYHTTP_API int thttp_stack_start(thttp_stack_handle_t *self);
 TINYHTTP_API int thttp_stack_set(thttp_stack_handle_t *self, ...);
+TINYHTTP_API const void* thttp_stack_get_userdata(thttp_stack_handle_t *self);
 TINYHTTP_API int thttp_stack_stop(thttp_stack_handle_t *self);
 
 TINYHTTP_GEXTERN const tsk_object_def_t *thttp_stack_def_t;

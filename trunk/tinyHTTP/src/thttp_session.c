@@ -80,9 +80,9 @@ int __thttp_session_set(thttp_session_t *self, va_list* app)
 					break;
 				}
 
-			case httpp_context:
-				{	/* (const void*)CTX_PTR */
-					self->context = va_arg(*app, const void *);
+			case httpp_userdata:
+				{	/* (const void*)USERDATA_PTR */
+					self->userdata = va_arg(*app, const void *);
 					break;
 				}
 
@@ -202,10 +202,10 @@ thttp_session_id_t thttp_session_get_id(const thttp_session_handle_t *self)
 * @retval A pointer to the context. Previously defined by using @ref THTTP_SESSION_SET_CONTEXT() macro.
 * @sa @ref THTTP_SESSION_SET_CONTEXT
 */
-const void* thttp_session_get_context(const thttp_session_handle_t *self)
+const void* thttp_session_get_userdata(const thttp_session_handle_t *self)
 {
 	if(self){
-		return ((const thttp_session_t*)self)->context;
+		return ((const thttp_session_t*)self)->userdata;
 	}
 	return tsk_null;
 }
