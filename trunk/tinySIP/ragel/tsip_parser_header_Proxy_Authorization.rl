@@ -79,7 +79,7 @@
 //
 //	action parse_uri
 //	{
-//		TSK_PARSER_SET_STRING(hdr_Proxy_Authorization->uri);
+//		TSK_PARSER_SET_STRING(hdr_Proxy_Authorization->line.request.uri);
 //	}
 //
 //	action parse_response
@@ -175,9 +175,9 @@
 //				Proxy_Authorization->nonce ? Proxy_Authorization->nonce : "",
 //				Proxy_Authorization->nonce ? "\"" : "",
 //
-//				Proxy_Authorization->uri ? ",uri=\"" : "",
-//				Proxy_Authorization->uri ? Proxy_Authorization->uri : "",
-//				Proxy_Authorization->uri ? "\"" : "",
+//				Proxy_Authorization->line.request.uri ? ",uri=\"" : "",
+//				Proxy_Authorization->line.request.uri ? Proxy_Authorization->line.request.uri : "",
+//				Proxy_Authorization->line.request.uri ? "\"" : "",
 //				
 //				Proxy_Authorization->response ? ",response=\"" : "",
 //				Proxy_Authorization->response ? Proxy_Authorization->response : "",
@@ -261,7 +261,7 @@
 //		TSK_FREE(Proxy_Authorization->username);
 //		TSK_FREE(Proxy_Authorization->realm);
 //		TSK_FREE(Proxy_Authorization->nonce);
-//		TSK_FREE(Proxy_Authorization->uri);
+//		TSK_FREE(Proxy_Authorization->line.request.uri);
 //		TSK_FREE(Proxy_Authorization->response);
 //		TSK_FREE(Proxy_Authorization->algorithm);
 //		TSK_FREE(Proxy_Authorization->cnonce);

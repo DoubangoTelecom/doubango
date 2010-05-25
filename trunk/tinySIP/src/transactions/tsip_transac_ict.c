@@ -722,7 +722,7 @@ int tsip_transac_ict_send_ACK(tsip_transac_ict_t *self, const tsip_response_t* r
 	// check lastINVITE
 	if(	!self->request->firstVia ||
 		!self->request->From || 
-		!self->request->uri || 
+		!self->request->line.request.uri || 
 		!self->request->Call_ID || 
 		!self->request->CSeq)
 	{
@@ -764,7 +764,7 @@ int tsip_transac_ict_send_ACK(tsip_transac_ict_t *self, const tsip_response_t* r
 		it was, the body in the ACK MAY be any type listed in the Accept
 		header field in the 415.
 	*/
-	if((request = tsip_request_new("ACK", self->request->uri,  self->request->From->uri, response->To->uri, self->request->Call_ID->value, self->request->CSeq->seq))){
+	if((request = tsip_request_new("ACK", self->request->line.request.uri,  self->request->From->uri, response->To->uri, self->request->Call_ID->value, self->request->CSeq->seq))){
 		// Via
 		request->firstVia = tsk_object_ref((void*)self->request->firstVia);
 		// tags

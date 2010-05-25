@@ -100,7 +100,7 @@ typedef enum thttp_stack_param_type_e
 
 	/* User Data */
 	pname_userdata,
-#define THHTP_STACK_SET_USERDATA(USERDATA_PTR)	pname_userdata, (const void*)USERDATA_PTR
+#define THTTP_STACK_SET_USERDATA(USERDATA_PTR)	pname_userdata, (const void*)USERDATA_PTR
 
 }
 thttp_stack_param_type_t;

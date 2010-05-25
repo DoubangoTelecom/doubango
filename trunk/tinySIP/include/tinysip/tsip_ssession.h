@@ -53,6 +53,9 @@ typedef uint64_t tsip_ssession_id_t;
 #	define TSIP_SSESSION_EXPIRES_DEFAULT		600000000
 #endif
 
+
+#define TSIP_SSESSION(self) ((tsip_ssession_t*)(self))
+
 typedef enum tsip_ssession_param_type_e
 {
 	sstype_null = tsk_null,

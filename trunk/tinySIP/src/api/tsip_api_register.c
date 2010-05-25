@@ -45,12 +45,12 @@ extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app)
 extern int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
 
 /* internal function used to signal evant from REGISTER dialog to user app */
-int tsip_register_event_signal(tsip_register_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
+int tsip_register_event_signal(tsip_register_event_type_t type, tsip_ssession_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_register_event_t* sipevent = TSIP_REGISTER_EVENT_CREATE(type);
-	tsip_event_init(TSIP_EVENT(sipevent), stack, ss, status_code, phrase, sipmessage, tsip_event_register);
+	tsip_event_init(TSIP_EVENT(sipevent), ss, status_code, phrase, sipmessage, tsip_event_register);
 
-	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), sipevent);
+	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(ss->stack), sipevent);
 
 	return 0;
 }

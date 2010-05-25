@@ -60,7 +60,7 @@ typedef struct tsip_publish_event_e
 }
 tsip_publish_event_t;
 
-int tsip_publish_event_signal(tsip_publish_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
+int tsip_publish_event_signal(tsip_publish_event_type_t type, tsip_ssession_handle_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
 TINYSIP_API int tsip_action_PUBLISH(const tsip_ssession_handle_t *ss, ...);
 TINYSIP_API int tsip_action_UNPUBLISH(const tsip_ssession_handle_t *ss, ...);

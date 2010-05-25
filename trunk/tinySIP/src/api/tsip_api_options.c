@@ -41,12 +41,12 @@
 
 extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
 
-int tsip_options_event_signal(tsip_options_event_type_t type, struct tsip_stack_s *stack, tsip_ssession_handle_t* SSESSION, short status_code, const char *phrase, const tsip_message_t* sipmessage)
+int tsip_options_event_signal(tsip_options_event_type_t type, tsip_ssession_handle_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
 	tsip_options_event_t* sipevent = TSIP_OPTIONS_EVENT_CREATE(type);
-	tsip_event_init(TSIP_EVENT(sipevent), stack, SSESSION, status_code, phrase, sipmessage, tsip_event_options);
+	tsip_event_init(TSIP_EVENT(sipevent), ss, status_code, phrase, sipmessage, tsip_event_options);
 
-	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(stack), sipevent);
+	TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(TSIP_SSESSION(ss)->stack), sipevent);
 
 	return 0;
 }

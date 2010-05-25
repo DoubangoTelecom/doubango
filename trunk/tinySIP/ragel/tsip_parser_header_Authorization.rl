@@ -79,7 +79,7 @@
 //
 //	action parse_uri
 //	{
-//		TSK_PARSER_SET_STRING(hdr_Authorization->uri);
+//		TSK_PARSER_SET_STRING(hdr_Authorization->line.request.uri);
 //	}
 //
 //	action parse_response
@@ -174,9 +174,9 @@
 //				Authorization->nonce ? Authorization->nonce : "",
 //				Authorization->nonce ? "\"" : "",
 //
-//				Authorization->uri ? ",uri=\"" : "",
-//				Authorization->uri ? Authorization->uri : "",
-//				Authorization->uri ? "\"" : "",
+//				Authorization->line.request.uri ? ",uri=\"" : "",
+//				Authorization->line.request.uri ? Authorization->line.request.uri : "",
+//				Authorization->line.request.uri ? "\"" : "",
 //				
 //				Authorization->response ? ",response=\"" : "",
 //				Authorization->response ? Authorization->response : "",
@@ -260,7 +260,7 @@
 //		TSK_FREE(Authorization->username);
 //		TSK_FREE(Authorization->realm);
 //		TSK_FREE(Authorization->nonce);
-//		TSK_FREE(Authorization->uri);
+//		TSK_FREE(Authorization->line.request.uri);
 //		TSK_FREE(Authorization->response);
 //		TSK_FREE(Authorization->algorithm);
 //		TSK_FREE(Authorization->cnonce);
