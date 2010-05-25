@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\_common\SipDebug.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\..\_common\SipEvent.cxx"
 				>
 			</File>
@@ -224,6 +228,10 @@
 			</File>
 			<File
 				RelativePath="..\..\csharp\tinyWRAP_wrap.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\..\_common\XcapStack.cxx"
 				>
 			</File>
 		</Filter>
@@ -257,6 +265,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\_common\SipDebug.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\_common\SipEvent.h"
 				>
 			</File>
@@ -282,6 +294,10 @@
 			</File>
 			<File
 				RelativePath="..\..\csharp\tinyWRAP_wrap.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\_common\XcapStack.h"
 				>
 			</File>
 		</Filter>

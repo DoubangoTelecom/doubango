@@ -29,7 +29,7 @@ class SipStack;
 class SipSession
 {
 public:
-	SipSession(SipStack* Stack);
+	SipSession(SipStack* stack);
 	virtual ~SipSession();
 
 public:
@@ -50,9 +50,14 @@ public:
 	%apply (const char *str, unsigned len) { (const char *str, unsigned len) };
 #endif
 	bool setPayload(const char *str, unsigned len);
+
+#if !defined(SWIG)
+	const SipStack* getStack() const;
+#endif
 	
 protected:
 	tsip_ssession_handle_t* handle;
+	const SipStack* stack;
 };
 
 #endif /* TINYWRAP_SIPSESSION_H */

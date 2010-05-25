@@ -424,7 +424,7 @@ namespace Swig {
  * C++ director class methods
  * --------------------------------------------------- */
 
-#include "tinyWRAP_wrap.h"
+#include "java/tinyWRAP_wrap.h"
 
 SwigDirector_SipCallback::SwigDirector_SipCallback(JNIEnv *jenv) : SipCallback(), Swig::Director(jenv) {
 }
@@ -1632,7 +1632,7 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SafeObject_1Lock(
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SafeObject **)&jarg1; 
-  result = (int)(arg1)->Lock();
+  result = (int)((SafeObject const *)arg1)->Lock();
   jresult = (jint)result; 
   return jresult;
 }
@@ -1647,7 +1647,7 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SafeObject_1UnLoc
   (void)jcls;
   (void)jarg1_;
   arg1 = *(SafeObject **)&jarg1; 
-  result = (int)(arg1)->UnLock();
+  result = (int)((SafeObject const *)arg1)->UnLock();
   jresult = (jint)result; 
   return jresult;
 }

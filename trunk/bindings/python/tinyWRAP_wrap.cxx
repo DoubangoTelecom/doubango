@@ -3598,7 +3598,7 @@ SWIG_AsVal_bool (PyObject *obj, bool *val)
  * C++ director class methods
  * --------------------------------------------------- */
 
-#include "tinyWRAP_wrap.h"
+#include "python/tinyWRAP_wrap.h"
 
 SwigDirector_SipCallback::SwigDirector_SipCallback(PyObject *self): SipCallback(), Swig::Director(self) {
   SWIG_DIRECTOR_RGTR((SipCallback *)this, this); 
@@ -5312,10 +5312,10 @@ SWIGINTERN PyObject *_wrap_SafeObject_Lock(PyObject *SWIGUNUSEDPARM(self), PyObj
   if (!PyArg_ParseTuple(args,(char *)"O:SafeObject_Lock",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SafeObject, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SafeObject_Lock" "', argument " "1"" of type '" "SafeObject *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SafeObject_Lock" "', argument " "1"" of type '" "SafeObject const *""'"); 
   }
   arg1 = reinterpret_cast< SafeObject * >(argp1);
-  result = (int)(arg1)->Lock();
+  result = (int)((SafeObject const *)arg1)->Lock();
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:
@@ -5334,10 +5334,10 @@ SWIGINTERN PyObject *_wrap_SafeObject_UnLock(PyObject *SWIGUNUSEDPARM(self), PyO
   if (!PyArg_ParseTuple(args,(char *)"O:SafeObject_UnLock",&obj0)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SafeObject, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SafeObject_UnLock" "', argument " "1"" of type '" "SafeObject *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SafeObject_UnLock" "', argument " "1"" of type '" "SafeObject const *""'"); 
   }
   arg1 = reinterpret_cast< SafeObject * >(argp1);
-  result = (int)(arg1)->UnLock();
+  result = (int)((SafeObject const *)arg1)->UnLock();
   resultobj = SWIG_From_int(static_cast< int >(result));
   return resultobj;
 fail:

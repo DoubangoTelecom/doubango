@@ -349,7 +349,7 @@ namespace Swig {
  * C++ director class methods
  * --------------------------------------------------- */
 
-#include "tinyWRAP_wrap.h"
+#include "csharp/tinyWRAP_wrap.h"
 
 SwigDirector_SipCallback::SwigDirector_SipCallback() : SipCallback(), Swig::Director() {
   swig_init_callbacks();
@@ -1156,7 +1156,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_SafeObject_Lock(void * jarg1) {
   int result;
   
   arg1 = (SafeObject *)jarg1; 
-  result = (int)(arg1)->Lock();
+  result = (int)((SafeObject const *)arg1)->Lock();
   jresult = result; 
   return jresult;
 }
@@ -1168,7 +1168,7 @@ SWIGEXPORT int SWIGSTDCALL CSharp_SafeObject_UnLock(void * jarg1) {
   int result;
   
   arg1 = (SafeObject *)jarg1; 
-  result = (int)(arg1)->UnLock();
+  result = (int)((SafeObject const *)arg1)->UnLock();
   jresult = result; 
   return jresult;
 }
