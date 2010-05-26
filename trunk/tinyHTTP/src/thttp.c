@@ -270,6 +270,12 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 			}
 			goto bail;
 
+		case event_error:
+			// alert all dialogs
+			if((session = thttp_session_get_by_fd(stack->sessions, e->fd))){
+				ret = thttp_session_signal_error(session);
+			}
+			goto bail;
 		case event_connected:
 		default:{
 				tsk_safeobj_unlock(stack);

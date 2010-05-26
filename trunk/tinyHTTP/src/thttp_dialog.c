@@ -45,6 +45,7 @@
 #define DEBUG_STATE_MACHINE 1
 #define THTTP_MESSAGE_DESCRIPTION(message) \
 		THTTP_MESSAGE_IS_RESPONSE(message) ? THTTP_RESPONSE_PHRASE(message) : THTTP_REQUEST_METHOD(message)
+#define THTTP_DIALOG_TRANSPORT_ERROR_CODE -0xFF
 
 /* ======================== internal functions ======================== */
 int thttp_dialog_send_request(thttp_dialog_t *self);
@@ -78,9 +79,9 @@ typedef enum _fsm_action_e
 	_fsm_action_close = atype_close,
 	_fsm_action_message = atype_i_message,
 	_fsm_action_closed = atype_closed,
+	_fsm_action_error = atype_error, // Transport error and not HTTP message error (e.g. 409)
 	
-	_fsm_action_transporterror = 0xFF,
-	_fsm_action_error,
+	/* _fsm_action_any_other = 0xFF */
 }
 _fsm_action_t;
 
@@ -151,7 +152,18 @@ int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app)
 	self->answered = tsk_true;
 
 	/* Retry with creadentials. */
-	return thttp_dialog_send_request(self);
+	ret = thttp_dialog_send_request(self);
+
+	/* very important: do not break the state machine for transport error events
+	* => let the transport layer do it for us throught (transport_error).
+	* => transport_error event will be queued and sent after this event (i_message)
+	*/
+	if(ret == THTTP_DIALOG_TRANSPORT_ERROR_CODE){
+		return 0;
+	}
+	else{
+		return ret;
+	}
 }
 
 /* Transfering -> (1xx) -> Transfering */
@@ -183,11 +195,10 @@ int thttp_dialog_Any_2_Terminated_X_closed(va_list *app)
 {
 	int ret = -2;
 	thttp_dialog_t *self = va_arg(*app, thttp_dialog_t *);
-	thttp_event_t* e = tsk_null;
+	thttp_event_t* e;
 	//self->fd = TNET_INVALID_FD; // to avoid close(fd) in the destructor
 
-	// alert the user
-	/* Alert the user. */
+	/* Alert the user */
 	if((e = thttp_event_create(thttp_event_closed, self->session, "Connection closed", tsk_null))){
 		ret = thttp_stack_alert(self->session->stack, e);
 		TSK_OBJECT_SAFE_FREE(e);
@@ -199,6 +210,16 @@ int thttp_dialog_Any_2_Terminated_X_closed(va_list *app)
 /* Any -> (error) -> Terminated */
 int thttp_dialog_Any_2_Terminated_X_Error(va_list *app)
 {
+	int ret = -2;
+	thttp_dialog_t *self = va_arg(*app, thttp_dialog_t *);
+	thttp_event_t* e;
+
+	/* Alert the user */
+	if((e = thttp_event_create(thttp_event_transport_error, self->session, "Transport error", tsk_null))){
+		ret = thttp_stack_alert(self->session->stack, e);
+		TSK_OBJECT_SAFE_FREE(e);
+	}
+
 	return 0;
 }
 
@@ -348,7 +369,7 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 	}
 	else{
 		TSK_DEBUG_INFO("Failed to sent HTTP/HTTPS message.");
-		ret = -15;
+		ret = THTTP_DIALOG_TRANSPORT_ERROR_CODE;
 	}
 
 bail:

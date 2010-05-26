@@ -492,6 +492,7 @@ void *tnet_transport_mainthread(void *param)
 
 		/* Get the network events flags */
 		if (WSAEnumNetworkEvents(active_socket->fd, active_event, &networkEvents) == SOCKET_ERROR){
+			TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 			TNET_PRINT_LAST_ERROR("WSAEnumNetworkEvents have failed.");
 
 			tsk_safeobj_unlock(context);
@@ -506,6 +507,7 @@ void *tnet_transport_mainthread(void *param)
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_ACCEPT", transport->description);
 
 			if(networkEvents.iErrorCode[FD_ACCEPT_BIT]){
+				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				TNET_PRINT_LAST_ERROR("ACCEPT FAILED.");
 				goto done;
 			}
@@ -538,6 +540,7 @@ void *tnet_transport_mainthread(void *param)
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_CONNECT", transport->description);
 
 			if(networkEvents.iErrorCode[FD_CONNECT_BIT]){
+				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				TNET_PRINT_LAST_ERROR("CONNECT FAILED.");
 				goto done;
 			}
@@ -557,6 +560,7 @@ void *tnet_transport_mainthread(void *param)
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description);
 
 			if(networkEvents.iErrorCode[FD_READ_BIT]){
+				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				TNET_PRINT_LAST_ERROR("READ FAILED.");
 				goto done;
 			}
@@ -592,8 +596,7 @@ void *tnet_transport_mainthread(void *param)
 				ret = WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0);
 			}
 
-			if(ret)
-			{
+			if(ret){
 				ret = WSAGetLastError();
 				if(ret == WSAEWOULDBLOCK){
 					TSK_DEBUG_WARN("WSAEWOULDBLOCK error for READ SSESSION");
@@ -630,6 +633,7 @@ void *tnet_transport_mainthread(void *param)
 			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_WRITE", transport->description);
 
 			if(networkEvents.iErrorCode[FD_WRITE_BIT]){
+				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
 				TNET_PRINT_LAST_ERROR("WRITE FAILED.");
 				goto done;
 			}			

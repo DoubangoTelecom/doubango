@@ -194,7 +194,10 @@ TINYHTTP_API thttp_session_id_t thttp_session_get_id(const thttp_session_handle_
 TINYHTTP_API const void* thttp_session_get_userdata(const thttp_session_handle_t *self);
 
 int thttp_session_update_challenges(thttp_session_t *self, const thttp_response_t* response, tsk_bool_t answered);
+
 int thttp_session_signal_closed(thttp_session_t *self);
+int thttp_session_signal_error(thttp_session_t *self);
+
 thttp_session_t* thttp_session_get_by_fd(thttp_sessions_L_t* sessions, tnet_fd_t fd);
 
 

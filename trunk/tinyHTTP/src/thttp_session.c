@@ -40,6 +40,8 @@
 /**@defgroup thttp_session_group HTTP Session
 */
 
+int thttp_session_signal(thttp_session_t *self, thttp_action_type_t atype);
+
 /**Sets parameters.
 */
 int __thttp_session_set(thttp_session_t *self, va_list* app)
@@ -352,31 +354,51 @@ bail:
 
 }
 
-/** Signals to all dialogs that the connection have been closed.
-*/
-int thttp_session_signal_closed(thttp_session_t *self)
+/* internal function */
+int thttp_session_signal(thttp_session_t *self, thttp_action_type_t atype)
 {
 	tsk_list_item_t *item;
 	
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
 	tsk_safeobj_lock(self);
-
+again:
 	tsk_list_foreach(item, self->dialogs){
-		// FIXME: not thread-safe
-		//--thttp_dialog_fsm_act((thttp_dialog_t*)item->data, atype_closed, tsk_null, tsk_null);
+		thttp_dialog_fsm_act((thttp_dialog_t*)item->data, atype, tsk_null, tsk_null);
+		/* As the above action could terminate the dialog (which means change the content of self->dialogs) 
+		* => list becomes unsafe */
+		goto again;
 	}
-	self->fd = TNET_INVALID_FD;
+
+	switch(atype){
+		case atype_closed:
+			self->fd = TNET_INVALID_FD;
+			break;
+		default:
+			break;
+	}
 	
 	tsk_safeobj_unlock(self);
 
 	return 0;
 }
 
-/** Retrieves a session by fd.
-*/
+/** Signals to all dialogs that the connection have been closed. */
+int thttp_session_signal_closed(thttp_session_t *self)
+{
+	return thttp_session_signal(self, atype_closed);
+}
+
+/** Signals to all dialogss that we got an error */
+int thttp_session_signal_error(thttp_session_t *self)
+{
+	return thttp_session_signal(self, atype_error);
+}
+
+/** Retrieves a session by fd */
 thttp_session_t* thttp_session_get_by_fd(thttp_sessions_L_t* sessions, tnet_fd_t fd)
 {
 	thttp_session_t* ret = tsk_null;
