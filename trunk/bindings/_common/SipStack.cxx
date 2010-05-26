@@ -22,6 +22,8 @@
 #include "SipStack.h"
 
 #include "SipSession.h"
+#include "PublicationEvent.h"
+#include "PublicationSession.h"
 #include "RegistrationEvent.h"
 #include "RegistrationSession.h"
 #include "SubscriptionEvent.h"
@@ -245,27 +247,26 @@ int stack_callback(const tsip_event_t *sipevent)
 					e = new RegistrationEvent(sipevent);
 					Stack->getCallback()->OnRegistrationChanged((const RegistrationEvent*)e);
 				}
-				//ret = register_handle_event(sipevent);
 				break;
 			}
 		case tsip_event_invite:
 			{	/* INVITE */
-				//ret = invite_handle_event(sipevent);
 				break;
 			}
 		case tsip_event_message:
 			{	/* MESSAGE */
-				//ret = message_handle_event(sipevent);
 				break;
 			}
 		case tsip_event_options:
 			{ /* OPTIONS */
-				//ret = options_handle_event(sipevent);
 				break;
 			}
 		case tsip_event_publish:
 			{ /* PUBLISH */
-				//ret = publish_handle_event(sipevent);
+				if(Stack->getCallback()){
+					e = new PublicationEvent(sipevent);
+					Stack->getCallback()->OnPublicationChanged((const PublicationEvent*)e);
+				}
 				break;
 			}
 		case tsip_event_subscribe:

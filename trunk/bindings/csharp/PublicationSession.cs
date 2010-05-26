@@ -10,46 +10,45 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class SafeObject : IDisposable {
+public class PublicationSession : SipSession {
   private HandleRef swigCPtr;
-  protected bool swigCMemOwn;
 
-  internal SafeObject(IntPtr cPtr, bool cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+  internal PublicationSession(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.PublicationSessionUpcast(cPtr), cMemoryOwn) {
     swigCPtr = new HandleRef(this, cPtr);
   }
 
-  internal static HandleRef getCPtr(SafeObject obj) {
+  internal static HandleRef getCPtr(PublicationSession obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~SafeObject() {
+  ~PublicationSession() {
     Dispose();
   }
 
-  public virtual void Dispose() {
+  public override void Dispose() {
     lock(this) {
       if (swigCPtr.Handle != IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          tinyWRAPPINVOKE.delete_SafeObject(swigCPtr);
+          tinyWRAPPINVOKE.delete_PublicationSession(swigCPtr);
         }
         swigCPtr = new HandleRef(null, IntPtr.Zero);
       }
       GC.SuppressFinalize(this);
+      base.Dispose();
     }
   }
 
-  public SafeObject() : this(tinyWRAPPINVOKE.new_SafeObject(), true) {
+  public PublicationSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_PublicationSession(SipStack.getCPtr(Stack)), true) {
   }
 
-  public int Lock() {
-    int ret = tinyWRAPPINVOKE.SafeObject_Lock(swigCPtr);
+  public bool Publish(byte[] payload, uint len) {
+    bool ret = tinyWRAPPINVOKE.PublicationSession_Publish(swigCPtr, payload, len);
     return ret;
   }
 
-  public int UnLock() {
-    int ret = tinyWRAPPINVOKE.SafeObject_UnLock(swigCPtr);
+  public bool UnPublish() {
+    bool ret = tinyWRAPPINVOKE.PublicationSession_UnPublish(swigCPtr);
     return ret;
   }
 

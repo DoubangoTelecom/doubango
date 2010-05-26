@@ -8,42 +8,43 @@
 
 package org.doubango.tinyWRAP;
 
-public enum tsip_event_type_t {
-  tsip_event_invite,
-  tsip_event_message,
-  tsip_event_options,
-  tsip_event_publish,
-  tsip_event_register,
-  tsip_event_subscribe,
-  tsip_event_dialog;
+public enum tsip_publish_event_type_t {
+  tsip_i_publish,
+  tsip_ai_publish,
+  tsip_o_publish,
+  tsip_ao_publish,
+  tsip_i_unpublish,
+  tsip_ai_unpublish,
+  tsip_o_unpublish,
+  tsip_ao_unpublish;
 
   public final int swigValue() {
     return swigValue;
   }
 
-  public static tsip_event_type_t swigToEnum(int swigValue) {
-    tsip_event_type_t[] swigValues = tsip_event_type_t.class.getEnumConstants();
+  public static tsip_publish_event_type_t swigToEnum(int swigValue) {
+    tsip_publish_event_type_t[] swigValues = tsip_publish_event_type_t.class.getEnumConstants();
     if (swigValue < swigValues.length && swigValue >= 0 && swigValues[swigValue].swigValue == swigValue)
       return swigValues[swigValue];
-    for (tsip_event_type_t swigEnum : swigValues)
+    for (tsip_publish_event_type_t swigEnum : swigValues)
       if (swigEnum.swigValue == swigValue)
         return swigEnum;
-    throw new IllegalArgumentException("No enum " + tsip_event_type_t.class + " with value " + swigValue);
+    throw new IllegalArgumentException("No enum " + tsip_publish_event_type_t.class + " with value " + swigValue);
   }
 
   @SuppressWarnings("unused")
-  private tsip_event_type_t() {
+  private tsip_publish_event_type_t() {
     this.swigValue = SwigNext.next++;
   }
 
   @SuppressWarnings("unused")
-  private tsip_event_type_t(int swigValue) {
+  private tsip_publish_event_type_t(int swigValue) {
     this.swigValue = swigValue;
     SwigNext.next = swigValue+1;
   }
 
   @SuppressWarnings("unused")
-  private tsip_event_type_t(tsip_event_type_t swigEnum) {
+  private tsip_publish_event_type_t(tsip_publish_event_type_t swigEnum) {
     this.swigValue = swigEnum.swigValue;
     SwigNext.next = this.swigValue+1;
   }

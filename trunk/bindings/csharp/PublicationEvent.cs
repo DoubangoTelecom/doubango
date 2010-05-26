@@ -10,46 +10,46 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class SafeObject : IDisposable {
+public class PublicationEvent : SipEvent {
   private HandleRef swigCPtr;
-  protected bool swigCMemOwn;
 
-  internal SafeObject(IntPtr cPtr, bool cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+  internal PublicationEvent(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.PublicationEventUpcast(cPtr), cMemoryOwn) {
     swigCPtr = new HandleRef(this, cPtr);
   }
 
-  internal static HandleRef getCPtr(SafeObject obj) {
+  internal static HandleRef getCPtr(PublicationEvent obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~SafeObject() {
+  ~PublicationEvent() {
     Dispose();
   }
 
-  public virtual void Dispose() {
+  public override void Dispose() {
     lock(this) {
       if (swigCPtr.Handle != IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          tinyWRAPPINVOKE.delete_SafeObject(swigCPtr);
+          tinyWRAPPINVOKE.delete_PublicationEvent(swigCPtr);
         }
         swigCPtr = new HandleRef(null, IntPtr.Zero);
       }
       GC.SuppressFinalize(this);
+      base.Dispose();
     }
   }
 
-  public SafeObject() : this(tinyWRAPPINVOKE.new_SafeObject(), true) {
+  public PublicationEvent() : this(tinyWRAPPINVOKE.new_PublicationEvent(), true) {
   }
 
-  public int Lock() {
-    int ret = tinyWRAPPINVOKE.SafeObject_Lock(swigCPtr);
+  public tsip_publish_event_type_t getType() {
+    tsip_publish_event_type_t ret = (tsip_publish_event_type_t)tinyWRAPPINVOKE.PublicationEvent_getType(swigCPtr);
     return ret;
   }
 
-  public int UnLock() {
-    int ret = tinyWRAPPINVOKE.SafeObject_UnLock(swigCPtr);
+  public PublicationSession getSession() {
+    IntPtr cPtr = tinyWRAPPINVOKE.PublicationEvent_getSession(swigCPtr);
+    PublicationSession ret = (cPtr == IntPtr.Zero) ? null : new PublicationSession(cPtr, false);
     return ret;
   }
 

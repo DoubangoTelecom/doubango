@@ -24,6 +24,7 @@
 
 class RegistrationEvent;
 class SubscriptionEvent;
+class PublicationEvent;
 
 class SipCallback
 {
@@ -32,6 +33,7 @@ public:
 	virtual ~SipCallback() {}
 	virtual int OnRegistrationChanged(const RegistrationEvent* e) { return -1; }
 	virtual int OnSubscriptionChanged(const SubscriptionEvent* e) { return -1; }
+	virtual int OnPublicationChanged(const PublicationEvent* e) { return -1; }
 
 private:
 	

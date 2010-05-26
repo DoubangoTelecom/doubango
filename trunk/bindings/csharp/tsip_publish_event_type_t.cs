@@ -7,17 +7,13 @@
  * ----------------------------------------------------------------------------- */
 
 
-public enum tsip_subscribe_event_type_t {
-  tsip_i_subscribe,
-  tsip_ai_subscribe,
-  tsip_o_subscribe,
-  tsip_ao_subscribe,
-  tsip_i_unsubscribe,
-  tsip_ai_unsubscribe,
-  tsip_o_unsubscribe,
-  tsip_ao_unsubscribe,
-  tsip_i_notify,
-  tsip_ai_notify,
-  tsip_o_notify,
-  tsip_ao_notify
+public enum tsip_publish_event_type_t {
+  tsip_i_publish,
+  tsip_ai_publish,
+  tsip_o_publish,
+  tsip_ao_publish,
+  tsip_i_unpublish,
+  tsip_ai_unpublish,
+  tsip_o_unpublish,
+  tsip_ao_unpublish
 }
