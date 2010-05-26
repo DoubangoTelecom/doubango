@@ -56,6 +56,12 @@ int test_stack_callback(const thttp_event_t *httpevent)
 				TSK_DEBUG_INFO("closed sid=%llu", id);
 				break;
 			}
+
+		case thttp_event_transport_error: /* HTTP connection closed (informational) */
+			{
+				TSK_DEBUG_INFO("Transport sid=%llu", id);
+				break;
+			}
 	}
 	
 	return 0;
@@ -103,7 +109,8 @@ void test_stack()
 
 		// session-level headers
 		THTTP_SESSION_SET_HEADER("Pragma", "No-Cache"),
-		THTTP_SESSION_SET_HEADER("Connection", "Keep-Alive"),
+		//THTTP_SESSION_SET_HEADER("Connection", "Keep-Alive"),
+		THTTP_SESSION_SET_HEADER("Connection", "close"),
 		THTTP_SESSION_SET_HEADER("User-Agent", "doubango 1.0"),
 		
 		THTTP_SESSION_SET_NULL()); /* MUST always be present */

@@ -66,6 +66,7 @@ typedef enum thttp_action_type_e
 
 	/* common */
 	atype_closed,
+	atype_error,
 	atype_close,
 	atype_cancel,
 
