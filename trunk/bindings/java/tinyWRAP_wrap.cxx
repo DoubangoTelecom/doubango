@@ -407,6 +407,7 @@ namespace Swig {
 }
 
 #include "SipUri.h"
+#include "SipMessage.h"
 #include "SipEvent.h"
 #include "SipSession.h"
 #include "RegistrationEvent.h"
@@ -424,7 +425,7 @@ namespace Swig {
  * C++ director class methods
  * --------------------------------------------------- */
 
-#include "java/tinyWRAP_wrap.h"
+#include "tinyWRAP_wrap.h"
 
 SwigDirector_SipCallback::SwigDirector_SipCallback(JNIEnv *jenv) : SipCallback(), Swig::Director(jenv) {
 }
@@ -754,6 +755,151 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipUri_1isVal
 }
 
 
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1SipMessage(JNIEnv *jenv, jclass jcls) {
+  jlong jresult = 0 ;
+  SipMessage *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  result = (SipMessage *)new SipMessage();
+  *(SipMessage **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1SipMessage(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(SipMessage **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void * JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getSipContent(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  void * jresult = 0 ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  void *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipMessage **)&jarg1; 
+  result = (void *)((SipMessage const *)arg1)->getSipContent();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getSipHeaderValue_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jlong jarg3) {
+  jstring jresult = 0 ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned int arg3 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipMessage **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = (unsigned int)jarg3; 
+  result = (char *)(arg1)->getSipHeaderValue((char const *)arg2,arg3);
+  if(result) jresult = jenv->NewStringUTF((const char *)result);
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getSipHeaderValue_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2) {
+  jstring jresult = 0 ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipMessage **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  result = (char *)(arg1)->getSipHeaderValue((char const *)arg2);
+  if(result) jresult = jenv->NewStringUTF((const char *)result);
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getSipHeaderParamValue_1_1SWIG_10(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jstring jarg3, jlong jarg4) {
+  jstring jresult = 0 ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  unsigned int arg4 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipMessage **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  arg4 = (unsigned int)jarg4; 
+  result = (char *)(arg1)->getSipHeaderParamValue((char const *)arg2,(char const *)arg3,arg4);
+  if(result) jresult = jenv->NewStringUTF((const char *)result);
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
+SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getSipHeaderParamValue_1_1SWIG_11(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jstring jarg3) {
+  jstring jresult = 0 ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipMessage **)&jarg1; 
+  arg2 = 0;
+  if (jarg2) {
+    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
+    if (!arg2) return 0;
+  }
+  arg3 = 0;
+  if (jarg3) {
+    arg3 = (char *)jenv->GetStringUTFChars(jarg3, 0);
+    if (!arg3) return 0;
+  }
+  result = (char *)(arg1)->getSipHeaderParamValue((char const *)arg2,(char const *)arg3);
+  if(result) jresult = jenv->NewStringUTF((const char *)result);
+  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
+  if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1SipEvent(JNIEnv *jenv, jclass jcls) {
   jlong jresult = 0 ;
   SipEvent *result = 0 ;
@@ -817,6 +963,21 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipEvent_1getBas
   arg1 = *(SipEvent **)&jarg1; 
   result = (SipSession *)((SipEvent const *)arg1)->getBaseSession();
   *(SipSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipEvent_1getSipMessage(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  SipEvent *arg1 = (SipEvent *) 0 ;
+  SipMessage *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipEvent **)&jarg1; 
+  result = (SipMessage *)((SipEvent const *)arg1)->getSipMessage();
+  *(SipMessage **)&jresult = result; 
   return jresult;
 }
 
@@ -1025,30 +1186,6 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipSession_1s
     if (!arg2) return 0;
   }
   result = (bool)(arg1)->setToUri((char const *)arg2);
-  jresult = (jboolean)result; 
-  if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
-  return jresult;
-}
-
-
-SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipSession_1setPayload(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jstring jarg2, jlong jarg3) {
-  jboolean jresult = 0 ;
-  SipSession *arg1 = (SipSession *) 0 ;
-  char *arg2 = (char *) 0 ;
-  unsigned int arg3 ;
-  bool result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(SipSession **)&jarg1; 
-  arg2 = 0;
-  if (jarg2) {
-    arg2 = (char *)jenv->GetStringUTFChars(jarg2, 0);
-    if (!arg2) return 0;
-  }
-  arg3 = (unsigned int)jarg3; 
-  result = (bool)(arg1)->setPayload((char const *)arg2,arg3);
   jresult = (jboolean)result; 
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   return jresult;

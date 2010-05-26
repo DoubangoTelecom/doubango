@@ -32,6 +32,8 @@
 #include "tinysip/headers/tsip_header_Dummy.h"
 
 
+#include "tsk_debug.h"
+
 /* Compact headers: http://www.cs.columbia.edu/sip/compact.html 
 Abbreviation 	Header 					defined by 					origin (mnemonic)
 a 				Accept-Contact 			draft-ietf-sip-callerprefs 	--
@@ -205,7 +207,7 @@ const char *tsip_header_get_name(tsip_header_type_t type)
 	}
 }
 
-const char *tsip_header_get_nameex(const tsip_header_t *self)
+const char *tsip_header_get_name_2(const tsip_header_t *self)
 {
 	if(self){
 		if(self->type == tsip_htype_Dummy){
@@ -241,31 +243,29 @@ char tsip_header_get_param_separator(const tsip_header_t *self)
 	return 0;
 }
 
-int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
+int tsip_header_serialize(const tsip_header_t *self, tsk_buffer_t *output)
 {
 	int ret = -1;
 	static const char* hname;
 	static char separator;
 
-	if(self && TSIP_HEADER(self)->tostring)
-	{
+	if(self && TSIP_HEADER(self)->serialize){
 		tsk_list_item_t *item;
 		
-		hname = tsip_header_get_nameex(self);
+		hname = tsip_header_get_name_2(self);
 		ret = 0; // for empty lists
 
 		/* Header name */
 		tsk_buffer_append_2(output, "%s: ", hname);
 
-		/*  Header value.*/
-		if((ret = TSIP_HEADER(self)->tostring(self, output))){
+		/*  Header value (likes calling tsip_header_value_serialize() ) */
+		if((ret = TSIP_HEADER(self)->serialize(self, output))){
 			// CHECK all headers return value!
 			//return ret;
 		}
 
 		/* Parameters */
-		tsk_list_foreach(item, self->params)
-		{
+		tsk_list_foreach(item, self->params){
 			tsk_param_t* param = item->data;
 			separator = tsip_header_get_param_separator(self);
 			if(ret = tsk_buffer_append_2(output, param->value?"%c%s=%s":"%c%s", separator, param->name, param->value)){
@@ -275,6 +275,43 @@ int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output)
 
 		/* CRLF */
 		tsk_buffer_append(output, "\r\n", 2);
+	}
+	return ret;
+}
+
+char* tsip_header_tostring(const tsip_header_t *self)
+{
+	tsk_buffer_t *output;
+	char* ret = tsk_null;
+	if(self && (output = tsk_buffer_create_null())){
+		if(!tsip_header_serialize(self, output)){
+			ret = tsk_strndup(output->data, output->size);
+		}
+		TSK_OBJECT_SAFE_FREE(output);
+	}
+	return ret;
+}
+
+int tsip_header_value_serialize(const tsip_header_t *self, tsk_buffer_t *output)
+{
+	if(self && output){
+		return TSIP_HEADER(self)->serialize(self, output);
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+}
+
+char* tsip_header_value_tostring(const tsip_header_t *self)
+{
+	tsk_buffer_t *output;
+	char* ret = tsk_null;
+	if(self && (output = tsk_buffer_create_null())){
+		if(!tsip_header_value_serialize(self, output)){
+			ret = tsk_strndup(output->data, output->size);
+		}
+		TSK_OBJECT_SAFE_FREE(output);
 	}
 	return ret;
 }

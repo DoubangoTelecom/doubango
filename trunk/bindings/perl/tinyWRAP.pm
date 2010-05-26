@@ -88,6 +88,46 @@ sub ACQUIRE {
 }
 
 
+############# Class : tinyWRAP::SipMessage ##############
+
+package tinyWRAP::SipMessage;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_SipMessage(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_SipMessage($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getSipContent = *tinyWRAPc::SipMessage_getSipContent;
+*getSipHeaderValue = *tinyWRAPc::SipMessage_getSipHeaderValue;
+*getSipHeaderParamValue = *tinyWRAPc::SipMessage_getSipHeaderParamValue;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : tinyWRAP::SipEvent ##############
 
 package tinyWRAP::SipEvent;
@@ -115,6 +155,7 @@ sub DESTROY {
 *getCode = *tinyWRAPc::SipEvent_getCode;
 *getPhrase = *tinyWRAPc::SipEvent_getPhrase;
 *getBaseSession = *tinyWRAPc::SipEvent_getBaseSession;
+*getSipMessage = *tinyWRAPc::SipEvent_getSipMessage;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -159,7 +200,6 @@ sub DESTROY {
 *setExpires = *tinyWRAPc::SipSession_setExpires;
 *setFromUri = *tinyWRAPc::SipSession_setFromUri;
 *setToUri = *tinyWRAPc::SipSession_setToUri;
-*setPayload = *tinyWRAPc::SipSession_setPayload;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);

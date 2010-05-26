@@ -80,7 +80,7 @@ tsip_header_Server_t* tsip_header_server_create_null()
 	return tsip_header_server_create(tsk_null);
 }
 
-int tsip_header_Server_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Server_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Server_t *Server = (const tsip_header_Server_t *)header;
@@ -130,7 +130,7 @@ static tsk_object_t* tsip_header_Server_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_Server_t *Server = self;
 	if(Server){
 		TSIP_HEADER(Server)->type = tsip_htype_Server;
-		TSIP_HEADER(Server)->tostring = tsip_header_Server_tostring;
+		TSIP_HEADER(Server)->serialize = tsip_header_Server_serialize;
 		Server->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else{

@@ -44,7 +44,7 @@ tsip_header_WWW_Authenticate_t* tsip_header_WWW_Authenticate_create()
 	return tsk_object_new(tsip_header_WWW_Authenticate_def_t);
 }
 
-int tsip_header_WWW_Authenticate_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_WWW_Authenticate_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_WWW_Authenticate_t *WWW_Authenticate = (const tsip_header_WWW_Authenticate_t *)header;
@@ -121,7 +121,7 @@ static tsk_object_t* tsip_header_WWW_Authenticate_ctor(tsk_object_t *self, va_li
 	tsip_header_WWW_Authenticate_t *WWW_Authenticate = self;
 	if(WWW_Authenticate){
 		TSIP_HEADER(WWW_Authenticate)->type = tsip_htype_WWW_Authenticate;
-		TSIP_HEADER(WWW_Authenticate)->tostring = tsip_header_WWW_Authenticate_tostring;
+		TSIP_HEADER(WWW_Authenticate)->serialize = tsip_header_WWW_Authenticate_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new WWW_Authenticate header.");

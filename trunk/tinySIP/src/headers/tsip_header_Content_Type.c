@@ -55,7 +55,7 @@ tsip_header_Content_Type_t* tsip_header_Content_Type_create_null()
 	return tsip_header_Content_Type_create(tsk_null);
 }
 
-int tsip_header_Content_Type_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Content_Type_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Content_Type_t *Content_Type = (const tsip_header_Content_Type_t *)header;
@@ -386,7 +386,7 @@ static tsk_object_t* tsip_header_Content_Type_ctor(tsk_object_t *self, va_list *
 	tsip_header_Content_Type_t *Content_Type = self;
 	if(Content_Type){
 		TSIP_HEADER(Content_Type)->type = tsip_htype_Content_Type;
-		TSIP_HEADER(Content_Type)->tostring = tsip_header_Content_Type_tostring;
+		TSIP_HEADER(Content_Type)->serialize = tsip_header_Content_Type_serialize;
 
 		Content_Type->type = tsk_strdup( va_arg(*app, const char*) );
 	}

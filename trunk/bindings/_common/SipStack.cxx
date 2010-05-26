@@ -61,7 +61,7 @@ SipStack::SipStack(SipCallback* callback_, const char* realm_uri, const char* im
 	/* Creates stack handle */
 	this->handle = tsip_stack_create(stack_callback, realm_uri, impi_uri, impu_uri,
 			TSIP_STACK_SET_LOCAL_IP(DEFAULT_LOCAL_IP),
-			/* TSIP_STACK_SET_USERDATA(this), */ /* used as context */
+			TSIP_STACK_SET_USERDATA(this), /* used as context (useful for server-initiated requests) */
 			TSIP_STACK_SET_NULL());
 
 	SipStack::count++;

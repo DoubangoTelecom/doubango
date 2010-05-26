@@ -344,7 +344,21 @@ const void* tsip_ssession_get_userdata(const tsip_ssession_handle_t *self)
 	if(self){
 		return ((const tsip_ssession_t*)self)->userdata;
 	}
-	return tsk_null;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+}
+
+const tsip_stack_handle_t* tsip_ssession_get_stack(const tsip_ssession_handle_t *self)
+{
+	if(self){
+		return ((const tsip_ssession_t*)self)->stack;
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
 }
 
 int tsip_ssession_handle(const tsip_ssession_t *self, const struct tsip_action_s* action)

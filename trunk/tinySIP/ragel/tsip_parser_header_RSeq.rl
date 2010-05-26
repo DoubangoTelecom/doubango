@@ -75,7 +75,7 @@ tsip_header_RSeq_t* tsip_header_RSeq_create_null()
 	return tsip_header_RSeq_create(0);
 }
 
-int tsip_header_RSeq_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_RSeq_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_RSeq_t *RSeq = (const tsip_header_RSeq_t *)header;
@@ -121,7 +121,7 @@ static tsk_object_t* tsip_header_RSeq_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_RSeq_t *RSeq = self;
 	if(RSeq){
 		TSIP_HEADER(RSeq)->type = tsip_htype_RSeq;
-		TSIP_HEADER(RSeq)->tostring = tsip_header_RSeq_tostring;
+		TSIP_HEADER(RSeq)->serialize = tsip_header_RSeq_serialize;
 		RSeq->seq = va_arg(*app, uint32_t);
 	}
 	else{

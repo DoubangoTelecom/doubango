@@ -196,6 +196,27 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipUri_isValid__SWIG_1")]
   public static extern bool SipUri_isValid__SWIG_1(HandleRef jarg1);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_new_SipMessage")]
+  public static extern IntPtr new_SipMessage();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_delete_SipMessage")]
+  public static extern void delete_SipMessage(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getSipContent")]
+  public static extern byte[] SipMessage_getSipContent(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getSipHeaderValue__SWIG_0")]
+  public static extern string SipMessage_getSipHeaderValue__SWIG_0(HandleRef jarg1, string jarg2, uint jarg3);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getSipHeaderValue__SWIG_1")]
+  public static extern string SipMessage_getSipHeaderValue__SWIG_1(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getSipHeaderParamValue__SWIG_0")]
+  public static extern string SipMessage_getSipHeaderParamValue__SWIG_0(HandleRef jarg1, string jarg2, string jarg3, uint jarg4);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipMessage_getSipHeaderParamValue__SWIG_1")]
+  public static extern string SipMessage_getSipHeaderParamValue__SWIG_1(HandleRef jarg1, string jarg2, string jarg3);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SipEvent")]
   public static extern IntPtr new_SipEvent();
 
@@ -210,6 +231,9 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipEvent_getBaseSession")]
   public static extern IntPtr SipEvent_getBaseSession(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipEvent_getSipMessage")]
+  public static extern IntPtr SipEvent_getSipMessage(HandleRef jarg1);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_SipSession")]
   public static extern IntPtr new_SipSession(HandleRef jarg1);
@@ -240,9 +264,6 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_setToUri")]
   public static extern bool SipSession_setToUri(HandleRef jarg1, string jarg2);
-
-  [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_setPayload")]
-  public static extern bool SipSession_setPayload(HandleRef jarg1, string jarg2, uint jarg3);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_new_RegistrationEvent")]
   public static extern IntPtr new_RegistrationEvent();

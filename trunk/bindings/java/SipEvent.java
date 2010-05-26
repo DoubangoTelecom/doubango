@@ -50,4 +50,9 @@ public class SipEvent {
     return (cPtr == 0) ? null : new SipSession(cPtr, false);
   }
 
+  public SipMessage getSipMessage() {
+    long cPtr = tinyWRAPJNI.SipEvent_getSipMessage(swigCPtr, this);
+    return (cPtr == 0) ? null : new SipMessage(cPtr, false);
+  }
+
 }

@@ -55,7 +55,7 @@ tsip_header_Min_Expires_t* tsip_header_Min_Expires_create_null()
 	return tsip_header_Min_Expires_create(TSIP_HEADER_MIN_EXPIRES_NONE);
 }
 
-int tsip_header_Min_Expires_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Min_Expires_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Min_Expires_t *Min_Expires = (const tsip_header_Min_Expires_t *)header;
@@ -289,7 +289,7 @@ static tsk_object_t* tsip_header_Min_Expires_ctor(tsk_object_t *self, va_list * 
 	tsip_header_Min_Expires_t *Min_Expires = self;
 	if(Min_Expires){
 		TSIP_HEADER(Min_Expires)->type = tsip_htype_Min_Expires;
-		TSIP_HEADER(Min_Expires)->tostring = tsip_header_Min_Expires_tostring;
+		TSIP_HEADER(Min_Expires)->serialize = tsip_header_Min_Expires_serialize;
 		Min_Expires->value = va_arg(*app, int32_t);
 	}
 	else{

@@ -51,7 +51,7 @@ tsip_header_Subscription_State_t* tsip_header_Subscription_State_create()
 }
 
 
-int tsip_header_Subscription_State_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Subscription_State_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Subscription_State_t *Subscription_State = (const tsip_header_Subscription_State_t *)header;
@@ -659,7 +659,7 @@ static tsk_object_t* tsip_header_Subscription_State_ctor(tsk_object_t *self, va_
 	tsip_header_Subscription_State_t *Subscription_State = self;
 	if(Subscription_State){
 		TSIP_HEADER(Subscription_State)->type = tsip_htype_Subscription_State;
-		TSIP_HEADER(Subscription_State)->tostring = tsip_header_Subscription_State_tostring;
+		TSIP_HEADER(Subscription_State)->serialize = tsip_header_Subscription_State_serialize;
 
 		Subscription_State->expires = -1;
 		Subscription_State->retry_after = -1;

@@ -53,7 +53,7 @@ tsip_header_Via_t* tsip_header_Via_create_null()
 	return tsip_header_Via_create(tsk_null, tsk_null, tsk_null, tsk_null, 0);
 }
 
-int tsip_header_Via_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Via_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Via_t *Via = (const tsip_header_Via_t *)header;
@@ -1321,7 +1321,7 @@ static tsk_object_t* tsip_header_Via_ctor(tsk_object_t *self, va_list * app)
 		via->ttl = -1;
 		
 		TSIP_HEADER(via)->type = tsip_htype_Via;
-		TSIP_HEADER(via)->tostring = tsip_header_Via_tostring;
+		TSIP_HEADER(via)->serialize = tsip_header_Via_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Via header.");

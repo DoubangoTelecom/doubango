@@ -66,7 +66,7 @@ tsip_header_P_Access_Network_Info_t* tsip_header_P_Access_Network_Info_create_nu
 	return tsip_header_P_Access_Network_Info_create(tsk_null);
 }
 
-int tsip_header_P_Access_Network_Info_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_P_Access_Network_Info_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_P_Access_Network_Info_t *P_Access_Network_Info = (const tsip_header_P_Access_Network_Info_t *)header;
@@ -310,7 +310,7 @@ static tsk_object_t* tsip_header_P_Access_Network_Info_ctor(tsk_object_t *self, 
 	if(P_Access_Network_Info){
 		P_Access_Network_Info->value = tsk_strdup(va_arg(*app, const char *));
 		TSIP_HEADER(P_Access_Network_Info)->type = tsip_htype_P_Access_Network_Info;
-		TSIP_HEADER(P_Access_Network_Info)->tostring = tsip_header_P_Access_Network_Info_tostring;
+		TSIP_HEADER(P_Access_Network_Info)->serialize = tsip_header_P_Access_Network_Info_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Access_Network_Info header.");

@@ -332,6 +332,7 @@ namespace Swig {
 
 
 #include "SipUri.h"
+#include "SipMessage.h"
 #include "SipEvent.h"
 #include "SipSession.h"
 #include "RegistrationEvent.h"
@@ -349,7 +350,7 @@ namespace Swig {
  * C++ director class methods
  * --------------------------------------------------- */
 
-#include "csharp/tinyWRAP_wrap.h"
+#include "tinyWRAP_wrap.h"
 
 SwigDirector_SipCallback::SwigDirector_SipCallback() : SipCallback(), Swig::Director() {
   swig_init_callbacks();
@@ -532,6 +533,102 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipUri_isValid__SWIG_1(void * jarg1) 
 }
 
 
+SWIGEXPORT void * SWIGSTDCALL CSharp_new_SipMessage() {
+  void * jresult ;
+  SipMessage *result = 0 ;
+  
+  result = (SipMessage *)new SipMessage();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void SWIGSTDCALL CSharp_delete_SipMessage(void * jarg1) {
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  
+  arg1 = (SipMessage *)jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SipMessage_getSipContent(void * jarg1) {
+  void * jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  void *result = 0 ;
+  
+  arg1 = (SipMessage *)jarg1; 
+  result = (void *)((SipMessage const *)arg1)->getSipContent();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipMessage_getSipHeaderValue__SWIG_0(void * jarg1, char * jarg2, unsigned int jarg3) {
+  char * jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned int arg3 ;
+  char *result = 0 ;
+  
+  arg1 = (SipMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (unsigned int)jarg3; 
+  result = (char *)(arg1)->getSipHeaderValue((char const *)arg2,arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipMessage_getSipHeaderValue__SWIG_1(void * jarg1, char * jarg2) {
+  char * jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (char *)(arg1)->getSipHeaderValue((char const *)arg2);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  delete [] result;
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipMessage_getSipHeaderParamValue__SWIG_0(void * jarg1, char * jarg2, char * jarg3, unsigned int jarg4) {
+  char * jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  unsigned int arg4 ;
+  char *result = 0 ;
+  
+  arg1 = (SipMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  arg4 = (unsigned int)jarg4; 
+  result = (char *)(arg1)->getSipHeaderParamValue((char const *)arg2,(char const *)arg3,arg4);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
+SWIGEXPORT char * SWIGSTDCALL CSharp_SipMessage_getSipHeaderParamValue__SWIG_1(void * jarg1, char * jarg2, char * jarg3) {
+  char * jresult ;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  char *result = 0 ;
+  
+  arg1 = (SipMessage *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (char *)jarg3; 
+  result = (char *)(arg1)->getSipHeaderParamValue((char const *)arg2,(char const *)arg3);
+  jresult = SWIG_csharp_string_callback((const char *)result); 
+  return jresult;
+}
+
+
 SWIGEXPORT void * SWIGSTDCALL CSharp_new_SipEvent() {
   void * jresult ;
   SipEvent *result = 0 ;
@@ -581,6 +678,18 @@ SWIGEXPORT void * SWIGSTDCALL CSharp_SipEvent_getBaseSession(void * jarg1) {
   
   arg1 = (SipEvent *)jarg1; 
   result = (SipSession *)((SipEvent const *)arg1)->getBaseSession();
+  jresult = (void *)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void * SWIGSTDCALL CSharp_SipEvent_getSipMessage(void * jarg1) {
+  void * jresult ;
+  SipEvent *arg1 = (SipEvent *) 0 ;
+  SipMessage *result = 0 ;
+  
+  arg1 = (SipEvent *)jarg1; 
+  result = (SipMessage *)((SipEvent const *)arg1)->getSipMessage();
   jresult = (void *)result; 
   return jresult;
 }
@@ -717,22 +826,6 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_setToUri(void * jarg1, cha
   arg1 = (SipSession *)jarg1; 
   arg2 = (char *)jarg2; 
   result = (bool)(arg1)->setToUri((char const *)arg2);
-  jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_setPayload(void * jarg1, char * jarg2, unsigned int jarg3) {
-  unsigned int jresult ;
-  SipSession *arg1 = (SipSession *) 0 ;
-  char *arg2 = (char *) 0 ;
-  unsigned int arg3 ;
-  bool result;
-  
-  arg1 = (SipSession *)jarg1; 
-  arg2 = (char *)jarg2; 
-  arg3 = (unsigned int)jarg3; 
-  result = (bool)(arg1)->setPayload((char const *)arg2,arg3);
   jresult = result; 
   return jresult;
 }

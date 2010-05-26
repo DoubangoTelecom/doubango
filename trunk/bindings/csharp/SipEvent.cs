@@ -57,4 +57,10 @@ public class SipEvent : IDisposable {
     return ret;
   }
 
+  public SipMessage getSipMessage() {
+    IntPtr cPtr = tinyWRAPPINVOKE.SipEvent_getSipMessage(swigCPtr);
+    SipMessage ret = (cPtr == IntPtr.Zero) ? null : new SipMessage(cPtr, false);
+    return ret;
+  }
+
 }

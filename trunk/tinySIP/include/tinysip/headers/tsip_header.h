@@ -48,9 +48,9 @@ struct tsip_header_s;
 
 #define TSIP_HEADER(self)					((tsip_header_t*)(self))
 #define TSIP_HEADER_PARAMS(self)			(TSIP_HEADER(self)->params)
-#define TSIP_HEADER_VALUE_TOSTRING_F(self)	((tsip_header_value_tostring_f)(self))
+#define TSIP_HEADER_VALUE_SERIALIZE_F(self)	((tsip_header_value_serialize_f)(self))
 
-typedef int (*tsip_header_value_tostring_f)(const struct tsip_header_s* header, tsk_buffer_t* output);
+typedef int (*tsip_header_value_serialize_f)(const struct tsip_header_s* header, tsk_buffer_t* output);
 
 /**
  * @enum	tsip_header_type_e
@@ -161,7 +161,7 @@ typedef struct tsip_header_s
 {
 	TSK_DECLARE_OBJECT;
 	tsip_header_type_t type;
-	tsip_header_value_tostring_f tostring;
+	tsip_header_value_serialize_f serialize;
 	tsk_params_L_t *params;
 }
 tsip_header_t;
@@ -172,9 +172,12 @@ typedef tsk_list_t tsip_headers_L_t; /**< List of @ref tsip_header_t elements. *
 ================================*/
 
 TINYSIP_API const char *tsip_header_get_name(tsip_header_type_t type);
-TINYSIP_API const char *tsip_header_get_nameex(const tsip_header_t *self);
+TINYSIP_API const char *tsip_header_get_name_2(const tsip_header_t *self);
 TINYSIP_API char tsip_header_get_param_separator(const tsip_header_t *self);
-TINYSIP_API int tsip_header_tostring(const tsip_header_t *self, tsk_buffer_t *output);
+TINYSIP_API int tsip_header_serialize(const tsip_header_t *self, tsk_buffer_t *output);
+TINYSIP_API char* tsip_header_tostring(const tsip_header_t *self);
+TINYSIP_API int tsip_header_value_serialize(const tsip_header_t *self, tsk_buffer_t *output);
+TINYSIP_API char* tsip_header_value_tostring(const tsip_header_t *self);
 
 #define TSIP_HEADER_HAVE_PARAM(self, name)					tsk_params_have_param(self ? TSIP_HEADER(self)->params : tsk_null, name)
 #define TSIP_HEADER_ADD_PARAM(self, name, value)			tsk_params_add_param(self ? &TSIP_HEADER(self)->params : tsk_null, name, value)

@@ -58,7 +58,7 @@ tsip_header_Service_Route_t* tsip_header_Service_Route_create_null()
 	return tsip_header_Service_Route_create(tsk_null);
 }
 
-int tsip_header_Service_Route_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Service_Route_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Service_Route_t *Service_Route = (const tsip_header_Service_Route_t *)header;
@@ -511,7 +511,7 @@ static tsk_object_t* tsip_header_Service_Route_ctor(tsk_object_t *self, va_list 
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(Service_Route)->type = tsip_htype_Service_Route;
-		TSIP_HEADER(Service_Route)->tostring = tsip_header_Service_Route_tostring;
+		TSIP_HEADER(Service_Route)->serialize = tsip_header_Service_Route_serialize;
 		if(uri){
 			Service_Route->uri = tsk_object_ref((void*)uri);
 		}

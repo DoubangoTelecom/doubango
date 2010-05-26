@@ -57,7 +57,7 @@ tsip_header_Dummy_t* tsip_header_Dummy_create_null()
 	return tsip_header_Dummy_create(tsk_null, tsk_null);
 }
 
-int tsip_header_Dummy_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Dummy_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Dummy_t *Dummy = (const tsip_header_Dummy_t *)header;
@@ -290,7 +290,7 @@ static tsk_object_t* tsip_header_Dummy_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_Dummy_t *Dummy = self;
 	if(Dummy){
 		TSIP_HEADER(Dummy)->type = tsip_htype_Dummy;
-		TSIP_HEADER(Dummy)->tostring = tsip_header_Dummy_tostring;
+		TSIP_HEADER(Dummy)->serialize = tsip_header_Dummy_serialize;
 
 		Dummy->name = tsk_strdup(va_arg(*app, const char*));
 		Dummy->value = tsk_strdup(va_arg(*app, const char*));

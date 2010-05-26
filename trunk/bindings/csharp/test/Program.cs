@@ -54,15 +54,19 @@ namespace test
             regSession.Register();
 
             /* Send SUBSCRIBE(reg) */
-            /*subSession = new SubscriptionSession(stack);
+            subSession = new SubscriptionSession(sipStack);
             subSession.addHeader("Event", "reg");
             subSession.addHeader("Accept", "application/reginfo+xml");
             subSession.addHeader("Allow-Events", "refer, presence, presence.winfo, xcap-diff, conference");
             subSession.setExpires(35);
 
-            //String s = "H\x00\x15eg\x09\x20mamadou";
-            //subSession.setPayload(s, (uint)s.Length);
-            subSession.Subscribe();*/
+            //while (true){
+            //    byte[] bytes = Encoding.UTF8.GetBytes("Salut comment tu vas?");
+                //subSession.setPayload(bytes, (uint)bytes.Length);
+            //}
+
+
+            //subSession.Subscribe();
 
             Console.Read();
 
@@ -130,6 +134,13 @@ namespace test
             short code = e.getCode();
             tsip_register_event_type_t type = e.getType();
             RegistrationSession session = e.getSession();
+            SipMessage message = e.getSipMessage();
+
+            if (message != null)
+            {
+                Console.WriteLine("call-id={0}", message.getSipHeaderValue("call-id"));
+                //byte[] bytes = message.getContent();
+            }
 
             switch (type)
             {
@@ -148,6 +159,7 @@ namespace test
             short code = e.getCode();
             tsip_subscribe_event_type_t type = e.getType();
             SubscriptionSession session = e.getSession();
+            SipMessage message = e.getSipMessage();
 
             switch (type)
             {

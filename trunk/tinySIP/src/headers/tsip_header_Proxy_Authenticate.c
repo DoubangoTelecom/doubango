@@ -44,7 +44,7 @@ tsip_header_Proxy_Authenticate_t* tsip_header_Proxy_Authenticate_create()
 	return tsk_object_new(tsip_header_Proxy_Authenticate_def_t);
 }
 
-int tsip_header_Proxy_Authenticate_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Proxy_Authenticate_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = (const tsip_header_Proxy_Authenticate_t*)header;
@@ -120,7 +120,7 @@ static tsk_object_t* tsip_header_Proxy_Authenticate_ctor(tsk_object_t *self, va_
 	tsip_header_Proxy_Authenticate_t *Proxy_Authenticate = self;
 	if(Proxy_Authenticate){
 		TSIP_HEADER(Proxy_Authenticate)->type = tsip_htype_Proxy_Authenticate;
-		TSIP_HEADER(Proxy_Authenticate)->tostring = tsip_header_Proxy_Authenticate_tostring;
+		TSIP_HEADER(Proxy_Authenticate)->serialize = tsip_header_Proxy_Authenticate_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Proxy_Authenticate header.");

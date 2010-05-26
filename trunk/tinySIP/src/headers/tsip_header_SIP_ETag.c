@@ -58,7 +58,7 @@ tsip_header_SIP_ETag_t* tsip_header_SIP_ETag_create_null()
 	return tsip_header_SIP_ETag_create(tsk_null);
 }
 
-int tsip_header_SIP_ETag_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_SIP_ETag_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_SIP_ETag_t *SIP_ETag = (const tsip_header_SIP_ETag_t *)header;
@@ -296,7 +296,7 @@ static tsk_object_t* tsip_header_SIP_ETag_ctor(tsk_object_t *self, va_list * app
 	tsip_header_SIP_ETag_t *SIP_ETag = self;
 	if(SIP_ETag){
 		TSIP_HEADER(SIP_ETag)->type = tsip_htype_SIP_ETag;
-		TSIP_HEADER(SIP_ETag)->tostring = tsip_header_SIP_ETag_tostring;
+		TSIP_HEADER(SIP_ETag)->serialize = tsip_header_SIP_ETag_serialize;
 		SIP_ETag->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else{

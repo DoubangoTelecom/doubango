@@ -21,21 +21,31 @@
 */
 #include "SipEvent.h"
 #include "SipSession.h"
+#include "SipMessage.h"
 
 #include "Common.h"
 
 SipEvent::SipEvent()
+: sipevent(tsk_null)
 {
-	::SipEvent(tsk_null);
 }
 
 SipEvent::SipEvent(const tsip_event_t *_sipevent)
 {
 	this->sipevent = _sipevent;
+	if(_sipevent){
+		this->sipmessage = new SipMessage(_sipevent->sipmessage);
+	}
+	else{
+		this->sipmessage = tsk_null;
+	}
 }
 
 SipEvent::~SipEvent()
 {
+	if(this->sipmessage){
+		delete this->sipmessage;
+	}
 }
 
 short SipEvent::getCode() const
@@ -53,3 +63,7 @@ const SipSession* SipEvent::getBaseSession() const
 	return dyn_cast<SipSession*>((SipSession*)tsip_ssession_get_userdata(this->sipevent->ss));
 }
 
+const SipMessage* SipEvent::getSipMessage() const
+{
+	return this->sipmessage;
+}

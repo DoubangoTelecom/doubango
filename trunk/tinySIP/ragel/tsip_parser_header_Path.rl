@@ -117,7 +117,7 @@ tsip_header_Path_t* tsip_header_Path_create_null()
 	return tsip_header_Path_create(tsk_null);
 }
 
-int tsip_header_Path_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Path_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Path_t *Path = (const tsip_header_Path_t *)header;
@@ -173,7 +173,7 @@ static tsk_object_t* tsip_header_Path_ctor(tsk_object_t *self, va_list * app)
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(Path)->type = tsip_htype_Path;
-		TSIP_HEADER(Path)->tostring = tsip_header_Path_tostring;
+		TSIP_HEADER(Path)->serialize = tsip_header_Path_serialize;
 		if(uri){
 			Path->uri = tsk_object_ref((void*)uri);
 		}

@@ -59,7 +59,7 @@ tsip_header_Security_Client_t* tsip_header_Security_Client_create_null()
 }
 
 
-int tsip_header_Security_Client_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Security_Client_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Security_Client_t *Security_Client = (const tsip_header_Security_Client_t *)header;
@@ -906,7 +906,7 @@ static tsk_object_t* tsip_header_Security_Client_ctor(tsk_object_t *self, va_lis
 		const char* mech = va_arg(*app, const char*);
 
 		TSIP_HEADER(Security_Client)->type = tsip_htype_Security_Client;
-		TSIP_HEADER(Security_Client)->tostring = tsip_header_Security_Client_tostring;
+		TSIP_HEADER(Security_Client)->serialize = tsip_header_Security_Client_serialize;
 
 		Security_Client->q = -1;
 

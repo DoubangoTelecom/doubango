@@ -105,7 +105,7 @@ tsip_header_Date_t* tsip_header_Date_create_null()
 	return tsip_header_Date_create(tsk_null, tsk_null, -1, -1, -1, -1, -1);
 }
 
-int tsip_header_Date_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Date_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	/* Date: Wed, 28 Apr 2010 23:42:50 GMT */
 	if(header){
@@ -159,7 +159,7 @@ static tsk_object_t* tsip_header_Date_ctor(tsk_object_t *self, va_list * app)
 		const char* wkday;
 		const char* month;
 		TSIP_HEADER(Date)->type = tsip_htype_Date;
-		TSIP_HEADER(Date)->tostring = tsip_header_Date_tostring;
+		TSIP_HEADER(Date)->serialize = tsip_header_Date_serialize;
 		Date->day = Date->time.h = Date->time.m = Date->time.s = -1;
 		Date->year = -1;
 

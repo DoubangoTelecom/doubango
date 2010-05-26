@@ -98,7 +98,7 @@ tsip_header_To_t* tsip_header_To_create_null()
 	return tsip_header_To_create(tsk_null, tsk_null, tsk_null);
 }
 
-int tsip_header_To_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_To_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		int ret;
@@ -160,7 +160,7 @@ static tsk_object_t* tsip_header_To_ctor(tsk_object_t *self, va_list * app)
 		To->tag = tsk_strdup(tag);
 
 		TSIP_HEADER(To)->type = tsip_htype_To;
-		TSIP_HEADER(To)->tostring = tsip_header_To_tostring;
+		TSIP_HEADER(To)->serialize = tsip_header_To_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new To header.");

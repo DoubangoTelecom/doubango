@@ -50,7 +50,7 @@ public class SipDebugCallback {
 
   public SipDebugCallback() {
     this(tinyWRAPJNI.new_SipDebugCallback(), true);
-    tinyWRAPJNI.SipDebugCallback_director_connect(this, swigCPtr, swigCMemOwn, true);
+    tinyWRAPJNI.SipDebugCallback_director_connect(this, swigCPtr, swigCMemOwn, false);
   }
 
   public int OnDebugInfo(String message) {

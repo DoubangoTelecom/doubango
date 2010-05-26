@@ -53,7 +53,7 @@ tsip_header_Event_t* tsip_header_Event_create(const char* package)
 	return tsk_object_new(TSIP_HEADER_EVENT_VA_ARGS(package));
 }
 
-int tsip_header_Event_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Event_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Event_t *Event = (const tsip_header_Event_t *)header;
@@ -424,7 +424,7 @@ static tsk_object_t* tsip_header_Event_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_Event_t *Event = self;
 	if(Event){
 		TSIP_HEADER(Event)->type = tsip_htype_Event;
-		TSIP_HEADER(Event)->tostring = tsip_header_Event_tostring;
+		TSIP_HEADER(Event)->serialize = tsip_header_Event_serialize;
 		Event->package = tsk_strdup(va_arg(*app, const char*));
 	}
 	else{

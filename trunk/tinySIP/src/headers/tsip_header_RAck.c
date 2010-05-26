@@ -57,7 +57,7 @@ tsip_header_RAck_t* tsip_header_RAck_create_null()
 	return tsip_header_RAck_create(0, 0, tsk_null);
 }
 
-int tsip_header_RAck_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_RAck_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_RAck_t *RAck = (const tsip_header_RAck_t *)header;
@@ -314,7 +314,7 @@ static tsk_object_t* tsip_header_RAck_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_RAck_t *RAck = self;
 	if(RAck){
 		TSIP_HEADER(RAck)->type = tsip_htype_RAck;
-		TSIP_HEADER(RAck)->tostring = tsip_header_RAck_tostring;
+		TSIP_HEADER(RAck)->serialize = tsip_header_RAck_serialize;
 		RAck->seq = va_arg(*app, uint32_t);
 		RAck->cseq = va_arg(*app, uint32_t);
 		RAck->method = tsk_strdup( va_arg(*app, const char*) );
