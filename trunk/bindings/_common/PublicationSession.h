@@ -19,33 +19,21 @@
 * along with DOUBANGO.
 *
 */
-#ifndef TINYWRAP_SIPMESSAGE_H
-#define TINYWRAP_SIPMESSAGE_H
+#ifndef TINYWRAP_PUBLICATIONSESSION_H
+#define TINYWRAP_PUBLICATIONSESSION_H
 
-#include "tinysip.h"
+#include "SipSession.h"
 
-class SipMessage
+class PublicationSession : public SipSession
 {
-public:
-	SipMessage();
-#if !defined(SWIG)
-	SipMessage(const tsip_message_t *sipmessage);
-#endif
-	virtual ~SipMessage();
+public: /* ctor() and dtor() */
+	PublicationSession(SipStack* Stack);
+	virtual ~PublicationSession();
 
-#if !defined(SWIG)
-	const void* getSipContent() const;
-#endif
-	
-	//%newobject getHeaderValueAt;
-	char* getSipHeaderValue(const char* name, unsigned index = 0);
-	const char* getSipHeaderParamValue(const char* name, const char* param, unsigned index = 0);
-
-private:
-	const tsip_header_t* getSipHeader(const char* name, unsigned index = 0);
-
-private:
-	const tsip_message_t *sipmessage;
+public: /* Public functions */
+	bool Publish(const void* payload, unsigned len);
+	bool UnPublish();
 };
 
-#endif /* TINYWRAP_SIPMESSAGE_H */
+#endif /* TINYWRAP_PUBLICATIONSESSION_H */
+

@@ -9,12 +9,15 @@ all: $(APP)
 
 OBJS = tinyWRAP_wrap.o\
 	../../_common/MessagingEvent.o \
+	../../_common/PublicationEvent.o \
+	../../_common/PublicationSession.o \
 	../../_common/RegistrationEvent.o \
 	../../_common/RegistrationSession.o \
 	../../_common/SafeObject.o \
 	../../_common/SipCallback.o \
 	../../_common/SipDebug.o \
 	../../_common/SipEvent.o \
+	../../_common/SipMessage.o \
 	../../_common/SipSession.o \
 	../../_common/SipStack.o \
 	../../_common/SipUri.o \

@@ -4,6 +4,8 @@
 #include "SipMessage.h"
 #include "SipEvent.h"
 #include "SipSession.h"
+#include "PublicationEvent.h"
+#include "PublicationSession.h"
 #include "RegistrationEvent.h"
 #include "RegistrationSession.h"
 #include "SubscriptionEvent.h"
@@ -24,6 +26,8 @@
 %include "SipMessage.h"
 %include "SipEvent.h"
 %include "SipSession.h"
+%include "PublicationEvent.h"
+%include "PublicationSession.h"
 %include "RegistrationEvent.h"
 %include "RegistrationSession.h"
 %include "SubscriptionEvent.h"
@@ -86,3 +90,18 @@ typedef enum tsip_subscribe_event_type_e
 	tsip_ao_notify
 }
 tsip_subscribe_event_type_t;
+
+/* ====== From "tinySIP\include\tinysip\tsip_api_publish.h"  ====== */
+typedef enum tsip_publish_event_type_e
+{
+	tsip_i_publish,
+	tsip_ai_publish,
+	tsip_o_publish,
+	tsip_ao_publish,
+	
+	tsip_i_unpublish,
+	tsip_ai_unpublish,
+	tsip_o_unpublish,
+	tsip_ao_unpublish
+}
+tsip_publish_event_type_t;

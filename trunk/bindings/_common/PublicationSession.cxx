@@ -19,31 +19,38 @@
 * along with DOUBANGO.
 *
 */
-#include "RegistrationEvent.h"
+#include "PublicationSession.h"
 
-#include "RegistrationSession.h"
-#include "Common.h"
-
-RegistrationEvent::RegistrationEvent()
-:SipEvent(tsk_null)
+PublicationSession::PublicationSession(SipStack* Stack)
+: SipSession(Stack)
 {
 }
 
-RegistrationEvent::RegistrationEvent(const tsip_event_t *sipevent)
-:SipEvent(sipevent)
+PublicationSession::~PublicationSession()
 {
 }
 
-RegistrationEvent::~RegistrationEvent()
+bool PublicationSession::Publish(const void* payload, unsigned len)
 {
+	TSK_DEBUG_INFO("Android---PublicationSession::Publish()");
+	int ret;
+	if(payload && len){
+		ret = tsip_action_PUBLISH(this->handle,
+			TSIP_ACTION_SET_PAYLOAD(payload, len),
+			TSIP_ACTION_SET_NULL());
+	}
+	else{
+		ret = tsip_action_PUBLISH(this->handle,
+			TSIP_ACTION_SET_NULL());
+	}
+	return (ret == 0);
 }
 
-tsip_register_event_type_t RegistrationEvent::getType() const
+bool PublicationSession::UnPublish()
 {
-	return TSIP_REGISTER_EVENT(this->sipevent)->type;
+	TSK_DEBUG_INFO("Android---PublicationSession::UnPublish()");
+	int ret = tsip_action_UNPUBLISH(this->handle,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
 }
 
-const RegistrationSession* RegistrationEvent::getSession() const
-{
-	return dyn_cast<const RegistrationSession*>(this->getBaseSession());
-}

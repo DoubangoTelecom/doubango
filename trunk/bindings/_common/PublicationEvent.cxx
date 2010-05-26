@@ -19,33 +19,31 @@
 * along with DOUBANGO.
 *
 */
-#ifndef TINYWRAP_SIPMESSAGE_H
-#define TINYWRAP_SIPMESSAGE_H
+#include "PublicationEvent.h"
 
-#include "tinysip.h"
+#include "PublicationSession.h"
+#include "Common.h"
 
-class SipMessage
+PublicationEvent::PublicationEvent()
+:SipEvent(sipevent)
 {
-public:
-	SipMessage();
-#if !defined(SWIG)
-	SipMessage(const tsip_message_t *sipmessage);
-#endif
-	virtual ~SipMessage();
+}
 
-#if !defined(SWIG)
-	const void* getSipContent() const;
-#endif
-	
-	//%newobject getHeaderValueAt;
-	char* getSipHeaderValue(const char* name, unsigned index = 0);
-	const char* getSipHeaderParamValue(const char* name, const char* param, unsigned index = 0);
+PublicationEvent::PublicationEvent(const tsip_event_t *sipevent)
+:SipEvent(sipevent)
+{
+}
 
-private:
-	const tsip_header_t* getSipHeader(const char* name, unsigned index = 0);
+PublicationEvent::~PublicationEvent()
+{
+}
 
-private:
-	const tsip_message_t *sipmessage;
-};
+tsip_publish_event_type_t PublicationEvent::getType() const
+{
+	return TSIP_PUBLISH_EVENT(this->sipevent)->type;
+}
 
-#endif /* TINYWRAP_SIPMESSAGE_H */
+const PublicationSession* PublicationEvent::getSession() const
+{
+	return dyn_cast<const PublicationSession*>(this->getBaseSession());
+}

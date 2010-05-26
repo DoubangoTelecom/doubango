@@ -36,6 +36,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\csharp\PublicationEvent.cs">
+      <Link>PublicationEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\PublicationSession.cs">
+      <Link>PublicationSession.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csharp\RegistrationEvent.cs">
       <Link>RegistrationEvent.cs</Link>
     </Compile>
@@ -53,6 +59,9 @@
     </Compile>
     <Compile Include="..\..\..\csharp\SipEvent.cs">
       <Link>SipEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\SipMessage.cs">
+      <Link>SipMessage.cs</Link>
     </Compile>
     <Compile Include="..\..\..\csharp\SipSession.cs">
       <Link>SipSession.cs</Link>
@@ -77,6 +86,9 @@
     </Compile>
     <Compile Include="..\..\..\csharp\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\tsip_publish_event_type_t.cs">
+      <Link>tsip_publish_event_type_t.cs</Link>
     </Compile>
     <Compile Include="..\..\..\csharp\tsip_register_event_type_t.cs">
       <Link>tsip_register_event_type_t.cs</Link>

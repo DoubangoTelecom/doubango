@@ -155,7 +155,7 @@ int thttp_dialog_Transfering_2_Transfering_X_401_407(va_list *app)
 	ret = thttp_dialog_send_request(self);
 
 	/* very important: do not break the state machine for transport error events
-	* => let the transport layer do it for us throught (transport_error).
+	* => let the transport layer do it for us (throught tnet_transport_error event).
 	* => transport_error event will be queued and sent after this event (i_message)
 	*/
 	if(ret == THTTP_DIALOG_TRANSPORT_ERROR_CODE){
