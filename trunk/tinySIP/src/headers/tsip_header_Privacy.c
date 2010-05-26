@@ -60,7 +60,7 @@ tsip_header_Privacy_t* tsip_header_Privacy_create()
 	return tsk_object_new(tsip_header_Privacy_def_t);
 }
 
-int tsip_header_Privacy_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Privacy_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Privacy_t *Privacy = (const tsip_header_Privacy_t *)header;
@@ -454,7 +454,7 @@ static tsk_object_t* tsip_header_Privacy_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_Privacy_t *Privacy = self;
 	if(Privacy){
 		TSIP_HEADER(Privacy)->type = tsip_htype_Privacy;
-		TSIP_HEADER(Privacy)->tostring = tsip_header_Privacy_tostring;
+		TSIP_HEADER(Privacy)->serialize = tsip_header_Privacy_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Privacy header.");

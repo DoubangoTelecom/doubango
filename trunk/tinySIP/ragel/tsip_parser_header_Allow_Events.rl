@@ -73,7 +73,7 @@ tsip_header_Allow_Events_t* tsip_header_Allow_Events_create()
 	return tsk_object_new(tsip_header_Allow_Events_def_t);
 }
 
-int tsip_header_Allow_Events_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Allow_Events_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Allow_Events_t *Allow_Events = (const tsip_header_Allow_Events_t *)header;
@@ -134,7 +134,7 @@ static tsk_object_t* tsip_header_Allow_Events_ctor(tsk_object_t *self, va_list *
 	tsip_header_Allow_Events_t *Allow_events = self;
 	if(Allow_events){
 		TSIP_HEADER(Allow_events)->type = tsip_htype_Allow_Events;
-		TSIP_HEADER(Allow_events)->tostring = tsip_header_Allow_Events_tostring;
+		TSIP_HEADER(Allow_events)->serialize = tsip_header_Allow_Events_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Allow-Events header.");

@@ -3127,17 +3127,19 @@ namespace Swig {
 #define SWIGTYPE_p_SipCallback swig_types[3]
 #define SWIGTYPE_p_SipDebugCallback swig_types[4]
 #define SWIGTYPE_p_SipEvent swig_types[5]
-#define SWIGTYPE_p_SipSession swig_types[6]
-#define SWIGTYPE_p_SipStack swig_types[7]
-#define SWIGTYPE_p_SipUri swig_types[8]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[9]
-#define SWIGTYPE_p_SubscriptionSession swig_types[10]
-#define SWIGTYPE_p_char swig_types[11]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[12]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[13]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[14]
-static swig_type_info *swig_types[16];
-static swig_module_info swig_module = {swig_types, 15, 0, 0, 0, 0};
+#define SWIGTYPE_p_SipMessage swig_types[6]
+#define SWIGTYPE_p_SipSession swig_types[7]
+#define SWIGTYPE_p_SipStack swig_types[8]
+#define SWIGTYPE_p_SipUri swig_types[9]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[10]
+#define SWIGTYPE_p_SubscriptionSession swig_types[11]
+#define SWIGTYPE_p_char swig_types[12]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[13]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[14]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[15]
+#define SWIGTYPE_p_void swig_types[16]
+static swig_type_info *swig_types[18];
+static swig_module_info swig_module = {swig_types, 17, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3235,6 +3237,7 @@ namespace swig {
 
 
 #include "SipUri.h"
+#include "SipMessage.h"
 #include "SipEvent.h"
 #include "SipSession.h"
 #include "RegistrationEvent.h"
@@ -3329,44 +3332,6 @@ SWIGINTERNINLINE PyObject*
   SWIG_From_bool  (bool value)
 {
   return PyBool_FromLong(value ? 1 : 0);
-}
-
-
-  #define SWIG_From_long   PyInt_FromLong 
-
-
-SWIGINTERNINLINE PyObject *
-SWIG_From_short  (short value)
-{    
-  return SWIG_From_long  (value);
-}
-
-
-SWIGINTERNINLINE PyObject *
-SWIG_FromCharPtrAndSize(const char* carray, size_t size)
-{
-  if (carray) {
-    if (size > INT_MAX) {
-      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
-      return pchar_descriptor ? 
-	SWIG_NewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
-    } else {
-#if PY_VERSION_HEX >= 0x03000000
-      return PyUnicode_FromStringAndSize(carray, static_cast< int >(size));
-#else
-      return PyString_FromStringAndSize(carray, static_cast< int >(size));
-#endif
-    }
-  } else {
-    return SWIG_Py_Void();
-  }
-}
-
-
-SWIGINTERNINLINE PyObject * 
-SWIG_FromCharPtr(const char *cptr)
-{ 
-  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
 }
 
 
@@ -3521,6 +3486,44 @@ SWIG_AsVal_unsigned_SS_int (PyObject * obj, unsigned int *val)
 
 
 SWIGINTERNINLINE PyObject *
+SWIG_FromCharPtrAndSize(const char* carray, size_t size)
+{
+  if (carray) {
+    if (size > INT_MAX) {
+      swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
+      return pchar_descriptor ? 
+	SWIG_NewPointerObj(const_cast< char * >(carray), pchar_descriptor, 0) : SWIG_Py_Void();
+    } else {
+#if PY_VERSION_HEX >= 0x03000000
+      return PyUnicode_FromStringAndSize(carray, static_cast< int >(size));
+#else
+      return PyString_FromStringAndSize(carray, static_cast< int >(size));
+#endif
+    }
+  } else {
+    return SWIG_Py_Void();
+  }
+}
+
+
+SWIGINTERNINLINE PyObject * 
+SWIG_FromCharPtr(const char *cptr)
+{ 
+  return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
+}
+
+
+  #define SWIG_From_long   PyInt_FromLong 
+
+
+SWIGINTERNINLINE PyObject *
+SWIG_From_short  (short value)
+{    
+  return SWIG_From_long  (value);
+}
+
+
+SWIGINTERNINLINE PyObject *
 SWIG_From_int  (int value)
 {    
   return SWIG_From_long  (value);
@@ -3598,7 +3601,7 @@ SWIG_AsVal_bool (PyObject *obj, bool *val)
  * C++ director class methods
  * --------------------------------------------------- */
 
-#include "python/tinyWRAP_wrap.h"
+#include "tinyWRAP_wrap.h"
 
 SwigDirector_SipCallback::SwigDirector_SipCallback(PyObject *self): SipCallback(), Swig::Director(self) {
   SWIG_DIRECTOR_RGTR((SipCallback *)this, this); 
@@ -3946,6 +3949,361 @@ SWIGINTERN PyObject *SipUri_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObjec
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_new_SipMessage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)":new_SipMessage")) SWIG_fail;
+  result = (SipMessage *)new SipMessage();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SipMessage, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_SipMessage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_SipMessage",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipMessage, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SipMessage" "', argument " "1"" of type '" "SipMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< SipMessage * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipMessage_getSipContent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  void *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipMessage_getSipContent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_getSipContent" "', argument " "1"" of type '" "SipMessage const *""'"); 
+  }
+  arg1 = reinterpret_cast< SipMessage * >(argp1);
+  result = (void *)((SipMessage const *)arg1)->getSipContent();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_void, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  unsigned int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SipMessage_getSipHeaderValue",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_getSipHeaderValue" "', argument " "1"" of type '" "SipMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< SipMessage * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipMessage_getSipHeaderValue" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipMessage_getSipHeaderValue" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (char *)(arg1)->getSipHeaderValue((char const *)arg2,arg3);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  delete[] result;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipMessage_getSipHeaderValue",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_getSipHeaderValue" "', argument " "1"" of type '" "SipMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< SipMessage * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipMessage_getSipHeaderValue" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  result = (char *)(arg1)->getSipHeaderValue((char const *)arg2);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  delete[] result;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderValue(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[4];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 3); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 2) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipMessage, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        return _wrap_SipMessage_getSipHeaderValue__SWIG_1(self, args);
+      }
+    }
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipMessage, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        {
+          int res = SWIG_AsVal_unsigned_SS_int(argv[2], NULL);
+          _v = SWIG_CheckState(res);
+        }
+        if (_v) {
+          return _wrap_SipMessage_getSipHeaderValue__SWIG_0(self, args);
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'SipMessage_getSipHeaderValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    getSipHeaderValue(SipMessage *,char const *,unsigned int)\n"
+    "    getSipHeaderValue(SipMessage *,char const *)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderParamValue__SWIG_0(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  unsigned int arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:SipMessage_getSipHeaderParamValue",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_getSipHeaderParamValue" "', argument " "1"" of type '" "SipMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< SipMessage * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipMessage_getSipHeaderParamValue" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipMessage_getSipHeaderParamValue" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  ecode4 = SWIG_AsVal_unsigned_SS_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "SipMessage_getSipHeaderParamValue" "', argument " "4"" of type '" "unsigned int""'");
+  } 
+  arg4 = static_cast< unsigned int >(val4);
+  result = (char *)(arg1)->getSipHeaderParamValue((char const *)arg2,(char const *)arg3,arg4);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderParamValue__SWIG_1(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipMessage *arg1 = (SipMessage *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  char *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOO:SipMessage_getSipHeaderParamValue",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipMessage, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipMessage_getSipHeaderParamValue" "', argument " "1"" of type '" "SipMessage *""'"); 
+  }
+  arg1 = reinterpret_cast< SipMessage * >(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipMessage_getSipHeaderParamValue" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = reinterpret_cast< char * >(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "SipMessage_getSipHeaderParamValue" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = reinterpret_cast< char * >(buf3);
+  result = (char *)(arg1)->getSipHeaderParamValue((char const *)arg2,(char const *)arg3);
+  resultobj = SWIG_FromCharPtr((const char *)result);
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderParamValue(PyObject *self, PyObject *args) {
+  int argc;
+  PyObject *argv[5];
+  int ii;
+  
+  if (!PyTuple_Check(args)) SWIG_fail;
+  argc = (int)PyObject_Length(args);
+  for (ii = 0; (ii < argc) && (ii < 4); ii++) {
+    argv[ii] = PyTuple_GET_ITEM(args,ii);
+  }
+  if (argc == 3) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipMessage, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          return _wrap_SipMessage_getSipHeaderParamValue__SWIG_1(self, args);
+        }
+      }
+    }
+  }
+  if (argc == 4) {
+    int _v;
+    void *vptr = 0;
+    int res = SWIG_ConvertPtr(argv[0], &vptr, SWIGTYPE_p_SipMessage, 0);
+    _v = SWIG_CheckState(res);
+    if (_v) {
+      int res = SWIG_AsCharPtrAndSize(argv[1], 0, NULL, 0);
+      _v = SWIG_CheckState(res);
+      if (_v) {
+        int res = SWIG_AsCharPtrAndSize(argv[2], 0, NULL, 0);
+        _v = SWIG_CheckState(res);
+        if (_v) {
+          {
+            int res = SWIG_AsVal_unsigned_SS_int(argv[3], NULL);
+            _v = SWIG_CheckState(res);
+          }
+          if (_v) {
+            return _wrap_SipMessage_getSipHeaderParamValue__SWIG_0(self, args);
+          }
+        }
+      }
+    }
+  }
+  
+fail:
+  SWIG_SetErrorMsg(PyExc_NotImplementedError,"Wrong number of arguments for overloaded function 'SipMessage_getSipHeaderParamValue'.\n"
+    "  Possible C/C++ prototypes are:\n"
+    "    getSipHeaderParamValue(SipMessage *,char const *,char const *,unsigned int)\n"
+    "    getSipHeaderParamValue(SipMessage *,char const *,char const *)\n");
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *SipMessage_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_SipMessage, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_new_SipEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipEvent *result = 0 ;
@@ -4040,6 +4398,28 @@ SWIGINTERN PyObject *_wrap_SipEvent_getBaseSession(PyObject *SWIGUNUSEDPARM(self
   arg1 = reinterpret_cast< SipEvent * >(argp1);
   result = (SipSession *)((SipEvent const *)arg1)->getBaseSession();
   resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SipSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipEvent_getSipMessage(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipEvent *arg1 = (SipEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  SipMessage *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipEvent_getSipMessage",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipEvent_getSipMessage" "', argument " "1"" of type '" "SipEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< SipEvent * >(argp1);
+  result = (SipMessage *)((SipEvent const *)arg1)->getSipMessage();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SipMessage, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4430,49 +4810,6 @@ SWIGINTERN PyObject *_wrap_SipSession_setToUri(PyObject *SWIGUNUSEDPARM(self), P
   }
   arg2 = reinterpret_cast< char * >(buf2);
   result = (bool)(arg1)->setToUri((char const *)arg2);
-  resultobj = SWIG_From_bool(static_cast< bool >(result));
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-  return resultobj;
-fail:
-  if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SipSession_setPayload(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SipSession *arg1 = (SipSession *) 0 ;
-  char *arg2 = (char *) 0 ;
-  unsigned int arg3 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  int res2 ;
-  char *buf2 = 0 ;
-  int alloc2 = 0 ;
-  unsigned int val3 ;
-  int ecode3 = 0 ;
-  PyObject * obj0 = 0 ;
-  PyObject * obj1 = 0 ;
-  PyObject * obj2 = 0 ;
-  bool result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"OOO:SipSession_setPayload",&obj0,&obj1,&obj2)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipSession, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipSession_setPayload" "', argument " "1"" of type '" "SipSession *""'"); 
-  }
-  arg1 = reinterpret_cast< SipSession * >(argp1);
-  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
-  if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipSession_setPayload" "', argument " "2"" of type '" "char const *""'");
-  }
-  arg2 = reinterpret_cast< char * >(buf2);
-  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
-  if (!SWIG_IsOK(ecode3)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipSession_setPayload" "', argument " "3"" of type '" "unsigned int""'");
-  } 
-  arg3 = static_cast< unsigned int >(val3);
-  result = (bool)(arg1)->setPayload((char const *)arg2,arg3);
   resultobj = SWIG_From_bool(static_cast< bool >(result));
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   return resultobj;
@@ -5954,11 +6291,18 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"delete_SipUri", _wrap_delete_SipUri, METH_VARARGS, NULL},
 	 { (char *)"SipUri_isValid", _wrap_SipUri_isValid, METH_VARARGS, NULL},
 	 { (char *)"SipUri_swigregister", SipUri_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_SipMessage", _wrap_new_SipMessage, METH_VARARGS, NULL},
+	 { (char *)"delete_SipMessage", _wrap_delete_SipMessage, METH_VARARGS, NULL},
+	 { (char *)"SipMessage_getSipContent", _wrap_SipMessage_getSipContent, METH_VARARGS, NULL},
+	 { (char *)"SipMessage_getSipHeaderValue", _wrap_SipMessage_getSipHeaderValue, METH_VARARGS, NULL},
+	 { (char *)"SipMessage_getSipHeaderParamValue", _wrap_SipMessage_getSipHeaderParamValue, METH_VARARGS, NULL},
+	 { (char *)"SipMessage_swigregister", SipMessage_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipEvent", _wrap_new_SipEvent, METH_VARARGS, NULL},
 	 { (char *)"delete_SipEvent", _wrap_delete_SipEvent, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_getCode", _wrap_SipEvent_getCode, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_getPhrase", _wrap_SipEvent_getPhrase, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_getBaseSession", _wrap_SipEvent_getBaseSession, METH_VARARGS, NULL},
+	 { (char *)"SipEvent_getSipMessage", _wrap_SipEvent_getSipMessage, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_swigregister", SipEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipSession", _wrap_new_SipSession, METH_VARARGS, NULL},
 	 { (char *)"delete_SipSession", _wrap_delete_SipSession, METH_VARARGS, NULL},
@@ -5969,7 +6313,6 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipSession_setExpires", _wrap_SipSession_setExpires, METH_VARARGS, NULL},
 	 { (char *)"SipSession_setFromUri", _wrap_SipSession_setFromUri, METH_VARARGS, NULL},
 	 { (char *)"SipSession_setToUri", _wrap_SipSession_setToUri, METH_VARARGS, NULL},
-	 { (char *)"SipSession_setPayload", _wrap_SipSession_setPayload, METH_VARARGS, NULL},
 	 { (char *)"SipSession_swigregister", SipSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_RegistrationEvent", _wrap_new_RegistrationEvent, METH_VARARGS, NULL},
 	 { (char *)"delete_RegistrationEvent", _wrap_delete_RegistrationEvent, METH_VARARGS, NULL},
@@ -6055,6 +6398,7 @@ static swig_type_info _swigt__p_SafeObject = {"_p_SafeObject", "SafeObject *", 0
 static swig_type_info _swigt__p_SipCallback = {"_p_SipCallback", "SipCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipDebugCallback = {"_p_SipDebugCallback", "SipDebugCallback *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipEvent = {"_p_SipEvent", "SipEvent *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_SipMessage = {"_p_SipMessage", "SipMessage *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipSession = {"_p_SipSession", "SipSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipStack = {"_p_SipStack", "SipStack *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SipUri = {"_p_SipUri", "SipUri *", 0, 0, (void*)0, 0};
@@ -6064,6 +6408,7 @@ static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_event_type_e = {"_p_tsip_event_type_e", "enum tsip_event_type_e *|tsip_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_void = {"_p_void", "void *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_RegistrationEvent,
@@ -6072,6 +6417,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_SipCallback,
   &_swigt__p_SipDebugCallback,
   &_swigt__p_SipEvent,
+  &_swigt__p_SipMessage,
   &_swigt__p_SipSession,
   &_swigt__p_SipStack,
   &_swigt__p_SipUri,
@@ -6081,6 +6427,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_tsip_event_type_e,
   &_swigt__p_tsip_register_event_type_e,
   &_swigt__p_tsip_subscribe_event_type_e,
+  &_swigt__p_void,
 };
 
 static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_RegistrationEvent, 0, 0, 0},{0, 0, 0, 0}};
@@ -6089,6 +6436,7 @@ static swig_cast_info _swigc__p_SafeObject[] = {  {&_swigt__p_SipStack, _p_SipSt
 static swig_cast_info _swigc__p_SipCallback[] = {  {&_swigt__p_SipCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipDebugCallback[] = {  {&_swigt__p_SipDebugCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipEvent[] = {  {&_swigt__p_SipEvent, 0, 0, 0},  {&_swigt__p_RegistrationEvent, _p_RegistrationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_SubscriptionEvent, _p_SubscriptionEventTo_p_SipEvent, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SipMessage[] = {  {&_swigt__p_SipMessage, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipSession[] = {  {&_swigt__p_SipSession, 0, 0, 0},  {&_swigt__p_RegistrationSession, _p_RegistrationSessionTo_p_SipSession, 0, 0},  {&_swigt__p_SubscriptionSession, _p_SubscriptionSessionTo_p_SipSession, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipStack[] = {  {&_swigt__p_SipStack, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipUri[] = {  {&_swigt__p_SipUri, 0, 0, 0},{0, 0, 0, 0}};
@@ -6098,6 +6446,7 @@ static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0,
 static swig_cast_info _swigc__p_tsip_event_type_e[] = {  {&_swigt__p_tsip_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_tsip_register_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_void[] = {  {&_swigt__p_void, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_RegistrationEvent,
@@ -6106,6 +6455,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_SipCallback,
   _swigc__p_SipDebugCallback,
   _swigc__p_SipEvent,
+  _swigc__p_SipMessage,
   _swigc__p_SipSession,
   _swigc__p_SipStack,
   _swigc__p_SipUri,
@@ -6115,6 +6465,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_tsip_event_type_e,
   _swigc__p_tsip_register_event_type_e,
   _swigc__p_tsip_subscribe_event_type_e,
+  _swigc__p_void,
 };
 
 

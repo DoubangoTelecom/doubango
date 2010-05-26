@@ -25,6 +25,7 @@
 #include "tinysip.h"
 
 class SipSession;
+class SipMessage;
 
 class SipEvent
 {
@@ -39,9 +40,11 @@ public:
 	short getCode() const;
 	const char* getPhrase() const;
 	const SipSession* getBaseSession() const;
+	const SipMessage* getSipMessage() const;
 
 protected:
 	const tsip_event_t *sipevent;
+	const SipMessage* sipmessage;
 };
 
 

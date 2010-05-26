@@ -44,7 +44,7 @@ tsip_header_Authorization_t* tsip_header_Authorization_create()
 	return tsk_object_new(tsip_header_Authorization_def_t);
 }
 
-int tsip_header_Authorization_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Authorization_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Authorization_t *Authorization = (const tsip_header_Authorization_t *)header;
@@ -137,7 +137,7 @@ static tsk_object_t* tsip_header_Authorization_ctor(tsk_object_t *self, va_list 
 	tsip_header_Authorization_t *Authorization = self;
 	if(Authorization){
 		TSIP_HEADER(Authorization)->type = tsip_htype_Authorization;
-		TSIP_HEADER(Authorization)->tostring = tsip_header_Authorization_tostring;
+		TSIP_HEADER(Authorization)->serialize = tsip_header_Authorization_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Authorization header.");

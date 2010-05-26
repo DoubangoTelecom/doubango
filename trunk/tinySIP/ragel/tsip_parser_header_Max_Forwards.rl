@@ -69,7 +69,7 @@ tsip_header_Max_Forwards_t* tsip_header_Max_Forwards_create(int32_t max)
 	return tsk_object_new(TSIP_HEADER_MAX_FORWARDS_VA_ARGS(max));
 }
 
-int tsip_header_Max_Forwards_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Max_Forwards_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Max_Forwards_t *Max_Forwards = (const tsip_header_Max_Forwards_t *)header;
@@ -119,7 +119,7 @@ static tsk_object_t* tsip_header_Max_Forwards_ctor(tsk_object_t *self, va_list *
 	tsip_header_Max_Forwards_t *Max_Forwards = self;
 	if(Max_Forwards){
 		TSIP_HEADER(Max_Forwards)->type = tsip_htype_Max_Forwards;
-		TSIP_HEADER(Max_Forwards)->tostring = tsip_header_Max_Forwards_tostring;
+		TSIP_HEADER(Max_Forwards)->serialize = tsip_header_Max_Forwards_serialize;
 		Max_Forwards->value = va_arg(*app, int32_t);
 	}
 	else{

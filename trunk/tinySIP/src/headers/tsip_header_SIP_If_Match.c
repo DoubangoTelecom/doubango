@@ -59,7 +59,7 @@ tsip_header_SIP_If_Match_t* tsip_header_SIP_If_Match_create_null()
 	return tsip_header_SIP_If_Match_create(tsk_null);
 }
 
-int tsip_header_SIP_If_Match_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_SIP_If_Match_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_SIP_If_Match_t *SIP_If_Match = (const tsip_header_SIP_If_Match_t *)header;
@@ -300,7 +300,7 @@ static tsk_object_t* tsip_header_SIP_If_Match_ctor(tsk_object_t *self, va_list *
 	tsip_header_SIP_If_Match_t *SIP_If_Match = self;
 	if(SIP_If_Match){
 		TSIP_HEADER(SIP_If_Match)->type = tsip_htype_SIP_If_Match;
-		TSIP_HEADER(SIP_If_Match)->tostring = tsip_header_SIP_If_Match_tostring;
+		TSIP_HEADER(SIP_If_Match)->serialize = tsip_header_SIP_If_Match_serialize;
 		SIP_If_Match->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else{

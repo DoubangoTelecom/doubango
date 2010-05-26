@@ -121,7 +121,10 @@ int tsk_stricmp(const char * str1, const char * str2)
 */
 int tsk_strnicmp(const char * str1, const char * str2, tsk_size_t n)
 {
-	return (str1 && str2) ? strnicmp(str1, str2, n) : ((!str1 && !str2) ? 0 : -1);
+	return (str1 && str2 && n) ? 
+		( (tolower(*str1) == tolower(*str2)) ? strnicmp(str1, str2, n) : (*str1-*str2) )  /* Compare first charaters before doing complete comparison */
+		: 
+		( (!str1 && !str2) ? 0 : -1 );
 }
 
 /**@ingroup tsk_string_group

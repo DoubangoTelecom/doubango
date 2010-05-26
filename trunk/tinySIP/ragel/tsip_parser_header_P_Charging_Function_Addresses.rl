@@ -102,7 +102,7 @@ tsip_header_P_Charging_Function_Addresses_t* tsip_header_P_Charging_Function_Add
 	return tsk_object_new(tsip_header_P_Charging_Function_Addresses_def_t);
 }
 
-int tsip_header_P_Charging_Function_Addresses_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_P_Charging_Function_Addresses_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = (const tsip_header_P_Charging_Function_Addresses_t *)header;		
@@ -157,7 +157,7 @@ static tsk_object_t* tsip_header_P_Charging_Function_Addresses_ctor(tsk_object_t
 	tsip_header_P_Charging_Function_Addresses_t *P_Charging_Function_Addresses = self;
 	if(P_Charging_Function_Addresses){
 		TSIP_HEADER(P_Charging_Function_Addresses)->type = tsip_htype_P_Charging_Function_Addresses;
-		TSIP_HEADER(P_Charging_Function_Addresses)->tostring = tsip_header_P_Charging_Function_Addresses_tostring;
+		TSIP_HEADER(P_Charging_Function_Addresses)->serialize = tsip_header_P_Charging_Function_Addresses_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Charging_Function_Addresses header.");

@@ -73,7 +73,7 @@ tsip_header_Call_ID_t* tsip_header_Call_ID_create(const char* call_id)
 	return tsk_object_new(TSIP_HEADER_CALL_ID_VA_ARGS(call_id));
 }
 
-int tsip_header_Call_ID_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Call_ID_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Call_ID_t *Call_ID = (const tsip_header_Call_ID_t *)header;
@@ -127,7 +127,7 @@ static tsk_object_t* tsip_header_Call_ID_ctor(tsk_object_t *self, va_list * app)
 	if(Call_ID){
 		Call_ID->value = tsk_strdup(va_arg(*app, const char *));
 		TSIP_HEADER(Call_ID)->type = tsip_htype_Call_ID;
-		TSIP_HEADER(Call_ID)->tostring = tsip_header_Call_ID_tostring;
+		TSIP_HEADER(Call_ID)->serialize = tsip_header_Call_ID_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Call-ID header.");

@@ -156,7 +156,7 @@ tsip_header_Security_Verify_t* tsip_header_Security_Verify_create_null()
 	return tsip_header_Security_Verify_create();
 }
 
-int tsip_header_Security_Verify_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Security_Verify_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Security_Verify_t *Security_Verify = (const tsip_header_Security_Verify_t *)header;
@@ -235,7 +235,7 @@ static tsk_object_t* tsip_header_Security_Verify_ctor(tsk_object_t *self, va_lis
 	if(Security_Verify){
 
 		TSIP_HEADER(Security_Verify)->type = tsip_htype_Security_Verify;
-		TSIP_HEADER(Security_Verify)->tostring = tsip_header_Security_Verify_tostring;
+		TSIP_HEADER(Security_Verify)->serialize = tsip_header_Security_Verify_serialize;
 
 		Security_Verify->q = -1;
 	}

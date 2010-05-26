@@ -83,6 +83,24 @@ class SipUri(_object):
 SipUri_swigregister = _tinyWRAP.SipUri_swigregister
 SipUri_swigregister(SipUri)
 
+class SipMessage(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, SipMessage, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, SipMessage, name)
+    __repr__ = _swig_repr
+    def __init__(self): 
+        this = _tinyWRAP.new_SipMessage()
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_SipMessage
+    __del__ = lambda self : None;
+    def getSipContent(self): return _tinyWRAP.SipMessage_getSipContent(self)
+    def getSipHeaderValue(self, *args): return _tinyWRAP.SipMessage_getSipHeaderValue(self, *args)
+    def getSipHeaderParamValue(self, *args): return _tinyWRAP.SipMessage_getSipHeaderParamValue(self, *args)
+SipMessage_swigregister = _tinyWRAP.SipMessage_swigregister
+SipMessage_swigregister(SipMessage)
+
 class SipEvent(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, SipEvent, name, value)
@@ -98,6 +116,7 @@ class SipEvent(_object):
     def getCode(self): return _tinyWRAP.SipEvent_getCode(self)
     def getPhrase(self): return _tinyWRAP.SipEvent_getPhrase(self)
     def getBaseSession(self): return _tinyWRAP.SipEvent_getBaseSession(self)
+    def getSipMessage(self): return _tinyWRAP.SipEvent_getSipMessage(self)
 SipEvent_swigregister = _tinyWRAP.SipEvent_swigregister
 SipEvent_swigregister(SipEvent)
 
@@ -120,7 +139,6 @@ class SipSession(_object):
     def setExpires(self, *args): return _tinyWRAP.SipSession_setExpires(self, *args)
     def setFromUri(self, *args): return _tinyWRAP.SipSession_setFromUri(self, *args)
     def setToUri(self, *args): return _tinyWRAP.SipSession_setToUri(self, *args)
-    def setPayload(self, *args): return _tinyWRAP.SipSession_setPayload(self, *args)
 SipSession_swigregister = _tinyWRAP.SipSession_swigregister
 SipSession_swigregister(SipSession)
 

@@ -25,8 +25,8 @@
 #include "Common.h"
 
 SubscriptionEvent::SubscriptionEvent()
+:SipEvent(tsk_null)
 {
-	::SubscriptionEvent(tsk_null);
 }
 
 SubscriptionEvent::SubscriptionEvent(const tsip_event_t *sipevent)

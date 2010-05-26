@@ -50,7 +50,7 @@ tsip_header_Allow_t* tsip_header_Allow_create()
 	return tsk_object_new(tsip_header_Allow_def_t);
 }
 
-int tsip_header_Allow_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Allow_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Allow_t *Allow = (const tsip_header_Allow_t *)header;
@@ -310,7 +310,7 @@ static tsk_object_t* tsip_header_Allow_ctor(tsk_object_t *self, va_list * app)
 			Allow->methods = tsip_header_Allow_parse(methods, tsk_strlen(methods));
 		}*/
 		TSIP_HEADER(Allow)->type = tsip_htype_Allow;
-		TSIP_HEADER(Allow)->tostring = tsip_header_Allow_tostring;
+		TSIP_HEADER(Allow)->serialize = tsip_header_Allow_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Allow header.");

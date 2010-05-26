@@ -153,7 +153,7 @@
 //
 //}%%
 //
-//int tsip_header_Proxy_Authorization_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+//int tsip_header_Proxy_Authorization_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 //{
 //	if(header)
 //	{
@@ -243,7 +243,7 @@
 //	if(Proxy_Authorization)
 //	{
 //		TSIP_HEADER(Proxy_Authorization)->type = tsip_htype_Proxy_Authorization;
-//		TSIP_HEADER(Proxy_Authorization)->tostring = tsip_header_Proxy_Authorization_tostring;
+//		TSIP_HEADER(Proxy_Authorization)->serialize = tsip_header_Proxy_Authorization_serialize;
 //	}
 //	else
 //	{

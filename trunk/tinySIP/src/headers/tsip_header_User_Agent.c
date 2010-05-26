@@ -55,7 +55,7 @@ tsip_header_User_Agent_t* tsip_header_User_Agent_create_null()
 	return tsip_header_User_Agent_create(tsk_null);
 }
 
-int tsip_header_User_Agent_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_User_Agent_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_User_Agent_t *User_Agent = (const tsip_header_User_Agent_t *)header;
@@ -282,7 +282,7 @@ static tsk_object_t* tsip_header_User_Agent_ctor(tsk_object_t *self, va_list * a
 	tsip_header_User_Agent_t *User_Agent = self;
 	if(User_Agent){
 		TSIP_HEADER(User_Agent)->type = tsip_htype_User_Agent;
-		TSIP_HEADER(User_Agent)->tostring = tsip_header_User_Agent_tostring;
+		TSIP_HEADER(User_Agent)->serialize = tsip_header_User_Agent_serialize;
 		User_Agent->value = tsk_strdup(va_arg(*app, const char*));
 	}
 	else{

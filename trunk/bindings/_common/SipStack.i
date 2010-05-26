@@ -1,6 +1,7 @@
 
 %{
 #include "SipUri.h"
+#include "SipMessage.h"
 #include "SipEvent.h"
 #include "SipSession.h"
 #include "RegistrationEvent.h"
@@ -20,6 +21,7 @@
 
 %nodefaultctor;
 %include "SipUri.h"
+%include "SipMessage.h"
 %include "SipEvent.h"
 %include "SipSession.h"
 %include "RegistrationEvent.h"
@@ -31,6 +33,10 @@
 %include "SafeObject.h"
 %include "SipStack.h"
 %clearnodefaultctor;
+
+
+
+
 
 /* ====== From "tinySIP\include\tinysip\tsip_event.h"  ====== */
 typedef enum tsip_event_type_e

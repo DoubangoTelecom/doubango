@@ -51,7 +51,7 @@ tsip_header_CSeq_t* tsip_header_CSeq_create(int32_t seq, const char*method)
 	return tsk_object_new(TSIP_HEADER_CSEQ_VA_ARGS(seq, method));
 }
 
-int tsip_header_CSeq_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_CSeq_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_CSeq_t *CSeq = (const tsip_header_CSeq_t *)header;
@@ -295,7 +295,7 @@ static tsk_object_t* tsip_header_CSeq_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_CSeq_t *CSeq = self;
 	if(CSeq){
 		TSIP_HEADER(CSeq)->type = tsip_htype_CSeq;
-		TSIP_HEADER(CSeq)->tostring = tsip_header_CSeq_tostring;
+		TSIP_HEADER(CSeq)->serialize = tsip_header_CSeq_serialize;
 		CSeq->seq = va_arg(*app, uint32_t);
 		CSeq->method = tsk_strdup(va_arg(*app, const char*));
 	}

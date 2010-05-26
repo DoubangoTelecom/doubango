@@ -81,9 +81,4 @@ public class SipSession : IDisposable {
     return ret;
   }
 
-  public bool setPayload(string str, uint len) {
-    bool ret = tinyWRAPPINVOKE.SipSession_setPayload(swigCPtr, str, len);
-    return ret;
-  }
-
 }

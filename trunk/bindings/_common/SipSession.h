@@ -42,15 +42,6 @@ public:
 	bool setFromUri(const char* fromUri);
 	bool setToUri(const char* toUri);
 
-#if defined(SWIG)
-	/* http://www.swig.org/Doc1.3/Library.html#Library_carrays
-	* 8.3.2 Passing binary data
-	*/
-	
-	%apply (const char *str, unsigned len) { (const char *str, unsigned len) };
-#endif
-	bool setPayload(const char *str, unsigned len);
-
 #if !defined(SWIG)
 	const SipStack* getStack() const;
 #endif

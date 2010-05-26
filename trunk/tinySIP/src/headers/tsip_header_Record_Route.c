@@ -59,7 +59,7 @@ tsip_header_Record_Route_t* tsip_header_Record_Route_create_null()
 	return tsip_header_Record_Route_create(tsk_null);
 }
 
-int tsip_header_Record_Route_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Record_Route_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		int ret;
@@ -517,7 +517,7 @@ static tsk_object_t* tsip_header_Record_Route_ctor(tsk_object_t *self, va_list *
 			Record_Route->uri = tsk_object_ref((void*)uri);
 		}
 		TSIP_HEADER(Record_Route)->type = tsip_htype_Record_Route;
-		TSIP_HEADER(Record_Route)->tostring = tsip_header_Record_Route_tostring;
+		TSIP_HEADER(Record_Route)->serialize = tsip_header_Record_Route_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Record_Route header.");

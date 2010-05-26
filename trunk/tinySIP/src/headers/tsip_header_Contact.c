@@ -51,7 +51,7 @@ tsip_header_Contact_t* tsip_header_Contact_create()
 	return tsk_object_new(tsip_header_Contact_def_t);
 }
 
-int tsip_header_Contact_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Contact_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Contact_t *Contact = (const tsip_header_Contact_t *)header;
@@ -618,7 +618,7 @@ static tsk_object_t* tsip_header_Contact_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_Contact_t *Contact = self;
 	if(Contact){
 		TSIP_HEADER(Contact)->type = tsip_htype_Contact;
-		TSIP_HEADER(Contact)->tostring = tsip_header_Contact_tostring;
+		TSIP_HEADER(Contact)->serialize = tsip_header_Contact_serialize;
 		Contact->expires = -1;
 	}
 	else{

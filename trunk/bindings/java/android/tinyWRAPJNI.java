@@ -13,11 +13,19 @@ class tinyWRAPJNI {
   public final static native void delete_SipUri(long jarg1);
   public final static native boolean SipUri_isValid__SWIG_0(String jarg1);
   public final static native boolean SipUri_isValid__SWIG_1(long jarg1, SipUri jarg1_);
+  public final static native long new_SipMessage();
+  public final static native void delete_SipMessage(long jarg1);
+  public final static native byte[] SipMessage_getSipContent(long jarg1, SipMessage jarg1_);
+  public final static native String SipMessage_getSipHeaderValue__SWIG_0(long jarg1, SipMessage jarg1_, String jarg2, long jarg3);
+  public final static native String SipMessage_getSipHeaderValue__SWIG_1(long jarg1, SipMessage jarg1_, String jarg2);
+  public final static native String SipMessage_getSipHeaderParamValue__SWIG_0(long jarg1, SipMessage jarg1_, String jarg2, String jarg3, long jarg4);
+  public final static native String SipMessage_getSipHeaderParamValue__SWIG_1(long jarg1, SipMessage jarg1_, String jarg2, String jarg3);
   public final static native long new_SipEvent();
   public final static native void delete_SipEvent(long jarg1);
   public final static native short SipEvent_getCode(long jarg1, SipEvent jarg1_);
   public final static native String SipEvent_getPhrase(long jarg1, SipEvent jarg1_);
   public final static native long SipEvent_getBaseSession(long jarg1, SipEvent jarg1_);
+  public final static native long SipEvent_getSipMessage(long jarg1, SipEvent jarg1_);
   public final static native long new_SipSession(long jarg1, SipStack jarg1_);
   public final static native void delete_SipSession(long jarg1);
   public final static native boolean SipSession_addHeader(long jarg1, SipSession jarg1_, String jarg2, String jarg3);
@@ -28,7 +36,6 @@ class tinyWRAPJNI {
   public final static native boolean SipSession_setExpires(long jarg1, SipSession jarg1_, long jarg2);
   public final static native boolean SipSession_setFromUri(long jarg1, SipSession jarg1_, String jarg2);
   public final static native boolean SipSession_setToUri(long jarg1, SipSession jarg1_, String jarg2);
-  public final static native boolean SipSession_setPayload(long jarg1, SipSession jarg1_, String jarg2, long jarg3);
   public final static native long new_RegistrationEvent();
   public final static native void delete_RegistrationEvent(long jarg1);
   public final static native int RegistrationEvent_getType(long jarg1, RegistrationEvent jarg1_);

@@ -57,7 +57,7 @@ tsip_header_Supported_t* tsip_header_Supported_create_null()
 	return tsip_header_Supported_create(tsk_null);
 }
 
-int tsip_header_Supported_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Supported_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Supported_t *Supported = (const tsip_header_Supported_t *)header;
@@ -319,7 +319,7 @@ static tsk_object_t* tsip_header_Supported_ctor(tsk_object_t *self, va_list * ap
 		const char* option;
 
 		TSIP_HEADER(Supported)->type = tsip_htype_Supported;
-		TSIP_HEADER(Supported)->tostring = tsip_header_Supported_tostring;
+		TSIP_HEADER(Supported)->serialize = tsip_header_Supported_serialize;
 
 		if((option = va_arg(*app, const char*))){
 			tsk_string_t* string = tsk_string_create(option);

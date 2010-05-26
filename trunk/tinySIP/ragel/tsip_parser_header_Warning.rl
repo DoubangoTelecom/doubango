@@ -102,7 +102,7 @@ tsip_header_Warning_t* tsip_header_Warning_create()
 	return tsk_object_new(tsip_header_Warning_def_t);
 }
 
-int tsip_header_Warning_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Warning_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Warning_t *Warning = (const tsip_header_Warning_t *)header;
@@ -150,7 +150,7 @@ static tsk_object_t* tsip_header_Warning_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_Warning_t *Warning = self;
 	if(Warning){
 		TSIP_HEADER(Warning)->type = tsip_htype_Warning;
-		TSIP_HEADER(Warning)->tostring = tsip_header_Warning_tostring;
+		TSIP_HEADER(Warning)->serialize = tsip_header_Warning_serialize;
 
 		Warning->code = -1;
 	}

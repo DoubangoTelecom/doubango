@@ -50,7 +50,7 @@ tsip_header_Expires_t* tsip_header_Expires_create(int64_t delta_seconds)
 	return tsk_object_new(TSIP_HEADER_EXPIRES_VA_ARGS(delta_seconds));
 }
 
-int tsip_header_Expires_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Expires_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Expires_t *Expires = (const tsip_header_Expires_t *)header;
@@ -275,7 +275,7 @@ static tsk_object_t* tsip_header_Expires_ctor(tsk_object_t *self, va_list * app)
 	tsip_header_Expires_t *Expires = self;
 	if(Expires){
 		TSIP_HEADER(Expires)->type = tsip_htype_Expires;
-		TSIP_HEADER(Expires)->tostring = tsip_header_Expires_tostring;
+		TSIP_HEADER(Expires)->serialize = tsip_header_Expires_serialize;
 		Expires->delta_seconds = va_arg(*app, int64_t);
 	}
 	else{

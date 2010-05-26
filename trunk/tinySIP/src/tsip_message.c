@@ -146,8 +146,7 @@ int tsip_message_add_headers(tsip_message_t *self, ...)
 
 int tsip_message_add_content(tsip_message_t *self, const char* content_type, const void* content, tsk_size_t size)
 {
-	if(self)
-	{
+	if(self){
 		if(content_type){
 			TSK_OBJECT_SAFE_FREE(self->Content_Type);
 		}
@@ -167,12 +166,12 @@ int tsip_message_add_content(tsip_message_t *self, const char* content_type, con
 
 const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_header_type_t type, tsk_size_t index)
 {
+	/* Do not forget to update tinyWRAP::SipMessage::getHeaderAt() */
 	tsk_size_t pos = 0;
-	tsk_list_item_t *item;
-	const tsip_header_t* hdr = 0;
+	const tsk_list_item_t *item;
+	const tsip_header_t* hdr = tsk_null;
 
-	if(self)
-	{		
+	if(self){		
 		switch(type)
 		{
 		case tsip_htype_Via:
@@ -188,8 +187,8 @@ const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_
 		case tsip_htype_To:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->To;
-				goto bail; break;
-			}else pos++;
+				goto bail;
+			}else pos++; break;
 		case tsip_htype_Contact:
 			if(index == 0){
 				hdr = (const tsip_header_t*)self->Contact;
@@ -224,12 +223,9 @@ const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_
 			break;
 		}
 
-		tsk_list_foreach(item, self->headers)
-		{
-			if(!pred_find_header_by_type(item, &type))
-			{
-				if(pos++ >= index)
-				{
+		tsk_list_foreach(item, self->headers){
+			if(!pred_find_header_by_type(item, &type)){
+				if(pos++ >= index){
 					hdr = item->data;
 					break;
 				}
@@ -274,16 +270,13 @@ tsk_bool_t tsip_message_supported(const tsip_message_t *self, const char* option
 	int index = 0;
 	tsip_header_Supported_t *hdr_supported;
 
-	if(self)
-	{
-		while( hdr_supported = (tsip_header_Supported_t*)tsip_message_get_headerAt(self, tsip_htype_Supported, index++) )
-		{
-			if(tsk_list_find_item_by_pred(hdr_supported->options, pred_find_string_by_value, option))
-			{
+	if(self){
+		while( hdr_supported = (tsip_header_Supported_t*)tsip_message_get_headerAt(self, tsip_htype_Supported, index++) ){
+			if(tsk_list_find_item_by_pred(hdr_supported->options, pred_find_string_by_value, option)){
 				return tsk_true;
 			}
 		}
-		}
+	}
 	return tsk_false;
 }
 
@@ -293,12 +286,9 @@ tsk_bool_t tsip_message_required(const tsip_message_t *self, const char* option)
 	int index = 0;
 	tsip_header_Require_t *hdr_require;
 
-	if(self)
-	{
-		while( hdr_require = (tsip_header_Require_t*)tsip_message_get_headerAt(self, tsip_htype_Require, index++) )
-		{
-			if(tsk_list_find_item_by_pred(hdr_require->options, pred_find_string_by_value, option))
-			{
+	if(self){
+		while( hdr_require = (tsip_header_Require_t*)tsip_message_get_headerAt(self, tsip_htype_Require, index++) ){
+			if(tsk_list_find_item_by_pred(hdr_require->options, pred_find_string_by_value, option)){
 				return tsk_true;
 			}
 		}
@@ -348,48 +338,47 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 
 	/* First Via */
 	if(self->firstVia){
-		tsip_header_tostring(TSIP_HEADER(self->firstVia), output);
+		tsip_header_serialize(TSIP_HEADER(self->firstVia), output);
 	}
 	/* From */
 	if(self->From){
-		tsip_header_tostring(TSIP_HEADER(self->From), output);
+		tsip_header_serialize(TSIP_HEADER(self->From), output);
 	}
 	/* To */
 	if(self->To){
-		tsip_header_tostring(TSIP_HEADER(self->To), output);
+		tsip_header_serialize(TSIP_HEADER(self->To), output);
 	}
 	/* Contact */
 	if(self->Contact){
-		tsip_header_tostring(TSIP_HEADER(self->Contact), output);
+		tsip_header_serialize(TSIP_HEADER(self->Contact), output);
 	}
 	/* Call_id */
 	if(self->Call_ID){
-		tsip_header_tostring(TSIP_HEADER(self->Call_ID), output);
+		tsip_header_serialize(TSIP_HEADER(self->Call_ID), output);
 	}
 	/* CSeq */
 	if(self->CSeq){
-		tsip_header_tostring(TSIP_HEADER(self->CSeq), output);
+		tsip_header_serialize(TSIP_HEADER(self->CSeq), output);
 	}
 	/* Expires */
 	if(self->Expires){
-		tsip_header_tostring(TSIP_HEADER(self->Expires), output);
+		tsip_header_serialize(TSIP_HEADER(self->Expires), output);
 	}
 	/* Content-Type */
 	if(self->Content_Type){
-		tsip_header_tostring(TSIP_HEADER(self->Content_Type), output);
+		tsip_header_serialize(TSIP_HEADER(self->Content_Type), output);
 	}
 	/* Content-Length*/
 	if(self->Content_Length){
-		tsip_header_tostring(TSIP_HEADER(self->Content_Length), output);
+		tsip_header_serialize(TSIP_HEADER(self->Content_Length), output);
 	}
 
 	/* All other headers */
 	{
 		tsk_list_item_t *item;
-		tsk_list_foreach(item, self->headers)
-		{
+		tsk_list_foreach(item, self->headers){
 			tsip_header_t *hdr = item->data;
-			tsip_header_tostring(hdr, output);
+			tsip_header_serialize(hdr, output);
 		}
 	}
 

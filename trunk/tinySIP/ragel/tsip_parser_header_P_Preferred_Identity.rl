@@ -104,7 +104,7 @@ tsip_header_P_Preferred_Identity_t* tsip_header_P_Preferred_Identity_create_null
 	return tsip_header_P_Preferred_Identity_create(tsk_null);
 }
 
-int tsip_header_Preferred_Identity_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Preferred_Identity_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		int ret;
@@ -158,7 +158,7 @@ static tsk_object_t* tsip_header_P_Preferred_Identity_ctor(tsk_object_t *self, v
 		const tsip_uri_t* uri = va_arg(*app, const tsip_uri_t*);
 
 		TSIP_HEADER(P_Preferred_Identity)->type = tsip_htype_P_Preferred_Identity;
-		TSIP_HEADER(P_Preferred_Identity)->tostring = tsip_header_Preferred_Identity_tostring;
+		TSIP_HEADER(P_Preferred_Identity)->serialize = tsip_header_Preferred_Identity_serialize;
 
 		if(uri){
 			P_Preferred_Identity->uri = tsk_object_ref((void*)uri);

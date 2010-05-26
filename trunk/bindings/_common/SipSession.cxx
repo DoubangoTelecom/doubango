@@ -103,12 +103,6 @@ bool SipSession::setToUri(const char* toUri)
 	return (ret == 0);
 }
 
-bool SipSession::setPayload(const char* payload, unsigned size)
-{
-	return false;
-}
-
-
 const SipStack* SipSession::getStack()const
 {
 	return this->stack;

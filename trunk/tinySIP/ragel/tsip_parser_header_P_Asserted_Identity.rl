@@ -104,7 +104,7 @@ tsip_header_P_Asserted_Identity_t* tsip_header_P_Asserted_Identity_create()
 	return tsk_object_new(tsip_header_P_Asserted_Identity_def_t);
 }
 
-int tsip_header_P_Asserted_Identity_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_P_Asserted_Identity_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_P_Asserted_Identity_t *P_Asserted_Identity = (const tsip_header_P_Asserted_Identity_t *)header;
@@ -160,7 +160,7 @@ static tsk_object_t* tsip_header_P_Asserted_Identity_ctor(tsk_object_t *self, va
 	tsip_header_P_Asserted_Identity_t *P_Asserted_Identity = self;
 	if(P_Asserted_Identity){
 		TSIP_HEADER(P_Asserted_Identity)->type = tsip_htype_P_Asserted_Identity;
-		TSIP_HEADER(P_Asserted_Identity)->tostring = tsip_header_P_Asserted_Identity_tostring;
+		TSIP_HEADER(P_Asserted_Identity)->serialize = tsip_header_P_Asserted_Identity_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new P_Asserted_Identity header.");

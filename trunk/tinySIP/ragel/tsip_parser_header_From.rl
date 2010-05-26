@@ -94,7 +94,7 @@ tsip_header_From_t* tsip_header_From_create(const char* display_name, const tsip
 	return tsk_object_new(TSIP_HEADER_FROM_VA_ARGS(display_name, uri, tag));
 }
 
-int tsip_header_From_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_From_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	int ret = -1;
 	if(header){
@@ -156,7 +156,7 @@ static tsk_object_t* tsip_header_From_ctor(tsk_object_t *self, va_list * app)
 		From->tag = tsk_strdup(tag);
 
 		TSIP_HEADER(From)->type = tsip_htype_From;
-		TSIP_HEADER(From)->tostring = tsip_header_From_tostring;
+		TSIP_HEADER(From)->serialize = tsip_header_From_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new From header.");

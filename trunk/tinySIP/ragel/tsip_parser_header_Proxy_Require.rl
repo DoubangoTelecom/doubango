@@ -76,7 +76,7 @@ tsip_header_Proxy_Require_t* tsip_header_Proxy_Require_create_null()
 	return tsip_header_Proxy_Require_create(tsk_null);
 }
 
-int tsip_header_Proxy_Require_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Proxy_Require_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Proxy_Require_t *Proxy_Require = (const tsip_header_Proxy_Require_t *)header;
@@ -139,7 +139,7 @@ static tsk_object_t* tsip_header_Proxy_Require_ctor(tsk_object_t *self, va_list 
 		const char* option;
 
 		TSIP_HEADER(Proxy_Require)->type = tsip_htype_Proxy_Require;
-		TSIP_HEADER(Proxy_Require)->tostring = tsip_header_Proxy_Require_tostring;
+		TSIP_HEADER(Proxy_Require)->serialize = tsip_header_Proxy_Require_serialize;
 
 		if((option = va_arg(*app, const char*))){
 			tsk_string_t* string = tsk_string_create(option);

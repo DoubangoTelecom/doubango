@@ -54,7 +54,7 @@ tsip_header_Content_Length_t* tsip_header_Content_Length_create_null()
 	return tsip_header_Content_Length_create(0);
 }
 
-int tsip_header_Content_Length_tostring(const tsip_header_t* header, tsk_buffer_t* output)
+int tsip_header_Content_Length_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
 		const tsip_header_Content_Length_t *Content_Length = (const tsip_header_Content_Length_t *)header;		
@@ -289,7 +289,7 @@ static tsk_object_t* tsip_header_Content_Length_ctor(tsk_object_t *self, va_list
 		Content_Length->length = va_arg(*app, uint32_t);
 
 		TSIP_HEADER(Content_Length)->type = tsip_htype_Content_Length;
-		TSIP_HEADER(Content_Length)->tostring = tsip_header_Content_Length_tostring;
+		TSIP_HEADER(Content_Length)->serialize = tsip_header_Content_Length_serialize;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Content_Length header.");

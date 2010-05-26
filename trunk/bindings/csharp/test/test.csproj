@@ -63,6 +63,9 @@
     <Compile Include="..\SipEvent.cs">
       <Link>SipEvent.cs</Link>
     </Compile>
+    <Compile Include="..\SipMessage.cs">
+      <Link>SipMessage.cs</Link>
+    </Compile>
     <Compile Include="..\SipSession.cs">
       <Link>SipSession.cs</Link>
     </Compile>
