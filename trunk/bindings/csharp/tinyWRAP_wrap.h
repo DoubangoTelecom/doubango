@@ -16,19 +16,28 @@ class SwigDirector_SipCallback : public SipCallback, public Swig::Director {
 public:
     SwigDirector_SipCallback();
     virtual ~SwigDirector_SipCallback();
-    virtual int OnRegistrationChanged(RegistrationEvent const *e);
-    virtual int OnSubscriptionChanged(SubscriptionEvent const *e);
-    virtual int OnPublicationChanged(PublicationEvent const *e);
+    virtual int OnDialogEvent(DialogEvent const *e);
+    virtual int OnMessagingEvent(MessagingEvent const *e);
+    virtual int OnOptionsEvent(OptionsEvent const *e);
+    virtual int OnPublicationEvent(PublicationEvent const *e);
+    virtual int OnRegistrationEvent(RegistrationEvent const *e);
+    virtual int OnSubscriptionEvent(SubscriptionEvent const *e);
 
     typedef int (SWIGSTDCALL* SWIG_Callback0_t)(void *);
     typedef int (SWIGSTDCALL* SWIG_Callback1_t)(void *);
     typedef int (SWIGSTDCALL* SWIG_Callback2_t)(void *);
-    void swig_connect_director(SWIG_Callback0_t callbackOnRegistrationChanged, SWIG_Callback1_t callbackOnSubscriptionChanged, SWIG_Callback2_t callbackOnPublicationChanged);
+    typedef int (SWIGSTDCALL* SWIG_Callback3_t)(void *);
+    typedef int (SWIGSTDCALL* SWIG_Callback4_t)(void *);
+    typedef int (SWIGSTDCALL* SWIG_Callback5_t)(void *);
+    void swig_connect_director(SWIG_Callback0_t callbackOnDialogEvent, SWIG_Callback1_t callbackOnMessagingEvent, SWIG_Callback2_t callbackOnOptionsEvent, SWIG_Callback3_t callbackOnPublicationEvent, SWIG_Callback4_t callbackOnRegistrationEvent, SWIG_Callback5_t callbackOnSubscriptionEvent);
 
 private:
-    SWIG_Callback0_t swig_callbackOnRegistrationChanged;
-    SWIG_Callback1_t swig_callbackOnSubscriptionChanged;
-    SWIG_Callback2_t swig_callbackOnPublicationChanged;
+    SWIG_Callback0_t swig_callbackOnDialogEvent;
+    SWIG_Callback1_t swig_callbackOnMessagingEvent;
+    SWIG_Callback2_t swig_callbackOnOptionsEvent;
+    SWIG_Callback3_t swig_callbackOnPublicationEvent;
+    SWIG_Callback4_t swig_callbackOnRegistrationEvent;
+    SWIG_Callback5_t swig_callbackOnSubscriptionEvent;
     void swig_init_callbacks();
 };
 

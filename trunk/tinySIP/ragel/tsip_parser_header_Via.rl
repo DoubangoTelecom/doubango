@@ -48,63 +48,75 @@
 		tag_start = p;
 	}
 
+	action create_via{
+		if(!curr_via){
+			curr_via = tsip_header_Via_create_null();
+		}
+	}
+
 	action parse_protocol_name{
-		TSK_PARSER_SET_STRING(hdr_via->proto_name);
+		TSK_PARSER_SET_STRING(curr_via->proto_name);
 	}
 
 	action parse_protocol_version{
-		TSK_PARSER_SET_STRING(hdr_via->proto_version);
+		TSK_PARSER_SET_STRING(curr_via->proto_version);
 	}
 
 	action parse_host{
-		TSK_PARSER_SET_STRING(hdr_via->host);
-		if(hdr_via->host && *hdr_via->host == '['){
-			tsk_strunquote_2(&hdr_via->host, '[', ']');
+		TSK_PARSER_SET_STRING(curr_via->host);
+		if(curr_via->host && *curr_via->host == '['){
+			tsk_strunquote_2(&curr_via->host, '[', ']');
 		}
 	}
 
 	action parse_port{
-		TSK_PARSER_SET_INTEGER(hdr_via->port);
+		TSK_PARSER_SET_INTEGER(curr_via->port);
 	}
 
 	action parse_transport{
-		TSK_PARSER_SET_STRING(hdr_via->transport);
+		TSK_PARSER_SET_STRING(curr_via->transport);
 	}
 
 	action parse_ttl{
-		TSK_PARSER_SET_INTEGER(hdr_via->ttl);
+		TSK_PARSER_SET_INTEGER(curr_via->ttl);
 	}
 
 	action parse_maddr{
-		TSK_PARSER_SET_STRING(hdr_via->maddr);
+		TSK_PARSER_SET_STRING(curr_via->maddr);
 	}
 	
 	action parse_received{
-		TSK_PARSER_SET_STRING(hdr_via->received);
+		TSK_PARSER_SET_STRING(curr_via->received);
 	}
 
 	action parse_branch{
-		TSK_PARSER_SET_STRING(hdr_via->branch);
+		TSK_PARSER_SET_STRING(curr_via->branch);
 	}
 
 	action parse_comp{
-		TSK_PARSER_SET_STRING(hdr_via->comp);
+		TSK_PARSER_SET_STRING(curr_via->comp);
 	}
 
 	action parse_rport{
-		TSK_PARSER_SET_INTEGER(hdr_via->rport);
+		TSK_PARSER_SET_INTEGER(curr_via->rport);
 	}
 
 	action has_rport{
-		if(hdr_via->rport <0){
-			hdr_via->rport = 0;
+		if(curr_via->rport <0){
+			curr_via->rport = 0;
 		}
 	}
 
 	action parse_param{
-		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_via));
+		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_via));
 	}
 	
+	action add_via{
+		if(curr_via){
+			tsk_list_push_back_data(hdr_vias, ((void**) &curr_via));
+		}
+	}
+
 	action eob{
 		
 	}
@@ -122,7 +134,7 @@
 	response_port = "rport"i ( EQUAL DIGIT+ >tag %parse_rport )? %has_rport;
 	via_extension = (generic_param) >tag %parse_param;
 	via_params = (via_ttl | via_maddr | via_received | via_branch | via_compression | response_port)@1 | (via_extension)@0;
-	via_parm = sent_protocol LWS sent_by ( SEMI via_params )*;
+	via_parm = (sent_protocol LWS sent_by ( SEMI via_params )*) >create_via %add_via;
 	Via = ( "Via"i | "v"i ) HCOLON via_parm ( COMMA via_parm )*;
 	
 	# Entry point
@@ -184,7 +196,7 @@ int tsip_header_Via_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 			Via->rport>=0 ? (Via->rport>0?";rport=":";rport") : "",
 			Via->rport>0 ? rport : "",
 
-			Via->ttl>=0 ? (Via->ttl>0?";rport=":";rport") : "",
+			Via->ttl>=0 ? (Via->ttl>0?";ttl=":";ttl") : "",
 			Via->ttl>0 ? ttl : "",
 
 			Via->received ? ";received=" : "",
@@ -197,13 +209,43 @@ int tsip_header_Via_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
-tsip_header_Via_t *tsip_header_Via_parse(const char *data, tsk_size_t size)
+char* tsip_header_Via_get_special_param_value(const tsip_header_t* header, const char* pname)
+{
+	if(header){
+		const tsip_header_Via_t *Via = (const tsip_header_Via_t *)header;
+		if(tsk_striequals(pname, "maddr")){
+			return tsk_strdup(Via->maddr);
+		}
+		else if(tsk_striequals(pname, "sigcomp-id")){
+			return tsk_strdup(Via->sigcomp_id);
+		}
+		else if(tsk_striequals(pname, "comp")){
+			return tsk_strdup(Via->comp);
+		}
+		else if(tsk_striequals(pname, "rport")){
+			tsk_istr_t rport;
+			tsk_itoa(Via->rport, &rport);
+
+			return tsk_strdup(rport);
+		}
+		else if(tsk_striequals(pname, "received")){
+			return tsk_strdup(Via->received);
+		}
+		else if(tsk_striequals(pname, "branch")){
+			return tsk_strdup(Via->branch);
+		}
+	}
+	return tsk_null;
+}
+
+tsip_header_Vias_L_t *tsip_header_Via_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Via_t *hdr_via = tsip_header_Via_create_null();
+	tsip_header_Vias_L_t *hdr_vias = tsk_list_create();
+	tsip_header_Via_t *curr_via = tsk_null;
 	
 	const char *tag_start;
 
@@ -213,10 +255,11 @@ tsip_header_Via_t *tsip_header_Via_parse(const char *data, tsk_size_t size)
 	
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse 'Via' header.");
-		TSK_OBJECT_SAFE_FREE(hdr_via);
+		TSK_OBJECT_SAFE_FREE(curr_via);
+		TSK_OBJECT_SAFE_FREE(hdr_vias);
 	}
 	
-	return hdr_via;
+	return hdr_vias;
 }
 
 
@@ -258,6 +301,7 @@ static tsk_object_t* tsip_header_Via_ctor(tsk_object_t *self, va_list * app)
 		
 		TSIP_HEADER(via)->type = tsip_htype_Via;
 		TSIP_HEADER(via)->serialize = tsip_header_Via_serialize;
+		TSIP_HEADER(via)->get_special_param_value = tsip_header_Via_get_special_param_value;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Via header.");

@@ -33,10 +33,6 @@ public class SubscriptionEvent extends SipEvent {
     super.delete();
   }
 
-  public SubscriptionEvent() {
-    this(tinyWRAPJNI.new_SubscriptionEvent(), true);
-  }
-
   public tsip_subscribe_event_type_t getType() {
     return tsip_subscribe_event_type_t.swigToEnum(tinyWRAPJNI.SubscriptionEvent_getType(swigCPtr, this));
   }

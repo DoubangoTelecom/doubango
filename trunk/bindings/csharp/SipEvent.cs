@@ -38,9 +38,6 @@ public class SipEvent : IDisposable {
     }
   }
 
-  public SipEvent() : this(tinyWRAPPINVOKE.new_SipEvent(), true) {
-  }
-
   public short getCode() {
     short ret = tinyWRAPPINVOKE.SipEvent_getCode(swigCPtr);
     return ret;

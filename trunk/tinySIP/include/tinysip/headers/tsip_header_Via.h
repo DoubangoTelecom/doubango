@@ -92,10 +92,12 @@ typedef struct tsip_header_Via_s
 }
 tsip_header_Via_t;
 
+typedef tsk_list_t tsip_header_Vias_L_t;
+
 TINYSIP_API tsip_header_Via_t* tsip_header_Via_create(const char* proto_name, const char* proto_version, const char* transport, const char* host, uint16_t port);
 TINYSIP_API tsip_header_Via_t* tsip_header_Via_create_null();
 
-TINYSIP_API tsip_header_Via_t *tsip_header_Via_parse(const char *data, tsk_size_t size);
+TINYSIP_API tsip_header_Vias_L_t *tsip_header_Via_parse(const char *data, tsk_size_t size);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Via_def_t;
 

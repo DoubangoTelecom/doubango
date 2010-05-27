@@ -174,26 +174,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\_common\MessagingEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\PublicationEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\PublicationSession.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\RegistrationEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\RegistrationSession.cxx"
-				>
-			</File>
-			<File
 				RelativePath="..\_common\SafeObject.cxx"
 				>
 			</File>
@@ -226,14 +206,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\_common\SubscriptionEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\SubscriptionSession.cxx"
-				>
-			</File>
-			<File
 				RelativePath=".\tinyWRAP_wrap.cxx"
 				>
 			</File>
@@ -249,26 +221,6 @@
 			>
 			<File
 				RelativePath="..\_common\Common.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\MessagingEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\PublicationEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\PublicationSession.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\RegistrationEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\RegistrationSession.h"
 				>
 			</File>
 			<File
@@ -301,14 +253,6 @@
 			</File>
 			<File
 				RelativePath="..\_common\SipUri.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\SubscriptionEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\SubscriptionSession.h"
 				>
 			</File>
 			<File

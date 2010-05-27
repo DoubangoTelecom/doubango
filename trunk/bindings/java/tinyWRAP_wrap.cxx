@@ -403,19 +403,14 @@ namespace Swig {
 
 namespace Swig {
   static jclass jclass_tinyWRAPJNI = NULL;
-  static jmethodID director_methids[7];
+  static jmethodID director_methids[10];
 }
 
 #include "SipUri.h"
 #include "SipMessage.h"
 #include "SipEvent.h"
 #include "SipSession.h"
-#include "PublicationEvent.h"
-#include "PublicationSession.h"
-#include "RegistrationEvent.h"
-#include "RegistrationSession.h"
-#include "SubscriptionEvent.h"
-#include "SubscriptionSession.h"
+
 #include "SipCallback.h"
 #include "SipDebug.h"
 #include "SafeObject.h"
@@ -437,7 +432,7 @@ SwigDirector_SipCallback::~SwigDirector_SipCallback() {
 }
 
 
-int SwigDirector_SipCallback::OnRegistrationChanged(RegistrationEvent const *e) {
+int SwigDirector_SipCallback::OnDialogEvent(DialogEvent const *e) {
   int c_result = SwigValueInit< int >() ;
   jint jresult = 0 ;
   JNIEnvWrapper swigjnienv(this) ;
@@ -446,11 +441,11 @@ int SwigDirector_SipCallback::OnRegistrationChanged(RegistrationEvent const *e) 
   jlong je = 0 ;
   
   if (!swig_override[0]) {
-    return SipCallback::OnRegistrationChanged(e);
+    return SipCallback::OnDialogEvent(e);
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *((RegistrationEvent **)&je) = (RegistrationEvent *) e; 
+    *((DialogEvent **)&je) = (DialogEvent *) e; 
     jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[0], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
@@ -461,7 +456,7 @@ int SwigDirector_SipCallback::OnRegistrationChanged(RegistrationEvent const *e) 
   return c_result;
 }
 
-int SwigDirector_SipCallback::OnSubscriptionChanged(SubscriptionEvent const *e) {
+int SwigDirector_SipCallback::OnMessagingEvent(MessagingEvent const *e) {
   int c_result = SwigValueInit< int >() ;
   jint jresult = 0 ;
   JNIEnvWrapper swigjnienv(this) ;
@@ -470,11 +465,11 @@ int SwigDirector_SipCallback::OnSubscriptionChanged(SubscriptionEvent const *e) 
   jlong je = 0 ;
   
   if (!swig_override[1]) {
-    return SipCallback::OnSubscriptionChanged(e);
+    return SipCallback::OnMessagingEvent(e);
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
-    *((SubscriptionEvent **)&je) = (SubscriptionEvent *) e; 
+    *((MessagingEvent **)&je) = (MessagingEvent *) e; 
     jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[1], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
@@ -485,7 +480,7 @@ int SwigDirector_SipCallback::OnSubscriptionChanged(SubscriptionEvent const *e) 
   return c_result;
 }
 
-int SwigDirector_SipCallback::OnPublicationChanged(PublicationEvent const *e) {
+int SwigDirector_SipCallback::OnOptionsEvent(OptionsEvent const *e) {
   int c_result = SwigValueInit< int >() ;
   jint jresult = 0 ;
   JNIEnvWrapper swigjnienv(this) ;
@@ -494,12 +489,84 @@ int SwigDirector_SipCallback::OnPublicationChanged(PublicationEvent const *e) {
   jlong je = 0 ;
   
   if (!swig_override[2]) {
-    return SipCallback::OnPublicationChanged(e);
+    return SipCallback::OnOptionsEvent(e);
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    *((OptionsEvent **)&je) = (OptionsEvent *) e; 
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[2], swigjobj, je);
+    if (jenv->ExceptionOccurred()) return c_result;
+    c_result = (int)jresult; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+int SwigDirector_SipCallback::OnPublicationEvent(PublicationEvent const *e) {
+  int c_result = SwigValueInit< int >() ;
+  jint jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong je = 0 ;
+  
+  if (!swig_override[3]) {
+    return SipCallback::OnPublicationEvent(e);
   }
   swigjobj = swig_get_self(jenv);
   if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
     *((PublicationEvent **)&je) = (PublicationEvent *) e; 
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[2], swigjobj, je);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[3], swigjobj, je);
+    if (jenv->ExceptionOccurred()) return c_result;
+    c_result = (int)jresult; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+int SwigDirector_SipCallback::OnRegistrationEvent(RegistrationEvent const *e) {
+  int c_result = SwigValueInit< int >() ;
+  jint jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong je = 0 ;
+  
+  if (!swig_override[4]) {
+    return SipCallback::OnRegistrationEvent(e);
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    *((RegistrationEvent **)&je) = (RegistrationEvent *) e; 
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[4], swigjobj, je);
+    if (jenv->ExceptionOccurred()) return c_result;
+    c_result = (int)jresult; 
+  } else {
+    SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null upcall object");
+  }
+  if (swigjobj) jenv->DeleteLocalRef(swigjobj);
+  return c_result;
+}
+
+int SwigDirector_SipCallback::OnSubscriptionEvent(SubscriptionEvent const *e) {
+  int c_result = SwigValueInit< int >() ;
+  jint jresult = 0 ;
+  JNIEnvWrapper swigjnienv(this) ;
+  JNIEnv * jenv = swigjnienv.getJNIEnv() ;
+  jobject swigjobj = (jobject) NULL ;
+  jlong je = 0 ;
+  
+  if (!swig_override[5]) {
+    return SipCallback::OnSubscriptionEvent(e);
+  }
+  swigjobj = swig_get_self(jenv);
+  if (swigjobj && jenv->IsSameObject(swigjobj, NULL) == JNI_FALSE) {
+    *((SubscriptionEvent **)&je) = (SubscriptionEvent *) e; 
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[5], swigjobj, je);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -516,13 +583,22 @@ void SwigDirector_SipCallback::swig_connect_director(JNIEnv *jenv, jobject jself
     jmethodID base_methid;
   } methods[] = {
     {
-      "OnRegistrationChanged", "(Lorg/doubango/tinyWRAP/RegistrationEvent;)I", NULL 
+      "OnDialogEvent", "(Lorg/doubango/tinyWRAP/DialogEvent;)I", NULL 
     },
     {
-      "OnSubscriptionChanged", "(Lorg/doubango/tinyWRAP/SubscriptionEvent;)I", NULL 
+      "OnMessagingEvent", "(Lorg/doubango/tinyWRAP/MessagingEvent;)I", NULL 
     },
     {
-      "OnPublicationChanged", "(Lorg/doubango/tinyWRAP/PublicationEvent;)I", NULL 
+      "OnOptionsEvent", "(Lorg/doubango/tinyWRAP/OptionsEvent;)I", NULL 
+    },
+    {
+      "OnPublicationEvent", "(Lorg/doubango/tinyWRAP/PublicationEvent;)I", NULL 
+    },
+    {
+      "OnRegistrationEvent", "(Lorg/doubango/tinyWRAP/RegistrationEvent;)I", NULL 
+    },
+    {
+      "OnSubscriptionEvent", "(Lorg/doubango/tinyWRAP/SubscriptionEvent;)I", NULL 
     }
   };
   
@@ -535,7 +611,7 @@ void SwigDirector_SipCallback::swig_connect_director(JNIEnv *jenv, jobject jself
       baseclass = (jclass) jenv->NewGlobalRef(baseclass);
     }
     bool derived = (jenv->IsSameObject(baseclass, jcls) ? false : true);
-    for (int i = 0; i < 3; ++i) {
+    for (int i = 0; i < 6; ++i) {
       if (!methods[i].base_methid) {
         methods[i].base_methid = jenv->GetMethodID(baseclass, methods[i].mname, methods[i].mdesc);
         if (!methods[i].base_methid) return;
@@ -577,7 +653,7 @@ int SwigDirector_SipDebugCallback::OnDebugInfo(char const *message) {
       jmessage = jenv->NewStringUTF((const char *)message);
       if (!jmessage) return c_result;
     }
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[3], swigjobj, jmessage);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[6], swigjobj, jmessage);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -605,7 +681,7 @@ int SwigDirector_SipDebugCallback::OnDebugWarn(char const *message) {
       jmessage = jenv->NewStringUTF((const char *)message);
       if (!jmessage) return c_result;
     }
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[4], swigjobj, jmessage);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[7], swigjobj, jmessage);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -633,7 +709,7 @@ int SwigDirector_SipDebugCallback::OnDebugError(char const *message) {
       jmessage = jenv->NewStringUTF((const char *)message);
       if (!jmessage) return c_result;
     }
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[5], swigjobj, jmessage);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[8], swigjobj, jmessage);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -661,7 +737,7 @@ int SwigDirector_SipDebugCallback::OnDebugFatal(char const *message) {
       jmessage = jenv->NewStringUTF((const char *)message);
       if (!jmessage) return c_result;
     }
-    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[6], swigjobj, jmessage);
+    jresult = (jint) jenv->CallStaticIntMethod(Swig::jclass_tinyWRAPJNI, Swig::director_methids[9], swigjobj, jmessage);
     if (jenv->ExceptionOccurred()) return c_result;
     c_result = (int)jresult; 
   } else {
@@ -881,6 +957,7 @@ SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1ge
   if(result) jresult = jenv->NewStringUTF((const char *)result);
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  delete [] result;
   return jresult;
 }
 
@@ -910,6 +987,7 @@ SWIGEXPORT jstring JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1ge
   if(result) jresult = jenv->NewStringUTF((const char *)result);
   if (arg2) jenv->ReleaseStringUTFChars(jarg2, (const char *)arg2);
   if (arg3) jenv->ReleaseStringUTFChars(jarg3, (const char *)arg3);
+  delete [] result;
   return jresult;
 }
 
@@ -941,24 +1019,11 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipMessage_1getS
   (void)jarg1_;
   arg1 = *(SipMessage **)&jarg1; 
   
-  arg2 = jarg2;
-  //arg2 = "mamadou";
+  arg2 = jenv->GetDirectBufferAddress(jarg2); 
   
   arg3 = (unsigned int)jarg3; 
   result = (unsigned int)(arg1)->getSipContent(arg2,arg3);
   jresult = (jlong)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1SipEvent(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  SipEvent *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (SipEvent *)new SipEvent();
-  *(SipEvent **)&jresult = result; 
   return jresult;
 }
 
@@ -1033,6 +1098,231 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipEvent_1getSip
 }
 
 
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1DialogEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  DialogEvent *arg1 = (DialogEvent *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(DialogEvent **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1MessagingEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  MessagingEvent *arg1 = (MessagingEvent *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(MessagingEvent **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingEvent_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  MessagingEvent *arg1 = (MessagingEvent *) 0 ;
+  tsip_message_event_type_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(MessagingEvent **)&jarg1; 
+  result = (tsip_message_event_type_t)((MessagingEvent const *)arg1)->getType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingEvent_1getSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  MessagingEvent *arg1 = (MessagingEvent *) 0 ;
+  MessagingSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(MessagingEvent **)&jarg1; 
+  result = (MessagingSession *)((MessagingEvent const *)arg1)->getSession();
+  *(MessagingSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingEvent_1takeSessionOwnership(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  MessagingEvent *arg1 = (MessagingEvent *) 0 ;
+  MessagingSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(MessagingEvent **)&jarg1; 
+  result = (MessagingSession *)((MessagingEvent const *)arg1)->takeSessionOwnership();
+  *(MessagingSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1OptionsEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  OptionsEvent *arg1 = (OptionsEvent *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(OptionsEvent **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_OptionsEvent_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  OptionsEvent *arg1 = (OptionsEvent *) 0 ;
+  tsip_options_event_type_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(OptionsEvent **)&jarg1; 
+  result = (tsip_options_event_type_t)((OptionsEvent const *)arg1)->getType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_OptionsEvent_1getSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  OptionsEvent *arg1 = (OptionsEvent *) 0 ;
+  OptionsSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(OptionsEvent **)&jarg1; 
+  result = (OptionsSession *)((OptionsEvent const *)arg1)->getSession();
+  *(OptionsSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1PublicationEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(PublicationEvent **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationEvent_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  tsip_publish_event_type_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(PublicationEvent **)&jarg1; 
+  result = (tsip_publish_event_type_t)((PublicationEvent const *)arg1)->getType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationEvent_1getSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  PublicationSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(PublicationEvent **)&jarg1; 
+  result = (PublicationSession *)((PublicationEvent const *)arg1)->getSession();
+  *(PublicationSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1RegistrationEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(RegistrationEvent **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationEvent_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  tsip_register_event_type_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(RegistrationEvent **)&jarg1; 
+  result = (tsip_register_event_type_t)((RegistrationEvent const *)arg1)->getType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationEvent_1getSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  RegistrationSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(RegistrationEvent **)&jarg1; 
+  result = (RegistrationSession *)((RegistrationEvent const *)arg1)->getSession();
+  *(RegistrationSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1SubscriptionEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(SubscriptionEvent **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionEvent_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jint jresult = 0 ;
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  tsip_subscribe_event_type_t result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SubscriptionEvent **)&jarg1; 
+  result = (tsip_subscribe_event_type_t)((SubscriptionEvent const *)arg1)->getType();
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionEvent_1getSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  SubscriptionSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SubscriptionEvent **)&jarg1; 
+  result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->getSession();
+  *(SubscriptionSession **)&jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1SipSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -1055,6 +1345,21 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1SipSessio
   (void)jcls;
   arg1 = *(SipSession **)&jarg1; 
   delete arg1;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipSession_1haveOwnership(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  SipSession *arg1 = (SipSession *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipSession **)&jarg1; 
+  result = (bool)(arg1)->haveOwnership();
+  jresult = (jboolean)result; 
+  return jresult;
 }
 
 
@@ -1243,54 +1548,133 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipSession_1s
 }
 
 
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1PublicationEvent(JNIEnv *jenv, jclass jcls) {
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipSession_1getId(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
   jlong jresult = 0 ;
-  PublicationEvent *result = 0 ;
+  SipSession *arg1 = (SipSession *) 0 ;
+  unsigned int result;
   
   (void)jenv;
   (void)jcls;
-  result = (PublicationEvent *)new PublicationEvent();
-  *(PublicationEvent **)&jresult = result; 
+  (void)jarg1_;
+  arg1 = *(SipSession **)&jarg1; 
+  result = (unsigned int)(arg1)->getId();
+  jresult = (jlong)result; 
   return jresult;
 }
 
 
-SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1PublicationEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1MessagingSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  MessagingSession *result = 0 ;
   
   (void)jenv;
   (void)jcls;
-  arg1 = *(PublicationEvent **)&jarg1; 
+  (void)jarg1_;
+  arg1 = *(SipStack **)&jarg1; 
+  result = (MessagingSession *)new MessagingSession(arg1);
+  *(MessagingSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1MessagingSession(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(MessagingSession **)&jarg1; 
   delete arg1;
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationEvent_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
-  tsip_publish_event_type_t result;
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1Send(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jbyteArray jarg2, jlong jarg3) {
+  jboolean jresult = 0 ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
+  bool result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(PublicationEvent **)&jarg1; 
-  result = (tsip_publish_event_type_t)((PublicationEvent const *)arg1)->getType();
-  jresult = (jint)result; 
+  arg1 = *(MessagingSession **)&jarg1; 
+  
+  arg2 = jenv->GetDirectBufferAddress(jarg2); 
+  
+  arg3 = (unsigned int)jarg3; 
+  result = (bool)(arg1)->Send((void const *)arg2,arg3);
+  jresult = (jboolean)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationEvent_1getSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
-  PublicationSession *result = 0 ;
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1Accept(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  bool result;
   
   (void)jenv;
   (void)jcls;
   (void)jarg1_;
-  arg1 = *(PublicationEvent **)&jarg1; 
-  result = (PublicationSession *)((PublicationEvent const *)arg1)->getSession();
-  *(PublicationSession **)&jresult = result; 
+  arg1 = *(MessagingSession **)&jarg1; 
+  result = (bool)(arg1)->Accept();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_MessagingSession_1Reject(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(MessagingSession **)&jarg1; 
+  result = (bool)(arg1)->Reject();
+  jresult = (jboolean)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1OptionsSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jlong jresult = 0 ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  OptionsSession *result = 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(SipStack **)&jarg1; 
+  result = (OptionsSession *)new OptionsSession(arg1);
+  *(OptionsSession **)&jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1OptionsSession(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+  OptionsSession *arg1 = (OptionsSession *) 0 ;
+  
+  (void)jenv;
+  (void)jcls;
+  arg1 = *(OptionsSession **)&jarg1; 
+  delete arg1;
+}
+
+
+SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_OptionsSession_1Send(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
+  jboolean jresult = 0 ;
+  OptionsSession *arg1 = (OptionsSession *) 0 ;
+  bool result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  arg1 = *(OptionsSession **)&jarg1; 
+  result = (bool)(arg1)->Send();
+  jresult = (jboolean)result; 
   return jresult;
 }
 
@@ -1332,8 +1716,7 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationSe
   (void)jarg1_;
   arg1 = *(PublicationSession **)&jarg1; 
   
-  arg2 = jarg2;
-  //arg2 = "mamadou";
+  arg2 = jenv->GetDirectBufferAddress(jarg2); 
   
   arg3 = (unsigned int)jarg3; 
   result = (bool)(arg1)->Publish((void const *)arg2,arg3);
@@ -1353,58 +1736,6 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_PublicationSe
   arg1 = *(PublicationSession **)&jarg1; 
   result = (bool)(arg1)->UnPublish();
   jresult = (jboolean)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1RegistrationEvent(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  RegistrationEvent *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (RegistrationEvent *)new RegistrationEvent();
-  *(RegistrationEvent **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1RegistrationEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(RegistrationEvent **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationEvent_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
-  tsip_register_event_type_t result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(RegistrationEvent **)&jarg1; 
-  result = (tsip_register_event_type_t)((RegistrationEvent const *)arg1)->getType();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationEvent_1getSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
-  RegistrationSession *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(RegistrationEvent **)&jarg1; 
-  result = (RegistrationSession *)((RegistrationEvent const *)arg1)->getSession();
-  *(RegistrationSession **)&jresult = result; 
   return jresult;
 }
 
@@ -1460,58 +1791,6 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_RegistrationS
   arg1 = *(RegistrationSession **)&jarg1; 
   result = (bool)(arg1)->UnRegister();
   jresult = (jboolean)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_new_1SubscriptionEvent(JNIEnv *jenv, jclass jcls) {
-  jlong jresult = 0 ;
-  SubscriptionEvent *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  result = (SubscriptionEvent *)new SubscriptionEvent();
-  *(SubscriptionEvent **)&jresult = result; 
-  return jresult;
-}
-
-
-SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1SubscriptionEvent(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  arg1 = *(SubscriptionEvent **)&jarg1; 
-  delete arg1;
-}
-
-
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionEvent_1getType(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jint jresult = 0 ;
-  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
-  tsip_subscribe_event_type_t result;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(SubscriptionEvent **)&jarg1; 
-  result = (tsip_subscribe_event_type_t)((SubscriptionEvent const *)arg1)->getType();
-  jresult = (jint)result; 
-  return jresult;
-}
-
-
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SubscriptionEvent_1getSession(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_) {
-  jlong jresult = 0 ;
-  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
-  SubscriptionSession *result = 0 ;
-  
-  (void)jenv;
-  (void)jcls;
-  (void)jarg1_;
-  arg1 = *(SubscriptionEvent **)&jarg1; 
-  result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->getSession();
-  *(SubscriptionSession **)&jresult = result; 
   return jresult;
 }
 
@@ -1593,10 +1872,10 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_delete_1SipCallba
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnRegistrationChanged(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnDialogEvent(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   jint jresult = 0 ;
   SipCallback *arg1 = (SipCallback *) 0 ;
-  RegistrationEvent *arg2 = (RegistrationEvent *) 0 ;
+  DialogEvent *arg2 = (DialogEvent *) 0 ;
   int result;
   
   (void)jenv;
@@ -1604,17 +1883,17 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnRe
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(SipCallback **)&jarg1; 
-  arg2 = *(RegistrationEvent **)&jarg2; 
-  result = (int)(arg1)->OnRegistrationChanged((RegistrationEvent const *)arg2);
+  arg2 = *(DialogEvent **)&jarg2; 
+  result = (int)(arg1)->OnDialogEvent((DialogEvent const *)arg2);
   jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnRegistrationChangedSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnDialogEventSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   jint jresult = 0 ;
   SipCallback *arg1 = (SipCallback *) 0 ;
-  RegistrationEvent *arg2 = (RegistrationEvent *) 0 ;
+  DialogEvent *arg2 = (DialogEvent *) 0 ;
   int result;
   
   (void)jenv;
@@ -1622,17 +1901,17 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnRe
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(SipCallback **)&jarg1; 
-  arg2 = *(RegistrationEvent **)&jarg2; 
-  result = (int)(arg1)->SipCallback::OnRegistrationChanged((RegistrationEvent const *)arg2);
+  arg2 = *(DialogEvent **)&jarg2; 
+  result = (int)(arg1)->SipCallback::OnDialogEvent((DialogEvent const *)arg2);
   jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnSubscriptionChanged(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnMessagingEvent(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   jint jresult = 0 ;
   SipCallback *arg1 = (SipCallback *) 0 ;
-  SubscriptionEvent *arg2 = (SubscriptionEvent *) 0 ;
+  MessagingEvent *arg2 = (MessagingEvent *) 0 ;
   int result;
   
   (void)jenv;
@@ -1640,17 +1919,17 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnSu
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(SipCallback **)&jarg1; 
-  arg2 = *(SubscriptionEvent **)&jarg2; 
-  result = (int)(arg1)->OnSubscriptionChanged((SubscriptionEvent const *)arg2);
+  arg2 = *(MessagingEvent **)&jarg2; 
+  result = (int)(arg1)->OnMessagingEvent((MessagingEvent const *)arg2);
   jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnSubscriptionChangedSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnMessagingEventSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   jint jresult = 0 ;
   SipCallback *arg1 = (SipCallback *) 0 ;
-  SubscriptionEvent *arg2 = (SubscriptionEvent *) 0 ;
+  MessagingEvent *arg2 = (MessagingEvent *) 0 ;
   int result;
   
   (void)jenv;
@@ -1658,14 +1937,50 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnSu
   (void)jarg1_;
   (void)jarg2_;
   arg1 = *(SipCallback **)&jarg1; 
-  arg2 = *(SubscriptionEvent **)&jarg2; 
-  result = (int)(arg1)->SipCallback::OnSubscriptionChanged((SubscriptionEvent const *)arg2);
+  arg2 = *(MessagingEvent **)&jarg2; 
+  result = (int)(arg1)->SipCallback::OnMessagingEvent((MessagingEvent const *)arg2);
   jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnPublicationChanged(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnOptionsEvent(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  OptionsEvent *arg2 = (OptionsEvent *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(SipCallback **)&jarg1; 
+  arg2 = *(OptionsEvent **)&jarg2; 
+  result = (int)(arg1)->OnOptionsEvent((OptionsEvent const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnOptionsEventSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  OptionsEvent *arg2 = (OptionsEvent *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(SipCallback **)&jarg1; 
+  arg2 = *(OptionsEvent **)&jarg2; 
+  result = (int)(arg1)->SipCallback::OnOptionsEvent((OptionsEvent const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnPublicationEvent(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   jint jresult = 0 ;
   SipCallback *arg1 = (SipCallback *) 0 ;
   PublicationEvent *arg2 = (PublicationEvent *) 0 ;
@@ -1677,13 +1992,13 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnPu
   (void)jarg2_;
   arg1 = *(SipCallback **)&jarg1; 
   arg2 = *(PublicationEvent **)&jarg2; 
-  result = (int)(arg1)->OnPublicationChanged((PublicationEvent const *)arg2);
+  result = (int)(arg1)->OnPublicationEvent((PublicationEvent const *)arg2);
   jresult = (jint)result; 
   return jresult;
 }
 
 
-SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnPublicationChangedSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnPublicationEventSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
   jint jresult = 0 ;
   SipCallback *arg1 = (SipCallback *) 0 ;
   PublicationEvent *arg2 = (PublicationEvent *) 0 ;
@@ -1695,7 +2010,79 @@ SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnPu
   (void)jarg2_;
   arg1 = *(SipCallback **)&jarg1; 
   arg2 = *(PublicationEvent **)&jarg2; 
-  result = (int)(arg1)->SipCallback::OnPublicationChanged((PublicationEvent const *)arg2);
+  result = (int)(arg1)->SipCallback::OnPublicationEvent((PublicationEvent const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnRegistrationEvent(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  RegistrationEvent *arg2 = (RegistrationEvent *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(SipCallback **)&jarg1; 
+  arg2 = *(RegistrationEvent **)&jarg2; 
+  result = (int)(arg1)->OnRegistrationEvent((RegistrationEvent const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnRegistrationEventSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  RegistrationEvent *arg2 = (RegistrationEvent *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(SipCallback **)&jarg1; 
+  arg2 = *(RegistrationEvent **)&jarg2; 
+  result = (int)(arg1)->SipCallback::OnRegistrationEvent((RegistrationEvent const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnSubscriptionEvent(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  SubscriptionEvent *arg2 = (SubscriptionEvent *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(SipCallback **)&jarg1; 
+  arg2 = *(SubscriptionEvent **)&jarg2; 
+  result = (int)(arg1)->OnSubscriptionEvent((SubscriptionEvent const *)arg2);
+  jresult = (jint)result; 
+  return jresult;
+}
+
+
+SWIGEXPORT jint JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipCallback_1OnSubscriptionEventSwigExplicitSipCallback(JNIEnv *jenv, jclass jcls, jlong jarg1, jobject jarg1_, jlong jarg2, jobject jarg2_) {
+  jint jresult = 0 ;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  SubscriptionEvent *arg2 = (SubscriptionEvent *) 0 ;
+  int result;
+  
+  (void)jenv;
+  (void)jcls;
+  (void)jarg1_;
+  (void)jarg2_;
+  arg1 = *(SipCallback **)&jarg1; 
+  arg2 = *(SubscriptionEvent **)&jarg2; 
+  result = (int)(arg1)->SipCallback::OnSubscriptionEvent((SubscriptionEvent const *)arg2);
   jresult = (jint)result; 
   return jresult;
 }
@@ -2355,19 +2742,35 @@ SWIGEXPORT jboolean JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SipStack_1sto
 }
 
 
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGDialogEventUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(SipEvent **)&baseptr = *(DialogEvent **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGMessagingEventUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(SipEvent **)&baseptr = *(MessagingEvent **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGOptionsEventUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(SipEvent **)&baseptr = *(OptionsEvent **)&jarg1;
+    return baseptr;
+}
+
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGPublicationEventUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
     jlong baseptr = 0;
     (void)jenv;
     (void)jcls;
     *(SipEvent **)&baseptr = *(PublicationEvent **)&jarg1;
-    return baseptr;
-}
-
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGPublicationSessionUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-    jlong baseptr = 0;
-    (void)jenv;
-    (void)jcls;
-    *(SipSession **)&baseptr = *(PublicationSession **)&jarg1;
     return baseptr;
 }
 
@@ -2379,19 +2782,43 @@ SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGRegistration
     return baseptr;
 }
 
-SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGRegistrationSessionUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
-    jlong baseptr = 0;
-    (void)jenv;
-    (void)jcls;
-    *(SipSession **)&baseptr = *(RegistrationSession **)&jarg1;
-    return baseptr;
-}
-
 SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGSubscriptionEventUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
     jlong baseptr = 0;
     (void)jenv;
     (void)jcls;
     *(SipEvent **)&baseptr = *(SubscriptionEvent **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGMessagingSessionUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(SipSession **)&baseptr = *(MessagingSession **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGOptionsSessionUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(SipSession **)&baseptr = *(OptionsSession **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGPublicationSessionUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(SipSession **)&baseptr = *(PublicationSession **)&jarg1;
+    return baseptr;
+}
+
+SWIGEXPORT jlong JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_SWIGRegistrationSessionUpcast(JNIEnv *jenv, jclass jcls, jlong jarg1) {
+    jlong baseptr = 0;
+    (void)jenv;
+    (void)jcls;
+    *(SipSession **)&baseptr = *(RegistrationSession **)&jarg1;
     return baseptr;
 }
 
@@ -2417,15 +2844,24 @@ SWIGEXPORT void JNICALL Java_org_doubango_tinyWRAP_tinyWRAPJNI_swig_1module_1ini
   static struct {
     const char *method;
     const char *signature;
-  } methods[7] = {
+  } methods[10] = {
     {
-      "SwigDirector_SipCallback_OnRegistrationChanged", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
+      "SwigDirector_SipCallback_OnDialogEvent", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
     },
     {
-      "SwigDirector_SipCallback_OnSubscriptionChanged", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
+      "SwigDirector_SipCallback_OnMessagingEvent", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
     },
     {
-      "SwigDirector_SipCallback_OnPublicationChanged", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
+      "SwigDirector_SipCallback_OnOptionsEvent", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
+    },
+    {
+      "SwigDirector_SipCallback_OnPublicationEvent", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
+    },
+    {
+      "SwigDirector_SipCallback_OnRegistrationEvent", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
+    },
+    {
+      "SwigDirector_SipCallback_OnSubscriptionEvent", "(Lorg/doubango/tinyWRAP/SipCallback;J)I" 
     },
     {
       "SwigDirector_SipDebugCallback_OnDebugInfo", "(Lorg/doubango/tinyWRAP/SipDebugCallback;Ljava/lang/String;)I" 

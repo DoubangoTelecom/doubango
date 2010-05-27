@@ -38,6 +38,16 @@ public class SipMessage : IDisposable {
     }
   }
 
+  public byte[] getSipContent() {
+    uint clen = this.getSipContentLength();
+    if(clen>0){
+        byte[] bytes = new byte[clen];
+        this.getSipContent(bytes, clen);
+        return bytes;
+    }
+    return null;
+  }
+
   public SipMessage() : this(tinyWRAPPINVOKE.new_SipMessage(), true) {
   }
 

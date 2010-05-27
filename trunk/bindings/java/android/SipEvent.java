@@ -33,10 +33,6 @@ public class SipEvent {
     swigCPtr = 0;
   }
 
-  public SipEvent() {
-    this(tinyWRAPJNI.new_SipEvent(), true);
-  }
-
   public short getCode() {
     return tinyWRAPJNI.SipEvent_getCode(swigCPtr, this);
   }

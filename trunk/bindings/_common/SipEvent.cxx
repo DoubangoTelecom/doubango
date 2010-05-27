@@ -23,13 +23,11 @@
 #include "SipSession.h"
 #include "SipMessage.h"
 
+#include "SipStack.h"
+
 #include "Common.h"
 
-SipEvent::SipEvent()
-: sipevent(tsk_null)
-{
-}
-
+/* ======================== SipEvent ========================*/
 SipEvent::SipEvent(const tsip_event_t *_sipevent)
 {
 	this->sipevent = _sipevent;
@@ -60,10 +58,159 @@ const char* SipEvent::getPhrase() const
 
 const SipSession* SipEvent::getBaseSession() const
 {
-	return dyn_cast<SipSession*>((SipSession*)tsip_ssession_get_userdata(this->sipevent->ss));
+	const void* userdata = tsip_ssession_get_userdata(this->sipevent->ss);
+	if(userdata){
+		return dyn_cast<const SipSession*>((const SipSession*)userdata);
+	}
+	return tsk_null;
 }
 
 const SipMessage* SipEvent::getSipMessage() const
 {
 	return this->sipmessage;
+}
+
+
+
+/* ======================== DialogEvent ========================*/
+DialogEvent::DialogEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
+{
+}
+
+DialogEvent::~DialogEvent()
+{
+}
+
+
+
+/* ======================== MessagingEvent ========================*/
+MessagingEvent::MessagingEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
+{
+}
+
+MessagingEvent::~MessagingEvent()
+{
+}
+
+tsip_message_event_type_t MessagingEvent::getType() const
+{
+	return TSIP_MESSAGE_EVENT(this->sipevent)->type;
+}
+
+const MessagingSession* MessagingEvent::getSession() const
+{
+	return dyn_cast<const MessagingSession*>(this->getBaseSession());
+}
+
+MessagingSession* MessagingEvent::takeSessionOwnership() const
+{
+	if(!this->sipevent || !this->sipevent->ss){
+		return tsk_null;
+	}
+
+	if(tsip_ssession_have_ownership(this->sipevent->ss)){
+		// already have ownership
+		return tsk_null;
+	}
+	else{
+		const tsip_stack_handle_t* stack_handle = tsip_ssession_get_stack(sipevent->ss);
+		const void* userdata;
+		if(stack_handle && (userdata = tsip_stack_get_userdata(stack_handle))){
+			SipStack* stack = dyn_cast<SipStack*>((SipStack*)userdata);
+			if(stack){
+				// FIXME: Memory Leak ?
+				/* The constructor will call take_ownerhip() */
+				return new MessagingSession(stack, this->sipevent->ss);
+			}
+		}
+		return tsk_null;
+	}
+}
+
+/* ======================== OptionsEvent ========================*/
+OptionsEvent::OptionsEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
+{
+}
+
+OptionsEvent::~OptionsEvent()
+{
+}
+
+tsip_options_event_type_t OptionsEvent::getType() const
+{
+	return TSIP_OPTIONS_EVENT(this->sipevent)->type;
+}
+
+const OptionsSession* OptionsEvent::getSession() const
+{
+	return dyn_cast<const OptionsSession*>(this->getBaseSession());
+}
+
+
+
+/* ======================== PublicationEvent ========================*/
+PublicationEvent::PublicationEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
+{
+}
+
+PublicationEvent::~PublicationEvent()
+{
+}
+
+tsip_publish_event_type_t PublicationEvent::getType() const
+{
+	return TSIP_PUBLISH_EVENT(this->sipevent)->type;
+}
+
+const PublicationSession* PublicationEvent::getSession() const
+{
+	return dyn_cast<const PublicationSession*>(this->getBaseSession());
+}
+
+
+
+/* ======================== RegistrationEvent ========================*/
+RegistrationEvent::RegistrationEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
+{
+}
+
+RegistrationEvent::~RegistrationEvent()
+{
+}
+
+tsip_register_event_type_t RegistrationEvent::getType() const
+{
+	return TSIP_REGISTER_EVENT(this->sipevent)->type;
+}
+
+const RegistrationSession* RegistrationEvent::getSession() const
+{
+	return dyn_cast<const RegistrationSession*>(this->getBaseSession());
+}
+
+
+
+/* ======================== SubscriptionEvent ========================*/
+SubscriptionEvent::SubscriptionEvent(const tsip_event_t *sipevent)
+:SipEvent(sipevent)
+{
+}
+
+SubscriptionEvent::~SubscriptionEvent()
+{
+}
+
+tsip_subscribe_event_type_t SubscriptionEvent::getType() const
+{
+	return TSIP_SUBSCRIBE_EVENT(this->sipevent)->type;
+}
+
+const SubscriptionSession* SubscriptionEvent::getSession() const
+{
+	return dyn_cast<const SubscriptionSession*>(this->getBaseSession());
 }

@@ -3121,27 +3121,34 @@ namespace Swig {
 
 /* -------- TYPES TABLE (BEGIN) -------- */
 
-#define SWIGTYPE_p_PublicationEvent swig_types[0]
-#define SWIGTYPE_p_PublicationSession swig_types[1]
-#define SWIGTYPE_p_RegistrationEvent swig_types[2]
-#define SWIGTYPE_p_RegistrationSession swig_types[3]
-#define SWIGTYPE_p_SafeObject swig_types[4]
-#define SWIGTYPE_p_SipCallback swig_types[5]
-#define SWIGTYPE_p_SipDebugCallback swig_types[6]
-#define SWIGTYPE_p_SipEvent swig_types[7]
-#define SWIGTYPE_p_SipMessage swig_types[8]
-#define SWIGTYPE_p_SipSession swig_types[9]
-#define SWIGTYPE_p_SipStack swig_types[10]
-#define SWIGTYPE_p_SipUri swig_types[11]
-#define SWIGTYPE_p_SubscriptionEvent swig_types[12]
-#define SWIGTYPE_p_SubscriptionSession swig_types[13]
-#define SWIGTYPE_p_char swig_types[14]
-#define SWIGTYPE_p_tsip_event_type_e swig_types[15]
-#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[16]
-#define SWIGTYPE_p_tsip_register_event_type_e swig_types[17]
-#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[18]
-static swig_type_info *swig_types[20];
-static swig_module_info swig_module = {swig_types, 19, 0, 0, 0, 0};
+#define SWIGTYPE_p_DialogEvent swig_types[0]
+#define SWIGTYPE_p_MessagingEvent swig_types[1]
+#define SWIGTYPE_p_MessagingSession swig_types[2]
+#define SWIGTYPE_p_OptionsEvent swig_types[3]
+#define SWIGTYPE_p_OptionsSession swig_types[4]
+#define SWIGTYPE_p_PublicationEvent swig_types[5]
+#define SWIGTYPE_p_PublicationSession swig_types[6]
+#define SWIGTYPE_p_RegistrationEvent swig_types[7]
+#define SWIGTYPE_p_RegistrationSession swig_types[8]
+#define SWIGTYPE_p_SafeObject swig_types[9]
+#define SWIGTYPE_p_SipCallback swig_types[10]
+#define SWIGTYPE_p_SipDebugCallback swig_types[11]
+#define SWIGTYPE_p_SipEvent swig_types[12]
+#define SWIGTYPE_p_SipMessage swig_types[13]
+#define SWIGTYPE_p_SipSession swig_types[14]
+#define SWIGTYPE_p_SipStack swig_types[15]
+#define SWIGTYPE_p_SipUri swig_types[16]
+#define SWIGTYPE_p_SubscriptionEvent swig_types[17]
+#define SWIGTYPE_p_SubscriptionSession swig_types[18]
+#define SWIGTYPE_p_char swig_types[19]
+#define SWIGTYPE_p_tsip_event_type_e swig_types[20]
+#define SWIGTYPE_p_tsip_message_event_type_e swig_types[21]
+#define SWIGTYPE_p_tsip_options_event_type_e swig_types[22]
+#define SWIGTYPE_p_tsip_publish_event_type_e swig_types[23]
+#define SWIGTYPE_p_tsip_register_event_type_e swig_types[24]
+#define SWIGTYPE_p_tsip_subscribe_event_type_e swig_types[25]
+static swig_type_info *swig_types[27];
+static swig_module_info swig_module = {swig_types, 26, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -3242,12 +3249,7 @@ namespace swig {
 #include "SipMessage.h"
 #include "SipEvent.h"
 #include "SipSession.h"
-#include "PublicationEvent.h"
-#include "PublicationSession.h"
-#include "RegistrationEvent.h"
-#include "RegistrationSession.h"
-#include "SubscriptionEvent.h"
-#include "SubscriptionSession.h"
+
 #include "SipCallback.h"
 #include "SipDebug.h"
 #include "SafeObject.h"
@@ -3632,25 +3634,25 @@ SwigDirector_SipCallback::SwigDirector_SipCallback(PyObject *self): SipCallback(
 SwigDirector_SipCallback::~SwigDirector_SipCallback() {
 }
 
-int SwigDirector_SipCallback::OnRegistrationChanged(RegistrationEvent const *e) {
+int SwigDirector_SipCallback::OnDialogEvent(DialogEvent const *e) {
   int c_result;
   swig::SwigVar_PyObject obj0;
-  obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(e), SWIGTYPE_p_RegistrationEvent,  0 );
+  obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(e), SWIGTYPE_p_DialogEvent,  0 );
   if (!swig_get_self()) {
     Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 0;
-  const char * const swig_method_name = "OnRegistrationChanged";
+  const char * const swig_method_name = "OnDialogEvent";
   PyObject* method = swig_get_method(swig_method_index, swig_method_name);
   swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
 #else
-  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnRegistrationChanged", (char *)"(O)" ,(PyObject *)obj0);
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnDialogEvent", (char *)"(O)" ,(PyObject *)obj0);
 #endif
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnRegistrationChanged'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnDialogEvent'");
     }
   }
   int swig_val;
@@ -3663,25 +3665,25 @@ int SwigDirector_SipCallback::OnRegistrationChanged(RegistrationEvent const *e) 
 }
 
 
-int SwigDirector_SipCallback::OnSubscriptionChanged(SubscriptionEvent const *e) {
+int SwigDirector_SipCallback::OnMessagingEvent(MessagingEvent const *e) {
   int c_result;
   swig::SwigVar_PyObject obj0;
-  obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(e), SWIGTYPE_p_SubscriptionEvent,  0 );
+  obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(e), SWIGTYPE_p_MessagingEvent,  0 );
   if (!swig_get_self()) {
     Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
   const size_t swig_method_index = 1;
-  const char * const swig_method_name = "OnSubscriptionChanged";
+  const char * const swig_method_name = "OnMessagingEvent";
   PyObject* method = swig_get_method(swig_method_index, swig_method_name);
   swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
 #else
-  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnSubscriptionChanged", (char *)"(O)" ,(PyObject *)obj0);
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnMessagingEvent", (char *)"(O)" ,(PyObject *)obj0);
 #endif
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnSubscriptionChanged'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnMessagingEvent'");
     }
   }
   int swig_val;
@@ -3694,7 +3696,38 @@ int SwigDirector_SipCallback::OnSubscriptionChanged(SubscriptionEvent const *e) 
 }
 
 
-int SwigDirector_SipCallback::OnPublicationChanged(PublicationEvent const *e) {
+int SwigDirector_SipCallback::OnOptionsEvent(OptionsEvent const *e) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(e), SWIGTYPE_p_OptionsEvent,  0 );
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 2;
+  const char * const swig_method_name = "OnOptionsEvent";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnOptionsEvent", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnOptionsEvent'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+int SwigDirector_SipCallback::OnPublicationEvent(PublicationEvent const *e) {
   int c_result;
   swig::SwigVar_PyObject obj0;
   obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(e), SWIGTYPE_p_PublicationEvent,  0 );
@@ -3702,17 +3735,79 @@ int SwigDirector_SipCallback::OnPublicationChanged(PublicationEvent const *e) {
     Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipCallback.__init__.");
   }
 #if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
-  const size_t swig_method_index = 2;
-  const char * const swig_method_name = "OnPublicationChanged";
+  const size_t swig_method_index = 3;
+  const char * const swig_method_name = "OnPublicationEvent";
   PyObject* method = swig_get_method(swig_method_index, swig_method_name);
   swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
 #else
-  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnPublicationChanged", (char *)"(O)" ,(PyObject *)obj0);
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnPublicationEvent", (char *)"(O)" ,(PyObject *)obj0);
 #endif
   if (result == NULL) {
     PyObject *error = PyErr_Occurred();
     if (error != NULL) {
-      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnPublicationChanged'");
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnPublicationEvent'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+int SwigDirector_SipCallback::OnRegistrationEvent(RegistrationEvent const *e) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(e), SWIGTYPE_p_RegistrationEvent,  0 );
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 4;
+  const char * const swig_method_name = "OnRegistrationEvent";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnRegistrationEvent", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnRegistrationEvent'");
+    }
+  }
+  int swig_val;
+  int swig_res = SWIG_AsVal_int(result, &swig_val);
+  if (!SWIG_IsOK(swig_res)) {
+    Swig::DirectorTypeMismatchException::raise(SWIG_ErrorType(SWIG_ArgError(swig_res)), "in output value of type '""int""'");
+  }
+  c_result = static_cast< int >(swig_val);
+  return (int) c_result;
+}
+
+
+int SwigDirector_SipCallback::OnSubscriptionEvent(SubscriptionEvent const *e) {
+  int c_result;
+  swig::SwigVar_PyObject obj0;
+  obj0 = SWIG_NewPointerObj(SWIG_as_voidptr(e), SWIGTYPE_p_SubscriptionEvent,  0 );
+  if (!swig_get_self()) {
+    Swig::DirectorException::raise("'self' uninitialized, maybe you forgot to call SipCallback.__init__.");
+  }
+#if defined(SWIG_PYTHON_DIRECTOR_VTABLE)
+  const size_t swig_method_index = 5;
+  const char * const swig_method_name = "OnSubscriptionEvent";
+  PyObject* method = swig_get_method(swig_method_index, swig_method_name);
+  swig::SwigVar_PyObject result = PyObject_CallFunction(method, (char *)"(O)" ,(PyObject *)obj0);
+#else
+  swig::SwigVar_PyObject result = PyObject_CallMethod(swig_get_self(), (char *)"OnSubscriptionEvent", (char *)"(O)" ,(PyObject *)obj0);
+#endif
+  if (result == NULL) {
+    PyObject *error = PyErr_Occurred();
+    if (error != NULL) {
+      Swig::DirectorMethodException::raise("Error detected when calling 'SipCallback.OnSubscriptionEvent'");
     }
   }
   int swig_val;
@@ -4211,6 +4306,7 @@ SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderParamValue__SWIG_0(PyObject *S
   resultobj = SWIG_FromCharPtr((const char *)result);
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  delete[] result;
   return resultobj;
 fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
@@ -4257,6 +4353,7 @@ SWIGINTERN PyObject *_wrap_SipMessage_getSipHeaderParamValue__SWIG_1(PyObject *S
   resultobj = SWIG_FromCharPtr((const char *)result);
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
   if (alloc3 == SWIG_NEWOBJ) delete[] buf3;
+  delete[] result;
   return resultobj;
 fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
@@ -4392,19 +4489,6 @@ SWIGINTERN PyObject *SipMessage_swigregister(PyObject *SWIGUNUSEDPARM(self), PyO
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_SipEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SipEvent *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)":new_SipEvent")) SWIG_fail;
-  result = (SipEvent *)new SipEvent();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SipEvent, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_delete_SipEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipEvent *arg1 = (SipEvent *) 0 ;
@@ -4521,6 +4605,416 @@ SWIGINTERN PyObject *SipEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObj
   return SWIG_Py_Void();
 }
 
+SWIGINTERN PyObject *_wrap_delete_DialogEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  DialogEvent *arg1 = (DialogEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_DialogEvent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_DialogEvent, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_DialogEvent" "', argument " "1"" of type '" "DialogEvent *""'"); 
+  }
+  arg1 = reinterpret_cast< DialogEvent * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *DialogEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_DialogEvent, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_MessagingEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MessagingEvent *arg1 = (MessagingEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_MessagingEvent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingEvent, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MessagingEvent" "', argument " "1"" of type '" "MessagingEvent *""'"); 
+  }
+  arg1 = reinterpret_cast< MessagingEvent * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MessagingEvent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MessagingEvent *arg1 = (MessagingEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  tsip_message_event_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MessagingEvent_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingEvent_getType" "', argument " "1"" of type '" "MessagingEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< MessagingEvent * >(argp1);
+  result = (tsip_message_event_type_t)((MessagingEvent const *)arg1)->getType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MessagingEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MessagingEvent *arg1 = (MessagingEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  MessagingSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MessagingEvent_getSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingEvent_getSession" "', argument " "1"" of type '" "MessagingEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< MessagingEvent * >(argp1);
+  result = (MessagingSession *)((MessagingEvent const *)arg1)->getSession();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MessagingSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_MessagingEvent_takeSessionOwnership(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MessagingEvent *arg1 = (MessagingEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  MessagingSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MessagingEvent_takeSessionOwnership",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingEvent_takeSessionOwnership" "', argument " "1"" of type '" "MessagingEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< MessagingEvent * >(argp1);
+  result = (MessagingSession *)((MessagingEvent const *)arg1)->takeSessionOwnership();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MessagingSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *MessagingEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_MessagingEvent, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_OptionsEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  OptionsEvent *arg1 = (OptionsEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_OptionsEvent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OptionsEvent, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_OptionsEvent" "', argument " "1"" of type '" "OptionsEvent *""'"); 
+  }
+  arg1 = reinterpret_cast< OptionsEvent * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_OptionsEvent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  OptionsEvent *arg1 = (OptionsEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  tsip_options_event_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:OptionsEvent_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OptionsEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OptionsEvent_getType" "', argument " "1"" of type '" "OptionsEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< OptionsEvent * >(argp1);
+  result = (tsip_options_event_type_t)((OptionsEvent const *)arg1)->getType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_OptionsEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  OptionsEvent *arg1 = (OptionsEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  OptionsSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:OptionsEvent_getSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OptionsEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OptionsEvent_getSession" "', argument " "1"" of type '" "OptionsEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< OptionsEvent * >(argp1);
+  result = (OptionsSession *)((OptionsEvent const *)arg1)->getSession();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_OptionsSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *OptionsEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_OptionsEvent, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_PublicationEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_PublicationEvent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationEvent, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_PublicationEvent" "', argument " "1"" of type '" "PublicationEvent *""'"); 
+  }
+  arg1 = reinterpret_cast< PublicationEvent * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PublicationEvent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  tsip_publish_event_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:PublicationEvent_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationEvent_getType" "', argument " "1"" of type '" "PublicationEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< PublicationEvent * >(argp1);
+  result = (tsip_publish_event_type_t)((PublicationEvent const *)arg1)->getType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_PublicationEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  PublicationSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:PublicationEvent_getSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationEvent_getSession" "', argument " "1"" of type '" "PublicationEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< PublicationEvent * >(argp1);
+  result = (PublicationSession *)((PublicationEvent const *)arg1)->getSession();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PublicationSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *PublicationEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_PublicationEvent, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_RegistrationEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_RegistrationEvent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationEvent, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_RegistrationEvent" "', argument " "1"" of type '" "RegistrationEvent *""'"); 
+  }
+  arg1 = reinterpret_cast< RegistrationEvent * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RegistrationEvent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  tsip_register_event_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationEvent_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationEvent_getType" "', argument " "1"" of type '" "RegistrationEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< RegistrationEvent * >(argp1);
+  result = (tsip_register_event_type_t)((RegistrationEvent const *)arg1)->getType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_RegistrationEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  RegistrationSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationEvent_getSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationEvent_getSession" "', argument " "1"" of type '" "RegistrationEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< RegistrationEvent * >(argp1);
+  result = (RegistrationSession *)((RegistrationEvent const *)arg1)->getSession();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegistrationSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *RegistrationEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_RegistrationEvent, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_delete_SubscriptionEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_SubscriptionEvent",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionEvent, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SubscriptionEvent" "', argument " "1"" of type '" "SubscriptionEvent *""'"); 
+  }
+  arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SubscriptionEvent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  tsip_subscribe_event_type_t result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionEvent_getType",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionEvent_getType" "', argument " "1"" of type '" "SubscriptionEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
+  result = (tsip_subscribe_event_type_t)((SubscriptionEvent const *)arg1)->getType();
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SubscriptionEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  SubscriptionSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionEvent_getSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionEvent, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionEvent_getSession" "', argument " "1"" of type '" "SubscriptionEvent const *""'"); 
+  }
+  arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
+  result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->getSession();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SubscriptionSession, 0 |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *SubscriptionEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_SubscriptionEvent, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
 SWIGINTERN PyObject *_wrap_new_SipSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -4558,6 +5052,28 @@ SWIGINTERN PyObject *_wrap_delete_SipSession(PyObject *SWIGUNUSEDPARM(self), PyO
   arg1 = reinterpret_cast< SipSession * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipSession_haveOwnership(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipSession *arg1 = (SipSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipSession_haveOwnership",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipSession_haveOwnership" "', argument " "1"" of type '" "SipSession *""'"); 
+  }
+  arg1 = reinterpret_cast< SipSession * >(argp1);
+  result = (bool)(arg1)->haveOwnership();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
   return NULL;
@@ -4907,6 +5423,28 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_SipSession_getId(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipSession *arg1 = (SipSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  unsigned int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:SipSession_getId",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipSession_getId" "', argument " "1"" of type '" "SipSession *""'"); 
+  }
+  arg1 = reinterpret_cast< SipSession * >(argp1);
+  result = (unsigned int)(arg1)->getId();
+  resultobj = SWIG_From_unsigned_SS_int(static_cast< unsigned int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *SipSession_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
@@ -4914,32 +5452,41 @@ SWIGINTERN PyObject *SipSession_swigregister(PyObject *SWIGUNUSEDPARM(self), PyO
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_PublicationEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_new_MessagingSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  PublicationEvent *result = 0 ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  MessagingSession *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)":new_PublicationEvent")) SWIG_fail;
-  result = (PublicationEvent *)new PublicationEvent();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PublicationEvent, SWIG_POINTER_NEW |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:new_MessagingSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_MessagingSession" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  result = (MessagingSession *)new MessagingSession(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MessagingSession, SWIG_POINTER_NEW |  0 );
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_delete_PublicationEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_delete_MessagingSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_PublicationEvent",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationEvent, SWIG_POINTER_DISOWN |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_MessagingSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingSession, SWIG_POINTER_DISOWN |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_PublicationEvent" "', argument " "1"" of type '" "PublicationEvent *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_MessagingSession" "', argument " "1"" of type '" "MessagingSession *""'"); 
   }
-  arg1 = reinterpret_cast< PublicationEvent * >(argp1);
+  arg1 = reinterpret_cast< MessagingSession * >(argp1);
   delete arg1;
   resultobj = SWIG_Py_Void();
   return resultobj;
@@ -4948,54 +5495,164 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_PublicationEvent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MessagingSession_Send(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  void *arg2 = (void *) 0 ;
+  unsigned int arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
+  int res2 ;
+  unsigned int val3 ;
+  int ecode3 = 0 ;
   PyObject * obj0 = 0 ;
-  tsip_publish_event_type_t result;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:PublicationEvent_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationEvent, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"OOO:MessagingSession_Send",&obj0,&obj1,&obj2)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationEvent_getType" "', argument " "1"" of type '" "PublicationEvent const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_Send" "', argument " "1"" of type '" "MessagingSession *""'"); 
   }
-  arg1 = reinterpret_cast< PublicationEvent * >(argp1);
-  result = (tsip_publish_event_type_t)((PublicationEvent const *)arg1)->getType();
-  resultobj = SWIG_From_int(static_cast< int >(result));
+  arg1 = reinterpret_cast< MessagingSession * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1,SWIG_as_voidptrptr(&arg2), 0, 0);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "MessagingSession_Send" "', argument " "2"" of type '" "void const *""'"); 
+  }
+  ecode3 = SWIG_AsVal_unsigned_SS_int(obj2, &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "MessagingSession_Send" "', argument " "3"" of type '" "unsigned int""'");
+  } 
+  arg3 = static_cast< unsigned int >(val3);
+  result = (bool)(arg1)->Send((void const *)arg2,arg3);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *_wrap_PublicationEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MessagingSession_Accept(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
-  PublicationEvent *arg1 = (PublicationEvent *) 0 ;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject * obj0 = 0 ;
-  PublicationSession *result = 0 ;
+  bool result;
   
-  if (!PyArg_ParseTuple(args,(char *)"O:PublicationEvent_getSession",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_PublicationEvent, 0 |  0 );
+  if (!PyArg_ParseTuple(args,(char *)"O:MessagingSession_Accept",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingSession, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "PublicationEvent_getSession" "', argument " "1"" of type '" "PublicationEvent const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_Accept" "', argument " "1"" of type '" "MessagingSession *""'"); 
   }
-  arg1 = reinterpret_cast< PublicationEvent * >(argp1);
-  result = (PublicationSession *)((PublicationEvent const *)arg1)->getSession();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_PublicationSession, 0 |  0 );
+  arg1 = reinterpret_cast< MessagingSession * >(argp1);
+  result = (bool)(arg1)->Accept();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
   return resultobj;
 fail:
   return NULL;
 }
 
 
-SWIGINTERN PyObject *PublicationEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_MessagingSession_Reject(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  MessagingSession *arg1 = (MessagingSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:MessagingSession_Reject",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_MessagingSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "MessagingSession_Reject" "', argument " "1"" of type '" "MessagingSession *""'"); 
+  }
+  arg1 = reinterpret_cast< MessagingSession * >(argp1);
+  result = (bool)(arg1)->Reject();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *MessagingSession_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_PublicationEvent, SWIG_NewClientData(obj));
+  SWIG_TypeNewClientData(SWIGTYPE_p_MessagingSession, SWIG_NewClientData(obj));
+  return SWIG_Py_Void();
+}
+
+SWIGINTERN PyObject *_wrap_new_OptionsSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipStack *arg1 = (SipStack *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  OptionsSession *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:new_OptionsSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_OptionsSession" "', argument " "1"" of type '" "SipStack *""'"); 
+  }
+  arg1 = reinterpret_cast< SipStack * >(argp1);
+  result = (OptionsSession *)new OptionsSession(arg1);
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_OptionsSession, SWIG_POINTER_NEW |  0 );
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_delete_OptionsSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  OptionsSession *arg1 = (OptionsSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:delete_OptionsSession",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OptionsSession, SWIG_POINTER_DISOWN |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_OptionsSession" "', argument " "1"" of type '" "OptionsSession *""'"); 
+  }
+  arg1 = reinterpret_cast< OptionsSession * >(argp1);
+  delete arg1;
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_OptionsSession_Send(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  OptionsSession *arg1 = (OptionsSession *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:OptionsSession_Send",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_OptionsSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "OptionsSession_Send" "', argument " "1"" of type '" "OptionsSession *""'"); 
+  }
+  arg1 = reinterpret_cast< OptionsSession * >(argp1);
+  result = (bool)(arg1)->Send();
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *OptionsSession_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *obj;
+  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
+  SWIG_TypeNewClientData(SWIGTYPE_p_OptionsSession, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -5109,91 +5766,6 @@ SWIGINTERN PyObject *PublicationSession_swigregister(PyObject *SWIGUNUSEDPARM(se
   return SWIG_Py_Void();
 }
 
-SWIGINTERN PyObject *_wrap_new_RegistrationEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegistrationEvent *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)":new_RegistrationEvent")) SWIG_fail;
-  result = (RegistrationEvent *)new RegistrationEvent();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegistrationEvent, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_RegistrationEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_RegistrationEvent",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationEvent, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_RegistrationEvent" "', argument " "1"" of type '" "RegistrationEvent *""'"); 
-  }
-  arg1 = reinterpret_cast< RegistrationEvent * >(argp1);
-  delete arg1;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegistrationEvent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  tsip_register_event_type_t result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationEvent_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationEvent, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationEvent_getType" "', argument " "1"" of type '" "RegistrationEvent const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegistrationEvent * >(argp1);
-  result = (tsip_register_event_type_t)((RegistrationEvent const *)arg1)->getType();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_RegistrationEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  RegistrationEvent *arg1 = (RegistrationEvent *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  RegistrationSession *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:RegistrationEvent_getSession",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_RegistrationEvent, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "RegistrationEvent_getSession" "', argument " "1"" of type '" "RegistrationEvent const *""'"); 
-  }
-  arg1 = reinterpret_cast< RegistrationEvent * >(argp1);
-  result = (RegistrationSession *)((RegistrationEvent const *)arg1)->getSession();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_RegistrationSession, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *RegistrationEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_RegistrationEvent, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
 SWIGINTERN PyObject *_wrap_new_RegistrationSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipStack *arg1 = (SipStack *) 0 ;
@@ -5285,91 +5857,6 @@ SWIGINTERN PyObject *RegistrationSession_swigregister(PyObject *SWIGUNUSEDPARM(s
   PyObject *obj;
   if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
   SWIG_TypeNewClientData(SWIGTYPE_p_RegistrationSession, SWIG_NewClientData(obj));
-  return SWIG_Py_Void();
-}
-
-SWIGINTERN PyObject *_wrap_new_SubscriptionEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SubscriptionEvent *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)":new_SubscriptionEvent")) SWIG_fail;
-  result = (SubscriptionEvent *)new SubscriptionEvent();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SubscriptionEvent, SWIG_POINTER_NEW |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_delete_SubscriptionEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:delete_SubscriptionEvent",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionEvent, SWIG_POINTER_DISOWN |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_SubscriptionEvent" "', argument " "1"" of type '" "SubscriptionEvent *""'"); 
-  }
-  arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
-  delete arg1;
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SubscriptionEvent_getType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  tsip_subscribe_event_type_t result;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionEvent_getType",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionEvent, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionEvent_getType" "', argument " "1"" of type '" "SubscriptionEvent const *""'"); 
-  }
-  arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
-  result = (tsip_subscribe_event_type_t)((SubscriptionEvent const *)arg1)->getType();
-  resultobj = SWIG_From_int(static_cast< int >(result));
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *_wrap_SubscriptionEvent_getSession(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SubscriptionEvent *arg1 = (SubscriptionEvent *) 0 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  PyObject * obj0 = 0 ;
-  SubscriptionSession *result = 0 ;
-  
-  if (!PyArg_ParseTuple(args,(char *)"O:SubscriptionEvent_getSession",&obj0)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SubscriptionEvent, 0 |  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SubscriptionEvent_getSession" "', argument " "1"" of type '" "SubscriptionEvent const *""'"); 
-  }
-  arg1 = reinterpret_cast< SubscriptionEvent * >(argp1);
-  result = (SubscriptionSession *)((SubscriptionEvent const *)arg1)->getSession();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_SubscriptionSession, 0 |  0 );
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
-SWIGINTERN PyObject *SubscriptionEvent_swigregister(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *obj;
-  if (!PyArg_ParseTuple(args,(char*)"O:swigregister", &obj)) return NULL;
-  SWIG_TypeNewClientData(SWIGTYPE_p_SubscriptionEvent, SWIG_NewClientData(obj));
   return SWIG_Py_Void();
 }
 
@@ -5510,10 +5997,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SipCallback_OnRegistrationChanged(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SipCallback_OnDialogEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipCallback *arg1 = (SipCallback *) 0 ;
-  RegistrationEvent *arg2 = (RegistrationEvent *) 0 ;
+  DialogEvent *arg2 = (DialogEvent *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -5524,24 +6011,24 @@ SWIGINTERN PyObject *_wrap_SipCallback_OnRegistrationChanged(PyObject *SWIGUNUSE
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnRegistrationChanged",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnDialogEvent",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnRegistrationChanged" "', argument " "1"" of type '" "SipCallback *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnDialogEvent" "', argument " "1"" of type '" "SipCallback *""'"); 
   }
   arg1 = reinterpret_cast< SipCallback * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_RegistrationEvent, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_DialogEvent, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnRegistrationChanged" "', argument " "2"" of type '" "RegistrationEvent const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnDialogEvent" "', argument " "2"" of type '" "DialogEvent const *""'"); 
   }
-  arg2 = reinterpret_cast< RegistrationEvent * >(argp2);
+  arg2 = reinterpret_cast< DialogEvent * >(argp2);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->SipCallback::OnRegistrationChanged((RegistrationEvent const *)arg2);
+      result = (int)(arg1)->SipCallback::OnDialogEvent((DialogEvent const *)arg2);
     } else {
-      result = (int)(arg1)->OnRegistrationChanged((RegistrationEvent const *)arg2);
+      result = (int)(arg1)->OnDialogEvent((DialogEvent const *)arg2);
     }
   } catch (Swig::DirectorException&) {
     SWIG_fail;
@@ -5553,10 +6040,10 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SipCallback_OnSubscriptionChanged(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SipCallback_OnMessagingEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipCallback *arg1 = (SipCallback *) 0 ;
-  SubscriptionEvent *arg2 = (SubscriptionEvent *) 0 ;
+  MessagingEvent *arg2 = (MessagingEvent *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
   void *argp2 = 0 ;
@@ -5567,24 +6054,24 @@ SWIGINTERN PyObject *_wrap_SipCallback_OnSubscriptionChanged(PyObject *SWIGUNUSE
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnSubscriptionChanged",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnMessagingEvent",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnSubscriptionChanged" "', argument " "1"" of type '" "SipCallback *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnMessagingEvent" "', argument " "1"" of type '" "SipCallback *""'"); 
   }
   arg1 = reinterpret_cast< SipCallback * >(argp1);
-  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_SubscriptionEvent, 0 |  0 );
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_MessagingEvent, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnSubscriptionChanged" "', argument " "2"" of type '" "SubscriptionEvent const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnMessagingEvent" "', argument " "2"" of type '" "MessagingEvent const *""'"); 
   }
-  arg2 = reinterpret_cast< SubscriptionEvent * >(argp2);
+  arg2 = reinterpret_cast< MessagingEvent * >(argp2);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->SipCallback::OnSubscriptionChanged((SubscriptionEvent const *)arg2);
+      result = (int)(arg1)->SipCallback::OnMessagingEvent((MessagingEvent const *)arg2);
     } else {
-      result = (int)(arg1)->OnSubscriptionChanged((SubscriptionEvent const *)arg2);
+      result = (int)(arg1)->OnMessagingEvent((MessagingEvent const *)arg2);
     }
   } catch (Swig::DirectorException&) {
     SWIG_fail;
@@ -5596,7 +6083,50 @@ fail:
 }
 
 
-SWIGINTERN PyObject *_wrap_SipCallback_OnPublicationChanged(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+SWIGINTERN PyObject *_wrap_SipCallback_OnOptionsEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  OptionsEvent *arg2 = (OptionsEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnOptionsEvent",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnOptionsEvent" "', argument " "1"" of type '" "SipCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipCallback * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_OptionsEvent, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnOptionsEvent" "', argument " "2"" of type '" "OptionsEvent const *""'"); 
+  }
+  arg2 = reinterpret_cast< OptionsEvent * >(argp2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->SipCallback::OnOptionsEvent((OptionsEvent const *)arg2);
+    } else {
+      result = (int)(arg1)->OnOptionsEvent((OptionsEvent const *)arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipCallback_OnPublicationEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SipCallback *arg1 = (SipCallback *) 0 ;
   PublicationEvent *arg2 = (PublicationEvent *) 0 ;
@@ -5610,24 +6140,110 @@ SWIGINTERN PyObject *_wrap_SipCallback_OnPublicationChanged(PyObject *SWIGUNUSED
   bool upcall = false;
   int result;
   
-  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnPublicationChanged",&obj0,&obj1)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnPublicationEvent",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipCallback, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnPublicationChanged" "', argument " "1"" of type '" "SipCallback *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnPublicationEvent" "', argument " "1"" of type '" "SipCallback *""'"); 
   }
   arg1 = reinterpret_cast< SipCallback * >(argp1);
   res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_PublicationEvent, 0 |  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnPublicationChanged" "', argument " "2"" of type '" "PublicationEvent const *""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnPublicationEvent" "', argument " "2"" of type '" "PublicationEvent const *""'"); 
   }
   arg2 = reinterpret_cast< PublicationEvent * >(argp2);
   director = SWIG_DIRECTOR_CAST(arg1);
   upcall = (director && (director->swig_get_self()==obj0));
   try {
     if (upcall) {
-      result = (int)(arg1)->SipCallback::OnPublicationChanged((PublicationEvent const *)arg2);
+      result = (int)(arg1)->SipCallback::OnPublicationEvent((PublicationEvent const *)arg2);
     } else {
-      result = (int)(arg1)->OnPublicationChanged((PublicationEvent const *)arg2);
+      result = (int)(arg1)->OnPublicationEvent((PublicationEvent const *)arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipCallback_OnRegistrationEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  RegistrationEvent *arg2 = (RegistrationEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnRegistrationEvent",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnRegistrationEvent" "', argument " "1"" of type '" "SipCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipCallback * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_RegistrationEvent, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnRegistrationEvent" "', argument " "2"" of type '" "RegistrationEvent const *""'"); 
+  }
+  arg2 = reinterpret_cast< RegistrationEvent * >(argp2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->SipCallback::OnRegistrationEvent((RegistrationEvent const *)arg2);
+    } else {
+      result = (int)(arg1)->OnRegistrationEvent((RegistrationEvent const *)arg2);
+    }
+  } catch (Swig::DirectorException&) {
+    SWIG_fail;
+  }
+  resultobj = SWIG_From_int(static_cast< int >(result));
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipCallback_OnSubscriptionEvent(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipCallback *arg1 = (SipCallback *) 0 ;
+  SubscriptionEvent *arg2 = (SubscriptionEvent *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 = 0 ;
+  int res2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  Swig::Director *director = 0;
+  bool upcall = false;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipCallback_OnSubscriptionEvent",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipCallback, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipCallback_OnSubscriptionEvent" "', argument " "1"" of type '" "SipCallback *""'"); 
+  }
+  arg1 = reinterpret_cast< SipCallback * >(argp1);
+  res2 = SWIG_ConvertPtr(obj1, &argp2,SWIGTYPE_p_SubscriptionEvent, 0 |  0 );
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipCallback_OnSubscriptionEvent" "', argument " "2"" of type '" "SubscriptionEvent const *""'"); 
+  }
+  arg2 = reinterpret_cast< SubscriptionEvent * >(argp2);
+  director = SWIG_DIRECTOR_CAST(arg1);
+  upcall = (director && (director->swig_get_self()==obj0));
+  try {
+    if (upcall) {
+      result = (int)(arg1)->SipCallback::OnSubscriptionEvent((SubscriptionEvent const *)arg2);
+    } else {
+      result = (int)(arg1)->OnSubscriptionEvent((SubscriptionEvent const *)arg2);
     }
   } catch (Swig::DirectorException&) {
     SWIG_fail;
@@ -6624,15 +7240,38 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipMessage_getSipContentLength", _wrap_SipMessage_getSipContentLength, METH_VARARGS, NULL},
 	 { (char *)"SipMessage_getSipContent", _wrap_SipMessage_getSipContent, METH_VARARGS, NULL},
 	 { (char *)"SipMessage_swigregister", SipMessage_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_SipEvent", _wrap_new_SipEvent, METH_VARARGS, NULL},
 	 { (char *)"delete_SipEvent", _wrap_delete_SipEvent, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_getCode", _wrap_SipEvent_getCode, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_getPhrase", _wrap_SipEvent_getPhrase, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_getBaseSession", _wrap_SipEvent_getBaseSession, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_getSipMessage", _wrap_SipEvent_getSipMessage, METH_VARARGS, NULL},
 	 { (char *)"SipEvent_swigregister", SipEvent_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_DialogEvent", _wrap_delete_DialogEvent, METH_VARARGS, NULL},
+	 { (char *)"DialogEvent_swigregister", DialogEvent_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_MessagingEvent", _wrap_delete_MessagingEvent, METH_VARARGS, NULL},
+	 { (char *)"MessagingEvent_getType", _wrap_MessagingEvent_getType, METH_VARARGS, NULL},
+	 { (char *)"MessagingEvent_getSession", _wrap_MessagingEvent_getSession, METH_VARARGS, NULL},
+	 { (char *)"MessagingEvent_takeSessionOwnership", _wrap_MessagingEvent_takeSessionOwnership, METH_VARARGS, NULL},
+	 { (char *)"MessagingEvent_swigregister", MessagingEvent_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_OptionsEvent", _wrap_delete_OptionsEvent, METH_VARARGS, NULL},
+	 { (char *)"OptionsEvent_getType", _wrap_OptionsEvent_getType, METH_VARARGS, NULL},
+	 { (char *)"OptionsEvent_getSession", _wrap_OptionsEvent_getSession, METH_VARARGS, NULL},
+	 { (char *)"OptionsEvent_swigregister", OptionsEvent_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_PublicationEvent", _wrap_delete_PublicationEvent, METH_VARARGS, NULL},
+	 { (char *)"PublicationEvent_getType", _wrap_PublicationEvent_getType, METH_VARARGS, NULL},
+	 { (char *)"PublicationEvent_getSession", _wrap_PublicationEvent_getSession, METH_VARARGS, NULL},
+	 { (char *)"PublicationEvent_swigregister", PublicationEvent_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_RegistrationEvent", _wrap_delete_RegistrationEvent, METH_VARARGS, NULL},
+	 { (char *)"RegistrationEvent_getType", _wrap_RegistrationEvent_getType, METH_VARARGS, NULL},
+	 { (char *)"RegistrationEvent_getSession", _wrap_RegistrationEvent_getSession, METH_VARARGS, NULL},
+	 { (char *)"RegistrationEvent_swigregister", RegistrationEvent_swigregister, METH_VARARGS, NULL},
+	 { (char *)"delete_SubscriptionEvent", _wrap_delete_SubscriptionEvent, METH_VARARGS, NULL},
+	 { (char *)"SubscriptionEvent_getType", _wrap_SubscriptionEvent_getType, METH_VARARGS, NULL},
+	 { (char *)"SubscriptionEvent_getSession", _wrap_SubscriptionEvent_getSession, METH_VARARGS, NULL},
+	 { (char *)"SubscriptionEvent_swigregister", SubscriptionEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipSession", _wrap_new_SipSession, METH_VARARGS, NULL},
 	 { (char *)"delete_SipSession", _wrap_delete_SipSession, METH_VARARGS, NULL},
+	 { (char *)"SipSession_haveOwnership", _wrap_SipSession_haveOwnership, METH_VARARGS, NULL},
 	 { (char *)"SipSession_addHeader", _wrap_SipSession_addHeader, METH_VARARGS, NULL},
 	 { (char *)"SipSession_removeHeader", _wrap_SipSession_removeHeader, METH_VARARGS, NULL},
 	 { (char *)"SipSession_addCaps", _wrap_SipSession_addCaps, METH_VARARGS, NULL},
@@ -6640,32 +7279,28 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipSession_setExpires", _wrap_SipSession_setExpires, METH_VARARGS, NULL},
 	 { (char *)"SipSession_setFromUri", _wrap_SipSession_setFromUri, METH_VARARGS, NULL},
 	 { (char *)"SipSession_setToUri", _wrap_SipSession_setToUri, METH_VARARGS, NULL},
+	 { (char *)"SipSession_getId", _wrap_SipSession_getId, METH_VARARGS, NULL},
 	 { (char *)"SipSession_swigregister", SipSession_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_PublicationEvent", _wrap_new_PublicationEvent, METH_VARARGS, NULL},
-	 { (char *)"delete_PublicationEvent", _wrap_delete_PublicationEvent, METH_VARARGS, NULL},
-	 { (char *)"PublicationEvent_getType", _wrap_PublicationEvent_getType, METH_VARARGS, NULL},
-	 { (char *)"PublicationEvent_getSession", _wrap_PublicationEvent_getSession, METH_VARARGS, NULL},
-	 { (char *)"PublicationEvent_swigregister", PublicationEvent_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_MessagingSession", _wrap_new_MessagingSession, METH_VARARGS, NULL},
+	 { (char *)"delete_MessagingSession", _wrap_delete_MessagingSession, METH_VARARGS, NULL},
+	 { (char *)"MessagingSession_Send", _wrap_MessagingSession_Send, METH_VARARGS, NULL},
+	 { (char *)"MessagingSession_Accept", _wrap_MessagingSession_Accept, METH_VARARGS, NULL},
+	 { (char *)"MessagingSession_Reject", _wrap_MessagingSession_Reject, METH_VARARGS, NULL},
+	 { (char *)"MessagingSession_swigregister", MessagingSession_swigregister, METH_VARARGS, NULL},
+	 { (char *)"new_OptionsSession", _wrap_new_OptionsSession, METH_VARARGS, NULL},
+	 { (char *)"delete_OptionsSession", _wrap_delete_OptionsSession, METH_VARARGS, NULL},
+	 { (char *)"OptionsSession_Send", _wrap_OptionsSession_Send, METH_VARARGS, NULL},
+	 { (char *)"OptionsSession_swigregister", OptionsSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_PublicationSession", _wrap_new_PublicationSession, METH_VARARGS, NULL},
 	 { (char *)"delete_PublicationSession", _wrap_delete_PublicationSession, METH_VARARGS, NULL},
 	 { (char *)"PublicationSession_Publish", _wrap_PublicationSession_Publish, METH_VARARGS, NULL},
 	 { (char *)"PublicationSession_UnPublish", _wrap_PublicationSession_UnPublish, METH_VARARGS, NULL},
 	 { (char *)"PublicationSession_swigregister", PublicationSession_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_RegistrationEvent", _wrap_new_RegistrationEvent, METH_VARARGS, NULL},
-	 { (char *)"delete_RegistrationEvent", _wrap_delete_RegistrationEvent, METH_VARARGS, NULL},
-	 { (char *)"RegistrationEvent_getType", _wrap_RegistrationEvent_getType, METH_VARARGS, NULL},
-	 { (char *)"RegistrationEvent_getSession", _wrap_RegistrationEvent_getSession, METH_VARARGS, NULL},
-	 { (char *)"RegistrationEvent_swigregister", RegistrationEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_RegistrationSession", _wrap_new_RegistrationSession, METH_VARARGS, NULL},
 	 { (char *)"delete_RegistrationSession", _wrap_delete_RegistrationSession, METH_VARARGS, NULL},
 	 { (char *)"RegistrationSession_Register", _wrap_RegistrationSession_Register, METH_VARARGS, NULL},
 	 { (char *)"RegistrationSession_UnRegister", _wrap_RegistrationSession_UnRegister, METH_VARARGS, NULL},
 	 { (char *)"RegistrationSession_swigregister", RegistrationSession_swigregister, METH_VARARGS, NULL},
-	 { (char *)"new_SubscriptionEvent", _wrap_new_SubscriptionEvent, METH_VARARGS, NULL},
-	 { (char *)"delete_SubscriptionEvent", _wrap_delete_SubscriptionEvent, METH_VARARGS, NULL},
-	 { (char *)"SubscriptionEvent_getType", _wrap_SubscriptionEvent_getType, METH_VARARGS, NULL},
-	 { (char *)"SubscriptionEvent_getSession", _wrap_SubscriptionEvent_getSession, METH_VARARGS, NULL},
-	 { (char *)"SubscriptionEvent_swigregister", SubscriptionEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SubscriptionSession", _wrap_new_SubscriptionSession, METH_VARARGS, NULL},
 	 { (char *)"delete_SubscriptionSession", _wrap_delete_SubscriptionSession, METH_VARARGS, NULL},
 	 { (char *)"SubscriptionSession_Subscribe", _wrap_SubscriptionSession_Subscribe, METH_VARARGS, NULL},
@@ -6673,9 +7308,12 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SubscriptionSession_swigregister", SubscriptionSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipCallback", _wrap_new_SipCallback, METH_VARARGS, NULL},
 	 { (char *)"delete_SipCallback", _wrap_delete_SipCallback, METH_VARARGS, NULL},
-	 { (char *)"SipCallback_OnRegistrationChanged", _wrap_SipCallback_OnRegistrationChanged, METH_VARARGS, NULL},
-	 { (char *)"SipCallback_OnSubscriptionChanged", _wrap_SipCallback_OnSubscriptionChanged, METH_VARARGS, NULL},
-	 { (char *)"SipCallback_OnPublicationChanged", _wrap_SipCallback_OnPublicationChanged, METH_VARARGS, NULL},
+	 { (char *)"SipCallback_OnDialogEvent", _wrap_SipCallback_OnDialogEvent, METH_VARARGS, NULL},
+	 { (char *)"SipCallback_OnMessagingEvent", _wrap_SipCallback_OnMessagingEvent, METH_VARARGS, NULL},
+	 { (char *)"SipCallback_OnOptionsEvent", _wrap_SipCallback_OnOptionsEvent, METH_VARARGS, NULL},
+	 { (char *)"SipCallback_OnPublicationEvent", _wrap_SipCallback_OnPublicationEvent, METH_VARARGS, NULL},
+	 { (char *)"SipCallback_OnRegistrationEvent", _wrap_SipCallback_OnRegistrationEvent, METH_VARARGS, NULL},
+	 { (char *)"SipCallback_OnSubscriptionEvent", _wrap_SipCallback_OnSubscriptionEvent, METH_VARARGS, NULL},
 	 { (char *)"disown_SipCallback", _wrap_disown_SipCallback, METH_VARARGS, NULL},
 	 { (char *)"SipCallback_swigregister", SipCallback_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_SipDebugCallback", _wrap_new_SipDebugCallback, METH_VARARGS, NULL},
@@ -6715,6 +7353,12 @@ static PyMethodDef SwigMethods[] = {
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
+static void *_p_MessagingSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipSession *)  ((MessagingSession *) x));
+}
+static void *_p_OptionsSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipSession *)  ((OptionsSession *) x));
+}
 static void *_p_PublicationSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipSession *)  ((PublicationSession *) x));
 }
@@ -6727,6 +7371,12 @@ static void *_p_SubscriptionSessionTo_p_SipSession(void *x, int *SWIGUNUSEDPARM(
 static void *_p_SipStackTo_p_SafeObject(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SafeObject *)  ((SipStack *) x));
 }
+static void *_p_OptionsEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((OptionsEvent *) x));
+}
+static void *_p_DialogEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((DialogEvent *) x));
+}
 static void *_p_PublicationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipEvent *)  ((PublicationEvent *) x));
 }
@@ -6736,6 +7386,14 @@ static void *_p_RegistrationEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newm
 static void *_p_SubscriptionEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((SipEvent *)  ((SubscriptionEvent *) x));
 }
+static void *_p_MessagingEventTo_p_SipEvent(void *x, int *SWIGUNUSEDPARM(newmemory)) {
+    return (void *)((SipEvent *)  ((MessagingEvent *) x));
+}
+static swig_type_info _swigt__p_DialogEvent = {"_p_DialogEvent", "DialogEvent *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MessagingEvent = {"_p_MessagingEvent", "MessagingEvent *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_MessagingSession = {"_p_MessagingSession", "MessagingSession *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_OptionsEvent = {"_p_OptionsEvent", "OptionsEvent *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_OptionsSession = {"_p_OptionsSession", "OptionsSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PublicationEvent = {"_p_PublicationEvent", "PublicationEvent *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_PublicationSession = {"_p_PublicationSession", "PublicationSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_RegistrationEvent = {"_p_RegistrationEvent", "RegistrationEvent *", 0, 0, (void*)0, 0};
@@ -6752,11 +7410,18 @@ static swig_type_info _swigt__p_SubscriptionEvent = {"_p_SubscriptionEvent", "Su
 static swig_type_info _swigt__p_SubscriptionSession = {"_p_SubscriptionSession", "SubscriptionSession *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_event_type_e = {"_p_tsip_event_type_e", "enum tsip_event_type_e *|tsip_event_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tsip_message_event_type_e = {"_p_tsip_message_event_type_e", "enum tsip_message_event_type_e *|tsip_message_event_type_t *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_tsip_options_event_type_e = {"_p_tsip_options_event_type_e", "enum tsip_options_event_type_e *|tsip_options_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_publish_event_type_e = {"_p_tsip_publish_event_type_e", "enum tsip_publish_event_type_e *|tsip_publish_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_register_event_type_e = {"_p_tsip_register_event_type_e", "enum tsip_register_event_type_e *|tsip_register_event_type_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_tsip_subscribe_event_type_e = {"_p_tsip_subscribe_event_type_e", "enum tsip_subscribe_event_type_e *|tsip_subscribe_event_type_t *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
+  &_swigt__p_DialogEvent,
+  &_swigt__p_MessagingEvent,
+  &_swigt__p_MessagingSession,
+  &_swigt__p_OptionsEvent,
+  &_swigt__p_OptionsSession,
   &_swigt__p_PublicationEvent,
   &_swigt__p_PublicationSession,
   &_swigt__p_RegistrationEvent,
@@ -6773,11 +7438,18 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_SubscriptionSession,
   &_swigt__p_char,
   &_swigt__p_tsip_event_type_e,
+  &_swigt__p_tsip_message_event_type_e,
+  &_swigt__p_tsip_options_event_type_e,
   &_swigt__p_tsip_publish_event_type_e,
   &_swigt__p_tsip_register_event_type_e,
   &_swigt__p_tsip_subscribe_event_type_e,
 };
 
+static swig_cast_info _swigc__p_DialogEvent[] = {  {&_swigt__p_DialogEvent, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MessagingEvent[] = {  {&_swigt__p_MessagingEvent, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_MessagingSession[] = {  {&_swigt__p_MessagingSession, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_OptionsEvent[] = {  {&_swigt__p_OptionsEvent, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_OptionsSession[] = {  {&_swigt__p_OptionsSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationEvent[] = {  {&_swigt__p_PublicationEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_PublicationSession[] = {  {&_swigt__p_PublicationSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_RegistrationEvent[] = {  {&_swigt__p_RegistrationEvent, 0, 0, 0},{0, 0, 0, 0}};
@@ -6785,20 +7457,27 @@ static swig_cast_info _swigc__p_RegistrationSession[] = {  {&_swigt__p_Registrat
 static swig_cast_info _swigc__p_SafeObject[] = {  {&_swigt__p_SipStack, _p_SipStackTo_p_SafeObject, 0, 0},  {&_swigt__p_SafeObject, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipCallback[] = {  {&_swigt__p_SipCallback, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipDebugCallback[] = {  {&_swigt__p_SipDebugCallback, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_SipEvent[] = {  {&_swigt__p_SipEvent, 0, 0, 0},  {&_swigt__p_PublicationEvent, _p_PublicationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_RegistrationEvent, _p_RegistrationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_SubscriptionEvent, _p_SubscriptionEventTo_p_SipEvent, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SipEvent[] = {  {&_swigt__p_SipEvent, 0, 0, 0},  {&_swigt__p_OptionsEvent, _p_OptionsEventTo_p_SipEvent, 0, 0},  {&_swigt__p_DialogEvent, _p_DialogEventTo_p_SipEvent, 0, 0},  {&_swigt__p_PublicationEvent, _p_PublicationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_RegistrationEvent, _p_RegistrationEventTo_p_SipEvent, 0, 0},  {&_swigt__p_SubscriptionEvent, _p_SubscriptionEventTo_p_SipEvent, 0, 0},  {&_swigt__p_MessagingEvent, _p_MessagingEventTo_p_SipEvent, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipMessage[] = {  {&_swigt__p_SipMessage, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_SipSession[] = {  {&_swigt__p_SipSession, 0, 0, 0},  {&_swigt__p_PublicationSession, _p_PublicationSessionTo_p_SipSession, 0, 0},  {&_swigt__p_RegistrationSession, _p_RegistrationSessionTo_p_SipSession, 0, 0},  {&_swigt__p_SubscriptionSession, _p_SubscriptionSessionTo_p_SipSession, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_SipSession[] = {  {&_swigt__p_SipSession, 0, 0, 0},  {&_swigt__p_MessagingSession, _p_MessagingSessionTo_p_SipSession, 0, 0},  {&_swigt__p_OptionsSession, _p_OptionsSessionTo_p_SipSession, 0, 0},  {&_swigt__p_PublicationSession, _p_PublicationSessionTo_p_SipSession, 0, 0},  {&_swigt__p_RegistrationSession, _p_RegistrationSessionTo_p_SipSession, 0, 0},  {&_swigt__p_SubscriptionSession, _p_SubscriptionSessionTo_p_SipSession, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipStack[] = {  {&_swigt__p_SipStack, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SipUri[] = {  {&_swigt__p_SipUri, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SubscriptionEvent[] = {  {&_swigt__p_SubscriptionEvent, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SubscriptionSession[] = {  {&_swigt__p_SubscriptionSession, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_event_type_e[] = {  {&_swigt__p_tsip_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tsip_message_event_type_e[] = {  {&_swigt__p_tsip_message_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_tsip_options_event_type_e[] = {  {&_swigt__p_tsip_options_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_publish_event_type_e[] = {  {&_swigt__p_tsip_publish_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_register_event_type_e[] = {  {&_swigt__p_tsip_register_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_tsip_subscribe_event_type_e[] = {  {&_swigt__p_tsip_subscribe_event_type_e, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
+  _swigc__p_DialogEvent,
+  _swigc__p_MessagingEvent,
+  _swigc__p_MessagingSession,
+  _swigc__p_OptionsEvent,
+  _swigc__p_OptionsSession,
   _swigc__p_PublicationEvent,
   _swigc__p_PublicationSession,
   _swigc__p_RegistrationEvent,
@@ -6815,6 +7494,8 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_SubscriptionSession,
   _swigc__p_char,
   _swigc__p_tsip_event_type_e,
+  _swigc__p_tsip_message_event_type_e,
+  _swigc__p_tsip_options_event_type_e,
   _swigc__p_tsip_publish_event_type_e,
   _swigc__p_tsip_register_event_type_e,
   _swigc__p_tsip_subscribe_event_type_e,
@@ -7442,6 +8123,14 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_ai_unpublish",SWIG_From_int(static_cast< int >(tsip_ai_unpublish)));
   SWIG_Python_SetConstant(d, "tsip_o_unpublish",SWIG_From_int(static_cast< int >(tsip_o_unpublish)));
   SWIG_Python_SetConstant(d, "tsip_ao_unpublish",SWIG_From_int(static_cast< int >(tsip_ao_unpublish)));
+  SWIG_Python_SetConstant(d, "tsip_i_message",SWIG_From_int(static_cast< int >(tsip_i_message)));
+  SWIG_Python_SetConstant(d, "tsip_ai_message",SWIG_From_int(static_cast< int >(tsip_ai_message)));
+  SWIG_Python_SetConstant(d, "tsip_o_message",SWIG_From_int(static_cast< int >(tsip_o_message)));
+  SWIG_Python_SetConstant(d, "tsip_ao_message",SWIG_From_int(static_cast< int >(tsip_ao_message)));
+  SWIG_Python_SetConstant(d, "tsip_i_options",SWIG_From_int(static_cast< int >(tsip_i_options)));
+  SWIG_Python_SetConstant(d, "tsip_ai_options",SWIG_From_int(static_cast< int >(tsip_ai_options)));
+  SWIG_Python_SetConstant(d, "tsip_o_options",SWIG_From_int(static_cast< int >(tsip_o_options)));
+  SWIG_Python_SetConstant(d, "tsip_ao_options",SWIG_From_int(static_cast< int >(tsip_ao_options)));
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

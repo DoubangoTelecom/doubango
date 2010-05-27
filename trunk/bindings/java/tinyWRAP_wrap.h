@@ -17,15 +17,18 @@ public:
     void swig_connect_director(JNIEnv *jenv, jobject jself, jclass jcls, bool swig_mem_own, bool weak_global);
     SwigDirector_SipCallback(JNIEnv *jenv);
     virtual ~SwigDirector_SipCallback();
-    virtual int OnRegistrationChanged(RegistrationEvent const *e);
-    virtual int OnSubscriptionChanged(SubscriptionEvent const *e);
-    virtual int OnPublicationChanged(PublicationEvent const *e);
+    virtual int OnDialogEvent(DialogEvent const *e);
+    virtual int OnMessagingEvent(MessagingEvent const *e);
+    virtual int OnOptionsEvent(OptionsEvent const *e);
+    virtual int OnPublicationEvent(PublicationEvent const *e);
+    virtual int OnRegistrationEvent(RegistrationEvent const *e);
+    virtual int OnSubscriptionEvent(SubscriptionEvent const *e);
 public:
     bool swig_overrides(int n) {
-      return (n < 3 ? swig_override[n] : false);
+      return (n < 6 ? swig_override[n] : false);
     }
 protected:
-    bool swig_override[3];
+    bool swig_override[6];
 };
 
 class SwigDirector_SipDebugCallback : public SipDebugCallback, public Swig::Director {

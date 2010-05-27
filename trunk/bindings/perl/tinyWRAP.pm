@@ -136,12 +136,6 @@ use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
 @ISA = qw( tinyWRAP );
 %OWNER = ();
 %ITERATORS = ();
-sub new {
-    my $pkg = shift;
-    my $self = tinyWRAPc::new_SipEvent(@_);
-    bless $self, $pkg if defined($self);
-}
-
 sub DESTROY {
     return unless $_[0]->isa('HASH');
     my $self = tied(%{$_[0]});
@@ -157,6 +151,203 @@ sub DESTROY {
 *getPhrase = *tinyWRAPc::SipEvent_getPhrase;
 *getBaseSession = *tinyWRAPc::SipEvent_getBaseSession;
 *getSipMessage = *tinyWRAPc::SipEvent_getSipMessage;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::DialogEvent ##############
+
+package tinyWRAP::DialogEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_DialogEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::MessagingEvent ##############
+
+package tinyWRAP::MessagingEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_MessagingEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::MessagingEvent_getType;
+*getSession = *tinyWRAPc::MessagingEvent_getSession;
+*takeSessionOwnership = *tinyWRAPc::MessagingEvent_takeSessionOwnership;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::OptionsEvent ##############
+
+package tinyWRAP::OptionsEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_OptionsEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::OptionsEvent_getType;
+*getSession = *tinyWRAPc::OptionsEvent_getSession;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::PublicationEvent ##############
+
+package tinyWRAP::PublicationEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_PublicationEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::PublicationEvent_getType;
+*getSession = *tinyWRAPc::PublicationEvent_getSession;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::RegistrationEvent ##############
+
+package tinyWRAP::RegistrationEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_RegistrationEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::RegistrationEvent_getType;
+*getSession = *tinyWRAPc::RegistrationEvent_getSession;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::SubscriptionEvent ##############
+
+package tinyWRAP::SubscriptionEvent;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_SubscriptionEvent($self);
+        delete $OWNER{$self};
+    }
+}
+
+*getType = *tinyWRAPc::SubscriptionEvent_getType;
+*getSession = *tinyWRAPc::SubscriptionEvent_getSession;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -194,6 +385,7 @@ sub DESTROY {
     }
 }
 
+*haveOwnership = *tinyWRAPc::SipSession_haveOwnership;
 *addHeader = *tinyWRAPc::SipSession_addHeader;
 *removeHeader = *tinyWRAPc::SipSession_removeHeader;
 *addCaps = *tinyWRAPc::SipSession_addCaps;
@@ -201,6 +393,7 @@ sub DESTROY {
 *setExpires = *tinyWRAPc::SipSession_setExpires;
 *setFromUri = *tinyWRAPc::SipSession_setFromUri;
 *setToUri = *tinyWRAPc::SipSession_setToUri;
+*getId = *tinyWRAPc::SipSession_getId;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -214,16 +407,16 @@ sub ACQUIRE {
 }
 
 
-############# Class : tinyWRAP::PublicationEvent ##############
+############# Class : tinyWRAP::MessagingSession ##############
 
-package tinyWRAP::PublicationEvent;
+package tinyWRAP::MessagingSession;
 use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
-@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
+@ISA = qw( tinyWRAP::SipSession tinyWRAP );
 %OWNER = ();
 %ITERATORS = ();
 sub new {
     my $pkg = shift;
-    my $self = tinyWRAPc::new_PublicationEvent(@_);
+    my $self = tinyWRAPc::new_MessagingSession(@_);
     bless $self, $pkg if defined($self);
 }
 
@@ -233,13 +426,52 @@ sub DESTROY {
     return unless defined $self;
     delete $ITERATORS{$self};
     if (exists $OWNER{$self}) {
-        tinyWRAPc::delete_PublicationEvent($self);
+        tinyWRAPc::delete_MessagingSession($self);
         delete $OWNER{$self};
     }
 }
 
-*getType = *tinyWRAPc::PublicationEvent_getType;
-*getSession = *tinyWRAPc::PublicationEvent_getSession;
+*Send = *tinyWRAPc::MessagingSession_Send;
+*Accept = *tinyWRAPc::MessagingSession_Accept;
+*Reject = *tinyWRAPc::MessagingSession_Reject;
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : tinyWRAP::OptionsSession ##############
+
+package tinyWRAP::OptionsSession;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( tinyWRAP::SipSession tinyWRAP );
+%OWNER = ();
+%ITERATORS = ();
+sub new {
+    my $pkg = shift;
+    my $self = tinyWRAPc::new_OptionsSession(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        tinyWRAPc::delete_OptionsSession($self);
+        delete $OWNER{$self};
+    }
+}
+
+*Send = *tinyWRAPc::OptionsSession_Send;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -292,45 +524,6 @@ sub ACQUIRE {
 }
 
 
-############# Class : tinyWRAP::RegistrationEvent ##############
-
-package tinyWRAP::RegistrationEvent;
-use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
-@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
-%OWNER = ();
-%ITERATORS = ();
-sub new {
-    my $pkg = shift;
-    my $self = tinyWRAPc::new_RegistrationEvent(@_);
-    bless $self, $pkg if defined($self);
-}
-
-sub DESTROY {
-    return unless $_[0]->isa('HASH');
-    my $self = tied(%{$_[0]});
-    return unless defined $self;
-    delete $ITERATORS{$self};
-    if (exists $OWNER{$self}) {
-        tinyWRAPc::delete_RegistrationEvent($self);
-        delete $OWNER{$self};
-    }
-}
-
-*getType = *tinyWRAPc::RegistrationEvent_getType;
-*getSession = *tinyWRAPc::RegistrationEvent_getSession;
-sub DISOWN {
-    my $self = shift;
-    my $ptr = tied(%$self);
-    delete $OWNER{$ptr};
-}
-
-sub ACQUIRE {
-    my $self = shift;
-    my $ptr = tied(%$self);
-    $OWNER{$ptr} = 1;
-}
-
-
 ############# Class : tinyWRAP::RegistrationSession ##############
 
 package tinyWRAP::RegistrationSession;
@@ -357,45 +550,6 @@ sub DESTROY {
 
 *Register = *tinyWRAPc::RegistrationSession_Register;
 *UnRegister = *tinyWRAPc::RegistrationSession_UnRegister;
-sub DISOWN {
-    my $self = shift;
-    my $ptr = tied(%$self);
-    delete $OWNER{$ptr};
-}
-
-sub ACQUIRE {
-    my $self = shift;
-    my $ptr = tied(%$self);
-    $OWNER{$ptr} = 1;
-}
-
-
-############# Class : tinyWRAP::SubscriptionEvent ##############
-
-package tinyWRAP::SubscriptionEvent;
-use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
-@ISA = qw( tinyWRAP::SipEvent tinyWRAP );
-%OWNER = ();
-%ITERATORS = ();
-sub new {
-    my $pkg = shift;
-    my $self = tinyWRAPc::new_SubscriptionEvent(@_);
-    bless $self, $pkg if defined($self);
-}
-
-sub DESTROY {
-    return unless $_[0]->isa('HASH');
-    my $self = tied(%{$_[0]});
-    return unless defined $self;
-    delete $ITERATORS{$self};
-    if (exists $OWNER{$self}) {
-        tinyWRAPc::delete_SubscriptionEvent($self);
-        delete $OWNER{$self};
-    }
-}
-
-*getType = *tinyWRAPc::SubscriptionEvent_getType;
-*getSession = *tinyWRAPc::SubscriptionEvent_getSession;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -472,9 +626,12 @@ sub DESTROY {
     }
 }
 
-*OnRegistrationChanged = *tinyWRAPc::SipCallback_OnRegistrationChanged;
-*OnSubscriptionChanged = *tinyWRAPc::SipCallback_OnSubscriptionChanged;
-*OnPublicationChanged = *tinyWRAPc::SipCallback_OnPublicationChanged;
+*OnDialogEvent = *tinyWRAPc::SipCallback_OnDialogEvent;
+*OnMessagingEvent = *tinyWRAPc::SipCallback_OnMessagingEvent;
+*OnOptionsEvent = *tinyWRAPc::SipCallback_OnOptionsEvent;
+*OnPublicationEvent = *tinyWRAPc::SipCallback_OnPublicationEvent;
+*OnRegistrationEvent = *tinyWRAPc::SipCallback_OnRegistrationEvent;
+*OnSubscriptionEvent = *tinyWRAPc::SipCallback_OnSubscriptionEvent;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -659,4 +816,12 @@ package tinyWRAP;
 *tsip_ai_unpublish = *tinyWRAPc::tsip_ai_unpublish;
 *tsip_o_unpublish = *tinyWRAPc::tsip_o_unpublish;
 *tsip_ao_unpublish = *tinyWRAPc::tsip_ao_unpublish;
+*tsip_i_message = *tinyWRAPc::tsip_i_message;
+*tsip_ai_message = *tinyWRAPc::tsip_ai_message;
+*tsip_o_message = *tinyWRAPc::tsip_o_message;
+*tsip_ao_message = *tinyWRAPc::tsip_ao_message;
+*tsip_i_options = *tinyWRAPc::tsip_i_options;
+*tsip_ai_options = *tinyWRAPc::tsip_ai_options;
+*tsip_o_options = *tinyWRAPc::tsip_o_options;
+*tsip_ao_options = *tinyWRAPc::tsip_ao_options;
 1;

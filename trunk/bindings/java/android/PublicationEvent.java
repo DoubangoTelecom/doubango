@@ -33,10 +33,6 @@ public class PublicationEvent extends SipEvent {
     super.delete();
   }
 
-  public PublicationEvent() {
-    this(tinyWRAPJNI.new_PublicationEvent(), true);
-  }
-
   public tsip_publish_event_type_t getType() {
     return tsip_publish_event_type_t.swigToEnum(tinyWRAPJNI.PublicationEvent_getType(swigCPtr, this));
   }

@@ -22,18 +22,24 @@
 #ifndef TINYWRAP_SIPCALLBACK_H
 #define TINYWRAP_SIPCALLBACK_H
 
+class DialogEvent;
+class MessagingEvent;
+class OptionsEvent;
+class PublicationEvent;
 class RegistrationEvent;
 class SubscriptionEvent;
-class PublicationEvent;
 
 class SipCallback
 {
 public:
 	SipCallback() {  }
 	virtual ~SipCallback() {}
-	virtual int OnRegistrationChanged(const RegistrationEvent* e) { return -1; }
-	virtual int OnSubscriptionChanged(const SubscriptionEvent* e) { return -1; }
-	virtual int OnPublicationChanged(const PublicationEvent* e) { return -1; }
+	virtual int OnDialogEvent(const DialogEvent* e) { return -1; }
+	virtual int OnMessagingEvent(const MessagingEvent* e) { return -1; }
+	virtual int OnOptionsEvent(const OptionsEvent* e) { return -1; }
+	virtual int OnPublicationEvent(const PublicationEvent* e) { return -1; }
+	virtual int OnRegistrationEvent(const RegistrationEvent* e) { return -1; }
+	virtual int OnSubscriptionEvent(const SubscriptionEvent* e) { return -1; }
 
 private:
 	

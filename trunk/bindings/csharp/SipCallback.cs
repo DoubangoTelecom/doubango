@@ -42,29 +42,50 @@ public class SipCallback : IDisposable {
     SwigDirectorConnect();
   }
 
-  public virtual int OnRegistrationChanged(RegistrationEvent e) {
-    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnRegistrationChanged(swigCPtr, RegistrationEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnRegistrationChangedSwigExplicitSipCallback(swigCPtr, RegistrationEvent.getCPtr(e)));
+  public virtual int OnDialogEvent(DialogEvent e) {
+    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnDialogEvent(swigCPtr, DialogEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnDialogEventSwigExplicitSipCallback(swigCPtr, DialogEvent.getCPtr(e)));
     return ret;
   }
 
-  public virtual int OnSubscriptionChanged(SubscriptionEvent e) {
-    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnSubscriptionChanged(swigCPtr, SubscriptionEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnSubscriptionChangedSwigExplicitSipCallback(swigCPtr, SubscriptionEvent.getCPtr(e)));
+  public virtual int OnMessagingEvent(MessagingEvent e) {
+    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnMessagingEvent(swigCPtr, MessagingEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnMessagingEventSwigExplicitSipCallback(swigCPtr, MessagingEvent.getCPtr(e)));
     return ret;
   }
 
-  public virtual int OnPublicationChanged(PublicationEvent e) {
-    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnPublicationChanged(swigCPtr, PublicationEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnPublicationChangedSwigExplicitSipCallback(swigCPtr, PublicationEvent.getCPtr(e)));
+  public virtual int OnOptionsEvent(OptionsEvent e) {
+    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnOptionsEvent(swigCPtr, OptionsEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnOptionsEventSwigExplicitSipCallback(swigCPtr, OptionsEvent.getCPtr(e)));
+    return ret;
+  }
+
+  public virtual int OnPublicationEvent(PublicationEvent e) {
+    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnPublicationEvent(swigCPtr, PublicationEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnPublicationEventSwigExplicitSipCallback(swigCPtr, PublicationEvent.getCPtr(e)));
+    return ret;
+  }
+
+  public virtual int OnRegistrationEvent(RegistrationEvent e) {
+    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnRegistrationEvent(swigCPtr, RegistrationEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnRegistrationEventSwigExplicitSipCallback(swigCPtr, RegistrationEvent.getCPtr(e)));
+    return ret;
+  }
+
+  public virtual int OnSubscriptionEvent(SubscriptionEvent e) {
+    int ret = ((this.GetType() == typeof(SipCallback)) ? tinyWRAPPINVOKE.SipCallback_OnSubscriptionEvent(swigCPtr, SubscriptionEvent.getCPtr(e)) : tinyWRAPPINVOKE.SipCallback_OnSubscriptionEventSwigExplicitSipCallback(swigCPtr, SubscriptionEvent.getCPtr(e)));
     return ret;
   }
 
   private void SwigDirectorConnect() {
-    if (SwigDerivedClassHasMethod("OnRegistrationChanged", swigMethodTypes0))
-      swigDelegate0 = new SwigDelegateSipCallback_0(SwigDirectorOnRegistrationChanged);
-    if (SwigDerivedClassHasMethod("OnSubscriptionChanged", swigMethodTypes1))
-      swigDelegate1 = new SwigDelegateSipCallback_1(SwigDirectorOnSubscriptionChanged);
-    if (SwigDerivedClassHasMethod("OnPublicationChanged", swigMethodTypes2))
-      swigDelegate2 = new SwigDelegateSipCallback_2(SwigDirectorOnPublicationChanged);
-    tinyWRAPPINVOKE.SipCallback_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2);
+    if (SwigDerivedClassHasMethod("OnDialogEvent", swigMethodTypes0))
+      swigDelegate0 = new SwigDelegateSipCallback_0(SwigDirectorOnDialogEvent);
+    if (SwigDerivedClassHasMethod("OnMessagingEvent", swigMethodTypes1))
+      swigDelegate1 = new SwigDelegateSipCallback_1(SwigDirectorOnMessagingEvent);
+    if (SwigDerivedClassHasMethod("OnOptionsEvent", swigMethodTypes2))
+      swigDelegate2 = new SwigDelegateSipCallback_2(SwigDirectorOnOptionsEvent);
+    if (SwigDerivedClassHasMethod("OnPublicationEvent", swigMethodTypes3))
+      swigDelegate3 = new SwigDelegateSipCallback_3(SwigDirectorOnPublicationEvent);
+    if (SwigDerivedClassHasMethod("OnRegistrationEvent", swigMethodTypes4))
+      swigDelegate4 = new SwigDelegateSipCallback_4(SwigDirectorOnRegistrationEvent);
+    if (SwigDerivedClassHasMethod("OnSubscriptionEvent", swigMethodTypes5))
+      swigDelegate5 = new SwigDelegateSipCallback_5(SwigDirectorOnSubscriptionEvent);
+    tinyWRAPPINVOKE.SipCallback_director_connect(swigCPtr, swigDelegate0, swigDelegate1, swigDelegate2, swigDelegate3, swigDelegate4, swigDelegate5);
   }
 
   private bool SwigDerivedClassHasMethod(string methodName, Type[] methodTypes) {
@@ -73,27 +94,48 @@ public class SipCallback : IDisposable {
     return hasDerivedMethod;
   }
 
-  private int SwigDirectorOnRegistrationChanged(IntPtr e) {
-    return OnRegistrationChanged((e == IntPtr.Zero) ? null : new RegistrationEvent(e, false));
+  private int SwigDirectorOnDialogEvent(IntPtr e) {
+    return OnDialogEvent((e == IntPtr.Zero) ? null : new DialogEvent(e, false));
   }
 
-  private int SwigDirectorOnSubscriptionChanged(IntPtr e) {
-    return OnSubscriptionChanged((e == IntPtr.Zero) ? null : new SubscriptionEvent(e, false));
+  private int SwigDirectorOnMessagingEvent(IntPtr e) {
+    return OnMessagingEvent((e == IntPtr.Zero) ? null : new MessagingEvent(e, false));
   }
 
-  private int SwigDirectorOnPublicationChanged(IntPtr e) {
-    return OnPublicationChanged((e == IntPtr.Zero) ? null : new PublicationEvent(e, false));
+  private int SwigDirectorOnOptionsEvent(IntPtr e) {
+    return OnOptionsEvent((e == IntPtr.Zero) ? null : new OptionsEvent(e, false));
+  }
+
+  private int SwigDirectorOnPublicationEvent(IntPtr e) {
+    return OnPublicationEvent((e == IntPtr.Zero) ? null : new PublicationEvent(e, false));
+  }
+
+  private int SwigDirectorOnRegistrationEvent(IntPtr e) {
+    return OnRegistrationEvent((e == IntPtr.Zero) ? null : new RegistrationEvent(e, false));
+  }
+
+  private int SwigDirectorOnSubscriptionEvent(IntPtr e) {
+    return OnSubscriptionEvent((e == IntPtr.Zero) ? null : new SubscriptionEvent(e, false));
   }
 
   public delegate int SwigDelegateSipCallback_0(IntPtr e);
   public delegate int SwigDelegateSipCallback_1(IntPtr e);
   public delegate int SwigDelegateSipCallback_2(IntPtr e);
+  public delegate int SwigDelegateSipCallback_3(IntPtr e);
+  public delegate int SwigDelegateSipCallback_4(IntPtr e);
+  public delegate int SwigDelegateSipCallback_5(IntPtr e);
 
   private SwigDelegateSipCallback_0 swigDelegate0;
   private SwigDelegateSipCallback_1 swigDelegate1;
   private SwigDelegateSipCallback_2 swigDelegate2;
+  private SwigDelegateSipCallback_3 swigDelegate3;
+  private SwigDelegateSipCallback_4 swigDelegate4;
+  private SwigDelegateSipCallback_5 swigDelegate5;
 
-  private static Type[] swigMethodTypes0 = new Type[] { typeof(RegistrationEvent) };
-  private static Type[] swigMethodTypes1 = new Type[] { typeof(SubscriptionEvent) };
-  private static Type[] swigMethodTypes2 = new Type[] { typeof(PublicationEvent) };
+  private static Type[] swigMethodTypes0 = new Type[] { typeof(DialogEvent) };
+  private static Type[] swigMethodTypes1 = new Type[] { typeof(MessagingEvent) };
+  private static Type[] swigMethodTypes2 = new Type[] { typeof(OptionsEvent) };
+  private static Type[] swigMethodTypes3 = new Type[] { typeof(PublicationEvent) };
+  private static Type[] swigMethodTypes4 = new Type[] { typeof(RegistrationEvent) };
+  private static Type[] swigMethodTypes5 = new Type[] { typeof(SubscriptionEvent) };
 }

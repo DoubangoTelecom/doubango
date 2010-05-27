@@ -94,11 +94,13 @@ int options_hack_aor(const tsip_response_t* resp)
 	int32_t rport;
 	if(resp && resp->firstVia){
 		if(resp->firstVia->rport <=0){
+			char* received_port_ext;
 			const tsk_param_t* param;
 			/* Ericsson SDS 
 			==> Via: SIP/2.0/TCP 192.168.0.12:49744;rport;branch=z9hG4bK1273100904048;received_port_ext=49744;received=192.168.0.12 */
-			if((param = tsk_params_get_param_by_name(TSIP_HEADER_PARAMS(resp->firstVia), "received_port_ext"))){
-				rport = (int32_t)atoi(param->value);
+			if((received_port_ext = tsip_header_get_param_value(resp->firstVia, "received_port_ext"))){
+				rport = (int32_t)atoi(received_port_ext);
+				TSK_FREE(received_port_ext);
 			}
 		}
 		else{

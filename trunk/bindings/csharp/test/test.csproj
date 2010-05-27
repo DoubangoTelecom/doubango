@@ -45,6 +45,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\DialogEvent.cs">
+      <Link>DialogEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\MessagingEvent.cs">
+      <Link>MessagingEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\MessagingSession.cs">
+      <Link>MessagingSession.cs</Link>
+    </Compile>
+    <Compile Include="..\OptionsEvent.cs">
+      <Link>OptionsEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\OptionsSession.cs">
+      <Link>OptionsSession.cs</Link>
+    </Compile>
     <Compile Include="..\PublicationEvent.cs">
       <Link>PublicationEvent.cs</Link>
     </Compile>
@@ -92,6 +107,12 @@
     </Compile>
     <Compile Include="..\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tsip_message_event_type_t.cs">
+      <Link>tsip_message_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tsip_options_event_type_t.cs">
+      <Link>tsip_options_event_type_t.cs</Link>
     </Compile>
     <Compile Include="..\tsip_publish_event_type_t.cs">
       <Link>tsip_publish_event_type_t.cs</Link>
