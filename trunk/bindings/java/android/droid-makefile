@@ -8,11 +8,6 @@ LDFLAGS := $(LDFLAGS_LIB) -lstdc++ -ltinySAK -ltinyHTTP -ltinyIPSec -ltinyNET -l
 all: $(APP)
 
 OBJS = tinyWRAP_wrap.o\
-	../../_common/MessagingEvent.o \
-	../../_common/PublicationEvent.o \
-	../../_common/PublicationSession.o \
-	../../_common/RegistrationEvent.o \
-	../../_common/RegistrationSession.o \
 	../../_common/SafeObject.o \
 	../../_common/SipCallback.o \
 	../../_common/SipDebug.o \
@@ -20,9 +15,7 @@ OBJS = tinyWRAP_wrap.o\
 	../../_common/SipMessage.o \
 	../../_common/SipSession.o \
 	../../_common/SipStack.o \
-	../../_common/SipUri.o \
-	../../_common/SubscriptionEvent.o \
-	../../_common/SubscriptionSession.o
+	../../_common/SipUri.o
 
 
 $(APP): $(OBJS)
