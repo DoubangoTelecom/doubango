@@ -115,23 +115,32 @@ char* SipMessage::getSipHeaderValue(const char* name, unsigned index /* = 0*/)
 {
 	const tsip_header_t* header;
 	if((header = this->getSipHeader(name, index))){
-		// SWIG: %newobject getHeaderValueAt;
-		return tsip_header_value_tostring(header);
+
+		switch(header->type){
+			case tsip_htype_From:
+				return tsip_uri_tostring(((const tsip_header_From_t*)header)->uri, tsk_false, tsk_false);
+			case tsip_htype_To:
+				return tsip_uri_tostring(((const tsip_header_To_t*)header)->uri, tsk_false, tsk_false);
+				break;
+
+			default:
+				return tsip_header_value_tostring(header);
+		}
 	}
+	// SWIG: %newobject getHeaderValueAt;
 	return tsk_null;
 }
 
 // e.g. getHeaderParamValue("content-type", "charset");
-const char* SipMessage::getSipHeaderParamValue(const char* name, const char* param, unsigned index /*=0*/)
+char* SipMessage::getSipHeaderParamValue(const char* name, const char* param, unsigned index /*=0*/)
 {
-	const tsk_param_t* _param;
 	const tsip_header_t* header;
 
-	if((header = this->getSipHeader(name, index)) && header->params){
-		if((_param = tsk_params_get_param_by_name(header->params, param))){
-			return _param->value;
-		}
+	if((header = this->getSipHeader(name, index))){
+		return tsip_header_get_param_value(header, param);
 	}
+
+	// SWIG: %newobject getSipHeaderParamValue;
 	return tsk_null;
 }
 

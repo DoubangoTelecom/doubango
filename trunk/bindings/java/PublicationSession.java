@@ -33,11 +33,19 @@ public class PublicationSession extends SipSession {
     super.delete();
   }
 
+  public boolean Publish(byte[] bytes) {
+    if(bytes != null){
+		final java.nio.ByteBuffer byteBuffer = this.getByteBuffer(bytes);
+        return this.Publish(byteBuffer, bytes.length);
+    }
+    return false;
+  }
+
   public PublicationSession(SipStack Stack) {
     this(tinyWRAPJNI.new_PublicationSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
-  public boolean Publish(byte[] payload, long len) {
+  public boolean Publish(java.nio.ByteBuffer payload, long len) {
     return tinyWRAPJNI.PublicationSession_Publish(swigCPtr, this, payload, len);
   }
 

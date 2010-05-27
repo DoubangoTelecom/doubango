@@ -41,6 +41,11 @@ public class SipSession : IDisposable {
   public SipSession(SipStack stack) : this(tinyWRAPPINVOKE.new_SipSession(SipStack.getCPtr(stack)), true) {
   }
 
+  public bool haveOwnership() {
+    bool ret = tinyWRAPPINVOKE.SipSession_haveOwnership(swigCPtr);
+    return ret;
+  }
+
   public bool addHeader(string name, string value) {
     bool ret = tinyWRAPPINVOKE.SipSession_addHeader(swigCPtr, name, value);
     return ret;
@@ -78,6 +83,11 @@ public class SipSession : IDisposable {
 
   public bool setToUri(string toUri) {
     bool ret = tinyWRAPPINVOKE.SipSession_setToUri(swigCPtr, toUri);
+    return ret;
+  }
+
+  public uint getId() {
+    uint ret = tinyWRAPPINVOKE.SipSession_getId(swigCPtr);
     return ret;
   }
 

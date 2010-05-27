@@ -25,12 +25,19 @@
 #include "tinysip.h"
 
 class SipSession;
+class MessagingSession;
+class OptionsSession;
+class PublicationSession;
+class RegistrationSession;
+class SubscriptionSession;
+
 class SipMessage;
 
+
+/* ======================== SipEvent ========================*/
 class SipEvent
 {
 public:
-	SipEvent();
 #if !defined(SWIG)
 	SipEvent(const tsip_event_t *sipevent);
 #endif
@@ -47,5 +54,96 @@ protected:
 	const SipMessage* sipmessage;
 };
 
+
+/* ======================== DialogEvent ========================*/
+class DialogEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	DialogEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~DialogEvent();
+
+public: /* Public API functions */
+};
+
+
+/* ======================== MessagingEvent ========================*/
+class MessagingEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	MessagingEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~MessagingEvent();
+
+public: /* Public API functions */
+	tsip_message_event_type_t getType() const;
+	const MessagingSession* getSession() const;
+	MessagingSession* takeSessionOwnership() const;
+};
+
+
+/* ======================== OptionsEvent ========================*/
+class OptionsEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	OptionsEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~OptionsEvent();
+
+public: /* Public API functions */
+	tsip_options_event_type_t getType() const;
+	const OptionsSession* getSession() const;
+};
+
+
+
+/* ======================== PublicationEvent ========================*/
+class PublicationEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	PublicationEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~PublicationEvent();
+
+public: /* Public API functions */
+	tsip_publish_event_type_t getType() const;
+	const PublicationSession* getSession() const;
+};
+
+
+
+/* ======================== RegistrationEvent ========================*/
+class RegistrationEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	RegistrationEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~RegistrationEvent();
+
+public: /* Public API functions */
+	tsip_register_event_type_t getType() const;
+	const RegistrationSession* getSession() const;
+	
+};
+
+
+/* ======================== SubscriptionEvent ========================*/
+class SubscriptionEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	SubscriptionEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~SubscriptionEvent();
+
+public: /* Public API functions */
+	tsip_subscribe_event_type_t getType() const;
+	const SubscriptionSession* getSession() const;
+};
 
 #endif /* TINYWRAP_SIPEVENT_H */

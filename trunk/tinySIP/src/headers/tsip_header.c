@@ -315,3 +315,23 @@ char* tsip_header_value_tostring(const tsip_header_t *self)
 	}
 	return ret;
 }
+
+char* tsip_header_get_param_value(const tsip_header_t *self, const char* pname)
+{
+	const tsk_param_t* _param;
+	char* value = tsk_null;
+
+	if(!self || !pname){
+		return tsk_null;
+	}
+
+	if(self->get_special_param_value && (value = self->get_special_param_value(self, pname))){
+		return value;
+	}
+			
+	if((_param = tsk_params_get_param_by_name(self->params, pname))){
+		return tsk_strdup(_param->value);
+	}
+	
+	return tsk_null;
+}

@@ -40,7 +40,7 @@
 *	Ragel state machine.
 */
 
-/* #line 130 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 142 "./ragel/tsip_parser_header_Via.rl" */
 
 
 
@@ -98,7 +98,7 @@ int tsip_header_Via_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 			Via->rport>=0 ? (Via->rport>0?";rport=":";rport") : "",
 			Via->rport>0 ? rport : "",
 
-			Via->ttl>=0 ? (Via->ttl>0?";rport=":";rport") : "",
+			Via->ttl>=0 ? (Via->ttl>0?";ttl=":";ttl") : "",
 			Via->ttl>0 ? ttl : "",
 
 			Via->received ? ";received=" : "",
@@ -111,24 +111,58 @@ int tsip_header_Via_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 	return -1;
 }
 
-tsip_header_Via_t *tsip_header_Via_parse(const char *data, tsk_size_t size)
+char* tsip_header_Via_get_special_param_value(const tsip_header_t* header, const char* pname)
+{
+	if(header){
+		const tsip_header_Via_t *Via = (const tsip_header_Via_t *)header;
+		if(tsk_striequals(pname, "maddr")){
+			return tsk_strdup(Via->maddr);
+		}
+		else if(tsk_striequals(pname, "sigcomp-id")){
+			return tsk_strdup(Via->sigcomp_id);
+		}
+		else if(tsk_striequals(pname, "comp")){
+			return tsk_strdup(Via->comp);
+		}
+		else if(tsk_striequals(pname, "rport")){
+			tsk_istr_t rport;
+			tsk_itoa(Via->rport, &rport);
+
+			return tsk_strdup(rport);
+		}
+		else if(tsk_striequals(pname, "received")){
+			return tsk_strdup(Via->received);
+		}
+		else if(tsk_striequals(pname, "branch")){
+			return tsk_strdup(Via->branch);
+		}
+	}
+	return tsk_null;
+}
+
+tsip_header_Vias_L_t *tsip_header_Via_parse(const char *data, tsk_size_t size)
 {
 	int cs = 0;
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_Via_t *hdr_via = tsip_header_Via_create_null();
+	tsip_header_Vias_L_t *hdr_vias = tsk_list_create();
+	tsip_header_Via_t *curr_via = tsk_null;
 	
 	const char *tag_start;
 
 	
-/* #line 126 "./src/headers/tsip_header_Via.c" */
+/* #line 156 "./src/headers/tsip_header_Via.c" */
 static const char _tsip_machine_parser_header_Via_actions[] = {
-	0, 1, 0, 1, 1, 1, 2, 1, 
-	3, 1, 4, 1, 5, 1, 6, 1, 
-	7, 1, 8, 1, 9, 1, 10, 1, 
-	12, 1, 13, 1, 14, 2, 11, 12
-	
+	0, 1, 0, 1, 2, 1, 3, 1, 
+	4, 1, 5, 1, 6, 1, 7, 1, 
+	8, 1, 9, 1, 10, 1, 11, 1, 
+	13, 1, 14, 1, 16, 2, 1, 0, 
+	2, 4, 15, 2, 5, 15, 2, 7, 
+	15, 2, 8, 15, 2, 9, 15, 2, 
+	10, 15, 2, 11, 15, 2, 12, 13, 
+	2, 13, 15, 2, 14, 15, 3, 12, 
+	13, 15
 };
 
 static const short _tsip_machine_parser_header_Via_key_offsets[] = {
@@ -1018,32 +1052,32 @@ static const short _tsip_machine_parser_header_Via_trans_targs[] = {
 };
 
 static const char _tsip_machine_parser_header_Via_trans_actions[] = {
-	0, 0, 0, 0, 0, 0, 1, 0, 
+	0, 0, 0, 0, 0, 0, 29, 0, 
 	0, 3, 3, 0, 3, 0, 0, 0, 
 	0, 0, 0, 1, 0, 0, 5, 5, 
 	0, 5, 0, 0, 0, 0, 0, 0, 
 	1, 0, 0, 11, 11, 0, 0, 0, 
 	1, 1, 1, 0, 0, 0, 0, 0, 
-	0, 0, 0, 7, 7, 7, 0, 0, 
+	0, 0, 0, 32, 32, 32, 0, 0, 
 	7, 7, 0, 0, 0, 0, 0, 0, 
-	0, 1, 0, 0, 9, 9, 9, 0, 
+	0, 1, 0, 0, 35, 35, 35, 0, 
 	9, 0, 0, 0, 0, 0, 1, 1, 
-	1, 1, 1, 1, 0, 0, 25, 25, 
-	0, 25, 25, 0, 0, 0, 0, 0, 
+	1, 1, 1, 1, 0, 0, 59, 59, 
+	0, 59, 25, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 25, 27, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 59, 27, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 25, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 59, 0, 
 	0, 0, 0, 0, 0, 1, 0, 0, 
-	19, 19, 0, 19, 19, 0, 0, 0, 
-	25, 0, 0, 0, 0, 0, 0, 1, 
-	0, 0, 21, 21, 0, 21, 21, 0, 
-	0, 0, 0, 25, 0, 0, 0, 0, 
+	47, 47, 0, 47, 19, 0, 0, 0, 
+	59, 0, 0, 0, 0, 0, 0, 1, 
+	0, 0, 50, 50, 0, 50, 21, 0, 
+	0, 0, 0, 59, 0, 0, 0, 0, 
 	0, 0, 1, 1, 1, 0, 0, 0, 
-	0, 0, 0, 0, 0, 15, 15, 15, 
+	0, 0, 0, 0, 0, 41, 41, 41, 
 	0, 0, 15, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
@@ -1051,18 +1085,18 @@ static const char _tsip_machine_parser_header_Via_trans_actions[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 25, 0, 0, 
+	0, 0, 0, 0, 0, 59, 0, 0, 
 	0, 0, 0, 0, 1, 1, 1, 0, 
-	0, 17, 17, 17, 0, 0, 0, 17, 
+	0, 44, 44, 44, 0, 0, 0, 17, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
-	0, 23, 23, 23, 23, 0, 0, 0, 
-	0, 0, 0, 1, 0, 0, 29, 29, 
-	29, 0, 29, 0, 0, 25, 0, 0, 
-	0, 0, 0, 0, 1, 0, 0, 13, 
-	13, 13, 0, 13, 0, 0, 0, 0, 
+	0, 56, 56, 56, 23, 0, 0, 0, 
+	0, 0, 0, 1, 0, 0, 62, 62, 
+	62, 0, 53, 0, 0, 59, 0, 0, 
+	0, 0, 0, 0, 1, 0, 0, 38, 
+	38, 38, 0, 13, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
 	0, 0, 0, 0, 0, 0, 0, 0, 
@@ -1078,16 +1112,16 @@ static const int tsip_machine_parser_header_Via_error = 0;
 static const int tsip_machine_parser_header_Via_en_main = 1;
 
 
-/* #line 211 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 253 "./ragel/tsip_parser_header_Via.rl" */
 	
-/* #line 1084 "./src/headers/tsip_header_Via.c" */
+/* #line 1118 "./src/headers/tsip_header_Via.c" */
 	{
 	cs = tsip_machine_parser_header_Via_start;
 	}
 
-/* #line 212 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 254 "./ragel/tsip_parser_header_Via.rl" */
 	
-/* #line 1091 "./src/headers/tsip_header_Via.c" */
+/* #line 1125 "./src/headers/tsip_header_Via.c" */
 	{
 	int _klen;
 	unsigned int _trans;
@@ -1170,93 +1204,109 @@ _match:
 	case 1:
 /* #line 51 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_STRING(hdr_via->proto_name);
+		if(!curr_via){
+			curr_via = tsip_header_Via_create_null();
+		}
 	}
 	break;
 	case 2:
-/* #line 55 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 57 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_STRING(hdr_via->proto_version);
+		TSK_PARSER_SET_STRING(curr_via->proto_name);
 	}
 	break;
 	case 3:
-/* #line 59 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 61 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_STRING(hdr_via->host);
-		if(hdr_via->host && *hdr_via->host == '['){
-			tsk_strunquote_2(&hdr_via->host, '[', ']');
-		}
+		TSK_PARSER_SET_STRING(curr_via->proto_version);
 	}
 	break;
 	case 4:
-/* #line 66 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 65 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_INTEGER(hdr_via->port);
+		TSK_PARSER_SET_STRING(curr_via->host);
+		if(curr_via->host && *curr_via->host == '['){
+			tsk_strunquote_2(&curr_via->host, '[', ']');
+		}
 	}
 	break;
 	case 5:
-/* #line 70 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 72 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_STRING(hdr_via->transport);
+		TSK_PARSER_SET_INTEGER(curr_via->port);
 	}
 	break;
 	case 6:
-/* #line 74 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 76 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_INTEGER(hdr_via->ttl);
+		TSK_PARSER_SET_STRING(curr_via->transport);
 	}
 	break;
 	case 7:
-/* #line 78 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 80 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_STRING(hdr_via->maddr);
+		TSK_PARSER_SET_INTEGER(curr_via->ttl);
 	}
 	break;
 	case 8:
-/* #line 82 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 84 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_STRING(hdr_via->received);
+		TSK_PARSER_SET_STRING(curr_via->maddr);
 	}
 	break;
 	case 9:
-/* #line 86 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 88 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_STRING(hdr_via->branch);
+		TSK_PARSER_SET_STRING(curr_via->received);
 	}
 	break;
 	case 10:
-/* #line 90 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 92 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_STRING(hdr_via->comp);
+		TSK_PARSER_SET_STRING(curr_via->branch);
 	}
 	break;
 	case 11:
-/* #line 94 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 96 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_SET_INTEGER(hdr_via->rport);
+		TSK_PARSER_SET_STRING(curr_via->comp);
 	}
 	break;
 	case 12:
-/* #line 98 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 100 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		if(hdr_via->rport <0){
-			hdr_via->rport = 0;
-		}
+		TSK_PARSER_SET_INTEGER(curr_via->rport);
 	}
 	break;
 	case 13:
 /* #line 104 "./ragel/tsip_parser_header_Via.rl" */
 	{
-		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(hdr_via));
+		if(curr_via->rport <0){
+			curr_via->rport = 0;
+		}
 	}
 	break;
 	case 14:
-/* #line 108 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 110 "./ragel/tsip_parser_header_Via.rl" */
+	{
+		TSK_PARSER_ADD_PARAM(TSIP_HEADER_PARAMS(curr_via));
+	}
+	break;
+	case 15:
+/* #line 114 "./ragel/tsip_parser_header_Via.rl" */
+	{
+		if(curr_via){
+			tsk_list_push_back_data(hdr_vias, ((void**) &curr_via));
+		}
+	}
+	break;
+	case 16:
+/* #line 120 "./ragel/tsip_parser_header_Via.rl" */
 	{
 		
 	}
 	break;
-/* #line 1260 "./src/headers/tsip_header_Via.c" */
+/* #line 1310 "./src/headers/tsip_header_Via.c" */
 		}
 	}
 
@@ -1269,18 +1319,19 @@ _again:
 	_out: {}
 	}
 
-/* #line 213 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 255 "./ragel/tsip_parser_header_Via.rl" */
 	
 	if( cs < 
-/* #line 1276 "./src/headers/tsip_header_Via.c" */
+/* #line 1326 "./src/headers/tsip_header_Via.c" */
 338
-/* #line 214 "./ragel/tsip_parser_header_Via.rl" */
+/* #line 256 "./ragel/tsip_parser_header_Via.rl" */
  ){
 		TSK_DEBUG_ERROR("Failed to parse 'Via' header.");
-		TSK_OBJECT_SAFE_FREE(hdr_via);
+		TSK_OBJECT_SAFE_FREE(curr_via);
+		TSK_OBJECT_SAFE_FREE(hdr_vias);
 	}
 	
-	return hdr_via;
+	return hdr_vias;
 }
 
 
@@ -1322,6 +1373,7 @@ static tsk_object_t* tsip_header_Via_ctor(tsk_object_t *self, va_list * app)
 		
 		TSIP_HEADER(via)->type = tsip_htype_Via;
 		TSIP_HEADER(via)->serialize = tsip_header_Via_serialize;
+		TSIP_HEADER(via)->get_special_param_value = tsip_header_Via_get_special_param_value;
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new Via header.");

@@ -37,9 +37,6 @@ public class PublicationEvent : SipEvent {
     }
   }
 
-  public PublicationEvent() : this(tinyWRAPPINVOKE.new_PublicationEvent(), true) {
-  }
-
   public tsip_publish_event_type_t getType() {
     tsip_publish_event_type_t ret = (tsip_publish_event_type_t)tinyWRAPPINVOKE.PublicationEvent_getType(swigCPtr);
     return ret;

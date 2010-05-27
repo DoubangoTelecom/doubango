@@ -57,7 +57,7 @@ namespace test
             regSession.setExpires(35);
             regSession.Register();
 
-            Thread.Sleep(2000);
+            //Thread.Sleep(2000);
 
             /* Send SUBSCRIBE(reg) */
             subSession = new SubscriptionSession(sipStack);
@@ -65,8 +65,23 @@ namespace test
             subSession.addHeader("Accept", "application/reginfo+xml");
             subSession.addHeader("Allow-Events", "refer, presence, presence.winfo, xcap-diff, conference");
             subSession.setExpires(35);
+            //subSession.Subscribe();
 
-            subSession.Subscribe();
+            /* Send MESSAGE */
+            MessagingSession msg = new MessagingSession(sipStack);
+            byte [] content = Encoding.ASCII.GetBytes("Hello World");
+            msg.setToUri(String.Format("sip:{0}@{1}", "alice", REALM));
+            msg.addHeader("NS", "imdn <urn:ietf:params:imdn>");
+            msg.addHeader("imdn.Message-ID", "34jk324j");
+            msg.addHeader("DateTime", "2006-04-04T12:16:49-05:00");
+            msg.addHeader("imdn.Disposition-Notification", "positive-delivery, negative-delivery");
+            msg.addHeader("Content-Type", "text/plain");
+            //msg.Send(content, (uint)content.Length);
+
+            /* Send OPTIONS */
+            OptionsSession opt = new OptionsSession(sipStack);
+            opt.setToUri(String.Format("sip:{0}@{1}", "hacking_the_aor", REALM));
+            opt.Send();
 
             Console.Read();
 
@@ -129,7 +144,7 @@ namespace test
             return (code <= 199 && code >= 100);
         }
 
-        public override int OnRegistrationChanged(RegistrationEvent e)
+        public override int OnRegistrationEvent(RegistrationEvent e)
         {
             short code = e.getCode();
             tsip_register_event_type_t type = e.getType();
@@ -154,7 +169,84 @@ namespace test
             return 0;
         }
 
-        public override int OnSubscriptionChanged(SubscriptionEvent e)
+        public override int OnOptionsEvent(OptionsEvent e)
+        {
+            short code = e.getCode();
+            tsip_options_event_type_t type = e.getType();
+            OptionsSession session = e.getSession();
+            SipMessage message = e.getSipMessage();
+
+            if (message != null)
+            {
+                Console.WriteLine("call-id={0}", message.getSipHeaderValue("call-id"));
+                //byte[] bytes = message.getContent();
+            }
+
+            switch (type)
+            {
+                case tsip_options_event_type_t.tsip_ao_options:
+                    String rport = message.getSipHeaderParamValue("v", "rport");
+                    String received_ip = message.getSipHeaderParamValue("v", "received");
+                    if (rport == null)
+                    {   /* Ericsson SDS */
+                        rport = message.getSipHeaderParamValue("v", "received_port_ext");
+                    }
+                    Console.WriteLine("Via(rport, received)=({0}, {1})", rport, received_ip);
+                    break;
+                case tsip_options_event_type_t.tsip_i_options:
+                    break;
+            }
+
+            Console.WriteLine("OnRegistrationChanged() ==> {0}:{1}", code, e.getPhrase());
+
+            return 0;
+        }
+
+        public override int OnMessagingEvent(MessagingEvent e)
+        {
+            short code = e.getCode();
+            tsip_message_event_type_t type = e.getType();
+            MessagingSession session = e.getSession();
+            SipMessage message = e.getSipMessage();
+
+            if (session == null && message != null)
+            { /* "Server-side-session" e.g. Initial MESSAGE/INVITE sent by the remote party */
+                session = e.takeSessionOwnership();
+                Console.WriteLine("From:{0} == To:{1}", message.getSipHeaderValue("f"), message.getSipHeaderValue("t"));
+            }
+
+            if (message != null)
+            {
+                Console.WriteLine("call-id={0}", message.getSipHeaderValue("call-id"));
+                //byte[] bytes = message.getContent();
+            }
+
+            switch (type)
+            {
+                case tsip_message_event_type_t.tsip_i_message:
+                    byte[] content = message.getSipContent();
+                    if (content != null)
+                    {
+                        Console.WriteLine("Message Content ==> {0}", Encoding.UTF8.GetString(content));
+                        session.Accept();
+                    }
+                    else
+                    {
+                        session.Reject();
+                    }
+                    break;
+                case tsip_message_event_type_t.tsip_ai_message:
+                case tsip_message_event_type_t.tsip_ao_message:
+                case tsip_message_event_type_t.tsip_o_message:
+                    break;
+            }
+
+            Console.WriteLine("OnMessagingEvent() ==> {0}:{1}", code, e.getPhrase());
+
+            return 0;
+        }
+
+        public override int OnSubscriptionEvent(SubscriptionEvent e)
         {
             short code = e.getCode();
             tsip_subscribe_event_type_t type = e.getType();
@@ -168,13 +260,9 @@ namespace test
                     break;
 
                 case tsip_subscribe_event_type_t.tsip_i_notify:
-                    uint content_len = message.getSipContentLength();
-                    if (content_len>0)
-                    {
-                        byte[] content = new byte[content_len];
-                        uint read = message.getSipContent(content, (uint)content.Length);
-                        Console.WriteLine("Notify Content ==> {0}", Encoding.UTF8.GetString(content, 0, (int)read));
-                    }
+                    byte[] content = message.getSipContent();
+                    if (content != null)
+                        Console.WriteLine("Notify Content ==> {0}", Encoding.UTF8.GetString(content));
                     break;
             }
 

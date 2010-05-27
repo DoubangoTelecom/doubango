@@ -107,11 +107,8 @@ class SipEvent(_object):
     __setattr__ = lambda self, name, value: _swig_setattr(self, SipEvent, name, value)
     __swig_getmethods__ = {}
     __getattr__ = lambda self, name: _swig_getattr(self, SipEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
     __repr__ = _swig_repr
-    def __init__(self): 
-        this = _tinyWRAP.new_SipEvent()
-        try: self.this.append(this)
-        except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_SipEvent
     __del__ = lambda self : None;
     def getCode(self): return _tinyWRAP.SipEvent_getCode(self)
@@ -120,6 +117,101 @@ class SipEvent(_object):
     def getSipMessage(self): return _tinyWRAP.SipEvent_getSipMessage(self)
 SipEvent_swigregister = _tinyWRAP.SipEvent_swigregister
 SipEvent_swigregister(SipEvent)
+
+class DialogEvent(SipEvent):
+    __swig_setmethods__ = {}
+    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, DialogEvent, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, DialogEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_DialogEvent
+    __del__ = lambda self : None;
+DialogEvent_swigregister = _tinyWRAP.DialogEvent_swigregister
+DialogEvent_swigregister(DialogEvent)
+
+class MessagingEvent(SipEvent):
+    __swig_setmethods__ = {}
+    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MessagingEvent, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, MessagingEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_MessagingEvent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.MessagingEvent_getType(self)
+    def getSession(self): return _tinyWRAP.MessagingEvent_getSession(self)
+    def takeSessionOwnership(self): return _tinyWRAP.MessagingEvent_takeSessionOwnership(self)
+MessagingEvent_swigregister = _tinyWRAP.MessagingEvent_swigregister
+MessagingEvent_swigregister(MessagingEvent)
+
+class OptionsEvent(SipEvent):
+    __swig_setmethods__ = {}
+    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, OptionsEvent, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, OptionsEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_OptionsEvent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.OptionsEvent_getType(self)
+    def getSession(self): return _tinyWRAP.OptionsEvent_getSession(self)
+OptionsEvent_swigregister = _tinyWRAP.OptionsEvent_swigregister
+OptionsEvent_swigregister(OptionsEvent)
+
+class PublicationEvent(SipEvent):
+    __swig_setmethods__ = {}
+    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, PublicationEvent, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, PublicationEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_PublicationEvent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.PublicationEvent_getType(self)
+    def getSession(self): return _tinyWRAP.PublicationEvent_getSession(self)
+PublicationEvent_swigregister = _tinyWRAP.PublicationEvent_swigregister
+PublicationEvent_swigregister(PublicationEvent)
+
+class RegistrationEvent(SipEvent):
+    __swig_setmethods__ = {}
+    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, RegistrationEvent, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, RegistrationEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_RegistrationEvent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.RegistrationEvent_getType(self)
+    def getSession(self): return _tinyWRAP.RegistrationEvent_getSession(self)
+RegistrationEvent_swigregister = _tinyWRAP.RegistrationEvent_swigregister
+RegistrationEvent_swigregister(RegistrationEvent)
+
+class SubscriptionEvent(SipEvent):
+    __swig_setmethods__ = {}
+    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, SubscriptionEvent, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, SubscriptionEvent, name)
+    def __init__(self, *args, **kwargs): raise AttributeError("No constructor defined")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _tinyWRAP.delete_SubscriptionEvent
+    __del__ = lambda self : None;
+    def getType(self): return _tinyWRAP.SubscriptionEvent_getType(self)
+    def getSession(self): return _tinyWRAP.SubscriptionEvent_getSession(self)
+SubscriptionEvent_swigregister = _tinyWRAP.SubscriptionEvent_swigregister
+SubscriptionEvent_swigregister(SubscriptionEvent)
 
 class SipSession(_object):
     __swig_setmethods__ = {}
@@ -133,6 +225,7 @@ class SipSession(_object):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_SipSession
     __del__ = lambda self : None;
+    def haveOwnership(self): return _tinyWRAP.SipSession_haveOwnership(self)
     def addHeader(self, *args): return _tinyWRAP.SipSession_addHeader(self, *args)
     def removeHeader(self, *args): return _tinyWRAP.SipSession_removeHeader(self, *args)
     def addCaps(self, *args): return _tinyWRAP.SipSession_addCaps(self, *args)
@@ -140,27 +233,47 @@ class SipSession(_object):
     def setExpires(self, *args): return _tinyWRAP.SipSession_setExpires(self, *args)
     def setFromUri(self, *args): return _tinyWRAP.SipSession_setFromUri(self, *args)
     def setToUri(self, *args): return _tinyWRAP.SipSession_setToUri(self, *args)
+    def getId(self): return _tinyWRAP.SipSession_getId(self)
 SipSession_swigregister = _tinyWRAP.SipSession_swigregister
 SipSession_swigregister(SipSession)
 
-class PublicationEvent(SipEvent):
+class MessagingSession(SipSession):
     __swig_setmethods__ = {}
-    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
-    __setattr__ = lambda self, name, value: _swig_setattr(self, PublicationEvent, name, value)
+    for _s in [SipSession]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, MessagingSession, name, value)
     __swig_getmethods__ = {}
-    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
-    __getattr__ = lambda self, name: _swig_getattr(self, PublicationEvent, name)
+    for _s in [SipSession]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, MessagingSession, name)
     __repr__ = _swig_repr
-    def __init__(self): 
-        this = _tinyWRAP.new_PublicationEvent()
+    def __init__(self, *args): 
+        this = _tinyWRAP.new_MessagingSession(*args)
         try: self.this.append(this)
         except: self.this = this
-    __swig_destroy__ = _tinyWRAP.delete_PublicationEvent
+    __swig_destroy__ = _tinyWRAP.delete_MessagingSession
     __del__ = lambda self : None;
-    def getType(self): return _tinyWRAP.PublicationEvent_getType(self)
-    def getSession(self): return _tinyWRAP.PublicationEvent_getSession(self)
-PublicationEvent_swigregister = _tinyWRAP.PublicationEvent_swigregister
-PublicationEvent_swigregister(PublicationEvent)
+    def Send(self, *args): return _tinyWRAP.MessagingSession_Send(self, *args)
+    def Accept(self): return _tinyWRAP.MessagingSession_Accept(self)
+    def Reject(self): return _tinyWRAP.MessagingSession_Reject(self)
+MessagingSession_swigregister = _tinyWRAP.MessagingSession_swigregister
+MessagingSession_swigregister(MessagingSession)
+
+class OptionsSession(SipSession):
+    __swig_setmethods__ = {}
+    for _s in [SipSession]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
+    __setattr__ = lambda self, name, value: _swig_setattr(self, OptionsSession, name, value)
+    __swig_getmethods__ = {}
+    for _s in [SipSession]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
+    __getattr__ = lambda self, name: _swig_getattr(self, OptionsSession, name)
+    __repr__ = _swig_repr
+    def __init__(self, *args): 
+        this = _tinyWRAP.new_OptionsSession(*args)
+        try: self.this.append(this)
+        except: self.this = this
+    __swig_destroy__ = _tinyWRAP.delete_OptionsSession
+    __del__ = lambda self : None;
+    def Send(self): return _tinyWRAP.OptionsSession_Send(self)
+OptionsSession_swigregister = _tinyWRAP.OptionsSession_swigregister
+OptionsSession_swigregister(OptionsSession)
 
 class PublicationSession(SipSession):
     __swig_setmethods__ = {}
@@ -181,25 +294,6 @@ class PublicationSession(SipSession):
 PublicationSession_swigregister = _tinyWRAP.PublicationSession_swigregister
 PublicationSession_swigregister(PublicationSession)
 
-class RegistrationEvent(SipEvent):
-    __swig_setmethods__ = {}
-    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
-    __setattr__ = lambda self, name, value: _swig_setattr(self, RegistrationEvent, name, value)
-    __swig_getmethods__ = {}
-    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
-    __getattr__ = lambda self, name: _swig_getattr(self, RegistrationEvent, name)
-    __repr__ = _swig_repr
-    def __init__(self): 
-        this = _tinyWRAP.new_RegistrationEvent()
-        try: self.this.append(this)
-        except: self.this = this
-    __swig_destroy__ = _tinyWRAP.delete_RegistrationEvent
-    __del__ = lambda self : None;
-    def getType(self): return _tinyWRAP.RegistrationEvent_getType(self)
-    def getSession(self): return _tinyWRAP.RegistrationEvent_getSession(self)
-RegistrationEvent_swigregister = _tinyWRAP.RegistrationEvent_swigregister
-RegistrationEvent_swigregister(RegistrationEvent)
-
 class RegistrationSession(SipSession):
     __swig_setmethods__ = {}
     for _s in [SipSession]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
@@ -218,25 +312,6 @@ class RegistrationSession(SipSession):
     def UnRegister(self): return _tinyWRAP.RegistrationSession_UnRegister(self)
 RegistrationSession_swigregister = _tinyWRAP.RegistrationSession_swigregister
 RegistrationSession_swigregister(RegistrationSession)
-
-class SubscriptionEvent(SipEvent):
-    __swig_setmethods__ = {}
-    for _s in [SipEvent]: __swig_setmethods__.update(getattr(_s,'__swig_setmethods__',{}))
-    __setattr__ = lambda self, name, value: _swig_setattr(self, SubscriptionEvent, name, value)
-    __swig_getmethods__ = {}
-    for _s in [SipEvent]: __swig_getmethods__.update(getattr(_s,'__swig_getmethods__',{}))
-    __getattr__ = lambda self, name: _swig_getattr(self, SubscriptionEvent, name)
-    __repr__ = _swig_repr
-    def __init__(self): 
-        this = _tinyWRAP.new_SubscriptionEvent()
-        try: self.this.append(this)
-        except: self.this = this
-    __swig_destroy__ = _tinyWRAP.delete_SubscriptionEvent
-    __del__ = lambda self : None;
-    def getType(self): return _tinyWRAP.SubscriptionEvent_getType(self)
-    def getSession(self): return _tinyWRAP.SubscriptionEvent_getSession(self)
-SubscriptionEvent_swigregister = _tinyWRAP.SubscriptionEvent_swigregister
-SubscriptionEvent_swigregister(SubscriptionEvent)
 
 class SubscriptionSession(SipSession):
     __swig_setmethods__ = {}
@@ -273,9 +348,12 @@ class SipCallback(_object):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_SipCallback
     __del__ = lambda self : None;
-    def OnRegistrationChanged(self, *args): return _tinyWRAP.SipCallback_OnRegistrationChanged(self, *args)
-    def OnSubscriptionChanged(self, *args): return _tinyWRAP.SipCallback_OnSubscriptionChanged(self, *args)
-    def OnPublicationChanged(self, *args): return _tinyWRAP.SipCallback_OnPublicationChanged(self, *args)
+    def OnDialogEvent(self, *args): return _tinyWRAP.SipCallback_OnDialogEvent(self, *args)
+    def OnMessagingEvent(self, *args): return _tinyWRAP.SipCallback_OnMessagingEvent(self, *args)
+    def OnOptionsEvent(self, *args): return _tinyWRAP.SipCallback_OnOptionsEvent(self, *args)
+    def OnPublicationEvent(self, *args): return _tinyWRAP.SipCallback_OnPublicationEvent(self, *args)
+    def OnRegistrationEvent(self, *args): return _tinyWRAP.SipCallback_OnRegistrationEvent(self, *args)
+    def OnSubscriptionEvent(self, *args): return _tinyWRAP.SipCallback_OnSubscriptionEvent(self, *args)
     def __disown__(self):
         self.this.disown()
         _tinyWRAP.disown_SipCallback(self)
@@ -394,5 +472,13 @@ tsip_i_unpublish = _tinyWRAP.tsip_i_unpublish
 tsip_ai_unpublish = _tinyWRAP.tsip_ai_unpublish
 tsip_o_unpublish = _tinyWRAP.tsip_o_unpublish
 tsip_ao_unpublish = _tinyWRAP.tsip_ao_unpublish
+tsip_i_message = _tinyWRAP.tsip_i_message
+tsip_ai_message = _tinyWRAP.tsip_ai_message
+tsip_o_message = _tinyWRAP.tsip_o_message
+tsip_ao_message = _tinyWRAP.tsip_ao_message
+tsip_i_options = _tinyWRAP.tsip_i_options
+tsip_ai_options = _tinyWRAP.tsip_ai_options
+tsip_o_options = _tinyWRAP.tsip_o_options
+tsip_ao_options = _tinyWRAP.tsip_ao_options
 
 

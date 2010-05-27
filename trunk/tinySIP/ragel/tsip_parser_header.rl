@@ -792,13 +792,21 @@
 
 	# /*== Via: ==*/
 	action parse_header_Via
-	{		
-		if(!message->firstVia){
-			message->firstVia = tsip_header_Via_parse(state->tag_start, (state->tag_end-state->tag_start));
-		}
-		else{
-			tsip_header_Via_t *header = tsip_header_Via_parse(state->tag_start, (state->tag_end-state->tag_start));
-			ADD_HEADER(header);
+	{	
+		tsip_header_Vias_L_t* headers =  tsip_header_Via_parse(state->tag_start, (state->tag_end-state->tag_start));
+		if(headers){
+			tsk_list_item_t *item;
+			tsk_list_foreach(item, headers){
+				tsip_header_Via_t *hdr = tsk_object_ref(item->data);
+				if(!message->firstVia){
+					message->firstVia = hdr;
+				}
+				else{
+					tsk_list_push_back_data(message->headers, ((void**) &hdr));
+				}
+			}
+
+			TSK_OBJECT_SAFE_FREE(headers);
 		}
 	}
 

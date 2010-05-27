@@ -33,8 +33,21 @@ public class SipSession {
     swigCPtr = 0;
   }
 
+  protected java.nio.ByteBuffer getByteBuffer(byte[] bytes) {
+    if(bytes != null){
+		final java.nio.ByteBuffer byteBuffer = java.nio.ByteBuffer.allocateDirect(bytes.length);
+        byteBuffer.put(bytes);
+        return byteBuffer;
+    }
+    return null;
+  }
+
   public SipSession(SipStack stack) {
     this(tinyWRAPJNI.new_SipSession(SipStack.getCPtr(stack), stack), true);
+  }
+
+  public boolean haveOwnership() {
+    return tinyWRAPJNI.SipSession_haveOwnership(swigCPtr, this);
   }
 
   public boolean addHeader(String name, String value) {
@@ -67,6 +80,10 @@ public class SipSession {
 
   public boolean setToUri(String toUri) {
     return tinyWRAPJNI.SipSession_setToUri(swigCPtr, this, toUri);
+  }
+
+  public long getId() {
+    return tinyWRAPJNI.SipSession_getId(swigCPtr, this);
   }
 
 }

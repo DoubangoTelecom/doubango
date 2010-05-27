@@ -22,4 +22,18 @@ inattributes="[MarshalAs(UnmanagedType.LPArray)]") TYPE[] "CSTYPE[]"
 %typemap(out) void * %{ $result = $1; %}
 %typemap(csdirectorin) void * "$iminput"
 
+
+
+%typemap(cscode) SipMessage %{
+  public byte[] getSipContent() {
+    uint clen = this.getSipContentLength();
+    if(clen>0){
+        byte[] bytes = new byte[clen];
+        this.getSipContent(bytes, clen);
+        return bytes;
+    }
+    return null;
+  }
+%}
+
 %include ../_common/tinyWRAP.i

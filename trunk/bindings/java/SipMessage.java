@@ -33,6 +33,18 @@ public class SipMessage {
     swigCPtr = 0;
   }
 
+  public byte[] getSipContent() {
+    final int clen = (int)this.getSipContentLength();
+    if(clen>0){
+		final java.nio.ByteBuffer buffer = java.nio.ByteBuffer.allocateDirect(clen);
+        final int read = (int)this.getSipContent(buffer, clen);
+        final byte[] bytes = new byte[read];
+        buffer.get(bytes, 0, read);
+        return bytes;
+    }
+    return null;
+  }
+
   public SipMessage() {
     this(tinyWRAPJNI.new_SipMessage(), true);
   }
@@ -57,7 +69,7 @@ public class SipMessage {
     return tinyWRAPJNI.SipMessage_getSipContentLength(swigCPtr, this);
   }
 
-  public long getSipContent(byte[] output, long maxsize) {
+  public long getSipContent(java.nio.ByteBuffer output, long maxsize) {
     return tinyWRAPJNI.SipMessage_getSipContent(swigCPtr, this, output, maxsize);
   }
 

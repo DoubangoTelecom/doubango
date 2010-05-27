@@ -37,9 +37,6 @@ public class SubscriptionEvent : SipEvent {
     }
   }
 
-  public SubscriptionEvent() : this(tinyWRAPPINVOKE.new_SubscriptionEvent(), true) {
-  }
-
   public tsip_subscribe_event_type_t getType() {
     tsip_subscribe_event_type_t ret = (tsip_subscribe_event_type_t)tinyWRAPPINVOKE.SubscriptionEvent_getType(swigCPtr);
     return ret;

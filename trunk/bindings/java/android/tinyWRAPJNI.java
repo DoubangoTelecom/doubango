@@ -20,15 +20,32 @@ class tinyWRAPJNI {
   public final static native String SipMessage_getSipHeaderParamValue__SWIG_0(long jarg1, SipMessage jarg1_, String jarg2, String jarg3, long jarg4);
   public final static native String SipMessage_getSipHeaderParamValue__SWIG_1(long jarg1, SipMessage jarg1_, String jarg2, String jarg3);
   public final static native long SipMessage_getSipContentLength(long jarg1, SipMessage jarg1_);
-  public final static native long SipMessage_getSipContent(long jarg1, SipMessage jarg1_, byte[] jarg2, long jarg3);
-  public final static native long new_SipEvent();
+  public final static native long SipMessage_getSipContent(long jarg1, SipMessage jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native void delete_SipEvent(long jarg1);
   public final static native short SipEvent_getCode(long jarg1, SipEvent jarg1_);
   public final static native String SipEvent_getPhrase(long jarg1, SipEvent jarg1_);
   public final static native long SipEvent_getBaseSession(long jarg1, SipEvent jarg1_);
   public final static native long SipEvent_getSipMessage(long jarg1, SipEvent jarg1_);
+  public final static native void delete_DialogEvent(long jarg1);
+  public final static native void delete_MessagingEvent(long jarg1);
+  public final static native int MessagingEvent_getType(long jarg1, MessagingEvent jarg1_);
+  public final static native long MessagingEvent_getSession(long jarg1, MessagingEvent jarg1_);
+  public final static native long MessagingEvent_takeSessionOwnership(long jarg1, MessagingEvent jarg1_);
+  public final static native void delete_OptionsEvent(long jarg1);
+  public final static native int OptionsEvent_getType(long jarg1, OptionsEvent jarg1_);
+  public final static native long OptionsEvent_getSession(long jarg1, OptionsEvent jarg1_);
+  public final static native void delete_PublicationEvent(long jarg1);
+  public final static native int PublicationEvent_getType(long jarg1, PublicationEvent jarg1_);
+  public final static native long PublicationEvent_getSession(long jarg1, PublicationEvent jarg1_);
+  public final static native void delete_RegistrationEvent(long jarg1);
+  public final static native int RegistrationEvent_getType(long jarg1, RegistrationEvent jarg1_);
+  public final static native long RegistrationEvent_getSession(long jarg1, RegistrationEvent jarg1_);
+  public final static native void delete_SubscriptionEvent(long jarg1);
+  public final static native int SubscriptionEvent_getType(long jarg1, SubscriptionEvent jarg1_);
+  public final static native long SubscriptionEvent_getSession(long jarg1, SubscriptionEvent jarg1_);
   public final static native long new_SipSession(long jarg1, SipStack jarg1_);
   public final static native void delete_SipSession(long jarg1);
+  public final static native boolean SipSession_haveOwnership(long jarg1, SipSession jarg1_);
   public final static native boolean SipSession_addHeader(long jarg1, SipSession jarg1_, String jarg2, String jarg3);
   public final static native boolean SipSession_removeHeader(long jarg1, SipSession jarg1_, String jarg2);
   public final static native boolean SipSession_addCaps__SWIG_0(long jarg1, SipSession jarg1_, String jarg2, String jarg3);
@@ -37,38 +54,41 @@ class tinyWRAPJNI {
   public final static native boolean SipSession_setExpires(long jarg1, SipSession jarg1_, long jarg2);
   public final static native boolean SipSession_setFromUri(long jarg1, SipSession jarg1_, String jarg2);
   public final static native boolean SipSession_setToUri(long jarg1, SipSession jarg1_, String jarg2);
-  public final static native long new_PublicationEvent();
-  public final static native void delete_PublicationEvent(long jarg1);
-  public final static native int PublicationEvent_getType(long jarg1, PublicationEvent jarg1_);
-  public final static native long PublicationEvent_getSession(long jarg1, PublicationEvent jarg1_);
+  public final static native long SipSession_getId(long jarg1, SipSession jarg1_);
+  public final static native long new_MessagingSession(long jarg1, SipStack jarg1_);
+  public final static native void delete_MessagingSession(long jarg1);
+  public final static native boolean MessagingSession_Send(long jarg1, MessagingSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
+  public final static native boolean MessagingSession_Accept(long jarg1, MessagingSession jarg1_);
+  public final static native boolean MessagingSession_Reject(long jarg1, MessagingSession jarg1_);
+  public final static native long new_OptionsSession(long jarg1, SipStack jarg1_);
+  public final static native void delete_OptionsSession(long jarg1);
+  public final static native boolean OptionsSession_Send(long jarg1, OptionsSession jarg1_);
   public final static native long new_PublicationSession(long jarg1, SipStack jarg1_);
   public final static native void delete_PublicationSession(long jarg1);
-  public final static native boolean PublicationSession_Publish(long jarg1, PublicationSession jarg1_, byte[] jarg2, long jarg3);
+  public final static native boolean PublicationSession_Publish(long jarg1, PublicationSession jarg1_, java.nio.ByteBuffer jarg2, long jarg3);
   public final static native boolean PublicationSession_UnPublish(long jarg1, PublicationSession jarg1_);
-  public final static native long new_RegistrationEvent();
-  public final static native void delete_RegistrationEvent(long jarg1);
-  public final static native int RegistrationEvent_getType(long jarg1, RegistrationEvent jarg1_);
-  public final static native long RegistrationEvent_getSession(long jarg1, RegistrationEvent jarg1_);
   public final static native long new_RegistrationSession(long jarg1, SipStack jarg1_);
   public final static native void delete_RegistrationSession(long jarg1);
   public final static native boolean RegistrationSession_Register(long jarg1, RegistrationSession jarg1_);
   public final static native boolean RegistrationSession_UnRegister(long jarg1, RegistrationSession jarg1_);
-  public final static native long new_SubscriptionEvent();
-  public final static native void delete_SubscriptionEvent(long jarg1);
-  public final static native int SubscriptionEvent_getType(long jarg1, SubscriptionEvent jarg1_);
-  public final static native long SubscriptionEvent_getSession(long jarg1, SubscriptionEvent jarg1_);
   public final static native long new_SubscriptionSession(long jarg1, SipStack jarg1_);
   public final static native void delete_SubscriptionSession(long jarg1);
   public final static native boolean SubscriptionSession_Subscribe(long jarg1, SubscriptionSession jarg1_);
   public final static native boolean SubscriptionSession_UnSubscribe(long jarg1, SubscriptionSession jarg1_);
   public final static native long new_SipCallback();
   public final static native void delete_SipCallback(long jarg1);
-  public final static native int SipCallback_OnRegistrationChanged(long jarg1, SipCallback jarg1_, long jarg2, RegistrationEvent jarg2_);
-  public final static native int SipCallback_OnRegistrationChangedSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, RegistrationEvent jarg2_);
-  public final static native int SipCallback_OnSubscriptionChanged(long jarg1, SipCallback jarg1_, long jarg2, SubscriptionEvent jarg2_);
-  public final static native int SipCallback_OnSubscriptionChangedSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, SubscriptionEvent jarg2_);
-  public final static native int SipCallback_OnPublicationChanged(long jarg1, SipCallback jarg1_, long jarg2, PublicationEvent jarg2_);
-  public final static native int SipCallback_OnPublicationChangedSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, PublicationEvent jarg2_);
+  public final static native int SipCallback_OnDialogEvent(long jarg1, SipCallback jarg1_, long jarg2, DialogEvent jarg2_);
+  public final static native int SipCallback_OnDialogEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, DialogEvent jarg2_);
+  public final static native int SipCallback_OnMessagingEvent(long jarg1, SipCallback jarg1_, long jarg2, MessagingEvent jarg2_);
+  public final static native int SipCallback_OnMessagingEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, MessagingEvent jarg2_);
+  public final static native int SipCallback_OnOptionsEvent(long jarg1, SipCallback jarg1_, long jarg2, OptionsEvent jarg2_);
+  public final static native int SipCallback_OnOptionsEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, OptionsEvent jarg2_);
+  public final static native int SipCallback_OnPublicationEvent(long jarg1, SipCallback jarg1_, long jarg2, PublicationEvent jarg2_);
+  public final static native int SipCallback_OnPublicationEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, PublicationEvent jarg2_);
+  public final static native int SipCallback_OnRegistrationEvent(long jarg1, SipCallback jarg1_, long jarg2, RegistrationEvent jarg2_);
+  public final static native int SipCallback_OnRegistrationEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, RegistrationEvent jarg2_);
+  public final static native int SipCallback_OnSubscriptionEvent(long jarg1, SipCallback jarg1_, long jarg2, SubscriptionEvent jarg2_);
+  public final static native int SipCallback_OnSubscriptionEventSwigExplicitSipCallback(long jarg1, SipCallback jarg1_, long jarg2, SubscriptionEvent jarg2_);
   public final static native void SipCallback_director_connect(SipCallback obj, long cptr, boolean mem_own, boolean weak_global);
   public final static native void SipCallback_change_ownership(SipCallback obj, long cptr, boolean take_or_release);
   public final static native long new_SipDebugCallback();
@@ -104,22 +124,36 @@ class tinyWRAPJNI {
   public final static native boolean SipStack_addDnsServer(long jarg1, SipStack jarg1_, String jarg2);
   public final static native boolean SipStack_isValid(long jarg1, SipStack jarg1_);
   public final static native boolean SipStack_stop(long jarg1, SipStack jarg1_);
+  public final static native long SWIGDialogEventUpcast(long jarg1);
+  public final static native long SWIGMessagingEventUpcast(long jarg1);
+  public final static native long SWIGOptionsEventUpcast(long jarg1);
   public final static native long SWIGPublicationEventUpcast(long jarg1);
-  public final static native long SWIGPublicationSessionUpcast(long jarg1);
   public final static native long SWIGRegistrationEventUpcast(long jarg1);
-  public final static native long SWIGRegistrationSessionUpcast(long jarg1);
   public final static native long SWIGSubscriptionEventUpcast(long jarg1);
+  public final static native long SWIGMessagingSessionUpcast(long jarg1);
+  public final static native long SWIGOptionsSessionUpcast(long jarg1);
+  public final static native long SWIGPublicationSessionUpcast(long jarg1);
+  public final static native long SWIGRegistrationSessionUpcast(long jarg1);
   public final static native long SWIGSubscriptionSessionUpcast(long jarg1);
   public final static native long SWIGSipStackUpcast(long jarg1);
 
-  public static int SwigDirector_SipCallback_OnRegistrationChanged(SipCallback self, long e) {
-    return self.OnRegistrationChanged((e == 0) ? null : new RegistrationEvent(e, false));
+  public static int SwigDirector_SipCallback_OnDialogEvent(SipCallback self, long e) {
+    return self.OnDialogEvent((e == 0) ? null : new DialogEvent(e, false));
   }
-  public static int SwigDirector_SipCallback_OnSubscriptionChanged(SipCallback self, long e) {
-    return self.OnSubscriptionChanged((e == 0) ? null : new SubscriptionEvent(e, false));
+  public static int SwigDirector_SipCallback_OnMessagingEvent(SipCallback self, long e) {
+    return self.OnMessagingEvent((e == 0) ? null : new MessagingEvent(e, false));
   }
-  public static int SwigDirector_SipCallback_OnPublicationChanged(SipCallback self, long e) {
-    return self.OnPublicationChanged((e == 0) ? null : new PublicationEvent(e, false));
+  public static int SwigDirector_SipCallback_OnOptionsEvent(SipCallback self, long e) {
+    return self.OnOptionsEvent((e == 0) ? null : new OptionsEvent(e, false));
+  }
+  public static int SwigDirector_SipCallback_OnPublicationEvent(SipCallback self, long e) {
+    return self.OnPublicationEvent((e == 0) ? null : new PublicationEvent(e, false));
+  }
+  public static int SwigDirector_SipCallback_OnRegistrationEvent(SipCallback self, long e) {
+    return self.OnRegistrationEvent((e == 0) ? null : new RegistrationEvent(e, false));
+  }
+  public static int SwigDirector_SipCallback_OnSubscriptionEvent(SipCallback self, long e) {
+    return self.OnSubscriptionEvent((e == 0) ? null : new SubscriptionEvent(e, false));
   }
   public static int SwigDirector_SipDebugCallback_OnDebugInfo(SipDebugCallback self, String message) {
     return self.OnDebugInfo(message);

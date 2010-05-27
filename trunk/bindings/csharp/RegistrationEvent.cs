@@ -37,9 +37,6 @@ public class RegistrationEvent : SipEvent {
     }
   }
 
-  public RegistrationEvent() : this(tinyWRAPPINVOKE.new_RegistrationEvent(), true) {
-  }
-
   public tsip_register_event_type_t getType() {
     tsip_register_event_type_t ret = (tsip_register_event_type_t)tinyWRAPPINVOKE.RegistrationEvent_getType(swigCPtr);
     return ret;

@@ -35,7 +35,7 @@ public:
 	
 	//%newobject getHeaderValueAt;
 	char* getSipHeaderValue(const char* name, unsigned index = 0);
-	const char* getSipHeaderParamValue(const char* name, const char* param, unsigned index = 0);
+	char* getSipHeaderParamValue(const char* name, const char* param, unsigned index = 0);
 	unsigned getSipContentLength();
 	unsigned getSipContent(void* output, unsigned maxsize);
 

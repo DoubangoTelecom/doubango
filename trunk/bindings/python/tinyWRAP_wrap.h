@@ -20,9 +20,12 @@ class SwigDirector_SipCallback : public SipCallback, public Swig::Director {
 public:
     SwigDirector_SipCallback(PyObject *self);
     virtual ~SwigDirector_SipCallback();
-    virtual int OnRegistrationChanged(RegistrationEvent const *e);
-    virtual int OnSubscriptionChanged(SubscriptionEvent const *e);
-    virtual int OnPublicationChanged(PublicationEvent const *e);
+    virtual int OnDialogEvent(DialogEvent const *e);
+    virtual int OnMessagingEvent(MessagingEvent const *e);
+    virtual int OnOptionsEvent(OptionsEvent const *e);
+    virtual int OnPublicationEvent(PublicationEvent const *e);
+    virtual int OnRegistrationEvent(RegistrationEvent const *e);
+    virtual int OnSubscriptionEvent(SubscriptionEvent const *e);
 
 
 /* Internal Director utilities */
@@ -56,7 +59,7 @@ private:
       return method;
     }
 private:
-    mutable swig::SwigVar_PyObject vtable[3];
+    mutable swig::SwigVar_PyObject vtable[6];
 #endif
 
 };

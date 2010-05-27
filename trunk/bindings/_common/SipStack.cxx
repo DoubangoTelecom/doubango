@@ -22,12 +22,7 @@
 #include "SipStack.h"
 
 #include "SipSession.h"
-#include "PublicationEvent.h"
-#include "PublicationSession.h"
-#include "RegistrationEvent.h"
-#include "RegistrationSession.h"
-#include "SubscriptionEvent.h"
-#include "SubscriptionSession.h"
+#include "SipEvent.h"
 
 #include "SipDebug.h"
 
@@ -227,14 +222,15 @@ int stack_callback(const tsip_event_t *sipevent)
 	}
 	else{
 		/* retrive the stack from the context */
-		const SipSession* session = dyn_cast<const SipSession*>((const SipSession*)tsip_ssession_get_userdata(sipevent->ss));
-		if(session){
-			Stack = session->getStack();
+		const void* userdata;
+		const tsip_stack_handle_t* stack_handle = tsip_ssession_get_stack(sipevent->ss);
+		if(stack_handle && (userdata = tsip_stack_get_userdata(stack_handle))){
+			Stack = dyn_cast<const SipStack*>((const SipStack*)userdata);
 		}
 	}
 
 	if(!Stack){
-		TSK_DEBUG_WARN("Invalid SIP event.");
+		TSK_DEBUG_WARN("Invalid SIP event (Stack is Null).");
 		return -2;
 	}
 
@@ -245,7 +241,7 @@ int stack_callback(const tsip_event_t *sipevent)
 			{	/* REGISTER */
 				if(Stack->getCallback()){
 					e = new RegistrationEvent(sipevent);
-					Stack->getCallback()->OnRegistrationChanged((const RegistrationEvent*)e);
+					Stack->getCallback()->OnRegistrationEvent((const RegistrationEvent*)e);
 				}
 				break;
 			}
@@ -255,17 +251,25 @@ int stack_callback(const tsip_event_t *sipevent)
 			}
 		case tsip_event_message:
 			{	/* MESSAGE */
+				if(Stack->getCallback()){
+					e = new MessagingEvent(sipevent);
+					Stack->getCallback()->OnMessagingEvent((const MessagingEvent*)e);
+				}
 				break;
 			}
 		case tsip_event_options:
 			{ /* OPTIONS */
+				if(Stack->getCallback()){
+					e = new OptionsEvent(sipevent);
+					Stack->getCallback()->OnOptionsEvent((const OptionsEvent*)e);
+				}
 				break;
 			}
 		case tsip_event_publish:
 			{ /* PUBLISH */
 				if(Stack->getCallback()){
 					e = new PublicationEvent(sipevent);
-					Stack->getCallback()->OnPublicationChanged((const PublicationEvent*)e);
+					Stack->getCallback()->OnPublicationEvent((const PublicationEvent*)e);
 				}
 				break;
 			}
@@ -273,14 +277,17 @@ int stack_callback(const tsip_event_t *sipevent)
 			{	/* SUBSCRIBE */
 				if(Stack->getCallback()){
 					e = new SubscriptionEvent(sipevent);
-					Stack->getCallback()->OnSubscriptionChanged((const SubscriptionEvent*)e);
+					Stack->getCallback()->OnSubscriptionEvent((const SubscriptionEvent*)e);
 				}
 				break;
 			}
 
 		case tsip_event_dialog:
 			{	/* Common to all dialogs */
-				//ret = session_handle_event(sipevent);
+				if(Stack->getCallback()){
+					e = new DialogEvent(sipevent);
+					Stack->getCallback()->OnDialogEvent((const DialogEvent*)e);
+				}
 				break;
 			}
 

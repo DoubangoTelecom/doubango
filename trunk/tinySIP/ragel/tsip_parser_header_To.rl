@@ -101,16 +101,17 @@ tsip_header_To_t* tsip_header_To_create_null()
 int tsip_header_To_serialize(const tsip_header_t* header, tsk_buffer_t* output)
 {
 	if(header){
-		int ret;
+		int ret = 0;
 		const tsip_header_To_t *To = (const tsip_header_To_t *)header;
 
 		/* Uri with hacked display-name*/
 		if((ret = tsip_uri_serialize(To->uri, tsk_true, tsk_true, output))){
 			return ret;
 		}
-		if(To->tag){
-			return tsk_buffer_append_2(output, ";tag=%s", To->tag);
+		if(To->tag && (ret = tsk_buffer_append_2(output, ";tag=%s", To->tag))){
+			return ret;
 		}
+		return ret;
 	}
 	return -1;
 }

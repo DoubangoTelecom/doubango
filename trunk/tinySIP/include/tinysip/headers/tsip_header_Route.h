@@ -57,8 +57,6 @@ typedef struct tsip_header_Route_s
 }
 tsip_header_Route_t;
 
-//#define TSIP_DECLARE_HEADER_ROUTE	tsip_header_Route_t header_Route
-
 typedef tsk_list_t tsip_header_Routes_L_t;
 
 TINYSIP_API tsip_header_Route_t* tsip_header_Route_create(const tsip_uri_t* uri);

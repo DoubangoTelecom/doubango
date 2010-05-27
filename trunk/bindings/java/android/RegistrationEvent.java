@@ -33,10 +33,6 @@ public class RegistrationEvent extends SipEvent {
     super.delete();
   }
 
-  public RegistrationEvent() {
-    this(tinyWRAPJNI.new_RegistrationEvent(), true);
-  }
-
   public tsip_register_event_type_t getType() {
     return tsip_register_event_type_t.swigToEnum(tinyWRAPJNI.RegistrationEvent_getType(swigCPtr, this));
   }
