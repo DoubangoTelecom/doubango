@@ -432,6 +432,7 @@ class SipStack(SafeObject):
     def addHeader(self, *args): return _tinyWRAP.SipStack_addHeader(self, *args)
     def removeHeader(self, *args): return _tinyWRAP.SipStack_removeHeader(self, *args)
     def addDnsServer(self, *args): return _tinyWRAP.SipStack_addDnsServer(self, *args)
+    def setAoR(self, *args): return _tinyWRAP.SipStack_setAoR(self, *args)
     def isValid(self): return _tinyWRAP.SipStack_isValid(self)
     def stop(self): return _tinyWRAP.SipStack_stop(self)
 SipStack_swigregister = _tinyWRAP.SipStack_swigregister

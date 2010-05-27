@@ -49,6 +49,8 @@ namespace test
             /* Set Password */
             //stack.setPassword(PASSWORD);
 
+            sipStack.setAoR("127.0.0.1", 1234);
+
             /* Send REGISTER */
             regSession = new RegistrationSession(sipStack);
             regSession.addCaps("+g.oma.sip-im");

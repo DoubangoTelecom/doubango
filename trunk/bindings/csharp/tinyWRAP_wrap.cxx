@@ -1926,6 +1926,22 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_addDnsServer(void * jarg1, c
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_setAoR(void * jarg1, char * jarg2, int jarg3) {
+  unsigned int jresult ;
+  SipStack *arg1 = (SipStack *) 0 ;
+  char *arg2 = (char *) 0 ;
+  int arg3 ;
+  bool result;
+  
+  arg1 = (SipStack *)jarg1; 
+  arg2 = (char *)jarg2; 
+  arg3 = (int)jarg3; 
+  result = (bool)(arg1)->setAoR((char const *)arg2,arg3);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_isValid(void * jarg1) {
   unsigned int jresult ;
   SipStack *arg1 = (SipStack *) 0 ;

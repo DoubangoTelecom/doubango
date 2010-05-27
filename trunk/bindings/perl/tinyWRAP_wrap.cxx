@@ -1849,6 +1849,59 @@ SWIG_AsVal_bool SWIG_PERL_DECL_ARGS_2(SV *obj, bool* val)
   return SWIG_TypeError;
 }
 
+
+SWIGINTERN int
+SWIG_AsVal_long SWIG_PERL_DECL_ARGS_2(SV *obj, long* val)
+{
+  if (SvIOK(obj)) {
+    if (val) *val = SvIV(obj);
+    return SWIG_OK;
+  } else {
+    int dispatch = 0;
+    const char *nptr = SvPV_nolen(obj);
+    if (nptr) {
+      char *endptr;
+      long v;
+      errno = 0;
+      v = strtol(nptr, &endptr,0);
+      if (errno == ERANGE) {
+	errno = 0;
+	return SWIG_OverflowError;
+      } else {
+	if (*endptr == '\0') {
+	  if (val) *val = v;
+	  return SWIG_Str2NumCast(SWIG_OK);
+	}
+      }
+    }
+    if (!dispatch) {
+      double d;
+      int res = SWIG_AddCast(SWIG_AsVal_double SWIG_PERL_CALL_ARGS_2(obj,&d));
+      if (SWIG_IsOK(res) && SWIG_CanCastAsInteger(&d, LONG_MIN, LONG_MAX)) {
+	if (val) *val = (long)(d);
+	return res;
+      }
+    }
+  }
+  return SWIG_TypeError;
+}
+
+
+SWIGINTERN int
+SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
+{
+  long v;
+  int res = SWIG_AsVal_long SWIG_PERL_CALL_ARGS_2(obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < INT_MIN || v > INT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = static_cast< int >(v);
+    }
+  }  
+  return res;
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -5494,6 +5547,55 @@ XS(_wrap_SipStack_addDnsServer) {
 }
 
 
+XS(_wrap_SipStack_setAoR) {
+  {
+    SipStack *arg1 = (SipStack *) 0 ;
+    char *arg2 = (char *) 0 ;
+    int arg3 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 3) || (items > 3)) {
+      SWIG_croak("Usage: SipStack_setAoR(self,ip,port);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_SipStack, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipStack_setAoR" "', argument " "1"" of type '" "SipStack *""'"); 
+    }
+    arg1 = reinterpret_cast< SipStack * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SipStack_setAoR" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SipStack_setAoR" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = static_cast< int >(val3);
+    result = (bool)(arg1)->setAoR((char const *)arg2,arg3);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_SipStack_isValid) {
   {
     SipStack *arg1 = (SipStack *) 0 ;
@@ -5809,6 +5911,7 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipStack_addHeader", _wrap_SipStack_addHeader},
 {"tinyWRAPc::SipStack_removeHeader", _wrap_SipStack_removeHeader},
 {"tinyWRAPc::SipStack_addDnsServer", _wrap_SipStack_addDnsServer},
+{"tinyWRAPc::SipStack_setAoR", _wrap_SipStack_setAoR},
 {"tinyWRAPc::SipStack_isValid", _wrap_SipStack_isValid},
 {"tinyWRAPc::SipStack_stop", _wrap_SipStack_stop},
 {0,0}

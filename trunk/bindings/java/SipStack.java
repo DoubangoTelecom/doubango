@@ -89,6 +89,10 @@ public class SipStack extends SafeObject {
     return tinyWRAPJNI.SipStack_addDnsServer(swigCPtr, this, ip);
   }
 
+  public boolean setAoR(String ip, int port) {
+    return tinyWRAPJNI.SipStack_setAoR(swigCPtr, this, ip, port);
+  }
+
   public boolean isValid() {
     return tinyWRAPJNI.SipStack_isValid(swigCPtr, this);
   }
