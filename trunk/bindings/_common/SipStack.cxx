@@ -184,6 +184,14 @@ bool SipStack::addDnsServer(const char* ip)
 	return (ret == 0);
 }
 
+bool SipStack::setAoR(const char* ip, int port)
+{
+	int ret = tsip_stack_set(this->handle,
+		TSIP_STACK_SET_AOR(ip, port),
+		TSIP_STACK_SET_NULL());
+	return (ret == 0);
+}
+
 bool SipStack::isValid()
 {
 	return (this->handle != tsk_null);

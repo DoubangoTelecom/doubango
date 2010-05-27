@@ -49,6 +49,7 @@ public: /* API functions */
 	bool addHeader(const char* name, const char* value);
 	bool removeHeader(const char* name);
 	bool addDnsServer(const char* ip);
+	bool setAoR(const char* ip, int port);
 
 	bool isValid();
 	bool stop();

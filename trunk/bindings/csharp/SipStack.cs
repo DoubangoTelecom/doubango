@@ -105,6 +105,11 @@ public class SipStack : SafeObject {
     return ret;
   }
 
+  public bool setAoR(string ip, int port) {
+    bool ret = tinyWRAPPINVOKE.SipStack_setAoR(swigCPtr, ip, port);
+    return ret;
+  }
+
   public bool isValid() {
     bool ret = tinyWRAPPINVOKE.SipStack_isValid(swigCPtr);
     return ret;

@@ -762,6 +762,7 @@ sub DESTROY {
 *addHeader = *tinyWRAPc::SipStack_addHeader;
 *removeHeader = *tinyWRAPc::SipStack_removeHeader;
 *addDnsServer = *tinyWRAPc::SipStack_addDnsServer;
+*setAoR = *tinyWRAPc::SipStack_setAoR;
 *isValid = *tinyWRAPc::SipStack_isValid;
 *stop = *tinyWRAPc::SipStack_stop;
 sub DISOWN {

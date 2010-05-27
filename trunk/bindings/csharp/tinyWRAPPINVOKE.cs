@@ -517,6 +517,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_addDnsServer")]
   public static extern bool SipStack_addDnsServer(HandleRef jarg1, string jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_setAoR")]
+  public static extern bool SipStack_setAoR(HandleRef jarg1, string jarg2, int jarg3);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_isValid")]
   public static extern bool SipStack_isValid(HandleRef jarg1);
 
