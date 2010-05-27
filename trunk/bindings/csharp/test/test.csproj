@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\PublicationEvent.cs">
+      <Link>PublicationEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\PublicationSession.cs">
+      <Link>PublicationSession.cs</Link>
+    </Compile>
     <Compile Include="..\RegistrationEvent.cs">
       <Link>RegistrationEvent.cs</Link>
     </Compile>
@@ -86,6 +92,9 @@
     </Compile>
     <Compile Include="..\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\tsip_publish_event_type_t.cs">
+      <Link>tsip_publish_event_type_t.cs</Link>
     </Compile>
     <Compile Include="..\tsip_register_event_type_t.cs">
       <Link>tsip_register_event_type_t.cs</Link>

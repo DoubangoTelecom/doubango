@@ -3,6 +3,15 @@
 */
 
 
+%define %cs_marshal_array(TYPE, CSTYPE)
+%typemap(ctype) TYPE[] "void*"
+%typemap(imtype,
+inattributes="[MarshalAs(UnmanagedType.LPArray)]") TYPE[] "CSTYPE[]"
+%typemap(cstype) TYPE[] "CSTYPE[]"
+%typemap(in) TYPE[] %{ $1 = (TYPE*)$input; %}
+%typemap(csin) TYPE[] "$csinput"
+%enddef
+
 // Mapping void* as byte[]
 %typemap(ctype) void * "void *"
 %typemap(imtype) void * "byte[]"
