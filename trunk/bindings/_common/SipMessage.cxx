@@ -36,16 +36,6 @@ SipMessage::~SipMessage()
 
 }
 
-const void* SipMessage::getSipContent() const
-{
-	if(this->sipmessage){
-		return TSIP_MESSAGE_CONTENT_DATA(this->sipmessage);
-	}
-	else{
-		return tsk_null;
-	}
-}
-
 const tsip_header_t* SipMessage::getSipHeader(const char* name, unsigned index /* =0 */)
 {
 	/* Do not worry about calling tsk_striequals() several times because the function
@@ -143,4 +133,28 @@ const char* SipMessage::getSipHeaderParamValue(const char* name, const char* par
 		}
 	}
 	return tsk_null;
+}
+
+/** Returns the content length.
+*/
+unsigned SipMessage::getSipContentLength()
+{
+	return TSIP_MESSAGE_CONTENT_DATA_LENGTH(this->sipmessage);
+}
+
+/** Gets the message content
+* @param output A pointer to the output buffer where to copy the data. MUST
+* be allocated by the caller.
+* @param maxsize The maximum number of octets to copy. Should be less than the size of the
+* @a output buffer. You can use @a getSipContentLength() to get the right value to use.
+* @retval The number of octet copied in the @a output buffer.
+*/
+unsigned SipMessage::getSipContent(void* output, unsigned maxsize)
+{
+	unsigned retsize = 0;
+	if(output && maxsize && TSIP_MESSAGE_HAS_CONTENT(this->sipmessage)){
+		retsize = (this->sipmessage->Content->size > maxsize) ? maxsize : this->sipmessage->Content->size;
+		memcpy(output, this->sipmessage->Content->data, retsize);
+	}
+	return retsize;
 }

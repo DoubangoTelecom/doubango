@@ -38,7 +38,6 @@ public:
 public: /* Public API functions */
 	tsip_publish_event_type_t getType() const;
 	const PublicationSession* getSession() const;
-	
 };
 
 #endif /* TINYWRAP_PUBLICATIONEVENT_H */

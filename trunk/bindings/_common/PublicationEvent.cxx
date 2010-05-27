@@ -25,12 +25,12 @@
 #include "Common.h"
 
 PublicationEvent::PublicationEvent()
-:SipEvent(sipevent)
+:SipEvent(tsk_null)
 {
 }
 
-PublicationEvent::PublicationEvent(const tsip_event_t *sipevent)
-:SipEvent(sipevent)
+PublicationEvent::PublicationEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
 {
 }
 

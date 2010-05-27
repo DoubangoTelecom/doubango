@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace test
 {
@@ -25,9 +26,12 @@ namespace test
         {
             Boolean success;
 
+            String s = "mamadou";
+            byte[] b = Encoding.UTF8.GetBytes(s);
+
             /* Create callbacks */
             sipCallback = new MySipCallback();
-            sipDebugCallback = new MySipDebugCallback();
+            //sipDebugCallback = new MySipDebugCallback();
 
             /* Create and configure the IMS/LTE stack */
             sipStack = new SipStack(sipCallback, String.Format("sip:{0}", REALM), String.Format("{0}@{1}", USER, REALM), String.Format("sip:{0}@{1}", USER, REALM));
@@ -53,6 +57,8 @@ namespace test
             regSession.setExpires(35);
             regSession.Register();
 
+            Thread.Sleep(2000);
+
             /* Send SUBSCRIBE(reg) */
             subSession = new SubscriptionSession(sipStack);
             subSession.addHeader("Event", "reg");
@@ -60,13 +66,7 @@ namespace test
             subSession.addHeader("Allow-Events", "refer, presence, presence.winfo, xcap-diff, conference");
             subSession.setExpires(35);
 
-            //while (true){
-            //    byte[] bytes = Encoding.UTF8.GetBytes("Salut comment tu vas?");
-                //subSession.setPayload(bytes, (uint)bytes.Length);
-            //}
-
-
-            //subSession.Subscribe();
+            subSession.Subscribe();
 
             Console.Read();
 
@@ -165,7 +165,16 @@ namespace test
             {
                 case tsip_subscribe_event_type_t.tsip_ao_subscribe:
                 case tsip_subscribe_event_type_t.tsip_ao_unsubscribe:
+                    break;
+
                 case tsip_subscribe_event_type_t.tsip_i_notify:
+                    uint content_len = message.getSipContentLength();
+                    if (content_len>0)
+                    {
+                        byte[] content = new byte[content_len];
+                        uint read = message.getSipContent(content, (uint)content.Length);
+                        Console.WriteLine("Notify Content ==> {0}", Encoding.UTF8.GetString(content, 0, (int)read));
+                    }
                     break;
             }
 
@@ -174,5 +183,41 @@ namespace test
             return 0;
         }
 
+
+
+       const String PUBLISH_PAYLOAD = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+"<presence xmlns:cp=\"urn:ietf:params:xml:ns:pidf:cipid\" xmlns:caps=\"urn:ietf:params:xml:ns:pidf:caps\" xmlns:rpid=\"urn:ietf:params:xml:ns:pidf:rpid\" xmlns:pdm=\"urn:ietf:params:xml:ns:pidf:data-model\" xmlns:p=\"urn:ietf:params:xml:ns:pidf-diff\" xmlns:op=\"urn:oma:xml:prs:pidf:oma-pres\" entity=\"sip:bob@ims.inexbee.com\" xmlns=\"urn:ietf:params:xml:ns:pidf\">" +
+  "<pdm:person id=\"RPVRYNJH\">" +
+    "<op:overriding-willingness>" +
+      "<op:basic>open</op:basic>" +
+    "</op:overriding-willingness>" +
+    "<rpid:activities>" +
+      "<rpid:busy />" +
+    "</rpid:activities>" +
+    "<rpid:mood>" +
+      "<rpid:guilty />" +
+    "</rpid:mood>" +
+    "<cp:homepage>http://doubango.org</cp:homepage>" +
+    "<pdm:note>Come share with me RCS Experience</pdm:note>" +
+  "</pdm:person>" +
+  "<pdm:device id=\"d0001\">" +
+    "<status>" +
+      "<basic>open</basic>" +
+    "</status>" +
+    "<caps:devcaps>" +
+      "<caps:mobility>" +
+        "<caps:supported>" +
+          "<caps:fixed />" +
+        "</caps:supported>" +
+      "</caps:mobility>" +
+    "</caps:devcaps>" +
+    "<op:network-availability>" +
+      "<op:network id=\"IMS\">" +
+        "<op:active />" +
+      "</op:network>" +
+    "</op:network-availability>" +
+    "<pdm:deviceID>urn:uuid:3ca50bcb-7a67-44f1-afd0-994a55f930f4</pdm:deviceID>" +
+  "</pdm:device>" +
+"</presence>";
     }
 }

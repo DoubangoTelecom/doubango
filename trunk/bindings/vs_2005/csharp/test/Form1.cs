@@ -42,7 +42,7 @@ namespace test
     "<rpid:mood>" +
       "<rpid:guilty />" +
     "</rpid:mood>" +
-    "<cp:homepage>http://www.mercuro.net</cp:homepage>" +
+    "<cp:homepage>http://doubango.org</cp:homepage>" +
     "<pdm:note>Come share with me RCS Experience</pdm:note>" +
   "</pdm:person>" +
   "<pdm:device id=\"d0001\">" +
@@ -126,7 +126,7 @@ namespace test
                 this.pubSession = new PublicationSession(stack);
                 this.pubSession.addHeader("Content-Type", "application/pidf+xml");
                 this.pubSession.addHeader("Event", "presence");
-                this.regSession.setExpires(30);
+                this.pubSession.setExpires(30);
 
                 byte[] payload = Encoding.UTF8.GetBytes(PUBLISH_PAYLOAD);
                 this.pubSession.Publish(payload, (uint)payload.Length);

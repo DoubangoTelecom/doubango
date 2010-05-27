@@ -29,8 +29,8 @@ RegistrationEvent::RegistrationEvent()
 {
 }
 
-RegistrationEvent::RegistrationEvent(const tsip_event_t *sipevent)
-:SipEvent(sipevent)
+RegistrationEvent::RegistrationEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent)
 {
 }
 

@@ -32,14 +32,12 @@ public:
 	SipMessage(const tsip_message_t *sipmessage);
 #endif
 	virtual ~SipMessage();
-
-#if !defined(SWIG)
-	const void* getSipContent() const;
-#endif
 	
 	//%newobject getHeaderValueAt;
 	char* getSipHeaderValue(const char* name, unsigned index = 0);
 	const char* getSipHeaderParamValue(const char* name, const char* param, unsigned index = 0);
+	unsigned getSipContentLength();
+	unsigned getSipContent(void* output, unsigned maxsize);
 
 private:
 	const tsip_header_t* getSipHeader(const char* name, unsigned index = 0);
