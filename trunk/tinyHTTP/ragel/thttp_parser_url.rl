@@ -47,13 +47,13 @@
 	}
 
 	#/* Sets URL type */
-	action is_http { url->scheme = tsk_strdup("http"), url->type = url_http; }
-	action is_https { url->scheme = tsk_strdup("https"), url->type = url_https; }
+	action is_http { url->scheme = tsk_strdup("http"), url->type = thttp_url_http; }
+	action is_https { url->scheme = tsk_strdup("https"), url->type = thttp_url_https; }
 
 	#/* Sets HOST type */
-	action is_ipv4 { url->host_type = url->host_type = host_ipv4; }
-	action is_ipv6 { url->host_type = url->host_type = host_ipv6; }
-	action is_hostname { url->host_type = url->host_type = host_hostname; }
+	action is_ipv4 { url->host_type = url->host_type = thttp_host_ipv4; }
+	action is_ipv6 { url->host_type = url->host_type = thttp_host_ipv6; }
+	action is_hostname { url->host_type = url->host_type = thttp_host_hostname; }
 
 	action parse_host{
 		TSK_PARSER_SET_STRING(url->host);
@@ -111,7 +111,7 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 	const char *ts = 0, *te = 0;
 	int act =0;
 
-	thttp_url_t *url = thttp_url_create(url_unknown);
+	thttp_url_t *url = thttp_url_create(thttp_url_unknown);
 	
 	const char *tag_start = 0;
 	
@@ -124,7 +124,7 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 		TSK_OBJECT_SAFE_FREE(url);
 	}
 	else if(!have_port){
-		if(url->type == url_https){
+		if(url->type == thttp_url_https){
 			url->port = 443;
 		}
 		else{

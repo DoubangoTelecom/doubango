@@ -525,15 +525,15 @@ _match:
 	break;
 	case 1:
 /* #line 52 "./ragel/tmsrp_parser_uri.rl" */
-	{ uri->authority.host_type = host_ipv4; }
+	{ uri->authority.host_type = tmsrp_host_ipv4; }
 	break;
 	case 2:
 /* #line 53 "./ragel/tmsrp_parser_uri.rl" */
-	{ uri->authority.host_type = host_ipv6; }
+	{ uri->authority.host_type = tmsrp_host_ipv6; }
 	break;
 	case 3:
 /* #line 54 "./ragel/tmsrp_parser_uri.rl" */
-	{ uri->authority.host_type = host_hostname; }
+	{ uri->authority.host_type = tmsrp_host_hostname; }
 	break;
 	case 4:
 /* #line 56 "./ragel/tmsrp_parser_uri.rl" */
@@ -551,7 +551,7 @@ _match:
 /* #line 64 "./ragel/tmsrp_parser_uri.rl" */
 	{
 		TSK_PARSER_SET_STRING(uri->authority.host);
-		if(uri->authority.host_type == host_ipv6){
+		if(uri->authority.host_type == tmsrp_host_ipv6){
 			tsk_strunquote_2(&uri->authority.host, '[', ']');
 		}
 	}

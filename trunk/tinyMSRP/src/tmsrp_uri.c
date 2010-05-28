@@ -59,7 +59,7 @@ tmsrp_uri_t* tmsrp_uri_create(const char*scheme, const char* host, tmsrp_host_ty
 
 tmsrp_uri_t* tmsrp_uri_create_null()
 {
-	return tmsrp_uri_create(tsk_null, tsk_null, host_unknown, -1, tsk_null, tsk_null);
+	return tmsrp_uri_create(tsk_null, tsk_null, tmsrp_host_unknown, -1, tsk_null, tsk_null);
 }
 
 int tmsrp_uri_serialize(const tmsrp_uri_t *uri, tsk_buffer_t *output)
@@ -85,9 +85,9 @@ int tmsrp_uri_serialize(const tmsrp_uri_t *uri, tsk_buffer_t *output)
 		// authority
 		uri->authority.userinfo ? uri->authority.userinfo : "",
 		uri->authority.userinfo ? "@" : "",
-		uri->authority.host_type == host_ipv6 ? "[" : "",
+		uri->authority.host_type == tmsrp_host_ipv6 ? "[" : "",
 		uri->authority.host,
-		uri->authority.host_type == host_ipv6 ? "]" : "",
+		uri->authority.host_type == tmsrp_host_ipv6 ? "]" : "",
 		uri->authority.port >= 0 ? ":" : "",
 		uri->authority.port >= 0 ? port : "",
 
