@@ -81,5 +81,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+
+#if HAVE_CONFIG_H
+	#include "../config.h"
+#endif
+
 #endif /* _TINYMSRP_H_ */
 
