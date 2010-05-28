@@ -75,4 +75,8 @@
 #include <stdlib.h>
 #endif
 
+#if HAVE_CONFIG_H
+	#include "../config.h"
+#endif
+
 #endif // TINYMEDIA_CONFIG_H
