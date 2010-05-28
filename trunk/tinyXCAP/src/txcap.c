@@ -782,10 +782,10 @@ int __txcap_stack_set(txcap_stack_t* self, va_list *app)
 					break;
 				}
 			
-			case xcapp_context:
+			case xcapp_userdata:
 				{	/* (const void*)CTX_PTR */
 					const void* CTX_PTR = va_arg(*app, const void*);
-					((thttp_session_t*)self->http_session)->context = CTX_PTR;
+					((thttp_session_t*)self->http_session)->userdata = CTX_PTR;
 					break;
 				}
 

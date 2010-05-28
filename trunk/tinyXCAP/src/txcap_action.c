@@ -161,7 +161,7 @@ done:
 	}
 
 	/* HTTP action */
-	if((action = thttp_action_create(atype_o_request, urlstring, method, tsk_null))){
+	if((action = thttp_action_create(thttp_atype_o_request, urlstring, method, tsk_null))){
 		const tsk_list_item_t* item;
 		if((dialog = thttp_dialog_new(xcap_stack->http_session))){
 			/* copy options */

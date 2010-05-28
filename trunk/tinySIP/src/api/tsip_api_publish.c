@@ -71,7 +71,7 @@ int tsip_action_PUBLISH(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = _tsip_action_create(atype_publish, &ap))){
+	if((action = _tsip_action_create(tsip_atype_publish, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_PUBLISH, ss);
 		}
@@ -104,7 +104,7 @@ int tsip_action_UNPUBLISH(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = _tsip_action_create(atype_unpublish, &ap))){
+	if((action = _tsip_action_create(tsip_atype_unpublish, &ap))){
 		ret = tsip_ssession_handle(ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}

@@ -75,11 +75,11 @@ tsk_bool_t _fsm_cond_i_1xx(thttp_dialog_t* self, thttp_message_t* message)
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
-	_fsm_action_request = atype_o_request,
-	_fsm_action_close = atype_close,
-	_fsm_action_message = atype_i_message,
-	_fsm_action_closed = atype_closed,
-	_fsm_action_error = atype_error, // Transport error and not HTTP message error (e.g. 409)
+	_fsm_action_request = thttp_atype_o_request,
+	_fsm_action_close = thttp_atype_close,
+	_fsm_action_message = thttp_atype_i_message,
+	_fsm_action_closed = thttp_thttp_atype_closed,
+	_fsm_action_error = thttp_atype_error, // Transport error and not HTTP message error (e.g. 409)
 	
 	/* _fsm_action_any_other = 0xFF */
 }
@@ -338,7 +338,7 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 		goto bail;
 	}
 	else{
-		if(request->line.request.url->type == url_https){
+		if(request->line.request.url->type == thttp_url_https){
 			TNET_SOCKET_TYPE_SET_TLS(type);
 		}
 		else{

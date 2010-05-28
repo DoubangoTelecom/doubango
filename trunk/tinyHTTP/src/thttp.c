@@ -372,7 +372,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	/* Alert the operation (FSM) */
 	if(message){
 		if(have_all_content){ /* only if we have all data */
-			ret = thttp_dialog_fsm_act(dialog, atype_i_message, message, tsk_null);
+			ret = thttp_dialog_fsm_act(dialog, thttp_atype_i_message, message, tsk_null);
 		}
 	}
 
@@ -392,19 +392,19 @@ int __thttp_stack_set(thttp_stack_t *self, va_list* app)
 {
 	thttp_stack_param_type_t curr;
 
-	while((curr = va_arg(*app, thttp_stack_param_type_t)) != pname_null)
+	while((curr = va_arg(*app, thttp_stack_param_type_t)) != thttp_pname_null)
 	{
 		switch(curr)
 		{
 			//
 			// Network
 			//
-		case pname_local_ip:
+		case thttp_pname_local_ip:
 			{ /* STR */
 				tsk_strupdate(&self->local_ip, va_arg(*app, const char*));
 				break;
 			}
-		case pname_local_port:
+		case thttp_pname_local_port:
 			{	/* INT */
 				self->local_port = va_arg(*app, int);
 				break;
@@ -413,7 +413,7 @@ int __thttp_stack_set(thttp_stack_t *self, va_list* app)
 			//
 			// TLS
 			//
-		case pname_tls_certs:
+		case thttp_pname_tls_certs:
 			{	/* A_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR */
 				tsk_strupdate(&self->tls.ca, va_arg(*app, const char*));
 				tsk_strupdate(&self->tls.pbk, va_arg(*app, const char*));
@@ -424,7 +424,7 @@ int __thttp_stack_set(thttp_stack_t *self, va_list* app)
 			//
 			// Userdata
 			//
-		case pname_userdata:
+		case thttp_pname_userdata:
 			{ /* (const void*)USERDATA_PTR */
 				self->userdata = va_arg(*app, const void*);
 				break;

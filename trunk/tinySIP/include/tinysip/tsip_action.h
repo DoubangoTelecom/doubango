@@ -46,41 +46,41 @@ typedef uint64_t tsip_action_id_t;
 typedef enum tsip_action_type_e
 {
 	//! Used as configuration action
-	atype_config,
+	tsip_atype_config,
 
 	/* === REGISTER == */
-	atype_register, /**< Sends SIP REGISTER request */
+	tsip_atype_register, /**< Sends SIP REGISTER request */
 	//! Unregister by sending SIP REGISTER request with expires value equals to zero
-#define atype_unregister atype_hangup
+#define tsip_atype_unregister tsip_atype_hangup
 	
 	/* === SUBSCRIBE === */
-	atype_subscribe, /**< Sends SIP SUBSCRIBE request */
+	tsip_atype_subscribe, /**< Sends SIP SUBSCRIBE request */
 	//! Unsubsribe by sending SIP SUBSCRIBE request with expires value equals to zero
-#define atype_unsubscribe atype_hangup
+#define tsip_atype_unsubscribe tsip_atype_hangup
 
 	/* === MESSAGE === */
-	atype_message_send, /**< Sends SIP MESSAGE request */
+	tsip_atype_message_send, /**< Sends SIP MESSAGE request */
 
 	/* === PUBLISH === */
-	atype_publish, /**< Sends SIP PUBLISH request */
+	tsip_atype_publish, /**< Sends SIP PUBLISH request */
 	//! Unpublish by sending SIP PUBLISH request with expires value equals to zero
-#define atype_unpublish atype_hangup
+#define tsip_atype_unpublish tsip_atype_hangup
 	
 	/* === OPTIONS === */
-	atype_options_send, /**< Sends SIP OPTIONS request */
+	tsip_atype_options_send, /**< Sends SIP OPTIONS request */
 
 
 	/* === common === */
 	//! Accept incoming call (INVITE) or message (SIP MESSAGE)
-	atype_accept,
+	tsip_atype_accept,
 	//! Reject incoming call (INVITE) or message (SIP MESSAGE)
-	atype_reject,
+	tsip_atype_reject,
 	//! Cancel an outgoing request
-	atype_cancel,
+	tsip_atype_cancel,
 	//! Hangup any SIP dialog (BYE, unREGISTER, unSUBSCRIBE ...). If the dialog is in early state, then it will be canceled.
-	atype_hangup,
+	tsip_atype_hangup,
 	//! Shutdown a SIP dialog. Should only be called by the stack.
-	atype_shutdown,
+	tsip_atype_shutdown,
 }
 tsip_action_type_t;
 

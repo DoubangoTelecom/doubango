@@ -72,7 +72,7 @@ int tsip_action_SUBSCRIBE(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = _tsip_action_create(atype_subscribe, &ap))){
+	if((action = _tsip_action_create(tsip_atype_subscribe, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_SUBSCRIBE, ss);
 		}
@@ -105,7 +105,7 @@ int tsip_action_UNSUBSCRIBE(const tsip_ssession_handle_t *ss, ...)
 	}
 	
 	va_start(ap, ss);
-	if((action = _tsip_action_create(atype_unsubscribe, &ap))){
+	if((action = _tsip_action_create(tsip_atype_unsubscribe, &ap))){
 		ret = tsip_ssession_handle(ss, action);
 		TSK_OBJECT_SAFE_FREE(action);
 	}

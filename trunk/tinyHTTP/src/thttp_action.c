@@ -77,7 +77,7 @@ int thttp_action_perform(thttp_session_handle_t *session, const char* urlstring,
 	}
 	
 	va_start(ap, method);
-	if((action = thttp_action_create(atype_o_request, urlstring, method, &ap))){		
+	if((action = thttp_action_create(thttp_atype_o_request, urlstring, method, &ap))){		
 		if((dialog = thttp_dialog_new(sess))){
 			ret = thttp_dialog_fsm_act(dialog, action->type, tsk_null, action);
 			
@@ -119,9 +119,9 @@ static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 			goto bail;
 		}
 
-		while((curr = va_arg(*app_2, thttp_action_param_type_t)) != aptype_null){
+		while((curr = va_arg(*app_2, thttp_action_param_type_t)) != thttp_aptype_null){
 			switch(curr){
-				case aptype_option:
+				case thttp_aptype_option:
 					{	/* (thttp_action_option_t)ID_ENUM, (const char*)VALUE_STR */
 						thttp_action_option_t id = va_arg(*app_2, thttp_action_option_t);
 						const char* value = va_arg(*app_2, const char *);
@@ -129,7 +129,7 @@ static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 						break;
 					}
 
-				case aptype_header:
+				case thttp_aptype_header:
 					{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 						const char* name = va_arg(*app_2, const char *);
 						const char* value = va_arg(*app_2, const char *);
@@ -137,7 +137,7 @@ static tsk_object_t* thttp_action_ctor(tsk_object_t * self, va_list * app)
 						break;
 					}
 
-				case aptype_payload:
+				case thttp_aptype_payload:
 					{	/* (const void*)PAY_PTR, (tsk_size_t)PAY_SIZE */
 						const void* payload = va_arg(*app_2, const void *);
 						tsk_size_t size = va_arg(*app_2, tsk_size_t);

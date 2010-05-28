@@ -85,22 +85,22 @@ THTTP_BEGIN_DECLS
 
 typedef enum thttp_stack_param_type_e
 {
-	pname_null = tsk_null,
-#define THTTP_STACK_SET_NULL()																pname_null
+	thttp_pname_null = tsk_null,
+#define THTTP_STACK_SET_NULL()																thttp_pname_null
 
 	/* Network */
-	pname_local_ip,
-	pname_local_port,
-#define THTTP_STACK_SET_LOCAL_IP(IP_STR)														pname_local_ip, (const char*)IP_STR
-#define THTTP_STACK_SET_LOCAL_PORT(PORT_INT)													pname_local_port, (int)PORT_INT
+	thttp_pname_local_ip,
+	thttp_pname_local_port,
+#define THTTP_STACK_SET_LOCAL_IP(IP_STR)														thttp_pname_local_ip, (const char*)IP_STR
+#define THTTP_STACK_SET_LOCAL_PORT(PORT_INT)													thttp_pname_local_port, (int)PORT_INT
 
 	/* TLS */
-	pname_tls_certs,
-#define THTTP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
+	thttp_pname_tls_certs,
+#define THTTP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			thttp_pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
 
 	/* User Data */
-	pname_userdata,
-#define THTTP_STACK_SET_USERDATA(USERDATA_PTR)	pname_userdata, (const void*)USERDATA_PTR
+	thttp_pname_userdata,
+#define THTTP_STACK_SET_USERDATA(USERDATA_PTR)	thttp_pname_userdata, (const void*)USERDATA_PTR
 
 }
 thttp_stack_param_type_t;

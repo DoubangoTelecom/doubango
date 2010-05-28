@@ -60,26 +60,26 @@ thttp_action_option_t;
 typedef enum thttp_action_type_e
 {
 	/* Outgoing GET, PUT, HEAD, DELETE, .... */
-	atype_o_request,
+	thttp_atype_o_request,
 	/* Incoming message */
-	atype_i_message,
+	thttp_atype_i_message,
 
 	/* common */
-	atype_closed,
-	atype_error,
-	atype_close,
-	atype_cancel,
+	thttp_thttp_atype_closed,
+	thttp_atype_error,
+	thttp_atype_close,
+	thttp_atype_cancel,
 
 }
 thttp_action_type_t;
 
 typedef enum thttp_action_param_type_e
 {
-	aptype_null = tsk_null,
+	thttp_aptype_null = tsk_null,
 
-	aptype_option,
-	aptype_header,
-	aptype_payload,
+	thttp_aptype_option,
+	thttp_aptype_header,
+	thttp_aptype_payload,
 }
 thttp_action_param_type_t;
 
@@ -133,10 +133,10 @@ thttp_action_PUT(session, "http://www.doubango.org"
 * @def THTTP_ACTION_SET_NULL
 * Ends action parameters. Must always be the last one.
 */
-#define THTTP_ACTION_SET_OPTION(ID_ENUM, VALUE_STR)			aptype_option, (thttp_action_option_t)ID_ENUM, (const char*)VALUE_STR
-#define THTTP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)		aptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
-#define THTTP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			aptype_payload, (const void*)PAY_PTR, (tsk_size_t)PAY_SIZE
-#define THTTP_ACTION_SET_NULL()								aptype_null
+#define THTTP_ACTION_SET_OPTION(ID_ENUM, VALUE_STR)			thttp_aptype_option, (thttp_action_option_t)ID_ENUM, (const char*)VALUE_STR
+#define THTTP_ACTION_SET_HEADER(NAME_STR, VALUE_STR)		thttp_aptype_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define THTTP_ACTION_SET_PAYLOAD(PAY_PTR, PAY_SIZE)			thttp_aptype_payload, (const void*)PAY_PTR, (tsk_size_t)PAY_SIZE
+#define THTTP_ACTION_SET_NULL()								thttp_aptype_null
 
 typedef struct thttp_action_s
 {
