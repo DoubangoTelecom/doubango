@@ -58,40 +58,40 @@ typedef uint8_t operator_id_t[16];
 
 typedef enum tsip_stack_param_type_e
 {
-	pname_null = tsk_null,
+	tsip_pname_null = tsk_null,
 	
 	/* === Identity === */
-	pname_display_name,
-	pname_impu,
-	pname_preferred_id,
-	pname_impi,
-	pname_password,
+	tsip_pname_display_name,
+	tsip_pname_impu,
+	tsip_pname_preferred_id,
+	tsip_pname_impi,
+	tsip_pname_password,
 
 	/* === Network === */
-	pname_realm,
-	pname_local_ip,
-	pname_local_port,
-	pname_aor,
-	pname_discovery_naptr,
-	pname_discovery_dhcp,
-	pname_proxy_cscf,
+	tsip_pname_realm,
+	tsip_pname_local_ip,
+	tsip_pname_local_port,
+	tsip_pname_aor,
+	tsip_pname_discovery_naptr,
+	tsip_pname_discovery_dhcp,
+	tsip_pname_proxy_cscf,
 	pnale_dnsserver,
 
 	
 	/* === Security === */
-	pname_early_ims,
-	pname_secagree_ipsec,
-	pname_secagree_tls,
-	pname_amf,
-	pname_operator_id,
-	pname_tls_certs,
-	pname_ipsec_params,
+	tsip_pname_early_ims,
+	tsip_pname_secagree_ipsec,
+	tsip_pname_secagree_tls,
+	tsip_pname_amf,
+	tsip_pname_operator_id,
+	tsip_pname_tls_certs,
+	tsip_pname_ipsec_params,
 
 	/* === Dummy Headers === */
-	pname_header,
+	tsip_pname_header,
 
 	/* === User Data === */
-	pname_userdata
+	tsip_pname_userdata
 
 }
 tsip_stack_param_type_t;
@@ -100,7 +100,7 @@ tsip_stack_param_type_t;
 * @def TSIP_STACK_SET_NULL
 * Ends the stack parameters. Mandatory and should be the last one.
 */
-#define TSIP_STACK_SET_NULL()							pname_null
+#define TSIP_STACK_SET_NULL()							tsip_pname_null
 
 /* === Identity === */
 /**@ingroup tsip_stack_group
@@ -153,11 +153,11 @@ tsip_stack_param_type_t;
 *              TSIP_STACK_SET_NULL());
 * @endcode
 */
-#define TSIP_STACK_SET_DISPLAY_NAME(NAME_STR)			pname_display_name, (const char*)NAME_STR
-#define TSIP_STACK_SET_IMPU(URI_STR)					pname_impu, (const char*)URI_STR
-#define TSIP_STACK_SET_PREFERRED_IDENTITY(URI_STR)		pname_preferred_id, (const char*)URI_STR
-#define TSIP_STACK_SET_IMPI(IMPI_STR)					pname_impi, (const char*)IMPI_STR
-#define TSIP_STACK_SET_PASSWORD(PASSORD_STR)			pname_password, (const char*)PASSORD_STR
+#define TSIP_STACK_SET_DISPLAY_NAME(NAME_STR)			tsip_pname_display_name, (const char*)NAME_STR
+#define TSIP_STACK_SET_IMPU(URI_STR)					tsip_pname_impu, (const char*)URI_STR
+#define TSIP_STACK_SET_PREFERRED_IDENTITY(URI_STR)		tsip_pname_preferred_id, (const char*)URI_STR
+#define TSIP_STACK_SET_IMPI(IMPI_STR)					tsip_pname_impi, (const char*)IMPI_STR
+#define TSIP_STACK_SET_PASSWORD(PASSORD_STR)			tsip_pname_password, (const char*)PASSORD_STR
 
 /* === Network === */
 /**@ingroup tsip_stack_group
@@ -264,13 +264,13 @@ int ret = tsip_stack_set(stack,
               TSIP_STACK_SET_NULL());
 * @endcode
 */
-#define TSIP_STACK_SET_REALM(URI_STR)					pname_realm, (const char*)URI_STR
-#define TSIP_STACK_SET_LOCAL_IP(IP_STR)					pname_local_ip, (const char*)IP_STR
-#define TSIP_STACK_SET_LOCAL_PORT(PORT_UINT)			pname_local_port, (unsigned)PORT_UINT
-#define TSIP_STACK_SET_AOR(IP_STR, PORT_UINT)			pname_aor, (const char*)IP_STR, (unsigned)PORT_UINT
-#define TSIP_STACK_SET_DISCOVERY_NAPTR(ENABLED_BOOL)	pname_discovery_naptr, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)		pname_discovery_dhcp, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
+#define TSIP_STACK_SET_REALM(URI_STR)					tsip_pname_realm, (const char*)URI_STR
+#define TSIP_STACK_SET_LOCAL_IP(IP_STR)					tsip_pname_local_ip, (const char*)IP_STR
+#define TSIP_STACK_SET_LOCAL_PORT(PORT_UINT)			tsip_pname_local_port, (unsigned)PORT_UINT
+#define TSIP_STACK_SET_AOR(IP_STR, PORT_UINT)			tsip_pname_aor, (const char*)IP_STR, (unsigned)PORT_UINT
+#define TSIP_STACK_SET_DISCOVERY_NAPTR(ENABLED_BOOL)	tsip_pname_discovery_naptr, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_DISCOVERY_DHCP(ENABLED_BOOL)		tsip_pname_discovery_dhcp, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_PROXY_CSCF(FQDN_STR, PORT_UINT, TRANSPORT_STR, IP_VERSION_STR)			tsip_pname_proxy_cscf, (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR
 #define TSIP_STACK_SET_DNS_SERVER(IP_STR)				pnale_dnsserver, (const char*)IP_STR
 
 /* === Security === */
@@ -363,13 +363,13 @@ int ret = tsip_stack_set(stack,
 *
 * @sa @ref TSIP_STACK_SET_IPSEC_PARAMS()
 */
-#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)				pname_early_ims, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_SECAGREE_IPSEC(ENABLED_BOOL)			pname_scagree_ipsec, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_SECAGREE_TLS(ENABLED_BOOL)			pname_scagree_tls, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_STACK_SET_IMS_AKA_AMF(AMF_UINT16)				pname_amf, (uint16_t)AMF_UINT16
-#define TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(OPID_HEX_STR)	pname_operator_id, (const char*)OPID_HEX_STR
-#define TSIP_STACK_SET_IPSEC_PARAMS(ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR)	pname_ipsec_params, (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR
-#define TSIP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
+#define TSIP_STACK_SET_EARLY_IMS(ENABLED_BOOL)				tsip_pname_early_ims, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_SECAGREE_IPSEC(ENABLED_BOOL)			tsip_pname_scagree_ipsec, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_SECAGREE_TLS(ENABLED_BOOL)			tsip_pname_scagree_tls, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_STACK_SET_IMS_AKA_AMF(AMF_UINT16)				tsip_pname_amf, (uint16_t)AMF_UINT16
+#define TSIP_STACK_SET_IMS_AKA_OPERATOR_ID(OPID_HEX_STR)	tsip_pname_operator_id, (const char*)OPID_HEX_STR
+#define TSIP_STACK_SET_IPSEC_PARAMS(ALG_STR, EALG_STR, MODE_STR, PROTOCOL_STR)	tsip_pname_ipsec_params, (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR
+#define TSIP_STACK_SET_TLS_CERTS(CA_FILE_STR, PUB_FILE_STR, PRIV_FILE_STR)			tsip_pname_tls_certs, (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR
 
 
 /* === Headers === */
@@ -401,7 +401,7 @@ int ret = tsip_stack_set(stack,
 *
 * @sa @ref TSIP_STACK_SET_HEADER()
 */
-#define TSIP_STACK_SET_HEADER(NAME_STR, VALUE_STR)		pname_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_STACK_SET_HEADER(NAME_STR, VALUE_STR)		tsip_pname_header, (const char*)NAME_STR, (const char*)VALUE_STR
 #define TSIP_STACK_UNSET_HEADER(NAME_STR)				TSIP_STACK_SET_HEADER(NAME_STR, ((const char*)-1))
 
 /* === User Data === */
@@ -416,7 +416,7 @@ int ret = tsip_stack_set(stack,
 *              TSIP_STACK_SET_NULL());
 * @endcode
 */
-#define TSIP_STACK_SET_USERDATA(DATA_PTR)		pname_userdata, (const void*)DATA_PTR
+#define TSIP_STACK_SET_USERDATA(DATA_PTR)		tsip_pname_userdata, (const void*)DATA_PTR
 
 
 

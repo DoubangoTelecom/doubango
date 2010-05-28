@@ -370,7 +370,7 @@ int tsip_ssession_handle(const tsip_ssession_t *self, const struct tsip_action_s
 				
 		if((dialog = tsip_dialog_layer_find_by_ss(self->stack->layer_dialog, self))){
 			switch(action->type){
-				case atype_hangup:
+				case tsip_atype_hangup:
 					{	/* hang-up is an special case (==> hangup/cancel/nothing) */
 						ret = tsip_dialog_hangup(dialog, action);
 						break;

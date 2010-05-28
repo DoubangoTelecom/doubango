@@ -714,7 +714,7 @@ tsip_action_handle_t* action_get_config(const opts_L_t* opts)
 		}
 
 		/* create new action */
-		if(!action_config && !(action_config = tsip_action_create(atype_config,
+		if(!action_config && !(action_config = tsip_action_create(tsip_atype_config,
 			TSIP_ACTION_SET_NULL()))) break;
 
 		switch(opt->type){

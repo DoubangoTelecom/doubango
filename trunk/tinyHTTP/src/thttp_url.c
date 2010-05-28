@@ -133,7 +133,7 @@ static tsk_object_t* thttp_url_ctor(tsk_object_t *self, va_list * app)
 	thttp_url_t *url = self;
 	if(url){
 		url->type = va_arg(*app, thttp_url_type_t);
-		if(url->type == url_https){
+		if(url->type == thttp_url_https){
 			url->port = 443;
 		}
 		else{

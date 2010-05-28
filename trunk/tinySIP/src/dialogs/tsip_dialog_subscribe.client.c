@@ -102,10 +102,10 @@ tsk_bool_t _fsm_cond_notify_not_terminated(tsip_dialog_subscribe_t* dialog, tsip
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
-	_fsm_action_subscribe = atype_subscribe,
-	_fsm_action_hangup = atype_hangup,
-	_fsm_action_cancel = atype_cancel,
-	_fsm_action_shutdown = atype_shutdown,
+	_fsm_action_subscribe = tsip_atype_subscribe,
+	_fsm_action_hangup = tsip_atype_hangup,
+	_fsm_action_cancel = tsip_atype_cancel,
+	_fsm_action_shutdown = tsip_atype_shutdown,
 
 	_fsm_action_1xx = 0xFF,
 	_fsm_action_2xx,

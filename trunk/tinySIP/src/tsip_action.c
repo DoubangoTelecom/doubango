@@ -46,7 +46,7 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app);
 *
 * @code
 tsip_action_handle_t* handle;
-handle = tsip_action_create(atype_config,
+handle = tsip_action_create(tsip_atype_config,
            TSIP_ACTION_SET_HEADER("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0"),
            TSIP_ACTION_SET_HEADER("Supported", "precondition"),
            TSIP_ACTION_SET_PAYLOAD("my payload", strlen("my payload")),
@@ -133,7 +133,7 @@ int _tsip_action_set(tsip_action_handle_t* self, va_list* app)
 				case aptype_config:
 					{ /* (const tsip_action_handle_t*)ACTION_CONFIG_HANDLE */
 						const tsip_action_t* handle = va_arg(*app, const tsip_action_handle_t *);
-						if(handle && handle->type == atype_config){
+						if(handle && handle->type == tsip_atype_config){
 							if(!TSK_LIST_IS_EMPTY(handle->headers)){ /* Copy headers */
 								tsk_list_pushback_list(action->headers, handle->headers);
 							}

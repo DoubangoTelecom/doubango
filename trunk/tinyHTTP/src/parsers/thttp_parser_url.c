@@ -66,7 +66,7 @@ thttp_url_t *thttp_url_parse(const char *urlstring, tsk_size_t length)
 	const char *ts = 0, *te = 0;
 	int act =0;
 
-	thttp_url_t *url = thttp_url_create(url_unknown);
+	thttp_url_t *url = thttp_url_create(thttp_url_unknown);
 	
 	const char *tag_start = 0;
 	
@@ -364,23 +364,23 @@ _match:
 	break;
 	case 1:
 /* #line 50 "./ragel/thttp_parser_url.rl" */
-	{ url->scheme = tsk_strdup("http"), url->type = url_http; }
+	{ url->scheme = tsk_strdup("http"), url->type = thttp_url_http; }
 	break;
 	case 2:
 /* #line 51 "./ragel/thttp_parser_url.rl" */
-	{ url->scheme = tsk_strdup("https"), url->type = url_https; }
+	{ url->scheme = tsk_strdup("https"), url->type = thttp_url_https; }
 	break;
 	case 3:
 /* #line 54 "./ragel/thttp_parser_url.rl" */
-	{ url->host_type = url->host_type = host_ipv4; }
+	{ url->host_type = url->host_type = thttp_host_ipv4; }
 	break;
 	case 4:
 /* #line 55 "./ragel/thttp_parser_url.rl" */
-	{ url->host_type = url->host_type = host_ipv6; }
+	{ url->host_type = url->host_type = thttp_host_ipv6; }
 	break;
 	case 5:
 /* #line 56 "./ragel/thttp_parser_url.rl" */
-	{ url->host_type = url->host_type = host_hostname; }
+	{ url->host_type = url->host_type = thttp_host_hostname; }
 	break;
 	case 6:
 /* #line 58 "./ragel/thttp_parser_url.rl" */
@@ -472,7 +472,7 @@ _again:
 		TSK_OBJECT_SAFE_FREE(url);
 	}
 	else if(!have_port){
-		if(url->type == url_https){
+		if(url->type == thttp_url_https){
 			url->port = 443;
 		}
 		else{

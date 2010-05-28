@@ -80,7 +80,7 @@ int tsip_action_REJECT(const tsip_ssession_handle_t *ss, ...)
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, atype_reject, &ap))){
+	if((ret = _tsip_action_ANY(ss, tsip_atype_reject, &ap))){
 		TSK_DEBUG_ERROR("Reject() failed.");
 	}
 	va_end(ap);
@@ -102,7 +102,7 @@ int tsip_action_HANGUP(const tsip_ssession_handle_t *ss, ...)
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, atype_hangup, &ap))){
+	if((ret = _tsip_action_ANY(ss, tsip_atype_hangup, &ap))){
 		TSK_DEBUG_ERROR("Hang-up() failed.");
 	}
 	va_end(ap);
@@ -123,7 +123,7 @@ int tsip_action_ACCEPT(const tsip_ssession_handle_t *ss, ...)
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, atype_accept, &ap))){
+	if((ret = _tsip_action_ANY(ss, tsip_atype_accept, &ap))){
 		TSK_DEBUG_ERROR("Accept() failed.");
 	}
 	va_end(ap);

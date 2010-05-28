@@ -66,24 +66,24 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 {
 	tsip_stack_param_type_t curr;
 
-	while((curr = va_arg(*app, tsip_stack_param_type_t)) != pname_null){
+	while((curr = va_arg(*app, tsip_stack_param_type_t)) != tsip_pname_null){
 		switch(curr){
 			
 			/* === Identity === */
-			case pname_display_name:
+			case tsip_pname_display_name:
 				{	/* (const char*)NAME_STR */
 					const char* NAME_STR = va_arg(*app, const char*);
 					tsk_strupdate(&self->identity.display_name, NAME_STR);
 					break;
 				}
-			case pname_impu:
-			case pname_preferred_id:
+			case tsip_pname_impu:
+			case tsip_pname_preferred_id:
 				{	/* (const char*)URI_STR */
 					const char* URI_STR = va_arg(*app, const char*);
 					if(!tsk_strnullORempty(URI_STR)){
 						tsip_uri_t *uri = tsip_uri_parse(URI_STR, tsk_strlen(URI_STR));
 						if(uri){
-							if(curr == pname_impu){
+							if(curr == tsip_pname_impu){
 								TSK_OBJECT_SAFE_FREE(self->identity.impu);
 								self->identity.impu = uri;
 							}
@@ -94,18 +94,18 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 						}
 						else{
 							TSK_DEBUG_ERROR("'%s' is an invalid SIP/TEL URI", URI_STR);
-							if(curr == pname_impu){
+							if(curr == tsip_pname_impu){
 								return -1; /* IMPU is mandatory but P-Preferred-Identity isn't. */
 							}
 						}
 					}
-					else if(curr == pname_impu){
+					else if(curr == tsip_pname_impu){
 						TSK_DEBUG_ERROR("IMPU (IMS Public Identity) is mandatory.");
 						return -1;
 					}
 					break;
 				}
-			case pname_impi:
+			case tsip_pname_impi:
 				{	/* (const char*)IMPI_STR */
 					const char* IMPI_STR = va_arg(*app, const char*);
 					if(tsk_strnullORempty(IMPI_STR)){
@@ -115,7 +115,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					tsk_strupdate(&self->identity.impi, IMPI_STR);
 					break;
 				}
-			case pname_password:
+			case tsip_pname_password:
 				{	/* (const char*)PASSORD_STR */
 					const char* PASSORD_STR = va_arg(*app, const char*);
 					tsk_strupdate(&self->identity.password, PASSORD_STR);
@@ -125,7 +125,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 
 
 			/* === Network === */
-			case pname_realm:
+			case tsip_pname_realm:
 				{	/* (const char*)URI_STR */
 					const char* URI_STR = va_arg(*app, const char*);
 					tsip_uri_t *uri;
@@ -143,18 +143,18 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					}
 					break;
 				}
-			case pname_local_ip:
+			case tsip_pname_local_ip:
 				{	/* (const char*)IP_STR */
 					const char* IP_STR = va_arg(*app, const char*);
 					tsk_strupdate(&self->network.local_ip, IP_STR);
 					break;
 				}
-			case pname_local_port:
+			case tsip_pname_local_port:
 				{	/* (unsigned)PORT_UINT */
 					self->network.local_port = (tnet_port_t)va_arg(*app, unsigned);
 					break;
 				}
-			case pname_aor:
+			case tsip_pname_aor:
 				{	/* (const char*)IP_STR, (unsigned)PORT_UINT */
 					const char* IP_STR = va_arg(*app, const char*);
 					tnet_port_t PORT_UINT = (tnet_port_t)va_arg(*app, unsigned);
@@ -167,17 +167,17 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					
 					break;
 				}
-			case pname_discovery_naptr:
+			case tsip_pname_discovery_naptr:
 				{	/* (tsk_bool_t)ENABLED_BOOL */
 					self->network.discovery_naptr = va_arg(*app, tsk_bool_t);
 					break;
 				}
-			case pname_discovery_dhcp:
+			case tsip_pname_discovery_dhcp:
 				{	/* (tsk_bool_t)ENABLED_BOOL */
 					self->network.discovery_dhcp = va_arg(*app, tsk_bool_t);
 					break;
 				}
-			case pname_proxy_cscf:
+			case tsip_pname_proxy_cscf:
 			{	/* (const char*)FQDN_STR, (unsigned)PORT_UINT, (const char*)TRANSPORT_STR, (const char*)IP_VERSION_STR */
 				const char* FQDN_STR = va_arg(*app, const char*);
 				tnet_port_t PORT_UINT = va_arg(*app, unsigned);
@@ -232,33 +232,33 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 
 
 			/* === Security === */
-			case pname_early_ims:
+			case tsip_pname_early_ims:
 				{	/* (tsk_bool_t)ENABLED_BOOL */
 					self->security.earlyIMS = va_arg(*app, tsk_bool_t);
 					break;
 				}
-			case pname_secagree_ipsec:
+			case tsip_pname_secagree_ipsec:
 				{	/* (tsk_bool_t)ENABLED_BOOL */
 					if((self->security.enable_secagree_ipsec = va_arg(*app, tsk_bool_t))){
 						tsk_strupdate(&self->security.secagree_mech, "ipsec-3gpp");
 					}
 					break;
 				}
-			case pname_secagree_tls:
+			case tsip_pname_secagree_tls:
 				{	/* (tsk_bool_t)ENABLED_BOOL */
 					if((self->security.enable_secagree_tls = va_arg(*app, tsk_bool_t))){
 						tsk_strupdate(&self->security.secagree_mech, "tls");
 					}
 					break;
 				}
-			case pname_amf:
+			case tsip_pname_amf:
 			{ /* (uint16_t)AMF_UINT16 */
 				unsigned amf = va_arg(*app, unsigned);
 				self->security.amf[0] = (amf >> 8);
 				self->security.amf[1] = (amf & 0xFF);
 				break;
 			}
-			case pname_operator_id:
+			case tsip_pname_operator_id:
 				{ /* (const char*)OPID_HEX_STR */
 					const char* hexstr = va_arg(*app, const char*);
 					tsk_size_t len = tsk_strlen(hexstr);
@@ -284,7 +284,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					}
 					break;
 				}
-			case pname_ipsec_params:
+			case tsip_pname_ipsec_params:
 				{	/* (const char*)ALG_STR, (const char*)EALG_STR, (const char*)MODE_STR, (const char*)PROTOCOL_STR*/
 					tsk_strupdate(&self->security.ipsec.alg, va_arg(*app, const char*));
 					tsk_strupdate(&self->security.ipsec.ealg, va_arg(*app, const char*));
@@ -292,7 +292,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					tsk_strupdate(&self->security.ipsec.protocol, va_arg(*app, const char*));
 					break;
 				}
-			case pname_tls_certs:
+			case tsip_pname_tls_certs:
 				{	/* (const char*)CA_FILE_STR, (const char*)PUB_FILE_STR, (const char*)PRIV_FILE_STR */
 					tsk_strupdate(&self->security.tls.ca, va_arg(*app, const char*));
 					tsk_strupdate(&self->security.tls.pbk, va_arg(*app, const char*));
@@ -302,7 +302,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 			
 
 			/* === Dummy Headers === */
-			case pname_header:
+			case tsip_pname_header:
 				{ /* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* NAME_STR = va_arg(*app, const char*);
 					const char* VALUE_STR = va_arg(*app, const char*);
@@ -316,7 +316,7 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 				}
 			
 			/* === User Data === */
-			case pname_userdata:
+			case tsip_pname_userdata:
 				{	/* (const void*)DATA_PTR */
 					self->userdata = va_arg(*app, const void*);
 					break;
@@ -702,7 +702,7 @@ tsip_uri_t* tsip_stack_get_pcscf_uri(const tsip_stack_t *stack, tsk_bool_t lr)
 					transport->protocol);
 				if(uristring){
 					if((uri = tsip_uri_parse(uristring, tsk_strlen(uristring)))){
-						//uri->host_type = ipv6 ? host_ipv6 : host_ipv4;
+						//uri->host_type = ipv6 ? thttp_host_ipv6 : thttp_host_ipv4;
 					}
 					TSK_FREE(uristring);
 				}

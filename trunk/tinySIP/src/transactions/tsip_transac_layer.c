@@ -122,7 +122,7 @@ int tsip_transac_layer_cancel_by_dialog(tsip_transac_layer_t *self, const struct
 again:
 	tsk_list_foreach(item, self->transactions){
 		if(tsk_object_cmp(dialog, TSIP_TRANSAC(item->data)->dialog) == 0){
-			if((ret = tsip_transac_fsm_act(TSIP_TRANSAC(item->data), atype_cancel, tsk_null))){ /* will call tsip_transac_layer_remove() if succeed */
+			if((ret = tsip_transac_fsm_act(TSIP_TRANSAC(item->data), tsip_atype_cancel, tsk_null))){ /* will call tsip_transac_layer_remove() if succeed */
 				/* break; */
 			}
 			else{

@@ -38,24 +38,24 @@
 
 THTTP_BEGIN_DECLS
 
-#define THTTP_URL_IS_SECURE(url)		((url && url->type==url_https) ? 1 : 0)
+#define THTTP_URL_IS_SECURE(url)		((url && url->type==thttp_url_https) ? 1 : 0)
 
 /** Url type.
 */
 typedef enum thttp_url_type_e
 {
-	url_unknown,
-	url_http,
-	url_https,
+	thttp_url_unknown,
+	thttp_url_http,
+	thttp_url_https,
 }
 thttp_url_type_t;
 
 typedef enum thttp_host_type_e
 {
-	host_unknown,
-	host_hostname,
-	host_ipv4,
-	host_ipv6
+	thttp_host_unknown,
+	thttp_host_hostname,
+	thttp_host_ipv4,
+	thttp_host_ipv6
 }
 thttp_host_type_t;
 

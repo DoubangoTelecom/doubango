@@ -221,7 +221,7 @@ TINYHTTP_API int thttp_message_add_headers(thttp_message_t *self, const thttp_he
 TINYHTTP_API int thttp_message_add_content(thttp_message_t *self, const char* content_type, const void* content, tsk_size_t size);
 TINYHTTP_API int thttp_message_append_content(thttp_message_t *self, const void* content, tsk_size_t size);
 
-#if !defined(_MSC_VER) || defined(__GNUC__)
+#if defined(__SYMBIAN32__) && 0
 static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)
 	{
 		va_list ap;
@@ -237,11 +237,11 @@ static void THTTP_MESSAGE_ADD_HEADER(thttp_message_t *self, ...)
 		tsk_object_unref(header);
 	}
 #else
-#define THTTP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
-	{																	\
-		thttp_header_t *header = tsk_object_new(objdef, __VA_ARGS__);	\
-		thttp_message_add_header(self, header);							\
-		tsk_object_unref(header);										\
+#define THTTP_MESSAGE_ADD_HEADER(self, objdef, ...)											\
+	{																						\
+		thttp_header_t *header = (thttp_header_t *)tsk_object_new(objdef, ##__VA_ARGS__);	\
+		thttp_message_add_header(self, header);												\
+		tsk_object_unref(header);															\
 	}
 #endif
 

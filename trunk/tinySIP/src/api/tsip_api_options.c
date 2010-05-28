@@ -71,7 +71,7 @@ int tsip_action_OPTIONS(const tsip_ssession_handle_t *ss, ...)
 	}
 
 	va_start(ap, ss);
-	if((action = _tsip_action_create(atype_options_send, &ap))){
+	if((action = _tsip_action_create(tsip_atype_options_send, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_OPTIONS, ss);
 		}

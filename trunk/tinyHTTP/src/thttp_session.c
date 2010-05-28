@@ -374,7 +374,7 @@ again:
 	}
 
 	switch(atype){
-		case atype_closed:
+		case thttp_thttp_atype_closed:
 			self->fd = TNET_INVALID_FD;
 			break;
 		default:
@@ -389,13 +389,13 @@ again:
 /** Signals to all dialogs that the connection have been closed. */
 int thttp_session_signal_closed(thttp_session_t *self)
 {
-	return thttp_session_signal(self, atype_closed);
+	return thttp_session_signal(self, thttp_thttp_atype_closed);
 }
 
 /** Signals to all dialogss that we got an error */
 int thttp_session_signal_error(thttp_session_t *self)
 {
-	return thttp_session_signal(self, atype_error);
+	return thttp_session_signal(self, thttp_atype_error);
 }
 
 /** Retrieves a session by fd */

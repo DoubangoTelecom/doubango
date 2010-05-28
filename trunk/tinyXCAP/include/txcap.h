@@ -63,7 +63,7 @@ typedef enum txcap_stack_param_type_e
 
 	xcapp_option,
 	xcapp_header,
-	xcapp_context,
+	xcapp_userdata,
 	xcapp_auid,
 }
 txcap_stack_param_type_t;
@@ -168,7 +168,7 @@ int ret = txcap_stack_set(stack,
 #define TXCAP_STACK_SET_PASSWORD(PASSWORD_STR)												TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_PASSWORD, PASSWORD_STR)
 #define TXCAP_STACK_SET_XUI(XUI_STR)														TXCAP_STACK_SET_OPTION(TXCAP_STACK_OPTION_XUI, XUI_STR)
 #define TXCAP_STACK_SET_HEADER(NAME_STR, VALUE_STR)											xcapp_header, (const char*)NAME_STR, (const char*)VALUE_STR
-#define TXCAP_STACK_SET_CONTEXT(CTX_PTR)													xcapp_context, (const void*)CTX_PTR
+#define TXCAP_STACK_SET_USERDATA(CTX_PTR)													xcapp_userdata, (const void*)CTX_PTR
 #define TXCAP_STACK_SET_AUID(ID_STR, MIME_TYPE_STR, NS_STR, DOC_NAME_STR, IS_GLOBAL_BOOL)	xcapp_auid, (const char*)ID_STR, (const char*)MIME_TYPE_STR, (const char*)NS_STR, (const char*)DOC_NAME_STR, (tsk_bool_t)IS_GLOBAL_BOOL
 #define TXCAP_STACK_SET_NULL()																xcapp_null
 

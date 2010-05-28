@@ -360,9 +360,10 @@ static int removeSocket(int index, transport_context_t *context)
 {
 	tsk_size_t i;
 
+	tsk_safeobj_lock(context);
+
 	if(index < (int)context->count)
 	{
-		tsk_safeobj_lock(context);
 
 		/* Close the socket if we are the owner. */
 		if(context->sockets[index]->owner){
@@ -388,9 +389,10 @@ static int removeSocket(int index, transport_context_t *context)
 		context->events[context->count-1] = 0;
 
 		context->count--;
-
-		tsk_safeobj_unlock(context);
 	}
+
+	tsk_safeobj_unlock(context);
+
 	return 0;
 }
 

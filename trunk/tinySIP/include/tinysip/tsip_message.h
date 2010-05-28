@@ -236,7 +236,7 @@ TINYSIP_API int	tsip_message_add_header(tsip_message_t *self, const tsip_header_
 TINYSIP_API int tsip_message_add_headers(tsip_message_t *self, ...);
 TINYSIP_API int tsip_message_add_content(tsip_message_t *self, const char* content_type, const void* content, tsk_size_t size);
 
-#if !defined(_MSC_VER) || defined(__GNUC__)
+#if defined(__SYMBIAN32__) && 0
 static void TSIP_MESSAGE_ADD_HEADER(tsip_message_t *self, ...)
 	{
 		va_list ap;
@@ -252,11 +252,11 @@ static void TSIP_MESSAGE_ADD_HEADER(tsip_message_t *self, ...)
 		tsk_object_unref(header);
 	}
 #else
-#define TSIP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
-	{																	\
-		tsip_header_t *header = tsk_object_new(objdef, __VA_ARGS__);	\
-		tsip_message_add_header(self, header);							\
-		tsk_object_unref(header);										\
+#define TSIP_MESSAGE_ADD_HEADER(self, objdef, ...)										\
+	{																					\
+		tsip_header_t *header = (tsip_header_t *)tsk_object_new(objdef, ##__VA_ARGS__);	\
+		tsip_message_add_header(self, header);											\
+		tsk_object_unref(header);														\
 	}
 #endif
 

@@ -105,7 +105,7 @@ int tsip_transac_nict_Any_2_Terminated_X_cancel(va_list *app); /* doubango-speci
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
-	_fsm_action_cancel = atype_cancel,
+	_fsm_action_cancel = tsip_atype_cancel,
 
 	_fsm_action_send = 0xFF,
 	_fsm_action_timerE,

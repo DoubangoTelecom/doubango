@@ -85,7 +85,7 @@ int tsip_action_REGISTER(const tsip_ssession_handle_t *ss, ...)
 	
 	/* performs action */
 	va_start(ap, ss);
-	if((action = _tsip_action_create(atype_register, &ap))){
+	if((action = _tsip_action_create(tsip_atype_register, &ap))){
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, _ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_REGISTER, _ss);
 		}
@@ -113,7 +113,7 @@ int tsip_action_UNREGISTER(const tsip_ssession_handle_t *ss, ...)
 	va_list ap;
 
 	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, atype_unregister, &ap))){
+	if((ret = _tsip_action_ANY(ss, tsip_atype_unregister, &ap))){
 		TSK_DEBUG_ERROR("unREGISTER() failed.");
 	}
 	va_end(ap);

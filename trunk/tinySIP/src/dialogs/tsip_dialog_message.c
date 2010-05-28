@@ -67,11 +67,11 @@ int tsip_dialog_message_Any_2_Terminated_X_Error(va_list *app);
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
-	_fsm_action_sendMESSAGE = atype_message_send,
-	_fsm_action_accept = atype_accept,
-	_fsm_action_reject = atype_reject,
-	_fsm_action_cancel = atype_cancel,
-	_fsm_action_shutdown = atype_shutdown,
+	_fsm_action_sendMESSAGE = tsip_atype_message_send,
+	_fsm_action_accept = tsip_atype_accept,
+	_fsm_action_reject = tsip_atype_reject,
+	_fsm_action_cancel = tsip_atype_cancel,
+	_fsm_action_shutdown = tsip_atype_shutdown,
 
 	_fsm_action_receiveMESSAGE = 0xFF,
 	_fsm_action_1xx,

@@ -86,10 +86,10 @@ int _fsm_cond_registering(tsip_dialog_register_t* dialog, tsip_message_t* messag
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
 {
-	_fsm_action_register = atype_register,
-	_fsm_action_cancel = atype_cancel,
-	_fsm_action_hangup = atype_hangup,
-	_fsm_action_shutdown = atype_shutdown,
+	_fsm_action_register = tsip_atype_register,
+	_fsm_action_cancel = tsip_atype_cancel,
+	_fsm_action_hangup = tsip_atype_hangup,
+	_fsm_action_shutdown = tsip_atype_shutdown,
 
 	_fsm_action_1xx = 0xFF,
 	_fsm_action_2xx,
