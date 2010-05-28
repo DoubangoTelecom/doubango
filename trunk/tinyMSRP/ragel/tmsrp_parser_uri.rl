@@ -49,9 +49,9 @@
 	}
 
 	#/* Sets HOST type */
-	action is_ipv4 { uri->authority.host_type = host_ipv4; }
-	action is_ipv6 { uri->authority.host_type = host_ipv6; }
-	action is_hostname { uri->authority.host_type = host_hostname; }
+	action is_ipv4 { uri->authority.host_type = tmsrp_host_ipv4; }
+	action is_ipv6 { uri->authority.host_type = tmsrp_host_ipv6; }
+	action is_hostname { uri->authority.host_type = tmsrp_host_hostname; }
 
 	action parse_scheme{
 		TSK_PARSER_SET_STRING(uri->scheme);
@@ -63,7 +63,7 @@
 
 	action parse_host{
 		TSK_PARSER_SET_STRING(uri->authority.host);
-		if(uri->authority.host_type == host_ipv6){
+		if(uri->authority.host_type == tmsrp_host_ipv6){
 			tsk_strunquote_2(&uri->authority.host, '[', ']');
 		}
 	}

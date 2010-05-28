@@ -45,10 +45,10 @@ TMSRP_BEGIN_DECLS
 */
 typedef enum tmsrp_host_type_e
 {
-	host_unknown,
-	host_hostname,
-	host_ipv4,
-	host_ipv6
+	tmsrp_host_unknown,
+	tmsrp_host_hostname,
+	tmsrp_host_ipv4,
+	tmsrp_host_ipv6
 }
 tmsrp_host_type_t;
 

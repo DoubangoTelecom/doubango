@@ -77,7 +77,7 @@ void test_uri_parser()
 			printf("userinfo: %s\n", uri->authority.userinfo);
 			printf("host: %s\n", uri->authority.host);
 			printf("port: %d\n", uri->authority.port);
-			printf("host-type: %s\n", uri->authority.host_type == host_ipv4 ? "IPv4" : (uri->authority.host_type == host_ipv6 ? "IPv6" : (uri->authority.host_type == host_hostname ? "HOSTNAME" : "UNKNOWN")) );
+			printf("host-type: %s\n", uri->authority.host_type == tmsrp_host_ipv4 ? "IPv4" : (uri->authority.host_type == tmsrp_host_ipv6 ? "IPv6" : (uri->authority.host_type == tmsrp_host_hostname ? "HOSTNAME" : "UNKNOWN")) );
 			printf("session-id: %s\n", uri->session_id);
 			printf("transport: %s\n", uri->transport);
 			
