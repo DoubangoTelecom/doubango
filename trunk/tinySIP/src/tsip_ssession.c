@@ -196,6 +196,12 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					break;
 				}
 
+			case sstype_silent_hangup:
+				{	/* sstype_silent_hangup, (tsk_bool_t)ENABLED_BOOL */
+					self->silent_hangup = va_arg(*app, tsk_bool_t);
+					break;
+				}
+
 			default:
 				{	/* va_list will be unsafe => exit */
 					TSK_DEBUG_ERROR("NOT SUPPORTED as valid pname %d.", curr);

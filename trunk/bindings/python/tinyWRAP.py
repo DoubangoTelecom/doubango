@@ -233,6 +233,7 @@ class SipSession(_object):
     def setExpires(self, *args): return _tinyWRAP.SipSession_setExpires(self, *args)
     def setFromUri(self, *args): return _tinyWRAP.SipSession_setFromUri(self, *args)
     def setToUri(self, *args): return _tinyWRAP.SipSession_setToUri(self, *args)
+    def setSilentHangup(self, *args): return _tinyWRAP.SipSession_setSilentHangup(self, *args)
     def getId(self): return _tinyWRAP.SipSession_getId(self)
 SipSession_swigregister = _tinyWRAP.SipSession_swigregister
 SipSession_swigregister(SipSession)
@@ -445,41 +446,33 @@ tsip_event_publish = _tinyWRAP.tsip_event_publish
 tsip_event_register = _tinyWRAP.tsip_event_register
 tsip_event_subscribe = _tinyWRAP.tsip_event_subscribe
 tsip_event_dialog = _tinyWRAP.tsip_event_dialog
+tsip_event_code_dialog_transport_error = _tinyWRAP.tsip_event_code_dialog_transport_error
+tsip_event_code_global_error = _tinyWRAP.tsip_event_code_global_error
+tsip_event_code_dialog_message_error = _tinyWRAP.tsip_event_code_dialog_message_error
+tsip_event_code_dialog_request_incoming = _tinyWRAP.tsip_event_code_dialog_request_incoming
+tsip_event_code_dialog_request_cancelled = _tinyWRAP.tsip_event_code_dialog_request_cancelled
+tsip_event_code_dialog_request_sent = _tinyWRAP.tsip_event_code_dialog_request_sent
+tsip_event_code_dialog_connecting = _tinyWRAP.tsip_event_code_dialog_connecting
+tsip_event_code_dialog_connected = _tinyWRAP.tsip_event_code_dialog_connected
+tsip_event_code_dialog_terminating = _tinyWRAP.tsip_event_code_dialog_terminating
+tsip_event_code_dialog_terminated = _tinyWRAP.tsip_event_code_dialog_terminated
 tsip_i_register = _tinyWRAP.tsip_i_register
-tsip_ai_register = _tinyWRAP.tsip_ai_register
-tsip_o_register = _tinyWRAP.tsip_o_register
 tsip_ao_register = _tinyWRAP.tsip_ao_register
 tsip_i_unregister = _tinyWRAP.tsip_i_unregister
-tsip_ai_unregister = _tinyWRAP.tsip_ai_unregister
-tsip_o_unregister = _tinyWRAP.tsip_o_unregister
 tsip_ao_unregister = _tinyWRAP.tsip_ao_unregister
 tsip_i_subscribe = _tinyWRAP.tsip_i_subscribe
-tsip_ai_subscribe = _tinyWRAP.tsip_ai_subscribe
-tsip_o_subscribe = _tinyWRAP.tsip_o_subscribe
 tsip_ao_subscribe = _tinyWRAP.tsip_ao_subscribe
 tsip_i_unsubscribe = _tinyWRAP.tsip_i_unsubscribe
-tsip_ai_unsubscribe = _tinyWRAP.tsip_ai_unsubscribe
-tsip_o_unsubscribe = _tinyWRAP.tsip_o_unsubscribe
 tsip_ao_unsubscribe = _tinyWRAP.tsip_ao_unsubscribe
 tsip_i_notify = _tinyWRAP.tsip_i_notify
-tsip_ai_notify = _tinyWRAP.tsip_ai_notify
-tsip_o_notify = _tinyWRAP.tsip_o_notify
 tsip_ao_notify = _tinyWRAP.tsip_ao_notify
 tsip_i_publish = _tinyWRAP.tsip_i_publish
-tsip_ai_publish = _tinyWRAP.tsip_ai_publish
-tsip_o_publish = _tinyWRAP.tsip_o_publish
 tsip_ao_publish = _tinyWRAP.tsip_ao_publish
 tsip_i_unpublish = _tinyWRAP.tsip_i_unpublish
-tsip_ai_unpublish = _tinyWRAP.tsip_ai_unpublish
-tsip_o_unpublish = _tinyWRAP.tsip_o_unpublish
 tsip_ao_unpublish = _tinyWRAP.tsip_ao_unpublish
 tsip_i_message = _tinyWRAP.tsip_i_message
-tsip_ai_message = _tinyWRAP.tsip_ai_message
-tsip_o_message = _tinyWRAP.tsip_o_message
 tsip_ao_message = _tinyWRAP.tsip_ao_message
 tsip_i_options = _tinyWRAP.tsip_i_options
-tsip_ai_options = _tinyWRAP.tsip_ai_options
-tsip_o_options = _tinyWRAP.tsip_o_options
 tsip_ao_options = _tinyWRAP.tsip_ao_options
 
 

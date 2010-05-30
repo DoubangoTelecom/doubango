@@ -43,7 +43,7 @@
 
 
 
-#define DEBUG_STATE_MACHINE											0
+#define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(subscribe, TX)
 #define TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, type, code, phrase, message)	\
 	tsip_subscribe_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)
@@ -74,16 +74,16 @@ int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app);
 
 
 /* ======================== conds ======================== */
-tsk_bool_t _fsm_cond_unsubscribing(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_unsubscribing(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
 {
 	return dialog->unsubscribing;
 }
-tsk_bool_t _fsm_cond_subscribing(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_subscribing(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
 {
 	return !_fsm_cond_unsubscribing(dialog, message);
 }
 
-tsk_bool_t _fsm_cond_notify_terminated(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_notify_terminated(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
 {
 	const tsip_header_Subscription_State_t *hdr_state;
 	if((hdr_state = (const tsip_header_Subscription_State_t*)tsip_message_get_header(message, tsip_htype_Subscription_State)))
@@ -93,11 +93,21 @@ tsk_bool_t _fsm_cond_notify_terminated(tsip_dialog_subscribe_t* dialog, tsip_mes
 	}
 	return tsk_false;
 }
-
-tsk_bool_t _fsm_cond_notify_not_terminated(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_notify_not_terminated(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
 {
 	return !_fsm_cond_notify_terminated(dialog, message);
 }
+
+static tsk_bool_t _fsm_cond_silent_hangup(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+{
+	return TSIP_DIALOG(dialog)->ss->silent_hangup;
+}
+static tsk_bool_t _fsm_cond_not_silent_hangup(tsip_dialog_subscribe_t* dialog, tsip_message_t* message)
+{
+	return !TSIP_DIALOG(dialog)->ss->silent_hangup;
+}
+#define _fsm_cond_silent_shutdown _fsm_cond_silent_hangup
+#define _fsm_cond_not_silent_shutdown _fsm_cond_not_silent_hangup
 
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
@@ -284,11 +294,15 @@ int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 			* === Any === 
 			*/
 			// Any -> (hangup) -> Trying
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_hangup, _fsm_state_Trying, tsip_dialog_subscribe_Any_2_Trying_X_hangup, "tsip_dialog_subscribe_Any_2_Trying_X_hangup"),
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_not_silent_hangup, _fsm_state_Trying, tsip_dialog_subscribe_Any_2_Trying_X_hangup, "tsip_dialog_subscribe_Any_2_Trying_X_hangup"),
+			// Any -> (silenthangup) -> Terminated
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_silent_hangup, _fsm_state_Terminated, tsk_null, "tsip_dialog_subscribe_Any_2_Trying_X_silenthangup"),
 			// Any -> (shutdown) -> Trying
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_state_Trying, tsip_dialog_subscribe_Any_2_Trying_X_shutdown, "tsip_dialog_subscribe_Any_2_Trying_X_shutdown"),
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_not_silent_shutdown, _fsm_state_Trying, tsip_dialog_subscribe_Any_2_Trying_X_shutdown, "tsip_dialog_subscribe_Any_2_Trying_X_shutdown"),
+			// Any -> (silentshutdown) -> Terminated
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_silent_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_subscribe_Any_2_Trying_X_silentshutdown"),
 			// Any -> (shutdown timedout) -> Terminated
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown_timedout, _fsm_state_Terminated, tsk_null, "tsip_dialog_subscribe_** Shutdown timedout"),			
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown_timedout, _fsm_state_Terminated, tsk_null, "tsip_dialog_subscribe_shutdown_timedout"),			
 			// Any -> (transport error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_dialog_subscribe_Any_2_Terminated_X_transportError, "tsip_dialog_subscribe_Any_2_Terminated_X_transportError"),
 			// Any -> (error) -> Terminated
@@ -327,6 +341,9 @@ int tsip_dialog_subscribe_Started_2_Trying_X_subscribe(va_list *app)
 	TSIP_DIALOG(self)->running = tsk_true;
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
+	/* alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connecting, "Dialog connecting");
+
 	return send_SUBSCRIBE(self);
 }
 
@@ -362,13 +379,19 @@ int tsip_dialog_subscribe_Trying_2_Connected_X_2xx(va_list *app)
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	/* Alert the user. */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	tsk_bool_t first_time_to_connect = (TSIP_DIALOG(self)->state == tsip_initial);
 
 	/* Update the dialog state. */
 	if((ret = tsip_dialog_update(TSIP_DIALOG(self), response))){
 		return ret;
+	}
+
+	/* Alert the user(session) */
+	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	/* Alert the user(dialog) */
+	if(first_time_to_connect){
+		TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
 	}
 
 	/* Reset current action */
@@ -424,8 +447,7 @@ int tsip_dialog_subscribe_Trying_2_Trying_X_423(va_list *app)
 		send_SUBSCRIBE(self);
 	}
 	else{
-		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-			tsip_event_code_message_error, "Invalid SIP response.", response);
+		TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_message_error, "Received invalid SIP response.");
 
 		return -1;
 	}
@@ -459,8 +481,7 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 	ret = tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 
 	/* Alert the user. */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-		tsip_event_code_request_cancelled, "Subscription cancelled", tsk_null);
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_cancelled, "Subscription cancelled");
 
 	return ret;
 }
@@ -508,7 +529,7 @@ int tsip_dialog_subscribe_Connected_2_Connected_X_NOTIFY(va_list *app)
 
 	/* Alert the user */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
-		tsip_event_code_request_incoming, "Incoming NOTIFY.", request);
+		tsip_event_code_dialog_request_incoming, "Incoming NOTIFY.", request);
 
 	return ret;
 }
@@ -522,7 +543,7 @@ int tsip_dialog_subscribe_Connected_2_Terminated_X_NOTIFY(va_list *app)
 
 	/* Alert the user */
 	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, tsip_i_notify, 
-		tsip_event_code_request_incoming, "Incoming NOTIFY.", request);
+		tsip_event_code_dialog_request_incoming, "Incoming NOTIFY.", request);
 
 	return send_200NOTIFY(self, request);
 }
@@ -541,6 +562,9 @@ int tsip_dialog_subscribe_Any_2_Trying_X_hangup(va_list *app)
 	/* Set  current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
+	/* Alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+
 	self->unsubscribing = tsk_true;
 	return send_SUBSCRIBE(self);
 }
@@ -554,6 +578,9 @@ int tsip_dialog_subscribe_Any_2_Trying_X_shutdown(va_list *app)
 	/* schedule shutdow timeout */
 	TSIP_DIALOG_SUBSCRIBE_TIMER_SCHEDULE(shutdown);
 
+	/* alert user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+
 	self->unsubscribing = tsk_true;
 	return send_SUBSCRIBE(self);
 }
@@ -566,8 +593,7 @@ int tsip_dialog_subscribe_Any_2_Terminated_X_transportError(va_list *app)
 	/* const tsip_response_t *response = va_arg(*app, const tsip_response_t *); */
 
 	/* Alert the user. */
-	TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-		tsip_event_code_transport_error, "Transport error.", tsk_null);
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_transport_error, "Transport error.");
 
 	return 0;
 }
@@ -585,8 +611,7 @@ int tsip_dialog_subscribe_Any_2_Terminated_X_Error(va_list *app)
 				TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 	}
 	else{
-		TSIP_DIALOG_SUBSCRIBE_SIGNAL(self, self->unsubscribing ? tsip_ao_unsubscribe : tsip_ao_subscribe, 
-			tsip_event_code_global_error, "Global error.", tsk_null);
+		TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_global_error, "Global error.");
 	}
 
 	return 0;
@@ -653,8 +678,7 @@ int tsip_dialog_subscribe_OnTerminated(tsip_dialog_subscribe_t *self)
 	TSK_DEBUG_INFO("=== SUBSCRIBE Dialog terminated ===");
 
 	/* Alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_dialog, 
-			tsip_event_code_dialog_terminated, "Dialog terminated");
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, "Dialog terminated");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

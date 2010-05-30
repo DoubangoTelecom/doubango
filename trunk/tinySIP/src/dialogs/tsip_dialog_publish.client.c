@@ -63,18 +63,31 @@ int tsip_dialog_publish_Trying_2_Terminated_X_300_to_699(va_list *app);
 int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app);
 int tsip_dialog_publish_Connected_2_Trying_X_publish(va_list *app);
 int tsip_dialog_publish_Any_2_Trying_X_hangup(va_list *app);
+int tsip_dialog_publish_Any_2_Trying_X_shutdown(va_list *app);
 int tsip_dialog_publish_Any_2_Terminated_X_transportError(va_list *app);
 int tsip_dialog_publish_Any_2_Terminated_X_Error(va_list *app);
 
+
 /* ======================== conds ======================== */
-int _fsm_cond_unpublishing(tsip_dialog_publish_t* dialog, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_unpublishing(tsip_dialog_publish_t* dialog, tsip_message_t* message)
 {
-	return dialog->unpublishing ? 1 : 0;
+	return dialog->unpublishing;
 }
-int _fsm_cond_publishing(tsip_dialog_publish_t* dialog, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_publishing(tsip_dialog_publish_t* dialog, tsip_message_t* message)
 {
 	return !_fsm_cond_unpublishing(dialog, message);
 }
+
+static tsk_bool_t _fsm_cond_silent_hangup(tsip_dialog_publish_t* dialog, tsip_message_t* message)
+{
+	return TSIP_DIALOG(dialog)->ss->silent_hangup;
+}
+static tsk_bool_t _fsm_cond_not_silent_hangup(tsip_dialog_publish_t* dialog, tsip_message_t* message)
+{
+	return !TSIP_DIALOG(dialog)->ss->silent_hangup;
+}
+#define _fsm_cond_silent_shutdown _fsm_cond_silent_hangup
+#define _fsm_cond_not_silent_shutdown _fsm_cond_not_silent_hangup
 
 
 /* ======================== actions ======================== */
@@ -89,7 +102,8 @@ typedef enum _fsm_action_e
 	_fsm_action_2xx,
 	_fsm_action_401_407_421_494,
 	_fsm_action_423,
-	_fsm_action_300_to_699,	
+	_fsm_action_300_to_699,
+	_fsm_action_shutdown_timedout, /* Any -> Terminated */
 	_fsm_action_transporterror,
 	_fsm_action_error,
 }
@@ -256,10 +270,18 @@ int tsip_dialog_publish_init(tsip_dialog_publish_t *self)
 			*/
 			// Any -> (transport error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_dialog_publish_Any_2_Terminated_X_transportError, "tsip_dialog_publish_Any_2_Terminated_X_transportError"),
-			// Any -> (transport error) -> Terminated
+			// Any -> (error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_error, _fsm_state_Terminated, tsip_dialog_publish_Any_2_Terminated_X_Error, "tsip_dialog_publish_Any_2_Terminated_X_Error"),
 			// Any -> (hangup) -> Trying
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_hangup, _fsm_state_Trying, tsip_dialog_publish_Any_2_Trying_X_hangup, "tsip_dialog_publish_Any_2_Trying_X_hangup"),
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_not_silent_hangup, _fsm_state_Trying, tsip_dialog_publish_Any_2_Trying_X_hangup, "tsip_dialog_publish_Any_2_Trying_X_hangup"),
+			// Any -> (silenthangup) -> Terminated
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_silent_hangup, _fsm_state_Terminated, tsk_null, "tsip_dialog_publish_Any_2_Trying_X_silenthangup"),
+			// Any -> (shutdown) -> Trying
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_not_silent_shutdown, _fsm_state_Trying, tsip_dialog_publish_Any_2_Trying_X_shutdown, "tsip_dialog_publish_Any_2_Trying_X_shutdown"),
+			// Any -> (silentshutdown) -> Terminated
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_silent_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_publishe_Any_2_Trying_X_silentshutdown"),
+			// Any -> (shutdown timedout) -> Terminated
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown_timedout, _fsm_state_Terminated, tsk_null, "tsip_dialog_publish_shutdown_timedout"),
 
 			TSK_FSM_ADD_NULL());
 
@@ -293,6 +315,9 @@ int tsip_dialog_publish_Started_2_Trying_X_publish(va_list *app)
 
 	TSIP_DIALOG(self)->running = tsk_true;
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+
+	/* alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connecting, "Dialog connecting");
 
 	return send_PUBLISH(self);
 }
@@ -329,6 +354,8 @@ int tsip_dialog_publish_Trying_2_Connected_X_2xx(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 	int ret;
 
+	tsk_bool_t first_time_to_connect = (TSIP_DIALOG(self)->state == tsip_initial);
+
 	/*	RFC 3903 - 4.1.  Identification of Published Event State
 		For each successful PUBLISH request, the ESC will generate and assign
 		an entity-tag and return it in the SIP-ETag header field of the 2xx
@@ -339,11 +366,15 @@ int tsip_dialog_publish_Trying_2_Connected_X_2xx(va_list *app)
 		tsk_strupdate(&self->etag, SIP_ETag->value);
 	}
 
-	/* Alert the user. */
+	/* Alert the user (session)*/
 	TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	/* Alert the user (dialog)*/
+	if(first_time_to_connect){ /* PUBLISH not dialog oriented ...but */
+		TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
+	}
 
-	/* Update the dialog state. */
+	/* Update the dialog state */
 	if((ret = tsip_dialog_update(TSIP_DIALOG(self), response))){
 		return ret;
 	}
@@ -401,8 +432,7 @@ int tsip_dialog_publish_Trying_2_Trying_X_423(va_list *app)
 		send_PUBLISH(self);
 	}
 	else{
-		TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-			tsip_event_code_message_error, "Invalid SIP response.", response);
+		TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_message_error, "Received invalid SIP response");
 
 		return -1;
 	}
@@ -436,8 +466,7 @@ int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app)
 	ret = tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 
 	/* Alert the user. */
-	TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-		tsip_event_code_request_cancelled, "Subscription cancelled", tsk_null);
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_cancelled, "Subscription cancelled");
 
 	return ret;
 }
@@ -470,17 +499,28 @@ int tsip_dialog_publish_Any_2_Trying_X_hangup(va_list *app)
 	va_arg(*app, const tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 	
-	///* Schedule timeout (shutdown). */
-	//if(shuttingdown){
-	//	TSIP_DIALOG_PUBLISH_TIMER_SCHEDULE(shutdown);
-	//}
-	
-	//self->unpublishing = tsk_true;
-	//return send_PUBLISH(self, rt_remove);
-	
 	/* Set  current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 	
+	/* Alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+
+	self->unpublishing = tsk_true;
+	return send_PUBLISH(self);
+}
+
+/* Any -> (shutdown) -> Trying
+*/
+int tsip_dialog_publish_Any_2_Trying_X_shutdown(va_list *app)
+{
+	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
+
+	/* schedule shutdow timeout */
+	TSIP_DIALOG_PUBLISH_TIMER_SCHEDULE(shutdown);
+
+	/* Alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+
 	self->unpublishing = tsk_true;
 	return send_PUBLISH(self);
 }
@@ -493,8 +533,7 @@ int tsip_dialog_publish_Any_2_Terminated_X_transportError(va_list *app)
 	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	/* Alert the user. */
-	TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-		tsip_event_code_transport_error, "Transport error.", tsk_null);
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_transport_error, "Transport error.");
 
 	return 0;
 }
@@ -512,8 +551,7 @@ int tsip_dialog_publish_Any_2_Terminated_X_Error(va_list *app)
 				TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 	}
 	else{
-		TSIP_DIALOG_PUBLISH_SIGNAL(self, self->unpublishing ? tsip_ao_unpublish : tsip_ao_publish, 
-			tsip_event_code_global_error, "Global error.", tsk_null);
+		TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_global_error, "Global error.");
 	}
 
 	return 0;
@@ -592,8 +630,7 @@ int tsip_dialog_publish_OnTerminated(tsip_dialog_publish_t *self)
 	TSK_DEBUG_INFO("=== PUBLISH Dialog terminated ===");
 
 	/* Alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_dialog, 
-			tsip_event_code_dialog_terminated, "Dialog terminated");
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, "Dialog terminated");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

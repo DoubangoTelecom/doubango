@@ -435,8 +435,7 @@ int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 	TSK_DEBUG_INFO("=== INVITE Dialog terminated ===");
 
 	/* Alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_dialog, 
-			tsip_event_code_dialog_terminated, "Dialog terminated");
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, "Dialog terminated");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

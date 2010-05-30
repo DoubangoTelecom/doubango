@@ -135,6 +135,14 @@ bool SipSession::setToUri(const char* toUri)
 	return (ret == 0);
 }
 
+bool SipSession::setSilentHangup(bool silent)
+{
+	int ret = tsip_ssession_set(this->handle,
+		TSIP_SSESSION_SET_SILENT_HANGUP(silent ? tsk_true : tsk_false),
+		TSIP_SSESSION_SET_NULL());
+	return (ret == 0);
+}
+
 unsigned SipSession::getId()
 {
 	return (unsigned)tsip_ssession_get_id(this->handle);

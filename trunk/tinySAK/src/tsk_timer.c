@@ -163,7 +163,8 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 		return -1;
 	}
 
-	tsk_mutex_lock(manager->mutex);
+	// all functions called below are thread-safe ==> do not lock
+	// "mainthread" uses manager->mutex and runs in a separate thread ==> deadlock
 
 	if(TSK_RUNNABLE(manager)->running){
 		if(ret = tsk_runnable_stop(TSK_RUNNABLE(manager))){
@@ -177,12 +178,11 @@ int tsk_timer_manager_stop(tsk_timer_manager_handle_t *self)
 		goto bail;
 	}
 	else{
-		return 0; /* already running. */
+		ret = 0; /* already running. */
+		goto bail;
 	}
 
 bail:
-	tsk_mutex_unlock(manager->mutex);
-
 	return ret;
 }
 
@@ -257,6 +257,8 @@ static void *run(void* self)
 		return tsk_null;
 	}
 
+	TSK_DEBUG_INFO("Timer manager run()::enter");
+
 	TSK_RUNNABLE_RUN_BEGIN(manager);
 
 	if(curr = TSK_RUNNABLE_POP_FIRST(manager)){
@@ -268,6 +270,8 @@ static void *run(void* self)
 	}
 
 	TSK_RUNNABLE_RUN_END(manager);
+
+	TSK_DEBUG_INFO("Timer manager run()::exit");
 
 	return tsk_null;
 }

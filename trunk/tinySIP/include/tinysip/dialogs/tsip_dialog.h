@@ -60,8 +60,8 @@ TSIP_BEGIN_DECLS
 #define TSIP_DIALOG_TIMER_SCHEDULE(name, TX)								\
 	self->timer##TX.id = tsk_timer_manager_schedule(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.timeout, TSK_TIMER_CALLBACK_F(tsip_dialog_##name##_timer_callback), self)	
 
-#define TSIP_DIALOG_SIGNAL(self, type, code, phrase)	\
-	tsip_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase)
+#define TSIP_DIALOG_SIGNAL(self, code, phrase)	\
+	tsip_event_signal(tsip_event_dialog, TSIP_DIALOG(self)->ss, code, phrase)
 
 #define TSIP_DIALOG_SHUTDOWN_TIMEOUT	2000 /* miliseconds. */
 
@@ -142,7 +142,7 @@ typedef struct tsip_dialog_s
 }
 tsip_dialog_t;
 
-#define TSIP_DECLARE_DIALOG tsip_dialog_t dialog
+#define TSIP_DECLARE_DIALOG tsip_dialog_t __dialog__
 
 typedef tsk_list_t tsip_dialogs_L_t;
 /*

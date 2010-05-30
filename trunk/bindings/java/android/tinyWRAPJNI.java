@@ -54,6 +54,7 @@ class tinyWRAPJNI {
   public final static native boolean SipSession_setExpires(long jarg1, SipSession jarg1_, long jarg2);
   public final static native boolean SipSession_setFromUri(long jarg1, SipSession jarg1_, String jarg2);
   public final static native boolean SipSession_setToUri(long jarg1, SipSession jarg1_, String jarg2);
+  public final static native boolean SipSession_setSilentHangup(long jarg1, SipSession jarg1_, boolean jarg2);
   public final static native long SipSession_getId(long jarg1, SipSession jarg1_);
   public final static native long new_MessagingSession(long jarg1, SipStack jarg1_);
   public final static native void delete_MessagingSession(long jarg1);

@@ -185,8 +185,13 @@ tsk_object_t* tsk_object_unref(tsk_object_t *self)
 {
 	if(self){
 		tsk_object_header_t* objhdr = TSK_OBJECT_HEADER(self);
-		if(objhdr->refCount && !--objhdr->refCount){ // If refCount is == 0 then, nothing should happen.
-			tsk_object_delete(self);
+		if(objhdr->refCount){ // If refCount is == 0 then, nothing should happen.
+			if(!--objhdr->refCount){
+				tsk_object_delete(self);
+				return tsk_null;
+			}
+		}
+		else{
 			return tsk_null;
 		}
 	}

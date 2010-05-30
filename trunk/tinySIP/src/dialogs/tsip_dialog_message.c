@@ -245,7 +245,7 @@ int tsip_dialog_message_Started_2_Receiving_X_recvMESSAGE(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_MESSAGE_SIGNAL(self, tsip_i_message, 
-			tsip_event_code_request_incoming, "Incoming Request.", request);
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
 
 	/* Update last incoming MESSAGE */
 	TSK_OBJECT_SAFE_FREE(self->last_iMessage);
@@ -452,8 +452,7 @@ int tsip_dialog_message_OnTerminated(tsip_dialog_message_t *self)
 	TSK_DEBUG_INFO("=== MESSAGE Dialog terminated ===");
 
 	/* Alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_dialog, 
-			tsip_event_code_dialog_terminated, "Dialog terminated");
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, "Dialog terminated");
 
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

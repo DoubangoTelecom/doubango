@@ -82,6 +82,10 @@ public class SipSession {
     return tinyWRAPJNI.SipSession_setToUri(swigCPtr, this, toUri);
   }
 
+  public boolean setSilentHangup(boolean silent) {
+    return tinyWRAPJNI.SipSession_setSilentHangup(swigCPtr, this, silent);
+  }
+
   public long getId() {
     return tinyWRAPJNI.SipSession_getId(swigCPtr, this);
   }

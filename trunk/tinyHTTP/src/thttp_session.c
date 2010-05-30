@@ -367,10 +367,13 @@ int thttp_session_signal(thttp_session_t *self, thttp_action_type_t atype)
 	tsk_safeobj_lock(self);
 again:
 	tsk_list_foreach(item, self->dialogs){
+		item = tsk_object_ref(item);
 		thttp_dialog_fsm_act((thttp_dialog_t*)item->data, atype, tsk_null, tsk_null);
 		/* As the above action could terminate the dialog (which means change the content of self->dialogs) 
 		* => list becomes unsafe */
-		goto again;
+		if(!(item = tsk_object_unref(item))){
+			goto again;
+		}
 	}
 
 	switch(atype){

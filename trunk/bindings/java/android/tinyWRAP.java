@@ -8,5 +8,5 @@
 
 package org.doubango.tinyWRAP;
 
-public class tinyWRAP {
+public class tinyWRAP implements tinyWRAPConstants {
 }

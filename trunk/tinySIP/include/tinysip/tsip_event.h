@@ -47,29 +47,34 @@ typedef enum tsip_event_type_e
 	tsip_event_register,
 	tsip_event_subscribe,
 	
-	tsip_event_dialog
+	tsip_event_dialog,
+	tsip_event_stack,
 }
 tsip_event_type_t;
 
-/** SIP codes associated to an internal event */
-typedef enum tsip_event_code_e
-{
-	/* 100-699 are reserved codes */
+/* SIP codes associated to an internal event */
+// 100-699 are reserved codes
 
-	/* 7xx ==> errors */
-	tsip_event_code_transport_error = 702,
-	tsip_event_code_global_error = 703,
-	tsip_event_code_message_error = 704,
+// 7xx ==> errors
+#define tsip_event_code_dialog_transport_error		702
+#define tsip_event_code_dialog_global_error			703
+#define tsip_event_code_dialog_message_error		704
 
-	/* 8xx ==> success */
-	tsip_event_code_request_incoming = 800,
-	tsip_event_code_request_cancelled = 801,
-	tsip_event_code_request_sent = 802,
+// 8xx ==> success
+#define tsip_event_code_dialog_request_incoming		800
+#define tsip_event_code_dialog_request_cancelled	801
+#define tsip_event_code_dialog_request_sent			802
 
-	/* 9xx ==> Informational */
-	tsip_event_code_dialog_terminated = 900,
-}
-tsip_event_code_t;
+// 9xx ==> Informational
+#define tsip_event_code_dialog_connecting			900
+#define tsip_event_code_dialog_connected			901
+#define tsip_event_code_dialog_terminating			902
+#define tsip_event_code_dialog_terminated			903
+#define tsip_event_code_stack_started				950
+#define tsip_event_code_stack_stopped				951
+#define tsip_event_code_stack_failed_to_start		952
+#define tsip_event_code_stack_failed_to_stop		953
+
 
 typedef struct tsip_event_s
 {
@@ -82,9 +87,12 @@ typedef struct tsip_event_s
 
 	tsip_event_type_t type;
 	struct tsip_message_s *sipmessage;
+
+	//! copy of stack user data (needed by sessionless events)
+	const void* userdata;
 }
 tsip_event_t;
-#define TSIP_DECLARE_EVENT	tsip_event_t sipevent
+#define TSIP_DECLARE_EVENT	tsip_event_t __sipevent__
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_event_def_t;
 

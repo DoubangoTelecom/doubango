@@ -47,6 +47,7 @@ public:
 	bool setExpires(unsigned expires);
 	bool setFromUri(const char* fromUri);
 	bool setToUri(const char* toUri);
+	bool setSilentHangup(bool silent);
 	unsigned getId();
 
 #if !defined(SWIG)

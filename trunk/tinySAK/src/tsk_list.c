@@ -66,6 +66,44 @@ tsk_list_item_t* tsk_list_item_create()
 }
 
 /**@ingroup tsk_list_group
+* Locks the list to avoid concurrent access. The list should be unlocked using
+* @ref tsk_list_unlock.
+* @param list The list to lock.
+* @retval zero if succeed and non-zero error code otherwise.
+* @sa @ref tsk_list_unlock
+*/
+int tsk_list_lock(tsk_list_t* list)
+{
+	if(list){
+		if(!list->mutex){
+			list->mutex = tsk_mutex_create();
+		}
+		return tsk_mutex_lock(list->mutex);
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+}
+
+/**@ingroup tsk_list_group
+* UnLocks a previously locked list.
+* @param list The list to unlock.
+* @retval zero if succeed and non-zero error code otherwise.
+* @sa @ref tsk_list_lock
+*/
+int tsk_list_unlock(tsk_list_t* list)
+{
+	if(list && list->mutex){
+		return tsk_mutex_unlock(list->mutex); 
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+}
+
+/**@ingroup tsk_list_group
 * Remove an item from the @a list.
 * @param list the list from which to remove the @a item.
 * @param item the item to remove from the @a list.
@@ -543,6 +581,11 @@ static tsk_object_t* tsk_list_dtor(tsk_object_t *self)
 			tsk_object_unref(item);
 		}
 #endif
+
+		/* destroy the on-demand mutex */
+		if(list->mutex){
+			tsk_mutex_destroy(&list->mutex);
+		}
 	}
 	else{
 		TSK_DEBUG_WARN("Cannot free an uninitialized list");

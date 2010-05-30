@@ -122,6 +122,7 @@ tsip_dialog_t* tsip_dialog_layer_find(const tsip_dialog_layer_t *self, const cha
 int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self)
 {
 	if(self){
+		tsk_bool_t wait = tsk_false;
 		tsk_list_item_t *item;
 		tsip_dialog_t *dialog;
 		tsip_dialog_type_t regtype = tsip_dialog_REGISTER;
@@ -146,37 +147,79 @@ int tsip_dialog_layer_shutdownAll(tsip_dialog_layer_t *self)
 		}
 
 phase1:
-		/* Phase 1 - shutdown all except register */
+		/* Phase 1 - shutdown all except register and silent_hangup */
 		TSK_DEBUG_INFO("== Shutting down - Phase-1 started ==");
+phase1_loop:
 		tsk_list_foreach(item, self->dialogs){
 			dialog = item->data;
-			if(dialog->type != tsip_dialog_REGISTER){
-				tsip_dialog_shutdown(dialog, tsk_null);
+			if(dialog->type != tsip_dialog_REGISTER && !dialog->ss->silent_hangup){
+				item = tsk_object_ref(item);
+				if(!tsip_dialog_shutdown(dialog, tsk_null)){
+					wait = tsk_true;
+				}
+
+				// if "tsip_dialog_shutdown()" remove the dialog, then
+				// "self->dialogs" will be unsafe
+				if(!(item = tsk_object_unref(item))){
+					goto phase1_loop;
+				}
 			}
 		}
 		tsk_safeobj_unlock(self);
 		
 		/* wait until phase-1 is completed */
-		tsk_condwait_timedwait(self->shutdown.condwait, TSIP_DIALOG_SHUTDOWN_TIMEOUT);
+		if(wait){
+			tsk_condwait_timedwait(self->shutdown.condwait, TSIP_DIALOG_SHUTDOWN_TIMEOUT);
+		}
 		
 		/* lock and goto phase2 */
 		tsk_safeobj_lock(self);
+		wait = tsk_false;
 		goto phase2;
 
 phase2:
 		/* Phase 2 - unregister */
 		TSK_DEBUG_INFO("== Shutting down - Phase-2 started ==");
 		self->shutdown.phase2 = tsk_true;
+phase2_loop:
 		tsk_list_foreach(item, self->dialogs){
 			dialog = item->data;
 			if(dialog->type == tsip_dialog_REGISTER){
-				tsip_dialog_shutdown(dialog, tsk_null);
+				item = tsk_object_ref(item);
+				if(!tsip_dialog_shutdown(dialog, tsk_null)){
+					wait = tsk_true;
+				}
+				// if "tsip_dialog_shutdown()" remove the dialog, then
+				// "self->dialogs" will be unsafe 
+				if(!(item = tsk_object_unref(item))){
+					goto phase2_loop;
+				}
 			}
 		}
 		tsk_safeobj_unlock(self);
 
 		/* wait until phase-2 is completed */
-		tsk_condwait_timedwait(self->shutdown.condwait, TSIP_DIALOG_SHUTDOWN_TIMEOUT);
+		if(wait){
+			tsk_condwait_timedwait(self->shutdown.condwait, TSIP_DIALOG_SHUTDOWN_TIMEOUT);
+		}
+
+
+		/* Phase 3 - silenthangup (dialogs will be terminated immediately) */
+		TSK_DEBUG_INFO("== Shutting down - Phase-3 ==");
+phase3_loop:
+		tsk_list_foreach(item, self->dialogs){
+			dialog = item->data;
+			if(dialog->ss->silent_hangup){
+				item = tsk_object_ref(item);
+				tsip_dialog_shutdown(dialog, tsk_null);
+
+				// if "tsip_dialog_shutdown()" remove the dialog, then
+				// "self->dialogs" will be unsafe
+				if(!(item = tsk_object_unref(item))){
+					goto phase3_loop;
+				}
+			}
+		}
 
 done:
 		return 0;

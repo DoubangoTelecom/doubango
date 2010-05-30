@@ -28,7 +28,7 @@
 
 _BEGIN_DECLS
 
-int subscribe_handle_event(const tsip_event_t *sipevent);
+int subscribe_handle_event(const tsip_event_t *_event);
 tsip_ssession_id_t subscribe_handle_cmd(cmd_type_t cmd, const opts_L_t* opts);
 
 _END_DECLS

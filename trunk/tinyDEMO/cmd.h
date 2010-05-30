@@ -85,6 +85,7 @@ typedef enum opt_type_e
 	opt_sec,			/* --sec 1800 */
 	opt_sid,			/* --sid 1234 */
 	opt_sigcomp,		/* --sigcomp */
+	opt_silent,			/* --silent */
 	opt_smsc,			/* --smsc +3315245856 */
 	opt_to,				/* --to sip:alice@open-ims.test */
 }

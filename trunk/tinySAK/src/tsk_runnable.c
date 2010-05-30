@@ -106,8 +106,8 @@ static int tsk_runnable_deinit(tsk_runnable_t *self)
 */
 int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 {
-	int ret = -1;
 	if(self){
+		int ret = -1;
 		if(self->running) return -2;
 		else if(!self->run) return -3;
 		else if(tsk_runnable_init(self, objdef)) return -4;
@@ -123,8 +123,30 @@ int tsk_runnable_start(tsk_runnable_t *self, const tsk_object_def_t *objdef)
 		//self->running = tsk_true;
 
 		self->started = tsk_true;
+		return 0;
 	}
-	return ret;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+}
+
+/**@ingroup tsk_runnable_group
+* To indicate whether the enqueued data is important or not.
+* @param self The runnable object
+* @param important @a tsk_true or @a tsk_false. If set to @a tsk_true, the thread will not be joined 
+* until all data in the queue have been consumed.
+*/
+int tsk_runnable_set_important(tsk_runnable_t *self, tsk_bool_t important)
+{
+	if(self){
+		self->important = important;
+		return 0;
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 }
 
 /**@ingroup tsk_runnable_group

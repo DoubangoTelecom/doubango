@@ -273,6 +273,7 @@ replace:
 	"sec"i % { opt->type = opt_sec; } |
 	"sid"i % { opt->type = opt_sid; } |
 	"sigcomp"i % { opt->type = opt_sigcomp; } |
+	"silent"i % { opt->type = opt_silent; } |
 	"smsc"i % { opt->type = opt_smsc; } |
 	"to"i % { opt->type = opt_to; }
 	)** >10 |

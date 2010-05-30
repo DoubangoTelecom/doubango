@@ -41,8 +41,6 @@ TSIP_BEGIN_DECLS
 typedef enum tsip_invite_event_type_e
 {
 	tsip_i_invite,
-	tsip_ai_invite,
-	tsip_o_invite,
 	tsip_ao_invite,
 }
 tsip_invite_event_type_t;
