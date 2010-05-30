@@ -23,43 +23,44 @@
 
 extern ctx_t* ctx;
 
-int publish_handle_event(const tsip_event_t *sipevent)
+int publish_handle_event(const tsip_event_t *_event)
 {
-	const tsip_publish_event_t* pub_event = TSIP_PUBLISH_EVENT(sipevent);
+	const tsip_publish_event_t* pub_event = TSIP_PUBLISH_EVENT(_event);
 	const session_t* session;
 	tsip_ssession_id_t sid;
 
 	/* Find associated session */
-	sid = tsip_ssession_get_id(sipevent->ss);
+	sid = tsip_ssession_get_id(_event->ss);
 	if(!(session = session_get_by_sid(ctx->sessions, sid))){
 		TSK_DEBUG_WARN("Failed to match session event.");
 		return -1;
 	}
 
 	switch(pub_event->type){
-		
-		/* Informational */
-		case tsip_o_publish: /* Outgoing PUBLISH */
-		case tsip_o_unpublish: /* Outgoing PUBLISH */
-			{	/* Request successfully sent (you cannot suppose that the remote peer has received the request) ==> Informational */
-				TSK_DEBUG_INFO("Transport layer successfully sent (un)PUBLISH request");
-				break;
-			}
-
 		case tsip_ao_publish: /* Answer to outgoing PUBLISH */
 			{
-				TSK_DEBUG_INFO("Event: Answer to outgoing PUBLISH. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
-				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
-					SESSION(session)->connected = tsk_true;
+				if(_event->sipmessage){
+					if(TSIP_MESSAGE_IS_RESPONSE(_event->sipmessage)){
+						TSK_DEBUG_INFO("Event: Answer to outgoing PUBLISH. Code=%d and phrase=%s", 
+							_event->sipmessage->line.response.status_code, _event->sipmessage->line.response.reason_phrase);
+					}
+					else{
+						// request
+					}
 				}
 				break;
 			}
 		
 		case tsip_ao_unpublish: /* Answer to outgoing unPUBLISH */
 			{
-				TSK_DEBUG_INFO("Event: Answer to outgoing unPUBLISH. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
-				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
-					SESSION(session)->connected = tsk_false;
+				if(_event->sipmessage){
+					if(TSIP_MESSAGE_IS_RESPONSE(_event->sipmessage)){
+						TSK_DEBUG_INFO("Event: Answer to outgoing UNPUBLISH. Code=%d and phrase=%s", 
+							_event->sipmessage->line.response.status_code, _event->sipmessage->line.response.reason_phrase);
+					}
+					else{
+						// request
+					}
 				}
 				break;
 			}
@@ -67,8 +68,6 @@ int publish_handle_event(const tsip_event_t *sipevent)
 		/* Server events (For whose dev. Server Side IMS Services) */
 		case tsip_i_publish: /* Incoming PUBLISH */
 		case tsip_i_unpublish: /* Incoming unPUBLISH */
-		case tsip_ai_publish: /* Answer to Incoming PUBLISH */
-		case tsip_ai_unpublish: /* Answer to Incoming unPUBLISH */
 			{	
 				TSK_DEBUG_WARN("Event not support by Client Framework.");
 				break;

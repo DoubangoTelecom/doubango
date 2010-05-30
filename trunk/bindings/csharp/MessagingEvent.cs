@@ -50,7 +50,7 @@ public class MessagingEvent : SipEvent {
 
   public MessagingSession takeSessionOwnership() {
     IntPtr cPtr = tinyWRAPPINVOKE.MessagingEvent_takeSessionOwnership(swigCPtr);
-    MessagingSession ret = (cPtr == IntPtr.Zero) ? null : new MessagingSession(cPtr, false);
+    MessagingSession ret = (cPtr == IntPtr.Zero) ? null : new MessagingSession(cPtr, true);
     return ret;
   }
 

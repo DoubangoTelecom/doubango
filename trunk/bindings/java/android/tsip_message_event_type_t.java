@@ -10,8 +10,6 @@ package org.doubango.tinyWRAP;
 
 public enum tsip_message_event_type_t {
   tsip_i_message,
-  tsip_ai_message,
-  tsip_o_message,
   tsip_ao_message;
 
   public final int swigValue() {

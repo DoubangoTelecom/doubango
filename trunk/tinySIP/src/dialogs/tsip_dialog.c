@@ -180,6 +180,15 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		case tsip_PUBLISH:
 			{
 				TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
+				/* add caps in Accept-Contact headers */
+				tsk_list_foreach(item, self->ss->caps){
+					char* value = tsk_null;
+					tsk_sprintf(&value, "*;%s", TSK_PARAM(item->data)->value);
+					if(value){
+						TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS("Accept-Contact", value));
+						TSK_FREE(value);
+					}
+				}
 				break;
 			}
 
@@ -294,8 +303,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 					TSK_OBJECT_SAFE_FREE(uri);
 				}
 				// Service routes
-				tsk_list_foreach(item, TSIP_DIALOG_GET_STACK(self)->service_routes)
-				{
+				tsk_list_foreach(item, TSIP_DIALOG_GET_STACK(self)->service_routes){
 					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(item->data));
 				}
 			}

@@ -30,17 +30,17 @@ extern ctx_t* ctx;
 tsk_bool_t is_valid_telnum(const tsip_uri_t* uri);
 tsk_buffer_t* sms_submit(const tsip_uri_t* smsc, const tsip_uri_t* dest, const char* ascii_pay);
 
-int message_handle_event(const tsip_event_t *sipevent)
+int message_handle_event(const tsip_event_t *_event)
 {
-	const tsip_message_event_t* msg_event = TSIP_MESSAGE_EVENT(sipevent);
+	const tsip_message_event_t* msg_event = TSIP_MESSAGE_EVENT(_event);
 	const session_t* session = tsk_null;
 	tsip_ssession_id_t sid;
 	int ret = 0;
 
 	/* Find associated session */
-	sid = tsip_ssession_get_id(sipevent->ss);
+	sid = tsip_ssession_get_id(_event->ss);
 	if(!(session = session_get_by_sid(ctx->sessions, sid))){
-		if(tsip_ssession_have_ownership(sipevent->ss)){
+		if(tsip_ssession_have_ownership(_event->ss)){
 			/* it's or own session and we fail to match it ==> should never happen */
 			TSK_DEBUG_ERROR("Failed to match session event.");
 			ret = -2;
@@ -49,7 +49,7 @@ int message_handle_event(const tsip_event_t *sipevent)
 		else{
 			/* it's a "server-side-session" */
 			session_t* _session;
-			if((_session = session_server_create(st_message, sipevent->ss)) && (session = _session)){
+			if((_session = session_server_create(st_message, _event->ss)) && (session = _session)){
 				tsk_list_push_back_data(ctx->sessions, (void**)&_session);
 			}
 			else{
@@ -62,18 +62,10 @@ int message_handle_event(const tsip_event_t *sipevent)
 	
 
 	switch(msg_event->type){
-		
-		/* Informational */
-		case tsip_o_message: /* Outgoing MESSAGE */
-			{	/* Request successfully sent (you cannot suppose that the remote peer has received the request) ==> Informational */
-				TSK_DEBUG_INFO("Transport layer successfully sent MESSAGE request");
-				break;
-			}
-
 		case tsip_ao_message: /* Answer to outgoing MESSAGE */
 			{
-				TSK_DEBUG_INFO("Event: Answer to outgoing MESSAGE. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
-				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
+				TSK_DEBUG_INFO("Event: Answer to outgoing MESSAGE. Code=%d", TSIP_RESPONSE_CODE(_event->sipmessage));
+				if(TSIP_RESPONSE_IS_2XX(_event->sipmessage)){
 					TSK_DEBUG_INFO("Message successfully sent.");
 				}
 				break;
@@ -81,11 +73,11 @@ int message_handle_event(const tsip_event_t *sipevent)
 
 		case tsip_i_message: /* Incoming MESSAGE */
 			{
-				const char* content_type = TSIP_MESSAGE_CONTENT_TYPE(sipevent->sipmessage);
+				const char* content_type = TSIP_MESSAGE_CONTENT_TYPE(_event->sipmessage);
 
 				TSK_DEBUG_INFO("Event: Incoming MESSAGE.");
-				if(TSIP_MESSAGE_HAS_CONTENT(sipevent->sipmessage)){
-					const tsk_buffer_t* content = TSIP_MESSAGE_CONTENT(sipevent->sipmessage);
+				if(TSIP_MESSAGE_HAS_CONTENT(_event->sipmessage)){
+					const tsk_buffer_t* content = TSIP_MESSAGE_CONTENT(_event->sipmessage);
 					TSK_DEBUG_INFO("MESSAGE Content-Type: %s", content_type);
 					TSK_DEBUG_INFO("MESSAGE Content: %s", content->data);
 				}
@@ -102,13 +94,6 @@ int message_handle_event(const tsip_event_t *sipevent)
 						TSIP_ACTION_SET_HEADER("In-Reply-To", "apb03a0s09dkjdfglkj49112"),// just for test
 						TSIP_ACTION_SET_NULL());
 					}
-				break;
-			}
-
-		/* Server events (For whose dev. Server Side IMS Services) */
-		case tsip_ai_message: /* Answer to Incoming MESSAGE */
-			{	
-				TSK_DEBUG_WARN("Event not supported by Client Framework.");
 				break;
 			}
 

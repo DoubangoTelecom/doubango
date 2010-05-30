@@ -232,6 +232,9 @@ int tsip_dialog_options_Started_2_Sending_X_sendOPTIONS(va_list *app)
 	TSIP_DIALOG(self)->running = tsk_true;
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
+	/* alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connecting, "Dialog connecting");
+
 	return send_OPTIONS(self);
 }
 
@@ -244,7 +247,7 @@ int tsip_dialog_options_Started_2_Receiving_X_recvOPTIONS(va_list *app)
 
 	/* Alert the user. */
 	TSIP_DIALOG_OPTIONS_SIGNAL(self, tsip_i_options, 
-			tsip_event_code_request_incoming, "Incoming Request.", request);
+			tsip_event_code_dialog_request_incoming, "Incoming Request.", request);
 
 	return send_response(self, 200, "OK", request); // Wait for accept
 }

@@ -237,9 +237,7 @@ namespace test
                         session.Reject();
                     }
                     break;
-                case tsip_message_event_type_t.tsip_ai_message:
                 case tsip_message_event_type_t.tsip_ao_message:
-                case tsip_message_event_type_t.tsip_o_message:
                     break;
             }
 

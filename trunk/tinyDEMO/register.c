@@ -23,43 +23,43 @@
 
 extern ctx_t* ctx;
 
-int register_handle_event(const tsip_event_t *sipevent)
+int register_handle_event(const tsip_event_t *_event)
 {
-	const tsip_register_event_t* reg_event = TSIP_REGISTER_EVENT(sipevent);
+	const tsip_register_event_t* reg_event = TSIP_REGISTER_EVENT(_event);
 	const session_t* session;
 	tsip_ssession_id_t sid;
 
 	/* Find associated session */
-	sid = tsip_ssession_get_id(sipevent->ss);
+	sid = tsip_ssession_get_id(_event->ss);
 	if(!(session = session_get_by_sid(ctx->sessions, sid))){
 		TSK_DEBUG_WARN("Failed to match session event.");
 		return -1;
 	}
 
-	switch(reg_event->type){
-		
-		/* Informational */
-		case tsip_o_register: /* Outgoing REGISTER */
-		case tsip_o_unregister: /* Outgoing REGISTER */
-			{	/* Request successfully sent (you cannot suppose that the remote peer has received the request) ==> Informational */
-				TSK_DEBUG_INFO("Transport layer successfully sent (un)REGISTER request");
-				break;
-			}
-		
+	switch(reg_event->type){		
 		case tsip_ao_register: /* Answer to outgoing REGISTER */
 			{
-				TSK_DEBUG_INFO("Event: Answer to outgoing REGISTER. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
-				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
-					SESSION(session)->connected = tsk_true;
+				if(_event->sipmessage){
+					if(TSIP_MESSAGE_IS_RESPONSE(_event->sipmessage)){
+						TSK_DEBUG_INFO("Event: Answer to outgoing REGISTER. Code=%d and phrase=%s", 
+							_event->sipmessage->line.response.status_code, _event->sipmessage->line.response.reason_phrase);
+					}
+					else{
+						// request
+					}
 				}
 				break;
 			}
-		
 		case tsip_ao_unregister: /* Answer to outgoing unREGISTER */
 			{
-				TSK_DEBUG_INFO("Event: Answer to outgoing unREGISTER. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
-				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
-					SESSION(session)->connected = tsk_false;
+				if(_event->sipmessage){
+					if(TSIP_MESSAGE_IS_RESPONSE(_event->sipmessage)){
+						TSK_DEBUG_INFO("Event: Answer to outgoing unREGISTER. Code=%d and phrase=%s", 
+							_event->sipmessage->line.response.status_code, _event->sipmessage->line.response.reason_phrase);
+					}
+					else{
+						// request
+					}
 				}
 				break;
 			}
@@ -67,8 +67,6 @@ int register_handle_event(const tsip_event_t *sipevent)
 		/* Server events (For whose dev. Server Side IMS Services) */
 		case tsip_i_register: /* Incoming REGISTER */
 		case tsip_i_unregister: /* Incoming unREGISTER */
-		case tsip_ai_register: /* Answer to Incoming REGISTER */
-		case tsip_ai_unregister: /* Answer to Incoming unREGISTER */
 			{	
 				TSK_DEBUG_WARN("Event not support by Client Framework.");
 				break;

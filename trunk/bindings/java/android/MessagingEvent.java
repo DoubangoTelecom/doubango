@@ -44,7 +44,7 @@ public class MessagingEvent extends SipEvent {
 
   public MessagingSession takeSessionOwnership() {
     long cPtr = tinyWRAPJNI.MessagingEvent_takeSessionOwnership(swigCPtr, this);
-    return (cPtr == 0) ? null : new MessagingSession(cPtr, false);
+    return (cPtr == 0) ? null : new MessagingSession(cPtr, true);
   }
 
 }

@@ -319,6 +319,9 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_setToUri")]
   public static extern bool SipSession_setToUri(HandleRef jarg1, string jarg2);
 
+  [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_setSilentHangup")]
+  public static extern bool SipSession_setSilentHangup(HandleRef jarg1, bool jarg2);
+
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipSession_getId")]
   public static extern uint SipSession_getId(HandleRef jarg1);
 
@@ -525,6 +528,36 @@ class tinyWRAPPINVOKE {
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_SipStack_stop")]
   public static extern bool SipStack_stop(HandleRef jarg1);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_transport_error_get")]
+  public static extern int tsip_event_code_dialog_transport_error_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_global_error_get")]
+  public static extern int tsip_event_code_global_error_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_message_error_get")]
+  public static extern int tsip_event_code_dialog_message_error_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_request_incoming_get")]
+  public static extern int tsip_event_code_dialog_request_incoming_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_request_cancelled_get")]
+  public static extern int tsip_event_code_dialog_request_cancelled_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_request_sent_get")]
+  public static extern int tsip_event_code_dialog_request_sent_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_connecting_get")]
+  public static extern int tsip_event_code_dialog_connecting_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_connected_get")]
+  public static extern int tsip_event_code_dialog_connected_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_terminating_get")]
+  public static extern int tsip_event_code_dialog_terminating_get();
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_tsip_event_code_dialog_terminated_get")]
+  public static extern int tsip_event_code_dialog_terminated_get();
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_DialogEventUpcast")]
   public static extern IntPtr DialogEventUpcast(IntPtr objectRef);

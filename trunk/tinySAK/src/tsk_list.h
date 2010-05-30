@@ -31,6 +31,7 @@
 #define _TINYSAK_LIST_H_
 
 #include "tinysak_config.h"
+#include "tsk_mutex.h"
 #include "tsk_object.h"
 
 TSK_BEGIN_DECLS
@@ -61,8 +62,10 @@ tsk_list_item_t;
 typedef struct tsk_list_s
 {
 	TSK_DECLARE_OBJECT;
+	
 	tsk_list_item_t* head; /**< The head of the linked list. */
 	tsk_list_item_t* tail; /**< The tail of the linked list. */
+	tsk_mutex_handle_t* mutex; /**< on-demand mutex. */
 }
 tsk_list_t;
 
@@ -85,6 +88,9 @@ typedef int (*tsk_list_func_predicate)(const tsk_list_item_t* item, const void* 
 
 TINYSAK_API tsk_list_t* tsk_list_create();
 TINYSAK_API tsk_list_item_t* tsk_list_item_create();
+
+TINYSAK_API int tsk_list_lock(tsk_list_t* list);
+TINYSAK_API int tsk_list_unlock(tsk_list_t* list);
 
 TINYSAK_API void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item);
 TINYSAK_API tsk_list_item_t* tsk_list_pop_item_by_data(tsk_list_t* list, const tsk_object_t * tskobj);

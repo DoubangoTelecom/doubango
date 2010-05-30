@@ -25,14 +25,14 @@ extern ctx_t* ctx;
 
 int options_hack_aor(const tsip_response_t* resp);
 
-int options_handle_event(const tsip_event_t *sipevent)
+int options_handle_event(const tsip_event_t *_event)
 {
-	const tsip_options_event_t* opt_event = TSIP_OPTIONS_EVENT(sipevent);
+	const tsip_options_event_t* opt_event = TSIP_OPTIONS_EVENT(_event);
 	const session_t* session;
 	tsip_ssession_id_t sid;
 
 	/* Find associated session */
-	sid = tsip_ssession_get_id(sipevent->ss);
+	sid = tsip_ssession_get_id(_event->ss);
 	if(!(session = session_get_by_sid(ctx->sessions, sid))){
 		TSK_DEBUG_WARN("Failed to match session event.");
 		return -1;
@@ -40,13 +40,11 @@ int options_handle_event(const tsip_event_t *sipevent)
 
 	switch(opt_event->type){
 		case tsip_i_options: /* incoming OPTIONS */
-		case tsip_ai_options: /* answer to incoming OPTIONS */
-		case tsip_o_options: /* outgoing OPTIONS */
 			break;
 		case tsip_ao_options: /* answer to outgoing OPTIONS */
 #if HACK_AOR
-			if(TSIP_MESSAGE_IS_RESPONSE(sipevent->sipmessage)){
-				options_hack_aor(sipevent->sipmessage);
+			if(TSIP_MESSAGE_IS_RESPONSE(_event->sipmessage)){
+				options_hack_aor(_event->sipmessage);
 			}
 #endif
 			break;

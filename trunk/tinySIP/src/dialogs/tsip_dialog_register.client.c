@@ -47,7 +47,7 @@
 #include "tsk_debug.h"
 #include "tsk_time.h"
 
-#define DEBUG_STATE_MACHINE											0
+#define DEBUG_STATE_MACHINE											1
 #define TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(register, TX)
 #define TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, message)	\
 	tsip_register_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)
@@ -74,14 +74,25 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app);
 
 
 /* ======================== conds ======================== */
-tsk_bool_t _fsm_cond_unregistering(tsip_dialog_register_t* dialog, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_unregistering(tsip_dialog_register_t* dialog, tsip_message_t* message)
 {
 	return dialog->unregistering;
 }
-int _fsm_cond_registering(tsip_dialog_register_t* dialog, tsip_message_t* message)
+static tsk_bool_t _fsm_cond_registering(tsip_dialog_register_t* dialog, tsip_message_t* message)
 {
 	return !_fsm_cond_unregistering(dialog, message);
 }
+
+static tsk_bool_t _fsm_cond_silent_hangup(tsip_dialog_register_t* dialog, tsip_message_t* message)
+{
+	return TSIP_DIALOG(dialog)->ss->silent_hangup;
+}
+static tsk_bool_t _fsm_cond_not_silent_hangup(tsip_dialog_register_t* dialog, tsip_message_t* message)
+{
+	return !TSIP_DIALOG(dialog)->ss->silent_hangup;
+}
+#define _fsm_cond_silent_shutdown _fsm_cond_silent_hangup
+#define _fsm_cond_not_silent_shutdown _fsm_cond_not_silent_hangup
 
 /* ======================== actions ======================== */
 typedef enum _fsm_action_e
@@ -262,11 +273,15 @@ int tsip_dialog_register_init(tsip_dialog_register_t *self)
 			* === Any === 
 			*/
 			// Any -> (hangup) -> Trying
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_hangup, _fsm_state_Trying, tsip_dialog_register_Any_2_Trying_X_hangup, "tsip_dialog_register_Any_2_Trying_X_hangup"),
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_not_silent_hangup, _fsm_state_Trying, tsip_dialog_register_Any_2_Trying_X_hangup, "tsip_dialog_register_Any_2_Trying_X_hangup"),
+			// Any -> (silenthangup) -> Terminated
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_hangup, _fsm_cond_silent_hangup, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_Any_2_Trying_X_silenthangup"),
 			// Any -> (shutdown) -> Trying
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_state_Trying, tsip_dialog_register_Any_2_Trying_X_shutdown, "tsip_dialog_register_Any_2_Trying_X_shutdown"),
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_not_silent_shutdown, _fsm_state_Trying, tsip_dialog_register_Any_2_Trying_X_shutdown, "tsip_dialog_register_Any_2_Trying_X_shutdown"),
+			// Any -> (silentshutdown) -> Terminated
+			TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_shutdown, _fsm_cond_silent_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_Any_2_Trying_X_silentshutdown"),
 			// Any -> (shutdown timedout) -> Terminated
-			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown_timedout, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_** Shutdown timedout"),			
+			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown_timedout, _fsm_state_Terminated, tsk_null, "tsip_dialog_register_shutdown_timedout"),			
 			// Any -> (transport error) -> Terminated
 			TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, tsip_dialog_register_Any_2_Terminated_X_transportError, "tsip_dialog_register_Any_2_Terminated_X_transportError"),
 			// Any -> (error) -> Terminated
@@ -304,6 +319,9 @@ int tsip_dialog_register_Started_2_Trying_X_register(va_list *app)
 	TSIP_DIALOG(self)->running = tsk_true;
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
+	/* alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connecting, "Dialog connecting");
+
 	return send_REGISTER(self, tsk_true);
 }
 
@@ -325,6 +343,8 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	int ret;
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	tsk_bool_t first_time_to_connect = (TSIP_DIALOG(self)->state == tsip_initial);
 
 	/*	- Set P-associated-uriS
 	*	- Update service-routes
@@ -375,7 +395,7 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	}
 
 	/* 3GPP TS 24.229 - 5.1.1.2 Initial registration */
-	if((TSIP_DIALOG(self)->state ==tsip_initial)){
+	if(first_time_to_connect){
 		tsk_bool_t barred = tsk_true;
 		const tsk_list_item_t *item;
 		const tsip_uri_t *uri;
@@ -409,7 +429,7 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 		}
 	}
 	
-	/* Update the dialog state. */
+	/* Update the dialog state */
 	if((ret = tsip_dialog_update(TSIP_DIALOG(self), response))){
 		return ret;
 	}
@@ -421,9 +441,13 @@ int tsip_dialog_register_Trying_2_Connected_X_2xx(va_list *app)
 	self->timerrefresh.timeout = tsip_dialog_get_newdelay(TSIP_DIALOG(self), response);
 	TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(refresh);
 
-	/* Alert the user. */
+	/* Alert the user (session) */
 	TSIP_DIALOG_REGISTER_SIGNAL(self, tsip_ao_register, 
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	/* Alert the user (dialog) */
+	if(first_time_to_connect){
+		TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
+	}
 	
 	return ret;
 }
@@ -435,7 +459,7 @@ int tsip_dialog_register_Trying_2_Terminated_X_2xx(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
 
-	/* Alert the user. */
+	/* Alert the user */
 	TSIP_DIALOG_REGISTER_SIGNAL(self, tsip_ao_unregister, 
 		TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
 
@@ -530,8 +554,7 @@ int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app)
 	ret = tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 
 	/* Alert the user. */
-	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-		tsip_event_code_request_cancelled, "Registration cancelled", tsk_null);
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_cancelled, "Registration cancelled");
 
 	return ret;
 }
@@ -567,6 +590,9 @@ int tsip_dialog_register_Any_2_Trying_X_hangup(va_list *app)
 	/* Set  current action */
 	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
 
+		/* Alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+
 	self->unregistering = tsk_true;
 	return send_REGISTER(self, tsk_true);
 }
@@ -580,6 +606,9 @@ int tsip_dialog_register_Any_2_Trying_X_shutdown(va_list *app)
 	/* schedule shutdow timeout */
 	TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(shutdown);
 
+	/* alert user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+
 	self->unregistering = tsk_true;
 	return send_REGISTER(self, tsk_true);
 }
@@ -592,8 +621,7 @@ int tsip_dialog_register_Any_2_Terminated_X_transportError(va_list *app)
 	/*const tsip_message_t *message = va_arg(*app, const tsip_message_t *);*/
 
 	/* Alert the user. */
-	TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-		tsip_event_code_transport_error, "Transport error.", tsk_null);
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_transport_error, "Transport error.");
 
 	return 0;
 }
@@ -611,8 +639,7 @@ int tsip_dialog_register_Any_2_Terminated_X_Error(va_list *app)
 				TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 	}
 	else{
-		TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-			tsip_event_code_global_error, "Global error.", tsk_null);
+		TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_global_error, "Global error.");
 	}
 
 	return 0;
@@ -716,12 +743,10 @@ int send_REGISTER(tsip_dialog_register_t *self, tsk_bool_t initial)
 		}
 		
 		if(!(ret = tsip_dialog_request_send(TSIP_DIALOG(self), request))){
-			TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_o_unregister : tsip_o_register, 
-				tsip_event_code_request_sent, "(un)REGISTER request successfully sent.", request);
+			TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_sent, "(un)REGISTER request successfully sent.");
 		}
 		else{
-			TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register, 
-				tsip_event_code_transport_error, "Transport error.", tsk_null);
+			TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_transport_error, "Transport error.");
 		}
 		
 		TSK_OBJECT_SAFE_FREE(request);
@@ -748,8 +773,7 @@ int tsip_dialog_register_OnTerminated(tsip_dialog_register_t *self)
 	}
 
 	/* Alert the user */
-	TSIP_DIALOG_SIGNAL(self, tsip_event_dialog, 
-			tsip_event_code_dialog_terminated, "Dialog terminated");
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, "Dialog terminated");
 	
 	/* Remove from the dialog layer. */
 	return tsip_dialog_remove(TSIP_DIALOG(self));

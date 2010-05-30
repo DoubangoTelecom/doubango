@@ -86,6 +86,11 @@ public class SipSession : IDisposable {
     return ret;
   }
 
+  public bool setSilentHangup(bool silent) {
+    bool ret = tinyWRAPPINVOKE.SipSession_setSilentHangup(swigCPtr, silent);
+    return ret;
+  }
+
   public uint getId() {
     uint ret = tinyWRAPPINVOKE.SipSession_getId(swigCPtr);
     return ret;

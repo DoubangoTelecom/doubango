@@ -53,58 +53,77 @@ int session_handle_event(const tsip_event_t *sipevent);
 int session_tostring(const session_t* session);
 
 /* our SIP callback function */
-int stack_callback(const tsip_event_t *sipevent)
+int stack_callback(const tsip_event_t *_event)
 {
 	int ret = 0;
 
-	if(!sipevent){ /* should never happen ...but who know? */
+	if(!_event){ /* should never happen ...but who know? */
 		TSK_DEBUG_WARN("Null SIP event.");
 		return -1;
 	}
 
 	tsk_safeobj_lock(ctx);
 
-	switch(sipevent->type){
+	switch(_event->type){
 		case tsip_event_register:
 			{	/* REGISTER */
-				ret = register_handle_event(sipevent);
+				ret = register_handle_event(_event);
 				break;
 			}
 		case tsip_event_invite:
 			{	/* INVITE */
-				ret = invite_handle_event(sipevent);
+				ret = invite_handle_event(_event);
 				break;
 			}
 		case tsip_event_message:
 			{	/* MESSAGE */
-				ret = message_handle_event(sipevent);
+				ret = message_handle_event(_event);
 				break;
 			}
 		case tsip_event_options:
 			{ /* OPTIONS */
-				ret = options_handle_event(sipevent);
+				ret = options_handle_event(_event);
 				break;
 			}
 		case tsip_event_publish:
 			{ /* PUBLISH */
-				ret = publish_handle_event(sipevent);
+				ret = publish_handle_event(_event);
 				break;
 			}
 		case tsip_event_subscribe:
 			{	/* SUBSCRIBE */
-				ret = subscribe_handle_event(sipevent);
+				ret = subscribe_handle_event(_event);
 				break;
 			}
 
 		case tsip_event_dialog:
 			{	/* Common to all dialogs */
-				ret = session_handle_event(sipevent);
+				ret = session_handle_event(_event);
+				break;
+			}
+
+		case tsip_event_stack:
+			{
+				switch(_event->code){
+					case tsip_event_code_stack_started:
+						TSK_DEBUG_INFO("Stack started");
+						break;
+					case tsip_event_code_stack_stopped:
+						TSK_DEBUG_INFO("Stack stopped");
+						break;
+					case tsip_event_code_stack_failed_to_start:
+						TSK_DEBUG_INFO("Stack failed to start");
+						break;
+					case tsip_event_code_stack_failed_to_stop:
+						TSK_DEBUG_INFO("Stack failed to stop");
+						break;
+				}
 				break;
 			}
 
 		default:
 			{	/* Unsupported */
-				TSK_DEBUG_WARN("%d not supported as SIP event.", sipevent->type);
+				TSK_DEBUG_WARN("%d not supported as SIP event.", _event->type);
 				ret = -3;
 				break;
 			}
@@ -438,27 +457,28 @@ int session_tostring(const session_t* session)
 
 
 /* handle events -common to all sessions */
-int session_handle_event(const tsip_event_t *sipevent)
+int session_handle_event(const tsip_event_t *_event)
 {
 	const session_t* session;
 
 	/* Find associated session */
-	if(!(session = session_get_by_sid(ctx->sessions, tsip_ssession_get_id(sipevent->ss)))){
+	if(!(session = session_get_by_sid(ctx->sessions, tsip_ssession_get_id(_event->ss)))){
 		TSK_DEBUG_WARN("Failed to match session event.");
 		return -1;
 	}
-	switch(sipevent->code)
+	switch(_event->code)
 	{
 		/* === 7xx ==> errors ===  */
-	case tsip_event_code_transport_error:
-	case tsip_event_code_global_error:
-	case tsip_event_code_message_error:
+	case tsip_event_code_dialog_transport_error:
+	case tsip_event_code_dialog_global_error:
+	case tsip_event_code_dialog_message_error:
+		/* do not guess that the dialog is terminated, wait for "tsip_event_code_dialog_terminated" event */
 		break;
 
 		/* === 8xx ==> success ===  */
-	case tsip_event_code_request_incoming:
-	case tsip_event_code_request_cancelled:
-	case tsip_event_code_request_sent:
+	case tsip_event_code_dialog_request_incoming:
+	case tsip_event_code_dialog_request_cancelled:
+	case tsip_event_code_dialog_request_sent:
 		break;
 
 		/* === 9xx ==> Informational ===  */
@@ -468,6 +488,12 @@ int session_handle_event(const tsip_event_t *sipevent)
 			tsk_list_remove_item_by_data(ctx->sessions, session);
 			break;
 		}
+
+	case tsip_event_code_dialog_connected:
+		((session_t*)session)->connected = tsk_true;
+		break;
+	case tsip_event_code_dialog_terminating:
+		break;
 	}
 	return 0;
 }
@@ -574,6 +600,13 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 				}
 			case opt_payload:
 				{	/* Will be handled by the caller */
+					break;
+				}
+			case opt_silent:
+				{	/* valueless option */
+					ret = tsip_ssession_set(session->handle, 
+							TSIP_SSESSION_SET_SILENT_HANGUP(tsk_true),
+							TSIP_SSESSION_SET_NULL());
 					break;
 				}
 			case opt_to:

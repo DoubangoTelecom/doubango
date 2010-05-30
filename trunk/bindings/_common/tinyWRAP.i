@@ -3,6 +3,9 @@
 
 %newobject getSipHeaderValue;
 %newobject getSipHeaderParamValue;
+// don't seem to work
+%newobject takeSessionOwnership;
+
 
 /* Sip Stack */
 %include SipStack.i

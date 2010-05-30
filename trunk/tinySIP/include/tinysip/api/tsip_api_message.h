@@ -41,8 +41,6 @@ TSIP_BEGIN_DECLS
 typedef enum tsip_message_event_type_e
 {
 	tsip_i_message,
-	tsip_ai_message,
-	tsip_o_message,
 	tsip_ao_message,
 }
 tsip_message_event_type_t;

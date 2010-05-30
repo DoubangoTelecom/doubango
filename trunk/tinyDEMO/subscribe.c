@@ -23,14 +23,14 @@
 
 extern ctx_t* ctx;
 
-int subscribe_handle_event(const tsip_event_t *sipevent)
+int subscribe_handle_event(const tsip_event_t *_event)
 {
-	const tsip_subscribe_event_t* sub_event = TSIP_SUBSCRIBE_EVENT(sipevent);
+	const tsip_subscribe_event_t* sub_event = TSIP_SUBSCRIBE_EVENT(_event);
 	const session_t* session;
 	tsip_ssession_id_t sid;
 
 	/* Find associated session */
-	sid = tsip_ssession_get_id(sipevent->ss);
+	sid = tsip_ssession_get_id(_event->ss);
 	if(!(session = session_get_by_sid(ctx->sessions, sid))){
 		TSK_DEBUG_WARN("Failed to match session event.");
 		return -1;
@@ -38,29 +38,30 @@ int subscribe_handle_event(const tsip_event_t *sipevent)
 	
 
 	switch(sub_event->type){
-		
-		/* Informational */
-		case tsip_o_subscribe: /* Outgoing SUBSCRIBE */
-		case tsip_o_unsubscribe: /* Outgoing SUBSCRIBE */
-			{	/* Request successfully sent (you cannot suppose that the remote peer has received the request) ==> Informational */
-				TSK_DEBUG_INFO("Transport layer successfully sent (un)SUBSCRIBE request");
-				break;
-			}
-
 		case tsip_ao_subscribe: /* Answer to outgoing SUBSCRIBE */
 			{
-				TSK_DEBUG_INFO("Event: Answer to outgoing SUBSCRIBE. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
-				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
-					SESSION(session)->connected = tsk_true;
+				if(_event->sipmessage){
+					if(TSIP_MESSAGE_IS_RESPONSE(_event->sipmessage)){
+						TSK_DEBUG_INFO("Event: Answer to outgoing SUBSCRIBE. Code=%d and phrase=%s", 
+							_event->sipmessage->line.response.status_code, _event->sipmessage->line.response.reason_phrase);
+					}
+					else{
+						// request
+					}
 				}
 				break;
 			}
 		
 		case tsip_ao_unsubscribe: /* Answer to outgoing unSUBSCRIBE */
 			{
-				TSK_DEBUG_INFO("Event: Answer to outgoing unSUBSCRIBE. Code=%d", TSIP_RESPONSE_CODE(sipevent->sipmessage));
-				if(TSIP_RESPONSE_IS_2XX(sipevent->sipmessage)){
-					SESSION(session)->connected = tsk_false;
+				if(_event->sipmessage){
+					if(TSIP_MESSAGE_IS_RESPONSE(_event->sipmessage)){
+						TSK_DEBUG_INFO("Event: Answer to outgoing unSUBSCRIBE. Code=%d and phrase=%s", 
+							_event->sipmessage->line.response.status_code, _event->sipmessage->line.response.reason_phrase);
+					}
+					else{
+						// request
+					}
 				}
 				break;
 			}
@@ -68,9 +69,9 @@ int subscribe_handle_event(const tsip_event_t *sipevent)
 		case tsip_i_notify: /* Incoming NOTIFY */
 			{
 				TSK_DEBUG_INFO("Event: Incoming NOTIFY.");
-				if(TSIP_MESSAGE_HAS_CONTENT(sipevent->sipmessage)){
-					const tsk_buffer_t* content = TSIP_MESSAGE_CONTENT(sipevent->sipmessage);
-					TSK_DEBUG_INFO("NOTIFY Content-Type: %s", TSIP_MESSAGE_CONTENT_TYPE(sipevent->sipmessage));
+				if(TSIP_MESSAGE_HAS_CONTENT(_event->sipmessage)){
+					const tsk_buffer_t* content = TSIP_MESSAGE_CONTENT(_event->sipmessage);
+					TSK_DEBUG_INFO("NOTIFY Content-Type: %s", TSIP_MESSAGE_CONTENT_TYPE(_event->sipmessage));
 					TSK_DEBUG_INFO("NOTIFY Content: %s", content->data);
 				}
 				break;
@@ -79,8 +80,6 @@ int subscribe_handle_event(const tsip_event_t *sipevent)
 		/* Server events (For whose dev. Server Side IMS Services) */
 		case tsip_i_subscribe: /* Incoming SUBSCRIBE */
 		case tsip_i_unsubscribe: /* Incoming unSUBSCRIBE */
-		case tsip_ai_subscribe: /* Answer to Incoming SUBSCRIBE */
-		case tsip_ai_unsubscribe: /* Answer to Incoming unSUBSCRIBE */
 			{	
 				TSK_DEBUG_WARN("Event not support by Client Framework.");
 				break;

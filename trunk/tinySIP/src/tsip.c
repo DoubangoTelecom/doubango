@@ -29,6 +29,8 @@
  */
 #include "tsip.h"
 
+#include "tinysip/tsip_event.h"
+
 #include "tinysip/parsers/tsip_parser_uri.h"
 
 #include "tinysip/transactions/tsip_transac_layer.h"
@@ -60,6 +62,14 @@ static void *run(void* self);
 /**@defgroup tsip_stack_group 3GPP IMS/LTE Stack
 */
 
+extern tsip_event_t* tsip_event_create(tsip_ssession_t* ss, short code, const char* phrase, const tsip_message_t* sipmessage, tsip_event_type_t type);
+#define TSIP_STACK_SIGNAL(self, code, phrase) \
+	{ \
+		tsip_event_t* e; \
+		if((e = tsip_event_create(tsk_null, code, phrase, tsk_null, tsip_event_stack))){ \
+			TSK_RUNNABLE_ENQUEUE_OBJECT(TSK_RUNNABLE(self), e); \
+		} \
+	}
 
 /* Internal function used to set all user's parameters */
 int __tsip_stack_set(tsip_stack_t *self, va_list* app)
@@ -403,6 +413,8 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	
 	stack->network.proxy_cscf_port = 5060;
 	stack->network.proxy_cscf_type = tnet_socket_type_udp_ipv4;
+	// all events should be delivered to the user before the stack stop
+	tsk_runnable_set_important(TSK_RUNNABLE(stack), tsk_true);
 	
 	/* === DNS context === 
 	* Because of TSIP_STACK_SET_DNS_SERVER(), ctx should be created before calling __tsip_stack_set()
@@ -543,12 +555,16 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		
 		stack->started = tsk_true;
 
+		/* Signal to the end-user that the stack has been started */
+		TSIP_STACK_SIGNAL(self, tsip_event_code_stack_started, "Stack started");
+		
 		TSK_DEBUG_INFO("SIP STACK -- START");
 
 		return ret;
 	}
 
 bail:
+	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_failed_to_start, "Stack failed to start");
 	return ret;
 }
 
@@ -641,6 +657,19 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 			one_failed = tsk_true;
 		}
 
+		/* Signal to the end-user that the stack has been stopped 
+		* should be done before tsk_runnable_stop() which will stop the thread
+		* responsible for the callbacks. The enqueued data have been marked as "important".
+		* As both the timer manager and the transport layer have been stoped there is no
+		* chance to got additional events */
+		if(one_failed){
+			TSIP_STACK_SIGNAL(self, tsip_event_code_stack_failed_to_stop, "Stack failed to stop");
+		}
+		else{
+			TSIP_STACK_SIGNAL(self, tsip_event_code_stack_stopped, "Stack stopped");
+		}
+
+		/* Stop runnable (run() thread) */
 		if((ret = tsk_runnable_stop(TSK_RUNNABLE(stack)))){
 			TSK_DEBUG_WARN("Failed to stop the stack");
 			one_failed = tsk_true;
@@ -735,6 +764,7 @@ static void *run(void* self)
 	if((curr = TSK_RUNNABLE_POP_FIRST(stack))){
 		tsip_event_t *sipevent = (tsip_event_t*)curr->data;
 		if(stack->callback){
+			sipevent->userdata = stack->userdata; // needed by sessionless events
 			stack->callback(sipevent);
 		}				
 		tsk_object_unref(curr);

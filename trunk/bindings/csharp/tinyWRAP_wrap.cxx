@@ -1096,6 +1096,20 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_setToUri(void * jarg1, cha
 }
 
 
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_setSilentHangup(void * jarg1, unsigned int jarg2) {
+  unsigned int jresult ;
+  SipSession *arg1 = (SipSession *) 0 ;
+  bool arg2 ;
+  bool result;
+  
+  arg1 = (SipSession *)jarg1; 
+  arg2 = jarg2 ? true : false; 
+  result = (bool)(arg1)->setSilentHangup(arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
 SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipSession_getId(void * jarg1) {
   unsigned int jresult ;
   SipSession *arg1 = (SipSession *) 0 ;
@@ -1961,6 +1975,106 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_SipStack_stop(void * jarg1) {
   
   arg1 = (SipStack *)jarg1; 
   result = (bool)(arg1)->stop();
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_transport_error_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 702;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_global_error_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 703;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_message_error_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 704;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_incoming_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 800;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_cancelled_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 801;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_request_sent_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 802;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_connecting_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 900;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_connected_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 901;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_terminating_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 902;
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT int SWIGSTDCALL CSharp_tsip_event_code_dialog_terminated_get() {
+  int jresult ;
+  int result;
+  
+  result = (int) 903;
   jresult = result; 
   return jresult;
 }

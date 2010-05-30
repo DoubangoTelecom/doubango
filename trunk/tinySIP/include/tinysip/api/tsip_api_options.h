@@ -41,8 +41,6 @@ TSIP_BEGIN_DECLS
 typedef enum tsip_options_event_type_e
 {
 	tsip_i_options,
-	tsip_ai_options,
-	tsip_o_options,
 	tsip_ao_options,
 }
 tsip_options_event_type_t;

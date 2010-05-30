@@ -50,20 +50,19 @@ tsip_event_t* tsip_event_create(tsip_ssession_t* ss, short code, const char* phr
 /* initialize a sip sevent */
 int tsip_event_init(tsip_event_t* self, tsip_ssession_t *ss, short code, const char *phrase, const tsip_message_t* sipmessage, tsip_event_type_t type)
 {
-	if(self && ss && ss->stack){
-		self->ss = tsk_object_ref(ss);
-		self->code = code;
-		tsk_strupdate(&(self->phrase), phrase);
-		self->type = type;
-		if(sipmessage){
-			self->sipmessage = tsk_object_ref((void*)sipmessage);
-		}
-		return 0;
-	}
-	else{
+	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+
+	self->ss = tsk_object_ref(ss);
+	self->code = code;
+	tsk_strupdate(&(self->phrase), phrase);
+	self->type = type;
+	if(sipmessage){
+		self->sipmessage = tsk_object_ref((void*)sipmessage);
+	}
+	return 0;
 }
 
 /* signal new event (enque) */

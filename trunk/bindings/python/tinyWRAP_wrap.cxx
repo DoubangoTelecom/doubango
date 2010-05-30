@@ -3591,6 +3591,17 @@ SWIG_AsVal_long (PyObject *obj, long* val)
 
 
 SWIGINTERN int
+SWIG_AsVal_bool (PyObject *obj, bool *val)
+{
+  int r = PyObject_IsTrue(obj);
+  if (r == -1)
+    return SWIG_ERROR;
+  if (val) *val = r ? true : false;
+  return SWIG_OK;
+}
+
+
+SWIGINTERN int
 SWIG_AsVal_int (PyObject * obj, int *val)
 {
   long v;
@@ -3603,17 +3614,6 @@ SWIG_AsVal_int (PyObject * obj, int *val)
     }
   }  
   return res;
-}
-
-
-SWIGINTERN int
-SWIG_AsVal_bool (PyObject *obj, bool *val)
-{
-  int r = PyObject_IsTrue(obj);
-  if (r == -1)
-    return SWIG_ERROR;
-  if (val) *val = r ? true : false;
-  return SWIG_OK;
 }
 
 
@@ -4713,7 +4713,7 @@ SWIGINTERN PyObject *_wrap_MessagingEvent_takeSessionOwnership(PyObject *SWIGUNU
   }
   arg1 = reinterpret_cast< MessagingEvent * >(argp1);
   result = (MessagingSession *)((MessagingEvent const *)arg1)->takeSessionOwnership();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MessagingSession, 0 |  0 );
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MessagingSession, SWIG_POINTER_OWN |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -5419,6 +5419,37 @@ SWIGINTERN PyObject *_wrap_SipSession_setToUri(PyObject *SWIGUNUSEDPARM(self), P
   return resultobj;
 fail:
   if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_SipSession_setSilentHangup(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SipSession *arg1 = (SipSession *) 0 ;
+  bool arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  bool val2 ;
+  int ecode2 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  bool result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OO:SipSession_setSilentHangup",&obj0,&obj1)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_SipSession, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SipSession_setSilentHangup" "', argument " "1"" of type '" "SipSession *""'"); 
+  }
+  arg1 = reinterpret_cast< SipSession * >(argp1);
+  ecode2 = SWIG_AsVal_bool(obj1, &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SipSession_setSilentHangup" "', argument " "2"" of type '" "bool""'");
+  } 
+  arg2 = static_cast< bool >(val2);
+  result = (bool)(arg1)->setSilentHangup(arg2);
+  resultobj = SWIG_From_bool(static_cast< bool >(result));
+  return resultobj;
+fail:
   return NULL;
 }
 
@@ -7322,6 +7353,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"SipSession_setExpires", _wrap_SipSession_setExpires, METH_VARARGS, NULL},
 	 { (char *)"SipSession_setFromUri", _wrap_SipSession_setFromUri, METH_VARARGS, NULL},
 	 { (char *)"SipSession_setToUri", _wrap_SipSession_setToUri, METH_VARARGS, NULL},
+	 { (char *)"SipSession_setSilentHangup", _wrap_SipSession_setSilentHangup, METH_VARARGS, NULL},
 	 { (char *)"SipSession_getId", _wrap_SipSession_getId, METH_VARARGS, NULL},
 	 { (char *)"SipSession_swigregister", SipSession_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_MessagingSession", _wrap_new_MessagingSession, METH_VARARGS, NULL},
@@ -8139,41 +8171,33 @@ SWIG_init(void) {
   SWIG_Python_SetConstant(d, "tsip_event_register",SWIG_From_int(static_cast< int >(tsip_event_register)));
   SWIG_Python_SetConstant(d, "tsip_event_subscribe",SWIG_From_int(static_cast< int >(tsip_event_subscribe)));
   SWIG_Python_SetConstant(d, "tsip_event_dialog",SWIG_From_int(static_cast< int >(tsip_event_dialog)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_transport_error",SWIG_From_int(static_cast< int >(702)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_global_error",SWIG_From_int(static_cast< int >(703)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_message_error",SWIG_From_int(static_cast< int >(704)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_incoming",SWIG_From_int(static_cast< int >(800)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_cancelled",SWIG_From_int(static_cast< int >(801)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_request_sent",SWIG_From_int(static_cast< int >(802)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_connecting",SWIG_From_int(static_cast< int >(900)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_connected",SWIG_From_int(static_cast< int >(901)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_terminating",SWIG_From_int(static_cast< int >(902)));
+  SWIG_Python_SetConstant(d, "tsip_event_code_dialog_terminated",SWIG_From_int(static_cast< int >(903)));
   SWIG_Python_SetConstant(d, "tsip_i_register",SWIG_From_int(static_cast< int >(tsip_i_register)));
-  SWIG_Python_SetConstant(d, "tsip_ai_register",SWIG_From_int(static_cast< int >(tsip_ai_register)));
-  SWIG_Python_SetConstant(d, "tsip_o_register",SWIG_From_int(static_cast< int >(tsip_o_register)));
   SWIG_Python_SetConstant(d, "tsip_ao_register",SWIG_From_int(static_cast< int >(tsip_ao_register)));
   SWIG_Python_SetConstant(d, "tsip_i_unregister",SWIG_From_int(static_cast< int >(tsip_i_unregister)));
-  SWIG_Python_SetConstant(d, "tsip_ai_unregister",SWIG_From_int(static_cast< int >(tsip_ai_unregister)));
-  SWIG_Python_SetConstant(d, "tsip_o_unregister",SWIG_From_int(static_cast< int >(tsip_o_unregister)));
   SWIG_Python_SetConstant(d, "tsip_ao_unregister",SWIG_From_int(static_cast< int >(tsip_ao_unregister)));
   SWIG_Python_SetConstant(d, "tsip_i_subscribe",SWIG_From_int(static_cast< int >(tsip_i_subscribe)));
-  SWIG_Python_SetConstant(d, "tsip_ai_subscribe",SWIG_From_int(static_cast< int >(tsip_ai_subscribe)));
-  SWIG_Python_SetConstant(d, "tsip_o_subscribe",SWIG_From_int(static_cast< int >(tsip_o_subscribe)));
   SWIG_Python_SetConstant(d, "tsip_ao_subscribe",SWIG_From_int(static_cast< int >(tsip_ao_subscribe)));
   SWIG_Python_SetConstant(d, "tsip_i_unsubscribe",SWIG_From_int(static_cast< int >(tsip_i_unsubscribe)));
-  SWIG_Python_SetConstant(d, "tsip_ai_unsubscribe",SWIG_From_int(static_cast< int >(tsip_ai_unsubscribe)));
-  SWIG_Python_SetConstant(d, "tsip_o_unsubscribe",SWIG_From_int(static_cast< int >(tsip_o_unsubscribe)));
   SWIG_Python_SetConstant(d, "tsip_ao_unsubscribe",SWIG_From_int(static_cast< int >(tsip_ao_unsubscribe)));
   SWIG_Python_SetConstant(d, "tsip_i_notify",SWIG_From_int(static_cast< int >(tsip_i_notify)));
-  SWIG_Python_SetConstant(d, "tsip_ai_notify",SWIG_From_int(static_cast< int >(tsip_ai_notify)));
-  SWIG_Python_SetConstant(d, "tsip_o_notify",SWIG_From_int(static_cast< int >(tsip_o_notify)));
   SWIG_Python_SetConstant(d, "tsip_ao_notify",SWIG_From_int(static_cast< int >(tsip_ao_notify)));
   SWIG_Python_SetConstant(d, "tsip_i_publish",SWIG_From_int(static_cast< int >(tsip_i_publish)));
-  SWIG_Python_SetConstant(d, "tsip_ai_publish",SWIG_From_int(static_cast< int >(tsip_ai_publish)));
-  SWIG_Python_SetConstant(d, "tsip_o_publish",SWIG_From_int(static_cast< int >(tsip_o_publish)));
   SWIG_Python_SetConstant(d, "tsip_ao_publish",SWIG_From_int(static_cast< int >(tsip_ao_publish)));
   SWIG_Python_SetConstant(d, "tsip_i_unpublish",SWIG_From_int(static_cast< int >(tsip_i_unpublish)));
-  SWIG_Python_SetConstant(d, "tsip_ai_unpublish",SWIG_From_int(static_cast< int >(tsip_ai_unpublish)));
-  SWIG_Python_SetConstant(d, "tsip_o_unpublish",SWIG_From_int(static_cast< int >(tsip_o_unpublish)));
   SWIG_Python_SetConstant(d, "tsip_ao_unpublish",SWIG_From_int(static_cast< int >(tsip_ao_unpublish)));
   SWIG_Python_SetConstant(d, "tsip_i_message",SWIG_From_int(static_cast< int >(tsip_i_message)));
-  SWIG_Python_SetConstant(d, "tsip_ai_message",SWIG_From_int(static_cast< int >(tsip_ai_message)));
-  SWIG_Python_SetConstant(d, "tsip_o_message",SWIG_From_int(static_cast< int >(tsip_o_message)));
   SWIG_Python_SetConstant(d, "tsip_ao_message",SWIG_From_int(static_cast< int >(tsip_ao_message)));
   SWIG_Python_SetConstant(d, "tsip_i_options",SWIG_From_int(static_cast< int >(tsip_i_options)));
-  SWIG_Python_SetConstant(d, "tsip_ai_options",SWIG_From_int(static_cast< int >(tsip_ai_options)));
-  SWIG_Python_SetConstant(d, "tsip_o_options",SWIG_From_int(static_cast< int >(tsip_o_options)));
   SWIG_Python_SetConstant(d, "tsip_ao_options",SWIG_From_int(static_cast< int >(tsip_ao_options)));
 #if PY_VERSION_HEX >= 0x03000000
   return m;

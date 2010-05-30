@@ -9,11 +9,7 @@
 
 public enum tsip_register_event_type_t {
   tsip_i_register,
-  tsip_ai_register,
-  tsip_o_register,
   tsip_ao_register,
   tsip_i_unregister,
-  tsip_ai_unregister,
-  tsip_o_unregister,
   tsip_ao_unregister
 }

@@ -66,7 +66,8 @@ typedef enum tsip_ssession_param_type_e
 	sstype_to,
 	sstype_from,
 	sstype_nocontact,
-	sstype_expires
+	sstype_expires,
+	sstype_silent_hangup
 }
 tsip_ssession_param_type_t;
 
@@ -79,6 +80,7 @@ tsip_ssession_param_type_t;
 #define TSIP_SSESSION_SET_FROM(FROM_URI_STR)					sstype_from, (const char*)FROM_URI_STR
 #define TSIP_SSESSION_SET_NO_CONTACT(ENABLED_BOOL)				sstype_nocontact, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_SSESSION_SET_EXPIRES(VALUE_UINT)					sstype_expires, (unsigned)VALUE_UINT
+#define TSIP_SSESSION_SET_SILENT_HANGUP(ENABLED_BOOL)			sstype_silent_hangup, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_SSESSION_SET_NULL()								sstype_null
 
 typedef struct tsip_ssession_s
@@ -97,6 +99,7 @@ typedef struct tsip_ssession_s
 	struct tsip_uri_s* from;
 	struct tsip_uri_s* to;
 	int64_t expires;
+	tsk_bool_t silent_hangup;
 }
 tsip_ssession_t;
 

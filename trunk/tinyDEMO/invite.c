@@ -23,7 +23,7 @@
 
 extern ctx_t* ctx;
 
-int invite_handle_event(const tsip_event_t *sipevent)
+int invite_handle_event(const tsip_event_t *_event)
 {
 	return 0;
 }
