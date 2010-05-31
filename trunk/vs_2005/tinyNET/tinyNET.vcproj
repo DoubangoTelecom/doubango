@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="ws2_32.lib Iphlpapi.lib $(OutDir)\tinySAK.lib $(DOUBANGO_HOME)\thirdparties\win32\lib\openssl\ssleay32.lib $(DOUBANGO_HOME)\thirdparties\win32\lib\openssl\libeay32.lib"
+				AdditionalDependencies="ws2_32.lib Iphlpapi.lib $(OutDir)\tinySAK.lib ..\..\thirdparties\win32\lib\openssl\ssleay32.lib ..\..\thirdparties\win32\lib\openssl\libeay32.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
