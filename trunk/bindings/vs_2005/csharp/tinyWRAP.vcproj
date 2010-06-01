@@ -179,23 +179,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\_common\MessagingEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\PublicationEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\PublicationSession.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\RegistrationEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\RegistrationSession.cxx"
+				RelativePath="..\..\_common\DDebug.cxx"
 				>
 			</File>
 			<File
@@ -204,10 +188,6 @@
 			</File>
 			<File
 				RelativePath="..\..\_common\SipCallback.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\SipDebug.cxx"
 				>
 			</File>
 			<File
@@ -231,14 +211,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\_common\SubscriptionEvent.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\SubscriptionSession.cxx"
-				>
-			</File>
-			<File
 				RelativePath="..\..\csharp\tinyWRAP_wrap.cxx"
 				>
 			</File>
@@ -257,23 +229,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\_common\MessagingEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\PublicationEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\PublicationSession.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\RegistrationEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\RegistrationSession.h"
+				RelativePath="..\..\_common\DDebug.h"
 				>
 			</File>
 			<File
@@ -282,10 +238,6 @@
 			</File>
 			<File
 				RelativePath="..\..\_common\SipCallback.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\SipDebug.h"
 				>
 			</File>
 			<File
@@ -306,14 +258,6 @@
 			</File>
 			<File
 				RelativePath="..\..\_common\SipUri.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\SubscriptionEvent.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\_common\SubscriptionSession.h"
 				>
 			</File>
 			<File

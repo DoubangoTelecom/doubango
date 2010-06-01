@@ -6,13 +6,11 @@
 #include "SipSession.h"
 
 #include "SipCallback.h"
-#include "SipDebug.h"
 #include "SafeObject.h"
 #include "SipStack.h"
 %}
 
 /* turn on director wrapping Callback */
-%feature("director") SipDebugCallback;
 %feature("director") SipCallback;
 
 
@@ -23,7 +21,6 @@
 %include "SipSession.h"
 
 %include "SipCallback.h"
-%include "SipDebug.h"
 %include "SafeObject.h"
 %include "SipStack.h"
 %clearnodefaultctor;

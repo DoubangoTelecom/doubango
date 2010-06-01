@@ -11,7 +11,7 @@ swig -c++ -java -package org.doubango.tinyWRAP -outdir java/android -o java/andr
 sed -i 's/dynamic_cast/static_cast/g' java/android/tinyWRAP_wrap.cxx
 sed -i 's/AttachCurrentThread((void \*\*)/AttachCurrentThread((JNIEnv \*\*)/g' java/android/tinyWRAP_wrap.cxx
 sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/SipCallback.java
-sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/SipDebugCallback.java
+sed -i 's/_director_connect(this, swigCPtr, swigCMemOwn, true)/_director_connect(this, swigCPtr, swigCMemOwn, false)/g' java/android/DDebugCallback.java
 
 
 ##### Python

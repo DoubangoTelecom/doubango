@@ -531,10 +531,13 @@ int tsip_transport_layer_shutdown(tsip_transport_layer_t* self)
 			return 0;
 		}
 		else{
-			return 0; /* Already running */
+			return 0; /* not running */
 		}
 	}
-	return -1;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 }
 
 

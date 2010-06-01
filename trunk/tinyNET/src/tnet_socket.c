@@ -248,7 +248,7 @@ static tsk_object_t* tnet_socket_ctor(tsk_object_t * self, va_list * app)
 			}
 
 			/* sets the real socket type (if ipv46) */
-			if(ptr->ai_family == AF_INET6){
+			if(ptr->ai_family == AF_INET6) {
 				TNET_SOCKET_TYPE_SET_IPV6Only(sock->type);
 			}
 			else{

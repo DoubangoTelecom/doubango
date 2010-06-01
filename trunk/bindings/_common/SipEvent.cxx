@@ -74,13 +74,16 @@ const SipMessage* SipEvent::getSipMessage() const
 
 /* ======================== DialogEvent ========================*/
 DialogEvent::DialogEvent(const tsip_event_t *_sipevent)
-:SipEvent(_sipevent)
-{
-}
+:SipEvent(_sipevent){ }
 
-DialogEvent::~DialogEvent()
-{
-}
+DialogEvent::~DialogEvent(){ }
+
+
+/* ======================== DialogEvent ========================*/
+StackEvent::StackEvent(const tsip_event_t *_sipevent)
+:SipEvent(_sipevent){ }
+
+StackEvent::~StackEvent(){ }
 
 
 

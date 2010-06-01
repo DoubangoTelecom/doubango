@@ -10,20 +10,20 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class SafeObject : IDisposable {
+public class DDebugCallback : IDisposable {
   private HandleRef swigCPtr;
   protected bool swigCMemOwn;
 
-  internal SafeObject(IntPtr cPtr, bool cMemoryOwn) {
+  internal DDebugCallback(IntPtr cPtr, bool cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = new HandleRef(this, cPtr);
   }
 
-  internal static HandleRef getCPtr(SafeObject obj) {
+  internal static HandleRef getCPtr(DDebugCallback obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~SafeObject() {
+  ~DDebugCallback() {
     Dispose();
   }
 
@@ -32,7 +32,7 @@ public class SafeObject : IDisposable {
       if (swigCPtr.Handle != IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          tinyWRAPPINVOKE.delete_SafeObject(swigCPtr);
+          tinyWRAPPINVOKE.delete_DDebugCallback(swigCPtr);
         }
         swigCPtr = new HandleRef(null, IntPtr.Zero);
       }
@@ -40,16 +40,26 @@ public class SafeObject : IDisposable {
     }
   }
 
-  public SafeObject() : this(tinyWRAPPINVOKE.new_SafeObject(), true) {
+  public DDebugCallback() : this(tinyWRAPPINVOKE.new_DDebugCallback(), true) {
   }
 
-  public int Lock() {
-    int ret = tinyWRAPPINVOKE.SafeObject_Lock(swigCPtr);
+  public virtual int OnDebugInfo(string message) {
+    int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugInfo(swigCPtr, message);
     return ret;
   }
 
-  public int UnLock() {
-    int ret = tinyWRAPPINVOKE.SafeObject_UnLock(swigCPtr);
+  public virtual int OnDebugWarn(string message) {
+    int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugWarn(swigCPtr, message);
+    return ret;
+  }
+
+  public virtual int OnDebugError(string message) {
+    int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugError(swigCPtr, message);
+    return ret;
+  }
+
+  public virtual int OnDebugFatal(string message) {
+    int ret = tinyWRAPPINVOKE.DDebugCallback_OnDebugFatal(swigCPtr, message);
     return ret;
   }
 

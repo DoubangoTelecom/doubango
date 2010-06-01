@@ -22,11 +22,11 @@
 #ifndef TINYWRAP_SIP_DEBUG_H
 #define TINYWRAP_SIP_DEBUG_H
 
-class SipDebugCallback
+class DDebugCallback
 {
 public:
-	SipDebugCallback() {  }
-	virtual ~SipDebugCallback() {}
+	DDebugCallback() {  }
+	virtual ~DDebugCallback() {}
 
 
 	virtual int OnDebugInfo(const char* message) { return -1; }

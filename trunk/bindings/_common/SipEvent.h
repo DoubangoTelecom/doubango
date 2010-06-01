@@ -67,6 +67,18 @@ public:
 public: /* Public API functions */
 };
 
+/* ======================== StackEvent ========================*/
+class StackEvent: public SipEvent
+{
+public:
+#if !defined(SWIG)
+	StackEvent(const tsip_event_t *sipevent);
+#endif
+	virtual ~StackEvent();
+
+public: /* Public API functions */
+};
+
 
 /* ======================== MessagingEvent ========================*/
 class MessagingEvent: public SipEvent

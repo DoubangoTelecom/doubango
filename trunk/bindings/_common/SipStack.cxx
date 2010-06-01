@@ -24,7 +24,7 @@
 #include "SipSession.h"
 #include "SipEvent.h"
 
-#include "SipDebug.h"
+#include "DDebug.h"
 
 #include "Common.h"
 
@@ -83,14 +83,14 @@ bool SipStack::start()
 	return (ret == 0);
 }
 
-bool SipStack::setDebugCallback(SipDebugCallback* callback)
+bool SipStack::setDebugCallback(DDebugCallback* callback)
 {
 	if((this->debugCallback = callback)){
 		tsk_debug_set_arg_data(this);
-		tsk_debug_set_info_cb(SipDebugCallback::debug_info_cb);
-		tsk_debug_set_warn_cb(SipDebugCallback::debug_warn_cb);
-		tsk_debug_set_error_cb(SipDebugCallback::debug_error_cb);
-		tsk_debug_set_fatal_cb(SipDebugCallback::debug_fatal_cb);
+		tsk_debug_set_info_cb(DDebugCallback::debug_info_cb);
+		tsk_debug_set_warn_cb(DDebugCallback::debug_warn_cb);
+		tsk_debug_set_error_cb(DDebugCallback::debug_error_cb);
+		tsk_debug_set_fatal_cb(DDebugCallback::debug_fatal_cb);
 		return true;
 	}
 
@@ -213,7 +213,7 @@ SipCallback* SipStack::getCallback()const
 	return this->callback;
 }
 
-SipDebugCallback* SipStack::getDebugCallback() const
+DDebugCallback* SipStack::getDebugCallback() const
 {
 	return this->debugCallback;
 }
@@ -228,12 +228,18 @@ int stack_callback(const tsip_event_t *sipevent)
 		TSK_DEBUG_WARN("Null SIP event.");
 		return -1;
 	}
-	else{
-		/* retrive the stack from the context */
-		const void* userdata;
-		const tsip_stack_handle_t* stack_handle = tsip_ssession_get_stack(sipevent->ss);
-		if(stack_handle && (userdata = tsip_stack_get_userdata(stack_handle))){
-			Stack = dyn_cast<const SipStack*>((const SipStack*)userdata);
+	else {
+		if(sipevent->type == tsip_event_stack && sipevent->userdata){
+			/* sessionless event */
+			Stack = dyn_cast<const SipStack*>((const SipStack*)sipevent->userdata);
+		}
+		else {
+			const void* userdata;
+			/* gets the stack from the session */
+			const tsip_stack_handle_t* stack_handle = tsip_ssession_get_stack(sipevent->ss);
+			if(stack_handle && (userdata = tsip_stack_get_userdata(stack_handle))){
+				Stack = dyn_cast<const SipStack*>((const SipStack*)userdata);
+			}
 		}
 	}
 
@@ -295,6 +301,15 @@ int stack_callback(const tsip_event_t *sipevent)
 				if(Stack->getCallback()){
 					e = new DialogEvent(sipevent);
 					Stack->getCallback()->OnDialogEvent((const DialogEvent*)e);
+				}
+				break;
+			}
+
+		case tsip_event_stack:
+			{	/* Stack event */
+				if(Stack->getCallback()){
+					e = new StackEvent(sipevent);
+					Stack->getCallback()->OnStackEvent((const StackEvent*)e);
 				}
 				break;
 			}

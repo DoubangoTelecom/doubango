@@ -8,16 +8,16 @@
 
 package org.doubango.tinyWRAP;
 
-public class SipUri {
+public class DDebugCallback {
   private long swigCPtr;
   protected boolean swigCMemOwn;
 
-  protected SipUri(long cPtr, boolean cMemoryOwn) {
+  protected DDebugCallback(long cPtr, boolean cMemoryOwn) {
     swigCMemOwn = cMemoryOwn;
     swigCPtr = cPtr;
   }
 
-  protected static long getCPtr(SipUri obj) {
+  protected static long getCPtr(DDebugCallback obj) {
     return (obj == null) ? 0 : obj.swigCPtr;
   }
 
@@ -29,22 +29,30 @@ public class SipUri {
     if (swigCPtr != 0) {
       if (swigCMemOwn) {
         swigCMemOwn = false;
-        tinyWRAPJNI.delete_SipUri(swigCPtr);
+        tinyWRAPJNI.delete_DDebugCallback(swigCPtr);
       }
       swigCPtr = 0;
     }
   }
 
-  public SipUri(String arg0) {
-    this(tinyWRAPJNI.new_SipUri(arg0), true);
+  public DDebugCallback() {
+    this(tinyWRAPJNI.new_DDebugCallback(), true);
   }
 
-  public static boolean isValid(String arg0) {
-    return tinyWRAPJNI.SipUri_isValid__SWIG_0(arg0);
+  public int OnDebugInfo(String message) {
+    return tinyWRAPJNI.DDebugCallback_OnDebugInfo(swigCPtr, this, message);
   }
 
-  public boolean isValid() {
-    return tinyWRAPJNI.SipUri_isValid__SWIG_1(swigCPtr, this);
+  public int OnDebugWarn(String message) {
+    return tinyWRAPJNI.DDebugCallback_OnDebugWarn(swigCPtr, this, message);
+  }
+
+  public int OnDebugError(String message) {
+    return tinyWRAPJNI.DDebugCallback_OnDebugError(swigCPtr, this, message);
+  }
+
+  public int OnDebugFatal(String message) {
+    return tinyWRAPJNI.DDebugCallback_OnDebugFatal(swigCPtr, this, message);
   }
 
 }

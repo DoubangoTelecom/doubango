@@ -10,47 +10,33 @@
 using System;
 using System.Runtime.InteropServices;
 
-public class SafeObject : IDisposable {
+public class StackEvent : SipEvent {
   private HandleRef swigCPtr;
-  protected bool swigCMemOwn;
 
-  internal SafeObject(IntPtr cPtr, bool cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
+  internal StackEvent(IntPtr cPtr, bool cMemoryOwn) : base(tinyWRAPPINVOKE.StackEventUpcast(cPtr), cMemoryOwn) {
     swigCPtr = new HandleRef(this, cPtr);
   }
 
-  internal static HandleRef getCPtr(SafeObject obj) {
+  internal static HandleRef getCPtr(StackEvent obj) {
     return (obj == null) ? new HandleRef(null, IntPtr.Zero) : obj.swigCPtr;
   }
 
-  ~SafeObject() {
+  ~StackEvent() {
     Dispose();
   }
 
-  public virtual void Dispose() {
+  public override void Dispose() {
     lock(this) {
       if (swigCPtr.Handle != IntPtr.Zero) {
         if (swigCMemOwn) {
           swigCMemOwn = false;
-          tinyWRAPPINVOKE.delete_SafeObject(swigCPtr);
+          tinyWRAPPINVOKE.delete_StackEvent(swigCPtr);
         }
         swigCPtr = new HandleRef(null, IntPtr.Zero);
       }
       GC.SuppressFinalize(this);
+      base.Dispose();
     }
-  }
-
-  public SafeObject() : this(tinyWRAPPINVOKE.new_SafeObject(), true) {
-  }
-
-  public int Lock() {
-    int ret = tinyWRAPPINVOKE.SafeObject_Lock(swigCPtr);
-    return ret;
-  }
-
-  public int UnLock() {
-    int ret = tinyWRAPPINVOKE.SafeObject_UnLock(swigCPtr);
-    return ret;
   }
 
 }

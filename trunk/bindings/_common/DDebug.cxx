@@ -19,11 +19,16 @@
 * along with DOUBANGO.
 *
 */
-#include "SipDebug.h"
+#include "DDebug.h"
 
 #include "SipStack.h"
 
 #include "Common.h"
+
+#if ANDROID /* callbacks will fail with jni */
+#	include <android/log.h>
+#	define ANDROID_DEBUG_TAG "tinyWRAP"
+#endif
 
 /* Very Important ==> never call functions which could raise debug callbacks into callback functions
 *  Callbacks should not used with Android (JNI).
@@ -51,16 +56,36 @@ int debug_xxx_cb(const void* arg, const char* fmt, enum cb_type type, va_list *a
 		
 		switch(type){
 			case cb_info:
-				ret = stack->getDebugCallback()-> OnDebugInfo(message);
+				ret=
+#if ANDROID
+				__android_log_write(ANDROID_LOG_INFO, ANDROID_DEBUG_TAG, message);
+#else
+				stack->getDebugCallback()-> OnDebugInfo(message);
+#endif
 				break;
 			case cb_warn:
-				ret = stack->getDebugCallback()-> OnDebugWarn(message);
+				ret=
+#if ANDROID
+				__android_log_write(ANDROID_LOG_WARN, ANDROID_DEBUG_TAG, message);
+#else
+				stack->getDebugCallback()-> OnDebugWarn(message);
+#endif
 				break;
 			case cb_error:
-				ret = stack->getDebugCallback()-> OnDebugError(message);
+				ret=
+#if ANDROID
+				__android_log_write(ANDROID_LOG_ERROR, ANDROID_DEBUG_TAG, message);
+#else
+				stack->getDebugCallback()-> OnDebugError(message);
+#endif
 				break;
 			case cb_fatal:
-				ret = stack->getDebugCallback()-> OnDebugFatal(message);
+				ret=
+#if ANDROID
+				__android_log_write(ANDROID_LOG_FATAL, ANDROID_DEBUG_TAG, message);
+#else
+				stack->getDebugCallback()-> OnDebugFatal(message);
+#endif
 				break;
 		}
 		
@@ -70,7 +95,7 @@ int debug_xxx_cb(const void* arg, const char* fmt, enum cb_type type, va_list *a
 	return ret;
 }
 
-int SipDebugCallback::debug_info_cb(const void* arg, const char* fmt, ...)
+int DDebugCallback::debug_info_cb(const void* arg, const char* fmt, ...)
 {
 	va_list ap;
 	int ret;
@@ -82,7 +107,7 @@ int SipDebugCallback::debug_info_cb(const void* arg, const char* fmt, ...)
 	return ret;
 }
 
-int SipDebugCallback::debug_warn_cb(const void* arg, const char* fmt, ...){
+int DDebugCallback::debug_warn_cb(const void* arg, const char* fmt, ...){
 	va_list ap;
 	int ret;
 
@@ -93,7 +118,7 @@ int SipDebugCallback::debug_warn_cb(const void* arg, const char* fmt, ...){
 	return ret;
 }
 
-int SipDebugCallback::debug_error_cb(const void* arg, const char* fmt, ...){
+int DDebugCallback::debug_error_cb(const void* arg, const char* fmt, ...){
 	va_list ap;
 	int ret;
 
@@ -104,7 +129,7 @@ int SipDebugCallback::debug_error_cb(const void* arg, const char* fmt, ...){
 	return ret;
 }
 
-int SipDebugCallback::debug_fatal_cb(const void* arg, const char* fmt, ...){
+int DDebugCallback::debug_fatal_cb(const void* arg, const char* fmt, ...){
 	va_list ap;
 	int ret;
 
