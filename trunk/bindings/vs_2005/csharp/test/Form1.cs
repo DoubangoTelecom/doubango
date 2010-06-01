@@ -161,7 +161,7 @@ namespace test
             this.form = form;
         }
 
-        public override int OnRegistrationChanged(RegistrationEvent e)
+        public override int OnRegistrationEvent(RegistrationEvent e)
         {
             short code = e.getCode();
             tsip_register_event_type_t type = e.getType();
@@ -172,12 +172,8 @@ namespace test
             switch (type)
             {
                 case tsip_register_event_type_t.tsip_i_register:
-                case tsip_register_event_type_t.tsip_ai_register:
-                case tsip_register_event_type_t.tsip_o_register:
                 case tsip_register_event_type_t.tsip_ao_register:
                 case tsip_register_event_type_t.tsip_i_unregister:
-                case tsip_register_event_type_t.tsip_ai_unregister:
-                case tsip_register_event_type_t.tsip_o_unregister:
                 case tsip_register_event_type_t.tsip_ao_unregister:
                     break;
             }
@@ -192,7 +188,7 @@ namespace test
             return 0;
         }
 
-        public override int OnPublicationChanged(PublicationEvent e)
+        public override int OnPublicationEvent(PublicationEvent e)
         {
             short code = e.getCode();
             tsip_publish_event_type_t type = e.getType();

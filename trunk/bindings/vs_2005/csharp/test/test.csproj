@@ -36,6 +36,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\..\csharp\DDebugCallback.cs">
+      <Link>DDebugCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\DialogEvent.cs">
+      <Link>DialogEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\MessagingEvent.cs">
+      <Link>MessagingEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\MessagingSession.cs">
+      <Link>MessagingSession.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\OptionsEvent.cs">
+      <Link>OptionsEvent.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\OptionsSession.cs">
+      <Link>OptionsSession.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csharp\PublicationEvent.cs">
       <Link>PublicationEvent.cs</Link>
     </Compile>
@@ -54,9 +72,6 @@
     <Compile Include="..\..\..\csharp\SipCallback.cs">
       <Link>SipCallback.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\csharp\SipDebugCallback.cs">
-      <Link>SipDebugCallback.cs</Link>
-    </Compile>
     <Compile Include="..\..\..\csharp\SipEvent.cs">
       <Link>SipEvent.cs</Link>
     </Compile>
@@ -72,6 +87,9 @@
     <Compile Include="..\..\..\csharp\SipUri.cs">
       <Link>SipUri.cs</Link>
     </Compile>
+    <Compile Include="..\..\..\csharp\StackEvent.cs">
+      <Link>StackEvent.cs</Link>
+    </Compile>
     <Compile Include="..\..\..\csharp\SubscriptionEvent.cs">
       <Link>SubscriptionEvent.cs</Link>
     </Compile>
@@ -86,6 +104,12 @@
     </Compile>
     <Compile Include="..\..\..\csharp\tsip_event_type_t.cs">
       <Link>tsip_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\tsip_message_event_type_t.cs">
+      <Link>tsip_message_event_type_t.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\csharp\tsip_options_event_type_t.cs">
+      <Link>tsip_options_event_type_t.cs</Link>
     </Compile>
     <Compile Include="..\..\..\csharp\tsip_publish_event_type_t.cs">
       <Link>tsip_publish_event_type_t.cs</Link>

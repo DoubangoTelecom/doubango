@@ -460,111 +460,128 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 	int ret = -1;
 	tsip_stack_t *stack = self;
 
-	if(stack){
+	if(!stack){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 
-		if(stack->started){
-			TSK_DEBUG_WARN("Stack Already started");
-			return 0;
-		}
-		
-		/* === Timer manager === */
-		if((ret = tsk_timer_manager_start(stack->timer_mgr))){
-			goto bail;
-		}
+	if(stack->started){
+		TSK_DEBUG_WARN("Stack Already started");
+		return 0;
+	}
+	
+	/* === Timer manager === */
+	if((ret = tsk_timer_manager_start(stack->timer_mgr))){
+		goto bail;
+	}
 
-		/* === Set P-Preferred-Identity === */
-		if(!stack->identity.preferred && stack->identity.impu){
-			stack->identity.preferred = tsk_object_ref((void*)stack->identity.impu);
+	/* === Set P-Preferred-Identity === */
+	if(!stack->identity.preferred && stack->identity.impu){
+		stack->identity.preferred = tsk_object_ref((void*)stack->identity.impu);
+	}
+	/* === Transport type === */
+	if(!tsk_strnullORempty(stack->security.secagree_mech)){
+		if(tsk_striequals(stack->security.secagree_mech, "ipsec-3gpp")){
+			TNET_SOCKET_TYPE_SET_IPSEC(stack->network.proxy_cscf_type);
 		}
-		/* === Transport type === */
-		if(!tsk_strnullORempty(stack->security.secagree_mech)){
-			if(tsk_striequals(stack->security.secagree_mech, "ipsec-3gpp")){
-				TNET_SOCKET_TYPE_SET_IPSEC(stack->network.proxy_cscf_type);
-			}
-			//else if if(tsk_striquals(stack->security.secagree_mech, "ipsec-ike"))
-		}
+		//else if if(tsk_striquals(stack->security.secagree_mech, "ipsec-ike"))
+	}
 
-		/* === Use DNS NAPTR+SRV for the P-CSCF discovery? === */
-		if(!stack->network.proxy_cscf || (stack->network.discovery_dhcp || stack->network.discovery_naptr)){
-			if(stack->network.discovery_dhcp){ /* DHCP v4/v6 */
-				/* FIXME: */
-				ret = -2;
-			} /* DHCP */
-			else{ /* DNS NAPTR + SRV*/
-				char* hostname = tsk_null;
-				tnet_port_t port = 0;
+	/* === Use DNS NAPTR+SRV for the P-CSCF discovery? === */
+	if(!stack->network.proxy_cscf || (stack->network.discovery_dhcp || stack->network.discovery_naptr)){
+		if(stack->network.discovery_dhcp){ /* DHCP v4/v6 */
+			/* FIXME: */
+			ret = -2;
+		} /* DHCP */
+		else{ /* DNS NAPTR + SRV*/
+			char* hostname = tsk_null;
+			tnet_port_t port = 0;
 
-				if(!(ret = tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, 
-					TNET_SOCKET_TYPE_IS_DGRAM(stack->network.proxy_cscf_type) ? "SIP+D2U" :
-					(TNET_SOCKET_TYPE_IS_TLS(stack->network.proxy_cscf_type) ? "SIPS+D2T" : "SIP+D2T"),
-					&hostname, &port))){
-					tsk_strupdate(&stack->network.proxy_cscf, hostname);
-					if(!stack->network.proxy_cscf_port || stack->network.proxy_cscf_port==5060){ /* Only if the Proxy-CSCF port is missing or default */
-						stack->network.proxy_cscf_port = port;
-					}
+			if(!(ret = tnet_dns_query_naptr_srv(stack->dns_ctx, stack->network.realm->host, 
+				TNET_SOCKET_TYPE_IS_DGRAM(stack->network.proxy_cscf_type) ? "SIP+D2U" :
+				(TNET_SOCKET_TYPE_IS_TLS(stack->network.proxy_cscf_type) ? "SIPS+D2T" : "SIP+D2T"),
+				&hostname, &port))){
+				tsk_strupdate(&stack->network.proxy_cscf, hostname);
+				if(!stack->network.proxy_cscf_port || stack->network.proxy_cscf_port==5060){ /* Only if the Proxy-CSCF port is missing or default */
+					stack->network.proxy_cscf_port = port;
 				}
-				else{
-					TSK_DEBUG_ERROR("P-CSCF discovery using DNS NAPTR failed. The stack will use the user supplied address and port.");
-				}
-				
-				TSK_FREE(hostname);
-			} /* NAPTR */
-		}
-
-		/* Check Proxy-CSCF IP address */
-		if(stack->network.proxy_cscf){
-			TSK_DEBUG_INFO("Proxy-CSCF=[%s]:%d", stack->network.proxy_cscf, stack->network.proxy_cscf_port);
-		}
-		else{
-			TSK_DEBUG_ERROR("Proxy-CSCF IP address is Null.");
-			goto bail;
-		}
-		
-		/* === Get Best source address ===  */
-		if(!stack->network.local_ip){ /* loacal-ip is missing? */
-			tnet_ip_t bestsource;
-			if((ret = tnet_getbestsource(stack->network.proxy_cscf, stack->network.proxy_cscf_port, stack->network.proxy_cscf_type, &bestsource))){ /* FIXME: what about linux version? */
-				TSK_DEBUG_ERROR("Failed to get best source [%d].", ret);
-				/* do not exit ==> will use default IP address */
 			}
 			else{
-				tsk_strupdate(&stack->network.local_ip, bestsource);
+				TSK_DEBUG_ERROR("P-CSCF discovery using DNS NAPTR failed. The stack will use the user supplied address and port.");
 			}
-		}
-
-		/* === Runnable === */
-		TSK_RUNNABLE(stack)->run = run;
-		if((ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))){
-			goto bail;
-		}
-		
-		/* === Transport Layer === */
-		/* Adds the default transport to the transport Layer */
-		if((ret = tsip_transport_layer_add(stack->layer_transport, stack->network.local_ip, stack->network.local_port, stack->network.proxy_cscf_type, "SIP transport"))){
-			goto bail;
-		}
-		/* Starts the transport Layer */
-		if((ret = tsip_transport_layer_start(stack->layer_transport))){
-			goto bail;
-		}
-		
-		/* ===	ALL IS OK === */
-		if(stack->layer_transac){ /* For transaction layer */
-			stack->layer_transac->reliable = TNET_SOCKET_TYPE_IS_STREAM(stack->network.proxy_cscf_type);
-		}
-		
-		stack->started = tsk_true;
-
-		/* Signal to the end-user that the stack has been started */
-		TSIP_STACK_SIGNAL(self, tsip_event_code_stack_started, "Stack started");
-		
-		TSK_DEBUG_INFO("SIP STACK -- START");
-
-		return ret;
+			
+			TSK_FREE(hostname);
+		} /* NAPTR */
 	}
+
+	/* Check Proxy-CSCF IP address */
+	if(stack->network.proxy_cscf){
+		TSK_DEBUG_INFO("Proxy-CSCF=[%s]:%d", stack->network.proxy_cscf, stack->network.proxy_cscf_port);
+	}
+	else{
+		TSK_DEBUG_ERROR("Proxy-CSCF IP address is Null.");
+		goto bail;
+	}
+	
+	/* === Get Best source address ===  */
+	if(!stack->network.local_ip){ /* loacal-ip is missing? */
+		tnet_ip_t bestsource;
+		if((ret = tnet_getbestsource(stack->network.proxy_cscf, stack->network.proxy_cscf_port, stack->network.proxy_cscf_type, &bestsource))){ /* FIXME: what about linux version? */
+			TSK_DEBUG_ERROR("Failed to get best source [%d].", ret);
+			/* do not exit ==> will use default IP address */
+		}
+		else{
+			tsk_strupdate(&stack->network.local_ip, bestsource);
+		}
+	}
+
+	/* === Runnable === */
+	TSK_RUNNABLE(stack)->run = run;
+	if((ret = tsk_runnable_start(TSK_RUNNABLE(stack), tsip_event_def_t))){
+		TSK_DEBUG_ERROR("Failed to start timer manager");
+		goto bail;
+	}
+	
+	/* === Transport Layer === */
+	/* Adds the default transport to the transport Layer */
+	if((ret = tsip_transport_layer_add(stack->layer_transport, stack->network.local_ip, stack->network.local_port, stack->network.proxy_cscf_type, "SIP transport"))){
+		TSK_DEBUG_ERROR("Failed to add new transport");
+		goto bail;
+	}
+	/* Starts the transport Layer */
+	if((ret = tsip_transport_layer_start(stack->layer_transport))){
+		TSK_DEBUG_ERROR("Failed to start sip transport");
+		goto bail;
+	}
+	
+	/* ===	ALL IS OK === */
+	if(stack->layer_transac){ /* For transaction layer */
+		stack->layer_transac->reliable = TNET_SOCKET_TYPE_IS_STREAM(stack->network.proxy_cscf_type);
+	}
+	
+	stack->started = tsk_true;
+
+	/* Signal to the end-user that the stack has been started */
+	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_started, "Stack started");
+	
+	TSK_DEBUG_INFO("SIP STACK -- START");
+
+	return 0;
+	
 
 bail:
 	TSIP_STACK_SIGNAL(self, tsip_event_code_stack_failed_to_start, "Stack failed to start");
+	/* stop all running instances */
+	if(stack->timer_mgr && TSK_RUNNABLE(stack->timer_mgr)->running){
+		tsk_timer_manager_stop(stack->timer_mgr);
+	}
+	if(stack->layer_transport){
+		tsip_transport_layer_shutdown(stack->layer_transport);
+	}
+	if(TSK_RUNNABLE(stack)->running){
+		tsk_runnable_stop(TSK_RUNNABLE(stack));
+	}
+
 	return ret;
 }
 

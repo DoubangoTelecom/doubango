@@ -40,7 +40,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\tinyXCAP\include&quot;;&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;;&quot;$(DOUBANGO_HOME)\tinyNET\src&quot;;&quot;$(DOUBANGO_HOME)\tinyHTTP\include&quot;"
+				AdditionalIncludeDirectories="..\..\tinyXCAP\include;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYXCAP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
