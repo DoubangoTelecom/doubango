@@ -44,106 +44,105 @@ typedef struct auid_s
 }
 auid_t;
 
-/** List of all default auids
-*/
+/** List of all default auids */
 static const auid_t __txcap_auids[] =
 {
 	/*== xcap-caps ==*/{	
 		tauid_ietf_xcap_caps, 
-		"xcap-caps", 
-		"application/xcap-caps+xml", 
-		"urn:ietf:params:xml:ns:xcap-caps",
-		"index", 
+		TXCAP_AUID_IETF_XCAP_CAPS_ID, 
+		TXCAP_AUID_IETF_XCAP_CAPS_MIME_TYPE, 
+		TXCAP_AUID_IETF_XCAP_CAPS_NS,
+		TXCAP_AUID_IETF_XCAP_CAPS_DOC, 
 		tsk_true 
 	},
 	
 	/*== resource-lists ==*/{
 		tauid_ietf_resource_lists, 
-		"resource-lists", 
-		"application/resource-lists+xml", 
-		"urn:ietf:params:xml:ns:resource-lists",
-		"index", 
+		TXCAP_AUID_IETF_RESOURCE_LISTS_ID, 
+		TXCAP_AUID_IETF_RESOURCE_LISTS_MIME_TYPE, 
+		TXCAP_AUID_IETF_RESOURCE_LISTS_NS,
+		TXCAP_AUID_IETF_RESOURCE_LISTS_DOC, 
 		tsk_false 
 	},
 
 	/*== rls-services ==*/{
 		tauid_ietf_rls_services, 
-		"rls-services", 
-		"application/rls-services+xml", 
-		"urn:ietf:params:xml:ns:resource-lists",
-		"index", 
+		TXCAP_AUID_IETF_RLS_SERVICES_ID, 
+		TXCAP_AUID_IETF_RLS_SERVICES_MIME_TYPE, 
+		TXCAP_AUID_IETF_RLS_SERVICES_NS,
+		TXCAP_AUID_IETF_RLS_SERVICES_DOC, 
 		tsk_false 
 	},
 
 	/*== pres-rules ==*/{
 		tauid_ietf_pres_rules, 
-		"pres-rules", 
-		"application/auth-policy+xml", 
-		"urn:ietf:params:xml:ns:pres-rules",
-		"index", 
+		TXCAP_AUID_IETF_PRES_RULES_ID, 
+		TXCAP_AUID_IETF_PRES_RULES_MIME_TYPE, 
+		TXCAP_AUID_IETF_PRES_RULES_NS,
+		TXCAP_AUID_IETF_PRES_RULES_DOC, 
 		tsk_false 
 	},
 
 	/*== org.openmobilealliance.pres-rules ==*/{
 		tauid_oma_pres_rules, 
-		"org.openmobilealliance.pres-rules", 
-		"application/auth-policy+xml", 
-		"urn:ietf:params:xml:ns:common-policy",
-		"pres-rules", 
+		TXCAP_AUID_OMA_PRES_RULES_ID, 
+		TXCAP_AUID_OMA_PRES_RULES_MIME_TYPE, 
+		TXCAP_AUID_OMA_PRES_RULES_NS,
+		TXCAP_AUID_OMA_PRES_RULES_DOC, 
 		tsk_false 
 	},
 
 	/*== directory ==*/{
 		tauid_ietf_directory, 
-		"directory", 
-		"application/directory+xml", 
-		"urn:ietf:params:xml:ns:xcap-directory",
-		"directory.xml", 
+		TXCAP_AUID_IETF_DIRECTORY_ID, 
+		TXCAP_AUID_IETF_DIRECTORY_MIME_TYPE, 
+		TXCAP_AUID_IETF_DIRECTORY_NS,
+		TXCAP_AUID_IETF_DIRECTORY_DOC, 
 		tsk_false 
 	},
 
 	/*== org.openmobilealliance.xcap-directory ==*/{
 		tauid_oma_directory, 
-		"org.openmobilealliance.xcap-directory", 
-		"application/vnd.oma.xcap-directory+xml", 
-		"urn:oma:xml:xdm:xcap-directory",
-		"directory.xml", 
+		TXCAP_AUID_OMA_DIRECTORY_ID, 
+		TXCAP_AUID_OMA_DIRECTORY_MIME_TYPE, 
+		TXCAP_AUID_OMA_DIRECTORY_NS,
+		TXCAP_AUID_OMA_DIRECTORY_DOC, 
 		tsk_false
 	},
 
 	/*== org.openmobilealliance.pres-content ==*/{
 		tauid_oma_pres_content, 
-		"org.openmobilealliance.pres-content", 
-		"application/vnd.oma.pres-content+xml", 
-		"urn:oma:xml:prs:pres-content",
-		"oma_status-icon/rcs_status_icon", 
+		TXCAP_AUID_OMA_PRES_CONTENT_ID, 
+		TXCAP_AUID_OMA_PRES_CONTENT_MIME_TYPE, 
+		TXCAP_AUID_OMA_PRES_CONTENT_NS,
+		TXCAP_AUID_OMA_PRES_CONTENT_DOC, 
 		tsk_false
 	},
 
 	/*== org.openmobilealliance.conv-history ==*/{
 		tauid_oma_conv_history, 
-		"org.openmobilealliance.conv-history",
-		"application/vnd.oma.im.history-list+xml",
-		"urn:oma:xml:im:history-list",
-		"conv-history",
+		TXCAP_AUID_OMA_CONV_HISTORY_ID,
+		TXCAP_AUID_OMA_CONV_HISTORY_MIME_TYPE,
+		TXCAP_AUID_OMA_CONV_HISTORY_NS,
+		TXCAP_AUID_OMA_CONV_HISTORY_DOC,
 		tsk_false
 	},
 
 	/*== org.openmobilealliance.deferred-list ==*/{
 		tauid_oma_deferred_list, 
-		"org.openmobilealliance.deferred-list", 
-		"application/vnd.oma.im.deferred-list+xml", 
-		"urn:oma:xml:im:history-list",
-		"deferred-list", 
+		TXCAP_AUID_OMA_DEFERRED_LIST_ID, 
+		TXCAP_AUID_OMA_DEFERRED_LIST_MIME_TYPE, 
+		TXCAP_AUID_OMA_DEFERRED_LIST_NS,
+		TXCAP_AUID_OMA_DEFERRED_LIST_DOC, 
 		tsk_false
 	},
 
 	/*== org.openmobilealliance.group-usage-list ==*/{
 		tauid_oma_shared_groups, 
-		"org.openmobilealliance.group-usage-list", 
-		"application/vnd.oma.group-usage-list+xml", 
-		"rn:ietf:params:xml:ns:resource-lists",
-		"index", 
+		TXCAP_AUID_OMA_SHARED_GROUPS_ID, 
+		TXCAP_AUID_OMA_SHARED_GROUPS_MIME_TYPE, 
+		TXCAP_AUID_OMA_SHARED_GROUPS_NS,
+		TXCAP_AUID_OMA_SHARED_GROUPS_DOC, 
 		tsk_false
 	},
 };

@@ -35,6 +35,73 @@
 
 TXCAP_BEGIN_DECLS
 
+/*== xcap-caps ==*/
+#define TXCAP_AUID_IETF_XCAP_CAPS_ID "xcap-caps"
+#define TXCAP_AUID_IETF_XCAP_CAPS_MIME_TYPE "application/xcap-caps+xml"
+#define TXCAP_AUID_IETF_XCAP_CAPS_NS "urn:ietf:params:xml:ns:xcap-caps"
+#define TXCAP_AUID_IETF_XCAP_CAPS_DOC "index"
+	
+/*== resource-lists ==*/
+#define TXCAP_AUID_IETF_RESOURCE_LISTS_ID "resource-lists"
+#define TXCAP_AUID_IETF_RESOURCE_LISTS_MIME_TYPE "application/resource-lists+xml"
+#define TXCAP_AUID_IETF_RESOURCE_LISTS_NS "urn:ietf:params:xml:ns:resource-lists"
+#define TXCAP_AUID_IETF_RESOURCE_LISTS_DOC "index"
+	
+/*== rls-services ==*/
+#define TXCAP_AUID_IETF_RLS_SERVICES_ID "rls-services"
+#define TXCAP_AUID_IETF_RLS_SERVICES_MIME_TYPE "application/rls-services+xml"
+#define TXCAP_AUID_IETF_RLS_SERVICES_NS "urn:ietf:params:xml:ns:resource-lists"
+#define TXCAP_AUID_IETF_RLS_SERVICES_DOC "index"
+
+/*== pres-rules ==*/
+#define TXCAP_AUID_IETF_PRES_RULES_ID "pres-rules"
+#define TXCAP_AUID_IETF_PRES_RULES_MIME_TYPE "application/auth-policy+xml"
+#define TXCAP_AUID_IETF_PRES_RULES_NS "urn:ietf:params:xml:ns:pres-rules"
+#define TXCAP_AUID_IETF_PRES_RULES_DOC "index"
+
+/*== org.openmobilealliance.pres-rules ==*/
+#define TXCAP_AUID_OMA_PRES_RULES_ID "org.openmobilealliance.pres-rules"
+#define TXCAP_AUID_OMA_PRES_RULES_MIME_TYPE "application/auth-policy+xml"
+#define TXCAP_AUID_OMA_PRES_RULES_NS "urn:ietf:params:xml:ns:common-policy"
+#define TXCAP_AUID_OMA_PRES_RULES_DOC "pres-rules"
+
+/*== directory ==*/
+#define TXCAP_AUID_IETF_DIRECTORY_ID "directory"
+#define TXCAP_AUID_IETF_DIRECTORY_MIME_TYPE "application/directory+xml"
+#define TXCAP_AUID_IETF_DIRECTORY_NS "urn:ietf:params:xml:ns:xcap-directory"
+#define TXCAP_AUID_IETF_DIRECTORY_DOC "directory.xml"
+
+/*== org.openmobilealliance.xcap-directory ==*/
+#define TXCAP_AUID_OMA_DIRECTORY_ID "org.openmobilealliance.xcap-directory"
+#define TXCAP_AUID_OMA_DIRECTORY_MIME_TYPE "application/vnd.oma.xcap-directory+xml"
+#define TXCAP_AUID_OMA_DIRECTORY_NS "urn:oma:xml:xdm:xcap-directory"
+#define TXCAP_AUID_OMA_DIRECTORY_DOC "directory.xml"
+
+/*== org.openmobilealliance.pres-content ==*/
+#define TXCAP_AUID_OMA_PRES_CONTENT_ID "org.openmobilealliance.pres-content"
+#define TXCAP_AUID_OMA_PRES_CONTENT_MIME_TYPE "application/vnd.oma.pres-content+xml"
+#define TXCAP_AUID_OMA_PRES_CONTENT_NS "urn:oma:xml:prs:pres-content"
+#define TXCAP_AUID_OMA_PRES_CONTENT_DOC "oma_status-icon/rcs_status_icon"
+
+/*== org.openmobilealliance.conv-history ==*/
+#define TXCAP_AUID_OMA_CONV_HISTORY_ID "org.openmobilealliance.conv-history"
+#define TXCAP_AUID_OMA_CONV_HISTORY_MIME_TYPE "application/vnd.oma.im.history-list+xml"
+#define TXCAP_AUID_OMA_CONV_HISTORY_NS "urn:oma:xml:im:history-list"
+#define TXCAP_AUID_OMA_CONV_HISTORY_DOC "conv-history"
+
+/*== org.openmobilealliance.deferred-list ==*/
+#define TXCAP_AUID_OMA_DEFERRED_LIST_ID "org.openmobilealliance.deferred-list"
+#define TXCAP_AUID_OMA_DEFERRED_LIST_MIME_TYPE "application/vnd.oma.im.deferred-list+xml"
+#define TXCAP_AUID_OMA_DEFERRED_LIST_NS "urn:oma:xml:im:history-list"
+#define TXCAP_AUID_OMA_DEFERRED_LIST_DOC "deferred-list"
+
+/*== org.openmobilealliance.group-usage-list ==*/
+#define TXCAP_AUID_OMA_SHARED_GROUPS_ID "org.openmobilealliance.group-usage-list"
+#define TXCAP_AUID_OMA_SHARED_GROUPS_MIME_TYPE "application/vnd.oma.group-usage-list+xml"
+#define TXCAP_AUID_OMA_SHARED_GROUPS_NS "urn:ietf:params:xml:ns:resource-lists"
+#define TXCAP_AUID_OMA_SHARED_GROUPS_DOC "index"
+
+
 /** List of supported AUIDs.
 */
 typedef enum txcap_auid_type_e
