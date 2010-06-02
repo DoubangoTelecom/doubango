@@ -244,8 +244,10 @@ int ret = thttp_action_GET(session, "http://ipv6.google.com",
 /**@defgroup thttp_stack_group HTTP/HTTPS stack
 */
 
-/** Callback function used by the transport layer to alert the stack when new messages come.
-*/
+/* min size of a stream chunck to form a valid HTTP message */
+#define THTTP_MIN_STREAM_CHUNCK_SIZE 0x32
+
+/** Callback function used by the transport layer to alert the stack when new messages come. */
 static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
@@ -306,6 +308,7 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	tsk_buffer_append(dialog->buf, e->data, e->size);
 	
 	/* Check if we have all HTTP headers. */
+parse_buffer:
 	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(dialog->buf), TSK_BUFFER_SIZE(dialog->buf), "\r\n\r\n"/*2CRLF*/)) < 0){
 		TSK_DEBUG_INFO("No all HTTP headers in the TCP buffer.");
 		goto bail;
@@ -369,10 +372,15 @@ static int thttp_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		}
 	}
 	
-	/* Alert the operation (FSM) */
+	/* Alert the dialog (FSM) */
 	if(message){
 		if(have_all_content){ /* only if we have all data */
 			ret = thttp_dialog_fsm_act(dialog, thttp_atype_i_message, message, tsk_null);
+			/* Parse next chunck */
+			if(TSK_BUFFER_SIZE(dialog->buf) >= THTTP_MIN_STREAM_CHUNCK_SIZE){
+				TSK_OBJECT_SAFE_FREE(message);
+				goto parse_buffer;
+			}
 		}
 	}
 

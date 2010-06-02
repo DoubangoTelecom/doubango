@@ -39,6 +39,13 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
+/* max size of a stream chunck to form a valid SIP message */
+#define TSIP_MAX_STREAM_CHUNCK_SIZE 0xFFFF
+/* min size of a stream chunck to form a valid SIP message
+* (Request/Response)-Line, Via, From, To, Call-Id, CSeq and Content-Length
+* Tests have been done with both compact and full headers */
+#define TSIP_MIN_STREAM_CHUNCK_SIZE 0xA0
+
 tsip_transport_layer_t* tsip_transport_layer_create(tsip_stack_t *stack)
 {
 	return tsk_object_new(tsip_transport_layer_def_t, stack);
@@ -99,7 +106,8 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	*/
 
 	/* Check if buffer is too big to be valid (have we missed some chuncks?) */
-	if(TSK_BUFFER_SIZE(transport->buff_stream) >= 0xFFFF){
+	if(TSK_BUFFER_SIZE(transport->buff_stream) >= TSIP_MAX_STREAM_CHUNCK_SIZE){
+		TSK_DEBUG_ERROR("TCP Buffer is too big to be valid");
 		tsk_buffer_cleanup(transport->buff_stream);
 	}
 
@@ -107,6 +115,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	tsk_buffer_append(transport->buff_stream, e->data, e->size);
 	
 	/* Check if we have all SIP headers. */
+parse_buffer:
 	if((endOfheaders = tsk_strindexOf(TSK_BUFFER_DATA(transport->buff_stream),TSK_BUFFER_SIZE(transport->buff_stream), "\r\n\r\n"/*2CRLF*/)) < 0){
 		TSK_DEBUG_INFO("No all SIP headers in the TCP buffer.");
 		goto bail;
@@ -142,8 +151,17 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 		message->sockfd = e->fd;
 		/* Alert transaction/dialog layer */
 		ret = tsip_transport_layer_handle_incoming_msg(transport, message);
+		/* Parse next chunck */
+		if(TSK_BUFFER_SIZE(transport->buff_stream) >= TSIP_MIN_STREAM_CHUNCK_SIZE){
+			/* message already passed to the dialog/transac layers */
+			TSK_OBJECT_SAFE_FREE(message);
+			goto parse_buffer;
+		}
 	}
-	else ret = -15;
+	else{
+		TSK_DEBUG_ERROR("Failed to parse SIP message");
+		ret = -15;
+	}
 
 bail:
 	TSK_OBJECT_SAFE_FREE(message);

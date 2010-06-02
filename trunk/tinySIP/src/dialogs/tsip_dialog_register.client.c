@@ -47,7 +47,7 @@
 #include "tsk_debug.h"
 #include "tsk_time.h"
 
-#define DEBUG_STATE_MACHINE											1
+#define DEBUG_STATE_MACHINE											0
 #define TSIP_DIALOG_REGISTER_TIMER_SCHEDULE(TX)						TSIP_DIALOG_TIMER_SCHEDULE(register, TX)
 #define TSIP_DIALOG_REGISTER_SIGNAL(self, type, code, phrase, message)	\
 	tsip_register_event_signal(type, TSIP_DIALOG(self)->ss, code, phrase, message)

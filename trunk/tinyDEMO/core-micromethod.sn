@@ -27,9 +27,9 @@
 ++r
 
 # REGISTER
-++reg --xp $$(expires) --caps +g.oma.sip-im --caps +g.3gpp.smsip --caps language="en,fr" \
-	--header Action-Header=Myheader-value @@action\
-	>>(reg-sid)
+#++reg --xp $$(expires) --caps +g.oma.sip-im --caps +g.3gpp.smsip --caps language="en,fr" \
+#	--header Action-Header=Myheader-value @@action\
+#	>>(reg-sid)
 
 # sleep
 #++sleep --sec $$(sleep-sec)

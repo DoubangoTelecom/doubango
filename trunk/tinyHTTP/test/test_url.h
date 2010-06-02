@@ -65,7 +65,7 @@ void test_url_parser()
 			printf("port: %u\n", url->port);
 			printf("hpath: %s\n", url->hpath);
 			printf("search: %s\n", url->search);
-			printf("host-type: %s\n", url->host_type == host_ipv4 ? "IPv4" : (url->host_type == host_ipv6 ? "IPv6" : (url->host_type == host_hostname ? "HOSTNAME" : "UNKNOWN")) );
+			printf("host-type: %s\n", url->host_type == thttp_host_ipv4 ? "IPv4" : (url->host_type == thttp_host_ipv6 ? "IPv6" : (url->host_type == thttp_host_hostname ? "HOSTNAME" : "UNKNOWN")) );
 			
 			printf("---PARAMS---\n");
 
