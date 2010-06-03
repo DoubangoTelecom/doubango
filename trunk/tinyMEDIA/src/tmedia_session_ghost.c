@@ -77,17 +77,12 @@ const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self)
 	return self->M.lo;
 }
 
-const tsdp_header_M_t* tmedia_session_ghost_get_no(tmedia_session_t* self)
-{
-	TSK_DEBUG_INFO("tmedia_session_ghost_get_no");
-	return tsk_null;
-}
-
 int tmedia_session_ghost_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
 	TSK_DEBUG_INFO("tmedia_session_ghost_set_ro");
 	return 0;
 }
+
 
 
 
@@ -143,7 +138,6 @@ static const tmedia_session_plugin_def_t tmedia_session_ghost_plugin_def_s =
 	tmedia_session_ghost_pause,
 
 	tmedia_session_ghost_get_lo,
-	tmedia_session_ghost_get_no,
 	tmedia_session_ghost_set_ro
 };
 const tmedia_session_plugin_def_t *tmedia_session_ghost_plugin_def_t = &tmedia_session_ghost_plugin_def_s;

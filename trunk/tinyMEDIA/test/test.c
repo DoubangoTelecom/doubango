@@ -86,6 +86,12 @@ void test_register_dummy_plugins()
 	if((ret = tmedia_codec_plugin_register(tmedia_codec_dpcmu_plugin_def_t))){
 		TSK_DEBUG_ERROR("Failed to register G.711u plugin");
 	}
+	if((ret = tmedia_codec_plugin_register(tmedia_codec_dh263_plugin_def_t))){
+		TSK_DEBUG_ERROR("Failed to register H.263-1996 plugin");
+	}
+	if((ret = tmedia_codec_plugin_register(tmedia_codec_dh264_plugin_def_t))){
+		TSK_DEBUG_ERROR("Failed to register H.264 (Base profile 10) plugin");
+	}
 }
 
 //#ifdef _WIN32_WCE

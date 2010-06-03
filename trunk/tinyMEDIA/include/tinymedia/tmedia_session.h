@@ -55,6 +55,7 @@ typedef struct tmedia_session_s
 	tmedia_codecs_L_t* codecs;
 	//! negociated codec
 	tmedia_codec_t* negociated_codec;
+	char* negociated_format;
 	//! whether the ro have been prepared (up to the manager to update the value)
 	tsk_bool_t ro_changed;
 	//! whether the session have been initialized (up to the manager to update the value)
@@ -65,7 +66,6 @@ typedef struct tmedia_session_s
 	struct{
 		tsdp_header_M_t* lo;
 		tsdp_header_M_t* ro;
-		tsdp_header_M_t* no;
 	} M;
 
 	//! plugin used to create the session
@@ -90,7 +90,6 @@ typedef struct tmedia_session_plugin_def_s
 	int (* stop) (tmedia_session_t* );
 
 	const tsdp_header_M_t* (* get_local_offer) (tmedia_session_t* );
-	const tsdp_header_M_t* (* get_negotiated_offer) (tmedia_session_t* );
 	/* return zero if can handle the ro and non-zero otherwise */
 	int (* set_remote_offer) (tmedia_session_t* , const tsdp_header_M_t* );
 }
@@ -152,10 +151,11 @@ typedef struct tmedia_session_mgr_s
 	struct{
 		tsdp_message_t* lo;
 		tsdp_message_t* ro;
-		tsdp_message_t* no;
 	} sdp;
 
+	tsk_bool_t started;
 	tsk_bool_t ro_changed;
+	tsk_bool_t state_changed;
 
 	//! session type
 	tmedia_type_t type;
@@ -166,9 +166,15 @@ typedef struct tmedia_session_mgr_s
 tmedia_session_mgr_t;
 
 TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6);
+TINYMEDIA_API int tmedia_session_mgr_start(tmedia_session_mgr_t* self);
+TINYMEDIA_API int tmedia_session_mgr_stop(tmedia_session_mgr_t* self);
 TINYMEDIA_API const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self);
-TINYMEDIA_API tsdp_message_t* tmedia_session_mgr_get_no(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp);
+TINYMEDIA_API int tmedia_session_mgr_hold(tmedia_session_mgr_t* self, tmedia_type_t type);
+TINYMEDIA_API tsk_bool_t tmedia_session_mgr_is_held(tmedia_session_mgr_t* self, tmedia_type_t type, tsk_bool_t local);
+TINYMEDIA_API int tmedia_session_mgr_resume(tmedia_session_mgr_t* self, tmedia_type_t type);
+TINYMEDIA_API int tmedia_session_mgr_add_media(tmedia_session_mgr_t* self, tmedia_type_t type);
+TINYMEDIA_API int tmedia_session_mgr_remove_media(tmedia_session_mgr_t* self, tmedia_type_t type);
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_session_mgr_def_t;
 

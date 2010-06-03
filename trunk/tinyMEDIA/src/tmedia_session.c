@@ -35,6 +35,7 @@
 #include "tsk_debug.h"
 
 /**@defgroup tmedia_session_group Media Session
+* For more information about the SOA, please refer to http://betelco.blogspot.com/2010/03/sdp-offeranswer-soa_2993.html
 */
 
 extern const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS];
@@ -49,15 +50,23 @@ int _tmedia_session_load_codecs(tmedia_session_t* self);
 
 const char* tmedia_session_get_media(const tmedia_session_t* self);
 const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self);
-const tsdp_header_M_t* tmedia_session_get_no(tmedia_session_t* self);
 int tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
 
 
-/*== Predicate function to find session object by media. */
+/*== Predicate function to find session object by media */
 int __pred_find_session_by_media(const tsk_list_item_t *item, const void *media)
 {
 	if(item && item->data){
-		return tsk_stricmp(tmedia_session_get_media((tmedia_session_t *)item->data), (const char*)media);
+		return tsk_stricmp(tmedia_session_get_media((const tmedia_session_t *)item->data), (const char*)media);
+	}
+	return -1;
+}
+
+/*== Predicate function to find session object by type */
+int __pred_find_session_by_type(const tsk_list_item_t *item, const void *type)
+{
+	if(item && item->data){
+		return ((const tmedia_session_t *)item->data)->type - *((tmedia_type_t*)type);
 	}
 	return -1;
 }
@@ -264,16 +273,6 @@ const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self)
 	return m;
 }
 
-/* internal function: get negociated offer */
-const tsdp_header_M_t* tmedia_session_get_no(tmedia_session_t* self)
-{
-	if(!self || !self->plugin || !self->plugin->get_negotiated_offer){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
-	}
-	return self->plugin->get_negotiated_offer(self);
-}
-
 /* internal function: get remote offer 
 * return zero if can handle ro and non-zero error code otherwise */
 int tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
@@ -304,11 +303,11 @@ int tmedia_session_deinit(tmedia_session_t* self)
 	/* free codecs */
 	TSK_OBJECT_SAFE_FREE(self->codecs);
 	TSK_OBJECT_SAFE_FREE(self->negociated_codec);
+	TSK_FREE(self->negociated_format);
 	
 	/* free lo, no and ro */
 	TSK_OBJECT_SAFE_FREE(self->M.lo);
 	TSK_OBJECT_SAFE_FREE(self->M.ro);
-	TSK_OBJECT_SAFE_FREE(self->M.no);
 
 	return 0;
 }
@@ -343,10 +342,10 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 }
 
 /* internal function used to match a codec */
-const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M)
+const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format)
 {
 	const tmedia_codec_t *codec;
-	char *rtpmap = tsk_null, *fmtp = tsk_null;
+	char *rtpmap = tsk_null, *fmtp = tsk_null, *name = tsk_null;
 	const tsdp_fmt_t* fmt;
 	const tsk_list_item_t *it1, *it2;
 	tsk_bool_t found = tsk_false;
@@ -368,14 +367,12 @@ const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const 
 			
 			// Dyn. payload type
 			if(codec->dyn && (rtpmap = tsdp_header_M_get_rtpmap(M, fmt->value))){
-				char* name = tsk_null;
 				int32_t rate, channels;
 				/* parse rtpmap */
 				if(tmedia_parse_rtpmap(rtpmap, &name, &rate, &channels)){
-					TSK_FREE(name);
-					TSK_DEBUG_ERROR("Failed to parse rtpmap(%s)", rtpmap);
 					goto next;
 				}
+				
 				/* compare name and rate. what about channels? */
 				if(tsk_striequals(name, codec->name) && (!rate || (codec->plugin->rate == rate))){
 					goto compare_fmtp;
@@ -392,8 +389,11 @@ const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const 
 			goto next;
 
 compare_fmtp:
-			if((fmtp = tsdp_header_M_get_fmtp(M, fmt->value))){ /* have fmtp? */
+			if((fmtp = tsdp_header_M_get_fmtp(M, fmt->value))){ /* remote have fmtp? */
 				if(tmedia_codec_match_fmtp(codec, fmtp)){ /* fmtp matches? */
+					if(codec->dyn){
+						tsk_strupdate(format, fmt->value);
+					}
 					found = tsk_true;
 				}
 			}
@@ -401,6 +401,7 @@ compare_fmtp:
 				found = tsk_true;
 			}
 next:
+			TSK_FREE(name);
 			TSK_FREE(fmtp);
 			TSK_FREE(rtpmap);
 			if(found){
@@ -439,6 +440,82 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
 }
 
 /**@ingroup tmedia_session_group
+* Starts the session manager by starting all underlying sessions.
+* You should set both remote and local offers before calling this function.
+* @param self The session manager to start.
+* @retval Zero if succced and non-zero error code otherwise.
+*
+* @sa @ref tmedia_session_mgr_stop
+*/
+int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
+{
+	int ret;
+	tsk_list_item_t* item;
+	tmedia_session_t* session;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+    
+	if(self->started){
+		TSK_DEBUG_WARN("Session manager already started");
+		return 0;
+	}
+
+	tsk_list_foreach(item, self->sessions){
+		if(!(session = item->data) || !session->plugin || !session->plugin->start){
+			TSK_DEBUG_ERROR("Invalid session");
+			return -2;
+		}
+		if((ret = session->plugin->start(session))){
+			TSK_DEBUG_ERROR("Failed to start session");
+			return ret;
+		}
+	}
+
+	self->started = tsk_true;
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
+* Stops the session manager by stopping all underlying sessions.
+* @param self The session manager to stop.
+* @retval Zero if succced and non-zero error code otherwise.
+*
+* @sa @ref tmedia_session_mgr_start
+*/
+int tmedia_session_mgr_stop(tmedia_session_mgr_t* self)
+{
+	int ret;
+	tsk_list_item_t* item;
+	tmedia_session_t* session;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(!self->started){
+		TSK_DEBUG_WARN("Session manager not started");
+		return 0;
+	}
+
+	tsk_list_foreach(item, self->sessions){
+		if(!(session = item->data) || !session->plugin || !session->plugin->stop){
+			TSK_DEBUG_ERROR("Invalid session");
+			return -2;
+		}
+		if((ret = session->plugin->stop(session))){
+			TSK_DEBUG_ERROR("Failed to stop session");
+			return ret;
+		}
+	}
+	self->started = tsk_false;
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
 * Gets local offer.
 */
 const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
@@ -461,9 +538,10 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	}
 	
 	/* creates local sdp if not already done or update it's value (because of set_ro())*/
-	if(self->ro_changed && self->sdp.lo){
+	if((self->ro_changed || self->state_changed) && self->sdp.lo){
 		TSK_OBJECT_SAFE_FREE(self->sdp.lo);
 		self->ro_changed = tsk_false;
+		self->state_changed = tsk_false;
 	}
 
 	if(self->sdp.lo){
@@ -503,18 +581,6 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	return self->sdp.lo;
 }
 
-/**@ingroup tmedia_session_group
-* Gets negociated offer.
-*/
-tsdp_message_t* tmedia_session_mgr_get_no(tmedia_session_mgr_t* self)
-{
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
-	}
-
-	return tsk_null;
-}
 
 /**@ingroup tmedia_session_group
 * Sets remote offer.
@@ -569,43 +635,182 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		}
 	}
 
-	/* update negociated offer */
-	if(self->sdp.lo && self->sdp.ro){
-		TSK_OBJECT_SAFE_FREE(self->sdp.no);
-		//...
-	}
-
-	///* foreach session */
-	//tsk_list_foreach(it1, self->sessions){
-	//	if(!(ms = it1->data)){
-	//		continue;
-	//	}
-	//	
-	//	
-
-	//	/* foreach codec in the curr. session */
-	//	tsk_list_foreach(it2, ms->codecs){
-	//		if(!(codec = it2->data)){
-	//			continue;
-	//		}
-
-	//		/* Codec with fixed payload type */
-	//		if(!codec->dyn){
-	//			
-	//		}
-	//		/* codec with dyn. payload type */
-	//		else{
-
-	//		}
-	//	}
-	//	
-	//}
-
 	/* signal that ro has changed (will be used to update lo) */
 	self->ro_changed = tsk_true;
 
 	return 0;
 }
+
+/**@ingroup tmedia_session_group
+* Holds the session as per 3GPP TS 34.610
+* @param self the session manager managing the session to hold.
+* @param type the type of the sessions to hold (you can combine several medias. e.g. audio|video|msrp).
+* @retval Zero if succeed and non zero error code otherwise.
+* @sa @ref tmedia_session_mgr_resume
+*/
+int tmedia_session_mgr_hold(tmedia_session_mgr_t* self, tmedia_type_t type)
+{
+	const tsk_list_item_t* item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_list_foreach(item, self->sessions){
+		tmedia_session_t* session = TMEDIA_SESSION(item->data);
+		if(((session->type & type) == session->type) && session->M.lo){
+			if(!tsdp_header_M_hold(session->M.lo)){
+				self->state_changed = tsk_true;
+			}
+		}
+	}
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
+* Indicates whether the specified medias are held or not.
+* @param self the session manager
+* @param type the type of the medias to check (you can combine several medias. e.g. audio|video|msrp)
+* @param local whether to check local or remote medias
+*/
+tsk_bool_t tmedia_session_mgr_is_held(tmedia_session_mgr_t* self, tmedia_type_t type, tsk_bool_t local)
+{	
+	const tsk_list_item_t* item;
+	tsk_bool_t have_these_sessions = tsk_false;
+	
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
+
+	tsk_list_foreach(item, self->sessions){
+		tmedia_session_t* session = TMEDIA_SESSION(item->data);
+		if((session->type & type) == session->type){
+			if(local && session->M.lo){
+				have_these_sessions = tsk_true;
+				if(!tsdp_header_M_is_held(session->M.lo, tsk_true)){
+					return tsk_false;
+				}
+			}
+			else if(!local && session->M.ro){
+				have_these_sessions = tsk_true;
+				if(!tsdp_header_M_is_held(session->M.ro, tsk_false)){
+					return tsk_false;
+				}
+			}
+		}
+	}
+	/* none is held */
+	return have_these_sessions ? tsk_true : tsk_false;
+}
+
+/**@ingroup tmedia_session_group
+* Resumes the session as per 3GPP TS 34.610. Should be previously held
+* by using @ref tmedia_session_mgr_hold.
+* @param self the session manager managing the session to resume.
+* @param type the type of the sessions to resume (you can combine several medias. e.g. audio|video|msrp).
+* @retval Zero if succeed and non zero error code otherwise.
+* @sa @ref tmedia_session_mgr_hold
+*/
+int tmedia_session_mgr_resume(tmedia_session_mgr_t* self, tmedia_type_t type)
+{
+	const tsk_list_item_t* item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	tsk_list_foreach(item, self->sessions){
+		tmedia_session_t* session = TMEDIA_SESSION(item->data);
+		if(((session->type & type) == session->type) && session->M.lo){
+			if(!tsdp_header_M_resume(session->M.lo)){
+				self->state_changed = tsk_true;
+			}
+		}
+	}
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
+* Adds new medias to the manager. A media will only be added if it is missing
+* or previously removed (slot with port equal to zero).
+* @param self The session manager
+* @param The types of the medias to add (ou can combine several medias. e.g. audio|video|msrp)
+* @retval Zero if succeed and non zero error code otherwise.
+*/
+int tmedia_session_mgr_add_media(tmedia_session_mgr_t* self, tmedia_type_t type)
+{
+	tsk_size_t i = 0;
+	tmedia_session_t* session;
+	const tmedia_session_plugin_def_t* plugin;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* for each registered plugin match with the supplied type */
+	while((i < TMED_SESSION_MAX_PLUGINS) && (plugin = __tmedia_session_plugins[i++])){
+		if((plugin->type & type) == plugin->type){
+			/* check whether we already support this media */
+			if((session = (tmedia_session_t*)tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_type, &plugin->type)) && session->plugin){
+				if(session->prepared){
+					TSK_DEBUG_WARN("[%s] already active", plugin->media);
+				}
+				else{
+					/* exist but unprepared(port=0) */
+					_tmedia_session_prepare_lo(session);
+					if(self->started && session->plugin->start){
+						session->plugin->start(session);
+					}
+					self->state_changed = tsk_true;
+				}
+			}
+			else{
+				/* session not supported */
+				self->state_changed = tsk_true;
+				if((session = tmedia_session_create(plugin->type))){
+					if(self->started && session->plugin->start){
+						session->plugin->start(session);
+					}
+					tsk_list_push_back_data(self->sessions, (void**)(&session));
+					self->state_changed = tsk_true;
+				}
+			}
+		}
+	}
+
+	return self->state_changed ? 0 : -2;
+}
+
+/**@ingroup tmedia_session_group
+* Removes medias from the manager. This action will stop the media and sets it's port value to zero (up to the session).
+* @param self The session manager
+* @param The types of the medias to remove (ou can combine several medias. e.g. audio|video|msrp)
+* @retval Zero if succeed and non zero error code otherwise.
+*/
+int tmedia_session_mgr_remove_media(tmedia_session_mgr_t* self, tmedia_type_t type)
+{
+	const tsk_list_item_t* item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	tsk_list_foreach(item, self->sessions){
+		tmedia_session_t* session = TMEDIA_SESSION(item->data);
+		if(((session->type & type) == session->type) && session->plugin->stop){
+			if(!session->plugin->stop(session)){
+				self->state_changed = tsk_true;
+			}
+		}
+	}
+	return 0;
+}
+
 
 /* internal functions used to prepare a session manager 
 * only sessions matching the manager type will be loaded
@@ -649,7 +854,6 @@ static tsk_object_t* tmedia_session_mgr_dtor(tsk_object_t * self)
 
 		TSK_OBJECT_SAFE_FREE(mgr->sdp.lo);
 		TSK_OBJECT_SAFE_FREE(mgr->sdp.ro);
-		TSK_OBJECT_SAFE_FREE(mgr->sdp.no);
 
 		TSK_FREE(mgr->addr);
 	}

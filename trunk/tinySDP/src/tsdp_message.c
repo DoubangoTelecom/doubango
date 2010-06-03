@@ -326,34 +326,17 @@ bail:
 /* ================= 3GPP TS 34.610 :: Communication HOLD (HOLD) using IP Multimedia (IM) Core ================*/
 int tsdp_message_hold(tsdp_message_t* self, const char* media)
 {
-	tsdp_header_M_t* m;
-	const tsdp_header_A_t* a;
+	tsdp_header_M_t* M;
 	const tsk_list_item_t* item;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	// 3GPP TS 34.610-900 - 4.5.2.1	Actions at the invoking UE
 	if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_media_by_name, media))){
-		m = TSDP_HEADER_M(item->data);
-		if((a = tsdp_header_M_findA(m, "recvonly"))){
-			// an "inactive" SDP attribute if the stream was previously set to "recvonly" media stream
-			tsk_strupdate(&(TSDP_HEADER_A(a)->field), "inactive");
-		}
-		else if((a = tsdp_header_M_findA(m, "sendrecv"))){
-			// a "sendonly" SDP attribute if the stream was previously set to "sendrecv" media stream
-			tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendonly");
-		}
-		else{
-			// default value is sendrecv. hold on default --> sendonly
-			if(!(a = tsdp_header_M_findA(m, "sendonly")) && !(a = tsdp_header_M_findA(m, "inactive"))){
-				tsdp_header_A_t* newA;
-				if((newA = tsdp_header_A_create("sendonly", tsk_null))){
-					tsdp_header_M_add(m, TSDP_HEADER(newA));
-					TSK_OBJECT_SAFE_FREE(newA);
-				}
-			}
-		}
+		M = TSDP_HEADER_M(item->data);
+		tsdp_header_M_hold(M);
 	}
 
 	return 0;
@@ -361,24 +344,17 @@ int tsdp_message_hold(tsdp_message_t* self, const char* media)
 
 int tsdp_message_resume(tsdp_message_t* self, const char* media)
 {
-	tsdp_header_M_t* m;
-	const tsdp_header_A_t* a;
+	tsdp_header_M_t* M;
 	const tsk_list_item_t* item;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	// 3GPP TS 34.610-900 - 4.5.2.1	Actions at the invoking UE
 	if((item = tsk_list_find_item_by_pred(self->headers, __pred_find_media_by_name, media))){
-		m = TSDP_HEADER_M(item->data);
-		if((a = tsdp_header_M_findA(m, "inactive"))){
-			// a "recvonly" SDP attribute if the stream was previously an inactive media stream
-			tsk_strupdate(&(TSDP_HEADER_A(a)->field), "recvonly");
-		}
-		else if((a = tsdp_header_M_findA(m, "sendonly"))){
-			// a "sendrecv" SDP attribute if the stream was previously a sendonly media stream, or the attribute may be omitted, since sendrecv is the default
-			tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendrecv");
-		}
+		M = TSDP_HEADER_M(item->data);
+		tsdp_header_M_resume(M);
 	}
 
 	return 0;

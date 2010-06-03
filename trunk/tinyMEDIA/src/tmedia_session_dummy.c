@@ -32,7 +32,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M);
+extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format);
 
 /* ============ Audio Session ================= */
 
@@ -58,7 +58,15 @@ int tmedia_session_daudio_start(tmedia_session_t* self)
 
 int tmedia_session_daudio_stop(tmedia_session_t* self)
 {
+	tmedia_session_daudio_t* daudio;
+
 	TSK_DEBUG_INFO("tmedia_session_daudio_stop");
+
+	daudio = (tmedia_session_daudio_t*)self;
+
+	/* very important */
+	daudio->local_port = 0;
+
 	return 0;
 }
 
@@ -76,7 +84,7 @@ const tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
 
 	if(!self || !self->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
-		return self->M.lo;
+		return tsk_null;
 	}
 
 	daudio = (tmedia_session_daudio_t*)self;
@@ -93,21 +101,23 @@ const tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
 		return tsk_null;
 	}
 
-	/* filter codecs */
-	if(self->negociated_codec){
-		tmedia_codec_removeAll_exceptThis(self->codecs, self->negociated_codec);
-	}
-	
 	/* from codecs to sdp */
-	tmedia_codec_to_sdp(self->codecs, self->M.lo);
+	if(self->negociated_codec && !TSK_LIST_IS_EMPTY(self->codecs)){
+		/* filter codecs */
+		tmedia_codec_removeAll_exceptThis(self->codecs, self->negociated_codec);
+		/* update format */
+		if(self->negociated_codec->dyn){
+			tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, self->negociated_format);
+		}
+		else{
+			tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, tsk_null);
+		}
+	}
+	else{
+		tmedia_codec_to_sdp(self->codecs, self->M.lo);
+	}
 
 	return self->M.lo;
-}
-
-const tsdp_header_M_t* tmedia_session_daudio_get_no(tmedia_session_t* self)
-{
-	TSK_DEBUG_INFO("tmedia_session_daudio_get_no");
-	return tsk_null;
 }
 
 int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
@@ -116,7 +126,7 @@ int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 
 	TSK_DEBUG_INFO("tmedia_session_daudio_set_ro");
 
-	if((codec = _tmedia_session_match_codec(self, m))){
+	if((codec = _tmedia_session_match_codec(self, m, &self->negociated_format))){
 		/* update negociated codec */
 		TSK_OBJECT_SAFE_FREE(self->negociated_codec);
 		self->negociated_codec = tsk_object_ref((void*)codec);
@@ -133,7 +143,15 @@ int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 
 int tmedia_session_dvideo_prepare(tmedia_session_t* self)
 {
+	tmedia_session_dvideo_t* dvideo;
+
 	TSK_DEBUG_INFO("tmedia_session_dvideo_prepare");
+
+	dvideo = (tmedia_session_dvideo_t*)self;
+
+	/* set local port */
+	dvideo->local_port = rand() ^ rand();
+
 	return 0;
 }
 
@@ -145,8 +163,16 @@ int tmedia_session_dvideo_start(tmedia_session_t* self)
 
 int tmedia_session_dvideo_stop(tmedia_session_t* self)
 {
+	tmedia_session_dvideo_t* dvideo;
+
 	TSK_DEBUG_INFO("tmedia_session_dvideo_stop");
-	return -1;
+
+	dvideo = (tmedia_session_dvideo_t*)self;
+
+	/* very important */
+	dvideo->local_port = 0;
+
+	return 0;
 }
 
 int tmedia_session_dvideo_pause(tmedia_session_t* self)
@@ -157,24 +183,64 @@ int tmedia_session_dvideo_pause(tmedia_session_t* self)
 
 const tsdp_header_M_t* tmedia_session_dvideo_get_lo(tmedia_session_t* self)
 {
+	tmedia_session_dvideo_t* dvideo;
+
 	TSK_DEBUG_INFO("tmedia_session_dvideo_get_lo");
 
-	if(self->ro_changed){
+	if(!self || !self->plugin){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	dvideo = (tmedia_session_dvideo_t*)self;
+
+	if(self->ro_changed && self->M.lo){
 		TSK_OBJECT_SAFE_FREE(self->M.lo);
 	}
 
-	return tsk_null;
-}
+	if(self->M.lo){
+		return self->M.lo;
+	}
+	else if(!(self->M.lo = tsdp_header_M_create(self->plugin->media, dvideo->local_port, "RTP/AVP"))){
+		TSK_DEBUG_ERROR("Failed to create lo");
+		return tsk_null;
+	}
 
-const tsdp_header_M_t* tmedia_session_dvideo_get_no(tmedia_session_t* self)
-{
-	TSK_DEBUG_INFO("tmedia_session_dvideo_get_no");
-	return tsk_null;
+	/* from codecs to sdp */
+	if(self->negociated_codec && !TSK_LIST_IS_EMPTY(self->codecs)){
+		/* filter codecs */
+		tmedia_codec_removeAll_exceptThis(self->codecs, self->negociated_codec);
+		/* update format */
+		if(self->negociated_codec->dyn){
+			tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, self->negociated_format);
+		}
+		else{
+			tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, tsk_null);
+		}
+	}
+	else{
+		tmedia_codec_to_sdp(self->codecs, self->M.lo);
+	}	
+
+	return self->M.lo;
 }
 
 int tmedia_session_dvideo_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
+	const tmedia_codec_t* codec;
+
 	TSK_DEBUG_INFO("tmedia_session_dvideo_set_ro");
+
+	if((codec = _tmedia_session_match_codec(self, m, &self->negociated_format))){
+		/* update negociated codec */
+		TSK_OBJECT_SAFE_FREE(self->negociated_codec);
+		self->negociated_codec = tsk_object_ref((void*)codec);
+		/* update remote offer */
+		TSK_OBJECT_SAFE_FREE(self->M.ro);
+		self->M.ro = tsk_object_ref((void*)m);
+		
+		return 0;
+	}
 	return -1;
 }
 
@@ -212,12 +278,6 @@ const tsdp_header_M_t* tmedia_session_dmsrp_get_lo(tmedia_session_t* self)
 		TSK_OBJECT_SAFE_FREE(self->M.lo);
 	}
 
-	return tsk_null;
-}
-
-const tsdp_header_M_t* tmedia_session_dmsrp_get_no(tmedia_session_t* self)
-{
-	TSK_DEBUG_INFO("tmedia_session_dmsrp_get_no");
 	return tsk_null;
 }
 
@@ -274,7 +334,6 @@ static const tmedia_session_plugin_def_t tmedia_session_daudio_plugin_def_s =
 	tmedia_session_daudio_pause,
 
 	tmedia_session_daudio_get_lo,
-	tmedia_session_daudio_get_no,
 	tmedia_session_daudio_set_ro
 };
 const tmedia_session_plugin_def_t *tmedia_session_daudio_plugin_def_t = &tmedia_session_daudio_plugin_def_s;
@@ -327,7 +386,6 @@ static const tmedia_session_plugin_def_t tmedia_session_dvideo_plugin_def_s =
 	tmedia_session_dvideo_pause,
 
 	tmedia_session_dvideo_get_lo,
-	tmedia_session_dvideo_get_no,
 	tmedia_session_dvideo_set_ro
 };
 const tmedia_session_plugin_def_t *tmedia_session_dvideo_plugin_def_t = &tmedia_session_dvideo_plugin_def_s;
@@ -380,7 +438,6 @@ static const tmedia_session_plugin_def_t tmedia_session_dmsrp_plugin_def_s =
 	tmedia_session_dmsrp_pause,
 
 	tmedia_session_dmsrp_get_lo,
-	tmedia_session_dmsrp_get_no,
 	tmedia_session_dmsrp_set_ro
 };
 const tmedia_session_plugin_def_t *tmedia_session_dmsrp_plugin_def_t = &tmedia_session_dmsrp_plugin_def_s;
