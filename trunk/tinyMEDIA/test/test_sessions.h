@@ -38,12 +38,12 @@
     "r=7d 1h 0 25h\r\n" \
 	"r=604800 3600 0 90000\r\n" \
 	"w=my dummy header\r\n" \
-	"m=audio 49170 RTP/AVP 0 8 97 98\r\n" \
+	"m=audio 49170 RTP/AVP 8 0 97 98\r\n" \
 	"i=Audio line\r\n" \
 	"c=IN IP4 otherhost.biloxi.example.com\r\n" \
 	"k=base64:ZWFzdXJlLgdddddddddddddddddddddd==\r\n" \
-	"a=rtpmap:0 PCMU/8000\r\n" \
 	"a=rtpmap:8 PCMA/8000\r\n" \
+	"a=rtpmap:0 PCMU/8000\r\n" \
 	"a=rtpmap:97 iLBC/8000\r\n" \
 	"a=rtpmap:98 AMR-WB/16000\r\n" \
     "a=fmtp:98 octet-align=1\r\n" \
@@ -62,7 +62,7 @@
 	"a=rtpmap:32 MPV/90000\r\n" \
 	"a=recvonly\r\n"
 
-void test_sessions()
+void test_sessions_client()
 {
 	tmedia_session_mgr_t* mgr;
 	const tsdp_message_t* sdp_lo;
@@ -85,8 +85,57 @@ void test_sessions()
 		tmedia_session_mgr_set_ro(mgr, sdp_ro);
 		TSK_OBJECT_SAFE_FREE(sdp_ro);
 	}
+
+	/* get lo */
+	sdp_lo = tmedia_session_mgr_get_lo(mgr);
+	if((temp = tsdp_message_tostring(sdp_lo))){
+		TSK_DEBUG_INFO("sdp_lo=%s", temp);
+		TSK_FREE(temp);
+	}
 	
 	TSK_OBJECT_SAFE_FREE(mgr);
+}
+
+void test_sessions_server()
+{
+	tmedia_session_mgr_t* mgr = tsk_null;
+	const tsdp_message_t* sdp_lo;
+	tsdp_message_t* sdp_ro = tsk_null;
+	char* temp;
+	tmedia_type_t type;
+
+	/* parse ro */
+	if(!(sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))){
+		TSK_DEBUG_ERROR("Failed to parse ro");
+		return;
+	}
+	else{
+		/* get ro media type */
+		type = tmedia_type_from_sdp(sdp_ro);
+	}
+
+	/* create manager */
+	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false);
+
+	/* set ro */
+	tmedia_session_mgr_set_ro(mgr, sdp_ro);
+
+	/* get lo */
+	sdp_lo = tmedia_session_mgr_get_lo(mgr);
+	if((temp = tsdp_message_tostring(sdp_lo))){
+		TSK_DEBUG_INFO("sdp_lo=%s", temp);
+		TSK_FREE(temp);
+	}
+
+	TSK_OBJECT_SAFE_FREE(sdp_ro);
+	TSK_OBJECT_SAFE_FREE(mgr);
+}
+
+
+void test_sessions()
+{
+	//test_sessions_client();
+	test_sessions_server();
 }
 
 #endif /* _TEST_SESSIONS_H_ */

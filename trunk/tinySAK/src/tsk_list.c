@@ -104,9 +104,9 @@ int tsk_list_unlock(tsk_list_t* list)
 }
 
 /**@ingroup tsk_list_group
-* Remove an item from the @a list.
+* Remove an free an item from the @a list.
 * @param list the list from which to remove the @a item.
-* @param item the item to remove from the @a list.
+* @param item the item to remove (and free) from the @a list.
 */
 void tsk_list_remove_item(tsk_list_t* list, tsk_list_item_t* item)
 {
@@ -459,7 +459,7 @@ const tsk_list_item_t* tsk_list_find_item_by_pred(const tsk_list_t* list, tsk_li
 * @retval the data holded by the item which match the criteria and NULL otherwise
 * @sa @ref tsk_list_find_item_by_pred
 */
-const tsk_object_t* tsk_list_find_data_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
+const tsk_object_t* tsk_list_find_object_by_pred(const tsk_list_t* list, tsk_list_func_predicate predicate, const void* data)
 {
 	const tsk_list_item_t *item;
 	if((item = tsk_list_find_item_by_pred(list, predicate, data))){

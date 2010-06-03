@@ -401,7 +401,7 @@ int tnet_transport_stop(tnet_transport_t *transport)
 {	
 	int ret;
 
-	if(ret = tsk_runnable_stop(TSK_RUNNABLE(transport))){
+	if((ret = tsk_runnable_stop(TSK_RUNNABLE(transport)))){
 		return ret;
 	}
 	

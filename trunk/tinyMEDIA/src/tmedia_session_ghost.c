@@ -60,8 +60,21 @@ int tmedia_session_ghost_pause(tmedia_session_t* self)
 
 const tsdp_header_M_t* tmedia_session_ghost_get_lo(tmedia_session_t* self)
 {
+	tmedia_session_ghost_t* ghost;
+
 	TSK_DEBUG_INFO("tmedia_session_ghost_get_lo");
-	return tsk_null;
+
+	ghost = (tmedia_session_ghost_t*)self;
+
+	if(self->M.lo){
+		return self->M.lo;
+	}
+	else if(!(self->M.lo = tsdp_header_M_create(ghost->media, 0, "RTP/AVP"))){
+		TSK_DEBUG_ERROR("Failed to create lo");
+		return tsk_null;
+	}
+
+	return self->M.lo;
 }
 
 const tsdp_header_M_t* tmedia_session_ghost_get_no(tmedia_session_t* self)
@@ -73,7 +86,7 @@ const tsdp_header_M_t* tmedia_session_ghost_get_no(tmedia_session_t* self)
 int tmedia_session_ghost_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
 	TSK_DEBUG_INFO("tmedia_session_ghost_set_ro");
-	return tsk_null;
+	return 0;
 }
 
 

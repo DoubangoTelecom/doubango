@@ -305,6 +305,72 @@ int tmedia_codec_set_remote_fmtp(tmedia_codec_t* self, const char* fmtp)
 }
 
 /**@ingroup tmedia_codec_group
+* Remove all codecs except the specified one.
+* @param codecs the list of codecs from which to remove codecs.
+* @param codec the codec which shall not be removed.
+* @retval zero if succeed (or nothing to do) and non-zero error code otherwise.
+*/
+int tmedia_codec_removeAll_exceptThis(tmedia_codecs_L_t* codecs, const tmedia_codec_t * codec)
+{
+	tsk_list_item_t* item;
+	if(!codecs || !codec){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+again:
+	tsk_list_foreach(item, codecs){
+		if(tsk_object_cmp(item->data, codec)){
+			tsk_list_remove_item(codecs, item);
+			goto again;
+		}
+	}
+	return 0;
+}
+
+/**@ingroup tmedia_codec_group
+* Converts a list of codecs as sdp (m= line).<br>
+* Will add: fmt, rtpmap and fmtp.
+* @param codecs The list of codecs to convert
+* @param m The destination
+* @retval Zero if succeed and non-zero error code otherwise
+*/
+int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
+{
+	const tsk_list_item_t* item;
+	const tmedia_codec_t* codec;
+	char *fmtp, *rtpmap;
+
+	if(!codecs || !m){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_list_foreach(item, codecs){
+		codec = item->data;
+		
+		/* add fmt */
+		if(tsdp_header_M_add_fmt(m, codec->format)){
+			continue;
+		}
+		/* add rtpmap attribute */
+		if((rtpmap = tmedia_codec_get_rtpmap(codec))){
+			tsdp_header_M_add_headers(m,
+			TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
+			tsk_null);
+			TSK_FREE(rtpmap);
+		}
+		/* add fmtp attribute */
+		if((fmtp = tmedia_codec_get_fmtp(codec))){
+			tsdp_header_M_add_headers(m,
+			TSDP_HEADER_A_VA_ARGS("fmtp", fmtp),
+			tsk_null);
+			TSK_FREE(fmtp);
+		}
+	}
+	return 0;
+}
+
+/**@ingroup tmedia_codec_group
 * DeInitialize a Codec.
 * @param self The codec to deinitialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
 * @retval Zero if succeed and non-zero error code otherwise.

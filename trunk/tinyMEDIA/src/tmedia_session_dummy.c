@@ -32,29 +32,22 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-extern int _tmedia_session_load_codecs(tmedia_session_t* self);
 extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M);
 
 /* ============ Audio Session ================= */
 
 int tmedia_session_daudio_prepare(tmedia_session_t* self)
 {
-	int ret;
 	tmedia_session_daudio_t* daudio;
 
 	TSK_DEBUG_INFO("tmedia_session_daudio_prepare");
 
 	daudio = (tmedia_session_daudio_t*)self;
 
-	if((ret = _tmedia_session_load_codecs(self))){
-		TSK_DEBUG_ERROR("Failed to prepare audio session");
-		return ret;
-	}
-
 	/* set local port */
 	daudio->local_port = rand() ^ rand();
 
-	return ret;
+	return 0;
 }
 
 int tmedia_session_daudio_start(tmedia_session_t* self)
@@ -77,9 +70,6 @@ int tmedia_session_daudio_pause(tmedia_session_t* self)
 
 const tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
 {
-	const tsk_list_item_t* item;
-	const tmedia_codec_t* codec;
-	char *fmtp, *rtpmap;
 	tmedia_session_daudio_t* daudio;
 
 	TSK_DEBUG_INFO("tmedia_session_daudio_get_lo");
@@ -91,6 +81,10 @@ const tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
 
 	daudio = (tmedia_session_daudio_t*)self;
 
+	if(self->ro_changed && self->M.lo){
+		TSK_OBJECT_SAFE_FREE(self->M.lo);
+	}
+
 	if(self->M.lo){
 		return self->M.lo;
 	}
@@ -99,28 +93,13 @@ const tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
 		return tsk_null;
 	}
 
-	tsk_list_foreach(item, self->codecs){
-		codec = item->data;
-		
-		/* add fmt */
-		if(tsdp_header_M_add_fmt(self->M.lo, codec->format)){
-			continue;
-		}
-		/* add rtpmap attribute */
-		if((rtpmap = tmedia_codec_get_rtpmap(codec))){
-			tsdp_header_M_add_headers(self->M.lo,
-			TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
-			tsk_null);
-			TSK_FREE(rtpmap);
-		}
-		/* add fmtp attribute */
-		if((fmtp = tmedia_codec_get_fmtp(codec))){
-			tsdp_header_M_add_headers(self->M.lo,
-			TSDP_HEADER_A_VA_ARGS("fmtp", fmtp),
-			tsk_null);
-			TSK_FREE(fmtp);
-		}
+	/* filter codecs */
+	if(self->negociated_codec){
+		tmedia_codec_removeAll_exceptThis(self->codecs, self->negociated_codec);
 	}
+	
+	/* from codecs to sdp */
+	tmedia_codec_to_sdp(self->codecs, self->M.lo);
 
 	return self->M.lo;
 }
@@ -138,6 +117,9 @@ int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 	TSK_DEBUG_INFO("tmedia_session_daudio_set_ro");
 
 	if((codec = _tmedia_session_match_codec(self, m))){
+		/* update negociated codec */
+		TSK_OBJECT_SAFE_FREE(self->negociated_codec);
+		self->negociated_codec = tsk_object_ref((void*)codec);
 		/* update remote offer */
 		TSK_OBJECT_SAFE_FREE(self->M.ro);
 		self->M.ro = tsk_object_ref((void*)m);
@@ -176,6 +158,11 @@ int tmedia_session_dvideo_pause(tmedia_session_t* self)
 const tsdp_header_M_t* tmedia_session_dvideo_get_lo(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dvideo_get_lo");
+
+	if(self->ro_changed){
+		TSK_OBJECT_SAFE_FREE(self->M.lo);
+	}
+
 	return tsk_null;
 }
 
@@ -196,30 +183,35 @@ int tmedia_session_dvideo_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 int tmedia_session_dmsrp_prepare(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_prepare");
-	return -1;
+	return 0;
 }
 
 int tmedia_session_dmsrp_start(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_start");
-	return -1;
+	return 0;
 }
 
 int tmedia_session_dmsrp_stop(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_stop");
-	return -1;
+	return 0;
 }
 
 int tmedia_session_dmsrp_pause(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_pause");
-	return -1;
+	return 0;
 }
 
 const tsdp_header_M_t* tmedia_session_dmsrp_get_lo(tmedia_session_t* self)
 {
 	TSK_DEBUG_INFO("tmedia_session_dmsrp_get_lo");
+
+	if(self->ro_changed){
+		TSK_OBJECT_SAFE_FREE(self->M.lo);
+	}
+
 	return tsk_null;
 }
 
@@ -243,7 +235,7 @@ static tsk_object_t* tmedia_session_daudio_ctor(tsk_object_t * self, va_list * a
 {
 	tmedia_session_daudio_t *session = self;
 	if(session){
-		/* init base */
+		/* init base: called by tmedia_session_create() */
 		/* init self */
 	}
 	return self;
@@ -296,7 +288,7 @@ static tsk_object_t* tmedia_session_dvideo_ctor(tsk_object_t * self, va_list * a
 {
 	tmedia_session_dvideo_t *session = self;
 	if(session){
-		/* init base */
+		/* init base: called by tmedia_session_create() */
 		/* init self */
 	}
 	return self;
@@ -349,7 +341,7 @@ static tsk_object_t* tmedia_session_dmsrp_ctor(tsk_object_t * self, va_list * ap
 {
 	tmedia_session_dmsrp_t *session = self;
 	if(session){
-		/* init base */
+		/* init base: called by tmedia_session_create() */
 		/* init self */
 	}
 	return self;
