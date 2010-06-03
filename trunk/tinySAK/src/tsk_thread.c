@@ -83,8 +83,10 @@ int tsk_thread_join(void** tid)
 #if TSK_UNDER_WINDOWS
 	return (WaitForSingleObject(*((HANDLE*)tid), INFINITE) == WAIT_FAILED) ? -1 : 0;
 #else
-	int ret = pthread_join(*((pthread_t*)*tid), 0);
-	tsk_free(tid);
+	int ret;
+	if((ret = pthread_join(*((pthread_t*)*tid), 0)) == 0){
+		tsk_free(tid);
+	}
 	return ret;
 #endif
 }

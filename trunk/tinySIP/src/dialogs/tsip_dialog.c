@@ -174,17 +174,20 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	*/
 	switch(request->line.request.request_type){
 		case tsip_MESSAGE:
-			{
-				break;
-			}
 		case tsip_PUBLISH:
 			{
-				TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
+				if(request->line.request.request_type == tsip_PUBLISH) {
+					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_EXPIRES_VA_ARGS(TSK_TIME_MS_2_S(self->expires)));
+				}
 				/* add caps in Accept-Contact headers */
-				tsk_list_foreach(item, self->ss->caps){
+				tsk_list_foreach(item, self->ss->caps) {
+					const tsk_param_t* param = TSK_PARAM(item->data);
 					char* value = tsk_null;
-					tsk_sprintf(&value, "*;%s", TSK_PARAM(item->data)->value);
-					if(value){
+					tsk_sprintf(&value, "*;%s%s%s", 
+						param->name,
+						param->value ? "=" : "",
+						param->value ? param->value : "");
+					if(value) {
 						TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS("Accept-Contact", value));
 						TSK_FREE(value);
 					}
@@ -198,14 +201,14 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 				tsip_header_Contacts_L_t *hdr_contacts;
 				tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/tsk_false?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
 				hdr_contacts = tsip_header_Contact_parse(contact, tsk_strlen(contact));
-				if(!TSK_LIST_IS_EMPTY(hdr_contacts)){
+				if(!TSK_LIST_IS_EMPTY(hdr_contacts)) {
 					request->Contact = tsk_object_ref(hdr_contacts->head->data);
 				}
 				TSK_OBJECT_SAFE_FREE(hdr_contacts);
 				TSK_FREE(contact);
 
-				/* Add capabilities as per RFC 3840. */
-				if(request->Contact){
+				/* Add capabilities as per RFC 3840 */
+				if(request->Contact) {
 					tsk_list_foreach(item, self->ss->caps){
 						tsk_params_add_param(&TSIP_HEADER(request->Contact)->params, TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value);
 					}

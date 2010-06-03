@@ -79,6 +79,7 @@ static int tsip_transport_layer_stream_cb(const tnet_transport_event_t* e)
 	
 	switch(e->type){
 		case event_data: {
+				//TSK_DEBUG_INFO("\n\n\nSIP Message:%s\n\n\n", e->data);
 				break;
 			}
 		case event_closed:
