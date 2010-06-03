@@ -111,6 +111,7 @@ typedef struct thttp_stack_s
 {
 	TSK_DECLARE_OBJECT;
 
+	tsk_bool_t started;
 	thttp_stack_callback_f callback;
 
 	/* Network */

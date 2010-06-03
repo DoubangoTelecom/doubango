@@ -57,7 +57,7 @@ typedef void * (*tsk_runnable_func_run)(void* self);
 	for(;;) { \
 		tsk_semaphore_decrement(TSK_RUNNABLE(self)->semaphore); \
 		if(!TSK_RUNNABLE(self)->running &&  \
-			(!TSK_RUNNABLE(self)->important) || (TSK_RUNNABLE(self)->important && TSK_LIST_IS_EMPTY(TSK_RUNNABLE(self)->objects))) \
+			(!TSK_RUNNABLE(self)->important || (TSK_RUNNABLE(self)->important && TSK_LIST_IS_EMPTY(TSK_RUNNABLE(self)->objects)))) \
 			break;
 		
 

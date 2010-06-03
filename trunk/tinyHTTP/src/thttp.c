@@ -517,6 +517,7 @@ int thttp_stack_start(thttp_stack_handle_t *self)
 			tsk_strupdate(&stack->transport->tls.pvk, stack->tls.pvk);
 			tsk_strupdate(&stack->transport->tls.pbk, stack->tls.pbk);
 		}
+		stack->started = tsk_true;
 	}
 	return ret;
 }
@@ -574,13 +575,26 @@ const void* thttp_stack_get_userdata(thttp_stack_handle_t *self)
 */
 int thttp_stack_stop(thttp_stack_handle_t *self)
 {
+	int ret;
 	thttp_stack_t *stack = self;
 
 	if(!stack){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	return tnet_transport_shutdown(stack->transport);
+
+	if(stack->started){
+		TSK_DEBUG_WARN("Stack already stopped");
+		return -2;
+	}
+
+	if(!(ret = tnet_transport_shutdown(stack->transport))){
+		stack->started = tsk_false;
+	}
+	else{
+		TSK_DEBUG_ERROR("Failed to stop the stack");
+	}
+	return ret;
 }
 
 /** Alerts the user.
@@ -626,7 +640,7 @@ int thttp_stack_alert(const thttp_stack_t *self, const thttp_event_t* e)
 //========================================================
 //	HTTP stack object definition
 //
-static tsk_object_t* _thttp_stack_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* thttp_stack_ctor(tsk_object_t * self, va_list * app)
 {
 	thttp_stack_t *stack = self;
 	if(stack){
@@ -637,7 +651,7 @@ static tsk_object_t* _thttp_stack_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* thttp_stack_destroy(tsk_object_t * self)
+static tsk_object_t* thttp_stack_dtor(tsk_object_t * self)
 { 
 	thttp_stack_t *stack = self;
 	if(stack){	
@@ -663,8 +677,8 @@ static tsk_object_t* thttp_stack_destroy(tsk_object_t * self)
 static const tsk_object_def_t thttp_stack_def_s = 
 {
 	sizeof(thttp_stack_t),
-	_thttp_stack_create, 
-	thttp_stack_destroy,
+	thttp_stack_ctor, 
+	thttp_stack_dtor,
 	tsk_null, 
 };
 const tsk_object_def_t *thttp_stack_def_t = &thttp_stack_def_s;
