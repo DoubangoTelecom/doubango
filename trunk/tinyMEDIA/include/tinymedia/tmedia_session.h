@@ -53,9 +53,14 @@ typedef struct tmedia_session_s
 	tmedia_type_t type;
 	//! list of codecs managed by this session
 	tmedia_codecs_L_t* codecs;
-	//! whether the session has been prepared
+	//! negociated codec
+	tmedia_codec_t* negociated_codec;
+	//! whether the ro have been prepared (up to the manager to update the value)
+	tsk_bool_t ro_changed;
+	//! whether the session have been initialized (up to the manager to update the value)
+	tsk_bool_t initialized;
+	//! whether the session have been prepared (up to the manager to update the value)
 	tsk_bool_t prepared;
-	unsigned initialized:1;
 
 	struct{
 		tsdp_header_M_t* lo;
@@ -86,6 +91,7 @@ typedef struct tmedia_session_plugin_def_s
 
 	const tsdp_header_M_t* (* get_local_offer) (tmedia_session_t* );
 	const tsdp_header_M_t* (* get_negotiated_offer) (tmedia_session_t* );
+	/* return zero if can handle the ro and non-zero otherwise */
 	int (* set_remote_offer) (tmedia_session_t* , const tsdp_header_M_t* );
 }
 tmedia_session_plugin_def_t;
@@ -149,7 +155,7 @@ typedef struct tmedia_session_mgr_s
 		tsdp_message_t* no;
 	} sdp;
 
-	tsk_bool_t prepared;
+	tsk_bool_t ro_changed;
 
 	//! session type
 	tmedia_type_t type;

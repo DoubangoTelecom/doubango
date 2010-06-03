@@ -303,16 +303,16 @@ int tsip_dialog_layer_remove(tsip_dialog_layer_t *self, const tsip_dialog_t *dia
 		
 		/* whether shutting down? */
 		if(self->shutdown.inprogress){
-			if(self->shutdown.phase2){ /* Phase 2 */
-				if(TSK_LIST_IS_EMPTY(self->dialogs)){
-					/* Alert only if all dialogs have been removed. */
+			if(self->shutdown.phase2){ /* Phase 2 (all non-REGISTER and silent dialogs have been removed) */
+				if(tsk_list_count(self->dialogs, pred_find_dialog_by_type, &regtype) == 0){
+					/* alert only if there is not REGISTER dialog (ignore silents) */
 					TSK_DEBUG_INFO("== Shutting down - Phase-2 completed ==");
 					tsk_condwait_broadcast(self->shutdown.condwait);
 				}
 			}
 			else{ /* Phase 1 */
 				if(tsk_list_count(self->dialogs, pred_find_dialog_by_not_type, &regtype) == 0){
-					/* Alert only if all dialogs except REGISTER have been removed. */
+					/* alert only if all dialogs except REGISTER have been removed */
 					TSK_DEBUG_INFO("== Shutting down - Phase-1 completed ==");
 					tsk_condwait_broadcast(self->shutdown.condwait);
 				}

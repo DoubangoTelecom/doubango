@@ -44,7 +44,7 @@ int main()
 	/* Register dummy plugins */
 	test_register_dummy_plugins();
 
-	do{
+	do {
 
 #if RUN_TEST_ALL  || RUN_TEST_CODECS
 		test_codecs();

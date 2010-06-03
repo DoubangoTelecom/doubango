@@ -54,6 +54,7 @@ static tsk_object_t* tmedia_codec_dpcmu_ctor(tsk_object_t * self, va_list * app)
 {
 	tmedia_codec_dpcmu_t *dpcmu = self;
 	if(dpcmu){
+		/* init base: called by tmedia_codec_create() */
 		/* init self */
 	}
 	return self;
@@ -111,6 +112,7 @@ static tsk_object_t* tmedia_codec_dpcma_ctor(tsk_object_t * self, va_list * app)
 {
 	tmedia_codec_dpcma_t *dpcma = self;
 	if(dpcma){
+		/* init base: called by tmedia_codec_create() */
 		/* init self */
 	}
 	return self;

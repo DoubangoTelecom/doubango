@@ -49,7 +49,7 @@ typedef enum tmedia_type_e
 }
 tmedia_type_t;
 
-tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp);
+TINYMEDIA_API tmedia_type_t tmedia_type_from_sdp(const tsdp_message_t* sdp);
 int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t* channels);
 
 TMEDIA_END_DECLS

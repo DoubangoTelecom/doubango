@@ -171,7 +171,7 @@ const tsdp_header_t *tsdp_message_get_header(const tsdp_message_t *self, tsdp_he
 const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_message_t *self, char name)
 {
 	if(self){
-		return tsk_list_find_data_by_pred(self->headers, __pred_find_header_by_name, &name);
+		return tsk_list_find_object_by_pred(self->headers, __pred_find_header_by_name, &name);
 	}
 	else{
 		TSK_DEBUG_ERROR("Invalid parameter");
