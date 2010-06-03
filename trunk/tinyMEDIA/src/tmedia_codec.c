@@ -269,7 +269,7 @@ char* tmedia_codec_get_fmtp(const tmedia_codec_t* self)
 tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* self, const char* fmtp)
 {
 	/* checks */
-	if(!self || !self->plugin || self->plugin->fmtp_match){
+	if(!self || !self->plugin || !self->plugin->fmtp_match){
 		TSK_DEBUG_ERROR("invalid parameter");
 		return tsk_false;
 	}
@@ -328,7 +328,7 @@ again:
 }
 
 /**@ingroup tmedia_codec_group
-* Converts a list of codecs as sdp (m= line).<br>
+* Serialize a list of codecs to sdp (m= line) message.<br>
 * Will add: fmt, rtpmap and fmtp.
 * @param codecs The list of codecs to convert
 * @param m The destination
@@ -337,8 +337,6 @@ again:
 int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 {
 	const tsk_list_item_t* item;
-	const tmedia_codec_t* codec;
-	char *fmtp, *rtpmap;
 
 	if(!codecs || !m){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -346,26 +344,51 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 	}
 
 	tsk_list_foreach(item, codecs){
-		codec = item->data;
-		
-		/* add fmt */
-		if(tsdp_header_M_add_fmt(m, codec->format)){
-			continue;
-		}
-		/* add rtpmap attribute */
-		if((rtpmap = tmedia_codec_get_rtpmap(codec))){
-			tsdp_header_M_add_headers(m,
-			TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
-			tsk_null);
-			TSK_FREE(rtpmap);
-		}
-		/* add fmtp attribute */
-		if((fmtp = tmedia_codec_get_fmtp(codec))){
-			tsdp_header_M_add_headers(m,
-			TSDP_HEADER_A_VA_ARGS("fmtp", fmtp),
-			tsk_null);
-			TSK_FREE(fmtp);
-		}
+		tmedia_codec_to_sdp_2((const tmedia_codec_t*)item->data, m, tsk_null);
+	}
+	return 0;
+}
+
+/**@ingroup tmedia_codec_group
+* Converts a codec to sdp (m= line).<br>
+* Will add: fmt, rtpmap and fmtp.
+* @param codec The codec to convert
+* @param m The destination
+* @param format The format to use (will override the codec's format). If null, the codec's format will
+* be used.
+* @retval Zero if succeed and non-zero error code otherwise
+*/
+int tmedia_codec_to_sdp_2(const tmedia_codec_t* codec, tsdp_header_M_t* m, const char* format)
+{
+	int ret;
+	char *fmtp, *rtpmap;
+
+	if(!codec || !m){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* add fmt */
+	if((ret = tsdp_header_M_add_fmt(m, format? format : codec->format))){
+		TSK_DEBUG_ERROR("Failed to add format");
+		return ret;
+	}
+	/* add rtpmap attribute */
+	if((rtpmap = tmedia_codec_get_rtpmap(codec))){
+		tsdp_header_M_add_headers(m,
+		TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
+		tsk_null);
+		TSK_FREE(rtpmap);
+	}
+	/* add fmtp attribute */
+	if((fmtp = tmedia_codec_get_fmtp(codec))){
+		char* temp = tsk_null;
+		tsk_sprintf(&temp, "%s %s", codec->format, fmtp);
+		tsdp_header_M_add_headers(m,
+			TSDP_HEADER_A_VA_ARGS("fmtp", temp),
+		tsk_null);
+		TSK_FREE(temp);
+		TSK_FREE(fmtp);
 	}
 	return 0;
 }

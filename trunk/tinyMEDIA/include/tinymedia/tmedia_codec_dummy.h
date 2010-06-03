@@ -70,6 +70,9 @@ tmedia_codec_dh264_t;
 TINYMEDIA_GEXTERN const tmedia_codec_plugin_def_t *tmedia_codec_dpcma_plugin_def_t;
 TINYMEDIA_GEXTERN const tmedia_codec_plugin_def_t *tmedia_codec_dpcmu_plugin_def_t;
 
+TINYMEDIA_GEXTERN const tmedia_codec_plugin_def_t *tmedia_codec_dh263_plugin_def_t;
+TINYMEDIA_GEXTERN const tmedia_codec_plugin_def_t *tmedia_codec_dh264_plugin_def_t;
+
 TMEDIA_END_DECLS
 
 #endif /* TINYMEDIA_CODEC_DUMMY_H */

@@ -151,11 +151,13 @@ typedef struct tmedia_codec_plugin_def_s
 	tsk_bool_t dyn;
 	int32_t rate;
 
+	/* default values could be updated at any time */
 	struct{
 		int8_t channels;
 		/* ...to be continued */
 	} audio;
 
+	/* default values could be updated at any time */
 	struct{
 		unsigned width;
 		unsigned height;
@@ -188,6 +190,7 @@ TINYMEDIA_API tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* self, con
 TINYMEDIA_API int tmedia_codec_set_remote_fmtp(tmedia_codec_t* self, const char* fmtp);
 TINYMEDIA_API int tmedia_codec_removeAll_exceptThis(tmedia_codecs_L_t* codecs, const tmedia_codec_t * codec);
 TINYMEDIA_API int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m);
+TINYMEDIA_API int tmedia_codec_to_sdp_2(const tmedia_codec_t* codec, tsdp_header_M_t* m, const char* format);
 TINYMEDIA_API int tmedia_codec_deinit(tmedia_codec_t* self);
 
 /** Audio codec */

@@ -72,23 +72,28 @@ int tmedia_parse_rtpmap(const char* rtpmap, char** name, int32_t* rate, int32_t*
 	len = tsk_strlen(rtpmap);
 
 	/* e.g. AMR-WB/16000/2 */
-	if(sscanf(rtpmap, "%*s/%*d/%*d")){
+	if(sscanf(rtpmap, "%*s/%*d/%*d") != EOF){
 		int index = tsk_strindexOf(rtpmap, len, "/");
 		*name = tsk_strndup(rtpmap, index);
 		sscanf(&rtpmap[index+1], "%d/%d", rate, channels);
+		return 0;
 	}
 	/* e.g. AMR-WB/16000 */
-	else if(sscanf(rtpmap, "%*s/%*d")){
+	else if(sscanf(rtpmap, "%*s/%*d") != EOF){
 		int index = tsk_strindexOf(rtpmap, len, "/");
 		*name = tsk_strndup(rtpmap, index);
 		*rate = atoi(&rtpmap[index+1]);
+		return 0;
 	}
 	/* e.g. AMR-WB */
-	else{
+	else if(sscanf(rtpmap, "%*s") != EOF){
 		*name = tsk_strdup(rtpmap);
 		return 0;
 	}
-	return -2;
+	else{
+		TSK_DEBUG_ERROR("%s is not a valid rtpmap value", rtpmap);
+		return -2;
+	}
 }
 
 

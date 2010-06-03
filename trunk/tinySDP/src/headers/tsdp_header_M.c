@@ -608,6 +608,76 @@ char* tsdp_header_M_get_fmtp(const tsdp_header_M_t* self, const char* fmt)
 	return fmtp;
 }
 
+/* as per 3GPP TS 34.610 */
+int tsdp_header_M_hold(tsdp_header_M_t* self)
+{
+	const tsdp_header_A_t* a;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((a = tsdp_header_M_findA(self, "recvonly"))){
+		// an "inactive" SDP attribute if the stream was previously set to "recvonly" media stream
+		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "inactive");
+	}
+	else if((a = tsdp_header_M_findA(self, "sendrecv"))){
+		// a "sendonly" SDP attribute if the stream was previously set to "sendrecv" media stream
+		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendonly");
+	}
+	else{
+		// default value is sendrecv. hold on default --> sendonly
+		if(!(a = tsdp_header_M_findA(self, "sendonly")) && !(a = tsdp_header_M_findA(self, "inactive"))){
+			tsdp_header_A_t* newA;
+			if((newA = tsdp_header_A_create("sendonly", tsk_null))){
+				tsdp_header_M_add(self, TSDP_HEADER_CONST(newA));
+				TSK_OBJECT_SAFE_FREE(newA);
+			}
+		}
+	}
+	return 0;
+}
+
+tsk_bool_t tsdp_header_M_is_held(const tsdp_header_M_t* self, tsk_bool_t local)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_false;
+	}
+
+	/* both cases */
+	if(tsdp_header_M_findA(self, "inactive")){
+		return tsk_true;
+	}
+
+	if(local){
+		return tsdp_header_M_findA(self, "sendonly") ? tsk_true : tsk_false;
+	}
+	else{
+		return tsdp_header_M_findA(self, "recvonly") ? tsk_true : tsk_false;
+	}
+}
+
+/* as per 3GPP TS 34.610 */
+int tsdp_header_M_resume(tsdp_header_M_t* self)
+{
+	const tsdp_header_A_t* a;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if((a = tsdp_header_M_findA(self, "inactive"))){
+		// a "recvonly" SDP attribute if the stream was previously an inactive media stream
+		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "recvonly");
+	}
+	else if((a = tsdp_header_M_findA(self, "sendonly"))){
+		// a "sendrecv" SDP attribute if the stream was previously a sendonly media stream, or the attribute may be omitted, since sendrecv is the default
+		tsk_strupdate(&(TSDP_HEADER_A(a)->field), "sendrecv");
+	}
+	return 0;
+}
+
 
 //
 //int tsdp_header_M_set(tsdp_header_M_t* self, ...)
