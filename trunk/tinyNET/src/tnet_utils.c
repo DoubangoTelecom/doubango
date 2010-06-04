@@ -1056,8 +1056,7 @@ int tnet_sockaddrinfo_init(const char *host, tnet_port_t port, enum tnet_socket_
 	}
 	
 	/* Find our address. */
-	for(ptr = result; ptr; ptr = ptr->ai_next)
-	{
+	for(ptr = result; ptr; ptr = ptr->ai_next){
 		/* Only IPv4 and IPv6 are supported */
 		if(ptr->ai_family != AF_INET6 && ptr->ai_family != AF_INET){
 			continue;

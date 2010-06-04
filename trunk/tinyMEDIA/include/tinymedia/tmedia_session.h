@@ -109,6 +109,18 @@ typedef tsk_list_t tmedia_sessions_L_t; /**< List of @ref tmedia_session_t objec
 typedef struct tmedia_session_audio_s
 {
 	TMEDIA_DECLARE_SESSION;
+	
+	/** Will be passed to the rtp session which will call this function to signal that
+	* there is new data (from the network). It's up to the session to decode the data using
+	* the negociated codec. Once the data is decoded, it should be passed to the consumer.
+	*/
+	int (* from_rtp_cb) (struct tmedia_session_audio_s* self, const void* data, tsk_size_t size);
+	/**! Will be passed to the producer which will call this callback to signal
+	* that there is new data to send. @a data contains raw audio buffer (most likely PCM 16bit).
+	* The data should be encoded using the negociated codec
+	* before to be sent over the network (using the rtp session).
+	*/
+	int (* from_producer_cb) (struct tmedia_session_audio_s* self, const void* data, tsk_size_t size);
 }
 tmedia_session_audio_t;
 #define tmedia_session_audio_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_audio)
@@ -120,6 +132,18 @@ tmedia_session_audio_t;
 typedef struct tmedia_session_video_s
 {
 	TMEDIA_DECLARE_SESSION;
+	
+	/** Will be passed to the rtp session which will call this function to signal that
+	* there is new data (from the network). It's up to the session to decode the data using
+	* the negociated codec. Once the data is decoded, it should be passed to the consumer.
+	*/
+	int (* from_rtp_cb) (struct tmedia_session_video_s* self, const void* data, tsk_size_t size);
+	/**! Will be passed to the producer which will call this callback to signal
+	* that there is new data to send. @a data contains raw audio buffer (most likely PCM 16bit).
+	* The data should be encoded using the negociated codec
+	* before to be sent over the network (using the rtp session).
+	*/
+	int (* from_producer_cb) (struct tmedia_session_video_s* self, const void* data, tsk_size_t size);
 }
 tmedia_session_video_t;
 #define tmedia_session_video_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_video)
@@ -131,6 +155,9 @@ tmedia_session_video_t;
 typedef struct tmedia_session_msrp_s
 {
 	TMEDIA_DECLARE_SESSION;
+
+	int (* send_file) (struct tmedia_session_msrp_s*, const char* path, ...);
+	int (* send_message) (struct tmedia_session_msrp_s*, const void* data, tsk_size_t size, ...);
 }
 tmedia_session_msrp_t;
 #define tmedia_session_msrp_init(self)	tmedia_session_init(TMEDIA_SESSION(self), tmed_sess_type_msrp)
