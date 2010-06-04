@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tinyMEDIA"
-	ProjectGUID="{52814B0D-7DCA-45B8-9A16-8B147040D619}"
-	RootNamespace="tinyMEDIA"
+	Name="tinyDAV"
+	ProjectGUID="{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}"
+	RootNamespace="tinyDAV"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -40,16 +40,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyMEDIA\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinySDP\include"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				WarnAsError="true"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
-				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -62,7 +60,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySDP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -118,17 +115,12 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyMEDIA\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinySDP\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
 				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				WarnAsError="true"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -179,95 +171,11 @@
 	<Files>
 		<Filter
 			Name="headers(*.h)"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia_config.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_codec.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_codec_dummy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_common.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_consumer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_producer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session_dummy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session_ghost.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="source(*.c)"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_codec.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_codec_dummy.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_common.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_consumer.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_producer.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session_dummy.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session_ghost.c"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>
