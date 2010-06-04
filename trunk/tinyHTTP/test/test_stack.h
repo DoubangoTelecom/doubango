@@ -104,13 +104,14 @@ void test_stack()
 
 	/* creates session */
 	session = thttp_session_create(stack,
+		THTTP_SESSION_SET_CRED("sip:mercuro1@colibria.com", "mercuro1"),
 		// session-level options
 		THTTP_SESSION_SET_OPTION(THTTP_SESSION_OPTION_TIMEOUT, "6000"),
 
 		// session-level headers
 		THTTP_SESSION_SET_HEADER("Pragma", "No-Cache"),
-		//THTTP_SESSION_SET_HEADER("Connection", "Keep-Alive"),
-		THTTP_SESSION_SET_HEADER("Connection", "close"),
+		THTTP_SESSION_SET_HEADER("Connection", "Keep-Alive"),
+		// THTTP_SESSION_SET_HEADER("Connection", "close"),
 		THTTP_SESSION_SET_HEADER("User-Agent", "doubango 1.0"),
 		
 		THTTP_SESSION_SET_NULL()); /* MUST always be present */
@@ -121,6 +122,14 @@ void test_stack()
 		tsk_null);
 
 	getchar();
+
+	thttp_action_GET(session, "http://siptest.colibria.com:8080/services/resource-lists/users/sip:mercuro1@colibria.com/index",
+		THTTP_ACTION_SET_HEADER("Content-Type", "application/resource-lists+xml"),
+		
+		tsk_null);
+
+	getchar();
+
 
 	thttp_action_GET(session, "http://ipv6.google.com",
 		// action-level options

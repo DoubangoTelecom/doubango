@@ -278,14 +278,17 @@ int addSocket(tnet_fd_t fd, tnet_socket_type_t type, tnet_transport_t *transport
 		}
 		
 		tsk_safeobj_lock(context);
-
+		
 		context->ufds[context->count].fd = fd;
 		context->ufds[context->count].events = context->events;
+		context->ufds[context->count].revents = 0;
 		context->sockets[context->count] = sock;
-
+		
 		context->count++;
-
+		
 		tsk_safeobj_unlock(context);
+		
+		TSK_DEBUG_INFO("Socket added");
 		
 		return 0;
 	}
@@ -332,11 +335,16 @@ int removeSocket(int index, transport_context_t *context)
 		
 		for(i=index ; i<context->count-1; i++){			
 			context->sockets[i] = context->sockets[i+1];
+			context->ufds[i] = context->ufds[i+1];
 		}
 		
 		context->sockets[context->count-1] = 0;
+		context->ufds[context->count-1].fd = 0;
+		context->ufds[context->count-1].events = 0;
+		context->ufds[context->count-1].revents = 0;
 		
 		context->count--;
+		TSK_DEBUG_INFO("Socket removed");
 	}
 
 	tsk_safeobj_unlock(context);
