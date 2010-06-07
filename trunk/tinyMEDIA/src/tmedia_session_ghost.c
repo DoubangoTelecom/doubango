@@ -132,6 +132,7 @@ static const tmedia_session_plugin_def_t tmedia_session_ghost_plugin_def_s =
 	tmedia_ghost,
 	"ghost",
 	
+	tsk_null,
 	tmedia_session_ghost_prepare,
 	tmedia_session_ghost_start,
 	tmedia_session_ghost_stop,

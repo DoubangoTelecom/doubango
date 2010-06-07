@@ -97,7 +97,7 @@ const tsip_header_t* SipMessage::getSipHeader(const char* name, unsigned index /
 
 
 	tsk_list_foreach(item, this->sipmessage->headers){
-		if(tsk_striequals(tsip_header_get_name_2(TSIP_HEADER(item)), name)){
+		if(tsk_striequals(tsip_header_get_name_2(TSIP_HEADER(item->data)), name)){
 			if(pos++ >= index){
 				hdr = (const tsip_header_t*)item->data;
 				break;

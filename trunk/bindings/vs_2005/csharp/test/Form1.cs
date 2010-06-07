@@ -24,6 +24,7 @@ namespace test
 
         RegistrationSession regSession = null;
         PublicationSession pubSession = null;
+        SubscriptionSession subSession = null;
         MyCallback callback = null;
         SipStack stack = null;
 
@@ -145,6 +146,19 @@ namespace test
         {
             this.textBoxDebug.Text = text;
         }
+
+        private void buttonSub_Click(object sender, EventArgs e)
+        {
+            if (this.subSession == null)
+            {
+                this.subSession = new SubscriptionSession(stack);
+                this.subSession.addHeader("Accept", "application/reginfo+xml");
+                this.subSession.addHeader("Event", "reg");
+                this.subSession.setExpires(30);
+
+                this.subSession.Subscribe();
+            }
+        }
     }
 
 
@@ -186,6 +200,20 @@ namespace test
             }
 
             return 0;
+        }
+
+        public override int OnSubscriptionEvent(SubscriptionEvent e)
+        {
+            switch (e.getType())
+            {
+                case tsip_subscribe_event_type_t.tsip_i_notify:
+                    String ev = e.getSipMessage().getSipHeaderValue("Event");
+                    Console.WriteLine("Event=%s", ev);
+                    break;
+                default:
+                    break;
+            }
+            return base.OnSubscriptionEvent(e);
         }
 
         public override int OnPublicationEvent(PublicationEvent e)
