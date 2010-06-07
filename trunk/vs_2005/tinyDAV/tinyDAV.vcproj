@@ -40,14 +40,17 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyDAV\include;..\..\tinyMEDIA\include;..\..\tinySDP\include;..\..\tinySAK\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
+				WarnAsError="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="4"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -60,6 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -119,8 +123,10 @@
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
+				WarnAsError="true"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -172,10 +178,210 @@
 		<Filter
 			Name="headers(*.h)"
 			>
+			<File
+				RelativePath="..\..\tinyDAV\include\tinydav\tdav.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDAV\include\tinydav.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDAV\include\tinydav_config.h"
+				>
+			</File>
+			<Filter
+				Name="codecs"
+				>
+				<Filter
+					Name="amr"
+					>
+				</Filter>
+				<Filter
+					Name="g711"
+					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\codecs\g711\tdav_codec_g711.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="g722"
+					>
+				</Filter>
+				<Filter
+					Name="gsm"
+					>
+				</Filter>
+				<Filter
+					Name="h261"
+					>
+				</Filter>
+				<Filter
+					Name="h263"
+					>
+				</Filter>
+				<Filter
+					Name="h264"
+					>
+				</Filter>
+				<Filter
+					Name="ilbc"
+					>
+				</Filter>
+				<Filter
+					Name="theora"
+					>
+				</Filter>
+				<Filter
+					Name="speex"
+					>
+				</Filter>
+				<Filter
+					Name="silk"
+					>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="audio"
+				>
+				<File
+					RelativePath="..\..\tinyDAV\include\tinydav\audio\tdav_session_audio.h"
+					>
+				</File>
+				<Filter
+					Name="android"
+					>
+				</Filter>
+				<Filter
+					Name="directsound"
+					>
+				</Filter>
+				<Filter
+					Name="oss"
+					>
+				</Filter>
+				<Filter
+					Name="waveapi"
+					>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="video"
+				>
+				<Filter
+					Name="android"
+					>
+				</Filter>
+				<Filter
+					Name="directsound"
+					>
+				</Filter>
+				<Filter
+					Name="v4linux"
+					>
+				</Filter>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="source(*.c)"
 			>
+			<File
+				RelativePath="..\..\tinyDAV\src\tdav.c"
+				>
+			</File>
+			<Filter
+				Name="codecs"
+				>
+				<Filter
+					Name="amr"
+					>
+				</Filter>
+				<Filter
+					Name="g711"
+					>
+					<File
+						RelativePath="..\..\tinyDAV\src\codecs\g711\tdav_codec_g711.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="g722"
+					>
+				</Filter>
+				<Filter
+					Name="gsm"
+					>
+				</Filter>
+				<Filter
+					Name="h261"
+					>
+				</Filter>
+				<Filter
+					Name="h263"
+					>
+				</Filter>
+				<Filter
+					Name="h264"
+					>
+				</Filter>
+				<Filter
+					Name="ilbc"
+					>
+				</Filter>
+				<Filter
+					Name="silk"
+					>
+				</Filter>
+				<Filter
+					Name="speex"
+					>
+				</Filter>
+				<Filter
+					Name="theora"
+					>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="audio"
+				>
+				<File
+					RelativePath="..\..\tinyDAV\src\audio\tdav_session_audio.c"
+					>
+				</File>
+				<Filter
+					Name="android"
+					>
+				</Filter>
+				<Filter
+					Name="directsound"
+					>
+				</Filter>
+				<Filter
+					Name="oss"
+					>
+				</Filter>
+				<Filter
+					Name="waveapi"
+					>
+				</Filter>
+			</Filter>
+			<Filter
+				Name="video"
+				>
+				<Filter
+					Name="android"
+					>
+				</Filter>
+				<Filter
+					Name="directshow"
+					>
+				</Filter>
+				<Filter
+					Name="v4linux"
+					>
+				</Filter>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

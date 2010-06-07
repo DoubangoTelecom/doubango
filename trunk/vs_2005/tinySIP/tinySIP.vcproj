@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\thirdparties\win32\include\smc;..\..\tinySIP\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinyIPSec\src"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\thirdparties\win32\include\smc;..\..\tinySIP\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinySDP\include;..\..\tinyMEDIA\include;..\..\tinyHTTP\include;..\..\tinyIPSec\src"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyIPSec.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinyIPSec.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -833,11 +833,35 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.cdiv.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.client.c"
 					>
 				</File>
 				<File
+					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.conf.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.ect.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.hold.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.qos.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.server.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinySIP\src\dialogs\tsip_dialog_invite.timers.c"
 					>
 				</File>
 				<File
@@ -918,14 +942,6 @@
 				</File>
 				<File
 					RelativePath="..\..\tinySIP\src\api\tsip_api_subscribe.c"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="media"
-				>
-				<File
-					RelativePath="..\..\tinySIP\src\media\tsip_msession.c"
 					>
 				</File>
 			</Filter>
@@ -1500,14 +1516,6 @@
 				</File>
 				<File
 					RelativePath="..\..\tinySIP\include\tinysip\api\tsip_api_subscribe.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="media"
-				>
-				<File
-					RelativePath="..\..\tinySIP\include\tinysip\media\tsip_msession.h"
 					>
 				</File>
 			</Filter>
