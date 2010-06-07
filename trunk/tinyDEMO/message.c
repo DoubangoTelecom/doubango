@@ -26,6 +26,7 @@
 #include <ctype.h>
 
 extern ctx_t* ctx;
+extern const session_t* session_handle_cmd(cmd_type_t , const opts_L_t*);
 
 tsk_bool_t is_valid_telnum(const tsip_uri_t* uri);
 tsk_buffer_t* sms_submit(const tsip_uri_t* smsc, const tsip_uri_t* dest, const char* ascii_pay);

@@ -875,6 +875,8 @@ static tsk_object_t* tsip_transac_ict_dtor(tsk_object_t * _self)
 
 		/* DeInitialize base class */
 		tsip_transac_deinit(TSIP_TRANSAC(self));
+
+		TSK_DEBUG_INFO("*** ICT destroyed ***");
 	}
 	return _self;
 }

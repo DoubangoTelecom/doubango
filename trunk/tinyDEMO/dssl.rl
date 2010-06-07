@@ -233,11 +233,13 @@ replace:
 	("file"i | "f"i) %{ cmd->type = cmd_file; } |
 	("hangup"i | "hu"i) %{ cmd->type = cmd_hangup; } |
 	("help"i | "h"i) %{ cmd->type = cmd_help; } |
+	("hold"i | "ho"i) %{ cmd->type = cmd_hold; } |
 	("large-message"i | "lm"i) %{ cmd->type = cmd_large_message; } |
 	("message"i | "m"i) %{ cmd->type = cmd_message; } |
 	("options"i | "opt"i) %{ cmd->type = cmd_options; } |
 	("publish"i | "pub"i) %{ cmd->type = cmd_publish; } |
 	("register"i | "reg"i) %{ cmd->type = cmd_register; } |
+	("resume"i | "res"i) %{ cmd->type = cmd_resume; } |
 	("run"i | "r"i) %{ cmd->type = cmd_run; } |
 	("scenario"i | "sn"i) %{ cmd->type = cmd_scenario; } |
 	"sleep"i %{ cmd->type = cmd_sleep; } |

@@ -104,7 +104,6 @@ void test_stack()
 
 	/* creates session */
 	session = thttp_session_create(stack,
-		THTTP_SESSION_SET_CRED("sip:mercuro1@colibria.com", "mercuro1"),
 		// session-level options
 		THTTP_SESSION_SET_OPTION(THTTP_SESSION_OPTION_TIMEOUT, "6000"),
 

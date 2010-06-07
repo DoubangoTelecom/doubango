@@ -55,10 +55,7 @@ int main()
 {
 	tnet_startup();
 
-#if LOOP
-	for(;;)
-#endif
-	{
+	do{
 		/* Print copyright information */
 		printf("Doubango Project\nCopyright (C) 2009-2010 Mamadou Diop \n\n");
 
@@ -80,6 +77,7 @@ int main()
 #endif
 
 	}
+	while(LOOP);
 
 	tnet_cleanup();
 

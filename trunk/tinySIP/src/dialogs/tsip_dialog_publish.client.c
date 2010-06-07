@@ -462,10 +462,14 @@ int tsip_dialog_publish_Trying_2_Terminated_X_cancel(va_list *app)
 	tsip_dialog_publish_t *self = va_arg(*app, tsip_dialog_publish_t *);
 	/* const tsip_message_t *message = va_arg(*app, const tsip_message_t *); */
 
-	/* Cancel all transactions associated to this dialog (will also be one when the dialog is destroyed (worth nothing)) */
+	/* Cancel all transactions associated to this dialog (will also be done when the dialog is destroyed (worth nothing)) */
 	ret = tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 
-	/* Alert the user. */
+	/*	RFC 3261 - 9.1 Client Behavior
+		A CANCEL request SHOULD NOT be sent to cancel a request other than INVITE.
+	*/
+
+	/* Alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_cancelled, "Subscription cancelled");
 
 	return ret;
@@ -677,8 +681,8 @@ static tsk_object_t* tsip_dialog_publish_dtor(tsk_object_t * _self)
 		TSK_DEBUG_INFO("*** PUBLISH Dialog destroyed ***");
 
 		/* Cancel all timers */
-		DIALOG_TIMER_CANCEL(refresh);
-		DIALOG_TIMER_CANCEL(shutdown);
+		TSIP_DIALOG_TIMER_CANCEL(refresh);
+		TSIP_DIALOG_TIMER_CANCEL(shutdown);
 		
 		/* deinit base class (will cancel all transactions) */
 		tsip_dialog_deinit(TSIP_DIALOG(self));

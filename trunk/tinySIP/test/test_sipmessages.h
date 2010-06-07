@@ -85,14 +85,14 @@
 	"Via: SIP/2.0/tcp 127.0.0.1:5082;branch=z9hG4bKc16be5aee32df400d01015675ab911ba,SIP/2.0/udp 127.0.0.1:5082;branch=z9hG4bKeec53b25db240bec92ea250964b8c1fa;received_port_ext=5081;received=192.168.0.13,SIP/2.0/UDP 192.168.0.12:57121;rport=57121;branch=z9hG4bK1274980921982;received_port_ext=5081;received=192.168.0.12\r\n" \
 	"From: \"Bob\"<sip:bob@open-ims.test>;tag=mercuro\r\n" \
 	"To: \"Alice\"<sip:alice@open-ims.test>\r\n" \
-	"Contact: \"\" <sip:mamadou@ims.inexbee.com>\r\n" \
+	"m: <sip:mamadou@127.0.0.1:5060>\r\n" \
 	"Call-ID: 1262767804423\r\n" \
 	"CSeq: 8 MESSAGE\r\n" \
 	"RSeq: 17422\r\n" \
 	"RAck: 776656 1 INVITE\r\n" \
 	"Max-Forwards: 70\r\n" \
 	"Date: Wed, 28 Apr 2010 23:42:50 GMT\r\n" \
-	"Date: Sun, 2 May 2010 20:27:49 GMT\n-r\n" \
+	"Date: Sun, 2 May 2010 20:27:49 GMT\r\n" \
 	"Allow: INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER\r\n" \
 	"User-Agent: IM-client/OMA1.0 Mercuro-Bronze/v4.0.1508.0\r\n" \
 	"c: text/plain; charset=utf-8\r\n" \

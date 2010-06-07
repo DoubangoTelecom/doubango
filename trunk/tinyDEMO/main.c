@@ -29,6 +29,8 @@
 #include "register.h"
 #include "subscribe.h"
 
+#include "tinydav.h" /* Doubango Audio/Video Framework */
+
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
@@ -59,6 +61,10 @@ int main(int argc, char** argv)
 
 	/* Initialize Network Layer ==> Mandatory */
 	tnet_startup();
+	/* Initialize Doubango Audio/Video Framework ==> will register all plugins(codecs and sessions) 
+	* Not mandatory if you have your own plugins*/
+	tdav_init();
+
 	/* Print Usage */
 	//cmd_print_help();
 
@@ -212,6 +218,9 @@ bail:
 	TSK_OBJECT_SAFE_FREE(buffer);
 	/* Destroy the user's ctx */
 	TSK_OBJECT_SAFE_FREE(ctx);
+	/* Deinitialize Doubango Audio/Video Framework ==> will unregister all plugins(codecs and sessions) 
+	* Not mandatory */
+	tdav_init();
 	/* Uninitilize Network Layer */
 	tnet_cleanup();
 
@@ -264,6 +273,12 @@ int execute(const cmd_t* cmd)
 		case cmd_audio:
 			{
 				TSK_DEBUG_INFO("command=audio");
+				if((sid = invite_handle_cmd(cmd->type, cmd->opts)) != TSIP_SSESSION_INVALID_ID){
+					if(cmd->sidparam){
+						tsk_itoa(sid, &istr);
+						update_param(cmd->sidparam, istr);
+					}
+				}
 				break;
 			}
 		case cmd_config_session:
@@ -313,6 +328,19 @@ int execute(const cmd_t* cmd)
 				cmd_print_help();
 				break;
 			}
+		case cmd_hold:
+			{
+				const opt_t* opt;
+				TSK_DEBUG_INFO("command=hold");
+				if((opt = opt_get_by_type(cmd->opts, opt_sid)) && !tsk_strnullORempty(opt->value)){ /* --sid option */
+					invite_handle_cmd(cmd->type, cmd->opts);
+				}
+				else{
+					TSK_DEBUG_ERROR("++hold command need --sid option");
+					ret = -1;
+				}
+				break;
+			}
 		case cmd_message:
 			{
 				TSK_DEBUG_INFO("command=message");
@@ -355,6 +383,19 @@ int execute(const cmd_t* cmd)
 						tsk_itoa(sid, &istr);
 						update_param(cmd->sidparam, istr);
 					}
+				}
+				break;
+			}
+		case cmd_resume:
+			{
+				const opt_t* opt;
+				TSK_DEBUG_INFO("command=resume");
+				if((opt = opt_get_by_type(cmd->opts, opt_sid)) && !tsk_strnullORempty(opt->value)){ /* --sid option */
+					invite_handle_cmd(cmd->type, cmd->opts);
+				}
+				else{
+					TSK_DEBUG_ERROR("++resume command need --sid option");
+					ret = -1;
 				}
 				break;
 			}

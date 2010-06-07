@@ -326,8 +326,8 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 		/*Method SP Request_URI SP SIP_Version CRLF*/
 		/* Method */
 		tsk_buffer_append_2(output, "%s ", self->line.request.method);
-		/* Request URI */
-		tsip_uri_serialize(self->line.request.uri, tsk_false, tsk_false, output);
+		/* Request URI (without quotes but with params)*/
+		tsip_uri_serialize(self->line.request.uri, tsk_true, tsk_false, output);
 		/* SIP VERSION */
 		tsk_buffer_append_2(output, " %s\r\n", TSIP_MESSAGE_VERSION_DEFAULT);
 	}
@@ -403,6 +403,8 @@ tsip_request_type_t tsip_request_get_type(const char* method)
 		return tsip_ACK;
 	}else if(tsk_striequals(method, "BYE")){
 		return tsip_BYE;
+	}else if(tsk_striequals(method, "CANCEL")){
+		return tsip_CANCEL;
 	}else if(tsk_striequals(method, "INVITE")){
 		return tsip_INVITE;
 	}else if(tsk_striequals(method, "OPTIONS")){
@@ -434,13 +436,27 @@ tsip_request_t *tsip_request_new(const char* method, const tsip_uri_t *request_u
 {
 	tsip_request_t* request;
 
+	/* RFC 3261 8.1.1 Generating the Request
+		A valid SIP request formulated by a UAC MUST, at a minimum, contain
+		the following header fields: To, From, CSeq, Call-ID, Max-Forwards,
+		and Via; all of these header fields are mandatory in all SIP
+		requests.  These six header fields are the fundamental building
+		blocks of a SIP message, as they jointly provide for most of the
+		critical message routing services including the addressing of
+		messages, the routing of responses, limiting message propagation,
+		ordering of messages, and the unique identification of transactions.
+		These header fields are in addition to the mandatory request line,
+		which contains the method, Request-URI, and SIP version.
+	*/
+
 	if((request = tsip_request_create(method, request_uri))){
 		tsip_message_add_headers(request,
-			TSIP_HEADER_FROM_VA_ARGS(tsk_null, from, tsk_null),
 			TSIP_HEADER_TO_VA_ARGS(tsk_null, to, tsk_null),
-			TSIP_HEADER_CALL_ID_VA_ARGS(call_id),
+			TSIP_HEADER_FROM_VA_ARGS(tsk_null, from, tsk_null),
 			TSIP_HEADER_CSEQ_VA_ARGS(cseq, method),
+			TSIP_HEADER_CALL_ID_VA_ARGS(call_id),
 			TSIP_HEADER_MAX_FORWARDS_VA_ARGS(TSIP_HEADER_MAX_FORWARDS_DEFAULT),
+			/* Via will be added by the transport layer */
 			/* TSIP_HEADER_USER_AGENT_VA_ARGS(TSIP_HEADER_USER_AGENT_DEFAULT), */
 			TSIP_HEADER_CONTENT_LENGTH_VA_ARGS(0),
 

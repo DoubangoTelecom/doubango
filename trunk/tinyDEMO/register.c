@@ -22,6 +22,8 @@
 #include "register.h"
 
 extern ctx_t* ctx;
+extern const session_t* session_handle_cmd(cmd_type_t , const opts_L_t*);
+
 
 int register_handle_event(const tsip_event_t *_event)
 {

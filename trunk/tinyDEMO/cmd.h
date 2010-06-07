@@ -41,11 +41,13 @@ typedef enum cmd_type_e
 	cmd_file, /* ++file | ++f*/
 	cmd_hangup, /* ++hangup | ++hu */
 	cmd_help, /* ++help | ++h  */
+	cmd_hold, /* ++hold | ++ho  */
 	cmd_large_message, /* ++large-message | ++lm */
 	cmd_message, /* ++message | ++m*/
 	cmd_options, /* ++options | ++opt*/
 	cmd_publish, /* ++publish | ++pub*/
 	cmd_register, /* ++register | ++reg */
+	cmd_resume, /* ++resume | ++res */
 	cmd_run, /* ++run | ++r*/
 	cmd_scenario, /* ++scenario | ++sn*/
 	cmd_sleep, /* ++sleep */

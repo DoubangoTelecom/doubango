@@ -69,6 +69,12 @@ typedef enum tsip_action_type_e
 	/* === OPTIONS === */
 	tsip_atype_options_send, /**< Sends SIP OPTIONS request */
 
+	/* === INVITE === */
+	tsip_atype_invite, /**< Sends SIP INVITE/reINVITE request */
+	tsip_atype_hold, /**< Puts the session on hold state */
+	tsip_atype_resume, /**< Resumes a previously held session*/
+#define tsip_atype_bye tsip_atype_hangup
+
 
 	/* === common === */
 	//! Accept incoming call (INVITE) or message (SIP MESSAGE)

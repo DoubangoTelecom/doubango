@@ -31,6 +31,10 @@
  */
 #include "tinysip/dialogs/tsip_dialog_invite.h"
 
+#include "tinysip/dialogs/tsip_dialog_invite.common.h"
+
+#include "tinysip/transports/tsip_transport_layer.h"
+
 #include "tinysip/headers/tsip_header_RAck.h"
 #include "tinysip/headers/tsip_header_RSeq.h"
 
@@ -61,24 +65,27 @@
 3GPP TS 24.605 : Ad-Hoc Multi Party Conference
 */
 
-#define DEBUG_STATE_MACHINE											1
-#define TSIP_DIALOG_INVITE_SIGNAL(self, type, code, phrase, message)	\
-	tsip_invite_event_signal(type, TSIP_DIALOG_GET_STACK(self), TSIP_DIALOG(self)->ss, code, phrase, message)
-
 /* ======================== internal functions ======================== */
 int send_INVITE(tsip_dialog_invite_t *self);
 int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx);
+int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
+int send_BYE(tsip_dialog_invite_t *self);
+int send_CANCEL(tsip_dialog_invite_t *self);
 int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
 
 /* ======================== transitions ======================== */
 extern int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
-extern int c0001_Outgoing_2_Connected_X_i2xx(va_list *app); // 2xx INVITE
-extern int c0002_Outgoing_2_Terminated_X_i300_to_i699(va_list *app); // 300-699 INVITE
+extern int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app);
+extern int c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app);
 extern int c0003_Outgoing_2_Terminated_X_oCANCEL(va_list *app);
 
-extern int s0000_Satrted_2_Incoming_X_iINVITE(va_list *app);
+extern int s0000_Started_2_Incoming_X_iINVITE(va_list *app);
 extern int s0000_Incoming_2_Connected_X_o2xx(va_list *app); // 2xx INVITE
 extern int s0000_Incoming_2_Terminated_X_oCANCEL(va_list *app);
+
+int x0000_Any_2_Any_X_i2xxINVITE(va_list *app);
+int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
+int x0000_Any_2_Trying_X_shutdown(va_list *app);
 
 int x0000_Any_2_Trying_X_oINVITE(va_list *app);
 int x0000_Any_2_Trying_X_oUPDATE(va_list *app);
@@ -102,41 +109,40 @@ tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* 
 	return tsk_false;
 }
 
-/* ======================== actions ======================== */
-typedef enum _fsm_action_e
+tsk_bool_t _fsm_cond_is_resp2UPDATE(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	_fsm_action_oINVITE,
-	_fsm_action_iINVITE,
-	_fsm_action_oUPDATE,
-	_fsm_action_iUPDATE,
-	_fsm_action_oCANCEL,
-	_fsm_action_iCANCEL,
-	_fsm_action_iPRACK,
-	_fsm_action_oPRACK,
-	_fsm_action_iACK,
-	_fsm_action_oACK,
-
-	_fsm_action_i1xx,
-	_fsm_action_i2xx,
-	_fsm_action_i300_to_i699,
-	_fsm_action_i401_i407_i421_i494,
-
-	_fsm_action_transporterror,
-	_fsm_action_error,
+	if(message->CSeq){
+		return tsk_striequals(TSIP_MESSAGE_CSEQ_METHOD(message), "UPDATE");
+	}
+	return tsk_false;
 }
-_fsm_action_t;
+
+tsk_bool_t _fsm_cond_is_resp2BYE(tsip_dialog_invite_t* self, tsip_message_t* message)
+{
+	if(message->CSeq){
+		return tsk_striequals(TSIP_MESSAGE_CSEQ_METHOD(message), "BYE");
+	}
+	return tsk_false;
+}
+
+tsk_bool_t _fsm_cond_is_resp2PRACK(tsip_dialog_invite_t* self, tsip_message_t* message)
+{
+	if(message->CSeq){
+		return tsk_striequals(TSIP_MESSAGE_CSEQ_METHOD(message), "PRACK");
+	}
+	return tsk_false;
+}
+
+/* ======================== actions ======================== */
+/* #include "tinysip/dialogs/tsip_dialog_invite.common.h" */
 
 /* ======================== states ======================== */
-typedef enum _fsm_state_e
-{
-	_fsm_state_Started,
-	_fsm_state_Outgoing,
-	_fsm_state_Incoming,
-	_fsm_state_Trying,
-	_fsm_state_Connected,
-	_fsm_state_Terminated
-}
-_fsm_state_t;
+/* #include "tinysip/dialogs/tsip_dialog_invite.common.h" */
+
+
+
+/* 3GPP TS 24.610 : Communication Hold  */
+extern int tsip_dialog_invite_hold_init(tsip_dialog_invite_t *self);
 
 int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dialog_event_type_t type, const tsip_message_t *msg)
 {
@@ -146,10 +152,8 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 	{
 	case tsip_dialog_i_msg:
 		{
-			if(msg)
-			{
-				if(TSIP_MESSAGE_IS_RESPONSE(msg)) /* Response */
-				{
+			if(msg){
+				if(TSIP_MESSAGE_IS_RESPONSE(msg)){ /* Response */
 					if(TSIP_RESPONSE_IS_1XX(msg)){ // 100-199
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i1xx, msg, tsk_null);
 					}
@@ -164,8 +168,7 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 					}
 					else; // Ignore
 				}
-				else /* Request */
-				{
+				else{ /* Request */
 					if(TSIP_REQUEST_IS_INVITE(msg)){ // INVITE
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iINVITE, msg, tsk_null);
 					}
@@ -202,6 +205,28 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 	return ret;
 }
 
+/**Timer manager callback.
+ *
+ * @param self	The owner of the signaled timer. 
+ * @param	timer_id		The identifier of the signaled timer.
+ *
+ * @return	Zero if succeed and non-zero error code otherwise.  
+**/
+int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_timer_id_t timer_id)
+{
+	int ret = -1;
+
+	if(self){
+		if(timer_id == self->timerrefresh.id){
+			//ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_register, tsk_null, tsk_null);
+		}
+		else if(timer_id == self->timershutdown.id){
+			ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_shutdown_timedout, tsk_null, tsk_null);
+		}
+	}
+	return ret;
+}
+
 tsip_dialog_invite_t* tsip_dialog_invite_create(const tsip_ssession_handle_t* ss)
 {
 	return tsk_object_new(tsip_dialog_invite_def_t,  ss);
@@ -209,37 +234,59 @@ tsip_dialog_invite_t* tsip_dialog_invite_create(const tsip_ssession_handle_t* ss
 
 int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 {
-	//const tsk_param_t* param;
-
-	/* Initialize the state machine. */
+	/* special cases (fsm) should be tried first */
+	
+	/* 3GPP TS 24.610 : Communication Hold  */
+	tsip_dialog_invite_hold_init(self);
+	
+	/* Initialize the state machine (all other cases) */
 	tsk_fsm_set(TSIP_DIALOG_GET_FSM(self),
-
+	
 		/*=======================
 		* === Started === 
 		*/
 		// Started -> (send INVITE) -> Outgoing
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_oINVITE, _fsm_state_Outgoing, c0000_Started_2_Outgoing_X_oINVITE, "c0000_Started_2_Outgoing_X_oINVITE"),
 		// Started -> (receive INVITE) -> Incoming
-		TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_iINVITE, _fsm_state_Incoming, s0000_Satrted_2_Incoming_X_iINVITE, "s0000_Satrted_2_Incoming_X_iINVITE"),
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Started, _fsm_action_iINVITE, _fsm_state_Incoming, s0000_Started_2_Incoming_X_iINVITE, "s0000_Satrted_2_Incoming_X_iINVITE"),
 		// Started -> (Any) -> Started
 		TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Started, "tsip_dialog_invite_Started_2_Started_X_any"),
 
 		/*=======================
 		* === Outgoing (Client) === 
 		*/
-		// Outgoing -> (receive 2xx INVITE) -> Connected
-		TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Connected, c0001_Outgoing_2_Connected_X_i2xx, "c0001_Outgoing_2_Connected_X_i2xx"),
+		// Outgoing -> (i2xx INVITE) -> Connected
+		TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, _fsm_state_Connected, c0001_Outgoing_2_Connected_X_i2xxINVITE, "c0001_Outgoing_2_Connected_X_i2xxINVITE"),
 		// Outgoing -> (300-699 INVITE) -> Termined
-		TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITE, _fsm_state_Terminated, c0002_Outgoing_2_Terminated_X_i300_to_i699, "c0002_Outgoing_2_Terminated_X_i300_to_i699"),
+		TSK_FSM_ADD(_fsm_state_Outgoing, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITE, _fsm_state_Terminated, c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE, "c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE"),
 		// Outgoing -> (send CANCEL) -> Terminated
 		TSK_FSM_ADD_ALWAYS(_fsm_state_Outgoing, _fsm_action_oCANCEL, _fsm_state_Terminated, c0003_Outgoing_2_Terminated_X_oCANCEL, "c0003_Outgoing_2_Terminated_X_oCANCEL"),
 
 
 		/*=======================
+		* === BYE/SHUTDOWN === 
+		*/
+		// Any -> (oBYE) -> Trying
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_oBYE, _fsm_state_Trying, x0000_Any_2_Trying_X_oBYE, "x0000_Any_2_Trying_X_oBYE"),
+		// Trying -> (i2xx BYE) -> Terminated
+		TSK_FSM_ADD(_fsm_state_Trying, _fsm_action_i2xx, _fsm_cond_is_resp2BYE, _fsm_state_Terminated, tsk_null, "x0000_Trying_2_Terminated_X_i2xxBYE"),
+		// Trying -> (i3xx-i6xx BYE) -> Terminated
+		TSK_FSM_ADD(_fsm_state_Trying, _fsm_action_i300_to_i699, _fsm_cond_is_resp2BYE, _fsm_state_Terminated, tsk_null, "x0000_Trying_2_Terminated_X_i2xxTOi6xxBYE"),
+		// Any -> (Shutdown) -> Trying
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_oShutdown, _fsm_state_Trying, x0000_Any_2_Trying_X_shutdown, "x0000_Any_2_Trying_X_shutdown"),
+		// Any -> (shutdown timedout) -> Terminated
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_shutdown_timedout, _fsm_state_Terminated, tsk_null, "tsip_dialog_invite_shutdown_timedout"),
+
+		
+		/*=======================
 		* === Any === 
 		*/
-		// Any -> (1xx) -> Any
+		// Any -> (i1xx) -> Any
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_i1xx, tsk_fsm_state_any, x0000_Any_2_Any_X_i1xx, "x0000_Any_2_Any_X_i1xx"),
+		// Any -> (i401/407)
+		//
+		// Any -> (i2xx INVITE) -> Any
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, tsk_fsm_state_any, x0000_Any_2_Any_X_i2xxINVITE, "x0000_Any_2_Any_X_i2xxINVITE"),
 		// Any -> (transport error) -> Terminated
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, x9998_Any_2_Any_X_transportError, "x9998_Any_2_Any_X_transportError"),
 		// Any -> (transport error) -> Terminated
@@ -251,6 +298,10 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 	TSIP_DIALOG(self)->callback = TSIP_DIALOG_EVENT_CALLBACK_F(tsip_dialog_invite_event_callback);
 
 	/* Timers */
+	//self->timerrefresh.id = TSK_INVALID_TIMER_ID;
+	//self->timerrefresh.timeout = ;
+	self->timershutdown.id = TSK_INVALID_TIMER_ID;
+	self->timershutdown.timeout = TSIP_DIALOG_SHUTDOWN_TIMEOUT;
 
 	return 0;
 }
@@ -273,6 +324,51 @@ int tsip_dialog_invite_start(tsip_dialog_invite_t *self)
 //				== STATE MACHINE BEGIN ==
 //--------------------------------------------------------
 
+
+int x0000_Any_2_Any_X_i2xxINVITE(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_response_t *r2xx = va_arg(*app, const tsip_response_t *);
+	int ret = 0;
+
+	/* Update the dialog state */
+	if((ret = tsip_dialog_update(TSIP_DIALOG(self), r2xx))){
+		return ret;
+	}
+
+	/* send ACK */
+	return send_ACK(self, r2xx);
+}
+
+/* Any -> (oBYE) -> Trying */
+int x0000_Any_2_Trying_X_oBYE(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+
+	/* send BYE */
+	return send_BYE(self);
+}
+
+
+int x0000_Any_2_Trying_X_shutdown(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	
+	/* schedule shutdow timeout */
+	TSIP_DIALOG_INVITE_TIMER_SCHEDULE(shutdown);
+
+	/* alert user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminating, "Terminating dialog");
+	
+	if(TSIP_DIALOG(self)->state == tsip_established){
+		return send_BYE(self);
+	}
+	else if(TSIP_DIALOG(self)->state == tsip_early){
+		return send_CANCEL(self);
+	}
+	
+	return 0;
+}
 
 int x0000_Any_2_Trying_X_oREINVITE(va_list *app)
 {
@@ -318,6 +414,7 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 
 int x0000_Any_2_Any_X_i2xx(va_list *app)
 {
+	/* FIXME: if 2xxINVITE, then send ACK */
 	return 0;
 }
 
@@ -359,13 +456,37 @@ int send_INVITE(tsip_dialog_invite_t *self)
 	tsip_request_t *request = tsk_null;
 
 	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 
 	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "INVITE"))){
 
+		/* apply action params to the request (will add a content if the action contains one) */
+		if(TSIP_DIALOG(self)->curr_action){
+			tsip_dialog_apply_action(request, TSIP_DIALOG(self)->curr_action);
+		}
+		
+		/* add our payload if current action does not have one */
+		if(!TSIP_DIALOG(self)->curr_action || !TSIP_DIALOG(self)->curr_action->payload){
+			const tsdp_message_t* sdp_lo;
+			char* sdp;
+			if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
+				tsip_message_add_content(request, "application/sdp", sdp, tsk_strlen(sdp));
+				TSK_FREE(sdp);
+			}
+		}
+		
+		/* send the request */
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
-		TSK_OBJECT_SAFE_FREE(request);
+		if(ret == 0){
+			/* update last INVITE */
+			TSK_OBJECT_SAFE_FREE(self->last_invite);
+			self->last_invite = request;
+		}
+		else{
+			TSK_OBJECT_SAFE_FREE(request);
+		}
 	}
 
 bail:
@@ -380,6 +501,7 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 	const tsip_header_RSeq_t* RSeq;
 
 	if(!self || !r1xx || !r1xx->CSeq){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		goto bail;
 	}
 
@@ -427,6 +549,166 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 	
 bail:
 	TSK_OBJECT_SAFE_FREE(request);
+	return ret;
+}
+
+int send_CANCEL(tsip_dialog_invite_t *self)
+{
+	int ret = -1;
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		goto bail;
+	}
+	/* RFC 3261 - 9 Canceling a Request
+		If the request being cancelled contains a Route header field, the
+		CANCEL request MUST include that Route header field's values.
+		==> up to tsip_dialog_request_new()
+	*/
+
+	/*	RFC 3261 - 9 Canceling a Request
+		Once the CANCEL is constructed, the client SHOULD check whether it
+		has received any response (provisional or final) for the request
+		being cancelled (herein referred to as the "original request").
+
+		If no provisional response has been received, the CANCEL request MUST
+		NOT be sent; rather, the client MUST wait for the arrival of a
+		provisional response before sending the request.
+		==> up to the caller to check that we are not in the initial state and the FSM
+		is in Trying state.
+   */
+
+	/*	RFC 3261 - 9 Canceling a Request
+		The following procedures are used to construct a CANCEL request.  The
+		Request-URI, Call-ID, To, the numeric part of CSeq, and From header
+		fields in the CANCEL request MUST be identical to those in the
+		request being cancelled, including tags.  A CANCEL constructed by a
+		client MUST have only a single Via header field value matching the
+		top Via value in the request being cancelled.  Using the same values
+		for these header fields allows the CANCEL to be matched with the
+		request it cancels (Section 9.2 indicates how such matching occurs).
+		However, the method part of the CSeq header field MUST have a value
+		of CANCEL.  This allows it to be identified and processed as a
+		transaction in its own right (See Section 17)
+	*/
+	if(self->last_invite){
+		/* to avoid concurrent access, take a reference to the request */
+		tsip_request_t* last_invite = tsk_object_ref(self->last_invite);
+		tsip_request_t* cancel;
+		if((cancel = tsip_dialog_request_new(TSIP_DIALOG(self), "CANCEL"))){
+			/* Request-URI, Call-ID, To and From will be added by the dialog layer */
+			/* the numeric part of CSeq */
+			cancel->CSeq->seq = last_invite->CSeq->seq;
+			/* Via */
+			TSK_OBJECT_SAFE_FREE(cancel->firstVia); /* firstVia is already Null ...but who know? */
+			cancel->firstVia = tsk_object_ref(last_invite->firstVia); /* transport layer won't update the Via header */
+
+			ret = tsip_dialog_request_send(TSIP_DIALOG(self), cancel);
+			TSK_OBJECT_SAFE_FREE(cancel);
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create CANCEL request");
+			ret = -2;
+		}
+
+		tsk_object_unref(last_invite);
+		return ret;
+	}
+	else{
+		TSK_DEBUG_WARN("There is no INVITE request to cancel");
+		return 0;
+	}
+
+bail:
+	return ret;
+}
+
+int send_BYE(tsip_dialog_invite_t *self)
+{
+	int ret = -1;
+	tsip_request_t *bye = tsk_null;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		goto bail;
+	}
+	/* RFC 3261 - 15.1.1 UAC Behavior
+		A BYE request is constructed as would any other request within a
+		dialog, as described in Section 12.
+
+		Once the BYE is constructed, the UAC core creates a new non-INVITE
+		client transaction, and passes it the BYE request.  The UAC MUST
+		consider the session terminated (and therefore stop sending or
+		listening for media) as soon as the BYE request is passed to the
+		client transaction.  If the response for the BYE is a 481
+		(Call/Transaction Does Not Exist) or a 408 (Request Timeout) or no
+
+		response at all is received for the BYE (that is, a timeout is
+		returned by the client transaction), the UAC MUST consider the
+		session and the dialog terminated.
+	*/
+	if((bye = tsip_dialog_request_new(TSIP_DIALOG(self), "BYE"))){
+		ret = tsip_dialog_request_send(TSIP_DIALOG(self), bye);
+		TSK_OBJECT_SAFE_FREE(bye);
+	}
+
+bail:
+	return ret;
+}
+
+int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE)
+{
+	int ret = -1;
+	tsip_request_t *request = tsk_null;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		goto bail;
+	}	
+
+	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "ACK"))){
+
+		/*	RFC 3261 - 13.2.2.4 2xx Responses
+		   The UAC core MUST generate an ACK request for each 2xx received from
+		   the transaction layer.  The header fields of the ACK are constructed
+		   in the same way as for any request sent within a dialog (see Section
+		   12) with the exception of the CSeq and the header fields related to
+		   authentication.  The sequence number of the CSeq header field MUST be
+		   the same as the INVITE being acknowledged, but the CSeq method MUST
+		   be ACK.  The ACK MUST contain the same credentials as the INVITE.  If
+		   the 2xx contains an offer (based on the rules above), the ACK MUST
+		   carry an answer in its body.  If the offer in the 2xx response is not
+		   acceptable, the UAC core MUST generate a valid answer in the ACK and
+		   then send a BYE immediately.
+		   ==> Credentials will be added by tsip_dialog_request_new() because they are
+		   associated to the dialog itself.
+		   ==> It's up to us to add/update the CSeq number.
+		   ==> ACK requests sent here will create new client transactions, which means that
+		   they will have there own branches. This is not the case for ACK requests sent from
+		   the transaction layer.
+		*/
+		request->CSeq->seq = r2xxINVITE->CSeq->seq; /* As the 2xx has the same CSeq than the INVITE */
+		
+		/*	RFC 3261 - 13.2.2.4 2xx Responses
+		   Once the ACK has been constructed, the procedures of [4] are used to
+		   determine the destination address, port and transport.  However, the
+		   request is passed to the transport layer directly for transmission,
+		   rather than a client transaction.  This is because the UAC core
+		   handles retransmissions of the ACK, not the transaction layer.  The
+		   ACK MUST be passed to the client transport every time a
+		   retransmission of the 2xx final response that triggered the ACK
+		   arrives.
+		*/
+		if(TSIP_DIALOG_GET_STACK(self)->layer_transport){
+			ret = tsip_transport_layer_send(TSIP_DIALOG_GET_STACK(self)->layer_transport, tsk_null, request);
+		}
+		else{
+			ret = -1;
+			TSK_DEBUG_ERROR("Not Transport layer associated to this stack");
+		}
+		TSK_OBJECT_SAFE_FREE(request);
+	}
+
+bail:
 	return ret;
 }
 
@@ -484,14 +766,23 @@ static tsk_object_t* tsip_dialog_invite_ctor(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * self)
+static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 { 
-	tsip_dialog_invite_t *dialog = self;
-	if(dialog){
+	tsip_dialog_invite_t *self = _self;
+	if(self){
+		/* Cancel all timers */
+		TSIP_DIALOG_TIMER_CANCEL(refresh);
+		TSIP_DIALOG_TIMER_CANCEL(shutdown);
+
 		/* DeInitialize base class */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
+		
+		/* DeInitialize self */
+		TSK_OBJECT_SAFE_FREE(self->msession_mgr);
+		TSK_OBJECT_SAFE_FREE(self->last_invite);
+		//...
 
-		TSK_OBJECT_SAFE_FREE(dialog->session);
+		TSK_DEBUG_INFO("*** INVITE Dialog destroyed ***");
 	}
 	return self;
 }

@@ -32,12 +32,16 @@
 #include "tinysip/dialogs/tsip_dialog_layer.h"
 #include "tinysip/dialogs/tsip_dialog_invite.h"
 
+#include "tinysip/tsip_action.h"
 #include "tsip.h"
 
 #include "tsk_runnable.h"
 #include "tsk_debug.h"
 
 #define TSIP_INVITE_EVENT_CREATE( type)		tsk_object_new(tsip_invite_event_def_t, type)
+
+extern tsip_action_t* _tsip_action_create(tsip_action_type_t type, va_list* app);
+extern int _tsip_action_ANY(const tsip_ssession_handle_t *ss, tsip_action_type_t type, va_list* app);
 
 int tsip_invite_event_signal(tsip_invite_event_type_t type, tsip_ssession_handle_t* ss, short status_code, const char *phrase, const tsip_message_t* sipmessage)
 {
@@ -49,9 +53,78 @@ int tsip_invite_event_signal(tsip_invite_event_type_t type, tsip_ssession_handle
 	return 0;
 }
 
-int tsip_invite(tsip_stack_handle_t *_stack, const tsip_ssession_handle_t *SSESSION)
+int tsip_action_INVITE(const tsip_ssession_handle_t *ss, ...)
+{
+	const tsip_ssession_t* _ss;
+	va_list ap;
+	tsip_action_t* action;
+	tsip_dialog_t* dialog;
+	int ret = -1;
+
+	if(!(_ss = ss) || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return ret;
+	}
+
+	/* Checks if the stack has been started */
+	if(!TSK_RUNNABLE(_ss->stack)->started){
+		TSK_DEBUG_ERROR("Stack not started.");
+		return -2;
+	}
+	
+	va_start(ap, ss);
+	if((action = _tsip_action_create(tsip_atype_invite, &ap))){
+		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
+			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_INVITE, ss);
+		}
+		ret = tsip_dialog_fsm_act(dialog, action->type, tsk_null, action);
+		
+		tsk_object_unref(dialog);
+		TSK_OBJECT_SAFE_FREE(action);
+	}
+	va_end(ap);
+
+	return ret;
+}
+
+int tsip_action_HOLD(const tsip_ssession_handle_t *ss, ...)
 {
 	int ret = -1;
+	va_list ap;
+
+	va_start(ap, ss);
+	if((ret = _tsip_action_ANY(ss, tsip_atype_hold, &ap))){
+		TSK_DEBUG_ERROR("Hold() failed.");
+	}
+	va_end(ap);
+
+	return ret;
+}
+
+int tsip_action_RESUME(const tsip_ssession_handle_t *ss, ...)
+{
+	int ret = -1;
+	va_list ap;
+
+	va_start(ap, ss);
+	if((ret = _tsip_action_ANY(ss, tsip_atype_resume, &ap))){
+		TSK_DEBUG_ERROR("Resume() failed.");
+	}
+	va_end(ap);
+
+	return ret;
+}
+
+int tsip_action_BYE(const tsip_ssession_handle_t *ss, ...)
+{
+	int ret = -1;
+	va_list ap;
+
+	va_start(ap, ss);
+	if((ret = _tsip_action_ANY(ss, tsip_atype_bye, &ap))){
+		TSK_DEBUG_ERROR("Bye() failed.");
+	}
+	va_end(ap);
 
 	return ret;
 }

@@ -53,7 +53,7 @@ TSIP_BEGIN_DECLS
 #define TSIP_DIALOG_GET_FSM(self)											TSIP_DIALOG(self)->fsm
 #define TSIP_DIALOG_GET_STACK(self)											TSIP_STACK(TSIP_DIALOG(self)->ss->stack)
 
-#define DIALOG_TIMER_CANCEL(TX) \
+#define TSIP_DIALOG_TIMER_CANCEL(TX) \
 	tsk_timer_manager_cancel(TSIP_DIALOG_GET_STACK(self)->timer_mgr, self->timer##TX.id)
 
 // TX MUST be in seconds

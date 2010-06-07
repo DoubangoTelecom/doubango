@@ -477,10 +477,14 @@ int tsip_dialog_subscribe_Trying_2_Terminated_X_cancel(va_list *app)
 	tsip_dialog_subscribe_t *self = va_arg(*app, tsip_dialog_subscribe_t *);
 	/* const tsip_response_t *response = va_arg(*app, const tsip_response_t *); */
 
-	/* Cancel all transactions associated to this dialog (will also be one when the dialog is destroyed (worth nothing)) */
+	/* Cancel all transactions associated to this dialog (will also be done when the dialog is destroyed (worth nothing)) */
 	ret = tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 
-	/* Alert the user. */
+	/*	RFC 3261 - 9.1 Client Behavior
+		A CANCEL request SHOULD NOT be sent to cancel a request other than INVITE.
+   */
+
+	/* Alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_cancelled, "Subscription cancelled");
 
 	return ret;
@@ -639,16 +643,19 @@ int send_SUBSCRIBE(tsip_dialog_subscribe_t *self)
 	}
 
 	if((request = tsip_dialog_request_new(TSIP_DIALOG(self), "SUBSCRIBE"))){
-		/* action parameters and payload */
+		/* apply action params to the request */
 		if(TSIP_DIALOG(self)->curr_action){
-			const tsk_list_item_t* item;
-			tsk_list_foreach(item, TSIP_DIALOG(self)->curr_action->headers){
-				TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
-			}
-			if(TSIP_DIALOG(self)->curr_action->payload){
-				tsip_message_add_content(request, tsk_null, TSK_BUFFER_DATA(TSIP_DIALOG(self)->curr_action->payload), TSK_BUFFER_SIZE(TSIP_DIALOG(self)->curr_action->payload));
-			}
+			tsip_dialog_apply_action(request, TSIP_DIALOG(self)->curr_action);
 		}
+		//if(TSIP_DIALOG(self)->curr_action){
+		//	const tsk_list_item_t* item;
+		//	tsk_list_foreach(item, TSIP_DIALOG(self)->curr_action->headers){
+		//		TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
+		//	}
+		//	if(TSIP_DIALOG(self)->curr_action->payload){
+		//		tsip_message_add_content(request, tsk_null, TSK_BUFFER_DATA(TSIP_DIALOG(self)->curr_action->payload), TSK_BUFFER_SIZE(TSIP_DIALOG(self)->curr_action->payload));
+		//	}
+		//}
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 		TSK_OBJECT_SAFE_FREE(request);
 	}
@@ -723,14 +730,14 @@ static tsk_object_t* tsip_dialog_subscribe_dtor(tsk_object_t * _self)
 { 
 	tsip_dialog_subscribe_t *self = _self;
 	if(self){
-		TSK_DEBUG_INFO("*** SUBSCRIBE Dialog destroyed ***");
-
 		/* Cancel all timers */
-		DIALOG_TIMER_CANCEL(refresh);
-		DIALOG_TIMER_CANCEL(shutdown);
+		TSIP_DIALOG_TIMER_CANCEL(refresh);
+		TSIP_DIALOG_TIMER_CANCEL(shutdown);
 
 		/* DeInitialize base class (will cancel all transactions) */
 		tsip_dialog_deinit(TSIP_DIALOG(self));
+
+		TSK_DEBUG_INFO("*** SUBSCRIBE Dialog destroyed ***");
 	}
 	return self;
 }

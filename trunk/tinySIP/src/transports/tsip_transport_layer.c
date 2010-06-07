@@ -39,9 +39,9 @@
 #include "tsk_thread.h"
 #include "tsk_debug.h"
 
-/* max size of a stream chunck to form a valid SIP message */
+/* max size of a chunck to form a valid SIP message */
 #define TSIP_MAX_STREAM_CHUNCK_SIZE 0xFFFF
-/* min size of a stream chunck to form a valid SIP message
+/* min size of a chunck to form a valid SIP message
 * (Request/Response)-Line, Via, From, To, Call-Id, CSeq and Content-Length
 * Tests have been done with both compact and full headers */
 #define TSIP_MIN_STREAM_CHUNCK_SIZE 0xA0
@@ -218,17 +218,14 @@ tsip_transport_t* tsip_transport_layer_find(const tsip_transport_layer_t* self, 
 	/* =========== Sending Request =========
 	*
 	*/
-	if(TSIP_MESSAGE_IS_REQUEST(msg))
-	{
+	if(TSIP_MESSAGE_IS_REQUEST(msg)){
 		/* Request are always sent to the Proxy-CSCF 
 		*/
 		tsk_list_item_t *item;
 		tsip_transport_t *curr;
-		tsk_list_foreach(item, self->transports)
-		{
+		tsk_list_foreach(item, self->transports){
 			curr = item->data;
-			if(curr->type == self->stack->network.proxy_cscf_type)
-			{
+			if(curr->type == self->stack->network.proxy_cscf_type){
 				transport = curr;
 				break;
 			}
@@ -404,11 +401,9 @@ int tsip_transport_createTempSAs(const tsip_transport_layer_t *self)
 		goto bail;
 	}
 
-	tsk_list_foreach(item, self->transports)
-	{
+	tsk_list_foreach(item, self->transports){
 		transport = item->data;
-		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type))
-		{
+		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type)){
 			ret = tsip_transport_ipsec_createTempSAs(TSIP_TRANSPORT_IPSEC(transport));
 			break;
 		}
@@ -429,8 +424,7 @@ int tsip_transport_ensureTempSAs(const tsip_transport_layer_t *self, const tsip_
 		goto bail;
 	}
 
-	tsk_list_foreach(item, self->transports)
-	{
+	tsk_list_foreach(item, self->transports){
 		transport = item->data;
 		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type)){
 			ret = tsip_transport_ipsec_ensureTempSAs(TSIP_TRANSPORT_IPSEC(transport), r401_407, expires);
@@ -453,8 +447,7 @@ int tsip_transport_startSAs(const tsip_transport_layer_t* self, const void* ik, 
 		goto bail;
 	}
 
-	tsk_list_foreach(item, self->transports)
-	{
+	tsk_list_foreach(item, self->transports){
 		transport = item->data;
 		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type)){
 			ret = tsip_transport_ipsec_startSAs(TSIP_TRANSPORT_IPSEC(transport), (const tipsec_key_t*)ik, (const tipsec_key_t*)ck);
@@ -477,11 +470,9 @@ int tsip_transport_cleanupSAs(const tsip_transport_layer_t *self)
 		goto bail;
 	}
 
-	tsk_list_foreach(item, self->transports)
-	{
+	tsk_list_foreach(item, self->transports){
 		transport = item->data;
-		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type))
-		{
+		if(TNET_SOCKET_TYPE_IS_IPSEC(transport->type)){
 			ret = tsip_transport_ipsec_cleanupSAs(TSIP_TRANSPORT_IPSEC(transport));
 			break;
 		}

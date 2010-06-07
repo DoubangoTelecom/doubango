@@ -199,7 +199,18 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 			{
 				char* contact = tsk_false;
 				tsip_header_Contacts_L_t *hdr_contacts;
-				tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/tsk_false?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
+
+				if(request->line.request.request_type == tsip_OPTIONS || 
+					request->line.request.request_type == tsip_PUBLISH || 
+					request->line.request.request_type == tsip_REGISTER ||
+					request->line.request.request_type == tsip_SUBSCRIBE){
+						/* with expires */
+					tsk_sprintf(&contact, "m: <%s:%s@%s:%d>;expires=%d\r\n", /*self->issecure*/tsk_false?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060, TSK_TIME_MS_2_S(self->expires));
+				}
+				else{
+					/* without expires */
+					tsk_sprintf(&contact, "m: <%s:%s@%s:%d>\r\n", /*self->issecure*/tsk_false?"sips":"sip", from_uri->user_name, "127.0.0.1", 5060);
+				}
 				hdr_contacts = tsip_header_Contact_parse(contact, tsk_strlen(contact));
 				if(!TSK_LIST_IS_EMPTY(hdr_contacts)) {
 					request->Contact = tsk_object_ref(hdr_contacts->head->data);
@@ -256,6 +267,15 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 	}
 
 	/* Update CSeq */
+	/*	RFC 3261 - 13.2.2.4 2xx Responses
+	   Generating ACK: The sequence number of the CSeq header field MUST be
+	   the same as the INVITE being acknowledged, but the CSeq method MUST
+	   be ACK.  The ACK MUST contain the same credentials as the INVITE.  If
+	   the 2xx contains an offer (based on the rules above), the ACK MUST
+	   carry an answer in its body.
+	   ==> CSeq number will be added/updated by the caller of this function,
+	   credentials were added above.
+	*/
 	if(!TSIP_REQUEST_IS_ACK(request) && !TSIP_REQUEST_IS_CANCEL(request)){
 		request->CSeq->seq = ++(TSIP_DIALOG(self)->cseq_value);
 	}
@@ -297,14 +317,17 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		}
 		else
 		{	/* No routes associated to this dialog. */
-			if(self->state == tsip_initial || self->state == tsip_early)
-			{
+			if(self->state == tsip_initial || self->state == tsip_early){
+#if _DEBUG /* FIXME: remove this */
+				/* Ericsson SDS hack (INVITE with Proxy-CSCF as First route fail) */
+#else
 				tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), tsk_true);
 				// Proxy-CSCF as first route
 				if(uri){
 					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(uri));
 					TSK_OBJECT_SAFE_FREE(uri);
 				}
+#endif
 				// Service routes
 				tsk_list_foreach(item, TSIP_DIALOG_GET_STACK(self)->service_routes){
 					TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_ROUTE_VA_ARGS(item->data));
@@ -339,16 +362,10 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 }
 
 
-/**
- * @fn	int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
+/** Sends a SIP/IMS request. This function is responsible for transaction creation.
  *
- * @brief	Sends a SIP/IMS request. This function is responsible for transaction creation.
- *
- * @author	Mamadou
- * @date	1/4/2010
- *
- * @param [in,out]	self	The parent dialog. All callback events will be notified to this dialog.
- * @param [in,out]	request	The request to send.
+ * @param self	The parent dialog. All callback events will be notified to this dialog.
+ * @param request	The request to send.
  *
  * @return	Zero if succeed and no-zero error code otherwise. 
 **/
@@ -356,11 +373,9 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 {
 	int ret = -1;
 
-	if(self && TSIP_DIALOG_GET_STACK(self))
-	{	
+	if(self && TSIP_DIALOG_GET_STACK(self)){	
 		const tsip_transac_layer_t *layer = TSIP_DIALOG_GET_STACK(self)->layer_transac;
-		if(layer)
-		{
+		if(layer){
 			/*	Create new transaction. The new transaction will be added to the dialog layer. 
 				The transaction has all information to create the right transaction type (NICT or ICT).
 				As this is an outgoing request ==> It shall be a client transaction (NICT or ICT).
@@ -370,8 +385,7 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 
 			/* Set the transaction's dialog. All events comming from the transaction (timeouts, errors ...) will be signaled to this dialog.
 			*/
-			if(transac)
-			{
+			if(transac){
 				switch(transac->type)
 				{
 				case tsip_ict:
@@ -379,10 +393,10 @@ int tsip_dialog_request_send(const tsip_dialog_t *self, tsip_request_t* request)
 					{
 						/* Start the newly create IC/NIC transaction */
 						ret = tsip_transac_start(transac, request);
-						tsk_object_unref(transac);
 						break;
 					}
 				}
+				tsk_object_unref(transac);
 			}
 		}
 	}
@@ -575,13 +589,14 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			/* 2xx */
 			else{
 				state = tsip_established;
-			}
-
-			/* Remote target */
-			if(!isRegister && response->Contact){
-				TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
-				if(response->Contact->uri){
-					self->uri_remote_target = tsip_uri_clone(response->Contact->uri, 0, 0);
+				/*	RFC 3261 12.2.1.2 Processing the Responses
+					When a UAC receives a 2xx response to a target refresh request, it
+					MUST replace the dialog's remote target URI with the URI from the
+					Contact header field in that response, if present.
+				*/
+				if(!isRegister && response->Contact && response->Contact->uri){
+					TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
+					self->uri_remote_target = tsip_uri_clone(response->Contact->uri, tsk_true, tsk_false);
 				}
 			}
 
@@ -945,11 +960,11 @@ int tsip_dialog_set_curr_action(tsip_dialog_t* self, const tsip_action_t* action
 int tsip_dialog_hangup(tsip_dialog_t *self, const tsip_action_t* action)
 {
 	if(self){
-		if(self->state == tsip_initial){
-			return tsip_dialog_fsm_act(self, tsip_atype_cancel, tsk_null, action);
+		if(self->state == tsip_established){
+			return tsip_dialog_fsm_act(self, tsip_atype_hangup, tsk_null, action);
 		}
 		else{
-			return tsip_dialog_fsm_act(self, tsip_atype_hangup, tsk_null, action);
+			return tsip_dialog_fsm_act(self, tsip_atype_cancel, tsk_null, action);
 		}
 	}
 	return -1;

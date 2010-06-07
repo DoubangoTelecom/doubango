@@ -36,7 +36,7 @@
 
 /* Started -> (iINVITE) -> Incoming
 */
-int s0000_Satrted_2_Incoming_X_iINVITE(va_list *app)
+int s0000_Started_2_Incoming_X_iINVITE(va_list *app)
 {
 	return 0;
 }
