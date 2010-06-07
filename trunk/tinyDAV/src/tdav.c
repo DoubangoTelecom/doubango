@@ -19,25 +19,39 @@
 * along with DOUBANGO.
 *
 */
-
-/**@file tinydav.h
- * @brief tinyDAV API.
+/**@file tdav.h
+ * @brief tinyDAV.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_TINYDAV_H
-#define TINYMEDIA_TINYDAV_H
-
 #include "tinydav/tdav.h"
 
-// sessions
 #include "tinydav/audio/tdav_session_audio.h"
-// codecs
+
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
 
-/* == tinyMEDIA == */
-#include "tinymedia.h"
+int tdav_init()
+{
+	/* === Register sessions === */
+	tmedia_session_plugin_register(tdav_session_audio_plugin_def_t);
 
-#endif /* TINYMEDIA_TINYDAV_H */
+	/* === Register codecs === */
+	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
+
+	return 0;
+}
+
+int tdav_deinit()
+{
+	/* === UnRegister sessions === */
+	tmedia_session_plugin_unregister(tdav_session_audio_plugin_def_t);
+
+	/* === UnRegister codecs === */
+	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
+	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
+
+	return 0;
+}

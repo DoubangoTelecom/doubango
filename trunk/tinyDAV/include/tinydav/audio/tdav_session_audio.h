@@ -20,24 +20,30 @@
 *
 */
 
-/**@file tinydav.h
- * @brief tinyDAV API.
+/**@file tdav_session_audio.h
+ * @brief Audio Session plugin.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_TINYDAV_H
-#define TINYMEDIA_TINYDAV_H
+#ifndef TINYDAV_SESSION_AUDIO_H
+#define TINYDAV_SESSION_AUDIO_H
 
-#include "tinydav/tdav.h"
+#include "tinydav_config.h"
 
-// sessions
-#include "tinydav/audio/tdav_session_audio.h"
-// codecs
-#include "tinydav/codecs/g711/tdav_codec_g711.h"
+#include "tinymedia/tmedia_session.h"
 
-/* == tinyMEDIA == */
-#include "tinymedia.h"
+typedef struct tdav_session_audio_s
+{
+	TMEDIA_DECLARE_SESSION_AUDIO;
 
-#endif /* TINYMEDIA_TINYDAV_H */
+	uint16_t local_port;
+	uint16_t remote_port;
+}
+tdav_session_audio_t;
+
+
+TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_audio_plugin_def_t;
+
+#endif /* TINYDAV_SESSION_AUDIO_H */
