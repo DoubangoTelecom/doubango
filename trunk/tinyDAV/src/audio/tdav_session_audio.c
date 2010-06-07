@@ -36,6 +36,17 @@ extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self,
 
 /* ============ Plugin interface ================= */
 
+int tmedia_session_audio_configure(tmedia_session_t* self, const va_list *app)
+{
+	tdav_session_audio_t* audio;
+
+	TSK_DEBUG_INFO("tmedia_session_audio_configure");
+
+	audio = (tdav_session_audio_t*)self;
+
+	return 0;
+}
+
 int tdav_session_audio_prepare(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
@@ -184,6 +195,7 @@ static const tmedia_session_plugin_def_t tdav_session_audio_plugin_def_s =
 	tmedia_audio,
 	"audio",
 	
+	tmedia_session_audio_configure,
 	tdav_session_audio_prepare,
 	tdav_session_audio_start,
 	tdav_session_audio_stop,
