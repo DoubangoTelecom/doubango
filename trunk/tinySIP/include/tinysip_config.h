@@ -64,7 +64,7 @@
 #endif
 
 /* Whether to use SIP Compact headers */
-#define TSIP_COMPACT_HEADERS 1
+#define TSIP_COMPACT_HEADERS 0
 
 #include <stdint.h>
 #ifdef __SYMBIAN32__

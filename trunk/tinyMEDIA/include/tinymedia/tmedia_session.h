@@ -45,6 +45,8 @@ TMEDIA_BEGIN_DECLS
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
 
+#define TMEDIA_SESSION_SET();
+
 /** Base objct used for all media sessions */
 typedef struct tmedia_session_s
 {
@@ -84,6 +86,7 @@ typedef struct tmedia_session_plugin_def_s
 	//! the media name. e.g. "audio", "video", "message", "image" etc.
 	const char* media;
 	
+	int (*configure) (tmedia_session_t* , const va_list *app);
 	int (* prepare) (tmedia_session_t* );
 	int (* start) (tmedia_session_t* );
 	int (* pause) (tmedia_session_t* );
@@ -195,6 +198,7 @@ tmedia_session_mgr_t;
 
 TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6);
 TINYMEDIA_API int tmedia_session_mgr_start(tmedia_session_mgr_t* self);
+TINYMEDIA_API int tmedia_session_mgr_configure(tmedia_session_mgr_t* self, tmedia_type_t type, ...);
 TINYMEDIA_API int tmedia_session_mgr_stop(tmedia_session_mgr_t* self);
 TINYMEDIA_API const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp);

@@ -33,6 +33,8 @@ namespace test
             this.textBoxDebug = new System.Windows.Forms.TextBox();
             this.buttonPublish = new System.Windows.Forms.Button();
             this.buttonUnPublish = new System.Windows.Forms.Button();
+            this.buttonUnSub = new System.Windows.Forms.Button();
+            this.buttonSub = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonRegister
@@ -83,11 +85,32 @@ namespace test
             this.buttonUnPublish.UseVisualStyleBackColor = true;
             this.buttonUnPublish.Click += new System.EventHandler(this.buttonUnPublish_Click);
             // 
+            // buttonUnSub
+            // 
+            this.buttonUnSub.Location = new System.Drawing.Point(199, 206);
+            this.buttonUnSub.Name = "buttonUnSub";
+            this.buttonUnSub.Size = new System.Drawing.Size(75, 23);
+            this.buttonUnSub.TabIndex = 6;
+            this.buttonUnSub.Text = "UnSubscribe";
+            this.buttonUnSub.UseVisualStyleBackColor = true;
+            // 
+            // buttonSub
+            // 
+            this.buttonSub.Location = new System.Drawing.Point(12, 205);
+            this.buttonSub.Name = "buttonSub";
+            this.buttonSub.Size = new System.Drawing.Size(75, 23);
+            this.buttonSub.TabIndex = 5;
+            this.buttonSub.Text = "Subscribe";
+            this.buttonSub.UseVisualStyleBackColor = true;
+            this.buttonSub.Click += new System.EventHandler(this.buttonSub_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(286, 374);
+            this.Controls.Add(this.buttonUnSub);
+            this.Controls.Add(this.buttonSub);
             this.Controls.Add(this.buttonUnPublish);
             this.Controls.Add(this.buttonPublish);
             this.Controls.Add(this.textBoxDebug);
@@ -107,6 +130,8 @@ namespace test
         private System.Windows.Forms.TextBox textBoxDebug;
         private System.Windows.Forms.Button buttonPublish;
         private System.Windows.Forms.Button buttonUnPublish;
+        private System.Windows.Forms.Button buttonUnSub;
+        private System.Windows.Forms.Button buttonSub;
     }
 }
 

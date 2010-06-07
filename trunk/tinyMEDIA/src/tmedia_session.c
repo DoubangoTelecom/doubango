@@ -481,6 +481,45 @@ int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 }
 
 /**@ingroup tmedia_session_group
+* Configures one or several sessions.
+* @param self The session manager
+* @param type The type of the sessions to configure
+* @param ... Any TMEDIA_SESSION_SET_*() macros
+* @retval Zero if succeed and non-zero error code otherwise
+*/
+int tmedia_session_mgr_configure(tmedia_session_mgr_t* self, tmedia_type_t type, ...)
+{
+	tsk_list_item_t* item;
+	tmedia_session_t* session;
+	va_list ap;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_list_foreach(item, self->sessions){
+		if(!(session = item->data)){
+			TSK_DEBUG_ERROR("Invalid session");
+			return -2;
+		}
+		
+		/* does not support configure() */
+		if(!session->plugin->configure){
+			continue;
+		}
+
+		va_start(ap, type);
+		if(((session->type & type) == session->type) && session->plugin->configure(session, &ap)){
+			TSK_DEBUG_ERROR("Failed to configue (%s) session", session->plugin->media);
+		}
+		va_end(ap);
+	}
+
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
 * Stops the session manager by stopping all underlying sessions.
 * @param self The session manager to stop.
 * @retval Zero if succced and non-zero error code otherwise.

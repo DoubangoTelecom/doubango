@@ -58,6 +58,7 @@
 	"Content-Length: 0\r\n" \
 	"Call-ID: 1261611941121\r\n" \
 	"Min-Expires: 30\r\n" \
+	"Event: reg\r\n" \
 	"From: <sip:mamadou@open-ims.test>;tag=1261611941121\r\n" \
 	"Contact: <sip:mamadou@192.168.0.12:58827;transport=udp>;mobility=fixed;+deviceid=\"DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC\";expires=300,<sip:mamadou@192.168.0.12:58828;transport=udp>;mobility=fixed;+deviceid=\"DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC\";expires=300,<sip:mamadou@192.168.0.12:58829;transport=udp>;mobility=fixed;+deviceid=\"DD1289FA-C3D7-47bd-A40D-F1F1B2CC5FFC\";expires=300\r\n"\
 	"Contact: <sip:mamadou@192.168.0.11:63140>;expires=3600;q=1.0,<sip:mamadou@192.168.0.11:56717>;expires=3600;q=1.0\r\n" \

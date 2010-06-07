@@ -204,6 +204,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyMEDIA\test\test_qos.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyMEDIA\test\test_sessions.h"
 				>
 			</File>

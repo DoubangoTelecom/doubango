@@ -21,6 +21,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySDP", "..\tinySDP\tinyS
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinySMS", "..\tinySMS\tinySMS.vcproj", "{9A3A5AF3-2333-4477-B880-7F901F9D8972}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyDAV", "..\tinyDAV\tinyDAV.vcproj", "{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tinyRTP", "..\tinyRTP\tinyRTP.vcproj", "{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -105,6 +109,18 @@ Global
 		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Release|Win32.ActiveCfg = Release|Win32
 		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Release|Win32.Build.0 = Release|Win32
 		{9A3A5AF3-2333-4477-B880-7F901F9D8972}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Win32
+		{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}.Debug|Win32.Build.0 = Debug|Win32
+		{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Win32
+		{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}.Release|Win32.ActiveCfg = Release|Win32
+		{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}.Release|Win32.Build.0 = Release|Win32
+		{8E2F0B2E-2596-4010-BF4A-2F688975B5C1}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Win32
+		{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}.Debug|Win32.ActiveCfg = Debug|Win32
+		{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}.Debug|Win32.Build.0 = Debug|Win32
+		{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}.Debug|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Debug|Win32
+		{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}.Release|Win32.ActiveCfg = Release|Win32
+		{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}.Release|Win32.Build.0 = Release|Win32
+		{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}.Release|Windows Mobile 5.0 Pocket PC SDK (ARMV4I).ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

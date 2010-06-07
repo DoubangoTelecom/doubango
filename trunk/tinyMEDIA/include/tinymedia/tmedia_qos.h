@@ -101,6 +101,7 @@ tmedia_qos_tline_t;
 TINYMEDIA_API tmedia_qos_stype_t tmedia_qos_get_type(const tsdp_header_M_t* m);
 TINYMEDIA_API tmedia_qos_tline_t* tmedia_qos_tline_from_sdp(const tsdp_header_M_t* m);
 TINYMEDIA_API int tmedia_qos_tline_to_sdp(const tmedia_qos_tline_t* self, tsdp_header_M_t* m);
+TINYMEDIA_API tsk_bool_t tmedia_qos_tline_canresume(const tmedia_qos_tline_t* self);
 
 /* QoS table-line for E2E type*/
 typedef struct tmedia_qos_tline_e2e_s
@@ -121,8 +122,8 @@ typedef struct tmedia_qos_tline_e2e_s
 	} send;
 
 	struct{
-		tsk_bool_t current:1;
-		tsk_bool_t confirm:1;
+		unsigned current:1;
+		unsigned confirm:1;
 		tmedia_qos_strength_t strength;
 	} recv;
 }
@@ -131,6 +132,8 @@ tmedia_qos_tline_e2e_t;
 TINYMEDIA_API tmedia_qos_tline_e2e_t* tmedia_qos_tline_e2e_create(tmedia_qos_strength_t strength);
 TINYMEDIA_API tmedia_qos_tline_e2e_t* tmedia_qos_tline_e2e_from_sdp(const tsdp_header_M_t* m);
 TINYMEDIA_API int tmedia_qos_tline_e2e_to_sdp(const tmedia_qos_tline_e2e_t* self, tsdp_header_M_t* m);
+TINYMEDIA_API int tmedia_qos_tline_e2e_set_ro(tmedia_qos_tline_e2e_t* self, const tmedia_qos_tline_e2e_t* ro);
+TINYMEDIA_API tsk_bool_t tmedia_qos_tline_e2e_canresume(const tmedia_qos_tline_e2e_t* self);
 
 /* QoS table-line for Segented type*/
 typedef struct tmedia_qos_tline_segmented_s
@@ -176,7 +179,8 @@ tmedia_qos_tline_segmented_t;
 TINYMEDIA_API tmedia_qos_tline_segmented_t* tmedia_qos_tline_segmented_create(tmedia_qos_strength_t strength);
 TINYMEDIA_API tmedia_qos_tline_segmented_t* tmedia_qos_tline_segmented_from_sdp(const tsdp_header_M_t* m);
 TINYMEDIA_API int tmedia_qos_tline_segmented_to_sdp(const tmedia_qos_tline_segmented_t* self, tsdp_header_M_t* m);
-
+TINYMEDIA_API int tmedia_qos_tline_segmented_set_ro(tmedia_qos_tline_segmented_t* self, const tmedia_qos_tline_segmented_t* ro);
+TINYMEDIA_API tsk_bool_t tmedia_qos_tline_segmented_canresume(const tmedia_qos_tline_segmented_t* self);
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_qos_tline_segmented_def_t;
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_qos_tline_e2e_def_t;

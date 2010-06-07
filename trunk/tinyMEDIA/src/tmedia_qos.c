@@ -112,6 +112,11 @@ tmedia_qos_stype_t tmedia_qos_get_type(const tsdp_header_M_t* m)
 
 tmedia_qos_tline_t* tmedia_qos_tline_from_sdp(const tsdp_header_M_t* m)
 {
+	if(!m){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
 	switch(tmedia_qos_get_type(m)){
 		case tmedia_qos_stype_e2e:
 			return (tmedia_qos_tline_t*)tmedia_qos_tline_e2e_from_sdp(m);
@@ -124,7 +129,12 @@ tmedia_qos_tline_t* tmedia_qos_tline_from_sdp(const tsdp_header_M_t* m)
 
 int tmedia_qos_tline_to_sdp(const tmedia_qos_tline_t* self, tsdp_header_M_t* m)
 {
-	switch(tmedia_qos_get_type(m)){
+	if(!self || !m){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_null;
+	}
+
+	switch(self->type){
 		case tmedia_qos_stype_e2e:
 			return tmedia_qos_tline_e2e_to_sdp((tmedia_qos_tline_e2e_t*)self, m);
 		case tmedia_qos_stype_segmented:
@@ -134,6 +144,21 @@ int tmedia_qos_tline_to_sdp(const tmedia_qos_tline_t* self, tsdp_header_M_t* m)
 	}
 }
 
+tsk_bool_t tmedia_qos_tline_canresume(const tmedia_qos_tline_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_true;
+	}
+	switch(self->type){
+		case tmedia_qos_stype_segmented:
+			return tmedia_qos_tline_segmented_canresume((const tmedia_qos_tline_segmented_t*)self); 
+		case tmedia_qos_stype_e2e:
+			return tmedia_qos_tline_e2e_canresume((const tmedia_qos_tline_e2e_t*)self);
+		default:
+			return tsk_true;
+	}
+}
 
 /* ========================= E2E ==================================*/
 
@@ -266,8 +291,9 @@ int tmedia_qos_tline_e2e_to_sdp(const tmedia_qos_tline_e2e_t* self, tsdp_header_
 		a=des:qos mandatory e2e sendrecv
 	*/
 
+	
 	/* curr */
-	tsk_sprintf(&temp, "qos e2e %s", self->recv.current ? "recv" : (self->send.current ? "send" : "none"));
+	tsk_sprintf(&temp, "qos e2e %s", (self->recv.current && self->send.current) ? "sendrecv" : (self->recv.current ? "recv" : (self->send.current ? "send" : "none")));
 	tsdp_header_M_add_headers(m,
 		TSDP_HEADER_A_VA_ARGS("curr", temp),
 		tsk_null);
@@ -298,7 +324,82 @@ int tmedia_qos_tline_e2e_to_sdp(const tmedia_qos_tline_e2e_t* self, tsdp_header_
 		TSK_FREE(temp);
 	}
 
+	/* conf (should not request confirm on "send" direction)*/
+	if(self->recv.confirm){
+		tsdp_header_M_add_headers(m,
+			TSDP_HEADER_A_VA_ARGS("conf", "qos e2e recv"),
+			tsk_null);
+	}
 	return 0;
+}
+
+int tmedia_qos_tline_e2e_set_ro(tmedia_qos_tline_e2e_t* self, const tmedia_qos_tline_e2e_t* ro)
+{
+	if(!self || !ro){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* We were the offerer
+	* Remote asked for confirmation in its "recv" direction? 
+	* "recv" direction for remote is our "send" direction
+	* As we don't support RSVP (under the way), confirm immediatly.
+	* "send" direction should not requested for confirmation
+	*/
+	if(ro->recv.confirm){
+		self->send.current = tsk_true;
+		goto bail;
+	}
+	if(ro->send.current){
+		self->recv.confirm = tsk_false; /* remote confirmed */
+		self->recv.current = tsk_true; /* because ro confirmed */
+		self->send.current = tsk_true; /* beacuse we don't support RSVP */
+		goto bail;
+	}
+
+	/* We are the answerer
+	* As we don't support RSVP (under the way):
+	* ==> request confirmation for "recv" direction if equal to "none" (not reserved)
+	* =>
+	*/
+	if(!self->recv.current){
+		self->recv.confirm = tsk_true;
+		goto bail;
+	}
+
+bail:
+	/* all other cases: success */
+	return 0;
+}
+
+tsk_bool_t tmedia_qos_tline_e2e_canresume(const tmedia_qos_tline_e2e_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_true;
+	}
+
+	/*  Example
+		a=curr:qos e2e none
+		a=des:qos mandatory e2e sendrecv
+
+		Or
+
+		a=curr:qos e2e send
+		a=des:qos mandatory e2e recv
+		a=des:qos optional e2e send
+	*/
+
+	/* only "mandatory" strength should force the application to continue nego. */
+	if(self->recv.strength == tmedia_qos_strength_mandatory && !self->recv.current){
+		return tsk_false;
+	}
+	/*else */if(self->send.strength == tmedia_qos_strength_mandatory && !self->send.current){
+		return tsk_false;
+	}
+	
+	/* "optinal" and "none" strengths */
+	return tsk_true;
 }
 
 //
@@ -548,14 +649,14 @@ int tmedia_qos_tline_segmented_to_sdp(const tmedia_qos_tline_segmented_t* self, 
 	*/
 
 	/* curr:local */
-	tsk_sprintf(&temp, "qos local %s", self->local_recv.current ? "recv" : (self->local_send.current ? "send" : "none"));
+	tsk_sprintf(&temp, "qos local %s", (self->local_recv.current && self->local_send.current) ? "sendrecv" : (self->local_recv.current ? "recv" : (self->local_send.current ? "send" : "none")));
 		tsdp_header_M_add_headers(m,
 			TSDP_HEADER_A_VA_ARGS("curr", temp),
 			tsk_null);
 		TSK_FREE(temp);
 
 	/* curr:remote */
-	tsk_sprintf(&temp, "qos remote %s", self->remote_recv.current ? "recv" : (self->remote_send.current ? "send" : "none"));
+	tsk_sprintf(&temp, "qos remote %s", (self->remote_recv.current && self->remote_send.current) ? "sendrecv" : (self->remote_recv.current ? "recv" : (self->remote_send.current ? "send" : "none")));
 	tsdp_header_M_add_headers(m,
 		TSDP_HEADER_A_VA_ARGS("curr", temp),
 		tsk_null);
@@ -613,7 +714,85 @@ int tmedia_qos_tline_segmented_to_sdp(const tmedia_qos_tline_segmented_t* self, 
 		TSK_FREE(temp);
 	}
 
+	/* conf */
+	if(self->remote_recv.confirm || self->remote_send.confirm){
+		tsk_sprintf(&temp, "qos remote %s", (self->remote_recv.confirm && self->remote_send.confirm) ? "sendrecv" : (self->remote_recv.confirm ? "recv" : (self->remote_send.confirm ? "send" : "none")));
+		tsdp_header_M_add_headers(m,
+			TSDP_HEADER_A_VA_ARGS("conf", temp),
+			tsk_null);
+		TSK_FREE(temp);
+	}
+
 	return 0;
+}
+
+int tmedia_qos_tline_segmented_set_ro(tmedia_qos_tline_segmented_t* self, const tmedia_qos_tline_segmented_t* ro)
+{
+	if(!self || !ro){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	//////////////
+	if(!ro->local_recv.current && !ro->remote_recv.confirm){
+		/* request confirmation */
+		self->remote_recv.confirm = tsk_true;
+	}
+	else{
+		self->remote_recv.confirm = tsk_false;
+		self->local_recv.current = tsk_true;
+	}
+	if(!ro->local_send.current && !ro->remote_send.confirm){
+		/* request confirmation */
+		self->remote_send.confirm = tsk_true;
+	}
+	else{
+		self->remote_send.confirm = tsk_false;
+		self->local_send.current = tsk_true;
+	}
+
+	//////////////
+	if(ro->remote_recv.confirm){
+		self->local_recv.current = tsk_true;
+	}
+	if(ro->remote_send.confirm){
+		self->local_send.current = tsk_true;
+	}
+
+	//////////////
+	if(ro->local_recv.current){
+		self->remote_recv.current = tsk_true;
+	}
+	if(ro->local_send.current){
+		self->remote_send.current = tsk_true;
+	}
+
+	return 0;
+}
+
+tsk_bool_t tmedia_qos_tline_segmented_canresume(const tmedia_qos_tline_segmented_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_true;
+	}
+
+	/* only "mandatory" strength should force the application to continue nego. */
+	if(self->local_recv.strength == tmedia_qos_strength_mandatory && !self->local_recv.current){
+		return tsk_false;
+	}
+	else if(self->local_send.strength == tmedia_qos_strength_mandatory && !self->local_send.current){
+		return tsk_false;
+	}
+	else if(self->remote_recv.strength == tmedia_qos_strength_mandatory && !self->remote_recv.current){
+		return tsk_false;
+	}
+	else if(self->remote_send.strength == tmedia_qos_strength_mandatory && !self->remote_send.current){
+		return tsk_false;
+	}
+
+	/* "optinal" and "none" strengths */
+	return tsk_true;
 }
 
 //

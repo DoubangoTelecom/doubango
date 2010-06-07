@@ -67,7 +67,8 @@ typedef enum tsip_ssession_param_type_e
 	sstype_from,
 	sstype_nocontact,
 	sstype_expires,
-	sstype_silent_hangup
+	sstype_silent_hangup,
+	sstype_media
 }
 tsip_ssession_param_type_t;
 
@@ -81,7 +82,26 @@ tsip_ssession_param_type_t;
 #define TSIP_SSESSION_SET_NO_CONTACT(ENABLED_BOOL)				sstype_nocontact, (tsk_bool_t)ENABLED_BOOL
 #define TSIP_SSESSION_SET_EXPIRES(VALUE_UINT)					sstype_expires, (unsigned)VALUE_UINT
 #define TSIP_SSESSION_SET_SILENT_HANGUP(ENABLED_BOOL)			sstype_silent_hangup, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_SSESSION_SET_MEDIA(...)							sstype_media, ##__VA_ARGS__
 #define TSIP_SSESSION_SET_NULL()								sstype_null
+
+typedef enum tsip_msession_param_type_e
+{
+	mstype_null = tsk_null,
+	
+	mstype_set_qos,
+	mstype_unset_qos,
+	mstype_set_timers,
+	mstype_unset_timers,
+}
+tsip_msession_param_type_t;
+
+#define TSIP_MSESSION_SET_QOS()
+#define TSIP_MSESSION_UNSET_QOS()
+#define TSIP_MSESSION_SET_TIMERS()
+#define TSIP_MSESSION_UNSET_TIMERS()							mstype_null
+
+#define TSIP_MSESSION_SET_NULL()
 
 typedef struct tsip_ssession_s
 {
