@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tinyMEDIA"
-	ProjectGUID="{52814B0D-7DCA-45B8-9A16-8B147040D619}"
-	RootNamespace="tinyMEDIA"
+	Name="test"
+	ProjectGUID="{91E0D694-5735-46C2-A56C-F159234C8B30}"
+	RootNamespace="test"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -19,7 +19,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			>
 			<Tool
@@ -40,8 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyMEDIA\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinySDP\include"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyMEDIA\include;..\..\tinySDP\include;..\..\tinyDAV\include;..\..\tinySAK\src;..\..\tinyNET\src"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -62,10 +62,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySDP.lib"
+				AdditionalDependencies="$(OutDir)\tinyNET.lib $(OutDir)\tinyDAV.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -97,7 +97,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
+			ConfigurationType="1"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -120,15 +120,12 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyMEDIA\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinySDP\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
-				WarnAsError="true"
 				DebugInformationFormat="3"
-				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -143,7 +140,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="1"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				TargetMachine="1"
@@ -178,104 +175,26 @@
 	</References>
 	<Files>
 		<Filter
-			Name="headers(*.h)"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			Name="source"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia_config.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_codec.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_codec_dummy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_common.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_consumer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_producer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_qos.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session_dummy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session_ghost.h"
+				RelativePath="..\..\tinyDAV\test\test.c"
 				>
 			</File>
 		</Filter>
 		<Filter
-			Name="source(*.c)"
+			Name="include"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
+		</Filter>
+		<Filter
+			Name="tests"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_codec.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_codec_dummy.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_common.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_consumer.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_producer.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_qos.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session_dummy.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session_ghost.c"
-				>
-			</File>
 		</Filter>
 	</Files>
 	<Globals>

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tinyMEDIA"
-	ProjectGUID="{52814B0D-7DCA-45B8-9A16-8B147040D619}"
-	RootNamespace="tinyMEDIA"
+	Name="tinyRTP"
+	ProjectGUID="{99B7D02F-8C70-4B45-AF3C-92313C3CEE15}"
+	RootNamespace="tinyRTP"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -40,8 +40,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyMEDIA\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinySDP\include"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyRTP\include;..\..\tinySAK\src;..\..\tinyNET\src"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYRTP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySDP.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -120,8 +120,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinyMEDIA\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinySDP\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYMEDIA_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;TINYRTP_EXPORTS"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -178,104 +177,96 @@
 	</References>
 	<Files>
 		<Filter
-			Name="headers(*.h)"
+			Name="source(*.c)"
+			Filter="cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx"
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
+			<File
+				RelativePath="..\..\tinyRTP\src\trtp.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyRTP\src\trtp_manager.c"
+				>
+			</File>
+			<Filter
+				Name="rtp"
+				>
+				<File
+					RelativePath="..\..\tinyRTP\src\rtp\trtp_rtp_header.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyRTP\src\rtp\trtp_rtp_packet.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyRTP\src\rtp\trtp_rtp_session.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="rtcp"
+				>
+				<File
+					RelativePath="..\..\tinyRTP\src\rtcp\trtp_rtcp_session.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="rtsp"
+				>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="include(*.h)"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia.h"
+				RelativePath="..\..\tinyRTP\include\tinyrtp.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia_config.h"
+				RelativePath="..\..\tinyRTP\include\tinyrtp_config.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia.h"
+				RelativePath="..\..\tinyRTP\include\tinyrtp\trtp.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_codec.h"
+				RelativePath="..\..\tinyRTP\include\tinyrtp\trtp_manager.h"
 				>
 			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_codec_dummy.h"
+			<Filter
+				Name="rtp"
 				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_common.h"
+				<File
+					RelativePath="..\..\tinyRTP\include\tinyrtp\rtp\trtp_rtp_header.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyRTP\include\tinyrtp\rtp\trtp_rtp_packet.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\tinyRTP\include\tinyrtp\rtp\trtp_rtp_session.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="rtcp"
 				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_consumer.h"
+				<File
+					RelativePath="..\..\tinyRTP\include\tinyrtp\rtcp\trtp_rtcp_session.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="rtsp"
 				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_producer.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_qos.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session_dummy.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_session_ghost.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="source(*.c)"
-			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
-			>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_codec.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_codec_dummy.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_common.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_consumer.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_producer.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_qos.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session_dummy.c"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyMEDIA\src\tmedia_session_ghost.c"
-				>
-			</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

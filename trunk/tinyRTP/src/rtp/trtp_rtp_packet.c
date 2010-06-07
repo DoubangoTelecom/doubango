@@ -54,7 +54,7 @@ tsk_buffer_t* trtp_rtp_packet_serialize(const trtp_rtp_packet_t *self)
 	tsk_buffer_t* buffer = tsk_null;
 
 	if(!self || !self->header){
-		TSK_DEBUG_ERROR("Invald parameter");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_null;
 	}
 
