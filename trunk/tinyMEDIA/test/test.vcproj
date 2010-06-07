@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\test_qos.h"
+				>
+			</File>
+			<File
 				RelativePath=".\test_sessions.h"
 				>
 			</File>

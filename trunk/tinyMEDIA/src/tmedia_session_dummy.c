@@ -32,8 +32,6 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format);
-
 /* ============ Audio Session ================= */
 
 int tmedia_session_daudio_prepare(tmedia_session_t* self)
@@ -126,7 +124,7 @@ int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 
 	TSK_DEBUG_INFO("tmedia_session_daudio_set_ro");
 
-	if((codec = _tmedia_session_match_codec(self, m, &self->negociated_format))){
+	if((codec = tmedia_session_match_codec(self, m, &self->negociated_format))){
 		/* update negociated codec */
 		TSK_OBJECT_SAFE_FREE(self->negociated_codec);
 		self->negociated_codec = tsk_object_ref((void*)codec);
@@ -231,7 +229,7 @@ int tmedia_session_dvideo_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 
 	TSK_DEBUG_INFO("tmedia_session_dvideo_set_ro");
 
-	if((codec = _tmedia_session_match_codec(self, m, &self->negociated_format))){
+	if((codec = tmedia_session_match_codec(self, m, &self->negociated_format))){
 		/* update negociated codec */
 		TSK_OBJECT_SAFE_FREE(self->negociated_codec);
 		self->negociated_codec = tsk_object_ref((void*)codec);
@@ -318,7 +316,7 @@ static const tsk_object_def_t tmedia_session_daudio_def_s =
 	sizeof(tmedia_session_daudio_t),
 	tmedia_session_daudio_ctor, 
 	tmedia_session_daudio_dtor,
-	tmedia_codec_cmp, 
+	tmedia_session_cmp, 
 };
 /* plugin definition*/
 static const tmedia_session_plugin_def_t tmedia_session_daudio_plugin_def_s = 
@@ -370,7 +368,7 @@ static const tsk_object_def_t tmedia_session_dvideo_def_s =
 	sizeof(tmedia_session_dvideo_t),
 	tmedia_session_dvideo_ctor, 
 	tmedia_session_dvideo_dtor,
-	tmedia_codec_cmp, 
+	tmedia_session_cmp, 
 };
 /* plugin definition*/
 static const tmedia_session_plugin_def_t tmedia_session_dvideo_plugin_def_s = 
@@ -422,7 +420,7 @@ static const tsk_object_def_t tmedia_session_dmsrp_def_s =
 	sizeof(tmedia_session_dmsrp_t),
 	tmedia_session_dmsrp_ctor, 
 	tmedia_session_dmsrp_dtor,
-	tmedia_codec_cmp, 
+	tmedia_session_cmp, 
 };
 /* plugin definition*/
 static const tmedia_session_plugin_def_t tmedia_session_dmsrp_plugin_def_s = 

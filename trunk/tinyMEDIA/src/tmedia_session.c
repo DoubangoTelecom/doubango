@@ -46,6 +46,7 @@ const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLU
 /* === local functions === */
 int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self);
 int _tmedia_session_prepare_lo(tmedia_session_t* self);
+int _tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
 int _tmedia_session_load_codecs(tmedia_session_t* self);
 
 const char* tmedia_session_get_media(const tmedia_session_t* self);
@@ -191,6 +192,7 @@ int tmedia_session_plugin_unregister(const tmedia_session_plugin_def_t* plugin)
 				break;
 			}
 		}
+		__tmedia_session_plugins[i] = tsk_null;
 	}
 	return (found ? 0 : -2);
 }
@@ -241,6 +243,20 @@ int _tmedia_session_prepare_lo(tmedia_session_t* self)
 	return ret;
 }
 
+/* internal function used to set remote offer */
+int _tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
+{
+	int ret;
+	if(!self || !self->plugin || !self->plugin->set_remote_offer){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	if(!(ret = self->plugin->set_remote_offer(self, m))){
+		self->ro_changed = tsk_true;
+	}
+	return ret;
+}
+
 /* internal function: get media */
 const char* tmedia_session_get_media(const tmedia_session_t* self)
 {
@@ -273,76 +289,8 @@ const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self)
 	return m;
 }
 
-/* internal function: get remote offer 
-* return zero if can handle ro and non-zero error code otherwise */
-int tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
-{
-	int ret;
-	if(!self || !self->plugin || !self->plugin->set_remote_offer){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	if(!(ret = self->plugin->set_remote_offer(self, m))){
-		self->ro_changed = tsk_true;
-	}
-	return ret;
-}
-
-/**@ingroup tmedia_session_group
-* DeInitializes a media session.
-* @param self the media session to deinitialize.
-* @retval Zero if succeed and non-zero error code otherwise.
-*/
-int tmedia_session_deinit(tmedia_session_t* self)
-{
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-	
-	/* free codecs */
-	TSK_OBJECT_SAFE_FREE(self->codecs);
-	TSK_OBJECT_SAFE_FREE(self->negociated_codec);
-	TSK_FREE(self->negociated_format);
-	
-	/* free lo, no and ro */
-	TSK_OBJECT_SAFE_FREE(self->M.lo);
-	TSK_OBJECT_SAFE_FREE(self->M.ro);
-
-	return 0;
-}
-
-/* internal function used to prepare a session */
-int _tmedia_session_load_codecs(tmedia_session_t* self)
-{
-	tsk_size_t i = 0;
-	tmedia_codec_t* codec;
-	const tmedia_codec_plugin_def_t* plugin;
-
-	if(!self){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
-	}
-
-	/* remove old codecs */
-	TSK_OBJECT_SAFE_FREE(self->codecs);
-
-	/* for each registered plugin create a session instance */
-	while((i < TMED_CODEC_MAX_PLUGINS) && (plugin = __tmedia_codec_plugins[i++])){
-		if((plugin->type & self->type) == plugin->type){
-			if((codec = tmedia_codec_create(plugin->format))){
-				if(!self->codecs){
-					self->codecs = tsk_list_create();
-				}
-				tsk_list_push_back_data(self->codecs, (void**)(&codec));
-			}
-		}
-	}
-	return 0;
-}
-
-/* internal function used to match a codec */
-const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format)
+/* Match a codec */
+const tmedia_codec_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format)
 {
 	const tmedia_codec_t *codec;
 	char *rtpmap = tsk_null, *fmtp = tsk_null, *name = tsk_null;
@@ -413,6 +361,60 @@ next:
 
 	return tsk_null;
 }
+
+/**@ingroup tmedia_session_group
+* DeInitializes a media session.
+* @param self the media session to deinitialize.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tmedia_session_deinit(tmedia_session_t* self)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	/* free codecs */
+	TSK_OBJECT_SAFE_FREE(self->codecs);
+	TSK_OBJECT_SAFE_FREE(self->negociated_codec);
+	TSK_FREE(self->negociated_format);
+	
+	/* free lo, no and ro */
+	TSK_OBJECT_SAFE_FREE(self->M.lo);
+	TSK_OBJECT_SAFE_FREE(self->M.ro);
+
+	return 0;
+}
+
+/* internal function used to prepare a session */
+int _tmedia_session_load_codecs(tmedia_session_t* self)
+{
+	tsk_size_t i = 0;
+	tmedia_codec_t* codec;
+	const tmedia_codec_plugin_def_t* plugin;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* remove old codecs */
+	TSK_OBJECT_SAFE_FREE(self->codecs);
+
+	/* for each registered plugin create a session instance */
+	while((i < TMED_CODEC_MAX_PLUGINS) && (plugin = __tmedia_codec_plugins[i++])){
+		if((plugin->type & self->type) == plugin->type){
+			if((codec = tmedia_codec_create(plugin->format))){
+				if(!self->codecs){
+					self->codecs = tsk_list_create();
+				}
+				tsk_list_push_back_data(self->codecs, (void**)(&codec));
+			}
+		}
+	}
+	return 0;
+}
+
 
 /**@ingroup tmedia_session_group
 * Creates new session manager.
@@ -616,7 +618,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		/* Find session by media */
 		if((ms = tsk_list_find_object_by_pred(self->sessions, __pred_find_session_by_media, M->media))){
 			/* set remote ro at session-level */
-			if(tmedia_session_set_ro(TMEDIA_SESSION(ms), M) == 0){
+			if(_tmedia_session_set_ro(TMEDIA_SESSION(ms), M) == 0){
 				found = tsk_true;
 			}
 		}

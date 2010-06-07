@@ -26,12 +26,14 @@
 
 #include "test_codecs.h"
 #include "test_sessions.h"
+#include "test_qos.h"
 
 #define RUN_TEST_LOOP		1
 
 #define RUN_TEST_ALL		0
 #define RUN_TEST_CODECS		0
-#define RUN_TEST_SESSIONS	1
+#define RUN_TEST_SESSIONS	0
+#define RUN_TEST_QOS		1
 
 void test_register_dummy_plugins();
 
@@ -52,6 +54,10 @@ int main()
 
 #if RUN_TEST_ALL  || RUN_TEST_SESSIONS
 		test_sessions();
+#endif
+
+#if RUN_TEST_ALL  || RUN_TEST_QOS
+		test_qos();
 #endif
 		
 	}

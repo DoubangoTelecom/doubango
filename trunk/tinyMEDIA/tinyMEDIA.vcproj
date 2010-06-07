@@ -203,6 +203,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinymedia\tmedia_qos.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinymedia\tmedia_session.h"
 				>
 			</File>
@@ -234,6 +238,10 @@
 			</File>
 			<File
 				RelativePath=".\src\tmedia_common.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tmedia_qos.c"
 				>
 			</File>
 			<File
