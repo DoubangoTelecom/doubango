@@ -35,8 +35,10 @@
 #include "tinymedia/tmedia_session_dummy.h"
 #include "tinymedia/tmedia_session_ghost.h"
 
-/* == tinySAK == */
-#include "tsk.h"
+#include "tinymedia/tmedia_qos.h"
+
+/* == tinyNET == */
+#include "tinynet.h"
 
 /* == tinySDP == */
 #include "tinysdp.h"

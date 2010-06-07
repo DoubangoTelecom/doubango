@@ -145,6 +145,7 @@ int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin)
 				break;
 			}
 		}
+		__tmedia_codec_plugins[i] = tsk_null;
 	}
 	return (found ? 0 : -2);
 }
