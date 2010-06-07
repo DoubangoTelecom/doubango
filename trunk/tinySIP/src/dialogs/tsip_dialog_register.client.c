@@ -192,13 +192,9 @@ int tsip_dialog_register_event_callback(const tsip_dialog_register_t *self, tsip
 	return ret;
 }
 
-/**
- * @fn	int tsip_dialog_register_timer_callback(const tsip_dialog_register_t* self,
- * 		tsk_timer_id_t timer_id)
+/**Timer manager callback.
  *
- * @brief	Timer manager callback.
- *
- * @param [in,out]	self	The owner of the signaled timer. 
+ * @param self	The owner of the signaled timer. 
  * @param	timer_id		The identifier of the signaled timer.
  *
  * @return	Zero if succeed and non-zero error code otherwise.  
@@ -550,10 +546,14 @@ int tsip_dialog_register_Trying_2_Terminated_X_cancel(va_list *app)
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
 	/* const tsip_message_t *message = va_arg(*app, const tsip_message_t *); */
 
-	/* Cancel all transactions associated to this dialog (will also be one when the dialog is destroyed (worth nothing)) */
+	/* Cancel all transactions associated to this dialog (will also be done when the dialog is destroyed (worth nothing)) */
 	ret = tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
 
-	/* Alert the user. */
+	/* RFC 3261 - 9.1 Client Behavior
+	   A CANCEL request SHOULD NOT be sent to cancel a request other than INVITE.
+	   */
+
+	/* Alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_cancelled, "Registration cancelled");
 
 	return ret;
@@ -820,8 +820,8 @@ static tsk_object_t* tsip_dialog_register_dtor(tsk_object_t * _self)
 	if(self){
 
 		/* Cancel all timers */
-		DIALOG_TIMER_CANCEL(refresh);
-		DIALOG_TIMER_CANCEL(shutdown);
+		TSIP_DIALOG_TIMER_CANCEL(refresh);
+		TSIP_DIALOG_TIMER_CANCEL(shutdown);
 
 		/* DeInitialize base class (will cancel all transactions) */
 		tsip_dialog_deinit(TSIP_DIALOG(self));

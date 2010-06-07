@@ -307,11 +307,21 @@ int tsip_dialog_options_Sending_2_Terminated_X_300_to_699(va_list *app)
 */
 int tsip_dialog_options_Sending_2_Terminated_X_cancel(va_list *app)
 {
+	int ret;
+
 	tsip_dialog_options_t *self = va_arg(*app, tsip_dialog_options_t *);
 	/* const tsip_message_t *message = va_arg(*app, const tsip_message_t *); */
 
-	/* Cancel all transactions associated to this dialog (will also be one when the dialog is destroyed (worth nothing)) */
-	return tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
+	/* RFC 3261 - 9.1 Client Behavior
+	   A CANCEL request SHOULD NOT be sent to cancel a request other than INVITE.
+	*/
+
+	/* Cancel all transactions associated to this dialog (will also be done when the dialog is destroyed (worth nothing)) */
+	ret = tsip_transac_layer_cancel_by_dialog(TSIP_DIALOG_GET_STACK(self)->layer_transac, TSIP_DIALOG(self));
+
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_request_cancelled, "Registration cancelled");
+
+	return ret;
 }
 
 /*	Receiving -> (accept) -> Terminated

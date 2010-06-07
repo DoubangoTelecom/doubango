@@ -523,7 +523,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 	
 	/* === Command === */
 	switch(cmd){
-		//case cmd_invite:
+		case cmd_audio: case cmd_video: case cmd_audiovideo: case cmd_file: case cmd_large_message:
 		case cmd_message:
 		case cmd_sms:
 		case cmd_options:
@@ -541,8 +541,14 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			}
 		default:
 			{
-				TSK_DEBUG_WARN("Session handling: Cannot handle this command [%d]", cmd);
-				goto bail;
+				if(session){
+					/* hold, resume, refer, update, ...all in-dialog commands */
+					break;
+				}
+				else{
+					TSK_DEBUG_WARN("Session handling: Cannot handle this command [%d]", cmd);
+					goto bail;
+				}
 			}
 	} /* switch */
 
@@ -551,7 +557,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		goto bail;
 	}
 
-	/* === Options === */
+	/* === User Options === */
 	tsk_list_foreach(item, opts){
 		opt = item->data;
 
@@ -638,10 +644,16 @@ int session_hangup(tsip_ssession_id_t sid)
 	if((session = session_get_by_sid(ctx->sessions, sid))){
 		switch(session->type){
 			case st_invite:
+				tsip_action_BYE(session->handle,
+					/* You can add your parameters */
+					TSIP_ACTION_SET_NULL());
 				break;
 			case st_message:
 				break;
 			case st_publish:
+				tsip_action_UNPUBLISH(session->handle,
+					/* You can add your parameters */
+					TSIP_ACTION_SET_NULL());
 				break;
 			case st_register:
 				tsip_action_UNREGISTER(session->handle,

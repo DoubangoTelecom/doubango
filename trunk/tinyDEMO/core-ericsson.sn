@@ -7,13 +7,14 @@
 %%proxy_ip 192.168.0.13 # IP address or FQDN
 %%proxy_port 5081
 %%proxy_trans tcp # udp, tcp, tls or sctp
-%%expires 10 # expires used by all dialogs
+%%expires 100 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
 
 %%reg-sid
 %%sub-reg-sid
 %%sub-pres-sid
 %%pub-sid
+%%inv_audio_sid
 
 #--local-ip 10.0.2.15\
 	
@@ -21,7 +22,7 @@
 # Realm, IMPI and IMPU are mandatory
 ++cst --realm $$(domain) --impi $$(user)@$$(domain) --impu sip:$$(user)@$$(domain) --pwd $$(pwd) \
 	--pcscf-ip $$(proxy_ip) --pcscf-port $$(proxy_port) --pcscf-trans $$(proxy_trans) \
-	--header Privacy=header;id --header Allow=INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER \
+	--header Privacy=none --header Allow=INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER \
 	--header P-Access-Network-Info=ADSL;utran-cell-id-3gpp=00000000 \
 	--header User-Agent=IM-client/OMA1.0 doubango/v1.0.0 # last should not have backslash
 	
@@ -39,19 +40,19 @@
 	>>(reg-sid)
 
 # sleep
-#++sleep --sec $$(sleep-sec)
+++sleep --sec $$(sleep-sec)
 
-# subscribe to reg event package (silent hangup)
-++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --silent --header Event=reg --header Accept=application/reginfo+xml \
-	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
+# SUBSCRIBE to reg event package (silent hangup)
+#++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --silent --header Event=reg --header Accept=application/reginfo+xml \
+#	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
 
-#subscribe to presence event package (alice)
-++sub --to sip:alice@$$(domain) --xp $$(expires) --header Event=presence --header Supported=eventlist\
-	--header Accept=multipart/related, application/rlmi+xml, application/pidf+xml, application/rpid+xml, application/xcap-diff+xml, message/external-body \
-	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-pres-sid)
+#SUBSCRIBE to presence event package (alice)
+#++sub --to sip:alice@$$(domain) --xp $$(expires) --header Event=presence --header Supported=eventlist\
+#	--header Accept=multipart/related, application/rlmi+xml, application/pidf+xml, application/rpid+xml, application/xcap-diff+xml, message/external-body \
+#	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-pres-sid)
 
-#publish
-++sn --path ./publish.sn
+#PUBLISH
+#++sn --path ./publish.sn
 
 #send Pager Mode IM
 #++m --to sip:alice@$$(domain) \
@@ -68,7 +69,15 @@
 #	--header Transfer-Encoding=binary \
 #	--pay hello world
 
-# Press Enter
+#send INVITE
+++a --to sip:bob@$$(domain) --header Supported=100rel >>(inv_audio_sid)
+++sleep --sec -1
+++ho --sid $$(inv_audio_sid)
+++sleep --sec -1
+++res --sid $$(inv_audio_sid)
+
+
+# Press ENTER
 ++sleep --sec -1
 
 # unsunscribe (reg and pres)

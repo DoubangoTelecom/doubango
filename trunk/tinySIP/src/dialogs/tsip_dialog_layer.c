@@ -227,6 +227,7 @@ done:
 	return -1;
 }
 
+/* the caller of this function must unref() the returned object */
 tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type_t type, const tsip_ssession_t *ss)
 {
 	tsip_dialog_t* ret = tsk_null;
@@ -238,6 +239,10 @@ tsip_dialog_t* tsip_dialog_layer_new(tsip_dialog_layer_t *self, tsip_dialog_type
 	switch(type){
 		case tsip_dialog_INVITE:
 			{
+				if((dialog = (tsip_dialog_t*)tsip_dialog_invite_create(ss))){
+					ret = tsk_object_ref(dialog);
+					tsk_list_push_back_data(self->dialogs, (void**)&dialog);
+				}
 				break;
 			}
 		case tsip_dialog_MESSAGE:

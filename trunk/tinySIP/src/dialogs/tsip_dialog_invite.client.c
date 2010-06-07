@@ -31,31 +31,69 @@
  */
 #include "tinysip/dialogs/tsip_dialog_invite.h"
 
+#include "tinysip/dialogs/tsip_dialog_invite.common.h"
+
 #include "tsk_debug.h"
 
 extern int send_INVITE(tsip_dialog_invite_t *self);
+extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 
 /* Started -> (oINVITE) -> Outgoing
 */
 int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 {
+	int ret;
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	//const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	
+	/* This is the first transaction when you try to make an audio/video/msrp call */
+	if(self->msession_mgr == tsk_null){
+		self->msession_mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38),
+		"192.168.0.12", tsk_false);
+	}
+	
+	/* send the request */
+	ret = send_INVITE(self);
 
-	return send_INVITE(self);
+	/* alert the user */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connecting, "Dialog connecting");
+
+
+	return ret;
 }
 
 /* Outgoing -> (i2xx INVITE) -> Connected
 */
-int c0001_Outgoing_2_Connected_X_i2xx(va_list *app)
+int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 {
-	return 0;
+	int ret;
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_response_t *r2xxINVITE = va_arg(*app, const tsip_response_t *);
+
+	/* Update the dialog state */
+	if((ret = tsip_dialog_update(TSIP_DIALOG(self), r2xxINVITE))){
+		return ret;
+	}
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_invite, 
+		TSIP_RESPONSE_CODE(r2xxINVITE), TSIP_RESPONSE_PHRASE(r2xxINVITE), r2xxINVITE);
+
+	/* send ACK */
+	return send_ACK(self, r2xxINVITE);
 }
 
 /* Outgoing -> (i300-i699 INVITE) -> Terminated
 */
-int c0002_Outgoing_2_Terminated_X_i300_to_i699(va_list *app)
+int c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 {
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	/* alert the user */
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_invite, 
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+
 	return 0;
 }
 
@@ -63,5 +101,6 @@ int c0002_Outgoing_2_Terminated_X_i300_to_i699(va_list *app)
 */
 int c0003_Outgoing_2_Terminated_X_oCANCEL(va_list *app)
 {
+	/* alert the user */
 	return 0;
 }

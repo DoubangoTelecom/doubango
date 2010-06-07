@@ -233,8 +233,7 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 		wsaBuffer.buf = (CHAR*)buf;
 		wsaBuffer.len = size;
 
-		if((ret = WSASend(from, &wsaBuffer, 1, &numberOfBytesSent, 0, NULL, NULL)) == SOCKET_ERROR)
-		{
+		if((ret = WSASend(from, &wsaBuffer, 1, &numberOfBytesSent, 0, NULL, NULL)) == SOCKET_ERROR){
 			if((ret = WSAGetLastError()) == WSA_IO_PENDING){
 				TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASend SSESSION");
 				ret = 0;
@@ -246,7 +245,9 @@ tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t 
 				goto bail;
 			}
 		}
-		else ret = 0;
+		else{
+			ret = 0;
+		}
 	}
 
 bail:
@@ -276,8 +277,7 @@ tsk_size_t tnet_transport_sendto(const tnet_transport_handle_t *handle, tnet_fd_
 	wsaBuffer.buf = (CHAR*)buf;
 	wsaBuffer.len = size;
 	
-    if((ret = WSASendTo(from, &wsaBuffer, 1, &numberOfBytesSent, 0, to, sizeof(*to), 0, 0)) == SOCKET_ERROR)
-	{
+    if((ret = WSASendTo(from, &wsaBuffer, 1, &numberOfBytesSent, 0, to, sizeof(*to), 0, 0)) == SOCKET_ERROR){
 		if((ret = WSAGetLastError()) == WSA_IO_PENDING){
 			TSK_DEBUG_INFO("WSA_IO_PENDING error for WSASendTo SSESSION");
 			ret = 0;
@@ -669,7 +669,7 @@ done:
 bail:
 
 
-	TSK_DEBUG_INFO("Stopping [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
+	TSK_DEBUG_INFO("Stopped [%s] server with IP {%s} on port {%d}...", transport->description, transport->master->ip, transport->master->port);
 	return 0;
 }
 

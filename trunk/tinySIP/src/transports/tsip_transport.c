@@ -31,6 +31,8 @@
 
 #include "tinysip/transports/tsip_transport_ipsec.h"
 
+#include "tinysip/transactions/tsip_transac.h" /* TSIP_TRANSAC_MAGIC_COOKIE */
+
 #include "tinysip/parsers/tsip_parser_uri.h"
 
 #include "tsk_string.h"
@@ -71,7 +73,17 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 	}
 	
 	/* updates the branch */
-	tsk_strupdate(&msg->firstVia->branch, branch);
+	if(branch){
+		tsk_strupdate(&msg->firstVia->branch, branch);
+	}
+	else{ /* Probably ACK sent from Dialog Layer */
+		TSK_FREE(msg->firstVia->branch);
+		if((msg->firstVia->branch = tsk_strdup(TSIP_TRANSAC_MAGIC_COOKIE))){
+			tsk_istr_t _branch;
+			tsk_strrandom(&_branch);
+			tsk_strcat(&msg->firstVia->branch, _branch);
+		}
+	}
 
 	/* multicast case */
 	if(tsk_false){
@@ -162,12 +174,13 @@ int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const ch
 tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort)
 {
 	tsk_size_t ret = 0;
-	if(self)
-	{
+	if(self){
 		tsk_buffer_t *buffer = tsk_null;
 
-		/* Add Via and update AOR, IPSec headers, SigComp ...*/
-		if(TSIP_MESSAGE_IS_REQUEST(msg) && !TSIP_REQUEST_IS_CANCEL(msg) && !TSIP_REQUEST_IS_ACK(msg)){
+		/* Add Via and update AOR, IPSec headers, SigComp ...
+		* ACK sent from the transaction layer will contains a Via header and should not be updated 
+		* CANCEL will have the same Via and Contact headers as the request it cancel */
+		if(TSIP_MESSAGE_IS_REQUEST(msg) && (!TSIP_REQUEST_IS_ACK(msg) || (TSIP_REQUEST_IS_ACK(msg) && !msg->firstVia)) && !TSIP_REQUEST_IS_CANCEL(msg)){
 			tsip_transport_addvia(self, branch, msg);
 			tsip_transport_msg_update(self, msg);
 		}

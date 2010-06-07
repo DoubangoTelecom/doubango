@@ -697,6 +697,8 @@ static tsk_object_t* tsip_transac_ist_ctor(tsk_object_t * self, va_list * app)
 
 		/* Initialize ICT object */
 		tsip_transac_ist_init(transac);
+
+		TSK_DEBUG_INFO("*** IST destroyed ***");
 	}
 	return self;
 }

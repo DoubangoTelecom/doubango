@@ -55,6 +55,11 @@ tsip_invite_event_t;
 
 int tsip_invite_event_signal(tsip_invite_event_type_t type, tsip_ssession_handle_t* ss, short status_code, const char *phrase, const struct tsip_message_s* sipmessage);
 
+TINYSIP_API int tsip_action_INVITE(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_action_HOLD(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_action_RESUME(const tsip_ssession_handle_t *ss, ...);
+TINYSIP_API int tsip_action_BYE(const tsip_ssession_handle_t *ss, ...);
+
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_invite_event_def_t;
 
 TSIP_END_DECLS

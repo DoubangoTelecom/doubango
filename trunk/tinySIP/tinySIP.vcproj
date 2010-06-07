@@ -832,11 +832,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\dialogs\tsip_dialog_invite.cdiv.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dialogs\tsip_dialog_invite.client.c"
 					>
 				</File>
 				<File
+					RelativePath=".\src\dialogs\tsip_dialog_invite.conf.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dialogs\tsip_dialog_invite.ect.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dialogs\tsip_dialog_invite.hold.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dialogs\tsip_dialog_invite.qos.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\dialogs\tsip_dialog_invite.server.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\dialogs\tsip_dialog_invite.timers.c"
 					>
 				</File>
 				<File
@@ -917,14 +941,6 @@
 				</File>
 				<File
 					RelativePath=".\src\api\tsip_api_subscribe.c"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="media"
-				>
-				<File
-					RelativePath=".\src\media\tsip_msession.c"
 					>
 				</File>
 			</Filter>
@@ -1426,6 +1442,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\tinysip\dialogs\tsip_dialog_invite.common.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinysip\dialogs\tsip_dialog_invite.h"
 					>
 				</File>
@@ -1499,14 +1519,6 @@
 				</File>
 				<File
 					RelativePath=".\include\tinysip\api\tsip_api_subscribe.h"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="media"
-				>
-				<File
-					RelativePath=".\include\tinysip\media\tsip_msession.h"
 					>
 				</File>
 			</Filter>

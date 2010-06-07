@@ -33,7 +33,7 @@
 #include "tinysip_config.h"
 #include "tinysip/dialogs/tsip_dialog.h"
 
-#include "tinysip/media/tsip_msession.h"
+#include "tinymedia/tmedia_session.h"
 
 
 TSIP_BEGIN_DECLS
@@ -46,7 +46,11 @@ typedef struct tsip_dialog_invite
 
 	uint32_t rseq;
 	
-	tsip_msession_t* session; /**< Media session Manager. */
+	tsip_timer_t timerrefresh;
+	tsip_timer_t timershutdown;
+
+	tsip_request_t* last_invite;
+	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager. */
 }
 tsip_dialog_invite_t;
 

@@ -92,6 +92,7 @@ TINYSAK_API int tsk_buffer_realloc(tsk_buffer_t* self, tsk_size_t size);
 TINYSAK_API int tsk_buffer_remove(tsk_buffer_t* self, tsk_size_t position, tsk_size_t size);
 TINYSAK_API int tsk_buffer_insert(tsk_buffer_t* self, tsk_size_t position, const void*data, tsk_size_t size);
 TINYSAK_API int tsk_buffer_cleanup(tsk_buffer_t* self);
+TINYSAK_API int tsk_buffer_takeownership(tsk_buffer_t* self, void** data, tsk_size_t size);
 
 TINYSAK_GEXTERN const tsk_object_def_t *tsk_buffer_def_t;
 

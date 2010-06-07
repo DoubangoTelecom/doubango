@@ -160,8 +160,15 @@ int tsk_runnable_stop(tsk_runnable_t *self)
 	int ret = -1;
 	if(self){
 		if(!self->initialized) {
-			TSK_DEBUG_ERROR("Not initialized.");
-			return -2;
+			if(!self->running){
+				/* already deinitialized */
+				return 0;
+			}
+			else{
+				/* should never happen */
+				TSK_DEBUG_ERROR("Not initialized.");
+				return -2;
+			}
 		}
 		else if(!self->running) {
 

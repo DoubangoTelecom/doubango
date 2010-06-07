@@ -22,6 +22,7 @@
 #include "options.h"
 
 extern ctx_t* ctx;
+extern const session_t* session_handle_cmd(cmd_type_t , const opts_L_t*);
 
 int options_hack_aor(const tsip_response_t* resp);
 

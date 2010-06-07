@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySAK\src;..\tinyNET\src;..\tinySMS\include;..\tinyHTTP\include;..\tinySIP\include"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySAK\src;..\tinyNET\src;..\tinySMS\include;..\tinyHTTP\include;..\tinySIP\include;..\tinyDAV\include;..\tinyMEDIA\include;..\tinySDP\include"
 				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinySMS.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinySMS.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyDAV.lib $(OutDir)\tinySDP.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="1"

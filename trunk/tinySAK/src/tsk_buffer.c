@@ -264,7 +264,7 @@ int tsk_buffer_insert(tsk_buffer_t* self, tsk_size_t position, const void* data,
 }
 
 /**@ingroup tsk_buffer_group
-* Cleanups the internal data and reset the size..
+* Cleanups the internal data and reset the size.
 * @param self The buffer holding the internal data to free.
 * @retval Zero if succeed and non-zero error code otherwise.
 */
@@ -277,6 +277,30 @@ int tsk_buffer_cleanup(tsk_buffer_t* self)
 	return 0;
 }
 
+/**@ingroup tsk_buffer_group
+* Takes the ownership of the @a data. If the destination buffer had data, then it will
+* be cleaned up.
+* @param self The buffer
+* @param data
+* @param size
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tsk_buffer_takeownership(tsk_buffer_t* self, void** data, tsk_size_t size)
+{
+	if(!self || !data || !*data || !size){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(self->data){
+		tsk_free(&(self->data));
+	}
+	self->data = *data;
+	self->size = size;
+	*data = tsk_null;
+
+	return 0;
+}
 
 
 
