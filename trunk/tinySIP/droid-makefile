@@ -31,8 +31,14 @@ OBJS += src/authentication/tsip_challenge.o\
 	### dialogs
 OBJS += src/dialogs/tsip_dialog.o\
 	src/dialogs/tsip_dialog_invite.o\
+	src/dialogs/tsip_dialog_invite.cdiv.o\
 	src/dialogs/tsip_dialog_invite.client.o\
+	src/dialogs/tsip_dialog_invite.conf.o\
+	src/dialogs/tsip_dialog_invite.ect.o\
+	src/dialogs/tsip_dialog_invite.hold.o\
+	src/dialogs/tsip_dialog_invite.qos.o\
 	src/dialogs/tsip_dialog_invite.server.o\
+	src/dialogs/tsip_dialog_invite.timers.o\
 	src/dialogs/tsip_dialog_layer.o\
 	src/dialogs/tsip_dialog_message.o\
 	src/dialogs/tsip_dialog_options.o\
@@ -137,9 +143,6 @@ OBJS += src/headers/tsip_header.o\
 	src/headers/tsip_header_Via.o\
 	src/headers/tsip_header_Warning.o\
 	src/headers/tsip_header_WWW_Authenticate.o
-	
-	### media
-OBJS += src/media/tsip_msession.o
 	
 	### parsers
 OBJS += src/parsers/tsip_parser_header.o\

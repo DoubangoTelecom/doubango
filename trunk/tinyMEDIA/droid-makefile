@@ -10,6 +10,7 @@ OBJS = \
 	src/tmedia_codec.o \
 	src/tmedia_codec_dummy.o \
 	src/tmedia_common.o \
+	src/tmedia_qos.o \
 	src/tmedia_session.o \
 	src/tmedia_session_dummy.o \
 	src/tmedia_session_ghost.o
