@@ -20,24 +20,36 @@
 *
 */
 
-/**@file tinydav.h
- * @brief tinyDAV API.
+/**@file tdav_codec_g711.h
+ * @brief G.711u and G.711a (a.k.a PCMU and PCMA) codec plugins.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_TINYDAV_H
-#define TINYMEDIA_TINYDAV_H
+#ifndef TINYDAV_CODEC_G711_H
+#define TINYDAV_CODEC_G711_H
 
-#include "tinydav/tdav.h"
+#include "tinydav_config.h"
 
-// sessions
-#include "tinydav/audio/tdav_session_audio.h"
-// codecs
-#include "tinydav/codecs/g711/tdav_codec_g711.h"
+#include "tinymedia/tmedia_codec.h"
 
-/* == tinyMEDIA == */
-#include "tinymedia.h"
+/** G.711u codec */
+typedef struct tdav_codec_g711u_s
+{
+	TMEDIA_DECLARE_CODEC_AUDIO;
+}
+tdav_codec_g711u_t;
 
-#endif /* TINYMEDIA_TINYDAV_H */
+/** G.711a codec */
+typedef struct tdav_codec_g711a_s
+{
+	TMEDIA_DECLARE_CODEC_AUDIO;
+}
+tdav_codec_g711a_t;
+
+
+TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_g711a_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_g711u_plugin_def_t;
+
+#endif /* TINYDAV_CODEC_G711_H */
