@@ -34,15 +34,69 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+/* ======================= Transport callback ========================== */
+static int trtp_transport_layer_cb(const tnet_transport_event_t* e)
+{
+	int ret = -1;
+	const trtp_manager_t *manager = e->callback_data;
+	trtp_rtp_packet_t* packet = tsk_null;
+
+	switch(e->type){
+		case event_data: {
+				break;
+			}
+		case event_closed:
+		case event_connected:
+		default:{
+				return 0;
+			}
+	}
+
+	//
+	//	RTCP
+	//
+	if(manager->rtcp.local_socket && manager->rtcp.local_socket->fd == e->fd){
+		TSK_DEBUG_INFO("RTCP packet");
+	}
+	//
+	// RTP
+	//
+	else if(manager->rtp.local_socket && manager->rtp.local_socket->fd == e->fd){
+		if(manager->rtp.callback){
+			if((packet = trtp_rtp_packet_deserialize(e->data, e->size))){
+				manager->rtp.callback(manager->rtp.callback_data, packet);
+				TSK_OBJECT_SAFE_FREE(packet);
+			}
+			else{
+				TSK_DEBUG_ERROR("RTP packet === NOK");
+				goto bail;
+			}
+		}
+	}
+	//
+	// UNKNOWN
+	//
+	else{
+		TSK_DEBUG_INFO("XXXX packet");
+		goto bail;
+	}
+
+bail:
+
+	return ret;
+}
+
+
+
 /** Create RTP/RTCP manager */
-trtp_manager_t* trtp_manager_create(tsk_bool_t enable_rtcp, const char* local_ip, tsk_bool_t ipv6, uint8_t payload_type)
+trtp_manager_t* trtp_manager_create(tsk_bool_t enable_rtcp, const char* local_ip, tsk_bool_t ipv6)
 {
 	trtp_manager_t* manager;
 	if((manager = tsk_object_new(trtp_manager_def_t))){
 		manager->enable_rtcp = enable_rtcp;
 		manager->local_ip = tsk_strdup(local_ip);
 		manager->ipv6 = ipv6;
-		manager->rtp.payload_type = payload_type;
+		manager->rtp.payload_type = 127;
 	}
 	return manager;
 }
@@ -66,9 +120,13 @@ int trtp_manager_prepare(trtp_manager_t* self)
 	
 	/* Creates local rtp and rtcp sockets */
 	while(retry_count--){
+		tnet_port_t local_port = TNET_SOCKET_PORT_ANY;
+
 		/* random number in the range 1024 to 65535 */
-		tnet_port_t local_port = ((rand() % 64511) + 1024);
-		local_port = (local_port % 0x01) ? (local_port + 1) : local_port; /* turn to even number */
+		if(self->enable_rtcp){
+			local_port = ((rand() % 64511) + 1024);
+			local_port = (local_port % 0x01) ? (local_port + 1) : local_port; /* turn to even number */
+		}
 		/* beacuse failure will cause errors in the log, print a message to alert that there is
 		* nothing to worry about */
 		TSK_DEBUG_INFO("RTP/RTCP manager[Begin]: Trying to bind to random ports");
@@ -88,14 +146,18 @@ int trtp_manager_prepare(trtp_manager_t* self)
 			}
 		}
 	
-		TSK_DEBUG_INFO("RTP/RTCP manager[End]: Trying to bind to random ports");
+		TSK_DEBUG_INFO("RTP/RTCP manager[End]: Trying to bind to random ports (%u)", self->rtp.local_socket->port);
 		break;
 	}
 
 	/* creates the transport */
 	if(self->rtp.local_socket && ((self->enable_rtcp && self->rtcp.local_socket) || !self->enable_rtcp)){
 		self->transport = tnet_transport_create(self->local_ip, TNET_SOCKET_PORT_ANY, socket_type, "RTP/RTCP Manager");
-		if(!self->transport){
+		if(self->transport){
+			/* set callback function */
+			tnet_transport_set_callback(self->transport, trtp_transport_layer_cb, self);
+		}
+		else {
 			TSK_DEBUG_ERROR("Failed to create RTP/RTCP manager");
 			return -3;
 		}
@@ -116,6 +178,31 @@ tsk_bool_t trtp_manager_is_prepared(trtp_manager_t* self)
 		return tsk_false;
 	}
 	return self->transport == tsk_null ? tsk_false : tsk_true;
+}
+
+/** Sets RTP callback */
+int trtp_manager_set_rtp_callback(trtp_manager_t* self, trtp_manager_rtp_cb_f callback, const void* callback_data)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	
+	self->rtp.callback = callback;
+	self->rtp.callback_data = callback_data;
+
+	return 0;
+}
+
+/** Sets the payload type */
+int trtp_manager_set_payload_type(trtp_manager_t* self, uint8_t payload_type)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+	self->rtp.payload_type = payload_type;
+	return 0;
 }
 
 /** Sets remote parameters for rtp session */
@@ -188,7 +275,7 @@ int trtp_manager_start(trtp_manager_t* self)
 			self->rtcp.remote_port = self->rtp.remote_port;
 		}
 	}
-	if((ret = tnet_sockaddr_init(self->rtcp.remote_ip, self->rtcp.remote_port, self->rtcp.local_socket->type, &remote_rtcp_addr))){
+	if(self->enable_rtcp && (ret = tnet_sockaddr_init(self->rtcp.remote_ip, self->rtcp.remote_port, self->rtcp.local_socket->type, &remote_rtcp_addr))){
 		TSK_DEBUG_ERROR("Invalid RTCP host:port [%s:%u]", self->rtcp.remote_ip, self->rtcp.remote_port);
 		return ret;
 	}
@@ -203,12 +290,12 @@ int trtp_manager_start(trtp_manager_t* self)
 		return ret;
 	}
 	
-	/* connect and add RTP socket to the transport */
-	if((ret = tnet_sockfd_connectto(self->rtcp.local_socket->fd, &remote_rtcp_addr))){
+	/* connect and add RTCP socket to the transport */
+	if(self->enable_rtcp && (ret = tnet_sockfd_connectto(self->rtcp.local_socket->fd, &remote_rtcp_addr))){
 		TSK_DEBUG_ERROR("Failed to connect RTPC socket");
 		return ret;
 	}
-	if((ret = tnet_transport_add_socket(self->transport, self->rtcp.local_socket->fd, self->rtcp.local_socket->type, tsk_false, tsk_true/* only Meaningful for tls*/))){
+	if(self->enable_rtcp && (ret = tnet_transport_add_socket(self->transport, self->rtcp.local_socket->fd, self->rtcp.local_socket->type, tsk_false, tsk_true/* only Meaningful for tls*/))){
 		TSK_DEBUG_ERROR("Failed to add RTPC socket");
 		return ret;
 	}

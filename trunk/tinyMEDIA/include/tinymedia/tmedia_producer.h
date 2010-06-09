@@ -76,6 +76,7 @@ typedef struct tmedia_producer_plugin_def_s
 }
 tmedia_producer_plugin_def_t;
 
+#define TMEDIA_DECLARE_PRODUCER tmedia_producer_t __producer__
 
 TINYMEDIA_API tmedia_producer_t* tmedia_producer_create(tmedia_type_t type);
 TINYMEDIA_API int tmedia_producer_init(tmedia_producer_t* self);

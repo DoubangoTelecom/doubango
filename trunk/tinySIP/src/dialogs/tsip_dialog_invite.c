@@ -716,7 +716,12 @@ int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 {
 	TSK_DEBUG_INFO("=== INVITE Dialog terminated ===");
 
-	/* Alert the user */
+	/* stop session manager */
+	if(self->msession_mgr){
+		tmedia_session_mgr_stop(self->msession_mgr);
+	}
+
+	/* alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_terminated, "Dialog terminated");
 
 	/* Remove from the dialog layer. */

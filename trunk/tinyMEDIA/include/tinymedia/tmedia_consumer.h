@@ -32,6 +32,7 @@
 
 #include "tinymedia_config.h"
 
+#include "tinymedia/tmedia_codec.h"
 #include "tmedia_common.h"
 
 /**Max number of plugins (consumer types) we can create */
@@ -40,7 +41,7 @@
 /** cast any pointer to @ref tmedia_consumer_t* object */
 #define TMEDIA_CONSUMER(self)		((tmedia_consumer_t*)(self))
 
-/** Base object for all Producers */
+/** Base object for all Consumers */
 typedef struct tmedia_consumer_s
 {
 	TSK_DECLARE_OBJECT;
@@ -64,7 +65,7 @@ typedef struct tmedia_consumer_plugin_def_s
 	//! full description (usefull for debugging)
 	const char* desc;
 
-	int (* prepare) (tmedia_consumer_t* );
+	int (* prepare) (tmedia_consumer_t*, const tmedia_codec_t* );
 	int (* start) (tmedia_consumer_t* );
 	int (* consume) (tmedia_consumer_t*, const void* buffer, tsk_size_t size);
 	int (* pause) (tmedia_consumer_t* );
@@ -72,15 +73,18 @@ typedef struct tmedia_consumer_plugin_def_s
 }
 tmedia_consumer_plugin_def_t;
 
+#define TMEDIA_DECLARE_CONSUMER tmedia_consumer_t __consumer__
 
 TINYMEDIA_API tmedia_consumer_t* tmedia_consumer_create(tmedia_type_t type);
 TINYMEDIA_API int tmedia_consumer_init(tmedia_consumer_t* self);
-TINYMEDIA_API int tmedia_consumer_prepare(tmedia_consumer_t *self);
+TINYMEDIA_API int tmedia_consumer_prepare(tmedia_consumer_t *self, const tmedia_codec_t* codec);
 TINYMEDIA_API int tmedia_consumer_start(tmedia_consumer_t *self);
 TINYMEDIA_API int tmedia_consumer_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size);
 TINYMEDIA_API int tmedia_consumer_pause(tmedia_consumer_t *self);
 TINYMEDIA_API int tmedia_consumer_stop(tmedia_consumer_t *self);
-
 TINYMEDIA_API int tmedia_consumer_deinit(tmedia_consumer_t* self);
+
+TINYMEDIA_API int tmedia_consumer_plugin_register(const tmedia_consumer_plugin_def_t* plugin);
+TINYMEDIA_API int tmedia_consumer_plugin_unregister(const tmedia_consumer_plugin_def_t* plugin);
 
 #endif /* TINYMEDIA_CONSUMER_H */

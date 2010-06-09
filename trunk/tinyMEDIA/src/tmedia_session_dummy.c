@@ -34,7 +34,7 @@
 
 /* ============ Audio Session ================= */
 
-int tmedia_session_daudio_configure(tmedia_session_t* self, const va_list *app)
+int tmedia_session_daudio_set(tmedia_session_t* self, va_list *app)
 {
 	tmedia_session_daudio_t* daudio;
 
@@ -150,11 +150,11 @@ int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 
 /* ============ Video Session ================= */
 
-int tmedia_session_dvideo_configure(tmedia_session_t* self, const va_list *app)
+int tmedia_session_dvideo_set(tmedia_session_t* self, va_list *app)
 {
 	tmedia_session_dvideo_t* dvideo;
 
-	TSK_DEBUG_INFO("tmedia_session_dvideo_configure");
+	TSK_DEBUG_INFO("tmedia_session_dvideo_set");
 
 	dvideo = (tmedia_session_dvideo_t*)self;
 
@@ -266,11 +266,11 @@ int tmedia_session_dvideo_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 
 /* ============ Msrp Session ================= */
 
-int tmedia_session_dmsrp_configure(tmedia_session_t* self, const va_list *app)
+int tmedia_session_dmsrp_set(tmedia_session_t* self, va_list *app)
 {
 	tmedia_session_dmsrp_t* dmsrp;
 
-	TSK_DEBUG_INFO("tmedia_session_dmsrp_configure");
+	TSK_DEBUG_INFO("tmedia_session_dmsrp_set");
 
 	dmsrp = (tmedia_session_dmsrp_t*)self;
 
@@ -359,11 +359,12 @@ static const tmedia_session_plugin_def_t tmedia_session_daudio_plugin_def_s =
 	tmedia_audio,
 	"audio",
 	
-	tmedia_session_daudio_configure,
+	tmedia_session_daudio_set,
 	tmedia_session_daudio_prepare,
 	tmedia_session_daudio_start,
-	tmedia_session_daudio_stop,
 	tmedia_session_daudio_pause,
+	tmedia_session_daudio_stop,
+	
 
 	tmedia_session_daudio_get_lo,
 	tmedia_session_daudio_set_ro
@@ -412,11 +413,12 @@ static const tmedia_session_plugin_def_t tmedia_session_dvideo_plugin_def_s =
 	tmedia_video,
 	"video",
 	
-	tmedia_session_dvideo_configure,
+	tmedia_session_dvideo_set,
 	tmedia_session_dvideo_prepare,
 	tmedia_session_dvideo_start,
-	tmedia_session_dvideo_stop,
 	tmedia_session_dvideo_pause,
+	tmedia_session_dvideo_stop,
+	
 
 	tmedia_session_dvideo_get_lo,
 	tmedia_session_dvideo_set_ro
@@ -465,11 +467,12 @@ static const tmedia_session_plugin_def_t tmedia_session_dmsrp_plugin_def_s =
 	tmedia_msrp,
 	"message",
 	
-	tmedia_session_dmsrp_configure,
+	tmedia_session_dmsrp_set,
 	tmedia_session_dmsrp_prepare,
 	tmedia_session_dmsrp_start,
-	tmedia_session_dmsrp_stop,
 	tmedia_session_dmsrp_pause,
+	tmedia_session_dmsrp_stop,
+	
 
 	tmedia_session_dmsrp_get_lo,
 	tmedia_session_dmsrp_set_ro

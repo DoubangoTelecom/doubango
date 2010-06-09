@@ -339,13 +339,12 @@ const tmedia_codec_t* tmedia_session_match_codec(tmedia_session_t* self, const t
 compare_fmtp:
 			if((fmtp = tsdp_header_M_get_fmtp(M, fmt->value))){ /* remote have fmtp? */
 				if(tmedia_codec_match_fmtp(codec, fmtp)){ /* fmtp matches? */
-					if(codec->dyn){
-						tsk_strupdate(format, fmt->value);
-					}
+					tsk_strupdate(format, fmt->value);
 					found = tsk_true;
 				}
 			}
 			else{ /* no fmtp -> always match */
+				tsk_strupdate(format, fmt->value);
 				found = tsk_true;
 			}
 next:
@@ -360,6 +359,34 @@ next:
 	
 
 	return tsk_null;
+}
+
+/**@ingroup tmedia_session_group
+* skip unsupported param
+*/
+int tmedia_session_skip_param(enum tmedia_session_param_type_e type, va_list *app)
+{
+	switch(type){
+		case tmedia_sptype_remote_ip:
+			/* (const char*) IP_STR */
+			va_arg(*app, const char *);
+			break;
+		case tmedia_sptype_local_ip:
+			/* (const char*) IP_STR, (tsk_bool_t)IPv6_BOOL */
+			va_arg(*app, const char *);
+			va_arg(*app, tsk_bool_t);
+			break;
+		case tmedia_sptype_set_rtcp:
+			/* (tsk_bool_t)ENABLED_BOOL */
+			va_arg(*app, tsk_bool_t);
+			break;
+
+		default:
+			TSK_DEBUG_ERROR("%d is an unknown parameter", type);
+			return -1;
+	}
+
+	return 0;
 }
 
 /**@ingroup tmedia_session_group
@@ -421,10 +448,11 @@ int _tmedia_session_load_codecs(tmedia_session_t* self)
 * @param type the type of the session to create. For example, (@ref tmed_sess_type_audio | @ref tmed_sess_type_video).
 * @param addr the local ip address or FQDN to use in the sdp message.
 * @param ipv6 indicates whether @a addr is IPv6 address or not. Useful when @a addr is a FQDN.
+* @param load_sessions Whether the offerer or not.
 * will create an audio/video session.
 * @retval new @ref tmedia_session_mgr_t object
 */
-tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6)
+tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6, tsk_bool_t offerer)
 {
 	tmedia_session_mgr_t* mgr;
 
@@ -432,11 +460,19 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
 		TSK_DEBUG_ERROR("Failed to create Media Session manager");
 		return tsk_null;
 	}
-	
+
 	/* init */
 	mgr->type = type;
 	mgr->addr = tsk_strdup(addr);
 	mgr->ipv6 = ipv6;
+
+	/* load sessions (will allow us to generate lo) */
+	if(offerer){
+		if(_tmedia_session_mgr_load_sessions(mgr)){
+			/* Do nothing */
+			TSK_DEBUG_ERROR("Failed to load sessions");
+		}
+	}
 
 	return mgr;
 }
@@ -471,8 +507,8 @@ int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 			return -2;
 		}
 		if((ret = session->plugin->start(session))){
-			TSK_DEBUG_ERROR("Failed to start session");
-			return ret;
+			TSK_DEBUG_ERROR("Failed to start %s session", session->plugin->media);
+			continue;
 		}
 	}
 
@@ -481,13 +517,13 @@ int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 }
 
 /**@ingroup tmedia_session_group
-* Configures one or several sessions.
+* sets one or several sessions.
 * @param self The session manager
-* @param type The type of the sessions to configure
+* @param type The type of the sessions to set
 * @param ... Any TMEDIA_SESSION_SET_*() macros
 * @retval Zero if succeed and non-zero error code otherwise
 */
-int tmedia_session_mgr_configure(tmedia_session_mgr_t* self, tmedia_type_t type, ...)
+int tmedia_session_mgr_set(tmedia_session_mgr_t* self, tmedia_type_t type, ...)
 {
 	tsk_list_item_t* item;
 	tmedia_session_t* session;
@@ -504,14 +540,14 @@ int tmedia_session_mgr_configure(tmedia_session_mgr_t* self, tmedia_type_t type,
 			return -2;
 		}
 		
-		/* does not support configure() */
-		if(!session->plugin->configure){
+		/* does not support set() */
+		if(!session->plugin->set){
 			continue;
 		}
 
 		va_start(ap, type);
-		if(((session->type & type) == session->type) && session->plugin->configure(session, &ap)){
-			TSK_DEBUG_ERROR("Failed to configue (%s) session", session->plugin->media);
+		if(((session->type & type) == session->type) && session->plugin->set(session, &ap)){
+			TSK_DEBUG_ERROR("Failed to set (%s) session", session->plugin->media);
 		}
 		va_end(ap);
 	}
@@ -630,6 +666,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 {
 	const tmedia_session_t* ms;
 	const tsdp_header_M_t* M;
+	const tsdp_header_C_t* C; /* global "c=" line */
 	tsk_size_t index = 0;
 	tsk_bool_t found;
 
@@ -647,10 +684,19 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	if(TSK_LIST_IS_EMPTY(self->sessions)){
 		if(_tmedia_session_mgr_load_sessions(self)){
 			TSK_DEBUG_ERROR("Failed to prepare the session manager");
-			return tsk_null;
+			return -2;
 		}
 	}
 	
+	/* get global connection line (common to all sessions) 
+	* Each session should override this info if it has a different one in its "m=" line
+	*/
+	if((C = (const tsdp_header_C_t*)tsdp_message_get_header(sdp, tsdp_htype_C)) && C->addr){
+		tmedia_session_mgr_set(self, self->type,
+			TMEDIA_SESSION_SET_REMOTE_IP(C->addr),
+			TMEDIA_SESSION_SET_NULL());
+	}
+
 	/* foreach "m=" line in the remote offer create a session*/
 	while((M = (const tsdp_header_M_t*)tsdp_message_get_headerAt(sdp, tsdp_htype_M, index++))){
 		found = tsk_false;
@@ -853,8 +899,7 @@ int tmedia_session_mgr_remove_media(tmedia_session_mgr_t* self, tmedia_type_t ty
 }
 
 
-/* internal functions used to prepare a session manager 
-* only sessions matching the manager type will be loaded
+/** internal function used to load sessions
 */
 int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 {
@@ -871,6 +916,10 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 				}
 			}
 		}
+		/* set ldefault values */
+		tmedia_session_mgr_set(self, self->type,
+			TMEDIA_SESSION_SET_LOCAL_IP(self->addr, self->ipv6),
+			TMEDIA_SESSION_SET_NULL());
 	}
 	return 0;
 }

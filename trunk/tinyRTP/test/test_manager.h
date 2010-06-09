@@ -27,9 +27,11 @@ void test_manager()
 	tsk_size_t i;
 	trtp_manager_t* manager;
 
-	if(!(manager = trtp_manager_create(tsk_true, "192.168.0.12", tsk_false, 8))){
+	if(!(manager = trtp_manager_create(tsk_true, "192.168.0.12", tsk_false))){
 		goto bail;
 	}
+
+	trtp_manager_set_payload_type(manager, 8);
 
 	/* Prepare: this will allow you to generate local port and ip */
 	if(trtp_manager_prepare(manager)){

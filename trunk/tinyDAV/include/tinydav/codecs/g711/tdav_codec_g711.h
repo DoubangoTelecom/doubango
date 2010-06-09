@@ -34,6 +34,8 @@
 
 #include "tinymedia/tmedia_codec.h"
 
+TDAV_BEGIN_DECLS
+
 /** G.711u codec */
 typedef struct tdav_codec_g711u_s
 {
@@ -51,5 +53,7 @@ tdav_codec_g711a_t;
 
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_g711a_plugin_def_t;
 TINYDAV_GEXTERN const tmedia_codec_plugin_def_t *tdav_codec_g711u_plugin_def_t;
+
+TDAV_END_DECLS
 
 #endif /* TINYDAV_CODEC_G711_H */

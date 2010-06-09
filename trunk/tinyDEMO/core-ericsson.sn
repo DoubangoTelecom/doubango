@@ -71,10 +71,10 @@
 
 #send INVITE
 ++a --to sip:bob@$$(domain) --header Supported=100rel >>(inv_audio_sid)
-++sleep --sec -1
-++ho --sid $$(inv_audio_sid)
-++sleep --sec -1
-++res --sid $$(inv_audio_sid)
+#++sleep --sec -1
+#++ho --sid $$(inv_audio_sid)
+#++sleep --sec -1
+#++res --sid $$(inv_audio_sid)
 
 
 # Press ENTER

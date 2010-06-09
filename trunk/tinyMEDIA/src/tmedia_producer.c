@@ -232,6 +232,7 @@ int tmedia_producer_plugin_unregister(const tmedia_producer_plugin_def_t* plugin
 				break;
 			}
 		}
+		__tmedia_producer_plugins[i] = tsk_null;
 	}
 	return (found ? 0 : -2);
 }

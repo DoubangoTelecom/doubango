@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;include;..\tinyMEDIA\include;..\tinySDP\include;..\tinySAK\src"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinySAK\src"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -64,7 +64,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib"
+				AdditionalDependencies="Winmm.lib $(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyRTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -200,6 +200,10 @@
 					Name="g711"
 					>
 					<File
+						RelativePath=".\include\tinydav\codecs\g711\g711.h"
+						>
+					</File>
+					<File
 						RelativePath=".\include\tinydav\codecs\g711\tdav_codec_g711.h"
 						>
 					</File>
@@ -245,6 +249,18 @@
 				Name="audio"
 				>
 				<File
+					RelativePath=".\include\tinydav\audio\tdav_consumer_audio.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinydav\audio\tdav_jitterbuffer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\tinydav\audio\tdav_producer_audio.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\tinydav\audio\tdav_session_audio.h"
 					>
 				</File>
@@ -263,6 +279,14 @@
 				<Filter
 					Name="waveapi"
 					>
+					<File
+						RelativePath=".\include\tinydav\audio\waveapi\tdav_consumer_waveapi.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\audio\waveapi\tdav_producer_wave_api.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -299,6 +323,10 @@
 				<Filter
 					Name="g711"
 					>
+					<File
+						RelativePath=".\src\codecs\g711\g711.c"
+						>
+					</File>
 					<File
 						RelativePath=".\src\codecs\g711\tdav_codec_g711.c"
 						>
@@ -345,6 +373,18 @@
 				Name="audio"
 				>
 				<File
+					RelativePath=".\src\audio\tdav_consumer_audio.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\audio\tdav_jitterbuffer.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\audio\tdav_producer_audio.c"
+					>
+				</File>
+				<File
 					RelativePath=".\src\audio\tdav_session_audio.c"
 					>
 				</File>
@@ -363,6 +403,14 @@
 				<Filter
 					Name="waveapi"
 					>
+					<File
+						RelativePath=".\src\audio\waveapi\tdav_consumer_waveapi.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\audio\waveapi\tdav_producer_waveapi.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter

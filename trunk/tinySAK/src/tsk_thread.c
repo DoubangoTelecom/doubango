@@ -28,6 +28,7 @@
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
 #include "tsk_thread.h"
+#include "tsk_debug.h"
 #include "tsk_memory.h"
 
 #if TSK_UNDER_WINDOWS
@@ -80,14 +81,25 @@ int tsk_thread_create(void** tid, void *(*start) (void *), void *arg)
 */
 int tsk_thread_join(void** tid)
 {
-#if TSK_UNDER_WINDOWS
-	return (WaitForSingleObject(*((HANDLE*)tid), INFINITE) == WAIT_FAILED) ? -1 : 0;
-#else
 	int ret;
+
+	if(!tid){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+#if TSK_UNDER_WINDOWS
+	ret = (WaitForSingleObject(*((HANDLE*)tid), INFINITE) == WAIT_FAILED) ? -1 : 0;
+	if(ret == 0){
+		CloseHandle(*((HANDLE*)tid));
+		*tid = tsk_null;
+	}
+#else
 	if((ret = pthread_join(*((pthread_t*)*tid), 0)) == 0){
 		tsk_free(tid);
 	}
-	return ret;
 #endif
+
+	return ret;
 }
 

@@ -176,7 +176,7 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 {
 	int ret = -1;
 	tsk_ragel_state_t state;
-	tsip_message_t *message = 0;
+	tsip_message_t *message = tsk_null;
 	const tsip_transport_t *transport = e->callback_data;
 
 	switch(e->type){

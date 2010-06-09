@@ -34,16 +34,35 @@
 
 #include "tinymedia/tmedia_session.h"
 
+TDAV_BEGIN_DECLS
+
+// Forward declaration
+struct trtp_manager_s;
+struct tdav_consumer_audio_s;
+
 typedef struct tdav_session_audio_s
 {
 	TMEDIA_DECLARE_SESSION_AUDIO;
 
-	uint16_t local_port;
+	tsk_bool_t useIPv6;
+
+	char* local_ip;
+	//uint16_t local_port;
+
+	char* remote_ip;
 	uint16_t remote_port;
+	
+	tsk_bool_t rtcp_enabled;
+
+	struct trtp_manager_s* rtp_manager;
+
+	struct tmedia_consumer_s* consumer;
 }
 tdav_session_audio_t;
 
 
 TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_audio_plugin_def_t;
+
+TDAV_END_DECLS
 
 #endif /* TINYDAV_SESSION_AUDIO_H */

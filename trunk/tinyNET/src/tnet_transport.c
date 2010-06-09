@@ -63,9 +63,7 @@ int tnet_transport_start(tnet_transport_handle_t* handle)
 	int ret = -1;
 	if(handle){
 		tnet_transport_t *transport = handle;
-		
-		TSK_DEBUG_INFO("tnet_transport_start()");
-		
+				
 		/* prepare transport */
 		if((ret = tnet_transport_prepare(transport))){
 			TSK_DEBUG_ERROR("Failed to prepare transport.");
@@ -284,8 +282,6 @@ static void *run(void* self)
 		TSK_DEBUG_FATAL("Failed to create main thread [%d]", ret);
 		return tsk_null;
 	}
-
-	TSK_DEBUG_INFO("tnet_transport_run()");
 	
 	TSK_RUNNABLE_RUN_BEGIN(transport);
 	

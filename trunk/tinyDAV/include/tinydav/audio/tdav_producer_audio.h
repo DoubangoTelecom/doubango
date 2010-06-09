@@ -19,23 +19,44 @@
 * along with DOUBANGO.
 *
 */
-/**@file tdav.h
- * @brief tinyDAV.
+
+/**@file tdav_producer_audio.h
+ * @brief Base class for all Audio producers.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_TDAV_H
-#define TINYMEDIA_TDAV_H
+#ifndef TINYDAV_PRODUCER_AUDIO_H
+#define TINYDAV_PRODUCER_AUDIO_H
 
 #include "tinydav_config.h"
 
+#include "tinymedia/tmedia_producer.h"
+
 TDAV_BEGIN_DECLS
 
-TINYDAV_API int tdav_init();
-TINYDAV_API int tdav_deinit();
+#define TDAV_BITS_PER_SAMPLE_DEFAULT 16
+
+typedef struct tdav_producer_audio_s
+{
+	TMEDIA_DECLARE_PRODUCER;
+
+	uint8_t channels;
+	uint32_t rate;
+	uint8_t bits_per_sample;
+}
+tdav_producer_audio_t;
+
+int tdav_producer_audio_init(tdav_producer_audio_t* self);
+int tdav_producer_audio_prepare(tdav_producer_audio_t *self);
+int tdav_producer_audio_start(tdav_producer_audio_t *self);
+int tdav_producer_audio_consume(tdav_producer_audio_t* self, const void* buffer, tsk_size_t size);
+int tdav_producer_audio_pause(tdav_producer_audio_t *self);
+int tdav_producer_audio_stop(tdav_producer_audio_t *self);
+int tdav_producer_audio_deinit(tdav_producer_audio_t* self);
 
 TDAV_END_DECLS
 
-#endif /* TINYMEDIA_TDAV_H */
+#endif /* TINYDAV_PRODUCER_AUDIO_H */
+
