@@ -203,6 +203,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinymedia\tmedia_consumer.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinymedia\tmedia_producer.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinymedia\tmedia_qos.h"
 				>
 			</File>
@@ -238,6 +246,14 @@
 			</File>
 			<File
 				RelativePath=".\src\tmedia_common.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tmedia_consumer.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tmedia_producer.c"
 				>
 			</File>
 			<File

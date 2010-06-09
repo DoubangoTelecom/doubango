@@ -33,6 +33,8 @@
 
 #include "tsk_buffer.h"
 
+TRTP_BEGIN_DECLS
+
 #define TRTP_RTP_HEADER_MIN_SIZE 12
 
 typedef struct trtp_rtp_header_s
@@ -73,5 +75,6 @@ TINYRTP_API trtp_rtp_header_t* trtp_rtp_header_deserialize(const void *data, tsk
 
 TINYRTP_GEXTERN const tsk_object_def_t *trtp_rtp_header_def_t;
 
+TRTP_END_DECLS
 
 #endif /* TINYMEDIA_RTP_HEADER_H */

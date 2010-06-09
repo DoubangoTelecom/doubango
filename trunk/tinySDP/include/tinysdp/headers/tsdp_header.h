@@ -107,7 +107,7 @@ typedef struct tsdp_header_s
 }
 tsdp_header_t;
 
-#define TSDP_DECLARE_HEADER tsdp_header_t header
+#define TSDP_DECLARE_HEADER tsdp_header_t __header__
 typedef tsk_list_t tsdp_headers_L_t; /**< List of @ref tsdp_header_t elements. */
 /*
 ================================*/

@@ -149,7 +149,7 @@ typedef struct tmedia_codec_plugin_def_s
 	const char* format;
 	//! whether the pay. type is dyn. or not
 	tsk_bool_t dyn;
-	int32_t rate;
+	uint32_t rate;
 
 	/* default values could be updated at any time */
 	struct{

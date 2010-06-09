@@ -28,18 +28,58 @@
  */
 #include "tinydav/tdav.h"
 
+// Sessions
+#include "tinymedia/tmedia_session_ghost.h"
 #include "tinydav/audio/tdav_session_audio.h"
 
+// Codecs
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
+
+// Consumers
+#include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
+
+// Producers
+
+#if 0
+#include <libavcodec/avcodec.h>
+#include <libswscale/swscale.h>
+#endif
 
 int tdav_init()
 {
+#if 0
+	AVCodecContext * context_encode;
+	AVCodec* codec;
+
+	/* === Initialize ffmpeg === */
+	avcodec_init();
+#endif
+
 	/* === Register sessions === */
+	tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_register(tdav_session_audio_plugin_def_t);
 
 	/* === Register codecs === */
+#if 0
+	avcodec_register_all();
+#endif
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
+
+	/* === Register consumers === */
+	tmedia_consumer_plugin_register(tmedia_consumer_waveapi_plugin_def_t);
+
+	//if((context_encode = avcodec_alloc_context())){
+	//	printf("avcodec_alloc_context()");
+	//}
+
+	//if((codec = avcodec_find_encoder(CODEC_ID_H263))){
+	//	printf("avcodec_find_encoder(H.263)");
+	//}
+
+	//if((codec = avcodec_find_encoder(CODEC_ID_H264))){
+	//	printf("avcodec_find_encoder(H.264)");
+	//}
 
 	return 0;
 }
@@ -47,11 +87,15 @@ int tdav_init()
 int tdav_deinit()
 {
 	/* === UnRegister sessions === */
+	tmedia_session_plugin_register(tmedia_session_ghost_plugin_def_t);
 	tmedia_session_plugin_unregister(tdav_session_audio_plugin_def_t);
 
 	/* === UnRegister codecs === */
 	tmedia_codec_plugin_unregister(tdav_codec_g711a_plugin_def_t);
 	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
+
+	/* === unRegister consumers === */
+	tmedia_consumer_plugin_unregister(tmedia_consumer_waveapi_plugin_def_t);
 
 	return 0;
 }

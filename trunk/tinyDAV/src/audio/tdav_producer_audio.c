@@ -19,23 +19,13 @@
 * along with DOUBANGO.
 *
 */
-/**@file tdav.h
- * @brief tinyDAV.
+
+/**@file tdav_producer_audio.c
+ * @brief Base class for all Audio producers.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_TDAV_H
-#define TINYMEDIA_TDAV_H
+#include "tinydav/audio/tdav_producer_audio.h"
 
-#include "tinydav_config.h"
-
-TDAV_BEGIN_DECLS
-
-TINYDAV_API int tdav_init();
-TINYDAV_API int tdav_deinit();
-
-TDAV_END_DECLS
-
-#endif /* TINYMEDIA_TDAV_H */

@@ -35,6 +35,9 @@
 
 #include "tsk_object.h"
 
+TRTP_BEGIN_DECLS
+
+
 typedef struct trtp_rtp_packet_s
 {
 	TSK_DECLARE_OBJECT;
@@ -61,5 +64,7 @@ TINYRTP_API trtp_rtp_packet_t* trtp_rtp_packet_deserialize(const void *data, tsk
 
 
 TINYRTP_GEXTERN const tsk_object_def_t *trtp_rtp_packet_def_t;
+
+TRTP_END_DECLS
 
 #endif /* TINYMEDIA_RTP_PACKET_H */

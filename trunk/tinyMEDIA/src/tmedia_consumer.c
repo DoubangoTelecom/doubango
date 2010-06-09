@@ -56,15 +56,16 @@ int tmedia_consumer_init(tmedia_consumer_t* self)
 /**@ingroup tmedia_consumer_group
 * Alert the consumer to be prepared to start.
 * @param self the consumer to prepare
+* @param codec Negociated codec
 * @retval Zero if succeed and non-zero error code otherwise
 */
-int tmedia_consumer_prepare(tmedia_consumer_t *self)
+int tmedia_consumer_prepare(tmedia_consumer_t *self, const tmedia_codec_t* codec)
 {
-	if(!self || !self->plugin || !self->plugin->prepare){
+	if(!self || !self->plugin || !self->plugin->prepare || !codec){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	return self->plugin->prepare(self);
+	return self->plugin->prepare(self, codec);
 }
 
 /**@ingroup tmedia_consumer_group
@@ -225,6 +226,7 @@ int tmedia_consumer_plugin_unregister(const tmedia_consumer_plugin_def_t* plugin
 				break;
 			}
 		}
+		__tmedia_consumer_plugins[i] = tsk_null;
 	}
 	return (found ? 0 : -2);
 }

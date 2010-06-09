@@ -36,6 +36,8 @@
 
 #include "tsk_object.h"
 
+TMEDIA_BEGIN_DECLS
+
 #define TMEDIA_QOS_TLINE(self) ((tmedia_qos_tline_t*)(self))
 
 /** List of all supported statues*/
@@ -184,5 +186,7 @@ TINYMEDIA_API tsk_bool_t tmedia_qos_tline_segmented_canresume(const tmedia_qos_t
 
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_qos_tline_segmented_def_t;
 TINYMEDIA_GEXTERN const tsk_object_def_t *tmedia_qos_tline_e2e_def_t;
+
+TMEDIA_END_DECLS
 
 #endif /* TINYMEDIA_QOS_H */

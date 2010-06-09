@@ -19,23 +19,26 @@
 * along with DOUBANGO.
 *
 */
-/**@file tdav.h
- * @brief tinyDAV.
+
+/**@file tdav_codec_g711.h
+ * @brief G.711u and G.711a (a.k.a PCMU and PCMA) codec plugins.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYMEDIA_TDAV_H
-#define TINYMEDIA_TDAV_H
+#ifndef TINYDAV_CODEC_G711_IMPLEMENTATION_H
+#define TINYDAV_CODEC_G711_IMPLEMENTATION_H
 
 #include "tinydav_config.h"
 
 TDAV_BEGIN_DECLS
 
-TINYDAV_API int tdav_init();
-TINYDAV_API int tdav_deinit();
+unsigned char linear2alaw(short	pcm_val);
+short alaw2linear(unsigned char	a_val);
+unsigned char linear2ulaw(short	pcm_val);
+short ulaw2linear(unsigned char	u_val);
 
 TDAV_END_DECLS
 
-#endif /* TINYMEDIA_TDAV_H */
+#endif /* TINYDAV_CODEC_G711_IMPLEMENTATION_H */

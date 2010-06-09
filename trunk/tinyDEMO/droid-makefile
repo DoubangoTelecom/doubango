@@ -1,7 +1,9 @@
 APP := demo
 
-CFLAGS := $(CFLAGS_COMMON) -I../tinySAK/src -I../tinyNET/src -I../tinySMS/include -I../tinyHTTP/include -I../tinySIP/include
-LDFLAGS := $(LDFLAGS_COMMON) -Wl,-Bsymbolic,--whole-archive  -Wl,--entry=main -lm -ltinySAK -ltinyNET -ltinyHTTP -ltinyIPSec -ltinySMS -ltinySIP
+FFMPEG_LDFLAGS := -L../thirdparties/android/lib -lavutil -lswscale -lavcodec -lgcc
+
+CFLAGS := $(CFLAGS_COMMON) -I../tinySAK/src -I../tinyNET/src -I../tinySMS/include -I../tinyHTTP/include -I../tinySDP/include -I../tinyDAV/include -I../tinyMEDIA/include -I../tinySIP/include
+LDFLAGS := $(LDFLAGS_COMMON) -Wl,-Bsymbolic,--whole-archive  -Wl,--entry=main -lm $(FFMPEG_LDFLAGS) -ltinySAK -ltinyNET -ltinyHTTP -ltinyIPSec -ltinySMS -ltinySDP -ltinyMEDIA -ltinyDAV -ltinySIP
 
 all: $(APP)
 

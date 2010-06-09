@@ -86,7 +86,7 @@ typedef struct tmedia_session_plugin_def_s
 	//! the media name. e.g. "audio", "video", "message", "image" etc.
 	const char* media;
 	
-	int (*configure) (tmedia_session_t* , const va_list *app);
+	int (*set) (tmedia_session_t* , va_list *app);
 	int (* prepare) (tmedia_session_t* );
 	int (* start) (tmedia_session_t* );
 	int (* pause) (tmedia_session_t* );
@@ -105,6 +105,7 @@ TINYMEDIA_API const tmedia_session_plugin_def_t* tmedia_session_plugin_find_by_m
 TINYMEDIA_API int tmedia_session_plugin_unregister(const tmedia_session_plugin_def_t* plugin);
 TINYMEDIA_API tmedia_session_t* tmedia_session_create(tmedia_type_t type);
 TINYMEDIA_API const tmedia_codec_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format);
+TINYMEDIA_API int tmedia_session_skip_param(enum tmedia_session_param_type_e type, va_list *app);
 TINYMEDIA_API int tmedia_session_deinit(tmedia_session_t* self);
 typedef tsk_list_t tmedia_sessions_L_t; /**< List of @ref tmedia_session_t objects */
 #define TMEDIA_DECLARE_SESSION tmedia_session_t __session__
@@ -196,9 +197,30 @@ typedef struct tmedia_session_mgr_s
 }
 tmedia_session_mgr_t;
 
-TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6);
+typedef enum tmedia_session_param_type_e
+{
+	tmedia_sptype_null = tsk_null,
+	
+	tmedia_sptype_remote_ip,
+	tmedia_sptype_local_ip,
+	tmedia_sptype_set_rtcp,
+	
+	tmedia_sptype_set_qos,
+	tmedia_sptype_unset_qos,
+	tmedia_sptype_set_timers,
+	tmedia_sptype_unset_timers,
+}
+tmedia_session_param_type_t;
+
+
+#define TMEDIA_SESSION_SET_REMOTE_IP(IP_STR)				tmedia_sptype_remote_ip, (const char*) IP_STR
+#define TMEDIA_SESSION_SET_LOCAL_IP(IP_STR, IPv6_BOOL)		tmedia_sptype_local_ip, (const char*) IP_STR, (tsk_bool_t)IPv6_BOOL
+#define TMEDIA_SESSION_SET_RTCP(ENABLED_BOOL)				tmedia_sptype_set_rtcp, (tsk_bool_t)ENABLED_BOOL
+#define TMEDIA_SESSION_SET_NULL()							tmedia_sptype_null
+
+TINYMEDIA_API tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* addr, tsk_bool_t ipv6, tsk_bool_t offerer);
 TINYMEDIA_API int tmedia_session_mgr_start(tmedia_session_mgr_t* self);
-TINYMEDIA_API int tmedia_session_mgr_configure(tmedia_session_mgr_t* self, tmedia_type_t type, ...);
+TINYMEDIA_API int tmedia_session_mgr_set(tmedia_session_mgr_t* self, tmedia_type_t type, ...);
 TINYMEDIA_API int tmedia_session_mgr_stop(tmedia_session_mgr_t* self);
 TINYMEDIA_API const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self);
 TINYMEDIA_API int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* sdp);

@@ -24,11 +24,14 @@
 
 #include "tinydav.h"
 
+#include "test_sessions.h"
+
 #define LOOP						1
 
 #define RUN_TEST_ALL				0
+#define RUN_TEST_SESSIONS			1
 
-
+// Codecs : http://www.itu.int/rec/T-REC-G.191-200509-S/en
 
 #ifdef _WIN32_WCE
 int _tmain(int argc, _TCHAR* argv[])
@@ -42,6 +45,10 @@ int main()
 	do{
 		/* Print copyright information */
 		printf("Doubango Project\nCopyright (C) 2009-2010 Mamadou Diop \n\n");
+
+#if RUN_TEST_SESSIONS || RUN_TEST_ALL
+		test_sessions();
+#endif
 
 	}
 	while(LOOP);
