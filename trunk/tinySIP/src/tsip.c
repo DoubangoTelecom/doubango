@@ -553,6 +553,19 @@ int tsip_stack_start(tsip_stack_handle_t *self)
 		TSK_DEBUG_ERROR("Failed to start sip transport");
 		goto bail;
 	}
+	else if(!stack->network.local_ip){
+		/* Update the local_ip */
+		if(!TSK_LIST_IS_EMPTY(stack->layer_transport->transports)){
+			tnet_ip_t ip;
+			if(!tnet_transport_get_ip_n_port_2(stack->layer_transport->transports->head->data, &ip, tsk_null)){
+				stack->network.local_ip = tsk_strdup(ip);
+			}
+			else{
+				TSK_DEBUG_WARN("Failed to get local_ip");
+				/* Do not exit */
+			}
+		}
+	}
 	
 	/* ===	ALL IS OK === */
 	if(stack->layer_transac){ /* For transaction layer */

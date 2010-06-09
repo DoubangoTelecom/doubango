@@ -93,6 +93,7 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 	va_list ap;
 	char *buffer;
 	tsk_size_t oldsize;
+    va_list ap2;
 
 	if(!self){
 		return -1;
@@ -101,8 +102,9 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 	oldsize = self->size;
 	buffer = (char*)TSK_BUFFER_DATA(self);
 	
-	/* initialize variable arguments */
+	/* initialize variable arguments (needed for 64bit platforms where vsnprintf will change the va_list) */
 	va_start(ap, format);
+	va_start(ap2, format);
 	
 	/* compute destination len for windows mobile
 	*/
@@ -129,11 +131,12 @@ int tsk_buffer_append_2(tsk_buffer_t* self, const char* format, ...)
 #if !defined(_MSC_VER) || defined(__GNUC__)
 		+1
 #endif
-		, format, ap);
+		, format, ap2);
 #endif
 	
 	/* reset variable arguments */
-	va_end( ap );
+	va_end(ap);
+	va_end(ap2);
 
 	self->data = buffer;
 	self->size = (oldsize+len);
@@ -255,7 +258,7 @@ int tsk_buffer_insert(tsk_buffer_t* self, tsk_size_t position, const void* data,
 			memcpy(((uint8_t*)self->data) + position, data, size);
 		}
 		else{
-			memset(((uint8_t*)self->data) + position, tsk_null, size);
+			memset(((uint8_t*)self->data) + position, 0, size);
 		}
 
 		return 0;

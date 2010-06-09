@@ -35,6 +35,8 @@
 
 #include "tinysdp/parsers/tsdp_parser_message.h"
 
+#include "tnet_transport.h"
+
 #include "tsk_debug.h"
 
 extern int send_INVITE(tsip_dialog_invite_t *self);
@@ -49,9 +51,9 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	//const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 	
 	/* This is the first transaction when you try to make an audio/video/msrp call */
-	if(self->msession_mgr == tsk_null){
+	if(self->msession_mgr == tsk_null){		
 		self->msession_mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38),
-		"192.168.0.12", tsk_false, tsk_true);
+		TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, tsk_true);
 	}
 	
 	/* send the request */

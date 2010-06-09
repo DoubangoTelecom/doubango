@@ -228,7 +228,7 @@ int _tmedia_session_prepare_lo(tmedia_session_t* self)
 	int ret;
 	if(!self || !self->plugin || !self->plugin->prepare){
 		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
+		return -1;
 	}
 	if(self->prepared){
 		TSK_DEBUG_WARN("Session already prepared");

@@ -52,7 +52,7 @@ tnet_dns_message_t* tnet_dns_message_create(const char* qname, tnet_dns_qclass_t
 */
 tnet_dns_message_t* tnet_dns_message_create_null()
 {
-	return tnet_dns_message_create(tsk_null, qclass_any, qtype_any, tsk_null);
+	return tnet_dns_message_create(tsk_null, qclass_any, qtype_any, tsk_false);
 }
 
 /**@ingroup tnet_dns_group

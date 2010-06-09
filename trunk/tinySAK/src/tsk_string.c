@@ -56,6 +56,9 @@
 /**@defgroup tsk_string_group String utillity functions.
 */
 
+#if !defined(va_copy)
+#	define va_copy(D, S)       ((D) = (S))
+#endif
 
 static char HEX[] = "0123456789abcdef";
 
@@ -304,12 +307,16 @@ int tsk_sprintf(char** str, const char* format, ...)
 int tsk_sprintf_2(char** str, const char* format, va_list* ap)
 {
 	int len = 0;
+    va_list ap2;
 
 	/* free previous value */
 	if(*str){
 		tsk_free((void**)str);
 	}
 	
+	/* needed for 64bit platforms where vsnprintf will change the va_list */
+    va_copy(ap2, *ap);
+    
 	/* compute destination len for windows mobile
 	*/
 #if defined(_WIN32_WCE)
@@ -337,9 +344,11 @@ done:
 #if !defined(_MSC_VER) || defined(__GNUC__)
 		+1
 #endif
-		, format, *ap);
+		, format, ap2);
 #endif
 	
+    va_end(ap2);
+    
 	return len;
 }
 

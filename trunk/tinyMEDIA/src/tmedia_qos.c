@@ -131,7 +131,7 @@ int tmedia_qos_tline_to_sdp(const tmedia_qos_tline_t* self, tsdp_header_M_t* m)
 {
 	if(!self || !m){
 		TSK_DEBUG_ERROR("Invalid parameter");
-		return tsk_null;
+		return -1;
 	}
 
 	switch(self->type){

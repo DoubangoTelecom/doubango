@@ -50,7 +50,10 @@ typedef int tsk_boolean_t;
 typedef int tsk_ssize_t; /**< Signed size */
 typedef unsigned int tsk_size_t; /**< Unsigned size */
 
-#define tsk_null	0 /**< Null pointer */
+#ifdef NULL
+#define tsk_null    NULL /**< Null pointer */
+#else
+#define tsk_null    0  /**< Null pointer */
+#endif
 
 #endif /* _TINYSAK_COMMON_H_ */
-

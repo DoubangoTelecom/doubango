@@ -29,10 +29,25 @@
  */
 #include "tinydav/codecs/g711/tdav_codec_g711.h"
 
+#include "tinydav/codecs/g711/g711.h" /* alforithms */
+
+#include "tsk_memory.h"
+#include "tsk_debug.h"
+
 /* ============ G.711u Plugin interface ================= */
 
 #define tdav_codec_g711u_fmtp_get tsk_null
 #define tdav_codec_g711u_fmtp_set tsk_null
+
+tsk_size_t tdav_codec_g711u_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	return 0;
+}
+
+tsk_size_t tdav_codec_g711u_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	return 0;
+}
 
 tsk_bool_t tdav_codec_g711u_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	/* always match */
@@ -40,7 +55,7 @@ tsk_bool_t tdav_codec_g711u_fmtp_match(const tmedia_codec_t* codec, const char* 
 }
 
 
-//=======================================================
+//
 //	G.711u Plugin definition
 //
 
@@ -93,6 +108,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711u_plugin_def_s =
 	/* video */
 	{0},
 
+	tdav_codec_g711u_fmtp_encode,
+	tdav_codec_g711u_fmtp_decode,
 	tdav_codec_g711u_fmtp_match,
 	tdav_codec_g711u_fmtp_get,
 	tdav_codec_g711u_fmtp_set
@@ -105,13 +122,44 @@ const tmedia_codec_plugin_def_t *tdav_codec_g711u_plugin_def_t = &tdav_codec_g71
 #define tdav_codec_g711a_fmtp_get tsk_null
 #define tdav_codec_g711a_fmtp_set tsk_null
 
+tsk_size_t tdav_codec_g711a_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	return 0;
+}
+
+tsk_size_t tdav_codec_g711a_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	tsk_size_t i;
+
+	if(!in_data || !in_size || !out_data){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+
+	/* free old buffer */
+	if(*out_data){
+		TSK_FREE(*out_data);
+	}
+	/* allocate new buffer */
+	if(!(*out_data = tsk_calloc(in_size, sizeof(short)))){
+		TSK_DEBUG_ERROR("Failed to allocate new buffer");
+		return 0;
+	}
+	
+	for(i = 0; i<in_size; i++){
+		((short*)*out_data)[i] = alaw2linear(((uint8_t*)in_data)[i]);
+	}
+
+	return (in_size*2);
+}
+
 tsk_bool_t tdav_codec_g711a_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	/* always match */
 	return tsk_true;
 }
 
 
-//======================================================
+//
 //	G.711a Plugin definition
 //
 
@@ -164,6 +212,8 @@ static const tmedia_codec_plugin_def_t tdav_codec_g711a_plugin_def_s =
 	/* video */
 	{0},
 
+	tdav_codec_g711a_fmtp_encode,
+	tdav_codec_g711a_fmtp_decode,
 	tdav_codec_g711a_fmtp_match,
 	tdav_codec_g711a_fmtp_get,
 	tdav_codec_g711a_fmtp_set

@@ -104,7 +104,7 @@ static int write_wavehdr(tdav_consumer_waveapi_t* consumer, tsk_size_t index)
 static int play_wavehdr(tdav_consumer_waveapi_t* consumer, LPWAVEHDR lpHdr)
 {
 	MMRESULT result;
-	tsk_size_t i;
+	void* data;
 
 	if(!consumer || !lpHdr || !consumer->hWaveOut){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -122,9 +122,13 @@ static int play_wavehdr(tdav_consumer_waveapi_t* consumer, LPWAVEHDR lpHdr)
 	//	Fill lpHdr->Data with decoded data
 	//
 	//
-	tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(consumer)); /* FIXXXXXXXXXXXME */
-	for(i = 0; i<lpHdr->dwBufferLength; i++){
-		lpHdr->lpData[i] = rand();
+	if((data = tdav_consumer_audio_get(TDAV_CONSUMER_AUDIO(consumer)))){
+		memcpy(lpHdr->lpData, data, lpHdr->dwBufferLength);
+		TSK_FREE(data);
+	}
+	else{
+		/* Put silence */
+		memset(lpHdr->lpData, 0, lpHdr->dwBufferLength);
 	}
 
 	if(!consumer->started){
@@ -250,7 +254,7 @@ int tdav_consumer_waveapi_start(tmedia_consumer_t* self)
 	}
 
 	/* open */
-	 result = waveOutOpen((HWAVEOUT *)&consumer->hWaveOut, WAVE_MAPPER, &consumer->wfx, (DWORD)consumer->events[0], tsk_null, CALLBACK_EVENT);
+	 result = waveOutOpen((HWAVEOUT *)&consumer->hWaveOut, WAVE_MAPPER, &consumer->wfx, (DWORD)consumer->events[0], (DWORD_PTR)consumer, CALLBACK_EVENT);
 	 if(result != MMSYSERR_NOERROR){
 		print_last_error(result, "waveOutOpen");
 		return -2;
@@ -269,24 +273,18 @@ int tdav_consumer_waveapi_start(tmedia_consumer_t* self)
 	return 0;
 }
 
-int tdav_consumer_waveapi_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size)
+int tdav_consumer_waveapi_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size)
 {
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)self;
-	void* data;
 
 	TSK_DEBUG_INFO("tdav_consumer_waveapi_consume");
 
-	if(!consumer || !buffer || !size){
+	if(!consumer || !buffer || !*buffer || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	/* buffer is already decoded */
-
-	/* FIXME: should own the buffer */
-	data = tsk_calloc(size, sizeof(uint8_t));
-	memcpy(data, buffer, size);
-
-	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), &data);
+	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer);
 }
 
 int tdav_consumer_waveapi_pause(tmedia_consumer_t* self)

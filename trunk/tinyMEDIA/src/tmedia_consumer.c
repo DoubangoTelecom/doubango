@@ -88,7 +88,7 @@ int tmedia_consumer_start(tmedia_consumer_t *self)
 * @param buffer Pointer to the data to consume
 * @param size Size of the data to consume
 */
-int tmedia_consumer_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size)
+int tmedia_consumer_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size)
 {
 	if(!self || !self->plugin || !self->plugin->consume){
 		TSK_DEBUG_ERROR("Invalid parameter");

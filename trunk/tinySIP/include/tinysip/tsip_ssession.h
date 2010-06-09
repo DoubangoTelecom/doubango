@@ -58,7 +58,7 @@ typedef uint64_t tsip_ssession_id_t;
 
 typedef enum tsip_ssession_param_type_e
 {
-	sstype_null = tsk_null,
+	sstype_null = 0,
 	
 	sstype_header,
 	sstype_caps,
@@ -87,7 +87,7 @@ tsip_ssession_param_type_t;
 
 typedef enum tsip_msession_param_type_e
 {
-	mstype_null = tsk_null,
+	mstype_null = 0,
 	
 	mstype_set_qos,
 	mstype_unset_qos,

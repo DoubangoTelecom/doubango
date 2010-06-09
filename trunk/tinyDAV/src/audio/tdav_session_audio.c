@@ -40,7 +40,7 @@
 extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format);
 
 
-static int tdav_session_audio_rtp_cb(const void* callback_data, struct trtp_rtp_packet_s* packet)
+static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
 {
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
 
@@ -50,7 +50,16 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, struct trtp_rtp_
 	}
 
 	if(audio->consumer){
-		return tmedia_consumer_consume(audio->consumer, packet->payload.data, packet->payload.size);
+		/* decode data--> FIXME:we should lock negociated codec */
+		if(TMEDIA_SESSION(audio)->negociated_codec && TMEDIA_SESSION(audio)->negociated_codec->plugin && TMEDIA_SESSION(audio)->negociated_codec->plugin->decode){
+			void* out_data = tsk_null;
+			tsk_size_t out_size;
+			out_size = TMEDIA_SESSION(audio)->negociated_codec->plugin->decode(TMEDIA_SESSION(audio)->negociated_codec, packet->payload.data, packet->payload.size, &out_data);
+			if(out_size){
+				tmedia_consumer_consume(audio->consumer, &out_data, out_size);
+			}
+			TSK_FREE(out_data);
+		}
 	}
 	return 0;
 }

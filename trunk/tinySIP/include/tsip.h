@@ -58,7 +58,7 @@ typedef uint8_t operator_id_t[16];
 
 typedef enum tsip_stack_param_type_e
 {
-	tsip_pname_null = tsk_null,
+	tsip_pname_null = 0,
 	
 	/* === Identity === */
 	tsip_pname_display_name,

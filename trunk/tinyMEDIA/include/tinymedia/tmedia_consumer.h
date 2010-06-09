@@ -67,7 +67,7 @@ typedef struct tmedia_consumer_plugin_def_s
 
 	int (* prepare) (tmedia_consumer_t*, const tmedia_codec_t* );
 	int (* start) (tmedia_consumer_t* );
-	int (* consume) (tmedia_consumer_t*, const void* buffer, tsk_size_t size);
+	int (* consume) (tmedia_consumer_t*, void** buffer, tsk_size_t size);
 	int (* pause) (tmedia_consumer_t* );
 	int (* stop) (tmedia_consumer_t* );
 }
@@ -79,7 +79,7 @@ TINYMEDIA_API tmedia_consumer_t* tmedia_consumer_create(tmedia_type_t type);
 TINYMEDIA_API int tmedia_consumer_init(tmedia_consumer_t* self);
 TINYMEDIA_API int tmedia_consumer_prepare(tmedia_consumer_t *self, const tmedia_codec_t* codec);
 TINYMEDIA_API int tmedia_consumer_start(tmedia_consumer_t *self);
-TINYMEDIA_API int tmedia_consumer_consume(tmedia_consumer_t* self, const void* buffer, tsk_size_t size);
+TINYMEDIA_API int tmedia_consumer_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size);
 TINYMEDIA_API int tmedia_consumer_pause(tmedia_consumer_t *self);
 TINYMEDIA_API int tmedia_consumer_stop(tmedia_consumer_t *self);
 TINYMEDIA_API int tmedia_consumer_deinit(tmedia_consumer_t* self);

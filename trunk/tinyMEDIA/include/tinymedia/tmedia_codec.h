@@ -164,6 +164,10 @@ typedef struct tmedia_codec_plugin_def_s
 		/* ...to be continued */
 	} video;
 	
+	//! encode data
+	tsk_size_t (*encode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data);
+	//! decode data
+	tsk_size_t (*decode) (tmedia_codec_t*, const void* in_data, tsk_size_t in_size, void** out_data);
 	//! whether the codec can handle the fmtp
 	tsk_bool_t (* fmtp_match) (const tmedia_codec_t*, const char* );
 	//! gets fmtp value. e.g. "mode-set=0,2,5,7; mode-change-period=2; mode-change-neighbor=1"

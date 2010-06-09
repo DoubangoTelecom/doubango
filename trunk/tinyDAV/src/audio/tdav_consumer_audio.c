@@ -61,7 +61,7 @@ int tdav_consumer_audio_init(tdav_consumer_audio_t* self)
 	/* self:jitterbuffer */
 	if(!self->jb.jbuffer){
 		self->jb.jbuffer = jb_new();
-		self->jb.jcodec = JB_CODEC_OTHER;
+		self->jb.jcodec = JB_CODEC_OTHER; // FIXME: e.g. JB_CODEC_G711x
 	}
 
 	tsk_safeobj_init(self);
@@ -94,7 +94,7 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data)
 	}
 
 	tsk_safeobj_lock(self);
-	ts += (self->ptime * self->rate)/1000;
+	ts += /*(self->ptime * self->rate)/1000*/self->ptime;
 	jb_put(self->jb.jbuffer, *data, JB_TYPE_VOICE, self->ptime, ts, (long)tsk_time_now(), self->jb.jcodec);
 	*data = tsk_null;
 	tsk_safeobj_unlock(self);
@@ -103,14 +103,14 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data)
 }
 
 /* get data drom the jitter buffer */
-int tdav_consumer_audio_get(tdav_consumer_audio_t* self)
+void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 {
 	void* data = tsk_null;
 	int jret;
 
 	if(!self || !self->jb.jbuffer){
 		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+		return tsk_null;
 	}
 
 	tsk_safeobj_lock(self);
@@ -131,10 +131,8 @@ int tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 		default:
 			break;
 	}
-	
-	TSK_FREE(data);
 
-	return 0;
+	return data;
 }
 
 /* tsk_safeobj_lock(self); */

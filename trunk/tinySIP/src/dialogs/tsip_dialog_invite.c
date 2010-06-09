@@ -396,6 +396,11 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 	const tsip_response_t *r1xx = va_arg(*app, const tsip_response_t *);
 	int ret = 0;
 
+	/* Update the dialog state */
+	if((ret = tsip_dialog_update(TSIP_DIALOG(self), r1xx))){
+		return ret;
+	}
+
 	/* RFC 3262 - 4 UAC Behavior
 		If a provisional response is received for an initial request, and
 		that response contains a Require header field containing the option

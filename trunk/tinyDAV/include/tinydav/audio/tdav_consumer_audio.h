@@ -68,7 +68,7 @@ int tdav_consumer_audio_cmp(const tsk_object_t* consumer1, const tsk_object_t* c
 #define tdav_consumer_audio_pause(self) tmedia_consumer_pause(TDAV_CONSUMER_AUDIO(self))
 #define tdav_consumer_audio_stop(self) tmedia_consumer_stop(TDAV_CONSUMER_AUDIO(self))
 int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data);
-int tdav_consumer_audio_get(tdav_consumer_audio_t* self);
+void* tdav_consumer_audio_get(tdav_consumer_audio_t* self);
 int tdav_consumer_audio_deinit(tdav_consumer_audio_t* self);
 
 #define TDAV_DECLARE_CONSUMER_AUDIO tdav_consumer_audio_t __consumer_audio__
