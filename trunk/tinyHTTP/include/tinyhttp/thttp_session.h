@@ -65,7 +65,7 @@ thttp_session_option_t;
 
 typedef enum thttp_session_param_type_e
 {
-	httpp_null = tsk_null,
+	httpp_null = 0,
 
 	httpp_option,
 	httpp_cred,

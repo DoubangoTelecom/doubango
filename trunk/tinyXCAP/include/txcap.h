@@ -59,7 +59,7 @@ txcap_stack_option_t;
 
 typedef enum txcap_stack_param_type_e
 {
-	xcapp_null = tsk_null,
+	xcapp_null = 0,
 
 	xcapp_option,
 	xcapp_header,

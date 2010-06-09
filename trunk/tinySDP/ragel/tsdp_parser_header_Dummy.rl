@@ -72,7 +72,7 @@ tsdp_header_Dummy_t* tsdp_header_dummy_create(char name, const char* value)
 
 tsdp_header_Dummy_t* tsdp_header_dummy_create_null()
 {
-	return tsdp_header_dummy_create(tsk_null, tsk_null);
+	return tsdp_header_dummy_create(0, tsk_null);
 }
 
 int tsdp_header_Dummy_tostring(const tsdp_header_t* header, tsk_buffer_t* output)

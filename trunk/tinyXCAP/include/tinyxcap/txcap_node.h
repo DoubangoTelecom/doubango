@@ -39,7 +39,7 @@ TXCAP_BEGIN_DECLS
 
 typedef enum txcap_selector_param_type_e
 {
-	xcapp_node_null = tsk_null,
+	xcapp_node_null = 0,
 
 	xcapp_node_name,
 	xcapp_node_pos,

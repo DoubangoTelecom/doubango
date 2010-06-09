@@ -75,7 +75,7 @@ thttp_action_type_t;
 
 typedef enum thttp_action_param_type_e
 {
-	thttp_aptype_null = tsk_null,
+	thttp_aptype_null = 0,
 
 	thttp_aptype_option,
 	thttp_aptype_header,

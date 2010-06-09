@@ -199,7 +199,7 @@ tmedia_session_mgr_t;
 
 typedef enum tmedia_session_param_type_e
 {
-	tmedia_sptype_null = tsk_null,
+	tmedia_sptype_null = 0,
 	
 	tmedia_sptype_remote_ip,
 	tmedia_sptype_local_ip,

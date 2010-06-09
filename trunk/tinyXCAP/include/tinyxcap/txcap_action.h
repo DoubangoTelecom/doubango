@@ -72,7 +72,7 @@ txcap_action_option_t;
 
 typedef enum txcap_action_param_type_e
 {
-	txcap_apt_null = tsk_null,
+	txcap_apt_null = 0,
 
 	txcap_apt_option,
 	txcap_apt_header,

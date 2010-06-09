@@ -318,7 +318,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		else
 		{	/* No routes associated to this dialog. */
 			if(self->state == tsip_initial || self->state == tsip_early){
-#if _DEBUG /* FIXME: remove this */
+#if _DEBUG && SDS_HACK/* FIXME: remove this */
 				/* Ericsson SDS hack (INVITE with Proxy-CSCF as First route fail) */
 #else
 				tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), tsk_true);

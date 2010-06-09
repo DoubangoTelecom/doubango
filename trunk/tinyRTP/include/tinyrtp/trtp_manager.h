@@ -38,8 +38,8 @@ TRTP_BEGIN_DECLS
 /* Forward declarations */
 struct trtp_rtp_packet_s;
 
-typedef int (*trtp_manager_rtp_cb_f)(const void* callback_data, struct trtp_rtp_packet_s* packet);
-typedef int (*trtp_manager_rtcp_cb_f)(const void* callback_data, struct trtp_rtpc_packet_s* packet);
+typedef int (*trtp_manager_rtp_cb_f)(const void* callback_data, const struct trtp_rtp_packet_s* packet);
+typedef int (*trtp_manager_rtcp_cb_f)(const void* callback_data, const struct trtp_rtpc_packet_s* packet);
 
 /** RTP/RTCP manager */
 typedef struct trtp_manager_s

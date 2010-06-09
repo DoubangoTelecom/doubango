@@ -128,8 +128,12 @@ int tnet_transport_get_ip_n_port_2(const tnet_transport_handle_t *handle, tnet_i
 	const tnet_transport_t *transport = handle;
 	if(transport){
 		// do not check the master, let the apllication die if "null"
-		memcpy(*ip, transport->master->ip, sizeof(transport->master->ip));
-		*port = transport->master->port;
+		if(ip){
+			memcpy(*ip, transport->master->ip, sizeof(transport->master->ip));
+		}
+		if(port){
+			*port = transport->master->port;
+		}
 	}
 	else{
 		TSK_DEBUG_ERROR("NULL transport object.");

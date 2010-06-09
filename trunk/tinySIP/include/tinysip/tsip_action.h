@@ -93,7 +93,7 @@ tsip_action_type_t;
 /* internal enum used to pass parameters from the application layer to the stack */
 typedef enum tsip_action_param_type_e
 {
-	aptype_null = tsk_null,
+	aptype_null = 0,
 	
 	aptype_header,
 	aptype_config,

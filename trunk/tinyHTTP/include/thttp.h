@@ -85,7 +85,7 @@ THTTP_BEGIN_DECLS
 
 typedef enum thttp_stack_param_type_e
 {
-	thttp_pname_null = tsk_null,
+	thttp_pname_null = 0,
 #define THTTP_STACK_SET_NULL()																thttp_pname_null
 
 	/* Network */

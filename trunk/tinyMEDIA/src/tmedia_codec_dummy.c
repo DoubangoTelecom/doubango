@@ -37,6 +37,8 @@
 
 #define tmedia_codec_dpcmu_fmtp_get tsk_null
 #define tmedia_codec_dpcmu_fmtp_set tsk_null
+#define tmedia_codec_dpcmu_fmtp_encode tsk_null
+#define tmedia_codec_dpcmu_fmtp_decode tsk_null
 
 tsk_bool_t tmedia_codec_dpcmu_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	/* always match */
@@ -91,7 +93,8 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcmu_plugin_def_s =
 
 	/* video */
 	{0},
-
+	tmedia_codec_dpcmu_fmtp_encode,
+	tmedia_codec_dpcmu_fmtp_decode,
 	tmedia_codec_dpcmu_fmtp_match,
 	tmedia_codec_dpcmu_fmtp_get,
 	tmedia_codec_dpcmu_fmtp_set
@@ -104,6 +107,8 @@ const tmedia_codec_plugin_def_t *tmedia_codec_dpcmu_plugin_def_t = &tmedia_codec
 
 #define tmedia_codec_dpcma_fmtp_get tsk_null
 #define tmedia_codec_dpcma_fmtp_set tsk_null
+#define tmedia_codec_dpcma_fmtp_encode tsk_null
+#define tmedia_codec_dpcma_fmtp_decode tsk_null
 
 tsk_bool_t tmedia_codec_dpcma_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	/* always match */
@@ -159,6 +164,8 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dpcma_plugin_def_s =
 	/* video */
 	{0},
 
+	tmedia_codec_dpcma_fmtp_encode,
+	tmedia_codec_dpcma_fmtp_decode,
 	tmedia_codec_dpcma_fmtp_match,
 	tmedia_codec_dpcma_fmtp_get,
 	tmedia_codec_dpcma_fmtp_set
@@ -170,6 +177,16 @@ const tmedia_codec_plugin_def_t *tmedia_codec_dpcma_plugin_def_t = &tmedia_codec
 //=================================================================================================
 //	Dummy H.263 object definition
 //
+
+tsk_size_t tmedia_codec_dh263_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	return 0;
+}
+
+tsk_size_t tmedia_codec_dh263_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	return 0;
+}
 
 tsk_bool_t tmedia_codec_dh263_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	
@@ -237,6 +254,8 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh263_plugin_def_s =
 	/* video */
 	{176, 144},
 
+	tmedia_codec_dh263_fmtp_encode,
+	tmedia_codec_dh263_fmtp_decode,
 	tmedia_codec_dh263_fmtp_match,
 	tmedia_codec_dh263_fmtp_get,
 	tmedia_codec_dh263_fmtp_set
@@ -249,6 +268,16 @@ const tmedia_codec_plugin_def_t *tmedia_codec_dh263_plugin_def_t = &tmedia_codec
 //=================================================================================================
 //	Dummy H.264 (Base profile 10) object definition
 //
+
+tsk_size_t tmedia_codec_dh264_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	return 0;
+}
+
+tsk_size_t tmedia_codec_dh264_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	return 0;
+}
 
 tsk_bool_t tmedia_codec_dh264_fmtp_match(const tmedia_codec_t* codec, const char* fmtp)
 {	
@@ -316,6 +345,8 @@ static const tmedia_codec_plugin_def_t tmedia_codec_dh264_plugin_def_s =
 	/* video */
 	{176, 144},
 
+	tmedia_codec_dh264_fmtp_encode,
+	tmedia_codec_dh264_fmtp_decode,
 	tmedia_codec_dh264_fmtp_match,
 	tmedia_codec_dh264_fmtp_get,
 	tmedia_codec_dh264_fmtp_set

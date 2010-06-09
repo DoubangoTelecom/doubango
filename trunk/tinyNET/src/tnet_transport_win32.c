@@ -559,7 +559,7 @@ void *tnet_transport_mainthread(void *param)
 			DWORD readCount = 0;
 			WSABUF wsaBuffer;
 
-			TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description);
+			/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- FD_READ", transport->description); */
 
 			if(networkEvents.iErrorCode[FD_READ_BIT]){
 				TSK_RUNNABLE_ENQUEUE(transport, event_error, transport->callback_data, active_socket->fd);
@@ -596,6 +596,10 @@ void *tnet_transport_mainthread(void *param)
 			}
 			else{
 				ret = WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0);
+				if(readCount < wsaBuffer.len){
+					wsaBuffer.len = readCount;
+					wsaBuffer.buf = tsk_realloc(wsaBuffer.buf, readCount);
+				}
 			}
 
 			if(ret){

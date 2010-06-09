@@ -491,7 +491,7 @@ void *tnet_transport_mainthread(void *param)
 				void* buffer = 0;
 				tnet_transport_event_t* e;
 				
-				TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description);
+				/* TSK_DEBUG_INFO("NETWORK EVENT FOR SERVER [%s] -- TNET_POLLIN", transport->description); */
 				
 				/* Retrieve the amount of pending data.
 				 * IMPORTANT: If you are using Symbian please update your SDK to the latest build (August 2009) to have 'FIONREAD'.
@@ -540,10 +540,10 @@ void *tnet_transport_mainthread(void *param)
 					TNET_PRINT_LAST_ERROR("recv have failed.");
 					continue;
 				}
-				else if(len != (tsk_size_t)ret){ /* useless test */
+				else if((len != (tsk_size_t)ret) && len){ /* useless test? */
 					len = (tsk_size_t)ret;
+					buffer = tsk_realloc(buffer, len);
 				}
-				
 					
 				e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);
 				e->data = buffer;

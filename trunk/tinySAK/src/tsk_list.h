@@ -42,8 +42,8 @@ TSK_BEGIN_DECLS
 */
 #define TSK_LIST_IS_EMPTY(self)				(self ? (!self->head) : tsk_true)
 
-#define TSK_LIST_IS_FIRST(self, item)		(self ? (self->head == item) : tsk_null)
-#define TSK_LIST_IS_LAST(self, item)		(self ? (self->tail == item) : tsk_null)
+#define TSK_LIST_IS_FIRST(self, item)		(self ? (self->head == item) : tsk_false)
+#define TSK_LIST_IS_LAST(self, item)		(self ? (self->tail == item) : tsk_false)
 
 /**@ingroup tsk_list_group
 * Item for linked list. 
