@@ -89,7 +89,7 @@ TINYSIGCOMP_API tcomp_result_t* tcomp_result_create();
 tcomp_tempstate_to_free_t* tcomp_tempstate_to_free_create();
 
 void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput);
-#define tcomp_result_reset(result) _tcomp_result_reset((tcomp_result_t *)result, 0, 1)
+#define tcomp_result_reset(result) _tcomp_result_reset((tcomp_result_t *)result, tsk_false, tsk_true)
 
 TINYSIGCOMP_API void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, tsk_size_t output_size, tsk_bool_t isStream, uint64_t streamId);
 #define tcomp_result_setOutputUDPBuffer(result, output_ptr, output_size) tcomp_result_setOutputBuffer((tcomp_result_t *)result, (void *)output_ptr, (tsk_size_t) output_size, tsk_false, 0)

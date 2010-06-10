@@ -11,10 +11,14 @@
 #++sn --path ./core-inexbee.sn
 
 # Micromethod
-++sn --path ./core-micromethod.sn
+#++sn --path ./core-micromethod.sn
 
 # Nokia Siemens Networks
 #++sn --path ./core-nsn.sn
 
 # Starents Networks
 #++sn --path ./core-starent.sn
+
+
+# SigComp
+++sn --path ./sigcomp.sn

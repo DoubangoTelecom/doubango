@@ -186,7 +186,7 @@ tsk_bool_t tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *d
 	else if(sigCompMessage->isNack && TCOMP_NACK_SUPPORTED(dispatcher)){
 		/* Remote party send us a NACK --> handle it */
 		tcomp_statehandler_handleNack((tcomp_statehandler_t*)dispatcher->stateHandler, (const tcomp_nackinfo_t*)sigCompMessage->nack_info);
-		(*lpResult)->isNack = 1;
+		(*lpResult)->isNack = tsk_true;
 		
 		goto bail;
 	}

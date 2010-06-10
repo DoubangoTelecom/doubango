@@ -165,7 +165,13 @@ int tsk_buffer_append(tsk_buffer_t* self, const void* data, tsk_size_t size)
 		tsk_size_t oldsize = self->size;
 		tsk_size_t newsize = oldsize + size;
 		
-		self->data = tsk_realloc(self->data, newsize);
+		if(oldsize){
+			self->data = tsk_realloc(self->data, newsize);
+		}
+		else{
+			self->data = tsk_calloc(size, sizeof(uint8_t));
+		}
+
 		if(self->data){
 			memcpy((void*)(TSK_BUFFER_TO_U8(self) + oldsize), data, size);
 			self->size = newsize;

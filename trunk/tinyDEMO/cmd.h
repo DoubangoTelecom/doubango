@@ -86,7 +86,7 @@ typedef enum opt_type_e
 	opt_realm,			/* --realm open-ims.test */
 	opt_sec,			/* --sec 1800 */
 	opt_sid,			/* --sid 1234 */
-	opt_sigcomp,		/* --sigcomp */
+	opt_sigcomp_id,		/* --sigcomp-id urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473 */
 	opt_silent,			/* --silent */
 	opt_smsc,			/* --smsc +3315245856 */
 	opt_to,				/* --to sip:alice@open-ims.test */

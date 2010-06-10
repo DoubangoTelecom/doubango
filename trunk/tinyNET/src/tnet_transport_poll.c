@@ -542,7 +542,7 @@ void *tnet_transport_mainthread(void *param)
 				}
 				else if((len != (tsk_size_t)ret) && len){ /* useless test? */
 					len = (tsk_size_t)ret;
-					buffer = tsk_realloc(buffer, len);
+					/* buffer = tsk_realloc(buffer, len); */
 				}
 					
 				e = tnet_transport_event_create(event_data, transport->callback_data, active_socket->fd);

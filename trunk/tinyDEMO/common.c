@@ -356,6 +356,14 @@ int stack_config(const opts_L_t* opts)
 					break;
 				}
 
+			case opt_sigcomp_id:
+				{	/* add compartment */
+					ret = tsip_stack_set(ctx->stack,
+						TSIP_STACK_SET_SIGCOMP_NEW_COMPARTMENT(opt->value),
+						TSIP_STACK_SET_NULL());
+					break;
+				}
+
 		}/* switch */
 
 	} /* foreach */
@@ -612,6 +620,13 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 				{	/* valueless option */
 					ret = tsip_ssession_set(session->handle, 
 							TSIP_SSESSION_SET_SILENT_HANGUP(tsk_true),
+							TSIP_SSESSION_SET_NULL());
+					break;
+				}
+			case opt_sigcomp_id:
+				{	/* sigcomp-id */
+					ret = tsip_ssession_set(session->handle, 
+							TSIP_SSESSION_SET_SIGCOMP_COMPARTMENT(opt->value),
 							TSIP_SSESSION_SET_NULL());
 					break;
 				}

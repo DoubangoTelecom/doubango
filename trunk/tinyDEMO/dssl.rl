@@ -274,7 +274,7 @@ replace:
 	"realm"i % { opt->type = opt_realm; } |
 	"sec"i % { opt->type = opt_sec; } |
 	"sid"i % { opt->type = opt_sid; } |
-	"sigcomp"i % { opt->type = opt_sigcomp; } |
+	"sigcomp-id"i % { opt->type = opt_sigcomp_id; } |
 	"silent"i % { opt->type = opt_silent; } |
 	"smsc"i % { opt->type = opt_smsc; } |
 	"to"i % { opt->type = opt_to; }

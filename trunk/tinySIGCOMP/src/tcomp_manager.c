@@ -133,7 +133,7 @@ tsk_size_t tcomp_manager_getNextStreamMessage(tcomp_manager_handle_t *handle, tc
 		return 0;
 	}
 
-	_tcomp_result_reset(lpResult, 0, 0);
+	_tcomp_result_reset(lpResult, tsk_false, tsk_false);
 	
 	if(tcomp_decompressordisp_getNextMessage(manager->dispatcher_decompressor, lpResult)){
 		return *tcomp_buffer_getIndexBytes(lpResult->output_buffer);
@@ -339,16 +339,17 @@ static void* tcomp_manager_ctor(void * self, va_list * app)
 static void* tcomp_manager_dtor(void *self)
 {
 	tcomp_manager_t *manager = self;
-	if(manager)
-	{
-		/* Deinitialize safeobject */
-		tsk_safeobj_deinit(manager);
-		
+	if(manager){		
 		TSK_OBJECT_SAFE_FREE(manager->stateHandler);
 		TSK_OBJECT_SAFE_FREE(manager->dispatcher_compressor);
 		TSK_OBJECT_SAFE_FREE(manager->dispatcher_decompressor);
+
+		/* Deinitialize safeobject */
+		tsk_safeobj_deinit(manager);
 	}
-	else TSK_DEBUG_ERROR("Null manager.");
+	else{
+		TSK_DEBUG_ERROR("Null manager.");
+	}
 	
 	return self;
 }

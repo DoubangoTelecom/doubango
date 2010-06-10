@@ -96,12 +96,10 @@ int	tsip_message_add_header(tsip_message_t *self, const tsip_header_t *hdr)
 				break; \
 			}
 	
-	if(self && hdr)
-	{
+	if(self && hdr){
 		tsip_header_t *header = tsk_object_ref((void*)hdr);
 
-		switch(header->type)
-		{
+		switch(header->type){
 			ADD_HEADER(Via, firstVia);
 			ADD_HEADER(From, From);
 			ADD_HEADER(To, To);
@@ -627,6 +625,8 @@ static tsk_object_t* tsip_message_dtor(tsk_object_t *self)
 		TSK_OBJECT_SAFE_FREE(message->Content);
 
 		TSK_OBJECT_SAFE_FREE(message->headers);
+
+		TSK_FREE(message->sigcomp_id);
 	}
 	else TSK_DEBUG_ERROR("Null SIP message.");
 

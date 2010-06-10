@@ -1031,8 +1031,8 @@ int main()
 	int i = 0;
 	size_t outLen = 0;
 
-	tcomp_manager_handle_t *manager1 = 0, *manager2 = 0;
-	tcomp_result_t *result1 = 0, *result2 = 0;
+	tcomp_manager_handle_t *manager1 = tsk_null, *manager2 = tsk_null;
+	tcomp_result_t *result1 = tsk_null, *result2 = tsk_null;
 
 	/* temporary buffers  --> will hold compression/decompression results */
 	char buff1[MAX_BUFFER_SIZE]; 

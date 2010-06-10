@@ -47,8 +47,9 @@ TSIP_BEGIN_DECLS
 #define TSIP_TRANSAC(self)						((tsip_transac_t*)(self))
 #define TSIP_TRANSAC_GET_TYPE(self)				TSIP_TRANSAC(self)->type
 #define TSIP_TRANSAC_GET_FSM(self)				TSIP_TRANSAC(self)->fsm
-#define TSIP_TRANSAC_GET_STACK(self)			TSIP_TRANSAC(self)->dialog->ss->stack
-#define TSIP_TRANSAC_GET_TIMER_MGR(self)		TSIP_TRANSAC(self)->dialog->ss->stack->timer_mgr
+#define TSIP_TRANSAC_GET_SESSION(self)			TSIP_TRANSAC(self)->dialog->ss
+#define TSIP_TRANSAC_GET_STACK(self)			TSIP_TRANSAC_GET_SESSION(self)->stack
+#define TSIP_TRANSAC_GET_TIMER_MGR(self)		TSIP_TRANSAC_GET_STACK(self)->timer_mgr
 
 #define TSIP_TRANSAC_MAGIC_COOKIE				"z9hG4bK"
 
@@ -123,7 +124,7 @@ typedef struct tsip_transac_s
 }
 tsip_transac_t;
 
-#define TSIP_DECLARE_TRANSAC tsip_transac_t transac
+#define TSIP_DECLARE_TRANSAC tsip_transac_t __transac__
 
 typedef tsk_list_t tsip_transacs_L_t; /**< List of @ref tsip_transac_t elements. */
 /*

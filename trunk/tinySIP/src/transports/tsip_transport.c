@@ -104,7 +104,7 @@ int tsip_transport_addvia(const tsip_transport_t* self, const char *branch, tsip
 	return 0;
 }
 
-/* update the entire message (AOR, IPSec headers, SigComp, ....) */
+/* update the entire message (AoR, IPSec headers, SigComp, ....) */
 int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 {
 	tnet_ip_t ip;
@@ -121,7 +121,7 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 		return -1;
 	}
 	
-	/* Host and port */
+	/* === Host and port === */
 	if(msg->Contact && msg->Contact->uri){
 		tsk_strupdate(&(msg->Contact->uri->scheme), self->scheme);
 		if(!tsk_strnullORempty(self->stack->network.aor.ip)){ /* user supplied his own IP address? */
@@ -140,12 +140,26 @@ int tsip_transport_msg_update(const tsip_transport_t* self, tsip_message_t *msg)
 		tsk_params_add_param(&msg->Contact->uri->params, "transport", self->protocol);
 	}
 
-	/* IPSec headers (Security-Client, Security-Verify, Sec-Agree ...) */
+	/* === IPSec headers (Security-Client, Security-Verify, Sec-Agree ...) === */
 	if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
 		ret = tsip_transport_ipsec_updateMSG(TSIP_TRANSPORT_IPSEC(self), msg);
 	}
 
-	/* SigComp */
+	/* === SigComp === */
+	if(msg->sigcomp_id){
+		/* Via */
+		if(msg->firstVia){
+			char* quoted_id = tsk_null;
+			TSIP_HEADER_ADD_PARAM(msg->firstVia, "comp", "sigcomp");
+			tsk_sprintf(&quoted_id, "\"%s\"", msg->sigcomp_id);
+			TSIP_HEADER_ADD_PARAM(msg->firstVia, "sigcomp-id", quoted_id);
+			TSK_FREE(quoted_id);
+		}
+		/* Contact */
+		if(msg->Contact && msg->Contact->uri){
+			tsk_params_add_param(&msg->Contact->uri->params, "sigcomp-id", msg->sigcomp_id);
+		}
+	}
 	
 
 	msg->update = tsk_false; /* To avoid to update retrans. */
@@ -170,7 +184,9 @@ int tsip_transport_set_tlscerts(tsip_transport_t *self, const char* ca, const ch
 	return 0;
 }
 
-/* sends a request */
+/* sends a request 
+* all callers of this function should provide a sigcomp-id
+*/
 tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch, tsip_message_t *msg, const char* destIP, int32_t destPort)
 {
 	tsk_size_t ret = 0;
@@ -181,7 +197,7 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 		* ACK sent from the transaction layer will contains a Via header and should not be updated 
 		* CANCEL will have the same Via and Contact headers as the request it cancel */
 		if(TSIP_MESSAGE_IS_REQUEST(msg) && (!TSIP_REQUEST_IS_ACK(msg) || (TSIP_REQUEST_IS_ACK(msg) && !msg->firstVia)) && !TSIP_REQUEST_IS_CANCEL(msg)){
-			tsip_transport_addvia(self, branch, msg);
+			tsip_transport_addvia(self, branch, msg); /* should be done before tsip_transport_msg_update() which could use the Via header */
 			tsip_transport_msg_update(self, msg);
 		}
 		else if(TSIP_MESSAGE_IS_RESPONSE(msg)){
@@ -218,6 +234,25 @@ tsk_size_t tsip_transport_send(const tsip_transport_t* self, const char *branch,
 				*/
 			}
 			
+			/* === SigComp === */
+			if(msg->sigcomp_id){
+				if(self->stack->sigcomp.handle){
+					tsk_size_t out_size;
+					char SigCompBuffer[TSIP_SIGCOMP_MAX_BUFF_SIZE];
+					
+					out_size = tsip_sigcomp_handler_compress(self->stack->sigcomp.handle, msg->sigcomp_id, TNET_SOCKET_TYPE_IS_STREAM(self->type),
+						buffer->data, buffer->size, SigCompBuffer, sizeof(SigCompBuffer));
+					if(out_size){
+						tsk_buffer_cleanup(buffer);
+						tsk_buffer_append(buffer, SigCompBuffer, out_size);
+					}
+				}
+				else{
+					TSK_DEBUG_ERROR("The outgoing message should be compressed using SigComp but there is not compartment");
+				}
+			}
+
+			/* === Send the message === */
 			if(TNET_SOCKET_TYPE_IS_IPSEC(self->type)){
 				tnet_fd_t fd = tsip_transport_ipsec_getFD(TSIP_TRANSPORT_IPSEC(self), TSIP_MESSAGE_IS_REQUEST(msg));
 				if(fd != TNET_INVALID_FD){

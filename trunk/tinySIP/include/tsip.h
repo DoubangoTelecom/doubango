@@ -38,6 +38,8 @@
 
 #include "tinysip/tsip_uri.h"
 
+#include "tinysip/sigcomp/tsip_sigcomp.h"
+
 #include "tnet_socket.h"
 #include "dns/tnet_dns.h"
 
@@ -66,6 +68,11 @@ typedef enum tsip_stack_param_type_e
 	tsip_pname_preferred_id,
 	tsip_pname_impi,
 	tsip_pname_password,
+
+	/* === SigComp === */
+	tsip_pname_sigcomp,
+	tsip_pname_sigcomp_add_compartment,
+	tsip_pname_sigcomp_remove_compartment,
 
 	/* === Network === */
 	tsip_pname_realm,
@@ -158,6 +165,55 @@ tsip_stack_param_type_t;
 #define TSIP_STACK_SET_PREFERRED_IDENTITY(URI_STR)		tsip_pname_preferred_id, (const char*)URI_STR
 #define TSIP_STACK_SET_IMPI(IMPI_STR)					tsip_pname_impi, (const char*)IMPI_STR
 #define TSIP_STACK_SET_PASSWORD(PASSORD_STR)			tsip_pname_password, (const char*)PASSORD_STR
+
+
+/* === SigComp === */
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_SET_SIGCOMP
+* Sets the SigComp parameters. It's not mandatory to call this function in order to use SigComp.
+* It should be called to change default parameters. As these parameters will be shared by all compartments,
+* you should call this function before adding any compartment.
+* @param DMS_UINT Decompression Memory Size. Default value is 8192.
+* @param SMS_UINT State Memory Size. Default value is 8192.
+* @param CPB_UINT Cycles Per Bit. Default value is 64.
+* @param PRES_DICT_BOOL Indicates whether to enable Presence dictionary (RFC 5112) or not. Default value is @a tsk_false.
+* @code
+* int ret = tsip_stack_set(stack, 
+*              TSIP_STACK_SET_SIGCOMP(8192, 8192, 64, tsk_true),
+*              TSIP_STACK_SET_NULL());
+* @endcode
+*/
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_SET_SIGCOMP_NEW_COMPARTMENT
+* Add New unique compartment identifier to the stack. This compartment will be removed when the stack is stopped.
+* A any time, you can remove this compartment by using @ref TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT().
+* @param COMPARTMENT_ID_STR The id of the compartment to add. Should be unique.
+* The identifier will be used to in the sip headers (as per RFC 5049) "AS IS".<br>
+* @sa @ref TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT()
+*
+* @code
+* int ret = tsip_stack_set(stack, 
+*              TSIP_STACK_SET_NEW_SIGCOMP_COMPARTMENT("urn:uuid:0C67446E-F1A1-11D9-94D3-000A95A0E128"),
+*              TSIP_STACK_SET_NULL());
+* @endcode
+*/
+/**@ingroup tsip_stack_group
+* @def TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT
+* Removes a SigComp compartment. This will close the compartment and release all its states.
+* You should only close a compartment if there is no outgoing session using it. In all cases, all compartments
+* will be closed when the stack is destroyed or stopped.
+* @param COMPARTMENT_ID_STR The id of the compartment to close.
+* @sa @ref TSIP_STACK_SET_SIGCOMP_NEW_COMPARTMENT()
+*
+* @code
+* int ret = tsip_stack_set(stack, 
+*              TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT("urn:uuid:0C67446E-F1A1-11D9-94D3-000A95A0E128"),
+*              TSIP_STACK_SET_NULL());
+* @endcode
+*/
+#define TSIP_STACK_SET_SIGCOMP(DMS_UINT, SMS_UINT, CPB_UINT, PRES_DICT_BOOL) tsip_pname_sigcomp, (unsigned)DMS_UINT, (unsigned)SMS_UINT, (unsigned)CPB_UINT, (tsk_bool_t)PRES_DICT_BOOL
+#define TSIP_STACK_SET_SIGCOMP_NEW_COMPARTMENT(COMPARTMENT_ID_STR)			tsip_pname_sigcomp_add_compartment, (const char*)COMPARTMENT_ID_STR
+#define TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT(COMPARTMENT_ID_STR)			tsip_pname_sigcomp_remove_compartment, (const char*)COMPARTMENT_ID_STR
 
 /* === Network === */
 /**@ingroup tsip_stack_group
@@ -436,6 +492,17 @@ typedef struct tsip_stack_s
 		char *impi;
 		char *password;
 	} identity;
+
+	/* === SigComp === */
+	struct{
+		tsip_sigcomp_handle_t* handle;
+
+		unsigned dms;
+		unsigned sms;
+		unsigned cpb;
+		tsk_bool_t sip_dict;
+		tsk_bool_t pres_dict;
+	} sigcomp;
 
 	/* === Network === */
 	struct{

@@ -222,7 +222,8 @@ typedef struct tsip_message_s
 	/*== OTHER HEADERS*/
 	tsip_headers_L_t *headers;
 
-	/*== */
+	/*== to hack the message */
+	char* sigcomp_id;
 	tnet_fd_t sockfd;
 	tsk_bool_t update;
 }

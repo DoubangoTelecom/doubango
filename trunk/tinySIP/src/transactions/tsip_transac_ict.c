@@ -784,6 +784,11 @@ int tsip_transac_ict_send_ACK(tsip_transac_ict_t *self, const tsip_response_t* r
 		// sockfd: 
 		//request->sockfd = response->sockfd;
 
+		// SigComp
+		if(TSIP_TRANSAC_GET_SESSION(self)->sigcomp_id){
+			request->sigcomp_id = tsk_strdup(TSIP_TRANSAC_GET_SESSION(self)->sigcomp_id);
+		}
+
 		// send the request
 		ret = tsip_transac_send(TSIP_TRANSAC(self), request->firstVia->branch, request);
 		TSK_OBJECT_SAFE_FREE(request);

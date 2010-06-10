@@ -202,6 +202,12 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					break;
 				}
 
+			case sstype_sigcomp_id:
+				{ /* (const char*)COMPARTMENT_ID_STR */
+					tsk_strupdate(&self->sigcomp_id, va_arg(*app, const char*));
+					break;
+				}
+
 			default:
 				{	/* va_list will be unsafe => exit */
 					TSK_DEBUG_ERROR("NOT SUPPORTED as valid pname %d.", curr);
@@ -447,6 +453,8 @@ static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 
 		TSK_OBJECT_SAFE_FREE(ss->from);
 		TSK_OBJECT_SAFE_FREE(ss->to);
+
+		TSK_FREE(ss->sigcomp_id);
 
 		TSK_DEBUG_INFO("*** SIP Session destroyed ***");
 	}
