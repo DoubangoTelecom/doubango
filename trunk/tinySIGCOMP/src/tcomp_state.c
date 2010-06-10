@@ -32,6 +32,12 @@
 #include "tsk_debug.h"
 #include "tsk_sha1.h"
 
+/** Creates new SigComp state.
+*/
+tcomp_state_t* tcomp_state_create(uint16_t length, uint16_t address, uint16_t instruction, uint16_t minimum_access_length, uint16_t retention_priority)
+{
+	return tsk_object_new(tcomp_state_def_t, length, address, instruction, minimum_access_length, retention_priority);
+}
 
 /** Compares two sigomp states.
 * @param state1 First state to compare.
@@ -57,9 +63,8 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 {
 	tsk_sha1context_t sha;
 
-	if(!state)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp state.");
+	if(!state){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return;
 	}
 
@@ -115,11 +120,10 @@ void tcomp_state_makeValid(tcomp_state_t* state)
 //========================================================
 //	State object definition
 //
-static tsk_object_t* tcomp_state_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tcomp_state_ctor(tsk_object_t * self, va_list * app)
 {
 	tcomp_state_t *state = self;
-	if(state)
-	{
+	if(state){
 #if defined(__GNUC__)
 		state->length = (uint16_t)va_arg(*app, unsigned);
 		state->address = (uint16_t)va_arg(*app, unsigned);
@@ -134,8 +138,8 @@ static tsk_object_t* tcomp_state_create(tsk_object_t * self, va_list * app)
 		state->retention_priority = va_arg(*app, uint16_t);
 #endif
 
-		state->value = TCOMP_BUFFER_CREATE();
-		state->identifier = TCOMP_BUFFER_CREATE();
+		state->value = tcomp_buffer_create_null();
+		state->identifier = tcomp_buffer_create_null();
 		
 		/* Initialize safeobject */
 		tsk_safeobj_init(state);
@@ -146,7 +150,7 @@ static tsk_object_t* tcomp_state_create(tsk_object_t * self, va_list * app)
 	return state;
 }
 
-static tsk_object_t* tcomp_state_destroy(tsk_object_t *self)
+static tsk_object_t* tcomp_state_dtor(tsk_object_t *self)
 {
 	tcomp_state_t *state = self;
 	if(state){
@@ -179,8 +183,8 @@ static int tcomp_state_cmp(const void *obj1, const void *obj2)
 static const tsk_object_def_t tcomp_state_def_s = 
 {
 	sizeof(tcomp_state_t),
-	tcomp_state_create,
-	tcomp_state_destroy,
+	tcomp_state_ctor,
+	tcomp_state_dtor,
 	tcomp_state_cmp
 };
 const tsk_object_def_t *tcomp_state_def_t = &tcomp_state_def_s;

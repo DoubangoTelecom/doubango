@@ -46,8 +46,6 @@
 
 TCOMP_BEGIN_DECLS
 
-#define TCOMP_UDVM_CREATE(_sigCompMessage, stateHandler, lpResult)	tsk_object_new(tcomp_udvm_def_t, (tcomp_message_t*)_sigCompMessage, (tcomp_statehandler_t*)stateHandler, (tcomp_result_t*)lpResult)
-
 #define TCOMP_UDVM_SET_2BYTES_VAL(position, value)	TSK_BINARY_SET_2BYTES(tcomp_buffer_getBufferAtPos(udvm->memory, position), value)
 #define TCOMP_UDVM_GET_2BYTES_VAL(position)			TSK_BINARY_GET_2BYTES(tcomp_buffer_getBufferAtPos(udvm->memory, position))
 
@@ -81,6 +79,7 @@ typedef struct tcomp_udvm_s
 }
 tcomp_udvm_t;
 
+tcomp_udvm_t* tcomp_udvm_create(tcomp_message_t* _sigCompMessage,tcomp_statehandler_t*  stateHandler, tcomp_result_t* lpResult);
 
 tsk_bool_t tcomp_udvm_decompress(tcomp_udvm_t *udvm);
 
@@ -95,9 +94,9 @@ uint16_t tcomp_udvm_opget_address_param(tcomp_udvm_t *udvm, uint16_t memory_addr
 /*
 * ByteCopy
 */
-int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t size_tocopy);
-int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t* source, uint16_t size_tocopy);
-int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint16_t source, uint16_t size_tocopy);
+int tcomp_udvm_bytecopy_self(tcomp_udvm_t *udvm, uint16_t *destination, uint16_t source, uint16_t tsk_size_tocopy);
+int tcomp_udvm_bytecopy_to(tcomp_udvm_t *udvm, uint16_t destination, const uint8_t* source, uint16_t tsk_size_tocopy);
+int tcomp_udvm_bytecopy_from(tcomp_udvm_t *udvm, uint8_t* destination, uint16_t source, uint16_t tsk_size_tocopy);
 
 /*
 * State Management

@@ -46,6 +46,12 @@ static int pred_find_compartment_by_id(const tsk_list_item_t *item, const void *
 	return -1;
 }
 
+/**Creates new SigComp state handler.
+*/
+tcomp_statehandler_t* tcomp_statehandler_create()
+{
+	return tsk_object_new(tcomp_statehandler_def_t);
+}
 
 tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_t *statehandler, uint64_t id)
 {
@@ -54,7 +60,7 @@ tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_
 	const tsk_list_item_t *item_const;
 
 	if(!statehandler){
-		TSK_DEBUG_ERROR("NULL SigComp state handler.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 
@@ -62,7 +68,7 @@ tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_
 
 	item_const = tsk_list_find_item_by_pred(statehandler->compartments, pred_find_compartment_by_id, &id);
 	if(!item_const || !(result = item_const->data)){
-		newcomp = TCOMP_COMPARTMENT_CREATE(id, tcomp_params_getParameters(statehandler->sigcomp_parameters));
+		newcomp = tcomp_compartment_create(id, tcomp_params_getParameters(statehandler->sigcomp_parameters));
 		result = newcomp;
 		tsk_list_push_back_data(statehandler->compartments, ((void**) &newcomp));
 	}
@@ -78,7 +84,7 @@ void tcomp_statehandler_deleteCompartment(tcomp_statehandler_t *statehandler, ui
 	const tsk_list_item_t *item_const;
 
 	if(!statehandler){
-		TSK_DEBUG_ERROR("NULL SigComp state handler.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return;
 	}
 
@@ -99,7 +105,7 @@ tsk_bool_t tcomp_statehandler_compartmentExist(tcomp_statehandler_t *statehandle
 	tsk_bool_t exist;
 
 	if(!statehandler){
-		TSK_DEBUG_ERROR("NULL SigComp state handler.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
 
@@ -117,7 +123,7 @@ uint16_t tcomp_statehandler_findState(tcomp_statehandler_t *statehandler, const 
 	tsk_list_item_t *item;
 
 	if(!statehandler){
-		TSK_DEBUG_ERROR("NULL SigComp state handler.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
@@ -158,7 +164,7 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 	uint8_t i;
 
 	if(!statehandler){
-		TSK_DEBUG_ERROR("NULL SigComp state handler.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return;
 	}
 
@@ -207,7 +213,7 @@ void tcomp_statehandler_handleResult(tcomp_statehandler_t *statehandler, tcomp_r
 			* deletes all but the first (state_memory_size - 64) bytes from the state_value.
 			*/
 			if(TCOMP_GET_STATE_SIZE(*lpState) > compartment_total_size){
-				size_t oldSize, newSize;
+				tsk_size_t oldSize, newSize;
 				tcomp_compartment_clearStates(lpCompartment);
 				oldSize =  tcomp_buffer_getSize((*lpState)->value);
 				newSize = (compartment_total_size - 64);
@@ -268,7 +274,7 @@ tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, con
 	tcomp_buffer_handle_t *sha_id;
 	tsk_list_item_t *item;
 	if(!statehandler){
-		TSK_DEBUG_ERROR("NULL SigComp state handler.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return tsk_false;
 	}
 
@@ -310,7 +316,7 @@ tsk_bool_t tcomp_statehandler_handleNack(tcomp_statehandler_t *statehandler, con
 int tcomp_statehandler_addSipSdpDictionary(tcomp_statehandler_t *statehandler)
 {
 	if(!statehandler){
-		TSK_DEBUG_ERROR("NULL SigComp state handler.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
@@ -355,7 +361,7 @@ int tcomp_statehandler_addPresenceDictionary(tcomp_statehandler_t *statehandler)
 //	State hanlder object definition
 //
 
-static tsk_object_t* tcomp_statehandler_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tcomp_statehandler_ctor(tsk_object_t * self, va_list * app)
 {
 	tcomp_statehandler_t *statehandler = self;
 	if(statehandler){
@@ -363,7 +369,7 @@ static tsk_object_t* tcomp_statehandler_create(tsk_object_t * self, va_list * ap
 		tsk_safeobj_init(statehandler);
 		
 		/* RFC 3320 - 3.3.  SigComp Parameters */
-		statehandler->sigcomp_parameters = TCOMP_PARAMS_CREATE();
+		statehandler->sigcomp_parameters = tcomp_params_create();
 		tcomp_params_setDmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_DECOMPRESSION_MEMORY_SIZE);
 		tcomp_params_setSmsValue(statehandler->sigcomp_parameters, SIP_RFC5049_STATE_MEMORY_SIZE);
 		tcomp_params_setCpbValue(statehandler->sigcomp_parameters, SIP_RFC5049_CYCLES_PER_BIT);
@@ -380,7 +386,7 @@ static tsk_object_t* tcomp_statehandler_create(tsk_object_t * self, va_list * ap
 	return self;
 }
 
-static void* tcomp_statehandler_destroy(tsk_object_t *self)
+static void* tcomp_statehandler_dtor(tsk_object_t *self)
 {
 	tcomp_statehandler_t *statehandler = self;
 	if(statehandler){
@@ -402,8 +408,8 @@ static void* tcomp_statehandler_destroy(tsk_object_t *self)
 static const tsk_object_def_t tsk_statehandler_def_s = 
 {
 	sizeof(tcomp_statehandler_t),
-	tcomp_statehandler_create,
-	tcomp_statehandler_destroy,
+	tcomp_statehandler_ctor,
+	tcomp_statehandler_dtor,
 	tsk_null
 };
 const tsk_object_def_t *tcomp_statehandler_def_t = &tsk_statehandler_def_s;

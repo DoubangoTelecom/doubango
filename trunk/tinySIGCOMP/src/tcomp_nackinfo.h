@@ -37,10 +37,6 @@
 
 TCOMP_BEGIN_DECLS
 
-/** Creates new NACK object.
-*/
-#define TCOMP_NACKINFO_CREATE()				tsk_object_new(tsk_nackinfo_def_t)
-
 /*
 +---+---+---+---+---+---+---+---+
 |         code_len = 0          |

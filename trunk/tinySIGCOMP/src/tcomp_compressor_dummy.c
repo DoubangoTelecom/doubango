@@ -54,10 +54,10 @@
 ///
 /// @return	1 if succedd and 0 otherwise. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)
+tsk_bool_t tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)
 {
-	tcomp_buffer_handle_t *output_buffer = TCOMP_BUFFER_CREATE();
-	size_t pointer = 0;
+	tcomp_buffer_handle_t *output_buffer = tcomp_buffer_create_null();
+	tsk_size_t pointer = 0;
 	uint8_t *header;
 	uint16_t codeLen;
 

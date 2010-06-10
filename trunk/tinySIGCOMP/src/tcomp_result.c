@@ -31,6 +31,18 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+/** Creates new SigComp result object.
+*/
+tcomp_result_t* tcomp_result_create()
+{
+	return tsk_object_new(tcomp_result_def_t);
+}
+
+tcomp_tempstate_to_free_t* tcomp_tempstate_to_free_create()
+{
+	return tsk_object_new(tcomp_tempstate_to_free_def_t);
+}
+
 /**Resets the result.
 */
 void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput)
@@ -71,7 +83,7 @@ void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOu
 
 /**Sets the output buffer.
 */
-void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, size_t output_size, tsk_bool_t isStream, uint64_t streamId)
+void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, tsk_size_t output_size, tsk_bool_t isStream, uint64_t streamId)
 {
 	if(result){
 		tcomp_buffer_referenceBuff(result->output_buffer, (uint8_t*)output_ptr, output_size);
@@ -85,7 +97,7 @@ void tcomp_result_setOutputBuffer(tcomp_result_t *result, void *output_ptr, size
 
 /**Sets the compartment identifier.
 */
-void tcomp_result_setCompartmentId(tcomp_result_t *result, const void *id, size_t len)
+void tcomp_result_setCompartmentId(tcomp_result_t *result, const void *id, tsk_size_t len)
 {
 	if(result){
 		result->compartmentId = tcomp_buffer_createHash(id, len);
@@ -168,24 +180,27 @@ uint8_t tcomp_result_getTempStatesToFreeSize(const tcomp_result_t *result)
 //	SigComp result object definition
 //
 
-static tsk_object_t* tcomp_result_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* tcomp_result_ctor(tsk_object_t *self, va_list * app)
 {
 	tcomp_result_t* result = self;
 
 	if(result){
-		result->output_buffer = TCOMP_BUFFER_CREATE();
-		result->ret_feedback = TCOMP_BUFFER_CREATE();
-		result->nack_info = TCOMP_BUFFER_CREATE();
+		result->output_buffer = tcomp_buffer_create_null();
+		result->ret_feedback = tcomp_buffer_create_null();
+		result->nack_info = tcomp_buffer_create_null();
 
-		result->remote_parameters = TCOMP_PARAMS_CREATE();
+		result->remote_parameters = tcomp_params_create();
 
-		result->req_feedback = TCOMP_REQFEED_CREATE();
+		result->req_feedback = tcomp_reqfeed_create();
+	}
+	else{
+		TSK_DEBUG_ERROR("Null result object");
 	}
 
 	return self;
 }
 
-static tsk_object_t* tcomp_result_destroy(tsk_object_t * self)
+static tsk_object_t* tcomp_result_dtor(tsk_object_t * self)
 {
 	tcomp_result_t* result = self;
 
@@ -199,6 +214,9 @@ static tsk_object_t* tcomp_result_destroy(tsk_object_t * self)
 
 		TSK_OBJECT_SAFE_FREE(result->req_feedback);
 	}
+	else{
+		TSK_DEBUG_ERROR("Null result object");
+	}
 
 	return self;
 }
@@ -206,8 +224,8 @@ static tsk_object_t* tcomp_result_destroy(tsk_object_t * self)
 static const tsk_object_def_t tcomp_result_def_s = 
 {
 	sizeof(tcomp_result_t),
-	tcomp_result_create, 
-	tcomp_result_destroy,
+	tcomp_result_ctor, 
+	tcomp_result_dtor,
 	tsk_null
 };
 const tsk_object_def_t *tcomp_result_def_t = &tcomp_result_def_s;
@@ -217,23 +235,29 @@ const tsk_object_def_t *tcomp_result_def_t = &tcomp_result_def_s;
 //	SigComp temporary state object definition
 //
 
-static tsk_object_t* tcomp_tempstate_to_free_create(tsk_object_t* self, va_list * app)
+static tsk_object_t* tcomp_tempstate_to_free_ctor(tsk_object_t* self, va_list * app)
 {
 	tcomp_tempstate_to_free_t* tempstate_to_free = self;
 
 	if(tempstate_to_free){
-		tempstate_to_free->identifier = TCOMP_BUFFER_CREATE();
+		tempstate_to_free->identifier = tcomp_buffer_create_null();
+	}
+	else{
+		TSK_DEBUG_ERROR("Null object");
 	}
 
 	return self;
 }
 
-static tsk_object_t* tcomp_tempstate_to_free_destroy(tsk_object_t* self)
+static tsk_object_t* tcomp_tempstate_to_free_dtor(tsk_object_t* self)
 {
 	tcomp_tempstate_to_free_t* tempstate_to_free = self;
 
 	if(tempstate_to_free){
 		TSK_OBJECT_SAFE_FREE(tempstate_to_free->identifier);
+	}
+	else{
+		TSK_DEBUG_ERROR("Null object");
 	}
 
 	return self;
@@ -242,8 +266,8 @@ static tsk_object_t* tcomp_tempstate_to_free_destroy(tsk_object_t* self)
 static const tsk_object_def_t tcomp_tempstate_to_free_def_s = 
 {
 	sizeof(tcomp_tempstate_to_free_t),
-	tcomp_tempstate_to_free_create, 
-	tcomp_tempstate_to_free_destroy,
+	tcomp_tempstate_to_free_ctor, 
+	tcomp_tempstate_to_free_dtor,
 	tsk_null
 };
 const tsk_object_def_t* tcomp_tempstate_to_free_def_t = &tcomp_tempstate_to_free_def_s;

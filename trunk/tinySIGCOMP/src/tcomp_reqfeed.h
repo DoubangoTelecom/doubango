@@ -36,10 +36,6 @@
 
 TCOMP_BEGIN_DECLS
 
-/** Creates new Requested feedback.
-*/
-#define TCOMP_REQFEED_CREATE()				tsk_object_new(tcomp_reqfeed_def_t)
-
 /*
 0   1   2   3   4   5   6   7
 +---+---+---+---+---+---+---+---+
@@ -68,9 +64,11 @@ typedef struct tcomp_reqfeed_s
 }
 tcomp_reqfeed_t;
 
+tcomp_reqfeed_t* tcomp_reqfeed_create();
+
 void tcomp_reqfeed_reset(tcomp_reqfeed_t*);
 
-TINYSIGCOMP_GEXTERN const void *tcomp_reqfeed_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_reqfeed_def_t;
 
 TCOMP_END_DECLS
 

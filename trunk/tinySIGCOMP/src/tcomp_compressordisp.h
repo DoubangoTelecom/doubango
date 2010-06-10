@@ -47,10 +47,6 @@ TCOMP_BEGIN_DECLS
 
 #define TCOMP_MAX_COMPRESSORS		5
 
-/**Creates new compressor dispatcher.
-*/
-#define TCOMP_COMPRESSORDISP_CREATE(statehandler)		tsk_object_new(tcomp_compressordisp_def_t, (const tcomp_statehandler_t*)statehandler)
-
 /**Compressor dispatcher.
 */
 typedef struct tcomp_compressordisp_s
@@ -64,8 +60,9 @@ typedef struct tcomp_compressordisp_s
 }
 tcomp_compressordisp_t;
 
+tcomp_compressordisp_t* tcomp_compressordisp_create(const tcomp_statehandler_t* statehandler);
 
-tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream);
+tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream);
 
 int tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress_f compressor);
 int tcomp_compressordisp_removeCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress_f compressor);

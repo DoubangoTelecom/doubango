@@ -40,11 +40,11 @@
 tcomp_dictionary_t* tcomp_dicts_create_presence_dict()
 {
 	static const char *pres_dict_data = RFC5112_DICTIONARY_PRESENCE_VALUE;
-	static tcomp_dictionary_t * pres_dict = 0;
+	static tcomp_dictionary_t * pres_dict = tsk_null;
 
 	if(!pres_dict)
 	{
-		pres_dict = TCOMP_STATE_CREATE(
+		pres_dict = tcomp_state_create(
 			RFC5112_DICTIONARY_PRESENCE_VALUE_LENGTH, 
 			RFC5112_DICTIONARY_PRESENCE_STATE_ADDRESS, 
 			RFC5112_DICTIONARY_PRESENCE_STATE_INSTRUCTION,
@@ -72,11 +72,10 @@ tcomp_dictionary_t* tcomp_dicts_create_sip_dict()
 {
 	
 	static const char *sip_dict_data = RFC3485_DICTIONARY_SIP_VALUE;
-	static tcomp_dictionary_t *sip_dict = 0;
+	static tcomp_dictionary_t *sip_dict = tsk_null;
 
-	if(!sip_dict)
-	{
-		sip_dict = TCOMP_STATE_CREATE(
+	if(!sip_dict){
+		sip_dict = tcomp_state_create(
 			RFC3485_DICTIONARY_SIP_VALUE_LENGTH, 
 			RFC3485_DICTIONARY_SIP_STATE_ADDRESS, 
 			RFC3485_DICTIONARY_SIP_STATE_INSTRUCTION,
@@ -92,6 +91,7 @@ tcomp_dictionary_t* tcomp_dicts_create_sip_dict()
 		}
 	}
 	else{
+		/* take ownership */
 		sip_dict = tsk_object_ref(sip_dict);
 	}
 

@@ -417,7 +417,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_ASCENDING(tcomp_udvm_t *udvm, uint16_t sta
 	
 	CONSUME_CYCLES(( 1 + k *(CEILLINGLOG2(k) + n) )); /* 1 + k * (ceiling(log2(k)) + n) */
 
-	if(TCOMP_UDVM_GET_SIZE() <= (size_t)(start+(n*k*2)) ){ 
+	if(TCOMP_UDVM_GET_SIZE() <= (tsk_size_t)(start+(n*k*2)) ){ 
 		segfault = 1; 
 		goto __SEGFAULT; 
 	};
@@ -486,7 +486,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__SORT_DESCENDING(tcomp_udvm_t *udvm, uint16_t st
 	
 	CONSUME_CYCLES(( 1 + k *(CEILLINGLOG2(k) + n) )); /* 1 + k * (ceiling(log2(k)) + n) */
 
-	if(TCOMP_UDVM_GET_SIZE() <= (size_t)(start+(n*k*2)) ){ segfault = 1; goto __SEGFAULT; };
+	if(TCOMP_UDVM_GET_SIZE() <= (tsk_size_t)(start+(n*k*2)) ){ segfault = 1; goto __SEGFAULT; };
 
 	//
 	// Create FirstList with key-value pairs.
@@ -1568,7 +1568,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t parti
 	/*
 	* Find matching state
 	*/
-	partial_id = TCOMP_BUFFER_CREATE();
+	partial_id = tcomp_buffer_create_null();
 	tcomp_buffer_referenceBuff(partial_id, TCOMP_UDVM_GET_BUFFER_AT(partial_identifier_start), partial_identifier_length);
 	match_count = tcomp_statehandler_findState(udvm->stateHandler, partial_id, &lpState);
 
@@ -1610,7 +1610,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_ACCESS(tcomp_udvm_t *udvm, uint16_t parti
 	CONSUME_CYCLES(1+state_length);
 
 	/* Decompression failure occurs if bytes are copied from beyond the end of the state_value. */
-	if((size_t)(state_begin + state_length) > tcomp_buffer_getSize(lpState->value)){
+	if((tsk_size_t)(state_begin + state_length) > tcomp_buffer_getSize(lpState->value)){
 		tcomp_udvm_createNackInfo3(udvm, NACK_STATE_TOO_SHORT, partial_id);
 		return tsk_false;
 	}
@@ -1705,7 +1705,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial
 		return tsk_false;
 	}
 
-	lpDesc = TCOMP_TEMPSTATE_TO_FREE_CREATE();
+	lpDesc = tcomp_tempstate_to_free_create();
 	lpDesc->partial_identifier_length = partial_identifier_length;
 	lpDesc->partial_identifier_start = partial_identifier_start;
 	tcomp_result_addTempStateToFree(udvm->lpResult, lpDesc);
@@ -1727,7 +1727,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__STATE_FREE(tcomp_udvm_t *udvm, uint16_t partial
 tsk_bool_t TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_start, uint16_t output_length)
 {
 	tsk_bool_t ok;
-	size_t *outputbuffer_size;
+	tsk_size_t *outputbuffer_size;
 
 	CONSUME_CYCLES(1+output_length);
 
@@ -1773,7 +1773,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__OUTPUT(tcomp_udvm_t *udvm, uint16_t output_star
 
 tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t requested_feedback_location, uint16_t returned_parameters_location, uint16_t state_length, uint16_t state_address, uint16_t state_instruction, uint16_t minimum_access_length, uint16_t state_retention_priority)
 {
-	size_t udvm_size;
+	tsk_size_t udvm_size;
 
 	CONSUME_CYCLES(1+state_length);
 
@@ -1901,7 +1901,7 @@ tsk_bool_t TCOMP_UDVM_EXEC_INST__END_MESSAGE(tcomp_udvm_t *udvm, uint16_t reques
 				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
 				return tsk_false;
 			}
-			partial_id = TCOMP_BUFFER_CREATE();
+			partial_id = tcomp_buffer_create_null();
 			tcomp_buffer_allocBuff(partial_id, length);
 			tcomp_udvm_bytecopy_from(udvm, tcomp_buffer_getBuffer(partial_id), index, length);
 			if(!udvm->lpResult->remote_parameters->returnedStates){

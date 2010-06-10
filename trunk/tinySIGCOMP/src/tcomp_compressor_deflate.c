@@ -50,21 +50,21 @@
 /// @return	. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-tsk_bool_t tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)
+tsk_bool_t tcomp_compressor_deflate_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)
 {
 #define GET_OUTPUT_BUFFER_AT(position) (((uint8_t*)output_ptr) + position)
 
 	tsk_bool_t result = tsk_true;
 	int stateChanged, stateful, windowBits, zret;
 	tcomp_deflatedata_t *deflatedata = 0;
-	size_t pointer = 0, state_len_index = 0, compressedDataLen;
+	tsk_size_t pointer = 0, state_len_index = 0, compressedDataLen;
 	uint8_t smsCode, *header;
 
 	tsk_safeobj_lock(lpCompartment);
 	
 	/* Compression Data */
 	if(!lpCompartment->compressorData){
-		lpCompartment->compressorData = TCOMP_DEFLATEDATA_CREATE(stream);
+		lpCompartment->compressorData = tcomp_deflatedata_create(stream);
 		if(!lpCompartment->compressorData){
 			TSK_DEBUG_ERROR("Failed to create deflate compressor data.");
 			result = tsk_false;

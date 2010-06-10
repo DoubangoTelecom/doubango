@@ -36,28 +36,29 @@
 
 #include <assert.h>
 
+tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint16_t sigCompParameters)
+{
+	return tsk_object_new(tcomp_compartment_def_t, id, sigCompParameters);
+}
 
 /**Sets remote parameters
 */
 void tcomp_compartment_setRemoteParams(tcomp_compartment_t *compartment, tcomp_params_t *lpParams)
 {
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return;
 	}
 
 	/* CPB||DMS||SMS [1-BYTE] */
-	if(tcomp_params_hasCpbDmsSms(lpParams))
-	{
+	if(tcomp_params_hasCpbDmsSms(lpParams)){
 		tcomp_params_setCpbCode(compartment->remote_parameters, lpParams->cpbCode);
 		tcomp_params_setDmsCode(compartment->remote_parameters, lpParams->dmsCode);
 		tcomp_params_setSmsCode(compartment->remote_parameters, lpParams->smsCode);
 	}
 
 	/* SigComp version */
-	if(lpParams->SigComp_version)
-	{
+	if(lpParams->SigComp_version){
 		compartment->remote_parameters->SigComp_version = lpParams->SigComp_version;
 	}
 
@@ -67,8 +68,7 @@ void tcomp_compartment_setRemoteParams(tcomp_compartment_t *compartment, tcomp_p
 	*	FIXME: not tic tac
 	*	FIXME: what about returned feedback?
 	*/
-	if(lpParams->returnedStates && tcomp_buffer_getSize(lpParams->returnedStates))
-	{
+	if(lpParams->returnedStates && tcomp_buffer_getSize(lpParams->returnedStates)){
 		TSK_OBJECT_SAFE_FREE(compartment->remote_parameters->returnedStates);
 		/* swap */
 		compartment->remote_parameters->returnedStates = lpParams->returnedStates;
@@ -80,9 +80,8 @@ void tcomp_compartment_setRemoteParams(tcomp_compartment_t *compartment, tcomp_p
 */
 void tcomp_compartment_setReqFeedback(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)
 {
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
 
@@ -91,7 +90,7 @@ void tcomp_compartment_setReqFeedback(tcomp_compartment_t *compartment, tcomp_bu
 	/* Delete old */
 	TSK_OBJECT_SAFE_FREE(compartment->lpReqFeedback);
 
-	compartment->lpReqFeedback = _TCOMP_BUFFER_CREATE(tcomp_buffer_getBuffer(feedback), tcomp_buffer_getSize(feedback));
+	compartment->lpReqFeedback = tcomp_buffer_create(tcomp_buffer_getBuffer(feedback), tcomp_buffer_getSize(feedback));
 
 	tsk_safeobj_unlock(compartment);
 }
@@ -100,9 +99,8 @@ void tcomp_compartment_setReqFeedback(tcomp_compartment_t *compartment, tcomp_bu
 */
 void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_buffer_handle_t *feedback)
 {
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
 	
@@ -111,15 +109,14 @@ void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_bu
 	// Delete old
 	TSK_OBJECT_SAFE_FREE(compartment->lpRetFeedback);
 	
-	compartment->lpRetFeedback = _TCOMP_BUFFER_CREATE(tcomp_buffer_getBuffer(feedback), tcomp_buffer_getSize(feedback));
+	compartment->lpRetFeedback = tcomp_buffer_create(tcomp_buffer_getBuffer(feedback), tcomp_buffer_getSize(feedback));
 
 #if USE_ONLY_ACKED_STATES
 	/*
 	* ACK STATE ==> Returned feedback contains the partial state-id.
 	*/
-	if(compartment->compressorData && !compartment->compressorData_isStream)
-	{
-		tcomp_buffer_handle_t *stateid = _TCOMP_BUFFER_CREATE(tcomp_buffer_getBufferAtPos(feedback, 1), tcomp_buffer_getSize(feedback)-1);
+	if(compartment->compressorData && !compartment->compressorData_isStream){
+		tcomp_buffer_handle_t *stateid = tcomp_buffer_create(tcomp_buffer_getBufferAtPos(feedback, 1), tcomp_buffer_getSize(feedback)-1);
 		compartment->ackGhost(compartment->compressorData, stateid);
 		TSK_OBJECT_SAFE_FREE(stateid);
 	}
@@ -132,8 +129,7 @@ void tcomp_compartment_setRetFeedback(tcomp_compartment_t *compartment, tcomp_bu
 */
 void tcomp_compartment_clearStates(tcomp_compartment_t *compartment)
 {
-	if(!compartment)
-	{
+	if(!compartment){
 		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
 		return;
 	}
@@ -153,9 +149,8 @@ void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 	tcomp_state_t *lpState;
 	tsk_list_item_t *item;
 
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
 
@@ -170,36 +165,33 @@ void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 	 * freed first.  Apart from this special case, states with the lowest state_retention_priority are always freed first.  In the event of
 	 * a tie, then the state item created first in the compartment is also the first to be freed.
 	*/
-	tsk_list_foreach(item, compartment->local_states)
-	{
+	tsk_list_foreach(item, compartment->local_states){
 		tcomp_state_t *curr = item->data;
 
-		if(!curr) continue;
+		if(!curr){
+			continue;
+		}
 
 		/* First --> always ok */
-		if(item == compartment->local_states->head)
-		{
+		if(item == compartment->local_states->head){
 			lpState = curr;
 			continue;
 		}
 		
 		/* Local state ? */
-		if(curr->retention_priority == 65535)
-		{
+		if(curr->retention_priority == 65535){
 			lpState = curr;
 			break;
 		}
 
 		/* Lower priority? */
-		if(curr->retention_priority < lpState->retention_priority)
-		{
+		if(curr->retention_priority < lpState->retention_priority){
 			lpState = curr;
 			continue;
 		}
 	}
 
-	if(lpState)
-	{
+	if(lpState){
 		compartment->total_memory_left += TCOMP_GET_STATE_SIZE(lpState);
 		tsk_list_remove_item_by_data(compartment->local_states, lpState);
 	}
@@ -211,9 +203,8 @@ void tcomp_compartment_freeStateByPriority(tcomp_compartment_t *compartment)
 */
 void tcomp_compartment_freeState(tcomp_compartment_t *compartment, tcomp_state_t **lpState)
 {
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
 
@@ -235,43 +226,36 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 	tcomp_state_t *lpState;
 	tsk_list_item_t *item;
 
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
 
-	if(!tempStates || !size)
-	{
+	if(!tempStates || !size){
 		return;
 	}
 	
-	lpState = 0;
-	item = 0;
+	lpState = tsk_null;
+	item = tsk_null;
 
-	for (i = 0; i < size; i++)
-	{
+	for (i = 0; i < size; i++){
 		/* lock */
 		tsk_safeobj_lock(compartment);
 
-		tsk_list_foreach(item, compartment->local_states)
-		{
+		tsk_list_foreach(item, compartment->local_states){
 			tcomp_state_t *curr = item->data;
 			
 			/* Compare current state with provided partial state */
-			if(tcomp_buffer_startsWith(curr->identifier, tempStates[i]->identifier))
-			{
+			if(tcomp_buffer_startsWith(curr->identifier, tempStates[i]->identifier)){
 				/*
 				* If more than one state item in the compartment matches the partial state identifier, 
 				* then the state free request is ignored.
 				*/
-				if(lpState)
-				{
+				if(lpState){
 					lpState = 0;
 					break;
 				}
-				else
-				{
+				else{
 					lpState = curr;
 				}
 			}
@@ -280,8 +264,7 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 		/* unlock */
 		tsk_safeobj_unlock(compartment);
 
-		if(lpState)
-		{
+		if(lpState){
 			tcomp_compartment_freeState(compartment, &lpState);
 		}
 	}	
@@ -291,9 +274,8 @@ void tcomp_compartment_freeStates(tcomp_compartment_t *compartment, tcomp_tempst
 */
 void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t **lpState)
 {
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
 
@@ -304,7 +286,7 @@ void tcomp_compartment_addState(tcomp_compartment_t *compartment, tcomp_state_t 
 	tsk_list_push_back_data(compartment->local_states, ((void**) lpState));
 	
 	TSK_DEBUG_INFO("SigComp - Add new state.");
-	*lpState = 0;
+	*lpState = tsk_null;
 
 	tsk_safeobj_unlock(compartment);
 }
@@ -316,22 +298,19 @@ uint16_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tco
 	uint16_t count = 0;
 	tsk_list_item_t *item;
 
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
 	tsk_safeobj_lock(compartment);
 
-	item = 0;
+	item = tsk_null;
 	
-	tsk_list_foreach(item, compartment->local_states)
-	{
+	tsk_list_foreach(item, compartment->local_states){
 		tcomp_state_t *curr = item->data;
 		
-		if(tcomp_buffer_startsWith(curr->identifier, partial_identifier))
-		{
+		if(tcomp_buffer_startsWith(curr->identifier, partial_identifier)){
 			*lpState = curr; // override
 			count++;
 		}
@@ -346,20 +325,17 @@ uint16_t tcomp_compartment_findState(tcomp_compartment_t *compartment, const tco
 */
 void tcomp_compartment_freeGhostState(tcomp_compartment_t *compartment)
 {
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
 
 	tsk_safeobj_lock(compartment);
 
-	if(compartment->compressorData)
-	{
+	if(compartment->compressorData){
 		compartment->freeGhostState(compartment->compressorData);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("No compression data to free.");
 	}
 
@@ -372,17 +348,15 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 {
 	tcomp_buffer_handle_t *id;
 
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return;
 	}
 
 	tsk_safeobj_lock(compartment);
 
 	// FIXME: very bad
-	if(compartment->nacks_history_count >= NACK_MAX_HISTORY_SIZE)
-	{
+	if(compartment->nacks_history_count >= NACK_MAX_HISTORY_SIZE){
 		//tsk_list_item_t *item;
 		tsk_list_item_t *item2delete = 0;
 
@@ -398,38 +372,35 @@ void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t n
 	}
 
 
-	id = _TCOMP_BUFFER_CREATE(nackId, TSK_SHA1_DIGEST_SIZE);
+	id = tcomp_buffer_create(nackId, TSK_SHA1_DIGEST_SIZE);
 	tsk_list_push_back_data(compartment->nacks, ((void**) &id));
 	compartment->nacks_history_count++;
 
 	tsk_safeobj_unlock(compartment);
 }
 
-/**Checks is the NACK exist.
+/**Checks if the NACK exist.
 */
-int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId)
+tsk_bool_t tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId)
 {
-	int ret = 0;
+	tsk_bool_t ret = tsk_false;
 	tsk_list_item_t *item;
 
-	if(!compartment)
-	{
-		TSK_DEBUG_ERROR("NULL sigcomp compartment.");
-		return 0;
+	if(!compartment){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return tsk_false;
 	}
 
 	tsk_safeobj_lock(compartment);
 
-	item = 0;
+	item = tsk_null;
 	
-	tsk_list_foreach(item, compartment->nacks)
-	{
+	tsk_list_foreach(item, compartment->nacks){
 		tcomp_buffer_handle_t *curr = item->data;
 	
-		if(tcomp_buffer_equals(curr, nackId))
-		{
+		if(tcomp_buffer_equals(curr, nackId)){
 			TSK_DEBUG_INFO("SigComp - Nack found.");
-			ret = 1;
+			ret = tsk_true;
 			break;
 		}
 	}
@@ -452,11 +423,10 @@ int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buff
 //	State object definition
 //
 
-static tsk_object_t* tcomp_compartment_create(tsk_object_t* self, va_list * app)
+static tsk_object_t* tcomp_compartment_ctor(tsk_object_t* self, va_list * app)
 {
 	tcomp_compartment_t *compartment = self;
-	if(compartment)
-	{
+	if(compartment){
 		uint64_t id = va_arg(*app, uint64_t);
 #if defined (__GNUC__)
 		uint16_t sigCompParameters = (uint16_t)va_arg(*app, unsigned);
@@ -481,11 +451,11 @@ static tsk_object_t* tcomp_compartment_create(tsk_object_t* self, va_list * app)
 		compartment->identifier = id;
 
 		/* Remote parameters */
-		compartment->remote_parameters = TCOMP_PARAMS_CREATE();
+		compartment->remote_parameters = tcomp_params_create();
 		tcomp_params_setParameters(compartment->remote_parameters, sigCompParameters);
 
 		/* Local parameters */
-		compartment->local_parameters = TCOMP_PARAMS_CREATE();
+		compartment->local_parameters = tcomp_params_create();
 		tcomp_params_setParameters(compartment->local_parameters, sigCompParameters);
 
 		/* Total size */
@@ -497,15 +467,17 @@ static tsk_object_t* tcomp_compartment_create(tsk_object_t* self, va_list * app)
 		/* Empty list. */
 		compartment->local_states = tsk_list_create();
 	}
+	else{
+		TSK_DEBUG_ERROR("Null Compartment");
+	}
 
 	return self;
 }
 
-static tsk_object_t* tcomp_compartment_destroy(tsk_object_t* self)
+static tsk_object_t* tcomp_compartment_dtor(tsk_object_t* self)
 {
 	tcomp_compartment_t *compartment = self;
-	if(compartment)
-	{
+	if(compartment){
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(compartment);
 
@@ -534,6 +506,9 @@ static tsk_object_t* tcomp_compartment_destroy(tsk_object_t* self)
 		/* Delete local states */
 		TSK_OBJECT_SAFE_FREE(compartment->local_states);
 	}
+	else{
+		TSK_DEBUG_ERROR("Null Compartment");
+	}
 	
 	return self;
 }
@@ -549,8 +524,8 @@ static int tcomp_compartment_cmp(const tsk_object_t *obj1, const tsk_object_t *o
 static const tsk_object_def_t tsk_compartment_def_s = 
 {
 	sizeof(tcomp_compartment_t),
-	tcomp_compartment_create,
-	tcomp_compartment_destroy,
+	tcomp_compartment_ctor,
+	tcomp_compartment_dtor,
 	tcomp_compartment_cmp
 };
 const tsk_object_def_t *tcomp_compartment_def_t = &tsk_compartment_def_s;

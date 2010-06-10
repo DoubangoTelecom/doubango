@@ -43,9 +43,6 @@
 
 TCOMP_BEGIN_DECLS
 
-#define _TCOMP_DEFLATEDATA_CREATE(isStream, z_level, z_windowBits)		tsk_object_new(tcomp_deflatedata_def_t, (int)isStream, (int)z_level,(int) z_windowBits)
-#define TCOMP_DEFLATEDATA_CREATE(isStream)								tsk_object_new(tcomp_deflatedata_def_t, (int)isStream, Z_BEST_COMPRESSION, Z_DEFAULT_WINDOW_BITS)
-
 //============================================================//
 #define USE_DICTS_FOR_COMPRESSION				0
 
@@ -150,14 +147,16 @@ typedef struct tcomp_deflatedata_s
 }
 tcomp_deflatedata_t;
 
+tcomp_deflatedata_t* tcomp_deflatedata_create(tsk_bool_t isStream);
+
 void tcomp_deflatedata_freeGhostState(tcomp_compressordata_t *deflatedata);
 void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *deflatedata, const tcomp_buffer_handle_t *stateid);
 void tcomp_deflatedata_createGhost(tcomp_deflatedata_t *deflatedata, uint16_t state_len, tcomp_params_t *params);
-void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, size_t input_size);
+void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, tsk_size_t input_size);
 uint32_t* tcomp_deflatedata_getGhostCopyOffset(tcomp_deflatedata_t *deflatedata);
 
 tsk_bool_t tcomp_deflatedata_zReset(tcomp_deflatedata_t *deflatedata);
-tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in, size_t inLen, void* out, size_t* outLen, tsk_bool_t *stateChanged);
+tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in, tsk_size_t inLen, void* out, tsk_size_t* outLen, tsk_bool_t *stateChanged);
 
 int tcomp_deflatedata_zGetWindowBits(tcomp_deflatedata_t *deflatedata);
 void tcomp_deflatedata_zSetWindowBits(tcomp_deflatedata_t *deflatedata, int windowSize);
@@ -166,7 +165,7 @@ tsk_bool_t tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata);
 tsk_bool_t tcomp_deflatedata_zInit(tcomp_deflatedata_t *deflatedata);
 tsk_bool_t tcomp_deflatedata_zUnInit(tcomp_deflatedata_t *deflatedata);
 
-TINYSIGCOMP_GEXTERN const void *tcomp_deflatedata_def_t;
+TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_deflatedata_def_t;
 
 TCOMP_END_DECLS
 

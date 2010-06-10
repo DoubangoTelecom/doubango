@@ -124,7 +124,7 @@ int tcomp_udvm_createTempState(tcomp_udvm_t *udvm, uint16_t state_length, uint16
 	if(is_ok)
 	{
 		// no byte copy ()
-		tcomp_state_t *lpState =  TCOMP_STATE_CREATE(state_length, state_address, state_instruction, minimum_access_length, state_retention_priority);
+		tcomp_state_t *lpState =  tcomp_state_create(state_length, state_address, state_instruction, minimum_access_length, state_retention_priority);
 		tcomp_result_addTempStateToCreate(udvm->lpResult, lpState);
 	}
 

@@ -1039,8 +1039,8 @@ int main()
 	char buff2[MAX_BUFFER_SIZE];
 	
 	/* Managers */
-	manager1 = TCOMP_MANAGER_CREATE();
-	manager2 = TCOMP_MANAGER_CREATE();
+	manager1 = tcomp_manager_create();
+	manager2 = tcomp_manager_create();
 
 	/* Add SIP/Presence dictionnaries */
 	tcomp_manager_addSipSdpDictionary(manager1);
@@ -1049,8 +1049,8 @@ int main()
 	tcomp_manager_addPresenceDictionary(manager2);
 	
 	/* Results --> it is recomanded to use one result struct for each manager */
-	result1 = TCOMP_RESULT_CREATE();
-	result2 = TCOMP_RESULT_CREATE();
+	result1 = tcomp_result_create();
+	result2 = tcomp_result_create();
 
 	/* Sets compartment Ids */
 	tcomp_result_setCompartmentId(result1, COMPARTMENT_ID1, strlen(COMPARTMENT_ID1));

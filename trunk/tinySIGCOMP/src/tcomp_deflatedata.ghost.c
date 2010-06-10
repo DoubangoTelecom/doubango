@@ -124,7 +124,7 @@ void tcomp_deflatedata_createGhost(tcomp_deflatedata_t *deflatedata, uint16_t st
 
 	tsk_safeobj_lock(deflatedata);
 	
-	deflatedata->ghostState = TCOMP_STATE_CREATE(state_length, GHOST_STATE_ADDRESS, GHOST_STATE_INSTRUCTION, GHOST_STATE_MIN_ACCESS_LEN, GHOST_STATE_RETENTION_PRIORITY);
+	deflatedata->ghostState = tcomp_state_create(state_length, GHOST_STATE_ADDRESS, GHOST_STATE_INSTRUCTION, GHOST_STATE_MIN_ACCESS_LEN, GHOST_STATE_RETENTION_PRIORITY);
 	tcomp_buffer_allocBuff(deflatedata->ghostState->value, state_length);
 	ghostvalue_ptr = tcomp_buffer_getBuffer(deflatedata->ghostState->value);
 
@@ -199,7 +199,7 @@ void tcomp_deflatedata_ackGhost(tcomp_compressordata_t *data, const tcomp_buffer
 
 /**Updates a Ghost state.
 */
-void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, size_t input_size)
+void tcomp_deflatedata_updateGhost(tcomp_deflatedata_t *deflatedata, const uint8_t *input_ptr, tsk_size_t input_size)
 {
 	uint32_t i;
 	uint8_t *ghostvalue_ptr = 0;

@@ -125,7 +125,7 @@
 * #define MAX_BUFFER_SIZE 0xFFFF
 * 
 * int i = 0;
-* size_t outLen = 0;
+* tsk_size_t outLen = 0;
 * tcomp_result_t *result = 0;
 * char outputBuffer[MAX_BUFFER_SIZE]; 
 * 

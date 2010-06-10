@@ -33,7 +33,12 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-
+/** Creates new Requested feedback.
+*/
+tcomp_reqfeed_t* tcomp_reqfeed_create()
+{
+	return tsk_object_new(tcomp_reqfeed_def_t);
+}
 
 /**
 * Reset the feedback.
@@ -41,14 +46,15 @@
 */
 void tcomp_reqfeed_reset(tcomp_reqfeed_t* feedback)
 {
-	if(feedback)
-	{
+	if(feedback){
 		tcomp_buffer_freeBuff(feedback->item);
 		tcomp_buffer_reset(feedback->item);
 	
 		feedback->Q = feedback->S = feedback->I = 0;
 	}
-	else TSK_DEBUG_ERROR("NULL feedback.");
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter.");
+	}
 }
 
 
@@ -57,26 +63,25 @@ void tcomp_reqfeed_reset(tcomp_reqfeed_t* feedback)
 //========================================================
 //	Requested feedback object definition
 //
-static void* tcomp_reqfeed_create(void * self, va_list * app)
+static void* tcomp_reqfeed_ctor(void * self, va_list * app)
 {
 	tcomp_reqfeed_t *feedback = self;
-	if(feedback)
-	{
-		feedback->item = TCOMP_BUFFER_CREATE();
+	if(feedback){
+		feedback->item = tcomp_buffer_create_null();
 	}
-	else TSK_DEBUG_ERROR("Failed to create new feedback.");
+	else{
+		TSK_DEBUG_WARN("NULL feedback");
+	}
 
 	return self;
 }
-static void* tcomp_reqfeed_destroy(void* self)
+static void* tcomp_reqfeed_dtor(void* self)
 {
 	tcomp_reqfeed_t *feedback = self;
-	if(feedback)
-	{
+	if(feedback){
 		TSK_OBJECT_SAFE_FREE(feedback->item);
 	}
-	else
-	{
+	else{
 		TSK_DEBUG_WARN("NULL feedback");
 	}
 	return self;
@@ -85,8 +90,8 @@ static void* tcomp_reqfeed_destroy(void* self)
 static const tsk_object_def_t tcomp_reqfeed_def_s = 
 {
 	sizeof(tcomp_reqfeed_t),
-	tcomp_reqfeed_create, 
-	tcomp_reqfeed_destroy,
-	0
+	tcomp_reqfeed_ctor, 
+	tcomp_reqfeed_dtor,
+	tsk_null
 };
-const void *tcomp_reqfeed_def_t = &tcomp_reqfeed_def_s;
+const tsk_object_def_t *tcomp_reqfeed_def_t = &tcomp_reqfeed_def_s;

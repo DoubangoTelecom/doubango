@@ -125,7 +125,7 @@ tsk_bool_t tcomp_deflatedata_zReset(tcomp_deflatedata_t *deflatedata)
 	return ret;
 }
 
-tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in, size_t inLen, void* out, size_t* outLen, tsk_bool_t *stateChanged)
+tsk_bool_t tcomp_deflatedata_zCompress(tcomp_deflatedata_t *deflatedata, const void* in, tsk_size_t inLen, void* out, tsk_size_t* outLen, tsk_bool_t *stateChanged)
 {
 	int ret = tsk_false;
 /*
