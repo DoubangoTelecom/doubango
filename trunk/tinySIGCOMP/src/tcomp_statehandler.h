@@ -45,10 +45,6 @@
 
 TCOMP_BEGIN_DECLS
 
-/**Creates new SigComp state handler.
-*/
-#define TCOMP_STATEHANDLER_CREATE()				tsk_object_new(tcomp_statehandler_def_t)
-
 /**State handler.
 */
 typedef struct tcomp_statehandler_s
@@ -65,6 +61,8 @@ typedef struct tcomp_statehandler_s
 	TSK_DECLARE_SAFEOBJ;
 }
 tcomp_statehandler_t;
+
+tcomp_statehandler_t* tcomp_statehandler_create();
 
 tcomp_compartment_t *tcomp_statehandler_getCompartment(const tcomp_statehandler_t *statehandler, uint64_t id);
 void tcomp_statehandler_deleteCompartment(tcomp_statehandler_t *statehandler, uint64_t id);

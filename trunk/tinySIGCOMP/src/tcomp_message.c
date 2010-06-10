@@ -47,6 +47,12 @@
 #define HEADER_GET_DEST_VALUE(destination) ( sigcomp_encoding_destination[destination] )
 #define HEADER_GET_STATE_LENGTH(length) ( sigcomp_encoding_partial_id_length[length] )
 
+/** Creates new SigComp message.
+*/
+tcomp_message_t* tcomp_message_create(const void* input_ptr, tsk_size_t input_size, tsk_bool_t stream)
+{
+	return tsk_object_new(tcomp_message_def_t, input_ptr, input_size, stream);
+}
 
 /**Iniatizes the feedback item field.
 */
@@ -233,14 +239,14 @@ void initNack(tcomp_message_t *message, uint8_t** start_ptr, uint8_t* end_ptr)
 //	SigComp message object definition
 //
 
-static tsk_object_t* tcomp_message_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* tcomp_message_ctor(tsk_object_t *self, va_list * app)
 {
 	tcomp_message_t *message = self;
 	
 	if(message){
 		const void* input_ptr = va_arg(*app, const void*);
-		size_t input_size = va_arg(*app, size_t);
-		int stream = va_arg(*app, int);
+		tsk_size_t input_size = va_arg(*app, tsk_size_t);
+		tsk_bool_t stream = va_arg(*app, tsk_bool_t);
 
 		uint8_t *dummy_ptr, *end_ptr;
 		uint8_t state_len;
@@ -251,10 +257,10 @@ static tsk_object_t* tcomp_message_create(tsk_object_t *self, va_list * app)
 			goto bail;
 		}
 		
-		message->stateId = TCOMP_BUFFER_CREATE();
-		message->remaining_sigcomp_buffer = TCOMP_BUFFER_CREATE();
-		message->uploaded_UDVM_buffer = TCOMP_BUFFER_CREATE();
-		message->ret_feedback_buffer= TCOMP_BUFFER_CREATE();
+		message->stateId = tcomp_buffer_create_null();
+		message->remaining_sigcomp_buffer = tcomp_buffer_create_null();
+		message->uploaded_UDVM_buffer = tcomp_buffer_create_null();
+		message->ret_feedback_buffer= tcomp_buffer_create_null();
 		
 		message->isNack = 0;
 		dummy_ptr = ((uint8_t*)input_ptr);
@@ -322,7 +328,7 @@ bail:
 	return message;
 }
 
-static tsk_object_t* tcomp_message_destroy(tsk_object_t *self)
+static tsk_object_t* tcomp_message_dtor(tsk_object_t *self)
 {
 	tcomp_message_t *message = self;
 
@@ -342,8 +348,8 @@ static tsk_object_t* tcomp_message_destroy(tsk_object_t *self)
 static const tsk_object_def_t tcomp_message_def_s = 
 {
 	sizeof(tcomp_message_t),
-	tcomp_message_create, 
-	tcomp_message_destroy,
+	tcomp_message_ctor, 
+	tcomp_message_dtor,
 	tsk_null
 };
 const tsk_object_def_t* tcomp_message_def_t = &tcomp_message_def_s;

@@ -40,14 +40,25 @@ typedef struct tcomp_buffer_s
 {
 	TSK_DECLARE_OBJECT;
 	
-	size_t		size;			/**< The size of the buffer */
+	tsk_size_t		size;			/**< The size of the buffer */
 	uint8_t*	lpbuffer;		/**< Pointer to the buffer */
-	size_t		index_bytes;	/**< Bytes (8bit size) cursor */
-	size_t		index_bits;		/**< Bits (1-bit size) cursor */
+	tsk_size_t		index_bytes;	/**< Bytes (8bit size) cursor */
+	tsk_size_t		index_bits;		/**< Bits (1-bit size) cursor */
 	unsigned	owner:1;		/**< Indicates whether we are the owner of the buffer or not (external buffer) */
 	uint8_t		P_BIT;			/**< P-BIT controller. */
 }
 tcomp_buffer_t;
+
+
+tcomp_buffer_handle_t* tcomp_buffer_create(const void* data, tsk_size_t len)
+{
+	return tsk_object_new(tcomp_buffer_def_t, data, len);
+}
+
+tcomp_buffer_handle_t* tcomp_buffer_create_null()
+{
+	return tcomp_buffer_create(tsk_null, 0);
+}
 
 /**Compares two sigomp buffers.
 * @param handle1 First handle to compare.
@@ -70,7 +81,7 @@ tsk_bool_t tcomp_buffer_equals(const tcomp_buffer_handle_t* handle1, const tcomp
 */
 tsk_bool_t tcomp_buffer_startsWith(const tcomp_buffer_handle_t* handle1, const tcomp_buffer_handle_t* handle2) /*const*/
 {
-	size_t i;
+	tsk_size_t i;
 	tcomp_buffer_t* buffer1 = (tcomp_buffer_t*)handle1;
 	tcomp_buffer_t* buffer2 = (tcomp_buffer_t*)handle2;
 
@@ -91,7 +102,7 @@ tsk_bool_t tcomp_buffer_startsWith(const tcomp_buffer_handle_t* handle1, const t
 * @param position Position pointer
 * @retval Pointer to the internal buffer.
 */
-const uint8_t* tcomp_buffer_getReadOnlyBufferAtPos(const tcomp_buffer_handle_t* handle, size_t position)/*const*/
+const uint8_t* tcomp_buffer_getReadOnlyBufferAtPos(const tcomp_buffer_handle_t* handle, tsk_size_t position)/*const*/
 {
 	if(handle){
 		return (((tcomp_buffer_t*)handle)->lpbuffer + position);
@@ -108,7 +119,7 @@ const uint8_t* tcomp_buffer_getReadOnlyBufferAtPos(const tcomp_buffer_handle_t* 
 * @param position Position pointer
 * @retval Pointer to the internal buffer.
 */
-uint8_t* tcomp_buffer_getBufferAtPos(const tcomp_buffer_handle_t* handle, size_t position)
+uint8_t* tcomp_buffer_getBufferAtPos(const tcomp_buffer_handle_t* handle, tsk_size_t position)
 {
 	if(handle){
 		return (((tcomp_buffer_t*)handle)->lpbuffer + position);
@@ -124,7 +135,7 @@ uint8_t* tcomp_buffer_getBufferAtPos(const tcomp_buffer_handle_t* handle, size_t
 /** Gets the internal buffer size
 * @retval The size of the internal buffer
 */
-size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* handle) /*const*/
+tsk_size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* handle) /*const*/
 {
 	if(handle){
 		return ((tcomp_buffer_t*)handle)->size;
@@ -139,11 +150,11 @@ size_t tcomp_buffer_getSize(const tcomp_buffer_handle_t* handle) /*const*/
 /**Gets the remainning bits.
 * @param handle The handle for which to get the remaining bits.
 */
-size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*const*/
+tsk_size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*const*/
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		size_t result = ((buffer->size * 8) - ((buffer->index_bytes * 8) + buffer->index_bits));
+		tsk_size_t result = ((buffer->size * 8) - ((buffer->index_bytes * 8) + buffer->index_bits));
 		return (result < 0) ? 0: result;
 	}
 	else{
@@ -158,11 +169,11 @@ size_t tcomp_buffer_getRemainingBits(const tcomp_buffer_handle_t* handle) /*cons
 * @param length Number of bytes to read.
 * @retval Pointer to the resulting buffer.
 */
-uint8_t* tcomp_buffer_readBytes(tcomp_buffer_handle_t* handle, size_t length)
+uint8_t* tcomp_buffer_readBytes(tcomp_buffer_handle_t* handle, tsk_size_t length)
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		size_t old_index;
+		tsk_size_t old_index;
 
 		if((buffer->index_bytes + length) > (buffer->size)) {
 			return tsk_null;
@@ -185,7 +196,7 @@ uint8_t* tcomp_buffer_readBytes(tcomp_buffer_handle_t* handle, size_t length)
 * @param length The length of the buffer to read.
 * @retval All bits as a 2-bytes integer value
 */
-uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, size_t length)
+uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, tsk_size_t length)
 {
 	// UDV Memory is always MSB first
 	// MSB  <-- LSB
@@ -223,7 +234,7 @@ uint16_t tcomp_buffer_readLsbToMsb(tcomp_buffer_handle_t* handle, size_t length)
 * @param length The length of the buffer to read.
 * @retval All bits as a 2-bytes integer value
 */
-uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, size_t length)
+uint16_t tcomp_buffer_readMsbToLsb(tcomp_buffer_handle_t* handle, tsk_size_t length)
 {
 	// UDV Memory is always MSB first
 	// MSB  --> LSB
@@ -297,7 +308,7 @@ void tcomp_buffer_discardLastBytes(tcomp_buffer_handle_t* handle, uint16_t count
 * @param handle SigComp handle holding the internal buffer to alloc.
 * @param size Number of bytes to allocate.
 */
-void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, size_t size)
+void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, tsk_size_t size)
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
@@ -325,7 +336,7 @@ void tcomp_buffer_allocBuff(tcomp_buffer_handle_t* handle, size_t size)
 * @param externalBuff THe external buffer to reference.
 * @param size The size of the external buffer.
 */
-void tcomp_buffer_referenceBuff(tcomp_buffer_handle_t* handle, uint8_t* externalBuff, size_t size)
+void tcomp_buffer_referenceBuff(tcomp_buffer_handle_t* handle, uint8_t* externalBuff, tsk_size_t size)
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
@@ -351,12 +362,12 @@ void tcomp_buffer_referenceBuff(tcomp_buffer_handle_t* handle, uint8_t* external
 * @param size The size of the data
 * @retval @a tsk_true if succeed an @a tsk_false otherwise.
 */
-tsk_bool_t tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, size_t size)
+tsk_bool_t tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* data, tsk_size_t size)
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		size_t oldSize = buffer->size;
-		size_t newSize = (oldSize + size);
+		tsk_size_t oldSize = buffer->size;
+		tsk_size_t newSize = (oldSize + size);
 		{
 			// realloc buffer
 			if(!buffer->size){
@@ -394,11 +405,11 @@ tsk_bool_t tcomp_buffer_appendBuff(tcomp_buffer_handle_t* handle, const void* da
 * @param size The number of bytes to remove
 * @retval @a tsk_true if succeed an @a tsk_false otherwise.
 */
-tsk_bool_t tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, size_t pos, size_t size)
+tsk_bool_t tcomp_buffer_removeBuff(tcomp_buffer_handle_t* handle, tsk_size_t pos, tsk_size_t size)
 {
 	if(handle){
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		size_t oldSize, newSize;
+		tsk_size_t oldSize, newSize;
 
 		if(((pos + size) > buffer->size)) size = (buffer->size - pos);
 		memcpy((buffer->lpbuffer + pos), (buffer->lpbuffer + pos + size), (buffer->size - (pos + size)));
@@ -447,7 +458,7 @@ void tcomp_buffer_freeBuff(tcomp_buffer_handle_t* handle)
 * @param handle SigComp handle holding the internal buffer.
 * @retval The cursor position.
 */
-size_t* tcomp_buffer_getIndexBytes(const tcomp_buffer_handle_t* handle)
+tsk_size_t* tcomp_buffer_getIndexBytes(const tcomp_buffer_handle_t* handle)
 {
 	if(handle){
 		return &(((tcomp_buffer_t*)handle)->index_bytes);
@@ -463,7 +474,7 @@ size_t* tcomp_buffer_getIndexBytes(const tcomp_buffer_handle_t* handle)
 * @param handle SigComp handle holding the internal buffer.
 * @retval The cursor position.
 */
-size_t* tcomp_buffer_getIndexBits(const tcomp_buffer_handle_t* handle)
+tsk_size_t* tcomp_buffer_getIndexBits(const tcomp_buffer_handle_t* handle)
 {
 	if(handle){
 		return &(((tcomp_buffer_t*)handle)->index_bits);
@@ -496,10 +507,9 @@ uint8_t* tcomp_buffer_getP_BIT(const tcomp_buffer_handle_t* handle)
 
 /**Creates a random HASH number.
 */
-uint64_t tcomp_buffer_createHash(const void *data, size_t len)
+uint64_t tcomp_buffer_createHash(const void *data, tsk_size_t len)
 {
-	if(!data || !len)
-	{
+	if(!data || !len){
 		TSK_DEBUG_ERROR("Null data.");
 		return 0;
 	}
@@ -512,7 +522,7 @@ uint64_t tcomp_buffer_createHash(const void *data, size_t len)
 		/* Generate Hash code from id */
 		{
 		   uint64_t b = PRIME_1, a = PRIME_2;
-		   size_t i;
+		   tsk_size_t i;
 		   for(i = 0; i < len; strid++, i++)
 		   {
 			  hash = hash * a + (*strid);
@@ -530,23 +540,23 @@ uint64_t tcomp_buffer_createHash(const void *data, size_t len)
 * @param handle SigComp handle holding the internal buffer to print.
 * @param size The number of bytes to print.
 */
-void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, size_t size)
+void tcomp_buffer_nprint(tcomp_buffer_handle_t* handle, tsk_size_t size)
 {
 #if defined(_DEBUG) || defined(DEBUG)
 
 	if(handle){
-		size_t i, size_to_print;
+		tsk_size_t i, tsk_size_to_print;
 		tcomp_buffer_t* buffer = (tcomp_buffer_t*)handle;
-		size_to_print = (size<0) ? buffer->size : size;
+		tsk_size_to_print = (size<0) ? buffer->size : size;
 
-		if( !size_to_print || !buffer->lpbuffer) return;
+		if( !tsk_size_to_print || !buffer->lpbuffer) return;
 
-		for(i = 0; i < size_to_print; i+=2){
+		for(i = 0; i < tsk_size_to_print; i+=2){
 			char s[10]; 
 			uint16_t value;
 			memset(s, 0, 10);
 			
-			if((i+1) == size_to_print){
+			if((i+1) == tsk_size_to_print){
 				// last 2-byte lay in 1byte
 				value = buffer->lpbuffer[i];
 #if 0
@@ -605,11 +615,11 @@ void tcomp_buffer_reset(tcomp_buffer_handle_t* handle)
 //========================================================
 //	SigComp buffer object definition
 //
-static tsk_object_t* _tcomp_buffer_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* tcomp_buffer_ctor(tsk_object_t *self, va_list * app)
 {
 	tcomp_buffer_t* buffer = self;
 	const void* data = va_arg(*app, const void *);
-	size_t len = va_arg(*app, size_t);
+	tsk_size_t len = va_arg(*app, tsk_size_t);
 
 	if(buffer){
 		buffer->owner = 1;
@@ -630,7 +640,7 @@ static tsk_object_t* _tcomp_buffer_create(tsk_object_t *self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tcomp_buffer_destroy(tsk_object_t *self)
+static tsk_object_t* tcomp_buffer_dtor(tsk_object_t *self)
 {
 	tcomp_buffer_t* buffer = self;
 	if(buffer){
@@ -646,8 +656,8 @@ static tsk_object_t* tcomp_buffer_destroy(tsk_object_t *self)
 static const tsk_object_def_t tcomp_buffer_def_s = 
 {
 	sizeof(tcomp_buffer_t),
-	_tcomp_buffer_create, 
-	tcomp_buffer_destroy,
+	tcomp_buffer_ctor, 
+	tcomp_buffer_dtor,
 	tsk_null
 };
 const tsk_object_def_t *tcomp_buffer_def_t = &tcomp_buffer_def_s;

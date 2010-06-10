@@ -31,6 +31,12 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+/** Creates new NACK object.
+*/
+tcomp_nackinfo_t* tcomp_nackinfo_create()
+{
+	return tsk_object_new(tcomp_nackinfo_def_t);
+}
 
 //========================================================
 //	NackInfo object definition
@@ -41,12 +47,12 @@
 * @retval The NACK info message.
 * @sa @ref tcomp_nackinfo_destroy.
 */
-static tsk_object_t* tcomp_nackinfo_create(tsk_object_t *self, va_list* app)
+static tsk_object_t* tcomp_nackinfo_ctor(tsk_object_t *self, va_list* app)
 {
 	tcomp_nackinfo_t *nackinfo = self;
 	if(nackinfo){
 		nackinfo->version = NACK_VERSION;
-		nackinfo->details = TCOMP_BUFFER_CREATE();
+		nackinfo->details = tcomp_buffer_create_null();
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new nackinfo.");
@@ -59,7 +65,7 @@ static tsk_object_t* tcomp_nackinfo_create(tsk_object_t *self, va_list* app)
 * @param nackinfo The NACK info message to free.
 * @sa @ref tcomp_nackinfo_create.
 */
-static tsk_object_t* tcomp_nackinfo_destroy(tsk_object_t* self)
+static tsk_object_t* tcomp_nackinfo_dtor(tsk_object_t* self)
 {
 	tcomp_nackinfo_t *nackinfo = self;
 	if(nackinfo){
@@ -72,8 +78,8 @@ static tsk_object_t* tcomp_nackinfo_destroy(tsk_object_t* self)
 static const tsk_object_def_t tcomp_nackinfo_def_s = 
 {
 	sizeof(tcomp_nackinfo_t),
-	tcomp_nackinfo_create, 
-	tcomp_nackinfo_destroy,
+	tcomp_nackinfo_ctor, 
+	tcomp_nackinfo_dtor,
 	tsk_null
 };
 const tsk_object_def_t* tcomp_nackinfo_def_t = &tcomp_nackinfo_def_s;

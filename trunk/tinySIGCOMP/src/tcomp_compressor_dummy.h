@@ -35,7 +35,7 @@
 
 TCOMP_BEGIN_DECLS
 
-tsk_bool_t tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream);
+tsk_bool_t tcomp_compressor_dummy_compress(tcomp_compartment_t *lpCompartment, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream);
 
 TCOMP_END_DECLS
 

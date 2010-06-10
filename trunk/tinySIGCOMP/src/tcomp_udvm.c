@@ -34,6 +34,10 @@
 
 #define TCOMP_UDVM_HEADER_RESERVED_SIZE 22
 
+tcomp_udvm_t* tcomp_udvm_create(tcomp_message_t* _sigCompMessage, tcomp_statehandler_t*  stateHandler, tcomp_result_t* lpResult)
+{
+	return tsk_object_new(tcomp_udvm_def_t, _sigCompMessage, stateHandler, lpResult);
+}
 
 /**Executes the bytecode.
 */
@@ -42,7 +46,7 @@ static tsk_bool_t tcomp_udvm_runByteCode(tcomp_udvm_t *udvm)
 	uint16_t operand_1, operand_2, operand_3, operand_4, operand_5, operand_6, operand_7;
 	tsk_bool_t excution_failed = tsk_false, end_message = tsk_false;
 	if(!udvm->isOK) {
-		TSK_DEBUG_ERROR("Cannot run/execute bytecode on invalid.");
+		TSK_DEBUG_ERROR("Cannot run()/execute() invalid bytecode");
 		return tsk_false;
 	}
 
@@ -403,7 +407,7 @@ tsk_bool_t tcomp_udvm_decompress(tcomp_udvm_t *udvm)
 //========================================================
 //	UDVM machine definition
 //
-static tsk_object_t* tcomp_udvm_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tcomp_udvm_ctor(tsk_object_t * self, va_list * app)
 {
 	tcomp_udvm_t *udvm = self;
 	if(udvm){
@@ -412,10 +416,10 @@ static tsk_object_t* tcomp_udvm_create(tsk_object_t * self, va_list * app)
 		udvm->stateHandler = va_arg(*app, tcomp_statehandler_t *);
 		udvm->lpResult = va_arg(*app, tcomp_result_t *);
 		
-		udvm->isOK = 1;
+		udvm->isOK = tsk_true;
 		udvm->maximum_UDVM_cycles = 0; /* RFC 3320 subclause 8.6 */
 		udvm->consumed_cycles = 0;
-		udvm->memory = TCOMP_BUFFER_CREATE();
+		udvm->memory = tcomp_buffer_create_null();
 
 		/* Alloc UDVM memory */
 		if(udvm->sigCompMessage->stream_based){
@@ -439,7 +443,7 @@ static tsk_object_t* tcomp_udvm_create(tsk_object_t * self, va_list * app)
 		* Has feedback with my state id?
 		*/
 		if(tcomp_buffer_getSize(udvm->sigCompMessage->ret_feedback_buffer)){
-			size_t size = tcomp_buffer_getSize(udvm->sigCompMessage->ret_feedback_buffer);
+			tsk_size_t size = tcomp_buffer_getSize(udvm->sigCompMessage->ret_feedback_buffer);
 			tcomp_buffer_allocBuff(udvm->lpResult->ret_feedback, size);
 			memcpy(tcomp_buffer_getBuffer(udvm->lpResult->ret_feedback), tcomp_buffer_getBuffer(udvm->sigCompMessage->ret_feedback_buffer), size);
 		}
@@ -453,19 +457,19 @@ static tsk_object_t* tcomp_udvm_create(tsk_object_t * self, va_list * app)
 			uint16_t match_count = tcomp_statehandler_findState(udvm->stateHandler, udvm->sigCompMessage->stateId, &lpState);
 			if( (!match_count || match_count>1 || !lpState)
 				|| (lpState->minimum_access_length > tcomp_buffer_getSize(udvm->sigCompMessage->stateId))
-				|| ((size_t)(lpState->address + lpState->length) > TCOMP_UDVM_GET_SIZE()) )
+				|| ((tsk_size_t)(lpState->address + lpState->length) > TCOMP_UDVM_GET_SIZE()) )
 			{
 				tcomp_udvm_createNackInfo(udvm, NACK_STATE_NOT_FOUND, udvm->sigCompMessage->stateId, 0);
-				udvm->isOK = 0;
+				udvm->isOK = tsk_false;
 				return self;
 			}
 			//this->sigCompMessage->stateId.print();//FIXME
 			/*
 			* Copy bytecodes to UDVM memory
 			*/
-			if( (size_t)(lpState->address + lpState->length) >= TCOMP_UDVM_GET_SIZE() ){
+			if( (tsk_size_t)(lpState->address + lpState->length) >= TCOMP_UDVM_GET_SIZE() ){
 				tcomp_udvm_createNackInfo2(udvm, NACK_SEGFAULT);
-				udvm->isOK = 0;
+				udvm->isOK = tsk_false;
 				return self;
 			}
 			memcpy( TCOMP_UDVM_GET_BUFFER_AT(lpState->address), 
@@ -483,10 +487,10 @@ static tsk_object_t* tcomp_udvm_create(tsk_object_t * self, va_list * app)
 			/*
 			* Copy bytecodes to UDVM memory
 			*/
-			size_t bytecodes_destination = udvm->sigCompMessage->bytecodes_destination;
+			tsk_size_t bytecodes_destination = udvm->sigCompMessage->bytecodes_destination;
 			if( (bytecodes_destination + tcomp_buffer_getSize(udvm->sigCompMessage->uploaded_UDVM_buffer)) >= TCOMP_UDVM_GET_SIZE() ){
 				tcomp_udvm_createNackInfo2(udvm, NACK_BYTECODES_TOO_LARGE);
-				udvm->isOK = 0;
+				udvm->isOK = tsk_false;
 				return self;
 			}
 			memcpy( TCOMP_UDVM_GET_BUFFER_AT(bytecodes_destination),
@@ -523,7 +527,7 @@ static tsk_object_t* tcomp_udvm_create(tsk_object_t * self, va_list * app)
 	return self;
 }
 
-static tsk_object_t* tcomp_udvm_destroy(tsk_object_t *self)
+static tsk_object_t* tcomp_udvm_dtor(tsk_object_t *self)
 {
 	tcomp_udvm_t *udvm = self;
 	if(udvm){
@@ -539,8 +543,8 @@ static tsk_object_t* tcomp_udvm_destroy(tsk_object_t *self)
 static const tsk_object_def_t tcomp_udvm_def_s = 
 {
 	sizeof(tcomp_udvm_t),
-	tcomp_udvm_create,
-	tcomp_udvm_destroy,
+	tcomp_udvm_ctor,
+	tcomp_udvm_dtor,
 	tsk_null
 };
 const tsk_object_def_t *tcomp_udvm_def_t = &tcomp_udvm_def_s;

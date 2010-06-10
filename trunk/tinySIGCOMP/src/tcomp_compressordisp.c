@@ -41,6 +41,14 @@
 */
 #define TCOMP_NACK_SUPPORTED (dispatcher->stateHandler->sigcomp_parameters->SigComp_version >= 0x02)
 
+
+/**Creates new compressor dispatcher.
+*/
+tcomp_compressordisp_t* tcomp_compressordisp_create(const tcomp_statehandler_t* statehandler)
+{
+	return tsk_object_new(tcomp_compressordisp_def_t, statehandler);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// Compress a message.
 ///
@@ -54,7 +62,7 @@
 ///
 /// @return	@a tsk_true if succeed and @a tsk_false otherwize. 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, size_t input_size, void *output_ptr, size_t *output_size, tsk_bool_t stream)
+tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uint64_t compartmentId, const void *input_ptr, tsk_size_t input_size, void *output_ptr, tsk_size_t *output_size, tsk_bool_t stream)
 {
 	tsk_bool_t ret = tsk_true;
 	int i = 0;
@@ -73,8 +81,7 @@ tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uin
 	*/
 	tsk_safeobj_lock(dispatcher);
 	
-	for( i = 0; (i < TCOMP_MAX_COMPRESSORS && dispatcher->compressors[i]); i++ )
-	{
+	for( i = 0; (i < TCOMP_MAX_COMPRESSORS && dispatcher->compressors[i]); i++ ){
 		if((ret = dispatcher->compressors[i](lpCompartment, input_ptr, input_size, output_ptr, output_size, stream))) {
 			break;
 		}
@@ -86,11 +93,10 @@ tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uin
 	/*
 	*	STREAM case. FIXME:Because I'm a lazy man I only support 0xFF00 case
 	*/
-	if(stream)
-	{
+	if(stream){
 		uint8_t* escapedBuffer;
-		size_t i, j;
-		size_t escapedBufferSize = (*output_size + 2); /* 2 = strlen(0xffff) */
+		tsk_size_t i, j;
+		tsk_size_t escapedBufferSize = (*output_size + 2); /* 2 = strlen(0xffff) */
 
 		for(i = 0; i < *output_size ; i++) {
 			escapedBufferSize += ((uint8_t*)output_ptr)[i] == 0xff ? 1 : 0;
@@ -115,8 +121,7 @@ tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uin
 	/*
 	* NACK
 	*/
-	if(ret && TCOMP_NACK_SUPPORTED)
-	{
+	if(ret && TCOMP_NACK_SUPPORTED){
 		/* store nack for later retrieval in case of errors */
 		uint8_t nackId[TSK_SHA1_DIGEST_SIZE];
 		tsk_sha1context_t sha;
@@ -139,9 +144,10 @@ tsk_bool_t tcomp_compressordisp_compress(tcomp_compressordisp_t *dispatcher, uin
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 int tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress_f compressor)
 {
-	size_t i;
+	tsk_size_t i;
 
 	if(!dispatcher){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -158,9 +164,10 @@ int tcomp_compressordisp_addCompressor(tcomp_compressordisp_t *dispatcher, tcomp
 */
 int tcomp_compressordisp_removeCompressor(tcomp_compressordisp_t *dispatcher, tcomp_compressor_compress_f compressor)
 {
-	size_t i;
+	tsk_size_t i;
 
 	if(!dispatcher){
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -183,7 +190,7 @@ int tcomp_compressordisp_removeCompressor(tcomp_compressordisp_t *dispatcher, tc
 //========================================================
 //	SigComp compressor dispatcher object definition
 //
-static tsk_object_t* tcomp_compressordisp_create(tsk_object_t * self, va_list * app)
+static tsk_object_t* tcomp_compressordisp_ctor(tsk_object_t * self, va_list * app)
 {
 	tcomp_compressordisp_t *compressordisp = self;
 	if(compressordisp){
@@ -207,7 +214,7 @@ static tsk_object_t* tcomp_compressordisp_create(tsk_object_t * self, va_list * 
 	return self;
 }
 
-static tsk_object_t* tcomp_compressordisp_destroy(tsk_object_t *self)
+static tsk_object_t* tcomp_compressordisp_dtor(tsk_object_t *self)
 {
 	tcomp_compressordisp_t *compressordisp = self;
 	if(compressordisp){
@@ -226,8 +233,8 @@ static tsk_object_t* tcomp_compressordisp_destroy(tsk_object_t *self)
 static const tsk_object_def_t tcomp_compressordisp_def_s = 
 {
 	sizeof(tcomp_compressordisp_t),
-	tcomp_compressordisp_create,
-	tcomp_compressordisp_destroy,
+	tcomp_compressordisp_ctor,
+	tcomp_compressordisp_dtor,
 	tsk_null
 };
 const tsk_object_def_t *tcomp_compressordisp_def_t = &tcomp_compressordisp_def_s;

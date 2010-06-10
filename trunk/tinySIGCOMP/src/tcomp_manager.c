@@ -58,15 +58,23 @@ typedef struct tcomp_manager_s
 }
 tcomp_manager_t;
 
+
+/**Creates new SigComp manager.
+*/
+tcomp_manager_handle_t* tcomp_manager_create()
+{
+	return tsk_object_new(tcomp_manager_def_t);
+}
+
 /**@ingroup tcomp_manager_group
 */
-size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compartmentId, size_t compartmentIdSize, const void* input_ptr, size_t input_size, void* output_ptr, size_t output_size, tsk_bool_t stream)
+tsk_size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compartmentId, tsk_size_t compartmentIdSize, const void* input_ptr, tsk_size_t input_size, void* output_ptr, tsk_size_t output_size, tsk_bool_t stream)
 {
 	tcomp_manager_t *manager = handle;
-	size_t ret_size = output_size;
+	tsk_size_t ret_size = output_size;
 
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
@@ -81,12 +89,12 @@ size_t tcomp_manager_compress(tcomp_manager_handle_t *handle, const void* compar
 
 /**@ingroup tcomp_manager_group
 */
-size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult)
+tsk_size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* input_ptr, tsk_size_t input_size, tcomp_result_t *lpResult)
 {
 	tcomp_manager_t *manager = handle;
 
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 	
@@ -107,11 +115,11 @@ size_t tcomp_manager_decompress(tcomp_manager_handle_t *handle, const void* inpu
 
 /**@ingroup tcomp_manager_group
 */
-size_t tcomp_manager_getNextStreamMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)
+tsk_size_t tcomp_manager_getNextStreamMessage(tcomp_manager_handle_t *handle, tcomp_result_t *lpResult)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 
@@ -140,7 +148,7 @@ void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_re
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return;
 	}
 
@@ -149,11 +157,11 @@ void tcomp_manager_provideCompartmentId(tcomp_manager_handle_t *handle, tcomp_re
 
 /**@ingroup tcomp_manager_group
 */
-void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, const void *compartmentId, size_t compartmentIdSize)
+void tcomp_manager_closeCompartment(tcomp_manager_handle_t *handle, const void *compartmentId, tsk_size_t compartmentIdSize)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return;
 	}
 
@@ -170,7 +178,7 @@ int tcomp_manager_setDecompression_Memory_Size(tcomp_manager_handle_t *handle, u
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 	
@@ -187,7 +195,7 @@ int tcomp_manager_setState_Memory_Size(tcomp_manager_handle_t *handle, uint32_t 
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -204,7 +212,7 @@ int tcomp_manager_setCycles_Per_Bit(tcomp_manager_handle_t *handle, uint8_t cpb)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -221,7 +229,7 @@ int tcomp_manager_setSigComp_Version(tcomp_manager_handle_t *handle, uint8_t ver
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -239,7 +247,7 @@ int tcomp_manager_addCompressor(tcomp_manager_handle_t *handle, tcomp_compressor
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -256,7 +264,7 @@ int tcomp_manager_removeCompressor(tcomp_manager_handle_t *handle, tcomp_compres
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -272,7 +280,7 @@ int tcomp_manager_addSipSdpDictionary(tcomp_manager_handle_t *handle)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -288,7 +296,7 @@ int tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle)
 {
 	tcomp_manager_t *manager = handle;
 	if(!manager){
-		TSK_DEBUG_ERROR("NULL sigcomp manager.");
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -309,14 +317,14 @@ int tcomp_manager_addPresenceDictionary(tcomp_manager_handle_t *handle)
 //	SigComp manager object definition
 //
 
-static void* tcomp_manager_create(void * self, va_list * app)
+static void* tcomp_manager_ctor(void * self, va_list * app)
 {
 	tcomp_manager_t *manager = self;
 	if(manager)
 	{
-		manager->stateHandler = TCOMP_STATEHANDLER_CREATE();
-		manager->dispatcher_compressor = TCOMP_COMPRESSORDISP_CREATE(manager->stateHandler);
-		manager->dispatcher_decompressor = TCOMP_DECOMPRESSORDISP_CREATE(manager->stateHandler);
+		manager->stateHandler = tcomp_statehandler_create();
+		manager->dispatcher_compressor = tcomp_compressordisp_create(manager->stateHandler);
+		manager->dispatcher_decompressor = tcomp_decompressordisp_create(manager->stateHandler);
 
 		/* Initialize safeobject */
 		tsk_safeobj_init(manager);
@@ -328,7 +336,7 @@ static void* tcomp_manager_create(void * self, va_list * app)
 	return self;
 }
 
-static void* tcomp_manager_destroy(void *self)
+static void* tcomp_manager_dtor(void *self)
 {
 	tcomp_manager_t *manager = self;
 	if(manager)
@@ -348,8 +356,8 @@ static void* tcomp_manager_destroy(void *self)
 static const tsk_object_def_t tcomp_manager_def_s = 
 {
 	sizeof(tcomp_manager_t),
-	tcomp_manager_create,
-	tcomp_manager_destroy,
-	0
+	tcomp_manager_ctor,
+	tcomp_manager_dtor,
+	tsk_null
 };
-const void *tcomp_manager_def_t = &tcomp_manager_def_s;
+const tsk_object_def_t *tcomp_manager_def_t = &tcomp_manager_def_s;

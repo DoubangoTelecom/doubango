@@ -43,8 +43,6 @@
 
 TCOMP_BEGIN_DECLS
 
-#define TCOMP_COMPARTMENT_CREATE(id, sigCompParameters)		tsk_object_new(tcomp_compartment_def_t, (uint64_t)id, (uint16_t)sigCompParameters)
-
 typedef struct tcomp_compartment_s
 {
 	TSK_DECLARE_OBJECT;
@@ -72,6 +70,8 @@ typedef struct tcomp_compartment_s
 }
 tcomp_compartment_t;
 
+tcomp_compartment_t* tcomp_compartment_create(uint64_t id, uint16_t sigCompParameters);
+
 //
 //	SigComp Parameters
 //
@@ -95,7 +95,7 @@ void tcomp_compartment_freeGhostState(tcomp_compartment_t *compartment);
 //	Nacks
 //
 void tcomp_compartment_addNack(tcomp_compartment_t *compartment, const uint8_t nackId[TSK_SHA1_DIGEST_SIZE]);
-int tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId);
+tsk_bool_t tcomp_compartment_hasNack(tcomp_compartment_t *compartment, const tcomp_buffer_handle_t *nackId);
 
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_compartment_def_t;

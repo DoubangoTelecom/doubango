@@ -36,8 +36,6 @@
 
 TCOMP_BEGIN_DECLS
 
-#define TCOMP_PARAMS_CREATE()				tsk_object_new(tcomp_params_def_t)
-
 /**@typedef tcomp_params_t
 * SIGCOMP parameters as per rfc 3320 subclause 3.3.
 */
@@ -58,6 +56,7 @@ typedef struct tcomp_params_s
 }
 tcomp_params_t;
 
+tcomp_params_t* tcomp_params_create();
 
 tsk_bool_t tcomp_params_hasCpbDmsSms(tcomp_params_t*);
 	

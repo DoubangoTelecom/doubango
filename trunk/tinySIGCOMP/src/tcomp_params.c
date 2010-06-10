@@ -32,6 +32,10 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+tcomp_params_t* tcomp_params_create()
+{
+	return tsk_object_new(tcomp_params_def_t);
+}
 
 /**
 * Checks if CPB, DMS and SMS values have been initialized.
@@ -44,7 +48,7 @@ tsk_bool_t tcomp_params_hasCpbDmsSms(tcomp_params_t* params)
 		return (params->cpbCode || params->dmsCode || params->smsCode) ? tsk_true : tsk_false;
 	}
 	else{
-		TSK_DEBUG_WARN("NULL sigcomp parameters.");
+		TSK_DEBUG_WARN("Invalid parameter.");
 	}
 	
 	return tsk_false;
@@ -63,7 +67,7 @@ void tcomp_params_setCpbCode(tcomp_params_t* params, uint8_t cpbCode)
 		params->cpbValue = sigcomp_encoding_cpb[cpbCode]; 
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 	}
 }
 
@@ -88,7 +92,7 @@ int tcomp_params_setCpbValue(tcomp_params_t* params, uint8_t cpbValue)
 		return 0;
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
 }
@@ -106,7 +110,7 @@ void tcomp_params_setDmsCode(tcomp_params_t* params, uint8_t dmsCode)
 		params->dmsValue = sigcomp_encoding_dms[dmsCode];
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 	}
 }
 
@@ -118,8 +122,7 @@ void tcomp_params_setDmsCode(tcomp_params_t* params, uint8_t dmsCode)
 */
 int tcomp_params_setDmsValue(tcomp_params_t* params, uint32_t dmsValue)
 {
-	if(params)
-	{
+	if(params){
 		uint8_t code;
 		for(code=1; code<8; code++){
 			if(dmsValue <= sigcomp_encoding_dms[code]){
@@ -131,7 +134,7 @@ int tcomp_params_setDmsValue(tcomp_params_t* params, uint32_t dmsValue)
 		return 0;
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
 }
@@ -149,7 +152,7 @@ void tcomp_params_setSmsCode(tcomp_params_t* params, uint8_t smsCode)
 		params->smsValue = sigcomp_encoding_sms[smsCode];
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 	}
 }
 
@@ -173,7 +176,7 @@ int tcomp_params_setSmsValue(tcomp_params_t* params, uint32_t smsValue)
 		return 0;
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 		return -1;
 	}
 }
@@ -199,7 +202,7 @@ uint16_t tcomp_params_getParameters(tcomp_params_t* params)
 		return (result | params->SigComp_version);
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 	}
 
 	return 0;
@@ -227,7 +230,7 @@ void tcomp_params_setParameters(tcomp_params_t* params, uint16_t sigCompParamete
 		params->SigComp_version = ( (sigCompParameters & 0x00ff) );
 	}
 	else{
-		TSK_DEBUG_ERROR("NULL sigcomp parameters.");
+		TSK_DEBUG_ERROR("Invalid parameter.");
 	}
 }
 
@@ -244,7 +247,7 @@ void tcomp_params_reset(tcomp_params_t* params)
 		tsk_list_clear_items(params->returnedStates);
 	}
 	else{
-		TSK_DEBUG_WARN("NULL sigcomp parameters.");
+		TSK_DEBUG_WARN("Invalid parameter.");
 	}
 }
 
@@ -258,13 +261,7 @@ void tcomp_params_reset(tcomp_params_t* params)
 //========================================================
 //	SigComp parameters object definition
 //
-
-/**
-* Creates new sigcomp params. You MUST use @ref tcomp_params_destroy to free the params.
-* @retval New sigcomp params.
-* @sa @ref tcomp_params_destroy.
-*/
-static tsk_object_t* tcomp_params_create(tsk_object_t *self, va_list * app)
+static tsk_object_t* tcomp_params_ctor(tsk_object_t *self, va_list * app)
 {
 	tcomp_params_t *params = self;
 	if(params){
@@ -277,13 +274,7 @@ static tsk_object_t* tcomp_params_create(tsk_object_t *self, va_list * app)
 	
 	return self;
 }
-
-/**
-* Destroy SigComp parameters previously created using @ref tcomp_params_create.
-* @param params The SigComp params to free.
-* @sa @ref tcomp_params_create.
-*/
-static tsk_object_t* tcomp_params_destroy(tsk_object_t *self)
+static tsk_object_t* tcomp_params_dtor(tsk_object_t *self)
 {
 	tcomp_params_t *params = self;
 	if(params){
@@ -299,8 +290,8 @@ static tsk_object_t* tcomp_params_destroy(tsk_object_t *self)
 static const tsk_object_def_t tcomp_params_def_s = 
 {
 	sizeof(tcomp_params_t),
-	tcomp_params_create, 
-	tcomp_params_destroy,
+	tcomp_params_ctor, 
+	tcomp_params_dtor,
 	tsk_null
 };
 const tsk_object_def_t *tcomp_params_def_t = &tcomp_params_def_s;

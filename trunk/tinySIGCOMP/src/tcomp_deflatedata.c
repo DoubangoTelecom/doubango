@@ -31,6 +31,15 @@
 
 #include "tsk_debug.h"
 
+tcomp_deflatedata_t* tcomp_deflatedata_create_2(tsk_bool_t isStream, int z_level, int z_windowBits)
+{
+	return tsk_object_new(tcomp_deflatedata_def_t, isStream, z_level, z_windowBits);
+}
+
+tcomp_deflatedata_t* tcomp_deflatedata_create(tsk_bool_t isStream)
+{
+	return tcomp_deflatedata_create_2(isStream, Z_BEST_COMPRESSION, Z_DEFAULT_WINDOW_BITS);
+}
 
 tsk_bool_t tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata)
 {
@@ -53,11 +62,10 @@ tsk_bool_t tcomp_deflatedata_isStateful(tcomp_deflatedata_t *deflatedata)
 //	Deflate compressor data object definition
 //
 
-static void* tcomp_deflatedata_create(void * self, va_list * app)
+static void* tcomp_deflatedata_ctor(void * self, va_list * app)
 {
 	tcomp_deflatedata_t *deflatedata = self;
-	if(deflatedata)
-	{
+	if(deflatedata){
 		/* Initialize safeobject */
 		tsk_safeobj_init(deflatedata);
 		
@@ -65,16 +73,17 @@ static void* tcomp_deflatedata_create(void * self, va_list * app)
 		deflatedata->zLevel = va_arg(*app, int);
 		deflatedata->zWindowBits = va_arg(*app, int);;
 	}
-	else TSK_DEBUG_ERROR("Null SigComp defalte data.");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp defalte data.");
+	}
 
 	return self;
 }
 
-static void* tcomp_deflatedata_destroy(void *self)
+static void* tcomp_deflatedata_dtor(void *self)
 {
 	tcomp_deflatedata_t *deflatedata = self;
-	if(deflatedata)
-	{
+	if(deflatedata){
 		/* Deinitialize safeobject */
 		tsk_safeobj_deinit(deflatedata);
 		
@@ -82,7 +91,9 @@ static void* tcomp_deflatedata_destroy(void *self)
 
 		tcomp_deflatedata_zUnInit(deflatedata);
 	}
-	else TSK_DEBUG_ERROR("Null SigComp defalte data.");
+	else{
+		TSK_DEBUG_ERROR("Null SigComp defalte data.");
+	}
 
 	return self;
 }
@@ -90,8 +101,8 @@ static void* tcomp_deflatedata_destroy(void *self)
 static const tsk_object_def_t tsk_deflatedata_def_s = 
 {
 	sizeof(tcomp_deflatedata_t),
-	tcomp_deflatedata_create,
-	tcomp_deflatedata_destroy,
-	0,
+	tcomp_deflatedata_ctor,
+	tcomp_deflatedata_dtor,
+	tsk_null,
 };
-const void *tcomp_deflatedata_def_t = &tsk_deflatedata_def_s;
+const tsk_object_def_t *tcomp_deflatedata_def_t = &tsk_deflatedata_def_s;

@@ -38,11 +38,6 @@
 
 TCOMP_BEGIN_DECLS
 
-/** Creates new SigComp state.
-*/
-#define TCOMP_STATE_CREATE(length, address, instruction, minimum_access_length, retention_priority)	\
-	tsk_object_new(tcomp_state_def_t, length, address, instruction, minimum_access_length, retention_priority)
-
 #define TCOMP_PARTIAL_ID_LEN_CODE		0x01
 #define TCOMP_PARTIAL_ID_LEN_VALUE		0x06
 
@@ -70,6 +65,8 @@ typedef struct tcomp_state_s
 tcomp_state_t;
 
 typedef tcomp_state_t tcomp_dictionary_t; /**< Ad dictionary is  a @ref tcomp_state_t. */
+
+tcomp_state_t* tcomp_state_create(uint16_t length, uint16_t address, uint16_t instruction, uint16_t minimum_access_length, uint16_t retention_priority);
 
 int tcomp_state_equals(const tcomp_state_t *state1, const tcomp_state_t *state2);
 void tcomp_state_makeValid(tcomp_state_t*);

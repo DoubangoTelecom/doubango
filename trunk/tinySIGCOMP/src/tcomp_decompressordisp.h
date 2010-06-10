@@ -42,10 +42,6 @@
 
 TCOMP_BEGIN_DECLS
 
-#define TCOMP_STREAM_BUFFER_CREATE(id)					tsk_object_new(tcomp_stream_buffer_def_t, (uint64_t)id)
-
-#define TCOMP_DECOMPRESSORDISP_CREATE(statehandler)		tsk_object_new(tcomp_decompressordisp_def_t, (const tcomp_statehandler_t*)statehandler)
-
 typedef struct tcomp_stream_buffer_s
 {
 	TSK_DECLARE_OBJECT;
@@ -68,12 +64,14 @@ typedef struct tcomp_decompressordisp_s
 }
 tcomp_decompressordisp_t;
 
-tsk_bool_t tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, size_t input_size, tcomp_result_t *lpResult);
+tcomp_decompressordisp_t* tcomp_decompressordisp_create(const tcomp_statehandler_t* statehandler);
+
+tsk_bool_t tcomp_decompressordisp_decompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, tsk_size_t input_size, tcomp_result_t *lpResult);
 tsk_bool_t tcomp_decompressordisp_getNextMessage(tcomp_decompressordisp_t *dispatcher, tcomp_result_t *lpResult);
 
-tsk_bool_t tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, const size_t input_size, tcomp_result_t **lpResult);
-tsk_bool_t tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, size_t input_size, uint64_t streamId);
-tsk_bool_t tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, size_t *size);
+tsk_bool_t tcomp_decompressordisp_internalDecompress(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, const tsk_size_t input_size, tcomp_result_t **lpResult);
+tsk_bool_t tcomp_decompressordisp_appendStream(tcomp_decompressordisp_t *dispatcher, const void* input_ptr, tsk_size_t input_size, uint64_t streamId);
+tsk_bool_t tcomp_decompressordisp_getNextStreamMsg(tcomp_decompressordisp_t *dispatcher, uint64_t streamId, uint16_t *discard_count, tsk_size_t *size);
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_stream_buffer_def_t;
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_decompressordisp_def_t;

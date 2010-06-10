@@ -37,9 +37,6 @@
 
 TCOMP_BEGIN_DECLS
 
-/** Creates new SigComp message.
-*/
-#define TCOMP_MESSAGE_CREATE(input_ptr, input_size, stream)	tsk_object_new(tcomp_message_def_t, (const void*)input_ptr, (size_t)input_size, (int)stream)
 
 /**
 * SigComp Message Format as per RFC 3320 subclause 7.
@@ -54,8 +51,8 @@ typedef struct tcomp_message_s
 	unsigned isNack:1; /**< If it's a NACK message. */
 	unsigned stream_based:1; /**< If it's stream message (e.g. TCP) */
 	const uint8_t* startPtr; /**< Message pointer. */
-	size_t totalSize; /**< The total message size. */
-	size_t header_size;	/**< The size of the message header */
+	tsk_size_t totalSize; /**< The total message size. */
+	tsk_size_t header_size;	/**< The size of the message header */
 	
 	tcomp_buffer_handle_t* stateId; /**< */
 	
@@ -67,6 +64,8 @@ typedef struct tcomp_message_s
 	tcomp_nackinfo_t* nack_info; /**< */
 }
 tcomp_message_t;
+
+tcomp_message_t* tcomp_message_create(const void* input_ptr, tsk_size_t input_size, tsk_bool_t stream);
 
 TINYSIGCOMP_GEXTERN const tsk_object_def_t *tcomp_message_def_t;
 
