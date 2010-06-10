@@ -598,7 +598,7 @@ void *tnet_transport_mainthread(void *param)
 				ret = WSARecv(active_socket->fd, &wsaBuffer, 1, &readCount, &flags, 0, 0);
 				if(readCount < wsaBuffer.len){
 					wsaBuffer.len = readCount;
-					wsaBuffer.buf = tsk_realloc(wsaBuffer.buf, readCount);
+					/* wsaBuffer.buf = tsk_realloc(wsaBuffer.buf, readCount); */
 				}
 			}
 

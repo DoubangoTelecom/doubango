@@ -44,8 +44,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySIP\include;..\tinySAK\src;..\tinyNET\src;..\tinyHTTP\include;..\tinyIPSec\src;..\tinySDP\include;..\tinyMEDIA\include"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
+				AdditionalIncludeDirectories="..\thirdparties\win32\include;..\tinySIP\include;..\tinySAK\src;..\tinyNET\src;..\tinyHTTP\include;..\tinySIGCOMP\src;..\tinyIPSec\src;..\tinySDP\include;..\tinyMEDIA\include"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;SDS_HACK;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIP_EXPORTS;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
@@ -65,7 +65,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyHTTP.lib $(OutDir)\tinySDP.lib $(OutDir)\tinyMEDIA.lib $(OutDir)\tinyIPSec.lib $(OutDir)\tinySigComp.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -944,6 +944,14 @@
 					>
 				</File>
 			</Filter>
+			<Filter
+				Name="sigcomp"
+				>
+				<File
+					RelativePath=".\src\sigcomp\tsip_sigcomp.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="include(*.h)"
@@ -1519,6 +1527,14 @@
 				</File>
 				<File
 					RelativePath=".\include\tinysip\api\tsip_api_subscribe.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sigcomp"
+				>
+				<File
+					RelativePath=".\include\tinysip\sigcomp\tsip_sigcomp.h"
 					>
 				</File>
 			</Filter>

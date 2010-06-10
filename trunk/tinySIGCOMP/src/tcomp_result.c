@@ -45,7 +45,7 @@ tcomp_tempstate_to_free_t* tcomp_tempstate_to_free_create()
 
 /**Resets the result.
 */
-void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOutput)
+void _tcomp_result_reset(tcomp_result_t *result, tsk_bool_t isDestructor, tsk_bool_t isResetOutput)
 {
 	if(result){
 		uint8_t i;
@@ -64,8 +64,7 @@ void _tcomp_result_reset(tcomp_result_t *result, int isDestructor, int isResetOu
 
 			tcomp_params_reset(result->remote_parameters);
 			
-			if(isResetOutput)
-			{
+			if(isResetOutput){
 				tcomp_buffer_reset(result->output_buffer);
 			}
 			
@@ -205,7 +204,7 @@ static tsk_object_t* tcomp_result_dtor(tsk_object_t * self)
 	tcomp_result_t* result = self;
 
 	if(result){
-		_tcomp_result_reset(result, 1, 1);
+		_tcomp_result_reset(result, tsk_true, tsk_true);
 		TSK_OBJECT_SAFE_FREE(result->output_buffer);
 		TSK_OBJECT_SAFE_FREE(result->ret_feedback);
 		TSK_OBJECT_SAFE_FREE(result->nack_info);

@@ -316,6 +316,10 @@
 				RelativePath=".\sample.sn"
 				>
 			</File>
+			<File
+				RelativePath=".\sigcomp.sn"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>

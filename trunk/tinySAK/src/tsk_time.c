@@ -61,43 +61,29 @@ struct timezone
 	int  tz_dsttime;     /* type of dst correction */
 }; 
 
+#include <sys/timeb.h>
 int gettimeofday(struct timeval *tv, struct timezone *tz) 
 {  
-	FILETIME ft;
-	uint64_t tmpres = 0;  
-	static int tzflag = 0; 
-
-	if(tv)   
-	{    
-#ifdef _WIN32_WCE
-		SYSTEMTIME st;
-		GetSystemTime(&st);
-		SystemTimeToFileTime(&st, &ft);
+	#ifdef _WIN32_WCE
+		struct timeb tb;
+		ftime (&tb);
+#elif defined(__MINGW32__)
+		//struct __timeb64 tb;
+		//_ftime64 (&tb);
+		struct _timeb tb;
+		_ftime (&tb);
 #else
-		GetSystemTimeAsFileTime(&ft);
+		struct __timeb64 tb;
+		_ftime64_s (&tb);
 #endif
 
-		tmpres |= ft.dwHighDateTime;   
-		tmpres <<= 32; 
-		tmpres |= ft.dwLowDateTime;
-
-		/*converting file time to unix epoch*/   
-		tmpres /= 10;  /*convert into microseconds*/  
-		tmpres -= DELTA_EPOCH_IN_MICROSECS;  
-		tv->tv_sec = (long)(tmpres / 1000000UL); 
-		tv->tv_usec = (long)(tmpres % 1000000UL); 
-	}
-
-	if (tz){   
-		if (!tzflag){    
-			_tzset();   
-			tzflag++;  
-		}   
-		tz->tz_minuteswest = _timezone / 60;
-		tz->tz_dsttime = _daylight;
-	}
-
-	return 0; 
+		tv->tv_sec = (long)tb.time; // Fix: tv_sec wraps year 2038 (tv.time is ok though)
+		tv->tv_usec = tb.millitm * 1000L;
+		if( tz ){
+			tz->tz_minuteswest = tb.timezone;	/* minutes west of Greenwich  */
+			tz->tz_dsttime = tb.dstflag;	/* type of dst correction  */
+		}
+return 0;
 }
 
 #else
@@ -126,7 +112,7 @@ uint64_t tsk_time_epoch()
 {
 	struct timeval tv;
 	static const uint64_t thousand = 1000;
-	gettimeofday(&tv, 0); 
+	gettimeofday(&tv, tsk_null); 
 	
 	return (((uint64_t)tv.tv_sec)*thousand) + (((uint64_t)tv.tv_usec)/thousand);
 }

@@ -132,7 +132,31 @@ int __tsip_stack_set(tsip_stack_t *self, va_list* app)
 					break;
 				}
 
-
+			/* === SigComp === */
+			case tsip_pname_sigcomp:
+				{	/* (unsigned)DMS_UINT, (unsigned)SMS_UINT, (unsigned)CPB_UINT, (tsk_bool_t)PRES_DICT_BOOL */
+					self->sigcomp.dms = va_arg(*app, unsigned);
+					self->sigcomp.sms = va_arg(*app, unsigned);
+					self->sigcomp.cpb = va_arg(*app, unsigned);
+					self->sigcomp.pres_dict = va_arg(*app, tsk_bool_t);
+					break;
+				}
+			case tsip_pname_sigcomp_add_compartment:
+				{	/* (const char*)COMPARTMENT_ID_STR */
+					if(!self->sigcomp.handle){
+						self->sigcomp.handle = tsip_sigcomp_handler_create(self->sigcomp.cpb, self->sigcomp.dms, self->sigcomp.sms);
+						tsip_sigcomp_handler_set_dicts(self->sigcomp.handle, self->sigcomp.sip_dict, self->sigcomp.pres_dict);
+					}
+					tsip_sigcomp_handler_add_compartment(self->sigcomp.handle, va_arg(*app, const char*));
+					break;
+				}
+			case tsip_pname_sigcomp_remove_compartment:
+				{	/* (const char*)COMPARTMENT_ID_STR */
+					if(self->sigcomp.handle){
+						tsip_sigcomp_handler_remove_compartment(self->sigcomp.handle, va_arg(*app, const char*));
+					}
+					break;
+				}
 
 			/* === Network === */
 			case tsip_pname_realm:
@@ -415,7 +439,15 @@ tsip_stack_handle_t* tsip_stack_create(tsip_stack_callback_f callback, const cha
 	stack->network.proxy_cscf_type = tnet_socket_type_udp_ipv4;
 	// all events should be delivered to the user before the stack stop
 	tsk_runnable_set_important(TSK_RUNNABLE(stack), tsk_true);
-	
+
+	/* === SigComp === */
+	// only create the handler on-demand: when compartment is added
+	stack->sigcomp.dms = TSIP_SIGCOMP_DMS;
+	stack->sigcomp.sms = TSIP_SIGCOMP_SMS;
+	stack->sigcomp.cpb = TSIP_SIGCOMP_CPB;
+	stack->sigcomp.sip_dict = TSIP_SIGCOMP_SIP_DICT;
+	stack->sigcomp.pres_dict = TSIP_SIGCOMP_PRES_DICT;
+
 	/* === DNS context === 
 	* Because of TSIP_STACK_SET_DNS_SERVER(), ctx should be created before calling __tsip_stack_set()
 	*/
@@ -705,6 +737,9 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 			one_failed = tsk_true;
 		}
 
+		/* Remove all SigComp Compartments */
+		TSK_OBJECT_SAFE_FREE(stack->sigcomp.handle);
+
 		if(!one_failed){
 			stack->started = tsk_false;
 		}
@@ -867,6 +902,9 @@ static tsk_object_t* tsip_stack_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(stack->service_routes);
 		TSK_OBJECT_SAFE_FREE(stack->associated_uris);
 		
+		/* SigComp (MUST be done after transports) */
+		TSK_OBJECT_SAFE_FREE(stack->sigcomp.handle);
+
 		/* Security(1/1) */
 		TSK_FREE(stack->security.secagree_mech);
 		TSK_FREE(stack->security.ipsec.alg);

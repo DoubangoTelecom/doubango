@@ -68,22 +68,24 @@ typedef enum tsip_ssession_param_type_e
 	sstype_nocontact,
 	sstype_expires,
 	sstype_silent_hangup,
+	sstype_sigcomp_id,
 	sstype_media
 }
 tsip_ssession_param_type_t;
 
-#define TSIP_SSESSION_SET_HEADER(NAME_STR, VALUE_STR)			sstype_header, (const char*)NAME_STR, (const char*)VALUE_STR
-#define TSIP_SSESSION_UNSET_HEADER(NAME_STR)					TSIP_SSESSION_SET_HEADER(NAME_STR, (const char*)-1)
-#define TSIP_SSESSION_SET_CAPS(NAME_STR, VALUE_STR)				sstype_caps, (const char*)NAME_STR, (const char*)VALUE_STR /* RFC 3840 */
-#define TSIP_SSESSION_UNSET_CAPS(NAME_STR)						TSIP_SSESSION_SET_CAPS(NAME_STR, (const char*)-1)
-#define TSIP_SSESSION_SET_USERDATA(DATA_PTR)					sstype_userdata, (const void*)DATA_PTR
-#define TSIP_SSESSION_SET_TO(TO_URI_STR)						sstype_to, (const char*)TO_URI_STR
-#define TSIP_SSESSION_SET_FROM(FROM_URI_STR)					sstype_from, (const char*)FROM_URI_STR
-#define TSIP_SSESSION_SET_NO_CONTACT(ENABLED_BOOL)				sstype_nocontact, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_SSESSION_SET_EXPIRES(VALUE_UINT)					sstype_expires, (unsigned)VALUE_UINT
-#define TSIP_SSESSION_SET_SILENT_HANGUP(ENABLED_BOOL)			sstype_silent_hangup, (tsk_bool_t)ENABLED_BOOL
-#define TSIP_SSESSION_SET_MEDIA(...)							sstype_media, ##__VA_ARGS__
-#define TSIP_SSESSION_SET_NULL()								sstype_null
+#define TSIP_SSESSION_SET_HEADER(NAME_STR, VALUE_STR)				sstype_header, (const char*)NAME_STR, (const char*)VALUE_STR
+#define TSIP_SSESSION_UNSET_HEADER(NAME_STR)						TSIP_SSESSION_SET_HEADER(NAME_STR, (const char*)-1)
+#define TSIP_SSESSION_SET_CAPS(NAME_STR, VALUE_STR)					sstype_caps, (const char*)NAME_STR, (const char*)VALUE_STR /* RFC 3840 */
+#define TSIP_SSESSION_UNSET_CAPS(NAME_STR)							TSIP_SSESSION_SET_CAPS(NAME_STR, (const char*)-1)
+#define TSIP_SSESSION_SET_USERDATA(DATA_PTR)						sstype_userdata, (const void*)DATA_PTR
+#define TSIP_SSESSION_SET_TO(TO_URI_STR)							sstype_to, (const char*)TO_URI_STR
+#define TSIP_SSESSION_SET_FROM(FROM_URI_STR)						sstype_from, (const char*)FROM_URI_STR
+#define TSIP_SSESSION_SET_NO_CONTACT(ENABLED_BOOL)					sstype_nocontact, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_SSESSION_SET_EXPIRES(VALUE_UINT)						sstype_expires, (unsigned)VALUE_UINT
+#define TSIP_SSESSION_SET_SILENT_HANGUP(ENABLED_BOOL)				sstype_silent_hangup, (tsk_bool_t)ENABLED_BOOL
+#define TSIP_SSESSION_SET_SIGCOMP_COMPARTMENT(COMPARTMENT_ID_STR)	sstype_sigcomp_id, (const char*)COMPARTMENT_ID_STR
+#define TSIP_SSESSION_SET_MEDIA(...)								sstype_media, ##__VA_ARGS__
+#define TSIP_SSESSION_SET_NULL()									sstype_null
 
 typedef enum tsip_msession_param_type_e
 {
@@ -120,6 +122,7 @@ typedef struct tsip_ssession_s
 	struct tsip_uri_s* to;
 	int64_t expires;
 	tsk_bool_t silent_hangup;
+	char* sigcomp_id;
 }
 tsip_ssession_t;
 

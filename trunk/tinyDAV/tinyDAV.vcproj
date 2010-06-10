@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\thirdparties\win32\include;include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinySAK\src"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYDAV_EXPORTS"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT 0x0501;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -271,6 +271,14 @@
 				<Filter
 					Name="directsound"
 					>
+					<File
+						RelativePath=".\include\tinydav\audio\directsound\tdav_consumer_dsound.h"
+						>
+					</File>
+					<File
+						RelativePath=".\include\tinydav\audio\directsound\tdav_producer_dsound.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="oss"
@@ -395,6 +403,14 @@
 				<Filter
 					Name="directsound"
 					>
+					<File
+						RelativePath=".\src\audio\directsound\tdav_consumer_dsound.c"
+						>
+					</File>
+					<File
+						RelativePath=".\src\audio\directsound\tdav_producer_dsound.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="oss"

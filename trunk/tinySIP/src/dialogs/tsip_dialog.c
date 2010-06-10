@@ -318,7 +318,7 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 		else
 		{	/* No routes associated to this dialog. */
 			if(self->state == tsip_initial || self->state == tsip_early){
-#if _DEBUG && SDS_HACK/* FIXME: remove this */
+#if _DEBUG && defined(SDS_HACK)/* FIXME: remove this */
 				/* Ericsson SDS hack (INVITE with Proxy-CSCF as First route fail) */
 #else
 				tsip_uri_t *uri = tsip_stack_get_pcscf_uri(TSIP_DIALOG_GET_STACK(self), tsk_true);
@@ -352,6 +352,13 @@ tsip_request_t *tsip_dialog_request_new(const tsip_dialog_t *self, const char* m
 
 	/* Add common headers */
 	tsip_dialog_add_common_headers(self, request);
+
+	/* SigComp */
+	if(self->ss->sigcomp_id){
+		/* should be added in this field instead of 'Contact' or 'Via' headers
+		* it's up to the transport layer to copy it to these headers */
+		request->sigcomp_id = tsk_strdup(self->ss->sigcomp_id);
+	}
 
 
 	TSK_OBJECT_SAFE_FREE(request_uri);
@@ -415,6 +422,12 @@ tsip_response_t *tsip_dialog_response_new(const tsip_dialog_t *self, short statu
 			tsk_istr_t tag;
 			tsk_strrandom(&tag);
 			response->To->tag = tsk_strdup(tag);
+		}
+		/* SigComp */
+		if(self->ss->sigcomp_id){
+			/* should be added in this field instead of 'Contact' or 'Via' headers
+			* it's up to the transport layer to copy it to these headers */
+			response->sigcomp_id = tsk_strdup(self->ss->sigcomp_id);
 		}
 	}
 	return response;
@@ -636,7 +649,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			return 0;
 		}
 	}
-	return -1;
+	return 0;
 }
 
 int tsip_dialog_getCKIK(tsip_dialog_t *self, AKA_CK_T *ck, AKA_IK_T *ik)

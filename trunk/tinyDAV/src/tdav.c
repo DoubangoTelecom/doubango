@@ -64,7 +64,7 @@ int tdav_init()
 	avcodec_register_all();
 #endif
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
-	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
+	//tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
 
 	/* === Register consumers === */
 	tmedia_consumer_plugin_register(tmedia_consumer_waveapi_plugin_def_t);
