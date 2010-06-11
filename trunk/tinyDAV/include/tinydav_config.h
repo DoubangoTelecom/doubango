@@ -75,6 +75,12 @@
 #include <stdlib.h>
 #endif
 
+#if TDAV_UNDER_WINDOWS
+#	define HAVE_WAVE_API	1
+#else
+#	define HAVE_WAVE_API	0
+#endif
+
 
 #if HAVE_CONFIG_H
 	#include "../config.h"

@@ -29,6 +29,8 @@
  */
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
 
+#if HAVE_WAVE_API
+
 #include "tsk_thread.h"
 #include "tsk_memory.h"
 #include "tsk_debug.h"
@@ -150,13 +152,15 @@ static int play_wavehdr(tdav_consumer_waveapi_t* consumer, LPWAVEHDR lpHdr)
 	return 0;
 }
 
-void *__playback_thread(void *param)
+static void *__playback_thread(void *param)
 {
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)param;  
 	DWORD dwEvent;
 	tsk_size_t i;
 
 	TSK_DEBUG_INFO("__playback_thread -- START");
+
+	SetPriorityClass(GetCurrentThread(), REALTIME_PRIORITY_CLASS);
 
 	for(;;){
 		dwEvent = WaitForMultipleObjects(2, consumer->events, FALSE, INFINITE);
@@ -195,8 +199,6 @@ int tdav_consumer_waveapi_prepare(tmedia_consumer_t* self, const tmedia_codec_t*
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)self;
 	tsk_size_t i;
 
-	TSK_DEBUG_INFO("tdav_consumer_waveapi_prepare");
-
 	if(!consumer || !codec && codec->plugin){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -232,8 +234,6 @@ int tdav_consumer_waveapi_start(tmedia_consumer_t* self)
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)self;
 	MMRESULT result;
 	tsk_size_t i;
-
-	TSK_DEBUG_INFO("tdav_consumer_waveapi_start");
 
 	if(!consumer){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -277,8 +277,6 @@ int tdav_consumer_waveapi_consume(tmedia_consumer_t* self, void** buffer, tsk_si
 {
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)self;
 
-	TSK_DEBUG_INFO("tdav_consumer_waveapi_consume");
-
 	if(!consumer || !buffer || !*buffer || !size){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
@@ -290,8 +288,6 @@ int tdav_consumer_waveapi_consume(tmedia_consumer_t* self, void** buffer, tsk_si
 int tdav_consumer_waveapi_pause(tmedia_consumer_t* self)
 {
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)self;
-
-	TSK_DEBUG_INFO("tdav_consumer_waveapi_pause");
 
 	if(!consumer){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -305,8 +301,6 @@ int tdav_consumer_waveapi_stop(tmedia_consumer_t* self)
 {
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)self;
 	MMRESULT result;
-
-	TSK_DEBUG_INFO("tdav_consumer_waveapi_stop");
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -405,3 +399,5 @@ static const tmedia_consumer_plugin_def_t tmedia_consumer_waveapi_plugin_def_s =
 	tdav_consumer_waveapi_stop
 };
 const tmedia_consumer_plugin_def_t *tmedia_consumer_waveapi_plugin_def_t = &tmedia_consumer_waveapi_plugin_def_s;
+
+#endif /* HAVE_WAVE_API */

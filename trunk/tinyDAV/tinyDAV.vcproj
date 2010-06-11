@@ -41,8 +41,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\thirdparties\win32\include;include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinySAK\src"
-				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT 0x0501;TINYDAV_EXPORTS"
+				AdditionalIncludeDirectories="&quot;$(DXSDK_DIR)include&quot;;..\thirdparties\win32\include;include;..\tinyRTP\include;..\tinyMEDIA\include;..\tinySDP\include;..\tinyNET\src;..\tinySAK\src"
+				PreprocessorDefinitions="DEBUG_LEVEL=DEBUG_LEVEL_INFO;HAVE_DSOUND_H=1;WIN32;_DEBUG;_WINDOWS;_USRDLL;_WIN32_WINNT=0x0501;TINYDAV_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -179,6 +179,10 @@
 			>
 			<File
 				RelativePath=".\include\tinydav\tdav.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\tinydav\tdav_win32.h"
 				>
 			</File>
 			<File
@@ -319,6 +323,10 @@
 			>
 			<File
 				RelativePath=".\src\tdav.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\tdav_win32.c"
 				>
 			</File>
 			<Filter
