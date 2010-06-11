@@ -120,13 +120,10 @@ int trtp_manager_prepare(trtp_manager_t* self)
 	
 	/* Creates local rtp and rtcp sockets */
 	while(retry_count--){
-		tnet_port_t local_port = TNET_SOCKET_PORT_ANY;
-
 		/* random number in the range 1024 to 65535 */
-		if(self->enable_rtcp){
-			local_port = ((rand() % 64511) + 1024);
-			local_port = (local_port % 0x01) ? (local_port + 1) : local_port; /* turn to even number */
-		}
+		tnet_port_t local_port = ((rand() % 64510) + 1025);
+		local_port = (local_port & 0xFFFE); /* turn to even number */
+		
 		/* beacuse failure will cause errors in the log, print a message to alert that there is
 		* nothing to worry about */
 		TSK_DEBUG_INFO("RTP/RTCP manager[Begin]: Trying to bind to random ports");

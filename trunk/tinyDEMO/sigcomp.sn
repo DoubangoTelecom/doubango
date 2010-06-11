@@ -4,12 +4,12 @@
 # However, for performance reasons, in your application you should use only one Compartment for all sessions.
 
 # user's parameters (like ANSI-C #define)
-%%domain ericsson.com
-%%user mamadou
-%%pwd mamadou
-%%proxy_ip 192.168.0.13 # IP address or FQDN
-%%proxy_port 5081
-%%proxy_trans tcp # udp, tcp, tls or sctp
+%%domain sigcomp.org
+%%user bob
+%%pwd bob
+%%proxy_ip 192.168.16.227 # IP address or FQDN
+%%proxy_port 4060
+%%proxy_trans udp # udp, tcp, tls or sctp
 %%expires 100 # expires used by all dialogs
 %%sleep-sec 1.0 # number of seconds to wait before sending next sip message
 
@@ -23,8 +23,8 @@
 	
 # Configure the stack
 # Realm, IMPI and IMPU are mandatory
-++cst --realm $$(domain) --impi $$(user)@$$(domain) --impu sip:$$(user)@$$(domain) --pwd $$(pwd) \
-	--pcscf-ip $$(proxy_ip) --pcscf-port $$(proxy_port) --pcscf-trans $$(proxy_trans) \
+++cst --realm $$(domain) --impi $$(user) --impu sip:$$(user)@$$(domain) --pwd $$(pwd) \
+	--pcscf-ip $$(proxy_ip) --pcscf-port $$(proxy_port) --pcscf-trans $$(proxy_trans) --local-port 5060 \
 	--sigcomp-id urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473 \
 	--sigcomp-id urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a474 \
 	--header Privacy=none --header Allow=INVITE, ACK, CANCEL, BYE, MESSAGE, OPTIONS, NOTIFY, PRACK, UPDATE, REFER \
@@ -44,9 +44,9 @@
 ++sleep --sec 1
 
 # SUBSCRIBE to reg event package (silent hangup)
-++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --silent --header Event=reg --header Accept=application/reginfo+xml \
-	--sigcomp-id urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a474 \
-	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
+#++sub --to sip:$$(user)@$$(domain) --xp $$(expires) --silent --header Event=reg --header Accept=application/reginfo+xml \
+#	--sigcomp-id urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a474 \
+#	--header Allow-Events=refer, presence, presence.winfo, xcap-diff, conference >>(sub-reg-sid)
 
 # Press ENTER
 ++sleep --sec -1

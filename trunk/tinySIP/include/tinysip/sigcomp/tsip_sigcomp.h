@@ -36,6 +36,8 @@
 
 TSIP_BEGIN_DECLS
 
+#define TSIP_IS_SIGCOMP_DATA(data)	((data) && (*((uint8_t*)data) & 0xF8) == 0xF8)
+
 #define TSIP_SIGCOMP_DMS			8192
 #define TSIP_SIGCOMP_SMS			8192
 #define TSIP_SIGCOMP_CPB			64
@@ -49,6 +51,7 @@ tsip_sigcomp_handle_t* tsip_sigcomp_handler_create(uint8_t cpb, uint32_t dms, ui
 int tsip_sigcomp_handler_set_dicts(tsip_sigcomp_handle_t* self, tsk_bool_t sip_n_sdp, tsk_bool_t pres);
 int tsip_sigcomp_handler_add_compartment(tsip_sigcomp_handle_t* self, const char* comp_id);
 int tsip_sigcomp_handler_remove_compartment(tsip_sigcomp_handle_t* self, const char* comp_id);
+int tsip_sigcomp_close_all(tsip_sigcomp_handle_t* self);
 tsk_size_t tsip_sigcomp_handler_compress(tsip_sigcomp_handle_t* self, const char* comp_id, tsk_bool_t is_stream, const void* in_data, tsk_size_t in_size, void* out_data, tsk_size_t out_maxsize);
 tsk_size_t tsip_sigcomp_handler_uncompress(tsip_sigcomp_handle_t* self, const char* comp_id, tsk_bool_t is_stream, const void* in_data, tsk_size_t in_size, void* out_data, tsk_size_t out_maxsize, tsk_bool_t* is_nack);
 tsk_size_t tsip_sigcomp_handler_uncompress_next(tsip_sigcomp_handle_t* self, const char* comp_id, void** nack_data, tsk_bool_t* is_nack);

@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(DOUBANGO_HOME)\thirdparties\win32\include&quot;;&quot;$(DOUBANGO_HOME)\tinySAK\src&quot;"
+				AdditionalIncludeDirectories="..\..\thirdparties\win32\include;..\..\tinySAK\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYSIGCOMP_EXPORTS;DEBUG_LEVEL=DEBUG_LEVEL_INFO;_WIN32_WINNT 0x0501"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"

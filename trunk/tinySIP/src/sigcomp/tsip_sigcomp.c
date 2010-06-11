@@ -217,6 +217,31 @@ int tsip_sigcomp_handler_remove_compartment(tsip_sigcomp_handle_t* self, const c
 	return 0;
 }
 
+/** Close all SigComp compartments
+* @param self The SigComp handler
+*/
+int tsip_sigcomp_close_all(tsip_sigcomp_handle_t* self)
+{
+	tsip_sigcomp_t* sigcomp = self;
+	const tsk_list_item_t* item;
+	const char* comp_id;
+
+	if(!sigcomp){
+		return -1;
+	}
+
+	tsk_safeobj_lock(sigcomp);
+
+	tsk_list_foreach(item, sigcomp->compartments){
+		comp_id = ((tsip_sigcomp_compartment_t*)item->data)->id;
+		tcomp_manager_closeCompartment(sigcomp->manager, comp_id, tsk_strlen(comp_id));
+	}
+
+	tsk_safeobj_unlock(sigcomp);
+
+	return 0;
+}
+
 /** Compress a Sip message
 * @param self The SigComp handler
 * @param comp_id The id of the compartement to use for compression. This compartment should be previously added using
@@ -288,6 +313,8 @@ tsk_size_t tsip_sigcomp_handler_uncompress(tsip_sigcomp_handle_t* self, const ch
 		TSK_DEBUG_ERROR("%s not a valid compartment Id", comp_id);
 		return 0;
 	}
+
+	*is_nack = tsk_false;
 
 	/* take ownership and lock() */
 	compartment = tsk_object_ref(compartment); /* take ownership instead of locking the handler(which will lock all compartments) */

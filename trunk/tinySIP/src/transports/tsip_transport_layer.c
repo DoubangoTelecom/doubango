@@ -126,9 +126,7 @@ parse_buffer:
 	*	==> Parse the SIP message without the content.
 	*/
 	tsk_ragel_state_init(&state, TSK_BUFFER_DATA(transport->buff_stream), endOfheaders + 4/*2CRLF*/);
-	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true 
-		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
-	{
+	if(tsip_message_parse(&state, &message, tsk_false/* do not extract the content */) == tsk_true){
 		tsk_size_t clen = TSIP_MESSAGE_CONTENT_LENGTH(message); /* MUST have content-length header (see RFC 3261 - 7.5). If no CL header then the macro return zero. */
 		if(clen == 0){ /* No content */
 			tsk_buffer_remove(transport->buff_stream, 0, (endOfheaders + 4/*2CRLF*/)); /* Remove SIP headers and CRLF */
@@ -147,7 +145,7 @@ parse_buffer:
 		}
 	}
 
-	if(message){
+	if(message && message->firstVia && message->Call_ID && message->CSeq && message->From && message->To){
 		/* Set fd */
 		message->sockfd = e->fd;
 		/* Alert transaction/dialog layer */
@@ -178,6 +176,9 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 	tsk_ragel_state_t state;
 	tsip_message_t *message = tsk_null;
 	const tsip_transport_t *transport = e->callback_data;
+	const char* data_ptr;
+	tsk_size_t data_size;
+	char SigCompBuffer[TSIP_SIGCOMP_MAX_BUFF_SIZE];
 
 	switch(e->type){
 		case event_data: {
@@ -190,7 +191,28 @@ static int tsip_transport_layer_dgram_cb(const tnet_transport_event_t* e)
 			}
 	}
 
-	tsk_ragel_state_init(&state, e->data, e->size);
+	/* === SigComp === */
+	if(TSIP_IS_SIGCOMP_DATA(e->data)){
+		tsk_bool_t is_nack;
+		data_size = tsip_sigcomp_handler_uncompressUDP(transport->stack->sigcomp.handle, "urn:uuid:2e5fdc76-00be-4314-8202-1116fa82a473", e->data, e->size, SigCompBuffer, sizeof(SigCompBuffer), &is_nack);
+		data_ptr = SigCompBuffer;
+		if(data_size){
+			if(is_nack){
+				tnet_transport_send(transport->net_transport, transport->connectedFD, data_ptr, data_size);
+				return 0;
+			}
+		}
+		else{
+			TSK_DEBUG_ERROR("SigComp decompression has failed");
+			return -2;
+		}
+	}
+	else{
+		data_ptr = e->data;
+		data_size = e->size;
+	}
+	
+	tsk_ragel_state_init(&state, data_ptr, data_size);
 	if(tsip_message_parse(&state, &message, tsk_true) == tsk_true 
 		&& message->firstVia &&  message->Call_ID && message->CSeq && message->From && message->To)
 	{

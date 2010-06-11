@@ -29,6 +29,8 @@
  */
 #include "tinydav/audio/tdav_consumer_audio.h"
 
+#include "tinyrtp/rtp/trtp_rtp_header.h"
+
 #include "tsk_memory.h"
 #include "tsk_time.h"
 #include "tsk_debug.h"
@@ -84,18 +86,17 @@ int tdav_consumer_audio_cmp(const tsk_object_t* consumer1, const tsk_object_t* c
 }
 
 /* put data into the jitter buffer */
-int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data)
+int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, const tsk_object_t* proto_hdr)
 {
-	static long ts = 0; /* FIXME: should come from the the RTP header */
+	const trtp_rtp_header_t* rtp_hdr = (const trtp_rtp_header_t*)proto_hdr;
 
-	if(!self || !data || !*data || !self->jb.jbuffer){
+	if(!self || !data || !*data || !self->jb.jbuffer || !rtp_hdr){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
 	tsk_safeobj_lock(self);
-	ts += /*(self->ptime * self->rate)/1000*/self->ptime;
-	jb_put(self->jb.jbuffer, *data, JB_TYPE_VOICE, self->ptime, ts, (long)tsk_time_now(), self->jb.jcodec);
+	jb_put(self->jb.jbuffer, *data, JB_TYPE_VOICE, self->ptime, rtp_hdr->timestamp, (long)tsk_time_now(), self->jb.jcodec);
 	*data = tsk_null;
 	tsk_safeobj_unlock(self);
 

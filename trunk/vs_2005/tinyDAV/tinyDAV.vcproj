@@ -183,6 +183,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyDAV\include\tinydav\tdav_win32.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyDAV\include\tinydav.h"
 				>
 			</File>
@@ -272,6 +276,14 @@
 				<Filter
 					Name="directsound"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\audio\directsound\tdav_consumer_dsound.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\audio\directsound\tdav_producer_dsound.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="oss"
@@ -280,6 +292,14 @@
 				<Filter
 					Name="waveapi"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\audio\waveapi\tdav_consumer_waveapi.h"
+						>
+					</File>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\audio\waveapi\tdav_producer_waveapi.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -304,6 +324,10 @@
 			>
 			<File
 				RelativePath="..\..\tinyDAV\src\tdav.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyDAV\src\tdav_win32.c"
 				>
 			</File>
 			<Filter
@@ -388,6 +412,14 @@
 				<Filter
 					Name="directsound"
 					>
+					<File
+						RelativePath="..\..\tinyDAV\src\audio\directsound\tdav_consumer_dsound.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\tinyDAV\src\audio\directsound\tdav_producer_dsound.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="oss"

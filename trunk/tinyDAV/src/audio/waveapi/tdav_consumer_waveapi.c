@@ -273,7 +273,7 @@ int tdav_consumer_waveapi_start(tmedia_consumer_t* self)
 	return 0;
 }
 
-int tdav_consumer_waveapi_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size)
+int tdav_consumer_waveapi_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
 	tdav_consumer_waveapi_t* consumer = (tdav_consumer_waveapi_t*)self;
 
@@ -282,7 +282,7 @@ int tdav_consumer_waveapi_consume(tmedia_consumer_t* self, void** buffer, tsk_si
 		return -1;
 	}
 	/* buffer is already decoded */
-	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer);
+	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(consumer), buffer, proto_hdr);
 }
 
 int tdav_consumer_waveapi_pause(tmedia_consumer_t* self)

@@ -685,7 +685,7 @@ int tsip_dialog_update_challenges(tsip_dialog_t *self, const tsip_response_t* re
 	const tsip_header_WWW_Authenticate_t *WWW_Authenticate;
 	const tsip_header_Proxy_Authenticate_t *Proxy_Authenticate;
 
-	/* RFC 2617 - Digest SSESSION
+	/* RFC 2617 - HTTP Digest Session
 
 	*	(A) The client response to a WWW-Authenticate challenge for a protection
 		space starts an authentication session with that protection space.

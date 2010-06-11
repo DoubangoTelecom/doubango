@@ -40,6 +40,7 @@
 #include "tinydav/audio/directsound/tdav_consumer_dsound.h"
 
 // Producers
+#include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
 
 #if 0
 #include <libavcodec/avcodec.h>
@@ -79,6 +80,12 @@ int tdav_init()
 	tmedia_consumer_plugin_register(tmedia_consumer_oss_plugin_def_t);
 #endif
 
+	/* === Register producers === */
+#if HAVE_DSOUND_H
+#elif HAVE_WAVE_API
+	tmedia_producer_plugin_register(tmedia_producer_waveapi_plugin_def_t);
+#endif
+
 	//if((context_encode = avcodec_alloc_context())){
 	//	printf("avcodec_alloc_context()");
 	//}
@@ -109,6 +116,12 @@ int tdav_deinit()
 	tmedia_consumer_plugin_unregister(tmedia_consumer_dsound_plugin_def_t);
 #elif HAVE_WAVE_API
 	tmedia_consumer_plugin_unregister(tmedia_consumer_waveapi_plugin_def_t);
+#endif
+
+	/* === UnRegister producers === */
+#if HAVE_DSOUND_H
+#elif HAVE_WAVE_API
+	tmedia_producer_plugin_unregister(tmedia_producer_waveapi_plugin_def_t);
 #endif
 
 #if HAVE_OSS_H

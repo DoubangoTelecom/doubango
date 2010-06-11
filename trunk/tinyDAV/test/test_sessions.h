@@ -73,7 +73,7 @@ void test_sessions_client()
 	tmedia_type_t type = tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38;
 
 	mgr = tmedia_session_mgr_create(type,
-		"192.168.0.12", tsk_false, tsk_true/* offerer */);
+		"0.0.0.0", tsk_false, tsk_true/* offerer */);
 
 	/* get lo */
 	sdp_lo = tmedia_session_mgr_get_lo(mgr);
@@ -113,7 +113,7 @@ void test_sessions_server()
 	if((sdp_ro = tsdp_message_parse(SDP_RO, tsk_strlen(SDP_RO)))){
 		type = tmedia_type_from_sdp(sdp_ro);
 		mgr = tmedia_session_mgr_create(type,
-			"192.168.0.12", tsk_false, tsk_false/* answerer */);
+			"0.0.0.0", tsk_false, tsk_false/* answerer */);
 		tmedia_session_mgr_set_ro(mgr, sdp_ro);
 		TSK_OBJECT_SAFE_FREE(sdp_ro);
 	}
