@@ -305,7 +305,7 @@ tsip_header_t *tsip_challenge_create_header_authorization(tsip_challenge_t *self
 		goto bail;
 	}
 
-	if(!(uristring = tsip_uri_tostring(request->line.request.uri, tsk_true, tsk_true))){
+	if(!(uristring = tsip_uri_tostring(request->line.request.uri, tsk_true, tsk_false))){
 		TSK_DEBUG_ERROR("Failed to parse URI: %s", uristring);
 		goto bail;
 	}

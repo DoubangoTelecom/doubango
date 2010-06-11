@@ -737,8 +737,10 @@ int tsip_stack_stop(tsip_stack_handle_t *self)
 			one_failed = tsk_true;
 		}
 
-		/* Remove all SigComp Compartments */
-		TSK_OBJECT_SAFE_FREE(stack->sigcomp.handle);
+		/* Close all SigComp Compartments (do not remove them) */
+		if(stack->sigcomp.handle){
+			tsip_sigcomp_close_all(stack->sigcomp.handle);
+		}
 
 		if(!one_failed){
 			stack->started = tsk_false;

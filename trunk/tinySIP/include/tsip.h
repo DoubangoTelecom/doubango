@@ -185,7 +185,7 @@ tsip_stack_param_type_t;
 */
 /**@ingroup tsip_stack_group
 * @def TSIP_STACK_SET_SIGCOMP_NEW_COMPARTMENT
-* Add New unique compartment identifier to the stack. This compartment will be removed when the stack is stopped.
+* Add New unique compartment identifier to the stack. This compartment will be closed (not removed) when the stack is stopped.
 * A any time, you can remove this compartment by using @ref TSIP_STACK_UNSET_SIGCOMP_COMPARTMENT().
 * @param COMPARTMENT_ID_STR The id of the compartment to add. Should be unique.
 * The identifier will be used to in the sip headers (as per RFC 5049) "AS IS".<br>

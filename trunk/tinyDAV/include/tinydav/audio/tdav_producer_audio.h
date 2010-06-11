@@ -38,6 +38,8 @@ TDAV_BEGIN_DECLS
 
 #define TDAV_BITS_PER_SAMPLE_DEFAULT 16
 
+#define TDAV_PRODUCER_AUDIO(self)  ((tdav_producer_audio_t*)(self))
+
 typedef struct tdav_producer_audio_s
 {
 	TMEDIA_DECLARE_PRODUCER;
@@ -45,16 +47,20 @@ typedef struct tdav_producer_audio_s
 	uint8_t channels;
 	uint32_t rate;
 	uint8_t bits_per_sample;
+	uint8_t ptime;
 }
 tdav_producer_audio_t;
 
 int tdav_producer_audio_init(tdav_producer_audio_t* self);
-int tdav_producer_audio_prepare(tdav_producer_audio_t *self);
-int tdav_producer_audio_start(tdav_producer_audio_t *self);
-int tdav_producer_audio_consume(tdav_producer_audio_t* self, const void* buffer, tsk_size_t size);
-int tdav_producer_audio_pause(tdav_producer_audio_t *self);
-int tdav_producer_audio_stop(tdav_producer_audio_t *self);
+int tdav_producer_audio_cmp(const tsk_object_t* producer1, const tsk_object_t* producer2);
+#define tdav_producer_audio_prepare(self, codec) tmedia_producer_prepare(TMEDIA_PRODUCER(self), codec)
+#define tmedia_producer_audio_set_callback(self, callback, callback_data) tmedia_producer_set_callback(TMEDIA_PRODUCER(self), callback, callback_data)
+#define tdav_producer_audio_start(self)	tdav_producer_start(TMEDIA_PRODUCER(self))
+#define tdav_producer_audio_pause(self)	tdav_producer_pause(TMEDIA_PRODUCER(self))
+#define tdav_producer_audio_stop(self) tdav_producer_stop(TMEDIA_PRODUCER(self))
 int tdav_producer_audio_deinit(tdav_producer_audio_t* self);
+
+#define TDAV_DECLARE_PRODUCER_AUDIO tdav_producer_audio_t __producer_audio__
 
 TDAV_END_DECLS
 

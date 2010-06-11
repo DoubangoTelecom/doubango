@@ -30,6 +30,7 @@
 #include "tinydav/audio/tdav_session_audio.h"
 
 #include "tinymedia/tmedia_consumer.h"
+#include "tinymedia/tmedia_producer.h"
 
 #include "tinyrtp/trtp_manager.h"
 #include "tinyrtp/rtp/trtp_rtp_packet.h"
@@ -39,7 +40,7 @@
 
 extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format);
 
-
+// RTP/RTCP callback
 static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
 {
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
@@ -56,11 +57,22 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 			tsk_size_t out_size;
 			out_size = TMEDIA_SESSION(audio)->negociated_codec->plugin->decode(TMEDIA_SESSION(audio)->negociated_codec, packet->payload.data, packet->payload.size, &out_data);
 			if(out_size){
-				tmedia_consumer_consume(audio->consumer, &out_data, out_size);
+				tmedia_consumer_consume(audio->consumer, &out_data, out_size, packet->header);
 			}
 			TSK_FREE(out_data);
 		}
 	}
+	return 0;
+}
+
+// Producer callback
+static int tdav_session_audio_producer_cb(const void* callback_data, const void* buffer, tsk_size_t size)
+{
+	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
+
+	if(audio){
+	}
+
 	return 0;
 }
 
@@ -168,6 +180,11 @@ int tdav_session_audio_start(tmedia_session_t* self)
 			tmedia_consumer_prepare(audio->consumer, self->negociated_codec);
 			tmedia_consumer_start(audio->consumer);
 		}
+		/* Producer */
+		if(audio->producer){
+			tmedia_producer_prepare(audio->producer, self->negociated_codec);
+			tmedia_producer_start(audio->producer);
+		}
 
 		/* for test */
 		//trtp_manager_send_rtp(audio->rtp_manager, "test", 4, tsk_true);
@@ -203,6 +220,10 @@ int tdav_session_audio_stop(tmedia_session_t* self)
 	if(audio->consumer){
 		tmedia_consumer_stop(audio->consumer);
 	}
+	/* Producer */
+	if(audio->producer){
+		tmedia_producer_stop(audio->producer);
+	}
 
 	/* very important */
 	//audio->local_port = 0;
@@ -226,6 +247,10 @@ int tdav_session_audio_pause(tmedia_session_t* self)
 	/* Consumer */
 	if(audio->consumer){
 		tmedia_consumer_pause(audio->consumer);
+	}
+	/* Producer */
+	if(audio->producer){
+		tmedia_producer_pause(audio->producer);
 	}
 
 	return 0;
@@ -328,6 +353,12 @@ static tsk_object_t* tdav_session_audio_ctor(tsk_object_t * self, va_list * app)
 		if(!(session->consumer = tmedia_consumer_create(tdav_session_audio_plugin_def_t->type))){
 			TSK_DEBUG_ERROR("Failed to create Audio consumer");
 		}
+		if((session->producer = tmedia_producer_create(tdav_session_audio_plugin_def_t->type))){
+			tmedia_producer_set_callback(session->producer, tdav_session_audio_producer_cb, self);
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create Audio producer");
+		}
 	}
 	return self;
 }
@@ -341,6 +372,7 @@ static tsk_object_t* tdav_session_audio_dtor(tsk_object_t * self)
 		/* deinit self */
 		TSK_OBJECT_SAFE_FREE(session->rtp_manager);
 		TSK_OBJECT_SAFE_FREE(session->consumer);
+		TSK_OBJECT_SAFE_FREE(session->producer);
 		TSK_FREE(session->remote_ip);
 		TSK_FREE(session->local_ip);
 	}

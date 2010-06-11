@@ -20,50 +20,49 @@
 *
 */
 
-/**@file tdav_session_audio.h
- * @brief Audio Session plugin.
+/**@file tdav_producer_waveapi.h
+ * @brief Audio Consumer for Win32 and WinCE platforms.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYDAV_SESSION_AUDIO_H
-#define TINYDAV_SESSION_AUDIO_H
+#ifndef TINYDAV_PRODUCER_WAVEAPI_H
+#define TINYDAV_PRODUCER_WAVEAPI_H
 
 #include "tinydav_config.h"
 
-#include "tinymedia/tmedia_session.h"
+#if HAVE_WAVE_API
+
+#include "tinydav/audio/tdav_producer_audio.h"
+
+#include <windows.h>
 
 TDAV_BEGIN_DECLS
 
-// Forward declaration
-struct trtp_manager_s;
-struct tdav_consumer_audio_s;
+#define TDAV_WAVEAPI_PRODUCER_NOTIF_POS_COUNT		4
 
-typedef struct tdav_session_audio_s
+typedef struct tdav_producer_waveapi_s
 {
-	TMEDIA_DECLARE_SESSION_AUDIO;
-
-	tsk_bool_t useIPv6;
-
-	char* local_ip;
-	//uint16_t local_port;
-
-	char* remote_ip;
-	uint16_t remote_port;
+	TDAV_DECLARE_PRODUCER_AUDIO;
 	
-	tsk_bool_t rtcp_enabled;
-
-	struct trtp_manager_s* rtp_manager;
-
-	struct tmedia_consumer_s* consumer;
-	struct tmedia_producer_s* producer;
+	tsk_bool_t started;
+	
+	WAVEFORMATEX wfx;
+	HWAVEIN hWaveIn;
+	LPWAVEHDR hWaveHeaders[TDAV_WAVEAPI_PRODUCER_NOTIF_POS_COUNT];
+	tsk_size_t bytes_per_notif;
+	
+	void* tid[1];
+	HANDLE events[2];
+	CRITICAL_SECTION cs;
 }
-tdav_session_audio_t;
+tdav_producer_waveapi_t;
 
-
-TINYDAV_GEXTERN const tmedia_session_plugin_def_t *tdav_session_audio_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_producer_plugin_def_t *tmedia_producer_waveapi_plugin_def_t;
 
 TDAV_END_DECLS
 
-#endif /* TINYDAV_SESSION_AUDIO_H */
+#endif /* HAVE_WAVE_API */
+
+#endif /* TINYDAV_PRODUCER_WAVEAPI_H */
