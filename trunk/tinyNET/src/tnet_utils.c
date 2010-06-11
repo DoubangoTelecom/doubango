@@ -80,12 +80,12 @@ void tnet_getlasterror(tnet_error_t *error)
 #endif
 		(
 		  FORMAT_MESSAGE_FROM_SYSTEM, 
-		  0,
+		  tsk_null,
 		  err,
 		  0,
 		  *error, 
 		  sizeof(*error)-1,
-		  0);
+		  tsk_null);
 	}
 #else
 	strerror_r(err, *error, sizeof(*error));

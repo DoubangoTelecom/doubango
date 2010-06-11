@@ -19,50 +19,40 @@
 * along with DOUBANGO.
 *
 */
-
-/**@file tdav_consumer_waveapi.h
- * @brief Audio Consumer for Win32 and WinCE platforms.
+/**@file tdav_win32.c
+ * @brief tinyDAV WIN32 helper functions.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYDAV_CONSUMER_WAVEAPI_H
-#define TINYDAV_CONSUMER_WAVEAPI_H
+#include "tinydav/tdav_win32.h"
 
-#include "tinydav_config.h"
+#if TDAV_UNDER_WINDOWS
 
-#if HAVE_WAVE_API
+#include "tsk_debug.h"
 
-#include "tinydav/audio/tdav_consumer_audio.h"
-
-#include <windows.h>
-
-TDAV_BEGIN_DECLS
-
-#define TDAV_WAVEAPI_CONSUMER_NOTIF_POS_COUNT		4
-
-typedef struct tdav_consumer_waveapi_s
+void tdav_win32_print_error(const char* func, HRESULT hr)
 {
-	TDAV_DECLARE_CONSUMER_AUDIO;
+	CHAR* message = tsk_null;
+#ifdef _WIN32_WCE
+	FormatMessage
+#else
+	FormatMessageA
+#endif
+	(
+	  FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, 
+	  tsk_null,
+	  hr,
+	  0,
+	  message, 
+	  0,
+	  tsk_null);
 
-	tsk_bool_t started;
+	TSK_DEBUG_ERROR("%s():", message);
 
-	WAVEFORMATEX wfx;
-	HWAVEOUT hWaveOut;
-	LPWAVEHDR hWaveHeaders[TDAV_WAVEAPI_CONSUMER_NOTIF_POS_COUNT];
-	tsk_size_t bytes_per_notif;
-
-	void* tid[1];
-	HANDLE events[2];
-	CRITICAL_SECTION cs;
+	LocalFree(message);
 }
-tdav_consumer_waveapi_t;
 
-TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tmedia_consumer_waveapi_plugin_def_t;
 
-TDAV_END_DECLS
-
-#endif /* HAVE_WAVE_API */
-
-#endif /* TINYDAV_CONSUMER_WAVEAPI_H */
+#endif /* TDAV_UNDER_WINDOWS */

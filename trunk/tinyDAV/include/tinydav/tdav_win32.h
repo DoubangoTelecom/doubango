@@ -19,50 +19,28 @@
 * along with DOUBANGO.
 *
 */
-
-/**@file tdav_consumer_waveapi.h
- * @brief Audio Consumer for Win32 and WinCE platforms.
+/**@file tdav_win32.h
+ * @brief tinyDAV WIN32 helper functions.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
  * @date Created: Sat Nov 8 16:54:58 2009 mdiop
  */
-#ifndef TINYDAV_CONSUMER_WAVEAPI_H
-#define TINYDAV_CONSUMER_WAVEAPI_H
+#ifndef TINYMEDIA_TDAV_WIN32_H
+#define TINYMEDIA_TDAV_WIN32_H
 
 #include "tinydav_config.h"
 
-#if HAVE_WAVE_API
-
-#include "tinydav/audio/tdav_consumer_audio.h"
+#if TDAV_UNDER_WINDOWS
 
 #include <windows.h>
 
 TDAV_BEGIN_DECLS
 
-#define TDAV_WAVEAPI_CONSUMER_NOTIF_POS_COUNT		4
-
-typedef struct tdav_consumer_waveapi_s
-{
-	TDAV_DECLARE_CONSUMER_AUDIO;
-
-	tsk_bool_t started;
-
-	WAVEFORMATEX wfx;
-	HWAVEOUT hWaveOut;
-	LPWAVEHDR hWaveHeaders[TDAV_WAVEAPI_CONSUMER_NOTIF_POS_COUNT];
-	tsk_size_t bytes_per_notif;
-
-	void* tid[1];
-	HANDLE events[2];
-	CRITICAL_SECTION cs;
-}
-tdav_consumer_waveapi_t;
-
-TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tmedia_consumer_waveapi_plugin_def_t;
+void tdav_win32_print_error(const char* func, HRESULT hr);
 
 TDAV_END_DECLS
 
-#endif /* HAVE_WAVE_API */
+#endif /* TDAV_UNDER_WINDOWS */
 
-#endif /* TINYDAV_CONSUMER_WAVEAPI_H */
+#endif /* TINYMEDIA_TDAV_WIN32_H */

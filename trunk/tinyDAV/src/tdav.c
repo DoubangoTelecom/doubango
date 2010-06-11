@@ -37,6 +37,7 @@
 
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
+#include "tinydav/audio/directsound/tdav_consumer_dsound.h"
 
 // Producers
 
@@ -63,11 +64,20 @@ int tdav_init()
 #if 0
 	avcodec_register_all();
 #endif
+
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
-	//tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
+	//--tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
 
 	/* === Register consumers === */
+#if HAVE_DSOUND_H
+	tmedia_consumer_plugin_register(tmedia_consumer_dsound_plugin_def_t);
+#elif HAVE_WAVE_API
 	tmedia_consumer_plugin_register(tmedia_consumer_waveapi_plugin_def_t);
+#endif
+
+#if HAVE_OSS_H
+	tmedia_consumer_plugin_register(tmedia_consumer_oss_plugin_def_t);
+#endif
 
 	//if((context_encode = avcodec_alloc_context())){
 	//	printf("avcodec_alloc_context()");
@@ -95,7 +105,15 @@ int tdav_deinit()
 	tmedia_codec_plugin_unregister(tdav_codec_g711u_plugin_def_t);
 
 	/* === unRegister consumers === */
+#if HAVE_DSOUND_H
+	tmedia_consumer_plugin_unregister(tmedia_consumer_dsound_plugin_def_t);
+#elif HAVE_WAVE_API
 	tmedia_consumer_plugin_unregister(tmedia_consumer_waveapi_plugin_def_t);
+#endif
+
+#if HAVE_OSS_H
+	tmedia_consumer_plugin_unregister(tmedia_consumer_oss_plugin_def_t);
+#endif
 
 	return 0;
 }
