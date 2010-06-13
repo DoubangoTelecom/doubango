@@ -111,7 +111,7 @@ tsk_buffer_t* trtp_rtp_header_serialize(const trtp_rtp_header_t *self)
 		return tsk_null;
 	}
 	else{
-		tsk_buffer_takeownership(buffer, &data, TRTP_RTP_HEADER_MIN_SIZE + (4 * self->csrc_count));
+		tsk_buffer_takeownership(buffer, (void**)&data, TRTP_RTP_HEADER_MIN_SIZE + (4 * self->csrc_count));
 	}
 
 	return buffer;

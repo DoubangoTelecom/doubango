@@ -1,7 +1,10 @@
 APP := lib$(PROJECT).$(EXT)
 
-CFLAGS := $(CFLAGS_LIB) -fno-rtti -fno-exceptions -I../../_common -I../../. -I../../../tinySAK/src -I../../../tinyNET/src -I../../../tinyHTTP/include -I../../../tinySIP/include
-LDFLAGS := $(LDFLAGS_LIB) -lstdc++ -llog -ltinySAK -ltinyHTTP -ltinyIPSec -ltinyNET -ltinySIP
+CFLAGS := $(CFLAGS_LIB) -fno-rtti -fno-exceptions -I../../_common -I../../. -I../../../tinySAK/src -I../../../tinyNET/src -I../../../tinyHTTP/include \
+	-I../../../tinySDP/include -I../../../tinyMEDIA/include -I../../../tinyDAV/include -I../../../tinySIP/include
+	
+# Because of the static build, you need all librarires
+LDFLAGS := $(LDFLAGS_LIB) -lstdc++ -llog -ltinySAK -ltinyHTTP -ltinyIPSec -ltinySIGCOMP -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA -ltinyDAV -ltinySIP -lm
 
 
 
@@ -9,6 +12,8 @@ all: $(APP)
 
 OBJS = tinyWRAP_wrap.o\
 	../../_common/DDebug.o \
+	../../_common/ProxyConsumer.o \
+	../../_common/ProxyProducer.o \
 	../../_common/SafeObject.o \
 	../../_common/SipCallback.o \
 	../../_common/SipEvent.o \

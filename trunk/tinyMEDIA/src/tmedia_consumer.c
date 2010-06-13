@@ -208,8 +208,42 @@ int tmedia_consumer_plugin_unregister(const tmedia_consumer_plugin_def_t* plugin
 	}
 
 	/* find the plugin to unregister */
-	for(i = 0; i<TMED_CONSUMER_MAX_PLUGINS; i++){
+	for(i = 0; i<TMED_CONSUMER_MAX_PLUGINS && __tmedia_consumer_plugins[i]; i++){
 		if(__tmedia_consumer_plugins[i] == plugin){
+			__tmedia_consumer_plugins[i] = tsk_null;
+			found = tsk_true;
+			break;
+		}
+	}
+
+	/* compact */
+	if(found){
+		for(; i<(TMED_CONSUMER_MAX_PLUGINS - 1); i++){
+			if(__tmedia_consumer_plugins[i+1]){
+				__tmedia_consumer_plugins[i] = __tmedia_consumer_plugins[i+1];
+			}
+			else{
+				break;
+			}
+		}
+		__tmedia_consumer_plugins[i] = tsk_null;
+	}
+	return (found ? 0 : -2);
+}
+
+/**@ingroup tmedia_consumer_group
+* UnRegisters all consumers matching the given type.
+* @param type the type of the consumers to unregister (e.g. audio|video).
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tmedia_consumer_plugin_unregister_by_type(tmedia_type_t type)
+{
+	tsk_size_t i;
+	tsk_bool_t found = tsk_false;
+
+	/* find the plugin to unregister */
+	for(i = 0; i<TMED_CONSUMER_MAX_PLUGINS && __tmedia_consumer_plugins[i]; i++){
+		if((__tmedia_consumer_plugins[i]->type & type) == __tmedia_consumer_plugins[i]->type){
 			__tmedia_consumer_plugins[i] = tsk_null;
 			found = tsk_true;
 			break;

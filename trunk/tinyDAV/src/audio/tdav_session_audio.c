@@ -53,6 +53,7 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 	if(audio->consumer){
 		/* decode data--> FIXME:we should lock negociated codec */
 		if(TMEDIA_SESSION(audio)->negociated_codec && TMEDIA_SESSION(audio)->negociated_codec->plugin && TMEDIA_SESSION(audio)->negociated_codec->plugin->decode){
+			/* decode */
 			void* out_data = tsk_null;
 			tsk_size_t out_size;
 			out_size = TMEDIA_SESSION(audio)->negociated_codec->plugin->decode(TMEDIA_SESSION(audio)->negociated_codec, packet->payload.data, packet->payload.size, &out_data);
@@ -70,7 +71,15 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 {
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
 
-	if(audio){
+	if(audio->rtp_manager && TMEDIA_SESSION(audio)->negociated_codec && TMEDIA_SESSION(audio)->negociated_codec->plugin && TMEDIA_SESSION(audio)->negociated_codec->plugin->encode){
+		/* encode */
+		void* out_data = tsk_null;
+		tsk_size_t out_size;
+		out_size = TMEDIA_SESSION(audio)->negociated_codec->plugin->encode(TMEDIA_SESSION(audio)->negociated_codec, buffer, size, &out_data);
+		if(out_size){
+			trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, tsk_false);
+		}
+		TSK_FREE(out_data);
 	}
 
 	return 0;

@@ -54,7 +54,7 @@ typedef tsdp_message_t tsdp_caps_t;
 TINYSDP_API int tsdp_message_add_header(tsdp_message_t *self, const tsdp_header_t *hdr);
 TINYSDP_API int tsdp_message_add_headers(tsdp_message_t *self, ...);
 
-#if !defined(_MSC_VER) || defined(__GNUC__)
+#if defined(__SYMBIAN32__) && 0
 static void TSDP_MESSAGE_ADD_HEADER(tsdp_message_t *self, ...)
 	{
 		va_list ap;
@@ -63,7 +63,7 @@ static void TSDP_MESSAGE_ADD_HEADER(tsdp_message_t *self, ...)
 		
 		va_start(ap, self);
 		objdef = va_arg(ap, const tsk_object_def_t*);
-		header = tsk_object_new_2(objdef, &ap);
+		header = (tsdp_header_t *)tsk_object_new_2(objdef, &ap);
 		va_end(ap);
 
 		tsdp_message_add_header(self, header);
@@ -72,7 +72,7 @@ static void TSDP_MESSAGE_ADD_HEADER(tsdp_message_t *self, ...)
 #else
 #define TSDP_MESSAGE_ADD_HEADER(self, objdef, ...)						\
 	{																	\
-		tsdp_header_t *header = tsk_object_new(objdef, __VA_ARGS__);	\
+		tsdp_header_t *header = (tsdp_header_t *)tsk_object_new(objdef, ##__VA_ARGS__);	\
 		tsdp_message_add_header(self, header);							\
 		tsk_object_unref(header);										\
 	}

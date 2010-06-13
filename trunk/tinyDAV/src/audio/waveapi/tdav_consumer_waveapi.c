@@ -385,7 +385,7 @@ static const tsk_object_def_t tdav_consumer_waveapi_def_s =
 	tdav_consumer_audio_cmp, 
 };
 /* plugin definition*/
-static const tmedia_consumer_plugin_def_t tmedia_consumer_waveapi_plugin_def_s = 
+static const tmedia_consumer_plugin_def_t tdav_consumer_waveapi_plugin_def_s = 
 {
 	&tdav_consumer_waveapi_def_s,
 	
@@ -398,6 +398,6 @@ static const tmedia_consumer_plugin_def_t tmedia_consumer_waveapi_plugin_def_s =
 	tdav_consumer_waveapi_pause,
 	tdav_consumer_waveapi_stop
 };
-const tmedia_consumer_plugin_def_t *tmedia_consumer_waveapi_plugin_def_t = &tmedia_consumer_waveapi_plugin_def_s;
+const tmedia_consumer_plugin_def_t *tdav_consumer_waveapi_plugin_def_t = &tdav_consumer_waveapi_plugin_def_s;
 
 #endif /* HAVE_WAVE_API */

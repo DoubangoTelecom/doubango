@@ -5,7 +5,7 @@
 #++sn --path ./core-colibria.sn
 
 # Ericsson
-#++sn --path ./core-ericsson.sn
+++sn --path ./core-ericsson.sn
 
 # Inexbee
 #++sn --path ./core-inexbee.sn
@@ -21,4 +21,4 @@
 
 
 # SigComp
-++sn --path ./sigcomp.sn
+#++sn --path ./sigcomp.sn

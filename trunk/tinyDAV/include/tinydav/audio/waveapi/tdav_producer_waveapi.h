@@ -59,7 +59,7 @@ typedef struct tdav_producer_waveapi_s
 }
 tdav_producer_waveapi_t;
 
-TINYDAV_GEXTERN const tmedia_producer_plugin_def_t *tmedia_producer_waveapi_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_producer_plugin_def_t *tdav_producer_waveapi_plugin_def_t;
 
 TDAV_END_DECLS
 

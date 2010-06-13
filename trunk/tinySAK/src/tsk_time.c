@@ -29,6 +29,8 @@
 */
 #include "tsk_time.h"
 
+#include "tsk_debug.h"
+
 #if TSK_UNDER_WINDOWS
 //#	ifdef _WIN32_WCE
 #		include <Winsock2.h> // timeval
@@ -61,29 +63,43 @@ struct timezone
 	int  tz_dsttime;     /* type of dst correction */
 }; 
 
-#include <sys/timeb.h>
 int gettimeofday(struct timeval *tv, struct timezone *tz) 
 {  
-	#ifdef _WIN32_WCE
-		struct timeb tb;
-		ftime (&tb);
-#elif defined(__MINGW32__)
-		//struct __timeb64 tb;
-		//_ftime64 (&tb);
-		struct _timeb tb;
-		_ftime (&tb);
+	FILETIME ft;
+	uint64_t tmpres = 0;  
+	static int tzflag = 0; 
+
+	if(tv)   
+	{    
+#ifdef _WIN32_WCE
+		SYSTEMTIME st;
+		GetSystemTime(&st);
+		SystemTimeToFileTime(&st, &ft);
 #else
-		struct __timeb64 tb;
-		_ftime64_s (&tb);
+		GetSystemTimeAsFileTime(&ft);
 #endif
 
-		tv->tv_sec = (long)tb.time; // Fix: tv_sec wraps year 2038 (tv.time is ok though)
-		tv->tv_usec = tb.millitm * 1000L;
-		if( tz ){
-			tz->tz_minuteswest = tb.timezone;	/* minutes west of Greenwich  */
-			tz->tz_dsttime = tb.dstflag;	/* type of dst correction  */
-		}
-return 0;
+		tmpres |= ft.dwHighDateTime;   
+		tmpres <<= 32; 
+		tmpres |= ft.dwLowDateTime;
+
+		/*converting file time to unix epoch*/   
+		tmpres /= 10;  /*convert into microseconds*/  
+		tmpres -= DELTA_EPOCH_IN_MICROSECS;  
+		tv->tv_sec = (long)(tmpres / 1000000UL); 
+		tv->tv_usec = (long)(tmpres % 1000000UL); 
+	}
+
+	if (tz){   
+		if (!tzflag){    
+			_tzset();   
+			tzflag++;  
+		}   
+		tz->tz_minuteswest = _timezone / 60;
+		tz->tz_dsttime = _daylight;
+	}
+
+	return 0; 
 }
 
 #else
@@ -105,15 +121,27 @@ int tsk_gettimeofday(struct timeval *tv, struct timezone *tz)
 }
 
 /**@ingroup tsk_time_group
+* Gets the number of milliseconds in @a tv
+* @retval The number of milliseconds
+*/
+uint64_t tsk_time_get_ms(struct timeval* tv)
+{
+	if(!tv){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+	return (((uint64_t)tv->tv_sec)*(uint64_t)1000) + (((uint64_t)tv->tv_usec)/(uint64_t)1000);
+}
+
+/**@ingroup tsk_time_group
 * Gets the number of milliseconds since the EPOCH.
 * @retval The number of milliseconds since EPOCH.
 */
 uint64_t tsk_time_epoch()
 {
 	struct timeval tv;
-	static const uint64_t thousand = 1000;
-	gettimeofday(&tv, tsk_null); 
+	gettimeofday(&tv, 0); 
 	
-	return (((uint64_t)tv.tv_sec)*thousand) + (((uint64_t)tv.tv_usec)/thousand);
+	return (((uint64_t)tv.tv_sec)*(uint64_t)1000) + (((uint64_t)tv.tv_usec)/(uint64_t)1000);
 }
 

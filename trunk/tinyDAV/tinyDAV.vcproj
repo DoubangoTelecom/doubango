@@ -296,7 +296,7 @@
 						>
 					</File>
 					<File
-						RelativePath=".\include\tinydav\audio\waveapi\tdav_producer_wave_api.h"
+						RelativePath=".\include\tinydav\audio\waveapi\tdav_producer_waveapi.h"
 						>
 					</File>
 				</Filter>

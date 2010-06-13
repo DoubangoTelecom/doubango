@@ -33,6 +33,14 @@ namespace test
             sipCallback = new MySipCallback();
             //sipDebugCallback = new MySipDebugCallback();
 
+            /* Create Audio consumer */
+            audioConsumer = new MyProxyAudioConsumer();
+            audioConsumer.setActivate();
+
+            /* Create Audio producer */
+            audioProducer = new MyProxyAudioProducer();
+            audioProducer.setActivate();
+
             /* Create and configure the IMS/LTE stack */
             sipStack = new SipStack(sipCallback, String.Format("sip:{0}", REALM), String.Format("{0}@{1}", USER, REALM), String.Format("sip:{0}@{1}", USER, REALM));
             sipStack.setDebugCallback(sipDebugCallback);
@@ -40,7 +48,11 @@ namespace test
             sipStack.addHeader("Privacy", "header; id");
             sipStack.addHeader("P-Access-Network-Info", "ADSL;utran-cell-id-3gpp=00000000");
             sipStack.addHeader("User-Agent", "IM-client/OMA1.0 doubango/v1.0.0");
-            
+
+            /* Do it after stack creation */
+            ProxyAudioConsumer.registerPlugin();
+            ProxyAudioProducer.registerPlugin();
+
             /* Sets Proxy-CSCF */
             success = sipStack.setProxyCSCF(PROXY_CSCF_IP, PROXY_CSCF_PORT, "tcp", "ipv4");
             /* Starts the stack */
@@ -49,7 +61,7 @@ namespace test
             /* Set Password */
             //stack.setPassword(PASSWORD);
 
-            sipStack.setAoR("127.0.0.1", 1234);
+            //sipStack.setAoR("127.0.0.1", 1234);
 
             /* Send REGISTER */
             regSession = new RegistrationSession(sipStack);
@@ -59,45 +71,75 @@ namespace test
             regSession.setExpires(35);
             regSession.Register();
 
-            //Thread.Sleep(2000);
+            Console.ReadLine();
 
-            /* Send SUBSCRIBE(reg) */
-            subSession = new SubscriptionSession(sipStack);
-            subSession.addHeader("Event", "reg");
-            subSession.addHeader("Accept", "application/reginfo+xml");
-            subSession.addHeader("Allow-Events", "refer, presence, presence.winfo, xcap-diff, conference");
-            subSession.setExpires(35);
-            //subSession.Subscribe();
+            callSession = new CallSession(sipStack);
+            callSession.Call(String.Format("sip:bob@{0}", REALM));
 
-            /* Send MESSAGE */
-            MessagingSession msg = new MessagingSession(sipStack);
-            byte [] content = Encoding.ASCII.GetBytes("Hello World");
-            msg.setToUri(String.Format("sip:{0}@{1}", "alice", REALM));
-            msg.addHeader("NS", "imdn <urn:ietf:params:imdn>");
-            msg.addHeader("imdn.Message-ID", "34jk324j");
-            msg.addHeader("DateTime", "2006-04-04T12:16:49-05:00");
-            msg.addHeader("imdn.Disposition-Notification", "positive-delivery, negative-delivery");
-            msg.addHeader("Content-Type", "text/plain");
-            //msg.Send(content, (uint)content.Length);
+            tcb = new TimerCallback(OnTimer);
+            timer = new Timer(tcb, new AutoResetEvent(false), 0, 20);
 
-            /* Send OPTIONS */
-            OptionsSession opt = new OptionsSession(sipStack);
-            opt.setToUri(String.Format("sip:{0}@{1}", "hacking_the_aor", REALM));
-            opt.Send();
+            Console.ReadLine();
 
-            Console.Read();
+            callSession.Hangup();
+
+
+            ////Thread.Sleep(2000);
+
+            ///* Send SUBSCRIBE(reg) */
+            //subSession = new SubscriptionSession(sipStack);
+            //subSession.addHeader("Event", "reg");
+            //subSession.addHeader("Accept", "application/reginfo+xml");
+            //subSession.addHeader("Allow-Events", "refer, presence, presence.winfo, xcap-diff, conference");
+            //subSession.setExpires(35);
+            ////subSession.Subscribe();
+
+            ///* Send MESSAGE */
+            //MessagingSession msg = new MessagingSession(sipStack);
+            //byte [] content = Encoding.ASCII.GetBytes("Hello World");
+            //msg.setToUri(String.Format("sip:{0}@{1}", "alice", REALM));
+            //msg.addHeader("NS", "imdn <urn:ietf:params:imdn>");
+            //msg.addHeader("imdn.Message-ID", "34jk324j");
+            //msg.addHeader("DateTime", "2006-04-04T12:16:49-05:00");
+            //msg.addHeader("imdn.Disposition-Notification", "positive-delivery, negative-delivery");
+            //msg.addHeader("Content-Type", "text/plain");
+            ////msg.Send(content, (uint)content.Length);
+
+            ///* Send OPTIONS */
+            //OptionsSession opt = new OptionsSession(sipStack);
+            //opt.setToUri(String.Format("sip:{0}@{1}", "hacking_the_aor", REALM));
+            //opt.Send();
+
+            Console.ReadLine();
 
             sipStack.stop();
         }
 
+
+        public static void OnTimer(Object stateInfo)
+        {
+            byte[] bytes = new byte[320];
+            uint ret = audioConsumer.pull(bytes, (uint)bytes.Length);
+            //Console.WriteLine("pull="+ret);
+
+            int ret2 = audioProducer.push(bytes, (uint)bytes.Length);
+            //Console.WriteLine("push=" + ret);
+        }
+
+        static Timer timer;
+        static TimerCallback tcb;
+        static CallSession callSession;
         static RegistrationSession regSession;
         static SubscriptionSession subSession;
         static MySipCallback sipCallback;
         static SipStack sipStack;
         static MySipDebugCallback sipDebugCallback;
+        static MyProxyAudioConsumer audioConsumer;
+        static MyProxyAudioProducer audioProducer;
     }
 
-    public class MySipDebugCallback : SipDebugCallback
+
+    public class MySipDebugCallback : DDebugCallback
     {
         public override int OnDebugInfo(string message)
         {
@@ -121,6 +163,52 @@ namespace test
         {
             Console.WriteLine(".NET____" + message);
             return 0;
+        }
+    }
+
+    public class MyProxyAudioConsumer : ProxyAudioConsumer
+    {
+        public override int prepare(int ptime, int rate, int channels)
+        {
+            return base.prepare(ptime, rate, channels);
+        }
+
+        public override int start()
+        {
+            return base.start();
+        }
+
+        public override int pause()
+        {
+            return base.pause();
+        }
+
+        public override int stop()
+        {
+            return base.stop();
+        }
+    }
+
+    public class MyProxyAudioProducer : ProxyAudioProducer
+    {
+        public override int prepare(int ptime, int rate, int channels)
+        {
+            return base.prepare(ptime, rate, channels);
+        }
+
+        public override int start()
+        {
+            return base.start();
+        }
+
+        public override int pause()
+        {
+            return base.pause();
+        }
+
+        public override int stop()
+        {
+            return base.stop();
         }
     }
 
@@ -170,6 +258,7 @@ namespace test
 
             return 0;
         }
+
 
         public override int OnOptionsEvent(OptionsEvent e)
         {

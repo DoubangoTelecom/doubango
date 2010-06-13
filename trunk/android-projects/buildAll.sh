@@ -1,7 +1,7 @@
 #!/bin/bash
 # Build tinyDEMO for Google Android Systems
 
-for project in tinySAK tinyNET tinyIPSec tinySMS tinyHTTP tinySDP tinyMEDIA tinySIP tinyDAV tinyDEMO
+for project in tinySAK tinyNET tinyIPSec tinySMS tinySIGCOMP tinyHTTP tinySDP tinyRTP tinyMEDIA tinySIP tinyDAV tinyDEMO
 do
 	echo -e building "$project....\n"
 	make PROJECT=$project clean

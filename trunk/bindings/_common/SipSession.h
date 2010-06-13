@@ -63,6 +63,20 @@ protected:
 };
 
 
+/* ======================== CallSession ========================*/
+class CallSession : public SipSession
+{
+public: /* ctor() and dtor() */
+	CallSession(SipStack* Stack);
+#if !defined(SWIG)
+	CallSession(SipStack* Stack, tsip_ssession_handle_t* handle);
+#endif
+	virtual ~CallSession();
+
+public: /* Public functions */
+	bool Call(const char* remoteUri);
+	bool Hangup();
+};
 
 /* ======================== MessagingSession ========================*/
 class MessagingSession : public SipSession

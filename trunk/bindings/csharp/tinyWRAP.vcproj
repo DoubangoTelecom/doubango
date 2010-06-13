@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\_common;..\.;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include"
+				AdditionalIncludeDirectories="..\_common;..\.;..\..\thirdparties\win32\include;..\..\tinySAK\src;..\..\tinyNET\src;..\..\tinyHTTP\include;..\..\tinySIP\include;..\..\tinyDAV\include;..\..\tinySDP\include;..\..\tinyMEDIA\include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;TINYWRAP_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib"
+				AdditionalDependencies="$(OutDir)\tinySAK.lib $(OutDir)\tinySIP.lib $(OutDir)\tinyNET.lib $(OutDir)\tinyDAV.lib $(OutDir)\tinyMEDIA.lib"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -174,15 +174,23 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\_common\DDebug.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\ProxyConsumer.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\ProxyProducer.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\SafeObject.cxx"
 				>
 			</File>
 			<File
 				RelativePath="..\_common\SipCallback.cxx"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\SipDebug.cxx"
 				>
 			</File>
 			<File
@@ -224,15 +232,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\_common\DDebug.h"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\ProxyConsumer.h"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\ProxyProducer.h"
+				>
+			</File>
+			<File
 				RelativePath="..\_common\SafeObject.h"
 				>
 			</File>
 			<File
 				RelativePath="..\_common\SipCallback.h"
-				>
-			</File>
-			<File
-				RelativePath="..\_common\SipDebug.h"
 				>
 			</File>
 			<File
@@ -253,6 +269,10 @@
 			</File>
 			<File
 				RelativePath="..\_common\SipUri.h"
+				>
+			</File>
+			<File
+				RelativePath="..\_common\tinyWRAP_config.h"
 				>
 			</File>
 			<File

@@ -35,6 +35,8 @@
 #include "tinymedia/tmedia_codec.h"
 #include "tmedia_common.h"
 
+TMEDIA_BEGIN_DECLS
+
 /**Max number of plugins (consumer types) we can create */
 #define TMED_CONSUMER_MAX_PLUGINS			0x0F
 
@@ -86,5 +88,8 @@ TINYMEDIA_API int tmedia_consumer_deinit(tmedia_consumer_t* self);
 
 TINYMEDIA_API int tmedia_consumer_plugin_register(const tmedia_consumer_plugin_def_t* plugin);
 TINYMEDIA_API int tmedia_consumer_plugin_unregister(const tmedia_consumer_plugin_def_t* plugin);
+TINYMEDIA_API int tmedia_consumer_plugin_unregister_by_type(tmedia_type_t type);
+
+TMEDIA_END_DECLS
 
 #endif /* TINYMEDIA_CONSUMER_H */

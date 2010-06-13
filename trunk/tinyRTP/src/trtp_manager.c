@@ -34,6 +34,8 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
+// TODO: Add support for outbound DTMF (http://www.ietf.org/rfc/rfc2833.txt)
+
 /* ======================= Transport callback ========================== */
 static int trtp_transport_layer_cb(const tnet_transport_event_t* e)
 {
@@ -314,7 +316,7 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 	}
 
 	if(!self->started){
-		TSK_DEBUG_ERROR("RTP/RTCP manager should be started before trying ti send data");
+		TSK_DEBUG_ERROR("RTP/RTCP manager should be started before trying to send data");
 		return -2;
 	}
 	

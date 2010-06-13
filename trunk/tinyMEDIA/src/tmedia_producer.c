@@ -215,8 +215,42 @@ int tmedia_producer_plugin_unregister(const tmedia_producer_plugin_def_t* plugin
 	}
 
 	/* find the plugin to unregister */
-	for(i = 0; i<TMED_PRODUCER_MAX_PLUGINS; i++){
+	for(i = 0; i<TMED_PRODUCER_MAX_PLUGINS && __tmedia_producer_plugins[i]; i++){
 		if(__tmedia_producer_plugins[i] == plugin){
+			__tmedia_producer_plugins[i] = tsk_null;
+			found = tsk_true;
+			break;
+		}
+	}
+
+	/* compact */
+	if(found){
+		for(; i<(TMED_PRODUCER_MAX_PLUGINS - 1); i++){
+			if(__tmedia_producer_plugins[i+1]){
+				__tmedia_producer_plugins[i] = __tmedia_producer_plugins[i+1];
+			}
+			else{
+				break;
+			}
+		}
+		__tmedia_producer_plugins[i] = tsk_null;
+	}
+	return (found ? 0 : -2);
+}
+
+/**@ingroup tmedia_producer_group
+* UnRegisters all producers matching the given type.
+* @param type the type of the plugins to unregister.
+* @retval Zero if succeed and non-zero error code otherwise.
+*/
+int tmedia_producer_plugin_unregister_by_type(tmedia_type_t type)
+{
+	tsk_size_t i;
+	tsk_bool_t found = tsk_false;
+
+	/* find the plugin to unregister */
+	for(i = 0; i<TMED_PRODUCER_MAX_PLUGINS && __tmedia_producer_plugins[i]; i++){
+		if((__tmedia_producer_plugins[i]->type & type) == __tmedia_producer_plugins[i]->type){
 			__tmedia_producer_plugins[i] = tsk_null;
 			found = tsk_true;
 			break;

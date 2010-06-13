@@ -77,7 +77,7 @@ int tdav_producer_audio_cmp(const tsk_object_t* producer1, const tsk_object_t* p
 
 /** Deinitialize a producer
 */
-int tdav_producer_audio_deinit(self)
+int tdav_producer_audio_deinit(tdav_producer_audio_t* self)
 {
 	int ret;
 

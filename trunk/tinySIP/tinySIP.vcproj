@@ -773,54 +773,6 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="transactions"
-				>
-				<File
-					RelativePath=".\src\transactions\tsip_transac.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\transactions\tsip_transac_ict.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\transactions\tsip_transac_ist.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\transactions\tsip_transac_layer.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\transactions\tsip_transac_nict.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\transactions\tsip_transac_nist.c"
-					>
-				</File>
-			</Filter>
-			<Filter
-				Name="transports"
-				>
-				<File
-					RelativePath=".\src\transports\tsip_transport.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\transports\tsip_transport_ipsec.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\transports\tsip_transport_layer.c"
-					>
-				</File>
-				<File
-					RelativePath=".\src\transports\tsip_transport_tls.c"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="dialogs"
 				>
 				<File
@@ -949,6 +901,54 @@
 				>
 				<File
 					RelativePath=".\src\sigcomp\tsip_sigcomp.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="transactions"
+				>
+				<File
+					RelativePath=".\src\transactions\tsip_transac.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\transactions\tsip_transac_ict.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\transactions\tsip_transac_ist.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\transactions\tsip_transac_layer.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\transactions\tsip_transac_nict.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\transactions\tsip_transac_nist.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="transports"
+				>
+				<File
+					RelativePath=".\src\transports\tsip_transport.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\transports\tsip_transport_ipsec.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\transports\tsip_transport_layer.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\transports\tsip_transport_tls.c"
 					>
 				</File>
 			</Filter>
