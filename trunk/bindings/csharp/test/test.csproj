@@ -45,6 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CallSession.cs">
+      <Link>CallSession.cs</Link>
+    </Compile>
+    <Compile Include="..\DDebugCallback.cs">
+      <Link>DDebugCallback.cs</Link>
+    </Compile>
     <Compile Include="..\DialogEvent.cs">
       <Link>DialogEvent.cs</Link>
     </Compile>
@@ -59,6 +65,12 @@
     </Compile>
     <Compile Include="..\OptionsSession.cs">
       <Link>OptionsSession.cs</Link>
+    </Compile>
+    <Compile Include="..\ProxyAudioConsumer.cs">
+      <Link>ProxyAudioConsumer.cs</Link>
+    </Compile>
+    <Compile Include="..\ProxyAudioProducer.cs">
+      <Link>ProxyAudioProducer.cs</Link>
     </Compile>
     <Compile Include="..\PublicationEvent.cs">
       <Link>PublicationEvent.cs</Link>
@@ -78,9 +90,6 @@
     <Compile Include="..\SipCallback.cs">
       <Link>SipCallback.cs</Link>
     </Compile>
-    <Compile Include="..\SipDebugCallback.cs">
-      <Link>SipDebugCallback.cs</Link>
-    </Compile>
     <Compile Include="..\SipEvent.cs">
       <Link>SipEvent.cs</Link>
     </Compile>
@@ -92,6 +101,9 @@
     </Compile>
     <Compile Include="..\SipStack.cs">
       <Link>SipStack.cs</Link>
+    </Compile>
+    <Compile Include="..\StackEvent.cs">
+      <Link>StackEvent.cs</Link>
     </Compile>
     <Compile Include="..\SubscriptionEvent.cs">
       <Link>SubscriptionEvent.cs</Link>

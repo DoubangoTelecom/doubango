@@ -96,7 +96,7 @@ static int add_wavehdr(tdav_producer_waveapi_t* producer, tsk_size_t index)
 
 	result = waveInAddBuffer(producer->hWaveIn, producer->hWaveHeaders[index], sizeof(WAVEHDR));
 	if(result != MMSYSERR_NOERROR){
-		print_last_error(result, "waveInWrite");
+		print_last_error(result, "waveInAddBuffer");
 		return -3;
 	 }
 
@@ -138,7 +138,7 @@ static int record_wavehdr(tdav_producer_waveapi_t* producer, LPWAVEHDR lpHdr)
 
 	result = waveInAddBuffer(producer->hWaveIn, lpHdr, sizeof(WAVEHDR));
 	if(result != MMSYSERR_NOERROR){
-		print_last_error(result, "waveInWrite");
+		print_last_error(result, "waveInAddBuffer");
 		return -4;
 	 }
 
@@ -373,7 +373,7 @@ static const tsk_object_def_t tdav_producer_waveapi_def_s =
 	tdav_producer_audio_cmp, 
 };
 /* plugin definition*/
-static const tmedia_producer_plugin_def_t tmedia_producer_waveapi_plugin_def_s = 
+static const tmedia_producer_plugin_def_t tdav_producer_waveapi_plugin_def_s = 
 {
 	&tdav_producer_waveapi_def_s,
 	
@@ -385,6 +385,6 @@ static const tmedia_producer_plugin_def_t tmedia_producer_waveapi_plugin_def_s =
 	tdav_producer_waveapi_pause,
 	tdav_producer_waveapi_stop
 };
-const tmedia_producer_plugin_def_t *tmedia_producer_waveapi_plugin_def_t = &tmedia_producer_waveapi_plugin_def_s;
+const tmedia_producer_plugin_def_t *tdav_producer_waveapi_plugin_def_t = &tdav_producer_waveapi_plugin_def_s;
 
 #endif /* HAVE_WAVE_API */

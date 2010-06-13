@@ -3,7 +3,7 @@
 
 #export CFLAGS="-Os"
 
-for project in tinySAK tinyNET tinyIPSec tinySMS tinyHTTP tinySDP tinyMEDIA tinySIP
+for project in tinySAK tinyNET tinyIPSec tinySMS tinyHTTP tinySIGCOMP tinySDP tinyRTP tinyMEDIA tinyDAV tinySIP
 do
 	echo -e building "$project....\n"
 	make PROJECT=$project clean

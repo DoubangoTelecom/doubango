@@ -5,13 +5,18 @@
 #include "SipEvent.h"
 #include "SipSession.h"
 
+#include "ProxyConsumer.h"
+#include "ProxyProducer.h"
+
 #include "SipCallback.h"
 #include "SafeObject.h"
 #include "SipStack.h"
 %}
 
-/* turn on director wrapping Callback */
+/* Callbacks */
 %feature("director") SipCallback;
+%feature("director") ProxyAudioConsumer;
+%feature("director") ProxyAudioProducer;
 
 
 %nodefaultctor;
@@ -19,6 +24,9 @@
 %include "SipMessage.h"
 %include "SipEvent.h"
 %include "SipSession.h"
+
+%include "ProxyConsumer.h"
+%include "ProxyProducer.h"
 
 %include "SipCallback.h"
 %include "SafeObject.h"

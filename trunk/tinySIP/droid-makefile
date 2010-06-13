@@ -1,7 +1,7 @@
 APP := lib$(PROJECT).$(EXT)
 
-CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I../tinyNET/src -I../tinyHTTP/include -I../tinyIPSec/src -I../tinySDP/include -I../tinyMEDIA/include -I./include
-LDFLAGS := $(LDFLAGS_LIB) -ltinySAK -ltinyNET -ltinyHTTP -ltinyIPSec -ltinySDP -ltinyMEDIA
+CFLAGS := $(CFLAGS_LIB) -I../tinySAK/src -I../tinyNET/src -I../tinyHTTP/include -I../tinyIPSec/src -I../tinySIGCOMP/src -I../tinySDP/include -I../tinyMEDIA/include -I./include
+LDFLAGS := $(LDFLAGS_LIB) -ltinySAK -ltinyNET -ltinyHTTP -ltinyIPSec -ltinySDP -ltinyMEDIA -ltinySIGCOMP
 
 all: $(APP)
 
@@ -148,6 +148,9 @@ OBJS += src/headers/tsip_header.o\
 OBJS += src/parsers/tsip_parser_header.o\
 	src/parsers/tsip_parser_message.o\
 	src/parsers/tsip_parser_uri.o
+	
+	### parsers
+OBJS += src/sigcomp/tsip_sigcomp.o
 	
 	### transactions
 OBJS += src/transactions/tsip_transac.o\

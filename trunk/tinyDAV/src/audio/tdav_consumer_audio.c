@@ -35,6 +35,14 @@
 #include "tsk_time.h"
 #include "tsk_debug.h"
 
+#if TSK_UNDER_WINDOWS
+#	include <Winsock2.h> // timeval
+#elif defined(__SYMBIAN32__)
+#	include <_timeval.h> 
+#else
+#	include <sys/time.h>
+#endif
+
 #define TDAV_BITS_PER_SAMPLE_DEFAULT	16
 #define TDAV_CHANNELS_DEFAULT			2
 #define TDAV_RATE_DEFAULT				8000
@@ -94,9 +102,22 @@ int tdav_consumer_audio_put(tdav_consumer_audio_t* self, void** data, const tsk_
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	/* synchronize the reference timestamp */
+	if(!self->jb.ref_timestamp){
+		struct timeval tv;
+		long ts = (rtp_hdr->timestamp/(self->rate/1000));
+		tsk_gettimeofday(&tv, tsk_null);
+		tv.tv_sec -= (ts / self->rate);
+		tv.tv_usec -= (ts % self->rate) * 125;
+		if((tv.tv_usec -= (tv.tv_usec % (self->ptime * 10000))) <0){
+			tv.tv_usec += 1000000;
+			tv.tv_sec -= 1;
+		}
+		self->jb.ref_timestamp = (long)tsk_time_get_ms(&tv);
+	}
 
 	tsk_safeobj_lock(self);
-	jb_put(self->jb.jbuffer, *data, JB_TYPE_VOICE, self->ptime, rtp_hdr->timestamp, (long)tsk_time_now(), self->jb.jcodec);
+	jb_put(self->jb.jbuffer, *data, JB_TYPE_VOICE, self->ptime, (rtp_hdr->timestamp/(self->rate/1000)), (long)(tsk_time_now()-self->jb.ref_timestamp), self->jb.jcodec);
 	*data = tsk_null;
 	tsk_safeobj_unlock(self);
 

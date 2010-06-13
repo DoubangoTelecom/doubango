@@ -45,6 +45,9 @@ TMEDIA_BEGIN_DECLS
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
 
+/* Forward declaration */
+enum tmedia_session_param_type_e;
+
 /** Base objct used for all media sessions */
 typedef struct tmedia_session_s
 {

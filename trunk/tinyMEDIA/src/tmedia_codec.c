@@ -127,7 +127,7 @@ int tmedia_codec_plugin_unregister(const tmedia_codec_plugin_def_t* plugin)
 	}
 
 	/* find the plugin to unregister */
-	for(i = 0; i<TMED_CODEC_MAX_PLUGINS; i++){
+	for(i = 0; i<TMED_CODEC_MAX_PLUGINS && __tmedia_codec_plugins[i]; i++){
 		if(__tmedia_codec_plugins[i] == plugin){
 			__tmedia_codec_plugins[i] = tsk_null;
 			found = tsk_true;

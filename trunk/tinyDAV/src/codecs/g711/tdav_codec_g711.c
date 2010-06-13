@@ -124,18 +124,48 @@ const tmedia_codec_plugin_def_t *tdav_codec_g711u_plugin_def_t = &tdav_codec_g71
 
 tsk_size_t tdav_codec_g711a_fmtp_encode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
 {
-	return 0;
-}
-
-tsk_size_t tdav_codec_g711a_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
-{
 	tsk_size_t i;
 
-	if(!in_data || !in_size || !out_data){
+	if(!self || !in_data || !in_size || !out_data){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return 0;
 	}
 
+	/* free old buffer */
+	if(*out_data){
+		TSK_FREE(*out_data);
+	}
+
+	/* allocate new buffer */
+	if(!(*out_data = tsk_calloc(in_size/2, sizeof(uint8_t)))){
+		TSK_DEBUG_ERROR("Failed to allocate new buffer");
+		return 0;
+	}
+
+	for(i = 0; i<(in_size/2); i++){
+		((uint8_t*)*out_data)[i] = linear2alaw(((short*)in_data)[i]);
+	}
+
+	return (in_size/2);
+}
+
+#if 0
+FILE* file = tsk_null;
+int count = 0;
+#endif
+tsk_size_t tdav_codec_g711a_fmtp_decode(tmedia_codec_t* self, const void* in_data, tsk_size_t in_size, void** out_data)
+{
+	tsk_size_t i;
+
+	if(!self || !in_data || !in_size || !out_data){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return 0;
+	}
+#if 0
+	if(!file && count<=1000){
+		file = fopen("./g711a.pcm", "wb");
+	}
+#endif
 	/* free old buffer */
 	if(*out_data){
 		TSK_FREE(*out_data);
@@ -149,7 +179,15 @@ tsk_size_t tdav_codec_g711a_fmtp_decode(tmedia_codec_t* self, const void* in_dat
 	for(i = 0; i<in_size; i++){
 		((short*)*out_data)[i] = alaw2linear(((uint8_t*)in_data)[i]);
 	}
-
+#if 0
+	if(++count<=1000){
+		fwrite(*out_data, sizeof(short), in_size, file);
+	}
+	else if(file){
+		fclose(file);
+		file = tsk_null;
+	}
+#endif
 	return (in_size*2);
 }
 

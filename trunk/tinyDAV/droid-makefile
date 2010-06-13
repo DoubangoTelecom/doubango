@@ -3,8 +3,8 @@ APP := lib$(PROJECT).$(EXT)
 FFMPEG_CFLAGS := -I../thirdparties/android/include
 FFMPEG_LDFLAGS := -L../thirdparties/android/lib -lavutil -lswscale -lavcodec -lgcc
 
-CFLAGS := $(CFLAGS_LIB) $(FFMPEG_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyMEDIA/include -I./include
-LDFLAGS := $(LDFLAGS_LIB) -lm $(FFMPEG_LDFLAGS) -ltinySAK -ltinyNET -ltinySDP -ltinyMEDIA
+CFLAGS := $(CFLAGS_LIB) $(FFMPEG_CFLAGS) -I../tinySAK/src -I../tinyNET/src -I../tinySDP/include -I../tinyRTP/include -I../tinyMEDIA/include -I./include
+LDFLAGS := $(LDFLAGS_LIB) -lm $(FFMPEG_LDFLAGS) -ltinySAK -ltinyNET -ltinySDP -ltinyRTP -ltinyMEDIA
 
 all: $(APP)
 
@@ -12,10 +12,14 @@ OBJS = \
 	src/tdav.o
 	
 	### audio
-OBJS += src/audio/tdav_session_audio.o
+OBJS += src/audio/tdav_consumer_audio.o \
+	src/audio/tdav_jitterbuffer.o \
+	src/audio/tdav_producer_audio.o \
+    src/audio/tdav_session_audio.o
 	
-	### codecs
-OBJS += src/codecs/g711/tdav_codec_g711.o
+	### codecs (G.711)
+OBJS += src/codecs/g711/g711.o \
+	src/codecs/g711/tdav_codec_g711.o
 	
 
 $(APP): $(OBJS)

@@ -21,6 +21,8 @@
 */
 #include "SipStack.h"
 
+#include "tinydav/tdav.h"
+
 #include "SipSession.h"
 #include "SipEvent.h"
 
@@ -52,6 +54,7 @@ SipStack::SipStack(SipCallback* callback_, const char* realm_uri, const char* im
 
 	/* Initialize network layer */
 	if(SipStack::count == 0){
+		tdav_init();
 		tnet_startup();
 	}
 
@@ -73,6 +76,7 @@ SipStack::~SipStack()
 
 	/* DeInitialize the network layer (only if last stack) */
 	if(--SipStack::count == 0){
+		tdav_deinit();
 		tnet_cleanup();
 	}
 }

@@ -244,7 +244,7 @@ int tdav_consumer_dsound_start(tmedia_consumer_t* self)
 	return 0;
 }
 
-int tdav_consumer_dsound_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size)
+int tdav_consumer_dsound_consume(tmedia_consumer_t* self, void** buffer, tsk_size_t size, const tsk_object_t* proto_hdr)
 {
 	tdav_consumer_dsound_t* dsound = (tdav_consumer_dsound_t*)self;
 
@@ -253,7 +253,7 @@ int tdav_consumer_dsound_consume(tmedia_consumer_t* self, void** buffer, tsk_siz
 		return -1;
 	}
 	/* buffer is already decoded */
-	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(dsound), buffer);
+	return tdav_consumer_audio_put(TDAV_CONSUMER_AUDIO(dsound), buffer, proto_hdr);
 }
 
 int tdav_consumer_dsound_pause(tmedia_consumer_t* self)
@@ -354,7 +354,7 @@ static const tsk_object_def_t tdav_consumer_dsound_def_s =
 	tdav_consumer_audio_cmp, 
 };
 /* plugin definition*/
-static const tmedia_consumer_plugin_def_t tmedia_consumer_dsound_plugin_def_s = 
+static const tmedia_consumer_plugin_def_t tdav_consumer_dsound_plugin_def_s = 
 {
 	&tdav_consumer_dsound_def_s,
 	
@@ -367,7 +367,7 @@ static const tmedia_consumer_plugin_def_t tmedia_consumer_dsound_plugin_def_s =
 	tdav_consumer_dsound_pause,
 	tdav_consumer_dsound_stop
 };
-const tmedia_consumer_plugin_def_t *tmedia_consumer_dsound_plugin_def_t = &tmedia_consumer_dsound_plugin_def_s;
+const tmedia_consumer_plugin_def_t *tdav_consumer_dsound_plugin_def_t = &tdav_consumer_dsound_plugin_def_s;
 
 
 #endif /* HAVE_DSOUND_H */

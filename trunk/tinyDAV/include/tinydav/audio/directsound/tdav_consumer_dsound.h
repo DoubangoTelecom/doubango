@@ -57,7 +57,7 @@ typedef struct tdav_consumer_dsound_s
 }
 tdav_consumer_dsound_t;
 
-TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tmedia_consumer_dsound_plugin_def_t;
+TINYDAV_GEXTERN const tmedia_consumer_plugin_def_t *tdav_consumer_dsound_plugin_def_t;
 
 
 TDAV_END_DECLS

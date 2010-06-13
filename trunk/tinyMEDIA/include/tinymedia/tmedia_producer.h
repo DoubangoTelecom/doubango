@@ -35,6 +35,8 @@
 #include "tinymedia/tmedia_codec.h"
 #include "tmedia_common.h"
 
+TMEDIA_BEGIN_DECLS
+
 /**Max number of plugins (producer types) we can create */
 #define TMED_PRODUCER_MAX_PLUGINS			0x0F
 
@@ -90,5 +92,8 @@ TINYMEDIA_API int tmedia_producer_deinit(tmedia_producer_t* self);
 
 TINYMEDIA_API int tmedia_producer_plugin_register(const tmedia_producer_plugin_def_t* plugin);
 TINYMEDIA_API int tmedia_producer_plugin_unregister(const tmedia_producer_plugin_def_t* plugin);
+TINYMEDIA_API int tmedia_producer_plugin_unregister_by_type(tmedia_type_t type);
+
+TMEDIA_END_DECLS
 
 #endif /* TINYMEDIA_PRODUCER_H */

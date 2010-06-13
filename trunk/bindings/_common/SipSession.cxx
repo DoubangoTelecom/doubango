@@ -154,6 +154,44 @@ const SipStack* SipSession::getStack()const
 }
 
 
+
+/* ======================== CallSession ========================*/
+CallSession::CallSession(SipStack* Stack)
+: SipSession(Stack)
+{
+}
+
+CallSession::CallSession(SipStack* Stack, tsip_ssession_handle_t* handle)
+: SipSession(Stack, handle)
+{
+}
+
+CallSession::~CallSession()
+{
+}
+
+bool CallSession::Call(const char* remoteUri)
+{
+	tsip_ssession_set(this->handle,
+		TSIP_SSESSION_SET_TO(remoteUri),
+		TSIP_SSESSION_SET_NULL());
+
+	int ret = tsip_action_INVITE(this->handle,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
+
+bool CallSession::Hangup()
+{
+	int ret = tsip_action_BYE(this->handle,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
+
+
+
+
+
 /* ======================== MessagingSession ========================*/
 MessagingSession::MessagingSession(SipStack* Stack)
 : SipSession(Stack)
@@ -200,7 +238,7 @@ bool MessagingSession::Reject()
 }
 
 
-/* ======================== PublicationSession ========================*/
+/* ======================== OptionsSession ========================*/
 OptionsSession::OptionsSession(SipStack* Stack)
 : SipSession(Stack)
 {

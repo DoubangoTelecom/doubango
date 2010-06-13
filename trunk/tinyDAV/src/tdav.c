@@ -41,6 +41,7 @@
 
 // Producers
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
+#include "tinydav/audio/directsound/tdav_producer_dsound.h"
 
 #if 0
 #include <libavcodec/avcodec.h>
@@ -71,9 +72,9 @@ int tdav_init()
 
 	/* === Register consumers === */
 #if HAVE_DSOUND_H
-	tmedia_consumer_plugin_register(tmedia_consumer_dsound_plugin_def_t);
+	tmedia_consumer_plugin_register(tdav_consumer_dsound_plugin_def_t);
 #elif HAVE_WAVE_API
-	tmedia_consumer_plugin_register(tmedia_consumer_waveapi_plugin_def_t);
+	tmedia_consumer_plugin_register(tdav_consumer_waveapi_plugin_def_t);
 #endif
 
 #if HAVE_OSS_H
@@ -82,8 +83,9 @@ int tdav_init()
 
 	/* === Register producers === */
 #if HAVE_DSOUND_H
+	tmedia_producer_plugin_register(tdav_producer_dsound_plugin_def_t);
 #elif HAVE_WAVE_API
-	tmedia_producer_plugin_register(tmedia_producer_waveapi_plugin_def_t);
+	tmedia_producer_plugin_register(tdav_producer_waveapi_plugin_def_t);
 #endif
 
 	//if((context_encode = avcodec_alloc_context())){
@@ -113,15 +115,16 @@ int tdav_deinit()
 
 	/* === unRegister consumers === */
 #if HAVE_DSOUND_H
-	tmedia_consumer_plugin_unregister(tmedia_consumer_dsound_plugin_def_t);
+	tmedia_consumer_plugin_unregister(tdav_consumer_dsound_plugin_def_t);
 #elif HAVE_WAVE_API
-	tmedia_consumer_plugin_unregister(tmedia_consumer_waveapi_plugin_def_t);
+	tmedia_consumer_plugin_unregister(tdav_consumer_waveapi_plugin_def_t);
 #endif
 
 	/* === UnRegister producers === */
 #if HAVE_DSOUND_H
+	tmedia_producer_plugin_unregister(tdav_producer_dsound_plugin_def_t);
 #elif HAVE_WAVE_API
-	tmedia_producer_plugin_unregister(tmedia_producer_waveapi_plugin_def_t);
+	tmedia_producer_plugin_unregister(tdav_producer_waveapi_plugin_def_t);
 #endif
 
 #if HAVE_OSS_H
