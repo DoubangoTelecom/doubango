@@ -290,13 +290,14 @@ const tsdp_header_M_t* tmedia_session_get_lo(tmedia_session_t* self)
 }
 
 /* Match a codec */
-const tmedia_codec_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format)
+tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M)
 {
 	const tmedia_codec_t *codec;
 	char *rtpmap = tsk_null, *fmtp = tsk_null, *name = tsk_null;
 	const tsdp_fmt_t* fmt;
 	const tsk_list_item_t *it1, *it2;
 	tsk_bool_t found = tsk_false;
+	tmedia_codecs_L_t* matchingCodecs = tsk_null;
 	
 	if(!self || !M){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -339,12 +340,12 @@ const tmedia_codec_t* tmedia_session_match_codec(tmedia_session_t* self, const t
 compare_fmtp:
 			if((fmtp = tsdp_header_M_get_fmtp(M, fmt->value))){ /* remote have fmtp? */
 				if(tmedia_codec_match_fmtp(codec, fmtp)){ /* fmtp matches? */
-					tsk_strupdate(format, fmt->value);
+					tsk_strupdate((char**)&codec->neg_format, fmt->value);
 					found = tsk_true;
 				}
 			}
 			else{ /* no fmtp -> always match */
-				tsk_strupdate(format, fmt->value);
+				tsk_strupdate((char**)&codec->neg_format, fmt->value);
 				found = tsk_true;
 			}
 next:
@@ -352,13 +353,21 @@ next:
 			TSK_FREE(fmtp);
 			TSK_FREE(rtpmap);
 			if(found){
-				return codec;
+				tmedia_codec_t * copy;
+				if(!matchingCodecs){
+					matchingCodecs = tsk_list_create();
+				}
+				copy = tsk_object_ref((void*)codec);
+				tsk_list_push_back_data(matchingCodecs, (void**)&copy);
+
+				found = tsk_false;
+				break;
 			}
 		}
 	}
 	
 
-	return tsk_null;
+	return matchingCodecs;
 }
 
 /**@ingroup tmedia_session_group
@@ -379,6 +388,11 @@ int tmedia_session_skip_param(enum tmedia_session_param_type_e type, va_list *ap
 		case tmedia_sptype_set_rtcp:
 			/* (tsk_bool_t)ENABLED_BOOL */
 			va_arg(*app, tsk_bool_t);
+			break;
+		case tmedia_sptype_qos:
+			/* (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM */
+			va_arg(*app, tmedia_qos_stype_t);
+			va_arg(*app, tmedia_qos_strength_t);
 			break;
 
 		default:
@@ -403,13 +417,15 @@ int tmedia_session_deinit(tmedia_session_t* self)
 	
 	/* free codecs */
 	TSK_OBJECT_SAFE_FREE(self->codecs);
-	TSK_OBJECT_SAFE_FREE(self->negociated_codec);
-	TSK_FREE(self->negociated_format);
+	TSK_OBJECT_SAFE_FREE(self->neg_codecs);
 	
 	/* free lo, no and ro */
 	TSK_OBJECT_SAFE_FREE(self->M.lo);
 	TSK_OBJECT_SAFE_FREE(self->M.ro);
 
+	/* QoS */
+	TSK_OBJECT_SAFE_FREE(self->qos);
+	
 	return 0;
 }
 
@@ -465,9 +481,12 @@ tmedia_session_mgr_t* tmedia_session_mgr_create(tmedia_type_t type, const char* 
 	mgr->type = type;
 	mgr->addr = tsk_strdup(addr);
 	mgr->ipv6 = ipv6;
+	mgr->qos.type = tmedia_qos_stype_segmented;
+	mgr->qos.strength = tmedia_qos_strength_none;
 
 	/* load sessions (will allow us to generate lo) */
 	if(offerer){
+		mgr->offerer = tsk_true;
 		if(_tmedia_session_mgr_load_sessions(mgr)){
 			/* Do nothing */
 			TSK_DEBUG_ERROR("Failed to load sessions");
@@ -646,6 +665,11 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 			continue;
 		}
 		
+		/* Add QoS lines to our local media (to it before calling tmedia_session_get_lo()) */
+		if(self->offerer && !TMEDIA_SESSION(ms)->qos){
+			TMEDIA_SESSION(ms)->qos = tmedia_qos_tline_create(self->qos.type, self->qos.strength);
+		}
+		
 		/* add "m=" line from the session to the local sdp */
 		if((m = tmedia_session_get_lo(TMEDIA_SESSION(ms)))){
 			tsdp_message_add_header(self->sdp.lo, TSDP_HEADER(m));
@@ -669,6 +693,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	const tsdp_header_C_t* C; /* global "c=" line */
 	tsk_size_t index = 0;
 	tsk_bool_t found;
+	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
 
 	if(!self || !sdp){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -706,6 +731,14 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 			if(_tmedia_session_set_ro(TMEDIA_SESSION(ms), M) == 0){
 				found = tsk_true;
 			}
+			/* set QoS type (only if we are not the offerer) */
+			if(!self->offerer && (qos_type == tmedia_qos_stype_none) && (self->qos.strength == tmedia_qos_strength_mandatory)){
+				tmedia_qos_tline_t* tline = tmedia_qos_tline_from_sdp(M);
+				if(tline){
+					qos_type = tline->type;
+					TSK_OBJECT_SAFE_FREE(tline);
+				}
+			}
 		}
 		
 		if(!found && (self->sdp.lo == tsk_null)){
@@ -720,6 +753,11 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 				continue;
 			}
 		}
+	}
+
+	/* Update QoS type */
+	if(!self->offerer && (qos_type != tmedia_qos_stype_none)){
+		self->qos.type = qos_type;
 	}
 
 	/* signal that ro has changed (will be used to update lo) */
@@ -898,6 +936,47 @@ int tmedia_session_mgr_remove_media(tmedia_session_mgr_t* self, tmedia_type_t ty
 	return 0;
 }
 
+/**@ingroup tmedia_session_group
+* Sets QoS type and strength
+* @param self The session manager
+* @param qos_type The QoS type
+* @param qos_strength The QoS strength
+* @retval Zero if succeed and non-zero error code otherwise
+*/
+int tmedia_session_mgr_set_qos(tmedia_session_mgr_t* self, tmedia_qos_stype_t qos_type, tmedia_qos_strength_t qos_strength)
+{
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	self->qos.type = qos_type;
+	self->qos.strength = qos_strength;
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
+* Indicates whether all preconditions are met
+* @param self The session manager
+* @retval @a tsk_true if all preconditions have been met and @a tsk_false otherwise
+*/
+tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self)
+{
+	const tsk_list_item_t* item;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return tsk_true;
+	}
+
+	tsk_list_foreach(item, self->sessions){
+		tmedia_session_t* session = TMEDIA_SESSION(item->data);
+		if(session && session->qos && !tmedia_qos_tline_canresume(session->qos)){
+			return tsk_false;
+		}
+	}
+	return tsk_true;
+}
 
 /** internal function used to load sessions
 */

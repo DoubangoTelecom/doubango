@@ -44,7 +44,7 @@
 #define TSDP_LINE_O_SESSION_ID_DEFAULT	1983
 
 /*== Predicate function to find tsdp_header_t object by type. */
-int __pred_find_header_by_type(const tsk_list_item_t *item, const void *tsdp_htype)
+static int __pred_find_header_by_type(const tsk_list_item_t *item, const void *tsdp_htype)
 {
 	if(item && item->data){
 		tsdp_header_t *header = item->data;
@@ -55,7 +55,7 @@ int __pred_find_header_by_type(const tsk_list_item_t *item, const void *tsdp_hty
 }
 
 /*== Predicate function to find tsdp_header_t object by name. */
-int __pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
+static int __pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
 {
 	if(item && item->data && name){
 		tsdp_header_t *header = item->data;
@@ -65,7 +65,7 @@ int __pred_find_header_by_name(const tsk_list_item_t *item, const void *name)
 }
 
 /*== Predicate function to find media object by name. */
-int __pred_find_media_by_name(const tsk_list_item_t *item, const void *name)
+static int __pred_find_media_by_name(const tsk_list_item_t *item, const void *name)
 {
 	if(item && item->data && name){
 		tsdp_header_t *header = item->data;

@@ -38,9 +38,7 @@
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
-extern const tmedia_codec_t* _tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M, char** format);
-
-// RTP/RTCP callback
+// RTP/RTCP callback (From the network to the consumer)
 static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trtp_rtp_packet_s* packet)
 {
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
@@ -51,35 +49,60 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 	}
 
 	if(audio->consumer){
-		/* decode data--> FIXME:we should lock negociated codec */
-		if(TMEDIA_SESSION(audio)->negociated_codec && TMEDIA_SESSION(audio)->negociated_codec->plugin && TMEDIA_SESSION(audio)->negociated_codec->plugin->decode){
-			/* decode */
-			void* out_data = tsk_null;
-			tsk_size_t out_size;
-			out_size = TMEDIA_SESSION(audio)->negociated_codec->plugin->decode(TMEDIA_SESSION(audio)->negociated_codec, packet->payload.data, packet->payload.size, &out_data);
-			if(out_size){
-				tmedia_consumer_consume(audio->consumer, &out_data, out_size, packet->header);
-			}
-			TSK_FREE(out_data);
+		void* out_data = tsk_null;
+		tsk_size_t out_size = 0;
+		tmedia_codec_t* codec;
+		tsk_istr_t format;
+
+		// Find the codec to use to decode the RTP payload
+		tsk_itoa(packet->header->payload_type, &format);
+		if(!(codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->neg_codecs, format)) || !codec->plugin || !codec->plugin->decode){
+			TSK_DEBUG_ERROR("%s is not a valid payoad for this session", format);
+			TSK_OBJECT_SAFE_FREE(codec);
+			return -2;
 		}
+		// Decode data
+		out_size = codec->plugin->decode(codec, packet->payload.data, packet->payload.size, &out_data);
+		if(out_size){
+			tmedia_consumer_consume(audio->consumer, &out_data, out_size, packet->header);
+		}
+		TSK_FREE(out_data);
+		TSK_OBJECT_SAFE_FREE(codec);
 	}
 	return 0;
 }
 
-// Producer callback
+// Producer callback (From the producer to the network)
 static int tdav_session_audio_producer_cb(const void* callback_data, const void* buffer, tsk_size_t size)
 {
 	tdav_session_audio_t* audio = (tdav_session_audio_t*)callback_data;
 
-	if(audio->rtp_manager && TMEDIA_SESSION(audio)->negociated_codec && TMEDIA_SESSION(audio)->negociated_codec->plugin && TMEDIA_SESSION(audio)->negociated_codec->plugin->encode){
+	if(audio->rtp_manager){
 		/* encode */
 		void* out_data = tsk_null;
-		tsk_size_t out_size;
-		out_size = TMEDIA_SESSION(audio)->negociated_codec->plugin->encode(TMEDIA_SESSION(audio)->negociated_codec, buffer, size, &out_data);
+		tsk_size_t out_size = 0;
+		tmedia_codec_t* codec = tsk_null;
+		
+		// Use first codec to encode data
+		if((codec = tsk_object_ref(TSK_LIST_FIRST_DATA(TMEDIA_SESSION(audio)->neg_codecs)))){
+			if(!codec->plugin || !codec->plugin->encode){
+				TSK_OBJECT_SAFE_FREE(codec);
+				TSK_DEBUG_ERROR("Invalid codec");
+				return -2;
+			}
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to find a valid codec");
+			return -3;
+		}
+
+		// Encode data
+		out_size = codec->plugin->encode(codec, buffer, size, &out_data);
 		if(out_size){
 			trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, tsk_false);
 		}
 		TSK_FREE(out_data);
+		TSK_OBJECT_SAFE_FREE(codec);
 	}
 
 	return 0;
@@ -177,21 +200,22 @@ int tdav_session_audio_start(tmedia_session_t* self)
 
 	audio = (tdav_session_audio_t*)self;
 
-	if(audio->rtp_manager){
+	if(audio->rtp_manager && !TSK_LIST_IS_EMPTY(self->neg_codecs)){
 		int ret;
+		const tmedia_codec_t* codec = (const tmedia_codec_t*)TSK_LIST_FIRST_DATA(self->neg_codecs);
 		/* RTP/RTCP manager: use latest information. */
 		ret = trtp_manager_set_rtp_remote(audio->rtp_manager, audio->remote_ip, audio->remote_port);
-		trtp_manager_set_payload_type(audio->rtp_manager, self->negociated_format ? atoi(self->negociated_format) : 255);
+		trtp_manager_set_payload_type(audio->rtp_manager, codec->neg_format ? atoi(codec->neg_format) : atoi(codec->format));
 		ret = trtp_manager_start(audio->rtp_manager);
 	
 		/* Consumer */
 		if(audio->consumer){
-			tmedia_consumer_prepare(audio->consumer, self->negociated_codec);
+			tmedia_consumer_prepare(audio->consumer, codec);
 			tmedia_consumer_start(audio->consumer);
 		}
 		/* Producer */
 		if(audio->producer){
-			tmedia_producer_prepare(audio->producer, self->negociated_codec);
+			tmedia_producer_prepare(audio->producer, codec);
 			tmedia_producer_start(audio->producer);
 		}
 
@@ -200,7 +224,7 @@ int tdav_session_audio_start(tmedia_session_t* self)
 		return ret;
 	}
 	else{
-		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager");
+		TSK_DEBUG_ERROR("Invalid RTP/RTCP manager or neg_codecs");
 		return -2;
 	}
 	
@@ -268,6 +292,7 @@ int tdav_session_audio_pause(tmedia_session_t* self)
 const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 {
 	tdav_session_audio_t* audio;
+	tsk_bool_t changed = tsk_false;
 
 	TSK_DEBUG_INFO("tdav_session_audio_get_lo");
 
@@ -284,23 +309,37 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 	}
 
 	if(self->ro_changed && self->M.lo){
-		TSK_OBJECT_SAFE_FREE(self->M.lo);
+		/* Codecs */
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "fmtp");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "rtpmap");
+		tsk_list_clear_items(self->M.lo->FMTs);
+		
+		/* QoS */
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "curr");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "des");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "conf");
 	}
 
-	if(self->M.lo){
-		return self->M.lo;
-	}
-	else if(!(self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->rtp.local_socket->port, "RTP/AVP"))){
+	changed = (self->ro_changed || !self->M.lo);
+
+	if(!self->M.lo && !(self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->rtp.local_socket->port, "RTP/AVP"))){
 		TSK_DEBUG_ERROR("Failed to create lo");
 		return tsk_null;
 	}
 
-	/* codec to sdp */
-	if(self->negociated_codec){
-		tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, self->negociated_format);
-	}
-	else{
-		tmedia_codec_to_sdp(self->codecs, self->M.lo);
+	/* from codecs to sdp */
+	if(changed){
+		/* from codecs to sdp */
+		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
+		/* QoS */
+		if(self->qos){
+			tmedia_qos_tline_t* ro_tline;
+			if(self->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(self->M.ro))){
+				tmedia_qos_tline_set_ro(self->qos, ro_tline);
+				TSK_OBJECT_SAFE_FREE(ro_tline);
+			}
+			tmedia_qos_tline_to_sdp(self->qos, self->M.lo);
+		}
 	}
 
 	return self->M.lo;
@@ -308,7 +347,7 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 
 int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
-	const tmedia_codec_t* codec;
+	tmedia_codecs_L_t* neg_codecs;
 	tdav_session_audio_t* audio;
 
 	TSK_DEBUG_INFO("tdav_session_audio_set_ro");
@@ -320,25 +359,24 @@ int tdav_session_audio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 
 	audio = (tdav_session_audio_t*)self;
 
-	if((codec = tmedia_session_match_codec(self, m, &self->negociated_format))){
-		/* update negociated codec */
-		TSK_OBJECT_SAFE_FREE(self->negociated_codec);
-		self->negociated_codec = tsk_object_ref((void*)codec);
+	if((neg_codecs = tmedia_session_match_codec(self, m))){
+		/* update negociated codecs */
+		TSK_OBJECT_SAFE_FREE(self->neg_codecs);
+		self->neg_codecs = neg_codecs;
 		/* filter codecs */
-		tmedia_codec_removeAll_exceptThis(self->codecs, self->negociated_codec);
+		// tmedia_codec_removeAll_exceptThese(self->codecs, self->neg_codecs);
 		/* update remote offer */
 		TSK_OBJECT_SAFE_FREE(self->M.ro);
 		self->M.ro = tsk_object_ref((void*)m);
-	
+		
 		/* get connection associated to this media line
-		* If the connnection is at session-level, then the manager will call tmedia_session_audio_set() */
+		* If the connnection is global, then the manager will call tmedia_session_audio_set() */
 		if(m->C && m->C->addr){
 			tsk_strupdate(&audio->remote_ip, m->C->addr);
 			audio->useIPv6 = tsk_striequals(m->C->addrtype, "IP6");
 		}
 		/* set remote port */
 		audio->remote_port = m->port;
-
 		return 0;
 	}
 

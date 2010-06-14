@@ -59,6 +59,9 @@ ragel.exe $OPTIONS -o ./src/headers/tsip_header_Max_Forwards.c ./ragel/tsip_pars
 # ==Min-Expires
 ragel.exe $OPTIONS -o ./src/headers/tsip_header_Min_Expires.c ./ragel/tsip_parser_header_Min_Expires.rl
 
+# ==Min-SE
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Min_SE.c ./ragel/tsip_parser_header_Min_SE.rl
+
 # ==Path
 ragel.exe $OPTIONS -o ./src/headers/tsip_header_Path.c ./ragel/tsip_parser_header_Path.rl
 
@@ -124,6 +127,9 @@ ragel.exe $OPTIONS -o ./src/headers/tsip_header_Security_Verify.c ./ragel/tsip_p
 
 # == Service-Route
 ragel.exe $OPTIONS -o ./src/headers/tsip_header_Service_Route.c ./ragel/tsip_parser_header_Service_Route.rl
+
+# == Session-Expires
+ragel.exe $OPTIONS -o ./src/headers/tsip_header_Session_Expires.c ./ragel/tsip_parser_header_Session_Expires.rl
 
 # ==Subscription-State
 ragel.exe $OPTIONS -o ./src/headers/tsip_header_Subscription_State.c ./ragel/tsip_parser_header_Subscription_State.rl

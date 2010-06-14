@@ -38,6 +38,8 @@
 #include "tinysip/headers/tsip_header_RAck.h"
 #include "tinysip/headers/tsip_header_RSeq.h"
 
+#include "tinysdp/parsers/tsdp_parser_message.h"
+
 #include "tsk_debug.h"
 
 // http://cdnet.stpi.org.tw/techroom/market/_pdf/2009/eetelecomm_09_009_OneVoiceProfile.pdf
@@ -69,9 +71,13 @@
 int send_INVITE(tsip_dialog_invite_t *self);
 int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx);
 int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
+int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase);
 int send_BYE(tsip_dialog_invite_t *self);
 int send_CANCEL(tsip_dialog_invite_t *self);
 int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self);
+
+extern int tsip_dialog_invite_stimers_cancel(tsip_dialog_invite_t* self);
+extern int tsip_dialog_invite_stimers_schedule(tsip_dialog_invite_t* self, uint64_t timeout);
 
 /* ======================== transitions ======================== */
 extern int c0000_Started_2_Outgoing_X_oINVITE(va_list *app);
@@ -83,6 +89,7 @@ extern int s0000_Started_2_Incoming_X_iINVITE(va_list *app);
 extern int s0000_Incoming_2_Connected_X_o2xx(va_list *app); // 2xx INVITE
 extern int s0000_Incoming_2_Terminated_X_oCANCEL(va_list *app);
 
+int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
 int x0000_Any_2_Any_X_i2xxINVITE(va_list *app);
 int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
 int x0000_Any_2_Trying_X_shutdown(va_list *app);
@@ -181,6 +188,9 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 					else if(TSIP_REQUEST_IS_ACK(msg)){ // ACK
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iACK, msg, tsk_null);
 					}
+					else if(TSIP_REQUEST_IS_OPTIONS(msg)){ // OPTIONS
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_iOPTIONS, msg, tsk_null);
+					}
 				}
 			}
 			break;
@@ -217,7 +227,7 @@ int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_time
 	int ret = -1;
 
 	if(self){
-		if(timer_id == self->timerrefresh.id){
+		if(timer_id == self->stimers.timer.id){
 			//ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_register, tsk_null, tsk_null);
 		}
 		else if(timer_id == self->timershutdown.id){
@@ -285,8 +295,12 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_i1xx, tsk_fsm_state_any, x0000_Any_2_Any_X_i1xx, "x0000_Any_2_Any_X_i1xx"),
 		// Any -> (i401/407)
 		//
+		// Any -> (iOPTIONS) -> Any
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_iOPTIONS, tsk_fsm_state_any, x0000_Any_2_Any_X_iOPTIONS, "x0000_Any_2_Any_X_iOPTIONS"),
 		// Any -> (i2xx INVITE) -> Any
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, tsk_fsm_state_any, x0000_Any_2_Any_X_i2xxINVITE, "x0000_Any_2_Any_X_i2xxINVITE"),
+		// Any -> (i2xx PRACK) -> Any
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2PRACK, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxPRACK"),
 		// Any -> (transport error) -> Terminated
 		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_transporterror, _fsm_state_Terminated, x9998_Any_2_Any_X_transportError, "x9998_Any_2_Any_X_transportError"),
 		// Any -> (transport error) -> Terminated
@@ -318,12 +332,84 @@ int tsip_dialog_invite_start(tsip_dialog_invite_t *self)
 	return ret;
 }
 
+int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message)
+{
+	tsdp_message_t* sdp_ro = tsk_null;
+	int ret = 0;
+
+	if(!self || !message){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* Parse SDP content */
+	if(TSIP_MESSAGE_HAS_CONTENT(message)){
+		if(tsk_striequals("application/sdp", TSIP_MESSAGE_CONTENT_TYPE(message))){
+			if(!(sdp_ro = tsdp_message_parse(TSIP_MESSAGE_CONTENT_DATA(message), TSIP_MESSAGE_CONTENT_DATA_LENGTH(message)))){
+				TSK_DEBUG_ERROR("Failed to parse remote sdp message");
+				return -2;
+			}
+		}
+		else{
+			TSK_DEBUG_ERROR("[%s] content-type is not supportted", TSIP_MESSAGE_CONTENT_TYPE(message));
+			return -3;
+		}
+	}
+	else{
+		/* Ignore it */
+		return 0;
+	}
+
+	/* Create session Manager if not already done */
+	if(!self->msession_mgr){
+		tmedia_type_t type = (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38); /* FIXME */
+		if(sdp_ro){
+			type = tmedia_type_from_sdp(sdp_ro);
+		}
+		self->msession_mgr = tmedia_session_mgr_create(type, TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, (sdp_ro == tsk_null));
+	}
+	
+	if(sdp_ro){
+		if((ret = tmedia_session_mgr_set_ro(self->msession_mgr, sdp_ro))){
+			TSK_DEBUG_ERROR("Failed to set remote offer");
+			goto bail;
+		}
+	}
+	
+	/* start session manager */
+	if(!self->msession_mgr->started && (ret = tmedia_session_mgr_start(self->msession_mgr))){
+		TSK_DEBUG_ERROR("Failed to start session manager");
+		goto bail;
+	}
+	
+bail:
+	TSK_OBJECT_SAFE_FREE(sdp_ro);
+
+	return ret;
+}
 
 
 //--------------------------------------------------------
 //				== STATE MACHINE BEGIN ==
 //--------------------------------------------------------
 
+int x0000_Any_2_Any_X_iOPTIONS(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_request_t *rOPTIONS = va_arg(*app, const tsip_request_t *);
+
+	if(!rOPTIONS){
+		/* Do not signal error */
+		return 0;
+	}
+
+	/* Alert user */
+
+	/* Send 2xx */
+	send_RESPONSE(self, rOPTIONS, 200, "OK");
+
+	return 0;
+}
 
 int x0000_Any_2_Any_X_i2xxINVITE(va_list *app)
 {
@@ -339,6 +425,7 @@ int x0000_Any_2_Any_X_i2xxINVITE(va_list *app)
 	/* send ACK */
 	return send_ACK(self, r2xx);
 }
+
 
 /* Any -> (oBYE) -> Trying */
 int x0000_Any_2_Trying_X_oBYE(va_list *app)
@@ -407,8 +494,26 @@ int x0000_Any_2_Any_X_i1xx(va_list *app)
 		tag 100rel, the response is to be sent reliably.  If the response is
 		a 100 (Trying) (as opposed to 101 to 199), this option tag MUST be
 		ignored, and the procedures below MUST NOT be used.
+
+		Assuming the response is to be transmitted reliably, the UAC MUST
+		create a new request with method PRACK.  This request is sent within
+		the dialog associated with the provisional response (indeed, the
+		provisional response may have created the dialog).  PRACK requests
+		MAY contain bodies, which are interpreted according to their type and
+		disposition.
+
+		Note that the PRACK is like any other non-INVITE request within a
+		dialog.  In particular, a UAC SHOULD NOT retransmit the PRACK request
+		when it receives a retransmission of the provisional response being
+		acknowledged, although doing so does not create a protocol error.
 	*/
 	if((TSIP_RESPONSE_CODE(r1xx) >= 101 && TSIP_RESPONSE_CODE(r1xx) <=199) && tsip_message_required(r1xx, "100rel")){
+		/* Process Remote offer */
+		if((ret = tsip_dialog_invite_process_ro(self, r1xx))){
+			/* Send Error */
+			return ret;
+		}
+
 		if((ret = send_PRACK(self, r1xx))){
 			return ret;
 		}
@@ -535,8 +640,9 @@ int send_PRACK(tsip_dialog_invite_t *self, const tsip_response_t* r1xx)
 		UAC.  An implementation MAY discard the response, or MAY cache the
 		response in the hopes of receiving the missing responses.
 		*/
-		if(self->rseq >= RSeq->seq){
+		if(self->rseq && (RSeq->seq <= self->rseq)){
 			TSK_DEBUG_WARN("1xx.RSeq value is not one higher than lastINVITE.RSeq.");
+			ret = 0; /* Not error */
 			goto bail;
 		}
 		self->rseq = RSeq->seq;
@@ -717,12 +823,24 @@ bail:
 	return ret;
 }
 
+int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase)
+{
+	tsip_response_t *response;
+	int ret = -1;
+
+	if((response = tsip_dialog_response_new(TSIP_DIALOG(self), code, phrase, request))){
+		ret = tsip_dialog_response_send(TSIP_DIALOG(self), response);
+		TSK_OBJECT_SAFE_FREE(response);
+	}
+	return ret;
+}
+
 int tsip_dialog_invite_OnTerminated(tsip_dialog_invite_t *self)
 {
 	TSK_DEBUG_INFO("=== INVITE Dialog terminated ===");
 
 	/* stop session manager */
-	if(self->msession_mgr){
+	if(self->msession_mgr && self->msession_mgr->started){
 		tmedia_session_mgr_stop(self->msession_mgr);
 	}
 
@@ -781,7 +899,7 @@ static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 	tsip_dialog_invite_t *self = _self;
 	if(self){
 		/* Cancel all timers */
-		TSIP_DIALOG_TIMER_CANCEL(refresh);
+		tsip_dialog_invite_stimers_cancel(self);
 		TSIP_DIALOG_TIMER_CANCEL(shutdown);
 
 		/* DeInitialize base class */
@@ -790,6 +908,7 @@ static tsk_object_t* tsip_dialog_invite_dtor(tsk_object_t * _self)
 		/* DeInitialize self */
 		TSK_OBJECT_SAFE_FREE(self->msession_mgr);
 		TSK_OBJECT_SAFE_FREE(self->last_invite);
+		TSK_FREE(self->stimers.refresher);
 		//...
 
 		TSK_DEBUG_INFO("*** INVITE Dialog destroyed ***");

@@ -91,6 +91,9 @@
 	"CSeq: 8 MESSAGE\r\n" \
 	"RSeq: 17422\r\n" \
 	"RAck: 776656 1 INVITE\r\n" \
+	"Min-SE: 90;test;y=0\r\n" \
+	"Session-Expires: 95;refresher=uas;y=4\r\n" \
+	"x: 95;refresher=uac;o=7;k\r\n" \
 	"Max-Forwards: 70\r\n" \
 	"Date: Wed, 28 Apr 2010 23:42:50 GMT\r\n" \
 	"Date: Sun, 2 May 2010 20:27:49 GMT\r\n" \

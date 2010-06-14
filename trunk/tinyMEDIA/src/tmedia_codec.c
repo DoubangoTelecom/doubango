@@ -39,6 +39,25 @@
 /* pointer to all registered codecs */
 const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS] = {0};
 
+
+/*== Predicate function to find a codec object by format */
+static int __pred_find_codec_by_format(const tsk_list_item_t *item, const void *format)
+{
+	if(item && item->data){
+		return tsk_strcmp(((tmedia_codec_t *)item->data)->format, format);
+	}
+	return -1;
+}
+
+/*== Predicate function to find a codec object by negociated format */
+static int __pred_find_codec_by_neg_format(const tsk_list_item_t *item, const void *format)
+{
+	if(item && item->data){
+		return tsk_strcmp(((tmedia_codec_t *)item->data)->neg_format, format);
+	}
+	return -1;
+}
+
 /**@ingroup tmedia_codec_group
 * Initialize a Codec 
 * @param self The codec to initialize. Could be any type of codec (e.g. @ref tmedia_codec_audio_t or @ref tmedia_codec_video_t).
@@ -218,17 +237,17 @@ char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self)
 			{	/* audio codecs */
 				/* const tmedia_codec_audio_t* audioCodec = (const tmedia_codec_audio_t*)self; */
 				if(self->plugin->audio.channels > 0){
-					tsk_sprintf(&rtpmap, "%s %s/%d/%d", self->format, self->name, self->plugin->rate, self->plugin->audio.channels);
+					tsk_sprintf(&rtpmap, "%s %s/%d/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->rate, self->plugin->audio.channels);
 				}
 				else{
-					tsk_sprintf(&rtpmap, "%s %s/%d", self->format, self->name, self->plugin->audio);
+					tsk_sprintf(&rtpmap, "%s %s/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->audio);
 				}
 			}
 			break;
 		case tmedia_video:
 			{	/* video codecs */
 				/* const tmedia_codec_video_t* videoCodec = (const tmedia_codec_video_t*)self; */
-				tsk_sprintf(&rtpmap, "%s %s/%d", self->format, self->name, self->plugin->rate);
+				tsk_sprintf(&rtpmap, "%s %s/%d", self->neg_format? self->neg_format : self->format, self->name, self->plugin->rate);
 				break;
 			}
 		/* all others */
@@ -306,21 +325,21 @@ int tmedia_codec_set_remote_fmtp(tmedia_codec_t* self, const char* fmtp)
 }
 
 /**@ingroup tmedia_codec_group
-* Remove all codecs except the specified one.
+* Remove all codecs except the specified ones.
 * @param codecs the list of codecs from which to remove codecs.
-* @param codec the codec which shall not be removed.
+* @param codecs2keep the codecs which shall not be removed.
 * @retval zero if succeed (or nothing to do) and non-zero error code otherwise.
 */
-int tmedia_codec_removeAll_exceptThis(tmedia_codecs_L_t* codecs, const tmedia_codec_t * codec)
+int tmedia_codec_removeAll_exceptThese(tmedia_codecs_L_t* codecs, const tmedia_codecs_L_t * codecs2keep)
 {
 	tsk_list_item_t* item;
-	if(!codecs || !codec){
+	if(!codecs || !codecs2keep){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 again:
 	tsk_list_foreach(item, codecs){
-		if(tsk_object_cmp(item->data, codec)){
+		if(!tsk_list_find_item_by_pred(codecs2keep, __pred_find_codec_by_format, ((tmedia_codec_t*)item->data)->format)){
 			tsk_list_remove_item(codecs, item);
 			goto again;
 		}
@@ -338,6 +357,9 @@ again:
 int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 {
 	const tsk_list_item_t* item;
+	const tmedia_codec_t* codec;
+	char *fmtp, *rtpmap;
+	int ret;
 
 	if(!codecs || !m){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -345,53 +367,55 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 	}
 
 	tsk_list_foreach(item, codecs){
-		tmedia_codec_to_sdp_2((const tmedia_codec_t*)item->data, m, tsk_null);
+		codec = item->data;
+		/* add fmt */
+		if((ret = tsdp_header_M_add_fmt(m, codec->neg_format?  codec->neg_format : codec->format))){
+			TSK_DEBUG_ERROR("Failed to add format");
+			return ret;
+		}
+		/* add rtpmap attribute */
+		if((rtpmap = tmedia_codec_get_rtpmap(codec))){
+			tsdp_header_M_add_headers(m,
+			TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
+			tsk_null);
+			TSK_FREE(rtpmap);
+		}
+		/* add fmtp attribute */
+		if((fmtp = tmedia_codec_get_fmtp(codec))){
+			char* temp = tsk_null;
+			tsk_sprintf(&temp, "%s %s",  codec->neg_format?  codec->neg_format : codec->format, fmtp);
+			tsdp_header_M_add_headers(m,
+				TSDP_HEADER_A_VA_ARGS("fmtp", temp),
+			tsk_null);
+			TSK_FREE(temp);
+			TSK_FREE(fmtp);
+		}
 	}
 	return 0;
 }
 
 /**@ingroup tmedia_codec_group
-* Converts a codec to sdp (m= line).<br>
-* Will add: fmt, rtpmap and fmtp.
-* @param codec The codec to convert
-* @param m The destination
-* @param format The format to use (will override the codec's format). If null, the codec's format will
-* be used.
-* @retval Zero if succeed and non-zero error code otherwise
+* Finds a codec by format. If the codec has a dyn. payload type, then this function will also compare negociate formats.
+* @param codecs List of codecs from which to retrieve the matching codec.
+* @param format the format of the codec to find.
+* @retval Zero if succeed and non-zero error code otherwise.
 */
-int tmedia_codec_to_sdp_2(const tmedia_codec_t* codec, tsdp_header_M_t* m, const char* format)
+tmedia_codec_t* tmedia_codec_find_by_format(tmedia_codecs_L_t* codecs, const char* format)
 {
-	int ret;
-	char *fmtp, *rtpmap;
+	const tmedia_codec_t* codec = tsk_null;
 
-	if(!codec || !m){
-		TSK_DEBUG_ERROR("Invalid parameter");
-		return -1;
+	if(!codecs || !format){
+		TSK_DEBUG_ERROR("Inalid parameter");
+		return tsk_null;
 	}
 
-	/* add fmt */
-	if((ret = tsdp_header_M_add_fmt(m, format? format : codec->format))){
-		TSK_DEBUG_ERROR("Failed to add format");
-		return ret;
+	if((codec = tsk_list_find_object_by_pred(codecs, __pred_find_codec_by_format, format)) || 
+		(codec = tsk_list_find_object_by_pred(codecs, __pred_find_codec_by_neg_format, format))){
+		return tsk_object_ref((void*)codec);
 	}
-	/* add rtpmap attribute */
-	if((rtpmap = tmedia_codec_get_rtpmap(codec))){
-		tsdp_header_M_add_headers(m,
-		TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
-		tsk_null);
-		TSK_FREE(rtpmap);
+	else{
+		return tsk_null;
 	}
-	/* add fmtp attribute */
-	if((fmtp = tmedia_codec_get_fmtp(codec))){
-		char* temp = tsk_null;
-		tsk_sprintf(&temp, "%s %s", codec->format, fmtp);
-		tsdp_header_M_add_headers(m,
-			TSDP_HEADER_A_VA_ARGS("fmtp", temp),
-		tsk_null);
-		TSK_FREE(temp);
-		TSK_FREE(fmtp);
-	}
-	return 0;
 }
 
 /**@ingroup tmedia_codec_group
@@ -409,6 +433,7 @@ int tmedia_codec_deinit(tmedia_codec_t* self)
 	TSK_FREE(self->name);
 	TSK_FREE(self->desc);
 	TSK_FREE(self->format);
+	TSK_FREE(self->neg_format);
 
 	return 0;
 }

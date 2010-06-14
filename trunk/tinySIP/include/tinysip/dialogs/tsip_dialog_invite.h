@@ -46,11 +46,16 @@ typedef struct tsip_dialog_invite
 
 	uint32_t rseq;
 	
-	tsip_timer_t timerrefresh;
 	tsip_timer_t timershutdown;
 
 	tsip_request_t* last_invite;
 	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager. */
+
+	struct{
+		tsip_timer_t timer;
+		tsk_bool_t use_update;
+		char* refresher;
+	} stimers;
 }
 tsip_dialog_invite_t;
 

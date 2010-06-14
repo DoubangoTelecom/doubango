@@ -88,6 +88,17 @@ static tmedia_qos_direction_t tmedia_qos_direction_fromstring(const char* direct
 
 /* ========================= Common ==================================*/
 
+tmedia_qos_tline_t* tmedia_qos_tline_create(tmedia_qos_stype_t type, tmedia_qos_strength_t strength)
+{
+	switch(type){
+		case tmedia_qos_stype_e2e:
+			return (tmedia_qos_tline_t*)tmedia_qos_tline_e2e_create(strength);
+		case tmedia_qos_stype_segmented:
+			return (tmedia_qos_tline_t*)tmedia_qos_tline_segmented_create(strength);
+	}
+	return tsk_null;
+}
+
 tmedia_qos_stype_t tmedia_qos_get_type(const tsdp_header_M_t* m)
 {
 	const tsdp_header_A_t* A;
@@ -140,7 +151,26 @@ int tmedia_qos_tline_to_sdp(const tmedia_qos_tline_t* self, tsdp_header_M_t* m)
 		case tmedia_qos_stype_segmented:
 			return tmedia_qos_tline_segmented_to_sdp((tmedia_qos_tline_segmented_t*)self, m);
 		default:
-			return -1;
+			TSK_DEBUG_ERROR("Invalid type");
+			return -2;
+	}
+}
+
+int tmedia_qos_tline_set_ro(tmedia_qos_tline_t* self, const tmedia_qos_tline_t* ro)
+{
+	if(!self || !ro){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	switch(self->type){
+		case tmedia_qos_stype_e2e:
+			return tmedia_qos_tline_e2e_set_ro((tmedia_qos_tline_e2e_t*)self, (const tmedia_qos_tline_e2e_t*)ro);
+		case tmedia_qos_stype_segmented:
+			return tmedia_qos_tline_segmented_set_ro((tmedia_qos_tline_segmented_t*)self, (const tmedia_qos_tline_segmented_t*)ro);
+		default:
+			TSK_DEBUG_ERROR("Invalid type");
+			return -2;
 	}
 }
 

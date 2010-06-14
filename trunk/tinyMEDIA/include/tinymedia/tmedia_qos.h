@@ -100,9 +100,11 @@ typedef struct tmedia_qos_tline_s
 tmedia_qos_tline_t;
 #define TMEDIA_DECLARE_QOS_TLINE tmedia_qos_tline_t __tline__
 
+TINYMEDIA_API tmedia_qos_tline_t* tmedia_qos_tline_create(tmedia_qos_stype_t type, tmedia_qos_strength_t strength);
 TINYMEDIA_API tmedia_qos_stype_t tmedia_qos_get_type(const tsdp_header_M_t* m);
 TINYMEDIA_API tmedia_qos_tline_t* tmedia_qos_tline_from_sdp(const tsdp_header_M_t* m);
 TINYMEDIA_API int tmedia_qos_tline_to_sdp(const tmedia_qos_tline_t* self, tsdp_header_M_t* m);
+TINYMEDIA_API int tmedia_qos_tline_set_ro(tmedia_qos_tline_t* self, const tmedia_qos_tline_t* ro);
 TINYMEDIA_API tsk_bool_t tmedia_qos_tline_canresume(const tmedia_qos_tline_t* self);
 
 /* QoS table-line for E2E type*/

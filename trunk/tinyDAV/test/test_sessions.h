@@ -146,8 +146,8 @@ void test_sessions_server()
 
 void test_sessions()
 {
-	//test_sessions_client();
-	test_sessions_server();
+	test_sessions_client();
+	//test_sessions_server();
 }
 
 
