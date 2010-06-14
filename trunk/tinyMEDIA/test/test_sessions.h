@@ -46,6 +46,11 @@
 	"a=rtpmap:0 PCMU/8000\r\n" \
 	"a=rtpmap:97 iLBC/8000\r\n" \
 	"a=rtpmap:98 AMR-WB/16000\r\n" \
+	"a=curr:qos local none\r\n" \
+	"a=curr:qos remote none\r\n" \
+	"a=des:qos mandatory local sendrecv\r\n" \
+	"a=des:qos mandatory remote sendrecv\r\n" \
+	"a=conf:qos remote sendrecv\r\n" \
     "a=fmtp:98 octet-align=1\r\n" \
 	"m=video 51372 RTP/AVP 31 32 98\r\n" \
 	"i=Video line\r\n" \
@@ -70,10 +75,12 @@ void test_sessions_client()
 	const tsdp_message_t* sdp_lo;
 	tsdp_message_t* sdp_ro;
 	char* temp;
+	tsk_bool_t canresume;
 	
 	/* create manager */
 	mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38),
-		"192.168.16.82", tsk_false);
+		"0.0.0.0", tsk_false, tsk_true);
+	tmedia_session_mgr_set_qos(mgr, tmedia_qos_stype_segmented, tmedia_qos_strength_mandatory);
 
 	/* get lo */
 	sdp_lo = tmedia_session_mgr_get_lo(mgr);
@@ -94,6 +101,8 @@ void test_sessions_client()
 		TSK_DEBUG_INFO("sdp_lo=%s", temp);
 		TSK_FREE(temp);
 	}
+
+	canresume = tmedia_session_mgr_canresume(mgr);
 	
 	TSK_OBJECT_SAFE_FREE(mgr);
 }
@@ -117,7 +126,7 @@ void test_sessions_server()
 	}
 
 	/* create manager */
-	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false);
+	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_false);
 
 	/* set ro */
 	tmedia_session_mgr_set_ro(mgr, sdp_ro);
@@ -141,7 +150,7 @@ void test_sessions_hold_resume()
 	tmedia_type_t type = tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38;
 	
 	/* create manager */
-	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false);
+	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_true);
 
 	/* get lo */
 	sdp_lo = tmedia_session_mgr_get_lo(mgr);
@@ -196,7 +205,7 @@ void test_sessions_add_remove()
 	}
 
 	/* create manager */
-	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false);
+	mgr = tmedia_session_mgr_create(type, "192.168.16.82", tsk_false, tsk_false);
 
 	/* set ro */
 	tmedia_session_mgr_set_ro(mgr, sdp_ro);
@@ -214,8 +223,8 @@ void test_sessions_add_remove()
 
 void test_sessions()
 {
-	//test_sessions_client();
-	test_sessions_server();
+	test_sessions_client();
+	//test_sessions_server();
 	//test_sessions_hold_resume();
 }
 

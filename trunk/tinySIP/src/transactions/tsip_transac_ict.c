@@ -535,7 +535,11 @@ int tsip_transac_ict_Calling_2_Accepted_X_2xx(va_list *app)
 */
 int tsip_transac_ict_Proceeding_2_Proceeding_X_1xx(va_list *app)
 {
-	return 0;
+	tsip_transac_ict_t *self = va_arg(*app, tsip_transac_ict_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+
+	/* pass the response to the TU (dialog) */
+	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
 }
 
 /* Proceeding -> (300-699) -> Completed

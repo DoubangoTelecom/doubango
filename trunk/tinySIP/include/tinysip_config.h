@@ -63,7 +63,7 @@
 #	define __C99__
 #endif
 
-/* Whether to use SIP Compact headers */
+/* Whether to use SIP Compact headers (RFC 3261 - 7.3.3 Compact Form) */
 #define TSIP_COMPACT_HEADERS 0
 
 #include <stdint.h>

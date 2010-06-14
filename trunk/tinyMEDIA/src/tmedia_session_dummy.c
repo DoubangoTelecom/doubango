@@ -88,6 +88,7 @@ int tmedia_session_daudio_pause(tmedia_session_t* self)
 const tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
 {
 	tmedia_session_daudio_t* daudio;
+	tsk_bool_t changed = tsk_false;
 
 	TSK_DEBUG_INFO("tmedia_session_daudio_get_lo");
 
@@ -99,46 +100,52 @@ const tsdp_header_M_t* tmedia_session_daudio_get_lo(tmedia_session_t* self)
 	daudio = (tmedia_session_daudio_t*)self;
 
 	if(self->ro_changed && self->M.lo){
-		TSK_OBJECT_SAFE_FREE(self->M.lo);
+		/* Codecs */
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "fmtp");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "rtpmap");
+		tsk_list_clear_items(self->M.lo->FMTs);
+		
+		/* QoS */
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "curr");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "des");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "conf");
 	}
 
-	if(self->M.lo){
-		return self->M.lo;
-	}
-	else if(!(self->M.lo = tsdp_header_M_create(self->plugin->media, daudio->local_port, "RTP/AVP"))){
+	changed = (self->ro_changed || !self->M.lo);
+	
+	if(!self->M.lo && !(self->M.lo = tsdp_header_M_create(self->plugin->media, daudio->local_port, "RTP/AVP"))){
 		TSK_DEBUG_ERROR("Failed to create lo");
 		return tsk_null;
 	}
 
-	/* from codecs to sdp */
-	if(self->negociated_codec && !TSK_LIST_IS_EMPTY(self->codecs)){
-		/* filter codecs */
-		tmedia_codec_removeAll_exceptThis(self->codecs, self->negociated_codec);
-		/* update format */
-		if(self->negociated_codec->dyn){
-			tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, self->negociated_format);
-		}
-		else{
-			tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, tsk_null);
+	if(changed){
+		/* from codecs to sdp */
+		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
+		/* QoS */
+		if(self->qos){
+			tmedia_qos_tline_t* ro_tline;
+			if(self->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(self->M.ro))){
+				tmedia_qos_tline_set_ro(self->qos, ro_tline);
+				TSK_OBJECT_SAFE_FREE(ro_tline);
+			}
+			tmedia_qos_tline_to_sdp(self->qos, self->M.lo);
 		}
 	}
-	else{
-		tmedia_codec_to_sdp(self->codecs, self->M.lo);
-	}
+	
 
 	return self->M.lo;
 }
 
 int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
-	const tmedia_codec_t* codec;
+	tmedia_codecs_L_t* neg_codecs;
 
 	TSK_DEBUG_INFO("tmedia_session_daudio_set_ro");
 
-	if((codec = tmedia_session_match_codec(self, m, &self->negociated_format))){
-		/* update negociated codec */
-		TSK_OBJECT_SAFE_FREE(self->negociated_codec);
-		self->negociated_codec = tsk_object_ref((void*)codec);
+	if((neg_codecs = tmedia_session_match_codec(self, m))){
+		/* update negociated codecs */
+		TSK_OBJECT_SAFE_FREE(self->neg_codecs);
+		self->neg_codecs = neg_codecs;
 		/* update remote offer */
 		TSK_OBJECT_SAFE_FREE(self->M.ro);
 		self->M.ro = tsk_object_ref((void*)m);
@@ -204,6 +211,7 @@ int tmedia_session_dvideo_pause(tmedia_session_t* self)
 const tsdp_header_M_t* tmedia_session_dvideo_get_lo(tmedia_session_t* self)
 {
 	tmedia_session_dvideo_t* dvideo;
+	tsk_bool_t changed = tsk_false;
 
 	TSK_DEBUG_INFO("tmedia_session_dvideo_get_lo");
 
@@ -215,46 +223,51 @@ const tsdp_header_M_t* tmedia_session_dvideo_get_lo(tmedia_session_t* self)
 	dvideo = (tmedia_session_dvideo_t*)self;
 
 	if(self->ro_changed && self->M.lo){
-		TSK_OBJECT_SAFE_FREE(self->M.lo);
+		/* Codecs */
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "fmtp");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "rtpmap");
+		tsk_list_clear_items(self->M.lo->FMTs);
+		
+		/* QoS */
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "curr");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "des");
+		tsdp_header_A_removeAll_by_field(self->M.lo->Attributes, "conf");
 	}
 
-	if(self->M.lo){
-		return self->M.lo;
-	}
-	else if(!(self->M.lo = tsdp_header_M_create(self->plugin->media, dvideo->local_port, "RTP/AVP"))){
+	changed = (self->ro_changed || !self->M.lo);
+	
+	if(!self->M.lo && !(self->M.lo = tsdp_header_M_create(self->plugin->media, dvideo->local_port, "RTP/AVP"))){
 		TSK_DEBUG_ERROR("Failed to create lo");
 		return tsk_null;
 	}
 
-	/* from codecs to sdp */
-	if(self->negociated_codec && !TSK_LIST_IS_EMPTY(self->codecs)){
-		/* filter codecs */
-		tmedia_codec_removeAll_exceptThis(self->codecs, self->negociated_codec);
-		/* update format */
-		if(self->negociated_codec->dyn){
-			tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, self->negociated_format);
-		}
-		else{
-			tmedia_codec_to_sdp_2(self->codecs->head->data, self->M.lo, tsk_null);
+	if(changed){
+		/* from codecs to sdp */
+		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
+		/* QoS */
+		if(self->qos){
+			tmedia_qos_tline_t* ro_tline;
+			if(self->M.ro && (ro_tline = tmedia_qos_tline_from_sdp(self->M.ro))){
+				tmedia_qos_tline_set_ro(self->qos, ro_tline);
+				TSK_OBJECT_SAFE_FREE(ro_tline);
+			}
+			tmedia_qos_tline_to_sdp(self->qos, self->M.lo);
 		}
 	}
-	else{
-		tmedia_codec_to_sdp(self->codecs, self->M.lo);
-	}	
 
 	return self->M.lo;
 }
 
 int tmedia_session_dvideo_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m)
 {
-	const tmedia_codec_t* codec;
+	tmedia_codecs_L_t* neg_codecs;
 
 	TSK_DEBUG_INFO("tmedia_session_dvideo_set_ro");
 
-	if((codec = tmedia_session_match_codec(self, m, &self->negociated_format))){
-		/* update negociated codec */
-		TSK_OBJECT_SAFE_FREE(self->negociated_codec);
-		self->negociated_codec = tsk_object_ref((void*)codec);
+	if((neg_codecs = tmedia_session_match_codec(self, m))){
+		/* update negociated codecs */
+		TSK_OBJECT_SAFE_FREE(self->neg_codecs);
+		self->neg_codecs = neg_codecs;
 		/* update remote offer */
 		TSK_OBJECT_SAFE_FREE(self->M.ro);
 		self->M.ro = tsk_object_ref((void*)m);
@@ -447,6 +460,7 @@ static tsk_object_t* tmedia_session_dmsrp_dtor(tsk_object_t * self)
 		/* deinit base */
 		tmedia_session_deinit(self);
 		/* deinit self */
+
 	}
 
 	return self;

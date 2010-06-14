@@ -143,9 +143,7 @@ void* tdav_consumer_audio_get(tdav_consumer_audio_t* self)
 		case JB_OK:
 			break;
 		case JB_INTERP:
-			{
 				jb_reset_all(self->jb.jbuffer);
-			}
 			break;
 		case JB_EMPTY:
 		case JB_NOFRAME:

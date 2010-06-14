@@ -276,6 +276,10 @@ int tsip_dialog_subscribe_init(tsip_dialog_subscribe_t *self)
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_cancel, _fsm_state_Terminated, tsip_dialog_subscribe_Trying_2_Terminated_X_cancel, "tsip_dialog_subscribe_Trying_2_Terminated_X_cancel"),
 			// Trying -> (Notify) -> Trying
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_notify, _fsm_state_Trying, tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY, "tsip_dialog_subscribe_Trying_2_Trying_X_NOTIFY"),
+			// Trying -> (hangup) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_hangup, _fsm_state_Terminated, tsk_null, "tsip_dialog_subscribe_Trying_2_Terminated_X_hangup"),
+			// Trying -> (shutdown) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Trying, _fsm_action_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_subscribe_Trying_2_Terminated_X_shutdown"),
 			// Trying -> (Any) -> Trying
 			//TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Trying, "tsip_dialog_subscribe_Trying_2_Trying_X_any"),
 

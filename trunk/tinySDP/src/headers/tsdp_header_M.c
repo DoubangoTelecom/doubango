@@ -505,6 +505,22 @@ int tsdp_header_M_add_headers(tsdp_header_M_t* self, ...)
 	return 0;
 }
 
+int tsdp_header_M_add_headers_2(tsdp_header_M_t* self, const tsdp_headers_L_t* headers)
+{
+	const tsk_list_item_t* item;
+
+	if(!self || !headers){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	tsk_list_foreach(item, headers){
+		tsdp_header_M_add(self, item->data);
+	}
+
+	return 0;
+}
+
 int tsdp_header_M_add_fmt(tsdp_header_M_t* self, const char* fmt)
 {
 	tsdp_fmt_t* _fmt;
@@ -736,7 +752,7 @@ static tsk_object_t* tsdp_header_M_ctor(tsk_object_t *self, va_list * app)
 		TSDP_HEADER(M)->clone = tsdp_header_M_clone;
 		TSDP_HEADER(M)->rank = TSDP_HTYPE_M_RANK;
 		
-		M->FMTs = tsk_list_create(); // Becuase there is at least one fmt.
+		M->FMTs = tsk_list_create(); // Because there is at least one fmt.
 
 		M->media = tsk_strdup(va_arg(*app, const char*));
 		M->port = va_arg(*app, uint32_t);

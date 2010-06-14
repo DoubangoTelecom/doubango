@@ -40,10 +40,12 @@ TSK_BEGIN_DECLS
 * Check if the the linked list is empty or not.
 *	This function will fail if the list is NULL.
 */
-#define TSK_LIST_IS_EMPTY(self)				(self ? (!self->head) : tsk_true)
+#define TSK_LIST_IS_EMPTY(self)				((self) ? (!(self)->head) : tsk_true)
 
-#define TSK_LIST_IS_FIRST(self, item)		(self ? (self->head == item) : tsk_false)
-#define TSK_LIST_IS_LAST(self, item)		(self ? (self->tail == item) : tsk_false)
+#define TSK_LIST_IS_FIRST(self, item)		((self) ? ((self)->head == item) : tsk_false)
+#define TSK_LIST_IS_LAST(self, item)		((self) ? ((self)->tail == item) : tsk_false)
+
+#define TSK_LIST_FIRST_DATA(self)			(((self) && (self)->head) ? (self)->head->data : tsk_null)
 
 /**@ingroup tsk_list_group
 * Item for linked list. 

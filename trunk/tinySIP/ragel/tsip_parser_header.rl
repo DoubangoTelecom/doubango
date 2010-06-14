@@ -357,9 +357,8 @@
 	# /*== Min-SE: ==*/
 	action parse_header_Min_SE
 	{
-		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		tsip_header_Min_SE_t *header = tsip_header_Min_SE_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Min_SE NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== Organization: ==*/
@@ -705,9 +704,8 @@
 	# /*== Session-Expires: ==*/
 	action parse_header_Session_Expires
 	{
-		tsip_header_Dummy_t *header = tsip_header_Dummy_parse(state->tag_start, (state->tag_end-state->tag_start));
+		tsip_header_Session_Expires_t *header = tsip_header_Session_Expires_parse(state->tag_start, (state->tag_end-state->tag_start));
 		ADD_HEADER(header);
-		TSK_DEBUG_WARN("parse_header_Session_Expires NOT IMPLEMENTED. Will be added as Dummy header.");
 	}
 
 	# /*== SIP-ETag: ==*/

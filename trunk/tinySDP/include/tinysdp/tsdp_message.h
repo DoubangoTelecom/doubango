@@ -53,6 +53,7 @@ typedef tsdp_message_t tsdp_caps_t;
 
 TINYSDP_API int tsdp_message_add_header(tsdp_message_t *self, const tsdp_header_t *hdr);
 TINYSDP_API int tsdp_message_add_headers(tsdp_message_t *self, ...);
+TINYSDP_API int tsdp_message_add_headers_2(tsdp_message_t *self, const tsdp_headers);
 
 #if defined(__SYMBIAN32__) && 0
 static void TSDP_MESSAGE_ADD_HEADER(tsdp_message_t *self, ...)

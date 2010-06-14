@@ -128,6 +128,8 @@ typedef struct tmedia_codec_s
 	char* desc;
 	//! the format. e.g. "0" for PCMU or "8" for PCMA or "*" for MSRP.
 	char* format;
+	//! the negociated format (only useful for codecs with dyn. payload type)
+	char* neg_format;
 	//! plugin used to create the codec
 	const struct tmedia_codec_plugin_def_s* plugin;
 }
@@ -192,9 +194,9 @@ TINYMEDIA_API char* tmedia_codec_get_rtpmap(const tmedia_codec_t* self);
 TINYMEDIA_API char* tmedia_codec_get_fmtp(const tmedia_codec_t* self);
 TINYMEDIA_API tsk_bool_t tmedia_codec_match_fmtp(const tmedia_codec_t* self, const char* fmtp);
 TINYMEDIA_API int tmedia_codec_set_remote_fmtp(tmedia_codec_t* self, const char* fmtp);
-TINYMEDIA_API int tmedia_codec_removeAll_exceptThis(tmedia_codecs_L_t* codecs, const tmedia_codec_t * codec);
+TINYMEDIA_API int tmedia_codec_removeAll_exceptThese(tmedia_codecs_L_t* codecs, const tmedia_codecs_L_t * codecs2keep);
 TINYMEDIA_API int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m);
-TINYMEDIA_API int tmedia_codec_to_sdp_2(const tmedia_codec_t* codec, tsdp_header_M_t* m, const char* format);
+TINYMEDIA_API tmedia_codec_t* tmedia_codec_find_by_format(tmedia_codecs_L_t* codecs, const char* format);
 TINYMEDIA_API int tmedia_codec_deinit(tmedia_codec_t* self);
 
 /** Audio codec */

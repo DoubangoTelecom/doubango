@@ -161,6 +161,7 @@ int tsk_fsm_act(tsk_fsm_t* self, tsk_fsm_action_id action, const void* cond_data
 			
 			if(entry->exec){
 				if((ret_exec = entry->exec(&ap))){
+
 					TSK_DEBUG_INFO("State machine: Exec function failed. Moving to terminal state.");
 					self->current = self->term;
 				}

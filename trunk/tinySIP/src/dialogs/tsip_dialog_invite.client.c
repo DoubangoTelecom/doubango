@@ -41,6 +41,7 @@
 
 extern int send_INVITE(tsip_dialog_invite_t *self);
 extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
+extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 
 /* Started -> (oINVITE) -> Outgoing
 */
@@ -51,8 +52,8 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	//const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 	
 	/* This is the first transaction when you try to make an audio/video/msrp call */
-	if(self->msession_mgr == tsk_null){		
-		self->msession_mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38),
+	if(!self->msession_mgr){		
+		self->msession_mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38), /* FIXME */
 		TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, tsk_true);
 	}
 	
@@ -71,7 +72,6 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 {
 	int ret;
-	tsdp_message_t* sdp_ro;
 
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	const tsip_response_t *r2xxINVITE = va_arg(*app, const tsip_response_t *);
@@ -81,18 +81,9 @@ int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 		return ret;
 	}
 
-	/* set ro and start the session (if not already done) */
-	if(self->msession_mgr && TSIP_MESSAGE_HAS_CONTENT(r2xxINVITE)){
-		if((sdp_ro = tsdp_message_parse(TSIP_MESSAGE_CONTENT_DATA(r2xxINVITE), TSIP_MESSAGE_CONTENT_DATA_LENGTH(r2xxINVITE)))){
-			ret = tmedia_session_mgr_set_ro(self->msession_mgr, sdp_ro);
-			TSK_OBJECT_SAFE_FREE(sdp_ro);
-			/* start session manager */
-			ret = tmedia_session_mgr_start(self->msession_mgr);
-		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Invalid session manager");
-		return -1;
+	if((ret = tsip_dialog_invite_process_ro(self, r2xxINVITE))){
+		/* Send error */
+		return ret;
 	}
 
 	/* send ack */

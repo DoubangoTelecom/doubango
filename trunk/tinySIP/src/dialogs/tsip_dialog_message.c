@@ -185,6 +185,8 @@ int tsip_dialog_message_init(tsip_dialog_message_t *self)
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Sending, _fsm_action_300_to_699, _fsm_state_Terminated, tsip_dialog_message_Sending_2_Terminated_X_300_to_699, "tsip_dialog_message_Sending_2_Terminated_X_300_to_699"),
 			// Sending -> (cancel) -> Terminated
 			TSK_FSM_ADD_ALWAYS(_fsm_state_Sending, _fsm_action_cancel, _fsm_state_Terminated, tsip_dialog_message_Sending_2_Terminated_X_cancel, "tsip_dialog_message_Sending_2_Terminated_X_cancel"),
+			// Sending -> (shutdown) -> Terminated
+			TSK_FSM_ADD_ALWAYS(_fsm_state_Sending, _fsm_action_shutdown, _fsm_state_Terminated, tsk_null, "tsip_dialog_message_Sending_2_Terminated_X_shutdown"),
 			// Sending -> (Any) -> Sending
 			TSK_FSM_ADD_ALWAYS_NOTHING(_fsm_state_Sending, "tsip_dialog_message_Sending_2_Sending_X_any"),
 

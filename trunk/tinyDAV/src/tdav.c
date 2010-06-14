@@ -68,7 +68,7 @@ int tdav_init()
 #endif
 
 	tmedia_codec_plugin_register(tdav_codec_g711a_plugin_def_t);
-	//--tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
+	tmedia_codec_plugin_register(tdav_codec_g711u_plugin_def_t);
 
 	/* === Register consumers === */
 #if HAVE_DSOUND_H

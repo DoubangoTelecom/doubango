@@ -316,7 +316,29 @@ _again:
 }
 
 
+int tsdp_header_A_removeAll_by_field(tsdp_headers_A_L_t *attributes, const char* field)
+{
+	tsk_list_item_t* item;
+	const tsdp_header_A_t* A;
 
+	if(!attributes || !field){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+again:
+	tsk_list_foreach(item, attributes){
+		if(!(A = item->data)){
+			continue;
+		}
+		if(tsk_striequals(field, A->field)){
+			tsk_list_remove_item(attributes, item);
+			goto again;
+		}
+	}
+
+	return 0;
+}
 
 
 

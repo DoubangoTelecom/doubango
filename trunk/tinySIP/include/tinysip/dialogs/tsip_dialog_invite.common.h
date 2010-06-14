@@ -55,6 +55,8 @@ typedef enum _fsm_action_e
 	_fsm_action_oPRACK,
 	_fsm_action_iACK,
 	_fsm_action_oACK,
+	_fsm_action_iOPTIONS,
+	_fsm_action_oOPTIONS,
 
 	_fsm_action_i1xx,
 	_fsm_action_i2xx,
