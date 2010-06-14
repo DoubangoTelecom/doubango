@@ -301,6 +301,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="coreaudio"
+					>
+					<File
+						RelativePath="..\..\tinyDAV\include\tinydav\audio\coreaudio\tdav_consumer_coreaudio.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="video"
@@ -434,6 +442,14 @@
 					</File>
 					<File
 						RelativePath="..\..\tinyDAV\src\audio\waveapi\tdav_producer_waveapi.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="coreaudio"
+					>
+					<File
+						RelativePath="..\..\tinyDAV\src\audio\coreaudio\tdav_consumer_coreaudio.c"
 						>
 					</File>
 				</Filter>

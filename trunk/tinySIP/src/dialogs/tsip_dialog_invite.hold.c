@@ -35,12 +35,12 @@
 
 #include "tsk_debug.h"
 
-/* an example of callflow can */
+/* ======================== transitions ======================== */
+static int x0100_Connected_2_Connected_X_oHold(va_list *app);
+static int x0101_Connected_2_Connected_X_oResume(va_list *app);
 
-int x0100_Connected_2_Connected_X_oHold(va_list *app);
-int x0101_Connected_2_Connected_X_oResume(va_list *app);
-
-extern int send_INVITE(tsip_dialog_invite_t *self);
+/* ======================== external functions ======================== */
+extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE);
 
 int tsip_dialog_invite_hold_init(tsip_dialog_invite_t *self)
 {

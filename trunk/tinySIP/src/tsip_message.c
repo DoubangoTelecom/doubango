@@ -47,7 +47,7 @@
 */
 
 /*== Predicate function to find tsk_string_t object by val*/
-static int pred_find_string_by_value(const tsk_list_item_t *item, const void *stringVal)
+static int __pred_find_string_by_value(const tsk_list_item_t *item, const void *stringVal)
 {
 	if(item && item->data){
 		tsk_string_t *string = item->data;
@@ -57,7 +57,7 @@ static int pred_find_string_by_value(const tsk_list_item_t *item, const void *st
 }
 
 /*== Predicate function to find tsip_header_t object by type. */
-static int pred_find_header_by_type(const tsk_list_item_t *item, const void *tsip_htype)
+static int __pred_find_header_by_type(const tsk_list_item_t *item, const void *tsip_htype)
 {
 	if(item && item->data){
 		tsip_header_t *header = item->data;
@@ -222,7 +222,7 @@ const tsip_header_t *tsip_message_get_headerAt(const tsip_message_t *self, tsip_
 		}
 
 		tsk_list_foreach(item, self->headers){
-			if(!pred_find_header_by_type(item, &type)){
+			if(!__pred_find_header_by_type(item, &type)){
 				if(pos++ >= index){
 					hdr = item->data;
 					break;
@@ -255,7 +255,7 @@ tsk_bool_t tsip_message_allowed(const tsip_message_t *self, const char* method)
 
 	if(self){
 		while( hdr_allow = (tsip_header_Allow_t*)tsip_message_get_headerAt(self, tsip_htype_Allow, index++) ){
-			if(tsk_list_find_item_by_pred(hdr_allow->methods, pred_find_string_by_value, method)){
+			if(tsk_list_find_item_by_pred(hdr_allow->methods, __pred_find_string_by_value, method)){
 				return tsk_true;
 			}
 		}
@@ -270,7 +270,7 @@ tsk_bool_t tsip_message_supported(const tsip_message_t *self, const char* option
 
 	if(self){
 		while( hdr_supported = (tsip_header_Supported_t*)tsip_message_get_headerAt(self, tsip_htype_Supported, index++) ){
-			if(tsk_list_find_item_by_pred(hdr_supported->options, pred_find_string_by_value, option)){
+			if(tsk_list_find_item_by_pred(hdr_supported->options, __pred_find_string_by_value, option)){
 				return tsk_true;
 			}
 		}
@@ -286,7 +286,7 @@ tsk_bool_t tsip_message_required(const tsip_message_t *self, const char* option)
 
 	if(self){
 		while( hdr_require = (tsip_header_Require_t*)tsip_message_get_headerAt(self, tsip_htype_Require, index++) ){
-			if(tsk_list_find_item_by_pred(hdr_require->options, pred_find_string_by_value, option)){
+			if(tsk_list_find_item_by_pred(hdr_require->options, __pred_find_string_by_value, option)){
 				return tsk_true;
 			}
 		}

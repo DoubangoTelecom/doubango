@@ -57,6 +57,9 @@ typedef enum _fsm_action_e
 	_fsm_action_oACK,
 	_fsm_action_iOPTIONS,
 	_fsm_action_oOPTIONS,
+	_fsm_action_iBYE,
+
+	_fsm_action_timerRefresh,
 
 	_fsm_action_i1xx,
 	_fsm_action_i2xx,
@@ -80,5 +83,10 @@ typedef enum _fsm_state_e
 	_fsm_state_Terminated
 }
 _fsm_state_t;
+
+
+#define send_INVITE(self) send_INVITEorUPDATE(self, tsk_true)
+#define send_UPDATE(self) send_INVITEorUPDATE(self, tsk_false)
+
 
 #endif /* TINYSIP_DIALOG_INVITE_COMMON_H */

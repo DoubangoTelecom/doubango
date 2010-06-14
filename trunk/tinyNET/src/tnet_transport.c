@@ -281,7 +281,7 @@ static void *run(void* self)
 	TSK_RUNNABLE(transport)->running = tsk_true; // VERY IMPORTANT --> needed by the main thread
 
 	/* create main thread */
-	if((ret = tsk_thread_create(&(transport->mainThreadId[0]), tnet_transport_mainthread, transport))){ /* More important than "tsk_runnable_start" ==> start it first. */
+	if((ret = tsk_thread_create(transport->mainThreadId, tnet_transport_mainthread, transport))){ /* More important than "tsk_runnable_start" ==> start it first. */
 		TSK_FREE(transport->context); /* Otherwise (tsk_thread_create is ok) will be freed when mainthread exit. */
 		TSK_DEBUG_FATAL("Failed to create main thread [%d]", ret);
 		return tsk_null;

@@ -405,8 +405,14 @@ int tnet_transport_stop(tnet_transport_t *transport)
 		return ret;
 	}
 	
-	WSASetEvent(((transport_context_t*)(transport->context))->events[0]);
-	return tsk_thread_join(transport->mainThreadId);
+	if(transport->mainThreadId[0]){
+		WSASetEvent(((transport_context_t*)(transport->context))->events[0]);
+		return tsk_thread_join(transport->mainThreadId);
+	}
+	else{
+		/* already stoppped */
+		return 0;
+	}
 }
 
 

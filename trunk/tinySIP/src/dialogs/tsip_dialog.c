@@ -568,9 +568,8 @@ compute:
 **/
 int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 {
-	if(self && TSIP_MESSAGE_IS_RESPONSE(response) && response->To)
-	{
-		short code = response->line.response.status_code;
+	if(self && TSIP_MESSAGE_IS_RESPONSE(response) && response->To){
+		short code = TSIP_RESPONSE_CODE(response);
 		const char *tag = response->To->tag;
 		tsk_bool_t isRegister = response->CSeq ? tsk_striequals(response->CSeq->method, "REGISTER") : tsk_false;
 
@@ -595,17 +594,27 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 			tsip_dialog_state_t state = self->state;
 
 			/* 1xx */
-			if(TSIP_RESPONSE_CODE(response) <= 199){
-				if(tsk_strempty(response->To->tag)) return -1;
+			if(code <= 199){
+				if(tsk_strempty(response->To->tag)){
+					TSK_DEBUG_ERROR("Invalid tag  parameter");
+					return -1;
+				}
 				state = tsip_early;
 			}
 			/* 2xx */
 			else{
 				state = tsip_established;
+			}
+
+			/* Remote target */
+			{
 				/*	RFC 3261 12.2.1.2 Processing the Responses
 					When a UAC receives a 2xx response to a target refresh request, it
 					MUST replace the dialog's remote target URI with the URI from the
 					Contact header field in that response, if present.
+
+					FIXME: Because PRACK/UPDATE sent before the session is established MUST have
+					the rigth target URI to be delivered to the UAS ==> Do not not check that we are connected
 				*/
 				if(!isRegister && response->Contact && response->Contact->uri){
 					TSK_OBJECT_SAFE_FREE(self->uri_remote_target);
