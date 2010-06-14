@@ -87,7 +87,11 @@ int tsk_thread_join(void** tid)
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-
+	if(!*tid){
+		TSK_DEBUG_WARN("Cannot join NULL tid");
+		return 0;
+	}
+    
 #if TSK_UNDER_WINDOWS
 	ret = (WaitForSingleObject(*((HANDLE*)tid), INFINITE) == WAIT_FAILED) ? -1 : 0;
 	if(ret == 0){
