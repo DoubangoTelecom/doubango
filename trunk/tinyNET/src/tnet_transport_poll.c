@@ -374,7 +374,13 @@ int tnet_transport_stop(tnet_transport_t *transport)
 		write(context->pipeW, &c, 1);
 	}
 	
-	return tsk_thread_join(transport->mainThreadId);
+	if(transport->mainThreadId[0]){
+		return tsk_thread_join(transport->mainThreadId);
+	}
+	else{
+		/* already soppped */
+		return 0;
+	}
 }
 
 int tnet_transport_prepare(tnet_transport_t *transport)

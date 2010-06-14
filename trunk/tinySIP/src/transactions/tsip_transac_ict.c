@@ -526,6 +526,12 @@ int tsip_transac_ict_Calling_2_Accepted_X_2xx(va_list *app)
 	
 	/* Schedule timer M */
 	TRANSAC_ICT_TIMER_SCHEDULE(M);
+	
+	/* Cancel timers A and B */
+	if(!TSIP_TRANSAC(self)->reliable){
+		TRANSAC_ICT_TIMER_SCHEDULE(A);
+	}
+	TRANSAC_ICT_TIMER_SCHEDULE(B);
 
 	/* pass the response to the TU (dialog) */
 	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);
@@ -607,6 +613,12 @@ int tsip_transac_ict_Proceeding_2_Accepted_X_2xx(va_list *app)
 
 	/* Schedule timer M */
 	TRANSAC_ICT_TIMER_SCHEDULE(M);
+
+	/* Cancel timers A and B */
+	if(!TSIP_TRANSAC(self)->reliable){
+		TRANSAC_ICT_TIMER_SCHEDULE(A);
+	}
+	TRANSAC_ICT_TIMER_SCHEDULE(B);
 
 	/* pass the response to the TU (dialog) */
 	return TSIP_TRANSAC(self)->dialog->callback(TSIP_TRANSAC(self)->dialog, tsip_dialog_i_msg, response);

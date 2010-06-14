@@ -44,17 +44,19 @@ typedef struct tsip_dialog_invite
 {
 	TSIP_DECLARE_DIALOG;
 
+	tsk_bool_t support_update; /**< Indicates whether the remote party support UPDATE */
+	tsk_bool_t is_client;
 	uint32_t rseq;
 	
 	tsip_timer_t timershutdown;
-
+	
 	tsip_request_t* last_invite;
 	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager. */
-
+	
 	struct{
 		tsip_timer_t timer;
-		tsk_bool_t use_update;
 		char* refresher;
+		uint64_t minse;
 	} stimers;
 }
 tsip_dialog_invite_t;

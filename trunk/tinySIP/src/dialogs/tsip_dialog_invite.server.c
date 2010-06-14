@@ -38,5 +38,14 @@
 */
 int s0000_Started_2_Incoming_X_iINVITE(va_list *app)
 {
+	/* RFC 4825 - 9. UAS Behavior
+
+		UAC supports?  refresher parameter  refresher parameter
+					   in request           in response
+   -------------------------------------------------------
+		 Y                none             uas or uac
+		 Y                uac                  uac
+		 Y                uas                  uas
+	*/
 	return 0;
 }

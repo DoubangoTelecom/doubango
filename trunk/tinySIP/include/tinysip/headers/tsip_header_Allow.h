@@ -56,6 +56,7 @@ tsip_header_Allow_t;
 TINYSIP_API tsip_header_Allow_t* tsip_header_Allow_create();
 
 TINYSIP_API tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, tsk_size_t size);
+TINYSIP_API tsk_bool_t tsip_header_Allow_allows(const tsip_header_Allow_t* self, const char* method);
 
 TINYSIP_GEXTERN const tsk_object_def_t *tsip_header_Allow_def_t;
 

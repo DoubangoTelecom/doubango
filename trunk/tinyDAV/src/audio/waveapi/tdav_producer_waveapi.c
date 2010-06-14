@@ -21,7 +21,7 @@
 */
 
 /**@file tdav_producer_waveapi.c
- * @brief Audio Consumer for Win32 and WinCE platforms.
+ * @brief Audio Producer for Win32 and WinCE platforms.
  *
  * @author Mamadou Diop <diopmamadou(at)doubango.org>
  *
@@ -234,7 +234,7 @@ int tdav_producer_waveapi_start(tmedia_producer_t* self)
 	}
 
 	if(producer->started || producer->hWaveIn){
-		TSK_DEBUG_WARN("Consumer already started");
+		TSK_DEBUG_WARN("Producer already started");
 		return 0;
 	}
 
@@ -296,7 +296,7 @@ int tdav_producer_waveapi_stop(tmedia_producer_t* self)
 	}
 
 	if(!producer->started){
-		TSK_DEBUG_WARN("Consumer not started");
+		TSK_DEBUG_WARN("Producer not started");
 		return 0;
 	}
 

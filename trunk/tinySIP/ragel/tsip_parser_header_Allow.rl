@@ -117,7 +117,26 @@ tsip_header_Allow_t *tsip_header_Allow_parse(const char *data, tsk_size_t size)
 	return hdr_allow;
 }
 
+tsk_bool_t tsip_header_Allow_allows(const tsip_header_Allow_t* self, const char* method)
+{
+	const tsk_list_item_t* item;
+	const tsk_string_t* string;
 
+	if(!self || !method){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}	
+
+	tsk_list_foreach(item, self->methods){
+		if(!(string = item->data)){
+			continue;
+		}
+		if(tsk_striequals(string->value, method)){
+			return tsk_true;
+		}
+	}
+	return tsk_false;
+}
 
 
 
