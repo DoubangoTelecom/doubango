@@ -38,6 +38,7 @@
 // Consumers
 #include "tinydav/audio/waveapi/tdav_consumer_waveapi.h"
 #include "tinydav/audio/directsound/tdav_consumer_dsound.h"
+#include "tinydav/audio/coreaudio/tdav_consumer_coreaudio.h"
 
 // Producers
 #include "tinydav/audio/waveapi/tdav_producer_waveapi.h"
@@ -75,6 +76,10 @@ int tdav_init()
 	tmedia_consumer_plugin_register(tdav_consumer_dsound_plugin_def_t);
 #elif HAVE_WAVE_API
 	tmedia_consumer_plugin_register(tdav_consumer_waveapi_plugin_def_t);
+#endif
+
+#if HAVE_COREAUDIO
+	tmedia_consumer_plugin_register(tmedia_consumer_coreaudio_plugin_def_t);
 #endif
 
 #if HAVE_OSS_H
@@ -125,6 +130,10 @@ int tdav_deinit()
 	tmedia_producer_plugin_unregister(tdav_producer_dsound_plugin_def_t);
 #elif HAVE_WAVE_API
 	tmedia_producer_plugin_unregister(tdav_producer_waveapi_plugin_def_t);
+#endif
+
+#if HAVE_COREAUDIO
+	tmedia_producer_plugin_unregister(tmedia_consumer_coreaudio_plugin_def_t);
 #endif
 
 #if HAVE_OSS_H
