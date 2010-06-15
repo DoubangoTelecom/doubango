@@ -35,6 +35,7 @@
 #include "tinymedia/tmedia_session_dummy.h"
 #include "tinymedia/tmedia_session_ghost.h"
 
+#include "tinymedia/tmedia_common.h"
 #include "tinymedia/tmedia_qos.h"
 
 /* == tinyNET == */

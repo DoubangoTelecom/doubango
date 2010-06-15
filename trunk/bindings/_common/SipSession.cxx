@@ -170,13 +170,35 @@ CallSession::~CallSession()
 {
 }
 
-bool CallSession::Call(const char* remoteUri)
+bool CallSession::CallAudio(const char* remoteUri)
 {
 	tsip_ssession_set(this->handle,
 		TSIP_SSESSION_SET_TO(remoteUri),
 		TSIP_SSESSION_SET_NULL());
 
-	int ret = tsip_action_INVITE(this->handle,
+	int ret = tsip_action_INVITE(this->handle, tmedia_audio,
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
+
+bool CallSession::CallAudioVideo(const char* remoteUri)
+{
+	tsip_ssession_set(this->handle,
+		TSIP_SSESSION_SET_TO(remoteUri),
+		TSIP_SSESSION_SET_NULL());
+
+	int ret = tsip_action_INVITE(this->handle, (tmedia_type_t)(tmedia_audio | tmedia_video),
+		TSIP_ACTION_SET_NULL());
+	return (ret == 0);
+}
+
+bool CallSession::CallVideo(const char* remoteUri)
+{
+	tsip_ssession_set(this->handle,
+		TSIP_SSESSION_SET_TO(remoteUri),
+		TSIP_SSESSION_SET_NULL());
+
+	int ret = tsip_action_INVITE(this->handle, tmedia_video,
 		TSIP_ACTION_SET_NULL());
 	return (ret == 0);
 }

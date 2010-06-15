@@ -504,7 +504,9 @@ sub DESTROY {
     }
 }
 
-*Call = *tinyWRAPc::CallSession_Call;
+*CallAudio = *tinyWRAPc::CallSession_CallAudio;
+*CallAudioVideo = *tinyWRAPc::CallSession_CallAudioVideo;
+*CallVideo = *tinyWRAPc::CallSession_CallVideo;
 *Hangup = *tinyWRAPc::CallSession_Hangup;
 sub DISOWN {
     my $self = shift;

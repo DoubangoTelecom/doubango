@@ -31,12 +31,10 @@
 
 #include "tinysip/parsers/tsip_parser_uri.h"
 
-#include "tinysip/tsip_message.h" /* tsip_request_type_t */
-
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
-
+extern tsip_request_type_t tsip_request_get_type(const char* method);
 
 /***********************************
 *	Ragel state machine.

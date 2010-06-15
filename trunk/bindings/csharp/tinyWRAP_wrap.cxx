@@ -1325,7 +1325,7 @@ SWIGEXPORT void SWIGSTDCALL CSharp_delete_CallSession(void * jarg1) {
 }
 
 
-SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_Call(void * jarg1, char * jarg2) {
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_CallAudio(void * jarg1, char * jarg2) {
   unsigned int jresult ;
   CallSession *arg1 = (CallSession *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -1333,7 +1333,35 @@ SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_Call(void * jarg1, char *
   
   arg1 = (CallSession *)jarg1; 
   arg2 = (char *)jarg2; 
-  result = (bool)(arg1)->Call((char const *)arg2);
+  result = (bool)(arg1)->CallAudio((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_CallAudioVideo(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->CallAudioVideo((char const *)arg2);
+  jresult = result; 
+  return jresult;
+}
+
+
+SWIGEXPORT unsigned int SWIGSTDCALL CSharp_CallSession_CallVideo(void * jarg1, char * jarg2) {
+  unsigned int jresult ;
+  CallSession *arg1 = (CallSession *) 0 ;
+  char *arg2 = (char *) 0 ;
+  bool result;
+  
+  arg1 = (CallSession *)jarg1; 
+  arg2 = (char *)jarg2; 
+  result = (bool)(arg1)->CallVideo((char const *)arg2);
   jresult = result; 
   return jresult;
 }

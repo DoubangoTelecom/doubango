@@ -33,15 +33,14 @@
 #include "tinysip_config.h"
 #include "tinysip/headers/tsip_header.h"
 
+#include "tinysip/tsip_message_common.h" /* tsip_request_type_t */
+
 TSIP_BEGIN_DECLS
 
 #define TSIP_HEADER_CSEQ_VA_ARGS(seq, method)		tsip_header_CSeq_def_t, (int32_t) seq, (const char*)method
 
 #define TSIP_HEADER_CSEQ_NONE						0
 #define TSIP_HEADER_CSEQ_DEFAULT					1
-
-/* Forward declaration */
-enum tsip_request_type_e;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -56,7 +55,7 @@ typedef struct tsip_header_CSeq_s
 
 	char *method;
 	uint32_t seq;
-	enum tsip_request_type_e type;
+	tsip_request_type_t type;
 }
 tsip_header_CSeq_t;
 

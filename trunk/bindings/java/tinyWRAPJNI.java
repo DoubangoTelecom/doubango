@@ -65,7 +65,9 @@ class tinyWRAPJNI {
   public final static native long SipSession_getId(long jarg1, SipSession jarg1_);
   public final static native long new_CallSession(long jarg1, SipStack jarg1_);
   public final static native void delete_CallSession(long jarg1);
-  public final static native boolean CallSession_Call(long jarg1, CallSession jarg1_, String jarg2);
+  public final static native boolean CallSession_CallAudio(long jarg1, CallSession jarg1_, String jarg2);
+  public final static native boolean CallSession_CallAudioVideo(long jarg1, CallSession jarg1_, String jarg2);
+  public final static native boolean CallSession_CallVideo(long jarg1, CallSession jarg1_, String jarg2);
   public final static native boolean CallSession_Hangup(long jarg1, CallSession jarg1_);
   public final static native long new_MessagingSession(long jarg1, SipStack jarg1_);
   public final static native void delete_MessagingSession(long jarg1);

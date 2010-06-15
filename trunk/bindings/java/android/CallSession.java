@@ -37,8 +37,16 @@ public class CallSession extends SipSession {
     this(tinyWRAPJNI.new_CallSession(SipStack.getCPtr(Stack), Stack), true);
   }
 
-  public boolean Call(String remoteUri) {
-    return tinyWRAPJNI.CallSession_Call(swigCPtr, this, remoteUri);
+  public boolean CallAudio(String remoteUri) {
+    return tinyWRAPJNI.CallSession_CallAudio(swigCPtr, this, remoteUri);
+  }
+
+  public boolean CallAudioVideo(String remoteUri) {
+    return tinyWRAPJNI.CallSession_CallAudioVideo(swigCPtr, this, remoteUri);
+  }
+
+  public boolean CallVideo(String remoteUri) {
+    return tinyWRAPJNI.CallSession_CallVideo(swigCPtr, this, remoteUri);
   }
 
   public boolean Hangup() {

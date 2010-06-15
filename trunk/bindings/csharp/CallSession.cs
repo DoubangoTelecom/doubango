@@ -40,8 +40,18 @@ public class CallSession : SipSession {
   public CallSession(SipStack Stack) : this(tinyWRAPPINVOKE.new_CallSession(SipStack.getCPtr(Stack)), true) {
   }
 
-  public bool Call(string remoteUri) {
-    bool ret = tinyWRAPPINVOKE.CallSession_Call(swigCPtr, remoteUri);
+  public bool CallAudio(string remoteUri) {
+    bool ret = tinyWRAPPINVOKE.CallSession_CallAudio(swigCPtr, remoteUri);
+    return ret;
+  }
+
+  public bool CallAudioVideo(string remoteUri) {
+    bool ret = tinyWRAPPINVOKE.CallSession_CallAudioVideo(swigCPtr, remoteUri);
+    return ret;
+  }
+
+  public bool CallVideo(string remoteUri) {
+    bool ret = tinyWRAPPINVOKE.CallSession_CallVideo(swigCPtr, remoteUri);
     return ret;
   }
 

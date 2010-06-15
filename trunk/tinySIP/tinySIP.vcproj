@@ -983,6 +983,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\tinysip\tsip_message_common.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\tinysip\tsip_ssession.h"
 				>
 			</File>

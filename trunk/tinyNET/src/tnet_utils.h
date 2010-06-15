@@ -39,7 +39,7 @@ TNET_BEGIN_DECLS
 
 /**@ingroup tnet_utils_group
 */
-#define TNET_CONNECT_TIMEOUT		2500
+#define TNET_CONNECT_TIMEOUT		2000
 
 /**Interface.
 */
@@ -141,11 +141,12 @@ TINYNET_API int tnet_sockfd_close(tnet_fd_t *fd);
 
 /**Prints last network error to @b stderr.
 */
-#define TNET_PRINT_LAST_ERROR(msg) \
+#define TNET_PRINT_LAST_ERROR(FMT, ...) \
 	{ \
 		tnet_error_t error; \
 		tnet_getlasterror(&error); \
-		TSK_DEBUG_ERROR("[%s]\nNetwork error ==> %s", msg, error); \
+		TSK_DEBUG_ERROR(FMT, ##__VA_ARGS__); \
+		TSK_DEBUG_ERROR("(SYSTEM)NETWORK ERROR ==>%s", error) \
 	}
 
 
