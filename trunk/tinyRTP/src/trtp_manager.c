@@ -63,7 +63,7 @@ static int trtp_transport_layer_cb(const tnet_transport_event_t* e)
 	//
 	// RTP
 	//
-	else if(manager->rtp.local_socket && manager->rtp.local_socket->fd == e->fd){
+	else if(manager->transport->master && (manager->transport->master->fd == e->fd)){
 		if(manager->rtp.callback){
 			if((packet = trtp_rtp_packet_deserialize(e->data, e->size))){
 				manager->rtp.callback(manager->rtp.callback_data, packet);
@@ -131,39 +131,26 @@ int trtp_manager_prepare(trtp_manager_t* self)
 		TSK_DEBUG_INFO("RTP/RTCP manager[Begin]: Trying to bind to random ports");
 		
 		/* RTP */
-		if(!(self->rtp.local_socket = tnet_socket_create(self->local_ip, local_port, socket_type))){
-			TSK_DEBUG_WARN("Failed to bind to %d", local_port);
-			continue;
+		if((self->transport = tnet_transport_create(self->local_ip, local_port, socket_type, "RTP/RTCP Manager"))){
+			/* set callback function */
+			tnet_transport_set_callback(self->transport, trtp_transport_layer_cb, self);
+		}
+		else {
+			TSK_DEBUG_ERROR("Failed to create RTP/RTCP Transport");
+			return -3;
 		}
 
 		/* RTCP */
 		if(self->enable_rtcp){
 			if(!(self->rtcp.local_socket = tnet_socket_create(self->local_ip, local_port+1, socket_type))){
 				TSK_DEBUG_WARN("Failed to bind to %d", local_port+1);
-				TSK_OBJECT_SAFE_FREE(self->rtp.local_socket);
+				TSK_OBJECT_SAFE_FREE(self->transport);
 				continue;
 			}
 		}
 	
-		TSK_DEBUG_INFO("RTP/RTCP manager[End]: Trying to bind to random ports (%u)", self->rtp.local_socket->port);
+		TSK_DEBUG_INFO("RTP/RTCP manager[End]: Trying to bind to random ports");
 		break;
-	}
-
-	/* creates the transport */
-	if(self->rtp.local_socket && ((self->enable_rtcp && self->rtcp.local_socket) || !self->enable_rtcp)){
-		self->transport = tnet_transport_create(self->local_ip, TNET_SOCKET_PORT_ANY, socket_type, "RTP/RTCP Manager");
-		if(self->transport){
-			/* set callback function */
-			tnet_transport_set_callback(self->transport, trtp_transport_layer_cb, self);
-		}
-		else {
-			TSK_DEBUG_ERROR("Failed to create RTP/RTCP manager");
-			return -3;
-		}
-	}
-	else{
-		TSK_DEBUG_ERROR("Failed to bind sockets");
-		return -4;
 	}
 
 	return 0;
@@ -231,8 +218,7 @@ int trtp_manager_set_rtcp_remote(trtp_manager_t* self, const char* remote_ip, tn
 /** Starts the RTP/RTCP manager */
 int trtp_manager_start(trtp_manager_t* self)
 {
-	int ret;
-	struct sockaddr_storage remote_rtp_addr, remote_rtcp_addr;
+	int ret = 0;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -244,7 +230,7 @@ int trtp_manager_start(trtp_manager_t* self)
 		return 0;
 	}
 
-	if(!self->transport){
+	if(!self->transport || !self->transport->master){
 		TSK_DEBUG_ERROR("RTP/RTCP manager not prepared");
 		return -2;
 	}
@@ -254,17 +240,14 @@ int trtp_manager_start(trtp_manager_t* self)
 		TSK_DEBUG_ERROR("Failed to start the RTP/RTCP transport");
 		return ret;
 	}
-
+	
 	/* RTP */
-	if(!self->rtp.remote_ip || !self->rtp.remote_port){
-		TSK_DEBUG_ERROR("Invalid remote RTP connection parameters");
-		return -3;
-	}
-	else if((ret = tnet_sockaddr_init(self->rtp.remote_ip, self->rtp.remote_port, self->rtp.local_socket->type, &remote_rtp_addr))){
+	if((ret = tnet_sockaddr_init(self->rtp.remote_ip, self->rtp.remote_port, self->transport->master->type, &self->rtp.remote_addr))){
+		tnet_transport_shutdown(self->transport);
 		TSK_DEBUG_ERROR("Invalid RTP host:port [%s:%u]", self->rtp.remote_ip, self->rtp.remote_port);
 		return ret;
 	}
-	
+
 	/* RTCP */
 	if(self->enable_rtcp){
 		if(!self->rtcp.remote_ip){
@@ -274,37 +257,24 @@ int trtp_manager_start(trtp_manager_t* self)
 			self->rtcp.remote_port = self->rtp.remote_port;
 		}
 	}
-	if(self->enable_rtcp && (ret = tnet_sockaddr_init(self->rtcp.remote_ip, self->rtcp.remote_port, self->rtcp.local_socket->type, &remote_rtcp_addr))){
+	if(self->enable_rtcp && (ret = tnet_sockaddr_init(self->rtcp.remote_ip, self->rtcp.remote_port, self->rtcp.local_socket->type, &self->rtp.remote_addr))){
 		TSK_DEBUG_ERROR("Invalid RTCP host:port [%s:%u]", self->rtcp.remote_ip, self->rtcp.remote_port);
-		return ret;
+		/* do not exit */
+	}
+	
+	/* add RTCP socket to the transport */
+	if(self->enable_rtcp && (ret = tnet_transport_add_socket(self->transport, self->rtcp.local_socket->fd, self->rtcp.local_socket->type, tsk_false, tsk_true/* only Meaningful for tls*/))){
+		TSK_DEBUG_ERROR("Failed to add RTCP socket");
+		/* do not exit */
 	}
 
-	/* connect and add RTP socket to the transport */
-	if((ret = tnet_sockfd_connectto(self->rtp.local_socket->fd, &remote_rtp_addr))){
-		TSK_DEBUG_ERROR("Failed to connect RTP socket");
-		return ret;
-	}
-	if((ret = tnet_transport_add_socket(self->transport, self->rtp.local_socket->fd, self->rtp.local_socket->type, tsk_false, tsk_true/* only Meaningful for tls*/))){
-		TSK_DEBUG_ERROR("Failed to add RTP socket");
-		return ret;
-	}
-	
-	/* connect and add RTCP socket to the transport */
-	if(self->enable_rtcp && (ret = tnet_sockfd_connectto(self->rtcp.local_socket->fd, &remote_rtcp_addr))){
-		TSK_DEBUG_ERROR("Failed to connect RTPC socket");
-		return ret;
-	}
-	if(self->enable_rtcp && (ret = tnet_transport_add_socket(self->transport, self->rtcp.local_socket->fd, self->rtcp.local_socket->type, tsk_false, tsk_true/* only Meaningful for tls*/))){
-		TSK_DEBUG_ERROR("Failed to add RTPC socket");
-		return ret;
-	}
-	
 	self->started = tsk_true;
+
 	return 0;
 }
 
 /* Encapsulate raw data into RTP packet and send it over the network */
-int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, tsk_bool_t marker)
+int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker)
 {
 	trtp_rtp_packet_t* packet;
 	tsk_buffer_t* buffer;
@@ -322,7 +292,7 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 	
 	/* create packet with header */
 	if(!(packet = trtp_rtp_packet_create(self->rtp.ssrc, self->rtp.seq_num++, 
-		(self->rtp.timestamp += 160), self->rtp.payload_type, marker))){
+		(self->rtp.timestamp += duration), self->rtp.payload_type, marker))){
 		return -3;
 	}
 
@@ -334,7 +304,7 @@ int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t siz
 
 	/* serialize and send over the network */
 	if((buffer = trtp_rtp_packet_serialize(packet))){
-		if(/* number of bytes sent */tnet_transport_send(self->transport, self->rtp.local_socket->fd, buffer->data, buffer->size)){
+		if(/* number of bytes sent */tnet_sockfd_sendto(self->transport->master->fd, (const struct sockaddr *)&self->rtp.remote_addr, buffer->data, buffer->size)){
 			ret = 0;
 		}
 		TSK_OBJECT_SAFE_FREE(buffer);
@@ -408,7 +378,6 @@ static tsk_object_t* trtp_manager_dtor(tsk_object_t * self)
 
 		/* rtp */
 		TSK_FREE(manager->rtp.remote_ip);
-		TSK_OBJECT_SAFE_FREE(manager->rtp.local_socket);
 
 		/* rtcp */
 		TSK_FREE(manager->rtcp.remote_ip);

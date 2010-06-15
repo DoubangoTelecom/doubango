@@ -99,7 +99,7 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 		// Encode data
 		out_size = codec->plugin->encode(codec, buffer, size, &out_data);
 		if(out_size){
-			trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, tsk_false);
+			trtp_manager_send_rtp(audio->rtp_manager, out_data, out_size, 160/*FIXME*/, tsk_false);
 		}
 		TSK_FREE(out_data);
 		TSK_OBJECT_SAFE_FREE(codec);
@@ -111,11 +111,10 @@ static int tdav_session_audio_producer_cb(const void* callback_data, const void*
 
 /* ============ Plugin interface ================= */
 
-int tmedia_session_audio_set(tmedia_session_t* self, va_list *app)
+int tmedia_session_audio_set(tmedia_session_t* self, const tmedia_param_t* param)
 {
 	int ret = 0;
 	tdav_session_audio_t* audio;
-	tmedia_session_param_type_t type;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
@@ -126,40 +125,21 @@ int tmedia_session_audio_set(tmedia_session_t* self, va_list *app)
 
 	audio = (tdav_session_audio_t*)self;
 
-	while((type = va_arg(*app, tmedia_session_param_type_t)) != tmedia_sptype_null){
-		switch(type){
-			case tmedia_sptype_remote_ip:
-				{	/* (const char*) IP_STR */
-					const char* ip = va_arg(*app, const char *);
-					/* only if no ip associated to the "m=" line */
-					if(ip && !audio->remote_ip){
-						audio->remote_ip = tsk_strdup(ip);
-					}
-					break;
-				}
-			case tmedia_sptype_local_ip:
-				{	/* IP_STR, IPv6_BOOL */
-					tsk_strupdate(&audio->local_ip, va_arg(*app, const char *));
-					audio->useIPv6 = va_arg(*app, tsk_bool_t);
-					break;
-				}
-			case tmedia_sptype_set_rtcp:
-				{/* (tsk_bool_t)ENABLED_BOOL */
-					audio->rtcp_enabled = va_arg(*app, tsk_bool_t);
-					break;
-				}
-			default:
-				{	/* MUST exit if unknown parameter */
-					if((ret = tmedia_session_skip_param(type, app))){
-						TSK_DEBUG_ERROR("Unknown parameter");
-						goto bail;
-					}
-					break;
-				}
+	if(param->value_type == tmedia_pvt_pchar){
+		if(tsk_striequals(param->key, "remote-ip")){
+			/* only if no ip associated to the "m=" line */
+			if(param->value && !audio->remote_ip){
+				audio->remote_ip = tsk_strdup(param->value);
+			}
+		}
+		else if(tsk_striequals(param->key, "local-ip")){
+			tsk_strupdate(&audio->local_ip, param->value);
+		}
+		else if(tsk_striequals(param->key, "local-ipver")){
+			audio->useIPv6 = tsk_striequals(param->value, "ipv6");
 		}
 	}
 
-bail:
 	return ret;
 }
 
@@ -303,7 +283,7 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 
 	audio = (tdav_session_audio_t*)self;
 
-	if(!audio->rtp_manager || !audio->rtp_manager->rtp.local_socket){
+	if(!audio->rtp_manager || !audio->rtp_manager->transport){
 		TSK_DEBUG_ERROR("RTP/RTCP manager in invalid");
 		return tsk_null;
 	}
@@ -322,7 +302,7 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 
 	changed = (self->ro_changed || !self->M.lo);
 
-	if(!self->M.lo && !(self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->rtp.local_socket->port, "RTP/AVP"))){
+	if(!self->M.lo && !(self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->transport->master->port, "RTP/AVP"))){
 		TSK_DEBUG_ERROR("Failed to create lo");
 		return tsk_null;
 	}

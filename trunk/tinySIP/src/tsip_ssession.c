@@ -210,7 +210,7 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 
 			default:
 				{	/* va_list will be unsafe => exit */
-					TSK_DEBUG_ERROR("NOT SUPPORTED as valid pname %d.", curr);
+					TSK_DEBUG_ERROR("%d NOT a valid pname", curr);
 					goto bail;
 				}
 		} /* switch */

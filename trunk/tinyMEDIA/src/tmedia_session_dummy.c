@@ -34,7 +34,7 @@
 
 /* ============ Audio Session ================= */
 
-int tmedia_session_daudio_set(tmedia_session_t* self, va_list *app)
+int tmedia_session_daudio_set(tmedia_session_t* self, const tmedia_param_t* param)
 {
 	tmedia_session_daudio_t* daudio;
 
@@ -157,7 +157,7 @@ int tmedia_session_daudio_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 
 /* ============ Video Session ================= */
 
-int tmedia_session_dvideo_set(tmedia_session_t* self, va_list *app)
+int tmedia_session_dvideo_set(tmedia_session_t* self, const tmedia_param_t* param)
 {
 	tmedia_session_dvideo_t* dvideo;
 
@@ -279,7 +279,7 @@ int tmedia_session_dvideo_set_ro(tmedia_session_t* self, const tsdp_header_M_t* 
 
 /* ============ Msrp Session ================= */
 
-int tmedia_session_dmsrp_set(tmedia_session_t* self, va_list *app)
+int tmedia_session_dmsrp_set(tmedia_session_t* self, const tmedia_param_t* param)
 {
 	tmedia_session_dmsrp_t* dmsrp;
 
