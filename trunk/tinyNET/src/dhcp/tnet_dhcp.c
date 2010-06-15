@@ -97,7 +97,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 	tv.tv_usec = (200 * 1000);
 
 	if(tnet_sockaddr_init("255.255.255.255", ctx->server_port, tnet_socket_type_udp_ipv4, &server)){
-		TNET_PRINT_LAST_ERROR("Failed to initialize the DHCP server address.");
+		TNET_PRINT_LAST_ERROR("Failed to initialize the DHCP server address");
 		goto bail;
 	}
 
@@ -109,7 +109,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 		int yes = 1;
 #endif
 		if(setsockopt(localsocket4->fd, SOL_SOCKET, SO_BROADCAST, (char*)&yes, sizeof(int))){
-			TSK_DEBUG_ERROR("Failed to enable broadcast option [errno=%d].", tnet_geterrno());
+			TNET_PRINT_LAST_ERROR("Failed to enable broadcast option");
 			goto bail;
 		}
 	}
@@ -153,7 +153,7 @@ tnet_dhcp_reply_t* tnet_dhcp_send_request(tnet_dhcp_ctx_t* ctx, tnet_dhcp_reques
 			}
 			/* Send the request to the DHCP server */
 			if((ret =tnet_sockfd_sendto(localsocket4->fd, (const struct sockaddr*)&server, output->data, output->size))<0){
-				TNET_PRINT_LAST_ERROR("Failed to send DHCP request.");
+				TNET_PRINT_LAST_ERROR("Failed to send DHCP request");
 
 				tsk_thread_sleep(150); // wait 150ms before trying the next iface.
 				goto next_iface;

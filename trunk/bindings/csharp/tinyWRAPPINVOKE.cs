@@ -352,8 +352,14 @@ class tinyWRAPPINVOKE {
   [DllImport("tinyWRAP", EntryPoint="CSharp_delete_CallSession")]
   public static extern void delete_CallSession(HandleRef jarg1);
 
-  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Call")]
-  public static extern bool CallSession_Call(HandleRef jarg1, string jarg2);
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_CallAudio")]
+  public static extern bool CallSession_CallAudio(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_CallAudioVideo")]
+  public static extern bool CallSession_CallAudioVideo(HandleRef jarg1, string jarg2);
+
+  [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_CallVideo")]
+  public static extern bool CallSession_CallVideo(HandleRef jarg1, string jarg2);
 
   [DllImport("tinyWRAP", EntryPoint="CSharp_CallSession_Hangup")]
   public static extern bool CallSession_Hangup(HandleRef jarg1);

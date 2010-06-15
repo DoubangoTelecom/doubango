@@ -4087,7 +4087,7 @@ XS(_wrap_delete_CallSession) {
 }
 
 
-XS(_wrap_CallSession_Call) {
+XS(_wrap_CallSession_CallAudio) {
   {
     CallSession *arg1 = (CallSession *) 0 ;
     char *arg2 = (char *) 0 ;
@@ -4101,19 +4101,97 @@ XS(_wrap_CallSession_Call) {
     dXSARGS;
     
     if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: CallSession_Call(self,remoteUri);");
+      SWIG_croak("Usage: CallSession_CallAudio(self,remoteUri);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_Call" "', argument " "1"" of type '" "CallSession *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_CallAudio" "', argument " "1"" of type '" "CallSession *""'"); 
     }
     arg1 = reinterpret_cast< CallSession * >(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_Call" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_CallAudio" "', argument " "2"" of type '" "char const *""'");
     }
     arg2 = reinterpret_cast< char * >(buf2);
-    result = (bool)(arg1)->Call((char const *)arg2);
+    result = (bool)(arg1)->CallAudio((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_CallSession_CallAudioVideo) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: CallSession_CallAudioVideo(self,remoteUri);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_CallAudioVideo" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_CallAudioVideo" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->CallAudioVideo((char const *)arg2);
+    ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_CallSession_CallVideo) {
+  {
+    CallSession *arg1 = (CallSession *) 0 ;
+    char *arg2 = (char *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int argvi = 0;
+    bool result;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: CallSession_CallVideo(self,remoteUri);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_CallSession, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "CallSession_CallVideo" "', argument " "1"" of type '" "CallSession *""'"); 
+    }
+    arg1 = reinterpret_cast< CallSession * >(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "CallSession_CallVideo" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = reinterpret_cast< char * >(buf2);
+    result = (bool)(arg1)->CallVideo((char const *)arg2);
     ST(argvi) = SWIG_From_bool  SWIG_PERL_CALL_ARGS_1(static_cast< bool >(result)); argvi++ ;
     
     if (alloc2 == SWIG_NEWOBJ) delete[] buf2;
@@ -6680,7 +6758,9 @@ static swig_command_info swig_commands[] = {
 {"tinyWRAPc::SipSession_getId", _wrap_SipSession_getId},
 {"tinyWRAPc::new_CallSession", _wrap_new_CallSession},
 {"tinyWRAPc::delete_CallSession", _wrap_delete_CallSession},
-{"tinyWRAPc::CallSession_Call", _wrap_CallSession_Call},
+{"tinyWRAPc::CallSession_CallAudio", _wrap_CallSession_CallAudio},
+{"tinyWRAPc::CallSession_CallAudioVideo", _wrap_CallSession_CallAudioVideo},
+{"tinyWRAPc::CallSession_CallVideo", _wrap_CallSession_CallVideo},
 {"tinyWRAPc::CallSession_Hangup", _wrap_CallSession_Hangup},
 {"tinyWRAPc::new_MessagingSession", _wrap_new_MessagingSession},
 {"tinyWRAPc::delete_MessagingSession", _wrap_delete_MessagingSession},

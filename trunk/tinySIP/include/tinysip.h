@@ -36,6 +36,9 @@
 /* === tinyNET === */
 #include "tinynet.h"
 
+/* === tinyMEDIA === */
+#include "tinymedia.h"
+
 /* === tinySIP === */
 #include "tsip.h"
 

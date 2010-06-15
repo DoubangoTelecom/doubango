@@ -74,7 +74,9 @@ public: /* ctor() and dtor() */
 	virtual ~CallSession();
 
 public: /* Public functions */
-	bool Call(const char* remoteUri);
+	bool CallAudio(const char* remoteUri);
+	bool CallAudioVideo(const char* remoteUri);
+	bool CallVideo(const char* remoteUri);
 	bool Hangup();
 };
 

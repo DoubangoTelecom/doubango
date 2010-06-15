@@ -285,7 +285,9 @@ class CallSession(SipSession):
         except: self.this = this
     __swig_destroy__ = _tinyWRAP.delete_CallSession
     __del__ = lambda self : None;
-    def Call(self, *args): return _tinyWRAP.CallSession_Call(self, *args)
+    def CallAudio(self, *args): return _tinyWRAP.CallSession_CallAudio(self, *args)
+    def CallAudioVideo(self, *args): return _tinyWRAP.CallSession_CallAudioVideo(self, *args)
+    def CallVideo(self, *args): return _tinyWRAP.CallSession_CallVideo(self, *args)
     def Hangup(self): return _tinyWRAP.CallSession_Hangup(self)
 CallSession_swigregister = _tinyWRAP.CallSession_swigregister
 CallSession_swigregister(CallSession)

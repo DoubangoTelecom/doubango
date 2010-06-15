@@ -47,9 +47,6 @@ TMEDIA_BEGIN_DECLS
 /**Max number of plugins (session types) we can create */
 #define TMED_SESSION_MAX_PLUGINS			0x0F
 
-/* Forward declaration */
-enum tmedia_session_param_type_e;
-
 /** Base objct used for all media sessions */
 typedef struct tmedia_session_s
 {
@@ -109,7 +106,6 @@ TINYMEDIA_API const tmedia_session_plugin_def_t* tmedia_session_plugin_find_by_m
 TINYMEDIA_API int tmedia_session_plugin_unregister(const tmedia_session_plugin_def_t* plugin);
 TINYMEDIA_API tmedia_session_t* tmedia_session_create(tmedia_type_t type);
 TINYMEDIA_API tmedia_codecs_L_t* tmedia_session_match_codec(tmedia_session_t* self, const tsdp_header_M_t* M);
-TINYMEDIA_API int tmedia_session_skip_param(enum tmedia_session_param_type_e type, va_list *app);
 TINYMEDIA_API int tmedia_session_deinit(tmedia_session_t* self);
 typedef tsk_list_t tmedia_sessions_L_t; /**< List of @ref tmedia_session_t objects */
 #define TMEDIA_DECLARE_SESSION tmedia_session_t __session__

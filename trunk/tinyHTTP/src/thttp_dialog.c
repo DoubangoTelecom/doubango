@@ -350,6 +350,7 @@ int thttp_dialog_send_request(thttp_dialog_t *self)
 	if(self->session->fd == TNET_INVALID_FD){
 		if((self->session->fd = tnet_transport_connectto(self->session->stack->transport, request->line.request.url->host, request->line.request.url->port, type)) == TNET_INVALID_FD){
 			TSK_DEBUG_ERROR("Failed to connect to %s:%d.", request->line.request.url->host, request->line.request.url->port);
+			ret = -3;
 			goto bail;
 		}
 		/* Wait for the socket for writability */
