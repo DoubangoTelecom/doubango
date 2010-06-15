@@ -38,6 +38,10 @@
 * For more information about the SOA, please refer to http://betelco.blogspot.com/2010/03/sdp-offeranswer-soa_2993.html
 */
 
+#if !defined(va_copy)
+#	define va_copy(D, S)       ((D) = (S))
+#endif
+
 extern const tmedia_codec_plugin_def_t* __tmedia_codec_plugins[TMED_CODEC_MAX_PLUGINS];
 
 /* pointer to all registered sessions */
@@ -45,6 +49,7 @@ const tmedia_session_plugin_def_t* __tmedia_session_plugins[TMED_SESSION_MAX_PLU
 
 /* === local functions === */
 int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self);
+int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self);
 int _tmedia_session_prepare_lo(tmedia_session_t* self);
 int _tmedia_session_set_ro(tmedia_session_t* self, const tsdp_header_M_t* m);
 int _tmedia_session_load_codecs(tmedia_session_t* self);
@@ -370,38 +375,6 @@ next:
 	return matchingCodecs;
 }
 
-/**@ingroup tmedia_session_group
-* skip unsupported param
-*/
-int tmedia_session_skip_param(enum tmedia_session_param_type_e type, va_list *app)
-{
-	switch(type){
-		case tmedia_sptype_remote_ip:
-			/* (const char*) IP_STR */
-			va_arg(*app, const char *);
-			break;
-		case tmedia_sptype_local_ip:
-			/* (const char*) IP_STR, (tsk_bool_t)IPv6_BOOL */
-			va_arg(*app, const char *);
-			va_arg(*app, tsk_bool_t);
-			break;
-		case tmedia_sptype_set_rtcp:
-			/* (tsk_bool_t)ENABLED_BOOL */
-			va_arg(*app, tsk_bool_t);
-			break;
-		case tmedia_sptype_qos:
-			/* (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM */
-			va_arg(*app, tmedia_qos_stype_t);
-			va_arg(*app, tmedia_qos_strength_t);
-			break;
-
-		default:
-			TSK_DEBUG_ERROR("%d is an unknown parameter", type);
-			return -1;
-	}
-
-	return 0;
-}
 
 /**@ingroup tmedia_session_group
 * DeInitializes a media session.
@@ -536,39 +509,102 @@ int tmedia_session_mgr_start(tmedia_session_mgr_t* self)
 }
 
 /**@ingroup tmedia_session_group
-* sets one or several sessions.
+* sets parameters for one or several sessions.
 * @param self The session manager
-* @param type The type of the sessions to set
 * @param ... Any TMEDIA_SESSION_SET_*() macros
 * @retval Zero if succeed and non-zero error code otherwise
 */
-int tmedia_session_mgr_set(tmedia_session_mgr_t* self, tmedia_type_t type, ...)
+int tmedia_session_mgr_set(tmedia_session_mgr_t* self, ...)
 {
-	tsk_list_item_t* item;
-	tmedia_session_t* session;
 	va_list ap;
+	int ret;
 
 	if(!self){
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
+	
+	va_start(ap, self);
+	ret = tmedia_session_mgr_set_2(self, &ap);
+	va_end(ap);
 
-	tsk_list_foreach(item, self->sessions){
-		if(!(session = item->data)){
-			TSK_DEBUG_ERROR("Invalid session");
-			return -2;
-		}
-		
-		/* does not support set() */
-		if(!session->plugin->set){
-			continue;
-		}
+	return ret;
+}
 
-		va_start(ap, type);
-		if(((session->type & type) == session->type) && session->plugin->set(session, &ap)){
-			TSK_DEBUG_ERROR("Failed to set (%s) session", session->plugin->media);
-		}
-		va_end(ap);
+/**@ingroup tmedia_session_group
+* sets parameters for one or several sessions.
+* @param self The session manager
+* @param app List of parameters.
+* @retval Zero if succeed and non-zero error code otherwise
+*/
+int tmedia_session_mgr_set_2(tmedia_session_mgr_t* self, va_list *app)
+{
+	tmedia_session_param_type_t curr;
+
+	if(!self || !app){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	while((curr = va_arg(*app, tmedia_session_param_type_t)) != tmedia_sptype_null){
+		switch(curr){
+			case tmedia_sptype_set:
+				{	/* (tmedia_type_t)MEDIA_TYPE_ENUM, (tmedia_param_plugin_type_t)PLUGIN_TYPE_ENUM, (tmedia_param_value_type_t)VALUE_TYPE_ENUM \
+						(const char*)KEY_STR, (void*)&VALUE */
+					/* IMPORTANT: do not pass va_arg() directly into the function */
+					tmedia_type_t media_type = va_arg(*app, tmedia_type_t);
+					tmedia_param_plugin_type_t plugin_type = va_arg(*app, tmedia_param_plugin_type_t);
+					tmedia_param_value_type_t value_type = va_arg(*app, tmedia_param_value_type_t);
+					const char* key = va_arg(*app, const char*);
+					void* value = va_arg(*app, void*);
+					tmedia_params_add_param(&self->params, tmedia_pat_set, 
+						media_type, plugin_type, value_type, key, value);
+					break;
+				}
+			//case tmedia_sptype_get:
+			//	{	/* (tmedia_type_t)MEDIA_TYPE_ENUM, (tmedia_param_plugin_type_t)PLUGIN_TYPE_ENUM, (tmedia_param_value_type_t)VALUE_TYPE_ENUM \
+			//			(const char*)KEY_STR, (void**)&VALUE_PTR */
+			//		tmedia_params_add_param(&self->params, tmedia_pat_get, 
+			//			...do not pass va_arg() );
+			//		break;
+			//	}
+			default:
+			{	/* va_list will be unsafe => exit */
+				TSK_DEBUG_ERROR("%d NOT a valid pname", curr);
+				return -2;
+			}
+		}/* switch */
+	}/* while */
+
+	/* load params if we already have sessions */
+	if(!TSK_LIST_IS_EMPTY(self->sessions)){
+		_tmedia_session_mgr_apply_params(self);
+	}
+
+	return 0;
+}
+
+/**@ingroup tmedia_session_group
+* sets parameters for one or several sessions.
+* @param self The session manager
+* @param params List of parameters to set
+* @retval Zero if succeed and non-zero error code otherwise
+*/
+int tmedia_session_mgr_set_3(tmedia_session_mgr_t* self, const tmedia_params_L_t* params)
+{
+	if(!self || !params){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	if(!self->params){
+		self->params = tsk_list_create();
+	}
+	tsk_list_pushback_list(self->params, params);
+
+	/* load params if we already have sessions */
+	if(!TSK_LIST_IS_EMPTY(self->sessions)){
+		_tmedia_session_mgr_apply_params(self);
 	}
 
 	return 0;
@@ -717,8 +753,8 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	* Each session should override this info if it has a different one in its "m=" line
 	*/
 	if((C = (const tsdp_header_C_t*)tsdp_message_get_header(sdp, tsdp_htype_C)) && C->addr){
-		tmedia_session_mgr_set(self, self->type,
-			TMEDIA_SESSION_SET_REMOTE_IP(C->addr),
+		tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_STR(self->type, "remote-ip", C->addr),
 			TMEDIA_SESSION_SET_NULL());
 	}
 
@@ -978,8 +1014,7 @@ tsk_bool_t tmedia_session_mgr_canresume(tmedia_session_mgr_t* self)
 	return tsk_true;
 }
 
-/** internal function used to load sessions
-*/
+/** internal function used to load sessions */
 int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 {
 	tsk_size_t i = 0;
@@ -996,10 +1031,58 @@ int _tmedia_session_mgr_load_sessions(tmedia_session_mgr_t* self)
 			}
 		}
 		/* set ldefault values */
-		tmedia_session_mgr_set(self, self->type,
-			TMEDIA_SESSION_SET_LOCAL_IP(self->addr, self->ipv6),
+		tmedia_session_mgr_set(self,
+			TMEDIA_SESSION_SET_STR(self->type, "local-ip", self->addr),
+			TMEDIA_SESSION_SET_STR(self->type, "local-ipver", self->ipv6 ? "ipv6" : "ipv4"),
 			TMEDIA_SESSION_SET_NULL());
+
+		/* load params */
+		_tmedia_session_mgr_apply_params(self);
 	}
+	return 0;
+}
+
+/* internal function */
+int _tmedia_session_mgr_apply_params(tmedia_session_mgr_t* self)
+{
+	tsk_list_item_t *it1, *it2;
+	tmedia_param_t* param;
+	tmedia_session_t* session;
+
+	if(!self){
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
+
+	/* If no parameters ==> do nothing (not error) */
+	if(TSK_LIST_IS_EMPTY(self->params)){
+		return 0;
+	}
+	
+	tsk_list_foreach(it1, self->params){
+		if(!(param = it1->data)){
+			continue;
+		}
+
+		/* For us */
+		if(param->plugin_type == tmedia_ppt_manager){
+			continue;
+		}
+		
+		/* For the session (or consumer or producer or codec) */
+		tsk_list_foreach(it2, self->sessions){
+			if(!(session = it2->data) || !session->plugin){
+				continue;
+			}
+			if((session->type & param->media_type) == session->type){
+				session->plugin->set(session, param);
+			}
+		}
+	}
+
+	/* Clean up params */
+	tsk_list_clear_items(self->params);
+	
 	return 0;
 }
 
@@ -1023,6 +1106,8 @@ static tsk_object_t* tmedia_session_mgr_dtor(tsk_object_t * self)
 
 		TSK_OBJECT_SAFE_FREE(mgr->sdp.lo);
 		TSK_OBJECT_SAFE_FREE(mgr->sdp.ro);
+		
+		TSK_OBJECT_SAFE_FREE(mgr->params);
 
 		TSK_FREE(mgr->addr);
 	}

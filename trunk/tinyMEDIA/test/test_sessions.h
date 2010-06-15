@@ -76,11 +76,24 @@ void test_sessions_client()
 	tsdp_message_t* sdp_ro;
 	char* temp;
 	tsk_bool_t canresume;
+	tmedia_type_t media_type = (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38);
+
+	int32_t width = 176;
+	int64_t height = 144LL;
+	
 	
 	/* create manager */
-	mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38),
+	mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38), 
 		"0.0.0.0", tsk_false, tsk_true);
 	tmedia_session_mgr_set_qos(mgr, tmedia_qos_stype_segmented, tmedia_qos_strength_mandatory);
+
+	tmedia_session_mgr_set(mgr,
+		TMEDIA_SESSION_VIDEO_SET_INT32("width", width),
+		TMEDIA_SESSION_VIDEO_SET_INT64("height", height),
+		TMEDIA_SESSION_VIDEO_SET_STR("description", "This is my session"),
+		TMEDIA_SESSION_AUDIO_SET_INT32("rate", "8000"),
+		TMEDIA_SESSION_SET_STR(tmedia_audio | tmedia_video, "hello", "world"),
+		TMEDIA_SESSION_SET_NULL());
 
 	/* get lo */
 	sdp_lo = tmedia_session_mgr_get_lo(mgr);

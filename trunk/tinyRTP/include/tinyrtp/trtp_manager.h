@@ -55,7 +55,7 @@ typedef struct trtp_manager_s
 
 		char* remote_ip;
 		tnet_port_t remote_port;
-		tnet_socket_t* local_socket;
+		struct sockaddr_storage remote_addr;
 
 		const void* callback_data;
 		trtp_manager_rtp_cb_f callback;
@@ -64,6 +64,7 @@ typedef struct trtp_manager_s
 	struct{
 		char* remote_ip;
 		tnet_port_t remote_port;
+		struct sockaddr_storage remote_addr;
 		tnet_socket_t* local_socket;
 
 		const void* callback_data;
@@ -87,7 +88,7 @@ TINYRTP_API int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* re
 TINYRTP_API int trtp_manager_set_rtp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);
 TINYRTP_API int trtp_manager_set_rtcp_remote(trtp_manager_t* self, const char* remote_ip, tnet_port_t remote_port);
 TINYRTP_API int trtp_manager_start(trtp_manager_t* self);
-TINYRTP_API int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, tsk_bool_t marker);
+TINYRTP_API int trtp_manager_send_rtp(trtp_manager_t* self, const void* data, tsk_size_t size, uint32_t duration, tsk_bool_t marker);
 TINYRTP_API int trtp_manager_stop(trtp_manager_t* self);
 
 TINYRTP_GEXTERN const tsk_object_def_t *trtp_manager_def_t;

@@ -203,7 +203,7 @@ int tnet_transport_remove_socket(const tnet_transport_handle_t *handle, tnet_fd_
 }
 
 /*
-* Sends stream/dgram data to the remote peer (previously connected to using @tnet_transport_connectto).
+* Sends stream/dgram data to the remote peer (shall be previously connected using @tnet_transport_connectto).
 */
 tsk_size_t tnet_transport_send(const tnet_transport_handle_t *handle, tnet_fd_t from, const void* buf, tsk_size_t size)
 {

@@ -39,7 +39,7 @@ void test_manager()
 	}
 
 	/* set remote parameters (rtcp ip:port not mandator, could be retrieved from rtp values) */
-	if(trtp_manager_set_rtp_remote(manager, "192.168.0.13", 2860)){
+	if(trtp_manager_set_rtp_remote(manager, "192.168.0.13", 5081)){
 		goto bail;
 	}
 	if(trtp_manager_set_rtcp_remote(manager, "192.168.0.13", 2861)){
@@ -52,8 +52,8 @@ void test_manager()
 	}
 	
 	/* send data */
-	for(i=0;i<100; i++){
-		if(trtp_manager_send_rtp(manager, "test", 4, tsk_true)){
+	for(i=0;i<2; i++){
+		if(trtp_manager_send_rtp(manager, "test", tsk_strlen("test"), 160, tsk_true)){
 			goto bail;
 		}
 	}

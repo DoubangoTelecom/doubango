@@ -31,6 +31,7 @@
 #include "tsk_memory.h"
 #include "tsk_string.h"
 #include "tsk_common.h"
+#include "tsk_debug.h"
 
 #include <string.h>
 
@@ -93,7 +94,7 @@ tsk_param_t *tsk_params_parse_param(const char* line, tsk_size_t size)
 
 		return param;
 	}
-	return 0;
+	return tsk_null;
 }
 /**@ingroup tsk_params_group
 * Checks if the supplied list of parameters contains a parameter named @a name (case-insensitive).
@@ -107,6 +108,9 @@ tsk_bool_t tsk_params_have_param(const tsk_params_L_t *self, const char* name)
 		if(tsk_list_find_item_by_pred(self, pred_find_param_by_name, name)){
 			return tsk_true;
 		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
 	}
 	return tsk_false;
 }
@@ -123,6 +127,7 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 	tsk_param_t *param;
 
 	if(!self || !name) {
+		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
 
@@ -143,13 +148,12 @@ int tsk_params_add_param(tsk_params_L_t **self, const char* name, const char* va
 
 int tsk_params_add_param_2(tsk_params_L_t **self, const tsk_param_t* param)
 {
-	int ret = -1;
 	if(!self || !param || !param){
-		return ret;
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
 	}
 
-	ret = tsk_params_add_param(self, param->name, param->value);
-	return ret;
+	return tsk_params_add_param(self, param->name, param->value);
 }
 
 /**@ingroup tsk_params_group
@@ -164,7 +168,10 @@ int tsk_params_remove_param(tsk_params_L_t *self, const char* name)
 		tsk_list_remove_item_by_pred(self, pred_find_param_by_name, name);
 		return 0;
 	}
-	return -1;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+		return -1;
+	}
 }
 
 /**@ingroup tsk_params_group
@@ -175,12 +182,14 @@ int tsk_params_remove_param(tsk_params_L_t *self, const char* name)
 */
 const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, const char* name)
 {
-	if(self)
-	{
+	if(self){
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
 		if(item_const){
 			return item_const->data;
 		}
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
 	}
 	return tsk_null;
 }
@@ -193,14 +202,16 @@ const tsk_param_t *tsk_params_get_param_by_name(const tsk_params_L_t *self, cons
 */
 const char *tsk_params_get_param_value(const tsk_params_L_t *self, const char* name)
 {
-	if(self)
-	{
+	if(self && name){
 		const tsk_list_item_t *item_const = tsk_list_find_item_by_pred(self, pred_find_param_by_name, name);
 		if(item_const && item_const->data){
 			return ((const tsk_param_t *)item_const->data)->value;
 		}
 	}
-	return 0;
+	else{
+		TSK_DEBUG_ERROR("Invalid parameter");
+	}
+	return tsk_null;
 }
 
 /**@ingroup tsk_params_group

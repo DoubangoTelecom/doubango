@@ -1239,8 +1239,7 @@ int tnet_sockfd_sendto(tnet_fd_t fd, const struct sockaddr *to, const void* buf,
 		goto bail;
 	}
 
-	while(sent < size)
-	{
+	while(sent < size){
 #if TNET_HAVE_SA_LEN
 		ret = sendto(fd, (buf+sent), (size-sent), 0, to, to->sa_len);
 #else
