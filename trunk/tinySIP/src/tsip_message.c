@@ -393,7 +393,7 @@ int tsip_message_tostring(const tsip_message_t *self, tsk_buffer_t *output)
 
 tsip_request_type_t tsip_request_get_type(const char* method)
 {
-	if(!method){
+	if(tsk_strnullORempty(method)){
 		return tsip_NONE;
 	}
 
@@ -562,8 +562,7 @@ static tsk_object_t* tsip_message_ctor(tsk_object_t *self, va_list * app)
 				message->CSeq = tsk_object_ref((void*)request->CSeq);
 				message->firstVia = tsk_object_ref((void*)request->firstVia);
 				/* All other VIAs */
-				if(message->firstVia)
-				{
+				if(message->firstVia){
 					tsk_size_t index = 1;
 					const tsip_header_t * via;
 					while((via = tsip_message_get_headerAt(request, tsip_htype_Via, index++)))

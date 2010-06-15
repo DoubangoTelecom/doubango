@@ -92,6 +92,22 @@ TSIP_BEGIN_DECLS
 #define TSIP_REQUEST_IS_PUBLISH(self)		((self) &&((self)->line.request.request_type==tsip_PUBLISH))
 #define TSIP_REQUEST_IS_PRACK(self)			((self) &&((self)->line.request.request_type==tsip_PRACK))
 
+#define TSIP_RESPONSE_IS_TO_ACK(self)			((self) && (self)->CSeq &&((self)->CSeq->type==tsip_ACK))
+#define TSIP_RESPONSE_IS_TO_BYE(self)			((self) && (self)->CSeq &&((self)->CSeq->type==tsip_BYE))
+#define TSIP_RESPONSE_IS_TO_CANCEL(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_CANCEL))
+#define TSIP_RESPONSE_IS_TO_INVITE(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_INVITE))
+#define TSIP_RESPONSE_IS_TO_OPTIONS(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_OPTIONS))
+#define TSIP_RESPONSE_IS_TO_REGISTER(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_REGISTER))
+#define TSIP_RESPONSE_IS_TO_SUBSCRIBE(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_SUBSCRIBE))
+#define TSIP_RESPONSE_IS_TO_NOTIFY(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_NOTIFY))
+#define TSIP_RESPONSE_IS_TO_REFER(self)			((self) && (self)->CSeq &&((self)->CSeq->type==tsip_REFER))
+#define TSIP_RESPONSE_IS_TO_INFO(self)			((self) && (self)->CSeq &&((self)->CSeq->type==tsip_INFO))
+#define TSIP_RESPONSE_IS_TO_UPDATE(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_UPDATE))
+#define TSIP_RESPONSE_IS_TO_MESSAGE(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_MESSAGE))
+#define TSIP_RESPONSE_IS_TO_PUBLISH(self)		((self) && (self)->CSeq &&((self)->CSeq->type==tsip_PUBLISH))
+#define TSIP_RESPONSE_IS_TO_PRACK(self)			((self) && (self)->CSeq &&((self)->CSeq->type==tsip_PRACK))
+
+
 #define TSIP_RESPONSE_IS(self, code)		(TSIP_RESPONSE_CODE((self)) == code)
 #define TSIP_RESPONSE_IS_NXX(self, N)		(TSIP_MESSAGE_IS_RESPONSE((self)) && N##00<= TSIP_RESPONSE_CODE((self)) && TSIP_RESPONSE_CODE((self)) <= N##99)
 #define TSIP_RESPONSE_IS_1XX(self)			TSIP_RESPONSE_IS_NXX(self, 1)

@@ -35,10 +35,11 @@
 
 #include "tinysip/transports/tsip_transport_layer.h"
 
+#include "tinysip/headers/tsip_header_Min_SE.h"
 #include "tinysip/headers/tsip_header_RAck.h"
 #include "tinysip/headers/tsip_header_RSeq.h"
 #include "tinysip/headers/tsip_header_Session_Expires.h"
-#include "tinysip/headers/tsip_header_Min_SE.h"
+#include "tinysip/headers/tsip_header_Supported.h"
 
 #include "tinysdp/parsers/tsdp_parser_message.h"
 
@@ -117,31 +118,19 @@ static int x9999_Any_2_Any_X_Error(va_list *app);
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	if(message->CSeq){
-		return tsk_striequals(TSIP_MESSAGE_CSEQ_METHOD(message), "INVITE");
-	}
-	return tsk_false;
+	return TSIP_RESPONSE_IS_TO_INVITE(message);
 }
 static tsk_bool_t _fsm_cond_is_resp2UPDATE(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	if(message->CSeq){
-		return tsk_striequals(TSIP_MESSAGE_CSEQ_METHOD(message), "UPDATE");
-	}
-	return tsk_false;
+	return TSIP_RESPONSE_IS_TO_UPDATE(message);
 }
 static tsk_bool_t _fsm_cond_is_resp2BYE(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	if(message->CSeq){
-		return tsk_striequals(TSIP_MESSAGE_CSEQ_METHOD(message), "BYE");
-	}
-	return tsk_false;
+	return TSIP_RESPONSE_IS_TO_BYE(message);
 }
 static tsk_bool_t _fsm_cond_is_resp2PRACK(tsip_dialog_invite_t* self, tsip_message_t* message)
 {
-	if(message->CSeq){
-		return tsk_striequals(TSIP_MESSAGE_CSEQ_METHOD(message), "PRACK");
-	}
-	return tsk_false;
+	return TSIP_RESPONSE_IS_TO_PRACK(message);
 }
 
 /* ======================== actions ======================== */
@@ -475,7 +464,7 @@ int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app)
 	}
 
 	/* send ACK */
-	if(tsk_striequals(r2xx->CSeq->method, "INVITE")){
+	if(TSIP_RESPONSE_IS_TO_INVITE(r2xx)){
 		ret = send_ACK(self, r2xx);
 	}
 	
@@ -666,6 +655,7 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE)
 		if(self->stimers.timer.timeout){
 			tsip_message_add_headers(request,
 					TSIP_HEADER_SESSION_EXPIRES_VA_ARGS(self->stimers.timer.timeout, tsk_striequals(self->stimers.refresher, "uas")),
+					TSIP_HEADER_SUPPORTED_VA_ARGS("timer"),
 					tsk_null
 				);
 		}
@@ -676,6 +666,14 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE)
 				);
 		}
 		
+		/* 100rel */
+		if(self->enable_100rel){
+			tsip_message_add_headers(request,
+					TSIP_HEADER_SUPPORTED_VA_ARGS("100rel"),
+					tsk_null
+				);
+		}
+
 		/* send the request */
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 		if(ret == 0){

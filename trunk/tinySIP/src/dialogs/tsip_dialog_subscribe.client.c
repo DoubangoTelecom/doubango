@@ -651,15 +651,7 @@ int send_SUBSCRIBE(tsip_dialog_subscribe_t *self)
 		if(TSIP_DIALOG(self)->curr_action){
 			tsip_dialog_apply_action(request, TSIP_DIALOG(self)->curr_action);
 		}
-		//if(TSIP_DIALOG(self)->curr_action){
-		//	const tsk_list_item_t* item;
-		//	tsk_list_foreach(item, TSIP_DIALOG(self)->curr_action->headers){
-		//		TSIP_MESSAGE_ADD_HEADER(request, TSIP_HEADER_DUMMY_VA_ARGS(TSK_PARAM(item->data)->name, TSK_PARAM(item->data)->value));
-		//	}
-		//	if(TSIP_DIALOG(self)->curr_action->payload){
-		//		tsip_message_add_content(request, tsk_null, TSK_BUFFER_DATA(TSIP_DIALOG(self)->curr_action->payload), TSK_BUFFER_SIZE(TSIP_DIALOG(self)->curr_action->payload));
-		//	}
-		//}
+		/* send the request */
 		ret = tsip_dialog_request_send(TSIP_DIALOG(self), request);
 		TSK_OBJECT_SAFE_FREE(request);
 	}

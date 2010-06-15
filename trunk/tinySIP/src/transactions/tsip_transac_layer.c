@@ -238,7 +238,7 @@ tsip_transac_t* tsip_transac_layer_find_server(const tsip_transac_layer_t *self,
 				ret = tsk_object_ref(transac);
 				break;
 			}
-			else if(tsk_strequals("ACK", message->CSeq->method) || tsk_strequals("CANCEL", message->CSeq->method)){
+			else if(TSIP_RESPONSE_IS_TO_ACK(message) || TSIP_RESPONSE_IS_TO_CANCEL(message)){
 				ret = tsk_object_ref(transac);
 				break;
 			}

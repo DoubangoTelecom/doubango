@@ -211,6 +211,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_params.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyMEDIA\include\tinymedia\tmedia_producer.h"
 				>
 			</File>
@@ -254,6 +258,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyMEDIA\src\tmedia_consumer.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyMEDIA\src\tmedia_params.c"
 				>
 			</File>
 			<File

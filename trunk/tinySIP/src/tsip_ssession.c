@@ -113,22 +113,27 @@ int __tsip_ssession_set_From(tsip_ssession_t *self, const char* value)
 
 int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 {
-	tsip_ssession_param_type_t curr;
+	tsip_ssession_param_type_t sscurr;
+	tsip_msession_param_type_t mscurr;
+
 	int ret;
 
 	if(!self){
 		return -1;
 	}
 
-	while((curr = va_arg(*app, tsip_ssession_param_type_t)) != sstype_null){
-		switch(curr){
+	while((sscurr = va_arg(*app, tsip_ssession_param_type_t)) != sstype_null){
+		switch(sscurr){
+			//=======
+			//	Sip
+			//=======
 			case sstype_header:
 			case sstype_caps:
 				{	/* (const char*)NAME_STR, (const char*)VALUE_STR */
 					const char* name = va_arg(*app, const char *);
 					const char* value = va_arg(*app, const char *);
 					
-					if(curr == sstype_header){
+					if(sscurr == sstype_header){
 						/* whether to SET or UNSET the header */
 						if(value == ((const char*)-1)){
 							tsk_params_remove_param(self->headers, name);
@@ -155,7 +160,7 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 						else{
 							tsk_params_add_param(&self->headers, name, value);
 						}
-					}else if(curr == sstype_caps){
+					}else if(sscurr == sstype_caps){
 						if(value == ((const char*)-1)){ /* UNSET */
 							tsk_params_remove_param(self->caps, name);
 						}
@@ -165,7 +170,6 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					}
 					break;
 				}
-			
 			case sstype_userdata:
 				{	/* (const void*)DATA_PTR */
 					self->userdata = va_arg(*app, const void *);
@@ -195,24 +199,62 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 					self->expires = (((int64_t)va_arg(*app, unsigned)) * 1000) /* milliseconds */;
 					break;
 				}
-
 			case sstype_silent_hangup:
 				{	/* sstype_silent_hangup, (tsk_bool_t)ENABLED_BOOL */
 					self->silent_hangup = va_arg(*app, tsk_bool_t);
 					break;
 				}
-
 			case sstype_sigcomp_id:
 				{ /* (const char*)COMPARTMENT_ID_STR */
 					tsk_strupdate(&self->sigcomp_id, va_arg(*app, const char*));
 					break;
 				}
-
-			default:
-				{	/* va_list will be unsafe => exit */
-					TSK_DEBUG_ERROR("%d NOT a valid pname", curr);
-					goto bail;
+			case sstype_media:
+				{
+					//=========
+					//	Media
+					//=========
+					while((mscurr = va_arg(*app, tsip_msession_param_type_t)) != mstype_null){
+						switch(mscurr){
+							case mstype_set_100rel:
+								self->media.enable_100rel = tsk_true;
+								break;
+							case mstype_unset_100rel:
+								self->media.enable_100rel = tsk_false;
+								break;
+							case mstype_set_qos:
+								break;
+							case mstype_unset_qos:
+								break;
+							case mstype_set_timers:
+								{ /* (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR */
+									/* set values */
+									self->media.timers.timeout = va_arg(*app, unsigned);
+									tsk_strupdate(&self->media.timers.refresher, va_arg(*app, const char*));
+									break;
+								}
+							case mstype_unset_timers:
+								{ /*  */
+									/* unset values */
+									self->media.timers.timeout = 0;
+									TSK_FREE(self->media.timers.refresher);
+								}
+								break;
+							default:{
+								/* va_list will be unsafe => exit */
+								TSK_DEBUG_ERROR("%d NOT a valid MEDIA pname", mscurr);
+								goto bail; }
+						} /* switch */
+					} /* while */
+					
+					break;
 				}
+
+			default:{
+				/* va_list will be unsafe => exit */
+				TSK_DEBUG_ERROR("%d NOT a valid SIP pname", sscurr);
+				goto bail; }
+				
 		} /* switch */
 	} /* while */
 	return 0;
@@ -448,6 +490,9 @@ static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 			tsk_list_remove_item_by_data(ss->stack->ssessions, ss);
 		}
 		
+		//=======
+		// SIP
+		//=======
 		TSK_OBJECT_SAFE_FREE(ss->caps);
 		TSK_OBJECT_SAFE_FREE(ss->headers);
 
@@ -455,6 +500,11 @@ static tsk_object_t* tsip_ssession_dtor(tsk_object_t * self)
 		TSK_OBJECT_SAFE_FREE(ss->to);
 
 		TSK_FREE(ss->sigcomp_id);
+
+		//=======
+		// Media
+		//=======
+		TSK_FREE(ss->media.timers.refresher);
 
 		TSK_DEBUG_INFO("*** SIP Session destroyed ***");
 	}

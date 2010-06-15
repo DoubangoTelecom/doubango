@@ -205,6 +205,7 @@ static tsk_object_t* tsip_action_ctor(tsk_object_t * self, va_list * app)
 	tsip_action_t *action = self;
 	if(action){
 		action->headers = tsk_list_create();
+		action->media.type = tmedia_none;
 	}
 	return self;
 }
