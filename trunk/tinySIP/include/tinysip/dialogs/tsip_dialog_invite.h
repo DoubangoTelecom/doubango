@@ -58,6 +58,8 @@ typedef struct tsip_dialog_invite
 		char* refresher;
 		uint64_t minse;
 	} stimers;
+
+	unsigned enable_100rel:1;
 }
 tsip_dialog_invite_t;
 

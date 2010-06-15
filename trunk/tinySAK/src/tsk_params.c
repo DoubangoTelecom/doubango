@@ -158,7 +158,7 @@ int tsk_params_add_param_2(tsk_params_L_t **self, const tsk_param_t* param)
 
 /**@ingroup tsk_params_group
 * Removes a parameter from the list of parameters.
-* @param self The source list.
+* @param self The list from which to remove the parameter.
 * @param name The name(case-insensitive) of the parameter to remove.
 * @retval Zero if succeed and -1 otherwise.
 */

@@ -91,19 +91,25 @@ typedef enum tsip_msession_param_type_e
 {
 	mstype_null = 0,
 	
+	mstype_set_100rel,
+	mstype_unset_100rel,
+
 	mstype_set_qos,
 	mstype_unset_qos,
+
 	mstype_set_timers,
 	mstype_unset_timers,
 }
 tsip_msession_param_type_t;
 
-#define TSIP_MSESSION_SET_QOS()
-#define TSIP_MSESSION_UNSET_QOS()
-#define TSIP_MSESSION_SET_TIMERS()
-#define TSIP_MSESSION_UNSET_TIMERS()							mstype_null
+#define TSIP_MSESSION_SET_100rel()								mstype_set_100rel
+#define TSIP_MSESSION_UNSET_100rel()							mstype_unset_100rel
+#define TSIP_MSESSION_SET_QOS()									mstype_set_qos
+#define TSIP_MSESSION_UNSET_QOS()								mstype_unset_qos
+#define TSIP_MSESSION_SET_TIMERS(TIMEOUT_UINT, REFRESHER_STR)	mstype_set_timers, (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR
+#define TSIP_MSESSION_UNSET_TIMERS()							mstype_unset_timers
 
-#define TSIP_MSESSION_SET_NULL()
+#define TSIP_MSESSION_SET_NULL()			mstype_null
 
 typedef struct tsip_ssession_s
 {
@@ -114,6 +120,10 @@ typedef struct tsip_ssession_s
 	
 	const struct tsip_stack_s* stack;
 	const void* userdata;
+
+	//=======
+	// SIP
+	//=======
 	tsk_params_L_t *caps;
 	tsk_params_L_t *headers;
 	
@@ -123,6 +133,24 @@ typedef struct tsip_ssession_s
 	int64_t expires;
 	tsk_bool_t silent_hangup;
 	char* sigcomp_id;
+
+	//=======
+	// Media
+	//=======
+	struct{
+		/* Session timers */
+		struct{
+			char* refresher;
+			unsigned timeout;
+		} timers;
+		/* QoS */
+		struct{
+			unsigned toto:1;
+		} qos;
+
+		/* Features */
+		unsigned enable_100rel:1;
+	} media;
 }
 tsip_ssession_t;
 

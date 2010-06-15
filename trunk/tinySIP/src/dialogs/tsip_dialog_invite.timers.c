@@ -177,7 +177,7 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 		}
 	}
 	/* 2xx */
-	else if(TSIP_MESSAGE_IS_RESPONSE(message) && (tsk_striequals(message->CSeq->method, "UPDATE") || tsk_striequals(message->CSeq->method, "INVITE"))){
+	else if(TSIP_MESSAGE_IS_RESPONSE(message) && (TSIP_RESPONSE_IS_TO_INVITE(message) || TSIP_RESPONSE_IS_TO_UPDATE(message))){
 		if(!TSIP_RESPONSE_IS_2XX(message)){
 			/* guard for stupide callers */
 			return 0;

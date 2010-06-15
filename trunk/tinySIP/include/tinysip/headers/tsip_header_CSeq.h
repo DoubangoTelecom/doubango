@@ -40,6 +40,8 @@ TSIP_BEGIN_DECLS
 #define TSIP_HEADER_CSEQ_NONE						0
 #define TSIP_HEADER_CSEQ_DEFAULT					1
 
+/* Forward declaration */
+enum tsip_request_type_e;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -54,6 +56,7 @@ typedef struct tsip_header_CSeq_s
 
 	char *method;
 	uint32_t seq;
+	enum tsip_request_type_e type;
 }
 tsip_header_CSeq_t;
 

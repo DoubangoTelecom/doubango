@@ -45,7 +45,9 @@ typedef enum tmedia_type_e
 	tmedia_audio = (0x01 << 1),
 	tmedia_video = (0x01 << 2),
 	tmedia_msrp = (0x01 << 3),
-	tmedia_t38 = (0x01 << 4)
+	tmedia_t38 = (0x01 << 4),
+
+	tmedia_all = (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38)
 }
 tmedia_type_t;
 

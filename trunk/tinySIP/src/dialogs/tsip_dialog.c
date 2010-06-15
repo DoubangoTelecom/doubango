@@ -496,7 +496,7 @@ int64_t tsip_dialog_get_newdelay(tsip_dialog_t *self, const tsip_response_t* res
 
 	/*== NOTIFY with subscription-state header with expires parameter. 
 	*/
-	if(response->CSeq && tsk_striequals(response->CSeq->method, "NOTIFY")){
+	if(TSIP_RESPONSE_IS_TO_NOTIFY(response)){
 		const tsip_header_Subscription_State_t *hdr_state;
 		if((hdr_state = (const tsip_header_Subscription_State_t*)tsip_message_get_header(response, tsip_htype_Subscription_State))){
 			if(hdr_state->expires >0){
@@ -571,7 +571,7 @@ int tsip_dialog_update(tsip_dialog_t *self, const tsip_response_t* response)
 	if(self && TSIP_MESSAGE_IS_RESPONSE(response) && response->To){
 		short code = TSIP_RESPONSE_CODE(response);
 		const char *tag = response->To->tag;
-		tsk_bool_t isRegister = response->CSeq ? tsk_striequals(response->CSeq->method, "REGISTER") : tsk_false;
+		tsk_bool_t isRegister = TSIP_RESPONSE_IS_TO_REGISTER(response);
 
 		/* 
 		*	1xx (!100) or 2xx 

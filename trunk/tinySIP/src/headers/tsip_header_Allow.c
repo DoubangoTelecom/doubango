@@ -290,7 +290,6 @@ _again:
 	return hdr_allow;
 }
 
-
 tsk_bool_t tsip_header_Allow_allows(const tsip_header_Allow_t* self, const char* method)
 {
 	const tsk_list_item_t* item;
@@ -311,6 +310,7 @@ tsk_bool_t tsip_header_Allow_allows(const tsip_header_Allow_t* self, const char*
 	}
 	return tsk_false;
 }
+
 
 
 

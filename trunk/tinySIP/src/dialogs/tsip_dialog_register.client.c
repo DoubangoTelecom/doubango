@@ -313,7 +313,7 @@ int tsip_dialog_register_Started_2_Trying_X_register(va_list *app)
 	const tsip_action_t* action;
 
 	self = va_arg(*app, tsip_dialog_register_t *);
-	/*const tsip_message_t *message =*/ va_arg(*app, const tsip_message_t *);
+	va_arg(*app, const tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 
 	TSIP_DIALOG(self)->running = tsk_true;
@@ -330,9 +330,13 @@ int tsip_dialog_register_Started_2_Trying_X_register(va_list *app)
 int tsip_dialog_register_Trying_2_Trying_X_1xx(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
-	return tsip_dialog_update(TSIP_DIALOG(self), message);
+	/* Alert the user (session) */
+	TSIP_DIALOG_REGISTER_SIGNAL(self, tsip_ao_register, 
+		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+
+	return tsip_dialog_update(TSIP_DIALOG(self), response);
 }
 
 /* Trying -> (2xx) -> Connected

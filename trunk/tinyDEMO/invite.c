@@ -38,6 +38,75 @@ int invite_handle_event(const tsip_event_t *_event)
 	}
 
 	switch(inv_event->type){
+		// ============================
+		//	Sip Events
+		//
+		case tsip_i_invite:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_i_invite)");
+			break;
+		case tsip_ao_invite:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_ao_invite)");
+			break;
+		
+		/* BYE */
+		case tsip_i_bye:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_i_bye)");
+			break;
+		case tsip_ao_bye:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_ao_bye)");
+			break;
+		
+		/* UPDATE */
+		case tsip_i_update:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_i_update)");
+			break;
+		case tsip_ao_update:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_ao_update)");
+			break;
+		
+		/* Explicit Call Transfer (ECT) */
+		case tsip_o_ect_ok:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_o_ect_ok)");
+			break;
+		case tsip_o_ect_nok:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_o_ect_nok)");
+			break;
+		case tsip_i_ect:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_i_ect)");
+			break;
+		
+		// ============================
+		//	Media Events
+		//
+		
+		/* Media State */
+		case tsip_m_connected:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_connected)");
+			break;
+		case tsip_m_terminated:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_terminated)");
+			break;
+
+		/* 3GPP TS 24.610: Communication Hold  */
+		case tsip_m_local_hold_ok:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_local_hold_ok)");
+			break;
+		case tsip_m_local_hold_nok:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_local_hold_nok)");
+			break;
+		case tsip_m_local_resume_ok:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_local_resume_ok)");
+			break;
+		case tsip_m_local_resume_nok:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_local_resume_nok)");
+			break;
+		case tsip_m_remote_hold:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_remote_hold)");
+			break;
+		case tsip_m_remote_resume:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_m_remote_resume)");
+			break;
+
 		default:
 			break;
 	}
@@ -61,7 +130,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_audio:
 			{	/* Make Audio call */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_INVITE(session->handle,
+				tsip_action_INVITE(session->handle, tmedia_audio,
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());
@@ -73,7 +142,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_hold:
 			{	/* Put the session on hold state */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_HOLD(session->handle,
+				tsip_action_HOLD(session->handle, tmedia_all,
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());
@@ -83,7 +152,7 @@ tsip_ssession_id_t invite_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 		case cmd_resume:
 			{	/* Put the session on hold state */
 				tsip_action_handle_t* action_config = action_get_config(opts);
-				tsip_action_RESUME(session->handle,
+				tsip_action_RESUME(session->handle, tmedia_all,
 					TSIP_ACTION_SET_CONFIG(action_config),
 					/* Any other TSIP_ACTION_SET_*() macros */
 					TSIP_ACTION_SET_NULL());

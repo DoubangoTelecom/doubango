@@ -407,7 +407,32 @@ int pred_find_session_by_id(const tsk_list_item_t *item, const void* id)
 
 session_t* session_create(session_type_t type, tsip_ssession_handle_t* handle)
 {
-	return tsk_object_new(session_def_t, type, handle);
+	session_t* session = tsk_object_new(session_def_t, type, handle);
+	if(!session){
+		TSK_DEBUG_ERROR("Failed to create new SIP session");
+		return tsk_null;
+	}
+
+	switch(type){
+		case st_invite:
+			{	/* Enable all features (QoS, Session timers, SigComp, ...) */
+				tsip_ssession_set(session->handle,
+					
+					/*=== MEDIA */
+					TSIP_SSESSION_SET_MEDIA(
+						TSIP_MSESSION_SET_100rel(),
+
+						TSIP_MSESSION_SET_TIMERS(90, "uac"),
+						TSIP_MSESSION_SET_NULL()
+					),
+
+					TSIP_SSESSION_SET_NULL());
+				break;
+			}
+		default:
+			break;
+	}
+	return session;
 }
 
 const session_t* session_get_by_sid(const sessions_L_t* sessions, tsip_ssession_id_t sid)

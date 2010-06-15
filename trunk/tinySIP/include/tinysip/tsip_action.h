@@ -36,6 +36,8 @@
 #include "tsk_options.h"
 #include "tsk_params.h"
 
+#include "tinymedia/tmedia_common.h"
+
 TSIP_BEGIN_DECLS
 
 typedef uint64_t tsip_action_id_t;			
@@ -114,6 +116,10 @@ typedef struct tsip_action_s
 	tsip_action_type_t type;
 	tsk_params_L_t *headers;
 	tsk_buffer_t* payload;
+
+	struct{
+		tmedia_type_t type;
+	} media;
 }
 tsip_action_t;
 

@@ -31,6 +31,8 @@
 
 #include "tinysip/parsers/tsip_parser_uri.h"
 
+#include "tinysip/tsip_message.h" /* tsip_request_type_t */
+
 #include "tsk_debug.h"
 #include "tsk_memory.h"
 
@@ -88,7 +90,7 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, tsk_size_t size)
 	const char *p = data;
 	const char *pe = p + size;
 	const char *eof = pe;
-	tsip_header_CSeq_t *hdr_cseq = tsip_header_CSeq_create(TSIP_HEADER_CSEQ_NONE, 0);
+	tsip_header_CSeq_t *hdr_cseq = tsip_header_CSeq_create(TSIP_HEADER_CSEQ_NONE, tsk_null);
 	
 	const char *tag_start;
 
@@ -99,6 +101,9 @@ tsip_header_CSeq_t *tsip_header_CSeq_parse(const char *data, tsk_size_t size)
 	if( cs < %%{ write first_final; }%% ){
 		TSK_DEBUG_ERROR("Failed to parse 'CSeq' header.");
 		TSK_OBJECT_SAFE_FREE(hdr_cseq);
+	}
+	else {
+		hdr_cseq->type = tsip_request_get_type(hdr_cseq->method);
 	}
 	
 	return hdr_cseq;
@@ -122,6 +127,13 @@ static tsk_object_t* tsip_header_CSeq_ctor(tsk_object_t *self, va_list * app)
 		TSIP_HEADER(CSeq)->serialize = tsip_header_CSeq_serialize;
 		CSeq->seq = va_arg(*app, uint32_t);
 		CSeq->method = tsk_strdup(va_arg(*app, const char*));
+
+		if(!tsk_strnullORempty(CSeq->method)){
+			CSeq->type = tsip_request_get_type(CSeq->method);
+		}
+		else{
+			CSeq->type = tsip_NONE;
+		}
 	}
 	else{
 		TSK_DEBUG_ERROR("Failed to create new CSeq header.");

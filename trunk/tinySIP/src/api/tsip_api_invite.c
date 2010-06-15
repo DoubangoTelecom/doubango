@@ -53,7 +53,7 @@ int tsip_invite_event_signal(tsip_invite_event_type_t type, tsip_ssession_handle
 	return 0;
 }
 
-int tsip_action_INVITE(const tsip_ssession_handle_t *ss, ...)
+int tsip_action_INVITE(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
 {
 	const tsip_ssession_t* _ss;
 	va_list ap;
@@ -72,8 +72,11 @@ int tsip_action_INVITE(const tsip_ssession_handle_t *ss, ...)
 		return -2;
 	}
 	
-	va_start(ap, ss);
+	va_start(ap, type);
 	if((action = _tsip_action_create(tsip_atype_invite, &ap))){
+		/* Media type */
+		action->media.type = type;
+
 		if(!(dialog = tsip_dialog_layer_find_by_ss(_ss->stack->layer_dialog, ss))){
 			dialog = tsip_dialog_layer_new(_ss->stack->layer_dialog, tsip_dialog_INVITE, ss);
 		}
@@ -87,28 +90,66 @@ int tsip_action_INVITE(const tsip_ssession_handle_t *ss, ...)
 	return ret;
 }
 
-int tsip_action_HOLD(const tsip_ssession_handle_t *ss, ...)
+int tsip_action_HOLD(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
 {
 	int ret = -1;
+	tsip_action_t* action;
+	const tsip_ssession_t* _ss;
 	va_list ap;
 
-	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, tsip_atype_hold, &ap))){
-		TSK_DEBUG_ERROR("Hold() failed.");
+	/* Checks for validity */
+	if(!(_ss = ss) || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return ret;
+	}
+	
+	/* Checks if the stack has been started */
+	if(!TSK_RUNNABLE(_ss->stack)->started){
+		TSK_DEBUG_ERROR("Stack not started.");
+		return -2;
+	}
+
+	va_start(ap, type);
+	/* execute action */
+	if((action = _tsip_action_create(tsip_atype_hold, &ap))){
+		/* Media type */
+		action->media.type = type;
+		/* Perform action */
+		ret = tsip_ssession_handle(_ss, action);
+		TSK_OBJECT_SAFE_FREE(action);
 	}
 	va_end(ap);
 
 	return ret;
 }
 
-int tsip_action_RESUME(const tsip_ssession_handle_t *ss, ...)
+int tsip_action_RESUME(const tsip_ssession_handle_t *ss, tmedia_type_t type, ...)
 {
 	int ret = -1;
+	tsip_action_t* action;
+	const tsip_ssession_t* _ss;
 	va_list ap;
 
-	va_start(ap, ss);
-	if((ret = _tsip_action_ANY(ss, tsip_atype_resume, &ap))){
-		TSK_DEBUG_ERROR("Resume() failed.");
+	/* Checks for validity */
+	if(!(_ss = ss) || !_ss->stack){
+		TSK_DEBUG_ERROR("Invalid parameter.");
+		return ret;
+	}
+	
+	/* Checks if the stack has been started */
+	if(!TSK_RUNNABLE(_ss->stack)->started){
+		TSK_DEBUG_ERROR("Stack not started.");
+		return -2;
+	}
+
+	va_start(ap, type);
+	/* execute action */
+	if((action = _tsip_action_create(tsip_atype_resume, &ap))){
+		/* Media type */
+		action->media.type = type;
+		/* Perform action */
+		ret = tsip_ssession_handle(_ss, action);
+		TSK_OBJECT_SAFE_FREE(action);
 	}
 	va_end(ap);
 

@@ -51,19 +51,26 @@ extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const t
 int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 {
 	int ret;
-	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	tsip_dialog_invite_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_invite_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
 	
 	/* This is the first transaction when you try to make an audio/video/msrp call */
 	if(!self->msession_mgr){		
-		self->msession_mgr = tmedia_session_mgr_create((tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38), /* FIXME */
+		self->msession_mgr = tmedia_session_mgr_create(action ? action->media.type : tmedia_all,
 		TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, tsk_true);
 	}
 
 	/* We are the client */
 	self->is_client = tsk_true;
 
-	/* Default: enable session timers
-		RFC 4028 - 7.1. Generating an Initial Session Refresh Request
+	/* Update current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+
+	/*  RFC 4028 - 7.1. Generating an Initial Session Refresh Request
 
 		A UAC MAY include a Session-Expires header field in an initial
 		session refresh request if it wants a session timer applied to the
@@ -77,15 +84,19 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 		parameter be omitted so that it can be selected by the negotiation
 		mechanisms described below.
 	*/
-	self->stimers.timer.timeout = 90/* FIXME: (TSIP_SESSION_EXPIRES_DEFAULT_VALUE) */;
-	tsk_strupdate(&self->stimers.refresher, "uac");
+	if(TSIP_DIALOG_GET_SS(self)->media.timers.timeout){
+		self->stimers.timer.timeout = TSIP_DIALOG_GET_SS(self)->media.timers.timeout;
+		tsk_strupdate(&self->stimers.refresher, TSIP_DIALOG_GET_SS(self)->media.timers.refresher);
+	}
 	
+	/* 100rel */
+	self->enable_100rel = TSIP_DIALOG_GET_SS(self)->media.enable_100rel;
+
 	/* send the request */
 	ret = send_INVITE(self);
 
 	/* alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connecting, "Dialog connecting");
-
 
 	return ret;
 }
@@ -117,7 +128,7 @@ int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 	else{
 		/* send error */
 	}
-
+	
 	/* Determine whether the remote party support UPDATE 
 	* FIXME: do the same in server side */
 	self->support_update = tsip_message_allowed(r2xxINVITE, "UPDATE");
@@ -126,11 +137,13 @@ int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 	if(self->stimers.timer.timeout){
 		tsip_dialog_invite_stimers_handle(self, r2xxINVITE);
 	}
-
-	/* alert the user */
+	
+	/* Alert the user (session) */
 	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_invite, 
 		TSIP_RESPONSE_CODE(r2xxINVITE), TSIP_RESPONSE_PHRASE(r2xxINVITE), r2xxINVITE);
-
+	/* Alert the user (dialog) */
+	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
+	
 	return ret;
 }
 
