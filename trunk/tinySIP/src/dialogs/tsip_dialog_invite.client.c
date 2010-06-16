@@ -41,7 +41,7 @@
 
 #include "tsk_debug.h"
 
-extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE);
+extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
 extern int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_message_t* message);
@@ -89,11 +89,20 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 		tsk_strupdate(&self->stimers.refresher, TSIP_DIALOG_GET_SS(self)->media.timers.refresher);
 	}
 	
+	/* QoS
+	* One Voice Profile - 5.4.1 SIP Precondition Considerations
+	* The UE shall use the Supported header, and not the Require header, to indicate the support of precondition in
+	* accordance with Section 5.1.3.1 of 3GPP TS 24.229.
+	*/
+	self->qos.type = TSIP_DIALOG_GET_SS(self)->media.qos.type;
+	self->qos.strength = TSIP_DIALOG_GET_SS(self)->media.qos.strength;
+	tmedia_session_mgr_set_qos(self->msession_mgr, self->qos.type, self->qos.strength);
+
 	/* 100rel */
 	self->enable_100rel = TSIP_DIALOG_GET_SS(self)->media.enable_100rel;
 
 	/* send the request */
-	ret = send_INVITE(self);
+	ret = send_INVITE(self, tsk_false);
 
 	/* alert the user */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connecting, "Dialog connecting");

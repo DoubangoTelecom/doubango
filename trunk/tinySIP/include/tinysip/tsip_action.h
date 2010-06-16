@@ -74,7 +74,8 @@ typedef enum tsip_action_type_e
 	/* === INVITE === */
 	tsip_atype_invite, /**< Sends SIP INVITE/reINVITE request */
 	tsip_atype_hold, /**< Puts the session on hold state */
-	tsip_atype_resume, /**< Resumes a previously held session*/
+	tsip_atype_resume, /**< Resumes a previously held session */
+	tsip_atype_ect, /**< Transfer the call */
 #define tsip_atype_bye tsip_atype_hangup
 
 
@@ -120,6 +121,10 @@ typedef struct tsip_action_s
 	struct{
 		tmedia_type_t type;
 	} media;
+
+	struct{
+		char* to;
+	} ect;
 }
 tsip_action_t;
 

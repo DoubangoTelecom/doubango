@@ -45,7 +45,7 @@ tsk_bool_t  tsip_dialog_invite_stimers_isRefresher(tsip_dialog_invite_t* self);
 extern int tsip_dialog_invite_timer_callback(const tsip_dialog_invite_t* self, tsk_timer_id_t timer_id);
 extern int send_RESPONSE(tsip_dialog_invite_t *self, const tsip_request_t* request, short code, const char* phrase);
 extern int send_BYE(tsip_dialog_invite_t *self);
-extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE);
+extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE, tsk_bool_t force_sdp);
 
 /* ======================== transitions ======================== */
 static int x0200_Connected_2_Connected_X_timerRefresh(va_list *app);
@@ -93,9 +93,20 @@ int x0200_Connected_2_Connected_X_timerRefresh(va_list *app)
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
 	int ret;
 
-	/* send INVITE or UPDATE 
-	* 2xx will be handled by tsip_dialog_invite_stimers_handle() */
-	ret = send_INVITEorUPDATE(self, !self->support_update);
+	/*	RFC 4028 - 7.4. Generating Subsequent Session Refresh Requests
+		
+		A re-INVITE generated to refresh the session is a normal re-INVITE,
+		and an UPDATE generated to refresh a session is a normal UPDATE.  If
+		a UAC knows that its peer supports the UPDATE method, it is
+		RECOMMENDED that UPDATE be used instead of a re-INVITE.  A UA can
+		make this determination if it has seen an Allow header field from its
+		peer with the value 'UPDATE', or through a mid-dialog OPTIONS
+		request.  It is RECOMMENDED that the UPDATE request not contain an
+		offer [4], but a re-INVITE SHOULD contain one, even if the details of
+		the session have not changed
+	*/
+	/* 2xx will be handled by tsip_dialog_invite_stimers_handle() */
+	ret = send_INVITEorUPDATE(self, !self->support_update, tsk_false);
 
 	return ret;
 }
@@ -141,13 +152,15 @@ int x0250_Any_2_Any_X_i422(va_list *app)
 	
 	if((Min_SE = (const tsip_header_Min_SE_t* )tsip_message_get_header(r422, tsip_htype_Min_SE))){
 		self->stimers.minse = Min_SE->delta_seconds;
+		self->stimers.timer.timeout = Min_SE->delta_seconds;
 	}
 	else{
 		TSK_DEBUG_ERROR("Invalid response (422 need Min-SE header)");
 		return 0; /* Do not end the dialog */
 	}
 
-	return 0;
+	/* send again the INVITE */
+	return send_INVITE(self, tsk_false);
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++

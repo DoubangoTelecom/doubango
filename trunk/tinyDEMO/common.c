@@ -420,9 +420,14 @@ session_t* session_create(session_type_t type, tsip_ssession_handle_t* handle)
 					
 					/*=== MEDIA */
 					TSIP_SSESSION_SET_MEDIA(
+						// 100rel
 						TSIP_MSESSION_SET_100rel(),
+						// Session timers
+						TSIP_MSESSION_SET_TIMERS(90, "uac"),
+						// QoS
+						TSIP_MSESSION_SET_QOS(tmedia_qos_stype_segmented, tmedia_qos_strength_mandatory),
 
-						TSIP_MSESSION_SET_TIMERS(10, "uac"),
+						// close media params
 						TSIP_MSESSION_SET_NULL()
 					),
 
@@ -658,7 +663,7 @@ const session_t*  session_handle_cmd(cmd_type_t cmd, const opts_L_t* opts)
 			case opt_to:
 				{	/* You should use  TSIP_SSESSION_SET_OPTION(TSIP_SSESSION_OPTION_TO, value)
 						instead of TSIP_SSESSION_SET_HEADER() to set the destination URI. */
-					if((cmd != cmd_sms) && !tsk_strnullORempty(opt->value)){ /* SMS will use SMSC Address as Request URI */
+					if((cmd != cmd_sms) && (cmd != cmd_ect) && !tsk_strnullORempty(opt->value)){ /* SMS will use SMSC Address as Request URI */
 						ret = tsip_ssession_set(session->handle, 
 							TSIP_SSESSION_SET_TO(opt->value),
 							TSIP_SSESSION_SET_NULL());

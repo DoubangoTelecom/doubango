@@ -37,6 +37,7 @@ typedef enum cmd_type_e
 	cmd_config_session, /* ++config-session | ++css */
 	cmd_config_stack, /* ++config-stack | ++cst*/
 	cmd_dump, /*++dump | ++d*/
+	cmd_ect, /*++ect*/
 	cmd_exit,	/*++exit | ++e | ++quit | ++q*/
 	cmd_file, /* ++file | ++f*/
 	cmd_hangup, /* ++hangup | ++hu */

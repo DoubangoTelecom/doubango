@@ -53,12 +53,19 @@ typedef struct tsip_dialog_invite
 	tsip_request_t* last_invite;
 	tmedia_session_mgr_t* msession_mgr; /**< Media session Manager. */
 	
+	/* Session Timers */
 	struct{
 		tsip_timer_t timer;
 		char* refresher;
 		uint64_t minse;
 	} stimers;
-
+	/* QoS (Preconditions) */
+	struct{
+		tsip_timer_t timer;
+		enum tmedia_qos_stype_e type;
+		enum tmedia_qos_strength_e strength;
+	} qos;
+	/* 100rel */
 	unsigned enable_100rel:1;
 }
 tsip_dialog_invite_t;

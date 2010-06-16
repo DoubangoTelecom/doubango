@@ -302,15 +302,47 @@ const tsdp_header_M_t* tdav_session_audio_get_lo(tmedia_session_t* self)
 
 	changed = (self->ro_changed || !self->M.lo);
 
-	if(!self->M.lo && !(self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->transport->master->port, "RTP/AVP"))){
-		TSK_DEBUG_ERROR("Failed to create lo");
-		return tsk_null;
+	if(!self->M.lo){
+		if((self->M.lo = tsdp_header_M_create(self->plugin->media, audio->rtp_manager->transport->master->port, "RTP/AVP"))){
+			/* 3GPP TS 24.229 - 6.1.1 General
+				In order to support accurate bandwidth calculations, the UE may include the "a=ptime" attribute for all "audio" media
+				lines as described in RFC 4566 [39]. If a UE receives an "audio" media line with "a=ptime" specified, the UE should
+				transmit at the specified packetization rate. If a UE receives an "audio" media line which does not have "a=ptime"
+				specified or the UE does not support the "a=ptime" attribute, the UE should transmit at the default codec packetization
+				rate as defined in RFC 3551 [55A]. The UE will transmit consistent with the resources available from the network.
+
+				For "video" and "audio" media types that utilize the RTP/RTCP, the UE shall specify the proposed bandwidth for each
+				media stream utilizing the "b=" media descriptor and the "AS" bandwidth modifier in the SDP.
+
+				The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
+				flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
+			*/
+			tsdp_header_M_add_headers(self->M.lo,
+				TSDP_HEADER_A_VA_ARGS("ptime", "20"),
+				tsk_null);
+			// the "telephone-event" fmt/rtpmap is added below
+		}
+		else{
+			TSK_DEBUG_ERROR("Failed to create lo");
+			return tsk_null;
+		}
 	}
 
 	/* from codecs to sdp */
 	if(changed){
 		/* from codecs to sdp */
 		tmedia_codec_to_sdp(self->neg_codecs ? self->neg_codecs : self->codecs, self->M.lo);
+		/* 3GPP TS 24.229 - 6.1.1 General
+			The UE shall include the MIME subtype "telephone-event" in the "m=" media descriptor in the SDP for audio media
+			flows that support both audio codec and DTMF payloads in RTP packets as described in RFC 4733 [23].
+		*/
+		tsdp_header_M_add_fmt(self->M.lo, TMEDIA_CODEC_FORMAT_DTMF);
+		tsdp_header_M_add_headers(self->M.lo,
+					TSDP_HEADER_A_VA_ARGS("fmtp", TMEDIA_CODEC_FORMAT_DTMF" 0-15"),
+				tsk_null);
+		tsdp_header_M_add_headers(self->M.lo,
+					TSDP_HEADER_A_VA_ARGS("rtpmap", TMEDIA_CODEC_FORMAT_DTMF" telephone-event/8000"),
+				tsk_null);
 		/* QoS */
 		if(self->qos){
 			tmedia_qos_tline_t* ro_tline;

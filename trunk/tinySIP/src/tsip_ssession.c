@@ -223,9 +223,17 @@ int __tsip_ssession_set(tsip_ssession_t *self, va_list *app)
 								self->media.enable_100rel = tsk_false;
 								break;
 							case mstype_set_qos:
-								break;
+								{	/* (tmedia_qos_stype_t)TYPE_ENUM, (tmedia_qos_strength_t)STRENGTH_ENUM */
+									self->media.qos.type = va_arg(*app, tmedia_qos_stype_t);
+									self->media.qos.strength = va_arg(*app, tmedia_qos_strength_t);
+									break;
+								}
 							case mstype_unset_qos:
-								break;
+								{	/*  */
+									self->media.qos.type = tmedia_qos_stype_none;
+									self->media.qos.strength = tmedia_qos_strength_none;
+									break;
+								}
 							case mstype_set_timers:
 								{ /* (unsigned)TIMEOUT_UINT, (const char*)REFRESHER_STR */
 									/* set values */
@@ -471,6 +479,9 @@ static tsk_object_t* tsip_ssession_ctor(tsk_object_t * self, va_list * app)
 		ss->owner = tsk_true;
 		// default expires value
 		ss->expires = TSIP_SSESSION_EXPIRES_DEFAULT;
+		// default media values
+		ss->media.qos.type = tmedia_qos_stype_none;
+		ss->media.qos.strength = tmedia_qos_strength_none;
 
 		/* add the session to the stack */
 		if(ss->stack){
