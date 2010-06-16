@@ -41,27 +41,11 @@ int invite_handle_event(const tsip_event_t *_event)
 		// ============================
 		//	Sip Events
 		//
-		case tsip_i_invite:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_i_invite)");
+		case tsip_i_request:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_i_request)");
 			break;
-		case tsip_ao_invite:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_ao_invite)");
-			break;
-		
-		/* BYE */
-		case tsip_i_bye:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_i_bye)");
-			break;
-		case tsip_ao_bye:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_ao_bye)");
-			break;
-		
-		/* UPDATE */
-		case tsip_i_update:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_i_update)");
-			break;
-		case tsip_ao_update:
-			TSK_DEBUG_INFO("invite_handle_event(tsip_ao_update)");
+		case tsip_ao_request:
+			TSK_DEBUG_INFO("invite_handle_event(tsip_ao_request)");
 			break;
 		
 		/* Explicit Call Transfer (ECT) */

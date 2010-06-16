@@ -57,7 +57,7 @@ static int tdav_session_audio_rtp_cb(const void* callback_data, const struct trt
 		// Find the codec to use to decode the RTP payload
 		tsk_itoa(packet->header->payload_type, &format);
 		if(!(codec = tmedia_codec_find_by_format(TMEDIA_SESSION(audio)->neg_codecs, format)) || !codec->plugin || !codec->plugin->decode){
-			TSK_DEBUG_ERROR("%s is not a valid payoad for this session", format);
+			TSK_DEBUG_ERROR("%s is not a valid payload for this session", format);
 			TSK_OBJECT_SAFE_FREE(codec);
 			return -2;
 		}

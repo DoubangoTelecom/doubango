@@ -158,7 +158,10 @@ typedef struct tmedia_session_mgr_s
 	tsk_bool_t ipv6;
 
 	struct{
+		uint32_t lo_ver;
 		tsdp_message_t* lo;
+
+		int32_t ro_ver;
 		tsdp_message_t* ro;
 	} sdp;
 

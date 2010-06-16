@@ -64,7 +64,8 @@ typedef enum _fsm_action_e
 	_fsm_action_i1xx,
 	_fsm_action_i2xx,
 	_fsm_action_i300_to_i699,
-	_fsm_action_i401_i407_i421_i494,
+	_fsm_action_i401_i407,
+	_fsm_action_i422,
 
 	_fsm_action_shutdown_timedout, /* Any -> Terminated */
 	_fsm_action_transporterror,
@@ -79,6 +80,8 @@ typedef enum _fsm_state_e
 	_fsm_state_Outgoing,
 	_fsm_state_Incoming,
 	_fsm_state_Trying,
+	_fsm_state_Holding,
+	_fsm_state_Resuming,
 	_fsm_state_Connected,
 	_fsm_state_Terminated
 }

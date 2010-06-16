@@ -58,7 +58,7 @@ int c0000_Started_2_Outgoing_X_oINVITE(va_list *app)
 	va_arg(*app, const tsip_message_t *);
 	action = va_arg(*app, const tsip_action_t *);
 	
-	/* This is the first transaction when you try to make an audio/video/msrp call */
+	/* This is the first FSM transaction when you try to make an audio/video/msrp call */
 	if(!self->msession_mgr){		
 		self->msession_mgr = tmedia_session_mgr_create(action ? action->media.type : tmedia_all,
 		TSIP_DIALOG_GET_STACK(self)->network.local_ip, tsk_false, tsk_true);
@@ -120,13 +120,9 @@ int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 		/* Send error */
 		return ret;
 	}
-
-	/* send ack */
-	if(ret == 0){
-		ret = send_ACK(self, r2xxINVITE);
-	}
 	else{
-		/* send error */
+		/* send ACK */
+		ret = send_ACK(self, r2xxINVITE);
 	}
 	
 	/* Determine whether the remote party support UPDATE 
@@ -139,7 +135,7 @@ int c0001_Outgoing_2_Connected_X_i2xxINVITE(va_list *app)
 	}
 	
 	/* Alert the user (session) */
-	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_invite, 
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request, 
 		TSIP_RESPONSE_CODE(r2xxINVITE), TSIP_RESPONSE_PHRASE(r2xxINVITE), r2xxINVITE);
 	/* Alert the user (dialog) */
 	TSIP_DIALOG_SIGNAL(self, tsip_event_code_dialog_connected, "Dialog connected");
@@ -155,7 +151,7 @@ int c0002_Outgoing_2_Terminated_X_i300_to_i699INVITE(va_list *app)
 	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 
 	/* alert the user */
-	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_invite, 
+	TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request, 
 		TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 
 	return 0;
