@@ -373,22 +373,24 @@ int tmedia_codec_to_sdp(const tmedia_codecs_L_t* codecs, tsdp_header_M_t* m)
 			TSK_DEBUG_ERROR("Failed to add format");
 			return ret;
 		}
-		/* add rtpmap attribute */
-		if((rtpmap = tmedia_codec_get_rtpmap(codec))){
-			tsdp_header_M_add_headers(m,
-			TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
-			tsk_null);
-			TSK_FREE(rtpmap);
-		}
-		/* add fmtp attribute */
-		if((fmtp = tmedia_codec_get_fmtp(codec))){
-			char* temp = tsk_null;
-			tsk_sprintf(&temp, "%s %s",  codec->neg_format?  codec->neg_format : codec->format, fmtp);
-			tsdp_header_M_add_headers(m,
-				TSDP_HEADER_A_VA_ARGS("fmtp", temp),
-			tsk_null);
-			TSK_FREE(temp);
-			TSK_FREE(fmtp);
+		if(tsk_striequals(m->media, "audio") || tsk_striequals(m->media, "video")){
+			/* add rtpmap attribute */
+			if((rtpmap = tmedia_codec_get_rtpmap(codec))){
+				tsdp_header_M_add_headers(m,
+				TSDP_HEADER_A_VA_ARGS("rtpmap", rtpmap),
+				tsk_null);
+				TSK_FREE(rtpmap);
+			}
+			/* add fmtp attribute */
+			if((fmtp = tmedia_codec_get_fmtp(codec))){
+				char* temp = tsk_null;
+				tsk_sprintf(&temp, "%s %s",  codec->neg_format?  codec->neg_format : codec->format, fmtp);
+				tsdp_header_M_add_headers(m,
+					TSDP_HEADER_A_VA_ARGS("fmtp", temp),
+				tsk_null);
+				TSK_FREE(temp);
+				TSK_FREE(fmtp);
+			}
 		}
 	}
 	return 0;

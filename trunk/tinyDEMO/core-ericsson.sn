@@ -4,7 +4,7 @@
 %%domain ericsson.com
 %%user mamadou
 %%pwd mamadou
-%%proxy_ip 192.168.0.13 # IP address or FQDN
+%%proxy_ip 192.168.0.17 # IP address or FQDN
 %%proxy_port 5081
 %%proxy_trans tcp # udp, tcp, tls or sctp
 %%expires 100 # expires used by all dialogs
@@ -71,10 +71,10 @@
 
 #send INVITE
 ++a --to sip:bob@$$(domain) --header Supported=100rel,precondition,timer >>(inv_audio_sid)
-#++sleep --sec -1
-#++ho --sid $$(inv_audio_sid)
-#++sleep --sec -1
-#++res --sid $$(inv_audio_sid)
+++sleep --sec -1
+++ho --sid $$(inv_audio_sid)
+++sleep --sec -1
+++res --sid $$(inv_audio_sid)
 
 
 # Press ENTER

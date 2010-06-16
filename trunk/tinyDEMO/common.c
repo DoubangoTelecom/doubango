@@ -422,7 +422,7 @@ session_t* session_create(session_type_t type, tsip_ssession_handle_t* handle)
 					TSIP_SSESSION_SET_MEDIA(
 						TSIP_MSESSION_SET_100rel(),
 
-						TSIP_MSESSION_SET_TIMERS(90, "uac"),
+						TSIP_MSESSION_SET_TIMERS(10, "uac"),
 						TSIP_MSESSION_SET_NULL()
 					),
 

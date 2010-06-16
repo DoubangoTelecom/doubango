@@ -31,6 +31,8 @@
 
 #include "tinymedia/tmedia_session_ghost.h"
 
+#include "tinysdp/headers/tsdp_header_O.h"
+
 #include "tsk_memory.h"
 #include "tsk_debug.h"
 
@@ -679,12 +681,13 @@ const tsdp_message_t* tmedia_session_mgr_get_lo(tmedia_session_mgr_t* self)
 	if(self->sdp.lo){
 		return self->sdp.lo;
 	}
-	else if((self->sdp.lo = tsdp_message_create_empty(self->addr, self->ipv6))){
+	else if((self->sdp.lo = tsdp_message_create_empty(self->addr, self->ipv6, self->sdp.lo_ver++))){
 		/* Set connection "c=" */
 		tsdp_message_add_headers(self->sdp.lo,
 			TSDP_HEADER_C_VA_ARGS("IN", self->ipv6 ? "IP6" : "IP4", self->addr),
 			tsk_null);
 	}else{
+		self->sdp.lo_ver--;
 		TSK_DEBUG_ERROR("Failed to create empty SDP message");
 		return tsk_null;
 	}
@@ -727,6 +730,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	const tmedia_session_t* ms;
 	const tsdp_header_M_t* M;
 	const tsdp_header_C_t* C; /* global "c=" line */
+	const tsdp_header_O_t* O;
 	tsk_size_t index = 0;
 	tsk_bool_t found;
 	tmedia_qos_stype_t qos_type = tmedia_qos_stype_none;
@@ -735,7 +739,25 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 		TSK_DEBUG_ERROR("Invalid parameter");
 		return -1;
 	}
-	
+
+	/*	RFC 3264 subcaluse 8
+		When issuing an offer that modifies the session, the "o=" line of the new SDP MUST be identical to that in the previous SDP, 
+		except that the version in the origin field MUST increment by one from the previous SDP. If the version in the origin line 
+		does not increment, the SDP MUST be identical to the SDP with that version number. The answerer MUST be prepared to receive 
+		an offer that contains SDP with a version that has not changed; this is effectively a no-op.
+	*/
+	if((O = (const tsdp_header_O_t*)tsdp_message_get_header(sdp, tsdp_htype_O))){
+		if(self->sdp.ro_ver == (int32_t)O->sess_version){
+			TSK_DEBUG_INFO("Remote offer has not changed");
+			return 0;
+		}
+		self->sdp.ro_ver = (int32_t)O->sess_version;
+	}
+	else{
+		TSK_DEBUG_ERROR("o= line is missing");
+		return -2;
+	}
+
 	/* update remote offer */
 	TSK_OBJECT_SAFE_FREE(self->sdp.ro);
 	self->sdp.ro = tsk_object_ref((void*)sdp);
@@ -745,7 +767,7 @@ int tmedia_session_mgr_set_ro(tmedia_session_mgr_t* self, const tsdp_message_t* 
 	if(TSK_LIST_IS_EMPTY(self->sessions)){
 		if(_tmedia_session_mgr_load_sessions(self)){
 			TSK_DEBUG_ERROR("Failed to prepare the session manager");
-			return -2;
+			return -3;
 		}
 	}
 	
@@ -1094,6 +1116,9 @@ static tsk_object_t* tmedia_session_mgr_ctor(tsk_object_t * self, va_list * app)
 	tmedia_session_mgr_t *mgr = self;
 	if(mgr){
 		mgr->sessions = tsk_list_create();
+
+		mgr->sdp.lo_ver = TSDP_HEADER_O_SESS_VERSION_DEFAULT;
+		mgr->sdp.ro_ver = -1;
 	}
 	return self;
 }

@@ -96,24 +96,17 @@ extern int s0000_Incoming_2_Terminated_X_oCANCEL(va_list *app);
 
 static int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app);
 
-static int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
+static int x0000_Any_2_Any_X_i1xx(va_list *app);
+static int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app);
 static int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app);
+
+static int x0000_Any_2_Any_X_iOPTIONS(va_list *app);
 static int x0000_Any_2_Trying_X_oBYE(va_list *app); /* If not Connected => Cancel will be called instead. See tsip_dialog_hangup() */
 static int x0000_Any_2_Terminated_X_iBYE(va_list *app);
 static int x0000_Any_2_Trying_X_shutdown(va_list *app);
 
-static int x0000_Any_2_Trying_X_oINVITE(va_list *app);
-static int x0000_Any_2_Trying_X_oUPDATE(va_list *app);
-static int x0000_Any_2_Any_X_iINVITE(va_list *app);
-static int x0000_Any_2_Any_X_iUPDATE(va_list *app);
-static int x0000_Any_2_Any_X_i1xx(va_list *app);
-static int x0000_Any_2_Any_X_i2xx(va_list *app);
-static int x0000_Any_2_Any_X_i401_i407_i421_i494(va_list *app);
-static int x0000_Any_2_Any_X_iPRACK(va_list *app);
-static int x0000_Any_2_Any_X_iACK(va_list *app);
 static int x9998_Any_2_Any_X_transportError(va_list *app);
 static int x9999_Any_2_Any_X_Error(va_list *app);
-
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_resp2INVITE(tsip_dialog_invite_t* self, tsip_message_t* message)
@@ -162,8 +155,11 @@ int tsip_dialog_invite_event_callback(const tsip_dialog_invite_t *self, tsip_dia
 					else if(TSIP_RESPONSE_IS_2XX(msg)){ // 200-299
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i2xx, msg, tsk_null);
 					}
-					else if(TSIP_RESPONSE_CODE(msg) == 401 || TSIP_RESPONSE_CODE(msg) == 407 || TSIP_RESPONSE_CODE(msg) == 421 || TSIP_RESPONSE_CODE(msg) == 494){ // 401,407,421,494
-						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i401_i407_i421_i494, msg, tsk_null);
+					else if(TSIP_RESPONSE_CODE(msg) == 401 || TSIP_RESPONSE_CODE(msg) == 407){ // 401,407
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i401_i407, msg, tsk_null);
+					}
+					else if(TSIP_RESPONSE_CODE(msg) == 422){ // 422
+						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i422, msg, tsk_null);
 					}
 					else if(TSIP_RESPONSE_IS_3456(msg)){ // 300-699
 						ret = tsip_dialog_fsm_act(TSIP_DIALOG(self), _fsm_action_i300_to_i699, msg, tsk_null);
@@ -307,6 +303,10 @@ int tsip_dialog_invite_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2INVITE, tsk_fsm_state_any, x0000_Any_2_Any_X_i2xxINVITEorUPDATE, "x0000_Any_2_Any_X_i2xxINVITE"),
 		// Any -> (i2xx UPDATE) -> Any
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2UPDATE, tsk_fsm_state_any, x0000_Any_2_Any_X_i2xxINVITEorUPDATE, "x0000_Any_2_Any_X_i2xxUPDATE"),
+		// Any -> (i401/407 INVITE) -> Any
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2INVITE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_INVITEorUPDATE, "x0000_Any_2_Any_X_i401_407_INVITE"),
+		// Any -> (i401/407  UPDATE) -> Any
+		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i401_i407, _fsm_cond_is_resp2UPDATE, tsk_fsm_state_any, x0000_Any_2_Any_X_i401_407_INVITEorUPDATE, "x0000_Any_2_Any_X_i401_407_UPDATE"),
 		// Any -> (i2xx PRACK) -> Any
 		TSK_FSM_ADD(tsk_fsm_state_any, _fsm_action_i2xx, _fsm_cond_is_resp2PRACK, tsk_fsm_state_any, tsk_null, "x0000_Any_2_Any_X_i2xxPRACK"),
 		// Any -> (transport error) -> Terminated
@@ -370,7 +370,7 @@ int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message
 
 	/* Create session Manager if not already done */
 	if(!self->msession_mgr){
-		tmedia_type_t type = (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38); /* FIXME */
+		tmedia_type_t type = TSIP_DIALOG(self)->curr_action ? TSIP_DIALOG(self)->curr_action->media.type : tmedia_all;
 		if(sdp_ro){
 			type = tmedia_type_from_sdp(sdp_ro);
 		}
@@ -429,6 +429,7 @@ int x0000_Connected_2_Connected_X_iINVITEorUPDATE(va_list *app)
 	return ret;
 }
 
+
 int x0000_Any_2_Any_X_iOPTIONS(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
@@ -447,6 +448,26 @@ int x0000_Any_2_Any_X_iOPTIONS(va_list *app)
 	return 0;
 }
 
+
+/*	Any --> (i401/407 INVITE or UPDATE) --> Any */
+int x0000_Any_2_Any_X_i401_407_INVITEorUPDATE(va_list *app)
+{
+	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
+	int ret;
+
+	if((ret = tsip_dialog_update(TSIP_DIALOG(self), response))){
+		/* Alert the user. */
+		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_ao_request,
+			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+		
+		return ret;
+	}
+	
+	return send_INVITEorUPDATE(self, TSIP_RESPONSE_IS_TO_INVITE(response));
+}
+
+/*	Any --> (i2xx INVITE or UPDATE) --> Any */
 int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app)
 {
 	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
@@ -461,6 +482,12 @@ int x0000_Any_2_Any_X_i2xxINVITEorUPDATE(va_list *app)
 	/* session timers */
 	if(self->stimers.timer.timeout){
 		tsip_dialog_invite_stimers_handle(self, r2xx);
+	}
+
+	/* Process remote offer */
+	if((ret = tsip_dialog_invite_process_ro(self, r2xx))){
+		/* Send error */
+		return ret;
 	}
 
 	/* send ACK */
@@ -592,21 +619,6 @@ int x0000_Any_2_Any_X_i2xx(va_list *app)
 	return 0;
 }
 
-int x0000_Any_2_Any_X_i401_i407_i421_i494(va_list *app)
-{
-	return 0;
-}
-
-int x0000_Any_2_Any_X_iPRACK(va_list *app)
-{
-	return 0;
-}
-
-int x0000_Any_2_Any_X_iACK(va_list *app)
-{
-	return 0;
-}
-
 int x9998_Any_2_Any_X_transportError(va_list *app)
 {
 	return 0;
@@ -642,12 +654,14 @@ int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE)
 		}
 		
 		/* add our payload if current action does not have one */
-		if(!TSIP_DIALOG(self)->curr_action || !TSIP_DIALOG(self)->curr_action->payload){
-			const tsdp_message_t* sdp_lo;
-			char* sdp;
-			if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
-				tsip_message_add_content(request, "application/sdp", sdp, tsk_strlen(sdp));
-				TSK_FREE(sdp);
+		if((self->msession_mgr && self->msession_mgr->state_changed) || (TSIP_DIALOG(self)->state == tsip_initial)){
+			if(!TSIP_DIALOG(self)->curr_action || !TSIP_DIALOG(self)->curr_action->payload){
+				const tsdp_message_t* sdp_lo;
+				char* sdp;
+				if((sdp_lo = tmedia_session_mgr_get_lo(self->msession_mgr)) && (sdp = tsdp_message_tostring(sdp_lo))){
+					tsip_message_add_content(request, "application/sdp", sdp, tsk_strlen(sdp));
+					TSK_FREE(sdp);
+				}
 			}
 		}
 

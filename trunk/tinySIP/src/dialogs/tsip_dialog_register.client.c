@@ -475,20 +475,20 @@ int tsip_dialog_register_Trying_2_Terminated_X_2xx(va_list *app)
 int tsip_dialog_register_Trying_2_Trying_X_401_407_421_494(va_list *app)
 {
 	tsip_dialog_register_t *self = va_arg(*app, tsip_dialog_register_t *);
-	const tsip_message_t *message = va_arg(*app, const tsip_message_t *);
+	const tsip_response_t *response = va_arg(*app, const tsip_response_t *);
 	int ret;
 
-	if((ret = tsip_dialog_update(TSIP_DIALOG(self), message))){
+	if((ret = tsip_dialog_update(TSIP_DIALOG(self), response))){
 		/* Alert the user. */
 		TSIP_DIALOG_REGISTER_SIGNAL(self, self->unregistering ? tsip_ao_unregister : tsip_ao_register,
-			TSIP_RESPONSE_CODE(message), TSIP_RESPONSE_PHRASE(message), message);
+			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
 		
 		return ret;
 	}
 
 	/* Ensure IPSec SAs */
 	if(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech && tsk_striequals(TSIP_DIALOG_GET_STACK(self)->security.secagree_mech, "ipsec-3gpp")){
-		tsip_transport_ensureTempSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport, message, TSIP_DIALOG(self)->expires);
+		tsip_transport_ensureTempSAs(TSIP_DIALOG_GET_STACK(self)->layer_transport, response, TSIP_DIALOG(self)->expires);
 	}
 	
 	return send_REGISTER(self, tsk_false);

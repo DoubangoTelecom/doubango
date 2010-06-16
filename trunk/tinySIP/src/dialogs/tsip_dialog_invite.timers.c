@@ -50,6 +50,7 @@ extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE)
 /* ======================== transitions ======================== */
 static int x0200_Connected_2_Connected_X_timerRefresh(va_list *app);
 static int x0201_Connected_2_Trying_X_timerRefresh(va_list *app);
+static int x0250_Any_2_Any_X_i422(va_list *app);
 
 /* ======================== conds ======================== */
 static tsk_bool_t _fsm_cond_is_refresher(tsip_dialog_invite_t* self, tsip_message_t* message)
@@ -71,7 +72,9 @@ int tsip_dialog_invite_stimers_init(tsip_dialog_invite_t *self)
 		TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_timerRefresh, _fsm_cond_is_refresher, _fsm_state_Connected, x0200_Connected_2_Connected_X_timerRefresh, "x0200_Connected_2_Connected_X_timerRefresh"),
 		// Connected -> (timerRefresh && !isRefresher) -> Trying (because we will send BYE)
 		TSK_FSM_ADD(_fsm_state_Connected, _fsm_action_timerRefresh, _fsm_cond_is_not_refresher, _fsm_state_Trying, x0201_Connected_2_Trying_X_timerRefresh, "x0201_Connected_2_Trying_X_timerRefresh"),
-		
+		// Any -> (i422) -> Any
+		TSK_FSM_ADD_ALWAYS(tsk_fsm_state_any, _fsm_action_i422, tsk_fsm_state_any, x0250_Any_2_Any_X_i422, "x0250_Any_2_Any_X_i422"),		
+
 		TSK_FSM_ADD_NULL());
 
 	return 0;
@@ -92,7 +95,7 @@ int x0200_Connected_2_Connected_X_timerRefresh(va_list *app)
 
 	/* send INVITE or UPDATE 
 	* 2xx will be handled by tsip_dialog_invite_stimers_handle() */
-	ret = send_INVITEorUPDATE(self, self->support_update);
+	ret = send_INVITEorUPDATE(self, !self->support_update);
 
 	return ret;
 }
@@ -113,9 +116,47 @@ int x0201_Connected_2_Trying_X_timerRefresh(va_list *app)
 	return ret;
 }
 
+// Any -> (i422) -> Any
+int x0250_Any_2_Any_X_i422(va_list *app)
+{
+	tsip_dialog_invite_t* self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_response_t* r422 = va_arg(*app, const tsip_response_t *);
+
+	const tsip_header_Min_SE_t* Min_SE;
+
+	/*	RFC 4825 - 3. Overview of Operation
+		If the Session-Expires interval is too low for a proxy (i.e., lower
+		than the value of Min-SE that the proxy would wish to assert), the
+		proxy rejects the request with a 422 response.  That response
+		contains a Min-SE header field identifying the minimum session
+		interval it is willing to support.  The UAC will try again, this time
+		including the Min-SE header field in the request.  The header field
+		contains the largest Min-SE header field it observed in all 422
+		responses previously received.  This way, the minimum timer meets the
+		constraints of all proxies along the path.
+
+		RFC 4825 - 6. 422 Response Code Definition
+		The 422 response MUST contain a Min-SE header field with the minimum timer for that server.
+	*/
+	
+	if((Min_SE = (const tsip_header_Min_SE_t* )tsip_message_get_header(r422, tsip_htype_Min_SE))){
+		self->stimers.minse = Min_SE->delta_seconds;
+	}
+	else{
+		TSK_DEBUG_ERROR("Invalid response (422 need Min-SE header)");
+		return 0; /* Do not end the dialog */
+	}
+
+	return 0;
+}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //				== STATE MACHINE END ==
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
 
 /* Indicates whether we are the refresher or not */
 tsk_bool_t  tsip_dialog_invite_stimers_isRefresher(tsip_dialog_invite_t* self)
@@ -251,4 +292,3 @@ int tsip_dialog_invite_stimers_handle(tsip_dialog_invite_t* self, const tsip_mes
 
 	return ret;
 }
-

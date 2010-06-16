@@ -43,7 +43,7 @@ TSIP_BEGIN_DECLS
 typedef struct tsip_dialog_invite
 {
 	TSIP_DECLARE_DIALOG;
-
+	
 	tsk_bool_t support_update; /**< Indicates whether the remote party support UPDATE */
 	tsk_bool_t is_client;
 	uint32_t rseq;

@@ -45,16 +45,8 @@ typedef enum tsip_invite_event_type_e
 	// ============================
 	//	Sip Events
 	//
-	tsip_i_invite,
-	tsip_ao_invite,
-	
-	/* BYE */
-	tsip_i_bye,
-	tsip_ao_bye,
-	
-	/* UPDATE */
-	tsip_i_update,
-	tsip_ao_update,
+	tsip_i_request,
+	tsip_ao_request,
 	
 	/* Explicit Call Transfer (ECT) */
 	tsip_o_ect_ok,

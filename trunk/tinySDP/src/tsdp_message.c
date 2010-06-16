@@ -210,7 +210,7 @@ char* tsdp_message_tostring(const tsdp_message_t *self)
 	return ret;
 }
 
-tsdp_message_t* tsdp_message_create_empty(const char* addr, tsk_bool_t ipv6)
+tsdp_message_t* tsdp_message_create_empty(const char* addr, tsk_bool_t ipv6, uint32_t version)
 {
 	tsdp_message_t* ret = 0;
 
@@ -227,7 +227,7 @@ tsdp_message_t* tsdp_message_create_empty(const char* addr, tsk_bool_t ipv6)
 	TSDP_MESSAGE_ADD_HEADER(ret, TSDP_HEADER_O_VA_ARGS(
 		TSDP_LINE_O_USERNAME_DEFAULT,
 		TSDP_LINE_O_SESSION_ID_DEFAULT,
-		TSDP_LINE_O_SESSION_VER_DEFAULT,
+		version,
 		"IN",
 		ipv6 ? "IP6" : "IP4",
 		addr));

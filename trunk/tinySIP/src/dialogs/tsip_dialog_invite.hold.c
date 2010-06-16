@@ -36,31 +36,69 @@
 #include "tsk_debug.h"
 
 /* ======================== transitions ======================== */
-static int x0100_Connected_2_Connected_X_oHold(va_list *app);
-static int x0101_Connected_2_Connected_X_oResume(va_list *app);
+static int x0100_Connected_2_Holding_X_oHold(va_list *app);
+static int x0101_Holding_2_Connected_X_ixxx(va_list *app);
+static int x0102_Connected_2_Resuming_X_oResume(va_list *app);
+static int x0103_Resuming_2_Connected_X_ixxx(va_list *app);
+
+static int x0150_Any_2_Any_X_i422(va_list *app);
+
+/* ======================== conds ======================== */
+static tsk_bool_t _fsm_cond_is_resp2INVITEorUPDATE(tsip_dialog_invite_t* self, tsip_message_t* message)
+{
+	return (TSIP_RESPONSE_IS_TO_INVITE(message) || TSIP_RESPONSE_IS_TO_UPDATE(message));
+}
 
 /* ======================== external functions ======================== */
 extern int send_INVITEorUPDATE(tsip_dialog_invite_t *self, tsk_bool_t is_INVITE);
+extern int tsip_dialog_invite_process_ro(tsip_dialog_invite_t *self, const tsip_message_t* message);
+extern int send_ACK(tsip_dialog_invite_t *self, const tsip_response_t* r2xxINVITE);
 
 int tsip_dialog_invite_hold_init(tsip_dialog_invite_t *self)
 {
 	tsk_fsm_set(TSIP_DIALOG_GET_FSM(self),
 
-		// Connected -> (send HOLD) -> Connected
-		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_oHold, _fsm_state_Connected, x0100_Connected_2_Connected_X_oHold, "x0100_Connected_2_Connected_X_oHold"),
-		// Connected -> (send RESUME) -> Connected
-		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_oResume, _fsm_state_Connected, x0101_Connected_2_Connected_X_oResume, "x0101_Connected_2_Connected_X_oResume"),
+		/*=======================
+		* === Hold === 
+		*/
+		// Connected -> (send HOLD) -> Holding
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_oHold, _fsm_state_Holding, x0100_Connected_2_Holding_X_oHold, "x0100_Connected_2_Holding_X_oHold"),
+		// Holding -> (i2xx) -> Connected
+		TSK_FSM_ADD(_fsm_state_Holding, _fsm_action_i2xx, _fsm_cond_is_resp2INVITEorUPDATE, _fsm_state_Connected, x0101_Holding_2_Connected_X_ixxx, "x0101_Holding_2_Connected_X_ixxx"),
+		// Holding -> (i300-699) -> Connected
+		TSK_FSM_ADD(_fsm_state_Holding, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITEorUPDATE, _fsm_state_Connected, x0101_Holding_2_Connected_X_ixxx, "x0101_Holding_2_Connected_X_ixxx"),
+
+		/*=======================
+		* === Resume === 
+		*/
+		// Connected -> (send RESUME) -> Resuming
+		TSK_FSM_ADD_ALWAYS(_fsm_state_Connected, _fsm_action_oResume, _fsm_state_Resuming, x0102_Connected_2_Resuming_X_oResume, "x0102_Connected_2_Resuming_X_oResume"),
+		// Resuming -> (i2xx) -> Connected
+		TSK_FSM_ADD(_fsm_state_Resuming, _fsm_action_i2xx, _fsm_cond_is_resp2INVITEorUPDATE, _fsm_state_Connected, x0103_Resuming_2_Connected_X_ixxx, "x0103_Resuming_2_Connected_X_ixxx"),
+		// Resuming -> (i300-699) -> Connected
+		TSK_FSM_ADD(_fsm_state_Resuming, _fsm_action_i300_to_i699, _fsm_cond_is_resp2INVITEorUPDATE, _fsm_state_Connected, x0103_Resuming_2_Connected_X_ixxx, "x0103_Resuming_2_Connected_X_ixxx"),
 		
 		TSK_FSM_ADD_NULL());
 
 	return 0;
 }
 
+
+
+//--------------------------------------------------------
+//				== STATE MACHINE BEGIN ==
+//--------------------------------------------------------
+
 // Connected -> (send HOLD) -> Connected
-int x0100_Connected_2_Connected_X_oHold(va_list *app)
+int x0100_Connected_2_Holding_X_oHold(va_list *app)
 {
-	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
-	int ret = 0;
+	int ret;
+	tsip_dialog_invite_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_invite_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
 
 	if(!self->msession_mgr){
 		TSK_DEBUG_WARN("Media Session manager is Null");
@@ -68,19 +106,61 @@ int x0100_Connected_2_Connected_X_oHold(va_list *app)
 	}
 
 	/* put on hold */
-	/* FIXME: only put on hold the specified media */
-	ret = tmedia_session_mgr_hold(self->msession_mgr, (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38));
+	ret = tmedia_session_mgr_hold(self->msession_mgr, action->media.type);
+
+	/* update current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+
 	/* send the request */
 	ret = send_INVITE(self);
 
 	return ret;
 }
 
-int x0101_Connected_2_Connected_X_oResume(va_list *app)
+// Holding -> (ixxx) -> Connected
+int x0101_Holding_2_Connected_X_ixxx(va_list *app)
 {
-	tsip_dialog_invite_t *self = va_arg(*app, tsip_dialog_invite_t *);
+	int ret;
 
-	int ret = 0;
+	tsip_dialog_invite_t* self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_response_t* response = va_arg(*app, const tsip_response_t *);
+
+	/* reset current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), tsk_null);
+
+	/* Process remote offer */
+	if((ret = tsip_dialog_invite_process_ro(self, response))){
+		/* Send error */
+		return ret;
+	}
+	else if(TSIP_RESPONSE_IS_TO_INVITE(response)){
+		/* send ACK */
+		ret = send_ACK(self, response);
+	}
+
+	/* alert the user */
+	if(TSIP_RESPONSE_IS_2XX(response)){
+		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_local_hold_ok, 
+			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	}
+	else{
+		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_local_hold_nok, 
+			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	}
+	
+	return ret;
+}
+
+// Connected -> (send RESUME) -> Resuming
+int x0102_Connected_2_Resuming_X_oResume(va_list *app)
+{
+	int ret;
+	tsip_dialog_invite_t *self;
+	const tsip_action_t* action;
+
+	self = va_arg(*app, tsip_dialog_invite_t *);
+	va_arg(*app, const tsip_message_t *);
+	action = va_arg(*app, const tsip_action_t *);
 
 	if(!self->msession_mgr){
 		TSK_DEBUG_WARN("Media Session manager is Null");
@@ -88,10 +168,52 @@ int x0101_Connected_2_Connected_X_oResume(va_list *app)
 	}
 
 	/* Resume */
-	/* FIXME: only put on hold the specified media */
-	ret = tmedia_session_mgr_resume(self->msession_mgr, (tmedia_audio | tmedia_video | tmedia_msrp | tmedia_t38));
+	ret = tmedia_session_mgr_resume(self->msession_mgr, action->media.type);
+
+	/* update current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), action);
+
 	/* send the request */
 	ret = send_INVITE(self);
 
 	return ret;
 }
+
+// Resuming -> (ixxx) -> Connected
+int x0103_Resuming_2_Connected_X_ixxx(va_list *app)
+{
+	int ret;
+
+	tsip_dialog_invite_t* self = va_arg(*app, tsip_dialog_invite_t *);
+	const tsip_response_t* response = va_arg(*app, const tsip_response_t *);
+
+	/* reset current action */
+	tsip_dialog_set_curr_action(TSIP_DIALOG(self), tsk_null);
+
+	/* Process remote offer */
+	if((ret = tsip_dialog_invite_process_ro(self, response))){
+		/* Send error */
+		return ret;
+	}
+	else if(TSIP_RESPONSE_IS_TO_INVITE(response)){
+		/* send ACK */
+		ret = send_ACK(self, response);
+	}
+
+	/* alert the user */
+	if(TSIP_RESPONSE_IS_2XX(response)){
+		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_local_resume_ok, 
+			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	}
+	else{
+		TSIP_DIALOG_INVITE_SIGNAL(self, tsip_m_local_resume_nok, 
+			TSIP_RESPONSE_CODE(response), TSIP_RESPONSE_PHRASE(response), response);
+	}
+	
+	return ret;
+}
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//				== STATE MACHINE END ==
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++

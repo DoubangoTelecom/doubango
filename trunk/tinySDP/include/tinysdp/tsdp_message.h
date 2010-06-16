@@ -85,7 +85,7 @@ TINYSDP_API const tsdp_header_t *tsdp_message_get_headerByName(const tsdp_messag
 TINYSDP_API int tsdp_message_serialize(const tsdp_message_t *self, tsk_buffer_t *output);
 TINYSDP_API char* tsdp_message_tostring(const tsdp_message_t *self);
 
-TINYSDP_API tsdp_message_t* tsdp_message_create_empty(const char* addr, tsk_bool_t ipv6);
+TINYSDP_API tsdp_message_t* tsdp_message_create_empty(const char* addr, tsk_bool_t ipv6, uint32_t version);
 TINYSDP_API tsdp_message_t* tsdp_message_clone(const tsdp_message_t *self);
 TINYSDP_API int tsdp_message_add_media(tsdp_message_t *self, const char* media, uint32_t port, const char* proto, ...);
 TINYSDP_API int tsdp_message_add_media_2(tsdp_message_t *self, const char* media, uint32_t port, const char* proto, va_list *ap);
